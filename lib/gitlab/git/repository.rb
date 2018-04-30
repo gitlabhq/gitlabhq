@@ -1546,7 +1546,8 @@ module Gitlab
       end
 
       def checksum
-        gitaly_migrate(:calculate_checksum) do |is_enabled|
+        gitaly_migrate(:calculate_checksum,
+                      status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_repository_client.calculate_checksum
           else
