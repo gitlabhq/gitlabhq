@@ -47,7 +47,7 @@ describe API::Runners do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(descriptions).to contain_exactly(
-          'Project runner', 'Group runner', 'Two projects runner'
+          'Project runner', 'Two projects runner'
         )
         expect(shared).to be_falsey
       end
@@ -149,16 +149,6 @@ describe API::Runners do
 
           expect(json_response['projects'].first['id']).to eq(project.id)
         end
-
-        it "returns the group's details for a group runner" do
-          get api("/runners/#{group_runner.id}", admin)
-
-          expect(json_response['groups'].first).to eq(
-            'id' => group.id,
-            'web_url' => group.web_url,
-            'name' => group.name
-          )
-        end
       end
 
       it 'returns 404 if runner does not exists' do
@@ -188,28 +178,11 @@ describe API::Runners do
       end
     end
 
-    context "runner group's administrative user" do
-      context 'when runner is not shared' do
-        it "returns runner's details" do
-          get api("/runners/#{group_runner.id}", user)
-
-          expect(response).to have_http_status(200)
-          expect(json_response['id']).to eq(group_runner.id)
-        end
-      end
-    end
-
     context 'other authorized user' do
       it "does not return project runner's details" do
         get api("/runners/#{project_runner.id}", user2)
 
         expect(response).to have_http_status(403)
-      end
-
-      it "does not return group runner's details" do
-        get api("/runners/#{group_runner.id}", user2)
-
-        expect(response).to have_gitlab_http_status(403)
       end
     end
 
@@ -218,12 +191,6 @@ describe API::Runners do
         get api("/runners/#{project_runner.id}")
 
         expect(response).to have_http_status(401)
-      end
-
-      it "does not return group runner's details" do
-        get api("/runners/#{group_runner.id}")
-
-        expect(response).to have_gitlab_http_status(401)
       end
     end
   end
@@ -301,12 +268,6 @@ describe API::Runners do
           expect(response).to have_http_status(403)
         end
 
-        it 'does not update group runner without access to it' do
-          put api("/runners/#{group_runner.id}", user2), description: 'test'
-
-          expect(response).to have_gitlab_http_status(403)
-        end
-
         it 'updates project runner with access to it' do
           description = project_runner.description
           put api("/runners/#{project_runner.id}", admin), description: 'test'
@@ -316,16 +277,6 @@ describe API::Runners do
           expect(project_runner.description).to eq('test')
           expect(project_runner.description).not_to eq(description)
         end
-
-        it 'updates group runner with access to it' do
-          description = group_runner.description
-          put api("/runners/#{group_runner.id}", admin), description: 'test'
-          group_runner.reload
-
-          expect(response).to have_gitlab_http_status(200)
-          expect(group_runner.description).to eq('test')
-          expect(group_runner.description).not_to eq(description)
-        end
       end
     end
 
@@ -334,12 +285,6 @@ describe API::Runners do
         put api("/runners/#{project_runner.id}")
 
         expect(response).to have_http_status(401)
-      end
-
-      it 'does not delete group runner' do
-        put api("/runners/#{group_runner.id}")
-
-        expect(response).to have_gitlab_http_status(401)
       end
     end
   end
@@ -374,14 +319,6 @@ describe API::Runners do
             delete api("/runners/#{project_runner.id}", admin)
 
             expect(response).to have_http_status(204)
-          end.to change { Ci::Runner.specific.count }.by(-1)
-        end
-
-        it 'deletes used group runner' do
-          expect do
-            delete api("/runners/#{group_runner.id}", admin)
-
-            expect(response).to have_gitlab_http_status(204)
           end.to change { Ci::Runner.specific.count }.by(-1)
         end
       end
@@ -420,14 +357,6 @@ describe API::Runners do
           end.to change { Ci::Runner.specific.count }.by(-1)
         end
 
-        it 'deletes group runner for one owned group' do
-          expect do
-            delete api("/runners/#{group_runner.id}", user)
-
-            expect(response).to have_gitlab_http_status(204)
-          end.to change { Ci::Runner.specific.count }.by(-1)
-        end
-
         it_behaves_like '412 response' do
           let(:request) { api("/runners/#{project_runner.id}", user) }
         end
@@ -439,12 +368,6 @@ describe API::Runners do
         delete api("/runners/#{project_runner.id}")
 
         expect(response).to have_http_status(401)
-      end
-
-      it 'does not delete group runner' do
-        delete api("/runners/#{group_runner.id}")
-
-        expect(response).to have_gitlab_http_status(401)
       end
     end
   end
