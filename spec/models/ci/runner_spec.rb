@@ -748,47 +748,47 @@ describe Ci::Runner do
     end
   end
 
-  describe 'group?' do
+  describe 'assigned_to_group?' do
     it 'returns false when the runner is a project runner' do
       project = create :project
       runner = create :ci_runner, description: 'Project runner', projects: [project]
 
-      expect(runner.group?).to be false
+      expect(runner.assigned_to_group?).to be false
     end
 
     it 'returns false when the runner is a shared runner' do
       runner = create :ci_runner, :shared, description: 'Shared runner'
 
-      expect(runner.group?).to be false
+      expect(runner.assigned_to_group?).to be false
     end
 
     it 'returns true when the runner is assigned to a group' do
       group = create :group
       runner = create :ci_runner, description: 'Group runner', groups: [group]
 
-      expect(runner.group?).to be true
+      expect(runner.assigned_to_group?).to be true
     end
   end
 
-  describe 'project?' do
+  describe 'assigned_to_project?' do
     it 'returns false when the runner is a group prunner' do
       group = create :group
       runner = create :ci_runner, description: 'Group runner', groups: [group]
 
-      expect(runner.project?).to be false
+      expect(runner.assigned_to_project?).to be false
     end
 
     it 'returns false when the runner is a shared runner' do
       runner = create :ci_runner, :shared, description: 'Shared runner'
 
-      expect(runner.project?).to be false
+      expect(runner.assigned_to_project?).to be false
     end
 
     it 'returns true when the runner is assigned to a project' do
       project = create :project
       runner = create :ci_runner, description: 'Group runner', projects: [project]
 
-      expect(runner.project?).to be true
+      expect(runner.assigned_to_project?).to be true
     end
   end
 

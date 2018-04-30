@@ -137,11 +137,11 @@ module Ci
       !shared?
     end
 
-    def group?
+    def assigned_to_group?
       runner_groups.any?
     end
 
-    def project?
+    def assigned_to_project?
       runner_projects.any?
     end
 
@@ -244,7 +244,7 @@ module Ci
         errors.add(:runner, 'can only be assigned to one group')
       end
 
-      if group? && project?
+      if assigned_to_group? && assigned_to_project?
         errors.add(:runner, 'can only be assigned either to projects or to a group')
       end
     end
