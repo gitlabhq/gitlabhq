@@ -2,7 +2,7 @@
   import { s__ } from '~/locale';
   import { numberToHumanSize } from '~/lib/utils/number_utils';
 
-  import { VALUE_TYPE, HELP_INFO_URLS } from '../../constants';
+  import { VALUE_TYPE, HELP_INFO_URL } from '../../constants';
 
   import GeoNodeDetailItem from '../geo_node_detail_item.vue';
   import SectionRevealButton from './section_reveal_button.vue';
@@ -57,7 +57,7 @@
               failureLabel: s__('GeoNodes|Failed'),
               helpInfo: {
                 title: s__('GeoNodes|Repositories checksummed for verification with their counterparts on Secondary nodes'),
-                url: HELP_INFO_URLS.REPOSITORY_VERIFICATION,
+                url: HELP_INFO_URL,
                 urlText: s__('GeoNodes|Learn more about Repository checksum progress'),
               },
             },
@@ -70,7 +70,7 @@
               failureLabel: s__('GeoNodes|Failed'),
               helpInfo: {
                 title: s__('GeoNodes|Wikis checksummed for verification with their counterparts on Secondary nodes'),
-                url: HELP_INFO_URLS.REPOSITORY_VERIFICATION,
+                url: HELP_INFO_URL,
                 urlText: s__('GeoNodes|Learn more about Wiki checksum progress'),
               },
             },
@@ -111,8 +111,8 @@
             failureLabel: s__('GeoNodes|Failed'),
             helpInfo: {
               title: s__('GeoNodes|Repositories verified with their counterparts on the Primary node'),
-              url: HELP_INFO_URLS.REPOSITORY_VERIFICATION,
-              urlText: s__('GeoNodes|Learn more about Repository checksum progress'),
+              url: HELP_INFO_URL,
+              urlText: s__('GeoNodes|Learn more about Repository verification'),
             },
           },
           {
@@ -124,8 +124,8 @@
             failureLabel: s__('GeoNodes|Failed'),
             helpInfo: {
               title: s__('GeoNodes|Wikis verified with their counterparts on the Primary node'),
-              url: HELP_INFO_URLS.CHECKSUMS,
-              urlText: s__('GeoNodes|Learn more about Wiki checksum progress'),
+              url: HELP_INFO_URL,
+              urlText: s__('GeoNodes|Learn more about Wiki verification'),
             },
           },
         ];

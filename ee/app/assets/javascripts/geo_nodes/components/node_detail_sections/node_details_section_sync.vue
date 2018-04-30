@@ -49,12 +49,12 @@
             itemValueType: VALUE_TYPE.GRAPH,
           },
           {
-            itemTitle: s__('GeoNodes|Local job artifacts:'),
+            itemTitle: s__('GeoNodes|Local job artifacts'),
             itemValue: this.nodeDetails.jobArtifacts,
             itemValueType: VALUE_TYPE.GRAPH,
           },
           {
-            itemTitle: s__('GeoNodes|Data replication lag:'),
+            itemTitle: s__('GeoNodes|Data replication lag'),
             itemValue: this.dbReplicationLag(),
             itemValueType: VALUE_TYPE.PLAIN,
           },

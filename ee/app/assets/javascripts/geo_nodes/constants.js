@@ -28,4 +28,4 @@ export const TIME_DIFF = {
   HOUR: 3600,
 };
 
-export const HELP_INFO_URLS = { REPOSITORY_VERIFICATION: 'https://docs.gitlab.com/ee/administration/geo/disaster_recovery/background_verification.html#repository-verification', CHECKSUMS: 'https://docs.gitlab.com/ee/administration/geo/disaster_recovery/background_verification.html#using-checksums-to-compare-geo-nodes' };
+export const HELP_INFO_URL = 'https://docs.gitlab.com/ee/administration/geo/disaster_recovery/background_verification.html#repository-verification';
