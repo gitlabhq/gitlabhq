@@ -14,11 +14,8 @@
 #   NotificationService.new.async.new_issue(issue, current_user)
 #
 class NotificationService
-<<<<<<< HEAD
   prepend EE::NotificationService
 
-=======
->>>>>>> upstream/master
   class Async
     attr_reader :parent
     delegate :respond_to_missing, to: :parent
@@ -526,7 +523,6 @@ class NotificationService
     end
   end
 
-<<<<<<< HEAD
   def add_mr_approvers_email(merge_request, approvers, current_user)
     approvers.each do |approver|
       recipient = approver.user
@@ -539,8 +535,6 @@ class NotificationService
     Notify
   end
 
-=======
->>>>>>> upstream/master
   private
 
   def recipients_for_pages_domain(domain)

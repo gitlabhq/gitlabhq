@@ -26,10 +26,7 @@ end
 module OmniAuth
   module Strategies
     autoload :Bitbucket, Rails.root.join('lib', 'omni_auth', 'strategies', 'bitbucket')
-<<<<<<< HEAD
     autoload :GroupSaml, Rails.root.join('ee', 'lib', 'omni_auth', 'strategies', 'group_saml')
-=======
->>>>>>> upstream/master
     autoload :Jwt, Rails.root.join('lib', 'omni_auth', 'strategies', 'jwt')
   end
 end
