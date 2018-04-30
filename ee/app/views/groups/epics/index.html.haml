@@ -1,12 +1,15 @@
+- has_filters_applied = params[:label_name].present? || params[:author_username].present? || params[:search].present?
+
 - page_title "Epics"
 
-.top-area
-  = render 'shared/issuable/epic_nav', type: :epics
-  .nav-controls
-    - if can?(current_user, :create_epic, @group)
-      #new-epic-app{ data: { endpoint: request.url, 'align-right' => true } }
+- if has_filters_applied || @epics.to_a.any?
+  .top-area
+    = render 'shared/issuable/epic_nav', type: :epics
+    .nav-controls
+      - if can?(current_user, :create_epic, @group)
+        #new-epic-app{ data: { endpoint: request.url, 'align-right' => true } }
 
-= render 'shared/epic/search_bar', type: :epics
+  = render 'shared/epic/search_bar', type: :epics
 
 - if @epics.to_a.any?
   = render 'shared/epics'
