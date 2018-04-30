@@ -279,7 +279,7 @@ end
 ```
 
 In `lib/gitlab/visibility_level.rb` this method is used to return the
-allowed visibilty levels:
+allowed visibility levels:
 
 ```ruby
 def levels_for_user(user = nil)

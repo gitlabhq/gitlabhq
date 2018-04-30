@@ -64,6 +64,10 @@ module QA
         find(element_selector_css(name))
       end
 
+      def all_elements(name)
+        all(element_selector_css(name))
+      end
+
       def click_element(name)
         find_element(name).click
       end

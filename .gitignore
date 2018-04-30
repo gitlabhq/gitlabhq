@@ -72,3 +72,4 @@ eslint-report.html
 /locale/**/*.time_stamp
 /.rspec
 /plugins/*
+/.gitlab_pages_secret
