@@ -99,24 +99,6 @@ module Ci
       self.token = SecureRandom.hex(15) if self.token.blank?
     end
 
-    def accessible_projects
-      accessible_projects =
-        if shared?
-          Project.with_shared_runners
-        elsif project?
-          projects
-        elsif group?
-          hierarchy_groups = Gitlab::GroupHierarchy.new(groups).base_and_descendants
-          Project.where(namespace_id: hierarchy_groups)
-        else
-          Project.none
-        end
-
-      accessible_projects
-        .with_builds_enabled
-        .without_deleted
-    end
-
     def assign_to(project, current_user = nil)
       self.is_shared = false if shared?
       self.save

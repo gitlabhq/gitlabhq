@@ -14,7 +14,14 @@ module Ci
     end
 
     def execute
-      builds = builds_for_runner
+      builds =
+        if runner.shared?
+          builds_for_shared_runner
+        elsif runner.group?
+          builds_for_group_runner
+        else
+          builds_for_project_runner
+        end
 
       valid = true
 
@@ -63,27 +70,39 @@ module Ci
 
     private
 
-    def builds_for_runner
-      new_builds
-        .joins("LEFT JOIN (#{running_projects.to_sql}) AS running_projects ON ci_builds.project_id=running_projects.project_id")
-        .order('COALESCE(running_projects.running_builds, 0) ASC', 'ci_builds.id ASC')
+    def builds_for_shared_runner
+      new_builds.
+        # don't run projects which have not enabled shared runners and builds
+        joins(:project).where(projects: { shared_runners_enabled: true, pending_delete: false })
+        .joins('LEFT JOIN project_features ON ci_builds.project_id = project_features.project_id')
+        .where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0').
+
+      # Implement fair scheduling
+      # this returns builds that are ordered by number of running builds
+      # we prefer projects that don't use shared runners at all
+      joins("LEFT JOIN (#{running_builds_for_shared_runners.to_sql}) AS project_builds ON ci_builds.project_id=project_builds.project_id")
+        .order('COALESCE(project_builds.running_builds, 0) ASC', 'ci_builds.id ASC')
     end
 
-    # New builds from the accessible projects
-    def new_builds
-      filter_builds(Ci::Build.pending.unstarted)
+    def builds_for_project_runner
+      new_builds.where(project: runner.projects.without_deleted.with_builds_enabled).order('created_at ASC')
     end
 
-    # Count running builds from the accessible projects
-    def running_projects
-      filter_builds(Ci::Build.running)
+    def builds_for_group_runner
+      hierarchy_groups = Gitlab::GroupHierarchy.new(runner.groups).base_and_descendants
+      projects = Project.where(namespace_id: hierarchy_groups).without_deleted.with_builds_enabled
+      new_builds.where(project: projects.without_deleted.with_builds_enabled).order('created_at ASC')
+    end
+
+    def running_builds_for_shared_runners
+      Ci::Build.running.where(runner: Ci::Runner.shared)
         .group(:project_id).select(:project_id, 'count(*) AS running_builds')
     end
 
-    # Filter the builds from the accessible projects
-    def filter_builds(builds)
+    def new_builds
+      builds = Ci::Build.pending.unstarted
       builds = builds.ref_protected if runner.ref_protected?
-      builds.where(project: runner.accessible_projects)
+      builds
     end
 
     def register_failure

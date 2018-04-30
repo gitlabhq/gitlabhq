@@ -195,56 +195,25 @@ module Ci
           let!(:unrelated_group_runner) { create :ci_runner, groups: [unrelated_group] }
 
           it 'does not consider builds from other group runners' do
-            expect(described_class.new(group_runner).send(:builds_for_runner).count).to eq 6
+            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 6
             execute(group_runner)
 
-            expect(described_class.new(group_runner).send(:builds_for_runner).count).to eq 5
+            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 5
             execute(group_runner)
 
-            expect(described_class.new(group_runner).send(:builds_for_runner).count).to eq 4
+            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 4
             execute(group_runner)
 
-            expect(described_class.new(group_runner).send(:builds_for_runner).count).to eq 3
+            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 3
             execute(group_runner)
 
-            expect(described_class.new(group_runner).send(:builds_for_runner).count).to eq 2
+            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 2
             execute(group_runner)
 
-            expect(described_class.new(group_runner).send(:builds_for_runner).count).to eq 1
+            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 1
             execute(group_runner)
 
-            expect(described_class.new(group_runner).send(:builds_for_runner).count).to eq 0
-            expect(execute(group_runner)).to be_nil
-          end
-
-          it 'prefers projects without builds first' do
-            # it gets for one build from each of the projects
-            expect(execute(group_runner)).to eq(build1_project1)
-            expect(execute(group_runner)).to eq(build1_project2)
-            expect(execute(group_runner)).to eq(build1_project3)
-
-            # then it gets a second build from each of the projects
-            expect(execute(group_runner)).to eq(build2_project1)
-            expect(execute(group_runner)).to eq(build2_project2)
-
-            # in the end the third build
-            expect(execute(group_runner)).to eq(build3_project1)
-
-            expect(execute(group_runner)).to be_nil
-          end
-
-          it 'equalises number of running builds' do
-            # after finishing the first build for project 1, get a second build from the same project
-            expect(execute(group_runner)).to eq(build1_project1)
-            build1_project1.reload.success
-            expect(execute(group_runner)).to eq(build2_project1)
-
-            expect(execute(group_runner)).to eq(build1_project2)
-            build1_project2.reload.success
-            expect(execute(group_runner)).to eq(build2_project2)
-            expect(execute(group_runner)).to eq(build1_project3)
-            expect(execute(group_runner)).to eq(build3_project1)
-
+            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 0
             expect(execute(group_runner)).to be_nil
           end
         end
@@ -282,7 +251,7 @@ module Ci
           let!(:other_build) { create :ci_build, pipeline: pipeline }
 
           before do
-            allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_runner)
+            allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_project_runner)
               .and_return(Ci::Build.where(id: [pending_job, other_build]))
           end
 
@@ -294,7 +263,7 @@ module Ci
 
         context 'when single build is in queue' do
           before do
-            allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_runner)
+            allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_project_runner)
               .and_return(Ci::Build.where(id: pending_job))
           end
 
@@ -305,7 +274,7 @@ module Ci
 
         context 'when there is no build in queue' do
           before do
-            allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_runner)
+            allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_project_runner)
               .and_return(Ci::Build.none)
           end
 
