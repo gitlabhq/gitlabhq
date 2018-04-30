@@ -205,7 +205,6 @@ module API
       def authenticate_enable_runner!(runner)
         forbidden!("Runner is shared") if runner.is_shared?
         forbidden!("Runner is locked") if runner.locked?
-        forbidden!("Runner is a group runner") if runner.assigned_to_group?
         return if current_user.admin?
 
         forbidden!("No access granted") unless user_can_access_runner?(runner)
