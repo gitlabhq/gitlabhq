@@ -30,6 +30,7 @@ See our [HA documentation for PostgreSQL](database.md) for information on runnin
    ```
 
 1. Run `gitlab-ctl reconfigure`
+
    **Note:** If the database was already running, it will need to be restarted after reconfigure by running `gitlab-ctl restart postgresql`.
 
 1. On the node you are running pgbouncer on, make sure the following is set in `/etc/gitlab/gitlab.rb`
