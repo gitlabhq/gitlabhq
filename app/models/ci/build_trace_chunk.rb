@@ -1,10 +1,12 @@
 module Ci
   class BuildTraceChunk < ActiveRecord::Base
+    include FastDestroyAll
     extend Gitlab::Ci::Model
 
     belongs_to :build, class_name: "Ci::Build", foreign_key: :build_id
 
     default_value_for :data_store, :redis
+    fast_destroy_all_with :delete_all_redis_data, :redis_all_data_keys
 
     WriteError = Class.new(StandardError)
 
@@ -19,27 +21,23 @@ module Ci
       db: 2
     }
 
-    def self.delayed_cleanup_blk
-      ids = all.redis.pluck(:build_id, :chunk_index).map do |data|
-        "gitlab:ci:trace:#{data.first}:chunks:#{data.second}"
+    class << self
+      def redis_data_key(build_id, chunk_index)
+        "gitlab:ci:trace:#{build_id}:chunks:#{chunk_index}"
       end
 
-      puts "before cleanup: #{ids.count}"
-
-      Proc.new do
-        puts "after cleanup: #{ids.count}"
-        Gitlab::Redis::SharedState.with do |redis|
-          redis.del(ids)
-        end unless ids.empty?
-
-        true
+      def redis_all_data_keys
+        redis.pluck(:build_id, :chunk_index).map do |data|
+          redis_data_key(data.first, data.second)
+        end
       end
-    end
 
-    def self.fast_destroy_all
-      delayed_cleanup_blk.tap do |cleanup|
-        delete_all
-        cleanup.call
+      def delete_all_redis_data(redis_keys)
+        if redis_keys.any?
+          Gitlab::Redis::SharedState.with do |redis|
+            redis.del(redis_keys)
+          end
+        end
       end
     end
 
@@ -130,24 +128,20 @@ module Ci
 
     def redis_data
       Gitlab::Redis::SharedState.with do |redis|
-        redis.get(redis_data_key)
+        redis.get(self.class.redis_data_key(build_id, chunk_index))
       end
     end
 
     def redis_set_data(data)
       Gitlab::Redis::SharedState.with do |redis|
-        redis.set(redis_data_key, data, ex: CHUNK_REDIS_TTL)
+        redis.set(self.class.redis_data_key(build_id, chunk_index), data, ex: CHUNK_REDIS_TTL)
       end
     end
 
     def redis_delete_data
       Gitlab::Redis::SharedState.with do |redis|
-        redis.del(redis_data_key)
+        redis.del(self.class.redis_data_key(build_id, chunk_index))
       end
-    end
-
-    def redis_data_key
-      "gitlab:ci:trace:#{build_id}:chunks:#{chunk_index}"
     end
 
     def redis_lock_key

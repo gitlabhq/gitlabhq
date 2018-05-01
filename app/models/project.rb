@@ -78,6 +78,12 @@ class Project < ActiveRecord::Base
   after_update :update_forks_visibility_level
 
   before_destroy :remove_private_deploy_keys
+
+  # This has to be defined before `has_many :builds, depenedent: :destroy`,
+  # otherwise we will not delete any data, due to trace chunks
+  # going through :builds
+  before_destroy -> { run_after_commit(&build_trace_chunks.delete_all_external_data_proc) }
+
   after_destroy -> { run_after_commit { remove_pages } }
   after_destroy :remove_exports
 
@@ -213,14 +219,6 @@ class Project < ActiveRecord::Base
 
   has_many :commit_statuses
   has_many :pipelines, class_name: 'Ci::Pipeline', inverse_of: :project
-
-  # This has to be defined before `has_many :builds, depenedent: :destroy`,
-  # otherwise we will not delete any data, due to trace chunks
-  # going through :builds
-  before_destroy do
-    puts "destroying all chunks"
-    self.run_after_commit(&build_trace_chunks.delayed_cleanup_blk)
-  end
 
   # Ci::Build objects store data on the file system such as artifact files and
   # build traces. Currently there's no efficient way of removing this data in
