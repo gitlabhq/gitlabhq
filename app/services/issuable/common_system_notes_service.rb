@@ -1,5 +1,6 @@
 module Issuable
   class CommonSystemNotesService < ::BaseService
+    prepend EE::Issuable::CommonSystemNotesService
     attr_reader :issuable
 
     def execute(issuable, old_labels)
