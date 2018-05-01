@@ -105,6 +105,10 @@ class Commit
         end
       end
     end
+
+    def parent_class
+      ::Project
+    end
   end
 
   attr_accessor :raw
