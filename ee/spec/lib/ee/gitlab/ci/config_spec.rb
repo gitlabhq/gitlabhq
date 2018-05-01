@@ -196,6 +196,33 @@ describe EE::Gitlab::Ci::Config do
           }
         })
       end
+
+      context 'when the script key is in both' do
+        let(:gitlab_ci_yml) do
+          <<~HEREDOC
+          include:
+            - #{remote_location}
+
+          job1:
+            script:
+            - echo 'hello from main file'
+            variables:
+              VARIABLE_DEFINED_IN_MAIN_FILE: 'some value'
+          HEREDOC
+        end
+
+        it 'uses the script from the gitlab_ci.yml' do
+          WebMock.stub_request(:get, remote_location).to_return(body: remote_file_content)
+          expect(config.to_hash).to eq({
+            job1: {
+              script: ["echo 'hello from main file'"],
+              variables: {
+                VARIABLE_DEFINED_IN_MAIN_FILE: 'some value'
+              }
+            }
+          })
+        end
+      end
     end
   end
 end
