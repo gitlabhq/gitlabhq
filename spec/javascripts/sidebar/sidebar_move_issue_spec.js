@@ -69,6 +69,15 @@ describe('SidebarMoveIssue', function () {
 
       expect($.fn.glDropdown).toHaveBeenCalled();
     });
+
+    it('escapes html from project name', (done) => {
+      this.$toggleButton.dropdown('toggle');
+
+      setTimeout(() => {
+        expect(this.$content.find('.js-move-issue-dropdown-item')[1].innerHTML.trim()).toEqual('&lt;img src=x onerror=alert(document.domain)&gt; foo / bar');
+        done();
+      });
+    });
   });
 
   describe('onConfirmClicked', () => {

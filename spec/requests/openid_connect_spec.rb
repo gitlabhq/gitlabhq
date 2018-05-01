@@ -153,4 +153,13 @@ describe 'OpenID Connect requests' do
       end
     end
   end
+
+  context 'OpenID configuration information' do
+    it 'correctly returns the configuration' do
+      get '/.well-known/openid-configuration'
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response).to have_key('issuer')
+    end
+  end
 end

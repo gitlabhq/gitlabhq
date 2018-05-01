@@ -123,15 +123,5 @@ describe ProjectMember do
     it { expect(@project_2.users).to be_empty }
   end
 
-  describe 'notifications' do
-    describe '#after_accept_request' do
-      it 'calls NotificationService.new_project_member' do
-        member = create(:project_member, user: create(:user), requested_at: Time.now)
-
-        expect_any_instance_of(NotificationService).to receive(:new_project_member)
-
-        member.__send__(:after_accept_request)
-      end
-    end
-  end
+  it_behaves_like 'members notifications', :project
 end
