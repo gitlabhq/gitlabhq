@@ -109,6 +109,65 @@ module API
           options[:project].repository.commit(repo_branch.dereferenced_target)
         end
       end
+
+      class User < Grape::Entity
+        expose :id
+        expose :username, as: :login
+        expose :url do |user|
+          Gitlab::Routing.url_helpers.user_url(user)
+        end
+      end
+
+      class NoteableComment < Grape::Entity
+        expose :id
+        expose :author, as: :user, using: User
+        expose :note, as: :body
+        expose :created_at
+      end
+
+      class PullRequest < Grape::Entity
+        expose :title
+        expose :assignee, using: User
+        expose :author, as: :user, using: User
+        expose :created_at
+        expose :description, as: :body
+        # Since Jira service requests `/repos/-/jira/pulls` (without project
+        # scope), we need to make it work with ID instead IID.
+        expose :id, as: :number
+        # GitHub doesn't have a "merged" or "closed" state. It's just "open" or
+        # "closed".
+        expose :state do |merge_request|
+          case merge_request.state
+          when 'opened', 'locked'
+            'open'
+          when 'merged'
+            'closed'
+          else
+            merge_request.state
+          end
+        end
+        expose :merged?, as: :merged
+        expose :merged_at do |merge_request|
+          merge_request.metrics&.merged_at
+        end
+        expose :closed_at do |merge_request|
+          merge_request.metrics&.latest_closed_at
+        end
+        expose :updated_at
+        expose :html_url do |merge_request|
+          Gitlab::UrlBuilder.build(merge_request)
+        end
+        expose :head do
+          expose :source_branch, as: :label
+          expose :source_branch, as: :ref
+          expose :source_project, as: :repo, using: Repository
+        end
+        expose :base do
+          expose :target_branch, as: :label
+          expose :target_branch, as: :ref
+          expose :target_project, as: :repo, using: Repository
+        end
+      end
     end
   end
 end

@@ -1,0 +1,16 @@
+{
+    "type": "object",
+    "properties": {
+        "id": { "type": "integer" },
+        "name": { "type": "string" },
+        "owner": {
+            "type": "object",
+            "required": ["login"],
+            "properties" : {
+                "login": { "type": "string" }
+            },
+            "additionalProperties": false
+        },
+        "additionalProperties": false
+    }
+}
