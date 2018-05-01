@@ -30,7 +30,7 @@ describe Geo::AttachmentRegistryFinder, :geo do
   end
 
   shared_examples 'counts all the things' do
-    describe '#count_local_attachments' do
+    describe '#count_syncable_attachments' do
       before do
         upload_1
         upload_2
@@ -39,13 +39,13 @@ describe Geo::AttachmentRegistryFinder, :geo do
       end
 
       it 'counts attachments' do
-        expect(subject.count_local_attachments).to eq 4
+        expect(subject.count_syncable_attachments).to eq 4
       end
 
       it 'ignores remote attachments' do
         upload_1.update!(store: ObjectStorage::Store::REMOTE)
 
-        expect(subject.count_local_attachments).to eq 3
+        expect(subject.count_syncable_attachments).to eq 3
       end
 
       context 'with selective sync' do
@@ -54,13 +54,13 @@ describe Geo::AttachmentRegistryFinder, :geo do
         end
 
         it 'counts attachments' do
-          expect(subject.count_local_attachments).to eq 2
+          expect(subject.count_syncable_attachments).to eq 2
         end
 
         it 'ignores remote attachments' do
           upload_1.update!(store: ObjectStorage::Store::REMOTE)
 
-          expect(subject.count_local_attachments).to eq 1
+          expect(subject.count_syncable_attachments).to eq 1
         end
       end
     end
@@ -286,7 +286,7 @@ describe Geo::AttachmentRegistryFinder, :geo do
         expect(synced_attachments).to match_ids(upload_1, upload_2, upload_6, upload_7)
       end
 
-      it 'only finds local attachments' do
+      it 'only finds syncable attachments' do
         create(:geo_file_registry, :avatar, file_id: upload_1.id)
         create(:geo_file_registry, :avatar, file_id: upload_2.id)
         upload_1.update!(store: ObjectStorage::Store::REMOTE)

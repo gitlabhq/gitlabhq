@@ -23,7 +23,7 @@ describe Geo::JobArtifactRegistryFinder, :geo do
   end
 
   shared_examples 'counts all the things' do
-    describe '#count_local_job_artifacts' do
+    describe '#count_syncable_job_artifacts' do
       before do
         job_artifact_1
         job_artifact_2
@@ -32,13 +32,13 @@ describe Geo::JobArtifactRegistryFinder, :geo do
       end
 
       it 'counts job artifacts' do
-        expect(subject.count_local_job_artifacts).to eq 4
+        expect(subject.count_syncable_job_artifacts).to eq 4
       end
 
       it 'ignores remote job artifacts' do
         job_artifact_1.update_column(:file_store, ObjectStorage::Store::REMOTE)
 
-        expect(subject.count_local_job_artifacts).to eq 3
+        expect(subject.count_syncable_job_artifacts).to eq 3
       end
 
       context 'with selective sync' do
@@ -47,13 +47,13 @@ describe Geo::JobArtifactRegistryFinder, :geo do
         end
 
         it 'counts job artifacts' do
-          expect(subject.count_local_job_artifacts).to eq 2
+          expect(subject.count_syncable_job_artifacts).to eq 2
         end
 
         it 'ignores remote job artifacts' do
           job_artifact_1.update_column(:file_store, ObjectStorage::Store::REMOTE)
 
-          expect(subject.count_local_job_artifacts).to eq 1
+          expect(subject.count_syncable_job_artifacts).to eq 1
         end
       end
     end

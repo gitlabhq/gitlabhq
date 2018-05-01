@@ -8,12 +8,12 @@ module Geo
       end
     end
 
-    def local_attachments
+    def syncable_attachments
       attachments.geo_syncable
     end
 
-    def count_local_attachments
-      local_attachments.count
+    def count_syncable_attachments
+      syncable_attachments.count
     end
 
     def count_synced_attachments
@@ -152,14 +152,14 @@ module Geo
     #
 
     def fdw_find_synced_attachments
-      fdw_find_local_attachments.merge(Geo::FileRegistry.synced)
+      fdw_find_syncable_attachments.merge(Geo::FileRegistry.synced)
     end
 
     def fdw_find_failed_attachments
-      fdw_find_local_attachments.merge(Geo::FileRegistry.failed)
+      fdw_find_syncable_attachments.merge(Geo::FileRegistry.failed)
     end
 
-    def fdw_find_local_attachments
+    def fdw_find_syncable_attachments
       fdw_attachments.joins("INNER JOIN file_registry ON file_registry.file_id = #{fdw_attachments_table}.id")
         .geo_syncable
         .merge(Geo::FileRegistry.attachments)
@@ -205,7 +205,7 @@ module Geo
 
     def legacy_find_synced_attachments
       legacy_inner_join_registry_ids(
-        local_attachments,
+        syncable_attachments,
         Geo::FileRegistry.attachments.synced.pluck(:file_id),
         Upload
       )
@@ -213,7 +213,7 @@ module Geo
 
     def legacy_find_failed_attachments
       legacy_inner_join_registry_ids(
-        local_attachments,
+        syncable_attachments,
         find_failed_attachments_registries.pluck(:file_id),
         Upload
       )
@@ -223,7 +223,7 @@ module Geo
       registry_file_ids = legacy_pluck_registry_file_ids(file_types: Geo::FileService::DEFAULT_OBJECT_TYPES) | except_file_ids
 
       legacy_left_outer_join_registry_ids(
-        local_attachments,
+        syncable_attachments,
         registry_file_ids,
         Upload
       )
@@ -241,7 +241,7 @@ module Geo
 
     def legacy_find_synced_missing_on_primary_attachments
       legacy_inner_join_registry_ids(
-        local_attachments,
+        syncable_attachments,
         Geo::FileRegistry.attachments.synced.missing_on_primary.pluck(:file_id),
         Upload
       )

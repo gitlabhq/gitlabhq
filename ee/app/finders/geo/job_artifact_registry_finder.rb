@@ -1,7 +1,7 @@
 module Geo
   class JobArtifactRegistryFinder < RegistryFinder
-    def count_local_job_artifacts
-      local_job_artifacts.count
+    def count_syncable_job_artifacts
+      syncable_job_artifacts.count
     end
 
     def count_synced_job_artifacts
@@ -72,7 +72,7 @@ module Geo
       end
     end
 
-    def local_job_artifacts
+    def syncable_job_artifacts
       job_artifacts.geo_syncable
     end
 
@@ -170,7 +170,7 @@ module Geo
 
     def legacy_find_synced_job_artifacts
       legacy_inner_join_registry_ids(
-        local_job_artifacts,
+        syncable_job_artifacts,
         find_synced_job_artifacts_registries.pluck(:artifact_id),
         Ci::JobArtifact
       )
@@ -178,7 +178,7 @@ module Geo
 
     def legacy_find_failed_job_artifacts
       legacy_inner_join_registry_ids(
-        local_job_artifacts,
+        syncable_job_artifacts,
         find_failed_job_artifacts_registries.pluck(:artifact_id),
         Ci::JobArtifact
       )
@@ -188,7 +188,7 @@ module Geo
       registry_artifact_ids = legacy_pluck_artifact_ids(include_registry_ids: except_artifact_ids)
 
       legacy_left_outer_join_registry_ids(
-        local_job_artifacts,
+        syncable_job_artifacts,
         registry_artifact_ids,
         Ci::JobArtifact
       )
@@ -211,7 +211,7 @@ module Geo
 
     def legacy_find_synced_missing_on_primary_job_artifacts
       legacy_inner_join_registry_ids(
-        local_job_artifacts,
+        syncable_job_artifacts,
         find_synced_missing_on_primary_job_artifacts_registries.pluck(:artifact_id),
         Ci::JobArtifact
       )
