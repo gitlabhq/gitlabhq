@@ -11,6 +11,8 @@ describe('IDE commit form', () => {
   let vm;
 
   beforeEach(() => {
+    spyOnProperty(window, 'innerHeight').and.returnValue(800);
+
     vm = createComponentWithStore(Component, store).$mount();
   });
 
