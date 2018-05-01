@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180412213305) do
+ActiveRecord::Schema.define(version: 20180419192603) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -72,6 +72,8 @@ ActiveRecord::Schema.define(version: 20180412213305) do
     t.string "last_wiki_verification_failure"
     t.binary "repository_verification_checksum_sha"
     t.binary "wiki_verification_checksum_sha"
+    t.boolean "repository_checksum_mismatch", default: false, null: false
+    t.boolean "wiki_checksum_mismatch", default: false, null: false
   end
 
   add_index "project_registry", ["last_repository_successful_sync_at"], name: "index_project_registry_on_last_repository_successful_sync_at", using: :btree
@@ -80,6 +82,8 @@ ActiveRecord::Schema.define(version: 20180412213305) do
   add_index "project_registry", ["project_id"], name: "idx_project_registry_on_repository_failure_partial", where: "(last_repository_verification_failure IS NOT NULL)", using: :btree
   add_index "project_registry", ["project_id"], name: "idx_project_registry_on_wiki_checksums_and_failure_partial", where: "((wiki_verification_checksum_sha IS NULL) AND (last_wiki_verification_failure IS NULL))", using: :btree
   add_index "project_registry", ["project_id"], name: "idx_project_registry_on_wiki_failure_partial", where: "(last_wiki_verification_failure IS NOT NULL)", using: :btree
+  add_index "project_registry", ["project_id"], name: "idx_repository_checksum_mismatch", where: "(repository_checksum_mismatch = true)", using: :btree
+  add_index "project_registry", ["project_id"], name: "idx_wiki_checksum_mismatch", where: "(wiki_checksum_mismatch = true)", using: :btree
   add_index "project_registry", ["project_id"], name: "index_project_registry_on_project_id", unique: true, using: :btree
   add_index "project_registry", ["repository_retry_at"], name: "index_project_registry_on_repository_retry_at", using: :btree
   add_index "project_registry", ["repository_verification_checksum_sha"], name: "idx_project_registry_on_repository_checksum_sha_partial", where: "(repository_verification_checksum_sha IS NULL)", using: :btree

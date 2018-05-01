@@ -485,179 +485,259 @@ describe GeoNodeStatus, :geo do
     end
   end
 
-  describe '#repositories_verified_count' do
-    context 'on the primary' do
-      before do
-        stub_current_geo_node(primary)
-      end
-
-      it 'returns the right number of verified repositories' do
-        stub_feature_flags(geo_repository_verification: true)
-        create(:repository_state, :repository_verified)
-        create(:repository_state, :repository_verified)
-
-        expect(subject.repositories_verified_count).to eq(2)
-      end
-
-      it 'returns existing value when feature flag if off' do
-        stub_feature_flags(geo_repository_verification: false)
-        create(:geo_node_status, :healthy, geo_node: primary)
-
-        expect(subject.repositories_verified_count).to eq(501)
-      end
+  describe '#repositories_checksummed_count' do
+    before do
+      stub_current_geo_node(primary)
     end
 
-    context 'on the secondary' do
-      before do
-        stub_current_geo_node(secondary)
-      end
+    it 'returns the right number of checksummed repositories' do
+      stub_feature_flags(geo_repository_verification: true)
+      create(:repository_state, :repository_verified)
+      create(:repository_state, :repository_verified)
 
-      it 'returns the right number of verified repositories' do
-        stub_feature_flags(geo_repository_verification: true)
-        create(:geo_project_registry, :repository_verified)
-        create(:geo_project_registry, :repository_verified)
+      expect(subject.repositories_checksummed_count).to eq(2)
+    end
 
-        expect(subject.repositories_verified_count).to eq(2)
-      end
+    it 'returns existing value when feature flag is off' do
+      stub_feature_flags(geo_repository_verification: false)
+      create(:geo_node_status, :healthy, geo_node: primary)
 
-      it 'returns existing value when feature flag if off' do
-        stub_feature_flags(geo_repository_verification: false)
-        create(:geo_node_status, :healthy, geo_node: secondary)
+      expect(subject.repositories_checksummed_count).to eq(600)
+    end
+  end
 
-        expect(subject.repositories_verified_count).to eq(501)
-      end
+  describe '#repositories_checksum_failed_count' do
+    before do
+      stub_current_geo_node(primary)
+    end
+
+    it 'returns the right number of failed repositories' do
+      stub_feature_flags(geo_repository_verification: true)
+      create(:repository_state, :repository_failed)
+      create(:repository_state, :repository_failed)
+
+      expect(subject.repositories_checksum_failed_count).to eq(2)
+    end
+
+    it 'returns existing value when feature flag if off' do
+      stub_feature_flags(geo_repository_verification: false)
+      create(:geo_node_status, :healthy, geo_node: primary)
+
+      expect(subject.repositories_checksum_failed_count).to eq(120)
+    end
+  end
+
+  describe '#repositories_checksummed_in_percentage' do
+    before do
+      stub_current_geo_node(primary)
+    end
+
+    it 'returns 0 when no projects are available' do
+      expect(subject.repositories_checksummed_in_percentage).to eq(0)
+    end
+
+    it 'returns 0 when project count is unknown' do
+      allow(subject).to receive(:repositories_count).and_return(nil)
+
+      expect(subject.repositories_checksummed_in_percentage).to eq(0)
+    end
+
+    it 'returns the right percentage' do
+      create(:repository_state, :repository_verified, project: project_1)
+
+      expect(subject.repositories_checksummed_in_percentage).to be_within(0.0001).of(25)
+    end
+  end
+
+  describe '#wikis_checksummed_count' do
+    before do
+      stub_current_geo_node(primary)
+    end
+
+    it 'returns the right number of checksummed wikis' do
+      stub_feature_flags(geo_repository_verification: true)
+      create(:repository_state, :wiki_verified)
+      create(:repository_state, :wiki_verified)
+
+      expect(subject.wikis_checksummed_count).to eq(2)
+    end
+
+    it 'returns existing value when feature flag if off' do
+      stub_feature_flags(geo_repository_verification: false)
+      create(:geo_node_status, :healthy, geo_node: primary)
+
+      expect(subject.wikis_checksummed_count).to eq(585)
+    end
+  end
+
+  describe '#wikis_checksum_failed_count' do
+    before do
+      stub_current_geo_node(primary)
+    end
+
+    it 'returns the right number of failed wikis' do
+      stub_feature_flags(geo_repository_verification: true)
+      create(:repository_state, :wiki_failed)
+      create(:repository_state, :wiki_failed)
+
+      expect(subject.wikis_checksum_failed_count).to eq(2)
+    end
+
+    it 'returns existing value when feature flag if off' do
+      stub_feature_flags(geo_repository_verification: false)
+      create(:geo_node_status, :healthy, geo_node: primary)
+
+      expect(subject.wikis_checksum_failed_count).to eq(55)
+    end
+  end
+
+  describe '#wikis_checksummed_in_percentage', :delete do
+    before do
+      stub_current_geo_node(primary)
+    end
+
+    it 'returns 0 when no projects are available' do
+      expect(subject.wikis_checksummed_in_percentage).to eq(0)
+    end
+
+    it 'returns 0 when project count is unknown' do
+      allow(subject).to receive(:wikis_count).and_return(nil)
+
+      expect(subject.wikis_checksummed_in_percentage).to eq(0)
+    end
+
+    it 'returns the right percentage' do
+      create(:repository_state, :wiki_verified, project: project_1)
+
+      expect(subject.wikis_checksummed_in_percentage).to be_within(0.0001).of(25)
+    end
+  end
+
+  describe '#repositories_verified_count' do
+    before do
+      stub_current_geo_node(secondary)
+    end
+
+    it 'returns the right number of verified repositories' do
+      stub_feature_flags(geo_repository_verification: true)
+      create(:geo_project_registry, :repository_verified)
+      create(:geo_project_registry, :repository_verified)
+
+      expect(subject.repositories_verified_count).to eq(2)
+    end
+
+    it 'returns existing value when feature flag if off' do
+      stub_feature_flags(geo_repository_verification: false)
+      create(:geo_node_status, :healthy, geo_node: secondary)
+
+      expect(subject.repositories_verified_count).to eq(501)
+    end
+  end
+
+  describe '#repositories_checksum_mismatch_count' do
+    before do
+      stub_current_geo_node(secondary)
+    end
+
+    it 'returns the right number of repositories that checksum mismatch' do
+      stub_feature_flags(geo_repository_verification: true)
+      create(:geo_project_registry, :repository_checksum_mismatch)
+      create(:geo_project_registry, :repository_verification_failed)
+      create(:geo_project_registry, :repository_verified)
+
+      expect(subject.repositories_checksum_mismatch_count).to eq(1)
+    end
+
+    it 'returns existing value when feature flag if off' do
+      stub_feature_flags(geo_repository_verification: false)
+      create(:geo_node_status, :healthy, geo_node: secondary)
+
+      expect(subject.repositories_checksum_mismatch_count).to eq(15)
     end
   end
 
   describe '#repositories_verification_failed_count' do
-    context 'on the primary' do
-      before do
-        stub_current_geo_node(primary)
-      end
-
-      it 'returns the right number of failed repositories' do
-        stub_feature_flags(geo_repository_verification: true)
-        create(:repository_state, :repository_failed)
-        create(:repository_state, :repository_failed)
-
-        expect(subject.repositories_verification_failed_count).to eq(2)
-      end
-
-      it 'returns existing value when feature flag if off' do
-        stub_feature_flags(geo_repository_verification: false)
-        create(:geo_node_status, :healthy, geo_node: primary)
-
-        expect(subject.repositories_verification_failed_count).to eq(100)
-      end
+    before do
+      stub_current_geo_node(secondary)
     end
 
-    context 'on the secondary' do
-      before do
-        stub_current_geo_node(secondary)
-      end
+    it 'returns the right number of failed repositories' do
+      stub_feature_flags(geo_repository_verification: true)
+      create(:geo_project_registry, :repository_verification_failed)
+      create(:geo_project_registry, :repository_verification_failed)
 
-      it 'returns the right number of failed repositories' do
-        stub_feature_flags(geo_repository_verification: true)
-        create(:geo_project_registry, :repository_verification_failed)
-        create(:geo_project_registry, :repository_verification_failed)
+      expect(subject.repositories_verification_failed_count).to eq(2)
+    end
 
-        expect(subject.repositories_verification_failed_count).to eq(2)
-      end
+    it 'returns existing value when feature flag if off' do
+      stub_feature_flags(geo_repository_verification: false)
+      create(:geo_node_status, :healthy, geo_node: secondary)
 
-      it 'returns existing value when feature flag if off' do
-        stub_feature_flags(geo_repository_verification: false)
-        create(:geo_node_status, :healthy, geo_node: secondary)
-
-        expect(subject.repositories_verification_failed_count).to eq(100)
-      end
+      expect(subject.repositories_verification_failed_count).to eq(100)
     end
   end
 
   describe '#wikis_verified_count' do
-    context 'on the primary' do
-      before do
-        stub_current_geo_node(primary)
-      end
-
-      it 'returns the right number of verified wikis' do
-        stub_feature_flags(geo_repository_verification: true)
-        create(:repository_state, :wiki_verified)
-        create(:repository_state, :wiki_verified)
-
-        expect(subject.wikis_verified_count).to eq(2)
-      end
-
-      it 'returns existing value when feature flag if off' do
-        stub_feature_flags(geo_repository_verification: false)
-        create(:geo_node_status, :healthy, geo_node: primary)
-
-        expect(subject.wikis_verified_count).to eq(499)
-      end
+    before do
+      stub_current_geo_node(secondary)
     end
 
-    context 'on the secondary' do
-      before do
-        stub_current_geo_node(secondary)
-      end
+    it 'returns the right number of verified wikis' do
+      stub_feature_flags(geo_repository_verification: true)
+      create(:geo_project_registry, :wiki_verified)
+      create(:geo_project_registry, :wiki_verified)
 
-      it 'returns the right number of verified wikis' do
-        stub_feature_flags(geo_repository_verification: true)
-        create(:geo_project_registry, :wiki_verified)
-        create(:geo_project_registry, :wiki_verified)
+      expect(subject.wikis_verified_count).to eq(2)
+    end
 
-        expect(subject.wikis_verified_count).to eq(2)
-      end
+    it 'returns existing value when feature flag if off' do
+      stub_feature_flags(geo_repository_verification: false)
+      create(:geo_node_status, :healthy, geo_node: secondary)
 
-      it 'returns existing value when feature flag if off' do
-        stub_feature_flags(geo_repository_verification: false)
-        create(:geo_node_status, :healthy, geo_node: secondary)
+      expect(subject.wikis_verified_count).to eq(499)
+    end
+  end
 
-        expect(subject.wikis_verified_count).to eq(499)
-      end
+  describe '#wikis_checksum_mismatch_count' do
+    before do
+      stub_current_geo_node(secondary)
+    end
+
+    it 'returns the right number of wikis that checksum mismatch' do
+      stub_feature_flags(geo_repository_verification: true)
+      create(:geo_project_registry, :wiki_checksum_mismatch)
+      create(:geo_project_registry, :wiki_verification_failed)
+      create(:geo_project_registry, :wiki_verified)
+
+      expect(subject.wikis_checksum_mismatch_count).to eq(1)
+    end
+
+    it 'returns existing value when feature flag if off' do
+      stub_feature_flags(geo_repository_verification: false)
+      create(:geo_node_status, :healthy, geo_node: secondary)
+
+      expect(subject.wikis_checksum_mismatch_count).to eq(10)
     end
   end
 
   describe '#wikis_verification_failed_count' do
-    context 'on the primary' do
-      before do
-        stub_current_geo_node(primary)
-      end
-
-      it 'returns the right number of failed wikis' do
-        stub_feature_flags(geo_repository_verification: true)
-        create(:repository_state, :wiki_failed)
-        create(:repository_state, :wiki_failed)
-
-        expect(subject.wikis_verification_failed_count).to eq(2)
-      end
-
-      it 'returns existing value when feature flag if off' do
-        stub_feature_flags(geo_repository_verification: false)
-        create(:geo_node_status, :healthy, geo_node: primary)
-
-        expect(subject.wikis_verification_failed_count).to eq(99)
-      end
+    before do
+      stub_current_geo_node(secondary)
     end
 
-    context 'on the secondary' do
-      before do
-        stub_current_geo_node(secondary)
-      end
+    it 'returns the right number of failed wikis' do
+      stub_feature_flags(geo_repository_verification: true)
+      create(:geo_project_registry, :wiki_verification_failed)
+      create(:geo_project_registry, :wiki_verification_failed)
 
-      it 'returns the right number of failed wikis' do
-        stub_feature_flags(geo_repository_verification: true)
-        create(:geo_project_registry, :wiki_verification_failed)
-        create(:geo_project_registry, :wiki_verification_failed)
+      expect(subject.wikis_verification_failed_count).to eq(2)
+    end
 
-        expect(subject.wikis_verification_failed_count).to eq(2)
-      end
+    it 'returns existing value when feature flag if off' do
+      stub_feature_flags(geo_repository_verification: false)
+      create(:geo_node_status, :healthy, geo_node: secondary)
 
-      it 'returns existing value when feature flag if off' do
-        stub_feature_flags(geo_repository_verification: false)
-        create(:geo_node_status, :healthy, geo_node: secondary)
-
-        expect(subject.wikis_verification_failed_count).to eq(99)
-      end
+      expect(subject.wikis_verification_failed_count).to eq(99)
     end
   end
 

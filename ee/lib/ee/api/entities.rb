@@ -299,17 +299,31 @@ module EE
 
         expose :repository_verification_enabled
 
+        expose :repositories_checksummed_count
+        expose :repositories_checksum_failed_count
+        expose :repositories_checksummed_in_percentage do |node|
+          number_to_percentage(node.repositories_checksummed_in_percentage, precision: 2)
+        end
+
+        expose :wikis_checksummed_count
+        expose :wikis_checksum_failed_count
+        expose :wikis_checksummed_in_percentage do |node|
+          number_to_percentage(node.wikis_checksummed_in_percentage, precision: 2)
+        end
+
         expose :repositories_verification_failed_count
         expose :repositories_verified_count
         expose :repositories_verified_in_percentage do |node|
           number_to_percentage(node.repositories_verified_in_percentage, precision: 2)
         end
+        expose :repositories_checksum_mismatch_count
 
         expose :wikis_verification_failed_count
         expose :wikis_verified_count
         expose :wikis_verified_in_percentage do |node|
           number_to_percentage(node.wikis_verified_in_percentage, precision: 2)
         end
+        expose :wikis_checksum_mismatch_count
 
         expose :replication_slots_count
         expose :replication_slots_used_count

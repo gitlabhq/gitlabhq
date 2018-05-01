@@ -103,9 +103,13 @@ module Gitlab
         end
 
         def handle_repository_updated_event(event, created_at)
-          registry = find_or_initialize_registry(event.project_id,
-            "resync_#{event.source}" => true, "#{event.source}_verification_checksum_sha" => nil,
-            "last_#{event.source}_verification_failure" => nil)
+          registry = find_or_initialize_registry(
+            event.project_id,
+            "resync_#{event.source}" => true,
+            "#{event.source}_verification_checksum_sha" => nil,
+            "#{event.source}_checksum_mismatch" => false,
+            "last_#{event.source}_verification_failure" => nil
+          )
 
           registry.save!
 
