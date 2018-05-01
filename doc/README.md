@@ -122,6 +122,14 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
   - [Checkout merge requests locally](user/project/merge_requests/index.md#checkout-merge-requests-locally)
   - [Cherry-pick](user/project/merge_requests/cherry_pick_changes.md)
 
+#### Merge Requests
+
+- [Merge Requests](user/project/merge_requests/index.md)
+  - [Work In Progress "WIP" Merge Requests](user/project/merge_requests/work_in_progress_merge_requests.md)
+  - [Merge Request discussion resolution](user/discussions/index.md#moving-a-single-discussion-to-a-new-issue): Resolve discussions, move discussions in a merge request to an issue, only allow merge requests to be merged if all discussions are resolved.
+  - [Checkout merge requests locally](user/project/merge_requests/index.md#checkout-merge-requests-locally)
+  - [Cherry-pick](user/project/merge_requests/cherry_pick_changes.md)
+
 #### Integrations
 
 - [Project Services](user/project/integrations/project_services.md): Integrate a project with external services, such as CI and chat.
@@ -146,12 +154,15 @@ scales to run your tests faster.
 - [GitLab CI/CD](ci/README.md): Explore the features and capabilities of Continuous Integration, Continuous Delivery, and Continuous Deployment with GitLab.
 - [Review Apps](ci/review_apps/index.md): Preview changes to your app right from a merge request.
 - [Pipeline Graphs](ci/pipelines.md#pipeline-graphs)
+<<<<<<< HEAD
 - [Multi-project pipeline graphs](ci/multi_project_pipeline_graphs.md) **[PREMIUM]**
 - [Code Quality](user/project/merge_requests/code_quality_diff.md) **[STARTER]**
 - [Static Application Security Testing (SAST)](user/project/merge_requests/sast.md) **[ULTIMATE]**
 - [Dynamic Application Security Testing (DAST)](user/project/merge_requests/dast.md) **[ULTIMATE]**
 - [Container Scanning](ci/examples/container_scanning.md) **[ULTIMATE]**
 - [Dependency Scanning](ci/examples/dependency_scanning.md) **[ULTIMATE]**
+=======
+>>>>>>> upstream/master
 
 ### Package
 
@@ -172,8 +183,11 @@ confidently and securely with GitLab’s built-in Continuous Delivery and Deploy
 - [GitLab Pages](user/project/pages/index.md): Build, test, and deploy a static site directly from GitLab.
 - [Scheduled Pipelines](user/project/pipelines/schedules.md)
 - [Protected Runners](ci/runners/README.md#protected-runners)
+<<<<<<< HEAD
 - [Deploy Boards](user/project/deploy_boards.md): View of the current health and status of each CI environment running on Kubernetes, displaying the status of the pods in the deployment. **[PREMIUM]**
 - [Canary Deployments](user/project/canary_deployments.md): A popular CI strategy, where a small portion of the fleet is updated to the new version first. **[PREMIUM]**
+=======
+>>>>>>> upstream/master
 
 ### Configure
 
@@ -185,8 +199,11 @@ configuration. Then customize everything from buildpacks to CI/CD.
 - [Deployment of Helm, Ingress, and Prometheus on Kubernetes](user/project/clusters/index.md#installing-applications)
 - [Protected secret variables](ci/variables/README.md#protected-secret-variables)
 - [Easy creation of Kubernetes clusters on GKE](user/project/clusters/index.md#adding-and-creating-a-new-gke-cluster-via-gitlab)
+<<<<<<< HEAD
 - [Multiple Kubernetes Clusters](user/project/clusters/index.md#multiple-kubernetes-clusters) **[PREMIUM]**
 - [Environment-specific secret variables](ci/variables/README.md#limiting-environment-scopes-of-secret-variables) **[PREMIUM]**
+=======
+>>>>>>> upstream/master
 
 ### Monitor
 
