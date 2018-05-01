@@ -17,7 +17,7 @@ module Ci
       validates :project, presence: true
       validates :pipeline, presence: true
       validates :name, presence: true
-      validates :priority, presence: true
+      validates :position, presence: true
     end
 
     after_initialize do
@@ -25,9 +25,9 @@ module Ci
     end
 
     before_validation unless: :importing? do
-      next if priority.present?
+      next if position.present?
 
-      self.priority = statuses.select(:stage_idx)
+      self.position = statuses.select(:stage_idx)
         .where('stage_idx IS NOT NULL')
         .group(:stage_idx)
         .order('COUNT(*) DESC')

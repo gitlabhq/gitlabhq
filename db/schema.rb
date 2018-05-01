@@ -322,7 +322,7 @@ ActiveRecord::Schema.define(version: 20180425131009) do
   add_index "ci_builds", ["project_id", "id"], name: "index_ci_builds_on_project_id_and_id", using: :btree
   add_index "ci_builds", ["protected"], name: "index_ci_builds_on_protected", using: :btree
   add_index "ci_builds", ["runner_id"], name: "index_ci_builds_on_runner_id", using: :btree
-  add_index "ci_builds", ["stage_id", "stage_idx"], name: "tmp_build_stage_priority_index", where: "(stage_idx IS NOT NULL)", using: :btree
+  add_index "ci_builds", ["stage_id", "stage_idx"], name: "tmp_build_stage_position_index", where: "(stage_idx IS NOT NULL)", using: :btree
   add_index "ci_builds", ["stage_id"], name: "index_ci_builds_on_stage_id", using: :btree
   add_index "ci_builds", ["status", "type", "runner_id"], name: "index_ci_builds_on_status_and_type_and_runner_id", using: :btree
   add_index "ci_builds", ["status"], name: "index_ci_builds_on_status", using: :btree
@@ -487,7 +487,7 @@ ActiveRecord::Schema.define(version: 20180425131009) do
     t.string "name"
     t.integer "status"
     t.integer "lock_version"
-    t.integer "priority"
+    t.integer "position"
   end
 
   add_index "ci_stages", ["pipeline_id", "name"], name: "index_ci_stages_on_pipeline_id_and_name", unique: true, using: :btree

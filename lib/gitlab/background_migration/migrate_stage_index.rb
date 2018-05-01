@@ -26,19 +26,19 @@ module Gitlab
                 FROM freqs
             )
 
-            UPDATE ci_stages SET priority = indexes.index
+            UPDATE ci_stages SET position = indexes.index
               FROM indexes WHERE indexes.stage_id = ci_stages.id
-                AND ci_stages.priority IS NULL;
+                AND ci_stages.position IS NULL;
           SQL
         else
           <<~SQL
             UPDATE ci_stages
-              SET priority =
+              SET position =
                 (SELECT stage_idx FROM ci_builds
                   WHERE ci_builds.stage_id = ci_stages.id
                   GROUP BY ci_builds.stage_idx ORDER BY COUNT(*) DESC LIMIT 1)
             WHERE ci_stages.id BETWEEN #{start_id} AND #{stop_id}
-              AND ci_stages.priority IS NULL
+              AND ci_stages.position IS NULL
           SQL
         end
       end
