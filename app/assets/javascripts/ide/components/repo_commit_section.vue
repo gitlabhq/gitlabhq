@@ -20,7 +20,25 @@ export default {
   computed: {
     ...mapState(['changedFiles', 'stagedFiles']),
   },
+  mounted() {
+    const lastOpenedFile = [...this.changedFiles, ...this.stagedFiles].sort(
+      (a, b) => b.lastOpenedAt - a.lastOpenedAt,
+    )[0];
+
+    if (lastOpenedFile) {
+      this.openPendingTab({
+        file: lastOpenedFile,
+      }).then(changeViewer => {
+        if (changeViewer) {
+          this.updateViewer('diff');
+        }
+      }).catch((e) => {
+        throw e;
+      });
+    }
+  },
   methods: {
+    ...mapActions(['openPendingTab', 'updateViewer']),
     ...mapActions('commit', ['commitChanges', 'updateCommitAction']),
     forceCreateNewBranch() {
       return this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH).then(() => this.commitChanges());
