@@ -4,6 +4,6 @@ class AddLegacyPathToCiJobArtifacts < ActiveRecord::Migration
   DOWNTIME = false
 
   def change
-    add_column :ci_job_artifacts, :path_type, :integer
+    add_column :ci_job_artifacts, :file_location, :integer
   end
 end

@@ -9,61 +9,96 @@ module Gitlab
         self.table_name = 'ci_builds'
         self.inheritance_column = :_type_disabled
 
-        scope :legacy_artifacts, -> { where('artifacts_file IS NOT NULL AND artifacts_file <> ?', '') }
+        scope :legacy_artifacts, -> { where('artifacts_file IS NOT NULL OR artifacts_file <> ?', '') }
       end
 
       class JobArtifact < ActiveRecord::Base
         self.table_name = 'ci_job_artifacts'
+
+        LOCAL_STORE = 1 # Equavalant to ObjectStorage::Store::LOCAL
 
         enum file_type: {
           archive: 1,
           metadata: 2,
           trace: 3
         }
-    
-        enum path_type: {
-          era_2: nil,
-          era_1: 1
+
+        ##
+        # File location of the file
+        # Location 1: File.join(model.created_at.utc.strftime('%Y_%m'), model.project_id.to_s, model.id.to_s)
+        # Location 2: File.join(disk_hash[0..1], disk_hash[2..3], disk_hash, creation_date, model.job_id.to_s, model.id.to_s)
+        enum file_location: {
+          location_2: nil,
+          location_1: 1
         }
       end
 
       def perform(start_id, stop_id)
         rows = []
 
-        Gitlab::BackgroundMigration::MigrateLegacyArtifacts::Build.legacy_artifacts
-          .where(id: (start_id..stop_id))
-          .each do |build|
-            base_param = {
-              project_id: build.project_id,
-              job_id: build.id,
-              expire_at: build.artifacts_expire_at,
-              path_type: Gitlab::BackgroundMigration::MigrateLegacyArtifacts::JobArtifact.path_types['era_1'],
-              created_at: build.created_at,
-              updated_at: build.created_at
-            }
+        Gitlab::BackgroundMigration::MigrateLegacyArtifacts::Build
+          .legacy_artifacts
+          .where(id: (start_id..stop_id)).each do |build|
+          base_param = {
+            project_id: build.project_id,
+            job_id: build.id,
+            expire_at: build.artifacts_expire_at,
+            file_location: Gitlab::BackgroundMigration::MigrateLegacyArtifacts::JobArtifact.file_locations['location_1'],
+            created_at: build.created_at,
+            updated_at: build.created_at
+          }
 
+          rows << base_param.merge({
+            size: build.artifacts_size,
+            file: build.artifacts_file,
+            file_store: build.artifacts_file_store || JobArtifact::LOCAL_STORE,
+            file_type: Gitlab::BackgroundMigration::MigrateLegacyArtifacts::JobArtifact.file_types['archive'],
+            file_sha256: nil # `file_sha256` of legacy artifacts had not been persisted
+          })
+
+          if build.artifacts_metadata
             rows << base_param.merge({
-              size: build.artifacts_size,
-              file: build.artifacts_file,
-              file_store: build.artifacts_file_store,
-              file_type: Gitlab::BackgroundMigration::MigrateLegacyArtifacts::JobArtifact.file_types['archive'],
+              size: get_file_size_of_legacy_metadata(build), # `size` of legacy metadatas had not been persisted
+              file: build.artifacts_metadata,
+              file_store: build.artifacts_metadata_store || JobArtifact::LOCAL_STORE,
+              file_type: Gitlab::BackgroundMigration::MigrateLegacyArtifacts::JobArtifact.file_types['metadata'],
               file_sha256: nil # `file_sha256` of legacy artifacts had not been persisted
             })
-
-            if build.legacy_artifacts_metadata.exists?
-              rows << base_param.merge({
-                size: nil, # `size`` of legacy metadatas had not been persisted
-                file: build.artifacts_metadata,
-                file_store: build.artifacts_metadata_store,
-                file_type: Gitlab::BackgroundMigration::MigrateLegacyArtifacts::JobArtifact.file_types['metadata'],
-                file_sha256: nil # `file_sha256` of legacy artifacts had not been persisted
-              })
-            end
           end
+        end
 
-          Gitlab::Database.bulk_insert(
-            Gitlab::BackgroundMigration::MigrateLegacyArtifacts::JobArtifact.table_name,
-            rows)
+        Gitlab::Database
+          .bulk_insert(Gitlab::BackgroundMigration::MigrateLegacyArtifacts::JobArtifact.table_name, rows)
+
+        # TODO: Do we need to verify the file existance with created job artifacts?
+
+        # Clean columns of ci_builds
+        #
+        # Targets
+        # "artifacts_file"
+        # "artifacts_metadata"
+        # "artifacts_size"
+        # "artifacts_file_store"
+        # Ignore
+        # "artifacts_expire_at" ,,, This is widely used for showing expiration time of artifacts
+        Gitlab::BackgroundMigration::MigrateLegacyArtifacts::Build
+          .legacy_artifacts
+          .where(id: (start_id..stop_id))
+          .update_all(artifacts_file: nil,
+                      artifacts_metadata: nil,
+                      artifacts_size: nil,
+                      artifacts_file_store: nil)
+      end
+
+      private
+
+      ##
+      # This method is efficient that request with HEAD method and get content-length,
+      # instead of pulling the whole data
+      def get_file_size_of_legacy_metadata(build)
+        legacy_file_path = File.join(build.created_at.utc.strftime('%Y_%m'), build.project_id.to_s, build.id.to_s, build.legacy_artifacts_metadata)
+
+        10 # TODO:
       end
     end
   end

@@ -31,15 +31,15 @@ class JobArtifactUploader < GitlabUploader
 
     creation_date = model.created_at.utc.strftime('%Y_%m_%d')
 
-    if model.era_2
+    if model.location_2?
       File.join(disk_hash[0..1], disk_hash[2..3], disk_hash,
                 creation_date, model.job_id.to_s, model.id.to_s)
-    elsif model.era_1
-      File.join(model.created_at.utc.strftime('%Y_%m'), model.project_id.to_s, model.id.to_s)
+    elsif model.location_1?
+      File.join(model.created_at.utc.strftime('%Y_%m'), model.project_id.to_s, model.job_id.to_s)
     end
   end
 
   def disk_hash
-    @disk_hash ||= Digest::SHA2.hexdigest(cproject_id.to_s)
+    @disk_hash ||= Digest::SHA2.hexdigest(model.project_id.to_s)
   end
 end

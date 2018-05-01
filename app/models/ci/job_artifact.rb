@@ -25,9 +25,13 @@ module Ci
       trace: 3
     }
 
-    enum path_type: {
-      era_2: nil,
-      era_1: 1
+    ##
+    # File location of the file
+    # Location 1: File.join(model.created_at.utc.strftime('%Y_%m'), model.project_id.to_s, model.id.to_s)
+    # Location 2: File.join(disk_hash[0..1], disk_hash[2..3], disk_hash, creation_date, model.job_id.to_s, model.id.to_s)
+    enum file_location: {
+      location_2: nil,
+      location_1: 1
     }
 
     def update_file_store

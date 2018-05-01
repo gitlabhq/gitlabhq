@@ -12,7 +12,11 @@ class MigrateLegacyArtifactsToJobArtifacts < ActiveRecord::Migration
     self.table_name = 'ci_builds'
     self.inheritance_column = :_type_disabled # disable STI
 
-    scope :legacy_artifacts, -> { where('artifacts_file IS NOT NULL AND artifacts_file <> ?', '') }
+    ##
+    # TODO: Consider when unique constraint violation of job_artifacts (i.e. duplicates inserts)
+    scope :legacy_artifacts, -> do
+      where('artifacts_file IS NOT NULL AND artifacts_file <> ?', '')
+    end
   end
 
   def up
