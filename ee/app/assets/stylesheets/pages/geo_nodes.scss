@@ -81,17 +81,17 @@
         padding: 0;
       }
     }
+  }
 
-    .node-health-message-container {
-      max-height: $dropdown-max-height;
-      overflow-y: auto;
+  .node-health-message-container {
+    max-height: $dropdown-max-height;
+    overflow-y: auto;
 
-      .node-health-message {
-        margin-bottom: 0;
-        padding: 2px $gl-padding-8;
-        background-color: $red-100;
-        color: $red-500;
-      }
+    .node-health-message {
+      margin-bottom: 0;
+      padding: 2px $gl-padding-8;
+      background-color: $red-100;
+      color: $red-500;
     }
   }
 }

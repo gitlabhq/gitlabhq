@@ -99,9 +99,9 @@ export default {
     />
     <div
       v-if="isNodeDetailsFailed"
-      class="prepend-top-10"
+      class="node-health-message-container"
     >
-      <p class="health-message">
+      <p class="health-message node-health-message">
         {{ errorMessage }}
       </p>
     </div>
