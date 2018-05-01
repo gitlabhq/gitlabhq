@@ -164,5 +164,38 @@ describe EE::Gitlab::Ci::Config do
         expect(config.to_hash).to eq({ variables: { A: 'alpha', B: 'beta', C: 'gamma', D: 'delta' } })
       end
     end
+
+    context 'when both external files and gitlab_ci.yml define a job' do
+      let(:remote_file_content) do
+        <<~HEREDOC
+        job1:
+          script:
+          - echo 'hello from remote file'
+        HEREDOC
+      end
+
+      let(:gitlab_ci_yml) do
+        <<~HEREDOC
+        include:
+          - #{remote_location}
+
+        job1:
+          variables:
+            VARIABLE_DEFINED_IN_MAIN_FILE: 'some value'
+        HEREDOC
+      end
+
+      it 'merges the jobs' do
+        WebMock.stub_request(:get, remote_location).to_return(body: remote_file_content)
+        expect(config.to_hash).to eq({
+          job1: {
+            script: ["echo 'hello from remote file'"],
+            variables: {
+              VARIABLE_DEFINED_IN_MAIN_FILE: 'some value'
+            }
+          }
+        })
+      end
+    end
   end
 end
