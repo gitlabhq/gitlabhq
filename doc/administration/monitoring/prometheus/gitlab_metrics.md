@@ -76,6 +76,16 @@ the `monitoring.sidekiq_exporter` configuration option in `gitlab.yml`.
 | geo_lfs_objects_synced_missing_on_primary   | Gauge   | 10.7  | Number of LFS objects marked as synced due to the file missing on the primary | url
 | geo_job_artifacts_synced_missing_on_primary | Gauge   | 10.7  | Number of job artifacts marked as synced due to the file missing on the primary | url
 | geo_attachments_synced_missing_on_primary   | Gauge   | 10.7  | Number of attachments marked as synced due to the file missing on the primary | url
+| geo_repositories_checksummed_count          | Gauge   | 10.7  | Number of repositories checksummed on primary | url
+| geo_repositories_checksum_failed_count      | Gauge   | 10.7  | Number of repositories failed to calculate the checksum on primary | url
+| geo_wikis_checksummed_count                 | Gauge   | 10.7  | Number of wikis checksummed on primary | url
+| geo_wikis_checksum_failed_count             | Gauge   | 10.7  | Number of wikis failed to calculate the checksum on primary | url
+| geo_repositories_verified_count             | Gauge   | 10.7  | Number of repositories verified on secondary | url
+| geo_repositories_verification_failed_count  | Gauge   | 10.7  | Number of repositories failed to verify on secondary | url
+| geo_repositories_checksum_mismatch_count    | Gauge   | 10.7  | Number of repositories that checksum mismatch on secondary | url
+| geo_wikis_verified_count                    | Gauge   | 10.7  | Number of wikis verified on secondary | url
+| geo_wikis_verification_failed_count         | Gauge   | 10.7  | Number of wikis failed to verify on secondary | url
+| geo_wikis_checksum_mismatch_count           | Gauge   | 10.7  | Number of wikis that checksum mismatch on secondary | url
 
 ## Metrics shared directory
 

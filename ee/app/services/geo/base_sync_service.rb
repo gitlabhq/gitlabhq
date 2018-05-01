@@ -166,6 +166,7 @@ module Geo
 
         # Indicate that repository verification needs to be done again
         attrs["#{type}_verification_checksum_sha"] = nil
+        attrs["#{type}_checksum_mismatch"] = false
         attrs["last_#{type}_verification_failure"] = nil
       end
 

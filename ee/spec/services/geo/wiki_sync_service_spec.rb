@@ -150,6 +150,12 @@ RSpec.describe Geo::WikiSyncService do
           expect(registry.last_wiki_verification_failure).to be_nil
         end
 
+        it 'resets the wiki_checksum_mismatch' do
+          subject.execute
+
+          expect(registry.wiki_checksum_mismatch).to eq false
+        end
+
         it 'logs success with timings' do
           allow(Gitlab::Geo::Logger).to receive(:info).and_call_original
           expect(Gitlab::Geo::Logger).to receive(:info).with(hash_including(:message, :update_delay_s, :download_time_s)).and_call_original
