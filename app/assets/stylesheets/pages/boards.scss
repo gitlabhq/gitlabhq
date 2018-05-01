@@ -317,6 +317,7 @@
   a {
     color: $gl-text-color;
     word-wrap: break-word;
+    word-break: break-word;
     margin-right: 2px;
   }
 }
@@ -462,6 +463,7 @@
 
   .issuable-header-text {
     padding-right: 35px;
+    word-break: break-word;
 
     > strong {
       font-weight: $gl-font-weight-bold;
