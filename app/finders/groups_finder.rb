@@ -39,7 +39,7 @@ class GroupsFinder < UnionFinder
 
   def all_groups
     return [owned_groups] if params[:owned]
-    return [Group.all] if current_user&.full_private_access?
+    return [Group.all] if current_user&.full_private_access? && all_available?
 
     groups = []
     groups << Gitlab::GroupHierarchy.new(groups_for_ancestors, groups_for_descendants).all_groups if current_user
@@ -67,6 +67,10 @@ class GroupsFinder < UnionFinder
   end
 
   def include_public_groups?
-    current_user.nil? || params.fetch(:all_available, true)
+    current_user.nil? || all_available?
+  end
+
+  def all_available?
+    params.fetch(:all_available, true)
   end
 end
