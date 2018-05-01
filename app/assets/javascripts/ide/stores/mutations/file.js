@@ -176,6 +176,7 @@ export default {
         [file.path]: Object.assign(state.entries[file.path], {
           opened: false,
           active: false,
+          lastOpenedAt: new Date().getTime(),
         }),
       }),
       openFiles: [

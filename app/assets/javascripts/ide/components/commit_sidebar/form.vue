@@ -36,7 +36,9 @@ export default {
   },
   watch: {
     currentActivityView() {
-      this.isCompact = this.currentActivityView !== activityBarViews.commit;
+      this.isCompact = !(
+        this.currentActivityView === activityBarViews.commit && window.innerHeight >= 750
+      );
     },
   },
   methods: {
