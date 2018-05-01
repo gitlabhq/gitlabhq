@@ -119,7 +119,6 @@ export const getRawFileData = ({ state, commit, dispatch }, { path, baseSha }) =
 
 export const changeFileContent = ({ state, commit, dispatch, getters }, { path, content }) => {
   const file = state.entries[path];
-  const stagedFile = getters.getStagedFile(path);
   commit(types.UPDATE_FILE_CONTENT, { path, content });
 
   const indexOfChangedFile = state.changedFiles.findIndex(f => f.path === path);

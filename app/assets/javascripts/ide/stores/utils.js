@@ -83,7 +83,6 @@ export const decorateData = entity => {
     opened,
     active,
     parentTreeUrl,
-    parentPath,
     changed,
     renderError,
     content,
