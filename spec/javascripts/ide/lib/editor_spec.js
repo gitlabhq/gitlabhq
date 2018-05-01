@@ -70,12 +70,14 @@ describe('Multi-file editor library', () => {
         minimap: {
           enabled: false,
         },
-        readOnly: false,
+        readOnly: true,
         scrollBeyondLastLine: false,
         quickSuggestions: false,
         occurrencesHighlight: false,
         wordWrap: 'on',
         renderSideBySide: true,
+        renderLineHighlight: 'all',
+        hideCursorInOverviewRuler: false,
       });
     });
   });

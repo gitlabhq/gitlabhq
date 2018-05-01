@@ -20,7 +20,12 @@ export default {
   },
   computed: {
     ...mapState(['rightPanelCollapsed', 'viewer', 'panelResizing']),
-    ...mapGetters(['currentMergeRequest', 'getStagedFile']),
+    ...mapGetters([
+      'currentMergeRequest',
+      'getStagedFile',
+      'isReviewModeActive',
+      'isCommitModeActive',
+    ]),
     shouldHideEditor() {
       return this.file && this.file.binary && !this.file.content;
     },
@@ -102,7 +107,7 @@ export default {
         if (this.viewer === 'editor') {
           this.editor.createInstance(this.$refs.editor);
         } else {
-          this.editor.createDiffInstance(this.$refs.editor);
+          this.editor.createDiffInstance(this.$refs.editor, !this.isReviewModeActive);
         }
 
         this.setupEditor();
@@ -167,7 +172,10 @@ export default {
     id="ide"
     class="blob-viewer-container blob-editor-container"
   >
-    <div class="ide-mode-tabs clearfix">
+    <div
+      v-show="!isReviewModeActive && !isCommitModeActive"
+      class="ide-mode-tabs clearfix"
+    >
       <ul
         class="nav-links pull-left"
         v-if="!shouldHideEditor">
@@ -203,6 +211,9 @@ export default {
       v-show="!shouldHideEditor && file.viewMode === 'edit'"
       ref="editor"
       class="multi-file-editor-holder"
+      :class="{
+        'is-readonly': isCommitModeActive,
+      }"
     >
     </div>
     <content-viewer

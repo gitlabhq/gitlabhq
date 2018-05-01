@@ -227,6 +227,17 @@
     display: none;
   }
 
+  .is-readonly,
+  .editor.original {
+    .view-lines {
+      cursor: default;
+    }
+
+    .cursors-layer {
+      display: none;
+    }
+  }
+
   .monaco-diff-editor.vs {
     .editor.modified {
       box-shadow: none;
@@ -284,16 +295,6 @@
     .margin-view-overlays .insert-sign,
     .margin-view-overlays .delete-sign {
       opacity: 0.4;
-    }
-
-    .editor.original {
-      .view-lines {
-        cursor: default;
-      }
-
-      .cursors-layer {
-        display: none;
-      }
     }
   }
 }

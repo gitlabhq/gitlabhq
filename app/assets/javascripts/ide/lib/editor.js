@@ -61,7 +61,7 @@ export default class Editor {
     }
   }
 
-  createDiffInstance(domElement) {
+  createDiffInstance(domElement, readOnly = true) {
     if (!this.instance) {
       clearDomElement(domElement);
 
@@ -71,6 +71,9 @@ export default class Editor {
           quickSuggestions: false,
           occurrencesHighlight: false,
           renderSideBySide: Editor.renderSideBySide(domElement),
+          readOnly,
+          renderLineHighlight: readOnly ? 'all' : 'none',
+          hideCursorInOverviewRuler: !readOnly,
         })),
       );
 
