@@ -1,0 +1,5 @@
+---
+title: Move SidebarTimeTracking vue component
+merge_request: 18677
+author: George Tsiolis
+type: performance

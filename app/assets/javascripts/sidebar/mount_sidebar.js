@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import Vue from 'vue';
-import SidebarTimeTracking from './components/time_tracking/sidebar_time_tracking';
+import SidebarTimeTracking from './components/time_tracking/sidebar_time_tracking.vue';
 import SidebarAssignees from './components/assignees/sidebar_assignees.vue';
 import ConfidentialIssueSidebar from './components/confidential/confidential_issue_sidebar.vue';
 import SidebarMoveIssue from './lib/sidebar_move_issue';
