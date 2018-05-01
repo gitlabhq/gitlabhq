@@ -30,6 +30,7 @@ See our [HA documentation for PostgreSQL](database.md) for information on runnin
    ```
 
 1. Run `gitlab-ctl reconfigure`
+   **Note:** If the database was already running, it will need to be restarted after reconfigure by running `gitlab-ctl restart postgresql`.
 
 1. On the node you are running pgbouncer on, make sure the following is set in `/etc/gitlab/gitlab.rb`
 
@@ -46,7 +47,7 @@ See our [HA documentation for PostgreSQL](database.md) for information on runnin
 
 1. Run `gitlab-ctl reconfigure`
 
-1. On the node running unicorn, make sure the following is seti in `/etc/gitlab/gitlab.rb`
+1. On the node running unicorn, make sure the following is set in `/etc/gitlab/gitlab.rb`
 
    ```ruby
    gitlab_rails['db_host'] = 'PGBOUNCER_HOST'
@@ -56,7 +57,7 @@ See our [HA documentation for PostgreSQL](database.md) for information on runnin
 
 1. Run `gitlab-ctl reconfigure`
 
-1. At this point, your instance should connect to the database through pgbouncer. If you are having issues, see the [Troubleshooting]() section
+1. At this point, your instance should connect to the database through pgbouncer. If you are having issues, see the [Troubleshooting](#troubleshooting) section
 
 ### Interacting with pgbouncer
 
@@ -125,4 +126,4 @@ In case you are experiencing any issues connecting through pgbouncer, the first 
 # gitlab-ctl tail pgbouncer
 ```
 
-Additionally, you can check the output from `show databases` in the [Administrative console](). In the output, you would expect to see values in the `host` field for the `gitlabhq_production` database. Additionally, `current_connections` should be greater than 1.
+Additionally, you can check the output from `show databases` in the [Administrative console](#administrative-console). In the output, you would expect to see values in the `host` field for the `gitlabhq_production` database. Additionally, `current_connections` should be greater than 1.
