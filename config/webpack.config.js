@@ -1,4 +1,3 @@
-const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
@@ -191,49 +190,6 @@ const config = {
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery',
-    }),
-
-    // assign deterministic module ids
-    new webpack.NamedModulesPlugin(),
-    new NameAllModulesPlugin(),
-
-    // assign deterministic chunk ids
-    new webpack.NamedChunksPlugin(chunk => {
-      if (chunk.name) {
-        return chunk.name;
-      }
-
-      const moduleNames = [];
-
-      function collectModuleNames(m) {
-        // handle ConcatenatedModule which does not have resource nor context set
-        if (m.modules) {
-          m.modules.forEach(collectModuleNames);
-          return;
-        }
-
-        const pagesBase = path.join(ROOT_PATH, 'app/assets/javascripts/pages');
-
-        if (m.resource.indexOf(pagesBase) === 0) {
-          moduleNames.push(
-            path
-              .relative(pagesBase, m.resource)
-              .replace(/\/index\.[a-z]+$/, '')
-              .replace(/\//g, '__')
-          );
-        } else {
-          moduleNames.push(path.relative(m.context, m.resource));
-        }
-      }
-
-      chunk.forEachModule(collectModuleNames);
-
-      const hash = crypto
-        .createHash('sha256')
-        .update(moduleNames.join('_'))
-        .digest('hex');
-
-      return `${moduleNames[0]}-${hash.substr(0, 6)}`;
     }),
 
     // copy pre-compiled vendor libraries verbatim
