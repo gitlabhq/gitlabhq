@@ -33,7 +33,6 @@ export const dataStructure = () => ({
   raw: '',
   content: '',
   parentTreeUrl: '',
-  parentPath: '',
   renderError: false,
   base64: false,
   editorRow: 1,
@@ -44,7 +43,6 @@ export const dataStructure = () => ({
   previewMode: null,
   size: 0,
   parentPath: null,
-  changesCount: 0,
   lastOpenedAt: 0,
 });
 

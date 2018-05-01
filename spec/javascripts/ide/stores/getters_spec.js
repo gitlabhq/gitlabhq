@@ -84,4 +84,67 @@ describe('IDE store getters', () => {
       expect(getters.allBlobs(localState)[0].name).toBe('blob');
     });
   });
+
+  describe('getChangesInFolder', () => {
+    it('returns length of changed files for a path', () => {
+      localState.changedFiles.push(
+        {
+          path: 'test/index',
+          name: 'index',
+        },
+        {
+          path: 'app/123',
+          name: '123',
+        },
+      );
+
+      expect(getters.getChangesInFolder(localState)('test')).toBe(1);
+    });
+
+    it('returns length of changed & staged files for a path', () => {
+      localState.changedFiles.push(
+        {
+          path: 'test/index',
+          name: 'index',
+        },
+        {
+          path: 'testing/123',
+          name: '123',
+        },
+      );
+
+      localState.stagedFiles.push(
+        {
+          path: 'test/123',
+          name: '123',
+        },
+        {
+          path: 'test/index',
+          name: 'index',
+        },
+        {
+          path: 'testing/12345',
+          name: '12345',
+        },
+      );
+
+      expect(getters.getChangesInFolder(localState)('test')).toBe(2);
+    });
+
+    it('returns length of changed & tempFiles files for a path', () => {
+      localState.changedFiles.push(
+        {
+          path: 'test/index',
+          name: 'index',
+        },
+        {
+          path: 'test/newfile',
+          name: 'newfile',
+          tempFile: true,
+        },
+      );
+
+      expect(getters.getChangesInFolder(localState)('test')).toBe(2);
+    });
+  });
 });

@@ -56,7 +56,6 @@ describe('RepoFile', () => {
         type: 'tree',
         branchId: 'master',
         projectId: 'project',
-        changesCount: '1',
       };
 
       createComponent({

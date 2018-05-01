@@ -55,7 +55,32 @@ export const allBlobs = state =>
     }, [])
     .sort((a, b) => b.lastOpenedAt - a.lastOpenedAt);
 
+export const getChangedFile = state => path => state.changedFiles.find(f => f.path === path);
 export const getStagedFile = state => path => state.stagedFiles.find(f => f.path === path);
+
+export const getChangesInFolder = state => path => {
+  const filePathMatches = f => f.path.replace(new RegExp(`/${f.name}$`), '').indexOf(path) === 0;
+  const changedFilesCount = state.changedFiles.filter(f => filePathMatches(f)).length;
+  const stagedFilesCount = state.stagedFiles.filter(
+    f => filePathMatches(f) && !getChangedFile(state, f.path),
+  ).length;
+
+  return changedFilesCount + stagedFilesCount;
+};
+
+export const getUnstagedFilesCountForPath = state => path => {
+  const filePathMatches = f => f.path.replace(new RegExp(`/${f.name}$`), '').indexOf(path) === 0;
+  const changedFilesCount = state.changedFiles.filter(f => filePathMatches(f)).length;
+
+  return changedFilesCount;
+};
+
+export const getStagedFilesCountForPath = state => path => {
+  const filePathMatches = f => f.path.replace(new RegExp(`/${f.name}$`), '').indexOf(path) === 0;
+  const stagedFilesCount = state.stagedFiles.filter(f => filePathMatches(f)).length;
+
+  return stagedFilesCount;
+};
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

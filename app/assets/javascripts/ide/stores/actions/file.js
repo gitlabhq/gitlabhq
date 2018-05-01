@@ -126,15 +126,8 @@ export const changeFileContent = ({ state, commit, dispatch, getters }, { path, 
 
   if (file.changed && indexOfChangedFile === -1) {
     commit(types.ADD_FILE_TO_CHANGED, path);
-
-    if (!stagedFile) {
-      dispatch('updateChangesCount', { path, count: +1 });
-    }
   } else if (!file.changed && indexOfChangedFile !== -1) {
     commit(types.REMOVE_FILE_FROM_CHANGED, path);
-    if (!stagedFile) {
-      dispatch('updateChangesCount', { path, count: -1 });
-    }
   }
 };
 
@@ -169,10 +162,6 @@ export const discardFileChanges = ({ dispatch, state, commit, getters }, path) =
 
   commit(types.DISCARD_FILE_CHANGES, path);
   commit(types.REMOVE_FILE_FROM_CHANGED, path);
-
-  if (!getters.getStagedFile(path)) {
-    dispatch('updateChangesCount', { path, count: -1 });
-  }
 
   if (file.tempFile && file.opened) {
     commit(types.TOGGLE_FILE_OPEN, path);
