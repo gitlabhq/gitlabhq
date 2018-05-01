@@ -69,5 +69,59 @@ namespace :gitlab do
 
       Gitlab::DowntimeCheck.new.check_and_print(migrations)
     end
+
+    desc 'Output pseudonymity dump of selected table'
+    task :pseudonymity_dump => :environment do
+      # issue* tables
+      # label* tables
+      # licenses
+      # merge_request* tables
+      # milestones
+      # namespace_statistics
+      # namespaces
+      # notes
+      # notification_settings
+      # project* tables
+      # subscriptions
+      # users
+
+      # REMOVE PRODUCTION INFRA SCRIPT AS PART OF MR> 
+      puts Pseudonymity::Table.table_to_csv("approvals",
+        ["id","merge_request_id","user_id","created_at","updated_at"],
+        ["id", "merge_request_id", "user_id"])
+      puts Pseudonymity::Table.table_to_csv("approver_groups",
+        ["id","target_type","group_id","created_at","updated_at"],
+        ["id","group_id"])
+      puts Pseudonymity::Table.table_to_csv("board_assignees",
+        ["id","board_id","assignee_id"],
+        ["id","board_id","assignee_id"])
+      puts Pseudonymity::Table.table_to_csv("board_labels",
+        ["id","board_id","label_id"],
+        ["id","board_id","label_id"])
+      puts Pseudonymity::Table.table_to_csv("boards",
+        ["id","project_id","created_at","updated_at","milestone_id","group_id","weight"],
+        ["id","project_id","milestone_id","group_id"])
+      puts Pseudonymity::Table.table_to_csv("epic_issues",
+        ["id","epic_id","issue_id","relative_position"],
+        ["id","epic_id","issue_id"])
+      puts Pseudonymity::Table.table_to_csv("epic_metrics",
+        ["id","epic_id","created_at","updated_at"],
+        ["id"])
+      puts Pseudonymity::Table.table_to_csv("epics",
+        ["id", "milestone_id", "group_id", "author_id", "assignee_id", "iid", "cached_markdown_version", "updated_by_id", "last_edited_by_id", "lock_version", "start_date", "end_date", "last_edited_at", "created_at", "updated_at", "title", "description"],
+        ["id", "milestone_id", "group_id", "author_id", "assignee_id", "iid", "cached_markdown_version", "updated_by_id", "last_edited_by_id", "lock_version", "start_date", "end_date", "last_edited_at", "created_at", "updated_at"])
+      puts Pseudonymity::Table.table_to_csv("issue_assignees",
+        ["user_id","issue_id"],
+        ["user_id","issue_id"])
+      puts Pseudonymity::Table.table_to_csv("issue_links",
+        ["id", "source_id", "target_id", "created_at", "updated_at"],
+        ["id", "source_id", "target_id"])
+      puts Pseudonymity::Table.table_to_csv("issue_metrics",
+        [],
+        [])
+      puts Pseudonymity::Table.table_to_csv("issues",
+        [],
+        [])
+    end
   end
 end
