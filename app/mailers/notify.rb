@@ -16,6 +16,7 @@ class Notify < BaseMailer
   helper BlobHelper
   helper EmailsHelper
   helper MembersHelper
+  helper AvatarsHelper
   helper GitlabRoutingHelper
 
   def test_email(recipient_email, subject, body)
