@@ -1201,6 +1201,7 @@ test:
 
 > Introduced in [GitLab Edition Premium][ee] 10.5.
 > Available for Starter, Premium and Ultimate [versions][gitlab-versions] since 10.6.
+> Behaviour expanded in GitLab 10.8 to allow more flexible overriding
 
 Using the `include` keyword, you can allow the inclusion of external YAML files.
 
@@ -1276,17 +1277,16 @@ include:
 
 ---
 
-Files defined by `include` are always evaluated first and recursively merged
-with the content of `.gitlab-ci.yml`, no matter the position of the `include`
-keyword. You can take advantage of recursive merging to customize and override
-details in included CI configurations with local defintions.
 
-NOTE: **Note:**
-Before GitLab 10.8, the content of `.gitlab-ci.yml` always took precedence
-over the content of external files.
+Since GitLab 10.8 we are now recursively merging the files defined in `include`
+with those in `.gitlab-ci.yml`. Files defined by `include` are always
+evaluated first and recursively merged with the content of `.gitlab-ci.yml`, no
+matter the position of the `include` keyword. You can take advantage of
+recursive merging to customize and override details in included CI
+configurations with local definitions.
 
-The following example shows specific YAML-defined variables and details of
-the `production` job from an include file being customized in `.gitlab-ci.yml`.
+The following example shows specific YAML-defined variables and details of the
+`production` job from an include file being customized in `.gitlab-ci.yml`.
 
 ```yaml
 # Content of https://company.com/autodevops-template.yml
@@ -1339,7 +1339,7 @@ Recursive includes are not supported meaning your external files
 should not use the `include` keyword, as it will be ignored.
 
 Recursive merging lets you extend and override dictionary mappings, but
-you cannot add or modify items to an included list. For example, to add
+you cannot add or modify items to an included array. For example, to add
 an additional item to the production job script, you must repeat the
 existing script items.
 
@@ -1371,7 +1371,6 @@ production:
 In this case, if `install_dependencies` and `deploy` were not repeated in
 `.gitlab-ci.yml`, they would not be part of the script for the `production`
 job in the combined CI configuration.
->>>>>>> 9d487fefac... Note that recursive merging applies to dicts
 
 ## `variables`
 
