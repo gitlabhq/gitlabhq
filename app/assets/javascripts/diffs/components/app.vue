@@ -1,18 +1,18 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
-import compareVersions from './compare_versions.vue';
-import changedFiles from './changed_files.vue';
-import diffFile from './diff_file.vue';
+import LoadingIcon from '../../vue_shared/components/loading_icon.vue';
+import CompareVersions from './compare_versions.vue';
+import ChangedFiles from './changed_files.vue';
+import DiffFile from './diff_file.vue';
 import NoChanges from './no_changes.vue';
 
 export default {
   name: 'DiffsApp',
   components: {
-    loadingIcon,
-    compareVersions,
-    changedFiles,
-    diffFile,
+    LoadingIcon,
+    CompareVersions,
+    ChangedFiles,
+    DiffFile,
     NoChanges,
   },
   props: {
@@ -95,6 +95,7 @@ export default {
           :merge-request-diffs="mergeRequestDiffs"
         />
         <changed-files
+          v-if="diffFiles.length > 0"
           :diff-files="diffFiles"
           :active-file="activeFile"
         />

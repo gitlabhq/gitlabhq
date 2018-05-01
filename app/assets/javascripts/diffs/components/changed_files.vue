@@ -141,7 +141,6 @@ export default {
 
 <template>
   <div
-    v-if="diffFiles.length > 0"
     ref="wrapper"
     class="content-block oneline-block diff-files-changed diff-files-changed-merge-request
     files-changed js-diff-files-changed"

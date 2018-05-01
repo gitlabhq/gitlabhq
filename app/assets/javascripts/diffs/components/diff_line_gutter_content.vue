@@ -153,10 +153,11 @@ export default {
       const params = { since, to, bottom, offset, unfold, view };
       const lineNumbers = { oldLineNumber, newLineNumber };
       this.loadMoreLines({ endpoint, params, lineNumbers, fileHash })
+        .then(() => {
+          this.isRequesting = false;
+        })
         .catch(() => {
           createFlash(s__('Diffs|Something went wrong while fetching diff lines.'));
-        })
-        .finally(() => {
           this.isRequesting = false;
         });
     },
@@ -170,6 +171,7 @@ export default {
       v-if="isMatchLine"
       @click="handleLoadMoreLines"
       class="context-cell"
+      role="button"
     >...</span>
     <template
       v-else

@@ -1,5 +1,6 @@
 <script>
 import Icon from '~/vue_shared/components/icon.vue';
+import { __ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
@@ -58,7 +59,7 @@ export default {
   methods: {
     versionName(version) {
       if (this.isLatest(version)) {
-        return 'latest version';
+        return __('latest version');
       }
       if (this.isBase(version)) {
         return this.baseVersion.branchName;
@@ -101,6 +102,7 @@ export default {
         <ul>
           <li
             v-for="version in targetVersions"
+            :key="version.path"
           >
             <a
               :class="{ 'is-active': isActive(version) }"
