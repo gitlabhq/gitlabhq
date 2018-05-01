@@ -33,11 +33,14 @@ describe AuthHelper do
       allow(helper).to receive(:auth_providers) { [:twitter, :ldapmain] }
       expect(helper.providers_for_base_controller).not_to include(:ldapmain)
     end
+<<<<<<< HEAD
 
     it 'excludes group_saml' do
       allow(helper).to receive(:auth_providers) { [:group_saml] }
       expect(helper.providers_for_base_controller).to eq([])
     end
+=======
+>>>>>>> upstream/master
   end
 
   describe "form_based_providers" do
@@ -50,11 +53,14 @@ describe AuthHelper do
       allow(helper).to receive(:auth_providers) { [:twitter, :crowd] }
       expect(helper.form_based_providers).to eq %i(crowd)
     end
+<<<<<<< HEAD
 
     it 'includes kerberos provider' do
       allow(helper).to receive(:auth_providers) { [:twitter, :kerberos] }
       expect(helper.form_based_providers).to eq %i(kerberos)
     end
+=======
+>>>>>>> upstream/master
   end
 
   describe 'enabled_button_based_providers' do

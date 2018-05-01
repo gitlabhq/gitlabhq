@@ -76,6 +76,9 @@ const config = {
         test: /\.js$/,
         exclude: /(node_modules|vendor\/assets)/,
         loader: 'babel-loader',
+        options: {
+          cacheDirectory: path.join(ROOT_PATH, 'tmp/cache/babel-loader'),
+        },
       },
       {
         test: /\.vue$/,
