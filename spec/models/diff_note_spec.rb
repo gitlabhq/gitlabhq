@@ -85,12 +85,35 @@ describe DiffNote do
   end
 
   describe "#diff_file" do
-    it "returns the correct diff file" do
-      diff_file = subject.diff_file
+    context 'when the discussion was created in the diff' do
+      it 'returns correct diff file' do
+        diff_file = subject.diff_file
 
-      expect(diff_file.old_path).to eq(position.old_path)
-      expect(diff_file.new_path).to eq(position.new_path)
-      expect(diff_file.diff_refs).to eq(position.diff_refs)
+        expect(diff_file.old_path).to eq(position.old_path)
+        expect(diff_file.new_path).to eq(position.new_path)
+        expect(diff_file.diff_refs).to eq(position.diff_refs)
+      end
+    end
+
+    context 'when discussion is outdated or not created in the diff' do
+      let(:diff_refs) { project.commit(sample_commit.id).diff_refs }
+      let(:position) do
+        Gitlab::Diff::Position.new(
+          old_path: "files/ruby/popen.rb",
+          new_path: "files/ruby/popen.rb",
+          old_line: nil,
+          new_line: 14,
+          diff_refs: diff_refs
+        )
+      end
+
+      it 'returns the correct diff file' do
+        diff_file = subject.diff_file
+
+        expect(diff_file.old_path).to eq(position.old_path)
+        expect(diff_file.new_path).to eq(position.new_path)
+        expect(diff_file.diff_refs).to eq(position.diff_refs)
+      end
     end
   end
 
