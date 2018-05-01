@@ -651,80 +651,87 @@ class Project < ActiveRecord::Base
     import_started? || import_scheduled?
   end
 
-  def ensure_import_state(param)
-    return unless self[param] && import_state.nil?
+  def import_state_args
+    {
+      status: self[:import_status],
+      jid: self[:import_jid],
+      last_error: self[:import_error]
+    }
+  end
 
-    create_import_state(status: self[:import_status],
-                        jid: self[:import_jid],
-                        last_error: self[:import_error])
+  def ensure_import_state
+    return if self[:import_status] == 'none' || self[:import_status].nil?
+    return unless import_state.nil?
 
-    update(import_status: nil)
+    create_import_state(import_state_args)
+
+    update_column(:import_status, 'none')
   end
 
   def import_schedule
-    ensure_import_state(:import_status)
+    ensure_import_state
 
     import_state&.schedule
   end
 
   def force_import_start
-    ensure_import_state(:import_status)
+    ensure_import_state
 
     import_state&.force_start
   end
 
   def import_start
-    ensure_import_state(:import_status)
+    ensure_import_state
 
     import_state&.start
   end
 
   def import_fail
-    ensure_import_state(:import_status)
+    ensure_import_state
 
     import_state&.fail_op
   end
 
   def import_finish
-    ensure_import_state(:import_status)
+    ensure_import_state
 
     import_state&.finish
   end
 
   def import_jid=(new_jid)
-    return super unless import_state
+    ensure_import_state
 
-    import_state.jid = new_jid
+    import_state&.jid = new_jid
   end
 
   def import_jid
-    ensure_import_state(:import_jid)
+    ensure_import_state
 
     import_state&.jid
   end
 
   def import_error=(new_error)
-    return super unless import_state
+    ensure_import_state
 
-    import_state.last_error = new_error
+    import_state&.last_error = new_error
   end
 
   def import_error
-    ensure_import_state(:import_error)
+    ensure_import_state
 
     import_state&.last_error
   end
 
   def import_status=(new_status)
-    return super unless import_state
+    ensure_import_state
 
-    import_state.status = new_status
+    import_state&.status = new_status
   end
 
   def import_status
-    ensure_import_state(:import_status)
+    ensure_import_state
 
-    import_state&.status
+    import_state&.status || 'none'
   end
 
   def no_import?
@@ -1588,8 +1595,7 @@ class Project < ActiveRecord::Base
 
     Gitlab::SidekiqStatus.unset(import_jid)
 
-    self.import_jid = nil
-    self.save(validate: false)
+    import_state.update_column(:jid, nil)
   end
 
   def running_or_pending_build_count(force: false)
@@ -1609,8 +1615,7 @@ class Project < ActiveRecord::Base
 
     import_fail
 
-    self.import_error = sanitized_message
-    self.save(validate: false)
+    import_state.update_column(:last_error, sanitized_message)
   rescue ActiveRecord::ActiveRecordError => e
     Rails.logger.error("Error setting import status to failed: #{e.message}. Original error: #{sanitized_message}")
   ensure

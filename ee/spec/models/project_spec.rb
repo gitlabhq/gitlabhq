@@ -48,6 +48,52 @@ describe Project do
     end
   end
 
+  describe 'setting up a mirror' do
+    context 'when new project' do
+      it 'creates import_state and sets next_execution_timestamp to now' do
+        project = build(:project, :mirror)
+
+        Timecop.freeze do
+          expect do
+            project.save
+          end.to change { ProjectImportState.count }.by(1)
+
+          expect(project.import_state.next_execution_timestamp).to eq(Time.now)
+        end
+      end
+    end
+
+    context 'when project already exists' do
+      context 'when project is not import' do
+        it 'creates import_state and sets next_execution_timestamp to now' do
+          project = create(:project)
+
+          Timecop.freeze do
+            expect do
+              project.update_attributes(mirror: true, mirror_user_id: project.creator.id, import_url: generate(:url))
+            end.to change { ProjectImportState.count }.by(1)
+
+            expect(project.import_state.next_execution_timestamp).to eq(Time.now)
+          end
+        end
+      end
+
+      context 'when project is import' do
+        it 'sets current import_state next_execution_timestamp to now' do
+          project = create(:project, import_url: generate(:url))
+
+          Timecop.freeze do
+            expect do
+              project.update_attributes(mirror: true, mirror_user_id: project.creator.id)
+            end.not_to change { ProjectImportState.count }
+
+            expect(project.import_state.next_execution_timestamp).to eq(Time.now)
+          end
+        end
+      end
+    end
+  end
+
   describe '.mirrors_to_sync' do
     let(:timestamp) { Time.now }
 

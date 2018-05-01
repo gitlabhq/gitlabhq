@@ -3,6 +3,12 @@ class MigrateImportAttributesDataFromProjectsToProjectMirrorData < ActiveRecord:
 
   DOWNTIME = false
 
+  UP_MIGRATION = 'PopulateImportState'.freeze
+  DOWN_MIGRATION = 'RollbackImportStateData'.freeze
+
+  BATCH_SIZE = 1000
+  DELAY_INTERVAL = 5.minutes
+
   disable_ddl_transaction!
 
   class Project < ActiveRecord::Base
@@ -18,54 +24,14 @@ class MigrateImportAttributesDataFromProjectsToProjectMirrorData < ActiveRecord:
   end
 
   def up
-    Project.where.not(import_status: nil).each_batch do |batch|
-      start, stop = batch.pluck('MIN(id), MAX(id)').first
+    projects = Project.where.not(import_status: :none)
 
-      execute <<~SQL
-        INSERT INTO project_mirror_data (project_id, status, jid, last_update_at, last_successful_update_at, last_error)
-        SELECT id, import_status, import_jid, mirror_last_update_at, mirror_last_successful_update_at, import_error
-        FROM projects proj
-        WHERE proj.import_status IS NOT NULL
-        AND proj.id >= #{start}
-        AND proj.id < #{stop}
-      SQL
-
-      execute <<~SQL
-        UPDATE projects
-        SET import_status = NULL
-        WHERE import_status IS NOT NULL
-        AND id >= #{start}
-        AND id < #{stop}
-      SQL
-    end
+    queue_background_migration_jobs_by_range_at_intervals(projects, UP_MIGRATION, DELAY_INTERVAL, batch_size: BATCH_SIZE)
   end
 
   def down
-    ProjectImportState.where.not(status: nil).each_batch do |batch|
-      start, stop = batch.pluck('MIN(id), MAX(id)').first
+    import_state = ProjectImportState.where.not(status: :none)
 
-      execute <<~SQL
-        UPDATE projects
-        SET
-          import_status = mirror_data.status,
-          import_jid = mirror_data.jid,
-          mirror_last_update_at = mirror_data.last_update_at,
-          mirror_last_successful_update_at = mirror_data.last_successful_update_at,
-          import_error = mirror_data.last_error
-        FROM project_mirror_data mirror_data
-        WHERE mirror_data.project_id = projects.id
-        AND mirror_data.status IS NOT NULL
-        AND mirror_data.id >= #{start}
-        AND mirror_data.id < #{stop}
-      SQL
-
-      execute <<~SQL
-        UPDATE project_mirror_data
-        SET status = NULL
-        WHERE status IS NOT NULL
-        AND id >= #{start}
-        AND id < #{stop}
-      SQL
-    end
+    queue_background_migration_jobs_by_range_at_intervals(import_state, DOWN_MIGRATION, DELAY_INTERVAL, batch_size: BATCH_SIZE)
   end
 end

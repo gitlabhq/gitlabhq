@@ -74,7 +74,7 @@ FactoryBot.define do
       end
 
       before(:create) do |project, evaluator|
-        project.create_import_state(status: evaluator.status)
+        project.create_import_state(:status, evaluator.status)
       end
     end
 
@@ -128,7 +128,6 @@ FactoryBot.define do
         project.create_import_state(status: evaluator.status,
                                     last_update_at: evaluator.last_update_at)
       end
-
     end
 
     trait :import_hard_failed do

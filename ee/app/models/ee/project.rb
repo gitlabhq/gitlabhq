@@ -16,6 +16,7 @@ module EE
       before_validation :mark_remote_mirrors_for_removal
 
       before_save :set_override_pull_mirror_available, unless: -> { ::Gitlab::CurrentSettings.mirror_available }
+      before_save :set_next_execution_timestamp_to_now, if: ->(project) { project.mirror? && project.mirror_changed? && project.import_state }
 
       after_update :remove_mirror_repository_reference,
         if: ->(project) { project.mirror? && project.import_url_updated? }
@@ -134,39 +135,31 @@ module EE
       mirror? && !empty_repo?
     end
 
-    override :ensure_import_state
-    def ensure_import_state(param)
-      return unless self[param] && import_state.nil?
-
-      create_import_state(status: self[:import_status],
-                          jid: self[:import_jid],
-                          last_error: self[:import_error],
-                          last_update_at: self[:mirror_last_update_at],
-                          last_successful_update_at: self[:mirror_last_successful_update_at])
-
-      update(import_status: nil)
+    def import_state_args
+      super.merge(last_update_at: self[:mirror_last_update_at],
+                  last_successful_update_at: self[:mirror_last_successful_update_at])
     end
 
     def mirror_last_update_at=(new_value)
-      return super unless import_state
+      ensure_import_state
 
-      import_state.last_update_at = new_value
+      import_state&.last_update_at = new_value
     end
 
     def mirror_last_update_at
-      ensure_import_state(:mirror_last_update_at)
+      ensure_import_state
 
       import_state&.last_update_at
     end
 
     def mirror_last_successful_update_at=(new_value)
-      return super unless import_state
+      ensure_import_state
 
-      import_state.last_successful_update_at = new_value
+      import_state&.last_successful_update_at = new_value
     end
 
     def mirror_last_successful_update_at
-      ensure_import_state(:mirror_last_successful_update_at)
+      ensure_import_state
 
       import_state&.last_successful_update_at
     end
@@ -546,6 +539,10 @@ module EE
     def set_override_pull_mirror_available
       self.pull_mirror_available_overridden = read_attribute(:mirror)
       true
+    end
+
+    def set_next_execution_timestamp_to_now
+      import_state.set_next_execution_to_now
     end
 
     def licensed_feature_available?(feature)

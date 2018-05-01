@@ -89,7 +89,7 @@ module EE
     end
 
     def set_next_execution_to_now
-      return unless mirror?
+      return unless project.mirror?
 
       self.next_execution_timestamp = Time.now
     end

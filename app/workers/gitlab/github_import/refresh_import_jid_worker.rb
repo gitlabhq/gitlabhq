@@ -31,7 +31,9 @@ module Gitlab
       end
 
       def find_project(id)
-        # TODO: select only import_jid
+        # TODO: Only select the JID
+        # This is due to the fact that the JID could be present in either the project record or
+        # its associated import_state record
         Project.import_started.find_by(id: id)
       end
     end

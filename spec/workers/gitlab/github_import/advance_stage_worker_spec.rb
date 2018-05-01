@@ -107,7 +107,7 @@ describe Gitlab::GithubImport::AdvanceStageWorker, :clean_gitlab_redis_shared_st
       # This test is there to make sure we only select the columns we care
       # about.
       # TODO: enable this assertion back again
-      #expect(found.attributes).to include({ 'id' => nil, 'import_jid' => '123' })
+      # expect(found.attributes).to include({ 'id' => nil, 'import_jid' => '123' })
     end
 
     it 'returns nil if the project import is not running' do
