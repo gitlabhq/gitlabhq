@@ -5,6 +5,7 @@ import store from '~/ide/stores';
 import repoEditor from '~/ide/components/repo_editor.vue';
 import monacoLoader from '~/ide/monaco_loader';
 import Editor from '~/ide/lib/editor';
+import { activityBarViews } from '~/ide/constants';
 import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
 import setTimeoutPromise from '../../helpers/set_timeout_promise_helper';
 import { file, resetStore } from '../helpers';
@@ -290,6 +291,32 @@ describe('RepoEditor', () => {
       vm.$nextTick(() => {
         expect(vm.editor.updateDimensions).not.toHaveBeenCalled();
         expect(vm.editor.updateDiffView).not.toHaveBeenCalled();
+
+        done();
+      });
+    });
+  });
+
+  describe('show tabs', () => {
+    it('shows tabs in edit mode', () => {
+      expect(vm.$el.querySelector('.nav-links').style.display).toBe('');
+    });
+
+    it('hides tabs in review mode', done => {
+      vm.$store.state.currentActivityView = activityBarViews.review;
+
+      vm.$nextTick(() => {
+        expect(vm.$el.querySelector('.nav-links').style.display).toBe('none');
+
+        done();
+      });
+    });
+
+    it('hides tabs in commit mode', done => {
+      vm.$store.state.currentActivityView = activityBarViews.commit;
+
+      vm.$nextTick(() => {
+        expect(vm.$el.querySelector('.nav-links').style.display).toBe('none');
 
         done();
       });

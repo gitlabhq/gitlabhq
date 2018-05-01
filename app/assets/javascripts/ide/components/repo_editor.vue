@@ -3,6 +3,7 @@
 import { mapState, mapGetters, mapActions } from 'vuex';
 import flash from '~/flash';
 import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer.vue';
+import { activityBarViews } from '../constants';
 import monacoLoader from '../monaco_loader';
 import Editor from '../lib/editor';
 import IdeFileButtons from './ide_file_buttons.vue';
@@ -19,7 +20,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['rightPanelCollapsed', 'viewer', 'panelResizing']),
+    ...mapState(['rightPanelCollapsed', 'viewer', 'panelResizing', 'currentActivityView']),
     ...mapGetters([
       'currentMergeRequest',
       'getStagedFile',
@@ -45,6 +46,21 @@ export default {
       // Compare key to allow for files opened in review mode to be cached differently
       if (newVal.key !== this.file.key) {
         this.initMonaco();
+
+        if (this.currentActivityView !== activityBarViews.edit) {
+          this.setFileViewMode({
+            file: this.file,
+            viewMode: 'edit',
+          });
+        }
+      }
+    },
+    currentActivityView() {
+      if (this.currentActivityView !== activityBarViews.edit) {
+        this.setFileViewMode({
+          file: this.file,
+          viewMode: 'edit',
+        });
       }
     },
     rightPanelCollapsed() {
@@ -172,13 +188,12 @@ export default {
     id="ide"
     class="blob-viewer-container blob-editor-container"
   >
-    <div
-      v-show="!isReviewModeActive && !isCommitModeActive"
-      class="ide-mode-tabs clearfix"
-    >
+    <div class="ide-mode-tabs clearfix" >
       <ul
         class="nav-links pull-left"
-        v-if="!shouldHideEditor">
+        v-if="!shouldHideEditor"
+        v-show="!isReviewModeActive && !isCommitModeActive"
+      >
         <li :class="editTabCSS">
           <a
             href="javascript:void(0);"
