@@ -19,18 +19,6 @@ class DiffFileEntity < Grape::Entity
 
   expose :blob, using: BlobEntity
 
-  expose :blob_path do |diff_file|
-    diff_file.blob.path
-  end
-
-  expose :blob_name do |diff_file|
-    diff_file.blob.name
-  end
-
-  expose :blob_icon do |diff_file|
-    blob_icon(diff_file.b_mode, diff_file.file_path)
-  end
-
   expose :file_hash do |diff_file|
     Digest::SHA1.hexdigest(diff_file.file_path)
   end

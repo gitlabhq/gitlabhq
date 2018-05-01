@@ -18,7 +18,8 @@ describe DiffFileEntity do
       :submodule, :submodule_link, :submodule_tree_url, :file_path,
       :deleted_file, :old_path, :new_path, :mode_changed,
       :a_mode, :b_mode, :text, :old_path_html,
-      :new_path_html, :highlighted_diff_lines, :parallel_diff_lines
+      :new_path_html, :highlighted_diff_lines, :parallel_diff_lines,
+      :blob
     )
   end
 end
