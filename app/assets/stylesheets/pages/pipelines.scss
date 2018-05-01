@@ -478,55 +478,6 @@
     .ci-job-dropdown-container:hover .build-content {
       @extend .build-content:hover;
     }
-  }
-
-  .ci-action-icon-container {
-    position: absolute;
-    right: 5px;
-    top: 5px;
-
-    // Action Icons in big pipeline-graph nodes
-    &.ci-action-icon-wrapper {
-      height: 30px;
-      width: 30px;
-      background: $white-light;
-      border: 1px solid $border-color;
-      border-radius: 100%;
-      display: block;
-
-      &:hover {
-        background-color: $stage-hover-bg;
-        border: 1px solid $dropdown-toggle-active-border-color;
-
-        svg {
-          fill: $gl-text-color;
-        }
-      }
-
-      svg {
-        fill: $gl-text-color-secondary;
-        position: relative;
-        top: -1px;
-      }
-
-      &.play {
-        svg {
-          left: 2px;
-        }
-      }
-    }
-  }
-
-  .build {
-    position: relative;
-    width: 186px;
-    margin-bottom: 10px;
-    white-space: normal;
-
-    // ensure .build-content has hover style when action-icon is hovered
-    .ci-job-dropdown-container:hover .build-content {
-      @extend .build-content:hover;
-    }
 
     .ci-status-icon svg {
       height: 20px;
@@ -611,36 +562,19 @@
       }
     }
   }
-}
-
-/**
- Action icons inside dropdowns:
- - mini graph in pipelines table
- - dropdown in big graph
- - mini graph in MR widget pipeline
- - mini graph in Commit widget pipeline
-*/
-.big-pipeline-graph-dropdown-menu,
-.mini-pipeline-graph-dropdown-menu {
-  // override dropdown.scss
-  &.dropdown-menu li button,
-  &.dropdown-menu li a.ci-action-icon-container {
-    padding: 0;
-    text-align: center;
-  }
 
   .ci-action-icon-container {
     position: absolute;
     right: 5px;
     top: 5px;
 
+    // Action Icons in big pipeline-graph nodes
     &.ci-action-icon-wrapper {
-      height: $ci-action-dropdown-button-size;
-      width: $ci-action-dropdown-button-size;
-
+      height: 30px;
+      width: 30px;
       background: $white-light;
       border: 1px solid $border-color;
-      border-radius: 50%;
+      border-radius: 100%;
       display: block;
 
       &:hover {
@@ -653,19 +587,17 @@
       }
 
       svg {
-        width: $ci-action-dropdown-svg-size;
-        height: $ci-action-dropdown-svg-size;
         fill: $gl-text-color-secondary;
         position: relative;
-        top: 0px;
-        vertical-align: initial;
+        top: -1px;
+      }
+
+      &.play {
+        svg {
+          left: 2px;
+        }
       }
     }
-  }
-
-  // SVGs in the commit widget and mr widget
-  a.ci-action-icon-container.ci-action-icon-wrapper svg {
-    top: 2px;
   }
 }
 
@@ -775,11 +707,63 @@ button.mini-pipeline-graph-dropdown-toggle {
   }
 }
 
-// dropdown content for big and mini pipeline
+/**
+ Action icons inside dropdowns:
+ - mini graph in pipelines table
+ - dropdown in big graph
+ - mini graph in MR widget pipeline
+ - mini graph in Commit widget pipeline
+*/
 .big-pipeline-graph-dropdown-menu,
 .mini-pipeline-graph-dropdown-menu {
   width: 240px;
   max-width: 240px;
+
+  // override dropdown.scss
+  &.dropdown-menu li button,
+  &.dropdown-menu li a.ci-action-icon-container {
+    padding: 0;
+    text-align: center;
+  }
+
+  .ci-action-icon-container {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+
+    &.ci-action-icon-wrapper {
+      height: $ci-action-dropdown-button-size;
+      width: $ci-action-dropdown-button-size;
+
+      background: $white-light;
+      border: 1px solid $border-color;
+      border-radius: 50%;
+      display: block;
+
+      &:hover {
+        background-color: $stage-hover-bg;
+        border: 1px solid $dropdown-toggle-active-border-color;
+
+        svg {
+          fill: $gl-text-color;
+        }
+      }
+
+      svg {
+        width: $ci-action-dropdown-svg-size;
+        height: $ci-action-dropdown-svg-size;
+        fill: $gl-text-color-secondary;
+        position: relative;
+        top: 0;
+        vertical-align: initial;
+      }
+    }
+  }
+
+   // SVGs in the commit widget and mr widget
+  a.ci-action-icon-container.ci-action-icon-wrapper svg {
+    top: 2px;
+  }
 
   .scrollable-menu {
     padding: 0;
