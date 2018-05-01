@@ -28,13 +28,15 @@ export default {
     if (lastOpenedFile) {
       this.openPendingTab({
         file: lastOpenedFile,
-      }).then(changeViewer => {
-        if (changeViewer) {
-          this.updateViewer('diff');
-        }
-      }).catch((e) => {
-        throw e;
-      });
+      })
+        .then(changeViewer => {
+          if (changeViewer) {
+            this.updateViewer('diff');
+          }
+        })
+        .catch(e => {
+          throw e;
+        });
     }
   },
   methods: {

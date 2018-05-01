@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import store from '~/ide/stores';
 import service from '~/ide/services';
+import router from '~/ide/ide_router';
 import repoCommitSection from '~/ide/components/repo_commit_section.vue';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { file, resetStore } from '../helpers';
@@ -59,6 +60,8 @@ describe('RepoCommitSection', () => {
   }
 
   beforeEach(done => {
+    spyOn(router, 'push');
+
     vm = createComponent();
 
     spyOn(service, 'getTreeData').and.returnValue(
@@ -165,6 +168,13 @@ describe('RepoCommitSection', () => {
       ).toBe(1);
 
       done();
+    });
+  });
+
+  describe('mounted', () => {
+    it('opens last opened file', () => {
+      expect(store.state.openFiles.length).toBe(1);
+      expect(store.state.openFiles[0].pending).toBe(true);
     });
   });
 });
