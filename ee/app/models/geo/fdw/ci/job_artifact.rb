@@ -6,6 +6,7 @@ module Geo
 
         scope :with_files_stored_locally, -> { where(file_store: [nil, JobArtifactUploader::Store::LOCAL]) }
         scope :with_files_stored_remotely, -> { where(file_store: JobArtifactUploader::Store::REMOTE) }
+        scope :geo_syncable, -> { with_files_stored_locally }
       end
     end
   end

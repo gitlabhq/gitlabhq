@@ -9,7 +9,7 @@ module Geo
     end
 
     def local_attachments
-      attachments.with_files_stored_locally
+      attachments.geo_syncable
     end
 
     def count_local_attachments
@@ -161,7 +161,7 @@ module Geo
 
     def fdw_find_local_attachments
       fdw_attachments.joins("INNER JOIN file_registry ON file_registry.file_id = #{fdw_attachments_table}.id")
-        .with_files_stored_locally
+        .geo_syncable
         .merge(Geo::FileRegistry.attachments)
     end
 
@@ -171,7 +171,7 @@ module Geo
       fdw_attachments.joins("LEFT OUTER JOIN file_registry
                                           ON file_registry.file_id = #{fdw_attachments_table}.id
                                          AND file_registry.file_type IN (#{upload_types})")
-        .with_files_stored_locally
+        .geo_syncable
         .where(file_registry: { id: nil })
         .where.not(id: except_file_ids)
     end

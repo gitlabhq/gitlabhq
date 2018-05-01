@@ -73,7 +73,7 @@ module Geo
     end
 
     def local_job_artifacts
-      job_artifacts.with_files_stored_locally
+      job_artifacts.geo_syncable
     end
 
     def find_retryable_failed_job_artifacts_registries(batch_size:, except_artifact_ids: [])
@@ -134,13 +134,13 @@ module Geo
 
     def fdw_find_job_artifacts
       fdw_job_artifacts.joins("INNER JOIN job_artifact_registry ON job_artifact_registry.artifact_id = #{fdw_job_artifacts_table}.id")
-        .with_files_stored_locally
+        .geo_syncable
     end
 
     def fdw_find_unsynced_job_artifacts(except_artifact_ids:)
       fdw_job_artifacts.joins("LEFT OUTER JOIN job_artifact_registry
                                ON job_artifact_registry.artifact_id = #{fdw_job_artifacts_table}.id")
-        .with_files_stored_locally
+        .geo_syncable
         .where(job_artifact_registry: { artifact_id: nil })
         .where.not(id: except_artifact_ids)
     end

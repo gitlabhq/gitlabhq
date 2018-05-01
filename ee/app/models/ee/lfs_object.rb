@@ -8,6 +8,8 @@ module EE
 
     prepended do
       after_destroy :log_geo_event
+
+      scope :geo_syncable, -> { with_files_stored_locally }
     end
 
     private

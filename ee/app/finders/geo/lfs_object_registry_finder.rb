@@ -73,7 +73,7 @@ module Geo
     end
 
     def local_lfs_objects
-      lfs_objects.with_files_stored_locally
+      lfs_objects.geo_syncable
     end
 
     def find_retryable_failed_lfs_objects_registries(batch_size:, except_file_ids: [])
@@ -122,7 +122,7 @@ module Geo
 
     def fdw_find_lfs_objects
       fdw_lfs_objects.joins("INNER JOIN file_registry ON file_registry.file_id = #{fdw_lfs_objects_table}.id")
-        .with_files_stored_locally
+        .geo_syncable
         .merge(Geo::FileRegistry.lfs_objects)
     end
 
@@ -130,7 +130,7 @@ module Geo
       fdw_lfs_objects.joins("LEFT OUTER JOIN file_registry
                                           ON file_registry.file_id = #{fdw_lfs_objects_table}.id
                                          AND file_registry.file_type = 'lfs'")
-        .with_files_stored_locally
+        .geo_syncable
         .where(file_registry: { id: nil })
         .where.not(id: except_file_ids)
     end
