@@ -8,7 +8,7 @@ module Ci
     let!(:pending_job) { create :ci_build, pipeline: pipeline }
     let!(:shared_runner) { create :ci_runner, is_shared: true }
     let!(:specific_runner) { create :ci_runner, is_shared: false }
-    let!(:group_runner) { create :ci_runner, groups: [group] }
+    let!(:group_runner) { create :ci_runner, groups: [group], runner_type: :group_type }
 
     before do
       specific_runner.assign_to(project)

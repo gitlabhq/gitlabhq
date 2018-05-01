@@ -19,7 +19,7 @@
     %p
       If you want Runners to build only specific projects, enable them in the table below.
       Keep in mind that this is a one way transition.
-- elsif @runner.assigned_to_group?
+- elsif @runner.group_type?
   .bs-callout.bs-callout-success
     %h4 This runner will process jobs from all projects in its group and subgroups
 - else

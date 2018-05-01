@@ -2,7 +2,7 @@
   %td
     - if runner.shared?
       %span.label.label-success shared
-    - elsif runner.assigned_to_group?
+    - elsif runner.group_type?
       %span.label.label-success group
     - else
       %span.label.label-info specific
@@ -21,7 +21,7 @@
   %td
     = runner.ip_address
   %td
-    - if runner.shared? || runner.assigned_to_group?
+    - if runner.shared? || runner.group_type?
       n/a
     - else
       = runner.projects.count(:all)

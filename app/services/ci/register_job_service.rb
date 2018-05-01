@@ -17,7 +17,7 @@ module Ci
       builds =
         if runner.shared?
           builds_for_shared_runner
-        elsif runner.assigned_to_group?
+        elsif runner.group_type?
           builds_for_group_runner
         else
           builds_for_project_runner
