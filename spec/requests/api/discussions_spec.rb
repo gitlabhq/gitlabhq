@@ -31,7 +31,6 @@ describe API::Discussions do
     end
   end
 
-<<<<<<< HEAD
   context 'when noteable is an Epic' do
     let(:group) { create(:group, :public) }
     let(:ext_group) { create(:group, :public) }
@@ -50,8 +49,6 @@ describe API::Discussions do
     end
   end
 
-=======
->>>>>>> upstream/master
   context 'when noteable is a Merge Request' do
     let!(:noteable) { create(:merge_request_with_diffs, source_project: project, target_project: project, author: user) }
     let!(:note) { create(:discussion_note_on_merge_request, noteable: noteable, project: project, author: user) }
