@@ -26,7 +26,7 @@
         - else
           - runner_project = @project.runner_projects.find_by(runner_id: runner)
           = link_to 'Disable for this project', project_runner_project_path(@project, runner_project), data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-danger btn-sm'
-      - elsif runner.assigned_to_project?
+      - elsif !(runner.is_shared? || runner.group_type?)
         = form_for [@project.namespace.becomes(Namespace), @project, @project.runner_projects.new] do |f|
           = f.hidden_field :runner_id, value: runner.id
           = f.submit 'Enable for this project', class: 'btn btn-sm'
