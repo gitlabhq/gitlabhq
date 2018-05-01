@@ -109,6 +109,15 @@ class Projects::PipelinesController < Projects::ApplicationController
       .represent(@stage, details: true)
   end
 
+  # TODO: This endpoint is used by mini-pipeline-graph
+  # TODO: This endpoint should be migrated to `stage.json`
+  def stage_ajax
+    @stage = pipeline.legacy_stage(params[:stage])
+    return not_found unless @stage
+
+    render json: { html: view_to_html_string('projects/pipelines/_stage')) }
+  end
+
   def retry
     pipeline.retry_failed(current_user)
 

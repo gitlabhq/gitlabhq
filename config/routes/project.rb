@@ -183,6 +183,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         member do
           get :stage
+          get :stage_ajax
           post :cancel
           post :retry
           get :builds
