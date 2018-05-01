@@ -184,6 +184,10 @@ module API
       MergeRequestsFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
     end
 
+    def find_project_commit(id)
+      user_project.commit_by(oid: id)
+    end
+
     def find_project_snippet(id)
       finder_params = { project: user_project }
       SnippetsFinder.new(current_user, finder_params).find(id)
