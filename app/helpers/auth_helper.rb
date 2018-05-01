@@ -3,11 +3,8 @@ module AuthHelper
 
   PROVIDERS_WITH_ICONS = %w(twitter github gitlab bitbucket google_oauth2 facebook azure_oauth2 authentiq).freeze
   LDAP_PROVIDER = /\Aldap/
-<<<<<<< HEAD
 
   delegate :slack_app_id, to: :'Gitlab::CurrentSettings.current_application_settings'
-=======
->>>>>>> upstream/master
 
   def ldap_enabled?
     Gitlab::Auth::LDAP::Config.enabled?
