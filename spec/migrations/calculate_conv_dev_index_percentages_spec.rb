@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170803090603_calculate_conv_dev_index_percentages.rb')
 
-describe CalculateConvDevIndexPercentages, :delete do
+describe CalculateDevOpsScorePercentages, :delete do
   let(:migration) { described_class.new }
   let!(:conv_dev_index) do
     create(:dev_ops_score_metric, # rubocop:disable RSpec/FactoriesInMigrationSpecs
