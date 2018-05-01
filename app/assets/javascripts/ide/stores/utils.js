@@ -141,5 +141,5 @@ export const sortTree = sortedTree =>
 export const filePathMatches = (f, path) =>
   f.path.replace(new RegExp(`${f.name}$`), '').indexOf(`${path}/`) === 0;
 
-export const getChangesCountForState = (state, path) =>
-  state.stagedFiles.filter(f => filePathMatches(f, path)).length;
+export const getChangesCountForFiles = (files, path) =>
+  files.filter(f => filePathMatches(f, path)).length;

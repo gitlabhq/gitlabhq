@@ -1,5 +1,5 @@
 import { __ } from '~/locale';
-import { getChangesCountForState, filePathMatches } from './utils';
+import { getChangesCountForFiles, filePathMatches } from './utils';
 
 export const activeFile = state => state.openFiles.find(file => file.active) || null;
 
@@ -69,10 +69,10 @@ export const getChangesInFolder = state => path => {
 };
 
 export const getUnstagedFilesCountForPath = state => path =>
-  getChangesCountForState(state.changesFiles, path);
+  getChangesCountForFiles(state.changedFiles, path);
 
 export const getStagedFilesCountForPath = state => path =>
-  getChangesCountForState(state.stagedFiles, path);
+  getChangesCountForFiles(state.stagedFiles, path);
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};
