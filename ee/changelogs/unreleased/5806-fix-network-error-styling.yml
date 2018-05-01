@@ -1,0 +1,5 @@
+---
+title: Fix network error message styling on Geo admin dashboard
+merge_request: 5530
+author:
+type: fixed
