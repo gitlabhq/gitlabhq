@@ -28,7 +28,9 @@ describe LfsObject do
 
         lfs_object.send(:write_attribute, :file, 'aiueo')
 
-        expect { lfs_object.save! }.to raise_error('invalid filename')
+        expect { lfs_object.save! }.to raise_error(ActiveRecord::RecordInvalid)
+
+        expect(lfs_object.errors[:filename]).to include('Invalid filename')
       end
     end
 

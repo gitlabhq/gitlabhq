@@ -10,15 +10,18 @@ FactoryBot.define do
     file do
       src_path = Rails.root + "spec/fixtures/dk.png"
       tmp_file = Tempfile.new("lfs-file")
-      File.open(src_path, 'r+b') do |stream|
+      File.open(src_path, 'rb') do |stream|
         IO.copy_stream(stream, tmp_file.path)
+        self.size = stream.size
       end
       tmp_file.close
 
+      self.oid = Digest::SHA256.file(tmp_file.path).hexdigest
+
       UploadedFile.new(tmp_file.path,
-        filename: oid[4..-1],
+        filename: self.oid[4..-1],
         content_type: 'application/octet-stream',
-        sha256: Digest::SHA256.file(tmp_file.path).hexdigest,
+        sha256: self.oid,
         remote_id: nil)
     end
   end
