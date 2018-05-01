@@ -19,7 +19,7 @@ See our [HA documentation for PostgreSQL](database.md) for information on runnin
 
 1. Generate PGBOUNCER_USER_PASSWORD_HASH with the command `gitlab-ctl pg-password-md5 pgbouncer`
 
-1. Generate SQL_USER_PASSWORD_HASH with the command `gitlab-ctl pg-password-md5 gitlab. We'll also need to enter the plaintext SQL_USER_PASSWORD later
+1. Generate SQL_USER_PASSWORD_HASH with the command `gitlab-ctl pg-password-md5 gitlab`. We'll also need to enter the plaintext SQL_USER_PASSWORD later
 
 1. On your database node, ensure the following is set in your `/etc/gitlab/gitlab.rb`
    ```ruby
@@ -35,14 +35,11 @@ See our [HA documentation for PostgreSQL](database.md) for information on runnin
 
    ```ruby
    pgbouncer['enable'] = true
-   pgbouncer['user'] = {
-     'pgbouncer': {
-       'password': 'PGBOUNCER_USER_PASSWORD_HASH'
-     }
-   }
    pgbouncer['databases'] = {
      gitlabhq_production: {
-       host: 'DATABASE_HOST'
+       host: 'DATABASE_HOST',
+       user: 'pgbouncer',
+       password: 'PGBOUNCER_USER_PASSWORD_HASH'
      }
    }
    ```
