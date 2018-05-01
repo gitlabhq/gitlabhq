@@ -58,6 +58,11 @@ describe('RepoFile', () => {
         projectId: 'project',
       };
 
+      store.state.changedFiles.push({
+        ...file('fileName'),
+        path: 'testing/fileName',
+      });
+
       createComponent({
         file: f,
         level: 0,
