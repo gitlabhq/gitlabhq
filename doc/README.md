@@ -122,6 +122,14 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
   - [Checkout merge requests locally](user/project/merge_requests/index.md#checkout-merge-requests-locally)
   - [Cherry-pick](user/project/merge_requests/cherry_pick_changes.md)
 
+#### Merge Requests
+
+- [Merge Requests](user/project/merge_requests/index.md)
+  - [Work In Progress "WIP" Merge Requests](user/project/merge_requests/work_in_progress_merge_requests.md)
+  - [Merge Request discussion resolution](user/discussions/index.md#moving-a-single-discussion-to-a-new-issue): Resolve discussions, move discussions in a merge request to an issue, only allow merge requests to be merged if all discussions are resolved.
+  - [Checkout merge requests locally](user/project/merge_requests/index.md#checkout-merge-requests-locally)
+  - [Cherry-pick](user/project/merge_requests/cherry_pick_changes.md)
+
 #### Integrations
 
 - [Project Services](user/project/integrations/project_services.md): Integrate a project with external services, such as CI and chat.

@@ -391,6 +391,26 @@ module Gitlab
         nil
       end
 
+      def archive_metadata(ref, storage_path, format = "tar.gz", append_sha:)
+        ref ||= root_ref
+        commit = Gitlab::Git::Commit.find(self, ref)
+        return {} if commit.nil?
+
+        prefix = archive_prefix(ref, commit.id, append_sha: append_sha)
+
+        {
+          'RepoPath' => path,
+          'ArchivePrefix' => prefix,
+          'ArchivePath' => archive_file_path(storage_path, commit.id, prefix, format),
+          'CommitId' => commit.id
+        }
+      end
+
+      # This is both the filename of the archive (missing the extension) and the
+      # name of the top-level member of the archive under which all files go
+      #
+      # FIXME: The generated prefix is incorrect for projects with hashed
+      # storage enabled
       def archive_prefix(ref, sha, append_sha:)
         append_sha = (ref != sha) if append_sha.nil?
 
@@ -402,23 +422,23 @@ module Gitlab
 
         prefix_segments.join('-')
       end
+      private :archive_prefix
 
-      def archive_metadata(ref, storage_path, format = "tar.gz", append_sha:)
-        ref ||= root_ref
-        commit = Gitlab::Git::Commit.find(self, ref)
-        return {} if commit.nil?
-
-        prefix = archive_prefix(ref, commit.id, append_sha: append_sha)
-
-        {
-          'RepoPath' => path,
-          'ArchivePrefix' => prefix,
-          'ArchivePath' => archive_file_path(prefix, storage_path, format),
-          'CommitId' => commit.id
-        }
-      end
-
-      def archive_file_path(name, storage_path, format = "tar.gz")
+      # The full path on disk where the archive should be stored. This is used
+      # to cache the archive between requests.
+      #
+      # The path is a global namespace, so needs to be globally unique. This is
+      # achieved by including `gl_repository` in the path.
+      #
+      # Archives relating to a particular ref when the SHA is not present in the
+      # filename must be invalidated when the ref is updated to point to a new
+      # SHA. This is achieved by including the SHA in the path.
+      #
+      # As this is a full path on disk, it is not "cloud native". This should
+      # be resolved by either removing the cache, or moving the implementation
+      # into Gitaly and removing the ArchivePath parameter from the git-archive
+      # senddata response.
+      def archive_file_path(storage_path, sha, name, format = "tar.gz")
         # Build file path
         return nil unless name
 
@@ -436,8 +456,9 @@ module Gitlab
           end
 
         file_name = "#{name}.#{extension}"
-        File.join(storage_path, self.name, file_name)
+        File.join(storage_path, self.gl_repository, sha, file_name)
       end
+      private :archive_file_path
 
       # Return repo size in megabytes
       def size
@@ -1183,6 +1204,8 @@ module Gitlab
           if is_enabled
             gitaly_fetch_ref(source_repository, source_ref: source_ref, target_ref: target_ref)
           else
+            # When removing this code, also remove source_repository#path
+            # to remove deprecated method calls
             local_fetch_ref(source_repository.path, source_ref: source_ref, target_ref: target_ref)
           end
         end
