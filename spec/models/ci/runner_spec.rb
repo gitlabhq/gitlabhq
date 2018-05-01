@@ -21,8 +21,9 @@ describe Ci::Runner do
     end
 
     context 'either_projects_or_group' do
+      let(:group) { create(:group) }
+
       it 'disallows assigning to a group if already assigned to a group' do
-        group = create(:group)
         runner = create(:ci_runner, groups: [group])
 
         runner.groups << build(:group)
@@ -42,7 +43,6 @@ describe Ci::Runner do
       end
 
       it 'disallows assigning to a project if already assigned to a group' do
-        group = create(:group)
         runner = create(:ci_runner, groups: [group])
 
         runner.projects << build(:project)
@@ -189,9 +189,9 @@ describe Ci::Runner do
       # globally shared
       shared_runner = create :ci_runner, :shared
 
-      expect(described_class.owned_or_shared(project.id)).to match_array [
+      expect(described_class.owned_or_shared(project.id)).to contain_exactly(
         group_runner, project_runner, shared_runner
-      ]
+      )
     end
   end
 

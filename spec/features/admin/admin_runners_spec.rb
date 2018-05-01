@@ -61,10 +61,10 @@ describe "Admin Runners" do
     end
 
     context 'group runner' do
-      it 'shows the label and does not show the project count' do
-        group = create :group
-        runner = create :ci_runner, groups: [group]
+      let(:group) { create(:group) }
+      let!(:runner) { create(:ci_runner, groups: [group], runner_type: :group_type) }
 
+      it 'shows the label and does not show the project count' do
         visit admin_runners_path
 
         within "#runner_#{runner.id}" do

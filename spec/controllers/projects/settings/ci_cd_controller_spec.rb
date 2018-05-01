@@ -18,15 +18,21 @@ describe Projects::Settings::CiCdController do
       expect(response).to render_template(:show)
     end
 
-    it 'sets assignable project runners' do
-      group = create(:group, runners: [create(:ci_runner)], parent: create(:group))
-      group.add_master(user)
-      project_runner = create(:ci_runner, projects: [create(:project, group: group)])
-      create(:ci_runner, :shared)
+    context 'with group runners' do
+      let(:group_runner) { create(:ci_runner) }
+      let(:parent_group) { create(:group) }
+      let(:group) { create(:group, runners: [group_runner], parent: parent_group) }
+      let(:other_project) { create(:project, group: group) }
+      let!(:project_runner) { create(:ci_runner, projects: [other_project]) }
+      let!(:shared_runner) { create(:ci_runner, :shared) }
 
-      get :show, namespace_id: project.namespace, project_id: project
+      it 'sets assignable project runners only' do
+        group.add_master(user)
 
-      expect(assigns(:assignable_runners)).to eq [project_runner]
+        get :show, namespace_id: project.namespace, project_id: project
+
+        expect(assigns(:assignable_runners)).to eq [project_runner]
+      end
     end
   end
 
