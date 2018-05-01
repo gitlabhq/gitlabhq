@@ -54,9 +54,9 @@ describe Projects::RawController do
           end
 
           context 'and lfs uses object storage' do
+            let(:lfs_object) { create(:lfs_object, :with_file, oid: '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897', size: '1575078') }
+
             before do
-              lfs_object.file = fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "`/png")
-              lfs_object.save!
               stub_lfs_object_storage
               lfs_object.file.migrate!(LfsObjectUploader::Store::REMOTE)
             end
