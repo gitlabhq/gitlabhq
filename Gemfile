@@ -51,7 +51,6 @@ gem 'omniauth-shibboleth', '~> 1.2.0'
 gem 'omniauth-twitter', '~> 1.4'
 gem 'omniauth_crowd', '~> 2.2.0'
 gem 'omniauth-authentiq', '~> 0.3.1'
-gem 'omniauth-jwt', '~> 0.0.2'
 gem 'rack-oauth2', '~> 1.2.1'
 gem 'jwt', '~> 1.5.6'
 
@@ -415,7 +414,7 @@ end
 
 # Gitaly GRPC client
 gem 'gitaly-proto', '~> 0.97.0', require: 'gitaly'
-gem 'grpc', '~> 1.10.0'
+gem 'grpc', '~> 1.11.0'
 
 # Locked until https://github.com/google/protobuf/issues/4210 is closed
 gem 'google-protobuf', '= 3.5.1'

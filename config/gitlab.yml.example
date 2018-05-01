@@ -534,7 +534,7 @@ production: &base
       #             required_claims: ["name", "email"],
       #             info_map: { name: "name", email: "email" },
       #             auth_url: 'https://example.com/',
-      #             valid_within: nil,
+      #             valid_within: null,
       #           }
       #   }
       # - { name: 'saml',
@@ -825,7 +825,7 @@ test:
                   required_claims: ["name", "email"],
                   info_map: { name: "name", email: "email" },
                   auth_url: 'https://example.com/',
-                  valid_within: nil,
+                  valid_within: null,
                 }
         }
       - { name: 'auth0',
