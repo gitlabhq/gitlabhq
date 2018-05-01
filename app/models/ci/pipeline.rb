@@ -284,6 +284,14 @@ module Ci
       commit.try(:title)
     end
 
+    def git_commit_full_title
+      commit.try(:full_title)
+    end
+
+    def git_commit_description
+      commit.try(:description)
+    end
+
     def short_sha
       Ci::Pipeline.truncate_sha(sha)
     end
@@ -491,6 +499,9 @@ module Ci
         .append(key: 'CI_PIPELINE_ID', value: id.to_s)
         .append(key: 'CI_CONFIG_PATH', value: ci_yaml_file_path)
         .append(key: 'CI_PIPELINE_SOURCE', value: source.to_s)
+        .append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message)
+        .append(key: 'CI_COMMIT_TITLE', value: git_commit_full_title)
+        .append(key: 'CI_COMMIT_DESCRIPTION', value: git_commit_description)
     end
 
     def queued_duration
