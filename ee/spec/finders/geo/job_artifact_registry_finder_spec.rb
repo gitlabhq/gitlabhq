@@ -41,6 +41,12 @@ describe Geo::JobArtifactRegistryFinder, :geo do
         expect(subject.count_syncable_job_artifacts).to eq 3
       end
 
+      it 'ignores expired job artifacts' do
+        job_artifact_1.update_column(:expire_at, Date.yesterday)
+
+        expect(subject.count_syncable_job_artifacts).to eq 3
+      end
+
       context 'with selective sync' do
         before do
           secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
@@ -52,6 +58,12 @@ describe Geo::JobArtifactRegistryFinder, :geo do
 
         it 'ignores remote job artifacts' do
           job_artifact_1.update_column(:file_store, ObjectStorage::Store::REMOTE)
+
+          expect(subject.count_syncable_job_artifacts).to eq 1
+        end
+
+        it 'ignores expired job artifacts' do
+          job_artifact_1.update_column(:expire_at, Date.yesterday)
 
           expect(subject.count_syncable_job_artifacts).to eq 1
         end
@@ -91,6 +103,15 @@ describe Geo::JobArtifactRegistryFinder, :geo do
         expect(subject.count_synced_job_artifacts).to eq 2
       end
 
+      it 'ignores expired job artifacts' do
+        job_artifact_1.update_column(:expire_at, Date.yesterday)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_1.id)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_2.id)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_3.id)
+
+        expect(subject.count_synced_job_artifacts).to eq 2
+      end
+
       context 'with selective sync' do
         before do
           secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
@@ -112,6 +133,15 @@ describe Geo::JobArtifactRegistryFinder, :geo do
 
         it 'ignores remote job artifacts' do
           create(:geo_job_artifact_registry, artifact_id: job_artifact_remote_1.id)
+          create(:geo_job_artifact_registry, artifact_id: job_artifact_2.id)
+          create(:geo_job_artifact_registry, artifact_id: job_artifact_3.id)
+
+          expect(subject.count_synced_job_artifacts).to eq 1
+        end
+
+        it 'ignores expired job artifacts' do
+          job_artifact_1.update_column(:expire_at, Date.yesterday)
+          create(:geo_job_artifact_registry, artifact_id: job_artifact_1.id)
           create(:geo_job_artifact_registry, artifact_id: job_artifact_2.id)
           create(:geo_job_artifact_registry, artifact_id: job_artifact_3.id)
 
@@ -153,6 +183,15 @@ describe Geo::JobArtifactRegistryFinder, :geo do
         expect(subject.count_failed_job_artifacts).to eq 2
       end
 
+      it 'ignores expired job artifacts' do
+        job_artifact_1.update_column(:expire_at, Date.yesterday)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_1.id, success: false)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_2.id, success: false)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_3.id, success: false)
+
+        expect(subject.count_failed_job_artifacts).to eq 2
+      end
+
       context 'with selective sync' do
         before do
           secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
@@ -178,10 +217,19 @@ describe Geo::JobArtifactRegistryFinder, :geo do
         end
 
         it 'ignores remote job artifacts' do
+          job_artifact_1.update_column(:file_store, ObjectStorage::Store::REMOTE)
           create(:geo_job_artifact_registry, artifact_id: job_artifact_1.id, success: false)
           create(:geo_job_artifact_registry, artifact_id: job_artifact_2.id, success: false)
           create(:geo_job_artifact_registry, artifact_id: job_artifact_3.id, success: false)
-          job_artifact_1.update_column(:file_store, ObjectStorage::Store::REMOTE)
+
+          expect(subject.count_failed_job_artifacts).to eq 1
+        end
+
+        it 'ignores expired job artifacts' do
+          job_artifact_1.update_column(:expire_at, Date.yesterday)
+          create(:geo_job_artifact_registry, artifact_id: job_artifact_1.id, success: false)
+          create(:geo_job_artifact_registry, artifact_id: job_artifact_2.id, success: false)
+          create(:geo_job_artifact_registry, artifact_id: job_artifact_3.id, success: false)
 
           expect(subject.count_failed_job_artifacts).to eq 1
         end
@@ -229,6 +277,13 @@ describe Geo::JobArtifactRegistryFinder, :geo do
         expect(subject.count_synced_missing_on_primary_job_artifacts).to eq 0
       end
 
+      it 'ignores expired job artifacts' do
+        job_artifact_1.update_column(:expire_at, Date.yesterday)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact_1.id, missing_on_primary: true)
+
+        expect(subject.count_synced_missing_on_primary_job_artifacts).to eq 0
+      end
+
       context 'with selective sync' do
         before do
           secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
@@ -250,6 +305,13 @@ describe Geo::JobArtifactRegistryFinder, :geo do
 
         it 'ignores remote job artifacts' do
           create(:geo_job_artifact_registry, artifact_id: job_artifact_remote_1.id, missing_on_primary: true)
+
+          expect(subject.count_synced_missing_on_primary_job_artifacts).to eq 0
+        end
+
+        it 'ignores expired job artifacts' do
+          job_artifact_1.update_column(:expire_at, Date.yesterday)
+          create(:geo_job_artifact_registry, artifact_id: job_artifact_1.id, missing_on_primary: true)
 
           expect(subject.count_synced_missing_on_primary_job_artifacts).to eq 0
         end
@@ -279,6 +341,22 @@ describe Geo::JobArtifactRegistryFinder, :geo do
         create(:geo_job_artifact_registry, artifact_id: job_artifact_3.id, success: false)
 
         job_artifacts = subject.find_unsynced_job_artifacts(batch_size: 10, except_artifact_ids: [job_artifact_2.id])
+
+        expect(job_artifacts).to match_ids(job_artifact_4)
+      end
+
+      it 'ignores remote job artifacts' do
+        job_artifact_2.update_column(:file_store, ObjectStorage::Store::REMOTE)
+
+        job_artifacts = subject.find_unsynced_job_artifacts(batch_size: 10)
+
+        expect(job_artifacts).to match_ids(job_artifact_4)
+      end
+
+      it 'ignores expired job artifacts' do
+        job_artifact_2.update_column(:expire_at, Date.yesterday)
+
+        job_artifacts = subject.find_unsynced_job_artifacts(batch_size: 10)
 
         expect(job_artifacts).to match_ids(job_artifact_4)
       end
@@ -323,6 +401,15 @@ describe Geo::JobArtifactRegistryFinder, :geo do
         job_artifacts = subject.find_migrated_local_job_artifacts(batch_size: 10, except_artifact_ids: [job_artifact_remote_1.id])
 
         expect(job_artifacts).to match_ids(job_artifact_remote_2)
+      end
+
+      it 'includes synced job artifacts that are expired' do
+        job_artifact = create(:ci_job_artifact, :remote_store, project: synced_project, expire_at: Date.yesterday)
+        create(:geo_job_artifact_registry, artifact_id: job_artifact.id)
+
+        job_artifacts = subject.find_migrated_local_job_artifacts(batch_size: 10)
+
+        expect(job_artifacts).to match_ids(job_artifact)
       end
     end
   end
