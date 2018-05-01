@@ -1,4 +1,5 @@
 import { __ } from '~/locale';
+import { getChangesCountForState, filePathMatches } from './utils';
 
 export const activeFile = state => state.openFiles.find(file => file.active) || null;
 
@@ -59,28 +60,19 @@ export const getChangedFile = state => path => state.changedFiles.find(f => f.pa
 export const getStagedFile = state => path => state.stagedFiles.find(f => f.path === path);
 
 export const getChangesInFolder = state => path => {
-  const filePathMatches = f => f.path.replace(new RegExp(`/${f.name}$`), '').indexOf(path) === 0;
-  const changedFilesCount = state.changedFiles.filter(f => filePathMatches(f)).length;
+  const changedFilesCount = state.changedFiles.filter(f => filePathMatches(f, path)).length;
   const stagedFilesCount = state.stagedFiles.filter(
-    f => filePathMatches(f) && !getChangedFile(state, f.path),
+    f => filePathMatches(f, path) && !getChangedFile(state)(f.path),
   ).length;
 
   return changedFilesCount + stagedFilesCount;
 };
 
-export const getUnstagedFilesCountForPath = state => path => {
-  const filePathMatches = f => f.path.replace(new RegExp(`/${f.name}$`), '').indexOf(path) === 0;
-  const changedFilesCount = state.changedFiles.filter(f => filePathMatches(f)).length;
+export const getUnstagedFilesCountForPath = state => path =>
+  getChangesCountForState(state.changesFiles, path);
 
-  return changedFilesCount;
-};
-
-export const getStagedFilesCountForPath = state => path => {
-  const filePathMatches = f => f.path.replace(new RegExp(`/${f.name}$`), '').indexOf(path) === 0;
-  const stagedFilesCount = state.stagedFiles.filter(f => filePathMatches(f)).length;
-
-  return stagedFilesCount;
-};
+export const getStagedFilesCountForPath = state => path =>
+  getChangesCountForState(state.stagedFiles, path);
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

@@ -137,3 +137,9 @@ export const sortTree = sortedTree =>
       }),
     )
     .sort(sortTreesByTypeAndName);
+
+export const filePathMatches = (f, path) =>
+  f.path.replace(new RegExp(`${f.name}$`), '').indexOf(`${path}/`) === 0;
+
+export const getChangesCountForState = (state, path) =>
+  state.stagedFiles.filter(f => filePathMatches(f, path)).length;
