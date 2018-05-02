@@ -65,6 +65,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
   def serializeable_vars
     {
+      environment: @environment,
       merge_request: @merge_request,
       merge_request_diffs: @merge_request_diffs,
       start_version: @start_version,

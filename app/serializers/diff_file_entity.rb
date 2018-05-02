@@ -1,11 +1,12 @@
 class DiffFileEntity < Grape::Entity
-  include Gitlab::Routing
-  include DiffHelper
-  include SubmoduleHelper
-  include BlobHelper
-  include TreeHelper
-  include IconsHelper
   include ActionView::Helpers::TagHelper
+  include Gitlab::Routing
+  include BlobHelper
+  include CommitsHelper
+  include DiffHelper
+  include IconsHelper
+  include SubmoduleHelper
+  include TreeHelper
 
   expose :submodule?, as: :submodule
 
@@ -39,6 +40,14 @@ class DiffFileEntity < Grape::Entity
   expose :content_sha
   expose :stored_externally?, as: :stored_externally
   expose :external_storage
+
+  expose :formatted_external_url, if: -> (_, options) { options[:environment] } do |diff_file|
+    options[:environment].formatted_external_url
+  end
+
+  expose :external_url, if: -> (_, options) { options[:environment] } do |diff_file|
+    options[:environment].external_url_for(diff_file.content_sha, diff_file.new_path)
+  end
 
   expose :old_path_html do |diff_file|
     old_path = mark_inline_diffs(diff_file.old_path, diff_file.new_path)
