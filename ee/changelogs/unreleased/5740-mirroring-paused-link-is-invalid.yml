@@ -1,0 +1,5 @@
+---
+title: Fixes invalid link in html version of mirror was hard failed email
+merge_request: 5546
+author:
+type: fixed

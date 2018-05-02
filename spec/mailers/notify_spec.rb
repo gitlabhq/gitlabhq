@@ -1369,6 +1369,7 @@ describe Notify do
     it 'has the correct subject and body' do
       is_expected.to have_subject("#{project.name} | Repository mirroring paused")
       is_expected.to have_html_escaped_body_text(project.full_path)
+      is_expected.to have_html_escaped_body_text(project_settings_repository_url(project))
     end
   end
 
