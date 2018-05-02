@@ -557,7 +557,7 @@ describe 'Pipelines', :js do
         it 'has field to add a new pipeline' do
           expect(page).to have_selector('.js-branch-select')
           expect(find('.js-branch-select')).to have_content project.default_branch
-          expect(page).to have_content('Run on')
+          expect(page).to have_content('Create for')
         end
       end
 
