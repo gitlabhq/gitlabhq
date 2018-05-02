@@ -86,7 +86,10 @@ export default {
   },
   updated() {
     if (this.file.type === 'blob' && this.file.active) {
-      this.$el.scrollIntoView();
+      this.$el.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
     }
   },
   methods: {
