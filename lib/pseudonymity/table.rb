@@ -9,21 +9,16 @@ module Pseudonymity
     end
 
     def anonymize(results)
-      count = 0
-      results.each do | r |
-        break if count > 0
-        count += 1
-        puts r.inspect
-        puts @anon_fields
-        new_hash = r.each_with_object({}) do | (k, v), h |
-          if @anon_fields.include? k and !v.nil?
-            h[k] = Digest::SHA2.new(256).hexdigest v
-          else
-            h[k] = v
-          end
+      columns = results.columns # Assume they all have the same table
+      to_filter = @anon_fields & columns
+
+      results.each do |result|
+        to_filter.each do |field|
+          result[field] = Digest::SHA2.new(256).hexdigest(result[field]) unless result[field].nil?
         end
-        new_hash
       end
+
+      results
     end
   end
 

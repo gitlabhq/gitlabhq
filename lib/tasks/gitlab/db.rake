@@ -73,8 +73,6 @@ namespace :gitlab do
     desc 'Output pseudonymity dump of selected table'
     task :pseudonymity_dump => :environment do
       table = Pseudonymity::Table.new
-      # REMOVE PRODUCTION INFRA SCRIPT AS PART OF MR> 
-      puts table.tables_to_csv
     end
   end
 end
