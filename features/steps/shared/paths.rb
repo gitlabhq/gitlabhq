@@ -200,10 +200,6 @@ module SharedPaths
     visit admin_spam_logs_path
   end
 
-  step 'I visit push rules page' do
-    visit admin_push_rule_path
-  end
-
   step 'I visit admin license page' do
     visit admin_license_path
   end
