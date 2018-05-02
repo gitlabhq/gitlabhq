@@ -56,7 +56,15 @@ export default {
       return this.versionName(selectedVersion);
     },
     commitsText() {
-      return n__(`${this.version.commitsCount} commit,`, `${this.version.commitsCount} commits,`, this.version.commitsCount);
+      if (!this.version) {
+        return '';
+      }
+
+      return n__(
+        `${this.version.commitsCount} commit,`,
+        `${this.version.commitsCount} commits,`,
+        this.version.commitsCount,
+      );
     },
   },
   methods: {
