@@ -193,6 +193,8 @@ export const unstageChange = ({ commit }, path) => {
 };
 
 export const openPendingTab = ({ commit, getters, dispatch, state }, { file, keyPrefix }) => {
+  state.openFiles.forEach(f => eventHub.$emit(`editor.update.model.dispose.${f.key}`));
+
   commit(types.ADD_PENDING_TAB, { file, keyPrefix });
 
   dispatch('scrollToTab');
