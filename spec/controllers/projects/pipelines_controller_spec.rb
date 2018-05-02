@@ -161,10 +161,10 @@ describe Projects::PipelinesController do
 
     def get_stage_ajax(name)
       get :stage_ajax, namespace_id: project.namespace,
-                  project_id: project,
-                  id: pipeline.id,
-                  stage: name,
-                  format: :json
+                       project_id: project,
+                       id: pipeline.id,
+                       stage: name,
+                       format: :json
     end
   end
 
