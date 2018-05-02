@@ -66,7 +66,7 @@
 - pipeline_processing:pipeline_update
 - pipeline_processing:stage_update
 - pipeline_processing:update_head_pipeline_for_merge_request
-- pipeline_processing:build_trace_swap_chunk
+- pipeline_processing:build_trace_chunk_flush_to_db
 
 - repository_check:repository_check_clear
 - repository_check:repository_check_single_repository
