@@ -459,6 +459,18 @@ ee-files-location-check:
     - branches
     - //@gitlab-org/gitlab-ee
 
+ee-specific-lines-check:
+  <<: *dedicated-runner
+  stage: test
+  before_script: []
+  cache: {}
+  retry: 0
+  script:
+    - scripts/ee-specific-lines-check
+  only:
+    - branches
+    - //@gitlab-org/gitlab-ee
+
 update-tests-metadata:
   <<: *tests-metadata-state
   <<: *only-canonical-masters
