@@ -77,8 +77,6 @@ describe Projects::Clusters::GcpController do
         end
 
         it 'has new object' do
-          expect(controller).to receive(:get_gcp_projects)
-
           go
 
           expect(assigns(:cluster)).to be_an_instance_of(Clusters::Cluster)
@@ -137,8 +135,6 @@ describe Projects::Clusters::GcpController do
       context 'when access token is valid' do
         before do
           stub_google_api_validate_token
-          allow_any_instance_of(described_class).to receive(:get_gcp_projects)
-          allow_any_instance_of(described_class).to receive(:gcp_projects).and_return([double])
         end
 
         it 'creates a new cluster' do
@@ -181,30 +177,6 @@ describe Projects::Clusters::GcpController do
 
     def go
       post :create, params.merge(namespace_id: project.namespace, project_id: project)
-    end
-  end
-
-  describe 'GET list_projects' do
-    describe 'functionality' do
-      let(:user) { create(:user) }
-      let(:gcp_projects) { [project_id: 'test-project-1234'] }
-
-      before do
-        project.add_master(user)
-        sign_in(user)
-
-        allow_any_instance_of(described_class).to receive(:gcp_projects).and_return(gcp_projects)
-      end
-
-      it 'renders the response as json' do
-        go
-
-        expect(response.body).to eq({ projects: gcp_projects }.to_json)
-      end
-    end
-
-    def go
-      get :list_projects, namespace_id: project.namespace, project_id: project, format: :json
     end
   end
 end

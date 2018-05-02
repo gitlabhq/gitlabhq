@@ -2,7 +2,6 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
   before_action :authorize_read_cluster!
   before_action :authorize_create_cluster!, only: [:new, :create]
   before_action :authorize_google_api, except: [:login, :list_projects]
-  before_action :get_gcp_projects, only: [:new]
 
   def login
     begin
@@ -34,12 +33,6 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
     end
   end
 
-  def list_projects
-    respond_to do |format|
-      format.json { render status: :ok, json: { projects: gcp_projects } }
-    end
-  end
-
   private
 
   def create_params
@@ -63,15 +56,6 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
                                            .validate_token(expires_at_in_session)
       redirect_to action: 'login'
     end
-  end
-
-  def get_gcp_projects
-    redis_token_key = ListGcpProjectsWorker.store_session_token(token_in_session)
-    ListGcpProjectsWorker.perform_async(redis_token_key)
-  end
-
-  def gcp_projects
-    ListGcpProjectsWorker.read_projects(token_in_session)
   end
 
   def token_in_session
