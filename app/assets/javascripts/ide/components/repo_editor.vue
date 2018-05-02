@@ -24,7 +24,7 @@ export default {
     ...mapGetters([
       'currentMergeRequest',
       'getStagedFile',
-      'isReviewModeActive',
+      'isEditModeActive',
       'isCommitModeActive',
     ]),
     shouldHideEditor() {
@@ -191,8 +191,7 @@ export default {
     <div class="ide-mode-tabs clearfix" >
       <ul
         class="nav-links pull-left"
-        v-if="!shouldHideEditor"
-        v-show="!isReviewModeActive && !isCommitModeActive"
+        v-if="!shouldHideEditor && isEditModeActive"
       >
         <li :class="editTabCSS">
           <a

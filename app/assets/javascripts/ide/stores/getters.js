@@ -54,7 +54,7 @@ export const allBlobs = state =>
 
 export const getStagedFile = state => path => state.stagedFiles.find(f => f.path === path);
 
-export const isReviewModeActive = state => state.currentActivityView === activityBarViews.review;
+export const isEditModeActive = state => state.currentActivityView === activityBarViews.edit;
 export const isCommitModeActive = state => state.currentActivityView === activityBarViews.commit;
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

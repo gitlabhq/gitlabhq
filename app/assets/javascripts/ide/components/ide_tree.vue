@@ -26,7 +26,6 @@ export default {
       <new-dropdown
         :project-id="currentProject.name_with_namespace"
         :branch="currentBranchId"
-        path=""
       />
     </template>
   </ide-tree-list>

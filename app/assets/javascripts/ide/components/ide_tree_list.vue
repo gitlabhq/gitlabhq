@@ -31,6 +31,9 @@ export default {
   computed: {
     ...mapState(['currentBranchId']),
     ...mapGetters(['currentProject', 'currentTree']),
+    showLoading() {
+      return !this.currentTree || this.currentTree.loading;
+    },
   },
   mounted() {
     this.updateViewer(this.viewerType);
@@ -45,7 +48,7 @@ export default {
   <div
     class="ide-file-list"
   >
-    <template v-if="!currentTree || currentTree.loading">
+    <template v-if="showLoading">
       <div
         class="multi-file-loading-container"
         v-for="n in 3"
