@@ -1372,6 +1372,10 @@ In this case, if `install_dependencies` and `deploy` were not repeated in
 `.gitlab-ci.yml`, they would not be part of the script for the `production`
 job in the combined CI configuration.
 
+NOTE: **Note:**
+We currently do not support using YAML aliases across different YAML files
+sourced by `include`. You must only refer to aliases in the same file.
+
 ## `variables`
 
 > Introduced in GitLab Runner v0.5.0.
