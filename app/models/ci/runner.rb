@@ -14,8 +14,8 @@ module Ci
     has_many :builds
     has_many :runner_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
     has_many :projects, through: :runner_projects
-    has_many :runner_groups
-    has_many :groups, through: :runner_groups
+    has_many :runner_namespaces
+    has_many :groups, through: :runner_namespaces
 
     has_one :last_build, ->() { order('id DESC') }, class_name: 'Ci::Build'
 
@@ -144,7 +144,7 @@ module Ci
     end
 
     def assigned_to_group?
-      runner_groups.any?
+      runner_namespaces.any?
     end
 
     def assigned_to_project?
