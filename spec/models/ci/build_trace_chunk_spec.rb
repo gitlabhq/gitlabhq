@@ -10,6 +10,10 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
     described_class.new(build: build, chunk_index: chunk_index, data_store: data_store, raw_data: raw_data)
   end
 
+  before do
+    stub_feature_flags(ci_enable_live_trace: true)
+  end
+
   describe 'CHUNK_SIZE' do
     it 'Chunk size can not be changed without special care' do
       expect(described_class::CHUNK_SIZE).to eq(128.kilobytes)
