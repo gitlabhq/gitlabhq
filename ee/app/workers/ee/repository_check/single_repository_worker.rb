@@ -7,17 +7,16 @@ module EE
       private
 
       override :save_result
-      def save_result(project, failure)
-        # TODO: Check for Geo
+      def save_result(project, result)
+        return super unless ::Gitlab::Geo.secondary?
 
-        # TODO: What if project registry does not exist
+        project_registry = ::Geo::ProjectRegistry.find_or_initialize_by(project: project)
 
-        project_registry = Geo::ProjectRegistry.find_by(project_id: project.id)
-
-        project_registry.update_columns(
-          last_repository_check_failed: failure,
+        project_registry.assign_attributes(
+          last_repository_check_failed: !result,
           last_repository_check_at: Time.now
         )
+        project_registry.save!
       end
     end
   end
