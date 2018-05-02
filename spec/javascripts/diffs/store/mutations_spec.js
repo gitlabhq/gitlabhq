@@ -3,7 +3,7 @@ import * as utils from '~/diffs/store/utils';
 import * as types from '~/diffs/store/mutation_types';
 import { INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
 
-describe('DiffsStoreMutations', () => {
+fdescribe('DiffsStoreMutations', () => {
   describe('SET_ENDPOINT', () => {
     it('should set endpoint', () => {
       const state = {};
