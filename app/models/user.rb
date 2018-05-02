@@ -3,6 +3,7 @@ require 'carrierwave/orm/activerecord'
 class User < ActiveRecord::Base
   extend Gitlab::ConfigHelper
 
+  include WithUploads
   include Gitlab::ConfigHelper
   include Gitlab::SQL::Pattern
   include AfterCommitQueue
@@ -137,7 +138,6 @@ class User < ActiveRecord::Base
 
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
   has_many :callouts, class_name: 'UserCallout'
-  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :term_agreements
   belongs_to :accepted_term, class_name: 'ApplicationSetting::Term'
 

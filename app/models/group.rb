@@ -2,6 +2,7 @@ require 'carrierwave/orm/activerecord'
 
 class Group < Namespace
   include Gitlab::ConfigHelper
+  include WithUploads
   include AfterCommitQueue
   include AccessRequestable
   include Avatarable
@@ -29,8 +30,6 @@ class Group < Namespace
   has_many :labels, class_name: 'GroupLabel'
   has_many :variables, class_name: 'Ci::GroupVariable'
   has_many :custom_attributes, class_name: 'GroupCustomAttribute'
-
-  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :boards
   has_many :badges, class_name: 'GroupBadge'
