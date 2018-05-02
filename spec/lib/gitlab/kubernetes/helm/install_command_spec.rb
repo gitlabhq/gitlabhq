@@ -12,50 +12,36 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
     )
   end
 
-  describe '#generate_script' do
-    let(:command) do
-      <<~MSG
-      set -eo pipefail
-      apk add -U ca-certificates openssl >/dev/null
-      wget -q -O - https://kubernetes-helm.storage.googleapis.com/helm-v2.7.0-linux-amd64.tar.gz | tar zxC /tmp >/dev/null
-      mv /tmp/linux-amd64/helm /usr/bin/
-      helm init --client-only >/dev/null
-      helm install #{application.chart} --name #{application.name} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
-      MSG
+  subject { install_command }
+
+  it_behaves_like 'helm commands' do
+    let(:commands) do
+      <<~EOS
+         helm init --client-only >/dev/null
+         helm install #{application.chart} --name #{application.name} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
+      EOS
+    end
+  end
+
+  context 'with an application with a repository' do
+    let(:ci_runner) { create(:ci_runner) }
+    let(:application) { create(:clusters_applications_runner, runner: ci_runner) }
+    let(:install_command) do
+      described_class.new(
+        application.name,
+        chart: application.chart,
+        values: application.values,
+        repository: application.repository
+      )
     end
 
-    subject { install_command.generate_script }
-
-    it 'should return appropriate command' do
-      is_expected.to eq(command)
-    end
-
-    context 'with an application with a repository' do
-      let(:ci_runner) { create(:ci_runner) }
-      let(:application) { create(:clusters_applications_runner, runner: ci_runner) }
-      let(:install_command) do
-        described_class.new(
-          application.name,
-          chart: application.chart,
-          values: application.values,
-          repository: application.repository
-        )
-      end
-
-      let(:command) do
-        <<~MSG
-        set -eo pipefail
-        apk add -U ca-certificates openssl >/dev/null
-        wget -q -O - https://kubernetes-helm.storage.googleapis.com/helm-v2.7.0-linux-amd64.tar.gz | tar zxC /tmp >/dev/null
-        mv /tmp/linux-amd64/helm /usr/bin/
-        helm init --client-only >/dev/null
-        helm repo add #{application.name} #{application.repository}
-        helm install #{application.chart} --name #{application.name} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
-        MSG
-      end
-
-      it 'should return appropriate command' do
-        is_expected.to eq(command)
+    it_behaves_like 'helm commands' do
+      let(:commands) do
+        <<~EOS
+           helm init --client-only >/dev/null
+           helm repo add #{application.name} #{application.repository}
+           helm install #{application.chart} --name #{application.name} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
+        EOS
       end
     end
   end
