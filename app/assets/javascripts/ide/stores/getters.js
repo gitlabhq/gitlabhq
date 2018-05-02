@@ -52,5 +52,8 @@ export const allBlobs = state =>
 
 export const getStagedFile = state => path => state.stagedFiles.find(f => f.path === path);
 
+export const lastOpenedFile = state =>
+  [...state.changedFiles, ...state.stagedFiles].sort((a, b) => b.lastOpenedAt - a.lastOpenedAt)[0];
+
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

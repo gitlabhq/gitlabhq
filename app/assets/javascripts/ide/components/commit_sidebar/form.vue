@@ -21,6 +21,7 @@ export default {
   computed: {
     ...mapState(['changedFiles', 'stagedFiles', 'currentActivityView']),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
+    ...mapGetters(['hasChanges']),
     ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled']),
     overviewText() {
       return sprintf(
@@ -69,6 +70,9 @@ export default {
         this.componentHeight = elHeight + 32;
       });
     },
+    afterEndTransition() {
+      this.componentHeight = null;
+    },
   },
   activityBarViews,
 };
@@ -82,13 +86,14 @@ export default {
       'is-full': !isCompact
     }"
     :style="{
-      height: `${componentHeight}px`
+      height: componentHeight ? `${componentHeight}px` : null,
     }"
   >
     <transition
       name="commit-form-slide-up"
       @before-enter="beforeEnterTransition"
       @enter="enterTransition"
+      @after-enter="afterEndTransition"
     >
       <div
         v-if="isCompact"
@@ -97,6 +102,7 @@ export default {
       >
         <button
           type="button"
+          :disabled="!hasChanges"
           class="btn btn-primary btn-sm btn-block"
           @click="toggleIsSmall"
         >

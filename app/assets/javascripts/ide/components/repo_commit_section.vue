@@ -1,11 +1,12 @@
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex';
 import tooltip from '~/vue_shared/directives/tooltip';
 import Icon from '~/vue_shared/components/icon.vue';
 import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 import CommitFilesList from './commit_sidebar/list.vue';
 import EmptyState from './commit_sidebar/empty_state.vue';
 import * as consts from '../stores/modules/commit/constants';
+import { activityBarViews } from '../constants';
 
 export default {
   components: {
@@ -19,15 +20,19 @@ export default {
   },
   computed: {
     ...mapState(['changedFiles', 'stagedFiles']),
+    ...mapGetters(['lastOpenedFile', 'hasChanges']),
+  },
+  watch: {
+    hasChanges() {
+      if (!this.hasChanges) {
+        this.updateActivityBarView(activityBarViews.edit);
+      }
+    },
   },
   mounted() {
-    const lastOpenedFile = [...this.changedFiles, ...this.stagedFiles].sort(
-      (a, b) => b.lastOpenedAt - a.lastOpenedAt,
-    )[0];
-
-    if (lastOpenedFile) {
+    if (this.lastOpenedFile) {
       this.openPendingTab({
-        file: lastOpenedFile,
+        file: this.lastOpenedFile,
       })
         .then(changeViewer => {
           if (changeViewer) {
@@ -40,7 +45,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['openPendingTab', 'updateViewer']),
+    ...mapActions(['openPendingTab', 'updateViewer', 'updateActivityBarView']),
     ...mapActions('commit', ['commitChanges', 'updateCommitAction']),
     forceCreateNewBranch() {
       return this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH).then(() => this.commitChanges());

@@ -1,5 +1,5 @@
 <script>
-import { mapGetters, mapState } from 'vuex';
+import { mapGetters, mapState, mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import SkeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
 import RepoFile from './repo_file.vue';
@@ -14,7 +14,17 @@ export default {
   },
   computed: {
     ...mapState(['currentBranchId']),
-    ...mapGetters(['currentProject', 'currentTree']),
+    ...mapGetters(['currentProject', 'currentTree', 'activeFile']),
+  },
+  mounted() {
+    if (this.activeFile && this.activeFile.pending) {
+      this.$router.push(`/project${this.activeFile.url}`, () => {
+        this.updateViewer('editor');
+      });
+    }
+  },
+  methods: {
+    ...mapActions(['updateViewer']),
   },
 };
 </script>

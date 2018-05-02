@@ -44,6 +44,11 @@ export default {
       default: false,
     },
   },
+  data() {
+    return {
+      showActionButton: false,
+    };
+  },
   computed: {
     titleText() {
       return sprintf(__('%{title} changes'), {
@@ -77,10 +82,21 @@ export default {
         />
         {{ titleText }}
         <span
+          v-show="!showActionButton"
+          @mouseenter="showActionButton = true"
           class="ide-commit-file-count"
         >
           {{ fileList.length }}
         </span>
+        <button
+          v-show="showActionButton"
+          @mouseleave="showActionButton = false"
+          type="button"
+          class="btn btn-blank btn-link ide-staged-action-btn"
+          @click="actionBtnClicked"
+        >
+          {{ actionBtnText }}
+        </button>
       </div>
     </header>
     <ul

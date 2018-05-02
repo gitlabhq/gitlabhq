@@ -193,10 +193,6 @@ export const unstageChange = ({ commit }, path) => {
 };
 
 export const openPendingTab = ({ commit, getters, dispatch, state }, { file, keyPrefix }) => {
-  if (getters.activeFile && getters.activeFile.path === file.path && state.viewer === 'diff') {
-    return false;
-  }
-
   commit(types.ADD_PENDING_TAB, { file, keyPrefix });
 
   dispatch('scrollToTab');

@@ -210,11 +210,11 @@
     right: 3px;
   }
 
-  &:hover {
+  &:not([disabled]):hover {
     background-color: $theme-gray-200;
   }
 
-  &:focus {
+  &:not([disabled]):focus {
     background-color: $blue-500;
     color: $white-light;
     outline: 0;
@@ -500,6 +500,7 @@
 .multi-file-commit-panel-header-title {
   display: flex;
   flex: 1;
+  align-items: center;
 
   svg {
     margin-right: $gl-btn-padding;
@@ -777,6 +778,11 @@
   &.is-first {
     border-bottom: 1px solid $white-dark;
   }
+}
+
+.ide-staged-action-btn {
+  margin-left: auto;
+  line-height: 22px;
 }
 
 .ide-commit-file-count {
