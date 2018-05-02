@@ -61,15 +61,17 @@ export default {
 
         this.fetchNotes(endpoint).then(() => {
           this.handleCancelCommentForm();
-        });
-      });
+        }).catch(() => {});
+      }).catch(() => {});
     },
   },
 };
 </script>
 
 <template>
-  <div class="content discussion-form js-discussion-note-form discussion-form-container discussion-notes">
+  <div
+    class="content discussion-form js-discussion-note-form
+    discussion-form-container discussion-notes">
     <note-form
       :is-editing="true"
       save-button-title="Comment"

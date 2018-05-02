@@ -308,7 +308,7 @@ import initMrPage from './helpers/init_vue_mr_page_helper';
       });
     });
 
-    xdescribe('loadDiff', function() {
+    describe('loadDiff', function() {
       beforeEach(() => {
         loadFixtures('merge_requests/diff_comment.html.raw');
         $('body').attr('data-page', 'projects:merge_requests:show');

@@ -1,5 +1,5 @@
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState } from 'vuex';
 import emptyImage from '~/../../views/shared/icons/_mr_widget_empty_state.svg';
 
 export default {
@@ -30,7 +30,7 @@ export default {
       </div>
     </div>
     <div class="col-xs-12">
-      <p class="text-content text-center">
+      <div class="text-content text-center">
         No changes between
         <span class="ref-name">{{ sourceBranch }}</span>
         and
@@ -43,7 +43,7 @@ export default {
             {{ __('Create commit') }}
           </a>
         </div>
-      </p>
+      </div>
     </div>
   </div>
 </template>

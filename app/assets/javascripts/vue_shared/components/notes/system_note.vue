@@ -19,8 +19,8 @@
   import $ from 'jquery';
   import { mapGetters } from 'vuex';
   import noteHeader from '~/notes/components/note_header.vue';
+  import Icon from '~/vue_shared/components/icon.vue';
   import { spriteIcon } from '../../../lib/utils/common_utils';
-  import Icon from '~/vue_shared/components/icon.vue'
 
   const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;
 

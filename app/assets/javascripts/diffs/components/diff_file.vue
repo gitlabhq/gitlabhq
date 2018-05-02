@@ -19,6 +19,11 @@ export default {
       isActive: false,
     };
   },
+  computed: {
+    isDiscussionsExpanded() {
+      return true; // TODO: @fatihacet - Fix this.
+    },
+  },
   mounted() {
     document.addEventListener('scroll', this.handleScroll);
   },
@@ -58,11 +63,6 @@ export default {
       }
 
       this.updating = false;
-    },
-  },
-  computed: {
-    isDiscussionsExpanded() {
-      return true; // TODO: @fatihacet - Fix this.
     },
   },
 };

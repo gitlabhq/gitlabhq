@@ -1,6 +1,6 @@
 <script>
 import Icon from '~/vue_shared/components/icon.vue';
-import { __ } from '~/locale';
+import { n__, __ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
@@ -54,6 +54,9 @@ export default {
         ? this.baseVersion
         : this.targetVersions[this.selectedIndex];
       return this.versionName(selectedVersion);
+    },
+    commitsText() {
+      return n__(`${this.version.commitsCount} commit,`, `${this.version.commitsCount} commits,`, this.version.commitsCount);
     },
   },
   methods: {
@@ -124,7 +127,7 @@ export default {
               <div>
                 <small>
                   <template v-if="version.commitsCount">
-                    {{ n__(`${version.commitsCount} commit,`, `${version.commitsCount} commits,`, version.commitsCount) }}
+                    {{ commitsText }}
                   </template>
                   <time-ago
                     class="js-timeago js-timeago-render"

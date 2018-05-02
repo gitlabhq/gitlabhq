@@ -1,5 +1,4 @@
 <script>
-import { mapState } from 'vuex';
 import diffContentMixin from '../mixins/diff_content';
 import {
   EMPTY_CELL_TYPE,
@@ -66,7 +65,7 @@ export default {
       }
     },
     shouldRenderDiscussions(line, position) {
-      const { lineCode, type } = line[position];
+      const { lineCode } = line[position];
       let render = this.discussionsByLineCode[lineCode] && this.isDiscussionExpanded(lineCode);
 
       // Avoid rendering context line discussions on the right side in parallel view
@@ -172,7 +171,8 @@ export default {
                 />
               </div>
               <diff-line-note-form
-                v-if="diffLineCommentForms[line.left.lineCode] && diffLineCommentForms[line.left.lineCode]"
+                v-if="diffLineCommentForms[line.left.lineCode] &&
+                diffLineCommentForms[line.left.lineCode]"
                 :diff-file="diffFile"
                 :diff-lines="diffLines"
                 :line="line.left"
@@ -191,7 +191,8 @@ export default {
                 />
               </div>
               <diff-line-note-form
-                v-if="diffLineCommentForms[line.right.lineCode] && diffLineCommentForms[line.right.lineCode] && line.right.type"
+                v-if="diffLineCommentForms[line.right.lineCode] &&
+                diffLineCommentForms[line.right.lineCode] && line.right.type"
                 :diff-file="diffFile"
                 :diff-lines="diffLines"
                 :line="line.right"

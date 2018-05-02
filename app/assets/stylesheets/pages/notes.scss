@@ -6,9 +6,11 @@
   from {
     background: $note-targe3-outside;
   }
+
   50% {
     background: $note-targe3-inside;
   }
+
   to {
     background: $note-targe3-outside;
   }
@@ -784,20 +786,21 @@ ul.notes {
       padding-left: 0;
 
       &:last-child {
-        border-bottom: none;
+        border-bottom: 0;
       }
 
-      & > .timeline-entry-inner {
+      > .timeline-entry-inner {
         padding: 0;
 
-        & > .timeline-content {
+        > .timeline-content {
           margin-left: 0;
         }
 
-        & > .timeline-icon {
+        > .timeline-icon {
           display: none;
         }
       }
+
       .discussion-body {
         padding-top: 0;
 

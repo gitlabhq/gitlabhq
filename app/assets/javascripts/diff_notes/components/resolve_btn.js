@@ -16,7 +16,7 @@ const ResolveBtn = Vue.extend({
     authorAvatar: String,
     noteTruncated: String,
   },
-  data: function() {
+  data() {
     return {
       discussions: CommentsStore.state,
       loading: false,
@@ -29,41 +29,41 @@ const ResolveBtn = Vue.extend({
     },
   },
   computed: {
-    discussion: function() {
+    discussion() {
       return this.discussions[this.discussionId];
     },
-    note: function() {
+    note() {
       return this.discussion ? this.discussion.getNote(this.noteId) : {};
     },
-    buttonText: function() {
+    buttonText() {
       if (this.isResolved) {
         return `Resolved by ${this.resolvedByName}`;
       } else if (this.canResolve) {
         return 'Mark as resolved';
-      } else {
-        return 'Unable to resolve';
       }
+
+      return 'Unable to resolve';
     },
-    isResolved: function() {
+    isResolved() {
       if (this.note) {
         return this.note.resolved;
-      } else {
-        return false;
       }
+
+      return false;
     },
-    resolvedByName: function() {
+    resolvedByName() {
       return this.note.resolved_by;
     },
   },
   methods: {
-    updateTooltip: function() {
+    updateTooltip() {
       this.$nextTick(() => {
         $(this.$refs.button)
           .tooltip('hide')
           .tooltip('fixTitle');
       });
     },
-    resolve: function() {
+    resolve() {
       if (!this.canResolve) return;
 
       let promise;
@@ -80,13 +80,13 @@ const ResolveBtn = Vue.extend({
         .then(data => {
           this.loading = false;
 
-          const resolved_by = data ? data.resolved_by : null;
+          const resolvedBy = data ? data.resolved_by : null;
 
           CommentsStore.update(
             this.discussionId,
             this.noteId,
             !this.isResolved,
-            resolved_by,
+            resolvedBy,
           );
           this.discussion.updateHeadline(data);
           gl.mrWidget.checkStatus();
@@ -100,15 +100,15 @@ const ResolveBtn = Vue.extend({
         );
     },
   },
-  mounted: function() {
+  mounted() {
     $(this.$refs.button).tooltip({
       container: 'body',
     });
   },
-  beforeDestroy: function() {
+  beforeDestroy() {
     CommentsStore.delete(this.discussionId, this.noteId);
   },
-  created: function() {
+  created() {
     CommentsStore.create({
       discussionId: this.discussionId,
       noteId: this.noteId,
