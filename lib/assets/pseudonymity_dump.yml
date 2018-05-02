@@ -1,0 +1,937 @@
+tables:
+  approvals:
+    whitelist:
+    - id
+    - merge_request_id
+    - user_id
+    - created_at
+    - updated_at
+    anon:
+    - id
+    - merge_request_id
+    - user_id
+  approver_groups:
+    whitelist:
+    - id
+    - target_type
+    - group_id
+    - created_at
+    - updated_at
+    anon:
+    - id
+    - group_id
+  board_assignees:
+    whitelist:
+    - id
+    - board_id
+    - assignee_id
+    anon:
+    - id
+    - board_id
+    - assignee_id
+  board_labels:
+    whitelist:
+    - id
+    - board_id
+    - label_id
+    anon:
+    - id
+    - board_id
+    - label_id
+  boards:
+    whitelist:
+    - id
+    - project_id
+    - created_at
+    - updated_at
+    - milestone_id
+    - group_id
+    - weight
+    anon:
+    - id
+    - project_id
+    - milestone_id
+    - group_id
+  epic_issues:
+    whitelist:
+    - id
+    - epic_id
+    - issue_id
+    - relative_position
+    anon:
+    - id
+    - epic_id
+    - issue_id
+  epic_metrics:
+    whitelist:
+    - id
+    - epic_id
+    - created_at
+    - updated_at
+    anon:
+    - id
+  epics:
+    whitelist:
+    - id
+    - milestone_id
+    - group_id
+    - author_id
+    - assignee_id
+    - iid
+    - cached_markdown_version
+    - updated_by_id
+    - last_edited_by_id
+    - lock_version
+    - start_date
+    - end_date
+    - last_edited_at
+    - created_at
+    - updated_at
+    - title
+    - description
+    anon:
+    - id
+    - milestone_id
+    - group_id
+    - author_id
+    - assignee_id
+    - iid
+    - cached_markdown_version
+    - updated_by_id
+    - last_edited_by_id
+    - lock_version
+    - start_date
+    - end_date
+    - last_edited_at
+    - created_at
+    - updated_at
+  issue_assignees:
+    whitelist:
+    - user_id
+    - issue_id
+    anon:
+    - user_id
+    - issue_id
+  issue_links:
+    whitelist:
+    - id
+    - source_id
+    - target_id
+    - created_at
+    - updated_at
+    anon:
+    - id
+    - source_id
+    - target_id
+  issue_metrics:
+    whitelist:
+    - id
+    - issue_id
+    - first_mentioned_in_commit_at
+    - first_associated_with_milestone_at
+    - first_added_to_board_at
+    - created_at
+    - updated_at
+    anon:
+    - id
+    - issue_id
+  issues:
+    whitelist:
+    - id
+    - title
+    - author_id
+    - project_id
+    - created_at
+    - updated_at
+    - description
+    - milestone_id
+    - state
+    - updated_by_id
+    - weight
+    - due_date
+    - moved_to_id
+    - lock_version
+    - time_estimate
+    - last_edited_at
+    - last_edited_by_id
+    - discussion_locked
+    - closed_at
+    - closed_by_id
+    anon:
+    - id
+    - title
+    - author_id
+    - project_id
+    - description
+    - milestone_id
+    - state
+    - updated_by_id
+    - moved_to_id
+    - discussion_locked
+    - closed_at
+  label_links:
+    whitelist:
+    - id
+    - label_id
+    - target_id
+    - target_type
+    - created_at
+    - updated_at
+    anon:
+    - id
+    - label_id
+    - target_id
+  label_priorities:
+    whitelist:
+    - id
+    - project_id
+    - label_id
+    - priority
+    - created_at
+    - updated_at
+    anon:
+    - id
+    - project_id
+    - label_id
+  labels:
+    whitelist:
+    - id
+    - title
+    - color
+    - project_id
+    - created_at
+    - updated_at
+    - template
+    - type
+    - group_id
+    anon:
+    - id
+    - title
+    - color
+    - project_id
+    - created_at
+    - updated_at
+    - template
+    - type
+    - group_id
+  licenses:
+    whitelist:
+    - id
+    - created_at
+    - updated_at
+    anon:
+    - id
+  merge_request_diff_commits:
+    whitelist:
+    - authored_date
+    - committed_date
+    - merge_request_diff_id
+    - relative_order
+    - author_name
+    - author_email
+    - committer_name
+    - committer_email
+    anon:
+    - merge_request_diff_id
+    - author_name
+    - author_email
+    - committer_name
+    - committer_email
+  merge_request_diff_files:
+    whitelist:
+    - merge_request_diff_id
+    - relative_order
+    - new_file
+    - renamed_file
+    - deleted_file
+    - too_large
+    - a_mode
+    - b_mode
+    anon:
+    - merge_request_diff_id
+  merge_request_diffs:
+    whitelist:
+    - id
+    - state
+    - merge_request_id
+    - created_at
+    - updated_at
+    - base_commit_sha
+    - real_size
+    - head_commit_sha
+    - start_commit_sha
+    - commits_count
+    anon:
+    - id
+    - merge_request_id
+    - base_commit_sha
+    - head_commit_sha
+    - start_commit_sha
+  merge_request_metrics:
+    whitelist:
+    - id
+    - merge_request_id
+    - latest_build_started_at
+    - latest_build_finished_at
+    - first_deployed_to_production_at
+    - merged_at
+    - created_at
+    - updated_at
+    - pipeline_id
+    - merged_by_id
+    - latest_closed_by_id
+    - latest_closed_at
+    anon:
+    - id
+    - merge_request_id
+    - pipeline_id
+    - merged_by_id
+    - latest_closed_by_id
+  merge_requests:
+    whitelist:
+    - id
+    - target_branch
+    - source_branch
+    - source_project_id
+    - author_id
+    - assignee_id
+    - created_at
+    - updated_at
+    - milestone_id
+    - state
+    - merge_status
+    - target_project_id
+    - updated_by_id
+    - merge_error
+    - merge_params
+    - merge_when_pipeline_succeeds
+    - merge_user_id
+    - approvals_before_merge
+    - lock_version
+    - time_estimate
+    - squash
+    - last_edited_at
+    - last_edited_by_id
+    - head_pipeline_id
+    - discussion_locked
+    - latest_merge_request_diff_id
+    - allow_maintainer_to_push
+    anon:
+    - id
+    - target_branch
+    - source_branch
+    - source_project_id
+    - author_id
+    - assignee_id
+    - milestone_id
+    - target_project_id
+    - updated_by_id
+    - merge_user_id
+    - last_edited_by_id
+    - head_pipeline_id
+    - latest_merge_request_diff_id
+  merge_requests_closing_issues:
+    whitelist:
+    - id
+    - merge_request_id
+    - issue_id
+    - created_at
+    - updated_at
+    anon:
+    - id
+    - merge_request_id
+    - issue_id
+  milestones:
+    whitelist:
+    - id
+    - project_id
+    - due_date
+    - created_at
+    - updated_at
+    - state
+    - start_date
+    - group_id
+    anon:
+    - id
+    - project_id
+    - group_id
+  namespace_statistics:
+    whitelist:
+    - id
+    - namespace_id
+    - shared_runners_seconds
+    - shared_runners_seconds_last_reset
+    anon:
+    - id
+    - namespace_id
+  namespaces:
+    whitelist:
+    - id
+    - name
+    - path
+    - owner_id
+    - created_at
+    - updated_at
+    - type
+    - avatar
+    - membership_lock
+    - share_with_group_lock
+    - visibility_level
+    - request_access_enabled
+    - ldap_sync_status
+    - ldap_sync_error
+    - ldap_sync_last_update_at
+    - ldap_sync_last_successful_update_at
+    - ldap_sync_last_sync_at
+    - lfs_enabled
+    - parent_id
+    - shared_runners_minutes_limit
+    - repository_size_limit
+    - require_two_factor_authentication
+    - two_factor_grace_period
+    - plan_id
+    - project_creation_level
+    anon:
+    - id
+    - name
+    - path
+    - owner_id
+    - type
+    - avatar
+    - membership_lock
+    - share_with_group_lock
+    - visibility_level
+    - request_access_enabled
+    - ldap_sync_status
+    - ldap_sync_error
+    - ldap_sync_last_update_at
+    - ldap_sync_last_successful_update_at
+    - ldap_sync_last_sync_at
+    - lfs_enabled
+    - parent_id
+    - shared_runners_minutes_limit
+    - repository_size_limit
+    - require_two_factor_authentication
+    - two_factor_grace_period
+    - plan_id
+    - project_creation_level
+  notes:
+    whitelist:
+    - id
+    - note
+    - noteable_type
+    - author_id
+    - created_at
+    - updated_at
+    - project_id
+    - attachment
+    - line_code
+    - commit_id
+    - noteable_id
+    - system
+    - st_diff
+    - updated_by_id
+    - type
+    - position
+    - original_position
+    - resolved_at
+    - resolved_by_id
+    - discussion_id
+    - note_html
+    - cached_markdown_version
+    - change_position
+    - resolved_by_push
+    anon:
+    - id
+    - note
+    - noteable_type
+    - author_id
+    - created_at
+    - updated_at
+    - project_id
+    - attachment
+    - line_code
+    - commit_id
+    - noteable_id
+    - system
+    - st_diff
+    - updated_by_id
+    - type
+    - position
+    - original_position
+    - resolved_at
+    - resolved_by_id
+    - discussion_id
+    - note_html
+    - cached_markdown_version
+    - change_position
+    - resolved_by_push
+  notification_settings:
+    whitelist:
+    - id
+    - user_id
+    - source_id
+    - source_type
+    - level
+    - created_at
+    - updated_at
+    - new_note
+    - new_issue
+    - reopen_issue
+    - close_issue
+    - reassign_issue
+    - new_merge_request
+    - reopen_merge_request
+    - close_merge_request
+    - reassign_merge_request
+    - merge_merge_request
+    - failed_pipeline
+    - success_pipeline
+    - push_to_merge_request
+    - issue_due
+    anon:
+    - id
+    - user_id
+    - source_id
+    - source_type
+    - level
+    - created_at
+    - updated_at
+    - new_note
+    - new_issue
+    - reopen_issue
+    - close_issue
+    - reassign_issue
+    - new_merge_request
+    - reopen_merge_request
+    - close_merge_request
+    - reassign_merge_request
+    - merge_merge_request
+    - failed_pipeline
+    - success_pipeline
+    - push_to_merge_request
+    - issue_due
+  project_authorizations:
+    whitelist:
+    - user_id
+    - project_id
+    - access_level
+    anon:
+    - user_id
+    - project_id
+    - access_level
+  project_auto_devops:
+    whitelist:
+    - id
+    - project_id
+    - created_at
+    - updated_at
+    - enabled
+    - domain
+    anon:
+    - id
+    - project_id
+    - created_at
+    - updated_at
+    - enabled
+    - domain
+  project_ci_cd_settings:
+    whitelist:
+    - id
+    - project_id
+    - group_runners_enabled
+    anon:
+    - id
+    - project_id
+    - group_runners_enabled
+  project_custom_attributes:
+    whitelist:
+    - id
+    - created_at
+    - updated_at
+    - project_id
+    - key
+    - value
+    anon:
+    - id
+    - created_at
+    - updated_at
+    - project_id
+    - key
+    - value
+  project_deploy_tokens:
+    whitelist:
+    - id
+    - project_id
+    - deploy_token_id
+    - created_at
+    anon:
+    - id
+    - project_id
+    - deploy_token_id
+    - created_at
+  project_features:
+    whitelist:
+    - id
+    - project_id
+    - merge_requests_access_level
+    - issues_access_level
+    - wiki_access_level
+    - snippets_access_level
+    - builds_access_level
+    - created_at
+    - updated_at
+    - repository_access_level
+    anon:
+    - id
+    - project_id
+    - merge_requests_access_level
+    - issues_access_level
+    - wiki_access_level
+    - snippets_access_level
+    - builds_access_level
+    - created_at
+    - updated_at
+    - repository_access_level
+  project_group_links:
+    whitelist:
+    - id
+    - project_id
+    - group_id
+    - created_at
+    - updated_at
+    - group_access
+    - expires_at
+    anon:
+    - id
+    - project_id
+    - group_id
+    - created_at
+    - updated_at
+    - group_access
+    - expires_at
+  project_import_data:
+    whitelist:
+    - id
+    - project_id
+    - data
+    - encrypted_credentials
+    - encrypted_credentials_iv
+    - encrypted_credentials_salt
+    anon:
+    - id
+    - project_id
+    - data
+    - encrypted_credentials
+    - encrypted_credentials_iv
+    - encrypted_credentials_salt
+  project_mirror_data:
+    whitelist:
+    - id
+    - project_id
+    - retry_count
+    - last_update_started_at
+    - last_update_scheduled_at
+    - next_execution_timestamp
+    - created_at
+    - updated_at
+    anon:
+    - id
+    - project_id
+    - retry_count
+    - last_update_started_at
+    - last_update_scheduled_at
+    - next_execution_timestamp
+    - created_at
+    - updated_at
+  project_repository_states:
+    whitelist:
+    - id
+    - project_id
+    - repository_verification_checksum
+    - wiki_verification_checksum
+    - last_repository_verification_failure
+    - last_wiki_verification_failure
+    anon:
+    - id
+    - project_id
+    - repository_verification_checksum
+    - wiki_verification_checksum
+    - last_repository_verification_failure
+    - last_wiki_verification_failure
+  project_statistics:
+    whitelist:
+    - id
+    - project_id
+    - namespace_id
+    - commit_count
+    - storage_size
+    - repository_size
+    - lfs_objects_size
+    - build_artifacts_size
+    - shared_runners_seconds
+    - shared_runners_seconds_last_reset
+    anon:
+    - id
+    - project_id
+    - namespace_id
+    - commit_count
+    - storage_size
+    - repository_size
+    - lfs_objects_size
+    - build_artifacts_size
+    - shared_runners_seconds
+    - shared_runners_seconds_last_reset
+  projects:
+    whitelist:
+    - id
+    - name
+    - path
+    - description
+    - created_at
+    - updated_at
+    - creator_id
+    - namespace_id
+    - last_activity_at
+    - import_url
+    - visibility_level
+    - archived
+    - avatar
+    - import_status
+    - merge_requests_template
+    - star_count
+    - merge_requests_rebase_enabled
+    - import_type
+    - import_source
+    - approvals_before_merge
+    - reset_approvals_on_push
+    - merge_requests_ff_only_enabled
+    - issues_template
+    - mirror
+    - mirror_last_update_at
+    - mirror_last_successful_update_at
+    - mirror_user_id
+    - import_error
+    - ci_id
+    - shared_runners_enabled
+    - runners_token
+    - build_coverage_regex
+    - build_allow_git_fetch
+    - build_timeout
+    - mirror_trigger_builds
+    - pending_delete
+    - public_builds
+    - last_repository_check_failed
+    - last_repository_check_at
+    - container_registry_enabled
+    - only_allow_merge_if_pipeline_succeeds
+    - has_external_issue_tracker
+    - repository_storage
+    - repository_read_only
+    - request_access_enabled
+    - has_external_wiki
+    - ci_config_path
+    - lfs_enabled
+    - description_html
+    - only_allow_merge_if_all_discussions_are_resolved
+    - repository_size_limit
+    - printing_merge_request_link_enabled
+    - auto_cancel_pending_pipelines
+    - service_desk_enabled
+    - import_jid
+    - cached_markdown_version
+    - delete_error
+    - last_repository_updated_at
+    - disable_overriding_approvers_per_merge_request
+    - storage_version
+    - resolve_outdated_diff_discussions
+    - remote_mirror_available_overridden
+    - only_mirror_protected_branches
+    - pull_mirror_available_overridden
+    - jobs_cache_index
+    - mirror_overwrites_diverged_branches
+    - external_authorization_classification_label
+    - external_webhook_token
+    - pages_https_only
+    anon:
+    - id
+    - name
+    - path
+    - description
+    - created_at
+    - updated_at
+    - creator_id
+    - namespace_id
+    - last_activity_at
+    - import_url
+    - visibility_level
+    - archived
+    - avatar
+    - import_status
+    - merge_requests_template
+    - star_count
+    - merge_requests_rebase_enabled
+    - import_type
+    - import_source
+    - approvals_before_merge
+    - reset_approvals_on_push
+    - merge_requests_ff_only_enabled
+    - issues_template
+    - mirror
+    - mirror_last_update_at
+    - mirror_last_successful_update_at
+    - mirror_user_id
+    - import_error
+    - ci_id
+    - shared_runners_enabled
+    - runners_token
+    - build_coverage_regex
+    - build_allow_git_fetch
+    - build_timeout
+    - mirror_trigger_builds
+    - pending_delete
+    - public_builds
+    - last_repository_check_failed
+    - last_repository_check_at
+    - container_registry_enabled
+    - only_allow_merge_if_pipeline_succeeds
+    - has_external_issue_tracker
+    - repository_storage
+    - repository_read_only
+    - request_access_enabled
+    - has_external_wiki
+    - ci_config_path
+    - lfs_enabled
+    - description_html
+    - only_allow_merge_if_all_discussions_are_resolved
+    - repository_size_limit
+    - printing_merge_request_link_enabled
+    - auto_cancel_pending_pipelines
+    - service_desk_enabled
+    - import_jid
+    - cached_markdown_version
+    - delete_error
+    - last_repository_updated_at
+    - disable_overriding_approvers_per_merge_request
+    - storage_version
+    - resolve_outdated_diff_discussions
+    - remote_mirror_available_overridden
+    - only_mirror_protected_branches
+    - pull_mirror_available_overridden
+    - jobs_cache_index
+    - mirror_overwrites_diverged_branches
+    - external_authorization_classification_label
+    - external_webhook_token
+    - pages_https_only
+  subscriptions:
+    whitelist:
+    - id
+    - user_id
+    - subscribable_id
+    - subscribable_type
+    - subscribed
+    - created_at
+    - updated_at
+    - project_id
+    anon:
+    - id
+    - user_id
+    - subscribable_id
+    - project_id
+  users:
+    whitelist:
+    - id
+    - email
+    - remember_created_at
+    - sign_in_count
+    - current_sign_in_at
+    - last_sign_in_at
+    - current_sign_in_ip
+    - last_sign_in_ip
+    - created_at
+    - updated_at
+    - name
+    - admin
+    - projects_limit
+    - skype
+    - linkedin
+    - twitter
+    - bio
+    - failed_attempts
+    - locked_at
+    - username
+    - can_create_group
+    - can_create_team
+    - state
+    - color_scheme_id
+    - password_expires_at
+    - created_by_id
+    - last_credential_check_at
+    - avatar
+    - confirmation_token
+    - confirmed_at
+    - confirmation_sent_at
+    - unconfirmed_email
+    - hide_no_ssh_key
+    - website_url
+    - admin_email_unsubscribed_at
+    - notification_email
+    - hide_no_password
+    - password_automatically_set
+    - location
+    - public_email
+    - dashboard
+    - project_view
+    - consumed_timestep
+    - layout
+    - hide_project_limit
+    - note
+    - unlock_token
+    - otp_grace_period_started_at
+    - external
+    - incoming_email_token
+    - organization
+    - auditor
+    - require_two_factor_authentication_from_group
+    - two_factor_grace_period
+    - ghost
+    - last_activity_on
+    - notified_of_own_activity
+    - support_bot
+    - preferred_language
+    - rss_token
+    - theme_id
+    anon:
+    - id
+    - email
+    - remember_created_at
+    - current_sign_in_ip
+    - last_sign_in_ip
+    - name
+    - admin
+    - skype
+    - linkedin
+    - twitter
+    - username
+    - created_by_id
+    - avatar
+    - confirmation_token
+    - unconfirmed_email
+    - hide_no_ssh_key
+    - website_url
+    - notification_email
+    - location
+    - public_email
+    - consumed_timestep
+    - hide_project_limit
+    - note
+    - unlock_token
+    - otp_grace_period_started_at
+    - external
+    - incoming_email_token
+    - organization
+    - auditor
+    - two_factor_grace_period
+    - ghost
+    - rss_token
+    - theme_id
