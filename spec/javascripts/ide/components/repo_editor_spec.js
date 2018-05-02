@@ -299,14 +299,14 @@ describe('RepoEditor', () => {
 
   describe('show tabs', () => {
     it('shows tabs in edit mode', () => {
-      expect(vm.$el.querySelector('.nav-links').style.display).toBe('');
+      expect(vm.$el.querySelector('.nav-links')).not.toBe(null);
     });
 
     it('hides tabs in review mode', done => {
       vm.$store.state.currentActivityView = activityBarViews.review;
 
       vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.nav-links').style.display).toBe('none');
+        expect(vm.$el.querySelector('.nav-links')).toBe(null);
 
         done();
       });
@@ -316,7 +316,7 @@ describe('RepoEditor', () => {
       vm.$store.state.currentActivityView = activityBarViews.commit;
 
       vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.nav-links').style.display).toBe('none');
+        expect(vm.$el.querySelector('.nav-links')).toBe(null);
 
         done();
       });
