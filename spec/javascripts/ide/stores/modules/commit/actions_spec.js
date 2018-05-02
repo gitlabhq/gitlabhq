@@ -289,21 +289,6 @@ describe('IDE commit module actions', () => {
         .then(done)
         .catch(done.fail);
     });
-
-    it('pushes route to new branch if commitAction is new branch', done => {
-      store.state.commit.commitAction = consts.COMMIT_TO_NEW_BRANCH;
-
-      store
-        .dispatch('commit/updateFilesAfterCommit', {
-          data,
-          branch,
-        })
-        .then(() => {
-          expect(router.push).toHaveBeenCalledWith(`/project/abcproject/blob/master/${f.path}`);
-        })
-        .then(done)
-        .catch(done.fail);
-    });
   });
 
   describe('commitChanges', () => {
@@ -385,21 +370,6 @@ describe('IDE commit module actions', () => {
               ],
               start_branch: 'master',
             });
-
-            done();
-          })
-          .catch(done.fail);
-      });
-
-      it('pushes router to new route', done => {
-        store
-          .dispatch('commit/commitChanges')
-          .then(() => {
-            expect(router.push).toHaveBeenCalledWith(
-              `/project/${store.state.currentProjectId}/blob/${
-                store.getters['commit/newBranchName']
-              }/changed`,
-            );
 
             done();
           })

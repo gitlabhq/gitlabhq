@@ -13,6 +13,8 @@ describe('IDE commit form', () => {
   beforeEach(() => {
     spyOnProperty(window, 'innerHeight').and.returnValue(800);
 
+    store.state.changedFiles.push('test');
+
     vm = createComponentWithStore(Component, store).$mount();
   });
 
@@ -20,6 +22,10 @@ describe('IDE commit form', () => {
     vm.$destroy();
 
     resetStore(vm.$store);
+  });
+
+  it('enables button when has changes', () => {
+    expect(vm.$el.querySelector('[disabled]')).toBe(null);
   });
 
   describe('compact', () => {
@@ -33,7 +39,6 @@ describe('IDE commit form', () => {
     });
 
     it('renders overview text', done => {
-      vm.$store.state.changedFiles.push('test');
       vm.$store.state.stagedFiles.push('test');
 
       vm.$nextTick(() => {

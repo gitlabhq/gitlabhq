@@ -575,20 +575,6 @@ describe('IDE store file actions', () => {
         .then(done)
         .catch(done.fail);
     });
-
-    it('returns false when passed in file is active & viewer is diff', done => {
-      f.active = true;
-      store.state.openFiles.push(f);
-      store.state.viewer = 'diff';
-
-      store
-        .dispatch('openPendingTab', { file: f, keyPrefix: 'pending' })
-        .then(added => {
-          expect(added).toBe(false);
-        })
-        .then(done)
-        .catch(done.fail);
-    });
   });
 
   describe('removePendingTab', () => {
