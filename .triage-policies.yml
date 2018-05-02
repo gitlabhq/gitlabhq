@@ -148,6 +148,40 @@ resource_rules:
             Because this issue is reporting a bug, please can you attempt to reproduce on the latest version of GitLab or on GitLab.com, to help us to understand whether the bug still needs our attention.
 
             Thanks for your help
+      - name: Mark stale Support Requests for closure
+        conditions:
+          date:
+            attribute: updated_at
+            condition: older_than
+            interval_type: months
+            interval: 3
+          labels:
+            - support request
+          milestone:
+            - No Milestone
+          state: opened
+        actions:
+          labels:
+            - awaiting feedback
+            - auto updated
+          mention:
+            - markglenfletcher
+          comment: |
+            Hi,
+
+            This issue was labelled as a support request.
+
+            This issue will be marked for closure, as it meets the following criteria:
+            * Issue is open
+            * No activity in the past 3 months
+            * Labelled as a support request
+            * Unscheduled (no milestone)
+
+            We'd like to ask you to help us out and determine whether this issue should remain open.
+
+            Please could you revisit the issue and provide an update if it is still relevant.
+
+            Thanks for your help
   merge_requests:
     rules:
       - name: Encourage old Community Merge Requests to completion
