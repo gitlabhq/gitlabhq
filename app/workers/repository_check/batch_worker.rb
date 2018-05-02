@@ -4,6 +4,7 @@ module RepositoryCheck
     include CronjobQueue
 
     RUN_TIME = 3600
+    BATCH_SIZE = 10_000
 
     def perform
       return unless Gitlab::CurrentSettings.repository_checks_enabled
@@ -15,7 +16,7 @@ module RepositoryCheck
       # projects to check. By default sidekiq-cron will start a new
       # RepositoryCheckWorker each hour so that as long as there are repositories to
       # check, only one (or two) will be checked at a time.
-      project_ids.each do |project_id|
+      find_batch.each do |project_id|
         break if Time.now - start >= RUN_TIME
 
         next unless try_obtain_lease(project_id)
@@ -31,13 +32,27 @@ module RepositoryCheck
     # array of ID's. This is OK because we do it only once an hour, because
     # getting ID's from Postgres is not terribly slow, and because no user
     # has to sit and wait for this query to finish.
-    def project_ids
-      limit = 10_000
-      never_checked_projects = Project.where('last_repository_check_at IS NULL AND created_at < ?', 24.hours.ago)
-        .limit(limit).pluck(:id)
-      old_check_projects = Project.where('last_repository_check_at < ?', 1.month.ago)
-        .reorder('last_repository_check_at ASC').limit(limit).pluck(:id)
-      never_checked_projects + old_check_projects
+    def find_batch(batch_size = BATCH_SIZE)
+      project_ids = never_checked_project_ids(batch_size)
+
+      remaining_capacity = batch_size - project_ids.count
+
+      if remaining_capacity > 0
+        project_ids + old_checked_project_ids(remaining_capacity)
+      else
+        project_ids
+      end
+    end
+
+    def never_checked_project_ids(batch_size)
+      Project.where('last_repository_check_at IS NULL AND created_at < ?', 24.hours.ago)
+        .limit(batch_size).pluck(:id)
+    end
+
+    def old_checked_project_ids(batch_size)
+      Project.where('last_repository_check_at < ?', 1.month.ago)
+        .reorder(last_repository_check_at: :asc)
+        .limit(batch_size).pluck(:id)
     end
 
     def try_obtain_lease(id)
