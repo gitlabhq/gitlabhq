@@ -792,7 +792,7 @@ describe Ci::Runner do
     end
   end
 
-  describe '#invalidate_build_cache!' do
+  describe '#pick_build!' do
     context 'runner can pick the build' do
       it 'calls #tick_runner_queue' do
         ci_build = build :ci_build
@@ -801,7 +801,7 @@ describe Ci::Runner do
 
         expect(runner).to receive(:tick_runner_queue)
 
-        runner.invalidate_build_cache!(ci_build)
+        runner.pick_build!(ci_build)
       end
     end
 
@@ -813,7 +813,7 @@ describe Ci::Runner do
 
         expect(runner).not_to receive(:tick_runner_queue)
 
-        runner.invalidate_build_cache!(ci_build)
+        runner.pick_build!(ci_build)
       end
     end
   end

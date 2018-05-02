@@ -205,7 +205,7 @@ module Ci
       end
     end
 
-    def invalidate_build_cache!(build)
+    def pick_build!(build)
       if can_pick?(build)
         tick_runner_queue
       end

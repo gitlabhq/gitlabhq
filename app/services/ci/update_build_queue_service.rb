@@ -8,7 +8,7 @@ module Ci
 
     def tick_for(build, runners)
       runners.each do |runner|
-        runner.invalidate_build_cache!(build)
+        runner.pick_build!(build)
       end
     end
   end
