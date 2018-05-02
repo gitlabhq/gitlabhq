@@ -5,7 +5,6 @@ import MirrorPull from 'ee/mirrors/mirror_pull';
 import { __ } from '~/locale';
 import Flash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import { renderTimeago } from '~/lib/utils/datetime_utility';
 
 export default {
   init(container) {
