@@ -21,9 +21,6 @@
         .panel-body
           %div= form_errors(@project)
 
-          = render 'shared/mirror_update_button'
-          = render 'projects/mirrors/pull/mirror_update_fail'
-
           .form-group.has-feedback
             = label_tag :url, 'Git repository URL', class: 'label-light-but-actually-light-i-promise'
             = text_field_tag :url, nil, class: 'form-control js-mirror-url js-repo-url', placeholder: 'Input your repository URL', required: 'required', pattern: "(#{protocols}):\/\/.+"
@@ -86,37 +83,46 @@
           = f.submit 'Mirror repository', class: 'btn btn-create', name: :update_remote_mirror
 
     .panel.panel-default
-      %table.table
-        %thead
-          %tr
-            %th= "Mirrored repositories (#{mirrored_repositories_count})"
-            %th Direction
-            %th Last update
-            %th
-            %th
-            %th
-        %tbody.js-mirrors-table-body
-          - if @project.mirror
+      .table-responsive
+        %table.table
+          %thead
             %tr
-              %td= @project.username_only_import_url
-              %td Pull
-              %td= @project.mirror_last_update_at.present? ? time_ago_with_tooltip(@project.mirror_last_update_at) : 'Never'
-              %td error badge
-              %td update now button
-              %td
-                %button.js-delete-mirror.js-delete-pull-mirror.btn.btn-transparent{ type: 'button' }= icon('trash-o')
-          - @project.remote_mirrors.each_with_index do |mirror, index|
-            - if mirror.enabled
+              %th= "Mirrored repositories (#{mirrored_repositories_count})"
+              %th Direction
+              %th Last update
+              %th
+              %th
+          %tbody.js-mirrors-table-body
+            - if @project.mirror
               %tr
-                %td= mirror.safe_url
-                %td Push
-                %td= mirror.last_update_at.present? ? time_ago_with_tooltip(mirror.last_update_at) : 'Never'
+                %td= @project.username_only_import_url
+                %td Pull
+                %td= @project.mirror_last_update_at.present? ? time_ago_with_tooltip(@project.mirror_last_update_at) : 'Never'
                 %td
-                  - if mirror.last_error.present?
-                    .badge{ data: { toggle: 'tooltip' }, title: h(mirror.last_error.strip) } Error
-                %td= render "shared/remote_mirror_update_button", remote_mirror: mirror
+                  - if @project.import_error.present?
+                    .badge.mirror-error-badge{ data: { toggle: 'tooltip', html: 'true' }, title: html_escape(@project.import_error.try(:strip)) } Error
                 %td
-                  %button.js-delete-mirror.btn.btn-transparent{ type: 'button', data: { mirror_id: mirror.id } }= icon('trash-o')
+                  .btn-group.mirror-actions-group{ role: 'group' }
+                    - if @project.mirror? && can?(current_user, :push_code, @project)
+                      - if @project.mirror_about_to_update? || @project.updating_mirror?
+                        %button.btn.disabled{ type: 'button', data: { container: 'body', toggle: 'tooltip' }, title: 'Updating' }= icon("refresh spin")
+                      - else
+                        = link_to update_now_project_mirror_path(@project), method: :post, class: 'btn', data: { container: 'body', toggle: 'tooltip' }, title: 'Update now' do
+                          = icon("refresh")
+                    %button.js-delete-mirror.js-delete-pull-mirror.btn.btn-danger{ type: 'button', data: { toggle: 'tooltip', container: 'body' }, title: 'Remove' }= icon('trash-o')
+            - @project.remote_mirrors.each_with_index do |mirror, index|
+              - if mirror.enabled
+                %tr
+                  %td= mirror.safe_url
+                  %td Push
+                  %td= mirror.last_update_at.present? ? time_ago_with_tooltip(mirror.last_update_at) : 'Never'
+                  %td
+                    - if mirror.last_error.present?
+                      .badge.mirror-error-badge{ data: { toggle: 'tooltip', html: 'true' }, title: html_escape(mirror.last_error.try(:strip)) } Error
+                  %td
+                    .btn-group.mirror-actions-group{ role: 'group' }
+                      = render 'shared/remote_mirror_update_button', remote_mirror: mirror
+                      %button.js-delete-mirror.btn.btn-danger{ type: 'button', data: { mirror_id: mirror.id, toggle: 'tooltip', container: 'body' }, title: 'Remove' }= icon('trash-o')
 
       %template.js-tr-template
         %tr

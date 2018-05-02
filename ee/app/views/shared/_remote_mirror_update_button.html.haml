@@ -1,11 +1,6 @@
 - if remote_mirror.update_in_progress?
-  %span.btn.disabled
+  %button.btn.disabled{ type: 'button', data: { toggle: 'tooltip', container: 'body' }, title: 'Updating' }
     = icon("refresh spin")
-    Updating&hellip;
 - else
-  = link_to update_now_project_mirror_path(@project, sync_remote: true), method: :post, class: "btn" do
+  = link_to update_now_project_mirror_path(@project, sync_remote: true), method: :post, class: "btn", data: { toggle: 'tooltip', container: 'body' }, title: 'Update now' do
     = icon("refresh")
-    Update Now
-- if @remote_mirror.last_successful_update_at
-  %p.inline.prepend-left-10
-    Successfully updated #{time_ago_with_tooltip(@remote_mirror.last_successful_update_at)}.

@@ -345,3 +345,13 @@
     margin-bottom: 0;
   }
 }
+
+.mirror-actions-group {
+  width: 67px;
+}
+
+.mirror-error-badge {
+  background-color: $red-600;
+  border-radius: $border-radius-default;
+  color: $white-light;
+}
