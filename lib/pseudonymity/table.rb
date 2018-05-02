@@ -11,7 +11,7 @@ module Pseudonymity
 
       results.collect! do | r |
         new_hash = r.each_with_object({}) do | (k, v), h |
-          if @anon_fields.include? k
+          if @anon_fields.include? k and !v.nil?
             h[k] = Digest::SHA2.new(256).hexdigest v
           else
             h[k] = v
@@ -33,7 +33,7 @@ module Pseudonymity
       end
 
       def write_to_csv_file(title, contents)
-        file_path = "/tmp/#{title}"
+        file_path = "/tmp/#{title}.csv"
         if contents.empty?
           File.open(file_path, "w") {}
           return file_path
