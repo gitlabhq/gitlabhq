@@ -1,49 +1,17 @@
 #!/usr/bin/env ruby
 
-WHITELIST = [
-  'CHANGELOG-EE.md',
-  'config/**/*', # https://gitlab.com/gitlab-org/gitlab-ee/issues/4946
-  'doc/**/*', # https://gitlab.com/gitlab-org/gitlab-ee/issues/4948#note_59945483
-  'qa/**/*', # https://gitlab.com/gitlab-org/gitlab-ee/issues/4997#note_59764702
-  'scripts/*',
-  'spec/javascripts/**/*', # https://gitlab.com/gitlab-org/gitlab-ee/issues/3871
-  'vendor/assets/javascripts/jasmine-jquery.js'
-].freeze
+require_relative 'ee_specific_check/ee_specific_check'
 
-def run_git_command(cmd)
-  puts "=> Running `git #{cmd}`"
-  `git #{cmd}`
-end
+include EESpecificCheck # rubocop:disable Style/MixinUsage
 
-run_git_command("remote add canonical-ee https://gitlab.com/gitlab-org/gitlab-ee.git")
-run_git_command("remote add canonical-ce https://gitlab.com/gitlab-org/gitlab-ce.git")
-run_git_command("fetch canonical-ee master --quiet")
+base = find_compare_base
 
 new_files_in_this_branch_not_at_the_ee_top_level =
-  run_git_command("diff canonical-ee/master...HEAD --name-status --diff-filter=A -- ./ ':!ee' | cut -f2").lines.map(&:strip)
-
-ce_repo_url = ENV.fetch('CI_REPOSITORY_URL', 'https://gitlab.com/gitlab-org/gitlab-ce.git').sub('gitlab-ee', 'gitlab-ce')
-current_branch = ENV.fetch('CI_COMMIT_REF_NAME', `git rev-parse --abbrev-ref HEAD`).strip
-minimal_ce_branch_name = current_branch.sub(/(\Aee\-|\-ee\z)/, '')
-
-ls_remote_output = run_git_command("ls-remote #{ce_repo_url} \"*#{minimal_ce_branch_name}*\"")
-remote_to_fetch = 'canonical-ce'
-branch_to_fetch = 'master'
-
-if ls_remote_output.include?(minimal_ce_branch_name)
-  remote_to_fetch = ce_repo_url
-  branch_to_fetch = ls_remote_output.scan(%r{(?<=refs/heads/).+}).sort_by(&:size).first
-  puts
-  puts "💪 We found the branch '#{branch_to_fetch}' in the #{ce_repo_url} repository. We will fetch it."
-else
-  puts "⚠️ We did not find a branch that would match the current '#{current_branch}' branch in the #{ce_repo_url} repository. We will fetch 'master' instead."
-  puts "ℹ️ If you have a CE branch for the current branch, make sure that its name includes '#{minimal_ce_branch_name}'."
-end
-
-run_git_command("fetch #{remote_to_fetch} #{branch_to_fetch} --quiet")
+  run_git_command("diff #{base.ee_merge_base}...HEAD --name-status --diff-filter=A -- ./ ':!ee' | cut -f2").lines.map(&:strip)
 
 ee_specific_files_in_ce_master_not_at_the_ee_top_level =
-  run_git_command("diff FETCH_HEAD..HEAD --name-status --diff-filter=A -- ./ ':!ee' | cut -f2").lines.map(&:strip)
+  run_git_command("diff #{base.ce_updated_base}..HEAD --name-status --diff-filter=A -- ./ ':!ee' | cut -f2").lines.map(&:strip)
+
 new_ee_specific_files_not_at_the_ee_top_level =
   new_files_in_this_branch_not_at_the_ee_top_level & ee_specific_files_in_ce_master_not_at_the_ee_top_level
 
@@ -59,15 +27,11 @@ new_ee_specific_files_not_at_the_ee_top_level.each do |file|
 end
 
 if status.zero?
-  puts
-  puts "🎉 All good, congrats! 🎉"
+  say "🎉 All good, congrats! 🎉"
 end
 
-run_git_command("remote remove canonical-ee")
-run_git_command("remote remove canonical-ce")
+remove_remotes
 
-puts
-puts "ℹ️ For more information on the why and how of this job, see https://docs.gitlab.com/ee/development/ee_features.html#detection-of-ee-only-files"
-puts
+say "ℹ️ For more information on the why and how of this job, see https://docs.gitlab.com/ee/development/ee_features.html#detection-of-ee-only-files"
 
 exit(status)
