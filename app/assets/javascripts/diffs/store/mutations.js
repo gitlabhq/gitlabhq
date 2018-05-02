@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import * as utils from './utils';
+import { findDiffFile, addLineReferences, removeMatchLine, addContextLines } from './utils';
 import * as types from './mutation_types';
 
 export default {
@@ -43,12 +43,12 @@ export default {
   [types.ADD_CONTEXT_LINES](state, options) {
     const { lineNumbers, contextLines, fileHash } = options;
     const { bottom } = options.params;
-    const diffFile = utils.findDiffFile(state.diffFiles, fileHash);
+    const diffFile = findDiffFile(state.diffFiles, fileHash);
     const { highlightedDiffLines, parallelDiffLines } = diffFile;
 
-    utils.removeMatchLine(diffFile, lineNumbers, bottom);
-    const lines = utils.addLineReferences(contextLines, lineNumbers, bottom);
-    utils.addContextLines({
+    removeMatchLine(diffFile, lineNumbers, bottom);
+    const lines = addLineReferences(contextLines, lineNumbers, bottom);
+    addContextLines({
       inlineLines: highlightedDiffLines,
       parallelLines: parallelDiffLines,
       contextLines: lines,

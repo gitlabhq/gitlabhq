@@ -1,5 +1,4 @@
 import mutations from '~/diffs/store/mutations';
-import * as utils from '~/diffs/store/utils';
 import * as types from '~/diffs/store/mutation_types';
 import { INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
 
@@ -88,10 +87,10 @@ fdescribe('DiffsStoreMutations', () => {
       const state = { diffFiles: [diffFile] };
       const lines = [{ oldLine: 1 }];
 
-      const findDiffFileSpy = spyOn(utils, 'findDiffFile').and.returnValue(diffFile);
-      const removeMatchLineSpy = spyOn(utils, 'removeMatchLine');
-      const addLineReferences = spyOn(utils, 'addLineReferences').and.returnValue(lines);
-      const addContextLinesSpy = spyOn(utils, 'addContextLines');
+      const findDiffFileSpy = spyOnDependency(mutations, 'findDiffFile').and.returnValue(diffFile);
+      const removeMatchLineSpy = spyOnDependency(mutations, 'removeMatchLine');
+      const lineRefSpy = spyOnDependency(mutations, 'addLineReferences').and.returnValue(lines);
+      const addContextLinesSpy = spyOnDependency(mutations, 'addContextLines');
 
       mutations[types.ADD_CONTEXT_LINES](state, options);
 
@@ -101,7 +100,7 @@ fdescribe('DiffsStoreMutations', () => {
         options.lineNumbers,
         options.params.bottom,
       );
-      expect(addLineReferences).toHaveBeenCalledWith(
+      expect(lineRefSpy).toHaveBeenCalledWith(
         options.contextLines,
         options.lineNumbers,
         options.params.bottom,
