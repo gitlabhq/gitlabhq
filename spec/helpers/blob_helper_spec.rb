@@ -242,4 +242,29 @@ describe BlobHelper do
       end
     end
   end
+
+  describe '#ide_edit_path' do
+    let(:project) { create(:project) }
+
+    around do |example|
+      old_script_name = Rails.application.routes.default_url_options[:script_name]
+      begin
+        example.run
+      ensure
+        Rails.application.routes.default_url_options[:script_name] = old_script_name
+      end
+    end
+
+    it 'returns full IDE path' do
+      Rails.application.routes.default_url_options[:script_name] = nil
+
+      expect(helper.ide_edit_path(project, "master", "")).to eq("/-/ide/project/#{project.namespace.path}/#{project.path}/edit/master/")
+    end
+
+    it 'returns IDE path without relative_url_root' do
+      Rails.application.routes.default_url_options[:script_name] = "/gitlab"
+
+      expect(helper.ide_edit_path(project, "master", "")).to eq("/gitlab/-/ide/project/#{project.namespace.path}/#{project.path}/edit/master/")
+    end
+  end
 end

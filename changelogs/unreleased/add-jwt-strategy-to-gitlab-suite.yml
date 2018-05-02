@@ -1,0 +1,5 @@
+---
+title: Ports omniauth-jwt gem onto GitLab OmniAuth Strategies suite
+merge_request: 18580
+author:
+type: fixed

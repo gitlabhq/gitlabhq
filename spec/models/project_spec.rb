@@ -1483,52 +1483,6 @@ describe Project do
     end
   end
 
-  describe '#user_can_push_to_empty_repo?' do
-    let(:project) { create(:project) }
-    let(:user)    { create(:user) }
-
-    it 'returns false when default_branch_protection is in full protection and user is developer' do
-      project.add_developer(user)
-      stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_FULL)
-
-      expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
-    end
-
-    it 'returns false when default_branch_protection only lets devs merge and user is dev' do
-      project.add_developer(user)
-      stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
-
-      expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
-    end
-
-    it 'returns true when default_branch_protection lets devs push and user is developer' do
-      project.add_developer(user)
-      stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
-
-      expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
-    end
-
-    it 'returns true when default_branch_protection is unprotected and user is developer' do
-      project.add_developer(user)
-      stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
-
-      expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
-    end
-
-    it 'returns true when user is master' do
-      project.add_master(user)
-
-      expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
-    end
-
-    it 'returns false when the repo is not empty' do
-      project.add_master(user)
-      expect(project).to receive(:empty_repo?).and_return(false)
-
-      expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
-    end
-  end
-
   describe '#container_registry_url' do
     let(:project) { create(:project) }
 
