@@ -160,7 +160,6 @@ describe Projects::BlobController do
 
             expect(match_line['type']).to eq('context')
           end
-
         end
       end
     end
