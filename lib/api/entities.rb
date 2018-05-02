@@ -136,6 +136,7 @@ module API
 
       def self.preload_relation(projects_relation, options =  {})
         projects_relation.preload(:project_feature, :route)
+                         .preload(:import_state)
                          .preload(namespace: [:route, :owner],
                                   tags: :taggings)
       end

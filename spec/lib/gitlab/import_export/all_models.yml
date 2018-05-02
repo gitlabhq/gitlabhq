@@ -274,6 +274,7 @@ project:
 - statistics
 - container_repositories
 - uploads
+- import_state
 - members_and_requesters
 - build_trace_section_names
 - root_of_fork_network
