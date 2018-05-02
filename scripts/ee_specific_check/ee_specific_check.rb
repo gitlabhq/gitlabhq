@@ -60,7 +60,7 @@ module EESpecificCheck
 
   def updated_diff_numstat(from, to)
     scan_diff_numstat(
-      run_git_command("diff #{from}..#{to} --numstat -- . '!ee'"))
+      run_git_command("diff #{from}..#{to} --numstat -- . ':!ee'"))
   end
 
   def find_remote_ce_branch
