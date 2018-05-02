@@ -39,19 +39,19 @@ class GeoNodeStatus < ActiveRecord::Base
     wikis_verified_count: 'Number of wikis verified on secondary',
     wikis_verification_failed_count: 'Number of wikis failed to verify on secondary',
     wikis_checksum_mismatch_count: 'Number of wikis that checksum mismatch on secondary',
-    lfs_objects_count: 'Total number of local LFS objects available on primary',
-    lfs_objects_synced_count: 'Number of local LFS objects synced on secondary',
-    lfs_objects_failed_count: 'Number of local LFS objects failed to sync on secondary',
+    lfs_objects_count: 'Total number of syncable LFS objects available on primary',
+    lfs_objects_synced_count: 'Number of syncable LFS objects synced on secondary',
+    lfs_objects_failed_count: 'Number of syncable LFS objects failed to sync on secondary',
     lfs_objects_registry_count: 'Number of LFS objects in the registry',
     lfs_objects_synced_missing_on_primary_count: 'Number of LFS objects marked as synced due to the file missing on the primary',
-    job_artifacts_count: 'Total number of local job artifacts available on primary',
-    job_artifacts_synced_count: 'Number of local job artifacts synced on secondary',
-    job_artifacts_failed_count: 'Number of local job artifacts failed to sync on secondary',
+    job_artifacts_count: 'Total number of syncable job artifacts available on primary',
+    job_artifacts_synced_count: 'Number of syncable job artifacts synced on secondary',
+    job_artifacts_failed_count: 'Number of syncable job artifacts failed to sync on secondary',
     job_artifacts_registry_count: 'Number of job artifacts in the registry',
     job_artifacts_synced_missing_on_primary_count: 'Number of job artifacts marked as synced due to the file missing on the primary',
-    attachments_count: 'Total number of local file attachments available on primary',
-    attachments_synced_count: 'Number of local file attachments synced on secondary',
-    attachments_failed_count: 'Number of local file attachments failed to sync on secondary',
+    attachments_count: 'Total number of syncable file attachments available on primary',
+    attachments_synced_count: 'Number of syncable file attachments synced on secondary',
+    attachments_failed_count: 'Number of syncable file attachments failed to sync on secondary',
     attachments_registry_count: 'Number of attachments in the registry',
     attachments_synced_missing_on_primary_count: 'Number of attachments marked as synced due to the file missing on the primary',
     replication_slots_count: 'Total number of replication slots on the primary',
@@ -150,9 +150,9 @@ class GeoNodeStatus < ActiveRecord::Base
     self.last_event_date = latest_event&.created_at
     self.repositories_count = projects_finder.count_repositories
     self.wikis_count = projects_finder.count_wikis
-    self.lfs_objects_count = lfs_objects_finder.count_local_lfs_objects
-    self.job_artifacts_count = job_artifacts_finder.count_local_job_artifacts
-    self.attachments_count = attachments_finder.count_local_attachments
+    self.lfs_objects_count = lfs_objects_finder.count_syncable_lfs_objects
+    self.job_artifacts_count = job_artifacts_finder.count_syncable_job_artifacts
+    self.attachments_count = attachments_finder.count_syncable_attachments
     self.last_successful_status_check_at = Time.now
     self.storage_shards = StorageShard.all
 

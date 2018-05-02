@@ -1,0 +1,5 @@
+---
+title: 'Geo: Exclude expired job artifacts from syncing and counts'
+merge_request: 5380
+author:
+type: fixed
