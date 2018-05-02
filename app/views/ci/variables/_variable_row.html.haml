@@ -17,14 +17,14 @@
   .ci-variable-row-body
     %input.js-ci-variable-input-id{ type: "hidden", name: id_input_name, value: id }
     %input.js-ci-variable-input-destroy{ type: "hidden", name: destroy_input_name }
-    %input.js-ci-variable-input-key.ci-variable-body-item.form-control{ type: "text",
+    %input.js-ci-variable-input-key.ci-variable-body-item.qa-ci-variable-input-key.form-control{ type: "text",
       name: key_input_name,
       value: key,
       placeholder: s_('CiVariables|Input variable key') }
     .ci-variable-body-item
-      .form-control.js-secret-value-placeholder{ class: ('hide' unless id) }
+      .form-control.js-secret-value-placeholder.qa-ci-variable-input-value{ class: ('hide' unless id) }
         = '*' * 20
-      %textarea.js-ci-variable-input-value.js-secret-value.form-control{ class: ('hide' if id),
+      %textarea.js-ci-variable-input-value.js-secret-value.qa-ci-variable-input-value.form-control{ class: ('hide' if id),
         rows: 1,
         name: value_input_name,
         placeholder: s_('CiVariables|Input variable value') }

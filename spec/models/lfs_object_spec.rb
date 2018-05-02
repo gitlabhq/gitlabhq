@@ -62,9 +62,7 @@ describe LfsObject do
               .with('LfsObjectUploader', described_class.name, :file, kind_of(Numeric))
               .once
 
-            lfs_object = create(:lfs_object)
-            lfs_object.file = fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "`/png")
-            lfs_object.save!
+            create(:lfs_object, :with_file)
           end
         end
       end

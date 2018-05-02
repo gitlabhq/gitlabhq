@@ -238,6 +238,7 @@ work.
 The default environment scope is `*`, which means all jobs, regardless of their
 environment, will use that cluster. Each scope can only be used by a single
 cluster in a project, and a validation error will occur if otherwise.
+Also, jobs that don't have an environment keyword set will not be able to access any cluster.
 
 ---
 

@@ -1,0 +1,5 @@
+---
+title: Fix users not seeing labels from private groups when being a member of a child project
+merge_request:
+author:
+type: fixed

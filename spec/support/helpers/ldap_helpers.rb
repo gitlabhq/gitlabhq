@@ -18,6 +18,10 @@ module LdapHelpers
     allow_any_instance_of(::Gitlab::Auth::LDAP::Config).to receive_messages(messages)
   end
 
+  def stub_ldap_setting(messages)
+    allow(Gitlab.config.ldap).to receive_messages(to_settings(messages))
+  end
+
   # Stub an LDAP person search and provide the return entry. Specify `nil` for
   # `entry` to simulate when an LDAP person is not found
   #

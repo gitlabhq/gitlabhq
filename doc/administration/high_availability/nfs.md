@@ -75,11 +75,71 @@ Notice several options that you should consider using:
 | `nobootwait` | Don't halt boot process waiting for this mount to become available
 | `lookupcache=positive` | Tells the NFS client to honor `positive` cache results but invalidates any `negative` cache results. Negative cache results cause problems with Git. Specifically, a `git push` can fail to register uniformly across all NFS clients. The negative cache causes the clients to 'remember' that the files did not exist previously.
 
-## Mount locations
+## A single NFS mount
+
+It's recommended to nest all gitlab data dirs within a mount, that allows automatic
+restore of backups without manually moving existing data.
+
+```
+mountpoint
+└── gitlab-data
+    ├── builds
+    ├── git-data
+    ├── home-git
+    ├── shared
+    └── uploads
+```
+
+To do so, we'll need to configure Omnibus with the paths to each directory nested
+in the mount point as follows:
+
+Mount `/gitlab-nfs` then use the following Omnibus
+configuration to move each data location to a subdirectory:
+
+```ruby
+git_data_dirs({"default" => "/gitlab-nfs/gitlab-data/git-data"})
+user['home'] = '/gitlab-nfs/gitlab-data/home'
+gitlab_rails['uploads_directory'] = '/gitlab-nfs/gitlab-data/uploads'
+gitlab_rails['shared_path'] = '/gitlab-nfs/gitlab-data/shared'
+gitlab_ci['builds_directory'] = '/gitlab-nfs/gitlab-data/builds'
+```
+
+To move the `git` home directory, all GitLab services must be stopped. Run
+`gitlab-ctl stop && initctl stop gitlab-runsvdir`. Then continue with the
+reconfigure.
+
+Run `sudo gitlab-ctl reconfigure` to start using the central location. Please
+be aware that if you had existing data you will need to manually copy/rsync it
+to these new locations and then restart GitLab.
+
+## Bind mounts
+
+Alternatively to changing the configuration in Omnibus, bind mounts can be used
+to store the data on an NFS mount.
+
+Bind mounts provide a way to specify just one NFS mount and then
+bind the default GitLab data locations to the NFS mount. Start by defining your
+single NFS mount point as you normally would in `/etc/fstab`. Let's assume your
+NFS mount point is `/gitlab-nfs`. Then, add the following bind mounts in
+`/etc/fstab`:
+
+```bash
+/gitlab-nfs/gitlab-data/git-data /var/opt/gitlab/git-data none bind 0 0
+/gitlab-nfs/gitlab-data/.ssh /var/opt/gitlab/.ssh none bind 0 0
+/gitlab-nfs/gitlab-data/uploads /var/opt/gitlab/gitlab-rails/uploads none bind 0 0
+/gitlab-nfs/gitlab-data/shared /var/opt/gitlab/gitlab-rails/shared none bind 0 0
+/gitlab-nfs/gitlab-data/builds /var/opt/gitlab/gitlab-ci/builds none bind 0 0
+```
+
+Using bind mounts will require manually making sure the data directories
+are empty before attempting a restore. Read more about the
+[restore prerequisites](../../raketasks/backup_restore.md).
+
+## Multiple NFS mounts
 
 When using default Omnibus configuration you will need to share 5 data locations
 between all GitLab cluster nodes. No other locations should be shared. The
-following are the 5 locations you need to mount:
+following are the 5 locations need to be shared:
 
 | Location | Description | Default configuration |
 | -------- | ----------- | --------------------- |
@@ -94,49 +154,9 @@ node-specific files and GitLab code that does not need to be shared. To ship
 logs to a central location consider using remote syslog. GitLab Omnibus packages
 provide configuration for [UDP log shipping][udp-log-shipping].
 
-### Consolidating mount points
-
-If you don't want to configure 5-6 different NFS mount points, you have a few
-alternative options.
-
-#### Change default file locations
-
-Omnibus allows you to configure the file locations. With custom configuration
-you can specify just one main mountpoint and have all of these locations
-as subdirectories. Mount `/gitlab-data` then use the following Omnibus
-configuration to move each data location to a subdirectory:
-
-```ruby
-git_data_dirs({"default" => "/gitlab-data/git-data"})
-user['home'] = '/gitlab-data/home'
-gitlab_rails['uploads_directory'] = '/gitlab-data/uploads'
-gitlab_rails['shared_path'] = '/gitlab-data/shared'
-gitlab_ci['builds_directory'] = '/gitlab-data/builds'
-```
-
-To move the `git` home directory, all GitLab services must be stopped. Run
-`gitlab-ctl stop && initctl stop gitlab-runsvdir`. Then continue with the
-reconfigure.
-
-Run `sudo gitlab-ctl reconfigure` to start using the central location. Please
-be aware that if you had existing data you will need to manually copy/rsync it
-to these new locations and then restart GitLab.
-
-#### Bind mounts
-
-Bind mounts provide a way to specify just one NFS mount and then
-bind the default GitLab data locations to the NFS mount. Start by defining your
-single NFS mount point as you normally would in `/etc/fstab`. Let's assume your
-NFS mount point is `/gitlab-data`. Then, add the following bind mounts in
-`/etc/fstab`:
-
-```bash
-/gitlab-data/git-data /var/opt/gitlab/git-data none bind 0 0
-/gitlab-data/.ssh /var/opt/gitlab/.ssh none bind 0 0
-/gitlab-data/uploads /var/opt/gitlab/gitlab-rails/uploads none bind 0 0
-/gitlab-data/shared /var/opt/gitlab/gitlab-rails/shared none bind 0 0
-/gitlab-data/builds /var/opt/gitlab/gitlab-ci/builds none bind 0 0
-```
+Having multiple NFS mounts will require manually making sure the data directories
+are empty before attempting a restore. Read more about the
+[restore prerequisites](../../raketasks/backup_restore.md).
 
 ---
 

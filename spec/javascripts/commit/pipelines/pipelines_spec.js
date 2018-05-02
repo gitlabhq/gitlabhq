@@ -4,7 +4,7 @@ import axios from '~/lib/utils/axios_utils';
 import pipelinesTable from '~/commit/pipelines/pipelines_table.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
-describe('Pipelines table in Commits and Merge requests', () => {
+describe('Pipelines table in Commits and Merge requests', function () {
   const jsonFixtureName = 'pipelines/pipelines.json';
   let pipeline;
   let PipelinesTable;

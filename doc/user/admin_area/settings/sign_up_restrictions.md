@@ -1,7 +1,7 @@
 # Sign-up restrictions
 
 You can block email addresses of specific domains, or whitelist only some
-specifc domains via the **Application Settings** in the Admin area.
+specific domains via the **Application Settings** in the Admin area.
 
 >**Note**: These restrictions are only applied during sign-up. An admin is
 able to add add a user through the admin panel with a disallowed domain. Also

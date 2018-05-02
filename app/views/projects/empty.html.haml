@@ -58,7 +58,9 @@
               touch README.md
               git add README.md
               git commit -m "add README"
-              git push -u origin master
+            - if @project.can_current_user_push_to_default_branch?
+              %span><
+                git push -u origin master
 
         %fieldset
           %h5 Existing folder
@@ -69,7 +71,9 @@
               git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
               git add .
               git commit -m "Initial commit"
-              git push -u origin master
+            - if @project.can_current_user_push_to_default_branch?
+              %span><
+                git push -u origin master
 
         %fieldset
           %h5 Existing Git repository
@@ -78,8 +82,10 @@
               cd existing_repo
               git remote rename origin old-origin
               git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
-              git push -u origin --all
-              git push -u origin --tags
+            - if @project.can_current_user_push_to_default_branch?
+              %span><
+                git push -u origin --all
+                git push -u origin --tags
 
           - if can? current_user, :remove_project, @project
             .prepend-top-20

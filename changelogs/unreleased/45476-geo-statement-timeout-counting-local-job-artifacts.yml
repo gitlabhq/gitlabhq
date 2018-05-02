@@ -1,5 +1,0 @@
----
-title: Add index to file_store on ci_job_artifacts
-merge_request: 18444
-author:
-type: performance

@@ -1,7 +1,7 @@
 module Storage
   class HashedProject
     attr_accessor :project
-    delegate :gitlab_shell, :repository_storage_path, to: :project
+    delegate :gitlab_shell, :repository_storage, to: :project
 
     ROOT_PATH_PREFIX = '@hashed'.freeze
 
@@ -24,7 +24,7 @@ module Storage
     end
 
     def ensure_storage_path_exists
-      gitlab_shell.add_namespace(repository_storage_path, base_dir)
+      gitlab_shell.add_namespace(repository_storage, base_dir)
     end
 
     def rename_repo

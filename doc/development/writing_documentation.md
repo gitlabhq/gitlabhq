@@ -49,7 +49,7 @@ do before.
 
 **Use cases**: provide at least two, ideally three, use cases for every major feature.
 You should answer this question: what can you do with this feature/change? Use cases
-are examples of how this feauture or change can be used in real life.
+are examples of how this feature or change can be used in real life.
 
 Examples:
 - CE and EE: [Issues](../user/project/issues/index.md#use-cases)

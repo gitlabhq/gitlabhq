@@ -1,5 +1,0 @@
----
-title: Fix N+1 queries when loading participants for a commit note
-merge_request:
-author:
-type: performance

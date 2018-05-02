@@ -17,25 +17,13 @@ export {
 } from './components/mr_widget_merge_help.vue';
 export { default as WidgetPipeline } from './components/mr_widget_pipeline.vue';
 export { default as Deployment } from './components/deployment.vue';
-export {
-  default as WidgetMaintainerEdit,
-} from './components/mr_widget_maintainer_edit.vue';
-export {
-  default as WidgetRelatedLinks,
-} from './components/mr_widget_related_links.vue';
-export {
-  default as MergedState,
-} from './components/states/mr_widget_merged.vue';
-export {
-  default as FailedToMerge,
-} from './components/states/mr_widget_failed_to_merge.vue';
-export {
-  default as ClosedState,
-} from './components/states/mr_widget_closed.vue';
-export {
-  default as MergingState,
-} from './components/states/mr_widget_merging.vue';
-export { default as WipState } from './components/states/mr_widget_wip';
+export { default as WidgetMaintainerEdit } from './components/mr_widget_maintainer_edit.vue';
+export { default as WidgetRelatedLinks } from './components/mr_widget_related_links.vue';
+export { default as MergedState } from './components/states/mr_widget_merged.vue';
+export { default as FailedToMerge } from './components/states/mr_widget_failed_to_merge.vue';
+export { default as ClosedState } from './components/states/mr_widget_closed.vue';
+export { default as MergingState } from './components/states/mr_widget_merging.vue';
+export { default as WorkInProgressState } from './components/states/work_in_progress.vue';
 export { default as ArchivedState } from './components/states/mr_widget_archived.vue';
 export { default as ConflictsState } from './components/states/mr_widget_conflicts.vue';
 export { default as NothingToMergeState } from './components/states/nothing_to_merge.vue';

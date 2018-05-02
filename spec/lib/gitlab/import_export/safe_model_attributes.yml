@@ -232,6 +232,7 @@ Ci::Stage:
 - id
 - name
 - status
+- position
 - lock_version
 - project_id
 - pipeline_id
@@ -546,3 +547,5 @@ Badge:
 - created_at
 - updated_at
 - type
+ProjectCiCdSetting:
+- group_runners_enabled

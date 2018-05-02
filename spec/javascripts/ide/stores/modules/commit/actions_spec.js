@@ -1,7 +1,7 @@
+import actions from '~/ide/stores/actions';
 import store from '~/ide/stores';
 import service from '~/ide/services';
 import router from '~/ide/ide_router';
-import * as urlUtils from '~/lib/utils/url_utility';
 import eventHub from '~/ide/eventhub';
 import * as consts from '~/ide/stores/modules/commit/constants';
 import { resetStore, file } from 'spec/ide/helpers';
@@ -307,8 +307,10 @@ describe('IDE commit module actions', () => {
   });
 
   describe('commitChanges', () => {
+    let visitUrl;
+
     beforeEach(() => {
-      spyOn(urlUtils, 'visitUrl');
+      visitUrl = spyOnDependency(actions, 'visitUrl');
 
       document.body.innerHTML += '<div class="flash-container"></div>';
 
@@ -461,7 +463,7 @@ describe('IDE commit module actions', () => {
           store
             .dispatch('commit/commitChanges')
             .then(() => {
-              expect(urlUtils.visitUrl).toHaveBeenCalledWith(
+              expect(visitUrl).toHaveBeenCalledWith(
                 `webUrl/merge_requests/new?merge_request[source_branch]=${
                   store.getters['commit/newBranchName']
                 }&merge_request[target_branch]=master`,

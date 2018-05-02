@@ -45,7 +45,7 @@ export default {
       return timeIntervalInWords(this.job.queued);
     },
     runnerId() {
-      return `#${this.job.runner.id}`;
+      return `${this.job.runner.description} (#${this.job.runner.id})`;
     },
     retryButtonClass() {
       let className = 'js-retry-button pull-right btn btn-retry visible-md-block visible-lg-block';
