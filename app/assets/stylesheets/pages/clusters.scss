@@ -26,3 +26,16 @@
     margin-right: 0;
   }
 }
+
+#new_cluster {
+  .dropdown-menu-toggle {
+    .loading-container {
+      .fa {
+        position: relative;
+        margin-top: 2px;
+        top: initial;
+        right: initial;
+      }
+    }
+  }
+}
