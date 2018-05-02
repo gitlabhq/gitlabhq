@@ -8,8 +8,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     omniauth_flow(Gitlab::Auth::OAuth)
   end
 
-  Gitlab.config.omniauth.providers.each do |provider|
-    alias_method provider['name'], :handle_omniauth
+  AuthHelper.providers_for_base_controller.each do |provider|
+    alias_method provider, :handle_omniauth
   end
 
   # Extend the standard implementation to also increment

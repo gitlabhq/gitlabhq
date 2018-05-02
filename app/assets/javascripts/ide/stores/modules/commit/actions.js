@@ -110,6 +110,17 @@ export const updateFilesAfterCommit = (
       { root: true },
     );
 
+    commit(
+      rootTypes.TOGGLE_FILE_CHANGED,
+      {
+        file,
+        changed: false,
+      },
+      { root: true },
+    );
+
+    dispatch('updateTempFlagForEntry', { file, tempFile: false }, { root: true });
+
     eventHub.$emit(`editor.update.model.content.${file.key}`, {
       content: file.content,
       changed: !!changedFile,

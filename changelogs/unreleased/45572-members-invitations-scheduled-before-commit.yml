@@ -1,0 +1,5 @@
+---
+title: Ensure member notifications are sent after the member actual creation/update in the DB
+merge_request: 18538
+author:
+type: fixed

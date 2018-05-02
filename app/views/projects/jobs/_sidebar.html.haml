@@ -15,7 +15,7 @@
           - elsif @build.has_expiring_artifacts?
             %p.build-detail-row
               The artifacts will be removed in
-              %span= time_ago_in_words @build.artifacts_expire_at
+              %span= time_ago_with_tooltip @build.artifacts_expire_at
 
           - if @build.artifacts?
             .btn-group.btn-group-justified{ role: :group }

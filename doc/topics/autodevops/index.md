@@ -135,6 +135,11 @@ and `1.2.3.4` is the IP address of your load balancer; generally NGINX
 ([see prerequisites](#prerequisites)). How to set up the DNS record is beyond
 the scope of this document; you should check with your DNS provider.
 
+Alternatively you can use free public services like [xip.io](http://xip.io) or
+[nip.io](http://nip.io) which provide automatic wildcard DNS without any
+configuration. Just set the Auto DevOps base domain to `1.2.3.4.xip.io` or
+`1.2.3.4.nip.io`.
+
 Once set up, all requests will hit the load balancer, which in turn will route
 them to the Kubernetes pods that run your application(s).
 

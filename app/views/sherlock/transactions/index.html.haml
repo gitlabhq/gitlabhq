@@ -35,8 +35,7 @@
               = t('sherlock.seconds')
             %td= trans.queries.length
             %td
-              = time_ago_in_words(trans.finished_at)
-              = t('sherlock.ago')
+              = time_ago_with_tooltip trans.finished_at
             %td
               = link_to(sherlock_transaction_path(trans), class: 'btn btn-xs') do
                 = t('sherlock.view')

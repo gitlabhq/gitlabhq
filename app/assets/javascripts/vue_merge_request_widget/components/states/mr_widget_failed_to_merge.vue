@@ -22,6 +22,7 @@ export default {
     return {
       timer: 10,
       isRefreshing: false,
+      intervalId: null,
     };
   },
 
@@ -36,13 +37,17 @@ export default {
   },
 
   mounted() {
-    setInterval(() => {
-      this.updateTimer();
-    }, 1000);
+    this.intervalId = setInterval(this.updateTimer, 1000);
   },
 
   created() {
     eventHub.$emit('DisablePolling');
+  },
+
+  beforeDestroy() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
   },
 
   methods: {

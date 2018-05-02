@@ -77,8 +77,7 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
 
   def link_to_project!(object)
     if object && !object.projects.exists?(storage_project.id)
-      object.projects << storage_project
-      object.save!
+      object.lfs_objects_projects.create!(project: storage_project)
     end
   end
 end

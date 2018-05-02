@@ -32,12 +32,8 @@ describe('new dropdown component', () => {
 
   it('renders new file, upload and new directory links', () => {
     expect(vm.$el.querySelectorAll('a')[0].textContent.trim()).toBe('New file');
-    expect(vm.$el.querySelectorAll('a')[1].textContent.trim()).toBe(
-      'Upload file',
-    );
-    expect(vm.$el.querySelectorAll('a')[2].textContent.trim()).toBe(
-      'New directory',
-    );
+    expect(vm.$el.querySelectorAll('a')[1].textContent.trim()).toBe('Upload file');
+    expect(vm.$el.querySelectorAll('a')[2].textContent.trim()).toBe('New directory');
   });
 
   describe('createNewItem', () => {
@@ -79,6 +75,20 @@ describe('new dropdown component', () => {
         })
         .then(done)
         .catch(done.fail);
+    });
+  });
+
+  describe('dropdownOpen', () => {
+    it('scrolls dropdown into view', done => {
+      spyOn(vm.$refs.dropdownMenu, 'scrollIntoView');
+
+      vm.dropdownOpen = true;
+
+      setTimeout(() => {
+        expect(vm.$refs.dropdownMenu.scrollIntoView).toHaveBeenCalled();
+
+        done();
+      });
     });
   });
 });

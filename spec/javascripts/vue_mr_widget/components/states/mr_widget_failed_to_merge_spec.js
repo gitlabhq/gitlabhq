@@ -4,12 +4,15 @@ import eventHub from '~/vue_merge_request_widget/event_hub';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('MRWidgetFailedToMerge', () => {
+  const dummyIntervalId = 1337;
   let Component;
   let vm;
 
   beforeEach(() => {
     Component = Vue.extend(failedToMergeComponent);
     spyOn(eventHub, '$emit');
+    spyOn(window, 'setInterval').and.returnValue(dummyIntervalId);
+    spyOn(window, 'clearInterval').and.stub();
     vm = mountComponent(Component, {
       mr: {
         mergeError: 'Merge error happened.',
@@ -19,6 +22,17 @@ describe('MRWidgetFailedToMerge', () => {
 
   afterEach(() => {
     vm.$destroy();
+  });
+
+  it('sets interval to refresh', () => {
+    expect(window.setInterval).toHaveBeenCalledWith(vm.updateTimer, 1000);
+    expect(vm.intervalId).toBe(dummyIntervalId);
+  });
+
+  it('clears interval when destroying ', () => {
+    vm.$destroy();
+
+    expect(window.clearInterval).toHaveBeenCalledWith(dummyIntervalId);
   });
 
   describe('computed', () => {
