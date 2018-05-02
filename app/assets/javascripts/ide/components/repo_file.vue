@@ -83,6 +83,12 @@ export default {
         'is-open': this.file.opened,
       };
     },
+    showTreeChangesCount() {
+      return this.isTree && this.changesCount > 0 && !this.file.opened;
+    },
+    showChangedFileIcon() {
+      return this.file.changed || this.file.tempFile || this.file.staged;
+    },
   },
   updated() {
     if (this.file.type === 'blob' && this.file.active) {
@@ -140,7 +146,7 @@ export default {
             v-if="file.mrChange"
           />
           <span
-            v-if="isTree && changesCount > 0 && !file.opened"
+            v-if="showTreeChangesCount"
             class="ide-tree-changes"
           >
             {{ changesCount }}
@@ -155,7 +161,7 @@ export default {
             />
           </span>
           <changed-file-icon
-            v-else-if="file.changed || file.tempFile || file.staged"
+            v-else-if="showChangedFileIcon"
             :file="file"
             :show-tooltip="true"
             :show-staged-icon="true"

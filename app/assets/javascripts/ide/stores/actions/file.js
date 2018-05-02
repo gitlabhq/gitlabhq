@@ -117,7 +117,7 @@ export const getRawFileData = ({ state, commit, dispatch }, { path, baseSha }) =
   });
 };
 
-export const changeFileContent = ({ state, commit, dispatch, getters }, { path, content }) => {
+export const changeFileContent = ({ state, commit }, { path, content }) => {
   const file = state.entries[path];
   commit(types.UPDATE_FILE_CONTENT, { path, content });
 
