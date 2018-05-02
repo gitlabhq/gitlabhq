@@ -66,5 +66,31 @@ module QA
           .to match(/\[remote rejected\] #{branch_name} -> #{branch_name} \(pre-receive hook declined\)/)
       end
     end
+
+    scenario 'users with authorization can push to protected branch' do
+      Factory::Resource::Branch.fabricate! do |resource|
+        resource.branch_name = branch_name
+        resource.project = project
+        resource.allow_to_push = true
+        resource.protected = true
+      end
+
+      project.visit!
+
+      Git::Repository.perform do |repository|
+        repository.uri = location.uri
+        repository.use_default_credentials
+
+        repository.act do
+          clone
+          configure_identity('GitLab QA', 'root@gitlab.com')
+          checkout('protected-branch')
+          commit_file('README.md', 'readme content', 'Add a readme')
+          push_changes('protected-branch')
+        end
+
+        expect(repository.push_output).to match(/remote: To create a merge request for protected-branch, visit/)
+      end
+    end
   end
 end
