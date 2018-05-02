@@ -13,18 +13,6 @@ describe('ChangedFiles', () => {
     `);
   });
 
-  describe('with no changed files', () => {
-    const props = {
-      diffFiles: [],
-    };
-
-    it('does not render', () => {
-      const vm = mountComponentWithStore(Component, { el: '#dummy-element', props, store });
-
-      expect(vm).not.toRender();
-    });
-  });
-
   describe('with single file added', () => {
     let vm;
     const props = {
@@ -32,7 +20,9 @@ describe('ChangedFiles', () => {
         {
           addedLines: 10,
           removedLines: 20,
-          blobPath: 'some/code.txt',
+          blob: {
+            path: 'some/code.txt',
+          },
           filePath: 'some/code.txt',
         },
       ],
@@ -43,12 +33,12 @@ describe('ChangedFiles', () => {
     });
 
     it('shows files changes', () => {
-      expect(vm).toContainText('1 changed file');
+      expect(vm.$el).toContainText('1 changed file');
     });
 
     it('shows file additions and deletions', () => {
-      expect(vm).toContainText('10 additions');
-      expect(vm).toContainText('20 deletions');
+      expect(vm.$el).toContainText('10 additions');
+      expect(vm.$el).toContainText('20 deletions');
     });
   });
 });
