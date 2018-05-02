@@ -17,6 +17,7 @@
 - cronjob:stuck_ci_jobs
 - cronjob:stuck_import_jobs
 - cronjob:stuck_merge_jobs
+- cronjob:fource_archive_stale_live_trace
 - cronjob:trending_projects
 - cronjob:issue_due_scheduler
 
