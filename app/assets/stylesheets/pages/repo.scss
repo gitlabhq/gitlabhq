@@ -454,10 +454,10 @@
 
   .multi-file-commit-panel-inner {
     display: flex;
-    flex: 1;
     flex-direction: column;
     height: 100%;
-    width: 0;
+    min-width: 0;
+    width: 100%;
   }
 
   .multi-file-commit-panel-inner-scroll {
