@@ -175,6 +175,20 @@ Example response:
     "wikis_failed_count": 0,
     "wikis_synced_count": 41,
     "wikis_synced_in_percentage": "100.00%",
+    "repositories_checksummed_count": 20,
+    "repositories_checksum_failed_count": 5,
+    "repositories_checksummed_in_percentage": "48.78%",
+    "wikis_checksummed_count": 10,
+    "wikis_checksum_failed_count": 3,
+    "wikis_checksummed_in_percentage": "24.39%",
+    "repositories_verified_count": 20,
+    "repositories_verification_failed_count": 5,
+    "repositories_verified_in_percentage": "48.78%",
+    "repositories_checksum_mismatch_count": 3,
+    "wikis_verified_count": 10,
+    "wikis_verification_failed_count": 3,
+    "wikis_verified_in_percentage": "24.39%",
+    "wikis_checksum_mismatch_count": 1,
     "last_event_id": 23,
     "last_event_timestamp": 1509681166,
     "cursor_last_event_id": 23,
@@ -191,10 +205,6 @@ Example response:
 ```
 GET /geo_nodes/:id/status
 ```
-
-| Attribute | Type    | Required | Description |
-| --------- | ------- | -------- | ----------- |
-| `refresh` | boolean | no       | Attempt to fetch the latest status from the Geo node directly, ignoring the cache |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/geo_nodes/2/status

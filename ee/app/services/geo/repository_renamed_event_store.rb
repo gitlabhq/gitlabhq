@@ -8,7 +8,6 @@ module Geo
       Geo::RepositoryRenamedEvent.new(
         project: project,
         repository_storage_name: project.repository.storage,
-        repository_storage_path: project.repository_storage_path,
         old_path_with_namespace: old_path_with_namespace,
         new_path_with_namespace: project.disk_path,
         old_wiki_path_with_namespace: old_wiki_path_with_namespace,

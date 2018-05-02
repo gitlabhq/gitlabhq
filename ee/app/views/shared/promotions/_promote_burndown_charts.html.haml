@@ -1,5 +1,7 @@
-- if show_project_feature_promotion?(:burndown_charts, 'promote_burndown_charts_dismissed')
-  .user-callout.promotion-callout#promote_burndown_charts{ data: { uid: 'promote_burndown_charts_dismissed' } }
+- callout_id = 'promote_burndown_charts_dismissed'
+
+- if !milestone.supports_burndown_charts? && show_promotions? && show_callout?(callout_id)
+  .user-callout.promotion-callout#promote_burndown_charts{ data: { uid: callout_id } }
     .bordered-box.content-block
       %button.btn.btn-default.close.js-close-callout{ type: 'button', 'aria-label' => 'Dismiss burndown charts promotion' }
         = icon('times', class: 'dismiss-icon', 'aria-hidden' => 'true')

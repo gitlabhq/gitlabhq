@@ -234,59 +234,72 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :tag_names
   end
 
-  shared_examples 'archive check' do |extenstion|
-    it { expect(metadata['ArchivePath']).to match(%r{tmp/gitlab-git-test.git/gitlab-git-test-master-#{SeedRepo::LastCommit::ID}}) }
-    it { expect(metadata['ArchivePath']).to end_with extenstion }
-  end
+  describe '#archive_metadata' do
+    let(:storage_path) { '/tmp' }
+    let(:cache_key) { File.join(repository.gl_repository, SeedRepo::LastCommit::ID) }
 
-  describe '#archive_prefix' do
-    let(:project_name) { 'project-name'}
+    let(:append_sha) { true }
+    let(:ref) { 'master' }
+    let(:format) { nil }
 
-    before do
-      expect(repository).to receive(:name).once.and_return(project_name)
+    let(:expected_extension) { 'tar.gz' }
+    let(:expected_filename) { "#{expected_prefix}.#{expected_extension}" }
+    let(:expected_path) { File.join(storage_path, cache_key, expected_filename) }
+    let(:expected_prefix) { "gitlab-git-test-#{ref}-#{SeedRepo::LastCommit::ID}" }
+
+    subject(:metadata) { repository.archive_metadata(ref, storage_path, format, append_sha: append_sha) }
+
+    it 'sets RepoPath to the repository path' do
+      expect(metadata['RepoPath']).to eq(repository.path)
     end
 
-    it 'returns parameterised string for a ref containing slashes' do
-      prefix = repository.archive_prefix('test/branch', 'SHA', append_sha: nil)
-
-      expect(prefix).to eq("#{project_name}-test-branch-SHA")
+    it 'sets CommitId to the commit SHA' do
+      expect(metadata['CommitId']).to eq(SeedRepo::LastCommit::ID)
     end
 
-    it 'returns correct string for a ref containing dots' do
-      prefix = repository.archive_prefix('test.branch', 'SHA', append_sha: nil)
-
-      expect(prefix).to eq("#{project_name}-test.branch-SHA")
+    it 'sets ArchivePrefix to the expected prefix' do
+      expect(metadata['ArchivePrefix']).to eq(expected_prefix)
     end
 
-    it 'returns string with sha when append_sha is false' do
-      prefix = repository.archive_prefix('test.branch', 'SHA', append_sha: false)
+    it 'sets ArchivePath to the expected globally-unique path' do
+      # This is really important from a security perspective. Think carefully
+      # before changing it: https://gitlab.com/gitlab-org/gitlab-ce/issues/45689
+      expect(expected_path).to include(File.join(repository.gl_repository, SeedRepo::LastCommit::ID))
 
-      expect(prefix).to eq("#{project_name}-test.branch")
+      expect(metadata['ArchivePath']).to eq(expected_path)
     end
-  end
 
-  describe '#archive' do
-    let(:metadata) { repository.archive_metadata('master', '/tmp', append_sha: true) }
+    context 'append_sha varies archive path and filename' do
+      where(:append_sha, :ref, :expected_prefix) do
+        sha = SeedRepo::LastCommit::ID
 
-    it_should_behave_like 'archive check', '.tar.gz'
-  end
+        true  | 'master' | "gitlab-git-test-master-#{sha}"
+        true  | sha      | "gitlab-git-test-#{sha}-#{sha}"
+        false | 'master' | "gitlab-git-test-master"
+        false | sha      | "gitlab-git-test-#{sha}"
+        nil   | 'master' | "gitlab-git-test-master-#{sha}"
+        nil   | sha      | "gitlab-git-test-#{sha}"
+      end
 
-  describe '#archive_zip' do
-    let(:metadata) { repository.archive_metadata('master', '/tmp', 'zip', append_sha: true) }
+      with_them do
+        it { expect(metadata['ArchivePrefix']).to eq(expected_prefix) }
+        it { expect(metadata['ArchivePath']).to eq(expected_path) }
+      end
+    end
 
-    it_should_behave_like 'archive check', '.zip'
-  end
+    context 'format varies archive path and filename' do
+      where(:format, :expected_extension) do
+        nil      | 'tar.gz'
+        'madeup' | 'tar.gz'
+        'tbz2'   | 'tar.bz2'
+        'zip'    | 'zip'
+      end
 
-  describe '#archive_bz2' do
-    let(:metadata) { repository.archive_metadata('master', '/tmp', 'tbz2', append_sha: true) }
-
-    it_should_behave_like 'archive check', '.tar.bz2'
-  end
-
-  describe '#archive_fallback' do
-    let(:metadata) { repository.archive_metadata('master', '/tmp', 'madeup', append_sha: true) }
-
-    it_should_behave_like 'archive check', '.tar.gz'
+      with_them do
+        it { expect(metadata['ArchivePrefix']).to eq(expected_prefix) }
+        it { expect(metadata['ArchivePath']).to eq(expected_path) }
+      end
+    end
   end
 
   describe '#size' do
@@ -470,7 +483,18 @@ describe Gitlab::Git::Repository, seed_helper: true do
           FileUtils.rm_rf(heads_dir)
           FileUtils.mkdir_p(heads_dir)
 
+          repository.expire_has_local_branches_cache
           expect(repository.has_local_branches?).to eq(false)
+        end
+      end
+
+      context 'memoizes the value' do
+        it 'returns true' do
+          expect(repository).to receive(:uncached_has_local_branches?).once.and_call_original
+
+          2.times do
+            expect(repository.has_local_branches?).to eq(true)
+          end
         end
       end
     end
@@ -678,7 +702,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     after do
-      Gitlab::Shell.new.remove_repository(storage_path, 'my_project')
+      Gitlab::Shell.new.remove_repository('default', 'my_project')
     end
 
     shared_examples 'repository mirror fecthing' do

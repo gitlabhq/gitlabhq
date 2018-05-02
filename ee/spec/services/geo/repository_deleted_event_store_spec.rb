@@ -8,7 +8,6 @@ describe Geo::RepositoryDeletedEventStore do
   let(:repo_path) { project.full_path }
   let(:wiki_path) { "#{project.full_path}.wiki" }
   let(:storage_name) { project.repository_storage }
-  let(:storage_path) { project.repository_storage_path }
 
   subject { described_class.new(project, repo_path: repo_path, wiki_path: wiki_path) }
 
@@ -44,7 +43,6 @@ describe Geo::RepositoryDeletedEventStore do
         expect(event.deleted_wiki_path).to eq(wiki_path)
         expect(event.deleted_project_name).to eq(project_name)
         expect(event.repository_storage_name).to eq(storage_name)
-        expect(event.repository_storage_path).to eq(storage_path)
       end
     end
   end

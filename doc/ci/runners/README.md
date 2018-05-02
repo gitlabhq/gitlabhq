@@ -298,6 +298,28 @@ Mentioned briefly earlier, but the following things of Runners can be exploited.
 We're always looking for contributions that can mitigate these
 [Security Considerations](https://docs.gitlab.com/runner/security/).
 
+### Resetting the registration token for a Project
+
+If you think that registration token for a Project was revealed, you should
+reset them. It's recommended because such token can be used to register another
+Runner to thi Project. It may be next used to obtain the values of secret
+variables or clone the project code, that normally may be unavailable for the
+attacker.
+
+To reset the token:
+
+1. Go to **Settings > CI/CD** for a specified Project
+1. Expand the **General pipelines settings** section
+1. Find the **Runner token** form field and click the **Reveal value** button
+1. Delete the value and save the form
+1. After the page is refreshed, expand the **Runners settings** section
+    and check the registration token - it should be changed
+
+From now on the old token is not valid anymore and will not allow to register
+a new Runner to the project. If you are using any tools to provision and
+register new Runners, you should now update the token that is used to the
+new value.
+
 ## Determining the IP address of a Runner
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17286) in GitLab 10.6.

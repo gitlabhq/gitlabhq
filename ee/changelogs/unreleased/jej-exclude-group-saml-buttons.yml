@@ -1,0 +1,5 @@
+---
+title: Exclude GroupSAML from sign in buttons
+merge_request: 5449
+author:
+type: fixed

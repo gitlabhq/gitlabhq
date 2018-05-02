@@ -1,6 +1,0 @@
----
-title: Geo - Switch from time-based checking of outdated checksums to the nil-checksum-based
-  approach
-merge_request:
-author:
-type: changed

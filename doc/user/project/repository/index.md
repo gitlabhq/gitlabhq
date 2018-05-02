@@ -163,14 +163,10 @@ Select branches to compare and view the changes inline:
 
 Find it under your project's **Repository > Compare**.
 
-## Locked files
+## Locked files **[PREMIUM]**
 
-> Available in [GitLab Premium](https://about.gitlab.com/products/).
-
-Lock your files to prevent any conflicting changes.
-
-[File Locking](https://docs.gitlab.com/ee/user/project/file_lock.html) is available only in
-[GitLab Premium](https://about.gitlab.com/products/).
+[Lock your files](https://docs.gitlab.com/ee/user/project/file_lock.html) to
+prevent any conflicting changes.
 
 ## Repository's API
 

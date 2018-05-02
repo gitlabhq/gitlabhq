@@ -1256,31 +1256,21 @@ describe Repository do
     end
   end
 
-  shared_examples 'repo exists check' do
+  describe '#exists?' do
     it 'returns true when a repository exists' do
-      expect(repository.exists?).to eq(true)
+      expect(repository.exists?).to be(true)
     end
 
     it 'returns false if no full path can be constructed' do
       allow(repository).to receive(:full_path).and_return(nil)
 
-      expect(repository.exists?).to eq(false)
+      expect(repository.exists?).to be(false)
     end
 
     context 'with broken storage', :broken_storage do
       it 'should raise a storage error' do
         expect_to_raise_storage_error { broken_repository.exists? }
       end
-    end
-  end
-
-  describe '#exists?' do
-    context 'when repository_exists is disabled' do
-      it_behaves_like 'repo exists check'
-    end
-
-    context 'when repository_exists is enabled', :skip_gitaly_mock do
-      it_behaves_like 'repo exists check'
     end
   end
 
@@ -1466,6 +1456,12 @@ describe Repository do
       allow(repository).to receive(:empty?).and_return(false)
 
       expect(cache).not_to receive(:expire).with(:has_visible_content?)
+
+      repository.expire_emptiness_caches
+    end
+
+    it 'expires the memoized repository cache' do
+      allow(repository.raw_repository).to receive(:expire_has_local_branches_cache).and_call_original
 
       repository.expire_emptiness_caches
     end

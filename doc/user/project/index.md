@@ -17,7 +17,7 @@ When you create a project in GitLab, you'll have access to a large number of
 
 - [Issue tracker](issues/index.md): Discuss implementations with your team within issues
   - [Issue Boards](issue_board.md): Organize and prioritize your workflow
-  - [Multiple Issue Boards](issue_board.md#multiple-issue-boards) (**Starter/Premium**): Allow your teams to create their own workflows (Issue Boards) for the same project
+  - [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards): Allow your teams to create their own workflows (Issue Boards) for the same project **[STARTER]**
 - [Repositories](repository/index.md): Host your code in a fully
 integrated platform
   - [Branches](repository/branches/index.md): use Git branching strategies to
@@ -28,17 +28,17 @@ integrated platform
   permission to create tags, and prevent accidental update or deletion
   - [Signing commits](gpg_signed_commits/index.md): use GPG to sign your commits
   - [Deploy tokens](deploy_tokens/index.md): Manage project-based deploy tokens that allow permanent access to the repository and Container Registry.
-- **(Ultimate)** [Web IDE](web_ide/index.md)
+- [Web IDE](web_ide/index.md)
 
 **Issues and merge requests:**
 
 - [Issue tracker](issues/index.md): Discuss implementations with your team within issues
   - [Issue Boards](issue_board.md): Organize and prioritize your workflow
-  - [Multiple Issue Boards](issue_board.md#multiple-issue-boards) (**Starter/Premium**): Allow your teams to create their own workflows (Issue Boards) for the same project
+  - [Multiple Issue Boards](issue_board.md#multiple-issue-boards): Allow your teams to create their own workflows (Issue Boards) for the same project **[STARTER]**
 - [Merge Requests](merge_requests/index.md): Apply your branching
 strategy and get reviewed by your team
-  - [Merge Request Approvals](merge_requests/merge_request_approvals.md) (**Starter/Premium**): Ask for approval before
-  implementing a change
+  - [Merge Request Approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html): Ask for approval before
+  implementing a change **[STARTER]**
   - [Fix merge conflicts from the UI](merge_requests/resolve_conflicts.md):
   Your Git diff tool right from GitLab's UI
   - [Review Apps](../../ci/review_apps/index.md): Live preview the results
@@ -52,6 +52,7 @@ and time spent on
 templates for issue and merge request description fields for your project
 - [Slash commands (quick actions)](quick_actions.md): Textual shortcuts for
 common actions on issues or merge requests
+- [Web IDE](web_ide/index.md)
 
 **GitLab CI/CD:**
 

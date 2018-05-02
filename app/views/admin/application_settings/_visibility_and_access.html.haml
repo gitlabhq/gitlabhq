@@ -33,6 +33,7 @@
     .form-group
       = f.label :import_sources, class: 'control-label col-sm-2'
       .col-sm-10
+        = hidden_field_tag 'application_setting[import_sources][]'
         - import_sources_checkboxes('import-sources-help').each do |source|
           .checkbox= source
         %span.help-block#import-sources-help

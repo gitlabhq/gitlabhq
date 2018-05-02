@@ -1,5 +1,0 @@
----
-title: Repository checksum calculation is handled by Gitaly when feature is enabled
-merge_request:
-author:
-type: changed

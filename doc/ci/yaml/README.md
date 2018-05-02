@@ -308,7 +308,9 @@ except master.
 
 ## `only` and `except` (complex)
 
-> Introduced in GitLab 10.0
+> `refs` and `kubernetes` policies introduced in GitLab 10.0
+
+> `variables` policy introduced in 10.7
 
 CAUTION: **Warning:**
 This an _alpha_ feature, and it it subject to change at any time without
@@ -1195,7 +1197,7 @@ test:
   retry: 2
 ```
 
-## `include`
+## `include` **[STARTER]**
 
 > Introduced in [GitLab Edition Premium][ee] 10.5.
 > Available for Starter, Premium and Ultimate [versions][gitlab-versions] since 10.6.
@@ -1712,8 +1714,8 @@ capitalization, the commit will be created but the pipeline will be skipped.
 ## Validate the .gitlab-ci.yml
 
 Each instance of GitLab CI has an embedded debug tool called Lint, which validates the
-content of your `.gitlab-ci.yml` files. You can find the Lint under the page `ci/lint` of your
-project namespace (e.g, `http://gitlab-example.com/gitlab-org/project-123/ci/lint`)
+content of your `.gitlab-ci.yml` files. You can find the Lint under the page `ci/lint` of your 
+project namespace (e.g, `http://gitlab-example.com/gitlab-org/project-123/-/ci/lint`)
 
 ## Using reserved keywords
 

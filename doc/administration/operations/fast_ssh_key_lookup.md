@@ -44,7 +44,7 @@ GitLab Shell provides a way to authorize SSH users via a fast, indexed lookup
 to the GitLab database. GitLab Shell uses the fingerprint of the SSH key to
 check whether the user is authorized to access GitLab.
 
-Add the following to your `sshd_config` file. This is usuaully located at
+Add the following to your `sshd_config` file. This is usually located at
 `/etc/ssh/sshd_config`, but it will be `/assets/sshd_config` if you're using
 Omnibus Docker:
 

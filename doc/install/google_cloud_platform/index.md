@@ -2,7 +2,7 @@
 
 ![GCP landing page](img/gcp_landing.png)
 
-Gettung started with GitLab on a [Google Cloud Platform (GCP)][gcp] instance is quick and easy.
+Getting started with GitLab on a [Google Cloud Platform (GCP)][gcp] instance is quick and easy.
 
 ## Prerequisites
 

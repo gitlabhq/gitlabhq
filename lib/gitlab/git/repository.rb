@@ -9,6 +9,7 @@ module Gitlab
       include Gitlab::Git::RepositoryMirroring
       include Gitlab::Git::Popen
       include Gitlab::EncodingHelper
+      include Gitlab::Utils::StrongMemoize
 
       ALLOWED_OBJECT_DIRECTORIES_VARIABLES = %w[
         GIT_OBJECT_DIRECTORY
@@ -141,15 +142,7 @@ module Gitlab
       end
 
       def exists?
-        Gitlab::GitalyClient.migrate(:repository_exists, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
-          if enabled
-            gitaly_repository_client.exists?
-          else
-            circuit_breaker.perform do
-              File.exist?(File.join(path, 'refs'))
-            end
-          end
-        end
+        gitaly_repository_client.exists?
       end
 
       # Returns an Array of branch names
@@ -231,13 +224,13 @@ module Gitlab
         end
       end
 
+      def expire_has_local_branches_cache
+        clear_memoization(:has_local_branches)
+      end
+
       def has_local_branches?
-        gitaly_migrate(:has_local_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.has_local_branches?
-          else
-            has_local_branches_rugged?
-          end
+        strong_memoize(:has_local_branches) do
+          uncached_has_local_branches?
         end
       end
 
@@ -299,7 +292,8 @@ module Gitlab
       #
       # Ref names must start with `refs/`.
       def ref_exists?(ref_name)
-        gitaly_migrate(:ref_exists) do |is_enabled|
+        gitaly_migrate(:ref_exists,
+                      status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_exists?(ref_name)
           else
@@ -397,6 +391,26 @@ module Gitlab
         nil
       end
 
+      def archive_metadata(ref, storage_path, format = "tar.gz", append_sha:)
+        ref ||= root_ref
+        commit = Gitlab::Git::Commit.find(self, ref)
+        return {} if commit.nil?
+
+        prefix = archive_prefix(ref, commit.id, append_sha: append_sha)
+
+        {
+          'RepoPath' => path,
+          'ArchivePrefix' => prefix,
+          'ArchivePath' => archive_file_path(storage_path, commit.id, prefix, format),
+          'CommitId' => commit.id
+        }
+      end
+
+      # This is both the filename of the archive (missing the extension) and the
+      # name of the top-level member of the archive under which all files go
+      #
+      # FIXME: The generated prefix is incorrect for projects with hashed
+      # storage enabled
       def archive_prefix(ref, sha, append_sha:)
         append_sha = (ref != sha) if append_sha.nil?
 
@@ -408,23 +422,23 @@ module Gitlab
 
         prefix_segments.join('-')
       end
+      private :archive_prefix
 
-      def archive_metadata(ref, storage_path, format = "tar.gz", append_sha:)
-        ref ||= root_ref
-        commit = Gitlab::Git::Commit.find(self, ref)
-        return {} if commit.nil?
-
-        prefix = archive_prefix(ref, commit.id, append_sha: append_sha)
-
-        {
-          'RepoPath' => path,
-          'ArchivePrefix' => prefix,
-          'ArchivePath' => archive_file_path(prefix, storage_path, format),
-          'CommitId' => commit.id
-        }
-      end
-
-      def archive_file_path(name, storage_path, format = "tar.gz")
+      # The full path on disk where the archive should be stored. This is used
+      # to cache the archive between requests.
+      #
+      # The path is a global namespace, so needs to be globally unique. This is
+      # achieved by including `gl_repository` in the path.
+      #
+      # Archives relating to a particular ref when the SHA is not present in the
+      # filename must be invalidated when the ref is updated to point to a new
+      # SHA. This is achieved by including the SHA in the path.
+      #
+      # As this is a full path on disk, it is not "cloud native". This should
+      # be resolved by either removing the cache, or moving the implementation
+      # into Gitaly and removing the ArchivePath parameter from the git-archive
+      # senddata response.
+      def archive_file_path(storage_path, sha, name, format = "tar.gz")
         # Build file path
         return nil unless name
 
@@ -442,8 +456,9 @@ module Gitlab
           end
 
         file_name = "#{name}.#{extension}"
-        File.join(storage_path, self.name, file_name)
+        File.join(storage_path, self.gl_repository, sha, file_name)
       end
+      private :archive_file_path
 
       # Return repo size in megabytes
       def size
@@ -1189,6 +1204,8 @@ module Gitlab
           if is_enabled
             gitaly_fetch_ref(source_repository, source_ref: source_ref, target_ref: target_ref)
           else
+            # When removing this code, also remove source_repository#path
+            # to remove deprecated method calls
             local_fetch_ref(source_repository.path, source_ref: source_ref, target_ref: target_ref)
           end
         end
@@ -1258,6 +1275,10 @@ module Gitlab
         end
 
         true
+      end
+
+      def create_from_snapshot(url, auth)
+        gitaly_repository_client.create_from_snapshot(url, auth)
       end
 
       def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
@@ -1474,7 +1495,7 @@ module Gitlab
 
         return [] if empty? || safe_query.blank?
 
-        args = %W(ls-tree --full-tree -r #{ref || root_ref} --name-status | #{safe_query})
+        args = %W(ls-tree -r --name-status --full-tree #{ref || root_ref} -- #{safe_query})
 
         run_git(args).first.lines.map(&:strip)
       end
@@ -1572,6 +1593,16 @@ module Gitlab
       end
 
       private
+
+      def uncached_has_local_branches?
+        gitaly_migrate(:has_local_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.has_local_branches?
+          else
+            has_local_branches_rugged?
+          end
+        end
+      end
 
       def local_write_ref(ref_path, ref, old_ref: nil, shell: true)
         if shell

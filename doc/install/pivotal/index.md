@@ -1,4 +1,4 @@
-# GitLab Pivotal Tile
+# GitLab Pivotal Tile **[PREMIUM ONLY]**
 
 > Introduced in [GitLab Premium][eep] 8.2.
 

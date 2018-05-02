@@ -31,7 +31,7 @@ export { default as ReadyToMergeState } from 'ee/vue_merge_request_widget/compon
 export { default as ShaMismatchState } from './components/states/sha_mismatch.vue';
 export { default as UnresolvedDiscussionsState } from './components/states/unresolved_discussions.vue';
 export { default as PipelineBlockedState } from './components/states/mr_widget_pipeline_blocked.vue';
-export { default as PipelineFailedState } from './components/states/mr_widget_pipeline_failed';
+export { default as PipelineFailedState } from './components/states/pipeline_failed.vue';
 export { default as MergeWhenPipelineSucceedsState } from './components/states/mr_widget_merge_when_pipeline_succeeds.vue';
 export { default as RebaseState } from './components/states/mr_widget_rebase.vue';
 export { default as AutoMergeFailed } from './components/states/mr_widget_auto_merge_failed.vue';

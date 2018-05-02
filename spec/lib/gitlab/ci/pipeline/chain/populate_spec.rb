@@ -35,11 +35,6 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
     it 'populates pipeline with stages' do
       expect(pipeline.stages).to be_one
       expect(pipeline.stages.first).not_to be_persisted
-    end
-
-    it 'populates pipeline with builds' do
-      expect(pipeline.builds).to be_one
-      expect(pipeline.builds.first).not_to be_persisted
       expect(pipeline.stages.first.builds).to be_one
       expect(pipeline.stages.first.builds.first).not_to be_persisted
     end
@@ -151,8 +146,8 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
       step.perform!
 
       expect(pipeline.stages.size).to eq 1
-      expect(pipeline.builds.size).to eq 1
-      expect(pipeline.builds.first.name).to eq 'rspec'
+      expect(pipeline.stages.first.builds.size).to eq 1
+      expect(pipeline.stages.first.builds.first.name).to eq 'rspec'
     end
   end
 end

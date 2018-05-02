@@ -51,5 +51,10 @@ module Geo
                update_delay_s: update_delay_in_seconds,
                download_time_s: download_time_in_seconds)
     end
+
+    def schedule_repack
+      # No-op: we currently don't schedule wiki repository to repack
+      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45523
+    end
   end
 end

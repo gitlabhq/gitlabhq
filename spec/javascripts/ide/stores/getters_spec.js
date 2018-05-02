@@ -37,19 +37,11 @@ describe('IDE store getters', () => {
       expect(modifiedFiles.length).toBe(1);
       expect(modifiedFiles[0].name).toBe('changed');
     });
-  });
 
-  describe('addedFiles', () => {
-    it('returns a list of added files', () => {
-      localState.openFiles.push(file());
-      localState.changedFiles.push(file('added'));
-      localState.changedFiles[0].changed = true;
-      localState.changedFiles[0].tempFile = true;
+    it('returns angle left when collapsed', () => {
+      localState.rightPanelCollapsed = true;
 
-      const modifiedFiles = getters.addedFiles(localState);
-
-      expect(modifiedFiles.length).toBe(1);
-      expect(modifiedFiles[0].name).toBe('added');
+      expect(getters.collapseButtonIcon(localState)).toBe('angle-double-left');
     });
   });
 
@@ -70,6 +62,26 @@ describe('IDE store getters', () => {
       localState.currentProjectId = 'otherproject';
 
       expect(getters.currentMergeRequest(localState)).toBeNull();
+    });
+  });
+
+  describe('allBlobs', () => {
+    beforeEach(() => {
+      Object.assign(localState.entries, {
+        index: { type: 'blob', name: 'index', lastOpenedAt: 0 },
+        app: { type: 'blob', name: 'blob', lastOpenedAt: 0 },
+        folder: { type: 'folder', name: 'folder', lastOpenedAt: 0 },
+      });
+    });
+
+    it('returns only blobs', () => {
+      expect(getters.allBlobs(localState).length).toBe(2);
+    });
+
+    it('returns list sorted by lastOpenedAt', () => {
+      localState.entries.app.lastOpenedAt = new Date().getTime();
+
+      expect(getters.allBlobs(localState)[0].name).toBe('blob');
     });
   });
 });

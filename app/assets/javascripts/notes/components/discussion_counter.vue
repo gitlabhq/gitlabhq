@@ -86,7 +86,7 @@ export default {
             v-html="resolveSvg"
           ></span>
         </span>
-        <span class=".line-resolve-text">
+        <span class="line-resolve-text">
           {{ resolvedDiscussionCount }}/{{ discussionCount }} {{ countText }} resolved
         </span>
       </div>

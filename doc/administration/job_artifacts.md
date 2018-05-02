@@ -91,8 +91,6 @@ _The artifacts are stored by default in
 - [Introduced][ee-1762] in [GitLab Premium][eep] 9.4.
 - Since version 9.5, artifacts are [browsable], when object storage is enabled. 
   9.4 lacks this feature.
-> Available in [GitLab Premium](https://about.gitlab.com/products/) and
-[GitLab.com Silver](https://about.gitlab.com/gitlab-com/).
 > Since version 10.6, available in [GitLab CE](https://about.gitlab.com/products/)
 
 If you don't want to use the local disk where GitLab is installed to store the
@@ -107,7 +105,7 @@ For source installations the following settings are nested under `artifacts:` an
 | Setting | Description | Default |
 |---------|-------------|---------|
 | `enabled` | Enable/disable object storage | `false` |
-| `remote_directory` | The bucket name where Artfacts will be stored| |
+| `remote_directory` | The bucket name where Artifacts will be stored| |
 | `direct_upload` | Set to true to enable direct upload of Artifacts without the need of local shared storage. Option may be removed once we decide to support only single storage for all files. Currently only `Google` provider is supported | `false` |
 | `background_upload` | Set to false to disable automatic upload. Option may be removed once upload is direct to S3 | `true` |
 | `proxy_download` | Set to true to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data | `false` |
@@ -148,7 +146,7 @@ _The artifacts are stored by default in
     ```
 
     NOTE: For GitLab 9.4+, if you are using AWS IAM profiles, be sure to omit the
-    AWS access key and secret acces key/value pairs. For example:
+    AWS access key and secret access key/value pairs. For example:
 
     ```ruby
     gitlab_rails['artifacts_object_store_connection'] = {

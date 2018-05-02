@@ -2,6 +2,7 @@ import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import stage from '~/pipelines/components/stage.vue';
+import eventHub from '~/pipelines/event_hub';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('Pipelines stage component', () => {
@@ -43,13 +44,15 @@ describe('Pipelines stage component', () => {
       mock.onGet('path.json').reply(200, { html: 'foo' });
     });
 
-    it('should render the received data', done => {
+    it('should render the received data and emit `clickedDropdown` event', done => {
+      spyOn(eventHub, '$emit');
       component.$el.querySelector('button').click();
 
       setTimeout(() => {
         expect(
           component.$el.querySelector('.js-builds-dropdown-container ul').textContent.trim(),
         ).toEqual('foo');
+        expect(eventHub.$emit).toHaveBeenCalledWith('clickedDropdown');
         done();
       }, 0);
     });

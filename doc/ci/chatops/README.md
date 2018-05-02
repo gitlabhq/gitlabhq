@@ -1,4 +1,4 @@
-# GitLab ChatOps
+# GitLab ChatOps **[ULTIMATE]**
 > **Notes:**
 
 > * [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/4466) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.6.

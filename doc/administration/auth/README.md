@@ -9,7 +9,7 @@ providers.
 
 - [LDAP](ldap.md) Includes Active Directory, Apple Open Directory, Open LDAP,
   and 389 Server
-  - **(Starter/Premium)** [LDAP for GitLab EE](ldap-ee.md): LDAP additions to GitLab Enterprise Editions
+  - [LDAP for GitLab EE](ldap-ee.md): LDAP additions to GitLab Enterprise Editions **[STARTER ONLY]**
 - [OmniAuth](../../integration/omniauth.md) Sign in via Twitter, GitHub, GitLab.com, Google,
   Bitbucket, Facebook, Shibboleth, Crowd, Azure and Authentiq ID
 - [CAS](../../integration/cas.md) Configure GitLab to sign in using CAS

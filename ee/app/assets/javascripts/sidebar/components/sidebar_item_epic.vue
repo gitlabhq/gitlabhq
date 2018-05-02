@@ -1,5 +1,6 @@
 <script>
   import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
+  import { __ } from '~/locale';
   import tooltip from '~/vue_shared/directives/tooltip';
   import { spriteIcon } from '~/lib/utils/common_utils';
   import Store from '../stores/sidebar_store';
@@ -36,21 +37,38 @@
       collapsedTitle() {
         return this.hasEpic ? this.epicTitle : 'None';
       },
+      tooltipTitle() {
+        if (!this.hasEpic) {
+          return __('Epic');
+        }
+        let tooltipTitle = this.epicTitle;
+
+        if (this.store.epic.human_readable_end_date || this.store.epic.human_readable_timestamp) {
+          tooltipTitle += '<br />';
+          tooltipTitle += this.store.epic.human_readable_end_date ? `${this.store.epic.human_readable_end_date} ` : '';
+          tooltipTitle += this.store.epic.human_readable_timestamp ? `(${this.store.epic.human_readable_timestamp})` : '';
+        }
+
+        return tooltipTitle;
+      },
     },
   };
 </script>
 
 <template>
   <div>
-    <div class="sidebar-collapsed-icon">
+    <div
+      class="sidebar-collapsed-icon"
+      :title="tooltipTitle"
+      data-container="body"
+      data-placement="left"
+      data-html="1"
+      v-tooltip
+    >
       <div v-html="epicIcon"></div>
       <span
         v-if="!isLoading"
         class="collapse-truncated-title"
-        :title="epicTitle"
-        data-container="body"
-        data-placement="left"
-        v-tooltip
       >
         {{ collapsedTitle }}
       </span>

@@ -1,4 +1,4 @@
-# Configuring a Database for GitLab HA
+# Configuring a Database for GitLab HA **[PREMIUM ONLY]**
 
 You can choose to install and manage a database server (PostgreSQL/MySQL)
 yourself, or you can use GitLab Omnibus packages to help. GitLab recommends

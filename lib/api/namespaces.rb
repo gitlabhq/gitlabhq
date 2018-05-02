@@ -32,7 +32,7 @@ module API
 
         namespace = find_namespace(params[:id])
 
-        return not_found!('Namespace') unless namespace
+        break not_found!('Namespace') unless namespace
 
         if namespace.update(declared_params)
           present namespace, with: Entities::Namespace, current_user: current_user

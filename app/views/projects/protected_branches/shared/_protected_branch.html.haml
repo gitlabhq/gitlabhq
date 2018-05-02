@@ -2,7 +2,7 @@
 
 %tr.js-protected-branch-edit-form{ data: { url: namespace_project_protected_branch_path(@project.namespace, @project, protected_branch) } }
   %td
-    %span.ref-name= protected_branch.name
+    %span.ref-name.qa-protected-branch-name= protected_branch.name
 
     - if @project.root_ref?(protected_branch.name)
       %span.label.label-info.prepend-left-5 default
@@ -21,4 +21,4 @@
 
   - if can_admin_project
     %td
-      = link_to 'Unprotect', [@project.namespace.becomes(Namespace), @project, protected_branch], data: { confirm: 'Branch will be writable for developers. Are you sure?' }, method: :delete, class: 'btn btn-warning'
+      = link_to 'Unprotect', [@project.namespace.becomes(Namespace), @project, protected_branch], disabled: local_assigns[:disabled], data: { confirm: 'Branch will be writable for developers. Are you sure?' }, method: :delete, class: "btn btn-warning"

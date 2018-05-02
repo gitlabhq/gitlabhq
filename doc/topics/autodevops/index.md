@@ -135,6 +135,11 @@ and `1.2.3.4` is the IP address of your load balancer; generally NGINX
 ([see prerequisites](#prerequisites)). How to set up the DNS record is beyond
 the scope of this document; you should check with your DNS provider.
 
+Alternatively you can use free public services like [xip.io](http://xip.io) or
+[nip.io](http://nip.io) which provide automatic wildcard DNS without any
+configuration. Just set the Auto DevOps base domain to `1.2.3.4.xip.io` or
+`1.2.3.4.nip.io`.
+
 Once set up, all requests will hit the load balancer, which in turn will route
 them to the Kubernetes pods that run your application(s).
 
@@ -227,7 +232,7 @@ In GitLab Starter, differences between the source and
 target branches are also
 [shown in the merge request widget](../../user/project/merge_requests/code_quality_diff.md).
 
-### Auto SAST
+### Auto SAST **[ULTIMATE]**
 
 > Introduced in [GitLab Ultimate][ee] 10.3.
 
@@ -240,7 +245,7 @@ check out.
 In GitLab Ultimate, any security warnings are also
 [shown in the merge request widget](../../user/project/merge_requests/sast.md).
 
-### Auto Dependency Scanning
+### Auto Dependency Scanning **[ULTIMATE]**
 
 > Introduced in [GitLab Ultimate][ee] 10.7.
 
@@ -292,7 +297,7 @@ up in the merge request widget for easy discovery. When the branch is deleted,
 for example after the merge request is merged, the Review App will automatically
 be deleted.
 
-### Auto DAST
+### Auto DAST **[ULTIMATE]**
 
 > Introduced in [GitLab Ultimate][ee] 10.4.
 
@@ -305,7 +310,7 @@ later download and check out.
 In GitLab Ultimate, any security warnings are also
 [shown in the merge request widget](../../user/project/merge_requests/dast.md).
 
-### Auto Browser Performance Testing
+### Auto Browser Performance Testing **[PREMIUM]**
 
 > Introduced in [GitLab Premium][ee] 10.4.
 

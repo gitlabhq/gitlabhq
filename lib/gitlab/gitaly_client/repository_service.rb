@@ -142,7 +142,7 @@ module Gitlab
           :repository_service,
           :is_rebase_in_progress,
           request,
-          timeout: GitalyClient.default_timeout
+          timeout: GitalyClient.fast_timeout
         )
 
         response.in_progress
@@ -159,7 +159,7 @@ module Gitlab
           :repository_service,
           :is_squash_in_progress,
           request,
-          timeout: GitalyClient.default_timeout
+          timeout: GitalyClient.fast_timeout
         )
 
         response.in_progress
@@ -231,6 +231,22 @@ module Gitlab
           :repository_service,
           :create_repository_from_bundle,
           enum,
+          timeout: GitalyClient.default_timeout
+        )
+      end
+
+      def create_from_snapshot(http_url, http_auth)
+        request = Gitaly::CreateRepositoryFromSnapshotRequest.new(
+          repository: @gitaly_repo,
+          http_url: http_url,
+          http_auth: http_auth
+        )
+
+        GitalyClient.call(
+          @storage,
+          :repository_service,
+          :create_repository_from_snapshot,
+          request,
           timeout: GitalyClient.default_timeout
         )
       end

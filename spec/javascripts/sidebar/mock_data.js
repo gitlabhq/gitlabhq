@@ -138,7 +138,7 @@ const RESPONSE_MAP = {
       },
       {
         id: 20,
-        name_with_namespace: 'foo / bar',
+        name_with_namespace: '<img src=x onerror=alert(document.domain)> foo / bar',
       },
     ],
   },

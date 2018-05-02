@@ -29,10 +29,16 @@ class GeoNodeStatus < ActiveRecord::Base
     wikis_count: 'Total number of wikis available on primary',
     wikis_synced_count: 'Number of wikis synced on secondary',
     wikis_failed_count: 'Number of wikis failed to sync on secondary',
+    repositories_checksummed_count: 'Number of repositories checksummed on primary',
+    repositories_checksum_failed_count: 'Number of repositories failed to calculate the checksum on primary',
+    wikis_checksummed_count: 'Number of wikis checksummed on primary',
+    wikis_checksum_failed_count: 'Number of wikis failed to calculate the checksum on primary',
     repositories_verified_count: 'Number of repositories verified on secondary',
     repositories_verification_failed_count: 'Number of repositories failed to verify on secondary',
+    repositories_checksum_mismatch_count: 'Number of repositories that checksum mismatch on secondary',
     wikis_verified_count: 'Number of wikis verified on secondary',
     wikis_verification_failed_count: 'Number of wikis failed to verify on secondary',
+    wikis_checksum_mismatch_count: 'Number of wikis that checksum mismatch on secondary',
     lfs_objects_count: 'Total number of local LFS objects available on primary',
     lfs_objects_synced_count: 'Number of local LFS objects synced on secondary',
     lfs_objects_failed_count: 'Number of local LFS objects failed to sync on secondary',
@@ -85,6 +91,24 @@ class GeoNodeStatus < ActiveRecord::Base
     status
   end
 
+  def self.fast_current_node_status
+    # Primary's status is easy to calculate so we can calculate it on the fly
+    return current_node_status if Gitlab::Geo.primary?
+
+    spawn_worker
+
+    attrs = Rails.cache.read(cache_key) || {}
+    new(attrs)
+  end
+
+  def self.spawn_worker
+    ::Geo::MetricsUpdateWorker.perform_async
+  end
+
+  def self.cache_key
+    "geo-node:#{Gitlab::Geo.current_node.id}:status"
+  end
+
   def self.from_json(json_data)
     json_data.slice!(*allowed_params)
 
@@ -107,6 +131,10 @@ class GeoNodeStatus < ActiveRecord::Base
 
   def initialize_feature_flags
     self.repository_verification_enabled = Feature.enabled?('geo_repository_verification')
+  end
+
+  def update_cache!
+    Rails.cache.write(self.class.cache_key, attributes)
   end
 
   def load_data_from_current_node
@@ -146,7 +174,6 @@ class GeoNodeStatus < ActiveRecord::Base
 
     load_primary_data
     load_secondary_data
-    load_verification_data
 
     self
   end
@@ -156,6 +183,13 @@ class GeoNodeStatus < ActiveRecord::Base
       self.replication_slots_count = geo_node.replication_slots_count
       self.replication_slots_used_count = geo_node.replication_slots_used_count
       self.replication_slots_max_retained_wal_bytes = geo_node.replication_slots_max_retained_wal_bytes
+
+      if repository_verification_enabled
+        self.repositories_checksummed_count = repository_verification_finder.count_verified_repositories
+        self.repositories_checksum_failed_count = repository_verification_finder.count_verification_failed_repositories
+        self.wikis_checksummed_count = repository_verification_finder.count_verified_wikis
+        self.wikis_checksum_failed_count = repository_verification_finder.count_verification_failed_wikis
+      end
     end
   end
 
@@ -180,17 +214,20 @@ class GeoNodeStatus < ActiveRecord::Base
       self.attachments_failed_count = attachments_finder.count_failed_attachments
       self.attachments_registry_count = attachments_finder.count_registry_attachments
       self.attachments_synced_missing_on_primary_count = attachments_finder.count_synced_missing_on_primary_attachments
+
+      load_verification_data
     end
   end
 
   def load_verification_data
-    return unless repository_verification_enabled
-
-    finder = Gitlab::Geo.primary? ? repository_verification_finder : projects_finder
-    self.repositories_verified_count = finder.count_verified_repositories
-    self.repositories_verification_failed_count = finder.count_verification_failed_repositories
-    self.wikis_verified_count = finder.count_verified_wikis
-    self.wikis_verification_failed_count = finder.count_verification_failed_wikis
+    if repository_verification_enabled
+      self.repositories_verified_count = projects_finder.count_verified_repositories
+      self.repositories_verification_failed_count = projects_finder.count_verification_failed_repositories
+      self.repositories_checksum_mismatch_count = projects_finder.count_repositories_checksum_mismatch
+      self.wikis_verified_count = projects_finder.count_verified_wikis
+      self.wikis_verification_failed_count = projects_finder.count_verification_failed_wikis
+      self.wikis_checksum_mismatch_count = projects_finder.count_wikis_checksum_mismatch
+    end
   end
 
   alias_attribute :health, :status_message
@@ -233,6 +270,14 @@ class GeoNodeStatus < ActiveRecord::Base
 
   def wikis_synced_in_percentage
     calc_percentage(wikis_count, wikis_synced_count)
+  end
+
+  def repositories_checksummed_in_percentage
+    calc_percentage(repositories_count, repositories_checksummed_count)
+  end
+
+  def wikis_checksummed_in_percentage
+    calc_percentage(wikis_count, wikis_checksummed_count)
   end
 
   def repositories_verified_in_percentage

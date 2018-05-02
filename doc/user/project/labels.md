@@ -9,8 +9,7 @@ Labels allow you to categorize issues or merge requests using descriptive titles
 In GitLab, you can create project and group labels:
 
 - **Project labels** can be assigned to issues or merge requests in that project only. 
-- **Group labels** can be assigned to any issue or merge request of any project in that group or subgroup.
-- In the [future](https://gitlab.com/gitlab-org/gitlab-ce/issues/40915), you will be able to assign group labels to issues and merge reqeusts of projects in [subgroups](../group/subgroups/index.md).
+- **Group labels** can be assigned to any issue or merge request of any project in that group or any subgroups of the group.
 
 ## Creating labels
 
@@ -88,9 +87,9 @@ From the group epic list page, you can [filter](../search/index.md#issues-and-me
 ### Filtering in issue boards
 
 - From [project boards](issue_board.md), you can filter by both group labels and project labels in the [search and filter bar](../search/index.md#issue-boards).
-- From [group issue boards](issue_board.md#group-issue-boards), you can filter by only group labels in the [search and filter bar](../search/index.md#issue-boards) (available in GitLab Premium).
-- From [project boards](issue_board.md), you can filter by both group labels and project labels in the [issue board configuration](issue_board.md#board-with-configuration) (available in GitLab Premium).
-- From [group issue boards](issue_board.md#group-issue-boards), you can filter by only group labels in the [issue board configuration](issue_board.md#board-with-configuration) (available in GitLab Premium).
+- From [group issue boards](issue_board.md#group-issue-boards), you can filter by only group labels in the [search and filter bar](../search/index.md#issue-boards). **[PREMIUM]**
+- From [project boards](issue_board.md), you can filter by both group labels and project labels in the [issue board configuration](issue_board.md#board-with-configuration). **[PREMIUM]**
+- From [group issue boards](issue_board.md#group-issue-boards), you can filter by only group labels in the [issue board configuration](issue_board.md#board-with-configuration). **[PREMIUM]**
 
 ## Subscribing to labels
 

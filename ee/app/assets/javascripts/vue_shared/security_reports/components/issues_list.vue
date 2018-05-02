@@ -34,14 +34,19 @@ export default {
       required: false,
       default: () => [],
     },
-    isFullReportVisible: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     type: {
       type: String,
       required: true,
+    },
+  },
+  data() {
+    return {
+      isFullReportVisible: false,
+    };
+  },
+  methods: {
+    openFullReport() {
+      this.isFullReportVisible = true;
     },
   },
 };
@@ -81,5 +86,14 @@ export default {
       status="success"
       :issues="resolvedIssues"
     />
+
+    <button
+      v-if="allIssues.length && !isFullReportVisible"
+      type="button"
+      class="btn-link btn-blank prepend-left-10 js-expand-full-list break-link"
+      @click="openFullReport"
+    >
+      {{ s__("ciReport|Show complete code vulnerabilities report") }}
+    </button>
   </div>
 </template>

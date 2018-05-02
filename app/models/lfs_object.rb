@@ -4,7 +4,7 @@ class LfsObject < ActiveRecord::Base
   include ObjectStorage::BackgroundMove
 
   has_many :lfs_objects_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :projects, -> { auto_include(false) }, through: :lfs_objects_projects
+  has_many :projects, through: :lfs_objects_projects
 
   scope :with_files_stored_locally, -> { where(file_store: [nil, LfsObjectUploader::Store::LOCAL]) }
   scope :with_files_stored_remotely, -> { where(file_store: LfsObjectUploader::Store::REMOTE) }
@@ -13,10 +13,12 @@ class LfsObject < ActiveRecord::Base
 
   mount_uploader :file, LfsObjectUploader
 
-  before_save :update_file_store
+  after_save :update_file_store
 
   def update_file_store
-    self.file_store = file.object_store
+    # The file.object_store is set during `uploader.store!`
+    # which happens after object is inserted/updated
+    self.update_column(:file_store, file.object_store)
   end
 
   def project_allowed_access?(project)

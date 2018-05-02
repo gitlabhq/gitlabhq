@@ -73,7 +73,7 @@ feature 'EE Clusters' do
         end
       end
 
-      context 'when user adds an GKE cluster' do
+      context 'when user adds an Google Kubernetes Engine cluster' do
         before do
           allow_any_instance_of(Projects::Clusters::GcpController)
             .to receive(:token_in_session).and_return('token')
@@ -105,7 +105,7 @@ feature 'EE Clusters' do
         context 'when user filled form with environment scope' do
           before do
             click_link 'Add Kubernetes cluster'
-            click_link 'Create on GKE'
+            click_link 'Create on Google Kubernetes Engine'
             fill_in 'cluster_provider_gcp_attributes_gcp_project_id', with: 'gcp-project-123'
             fill_in 'cluster_name', with: 'staging-cluster'
             fill_in 'cluster_environment_scope', with: 'staging/*'
@@ -135,7 +135,7 @@ feature 'EE Clusters' do
         context 'when user updates duplicated environment scope' do
           before do
             click_link 'Add Kubernetes cluster'
-            click_link 'Create on GKE'
+            click_link 'Create on Google Kubernetes Engine'
             fill_in 'cluster_provider_gcp_attributes_gcp_project_id', with: 'gcp-project-123'
             fill_in 'cluster_name', with: 'staging-cluster'
             fill_in 'cluster_environment_scope', with: '*'

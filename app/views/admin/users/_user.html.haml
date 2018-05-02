@@ -49,7 +49,7 @@
                   delete_user_url: admin_user_path(user),
                   block_user_url: block_admin_user_path(user),
                   username: user.name,
-                  delete_contributions: 'false' }, type: 'button' }
+                  delete_contributions: false }, type: 'button' }
                   = s_('AdminUsers|Delete user')
 
             %li
@@ -58,5 +58,5 @@
                 delete_user_url: admin_user_path(user, hard_delete: true),
                 block_user_url: block_admin_user_path(user),
                 username: user.name,
-                delete_contributions: 'true' }, type: 'button' }
+                delete_contributions: true }, type: 'button' }
                 = s_('AdminUsers|Delete user and contributions')

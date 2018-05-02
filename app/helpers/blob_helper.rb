@@ -17,7 +17,7 @@ module BlobHelper
   end
 
   def ide_edit_path(project = @project, ref = @ref, path = @path, options = {})
-    "#{ide_path}/project#{edit_blob_path(project, ref, path, options)}"
+    "#{ide_path}/project#{url_for([project, "edit", "blob", id: [ref, path], script_name: "/"])}"
   end
 
   def edit_blob_button(project = @project, ref = @ref, path = @path, options = {})
@@ -259,7 +259,7 @@ module BlobHelper
     options = []
 
     if error == :collapsed
-      options << link_to('load it anyway', url_for(params.merge(viewer: viewer.type, expanded: true, format: nil)))
+      options << link_to('load it anyway', url_for(safe_params.merge(viewer: viewer.type, expanded: true, format: nil)))
     end
 
     # If the error is `:server_side_but_stored_externally`, the simple viewer will show the same error,

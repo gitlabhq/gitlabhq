@@ -34,26 +34,8 @@ module API
       get 'status' do
         authenticate_by_gitlab_geo_node_token!
 
-        status = ::GeoNodeStatus.current_node_status
+        status = ::GeoNodeStatus.fast_current_node_status
         present status, with: EE::API::Entities::GeoNodeStatus
-      end
-    end
-
-    helpers do
-      def authenticate_by_gitlab_geo_node_token!
-        auth_header = headers['Authorization']
-
-        begin
-          unless auth_header && Gitlab::Geo::JwtRequestDecoder.new(auth_header).decode
-            unauthorized!
-          end
-        rescue Gitlab::Geo::InvalidDecryptionKeyError, Gitlab::Geo::SignatureTimeInvalidError => e
-          render_api_error!(e.to_s, 401)
-        end
-      end
-
-      def require_node_to_be_enabled!
-        forbidden! 'Geo node is disabled.' unless Gitlab::Geo.current_node&.enabled?
       end
     end
   end

@@ -57,6 +57,7 @@ GET /users
 | --------- | ---- | -------- | ----------- |
 | `order_by` | string | no | Return projects ordered by `id`, `name`, `username`, `created_at`, or `updated_at` fields. Default is `id` |
 | `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
+| `two_factor` | string | no | Filter users by Two-factor authentication. Filter values are `enabled` or `disabled`. By default it returns all users |
 
 ```json
 [

@@ -1,4 +1,4 @@
-# Database Load Balancing
+# Database Load Balancing **[PREMIUM ONLY]**
 
 > [Introduced][ee-1283] in [GitLab Premium][eep] 9.0.
 

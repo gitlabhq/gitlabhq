@@ -73,32 +73,15 @@ module Gitlab
       end
 
       def fetch_remote(name, timeout, force:, tags:, ssh_key: nil, known_hosts: nil, prune: true)
-        tags_option = tags ? '--tags' : '--no-tags'
-
         logger.info "Fetching remote #{name} for repository #{repository_absolute_path}."
-        cmd = %W(#{git_fetch_binary} fetch #{name} --quiet)
-        cmd << '--prune' if prune
-        cmd << '--force' if force
-        cmd << tags_option
+        cmd = fetch_remote_command(name, tags, prune, force)
 
         setup_ssh_auth(ssh_key, known_hosts) do |env|
-          success = run_with_timeout(cmd, timeout, repository_absolute_path, env)
-
-          unless success
-            logger.error "Fetching remote #{name} for repository #{repository_absolute_path} failed."
+          run_with_timeout(cmd, timeout, repository_absolute_path, env).tap do |success|
+            unless success
+              logger.error "Fetching remote #{name} for repository #{repository_absolute_path} failed."
+            end
           end
-
-          success
-        end
-      end
-
-      # This is a workaround for Geo until we can ship git 2.16
-      # See https://gitlab.com/gitlab-org/gitlab-ee/issues/5214
-      def git_fetch_binary
-        if ENV['USE_SYSTEM_GIT_FOR_FETCH'] == '1'
-          '/usr/bin/git'
-        else
-          Gitlab.config.git.bin_path
         end
       end
 
@@ -223,6 +206,14 @@ module Gitlab
       end
 
       private
+
+      def fetch_remote_command(name, tags, prune, force)
+        %W(#{Gitlab.config.git.bin_path} fetch #{name} --quiet).tap do |cmd|
+          cmd << '--prune' if prune
+          cmd << '--force' if force
+          cmd << (tags ? '--tags' : '--no-tags')
+        end
+      end
 
       def git_import_repository(source, timeout)
         # Skip import if repo already exists

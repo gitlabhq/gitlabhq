@@ -8,9 +8,9 @@ describe GroupPolicy do
   let(:owner) { create(:user) }
   let(:auditor) { create(:user, :auditor) }
   let(:admin) { create(:admin) }
-  let(:group) { create(:group) }
+  let(:group) { create(:group, :private) }
 
-  let(:guest_permissions) { [:read_group, :upload_file, :read_namespace] }
+  let(:guest_permissions) { [:read_label, :read_group, :upload_file, :read_namespace] }
 
   let(:reporter_permissions) { [:admin_label] }
 
@@ -51,6 +51,7 @@ describe GroupPolicy do
   end
 
   context 'with no user' do
+    let(:group) { create(:group, :public) }
     let(:current_user) { nil }
 
     it do
@@ -61,6 +62,28 @@ describe GroupPolicy do
       expect_disallowed(*master_permissions)
       expect_disallowed(*owner_permissions)
       expect_disallowed(:read_namespace)
+    end
+  end
+
+  context 'has projects' do
+    let(:current_user) { create(:user) }
+    let(:project) { create(:project, namespace: group) }
+
+    before do
+      project.add_developer(current_user)
+    end
+
+    it do
+      expect_allowed(:read_group, :read_label)
+    end
+
+    context 'in subgroups', :nested_groups do
+      let(:subgroup) { create(:group, :private, parent: group) }
+      let(:project) { create(:project, namespace: subgroup) }
+
+      it do
+        expect_allowed(:read_group, :read_label)
+      end
     end
   end
 

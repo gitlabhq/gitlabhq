@@ -104,9 +104,18 @@
           // Set offset to 0.
           offset = 'left: 0;';
         } else {
-          // Calculate proportional offset based on startDate and total days in
-          // current month.
-          offset = `left: ${Math.floor((startDate / daysInMonth) * 100)}%;`;
+          // If Epic end date is out of range
+          const lastTimeframeItem = this.timeframe[this.timeframe.length - 1];
+          // Check if Epic start date falls within last month of the timeframe
+          if (this.epic.startDate.getMonth() === lastTimeframeItem.getMonth() &&
+              this.epic.startDate.getFullYear() === lastTimeframeItem.getFullYear()) {
+            // Compensate for triangle size
+            offset = `right: ${TIMELINE_END_OFFSET_HALF}px;`;
+          } else {
+            // Calculate proportional offset based on startDate and total days in
+            // current month.
+            offset = `left: ${(startDate / daysInMonth) * 100}%;`;
+          }
         }
 
         return offset;

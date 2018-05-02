@@ -1,5 +1,0 @@
----
-title: Fix validation error message when historical data is empty
-merge_request: 4961
-author:
-type: fixed

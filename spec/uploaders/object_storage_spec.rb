@@ -75,36 +75,8 @@ describe ObjectStorage do
         expect(object).to receive(:file_store).and_return(nil)
       end
 
-      context 'when object storage is enabled' do
-        context 'when direct uploads are enabled' do
-          before do
-            stub_uploads_object_storage(uploader_class, enabled: true, direct_upload: true)
-          end
-
-          it "uses Store::REMOTE" do
-            is_expected.to eq(described_class::Store::REMOTE)
-          end
-        end
-
-        context 'when direct uploads are disabled' do
-          before do
-            stub_uploads_object_storage(uploader_class, enabled: true, direct_upload: false)
-          end
-
-          it "uses Store::LOCAL" do
-            is_expected.to eq(described_class::Store::LOCAL)
-          end
-        end
-      end
-
-      context 'when object storage is disabled' do
-        before do
-          stub_uploads_object_storage(uploader_class, enabled: false)
-        end
-
-        it "uses Store::LOCAL" do
-          is_expected.to eq(described_class::Store::LOCAL)
-        end
+      it "uses Store::LOCAL" do
+        is_expected.to eq(described_class::Store::LOCAL)
       end
     end
 
@@ -549,6 +521,72 @@ describe ObjectStorage do
       end
     end
 
+    context 'when local file is used' do
+      let(:temp_file) { Tempfile.new("test") }
+
+      before do
+        FileUtils.touch(temp_file)
+      end
+
+      after do
+        FileUtils.rm_f(temp_file)
+      end
+
+      context 'when valid file is used' do
+        context 'when valid file is specified' do
+          let(:uploaded_file) { temp_file }
+
+          context 'when object storage and direct upload is specified' do
+            before do
+              stub_uploads_object_storage(uploader_class, enabled: true, direct_upload: true)
+            end
+
+            context 'when file is stored' do
+              subject do
+                uploader.store!(uploaded_file)
+              end
+
+              it 'file to be remotely stored in permament location' do
+                subject
+
+                expect(uploader).to be_exists
+                expect(uploader).not_to be_cached
+                expect(uploader).not_to be_file_storage
+                expect(uploader.path).not_to be_nil
+                expect(uploader.path).not_to include('tmp/upload')
+                expect(uploader.path).not_to include('tmp/cache')
+                expect(uploader.object_store).to eq(described_class::Store::REMOTE)
+              end
+            end
+          end
+
+          context 'when object storage and direct upload is not used' do
+            before do
+              stub_uploads_object_storage(uploader_class, enabled: true, direct_upload: false)
+            end
+
+            context 'when file is stored' do
+              subject do
+                uploader.store!(uploaded_file)
+              end
+
+              it 'file to be remotely stored in permament location' do
+                subject
+
+                expect(uploader).to be_exists
+                expect(uploader).not_to be_cached
+                expect(uploader).to be_file_storage
+                expect(uploader.path).not_to be_nil
+                expect(uploader.path).not_to include('tmp/upload')
+                expect(uploader.path).not_to include('tmp/cache')
+                expect(uploader.object_store).to eq(described_class::Store::LOCAL)
+              end
+            end
+          end
+        end
+      end
+    end
+
     context 'when remote file is used' do
       let(:temp_file) { Tempfile.new("test") }
 
@@ -602,9 +640,9 @@ describe ObjectStorage do
 
             expect(uploader).to be_exists
             expect(uploader).to be_cached
+            expect(uploader).not_to be_file_storage
             expect(uploader.path).not_to be_nil
             expect(uploader.path).not_to include('tmp/cache')
-            expect(uploader.url).not_to be_nil
             expect(uploader.path).not_to include('tmp/cache')
             expect(uploader.object_store).to eq(described_class::Store::REMOTE)
           end
@@ -619,6 +657,7 @@ describe ObjectStorage do
 
               expect(uploader).to be_exists
               expect(uploader).not_to be_cached
+              expect(uploader).not_to be_file_storage
               expect(uploader.path).not_to be_nil
               expect(uploader.path).not_to include('tmp/upload')
               expect(uploader.path).not_to include('tmp/cache')

@@ -1,4 +1,4 @@
-# GitLab CI/CD for external repositories
+# GitLab CI/CD for external repositories **[PREMIUM]**
 
 >[Introduced][ee-4642] in [GitLab Premium][eep] 10.6.
 
@@ -10,8 +10,8 @@ external repository to get the benefits of GitLab CI/CD.
 - [Bitbucket Cloud](bitbucket_integration.md)
 
 Connecting an external repository will set up [repository mirroring][mirroring]
-and create a lightweight project where issues, merge requests, container
-registry, wiki, and snippets disabled. These features
+and create a lightweight project where issues, merge requests, wiki, and
+snippets disabled. These features
 [can be re-enabled later][settings].
 
 1. From your GitLab dashboard click **New project**
@@ -20,7 +20,6 @@ registry, wiki, and snippets disabled. These features
 1. The next steps are similar to the [import flow](../../user/project/import/index.md)
 
 ![CI/CD for external repository project creation](img/ci_cd_for_external_repo.png)
-
 
 [ee-4642]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/4642
 [eep]: https://about.gitlab.com/products/

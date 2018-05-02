@@ -1,6 +1,5 @@
 # Repository mirroring
 
-
 Repository Mirroring is a way to mirror repositories from external sources.
 It can be used to mirror all branches, tags, and commits that you have
 in your repository.
@@ -47,7 +46,7 @@ A few things/limitations to consider:
   a push mirror so that your active GitLab repository can push its changes to the
   old location.
 
-## Pulling from a remote repository
+## Pulling from a remote repository **[STARTER]**
 
 >[Introduced][ee-51] in GitLab Enterprise Edition 8.2.
 
@@ -84,7 +83,7 @@ this branch to prevent any changes from being lost.
 
 ![Diverged branch](repository_mirroring/repository_mirroring_diverged_branch.png)
 
-### Trigger update using API
+### Trigger update using API **[STARTER]**
 
 >[Introduced][ee-3453] in GitLab Enterprise Edition 10.3.
 
@@ -94,7 +93,7 @@ will be pulled immediately.
 
 Read the [Pull Mirror Trigger API docs][pull-api].
 
-### Pull only protected branches
+### Pull only protected branches **[STARTER]**
 
 >[Introduced][ee-3326] in GitLab Enterprise Edition 10.3.
 
@@ -102,7 +101,7 @@ You can choose to only pull the protected branches from your remote repository t
 
 To use this option go to your project's repository settings page under pull mirror.
 
-### Overwrite diverged branches
+### Overwrite diverged branches **[STARTER]**
 
 >[Introduced][ee-4559] in GitLab Enterprise Edition 10.6.
 
@@ -111,7 +110,7 @@ if your local version has diverged from the remote.
 
 To use this option go to your project's repository settings page under pull mirror.
 
-### Hard failure
+### Hard failure **[STARTER]**
 
 >[Introduced][ee-3117] in GitLab Enterprise Edition 10.2.
 
@@ -127,7 +126,7 @@ When a project is hard failed, it will no longer get picked up for mirroring.
 A user can resume the project mirroring again by either [forcing an update](#forcing-an-update)
 or by changing the import URL in repository settings.
 
-### SSH authentication
+### SSH authentication **[STARTER]**
 
 > [Introduced][ee-2551] in GitLab Starter 9.5
 
@@ -230,7 +229,7 @@ backoff period.
 If the mirror fails (eg: branch diverged from upstream), the project's backoff
 period will be penalized each time it fails up to a maximum amount of time.
 
-## Pushing to a remote repository
+## Pushing to a remote repository **[STARTER]**
 
 >[Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/249) in
 GitLab Enterprise Edition 8.7.

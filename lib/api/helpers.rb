@@ -106,9 +106,9 @@ module API
     end
 
     def find_project(id)
-      if id =~ /^\d+$/
+      if id.is_a?(Integer) || id =~ /^\d+$/
         Project.find_by(id: id)
-      else
+      elsif id.include?("/")
         Project.find_by_full_path(id)
       end
     end
@@ -182,6 +182,10 @@ module API
 
     def find_project_merge_request(iid)
       MergeRequestsFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
+    end
+
+    def find_project_commit(id)
+      user_project.commit_by(oid: id)
     end
 
     def find_project_snippet(id)

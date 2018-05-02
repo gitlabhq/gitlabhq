@@ -1407,10 +1407,7 @@ POST /projects/:id/housekeeping
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
-## Push Rules
-
->**Note:**
-Available in [GitLab Starter](https://about.gitlab.com/products).
+## Push Rules **[STARTER]**
 
 ### Get project push rules
 
@@ -1507,9 +1504,9 @@ Read more in the [Project import/export](project_import_export.md) documentation
 
 Read more in the [Project members](members.md) documentation.
 
-## Start the pull mirroring process for a Project
+## Start the pull mirroring process for a Project **[STARTER]**
 
-> Introduced in GitLab 10.3. **Note:** Available in [GitLab Starter](https://about.gitlab.com/products).
+> Introduced in [GitLab Starter](https://about.gitlab.com/products) 10.3.
 
 ```
 POST /projects/:id/mirror/pull
@@ -1526,3 +1523,25 @@ Read more in the [Project Badges](project_badges.md) documentation.
 ## Issue and merge request description templates
 
 The non-default [issue and merge request description templates](../user/project/description_templates.md) are managed inside the project's repository. So you can manage them via the API through the [Repositories API](repositories.md) and the [Repository Files API](repository_files.md).
+
+## Download snapshot of a git repository
+
+> Introduced in GitLab 10.7
+
+This endpoint may only be accessed by an administrative user.
+
+Download a snapshot of the project (or wiki, if requested) git repository. This
+snapshot is always in uncompressed [tar](https://en.wikipedia.org/wiki/Tar_(computing))
+format.
+
+If a repository is corrupted to the point where `git clone` does not work, the
+snapshot may allow some of the data to be retrieved.
+
+```
+GET /projects/:id/snapshot
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `wiki`    | boolean | no | Whether to download the wiki, rather than project, repository |

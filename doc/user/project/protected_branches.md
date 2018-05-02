@@ -66,7 +66,7 @@ dropdown list in the "Already protected" area.
 If you don't choose any of those options while creating a protected branch,
 they are set to "Masters" by default.
 
-## Restricting push and merge access to certain users
+## Restricting push and merge access to certain users **[STARTER]**
 
 > This feature was [introduced][ce-5081] in [GitLab Starter][ee] 8.11.
 

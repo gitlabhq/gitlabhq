@@ -2,7 +2,6 @@ import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import newEpic from 'ee/epics/new_epic/components/new_epic.vue';
-import * as urlUtility from '~/lib/utils/url_utility';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('newEpic', () => {
@@ -40,7 +39,7 @@ describe('newEpic', () => {
 
   describe('creating epic', () => {
     it('should call createEpic service', (done) => {
-      spyOn(urlUtility, 'visitUrl').and.callFake(() => {});
+      spyOnDependency(newEpic, 'visitUrl').and.callFake(done);
       spyOn(vm.service, 'createEpic').and.callThrough();
 
       vm.title = 'test';
@@ -48,12 +47,11 @@ describe('newEpic', () => {
       Vue.nextTick(() => {
         vm.$el.querySelector('.btn-save').click();
         expect(vm.service.createEpic).toHaveBeenCalled();
-        done();
       });
     });
 
     it('should redirect to epic url after epic creation', (done) => {
-      spyOn(urlUtility, 'visitUrl').and.callFake((url) => {
+      spyOnDependency(newEpic, 'visitUrl').and.callFake((url) => {
         expect(url).toEqual(gl.TEST_HOST);
         done();
       });
@@ -66,7 +64,7 @@ describe('newEpic', () => {
     });
 
     it('should toggle loading button while creating', (done) => {
-      spyOn(urlUtility, 'visitUrl').and.callFake(() => {});
+      spyOnDependency(newEpic, 'visitUrl').and.callFake(done);
       vm.title = 'test';
 
       Vue.nextTick(() => {
@@ -76,7 +74,6 @@ describe('newEpic', () => {
         expect(loadingIcon).toBeNull();
         btnSave.click();
         expect(loadingIcon).toBeDefined();
-        done();
       });
     });
   });

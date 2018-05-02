@@ -50,12 +50,12 @@ Here is a snippet of the important settings:
 gitlabUrl: http://gitlab.your-domain.com/
 
 ## The Registration Token for adding new Runners to the GitLab Server. This must
-## be retreived from your GitLab Instance.
+## be retrieved from your GitLab Instance.
 ## ref: https://docs.gitlab.com/ce/ci/runners/README.html#creating-and-registering-a-runner
 ##
 runnerRegistrationToken: ""
 
-## Set the certsSecretName in order to pass custom certficates for GitLab Runner to use
+## Set the certsSecretName in order to pass custom certificates for GitLab Runner to use
 ## Provide resource name for a Kubernetes Secret Object in the same namespace,
 ## this is used to populate the /etc/gitlab-runner/certs directory
 ## ref: https://docs.gitlab.com/runner/configuration/tls-self-signed.html#supported-options-for-self-signed-certificates
@@ -72,6 +72,18 @@ concurrent: 10
 ##
 checkInterval: 30
 
+## For RBAC support:
+rbac:
+  create: false
+
+  ## Run the gitlab-bastion container with the ability to deploy/manage containers of jobs
+  ## cluster-wide or only within namespace
+  clusterWideAccess: false
+
+  ## Use the following Kubernetes Service Account name if RBAC is disabled in this Helm chart (see rbac.create)
+  ##
+  # serviceAccountName: default
+
 ## Configuration for the Pods that that the runner launches for each new job
 ##
 runners:
@@ -80,7 +92,7 @@ runners:
   image: ubuntu:16.04
 
   ## Run all containers with the privileged flag enabled
-  ## This will allow the docker:dind image to run if you need to run Docker
+  ## This will allow the docker:stable-dind image to run if you need to run Docker
   ## commands. Please read the docs before turning this on:
   ## ref: https://docs.gitlab.com/runner/executors/kubernetes.html#using-docker-dind
   ##
@@ -116,6 +128,12 @@ runners:
 
 ```
 
+### Enabling RBAC support
+
+If your cluster has RBAC enabled, you can choose to either have the chart create its own service account or provide one.
+
+To have the chart create the service account for you, set `rbac.create` to true. 
+
 ### Controlling maximum Runner concurrency
 
 A single GitLab Runner deployed on Kubernetes is able to execute multiple jobs in parallel by automatically starting additional Runner pods. The [`concurrent` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section) controls the maximum number of pods allowed at a single time, and defaults to `10`.
@@ -147,7 +165,7 @@ enable privileged mode in `values.yaml`:
 ```yaml
 runners:
   ## Run all containers with the privileged flag enabled
-  ## This will allow the docker:dind image to run if you need to run Docker
+  ## This will allow the docker:stable-dind image to run if you need to run Docker
   ## commands. Please read the docs before turning this on:
   ## ref: https://docs.gitlab.com/runner/executors/kubernetes.html#using-docker-dind
   ##
@@ -190,7 +208,7 @@ You then need to provide the secret's name to the GitLab Runner chart.
 Add the following to your `values.yaml`
 
 ```yaml
-## Set the certsSecretName in order to pass custom certficates for GitLab Runner to use
+## Set the certsSecretName in order to pass custom certificates for GitLab Runner to use
 ## Provide resource name for a Kubernetes Secret Object in the same namespace,
 ## this is used to populate the /etc/gitlab-runner/certs directory
 ## ref: https://docs.gitlab.com/runner/configuration/tls-self-signed.html#supported-options-for-self-signed-certificates

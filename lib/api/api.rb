@@ -168,6 +168,7 @@ module API
     mount ::API::ProjectHooks
     mount ::API::Projects
     mount ::API::ProjectMilestones
+    mount ::API::ProjectSnapshots
     mount ::API::ProjectSnippets
     mount ::API::ProtectedBranches
     mount ::API::Repositories

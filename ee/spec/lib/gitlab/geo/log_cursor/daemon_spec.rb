@@ -113,7 +113,7 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
       end
 
       context 'when event source is repository' do
-        let!(:registry) { create(:geo_project_registry, :synced, :repository_verified, project: repository_updated_event.project) }
+        let!(:registry) { create(:geo_project_registry, :synced, :repository_verified, :repository_checksum_mismatch, project: repository_updated_event.project) }
 
         before do
           repository_updated_event.update!(source: Geo::RepositoryUpdatedEvent::REPOSITORY)
@@ -125,16 +125,19 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
           expect(registry.reload.resync_repository).to be true
         end
 
-        it 'resets the repository verification checksum and failure' do
+        it 'resets the repository verification fields' do
           daemon.run_once!
 
           expect(registry.reload).to have_attributes(
-            resync_repository: true, repository_verification_checksum_sha: nil, last_repository_verification_failure: nil)
+            repository_verification_checksum_sha: nil,
+            repository_checksum_mismatch: false,
+            last_repository_verification_failure: nil
+          )
         end
       end
 
       context 'when event source is wiki' do
-        let!(:registry) { create(:geo_project_registry, :synced, :wiki_verified, project: repository_updated_event.project) }
+        let!(:registry) { create(:geo_project_registry, :synced, :wiki_verified, :wiki_checksum_mismatch, project: repository_updated_event.project) }
 
         before do
           repository_updated_event.update!(source: Geo::RepositoryUpdatedEvent::WIKI)
@@ -146,11 +149,14 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
           expect(registry.reload.resync_wiki).to be true
         end
 
-        it 'resets the wiki verification checksum and failure' do
+        it 'resets the wiki repository verification fields' do
           daemon.run_once!
 
           expect(registry.reload).to have_attributes(
-            resync_wiki: true, wiki_verification_checksum_sha: nil, last_wiki_verification_failure: nil)
+            wiki_verification_checksum_sha: nil,
+            wiki_checksum_mismatch: false,
+            last_wiki_verification_failure: nil
+          )
         end
       end
 

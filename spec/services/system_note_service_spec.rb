@@ -984,28 +984,6 @@ describe SystemNoteService do
     end
   end
 
-  describe '.change_time_estimate' do
-    subject { described_class.change_time_estimate(noteable, project, author) }
-
-    it_behaves_like 'a system note' do
-      let(:action) { 'time_tracking' }
-    end
-
-    context 'with a time estimate' do
-      it 'sets the note text' do
-        noteable.update_attribute(:time_estimate, 277200)
-
-        expect(subject.note).to eq "changed time estimate to 1w 4d 5h"
-      end
-    end
-
-    context 'without a time estimate' do
-      it 'sets the note text' do
-        expect(subject.note).to eq "removed time estimate"
-      end
-    end
-  end
-
   describe '.change_time_spent' do
     # We need a custom noteable in order to the shared examples to be green.
     let(:noteable) do

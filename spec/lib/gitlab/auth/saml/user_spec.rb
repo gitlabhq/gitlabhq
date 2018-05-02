@@ -24,10 +24,6 @@ describe Gitlab::Auth::Saml::User do
       allow(Gitlab.config.omniauth).to receive_messages(messages)
     end
 
-    def stub_ldap_config(messages)
-      allow(Gitlab::Auth::LDAP::Config).to receive_messages(messages)
-    end
-
     def stub_basic_saml_config
       allow(Gitlab::Auth::Saml::Config).to receive_messages({ options: { name: 'saml', args: {} } })
     end

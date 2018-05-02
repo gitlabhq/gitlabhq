@@ -88,7 +88,7 @@ class Burndown
         # reopened.
         internal_clause =
           ::Issue
-            .joins("LEFT OUTER JOIN events e ON issues.id = e.target_id AND e.target_type = 'Issue'")
+            .joins("LEFT OUTER JOIN events e ON issues.id = e.target_id AND e.target_type = 'Issue' AND e.action = #{Event::CLOSED}") # rubocop:disable GitlabSecurity/SqlInjection
             .where(milestone: @milestone)
             .where("state = 'closed' OR (state = 'opened' AND e.action = #{Event::CLOSED})") # rubocop:disable GitlabSecurity/SqlInjection
 

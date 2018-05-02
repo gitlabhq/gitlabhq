@@ -1,4 +1,4 @@
-# Related issues
+# Related issues **[STARTER]**
 
 > [Introduced][ee-1797] in [GitLab Starter][ee] 9.4.
 

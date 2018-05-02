@@ -1,4 +1,4 @@
-# Dependency Scanning
+# Dependency Scanning **[ULTIMATE]**
 
 > [Introduced][ee-5105] in [GitLab Ultimate][ee] 10.7.
 

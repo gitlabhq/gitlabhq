@@ -576,12 +576,6 @@ PrometheusMetric:
 - title
 - query
 - group
-LfsFileLock:
-- id
-- path
-- user_id
-- project_id
-- created_at
 Badge:
 - id
 - link_url
@@ -591,3 +585,5 @@ Badge:
 - created_at
 - updated_at
 - type
+ProjectCiCdSetting:
+- group_runners_enabled

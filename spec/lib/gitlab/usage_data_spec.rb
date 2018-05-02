@@ -70,6 +70,7 @@ describe Gitlab::UsageData do
       expect(count_data.keys).to match_array(%i(
         boards
         ci_builds
+        projects_mirrored_with_pipelines_enabled
         ci_internal_pipelines
         ci_external_pipelines
         ci_pipeline_config_auto_devops
@@ -107,6 +108,7 @@ describe Gitlab::UsageData do
         notes
         projects
         projects_imported_from_github
+        projects_reporting_ci_cd_back_to_github
         projects_jira_active
         projects_slack_notifications_active
         projects_slack_slash_active

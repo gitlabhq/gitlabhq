@@ -5,6 +5,8 @@
 - breadcrumb_title _("Epics Roadmap")
 
 - if @epics_count != 0
+  = render 'shared/epic/search_bar', type: :epics, hide_sort_dropdown: true
+
   #js-roadmap{ data: { epics_path: group_epics_path(@group, format: :json), group_id: @group.id, empty_state_illustration: image_path('illustrations/epics/roadmap.svg') } }
 - else
   = render 'shared/empty_states/roadmap'

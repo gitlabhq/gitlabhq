@@ -41,7 +41,6 @@ describe Geo::HashedStorageMigratedEventStore do
 
         expect(event).to have_attributes(
           repository_storage_name: project.repository_storage,
-          repository_storage_path: project.repository_storage_path,
           old_storage_version: nil,
           new_storage_version: project.storage_version,
           old_disk_path: old_disk_path,

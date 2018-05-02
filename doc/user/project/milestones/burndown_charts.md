@@ -1,7 +1,8 @@
-# Burndown Charts
+# Burndown Charts **[STARTER]**
 
 >**Notes:**
-- [Introduced][ee-1540] in [GitLab Starter 9.1][ee-9.1].
+- [Introduced][ee-1540] in [GitLab Starter 9.1][ee-9.1] for project milestones.
+- [Introduced][ee-5354] in [GitLab Silver 10.8][ee-10.8] for group milestones.
 - Closed or reopened issues prior to GitLab 9.1 won't have a `closed_at`
   value, so the burndown chart considers them as closed on the milestone
   `start_date`. In that case, a warning will be displayed.
@@ -42,13 +43,16 @@ it was taken care of closely throughout the whole quarter
 
 ## How it works
 
->**Note:** Burndown charts are only available for project milestones. They will be available for group milestones [in the future](https://gitlab.com/gitlab-org/gitlab-ee/issues/3064).
-
-A Burndown Chart is available for every project milestone that has been attributed a **start
+A Burndown Chart is available for every project or group milestone that has been attributed a **start
 date** and a **due date**.
 
 Find your project's **Burndown Chart** under **Project > Issues > Milestones**,
-and select a milestone from your current ones.
+and select a milestone from your current ones, while for group's, access the **Groups** dashboard,
+select a group, and go through **Issues > Milestones** on the sidebar.
+
+>
+  **Note:** You're able to [promote project][promote-milestone] to group milestones and still
+  see the **Burndown Chart** for them, respecting license limitations.
 
 The chart indicates the project's progress throughout that milestone (for issues assigned to it).
 
@@ -73,3 +77,6 @@ cumulative value.
 
 [ee-1540]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1540
 [ee-9.1]: https://about.gitlab.com/2017/04/22/gitlab-9-1-released/#burndown-charts-ees-eep
+[ee-5354]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/5354
+[ee-10.8]: https://about.gitlab.com/2017/04/22/gitlab-10-8-released/#burndown-charts-eep-eeu
+[promote-milestone]: https://docs.gitlab.com/ee/user/project/milestones/#promoting-project-milestones-to-group-milestones

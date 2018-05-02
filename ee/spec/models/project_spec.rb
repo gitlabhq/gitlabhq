@@ -1310,17 +1310,6 @@ describe Project do
     end
   end
 
-  describe '#user_can_push_to_empty_repo?' do
-    it 'returns false when the external service denies access' do
-      user = create(:user)
-      project = create(:project)
-      project.add_master(user)
-      external_service_deny_access(user, project)
-
-      expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
-    end
-  end
-
   describe 'project import state transitions' do
     context 'state transition: [:started] => [:finished]' do
       context 'elasticsearch indexing disabled' do
@@ -1362,6 +1351,86 @@ describe Project do
           end
         end
       end
+    end
+  end
+
+  describe '#licensed_features' do
+    let(:plan_license) { :free_plan }
+    let(:global_license) { create(:license) }
+    let(:group) { create(:group, plan: plan_license) }
+    let(:project) { create(:project, group: group) }
+
+    before do
+      allow(License).to receive(:current).and_return(global_license)
+      allow(global_license).to receive(:features).and_return([
+        :epics, # Gold only
+        :service_desk, # Silver and up
+        :audit_events, # Bronze and up
+        :geo, # Global feature, should not be checked at namespace level
+      ])
+    end
+
+    subject { project.licensed_features }
+
+    context 'when the namespace should be checked' do
+      before do
+        enable_namespace_license_check!
+      end
+
+      context 'when bronze' do
+        let(:plan_license) { :bronze_plan }
+
+        it 'filters for bronze features' do
+          is_expected.to contain_exactly(:audit_events, :geo)
+        end
+      end
+
+      context 'when silver' do
+        let(:plan_license) { :silver_plan }
+
+        it 'filters for silver features' do
+          is_expected.to contain_exactly(:service_desk, :audit_events, :geo)
+        end
+      end
+
+      context 'when gold' do
+        let(:plan_license) { :gold_plan }
+
+        it 'filters for gold features' do
+          is_expected.to contain_exactly(:epics, :service_desk, :audit_events, :geo)
+        end
+      end
+
+      context 'when free plan' do
+        let(:plan_license) { :free_plan }
+
+        it 'filters out paid features' do
+          is_expected.to contain_exactly(:geo)
+        end
+
+        context 'when public project and namespace' do
+          let(:group) { create(:group, :public, plan: plan_license) }
+          let(:project) { create(:project, :public, group: group) }
+
+          it 'includes all features in global license' do
+            is_expected.to contain_exactly(:epics, :service_desk, :audit_events, :geo)
+          end
+        end
+      end
+    end
+
+    context 'when namespace should not be checked' do
+      it 'includes all features in global license' do
+        is_expected.to contain_exactly(:epics, :service_desk, :audit_events, :geo)
+      end
+    end
+
+    context 'when there is no license' do
+      before do
+        allow(License).to receive(:current).and_return(nil)
+      end
+
+      it { is_expected.to be_empty }
     end
   end
 end

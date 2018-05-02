@@ -26,27 +26,27 @@ server, because the embedded server configuration is overwritten once every
 
 In this experimental phase, only a few metrics are available:
 
-| Metric                                        | Type      | Since | Description |
-|:--------------------------------------------- |:--------- |:----- |:----------- |
-| db_ping_timeout                               | Gauge     | 9.4   | Whether or not the last database ping timed out |
-| db_ping_success                               | Gauge     | 9.4   | Whether or not the last database ping succeeded |
-| db_ping_latency_seconds                       | Gauge     | 9.4   | Round trip time of the database ping |
-| filesystem_access_latency_seconds             | Gauge     | 9.4   | Latency in accessing a specific filesystem |
-| filesystem_accessible                         | Gauge     | 9.4   | Whether or not a specific filesystem is accessible |
-| filesystem_write_latency_seconds              | Gauge     | 9.4   | Write latency of a specific filesystem |
-| filesystem_writable                           | Gauge     | 9.4   | Whether or not the filesystem is writable |
-| filesystem_read_latency_seconds               | Gauge     | 9.4   | Read latency of a specific filesystem |
-| filesystem_readable                           | Gauge     | 9.4   | Whether or not the filesystem is readable |
-| http_requests_total                           | Counter   | 9.4   | Rack request count |
-| http_request_duration_seconds                 | Histogram | 9.4   | HTTP response time from rack middleware |
-| pipelines_created_total                       | Counter   | 9.4   | Counter of pipelines created |
-| rack_uncaught_errors_total                    | Counter   | 9.4   | Rack connections handling uncaught errors count |
-| redis_ping_timeout                            | Gauge     | 9.4   | Whether or not the last redis ping timed out |
-| redis_ping_success                            | Gauge     | 9.4   | Whether or not the last redis ping succeeded |
-| redis_ping_latency_seconds                    | Gauge     | 9.4   | Round trip time of the redis ping |
-| user_session_logins_total                     | Counter   | 9.4   | Counter of how many users have logged in |
-| filesystem_circuitbreaker_latency_seconds     | Gauge | 9.5 | Time spent validating if a storage is accessible |
-| filesystem_circuitbreaker                     | Gauge     | 9.5   | Whether or not the circuit for a certain shard is broken or not |
+| Metric                            | Type      | Since | Description |
+|:--------------------------------- |:--------- |:----- |:----------- |
+| db_ping_timeout                   | Gauge     | 9.4   | Whether or not the last database ping timed out |
+| db_ping_success                   | Gauge     | 9.4   | Whether or not the last database ping succeeded |
+| db_ping_latency_seconds           | Gauge     | 9.4   | Round trip time of the database ping |
+| filesystem_access_latency_seconds | Gauge     | 9.4   | Latency in accessing a specific filesystem |
+| filesystem_accessible             | Gauge     | 9.4   | Whether or not a specific filesystem is accessible |
+| filesystem_write_latency_seconds  | Gauge     | 9.4   | Write latency of a specific filesystem |
+| filesystem_writable               | Gauge     | 9.4   | Whether or not the filesystem is writable |
+| filesystem_read_latency_seconds   | Gauge     | 9.4   | Read latency of a specific filesystem |
+| filesystem_readable               | Gauge     | 9.4   | Whether or not the filesystem is readable |
+| http_requests_total               | Counter   | 9.4   | Rack request count |
+| http_request_duration_seconds     | Histogram | 9.4   | HTTP response time from rack middleware |
+| pipelines_created_total           | Counter   | 9.4   | Counter of pipelines created |
+| rack_uncaught_errors_total        | Counter   | 9.4   | Rack connections handling uncaught errors count |
+| redis_ping_timeout                | Gauge     | 9.4   | Whether or not the last redis ping timed out |
+| redis_ping_success                | Gauge     | 9.4   | Whether or not the last redis ping succeeded |
+| redis_ping_latency_seconds        | Gauge     | 9.4   | Round trip time of the redis ping |
+| user_session_logins_total         | Counter   | 9.4   | Counter of how many users have logged in |
+| filesystem_circuitbreaker_latency_seconds | Gauge | 9.5 | Time spent validating if a storage is accessible |
+| filesystem_circuitbreaker         | Gauge     | 9.5   | Whether or not the circuit for a certain shard is broken or not |
 | circuitbreaker_storage_check_duration_seconds | Histogram | 10.3 | Time a single storage probe took |
 | upload_file_does_not_exist                    | Counter   | 10.7  | Number of times an upload record could not find its file |
 
@@ -76,6 +76,16 @@ the `monitoring.sidekiq_exporter` configuration option in `gitlab.yml`.
 | geo_lfs_objects_synced_missing_on_primary   | Gauge   | 10.7  | Number of LFS objects marked as synced due to the file missing on the primary | url
 | geo_job_artifacts_synced_missing_on_primary | Gauge   | 10.7  | Number of job artifacts marked as synced due to the file missing on the primary | url
 | geo_attachments_synced_missing_on_primary   | Gauge   | 10.7  | Number of attachments marked as synced due to the file missing on the primary | url
+| geo_repositories_checksummed_count          | Gauge   | 10.7  | Number of repositories checksummed on primary | url
+| geo_repositories_checksum_failed_count      | Gauge   | 10.7  | Number of repositories failed to calculate the checksum on primary | url
+| geo_wikis_checksummed_count                 | Gauge   | 10.7  | Number of wikis checksummed on primary | url
+| geo_wikis_checksum_failed_count             | Gauge   | 10.7  | Number of wikis failed to calculate the checksum on primary | url
+| geo_repositories_verified_count             | Gauge   | 10.7  | Number of repositories verified on secondary | url
+| geo_repositories_verification_failed_count  | Gauge   | 10.7  | Number of repositories failed to verify on secondary | url
+| geo_repositories_checksum_mismatch_count    | Gauge   | 10.7  | Number of repositories that checksum mismatch on secondary | url
+| geo_wikis_verified_count                    | Gauge   | 10.7  | Number of wikis verified on secondary | url
+| geo_wikis_verification_failed_count         | Gauge   | 10.7  | Number of wikis failed to verify on secondary | url
+| geo_wikis_checksum_mismatch_count           | Gauge   | 10.7  | Number of wikis that checksum mismatch on secondary | url
 
 ## Metrics shared directory
 

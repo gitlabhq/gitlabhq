@@ -429,7 +429,7 @@ module API
           end
 
           unless user_project.allowed_to_share_with_group?
-            return render_api_error!("The project sharing with group is disabled", 400)
+            break render_api_error!("The project sharing with group is disabled", 400)
           end
 
           link = user_project.project_group_links.new(declared_params(include_missing: false))

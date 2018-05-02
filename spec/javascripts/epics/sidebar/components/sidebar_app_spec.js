@@ -85,9 +85,10 @@ describe('epicSidebar', () => {
       epicsWebUrl,
     });
 
-    const datePickers = vm.$el.querySelectorAll('.block');
-    expect(datePickers[0].querySelector('.value-content strong').innerText.trim()).toEqual('Jan 1, 2017');
-    expect(datePickers[1].querySelector('.value-content strong').innerText.trim()).toEqual('Jan 1, 2018');
+    const startDatePicker = vm.$el.querySelector('.block.start-date');
+    const endDatePicker = vm.$el.querySelector('.block.end-date');
+    expect(startDatePicker.querySelector('.value-content strong').innerText.trim()).toEqual('Jan 1, 2017');
+    expect(endDatePicker.querySelector('.value-content strong').innerText.trim()).toEqual('Jan 1, 2018');
   });
 
   describe('when collapsed', () => {
@@ -110,6 +111,10 @@ describe('epicSidebar', () => {
 
     it('should render collapsed grouped date picker', () => {
       expect(vm.$el.querySelector('.sidebar-collapsed-icon span').innerText.trim()).toEqual('From Jan 1 2017');
+    });
+
+    it('should render collapsed labels picker', () => {
+      expect(vm.$el.querySelector('.js-labels-block .sidebar-collapsed-icon span').innerText.trim()).toEqual('1');
     });
   });
 
@@ -213,6 +218,26 @@ describe('epicSidebar', () => {
       vm.handleLabelClick(label); // Un-select
       expect(vm.epicContext.labels.length).toBe(1);
       expect(vm.epicContext.labels[0].id).toBe(labels[0].id);
+    });
+  });
+
+  describe('handleDropdownClose', () => {
+    it('calls toggleSidebar when `autoExpanded` prop is true', () => {
+      spyOn(vm, 'toggleSidebar');
+      vm.autoExpanded = true;
+      vm.handleDropdownClose();
+
+      expect(vm.autoExpanded).toBe(false);
+      expect(vm.toggleSidebar).toHaveBeenCalled();
+    });
+
+    it('does not call toggleSidebar when `autoExpanded` prop is false', () => {
+      spyOn(vm, 'toggleSidebar');
+      vm.autoExpanded = false;
+      vm.handleDropdownClose();
+
+      expect(vm.autoExpanded).toBe(false);
+      expect(vm.toggleSidebar).not.toHaveBeenCalled();
     });
   });
 

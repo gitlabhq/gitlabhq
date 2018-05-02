@@ -212,6 +212,18 @@ describe API::Users do
         expect(json_response.last['id']).to eq(user.id)
       end
 
+      it 'returns users with 2fa enabled' do
+        admin
+        user
+        user_with_2fa = create(:user, :two_factor_via_otp)
+
+        get api('/users', admin), { two_factor: 'enabled' }
+
+        expect(response).to match_response_schema('public_api/v4/user/admins')
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['id']).to eq(user_with_2fa.id)
+      end
+
       it 'returns 400 when provided incorrect sort params' do
         get api('/users', admin), { order_by: 'magic', sort: 'asc' }
 

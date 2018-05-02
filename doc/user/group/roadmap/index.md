@@ -1,4 +1,4 @@
-# Roadmap
+# Roadmap **[ULTIMATE]**
 
 > Introduced in [GitLab Ultimate][ee] 10.5.
 

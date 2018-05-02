@@ -413,7 +413,7 @@ class ProjectsController < Projects::ApplicationController
     params[:namespace_id] = project.namespace.to_param
     params[:id] = project.to_param
 
-    url_for(params)
+    url_for(safe_params)
   end
 
   def project_export_enabled

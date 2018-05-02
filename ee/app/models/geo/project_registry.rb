@@ -26,6 +26,8 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
   scope :verified_wikis, -> { where.not(wiki_verification_checksum_sha: nil) }
   scope :verification_failed_repos, -> { where.not(last_repository_verification_failure: nil) }
   scope :verification_failed_wikis, -> { where.not(last_wiki_verification_failure: nil) }
+  scope :repository_checksum_mismatch, -> { where(repository_checksum_mismatch: true) }
+  scope :wiki_checksum_mismatch, -> { where(wiki_checksum_mismatch: true) }
 
   def self.failed
     repository_sync_failed = arel_table[:repository_retry_count].gt(0)

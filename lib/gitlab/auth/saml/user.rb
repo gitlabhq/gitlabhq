@@ -7,6 +7,8 @@ module Gitlab
   module Auth
     module Saml
       class User < Gitlab::Auth::OAuth::User
+        extend ::Gitlab::Utils::Override
+
         def save
           super('SAML')
         end
@@ -27,20 +29,25 @@ module Gitlab
           end
 
           if user
-            user.external = !(auth_hash.groups & Gitlab::Auth::Saml::Config.external_groups).empty? if external_users_enabled?
-            user.admin = !(auth_hash.groups & Gitlab::Auth::Saml::Config.admin_groups).empty? if admin_groups_enabled?
+            user.external = !(auth_hash.groups & saml_config.external_groups).empty? if external_users_enabled?
+            user.admin = !(auth_hash.groups & saml_config.admin_groups).empty? if admin_groups_enabled?
           end
 
           user
         end
 
-        def changed?
+        override :should_save?
+        def should_save?
           return true unless gl_user
 
           gl_user.changed? || gl_user.identities.any?(&:changed?)
         end
 
         protected
+
+        def saml_config
+          Gitlab::Auth::Saml::Config
+        end
 
         def block_user(user, reason)
           user.ldap_block
@@ -60,7 +67,7 @@ module Gitlab
         end
 
         def user_in_required_group?
-          required_groups = Gitlab::Auth::Saml::Config.required_groups
+          required_groups = saml_config.required_groups
           required_groups.empty? || !(auth_hash.groups & required_groups).empty?
         end
 
@@ -69,7 +76,7 @@ module Gitlab
         end
 
         def external_users_enabled?
-          !Gitlab::Auth::Saml::Config.external_groups.nil?
+          !saml_config.external_groups.nil?
         end
 
         def auth_hash=(auth_hash)
@@ -77,7 +84,7 @@ module Gitlab
         end
 
         def admin_groups_enabled?
-          !Gitlab::Auth::Saml::Config.admin_groups.nil?
+          !saml_config.admin_groups.nil?
         end
       end
     end

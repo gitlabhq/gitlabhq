@@ -24,7 +24,10 @@
       "system": { "type": "boolean" },
       "noteable_id": { "type": "integer" },
       "noteable_iid": { "type": "integer" },
-      "noteable_type": { "type": "string" }
+      "noteable_type": { "type": "string" },
+      "resolved": { "type": "boolean" },
+      "resolvable": { "type": "boolean" },
+      "resolved_by": { "type": ["string", "null"] }
     },
     "required": [
       "id", "body", "attachment", "author", "created_at", "updated_at",

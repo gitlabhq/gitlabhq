@@ -1,4 +1,4 @@
-# LDAP Additions in GitLab EE
+# LDAP Additions in GitLab EE **[STARTER ONLY]**
 
 This is a continuation of the main [LDAP documentation](ldap.md), detailing LDAP
 features specific to GitLab Enterprise Edition.
@@ -47,7 +47,7 @@ The process will also update the following user information:
 > **Note:** The LDAP sync process updates existing users while new users will
   be created on first sign in.
 
-## Group Sync
+## Group Sync **[PREMIUM ONLY]**
 
 If your LDAP supports the `memberof` property, GitLab will add the user to any
 new groups they might be added to when the user logs in. That way they don't need

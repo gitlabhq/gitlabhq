@@ -222,7 +222,7 @@ to reach your apps. This heavily depends on your domain provider, but in case
 you aren't sure, just create an A record with a wildcard host like
 `*.example.com.`.
 
-## Setting the environment scope
+## Setting the environment scope **[PREMIUM]**
 
 NOTE: **Note:**
 This is only available for [GitLab Premium][ee] where you can add more than
@@ -238,6 +238,7 @@ work.
 The default environment scope is `*`, which means all jobs, regardless of their
 environment, will use that cluster. Each scope can only be used by a single
 cluster in a project, and a validation error will occur if otherwise.
+Also, jobs that don't have an environment keyword set will not be able to access any cluster.
 
 ---
 
@@ -281,7 +282,7 @@ The result will then be:
 - The staging cluster will be used for the "deploy to staging" job.
 - The production cluster will be used for the "deploy to production" job.
 
-## Multiple Kubernetes clusters
+## Multiple Kubernetes clusters **[PREMIUM]**
 
 > Introduced in [GitLab Premium][ee] 10.3.
 
@@ -308,7 +309,7 @@ GitLab CI/CD build environment.
 | `KUBE_CA_PEM` | (**deprecated**) Only if a custom CA bundle was specified. Raw PEM data. |
 | `KUBECONFIG` | Path to a file containing `kubeconfig` for this deployment. CA bundle would be embedded if specified. |
 
-## Monitoring your Kubernetes cluster
+## Monitoring your Kubernetes cluster **[ULTIMATE]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/4701) in [GitLab Ultimate][ee] 10.6.
 
@@ -346,9 +347,7 @@ and add a Kubernetes cluster again.
 
 Here's what you can do with GitLab if you enable the Kubernetes integration.
 
-### Deploy Boards
-
-> Available in [GitLab Premium][ee].
+### Deploy Boards **[PREMIUM]**
 
 GitLab's Deploy Boards offer a consolidated view of the current health and
 status of each CI [environment](../../../ci/environments.md) running on Kubernetes,
@@ -358,9 +357,7 @@ workflow they already use without any need to access Kubernetes.
 
 [> Read more about Deploy Boards](../deploy_boards.md)
 
-### Canary Deployments
-
-> Available in [GitLab Premium][ee].
+### Canary Deployments **[PREMIUM]**
 
 Leverage [Kubernetes' Canary deployments](https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments)
 and visualize your canary deployments right inside the Deploy Board, without

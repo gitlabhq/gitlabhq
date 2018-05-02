@@ -91,9 +91,14 @@ class Repository
 
   # Return absolute path to repository
   def path_to_repo
-    @path_to_repo ||= File.expand_path(
-      File.join(repository_storage_path, disk_path + '.git')
-    )
+    @path_to_repo ||=
+      begin
+        storage = Gitlab.config.repositories.storages[@project.repository_storage]
+
+        File.expand_path(
+          File.join(storage.legacy_disk_path, disk_path + '.git')
+        )
+      end
   end
 
   def inspect
@@ -338,6 +343,7 @@ class Repository
     return unless empty?
 
     expire_method_caches(%i(has_visible_content?))
+    raw_repository.expire_has_local_branches_cache
   end
 
   def lookup_cache
@@ -975,10 +981,6 @@ class Repository
 
   def fetch_ref(source_repository, source_ref:, target_ref:)
     raw_repository.fetch_ref(source_repository.raw_repository, source_ref: source_ref, target_ref: target_ref)
-  end
-
-  def repository_storage_path
-    @project.repository_storage_path
   end
 
   def rebase(user, merge_request)

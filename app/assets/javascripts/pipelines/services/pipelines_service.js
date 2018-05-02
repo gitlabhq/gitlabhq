@@ -19,8 +19,13 @@ export default class PipelinesService {
 
   getPipelines(data = {}) {
     const { scope, page } = data;
+    const CancelToken = axios.CancelToken;
+
+    this.cancelationSource = CancelToken.source();
+
     return axios.get(this.endpoint, {
       params: { scope, page },
+      cancelToken: this.cancelationSource.token,
     });
   }
 

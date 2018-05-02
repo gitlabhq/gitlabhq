@@ -64,15 +64,6 @@ module EE
       succeeded
     end
 
-    override :features
-    def features
-      return super unless License.current
-
-      License.current.features.select do |feature|
-        License.global_feature?(feature) || feature_available?(feature)
-      end
-    end
-
     # Checks features (i.e. https://about.gitlab.com/products/) availabily
     # for a given Namespace plan. This method should consider ancestor groups
     # being licensed.

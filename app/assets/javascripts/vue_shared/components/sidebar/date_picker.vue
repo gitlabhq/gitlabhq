@@ -100,12 +100,6 @@
     class="block"
     :class="blockClass"
   >
-    <div class="issuable-sidebar-header">
-      <toggle-sidebar
-        :collapsed="collapsed"
-        @toggle="toggleSidebar"
-      />
-    </div>
     <collapsed-calendar-icon
       class="sidebar-collapsed-icon"
       :text="collapsedText"

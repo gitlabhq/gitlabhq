@@ -30,10 +30,10 @@ export default class IssuableContext {
         const $selectbox = $block.find('.selectbox');
         if ($selectbox.is(':visible')) {
           $selectbox.hide();
-          $block.find('.value').show();
+          $block.find('.value:not(.dont-hide)').show();
         } else {
           $selectbox.show();
-          $block.find('.value').hide();
+          $block.find('.value:not(.dont-hide)').hide();
         }
 
         if ($selectbox.is(':visible')) {

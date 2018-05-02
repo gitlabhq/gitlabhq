@@ -3,7 +3,7 @@ module EE
     extend ActiveSupport::Concern
 
     prepended do
-      include NonatomicInternalId
+      include AtomicInternalId
       include Issuable
       include Noteable
       include Referable
@@ -11,6 +11,8 @@ module EE
 
       belongs_to :assignee, class_name: "User"
       belongs_to :group
+
+      has_internal_id :iid, scope: :group, init: ->(s) { s&.group&.epics&.maximum(:iid) }
 
       has_many :epic_issues
 
@@ -87,6 +89,23 @@ module EE
     def supports_weight?
       false
     end
+
+    def upcoming?
+      start_date&.future?
+    end
+
+    def expired?
+      end_date&.past?
+    end
+
+    def elapsed_days
+      return 0 if start_date.nil? || start_date.future?
+
+      (Date.today - start_date).to_i
+    end
+
+    # Needed to use EntityDateHelper#remaining_days_in_words
+    alias_attribute(:due_date, :end_date)
 
     def to_reference(from = nil, full: false)
       reference = "#{self.class.reference_prefix}#{iid}"

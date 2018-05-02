@@ -5,18 +5,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   protect_from_forgery except: [:kerberos, :saml, :cas3]
 
-  Gitlab.config.omniauth.providers.each do |provider|
-    define_method provider['name'] do
-      handle_omniauth
-    end
+  def handle_omniauth
+    omniauth_flow(Gitlab::Auth::OAuth)
   end
 
-  if Gitlab::Auth::LDAP::Config.enabled?
-    Gitlab::Auth::LDAP::Config.available_servers.each do |server|
-      define_method server['provider_name'] do
-        ldap
-      end
-    end
+  AuthHelper.providers_for_base_controller.each do |provider|
+    alias_method provider, :handle_omniauth
   end
 
   # Extend the standard implementation to also increment
@@ -38,53 +32,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     error ||= exception.error        if exception.respond_to?(:error)
     error ||= exception.message      if exception.respond_to?(:message)
     error ||= env["omniauth.error.type"].to_s
+
     error.to_s.humanize if error
   end
 
-  # We only find ourselves here
-  # if the authentication to LDAP was successful.
-  def ldap
-    ldap_user = Gitlab::Auth::LDAP::User.new(oauth)
-    ldap_user.save if ldap_user.changed? # will also save new users
-
-    @user = ldap_user.gl_user
-    @user.remember_me = params[:remember_me] if ldap_user.persisted?
-
-    # Do additional LDAP checks for the user filter and EE features
-    if ldap_user.allowed?
-      if @user.two_factor_enabled?
-        prompt_for_two_factor(@user)
-      else
-        log_audit_event(@user, with: oauth['provider'])
-        # The counter only gets incremented in `sign_in_and_redirect`
-        show_ldap_sync_flash if @user.sign_in_count == 0
-        sign_in_and_redirect(@user)
-      end
-    else
-      fail_ldap_login
-    end
-  end
-
   def saml
-    if current_user
-      log_audit_event(current_user, with: :saml)
-      # Update SAML identity if data has changed.
-      identity = current_user.identities.with_extern_uid(:saml, oauth['uid']).take
-      if identity.nil?
-        current_user.identities.create(extern_uid: oauth['uid'], provider: :saml)
-        redirect_to profile_account_path, notice: 'Authentication method updated'
-      else
-        redirect_to after_sign_in_path_for(current_user)
-      end
-    else
-      saml_user = Gitlab::Auth::Saml::User.new(oauth)
-      saml_user.save if saml_user.changed?
-      @user = saml_user.gl_user
-
-      continue_login_process
-    end
-  rescue Gitlab::Auth::OAuth::User::SignupDisabledError
-    handle_signup_error
+    omniauth_flow(Gitlab::Auth::Saml)
   end
 
   def omniauth_error
@@ -130,25 +83,36 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   private
 
-  def handle_omniauth
+  def omniauth_flow(auth_module, identity_linker: nil)
     if current_user
-      # Add new authentication method
-      current_user.identities
-                  .with_extern_uid(oauth['provider'], oauth['uid'])
-                  .first_or_create(extern_uid: oauth['uid'])
       log_audit_event(current_user, with: oauth['provider'])
-      redirect_to profile_account_path, notice: 'Authentication method updated'
-    else
-      oauth_user = Gitlab::Auth::OAuth::User.new(oauth)
-      oauth_user.save
-      @user = oauth_user.gl_user
 
-      continue_login_process
+      identity_linker ||= auth_module::IdentityLinker.new(current_user, oauth)
+
+      identity_linker.link
+
+      if identity_linker.changed?
+        redirect_identity_linked
+      elsif identity_linker.error_message.present?
+        redirect_identity_link_failed(identity_linker.error_message)
+      else
+        redirect_identity_exists
+      end
+    else
+      sign_in_user_flow(auth_module::User)
     end
-  rescue Gitlab::Auth::OAuth::User::SigninDisabledForProviderError
-    handle_disabled_provider
-  rescue Gitlab::Auth::OAuth::User::SignupDisabledError
-    handle_signup_error
+  end
+
+  def redirect_identity_exists
+    redirect_to after_sign_in_path_for(current_user)
+  end
+
+  def redirect_identity_link_failed(error_message)
+    redirect_to profile_account_path, notice: "Authentication failed: #{error_message}"
+  end
+
+  def redirect_identity_linked
+    redirect_to profile_account_path, notice: 'Authentication method updated'
   end
 
   def handle_service_ticket(provider, ticket)
@@ -157,21 +121,27 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     session[:service_tickets][provider] = ticket
   end
 
-  def continue_login_process
-    # Only allow properly saved users to login.
-    if @user.persisted? && @user.valid?
-      log_audit_event(@user, with: oauth['provider'])
+  def sign_in_user_flow(auth_user_class)
+    auth_user = auth_user_class.new(oauth)
+    user = auth_user.find_and_update!
 
-      if @user.two_factor_enabled?
-        params[:remember_me] = '1' if remember_me?
-        prompt_for_two_factor(@user)
+    if auth_user.valid_sign_in?
+      log_audit_event(user, with: oauth['provider'])
+
+      set_remember_me(user)
+
+      if user.two_factor_enabled?
+        prompt_for_two_factor(user)
       else
-        remember_me(@user) if remember_me?
-        sign_in_and_redirect(@user)
+        sign_in_and_redirect(user)
       end
     else
-      fail_login
+      fail_login(user)
     end
+  rescue Gitlab::Auth::OAuth::User::SigninDisabledForProviderError
+    handle_disabled_provider
+  rescue Gitlab::Auth::OAuth::User::SignupDisabledError
+    handle_signup_error
   end
 
   def handle_signup_error
@@ -191,16 +161,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     @oauth ||= request.env['omniauth.auth']
   end
 
-  def fail_login
-    error_message = @user.errors.full_messages.to_sentence
+  def fail_login(user)
+    error_message = user.errors.full_messages.to_sentence
 
     return redirect_to omniauth_error_path(oauth['provider'], error: error_message)
-  end
-
-  def fail_ldap_login
-    flash[:alert] = 'Access denied for your LDAP account.'
-
-    redirect_to new_user_session_path
   end
 
   def fail_auth0_login
@@ -221,13 +185,18 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       .for_authentication.security_event
   end
 
+  def set_remember_me(user)
+    return unless remember_me?
+
+    if user.two_factor_enabled?
+      params[:remember_me] = '1'
+    else
+      remember_me(user)
+    end
+  end
+
   def remember_me?
     request_params = request.env['omniauth.params']
     (request_params['remember_me'] == '1') if request_params.present?
-  end
-
-  def show_ldap_sync_flash
-    flash[:notice] = 'LDAP sync in progress. This could take a few minutes. '\
-                     'Refresh the page to see the changes.'
   end
 end

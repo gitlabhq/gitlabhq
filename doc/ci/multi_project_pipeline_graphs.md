@@ -1,4 +1,4 @@
-# Multi-project pipeline graphs
+# Multi-project pipeline graphs **[PREMIUM]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/2121) in
 [GitLab Premium 9.3](https://about.gitlab.com/2017/06/22/gitlab-9-3-released/#multi-project-pipeline-graphs).

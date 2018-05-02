@@ -59,8 +59,8 @@ describe('sidebarItemEpic', () => {
     });
 
     it('shows epic title as collapsed title tooltip', () => {
-      expect(vm.$el.querySelector('.collapse-truncated-title').getAttribute('title')).toBeDefined();
-      expect(vm.$el.querySelector('.collapse-truncated-title').getAttribute('data-original-title')).toEqual(epicTitle);
+      expect(vm.$el.querySelector('.sidebar-collapsed-icon').getAttribute('title')).toBeDefined();
+      expect(vm.$el.querySelector('.sidebar-collapsed-icon').getAttribute('data-original-title')).toEqual(epicTitle);
     });
 
     describe('no epic', () => {

@@ -239,6 +239,14 @@ describe Gitlab::Database::LoadBalancing::Host, :postgresql do
 
       expect(host.replication_lag_size).to be_nil
     end
+
+    it 'returns nil when the database connection fails' do
+      allow(host)
+        .to receive(:connection)
+        .and_raise(ActionView::Template::Error.new('boom', StandardError.new))
+
+      expect(host.replication_lag_size).to be_nil
+    end
   end
 
   describe '#primary_write_location' do
@@ -265,6 +273,14 @@ describe Gitlab::Database::LoadBalancing::Host, :postgresql do
     it 'returns false when a host has not caught up' do
       allow(host).to receive(:connection).and_return(connection)
       expect(connection).to receive(:select_all).and_return([{ 'result' => 'f' }])
+
+      expect(host.caught_up?('foo')).to eq(false)
+    end
+
+    it 'returns false when the connection fails' do
+      allow(host)
+        .to receive(:connection)
+        .and_raise(ActionView::Template::Error.new('boom', StandardError.new))
 
       expect(host.caught_up?('foo')).to eq(false)
     end

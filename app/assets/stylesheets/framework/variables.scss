@@ -248,6 +248,7 @@ $btn-sm-side-margin: 7px;
 $btn-xs-side-margin: 5px;
 $issue-status-expired: $orange-500;
 $issuable-sidebar-color: $gl-text-color-secondary;
+$sidebar-block-hover-color: #ebebeb;
 $group-path-color: #999;
 $project-path-color: #999;
 $namespace-kind-color: #aaa;
@@ -382,6 +383,8 @@ $dropdown-hover-color: $blue-400;
 $link-active-background: rgba(0, 0, 0, 0.04);
 $link-hover-background: rgba(0, 0, 0, 0.06);
 $inactive-badge-background: rgba(0, 0, 0, 0.08);
+$sidebar-toggle-height: 60px;
+$sidebar-milestone-toggle-bottom-margin: 10px;
 
 /*
 * Buttons
@@ -736,20 +739,6 @@ Convdev Index
 $color-high-score: $green-400;
 $color-average-score: $orange-400;
 $color-low-score: $red-400;
-
-/*
-Repo editor
-*/
-$repo-editor-grey: #f6f7f9;
-$repo-editor-grey-darker: #e9ebee;
-$repo-editor-linear-gradient: linear-gradient(
-  to right,
-  $repo-editor-grey 0%,
-  $repo-editor-grey-darker,
-  20%,
-  $repo-editor-grey 40%,
-  $repo-editor-grey 100%
-);
 
 /*
 Performance Bar

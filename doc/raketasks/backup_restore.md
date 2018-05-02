@@ -498,6 +498,13 @@ more of the following options:
   Read what the [backup timestamp is about](#backup-timestamp).
 - `force=yes` - Does not ask if the authorized_keys file should get regenerated and assumes 'yes' for warning that database tables will be removed.
 
+If you are restoring into directories that are mountpoints you will need to make
+sure these directories are empty before attempting a restore. Otherwise GitLab
+will attempt to move these directories before restoring the new data and this
+would cause an error.
+
+Read more on [configuring NFS mounts](../administration/high_availability/nfs.md)
+
 ### Restore for installation from source
 
 ```

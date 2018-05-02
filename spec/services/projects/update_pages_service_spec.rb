@@ -29,25 +29,10 @@ describe Projects::UpdatePagesService do
     end
 
     describe 'pages artifacts' do
-      context 'with expiry date' do
-        before do
-          build.artifacts_expire_in = "2 days"
-          build.save!
-        end
+      it "doesn't delete artifacts after deploying" do
+        expect(execute).to eq(:success)
 
-        it "doesn't delete artifacts" do
-          expect(execute).to eq(:success)
-
-          expect(build.reload.artifacts?).to eq(true)
-        end
-      end
-
-      context 'without expiry date' do
-        it "does delete artifacts" do
-          expect(execute).to eq(:success)
-
-          expect(build.reload.artifacts?).to eq(false)
-        end
+        expect(build.reload.artifacts?).to eq(true)
       end
     end
 
@@ -100,25 +85,10 @@ describe Projects::UpdatePagesService do
       end
 
       describe 'pages artifacts' do
-        context 'with expiry date' do
-          before do
-            build.artifacts_expire_in = "2 days"
-            build.save!
-          end
+        it "doesn't delete artifacts after deploying" do
+          expect(execute).to eq(:success)
 
-          it "doesn't delete artifacts" do
-            expect(execute).to eq(:success)
-
-            expect(build.artifacts?).to eq(true)
-          end
-        end
-
-        context 'without expiry date' do
-          it "does delete artifacts" do
-            expect(execute).to eq(:success)
-
-            expect(build.reload.artifacts?).to eq(false)
-          end
+          expect(build.artifacts?).to eq(true)
         end
       end
 
@@ -171,13 +141,12 @@ describe Projects::UpdatePagesService do
 
           build.reload
           expect(deploy_status).to be_failed
-          expect(build.artifacts?).to be_truthy
         end
       end
 
       context 'when failed to extract zip artifacts' do
         before do
-          allow_any_instance_of(described_class)
+          expect_any_instance_of(described_class)
             .to receive(:extract_zip_archive!)
             .and_raise(Projects::UpdatePagesService::FailedToExtractError)
         end
@@ -188,21 +157,19 @@ describe Projects::UpdatePagesService do
 
           build.reload
           expect(deploy_status).to be_failed
-          expect(build.artifacts?).to be_truthy
         end
       end
 
       context 'when missing artifacts metadata' do
         before do
-          allow(build).to receive(:artifacts_metadata?).and_return(false)
+          expect(build).to receive(:artifacts_metadata?).and_return(false)
         end
 
-        it 'does not raise an error and remove artifacts as failed job' do
+        it 'does not raise an error as failed job' do
           execute
 
           build.reload
           expect(deploy_status).to be_failed
-          expect(build.artifacts?).to be_falsey
         end
       end
     end

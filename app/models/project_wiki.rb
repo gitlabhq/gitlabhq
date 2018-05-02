@@ -24,7 +24,7 @@ class ProjectWiki
   end
 
   delegate :empty?, to: :pages
-  delegate :repository_storage_path, :hashed_storage?, to: :project
+  delegate :repository_storage, :hashed_storage?, to: :project
 
   def path
     @project.path + '.wiki'
@@ -193,7 +193,11 @@ class ProjectWiki
   def commit_details(action, message = nil, title = nil)
     commit_message = message || default_message(action, title)
 
-    Gitlab::Git::Wiki::CommitDetails.new(@user.name, @user.email, commit_message)
+    Gitlab::Git::Wiki::CommitDetails.new(@user.id,
+                                         @user.username,
+                                         @user.name,
+                                         @user.email,
+                                         commit_message)
   end
 
   def default_message(action, title)
@@ -211,6 +215,8 @@ class ProjectWiki
   end
 
   def path_to_repo
-    @path_to_repo ||= File.join(project.repository_storage_path, "#{disk_path}.git")
+    @path_to_repo ||=
+      File.join(Gitlab.config.repositories.storages[project.repository_storage].legacy_disk_path,
+                "#{disk_path}.git")
   end
 end

@@ -1,10 +1,10 @@
 %td
   = hidden_field_tag "allowed_to_merge_#{protected_branch.id}", protected_branch.merge_access_levels.first.access_level
   = dropdown_tag( (protected_branch.merge_access_levels.first.humanize || 'Select') ,
-                 options: { toggle_class: 'js-allowed-to-merge', dropdown_class: 'dropdown-menu-selectable js-allowed-to-merge-container capitalize-header',
+                 options: { toggle_class: 'js-allowed-to-merge qa-allowed-to-merge', dropdown_class: 'dropdown-menu-selectable js-allowed-to-merge-container capitalize-header',
                  data: { field_name: "allowed_to_merge_#{protected_branch.id}", access_level_id: protected_branch.merge_access_levels.first.id }})
 %td
   = hidden_field_tag "allowed_to_push_#{protected_branch.id}", protected_branch.push_access_levels.first.access_level
   = dropdown_tag( (protected_branch.push_access_levels.first.humanize || 'Select') ,
-                 options: { toggle_class: 'js-allowed-to-push', dropdown_class: 'dropdown-menu-selectable js-allowed-to-push-container capitalize-header',
+                 options: { toggle_class: 'js-allowed-to-push qa-allowed-to-push', dropdown_class: 'dropdown-menu-selectable js-allowed-to-push-container capitalize-header',
                  data: { field_name: "allowed_to_push_#{protected_branch.id}", access_level_id: protected_branch.push_access_levels.first.id }})

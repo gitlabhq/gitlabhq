@@ -37,9 +37,9 @@ export const setLastCommitMessage = ({ rootState, commit }, data) => {
   const commitMsg = sprintf(
     __('Your changes have been committed. Commit %{commitId} %{commitStats}'),
     {
-      commitId: `<a href="${currentProject.web_url}/commit/${
+      commitId: `<a href="${currentProject.web_url}/commit/${data.short_id}" class="commit-sha">${
         data.short_id
-      }" class="commit-sha">${data.short_id}</a>`,
+      }</a>`,
       commitStats,
     },
     false,
@@ -54,9 +54,7 @@ export const checkCommitStatus = ({ rootState }) =>
     .then(({ data }) => {
       const { id } = data.commit;
       const selectedBranch =
-        rootState.projects[rootState.currentProjectId].branches[
-          rootState.currentBranchId
-        ];
+        rootState.projects[rootState.currentProjectId].branches[rootState.currentBranchId];
 
       if (selectedBranch.workingReference !== id) {
         return true;
@@ -100,23 +98,14 @@ export const updateFilesAfterCommit = (
     { root: true },
   );
 
-  rootState.changedFiles.forEach(entry => {
+  rootState.stagedFiles.forEach(file => {
+    const changedFile = rootState.changedFiles.find(f => f.path === file.path);
+
     commit(
-      rootTypes.SET_LAST_COMMIT_DATA,
+      rootTypes.UPDATE_FILE_AFTER_COMMIT,
       {
-        entry,
+        file,
         lastCommit,
-      },
-      { root: true },
-    );
-
-    eventHub.$emit(`editor.update.model.content.${entry.path}`, entry.content);
-
-    commit(
-      rootTypes.SET_FILE_RAW_DATA,
-      {
-        file: entry,
-        raw: entry.content,
       },
       { root: true },
     );
@@ -124,43 +113,31 @@ export const updateFilesAfterCommit = (
     commit(
       rootTypes.TOGGLE_FILE_CHANGED,
       {
-        file: entry,
+        file,
         changed: false,
       },
       { root: true },
     );
+
+    dispatch('updateTempFlagForEntry', { file, tempFile: false }, { root: true });
+
+    eventHub.$emit(`editor.update.model.content.${file.key}`, {
+      content: file.content,
+      changed: !!changedFile,
+    });
   });
 
-  commit(rootTypes.REMOVE_ALL_CHANGES_FILES, null, { root: true });
-
-  if (state.commitAction === consts.COMMIT_TO_NEW_BRANCH) {
+  if (state.commitAction === consts.COMMIT_TO_NEW_BRANCH && rootGetters.activeFile) {
     router.push(
-      `/project/${rootState.currentProjectId}/blob/${branch}/${
-        rootGetters.activeFile.path
-      }`,
+      `/project/${rootState.currentProjectId}/blob/${branch}/${rootGetters.activeFile.path}`,
     );
   }
-
-  dispatch('updateCommitAction', consts.COMMIT_TO_CURRENT_BRANCH);
 };
 
-export const commitChanges = ({
-  commit,
-  state,
-  getters,
-  dispatch,
-  rootState,
-}) => {
+export const commitChanges = ({ commit, state, getters, dispatch, rootState }) => {
   const newBranch = state.commitAction !== consts.COMMIT_TO_CURRENT_BRANCH;
-  const payload = createCommitPayload(
-    getters.branchName,
-    newBranch,
-    state,
-    rootState,
-  );
-  const getCommitStatus = newBranch
-    ? Promise.resolve(false)
-    : dispatch('checkCommitStatus');
+  const payload = createCommitPayload(getters.branchName, newBranch, state, rootState);
+  const getCommitStatus = newBranch ? Promise.resolve(false) : dispatch('checkCommitStatus');
 
   commit(types.UPDATE_LOADING, true);
 
@@ -182,28 +159,31 @@ export const commitChanges = ({
 
       if (!data.short_id) {
         flash(data.message, 'alert', document, null, false, true);
-        return;
+        return null;
       }
 
       dispatch('setLastCommitMessage', data);
       dispatch('updateCommitMessage', '');
+      return dispatch('updateFilesAfterCommit', {
+        data,
+        branch: getters.branchName,
+      })
+        .then(() => {
+          if (state.commitAction === consts.COMMIT_TO_NEW_BRANCH_MR) {
+            dispatch(
+              'redirectToUrl',
+              createNewMergeRequestUrl(
+                rootState.projects[rootState.currentProjectId].web_url,
+                getters.branchName,
+                rootState.currentBranchId,
+              ),
+              { root: true },
+            );
+          }
 
-      if (state.commitAction === consts.COMMIT_TO_NEW_BRANCH_MR) {
-        dispatch(
-          'redirectToUrl',
-          createNewMergeRequestUrl(
-            rootState.projects[rootState.currentProjectId].web_url,
-            getters.branchName,
-            rootState.currentBranchId,
-          ),
-          { root: true },
-        );
-      } else {
-        dispatch('updateFilesAfterCommit', {
-          data,
-          branch: getters.branchName,
-        });
-      }
+          commit(rootTypes.CLEAR_STAGED_CHANGES, null, { root: true });
+        })
+        .then(() => dispatch('updateCommitAction', consts.COMMIT_TO_CURRENT_BRANCH));
     })
     .catch(err => {
       let errMsg = __('Error committing changes. Please try again.');
@@ -216,3 +196,6 @@ export const commitChanges = ({
       commit(types.UPDATE_LOADING, false);
     });
 };
+
+// prevent babel-plugin-rewire from generating an invalid default during karma tests
+export default () => {};

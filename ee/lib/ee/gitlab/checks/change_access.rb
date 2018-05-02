@@ -48,7 +48,7 @@ module EE
 
         def changes
           strong_memoize(:changes) do
-            return [] unless newrev
+            next [] unless newrev
 
             project.repository.raw_changes_between(oldrev, newrev)
           end

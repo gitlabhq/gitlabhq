@@ -91,6 +91,8 @@ module Gitlab
             pages_domains: PagesDomain.count,
             projects: Project.count,
             projects_imported_from_github: Project.where(import_type: 'github').count,
+            projects_reporting_ci_cd_back_to_github: GithubService.without_defaults.active.count,
+            projects_mirrored_with_pipelines_enabled: projects_mirrored_with_pipelines_enabled,
             protected_branches: ProtectedBranch.count,
             releases: Release.count,
             remote_mirrors: RemoteMirror.count,
@@ -176,6 +178,16 @@ module Gitlab
 
         results = Service.unscoped.where(type: types.keys, active: true).group(:type).count
         results.each_with_object({}) { |(key, value), response| response[types[key.to_sym]] = value  }
+      end
+
+      def projects_mirrored_with_pipelines_enabled
+        Project.joins(:project_feature).where(
+          mirror: true,
+          mirror_trigger_builds: true,
+          project_features: {
+            builds_access_level: ProjectFeature::ENABLED
+          }
+        ).count
       end
     end
   end

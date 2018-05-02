@@ -7,6 +7,8 @@ describe Geo::RepositorySyncService do
   set(:secondary) { create(:geo_node) }
 
   let(:lease) { double(try_obtain: true) }
+  let(:project) { create(:project_empty_repo) }
+  let(:repository) { project.repository }
 
   subject { described_class.new(project) }
 
@@ -15,16 +17,13 @@ describe Geo::RepositorySyncService do
   end
 
   it_behaves_like 'geo base sync execution'
+  it_behaves_like 'geo base sync fetch and repack'
 
   describe '#execute' do
-    let(:project) { create(:project_empty_repo) }
-    let(:repository) { project.repository }
     let(:url_to_repo) { "#{primary.url}#{project.full_path}.git" }
 
     before do
-      allow(Gitlab::ExclusiveLease).to receive(:new)
-        .with(subject.lease_key, anything)
-        .and_return(lease)
+      allow(subject).to receive(:exclusive_lease).and_return(lease)
 
       allow_any_instance_of(Repository).to receive(:fetch_as_mirror)
         .and_return(true)
@@ -172,6 +171,12 @@ describe Geo::RepositorySyncService do
           expect(registry.last_repository_verification_failure).to be_nil
         end
 
+        it 'resets the repository_checksum_mismatch' do
+          subject.execute
+
+          expect(registry.repository_checksum_mismatch).to eq false
+        end
+
         it 'logs success with timings' do
           allow(Gitlab::Geo::Logger).to receive(:info).and_call_original
           expect(Gitlab::Geo::Logger).to receive(:info).with(hash_including(:message, :update_delay_s, :download_time_s)).and_call_original
@@ -256,13 +261,13 @@ describe Geo::RepositorySyncService do
         expect(subject.gitlab_shell).to receive(:mv_repository).exactly(2).times.and_call_original
 
         expect(subject.gitlab_shell).to receive(:add_namespace).with(
-          project.repository_storage_path,
-          "@failed-geo-sync/#{repository.disk_path}"
+          project.repository_storage,
+          "@failed-geo-sync/#{File.dirname(repository.disk_path)}"
         ).and_call_original
 
         expect(subject.gitlab_shell).to receive(:add_namespace).with(
-          project.repository_storage_path,
-          repository.disk_path
+          project.repository_storage,
+          File.dirname(repository.disk_path)
         ).and_call_original
 
         expect(subject.gitlab_shell).to receive(:remove_repository).exactly(2).times.and_call_original
@@ -333,6 +338,18 @@ describe Geo::RepositorySyncService do
 
           subject.execute
         end
+      end
+    end
+
+    it_behaves_like 'sync retries use the snapshot RPC' do
+      let(:repository) { project.repository }
+    end
+  end
+
+  describe '#schedule_repack' do
+    it 'schedule GitGarbageCollectWorker for full repack' do
+      Sidekiq::Testing.fake! do
+        expect { subject.send(:schedule_repack) }.to change { GitGarbageCollectWorker.jobs.count }.by(1)
       end
     end
   end

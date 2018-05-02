@@ -141,7 +141,7 @@ module Gitlab
         end
 
         def external_groups
-          options['external_groups']
+          options['external_groups'] || []
         end
 
         def has_auth?

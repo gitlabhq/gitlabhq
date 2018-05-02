@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'spec_helper'
 
 describe QuickActions::InterpretService do
@@ -322,6 +323,23 @@ describe QuickActions::InterpretService do
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(canonical_issue_id: issue_duplicate.id)
+      end
+    end
+
+    shared_examples 'copy_metadata command' do
+      it 'fetches issue or merge request and copies labels and milestone if content contains /copy_metadata reference' do
+        source_issuable # populate the issue
+        todo_label # populate this label
+        inreview_label # populate this label
+        _, updates = service.execute(content, issuable)
+
+        expect(updates[:add_label_ids]).to match_array([inreview_label.id, todo_label.id])
+
+        if source_issuable.milestone
+          expect(updates[:milestone_id]).to eq(source_issuable.milestone.id)
+        else
+          expect(updates).not_to have_key(:milestone_id)
+        end
       end
     end
 
@@ -830,6 +848,65 @@ describe QuickActions::InterpretService do
         _, updates = service.execute('/clear_weight', issue)
 
         expect(updates).to be_empty
+      end
+    end
+
+    context '/copy_metadata command' do
+      let(:todo_label) { create(:label, project: project, title: 'To Do') }
+      let(:inreview_label) { create(:label, project: project, title: 'In Review') }
+
+      it_behaves_like 'empty command' do
+        let(:content) { '/copy_metadata' }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'copy_metadata command' do
+        let(:source_issuable) { create(:labeled_issue, project: project, labels: [inreview_label, todo_label]) }
+
+        let(:content) { "/copy_metadata #{source_issuable.to_reference}" }
+        let(:issuable) { issue }
+      end
+
+      context 'when the parent issuable has a milestone' do
+        it_behaves_like 'copy_metadata command' do
+          let(:source_issuable) { create(:labeled_issue, project: project, labels: [todo_label, inreview_label], milestone: milestone) }
+
+          let(:content) { "/copy_metadata #{source_issuable.to_reference(project)}" }
+          let(:issuable) { issue }
+        end
+      end
+
+      context 'when more than one issuable is passed' do
+        it_behaves_like 'copy_metadata command' do
+          let(:source_issuable) { create(:labeled_issue, project: project, labels: [inreview_label, todo_label]) }
+          let(:other_label) { create(:label, project: project, title: 'Other') }
+          let(:other_source_issuable) { create(:labeled_issue, project: project, labels: [other_label]) }
+
+          let(:content) { "/copy_metadata #{source_issuable.to_reference} #{other_source_issuable.to_reference}" }
+          let(:issuable) { issue }
+        end
+      end
+
+      context 'cross project references' do
+        it_behaves_like 'empty command' do
+          let(:other_project) { create(:project, :public) }
+          let(:source_issuable) { create(:labeled_issue, project: other_project, labels: [todo_label, inreview_label]) }
+          let(:content) { "/copy_metadata #{source_issuable.to_reference(project)}" }
+          let(:issuable) { issue }
+        end
+
+        it_behaves_like 'empty command' do
+          let(:content) { "/copy_metadata imaginary#1234" }
+          let(:issuable) { issue }
+        end
+
+        it_behaves_like 'empty command' do
+          let(:other_project) { create(:project, :private) }
+          let(:source_issuable) { create(:issue, project: other_project) }
+
+          let(:content) { "/copy_metadata #{source_issuable.to_reference(project)}" }
+          let(:issuable) { issue }
+        end
       end
     end
 

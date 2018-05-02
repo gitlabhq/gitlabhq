@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180405142733) do
+ActiveRecord::Schema.define(version: 20180425131009) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -456,6 +456,7 @@ ActiveRecord::Schema.define(version: 20180405142733) do
   end
 
   add_index "ci_job_artifacts", ["expire_at", "job_id"], name: "index_ci_job_artifacts_on_expire_at_and_job_id", using: :btree
+  add_index "ci_job_artifacts", ["file_store"], name: "index_ci_job_artifacts_on_file_store", using: :btree
   add_index "ci_job_artifacts", ["job_id", "file_type"], name: "index_ci_job_artifacts_on_job_id_and_file_type", unique: true, using: :btree
   add_index "ci_job_artifacts", ["project_id"], name: "index_ci_job_artifacts_on_project_id", using: :btree
 
@@ -1019,7 +1020,7 @@ ActiveRecord::Schema.define(version: 20180405142733) do
   create_table "geo_hashed_storage_migrated_events", id: :bigserial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.text "repository_storage_name", null: false
-    t.text "repository_storage_path", null: false
+    t.text "repository_storage_path"
     t.text "old_disk_path", null: false
     t.text "new_disk_path", null: false
     t.text "old_wiki_disk_path", null: false
@@ -1093,6 +1094,12 @@ ActiveRecord::Schema.define(version: 20180405142733) do
     t.integer "lfs_objects_synced_missing_on_primary_count"
     t.integer "job_artifacts_synced_missing_on_primary_count"
     t.integer "attachments_synced_missing_on_primary_count"
+    t.integer "repositories_checksummed_count"
+    t.integer "repositories_checksum_failed_count"
+    t.integer "repositories_checksum_mismatch_count"
+    t.integer "wikis_checksummed_count"
+    t.integer "wikis_checksum_failed_count"
+    t.integer "wikis_checksum_mismatch_count"
   end
 
   add_index "geo_node_statuses", ["geo_node_id"], name: "index_geo_node_statuses_on_geo_node_id", unique: true, using: :btree
@@ -1125,7 +1132,7 @@ ActiveRecord::Schema.define(version: 20180405142733) do
   create_table "geo_repository_created_events", id: :bigserial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.text "repository_storage_name", null: false
-    t.text "repository_storage_path", null: false
+    t.text "repository_storage_path"
     t.text "repo_path", null: false
     t.text "wiki_path"
     t.text "project_name", null: false
@@ -1136,7 +1143,7 @@ ActiveRecord::Schema.define(version: 20180405142733) do
   create_table "geo_repository_deleted_events", id: :bigserial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.text "repository_storage_name", null: false
-    t.text "repository_storage_path", null: false
+    t.text "repository_storage_path"
     t.text "deleted_path", null: false
     t.text "deleted_wiki_path"
     t.text "deleted_project_name", null: false
@@ -1147,7 +1154,7 @@ ActiveRecord::Schema.define(version: 20180405142733) do
   create_table "geo_repository_renamed_events", id: :bigserial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.text "repository_storage_name", null: false
-    t.text "repository_storage_path", null: false
+    t.text "repository_storage_path"
     t.text "old_path_with_namespace", null: false
     t.text "new_path_with_namespace", null: false
     t.text "old_wiki_path_with_namespace", null: false
@@ -1264,12 +1271,14 @@ ActiveRecord::Schema.define(version: 20180405142733) do
   add_index "index_statuses", ["project_id"], name: "index_index_statuses_on_project_id", unique: true, using: :btree
 
   create_table "internal_ids", id: :bigserial, force: :cascade do |t|
-    t.integer "project_id", null: false
+    t.integer "project_id"
     t.integer "usage", null: false
     t.integer "last_value", null: false
+    t.integer "namespace_id"
   end
 
-  add_index "internal_ids", ["usage", "project_id"], name: "index_internal_ids_on_usage_and_project_id", unique: true, using: :btree
+  add_index "internal_ids", ["usage", "namespace_id"], name: "index_internal_ids_on_usage_and_namespace_id", unique: true, where: "(namespace_id IS NOT NULL)", using: :btree
+  add_index "internal_ids", ["usage", "project_id"], name: "index_internal_ids_on_usage_and_project_id", unique: true, where: "(project_id IS NOT NULL)", using: :btree
 
   create_table "issue_assignees", id: false, force: :cascade do |t|
     t.integer "user_id", null: false
@@ -1748,6 +1757,7 @@ ActiveRecord::Schema.define(version: 20180405142733) do
     t.boolean "failed_pipeline"
     t.boolean "success_pipeline"
     t.boolean "push_to_merge_request"
+    t.boolean "issue_due"
   end
 
   add_index "notification_settings", ["source_id", "source_type"], name: "index_notification_settings_on_source_id_and_source_type", using: :btree
@@ -1877,6 +1887,13 @@ ActiveRecord::Schema.define(version: 20180405142733) do
   end
 
   add_index "project_auto_devops", ["project_id"], name: "index_project_auto_devops_on_project_id", unique: true, using: :btree
+
+  create_table "project_ci_cd_settings", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.boolean "group_runners_enabled", default: true, null: false
+  end
+
+  add_index "project_ci_cd_settings", ["project_id"], name: "index_project_ci_cd_settings_on_project_id", unique: true, using: :btree
 
   create_table "project_custom_attributes", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -2050,6 +2067,7 @@ ActiveRecord::Schema.define(version: 20180405142733) do
   add_index "projects", ["creator_id"], name: "index_projects_on_creator_id", using: :btree
   add_index "projects", ["description"], name: "index_projects_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
   add_index "projects", ["id"], name: "index_projects_on_id_partial_for_visibility", unique: true, where: "(visibility_level = ANY (ARRAY[10, 20]))", using: :btree
+  add_index "projects", ["id"], name: "index_projects_on_mirror_and_mirror_trigger_builds_both_true", where: "((mirror IS TRUE) AND (mirror_trigger_builds IS TRUE))", using: :btree
   add_index "projects", ["last_activity_at"], name: "index_projects_on_last_activity_at", using: :btree
   add_index "projects", ["last_repository_check_failed"], name: "index_projects_on_last_repository_check_failed", using: :btree
   add_index "projects", ["last_repository_updated_at"], name: "index_projects_on_last_repository_updated_at", using: :btree
@@ -2751,6 +2769,7 @@ ActiveRecord::Schema.define(version: 20180405142733) do
   add_foreign_key "gpg_signatures", "projects", on_delete: :cascade
   add_foreign_key "group_custom_attributes", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "index_statuses", "projects", name: "fk_74b2492545", on_delete: :cascade
+  add_foreign_key "internal_ids", "namespaces", name: "fk_162941d509", on_delete: :cascade
   add_foreign_key "internal_ids", "projects", on_delete: :cascade
   add_foreign_key "issue_assignees", "issues", name: "fk_b7d881734a", on_delete: :cascade
   add_foreign_key "issue_assignees", "users", name: "fk_5e0c8d9154", on_delete: :cascade
@@ -2803,6 +2822,7 @@ ActiveRecord::Schema.define(version: 20180405142733) do
   add_foreign_key "project_authorizations", "projects", on_delete: :cascade
   add_foreign_key "project_authorizations", "users", on_delete: :cascade
   add_foreign_key "project_auto_devops", "projects", on_delete: :cascade
+  add_foreign_key "project_ci_cd_settings", "projects", name: "fk_24c15d2f2e", on_delete: :cascade
   add_foreign_key "project_custom_attributes", "projects", on_delete: :cascade
   add_foreign_key "project_deploy_tokens", "deploy_tokens", on_delete: :cascade
   add_foreign_key "project_deploy_tokens", "projects", on_delete: :cascade

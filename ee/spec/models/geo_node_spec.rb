@@ -200,6 +200,19 @@ describe GeoNode, type: :model do
     end
   end
 
+  describe '#snapshot_url' do
+    let(:project) { create(:project) }
+    let(:snapshot_url) { "https://localhost:3000/gitlab/api/#{api_version}/projects/#{project.id}/snapshot" }
+
+    it 'returns snapshot URL based on node URI' do
+      expect(new_node.snapshot_url(project.repository)).to eq(snapshot_url)
+    end
+
+    it 'adds ?wiki=1 to the snapshot URL when the repository is a wiki' do
+      expect(new_node.snapshot_url(project.wiki.repository)).to eq(snapshot_url + "?wiki=1")
+    end
+  end
+
   describe '#find_or_build_status' do
     it 'returns a new status' do
       status = new_node.find_or_build_status

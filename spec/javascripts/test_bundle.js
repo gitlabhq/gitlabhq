@@ -1,4 +1,5 @@
-/* eslint-disable jasmine/no-global-setup */
+/* eslint-disable jasmine/no-global-setup, jasmine/no-unsafe-spy, no-underscore-dangle */
+
 import $ from 'jquery';
 import 'vendor/jasmine-jquery';
 import '~/commons';
@@ -54,6 +55,17 @@ window.addEventListener('unhandledrejection', event => {
   console.error(event.reason.stack || event.reason);
 });
 
+// Add global function to spy on a module's dependencies via rewire
+window.spyOnDependency = (module, name) => {
+  const dependency = module.__GetDependency__(name);
+  const spy = jasmine.createSpy(name, dependency);
+  module.__Rewire__(name, spy);
+  return spy;
+};
+
+// Reset any rewired modules after each test (see babel-plugin-rewire)
+afterEach(__rewire_reset_all__); // eslint-disable-line
+
 // HACK: Chrome 59 disconnects if there are too many synchronous tests in a row
 // because it appears to lock up the thread that communicates to Karma's socket
 // This async beforeEach gets called on every spec and releases the JS thread long
@@ -71,21 +83,11 @@ beforeEach(() => {
 
 const axiosDefaultAdapter = getDefaultAdapter();
 
-let testFiles = process.env.TEST_FILES || [];
-if (testFiles.length > 0) {
-  testFiles = testFiles.map(path => path.replace(/^spec\/javascripts\//, '').replace(/\.js$/, ''));
-  console.log(`Running only tests matching: ${testFiles}`);
-} else {
-  console.log('Running all tests');
-}
-
 // render all of our tests
 const testsContext = require.context('.', true, /_spec$/);
 testsContext.keys().forEach(function(path) {
   try {
-    if (testFiles.length === 0 || testFiles.some(p => path.includes(p))) {
-      testsContext(path);
-    }
+    testsContext(path);
   } catch (err) {
     console.error('[ERROR] Unable to load spec: ', path);
     describe('Test bundle', function() {

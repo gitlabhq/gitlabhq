@@ -9,7 +9,11 @@ The access levels are defined in the `ProtectedRefAccess::ALLOWED_ACCESS_LEVELS`
 0  => No access
 30 => Developer access
 40 => Master access
+60 => Admin access
 ```
+
+**Note:** The admin access level (`60`) may be removed in GitLab 11.0. We are currently evaluating restrictions to
+the Owner role as an alternative.
 
 ## List protected branches
 
@@ -105,7 +109,7 @@ POST /projects/:id/protected_branches
 ```
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/projects/5/protected_branches?name=*-stable&push_access_level=30&merge_access_level=30'
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/projects/5/protected_branches?name=*-stable&push_access_level=30&merge_access_level=30&unprotect_access_level=40'
 ```
 
 | Attribute | Type | Required | Description |
@@ -114,8 +118,10 @@ curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitl
 | `name` | string | yes | The name of the branch or wildcard |
 | `push_access_level` | string | no | Access levels allowed to push (defaults: `40`, master access level) |
 | `merge_access_level` | string | no | Access levels allowed to merge (defaults: `40`, master access level) |
+| `unprotect_access_level` | string | no | Access levels allowed to unprotect (defaults: `40`, master access level) |
 | `allowed_to_push` | array | no | Array of access levels allowed to push, with each described by a hash |
 | `allowed_to_merge` | array | no | Array of access levels allowed to merge, with each described by a hash |
+| `allowed_to_unprotect` | array | no | Array of access levels allowed to unprotect, with each described by a hash |
 
 
 Example response:
@@ -137,6 +143,13 @@ Example response:
       "user_id": null,
       "group_id": null,
       "access_level_description": "Developers + Masters"
+  ],
+  "unprotect_access_levels": [
+    {
+      "access_level": 40,
+      "user_id": null,
+      "group_id": null,
+      "access_level_description": "Masters"
     }
   ]
 }
@@ -144,7 +157,7 @@ Example response:
 
 ### Example with user / group level access
 
-Elements in the `allowed_to_push` / `allowed_to_merge` array should take the
+Elements in the `allowed_to_push` / `allowed_to_merge` / `allowed_to_unprotect` array should take the
 form `{user_id: integer}`, `{group_id: integer}` or `{access_level: integer}`. Each user must have access to the project and each group must [have this project shared](../user/project/members/share_project_with_groups.md). These access levels allow [more granular control over protected branch access](../user/project/protected_branches.md#restricting-push-and-merge-access-to-certain-users) and were [added to the API in ][ee-3516] in GitLab 10.3 EE.
 
 ```bash
@@ -165,6 +178,13 @@ Example response:
     }
   ],
   "merge_access_levels": [
+    {
+      "access_level":40,
+      "user_id":null,
+      "group_id":null,
+      "access_level_description":"Masters"
+  ],
+  "unprotect_access_levels": [
     {
       "access_level":40,
       "user_id":null,

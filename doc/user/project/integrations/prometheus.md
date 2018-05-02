@@ -91,7 +91,7 @@ GitLab will automatically scan the Prometheus server for metrics from known serv
 
 You can view the performance dashboard for an environment by [clicking on the monitoring button](../../../ci/environments.md#monitoring-environments).
 
-### Adding additional metrics
+### Adding additional metrics **[PREMIUM]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3799) in [GitLab Premium](https://about.gitlab.com/products/) 10.6.
 

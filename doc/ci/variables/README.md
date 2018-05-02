@@ -61,7 +61,7 @@ future GitLab releases.**
 | **CI_RUNNER_EXECUTABLE_ARCH**   | all    | 10.6   | The OS/architecture of the GitLab Runner executable (note that this is not necessarily the same as the environment of the executor) |
 | **CI_PIPELINE_ID**              | 8.10   | 0.5    | The unique id of the current pipeline that GitLab CI uses internally |
 | **CI_PIPELINE_TRIGGERED**       | all    | all    | The flag to indicate that job was [triggered] |
-| **CI_PIPELINE_SOURCE**          | 9.3    | all    | Indicates how the pipeline was triggered. Possible options are: `push`, `web`, `trigger`, `schedule`, `api`, and `pipeline`. For pipelines created before GitLab 9.5, this will show as `unknown`.
+| **CI_PIPELINE_SOURCE**          | 10.0   | all    | Indicates how the pipeline was triggered. Possible options are: `push`, `web`, `trigger`, `schedule`, `api`, and `pipeline`. For pipelines created before GitLab 9.5, this will show as `unknown` |
 | **CI_PROJECT_DIR**              | all    | all    | The full path where the repository is cloned and where the job is run |
 | **CI_PROJECT_ID**               | all    | all    | The unique id of the current project that GitLab CI uses internally |
 | **CI_PROJECT_NAME**             | 8.10   | 0.5    | The project name that is currently being built (actually it is project folder name) |
@@ -90,6 +90,8 @@ future GitLab releases.**
 | **RESTORE_CACHE_ATTEMPTS**      | 8.15   | 1.9    | Number of attempts to restore the cache running a job |
 | **CHAT_INPUT**                  | 10.6  | all    | Additional arguments passed in the [ChatOps](../chatops/README.md) command. |
 | **CHAT_CHANNEL**                | 10.6  | all    | Source chat channel which triggered the [ChatOps](../chatops/README.md) command. |
+| **CI_DEPLOY_USER**              | 10.8   | all    | Authentication username of the [GitLab Deploy Token][gitlab-deploy-token], only present if the Project has one related.|
+| **CI_DEPLOY_PASSWORD**          | 10.8   | all    | Authentication password of the [GitLab Deploy Token][gitlab-deploy-token], only present if the Project has one related.|
 
 ## 9.0 Renaming
 
@@ -202,7 +204,7 @@ Protected variables can be added by going to your project's
 
 Once you set them, they will be available for all subsequent pipelines.
 
-### Limiting environment scopes of secret variables
+### Limiting environment scopes of secret variables **[PREMIUM]**
 
 >**Notes:**
 [Introduced][ee-2112] in [GitLab Premium][premium] 9.4.
@@ -567,8 +569,10 @@ You can find a full list of unsupported variables below:
 - `CI_REGISTRY_PASSWORD`
 - `CI_REPOSITORY_URL`
 - `CI_ENVIRONMENT_URL`
+- `CI_DEPLOY_USER`
+- `CI_DEPLOY_PASSWORD`
 
-These variables are also not supported in a contex of a
+These variables are also not supported in a context of a
 [dynamic environment name][dynamic-environments].
 
 ### Secret variables with an environment scope
@@ -604,3 +608,4 @@ my-job:
 [builds-policies]: ../yaml/README.md#only-and-except-complex
 [dynamic-environments]: ../environments.md#dynamic-environments
 [trigger-job-token]: ../triggers/README.md#ci-job-token
+[gitlab-deploy-token]: ../../user/project/deploy_tokens/index.md#gitlab-deploy-token

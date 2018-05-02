@@ -41,6 +41,11 @@
 
   .commit-title {
     margin: 0;
+    white-space: normal;
+
+    @media (max-width: $screen-sm-max) {
+      justify-content: flex-end;
+    }
   }
 
   .ci-table {
@@ -491,6 +496,14 @@
     width: 186px;
     margin-bottom: 10px;
     white-space: normal;
+
+    .ci-job-dropdown-container {
+      // override dropdown.scss
+      .dropdown-menu li button {
+        padding: 0;
+        text-align: center;
+      }
+    }
 
     // ensure .build-content has hover style when action-icon is hovered
     .ci-job-dropdown-container:hover .build-content {

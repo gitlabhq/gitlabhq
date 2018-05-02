@@ -1,8 +1,4 @@
-# Dependency Scanning with GitLab CI/CD
-
-NOTE: **Note:**
-In order to use this tool, a [GitLab Ultimate][ee] license
-is needed.
+# Dependency Scanning with GitLab CI/CD **[ULTIMATE]**
 
 This example shows how to run Dependency Scanning on your
 project's dependencies by using GitLab CI/CD.
@@ -21,9 +17,9 @@ dependency_scanning:
   script:
     - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
     - docker run
-        --env DEP_SCAN_DISABLE_REMOTE_CHECKS="${DEP_SCAN_DISABLE_REMOTE_CHECKS:-false}" \
-        --volume "$PWD:/code" \
-        --volume /var/run/docker.sock:/var/run/docker.sock \
+        --env DEP_SCAN_DISABLE_REMOTE_CHECKS="${DEP_SCAN_DISABLE_REMOTE_CHECKS:-false}"
+        --volume "$PWD:/code"
+        --volume /var/run/docker.sock:/var/run/docker.sock
         "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$SP_VERSION" /code
   artifacts:
     paths: [gl-dependency-scanning-report.json]

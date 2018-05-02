@@ -75,7 +75,7 @@ cancel the job, retry it, or erase the job trace.
 
 ## Seeing the failure reason for jobs
 
-> [Introduced][ce-5742] in GitLab 10.7.
+> [Introduced][ce-17782] in GitLab 10.7.
 
 When a pipeline fails or is allowed to fail, there are several places where you
 can quickly check the reason it failed:
@@ -87,6 +87,8 @@ can quickly check the reason it failed:
 In any case, if you hover over the failed job you can see the reason it failed.
 
 ![Pipeline detail](img/job_failure_reason.png)
+
+From [GitLab 10.8][ce-17814] you can also see the reason it failed on the Job detail page.
 
 ## Pipeline graphs
 
@@ -206,12 +208,10 @@ by name. The order of severity is:
 
 ![Pipeline mini graph sorting](img/pipelines_mini_graph_sorting.png)
 
-### Multi-project pipelines graphs
+### Multi-project pipelines graphs **[PREMIUM]**
 
 With [multi-project pipeline graphs](multi_project_pipeline_graphs.md),
 you can visualize cross-project pipelines.
-
-It is available only in [GitLab Premium][eep].
 
 ## How the pipeline duration is calculated
 
@@ -286,6 +286,7 @@ runners will not use regular runners, they must be tagged accordingly.
 [ce-7931]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7931
 [ce-9760]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9760
 [ce-17782]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17782
+[ce-17814]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17814
 [regexp]: https://gitlab.com/gitlab-org/gitlab-ce/blob/2f3dc314f42dbd79813e6251792853bc231e69dd/app/models/commit_status.rb#L99
 [eep]: https://about.gitlab.com/products/ "GitLab Premium"
 [ee-2121]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2121

@@ -95,7 +95,7 @@ module Projects
 
         project.run_after_commit do
           # self is now project
-          GitlabShellWorker.perform_in(5.minutes, :remove_repository, self.repository_storage_path, new_path)
+          GitlabShellWorker.perform_in(5.minutes, :remove_repository, self.repository_storage, new_path)
         end
       else
         false
@@ -110,11 +110,13 @@ module Projects
     end
 
     def repo_exists?(path)
-      gitlab_shell.exists?(project.repository_storage_path, path + '.git')
+      gitlab_shell.exists?(project.repository_storage, path + '.git')
     end
 
     def mv_repository(from_path, to_path)
-      gitlab_shell.mv_repository(project.repository_storage_path, from_path, to_path)
+      return true unless gitlab_shell.exists?(project.repository_storage, from_path + '.git')
+
+      gitlab_shell.mv_repository(project.repository_storage, from_path, to_path)
     end
 
     def attempt_rollback(project, message)
@@ -149,7 +151,7 @@ module Projects
       return true unless Gitlab.config.registry.enabled
 
       ContainerRepository.build_root_repository(project).tap do |repository|
-        return repository.has_tags? ? repository.delete_tags! : true
+        break repository.has_tags? ? repository.delete_tags! : true
       end
     end
 
