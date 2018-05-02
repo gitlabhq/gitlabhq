@@ -5,6 +5,7 @@ require 'carrierwave/orm/activerecord'
 class Group < Namespace
   include EE::Group
   include Gitlab::ConfigHelper
+  include WithUploads
   include AfterCommitQueue
   include AccessRequestable
   include Avatarable
@@ -35,7 +36,6 @@ class Group < Namespace
 
   has_many :ldap_group_links, foreign_key: 'group_id', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :hooks, dependent: :destroy, class_name: 'GroupHook' # rubocop:disable Cop/ActiveRecordDependent
-  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :boards
 
