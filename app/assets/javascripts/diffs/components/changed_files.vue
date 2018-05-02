@@ -1,5 +1,4 @@
 <script>
-import _ from 'underscore';
 import { mapGetters, mapActions } from 'vuex';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -59,8 +58,7 @@ export default {
     },
   },
   mounted() {
-    this.throttledHandleScroll = _.throttle(this.handleScroll, 50);
-    document.addEventListener('scroll', this.throttledHandleScroll);
+    document.addEventListener('scroll', this.handleScroll);
 
     this.offsetTop = parseInt(
       window.getComputedStyle(this.$refs.wrapper).getPropertyValue('top'),
@@ -68,21 +66,27 @@ export default {
     );
   },
   beforeDestroy() {
-    document.removeEventListener('scroll', this.throttledHandleScroll);
+    document.removeEventListener('scroll', this.handleScroll);
   },
   methods: {
     ...mapActions(['setInlineDiffViewType', 'setParallelDiffViewType']),
     pluralize,
     handleScroll() {
+      if (!this.updating) {
+        requestAnimationFrame(this.updateIsStuck);
+        this.updating = true;
+      }
+    },
+    updateIsStuck() {
       if (!this.$refs.wrapper) {
         return;
       }
 
       const wrapperBottom = this.$refs.wrapper.getBoundingClientRect().bottom;
-
       const scrollPosition = window.scrollY;
 
       this.isStuck = scrollPosition >= this.$refs.wrapper.offsetTop - this.offsetTop;
+      this.updating = false;
     },
     sumValues(key) {
       return this.diffFiles.reduce((total, file) => total + file[key], 0);
