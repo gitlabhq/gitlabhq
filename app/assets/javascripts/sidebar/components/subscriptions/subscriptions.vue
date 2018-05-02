@@ -37,7 +37,7 @@
     },
     computed: {
       showLoadingState() {
-        return this.subscribed === null;
+        return this.loading || this.subscribed === null;
       },
       notificationIcon() {
         return this.subscribed ? ICON_ON : ICON_OFF;

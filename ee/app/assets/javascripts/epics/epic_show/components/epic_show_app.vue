@@ -90,12 +90,24 @@
         type: Array,
         required: true,
       },
+      participants: {
+        type: Array,
+        required: true,
+      },
+      subscribed: {
+        type: Boolean,
+        required: true,
+      },
       namespace: {
         type: String,
         required: false,
         default: '#',
       },
       labelsPath: {
+        type: String,
+        required: true,
+      },
+      toggleSubscriptionPath: {
         type: String,
         required: true,
       },
@@ -163,9 +175,12 @@
         :initial-start-date="startDate"
         :initial-end-date="endDate"
         :initial-labels="labels"
+        :initial-participants="participants"
+        :initial-subscribed="subscribed"
         :namespace="namespace"
         :update-path="updateEndpoint"
         :labels-path="labelsPath"
+        :toggle-subscription-path="toggleSubscriptionPath"
         :labels-web-url="labelsWebUrl"
         :epics-web-url="epicsWebUrl"
       />
