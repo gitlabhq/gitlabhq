@@ -153,11 +153,13 @@ describe Projects::UpdatePagesService do
         expect(execute).not_to eq(:success)
       end
 
-      it 'fails for empty file fails' do
-        build.job_artifacts_archive.update_attributes(file: empty_file)
+      context 'when using empty file' do
+        let(:file) { empty_file }
 
-        expect { execute }
-          .to raise_error(Projects::UpdatePagesService::FailedToExtractError)
+        it 'fails to extract' do
+          expect { execute }
+            .to raise_error(Projects::UpdatePagesService::FailedToExtractError)
+        end
       end
 
       context 'when timeout happens by DNS error' do
