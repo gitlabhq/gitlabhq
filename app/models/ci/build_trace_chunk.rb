@@ -6,7 +6,7 @@ module Ci
     belongs_to :build, class_name: "Ci::Build", foreign_key: :build_id
 
     default_value_for :data_store, :redis
-    fast_destroy_all_with :delete_all_redis_data, :redis_all_data_keys
+    fast_destroy_all_with :redis_delete_data, :redis_data_keys
 
     WriteError = Class.new(StandardError)
 
@@ -26,17 +26,17 @@ module Ci
         "gitlab:ci:trace:#{build_id}:chunks:#{chunk_index}"
       end
 
-      def redis_all_data_keys
+      def redis_data_keys
         redis.pluck(:build_id, :chunk_index).map do |data|
           redis_data_key(data.first, data.second)
         end
       end
 
-      def delete_all_redis_data(redis_keys)
-        if redis_keys.any?
-          Gitlab::Redis::SharedState.with do |redis|
-            redis.del(redis_keys)
-          end
+      def redis_delete_data(keys)
+        return if keys.empty?
+
+        Gitlab::Redis::SharedState.with do |redis|
+          redis.del(keys)
         end
       end
     end
@@ -80,7 +80,8 @@ module Ci
         break unless size > 0
 
         self.update!(raw_data: data, data_store: :db)
-        redis_delete_data
+        key = self.class.redis_data_key(build_id, chunk_index)
+        self.class.redis_delete_data([key])
       end
     end
 
@@ -135,12 +136,6 @@ module Ci
     def redis_set_data(data)
       Gitlab::Redis::SharedState.with do |redis|
         redis.set(self.class.redis_data_key(build_id, chunk_index), data, ex: CHUNK_REDIS_TTL)
-      end
-    end
-
-    def redis_delete_data
-      Gitlab::Redis::SharedState.with do |redis|
-        redis.del(self.class.redis_data_key(build_id, chunk_index))
       end
     end
 

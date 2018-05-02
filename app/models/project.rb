@@ -22,6 +22,7 @@ class Project < ActiveRecord::Base
   include DeploymentPlatform
   include ::Gitlab::Utils::StrongMemoize
   include ChronicDurationAttribute
+  include FastDestroyAll::Helpers
 
   extend Gitlab::ConfigHelper
 
@@ -79,10 +80,10 @@ class Project < ActiveRecord::Base
 
   before_destroy :remove_private_deploy_keys
 
-  # This has to be defined before `has_many :builds, depenedent: :destroy`,
-  # otherwise we will not delete any data, due to trace chunks
-  # going through :builds
-  before_destroy -> { run_after_commit(&build_trace_chunks.delete_all_external_data_proc) }
+  ##
+  # `use_fast_destroy` must be defined **before** `has_many` and `has_one` such as `has_many :relation, depenedent: :destroy`
+  # Otherwise `use_fast_destroy` performs against **deleted** rows, which fails to get identifiers of external data
+  use_fast_destroy :build_trace_chunks
 
   after_destroy -> { run_after_commit { remove_pages } }
   after_destroy :remove_exports
