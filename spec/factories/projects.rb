@@ -69,19 +69,43 @@ FactoryBot.define do
     end
 
     trait :import_scheduled do
-      import_status :scheduled
+      transient do
+        status :scheduled
+      end
+
+      before(:create) do |project, evaluator|
+        project.create_import_state(status: evaluator.status)
+      end
     end
 
     trait :import_started do
-      import_status :started
+      transient do
+        status :started
+      end
+
+      before(:create) do |project, evaluator|
+        project.create_import_state(status: evaluator.status)
+      end
     end
 
     trait :import_finished do
-      import_status :finished
+      transient do
+        status :finished
+      end
+
+      before(:create) do |project, evaluator|
+        project.create_import_state(status: evaluator.status)
+      end
     end
 
     trait :import_failed do
-      import_status :failed
+      transient do
+        status :failed
+      end
+
+      before(:create) do |project, evaluator|
+        project.create_import_state(status: evaluator.status)
+      end
     end
 
     trait :archived do

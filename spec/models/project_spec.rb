@@ -1695,7 +1695,8 @@ describe Project do
 
       it 'resets project import_error' do
         error_message = 'Some error'
-        mirror = create(:project_empty_repo, :import_started, import_error: error_message)
+        mirror = create(:project_empty_repo, :import_started)
+        mirror.import_state.update_attributes(last_error: error_message)
 
         expect { mirror.import_finish }.to change { mirror.import_error }.from(error_message).to(nil)
       end
@@ -3339,7 +3340,8 @@ describe Project do
 
     context 'with an import JID' do
       it 'unsets the import JID' do
-        project = create(:project, import_jid: '123')
+        project = create(:project)
+        create(:import_state, project: project, jid: '123')
 
         expect(Gitlab::SidekiqStatus)
           .to receive(:unset)
