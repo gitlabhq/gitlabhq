@@ -28,7 +28,6 @@ export default {
   },
   data() {
     return {
-      searchText: '',
       isStuck: false,
       maxWidth: 'auto',
       top: 0,
@@ -41,11 +40,6 @@ export default {
     },
     sumRemovedLines() {
       return this.sumValues('removedLines');
-    },
-    filteredDiffFiles() {
-      return this.diffFiles.filter(file =>
-        file.filePath.toLowerCase().includes(this.searchText.toLowerCase()),
-      );
     },
     whitespaceVisible() {
       return !getParameterValues('w')[0];
@@ -65,44 +59,30 @@ export default {
     },
   },
   mounted() {
-    this.mrTabsEl = document.querySelector('.js-tabs-affix');
-
-    if (!this.mrTabsEl) return;
-
     this.throttledHandleScroll = _.throttle(this.handleScroll, 50);
     document.addEventListener('scroll', this.throttledHandleScroll);
 
-    this.throttledHandleResize = _.throttle(this.setMaxWidth, 100);
-    window.addEventListener('resize', this.throttledHandleResize);
-
-    this.setMaxWidth();
+    this.offsetTop = parseInt(
+      window.getComputedStyle(this.$refs.wrapper).getPropertyValue('top'),
+      10,
+    );
   },
   beforeDestroy() {
     document.removeEventListener('scroll', this.throttledHandleScroll);
-    window.removeEventListener('resize', this.throttledHandleResize);
   },
   methods: {
     ...mapActions(['setInlineDiffViewType', 'setParallelDiffViewType']),
     pluralize,
-    setMaxWidth() {
-      const { width } = this.mrTabsEl.getBoundingClientRect();
-
-      this.maxWidth = `${width}px`;
-    },
     handleScroll() {
-      if (!this.mrTabsEl || !this.$refs.wrapper) {
+      if (!this.$refs.wrapper) {
         return;
       }
 
-      const mrTabsBottom = this.mrTabsEl.getBoundingClientRect().bottom;
       const wrapperBottom = this.$refs.wrapper.getBoundingClientRect().bottom;
 
       const scrollPosition = window.scrollY;
 
-      const top = Math.max(mrTabsBottom, wrapperBottom);
-
-      this.top = `${top}px`;
-      this.isStuck = mrTabsBottom > wrapperBottom;
+      this.isStuck = scrollPosition >= this.$refs.wrapper.offsetTop - this.offsetTop;
     },
     sumValues(key) {
       return this.diffFiles.reduce((total, file) => total + file[key], 0);
@@ -143,35 +123,10 @@ export default {
   <div
     v-if="diffFiles.length > 0"
     ref="wrapper"
+    :class="{'is-stuck': isStuck}"
     class="content-block oneline-block diff-files-changed diff-files-changed-merge-request
     files-changed js-diff-files-changed"
   >
-    <transition name="slide-down">
-      <div
-        v-show="isStuck"
-        :style="{ maxWidth, top }"
-        class="sticky-top-bar hidden-xs"
-      >
-        <changed-files-dropdown
-          :diff-files="diffFiles"
-        />
-        <span
-          v-show="activeFile"
-          class="prepend-left-5"
-        >
-          <strong class="prepend-right-5">
-            {{ truncatedDiffPath(activeFile) }}
-          </strong>
-          <clipboard-button
-            :text="activeFile"
-            :title="s__('Copy file name to clipboard')"
-            tooltip-placement="bottom"
-            tooltip-container="body"
-            class="btn btn-default btn-transparent btn-clipboard"
-          />
-        </span>
-      </div>
-    </transition>
     <div class="files-changed-inner">
       <div
         class="inline-parallel-buttons hidden-xs hidden-sm"
@@ -210,6 +165,22 @@ export default {
         <changed-files-dropdown
           :diff-files="diffFiles"
         />
+
+        <span
+          v-show="activeFile"
+          class="prepend-left-5"
+        >
+          <strong class="prepend-right-5">
+            {{ truncatedDiffPath(activeFile) }}
+          </strong>
+          <clipboard-button
+            :text="activeFile"
+            :title="s__('Copy file name to clipboard')"
+            tooltip-placement="bottom"
+            tooltip-container="body"
+            class="btn btn-default btn-transparent btn-clipboard"
+          />
+        </span>
 
         <span
           v-show="!isStuck"

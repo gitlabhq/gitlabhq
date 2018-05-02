@@ -36,7 +36,7 @@ export default {
       }
     },
     scrollUpdate() {
-      const header = document.querySelector('.sticky-top-bar');
+      const header = document.querySelector('.js-diff-files-changed');
       if (!header) {
         this.updating = false;
         return;

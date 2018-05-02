@@ -585,15 +585,6 @@
   }
 }
 
-.sticky-top-bar {
-  position: fixed;
-  width: 100%;
-  background-color: $white-light;
-  border-bottom: solid 1px $border-color;
-  z-index: 190;
-  top: 124px;
-}
-
 .diff-files-changed {
   .inline-parallel-buttons {
     position: relative;
@@ -613,7 +604,11 @@
     background-color: $white-light;
 
     &.diff-files-changed-merge-request {
-      top: 76px;
+      position: sticky;
+      top: 90px;
+      z-index: 190;
+      margin: $gl-padding 0;
+      padding: 0;
     }
 
     &:not(.is-stuck) .diff-stats-additions-deletions-collapsed {
@@ -624,7 +619,6 @@
       padding-top: 0;
       padding-bottom: 0;
       border-bottom: 1px solid $white-dark;
-      transform: translateY(16px);
 
       .diff-stats-additions-deletions-expanded,
       .inline-parallel-buttons {
