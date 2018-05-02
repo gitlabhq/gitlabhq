@@ -6,7 +6,7 @@ module RepositoryCheck
     RUN_TIME = 3600
 
     def perform
-      break unless Gitlab::CurrentSettings.repository_checks_enabled
+      return unless Gitlab::CurrentSettings.repository_checks_enabled
 
       start = Time.now
 
