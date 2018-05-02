@@ -61,19 +61,19 @@ export default class Editor {
     }
   }
 
-  createDiffInstance(domElement) {
+  createDiffInstance(domElement, readOnly = true) {
     if (!this.instance) {
       clearDomElement(domElement);
 
       this.disposable.add(
         (this.instance = this.monaco.editor.createDiffEditor(domElement, {
           ...defaultEditorOptions,
-          readOnly: true,
           quickSuggestions: false,
           occurrencesHighlight: false,
-          renderLineHighlight: 'none',
-          hideCursorInOverviewRuler: true,
           renderSideBySide: Editor.renderSideBySide(domElement),
+          readOnly,
+          renderLineHighlight: readOnly ? 'all' : 'none',
+          hideCursorInOverviewRuler: !readOnly,
         })),
       );
 

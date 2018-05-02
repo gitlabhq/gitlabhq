@@ -1,16 +1,15 @@
 import Vue from 'vue';
-import IdeTree from '~/ide/components/ide_tree.vue';
+import IdeReview from '~/ide/components/ide_review.vue';
 import store from '~/ide/stores';
 import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
 import { resetStore, file } from '../helpers';
 import { projectData } from '../mock_data';
 
-describe('IdeRepoTree', () => {
+describe('IDE review mode', () => {
+  const Component = Vue.extend(IdeReview);
   let vm;
 
   beforeEach(() => {
-    const IdeRepoTree = Vue.extend(IdeTree);
-
     store.state.currentProjectId = 'abcproject';
     store.state.currentBranchId = 'master';
     store.state.projects.abcproject = Object.assign({}, projectData);
@@ -19,7 +18,7 @@ describe('IdeRepoTree', () => {
       loading: false,
     });
 
-    vm = createComponentWithStore(IdeRepoTree, store).$mount();
+    vm = createComponentWithStore(Component, store).$mount();
   });
 
   afterEach(() => {

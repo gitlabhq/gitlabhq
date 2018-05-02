@@ -9,6 +9,7 @@ import IdeTree from './ide_tree.vue';
 import ResizablePanel from './resizable_panel.vue';
 import ActivityBar from './activity_bar.vue';
 import CommitSection from './repo_commit_section.vue';
+import IdeReview from './ide_review.vue';
 
 export default {
   components: {
@@ -21,6 +22,7 @@ export default {
     Identicon,
     CommitSection,
     IdeTree,
+    IdeReview,
   },
   computed: {
     ...mapState(['loading', 'currentBranchId', 'currentActivityView']),

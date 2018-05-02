@@ -72,9 +72,47 @@ describe('RepoFile', () => {
 
     it('renders a tooltip', () => {
       expect(
-        vm.$el.querySelector('.ide-file-name span:nth-child(2)').dataset
-          .originalTitle,
+        vm.$el.querySelector('.ide-file-name span:nth-child(2)').dataset.originalTitle,
       ).toContain('Locked by testuser');
+    });
+  });
+
+  describe('folder', () => {
+    it('renders action dropdown', done => {
+      createComponent({
+        file: {
+          ...file('t4'),
+          type: 'tree',
+          branchId: 'master',
+          projectId: 'project',
+        },
+        level: 0,
+      });
+
+      setTimeout(() => {
+        expect(vm.$el.querySelector('.ide-new-btn')).not.toBeNull();
+
+        done();
+      });
+    });
+
+    it('disables action dropdown', done => {
+      createComponent({
+        file: {
+          ...file('t4'),
+          type: 'tree',
+          branchId: 'master',
+          projectId: 'project',
+        },
+        level: 0,
+        disableActionDropdown: true,
+      });
+
+      setTimeout(() => {
+        expect(vm.$el.querySelector('.ide-new-btn')).toBeNull();
+
+        done();
+      });
     });
   });
 });

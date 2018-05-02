@@ -3,6 +3,7 @@
 import { mapState, mapGetters, mapActions } from 'vuex';
 import flash from '~/flash';
 import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer.vue';
+import { activityBarViews } from '../constants';
 import monacoLoader from '../monaco_loader';
 import Editor from '../lib/editor';
 import IdeFileButtons from './ide_file_buttons.vue';
@@ -19,8 +20,13 @@ export default {
     },
   },
   computed: {
-    ...mapState(['rightPanelCollapsed', 'viewer', 'delayViewerUpdated', 'panelResizing']),
-    ...mapGetters(['currentMergeRequest', 'getStagedFile']),
+    ...mapState(['rightPanelCollapsed', 'viewer', 'panelResizing', 'currentActivityView']),
+    ...mapGetters([
+      'currentMergeRequest',
+      'getStagedFile',
+      'isEditModeActive',
+      'isCommitModeActive',
+    ]),
     shouldHideEditor() {
       return this.file && this.file.binary && !this.file.content;
     },
@@ -40,6 +46,21 @@ export default {
       // Compare key to allow for files opened in review mode to be cached differently
       if (newVal.key !== this.file.key) {
         this.initMonaco();
+
+        if (this.currentActivityView !== activityBarViews.edit) {
+          this.setFileViewMode({
+            file: this.file,
+            viewMode: 'edit',
+          });
+        }
+      }
+    },
+    currentActivityView() {
+      if (this.currentActivityView !== activityBarViews.edit) {
+        this.setFileViewMode({
+          file: this.file,
+          viewMode: 'edit',
+        });
       }
     },
     rightPanelCollapsed() {
@@ -77,7 +98,6 @@ export default {
       'setFileViewMode',
       'setFileEOL',
       'updateViewer',
-      'updateDelayViewerUpdated',
     ]),
     initMonaco() {
       if (this.shouldHideEditor) return;
@@ -89,14 +109,6 @@ export default {
         baseSha: this.currentMergeRequest ? this.currentMergeRequest.baseCommitSha : '',
       })
         .then(() => {
-          const viewerPromise = this.delayViewerUpdated
-            ? this.updateViewer(this.file.pending ? 'diff' : 'editor')
-            : Promise.resolve();
-
-          return viewerPromise;
-        })
-        .then(() => {
-          this.updateDelayViewerUpdated(false);
           this.createEditorInstance();
         })
         .catch(err => {
@@ -111,7 +123,7 @@ export default {
         if (this.viewer === 'editor') {
           this.editor.createInstance(this.$refs.editor);
         } else {
-          this.editor.createDiffInstance(this.$refs.editor);
+          this.editor.createDiffInstance(this.$refs.editor, !this.isReviewModeActive);
         }
 
         this.setupEditor();
@@ -176,10 +188,11 @@ export default {
     id="ide"
     class="blob-viewer-container blob-editor-container"
   >
-    <div class="ide-mode-tabs clearfix">
+    <div class="ide-mode-tabs clearfix" >
       <ul
         class="nav-links pull-left"
-        v-if="!shouldHideEditor">
+        v-if="!shouldHideEditor && isEditModeActive"
+      >
         <li :class="editTabCSS">
           <a
             href="javascript:void(0);"
@@ -212,6 +225,9 @@ export default {
       v-show="!shouldHideEditor && file.viewMode === 'edit'"
       ref="editor"
       class="multi-file-editor-holder"
+      :class="{
+        'is-readonly': isCommitModeActive,
+      }"
     >
     </div>
     <content-viewer

@@ -159,24 +159,6 @@
       border-bottom-color: $white-light;
     }
   }
-
-  .dropdown {
-    display: flex;
-    margin-left: auto;
-    margin-bottom: 1px;
-    padding: 0 $grid-size;
-    border-left: 1px solid $white-dark;
-    background-color: $white-light;
-
-    &.shadow {
-      box-shadow: 0 0 10px $dropdown-shadow-color;
-    }
-
-    .btn {
-      margin-top: auto;
-      margin-bottom: auto;
-    }
-  }
 }
 
 .multi-file-tab {
@@ -245,6 +227,17 @@
     display: none;
   }
 
+  .is-readonly,
+  .editor.original {
+    .view-lines {
+      cursor: default;
+    }
+
+    .cursors-layer {
+      display: none;
+    }
+  }
+
   .monaco-diff-editor.vs {
     .editor.modified {
       box-shadow: none;
@@ -302,10 +295,6 @@
     .margin-view-overlays .insert-sign,
     .margin-view-overlays .delete-sign {
       opacity: 0.4;
-    }
-
-    .cursors-layer {
-      display: none;
     }
   }
 }
@@ -378,6 +367,7 @@
 
 .ide-btn-group {
   padding: $gl-padding-4 $gl-vert-padding;
+  line-height: 24px;
 }
 
 .ide-status-bar {
@@ -812,10 +802,12 @@
   }
 
   &:hover {
+    color: $gl-text-color;
     background-color: $theme-gray-100;
   }
 
   &:focus {
+    color: $gl-text-color;
     background-color: $theme-gray-200;
   }
 
@@ -956,6 +948,15 @@
     top: 3px;
     margin-top: -1px;
   }
+}
+
+.ide-review-header {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.ide-review-sub-header {
+  color: $gl-text-color-secondary;
 }
 
 .ide-new-modal-label {
