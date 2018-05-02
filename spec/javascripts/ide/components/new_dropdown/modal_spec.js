@@ -25,25 +25,17 @@ describe('new file modal component', () => {
       it(`sets modal title as ${type}`, () => {
         const title = type === 'tree' ? 'directory' : 'file';
 
-        expect(vm.$el.querySelector('.modal-title').textContent.trim()).toBe(
-          `Create new ${title}`,
-        );
+        expect(vm.$el.querySelector('.modal-title').textContent.trim()).toBe(`Create new ${title}`);
       });
 
       it(`sets button label as ${type}`, () => {
         const title = type === 'tree' ? 'directory' : 'file';
 
-        expect(vm.$el.querySelector('.btn-success').textContent.trim()).toBe(
-          `Create ${title}`,
-        );
+        expect(vm.$el.querySelector('.btn-success').textContent.trim()).toBe(`Create ${title}`);
       });
 
       it(`sets form label as ${type}`, () => {
-        const title = type === 'tree' ? 'Directory' : 'File';
-
-        expect(vm.$el.querySelector('.label-light').textContent.trim()).toBe(
-          `${title} name`,
-        );
+        expect(vm.$el.querySelector('.label-light').textContent.trim()).toBe('Name');
       });
 
       describe('createEntryInStore', () => {

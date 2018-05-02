@@ -4,6 +4,7 @@ export default {
   [types.SET_FILE_ACTIVE](state, { path, active }) {
     Object.assign(state.entries[path], {
       active,
+      lastOpenedAt: new Date().getTime(),
     });
 
     if (active && !state.entries[path].pending) {

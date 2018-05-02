@@ -17,7 +17,7 @@ module BlobHelper
   end
 
   def ide_edit_path(project = @project, ref = @ref, path = @path, options = {})
-    "#{ide_path}/project#{edit_blob_path(project, ref, path, options)}"
+    "#{ide_path}/project#{url_for([project, "edit", "blob", id: [ref, path], script_name: "/"])}"
   end
 
   def edit_blob_button(project = @project, ref = @ref, path = @path, options = {})

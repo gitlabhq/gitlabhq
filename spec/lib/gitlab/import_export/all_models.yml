@@ -286,6 +286,7 @@ project:
 - internal_ids
 - project_deploy_tokens
 - deploy_tokens
+- ci_cd_settings
 award_emoji:
 - awardable
 - user

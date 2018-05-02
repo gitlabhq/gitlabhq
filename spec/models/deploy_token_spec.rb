@@ -142,4 +142,23 @@ describe DeployToken do
       end
     end
   end
+
+  describe '.gitlab_deploy_token' do
+    let(:project) { create(:project ) }
+
+    subject { project.deploy_tokens.gitlab_deploy_token }
+
+    context 'with a gitlab deploy token associated' do
+      it 'should return the gitlab deploy token' do
+        deploy_token = create(:deploy_token, :gitlab_deploy_token, projects: [project])
+        is_expected.to eq(deploy_token)
+      end
+    end
+
+    context 'with no gitlab deploy token associated' do
+      it 'should return nil' do
+        is_expected.to be_nil
+      end
+    end
+  end
 end

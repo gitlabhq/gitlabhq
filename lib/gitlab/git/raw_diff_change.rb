@@ -38,7 +38,9 @@ module Gitlab
       end
 
       def extract_operation
-        case @raw_operation&.first(1)
+        return :unknown unless @raw_operation
+
+        case @raw_operation[0]
         when 'A'
           :added
         when 'C'

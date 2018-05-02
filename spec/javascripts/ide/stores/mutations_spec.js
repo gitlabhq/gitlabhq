@@ -86,4 +86,34 @@ describe('Multi-file store mutations', () => {
       expect(localState.viewer).toBe('diff');
     });
   });
+
+  describe('UPDATE_TEMP_FLAG', () => {
+    beforeEach(() => {
+      localState.entries.test = {
+        ...file(),
+        tempFile: true,
+        changed: true,
+      };
+    });
+
+    it('updates tempFile flag', () => {
+      mutations.UPDATE_TEMP_FLAG(localState, { path: 'test', tempFile: false });
+
+      expect(localState.entries.test.tempFile).toBe(false);
+    });
+
+    it('updates changed flag', () => {
+      mutations.UPDATE_TEMP_FLAG(localState, { path: 'test', tempFile: false });
+
+      expect(localState.entries.test.changed).toBe(false);
+    });
+  });
+
+  describe('TOGGLE_FILE_FINDER', () => {
+    it('updates fileFindVisible', () => {
+      mutations.TOGGLE_FILE_FINDER(localState, true);
+
+      expect(localState.fileFindVisible).toBe(true);
+    });
+  });
 });

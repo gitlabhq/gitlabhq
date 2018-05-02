@@ -196,7 +196,7 @@ This is really useful for integrating repositories to secured, shared Continuous
 Integration (CI) services or other shared services. 
 GitLab administrators can set up the Global Shared Deploy key in GitLab and 
 add the private key to any shared systems.  Individual repositories opt into
-exposing their repsitory using these keys when a project masters (or higher)
+exposing their repository using these keys when a project masters (or higher)
 authorizes a Global Shared Deploy key to be used with their project. 
 
 Global Shared Keys can provide greater security compared to Per-Project Deploy
@@ -224,7 +224,7 @@ if there is at least one Global Deploy Key configured.
 
 CAUTION: **Warning:**
 Defining Global Deploy Keys does not expose any given repository via
-the key until that respository adds the Global Deploy Key to their project.
+the key until that repository adds the Global Deploy Key to their project.
 In this way the Global Deploy Keys enable access by other systems, but do
 not implicitly give any access just by setting them up.
 

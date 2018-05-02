@@ -93,17 +93,6 @@ describe('pipeline graph job component', () => {
     });
   });
 
-  describe('dropdown', () => {
-    it('should render the dropdown action icon', () => {
-      component = mountComponent(JobComponent, {
-        job: mockJob,
-        isDropdown: true,
-      });
-
-      expect(component.$el.querySelector('a.ci-action-icon-wrapper')).toBeDefined();
-    });
-  });
-
   it('should render provided class name', () => {
     component = mountComponent(JobComponent, {
       job: mockJob,

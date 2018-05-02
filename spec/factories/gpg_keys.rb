@@ -1,4 +1,4 @@
-require_relative '../support/gpg_helpers'
+require_relative '../support/helpers/gpg_helpers'
 
 FactoryBot.define do
   factory :gpg_key do

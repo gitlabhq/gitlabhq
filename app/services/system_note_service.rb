@@ -159,7 +159,7 @@ module SystemNoteService
     body = if noteable.time_estimate == 0
              "removed time estimate"
            else
-             "changed time estimate to #{parsed_time},"
+             "changed time estimate to #{parsed_time}"
            end
 
     create_note(NoteSummary.new(noteable, project, author, body, action: 'time_tracking'))

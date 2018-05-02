@@ -1,0 +1,5 @@
+---
+title: Fixed wrong avatar URL when the avatar is on object storage.
+merge_request: 18092
+author:
+type: fixed

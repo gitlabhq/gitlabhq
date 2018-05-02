@@ -16,8 +16,8 @@ describe Projects::HashedStorage::MigrateRepositoryService do
       it 'renames project and wiki repositories' do
         service.execute
 
-        expect(gitlab_shell.exists?(project.repository_storage_path, "#{hashed_storage.disk_path}.git")).to be_truthy
-        expect(gitlab_shell.exists?(project.repository_storage_path, "#{hashed_storage.disk_path}.wiki.git")).to be_truthy
+        expect(gitlab_shell.exists?(project.repository_storage, "#{hashed_storage.disk_path}.git")).to be_truthy
+        expect(gitlab_shell.exists?(project.repository_storage, "#{hashed_storage.disk_path}.wiki.git")).to be_truthy
       end
 
       it 'updates project to be hashed and not read-only' do
@@ -52,8 +52,8 @@ describe Projects::HashedStorage::MigrateRepositoryService do
 
         service.execute
 
-        expect(gitlab_shell.exists?(project.repository_storage_path, "#{hashed_storage.disk_path}.git")).to be_falsey
-        expect(gitlab_shell.exists?(project.repository_storage_path, "#{hashed_storage.disk_path}.wiki.git")).to be_falsey
+        expect(gitlab_shell.exists?(project.repository_storage, "#{hashed_storage.disk_path}.git")).to be_falsey
+        expect(gitlab_shell.exists?(project.repository_storage, "#{hashed_storage.disk_path}.wiki.git")).to be_falsey
         expect(project.repository_read_only?).to be_falsey
       end
 
@@ -63,11 +63,11 @@ describe Projects::HashedStorage::MigrateRepositoryService do
 
         before do
           hashed_storage.ensure_storage_path_exists
-          gitlab_shell.mv_repository(project.repository_storage_path, from_name, to_name)
+          gitlab_shell.mv_repository(project.repository_storage, from_name, to_name)
         end
 
         it 'does not try to move nil repository over hashed' do
-          expect(gitlab_shell).not_to receive(:mv_repository).with(project.repository_storage_path, from_name, to_name)
+          expect(gitlab_shell).not_to receive(:mv_repository).with(project.repository_storage, from_name, to_name)
           expect_move_repository("#{project.disk_path}.wiki", "#{hashed_storage.disk_path}.wiki")
 
           service.execute
@@ -76,7 +76,7 @@ describe Projects::HashedStorage::MigrateRepositoryService do
     end
 
     def expect_move_repository(from_name, to_name)
-      expect(gitlab_shell).to receive(:mv_repository).with(project.repository_storage_path, from_name, to_name).and_call_original
+      expect(gitlab_shell).to receive(:mv_repository).with(project.repository_storage, from_name, to_name).and_call_original
     end
   end
 end

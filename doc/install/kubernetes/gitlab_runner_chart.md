@@ -50,12 +50,12 @@ Here is a snippet of the important settings:
 gitlabUrl: http://gitlab.your-domain.com/
 
 ## The Registration Token for adding new Runners to the GitLab Server. This must
-## be retreived from your GitLab Instance.
+## be retrieved from your GitLab Instance.
 ## ref: https://docs.gitlab.com/ce/ci/runners/README.html#creating-and-registering-a-runner
 ##
 runnerRegistrationToken: ""
 
-## Set the certsSecretName in order to pass custom certficates for GitLab Runner to use
+## Set the certsSecretName in order to pass custom certificates for GitLab Runner to use
 ## Provide resource name for a Kubernetes Secret Object in the same namespace,
 ## this is used to populate the /etc/gitlab-runner/certs directory
 ## ref: https://docs.gitlab.com/runner/configuration/tls-self-signed.html#supported-options-for-self-signed-certificates
@@ -130,7 +130,7 @@ runners:
 
 ### Enabling RBAC support
 
-If your cluster has RBAC enabled, you can choose to either have the chart create its own sevice account or provide one.
+If your cluster has RBAC enabled, you can choose to either have the chart create its own service account or provide one.
 
 To have the chart create the service account for you, set `rbac.create` to true. 
 
@@ -208,7 +208,7 @@ You then need to provide the secret's name to the GitLab Runner chart.
 Add the following to your `values.yaml`
 
 ```yaml
-## Set the certsSecretName in order to pass custom certficates for GitLab Runner to use
+## Set the certsSecretName in order to pass custom certificates for GitLab Runner to use
 ## Provide resource name for a Kubernetes Secret Object in the same namespace,
 ## this is used to populate the /etc/gitlab-runner/certs directory
 ## ref: https://docs.gitlab.com/runner/configuration/tls-self-signed.html#supported-options-for-self-signed-certificates

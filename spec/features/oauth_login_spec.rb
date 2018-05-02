@@ -28,35 +28,46 @@ feature 'OAuth Login', :js, :allow_forgery_protection do
     OmniAuth.config.full_host = @omniauth_config_full_host
   end
 
+  def login_with_provider(provider, enter_two_factor: false)
+    login_via(provider.to_s, user, uid, remember_me: remember_me)
+    enter_code(user.current_otp) if enter_two_factor
+  end
+
   providers.each do |provider|
     context "when the user logs in using the #{provider} provider" do
+      let(:uid) { 'my-uid' }
+      let(:remember_me) { false }
+      let(:user) { create(:omniauth_user, extern_uid: uid, provider: provider.to_s) }
+      let(:two_factor_user) { create(:omniauth_user, :two_factor, extern_uid: uid, provider: provider.to_s) }
+
+      before do
+        stub_omniauth_config(provider)
+      end
+
       context 'when two-factor authentication is disabled' do
         it 'logs the user in' do
-          stub_omniauth_config(provider)
-          user = create(:omniauth_user, extern_uid: 'my-uid', provider: provider.to_s)
-          login_via(provider.to_s, user, 'my-uid')
+          login_with_provider(provider)
 
           expect(current_path).to eq root_path
         end
       end
 
       context 'when two-factor authentication is enabled' do
-        it 'logs the user in' do
-          stub_omniauth_config(provider)
-          user = create(:omniauth_user, :two_factor, extern_uid: 'my-uid', provider: provider.to_s)
-          login_via(provider.to_s, user, 'my-uid')
+        let(:user) { two_factor_user }
 
-          enter_code(user.current_otp)
+        it 'logs the user in' do
+          login_with_provider(provider, enter_two_factor: true)
+
           expect(current_path).to eq root_path
         end
       end
 
       context 'when "remember me" is checked' do
+        let(:remember_me) { true }
+
         context 'when two-factor authentication is disabled' do
           it 'remembers the user after a browser restart' do
-            stub_omniauth_config(provider)
-            user = create(:omniauth_user, extern_uid: 'my-uid', provider: provider.to_s)
-            login_via(provider.to_s, user, 'my-uid', remember_me: true)
+            login_with_provider(provider)
 
             clear_browser_session
 
@@ -66,11 +77,10 @@ feature 'OAuth Login', :js, :allow_forgery_protection do
         end
 
         context 'when two-factor authentication is enabled' do
+          let(:user) { two_factor_user }
+
           it 'remembers the user after a browser restart' do
-            stub_omniauth_config(provider)
-            user = create(:omniauth_user, :two_factor, extern_uid: 'my-uid', provider: provider.to_s)
-            login_via(provider.to_s, user, 'my-uid', remember_me: true)
-            enter_code(user.current_otp)
+            login_with_provider(provider, enter_two_factor: true)
 
             clear_browser_session
 
@@ -83,9 +93,7 @@ feature 'OAuth Login', :js, :allow_forgery_protection do
       context 'when "remember me" is not checked' do
         context 'when two-factor authentication is disabled' do
           it 'does not remember the user after a browser restart' do
-            stub_omniauth_config(provider)
-            user = create(:omniauth_user, extern_uid: 'my-uid', provider: provider.to_s)
-            login_via(provider.to_s, user, 'my-uid', remember_me: false)
+            login_with_provider(provider)
 
             clear_browser_session
 
@@ -95,11 +103,10 @@ feature 'OAuth Login', :js, :allow_forgery_protection do
         end
 
         context 'when two-factor authentication is enabled' do
+          let(:user) { two_factor_user }
+
           it 'does not remember the user after a browser restart' do
-            stub_omniauth_config(provider)
-            user = create(:omniauth_user, :two_factor, extern_uid: 'my-uid', provider: provider.to_s)
-            login_via(provider.to_s, user, 'my-uid', remember_me: false)
-            enter_code(user.current_otp)
+            login_with_provider(provider, enter_two_factor: true)
 
             clear_browser_session
 

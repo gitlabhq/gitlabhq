@@ -63,6 +63,8 @@ writing one](testing_levels.md#consider-not-writing-a-system-test)!
 
 Sometimes you may need to debug Capybara tests by observing browser behavior.
 
+#### Live debug
+
 You can pause Capybara and view the website on the browser by using the
 `live_debug` method in your spec. The current page will be automatically opened
 in your default browser.
@@ -89,6 +91,54 @@ Finished in 34.51 seconds (files took 0.76702 seconds to load)
 ```
 
 Note: `live_debug` only works on javascript enabled specs.
+
+#### Run `:js` spec in a visible browser
+
+Run the spec with `CHROME_HEADLESS=0`, e.g.:
+
+```
+CHROME_HEADLESS=0 bundle exec rspec some_spec.rb
+```
+
+The test will go by quickly, but this will give you an idea of what's happening.
+
+You can also add `byebug` or `binding.pry` to pause execution and step through
+the test.
+
+#### Screenshots
+
+We use the `capybara-screenshot` gem to automatically take a screenshot on
+failure. In CI you can download these files as job artifacts.
+
+Also, you can manually take screenshots at any point in a test by adding the
+methods below. Be sure to remove them when they are no longer needed! See
+https://github.com/mattheworiordan/capybara-screenshot#manual-screenshots for
+more.
+
+Add `screenshot_and_save_page` in a `:js` spec to screenshot what Capybara
+"sees", and save the page source.
+
+Add `screenshot_and_open_image` in a `:js` spec to screenshot what Capybara
+"sees", and automatically open the image.
+
+### Fast unit tests
+
+Some classes are well-isolated from Rails and you should be able to test them
+without the overhead added by the Rails environment and Bundler's `:default`
+group's gem loading. In these cases, you can `require 'fast_spec_helper'`
+instead of `require 'spec_helper'` in your test file, and your test should run
+really fast since:
+
+- Gems loading is skipped
+- Rails app boot is skipped
+- gitlab-shell and Gitaly setup are skipped
+- Test repositories setup are skipped
+
+Note that in some cases, you might have to add some `require_dependency 'foo'`
+in your file under test since Rails autoloading is not available in these cases.
+
+This shouldn't be a problem since explicitely listing dependencies should be
+considered a good practice anyway.
 
 ### `let` variables
 
@@ -281,14 +331,13 @@ All fixtures should be be placed under `spec/fixtures/`.
 
 RSpec config files are files that change the RSpec config (i.e.
 `RSpec.configure do |config|` blocks). They should be placed under
-`spec/support/config/`.
+`spec/support/`.
 
 Each file should be related to a specific domain, e.g.
-`spec/support/config/capybara.rb`, `spec/support/config/carrierwave.rb`, etc.
+`spec/support/capybara.rb`, `spec/support/carrierwave.rb`, etc.
 
-Helpers can be included in the `spec/support/config/rspec.rb` file. If a
-helpers module applies only to a certain kind of specs, it should add modifiers
-to the `config.include` call. For instance if
+If a helpers module applies only to a certain kind of specs, it should add
+modifiers to the `config.include` call. For instance if
 `spec/support/helpers/cycle_analytics_helpers.rb` applies to `:lib` and
 `type: :model` specs only, you would write the following:
 
@@ -298,6 +347,14 @@ RSpec.configure do |config|
   config.include Spec::Support::Helpers::CycleAnalyticsHelpers, type: :model
 end
 ```
+
+If a config file only consists of `config.include`, you can add these
+`config.include` directly in `spec/spec_helper.rb`.
+
+For very generic helpers, consider including them in the `spec/support/rspec.rb`
+file which is used by the `spec/fast_spec_helper.rb` file. See
+[Fast unit tests](#fast-unit-tests) for more details about the
+`spec/fast_spec_helper.rb` file.
 
 ---
 

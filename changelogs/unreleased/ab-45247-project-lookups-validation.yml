@@ -1,5 +1,0 @@
----
-title: Validate project path prior to hitting the database.
-merge_request: 18322
-author:
-type: performance

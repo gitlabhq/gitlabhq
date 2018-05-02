@@ -1,0 +1,5 @@
+---
+title: Fix project creation for user endpoint when jobs_enabled parameter supplied
+merge_request:
+author:
+type: fixed

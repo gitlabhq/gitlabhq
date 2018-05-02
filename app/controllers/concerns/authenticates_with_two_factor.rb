@@ -23,6 +23,9 @@ module AuthenticatesWithTwoFactor
   #
   # Returns nil
   def prompt_for_two_factor(user)
+    # Set @user for Devise views
+    @user = user # rubocop:disable Gitlab/ModuleWithInstanceVariables
+
     return locked_user_redirect(user) unless user.can?(:log_in)
 
     session[:otp_user_id] = user.id

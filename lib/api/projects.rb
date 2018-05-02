@@ -74,6 +74,11 @@ module API
 
         present options[:with].prepare_relation(projects, options), options
       end
+
+      def translate_params_for_compatibility(params)
+        params[:builds_enabled] = params.delete(:jobs_enabled) if params.key?(:jobs_enabled)
+        params
+      end
     end
 
     resource :users, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
@@ -123,7 +128,7 @@ module API
       end
       post do
         attrs = declared_params(include_missing: false)
-        attrs[:builds_enabled] = attrs.delete(:jobs_enabled) if attrs.key?(:jobs_enabled)
+        attrs = translate_params_for_compatibility(attrs)
         project = ::Projects::CreateService.new(current_user, attrs).execute
 
         if project.saved?
@@ -155,6 +160,7 @@ module API
         not_found!('User') unless user
 
         attrs = declared_params(include_missing: false)
+        attrs = translate_params_for_compatibility(attrs)
         project = ::Projects::CreateService.new(user, attrs).execute
 
         if project.saved?
@@ -276,7 +282,7 @@ module API
         authorize! :rename_project, user_project if attrs[:name].present?
         authorize! :change_visibility_level, user_project if attrs[:visibility].present?
 
-        attrs[:builds_enabled] = attrs.delete(:jobs_enabled) if attrs.key?(:jobs_enabled)
+        attrs = translate_params_for_compatibility(attrs)
 
         result = ::Projects::UpdateService.new(user_project, current_user, attrs).execute
 

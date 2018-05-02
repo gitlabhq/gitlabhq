@@ -11,7 +11,7 @@ describe ProjectWiki do
   subject { project_wiki }
 
   it { is_expected.to delegate_method(:empty?).to :pages }
-  it { is_expected.to delegate_method(:repository_storage_path).to :project }
+  it { is_expected.to delegate_method(:repository_storage).to :project }
   it { is_expected.to delegate_method(:hashed_storage?).to :project }
 
   describe "#full_path" do

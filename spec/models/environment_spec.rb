@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Environment do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :stubbed_repository) }
   subject(:environment) { create(:environment, project: project) }
 
   it { is_expected.to belong_to(:project) }
@@ -201,7 +201,7 @@ describe Environment do
   end
 
   describe '#stop_with_action!' do
-    let(:user) { create(:admin) }
+    let(:user) { create(:user) }
 
     subject { environment.stop_with_action!(user) }
 

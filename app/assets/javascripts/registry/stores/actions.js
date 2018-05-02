@@ -35,3 +35,6 @@ export const deleteRegistry = ({ commit }, image) => Vue.http.delete(image.destr
 
 export const setMainEndpoint = ({ commit }, data) => commit(types.SET_MAIN_ENDPOINT, data);
 export const toggleLoading = ({ commit }) => commit(types.TOGGLE_MAIN_LOADING);
+
+// prevent babel-plugin-rewire from generating an invalid default during karma tests
+export default () => {};
