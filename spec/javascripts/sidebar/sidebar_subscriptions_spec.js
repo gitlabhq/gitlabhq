@@ -3,6 +3,7 @@ import sidebarSubscriptions from '~/sidebar/components/subscriptions/sidebar_sub
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import SidebarService from '~/sidebar/services/sidebar_service';
 import SidebarStore from '~/sidebar/stores/sidebar_store';
+import eventHub from '~/sidebar/event_hub';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import Mock from './mock_data';
 
@@ -31,7 +32,7 @@ describe('Sidebar Subscriptions', function () {
       mediator,
     });
 
-    vm.onToggleSubscription();
+    eventHub.$emit('toggleSubscription');
 
     expect(mediator.toggleSubscription).toHaveBeenCalled();
   });
