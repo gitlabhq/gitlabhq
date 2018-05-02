@@ -1,16 +1,12 @@
 <script>
 import Icon from '~/vue_shared/components/icon.vue';
+import changedFilesMixin from '../mixins/changed_files';
 
 export default {
   components: {
     Icon,
   },
-  props: {
-    diffFiles: {
-      type: Array,
-      required: true,
-    },
-  },
+  mixins: [changedFilesMixin],
   data() {
     return {
       searchText: '',
@@ -26,34 +22,6 @@ export default {
   methods: {
     clearSearch() {
       this.searchText = '';
-    },
-    fileChangedIcon(diffFile) {
-      if (diffFile.deletedFile) {
-        return 'file-deletion';
-      } else if (diffFile.newFile) {
-        return 'file-addition';
-      }
-      return 'file-modified';
-    },
-    fileChangedClass(diffFile) {
-      if (diffFile.deletedFile) {
-        return 'cred';
-      } else if (diffFile.newFile) {
-        return 'cgreen';
-      }
-
-      return '';
-    },
-    truncatedDiffPath(path) {
-      const maxLength = 60;
-
-      if (path.length > maxLength) {
-        const start = path.length - maxLength;
-        const end = start + maxLength;
-        return `...${path.slice(start, end)}`;
-      }
-
-      return path;
     },
   },
 };

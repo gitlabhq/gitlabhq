@@ -7,6 +7,7 @@ import { getParameterValues, mergeUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import bp from '~/breakpoints';
 import ChangedFilesDropdown from './changed_files_dropdown.vue';
+import changedFilesMixin from '../mixins/changed_files';
 
 export default {
   components: {
@@ -14,11 +15,8 @@ export default {
     ChangedFilesDropdown,
     ClipboardButton,
   },
+  mixins: [changedFilesMixin],
   props: {
-    diffFiles: {
-      type: Array,
-      required: true,
-    },
     activeFile: {
       type: String,
       required: false,
@@ -90,34 +88,6 @@ export default {
     },
     sumValues(key) {
       return this.diffFiles.reduce((total, file) => total + file[key], 0);
-    },
-    fileChangedIcon(diffFile) {
-      if (diffFile.deletedFile) {
-        return 'file-deletion';
-      } else if (diffFile.newFile) {
-        return 'file-addition';
-      }
-      return 'file-modified';
-    },
-    fileChangedClass(diffFile) {
-      if (diffFile.deletedFile) {
-        return 'cred';
-      } else if (diffFile.newFile) {
-        return 'cgreen';
-      }
-
-      return '';
-    },
-    truncatedDiffPath(path) {
-      const maxLength = 60;
-
-      if (path.length > maxLength) {
-        const start = path.length - maxLength;
-        const end = start + maxLength;
-        return `...${path.slice(start, end)}`;
-      }
-
-      return path;
     },
   },
 };
