@@ -6,7 +6,9 @@ describe Ci::RetryBuildService do
   set(:pipeline) { create(:ci_pipeline, project: project) }
 
   let(:stage) do
-    Ci::Stage.create!(project: project, pipeline: pipeline, name: 'test')
+    create(:ci_stage_entity, project: project,
+                             pipeline: pipeline,
+                             name: 'test')
   end
 
   let(:build) { create(:ci_build, pipeline: pipeline, stage_id: stage.id) }

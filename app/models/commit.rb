@@ -424,6 +424,12 @@ class Commit
     # no-op but needs to be defined since #persisted? is defined
   end
 
+  def touch_later
+    # No-op.
+    # This method is called by ActiveRecord.
+    # We don't want to do anything for `Commit` model, so this is empty.
+  end
+
   WIP_REGEX = /\A\s*(((?i)(\[WIP\]|WIP:|WIP)\s|WIP$))|(fixup!|squash!)\s/.freeze
 
   def work_in_progress?

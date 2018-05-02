@@ -928,7 +928,7 @@ class User < ActiveRecord::Base
 
   def delete_async(deleted_by:, params: {})
     block if params[:hard_delete]
-    DeleteUserWorker.perform_async(deleted_by.id, id, params)
+    DeleteUserWorker.perform_async(deleted_by.id, id, params.to_h)
   end
 
   def notification_service
