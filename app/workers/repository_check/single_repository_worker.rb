@@ -3,6 +3,8 @@ module RepositoryCheck
     include ApplicationWorker
     include RepositoryCheckQueue
 
+    prepend ::EE::RepositoryCheck::SingleRepositoryWorker
+
     def perform(project_id)
       project = Project.find(project_id)
       result = check(project)
