@@ -1,7 +1,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
 import noteForm from '../../notes/components/note_form.vue';
-import * as utils from '../store/utils';
+import { getNoteFormData } from '../store/utils';
 
 export default {
   components: {
@@ -45,7 +45,7 @@ export default {
       });
     },
     handleSaveNote(note) {
-      const postData = utils.getNoteFormData({
+      const postData = getNoteFormData({
         note,
         noteableData: this.noteableData,
         noteableType: this.noteableType,

@@ -83,8 +83,8 @@ describe('ParallelDiffView', () => {
     describe('handleMouse', () => {
       it('should set hovered line code and line section to null when isHover is false', () => {
         const rightLineEventMock = { target: component.$refs.rightLines[1] };
-        expect(component.hoveredLineCode).toEqual(undefined);
-        expect(component.hoveredSection).toEqual(undefined);
+        expect(component.hoveredLineCode).toEqual(null);
+        expect(component.hoveredSection).toEqual(null);
 
         component.handleMouse(rightLineEventMock, null, false);
         expect(component.hoveredLineCode).toEqual(null);

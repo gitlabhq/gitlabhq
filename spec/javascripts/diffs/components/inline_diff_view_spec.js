@@ -23,7 +23,7 @@ describe('InlineDiffView', () => {
   describe('methods', () => {
     describe('handleMouse', () => {
       it('should set hoveredLineCode', () => {
-        expect(component.hoveredLineCode).toEqual(undefined);
+        expect(component.hoveredLineCode).toEqual(null);
 
         component.handleMouse('lineCode1', true);
         expect(component.hoveredLineCode).toEqual('lineCode1');

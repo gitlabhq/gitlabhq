@@ -47,7 +47,7 @@ describe('DiffsStoreActions', () => {
     it('should fetch diff files', done => {
       const endpoint = '/fetch/diff/files';
       const mock = new MockAdapter(axios);
-      const res = { diff_files: 1 };
+      const res = { diff_files: 1, merge_request_diffs: [] };
       mock.onGet(endpoint).reply(200, res);
 
       testAction(
@@ -57,6 +57,7 @@ describe('DiffsStoreActions', () => {
         [
           { type: types.SET_LOADING, payload: true },
           { type: types.SET_LOADING, payload: false },
+          { type: types.SET_MERGE_REQUEST_DIFFS, payload: res.merge_request_diffs },
           { type: types.SET_DIFF_FILES, payload: res.diff_files },
         ],
         [],

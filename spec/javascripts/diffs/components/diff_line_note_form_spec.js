@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import DiffLineNoteForm from '~/diffs/components/diff_line_note_form.vue';
 import store from '~/mr_notes/stores';
-import * as utils from '~/diffs/store/utils';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import diffFileMockData from '../mock_data/diff_file';
 
@@ -38,17 +37,20 @@ describe('DiffLineNoteForm', () => {
     describe('saveNoteForm', () => {
       it('should call saveNote action with proper params', done => {
         let isPromiseCalled = false;
-        spyOn(utils, 'getNoteFormData').and.returnValue({ postData: 1 });
-        spyOn(component, 'saveNote').and.returnValue(
+        const formDataSpy = spyOnDependency(DiffLineNoteForm, 'getNoteFormData').and.returnValue({
+          postData: 1,
+        });
+        const saveNoteSpy = spyOn(component, 'saveNote').and.returnValue(
           new Promise(() => {
             isPromiseCalled = true;
             done();
           }),
         );
 
-        component.handleSaveNote();
+        component.handleSaveNote('note body');
 
-        expect(utils.getNoteFormData).toHaveBeenCalled();
+        expect(formDataSpy).toHaveBeenCalled();
+        expect(saveNoteSpy).toHaveBeenCalled();
         expect(isPromiseCalled).toEqual(true);
       });
     });
