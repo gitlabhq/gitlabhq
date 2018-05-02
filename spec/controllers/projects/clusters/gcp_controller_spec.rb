@@ -137,21 +137,13 @@ describe Projects::Clusters::GcpController do
           stub_google_api_validate_token
         end
 
-        context 'when google project billing is enabled' do
-          before do
-            redis_double = double.as_null_object
-            allow(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis_double)
-            allow(redis_double).to receive(:get).with(CheckGcpProjectBillingWorker.redis_shared_state_key_for('token')).and_return('true')
-          end
-
-          it 'creates a new cluster' do
-            expect(ClusterProvisionWorker).to receive(:perform_async)
-            expect { go }.to change { Clusters::Cluster.count }
-              .and change { Clusters::Providers::Gcp.count }
-            expect(response).to redirect_to(project_cluster_path(project, project.clusters.first))
-            expect(project.clusters.first).to be_gcp
-            expect(project.clusters.first).to be_kubernetes
-          end
+        it 'creates a new cluster' do
+          expect(ClusterProvisionWorker).to receive(:perform_async)
+          expect { go }.to change { Clusters::Cluster.count }
+            .and change { Clusters::Providers::Gcp.count }
+          expect(response).to redirect_to(project_cluster_path(project, project.clusters.first))
+          expect(project.clusters.first).to be_gcp
+          expect(project.clusters.first).to be_kubernetes
         end
       end
 
