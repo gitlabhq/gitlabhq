@@ -12,6 +12,8 @@ describe "Admin sends notification", :js do
     sign_in(admin)
 
     visit(admin_email_path)
+
+    ActionMailer::Base.deliveries.clear
   end
 
   it "sends notification" do
