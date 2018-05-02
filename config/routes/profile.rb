@@ -30,7 +30,6 @@ resource :profile, only: [:show, :update] do
         put :revoke
       end
     end
-    resources :active_sessions, only: [:index, :destroy]
     resources :emails, only: [:index, :create, :destroy] do
       member do
         put :resend_confirmation_instructions

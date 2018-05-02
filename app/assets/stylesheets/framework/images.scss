@@ -39,10 +39,35 @@
 svg {
   fill: currentColor;
 
-  $svg-sizes: 8 12 16 18 24 32 48 72;
-  @each $svg-size in $svg-sizes {
-    &.s#{$svg-size} {
-      @include svg-size(#{$svg-size}px);
-    }
+  &.s8 {
+    @include svg-size(8px);
+  }
+
+  &.s12 {
+    @include svg-size(12px);
+  }
+
+  &.s16 {
+    @include svg-size(16px);
+  }
+
+  &.s18 {
+    @include svg-size(18px);
+  }
+
+  &.s24 {
+    @include svg-size(24px);
+  }
+
+  &.s32 {
+    @include svg-size(32px);
+  }
+
+  &.s48 {
+    @include svg-size(48px);
+  }
+
+  &.s72 {
+    @include svg-size(72px);
   }
 }

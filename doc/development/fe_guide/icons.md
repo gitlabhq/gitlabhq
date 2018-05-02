@@ -49,7 +49,7 @@ Please use the following function inside JS to render an icon :
 
 All Icons and Illustrations are managed in the [gitlab-svgs](https://gitlab.com/gitlab-org/gitlab-svgs) repository which is added as a dev-dependency.
 
-To upgrade to a new SVG Sprite version run `yarn upgrade @gitlab-org/gitlab-svgs`.
+To upgrade to a new SVG Sprite version run `yarn upgrade @gitlab-org/gitlab-svgs` and then run `yarn run svg`. This task will copy the svg sprite and all illustrations in the correct folders. The updated files should be tracked in Git as those are referenced.
 
 # SVG Illustrations
 

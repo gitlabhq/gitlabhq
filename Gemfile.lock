@@ -161,7 +161,6 @@ GEM
       activerecord (>= 3.2.0, < 5.1)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
-    device_detector (1.0.0)
     devise (4.2.0)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
@@ -1027,7 +1026,6 @@ DEPENDENCIES
   database_cleaner (~> 1.5.0)
   deckar01-task_list (= 2.0.0)
   default_value_for (~> 3.0.0)
-  device_detector
   devise (~> 4.2)
   devise-two-factor (~> 3.0.0)
   diffy (~> 3.1.0)
