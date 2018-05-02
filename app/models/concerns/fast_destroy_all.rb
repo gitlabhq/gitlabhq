@@ -23,7 +23,7 @@ module FastDestroyAll
 
     before_destroy do
       raise ForbiddenActionError, '`destroy` is forbbiden, please use `fast_destroy_all`'
-    end  
+    end
   end
 
   class_methods do
@@ -79,7 +79,7 @@ module FastDestroyAll
       # e.g. use_fast_destroy :build_trace_chunks
       def use_fast_destroy(relation)
         before_destroy do
-          subject = public_send(relation)
+          subject = public_send(relation) # rubocop:disable GitlabSecurity/PublicSend
           after_commit_proc = subject.after_commit_cleanup_proc
           run_after_commit(&after_commit_proc)
         end
