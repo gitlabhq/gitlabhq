@@ -13,12 +13,25 @@ module Ci
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :stage_id
     has_many :builds, foreign_key: :stage_id
 
-    validates :project, presence: true, unless: :importing?
-    validates :pipeline, presence: true, unless: :importing?
-    validates :name, presence: true, unless: :importing?
+    with_options unless: :importing? do
+      validates :project, presence: true
+      validates :pipeline, presence: true
+      validates :name, presence: true
+      validates :position, presence: true
+    end
 
-    after_initialize do |stage|
+    after_initialize do
       self.status = DEFAULT_STATUS if self.status.nil?
+    end
+
+    before_validation unless: :importing? do
+      next if position.present?
+
+      self.position = statuses.select(:stage_idx)
+        .where('stage_idx IS NOT NULL')
+        .group(:stage_idx)
+        .order('COUNT(*) DESC')
+        .first&.stage_idx.to_i
     end
 
     state_machine :status, initial: :created do
