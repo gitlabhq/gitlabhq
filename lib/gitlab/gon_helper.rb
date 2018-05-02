@@ -19,6 +19,7 @@ module Gitlab
       gon.gitlab_logo            = ActionController::Base.helpers.asset_path('gitlab_logo.png')
       gon.sprite_icons           = IconsHelper.sprite_icon_path
       gon.sprite_file_icons      = IconsHelper.sprite_file_icons_path
+      gon.emoji_sprites_css_path = ActionController::Base.helpers.stylesheet_path('emoji_sprites')
       gon.test_env               = Rails.env.test?
       gon.suggested_label_colors = LabelsHelper.suggested_colors
 
