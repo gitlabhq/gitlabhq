@@ -1,5 +1,7 @@
 module RepositoryCheck
   class BatchWorker
+    prepend ::EE::RepositoryCheck::BatchWorker
+
     include ApplicationWorker
     include CronjobQueue
 
