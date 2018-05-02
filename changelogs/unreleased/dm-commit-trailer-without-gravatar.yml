@@ -1,0 +1,5 @@
+---
+title: Fix commit trailer rendering when Gravatar is disabled
+merge_request:
+author:
+type: fixed

@@ -1,9 +1,9 @@
 require "spec_helper"
 
 describe "User toggles subscription", :js do
-  set(:project) { create(:project_empty_repo, :public) }
-  set(:user) { create(:user) }
-  set(:issue) { create(:issue, project: project, author: user) }
+  let(:project) { create(:project_empty_repo, :public) }
+  let(:user) { create(:user) }
+  let(:issue) { create(:issue, project: project, author: user) }
 
   before do
     project.add_developer(user)
@@ -12,7 +12,7 @@ describe "User toggles subscription", :js do
     visit(project_issue_path(project, issue))
   end
 
-  it "unsibscribes from issue" do
+  it "unsubscribes from issue" do
     subscription_button = find(".js-issuable-subscribe-button")
 
     # Check we're subscribed.

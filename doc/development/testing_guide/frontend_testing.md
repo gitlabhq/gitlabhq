@@ -62,6 +62,7 @@ describe('.methodName', () => {
   });
 });
 ```
+
 #### Testing promises
 
 When testing Promises you should always make sure that the test is asynchronous and rejections are handled.
@@ -69,9 +70,9 @@ Your Promise chain should therefore end with a call of the `done` callback and `
 
 ```javascript
 // Good
-it('tests a promise', (done) => {
+it('tests a promise', done => {
   promise
-    .then((data) => {
+    .then(data => {
       expect(data).toBe(asExpected);
     })
     .then(done)
@@ -79,10 +80,10 @@ it('tests a promise', (done) => {
 });
 
 // Good
-it('tests a promise rejection', (done) => {
+it('tests a promise rejection', done => {
   promise
     .then(done.fail)
-    .catch((error) => {
+    .catch(error => {
       expect(error).toBe(expectedError);
     })
     .then(done)
@@ -91,38 +92,37 @@ it('tests a promise rejection', (done) => {
 
 // Bad (missing done callback)
 it('tests a promise', () => {
-  promise
-    .then((data) => {
-      expect(data).toBe(asExpected);
-    })
+  promise.then(data => {
+    expect(data).toBe(asExpected);
+  });
 });
 
 // Bad (missing catch)
-it('tests a promise', (done) => {
+it('tests a promise', done => {
   promise
-    .then((data) => {
+    .then(data => {
       expect(data).toBe(asExpected);
     })
-    .then(done)
+    .then(done);
 });
 
 // Bad (use done.fail in asynchronous tests)
-it('tests a promise', (done) => {
+it('tests a promise', done => {
   promise
-    .then((data) => {
+    .then(data => {
       expect(data).toBe(asExpected);
     })
     .then(done)
-    .catch(fail)
+    .catch(fail);
 });
 
 // Bad (missing catch)
-it('tests a promise rejection', (done) => {
+it('tests a promise rejection', done => {
   promise
-    .catch((error) => {
+    .catch(error => {
       expect(error).toBe(expectedError);
     })
-    .then(done)
+    .then(done);
 });
 ```
 
@@ -139,7 +139,7 @@ documentation for these methods can be found in the [jasmine introduction page](
 Sometimes you may need to spy on a method that is directly imported by another
 module. GitLab has a custom `spyOnDependency` method which utilizes
 [babel-plugin-rewire](https://github.com/speedskater/babel-plugin-rewire) to
-achieve this.  It can be used like so:
+achieve this. It can be used like so:
 
 ```javascript
 // my_module.js
@@ -181,8 +181,8 @@ See this [section][vue-test].
 `rake karma` runs the frontend-only (JavaScript) tests.
 It consists of two subtasks:
 
-- `rake karma:fixtures` (re-)generates fixtures
-- `rake karma:tests` actually executes the tests
+* `rake karma:fixtures` (re-)generates fixtures
+* `rake karma:tests` actually executes the tests
 
 As long as the fixtures don't change, `rake karma:tests` (or `yarn karma`)
 is sufficient (and saves you some time).
@@ -217,6 +217,14 @@ yarn karma-start --filter-spec profile/account/components/
 yarn karma-start -f vue_shared -f vue_mr_widget
 ```
 
+You can also use glob syntax to match files. Remember to put quotes around the
+glob otherwise your shell may split it into multiple arguments:
+
+```bash
+# Run all specs named `file_spec` within the IDE subdirectory
+yarn karma -f 'spec/javascripts/ide/**/file_spec.js'
+```
+
 ## RSpec feature integration tests
 
 Information on setting up and running RSpec integration tests with
@@ -231,14 +239,14 @@ supported by the PhantomJS test runner which is used for both Karma and RSpec
 tests. We polyfill some JavaScript objects for older browsers, but some
 features are still unavailable:
 
-- Array.from
-- Array.first
-- Async functions
-- Generators
-- Array destructuring
-- For..Of
-- Symbol/Symbol.iterator
-- Spread
+* Array.from
+* Array.first
+* Async functions
+* Generators
+* Array destructuring
+* For..Of
+* Symbol/Symbol.iterator
+* Spread
 
 Until these are polyfilled appropriately, they should not be used. Please
 update this list with additional unsupported features.
@@ -295,11 +303,11 @@ Scenario: Developer can approve merge request
 [jasmine-focus]: https://jasmine.github.io/2.5/focused_specs.html
 [jasmine-jquery]: https://github.com/velesin/jasmine-jquery
 [karma]: http://karma-runner.github.io/
-[vue-test]:https://docs.gitlab.com/ce/development/fe_guide/vue.html#testing-vue-components
-[RSpec]: https://github.com/rspec/rspec-rails#feature-specs
-[Capybara]: https://github.com/teamcapybara/capybara
-[Karma]: http://karma-runner.github.io/
-[Jasmine]: https://jasmine.github.io/
+[vue-test]: https://docs.gitlab.com/ce/development/fe_guide/vue.html#testing-vue-components
+[rspec]: https://github.com/rspec/rspec-rails#feature-specs
+[capybara]: https://github.com/teamcapybara/capybara
+[karma]: http://karma-runner.github.io/
+[jasmine]: https://jasmine.github.io/
 
 ---
 
