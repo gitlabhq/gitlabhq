@@ -5,6 +5,8 @@ module Gitlab
   module Redis
     class SharedState < ::Gitlab::Redis::Wrapper
       SESSION_NAMESPACE = 'session:gitlab'.freeze
+      USER_SESSIONS_NAMESPACE = 'session:user:gitlab'.freeze
+      USER_SESSIONS_LOOKUP_NAMESPACE = 'session:lookup:user:gitlab'.freeze
       DEFAULT_REDIS_SHARED_STATE_URL = 'redis://localhost:6382'.freeze
       REDIS_SHARED_STATE_CONFIG_ENV_VAR_NAME = 'GITLAB_REDIS_SHARED_STATE_CONFIG_FILE'.freeze
 

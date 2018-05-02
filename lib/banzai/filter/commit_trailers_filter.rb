@@ -13,7 +13,6 @@ module Banzai
     # * https://git.wiki.kernel.org/index.php/CommitMessageConventions
     class CommitTrailersFilter < HTML::Pipeline::Filter
       include ActionView::Helpers::TagHelper
-      include ApplicationHelper
       include AvatarsHelper
 
       TRAILER_REGEXP = /(?<label>[[:alpha:]-]+-by:)/i.freeze
