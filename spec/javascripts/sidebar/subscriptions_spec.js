@@ -39,4 +39,12 @@ describe('Subscriptions', function () {
 
     expect(vm.$refs.toggleButton.$el.querySelector('.project-feature-toggle')).toHaveClass('is-checked');
   });
+
+  it('toggleSubscription method emits `toggleSubscription` event on component', () => {
+    vm = mountComponent(Subscriptions, { subscribed: true });
+    spyOn(vm, '$emit');
+
+    vm.toggleSubscription();
+    expect(vm.$emit).toHaveBeenCalledWith('toggleSubscription', jasmine.any(Object));
+  });
 });

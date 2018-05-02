@@ -3,7 +3,6 @@
   import icon from '~/vue_shared/components/icon.vue';
   import toggleButton from '~/vue_shared/components/toggle_button.vue';
   import tooltip from '~/vue_shared/directives/tooltip';
-  import eventHub from '../../event_hub';
 
   const ICON_ON = 'notifications';
   const ICON_OFF = 'notifications-off';
@@ -48,7 +47,7 @@
     },
     methods: {
       toggleSubscription() {
-        eventHub.$emit('toggleSubscription', this.id);
+        this.$emit('toggleSubscription', this.id);
       },
     },
   };
