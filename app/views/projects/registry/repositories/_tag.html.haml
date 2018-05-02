@@ -18,7 +18,7 @@
         \-
   %td
     - if tag.created_at
-      = time_ago_in_words(tag.created_at)
+      = time_ago_with_tooltip tag.created_at
     - else
       .light
         \-
