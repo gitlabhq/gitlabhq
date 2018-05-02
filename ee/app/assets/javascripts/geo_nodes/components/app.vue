@@ -1,7 +1,6 @@
 <script>
 import { s__ } from '~/locale';
 import Flash from '~/flash';
-import statusCodes from '~/lib/utils/http_status';
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 import SmartInterval from '~/smart_interval';
@@ -116,7 +115,7 @@ export default {
           );
         })
         .catch(err => {
-          if (err.response && err.response.status === statusCodes.NOT_FOUND) {
+          if (err.response && err.response.data) {
             this.store.setNodeDetails(nodeId, {
               geo_node_id: nodeId,
               health: err.message,
