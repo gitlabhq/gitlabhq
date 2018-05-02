@@ -293,6 +293,12 @@ module Gitlab
         response = GitalyClient.call(@storage, :repository_service, :calculate_checksum, request)
         response.checksum.presence
       end
+
+      def raw_changes_between(from, to)
+        request = Gitaly::GetRawChangesRequest.new(repository: @gitaly_repo, from_revision: from, to_revision: to)
+
+        GitalyClient.call(@storage, :repository_service, :get_raw_changes, request)
+      end
     end
   end
 end
