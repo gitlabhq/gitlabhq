@@ -184,6 +184,9 @@ gem 're2', '~> 1.1.1'
 
 gem 'version_sorter', '~> 2.1.0'
 
+# User agent parsing
+gem 'device_detector'
+
 # Cache
 gem 'redis-rails', '~> 5.0.2'
 
