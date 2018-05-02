@@ -13,7 +13,7 @@
           .nav-icon-container
             = sprite_icon('project')
           %span.nav-item-name
-            Overview
+            Project
 
         %ul.sidebar-sub-level-items
           = nav_link(path: 'projects#show', html_options: { class: "fly-out-top-item" } ) do
@@ -258,7 +258,7 @@
                   #{ _('Snippets') }
 
       - if project_nav_tab? :settings
-        = nav_link(path: %w[projects#edit project_members#index integrations#show services#edit repository#show ci_cd#show pages#show]) do
+        = nav_link(path: %w[projects#edit project_members#index integrations#show services#edit repository#show ci_cd#show badges#index pages#show]) do
           = link_to edit_project_path(@project), class: 'shortcuts-tree' do
             .nav-icon-container
               = sprite_icon('settings')
@@ -268,7 +268,7 @@
           %ul.sidebar-sub-level-items
             - can_edit = can?(current_user, :admin_project, @project)
             - if can_edit
-              = nav_link(path: %w[projects#edit project_members#index integrations#show services#edit repository#show ci_cd#show pages#show], html_options: { class: "fly-out-top-item" } ) do
+              = nav_link(path: %w[projects#edit project_members#index integrations#show services#edit repository#show ci_cd#show badges#index pages#show], html_options: { class: "fly-out-top-item" } ) do
                 = link_to edit_project_path(@project) do
                   %strong.fly-out-top-item-name
                     #{ _('Settings') }
@@ -281,6 +281,11 @@
               = link_to project_project_members_path(@project), title: 'Members' do
                 %span
                   Members
+            - if can_edit
+              = nav_link(controller: :badges) do
+                = link_to project_settings_badges_path(@project), title: _('Badges') do
+                  %span
+                    = _('Badges')
             - if can_edit
               = nav_link(controller: [:integrations, :services, :hooks, :hook_logs]) do
                 = link_to project_settings_integrations_path(@project), title: 'Integrations' do

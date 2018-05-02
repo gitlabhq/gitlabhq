@@ -406,7 +406,7 @@ describe API::Runner do
             expect(json_response['image']).to eq({ 'name' => 'ruby:2.1', 'entrypoint' => '/bin/sh' })
             expect(json_response['services']).to eq([{ 'name' => 'postgres', 'entrypoint' => nil,
                                                        'alias' => nil, 'command' => nil },
-                                                     { 'name' => 'docker:dind', 'entrypoint' => '/bin/sh',
+                                                     { 'name' => 'docker:stable-dind', 'entrypoint' => '/bin/sh',
                                                        'alias' => 'docker', 'command' => 'sleep 30' }])
             expect(json_response['steps']).to eq(expected_steps)
             expect(json_response['artifacts']).to eq(expected_artifacts)
@@ -1330,7 +1330,7 @@ describe API::Runner do
 
               it 'download artifacts' do
                 expect(response).to have_http_status(200)
-                expect(response.headers).to include download_headers
+                expect(response.headers.to_h).to include download_headers
               end
             end
 
@@ -1345,7 +1345,7 @@ describe API::Runner do
 
                 it 'uses workhorse send-url' do
                   expect(response).to have_gitlab_http_status(200)
-                  expect(response.headers).to include(
+                  expect(response.headers.to_h).to include(
                     'Gitlab-Workhorse-Send-Data' => /send-url:/)
                 end
               end

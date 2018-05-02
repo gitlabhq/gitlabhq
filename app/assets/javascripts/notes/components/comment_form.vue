@@ -317,10 +317,10 @@ Please check your network connection and try again.`;
     <note-signed-out-widget v-if="!isLoggedIn" />
     <discussion-locked-widget
       issuable-type="issue"
-      v-else-if="!canCreateNote"
+      v-else-if="isLocked(getNoteableData) && !canCreateNote"
     />
     <ul
-      v-else
+      v-else-if="canCreateNote"
       class="notes notes-form timeline">
       <li class="timeline-entry">
         <div class="timeline-entry-inner">

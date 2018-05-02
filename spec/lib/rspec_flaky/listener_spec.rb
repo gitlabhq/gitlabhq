@@ -4,7 +4,7 @@ describe RspecFlaky::Listener, :aggregate_failures do
   let(:already_flaky_example_uid) { '6e869794f4cfd2badd93eb68719371d1' }
   let(:suite_flaky_example_report) do
     {
-      already_flaky_example_uid => {
+      "#{already_flaky_example_uid}": {
         example_id: 'spec/foo/bar_spec.rb:2',
         file: 'spec/foo/bar_spec.rb',
         line: 2,
@@ -55,8 +55,7 @@ describe RspecFlaky::Listener, :aggregate_failures do
       it 'returns a valid Listener instance' do
         listener = described_class.new
 
-        expect(listener.to_report(listener.suite_flaky_examples))
-          .to eq(expected_suite_flaky_examples)
+        expect(listener.suite_flaky_examples.to_h).to eq(expected_suite_flaky_examples)
         expect(listener.flaky_examples).to eq({})
       end
     end
@@ -65,25 +64,35 @@ describe RspecFlaky::Listener, :aggregate_failures do
       it_behaves_like 'a valid Listener instance'
     end
 
-    context 'when a report file exists and set by SUITE_FLAKY_RSPEC_REPORT_PATH' do
-      let(:report_file) do
-        Tempfile.new(%w[rspec_flaky_report .json]).tap do |f|
-          f.write(JSON.pretty_generate(suite_flaky_example_report))
-          f.rewind
+    context 'when SUITE_FLAKY_RSPEC_REPORT_PATH is set' do
+      let(:report_file_path) { 'foo/report.json' }
+
+      before do
+        stub_env('SUITE_FLAKY_RSPEC_REPORT_PATH', report_file_path)
+      end
+
+      context 'and report file exists' do
+        before do
+          expect(File).to receive(:exist?).with(report_file_path).and_return(true)
+        end
+
+        it 'delegates the load to RspecFlaky::Report' do
+          report = RspecFlaky::Report.new(RspecFlaky::FlakyExamplesCollection.new(suite_flaky_example_report))
+
+          expect(RspecFlaky::Report).to receive(:load).with(report_file_path).and_return(report)
+          expect(described_class.new.suite_flaky_examples.to_h).to eq(report.flaky_examples.to_h)
         end
       end
 
-      before do
-        stub_env('SUITE_FLAKY_RSPEC_REPORT_PATH', report_file.path)
-      end
+      context 'and report file does not exist' do
+        before do
+          expect(File).to receive(:exist?).with(report_file_path).and_return(false)
+        end
 
-      after do
-        report_file.close
-        report_file.unlink
-      end
-
-      it_behaves_like 'a valid Listener instance' do
-        let(:expected_suite_flaky_examples) { suite_flaky_example_report }
+        it 'return an empty hash' do
+          expect(RspecFlaky::Report).not_to receive(:load)
+          expect(described_class.new.suite_flaky_examples.to_h).to eq({})
+        end
       end
     end
   end
@@ -186,74 +195,21 @@ describe RspecFlaky::Listener, :aggregate_failures do
     let(:notification_already_flaky_rspec_example) { double(example: already_flaky_rspec_example) }
 
     context 'when a report file path is set by FLAKY_RSPEC_REPORT_PATH' do
-      let(:report_file_path) { Rails.root.join('tmp', 'rspec_flaky_report.json') }
-      let(:new_report_file_path) { Rails.root.join('tmp', 'rspec_flaky_new_report.json') }
+      it 'delegates the writes to RspecFlaky::Report' do
+        listener.example_passed(notification_new_flaky_rspec_example)
+        listener.example_passed(notification_already_flaky_rspec_example)
 
-      before do
-        stub_env('FLAKY_RSPEC_REPORT_PATH', report_file_path)
-        stub_env('NEW_FLAKY_RSPEC_REPORT_PATH', new_report_file_path)
-        FileUtils.rm(report_file_path) if File.exist?(report_file_path)
-        FileUtils.rm(new_report_file_path) if File.exist?(new_report_file_path)
+        report1 = double
+        report2 = double
+
+        expect(RspecFlaky::Report).to receive(:new).with(listener.flaky_examples).and_return(report1)
+        expect(report1).to receive(:write).with(RspecFlaky::Config.flaky_examples_report_path)
+
+        expect(RspecFlaky::Report).to receive(:new).with(listener.flaky_examples - listener.suite_flaky_examples).and_return(report2)
+        expect(report2).to receive(:write).with(RspecFlaky::Config.new_flaky_examples_report_path)
+
+        listener.dump_summary(nil)
       end
-
-      after do
-        FileUtils.rm(report_file_path) if File.exist?(report_file_path)
-        FileUtils.rm(new_report_file_path) if File.exist?(new_report_file_path)
-      end
-
-      context 'when FLAKY_RSPEC_GENERATE_REPORT == "false"' do
-        before do
-          stub_env('FLAKY_RSPEC_GENERATE_REPORT', 'false')
-        end
-
-        it 'does not write any report file' do
-          listener.example_passed(notification_new_flaky_rspec_example)
-
-          listener.dump_summary(nil)
-
-          expect(File.exist?(report_file_path)).to be(false)
-          expect(File.exist?(new_report_file_path)).to be(false)
-        end
-      end
-
-      context 'when FLAKY_RSPEC_GENERATE_REPORT == "true"' do
-        before do
-          stub_env('FLAKY_RSPEC_GENERATE_REPORT', 'true')
-        end
-
-        around do |example|
-          Timecop.freeze { example.run }
-        end
-
-        it 'writes the report files' do
-          listener.example_passed(notification_new_flaky_rspec_example)
-          listener.example_passed(notification_already_flaky_rspec_example)
-
-          listener.dump_summary(nil)
-
-          expect(File.exist?(report_file_path)).to be(true)
-          expect(File.exist?(new_report_file_path)).to be(true)
-
-          expect(File.read(report_file_path))
-            .to eq(JSON.pretty_generate(listener.to_report(listener.flaky_examples)))
-
-          new_example = RspecFlaky::Example.new(notification_new_flaky_rspec_example)
-          new_flaky_example = RspecFlaky::FlakyExample.new(new_example)
-          new_flaky_example.update_flakiness!
-
-          expect(File.read(new_report_file_path))
-            .to eq(JSON.pretty_generate(listener.to_report(new_example.uid => new_flaky_example)))
-        end
-      end
-    end
-  end
-
-  describe '#to_report' do
-    let(:listener) { described_class.new(suite_flaky_example_report.to_json) }
-
-    it 'transforms the internal hash to a JSON-ready hash' do
-      expect(listener.to_report(already_flaky_example_uid => already_flaky_example))
-        .to match(hash_including(suite_flaky_example_report))
     end
   end
 end

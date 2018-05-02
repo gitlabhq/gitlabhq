@@ -1,5 +1,0 @@
----
-title: Ensure hooks run when a deploy key without a user pushes
-merge_request:
-author:
-type: fixed

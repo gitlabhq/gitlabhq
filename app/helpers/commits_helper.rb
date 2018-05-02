@@ -63,7 +63,7 @@ module CommitsHelper
   # Returns a link formatted as a commit branch link
   def commit_branch_link(url, text)
     link_to(url, class: 'label label-gray ref-name branch-link') do
-      sprite_icon('fork', size: 16, css_class: 'fork-svg') + "#{text}"
+      sprite_icon('fork', size: 12, css_class: 'fork-svg') + "#{text}"
     end
   end
 
@@ -163,7 +163,7 @@ module CommitsHelper
     tooltip = "#{action.capitalize} this #{commit.change_type_title(current_user)} in a new merge request" if has_tooltip
     btn_class = "btn btn-#{btn_class}" unless btn_class.nil?
 
-    if can_collaborate_with_project?
+    if can_collaborate_with_project?(@project)
       link_to action.capitalize, "#modal-#{action}-commit", 'data-toggle' => 'modal', 'data-container' => 'body', title: (tooltip if has_tooltip), class: "#{btn_class} #{'has-tooltip' if has_tooltip}"
     elsif can?(current_user, :fork_project, @project)
       continue_params = {

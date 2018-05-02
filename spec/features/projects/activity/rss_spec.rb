@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 feature 'Project Activity RSS' do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+  let(:project) { create(:project, :public) }
+  let(:user) { project.owner }
   let(:path) { activity_project_path(project) }
 
   before do
@@ -11,8 +11,7 @@ feature 'Project Activity RSS' do
 
   context 'when signed in' do
     before do
-      project.add_developer(user)
-      sign_in(user)
+      sign_in(project.owner)
       visit path
     end
 

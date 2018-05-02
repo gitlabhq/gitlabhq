@@ -1,5 +1,0 @@
----
-title: ListCommitsByOid is executed by Gitaly by default
-merge_request:
-author:
-type: performance

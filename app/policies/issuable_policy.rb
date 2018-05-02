@@ -18,9 +18,7 @@ class IssuablePolicy < BasePolicy
 
   rule { locked & ~is_project_member }.policy do
     prevent :create_note
-    prevent :update_note
     prevent :admin_note
     prevent :resolve_note
-    prevent :edit_note
   end
 end

@@ -97,13 +97,17 @@ export default {
             :file="file"
           />
         </span>
-        <span class="pull-right">
+        <span class="pull-right ide-file-icon-holder">
           <mr-file-icon
             v-if="file.mrChange"
           />
           <changed-file-icon
+            v-if="file.changed || file.tempFile || file.staged"
             :file="file"
-            v-if="file.changed || file.tempFile"
+            :show-tooltip="true"
+            :show-staged-icon="true"
+            :force-modified-icon="true"
+            class="pull-right"
           />
         </span>
         <new-dropdown

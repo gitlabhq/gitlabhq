@@ -1,4 +1,4 @@
-import * as imageUtility from '~/lib/utils/image_utility';
+import { isImageLoaded } from '~/lib/utils/image_utility';
 
 describe('imageUtility', () => {
   describe('isImageLoaded', () => {
@@ -8,7 +8,7 @@ describe('imageUtility', () => {
         naturalHeight: 100,
       };
 
-      expect(imageUtility.isImageLoaded(element)).toEqual(false);
+      expect(isImageLoaded(element)).toEqual(false);
     });
 
     it('should return false when naturalHeight = 0', () => {
@@ -17,7 +17,7 @@ describe('imageUtility', () => {
         naturalHeight: 0,
       };
 
-      expect(imageUtility.isImageLoaded(element)).toEqual(false);
+      expect(isImageLoaded(element)).toEqual(false);
     });
 
     it('should return true when image.complete and naturalHeight != 0', () => {
@@ -26,7 +26,7 @@ describe('imageUtility', () => {
         naturalHeight: 100,
       };
 
-      expect(imageUtility.isImageLoaded(element)).toEqual(true);
+      expect(isImageLoaded(element)).toEqual(true);
     });
   });
 });

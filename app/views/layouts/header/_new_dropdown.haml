@@ -19,8 +19,8 @@
           %li.dropdown-bold-header GitLab
 
       - if @project&.persisted?
-        - create_project_issue = can?(current_user, :create_issue, @project)
-        - merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
+        - create_project_issue = show_new_issue_link?(@project)
+        - merge_project = merge_request_source_project_for_project(@project)
         - create_project_snippet = can?(current_user, :create_project_snippet, @project)
         - if create_project_issue || merge_project || create_project_snippet
           %li.dropdown-bold-header This project

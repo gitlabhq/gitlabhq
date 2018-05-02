@@ -36,7 +36,7 @@
           %template{ 'v-else' => '' }
             = render 'shared/icons/icon_resolve_discussion.svg'
 
-- if current_user
+- if can?(current_user, :award_emoji, note)
   - if note.emoji_awardable?
     - user_authored = note.user_authored?(current_user)
     .note-actions-item

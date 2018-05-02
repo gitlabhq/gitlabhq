@@ -238,4 +238,20 @@ describe Banzai::Filter::CommitReferenceFilter do
       expect(doc.text).to eq("See (#{commit.reference_link_text(project)} (builds).patch)")
     end
   end
+
+  context 'group context' do
+    let(:context) { { project: nil, group: create(:group) } }
+
+    it 'ignores internal references' do
+      exp = act = "See #{commit.id}"
+
+      expect(reference_filter(act, context).to_html).to eq exp
+    end
+
+    it 'links to a valid reference' do
+      act = "See #{project.full_path}@#{commit.id}"
+
+      expect(reference_filter(act, context).css('a').first.text).to eql("#{project.full_path}@#{commit.short_id}")
+    end
+  end
 end

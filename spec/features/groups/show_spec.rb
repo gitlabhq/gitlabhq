@@ -98,7 +98,7 @@ feature 'Group show page' do
 
     it 'shows the project info' do
       expect(page).to have_content(project.title)
-      expect(page).to have_selector('gl-emoji[data-name="smile"]')
+      expect(page).to have_emoji('smile')
     end
   end
 end

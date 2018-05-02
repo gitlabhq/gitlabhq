@@ -1,6 +1,12 @@
 <script>
+import { __ } from '~/locale';
+import tooltip from '~/vue_shared/directives/tooltip';
+
 export default {
   name: 'Assignees',
+  directives: {
+    tooltip,
+  },
   props: {
     rootPath: {
       type: String,
@@ -13,6 +19,11 @@ export default {
     editable: {
       type: Boolean,
       required: true,
+    },
+    issuableType: {
+      type: String,
+      require: true,
+      default: 'issue',
     },
   },
   data() {
@@ -62,6 +73,12 @@ export default {
         names.push(`+ ${this.users.length - maxRender} more`);
       }
 
+      if (!this.users.length) {
+        const emptyTooltipLabel = this.issuableType === 'issue' ?
+          __('Assignee(s)') : __('Assignee');
+        names.push(emptyTooltipLabel);
+      }
+
       return names.join(', ');
     },
     sidebarAvatarCounter() {
@@ -109,7 +126,8 @@ export default {
   <div>
     <div
       class="sidebar-collapsed-icon sidebar-collapsed-user"
-      :class="{ 'multiple-users': hasMoreThanOneAssignee, 'has-tooltip': hasAssignees }"
+      :class="{ 'multiple-users': hasMoreThanOneAssignee }"
+      v-tooltip
       data-container="body"
       data-placement="left"
       :title="collapsedTooltipTitle"

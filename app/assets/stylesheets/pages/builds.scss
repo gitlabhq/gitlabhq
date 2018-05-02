@@ -1,39 +1,56 @@
 @keyframes fade-out-status {
-  0%, 50% { opacity: 1; }
-  100% { opacity: 0; }
+  0%,
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
 }
 
 @keyframes blinking-dots {
   0% {
     background-color: rgba($white-light, 1);
     box-shadow: 12px 0 0 0 rgba($white-light, 0.2),
-                24px 0 0 0 rgba($white-light, 0.2);
+      24px 0 0 0 rgba($white-light, 0.2);
   }
 
   25% {
     background-color: rgba($white-light, 0.4);
     box-shadow: 12px 0 0 0 rgba($white-light, 2),
-                24px 0 0 0 rgba($white-light, 0.2);
+      24px 0 0 0 rgba($white-light, 0.2);
   }
 
   75% {
     background-color: rgba($white-light, 0.4);
     box-shadow: 12px 0 0 0 rgba($white-light, 0.2),
-                24px 0 0 0 rgba($white-light, 1);
+      24px 0 0 0 rgba($white-light, 1);
   }
 
   100% {
     background-color: rgba($white-light, 1);
     box-shadow: 12px 0 0 0 rgba($white-light, 0.2),
-                24px 0 0 0 rgba($white-light, 0.2);
+      24px 0 0 0 rgba($white-light, 0.2);
   }
 }
 
 @keyframes blinking-scroll-button {
-  0% { opacity: 0.2; }
-  25% { opacity: 0.5; }
-  50% { opacity: 0.7; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0.2;
+  }
+
+  25% {
+    opacity: 0.5;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
 
 .build-page {
@@ -125,12 +142,12 @@
       .btn-scroll.animate {
         .first-triangle {
           animation: blinking-scroll-button 1s ease infinite;
-          animation-delay: .3s;
+          animation-delay: 0.3s;
         }
 
         .second-triangle {
           animation: blinking-scroll-button 1s ease infinite;
-          animation-delay: .2s;
+          animation-delay: 0.2s;
         }
 
         .third-triangle {

@@ -33,7 +33,7 @@
                 = link_to 'Block', block_admin_user_path(user), data: { confirm: 'USER WILL BE BLOCKED! Are you sure?' }, method: :put
             - if user.access_locked?
               %li
-                = link_to 'Unlock', unlock_admin_user_path(user), method: :put, class: 'btn-grouped btn btn-xs btn-success', data: { confirm: 'Are you sure?' }
+                = link_to _('Unlock'), unlock_admin_user_path(user), method: :put, data: { confirm: _('Are you sure?') }
           - if can?(current_user, :destroy_user, user)
             %li.divider
             - if user.can_be_removed?
@@ -43,7 +43,7 @@
                   delete_user_url: admin_user_path(user),
                   block_user_url: block_admin_user_path(user),
                   username: user.name,
-                  delete_contributions: 'false' }, type: 'button' }
+                  delete_contributions: false }, type: 'button' }
                   = s_('AdminUsers|Delete user')
 
             %li
@@ -52,5 +52,5 @@
                 delete_user_url: admin_user_path(user, hard_delete: true),
                 block_user_url: block_admin_user_path(user),
                 username: user.name,
-                delete_contributions: 'true' }, type: 'button' }
+                delete_contributions: true }, type: 'button' }
                 = s_('AdminUsers|Delete user and contributions')

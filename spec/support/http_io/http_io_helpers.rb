@@ -44,10 +44,11 @@ module HttpIOHelpers
 
   def remote_trace_body
     @remote_trace_body ||= File.read(expand_fixture_path('trace/sample_trace'))
+      .force_encoding(Encoding::BINARY)
   end
 
   def remote_trace_size
-    remote_trace_body.length
+    remote_trace_body.bytesize
   end
 
   def set_smaller_buffer_size_than(file_size)

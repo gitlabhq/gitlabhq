@@ -1,10 +1,13 @@
 require 'cgi'
 require 'uri'
+require 'open3'
 
 module QA
   module Git
     class Repository
       include Scenario::Actable
+
+      attr_reader :push_error
 
       def self.perform(*args)
         Dir.mktmpdir do |dir|
@@ -12,8 +15,7 @@ module QA
         end
       end
 
-      def location=(address)
-        @location = address
+      def uri=(address)
         @uri = URI(address)
       end
 
@@ -38,6 +40,10 @@ module QA
 
       def checkout(branch_name)
         `git checkout "#{branch_name}"`
+      end
+
+      def checkout_new_branch(branch_name)
+        `git checkout -b "#{branch_name}"`
       end
 
       def shallow_clone
@@ -65,7 +71,8 @@ module QA
       end
 
       def push_changes(branch = 'master')
-        `git push #{@uri.to_s} #{branch} #{suppress_output}`
+        # capture3 returns stdout, stderr and status.
+        _, @push_error, _ = Open3.capture3("git push #{@uri} #{branch} #{suppress_output}")
       end
 
       def commits

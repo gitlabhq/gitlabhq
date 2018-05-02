@@ -1,11 +1,11 @@
 - is_collapsed = local_assigns.fetch(:is_collapsed, false)
-- mark_content = is_collapsed ? icon('check-square', class: 'todo-undone') : _('Mark done')
+- mark_content = is_collapsed ? icon('check-square', class: 'todo-undone') : _('Mark todo as done')
 - todo_content = is_collapsed ? icon('plus-square') : _('Add todo')
 
 %button.issuable-todo-btn.js-issuable-todo{ type: 'button',
   class: (is_collapsed ? 'btn-blank sidebar-collapsed-icon dont-change-state has-tooltip' : 'btn btn-default issuable-header-btn pull-right'),
-  title: (todo.nil? ? _('Add todo') : _('Mark done')),
-  'aria-label' => (todo.nil? ? _('Add todo') : _('Mark done')),
+  title: (todo.nil? ? _('Add todo') : _('Mark todo as done')),
+  'aria-label' => (todo.nil? ? _('Add todo') : _('Mark todo as done')),
   data: issuable_todo_button_data(issuable, todo, is_collapsed) }
   %span.issuable-todo-inner.js-issuable-todo-inner<
     - if todo

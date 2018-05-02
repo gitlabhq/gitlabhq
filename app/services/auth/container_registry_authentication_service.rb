@@ -149,7 +149,8 @@ module Auth
     def deploy_token_can_pull?(requested_project)
       has_authentication_ability?(:read_container_image) &&
         current_user.is_a?(DeployToken) &&
-        current_user.has_access_to?(requested_project)
+        current_user.has_access_to?(requested_project) &&
+        current_user.read_registry?
     end
 
     ##

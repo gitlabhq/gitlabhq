@@ -2,7 +2,7 @@
 - return if note.cross_reference_not_visible_for?(current_user)
 
 - show_image_comment_badge = local_assigns.fetch(:show_image_comment_badge, false)
-- note_editable = note_editable?(note)
+- note_editable = can?(current_user, :admin_note, note)
 - note_counter = local_assigns.fetch(:note_counter, 0)
 
 %li.timeline-entry{ id: dom_id(note),

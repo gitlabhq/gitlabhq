@@ -7,7 +7,7 @@
   - count = @existing_commits.size
   %ul
     %li
-      - if count.one?
+      - if count == 1
         - commit_id = @existing_commits.first[:short_id]
         = link_to(commit_id, project_commit_url(@merge_request.target_project, commit_id))
       - else

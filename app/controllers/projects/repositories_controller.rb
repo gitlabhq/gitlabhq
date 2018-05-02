@@ -16,8 +16,10 @@ class Projects::RepositoriesController < Projects::ApplicationController
   def archive
     append_sha = params[:append_sha]
 
-    shortname = "#{@project.path}-#{@ref.tr('/', '-')}"
-    append_sha = false if @filename == shortname
+    if @ref
+      shortname = "#{@project.path}-#{@ref.tr('/', '-')}"
+      append_sha = false if @filename == shortname
+    end
 
     send_git_archive @repository, ref: @ref, format: params[:format], append_sha: append_sha
   rescue => ex
@@ -26,8 +28,12 @@ class Projects::RepositoriesController < Projects::ApplicationController
   end
 
   def assign_archive_vars
-    @id = params[:id]
-    @ref, @filename = extract_ref(@id)
+    if params[:id]
+      @ref, @filename = extract_ref(params[:id])
+    else
+      @ref = params[:ref]
+      @filename = nil
+    end
   rescue InvalidPathError
     render_404
   end

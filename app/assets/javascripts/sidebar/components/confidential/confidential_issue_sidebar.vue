@@ -1,14 +1,18 @@
 <script>
-import Flash from '../../../flash';
+import { __ } from '~/locale';
+import Flash from '~/flash';
+import tooltip from '~/vue_shared/directives/tooltip';
+import Icon from '~/vue_shared/components/icon.vue';
+import eventHub from '~/sidebar/event_hub';
 import editForm from './edit_form.vue';
-import Icon from '../../../vue_shared/components/icon.vue';
-import { __ } from '../../../locale';
-import eventHub from '../../event_hub';
 
 export default {
   components: {
     editForm,
     Icon,
+  },
+  directives: {
+    tooltip,
   },
   props: {
     isConfidential: {
@@ -32,6 +36,9 @@ export default {
   computed: {
     confidentialityIcon() {
       return this.isConfidential ? 'eye-slash' : 'eye';
+    },
+    tooltipLabel() {
+      return this.isConfidential ? __('Confidential') : __('Not confidential');
     },
   },
   created() {
@@ -65,6 +72,10 @@ export default {
     <div
       class="sidebar-collapsed-icon"
       @click="toggleForm"
+      v-tooltip
+      data-container="body"
+      data-placement="left"
+      :title="tooltipLabel"
     >
       <icon
         :name="confidentialityIcon"

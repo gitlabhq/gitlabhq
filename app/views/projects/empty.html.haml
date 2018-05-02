@@ -22,7 +22,7 @@
 
       %hr
       %p
-        - link_to_auto_devops_settings = link_to(s_('AutoDevOps|enable Auto DevOps (Beta)'), project_settings_ci_cd_path(@project, anchor: 'js-general-pipeline-settings'))
+        - link_to_auto_devops_settings = link_to(s_('AutoDevOps|enable Auto DevOps (Beta)'), project_settings_ci_cd_path(@project, anchor: 'autodevops-settings'))
         - link_to_add_kubernetes_cluster = link_to(s_('AutoDevOps|add a Kubernetes cluster'), new_project_cluster_path(@project))
         = s_('AutoDevOps|You can automatically build and test your application if you %{link_to_auto_devops_settings} for this project. You can automatically deploy it as well, if you %{link_to_add_kubernetes_cluster}.').html_safe % { link_to_auto_devops_settings: link_to_auto_devops_settings, link_to_add_kubernetes_cluster: link_to_add_kubernetes_cluster }
 
@@ -58,7 +58,9 @@
               touch README.md
               git add README.md
               git commit -m "add README"
-              git push -u origin master
+            - if @project.can_current_user_push_to_default_branch?
+              %span><
+                git push -u origin master
 
         %fieldset
           %h5 Existing folder
@@ -69,7 +71,9 @@
               git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
               git add .
               git commit -m "Initial commit"
-              git push -u origin master
+            - if @project.can_current_user_push_to_default_branch?
+              %span><
+                git push -u origin master
 
         %fieldset
           %h5 Existing Git repository
@@ -78,8 +82,10 @@
               cd existing_repo
               git remote rename origin old-origin
               git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
-              git push -u origin --all
-              git push -u origin --tags
+            - if @project.can_current_user_push_to_default_branch?
+              %span><
+                git push -u origin --all
+                git push -u origin --tags
 
           - if can? current_user, :remove_project, @project
             .prepend-top-20

@@ -219,7 +219,7 @@ describe MergeRequests::MergeService do
 
         service.execute(merge_request)
 
-        expect(merge_request.merge_error).to include(error_message)
+        expect(merge_request.merge_error).to include('Something went wrong during merge')
         expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
       end
 
@@ -231,7 +231,7 @@ describe MergeRequests::MergeService do
 
         service.execute(merge_request)
 
-        expect(merge_request.merge_error).to include(error_message)
+        expect(merge_request.merge_error).to include('Something went wrong during merge pre-receive hook')
         expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
       end
 

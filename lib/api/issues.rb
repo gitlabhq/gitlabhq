@@ -310,7 +310,7 @@ module API
 
         issue = find_project_issue(params[:issue_iid])
 
-        return not_found!('UserAgentDetail') unless issue.user_agent_detail
+        break not_found!('UserAgentDetail') unless issue.user_agent_detail
 
         present issue.user_agent_detail, with: Entities::UserAgentDetail
       end

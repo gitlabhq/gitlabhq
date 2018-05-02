@@ -117,4 +117,33 @@ describe('Multi-file editor library decorations controller', () => {
       expect(controller.editorDecorations.size).toBe(0);
     });
   });
+
+  describe('hasDecorations', () => {
+    it('returns true when decorations are cached', () => {
+      controller.addDecorations(model, 'key', [{ decoration: 'decorationValue' }]);
+
+      expect(controller.hasDecorations(model)).toBe(true);
+    });
+
+    it('returns false when no model decorations exist', () => {
+      expect(controller.hasDecorations(model)).toBe(false);
+    });
+  });
+
+  describe('removeDecorations', () => {
+    beforeEach(() => {
+      controller.addDecorations(model, 'key', [{ decoration: 'decorationValue' }]);
+      controller.decorate(model);
+    });
+
+    it('removes cached decorations', () => {
+      expect(controller.decorations.size).not.toBe(0);
+      expect(controller.editorDecorations.size).not.toBe(0);
+
+      controller.removeDecorations(model);
+
+      expect(controller.decorations.size).toBe(0);
+      expect(controller.editorDecorations.size).toBe(0);
+    });
+  });
 });

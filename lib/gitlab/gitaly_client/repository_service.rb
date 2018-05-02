@@ -50,6 +50,15 @@ module Gitlab
         GitalyClient.call(@storage, :repository_service, :apply_gitattributes, request)
       end
 
+      def info_attributes
+        request = Gitaly::GetInfoAttributesRequest.new(repository: @gitaly_repo)
+
+        response = GitalyClient.call(@storage, :repository_service, :get_info_attributes, request)
+        response.each_with_object("") do |message, attributes|
+          attributes << message.attributes
+        end
+      end
+
       def fetch_remote(remote, ssh_auth:, forced:, no_tags:, timeout:, prune: true)
         request = Gitaly::FetchRemoteRequest.new(
           repository: @gitaly_repo, remote: remote, force: forced,
@@ -133,7 +142,7 @@ module Gitlab
           :repository_service,
           :is_rebase_in_progress,
           request,
-          timeout: GitalyClient.default_timeout
+          timeout: GitalyClient.fast_timeout
         )
 
         response.in_progress
@@ -150,7 +159,7 @@ module Gitlab
           :repository_service,
           :is_squash_in_progress,
           request,
-          timeout: GitalyClient.default_timeout
+          timeout: GitalyClient.fast_timeout
         )
 
         response.in_progress
@@ -222,6 +231,22 @@ module Gitlab
           :repository_service,
           :create_repository_from_bundle,
           enum,
+          timeout: GitalyClient.default_timeout
+        )
+      end
+
+      def create_from_snapshot(http_url, http_auth)
+        request = Gitaly::CreateRepositoryFromSnapshotRequest.new(
+          repository: @gitaly_repo,
+          http_url: http_url,
+          http_auth: http_auth
+        )
+
+        GitalyClient.call(
+          @storage,
+          :repository_service,
+          :create_repository_from_snapshot,
+          request,
           timeout: GitalyClient.default_timeout
         )
       end

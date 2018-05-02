@@ -19,6 +19,12 @@ describe MergeRequestTargetProjectFinder do
 
       expect(finder.execute).to contain_exactly(forked_project)
     end
+
+    it 'does not contain archived projects' do
+      base_project.update!(archived: true)
+
+      expect(finder.execute).to contain_exactly(other_fork, forked_project)
+    end
   end
 
   context 'public projects' do

@@ -6,10 +6,6 @@ module NotesHelper
     end
   end
 
-  def note_editable?(note)
-    Ability.can_edit_note?(current_user, note)
-  end
-
   def note_supports_quick_actions?(note)
     Notes::QuickActionsService.supported?(note)
   end

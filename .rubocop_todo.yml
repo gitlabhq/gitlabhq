@@ -143,7 +143,7 @@ Lint/MissingCopEnableDirective:
 Lint/NestedPercentLiteral:
   Exclude:
     - 'lib/gitlab/git/repository.rb'
-    - 'spec/support/email_format_shared_examples.rb'
+    - 'spec/support/shared_examples/email_format_shared_examples.rb'
 
 # Offense count: 1
 Lint/ReturnInVoidContext:
@@ -195,8 +195,8 @@ Naming/HeredocDelimiterCase:
     - 'spec/lib/gitlab/diff/parser_spec.rb'
     - 'spec/lib/json_web_token/rsa_token_spec.rb'
     - 'spec/models/commit_spec.rb'
-    - 'spec/support/repo_helpers.rb'
-    - 'spec/support/seed_repo.rb'
+    - 'spec/support/helpers/repo_helpers.rb'
+    - 'spec/support/helpers/seed_repo.rb'
 
 # Offense count: 112
 # Configuration parameters: Blacklist.
@@ -496,7 +496,7 @@ Style/EmptyLiteral:
     - 'spec/lib/gitlab/request_context_spec.rb'
     - 'spec/lib/gitlab/workhorse_spec.rb'
     - 'spec/requests/api/jobs_spec.rb'
-    - 'spec/support/chat_slash_commands_shared_examples.rb'
+    - 'spec/support/shared_examples/chat_slash_commands_shared_examples.rb'
 
 # Offense count: 102
 # Cop supports --auto-correct.

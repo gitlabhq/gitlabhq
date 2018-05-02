@@ -6,7 +6,7 @@ describe Banzai::ReferenceParser::MergeRequestParser do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
   let(:merge_request) { create(:merge_request, source_project: project) }
-  subject { described_class.new(project, user) }
+  subject { described_class.new(Banzai::RenderContext.new(merge_request.target_project, user)) }
   let(:link) { empty_html_link }
 
   describe '#nodes_visible_to_user' do

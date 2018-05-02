@@ -25,7 +25,9 @@ module Gitlab
           stdin.close
 
           if lazy_block
-            return [lazy_block.call(stdout.lazy), 0]
+            cmd_output = lazy_block.call(stdout.lazy)
+            cmd_status = 0
+            break
           else
             cmd_output << stdout.read
           end

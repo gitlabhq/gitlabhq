@@ -256,7 +256,7 @@ module MarkupHelper
     return '' unless html.present?
 
     context.merge!(
-      current_user:   (current_user if defined?(current_user)),
+      current_user: (current_user if defined?(current_user)),
 
       # RelativeLinkFilter
       commit:         @commit,

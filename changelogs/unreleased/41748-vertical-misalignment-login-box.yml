@@ -1,0 +1,5 @@
+---
+title: Refactor CSS to eliminate vertical misalignment of login nav
+merge_request: 16275
+author: Takuya Noguchi
+type: fixed

@@ -78,19 +78,30 @@ describe DeployToken do
   describe '#has_access_to?' do
     let(:project) { create(:project) }
 
-    subject(:deploy_token) { create(:deploy_token, projects: [project]) }
+    subject { deploy_token.has_access_to?(project) }
 
-    context 'when the deploy token has access to the project' do
-      it 'should return true' do
-        expect(deploy_token.has_access_to?(project)).to be_truthy
-      end
+    context 'when deploy token is active and related to project' do
+      let(:deploy_token) { create(:deploy_token, projects: [project]) }
+
+      it { is_expected.to be_truthy }
     end
 
-    context 'when the deploy token does not have access to the project' do
-      it 'should return false' do
-        another_project = create(:project)
-        expect(deploy_token.has_access_to?(another_project)).to be_falsy
-      end
+    context 'when deploy token is active but not related to project' do
+      let(:deploy_token) { create(:deploy_token) }
+
+      it { is_expected.to be_falsy }
+    end
+
+    context 'when deploy token is revoked and related to project' do
+      let(:deploy_token) { create(:deploy_token, :revoked, projects: [project]) }
+
+      it { is_expected.to be_falsy }
+    end
+
+    context 'when deploy token is revoked and not related to the project' do
+      let(:deploy_token) { create(:deploy_token, :revoked) }
+
+      it { is_expected.to be_falsy }
     end
   end
 
@@ -128,6 +139,25 @@ describe DeployToken do
 
       it 'should respect the value' do
         expect(deploy_token.read_attribute(:expires_at)).to eq(expires_at)
+      end
+    end
+  end
+
+  describe '.gitlab_deploy_token' do
+    let(:project) { create(:project ) }
+
+    subject { project.deploy_tokens.gitlab_deploy_token }
+
+    context 'with a gitlab deploy token associated' do
+      it 'should return the gitlab deploy token' do
+        deploy_token = create(:deploy_token, :gitlab_deploy_token, projects: [project])
+        is_expected.to eq(deploy_token)
+      end
+    end
+
+    context 'with no gitlab deploy token associated' do
+      it 'should return nil' do
+        is_expected.to be_nil
       end
     end
   end

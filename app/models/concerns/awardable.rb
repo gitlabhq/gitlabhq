@@ -79,11 +79,7 @@ module Awardable
   end
 
   def user_can_award?(current_user, name)
-    if user_authored?(current_user)
-      !awardable_votes?(normalize_name(name))
-    else
-      true
-    end
+    awardable_by_user?(current_user, name) && Ability.allowed?(current_user, :award_emoji, self)
   end
 
   def user_authored?(current_user)
@@ -118,5 +114,13 @@ module Awardable
 
   def normalize_name(name)
     Gitlab::Emoji.normalize_emoji_name(name)
+  end
+
+  def awardable_by_user?(current_user, name)
+    if user_authored?(current_user)
+      !awardable_votes?(normalize_name(name))
+    else
+      true
+    end
   end
 end

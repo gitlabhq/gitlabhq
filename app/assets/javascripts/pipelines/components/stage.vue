@@ -1,5 +1,4 @@
 <script>
-  import $ from 'jquery';
 
   /**
    * Renders each stage of the pipeline mini graph.
@@ -14,15 +13,18 @@
    * 4. Commit widget
    */
 
+  import $ from 'jquery';
   import Flash from '../../flash';
-  import icon from '../../vue_shared/components/icon.vue';
-  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
+  import axios from '../../lib/utils/axios_utils';
+  import eventHub from '../event_hub';
+  import Icon from '../../vue_shared/components/icon.vue';
+  import LoadingIcon from '../../vue_shared/components/loading_icon.vue';
   import tooltip from '../../vue_shared/directives/tooltip';
 
   export default {
     components: {
-      loadingIcon,
-      icon,
+      LoadingIcon,
+      Icon,
     },
 
     directives: {
@@ -82,15 +84,15 @@
     methods: {
       onClickStage() {
         if (!this.isDropdownOpen()) {
+          eventHub.$emit('clickedDropdown');
           this.isLoading = true;
           this.fetchJobs();
         }
       },
 
       fetchJobs() {
-        this.$http.get(this.stage.dropdown_path)
-          .then(response => response.json())
-          .then((data) => {
+        axios.get(this.stage.dropdown_path)
+          .then(({ data }) => {
             this.dropdownContent = data.html;
             this.isLoading = false;
           })
@@ -98,8 +100,7 @@
             this.closeDropdown();
             this.isLoading = false;
 
-            const flash = new Flash('Something went wrong on our end.');
-            return flash;
+            Flash('Something went wrong on our end.');
           });
       },
 

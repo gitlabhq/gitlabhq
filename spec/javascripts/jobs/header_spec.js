@@ -36,12 +36,26 @@ describe('Job details header', () => {
       },
       isLoading: false,
     };
-
-    vm = mountComponent(HeaderComponent, props);
   });
 
   afterEach(() => {
     vm.$destroy();
+  });
+
+  describe('job reason', () => {
+    it('should not render the reason when reason is absent', () => {
+      vm = mountComponent(HeaderComponent, props);
+
+      expect(vm.shouldRenderReason).toBe(false);
+    });
+
+    it('should render the reason when reason is present', () => {
+      props.job.callout_message = 'There is an unknown failure, please try again';
+
+      vm = mountComponent(HeaderComponent, props);
+
+      expect(vm.shouldRenderReason).toBe(true);
+    });
   });
 
   describe('triggered job', () => {
@@ -51,14 +65,17 @@ describe('Job details header', () => {
 
     it('should render provided job information', () => {
       expect(
-        vm.$el.querySelector('.header-main-content').textContent.replace(/\s+/g, ' ').trim(),
+        vm.$el
+          .querySelector('.header-main-content')
+          .textContent.replace(/\s+/g, ' ')
+          .trim(),
       ).toEqual('failed Job #123 triggered 3 weeks ago by Foo');
     });
 
     it('should render new issue link', () => {
-      expect(
-        vm.$el.querySelector('.js-new-issue').getAttribute('href'),
-      ).toEqual(props.job.new_issue_path);
+      expect(vm.$el.querySelector('.js-new-issue').getAttribute('href')).toEqual(
+        props.job.new_issue_path,
+      );
     });
   });
 
@@ -68,7 +85,10 @@ describe('Job details header', () => {
       vm = mountComponent(HeaderComponent, props);
 
       expect(
-        vm.$el.querySelector('.header-main-content').textContent.replace(/\s+/g, ' ').trim(),
+        vm.$el
+          .querySelector('.header-main-content')
+          .textContent.replace(/\s+/g, ' ')
+          .trim(),
       ).toEqual('failed Job #123 created 3 weeks ago by Foo');
     });
   });

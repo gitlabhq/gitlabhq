@@ -2,12 +2,12 @@
 - page_title _("Issues")
 - @breadcrumb_link = issues_dashboard_path(assignee_id: current_user.id)
 = content_for :meta_tags do
-  = auto_discovery_link_tag(:atom, params.merge(rss_url_options), title: "#{current_user.name} issues")
+  = auto_discovery_link_tag(:atom, safe_params.merge(rss_url_options).to_h, title: "#{current_user.name} issues")
 
 .top-area
   = render 'shared/issuable/nav', type: :issues, display_count: !@no_filters_set
   .nav-controls
-    = link_to params.merge(rss_url_options), class: 'btn has-tooltip', data: { container: 'body' }, title: 'Subscribe' do
+    = link_to safe_params.merge(rss_url_options), class: 'btn has-tooltip', data: { container: 'body' }, title: 'Subscribe' do
       = icon('rss')
     = render 'shared/new_project_item_select', path: 'issues/new', label: "New issue", with_feature_enabled: 'issues', type: :issues
 

@@ -5,9 +5,9 @@ feature 'Issue Sidebar' do
 
   let(:group) { create(:group, :nested) }
   let(:project) { create(:project, :public, namespace: group) }
-  let(:issue) { create(:issue, project: project) }
   let!(:user) { create(:user)}
   let!(:label) { create(:label, project: project, title: 'bug') }
+  let(:issue) { create(:labeled_issue, project: project, labels: [label]) }
   let!(:xss_label) { create(:label, project: project, title: '&lt;script&gt;alert("xss");&lt;&#x2F;script&gt;') }
 
   before do
@@ -112,8 +112,15 @@ feature 'Issue Sidebar' do
 
     context 'editing issue labels', :js do
       before do
+        issue.update_attributes(labels: [label])
         page.within('.block.labels') do
           find('.edit-link').click
+        end
+      end
+
+      it 'shows the current set of labels' do
+        page.within('.issuable-show-labels') do
+          expect(page).to have_content label.title
         end
       end
 

@@ -29,7 +29,7 @@ module API
             project.runners.create(attributes)
           end
 
-        return forbidden! unless runner
+        break forbidden! unless runner
 
         if runner.id
           present runner, with: Entities::RunnerRegistrationDetails
@@ -83,7 +83,7 @@ module API
         if current_runner.runner_queue_value_latest?(params[:last_update])
           header 'X-GitLab-Last-Update', params[:last_update]
           Gitlab::Metrics.add_event(:build_not_found_cached)
-          return no_content!
+          break no_content!
         end
 
         new_update = current_runner.ensure_runner_queue_value
@@ -152,7 +152,7 @@ module API
 
         stream_size = job.trace.append(request.body.read, content_range[0].to_i)
         if stream_size < 0
-          return error!('416 Range Not Satisfiable', 416, { 'Range' => "0-#{-stream_size}" })
+          break error!('416 Range Not Satisfiable', 416, { 'Range' => "0-#{-stream_size}" })
         end
 
         status 202

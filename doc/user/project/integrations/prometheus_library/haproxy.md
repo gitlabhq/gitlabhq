@@ -5,7 +5,7 @@ GitLab has support for automatically detecting and monitoring HAProxy. This is p
 
 ## Requirements
 
-The [Prometheus service](../prometheus/index.md) must be enabled.
+The [Prometheus service](../prometheus.md) must be enabled.
 
 ## Metrics supported
 

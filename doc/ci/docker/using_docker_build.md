@@ -101,12 +101,12 @@ In order to do that, follow the steps:
       --registration-token REGISTRATION_TOKEN \
       --executor docker \
       --description "My Docker Runner" \
-      --docker-image "docker:latest" \
+      --docker-image "docker:stable" \
       --docker-privileged
     ```
 
     The above command will register a new Runner to use the special
-    `docker:latest` image which is provided by Docker. **Notice that it's using
+    `docker:stable` image which is provided by Docker. **Notice that it's using
     the `privileged` mode to start the build and service containers.** If you
     want to use [docker-in-docker] mode, you always have to use `privileged = true`
     in your Docker containers.
@@ -120,7 +120,7 @@ In order to do that, follow the steps:
       executor = "docker"
       [runners.docker]
         tls_verify = false
-        image = "docker:latest"
+        image = "docker:stable"
         privileged = true
         disable_cache = false
         volumes = ["/cache"]
@@ -132,7 +132,7 @@ In order to do that, follow the steps:
    `docker:dind` service):
 
     ```yaml
-    image: docker:latest
+    image: docker:stable
 
     # When using dind, it's wise to use the overlayfs driver for
     # improved performance.
@@ -201,12 +201,12 @@ In order to do that, follow the steps:
       --registration-token REGISTRATION_TOKEN \
       --executor docker \
       --description "My Docker Runner" \
-      --docker-image "docker:latest" \
+      --docker-image "docker:stable" \
       --docker-volumes /var/run/docker.sock:/var/run/docker.sock
     ```
 
     The above command will register a new Runner to use the special
-    `docker:latest` image which is provided by Docker. **Notice that it's using
+    `docker:stable` image which is provided by Docker. **Notice that it's using
     the Docker daemon of the Runner itself, and any containers spawned by docker
     commands will be siblings of the Runner rather than children of the runner.**
     This may have complications and limitations that are unsuitable for your workflow.
@@ -220,7 +220,7 @@ In order to do that, follow the steps:
       executor = "docker"
       [runners.docker]
         tls_verify = false
-        image = "docker:latest"
+        image = "docker:stable"
         privileged = false
         disable_cache = false
         volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
@@ -232,7 +232,7 @@ In order to do that, follow the steps:
    include the `docker:dind` service as when using the Docker in Docker executor):
 
     ```yaml
-    image: docker:latest
+    image: docker:stable
 
     before_script:
     - docker info
@@ -286,7 +286,7 @@ any image that's used with the `--cache-from` argument must first be pulled
 Here's a simple `.gitlab-ci.yml` file showing how Docker caching can be utilized:
 
 ```yaml
-image: docker:latest
+image: docker:stable
 
 services:
   - docker:dind
@@ -388,7 +388,7 @@ could look like:
 
 ```yaml
  build:
-   image: docker:latest
+   image: docker:stable
    services:
    - docker:dind
    stage: build
@@ -434,7 +434,7 @@ when needed. Changes to `master` also get tagged as `latest` and deployed using
 an application-specific deploy script:
 
 ```yaml
-image: docker:latest
+image: docker:stable
 services:
 - docker:dind
 

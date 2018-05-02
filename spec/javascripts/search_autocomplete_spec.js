@@ -4,7 +4,6 @@ import $ from 'jquery';
 import '~/gl_dropdown';
 import SearchAutocomplete from '~/search_autocomplete';
 import '~/lib/utils/common_utils';
-import * as urlUtils from '~/lib/utils/url_utility';
 
 describe('Search autocomplete dropdown', () => {
   var assertLinks,
@@ -128,9 +127,6 @@ describe('Search autocomplete dropdown', () => {
   preloadFixtures('static/search_autocomplete.html.raw');
   beforeEach(function() {
     loadFixtures('static/search_autocomplete.html.raw');
-
-    // Prevent turbolinks from triggering within gl_dropdown
-    spyOn(urlUtils, 'visitUrl').and.returnValue(true);
 
     window.gon = {};
     window.gon.current_user_id = userId;

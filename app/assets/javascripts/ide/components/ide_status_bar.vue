@@ -22,13 +22,6 @@ export default {
 
 <template>
   <div class="ide-status-bar">
-    <div class="ref-name">
-      <icon
-        name="branch"
-        :size="12"
-      />
-      {{ file.branchId }}
-    </div>
     <div>
       <div v-if="file.lastCommit && file.lastCommit.id">
         Last commit:

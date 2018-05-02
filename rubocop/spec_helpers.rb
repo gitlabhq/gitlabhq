@@ -1,6 +1,6 @@
 module RuboCop
   module SpecHelpers
-    SPEC_HELPERS = %w[spec_helper.rb rails_helper.rb].freeze
+    SPEC_HELPERS = %w[fast_spec_helper.rb rails_helper.rb spec_helper.rb].freeze
 
     # Returns true if the given node originated from the spec directory.
     def in_spec?(node)

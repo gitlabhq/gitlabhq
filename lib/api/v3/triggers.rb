@@ -72,7 +72,7 @@ module API
           authorize! :admin_build, user_project
 
           trigger = user_project.triggers.find_by(token: params[:token].to_s)
-          return not_found!('Trigger') unless trigger
+          break not_found!('Trigger') unless trigger
 
           present trigger, with: ::API::V3::Entities::Trigger
         end
@@ -100,7 +100,7 @@ module API
           authorize! :admin_build, user_project
 
           trigger = user_project.triggers.find_by(token: params[:token].to_s)
-          return not_found!('Trigger') unless trigger
+          break not_found!('Trigger') unless trigger
 
           trigger.destroy
 

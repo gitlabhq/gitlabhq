@@ -1,0 +1,5 @@
+---
+title: Expose Deploy Token data as environment varialbes on CI/CD jobs
+merge_request: 18414
+author:
+type: added

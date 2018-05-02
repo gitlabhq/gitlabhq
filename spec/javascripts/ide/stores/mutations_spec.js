@@ -69,11 +69,51 @@ describe('Multi-file store mutations', () => {
     });
   });
 
+  describe('CLEAR_STAGED_CHANGES', () => {
+    it('clears stagedFiles array', () => {
+      localState.stagedFiles.push('a');
+
+      mutations.CLEAR_STAGED_CHANGES(localState);
+
+      expect(localState.stagedFiles.length).toBe(0);
+    });
+  });
+
   describe('UPDATE_VIEWER', () => {
     it('sets viewer state', () => {
       mutations.UPDATE_VIEWER(localState, 'diff');
 
       expect(localState.viewer).toBe('diff');
+    });
+  });
+
+  describe('UPDATE_TEMP_FLAG', () => {
+    beforeEach(() => {
+      localState.entries.test = {
+        ...file(),
+        tempFile: true,
+        changed: true,
+      };
+    });
+
+    it('updates tempFile flag', () => {
+      mutations.UPDATE_TEMP_FLAG(localState, { path: 'test', tempFile: false });
+
+      expect(localState.entries.test.tempFile).toBe(false);
+    });
+
+    it('updates changed flag', () => {
+      mutations.UPDATE_TEMP_FLAG(localState, { path: 'test', tempFile: false });
+
+      expect(localState.entries.test.changed).toBe(false);
+    });
+  });
+
+  describe('TOGGLE_FILE_FINDER', () => {
+    it('updates fileFindVisible', () => {
+      mutations.TOGGLE_FILE_FINDER(localState, true);
+
+      expect(localState.fileFindVisible).toBe(true);
     });
   });
 });

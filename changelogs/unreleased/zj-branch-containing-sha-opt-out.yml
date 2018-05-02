@@ -1,0 +1,5 @@
+---
+title: Detecting branchnames containing a commit uses Gitaly by default
+merge_request:
+author:
+type: performance

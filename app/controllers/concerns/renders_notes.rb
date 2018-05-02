@@ -4,7 +4,7 @@ module RendersNotes
     preload_noteable_for_regular_notes(notes)
     preload_max_access_for_authors(notes, @project)
     preload_first_time_contribution_for_authors(noteable, notes)
-    Notes::RenderService.new(current_user).execute(notes, @project)
+    Notes::RenderService.new(current_user).execute(notes)
 
     notes
   end

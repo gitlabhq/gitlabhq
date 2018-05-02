@@ -6,7 +6,7 @@ GitLab has support for automatically detecting and monitoring AWS resources, sta
 
 ## Requirements
 
-The [Prometheus service](../prometheus/index.md) must be enabled.
+The [Prometheus service](../prometheus.md) must be enabled.
 
 ## Metrics supported
 
