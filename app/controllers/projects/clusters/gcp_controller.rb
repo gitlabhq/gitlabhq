@@ -1,7 +1,7 @@
 class Projects::Clusters::GcpController < Projects::ApplicationController
   before_action :authorize_read_cluster!
   before_action :authorize_create_cluster!, only: [:new, :create]
-  before_action :authorize_google_api, except: [:login, :list_projects]
+  before_action :authorize_google_api, except: :login
 
   def login
     begin
