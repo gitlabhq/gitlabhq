@@ -27,69 +27,61 @@ module QA
     end
 
     scenario 'user is able to protect a branch' do
-      protected_branch = Factory::Resource::Branch.fabricate! do |resource|
-        resource.branch_name = branch_name
-        resource.project = project
-        resource.allow_to_push = true
-        resource.protected = true
-      end
+      protected_branch = fabricate_branch(allow_to_push: true)
 
       expect(protected_branch.name).to have_content(branch_name)
       expect(protected_branch.push_allowance).to have_content('Developers + Maintainers')
     end
 
-    scenario 'users without authorization cannot push to protected branch' do
-      Factory::Resource::Branch.fabricate! do |resource|
-        resource.branch_name = branch_name
-        resource.project = project
-        resource.allow_to_push = false
-        resource.protected = true
+    context 'push to protected branch' do
+      scenario 'unauthorized users are blocked' do
+        fabricate_branch(allow_to_push: false)
+
+        project.visit!
+
+        Git::Repository.perform do |repository|
+          push_output = push_to_repository(repository)
+
+          expect(push_output)
+            .to match(/remote\: GitLab\: You are not allowed to push code to protected branches on this project/)
+          expect(push_output)
+            .to match(/\[remote rejected\] #{branch_name} -> #{branch_name} \(pre-receive hook declined\)/)
+        end
       end
 
-      project.visit!
+      scenario 'authorized users are allowed' do
+        fabricate_branch(allow_to_push: true)
 
-      Git::Repository.perform do |repository|
-        repository.uri = location.uri
-        repository.use_default_credentials
+        project.visit!
 
-        repository.act do
-          clone
-          configure_identity('GitLab QA', 'root@gitlab.com')
-          checkout('protected-branch')
-          commit_file('README.md', 'readme content', 'Add a readme')
-          push_changes('protected-branch')
+        Git::Repository.perform do |repository|
+          push_output = push_to_repository(repository)
+
+          expect(push_output).to match(/remote: To create a merge request for protected-branch, visit/)
         end
-
-        expect(repository.push_output)
-          .to match(/remote\: GitLab\: You are not allowed to push code to protected branches on this project/)
-        expect(repository.push_output)
-          .to match(/\[remote rejected\] #{branch_name} -> #{branch_name} \(pre-receive hook declined\)/)
       end
     end
 
-    scenario 'users with authorization can push to protected branch' do
+    def fabricate_branch(allow_to_push:)
       Factory::Resource::Branch.fabricate! do |resource|
         resource.branch_name = branch_name
         resource.project = project
-        resource.allow_to_push = true
+        resource.allow_to_push = allow_to_push
         resource.protected = true
       end
+    end
 
-      project.visit!
+    def push_to_repository(repository)
+      repository.uri = location.uri
+      repository.use_default_credentials
 
-      Git::Repository.perform do |repository|
-        repository.uri = location.uri
-        repository.use_default_credentials
-
-        repository.act do
-          clone
-          configure_identity('GitLab QA', 'root@gitlab.com')
-          checkout('protected-branch')
-          commit_file('README.md', 'readme content', 'Add a readme')
-          push_changes('protected-branch')
-        end
-
-        expect(repository.push_output).to match(/remote: To create a merge request for protected-branch, visit/)
+      repository.act do
+        clone
+        configure_identity('GitLab QA', 'root@gitlab.com')
+        checkout('protected-branch')
+        commit_file('README.md', 'readme content', 'Add a readme')
+        push_changes('protected-branch')
+        push_output
       end
     end
   end
