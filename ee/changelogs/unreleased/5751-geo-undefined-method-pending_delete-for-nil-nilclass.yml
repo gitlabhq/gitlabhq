@@ -1,5 +1,0 @@
----
-title: Geo - Fix undefined method pending_delete for nil class
-merge_request: 5470
-author:
-type: fixed
