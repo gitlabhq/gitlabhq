@@ -3,5 +3,5 @@
 #js-peek{ data: { env: Peek.env,
          request_id: Peek.request_id,
          peek_url: peek_routes.results_url,
-         profile_url: url_for(params.merge(lineprofiler: 'true')) },
+         profile_url: url_for(safe_params.merge(lineprofiler: 'true')) },
          class: Peek.env }
