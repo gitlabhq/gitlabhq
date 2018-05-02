@@ -134,7 +134,8 @@ module Gitlab
         end
 
         def truncate(offset)
-          return unless offset < size && offset >= 0
+          raise ArgumentError, 'Outside of file' if offset > size || offset < 0
+          return if offset == size # Skip the following process as it doesn't affect anything
 
           @tell = offset
           @size = offset
