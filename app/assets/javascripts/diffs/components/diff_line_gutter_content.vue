@@ -15,6 +15,10 @@ import {
 import * as utils from '../store/utils';
 
 export default {
+  components: {
+    DiffGutterAvatars,
+    Icon,
+  },
   props: {
     fileHash: {
       type: String,
@@ -59,10 +63,6 @@ export default {
       required: false,
       default: false,
     },
-  },
-  components: {
-    DiffGutterAvatars,
-    Icon,
   },
   computed: {
     ...mapState({

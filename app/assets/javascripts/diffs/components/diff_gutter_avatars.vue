@@ -1,5 +1,4 @@
 <script>
-import { mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import { pluralize, truncate } from '~/lib/utils/text_utility';
@@ -10,32 +9,29 @@ export default {
   directives: {
     tooltip,
   },
+  components: {
+    Icon,
+    UserAvatarImage,
+  },
   props: {
     discussions: {
       type: Array,
       required: true,
     },
   },
-  components: {
-    Icon,
-    UserAvatarImage,
-  },
   computed: {
     discussionsExpanded() {
       return this.discussions.every(discussion => discussion.expanded);
     },
     allDiscussions() {
-      return this.discussions.reduce((acc, note) => {
-        return acc.concat(note.notes);
-      }, []);
+      return this.discussions.reduce((acc, note) => acc.concat(note.notes), []);
     },
     notesInGutter() {
-      return this.allDiscussions.slice(0, COUNT_OF_AVATARS_IN_GUTTER).map(n => {
-        return {
+      return this.allDiscussions.slice(0, COUNT_OF_AVATARS_IN_GUTTER).map(n =>
+        ({
           note: n.note,
           author: n.author,
-        };
-      });
+        }));
     },
     moreCount() {
       return this.allDiscussions.length - this.notesInGutter.length;
@@ -59,9 +55,11 @@ export default {
       return `${noteData.author.name}: ${note}`;
     },
     toggleDiscussions() {
-      this.discussions.forEach(discussion => {
-        discussion.expanded = !discussion.expanded;
-      });
+      this.discussions = this.discussions.map(discussion =>
+        (Object.assign({}, discussion, {
+          expanded: !discussion.expanded,
+        })),
+      );
     },
   },
 };
@@ -100,7 +98,7 @@ export default {
         data-container="body"
         data-placement="top"
         role="button"
-      >+{{moreCount}}</span>
+      >+{{ moreCount }}</span>
     </template>
   </div>
 </template>

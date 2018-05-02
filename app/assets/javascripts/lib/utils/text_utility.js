@@ -8,7 +8,7 @@
  * @returns {String}
  */
 export const addDelimiter = text =>
-  text ? text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : text;
+  (text ? text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : text);
 
 /**
  * Returns '99+' for numbers bigger than 99.

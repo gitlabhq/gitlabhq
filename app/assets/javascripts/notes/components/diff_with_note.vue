@@ -27,7 +27,7 @@ export default {
       return $(this.discussion.truncatedDiffLines);
     },
     diffFile() {
-      return convertObjectPropsToCamelCase(this.discussion.diffFile, {deep: true});
+      return convertObjectPropsToCamelCase(this.discussion.diffFile, { deep: true });
     },
     imageDiffHtml() {
       return this.discussion.imageDiffHtml;

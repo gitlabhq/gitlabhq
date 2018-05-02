@@ -7,7 +7,7 @@ export default {
       default: '',
     },
   },
-}
+};
 
 /*
 Edit button

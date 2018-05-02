@@ -40,9 +40,20 @@ export default {
     }),
     ...mapGetters(['isParallelView']),
   },
+  watch: {
+    diffViewType() {
+      this.adjustView();
+    },
+    shouldShow() {
+      this.adjustView();
+    },
+  },
   mounted() {
     this.setEndpoint(this.endpoint);
     this.fetchDiffFiles(); // TODO: @fatihacet Error handling
+  },
+  created() {
+    this.adjustView();
   },
   methods: {
     ...mapActions(['setEndpoint', 'fetchDiffFiles']),
@@ -56,22 +67,11 @@ export default {
     },
     adjustView() {
       if (this.shouldShow && this.isParallelView) {
-        return window.mrTabs.expandViewContainer();
+        window.mrTabs.expandViewContainer();
+      } else {
+        window.mrTabs.resetViewContainer();
       }
-
-      window.mrTabs.resetViewContainer();
     },
-  },
-  watch: {
-    diffViewType() {
-      this.adjustView();
-    },
-    shouldShow() {
-      this.adjustView();
-    },
-  },
-  created() {
-    this.adjustView();
   },
 };
 </script>

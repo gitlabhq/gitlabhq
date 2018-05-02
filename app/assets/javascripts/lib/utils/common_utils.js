@@ -328,7 +328,7 @@ export const objectToQueryString = (params = {}) =>
     .join('&');
 
 export const buildUrlWithCurrentLocation = param =>
-  param ? `${window.location.pathname}${param}` : window.location.pathname;
+  (param ? `${window.location.pathname}${param}` : window.location.pathname);
 
 /**
  * Based on the current location and the string parameters provided

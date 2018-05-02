@@ -12,7 +12,7 @@ export default class ShortcutsIssuable extends Shortcuts {
     Mousetrap.bind('a', () => ShortcutsIssuable.openSidebarDropdown('assignee'));
     Mousetrap.bind('m', () => ShortcutsIssuable.openSidebarDropdown('milestone'));
     Mousetrap.bind('l', () => ShortcutsIssuable.openSidebarDropdown('labels'));
-    Mousetrap.bind('r', this.replyWithSelectedText.bind(this));
+    Mousetrap.bind('r', ShortcutsIssuable.replyWithSelectedText);
     Mousetrap.bind('e', ShortcutsIssuable.editIssue);
 
     if (isMergeRequest) {
@@ -22,7 +22,7 @@ export default class ShortcutsIssuable extends Shortcuts {
     }
   }
 
-  replyWithSelectedText() {
+  static replyWithSelectedText() {
     const $replyField = $('.js-main-target-form .js-vue-comment-form');
     const documentFragment = window.gl.utils.getSelectedFragment();
 

@@ -146,7 +146,7 @@ export default {
         class="diff-toggle-caret"
       />
       <a
-        ref="titleWrapper""
+        ref="titleWrapper"
         :href="titleLink"
       >
         <i
@@ -245,7 +245,6 @@ export default {
         v-if="diffFile.environment"
       >
         {{ s__('MergeRequests|View on environment') }}
-        <!-- = view_on_environment_button(diff_file.content_sha, diff_file.file_path, environment) if environment -->
       </button>
     </div>
   </div>

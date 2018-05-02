@@ -5,7 +5,6 @@ import Icon from '~/vue_shared/components/icon.vue';
 import { pluralize } from '~/lib/utils/text_utility';
 import { getParameterValues, mergeUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
-import bp from '~/breakpoints';
 import ChangedFilesDropdown from './changed_files_dropdown.vue';
 import changedFilesMixin from '../mixins/changed_files';
 
@@ -80,7 +79,6 @@ export default {
         return;
       }
 
-      const wrapperBottom = this.$refs.wrapper.getBoundingClientRect().bottom;
       const scrollPosition = window.scrollY;
 
       this.isStuck = scrollPosition >= this.$refs.wrapper.offsetTop - this.offsetTop;
