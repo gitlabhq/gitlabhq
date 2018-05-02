@@ -12,7 +12,7 @@ shared_examples_for 'AtomicInternalId' do
       subject { instance }
 
       before do
-        allow(InternalId).to receive(:generate_next).and_return(nil)
+        allow(InternalId).to receive(:generate_next).with(instance, scope_attrs, usage, anything).and_return(nil)
       end
 
       it { is_expected.to validate_presence_of(internal_id_attribute) }
