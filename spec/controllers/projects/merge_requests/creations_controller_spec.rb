@@ -157,34 +157,4 @@ describe Projects::MergeRequests::CreationsController do
       expect(response).to have_gitlab_http_status(200)
     end
   end
-
-  describe 'GET #update_branches' do
-    before do
-      allow(Ability).to receive(:allowed?).and_call_original
-    end
-
-    it 'lists the branches of another fork if the user has access' do
-      expect(Ability).to receive(:allowed?).with(user, :read_project, project) { true }
-
-      get :update_branches,
-          namespace_id: fork_project.namespace,
-          project_id: fork_project,
-          target_project_id: project.id
-
-      expect(assigns(:target_branches)).not_to be_empty
-      expect(response).to have_gitlab_http_status(200)
-    end
-
-    it 'does not list branches when the user cannot read the project' do
-      expect(Ability).to receive(:allowed?).with(user, :read_project, project) { false }
-
-      get :update_branches,
-          namespace_id: fork_project.namespace,
-          project_id: fork_project,
-          target_project_id: project.id
-
-      expect(response).to have_gitlab_http_status(200)
-      expect(assigns(:target_branches)).to eq([])
-    end
-  end
 end
