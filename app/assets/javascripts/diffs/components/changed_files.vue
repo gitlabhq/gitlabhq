@@ -125,7 +125,6 @@ export default {
 
 <template>
   <div
-    v-if="diffFiles.length > 0"
     ref="wrapper"
     :class="{'is-stuck': isStuck}"
     class="content-block oneline-block diff-files-changed diff-files-changed-merge-request

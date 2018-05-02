@@ -17,8 +17,8 @@ export default {
   },
   data() {
     return {
-      hoveredLineCode: undefined,
-      hoveredSection: undefined,
+      hoveredLineCode: null,
+      hoveredSection: null,
     };
   },
   components: {

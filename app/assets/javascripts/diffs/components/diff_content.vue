@@ -1,12 +1,12 @@
 <script>
 import { mapGetters } from 'vuex';
-import inlineDiffView from './inline_diff_view.vue';
-import parallelDiffView from './parallel_diff_view.vue';
+import InlineDiffView from './inline_diff_view.vue';
+import ParallelDiffView from './parallel_diff_view.vue';
 
 export default {
   components: {
-    inlineDiffView,
-    parallelDiffView,
+    InlineDiffView,
+    ParallelDiffView,
   },
   props: {
     diffFile: {
