@@ -90,13 +90,13 @@ export default {
       v-show="!isExpanded"
       class="nothing-here-block diff-collapsed"
     >
-      This diff is collapsed.
+      {{ __('This diff is collapsed.') }}
       <button
         @click.prevent="handleToggle"
-        class="btn btn-link click-to-expand"
+        class="btn click-to-expand prepend-left-10"
         type="button"
       >
-        Click to expand it.
+        {{ __('Expand') }}
       </button>
     </div>
   </div>
