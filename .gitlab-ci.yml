@@ -447,29 +447,27 @@ retrieve-tests-metadata:
     - wget -O $EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH http://${TESTS_METADATA_S3_BUCKET}.s3.amazonaws.com/$EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH || rm $EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH
     - '[[ -f $EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH ]] || echo "{}" > ${EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH}'
 
-ee-files-location-check:
+.ee-specific-check: &ee-specific-check
   <<: *dedicated-runner
   stage: test
   before_script: []
   cache: {}
   retry: 0
+  only:
+    - branches
+    - //@gitlab-org/gitlab-ee
+  except:
+    - master
+
+ee-files-location-check:
+  <<: *ee-specific-check
   script:
     - scripts/ee-files-location-check
-  only:
-    - branches
-    - //@gitlab-org/gitlab-ee
 
 ee-specific-lines-check:
-  <<: *dedicated-runner
-  stage: test
-  before_script: []
-  cache: {}
-  retry: 0
+  <<: *ee-specific-check
   script:
     - scripts/ee-specific-lines-check
-  only:
-    - branches
-    - //@gitlab-org/gitlab-ee
 
 update-tests-metadata:
   <<: *tests-metadata-state
