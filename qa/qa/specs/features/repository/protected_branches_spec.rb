@@ -26,15 +26,25 @@ module QA
       Capybara.execute_script 'localStorage.clear()'
     end
 
-    scenario 'user is able to protect a branch' do
-      protected_branch = fabricate_branch(allow_to_push: true)
+    context 'when developers and maintainers are allowed to push to a protected branch' do
+      scenario 'a push by the owner succeeds' do
+        protected_branch = fabricate_branch(allow_to_push: true)
 
-      expect(protected_branch.name).to have_content(branch_name)
-      expect(protected_branch.push_allowance).to have_content('Developers + Maintainers')
+        expect(protected_branch.name).to have_content(branch_name)
+        expect(protected_branch.push_allowance).to have_content('Developers + Maintainers')
+
+        project.visit!
+
+        Git::Repository.perform do |repository|
+          push_output = push_to_repository(repository)
+
+          expect(push_output).to match(/remote: To create a merge request for protected-branch, visit/)
+        end
+      end
     end
 
-    context 'push to protected branch' do
-      scenario 'unauthorized users are blocked' do
+    context 'when developers and maintainers are not allowed to push to a protected branch' do
+      scenario 'a push by the owner fails' do
         fabricate_branch(allow_to_push: false)
 
         project.visit!
@@ -46,18 +56,6 @@ module QA
             .to match(/remote\: GitLab\: You are not allowed to push code to protected branches on this project/)
           expect(push_output)
             .to match(/\[remote rejected\] #{branch_name} -> #{branch_name} \(pre-receive hook declined\)/)
-        end
-      end
-
-      scenario 'authorized users are allowed' do
-        fabricate_branch(allow_to_push: true)
-
-        project.visit!
-
-        Git::Repository.perform do |repository|
-          push_output = push_to_repository(repository)
-
-          expect(push_output).to match(/remote: To create a merge request for protected-branch, visit/)
         end
       end
     end
