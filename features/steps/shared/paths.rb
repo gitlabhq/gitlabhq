@@ -252,10 +252,6 @@ module SharedPaths
     visit project_settings_integrations_path(@project)
   end
 
-  step 'I visit group hooks page' do
-    visit group_hooks_path(@group)
-  end
-
   step 'I visit project deploy keys page' do
     visit project_deploy_keys_path(@project)
   end
