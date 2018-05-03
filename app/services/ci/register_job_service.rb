@@ -91,7 +91,10 @@ module Ci
     def builds_for_group_runner
       hierarchy_groups = Gitlab::GroupHierarchy.new(runner.groups).base_and_descendants
       projects = Project.where(namespace_id: hierarchy_groups)
-      new_builds.where(project: projects.without_deleted.with_builds_enabled).order('created_at ASC')
+        .with_group_runners_enabled
+        .with_builds_enabled
+        .without_deleted
+      new_builds.where(project: projects).order('created_at ASC')
     end
 
     def running_builds_for_shared_runners

@@ -2,13 +2,13 @@ require 'spec_helper'
 
 module Ci
   describe RegisterJobService do
-    let!(:project) { create :project, shared_runners_enabled: false }
-    let!(:group) { create :group }
-    let!(:pipeline) { create :ci_pipeline, project: project }
-    let!(:pending_job) { create :ci_build, pipeline: pipeline }
-    let!(:shared_runner) { create :ci_runner, is_shared: true }
-    let!(:specific_runner) { create :ci_runner, is_shared: false }
-    let!(:group_runner) { create :ci_runner, groups: [group], runner_type: :group_type }
+    set(:group) { create(:group) }
+    set(:project) { create(:project, group: group, shared_runners_enabled: false, group_runners_enabled: false) }
+    set(:pipeline) { create(:ci_pipeline, project: project) }
+    let!(:shared_runner) { create(:ci_runner, is_shared: true) }
+    let!(:specific_runner) { create(:ci_runner, is_shared: false) }
+    let!(:group_runner) { create(:ci_runner, groups: [group], runner_type: :group_type) }
+    let!(:pending_job) { create(:ci_build, pipeline: pipeline) }
 
     before do
       specific_runner.assign_to(project)
@@ -152,7 +152,7 @@ module Ci
 
       context 'disallow when builds are disabled' do
         before do
-          project.update(shared_runners_enabled: true)
+          project.update(shared_runners_enabled: true, group_runners_enabled: true)
           project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
         end
 
@@ -162,7 +162,13 @@ module Ci
           it { expect(build).to be_nil }
         end
 
-        context 'and uses specific runner' do
+        context 'and uses group runner' do
+          let(:build) { execute(group_runner) }
+
+          it { expect(build).to be_nil }
+        end
+
+        context 'and uses project runner' do
           let(:build) { execute(specific_runner) }
 
           it { expect(build).to be_nil }
@@ -171,7 +177,7 @@ module Ci
 
       context 'allow group runners' do
         before do
-          project.update!(group_runners_enabled: true, group: group)
+          project.update!(group_runners_enabled: true)
         end
 
         context 'for multiple builds' do
@@ -230,7 +236,7 @@ module Ci
 
       context 'disallow group runners' do
         before do
-          project.update(group_runners_enabled: false)
+          project.update!(group_runners_enabled: false)
         end
 
         context 'group runner' do
