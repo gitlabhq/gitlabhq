@@ -388,7 +388,7 @@ describe 'Pipelines', :js do
 
           it 'should be possible to cancel pending build' do
             find('.js-builds-dropdown-button').click
-            find('a.js-ci-action-icon').click
+            find('.js-ci-action-icon').click
 
             expect(page).to have_content('canceled')
             expect(build.reload).to be_canceled

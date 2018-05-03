@@ -75,7 +75,7 @@ export default {
     v-tooltip
     :title="tooltipText"
     class="js-ci-action btn btn-blank
-btn-transparent ci-action-icon-container ci-action-icon-wrapper"
+btn-transparent ci-action-icon-container ci-action-icon-wrapper js-ci-action-icon"
     :class="cssClass"
     data-container="body"
     :disabled="isDisabled"
