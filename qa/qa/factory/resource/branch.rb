@@ -46,7 +46,9 @@ module QA
             resource.remote_branch = @branch_name
           end
 
-          Page::Project::Show.act { wait_for_push }
+          Page::Project::Show.perform do |page|
+            page.wait { page.has_content?(branch_name) }
+          end
 
           # The upcoming process will make it access the Protected Branches page,
           # select the already created branch and protect it according
