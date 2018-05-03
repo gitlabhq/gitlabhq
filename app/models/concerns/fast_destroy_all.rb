@@ -73,7 +73,7 @@ module FastDestroyAll
       # This is a helper method for performaning fast_destroy_all when parent relations are deleted
       # Their children must include `FastDestroyAll` module.
       #
-      # `use_fast_destroy` must be defined **before** `has_many` and `has_one`, such as `has_many :relation, depenedent: :destroy`
+      # `use_fast_destroy` must be defined **before** `has_many` and `has_one`, such as `has_many :relation, dependent: :destroy`
       # Otherwise `use_fast_destroy` performs against **deleted** rows, which fails to get identifiers of external data
       #
       # e.g. use_fast_destroy :build_trace_chunks
