@@ -309,7 +309,9 @@ describe Ci::Runner do
   describe '#can_pick?' do
     let(:pipeline) { create(:ci_pipeline) }
     let(:build) { create(:ci_build, pipeline: pipeline) }
-    let(:runner) { create(:ci_runner) }
+    let(:runner) { create(:ci_runner, tag_list: tag_list, run_untagged: run_untagged) }
+    let(:tag_list) { [] }
+    let(:run_untagged) { true }
 
     subject { runner.can_pick?(build) }
 
@@ -319,7 +321,7 @@ describe Ci::Runner do
 
     context 'a different runner' do
       it 'cannot handle builds' do
-        other_runner = create :ci_runner
+        other_runner = create(:ci_runner)
         expect(other_runner.can_pick?(build)).to be_falsey
       end
     end
@@ -337,9 +339,7 @@ describe Ci::Runner do
     end
 
     context 'when runner has tags' do
-      before do
-        runner.tag_list = %w(bb cc)
-      end
+      let(:tag_list) { %w(bb cc) }
 
       shared_examples 'tagged build picker' do
         it 'can handle build with matching tags' do
@@ -364,9 +364,7 @@ describe Ci::Runner do
       end
 
       context 'when runner cannot pick untagged jobs' do
-        before do
-          runner.update_attributes!(run_untagged: false)
-        end
+        let(:run_untagged) { false }
 
         it 'cannot handle builds without tags' do
           expect(runner.can_pick?(build)).to be_falsey
@@ -377,8 +375,9 @@ describe Ci::Runner do
     end
 
     context 'when runner is shared' do
+      let(:runner) { create(:ci_runner, :shared) }
+
       before do
-        runner.update_attributes!(is_shared: true)
         build.project.runners = []
       end
 
@@ -387,9 +386,7 @@ describe Ci::Runner do
       end
 
       context 'when runner is locked' do
-        before do
-          runner.update_attributes!(locked: true)
-        end
+        let(:runner) { create(:ci_runner, :shared, locked: true) }
 
         it 'can handle builds' do
           expect(runner.can_pick?(build)).to be_truthy
@@ -748,55 +745,57 @@ describe Ci::Runner do
     end
   end
 
-  describe 'assigned_to_group?' do
-    it 'returns false when the runner is a project runner' do
-      project = create :project
-      runner = create :ci_runner, description: 'Project runner', projects: [project]
+  describe '#assigned_to_group?' do
+    subject { runner.assigned_to_group? }
 
-      expect(runner.assigned_to_group?).to be false
+    context 'when project runner' do
+      let(:runner) { create(:ci_runner, description: 'Project runner', projects: [project]) }
+      let(:project) { create(:project) }
+
+      it { is_expected.to be_falsey }
     end
 
-    it 'returns false when the runner is a shared runner' do
-      runner = create :ci_runner, :shared, description: 'Shared runner'
+    context 'when shared runner' do
+      let(:runner) { create(:ci_runner, :shared, description: 'Shared runner') }
 
-      expect(runner.assigned_to_group?).to be false
+      it { is_expected.to be_falsey }
     end
 
-    it 'returns true when the runner is assigned to a group' do
-      group = create :group
-      runner = create :ci_runner, description: 'Group runner', groups: [group]
+    context 'when group runner' do
+      let(:group) { create(:group) }
+      let(:runner) { create(:ci_runner, description: 'Group runner', groups: [group]) }
 
-      expect(runner.assigned_to_group?).to be true
+      it { is_expected.to be_truthy }
     end
   end
 
-  describe 'assigned_to_project?' do
-    it 'returns false when the runner is a group prunner' do
-      group = create :group
-      runner = create :ci_runner, description: 'Group runner', groups: [group]
+  describe '#assigned_to_project?' do
+    subject { runner.assigned_to_project? }
 
-      expect(runner.assigned_to_project?).to be false
+    context 'when group runner' do
+      let(:runner) { create(:ci_runner, description: 'Group runner', groups: [group]) }
+      let(:group) { create(:group) }
+      it { is_expected.to be_falsey }
     end
 
-    it 'returns false when the runner is a shared runner' do
-      runner = create :ci_runner, :shared, description: 'Shared runner'
-
-      expect(runner.assigned_to_project?).to be false
+    context 'when shared runner' do
+      let(:runner) { create(:ci_runner, :shared, description: 'Shared runner') }
+      it { is_expected.to be_falsey }
     end
 
-    it 'returns true when the runner is assigned to a project' do
-      project = create :project
-      runner = create :ci_runner, description: 'Group runner', projects: [project]
+    context 'when project runner' do
+      let(:runner) { create(:ci_runner, description: 'Group runner', projects: [project]) }
+      let(:project) { create(:project) }
 
-      expect(runner.assigned_to_project?).to be true
+      it { is_expected.to be_truthy }
     end
   end
 
   describe '#pick_build!' do
     context 'runner can pick the build' do
       it 'calls #tick_runner_queue' do
-        ci_build = build :ci_build
-        runner = build :ci_runner
+        ci_build = build(:ci_build)
+        runner = build(:ci_runner)
         allow(runner).to receive(:can_pick?).with(ci_build).and_return(true)
 
         expect(runner).to receive(:tick_runner_queue)
@@ -807,8 +806,8 @@ describe Ci::Runner do
 
     context 'runner cannot pick the build' do
       it 'does not call #tick_runner_queue' do
-        ci_build = build :ci_build
-        runner = build :ci_runner
+        ci_build = build(:ci_build)
+        runner = build(:ci_runner)
         allow(runner).to receive(:can_pick?).with(ci_build).and_return(false)
 
         expect(runner).not_to receive(:tick_runner_queue)
