@@ -3,7 +3,7 @@
 
 = form_for [@project.namespace.becomes(Namespace), @project, @merge_request], url: project_new_merge_request_path(@project), method: :get, html: { class: "merge-request-form form-inline js-requires-input" } do |f|
   .hide.alert.alert-danger.mr-compare-errors
-  .js-merge-request-new-compare.row{ 'data-target-project-url': project_new_merge_request_update_branches_path(@source_project), 'data-source-branch-url': project_new_merge_request_branch_from_path(@source_project), 'data-target-branch-url': project_new_merge_request_branch_to_path(@source_project) }
+  .js-merge-request-new-compare.row{ 'data-source-branch-url': project_new_merge_request_branch_from_path(@source_project), 'data-target-branch-url': project_new_merge_request_branch_to_path(@source_project) }
     .col-md-6
       .panel.panel-default.panel-new-merge-request
         .panel-heading
@@ -11,7 +11,7 @@
         .panel-body.clearfix
           .merge-request-select.dropdown
             = f.hidden_field :source_project_id
-            = dropdown_toggle @merge_request.source_project_path, { toggle: "dropdown", field_name: "#{f.object_name}[source_project_id]", disabled: @merge_request.persisted? }, { toggle_class: "js-compare-dropdown js-source-project" }
+            = dropdown_toggle @merge_request.source_project_path, { toggle: "dropdown", 'field-name': "#{f.object_name}[source_project_id]", disabled: @merge_request.persisted? }, { toggle_class: "js-compare-dropdown js-source-project" }
             .dropdown-menu.dropdown-menu-selectable.dropdown-source-project
               = dropdown_title("Select source project")
               = dropdown_filter("Search projects")
@@ -21,14 +21,12 @@
                   selected: f.object.source_project_id
           .merge-request-select.dropdown
             = f.hidden_field :source_branch
-            = dropdown_toggle f.object.source_branch || "Select source branch", { toggle: "dropdown", field_name: "#{f.object_name}[source_branch]" }, { toggle_class: "js-compare-dropdown js-source-branch git-revision-dropdown-toggle" }
-            .dropdown-menu.dropdown-menu-selectable.dropdown-source-branch.git-revision-dropdown
-              = dropdown_title("Select source branch")
-              = dropdown_filter("Search branches")
-              = dropdown_content do
-                = render 'projects/merge_requests/dropdowns/branch',
-                  branches: @merge_request.source_branches,
-                  selected: f.object.source_branch
+            = dropdown_toggle f.object.source_branch || _("Select source branch"), { toggle: "dropdown", 'field-name': "#{f.object_name}[source_branch]", 'refs-url': refs_project_path(@source_project), selected: f.object.source_branch }, { toggle_class: "js-compare-dropdown js-source-branch git-revision-dropdown-toggle" }
+            .dropdown-menu.dropdown-menu-selectable.js-source-branch-dropdown.git-revision-dropdown
+              = dropdown_title(_("Select source branch"))
+              = dropdown_filter(_("Search branches"))
+              = dropdown_content
+              = dropdown_loading
         .panel-footer
           .text-center= icon('spinner spin', class: 'js-source-loading')
           %ul.list-unstyled.mr_source_commit
@@ -41,7 +39,7 @@
           - projects = target_projects(@project)
           .merge-request-select.dropdown
             = f.hidden_field :target_project_id
-            = dropdown_toggle f.object.target_project.full_path, { toggle: "dropdown", field_name: "#{f.object_name}[target_project_id]", disabled: @merge_request.persisted? }, { toggle_class: "js-compare-dropdown js-target-project" }
+            = dropdown_toggle f.object.target_project.full_path, { toggle: "dropdown", 'field-name': "#{f.object_name}[target_project_id]", disabled: @merge_request.persisted? }, { toggle_class: "js-compare-dropdown js-target-project" }
             .dropdown-menu.dropdown-menu-selectable.dropdown-target-project
               = dropdown_title("Select target project")
               = dropdown_filter("Search projects")
@@ -51,14 +49,12 @@
                   selected: f.object.target_project_id
           .merge-request-select.dropdown
             = f.hidden_field :target_branch
-            = dropdown_toggle f.object.target_branch, { toggle: "dropdown", field_name: "#{f.object_name}[target_branch]" }, { toggle_class: "js-compare-dropdown js-target-branch git-revision-dropdown-toggle" }
-            .dropdown-menu.dropdown-menu-selectable.dropdown-target-branch.js-target-branch-dropdown.git-revision-dropdown
-              = dropdown_title("Select target branch")
-              = dropdown_filter("Search branches")
-              = dropdown_content do
-                = render 'projects/merge_requests/dropdowns/branch',
-                  branches: @merge_request.target_branches,
-                  selected: f.object.target_branch
+            = dropdown_toggle f.object.target_branch, { toggle: "dropdown", 'field-name': "#{f.object_name}[target_branch]", 'refs-url': refs_project_path(f.object.target_project), selected: f.object.target_branch }, { toggle_class: "js-compare-dropdown js-target-branch git-revision-dropdown-toggle" }
+            .dropdown-menu.dropdown-menu-selectable.js-target-branch-dropdown.git-revision-dropdown
+              = dropdown_title(_("Select target branch"))
+              = dropdown_filter(_("Search branches"))
+              = dropdown_content
+              = dropdown_loading
         .panel-footer
           .text-center= icon('spinner spin', class: "js-target-loading")
           %ul.list-unstyled.mr_target_commit

@@ -1355,7 +1355,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
               it 'download artifacts' do
                 expect(response).to have_http_status(200)
-                expect(response.headers).to include download_headers
+                expect(response.headers.to_h).to include download_headers
               end
             end
 
@@ -1370,7 +1370,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
                 it 'uses workhorse send-url' do
                   expect(response).to have_gitlab_http_status(200)
-                  expect(response.headers).to include(
+                  expect(response.headers.to_h).to include(
                     'Gitlab-Workhorse-Send-Data' => /send-url:/)
                 end
               end
