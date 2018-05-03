@@ -3,8 +3,6 @@ class AddCiRunnerNamespaces < ActiveRecord::Migration
 
   DOWNTIME = false
 
-  disable_ddl_transaction!
-
   def change
     create_table :ci_runner_namespaces do |t|
       t.integer :runner_id
