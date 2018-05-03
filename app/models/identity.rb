@@ -1,5 +1,11 @@
 class Identity < ActiveRecord::Base
+<<<<<<< HEAD
   prepend EE::Identity
+=======
+  def self.uniqueness_scope
+    :provider
+  end
+>>>>>>> upstream/master
 
   include Sortable
   include CaseSensitivity
@@ -7,8 +13,8 @@ class Identity < ActiveRecord::Base
   belongs_to :user
 
   validates :provider, presence: true
-  validates :extern_uid, allow_blank: true, uniqueness: { scope: :provider, case_sensitive: false }
-  validates :user_id, uniqueness: { scope: :provider }
+  validates :extern_uid, allow_blank: true, uniqueness: { scope: uniqueness_scope, case_sensitive: false }
+  validates :user_id, uniqueness: { scope: uniqueness_scope }
 
   before_save :ensure_normalized_extern_uid, if: :extern_uid_changed?
   after_destroy :clear_user_synced_attributes, if: :user_synced_attributes_metadata_from_provider?

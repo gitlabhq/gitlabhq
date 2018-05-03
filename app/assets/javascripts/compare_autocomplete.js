@@ -4,8 +4,9 @@ import $ from 'jquery';
 import { __ } from './locale';
 import axios from './lib/utils/axios_utils';
 import flash from './flash';
+import { capitalizeFirstCharacter } from './lib/utils/text_utility';
 
-export default function initCompareAutocomplete() {
+export default function initCompareAutocomplete(limitTo = null, clickHandler = () => {}) {
   $('.js-compare-dropdown').each(function() {
     var $dropdown, selected;
     $dropdown = $(this);
@@ -15,14 +16,27 @@ export default function initCompareAutocomplete() {
     const $filterInput = $('input[type="search"]', $dropdownContainer);
     $dropdown.glDropdown({
       data: function(term, callback) {
-        axios.get($dropdown.data('refsUrl'), {
-          params: {
-            ref: $dropdown.data('ref'),
-            search: term,
-          },
-        }).then(({ data }) => {
-          callback(data);
-        }).catch(() => flash(__('Error fetching refs')));
+        const params = {
+          ref: $dropdown.data('ref'),
+          search: term,
+        };
+
+        if (limitTo) {
+          params.find = limitTo;
+        }
+
+        axios
+          .get($dropdown.data('refsUrl'), {
+            params,
+          })
+          .then(({ data }) => {
+            if (limitTo) {
+              callback(data[capitalizeFirstCharacter(limitTo)] || []);
+            } else {
+              callback(data);
+            }
+          })
+          .catch(() => flash(__('Error fetching refs')));
       },
       selectable: true,
       filterable: true,
@@ -32,9 +46,15 @@ export default function initCompareAutocomplete() {
       renderRow: function(ref) {
         var link;
         if (ref.header != null) {
-          return $('<li />').addClass('dropdown-header').text(ref.header);
+          return $('<li />')
+            .addClass('dropdown-header')
+            .text(ref.header);
         } else {
-          link = $('<a />').attr('href', '#').addClass(ref === selected ? 'is-active' : '').text(ref).attr('data-ref', escape(ref));
+          link = $('<a />')
+            .attr('href', '#')
+            .addClass(ref === selected ? 'is-active' : '')
+            .text(ref)
+            .attr('data-ref', escape(ref));
           return $('<li />').append(link);
         }
       },
@@ -43,9 +63,10 @@ export default function initCompareAutocomplete() {
       },
       toggleLabel: function(obj, $el) {
         return $el.text().trim();
-      }
+      },
+      clicked: () => clickHandler($dropdown),
     });
-    $filterInput.on('keyup', (e) => {
+    $filterInput.on('keyup', e => {
       const keyCode = e.keyCode || e.which;
       if (keyCode !== 13) return;
       const text = $filterInput.val();
@@ -54,7 +75,7 @@ export default function initCompareAutocomplete() {
       $dropdownContainer.removeClass('open');
     });
 
-    $dropdownContainer.on('click', '.dropdown-content a', (e) => {
+    $dropdownContainer.on('click', '.dropdown-content a', e => {
       $dropdown.prop('title', e.target.text.replace(/_+?/g, '-'));
       if ($dropdown.hasClass('has-tooltip')) {
         $dropdown.tooltip('fixTitle');

@@ -2,20 +2,22 @@
   /**
   * Renders the Monitoring (Metrics) link in environments table.
   */
+  import Icon from '~/vue_shared/components/icon.vue';
   import tooltip from '../../vue_shared/directives/tooltip';
 
   export default {
+    components: {
+      Icon,
+    },
     directives: {
       tooltip,
     },
-
     props: {
       monitoringUrl: {
         type: String,
         required: true,
       },
     },
-
     computed: {
       title() {
         return 'Monitoring';
@@ -33,10 +35,9 @@
     :title="title"
     :aria-label="title"
   >
-    <i
-      class="fa fa-area-chart"
-      aria-hidden="true"
-    >
-    </i>
+    <icon
+      name="chart"
+      :size="12"
+    />
   </a>
 </template>

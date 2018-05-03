@@ -333,7 +333,7 @@ class MergeRequest < ActiveRecord::Base
   # updates `merge_jid` with the MergeWorker#jid.
   # This helps tracking enqueued and ongoing merge jobs.
   def merge_async(user_id, params)
-    jid = MergeWorker.perform_async(id, user_id, params)
+    jid = MergeWorker.perform_async(id, user_id, params.to_h)
     update_column(:merge_jid, jid)
   end
 
