@@ -161,7 +161,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
 
           get :diff_for_path
-          get :update_branches
           get :branch_from
           get :branch_to
         end

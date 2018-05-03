@@ -62,6 +62,6 @@
       %td Last contact
       %td
         - if @runner.contacted_at
-          #{time_ago_in_words(@runner.contacted_at)} ago
+          = time_ago_with_tooltip @runner.contacted_at
         - else
           Never
