@@ -270,7 +270,7 @@ If there are merge conflicts in the `gitlab.pot` file, you can delete the file
 and regenerate it using the same command. Confirm that you are not deleting any strings accidentally by looking over the diff.
 
 The command also updates the translation files for each language: `locale/*/gitlab.po`
-These changes can be discarded, the languange files will be updated by Crowdin
+These changes can be discarded, the language files will be updated by Crowdin
 automatically.
 
 Discard all of them at once like this:

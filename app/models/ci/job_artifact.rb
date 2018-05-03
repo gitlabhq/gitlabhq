@@ -13,7 +13,7 @@ module Ci
     after_save :update_project_statistics_after_save, if: :size_changed?
     after_destroy :update_project_statistics_after_destroy, unless: :project_destroyed?
 
-    after_save :update_file_store
+    after_save :update_file_store, if: :file_changed?
 
     scope :with_files_stored_locally, -> { where(file_store: [nil, ::JobArtifactUploader::Store::LOCAL]) }
 

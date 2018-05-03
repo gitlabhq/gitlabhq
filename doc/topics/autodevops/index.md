@@ -135,6 +135,11 @@ and `1.2.3.4` is the IP address of your load balancer; generally NGINX
 ([see prerequisites](#prerequisites)). How to set up the DNS record is beyond
 the scope of this document; you should check with your DNS provider.
 
+Alternatively you can use free public services like [xip.io](http://xip.io) or
+[nip.io](http://nip.io) which provide automatic wildcard DNS without any
+configuration. Just set the Auto DevOps base domain to `1.2.3.4.xip.io` or
+`1.2.3.4.nip.io`.
+
 Once set up, all requests will hit the load balancer, which in turn will route
 them to the Kubernetes pods that run your application(s).
 
@@ -490,6 +495,7 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | `POSTGRES_PASSWORD`          | The PostgreSQL password; defaults to `testing-password`. Set it to use a custom password.                                                                                                                                     |
 | `POSTGRES_DB`                | The PostgreSQL database name; defaults to the value of [`$CI_ENVIRONMENT_SLUG`](../../ci/variables/README.md#predefined-variables-environment-variables). Set it to use a custom database name.                               |
 | `BUILDPACK_URL`              | The buildpack's full URL. It can point to either Git repositories or a tarball URL. For Git repositories, it is possible to point to a specific `ref`, for example `https://github.com/heroku/heroku-buildpack-ruby.git#v142` |
+| `STAGING_ENABLED`            | From GitLab 10.8, this variable can be used to define a [deploy policy for staging and production environments](#deploy-policy-for-staging-and-production-environments). |
 
 TIP: **Tip:**
 Set up the replica variables using a
@@ -555,6 +561,22 @@ service:
   externalPort: 5000
   internalPort: 5000
 ```
+
+#### Deploy policy for staging and production environments
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ci-yml/merge_requests/160)
+in GitLab 10.8.
+
+The normal behavior of Auto DevOps is to use Continuous Deployment, pushing
+automatically to the `production` environment every time a new pipeline is run
+on the default branch. However, there are cases where you might want to use a
+staging environment and deploy to production manually. For this scenario, the
+`STAGING_ENABLED` environment variable was introduced.
+
+If `STAGING_ENABLED` is defined in your project (e.g., set `STAGING_ENABLED` to
+`1` as a secret variable), then the application will be automatically deployed
+to a `staging` environment, and a  `production_manual` job will be created for
+you when you're ready to manually deploy to production.
 
 ## Currently supported languages
 

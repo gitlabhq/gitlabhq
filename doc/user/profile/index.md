@@ -39,6 +39,7 @@ From there, you can:
 - Manage [SSH keys](../../ssh/README.md#ssh) to access your account via SSH
 - Manage your [preferences](preferences.md#syntax-highlighting-theme)
 to customize your own GitLab experience
+- [View your active sessions](active_sessions.md) and revoke any of them if necessary
 - Access your audit log, a security log of important events involving your account
 
 ## Changing your username

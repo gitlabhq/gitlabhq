@@ -551,7 +551,7 @@ You can find a full list of unsupported variables below:
 - `CI_DEPLOY_USER`
 - `CI_DEPLOY_PASSWORD`
 
-These variables are also not supported in a contex of a
+These variables are also not supported in a context of a
 [dynamic environment name][dynamic-environments].
 
 [ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784 "Simple protection of CI secret variables"

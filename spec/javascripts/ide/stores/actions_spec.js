@@ -1,4 +1,9 @@
-import actions, { stageAllChanges, unstageAllChanges, toggleFileFinder } from '~/ide/stores/actions';
+import actions, {
+  stageAllChanges,
+  unstageAllChanges,
+  toggleFileFinder,
+  updateTempFlagForEntry,
+} from '~/ide/stores/actions';
 import store from '~/ide/stores';
 import * as types from '~/ide/stores/mutation_types';
 import router from '~/ide/ide_router';
@@ -337,6 +342,49 @@ describe('Multi-file store actions', () => {
         })
         .then(done)
         .catch(done.fail);
+    });
+  });
+
+  describe('updateTempFlagForEntry', () => {
+    it('commits UPDATE_TEMP_FLAG', done => {
+      const f = {
+        ...file(),
+        path: 'test',
+        tempFile: true,
+      };
+      store.state.entries[f.path] = f;
+
+      testAction(
+        updateTempFlagForEntry,
+        { file: f, tempFile: false },
+        store.state,
+        [{ type: 'UPDATE_TEMP_FLAG', payload: { path: f.path, tempFile: false } }],
+        [],
+        done,
+      );
+    });
+
+    it('commits UPDATE_TEMP_FLAG and dispatches for parent', done => {
+      const parent = {
+        ...file(),
+        path: 'testing',
+      };
+      const f = {
+        ...file(),
+        path: 'test',
+        parentPath: 'testing',
+      };
+      store.state.entries[parent.path] = parent;
+      store.state.entries[f.path] = f;
+
+      testAction(
+        updateTempFlagForEntry,
+        { file: f, tempFile: false },
+        store.state,
+        [{ type: 'UPDATE_TEMP_FLAG', payload: { path: f.path, tempFile: false } }],
+        [{ type: 'updateTempFlagForEntry', payload: { file: parent, tempFile: false } }],
+        done,
+      );
     });
   });
 

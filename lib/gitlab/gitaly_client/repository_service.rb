@@ -142,7 +142,7 @@ module Gitlab
           :repository_service,
           :is_rebase_in_progress,
           request,
-          timeout: GitalyClient.default_timeout
+          timeout: GitalyClient.fast_timeout
         )
 
         response.in_progress
@@ -159,7 +159,7 @@ module Gitlab
           :repository_service,
           :is_squash_in_progress,
           request,
-          timeout: GitalyClient.default_timeout
+          timeout: GitalyClient.fast_timeout
         )
 
         response.in_progress

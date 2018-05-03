@@ -1,0 +1,6 @@
+---
+title: Don't automatically remove artifacts for pages jobs after pages:deploy has
+  run
+merge_request: 18628
+author:
+type: fixed

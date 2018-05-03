@@ -152,7 +152,7 @@ know you like it without spamming them.
 These text fields also fully support
 [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm).
 
-#### 17. Comment, start a discusion, or comment and close
+#### 17. Comment, start a discussion, or comment and close
 
 Once you wrote your comment, you can either:
 

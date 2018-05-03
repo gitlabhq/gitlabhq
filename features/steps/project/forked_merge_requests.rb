@@ -53,7 +53,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
 
     first('.js-source-branch').click
     wait_for_requests
-    first('.dropdown-source-branch .dropdown-content a', text: 'fix').click
+    first('.js-source-branch-dropdown .dropdown-content a', text: 'fix').click
 
     click_button "Compare branches and continue"
 
