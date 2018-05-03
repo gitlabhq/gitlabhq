@@ -117,7 +117,8 @@ export default {
      */
     stopDropdownClickPropagation() {
       $(
-        this.$el.querySelectorAll('.js-builds-dropdown-list a.mini-pipeline-graph-dropdown-item'),
+        '.js-builds-dropdown-list button, .js-builds-dropdown-list a.mini-pipeline-graph-dropdown-item',
+        this.$el,
       ).on('click', e => {
         e.stopPropagation();
       });

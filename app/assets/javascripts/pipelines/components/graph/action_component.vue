@@ -61,7 +61,7 @@ export default {
   methods: {
     onClickAction() {
       $(this.$el).tooltip('hide');
-      eventHub.$emit('graphAction', this.link);
+      eventHub.$emit('postAction', this.link);
       this.linkRequested = this.link;
       this.isDisabled = true;
     },
@@ -75,7 +75,7 @@ export default {
     v-tooltip
     :title="tooltipText"
     class="js-ci-action btn btn-blank
-btn-transparent ci-action-icon-container ci-action-icon-wrapper js-ci-action-icon"
+btn-transparent ci-action-icon-container ci-action-icon-wrapper"
     :class="cssClass"
     data-container="body"
     :disabled="isDisabled"
