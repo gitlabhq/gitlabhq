@@ -61,6 +61,9 @@ export default {
     actionBtnClicked() {
       this[this.action]();
     },
+    setShowActionButton(show) {
+      this.showActionButton = show;
+    },
   },
 };
 </script>
@@ -83,14 +86,14 @@ export default {
         {{ titleText }}
         <span
           v-show="!showActionButton"
-          @mouseenter="showActionButton = true"
+          @mouseenter="setShowActionButton(true)"
           class="ide-commit-file-count"
         >
           {{ fileList.length }}
         </span>
         <button
           v-show="showActionButton"
-          @mouseleave="showActionButton = false"
+          @mouseleave="setShowActionButton(false)"
           type="button"
           class="btn btn-blank btn-link ide-staged-action-btn"
           @click="actionBtnClicked"

@@ -45,7 +45,7 @@ export default {
       :value="$options.commitToNewBranchMR"
       :label="__('Create a new branch and merge request')"
       :show-input="true"
-      :disabled="!!changedFiles.length && !!changedFiles.length"
+      :disabled="!!changedFiles.length && !!stagedFiles.length"
     />
   </div>
 </template>

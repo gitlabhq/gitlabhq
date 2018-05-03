@@ -986,25 +986,19 @@
   transition: all 0.3s ease;
 }
 
-.is-full .commit-form-slide-up-enter {
+.is-full .commit-form-slide-up-enter,
+.is-compact .commit-form-slide-up-leave-to {
   transform: translateY(100%);
 }
 
-.is-full .commit-form-slide-up-enter-to {
+.is-full .commit-form-slide-up-enter-to,
+.is-compact .commit-form-slide-up-leave {
   transform: translateY(0);
 }
 
 .commit-form-slide-up-enter,
 .commit-form-slide-up-leave-to {
   opacity: 0;
-}
-
-.is-compact .commit-form-slide-up-leave {
-  transform: translateY(0);
-}
-
-.is-compact .commit-form-slide-up-leave-to {
-  transform: translateY(100%);
 }
 
 .ide-review-header {
