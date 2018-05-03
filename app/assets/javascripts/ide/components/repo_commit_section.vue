@@ -19,8 +19,22 @@ export default {
     tooltip,
   },
   computed: {
-    ...mapState(['changedFiles', 'stagedFiles']),
+    ...mapState([
+      'changedFiles',
+      'stagedFiles',
+      'rightPanelCollapsed',
+      'lastCommitMsg',
+      'unusedSeal',
+    ]),
+    ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
     ...mapGetters(['lastOpenedFile', 'hasChanges']),
+    ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled']),
+    showStageUnstageArea() {
+      return !!(this.someUncommitedChanges || this.lastCommitMsg || !this.unusedSeal);
+    },
+    someUncommitedChanges() {
+      return !!(this.changedFiles.length || this.stagedFiles.length);
+    },
   },
   watch: {
     hasChanges() {
@@ -71,7 +85,7 @@ export default {
       </template>
     </deprecated-modal>
     <template
-      v-if="changedFiles.length || stagedFiles.length"
+      v-if="showStageUnstageArea"
     >
       <commit-files-list
         class="is-first"
@@ -93,7 +107,7 @@ export default {
       />
     </template>
     <empty-state
-      v-else
+      v-if="unusedSeal"
     />
   </div>
 </template>

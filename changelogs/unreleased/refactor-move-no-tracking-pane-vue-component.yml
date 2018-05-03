@@ -1,0 +1,5 @@
+---
+title: Move TimeTrackingNoTrackingPane vue component
+merge_request: 18676
+author: George Tsiolis
+type: performance

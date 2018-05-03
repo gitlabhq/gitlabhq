@@ -398,6 +398,20 @@ describe('IDE store file actions', () => {
         })
         .catch(done.fail);
     });
+
+    it('bursts unused seal', done => {
+      store
+        .dispatch('changeFileContent', {
+          path: tmpFile.path,
+          content: 'content',
+        })
+        .then(() => {
+          expect(store.state.unusedSeal).toBe(false);
+
+          done();
+        })
+        .catch(done.fail);
+    });
   });
 
   describe('discardFileChanges', () => {

@@ -177,6 +177,10 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
           }
 
           commit(rootTypes.CLEAR_STAGED_CHANGES, null, { root: true });
+
+          setTimeout(() => {
+            commit(rootTypes.SET_LAST_COMMIT_MSG, '', { root: true });
+          }, 5000);
         })
         .then(() => {
           if (rootGetters.lastOpenedFile) {

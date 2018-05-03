@@ -4,6 +4,7 @@ import { sprintf, __ } from '~/locale';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import CommitMessageField from './message_field.vue';
 import Actions from './actions.vue';
+import SuccessMessage from './success_message.vue';
 import { activityBarViews, MAX_WINDOW_HEIGHT_COMPACT, COMMIT_ITEM_PADDING } from '../../constants';
 
 export default {
@@ -11,6 +12,7 @@ export default {
     Actions,
     LoadingButton,
     CommitMessageField,
+    SuccessMessage,
   },
   data() {
     return {
@@ -19,10 +21,13 @@ export default {
     };
   },
   computed: {
-    ...mapState(['changedFiles', 'stagedFiles', 'currentActivityView']),
+    ...mapState(['lastCommitMsg', 'changedFiles', 'stagedFiles', 'currentActivityView']),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
     ...mapGetters(['hasChanges']),
     ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled']),
+    someUncommitedChanges() {
+      return !!(this.changedFiles.length || this.stagedFiles.length);
+    },
     overviewText() {
       return sprintf(
         __(
@@ -120,6 +125,10 @@ export default {
         @submit.prevent.stop="commitChanges"
         ref="formEl"
       >
+        <success-message
+          v-if="lastCommitMsg && !someUncommitedChanges"
+          :committed-state-svg-path="committedStateSvgPath"
+        />
         <commit-message-field
           :text="commitMessage"
           @input="updateCommitMessage"
