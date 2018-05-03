@@ -10,6 +10,7 @@ import ResizablePanel from './resizable_panel.vue';
 import ActivityBar from './activity_bar.vue';
 import CommitSection from './repo_commit_section.vue';
 import CommitForm from './commit_sidebar/form.vue';
+import IdeReview from './ide_review.vue';
 
 export default {
   components: {
@@ -23,6 +24,7 @@ export default {
     CommitSection,
     IdeTree,
     CommitForm,
+    IdeReview,
   },
   computed: {
     ...mapState(['loading', 'currentBranchId', 'currentActivityView']),

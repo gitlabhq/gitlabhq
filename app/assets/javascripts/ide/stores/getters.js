@@ -1,3 +1,5 @@
+import { activityBarViews } from '../constants';
+
 export const activeFile = state => state.openFiles.find(file => file.active) || null;
 
 export const addedFiles = state => state.changedFiles.filter(f => f.tempFile);
@@ -54,6 +56,9 @@ export const getStagedFile = state => path => state.stagedFiles.find(f => f.path
 
 export const lastOpenedFile = state =>
   [...state.changedFiles, ...state.stagedFiles].sort((a, b) => b.lastOpenedAt - a.lastOpenedAt)[0];
+
+export const isEditModeActive = state => state.currentActivityView === activityBarViews.edit;
+export const isCommitModeActive = state => state.currentActivityView === activityBarViews.commit;
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

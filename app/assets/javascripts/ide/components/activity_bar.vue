@@ -54,6 +54,20 @@ export default {
       <li v-show="hasChanges">
         <button
           type="button"
+          class="ide-sidebar-link js-ide-review-mode"
+          :class="{
+            active: currentActivityView === $options.activityBarViews.review
+          }"
+          @click.prevent="updateActivityBarView($options.activityBarViews.review)"
+        >
+          <icon
+            name="file-modified"
+          />
+        </button>
+      </li>
+      <li>
+        <button
+          type="button"
           class="ide-sidebar-link js-ide-commit-mode"
           :class="{
             active: currentActivityView === $options.activityBarViews.commit

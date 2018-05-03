@@ -10,4 +10,5 @@ export const MAX_BODY_LENGTH = 72;
 export const activityBarViews = {
   edit: 'ide-tree',
   commit: 'commit-section',
+  review: 'ide-review',
 };
