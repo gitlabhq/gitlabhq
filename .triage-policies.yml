@@ -1,3 +1,9 @@
+.common_conditions:
+  label_exemptions: &label_exemptions
+    forbidden_labels:
+      - technical debt
+      - Accepting Merge Requests
+
 resource_rules:
   issues:
     rules:
@@ -11,6 +17,7 @@ resource_rules:
           milestone:
             - No Milestone
           state: opened
+          <<: *label_exemptions
         actions:
           labels:
             - awaiting feedback
@@ -75,6 +82,7 @@ resource_rules:
           labels:
             - awaiting feedback
             - auto updated
+            <<: *label_exemptions
           state: opened
         actions:
           labels:
@@ -126,6 +134,7 @@ resource_rules:
           milestone:
             - No Milestone
           state: opened
+          <<: *label_exemptions
         actions:
           labels:
             - awaiting feedback
