@@ -40,7 +40,10 @@ module Ci
     }
 
     scope :owned_or_shared, -> (project_id) do
-      union = Gitlab::SQL::Union.new([belonging_to_project(project_id), belonging_to_parent_group_of_project(project_id), shared])
+      union = Gitlab::SQL::Union.new(
+        [belonging_to_project(project_id), belonging_to_parent_group_of_project(project_id), shared],
+        remove_duplicates: false
+      )
       from("(#{union.to_sql}) ci_runners")
     end
 
