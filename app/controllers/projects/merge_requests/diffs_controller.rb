@@ -9,16 +9,20 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   before_action :define_diff_comment_vars
 
   def show
+    render_diff_file
+  end
+
+  def diff_for_path
+    render_diff_file
+  end
+
+  private
+
+  def render_diff_file
     @environment = @merge_request.environments_for(current_user).last
 
     render json: DiffsSerializer.new.represent(@diffs, serializeable_vars)
   end
-
-  def diff_for_path
-    render_diff_for_path(@diffs)
-  end
-
-  private
 
   def define_diff_vars
     @merge_request_diffs = @merge_request.merge_request_diffs.viewable.order_id_desc
