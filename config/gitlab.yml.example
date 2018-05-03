@@ -155,6 +155,9 @@ production: &base
     #     aws_access_key_id: AWS_ACCESS_KEY_ID
     #     aws_secret_access_key: AWS_SECRET_ACCESS_KEY
     #     region: us-east-1
+    #     aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
+    #     endpoint: 'https://s3.amazonaws.com' # default: nil - Usefull for S3 compliant services such as DigitalOcean Spaces
+
 
   ## Git LFS
   lfs:
@@ -192,6 +195,7 @@ production: &base
         provider: AWS
         aws_access_key_id: AWS_ACCESS_KEY_ID
         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
         region: us-east-1
         # host: 'localhost' # default: s3.amazonaws.com
         # endpoint: 'http://127.0.0.1:9000' # default: nil
