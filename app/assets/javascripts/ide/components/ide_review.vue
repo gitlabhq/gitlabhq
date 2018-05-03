@@ -13,7 +13,9 @@ export default {
     ...mapState(['viewer']),
   },
   mounted() {
-    this.updateViewer(this.currentMergeRequest ? 'mrdiff' : 'diff');
+    this.$nextTick(() => {
+      this.updateViewer(this.currentMergeRequest ? 'mrdiff' : 'diff');
+    });
   },
   methods: {
     ...mapActions(['updateViewer']),
@@ -51,11 +53,3 @@ export default {
     </template>
   </ide-tree-list>
 </template>
-
-<style>
-.ide-review-button-holder {
-  display: flex;
-  width: 100%;
-  align-items: center;
-}
-</style>

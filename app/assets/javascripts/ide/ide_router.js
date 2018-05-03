@@ -102,14 +102,14 @@ router.beforeEach((to, from, next) => {
               throw e;
             });
         } else if (to.params.mrid) {
-          store.dispatch('updateActivityBarView', activityBarViews.review);
-
           store
             .dispatch('getMergeRequestData', {
               projectId: fullProjectId,
               mergeRequestId: to.params.mrid,
             })
             .then(mr => {
+              store.dispatch('updateActivityBarView', activityBarViews.review);
+
               store.dispatch('getBranchData', {
                 projectId: fullProjectId,
                 branchId: mr.source_branch,

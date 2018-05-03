@@ -30,7 +30,6 @@ export default {
 <template>
   <div
     class="dropdown"
-    style="margin-left:auto;"
   >
     <button
       type="button"
