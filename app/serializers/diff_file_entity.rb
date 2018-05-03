@@ -25,6 +25,8 @@ class DiffFileEntity < Grape::Entity
   end
 
   expose :file_path
+  expose :too_large?, as: :too_large
+  expose :collapsed?, as: :collapsed
   expose :new_file?, as: :new_file
   expose :deleted_file?, as: :deleted_file
   expose :renamed_file?, as: :renamed_file
@@ -40,6 +42,20 @@ class DiffFileEntity < Grape::Entity
   expose :content_sha
   expose :stored_externally?, as: :stored_externally
   expose :external_storage
+
+  expose :load_collapsed_diff_url, if: -> (diff_file, options) { diff_file.text? && options[:merge_request] } do |diff_file|
+    merge_request = options[:merge_request]
+    project = merge_request.source_project
+
+    diff_for_path_namespace_project_merge_request_path(
+      namespace_id: project.namespace.to_param,
+      project_id: project.to_param,
+      id: merge_request.iid,
+      old_path: diff_file.old_path,
+      new_path: diff_file.new_path,
+      file_identifier: diff_file.file_identifier
+    )
+  end
 
   expose :formatted_external_url, if: -> (_, options) { options[:environment] } do |diff_file|
     options[:environment].formatted_external_url
