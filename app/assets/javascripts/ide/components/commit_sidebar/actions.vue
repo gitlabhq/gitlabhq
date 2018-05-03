@@ -1,5 +1,5 @@
 <script>
-import { mapGetters, mapState } from 'vuex';
+import { mapState } from 'vuex';
 import { sprintf, __ } from '~/locale';
 import * as consts from '../../stores/modules/commit/constants';
 import RadioGroup from './radio_group.vue';

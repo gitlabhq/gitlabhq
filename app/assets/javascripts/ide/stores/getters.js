@@ -59,6 +59,10 @@ export const lastOpenedFile = state =>
 
 export const isEditModeActive = state => state.currentActivityView === activityBarViews.edit;
 export const isCommitModeActive = state => state.currentActivityView === activityBarViews.commit;
+export const isReviewModeActive = state => state.currentActivityView === activityBarViews.review;
+
+export const someUncommitedChanges = state =>
+  !!(state.changedFiles.length || state.stagedFiles.length);
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

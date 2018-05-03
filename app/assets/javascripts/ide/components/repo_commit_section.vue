@@ -27,13 +27,10 @@ export default {
       'unusedSeal',
     ]),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
-    ...mapGetters(['lastOpenedFile', 'hasChanges']),
+    ...mapGetters(['lastOpenedFile', 'hasChanges', 'someUncommitedChanges']),
     ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled']),
     showStageUnstageArea() {
       return !!(this.someUncommitedChanges || this.lastCommitMsg || !this.unusedSeal);
-    },
-    someUncommitedChanges() {
-      return !!(this.changedFiles.length || this.stagedFiles.length);
     },
   },
   watch: {

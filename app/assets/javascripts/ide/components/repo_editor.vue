@@ -26,6 +26,7 @@ export default {
       'getStagedFile',
       'isEditModeActive',
       'isCommitModeActive',
+      'isReviewModeActive',
     ]),
     shouldHideEditor() {
       return this.file && this.file.binary && !this.file.content;

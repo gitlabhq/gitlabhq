@@ -11,6 +11,8 @@ import ActivityBar from './activity_bar.vue';
 import CommitSection from './repo_commit_section.vue';
 import CommitForm from './commit_sidebar/form.vue';
 import IdeReview from './ide_review.vue';
+import SuccessMessage from './commit_sidebar/success_message.vue';
+import { activityBarViews } from '../constants';
 
 export default {
   components: {
@@ -25,10 +27,24 @@ export default {
     IdeTree,
     CommitForm,
     IdeReview,
+    SuccessMessage,
   },
   computed: {
-    ...mapState(['loading', 'currentBranchId', 'currentActivityView']),
-    ...mapGetters(['currentProject']),
+    ...mapState([
+      'loading',
+      'currentBranchId',
+      'currentActivityView',
+      'changedFiles',
+      'stagedFiles',
+      'lastCommitMsg',
+    ]),
+    ...mapGetters(['currentProject', 'someUncommitedChanges']),
+    showSuccessMessage() {
+      return (
+        this.currentActivityView === activityBarViews.edit &&
+        (this.lastCommitMsg && !this.someUncommitedChanges)
+      );
+    },
   },
 };
 </script>
@@ -96,6 +112,9 @@ export default {
           />
         </div>
         <commit-form />
+        <success-message
+          v-show="showSuccessMessage"
+        />
       </template>
     </div>
   </resizable-panel>

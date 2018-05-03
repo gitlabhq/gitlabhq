@@ -21,13 +21,10 @@ export default {
     };
   },
   computed: {
-    ...mapState(['lastCommitMsg', 'changedFiles', 'stagedFiles', 'currentActivityView']),
+    ...mapState(['changedFiles', 'stagedFiles', 'currentActivityView', 'lastCommitMsg']),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
-    ...mapGetters(['hasChanges']),
+    ...mapGetters(['hasChanges', 'someUncommitedChanges']),
     ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled']),
-    someUncommitedChanges() {
-      return !!(this.changedFiles.length || this.stagedFiles.length);
-    },
     overviewText() {
       return sprintf(
         __(
@@ -126,8 +123,7 @@ export default {
         ref="formEl"
       >
         <success-message
-          v-if="lastCommitMsg && !someUncommitedChanges"
-          :committed-state-svg-path="committedStateSvgPath"
+          v-show="(lastCommitMsg && someUncommitedChanges)"
         />
         <commit-message-field
           :text="commitMessage"

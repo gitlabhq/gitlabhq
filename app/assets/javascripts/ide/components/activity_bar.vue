@@ -51,7 +51,7 @@ export default {
           />
         </button>
       </li>
-      <li v-show="hasChanges">
+      <li>
         <button
           type="button"
           class="ide-sidebar-link js-ide-review-mode"
@@ -65,7 +65,7 @@ export default {
           />
         </button>
       </li>
-      <li>
+      <li v-show="hasChanges">
         <button
           type="button"
           class="ide-sidebar-link js-ide-commit-mode"
