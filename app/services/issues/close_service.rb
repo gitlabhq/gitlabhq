@@ -26,7 +26,7 @@ module Issues
         issue.update(closed_by: current_user)
         event_service.close_issue(issue, current_user)
         create_note(issue, commit) if system_note
-        notification_service.close_issue(issue, current_user) if notifications
+        notification_service.async.close_issue(issue, current_user) if notifications
         todo_service.close_issue(issue, current_user)
         execute_hooks(issue, 'close')
         invalidate_cache_counts(issue, users: issue.assignees)

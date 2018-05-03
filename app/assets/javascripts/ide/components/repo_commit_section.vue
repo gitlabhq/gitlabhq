@@ -7,6 +7,7 @@ import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import CommitFilesList from './commit_sidebar/list.vue';
 import EmptyState from './commit_sidebar/empty_state.vue';
 import CommitMessageField from './commit_sidebar/message_field.vue';
+import SuccessMessage from './commit_sidebar/success_message.vue';
 import * as consts from '../stores/modules/commit/constants';
 import Actions from './commit_sidebar/actions.vue';
 
@@ -16,6 +17,7 @@ export default {
     Icon,
     CommitFilesList,
     EmptyState,
+    SuccessMessage,
     Actions,
     LoadingButton,
     CommitMessageField,
@@ -24,9 +26,21 @@ export default {
     tooltip,
   },
   computed: {
-    ...mapState(['changedFiles', 'stagedFiles']),
+    showStageUnstageArea() {
+      return !!(this.someUncommitedChanges || this.lastCommitMsg || !this.unusedSeal);
+    },
+    someUncommitedChanges() {
+      return !!(this.changedFiles.length || this.stagedFiles.length);
+    },
+    ...mapState([
+      'changedFiles',
+      'stagedFiles',
+      'rightPanelCollapsed',
+      'lastCommitMsg',
+      'unusedSeal',
+    ]),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
-    ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled', 'branchName']),
+    ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled']),
   },
   methods: {
     ...mapActions('commit', [
@@ -59,7 +73,7 @@ export default {
       </template>
     </deprecated-modal>
     <template
-      v-if="changedFiles.length || stagedFiles.length"
+      v-if="showStageUnstageArea"
     >
       <commit-files-list
         icon-name="unstaged"
@@ -78,10 +92,21 @@ export default {
         item-action-component="unstage-button"
         :staged-list="true"
       />
+    </template>
+    <empty-state
+      v-if="unusedSeal"
+    />
+    <div
+      class="multi-file-commit-panel-bottom"
+    >
       <form
         class="form-horizontal multi-file-commit-form"
         @submit.prevent.stop="commitChanges"
       >
+        <success-message
+          v-if="lastCommitMsg && !someUncommitedChanges"
+          :committed-state-svg-path="committedStateSvgPath"
+        />
         <commit-message-field
           :text="commitMessage"
           @input="updateCommitMessage"
@@ -105,9 +130,6 @@ export default {
           </button>
         </div>
       </form>
-    </template>
-    <empty-state
-      v-else
-    />
+    </div>
   </div>
 </template>

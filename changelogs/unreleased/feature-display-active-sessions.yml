@@ -1,0 +1,5 @@
+---
+title: Display active sessions and allow the user to revoke any of it
+merge_request: 17867
+author: Alexis Reigel
+type: added

@@ -182,6 +182,10 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState }) =
           }
 
           commit(rootTypes.CLEAR_STAGED_CHANGES, null, { root: true });
+
+          setTimeout(() => {
+            commit(rootTypes.SET_LAST_COMMIT_MSG, '', { root: true });
+          }, 5000);
         })
         .then(() => dispatch('updateCommitAction', consts.COMMIT_TO_CURRENT_BRANCH));
     })
