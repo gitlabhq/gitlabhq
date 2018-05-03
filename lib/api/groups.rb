@@ -46,13 +46,11 @@ module API
         use :pagination
       end
 
-      def find_groups(params)
-        find_params = {
-          all_available: params[:all_available],
-          custom_attributes: params[:custom_attributes],
-          owned: params[:owned]
-        }
-        find_params[:parent] = find_group!(params[:id]) if params[:id]
+      def find_groups(params, parent_id = nil)
+        find_params = params.slice(:all_available, :custom_attributes, :owned)
+        find_params[:parent] = find_group!(parent_id) if parent_id
+        find_params[:all_available] =
+          find_params.fetch(:all_available, current_user&.full_private_access?)
 
         groups = GroupsFinder.new(current_user, find_params).execute
         # EE-only
@@ -96,7 +94,7 @@ module API
         use :with_custom_attributes
       end
       get do
-        groups = find_groups(params)
+        groups = find_groups(declared_params(include_missing: false), params[:id])
         present_groups params, groups
       end
 
@@ -250,7 +248,7 @@ module API
         use :with_custom_attributes
       end
       get ":id/subgroups" do
-        groups = find_groups(params)
+        groups = find_groups(declared_params(include_missing: false), params[:id])
         present_groups params, groups
       end
 

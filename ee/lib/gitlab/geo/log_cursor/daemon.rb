@@ -2,6 +2,8 @@ module Gitlab
   module Geo
     module LogCursor
       class Daemon
+        include Utils::StrongMemoize
+
         VERSION = '0.2.0'.freeze
         BATCH_SIZE = 250
         SECONDARY_CHECK_INTERVAL = 1.minute
@@ -11,7 +13,6 @@ module Gitlab
         def initialize(options = {})
           @options = options
           @exit = false
-          logger.geo_logger.build.level = options[:debug] ? :debug : Rails.logger.level
         end
 
         def run!
@@ -103,9 +104,13 @@ module Gitlab
         end
 
         def handle_repository_updated_event(event, created_at)
-          registry = find_or_initialize_registry(event.project_id,
-            "resync_#{event.source}" => true, "#{event.source}_verification_checksum_sha" => nil,
-            "last_#{event.source}_verification_failure" => nil)
+          registry = find_or_initialize_registry(
+            event.project_id,
+            "resync_#{event.source}" => true,
+            "#{event.source}_verification_checksum_sha" => nil,
+            "#{event.source}_checksum_mismatch" => false,
+            "last_#{event.source}_verification_failure" => nil
+          )
 
           registry.save!
 
@@ -297,7 +302,13 @@ module Gitlab
         end
 
         def logger
-          Gitlab::Geo::LogCursor::Logger
+          strong_memoize(:logger) do
+            Gitlab::Geo::LogCursor::Logger.new(self.class, log_level)
+          end
+        end
+
+        def log_level
+          options[:debug] ? :debug : Rails.logger.level
         end
       end
     end

@@ -15,17 +15,10 @@ export default {
       type: String,
       required: true,
     },
-    committedStateSvgPath: {
-      type: String,
-      required: true,
-    },
   },
   computed: {
-    ...mapState(['lastCommitMsg', 'rightPanelCollapsed']),
+    ...mapState(['lastCommitMsg', 'rightPanelCollapsed', 'changedFiles', 'stagedFiles']),
     ...mapGetters(['collapseButtonIcon', 'collapseButtonTooltip']),
-    statusSvg() {
-      return this.lastCommitMsg ? this.committedStateSvgPath : this.noChangesStateSvgPath;
-    },
   },
   methods: {
     ...mapActions(['toggleRightPanelCollapsed']),
@@ -35,6 +28,7 @@ export default {
 
 <template>
   <div
+    v-if="!lastCommitMsg"
     class="multi-file-commit-panel-section ide-commit-empty-state js-empty-state"
   >
     <header
@@ -64,12 +58,11 @@ export default {
       v-if="!rightPanelCollapsed"
     >
       <div class="svg-content svg-80">
-        <img :src="statusSvg" />
+        <img :src="noChangesStateSvgPath" />
       </div>
       <div class="append-right-default prepend-left-default">
         <div
           class="text-content text-center"
-          v-if="!lastCommitMsg"
         >
           <h4>
             {{ __('No changes') }}
@@ -77,15 +70,6 @@ export default {
           <p>
             {{ __('Edit files in the editor and commit changes here') }}
           </p>
-        </div>
-        <div
-          class="text-content text-center"
-          v-else
-        >
-          <h4>
-            {{ __('All changes are committed') }}
-          </h4>
-          <p v-html="lastCommitMsg"></p>
         </div>
       </div>
     </div>

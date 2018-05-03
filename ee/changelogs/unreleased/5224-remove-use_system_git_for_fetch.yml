@@ -1,0 +1,5 @@
+---
+title: Use of ENV['USE_SYSTEM_GIT_FOR_FETCH'] is no longer supported
+merge_request:
+author:
+type: removed

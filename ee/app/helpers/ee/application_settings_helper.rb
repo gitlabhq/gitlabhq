@@ -15,7 +15,7 @@ module EE
 
     def external_authorization_url_help_text
       _("When leaving the URL blank, classification labels can still be "\
-        "specified whitout disabling cross project features or performing "\
+        "specified without disabling cross project features or performing "\
         "external authorization checks.")
     end
 

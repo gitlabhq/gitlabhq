@@ -93,7 +93,7 @@ describe Oauth::GeoAuthController do
       render_views
 
       before do
-        allow(controller).to receive(:current_user) { user }
+        sign_in(user)
       end
 
       it 'logs out when correct access_token is informed' do

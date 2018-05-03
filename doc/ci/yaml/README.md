@@ -1201,6 +1201,7 @@ test:
 
 > Introduced in [GitLab Edition Premium][ee] 10.5.
 > Available for Starter, Premium and Ultimate [versions][gitlab-versions] since 10.6.
+> Behaviour expanded in GitLab 10.8 to allow more flexible overriding
 
 Using the `include` keyword, you can allow the inclusion of external YAML files.
 
@@ -1276,10 +1277,16 @@ include:
 
 ---
 
-Since external files defined by `include` are evaluated first, the content of
-`.gitlab-ci.yml` will always take precedence over the content of the external
-files, no matter of the position of the `include` keyword. This allows you to
-override values and functions with local definitions. For example:
+
+Since GitLab 10.8 we are now recursively merging the files defined in `include`
+with those in `.gitlab-ci.yml`. Files defined by `include` are always
+evaluated first and recursively merged with the content of `.gitlab-ci.yml`, no
+matter the position of the `include` keyword. You can take advantage of
+recursive merging to customize and override details in included CI
+configurations with local definitions.
+
+The following example shows specific YAML-defined variables and details of the
+`production` job from an include file being customized in `.gitlab-ci.yml`.
 
 ```yaml
 # Content of https://company.com/autodevops-template.yml
@@ -1311,7 +1318,6 @@ image: alpine:latest
 variables:
   POSTGRES_USER: root
   POSTGRES_PASSWORD: secure_password
-  POSTGRES_DB: company_database
 
 stages:
   - build
@@ -1319,25 +1325,56 @@ stages:
   - production
 
 production:
-  stage: production
-  script:
-    - install_dependencies
-    - deploy
   environment:
-    name: production
     url: https://domain.com
-  only:
-    - master
 ```
 
-In this case, the variables `POSTGRES_USER`, `POSTGRES_PASSWORD` and
-`POSTGRES_DB` along with the `production` job defined in
-`autodevops-template.yml` will be overridden by the ones defined in
+In this case, the variables `POSTGRES_USER` and `POSTGRES_PASSWORD` along
+with the environment url of the `production` job defined in
+`autodevops-template.yml` have been overridden by new values defined in
 `.gitlab-ci.yml`.
 
 NOTE: **Note:**
 Recursive includes are not supported meaning your external files
 should not use the `include` keyword, as it will be ignored.
+
+Recursive merging lets you extend and override dictionary mappings, but
+you cannot add or modify items to an included array. For example, to add
+an additional item to the production job script, you must repeat the
+existing script items.
+
+```yaml
+# Content of https://company.com/autodevops-template.yml
+
+production:
+  stage: production
+  script:
+    - install_dependencies
+    - deploy
+```
+
+```yaml
+# Content of .gitlab-ci.yml
+
+include: 'https://company.com/autodevops-template.yml'
+
+stages:
+  - production
+
+production:
+  script:
+    - install_depedencies
+    - deploy
+    - notify_owner
+```
+
+In this case, if `install_dependencies` and `deploy` were not repeated in
+`.gitlab-ci.yml`, they would not be part of the script for the `production`
+job in the combined CI configuration.
+
+NOTE: **Note:**
+We currently do not support using YAML aliases across different YAML files
+sourced by `include`. You must only refer to aliases in the same file.
 
 ## `variables`
 

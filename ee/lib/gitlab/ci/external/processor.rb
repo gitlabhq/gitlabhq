@@ -15,7 +15,7 @@ module Gitlab
 
           external_files.each do |external_file|
             validate_external_file(external_file)
-            @content.merge!(content_of(external_file))
+            @content.deep_merge!(content_of(external_file))
           end
 
           append_inline_content
@@ -37,7 +37,7 @@ module Gitlab
         end
 
         def append_inline_content
-          @content.merge!(@values)
+          @content.deep_merge!(@values)
         end
 
         def remove_include_keyword

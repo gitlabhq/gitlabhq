@@ -171,6 +171,12 @@ describe Geo::RepositorySyncService do
           expect(registry.last_repository_verification_failure).to be_nil
         end
 
+        it 'resets the repository_checksum_mismatch' do
+          subject.execute
+
+          expect(registry.repository_checksum_mismatch).to eq false
+        end
+
         it 'logs success with timings' do
           allow(Gitlab::Geo::Logger).to receive(:info).and_call_original
           expect(Gitlab::Geo::Logger).to receive(:info).with(hash_including(:message, :update_delay_s, :download_time_s)).and_call_original
@@ -293,7 +299,8 @@ describe Geo::RepositorySyncService do
         )
 
         expect(subject).to receive(:fetch_geo_mirror)
-        expect(subject).to receive(:clean_up_temporary_repository).twice
+        expect(subject).to receive(:clean_up_temporary_repository).twice.and_call_original
+        expect(subject.gitlab_shell).to receive(:exists?).twice.with(project.repository_storage, /.git$/)
 
         subject.execute
       end

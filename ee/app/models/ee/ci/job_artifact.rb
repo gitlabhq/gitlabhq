@@ -8,6 +8,9 @@ module EE
 
     prepended do
       after_destroy :log_geo_event
+
+      scope :not_expired, -> { where('expire_at IS NULL OR expire_at > ?', Time.current) }
+      scope :geo_syncable, -> { with_files_stored_locally.not_expired }
     end
 
     private

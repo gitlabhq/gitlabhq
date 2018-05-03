@@ -1,0 +1,5 @@
+---
+title: 'Replace the `admin/emails.feature` spinach test with an rspec analog'
+merge_request: 5513
+author: '@blackst0ne'
+type: other

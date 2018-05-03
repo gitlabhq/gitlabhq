@@ -294,17 +294,7 @@ module Gitlab
     #   add_namespace("default", "gitlab")
     #
     def add_namespace(storage, name)
-      Gitlab::GitalyClient.migrate(:add_namespace,
-                                   status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
-        if enabled
-          Gitlab::GitalyClient::NamespaceService.new(storage).add(name)
-        else
-          path = full_path(storage, name)
-          FileUtils.mkdir_p(path, mode: 0770) unless exists?(storage, name)
-        end
-      end
-    rescue Errno::EEXIST => e
-      Rails.logger.warn("Directory exists as a file: #{e} at: #{path}")
+      Gitlab::GitalyClient::NamespaceService.new(storage).add(name)
     rescue GRPC::InvalidArgument => e
       raise ArgumentError, e.message
     end
@@ -316,14 +306,7 @@ module Gitlab
     #   rm_namespace("default", "gitlab")
     #
     def rm_namespace(storage, name)
-      Gitlab::GitalyClient.migrate(:remove_namespace,
-                               status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
-        if enabled
-          Gitlab::GitalyClient::NamespaceService.new(storage).remove(name)
-        else
-          FileUtils.rm_r(full_path(storage, name), force: true)
-        end
-      end
+      Gitlab::GitalyClient::NamespaceService.new(storage).remove(name)
     rescue GRPC::InvalidArgument => e
       raise ArgumentError, e.message
     end
@@ -335,17 +318,7 @@ module Gitlab
     #   mv_namespace("/path/to/storage", "gitlab", "gitlabhq")
     #
     def mv_namespace(storage, old_name, new_name)
-      Gitlab::GitalyClient.migrate(:rename_namespace,
-                                   status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
-        if enabled
-          Gitlab::GitalyClient::NamespaceService.new(storage)
-            .rename(old_name, new_name)
-        else
-          break false if exists?(storage, new_name) || !exists?(storage, old_name)
-
-          FileUtils.mv(full_path(storage, old_name), full_path(storage, new_name))
-        end
-      end
+      Gitlab::GitalyClient::NamespaceService.new(storage).rename(old_name, new_name)
     rescue GRPC::InvalidArgument
       false
     end
@@ -370,17 +343,8 @@ module Gitlab
     #   exists?(storage, 'gitlab')
     #   exists?(storage, 'gitlab/cookies.git')
     #
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/385
     def exists?(storage, dir_name)
-      Gitlab::GitalyClient.migrate(:namespace_exists,
-                                   status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
-        if enabled
-          Gitlab::GitalyClient::NamespaceService.new(storage)
-            .exists?(dir_name)
-        else
-          File.exist?(full_path(storage, dir_name))
-        end
-      end
+      Gitlab::GitalyClient::NamespaceService.new(storage).exists?(dir_name)
     end
 
     protected

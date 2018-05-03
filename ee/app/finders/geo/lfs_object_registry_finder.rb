@@ -1,7 +1,7 @@
 module Geo
   class LfsObjectRegistryFinder < FileRegistryFinder
-    def count_local_lfs_objects
-      local_lfs_objects.count
+    def count_syncable_lfs_objects
+      syncable_lfs_objects.count
     end
 
     def count_synced_lfs_objects
@@ -72,8 +72,8 @@ module Geo
       end
     end
 
-    def local_lfs_objects
-      lfs_objects.with_files_stored_locally
+    def syncable_lfs_objects
+      lfs_objects.geo_syncable
     end
 
     def find_retryable_failed_lfs_objects_registries(batch_size:, except_file_ids: [])
@@ -122,7 +122,7 @@ module Geo
 
     def fdw_find_lfs_objects
       fdw_lfs_objects.joins("INNER JOIN file_registry ON file_registry.file_id = #{fdw_lfs_objects_table}.id")
-        .with_files_stored_locally
+        .geo_syncable
         .merge(Geo::FileRegistry.lfs_objects)
     end
 
@@ -130,7 +130,7 @@ module Geo
       fdw_lfs_objects.joins("LEFT OUTER JOIN file_registry
                                           ON file_registry.file_id = #{fdw_lfs_objects_table}.id
                                          AND file_registry.file_type = 'lfs'")
-        .with_files_stored_locally
+        .geo_syncable
         .where(file_registry: { id: nil })
         .where.not(id: except_file_ids)
     end
@@ -172,7 +172,7 @@ module Geo
 
     def legacy_find_synced_lfs_objects
       legacy_inner_join_registry_ids(
-        local_lfs_objects,
+        syncable_lfs_objects,
         Geo::FileRegistry.lfs_objects.synced.pluck(:file_id),
         LfsObject
       )
@@ -180,7 +180,7 @@ module Geo
 
     def legacy_find_failed_lfs_objects
       legacy_inner_join_registry_ids(
-        local_lfs_objects,
+        syncable_lfs_objects,
         find_failed_lfs_objects_registries.pluck(:file_id),
         LfsObject
       )
@@ -190,7 +190,7 @@ module Geo
       registry_file_ids = legacy_pluck_registry_file_ids(file_types: :lfs) | except_file_ids
 
       legacy_left_outer_join_registry_ids(
-        local_lfs_objects,
+        syncable_lfs_objects,
         registry_file_ids,
         LfsObject
       )
@@ -208,7 +208,7 @@ module Geo
 
     def legacy_find_synced_missing_on_primary_lfs_objects
       legacy_inner_join_registry_ids(
-        local_lfs_objects,
+        syncable_lfs_objects,
         Geo::FileRegistry.lfs_objects.synced.missing_on_primary.pluck(:file_id),
         LfsObject
       )

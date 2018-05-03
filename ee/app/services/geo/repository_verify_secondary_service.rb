@@ -43,7 +43,7 @@ module Geo
       checksum = calculate_checksum
 
       if mismatch?(checksum)
-        update_registry!(failure: "#{type.to_s.capitalize} checksum mismatch: #{repository.disk_path}")
+        update_registry!(mismatch: true, failure: "#{type.to_s.capitalize} checksum mismatch: #{repository.disk_path}")
       else
         update_registry!(checksum: checksum)
       end
@@ -61,9 +61,10 @@ module Geo
       primary_checksum != checksum
     end
 
-    def update_registry!(checksum: nil, failure: nil, exception: nil, details: {})
+    def update_registry!(checksum: nil, mismatch: false, failure: nil, exception: nil, details: {})
       attrs = {
         "#{type}_verification_checksum_sha" => checksum,
+        "#{type}_checksum_mismatch" => mismatch,
         "last_#{type}_verification_failure" => failure
       }
 

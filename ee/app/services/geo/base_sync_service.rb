@@ -166,6 +166,7 @@ module Geo
 
         # Indicate that repository verification needs to be done again
         attrs["#{type}_verification_checksum_sha"] = nil
+        attrs["#{type}_checksum_mismatch"] = false
         attrs["last_#{type}_verification_failure"] = nil
       end
 
@@ -219,7 +220,7 @@ module Geo
     end
 
     def clean_up_temporary_repository
-      exists = gitlab_shell.exists?(project.repository_storage, disk_path_temp)
+      exists = gitlab_shell.exists?(project.repository_storage, disk_path_temp + '.git')
 
       if exists && !gitlab_shell.remove_repository(project.repository_storage, disk_path_temp)
         raise Gitlab::Shell::Error, "Temporary #{type} can not be removed"

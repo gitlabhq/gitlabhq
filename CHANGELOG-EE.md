@@ -1,5 +1,18 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.7.3 (2018-05-02)
+
+### Fixed (3 changes)
+
+- Geo - Fix undefined method pending_delete for nil class. !5470
+- Geo: Admin page will not crash with 500 because of InvalidSignatureTimeError. !5495
+- Fix DB LB errors when escaping input.
+
+
+## 10.7.2 (2018-04-25)
+
+- No changes.
+
 ## 10.7.1 (2018-04-23)
 
 ### Fixed (4 changes)
@@ -87,6 +100,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - [Geo] Log JID for sync related jobs.
 - Breaks utils function to parse codeclimate and sast into separate functions.
 
+
+## 10.6.5 (2018-04-24)
+
+- No changes.
 
 ## 10.6.4 (2018-04-09)
 
@@ -271,6 +288,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Allow use of system git for git fetch if USE_SYSTEM_GIT_FOR_FETCH is defined.
 - Rename "Approve Additionally" to "Add approval".
 
+
+## 10.5.8 (2018-04-24)
+
+- No changes.
 
 ## 10.5.7 (2018-04-03)
 

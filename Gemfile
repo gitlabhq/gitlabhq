@@ -33,7 +33,7 @@ gem 'grape-route-helpers', '~> 2.1.0'
 gem 'faraday', '~> 0.12'
 
 # Authentication libraries
-gem 'devise', '~> 4.2'
+gem 'devise', '~> 4.4'
 gem 'doorkeeper', '~> 4.3'
 gem 'doorkeeper-openid_connect', '~> 1.3'
 gem 'omniauth', '~> 1.8'
@@ -193,6 +193,9 @@ gem 're2', '~> 1.1.1'
 # Misc
 
 gem 'version_sorter', '~> 2.1.0'
+
+# User agent parsing
+gem 'device_detector'
 
 # Cache
 gem 'redis-rails', '~> 5.0.2'

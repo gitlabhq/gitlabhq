@@ -19,7 +19,7 @@ describe 'Merge request > User selects branches for new MR', :js do
     expect(page).to have_content('Target branch')
 
     first('.js-source-branch').click
-    find('.dropdown-source-branch .dropdown-content a', match: :first).click
+    find('.js-source-branch-dropdown .dropdown-content a', match: :first).click
 
     expect(page).to have_content "b83d6e3"
   end
@@ -35,22 +35,16 @@ describe 'Merge request > User selects branches for new MR', :js do
     expect(page).to have_content('Target branch')
 
     first('.js-target-branch').click
-    find('.dropdown-target-branch .dropdown-content a', text: 'v1.1.0', match: :first).click
+    find('.js-target-branch-dropdown .dropdown-content a', text: 'v1.1.0', match: :first).click
 
     expect(page).to have_content "b83d6e3"
   end
 
   it 'generates a diff for an orphaned branch' do
-    visit project_merge_requests_path(project)
-
-    page.within '.content' do
-      click_link 'New merge request'
-    end
-    expect(page).to have_content('Source branch')
-    expect(page).to have_content('Target branch')
+    visit project_new_merge_request_path(project)
 
     find('.js-source-branch', match: :first).click
-    find('.dropdown-source-branch .dropdown-content a', text: 'orphaned-branch', match: :first).click
+    find('.js-source-branch-dropdown .dropdown-content a', text: 'orphaned-branch', match: :first).click
 
     click_button "Compare branches"
     click_link "Changes"
@@ -71,19 +65,18 @@ describe 'Merge request > User selects branches for new MR', :js do
 
     first('.js-source-branch').click
 
-    input = find('.dropdown-source-branch .dropdown-input-field')
-    input.click
-    input.send_keys('orphaned-branch')
+    page.within '.js-source-branch-dropdown' do
+      input = find('.dropdown-input-field')
+      input.click
+      input.send_keys('orphaned-branch')
 
-    find('.dropdown-source-branch .dropdown-content li', match: :first)
-    source_items = all('.dropdown-source-branch .dropdown-content li')
-
-    expect(source_items.count).to eq(1)
+      expect(page).to have_css('.dropdown-content li', count: 1)
+    end
 
     first('.js-target-branch').click
 
-    find('.dropdown-target-branch .dropdown-content li', match: :first)
-    target_items = all('.dropdown-target-branch .dropdown-content li')
+    find('.js-target-branch-dropdown .dropdown-content li', match: :first)
+    target_items = all('.js-target-branch-dropdown .dropdown-content li')
 
     expect(target_items.count).to be > 1
   end
@@ -200,7 +193,6 @@ describe 'Merge request > User selects branches for new MR', :js do
 
       page.within('.merge-request') do
         click_link 'Pipelines'
-        wait_for_requests
 
         expect(page).to have_content "##{pipeline.id}"
       end

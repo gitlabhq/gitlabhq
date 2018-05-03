@@ -50,8 +50,13 @@ describe Geo::RepositoryVerifySecondaryService, :geo do
     it 'sets checksum when the checksum matches' do
       expect(repository).to receive(:checksum).and_return('my_checksum')
 
-      expect { service.execute }.to change(registry, "#{type}_verification_checksum_sha")
-        .from(nil).to('my_checksum')
+      service.execute
+
+      expect(registry).to have_attributes(
+        "#{type}_verification_checksum_sha" => 'my_checksum',
+        "#{type}_checksum_mismatch" => false,
+        "last_#{type}_verification_failure" => nil
+      )
     end
 
     it 'does not mark the verification as failed when there is no repo' do
@@ -61,8 +66,9 @@ describe Geo::RepositoryVerifySecondaryService, :geo do
 
       service.execute
 
-      expect(registry.reload).to have_attributes(
+      expect(registry).to have_attributes(
         "#{type}_verification_checksum_sha" => '0000000000000000000000000000000000000000',
+        "#{type}_checksum_mismatch" => false,
         "last_#{type}_verification_failure" => nil
       )
     end
@@ -70,8 +76,13 @@ describe Geo::RepositoryVerifySecondaryService, :geo do
     it 'keeps track of failure when the checksum mismatch' do
       expect(repository).to receive(:checksum).and_return('other_checksum')
 
-      expect { service.execute }.to change(registry, "last_#{type}_verification_failure")
-        .from(nil).to(/#{Regexp.quote(type.to_s.capitalize)} checksum mismatch/)
+      service.execute
+
+      expect(registry).to have_attributes(
+        "#{type}_verification_checksum_sha" => nil,
+        "#{type}_checksum_mismatch" => true,
+        "last_#{type}_verification_failure" => /#{Regexp.quote(type.to_s.capitalize)} checksum mismatch/
+      )
     end
 
     def find_repository(type)

@@ -39,7 +39,8 @@ GET /projects/:id/issues/:issue_iid/notes?sort=asc&order_by=updated_at
     "system": true,
     "noteable_id": 377,
     "noteable_type": "Issue",
-    "noteable_iid": 377
+    "noteable_iid": 377,
+    "resolvable": false
   },
   {
     "id": 305,
@@ -58,7 +59,8 @@ GET /projects/:id/issues/:issue_iid/notes?sort=asc&order_by=updated_at
     "system": true,
     "noteable_id": 121,
     "noteable_type": "Issue",
-    "noteable_iid": 121
+    "noteable_iid": 121,
+    "resolvable": false
   }
 ]
 ```
@@ -314,7 +316,8 @@ Parameters:
   "system": false,
   "noteable_id": 2,
   "noteable_type": "MergeRequest",
-  "noteable_iid": 2
+  "noteable_iid": 2,
+  "resolvable": false
 }
 ```
 

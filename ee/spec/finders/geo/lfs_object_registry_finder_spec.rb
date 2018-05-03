@@ -23,7 +23,7 @@ describe Geo::LfsObjectRegistryFinder, :geo do
   end
 
   shared_examples 'counts all the things' do
-    describe '#count_local_lfs_objects' do
+    describe '#count_syncable_lfs_objects' do
       before do
         lfs_object_1
         lfs_object_2
@@ -32,13 +32,13 @@ describe Geo::LfsObjectRegistryFinder, :geo do
       end
 
       it 'counts LFS objects' do
-        expect(subject.count_local_lfs_objects).to eq 4
+        expect(subject.count_syncable_lfs_objects).to eq 4
       end
 
       it 'ignores remote LFS objects' do
         lfs_object_1.update_column(:file_store, ObjectStorage::Store::REMOTE)
 
-        expect(subject.count_local_lfs_objects).to eq 3
+        expect(subject.count_syncable_lfs_objects).to eq 3
       end
 
       context 'with selective sync' do
@@ -53,13 +53,13 @@ describe Geo::LfsObjectRegistryFinder, :geo do
         end
 
         it 'counts LFS objects' do
-          expect(subject.count_local_lfs_objects).to eq 2
+          expect(subject.count_syncable_lfs_objects).to eq 2
         end
 
         it 'ignores remote LFS objects' do
           lfs_object_1.update_column(:file_store, ObjectStorage::Store::REMOTE)
 
-          expect(subject.count_local_lfs_objects).to eq 1
+          expect(subject.count_syncable_lfs_objects).to eq 1
         end
       end
     end

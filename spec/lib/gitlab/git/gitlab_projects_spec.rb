@@ -160,20 +160,6 @@ describe Gitlab::Git::GitlabProjects do
         expect(key.string).to eq('KNOWN HOSTS')
       end
     end
-
-    context 'with USE_SYSTEM_GIT_FOR_FETCH env' do
-      let(:cmd) { %W(/usr/bin/git fetch #{remote_name} --quiet --prune --tags) }
-
-      before do
-        stub_env('USE_SYSTEM_GIT_FOR_FETCH', '1')
-      end
-
-      it 'uses system git' do
-        stub_spawn(cmd, 600, tmp_repo_path, {}, success: true)
-
-        is_expected.to be_truthy
-      end
-    end
   end
 
   describe '#import_project' do

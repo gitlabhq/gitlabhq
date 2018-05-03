@@ -59,7 +59,20 @@ class DiffNote < Note
   end
 
   def diff_file
-    @diff_file ||= self.original_position.diff_file(self.project.repository)
+    @diff_file ||=
+      begin
+        if created_at_diff?(noteable.diff_refs)
+          # We're able to use the already persisted diffs (Postgres) if we're
+          # presenting a "current version" of the MR discussion diff.
+          # So no need to make an extra Gitaly diff request for it.
+          # As an extra benefit, the returned `diff_file` already
+          # has `highlighted_diff_lines` data set from Redis on
+          # `Diff::FileCollection::MergeRequestDiff`.
+          noteable.diffs(paths: original_position.paths, expanded: true).diff_files.first
+        else
+          original_position.diff_file(self.project.repository)
+        end
+      end
   end
 
   def diff_line

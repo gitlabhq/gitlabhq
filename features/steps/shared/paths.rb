@@ -48,10 +48,6 @@ module SharedPaths
     visit group_group_members_path(Group.find_by(name: "Owned"))
   end
 
-  step 'I visit group "Owned" settings page' do
-    visit edit_group_path(Group.find_by(name: "Owned"))
-  end
-
   step 'I visit group "Owned" projects page' do
     visit projects_group_path(Group.find_by(name: "Owned"))
   end
@@ -188,20 +184,12 @@ module SharedPaths
     visit admin_teams_path
   end
 
-  step 'I visit admin email page' do
-    visit admin_email_path
-  end
-
   step 'I visit admin settings page' do
     visit admin_application_settings_path
   end
 
   step 'I visit spam logs page' do
     visit admin_spam_logs_path
-  end
-
-  step 'I visit push rules page' do
-    visit admin_push_rule_path
   end
 
   step 'I visit admin license page' do
@@ -258,10 +246,6 @@ module SharedPaths
 
   step 'I visit project hooks page' do
     visit project_settings_integrations_path(@project)
-  end
-
-  step 'I visit group hooks page' do
-    visit group_hooks_path(@group)
   end
 
   step 'I visit project deploy keys page' do

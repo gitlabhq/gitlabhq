@@ -1,0 +1,5 @@
+---
+title: 'Replace the `admin/push_rules.feature` spinach test with an rspec analog'
+merge_request: 5512
+author: "@blackst0ne"
+type: other

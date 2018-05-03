@@ -411,6 +411,7 @@ ActiveRecord::Schema.define(version: 20180425131009) do
   add_index "ci_builds", ["project_id", "id"], name: "index_ci_builds_on_project_id_and_id", using: :btree
   add_index "ci_builds", ["protected"], name: "index_ci_builds_on_protected", using: :btree
   add_index "ci_builds", ["runner_id"], name: "index_ci_builds_on_runner_id", using: :btree
+  add_index "ci_builds", ["stage_id", "stage_idx"], name: "tmp_build_stage_position_index", where: "(stage_idx IS NOT NULL)", using: :btree
   add_index "ci_builds", ["stage_id"], name: "index_ci_builds_on_stage_id", using: :btree
   add_index "ci_builds", ["status", "type", "runner_id"], name: "index_ci_builds_on_status_and_type_and_runner_id", using: :btree
   add_index "ci_builds", ["status"], name: "index_ci_builds_on_status", using: :btree
@@ -597,6 +598,7 @@ ActiveRecord::Schema.define(version: 20180425131009) do
     t.string "name"
     t.integer "status"
     t.integer "lock_version"
+    t.integer "position"
   end
 
   add_index "ci_stages", ["pipeline_id", "name"], name: "index_ci_stages_on_pipeline_id_and_name", unique: true, using: :btree
@@ -1094,6 +1096,12 @@ ActiveRecord::Schema.define(version: 20180425131009) do
     t.integer "lfs_objects_synced_missing_on_primary_count"
     t.integer "job_artifacts_synced_missing_on_primary_count"
     t.integer "attachments_synced_missing_on_primary_count"
+    t.integer "repositories_checksummed_count"
+    t.integer "repositories_checksum_failed_count"
+    t.integer "repositories_checksum_mismatch_count"
+    t.integer "wikis_checksummed_count"
+    t.integer "wikis_checksum_failed_count"
+    t.integer "wikis_checksum_mismatch_count"
   end
 
   add_index "geo_node_statuses", ["geo_node_id"], name: "index_geo_node_statuses_on_geo_node_id", unique: true, using: :btree

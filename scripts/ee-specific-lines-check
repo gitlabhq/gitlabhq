@@ -1,0 +1,44 @@
+#!/usr/bin/env ruby
+
+require_relative 'ee_specific_check/ee_specific_check'
+
+include EESpecificCheck # rubocop:disable Style/MixinUsage
+
+base = find_compare_base
+
+current_numstat = updated_diff_numstat(base.ce_merge_base, base.ee_merge_base)
+updated_numstat = updated_diff_numstat(base.ce_updated_base, 'HEAD')
+
+offenses = updated_numstat.select do |file, updated_delta|
+  current_delta = current_numstat[file]
+
+  more_lines =
+    current_delta &&
+    updated_delta > current_delta &&
+    WHITELIST.all? { |pattern| !Dir.glob(pattern).include?(file) }
+
+  # Don't complain if we're just adding one more line, which could be
+  # `prepend EE::Module` that we want.
+  more_lines && !(current_delta == 0 && updated_delta == 1)
+end
+
+if offenses.empty?
+  say "🎉 All good, congrats! 🎉"
+else
+  puts
+
+  offenses.each do |(file, delta)|
+    puts "* 💥 #{file} has #{delta - current_numstat[file]} more different lines than before! 💥"
+  end
+
+  say <<~MESSAGE
+    ℹ️ Consider using an EE module to add the features you want.
+    ℹ️ See this for detail: https://docs.gitlab.com/ee/development/ee_features.html#ee-features-based-on-ce-features
+  MESSAGE
+end
+
+remove_remotes
+
+say "ℹ️ For more information on why, see https://gitlab.com/gitlab-org/gitlab-ee/issues/2952"
+
+exit(offenses.size)

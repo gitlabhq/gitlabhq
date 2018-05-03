@@ -105,6 +105,10 @@ class Commit
         end
       end
     end
+
+    def parent_class
+      ::Project
+    end
   end
 
   attr_accessor :raw
@@ -418,6 +422,12 @@ class Commit
 
   def touch
     # no-op but needs to be defined since #persisted? is defined
+  end
+
+  def touch_later
+    # No-op.
+    # This method is called by ActiveRecord.
+    # We don't want to do anything for `Commit` model, so this is empty.
   end
 
   WIP_REGEX = /\A\s*(((?i)(\[WIP\]|WIP:|WIP)\s|WIP$))|(fixup!|squash!)\s/.freeze

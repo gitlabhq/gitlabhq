@@ -68,6 +68,14 @@ module Geo
       relation.count
     end
 
+    def count_repositories_checksum_mismatch
+      Geo::ProjectRegistry.repository_checksum_mismatch.count
+    end
+
+    def count_wikis_checksum_mismatch
+      Geo::ProjectRegistry.wiki_checksum_mismatch.count
+    end
+
     def count_verification_failed_repositories
       find_verification_failed_project_registries('repository').count
     end

@@ -1429,7 +1429,7 @@ describe MergeRequest do
     it 'enqueues MergeWorker job and updates merge_jid' do
       merge_request = create(:merge_request)
       user_id = double(:user_id)
-      params = double(:params)
+      params = {}
       merge_jid = 'hash-123'
 
       expect(MergeWorker).to receive(:perform_async).with(merge_request.id, user_id, params) do

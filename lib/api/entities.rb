@@ -287,6 +287,10 @@ module API
       end
     end
 
+    class DiffRefs < Grape::Entity
+      expose :base_sha, :head_sha, :start_sha
+    end
+
     class Commit < Grape::Entity
       expose :id, :short_id, :title, :created_at
       expose :parent_ids
@@ -604,6 +608,8 @@ module API
         merge_request.metrics&.pipeline
       end
 
+      expose :diff_refs, using: Entities::DiffRefs
+
       def build_available?(options)
         options[:project]&.feature_available?(:builds, options[:current_user])
       end
@@ -671,6 +677,11 @@ module API
       expose :id, :key, :created_at
     end
 
+    class DiffPosition < Grape::Entity
+      expose :base_sha, :start_sha, :head_sha, :old_path, :new_path,
+        :position_type
+    end
+
     class Note < Grape::Entity
       # Only Issue and MergeRequest have iid
       NOTEABLE_TYPES_WITH_IID = %w(Issue MergeRequest).freeze
@@ -683,6 +694,14 @@ module API
       expose :created_at, :updated_at
       expose :system?, as: :system
       expose :noteable_id, :noteable_type
+
+      expose :position, if: ->(note, options) { note.diff_note? } do |note|
+        note.position.to_h
+      end
+
+      expose :resolvable?, as: :resolvable
+      expose :resolved?, as: :resolved, if: ->(note, options) { note.resolvable? }
+      expose :resolved_by, using: Entities::UserBasic, if: ->(note, options) { note.resolvable? }
 
       # Avoid N+1 queries as much as possible
       expose(:noteable_iid) { |note| note.noteable.iid if NOTEABLE_TYPES_WITH_IID.include?(note.noteable_type) }

@@ -12,9 +12,9 @@ module EE
       group_saml_enabled? && !group.subgroup? && can?(current_user, :admin_group_saml, group)
     end
 
-    def saml_link(text, group_id, redirect: nil, html_class: 'btn')
-      redirect ||= group_path(group_id)
-      url = omniauth_authorize_path(:user, :group_saml, group_id: group_id, redirect_to: redirect)
+    def saml_link(text, group_path, redirect: nil, html_class: 'btn')
+      redirect ||= group_path(group_path)
+      url = omniauth_authorize_path(:user, :group_saml, group_path: group_path, redirect_to: redirect)
 
       link_to(text, url, method: :post, class: html_class)
     end
