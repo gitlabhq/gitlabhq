@@ -40,7 +40,7 @@ module FastDestroyAll
     ##
     # This method delete rows and associated external data efficiently
     #
-    # This method can replace `destroy` and `destroy_all` withtout having `after_destroy` hook
+    # This method can replace `destroy` and `destroy_all` without having `after_destroy` hook
     def fast_destroy_all
       params = begin_fast_destroy
 
