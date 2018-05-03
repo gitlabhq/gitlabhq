@@ -63,7 +63,7 @@ export default {
     },
     startDiscussionDescription() {
       let text = 'Discuss a specific suggestion or question';
-      if (this.getNoteableData.noteableType === 'merge_request') {
+      if (this.getNoteableData.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE) {
         text += ' that needs to be resolved';
       }
       return `${text}.`;
