@@ -5,14 +5,14 @@ class SentNotification < ActiveRecord::Base
   belongs_to :noteable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :recipient, class_name: "User"
 
-  validates :project, :recipient, presence: true
+  validates :recipient, presence: true
   validates :reply_key, presence: true, uniqueness: true
   validates :noteable_id, presence: true, unless: :for_commit?
   validates :commit_id, presence: true, if: :for_commit?
   validates :in_reply_to_discussion_id, format: { with: /\A\h{40}\z/, allow_nil: true }
   validate :note_valid
 
-  after_save :keep_around_commit
+  after_save :keep_around_commit, if: :for_commit?
 
   class << self
     def reply_key
