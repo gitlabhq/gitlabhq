@@ -50,7 +50,7 @@ module Gitlab
         end
 
         def self.logger
-          Gitlab::Geo::LogCursor::Logger
+          @logger ||= Gitlab::Geo::LogCursor::Logger.new(self)
         end
 
         private_class_method :exclusive_lease, :lease_taken_message, :logger

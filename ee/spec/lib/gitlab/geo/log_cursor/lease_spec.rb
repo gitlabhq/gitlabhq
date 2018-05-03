@@ -7,15 +7,26 @@ describe Gitlab::Geo::LogCursor::Lease, :clean_gitlab_redis_shared_state do
     end
   end
 
-  describe '.renew_lease!' do
+  describe '.renew!' do
     it 'returns an exclusive lease instance' do
       expect_any_instance_of(Gitlab::ExclusiveLease).to receive(:renew)
 
       described_class.renew!
     end
+
+    it 'logs with the correct caller class' do
+      stub_const("Gitlab::Geo::LogCursor::Logger::PID", 111)
+      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:renew).and_return(true)
+
+      expect(::Gitlab::Logger).to receive(:debug).with(pid: 111,
+                                                       class: 'Gitlab::Geo::LogCursor::Lease',
+                                                       message: 'Lease renewed.')
+
+      described_class.renew!
+    end
   end
 
-  describe '.try_obtain_lease' do
+  describe '.try_obtain_lease_with_ttl' do
     it 'returns zero when there is no lease' do
       result = described_class.try_obtain_with_ttl {}
 
