@@ -81,10 +81,9 @@ module QA
 
               page.protect_branch
 
-              # Wait for page load, which resets the expanded sections
-              page.wait(reload: false) do
-                !page.has_content?('Collapse')
-              end
+              # Avoid Selenium::WebDriver::Error::StaleElementReferenceError
+              # without sleeping. I.e. this completes fast on fast machines.
+              page.refresh
             end
           end
         end
