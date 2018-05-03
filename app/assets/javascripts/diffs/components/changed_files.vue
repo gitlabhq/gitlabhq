@@ -114,7 +114,7 @@ export default {
             @click="setInlineDiffViewType"
             :class="{ active: isInlineView }"
             id="inline-diff-btn"
-            class="btn"
+            class="btn js-inline-diff-button"
             data-view-type="inline"
           >
             {{ __('Inline') }}
@@ -124,7 +124,7 @@ export default {
             @click="setParallelDiffViewType"
             :class="{ active: isParallelView }"
             id="parallel-diff-btn"
-            class="btn"
+            class="btn js-parallel-diff-button"
             data-view-type="parallel"
           >
             {{ __('Side-by-side') }}
