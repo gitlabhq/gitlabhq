@@ -480,7 +480,7 @@ ActiveRecord::Schema.define(version: 20180503150427) do
     t.integer "access_level", default: 0, null: false
     t.string "ip_address"
     t.integer "maximum_timeout"
-    t.integer "runner_type"
+    t.integer "runner_type", limit: 2
   end
 
   add_index "ci_runners", ["contacted_at"], name: "index_ci_runners_on_contacted_at", using: :btree

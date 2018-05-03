@@ -4,6 +4,6 @@ class AddRunnerTypeToCiRunners < ActiveRecord::Migration
   DOWNTIME = false
 
   def change
-    add_column :ci_runners, :runner_type, :integer
+    add_column :ci_runners, :runner_type, :smallint
   end
 end
