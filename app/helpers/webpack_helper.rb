@@ -1,8 +1,8 @@
 require 'gitlab/webpack/manifest'
 
 module WebpackHelper
-  def webpack_bundle_tag(bundle, force_same_domain: false)
-    javascript_include_tag(*entrypoint_paths(bundle, force_same_domain: force_same_domain))
+  def webpack_bundle_tag(bundle)
+    javascript_include_tag(*entrypoint_paths(bundle))
   end
 
   def webpack_controller_bundle_tags
@@ -33,7 +33,7 @@ module WebpackHelper
     javascript_include_tag(*chunks)
   end
 
-  def entrypoint_paths(source, extension: nil, force_same_domain: false)
+  def entrypoint_paths(source, extension: nil)
     return "" unless source.present?
 
     paths = Gitlab::Webpack::Manifest.entrypoint_paths(source)
@@ -41,11 +41,9 @@ module WebpackHelper
       paths.select! { |p| p.ends_with? ".#{extension}" }
     end
 
-    unless force_same_domain
-      force_host = webpack_public_host
-      if force_host
-        paths.map! { |p| "#{force_host}#{p}" }
-      end
+    force_host = webpack_public_host
+    if force_host
+      paths.map! { |p| "#{force_host}#{p}" }
     end
 
     paths
