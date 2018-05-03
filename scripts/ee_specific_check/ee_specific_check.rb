@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EESpecificCheck
   WHITELIST = [
     'CHANGELOG-EE.md',
@@ -21,15 +23,15 @@ module EESpecificCheck
   def find_compare_base
     setup_canonical_remotes
 
-    fetch_head_ce = fetch_remote_ce_branch
-    ce_merge_base = run_git_command("merge-base #{fetch_head_ce} HEAD").strip
-    ee_merge_base = run_git_command("merge-base canonical-ee/master HEAD").strip
+    ce_fetch_head = fetch_remote_ce_branch
+    ce_merge_base = run_git_command("merge-base canonical-ce/master canonical-ee/master")
+    ee_merge_base = run_git_command("merge-base canonical-ee/master HEAD")
 
     ce_updated_base =
-      if fetch_head_ce.start_with?('canonical-ce')
+      if ce_fetch_head.start_with?('canonical-ce')
         ce_merge_base # Compare with merge-base if no specific CE branch
       else
-        fetch_head_ce # Compare with the new HEAD if we do have one
+        checkout_and_rebase_ce_fetch_head_onto_ce_merge_base(ce_merge_base, ce_fetch_head)
       end
 
     CompareBase.new(ce_merge_base, ee_merge_base, ce_updated_base)
@@ -38,9 +40,9 @@ module EESpecificCheck
   def setup_canonical_remotes
     run_git_command(
       "remote add canonical-ee https://gitlab.com/gitlab-org/gitlab-ee.git",
-      "remote add canonical-ce https://gitlab.com/gitlab-org/gitlab-ce.git")
-
-    run_git_command("fetch canonical-ee master --quiet")
+      "remote add canonical-ce https://gitlab.com/gitlab-org/gitlab-ce.git",
+      "fetch canonical-ee master --quiet",
+      "fetch canonical-ce master --quiet")
   end
 
   def fetch_remote_ce_branch
@@ -49,6 +51,77 @@ module EESpecificCheck
     run_git_command("fetch #{remote_to_fetch} #{branch_to_fetch} --quiet")
 
     "#{remote_to_fetch}/#{branch_to_fetch}"
+  end
+
+  def checkout_and_rebase_ce_fetch_head_onto_ce_merge_base(ce_merge_base, ce_fetch_head)
+    # So that we could switch back
+    head = head_commit_sha
+
+    # Use detached HEAD so that we don't update HEAD
+    run_git_command("checkout #{ce_fetch_head}")
+
+    # We rebase onto the commit which is the latest commit presented in both
+    # CE and EE, i.e. ce_merge_base, cutting off commits aren't merged into
+    # EE yet. Here's an example:
+    #
+    # * o: Relevant commits
+    # * x: Irrelevant commits
+    # * !: Commits we want to cut off from CE branch
+    #
+    #                ^-> o CE branch (ce_fetch_head)
+    #               /
+    #     o -> o -> ! -> x CE master
+    #          v (ce_merge_base)
+    #     o -> o -> o -> x EE master
+    #               \ (ee_merge_base)
+    #                v-> o EE branch
+    #
+    # We want to rebase above into this: (we only change the connection)
+    #
+    #            -> - -> o CE branch (ce_fetch_head)
+    #           /
+    #     o -> o -> ! -> x CE master
+    #          v (ce_merge_base)
+    #     o -> o -> o -> x EE master
+    #               \ (ee_merge_base)
+    #                v-> o EE branch
+    #
+    # Therefore we rebase onto ce_merge_base, which is based off CE master,
+    # for the CE branch (ce_fetch_head), effective remove the commit marked
+    # as ! in the graph for CE branch. We need to remove it because it's not
+    # merged into EE yet, therefore won't be available in the EE branch.
+    #
+    # After rebase is done, then we could compare against
+    # ce_merge_base..ee_merge_base along with ce_fetch_head..HEAD (EE branch)
+    # where ce_merge_base..ee_merge_base is the update-to-date
+    # CE/EE difference and ce_fetch_head..HEAD is the changes we made in
+    # CE and EE branches.
+    run_git_command("rebase --onto #{ce_merge_base} canonical-ce/master #{ce_fetch_head}")
+
+    if status_clean?
+      head_commit_sha
+    else
+      say <<~MESSAGE
+        💥 WE HAVE CONFLICTS! This shouldn't happen. Please create an issue
+        💥 and ping @godfat to investigate.
+      MESSAGE
+
+      run_git_command("rebase --abort")
+
+      exit(255)
+    end
+
+  ensure # ensure would still run if we call exit, don't worry
+    # Make sure to switch back
+    run_git_command("checkout #{head}")
+  end
+
+  def head_commit_sha
+    run_git_command("rev-parse HEAD")
+  end
+
+  def status_clean?
+    run_git_command("status --porcelain") == ''
   end
 
   def remove_remotes
@@ -119,7 +192,7 @@ module EESpecificCheck
     commands.map do |cmd|
       puts "=> Running `#{cmd}`"
 
-      `#{cmd}`
+      `#{cmd}`.strip
     end
   end
 end
