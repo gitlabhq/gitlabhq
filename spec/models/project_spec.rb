@@ -1138,7 +1138,7 @@ describe Project do
     end
   end
 
-  describe '#any_runners' do
+  describe '#any_runners?' do
     context 'shared runners' do
       let(:project) { create :project, shared_runners_enabled: shared_runners_enabled }
       let(:specific_runner) { create :ci_runner }
@@ -1153,21 +1153,25 @@ describe Project do
 
         it 'has a specific runner' do
           project.runners << specific_runner
+
           expect(project.any_runners?).to be_truthy
         end
 
         it 'has a shared runner, but they are prohibited to use' do
           shared_runner
+
           expect(project.any_runners?).to be_falsey
         end
 
         it 'checks the presence of specific runner' do
           project.runners << specific_runner
+
           expect(project.any_runners? { |runner| runner == specific_runner }).to be_truthy
         end
 
         it 'returns false if match cannot be found' do
           project.runners << specific_runner
+
           expect(project.any_runners? { false }).to be_falsey
         end
       end
@@ -1177,16 +1181,19 @@ describe Project do
 
         it 'has a shared runner' do
           shared_runner
+
           expect(project.any_runners?).to be_truthy
         end
 
         it 'checks the presence of shared runner' do
           shared_runner
+
           expect(project.any_runners? { |runner| runner == shared_runner }).to be_truthy
         end
 
         it 'returns false if match cannot be found' do
           shared_runner
+
           expect(project.any_runners? { false }).to be_falsey
         end
       end
@@ -1206,6 +1213,7 @@ describe Project do
 
         it 'has a group runner, but they are prohibited to use' do
           group_runner
+
           expect(project.any_runners?).to be_falsey
         end
       end
@@ -1215,16 +1223,19 @@ describe Project do
 
         it 'has a group runner' do
           group_runner
+
           expect(project.any_runners?).to be_truthy
         end
 
         it 'checks the presence of group runner' do
           group_runner
+
           expect(project.any_runners? { |runner| runner == group_runner }).to be_truthy
         end
 
         it 'returns false if match cannot be found' do
           group_runner
+
           expect(project.any_runners? { false }).to be_falsey
         end
       end
@@ -3592,7 +3603,7 @@ describe Project do
 
   describe '#toggle_ci_cd_settings!' do
     it 'toggles the value on #settings' do
-      project = create :project, group_runners_enabled: false
+      project = create(:project, group_runners_enabled: false)
 
       expect(project.group_runners_enabled).to be false
 
