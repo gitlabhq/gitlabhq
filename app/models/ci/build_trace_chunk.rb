@@ -6,7 +6,7 @@ module Ci
     belongs_to :build, class_name: "Ci::Build", foreign_key: :build_id
 
     default_value_for :data_store, :redis
-    fast_destroy_all_with :redis_delete_data, :redis_data_keys
+    # fast_destroy_all_with :redis_delete_data, :redis_data_keys
 
     WriteError = Class.new(StandardError)
 
@@ -37,6 +37,18 @@ module Ci
 
         Gitlab::Redis::SharedState.with do |redis|
           redis.del(keys)
+        end
+      end
+
+      ##
+      # FastDestroyAll
+      def prepare_to_delete_all
+        keys = redis_data_keys
+
+        yield if block_given?
+
+        lambda do |_|
+          Ci::BuildTraceChunk.redis_delete_data(keys)
         end
       end
     end
