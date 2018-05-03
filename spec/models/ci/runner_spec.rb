@@ -107,16 +107,17 @@ describe Ci::Runner do
   end
 
   describe '.shared' do
+    let(:group) { create(:group) }
+    let(:project) { create(:project) }
+
     it 'returns the shared group runner' do
-      group = create :group
-      runner = create :ci_runner, :shared, groups: [group]
+      runner = create(:ci_runner, :shared, groups: [group])
 
       expect(described_class.shared).to eq [runner]
     end
 
     it 'returns the shared project runner' do
-      project = create :project
-      runner = create :ci_runner, :shared, projects: [project]
+      runner = create(:ci_runner, :shared, projects: [project])
 
       expect(described_class.shared).to eq [runner]
     end
@@ -125,12 +126,12 @@ describe Ci::Runner do
   describe '.belonging_to_project' do
     it 'returns the specific project runner' do
       # own
-      specific_project = create :project
-      specific_runner = create :ci_runner, :specific, projects: [specific_project]
+      specific_project = create(:project)
+      specific_runner = create(:ci_runner, :specific, projects: [specific_project])
 
       # other
-      other_project = create :project
-      create :ci_runner, :specific, projects: [other_project]
+      other_project = create(:project)
+      create(:ci_runner, :specific, projects: [other_project])
 
       expect(described_class.belonging_to_project(specific_project.id)).to eq [specific_runner]
     end
@@ -139,55 +140,54 @@ describe Ci::Runner do
   describe '.belonging_to_any_project' do
     it 'returns the specific project runner' do
       # project
-      project_project = create :project
-      project_runner = create :ci_runner, :specific, projects: [project_project]
+      project_project = create(:project)
+      project_runner = create(:ci_runner, :specific, projects: [project_project])
 
       # group
-      group = create :group
-      create :project, group: group
-      create :ci_runner, :specific, groups: [group]
+      group = create(:group)
+      create(:project, group: group)
+      create(:ci_runner, :specific, groups: [group])
 
       expect(described_class.belonging_to_any_project).to eq [project_runner]
     end
   end
 
   describe '.belonging_to_parent_group_of_project' do
+    let(:project) { create(:project, group: group) }
+    let(:group) { create(:group) }
+    let(:runner) { create(:ci_runner, :specific, groups: [group]) }
+    let!(:unrelated_group) { create(:group) }
+    let!(:unrelated_project) { create(:project, group: unrelated_group) }
+    let!(:unrelated_runner) { create(:ci_runner, :specific, groups: [unrelated_group]) }
+
     it 'returns the specific group runner' do
-      # own
-      specific_group = create :group
-      specific_project = create :project, group: specific_group
-      specific_runner = create :ci_runner, :specific, groups: [specific_group]
-
-      # other
-      other_group = create :group
-      create :project, group: other_group
-      create :ci_runner, :specific, groups: [other_group]
-
-      expect(described_class.belonging_to_parent_group_of_project(specific_project.id)).to eq [specific_runner]
+      expect(described_class.belonging_to_parent_group_of_project(project.id)).to contain_exactly(runner)
     end
 
-    it 'returns the group runner from a parent group', :nested_groups do
-      parent_group = create :group
-      group = create :group, parent: parent_group
-      project = create :project, group: group
-      runner = create :ci_runner, :specific, groups: [parent_group]
+    context 'with a parent group with a runner', :nested_groups do
+      let(:runner) { create(:ci_runner, :specific, groups: [parent_group]) }
+      let(:project) { create(:project, group: group) }
+      let(:group) { create(:group, parent: parent_group) }
+      let(:parent_group) { create(:group) }
 
-      expect(described_class.belonging_to_parent_group_of_project(project.id)).to eq [runner]
+      it 'returns the group runner from the parent group' do
+        expect(described_class.belonging_to_parent_group_of_project(project.id)).to contain_exactly(runner)
+      end
     end
   end
 
   describe '.owned_or_shared' do
     it 'returns a globally shared, a project specific and a group specific runner' do
       # group specific
-      group = create :group
-      project = create :project, group: group
-      group_runner = create :ci_runner, :specific, groups: [group]
+      group = create(:group)
+      project = create(:project, group: group)
+      group_runner = create(:ci_runner, :specific, groups: [group])
 
       # project specific
-      project_runner = create :ci_runner, :specific, projects: [project]
+      project_runner = create(:ci_runner, :specific, projects: [project])
 
       # globally shared
-      shared_runner = create :ci_runner, :shared
+      shared_runner = create(:ci_runner, :shared)
 
       expect(described_class.owned_or_shared(project.id)).to contain_exactly(
         group_runner, project_runner, shared_runner
