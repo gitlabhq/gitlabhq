@@ -174,6 +174,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
+      resource :mirror, only: [:show, :update] do
+        member do
+          post :update_now
+        end
+      end
+
       resources :pipelines, only: [:index, :new, :create, :show] do
         collection do
           resource :pipelines_settings, path: 'settings', only: [:show, :update]

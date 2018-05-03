@@ -1852,7 +1852,7 @@ describe Project do
     it { expect(project.gitea_import?).to be true }
   end
 
-    describe '#has_remote_mirror?' do
+  describe '#has_remote_mirror?' do
     let(:project) { create(:project, :remote_mirror, :import_started) }
     subject { project.has_remote_mirror? }
 

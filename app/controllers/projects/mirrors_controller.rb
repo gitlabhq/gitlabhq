@@ -2,8 +2,9 @@ class Projects::MirrorsController < Projects::ApplicationController
   include RepositorySettingsRedirect
 
   # Authorize
-  before_action :authorize_admin_mirror!
   before_action :remote_mirror, only: [:update]
+  before_action :check_mirror_available!
+  before_action :authorize_admin_project!
 
   layout "project_settings"
 
@@ -43,6 +44,10 @@ class Projects::MirrorsController < Projects::ApplicationController
 
   def remote_mirror
     @remote_mirror = project.remote_mirrors.first_or_initialize
+  end
+
+  def check_mirror_available!
+    Gitlab::CurrentSettings.current_application_settings.mirror_available || current_user&.admin?
   end
 
   def mirror_params_attributes

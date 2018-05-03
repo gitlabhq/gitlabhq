@@ -1,6 +1,4 @@
 class ProjectMirrorEntity < Grape::Entity
-  prepend ::EE::ProjectMirrorEntity
-
   expose :id
 
   expose :remote_mirrors_attributes do |project|

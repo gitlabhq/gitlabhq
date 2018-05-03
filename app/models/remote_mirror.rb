@@ -86,9 +86,12 @@ class RemoteMirror < ActiveRecord::Base
     raw.update(options)
   end
 
+  def sync?
+    !enabled?
+  end
+
   def sync
-    return unless enabled?
-    return if Gitlab::Geo.secondary?
+    return if sync?
 
     if recently_scheduled?
       RepositoryUpdateRemoteMirrorWorker.perform_in(backoff_delay, self.id, Time.now)

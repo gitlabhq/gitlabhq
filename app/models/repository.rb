@@ -854,7 +854,7 @@ class Repository
     add_remote(remote_name, url, mirror_refmap: refmap)
     fetch_remote(remote_name, forced: forced, prune: prune)
   ensure
-    remove_remote(remote_name) if tmp_remote_name
+    async_remove_remote(remote_name) if tmp_remote_name
   end
 
   def fetch_remote(remote, forced: false, ssh_auth: nil, no_tags: false, prune: true)
