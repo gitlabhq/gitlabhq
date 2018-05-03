@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import flash from '~/flash';
 import store from './stores';
+import { activityBarViews } from './constants';
 
 Vue.use(VueRouter);
 
@@ -101,7 +102,7 @@ router.beforeEach((to, from, next) => {
               throw e;
             });
         } else if (to.params.mrid) {
-          store.dispatch('updateViewer', 'mrdiff');
+          store.dispatch('updateActivityBarView', activityBarViews.review);
 
           store
             .dispatch('getMergeRequestData', {
