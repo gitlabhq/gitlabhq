@@ -7,31 +7,31 @@ module RepositoryCheck
 
     def perform(project_id)
       project = Project.find(project_id)
-      result = check(project)
+      healthy = project_healthy?(project)
 
-      save_result(project, result)
+      update_repository_check_status(project, healthy)
     end
 
     private
 
-    def save_result(project, result)
+    def update_repository_check_status(project, healthy)
       project.update_columns(
-        last_repository_check_failed: !result,
+        last_repository_check_failed: !healthy,
         last_repository_check_at: Time.now
       )
     end
 
-    def check(project)
-      check_repo(project) && check_wiki_repo(project)
+    def project_healthy?(project)
+      repo_healthy?(project) && wiki_repo_healthy?(project)
     end
 
-    def check_repo(project)
+    def repo_healthy?(project)
       return true if project.empty_repo?
 
       git_fsck(project.repository)
     end
 
-    def check_wiki_repo(project)
+    def wiki_repo_healthy?(project)
       return true unless project.wiki_enabled?
 
       # Historically some projects never had their wiki repos initialized;
