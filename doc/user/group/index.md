@@ -5,7 +5,7 @@ and grant members access to several projects at once.
 
 Groups can also be nested in [subgroups](subgroups/index.md).
 
-Find your groups by expanding the left menu and clicking **Groups**:
+Find your groups by clicking **Groups** on the menu bar.
 
 ![GitLab Groups](img/groups.png)
 
@@ -69,7 +69,7 @@ together in a single list view.
 
 You can create a group in GitLab from:
 
-1. The Groups page: expand the left menu, click **Groups**, and click the green button **New group**:
+1. The Groups page: from the top menu, click **Groups**, and click the green button **New group**:
 
     ![new group from groups page](img/new_group_from_groups.png)
 
