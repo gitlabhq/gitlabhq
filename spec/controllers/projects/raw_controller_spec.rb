@@ -32,30 +32,30 @@ describe Projects::RawController do
 
     context 'lfs object' do
       let(:id) { 'be93687/files/lfs/lfs_object.iso' }
-      let!(:lfs_object) { create(:lfs_object, oid: '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897', size: '1575078') }
+      let!(:lfs_object) { create(:lfs_object, :with_file) }
+      let(:oid) { lfs_object.oid }
+      let(:size) { lfs_object.size }
 
       context 'when lfs is enabled' do
         before do
           allow_any_instance_of(Project).to receive(:lfs_enabled?).and_return(true)
+          allow_any_instance_of(Gitlab::Git::Blob).to receive(:lfs_oid).and_return(oid)
         end
 
         context 'when project has access' do
           before do
             public_project.lfs_objects << lfs_object
-            allow_any_instance_of(LfsObjectUploader).to receive(:exists?).and_return(true)
             allow(controller).to receive(:send_file) { controller.head :ok }
           end
 
           it 'serves the file' do
-            expect(controller).to receive(:send_file).with("#{LfsObjectUploader.root}/91/ef/f75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897", filename: 'lfs_object.iso', disposition: 'attachment')
+            expect(controller).to receive(:send_file).with("#{LfsObjectUploader.root}/#{oid[0, 2]}/#{oid[2, 2]}/#{oid[4..-1]}", filename: 'lfs_object.iso', disposition: 'attachment')
             get_show(public_project, id)
 
             expect(response).to have_gitlab_http_status(200)
           end
 
           context 'and lfs uses object storage' do
-            let(:lfs_object) { create(:lfs_object, :with_file, oid: '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897', size: '1575078') }
-
             before do
               stub_lfs_object_storage
               lfs_object.file.migrate!(LfsObjectUploader::Store::REMOTE)
