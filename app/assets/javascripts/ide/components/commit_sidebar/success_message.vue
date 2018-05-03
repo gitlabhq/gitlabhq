@@ -2,14 +2,8 @@
 import { mapState } from 'vuex';
 
 export default {
-  props: {
-    committedStateSvgPath: {
-      type: String,
-      required: true,
-    },
-  },
   computed: {
-    ...mapState(['lastCommitMsg']),
+    ...mapState(['lastCommitMsg', 'committedStateSvgPath']),
   },
 };
 </script>

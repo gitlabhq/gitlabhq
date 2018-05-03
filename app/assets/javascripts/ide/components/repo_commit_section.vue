@@ -105,7 +105,6 @@ export default {
       >
         <success-message
           v-if="lastCommitMsg && !someUncommitedChanges"
-          :committed-state-svg-path="committedStateSvgPath"
         />
         <commit-message-field
           :text="commitMessage"
