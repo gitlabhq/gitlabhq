@@ -3,7 +3,7 @@ import Dropzone from 'dropzone';
 import Mousetrap from 'mousetrap';
 import ZenMode from '~/zen_mode';
 
-fdescribe('ZenMode', () => {
+describe('ZenMode', () => {
   let zen;
   let dropzoneForElementSpy;
   const fixtureName = 'snippets/show.html.raw';
@@ -19,9 +19,11 @@ fdescribe('ZenMode', () => {
   }
 
   function escapeKeydown() {
-    $('.notes-form textarea').trigger($.Event('keydown', {
-      keyCode: 27,
-    }));
+    $('.notes-form textarea').trigger(
+      $.Event('keydown', {
+        keyCode: 27,
+      }),
+    );
   }
 
   beforeEach(() => {
