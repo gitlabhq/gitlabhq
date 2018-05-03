@@ -14,6 +14,7 @@ FactoryBot.define do
     # Associations
     namespace
     creator { group ? create(:user) : namespace&.owner }
+    ci_cd_settings strategy: :build, factory: :project_ci_cd_setting, project: nil
 
     transient do
       # Nest Project Feature attributes
@@ -23,10 +24,6 @@ FactoryBot.define do
       issues_access_level ProjectFeature::ENABLED
       merge_requests_access_level ProjectFeature::ENABLED
       repository_access_level ProjectFeature::ENABLED
-
-      # we can't assign the delegated `#ci_cd_settings` attributes directly, as the
-      # `#ci_cd_settings` relation needs to be created first
-      group_runners_enabled nil
     end
 
     after(:create) do |project, evaluator|
@@ -51,9 +48,6 @@ FactoryBot.define do
       end
 
       project.group&.refresh_members_authorized_projects
-
-      # assign the delegated `#ci_cd_settings` attributes after create
-      project.reload.group_runners_enabled = evaluator.group_runners_enabled unless evaluator.group_runners_enabled.nil?
     end
 
     trait :public do
