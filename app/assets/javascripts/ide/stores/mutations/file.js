@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import * as types from '../mutation_types';
 
 export default {
@@ -169,26 +170,18 @@ export default {
     });
   },
   [types.ADD_PENDING_TAB](state, { file, keyPrefix = 'pending' }) {
-    const key = `${keyPrefix}-${file.key}`;
-
-    Object.assign(state, {
-      entries: Object.assign(state.entries, {
-        [file.path]: Object.assign(state.entries[file.path], {
-          opened: false,
-          active: false,
-          lastOpenedAt: new Date().getTime(),
-        }),
-      }),
-      openFiles: [
-        {
-          ...file,
-          key,
-          pending: true,
-          opened: true,
-          active: true,
-        },
-      ],
-    });
+    state.entries[file.path].opened = false;
+    state.entries[file.path].active = false;
+    state.entries[file.path].lastOpenedAt = new Date().getTime();
+    state.openFiles = [
+      {
+        ...file,
+        key: `${keyPrefix}-${file.key}`,
+        pending: true,
+        opened: true,
+        active: true,
+      },
+    ];
   },
   [types.REMOVE_PENDING_TAB](state, file) {
     Object.assign(state, {

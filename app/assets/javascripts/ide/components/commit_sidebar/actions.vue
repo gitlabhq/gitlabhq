@@ -10,13 +10,15 @@ export default {
   },
   computed: {
     ...mapState(['currentBranchId', 'changedFiles', 'stagedFiles']),
-    ...mapGetters(['hasChanges']),
     commitToCurrentBranchText() {
       return sprintf(
         __('Commit to %{branchName} branch'),
         { branchName: `<strong class="monospace">${this.currentBranchId}</strong>` },
         false,
       );
+    },
+    disableMergeRequestRadio() {
+      return this.changedFiles.length > 0 && this.stagedFiles.length > 0;
     },
   },
   commitToCurrentBranch: consts.COMMIT_TO_CURRENT_BRANCH,
@@ -45,7 +47,7 @@ export default {
       :value="$options.commitToNewBranchMR"
       :label="__('Create a new branch and merge request')"
       :show-input="true"
-      :disabled="!!changedFiles.length && !!stagedFiles.length"
+      :disabled="disableMergeRequestRadio"
     />
   </div>
 </template>

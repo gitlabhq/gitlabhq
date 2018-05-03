@@ -4,7 +4,7 @@ import { sprintf, __ } from '~/locale';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import CommitMessageField from './message_field.vue';
 import Actions from './actions.vue';
-import { activityBarViews } from '../../constants';
+import { activityBarViews, MAX_WINDOW_HEIGHT_COMPACT, COMMIT_ITEM_PADDING } from '../../constants';
 
 export default {
   components: {
@@ -38,7 +38,8 @@ export default {
   watch: {
     currentActivityView() {
       this.isCompact = !(
-        this.currentActivityView === activityBarViews.commit && window.innerHeight >= 750
+        this.currentActivityView === activityBarViews.commit &&
+        window.innerHeight >= MAX_WINDOW_HEIGHT_COMPACT
       );
     },
   },
@@ -59,7 +60,7 @@ export default {
         ? this.$refs.formEl && this.$refs.formEl.offsetHeight
         : this.$refs.compactEl && this.$refs.compactEl.offsetHeight;
 
-      this.componentHeight = elHeight + 32;
+      this.componentHeight = elHeight + COMMIT_ITEM_PADDING;
     },
     enterTransition() {
       this.$nextTick(() => {
@@ -67,7 +68,7 @@ export default {
           ? this.$refs.compactEl && this.$refs.compactEl.offsetHeight
           : this.$refs.formEl && this.$refs.formEl.offsetHeight;
 
-        this.componentHeight = elHeight + 32;
+        this.componentHeight = elHeight + COMMIT_ITEM_PADDING;
       });
     },
     afterEndTransition() {
