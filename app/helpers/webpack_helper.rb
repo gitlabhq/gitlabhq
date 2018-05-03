@@ -33,7 +33,7 @@ module WebpackHelper
     javascript_include_tag(*chunks)
   end
 
-  def entrypoint_paths(source, extension: nil)
+  def entrypoint_paths(source, extension: nil, exclude_duplicates: true)
     return "" unless source.present?
 
     paths = Gitlab::Webpack::Manifest.entrypoint_paths(source)
@@ -46,7 +46,14 @@ module WebpackHelper
       paths.map! { |p| "#{force_host}#{p}" }
     end
 
-    paths
+    if exclude_duplicates
+      @used_paths ||= []
+      new_paths = paths - @used_paths
+      @used_paths += new_paths
+      new_paths
+    else
+      paths
+    end
   end
 
   def webpack_public_host
