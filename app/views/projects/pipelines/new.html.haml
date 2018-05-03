@@ -20,12 +20,12 @@
         = s_("Pipeline|Existing branch name or tag")
 
     .col-sm-12.prepend-top-10.js-ci-variable-list-section
-      %label.label-light
+      %label
         = s_('Pipeline|Variables')
-      .help-block
-        = (s_("Pipeline|Specify variable values to be used in this run. The values specified in %{settings_link} will be used by default") % {settings_link: settings_link}).html_safe
       %ul.ci-variable-list
         = render 'ci/variables/variable_row', form_field: 'pipeline', only_key_value: true
+      .help-block
+        = (s_("Pipeline|Specify variable values to be used in this run. The values specified in %{settings_link} will be used by default.") % {settings_link: settings_link}).html_safe
 
   .form-actions
     = f.submit s_('Pipeline|Create pipeline'), class: 'btn btn-success js-variables-save-button', tabindex: 3
