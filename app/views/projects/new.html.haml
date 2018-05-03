@@ -105,6 +105,10 @@
                     %hr
                       = render "shared/import_form", f: f
                       = render 'new_project_fields', f: f, project_name_id: "import-url-name"
+            - else
+              .nothing-here-block
+                %h4 No import options available
+                %p Contact an administrator to enable options for importing your project.
 
 .save-project-loader.hide
   .center
