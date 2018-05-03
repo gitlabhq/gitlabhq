@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180502134117) do
+ActiveRecord::Schema.define(version: 20180503160318) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -158,6 +158,7 @@ ActiveRecord::Schema.define(version: 20180502134117) do
     t.string "auto_devops_domain"
     t.boolean "pages_domain_verification_enabled", default: true, null: false
     t.boolean "allow_local_requests_from_hooks_and_services", default: false, null: false
+    t.boolean "mirror_available", default: true, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -307,10 +308,10 @@ ActiveRecord::Schema.define(version: 20180502134117) do
     t.integer "auto_canceled_by_id"
     t.boolean "retried"
     t.integer "stage_id"
-    t.integer "artifacts_file_store"
-    t.integer "artifacts_metadata_store"
     t.boolean "protected"
     t.integer "failure_reason"
+    t.integer "artifacts_file_store"
+    t.integer "artifacts_metadata_store"
   end
 
   add_index "ci_builds", ["artifacts_expire_at"], name: "index_ci_builds_on_artifacts_expire_at", where: "(artifacts_file <> ''::text)", using: :btree
@@ -358,13 +359,13 @@ ActiveRecord::Schema.define(version: 20180502134117) do
     t.integer "project_id", null: false
     t.integer "job_id", null: false
     t.integer "file_type", null: false
-    t.integer "file_store"
     t.integer "size", limit: 8
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
     t.datetime_with_timezone "expire_at"
     t.string "file"
     t.binary "file_sha256"
+    t.integer "file_store"
   end
 
   add_index "ci_job_artifacts", ["expire_at", "job_id"], name: "index_ci_job_artifacts_on_expire_at_and_job_id", using: :btree
@@ -1575,6 +1576,7 @@ ActiveRecord::Schema.define(version: 20180502134117) do
     t.boolean "merge_requests_rebase_enabled", default: false, null: false
     t.integer "jobs_cache_index"
     t.boolean "pages_https_only", default: true
+    t.boolean "remote_mirror_available_overridden"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1679,6 +1681,24 @@ ActiveRecord::Schema.define(version: 20180502134117) do
 
   add_index "releases", ["project_id", "tag"], name: "index_releases_on_project_id_and_tag", using: :btree
   add_index "releases", ["project_id"], name: "index_releases_on_project_id", using: :btree
+
+  create_table "remote_mirrors", force: :cascade do |t|
+    t.integer "project_id"
+    t.string "url"
+    t.boolean "enabled", default: true
+    t.string "update_status"
+    t.datetime "last_update_at"
+    t.datetime "last_successful_update_at"
+    t.string "last_error"
+    t.text "encrypted_credentials"
+    t.string "encrypted_credentials_iv"
+    t.string "encrypted_credentials_salt"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "remote_mirrors", ["last_successful_update_at"], name: "index_remote_mirrors_on_last_successful_update_at", using: :btree
+  add_index "remote_mirrors", ["project_id"], name: "index_remote_mirrors_on_project_id", using: :btree
 
   create_table "routes", force: :cascade do |t|
     t.integer "source_id", null: false
@@ -2200,6 +2220,7 @@ ActiveRecord::Schema.define(version: 20180502134117) do
   add_foreign_key "protected_tags", "projects", name: "fk_8e4af87648", on_delete: :cascade
   add_foreign_key "push_event_payloads", "events", name: "fk_36c74129da", on_delete: :cascade
   add_foreign_key "releases", "projects", name: "fk_47fe2a0596", on_delete: :cascade
+  add_foreign_key "remote_mirrors", "projects"
   add_foreign_key "services", "projects", name: "fk_71cce407f9", on_delete: :cascade
   add_foreign_key "snippets", "projects", name: "fk_be41fd4bb7", on_delete: :cascade
   add_foreign_key "subscriptions", "projects", on_delete: :cascade
