@@ -25,8 +25,4 @@ module SharedActiveTab
   step 'no other sub tabs should be active' do
     expect(page).to have_selector('.sidebar-sub-level-items  > li.active:not(.fly-out-top-item)', count: 1)
   end
-
-  step 'no other sub navs should be active' do
-    expect(page).to have_selector('.layout-nav .controls li.active', count: 1)
-  end
 end
