@@ -129,7 +129,15 @@ const config = {
       },
       {
         test: /\_worker\.js$/,
-        use: ['worker-loader', 'babel-loader'],
+        use: [
+          {
+            loader: 'worker-loader',
+            options: {
+              name: '[name].[hash].worker.js',
+            },
+          },
+          'babel-loader',
+        ],
       },
       {
         test: /\.(worker(\.min)?\.js|pdf|bmpr)$/,
