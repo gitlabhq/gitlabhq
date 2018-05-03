@@ -22,7 +22,7 @@ module FastDestroyAll
     class_attribute :_delete_method, :_delete_params_generator
 
     before_destroy do
-      raise ForbiddenActionError, '`destroy` is forbbiden, please use `fast_destroy_all`'
+      raise ForbiddenActionError, '`destroy` and `destroy_all` are forbbiden. Please use `fast_destroy_all`'
     end
   end
 

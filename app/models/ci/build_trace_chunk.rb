@@ -80,8 +80,7 @@ module Ci
         break unless size > 0
 
         self.update!(raw_data: data, data_store: :db)
-        key = self.class.redis_data_key(build_id, chunk_index)
-        self.class.redis_delete_data([key])
+        self.class.redis_delete_data([redis_data_key])
       end
     end
 
@@ -129,22 +128,24 @@ module Ci
 
     def redis_data
       Gitlab::Redis::SharedState.with do |redis|
-        redis.get(self.class.redis_data_key(build_id, chunk_index))
+        redis.get(redis_data_key)
       end
     end
 
     def redis_set_data(data)
       Gitlab::Redis::SharedState.with do |redis|
-        redis.set(self.class.redis_data_key(build_id, chunk_index), data, ex: CHUNK_REDIS_TTL)
+        redis.set(redis_data_key, data, ex: CHUNK_REDIS_TTL)
       end
     end
 
-    def redis_lock_key
-      "trace_write:#{build_id}:chunks:#{chunk_index}"
+    def redis_data_key
+      self.class.redis_data_key(build_id, chunk_index)
     end
 
     def in_lock
-      lease = Gitlab::ExclusiveLease.new(redis_lock_key, timeout: WRITE_LOCK_TTL)
+      write_lock_key = "trace_write:#{build_id}:chunks:#{chunk_index}"
+
+      lease = Gitlab::ExclusiveLease.new(write_lock_key, timeout: WRITE_LOCK_TTL)
       retry_count = 0
 
       until uuid = lease.try_obtain
@@ -159,7 +160,7 @@ module Ci
       self.reload if self.persisted?
       return yield
     ensure
-      Gitlab::ExclusiveLease.cancel(redis_lock_key, uuid)
+      Gitlab::ExclusiveLease.cancel(write_lock_key, uuid)
     end
   end
 end
