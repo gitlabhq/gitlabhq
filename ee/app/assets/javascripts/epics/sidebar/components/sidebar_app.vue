@@ -256,11 +256,13 @@
       </sidebar-labels-select>
       <sidebar-participants
         :participants="initialParticipants"
+        @toggleCollapse="toggleSidebar"
       />
       <sidebar-subscriptions
         :loading="savingSubscription"
         :subscribed="store.subscription"
         @toggleSubscription="handleToggleSubscription"
+        @toggleCollapse="toggleSidebar"
       />
     </div>
   </aside>

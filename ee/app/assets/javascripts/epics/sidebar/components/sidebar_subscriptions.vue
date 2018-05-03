@@ -19,6 +19,9 @@
       onToggleSubscription() {
         this.$emit('toggleSubscription');
       },
+      onToggleSidebar() {
+        this.$emit('toggleCollapse');
+      },
     },
   };
 </script>
@@ -29,6 +32,7 @@
       :loading="loading"
       :subscribed="subscribed"
       @toggleSubscription="onToggleSubscription"
+      @toggleSidebar="onToggleSidebar"
     />
   </div>
 </template>

@@ -37,7 +37,7 @@
     },
     computed: {
       showLoadingState() {
-        return this.loading || this.subscribed === null;
+        return this.subscribed === null;
       },
       notificationIcon() {
         return this.subscribed ? ICON_ON : ICON_OFF;
@@ -51,6 +51,7 @@
        * We need to emit this event on both component & eventHub
        * for 2 dependencies;
        *
+       * Make Epic sidebar auto-expand when participants & label icon is clicked
        * 1. eventHub: This component is used in Issue Boards sidebar
        *              where component template is part of HAML
        *              and event listeners are tied to app's eventHub.

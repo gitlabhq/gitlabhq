@@ -11,6 +11,11 @@
         required: true,
       },
     },
+    methods: {
+      onToggleSidebar() {
+        this.$emit('toggleCollapse');
+      },
+    },
   };
 </script>
 
@@ -18,6 +23,7 @@
   <div class="block participants">
     <participants
       :participants="participants"
+      @toggleSidebar="onToggleSidebar"
     />
   </div>
 </template>
