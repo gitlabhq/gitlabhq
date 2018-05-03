@@ -6,7 +6,7 @@ tables:
     - user_id
     - created_at
     - updated_at
-    anon:
+    pseudo:
     - id
     - merge_request_id
     - user_id
@@ -17,7 +17,7 @@ tables:
     - group_id
     - created_at
     - updated_at
-    anon:
+    pseudo:
     - id
     - group_id
   board_assignees:
@@ -25,7 +25,7 @@ tables:
     - id
     - board_id
     - assignee_id
-    anon:
+    pseudo:
     - id
     - board_id
     - assignee_id
@@ -34,7 +34,7 @@ tables:
     - id
     - board_id
     - label_id
-    anon:
+    pseudo:
     - id
     - board_id
     - label_id
@@ -47,7 +47,7 @@ tables:
     - milestone_id
     - group_id
     - weight
-    anon:
+    pseudo:
     - id
     - project_id
     - milestone_id
@@ -58,7 +58,7 @@ tables:
     - epic_id
     - issue_id
     - relative_position
-    anon:
+    pseudo:
     - id
     - epic_id
     - issue_id
@@ -68,7 +68,7 @@ tables:
     - epic_id
     - created_at
     - updated_at
-    anon:
+    pseudo:
     - id
   epics:
     whitelist:
@@ -89,7 +89,7 @@ tables:
     - updated_at
     - title
     - description
-    anon:
+    pseudo:
     - id
     - milestone_id
     - group_id
@@ -109,7 +109,7 @@ tables:
     whitelist:
     - user_id
     - issue_id
-    anon:
+    pseudo:
     - user_id
     - issue_id
   issue_links:
@@ -119,7 +119,7 @@ tables:
     - target_id
     - created_at
     - updated_at
-    anon:
+    pseudo:
     - id
     - source_id
     - target_id
@@ -132,7 +132,7 @@ tables:
     - first_added_to_board_at
     - created_at
     - updated_at
-    anon:
+    pseudo:
     - id
     - issue_id
   issues:
@@ -157,7 +157,7 @@ tables:
     - discussion_locked
     - closed_at
     - closed_by_id
-    anon:
+    pseudo:
     - id
     - title
     - author_id
@@ -177,7 +177,7 @@ tables:
     - target_type
     - created_at
     - updated_at
-    anon:
+    pseudo:
     - id
     - label_id
     - target_id
@@ -189,7 +189,7 @@ tables:
     - priority
     - created_at
     - updated_at
-    anon:
+    pseudo:
     - id
     - project_id
     - label_id
@@ -204,7 +204,7 @@ tables:
     - template
     - type
     - group_id
-    anon:
+    pseudo:
     - id
     - title
     - color
@@ -219,7 +219,7 @@ tables:
     - id
     - created_at
     - updated_at
-    anon:
+    pseudo:
     - id
   merge_request_diff_commits:
     whitelist:
@@ -231,7 +231,7 @@ tables:
     - author_email
     - committer_name
     - committer_email
-    anon:
+    pseudo:
     - merge_request_diff_id
     - author_name
     - author_email
@@ -247,7 +247,7 @@ tables:
     - too_large
     - a_mode
     - b_mode
-    anon:
+    pseudo:
     - merge_request_diff_id
   merge_request_diffs:
     whitelist:
@@ -261,7 +261,7 @@ tables:
     - head_commit_sha
     - start_commit_sha
     - commits_count
-    anon:
+    pseudo:
     - id
     - merge_request_id
     - base_commit_sha
@@ -281,7 +281,7 @@ tables:
     - merged_by_id
     - latest_closed_by_id
     - latest_closed_at
-    anon:
+    pseudo:
     - id
     - merge_request_id
     - pipeline_id
@@ -316,7 +316,7 @@ tables:
     - discussion_locked
     - latest_merge_request_diff_id
     - allow_maintainer_to_push
-    anon:
+    pseudo:
     - id
     - target_branch
     - source_branch
@@ -337,7 +337,7 @@ tables:
     - issue_id
     - created_at
     - updated_at
-    anon:
+    pseudo:
     - id
     - merge_request_id
     - issue_id
@@ -351,7 +351,7 @@ tables:
     - state
     - start_date
     - group_id
-    anon:
+    pseudo:
     - id
     - project_id
     - group_id
@@ -361,7 +361,7 @@ tables:
     - namespace_id
     - shared_runners_seconds
     - shared_runners_seconds_last_reset
-    anon:
+    pseudo:
     - id
     - namespace_id
   namespaces:
@@ -391,7 +391,7 @@ tables:
     - two_factor_grace_period
     - plan_id
     - project_creation_level
-    anon:
+    pseudo:
     - id
     - name
     - path
@@ -441,7 +441,7 @@ tables:
     - cached_markdown_version
     - change_position
     - resolved_by_push
-    anon:
+    pseudo:
     - id
     - note
     - noteable_type
@@ -489,7 +489,7 @@ tables:
     - success_pipeline
     - push_to_merge_request
     - issue_due
-    anon:
+    pseudo:
     - id
     - user_id
     - source_id
@@ -516,7 +516,7 @@ tables:
     - user_id
     - project_id
     - access_level
-    anon:
+    pseudo:
     - user_id
     - project_id
     - access_level
@@ -528,7 +528,7 @@ tables:
     - updated_at
     - enabled
     - domain
-    anon:
+    pseudo:
     - id
     - project_id
     - created_at
@@ -540,7 +540,7 @@ tables:
     - id
     - project_id
     - group_runners_enabled
-    anon:
+    pseudo:
     - id
     - project_id
     - group_runners_enabled
@@ -552,7 +552,7 @@ tables:
     - project_id
     - key
     - value
-    anon:
+    pseudo:
     - id
     - created_at
     - updated_at
@@ -565,7 +565,7 @@ tables:
     - project_id
     - deploy_token_id
     - created_at
-    anon:
+    pseudo:
     - id
     - project_id
     - deploy_token_id
@@ -582,7 +582,7 @@ tables:
     - created_at
     - updated_at
     - repository_access_level
-    anon:
+    pseudo:
     - id
     - project_id
     - merge_requests_access_level
@@ -602,7 +602,7 @@ tables:
     - updated_at
     - group_access
     - expires_at
-    anon:
+    pseudo:
     - id
     - project_id
     - group_id
@@ -618,7 +618,7 @@ tables:
     - encrypted_credentials
     - encrypted_credentials_iv
     - encrypted_credentials_salt
-    anon:
+    pseudo:
     - id
     - project_id
     - data
@@ -635,7 +635,7 @@ tables:
     - next_execution_timestamp
     - created_at
     - updated_at
-    anon:
+    pseudo:
     - id
     - project_id
     - retry_count
@@ -652,7 +652,7 @@ tables:
     - wiki_verification_checksum
     - last_repository_verification_failure
     - last_wiki_verification_failure
-    anon:
+    pseudo:
     - id
     - project_id
     - repository_verification_checksum
@@ -671,7 +671,7 @@ tables:
     - build_artifacts_size
     - shared_runners_seconds
     - shared_runners_seconds_last_reset
-    anon:
+    pseudo:
     - id
     - project_id
     - namespace_id
@@ -753,7 +753,7 @@ tables:
     - external_authorization_classification_label
     - external_webhook_token
     - pages_https_only
-    anon:
+    pseudo:
     - id
     - name
     - path
@@ -833,7 +833,7 @@ tables:
     - created_at
     - updated_at
     - project_id
-    anon:
+    pseudo:
     - id
     - user_id
     - subscribable_id
@@ -901,7 +901,7 @@ tables:
     - preferred_language
     - rss_token
     - theme_id
-    anon:
+    pseudo:
     - id
     - email
     - remember_created_at

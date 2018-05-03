@@ -73,6 +73,7 @@ namespace :gitlab do
     desc 'Output pseudonymity dump of selected table'
     task :pseudonymity_dump => :environment do
       table = Pseudonymity::Table.new
+      table.tables_to_csv
     end
   end
 end
