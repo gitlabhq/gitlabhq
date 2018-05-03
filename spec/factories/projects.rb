@@ -183,6 +183,17 @@ FactoryBot.define do
       end
     end
 
+    trait :remote_mirror do
+      transient do
+        remote_name "remote_mirror_#{SecureRandom.hex}"
+        url "http://foo.com"
+        enabled true
+      end
+      after(:create) do |project, evaluator|
+        project.remote_mirrors.create!(url: evaluator.url, enabled: evaluator.enabled)
+      end
+    end
+
     trait :stubbed_repository do
       after(:build) do |project|
         allow(project).to receive(:empty_repo?).and_return(false)
