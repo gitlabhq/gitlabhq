@@ -81,7 +81,7 @@ class Project < ActiveRecord::Base
   before_destroy :remove_private_deploy_keys
 
   ##
-  # `use_fast_destroy` must be defined **before** `has_many` and `has_one` such as `has_many :relation, depenedent: :destroy`
+  # `use_fast_destroy` must be defined **before** `has_many` and `has_one` such as `has_many :relation, dependent: :destroy`
   # Otherwise `use_fast_destroy` performs against **deleted** rows, which fails to get identifiers of external data
   use_fast_destroy :build_trace_chunks
 
