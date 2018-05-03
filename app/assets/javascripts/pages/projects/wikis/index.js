@@ -15,9 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
   new GLForm($('.wiki-form'), true); // eslint-disable-line no-new
 
   Vue.use(Translate);
-  const { deleteWikiUrl } = document.getElementById('delete-wiki-button').dataset;
+  const { deleteWikiUrl, pageTitle } = document.getElementById('delete-wiki-button').dataset;
   const deleteWikiModalEl = document.getElementById('delete-wiki-modal');
-  const deleteModal = new Vue({
+  const deleteModal = new Vue({ // eslint-disable-line
     el: deleteWikiModalEl,
     data: {
       deleteWikiUrl: '',
@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     render(createElement) {
       return createElement(deleteWikiModal, {
         props: {
+          pageTitle,
           deleteWikiUrl,
           csrfToken: csrf.token,
         },
