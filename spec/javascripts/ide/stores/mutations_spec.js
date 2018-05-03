@@ -116,4 +116,14 @@ describe('Multi-file store mutations', () => {
       expect(localState.fileFindVisible).toBe(true);
     });
   });
+
+  describe('BURST_UNUSED_SEAL', () => {
+    it('updates unusedSeal', () => {
+      expect(localState.unusedSeal).toBe(true);
+
+      mutations.BURST_UNUSED_SEAL(localState);
+
+      expect(localState.unusedSeal).toBe(false);
+    });
+  });
 });

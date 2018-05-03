@@ -149,6 +149,12 @@ export const updateTempFlagForEntry = ({ commit, dispatch, state }, { file, temp
 export const toggleFileFinder = ({ commit }, fileFindVisible) =>
   commit(types.TOGGLE_FILE_FINDER, fileFindVisible);
 
+export const burstUnusedSeal = ({ state, commit }) => {
+  if (state.unusedSeal) {
+    commit(types.BURST_UNUSED_SEAL);
+  }
+};
+
 export * from './actions/tree';
 export * from './actions/file';
 export * from './actions/project';
