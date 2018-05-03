@@ -108,4 +108,4 @@
 
           %td.timestamp
             - if build.finished_at
-              %span #{time_ago_in_words build.finished_at} ago
+              %span= time_ago_with_tooltip build.finished_at

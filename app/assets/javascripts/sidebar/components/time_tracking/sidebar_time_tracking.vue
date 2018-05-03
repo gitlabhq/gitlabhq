@@ -1,3 +1,4 @@
+<script>
 import $ from 'jquery';
 import _ from 'underscore';
 
@@ -10,14 +11,17 @@ import Mediator from '../../sidebar_mediator';
 import eventHub from '../../event_hub';
 
 export default {
+  components: {
+    IssuableTimeTracker,
+  },
   data() {
     return {
       mediator: new Mediator(),
       store: new Store(),
     };
   },
-  components: {
-    IssuableTimeTracker,
+  mounted() {
+    this.listenForQuickActions();
   },
   methods: {
     listenForQuickActions() {
@@ -41,18 +45,17 @@ export default {
       }
     },
   },
-  mounted() {
-    this.listenForQuickActions();
-  },
-  template: `
-    <div class="block">
-      <issuable-time-tracker
-        :time_estimate="store.timeEstimate"
-        :time_spent="store.totalTimeSpent"
-        :human_time_estimate="store.humanTimeEstimate"
-        :human_time_spent="store.humanTotalTimeSpent"
-        :rootPath="store.rootPath"
-      />
-    </div>
-  `,
 };
+</script>
+
+<template>
+  <div class="block">
+    <issuable-time-tracker
+      :time_estimate="store.timeEstimate"
+      :time_spent="store.totalTimeSpent"
+      :human_time_estimate="store.humanTimeEstimate"
+      :human_time_spent="store.humanTotalTimeSpent"
+      :root-path="store.rootPath"
+    />
+  </div>
+</template>
