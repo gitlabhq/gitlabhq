@@ -75,10 +75,6 @@ module QA
 
             within_element(:"allowed_to_#{action}_dropdown") do
               click_on text
-
-              wait(reload: false) do
-                has_css?('.is-active')
-              end
             end
           end
         end
