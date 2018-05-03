@@ -3,15 +3,7 @@ class AddRunnersTokenToGroups < ActiveRecord::Migration
 
   DOWNTIME = false
 
-  disable_ddl_transaction!
-
-  def up
+  def change
     add_column :namespaces, :runners_token, :string
-
-    add_concurrent_index :namespaces, :runners_token, unique: true
-  end
-
-  def down
-    remove_column :namespaces, :runners_token
   end
 end
