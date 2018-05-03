@@ -137,21 +137,6 @@ describe Ci::Runner do
     end
   end
 
-  describe '.belonging_to_any_project' do
-    it 'returns the specific project runner' do
-      # project
-      project_project = create(:project)
-      project_runner = create(:ci_runner, :specific, projects: [project_project])
-
-      # group
-      group = create(:group)
-      create(:project, group: group)
-      create(:ci_runner, :specific, groups: [group])
-
-      expect(described_class.belonging_to_any_project).to eq [project_runner]
-    end
-  end
-
   describe '.belonging_to_parent_group_of_project' do
     let(:project) { create(:project, group: group) }
     let(:group) { create(:group) }

@@ -72,7 +72,6 @@ module Projects
           .ci_authorized_runners
           .assignable_for(project)
           .ordered
-          .belonging_to_any_project
           .page(params[:page]).per(20)
 
         @shared_runners = ::Ci::Runner.shared.active
