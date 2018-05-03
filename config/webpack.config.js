@@ -57,7 +57,6 @@ function generateEntries() {
   const manualEntries = {
     default: defaultEntries,
     raven: './raven/index.js',
-    ide: './ide/index.js',
   };
 
   return Object.assign(manualEntries, autoEntries);
@@ -75,6 +74,7 @@ const config = {
     publicPath: '/assets/webpack/',
     filename: IS_PRODUCTION ? '[name].[chunkhash].bundle.js' : '[name].bundle.js',
     chunkFilename: IS_PRODUCTION ? '[name].[chunkhash].chunk.js' : '[name].chunk.js',
+    globalObject: 'this', // allow HMR and web workers to play nice
   },
 
   optimization: {
@@ -129,15 +129,7 @@ const config = {
       },
       {
         test: /\_worker\.js$/,
-        use: [
-          {
-            loader: 'worker-loader',
-            options: {
-              inline: true,
-            },
-          },
-          { loader: 'babel-loader' },
-        ],
+        use: ['worker-loader', 'babel-loader'],
       },
       {
         test: /\.(worker(\.min)?\.js|pdf|bmpr)$/,

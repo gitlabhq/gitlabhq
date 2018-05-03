@@ -4,7 +4,9 @@ import ide from './components/ide.vue';
 import store from './stores';
 import router from './ide_router';
 
-function initIde(el) {
+Vue.use(Translate);
+
+export function initIde(el) {
   if (!el) return null;
 
   return new Vue({
@@ -26,8 +28,9 @@ function initIde(el) {
   });
 }
 
-const ideElement = document.getElementById('ide');
-
-Vue.use(Translate);
-
-initIde(ideElement);
+export function resetServiceWorkersPublicPath() {
+  // tell webpack to load assets from origin so that web workers don't break
+  const relativeRootPath = (gon && gon.relative_url_root) || '';
+  const webpackAssetPath = `${relativeRootPath}/assets/webpack/`;
+  __webpack_public_path__ = webpackAssetPath; // eslint-disable-line camelcase
+}
