@@ -161,6 +161,7 @@ feature 'Issues > User uses quick actions', :js do
 
         before do
           target_project.add_master(user)
+          gitlab_sign_out
           sign_in(user)
           visit project_issue_path(project, issue)
         end
@@ -220,6 +221,7 @@ feature 'Issues > User uses quick actions', :js do
 
         before do
           target_project.add_master(user)
+          gitlab_sign_out
           sign_in(user)
           visit project_issue_path(project, issue)
         end
