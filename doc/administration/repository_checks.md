@@ -14,11 +14,11 @@ checks failed you can see their output on the admin log page under
 ## Periodic checks
 
 When enabled, GitLab periodically runs a repository check on all project
-repositories and wiki repositories in order to detect data corruption problems.
+repositories and wiki repositories in order to detect data corruption.
 A project will be checked no more than once per month. If any projects
 fail their repository checks all GitLab administrators will receive an email
-notification of the situation. This notification is sent out once a week on
-Sunday, by default.
+notification of the situation. This notification is sent out once a week,
+by default, midnight at the start of Sunday.
 
 ## Disabling periodic checks
 
@@ -37,8 +37,8 @@ in `repocheck.log`:
 
 If for some reason the periodic repository check caused a lot of false
 alarms you can choose to clear *all* repository check states by
-clicking "Clear all repository checks" on the 'Settings' page of the
-admin panel.
+clicking "Clear all repository checks" on the **Settings** page of the
+admin panel (`/admin/application_settings`).
 
 ---
 [ce-3232]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3232 "Auto git fsck"
