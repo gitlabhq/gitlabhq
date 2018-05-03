@@ -91,13 +91,13 @@ export default {
       class="nothing-here-block diff-collapsed"
     >
       {{ __('This diff is collapsed.') }}
-      <button
+      <a
         @click.prevent="handleToggle"
-        class="btn click-to-expand prepend-left-10"
-        type="button"
+        class="click-to-expand"
+        href="#"
       >
-        {{ __('Expand') }}
-      </button>
+        {{ __('Click to expand it.') }}
+      </a>
     </div>
   </div>
 </template>
