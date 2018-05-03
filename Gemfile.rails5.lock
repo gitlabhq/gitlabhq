@@ -162,6 +162,7 @@ GEM
       activerecord (>= 3.2.0, < 5.2)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
+    device_detector (1.0.1)
     devise (4.4.1)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
@@ -375,7 +376,7 @@ GEM
       rake
     grape_logging (1.7.0)
       grape
-    grpc (1.10.0)
+    grpc (1.11.0)
       google-protobuf (~> 3.1)
       googleapis-common-protos-types (~> 1.0.0)
       googleauth (>= 0.5.1, < 0.7)
@@ -554,9 +555,6 @@ GEM
       jwt (>= 1.5)
       omniauth (>= 1.1.1)
       omniauth-oauth2 (>= 1.5)
-    omniauth-jwt (0.0.2)
-      jwt
-      omniauth (~> 1.1)
     omniauth-kerberos (0.3.0)
       omniauth-multipassword
       timfel-krb5-auth (~> 0.8)
@@ -1033,6 +1031,7 @@ DEPENDENCIES
   database_cleaner (~> 1.5.0)
   deckar01-task_list (= 2.0.0)
   default_value_for (~> 3.0.5)
+  device_detector
   devise (~> 4.2)
   devise-two-factor (~> 3.0.0)
   diffy (~> 3.1.0)
@@ -1080,7 +1079,7 @@ DEPENDENCIES
   grape-entity (~> 0.6.0)
   grape-route-helpers (~> 2.1.0)
   grape_logging (~> 1.7)
-  grpc (~> 1.10.0)
+  grpc (~> 1.11.0)
   haml_lint (~> 0.26.0)
   hamlit (~> 2.6.1)
   hashie-forbidden_attributes
@@ -1121,7 +1120,6 @@ DEPENDENCIES
   omniauth-github (~> 1.1.1)
   omniauth-gitlab (~> 1.0.2)
   omniauth-google-oauth2 (~> 0.5.3)
-  omniauth-jwt (~> 0.0.2)
   omniauth-kerberos (~> 0.3.0)
   omniauth-oauth2-generic (~> 0.2.2)
   omniauth-saml (~> 1.10)

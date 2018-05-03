@@ -74,7 +74,11 @@ export function capitalizeFirstCharacter(text) {
  * @param {*} replace
  * @returns {String}
  */
-export const stripHtml = (string, replace = '') => string.replace(/<[^>]*>/g, replace);
+export const stripHtml = (string, replace = '') => {
+  if (!string) return string;
+
+  return string.replace(/<[^>]*>/g, replace);
+};
 
 /**
  * Converts snake_case string to camelCase
