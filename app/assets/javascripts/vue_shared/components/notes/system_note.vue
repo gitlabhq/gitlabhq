@@ -1,77 +1,75 @@
 <script>
-  /**
-   * Common component to render a system note, icon and user information.
-   *
-   * This component needs to be used with a vuex store.
-   * That vuex store needs to have a `targetNoteHash` getter
-   *
-   * @example
-   * <system-note
-   *   :note="{
-   *     id: String,
-   *     author: Object,
-   *     createdAt: String,
-   *     note_html: String,
-   *     system_note_icon_name: String
-   *    }"
-   *   />
-   */
-  import $ from 'jquery';
-  import { mapGetters } from 'vuex';
-  import noteHeader from '~/notes/components/note_header.vue';
-  import Icon from '~/vue_shared/components/icon.vue';
-  import { spriteIcon } from '../../../lib/utils/common_utils';
+/**
+ * Common component to render a system note, icon and user information.
+ *
+ * This component needs to be used with a vuex store.
+ * That vuex store needs to have a `targetNoteHash` getter
+ *
+ * @example
+ * <system-note
+ *   :note="{
+ *     id: String,
+ *     author: Object,
+ *     createdAt: String,
+ *     note_html: String,
+ *     system_note_icon_name: String
+ *    }"
+ *   />
+ */
+import $ from 'jquery';
+import { mapGetters } from 'vuex';
+import noteHeader from '~/notes/components/note_header.vue';
+import Icon from '~/vue_shared/components/icon.vue';
+import { spriteIcon } from '../../../lib/utils/common_utils';
 
-  const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;
+const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;
 
-  export default {
-    name: 'SystemNote',
-    components: {
-      Icon,
-      noteHeader,
+export default {
+  name: 'SystemNote',
+  components: {
+    Icon,
+    noteHeader,
+  },
+  props: {
+    note: {
+      type: Object,
+      required: true,
     },
-    props: {
-      note: {
-        type: Object,
-        required: true,
-      },
+  },
+  data() {
+    return {
+      expanded: false,
+    };
+  },
+  computed: {
+    ...mapGetters(['targetNoteHash']),
+    noteAnchorId() {
+      return `note_${this.note.id}`;
     },
-    data() {
-      return {
-        expanded: false,
-      };
+    isTargetNote() {
+      return this.targetNoteHash === this.noteAnchorId;
     },
-    computed: {
-      ...mapGetters([
-        'targetNoteHash',
-      ]),
-      noteAnchorId() {
-        return `note_${this.note.id}`;
-      },
-      isTargetNote() {
-        return this.targetNoteHash === this.noteAnchorId;
-      },
-      iconHtml() {
-        return spriteIcon(this.note.system_note_icon_name);
-      },
-      toggleIcon() {
-        return this.expanded ? 'chevron-up' : 'chevron-down';
-      },
-      // following 2 methods taken from code in `collapseLongCommitList` of notes.js:
-      actionTextHtml() {
-        return $(this.note.note_html)
-          .first()
-          .text()
-          .replace(':', '');
-      },
-      hasMoreCommits() {
-        return $(this.note.note_html)
-           .filter('ul')
-           .children()
-           .length > MAX_VISIBLE_COMMIT_LIST_COUNT;
-      },
+    iconHtml() {
+      return spriteIcon(this.note.system_note_icon_name);
     },
-  };
+    toggleIcon() {
+      return this.expanded ? 'chevron-up' : 'chevron-down';
+    },
+    // following 2 methods taken from code in `collapseLongCommitList` of notes.js:
+    actionTextHtml() {
+      return $(this.note.note_html)
+        .unwrap()
+        .html();
+    },
+    hasMoreCommits() {
+      return (
+        $(this.note.note_html)
+          .filter('ul')
+          .children().length > MAX_VISIBLE_COMMIT_LIST_COUNT
+      );
+    },
+  },
+};
 </script>
 
 <template>
