@@ -2,6 +2,7 @@
 import { mapGetters, mapState, mapActions } from 'vuex';
 import IdeTreeList from './ide_tree_list.vue';
 import EditorModeDropdown from './editor_mode_dropdown.vue';
+import { viewerTypes } from '../constants';
 
 export default {
   components: {
@@ -11,10 +12,16 @@ export default {
   computed: {
     ...mapGetters(['currentMergeRequest']),
     ...mapState(['viewer']),
+    showLatestChangesText() {
+      return !this.currentMergeRequest || this.viewer === viewerTypes.diff;
+    },
+    showMergeRequestText() {
+      return this.currentMergeRequest && this.viewer === viewerTypes.mr;
+    },
   },
   mounted() {
     this.$nextTick(() => {
-      this.updateViewer(this.currentMergeRequest ? 'mrdiff' : 'diff');
+      this.updateViewer(this.currentMergeRequest ? viewerTypes.mr : viewerTypes.diff);
     });
   },
   methods: {
@@ -42,11 +49,11 @@ export default {
         />
       </div>
       <div class="prepend-top-5 ide-review-sub-header">
-        <template v-if="!currentMergeRequest || viewer === 'diff'">
+        <template v-if="showLatestChangesText">
           {{ __('Latest changes') }}
         </template>
-        <template v-else-if="currentMergeRequest && viewer === 'mrdiff'">
-          Merge request
+        <template v-else-if="showMergeRequestText">
+          {{ __('Merge request') }}
           (<a :href="currentMergeRequest.web_url">!{{ currentMergeRequest.iid }}</a>)
         </template>
       </div>

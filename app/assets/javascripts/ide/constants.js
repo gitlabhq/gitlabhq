@@ -12,3 +12,9 @@ export const activityBarViews = {
   commit: 'commit-section',
   review: 'ide-review',
 };
+
+export const viewerTypes = {
+  mr: 'mrdiff',
+  edit: 'editor',
+  diff: 'diff',
+};

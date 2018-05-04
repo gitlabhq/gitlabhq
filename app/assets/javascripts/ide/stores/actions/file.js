@@ -5,6 +5,7 @@ import service from '../../services';
 import * as types from '../mutation_types';
 import router from '../../ide_router';
 import { setPageTitle } from '../utils';
+import { viewerTypes } from '../../constants';
 
 export const closeFile = ({ commit, state, dispatch }, file) => {
   const path = file.path;
@@ -23,7 +24,7 @@ export const closeFile = ({ commit, state, dispatch }, file) => {
     const nextFileToOpen = state.openFiles[nextIndexToOpen];
 
     if (nextFileToOpen.pending) {
-      dispatch('updateViewer', 'diff');
+      dispatch('updateViewer', viewerTypes.diff);
       dispatch('openPendingTab', {
         file: nextFileToOpen,
         keyPrefix: nextFileToOpen.staged ? 'staged' : 'unstaged',
@@ -194,7 +195,11 @@ export const unstageChange = ({ commit }, path) => {
 };
 
 export const openPendingTab = ({ commit, getters, dispatch, state }, { file, keyPrefix }) => {
-  if (getters.activeFile && getters.activeFile.path === file.path && state.viewer === 'diff') {
+  if (
+    getters.activeFile &&
+    getters.activeFile.path === file.path &&
+    state.viewer === viewerTypes.diff
+  ) {
     return false;
   }
 

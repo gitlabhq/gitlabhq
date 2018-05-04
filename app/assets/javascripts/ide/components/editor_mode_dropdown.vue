@@ -1,5 +1,6 @@
 <script>
 import { __, sprintf } from '~/locale';
+import { viewerTypes } from '../constants';
 
 export default {
   props: {
@@ -24,6 +25,7 @@ export default {
       this.$emit('click', mode);
     },
   },
+  viewerTypes,
 };
 </script>
 
@@ -36,16 +38,16 @@ export default {
       class="btn btn-link"
       data-toggle="dropdown"
     >
-      Edit
+      {{ __('Edit') }}
     </button>
     <div class="dropdown-menu dropdown-menu-selectable dropdown-open-left">
       <ul>
         <li>
           <a
             href="#"
-            @click.prevent="changeMode('mrdiff')"
+            @click.prevent="changeMode($options.viewerTypes.mr)"
             :class="{
-              'is-active': viewer === 'mrdiff',
+              'is-active': viewer === $options.viewerTypes.mr,
             }"
           >
             <strong class="dropdown-menu-inner-title">
@@ -59,9 +61,9 @@ export default {
         <li>
           <a
             href="#"
-            @click.prevent="changeMode('diff')"
+            @click.prevent="changeMode($options.viewerTypes.diff)"
             :class="{
-              'is-active': viewer === 'diff',
+              'is-active': viewer === $options.viewerTypes.diff,
             }"
           >
             <strong class="dropdown-menu-inner-title">{{ __('Reviewing') }}</strong>
