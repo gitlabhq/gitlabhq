@@ -173,6 +173,12 @@ export default {
     state.entries[file.path].opened = false;
     state.entries[file.path].active = false;
     state.entries[file.path].lastOpenedAt = new Date().getTime();
+    state.openFiles.forEach(f =>
+      Object.assign(f, {
+        opened: false,
+        active: false,
+      }),
+    );
     state.openFiles = [
       {
         ...file,

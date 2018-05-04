@@ -39,10 +39,17 @@ export default {
   },
   watch: {
     currentActivityView() {
-      this.isCompact = !(
-        this.currentActivityView === activityBarViews.commit &&
-        window.innerHeight >= MAX_WINDOW_HEIGHT_COMPACT
-      );
+      if (this.lastCommitMsg) {
+        this.isCompact = false;
+      } else {
+        this.isCompact = !(
+          this.currentActivityView === activityBarViews.commit &&
+          window.innerHeight >= MAX_WINDOW_HEIGHT_COMPACT
+        );
+      }
+    },
+    lastCommitMsg() {
+      this.isCompact = this.lastCommitMsg === '';
     },
   },
   methods: {
@@ -122,9 +129,11 @@ export default {
         @submit.prevent.stop="commitChanges"
         ref="formEl"
       >
-        <success-message
-          v-show="(lastCommitMsg && someUncommitedChanges)"
-        />
+        <transition name="fade">
+          <success-message
+            v-show="lastCommitMsg"
+          />
+        </transition>
         <commit-message-field
           :text="commitMessage"
           @input="updateCommitMessage"

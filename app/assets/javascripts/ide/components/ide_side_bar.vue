@@ -112,9 +112,6 @@ export default {
           />
         </div>
         <commit-form />
-        <success-message
-          v-show="showSuccessMessage"
-        />
       </template>
     </div>
   </resizable-panel>

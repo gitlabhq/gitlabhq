@@ -797,6 +797,12 @@
 .ide-commit-radios {
   label {
     font-weight: normal;
+
+    &.is-disabled {
+      .ide-radio-label {
+        text-decoration: line-through;
+      }
+    }
   }
 
   .help-block {

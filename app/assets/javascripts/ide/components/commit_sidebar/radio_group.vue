@@ -53,6 +53,9 @@ export default {
     <label
       v-tooltip
       :title="tooltipTitle"
+      :class="{
+        'is-disabled': disabled
+      }"
     >
       <input
         type="radio"
@@ -63,9 +66,12 @@ export default {
         :disabled="disabled"
       />
       <span class="prepend-left-10">
-        <template v-if="label">
+        <span
+          v-if="label"
+          class="ide-radio-label"
+        >
           {{ label }}
-        </template>
+        </span>
         <slot v-else></slot>
       </span>
     </label>
