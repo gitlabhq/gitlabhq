@@ -390,7 +390,7 @@ If you have installed GitLab using a different method, you need to:
 1. [Deploy Prometheus](../../user/project/integrations/prometheus.md#configuring-your-own-prometheus-server-within-kubernetes) into your Kubernetes cluster
 1. If you would like response metrics, ensure you are running at least version
    0.9.0 of NGINX Ingress and
-   [enable Prometheus metrics](https://github.com/kubernetes/ingress/blob/master/examples/customization/custom-vts-metrics/nginx/nginx-vts-metrics-conf.yaml).
+   [enable Prometheus metrics](https://github.com/kubernetes/ingress-nginx/blob/master/docs/examples/customization/custom-vts-metrics-prometheus/nginx-vts-metrics-conf.yaml).
 1. Finally, [annotate](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/)
    the NGINX Ingress deployment to be scraped by Prometheus using
    `prometheus.io/scrape: "true"` and `prometheus.io/port: "10254"`.

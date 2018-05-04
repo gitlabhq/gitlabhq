@@ -8,8 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2018-05-03 10:13+0200\n"
 "PO-Revision-Date: 2018-05-03 10:13+0200\n"
+=======
+"POT-Creation-Date: 2018-05-02 22:28+0200\n"
+"PO-Revision-Date: 2018-05-02 22:28+0200\n"
+>>>>>>> upstream/master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -119,11 +124,14 @@ msgstr ""
 msgid "%{title} changes"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "%{type} detected %d vulnerability"
 msgid_plural "%{type} detected %d vulnerabilities"
 msgstr[0] ""
 msgstr[1] ""
 
+=======
+>>>>>>> upstream/master
 msgid "(checkout the %{link} for information on how to install it)."
 msgstr ""
 
@@ -206,9 +214,12 @@ msgstr ""
 msgid "Accept terms"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Accepted MR"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Access Tokens"
 msgstr ""
 
@@ -871,9 +882,12 @@ msgstr ""
 msgid "CI/CD configuration"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "CI/CD for external repo"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "CICD|An explicit %{ci_file} needs to be specified before you can begin using Continuous Integration and Delivery."
 msgstr ""
 
@@ -1730,13 +1744,20 @@ msgstr ""
 msgid "CreateTokenToCloneLink|create a personal access token"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Creating epic"
-msgstr ""
-
+=======
 msgid "Cron Timezone"
 msgstr ""
 
 msgid "Cron syntax"
+>>>>>>> upstream/master
+msgstr ""
+
+msgid "CurrentUser|Profile"
+msgstr ""
+
+msgid "CurrentUser|Settings"
 msgstr ""
 
 msgid "Current node"
@@ -1796,9 +1817,12 @@ msgstr ""
 msgid "Decline and sign out"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Default classification label"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Define a custom pattern with cron syntax"
 msgstr ""
 
@@ -1903,9 +1927,12 @@ msgstr ""
 msgid "Directory name"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Disable"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Discard changes"
 msgstr ""
 
@@ -1918,12 +1945,15 @@ msgstr ""
 msgid "Dismiss Cycle Analytics introduction box"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Dismiss Merge Request promotion"
 msgstr ""
 
 msgid "Documentation for popular identity providers"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Domain"
 msgstr ""
 
@@ -2508,6 +2538,7 @@ msgstr ""
 msgid "Group ID"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "GroupRoadmap|Epics let you manage your portfolio of projects more efficiently and with less effort"
 msgstr ""
 
@@ -2526,6 +2557,8 @@ msgstr ""
 msgid "GroupRoadmap|Until %{dateWord}"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
 msgstr ""
 
@@ -2663,6 +2696,7 @@ msgstr ""
 msgid "Import repository"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "ImportButtons|Connect repositories from"
 msgstr ""
 
@@ -2675,6 +2709,8 @@ msgstr ""
 msgid "Improve search with Advanced Global Search and GitLab Enterprise Edition."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Include a Terms of Service agreement that all users must accept."
 msgstr ""
 
@@ -2946,9 +2982,12 @@ msgstr ""
 msgid "Members"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Members will be forwarded here when signing in to your group. Get this from your identity provider, where it can also be called \"SSO Service Location\", \"SAML Token Issuance Endpoint\", or \"SAML 2.0/W-Federation URL\"."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Merge Request:"
 msgstr ""
 
@@ -3099,9 +3138,12 @@ msgstr ""
 msgid "Move issue"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Multiple issue boards"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Name"
 msgstr ""
 
@@ -4001,9 +4043,12 @@ msgstr ""
 msgid "Resolve discussion"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Response metrics (Custom)"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Retry"
 msgstr ""
 
@@ -4221,6 +4266,7 @@ msgid_plural "Showing %d events"
 msgstr[0] ""
 msgstr[1] ""
 
+<<<<<<< HEAD
 msgid "Sidebar|Change weight"
 msgstr ""
 
@@ -4233,6 +4279,8 @@ msgstr ""
 msgid "Sidebar|Weight"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Sign out"
 msgstr ""
 
@@ -4553,12 +4601,15 @@ msgstr ""
 msgid "Terms of Service Agreement"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Thanks! Don't show me this again"
 msgstr ""
 
 msgid "The Advanced Global Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "The Issue Tracker is the place to add things that need to be improved or solved in a project"
 msgstr ""
 
@@ -4760,12 +4811,15 @@ msgstr ""
 msgid "Time between merge request creation and merge/close"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Time between updates and capacity settings."
 msgstr ""
 
 msgid "Time in seconds GitLab will wait for a response from the external service. When the service does not respond in time, access will be denied."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Time remaining"
 msgstr ""
 
@@ -5004,6 +5058,7 @@ msgstr ""
 msgid "Try again"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Turn on Service Desk"
 msgstr ""
 
@@ -5013,6 +5068,11 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
+=======
+msgid "Unable to load the diff. %{button_try_again}"
+msgstr ""
+
+>>>>>>> upstream/master
 msgid "Unlock"
 msgstr ""
 
@@ -5172,6 +5232,7 @@ msgstr ""
 msgid "Web terminal"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
 msgstr ""
 
@@ -5187,6 +5248,11 @@ msgstr ""
 msgid "When leaving the URL blank, classification labels can still be specified whitout disabling cross project features or performing external authorization checks."
 msgstr ""
 
+=======
+msgid "When enabled, users cannot use GitLab until the terms have been accepted."
+msgstr ""
+
+>>>>>>> upstream/master
 msgid "Wiki"
 msgstr ""
 
@@ -5587,6 +5653,7 @@ msgstr[1] ""
 msgid "deploy token"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "detected %d fixed vulnerability"
 msgid_plural "detected %d fixed vulnerabilities"
 msgstr[0] ""
@@ -5600,6 +5667,8 @@ msgstr[1] ""
 msgid "detected no vulnerabilities"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "disabled"
 msgstr ""
 
@@ -5844,9 +5913,12 @@ msgstr ""
 msgid "personal access token"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "private key does not match certificate."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "remaining"
 msgstr ""
 

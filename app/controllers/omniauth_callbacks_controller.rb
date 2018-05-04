@@ -93,7 +93,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       if identity_linker.changed?
         redirect_identity_linked
-      elsif identity_linker.error_message.present?
+      elsif identity_linker.failed?
         redirect_identity_link_failed(identity_linker.error_message)
       else
         redirect_identity_exists

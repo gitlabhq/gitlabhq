@@ -53,6 +53,12 @@ ActiveRecord::Schema.define(version: 20180503150427) do
     t.text "terms_html"
   end
 
+  create_table "application_setting_terms", force: :cascade do |t|
+    t.integer "cached_markdown_version"
+    t.text "terms", null: false
+    t.text "terms_html"
+  end
+
   create_table "application_settings", force: :cascade do |t|
     t.integer "default_projects_limit"
     t.boolean "signup_enabled"
@@ -198,6 +204,7 @@ ActiveRecord::Schema.define(version: 20180503150427) do
     t.boolean "pages_domain_verification_enabled", default: true, null: false
     t.float "external_authorization_service_timeout", default: 0.5, null: false
     t.boolean "allow_local_requests_from_hooks_and_services", default: false, null: false
+<<<<<<< HEAD
     t.text "external_auth_client_cert"
     t.text "encrypted_external_auth_client_key"
     t.string "encrypted_external_auth_client_key_iv"
@@ -222,6 +229,9 @@ ActiveRecord::Schema.define(version: 20180503150427) do
     t.integer "group_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+=======
+    t.boolean "enforce_terms", default: false
+>>>>>>> upstream/master
   end
 
   add_index "approver_groups", ["group_id"], name: "index_approver_groups_on_group_id", using: :btree
