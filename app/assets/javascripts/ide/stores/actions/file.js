@@ -117,7 +117,7 @@ export const getRawFileData = ({ state, commit, dispatch }, { path, baseSha }) =
   });
 };
 
-export const changeFileContent = ({ state, commit }, { path, content }) => {
+export const changeFileContent = ({ commit, dispatch, state }, { path, content }) => {
   const file = state.entries[path];
   commit(types.UPDATE_FILE_CONTENT, { path, content });
 
@@ -128,6 +128,8 @@ export const changeFileContent = ({ state, commit }, { path, content }) => {
   } else if (!file.changed && indexOfChangedFile !== -1) {
     commit(types.REMOVE_FILE_FROM_CHANGED, path);
   }
+
+  dispatch('burstUnusedSeal', {}, { root: true });
 };
 
 export const setFileLanguage = ({ getters, commit }, { fileLanguage }) => {
