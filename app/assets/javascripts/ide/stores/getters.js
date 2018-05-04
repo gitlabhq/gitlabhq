@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-import { activityBarViews } from '../constants';
-=======
-import { __ } from '~/locale';
 import { getChangesCountForFiles, filePathMatches } from './utils';
->>>>>>> master
+import { activityBarViews } from '../constants';
 
 export const activeFile = state => state.openFiles.find(file => file.active) || null;
 
