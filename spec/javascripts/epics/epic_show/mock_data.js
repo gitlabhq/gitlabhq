@@ -14,7 +14,7 @@ export const mockParticipants = [
     name: 'Administrator',
     username: 'root',
     state: 'active',
-    avatar_url: 'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+    avatar_url: '',
     web_url: 'http://127.0.0.1:3001/root',
   },
   {
@@ -22,7 +22,7 @@ export const mockParticipants = [
     name: 'Susy Johnson',
     username: 'tana_harvey',
     state: 'active',
-    avatar_url: 'https://www.gravatar.com/avatar/e021a7b0f3e4ae53b5068d487e68c031?s=80&d=identicon',
+    avatar_url: '',
     web_url: 'http://127.0.0.1:3001/tana_harvey',
   },
 ];
