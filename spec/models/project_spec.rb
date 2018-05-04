@@ -105,7 +105,7 @@ describe Project do
       it 'does not raise an error' do
         project = create(:project)
 
-        expect{ project.update(ci_cd_settings: nil) }.not_to raise_exception
+        expect { project.update(ci_cd_settings: nil) }.not_to raise_exception
       end
     end
 
