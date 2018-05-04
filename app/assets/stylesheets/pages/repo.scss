@@ -539,14 +539,14 @@
   }
 }
 
-.multi-file-additions,
-.multi-file-additions-solid {
-  fill: $green-500;
+.multi-file-addition,
+.multi-file-addition-solid {
+  color: $green-500;
 }
 
 .multi-file-modified,
 .multi-file-modified-solid {
-  fill: $orange-500;
+  color: $orange-500;
 }
 
 .multi-file-commit-list-collapsed {
@@ -984,6 +984,12 @@
 
 .ide-review-sub-header {
   color: $gl-text-color-secondary;
+}
+
+.ide-tree-changes {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
 }
 
 .ide-new-modal-label {

@@ -230,13 +230,11 @@ class Project < ActiveRecord::Base
   has_many :project_deploy_tokens
   has_many :deploy_tokens, through: :project_deploy_tokens
 
-  has_many :active_runners, -> { active }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
-
   has_one :auto_devops, class_name: 'ProjectAutoDevops'
   has_many :custom_attributes, class_name: 'ProjectCustomAttribute'
 
   has_many :project_badges, class_name: 'ProjectBadge'
-  has_one :ci_cd_settings, class_name: 'ProjectCiCdSetting'
+  has_one :ci_cd_settings, class_name: 'ProjectCiCdSetting', inverse_of: :project, autosave: true
 
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature, update_only: true
@@ -247,6 +245,7 @@ class Project < ActiveRecord::Base
   delegate :members, to: :team, prefix: true
   delegate :add_user, :add_users, to: :team
   delegate :add_guest, :add_reporter, :add_developer, :add_master, :add_role, to: :team
+  delegate :group_runners_enabled, :group_runners_enabled=, :group_runners_enabled?, to: :ci_cd_settings
 
   # Validations
   validates :creator, presence: true, on: :create
@@ -331,6 +330,11 @@ class Project < ActiveRecord::Base
   scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
   scope :with_issues_available_for_user, ->(current_user) { with_feature_available_for_user(:issues, current_user) }
   scope :with_merge_requests_enabled, -> { with_feature_enabled(:merge_requests) }
+
+  scope :with_group_runners_enabled, -> do
+    joins(:ci_cd_settings)
+    .where(project_ci_cd_settings: { group_runners_enabled: true })
+  end
 
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
 
@@ -1301,12 +1305,17 @@ class Project < ActiveRecord::Base
     @shared_runners ||= shared_runners_available? ? Ci::Runner.shared : Ci::Runner.none
   end
 
-  def active_shared_runners
-    @active_shared_runners ||= shared_runners.active
+  def group_runners
+    @group_runners ||= group_runners_enabled? ? Ci::Runner.belonging_to_parent_group_of_project(self.id) : Ci::Runner.none
+  end
+
+  def all_runners
+    union = Gitlab::SQL::Union.new([runners, group_runners, shared_runners])
+    Ci::Runner.from("(#{union.to_sql}) ci_runners")
   end
 
   def any_runners?(&block)
-    active_runners.any?(&block) || active_shared_runners.any?(&block)
+    all_runners.active.any?(&block)
   end
 
   def valid_runners_token?(token)
@@ -1872,6 +1881,10 @@ class Project < ActiveRecord::Base
 
   def licensed_features
     []
+  end
+
+  def toggle_ci_cd_settings!(settings_attribute)
+    ci_cd_settings.toggle!(settings_attribute)
   end
 
   def gitlab_deploy_token
