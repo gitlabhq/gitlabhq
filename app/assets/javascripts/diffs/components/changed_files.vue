@@ -30,7 +30,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['isInlineView', 'isParallelView']),
+    ...mapGetters(['isInlineView', 'isParallelView', 'areAllFilesCollapsed']),
     sumAddedLines() {
       return this.sumValues('addedLines');
     },
@@ -66,7 +66,7 @@ export default {
     document.removeEventListener('scroll', this.handleScroll);
   },
   methods: {
-    ...mapActions(['setInlineDiffViewType', 'setParallelDiffViewType']),
+    ...mapActions(['setInlineDiffViewType', 'setParallelDiffViewType', 'expandAllFiles']),
     pluralize,
     handleScroll() {
       if (!this.updating) {
@@ -102,6 +102,13 @@ export default {
       <div
         class="inline-parallel-buttons hidden-xs hidden-sm"
       >
+        <a
+          v-if="areAllFilesCollapsed"
+          class="hidden-xs btn btn-default"
+          @click="expandAllFiles"
+        >
+          {{ __('Expand all') }}
+        </a>
         <a
           class="hidden-xs btn btn-default"
           :href="toggleWhitespacePath"

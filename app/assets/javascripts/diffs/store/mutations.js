@@ -69,4 +69,17 @@ export default {
       state.diffFiles.splice(index, 1, newFileData);
     }
   },
+
+  [types.EXPAND_ALL_FILES](state) {
+    const diffFiles = [];
+
+    state.diffFiles.forEach((file) => {
+      diffFiles.push({
+        ...file,
+        collapsed: false,
+      });
+    });
+
+    Object.assign(state, { diffFiles });
+  },
 };
