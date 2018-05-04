@@ -1,14 +1,14 @@
-import Cookies from 'js-cookie';
 import MockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
-import * as actions from '~/diffs/store/actions';
-import * as types from '~/diffs/store/mutation_types';
-import store from '~/diffs/store';
+import Cookies from 'js-cookie';
 import {
+  DIFF_VIEW_COOKIE_NAME,
   INLINE_DIFF_VIEW_TYPE,
   PARALLEL_DIFF_VIEW_TYPE,
-  DIFF_VIEW_COOKIE_NAME,
 } from '~/diffs/constants';
+import store from '~/diffs/store';
+import * as actions from '~/diffs/store/actions';
+import * as types from '~/diffs/store/mutation_types';
+import axios from '~/lib/utils/axios_utils';
 import testAction from '../../helpers/vuex_action_helper';
 
 describe('DiffsStoreActions', () => {
@@ -58,7 +58,7 @@ describe('DiffsStoreActions', () => {
           { type: types.SET_LOADING, payload: true },
           { type: types.SET_LOADING, payload: false },
           { type: types.SET_MERGE_REQUEST_DIFFS, payload: res.merge_request_diffs },
-          { type: types.SET_DIFF_FILES, payload: res.diff_files },
+          { type: types.SET_DIFF_DATA, payload: res },
         ],
         [],
         done,
