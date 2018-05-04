@@ -64,7 +64,6 @@
     "marked": "^0.3.12",
     "monaco-editor": "0.10.0",
     "mousetrap": "^1.4.6",
-    "name-all-modules-plugin": "^1.0.1",
     "pikaday": "^1.6.1",
     "prismjs": "^1.6.0",
     "raphael": "^2.2.7",
