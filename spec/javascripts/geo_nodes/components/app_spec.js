@@ -124,18 +124,6 @@ describe('AppComponent', () => {
         }, 0);
       });
 
-      it('emits `nodeDetailsLoadFailed` event on failure', (done) => {
-        spyOn(eventHub, '$emit');
-        mock.onGet(mockNode.statusPath).reply(500, {});
-        spyOn(vm.service, 'getGeoNodeDetails').and.callThrough();
-
-        vm.fetchNodeDetails(mockNode);
-        setTimeout(() => {
-          expect(eventHub.$emit).toHaveBeenCalledWith('nodeDetailsLoadFailed', mockNode.id, jasmine.any(Object));
-          done();
-        }, 0);
-      });
-
       it('emits `nodeDetailsLoaded` event with fake nodeDetails object on 404 failure', (done) => {
         spyOn(eventHub, '$emit');
         mock.onGet(mockNode.statusPath).reply(404, {});
@@ -148,6 +136,34 @@ describe('AppComponent', () => {
           expect(nodeDetails).toBeDefined();
           expect(nodeDetails.syncStatusUnavailable).toBe(true);
           expect(nodeDetails.health).toBe('Request failed with status code 404');
+          done();
+        }, 0);
+      });
+
+      it('emits `nodeDetailsLoaded` event with fake nodeDetails object on 500 failure', (done) => {
+        spyOn(eventHub, '$emit');
+        mock.onGet(mockNode.statusPath).reply(500, {});
+        spyOn(vm.service, 'getGeoNodeDetails').and.callThrough();
+
+        vm.fetchNodeDetails(mockNode);
+        setTimeout(() => {
+          expect(eventHub.$emit).toHaveBeenCalledWith('nodeDetailsLoaded', jasmine.any(Object));
+          const nodeDetails = vm.store.state.nodeDetails['1'];
+          expect(nodeDetails).toBeDefined();
+          expect(nodeDetails.syncStatusUnavailable).toBe(true);
+          expect(nodeDetails.health).toBe('Request failed with status code 500');
+          done();
+        }, 0);
+      });
+
+      it('emits `nodeDetailsLoadFailed` event on failure when there is no response', (done) => {
+        spyOn(eventHub, '$emit');
+        mock.onGet(mockNode.statusPath).reply(500, null);
+        spyOn(vm.service, 'getGeoNodeDetails').and.callThrough();
+
+        vm.fetchNodeDetails(mockNode);
+        setTimeout(() => {
+          expect(eventHub.$emit).toHaveBeenCalledWith('nodeDetailsLoadFailed', mockNode.id, jasmine.any(Object));
           done();
         }, 0);
       });
