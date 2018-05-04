@@ -53,6 +53,7 @@ module Gitlab
 
         def adapter_options
           opts = base_options.merge(
+            base: base,
             encryption: encryption_options
           )
 

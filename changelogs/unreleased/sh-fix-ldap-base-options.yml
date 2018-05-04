@@ -1,0 +1,5 @@
+---
+title: Fix LDAP authentication on systems not using a base of dc=com
+merge_request:
+author:
+type: fixed

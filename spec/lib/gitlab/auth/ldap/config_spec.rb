@@ -31,6 +31,7 @@ describe Gitlab::Auth::LDAP::Config do
     it 'constructs basic options' do
       stub_ldap_config(
         options: {
+          'base'       => 'dc=example,dc=com',
           'host'       => 'ldap.example.com',
           'port'       => 386,
           'encryption' => 'plain'
@@ -38,6 +39,7 @@ describe Gitlab::Auth::LDAP::Config do
       )
 
       expect(config.adapter_options).to eq(
+        base: 'dc=example,dc=com',
         host: 'ldap.example.com',
         port: 386,
         encryption: nil
