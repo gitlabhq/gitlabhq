@@ -82,7 +82,7 @@ resource_rules:
           labels:
             - awaiting feedback
             - auto updated
-            <<: *label_exemptions
+          <<: *label_exemptions
           state: opened
         actions:
           labels:
