@@ -24,16 +24,19 @@ module Pseudonymity
   end
 
   class Table
-
-    config = {}
-
     def initialize
+      @config = {}
+      @csv_output = ""
       parse_config
     end
 
     def tables_to_csv
       tables = @config["tables"]
-
+      @csv_output = @config["output"]["csv"]
+      if not File.directory?(@csv_output)
+        puts "No such directory #{@csv_output}"
+        return
+      end
       tables.map do | k, v |
         table_to_csv(k, v["whitelist"], v["pseudo"])
       end
@@ -43,7 +46,7 @@ module Pseudonymity
       sql = "SELECT #{whitelist_columns.join(",")} from #{table}"
       results = ActiveRecord::Base.connection.exec_query(sql)
       return if results.empty?
-      
+
       anon = Anon.new(pseudonymity_columns)
       write_to_csv_file(table, anon.anonymize(results))
     end
@@ -53,7 +56,7 @@ module Pseudonymity
     end
 
     def write_to_csv_file(title, contents)
-      file_path = "/tmp/#{title}.csv"
+      file_path = "#{@csv_output}/#{title}_#{Time.now.to_i}.csv"
       column_names = contents.first.keys
       contents = CSV.generate do | csv |
         csv << column_names

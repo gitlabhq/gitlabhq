@@ -1,3 +1,5 @@
+output:
+  csv: '/tmp/'
 tables:
   approvals:
     whitelist:
