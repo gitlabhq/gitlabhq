@@ -25,9 +25,9 @@ module Gitlab
     end
 
     TEMPLATES_TABLE = [
-      ProjectTemplate.new('rails', 'Ruby on Rails', 'Includes an MVC structure, gemfile, rakefile, and .gitlab-ci.yml file, along with many others, to help you get started.', 'https://gitlab.com/gitlab-org/project-templates/rails'),
-      ProjectTemplate.new('spring', 'Spring', 'Includes an MVC structure, mvnw, pom.xml, and .gitlab-ci.yml file to help you get started.', 'https://gitlab.com/gitlab-org/project-templates/spring'),
-      ProjectTemplate.new('express', 'NodeJS Express', 'Includes an MVC structure and .gitlab-ci.yml file to help you get started.', 'https://gitlab.com/gitlab-org/project-templates/express')
+      ProjectTemplate.new('rails', 'Ruby on Rails', 'Includes an MVC structure, Gemfile, Rakefile, along with many others, to help you get started.', 'https://gitlab.com/gitlab-org/project-templates/rails'),
+      ProjectTemplate.new('spring', 'Spring', 'Includes an MVC structure, mvnw and pom.xml to help you get started.', 'https://gitlab.com/gitlab-org/project-templates/spring'),
+      ProjectTemplate.new('express', 'NodeJS Express', 'Includes an MVC structure to help you get started.', 'https://gitlab.com/gitlab-org/project-templates/express')
     ].freeze
 
     class << self

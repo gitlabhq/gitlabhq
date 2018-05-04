@@ -181,4 +181,84 @@ feature 'Runners' do
       expect(page.find('.shared-runners-description')).to have_content('Disable shared Runners')
     end
   end
+
+  context 'group runners' do
+    background do
+      project.add_master(user)
+    end
+
+    given(:group) { create :group }
+
+    context 'as project and group master' do
+      background do
+        group.add_master(user)
+      end
+
+      context 'project with a group but no group runner' do
+        given(:project) { create :project, group: group }
+
+        scenario 'group runners are not available' do
+          visit runners_path(project)
+
+          expect(page).to have_content 'This group does not provide any group Runners yet.'
+
+          expect(page).to have_content 'Setup a group Runner manually'
+          expect(page).not_to have_content 'Ask your group master to setup a group Runner.'
+        end
+      end
+    end
+
+    context 'as project master' do
+      context 'project without a group' do
+        given(:project) { create :project }
+
+        scenario 'group runners are not available' do
+          visit runners_path(project)
+
+          expect(page).to have_content 'This project does not belong to a group and can therefore not make use of group Runners.'
+        end
+      end
+
+      context 'project with a group but no group runner' do
+        given(:group) { create :group }
+        given(:project) { create :project, group: group }
+
+        scenario 'group runners are not available' do
+          visit runners_path(project)
+
+          expect(page).to have_content 'This group does not provide any group Runners yet.'
+
+          expect(page).not_to have_content 'Setup a group Runner manually'
+          expect(page).to have_content 'Ask your group master to setup a group Runner.'
+        end
+      end
+
+      context 'project with a group and a group runner' do
+        given(:group) { create :group }
+        given(:project) { create :project, group: group }
+        given!(:ci_runner) { create :ci_runner, groups: [group], description: 'group-runner' }
+
+        scenario 'group runners are available' do
+          visit runners_path(project)
+
+          expect(page).to have_content 'Available group Runners : 1'
+          expect(page).to have_content 'group-runner'
+        end
+
+        scenario 'group runners may be disabled for a project' do
+          visit runners_path(project)
+
+          click_on 'Disable group Runners'
+
+          expect(page).to have_content 'Enable group Runners'
+          expect(project.reload.group_runners_enabled).to be false
+
+          click_on 'Enable group Runners'
+
+          expect(page).to have_content 'Disable group Runners'
+          expect(project.reload.group_runners_enabled).to be true
+        end
+      end
+    end
+  end
 end

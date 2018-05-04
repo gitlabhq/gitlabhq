@@ -40,18 +40,36 @@ describe API::Runner do
           expect(json_response['token']).to eq(runner.token)
           expect(runner.run_untagged).to be true
           expect(runner.token).not_to eq(registration_token)
+          expect(runner).to be_instance_type
         end
 
         context 'when project token is used' do
           let(:project) { create(:project) }
 
-          it 'creates runner' do
+          it 'creates project runner' do
             post api('/runners'), token: project.runners_token
 
             expect(response).to have_gitlab_http_status 201
             expect(project.runners.size).to eq(1)
-            expect(Ci::Runner.first.token).not_to eq(registration_token)
-            expect(Ci::Runner.first.token).not_to eq(project.runners_token)
+            runner = Ci::Runner.first
+            expect(runner.token).not_to eq(registration_token)
+            expect(runner.token).not_to eq(project.runners_token)
+            expect(runner).to be_project_type
+          end
+        end
+
+        context 'when group token is used' do
+          let(:group) { create(:group) }
+
+          it 'creates a group runner' do
+            post api('/runners'), token: group.runners_token
+
+            expect(response).to have_http_status 201
+            expect(group.runners.size).to eq(1)
+            runner = Ci::Runner.first
+            expect(runner.token).not_to eq(registration_token)
+            expect(runner.token).not_to eq(group.runners_token)
+            expect(runner).to be_group_type
           end
         end
       end
