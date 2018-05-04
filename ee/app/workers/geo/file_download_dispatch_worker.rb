@@ -28,24 +28,25 @@ module Geo
       end
     end
 
+    # Get a batch of unsynced resources, taking equal parts from each resource.
+    #
     # @return [Array] job arguments of unsynced resources
     def find_unsynced_jobs(batch_size:)
-      find_jobs(sync_statuses: [:unsynced], batch_size: batch_size)
+      jobs = job_finders.reduce([]) do |jobs, job_finder|
+        jobs << job_finder.find_unsynced_jobs(batch_size: batch_size)
+      end
+
+      take_batch(*jobs, batch_size: batch_size)
     end
 
+    # Get a batch of failed and synced-but-missing-on-primary resources, taking
+    # equal parts from each resource.
+    #
     # @return [Array] job arguments of low priority resources
     def find_low_priority_jobs(batch_size:)
-      find_jobs(sync_statuses: [:failed, :synced_missing_on_primary], batch_size: batch_size)
-    end
-
-    # Get a batch of resources taking equal parts from each resource.
-    #
-    # @return [Array] job arguments of a batch of resources
-    def find_jobs(sync_statuses:, batch_size:)
       jobs = job_finders.reduce([]) do |jobs, job_finder|
-        sync_statuses.reduce(jobs) do |jobs, sync_status|
-          jobs << job_finder.find_jobs(sync_status: sync_status, batch_size: batch_size)
-        end
+        jobs << job_finder.find_failed_jobs(batch_size: batch_size)
+        jobs << job_finder.find_synced_missing_on_primary_jobs(batch_size: batch_size)
       end
 
       take_batch(*jobs, batch_size: batch_size)
