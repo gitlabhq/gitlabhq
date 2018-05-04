@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-03 10:13+0200\n"
-"PO-Revision-Date: 2018-05-03 10:13+0200\n"
+"POT-Creation-Date: 2018-05-04 17:37+0200\n"
+"PO-Revision-Date: 2018-05-04 17:37+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -63,6 +63,16 @@ msgstr[1] ""
 
 msgid "%d metric"
 msgid_plural "%d metrics"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d staged change"
+msgid_plural "%d staged changes"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d unstaged change"
+msgid_plural "%d unstaged changes"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -123,6 +133,9 @@ msgid "%{type} detected %d vulnerability"
 msgid_plural "%{type} detected %d vulnerabilities"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "%{unstaged} unstaged and %{staged} staged changes"
+msgstr ""
 
 msgid "(checkout the %{link} for information on how to install it)."
 msgstr ""
@@ -2508,9 +2521,6 @@ msgstr ""
 msgid "Group ID"
 msgstr ""
 
-msgid "GroupRoadmap|Epics let you manage your portfolio of projects more efficiently and with less effort"
-msgstr ""
-
 msgid "GroupRoadmap|From %{dateWord}"
 msgstr ""
 
@@ -2520,7 +2530,16 @@ msgstr ""
 msgid "GroupRoadmap|Something went wrong while fetching epics"
 msgstr ""
 
+msgid "GroupRoadmap|Sorry, no epics matched your search"
+msgstr ""
+
+msgid "GroupRoadmap|The roadmap shows the progress of your epics along a timeline"
+msgstr ""
+
 msgid "GroupRoadmap|To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. Only epics in the past 3 months and the next 3 months are shown &ndash; from %{startDate} to %{endDate}."
+msgstr ""
+
+msgid "GroupRoadmap|To widen your search, change or remove filters. Only epics in the past 3 months and the next 3 months are shown &ndash; from %{startDate} to %{endDate}."
 msgstr ""
 
 msgid "GroupRoadmap|Until %{dateWord}"
@@ -4048,6 +4067,12 @@ msgstr ""
 msgid "Running"
 msgstr ""
 
+msgid "SAML SSO"
+msgstr ""
+
+msgid "SAML SSO for %{group_name}"
+msgstr ""
+
 msgid "SAML Single Sign On"
 msgstr ""
 
@@ -4085,6 +4110,9 @@ msgid "Scoped issue boards"
 msgstr ""
 
 msgid "Search"
+msgstr ""
+
+msgid "Search branches"
 msgstr ""
 
 msgid "Search branches and tags"
@@ -4130,6 +4158,9 @@ msgid "Select assignee"
 msgstr ""
 
 msgid "Select branch/tag"
+msgstr ""
+
+msgid "Select source branch"
 msgstr ""
 
 msgid "Select target branch"
@@ -4233,6 +4264,12 @@ msgstr ""
 msgid "Sidebar|Weight"
 msgstr ""
 
+msgid "Sign in to %{group_name}"
+msgstr ""
+
+msgid "Sign in with Single Sign-On"
+msgstr ""
+
 msgid "Sign out"
 msgstr ""
 
@@ -4270,6 +4307,9 @@ msgid "Something went wrong while fetching the registry list."
 msgstr ""
 
 msgid "Something went wrong. Please try again."
+msgstr ""
+
+msgid "Sorry, no epics matched your search"
 msgstr ""
 
 msgid "Sort by"
@@ -4685,6 +4725,9 @@ msgstr ""
 msgid "This directory"
 msgstr ""
 
+msgid "This group allows you to sign in with your %{group_name} Single Sign-On account. This will redirect you to an external sign in page."
+msgstr ""
+
 msgid "This is a confidential issue."
 msgstr ""
 
@@ -4962,6 +5005,9 @@ msgstr ""
 msgid "To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. Only epics in the past 3 months and the next 3 months are shown."
 msgstr ""
 
+msgid "To widen your search, change or remove filters. If something is missing, create an epic."
+msgstr ""
+
 msgid "Todo"
 msgstr ""
 
@@ -5184,7 +5230,7 @@ msgstr ""
 msgid "When enabled, users cannot use GitLab until the terms have been accepted."
 msgstr ""
 
-msgid "When leaving the URL blank, classification labels can still be specified whitout disabling cross project features or performing external authorization checks."
+msgid "When leaving the URL blank, classification labels can still be specified without disabling cross project features or performing external authorization checks."
 msgstr ""
 
 msgid "Wiki"

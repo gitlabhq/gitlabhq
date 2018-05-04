@@ -20,6 +20,9 @@ module Gitlab
         GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE
       ].freeze
       SEARCH_CONTEXT_LINES = 3
+      # In https://gitlab.com/gitlab-org/gitaly/merge_requests/698
+      # We copied these two prefixes into gitaly-go, so don't change these
+      # or things will break! (REBASE_WORKTREE_PREFIX and SQUASH_WORKTREE_PREFIX)
       REBASE_WORKTREE_PREFIX = 'rebase'.freeze
       SQUASH_WORKTREE_PREFIX = 'squash'.freeze
       GITALY_INTERNAL_URL = 'ssh://gitaly/internal.git'.freeze
@@ -1685,10 +1688,14 @@ module Gitlab
         end
       end
 
+      # This function is duplicated in Gitaly-Go, don't change it!
+      # https://gitlab.com/gitlab-org/gitaly/merge_requests/698
       def fresh_worktree?(path)
         File.exist?(path) && !clean_stuck_worktree(path)
       end
 
+      # This function is duplicated in Gitaly-Go, don't change it!
+      # https://gitlab.com/gitlab-org/gitaly/merge_requests/698
       def clean_stuck_worktree(path)
         return false unless File.mtime(path) < 15.minutes.ago
 
