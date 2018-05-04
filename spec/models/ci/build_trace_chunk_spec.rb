@@ -14,6 +14,21 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
     stub_feature_flags(ci_enable_live_trace: true)
   end
 
+  context 'FastDestroyAll' do
+    let(:parent) { create(:project) }
+    let(:pipeline) { create(:ci_pipeline, project: parent) }
+    let(:build) { create(:ci_build, :running, :trace_live, pipeline: pipeline, project: parent) }
+    let(:subjects) { build.trace_chunks }
+
+    it_behaves_like 'fast destroyable'
+
+    def external_data_counter
+      Gitlab::Redis::SharedState.with do |redis|
+        redis.scan_each(match: "gitlab:ci:trace:*:chunks:*").to_a.size
+      end
+    end
+  end
+
   describe 'CHUNK_SIZE' do
     it 'Chunk size can not be changed without special care' do
       expect(described_class::CHUNK_SIZE).to eq(128.kilobytes)
