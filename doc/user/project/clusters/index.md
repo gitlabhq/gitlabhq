@@ -223,6 +223,18 @@ to reach your apps. This heavily depends on your domain provider, but in case
 you aren't sure, just create an A record with a wildcard host like
 `*.example.com.`.
 
+## Multiple Kubernetes clusters **[PREMIUM]**
+
+> Introduced in [GitLab Premium][ee] 10.3.
+
+With GitLab Premium, you can associate more than one Kubernetes clusters to your
+project. That way you can have different clusters for different environments,
+like dev, staging, production, etc.
+
+Simply add another cluster, like you did the first time, and make sure to
+[set an environment scope](#setting-the-environment-scope) that will
+differentiate the new cluster with the rest.
+
 ## Setting the environment scope **[PREMIUM]**
 
 NOTE: **Note:**
@@ -245,11 +257,11 @@ Also, jobs that don't have an environment keyword set will not be able to access
 
 For example, let's say the following Kubernetes clusters exist in a project:
 
-| Cluster    | Environment scope   |
-| ---------- | ------------------- |
-| Development| `*`                 |
-| Staging    | `staging/*`         |
-| Production | `production/*`      |
+| Cluster    | Environment scope |
+| ---------- | ------------------|
+| Development| `*`               |
+| Staging    | `staging`         |
+| Production | `production`      |
 
 And the following environments are set in [`.gitlab-ci.yml`](../../../ci/yaml/README.md):
 
@@ -266,14 +278,14 @@ deploy to staging:
   stage: deploy
   script: make deploy
   environment:
-    name: staging/$CI_COMMIT_REF_NAME
+    name: staging
     url: https://staging.example.com/
 
 deploy to production:
   stage: deploy
   script: make deploy
   environment:
-    name: production/$CI_COMMIT_REF_NAME
+    name: production
     url: https://example.com/
 ```
 
@@ -282,18 +294,6 @@ The result will then be:
 - The development cluster will be used for the "test" job.
 - The staging cluster will be used for the "deploy to staging" job.
 - The production cluster will be used for the "deploy to production" job.
-
-## Multiple Kubernetes clusters **[PREMIUM]**
-
-> Introduced in [GitLab Premium][ee] 10.3.
-
-With GitLab Premium, you can associate more than one Kubernetes clusters to your
-project. That way you can have different clusters for different environments,
-like dev, staging, production, etc.
-
-Simply add another cluster, like you did the first time, and make sure to
-[set an environment scope](#setting-the-environment-scope) that will
-differentiate the new cluster with the rest.
 
 ## Deployment variables
 
