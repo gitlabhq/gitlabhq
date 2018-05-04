@@ -7,7 +7,9 @@ module EESpecificCheck
     'scripts/**/*',
     'spec/javascripts/**/*', # https://gitlab.com/gitlab-org/gitlab-ee/issues/3871
     'vendor/assets/javascripts/jasmine-jquery.js',
-    '.gitlab-ci.yml'
+    '.gitlab-ci.yml',
+    'db/schema.rb',
+    'locale/gitlab.pot'
   ].freeze
 
   CompareBase = Struct.new(:ce_merge_base, :ee_merge_base, :ce_updated_base)
