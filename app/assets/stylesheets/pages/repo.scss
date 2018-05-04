@@ -995,3 +995,17 @@
   width: 100%;
   align-items: center;
 }
+
+.ide-context-header {
+  .avatar {
+    flex: 0 0 40px;
+  }
+}
+
+.ide-sidebar-project-title {
+  min-width: 0;
+
+  .sidebar-context-title {
+    white-space: nowrap;
+  }
+}

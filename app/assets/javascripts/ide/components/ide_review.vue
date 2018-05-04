@@ -43,7 +43,7 @@ export default {
       </div>
       <div class="prepend-top-5 ide-review-sub-header">
         <template v-if="!currentMergeRequest || viewer === 'diff'">
-          {{ __('Lastest changes') }}
+          {{ __('Latest changes') }}
         </template>
         <template v-else-if="currentMergeRequest && viewer === 'mrdiff'">
           Merge request
