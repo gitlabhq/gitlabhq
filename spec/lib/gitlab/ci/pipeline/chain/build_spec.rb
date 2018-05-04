@@ -44,7 +44,8 @@ describe Gitlab::Ci::Pipeline::Chain::Build do
     expect(pipeline.tag).to be false
     expect(pipeline.user).to eq user
     expect(pipeline.project).to eq project
-    expect(pipeline.variables.size).to eq variables_attributes.count
+    expect(pipeline.variables.map { |var| var.slice(:key, :secret_value) })
+      .to eq variables_attributes.map(&:with_indifferent_access)
   end
 
   it 'sets a valid config source' do
