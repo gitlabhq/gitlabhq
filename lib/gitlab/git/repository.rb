@@ -1679,7 +1679,7 @@ module Gitlab
       def fresh_worktree?(path)
         File.exist?(path) && !clean_stuck_worktree(path)
       end
-      
+
       # This function is duplicated in Gitaly-Go, don't change it!
       # https://gitlab.com/gitlab-org/gitaly/merge_requests/698
       def clean_stuck_worktree(path)
