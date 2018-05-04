@@ -53,12 +53,10 @@ class Group < Namespace
 
   validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
-<<<<<<< HEAD
   validates :repository_size_limit,
             numericality: { only_integer: true, greater_than_or_equal_to: 0, allow_nil: true }
-=======
+
   add_authentication_token_field :runners_token
->>>>>>> upstream/master
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook

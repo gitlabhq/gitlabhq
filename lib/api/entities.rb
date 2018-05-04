@@ -242,11 +242,6 @@ module API
       expose :requested_at
     end
 
-<<<<<<< HEAD
-    class Group < Grape::Entity
-      expose :id, :name, :path, :description, :visibility
-
-=======
     class BasicGroupDetails < Grape::Entity
       expose :id
       expose :web_url
@@ -255,7 +250,6 @@ module API
 
     class Group < BasicGroupDetails
       expose :path, :description, :visibility
->>>>>>> upstream/master
       expose :lfs_enabled?, as: :lfs_enabled
       expose :avatar_url do |group, options|
         group.avatar_url(only_path: false)

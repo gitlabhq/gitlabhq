@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20180502125859) do
-=======
 ActiveRecord::Schema.define(version: 20180503150427) do
->>>>>>> upstream/master
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1700,12 +1696,9 @@ ActiveRecord::Schema.define(version: 20180503150427) do
     t.boolean "require_two_factor_authentication", default: false, null: false
     t.integer "two_factor_grace_period", default: 48, null: false
     t.integer "cached_markdown_version"
-<<<<<<< HEAD
     t.integer "plan_id"
     t.integer "project_creation_level"
-=======
     t.string "runners_token"
->>>>>>> upstream/master
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree
