@@ -158,4 +158,27 @@ describe('DiffsStoreActions', () => {
       );
     });
   });
+
+  describe('loadCollapsedDiff', () => {
+    it('should fetch data and call mutation with response and the give parameter', done => {
+      const file = { hash: 123, loadCollapsedDiffUrl: '/load/collapsed/diff/url' };
+      const data = { hash: 123, parallelDiffLines: [{ lineCode: 1 }] };
+      const mock = new MockAdapter(axios);
+      mock.onGet(file.loadCollapsedDiffUrl).reply(200, data);
+
+      testAction(
+        actions.loadCollapsedDiff,
+        file,
+        {},
+        [
+          {
+            type: types.ADD_COLLAPSED_DIFFS,
+            payload: { file, data },
+          },
+        ],
+        [],
+        done,
+      );
+    });
+  });
 });

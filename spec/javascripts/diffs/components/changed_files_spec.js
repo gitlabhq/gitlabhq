@@ -4,7 +4,7 @@ import { mountComponentWithStore } from 'spec/helpers';
 import store from '~/diffs/store';
 import ChangedFiles from '~/diffs/components/changed_files.vue';
 
-fdescribe('ChangedFiles', () => {
+describe('ChangedFiles', () => {
   const Component = Vue.extend(ChangedFiles);
   const createComponent = props => {
     return mountComponentWithStore(Component, { props, store });

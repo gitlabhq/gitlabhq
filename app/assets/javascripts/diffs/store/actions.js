@@ -66,6 +66,14 @@ export const loadMoreLines = ({ commit }, options) => {
   });
 };
 
+export const loadCollapsedDiff = ({ commit }, file) =>
+  axios.get(file.loadCollapsedDiffUrl).then(res => {
+    commit(types.ADD_COLLAPSED_DIFFS, {
+      file,
+      data: res.data,
+    });
+  });
+
 export default {
   setEndpoint,
   setLoadingState,
@@ -75,4 +83,5 @@ export default {
   showCommentForm,
   cancelCommentForm,
   loadMoreLines,
+  loadCollapsedDiff,
 };

@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import _ from 'underscore';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { findDiffFile, addLineReferences, removeMatchLine, addContextLines } from './utils';
 import * as types from './mutation_types';
@@ -14,17 +15,13 @@ export default {
 
   [types.SET_DIFF_FILES](state, diffFiles) {
     Object.assign(state, {
-      diffFiles: convertObjectPropsToCamelCase(diffFiles, {
-        deep: true,
-      }),
+      diffFiles: convertObjectPropsToCamelCase(diffFiles, { deep: true }),
     });
   },
 
   [types.SET_MERGE_REQUEST_DIFFS](state, mergeRequestDiffs) {
     Object.assign(state, {
-      mergeRequestDiffs: convertObjectPropsToCamelCase(mergeRequestDiffs, {
-        deep: true,
-      }),
+      mergeRequestDiffs: convertObjectPropsToCamelCase(mergeRequestDiffs, { deep: true }),
     });
   },
 
@@ -55,5 +52,15 @@ export default {
       bottom,
       lineNumbers,
     });
+  },
+
+  [types.ADD_COLLAPSED_DIFFS](state, { file, data }) {
+    const normalizedData = convertObjectPropsToCamelCase(data, { deep: true });
+    const [newFileData] = normalizedData.diffFiles.filter(f => f.fileHash === file.fileHash);
+
+    if (newFileData) {
+      const index = _.findIndex(state.diffFiles, f => f.fileHash === file.fileHash);
+      state.diffFiles.splice(index, 1, newFileData);
+    }
   },
 };
