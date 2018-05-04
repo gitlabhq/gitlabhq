@@ -207,6 +207,10 @@ class MergeRequestWidgetEntity < IssuableEntity
     commit_change_content_project_merge_request_path(merge_request.project, merge_request)
   end
 
+  expose :preview_note_path do |merge_request|
+    preview_markdown_path(merge_request.project, quick_actions_target_type: 'MergeRequest', quick_actions_target_id: merge_request.id)
+  end
+
   private
 
   delegate :current_user, to: :request

@@ -35,11 +35,11 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
   describe('Notes', function() {
     const FLASH_TYPE_ALERT = 'alert';
     const NOTES_POST_PATH = /(.*)\/notes\?html=true$/;
-    var commentsTemplate = 'merge_requests/merge_request_with_comment.html.raw';
-    preloadFixtures(commentsTemplate);
+    var fixture = 'snippets/show.html.raw';
+    preloadFixtures(fixture);
 
     beforeEach(function() {
-      loadFixtures(commentsTemplate);
+      loadFixtures(fixture);
       gl.utils.disableButtonIfEmptyField = _.noop;
       window.project_uploads_path = 'http://test.host/uploads';
       $('body').attr('data-page', 'projects:merge_requets:show');
@@ -65,12 +65,9 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
       let mock;
 
       beforeEach(function() {
-        spyOn(axios, 'patch').and.callThrough();
+        spyOn(axios, 'patch').and.callFake(() => new Promise(() => {}));
         mock = new MockAdapter(axios);
-
-        mock
-          .onPatch(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`)
-          .reply(200, {});
+        mock.onAny().reply(200, {});
 
         $('.js-comment-button').on('click', function(e) {
           e.preventDefault();
@@ -86,7 +83,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         const changeEvent = document.createEvent('HTMLEvents');
         changeEvent.initEvent('change', true, true);
         $('input[type=checkbox]')
-          .attr('checked', true)[1]
+          .attr('checked', true)[0]
           .dispatchEvent(changeEvent);
 
         expect($('.js-task-list-field.original-task-list').val()).toBe('- [x] Task List Item');
@@ -96,12 +93,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         $('.js-task-list-container').trigger('tasklist:changed');
 
         setTimeout(() => {
-          expect(axios.patch).toHaveBeenCalledWith(
-            `${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`,
-            {
-              note: { note: '' },
-            },
-          );
+          expect(axios.patch).toHaveBeenCalled();
           done();
         });
       });

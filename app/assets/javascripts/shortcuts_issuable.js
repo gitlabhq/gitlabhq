@@ -26,6 +26,10 @@ export default class ShortcutsIssuable extends Shortcuts {
     const $replyField = $('.js-main-target-form .js-vue-comment-form');
     const documentFragment = window.gl.utils.getSelectedFragment();
 
+    if (!$replyField.length) {
+      return false;
+    }
+
     if (!documentFragment) {
       $replyField.focus();
       return false;

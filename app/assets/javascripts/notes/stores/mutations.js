@@ -126,9 +126,7 @@ export default {
     notesArr.push({
       individual_note: true,
       isPlaceholderNote: true,
-      placeholderType: data.isSystemNote
-        ? constants.SYSTEM_NOTE
-        : constants.NOTE,
+      placeholderType: data.isSystemNote ? constants.SYSTEM_NOTE : constants.NOTE,
       notes: [
         {
           body: data.noteBody,
@@ -147,10 +145,7 @@ export default {
 
     if (hasEmojiAwardedByCurrentUser.length) {
       // If current user has awarded this emoji, remove it.
-      note.award_emoji.splice(
-        note.award_emoji.indexOf(hasEmojiAwardedByCurrentUser[0]),
-        1,
-      );
+      note.award_emoji.splice(note.award_emoji.indexOf(hasEmojiAwardedByCurrentUser[0]), 1);
     } else {
       note.award_emoji.push({
         name: awardName,

@@ -1,4 +1,5 @@
 <script>
+import { mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import { pluralize, truncate } from '~/lib/utils/text_utility';
@@ -27,11 +28,10 @@ export default {
       return this.discussions.reduce((acc, note) => acc.concat(note.notes), []);
     },
     notesInGutter() {
-      return this.allDiscussions.slice(0, COUNT_OF_AVATARS_IN_GUTTER).map(n =>
-        ({
-          note: n.note,
-          author: n.author,
-        }));
+      return this.allDiscussions.slice(0, COUNT_OF_AVATARS_IN_GUTTER).map(n => ({
+        note: n.note,
+        author: n.author,
+      }));
     },
     moreCount() {
       return this.allDiscussions.length - this.notesInGutter.length;
@@ -45,6 +45,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions(['toggleDiscussion']),
     getTooltipText(noteData) {
       let note = noteData.note;
 
@@ -55,11 +56,11 @@ export default {
       return `${noteData.author.name}: ${note}`;
     },
     toggleDiscussions() {
-      this.discussions = this.discussions.map(discussion =>
-        (Object.assign({}, discussion, {
-          expanded: !discussion.expanded,
-        })),
-      );
+      this.discussions.forEach(discussion => {
+        this.toggleDiscussion({
+          discussionId: discussion.id,
+        });
+      });
     },
   },
 };

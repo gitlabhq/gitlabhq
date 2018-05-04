@@ -163,6 +163,7 @@ export default class MergeRequestTabs {
         this.expandViewContainer();
       }
       this.destroyPipelinesView();
+      this.commitsTab.classList.remove('active');
     } else if (action === 'pipelines') {
       this.resetViewContainer();
       this.mountPipelinesView();
