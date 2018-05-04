@@ -8,7 +8,13 @@ class AddIndexToNamespacesRunnersToken < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  def change
+  def up
     add_concurrent_index :namespaces, :runners_token, unique: true
+  end
+
+  def down
+    if index_exists?(:namespaces, :runners_token, unique: true)
+      remove_index :namespaces, :runners_token
+    end
   end
 end
