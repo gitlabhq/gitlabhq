@@ -11,7 +11,10 @@ export default new Vuex.Store({
   getters,
   mutations,
   state: {
-    selectedProject: '',
+    selectedProject: {
+      projectId: '',
+      name: '',
+    },
     selectedZone: '',
     selectedMachineType: '',
   },

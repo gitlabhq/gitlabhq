@@ -11,7 +11,6 @@ import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidde
 import store from '../stores';
 import DropdownButton from './dropdown_button.vue';
 // TODO: Consolidate dropdown code
-// TODO: Account for invalid project settings/errors (project returns error when retrieving zones)
 
 export default {
   name: 'GkeProjectIdDropdown',
@@ -43,7 +42,6 @@ export default {
   },
   data() {
     return {
-      isDisabled: false,
       isLoading: true,
       hasErrors: false,
       searchQuery: '',
@@ -52,17 +50,24 @@ export default {
     };
   },
   computed: {
+    isDisabled() {
+      return this.items.length < 2;
+    },
     results() {
       return this.items.filter(item => item.name.toLowerCase().indexOf(this.searchQuery) > -1);
     },
     toggleText() {
-      if (this.$store.state.selectedProject) {
-        return this.$store.state.selectedProject;
+      if (this.$store.state.selectedProject.name) {
+        return this.$store.state.selectedProject.name;
       }
 
-      return this.isLoading
-        ? s__('ClusterIntegration|Fetching projects')
-        : s__('ClusterIntegration|Select project');
+      if (this.isLoading) {
+        return s__('ClusterIntegration|Fetching projects');
+      }
+
+      return this.items.length
+        ? s__('ClusterIntegration|Select project')
+        : s__('ClusterIntegration|No projects found');
     },
     placeholderText() {
       return s__('ClusterIntegration|Search projects');
@@ -102,26 +107,10 @@ export default {
         resp => {
           this.items = resp.result.projects;
 
-          // Cause error
-          // this.items = data;
-
-          // Single state
-          // this.items = [
-          //   {
-          //     create_time: '2018-01-16T15:55:02.992Z',
-          //     lifecycle_state: 'ACTIVE',
-          //     name: 'NaturalInterface',
-          //     item_id: 'naturalinterface-192315',
-          //     item_number: 840816084083,
-          //   },
-          // ];
-
-          if (this.items.length === 1) {
-            this.isDisabled = true;
-            this.setProject(this.items[0].name);
-          }
-
           this.isLoading = false;
+          if (this.items.length === 1) {
+            this.setProject(this.items[0]);
+          }
         },
         resp => {
           this.isLoading = false;
@@ -150,7 +139,7 @@ export default {
     >
       <dropdown-hidden-input
         :name="fieldName"
-        :value="$store.state.selectedProject"
+        :value="$store.state.selectedProject.projectId"
       />
       <dropdown-button
         :class="{ 'gl-field-error-outline': hasErrors }"
@@ -171,7 +160,7 @@ export default {
             >
               <a
                 href="#"
-                @click.prevent="setProject(result.name)"
+                @click.prevent="setProject(result)"
               >{{ result.name }}</a>
             </li>
           </ul>

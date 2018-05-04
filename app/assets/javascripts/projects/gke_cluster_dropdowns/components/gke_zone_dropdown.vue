@@ -76,7 +76,9 @@ export default {
     ...mapActions(['setZone']),
     fetchItems() {
       this.isLoading = true;
-      const request = this.service.zones.list({ project: this.$store.state.selectedProject });
+      const request = this.service.zones.list({
+        project: this.$store.state.selectedProject.projectId,
+      });
 
       return request.then(
         resp => {
@@ -129,7 +131,7 @@ export default {
   >
     <dropdown-hidden-input
       :name="fieldName"
-      :value="$store.state.selectedProject"
+      :value="$store.state.selectedZone"
     />
     <dropdown-button
       :class="{ 'gl-field-error-outline': hasErrors }"

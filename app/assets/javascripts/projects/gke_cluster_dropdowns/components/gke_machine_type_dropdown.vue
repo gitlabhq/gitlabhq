@@ -85,7 +85,7 @@ export default {
     fetchItems() {
       this.isLoading = true;
       const request = this.service.machineTypes.list({
-        project: this.$store.state.selectedProject,
+        project: this.$store.state.selectedProject.projectId,
         zone: this.$store.state.selectedZone,
       });
 
@@ -143,7 +143,7 @@ export default {
   >
     <dropdown-hidden-input
       :name="fieldName"
-      :value="$store.state.selectedProject"
+      :value="$store.state.selectedMachineType"
     />
     <dropdown-button
       :class="{ 'gl-field-error-outline': hasErrors }"
