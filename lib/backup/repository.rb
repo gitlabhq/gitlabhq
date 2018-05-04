@@ -90,7 +90,6 @@ module Backup
     def restore
       prepare_directories
       Project.find_each(batch_size: 1000) do |project|
-        progress.print " * #{display_repo_path(project)} ... "
         path_to_project_bundle = path_to_bundle(project)
 
         project.repository.create_from_bundle path_to_project_bundle unless project.repository_exists?
