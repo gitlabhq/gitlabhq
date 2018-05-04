@@ -47,7 +47,7 @@ export default {
   },
   computed: {
     isDisabled() {
-      return this.$store.state.selectedProject.length === 0;
+      return this.$store.state.selectedProject.projectId.length === 0;
     },
     results() {
       return this.items.filter(item => item.name.toLowerCase().indexOf(this.searchQuery) > -1);
