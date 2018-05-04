@@ -901,7 +901,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
             context 'when we resend full trace' do
               before do
-                patch_the_trace('BUILD TRACE appended appended hello')
+                patch_the_trace('BUILD TRACE appended appended hello', headers.merge({ 'Content-Range' => "0-32" }))
               end
 
               it 'succeeds with updating trace' do
