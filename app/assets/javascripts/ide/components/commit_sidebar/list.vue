@@ -44,6 +44,11 @@ export default {
       default: false,
     },
   },
+  data() {
+    return {
+      showActionButton: false,
+    };
+  },
   computed: {
     titleText() {
       return sprintf(__('%{title} changes'), {
@@ -55,6 +60,9 @@ export default {
     ...mapActions(['stageAllChanges', 'unstageAllChanges']),
     actionBtnClicked() {
       this[this.action]();
+    },
+    setShowActionButton(show) {
+      this.showActionButton = show;
     },
   },
 };
@@ -76,7 +84,16 @@ export default {
           :size="18"
         />
         {{ titleText }}
+        <span
+          v-show="!showActionButton"
+          @mouseenter="setShowActionButton(true)"
+          class="ide-commit-file-count"
+        >
+          {{ fileList.length }}
+        </span>
         <button
+          v-show="showActionButton"
+          @mouseleave="setShowActionButton(false)"
           type="button"
           class="btn btn-blank btn-link ide-staged-action-btn"
           @click="actionBtnClicked"

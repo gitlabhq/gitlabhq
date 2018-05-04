@@ -10,7 +10,10 @@ import IdeTree from './ide_tree.vue';
 import ResizablePanel from './resizable_panel.vue';
 import ActivityBar from './activity_bar.vue';
 import CommitSection from './repo_commit_section.vue';
+import CommitForm from './commit_sidebar/form.vue';
 import IdeReview from './ide_review.vue';
+import SuccessMessage from './commit_sidebar/success_message.vue';
+import { activityBarViews } from '../constants';
 
 export default {
   directives: {
@@ -26,7 +29,9 @@ export default {
     Identicon,
     CommitSection,
     IdeTree,
+    CommitForm,
     IdeReview,
+    SuccessMessage,
   },
   data() {
     return {
@@ -34,8 +39,21 @@ export default {
     };
   },
   computed: {
-    ...mapState(['loading', 'currentBranchId', 'currentActivityView']),
-    ...mapGetters(['currentProject']),
+    ...mapState([
+      'loading',
+      'currentBranchId',
+      'currentActivityView',
+      'changedFiles',
+      'stagedFiles',
+      'lastCommitMsg',
+    ]),
+    ...mapGetters(['currentProject', 'someUncommitedChanges']),
+    showSuccessMessage() {
+      return (
+        this.currentActivityView === activityBarViews.edit &&
+        (this.lastCommitMsg && !this.someUncommitedChanges)
+      );
+    },
     branchTooltipTitle() {
       return this.showTooltip ? this.currentBranchId : undefined;
     },
@@ -115,6 +133,7 @@ export default {
             :is="currentActivityView"
           />
         </div>
+        <commit-form />
       </template>
     </div>
   </resizable-panel>

@@ -49,16 +49,4 @@ describe('Multi-file editor commit sidebar list', () => {
       expect(vm.$el.textContent).toContain('No changes');
     });
   });
-
-  describe('action button', () => {
-    beforeEach(() => {
-      spyOn(vm, 'stageAllChanges');
-    });
-
-    it('calls store action when clicked', () => {
-      vm.$el.querySelector('.ide-staged-action-btn').click();
-
-      expect(vm.stageAllChanges).toHaveBeenCalled();
-    });
-  });
 });

@@ -56,9 +56,15 @@ export const allBlobs = state =>
 export const getChangedFile = state => path => state.changedFiles.find(f => f.path === path);
 export const getStagedFile = state => path => state.stagedFiles.find(f => f.path === path);
 
+export const lastOpenedFile = state =>
+  [...state.changedFiles, ...state.stagedFiles].sort((a, b) => b.lastOpenedAt - a.lastOpenedAt)[0];
+
 export const isEditModeActive = state => state.currentActivityView === activityBarViews.edit;
 export const isCommitModeActive = state => state.currentActivityView === activityBarViews.commit;
 export const isReviewModeActive = state => state.currentActivityView === activityBarViews.review;
+
+export const someUncommitedChanges = state =>
+  !!(state.changedFiles.length || state.stagedFiles.length);
 
 export const getChangesInFolder = state => path => {
   const changedFilesCount = state.changedFiles.filter(f => filePathMatches(f, path)).length;

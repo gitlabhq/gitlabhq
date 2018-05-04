@@ -1,5 +1,5 @@
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 import NewDropdown from './new_dropdown/index.vue';
 import IdeTreeList from './ide_tree_list.vue';
 
@@ -10,7 +10,17 @@ export default {
   },
   computed: {
     ...mapState(['currentBranchId']),
-    ...mapGetters(['currentProject']),
+    ...mapGetters(['currentProject', 'currentTree', 'activeFile']),
+  },
+  mounted() {
+    if (this.activeFile && this.activeFile.pending) {
+      this.$router.push(`/project${this.activeFile.url}`, () => {
+        this.updateViewer('editor');
+      });
+    }
+  },
+  methods: {
+    ...mapActions(['updateViewer']),
   },
 };
 </script>

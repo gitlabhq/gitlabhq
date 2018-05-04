@@ -8,7 +8,7 @@ export default {
     Icon,
   },
   computed: {
-    ...mapGetters(['currentProject']),
+    ...mapGetters(['currentProject', 'hasChanges']),
     ...mapState(['currentActivityView']),
     goBackUrl() {
       return document.referrer || this.currentProject.web_url;
@@ -65,7 +65,7 @@ export default {
           />
         </button>
       </li>
-      <li>
+      <li v-show="hasChanges">
         <button
           type="button"
           class="ide-sidebar-link js-ide-commit-mode"
