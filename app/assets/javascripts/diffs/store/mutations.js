@@ -12,6 +12,12 @@ export default {
     Object.assign(state, { isLoading });
   },
 
+  [types.SET_DIFF_DATA](state, data) {
+    Object.assign(state, {
+      ...convertObjectPropsToCamelCase(data, { deep: true }),
+    });
+  },
+
   [types.SET_DIFF_FILES](state, diffFiles) {
     Object.assign(state, {
       diffFiles: convertObjectPropsToCamelCase(diffFiles, {

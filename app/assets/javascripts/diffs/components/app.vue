@@ -5,6 +5,7 @@ import CompareVersions from './compare_versions.vue';
 import ChangedFiles from './changed_files.vue';
 import DiffFile from './diff_file.vue';
 import NoChanges from './no_changes.vue';
+import HiddenFilesWarning from './hidden_files_warning.vue';
 
 export default {
   name: 'DiffsApp',
@@ -14,6 +15,7 @@ export default {
     ChangedFiles,
     DiffFile,
     NoChanges,
+    HiddenFilesWarning,
   },
   props: {
     endpoint: {
@@ -37,8 +39,9 @@ export default {
       diffFiles: state => state.diffs.diffFiles,
       diffViewType: state => state.diffs.diffViewType,
       mergeRequestDiffs: state => state.diffs.mergeRequestDiffs,
+      renderOverflowWarning: state => !state.diffs.renderOverflowWarning,
     }),
-    ...mapGetters(['isParallelView']),
+    ...mapGetters(['isParallelView', 'diffFilesSize']),
   },
   watch: {
     diffViewType() {
@@ -99,6 +102,13 @@ export default {
           :diff-files="diffFiles"
           :active-file="activeFile"
         />
+
+        <hidden-files-warning
+          v-if="renderOverflowWarning"
+          :visible="diffFilesSize.visible"
+          :total="diffFilesSize.total"
+        />
+
         <div class="files">
           <diff-file
             v-for="file in diffFiles"

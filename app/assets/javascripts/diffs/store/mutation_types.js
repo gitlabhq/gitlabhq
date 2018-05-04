@@ -1,5 +1,6 @@
 export const SET_ENDPOINT = 'SET_ENDPOINT';
 export const SET_LOADING = 'SET_LOADING';
+export const SET_DIFF_DATA = 'SET_DIFF_DATA';
 export const SET_DIFF_FILES = 'SET_DIFF_FILES';
 export const SET_DIFF_VIEW_TYPE = 'SET_DIFF_VIEW_TYPE';
 export const SET_MERGE_REQUEST_DIFFS = 'SET_MERGE_REQUEST_DIFFS';
