@@ -74,7 +74,7 @@ module FastDestroyAll
       # This method is to be defined on models which have fast destroyable models as children,
       # and let us avoid to use `dependent: :destroy` hook
       def use_fast_destroy(relation)
-        before_destroy do
+        before_destroy(prepend: true) do
           perform_fast_destroy(public_send(relation)) # rubocop:disable GitlabSecurity/PublicSend
         end
       end
