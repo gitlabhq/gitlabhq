@@ -274,11 +274,10 @@ class Group < Namespace
   end
 
   def secret_variables_for(ref, project)
-    list_of_ids = [self] + ancestors
+    list_of_ids = ([self] + ancestors).map(&:id)
     variables = Ci::GroupVariable.where(group: list_of_ids)
     variables = variables.unprotected unless project.protected_for?(ref)
-    variables = variables.group_by(&:group_id)
-    list_of_ids.reverse.map { |group| variables[group.id] }.compact.flatten
+    variables.order(order_by_field(:group_id, list_of_ids))
   end
 
   def group_member(user)
@@ -332,5 +331,15 @@ class Group < Namespace
     return if visibility_level_allowed_by_sub_groups?
 
     errors.add(:visibility_level, "#{visibility} is not allowed since there are sub-groups with higher visibility.")
+  end
+
+  # TODO: Make #order_by_field reusable
+  def order_by_field(field, values)
+    order_by = ["CASE"]
+    values.each_with_index do |value, index|
+      order_by << "WHEN #{field}='#{value}' THEN #{index}"
+    end
+    order_by << "END DESC"
+    order_by.join(" ")
   end
 end
