@@ -73,38 +73,7 @@ describe('RepoFile', () => {
       expect(treeChangesEl).not.toBeNull();
       expect(treeChangesEl.textContent).toContain('1');
     });
-  });
 
-  describe('locked file', () => {
-    let f;
-
-    beforeEach(() => {
-      f = file('locked file');
-      f.file_lock = {
-        user: {
-          name: 'testuser',
-          updated_at: new Date(),
-        },
-      };
-
-      createComponent({
-        file: f,
-        level: 0,
-      });
-    });
-
-    it('renders lock icon', () => {
-      expect(vm.$el.querySelector('.file-status-icon')).not.toBeNull();
-    });
-
-    it('renders a tooltip', () => {
-      expect(
-        vm.$el.querySelector('.ide-file-name span:nth-child(2)').dataset.originalTitle,
-      ).toContain('Locked by testuser');
-    });
-  });
-
-  describe('folder', () => {
     it('renders action dropdown', done => {
       createComponent({
         file: {
@@ -140,6 +109,35 @@ describe('RepoFile', () => {
 
         done();
       });
+    });
+  });
+
+  describe('locked file', () => {
+    let f;
+
+    beforeEach(() => {
+      f = file('locked file');
+      f.file_lock = {
+        user: {
+          name: 'testuser',
+          updated_at: new Date(),
+        },
+      };
+
+      createComponent({
+        file: f,
+        level: 0,
+      });
+    });
+
+    it('renders lock icon', () => {
+      expect(vm.$el.querySelector('.file-status-icon')).not.toBeNull();
+    });
+
+    it('renders a tooltip', () => {
+      expect(
+        vm.$el.querySelector('.ide-file-name span:nth-child(2)').dataset.originalTitle,
+      ).toContain('Locked by testuser');
     });
   });
 });
