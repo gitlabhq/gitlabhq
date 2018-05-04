@@ -1,4 +1,8 @@
 .terms {
+  .with-performance-bar & {
+    margin-top: 0;
+  }
+
   .alert-wrapper {
     min-height: $header-height + $gl-padding;
   }
