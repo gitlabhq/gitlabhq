@@ -3,7 +3,8 @@ require 'rails_helper'
 describe RepositoryUpdateMirrorWorker do
   describe '#perform' do
     let(:jid) { '12345678' }
-    let!(:project) { create(:project, :mirror, :import_scheduled) }
+    let!(:project) { create(:project) }
+    let!(:import_state) { create(:import_state, :mirror, :scheduled, project: project) }
 
     before do
       allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(true)
@@ -13,7 +14,7 @@ describe RepositoryUpdateMirrorWorker do
     it 'sets status as finished when update mirror service executes successfully' do
       expect_any_instance_of(Projects::UpdateMirrorService).to receive(:execute).and_return(status: :success)
 
-      expect { subject.perform(project.id) }.to change { project.reload.import_status }.to('finished')
+      expect { subject.perform(project.id) }.to change { import_state.reload.status }.to('finished')
     end
 
     it 'sets status as failed when update mirror service executes with errors' do
@@ -35,16 +36,17 @@ describe RepositoryUpdateMirrorWorker do
       allow_any_instance_of(Projects::UpdateMirrorService).to receive(:execute).and_raise(RuntimeError)
 
       expect { subject.perform(project.id) }.to raise_error(RepositoryUpdateMirrorWorker::UpdateError)
-      expect(project.reload.import_status).to eq('failed')
+      expect(import_state.reload.status).to eq('failed')
     end
 
     context 'when worker was reset without cleanup' do
-      let(:started_project) { create(:project, :mirror, :import_started, import_jid: jid) }
+      let(:started_project) { create(:project) }
+      let(:import_state) { create(:import_state, :mirror, :started, project: started_project, jid: jid) }
 
       it 'sets status as finished when update mirror service executes successfully' do
         expect_any_instance_of(Projects::UpdateMirrorService).to receive(:execute).and_return(status: :success)
 
-        expect { subject.perform(started_project.id) }.to change { started_project.reload.import_status }.to('finished')
+        expect { subject.perform(started_project.id) }.to change { import_state.reload.status }.to('finished')
       end
     end
 

@@ -307,7 +307,7 @@ project:
 - statistics
 - container_repositories
 - uploads
-- mirror_data
+- import_state
 - repository_state
 - source_pipelines
 - sourced_pipelines

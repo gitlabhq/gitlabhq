@@ -37,7 +37,7 @@ describe UpdateAllMirrorsWorker do
     end
 
     def expect_import_status(project, status)
-      expect(project.reload.import_status).to eq(status)
+      expect(project.import_state.reload.status).to eq(status)
     end
 
     def expect_import_scheduled(*projects)
@@ -65,7 +65,7 @@ describe UpdateAllMirrorsWorker do
         namespace = create(:group, :public, plan: (:bronze_plan if licensed))
         project = create(:project, :public, :mirror, namespace: namespace)
 
-        project.mirror_data.update!(next_execution_timestamp: at)
+        project.import_state.update!(next_execution_timestamp: at)
         project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
         project
       end

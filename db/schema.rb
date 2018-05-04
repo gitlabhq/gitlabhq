@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180503150427) do
+ActiveRecord::Schema.define(version: 20180503154922) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1980,10 +1980,18 @@ ActiveRecord::Schema.define(version: 20180503150427) do
     t.datetime "next_execution_timestamp"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string "status"
+    t.string "jid"
+    t.datetime_with_timezone "last_update_at"
+    t.datetime_with_timezone "last_successful_update_at"
+    t.text "last_error"
   end
 
+  add_index "project_mirror_data", ["jid"], name: "index_project_mirror_data_on_jid", using: :btree
+  add_index "project_mirror_data", ["last_successful_update_at"], name: "index_project_mirror_data_on_last_successful_update_at", using: :btree
   add_index "project_mirror_data", ["next_execution_timestamp", "retry_count"], name: "index_mirror_data_on_next_execution_and_retry_count", using: :btree
   add_index "project_mirror_data", ["project_id"], name: "index_project_mirror_data_on_project_id", unique: true, using: :btree
+  add_index "project_mirror_data", ["status"], name: "index_project_mirror_data_on_status", using: :btree
 
   create_table "project_repository_states", force: :cascade do |t|
     t.integer "project_id", null: false

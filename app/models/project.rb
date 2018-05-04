@@ -71,6 +71,9 @@ class Project < ActiveRecord::Base
   before_save :ensure_runners_token
 
   after_save :update_project_statistics, if: :namespace_id_changed?
+
+  after_save :create_import_state, if: ->(project) { project.import? && project.import_state.nil? }
+
   after_create :create_project_feature, unless: :project_feature
 
   after_create :create_ci_cd_settings,
@@ -161,6 +164,8 @@ class Project < ActiveRecord::Base
           class_name: 'ForkNetwork'
   has_one :fork_network_member
   has_one :fork_network, through: :fork_network_member
+
+  has_one :import_state, autosave: true, class_name: 'ProjectImportState', inverse_of: :project
 
   # Merge Requests for target project should be removed with it
   has_many :merge_requests, foreign_key: 'target_project_id'
@@ -392,51 +397,9 @@ class Project < ActiveRecord::Base
   scope :abandoned, -> { where('projects.last_activity_at < ?', 6.months.ago) }
 
   scope :excluding_project, ->(project) { where.not(id: project) }
-  scope :import_started, -> { where(import_status: 'started') }
 
-  state_machine :import_status, initial: :none do
-    event :import_schedule do
-      transition [:none, :finished, :failed] => :scheduled
-    end
-
-    event :force_import_start do
-      transition [:none, :finished, :failed] => :started
-    end
-
-    event :import_start do
-      transition scheduled: :started
-    end
-
-    event :import_finish do
-      transition started: :finished
-    end
-
-    event :import_fail do
-      transition [:scheduled, :started] => :failed
-    end
-
-    state :scheduled
-    state :started
-    state :finished
-    state :failed
-
-    after_transition [:none, :finished, :failed] => :scheduled do |project, _|
-      project.run_after_commit do
-        job_id = add_import_job
-        update(import_jid: job_id) if job_id
-      end
-    end
-
-    after_transition started: :finished do |project, _|
-      project.reset_cache_and_import_attrs
-
-      if Gitlab::ImportSources.importer_names.include?(project.import_type) && project.repo_exists?
-        project.run_after_commit do
-          Projects::AfterImportService.new(project).execute
-        end
-      end
-    end
-  end
+  scope :joins_import_state, -> { joins("LEFT JOIN project_mirror_data import_state ON import_state.project_id = projects.id") }
+  scope :import_started, -> { joins_import_state.where("import_state.status = 'started' OR projects.import_status = 'started'") }
 
   class << self
     # Searches for a list of projects based on the query given in `query`.
@@ -676,10 +639,6 @@ class Project < ActiveRecord::Base
     external_import? || forked? || gitlab_project_import? || bare_repository_import?
   end
 
-  def no_import?
-    import_status == 'none'
-  end
-
   def external_import?
     import_url.present?
   end
@@ -690,6 +649,93 @@ class Project < ActiveRecord::Base
 
   def import_in_progress?
     import_started? || import_scheduled?
+  end
+
+  def import_state_args
+    {
+      status: self[:import_status],
+      jid: self[:import_jid],
+      last_error: self[:import_error]
+    }
+  end
+
+  def ensure_import_state
+    return if self[:import_status] == 'none' || self[:import_status].nil?
+    return unless import_state.nil?
+
+    create_import_state(import_state_args)
+
+    update_column(:import_status, 'none')
+  end
+
+  def import_schedule
+    ensure_import_state
+
+    import_state&.schedule
+  end
+
+  def force_import_start
+    ensure_import_state
+
+    import_state&.force_start
+  end
+
+  def import_start
+    ensure_import_state
+
+    import_state&.start
+  end
+
+  def import_fail
+    ensure_import_state
+
+    import_state&.fail_op
+  end
+
+  def import_finish
+    ensure_import_state
+
+    import_state&.finish
+  end
+
+  def import_jid=(new_jid)
+    ensure_import_state
+
+    import_state&.jid = new_jid
+  end
+
+  def import_jid
+    ensure_import_state
+
+    import_state&.jid
+  end
+
+  def import_error=(new_error)
+    ensure_import_state
+
+    import_state&.last_error = new_error
+  end
+
+  def import_error
+    ensure_import_state
+
+    import_state&.last_error
+  end
+
+  def import_status=(new_status)
+    ensure_import_state
+
+    import_state&.status = new_status
+  end
+
+  def import_status
+    ensure_import_state
+
+    import_state&.status || 'none'
+  end
+
+  def no_import?
+    import_status == 'none'
   end
 
   def import_started?
@@ -1494,7 +1540,7 @@ class Project < ActiveRecord::Base
   def rename_repo_notify!
     # When we import a project overwriting the original project, there
     # is a move operation. In that case we don't want to send the instructions.
-    send_move_instructions(full_path_was) unless started?
+    send_move_instructions(full_path_was) unless import_started?
     expires_full_path_cache
 
     self.old_path_with_namespace = full_path_was
@@ -1548,7 +1594,8 @@ class Project < ActiveRecord::Base
     return unless import_jid
 
     Gitlab::SidekiqStatus.unset(import_jid)
-    update_column(:import_jid, nil)
+
+    import_state.update_column(:jid, nil)
   end
 
   def running_or_pending_build_count(force: false)
@@ -1567,7 +1614,8 @@ class Project < ActiveRecord::Base
     sanitized_message = Gitlab::UrlSanitizer.sanitize(error_message)
 
     import_fail
-    update_column(:import_error, sanitized_message)
+
+    import_state.update_column(:last_error, sanitized_message)
   rescue ActiveRecord::ActiveRecordError => e
     Rails.logger.error("Error setting import status to failed: #{e.message}. Original error: #{sanitized_message}")
   ensure

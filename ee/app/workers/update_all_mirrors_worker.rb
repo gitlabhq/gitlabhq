@@ -37,7 +37,7 @@ class UpdateAllMirrorsWorker
       # If fewer than `batch_size` projects were returned, we don't need to query again
       break if projects.length < batch_size
 
-      last = projects.last.mirror_data.next_execution_timestamp
+      last = projects.last.import_state.next_execution_timestamp
     end
 
     ProjectImportScheduleWorker.bulk_perform_and_wait(all_project_ids.map { |id| [id] }, timeout: SCHEDULE_WAIT_TIMEOUT.to_i)
@@ -56,11 +56,11 @@ class UpdateAllMirrorsWorker
   def pull_mirrors_batch(freeze_at:, batch_size:, offset_at: nil)
     relation = Project
       .mirrors_to_sync(freeze_at)
-      .reorder('project_mirror_data.next_execution_timestamp')
+      .reorder('import_state.next_execution_timestamp')
       .limit(batch_size)
       .includes(:namespace) # Used by `project.mirror?`
 
-    relation = relation.where('next_execution_timestamp > ?', offset_at) if offset_at
+    relation = relation.where('import_state.next_execution_timestamp > ?', offset_at) if offset_at
 
     relation
   end

@@ -118,7 +118,8 @@ feature 'New project' do
 
         # Mock the POST `/import/github`
         allow_any_instance_of(Gitlab::LegacyGithubImport::Client).to receive(:repo).and_return(repo)
-        project = create(:project, name: 'some-github-repo', creator: user, import_type: 'github', import_status: 'finished', import_url: repo.clone_url)
+        project = create(:project, name: 'some-github-repo', creator: user, import_type: 'github')
+        create(:import_state, :finished, import_url: repo.clone_url, project: project)
         allow_any_instance_of(CiCd::SetupProject).to receive(:setup_external_service)
         CiCd::SetupProject.new(project, user).execute
         allow_any_instance_of(Gitlab::LegacyGithubImport::ProjectCreator)

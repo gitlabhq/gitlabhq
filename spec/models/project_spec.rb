@@ -279,16 +279,12 @@ describe Project do
       expect(project2.errors[:import_url].first).to include('Only allowed ports are 22, 80, 443')
     end
 
-    it 'creates mirror data when enabled' do
-      project2 = create(:project, :mirror, mirror: false)
+    it 'creates import state when mirror gets enabled' do
+      project2 = create(:project)
 
-      expect { project2.update_attributes(mirror: true) }.to change { ProjectMirrorData.count }.from(0).to(1)
-    end
-
-    it 'destroys mirror data when disabled' do
-      project2 = create(:project, :mirror)
-
-      expect { project2.update_attributes(mirror: false) }.to change { ProjectMirrorData.count }.from(1).to(0)
+      expect do
+        project2.update_attributes(mirror: true, import_url: generate(:url), mirror_user: project.creator)
+      end.to change { ProjectImportState.where(project: project2).count }.from(0).to(1)
     end
 
     describe 'project pending deletion' do
@@ -1698,7 +1694,7 @@ describe Project do
 
     context 'when project is not a mirror' do
       it 'returns the sanitized URL' do
-        project = create(:project, import_status: 'started', import_url: 'http://user:pass@test.com')
+        project = create(:project, :import_started, import_url: 'http://user:pass@test.com')
 
         project.import_finish
 
@@ -1870,7 +1866,8 @@ describe Project do
 
       it 'resets project import_error' do
         error_message = 'Some error'
-        mirror = create(:project_empty_repo, :import_started, import_error: error_message)
+        mirror = create(:project_empty_repo, :import_started)
+        mirror.import_state.update_attributes(last_error: error_message)
 
         expect { mirror.import_finish }.to change { mirror.import_error }.from(error_message).to(nil)
       end
@@ -2615,11 +2612,11 @@ describe Project do
     end
   end
 
-  describe '#create_mirror_data' do
+  describe '#create_import_state' do
     it 'it is called after save' do
       project = create(:project)
 
-      expect(project).to receive(:create_mirror_data)
+      expect(project).to receive(:create_import_state)
 
       project.update(mirror: true, mirror_user: project.owner, import_url: 'http://foo.com')
     end
@@ -3641,7 +3638,7 @@ describe Project do
     end
 
     context 'branch protection' do
-      let(:project) { create(:project, :repository) }
+      let(:project) { create(:project, :repository, :import_started) }
 
       it 'does not protect when branch protection is disabled' do
         stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
@@ -3714,7 +3711,8 @@ describe Project do
 
     context 'with an import JID' do
       it 'unsets the import JID' do
-        project = create(:project, import_jid: '123')
+        project = create(:project)
+        create(:import_state, project: project, jid: '123')
 
         expect(Gitlab::SidekiqStatus)
           .to receive(:unset)
