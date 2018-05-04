@@ -39,7 +39,7 @@ export default {
       diffFiles: state => state.diffs.diffFiles,
       diffViewType: state => state.diffs.diffViewType,
       mergeRequestDiffs: state => state.diffs.mergeRequestDiffs,
-      renderOverflowWarning: state => !state.diffs.renderOverflowWarning,
+      renderOverflowWarning: state => state.diffs.renderOverflowWarning,
     }),
     ...mapGetters(['isParallelView', 'diffFilesSize']),
   },
