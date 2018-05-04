@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe API::Runner, :clean_gitlab_redis_shared_state do
   include StubGitlabCalls
-  include ChunkedIOHelpers
+  include RedisHelpers
 
   let(:registration_token) { 'abcdefg123456' }
 
@@ -873,8 +873,8 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             patch_the_trace
             expect(job.reload.trace.raw).to eq 'BUILD TRACE appended appended'
 
-            # GitLab-Rails enxounters an outage on Redis
-            redis_shared_state_outage!
+            # GitLab-Rails encounters an outage on Redis
+            redis_shared_state_cleanup!
             expect(job.reload.trace.raw).to eq ''
 
             # GitLab-Runner patchs

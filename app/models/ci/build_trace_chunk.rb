@@ -99,7 +99,7 @@ module Ci
     def schedule_to_db
       return if db?
 
-      BuildTraceChunkFlushToDbWorker.perform_async(id)
+      Ci::BuildTraceChunkFlushWorker.perform_async(id)
     end
 
     def fullfilled?

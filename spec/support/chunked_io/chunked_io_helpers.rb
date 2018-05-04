@@ -8,9 +8,4 @@ module ChunkedIOHelpers
     stub_const('Ci::BuildTraceChunk::CHUNK_SIZE', size)
     stub_const('Gitlab::Ci::Trace::ChunkedIO::CHUNK_SIZE', size)
   end
-
-  def redis_shared_state_outage!
-    Gitlab::Redis::SharedState.with(&:flushall)
-    Sidekiq.redis(&:flushall)
-  end
 end
