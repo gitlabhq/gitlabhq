@@ -2,7 +2,7 @@
 export default {
   props: {
     total: {
-      type: Number,
+      type: String,
       required: true,
     },
     visible: {
