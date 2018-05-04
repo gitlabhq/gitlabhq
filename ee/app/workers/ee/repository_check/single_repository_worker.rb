@@ -6,14 +6,14 @@ module EE
 
       private
 
-      override :save_result
-      def save_result(project, result)
+      override :update_repository_check_status
+      def update_repository_check_status(project, healthy)
         return super unless ::Gitlab::Geo.secondary?
 
         project_registry = ::Geo::ProjectRegistry.find_or_initialize_by(project: project)
 
         project_registry.assign_attributes(
-          last_repository_check_failed: !result,
+          last_repository_check_failed: !healthy,
           last_repository_check_at: Time.now
         )
         project_registry.save!
