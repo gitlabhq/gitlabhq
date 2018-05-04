@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180425131009) do
+ActiveRecord::Schema.define(version: 20180502125859) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1257,8 +1257,10 @@ ActiveRecord::Schema.define(version: 20180425131009) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "secondary_extern_uid"
+    t.integer "saml_provider_id"
   end
 
+  add_index "identities", ["saml_provider_id"], name: "index_identities_on_saml_provider_id", where: "(saml_provider_id IS NOT NULL)", using: :btree
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
 
   create_table "index_statuses", force: :cascade do |t|
@@ -2770,6 +2772,7 @@ ActiveRecord::Schema.define(version: 20180425131009) do
   add_foreign_key "gpg_signatures", "gpg_keys", on_delete: :nullify
   add_foreign_key "gpg_signatures", "projects", on_delete: :cascade
   add_foreign_key "group_custom_attributes", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "identities", "saml_providers", name: "fk_aade90f0fc", on_delete: :cascade
   add_foreign_key "index_statuses", "projects", name: "fk_74b2492545", on_delete: :cascade
   add_foreign_key "internal_ids", "namespaces", name: "fk_162941d509", on_delete: :cascade
   add_foreign_key "internal_ids", "projects", on_delete: :cascade

@@ -1,9 +1,9 @@
 class Identity < ActiveRecord::Base
-  prepend EE::Identity
-
   def self.uniqueness_scope
     :provider
   end
+
+  prepend EE::Identity
 
   include Sortable
   include CaseSensitivity
