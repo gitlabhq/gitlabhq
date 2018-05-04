@@ -33,7 +33,6 @@ export const dataStructure = () => ({
   raw: '',
   content: '',
   parentTreeUrl: '',
-  parentPath: '',
   renderError: false,
   base64: false,
   editorRow: 1,
@@ -43,6 +42,7 @@ export const dataStructure = () => ({
   viewMode: 'edit',
   previewMode: null,
   size: 0,
+  parentPath: null,
   lastOpenedAt: 0,
 });
 
@@ -83,7 +83,6 @@ export const decorateData = entity => {
     opened,
     active,
     parentTreeUrl,
-    parentPath,
     changed,
     renderError,
     content,
@@ -91,6 +90,7 @@ export const decorateData = entity => {
     previewMode,
     file_lock,
     html,
+    parentPath,
   };
 };
 
@@ -137,3 +137,9 @@ export const sortTree = sortedTree =>
       }),
     )
     .sort(sortTreesByTypeAndName);
+
+export const filePathMatches = (f, path) =>
+  f.path.replace(new RegExp(`${f.name}$`), '').indexOf(`${path}/`) === 0;
+
+export const getChangesCountForFiles = (files, path) =>
+  files.filter(f => filePathMatches(f, path)).length;
