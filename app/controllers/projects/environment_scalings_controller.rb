@@ -8,7 +8,7 @@ class Projects::EnvironmentScalingsController < Projects::ApplicationController
   def update
     if @environment_scaling.update(scaling_params)
       respond_to do |format|
-        format.json { return head status: :ok }
+        format.json { head status: :ok }
       end
     else
       respond_to do |format|
