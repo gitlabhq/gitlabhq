@@ -279,8 +279,7 @@ module Ci
         variables.concat(project.deployment_variables(environment: environment)) if environment
         variables.concat(yaml_variables)
         variables.concat(user_variables)
-        variables.concat(secret_group_variables)
-        variables.concat(secret_project_variables(environment: environment))
+        variables.concat(project.all_secret_variables_for(ref: ref, environment: environment))
         variables.concat(trigger_request.user_variables) if trigger_request
         variables.concat(pipeline.variables)
         variables.concat(pipeline.pipeline_schedule.job_variables) if pipeline.pipeline_schedule
@@ -487,16 +486,6 @@ module Ci
         variables.append(key: 'GITLAB_USER_LOGIN', value: user.username)
         variables.append(key: 'GITLAB_USER_NAME', value: user.name)
       end
-    end
-
-    def secret_group_variables
-      return [] unless project.group
-
-      project.group.secret_variables_for(ref, project)
-    end
-
-    def secret_project_variables(environment: persisted_environment)
-      project.secret_variables_for(ref: ref, environment: environment)
     end
 
     def steps
