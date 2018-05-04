@@ -641,6 +641,12 @@ production, what happens for branches? So far we haven't defined anything
 regarding deployments for branches other than `master`. Dynamic environments
 will help us achieve that.
 
+## Scaling
+
+>**Note:**
+Environment scaling is available only if you don't have any unprotected variable
+with the <env_slug>\_REPLICAS key that's matched by the environment scope.
+
 ## Checkout deployments locally
 
 Since 8.13, a reference in the git repository is saved for each deployment, so
