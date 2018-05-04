@@ -26,7 +26,7 @@ module Issues
         issue.update(closed_by: current_user)
         event_service.close_issue(issue, current_user)
         create_note(issue, commit) if system_note
-        notification_service.async.close_issue(issue, current_user) if notifications
+        notify_participants(issue) if notifications
         todo_service.close_issue(issue, current_user)
         execute_hooks(issue, 'close')
         invalidate_cache_counts(issue, users: issue.assignees)
@@ -40,6 +40,12 @@ module Issues
 
     def create_note(issue, current_commit)
       SystemNoteService.change_status(issue, issue.project, current_user, issue.state, current_commit)
+    end
+
+    def notify_participants(issue)
+      issue.run_after_commit_or_now do
+        notification_service.async.close_issue(issue, current_user)
+      end
     end
   end
 end
