@@ -3,4 +3,4 @@
 %h4 Runner ##{@runner.id}
 
 %hr
-  = render 'form', runner: @runner, runner_form_url: group_runner_path(@group, @runner)
+  = render 'shared/runners/form', runner: @runner, runner_form_url: group_runner_path(@group, @runner)

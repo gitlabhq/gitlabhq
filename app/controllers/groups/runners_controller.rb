@@ -3,6 +3,7 @@ class Groups::RunnersController < Groups::ApplicationController
   before_action :set_runner, only: [:edit, :update, :destroy, :pause, :resume, :show]
 
   def show
+    render 'shared/runners/show'
   end
 
   def edit
