@@ -5,7 +5,6 @@ module Geo
        .with_route
        .joins(:repository_state)
        .where(repository_outdated.or(wiki_outdated))
-       .order(last_repository_updated_at_asc)
        .limit(batch_size)
     end
 
@@ -14,7 +13,6 @@ module Geo
        .with_route
        .joins(left_join_repository_state)
        .where(repository_never_verified)
-       .order(last_repository_updated_at_asc)
        .limit(batch_size)
     end
 
@@ -63,10 +61,6 @@ module Geo
 
     def repository_never_verified
       repository_state_table[:project_id].eq(nil)
-    end
-
-    def last_repository_updated_at_asc
-      Gitlab::Database.nulls_last_order('projects.last_repository_updated_at', 'ASC')
     end
   end
 end
