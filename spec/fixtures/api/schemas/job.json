@@ -18,7 +18,7 @@
     "playable": { "type": "boolean" },
     "created_at": { "type": "string" },
     "updated_at": { "type": "string" },
-    "status": { "$ref": "status.json" }
+    "status": { "$ref": "ci_detailed_status.json" }
   },
   "additionalProperties": false
 }
