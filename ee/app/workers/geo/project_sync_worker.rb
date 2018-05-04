@@ -21,6 +21,12 @@ module Geo
         return
       end
 
+      shard_name = project.repository_storage
+      unless Gitlab::Geo::ShardHealthCache.healthy_shard?(shard_name)
+        log_error("Project shard '#{shard_name}' is unhealthy, skipping syncing", project_id: project_id)
+        return
+      end
+
       mark_disabled_wiki_as_synced(registry)
 
       Geo::RepositorySyncService.new(project).execute if registry.repository_sync_due?(scheduled_time)
