@@ -233,6 +233,10 @@ class Environment < ActiveRecord::Base
     project.deployment_platform(environment: self.name)
   end
 
+  def scaling_available?
+    !project.all_secret_variables_for(ref: nil, environment: self.name).any? {|variable| variable[:key] == replica_variable_key }
+  end
+
   private
 
   # Slugifying a name may remove the uniqueness guarantee afforded by it being
@@ -247,5 +251,9 @@ class Environment < ActiveRecord::Base
     return [] unless scaling
 
     scaling.predefined_variables
+  end
+
+  def replica_variable_key
+    "#{variable_prefix}_REPLICAS"
   end
 end

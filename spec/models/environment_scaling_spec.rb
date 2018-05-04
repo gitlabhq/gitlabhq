@@ -11,54 +11,6 @@ describe EnvironmentScaling do
   it { is_expected.to validate_presence_of(:replicas) }
   it { is_expected.to validate_numericality_of(:replicas).only_integer }
 
-  describe '.available_for?' do
-    subject { described_class.available_for?(environment) }
-
-    context 'when project has a conflicting variable' do
-      before do
-        project.variables.create(key: "#{environment.variable_prefix}_REPLICAS", value: '2')
-      end
-
-      it 'should be false' do
-        expect(subject).to eq false
-      end
-    end
-
-    context 'when group has a conflicting variable' do
-      before do
-        group.variables.create(key: "#{environment.variable_prefix}_REPLICAS", value: '2')
-      end
-
-      it 'should be false' do
-        expect(subject).to eq false
-      end
-    end
-
-    context 'when there is no conflicting variable' do
-      it 'should be true' do
-        expect(subject).to eq true
-      end
-    end
-  end
-
-  describe '.incompatible_variables_for?' do
-    subject { described_class.incompatible_variables_for(environment) }
-
-    it 'returns incompatible variables' do
-      expect(subject).to eq(["#{environment.variable_prefix}_REPLICAS"])
-    end
-  end
-
-  describe '#available?' do
-    subject { environment_scaling.available? }
-
-    it 'calls the class method for availability' do
-      expect(described_class).to receive(:available_for?)
-
-      subject
-    end
-  end
-
   describe '#predefined_variables' do
     subject { environment_scaling.predefined_variables }
 

@@ -680,4 +680,30 @@ describe Environment do
       subject.prometheus_adapter
     end
   end
+
+  describe '#scaling_available?' do
+    let(:group) { create(:group) }
+    let(:project) { create(:project, group: group) }
+    let(:environment) { create(:environment, project: project) }
+
+    subject { environment.scaling_available? }
+
+    it { is_expected.to eq true }
+
+    context 'when project has incompatible variable' do
+      before do
+        create(:ci_variable, key: environment.send(:replica_variable_key), value: 'test', project: project)
+      end
+
+      it { is_expected.to eq false }
+    end
+
+    context 'when group has incompatible variable' do
+      before do
+        create(:ci_group_variable, key: environment.send(:replica_variable_key), value: 'test', group: group)
+      end
+
+      it { is_expected.to eq false }
+    end
+  end
 end
