@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import $ from 'jquery';
 import DiffFileComponent from '~/diffs/components/diff_file.vue';
 import store from '~/mr_notes/stores';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
