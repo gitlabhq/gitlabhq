@@ -46,7 +46,7 @@ describe('ZenMode', () => {
     it('should not call dropzone if element is not dropzone valid', () => {
       $('.div-dropzone').addClass('js-invalid-dropzone');
       exitZen();
-      expect(dropzoneForElementSpy.calls.count()).toEqual(1);
+      expect(dropzoneForElementSpy.calls.count()).toEqual(0);
     });
 
     it('should call dropzone if element is dropzone valid', () => {
