@@ -1,0 +1,22 @@
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      .col-sm-12
+        .checkbox
+          = f.label :enforce_terms do
+            = f.check_box :enforce_terms
+            = _("Require all users to accept Terms of Service when they access GitLab.")
+          .help-block
+            = _("When enabled, users cannot use GitLab until the terms have been accepted.")
+    .form-group
+      .col-sm-12
+        = f.label :terms do
+          = _("Terms of Service Agreement")
+      .col-sm-12
+        = f.text_area :terms, class: 'form-control', rows: 8
+        .help-block
+          = _("Markdown enabled")
+
+  = f.submit _("Save changes"), class: "btn btn-success"
