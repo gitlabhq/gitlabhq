@@ -101,6 +101,14 @@ describe Project do
       end
     end
 
+    context 'updating cd_cd_settings' do
+      it 'does not raise an error' do
+        project = create(:project)
+
+        expect{ project.update(ci_cd_settings: nil) }.not_to raise_exception
+      end
+    end
+
     describe '#members & #requesters' do
       let(:project) { create(:project, :public, :access_requestable) }
       let(:requester) { create(:user) }
