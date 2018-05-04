@@ -557,9 +557,8 @@ describe Ci::CreatePipelineService do
       subject { execute_service(variables_attributes: variables_attributes) }
 
       it 'creates a pipeline with specified variables' do
-        expect(subject.variables.count).to eq(variables_attributes.count)
-        expect(subject.variables.first.key).to eq(variables_attributes.first[:key])
-        expect(subject.variables.last.secret_value).to eq(variables_attributes.last[:secret_value])
+        expect(subject.variables.map { |var| var.slice(:key, :secret_value) })
+          .to eq variables_attributes.map(&:with_indifferent_access)
       end
     end
   end
