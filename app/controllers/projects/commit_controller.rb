@@ -34,6 +34,7 @@ class Projects::CommitController < Projects::ApplicationController
 
   def pipelines
     @pipelines = @commit.pipelines.order(id: :desc)
+    @pipelines = @pipelines.where(ref: params[:ref]) if params[:ref]
 
     respond_to do |format|
       format.html

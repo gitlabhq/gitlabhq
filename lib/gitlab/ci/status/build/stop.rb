@@ -19,6 +19,10 @@ module Gitlab
             'Stop'
           end
 
+          def action_button_title
+            _('Stop this environment')
+          end
+
           def action_path
             play_project_job_path(subject.project, subject)
           end

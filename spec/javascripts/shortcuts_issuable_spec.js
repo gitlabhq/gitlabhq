@@ -4,7 +4,7 @@ import ShortcutsIssuable from '~/shortcuts_issuable';
 
 initCopyAsGFM();
 
-describe('ShortcutsIssuable', () => {
+describe('ShortcutsIssuable', function () {
   const fixtureName = 'merge_requests/diff_comment.html.raw';
   preloadFixtures(fixtureName);
   beforeEach(() => {

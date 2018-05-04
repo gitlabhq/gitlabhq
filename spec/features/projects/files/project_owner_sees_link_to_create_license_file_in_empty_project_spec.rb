@@ -1,15 +1,14 @@
 require 'spec_helper'
 
-feature 'project owner sees a link to create a license file in empty project', :js do
-  let(:project_master) { create(:user) }
+describe 'Projects > Files > Project owner sees a link to create a license file in empty project', :js do
   let(:project) { create(:project_empty_repo) }
+  let(:project_master) { project.owner }
 
-  background do
-    project.add_master(project_master)
+  before do
     sign_in(project_master)
   end
 
-  scenario 'project master creates a license file from a template' do
+  it 'project master creates a license file from a template' do
     visit project_path(project)
     click_on 'Add License'
     expect(page).to have_content('New file')

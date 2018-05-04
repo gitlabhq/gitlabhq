@@ -86,7 +86,7 @@ services](#accessing-the-services).
 ### How the health check of services works
 
 Services are designed to provide additional functionality which is **network accessible**.
-It may be a database like MySQL, or Redis, and even `docker:dind` which
+It may be a database like MySQL, or Redis, and even `docker:stable-dind` which
 allows you to use Docker in Docker. It can be practically anything that is
 required for the CI/CD job to proceed and is accessed by network.
 

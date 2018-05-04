@@ -17,11 +17,17 @@ describe MergeRequest do
   describe 'modules' do
     subject { described_class }
 
-    it { is_expected.to include_module(NonatomicInternalId) }
     it { is_expected.to include_module(Issuable) }
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Sortable) }
     it { is_expected.to include_module(Taskable) }
+
+    it_behaves_like 'AtomicInternalId' do
+      let(:internal_id_attribute) { :iid }
+      let(:instance) { build(:merge_request) }
+      let(:scope_attrs) { { project: instance.target_project } }
+      let(:usage) { :merge_requests }
+    end
   end
 
   describe 'validation' do
@@ -1207,7 +1213,7 @@ describe MergeRequest do
     it 'enqueues MergeWorker job and updates merge_jid' do
       merge_request = create(:merge_request)
       user_id = double(:user_id)
-      params = double(:params)
+      params = {}
       merge_jid = 'hash-123'
 
       expect(MergeWorker).to receive(:perform_async).with(merge_request.id, user_id, params) do

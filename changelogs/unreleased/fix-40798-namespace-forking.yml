@@ -1,5 +1,0 @@
----
-title: Fix forking to subgroup via API when namespace is given by name
-merge_request: 17815
-author: Jan Beckmann
-type: fixed

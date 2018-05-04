@@ -1,0 +1,6 @@
+---
+title: Verifiy if pipeline has commit idetails and render information in MR widget
+  when branch is deleted
+merge_request:
+author:
+type: fixed

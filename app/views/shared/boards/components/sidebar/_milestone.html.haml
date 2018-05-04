@@ -18,8 +18,7 @@
       .dropdown
         %button.dropdown-menu-toggle.js-milestone-select.js-issue-board-sidebar{ type: "button", data: { toggle: "dropdown", show_no: "true", field_name: "issue[milestone_id]", milestones: milestones_filter_path(format: :json), ability_name: "issue", use_id: "true", default_no: "true" },
           ":data-selected" => "milestoneTitle",
-          ":data-issuable-id" => "issue.iid",
-          ":data-issue-update" => "'#{build_issue_link_base}/' + issue.iid + '.json'" }
+          ":data-issuable-id" => "issue.iid" }
           Milestone
           = icon("chevron-down")
         .dropdown-menu.dropdown-select.dropdown-menu-selectable

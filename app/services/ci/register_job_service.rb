@@ -4,6 +4,9 @@ module Ci
   class RegisterJobService
     attr_reader :runner
 
+    JOB_QUEUE_DURATION_SECONDS_BUCKETS = [1, 3, 10, 30].freeze
+    JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET = 5.freeze
+
     Result = Struct.new(:build, :valid?)
 
     def initialize(runner)
@@ -14,8 +17,10 @@ module Ci
       builds =
         if runner.shared?
           builds_for_shared_runner
+        elsif runner.group_type?
+          builds_for_group_runner
         else
-          builds_for_specific_runner
+          builds_for_project_runner
         end
 
       valid = true
@@ -41,7 +46,7 @@ module Ci
             build.run!
             register_success(build)
 
-            return Result.new(build, true)
+            return Result.new(build, true) # rubocop:disable Cop/AvoidReturnFromBlocks
           rescue Ci::Build::MissingDependenciesError
             build.drop!(:missing_dependency_failure)
           end
@@ -72,15 +77,24 @@ module Ci
         .joins('LEFT JOIN project_features ON ci_builds.project_id = project_features.project_id')
         .where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0').
 
-        # Implement fair scheduling
-        # this returns builds that are ordered by number of running builds
-        # we prefer projects that don't use shared runners at all
-        joins("LEFT JOIN (#{running_builds_for_shared_runners.to_sql}) AS project_builds ON ci_builds.project_id=project_builds.project_id")
+      # Implement fair scheduling
+      # this returns builds that are ordered by number of running builds
+      # we prefer projects that don't use shared runners at all
+      joins("LEFT JOIN (#{running_builds_for_shared_runners.to_sql}) AS project_builds ON ci_builds.project_id=project_builds.project_id")
         .order('COALESCE(project_builds.running_builds, 0) ASC', 'ci_builds.id ASC')
     end
 
-    def builds_for_specific_runner
-      new_builds.where(project: runner.projects.without_deleted.with_builds_enabled).order('created_at ASC')
+    def builds_for_project_runner
+      new_builds.where(project: runner.projects.without_deleted.with_builds_enabled).order('id ASC')
+    end
+
+    def builds_for_group_runner
+      hierarchy_groups = Gitlab::GroupHierarchy.new(runner.groups).base_and_descendants
+      projects = Project.where(namespace_id: hierarchy_groups)
+        .with_group_runners_enabled
+        .with_builds_enabled
+        .without_deleted
+      new_builds.where(project: projects).order('id ASC')
     end
 
     def running_builds_for_shared_runners
@@ -94,18 +108,26 @@ module Ci
       builds
     end
 
-    def shared_runner_build_limits_feature_enabled?
-      ENV['DISABLE_SHARED_RUNNER_BUILD_MINUTES_LIMIT'].to_s != 'true'
-    end
-
     def register_failure
       failed_attempt_counter.increment
       attempt_counter.increment
     end
 
     def register_success(job)
-      job_queue_duration_seconds.observe({ shared_runner: @runner.shared? }, Time.now - job.created_at)
+      labels = { shared_runner: runner.shared?,
+                 jobs_running_for_project: jobs_running_for_project(job) }
+
+      job_queue_duration_seconds.observe(labels, Time.now - job.queued_at) unless job.queued_at.nil?
       attempt_counter.increment
+    end
+
+    def jobs_running_for_project(job)
+      return '+Inf' unless runner.shared?
+
+      # excluding currently started job
+      running_jobs_count = job.project.builds.running.where(runner: Ci::Runner.shared)
+                              .limit(JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET + 1).count - 1
+      running_jobs_count < JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET ? running_jobs_count : "#{JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET}+"
     end
 
     def failed_attempt_counter
@@ -117,7 +139,7 @@ module Ci
     end
 
     def job_queue_duration_seconds
-      @job_queue_duration_seconds ||= Gitlab::Metrics.histogram(:job_queue_duration_seconds, 'Request handling execution time')
+      @job_queue_duration_seconds ||= Gitlab::Metrics.histogram(:job_queue_duration_seconds, 'Request handling execution time', {}, JOB_QUEUE_DURATION_SECONDS_BUCKETS)
     end
   end
 end

@@ -11,12 +11,12 @@ describe 'User uses shortcuts', :js do
     visit(project_path(project))
   end
 
-  context 'when navigating to the Overview pages' do
+  context 'when navigating to the Project pages' do
     it 'redirects to the details page' do
       find('body').native.send_key('g')
       find('body').native.send_key('p')
 
-      expect(page).to have_active_navigation('Overview')
+      expect(page).to have_active_navigation('Project')
       expect(page).to have_active_sub_navigation('Details')
     end
 
@@ -24,7 +24,7 @@ describe 'User uses shortcuts', :js do
       find('body').native.send_key('g')
       find('body').native.send_key('e')
 
-      expect(page).to have_active_navigation('Overview')
+      expect(page).to have_active_navigation('Project')
       expect(page).to have_active_sub_navigation('Activity')
     end
   end

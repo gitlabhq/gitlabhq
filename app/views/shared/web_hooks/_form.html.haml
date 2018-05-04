@@ -33,6 +33,13 @@
         %p.light
           This URL will be triggered when someone adds a comment
     %li
+      = form.check_box :confidential_note_events, class: 'pull-left'
+      .prepend-left-20
+        = form.label :confidential_note_events, class: 'list-label' do
+          %strong Confidential Comments
+        %p.light
+          This URL will be triggered when someone adds a comment on a confidential issue
+    %li
       = form.check_box :issues_events, class: 'pull-left'
       .prepend-left-20
         = form.label :issues_events, class: 'list-label' do

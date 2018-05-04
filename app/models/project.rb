@@ -21,6 +21,7 @@ class Project < ActiveRecord::Base
   include Gitlab::SQL::Pattern
   include DeploymentPlatform
   include ::Gitlab::Utils::StrongMemoize
+  include ChronicDurationAttribute
 
   extend Gitlab::ConfigHelper
 
@@ -67,6 +68,11 @@ class Project < ActiveRecord::Base
 
   after_save :update_project_statistics, if: :namespace_id_changed?
   after_create :create_project_feature, unless: :project_feature
+
+  after_create :create_ci_cd_settings,
+    unless: :ci_cd_settings,
+    if: proc { ProjectCiCdSetting.available? }
+
   after_create :set_last_activity_at
   after_create :set_last_repository_updated_at
   after_update :update_forks_visibility_level
@@ -221,13 +227,14 @@ class Project < ActiveRecord::Base
   has_many :environments
   has_many :deployments
   has_many :pipeline_schedules, class_name: 'Ci::PipelineSchedule'
-
-  has_many :active_runners, -> { active }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
+  has_many :project_deploy_tokens
+  has_many :deploy_tokens, through: :project_deploy_tokens
 
   has_one :auto_devops, class_name: 'ProjectAutoDevops'
   has_many :custom_attributes, class_name: 'ProjectCustomAttribute'
 
   has_many :project_badges, class_name: 'ProjectBadge'
+  has_one :ci_cd_settings, class_name: 'ProjectCiCdSetting', inverse_of: :project, autosave: true
 
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature, update_only: true
@@ -238,6 +245,7 @@ class Project < ActiveRecord::Base
   delegate :members, to: :team, prefix: true
   delegate :add_user, :add_users, to: :team
   delegate :add_guest, :add_reporter, :add_developer, :add_master, :add_role, to: :team
+  delegate :group_runners_enabled, :group_runners_enabled=, :group_runners_enabled?, to: :ci_cd_settings
 
   # Validations
   validates :creator, presence: true, on: :create
@@ -323,7 +331,18 @@ class Project < ActiveRecord::Base
   scope :with_issues_available_for_user, ->(current_user) { with_feature_available_for_user(:issues, current_user) }
   scope :with_merge_requests_enabled, -> { with_feature_enabled(:merge_requests) }
 
+  scope :with_group_runners_enabled, -> do
+    joins(:ci_cd_settings)
+    .where(project_ci_cd_settings: { group_runners_enabled: true })
+  end
+
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
+
+  chronic_duration_attr :build_timeout_human_readable, :build_timeout, default: 3600
+
+  validates :build_timeout, allow_nil: true,
+                            numericality: { greater_than_or_equal_to: 600,
+                                            message: 'needs to be at least 10 minutes' }
 
   # Returns a collection of projects that is either public or visible to the
   # logged in user.
@@ -503,10 +522,6 @@ class Project < ActiveRecord::Base
     repository.empty?
   end
 
-  def repository_storage_path
-    Gitlab.config.repositories.storages[repository_storage]&.legacy_disk_path
-  end
-
   def team
     @team ||= ProjectTeam.new(self)
   end
@@ -630,7 +645,7 @@ class Project < ActiveRecord::Base
   end
 
   def create_or_update_import_data(data: nil, credentials: nil)
-    return unless import_url.present? && valid_import_url?
+    return if data.nil? && credentials.nil?
 
     project_import_data = import_data || build_import_data
     if data
@@ -1032,13 +1047,6 @@ class Project < ActiveRecord::Base
     "#{web_url}.git"
   end
 
-  def user_can_push_to_empty_repo?(user)
-    return false unless empty_repo?
-    return false unless Ability.allowed?(user, :push_code, self)
-
-    !ProtectedBranch.default_branch_protected? || team.max_member_access(user.id) > Gitlab::Access::DEVELOPER
-  end
-
   def forked?
     return true if fork_network && fork_network.root_project != self
 
@@ -1066,6 +1074,16 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # This will return all `lfs_objects` that are accessible to the project.
+  # So this might be `self.lfs_objects` if the project is not part of a fork
+  # network, or it is the base of the fork network.
+  #
+  # TODO: refactor this to get the correct lfs objects when implementing
+  #       https://gitlab.com/gitlab-org/gitlab-ce/issues/39769
+  def all_lfs_objects
+    lfs_storage_project.lfs_objects
+  end
+
   def personal?
     !group
   end
@@ -1087,7 +1105,7 @@ class Project < ActiveRecord::Base
   # Check if repository already exists on disk
   def check_repository_path_availability
     return true if skip_disk_validation
-    return false unless repository_storage_path
+    return false unless repository_storage
 
     expires_full_path_cache # we need to clear cache to validate renames correctly
 
@@ -1287,24 +1305,21 @@ class Project < ActiveRecord::Base
     @shared_runners ||= shared_runners_available? ? Ci::Runner.shared : Ci::Runner.none
   end
 
-  def active_shared_runners
-    @active_shared_runners ||= shared_runners.active
+  def group_runners
+    @group_runners ||= group_runners_enabled? ? Ci::Runner.belonging_to_parent_group_of_project(self.id) : Ci::Runner.none
+  end
+
+  def all_runners
+    union = Gitlab::SQL::Union.new([runners, group_runners, shared_runners])
+    Ci::Runner.from("(#{union.to_sql}) ci_runners")
   end
 
   def any_runners?(&block)
-    active_runners.any?(&block) || active_shared_runners.any?(&block)
+    all_runners.active.any?(&block)
   end
 
   def valid_runners_token?(token)
     self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
-  end
-
-  def build_timeout_in_minutes
-    build_timeout / 60
-  end
-
-  def build_timeout_in_minutes=(value)
-    self.build_timeout = value.to_i * 60
   end
 
   def open_issues_count
@@ -1463,7 +1478,9 @@ class Project < ActiveRecord::Base
   end
 
   def rename_repo_notify!
-    send_move_instructions(full_path_was)
+    # When we import a project overwriting the original project, there
+    # is a move operation. In that case we don't want to send the instructions.
+    send_move_instructions(full_path_was) unless started?
     expires_full_path_cache
 
     self.old_path_with_namespace = full_path_was
@@ -1478,6 +1495,7 @@ class Project < ActiveRecord::Base
     remove_import_jid
     update_project_counter_caches
     after_create_default_branch
+    refresh_markdown_cache!
   end
 
   def update_project_counter_caches
@@ -1623,7 +1641,7 @@ class Project < ActiveRecord::Base
 
   def container_registry_variables
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
-      return variables unless Gitlab.config.registry.enabled
+      break variables unless Gitlab.config.registry.enabled
 
       variables.append(key: 'CI_REGISTRY', value: Gitlab.config.registry.host_port)
 
@@ -1861,6 +1879,18 @@ class Project < ActiveRecord::Base
     memoized_results[cache_key]
   end
 
+  def licensed_features
+    []
+  end
+
+  def toggle_ci_cd_settings!(settings_attribute)
+    ci_cd_settings.toggle!(settings_attribute)
+  end
+
+  def gitlab_deploy_token
+    @gitlab_deploy_token ||= deploy_tokens.gitlab_deploy_token
+  end
+
   private
 
   def storage
@@ -1889,14 +1919,14 @@ class Project < ActiveRecord::Base
   def check_repository_absence!
     return if skip_disk_validation
 
-    if repository_storage_path.blank? || repository_with_same_path_already_exists?
+    if repository_storage.blank? || repository_with_same_path_already_exists?
       errors.add(:base, 'There is already a repository with that name on disk')
       throw :abort
     end
   end
 
   def repository_with_same_path_already_exists?
-    gitlab_shell.exists?(repository_storage_path, "#{disk_path}.git")
+    gitlab_shell.exists?(repository_storage, "#{disk_path}.git")
   end
 
   # set last_activity_at to the same as created_at
@@ -1986,10 +2016,11 @@ class Project < ActiveRecord::Base
 
   def fetch_branch_allows_maintainer_push?(user, branch_name)
     check_access = -> do
+      next false if empty_repo?
+
       merge_request = source_of_merge_requests.opened
                         .where(allow_maintainer_to_push: true)
                         .find_by(source_branch: branch_name)
-
       merge_request&.can_be_merged_by?(user)
     end
 

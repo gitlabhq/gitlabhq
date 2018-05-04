@@ -27,8 +27,6 @@ project_tree:
   - :releases
   - project_members:
     - :user
-  - lfs_file_locks:
-    - :user
   - merge_requests:
     - notes:
       - :author
@@ -66,6 +64,7 @@ project_tree:
   - :project_feature
   - :custom_attributes
   - :project_badges
+  - :ci_cd_settings
 
 # Only include the following attributes for the models specified.
 included_attributes:
@@ -75,6 +74,8 @@ included_attributes:
     - :username
   author:
     - :name
+  ci_cd_settings:
+    - :group_runners_enabled
 
 # Do not include the following attributes for the models specified.
 excluded_attributes:
@@ -105,6 +106,7 @@ excluded_attributes:
     - :last_repository_updated_at
     - :last_repository_check_at
     - :storage_version
+    - :description_html
   snippets:
     - :expired_at
   merge_request_diff:
@@ -124,6 +126,8 @@ excluded_attributes:
     - :trace
     - :token
     - :when
+    - :artifacts_file
+    - :artifacts_metadata
   push_event_payload:
     - :event_id
   project_badges:
@@ -144,8 +148,6 @@ methods:
     - :diff_head_sha
     - :source_branch_sha
     - :target_branch_sha
-  project:
-    - :description_html
   events:
     - :action
   push_event_payload:

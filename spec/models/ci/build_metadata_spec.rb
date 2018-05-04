@@ -13,7 +13,7 @@ describe Ci::BuildMetadata do
   end
 
   let(:build) { create(:ci_build, pipeline: pipeline) }
-  let(:build_metadata) { create(:ci_build_metadata, build: build) }
+  let(:build_metadata) { build.metadata }
 
   describe '#update_timeout_state' do
     subject { build_metadata }

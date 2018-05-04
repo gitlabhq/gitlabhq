@@ -30,7 +30,7 @@ describe PipelineEntity do
         expect(subject).to include :details
         expect(subject[:details])
           .to include :duration, :finished_at
-        expect(subject[:details][:status]).to include :icon, :favicon, :text, :label
+        expect(subject[:details][:status]).to include :icon, :favicon, :text, :label, :tooltip
       end
 
       it 'contains flags' do

@@ -70,7 +70,7 @@ In case you want to point a root domain (`example.com`) to your
 GitLab Pages site, deployed to `namespace.gitlab.io`, you need to
 log into your domain's admin control panel and add a DNS `A` record
 pointing your domain to Pages' server IP address. For projects on
-GitLab.com, this IP is `52.167.214.135`. For projects leaving in
+GitLab.com, this IP is `52.167.214.135`. For projects living in
 other GitLab instances (CE or EE), please contact your sysadmin
 asking for this information (which IP address is Pages server
 running on your instance).

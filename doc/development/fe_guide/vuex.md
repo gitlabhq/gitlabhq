@@ -1,5 +1,5 @@
 # Vuex
-To manage the state of an application you may use [Vuex][vuex-docs].
+To manage the state of an application you should use [Vuex][vuex-docs].
 
 _Note:_ All of the below is explained in more detail in the official [Vuex documentation][vuex-docs].
 
@@ -115,8 +115,8 @@ create:
 1. An action `requestSomething`, to toggle the loading state
 1. An action `receiveSomethingSuccess`, to handle the success callback
 1. An action `receiveSomethingError`, to handle the error callback
-1. An action `fetchSomething` to make the request. 
-    1. In case your application does more than a `GET` request you can use these as examples: 
+1. An action `fetchSomething` to make the request.
+    1. In case your application does more than a `GET` request you can use these as examples:
         1. `PUT`: `createSomething`
         2. `POST`: `updateSomething`
         3. `DELETE`: `deleteSomething`

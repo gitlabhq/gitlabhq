@@ -28,7 +28,7 @@ module Projects
       end
 
       def save_services
-        [version_saver, avatar_saver, project_tree_saver, uploads_saver, repo_saver, wiki_repo_saver].all?(&:save)
+        [version_saver, avatar_saver, project_tree_saver, uploads_saver, repo_saver, wiki_repo_saver, lfs_saver].all?(&:save)
       end
 
       def version_saver
@@ -53,6 +53,10 @@ module Projects
 
       def wiki_repo_saver
         Gitlab::ImportExport::WikiRepoSaver.new(project: project, shared: @shared)
+      end
+
+      def lfs_saver
+        Gitlab::ImportExport::LfsSaver.new(project: project, shared: @shared)
       end
 
       def cleanup_and_notify_error

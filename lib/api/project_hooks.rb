@@ -14,6 +14,7 @@ module API
         optional :merge_requests_events, type: Boolean, desc: "Trigger hook on merge request events"
         optional :tag_push_events, type: Boolean, desc: "Trigger hook on tag push events"
         optional :note_events, type: Boolean, desc: "Trigger hook on note(comment) events"
+        optional :confidential_note_events, type: Boolean, desc: "Trigger hook on confidential note(comment) events"
         optional :job_events, type: Boolean, desc: "Trigger hook on job events"
         optional :pipeline_events, type: Boolean, desc: "Trigger hook on pipeline events"
         optional :wiki_page_events, type: Boolean, desc: "Trigger hook on wiki events"

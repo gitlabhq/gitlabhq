@@ -44,6 +44,12 @@
       }
     }
 
+    .note-text {
+      table {
+        font-family: $font-family-sans-serif;
+      }
+    }
+
     table {
       width: 100%;
       font-family: $monospace_font;
@@ -159,6 +165,11 @@
           left: 0.5em;
         }
       }
+    }
+
+    .diff-loading-error-block {
+      padding: $gl-padding * 2 $gl-padding;
+      text-align: center;
     }
   }
 

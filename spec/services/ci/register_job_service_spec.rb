@@ -2,11 +2,13 @@ require 'spec_helper'
 
 module Ci
   describe RegisterJobService do
-    let!(:project) { FactoryBot.create :project, shared_runners_enabled: false }
-    let!(:pipeline) { FactoryBot.create :ci_pipeline, project: project }
-    let!(:pending_job) { FactoryBot.create :ci_build, pipeline: pipeline }
-    let!(:shared_runner) { FactoryBot.create(:ci_runner, is_shared: true) }
-    let!(:specific_runner) { FactoryBot.create(:ci_runner, is_shared: false) }
+    set(:group) { create(:group) }
+    set(:project) { create(:project, group: group, shared_runners_enabled: false, group_runners_enabled: false) }
+    set(:pipeline) { create(:ci_pipeline, project: project) }
+    let!(:shared_runner) { create(:ci_runner, is_shared: true) }
+    let!(:specific_runner) { create(:ci_runner, is_shared: false) }
+    let!(:group_runner) { create(:ci_runner, groups: [group], runner_type: :group_type) }
+    let!(:pending_job) { create(:ci_build, pipeline: pipeline) }
 
     before do
       specific_runner.assign_to(project)
@@ -150,7 +152,7 @@ module Ci
 
       context 'disallow when builds are disabled' do
         before do
-          project.update(shared_runners_enabled: true)
+          project.update(shared_runners_enabled: true, group_runners_enabled: true)
           project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
         end
 
@@ -160,8 +162,85 @@ module Ci
           it { expect(build).to be_nil }
         end
 
-        context 'and uses specific runner' do
+        context 'and uses group runner' do
+          let(:build) { execute(group_runner) }
+
+          it { expect(build).to be_nil }
+        end
+
+        context 'and uses project runner' do
           let(:build) { execute(specific_runner) }
+
+          it { expect(build).to be_nil }
+        end
+      end
+
+      context 'allow group runners' do
+        before do
+          project.update!(group_runners_enabled: true)
+        end
+
+        context 'for multiple builds' do
+          let!(:project2) { create :project, group_runners_enabled: true, group: group }
+          let!(:pipeline2) { create :ci_pipeline, project: project2 }
+          let!(:project3) { create :project, group_runners_enabled: true, group: group }
+          let!(:pipeline3) { create :ci_pipeline, project: project3 }
+
+          let!(:build1_project1) { pending_job }
+          let!(:build2_project1) { create :ci_build, pipeline: pipeline }
+          let!(:build3_project1) { create :ci_build, pipeline: pipeline }
+          let!(:build1_project2) { create :ci_build, pipeline: pipeline2 }
+          let!(:build2_project2) { create :ci_build, pipeline: pipeline2 }
+          let!(:build1_project3) { create :ci_build, pipeline: pipeline3 }
+
+          # these shouldn't influence the scheduling
+          let!(:unrelated_group) { create :group }
+          let!(:unrelated_project) { create :project, group_runners_enabled: true, group: unrelated_group }
+          let!(:unrelated_pipeline) { create :ci_pipeline, project: unrelated_project }
+          let!(:build1_unrelated_project) { create :ci_build, pipeline: unrelated_pipeline }
+          let!(:unrelated_group_runner) { create :ci_runner, groups: [unrelated_group] }
+
+          it 'does not consider builds from other group runners' do
+            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 6
+            execute(group_runner)
+
+            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 5
+            execute(group_runner)
+
+            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 4
+            execute(group_runner)
+
+            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 3
+            execute(group_runner)
+
+            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 2
+            execute(group_runner)
+
+            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 1
+            execute(group_runner)
+
+            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 0
+            expect(execute(group_runner)).to be_nil
+          end
+        end
+
+        context 'group runner' do
+          let(:build) { execute(group_runner) }
+
+          it { expect(build).to be_kind_of(Build) }
+          it { expect(build).to be_valid }
+          it { expect(build).to be_running }
+          it { expect(build.runner).to eq(group_runner) }
+        end
+      end
+
+      context 'disallow group runners' do
+        before do
+          project.update!(group_runners_enabled: false)
+        end
+
+        context 'group runner' do
+          let(:build) { execute(group_runner) }
 
           it { expect(build).to be_nil }
         end
@@ -178,7 +257,7 @@ module Ci
           let!(:other_build) { create :ci_build, pipeline: pipeline }
 
           before do
-            allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_specific_runner)
+            allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_project_runner)
               .and_return(Ci::Build.where(id: [pending_job, other_build]))
           end
 
@@ -190,7 +269,7 @@ module Ci
 
         context 'when single build is in queue' do
           before do
-            allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_specific_runner)
+            allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_project_runner)
               .and_return(Ci::Build.where(id: pending_job))
           end
 
@@ -201,7 +280,7 @@ module Ci
 
         context 'when there is no build in queue' do
           before do
-            allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_specific_runner)
+            allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_project_runner)
               .and_return(Ci::Build.none)
           end
 
@@ -370,10 +449,111 @@ module Ci
           it_behaves_like 'validation is not active'
         end
       end
+    end
 
-      def execute(runner)
-        described_class.new(runner).execute.build
+    describe '#register_success' do
+      let!(:current_time) { Time.new(2018, 4, 5, 14, 0, 0) }
+      let!(:attempt_counter) { double('Gitlab::Metrics::NullMetric') }
+      let!(:job_queue_duration_seconds) { double('Gitlab::Metrics::NullMetric') }
+
+      before do
+        allow(Time).to receive(:now).and_return(current_time)
+
+        # Stub defaults for any metrics other than the ones we're testing
+        allow(Gitlab::Metrics).to receive(:counter)
+                                    .with(any_args)
+                                    .and_return(Gitlab::Metrics::NullMetric.instance)
+        allow(Gitlab::Metrics).to receive(:histogram)
+                                    .with(any_args)
+                                    .and_return(Gitlab::Metrics::NullMetric.instance)
+
+        # Stub tested metrics
+        allow(Gitlab::Metrics).to receive(:counter)
+                                    .with(:job_register_attempts_total, anything)
+                                    .and_return(attempt_counter)
+        allow(Gitlab::Metrics).to receive(:histogram)
+                                    .with(:job_queue_duration_seconds, anything, anything, anything)
+                                    .and_return(job_queue_duration_seconds)
+
+        project.update(shared_runners_enabled: true)
+        pending_job.update(created_at: current_time - 3600, queued_at: current_time - 1800)
       end
+
+      shared_examples 'attempt counter collector' do
+        it 'increments attempt counter' do
+          allow(job_queue_duration_seconds).to receive(:observe)
+          expect(attempt_counter).to receive(:increment)
+
+          execute(runner)
+        end
+      end
+
+      shared_examples 'jobs queueing time histogram collector' do
+        it 'counts job queuing time histogram with expected labels' do
+          allow(attempt_counter).to receive(:increment)
+          expect(job_queue_duration_seconds).to receive(:observe)
+            .with({ shared_runner: expected_shared_runner,
+                    jobs_running_for_project: expected_jobs_running_for_project_first_job }, 1800)
+
+          execute(runner)
+        end
+
+        context 'when project already has running jobs' do
+          let!(:build2) { create( :ci_build, :running, pipeline: pipeline, runner: shared_runner) }
+          let!(:build3) { create( :ci_build, :running, pipeline: pipeline, runner: shared_runner) }
+
+          it 'counts job queuing time histogram with expected labels' do
+            allow(attempt_counter).to receive(:increment)
+            expect(job_queue_duration_seconds).to receive(:observe)
+              .with({ shared_runner: expected_shared_runner,
+                      jobs_running_for_project: expected_jobs_running_for_project_third_job }, 1800)
+
+            execute(runner)
+          end
+        end
+      end
+
+      shared_examples 'metrics collector' do
+        it_behaves_like 'attempt counter collector'
+        it_behaves_like 'jobs queueing time histogram collector'
+      end
+
+      context 'when shared runner is used' do
+        let(:runner) { shared_runner }
+        let(:expected_shared_runner) { true }
+        let(:expected_jobs_running_for_project_first_job) { 0 }
+        let(:expected_jobs_running_for_project_third_job) { 2 }
+
+        it_behaves_like 'metrics collector'
+
+        context 'when pending job with queued_at=nil is used' do
+          before do
+            pending_job.update(queued_at: nil)
+          end
+
+          it_behaves_like 'attempt counter collector'
+
+          it "doesn't count job queuing time histogram" do
+            allow(attempt_counter).to receive(:increment)
+            expect(job_queue_duration_seconds).not_to receive(:observe)
+
+            execute(runner)
+          end
+        end
+      end
+
+      context 'when specific runner is used' do
+        let(:runner) { specific_runner }
+        let(:expected_shared_runner) { false }
+        let(:expected_jobs_running_for_project_first_job) { '+Inf' }
+        let(:expected_jobs_running_for_project_third_job) { '+Inf' }
+
+        it_behaves_like 'metrics collector'
+      end
+    end
+
+    def execute(runner)
+      described_class.new(runner).execute.build
     end
   end
 end

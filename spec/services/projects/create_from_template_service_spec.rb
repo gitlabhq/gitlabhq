@@ -7,7 +7,7 @@ describe Projects::CreateFromTemplateService do
         path: user.to_param,
         template_name: 'rails',
         description: 'project description',
-        visibility_level: Gitlab::VisibilityLevel::PRIVATE
+        visibility_level: Gitlab::VisibilityLevel::PUBLIC
     }
   end
 
@@ -24,7 +24,23 @@ describe Projects::CreateFromTemplateService do
 
     expect(project).to be_saved
     expect(project.scheduled?).to be(true)
-    expect(project.description).to match('project description')
-    expect(project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+  end
+
+  context 'the result project' do
+    before do
+      Sidekiq::Testing.inline! do
+        @project = subject.execute
+      end
+
+      @project.reload
+    end
+
+    it 'overrides template description' do
+      expect(@project.description).to match('project description')
+    end
+
+    it 'overrides template visibility_level' do
+      expect(@project.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
+    end
   end
 end

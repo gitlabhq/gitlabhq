@@ -15,8 +15,7 @@ module Gitlab
 
         return false unless new_lfs_pointers.present?
 
-        existing_count = @project.lfs_storage_project
-                                 .lfs_objects
+        existing_count = @project.all_lfs_objects
                                  .where(oid: new_lfs_pointers.map(&:lfs_oid))
                                  .count
 

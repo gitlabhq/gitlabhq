@@ -84,6 +84,28 @@ describe ProfilesController, :request_store do
       expect(user.username).to eq(new_username)
     end
 
+    it 'updates a username using JSON request' do
+      sign_in(user)
+
+      put :update_username,
+          user: { username: new_username },
+          format: :json
+
+      expect(response.status).to eq(200)
+      expect(json_response['message']).to eq('Username successfully changed')
+    end
+
+    it 'renders an error message when the username was not updated' do
+      sign_in(user)
+
+      put :update_username,
+          user: { username: 'invalid username.git' },
+          format: :json
+
+      expect(response.status).to eq(422)
+      expect(json_response['message']).to match(/Username change failed/)
+    end
+
     it 'raises a correct error when the username is missing' do
       sign_in(user)
 
@@ -103,7 +125,7 @@ describe ProfilesController, :request_store do
         user.reload
 
         expect(response.status).to eq(302)
-        expect(gitlab_shell.exists?(project.repository_storage_path, "#{new_username}/#{project.path}.git")).to be_truthy
+        expect(gitlab_shell.exists?(project.repository_storage, "#{new_username}/#{project.path}.git")).to be_truthy
       end
     end
 
@@ -121,7 +143,7 @@ describe ProfilesController, :request_store do
         user.reload
 
         expect(response.status).to eq(302)
-        expect(gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")).to be_truthy
+        expect(gitlab_shell.exists?(project.repository_storage, "#{project.disk_path}.git")).to be_truthy
         expect(before_disk_path).to eq(project.disk_path)
       end
     end

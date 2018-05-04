@@ -35,6 +35,7 @@ module Boards
       def filter_params
         set_parent
         set_state
+        set_scope
 
         params
       end
@@ -49,6 +50,10 @@ module Boards
 
       def set_state
         params[:state] = list && list.closed? ? 'closed' : 'opened'
+      end
+
+      def set_scope
+        params[:include_subgroups] = board.group_board?
       end
 
       def board_label_ids

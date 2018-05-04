@@ -88,6 +88,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
+      resources :deploy_tokens, constraints: { id: /\d+/ }, only: [] do
+        member do
+          put :revoke
+        end
+      end
+
       resources :forks, only: [:index, :new, :create]
       resource :import, only: [:new, :create, :show]
 
@@ -155,7 +161,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
 
           get :diff_for_path
-          get :update_branches
           get :branch_from
           get :branch_to
         end
@@ -249,6 +254,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       end
 
       scope '-' do
+        get 'archive/*id', constraints: { format: Gitlab::PathRegex.archive_formats_regex, id: /.+?/ }, to: 'repositories#archive', as: 'archive'
+
         resources :jobs, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
             post :cancel_all
@@ -402,6 +409,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         collection do
           post :toggle_shared_runners
+          post :toggle_group_runners
         end
       end
 
@@ -420,11 +428,14 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       end
       namespace :settings do
         get :members, to: redirect("%{namespace_id}/%{project_id}/project_members")
-        resource :ci_cd, only: [:show], controller: 'ci_cd' do
+        resource :ci_cd, only: [:show, :update], controller: 'ci_cd' do
           post :reset_cache
         end
         resource :integrations, only: [:show]
-        resource :repository, only: [:show], controller: :repository
+        resource :repository, only: [:show], controller: :repository do
+          post :create_deploy_token, path: 'deploy_token/create'
+        end
+        resources :badges, only: [:index]
       end
 
       # Since both wiki and repository routing contains wildcard characters

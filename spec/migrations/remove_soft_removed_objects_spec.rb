@@ -8,7 +8,7 @@ describe RemoveSoftRemovedObjects, :migration do
         create_with_deleted_at(:issue)
       end
 
-      regular_issue = create(:issue)
+      regular_issue = create(:issue) # rubocop:disable RSpec/FactoriesInMigrationSpecs
 
       run_migration
 
@@ -28,7 +28,7 @@ describe RemoveSoftRemovedObjects, :migration do
 
     it 'removes routes of soft removed personal namespaces' do
       namespace = create_with_deleted_at(:namespace)
-      group = create(:group)
+      group = create(:group) # rubocop:disable RSpec/FactoriesInMigrationSpecs
 
       expect(Route.where(source: namespace).exists?).to eq(true)
       expect(Route.where(source: group).exists?).to eq(true)
@@ -41,7 +41,7 @@ describe RemoveSoftRemovedObjects, :migration do
 
     it 'schedules the removal of soft removed groups' do
       group = create_with_deleted_at(:group)
-      admin = create(:user, admin: true)
+      admin = create(:user, admin: true) # rubocop:disable RSpec/FactoriesInMigrationSpecs
 
       expect_any_instance_of(GroupDestroyWorker)
         .to receive(:perform)
@@ -67,7 +67,7 @@ describe RemoveSoftRemovedObjects, :migration do
   end
 
   def create_with_deleted_at(*args)
-    row = create(*args)
+    row = create(*args) # rubocop:disable RSpec/FactoriesInMigrationSpecs
 
     # We set "deleted_at" this way so we don't run into any column cache issues.
     row.class.where(id: row.id).update_all(deleted_at: 1.year.ago)

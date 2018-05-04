@@ -5,13 +5,14 @@ describe Banzai::ReferenceParser::BaseParser do
 
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
+  let(:context) { Banzai::RenderContext.new(project, user) }
 
   subject do
     klass = Class.new(described_class) do
       self.reference_type = :foo
     end
 
-    klass.new(project, user)
+    klass.new(context)
   end
 
   describe '.reference_type=' do
@@ -20,6 +21,19 @@ describe Banzai::ReferenceParser::BaseParser do
       dummy.reference_type = :foo
 
       expect(dummy.reference_type).to eq(:foo)
+    end
+  end
+
+  describe '#project_for_node' do
+    it 'returns the Project for a node' do
+      document = instance_double('document', fragment?: false)
+      project = instance_double('project')
+      object = instance_double('object', project: project)
+      node = instance_double('node', document: document)
+
+      context.associate_document(document, object)
+
+      expect(subject.project_for_node(node)).to eq(project)
     end
   end
 
@@ -164,7 +178,7 @@ describe Banzai::ReferenceParser::BaseParser do
         self.reference_type = :test
       end
 
-      instance = dummy.new(project, user)
+      instance = dummy.new(Banzai::RenderContext.new(project, user))
       document = Nokogiri::HTML.fragment('<a class="gfm"></a><a class="gfm" data-reference-type="test"></a>')
 
       expect(instance).to receive(:gather_references)

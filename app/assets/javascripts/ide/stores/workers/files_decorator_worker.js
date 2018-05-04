@@ -1,17 +1,12 @@
+import { viewerInformationForPath } from '~/vue_shared/components/content_viewer/lib/viewer_utils';
 import { decorateData, sortTree } from '../utils';
 
 self.addEventListener('message', e => {
-  const {
-    data,
-    projectId,
-    branchId,
-    tempFile = false,
-    content = '',
-    base64 = false,
-  } = e.data;
+  const { data, projectId, branchId, tempFile = false, content = '', base64 = false } = e.data;
 
   const treeList = [];
   let file;
+  let parentPath;
   const entries = data.reduce((acc, path) => {
     const pathSplit = path.split('/');
     const blobName = pathSplit.pop().trim();
@@ -19,12 +14,12 @@ self.addEventListener('message', e => {
     if (pathSplit.length > 0) {
       pathSplit.reduce((pathAcc, folderName) => {
         const parentFolder = acc[pathAcc[pathAcc.length - 1]];
-        const folderPath = `${
-          parentFolder ? `${parentFolder.path}/` : ''
-        }${folderName}`;
+        const folderPath = `${parentFolder ? `${parentFolder.path}/` : ''}${folderName}`;
         const foundEntry = acc[folderPath];
 
         if (!foundEntry) {
+          parentPath = parentFolder ? parentFolder.path : null;
+
           const tree = decorateData({
             projectId,
             branchId,
@@ -33,12 +28,11 @@ self.addEventListener('message', e => {
             path: folderPath,
             url: `/${projectId}/tree/${branchId}/${folderPath}/`,
             type: 'tree',
-            parentTreeUrl: parentFolder
-              ? parentFolder.url
-              : `/${projectId}/tree/${branchId}/`,
+            parentTreeUrl: parentFolder ? parentFolder.url : `/${projectId}/tree/${branchId}/`,
             tempFile,
             changed: tempFile,
             opened: tempFile,
+            parentPath,
           });
 
           Object.assign(acc, {
@@ -62,6 +56,8 @@ self.addEventListener('message', e => {
 
     if (blobName !== '') {
       const fileFolder = acc[pathSplit.join('/')];
+      parentPath = fileFolder ? fileFolder.path : null;
+
       file = decorateData({
         projectId,
         branchId,
@@ -70,13 +66,13 @@ self.addEventListener('message', e => {
         path,
         url: `/${projectId}/blob/${branchId}/${path}`,
         type: 'blob',
-        parentTreeUrl: fileFolder
-          ? fileFolder.url
-          : `/${projectId}/blob/${branchId}`,
+        parentTreeUrl: fileFolder ? fileFolder.url : `/${projectId}/blob/${branchId}`,
         tempFile,
         changed: tempFile,
         content,
         base64,
+        previewMode: viewerInformationForPath(blobName),
+        parentPath,
       });
 
       Object.assign(acc, {
@@ -97,5 +93,6 @@ self.addEventListener('message', e => {
     entries,
     treeList: sortTree(treeList),
     file,
+    parentPath,
   });
 });

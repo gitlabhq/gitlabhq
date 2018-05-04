@@ -96,6 +96,37 @@ describe NotificationService, :mailer do
     it_should_behave_like 'participating by assignee notification'
   end
 
+  describe '#async' do
+    let(:async) { notification.async }
+    set(:key) { create(:personal_key) }
+
+    it 'returns an Async object with the correct parent' do
+      expect(async).to be_a(described_class::Async)
+      expect(async.parent).to eq(notification)
+    end
+
+    context 'when receiving a public method' do
+      it 'schedules a MailScheduler::NotificationServiceWorker' do
+        expect(MailScheduler::NotificationServiceWorker)
+          .to receive(:perform_async).with('new_key', key)
+
+        async.new_key(key)
+      end
+    end
+
+    context 'when receiving a private method' do
+      it 'raises NoMethodError' do
+        expect { async.notifiable?(key) }.to raise_error(NoMethodError)
+      end
+    end
+
+    context 'when recieving a non-existent method' do
+      it 'raises NoMethodError' do
+        expect { async.foo(key) }.to raise_error(NoMethodError)
+      end
+    end
+  end
+
   describe 'Keys' do
     describe '#new_key' do
       let(:key_options) { {} }
@@ -933,6 +964,46 @@ describe NotificationService, :mailer do
         let(:notification_trigger) { notification.issue_moved(issue, new_issue, @u_disabled) }
       end
     end
+
+    describe '#issue_due' do
+      before do
+        issue.update!(due_date: Date.today)
+
+        update_custom_notification(:issue_due, @u_guest_custom, resource: project)
+        update_custom_notification(:issue_due, @u_custom_global)
+      end
+
+      it 'sends email to issue notification recipients, excluding watchers' do
+        notification.issue_due(issue)
+
+        should_email(issue.assignees.first)
+        should_email(issue.author)
+        should_email(@u_guest_custom)
+        should_email(@u_custom_global)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
+        should_not_email(@u_watcher)
+        should_not_email(@u_guest_watcher)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+        should_not_email(@u_lazy_participant)
+      end
+
+      it 'sends the email from the author' do
+        notification.issue_due(issue)
+        email = find_email_for(@subscriber)
+
+        expect(email.header[:from].display_names).to eq([issue.author.name])
+      end
+
+      it_behaves_like 'participating notifications' do
+        let(:participant) { create(:user, username: 'user-participant') }
+        let(:issuable) { issue }
+        let(:notification_trigger) { notification.issue_due(issue) }
+      end
+    end
   end
 
   describe 'Merge Requests' do
@@ -942,6 +1013,8 @@ describe NotificationService, :mailer do
     let(:merge_request) { create :merge_request, source_project: project, assignee: create(:user), description: 'cc @participant' }
 
     before do
+      project.add_master(merge_request.author)
+      project.add_master(merge_request.assignee)
       build_team(merge_request.target_project)
       add_users_with_subscription(merge_request.target_project, merge_request)
       update_custom_notification(:new_merge_request, @u_guest_custom, resource: project)
@@ -1053,15 +1126,18 @@ describe NotificationService, :mailer do
     end
 
     describe '#reassigned_merge_request' do
+      let(:current_user) { create(:user) }
+
       before do
         update_custom_notification(:reassign_merge_request, @u_guest_custom, resource: project)
         update_custom_notification(:reassign_merge_request, @u_custom_global)
       end
 
       it do
-        notification.reassigned_merge_request(merge_request, merge_request.author)
+        notification.reassigned_merge_request(merge_request, current_user, merge_request.author)
 
         should_email(merge_request.assignee)
+        should_email(merge_request.author)
         should_email(@u_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
@@ -1076,7 +1152,7 @@ describe NotificationService, :mailer do
       end
 
       it 'adds "assigned" reason for new assignee' do
-        notification.reassigned_merge_request(merge_request, merge_request.author)
+        notification.reassigned_merge_request(merge_request, current_user, merge_request.author)
 
         email = find_email_for(merge_request.assignee)
 
@@ -1086,7 +1162,7 @@ describe NotificationService, :mailer do
       it_behaves_like 'participating notifications' do
         let(:participant) { create(:user, username: 'user-participant') }
         let(:issuable) { merge_request }
-        let(:notification_trigger) { notification.reassigned_merge_request(merge_request, @u_disabled) }
+        let(:notification_trigger) { notification.reassigned_merge_request(merge_request, current_user, merge_request.author) }
       end
     end
 

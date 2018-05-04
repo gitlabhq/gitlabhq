@@ -30,6 +30,10 @@ module Gitlab
           gl_user.try(:valid?)
         end
 
+        def valid_sign_in?
+          valid? && persisted?
+        end
+
         def save(provider = 'OAuth')
           raise SigninDisabledForProviderError if oauth_provider_disabled?
           raise SignupDisabledError unless gl_user
@@ -64,7 +68,17 @@ module Gitlab
           user
         end
 
+        def find_and_update!
+          save if should_save?
+
+          gl_user
+        end
+
         protected
+
+        def should_save?
+          true
+        end
 
         def add_or_update_user_identities
           return unless gl_user

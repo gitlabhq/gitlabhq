@@ -2,7 +2,6 @@
   "description": "Nisi et repellendus ut enim quo accusamus vel magnam.",
   "visibility_level": 10,
   "archived": false,
-  "description_html": "description",
   "labels": [
     {
       "id": 2,
@@ -6181,12 +6180,6 @@
               "user_id": null,
               "target_url": null,
               "description": null,
-              "artifacts_file": {
-                "url": null
-              },
-              "artifacts_metadata": {
-                "url": null
-              },
               "erased_by_id": null,
               "erased_at": null,
               "type": "Ci::Build",
@@ -6219,12 +6212,6 @@
               "user_id": null,
               "target_url": null,
               "description": null,
-              "artifacts_file": {
-                "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/72/p5_build_artifacts.zip"
-              },
-              "artifacts_metadata": {
-                "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/72/p5_build_artifacts_metadata.gz"
-              },
               "erased_by_id": null,
               "erased_at": null
             }
@@ -6293,12 +6280,6 @@
               "user_id": null,
               "target_url": null,
               "description": null,
-              "artifacts_file": {
-                "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/74/p5_build_artifacts.zip"
-              },
-              "artifacts_metadata": {
-                "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/74/p5_build_artifacts_metadata.gz"
-              },
               "erased_by_id": null,
               "erased_at": null
             },
@@ -6328,12 +6309,6 @@
               "user_id": null,
               "target_url": null,
               "description": null,
-              "artifacts_file": {
-                "url": null
-              },
-              "artifacts_metadata": {
-                "url": null
-              },
               "erased_by_id": null,
               "erased_at": null
             }
@@ -6393,12 +6368,6 @@
               "user_id": null,
               "target_url": null,
               "description": null,
-              "artifacts_file": {
-                "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/76/p5_build_artifacts.zip"
-              },
-              "artifacts_metadata": {
-                "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/76/p5_build_artifacts_metadata.gz"
-              },
               "erased_by_id": null,
               "erased_at": null
             },
@@ -6428,12 +6397,6 @@
               "user_id": null,
               "target_url": null,
               "description": null,
-              "artifacts_file": {
-                "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/75/p5_build_artifacts.zip"
-              },
-              "artifacts_metadata": {
-                "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/75/p5_build_artifacts_metadata.gz"
-              },
               "erased_by_id": null,
               "erased_at": null
             }
@@ -6493,12 +6456,6 @@
               "user_id": null,
               "target_url": null,
               "description": null,
-              "artifacts_file": {
-                "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/78/p5_build_artifacts.zip"
-              },
-              "artifacts_metadata": {
-                "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/78/p5_build_artifacts_metadata.gz"
-              },
               "erased_by_id": null,
               "erased_at": null
             },
@@ -6528,12 +6485,6 @@
               "user_id": null,
               "target_url": null,
               "description": null,
-              "artifacts_file": {
-                "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/77/p5_build_artifacts.zip"
-              },
-              "artifacts_metadata": {
-                "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/77/p5_build_artifacts_metadata.gz"
-              },
               "erased_by_id": null,
               "erased_at": null
             }
@@ -6593,12 +6544,6 @@
               "user_id": null,
               "target_url": null,
               "description": null,
-              "artifacts_file": {
-                "url": null
-              },
-              "artifacts_metadata": {
-                "url": null
-              },
               "erased_by_id": null,
               "erased_at": null
             },
@@ -6628,12 +6573,6 @@
               "user_id": null,
               "target_url": null,
               "description": null,
-              "artifacts_file": {
-                "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/80/p5_build_artifacts.zip"
-              },
-              "artifacts_metadata": {
-                "url": "/Users/Test/Test/gitlab-development-kit/gitlab/shared/artifacts/2016_03/5/80/p5_build_artifacts_metadata.gz"
-              },
               "erased_by_id": null,
               "erased_at": null
             }

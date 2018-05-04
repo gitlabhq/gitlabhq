@@ -9,16 +9,7 @@ export default {
   },
   computed: {
     noteableType() {
-      switch (this.note.noteable_type) {
-        case 'MergeRequest':
-          return constants.MERGE_REQUEST_NOTEABLE_TYPE;
-        case 'Issue':
-          return constants.ISSUE_NOTEABLE_TYPE;
-        case 'Epic':
-          return constants.EPIC_NOTEABLE_TYPE;
-        default:
-          return '';
-      }
+      return constants.NOTEABLE_TYPE_MAPPING[this.note.noteable_type];
     },
   },
 };

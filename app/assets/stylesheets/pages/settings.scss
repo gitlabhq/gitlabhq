@@ -284,3 +284,23 @@
 .deprecated-service {
   cursor: default;
 }
+
+.personal-access-tokens-never-expires-label {
+  color: $note-disabled-comment-color;
+}
+
+.created-deploy-token-container {
+  .deploy-token-field {
+    width: 90%;
+    display: inline;
+  }
+
+  .btn-clipboard {
+    margin-left: 5px;
+  }
+
+  .deploy-token-help-block {
+    display: block;
+    margin-bottom: 0;
+  }
+}

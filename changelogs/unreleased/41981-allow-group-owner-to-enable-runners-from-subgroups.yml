@@ -1,0 +1,5 @@
+---
+title: 'Allow group owner to enable runners from subgroups (#41981)'
+merge_request: 18009
+author:
+type: fixed

@@ -61,7 +61,7 @@ future GitLab releases.**
 | **CI_RUNNER_EXECUTABLE_ARCH**   | all    | 10.6   | The OS/architecture of the GitLab Runner executable (note that this is not necessarily the same as the environment of the executor) |
 | **CI_PIPELINE_ID**              | 8.10   | 0.5    | The unique id of the current pipeline that GitLab CI uses internally |
 | **CI_PIPELINE_TRIGGERED**       | all    | all    | The flag to indicate that job was [triggered] |
-| **CI_PIPELINE_SOURCE**          | 10.0   | all    | The source for this pipeline, one of: push, web, trigger, schedule, api, external. Pipelines created before 9.5 will have unknown as source |
+| **CI_PIPELINE_SOURCE**          | 10.0   | all    | Indicates how the pipeline was triggered. Possible options are: `push`, `web`, `trigger`, `schedule`, `api`, and `pipeline`. For pipelines created before GitLab 9.5, this will show as `unknown` |
 | **CI_PROJECT_DIR**              | all    | all    | The full path where the repository is cloned and where the job is run |
 | **CI_PROJECT_ID**               | all    | all    | The unique id of the current project that GitLab CI uses internally |
 | **CI_PROJECT_NAME**             | 8.10   | 0.5    | The project name that is currently being built (actually it is project folder name) |
@@ -87,6 +87,8 @@ future GitLab releases.**
 | **GITLAB_USER_LOGIN**           | 10.0   | all    | The login username of the user who started the job |
 | **GITLAB_USER_NAME**            | 10.0   | all    | The real name of the user who started the job |
 | **RESTORE_CACHE_ATTEMPTS**      | 8.15   | 1.9    | Number of attempts to restore the cache running a job |
+| **CI_DEPLOY_USER**              | 10.8   | all    | Authentication username of the [GitLab Deploy Token][gitlab-deploy-token], only present if the Project has one related.|
+| **CI_DEPLOY_PASSWORD**          | 10.8   | all    | Authentication password of the [GitLab Deploy Token][gitlab-deploy-token], only present if the Project has one related.|
 
 ## 9.0 Renaming
 
@@ -454,8 +456,8 @@ export CI_REGISTRY_PASSWORD="longalfanumstring"
 > Variables expressions were added in GitLab 10.7.
 
 It is possible to use variables expressions with only / except policies in
-`.gitlab-ci.yml`. By using this approach you can limit what builds are going to
-be created within a pipeline after pushing code to GitLab.
+`.gitlab-ci.yml`. By using this approach you can limit what jobs are going to
+be created within a pipeline after pushing a code to GitLab.
 
 This is particularly useful in combination with secret variables and triggered
 pipeline variables.
@@ -470,22 +472,21 @@ deploy:
       - $STAGING
 ```
 
-Each provided variables expression is going to be evaluated before creating
-a pipeline.
+Each expression provided is going to be evaluated before creating a pipeline.
 
 If any of the conditions in `variables` evaluates to truth when using `only`,
 a new job is going to be created. If any of the expressions evaluates to truth
 when `except` is being used, a job is not going to be created.
 
-This follows usual rules for `only` / `except` policies.
+This follows usual rules for [`only` / `except` policies][builds-policies].
 
 ### Supported syntax
 
-Below you can find currently supported syntax reference:
+Below you can find supported syntax reference:
 
 1. Equality matching using a string
 
-    Example: `$VARIABLE == "some value"`
+    > Example: `$VARIABLE == "some value"`
 
     You can use equality operator `==` to compare a variable content to a
     string. We support both, double quotes and single quotes to define a string
@@ -494,26 +495,64 @@ Below you can find currently supported syntax reference:
 
 1. Checking for an undefined value
 
-    It sometimes happens that you want to check whether variable is defined or
-    not. To do that, you can compare variable to `null` value, like
+    > Example: `$VARIABLE == null`
+
+    It sometimes happens that you want to check whether a variable is defined
+    or not. To do that, you can compare a variable to `null` keyword, like
     `$VARIABLE == null`. This expression is going to evaluate to truth if
-    variable is not set.
+    variable is not defined.
 
 1. Checking for an empty variable
+
+    > Example: `$VARIABLE == ""`
 
     If you want to check whether a variable is defined, but is empty, you can
     simply compare it against an empty string, like `$VAR == ''`.
 
 1. Comparing two variables
 
-    It is possible to compare two variables. `$VARIABLE_1 == $VARIABLE_2`.
+    > Example: `$VARIABLE_1 == $VARIABLE_2`
+
+    It is possible to compare two variables. This is going to compare values
+    of these variables.
 
 1. Variable presence check
+
+    > Example: `$STAGING`
 
     If you only want to create a job when there is some variable present,
     which means that it is defined and non-empty, you can simply use
     variable name as an expression, like `$STAGING`. If `$STAGING` variable
     is defined, and is non empty, expression will evaluate to truth.
+    `$STAGING` value needs to a string, with length higher than zero.
+    Variable that contains only whitespace characters is not an empty variable.
+
+### Unsupported predefined variables
+
+Because GitLab evaluates variables before creating jobs, we do not support a
+few variables that depend on persistence layer, like `$CI_JOB_ID`.
+
+Environments (like `production` or `staging`) are also being created based on
+what jobs pipeline consists of, thus some environment-specific variables are
+not supported as well.
+
+We do not support variables containing tokens because of security reasons.
+
+You can find a full list of unsupported variables below:
+
+- `CI_JOB_ID`
+- `CI_JOB_TOKEN`
+- `CI_BUILD_ID`
+- `CI_BUILD_TOKEN`
+- `CI_REGISTRY_USER`
+- `CI_REGISTRY_PASSWORD`
+- `CI_REPOSITORY_URL`
+- `CI_ENVIRONMENT_URL`
+- `CI_DEPLOY_USER`
+- `CI_DEPLOY_PASSWORD`
+
+These variables are also not supported in a context of a
+[dynamic environment name][dynamic-environments].
 
 [ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784 "Simple protection of CI secret variables"
 [eep]: https://about.gitlab.com/products/ "Available only in GitLab Premium"
@@ -525,3 +564,6 @@ Below you can find currently supported syntax reference:
 [triggered]: ../triggers/README.md
 [triggers]: ../triggers/README.md#pass-job-variables-to-a-trigger
 [subgroups]: ../../user/group/subgroups/index.md
+[builds-policies]: ../yaml/README.md#only-and-except-complex
+[dynamic-environments]: ../environments.md#dynamic-environments
+[gitlab-deploy-token]: ../../user/project/deploy_tokens/index.md#gitlab-deploy-token

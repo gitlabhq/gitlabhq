@@ -11,7 +11,8 @@ module Gitlab
 
       def build(user: nil, changes: {})
         hook_data = {
-          object_kind: issuable.class.name.underscore,
+          object_kind: object_kind,
+          event_type: event_type,
           user: user.hook_attrs,
           project: issuable.project.hook_attrs,
           object_attributes: issuable.hook_attrs,
@@ -35,6 +36,18 @@ module Gitlab
       end
 
       private
+
+      def object_kind
+        issuable.class.name.underscore
+      end
+
+      def event_type
+        if issuable.try(:confidential?)
+          "confidential_#{object_kind}"
+        else
+          object_kind
+        end
+      end
 
       def issuable_builder
         case issuable

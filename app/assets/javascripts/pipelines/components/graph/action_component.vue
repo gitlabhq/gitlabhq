@@ -1,60 +1,85 @@
 <script>
-  import tooltip from '../../../vue_shared/directives/tooltip';
-  import icon from '../../../vue_shared/components/icon.vue';
-  import { dasherize } from '../../../lib/utils/text_utility';
-  /**
-   * Renders either a cancel, retry or play icon pointing to the given path.
-   * TODO: Remove UJS from here and use an async request instead.
-   */
-  export default {
-    components: {
-      icon,
+import $ from 'jquery';
+import tooltip from '../../../vue_shared/directives/tooltip';
+import Icon from '../../../vue_shared/components/icon.vue';
+import { dasherize } from '../../../lib/utils/text_utility';
+import eventHub from '../../event_hub';
+/**
+ * Renders either a cancel, retry or play icon pointing to the given path.
+ */
+export default {
+  components: {
+    Icon,
+  },
+
+  directives: {
+    tooltip,
+  },
+
+  props: {
+    tooltipText: {
+      type: String,
+      required: true,
     },
 
-    directives: {
-      tooltip,
+    link: {
+      type: String,
+      required: true,
     },
 
-    props: {
-      tooltipText: {
-        type: String,
-        required: true,
-      },
-
-      link: {
-        type: String,
-        required: true,
-      },
-
-      actionMethod: {
-        type: String,
-        required: true,
-      },
-
-      actionIcon: {
-        type: String,
-        required: true,
-      },
+    actionIcon: {
+      type: String,
+      required: true,
     },
 
-    computed: {
-      cssClass() {
-        const actionIconDash = dasherize(this.actionIcon);
-        return `${actionIconDash} js-icon-${actionIconDash}`;
-      },
+    requestFinishedFor: {
+      type: String,
+      required: false,
+      default: '',
     },
-  };
+  },
+  data() {
+    return {
+      isDisabled: false,
+      linkRequested: '',
+    };
+  },
+
+  computed: {
+    cssClass() {
+      const actionIconDash = dasherize(this.actionIcon);
+      return `${actionIconDash} js-icon-${actionIconDash}`;
+    },
+  },
+  watch: {
+    requestFinishedFor() {
+      if (this.requestFinishedFor === this.linkRequested) {
+        this.isDisabled = false;
+      }
+    },
+  },
+  methods: {
+    onClickAction() {
+      $(this.$el).tooltip('hide');
+      eventHub.$emit('graphAction', this.link);
+      this.linkRequested = this.link;
+      this.isDisabled = true;
+    },
+  },
+};
 </script>
 <template>
-  <a
+  <button
+    type="button"
+    @click="onClickAction"
     v-tooltip
-    :data-method="actionMethod"
     :title="tooltipText"
-    :href="link"
-    class="ci-action-icon-container ci-action-icon-wrapper"
+    class="js-ci-action btn btn-blank
+btn-transparent ci-action-icon-container ci-action-icon-wrapper"
     :class="cssClass"
     data-container="body"
+    :disabled="isDisabled"
   >
     <icon :name="actionIcon" />
-  </a>
+  </button>
 </template>

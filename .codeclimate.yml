@@ -10,12 +10,6 @@ engines:
       - javascript
     exclude_paths:
       - "lib/api/v3/*"
-  eslint:
-    enabled: true
-    channel: "eslint-4"
-  rubocop:
-    enabled: true
-    channel: "gitlab-rubocop-0-52-1"
 ratings:
   paths:
   - Gemfile.lock

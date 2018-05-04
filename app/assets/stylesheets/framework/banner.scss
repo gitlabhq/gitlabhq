@@ -1,7 +1,7 @@
 .banner-callout {
   display: flex;
   position: relative;
-  flex-wrap: wrap;
+  align-items: start;
 
   .banner-close {
     position: absolute;
@@ -16,10 +16,25 @@
   }
 
   .banner-graphic {
-    margin: 20px auto;
+    margin: 0 $gl-padding $gl-padding 0;
   }
 
   &.banner-non-empty-state {
     border-bottom: 1px solid $border-color;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+
+    .banner-title,
+    .banner-buttons {
+      text-align: center;
+    }
+
+    .banner-graphic {
+      margin-left: $gl-padding;
+    }
   }
 }

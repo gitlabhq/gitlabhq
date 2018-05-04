@@ -34,6 +34,7 @@
   - [email_receiver, 2]
   - [emails_on_push, 2]
   - [mailers, 2]
+  - [mail_scheduler, 2]
   - [invalid_gpg_signature_update, 2]
   - [create_gpg_signature, 2]
   - [rebase, 2]

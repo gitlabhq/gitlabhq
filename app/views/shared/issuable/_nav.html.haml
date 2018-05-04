@@ -1,22 +1,23 @@
 - type = local_assigns.fetch(:type, :issues)
 - page_context_word = type.to_s.humanize(capitalize: false)
+- display_count = local_assigns.fetch(:display_count, :true)
 
 %ul.nav-links.issues-state-filters.mobile-separator
   %li{ class: active_when(params[:state] == 'opened') }>
     = link_to page_filter_path(state: 'opened', label: true), id: 'state-opened', title: "Filter by #{page_context_word} that are currently opened.", data: { state: 'opened' } do
-      #{issuables_state_counter_text(type, :opened)}
+      #{issuables_state_counter_text(type, :opened, display_count)}
 
   - if type == :merge_requests
     %li{ class: active_when(params[:state] == 'merged') }>
       = link_to page_filter_path(state: 'merged', label: true), id: 'state-merged', title: 'Filter by merge requests that are currently merged.', data: { state: 'merged' } do
-        #{issuables_state_counter_text(type, :merged)}
+        #{issuables_state_counter_text(type, :merged, display_count)}
 
     %li{ class: active_when(params[:state] == 'closed') }>
       = link_to page_filter_path(state: 'closed', label: true), id: 'state-closed', title: 'Filter by merge requests that are currently closed and unmerged.', data: { state: 'closed' } do
-        #{issuables_state_counter_text(type, :closed)}
+        #{issuables_state_counter_text(type, :closed, display_count)}
   - else
     %li{ class: active_when(params[:state] == 'closed') }>
       = link_to page_filter_path(state: 'closed', label: true), id: 'state-closed', title: 'Filter by issues that are currently closed.', data: { state: 'closed' } do
-        #{issuables_state_counter_text(type, :closed)}
+        #{issuables_state_counter_text(type, :closed, display_count)}
 
-  = render 'shared/issuable/nav_links/all', page_context_word: page_context_word, counter: issuables_state_counter_text(type, :all)
+  = render 'shared/issuable/nav_links/all', page_context_word: page_context_word, counter: issuables_state_counter_text(type, :all, display_count)

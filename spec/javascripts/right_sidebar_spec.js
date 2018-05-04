@@ -9,8 +9,6 @@ import Sidebar from '~/right_sidebar';
 (function() {
   var $aside, $icon, $labelsIcon, $page, $toggle, assertSidebarState;
 
-  this.sidebar = null;
-
   $aside = null;
 
   $toggle = null;
@@ -43,7 +41,7 @@ import Sidebar from '~/right_sidebar';
       beforeEach(function() {
         loadFixtures(fixtureName);
         mock = new MockAdapter(axios);
-        this.sidebar = new Sidebar();
+        new Sidebar(); // eslint-disable-line no-new
         $aside = $('.right-sidebar');
         $page = $('.layout-page');
         $icon = $aside.find('i');

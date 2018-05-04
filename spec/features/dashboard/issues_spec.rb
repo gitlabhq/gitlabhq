@@ -51,15 +51,6 @@ RSpec.describe 'Dashboard Issues' do
       expect(page).not_to have_content(other_issue.title)
     end
 
-    it 'shows all issues' do
-      click_link('Reset filters')
-
-      expect(page).to have_content(authored_issue.title)
-      expect(page).to have_content(authored_issue_on_public_project.title)
-      expect(page).to have_content(assigned_issue.title)
-      expect(page).to have_content(other_issue.title)
-    end
-
     it 'state filter tabs work' do
       find('#state-closed').click
       expect(page).to have_current_path(issues_dashboard_url(assignee_id: current_user.id, state: 'closed'), url: true)

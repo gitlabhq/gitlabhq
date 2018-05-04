@@ -1,5 +1,0 @@
----
-title: Fix relative uri when "#" is in branch name
-merge_request:
-author: Jan
-type: fixed

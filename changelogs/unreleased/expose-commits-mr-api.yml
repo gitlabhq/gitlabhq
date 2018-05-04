@@ -1,5 +1,0 @@
----
-title: Allow merge requests related to a commit to be found via API
-merge_request:
-author:
-type: added

@@ -47,7 +47,8 @@ class NotificationSetting < ActiveRecord::Base
   ].freeze
 
   EXCLUDED_WATCHER_EVENTS = [
-    :push_to_merge_request
+    :push_to_merge_request,
+    :issue_due
   ].push(*EXCLUDED_PARTICIPATING_EVENTS).freeze
 
   def self.find_or_create_for(source)

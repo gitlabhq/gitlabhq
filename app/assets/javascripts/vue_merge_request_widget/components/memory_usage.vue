@@ -146,8 +146,8 @@ export default {
     </p>
     <p
       v-if="shouldShowMemoryGraph"
-      class="usage-info js-usage-info">
-      {{ memoryChangeMessage }}
+      class="usage-info js-usage-info"
+      v-html="memoryChangeMessage">
     </p>
     <p
       v-if="shouldShowLoadFailure"

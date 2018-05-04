@@ -1,5 +1,5 @@
 class MergeRequest < ActiveRecord::Base
-  include NonatomicInternalId
+  include AtomicInternalId
   include Issuable
   include Noteable
   include Referable
@@ -17,6 +17,8 @@ class MergeRequest < ActiveRecord::Base
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
   belongs_to :merge_user, class_name: "User"
+
+  has_internal_id :iid, scope: :target_project, init: ->(s) { s&.target_project&.merge_requests&.maximum(:iid) }
 
   has_many :merge_request_diffs
 
@@ -321,7 +323,7 @@ class MergeRequest < ActiveRecord::Base
   # updates `merge_jid` with the MergeWorker#jid.
   # This helps tracking enqueued and ongoing merge jobs.
   def merge_async(user_id, params)
-    jid = MergeWorker.perform_async(id, user_id, params)
+    jid = MergeWorker.perform_async(id, user_id, params.to_h)
     update_column(:merge_jid, jid)
   end
 

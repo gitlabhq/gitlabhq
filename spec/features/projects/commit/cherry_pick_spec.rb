@@ -89,4 +89,15 @@ describe 'Cherry-pick Commits' do
       expect(page).to have_content('The commit has been successfully cherry-picked.')
     end
   end
+
+  context 'when the project is archived' do
+    let(:project) { create(:project, :repository, :archived, namespace: group) }
+
+    it 'does not show the cherry-pick link' do
+      find('.header-action-buttons a.dropdown-toggle').click
+
+      expect(page).not_to have_text("Cherry-pick")
+      expect(page).not_to have_css("a[href='#modal-cherry-pick-commit']")
+    end
+  end
 end

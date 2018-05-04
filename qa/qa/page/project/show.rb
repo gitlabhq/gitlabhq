@@ -21,6 +21,11 @@ module QA
           element :new_issue_link, "link_to 'New issue', new_project_issue_path(@project)"
         end
 
+        view 'app/views/shared/_ref_switcher.html.haml' do
+          element :branches_select
+          element :branches_dropdown
+        end
+
         def choose_repository_clone_http
           choose_repository_clone('HTTP', 'http')
         end
@@ -33,15 +38,23 @@ module QA
         end
 
         def repository_location
-          find('#project_clone').value
-        end
-
-        def repository_location_uri
-          Git::Location.new(repository_location)
+          Git::Location.new(find('#project_clone').value)
         end
 
         def project_name
           find('.qa-project-name').text
+        end
+
+        def switch_to_branch(branch_name)
+          find_element(:branches_select).click
+
+          within_element(:branches_dropdown) do
+            click_on branch_name
+          end
+        end
+
+        def last_commit_content
+          find_element(:commit_content).text
         end
 
         def new_merge_request
@@ -74,7 +87,7 @@ module QA
             end
 
             # Ensure git clone textbox was updated
-            repository_location.include?(detect_text)
+            repository_location.git_uri.include?(detect_text)
           end
         end
       end

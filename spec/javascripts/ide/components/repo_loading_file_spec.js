@@ -27,7 +27,7 @@ describe('RepoLoadingFile', () => {
       const lines = [...container.querySelectorAll(':scope > div')];
 
       expect(container).toBeTruthy();
-      expect(lines.length).toEqual(6);
+      expect(lines.length).toEqual(3);
       assertLines(lines);
     });
   }

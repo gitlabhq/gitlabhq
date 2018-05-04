@@ -71,7 +71,7 @@ rm NAME-OF-FILE
 ### Remove a directory and all of its contents
 
 ```
-rm -rf NAME-OF-DIRECTORY
+rm -r NAME-OF-DIRECTORY
 ```
 
 ### View history in the command line

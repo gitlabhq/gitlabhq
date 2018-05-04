@@ -83,7 +83,7 @@ feature 'Clusters', :js do
       visit project_clusters_path(project)
 
       click_link 'Add Kubernetes cluster'
-      click_link 'Create on GKE'
+      click_link 'Create on Google Kubernetes Engine'
     end
 
     it 'user sees a login page' do

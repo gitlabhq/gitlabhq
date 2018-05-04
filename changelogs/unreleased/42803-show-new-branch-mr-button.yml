@@ -1,0 +1,5 @@
+---
+title: Show new branch/mr button even when branch exists
+merge_request: 17712
+author: Jacopo Beschi @jacopo-beschi
+type: added

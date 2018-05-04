@@ -31,7 +31,8 @@ with all their related data and be moved into a new GitLab instance.
 
 | GitLab version   | Import/Export version |
 | ---------------- | --------------------- |
-| 10.4 to current  | 0.2.2                 |
+| 10.8 to current  | 0.2.3                 |
+| 10.4             | 0.2.2                 |
 | 10.3             | 0.2.1                 |
 | 10.0             | 0.2.0                 |
 | 9.4.0            | 0.1.8                 |
@@ -57,11 +58,11 @@ The following items will be exported:
 - Project configuration including web hooks and services
 - Issues with comments, merge requests with diffs and comments, labels, milestones, snippets,
   and other project entities
+- LFS objects
 
 The following items will NOT be exported:
 
 - Build traces and artifacts
-- LFS objects
 - Container registry images
 - CI variables
 - Any encrypted tokens

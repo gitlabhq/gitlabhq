@@ -1,0 +1,5 @@
+---
+title: Improve DB performance of calculating total artifacts size
+merge_request: 17839
+author:
+type: performance

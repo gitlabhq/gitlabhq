@@ -440,7 +440,6 @@ need to test the rendered output. [Vue][vue-test] guide's to unit test show us e
 Refer to [mock axios](axios.md#mock-axios-response-on-tests)
 
 
-
 [vue-docs]: http://vuejs.org/guide/index.html
 [issue-boards]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/assets/javascripts/boards
 [environments-table]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/assets/javascripts/environments

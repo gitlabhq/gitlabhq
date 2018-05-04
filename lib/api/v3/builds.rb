@@ -51,7 +51,7 @@ module API
         get ':id/repository/commits/:sha/builds' do
           authorize_read_builds!
 
-          return not_found! unless user_project.commit(params[:sha])
+          break not_found! unless user_project.commit(params[:sha])
 
           pipelines = user_project.pipelines.where(sha: params[:sha])
           builds = user_project.builds.where(pipeline: pipelines).order('id DESC')
@@ -153,7 +153,7 @@ module API
 
           build = get_build!(params[:build_id])
           authorize!(:update_build, build)
-          return forbidden!('Build is not retryable') unless build.retryable?
+          break forbidden!('Build is not retryable') unless build.retryable?
 
           build = Ci::Build.retry(build, current_user)
 
@@ -171,7 +171,7 @@ module API
 
           build = get_build!(params[:build_id])
           authorize!(:erase_build, build)
-          return forbidden!('Build is not erasable!') unless build.erasable?
+          break forbidden!('Build is not erasable!') unless build.erasable?
 
           build.erase(erased_by: current_user)
           present build, with: ::API::V3::Entities::Build
@@ -188,7 +188,7 @@ module API
 
           build = get_build!(params[:build_id])
           authorize!(:update_build, build)
-          return not_found!(build) unless build.artifacts?
+          break not_found!(build) unless build.artifacts?
 
           build.keep_artifacts!
 

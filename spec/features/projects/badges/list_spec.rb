@@ -6,7 +6,7 @@ feature 'list of badges' do
     project = create(:project, :repository)
     project.add_master(user)
     sign_in(user)
-    visit project_pipelines_settings_path(project)
+    visit project_settings_ci_cd_path(project)
   end
 
   scenario 'user wants to see build status badge' do

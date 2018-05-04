@@ -1,5 +1,4 @@
 import CommentTypeToggle from '~/comment_type_toggle';
-import * as dropLabSrc from '~/droplab/drop_lab';
 import InputSetter from '~/droplab/plugins/input_setter';
 
 describe('CommentTypeToggle', function () {
@@ -59,14 +58,14 @@ describe('CommentTypeToggle', function () {
 
       this.droplab = jasmine.createSpyObj('droplab', ['init']);
 
-      spyOn(dropLabSrc, 'default').and.returnValue(this.droplab);
+      this.droplabConstructor = spyOnDependency(CommentTypeToggle, 'DropLab').and.returnValue(this.droplab);
       spyOn(this.commentTypeToggle, 'setConfig').and.returnValue(this.config);
 
       CommentTypeToggle.prototype.initDroplab.call(this.commentTypeToggle);
     });
 
     it('should instantiate a DropLab instance', function () {
-      expect(dropLabSrc.default).toHaveBeenCalled();
+      expect(this.droplabConstructor).toHaveBeenCalled();
     });
 
     it('should set .droplab', function () {

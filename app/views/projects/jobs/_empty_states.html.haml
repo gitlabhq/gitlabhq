@@ -1,0 +1,9 @@
+- detailed_status = @build.detailed_status(current_user)
+- illustration = detailed_status.illustration
+
+= render 'empty_state',
+    illustration: illustration[:image],
+    illustration_size: illustration[:size],
+    title: illustration[:title],
+    content: illustration[:content],
+    action: detailed_status.has_action? ? link_to(detailed_status.action_button_title, detailed_status.action_path, method: detailed_status.action_method, class: 'btn btn-primary', title: detailed_status.action_button_title) : nil

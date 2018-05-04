@@ -1,6 +1,0 @@
----
-title: Fixes remove source branch checkbox being visible when user cannot remove the
-  branch
-merge_request:
-author:
-type: changed
