@@ -31,6 +31,9 @@
       %td Version
       %td= @runner.version
     %tr
+      %td IP Address
+      %td= @runner.ip_address
+    %tr
       %td Revision
       %td= @runner.revision
     %tr
@@ -43,9 +46,12 @@
       %td Description
       %td= @runner.description
     %tr
+      %td Maximum job timeout
+      %td= @runner.maximum_timeout_human_readable
+    %tr
       %td Last contact
       %td
         - if @runner.contacted_at
-          #{time_ago_in_words(@runner.contacted_at)} ago
+          = time_ago_with_tooltip @runner.contacted_at
         - else
           Never
