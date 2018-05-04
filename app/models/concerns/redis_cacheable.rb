@@ -15,7 +15,13 @@ module RedisCacheable
   end
 
   def cached_attribute(attribute)
-    (cached_attributes || {})[attribute]
+    value = (cached_attributes || {})[attribute]
+
+    if self.class.columns_hash[attribute.to_s]&.type == :datetime
+      value && Time.zone.parse(value)
+    else
+      value
+    end
   end
 
   def cache_attributes(values)
