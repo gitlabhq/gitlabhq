@@ -5,6 +5,8 @@
 import $ from 'jquery';
 import _ from 'underscore';
 import axios from './lib/utils/axios_utils';
+import { __ } from './locale';
+import ModalStore from './boards/stores/modal_store';
 
 // TODO: remove eventHub hack after code splitting refactor
 window.emitSidebarEvent = window.emitSidebarEvent || $.noop;
@@ -181,7 +183,7 @@ function UsersSelect(currentUser, els, options = {}) {
 
         return axios.put(issueURL, data)
           .then(({ data }) => {
-            var user;
+            var user, tooltipTitle;
             $dropdown.trigger('loaded.gl.dropdown');
             $loading.fadeOut();
             if (data.assignee) {
@@ -190,15 +192,17 @@ function UsersSelect(currentUser, els, options = {}) {
                 username: data.assignee.username,
                 avatar: data.assignee.avatar_url
               };
+              tooltipTitle = _.escape(user.name);
             } else {
               user = {
                 name: 'Unassigned',
                 username: '',
                 avatar: ''
               };
+              tooltipTitle = __('Assignee');
             }
             $value.html(assigneeTemplate(user));
-            $collapsedSidebar.attr('title', _.escape(user.name)).tooltip('fixTitle');
+            $collapsedSidebar.attr('title', tooltipTitle).tooltip('fixTitle');
             return $collapsedSidebar.html(collapsedAssigneeTemplate(user));
           });
       };
@@ -441,7 +445,7 @@ function UsersSelect(currentUser, els, options = {}) {
             return;
           }
           if ($el.closest('.add-issues-modal').length) {
-            gl.issueBoards.ModalStore.store.filter[$dropdown.data('fieldName')] = user.id;
+            ModalStore.store.filter[$dropdown.data('fieldName')] = user.id;
           } else if (handleClick) {
             e.preventDefault();
             handleClick(user, isMarking);

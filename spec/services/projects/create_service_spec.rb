@@ -28,6 +28,14 @@ describe Projects::CreateService, '#execute' do
     end
   end
 
+  describe 'after create actions' do
+    it 'invalidate personal_projects_count caches' do
+      expect(user).to receive(:invalidate_personal_projects_count)
+
+      create_project(user, opts)
+    end
+  end
+
   context "admin creates project with other user's namespace_id" do
     it 'sets the correct permissions' do
       admin = create(:admin)
@@ -163,7 +171,6 @@ describe Projects::CreateService, '#execute' do
 
     context 'when another repository already exists on disk' do
       let(:repository_storage) { 'default' }
-      let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage].legacy_disk_path }
 
       let(:opts) do
         {
@@ -178,7 +185,7 @@ describe Projects::CreateService, '#execute' do
         end
 
         after do
-          gitlab_shell.remove_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
+          gitlab_shell.remove_repository(repository_storage, "#{user.namespace.full_path}/existing")
         end
 
         it 'does not allow to create a project when path matches existing repository on disk' do
@@ -214,7 +221,7 @@ describe Projects::CreateService, '#execute' do
         end
 
         after do
-          gitlab_shell.remove_repository(repository_storage_path, hashed_path)
+          gitlab_shell.remove_repository(repository_storage, hashed_path)
         end
 
         it 'does not allow to create a project when path matches existing repository on disk' do

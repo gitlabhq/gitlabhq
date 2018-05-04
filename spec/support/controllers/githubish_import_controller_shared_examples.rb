@@ -56,7 +56,7 @@ shared_examples 'a GitHub-ish import controller: GET status' do
   end
 
   it "assigns variables" do
-    project = create(:project, import_type: provider, creator_id: user.id)
+    project = create(:project, import_type: provider, namespace: user.namespace)
     stub_client(repos: [repo, org_repo], orgs: [org], org_repos: [org_repo])
 
     get :status
@@ -69,7 +69,7 @@ shared_examples 'a GitHub-ish import controller: GET status' do
   end
 
   it "does not show already added project" do
-    project = create(:project, import_type: provider, creator_id: user.id, import_source: 'asd/vim')
+    project = create(:project, import_type: provider, namespace: user.namespace, import_source: 'asd/vim')
     stub_client(repos: [repo], orgs: [])
 
     get :status
@@ -257,11 +257,12 @@ shared_examples 'a GitHub-ish import controller: POST create' do
     end
 
     context 'user has chosen an existing nested namespace and name for the project', :postgresql do
-      let(:parent_namespace) { create(:group, name: 'foo', owner: user) }
+      let(:parent_namespace) { create(:group, name: 'foo') }
       let(:nested_namespace) { create(:group, name: 'bar', parent: parent_namespace) }
       let(:test_name) { 'test_name' }
 
       before do
+        parent_namespace.add_owner(user)
         nested_namespace.add_owner(user)
       end
 
@@ -307,7 +308,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
 
     context 'user has chosen existent and non-existent nested namespaces and name for the project', :postgresql do
       let(:test_name) { 'test_name' }
-      let!(:parent_namespace) { create(:group, name: 'foo', owner: user) }
+      let!(:parent_namespace) { create(:group, name: 'foo') }
 
       before do
         parent_namespace.add_owner(user)

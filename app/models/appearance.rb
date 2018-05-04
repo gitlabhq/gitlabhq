@@ -16,7 +16,7 @@ class Appearance < ActiveRecord::Base
 
   has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
-  CACHE_KEY = 'current_appearance'.freeze
+  CACHE_KEY = "current_appearance:#{Gitlab::VERSION}".freeze
 
   after_commit :flush_redis_cache
 

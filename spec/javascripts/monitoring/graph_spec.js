@@ -2,11 +2,15 @@ import Vue from 'vue';
 import Graph from '~/monitoring/components/graph.vue';
 import MonitoringMixins from '~/monitoring/mixins/monitoring_mixins';
 import eventHub from '~/monitoring/event_hub';
-import { deploymentData, convertDatesMultipleSeries, singleRowMetricsMultipleSeries } from './mock_data';
+import {
+  deploymentData,
+  convertDatesMultipleSeries,
+  singleRowMetricsMultipleSeries,
+} from './mock_data';
 
 const tagsPath = 'http://test.host/frontend-fixtures/environments-project/tags';
 const projectPath = 'http://test.host/frontend-fixtures/environments-project';
-const createComponent = (propsData) => {
+const createComponent = propsData => {
   const Component = Vue.extend(Graph);
 
   return new Component({
@@ -14,7 +18,9 @@ const createComponent = (propsData) => {
   }).$mount();
 };
 
-const convertedMetrics = convertDatesMultipleSeries(singleRowMetricsMultipleSeries);
+const convertedMetrics = convertDatesMultipleSeries(
+  singleRowMetricsMultipleSeries,
+);
 
 describe('Graph', () => {
   beforeEach(() => {
@@ -31,7 +37,9 @@ describe('Graph', () => {
       projectPath,
     });
 
-    expect(component.$el.querySelector('.text-center').innerText.trim()).toBe(component.graphData.title);
+    expect(component.$el.querySelector('.text-center').innerText.trim()).toBe(
+      component.graphData.title,
+    );
   });
 
   describe('Computed props', () => {
@@ -46,8 +54,9 @@ describe('Graph', () => {
       });
 
       const transformedHeight = `${component.graphHeight - 100}`;
-      expect(component.axisTransform.indexOf(transformedHeight))
-        .not.toEqual(-1);
+      expect(component.axisTransform.indexOf(transformedHeight)).not.toEqual(
+        -1,
+      );
     });
 
     it('outerViewBox gets a width and height property based on the DOM size of the element', () => {
@@ -63,11 +72,11 @@ describe('Graph', () => {
       const viewBoxArray = component.outerViewBox.split(' ');
       expect(typeof component.outerViewBox).toEqual('string');
       expect(viewBoxArray[2]).toEqual(component.graphWidth.toString());
-      expect(viewBoxArray[3]).toEqual(component.graphHeight.toString());
+      expect(viewBoxArray[3]).toEqual((component.graphHeight - 50).toString());
     });
   });
 
-  it('sends an event to the eventhub when it has finished resizing', (done) => {
+  it('sends an event to the eventhub when it has finished resizing', done => {
     const component = createComponent({
       graphData: convertedMetrics[1],
       classType: 'col-md-6',

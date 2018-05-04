@@ -12,6 +12,8 @@ module Banzai
       end
 
       def find_object(project, id)
+        return unless project.is_a?(Project)
+
         project.snippets.find_by(id: id)
       end
 

@@ -88,7 +88,7 @@ describe('Multi-file editor library', () => {
 
       instance.createModel('FILE');
 
-      expect(instance.modelManager.addModel).toHaveBeenCalledWith('FILE');
+      expect(instance.modelManager.addModel).toHaveBeenCalledWith('FILE', null);
     });
   });
 

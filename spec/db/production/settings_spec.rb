@@ -2,9 +2,14 @@ require 'spec_helper'
 require 'rainbow/ext/string'
 
 describe 'seed production settings' do
-  include StubENV
   let(:settings_file) { Rails.root.join('db/fixtures/production/010_settings.rb') }
   let(:settings) { Gitlab::CurrentSettings.current_application_settings }
+
+  before do
+    # It's important to set this variable so that we don't save a memoized
+    # (supposed to be) in-memory record in `Gitlab::CurrentSettings.in_memory_application_settings`
+    stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
+  end
 
   context 'GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN is set in the environment' do
     before do

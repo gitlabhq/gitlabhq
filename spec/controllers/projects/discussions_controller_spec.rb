@@ -16,6 +16,53 @@ describe Projects::DiscussionsController do
     }
   end
 
+  describe 'GET show' do
+    before do
+      sign_in user
+    end
+
+    context 'when user is not authorized to read the MR' do
+      it 'returns 404' do
+        get :show, request_params, format: :json
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'when user is authorized to read the MR' do
+      before do
+        project.add_reporter(user)
+      end
+
+      it 'returns status 200' do
+        get :show, request_params, format: :json
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+
+      it 'returns status 404 if MR does not exists' do
+        merge_request.destroy!
+
+        get :show, request_params, format: :json
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'when user is authorized but note is LegacyDiffNote' do
+      before do
+        project.add_developer(user)
+        note.update!(type: 'LegacyDiffNote')
+      end
+
+      it 'returns status 200' do
+        get :show, request_params, format: :json
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+    end
+  end
+
   describe 'POST resolve' do
     before do
       sign_in user

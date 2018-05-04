@@ -4,7 +4,7 @@
 \
 - if @existing_commits.any?
   - count = @existing_commits.size
-  - commits_id = count.one? ? @existing_commits.first[:short_id] : "#{@existing_commits.first[:short_id]}...#{@existing_commits.last[:short_id]}"
+  - commits_id = count == 1 ? @existing_commits.first[:short_id] : "#{@existing_commits.first[:short_id]}...#{@existing_commits.last[:short_id]}"
   - commits_text = "#{count} commit".pluralize(count)
 
   * #{commits_id} - #{commits_text} from branch `#{@merge_request.target_branch}`

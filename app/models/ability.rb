@@ -46,10 +46,6 @@ class Ability
       end
     end
 
-    def can_edit_note?(user, note)
-      allowed?(user, :edit_note, note)
-    end
-
     def allowed?(user, action, subject = :global, opts = {})
       if subject.is_a?(Hash)
         opts, subject = subject, :global

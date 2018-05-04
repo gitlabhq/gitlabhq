@@ -8,7 +8,8 @@ describe 'projects/buttons/_dropdown' do
       assign(:project, project)
 
       allow(view).to receive(:current_user).and_return(user)
-      allow(view).to receive(:can?).and_return(true)
+      allow(view).to receive(:can?).with(user, :push_code, project).and_return(true)
+      allow(view).to receive(:can_collaborate_with_project?).and_return(true)
     end
 
     context 'empty repository' do

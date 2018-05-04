@@ -1164,8 +1164,12 @@ describe User do
     end
 
     context 'with a group route matching the given path' do
+      let!(:group) { create(:group, path: 'group_path') }
+
       context 'when the group namespace has an owner_id (legacy data)' do
-        let!(:group) { create(:group, path: 'group_path', owner: user) }
+        before do
+          group.update!(owner_id: user.id)
+        end
 
         it 'returns nil' do
           expect(described_class.find_by_full_path('group_path')).to eq(nil)
@@ -1173,8 +1177,6 @@ describe User do
       end
 
       context 'when the group namespace does not have an owner_id' do
-        let!(:group) { create(:group, path: 'group_path') }
-
         it 'returns nil' do
           expect(described_class.find_by_full_path('group_path')).to eq(nil)
         end
@@ -1850,6 +1852,21 @@ describe User do
 
       it_behaves_like :member
     end
+
+    context 'with subgroup with different owner for project runner', :nested_groups do
+      let(:group) { create(:group) }
+      let(:another_user) { create(:user) }
+      let(:subgroup) { create(:group, parent: group) }
+      let(:project) { create(:project, group: subgroup) }
+
+      def add_user(access)
+        group.add_user(user, access)
+        group.add_user(another_user, :owner)
+        subgroup.add_user(another_user, :owner)
+      end
+
+      it_behaves_like :member
+    end
   end
 
   describe '#projects_with_reporter_access_limited_to' do
@@ -2234,6 +2251,20 @@ describe User do
     end
   end
 
+  context '#invalidate_personal_projects_count' do
+    let(:user) { build_stubbed(:user) }
+
+    it 'invalidates cache for personal projects counter' do
+      cache_mock = double
+
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'personal_projects_count'])
+
+      allow(Rails).to receive(:cache).and_return(cache_mock)
+
+      user.invalidate_personal_projects_count
+    end
+  end
+
   describe '#allow_password_authentication_for_web?' do
     context 'regular user' do
       let(:user) { build(:user) }
@@ -2283,11 +2314,9 @@ describe User do
       user = build(:user)
       projects = double(:projects, count: 1)
 
-      expect(user).to receive(:personal_projects).once.and_return(projects)
+      expect(user).to receive(:personal_projects).and_return(projects)
 
-      2.times do
-        expect(user.personal_projects_count).to eq(1)
-      end
+      expect(user.personal_projects_count).to eq(1)
     end
   end
 

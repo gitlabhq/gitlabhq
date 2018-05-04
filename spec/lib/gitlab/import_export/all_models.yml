@@ -145,6 +145,9 @@ pipeline_schedule:
 - pipelines
 pipeline_schedule_variables:
 - pipeline_schedule
+deploy_tokens:
+- project_deploy_tokens
+- projects
 deploy_keys:
 - user
 - deploy_keys_projects
@@ -255,7 +258,6 @@ project:
 - builds
 - runner_projects
 - runners
-- active_runners
 - variables
 - triggers
 - pipeline_schedules
@@ -281,6 +283,10 @@ project:
 - project_badges
 - source_of_merge_requests
 - internal_ids
+- project_deploy_tokens
+- deploy_tokens
+- settings
+- ci_cd_settings
 award_emoji:
 - awardable
 - user

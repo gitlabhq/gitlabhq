@@ -1,12 +1,11 @@
 import _ from 'underscore';
 import Vue from 'vue';
-import * as urlUtils from '~/lib/utils/url_utility';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import SidebarStore from '~/sidebar/stores/sidebar_store';
 import SidebarService from '~/sidebar/services/sidebar_service';
 import Mock from './mock_data';
 
-describe('Sidebar mediator', () => {
+describe('Sidebar mediator', function() {
   beforeEach(() => {
     Vue.http.interceptors.push(Mock.sidebarMockInterceptor);
     this.mediator = new SidebarMediator(Mock.mediator);
@@ -87,12 +86,12 @@ describe('Sidebar mediator', () => {
     const moveToProjectId = 7;
     this.mediator.store.setMoveToProjectId(moveToProjectId);
     spyOn(this.mediator.service, 'moveIssue').and.callThrough();
-    spyOn(urlUtils, 'visitUrl');
+    const visitUrl = spyOnDependency(SidebarMediator, 'visitUrl');
 
     this.mediator.moveIssue()
       .then(() => {
         expect(this.mediator.service.moveIssue).toHaveBeenCalledWith(moveToProjectId);
-        expect(urlUtils.visitUrl).toHaveBeenCalledWith('/root/some-project/issues/5');
+        expect(visitUrl).toHaveBeenCalledWith('/root/some-project/issues/5');
       })
       .then(done)
       .catch(done.fail);

@@ -1016,7 +1016,7 @@ describe 'Git LFS API and storage' do
 
                 it_behaves_like 'a valid response' do
                   it 'responds with status 200, location of lfs remote store and object details' do
-                    expect(json_response['TempPath']).to be_nil
+                    expect(json_response['TempPath']).to eq(LfsObjectUploader.workhorse_local_upload_path)
                     expect(json_response['RemoteObject']).to have_key('ID')
                     expect(json_response['RemoteObject']).to have_key('GetURL')
                     expect(json_response['RemoteObject']).to have_key('StoreURL')
@@ -1073,7 +1073,9 @@ describe 'Git LFS API and storage' do
                 ['123123', '../../123123'].each do |remote_id|
                   context "with invalid remote_id: #{remote_id}" do
                     subject do
-                      put_finalize_with_args('file.remote_id' => remote_id)
+                      put_finalize(with_tempfile: true, args: {
+                        'file.remote_id' => remote_id
+                      })
                     end
 
                     it 'responds with status 403' do
@@ -1093,9 +1095,10 @@ describe 'Git LFS API and storage' do
                   end
 
                   subject do
-                    put_finalize_with_args(
+                    put_finalize(with_tempfile: true, args: {
                       'file.remote_id' => '12312300',
-                      'file.name' => 'name')
+                      'file.name' => 'name'
+                    })
                   end
 
                   it 'responds with status 200' do
@@ -1331,7 +1334,7 @@ describe 'Git LFS API and storage' do
       put "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}/#{sample_size}/authorize", nil, authorize_headers
     end
 
-    def put_finalize(lfs_tmp = lfs_tmp_file, with_tempfile: false)
+    def put_finalize(lfs_tmp = lfs_tmp_file, with_tempfile: false, args: {})
       upload_path = LfsObjectUploader.workhorse_local_upload_path
       file_path = upload_path + '/' + lfs_tmp if lfs_tmp
 
@@ -1340,12 +1343,12 @@ describe 'Git LFS API and storage' do
         FileUtils.touch(file_path)
       end
 
-      args = {
+      extra_args = {
         'file.path' => file_path,
         'file.name' => File.basename(file_path)
-      }.compact
+      }
 
-      put_finalize_with_args(args)
+      put_finalize_with_args(args.merge(extra_args).compact)
     end
 
     def put_finalize_with_args(args)

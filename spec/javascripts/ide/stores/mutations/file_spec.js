@@ -8,7 +8,10 @@ describe('IDE store file mutations', () => {
 
   beforeEach(() => {
     localState = state();
-    localFile = file();
+    localFile = {
+      ...file(),
+      type: 'blob',
+    };
 
     localState.entries[localFile.path] = localFile;
   });
@@ -180,6 +183,49 @@ describe('IDE store file mutations', () => {
       mutations.REMOVE_FILE_FROM_CHANGED(localState, localFile.path);
 
       expect(localState.changedFiles.length).toBe(0);
+    });
+  });
+
+  describe('STAGE_CHANGE', () => {
+    it('adds file into stagedFiles array', () => {
+      mutations.STAGE_CHANGE(localState, localFile.path);
+
+      expect(localState.stagedFiles.length).toBe(1);
+      expect(localState.stagedFiles[0]).toEqual(localFile);
+    });
+
+    it('updates stagedFile if it is already staged', () => {
+      mutations.STAGE_CHANGE(localState, localFile.path);
+
+      localFile.raw = 'testing 123';
+
+      mutations.STAGE_CHANGE(localState, localFile.path);
+
+      expect(localState.stagedFiles.length).toBe(1);
+      expect(localState.stagedFiles[0].raw).toEqual('testing 123');
+    });
+  });
+
+  describe('UNSTAGE_CHANGE', () => {
+    let f;
+
+    beforeEach(() => {
+      f = {
+        ...file(),
+        type: 'blob',
+        staged: true,
+      };
+
+      localState.stagedFiles.push(f);
+      localState.changedFiles.push(f);
+      localState.entries[f.path] = f;
+    });
+
+    it('removes from stagedFiles array', () => {
+      mutations.UNSTAGE_CHANGE(localState, f.path);
+
+      expect(localState.stagedFiles.length).toBe(0);
+      expect(localState.changedFiles.length).toBe(1);
     });
   });
 

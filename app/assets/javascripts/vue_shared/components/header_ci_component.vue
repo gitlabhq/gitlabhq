@@ -1,78 +1,78 @@
 <script>
-  import ciIconBadge from './ci_badge_link.vue';
-  import loadingIcon from './loading_icon.vue';
-  import timeagoTooltip from './time_ago_tooltip.vue';
-  import tooltip from '../directives/tooltip';
-  import userAvatarImage from './user_avatar/user_avatar_image.vue';
+import CiIconBadge from './ci_badge_link.vue';
+import LoadingIcon from './loading_icon.vue';
+import TimeagoTooltip from './time_ago_tooltip.vue';
+import tooltip from '../directives/tooltip';
+import UserAvatarImage from './user_avatar/user_avatar_image.vue';
 
-  /**
-   * Renders header component for job and pipeline page based on UI mockups
-   *
-   * Used in:
-   * - job show page
-   * - pipeline show page
-   */
-  export default {
-    components: {
-      ciIconBadge,
-      loadingIcon,
-      timeagoTooltip,
-      userAvatarImage,
+/**
+ * Renders header component for job and pipeline page based on UI mockups
+ *
+ * Used in:
+ * - job show page
+ * - pipeline show page
+ */
+export default {
+  components: {
+    CiIconBadge,
+    LoadingIcon,
+    TimeagoTooltip,
+    UserAvatarImage,
+  },
+  directives: {
+    tooltip,
+  },
+  props: {
+    status: {
+      type: Object,
+      required: true,
     },
-    directives: {
-      tooltip,
+    itemName: {
+      type: String,
+      required: true,
     },
-    props: {
-      status: {
-        type: Object,
-        required: true,
-      },
-      itemName: {
-        type: String,
-        required: true,
-      },
-      itemId: {
-        type: Number,
-        required: true,
-      },
-      time: {
-        type: String,
-        required: true,
-      },
-      user: {
-        type: Object,
-        required: false,
-        default: () => ({}),
-      },
-      actions: {
-        type: Array,
-        required: false,
-        default: () => [],
-      },
-      hasSidebarButton: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
-      shouldRenderTriggeredLabel: {
-        type: Boolean,
-        required: false,
-        default: true,
-      },
+    itemId: {
+      type: Number,
+      required: true,
     },
+    time: {
+      type: String,
+      required: true,
+    },
+    user: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    actions: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    hasSidebarButton: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    shouldRenderTriggeredLabel: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+  },
 
-    computed: {
-      userAvatarAltText() {
-        return `${this.user.name}'s avatar`;
-      },
+  computed: {
+    userAvatarAltText() {
+      return `${this.user.name}'s avatar`;
     },
+  },
 
-    methods: {
-      onClickAction(action) {
-        this.$emit('actionClicked', action);
-      },
+  methods: {
+    onClickAction(action) {
+      this.$emit('actionClicked', action);
     },
-  };
+  },
+};
 </script>
 
 <template>

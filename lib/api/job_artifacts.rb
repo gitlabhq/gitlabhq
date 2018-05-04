@@ -77,7 +77,7 @@ module API
 
         build = find_build!(params[:job_id])
         authorize!(:update_build, build)
-        return not_found!(build) unless build.artifacts?
+        break not_found!(build) unless build.artifacts?
 
         build.keep_artifacts!
 

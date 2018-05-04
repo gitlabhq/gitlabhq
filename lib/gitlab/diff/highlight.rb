@@ -33,10 +33,7 @@ module Gitlab
             # match the blob, which is a bug. But we shouldn't fail to render
             # completely in that case, even though we want to report the error.
             rescue RangeError => e
-              if Gitlab::Sentry.enabled?
-                Gitlab::Sentry.context
-                Raven.capture_exception(e)
-              end
+              Gitlab::Sentry.track_exception(e, issue_url: 'https://gitlab.com/gitlab-org/gitlab-ce/issues/45441')
             end
           end
 

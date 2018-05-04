@@ -233,21 +233,21 @@ export default class SearchAutocomplete {
     const issueItems = [
       {
         text: 'Issues assigned to me',
-        url: `${issuesPath}/?assignee_username=${userName}`,
+        url: `${issuesPath}/?assignee_id=${userId}`,
       },
       {
         text: "Issues I've created",
-        url: `${issuesPath}/?author_username=${userName}`,
+        url: `${issuesPath}/?author_id=${userId}`,
       },
     ];
     const mergeRequestItems = [
       {
         text: 'Merge requests assigned to me',
-        url: `${mrPath}/?assignee_username=${userName}`,
+        url: `${mrPath}/?assignee_id=${userId}`,
       },
       {
         text: "Merge requests I've created",
-        url: `${mrPath}/?author_username=${userName}`,
+        url: `${mrPath}/?author_id=${userId}`,
       },
     ];
 

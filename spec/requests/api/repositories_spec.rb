@@ -427,5 +427,20 @@ describe API::Repositories do
         let(:request) { get api(route, guest) }
       end
     end
+
+    # Regression: https://gitlab.com/gitlab-org/gitlab-ce/issues/45363
+    describe 'Links header contains working URLs when no `order_by` nor `sort` is given' do
+      let(:project) { create(:project, :public, :repository) }
+      let(:current_user) { nil }
+
+      it 'returns `Link` header that includes URLs with default value for `order_by` & `sort`' do
+        get api(route, current_user)
+
+        first_link_url = response.headers['Link'].split(';').first
+
+        expect(first_link_url).to include('order_by=commits')
+        expect(first_link_url).to include('sort=asc')
+      end
+    end
   end
 end

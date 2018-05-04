@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import pipelineBlockedComponent from '~/vue_merge_request_widget/components/states/mr_widget_pipeline_blocked.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import removeBreakLine from 'spec/helpers/vue_component_helper';
+import { removeBreakLine } from 'spec/helpers/vue_component_helper';
 
 describe('MRWidgetPipelineBlocked', () => {
   let vm;

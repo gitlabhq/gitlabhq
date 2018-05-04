@@ -15,6 +15,10 @@ module Gitlab
             'Retry'
           end
 
+          def action_button_title
+            _('Retry this job')
+          end
+
           def action_path
             retry_project_job_path(subject.project, subject)
           end

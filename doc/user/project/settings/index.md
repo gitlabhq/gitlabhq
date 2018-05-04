@@ -34,7 +34,7 @@ Set up your project's merge request settings:
 
 - Set up the merge request method (merge commit, [fast-forward merge](../merge_requests/fast_forward_merge.html)).
 - Merge request [description templates](../description_templates.md#description-templates).
-- Enable [merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html#merge-request-approvals), _available in [GitLab Starter](https://about.gitlab.com/products/)_.
+- Enable [merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html#merge-request-approvals). **[STARTER]**
 - Enable [merge only of pipeline succeeds](../merge_requests/merge_when_pipeline_succeeds.md).
 - Enable [merge only when all discussions are resolved](../../discussions/index.md#only-allow-merge-requests-to-be-merged-if-all-discussions-are-resolved).
 
@@ -57,14 +57,19 @@ Here you can run housekeeping, archive, rename, transfer, or remove a project.
 NOTE: **Note:**
 Only project Owners and Admin users have the [permissions] to archive a project.
 
-An archived project will be hidden by default in the project listings.
+Archiving a project makes it read-only for all users and indicates that it is
+no longer actively maintained. Projects that have been archived can also be
+unarchived.
+
+When a project is archived, the repository, issues, merge requests and all
+other features are read-only. Archived projects are also hidden
+in project listings.
+
+To archive a project:
 
 1. Navigate to your project's **Settings > General > Advanced settings**.
-1. Under "Archive project", hit the **Archive project** button.
+1. In the Archive project section, click the **Archive project** button.
 1. Confirm the action when asked to.
-
-An archived project can be fully restored and will therefore retain its
-repository and all associated resources whilst in an archived state.
 
 #### Renaming a repository
 

@@ -1,0 +1,5 @@
+---
+title: Move ReadyToMerge vue component
+merge_request: 17545
+author: George Tsiolis
+type: performance

@@ -187,7 +187,12 @@
       padding-left: 10px;
 
       &:hover {
-        color: $gray-darkest;
+        color: $gl-text-color;
+      }
+
+      &:hover,
+      &:focus {
+        text-decoration: none;
       }
     }
 
@@ -368,6 +373,14 @@
       padding: 15px 0 0;
       border-bottom: 0;
       overflow: hidden;
+
+      &:hover {
+        background-color: $sidebar-block-hover-color;
+      }
+
+      &.issuable-sidebar-header {
+        padding-top: 0;
+      }
     }
 
     .participants {
@@ -380,8 +393,17 @@
 
     .gutter-toggle {
       width: 100%;
+      height: $sidebar-toggle-height;
       margin-left: 0;
-      padding-left: 25px;
+      padding-left: 0;
+      border-bottom: 1px solid $border-gray-dark;
+    }
+
+    a.gutter-toggle {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
     }
 
     .sidebar-collapsed-icon {
@@ -428,10 +450,10 @@
 
       .btn-clipboard {
         border: 0;
+        background: transparent;
         color: $issuable-sidebar-color;
 
         &:hover {
-          background: transparent;
           color: $gl-text-color;
         }
       }

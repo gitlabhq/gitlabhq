@@ -1,6 +1,0 @@
----
-title: Display state indicator for issuable references in non-project scope (e.g.
-  when referencing issuables from group scope).
-merge_request:
-author:
-type: fixed

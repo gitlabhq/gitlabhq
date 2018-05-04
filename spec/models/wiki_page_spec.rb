@@ -561,7 +561,7 @@ describe WikiPage do
   end
 
   def commit_details
-    Gitlab::Git::Wiki::CommitDetails.new(user.name, user.email, "test commit")
+    Gitlab::Git::Wiki::CommitDetails.new(user.id, user.username, user.name, user.email, "test commit")
   end
 
   def create_page(name, content)

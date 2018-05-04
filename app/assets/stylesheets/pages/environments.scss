@@ -273,21 +273,6 @@
     line-height: 1.2;
   }
 
-  table {
-    border-collapse: collapse;
-    padding: 0;
-    margin: 0;
-  }
-
-  td {
-    vertical-align: middle;
-
-    + td {
-      padding-left: 5px;
-      vertical-align: top;
-    }
-  }
-
   .deploy-meta-content {
     border-bottom: 1px solid $white-dark;
 
@@ -323,6 +308,26 @@
   }
 }
 
+.prometheus-table {
+  border-collapse: collapse;
+  padding: 0;
+  margin: 0;
+
+  td {
+    vertical-align: middle;
+
+    + td {
+      padding-left: 5px;
+      vertical-align: top;
+    }
+  }
+
+  .legend-metric-title {
+    font-size: 12px;
+    vertical-align: middle;
+  }
+}
+
 .prometheus-svg-container {
   position: relative;
   height: 0;
@@ -330,8 +335,7 @@
   padding: 0;
   padding-bottom: 100%;
 
-  .text-metric-usage,
-  .legend-metric-title {
+  .text-metric-usage {
     fill: $black;
     font-weight: $gl-font-weight-normal;
     font-size: 12px;
@@ -374,10 +378,6 @@
       }
     }
 
-    .text-metric-title {
-      font-size: 12px;
-    }
-
     .y-label-text,
     .x-label-text {
       fill: $gray-darkest;
@@ -413,4 +413,8 @@
       }
     }
   }
+}
+
+.prometheus-table-row-highlight {
+  background-color: $prometheus-table-row-highlight-color;
 }

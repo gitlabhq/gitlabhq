@@ -5,7 +5,7 @@ module Gitlab
     CANONICAL_CE_PROJECT_URL = 'https://gitlab.com/gitlab-org/gitlab-ce'.freeze
     CANONICAL_EE_REPO_URL = 'https://gitlab.com/gitlab-org/gitlab-ee.git'.freeze
     CHECK_DIR = Rails.root.join('ee_compat_check')
-    IGNORED_FILES_REGEX = %r{VERSION|CHANGELOG\.md|db/schema\.rb}i.freeze
+    IGNORED_FILES_REGEX = %r{VERSION|CHANGELOG\.md|db/schema\.rb|locale/gitlab\.pot}i.freeze
     PLEASE_READ_THIS_BANNER = %Q{
       ============================================================
       ===================== PLEASE READ THIS =====================

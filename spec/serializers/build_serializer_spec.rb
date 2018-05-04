@@ -28,15 +28,31 @@ describe BuildSerializer do
   end
 
   describe '#represent_status' do
-    context 'when represents only status' do
-      let(:resource) { create(:ci_build) }
+    context 'for a failed build' do
+      let(:resource) { create(:ci_build, :failed) }
       let(:status) { resource.detailed_status(double('user')) }
 
       subject { serializer.represent_status(resource) }
 
       it 'serializes only status' do
         expect(subject[:text]).to eq(status.text)
-        expect(subject[:label]).to eq(status.label)
+        expect(subject[:label]).to eq('failed')
+        expect(subject[:tooltip]).to eq('failed <br> (unknown failure)')
+        expect(subject[:icon]).to eq(status.icon)
+        expect(subject[:favicon]).to match_asset_path("/assets/ci_favicons/#{status.favicon}.ico")
+      end
+    end
+
+    context 'for any other type of build' do
+      let(:resource) { create(:ci_build, :success) }
+      let(:status) { resource.detailed_status(double('user')) }
+
+      subject { serializer.represent_status(resource) }
+
+      it 'serializes only status' do
+        expect(subject[:text]).to eq(status.text)
+        expect(subject[:label]).to eq('passed')
+        expect(subject[:tooltip]).to eq('passed')
         expect(subject[:icon]).to eq(status.icon)
         expect(subject[:favicon]).to match_asset_path("/assets/ci_favicons/#{status.favicon}.ico")
       end

@@ -77,7 +77,7 @@ module DeclarativePolicy
       @state = State.new
 
       steps_by_score do |step, score|
-        return if !debug && @state.prevented?
+        break if !debug && @state.prevented?
 
         passed = nil
         case step.action

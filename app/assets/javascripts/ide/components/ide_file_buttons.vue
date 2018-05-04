@@ -36,6 +36,7 @@ export default {
   >
     <a
       v-tooltip
+      v-if="!file.binary"
       :href="file.blamePath"
       :title="__('Blame')"
       class="btn btn-xs btn-transparent blame"

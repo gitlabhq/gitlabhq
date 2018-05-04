@@ -17,12 +17,8 @@ export default {
     });
   },
   [types.SET_DIRECTORY_DATA](state, { data, treePath }) {
-    Object.assign(state, {
-      trees: Object.assign(state.trees, {
-        [treePath]: {
-          tree: data,
-        },
-      }),
+    Object.assign(state.trees[treePath], {
+      tree: data,
     });
   },
   [types.SET_LAST_COMMIT_URL](state, { tree = state, url }) {

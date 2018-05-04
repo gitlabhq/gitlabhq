@@ -210,13 +210,8 @@
 }
 
 .created-personal-access-token-container {
-  #created-personal-access-token {
-    width: 90%;
-    display: inline;
-  }
-
   .btn-clipboard {
-    margin-left: 5px;
+    border: 1px solid $border-color;
   }
 }
 

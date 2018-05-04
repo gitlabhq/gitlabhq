@@ -97,11 +97,13 @@ describe Issues::UpdateService, :mailer do
         expect(issue.relative_position).to be_between(issue1.relative_position, issue2.relative_position)
       end
 
-      context 'when moving issue between issues from different projects' do
+      context 'when moving issue between issues from different projects', :nested_groups do
         let(:group) { create(:group) }
+        let(:subgroup) { create(:group, parent: group) }
+
         let(:project_1) { create(:project, namespace: group) }
         let(:project_2) { create(:project, namespace: group) }
-        let(:project_3) { create(:project, namespace: group) }
+        let(:project_3) { create(:project, namespace: subgroup) }
 
         let(:issue_1) { create(:issue, project: project_1) }
         let(:issue_2) { create(:issue, project: project_2) }

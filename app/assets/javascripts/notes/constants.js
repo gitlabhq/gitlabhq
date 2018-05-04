@@ -14,3 +14,9 @@ export const EPIC_NOTEABLE_TYPE = 'epic';
 export const MERGE_REQUEST_NOTEABLE_TYPE = 'merge_request';
 export const UNRESOLVE_NOTE_METHOD_NAME = 'delete';
 export const RESOLVE_NOTE_METHOD_NAME = 'post';
+
+export const NOTEABLE_TYPE_MAPPING = {
+  Issue: ISSUE_NOTEABLE_TYPE,
+  MergeRequest: MERGE_REQUEST_NOTEABLE_TYPE,
+  Epic: EPIC_NOTEABLE_TYPE,
+};

@@ -1,6 +1,9 @@
 module Gitlab
   module ImportExport
     class Importer
+      include Gitlab::Allowable
+      include Gitlab::Utils::StrongMemoize
+
       def self.imports_repository?
         true
       end
@@ -13,12 +16,14 @@ module Gitlab
       end
 
       def execute
-        if import_file && check_version! && restorers.all?(&:restore)
+        if import_file && check_version! && restorers.all?(&:restore) && overwrite_project
           project_tree.restored_project
         else
           raise Projects::ImportService::Error.new(@shared.errors.join(', '))
         end
-
+      rescue => e
+        raise Projects::ImportService::Error.new(e.message)
+      ensure
         remove_import_file
       end
 
@@ -26,7 +31,7 @@ module Gitlab
 
       def restorers
         [repo_restorer, wiki_restorer, project_tree, avatar_restorer,
-         uploads_restorer, lfs_restorer]
+         uploads_restorer, lfs_restorer, statistics_restorer]
       end
 
       def import_file
@@ -69,6 +74,10 @@ module Gitlab
         Gitlab::ImportExport::LfsRestorer.new(project: project_tree.restored_project, shared: @shared)
       end
 
+      def statistics_restorer
+        Gitlab::ImportExport::StatisticsRestorer.new(project: project_tree.restored_project, shared: @shared)
+      end
+
       def path_with_namespace
         File.join(@project.namespace.full_path, @project.path)
       end
@@ -83,6 +92,33 @@ module Gitlab
 
       def remove_import_file
         FileUtils.rm_rf(@archive_file)
+      end
+
+      def overwrite_project
+        project = project_tree.restored_project
+
+        return unless can?(@current_user, :admin_namespace, project.namespace)
+
+        if overwrite_project?
+          ::Projects::OverwriteProjectService.new(project, @current_user)
+                                             .execute(project_to_overwrite)
+        end
+
+        true
+      end
+
+      def original_path
+        @project.import_data&.data&.fetch('original_path', nil)
+      end
+
+      def overwrite_project?
+        original_path.present? && project_to_overwrite.present?
+      end
+
+      def project_to_overwrite
+        strong_memoize(:project_to_overwrite) do
+          Project.find_by_full_path("#{@project.namespace.full_path}/#{original_path}")
+        end
       end
     end
   end

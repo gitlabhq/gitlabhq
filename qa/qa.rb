@@ -11,9 +11,15 @@ module QA
     autoload :Scenario, 'qa/runtime/scenario'
     autoload :Browser, 'qa/runtime/browser'
     autoload :Env, 'qa/runtime/env'
-    autoload :RSAKey, 'qa/runtime/rsa_key'
     autoload :Address, 'qa/runtime/address'
     autoload :API, 'qa/runtime/api'
+
+    module Key
+      autoload :Base, 'qa/runtime/key/base'
+      autoload :RSA, 'qa/runtime/key/rsa'
+      autoload :ECDSA, 'qa/runtime/key/ecdsa'
+      autoload :ED25519, 'qa/runtime/key/ed25519'
+    end
   end
 
   ##
@@ -31,6 +37,7 @@ module QA
       autoload :Project, 'qa/factory/resource/project'
       autoload :MergeRequest, 'qa/factory/resource/merge_request'
       autoload :DeployKey, 'qa/factory/resource/deploy_key'
+      autoload :Branch, 'qa/factory/resource/branch'
       autoload :SecretVariable, 'qa/factory/resource/secret_variable'
       autoload :Runner, 'qa/factory/resource/runner'
       autoload :PersonalAccessToken, 'qa/factory/resource/personal_access_token'
@@ -132,6 +139,7 @@ module QA
         autoload :Repository, 'qa/page/project/settings/repository'
         autoload :CICD, 'qa/page/project/settings/ci_cd'
         autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
+        autoload :ProtectedBranches, 'qa/page/project/settings/protected_branches'
         autoload :SecretVariables, 'qa/page/project/settings/secret_variables'
         autoload :Runners, 'qa/page/project/settings/runners'
         autoload :MergeRequest, 'qa/page/project/settings/merge_request'

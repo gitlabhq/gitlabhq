@@ -1,7 +1,16 @@
-var path = require('path');
-var webpack = require('webpack');
-var webpackConfig = require('./webpack.config.js');
-var ROOT_PATH = path.resolve(__dirname, '..');
+const path = require('path');
+const glob = require('glob');
+const chalk = require('chalk');
+const webpack = require('webpack');
+const argumentsParser = require('commander');
+const webpackConfig = require('./webpack.config.js');
+
+const ROOT_PATH = path.resolve(__dirname, '..');
+
+function fatalError(message) {
+  console.error(chalk.red(`\nError: ${message}\n`));
+  process.exit(1);
+}
 
 // remove problematic plugins
 if (webpackConfig.plugins) {
@@ -14,15 +23,70 @@ if (webpackConfig.plugins) {
   });
 }
 
+const specFilters = argumentsParser
+  .option(
+    '-f, --filter-spec [filter]',
+    'Filter run spec files by path. Multiple filters are like a logical OR.',
+    (filter, memo) => {
+      memo.push(filter, filter.replace(/\/?$/, '/**/*.js'));
+      return memo;
+    },
+    []
+  )
+  .parse(process.argv).filterSpec;
+
+if (specFilters.length) {
+  const specsPath = /^(?:\.[\\\/])?spec[\\\/]javascripts[\\\/]/;
+
+  // resolve filters
+  let filteredSpecFiles = specFilters.map(filter =>
+    glob
+      .sync(filter, {
+        root: ROOT_PATH,
+        matchBase: true,
+      })
+      .filter(path => path.endsWith('spec.js'))
+  );
+
+  // flatten
+  filteredSpecFiles = Array.prototype.concat.apply([], filteredSpecFiles);
+
+  // remove duplicates
+  filteredSpecFiles = [...new Set(filteredSpecFiles)];
+
+  if (filteredSpecFiles.length < 1) {
+    fatalError('Your filter did not match any test files.');
+  }
+
+  if (!filteredSpecFiles.every(file => specsPath.test(file))) {
+    fatalError('Test files must be located within /spec/javascripts.');
+  }
+
+  const newContext = filteredSpecFiles.reduce((context, file) => {
+    const relativePath = file.replace(specsPath, '');
+    context[file] = `./${relativePath}`;
+    return context;
+  }, {});
+
+  webpackConfig.plugins.push(
+    new webpack.ContextReplacementPlugin(
+      /spec[\\\/]javascripts$/,
+      path.join(ROOT_PATH, 'spec/javascripts'),
+      newContext
+    )
+  );
+}
+
+webpackConfig.entry = undefined;
 webpackConfig.devtool = 'cheap-inline-source-map';
 
 // Karma configuration
 module.exports = function(config) {
   process.env.TZ = 'Etc/UTC';
 
-  var progressReporter = process.env.CI ? 'mocha' : 'progress';
+  const progressReporter = process.env.CI ? 'mocha' : 'progress';
 
-  var karmaConfig = {
+  const karmaConfig = {
     basePath: ROOT_PATH,
     browsers: ['ChromeHeadlessCustom'],
     customLaunchers: {
@@ -39,7 +103,7 @@ module.exports = function(config) {
     frameworks: ['jasmine'],
     files: [
       { pattern: 'spec/javascripts/test_bundle.js', watched: false },
-      { pattern: 'spec/javascripts/fixtures/**/*@(.json|.html|.html.raw)', included: false },
+      { pattern: 'spec/javascripts/fixtures/**/*@(.json|.html|.html.raw|.png)', included: false },
     ],
     preprocessors: {
       'spec/javascripts/**/*.js': ['webpack', 'sourcemap'],

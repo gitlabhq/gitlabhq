@@ -1,4 +1,7 @@
 const viewers = {
+  image: {
+    id: 'image',
+  },
   markdown: {
     id: 'markdown',
     previewTitle: 'Preview Markdown',
@@ -7,6 +10,12 @@ const viewers = {
 
 const fileNameViewers = {};
 const fileExtensionViewers = {
+  jpg: 'image',
+  jpeg: 'image',
+  gif: 'image',
+  png: 'image',
+  bmp: 'image',
+  ico: 'image',
   md: 'markdown',
   markdown: 'markdown',
 };

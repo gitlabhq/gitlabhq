@@ -1,0 +1,24 @@
+- blob = @snippet.blob
+.gitlab-embed-snippets
+  .js-file-title.file-title-flex-parent
+    .file-header-content
+      = external_snippet_icon('doc_text')
+
+      %strong.file-title-name
+        %a.gitlab-embedded-snippets-title{ href: url_for(only_path: false, overwrite_params: nil) }
+          = blob.name
+
+      %small
+        = number_to_human_size(blob.raw_size)
+      %a.gitlab-logo{ href: url_for(only_path: false, overwrite_params: nil), title: 'view on gitlab' }
+        on &nbsp;
+        %span.logo-text
+          GitLab
+
+    .file-actions.hidden-xs
+      .btn-group{ role: "group" }<
+        = embedded_snippet_raw_button
+
+        = embedded_snippet_download_button
+  %article.file-holder.snippet-file-content
+    = render 'projects/blob/viewer', viewer: @snippet.blob.simple_viewer, load_async: false, external_embed: true

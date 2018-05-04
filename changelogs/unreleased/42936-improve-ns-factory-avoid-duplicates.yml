@@ -1,0 +1,6 @@
+---
+title: Fix discussions API setting created_at for notable in a group or notable in
+  a project in a group with owners
+merge_request: 18464
+author:
+type: fixed

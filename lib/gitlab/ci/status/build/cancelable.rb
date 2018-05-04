@@ -23,6 +23,10 @@ module Gitlab
             'Cancel'
           end
 
+          def action_button_title
+            _('Cancel this job')
+          end
+
           def self.matches?(build, user)
             build.cancelable?
           end

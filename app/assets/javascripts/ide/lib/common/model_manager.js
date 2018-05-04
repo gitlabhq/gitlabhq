@@ -17,12 +17,12 @@ export default class ModelManager {
     return this.models.get(key);
   }
 
-  addModel(file) {
+  addModel(file, head = null) {
     if (this.hasCachedModel(file.key)) {
       return this.getModel(file.key);
     }
 
-    const model = new Model(this.monaco, file);
+    const model = new Model(this.monaco, file, head);
     this.models.set(model.path, model);
     this.disposable.add(model);
 

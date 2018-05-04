@@ -28,7 +28,7 @@
         = icon('history')
       .btn-container.controls-item
         = render 'projects/buttons/download', project: @project, ref: @tag.name
-      - if can?(current_user, :admin_project, @project)
+      - if can?(current_user, :push_code, @project) && can?(current_user, :admin_project, @project)
         .btn-container.controls-item-full
           = link_to project_tag_path(@project, @tag.name), class: "btn btn-remove remove-row has-tooltip #{protected_tag?(@project, @tag) ? 'disabled' : ''}", title: s_('TagsPage|Delete tag'), method: :delete, data: { confirm: s_('TagsPage|Deleting the %{tag_name} tag cannot be undone. Are you sure?') % { tag_name: @tag.name } } do
             %i.fa.fa-trash-o

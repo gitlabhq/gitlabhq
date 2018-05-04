@@ -1,0 +1,5 @@
+---
+title: Add sha filter to pipelines list API
+merge_request: 18125
+author:
+type: changed

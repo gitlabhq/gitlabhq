@@ -1,0 +1,5 @@
+---
+title: Sanitizes user name to avoid XSS attacks
+merge_request:
+author:
+type: security

@@ -7,5 +7,6 @@
       - link_to_help_page = link_to(_('Learn more about Kubernetes'), help_page_path('user/project/clusters/index'), target: '_blank', rel: 'noopener noreferrer')
       %p= s_('ClusterIntegration|Kubernetes clusters allow you to use review apps, deploy your applications, run your pipelines, and much more in an easy way. %{link_to_help_page}').html_safe % { link_to_help_page: link_to_help_page}
 
-      .text-center
-        = link_to s_('ClusterIntegration|Add Kubernetes cluster'), new_project_cluster_path(@project), class: 'btn btn-success'
+      - if can?(current_user, :create_cluster, @project)
+        .text-center
+          = link_to s_('ClusterIntegration|Add Kubernetes cluster'), new_project_cluster_path(@project), class: 'btn btn-success'

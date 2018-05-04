@@ -114,6 +114,29 @@ describe API::ProjectImport do
       expect(import_project.description).to eq('Hello world')
     end
 
+    context 'when target path already exists in namespace' do
+      let(:existing_project) { create(:project, namespace: user.namespace) }
+
+      it 'does not schedule an import' do
+        expect_any_instance_of(Project).not_to receive(:import_schedule)
+
+        post api('/projects/import', user), path: existing_project.path, file: fixture_file_upload(file)
+
+        expect(response).to have_gitlab_http_status(400)
+        expect(json_response['message']).to eq('Name has already been taken')
+      end
+
+      context 'when param overwrite is true' do
+        it 'schedules an import' do
+          stub_import(user.namespace)
+
+          post api('/projects/import', user), path: existing_project.path, file: fixture_file_upload(file), overwrite: true
+
+          expect(response).to have_gitlab_http_status(201)
+        end
+      end
+    end
+
     def stub_import(namespace)
       expect_any_instance_of(Project).to receive(:import_schedule)
       expect(::Projects::CreateService).to receive(:new).with(user, hash_including(namespace_id: namespace.id)).and_call_original

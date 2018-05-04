@@ -1,0 +1,5 @@
+---
+title: Fix unassign slash command preview
+merge_request: 18447
+author:
+type: fixed

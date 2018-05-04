@@ -183,7 +183,7 @@ GET /projects/:id/repository/contributors
 Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
-- `order_by` (optional) - Return contributors ordered by `name`, `email`, or `commits` fields. If not given contributors are ordered by commit date.
+- `order_by` (optional) - Return contributors ordered by `name`, `email`, or `commits` (orders by commit date) fields. Default is `commits`
 - `sort` (optional) - Return contributors sorted in `asc` or `desc` order. Default is `asc`
 
 Response:

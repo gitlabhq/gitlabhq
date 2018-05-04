@@ -15,7 +15,7 @@ module Groups
     def update
       if @group.update(group_variables_params)
         respond_to do |format|
-          format.json { return render_group_variables }
+          format.json { render_group_variables }
         end
       else
         respond_to do |format|

@@ -13,6 +13,7 @@ describe('pipeline graph job component', () => {
       icon: 'icon_status_success',
       text: 'passed',
       label: 'passed',
+      tooltip: 'passed',
       group: 'success',
       details_path: '/root/ci-mock/builds/4256',
       has_details: true,
@@ -92,17 +93,6 @@ describe('pipeline graph job component', () => {
     });
   });
 
-  describe('dropdown', () => {
-    it('should render the dropdown action icon', () => {
-      component = mountComponent(JobComponent, {
-        job: mockJob,
-        isDropdown: true,
-      });
-
-      expect(component.$el.querySelector('a.ci-action-icon-wrapper')).toBeDefined();
-    });
-  });
-
   it('should render provided class name', () => {
     component = mountComponent(JobComponent, {
       job: mockJob,
@@ -137,6 +127,7 @@ describe('pipeline graph job component', () => {
           status: {
             icon: 'icon_status_success',
             label: 'success',
+            tooltip: 'success',
           },
         },
       });

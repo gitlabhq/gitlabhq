@@ -13,7 +13,7 @@ module Clusters
       rescue Google::Apis::ServerError, Google::Apis::ClientError, Google::Apis::AuthorizationError => e
         provider.make_errored!("Failed to request to CloudPlatform; #{e.message}")
       rescue ActiveRecord::RecordInvalid => e
-        provider.make_errored!("Failed to configure GKE Cluster: #{e.message}")
+        provider.make_errored!("Failed to configure Google Kubernetes Engine Cluster: #{e.message}")
       end
 
       private

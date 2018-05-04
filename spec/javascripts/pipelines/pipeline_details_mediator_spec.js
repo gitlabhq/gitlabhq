@@ -1,42 +1,36 @@
-import _ from 'underscore';
-import Vue from 'vue';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import PipelineMediator from '~/pipelines/pipeline_details_mediator';
 
 describe('PipelineMdediator', () => {
   let mediator;
+  let mock;
+
   beforeEach(() => {
-    mediator = new PipelineMediator({ endpoint: 'foo' });
+    mock = new MockAdapter(axios);
+    mediator = new PipelineMediator({ endpoint: 'foo.json' });
+  });
+
+  afterEach(() => {
+    mock.restore();
   });
 
   it('should set defaults', () => {
-    expect(mediator.options).toEqual({ endpoint: 'foo' });
+    expect(mediator.options).toEqual({ endpoint: 'foo.json' });
     expect(mediator.state.isLoading).toEqual(false);
     expect(mediator.store).toBeDefined();
     expect(mediator.service).toBeDefined();
   });
 
   describe('request and store data', () => {
-    const interceptor = (request, next) => {
-      next(request.respondWith(JSON.stringify({ foo: 'bar' }), {
-        status: 200,
-      }));
-    };
-
-    beforeEach(() => {
-      Vue.http.interceptors.push(interceptor);
-    });
-
-    afterEach(() => {
-      Vue.http.interceptors = _.without(Vue.http.interceptor, interceptor);
-    });
-
-    it('should store received data', (done) => {
+    it('should store received data', done => {
+      mock.onGet('foo.json').reply(200, { id: '121123' });
       mediator.fetchPipeline();
 
       setTimeout(() => {
-        expect(mediator.store.state.pipeline).toEqual({ foo: 'bar' });
+        expect(mediator.store.state.pipeline).toEqual({ id: '121123' });
         done();
-      });
+      }, 0);
     });
   });
 });

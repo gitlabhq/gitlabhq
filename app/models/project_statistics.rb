@@ -4,15 +4,15 @@ class ProjectStatistics < ActiveRecord::Base
 
   before_save :update_storage_size
 
-  STORAGE_COLUMNS = [:repository_size, :lfs_objects_size, :build_artifacts_size].freeze
-  STATISTICS_COLUMNS = [:commit_count] + STORAGE_COLUMNS
+  COLUMNS_TO_REFRESH = [:repository_size, :lfs_objects_size, :commit_count].freeze
+  INCREMENTABLE_COLUMNS = [:build_artifacts_size].freeze
 
   def total_repository_size
     repository_size + lfs_objects_size
   end
 
   def refresh!(only: nil)
-    STATISTICS_COLUMNS.each do |column, generator|
+    COLUMNS_TO_REFRESH.each do |column, generator|
       if only.blank? || only.include?(column)
         public_send("update_#{column}") # rubocop:disable GitlabSecurity/PublicSend
       end
@@ -34,13 +34,15 @@ class ProjectStatistics < ActiveRecord::Base
     self.lfs_objects_size = project.lfs_objects.sum(:size)
   end
 
-  def update_build_artifacts_size
-    self.build_artifacts_size =
-      project.builds.sum(:artifacts_size) +
-      Ci::JobArtifact.artifacts_size_for(self.project)
+  def update_storage_size
+    self.storage_size = repository_size + lfs_objects_size + build_artifacts_size
   end
 
-  def update_storage_size
-    self.storage_size = STORAGE_COLUMNS.sum(&method(:read_attribute))
+  def self.increment_statistic(project_id, key, amount)
+    raise ArgumentError, "Cannot increment attribute: #{key}" unless key.in?(INCREMENTABLE_COLUMNS)
+    return if amount == 0
+
+    where(project_id: project_id)
+      .update_all(["#{key} = COALESCE(#{key}, 0) + (?)", amount])
   end
 end

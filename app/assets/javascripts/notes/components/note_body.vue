@@ -112,6 +112,7 @@ export default {
       :note-author-id="note.author.id"
       :awards="note.award_emoji"
       :toggle-award-path="note.toggle_award_path"
+      :can-award-emoji="note.current_user.can_award_emoji"
     />
     <note-attachment
       v-if="note.attachment"

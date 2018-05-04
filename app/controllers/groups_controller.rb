@@ -173,7 +173,9 @@ class GroupsController < Groups::ApplicationController
       .new(@projects, offset: params[:offset].to_i, filter: event_filter)
       .to_a
 
-    Events::RenderService.new(current_user).execute(@events, atom_request: request.format.atom?)
+    Events::RenderService
+      .new(current_user)
+      .execute(@events, atom_request: request.format.atom?)
   end
 
   def user_actions
@@ -187,6 +189,6 @@ class GroupsController < Groups::ApplicationController
 
     params[:id] = group.to_param
 
-    url_for(params)
+    url_for(safe_params)
   end
 end

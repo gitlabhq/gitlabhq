@@ -115,17 +115,17 @@ feature 'Labels Hierarchy', :js, :nested_groups do
     it 'filters by descendant group labels' do
       wait_for_requests
 
-      if board
-        pending("Waiting for https://gitlab.com/gitlab-org/gitlab-ce/issues/44270")
+      select_label_on_dropdown(group_label_3.title)
 
-        select_label_on_dropdown(group_label_3.title)
+      if board
+        expect(page).to have_selector('.card-title') do |card|
+          expect(card).not_to have_selector('a', text: labeled_issue_2.title)
+        end
 
         expect(page).to have_selector('.card-title') do |card|
           expect(card).to have_selector('a', text: labeled_issue_3.title)
         end
       else
-        select_label_on_dropdown(group_label_3.title)
-
         expect_issues_list_count(1)
         expect(page).to have_selector('span.issue-title-text', text: labeled_issue_3.title)
       end
@@ -170,6 +170,8 @@ feature 'Labels Hierarchy', :js, :nested_groups do
 
     context 'on issue sidebar' do
       before do
+        project_1.add_developer(user)
+
         visit project_issue_path(project_1, issue)
       end
 
@@ -180,6 +182,8 @@ feature 'Labels Hierarchy', :js, :nested_groups do
       let(:board)   { create(:board, project: project_1) }
 
       before do
+        project_1.add_developer(user)
+
         visit project_board_path(project_1, board)
 
         wait_for_requests
@@ -194,6 +198,8 @@ feature 'Labels Hierarchy', :js, :nested_groups do
       let(:board)   { create(:board, group: parent) }
 
       before do
+        parent.add_developer(user)
+
         visit group_board_path(parent, board)
 
         wait_for_requests
@@ -211,6 +217,8 @@ feature 'Labels Hierarchy', :js, :nested_groups do
 
     context 'on project issuable list' do
       before do
+        project_1.add_developer(user)
+
         visit project_issues_path(project_1)
       end
 
@@ -237,6 +245,8 @@ feature 'Labels Hierarchy', :js, :nested_groups do
       let(:board) { create(:board, project: project_1) }
 
       before do
+        project_1.add_developer(user)
+
         visit project_board_path(project_1, board)
       end
 
@@ -247,6 +257,8 @@ feature 'Labels Hierarchy', :js, :nested_groups do
       let(:board) { create(:board, group: parent) }
 
       before do
+        parent.add_developer(user)
+
         visit group_board_path(parent, board)
       end
 
@@ -259,6 +271,7 @@ feature 'Labels Hierarchy', :js, :nested_groups do
       let(:board) { create(:board, project: project_1) }
 
       before do
+        project_1.add_developer(user)
         visit project_board_path(project_1, board)
         find('.js-new-board-list').click
         wait_for_requests
@@ -281,6 +294,7 @@ feature 'Labels Hierarchy', :js, :nested_groups do
       let(:board) { create(:board, group: parent) }
 
       before do
+        parent.add_developer(user)
         visit group_board_path(parent, board)
         find('.js-new-board-list').click
         wait_for_requests

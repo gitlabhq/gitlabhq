@@ -37,6 +37,12 @@ describe Projects::TransferService do
       transfer_project(project, user, group)
     end
 
+    it 'invalidates the user\'s personal_project_count cache' do
+      expect(user).to receive(:invalidate_personal_projects_count)
+
+      transfer_project(project, user, group)
+    end
+
     it 'executes system hooks' do
       transfer_project(project, user, group) do |service|
         expect(service).to receive(:execute_system_hooks)
@@ -78,7 +84,7 @@ describe Projects::TransferService do
     end
 
     def project_path(project)
-      File.join(project.repository_storage_path, "#{project.disk_path}.git")
+      project.repository.path_to_repo
     end
 
     def current_path
@@ -88,7 +94,7 @@ describe Projects::TransferService do
     it 'rolls back repo location' do
       attempt_project_transfer
 
-      expect(Dir.exist?(original_path)).to be_truthy
+      expect(gitlab_shell.exists?(project.repository_storage, "#{project.disk_path}.git")).to be(true)
       expect(original_path).to eq current_path
     end
 
@@ -159,7 +165,7 @@ describe Projects::TransferService do
     end
 
     after do
-      gitlab_shell.remove_repository(repository_storage_path, "#{group.full_path}/#{project.path}")
+      gitlab_shell.remove_repository(repository_storage, "#{group.full_path}/#{project.path}")
     end
 
     it { expect(@result).to eq false }

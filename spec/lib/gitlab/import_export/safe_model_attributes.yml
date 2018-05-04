@@ -232,6 +232,7 @@ Ci::Stage:
 - id
 - name
 - status
+- position
 - lock_version
 - project_id
 - pipeline_id
@@ -537,12 +538,6 @@ ProjectCustomAttribute:
 - project_id
 - key
 - value
-LfsFileLock:
-- id
-- path
-- user_id
-- project_id
-- created_at
 Badge:
 - id
 - link_url
@@ -552,3 +547,5 @@ Badge:
 - created_at
 - updated_at
 - type
+ProjectCiCdSetting:
+- group_runners_enabled

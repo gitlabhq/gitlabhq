@@ -1,9 +1,9 @@
 import Vue from 'vue';
-
-const ModalStore = gl.issueBoards.ModalStore;
+import ModalStore from '../../stores/modal_store';
+import modalMixin from '../../mixins/modal_mixins';
 
 gl.issueBoards.ModalEmptyState = Vue.extend({
-  mixins: [gl.issueBoards.ModalMixins],
+  mixins: [modalMixin],
   data() {
     return ModalStore.store;
   },

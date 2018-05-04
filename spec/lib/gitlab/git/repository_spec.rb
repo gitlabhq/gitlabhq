@@ -234,53 +234,72 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :tag_names
   end
 
-  shared_examples 'archive check' do |extenstion|
-    it { expect(metadata['ArchivePath']).to match(%r{tmp/gitlab-git-test.git/gitlab-git-test-master-#{SeedRepo::LastCommit::ID}}) }
-    it { expect(metadata['ArchivePath']).to end_with extenstion }
-  end
+  describe '#archive_metadata' do
+    let(:storage_path) { '/tmp' }
+    let(:cache_key) { File.join(repository.gl_repository, SeedRepo::LastCommit::ID) }
 
-  describe '#archive_prefix' do
-    let(:project_name) { 'project-name'}
+    let(:append_sha) { true }
+    let(:ref) { 'master' }
+    let(:format) { nil }
 
-    before do
-      expect(repository).to receive(:name).once.and_return(project_name)
+    let(:expected_extension) { 'tar.gz' }
+    let(:expected_filename) { "#{expected_prefix}.#{expected_extension}" }
+    let(:expected_path) { File.join(storage_path, cache_key, expected_filename) }
+    let(:expected_prefix) { "gitlab-git-test-#{ref}-#{SeedRepo::LastCommit::ID}" }
+
+    subject(:metadata) { repository.archive_metadata(ref, storage_path, format, append_sha: append_sha) }
+
+    it 'sets RepoPath to the repository path' do
+      expect(metadata['RepoPath']).to eq(repository.path)
     end
 
-    it 'returns parameterised string for a ref containing slashes' do
-      prefix = repository.archive_prefix('test/branch', 'SHA')
-
-      expect(prefix).to eq("#{project_name}-test-branch-SHA")
+    it 'sets CommitId to the commit SHA' do
+      expect(metadata['CommitId']).to eq(SeedRepo::LastCommit::ID)
     end
 
-    it 'returns correct string for a ref containing dots' do
-      prefix = repository.archive_prefix('test.branch', 'SHA')
-
-      expect(prefix).to eq("#{project_name}-test.branch-SHA")
+    it 'sets ArchivePrefix to the expected prefix' do
+      expect(metadata['ArchivePrefix']).to eq(expected_prefix)
     end
-  end
 
-  describe '#archive' do
-    let(:metadata) { repository.archive_metadata('master', '/tmp') }
+    it 'sets ArchivePath to the expected globally-unique path' do
+      # This is really important from a security perspective. Think carefully
+      # before changing it: https://gitlab.com/gitlab-org/gitlab-ce/issues/45689
+      expect(expected_path).to include(File.join(repository.gl_repository, SeedRepo::LastCommit::ID))
 
-    it_should_behave_like 'archive check', '.tar.gz'
-  end
+      expect(metadata['ArchivePath']).to eq(expected_path)
+    end
 
-  describe '#archive_zip' do
-    let(:metadata) { repository.archive_metadata('master', '/tmp', 'zip') }
+    context 'append_sha varies archive path and filename' do
+      where(:append_sha, :ref, :expected_prefix) do
+        sha = SeedRepo::LastCommit::ID
 
-    it_should_behave_like 'archive check', '.zip'
-  end
+        true  | 'master' | "gitlab-git-test-master-#{sha}"
+        true  | sha      | "gitlab-git-test-#{sha}-#{sha}"
+        false | 'master' | "gitlab-git-test-master"
+        false | sha      | "gitlab-git-test-#{sha}"
+        nil   | 'master' | "gitlab-git-test-master-#{sha}"
+        nil   | sha      | "gitlab-git-test-#{sha}"
+      end
 
-  describe '#archive_bz2' do
-    let(:metadata) { repository.archive_metadata('master', '/tmp', 'tbz2') }
+      with_them do
+        it { expect(metadata['ArchivePrefix']).to eq(expected_prefix) }
+        it { expect(metadata['ArchivePath']).to eq(expected_path) }
+      end
+    end
 
-    it_should_behave_like 'archive check', '.tar.bz2'
-  end
+    context 'format varies archive path and filename' do
+      where(:format, :expected_extension) do
+        nil      | 'tar.gz'
+        'madeup' | 'tar.gz'
+        'tbz2'   | 'tar.bz2'
+        'zip'    | 'zip'
+      end
 
-  describe '#archive_fallback' do
-    let(:metadata) { repository.archive_metadata('master', '/tmp', 'madeup') }
-
-    it_should_behave_like 'archive check', '.tar.gz'
+      with_them do
+        it { expect(metadata['ArchivePrefix']).to eq(expected_prefix) }
+        it { expect(metadata['ArchivePath']).to eq(expected_path) }
+      end
+    end
   end
 
   describe '#size' do
@@ -464,7 +483,18 @@ describe Gitlab::Git::Repository, seed_helper: true do
           FileUtils.rm_rf(heads_dir)
           FileUtils.mkdir_p(heads_dir)
 
+          repository.expire_has_local_branches_cache
           expect(repository.has_local_branches?).to eq(false)
+        end
+      end
+
+      context 'memoizes the value' do
+        it 'returns true' do
+          expect(repository).to receive(:uncached_has_local_branches?).once.and_call_original
+
+          2.times do
+            expect(repository.has_local_branches?).to eq(true)
+          end
         end
       end
     end
@@ -672,7 +702,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     after do
-      Gitlab::Shell.new.remove_repository(storage_path, 'my_project')
+      Gitlab::Shell.new.remove_repository('default', 'my_project')
     end
 
     shared_examples 'repository mirror fecthing' do
@@ -1035,6 +1065,44 @@ describe Gitlab::Git::Repository, seed_helper: true do
     subject { repository.count_commits_between('feature', 'master') }
 
     it { is_expected.to eq(17) }
+  end
+
+  describe '#raw_changes_between' do
+    let(:old_rev) { }
+    let(:new_rev) { }
+    let(:changes) { repository.raw_changes_between(old_rev, new_rev) }
+
+    context 'initial commit' do
+      let(:old_rev) { Gitlab::Git::BLANK_SHA }
+      let(:new_rev) { '1a0b36b3cdad1d2ee32457c102a8c0b7056fa863' }
+
+      it 'returns the changes' do
+        expect(changes).to be_present
+        expect(changes.size).to eq(3)
+      end
+    end
+
+    context 'with an invalid rev' do
+      let(:old_rev) { 'foo' }
+      let(:new_rev) { 'bar' }
+
+      it 'returns an error' do
+        expect { changes }.to raise_error(Gitlab::Git::Repository::GitError)
+      end
+    end
+
+    context 'with valid revs' do
+      let(:old_rev) { 'fa1b1e6c004a68b7d8763b86455da9e6b23e36d6' }
+      let(:new_rev) { '4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6' }
+
+      it 'returns the changes' do
+        expect(changes.size).to eq(9)
+        expect(changes.first.operation).to eq(:modified)
+        expect(changes.first.new_path).to eq('.gitmodules')
+        expect(changes.last.operation).to eq(:added)
+        expect(changes.last.new_path).to eq('files/lfs/picture-invalid.png')
+      end
+    end
   end
 
   describe '#merge_base' do
@@ -2178,6 +2246,55 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#checksum' do
+    shared_examples 'calculating checksum' do
+      it 'calculates the checksum for non-empty repo' do
+        expect(repository.checksum).to eq '54f21be4c32c02f6788d72207fa03ad3bce725e4'
+      end
+
+      it 'returns 0000000000000000000000000000000000000000 for an empty repo' do
+        FileUtils.rm_rf(File.join(storage_path, 'empty-repo.git'))
+
+        system(git_env, *%W(#{Gitlab.config.git.bin_path} init --bare empty-repo.git),
+               chdir: storage_path,
+               out:   '/dev/null',
+               err:   '/dev/null')
+
+        empty_repo = described_class.new('default', 'empty-repo.git', '')
+
+        expect(empty_repo.checksum).to eq '0000000000000000000000000000000000000000'
+      end
+
+      it 'raises a no repository exception when there is no repo' do
+        broken_repo = described_class.new('default', 'a/path.git', '')
+
+        expect { broken_repo.checksum }.to raise_error(Gitlab::Git::Repository::NoRepository)
+      end
+    end
+
+    context 'when calculate_checksum Gitaly feature is enabled' do
+      it_behaves_like 'calculating checksum'
+    end
+
+    context 'when calculate_checksum Gitaly feature is disabled', :disable_gitaly do
+      it_behaves_like 'calculating checksum'
+
+      describe 'when storage is broken', :broken_storage  do
+        it 'raises a storage exception when storage is not available' do
+          broken_repo = described_class.new('broken', 'a/path.git', '')
+
+          expect { broken_repo.rugged }.to raise_error(Gitlab::Git::Storage::Inaccessible)
+        end
+      end
+
+      it "raises a Gitlab::Git::Repository::Failure error if the `popen` call to git returns a non-zero exit code" do
+        allow(repository).to receive(:popen).and_return(['output', nil])
+
+        expect { repository.checksum }.to raise_error Gitlab::Git::Repository::ChecksumError
+      end
+    end
+  end
+
   context 'gitlab_projects commands' do
     let(:gitlab_projects) { repository.gitlab_projects }
     let(:timeout) { Gitlab.config.gitlab_shell.git_timeout }
@@ -2248,6 +2365,39 @@ describe Gitlab::Git::Repository, seed_helper: true do
           .and_return(false)
 
         expect { subject }.to raise_error(Gitlab::Git::CommandError, 'error')
+      end
+    end
+
+    describe '#clean_stale_repository_files' do
+      let(:worktree_path) { File.join(repository.path, 'worktrees', 'delete-me') }
+
+      it 'cleans up the files' do
+        repository.with_worktree(worktree_path, 'master', env: ENV) do
+          FileUtils.touch(worktree_path, mtime: Time.now - 8.hours)
+          # git rev-list --all will fail in git 2.16 if HEAD is pointing to a non-existent object,
+          # but the HEAD must be 40 characters long or git will ignore it.
+          File.write(File.join(worktree_path, 'HEAD'), Gitlab::Git::BLANK_SHA)
+
+          # git 2.16 fails with "fatal: bad object HEAD"
+          expect { repository.rev_list(including: :all) }.to raise_error(Gitlab::Git::Repository::GitError)
+
+          repository.clean_stale_repository_files
+
+          expect { repository.rev_list(including: :all) }.not_to raise_error
+          expect(File.exist?(worktree_path)).to be_falsey
+        end
+      end
+
+      it 'increments a counter upon an error' do
+        expect(repository.gitaly_repository_client).to receive(:cleanup).and_raise(Gitlab::Git::CommandError)
+
+        counter = double(:counter)
+
+        expect(counter).to receive(:increment)
+        expect(Gitlab::Metrics).to receive(:counter).with(:failed_repository_cleanup_total,
+                                                          'Number of failed repository cleanup events').and_return(counter)
+
+        repository.clean_stale_repository_files
       end
     end
 

@@ -36,10 +36,6 @@ module Gitlab
         }
       end
 
-      def artifact_upload_ok
-        { TempPath: JobArtifactUploader.workhorse_upload_path }
-      end
-
       def send_git_blob(repository, blob)
         params = if Gitlab::GitalyClient.feature_enabled?(:workhorse_raw_show, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT)
                    {
@@ -63,10 +59,10 @@ module Gitlab
         ]
       end
 
-      def send_git_archive(repository, ref:, format:)
+      def send_git_archive(repository, ref:, format:, append_sha:)
         format ||= 'tar.gz'
         format.downcase!
-        params = repository.archive_metadata(ref, Gitlab.config.gitlab.repository_downloads_path, format)
+        params = repository.archive_metadata(ref, Gitlab.config.gitlab.repository_downloads_path, format, append_sha: append_sha)
         raise "Repository or ref not found" if params.empty?
 
         if Gitlab::GitalyClient.feature_enabled?(:workhorse_archive, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT)
@@ -82,6 +78,20 @@ module Gitlab
         [
           SEND_DATA_HEADER,
           "git-archive:#{encode(params)}"
+        ]
+      end
+
+      def send_git_snapshot(repository)
+        params = {
+          'GitalyServer' => gitaly_server_hash(repository),
+          'GetSnapshotRequest' => Gitaly::GetSnapshotRequest.new(
+            repository: repository.gitaly_repository
+          ).to_json
+        }
+
+        [
+          SEND_DATA_HEADER,
+          "git-snapshot:#{encode(params)}"
         ]
       end
 

@@ -94,7 +94,7 @@ export default class FileTemplateMediator {
       const hash = urlPieces[1];
       if (hash === 'preview') {
         this.hideTemplateSelectorMenu();
-      } else if (hash === 'editor') {
+      } else if (hash === 'editor' && !this.typeSelector.isHidden()) {
         this.showTemplateSelectorMenu();
       }
     });

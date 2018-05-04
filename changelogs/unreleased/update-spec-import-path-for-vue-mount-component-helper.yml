@@ -1,5 +1,0 @@
----
-title: Update spec import path for vue mount component helper
-merge_request: 17880
-author: George Tsiolis
-type: performance

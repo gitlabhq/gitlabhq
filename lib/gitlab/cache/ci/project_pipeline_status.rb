@@ -40,7 +40,7 @@ module Gitlab
         end
 
         def self.cache_key_for_project(project)
-          "projects/#{project.id}/pipeline_status"
+          "#{Gitlab::Redis::Cache::CACHE_NAMESPACE}:projects/#{project.id}/pipeline_status"
         end
 
         def self.update_for_pipeline(pipeline)

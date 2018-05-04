@@ -42,6 +42,18 @@ module QA
             end
           end
 
+          def key_titles
+            within_project_deploy_keys do
+              all_elements(:key_title)
+            end
+          end
+
+          def key_fingerprints
+            within_project_deploy_keys do
+              all_elements(:key_fingerprint)
+            end
+          end
+
           private
 
           def within_project_deploy_keys

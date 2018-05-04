@@ -162,7 +162,7 @@ need for running complex operations to fetch the data. You should use Redis if
 data should be cached for a certain time period instead of the duration of the
 transaction.
 
-For example, say you process multiple snippets of text containiner username
+For example, say you process multiple snippets of text containing username
 mentions (e.g. `Hello @alice` and `How are you doing @alice?`). By caching the
 user objects for every username we can remove the need for running the same
 query for every mention of `@alice`.

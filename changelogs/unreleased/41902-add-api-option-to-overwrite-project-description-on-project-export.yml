@@ -1,5 +1,0 @@
----
-title: Adds the option to the project export API to override the project description and display GitLab export description once imported
-merge_request: 17744
-author:
-type: added

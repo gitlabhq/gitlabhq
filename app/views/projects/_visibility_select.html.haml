@@ -1,9 +1,0 @@
-- if can_change_visibility_level?(@project, current_user)
-  .select-wrapper
-    = form.select(model_method, visibility_select_options(@project, selected_level), {}, class: 'form-control visibility-select select-control')
-    = icon('chevron-down')
-- else
-  .info.js-locked{ data: { help_block: visibility_level_description(@project.visibility_level, @project) } }
-    = visibility_level_icon(@project.visibility_level)
-    %strong
-      = visibility_level_label(@project.visibility_level)

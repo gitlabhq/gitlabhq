@@ -9,6 +9,7 @@ class Group < Namespace
   include SelectForProjectAuthorization
   include LoadedInGroupList
   include GroupDescendant
+  include TokenAuthenticatable
 
   has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   alias_method :members, :group_members
@@ -42,6 +43,8 @@ class Group < Namespace
   validates :variables, variable_duplicates: true
 
   validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
+
+  add_authentication_token_field :runners_token
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
@@ -123,6 +126,10 @@ class Group < Namespace
     return Gitlab.config.lfs.enabled if self[:lfs_enabled].nil?
 
     self[:lfs_enabled]
+  end
+
+  def owned_by?(user)
+    owners.include?(user)
   end
 
   def add_users(users, access_level, current_user: nil, expires_at: nil)
@@ -284,6 +291,17 @@ class Group < Namespace
 
   def hashed_storage?(_feature)
     false
+  end
+
+  def refresh_project_authorizations
+    refresh_members_authorized_projects(blocking: false)
+  end
+
+  # each existing group needs to have a `runners_token`.
+  # we do this on read since migrating all existing groups is not a feasible
+  # solution.
+  def runners_token
+    ensure_runners_token!
   end
 
   private

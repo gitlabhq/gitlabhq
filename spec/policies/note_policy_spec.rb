@@ -18,7 +18,6 @@ describe NotePolicy, mdoels: true do
     context 'when the project is public' do
       context 'when the note author is not a project member' do
         it 'can edit a note' do
-          expect(policies).to be_allowed(:update_note)
           expect(policies).to be_allowed(:admin_note)
           expect(policies).to be_allowed(:resolve_note)
           expect(policies).to be_allowed(:read_note)
@@ -29,7 +28,6 @@ describe NotePolicy, mdoels: true do
         it 'can edit note' do
           policies = policies(create(:project_snippet, project: project))
 
-          expect(policies).to be_allowed(:update_note)
           expect(policies).to be_allowed(:admin_note)
           expect(policies).to be_allowed(:resolve_note)
           expect(policies).to be_allowed(:read_note)
@@ -47,7 +45,6 @@ describe NotePolicy, mdoels: true do
           end
 
           it 'can edit a note' do
-            expect(policies).to be_allowed(:update_note)
             expect(policies).to be_allowed(:admin_note)
             expect(policies).to be_allowed(:resolve_note)
             expect(policies).to be_allowed(:read_note)
@@ -56,7 +53,6 @@ describe NotePolicy, mdoels: true do
 
         context 'when the note author is not a project member' do
           it 'can not edit a note' do
-            expect(policies).to be_disallowed(:update_note)
             expect(policies).to be_disallowed(:admin_note)
             expect(policies).to be_disallowed(:resolve_note)
           end

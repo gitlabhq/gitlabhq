@@ -3,12 +3,9 @@ module Gitlab
     module Variables
       class Collection
         class Item
-          def initialize(**options)
+          def initialize(key:, value:, public: true, file: false)
             @variable = {
-              key: options.fetch(:key),
-              value: options.fetch(:value),
-              public: options.fetch(:public, true),
-              file: options.fetch(:files, false)
+              key: key, value: value, public: public, file: file
             }
           end
 
