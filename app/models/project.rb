@@ -1660,6 +1660,17 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def find_variable_for(key, environment: nil)
+    all_secret_variables_for(ref: nil, environment: environment).find_by(key: key)
+  end
+
+  def all_secret_variables_for(ref:, environment: nil)
+    Gitlab::Ci::Variables::Collection.new.tap do |variables|
+      variables.concat(group.secret_variables_for(ref, self)) if group
+      variables.concat(secret_variables_for(ref: ref, environment: environment))
+    end
+  end
+
   def protected_for?(ref)
     if repository.branch_exists?(ref)
       ProtectedBranch.protected?(self, ref)

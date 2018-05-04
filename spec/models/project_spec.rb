@@ -2189,6 +2189,21 @@ describe Project do
     end
   end
 
+  describe '#all_secret_variables_for' do
+    let(:project) { build(:project, group: build(:group)) }
+    let(:project_variable) { build(:ci_variable) }
+    let(:group_variable) { build(:ci_group_variable) }
+
+    subject { project.all_secret_variables_for(ref: 'ref') }
+
+    it 'has project and group variables' do
+      expect(project).to receive(:secret_variables_for).and_return([project_variable])
+      expect(project.group).to receive(:secret_variables_for).and_return([group_variable])
+
+      expect(subject).to include(project_variable, group_variable)
+    end
+  end
+
   describe '#protected_for?' do
     let(:project) { create(:project) }
 
