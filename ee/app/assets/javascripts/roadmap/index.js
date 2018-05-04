@@ -2,6 +2,7 @@ import Vue from 'vue';
 
 import Translate from '~/vue_shared/translate';
 
+import { convertPermissionToBoolean } from '~/lib/utils/common_utils';
 import { getTimeframeWindow } from '~/lib/utils/datetime_utility';
 
 import { TIMEFRAME_LENGTH } from './constants';
@@ -27,6 +28,7 @@ export default () => {
     },
     data() {
       const dataset = this.$options.el.dataset;
+      const hasFiltersApplied = convertPermissionToBoolean(dataset.hasFiltersApplied);
       const filterQueryString = window.location.search.substring(1);
 
       // Construct Epic API path to include
@@ -49,6 +51,8 @@ export default () => {
       return {
         store,
         service,
+        hasFiltersApplied,
+        newEpicEndpoint: dataset.newEpicEndpoint,
         emptyStateIllustrationPath: dataset.emptyStateIllustration,
       };
     },
@@ -57,6 +61,8 @@ export default () => {
         props: {
           store: this.store,
           service: this.service,
+          hasFiltersApplied: this.hasFiltersApplied,
+          newEpicEndpoint: this.newEpicEndpoint,
           emptyStateIllustrationPath: this.emptyStateIllustrationPath,
         },
       });

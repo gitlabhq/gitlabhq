@@ -11,6 +11,8 @@ export const mockItemWidth = 180;
 
 export const epicsPath = '/groups/gitlab-org/-/epics.json?start_date=2017-11-1&end_date=2018-4-30';
 
+export const mockNewEpicEndpoint = '/groups/gitlab-org/-/epics';
+
 export const mockSvgPath = '/foo/bar.svg';
 
 export const mockTimeframe = getTimeframeWindow(TIMEFRAME_LENGTH, new Date(2018, 1, 1));
