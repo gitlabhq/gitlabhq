@@ -11,4 +11,5 @@ export const projectData = {
       treeId: 'abcproject/master',
     },
   },
+  mergeRequests: {},
 };
