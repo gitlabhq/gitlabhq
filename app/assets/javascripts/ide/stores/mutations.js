@@ -128,6 +128,11 @@ export default {
       }),
     });
   },
+  [types.BURST_UNUSED_SEAL](state) {
+    Object.assign(state, {
+      unusedSeal: false,
+    });
+  },
   ...projectMutations,
   ...mergeRequestMutation,
   ...fileMutations,

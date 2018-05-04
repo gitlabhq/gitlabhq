@@ -59,11 +59,14 @@ module Ci
     end
 
     def truncate(offset = 0)
-      self.append("", offset) if offset < size
+      raise ArgumentError, 'Offset is out of range' if offset > size || offset < 0
+      return if offset == size # Skip the following process as it doesn't affect anything
+
+      self.append("", offset)
     end
 
     def append(new_data, offset)
-      raise ArgumentError, 'Offset is out of range' if offset > data.bytesize || offset < 0
+      raise ArgumentError, 'Offset is out of range' if offset > size || offset < 0
       raise ArgumentError, 'Chunk size overflow' if CHUNK_SIZE < (offset + new_data.bytesize)
 
       set_data(data.byteslice(0, offset) + new_data)
@@ -130,7 +133,7 @@ module Ci
     def schedule_to_db
       return if db?
 
-      BuildTraceChunkFlushToDbWorker.perform_async(id)
+      Ci::BuildTraceChunkFlushWorker.perform_async(id)
     end
 
     def fullfilled?

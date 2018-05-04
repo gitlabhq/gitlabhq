@@ -549,6 +549,7 @@
   margin-bottom: 0;
   border-bottom: 1px solid $white-dark;
   padding: $gl-btn-padding 0;
+  min-height: 56px;
 }
 
 .multi-file-commit-panel-header-title {
@@ -602,14 +603,14 @@
   }
 }
 
-.multi-file-additions,
-.multi-file-additions-solid {
-  fill: $green-500;
+.multi-file-addition,
+.multi-file-addition-solid {
+  color: $green-500;
 }
 
 .multi-file-modified,
 .multi-file-modified-solid {
-  fill: $orange-500;
+  color: $orange-500;
 }
 
 .multi-file-commit-list-collapsed {
@@ -670,6 +671,24 @@
 
   .btn {
     font-size: $gl-font-size;
+  }
+}
+
+.multi-file-commit-panel-bottom {
+  position: relative;
+
+  .multi-file-commit-panel-success-message {
+    position: absolute;
+    top: 1px;
+    left: 3px;
+    bottom: 0;
+    right: 0;
+    z-index: 10;
+    background: $gray-light;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 }
 
@@ -970,6 +989,12 @@
   z-index: 2;
   background: transparent;
   resize: none;
+}
+
+.ide-tree-changes {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
 }
 
 .ide-new-modal-label {
