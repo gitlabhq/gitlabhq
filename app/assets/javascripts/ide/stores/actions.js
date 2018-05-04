@@ -123,6 +123,8 @@ export const scrollToTab = () => {
 };
 
 export const stageAllChanges = ({ state, commit }) => {
+  commit(types.SET_LAST_COMMIT_MSG, '');
+
   state.changedFiles.forEach(file => commit(types.STAGE_CHANGE, file.path));
 };
 

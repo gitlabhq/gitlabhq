@@ -74,6 +74,8 @@ export default {
   >
     <header
       class="multi-file-commit-panel-header"
+      @mouseenter="setShowActionButton(true)"
+      @mouseleave="setShowActionButton(false)"
     >
       <div
         class="multi-file-commit-panel-header-title"
@@ -86,14 +88,12 @@ export default {
         {{ titleText }}
         <span
           v-show="!showActionButton"
-          @mouseenter="setShowActionButton(true)"
           class="ide-commit-file-count"
         >
           {{ fileList.length }}
         </span>
         <button
           v-show="showActionButton"
-          @mouseleave="setShowActionButton(false)"
           type="button"
           class="btn btn-blank btn-link ide-staged-action-btn"
           @click="actionBtnClicked"

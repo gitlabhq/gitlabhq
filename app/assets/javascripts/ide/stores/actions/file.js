@@ -184,6 +184,7 @@ export const stageChange = ({ commit, state }, path) => {
   const stagedFile = state.stagedFiles.find(f => f.path === path);
 
   commit(types.STAGE_CHANGE, path);
+  commit(types.SET_LAST_COMMIT_MSG, '');
 
   if (stagedFile) {
     eventHub.$emit(`editor.update.model.new.content.staged-${stagedFile.key}`, stagedFile.content);
