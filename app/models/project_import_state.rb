@@ -3,8 +3,11 @@ class ProjectImportState < ActiveRecord::Base
 
   self.table_name = "project_mirror_data"
 
+<<<<<<< HEAD
   prepend EE::ProjectImportState
 
+=======
+>>>>>>> upstream/master
   belongs_to :project, inverse_of: :import_state
 
   validates :project, presence: true

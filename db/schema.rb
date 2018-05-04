@@ -11,7 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20180503154922) do
+=======
+ActiveRecord::Schema.define(version: 20180503175054) do
+>>>>>>> upstream/master
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1974,6 +1978,7 @@ ActiveRecord::Schema.define(version: 20180503154922) do
 
   create_table "project_mirror_data", force: :cascade do |t|
     t.integer "project_id"
+<<<<<<< HEAD
     t.integer "retry_count", default: 0, null: false
     t.datetime "last_update_started_at"
     t.datetime "last_update_scheduled_at"
@@ -1984,10 +1989,15 @@ ActiveRecord::Schema.define(version: 20180503154922) do
     t.string "jid"
     t.datetime_with_timezone "last_update_at"
     t.datetime_with_timezone "last_successful_update_at"
+=======
+    t.string "status"
+    t.string "jid"
+>>>>>>> upstream/master
     t.text "last_error"
   end
 
   add_index "project_mirror_data", ["jid"], name: "index_project_mirror_data_on_jid", using: :btree
+<<<<<<< HEAD
   add_index "project_mirror_data", ["last_successful_update_at"], name: "index_project_mirror_data_on_last_successful_update_at", using: :btree
   add_index "project_mirror_data", ["next_execution_timestamp", "retry_count"], name: "index_mirror_data_on_next_execution_and_retry_count", using: :btree
   add_index "project_mirror_data", ["project_id"], name: "index_project_mirror_data_on_project_id", unique: true, using: :btree
@@ -2006,6 +2016,11 @@ ActiveRecord::Schema.define(version: 20180503154922) do
   add_index "project_repository_states", ["project_id"], name: "index_project_repository_states_on_project_id", unique: true, using: :btree
   add_index "project_repository_states", ["repository_verification_checksum", "wiki_verification_checksum"], name: "idx_repository_states_on_checksums_partial", where: "((repository_verification_checksum IS NULL) OR (wiki_verification_checksum IS NULL))", using: :btree
 
+=======
+  add_index "project_mirror_data", ["project_id"], name: "index_project_mirror_data_on_project_id", using: :btree
+  add_index "project_mirror_data", ["status"], name: "index_project_mirror_data_on_status", using: :btree
+
+>>>>>>> upstream/master
   create_table "project_statistics", force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "namespace_id", null: false
@@ -2875,8 +2890,12 @@ ActiveRecord::Schema.define(version: 20180503154922) do
   add_foreign_key "project_features", "projects", name: "fk_18513d9b92", on_delete: :cascade
   add_foreign_key "project_group_links", "projects", name: "fk_daa8cee94c", on_delete: :cascade
   add_foreign_key "project_import_data", "projects", name: "fk_ffb9ee3a10", on_delete: :cascade
+<<<<<<< HEAD
   add_foreign_key "project_mirror_data", "projects", name: "fk_d1aad367d7", on_delete: :cascade
   add_foreign_key "project_repository_states", "projects", on_delete: :cascade
+=======
+  add_foreign_key "project_mirror_data", "projects", on_delete: :cascade
+>>>>>>> upstream/master
   add_foreign_key "project_statistics", "projects", on_delete: :cascade
   add_foreign_key "prometheus_metrics", "projects", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "namespaces", column: "group_id", name: "fk_98f3d044fe", on_delete: :cascade

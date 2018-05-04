@@ -7,9 +7,15 @@ class Import::BaseController < ApplicationController
 
   def find_jobs(import_type)
     current_user.created_projects
+<<<<<<< HEAD
       .includes(:import_state)
       .where(import_type: import_type)
       .to_json(only: [:id], methods: [:import_status])
+=======
+        .includes(:import_state)
+        .where(import_type: import_type)
+        .to_json(only: [:id], methods: [:import_status])
+>>>>>>> upstream/master
   end
 
   def find_or_create_namespace(names, owner)

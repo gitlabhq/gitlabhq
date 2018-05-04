@@ -308,9 +308,12 @@ project:
 - container_repositories
 - uploads
 - import_state
+<<<<<<< HEAD
 - repository_state
 - source_pipelines
 - sourced_pipelines
+=======
+>>>>>>> upstream/master
 - members_and_requesters
 - build_trace_section_names
 - root_of_fork_network

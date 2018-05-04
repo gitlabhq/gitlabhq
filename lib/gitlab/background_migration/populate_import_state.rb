@@ -15,8 +15,13 @@ module Gitlab
         Rails.logger.info("#{self.class.name} - Moving import attributes data to project mirror data table: #{start_id} - #{end_id}")
 
         ActiveRecord::Base.connection.execute <<~SQL
+<<<<<<< HEAD
           INSERT INTO project_mirror_data (project_id, status, jid, last_update_at, last_successful_update_at, last_error)
           SELECT id, import_status, import_jid, mirror_last_update_at, mirror_last_successful_update_at, import_error
+=======
+          INSERT INTO project_mirror_data (project_id, status, jid, last_error)
+          SELECT id, import_status, import_jid, import_error
+>>>>>>> upstream/master
           FROM projects
           WHERE projects.import_status != 'none'
           AND projects.id BETWEEN #{start_id} AND #{end_id}

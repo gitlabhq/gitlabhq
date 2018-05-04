@@ -81,29 +81,44 @@ FactoryBot.define do
     trait :import_scheduled do
       transient do
         status :scheduled
+<<<<<<< HEAD
         last_update_scheduled_at Time.now
       end
 
       before(:create) do |project, evaluator|
         project.create_import_state(status: evaluator.status,
                                     last_update_scheduled_at: evaluator.last_update_scheduled_at)
+=======
+      end
+
+      before(:create) do |project, evaluator|
+        project.create_import_state(status: evaluator.status)
+>>>>>>> upstream/master
       end
     end
 
     trait :import_started do
       transient do
         status :started
+<<<<<<< HEAD
         last_update_started_at Time.now
       end
 
       before(:create) do |project, evaluator|
         project.create_import_state(status: evaluator.status,
                                     last_update_started_at: evaluator.last_update_started_at)
+=======
+      end
+
+      before(:create) do |project, evaluator|
+        project.create_import_state(status: evaluator.status)
+>>>>>>> upstream/master
       end
     end
 
     trait :import_finished do
       transient do
+<<<<<<< HEAD
         timestamp = Time.now
 
         status :finished
@@ -115,12 +130,20 @@ FactoryBot.define do
         project.create_import_state(status: evaluator.status,
                                     last_update_at: evaluator.last_update_at,
                                     last_successful_update_at: evaluator.last_successful_update_at)
+=======
+        status :finished
+      end
+
+      before(:create) do |project, evaluator|
+        project.create_import_state(status: evaluator.status)
+>>>>>>> upstream/master
       end
     end
 
     trait :import_failed do
       transient do
         status :failed
+<<<<<<< HEAD
         last_update_at { Time.now }
       end
 
@@ -154,6 +177,13 @@ FactoryBot.define do
       mirror true
       import_url { generate(:url) }
       mirror_user_id { creator_id }
+=======
+      end
+
+      before(:create) do |project, evaluator|
+        project.create_import_state(status: evaluator.status)
+      end
+>>>>>>> upstream/master
     end
 
     trait :archived do
