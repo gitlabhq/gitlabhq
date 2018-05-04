@@ -452,6 +452,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         collection do
           post :toggle_shared_runners
+          post :toggle_group_runners
         end
       end
 

@@ -19,8 +19,10 @@ module Ci
       builds =
         if runner.shared?
           builds_for_shared_runner
+        elsif runner.group_type?
+          builds_for_group_runner
         else
-          builds_for_specific_runner
+          builds_for_project_runner
         end
 
       valid = true
@@ -77,15 +79,24 @@ module Ci
         .joins('LEFT JOIN project_features ON ci_builds.project_id = project_features.project_id')
         .where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0').
 
-        # Implement fair scheduling
-        # this returns builds that are ordered by number of running builds
-        # we prefer projects that don't use shared runners at all
-        joins("LEFT JOIN (#{running_builds_for_shared_runners.to_sql}) AS project_builds ON ci_builds.project_id=project_builds.project_id")
+      # Implement fair scheduling
+      # this returns builds that are ordered by number of running builds
+      # we prefer projects that don't use shared runners at all
+      joins("LEFT JOIN (#{running_builds_for_shared_runners.to_sql}) AS project_builds ON ci_builds.project_id=project_builds.project_id")
         .order('COALESCE(project_builds.running_builds, 0) ASC', 'ci_builds.id ASC')
     end
 
-    def builds_for_specific_runner
-      new_builds.where(project: runner.projects.without_deleted.with_builds_enabled).order('created_at ASC')
+    def builds_for_project_runner
+      new_builds.where(project: runner.projects.without_deleted.with_builds_enabled).order('id ASC')
+    end
+
+    def builds_for_group_runner
+      hierarchy_groups = Gitlab::GroupHierarchy.new(runner.groups).base_and_descendants
+      projects = Project.where(namespace_id: hierarchy_groups)
+        .with_group_runners_enabled
+        .with_builds_enabled
+        .without_deleted
+      new_builds.where(project: projects).order('id ASC')
     end
 
     def running_builds_for_shared_runners
@@ -97,10 +108,6 @@ module Ci
       builds = Ci::Build.pending.unstarted
       builds = builds.ref_protected if runner.ref_protected?
       builds
-    end
-
-    def shared_runner_build_limits_feature_enabled?
-      ENV['DISABLE_SHARED_RUNNER_BUILD_MINUTES_LIMIT'].to_s != 'true'
     end
 
     def register_failure
