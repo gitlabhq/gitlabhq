@@ -9,7 +9,7 @@ describe Geo::RepositorySyncWorker, :geo, :clean_gitlab_redis_cache do
   let!(:project_in_synced_group) { create(:project, group: synced_group) }
   let!(:unsynced_project) { create(:project) }
 
-  let(:healthy_shard) { project_in_synced_group.repository.storage }
+  let(:healthy_shard_name) { project_in_synced_group.repository.storage }
 
   subject { described_class.new }
 
@@ -39,13 +39,13 @@ describe Geo::RepositorySyncWorker, :geo, :clean_gitlab_redis_cache do
       end
 
       it 'skips backfill for projects on shards excluded by selective sync' do
-        secondary.update!(selective_sync_type: 'shards', selective_sync_shards: [healthy_shard])
+        secondary.update!(selective_sync_type: 'shards', selective_sync_shards: [healthy_shard_name])
 
         # Report both shards as healthy
         expect(Gitlab::HealthChecks::FsShardsCheck).to receive(:readiness)
-          .and_return([result(true, healthy_shard), result(true, 'broken')])
+          .and_return([result(true, healthy_shard_name), result(true, 'broken')])
         expect(Gitlab::HealthChecks::GitalyCheck).to receive(:readiness)
-          .and_return([result(true, healthy_shard), result(true, 'broken')])
+          .and_return([result(true, healthy_shard_name), result(true, 'broken')])
 
         expect(Geo::RepositoryShardSyncWorker).to receive(:perform_async).with('default')
         expect(Geo::RepositoryShardSyncWorker).not_to receive(:perform_async).with('broken')
@@ -78,11 +78,11 @@ describe Geo::RepositorySyncWorker, :geo, :clean_gitlab_redis_cache do
 
         # Report only one healthy shard
         expect(Gitlab::HealthChecks::FsShardsCheck).to receive(:readiness)
-          .and_return([result(true, healthy_shard), result(true, 'broken')])
+          .and_return([result(true, healthy_shard_name), result(true, 'broken')])
         expect(Gitlab::HealthChecks::GitalyCheck).to receive(:readiness)
-          .and_return([result(true, healthy_shard), result(false, 'broken')])
+          .and_return([result(true, healthy_shard_name), result(false, 'broken')])
 
-        expect(Geo::RepositoryShardSyncWorker).to receive(:perform_async).with(healthy_shard)
+        expect(Geo::RepositoryShardSyncWorker).to receive(:perform_async).with(healthy_shard_name)
         expect(Geo::RepositoryShardSyncWorker).not_to receive(:perform_async).with('broken')
 
         subject.perform
