@@ -49,6 +49,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Plugins](plugins.md): With custom plugins, GitLab administrators can introduce custom integrations without modifying GitLab's source code.
 - [Elasticsearch](../integration/elasticsearch.md): Enable Elasticsearch to empower GitLab's Advanced Global Search. Useful when you deal with a huge amount of data. **[STARTER ONLY]**
 - [External Classification Policy Authorization](../user/admin_area/settings/external_authorization.md) **[PREMIUM ONLY]**
+- [Enforcing Terms of Service](../user/admin_area/settings/terms.md)
 
 #### Customizing GitLab's appearance
 

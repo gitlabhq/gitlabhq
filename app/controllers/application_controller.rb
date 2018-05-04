@@ -13,12 +13,14 @@ class ApplicationController < ActionController::Base
 
   before_action :authenticate_sessionless_user!
   before_action :authenticate_user!
+  before_action :enforce_terms!, if: -> { Gitlab::CurrentSettings.current_application_settings.enforce_terms },
+                                 unless: :peek_request?
   before_action :validate_user_service_ticket!
   before_action :check_password_expiration
   before_action :ldap_security_check
   before_action :sentry_context
   before_action :default_headers
-  before_action :add_gon_variables, unless: -> { request.path.start_with?('/-/peek') }
+  before_action :add_gon_variables, unless: :peek_request?
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :require_email, unless: :devise_controller?
 
@@ -277,6 +279,27 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def enforce_terms!
+    return unless current_user
+    return if current_user.terms_accepted?
+
+    if sessionless_user?
+      render_403
+    else
+      # Redirect to the destination if the request is a get.
+      # Redirect to the source if it was a post, so the user can re-submit after
+      # accepting the terms.
+      redirect_path = if request.get?
+                        request.fullpath
+                      else
+                        URI(request.referer).path if request.referer
+                      end
+
+      flash[:notice] = _("Please accept the Terms of Service before continuing.")
+      redirect_to terms_path(redirect: redirect_path), status: :found
+    end
+  end
+
   def import_sources_enabled?
     !Gitlab::CurrentSettings.import_sources.empty?
   end
@@ -349,5 +372,13 @@ class ApplicationController < ActionController::Base
   def set_page_title_header
     # Per https://tools.ietf.org/html/rfc5987, headers need to be ISO-8859-1, not UTF-8
     response.headers['Page-Title'] = URI.escape(page_title('GitLab'))
+  end
+
+  def sessionless_user?
+    current_user && !session.keys.include?('warden.user.user.key')
+  end
+
+  def peek_request?
+    request.path.start_with?('/-/peek')
   end
 end

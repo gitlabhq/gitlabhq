@@ -1,4 +1,5 @@
 class SessionsController < Devise::SessionsController
+  include InternalRedirect
   include AuthenticatesWithTwoFactor
   include Devise::Controllers::Rememberable
   include Recaptcha::ClientHelper
@@ -103,16 +104,10 @@ class SessionsController < Devise::SessionsController
     # we should never redirect to '/users/sign_in' after signing in successfully.
     return true if redirect_uri.path == new_user_session_path
 
-    redirect_to = redirect_uri.to_s if redirect_allowed_to?(redirect_uri)
+    redirect_to = redirect_uri.to_s if host_allowed?(redirect_uri)
 
     @redirect_to = redirect_to
     store_location_for(:redirect, redirect_to)
-  end
-
-  # Overridden in EE
-  def redirect_allowed_to?(uri)
-    uri.host == Gitlab.config.gitlab.host &&
-      uri.port == Gitlab.config.gitlab.port
   end
 
   def two_factor_enabled?

@@ -47,6 +47,12 @@ ActiveRecord::Schema.define(version: 20180503150427) do
     t.text "message_font_color"
   end
 
+  create_table "application_setting_terms", force: :cascade do |t|
+    t.integer "cached_markdown_version"
+    t.text "terms", null: false
+    t.text "terms_html"
+  end
+
   create_table "application_settings", force: :cascade do |t|
     t.integer "default_projects_limit"
     t.boolean "signup_enabled"
@@ -198,6 +204,7 @@ ActiveRecord::Schema.define(version: 20180503150427) do
     t.string "encrypted_external_auth_client_key_pass"
     t.string "encrypted_external_auth_client_key_pass_iv"
     t.string "email_additional_text"
+    t.boolean "enforce_terms", default: false
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -2417,6 +2424,18 @@ ActiveRecord::Schema.define(version: 20180503150427) do
 
   add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
 
+  create_table "term_agreements", force: :cascade do |t|
+    t.integer "term_id", null: false
+    t.integer "user_id", null: false
+    t.boolean "accepted", default: false, null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+  end
+
+  add_index "term_agreements", ["term_id"], name: "index_term_agreements_on_term_id", using: :btree
+  add_index "term_agreements", ["user_id", "term_id"], name: "term_agreements_unique_index", unique: true, using: :btree
+  add_index "term_agreements", ["user_id"], name: "index_term_agreements_on_user_id", using: :btree
+
   create_table "timelogs", force: :cascade do |t|
     t.integer "time_spent", null: false
     t.integer "user_id"
@@ -2613,6 +2632,7 @@ ActiveRecord::Schema.define(version: 20180503150427) do
     t.integer "email_opted_in_source_id"
     t.datetime "email_opted_in_at"
     t.integer "theme_id", limit: 2
+    t.integer "accepted_term_id"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -2875,6 +2895,8 @@ ActiveRecord::Schema.define(version: 20180503150427) do
   add_foreign_key "snippets", "projects", name: "fk_be41fd4bb7", on_delete: :cascade
   add_foreign_key "subscriptions", "projects", on_delete: :cascade
   add_foreign_key "system_note_metadata", "notes", name: "fk_d83a918cb1", on_delete: :cascade
+  add_foreign_key "term_agreements", "application_setting_terms", column: "term_id"
+  add_foreign_key "term_agreements", "users", on_delete: :cascade
   add_foreign_key "timelogs", "issues", name: "fk_timelogs_issues_issue_id", on_delete: :cascade
   add_foreign_key "timelogs", "merge_requests", name: "fk_timelogs_merge_requests_merge_request_id", on_delete: :cascade
   add_foreign_key "todos", "notes", name: "fk_91d1f47b13", on_delete: :cascade
@@ -2888,6 +2910,7 @@ ActiveRecord::Schema.define(version: 20180503150427) do
   add_foreign_key "user_interacted_projects", "projects", name: "fk_722ceba4f7", on_delete: :cascade
   add_foreign_key "user_interacted_projects", "users", name: "fk_0894651f08", on_delete: :cascade
   add_foreign_key "user_synced_attributes_metadata", "users", on_delete: :cascade
+  add_foreign_key "users", "application_setting_terms", column: "accepted_term_id", name: "fk_789cd90b35", on_delete: :cascade
   add_foreign_key "users_star_projects", "projects", name: "fk_22cd27ddfc", on_delete: :cascade
   add_foreign_key "web_hook_logs", "web_hooks", on_delete: :cascade
   add_foreign_key "web_hooks", "projects", name: "fk_0c8ca6d9d1", on_delete: :cascade
