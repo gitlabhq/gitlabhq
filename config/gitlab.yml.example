@@ -156,7 +156,7 @@ production: &base
     #     aws_secret_access_key: AWS_SECRET_ACCESS_KEY
     #     region: us-east-1
     #     aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
-    #     endpoint: 'https://s3.amazonaws.com' # default: nil - Usefull for S3 compliant services such as DigitalOcean Spaces
+    #     endpoint: 'https://s3.amazonaws.com' # default: nil - Useful for S3 compliant services such as DigitalOcean Spaces
 
 
   ## Git LFS
