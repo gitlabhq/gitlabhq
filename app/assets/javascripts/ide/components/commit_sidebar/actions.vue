@@ -1,5 +1,5 @@
 <script>
-import { mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import { sprintf, __ } from '~/locale';
 import * as consts from '../../stores/modules/commit/constants';
 import RadioGroup from './radio_group.vue';
@@ -20,6 +20,14 @@ export default {
     disableMergeRequestRadio() {
       return this.changedFiles.length > 0 && this.stagedFiles.length > 0;
     },
+  },
+  mounted() {
+    if (this.disableMergeRequestRadio) {
+      this.updateCommitAction(consts.COMMIT_TO_CURRENT_BRANCH);
+    }
+  },
+  methods: {
+    ...mapActions('commit', ['updateCommitAction']),
   },
   commitToCurrentBranch: consts.COMMIT_TO_CURRENT_BRANCH,
   commitToNewBranch: consts.COMMIT_TO_NEW_BRANCH,
