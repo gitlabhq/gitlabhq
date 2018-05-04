@@ -15,11 +15,7 @@ export default class SidebarStore {
     return this.endDate ? parsePikadayDate(this.endDate) : null;
   }
 
-  get subscription() {
-    return this.subscribed;
-  }
-
-  setSubscription(subscribed) {
+  setSubscribed(subscribed) {
     this.subscribed = subscribed;
   }
 }

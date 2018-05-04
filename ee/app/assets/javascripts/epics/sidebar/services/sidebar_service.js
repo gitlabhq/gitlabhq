@@ -14,7 +14,7 @@ export default class SidebarService {
     return axios.put(this.endpoint, { end_date: endDate });
   }
 
-  toggleSubscription() {
+  toggleSubscribed() {
     return axios.post(this.subscriptionEndpoint);
   }
 }

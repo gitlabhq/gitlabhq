@@ -177,13 +177,13 @@
           this.toggleSidebar();
         }
       },
-      handleToggleSubscription() {
-        this.service.toggleSubscription()
+      handleToggleSubscribed() {
+        this.service.toggleSubscribed()
           .then(() => {
-            this.store.setSubscription(!this.store.subscription);
+            this.store.setSubscribed(!this.store.subscribed);
           })
           .catch(() => {
-            if (this.store.subscription) {
+            if (this.store.subscribed) {
               Flash(__('An error occurred while unsubscribing to notifications.'));
             } else {
               Flash(__('An error occurred while subscribing to notifications.'));
@@ -260,8 +260,8 @@
       />
       <sidebar-subscriptions
         :loading="savingSubscription"
-        :subscribed="store.subscription"
-        @toggleSubscription="handleToggleSubscription"
+        :subscribed="store.subscribed"
+        @toggleSubscription="handleToggleSubscribed"
         @toggleCollapse="toggleSidebar"
       />
     </div>
