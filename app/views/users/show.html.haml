@@ -35,7 +35,7 @@
         = link_to avatar_icon_for_user(@user, 400), target: '_blank', rel: 'noopener noreferrer' do
           = image_tag avatar_icon_for_user(@user, 90), class: "avatar s90", alt: ''
 
-      .user-info
+      .user-info.prepend-left-default.append-right-default
         .cover-title
           = @user.name
 

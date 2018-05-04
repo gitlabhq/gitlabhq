@@ -36,7 +36,7 @@ export default {
       return this.file.tempFile ? `file-addition${prefix}` : `file-modified${prefix}`;
     },
     iconClass() {
-      return `multi-file-${this.file.tempFile ? 'additions' : 'modified'} append-right-8`;
+      return `multi-file-${this.file.tempFile ? 'addition' : 'modified'} append-right-8`;
     },
   },
   methods: {

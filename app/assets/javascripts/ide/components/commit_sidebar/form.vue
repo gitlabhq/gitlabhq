@@ -23,7 +23,7 @@ export default {
   computed: {
     ...mapState(['changedFiles', 'stagedFiles', 'currentActivityView', 'lastCommitMsg']),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
-    ...mapGetters(['hasChanges', 'someUncommitedChanges']),
+    ...mapGetters(['hasChanges']),
     ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled']),
     overviewText() {
       return sprintf(
