@@ -1,5 +1,8 @@
 class DiffsEntity < Grape::Entity
+  include DiffHelper
+
   expose :real_size
+  expose :size
 
   expose :branch_name do |diffs|
     options[:merge_request]&.source_branch
@@ -23,6 +26,10 @@ class DiffsEntity < Grape::Entity
 
   expose :removed_lines do |diffs|
     diffs.diff_files.sum(&:removed_lines)
+  end
+
+  expose :render_overflow_warning do |diffs|
+    render_overflow_warning?(diffs.diff_files)
   end
 
   expose :diff_files, using: DiffFileEntity

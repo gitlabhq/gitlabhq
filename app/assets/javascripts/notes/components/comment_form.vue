@@ -169,6 +169,7 @@ export default {
               noteable_id: this.getNoteableData.id,
               note: this.note,
             },
+            merge_request_diff_head_sha: this.getNoteableData.diff_head_sha,
           },
         };
 
