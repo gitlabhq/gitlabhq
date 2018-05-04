@@ -1,4 +1,4 @@
-import { activityBarViews } from '../constants';
+import { activityBarViews, viewerTypes } from '../constants';
 
 export default () => ({
   currentProjectId: '',
@@ -18,7 +18,7 @@ export default () => ({
   rightPanelCollapsed: false,
   panelResizing: false,
   entries: {},
-  viewer: 'editor',
+  viewer: viewerTypes.edit,
   delayViewerUpdated: false,
   currentActivityView: activityBarViews.edit,
   unusedSeal: true,

@@ -3,7 +3,7 @@
 import { mapState, mapGetters, mapActions } from 'vuex';
 import flash from '~/flash';
 import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer.vue';
-import { activityBarViews } from '../constants';
+import { activityBarViews, viewerTypes } from '../constants';
 import monacoLoader from '../monaco_loader';
 import Editor from '../lib/editor';
 import IdeFileButtons from './ide_file_buttons.vue';
@@ -121,7 +121,7 @@ export default {
       this.editor.dispose();
 
       this.$nextTick(() => {
-        if (this.viewer === 'editor') {
+        if (this.viewer === viewerTypes.edit) {
           this.editor.createInstance(this.$refs.editor);
         } else {
           this.editor.createDiffInstance(this.$refs.editor, !this.isReviewModeActive);
@@ -140,7 +140,7 @@ export default {
         this.file.staged && this.file.key.indexOf('unstaged-') === 0 ? head : null,
       );
 
-      if (this.viewer === 'mrdiff') {
+      if (this.viewer === viewerTypes.mr) {
         this.editor.attachMergeRequestModel(this.model);
       } else {
         this.editor.attachModel(this.model);
@@ -181,6 +181,7 @@ export default {
       });
     },
   },
+  viewerTypes,
 };
 </script>
 
@@ -199,7 +200,7 @@ export default {
             href="javascript:void(0);"
             role="button"
             @click.prevent="setFileViewMode({ file, viewMode: 'edit' })">
-            <template v-if="viewer === 'editor'">
+            <template v-if="viewer === $options.viewerTypes.edit">
               {{ __('Edit') }}
             </template>
             <template v-else>

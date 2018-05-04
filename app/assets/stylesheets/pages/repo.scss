@@ -972,6 +972,14 @@
 .ide-review-header {
   flex-direction: column;
   align-items: flex-start;
+
+  .dropdown {
+    margin-left: auto;
+  }
+
+  a {
+    color: $gl-link-color;
+  }
 }
 
 .ide-review-sub-header {
@@ -986,4 +994,24 @@
 
 .ide-new-modal-label {
   line-height: 34px;
+}
+
+.ide-review-button-holder {
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+.ide-context-header {
+  .avatar {
+    flex: 0 0 40px;
+  }
+}
+
+.ide-sidebar-project-title {
+  min-width: 0;
+
+  .sidebar-context-title {
+    white-space: nowrap;
+  }
 }

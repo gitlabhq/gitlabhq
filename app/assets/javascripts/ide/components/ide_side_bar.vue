@@ -2,6 +2,7 @@
 import { mapState, mapGetters } from 'vuex';
 import ProjectAvatarImage from '~/vue_shared/components/project_avatar/image.vue';
 import Icon from '~/vue_shared/components/icon.vue';
+import tooltip from '~/vue_shared/directives/tooltip';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import SkeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
 import Identicon from '../../vue_shared/components/identicon.vue';
@@ -12,6 +13,9 @@ import CommitSection from './repo_commit_section.vue';
 import IdeReview from './ide_review.vue';
 
 export default {
+  directives: {
+    tooltip,
+  },
   components: {
     Icon,
     PanelResizer,
@@ -24,9 +28,24 @@ export default {
     IdeTree,
     IdeReview,
   },
+  data() {
+    return {
+      showTooltip: false,
+    };
+  },
   computed: {
     ...mapState(['loading', 'currentBranchId', 'currentActivityView']),
     ...mapGetters(['currentProject']),
+    branchTooltipTitle() {
+      return this.showTooltip ? this.currentBranchId : undefined;
+    },
+  },
+  watch: {
+    currentBranchId() {
+      this.$nextTick(() => {
+        this.showTooltip = this.$refs.branchId.scrollWidth > this.$refs.branchId.offsetWidth;
+      });
+    },
   },
 };
 </script>
@@ -79,6 +98,9 @@ export default {
               </div>
               <div
                 class="sidebar-context-title ide-sidebar-branch-title"
+                ref="branchId"
+                v-tooltip
+                :title="branchTooltipTitle"
               >
                 <icon
                   name="branch"
