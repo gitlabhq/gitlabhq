@@ -133,13 +133,15 @@ describe('DiffsStoreUtils', () => {
         note_project_id: '',
         target_type: options.noteableType,
         target_id: options.noteableData.id,
-        'note[noteable_type]': options.noteableType,
-        'note[noteable_id]': options.noteableData.id,
-        'note[commit_id]': '',
-        'note[type]': DIFF_NOTE_TYPE,
-        'note[line_code]': options.noteTargetLine.lineCode,
-        'note[note]': options.note,
-        'note[position]': position,
+        note: {
+          noteable_type: options.noteableType,
+          noteable_id: options.noteableData.id,
+          commit_id: '',
+          type: DIFF_NOTE_TYPE,
+          line_code: options.noteTargetLine.lineCode,
+          note: options.note,
+          position,
+        },
       };
 
       expect(utils.getNoteFormData(options)).toEqual({
