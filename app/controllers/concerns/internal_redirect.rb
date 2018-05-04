@@ -1,8 +1,5 @@
 module InternalRedirect
-<<<<<<< HEAD
   prepend EE::InternalRedirect
-=======
->>>>>>> upstream/master
   extend ActiveSupport::Concern
 
   def safe_redirect_path(path)
