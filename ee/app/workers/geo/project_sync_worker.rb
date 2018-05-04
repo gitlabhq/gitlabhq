@@ -39,8 +39,9 @@ module Geo
       registry.force_to_redownload_wiki = false
 
       if registry.changed? || registry.last_wiki_synced_at.nil? || registry.last_wiki_successful_sync_at.nil?
-        registry.last_wiki_synced_at = DateTime.now
-        registry.last_wiki_successful_sync_at = DateTime.now
+        now = DateTime.now
+        registry.last_wiki_synced_at = now
+        registry.last_wiki_successful_sync_at = now
 
         success = registry.save
         log_info("#{success ? 'Successfully marked' : 'Failed to mark'} disabled wiki as synced", registry_id: registry.id, project_id: registry.project_id)
