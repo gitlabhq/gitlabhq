@@ -32,6 +32,8 @@ module WithUploads
   # it can not be done in after_commit because FileUploader requires loads
   # associated model on destroy (which is already deleted in after_commit)
   def destroy_file_uploads
-    self.uploads.where(uploader: FILE_UPLOADERS).destroy_all
+    self.uploads.where(uploader: FILE_UPLOADERS).find_each do |upload|
+      upload.destroy
+    end
   end
 end
