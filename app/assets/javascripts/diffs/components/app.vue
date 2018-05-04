@@ -40,6 +40,8 @@ export default {
       diffViewType: state => state.diffs.diffViewType,
       mergeRequestDiffs: state => state.diffs.mergeRequestDiffs,
       renderOverflowWarning: state => !state.diffs.renderOverflowWarning,
+      numTotalFiles: state => state.diffs.realSize,
+      numVisibleFiles: state => state.diffs.size,
     }),
     ...mapGetters(['isParallelView', 'diffFilesSize']),
   },
@@ -105,8 +107,8 @@ export default {
 
         <hidden-files-warning
           v-if="renderOverflowWarning"
-          :visible="diffFilesSize.visible"
-          :total="diffFilesSize.total"
+          :visible="numVisibleFiles"
+          :total="numTotalFiles"
         />
 
         <div class="files">

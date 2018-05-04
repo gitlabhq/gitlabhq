@@ -7,10 +7,4 @@ export default {
   isInlineView(state) {
     return state.diffViewType === INLINE_DIFF_VIEW_TYPE;
   },
-  diffFilesSize(state) {
-    return {
-      visible: parseInt(state.size, 10),
-      total: parseInt(state.realSize, 10),
-    };
-  },
 };
