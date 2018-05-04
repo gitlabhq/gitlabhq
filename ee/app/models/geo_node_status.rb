@@ -150,9 +150,9 @@ class GeoNodeStatus < ActiveRecord::Base
     self.last_event_date = latest_event&.created_at
     self.repositories_count = projects_finder.count_repositories
     self.wikis_count = projects_finder.count_wikis
-    self.lfs_objects_count = lfs_objects_finder.count_syncable_lfs_objects
-    self.job_artifacts_count = job_artifacts_finder.count_syncable_job_artifacts
-    self.attachments_count = attachments_finder.count_syncable_attachments
+    self.lfs_objects_count = lfs_objects_finder.count_syncable
+    self.job_artifacts_count = job_artifacts_finder.count_syncable
+    self.attachments_count = attachments_finder.count_syncable
     self.last_successful_status_check_at = Time.now
     self.storage_shards = StorageShard.all
 
@@ -202,18 +202,18 @@ class GeoNodeStatus < ActiveRecord::Base
       self.repositories_failed_count = projects_finder.count_failed_repositories
       self.wikis_synced_count = projects_finder.count_synced_wikis
       self.wikis_failed_count = projects_finder.count_failed_wikis
-      self.lfs_objects_synced_count = lfs_objects_finder.count_synced_lfs_objects
-      self.lfs_objects_failed_count = lfs_objects_finder.count_failed_lfs_objects
-      self.lfs_objects_registry_count = lfs_objects_finder.count_registry_lfs_objects
-      self.lfs_objects_synced_missing_on_primary_count = lfs_objects_finder.count_synced_missing_on_primary_lfs_objects
-      self.job_artifacts_synced_count = job_artifacts_finder.count_synced_job_artifacts
-      self.job_artifacts_failed_count = job_artifacts_finder.count_failed_job_artifacts
-      self.job_artifacts_registry_count = job_artifacts_finder.count_registry_job_artifacts
-      self.job_artifacts_synced_missing_on_primary_count = job_artifacts_finder.count_synced_missing_on_primary_job_artifacts
-      self.attachments_synced_count = attachments_finder.count_synced_attachments
-      self.attachments_failed_count = attachments_finder.count_failed_attachments
-      self.attachments_registry_count = attachments_finder.count_registry_attachments
-      self.attachments_synced_missing_on_primary_count = attachments_finder.count_synced_missing_on_primary_attachments
+      self.lfs_objects_synced_count = lfs_objects_finder.count_synced
+      self.lfs_objects_failed_count = lfs_objects_finder.count_failed
+      self.lfs_objects_registry_count = lfs_objects_finder.count_registry
+      self.lfs_objects_synced_missing_on_primary_count = lfs_objects_finder.count_synced_missing_on_primary
+      self.job_artifacts_synced_count = job_artifacts_finder.count_synced
+      self.job_artifacts_failed_count = job_artifacts_finder.count_failed
+      self.job_artifacts_registry_count = job_artifacts_finder.count_registry
+      self.job_artifacts_synced_missing_on_primary_count = job_artifacts_finder.count_synced_missing_on_primary
+      self.attachments_synced_count = attachments_finder.count_synced
+      self.attachments_failed_count = attachments_finder.count_failed
+      self.attachments_registry_count = attachments_finder.count_registry
+      self.attachments_synced_missing_on_primary_count = attachments_finder.count_synced_missing_on_primary
 
       load_verification_data
     end

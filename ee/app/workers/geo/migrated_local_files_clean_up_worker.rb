@@ -45,7 +45,7 @@ module Geo
     def find_migrated_local_lfs_objects_ids(batch_size:)
       return [] unless lfs_objects_object_store_enabled?
 
-      lfs_objects_finder.find_migrated_local_lfs_objects(batch_size: batch_size, except_file_ids: scheduled_file_ids(:lfs))
+      lfs_objects_finder.find_migrated_local(batch_size: batch_size, except_file_ids: scheduled_file_ids(:lfs))
                         .pluck(:id)
                         .map { |id| ['lfs', id] }
     end
@@ -53,7 +53,7 @@ module Geo
     def find_migrated_local_attachments_ids(batch_size:)
       return [] unless attachments_object_store_enabled?
 
-      attachments_finder.find_migrated_local_attachments(batch_size: batch_size, except_file_ids: scheduled_file_ids(Geo::FileService::DEFAULT_OBJECT_TYPES))
+      attachments_finder.find_migrated_local(batch_size: batch_size, except_file_ids: scheduled_file_ids(Geo::FileService::DEFAULT_OBJECT_TYPES))
                         .pluck(:uploader, :id)
                         .map { |uploader, id| [uploader.sub(/Uploader\z/, '').underscore, id] }
     end
@@ -61,7 +61,7 @@ module Geo
     def find_migrated_local_job_artifacts_ids(batch_size:)
       return [] unless job_artifacts_object_store_enabled?
 
-      job_artifacts_finder.find_migrated_local_job_artifacts(batch_size: batch_size, except_artifact_ids: scheduled_file_ids(:job_artifact))
+      job_artifacts_finder.find_migrated_local(batch_size: batch_size, except_artifact_ids: scheduled_file_ids(:job_artifact))
                           .pluck(:id)
                           .map { |id| ['job_artifact', id] }
     end

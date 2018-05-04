@@ -1,34 +1,57 @@
 module Geo
   class FileDownloadDispatchWorker
+    # This class is meant to be inherited, and is responsible for generating
+    # batches of job arguments for FileDownloadWorker.
+    #
+    # The subclass should define
+    #
+    #   * registry_finder
+    #   * EXCEPT_RESOURCE_IDS_KEY
+    #   * RESOURCE_ID_KEY
+    #   * FILE_SERVICE_OBJECT_TYPE
+    #
     class JobFinder
       include Gitlab::Utils::StrongMemoize
 
-      attr_reader :registry_finder, :scheduled_file_ids
+      attr_reader :scheduled_file_ids
 
       def initialize(scheduled_file_ids)
-        current_node = Gitlab::Geo.current_node
-        @registry_finder = registry_finder_class.new(current_node: current_node)
         @scheduled_file_ids = scheduled_file_ids
       end
 
-      def registry_finder_class
-        "Geo::#{resource_type.to_s.classify}RegistryFinder".constantize
+      def find_unsynced_jobs(batch_size:)
+        convert_resource_relation_to_job_args(
+          registry_finder.find_unsynced(find_batch_params(batch_size))
+        )
       end
 
-      def except_resource_ids_key
-        :"except_#{resource_id_prefix}_ids"
+      def find_failed_jobs(batch_size:)
+        convert_registry_relation_to_job_args(
+          registry_finder.find_retryable_failed_registries(find_batch_params(batch_size))
+        )
       end
 
-      def find_jobs(sync_status:, batch_size:)
-        self.public_send(:"find_#{sync_status}_jobs", batch_size: batch_size) # rubocop:disable GitlabSecurity/PublicSend
+      def find_synced_missing_on_primary_jobs(batch_size:)
+        convert_registry_relation_to_job_args(
+          registry_finder.find_retryable_synced_missing_on_primary_registries(find_batch_params(batch_size))
+        )
       end
 
-      def find_failed_registries(batch_size:)
-        registry_finder.public_send(:"find_retryable_failed_#{resource_type}s_registries", batch_size: batch_size, except_resource_ids_key => scheduled_file_ids) # rubocop:disable GitlabSecurity/PublicSend
+      private
+
+      def find_batch_params(batch_size)
+        {
+          :batch_size => batch_size,
+          self.class::EXCEPT_RESOURCE_IDS_KEY => scheduled_file_ids
+        }
       end
 
-      def find_synced_missing_on_primary_registries(batch_size:)
-        registry_finder.public_send(:"find_retryable_synced_missing_on_primary_#{resource_type}s_registries", batch_size: batch_size, except_resource_ids_key => scheduled_file_ids) # rubocop:disable GitlabSecurity/PublicSend
+      def convert_resource_relation_to_job_args(relation)
+        relation.pluck(:id).map { |id| [self.class::FILE_SERVICE_OBJECT_TYPE.to_s, id] }
+      end
+
+      def convert_registry_relation_to_job_args(relation)
+        relation.pluck(self.class::RESOURCE_ID_KEY).map { |id| [self.class::FILE_SERVICE_OBJECT_TYPE.to_s, id] }
       end
     end
   end

@@ -3,6 +3,10 @@ require 'spec_helper'
 describe Geo::ProjectRegistryFinder, :geo do
   include ::EE::GeoHelpers
 
+  # Using let() instead of set() because set() does not work properly
+  # when using the :delete DatabaseCleaner strategy, which is required for FDW
+  # tests because a foreign table can't see changes inside a transaction of a
+  # different connection.
   let(:secondary) { create(:geo_node) }
   let(:synced_group) { create(:group) }
   let!(:project_not_synced) { create(:project) }
