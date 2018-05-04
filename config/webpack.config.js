@@ -72,8 +72,8 @@ const config = {
   output: {
     path: path.join(ROOT_PATH, 'public/assets/webpack'),
     publicPath: '/assets/webpack/',
-    filename: IS_PRODUCTION ? '[name].[chunkhash].bundle.js' : '[name].bundle.js',
-    chunkFilename: IS_PRODUCTION ? '[name].[chunkhash].chunk.js' : '[name].chunk.js',
+    filename: IS_PRODUCTION ? '[name].[chunkhash:8].bundle.js' : '[name].bundle.js',
+    chunkFilename: IS_PRODUCTION ? '[name].[chunkhash:8].chunk.js' : '[name].chunk.js',
     globalObject: 'this', // allow HMR and web workers to play nice
   },
 
@@ -133,7 +133,7 @@ const config = {
           {
             loader: 'worker-loader',
             options: {
-              name: '[name].[hash].worker.js',
+              name: '[name].[hash:8].worker.js',
             },
           },
           'babel-loader',
@@ -144,7 +144,7 @@ const config = {
         exclude: /node_modules/,
         loader: 'file-loader',
         options: {
-          name: '[name].[hash].[ext]',
+          name: '[name].[hash:8].[ext]',
         },
       },
       {
@@ -155,7 +155,7 @@ const config = {
           {
             loader: 'css-loader',
             options: {
-              name: '[name].[hash].[ext]',
+              name: '[name].[hash:8].[ext]',
             },
           },
         ],
@@ -165,7 +165,7 @@ const config = {
         include: /node_modules\/katex\/dist\/fonts/,
         loader: 'file-loader',
         options: {
-          name: '[name].[hash].[ext]',
+          name: '[name].[hash:8].[ext]',
         },
       },
       {
