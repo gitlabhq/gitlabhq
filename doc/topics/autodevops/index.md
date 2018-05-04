@@ -1,7 +1,5 @@
 # Auto DevOps
 
-DANGER: Auto DevOps is currently in **Beta** and _not recommended for production use_.
-
 > [Introduced][ce-37115] in GitLab 10.0.
 
 Auto DevOps automatically detects, builds, tests, deploys, and monitors your
