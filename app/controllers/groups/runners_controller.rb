@@ -1,6 +1,6 @@
 class Groups::RunnersController < Groups::ApplicationController
   before_action :authorize_admin_pipeline!
-  before_action :set_runner, only: [:edit, :update, :destroy, :pause, :resume, :show]
+  before_action :runner, only: [:edit, :update, :destroy, :pause, :resume, :show]
 
   def show
     render 'shared/runners/show'
@@ -41,7 +41,7 @@ class Groups::RunnersController < Groups::ApplicationController
 
   private
 
-  def set_runner
+  def runner
     @runner ||= @group.runners.find(params[:id])
   end
 
