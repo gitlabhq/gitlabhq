@@ -867,26 +867,48 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           end
         end
 
-        context 'when redis had an outage' do
-          it "recovers" do
-            # GitLab-Runner patchs
+        context 'when trace is patched' do
+          before do
             patch_the_trace
+          end
+
+          it 'has valid trace' do
+            expect(response.status).to eq(202)
             expect(job.reload.trace.raw).to eq 'BUILD TRACE appended appended'
+          end
 
-            # GitLab-Rails encounters an outage on Redis
-            redis_shared_state_cleanup!
-            expect(job.reload.trace.raw).to eq ''
+          context 'when redis data are flushed' do
+            before do
+              redis_shared_state_cleanup!
+            end
 
-            # GitLab-Runner patchs
-            patch_the_trace('hello', headers.merge({ 'Content-Range' => "28-32" }))
-            expect(response.status).to eq 202
-            expect(response.header).to have_key 'Range'
-            expect(response.header['Range']).to eq '0-0'
-            expect(job.reload.trace.raw).to eq ''
+            it 'has empty trace' do
+              expect(job.reload.trace.raw).to eq ''
+            end
 
-            # GitLab-Runner re-patchs
-            patch_the_trace('BUILD TRACE appended appended hello')
-            expect(job.reload.trace.raw).to eq 'BUILD TRACE appended appended hello'
+            context 'when we perform partial patch' do
+              before do
+                patch_the_trace('hello', headers.merge({ 'Content-Range' => "28-32" }))
+              end
+
+              it 'returns an error' do
+                expect(response.status).to eq(202)
+                expect(response.header).to have_key 'Range'
+                expect(response.header['Range']).to eq '0-0'
+                expect(job.reload.trace.raw).to eq ''
+              end
+            end
+
+            context 'when we resend full trace' do
+              before do
+                patch_the_trace('BUILD TRACE appended appended hello')
+              end
+
+              it 'succeeds with updating trace' do
+                expect(response.status).to eq(202)
+                expect(job.reload.trace.raw).to eq 'BUILD TRACE appended appended hello'
+              end
+            end
           end
         end
       end
