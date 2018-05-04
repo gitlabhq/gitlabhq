@@ -141,11 +141,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       context 'when offset is bigger than data size' do
         let(:offset) { data.bytesize + 1 }
 
-        it do
-          expect_any_instance_of(described_class).not_to receive(:append) { }
-
-          subject
-        end
+        it { expect { subject }.to raise_error('Offset is out of range') }
       end
 
       context 'when offset is 10' do
