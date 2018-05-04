@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180503150427) do
+ActiveRecord::Schema.define(version: 20180503175054) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1518,6 +1518,17 @@ ActiveRecord::Schema.define(version: 20180503150427) do
 
   add_index "project_import_data", ["project_id"], name: "index_project_import_data_on_project_id", using: :btree
 
+  create_table "project_mirror_data", force: :cascade do |t|
+    t.integer "project_id"
+    t.string "status"
+    t.string "jid"
+    t.text "last_error"
+  end
+
+  add_index "project_mirror_data", ["jid"], name: "index_project_mirror_data_on_jid", using: :btree
+  add_index "project_mirror_data", ["project_id"], name: "index_project_mirror_data_on_project_id", using: :btree
+  add_index "project_mirror_data", ["status"], name: "index_project_mirror_data_on_status", using: :btree
+
   create_table "project_statistics", force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "namespace_id", null: false
@@ -2211,6 +2222,7 @@ ActiveRecord::Schema.define(version: 20180503150427) do
   add_foreign_key "project_features", "projects", name: "fk_18513d9b92", on_delete: :cascade
   add_foreign_key "project_group_links", "projects", name: "fk_daa8cee94c", on_delete: :cascade
   add_foreign_key "project_import_data", "projects", name: "fk_ffb9ee3a10", on_delete: :cascade
+  add_foreign_key "project_mirror_data", "projects", on_delete: :cascade
   add_foreign_key "project_statistics", "projects", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches", name: "fk_8a3072ccb3", on_delete: :cascade
   add_foreign_key "protected_branch_push_access_levels", "protected_branches", name: "fk_9ffc86a3d9", on_delete: :cascade

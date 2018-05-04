@@ -23,7 +23,7 @@ describe Projects::CreateFromTemplateService do
     project = subject.execute
 
     expect(project).to be_saved
-    expect(project.scheduled?).to be(true)
+    expect(project.import_scheduled?).to be(true)
   end
 
   context 'the result project' do
