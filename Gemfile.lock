@@ -334,9 +334,8 @@ GEM
       activesupport (>= 4.2.0)
     gollum-grit_adapter (1.0.1)
       gitlab-grit (~> 2.7, >= 2.7.1)
-    gon (6.1.0)
+    gon (6.2.0)
       actionpack (>= 3.0)
-      json
       multi_json
       request_store (>= 1.0)
     google-api-client (0.19.8)
@@ -1068,7 +1067,7 @@ DEPENDENCIES
   gitlab-markup (~> 1.6.2)
   gitlab-styles (~> 2.3)
   gitlab_omniauth-ldap (~> 2.0.4)
-  gon (~> 6.1.0)
+  gon (~> 6.2)
   google-api-client (~> 0.19.8)
   google-protobuf (= 3.5.1)
   gpgme
