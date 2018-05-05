@@ -7,9 +7,7 @@
 #
 module Geo
   class ProjectHousekeepingService < BaseService
-    # Timeout set to 24h
-    LEASE_TIMEOUT = 86400
-
+    LEASE_TIMEOUT = 24.hours
     attr_reader :project
 
     def initialize(project)
@@ -17,22 +15,12 @@ module Geo
     end
 
     def execute
-      lease_uuid = try_obtain_lease
-      return false unless lease_uuid.present?
-
-      yield if block_given?
-
-      execute_gitlab_shell_gc(lease_uuid)
+      increment!
+      do_housekeeping if needed?
     end
 
     def needed?
       syncs_since_gc > 0 && period_match? && housekeeping_enabled?
-    end
-
-    def increment!
-      Gitlab::Metrics.measure(:geo_increment_syncs_since_gc) do
-        registry.increment_syncs_since_gc
-      end
     end
 
     def registry
@@ -41,10 +29,23 @@ module Geo
 
     private
 
+    def increment!
+      Gitlab::Metrics.measure(:geo_increment_syncs_since_gc) do
+        registry.increment_syncs_since_gc
+      end
+    end
+
+    def do_housekeeping
+      lease_uuid = try_obtain_lease
+      return false unless lease_uuid.present?
+
+      execute_gitlab_shell_gc(lease_uuid)
+    end
+
     def execute_gitlab_shell_gc(lease_uuid)
       GitGarbageCollectWorker.perform_async(project.id, task, lease_key, lease_uuid)
     ensure
-      if syncs_since_gc >= gc_period
+      if should_reset?
         Gitlab::Metrics.measure(:geo_reset_syncs_since_gc) do
           registry.reset_syncs_since_gc
         end
@@ -56,6 +57,10 @@ module Geo
         lease = ::Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT)
         lease.try_obtain
       end
+    end
+
+    def should_reset?
+      syncs_since_gc >= gc_period
     end
 
     def lease_key

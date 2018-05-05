@@ -61,21 +61,21 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
   end
 
   def syncs_since_gc
-    Gitlab::Redis::SharedState.with { |redis| redis.get(syncs_since_gc_redis_shared_state_key).to_i }
+    Gitlab::Redis::SharedState.with { |redis| redis.get(fetches_since_gc_redis_key).to_i }
   end
 
   def increment_syncs_since_gc
-    Gitlab::Redis::SharedState.with { |redis| redis.incr(syncs_since_gc_redis_shared_state_key) }
+    Gitlab::Redis::SharedState.with { |redis| redis.incr(fetches_since_gc_redis_key) }
   end
 
   def reset_syncs_since_gc
-    Gitlab::Redis::SharedState.with { |redis| redis.del(syncs_since_gc_redis_shared_state_key) }
+    Gitlab::Redis::SharedState.with { |redis| redis.del(fetches_since_gc_redis_key) }
   end
 
   private
 
-  def syncs_since_gc_redis_shared_state_key
-    "projects/#{id}/syncs_since_gc"
+  def fetches_since_gc_redis_key
+    "projects/#{project.id}/fetches_since_gc"
   end
 
   def never_synced_repository?
