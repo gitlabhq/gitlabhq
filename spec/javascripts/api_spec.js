@@ -341,4 +341,24 @@ describe('Api', () => {
         .catch(done.fail);
     });
   });
+
+  describe('pipelines', () => {
+    it('fetches pipelines for a given project', done => {
+      const projectId = '1234';
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/pipelines`;
+      mock.onGet(expectedUrl).reply(200, [
+        {
+          name: 'test',
+        },
+      ]);
+
+      Api.pipelines(projectId)
+        .then(({ data }) => {
+          expect(data.length).toBe(1);
+          expect(data[0].name).toBe('test');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
 });

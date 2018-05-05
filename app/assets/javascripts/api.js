@@ -10,6 +10,7 @@ const Api = {
   projectsPath: '/api/:version/projects.json',
   projectPath: '/api/:version/projects/:id',
   projectLabelsPath: '/:namespace_path/:project_path/labels',
+  pipelinesPath: '/api/:version/projects/:id/pipelines',
   mergeRequestPath: '/api/:version/projects/:id/merge_requests/:mrid',
   mergeRequestChangesPath: '/api/:version/projects/:id/merge_requests/:mrid/changes',
   mergeRequestVersionsPath: '/api/:version/projects/:id/merge_requests/:mrid/versions',
@@ -171,6 +172,11 @@ const Api = {
       .replace(':id', encodeURIComponent(id))
       .replace(':branch', encodeURIComponent(branch));
 
+    return axios.get(url);
+  },
+
+  pipelines(projectId) {
+    const url = Api.buildUrl(Api.pipelinesPath).replace(':id', projectId);
     return axios.get(url);
   },
 
