@@ -44,6 +44,7 @@ export default {
     <i
       aria-hidden="true"
       data-hidden="true"
+      v-show="!isLoading"
       class="fa fa-chevron-down"
     ></i>
   </button>
