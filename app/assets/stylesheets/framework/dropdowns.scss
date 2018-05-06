@@ -63,6 +63,10 @@
   border-radius: $border-radius-base;
   white-space: nowrap;
 
+  &:disabled.read-only {
+    color: $gl-text-color !important;
+  }
+
   &.no-outline {
     outline: 0;
   }

@@ -56,6 +56,9 @@ export default {
   computed: {
     ...mapState(['selectedProject']),
     ...mapGetters(['hasProject']),
+    hasOneProject() {
+      return this.items.length === 1;
+    },
     isDisabled() {
       return this.items.length < 2;
     },
@@ -158,7 +161,7 @@ export default {
         :value="selectedProject.projectId"
       />
       <dropdown-button
-        :class="{ 'gl-field-error-outline': hasErrors }"
+        :class="{ 'gl-field-error-outline': hasErrors, 'read-only': hasOneProject }"
         :is-disabled="isDisabled"
         :is-loading="isLoading"
         :toggle-text="toggleText"
