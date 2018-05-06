@@ -257,7 +257,7 @@ Please check your network connection and try again.`;
       </div>
       <div class="timeline-content">
         <div
-          class="discussion"
+          class="discussion js-discussion-container"
           :data-discussion-id="discussion.discussion_id"
         >
           <div
