@@ -42,6 +42,8 @@ module Gitlab
           end
         end
 
+        private
+
         def handle_events(batch)
           batch.each do |event_log|
             next unless can_replay?(event_log)
@@ -57,8 +59,6 @@ module Gitlab
             end
           end
         end
-
-        private
 
         def trap_signals
           trap(:TERM) do
@@ -86,8 +86,19 @@ module Gitlab
           Gitlab::Geo.current_node&.projects_include?(event_log.project_id)
         end
 
+        def healthy_shard_for?(event)
+          return true unless event.respond_to?(:project)
+
+          Gitlab::Geo::ShardHealthCache.healthy_shard?(event.project.repository_storage)
+        end
+
+        def enqueue_job_if_shard_healthy(event)
+          yield if healthy_shard_for?(event)
+        end
+
         def handle_repository_created_event(event, created_at)
-          registry = find_or_initialize_registry(event.project_id, resync_repository: true, resync_wiki: event.wiki_path.present?)
+          registry = find_or_initialize_registry(event.project_id,
+            resync_repository: true, resync_wiki: event.wiki_path.present?)
 
           logger.event_info(
             created_at,
@@ -100,7 +111,9 @@ module Gitlab
 
           registry.save!
 
-          ::Geo::ProjectSyncWorker.perform_async(event.project_id, Time.now)
+          enqueue_job_if_shard_healthy(event) do
+            ::Geo::ProjectSyncWorker.perform_async(event.project_id, Time.now)
+          end
         end
 
         def handle_repository_updated_event(event, created_at)
@@ -114,7 +127,9 @@ module Gitlab
 
           registry.save!
 
-          job_id = ::Geo::ProjectSyncWorker.perform_async(event.project_id, Time.now)
+          job_id = enqueue_job_if_shard_healthy(event) do
+            ::Geo::ProjectSyncWorker.perform_async(event.project_id, Time.now)
+          end
 
           logger.event_info(
             created_at,
@@ -138,6 +153,8 @@ module Gitlab
           }
 
           unless skippable
+            # Must always schedule - https://gitlab.com/gitlab-org/gitlab-ee/issues/3651
+            # TODO: Wrap in enqueue_job_if_shard_healthy once ^ is resolved
             params[:job_id] = ::Geo::RepositoryDestroyService.new(
               event.project_id,
               event.deleted_project_name,
@@ -154,6 +171,7 @@ module Gitlab
         def handle_repositories_changed_event(event, created_at)
           return unless Gitlab::Geo.current_node.id == event.geo_node_id
 
+          # Must always schedule, regardless of shard health
           job_id = ::Geo::RepositoriesCleanUpWorker.perform_in(1.hour, event.geo_node_id)
 
           if job_id
@@ -177,6 +195,7 @@ module Gitlab
           }
 
           unless skippable
+            # Must always schedule, regardless of shard health
             params[:job_id] = ::Geo::RenameRepositoryService.new(
               event.project_id,
               event.old_path_with_namespace,
@@ -203,6 +222,7 @@ module Gitlab
           }
 
           unless skippable
+            # Must always schedule, regardless of shard health
             params[:job_id] = ::Geo::HashedStorageMigrationService.new(
               event.project_id,
               old_disk_path: event.old_disk_path,
@@ -215,6 +235,7 @@ module Gitlab
         end
 
         def handle_hashed_storage_attachments_event(event, created_at)
+          # Must always schedule, regardless of shard health
           job_id = ::Geo::HashedStorageAttachmentsMigrationService.new(
             event.project_id,
             old_attachments_path: event.old_attachments_path,
