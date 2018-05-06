@@ -309,6 +309,7 @@ describe('Multi-file store actions', () => {
         null,
         store.state,
         [
+          { type: types.SET_LAST_COMMIT_MSG, payload: '' },
           { type: types.STAGE_CHANGE, payload: store.state.changedFiles[0].path },
           { type: types.STAGE_CHANGE, payload: store.state.changedFiles[1].path },
         ],
