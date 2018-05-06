@@ -16,14 +16,24 @@
   = field.fields_for :provider_gcp, @cluster.provider_gcp do |provider_gcp_field|
     .form-group
       = provider_gcp_field.label :gcp_project_id, s_('ClusterIntegration|Google Cloud Platform project ID')
-      #js-gcp-project-id-dropdown-entry-point{ data: { docsUrl: 'https://console.cloud.google.com/home/dashboard' } }
-        = provider_gcp_field.hidden_field :gcp_project_id, class: 'form-control', placeholder: 'Select project'
+      .js-gcp-project-id-dropdown-entry-point{ data: { docsUrl: 'https://console.cloud.google.com/home/dashboard' } }
+        = provider_gcp_field.hidden_field :gcp_project_id
+        .dropdown
+          %button.dropdown-menu-toggle.dropdown-menu-full-width{ type: 'button', disabled: true }
+            %span.dropdown-toggle-text
+              = _('Select project')
+            = icon('chevron-down')
 
     .form-group
       = provider_gcp_field.label :zone, s_('ClusterIntegration|Zone')
       = link_to(s_('ClusterIntegration|See zones'), 'https://cloud.google.com/compute/docs/regions-zones/regions-zones', target: '_blank', rel: 'noopener noreferrer')
-      #js-gcp-zone-dropdown-entry-point
-        = provider_gcp_field.hidden_field :zone, class: 'form-control', placeholder: 'us-central1-a'
+      .js-gcp-zone-dropdown-entry-point
+        = provider_gcp_field.hidden_field :zone
+        .dropdown
+          %button.dropdown-menu-toggle.dropdown-menu-full-width{ type: 'button', disabled: true }
+            %span.dropdown-toggle-text
+              = _('Select project to choose zone')
+            = icon('chevron-down')
 
     .form-group
       = provider_gcp_field.label :num_nodes, s_('ClusterIntegration|Number of nodes')
@@ -31,8 +41,13 @@
 
     .form-group
       = provider_gcp_field.label :machine_type, s_('ClusterIntegration|Machine type')
-      #js-gcp-machine-type-dropdown-entry-point
-        = provider_gcp_field.hidden_field :machine_type, class: 'form-control', placeholder: 'us-central1-a'
+      .js-gcp-machine-type-dropdown-entry-point
+        = provider_gcp_field.hidden_field :machine_type
+        .dropdown
+          %button.dropdown-menu-toggle.dropdown-menu-full-width{ type: 'button', disabled: true }
+            %span.dropdown-toggle-text
+              = _('Select project and zone to choose machine type')
+            = icon('chevron-down')
 
     .form-group
       = field.submit s_('ClusterIntegration|Create Kubernetes cluster'), class: 'btn btn-success', disabled: true
