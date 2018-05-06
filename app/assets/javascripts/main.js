@@ -1,21 +1,18 @@
-/* eslint-disable import/first */
 /* global $ */
 
 import jQuery from 'jquery';
 import Cookies from 'js-cookie';
 import svg4everybody from 'svg4everybody';
 
-// expose common libraries as globals (TODO: remove these)
-window.jQuery = jQuery;
-window.$ = jQuery;
+// bootstrap webpack, common libs, polyfills, and behaviors
+import './webpack';
+import './commons';
+import './behaviors';
 
 // lib/utils
 import { handleLocationHash, addSelectOnFocusBehaviour } from './lib/utils/common_utils';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import { getLocationHash, visitUrl } from './lib/utils/url_utility';
-
-// behaviors
-import './behaviors/';
 
 // everything else
 import loadAwardsHandler from './awards_handler';
@@ -31,8 +28,11 @@ import initLogoAnimation from './logo';
 import './milestone_select';
 import './projects_dropdown';
 import initBreadcrumbs from './breadcrumb';
-
 import initDispatcher from './dispatcher';
+
+// expose jQuery as global (TODO: remove these)
+window.jQuery = jQuery;
+window.$ = jQuery;
 
 // inject test utilities if necessary
 if (process.env.NODE_ENV !== 'production' && gon && gon.test_env) {

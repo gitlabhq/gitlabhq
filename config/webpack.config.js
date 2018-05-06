@@ -18,7 +18,7 @@ const NO_COMPRESSION = process.env.NO_COMPRESSION;
 
 let autoEntriesCount = 0;
 let watchAutoEntries = [];
-const defaultEntries = ['./webpack', './commons', './main'];
+const defaultEntries = ['./main'];
 
 function generateEntries() {
   // generate automatic entry points
