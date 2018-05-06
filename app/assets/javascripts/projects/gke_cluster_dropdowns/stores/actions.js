@@ -1,6 +1,6 @@
 /* global gapi */
 import Flash from '~/flash';
-import { sprintf } from '~/locale';
+import { s__, sprintf } from '~/locale';
 
 import * as types from './mutation_types';
 import eventHub from '../eventhub';
@@ -37,7 +37,9 @@ export const getProjects = ({ commit }) =>
         if (resp.result.error) {
           Flash(
             sprintf(
-              'ClusterIntegration|An error occured while trying to fetch your projects: %{error}',
+              s__(
+                'ClusterIntegration|An error occured while trying to fetch your projects: %{error}',
+              ),
               {
                 error: resp.result.error.message,
               },
@@ -66,7 +68,9 @@ export const getZones = ({ commit, state }) =>
         if (resp.result.error) {
           Flash(
             sprintf(
-              'ClusterIntegration|An error occured while trying to fetch project zones: %{error}',
+              s__(
+                'ClusterIntegration|An error occured while trying to fetch project zones: %{error}',
+              ),
               { error: resp.result.error.message },
             ),
           );
@@ -94,7 +98,9 @@ export const getMachineTypes = ({ commit, state }) =>
         if (resp.result.error) {
           Flash(
             sprintf(
-              'ClusterIntegration|An error occured while trying to fetch zone machine types: %{error}',
+              s__(
+                'ClusterIntegration|An error occured while trying to fetch zone machine types: %{error}',
+              ),
               { error: resp.result.error.message },
             ),
           );
