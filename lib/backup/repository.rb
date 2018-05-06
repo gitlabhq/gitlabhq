@@ -93,11 +93,15 @@ module Backup
         path_to_project_bundle = path_to_bundle(project)
 
         project.repository.create_from_bundle path_to_project_bundle unless project.repository_exists?
+        progress.puts "[DONE] restoring #{project.name} repository".color(:green)
 
         wiki = ProjectWiki.new(project)
         path_to_wiki_bundle = path_to_bundle(wiki)
 
-        project.repository.create_from_bundle(path_to_wiki_bundle) if File.exists?(path_to_wiki_bundle)
+        if File.exists?(path_to_wiki_bundle)
+          project.repository.create_from_bundle(path_to_wiki_bundle)
+          progress.puts "[DONE] restoring #{project.name} wiki".color(:green)
+        end
       end
     end
     # rubocop:enable Metrics/AbcSize
