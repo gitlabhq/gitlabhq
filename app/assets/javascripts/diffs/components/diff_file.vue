@@ -1,11 +1,17 @@
 <script>
-import diffFileHeader from './diff_file_header.vue';
-import diffContent from './diff_content.vue';
+import { mapActions } from 'vuex';
+import _ from 'underscore';
+import { __, sprintf } from '~/locale';
+import createFlash from '~/flash';
+import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
+import DiffFileHeader from './diff_file_header.vue';
+import DiffContent from './diff_content.vue';
 
 export default {
   components: {
-    diffFileHeader,
-    diffContent,
+    DiffFileHeader,
+    DiffContent,
+    LoadingIcon,
   },
   props: {
     file: {
@@ -15,13 +21,26 @@ export default {
   },
   data() {
     return {
-      isExpanded: true,
       isActive: false,
+      isLoadingCollapsedDiff: false,
     };
   },
   computed: {
     isDiscussionsExpanded() {
       return true; // TODO: @fatihacet - Fix this.
+    },
+    isCollapsed() {
+      return this.file.collapsed || false;
+    },
+    viewBlobLink() {
+      return sprintf(
+        __('You can %{linkStart}view the blob%{linkEnd} instead.'),
+        {
+          linkStart: `<a href="${_.escape(this.file.viewPath)}">`,
+          linkEnd: '</a>',
+        },
+        false,
+      );
     },
   },
   mounted() {
@@ -31,8 +50,15 @@ export default {
     document.removeEventListener('scroll', this.handleScroll);
   },
   methods: {
+    ...mapActions(['loadCollapsedDiff']),
     handleToggle() {
-      this.isExpanded = !this.isExpanded;
+      const { collapsed, highlightedDiffLines, parallelDiffLines } = this.file;
+
+      if (collapsed && !highlightedDiffLines && !parallelDiffLines.length) {
+        this.handleLoadCollapsedDiff();
+      } else {
+        this.file.collapsed = !this.file.collapsed;
+      }
     },
     handleScroll() {
       if (!this.updating) {
@@ -64,6 +90,19 @@ export default {
 
       this.updating = false;
     },
+    handleLoadCollapsedDiff() {
+      this.isLoadingCollapsedDiff = true;
+
+      this.loadCollapsedDiff(this.file)
+        .then(() => {
+          this.isLoadingCollapsedDiff = false;
+          this.file.collapsed = false;
+        })
+        .catch(() => {
+          this.isLoadingCollapsedDiff = false;
+          createFlash(__('Something went wrong on our end. Please try again!'));
+        });
+    },
   },
 };
 </script>
@@ -76,28 +115,40 @@ export default {
     <diff-file-header
       :diff-file="file"
       :collapsible="true"
-      :expanded="isExpanded"
+      :expanded="!isCollapsed"
       :discussions-expanded="isDiscussionsExpanded"
       :add-merge-request-buttons="true"
       @toggleFile="handleToggle"
       class="js-file-title file-title"
     />
     <diff-content
-      v-show="isExpanded"
+      v-show="!isCollapsed"
+      :class="{ hidden: isCollapsed || file.tooLarge }"
       :diff-file="file"
     />
+    <loading-icon
+      v-if="isLoadingCollapsedDiff"
+      class="diff-content loading"
+    />
     <div
-      v-show="!isExpanded"
+      v-show="isCollapsed && !isLoadingCollapsedDiff && !file.tooLarge"
       class="nothing-here-block diff-collapsed"
     >
       {{ __('This diff is collapsed.') }}
       <a
         @click.prevent="handleToggle"
-        class="click-to-expand"
+        class="click-to-expand js-click-to-expand"
         href="#"
       >
         {{ __('Click to expand it.') }}
       </a>
+    </div>
+    <div
+      v-if="file.tooLarge"
+      class="nothing-here-block diff-collapsed js-too-large-diff"
+    >
+      {{ __('This source diff could not be displayed because it is too large.') }}
+      <span v-html="viewBlobLink"></span>
     </div>
   </div>
 </template>

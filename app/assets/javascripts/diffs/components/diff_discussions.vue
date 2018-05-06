@@ -15,7 +15,9 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div
+    v-if="notes.length"
+  >
     <div
       v-for="notesArr in notes"
       :key="notesArr.id"

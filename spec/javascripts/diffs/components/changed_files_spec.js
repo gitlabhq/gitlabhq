@@ -4,11 +4,9 @@ import { mountComponentWithStore } from 'spec/helpers';
 import store from '~/diffs/store';
 import ChangedFiles from '~/diffs/components/changed_files.vue';
 
-fdescribe('ChangedFiles', () => {
+describe('ChangedFiles', () => {
   const Component = Vue.extend(ChangedFiles);
-  const createComponent = props => {
-    return mountComponentWithStore(Component, { props, store });
-  };
+  const createComponent = props => mountComponentWithStore(Component, { props, store });
   let vm;
 
   beforeEach(() => {
@@ -57,7 +55,7 @@ fdescribe('ChangedFiles', () => {
         expect(parallelButton).toBeDefined();
       });
 
-      it('should Inline button has active class', () => {
+      it('should add active class to Inline button', () => {
         expect(inlineButton.classList.contains('active')).toEqual(true);
         expect(parallelButton.classList.contains('active')).toEqual(false);
       });

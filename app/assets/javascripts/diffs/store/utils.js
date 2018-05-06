@@ -54,13 +54,15 @@ export function getNoteFormData(params) {
     note_project_id: '',
     target_type: noteableType,
     target_id: noteableData.id,
-    'note[noteable_type]': noteableType,
-    'note[noteable_id]': noteableData.id,
-    'note[commit_id]': '',
-    'note[type]': DIFF_NOTE_TYPE,
-    'note[line_code]': noteTargetLine.lineCode,
-    'note[note]': note,
-    'note[position]': position,
+    note: {
+      note,
+      position,
+      noteable_type: noteableType,
+      noteable_id: noteableData.id,
+      commit_id: '',
+      type: DIFF_NOTE_TYPE,
+      line_code: noteTargetLine.lineCode,
+    },
   };
 
   return {

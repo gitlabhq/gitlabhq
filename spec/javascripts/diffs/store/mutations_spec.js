@@ -69,6 +69,18 @@ describe('DiffsStoreMutations', () => {
     });
   });
 
+  describe('EXPAND_ALL_FILES', () => {
+    it('should change the collapsed prop from diffFiles', () => {
+      const diffFile = {
+        collapsed: true,
+      };
+      const state = { expandAllFiles: true, diffFiles: [diffFile] };
+
+      mutations[types.EXPAND_ALL_FILES](state);
+      expect(state.diffFiles[0].collapsed).toEqual(false);
+    });
+  });
+
   describe('ADD_CONTEXT_LINES', () => {
     it('should call utils.addContextLines with proper params', () => {
       const options = {
@@ -112,6 +124,24 @@ describe('DiffsStoreMutations', () => {
         bottom: options.params.bottom,
         lineNumbers: options.lineNumbers,
       });
+    });
+  });
+
+  describe('ADD_COLLAPSED_DIFFS', () => {
+    it('should update the state with the given data for the given file hash', () => {
+      const spy = spyOnDependency(mutations, 'convertObjectPropsToCamelCase').and.callThrough();
+
+      const fileHash = 123;
+      const state = { diffFiles: [{}, { fileHash, existingField: 0 }] };
+      const file = { fileHash };
+      const data = { diff_files: [{ file_hash: fileHash, extra_field: 1, existingField: 1 }] };
+
+      mutations[types.ADD_COLLAPSED_DIFFS](state, { file, data });
+      expect(spy).toHaveBeenCalledWith(data, { deep: true });
+
+      expect(state.diffFiles[1].fileHash).toEqual(fileHash);
+      expect(state.diffFiles[1].existingField).toEqual(1);
+      expect(state.diffFiles[1].extraField).toEqual(1);
     });
   });
 });
