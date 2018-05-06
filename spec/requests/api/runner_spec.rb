@@ -906,20 +906,18 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
             context 'when we perform partial patch' do
               before do
-                patch_the_trace('hello', headers.merge({ 'Content-Range' => "28-32" }))
+                patch_the_trace('hello', headers.merge({ 'Content-Range' => "28-32/5" }))
               end
 
               it 'returns an error' do
-                expect(response.status).to eq(202)
-                expect(response.header).to have_key 'Range'
-                expect(response.header['Range']).to eq '0-0'
-                expect(job.reload.trace.raw).to eq ''
+                expect(response.status).to eq(416)
+                expect(response.header['Range']).to eq('0-0')
               end
             end
 
             context 'when we resend full trace' do
               before do
-                patch_the_trace('BUILD TRACE appended appended hello', headers.merge({ 'Content-Range' => "0-32" }))
+                patch_the_trace('BUILD TRACE appended appended hello', headers.merge({ 'Content-Range' => "0-34/35" }))
               end
 
               it 'succeeds with updating trace' do
@@ -945,7 +943,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
       end
 
       context 'when content-range start is too big' do
-        let(:headers_with_range) { headers.merge({ 'Content-Range' => '15-20' }) }
+        let(:headers_with_range) { headers.merge({ 'Content-Range' => '15-20/6' }) }
 
         it 'gets 416 error response with range headers' do
           expect(response.status).to eq 416
@@ -955,7 +953,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
       end
 
       context 'when content-range start is too small' do
-        let(:headers_with_range) { headers.merge({ 'Content-Range' => '8-20' }) }
+        let(:headers_with_range) { headers.merge({ 'Content-Range' => '8-20/13' }) }
 
         it 'gets 416 error response with range headers' do
           expect(response.status).to eq 416
