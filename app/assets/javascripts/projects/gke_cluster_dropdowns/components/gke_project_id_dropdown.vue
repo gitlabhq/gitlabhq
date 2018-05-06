@@ -2,7 +2,7 @@
 import _ from 'underscore';
 import Flash from '~/flash';
 import { s__, sprintf } from '~/locale';
-import { mapActions } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import DropdownSearchInput from '~/vue_shared/components/dropdown/dropdown_search_input.vue';
@@ -39,30 +39,36 @@ export default {
       type: String,
       required: true,
     },
+    inputValue: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
       isLoading: true,
       hasErrors: false,
       searchQuery: '',
-      selectedItem: '',
       items: [],
     };
   },
   computed: {
+    ...mapState(['selectedProject']),
+    ...mapGetters(['hasProject']),
     isDisabled() {
       return this.items.length < 2;
     },
-    results() {
+    searchResults() {
       return this.items.filter(item => item.name.toLowerCase().indexOf(this.searchQuery) > -1);
     },
     toggleText() {
-      if (this.$store.state.selectedProject.name) {
-        return this.$store.state.selectedProject.name;
-      }
-
       if (this.isLoading) {
         return s__('ClusterIntegration|Fetching projects');
+      }
+
+      if (this.hasProject) {
+        return this.selectedProject.name;
       }
 
       return this.items.length
@@ -105,24 +111,34 @@ export default {
 
       return request.then(
         resp => {
+          let projectToSelect;
           this.items = resp.result.projects;
 
-          this.isLoading = false;
-          if (this.items.length === 1) {
-            this.setProject(this.items[0]);
+          if (this.inputValue) {
+            projectToSelect = _.find(this.items, item => item.projectId === this.inputValue);
+            this.setProject(projectToSelect);
+          } else if (this.items.length === 1) {
+            projectToSelect = this.items[0];
+            this.setProject(projectToSelect);
           }
+
+          this.isLoading = false;
+          this.hasErrors = false;
         },
         resp => {
-          this.isLoading = false;
-          this.hasErrors = true;
-
           if (resp.result.error) {
             Flash(
-              `${s__('ClusterIntegration|An error occured while trying to fetch your projects:')} ${
-                resp.result.error.message
-              }`,
+              sprintf(
+                'ClusterIntegration|An error occured while trying to fetch your projects: %{error}',
+                {
+                  error: resp.result.error.message,
+                },
+              ),
             );
           }
+
+          this.isLoading = false;
+          this.hasErrors = true;
         },
         this,
       );
@@ -139,7 +155,7 @@ export default {
     >
       <dropdown-hidden-input
         :name="fieldName"
-        :value="$store.state.selectedProject.projectId"
+        :value="selectedProject.projectId"
       />
       <dropdown-button
         :class="{ 'gl-field-error-outline': hasErrors }"
@@ -155,7 +171,7 @@ export default {
         <div class="dropdown-content">
           <ul>
             <li
-              v-for="result in results"
+              v-for="result in searchResults"
               :key="result.project_number"
             >
               <a

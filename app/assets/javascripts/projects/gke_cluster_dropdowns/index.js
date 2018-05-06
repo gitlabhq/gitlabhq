@@ -24,6 +24,7 @@ const mountGkeProjectIdDropdown = () => {
           service: gapi.client.cloudresourcemanager,
           fieldName: hiddenInput.getAttribute('name'),
           fieldId: hiddenInput.getAttribute('id'),
+          inputValue: hiddenInput.value,
         },
       }),
   });
@@ -46,6 +47,7 @@ const mountGkeZoneDropdown = () => {
           service: gapi.client.compute,
           fieldName: hiddenInput.getAttribute('name'),
           fieldId: hiddenInput.getAttribute('id'),
+          inputValue: hiddenInput.value,
         },
       }),
   });
@@ -68,6 +70,7 @@ const mountGkeMachineTypeDropdown = () => {
           service: gapi.client.compute,
           fieldName: hiddenInput.getAttribute('name'),
           fieldId: hiddenInput.getAttribute('id'),
+          inputValue: hiddenInput.value,
         },
       }),
   });
@@ -78,9 +81,10 @@ const gkeDropdownErrorHandler = () => {
 };
 
 const initializeGapiClient = () => {
-  const el = document.getElementById('new_cluster');
+  const el = document.querySelector('.js-gke-cluster-creation');
 
   gapi.client.setToken({ access_token: el.dataset.token });
+  delete el.dataset.token;
 
   gapi.client
     .load(CONSTANTS.GCP_API_CLOUD_RESOURCE_MANAGER_ENDPOINT)

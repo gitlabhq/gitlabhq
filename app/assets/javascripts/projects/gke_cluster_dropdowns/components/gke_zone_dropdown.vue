@@ -1,7 +1,8 @@
 <script>
+import _ from 'underscore';
 import Flash from '~/flash';
-import { s__ } from '~/locale';
-import { mapActions } from 'vuex';
+import { s__, sprintf } from '~/locale';
+import { mapState, mapGetters, mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import DropdownSearchInput from '~/vue_shared/components/dropdown/dropdown_search_input.vue';
@@ -10,7 +11,6 @@ import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidde
 import eventHub from '../eventhub';
 import store from '../stores';
 import DropdownButton from './dropdown_button.vue';
-// TODO: Fall back to default us-central1-a or first option
 
 export default {
   name: 'GkeZoneDropdown',
@@ -35,33 +35,39 @@ export default {
       type: String,
       required: true,
     },
+    inputValue: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
       isLoading: false,
       hasErrors: false,
       searchQuery: '',
-      selectedItem: '',
       items: [],
     };
   },
   computed: {
+    ...mapState(['selectedProject', 'selectedZone']),
+    ...mapGetters(['hasProject']),
     isDisabled() {
-      return this.$store.state.selectedProject.projectId.length === 0;
+      return !this.hasProject;
     },
-    results() {
+    searchResults() {
       return this.items.filter(item => item.name.toLowerCase().indexOf(this.searchQuery) > -1);
     },
     toggleText() {
-      if (this.$store.state.selectedZone) {
-        return this.$store.state.selectedZone;
-      }
-
       if (this.isLoading) {
         return s__('ClusterIntegration|Fetching zones');
       }
 
-      return this.$store.state.selectedProject
+      if (this.selectedZone) {
+        return this.selectedZone;
+      }
+
+      return this.$store.state.selectedProject.projectId.length
         ? s__('ClusterIntegration|Select zone')
         : s__('ClusterIntegration|Select project to choose zone');
     },
@@ -77,33 +83,21 @@ export default {
     fetchItems() {
       this.isLoading = true;
       const request = this.service.zones.list({
-        project: this.$store.state.selectedProject.projectId,
+        project: this.selectedProject.projectId,
       });
 
       return request.then(
         resp => {
+          let zoneToSelect;
           this.items = resp.result.items;
 
-          // Cause error
-          // this.items = data;
-
-          // Single state
-          // this.items = [
-          //   {
-          //     create_time: '2018-01-16T15:55:02.992Z',
-          //     lifecycle_state: 'ACTIVE',
-          //     name: 'NaturalInterface',
-          //     item_id: 'naturalinterface-192315',
-          //     item_number: 840816084083,
-          //   },
-          // ];
-
-          if (this.items.length === 1) {
-            this.isDisabled = true;
-            this.setZone(this.items[0].name);
+          if (this.inputValue) {
+            zoneToSelect = _.find(this.items, item => item.name === this.inputValue);
+            this.setZone(zoneToSelect.name);
           }
 
           this.isLoading = false;
+          this.hasErrors = false;
         },
         resp => {
           this.isLoading = false;
@@ -111,9 +105,10 @@ export default {
 
           if (resp.result.error) {
             Flash(
-              `${s__('ClusterIntegration|An error occured while trying to fetch project zones:')} ${
-                resp.result.error.message
-              }`,
+              sprintf(
+                'ClusterIntegration|An error occured while trying to fetch project zones: %{error}',
+                { error: resp.result.error.message },
+              ),
             );
           }
         },
@@ -131,7 +126,7 @@ export default {
   >
     <dropdown-hidden-input
       :name="fieldName"
-      :value="$store.state.selectedZone"
+      :value="selectedZone"
     />
     <dropdown-button
       :class="{ 'gl-field-error-outline': hasErrors }"
@@ -147,7 +142,7 @@ export default {
       <div class="dropdown-content">
         <ul>
           <li
-            v-for="result in results"
+            v-for="result in searchResults"
             :key="result.id"
           >
             <a
