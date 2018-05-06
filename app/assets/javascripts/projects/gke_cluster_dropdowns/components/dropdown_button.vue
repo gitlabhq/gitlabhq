@@ -23,7 +23,6 @@ export default {
       default: __('Select'),
     },
   },
-  computed: {},
 };
 </script>
 
