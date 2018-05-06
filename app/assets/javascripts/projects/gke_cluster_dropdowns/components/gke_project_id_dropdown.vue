@@ -66,9 +66,9 @@ export default {
         return this.selectedProject.name;
       }
 
-      return this.projects.length
-        ? s__('ClusterIntegration|Select project')
-        : s__('ClusterIntegration|No projects found');
+      return !this.projects.length
+        ? s__('ClusterIntegration|No projects found')
+        : s__('ClusterIntegration|Select project');
     },
     searchPlaceholderText() {
       return s__('ClusterIntegration|Search projects');

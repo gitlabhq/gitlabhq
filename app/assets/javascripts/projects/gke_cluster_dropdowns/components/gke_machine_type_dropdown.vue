@@ -63,12 +63,12 @@ export default {
       }
 
       if (!this.hasProject && !this.hasZone) {
-        return s__('ClusterIntegration|Select project and zone to choose machine type.');
+        return s__('ClusterIntegration|Select project.and zone to choose machine type');
       }
 
-      return this.hasZone
-        ? s__('ClusterIntegration|Select machine type')
-        : s__('ClusterIntegration|Select zone to choose machine type');
+      return !this.hasZone
+        ? s__('ClusterIntegration|Select zone to choose machine type')
+        : s__('ClusterIntegration|Select machine type');
     },
     searchPlaceholderText() {
       return s__('ClusterIntegration|Search machine types');

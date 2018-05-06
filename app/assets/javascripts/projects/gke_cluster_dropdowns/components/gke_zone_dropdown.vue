@@ -60,9 +60,9 @@ export default {
         return this.selectedZone;
       }
 
-      return this.$store.state.selectedProject.projectId.length
-        ? s__('ClusterIntegration|Select zone')
-        : s__('ClusterIntegration|Select project to choose zone');
+      return !this.hasProject
+        ? s__('ClusterIntegration|Select project to choose zone')
+        : s__('ClusterIntegration|Select zone');
     },
     searchPlaceholderText() {
       return s__('ClusterIntegration|Search zones');
