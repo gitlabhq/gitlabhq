@@ -56,7 +56,7 @@ export default {
     isDisabled() {
       return this.projects.length < 2;
     },
-    searchResults() {
+    results() {
       return this.projects.filter(item => item.name.toLowerCase().indexOf(this.searchQuery) > -1);
     },
     toggleText() {
@@ -158,7 +158,7 @@ export default {
         <div class="dropdown-content">
           <ul>
             <li
-              v-for="result in searchResults"
+              v-for="result in results"
               :key="result.project_number"
             >
               <a

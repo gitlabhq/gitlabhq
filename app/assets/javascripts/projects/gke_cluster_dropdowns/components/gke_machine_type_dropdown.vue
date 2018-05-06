@@ -50,7 +50,7 @@ export default {
     isDisabled() {
       return !this.selectedProject || !this.selectedZone;
     },
-    searchResults() {
+    results() {
       return this.machineTypes.filter(
         item => item.name.toLowerCase().indexOf(this.searchQuery) > -1,
       );
@@ -138,7 +138,7 @@ export default {
       <div class="dropdown-content">
         <ul>
           <li
-            v-for="result in searchResults"
+            v-for="result in results"
             :key="result.id"
           >
             <a

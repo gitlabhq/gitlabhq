@@ -50,7 +50,7 @@ export default {
     isDisabled() {
       return !this.hasProject;
     },
-    searchResults() {
+    results() {
       return this.zones.filter(item => item.name.toLowerCase().indexOf(this.searchQuery) > -1);
     },
     toggleText() {
@@ -123,7 +123,7 @@ export default {
       <div class="dropdown-content">
         <ul>
           <li
-            v-for="result in searchResults"
+            v-for="result in results"
             :key="result.id"
           >
             <a
