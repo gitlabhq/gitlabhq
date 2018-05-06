@@ -63,7 +63,7 @@ export default {
       }
 
       if (!this.hasProject && !this.hasZone) {
-        return s__('ClusterIntegration|Select project.and zone to choose machine type');
+        return s__('ClusterIntegration|Select project and zone to choose machine type');
       }
 
       return !this.hasZone
