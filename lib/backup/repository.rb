@@ -92,15 +92,29 @@ module Backup
       Project.find_each(batch_size: 1000) do |project|
         path_to_project_bundle = path_to_bundle(project)
 
-        project.repository.create_from_bundle path_to_project_bundle unless project.repository_exists?
-        progress.puts "[DONE] restoring #{project.name} repository".color(:green)
+        if File.exist?(path_to_project_bundle)
+          begin
+            project.repository.create_from_bundle path_to_project_bundle unless project.repository_exists?
+            progress.puts "[DONE] restoring #{project.name} repository".color(:green)
+          rescue StandardError => e
+            progress.puts "[Failed] restoring #{project.name} repository".color(:red)
+            progress.puts "Error: #{e}".color(:red)
+          end
+        else
+          progress.puts "[Failed] bundle file #{path_to_project_bundle} does not exist"
+        end
 
         wiki = ProjectWiki.new(project)
         path_to_wiki_bundle = path_to_bundle(wiki)
 
-        if File.exists?(path_to_wiki_bundle)
-          project.repository.create_from_bundle(path_to_wiki_bundle)
-          progress.puts "[DONE] restoring #{project.name} wiki".color(:green)
+        if File.exist?(path_to_wiki_bundle)
+          begin
+            project.repository.create_from_bundle(path_to_wiki_bundle)
+            progress.puts "[DONE] restoring #{project.name} wiki".color(:green)
+          rescue StandardError => e
+            progress.puts "[Failed] restoring #{project.name} wiki".color(:red)
+            progress.puts "Error #{e}".color(:red)
+          end
         end
       end
     end
