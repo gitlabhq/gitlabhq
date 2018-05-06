@@ -2,7 +2,6 @@
 import _ from 'underscore';
 import { s__, sprintf } from '~/locale';
 import { mapState, mapGetters, mapActions } from 'vuex';
-import Icon from '~/vue_shared/components/icon.vue';
 import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import DropdownSearchInput from '~/vue_shared/components/dropdown/dropdown_search_input.vue';
 import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidden_input.vue';
@@ -14,7 +13,6 @@ export default {
   name: 'GkeProjectIdDropdown',
   store,
   components: {
-    Icon,
     LoadingIcon,
     DropdownButton,
     DropdownSearchInput,
