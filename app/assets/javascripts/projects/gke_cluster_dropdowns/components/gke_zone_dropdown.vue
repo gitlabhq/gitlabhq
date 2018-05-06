@@ -1,7 +1,6 @@
 <script>
 import _ from 'underscore';
-import Flash from '~/flash';
-import { s__, sprintf } from '~/locale';
+import { s__ } from '~/locale';
 import { mapState, mapGetters, mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
@@ -23,10 +22,6 @@ export default {
     DropdownHiddenInput,
   },
   props: {
-    service: {
-      type: Object,
-      required: true,
-    },
     fieldId: {
       type: String,
       required: true,
@@ -35,7 +30,7 @@ export default {
       type: String,
       required: true,
     },
-    inputValue: {
+    defaultValue: {
       type: String,
       required: false,
       default: '',
@@ -46,17 +41,17 @@ export default {
       isLoading: false,
       hasErrors: false,
       searchQuery: '',
-      items: [],
     };
   },
   computed: {
     ...mapState(['selectedProject', 'selectedZone']),
+    ...mapState({ zones: 'fetchedZones' }),
     ...mapGetters(['hasProject']),
     isDisabled() {
       return !this.hasProject;
     },
     searchResults() {
-      return this.items.filter(item => item.name.toLowerCase().indexOf(this.searchQuery) > -1);
+      return this.zones.filter(item => item.name.toLowerCase().indexOf(this.searchQuery) > -1);
     },
     toggleText() {
       if (this.isLoading) {
@@ -71,49 +66,35 @@ export default {
         ? s__('ClusterIntegration|Select zone')
         : s__('ClusterIntegration|Select project to choose zone');
     },
-    placeholderText() {
+    searchPlaceholderText() {
       return s__('ClusterIntegration|Search zones');
     },
   },
   created() {
-    eventHub.$on('projectSelected', this.fetchItems);
+    eventHub.$on('projectSelected', this.fetchZones);
   },
   methods: {
-    ...mapActions(['setZone']),
-    fetchItems() {
+    ...mapActions(['setZone', 'getZones']),
+    fetchZones() {
       this.isLoading = true;
-      const request = this.service.zones.list({
-        project: this.selectedProject.projectId,
-      });
 
-      return request.then(
-        resp => {
-          let zoneToSelect;
-          this.items = resp.result.items;
+      this.getZones()
+        .then(() => {
+          if (this.defaultValue) {
+            const zoneToSelect = _.find(this.zones, item => item.name === this.defaultValue);
 
-          if (this.inputValue) {
-            zoneToSelect = _.find(this.items, item => item.name === this.inputValue);
-            this.setZone(zoneToSelect.name);
+            if (zoneToSelect) {
+              this.setZone(zoneToSelect.name);
+            }
           }
 
           this.isLoading = false;
           this.hasErrors = false;
-        },
-        resp => {
+        })
+        .catch(() => {
           this.isLoading = false;
           this.hasErrors = true;
-
-          if (resp.result.error) {
-            Flash(
-              sprintf(
-                'ClusterIntegration|An error occured while trying to fetch project zones: %{error}',
-                { error: resp.result.error.message },
-              ),
-            );
-          }
-        },
-        this,
-      );
+        });
     },
   },
 };
@@ -137,7 +118,7 @@ export default {
     <div class="dropdown-menu dropdown-select">
       <dropdown-search-input
         v-model="searchQuery"
-        :placeholder-text="placeholderText"
+        :placeholder-text="searchPlaceholderText"
       />
       <div class="dropdown-content">
         <ul>

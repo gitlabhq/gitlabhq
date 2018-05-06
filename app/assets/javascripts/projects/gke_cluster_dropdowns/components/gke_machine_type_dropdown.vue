@@ -1,7 +1,6 @@
 <script>
 import _ from 'underscore';
-import Flash from '~/flash';
-import { s__, sprintf } from '~/locale';
+import { s__ } from '~/locale';
 import { mapState, mapGetters, mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
@@ -23,10 +22,6 @@ export default {
     DropdownHiddenInput,
   },
   props: {
-    service: {
-      type: Object,
-      required: true,
-    },
     fieldId: {
       type: String,
       required: true,
@@ -35,7 +30,7 @@ export default {
       type: String,
       required: true,
     },
-    inputValue: {
+    defaultValue: {
       type: String,
       required: false,
       default: '',
@@ -46,17 +41,19 @@ export default {
       isLoading: false,
       hasErrors: false,
       searchQuery: '',
-      items: [],
     };
   },
   computed: {
     ...mapState(['selectedProject', 'selectedZone', 'selectedMachineType']),
-    ...mapGetters(['hasProject', 'hasZone']),
+    ...mapState({ machineTypes: 'fetchedMachineTypes' }),
+    ...mapGetters(['hasProject', 'hasZone', 'hasMachineType']),
     isDisabled() {
       return !this.selectedProject || !this.selectedZone;
     },
     searchResults() {
-      return this.items.filter(item => item.name.toLowerCase().indexOf(this.searchQuery) > -1);
+      return this.machineTypes.filter(
+        item => item.name.toLowerCase().indexOf(this.searchQuery) > -1,
+      );
     },
     toggleText() {
       if (this.isLoading) {
@@ -75,54 +72,44 @@ export default {
         ? s__('ClusterIntegration|Select machine type')
         : s__('ClusterIntegration|Select zone to choose machine type');
     },
-    placeholderText() {
+    searchPlaceholderText() {
       return s__('ClusterIntegration|Search machine types');
     },
   },
   created() {
-    eventHub.$on('zoneSelected', this.fetchItems);
+    eventHub.$on('zoneSelected', this.fetchMachineTypes);
     eventHub.$on('machineTypeSelected', this.enableSubmit);
   },
   methods: {
-    ...mapActions(['setMachineType']),
-    fetchItems() {
+    ...mapActions(['setMachineType', 'getMachineTypes']),
+    fetchMachineTypes() {
       this.isLoading = true;
-      const request = this.service.machineTypes.list({
-        project: this.selectedProject.projectId,
-        zone: this.selectedZone,
-      });
 
-      return request.then(
-        resp => {
-          let machineTypeToSelect;
-          this.items = resp.result.items;
+      this.getMachineTypes()
+        .then(() => {
+          if (this.defaultValue) {
+            const machineTypeToSelect = _.find(
+              this.machineTypes,
+              item => item.name === this.defaultValue,
+            );
 
-          if (this.inputValue) {
-            machineTypeToSelect = _.find(this.items, item => item.name === this.inputValue);
-            this.setMachineType(machineTypeToSelect.name);
+            if (machineTypeToSelect) {
+              this.setMachineType(machineTypeToSelect.name);
+            }
           }
 
           this.isLoading = false;
           this.hasErrors = false;
-        },
-        () => {
+        })
+        .catch(() => {
           this.isLoading = false;
           this.hasErrors = true;
-
-          if (resp.result.error) {
-            Flash(
-              sprintf(
-                'ClusterIntegration|An error occured while trying to fetch zone machine types: %{error}',
-                { error: resp.result.error.message },
-              ),
-            );
-          }
-        },
-        this,
-      );
+        });
     },
     enableSubmit() {
-      document.querySelector('.js-gke-cluster-creation-submit').removeAttribute('disabled');
+      if (this.hasProject && this.hasZone && this.hasMachineType) {
+        document.querySelector('.js-gke-cluster-creation-submit').removeAttribute('disabled');
+      }
     },
   },
 };
@@ -146,7 +133,7 @@ export default {
     <div class="dropdown-menu dropdown-select">
       <dropdown-search-input
         v-model="searchQuery"
-        :placeholder-text="placeholderText"
+        :placeholder-text="searchPlaceholderText"
       />
       <div class="dropdown-content">
         <ul>

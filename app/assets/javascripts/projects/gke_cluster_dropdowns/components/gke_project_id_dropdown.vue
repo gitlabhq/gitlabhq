@@ -1,6 +1,5 @@
 <script>
 import _ from 'underscore';
-import Flash from '~/flash';
 import { s__, sprintf } from '~/locale';
 import { mapState, mapGetters, mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -10,7 +9,6 @@ import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidde
 
 import store from '../stores';
 import DropdownButton from './dropdown_button.vue';
-// TODO: Consolidate dropdown code
 
 export default {
   name: 'GkeProjectIdDropdown',
@@ -27,10 +25,6 @@ export default {
       type: String,
       required: true,
     },
-    service: {
-      type: Object,
-      required: true,
-    },
     fieldId: {
       type: String,
       required: true,
@@ -39,7 +33,7 @@ export default {
       type: String,
       required: true,
     },
-    inputValue: {
+    defaultValue: {
       type: String,
       required: false,
       default: '',
@@ -50,20 +44,20 @@ export default {
       isLoading: true,
       hasErrors: false,
       searchQuery: '',
-      items: [],
     };
   },
   computed: {
     ...mapState(['selectedProject']),
+    ...mapState({ projects: 'fetchedProjects' }),
     ...mapGetters(['hasProject']),
     hasOneProject() {
-      return this.items.length === 1;
+      return this.projects.length === 1;
     },
     isDisabled() {
-      return this.items.length < 2;
+      return this.projects.length < 2;
     },
     searchResults() {
-      return this.items.filter(item => item.name.toLowerCase().indexOf(this.searchQuery) > -1);
+      return this.projects.filter(item => item.name.toLowerCase().indexOf(this.searchQuery) > -1);
     },
     toggleText() {
       if (this.isLoading) {
@@ -74,11 +68,11 @@ export default {
         return this.selectedProject.name;
       }
 
-      return this.items.length
+      return this.projects.length
         ? s__('ClusterIntegration|Select project')
         : s__('ClusterIntegration|No projects found');
     },
-    placeholderText() {
+    searchPlaceholderText() {
       return s__('ClusterIntegration|Search projects');
     },
     helpText() {
@@ -88,7 +82,7 @@ export default {
           'ClusterIntegration|We were unable to fetch any projects. Ensure that you have a project on %{docsLinkStart}Google Cloud Platform%{docsLinkEnd}.';
       }
 
-      message = this.items.length
+      message = this.projects.length
         ? 'ClusterIntegration|To use a new project, first create one on %{docsLinkStart}Google Cloud Platform%{docsLinkEnd}.'
         : 'ClusterIntegration|To create a cluster, first create a project on %{docsLinkStart}Google Cloud Platform%{docsLinkEnd}.';
 
@@ -105,46 +99,33 @@ export default {
     },
   },
   created() {
-    this.fetchItems();
+    this.fetchProjects();
   },
   methods: {
-    ...mapActions(['setProject']),
-    fetchItems() {
-      const request = this.service.projects.list();
+    ...mapActions(['setProject', 'getProjects']),
+    fetchProjects() {
+      this.getProjects()
+        .then(() => {
+          if (this.defaultValue) {
+            const projectToSelect = _.find(
+              this.projects,
+              item => item.projectId === this.defaultValue,
+            );
 
-      return request.then(
-        resp => {
-          let projectToSelect;
-          this.items = resp.result.projects;
-
-          if (this.inputValue) {
-            projectToSelect = _.find(this.items, item => item.projectId === this.inputValue);
-            this.setProject(projectToSelect);
-          } else if (this.items.length === 1) {
-            projectToSelect = this.items[0];
-            this.setProject(projectToSelect);
+            if (projectToSelect) {
+              this.setProject(projectToSelect);
+            }
+          } else if (this.projects.length === 1) {
+            this.setProject(this.projects[0]);
           }
 
           this.isLoading = false;
           this.hasErrors = false;
-        },
-        resp => {
-          if (resp.result.error) {
-            Flash(
-              sprintf(
-                'ClusterIntegration|An error occured while trying to fetch your projects: %{error}',
-                {
-                  error: resp.result.error.message,
-                },
-              ),
-            );
-          }
-
+        })
+        .catch(() => {
           this.isLoading = false;
           this.hasErrors = true;
-        },
-        this,
-      );
+        });
     },
   },
 };
@@ -161,7 +142,10 @@ export default {
         :value="selectedProject.projectId"
       />
       <dropdown-button
-        :class="{ 'gl-field-error-outline': hasErrors, 'read-only': hasOneProject }"
+        :class="{
+          'gl-field-error-outline': hasErrors,
+          'read-only': hasOneProject
+        }"
         :is-disabled="isDisabled"
         :is-loading="isLoading"
         :toggle-text="toggleText"
@@ -169,7 +153,7 @@ export default {
       <div class="dropdown-menu dropdown-select">
         <dropdown-search-input
           v-model="searchQuery"
-          :placeholder-text="placeholderText"
+          :placeholder-text="searchPlaceholderText"
         />
         <div class="dropdown-content">
           <ul>

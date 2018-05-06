@@ -10,4 +10,13 @@ export default {
   [types.SET_MACHINE_TYPE](state, selectedMachineType) {
     Object.assign(state, { selectedMachineType });
   },
+  [types.SET_FETCHED_PROJECTS](state, fetchedProjects) {
+    Object.assign(state, { fetchedProjects });
+  },
+  [types.SET_FETCHED_ZONES](state, fetchedZones) {
+    Object.assign(state, { fetchedZones });
+  },
+  [types.SET_FETCHED_MACHINE_TYPES](state, fetchedMachineTypes) {
+    Object.assign(state, { fetchedMachineTypes });
+  },
 };

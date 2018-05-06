@@ -21,10 +21,9 @@ const mountGkeProjectIdDropdown = () => {
       createElement('gke-project-id-dropdown', {
         props: {
           docsUrl: el.dataset.docsurl,
-          service: gapi.client.cloudresourcemanager,
           fieldName: hiddenInput.getAttribute('name'),
           fieldId: hiddenInput.getAttribute('id'),
-          inputValue: hiddenInput.value,
+          defaultValue: hiddenInput.value,
         },
       }),
   });
@@ -44,10 +43,9 @@ const mountGkeZoneDropdown = () => {
     render: createElement =>
       createElement('gke-zone-dropdown', {
         props: {
-          service: gapi.client.compute,
           fieldName: hiddenInput.getAttribute('name'),
           fieldId: hiddenInput.getAttribute('id'),
-          inputValue: hiddenInput.value,
+          defaultValue: hiddenInput.value,
         },
       }),
   });
@@ -67,10 +65,9 @@ const mountGkeMachineTypeDropdown = () => {
     render: createElement =>
       createElement('gke-machine-type-dropdown', {
         props: {
-          service: gapi.client.compute,
           fieldName: hiddenInput.getAttribute('name'),
           fieldId: hiddenInput.getAttribute('id'),
-          inputValue: hiddenInput.value,
+          defaultValue: hiddenInput.value,
         },
       }),
   });
