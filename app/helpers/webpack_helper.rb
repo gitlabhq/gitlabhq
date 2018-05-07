@@ -2,7 +2,7 @@ require 'gitlab/webpack/manifest'
 
 module WebpackHelper
   def webpack_bundle_tag(bundle)
-    javascript_include_tag(*entrypoint_paths(bundle))
+    javascript_include_tag(*webpack_entrypoint_paths(bundle))
   end
 
   def webpack_controller_bundle_tags
@@ -19,7 +19,7 @@ module WebpackHelper
     until chunks.any? || route.empty?
       entrypoint = "pages.#{route.join('.')}"
       begin
-        chunks = entrypoint_paths(entrypoint, extension: 'js')
+        chunks = webpack_entrypoint_paths(entrypoint, extension: 'js')
       rescue Gitlab::Webpack::Manifest::AssetMissingError
         # no bundle exists for this path
       end
@@ -27,13 +27,13 @@ module WebpackHelper
     end
 
     if chunks.empty?
-      chunks = entrypoint_paths("default", extension: 'js')
+      chunks = webpack_entrypoint_paths("default", extension: 'js')
     end
 
     javascript_include_tag(*chunks)
   end
 
-  def entrypoint_paths(source, extension: nil, exclude_duplicates: true)
+  def webpack_entrypoint_paths(source, extension: nil, exclude_duplicates: true)
     return "" unless source.present?
 
     paths = Gitlab::Webpack::Manifest.entrypoint_paths(source)
