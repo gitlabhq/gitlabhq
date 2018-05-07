@@ -213,7 +213,7 @@ describe Geo::ProjectRegistry do
 
   context 'redis shared state', :redis do
     after do
-      subject.reset_syncs_since_gc
+      subject.reset_syncs_since_gc!
     end
 
     describe '#syncs_since_gc' do
@@ -234,7 +234,7 @@ describe Geo::ProjectRegistry do
 
     describe '#increment_syncs_since_gc' do
       it 'increments the number of pushes since the last GC' do
-        3.times { subject.increment_syncs_since_gc }
+        3.times { subject.increment_syncs_since_gc! }
 
         expect(subject.syncs_since_gc).to eq(3)
       end
@@ -242,9 +242,9 @@ describe Geo::ProjectRegistry do
 
     describe '#reset_syncs_since_gc' do
       it 'resets the number of pushes since the last GC' do
-        3.times { subject.increment_syncs_since_gc }
+        3.times { subject.increment_syncs_since_gc! }
 
-        subject.reset_syncs_since_gc
+        subject.reset_syncs_since_gc!
 
         expect(subject.syncs_since_gc).to eq(0)
       end

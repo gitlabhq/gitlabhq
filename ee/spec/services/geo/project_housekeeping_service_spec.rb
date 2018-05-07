@@ -6,11 +6,11 @@ describe Geo::ProjectHousekeepingService do
   let(:registry) { service.registry }
 
   before do
-    registry.reset_syncs_since_gc
+    registry.reset_syncs_since_gc!
   end
 
   after do
-    registry.reset_syncs_since_gc
+    registry.reset_syncs_since_gc!
   end
 
   describe '#execute' do

@@ -29,7 +29,7 @@ module Geo
 
     def increment!
       Gitlab::Metrics.measure(:geo_increment_syncs_since_gc) do
-        registry.increment_syncs_since_gc
+        registry.increment_syncs_since_gc!
       end
     end
 
@@ -47,7 +47,7 @@ module Geo
     ensure
       if should_reset?
         Gitlab::Metrics.measure(:geo_reset_syncs_since_gc) do
-          registry.reset_syncs_since_gc
+          registry.reset_syncs_since_gc!
         end
       end
     end
