@@ -1,4 +1,4 @@
-class AddIndexesToProjectMirrorDataCe < ActiveRecord::Migration
+class AddIndexesToProjectMirrorData < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

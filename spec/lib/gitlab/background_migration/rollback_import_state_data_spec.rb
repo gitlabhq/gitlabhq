@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::RollbackImportStateData, :migration, schema: 20180430144643 do
+describe Gitlab::BackgroundMigration::RollbackImportStateData, :migration, schema: 20180502134117 do
   let(:migration) { described_class.new }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }

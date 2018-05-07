@@ -1,4 +1,4 @@
-class CreateProjectMirrorData < ActiveRecord::Migration
+class CreateProjectMirrorDataEE < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
@@ -6,6 +6,10 @@ class CreateProjectMirrorData < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
+    # When moving from CE to EE, project_mirror_data may already exist, but will
+    # not have all the required columns. These are added in AddMissingColumnsToProjectMirrorData.
+    return if table_exists?(:project_mirror_data)
+
     execute <<-SQL
       CREATE TABLE project_mirror_data
       AS (
