@@ -9,18 +9,21 @@ class Spinach::Features::ProjectDeployKeys < Spinach::FeatureSteps
 
   step 'I should see project deploy key' do
     page.within(find('.deploy-keys')) do
+      find('.js-deployKeys-tab-enabled_keys').click()
       expect(page).to have_content deploy_key.title
     end
   end
 
   step 'I should see other project deploy key' do
     page.within(find('.deploy-keys')) do
+      find('.js-deployKeys-tab-available_project_keys').click()
       expect(page).to have_content other_deploy_key.title
     end
   end
 
   step 'I should see public deploy key' do
     page.within(find('.deploy-keys')) do
+      find('.js-deployKeys-tab-public_keys').click()
       expect(page).to have_content public_deploy_key.title
     end
   end
@@ -42,6 +45,7 @@ class Spinach::Features::ProjectDeployKeys < Spinach::FeatureSteps
   step 'I should see newly created deploy key' do
     @project.reload
     page.within(find('.deploy-keys')) do
+      find('.js-deployKeys-tab-enabled_keys').click()
       expect(page).to have_content(deploy_key.title)
     end
   end
@@ -58,7 +62,7 @@ class Spinach::Features::ProjectDeployKeys < Spinach::FeatureSteps
 
   step 'I should only see the same deploy key once' do
     page.within(find('.deploy-keys')) do
-      expect(page).to have_selector('ul li', count: 1)
+      expect(find('.js-deployKeys-tab-available_project_keys .badge')).to have_content('1')
     end
   end
 
@@ -68,6 +72,7 @@ class Spinach::Features::ProjectDeployKeys < Spinach::FeatureSteps
 
   step 'I click attach deploy key' do
     page.within(find('.deploy-keys')) do
+      find('.badge', text: '1').click()
       click_button 'Enable'
       expect(page).not_to have_selector('.fa-spinner')
     end
