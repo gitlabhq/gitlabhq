@@ -1,5 +1,5 @@
 <script>
-import { __ } from '~/locale';
+import { s__ } from '~/locale';
 import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 
 export default {
@@ -20,7 +20,7 @@ export default {
     toggleText: {
       type: String,
       required: true,
-      default: __('Select'),
+      default: s__('ClusterIntegration|Select'),
     },
   },
 };
