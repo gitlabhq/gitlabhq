@@ -42,8 +42,8 @@ class LfsObject < ActiveRecord::Base
   end
 
   def verify_filename!
-    return unless self.file_identifier
-
-    self.errors.add(:filename, 'Invalid filename') unless self.file_identifier == oid[FILE_NAME_RANGE]
+    unless self.file_identifier == oid[FILE_NAME_RANGE]
+      self.errors.add(:filename, 'Invalid filename')
+    end
   end
 end
