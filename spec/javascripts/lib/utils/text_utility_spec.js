@@ -98,4 +98,10 @@ describe('text_utility', () => {
       expect(textUtils.truncateSha('shortsha')).toBe('shortsha');
     });
   });
+
+  describe('splitCamelCase', () => {
+    it('separates a PascalCase word to two', () => {
+      expect(textUtils.splitCamelCase('HelloWorld')).toBe('Hello World');
+    });
+  });
 });

@@ -7,7 +7,7 @@ import { __, sprintf } from '~/locale';
 import Flash from '../../flash';
 import Autosave from '../../autosave';
 import TaskList from '../../task_list';
-import { capitalizeFirstCharacter, convertToCamelCase } from '../../lib/utils/text_utility';
+import { capitalizeFirstCharacter, convertToCamelCase, splitCamelCase } from '../../lib/utils/text_utility';
 import * as constants from '../constants';
 import eventHub from '../event_hub';
 import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
@@ -53,7 +53,7 @@ export default {
     ]),
     ...mapState(['isToggleStateButtonLoading']),
     noteableDisplayName() {
-      return this.noteableType.replace(/_/g, ' ');
+      return splitCamelCase(this.noteableType).toLowerCase();
     },
     isLoggedIn() {
       return this.getUserData.id;
