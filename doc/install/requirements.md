@@ -105,7 +105,7 @@ features of GitLab work with MySQL/MariaDB:
 1. GitLab Geo does [not support MySQL](https://docs.gitlab.com/ee/gitlab-geo/database.html#mysql-replication).
 1. [Zero downtime migrations][zero] do not work with MySQL
 1. [Database load balancing](../administration/database_load_balancing.md)
-1. GitLab [optimizes the loading of dashboard events](https://gitlab.com/gitlab-org/gitlab-ce/issues/31806) using [PostgreSQL LATERAL JOINs](https://blog.heapanalytics.com/postgresqls-powerful-new-join-type-lateral/).withi
+1. GitLab [optimizes the loading of dashboard events](https://gitlab.com/gitlab-org/gitlab-ce/issues/31806) using [PostgreSQL LATERAL JOINs](https://blog.heapanalytics.com/postgresqls-powerful-new-join-type-lateral/)
 1. In MySQL, subselects within the IN clause may be re-executed for every row in the outer query, which may cause O(n^2) queries.
 1. In general, SQL optimized for PostgreSQL may run much slower in MySQL due to
    differences in query planners. For example, subqueries that work well in PostgreSQL
