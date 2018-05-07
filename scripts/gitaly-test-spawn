@@ -2,7 +2,8 @@
 
 gitaly_dir = 'tmp/tests/gitaly'
 env = { 'HOME' => File.expand_path('tmp/tests'),
-        'GEM_PATH' => Gem.path.join(':') }
+        'GEM_PATH' => Gem.path.join(':'),
+        'BUNDLE_GEMFILE' => nil }
 args = %W[#{gitaly_dir}/gitaly #{gitaly_dir}/config.toml]
 
 spawn('sleep 1; tail -f log/gitaly-test.log')
