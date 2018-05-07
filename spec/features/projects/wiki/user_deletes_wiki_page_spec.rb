@@ -14,7 +14,7 @@ feature 'User deletes wiki page', :js do
     click_on('Edit')
     click_on('Delete')
     find('.js-modal-primary-action').click
-    
+
     expect(page).to have_content('Page was successfully deleted')
   end
 end

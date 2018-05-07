@@ -34,7 +34,7 @@ export default {
         {
           pageTitle: `'${_.escape(this.pageTitle)}'`,
         },
-        false
+        false,
       );
     },
   },
@@ -56,22 +56,22 @@ export default {
   >
     {{ message }}
     <form
-        ref="form"
-        :action="deleteWikiUrl"
-        method="post"
-        class="form-horizontal js-requires-input"
-      >
-        <input
-          ref="method"
-          type="hidden"
-          name="_method"
-          value="delete"
-        />
-        <input
-          type="hidden"
-          name="authenticity_token"
-          :value="csrfToken"
-        />
-      </form>
+      ref="form"
+      :action="deleteWikiUrl"
+      method="post"
+      class="form-horizontal js-requires-input"
+    >
+      <input
+        ref="method"
+        type="hidden"
+        name="_method"
+        value="delete"
+      />
+      <input
+        type="hidden"
+        name="authenticity_token"
+        :value="csrfToken"
+      />
+    </form>
   </gl-modal>
 </template>
