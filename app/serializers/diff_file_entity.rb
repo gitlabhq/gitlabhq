@@ -20,6 +20,12 @@ class DiffFileEntity < Grape::Entity
 
   expose :blob, using: BlobEntity
 
+  expose :can_modify_blob do |diff_file|
+    # todo: this depends on can_collaborate_with_project?, which needs current_user
+    # also maybe this should live in current_user like in merge_request entity
+    # can_modify_blob?(diff_file.blob, merge_request.project, merge_request.source_branch)
+  end
+
   expose :file_hash do |diff_file|
     Digest::SHA1.hexdigest(diff_file.file_path)
   end
@@ -83,6 +89,12 @@ class DiffFileEntity < Grape::Entity
     project_edit_blob_path(merge_request.source_project,
       tree_join(merge_request.source_branch, diff_file.new_path),
       options)
+  end
+
+  expose :fork_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
+    # copypasted from helper
+    # params = edit_blob_fork_params(edit_path)
+    # project_forks_path(merge_request.project, namespace_key: request.current_user.namespace.id, continue: params)
   end
 
   expose :view_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
