@@ -23,7 +23,7 @@ class Projects::PipelinesController < Projects::ApplicationController
     @finished_count = limited_pipelines_count(project, 'finished')
     @pipelines_count = limited_pipelines_count(project)
 
-    @pipelines.map(&:commit) # List commits for batch loading
+    Gitlab::Ci::Pipeline::Preloader.preload(@pipelines)
 
     respond_to do |format|
       format.html
