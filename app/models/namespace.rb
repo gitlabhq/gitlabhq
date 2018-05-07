@@ -166,6 +166,13 @@ class Namespace < ActiveRecord::Base
     projects.with_shared_runners.any?
   end
 
+  # Returns all ancestors, self, and descendants of the current namespace.
+  def self_and_hierarchy
+    Gitlab::GroupHierarchy
+      .new(self.class.where(id: id))
+      .all_groups
+  end
+
   # Returns all the ancestors of the current namespaces.
   def ancestors
     return self.class.none unless parent_id
