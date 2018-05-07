@@ -1,4 +1,6 @@
 class SystemNoteMetadata < ActiveRecord::Base
+  prepend EE::SystemNoteMetadata
+
   # These notes's action text might contain a reference that is external.
   # We should always force a deep validation upon references that are found
   # in this note type.
@@ -15,13 +17,14 @@ class SystemNoteMetadata < ActiveRecord::Base
     title time_tracking branch milestone discussion task moved
     opened closed merged duplicate locked unlocked
     outdated
-    approved unapproved relate unrelate
-    epic_issue_added issue_added_to_epic epic_issue_removed issue_removed_from_epic
-    epic_issue_moved issue_changed_epic
   ].freeze
 
   validates :note, presence: true
-  validates :action, inclusion: ICON_TYPES, allow_nil: true
+  validates :action, inclusion: { in: :icon_types }, allow_nil: true
 
   belongs_to :note
+
+  def icon_types
+    ICON_TYPES
+  end
 end
