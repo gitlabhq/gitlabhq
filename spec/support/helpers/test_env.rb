@@ -153,22 +153,16 @@ module TestEnv
   end
 
   def start_gitaly(gitaly_dir)
+Thread.new { sleep(30); system('grep', '-v', 'level=info', 'log/gitaly-test.log') }
+
     if ENV['CI'].present?
       # Gitaly has been spawned outside this process already
       return
     end
 
-    spawn_script = %W[
-      /usr/bin/env
-      -u RUBYOPT
-      -u BUNDLE_GEMFILE
-      BUNDLE_PATH=#{Bundler.bundle_path}
-      #{Rails.root.join('scripts/gitaly-test-spawn')}
-    ]
-    @gitaly_pid = Bundler.with_original_env { IO.popen(spawn_script, &:read).to_i }
+    spawn_script = Rails.root.join('scripts/gitaly-test-spawn').to_s
+    @gitaly_pid = Bundler.with_original_env { IO.popen([spawn_script], &:read).to_i }
     Kernel.at_exit { stop_gitaly }
-
-Thread.new { sleep(30); system('grep', '-v', 'level=info', 'log/gitaly-test.log') }
 
     wait_gitaly
   end
