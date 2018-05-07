@@ -196,7 +196,7 @@ shared_examples_for 'common trace features' do
 
     context 'tries to append trace at different offset' do
       it "fails with append" do
-        expect(trace.append("56", 2)).to eq(-4)
+        expect(trace.append("56", 2)).to eq(4)
         expect(trace.raw).to eq("1234")
       end
     end
