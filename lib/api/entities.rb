@@ -136,6 +136,7 @@ module API
 
       def self.preload_relation(projects_relation, options =  {})
         projects_relation.preload(:project_feature, :route)
+                         .preload(:import_state)
                          .preload(namespace: [:route, :owner],
                                   tags: :taggings)
       end
@@ -242,13 +243,18 @@ module API
       expose :requested_at
     end
 
-    class Group < Grape::Entity
-      expose :id, :name, :path, :description, :visibility
+    class BasicGroupDetails < Grape::Entity
+      expose :id
+      expose :web_url
+      expose :name
+    end
+
+    class Group < BasicGroupDetails
+      expose :path, :description, :visibility
       expose :lfs_enabled?, as: :lfs_enabled
       expose :avatar_url do |group, options|
         group.avatar_url(only_path: false)
       end
-      expose :web_url
       expose :request_access_enabled
       expose :full_name, :full_path
 
@@ -982,6 +988,13 @@ module API
           runner.projects
         else
           options[:current_user].authorized_projects.where(id: runner.projects)
+        end
+      end
+      expose :groups, with: Entities::BasicGroupDetails do |runner, options|
+        if options[:current_user].admin?
+          runner.groups
+        else
+          options[:current_user].authorized_groups.where(id: runner.groups)
         end
       end
     end
