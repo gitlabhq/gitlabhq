@@ -13,7 +13,7 @@ module Ci
     CHUNK_SIZE = 128.kilobytes
     CHUNK_REDIS_TTL = 1.week
     WRITE_LOCK_RETRY = 10
-    WRITE_LOCK_SLEEP = 0.01.second
+    WRITE_LOCK_SLEEP = 0.01.seconds
     WRITE_LOCK_TTL = 1.minute
 
     enum data_store: {
