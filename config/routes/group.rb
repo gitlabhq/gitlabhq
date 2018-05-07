@@ -84,6 +84,12 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       end
     end
 
+    resources :autocomplete_sources, only: [] do
+      collection do
+        get 'members'
+      end
+    end
+
     resources :billings, only: [:index]
     resources :epics, concerns: :awardable, constraints: { id: /\d+/ } do
       member do

@@ -154,7 +154,7 @@
           :project-namespace="projectNamespace"
           :show-inline-edit-button="true"
           :show-delete-button="false"
-          :enable-autocomplete="false"
+          :enable-autocomplete="true"
         />
       </div>
       <epic-sidebar

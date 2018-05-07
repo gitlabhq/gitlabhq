@@ -28,6 +28,17 @@ module EE
       class_names
     end
 
+    override :autocomplete_data_sources
+    def autocomplete_data_sources(object, noteable_type)
+      return {} unless object && noteable_type
+
+      return super unless object.is_a?(Group)
+
+      {
+        members: members_group_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id])
+      }
+    end
+
     private
 
     def appearance

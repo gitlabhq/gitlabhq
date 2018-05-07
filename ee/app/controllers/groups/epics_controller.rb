@@ -47,7 +47,7 @@ class Groups::EpicsController < Groups::ApplicationController
 
     return render_404 unless can?(current_user, :read_epic, @epic)
 
-    @epic
+    @noteable = @epic
   end
   alias_method :issuable, :epic
   alias_method :awardable, :epic
