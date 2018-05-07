@@ -9,6 +9,14 @@ export default {
       type: Number,
       required: true,
     },
+    plainDiffPath: {
+      type: String,
+      required: true,
+    },
+    emailPatchPath: {
+      type: String,
+      required: true,
+    },
   },
 };
 </script>
@@ -19,14 +27,18 @@ export default {
       {{ __('Too many changes to show.') }}
     </h4>
     <div class="pull-right">
-<!-- TODO: psimyn
-- if current_controller?(:commit)
-= link_to "Plain diff", project_commit_path(@project, @commit, format: :diff), class: "btn btn-sm"
-= link_to "Email patch", project_commit_path(@project, @commit, format: :patch), class: "btn btn-sm"
-- elsif current_controller?('projects/merge_requests/diffs') && @merge_request&.persisted?
-= link_to "Plain diff", merge_request_path(@merge_request, format: :diff), class: "btn btn-sm"
-= link_to "Email patch", merge_request_path(@merge_request, format: :patch), class: "btn btn-sm"
--->
+      <a
+        :href="plainDiffPath"
+        class="btn btn-sm"
+      >
+        {{ __('Plain diff') }}
+      </a>
+      <a
+        :href="emailPatchPath"
+        class="btn btn-sm"
+      >
+        {{ __('Email patch') }}
+      </a>
     </div>
     <p>
       To preserve performance only

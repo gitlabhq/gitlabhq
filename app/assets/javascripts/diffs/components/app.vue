@@ -109,6 +109,9 @@ export default {
           v-if="renderOverflowWarning"
           :visible="numVisibleFiles"
           :total="numTotalFiles"
+          <!-- todo: psimyn. these values are both in MR widget, not sure if they should be duplicated to diffs or not -->
+          plain-diff-path=""
+          email-patch-path=""
         />
 
         <div class="files">
