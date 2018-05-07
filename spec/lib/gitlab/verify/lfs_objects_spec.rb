@@ -11,7 +11,7 @@ describe Gitlab::Verify::LfsObjects do
     let(:failures) { collect_failures }
     let(:failure) { failures[lfs_object] }
 
-    let!(:lfs_object) { create(:lfs_object, :with_file, :correct_oid) }
+    let!(:lfs_object) { create(:lfs_object, :with_file) }
 
     it 'passes LFS objects with the correct file' do
       expect(failures).to eq({})

@@ -26,12 +26,6 @@ FactoryBot.define do
     size { File.size(file.path) }
   end
 
-  # The uniqueness constraint means we can't use the correct OID for all LFS
-  # objects, so the test needs to decide which (if any) object gets it
-  trait :correct_oid do
-    oid 'b804383982bb89b00e828e3f44c038cc991d3d1768009fc39ba8e2c081b9fb75'
-  end
-
   trait :object_storage do
     file_store { LfsObjectUploader::Store::REMOTE }
   end
