@@ -672,8 +672,8 @@ class Project < ActiveRecord::Base
     }
   end
 
-  def ensure_import_state
-    return if self[:import_status] == 'none' || self[:import_status].nil?
+  def ensure_import_state(force: false)
+    return if !force && (self[:import_status] == 'none' || self[:import_status].nil?)
     return unless import_state.nil?
 
     create_import_state(import_state_args)
@@ -682,39 +682,39 @@ class Project < ActiveRecord::Base
   end
 
   def import_schedule
-    ensure_import_state
+    ensure_import_state(force: true)
 
-    import_state&.schedule
+    import_state.schedule
   end
 
   def force_import_start
-    ensure_import_state
+    ensure_import_state(force: true)
 
-    import_state&.force_start
+    import_state.force_start
   end
 
   def import_start
-    ensure_import_state
+    ensure_import_state(force: true)
 
-    import_state&.start
+    import_state.start
   end
 
   def import_fail
-    ensure_import_state
+    ensure_import_state(force: true)
 
-    import_state&.fail_op
+    import_state.fail_op
   end
 
   def import_finish
-    ensure_import_state
+    ensure_import_state(force: true)
 
-    import_state&.finish
+    import_state.finish
   end
 
   def import_jid=(new_jid)
-    ensure_import_state
+    ensure_import_state(force: true)
 
-    import_state&.jid = new_jid
+    import_state.jid = new_jid
   end
 
   def import_jid
@@ -724,9 +724,9 @@ class Project < ActiveRecord::Base
   end
 
   def import_error=(new_error)
-    ensure_import_state
+    ensure_import_state(force: true)
 
-    import_state&.last_error = new_error
+    import_state.last_error = new_error
   end
 
   def import_error
@@ -736,9 +736,9 @@ class Project < ActiveRecord::Base
   end
 
   def import_status=(new_status)
-    ensure_import_state
+    ensure_import_state(force: true)
 
-    import_state&.status = new_status
+    import_state.status = new_status
   end
 
   def import_status

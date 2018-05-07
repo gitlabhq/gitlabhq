@@ -69,78 +69,44 @@ FactoryBot.define do
     end
 
     trait :import_none do
-      transient do
-        status :none
-      end
-
-      before(:create) do |project, evaluator|
-        project.create_import_state(:status, evaluator.status)
-      end
+      import_status :none
     end
 
     trait :import_scheduled do
-      transient do
-        status :scheduled
-        last_update_scheduled_at Time.now
-      end
+      import_status :scheduled
 
-      before(:create) do |project, evaluator|
-        project.create_import_state(status: evaluator.status,
-                                    last_update_scheduled_at: evaluator.last_update_scheduled_at)
+      after(:create) do |project, _|
+        project.import_state&.update_attributes(last_update_scheduled_at: Time.now)
       end
     end
 
     trait :import_started do
-      transient do
-        status :started
-        last_update_started_at Time.now
-      end
+      import_status :started
 
-      before(:create) do |project, evaluator|
-        project.create_import_state(status: evaluator.status,
-                                    last_update_started_at: evaluator.last_update_started_at)
+      after(:create) do |project, _|
+        project.import_state&.update_attributes(last_update_started_at: Time.now)
       end
     end
 
     trait :import_finished do
-      transient do
-        timestamp = Time.now
+      timestamp = Time.now
 
-        status :finished
-        last_update_at timestamp
-        last_successful_update_at timestamp
-      end
-
-      before(:create) do |project, evaluator|
-        project.create_import_state(status: evaluator.status,
-                                    last_update_at: evaluator.last_update_at,
-                                    last_successful_update_at: evaluator.last_successful_update_at)
-      end
+      import_status :finished
+      mirror_last_update_at timestamp
+      mirror_last_successful_update_at timestamp
     end
 
     trait :import_failed do
-      transient do
-        status :failed
-        last_update_at { Time.now }
-      end
-
-      before(:create) do |project, evaluator|
-        project.create_import_state(status: evaluator.status,
-                                    last_update_at: evaluator.last_update_at)
-      end
+      import_status :failed
+      mirror_last_update_at { Time.now }
     end
 
     trait :import_hard_failed do
-      transient do
-        status :failed
-        retry_count Gitlab::Mirror::MAX_RETRY + 1
-        last_update_at Time.now - 1.minute
-      end
+      import_status :failed
+      mirror_last_update_at { Time.now - 1.minute }
 
-      before(:create) do |project, evaluator|
-        project.create_import_state(status: evaluator.status,
-                                    retry_count: evaluator.retry_count,
-                                    last_update_at: evaluator.last_update_at)
+      after(:create) do |project|
+        project.import_state&.update_attributes(retry_count: Gitlab::Mirror::MAX_RETRY + 1)
       end
     end
 
