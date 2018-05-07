@@ -23,6 +23,7 @@ export default {
     return {
       isActive: false,
       isLoadingCollapsedDiff: false,
+      forkMessageVisible: false,
     };
   },
   computed: {
@@ -103,6 +104,12 @@ export default {
           createFlash(__('Something went wrong on our end. Please try again!'));
         });
     },
+    showForkMessage() {
+      this.forkMessageVisible = true;
+    },
+    hideForkMessage() {
+      this.forkMessageVisible = false;
+    },
   },
 };
 </script>
@@ -119,8 +126,34 @@ export default {
       :discussions-expanded="isDiscussionsExpanded"
       :add-merge-request-buttons="true"
       @toggleFile="handleToggle"
+      @showForkMessage="showForkMessage"
       class="js-file-title file-title"
     />
+
+    <div
+      v-if="forkMessageVisible"
+      class="js-file-fork-suggestion-section file-fork-suggestion">
+      <span class="file-fork-suggestion-note">
+        <!-- TODO: psimyn this button can be Replace/Delete/Edit. This seems excessive, do we actually need to specify edit? -->
+        <!-- see modify_file_button helper in haml -->
+        You're not allowed to <span class="js-file-fork-suggestion-section-action">edit</span>
+        files in this project directly. Please fork this project,
+        make your changes there, and submit a merge request.
+      </span>
+      <button
+        class="js-fork-suggestion-button btn btn-grouped btn-inverted btn-success"
+      >
+        Fork
+      </button>
+      <button
+        class="js-cancel-fork-suggestion-button btn btn-grouped"
+        type="button"
+        @click="hideForkMessage"
+      >
+        Cancel
+      </button>
+    </div>
+
     <diff-content
       v-show="!isCollapsed"
       :class="{ hidden: isCollapsed || file.tooLarge }"
