@@ -153,9 +153,20 @@ module API
         content_range = request.headers['Content-Range']
         content_range = content_range.split('-')
 
-        stream_size = job.trace.append(request.body.read, content_range[0].to_i)
-        if stream_size < 0
-          break error!('416 Range Not Satisfiable', 416, { 'Range' => "0-#{-stream_size}" })
+        # TODO:
+        # it seems that `Content-Range` as formatted by runner is wrong,
+        # the `byte_end` should point to final byte, but it points byte+1
+        # that means that we have to calculate end of body,
+        # as we cannot use `content_length[1]`
+        # Issue: https://gitlab.com/gitlab-org/gitlab-runner/issues/3275
+
+        body_data = request.body.read
+        body_start = content_range[0].to_i
+        body_end = body_start + body_data.bytesize
+
+        stream_size = job.trace.append(body_data, body_start)
+        unless stream_size == body_end
+          break error!('416 Range Not Satisfiable', 416, { 'Range' => "0-#{stream_size}" })
         end
 
         status 202
