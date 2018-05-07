@@ -12,9 +12,9 @@ module Ci
 
     CHUNK_SIZE = 128.kilobytes
     CHUNK_REDIS_TTL = 1.week
-    WRITE_LOCK_RETRY = 100
-    WRITE_LOCK_SLEEP = 1
-    WRITE_LOCK_TTL = 5.minutes
+    WRITE_LOCK_RETRY = 10
+    WRITE_LOCK_SLEEP = 5.milisecond
+    WRITE_LOCK_TTL = 1.minute
 
     enum data_store: {
       redis: 1,
@@ -96,7 +96,7 @@ module Ci
         save! if changed?
       end
 
-      schedule_to_db if fullfilled?
+      schedule_to_db if full?
     end
 
     def schedule_to_db
@@ -105,7 +105,7 @@ module Ci
       Ci::BuildTraceChunkFlushWorker.perform_async(id)
     end
 
-    def fullfilled?
+    def full?
       size == CHUNK_SIZE
     end
 
