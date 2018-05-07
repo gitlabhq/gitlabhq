@@ -8,6 +8,6 @@ class AddRepositoryCheckToGeoProjectRegistry < ActiveRecord::Migration
 
   def change
     add_column :project_registry, :last_repository_check_failed, :boolean
-    add_column :project_registry, :last_repository_check_at, :datetime
+    add_column :project_registry, :last_repository_check_at, :datetime_with_timezone
   end
 end

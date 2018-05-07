@@ -38,5 +38,13 @@ describe EE::RepositoryCheck::SingleRepositoryWorker do
 
       expect(project_registry.last_repository_check_failed).to be_falsy
     end
+
+    it 'creates Geo registry when not yet exists' do
+      project_registry.destroy!
+
+      worker.perform(project.id)
+
+      expect(Geo::ProjectRegistry.find_by!(project: project.id).last_repository_check_failed).to be_falsy
+    end
   end
 end

@@ -14,7 +14,7 @@ module EE
 
         project_registry.assign_attributes(
           last_repository_check_failed: !healthy,
-          last_repository_check_at: Time.now
+          last_repository_check_at: Time.zone.now
         )
         project_registry.save!
       end
