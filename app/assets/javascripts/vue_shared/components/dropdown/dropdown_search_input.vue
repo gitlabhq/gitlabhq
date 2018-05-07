@@ -3,15 +3,18 @@ import { __ } from '~/locale';
 
 export default {
   props: {
-    searchQuery: {
-      type: String,
-      required: false,
-      default: '',
-    },
     placeholderText: {
       type: String,
       required: true,
       default: __('Search'),
+    },
+  },
+  data() {
+    return { searchQuery: this.value };
+  },
+  watch: {
+    searchQuery(query) {
+      this.$emit('input', query);
     },
   },
 };
@@ -20,12 +23,11 @@ export default {
 <template>
   <div class="dropdown-input">
     <input
-      autocomplete="off"
       class="dropdown-input-field"
       type="search"
+      v-model="searchQuery"
       :placeholder="placeholderText"
-      :searchQuery="searchQuery"
-      @input="$emit('input', $event.target.value)"
+      autocomplete="off"
     />
     <i
       aria-hidden="true"
