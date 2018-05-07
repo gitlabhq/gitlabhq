@@ -132,7 +132,7 @@ export default {
 <template>
   <div>
     <div
-      class="dropdown"
+      class="js-gcp-project-id-dropdown dropdown"
       :class="{ 'gl-show-field-errors': hasErrors }"
     >
       <dropdown-hidden-input

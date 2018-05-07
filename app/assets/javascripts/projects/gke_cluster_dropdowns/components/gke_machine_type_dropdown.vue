@@ -115,7 +115,7 @@ export default {
 
 <template>
   <div
-    class="dropdown"
+    class="js-gcp-machine-type-dropdown dropdown"
     :class="{ 'gl-show-field-errors': hasErrors }"
   >
     <dropdown-hidden-input

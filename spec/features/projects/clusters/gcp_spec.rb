@@ -42,8 +42,16 @@ feature 'Gcp Cluster', :js do
 
           allow(WaitForClusterCreationWorker).to receive(:perform_in).and_return(nil)
 
-          fill_in 'cluster_provider_gcp_attributes_gcp_project_id', with: 'gcp-project-123'
-          fill_in 'cluster_name', with: 'dev-cluster'
+          execute_script('document.querySelector(".js-gke-cluster-creation-submit").removeAttribute("disabled")')
+          sleep 2 # wait for ajax
+          execute_script('document.querySelector(".js-gcp-project-id-dropdown input").setAttribute("type", "text")')
+          execute_script('document.querySelector(".js-gcp-zone-dropdown input").setAttribute("type", "text")')
+          execute_script('document.querySelector(".js-gcp-machine-type-dropdown input").setAttribute("type", "text")')
+
+          fill_in 'cluster[name]', with: 'dev-cluster'
+          fill_in 'cluster[provider_gcp_attributes][gcp_project_id]', with: 'gcp-project-123'
+          fill_in 'cluster[provider_gcp_attributes][zone]', with: 'us-central1-a'
+          fill_in 'cluster[provider_gcp_attributes][machine_type]', with: 'n1-standard-2'
           click_button 'Create Kubernetes cluster'
         end
 
@@ -55,7 +63,7 @@ feature 'Gcp Cluster', :js do
           expect(page).to have_content('Kubernetes cluster was successfully created on Google Kubernetes Engine')
         end
 
-        it 'user sees a error if something worng during creation' do
+        it 'user sees a error if something wrong during creation' do
           expect(page).to have_content('Kubernetes cluster is being created on Google Kubernetes Engine...')
 
           Clusters::Cluster.last.provider.make_errored!('Something wrong!')
@@ -66,6 +74,7 @@ feature 'Gcp Cluster', :js do
 
       context 'when user filled form with invalid parameters' do
         before do
+          execute_script('document.querySelector(".js-gke-cluster-creation-submit").removeAttribute("disabled")')
           click_button 'Create Kubernetes cluster'
         end
 
