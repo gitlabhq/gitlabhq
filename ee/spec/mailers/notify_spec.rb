@@ -149,4 +149,50 @@ describe Notify do
       end
     end
   end
+
+  context 'for a group' do
+    context 'for epic notes' do
+      set(:group) { create(:group) }
+      set(:epic) { create(:epic, group: group) }
+      set(:note) { create(:note, project: nil, noteable: epic) }
+      let(:note_author) { note.author }
+      let(:epic_note_path) { group_epic_path(group, epic, anchor: "note_#{note.id}") }
+
+      subject { described_class.note_epic_email(recipient.id, note.id) }
+
+      it_behaves_like 'a note email'
+
+      it_behaves_like 'an unsubscribeable thread'
+
+      it 'has the characteristics of a threaded reply' do
+        host = Gitlab.config.gitlab.host
+        route_key = "#{epic.class.model_name.singular_route_key}_#{epic.id}"
+
+        aggregate_failures do
+          is_expected.to have_header('Message-ID', /\A<.*@#{host}>\Z/)
+          is_expected.to have_header('In-Reply-To', "<#{route_key}@#{host}>")
+          is_expected.to have_header('References',  /\A<#{route_key}@#{host}> <reply\-.*@#{host}>\Z/ )
+          is_expected.to have_subject(/^Re: /)
+        end
+      end
+
+      context 'when reply-by-email is enabled with incoming address with %{key}' do
+        it 'has a Reply-To header' do
+          is_expected.to have_header 'Reply-To', /<reply+(.*)@#{Gitlab.config.gitlab.host}>\Z/
+        end
+      end
+
+      it { is_expected.to have_body_text('View Epic') }
+
+      it 'has the correct subject and body' do
+        prefix = "Re: #{epic.group.name} | "
+        suffix = "#{epic.title} (#{epic.to_reference})"
+
+        aggregate_failures do
+          is_expected.to have_subject [prefix, suffix].compact.join
+          is_expected.to have_body_text(epic_note_path)
+        end
+      end
+    end
+  end
 end

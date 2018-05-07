@@ -1,23 +1,20 @@
-import Vue from 'vue';
-import VueResource from 'vue-resource';
-
-Vue.use(VueResource);
+import axios from '~/lib/utils/axios_utils';
 
 export default class SidebarService {
-  constructor(endpoint) {
+  constructor(endpoint, subscriptionEndpoint) {
     this.endpoint = endpoint;
-    this.resource = Vue.resource(`${this.endpoint}.json`, {});
+    this.subscriptionEndpoint = subscriptionEndpoint;
   }
 
   updateStartDate(startDate) {
-    return this.resource.update({
-      start_date: startDate,
-    });
+    return axios.put(this.endpoint, { start_date: startDate });
   }
 
   updateEndDate(endDate) {
-    return this.resource.update({
-      end_date: endDate,
-    });
+    return axios.put(this.endpoint, { end_date: endDate });
+  }
+
+  toggleSubscribed() {
+    return axios.post(this.subscriptionEndpoint);
   }
 }

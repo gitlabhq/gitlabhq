@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe EE::NotificationService, :mailer do
+  include NotificationHelpers
   include ExternalAuthorizationServiceHelpers
   let(:subject) { NotificationService.new }
 
@@ -235,5 +236,123 @@ describe EE::NotificationService, :mailer do
 
       subject.project_mirror_user_changed(new_mirror_user, mirror_user.name, project)
     end
+  end
+
+  describe 'Notes' do
+    around do |example|
+      perform_enqueued_jobs do
+        example.run
+      end
+    end
+
+    context 'epic notes' do
+      set(:group) { create(:group, :private) }
+      set(:epic) { create(:epic, group: group) }
+      set(:note) { create(:note, project: nil, noteable: epic, note: '@mention referenced, @unsubscribed_mentioned and @outsider also') }
+
+      before(:all) do
+        create(:group_member, group: group, user: epic.author)
+        create(:group_member, group: group, user: note.author)
+      end
+
+      before do
+        stub_licensed_features(epics: true)
+        build_group_members(group)
+
+        @u_custom_off = create_user_with_notification(:custom, 'custom_off', group)
+        create(:group_member, group: group, user: @u_custom_off)
+
+        create(
+          :note,
+          project: nil,
+          noteable: epic,
+          author: @u_custom_off,
+          note: 'i think @subscribed_participant should see this'
+        )
+
+        update_custom_notification(:new_note, @u_guest_custom, resource: group)
+        update_custom_notification(:new_note, @u_custom_global)
+      end
+
+      describe '#new_note' do
+        it do
+          add_users_with_subscription(group, epic)
+          reset_delivered_emails!
+
+          expect(SentNotification).to receive(:record).with(epic, any_args).exactly(9).times
+
+          subject.new_note(note)
+
+          should_email(@u_watcher)
+          should_email(note.noteable.author)
+          should_email(@u_custom_global)
+          should_email(@u_mentioned)
+          should_email(@subscriber)
+          should_email(@watcher_and_subscriber)
+          should_email(@subscribed_participant)
+          should_email(@u_custom_off)
+          should_email(@unsubscribed_mentioned)
+          should_not_email(@u_guest_custom)
+          should_not_email(@u_guest_watcher)
+          should_not_email(note.author)
+          should_not_email(@u_participating)
+          should_not_email(@u_disabled)
+          should_not_email(@unsubscriber)
+          should_not_email(@u_outsider_mentioned)
+          should_not_email(@u_lazy_participant)
+        end
+      end
+    end
+  end
+
+  def build_group_members(group)
+    @u_watcher               = create_global_setting_for(create(:user), :watch)
+    @u_participating         = create_global_setting_for(create(:user), :participating)
+    @u_participant_mentioned = create_global_setting_for(create(:user, username: 'participant'), :participating)
+    @u_disabled              = create_global_setting_for(create(:user), :disabled)
+    @u_mentioned             = create_global_setting_for(create(:user, username: 'mention'), :mention)
+    @u_committer             = create(:user, username: 'committer')
+    @u_not_mentioned         = create_global_setting_for(create(:user, username: 'regular'), :participating)
+    @u_outsider_mentioned    = create(:user, username: 'outsider')
+    @u_custom_global         = create_global_setting_for(create(:user, username: 'custom_global'), :custom)
+
+    # User to be participant by default
+    # This user does not contain any record in notification settings table
+    # It should be treated with a :participating notification_level
+    @u_lazy_participant      = create(:user, username: 'lazy-participant')
+
+    @u_guest_watcher = create_user_with_notification(:watch, 'guest_watching', group)
+    @u_guest_custom = create_user_with_notification(:custom, 'guest_custom', group)
+
+    create(:group_member, group: group, user: @u_watcher)
+    create(:group_member, group: group, user: @u_participating)
+    create(:group_member, group: group, user: @u_participant_mentioned)
+    create(:group_member, group: group, user: @u_disabled)
+    create(:group_member, group: group, user: @u_mentioned)
+    create(:group_member, group: group, user: @u_committer)
+    create(:group_member, group: group, user: @u_not_mentioned)
+    create(:group_member, group: group, user: @u_lazy_participant)
+    create(:group_member, group: group, user: @u_custom_global)
+  end
+
+  def add_users_with_subscription(group, issuable)
+    @subscriber = create :user
+    @unsubscriber = create :user
+    @unsubscribed_mentioned = create :user, username: 'unsubscribed_mentioned'
+    @subscribed_participant = create_global_setting_for(create(:user, username: 'subscribed_participant'), :participating)
+    @watcher_and_subscriber = create_global_setting_for(create(:user), :watch)
+
+    create(:group_member, group: group, user: @subscribed_participant)
+    create(:group_member, group: group, user: @subscriber)
+    create(:group_member, group: group, user: @unsubscriber)
+    create(:group_member, group: group, user: @watcher_and_subscriber)
+    create(:group_member, group: group, user: @unsubscribed_mentioned)
+
+    issuable.subscriptions.create(user: @unsubscribed_mentioned, subscribed: false)
+    issuable.subscriptions.create(user: @subscriber, subscribed: true)
+    issuable.subscriptions.create(user: @subscribed_participant, subscribed: true)
+    issuable.subscriptions.create(user: @unsubscriber, subscribed: false)
+    # Make the watcher a subscriber to detect dupes
+    issuable.subscriptions.create(user: @watcher_and_subscriber, subscribed: true)
   end
 end

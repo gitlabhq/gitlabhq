@@ -2,47 +2,21 @@ require 'spec_helper'
 
 describe Gitlab::Email::Handler::CreateNoteHandler do
   include_context :email_shared_context
-  it_behaves_like :reply_processing_shared_examples
 
   before do
     stub_incoming_email_setting(enabled: true, address: "reply+%{key}@appmail.adventuretime.ooo")
     stub_config_setting(host: 'localhost')
+    stub_licensed_features(epics: true)
   end
 
   let(:email_raw) { fixture_file('emails/valid_reply.eml') }
-  let(:project)   { create(:project, :public, :repository) }
-  let(:user)      { create(:user) }
-  let(:note)      { create(:diff_note_on_merge_request, project: project) }
-  let(:noteable)  { note.noteable }
+  let(:group) { create(:group_with_members) }
+  let(:user) { group.users.first }
+  let(:noteable) { create(:epic, group: group) }
+  let(:note) { create(:note, project: nil, noteable: noteable)}
 
   let!(:sent_notification) do
     SentNotification.record_note(note, user.id, mail_key)
-  end
-
-  context "when the recipient address doesn't include a mail key" do
-    let(:email_raw) { fixture_file('emails/valid_reply.eml').gsub(mail_key, "") }
-
-    it "raises a UnknownIncomingEmail" do
-      expect { receiver.execute }.to raise_error(Gitlab::Email::UnknownIncomingEmail)
-    end
-  end
-
-  context "when no sent notification for the mail key could be found" do
-    let(:email_raw) { fixture_file('emails/wrong_mail_key.eml') }
-
-    it "raises a SentNotificationNotFoundError" do
-      expect { receiver.execute }.to raise_error(Gitlab::Email::SentNotificationNotFoundError)
-    end
-  end
-
-  context "when the noteable could not be found" do
-    before do
-      noteable.destroy
-    end
-
-    it "raises a NoteableNotFoundError" do
-      expect { receiver.execute }.to raise_error(Gitlab::Email::NoteableNotFoundError)
-    end
   end
 
   context "when the note could not be saved" do
@@ -53,29 +27,6 @@ describe Gitlab::Email::Handler::CreateNoteHandler do
     it "raises an InvalidNoteError" do
       expect { receiver.execute }.to raise_error(Gitlab::Email::InvalidNoteError)
     end
-
-    context 'because the note was update commands only' do
-      let!(:email_raw) { fixture_file("emails/update_commands_only_reply.eml") }
-
-      context 'and current user cannot update noteable' do
-        it 'raises a CommandsOnlyNoteError' do
-          expect { receiver.execute }.to raise_error(Gitlab::Email::InvalidNoteError)
-        end
-      end
-
-      context 'and current user can update noteable' do
-        before do
-          project.add_developer(user)
-        end
-
-        it 'does not raise an error' do
-          # One system note is created for the 'close' event
-          expect { receiver.execute }.to change { noteable.notes.count }.by(1)
-
-          expect(noteable.reload).to be_closed
-        end
-      end
-    end
   end
 
   context 'when the note contains quick actions' do
@@ -85,15 +36,12 @@ describe Gitlab::Email::Handler::CreateNoteHandler do
       it 'only executes the commands that the user can perform' do
         expect { receiver.execute }
           .to change { noteable.notes.user.count }.by(1)
-          .and change { user.todos_pending_count }.from(0).to(1)
-
-        expect(noteable.reload).to be_open
       end
     end
 
     context 'and current user can update noteable' do
       before do
-        project.add_developer(user)
+        group.add_developer(user)
       end
 
       it 'posts a note and updates the noteable' do
@@ -101,9 +49,6 @@ describe Gitlab::Email::Handler::CreateNoteHandler do
 
         expect { receiver.execute }
           .to change { noteable.notes.user.count }.by(1)
-          .and change { user.todos_pending_count }.from(0).to(1)
-
-        expect(noteable.reload).to be_closed
       end
     end
   end

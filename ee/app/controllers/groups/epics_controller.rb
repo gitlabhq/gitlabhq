@@ -2,6 +2,7 @@ class Groups::EpicsController < Groups::ApplicationController
   include IssuableActions
   include IssuableCollections
   include ToggleAwardEmoji
+  include ToggleSubscriptionAction
   include RendersNotes
 
   before_action :check_epics_available!
@@ -51,6 +52,11 @@ class Groups::EpicsController < Groups::ApplicationController
   end
   alias_method :issuable, :epic
   alias_method :awardable, :epic
+  alias_method :subscribable_resource, :epic
+
+  def subscribable_project
+    nil
+  end
 
   def epic_params
     params.require(:epic).permit(*epic_params_attributes)

@@ -8,8 +8,28 @@ export const mockLabels = [
   },
 ];
 
+export const mockParticipants = [
+  {
+    id: 1,
+    name: 'Administrator',
+    username: 'root',
+    state: 'active',
+    avatar_url: '',
+    web_url: 'http://127.0.0.1:3001/root',
+  },
+  {
+    id: 12,
+    name: 'Susy Johnson',
+    username: 'tana_harvey',
+    state: 'active',
+    avatar_url: '',
+    web_url: 'http://127.0.0.1:3001/tana_harvey',
+  },
+];
+
 export const contentProps = {
   endpoint: '',
+  toggleSubscriptionPath: gl.TEST_HOST,
   updateEndpoint: gl.TEST_HOST,
   canAdmin: true,
   canUpdate: true,
@@ -27,6 +47,8 @@ export const contentProps = {
   startDate: '2017-01-01',
   endDate: '2017-10-10',
   labels: mockLabels,
+  participants: mockParticipants,
+  subscribed: true,
 };
 
 export const headerProps = {

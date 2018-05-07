@@ -54,4 +54,13 @@ describe('Sidebar Store', () => {
       expect(date.getFullYear()).toEqual(2017);
     });
   });
+
+  describe('setSubscribed', () => {
+    it('should set store.subscribed value', () => {
+      const store = new SidebarStore({ subscribed: true });
+
+      store.setSubscribed(false);
+      expect(store.subscribed).toEqual(false);
+    });
+  });
 });
