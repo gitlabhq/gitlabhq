@@ -104,8 +104,12 @@ module EESpecificCheck
       head_commit_sha
     else
       say <<~MESSAGE
-        💥 WE HAVE CONFLICTS! This shouldn't happen. Please create an issue
+        💥 Git status not clean! This shouldn't happen. Please create an issue
         💥 and ping @godfat to investigate.
+
+        ⚠️ Git status:
+
+        #{status}
       MESSAGE
 
       run_git_command("rebase --abort")
@@ -122,8 +126,12 @@ module EESpecificCheck
     run_git_command("rev-parse HEAD")
   end
 
+  def status
+    run_git_command("status --porcelain")
+  end
+
   def status_clean?
-    run_git_command("status --porcelain") == ''
+    status == ''
   end
 
   def remove_remotes
