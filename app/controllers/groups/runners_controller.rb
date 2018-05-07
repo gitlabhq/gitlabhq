@@ -23,22 +23,22 @@ class Groups::RunnersController < Groups::ApplicationController
   def destroy
     @runner.destroy
 
-    redirect_to group_settings_ci_cd_path(@group), status: 302
+    redirect_to group_settings_ci_cd_path(@group, anchor: 'runners-settings'), status: 302
   end
 
   def resume
     if Ci::UpdateRunnerService.new(@runner).update(active: true)
-      redirect_to group_settings_ci_cd_path(@group), notice: 'Runner was successfully updated.'
+      redirect_to group_settings_ci_cd_path(@group, anchor: 'runners-settings'), notice: 'Runner was successfully updated.'
     else
-      redirect_to group_settings_ci_cd_path(@group), alert: 'Runner was not updated.'
+      redirect_to group_settings_ci_cd_path(@group, anchor: 'runners-settings'), alert: 'Runner was not updated.'
     end
   end
 
   def pause
     if Ci::UpdateRunnerService.new(@runner).update(active: false)
-      redirect_to group_settings_ci_cd_path(@group), notice: 'Runner was successfully updated.'
+      redirect_to group_settings_ci_cd_path(@group, anchor: 'runners-settings'), notice: 'Runner was successfully updated.'
     else
-      redirect_to group_settings_ci_cd_path(@group), alert: 'Runner was not updated.'
+      redirect_to group_settings_ci_cd_path(@group, anchor: 'runners-settings'), alert: 'Runner was not updated.'
     end
   end
 
