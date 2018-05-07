@@ -106,6 +106,7 @@ excluded_attributes:
     - :last_repository_updated_at
     - :last_repository_check_at
     - :storage_version
+    - :remote_mirror_available_overridden
     - :description_html
   snippets:
     - :expired_at

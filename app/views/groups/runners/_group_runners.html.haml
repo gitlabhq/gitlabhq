@@ -1,0 +1,24 @@
+- link = link_to 'Runners API', help_page_path('api/runners.md')
+
+%h3
+  = _('Group Runners')
+
+.bs-callout.bs-callout-warning
+  = _('GitLab Group Runners can execute code for all the projects in this group.')
+  = _('They can be managed using the %{link}.').html_safe % { link: link }
+
+-# Proper policies should be implemented per
+-# https://gitlab.com/gitlab-org/gitlab-ce/issues/45894
+- if can?(current_user, :admin_pipeline, @group)
+  = render partial: 'ci/runner/how_to_setup_runner',
+           locals: { registration_token: @group.runners_token, type: 'group' }
+
+- if @group.runners.empty?
+  %h4.underlined-title
+    = _('This group does not provide any group Runners yet.')
+
+- else
+  %h4.underlined-title
+    = _('Available group Runners : %{runners}.').html_safe % { runners: @group.runners.count }
+  %ul.bordered-list
+    = render partial: 'groups/runners/runner', collection: @group.runners, as: :runner

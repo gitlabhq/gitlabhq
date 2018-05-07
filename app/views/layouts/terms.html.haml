@@ -1,0 +1,34 @@
+!!! 5
+- @hide_breadcrumbs = true
+%html{ lang: I18n.locale, class: page_class }
+  = render "layouts/head"
+
+  %body{ data: { page: body_data_page } }
+    .layout-page.terms{ class: page_class }
+      .content-wrapper.prepend-top-0
+        .mobile-overlay
+        .alert-wrapper
+          = render "layouts/broadcast"
+          = render 'layouts/header/read_only_banner'
+          = render "layouts/flash", extra_flash_class: 'limit-container-width'
+
+        %div{ class: "#{container_class} limit-container-width" }
+          .content{ id: "content-body" }
+            .panel.panel-default
+              .panel-heading
+                .title
+                  = brand_header_logo
+                  - logo_text = brand_header_logo_type
+                  - if logo_text.present?
+                    %span.logo-text.hidden-xs.prepend-left-8
+                      = logo_text
+                - if header_link?(:user_dropdown)
+                  .navbar-collapse.collapse
+                    %ul.nav.navbar-nav
+                      %li.header-user.dropdown
+                        = link_to current_user, class: user_dropdown_class, data: { toggle: "dropdown" } do
+                          = image_tag avatar_icon_for_user(current_user, 23), width: 23, height: 23, class: "header-user-avatar qa-user-avatar"
+                          = sprite_icon('angle-down', css_class: 'caret-down')
+                        .dropdown-menu-nav.dropdown-menu-align-right
+                          = render 'layouts/header/current_user_dropdown'
+              = yield

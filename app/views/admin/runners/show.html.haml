@@ -19,6 +19,9 @@
     %p
       If you want Runners to build only specific projects, enable them in the table below.
       Keep in mind that this is a one way transition.
+- elsif @runner.group_type?
+  .bs-callout.bs-callout-success
+    %h4 This runner will process jobs from all projects in its group and subgroups
 - else
   .bs-callout.bs-callout-info
     %h4 This Runner will process jobs only from ASSIGNED projects
@@ -26,7 +29,7 @@
 %hr
 
 .append-bottom-20
-  = render '/projects/runners/form', runner: @runner, runner_form_url: admin_runner_path(@runner)
+  = render 'shared/runners/form', runner: @runner, runner_form_url: admin_runner_path(@runner)
 
 .row
   .col-md-6
@@ -108,4 +111,4 @@
 
           %td.timestamp
             - if build.finished_at
-              %span #{time_ago_in_words build.finished_at} ago
+              %span= time_ago_with_tooltip build.finished_at

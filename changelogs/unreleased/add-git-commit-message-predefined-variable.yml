@@ -1,0 +1,5 @@
+---
+title: Add CI_COMMIT_MESSAGE, CI_COMMIT_TITLE and CI_COMMIT_DESCRIPTION predefined variables
+merge_request: 18672
+author:
+type: added
