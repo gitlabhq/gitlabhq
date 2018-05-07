@@ -313,3 +313,14 @@
       = _('Allow requests to the local network from hooks and services.')
   .settings-content
     = render 'outbound'
+
+%section.settings.as-mirror.no-animate#js-mirror-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Repository mirror settings')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Configure push mirrors.')
+  .settings-content
+    = render partial: 'repository_mirrors_form'

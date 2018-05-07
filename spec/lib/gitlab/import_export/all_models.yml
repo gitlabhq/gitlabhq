@@ -268,6 +268,7 @@ project:
 - pages_domains
 - authorized_users
 - project_authorizations
+- remote_mirrors
 - route
 - redirect_routes
 - statistics

@@ -165,6 +165,7 @@ ActiveRecord::Schema.define(version: 20180503200320) do
     t.boolean "pages_domain_verification_enabled", default: true, null: false
     t.boolean "allow_local_requests_from_hooks_and_services", default: false, null: false
     t.boolean "enforce_terms", default: false
+    t.boolean "mirror_available", default: true, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -1602,6 +1603,7 @@ ActiveRecord::Schema.define(version: 20180503200320) do
     t.boolean "merge_requests_rebase_enabled", default: false, null: false
     t.integer "jobs_cache_index"
     t.boolean "pages_https_only", default: true
+    t.boolean "remote_mirror_available_overridden"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1706,6 +1708,27 @@ ActiveRecord::Schema.define(version: 20180503200320) do
 
   add_index "releases", ["project_id", "tag"], name: "index_releases_on_project_id_and_tag", using: :btree
   add_index "releases", ["project_id"], name: "index_releases_on_project_id", using: :btree
+
+  create_table "remote_mirrors", force: :cascade do |t|
+    t.integer "project_id"
+    t.string "url"
+    t.boolean "enabled", default: true
+    t.string "update_status"
+    t.datetime "last_update_at"
+    t.datetime "last_successful_update_at"
+    t.datetime "last_update_started_at"
+    t.string "last_error"
+    t.boolean "only_protected_branches", default: false, null: false
+    t.string "remote_name"
+    t.text "encrypted_credentials"
+    t.string "encrypted_credentials_iv"
+    t.string "encrypted_credentials_salt"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "remote_mirrors", ["last_successful_update_at"], name: "index_remote_mirrors_on_last_successful_update_at", using: :btree
+  add_index "remote_mirrors", ["project_id"], name: "index_remote_mirrors_on_project_id", using: :btree
 
   create_table "routes", force: :cascade do |t|
     t.integer "source_id", null: false
@@ -2243,6 +2266,7 @@ ActiveRecord::Schema.define(version: 20180503200320) do
   add_foreign_key "protected_tags", "projects", name: "fk_8e4af87648", on_delete: :cascade
   add_foreign_key "push_event_payloads", "events", name: "fk_36c74129da", on_delete: :cascade
   add_foreign_key "releases", "projects", name: "fk_47fe2a0596", on_delete: :cascade
+  add_foreign_key "remote_mirrors", "projects", on_delete: :cascade
   add_foreign_key "services", "projects", name: "fk_71cce407f9", on_delete: :cascade
   add_foreign_key "snippets", "projects", name: "fk_be41fd4bb7", on_delete: :cascade
   add_foreign_key "subscriptions", "projects", on_delete: :cascade
