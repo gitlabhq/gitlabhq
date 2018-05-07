@@ -168,7 +168,7 @@ module TestEnv
     @gitaly_pid = Bundler.with_original_env { IO.popen(spawn_script, &:read).to_i }
     Kernel.at_exit { stop_gitaly }
 
-Thread.new { sleep(30); system('cat', 'log/gitaly-test.log') }
+Thread.new { sleep(30); system('grep', '-v', 'level=info', 'log/gitaly-test.log') }
 
     wait_gitaly
   end
