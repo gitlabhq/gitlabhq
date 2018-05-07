@@ -159,7 +159,7 @@ module TestEnv
     end
 
     spawn_script = %W[/usr/bin/env -u BUNDLE_GEMFILE #{Rails.root.join('scripts/gitaly-test-spawn')}]
-    @gitaly_pid = Bundler.with_original_env { IO.popen(spawn_script, &:read).to_i
+    @gitaly_pid = Bundler.with_original_env { IO.popen(spawn_script, &:read).to_i }
     Kernel.at_exit { stop_gitaly }
 
     wait_gitaly
