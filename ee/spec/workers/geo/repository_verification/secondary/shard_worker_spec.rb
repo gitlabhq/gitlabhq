@@ -26,8 +26,8 @@ describe Geo::RepositoryVerification::Secondary::ShardWorker, :postgresql, :clea
       other_project = create(:project)
       create(:repository_state, :repository_verified, project: project)
       create(:repository_state, :repository_verified, project: other_project)
-      create(:geo_project_registry, :repository_verification_outdated, project: project)
-      create(:geo_project_registry, :repository_verification_outdated, project: other_project)
+      create(:geo_project_registry, :synced, :repository_verification_outdated, project: project)
+      create(:geo_project_registry, :synced, :repository_verification_outdated, project: other_project)
 
       expect(secondary_singleworker).to receive(:perform_async).twice
 
@@ -36,7 +36,7 @@ describe Geo::RepositoryVerification::Secondary::ShardWorker, :postgresql, :clea
 
     it 'schedules job for projects missing repository verification' do
       create(:repository_state, :repository_verified, :wiki_verified, project: project)
-      missing_repository_verification = create(:geo_project_registry, :wiki_verified, project: project)
+      missing_repository_verification = create(:geo_project_registry, :synced, :wiki_verified, project: project)
 
       expect(secondary_singleworker).to receive(:perform_async).with(missing_repository_verification.id)
 
@@ -45,7 +45,7 @@ describe Geo::RepositoryVerification::Secondary::ShardWorker, :postgresql, :clea
 
     it 'schedules job for projects missing wiki verification' do
       create(:repository_state, :repository_verified, :wiki_verified, project: project)
-      missing_wiki_verification = create(:geo_project_registry, :repository_verified, project: project)
+      missing_wiki_verification = create(:geo_project_registry, :synced, :repository_verified, project: project)
 
       expect(secondary_singleworker).to receive(:perform_async).with(missing_wiki_verification.id)
 
@@ -67,8 +67,8 @@ describe Geo::RepositoryVerification::Secondary::ShardWorker, :postgresql, :clea
       let(:project6_both_verified) { create(:repository_state, :repository_verified, :wiki_verified).project }
 
       it 'handles multiple batches of projects needing verification' do
-        reg1 = create(:geo_project_registry, :repository_verification_outdated, project: project1_repo_verified)
-        reg2 = create(:geo_project_registry, :repository_verification_outdated, project: project2_repo_verified)
+        reg1 = create(:geo_project_registry, :synced, :repository_verification_outdated, project: project1_repo_verified)
+        reg2 = create(:geo_project_registry, :synced, :repository_verification_outdated, project: project2_repo_verified)
 
         expect(secondary_singleworker).to receive(:perform_async).with(reg1.id).once
 
@@ -82,12 +82,12 @@ describe Geo::RepositoryVerification::Secondary::ShardWorker, :postgresql, :clea
       end
 
       it 'handles multiple batches of projects needing verification, skipping failed repos' do
-        reg1 = create(:geo_project_registry, :repository_verification_outdated, project: project1_repo_verified)
-        reg2 = create(:geo_project_registry, :repository_verification_outdated, project: project2_repo_verified)
-        create(:geo_project_registry, :repository_verification_outdated, project: project3_repo_failed)
-        reg4 = create(:geo_project_registry, :wiki_verification_outdated, project: project4_wiki_verified)
-        create(:geo_project_registry, :repository_verification_failed, :wiki_verification_failed, project: project5_both_verified)
-        reg6 = create(:geo_project_registry, project: project6_both_verified)
+        reg1 = create(:geo_project_registry, :synced, :repository_verification_outdated, project: project1_repo_verified)
+        reg2 = create(:geo_project_registry, :synced, :repository_verification_outdated, project: project2_repo_verified)
+        create(:geo_project_registry, :synced, :repository_verification_outdated, project: project3_repo_failed)
+        reg4 = create(:geo_project_registry, :synced, :wiki_verification_outdated, project: project4_wiki_verified)
+        create(:geo_project_registry, :synced, :repository_verification_failed, :wiki_verification_failed, project: project5_both_verified)
+        reg6 = create(:geo_project_registry, :synced, project: project6_both_verified)
 
         expect(secondary_singleworker).to receive(:perform_async).with(reg1.id).once
 
