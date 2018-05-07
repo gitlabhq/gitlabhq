@@ -24,6 +24,8 @@ module Pseudonymity
   end
 
   class Table
+    attr_accessor :config
+
     def initialize
       @config = {}
       @csv_output = ""
@@ -31,8 +33,8 @@ module Pseudonymity
     end
 
     def tables_to_csv
-      tables = @config["tables"]
-      @csv_output = @config["output"]["csv"]
+      tables = config["tables"]
+      @csv_output = config["output"]["csv"]
       if not File.directory?(@csv_output)
         puts "No such directory #{@csv_output}"
         return

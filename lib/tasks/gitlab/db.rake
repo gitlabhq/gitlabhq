@@ -70,7 +70,7 @@ namespace :gitlab do
       Gitlab::DowntimeCheck.new.check_and_print(migrations)
     end
 
-    desc 'Output pseudonymity dump of selected table'
+    desc 'Output pseudonymity dump of selected tables'
     task :pseudonymity_dump => :environment do
       table = Pseudonymity::Table.new
       table.tables_to_csv
