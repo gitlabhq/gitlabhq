@@ -3,7 +3,7 @@ module EE
     extend ActiveSupport::Concern
 
     def sync?
-      super || ::Gitlab::Geo.secondary?
+      super && !::Gitlab::Geo.secondary?
     end
   end
 end
