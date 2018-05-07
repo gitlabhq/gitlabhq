@@ -27,3 +27,5 @@ export const TIME_DIFF = {
   FIVE_MINS: 300,
   HOUR: 3600,
 };
+
+export const HELP_INFO_URL = 'https://docs.gitlab.com/ee/administration/geo/disaster_recovery/background_verification.html#repository-verification';

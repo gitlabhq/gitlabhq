@@ -56,7 +56,7 @@
       class="col-md-6 prepend-left-15 prepend-top-10 section-items-container"
     >
       <geo-node-detail-item
-        :item-title="s__('GeoNodes|Storage config:')"
+        :item-title="s__('GeoNodes|Storage config')"
         :item-value="storageShardsStatus"
         :item-value-type="$options.valueType.PLAIN"
         :css-class="storageShardsCssClass"
