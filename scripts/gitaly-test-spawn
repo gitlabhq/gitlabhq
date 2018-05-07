@@ -1,13 +1,14 @@
 #!/usr/bin/env ruby
 
 gitaly_dir = 'tmp/tests/gitaly'
+gitaly_ruby_dir = File.expand_path(File.join(gitaly_dir, 'ruby'))
 env = { 'HOME' => File.expand_path('tmp/tests'),
         'GEM_PATH' => Gem.path.join(':'),
-        'BUNDLE_GEMFILE' => nil }
+        'BUNDLE_GEMFILE' => File.join(gitaly_ruby_dir, 'Gemfile') }
 args = %W[#{gitaly_dir}/gitaly #{gitaly_dir}/config.toml]
 
 spawn('sleep 1; tail -f log/gitaly-test.log')
-system(env, 'bundle', 'config', chdir: gitaly_dir + '/ruby')
+system(env, 'bundle', 'config', chdir: gitaly_ruby_dir)
 
 # Print the PID of the spawned process
 puts spawn(env, *args, [:out, :err] => 'log/gitaly-test.log')
