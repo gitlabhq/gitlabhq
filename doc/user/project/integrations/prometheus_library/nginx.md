@@ -12,9 +12,9 @@ The [Prometheus service](../prometheus.md) must be enabled.
 
 | Name | Query |
 | ---- | ----- |
-| Throughput (req/sec) | sum(rate(nginx_responses_total{server_zone!="*", server_zone!="_", %{environment_filter}}[2m])) by (status_code) |
-| Latency (ms) | avg(nginx_upstream_response_msecs_avg{%{environment_filter}}) |
-| HTTP Error Rate (HTTP Errors / sec) | rate(nginx_responses_total{status_code="5xx", %{environment_filter}}[2m])) |
+| Throughput (req/sec) | sum(rate(nginx_server_requests{server_zone!="*", server_zone!="_", %{environment_filter}}[2m])) by (code) |
+| Latency (ms) | avg(nginx_server_requestMsec{%{environment_filter}}) |
+| HTTP Error Rate (HTTP Errors / sec) | sum(rate(nginx_server_requests{code="5xx", %{environment_filter}}[2m])) |
 
 ## Configuring Prometheus to monitor for NGINX metrics
 
