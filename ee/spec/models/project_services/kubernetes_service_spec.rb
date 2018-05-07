@@ -16,7 +16,8 @@ describe KubernetesService, models: true, use_clean_rails_memory_store_caching: 
         before do
           stub_reactive_cache(
             service,
-            deployments: [kube_deployment(app: environment.slug), kube_deployment]
+            deployments: [kube_deployment(app: environment.slug), kube_deployment],
+            pods: [kube_pod(app: environment.slug), kube_pod(app: environment.slug, status: 'Pending')]
           )
         end
 

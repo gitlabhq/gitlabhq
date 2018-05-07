@@ -8,6 +8,14 @@ module Gitlab
     class RolloutStatus
       attr_reader :deployments, :instances, :completion, :status
 
+      STATUS_MAP = {
+        running: 'running',
+        failed: 'failed',
+        unkonw: 'unknown',
+        succeeded: 'succeeded',
+        pending: 'pending'
+      }.freeze
+
       def complete?
         completion == 100
       end
@@ -24,10 +32,10 @@ module Gitlab
         @status == :found
       end
 
-      def self.from_specs(*specs)
-        return new([], status: :not_found) if specs.empty?
+      def self.from_deployments(*deployments, pods: {})
+        return new([], status: :not_found) if deployments.empty?
 
-        deployments = specs.map { |spec| ::Gitlab::Kubernetes::Deployment.new(spec) }
+        deployments = deployments.map { |deploy| ::Gitlab::Kubernetes::Deployment.new(deploy, pods: pods) }
         deployments.sort_by!(&:order)
         new(deployments)
       end
@@ -45,7 +53,7 @@ module Gitlab
           if @instances.empty?
             100
           else
-            finished = @instances.select { |instance| instance[:status] == 'finished' }.count
+            finished = @instances.select { |instance| instance[:status] == STATUS_MAP[:running] }.count
 
             (finished / @instances.count.to_f * 100).to_i
           end
