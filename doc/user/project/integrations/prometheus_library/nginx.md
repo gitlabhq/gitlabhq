@@ -10,6 +10,8 @@ The [Prometheus service](../prometheus.md) must be enabled.
 
 ## Metrics supported
 
+NGINX server metrics are detected, which tracks the pages and content directly served by NGINX.
+
 | Name | Query |
 | ---- | ----- |
 | Throughput (req/sec) | sum(rate(nginx_server_requests{server_zone!="*", server_zone!="_", %{environment_filter}}[2m])) by (code) |
@@ -20,7 +22,7 @@ The [Prometheus service](../prometheus.md) must be enabled.
 
 To get started with NGINX monitoring, you should first enable the [VTS statistics](https://github.com/vozlt/nginx-module-vts)) module for your NGINX server. This will capture and display statistics in an HTML readable form. Next, you should install and configure the [NGINX VTS exporter](https://github.com/hnlq715/nginx-vts-exporter) which parses these statistics and translates them into a Prometheus monitoring endpoint.
 
-If you are using NGINX as your Kubernetes ingress, there is [upcoming direct support](https://github.com/kubernetes/ingress/pull/423) for enabling Prometheus monitoring in the 0.9.0 release.
+If you are using NGINX as your Kubernetes ingress, GitLab will [automatically detect](nginx_ingress.md) the metrics once enabled in 0.9.0 and later releases.
 
 ## Specifying the Environment label
 
