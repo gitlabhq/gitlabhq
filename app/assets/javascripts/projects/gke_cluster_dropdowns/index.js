@@ -6,8 +6,8 @@ import GkeZoneDropdown from './components/gke_zone_dropdown.vue';
 import GkeMachineTypeDropdown from './components/gke_machine_type_dropdown.vue';
 import * as CONSTANTS from './constants';
 
-const mountGkeProjectIdDropdown = () => {
-  const el = document.querySelector('.js-gcp-project-id-dropdown-entry-point');
+const mountComponent = (entryPoint, component, componentName, extraProps = {}) => {
+  const el = document.querySelector(entryPoint);
   const hiddenInput = el.querySelector('input');
 
   if (!el) return false;
@@ -15,62 +15,39 @@ const mountGkeProjectIdDropdown = () => {
   return new Vue({
     el,
     components: {
-      GkeProjectIdDropdown,
+      [componentName]: component,
     },
     render: createElement =>
-      createElement('gke-project-id-dropdown', {
+      createElement(componentName, {
         props: {
-          docsUrl: el.dataset.docsurl,
           fieldName: hiddenInput.getAttribute('name'),
           fieldId: hiddenInput.getAttribute('id'),
           defaultValue: hiddenInput.value,
+          ...extraProps,
         },
       }),
+  });
+};
+
+const mountGkeProjectIdDropdown = () => {
+  const entryPoint = '.js-gcp-project-id-dropdown-entry-point';
+  const el = document.querySelector(entryPoint);
+
+  mountComponent(entryPoint, GkeProjectIdDropdown, 'gke-project-id-dropdown', {
+    docsUrl: el.dataset.docsurl,
   });
 };
 
 const mountGkeZoneDropdown = () => {
-  const el = document.querySelector('.js-gcp-zone-dropdown-entry-point');
-  const hiddenInput = el.querySelector('input');
-
-  if (!el) return false;
-
-  return new Vue({
-    el,
-    components: {
-      GkeZoneDropdown,
-    },
-    render: createElement =>
-      createElement('gke-zone-dropdown', {
-        props: {
-          fieldName: hiddenInput.getAttribute('name'),
-          fieldId: hiddenInput.getAttribute('id'),
-          defaultValue: hiddenInput.value,
-        },
-      }),
-  });
+  mountComponent('.js-gcp-zone-dropdown-entry-point', GkeZoneDropdown, 'gke-zone-dropdown');
 };
 
 const mountGkeMachineTypeDropdown = () => {
-  const el = document.querySelector('.js-gcp-machine-type-dropdown-entry-point');
-  const hiddenInput = el.querySelector('input');
-
-  if (!el) return false;
-
-  return new Vue({
-    el,
-    components: {
-      GkeMachineTypeDropdown,
-    },
-    render: createElement =>
-      createElement('gke-machine-type-dropdown', {
-        props: {
-          fieldName: hiddenInput.getAttribute('name'),
-          fieldId: hiddenInput.getAttribute('id'),
-          defaultValue: hiddenInput.value,
-        },
-      }),
-  });
+  mountComponent(
+    '.js-gcp-machine-type-dropdown-entry-point',
+    GkeMachineTypeDropdown,
+    'gke-machine-type-dropdown',
+  );
 };
 
 const gkeDropdownErrorHandler = () => {
