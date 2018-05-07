@@ -45,13 +45,13 @@ describe Geo::ProjectHousekeepingService do
         allow(service).to receive(:lease_key).and_return(:the_lease_key)
         allow(service).to receive(:try_obtain_lease).and_return(:the_uuid)
 
-        # At push 200
+        # At fetch 200
         expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :gc, :the_lease_key, :the_uuid)
           .exactly(1).times
-        # At push 50, 100, 150
+        # At fetch 50, 100, 150
         expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :full_repack, :the_lease_key, :the_uuid)
           .exactly(3).times
-        # At push 10, 20, ... (except those above)
+        # At fetch 10, 20, ... (except those above)
         expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :incremental_repack, :the_lease_key, :the_uuid)
           .exactly(16).times
 

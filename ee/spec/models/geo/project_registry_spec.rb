@@ -224,7 +224,7 @@ describe Geo::ProjectRegistry do
       end
 
       context 'with a number of syncs' do
-        it 'returns the number of pushes' do
+        it 'returns the number of syncs' do
           2.times { Geo::ProjectHousekeepingService.new(project).increment! }
 
           expect(subject.syncs_since_gc).to eq(2)
@@ -233,7 +233,7 @@ describe Geo::ProjectRegistry do
     end
 
     describe '#increment_syncs_since_gc' do
-      it 'increments the number of pushes since the last GC' do
+      it 'increments the number of syncs since the last GC' do
         3.times { subject.increment_syncs_since_gc! }
 
         expect(subject.syncs_since_gc).to eq(3)
@@ -241,7 +241,7 @@ describe Geo::ProjectRegistry do
     end
 
     describe '#reset_syncs_since_gc' do
-      it 'resets the number of pushes since the last GC' do
+      it 'resets the number of syncs since the last GC' do
         3.times { subject.increment_syncs_since_gc! }
 
         subject.reset_syncs_since_gc!
