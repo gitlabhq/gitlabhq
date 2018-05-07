@@ -12,4 +12,4 @@
       Create a new deploy key for this project
     = render @deploy_keys.form_partial_path
     %hr
-    #js-deploy-keys{ data: { endpoint: project_deploy_keys_path(@project) } }
+    #js-deploy-keys{ data: { endpoint: project_deploy_keys_path(@project), project_id: @project.id } }
