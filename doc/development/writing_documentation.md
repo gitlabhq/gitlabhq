@@ -201,6 +201,19 @@ Things to note:
   built-in help page, that's why we omit it in `git grep`.
 - Use the checklist on the documentation MR description template.
 
+#### Alternative redirection method
+
+Alternatively to the method described above, you can simply replace the content
+of the old file with a frontmatter containing a redirect link:
+
+```yaml
+---
+redirect_to: '../path/to/file/README.md'
+---
+```
+
+It supports both full and relative URLs, e.g. `https://docs.gitlab.com/ee/path/to/file.html`, `../path/to/file.html`, `path/to/file.md`. Note that any `*.md` paths will be compiled to `*.html`.
+
 ### Redirections for pages with Disqus comments
 
 If the documentation page being relocated already has any Disqus comments,
