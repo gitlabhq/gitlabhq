@@ -1,10 +1,9 @@
 module Ci
   class BuildTraceChunk < ActiveRecord::Base
+    include FastDestroyAll
     extend Gitlab::Ci::Model
 
     belongs_to :build, class_name: "Ci::Build", foreign_key: :build_id
-
-    after_destroy :redis_delete_data, if: :redis?
 
     default_value_for :data_store, :redis
 
@@ -20,6 +19,38 @@ module Ci
       redis: 1,
       db: 2
     }
+
+    class << self
+      def redis_data_key(build_id, chunk_index)
+        "gitlab:ci:trace:#{build_id}:chunks:#{chunk_index}"
+      end
+
+      def redis_data_keys
+        redis.pluck(:build_id, :chunk_index).map do |data|
+          redis_data_key(data.first, data.second)
+        end
+      end
+
+      def redis_delete_data(keys)
+        return if keys.empty?
+
+        Gitlab::Redis::SharedState.with do |redis|
+          redis.del(keys)
+        end
+      end
+
+      ##
+      # FastDestroyAll concerns
+      def begin_fast_destroy
+        redis_data_keys
+      end
+
+      ##
+      # FastDestroyAll concerns
+      def finalize_fast_destroy(keys)
+        redis_delete_data(keys)
+      end
+    end
 
     ##
     # Data is memoized for optimizing #size and #end_offset
@@ -63,7 +94,7 @@ module Ci
         break unless size > 0
 
         self.update!(raw_data: data, data_store: :db)
-        redis_delete_data
+        self.class.redis_delete_data([redis_data_key])
       end
     end
 
@@ -121,22 +152,14 @@ module Ci
       end
     end
 
-    def redis_delete_data
-      Gitlab::Redis::SharedState.with do |redis|
-        redis.del(redis_data_key)
-      end
-    end
-
     def redis_data_key
-      "gitlab:ci:trace:#{build_id}:chunks:#{chunk_index}"
-    end
-
-    def redis_lock_key
-      "trace_write:#{build_id}:chunks:#{chunk_index}"
+      self.class.redis_data_key(build_id, chunk_index)
     end
 
     def in_lock
-      lease = Gitlab::ExclusiveLease.new(redis_lock_key, timeout: WRITE_LOCK_TTL)
+      write_lock_key = "trace_write:#{build_id}:chunks:#{chunk_index}"
+
+      lease = Gitlab::ExclusiveLease.new(write_lock_key, timeout: WRITE_LOCK_TTL)
       retry_count = 0
 
       until uuid = lease.try_obtain
@@ -151,7 +174,7 @@ module Ci
       self.reload if self.persisted?
       return yield
     ensure
-      Gitlab::ExclusiveLease.cancel(redis_lock_key, uuid)
+      Gitlab::ExclusiveLease.cancel(write_lock_key, uuid)
     end
   end
 end

@@ -100,7 +100,7 @@ module Gitlab
           FileUtils.rm(trace_path, force: true)
         end
 
-        job.trace_chunks.destroy_all
+        job.trace_chunks.fast_destroy_all
         job.erase_old_trace!
       end
 
