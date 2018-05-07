@@ -82,7 +82,7 @@ module TestEnv
     # Setup GitLab shell for test instance
     setup_gitlab_shell
 
-    setup_gitaly
+    setup_gitaly(start: opts.fetch(:start_gitaly, true))
 
     # Create repository for FactoryBot.create(:project)
     setup_factory_repo
@@ -136,7 +136,7 @@ module TestEnv
       task: 'gitlab:shell:install')
   end
 
-  def setup_gitaly
+  def setup_gitaly(start: true)
     socket_path = Gitlab::GitalyClient.address('default').sub(/\Aunix:/, '')
     gitaly_dir = File.dirname(socket_path)
 
@@ -148,7 +148,7 @@ module TestEnv
       # Always re-create config, in case it's outdated. This is fast anyway.
       Gitlab::SetupHelper.create_gitaly_configuration(gitaly_dir, force: true)
 
-      start_gitaly(gitaly_dir)
+      start_gitaly(gitaly_dir) if start
     end
   end
 
