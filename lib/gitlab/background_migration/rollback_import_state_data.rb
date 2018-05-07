@@ -18,11 +18,8 @@ module Gitlab
             SET
               projects.import_status = project_mirror_data.status,
               projects.import_jid = project_mirror_data.jid,
-<<<<<<< HEAD
               projects.mirror_last_update_at = project_mirror_data.last_update_at,
               projects.mirror_last_successful_update_at = project_mirror_data.last_successful_update_at,
-=======
->>>>>>> upstream/master
               projects.import_error = project_mirror_data.last_error
             WHERE project_mirror_data.project_id = projects.id
             AND project_mirror_data.id BETWEEN #{start_id} AND #{end_id}
@@ -33,11 +30,8 @@ module Gitlab
             SET
               import_status = project_mirror_data.status,
               import_jid = project_mirror_data.jid,
-<<<<<<< HEAD
               mirror_last_update_at = project_mirror_data.last_update_at,
               mirror_last_successful_update_at = project_mirror_data.last_successful_update_at,
-=======
->>>>>>> upstream/master
               import_error = project_mirror_data.last_error
             FROM project_mirror_data
             WHERE project_mirror_data.project_id = projects.id
