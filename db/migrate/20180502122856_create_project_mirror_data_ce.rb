@@ -1,4 +1,4 @@
-class CreateProjectMirrorDataCE < ActiveRecord::Migration
+class CreateProjectMirrorDataCe < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
