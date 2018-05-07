@@ -431,7 +431,7 @@ setup-test-env:
   cache:
     <<: *default-cache
   script:
-    - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init(start_gitaly: false)'
+    - scripts/setup-test-env-ci
     - scripts/gitaly-test-build # Do not use 'bundle exec' here
   artifacts:
     expire_in: 7d
