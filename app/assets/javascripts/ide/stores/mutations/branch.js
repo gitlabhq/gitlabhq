@@ -28,4 +28,9 @@ export default {
       commit,
     });
   },
+  [types.SET_LAST_COMMIT_PIPELINE](state, { projectId, branchId, pipeline }) {
+    Object.assign(state.projects[projectId].branches[branchId].commit, {
+      pipeline,
+    });
+  },
 };

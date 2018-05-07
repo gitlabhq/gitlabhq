@@ -75,4 +75,7 @@ export default {
       },
     });
   },
+  getPipelinesForProject(projectId) {
+    return Api.pipelines(projectId);
+  },
 };

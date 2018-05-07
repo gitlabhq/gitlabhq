@@ -84,10 +84,46 @@ export const refreshLastCommitData = (
       branchId,
       commit: data.commit,
     });
+
+    dispatch('getLastCommitPipeline', {
+      projectId,
+      projectIdNumber: state.projects[projectId].id,
+      branchId,
+    });
   })
   .catch(() => {
     flash(
       'Error loading last commit.',
+      'alert',
+      document,
+      null,
+      false,
+      true,
+    );
+  });
+
+export const getLastCommitPipeline = (
+  { commit, state, dispatch },
+  { projectId, projectIdNumber, branchId } = {},
+) => service
+  .getPipelinesForProject(projectIdNumber)
+  .then(({ data }) => {
+    const lastCommitInBranchHash =
+      state.projects[state.currentProjectId].branches[state.currentBranchId].commit.id;
+
+    const pipeline = data.find((element) => element.sha
+      && element.sha === lastCommitInBranchHash
+      && element.ref === branchId);
+
+    commit(types.SET_LAST_COMMIT_PIPELINE, {
+      projectId,
+      branchId,
+      pipeline,
+    });
+  })
+  .catch(() => {
+    flash(
+      'Error loading the pipeline of last commit.',
       'alert',
       document,
       null,

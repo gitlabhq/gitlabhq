@@ -76,6 +76,12 @@ router.beforeEach((to, from, next) => {
             branchId,
           });
 
+          store.dispatch('getLastCommitPipeline', {
+            projectId: fullProjectId,
+            projectIdNumber: store.state.projects[fullProjectId].id,
+            branchId: store.state.currentBranchId,
+          });
+
           store
             .dispatch('getFiles', {
               projectId: fullProjectId,
