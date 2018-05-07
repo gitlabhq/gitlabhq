@@ -87,11 +87,11 @@ class RemoteMirror < ActiveRecord::Base
   end
 
   def sync?
-    !enabled?
+    enabled?
   end
 
   def sync
-    return if sync?
+    return unless sync?
 
     if recently_scheduled?
       RepositoryUpdateRemoteMirrorWorker.perform_in(backoff_delay, self.id, Time.now)
