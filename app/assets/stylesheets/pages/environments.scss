@@ -229,12 +229,12 @@
   justify-content: center;
   align-items: center;
 
-  &-finished {
+  &-running {
     background-color: $green-100;
     border-color: $green-400;
   }
 
-  &-deploying {
+  &-succeeded {
     background-color: $green-50;
     border-color: $green-400;
   }
@@ -244,17 +244,12 @@
     border-color: $red-500;
   }
 
-  &-ready {
-    background-color: lighten($border-color, 1%);
-    border-color: $border-color;
+  &-unknown {
+    background-color: $red-200;
+    border-color: $red-500;
   }
 
-  &-preparing {
-    background-color: lighten($border-color, 5%);
-    border-color: $border-color;
-  }
-
-  &-waiting {
+  &-pending {
     background-color: $white-light;
     border-color: $border-color;
   }
