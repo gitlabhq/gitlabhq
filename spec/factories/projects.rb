@@ -15,14 +15,18 @@ FactoryBot.define do
     namespace
     creator { group ? create(:user) : namespace&.owner }
 
-    # Nest Project Feature attributes
     transient do
+      # Nest Project Feature attributes
       wiki_access_level ProjectFeature::ENABLED
       builds_access_level ProjectFeature::ENABLED
       snippets_access_level ProjectFeature::ENABLED
       issues_access_level ProjectFeature::ENABLED
       merge_requests_access_level ProjectFeature::ENABLED
       repository_access_level ProjectFeature::ENABLED
+
+      # we can't assign the delegated `#ci_cd_settings` attributes directly, as the
+      # `#ci_cd_settings` relation needs to be created first
+      group_runners_enabled nil
     end
 
     after(:create) do |project, evaluator|
@@ -47,6 +51,9 @@ FactoryBot.define do
       end
 
       project.group&.refresh_members_authorized_projects
+
+      # assign the delegated `#ci_cd_settings` attributes after create
+      project.reload.group_runners_enabled = evaluator.group_runners_enabled unless evaluator.group_runners_enabled.nil?
     end
 
     trait :public do
@@ -62,19 +69,43 @@ FactoryBot.define do
     end
 
     trait :import_scheduled do
-      import_status :scheduled
+      transient do
+        status :scheduled
+      end
+
+      before(:create) do |project, evaluator|
+        project.create_import_state(status: evaluator.status)
+      end
     end
 
     trait :import_started do
-      import_status :started
+      transient do
+        status :started
+      end
+
+      before(:create) do |project, evaluator|
+        project.create_import_state(status: evaluator.status)
+      end
     end
 
     trait :import_finished do
-      import_status :finished
+      transient do
+        status :finished
+      end
+
+      before(:create) do |project, evaluator|
+        project.create_import_state(status: evaluator.status)
+      end
     end
 
     trait :import_failed do
-      import_status :failed
+      transient do
+        status :failed
+      end
+
+      before(:create) do |project, evaluator|
+        project.create_import_state(status: evaluator.status)
+      end
     end
 
     trait :archived do
