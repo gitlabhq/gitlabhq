@@ -3,7 +3,6 @@ require 'carrierwave/orm/activerecord'
 class User < ActiveRecord::Base
   extend Gitlab::ConfigHelper
 
-  include WithUploads
   include Gitlab::ConfigHelper
   include Gitlab::SQL::Pattern
   include AfterCommitQueue
@@ -18,6 +17,7 @@ class User < ActiveRecord::Base
   include IgnorableColumn
   include BulkMemberAccessLoad
   include BlocksJsonSerialization
+  include WithUploads
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
