@@ -32,16 +32,8 @@ module RepositoryCheck
     # array of ID's. This is OK because we do it only once an hour, because
     # getting ID's from Postgres is not terribly slow, and because no user
     # has to sit and wait for this query to finish.
-    def project_ids(batch_size = BATCH_SIZE)
-      project_ids = never_checked_project_ids(batch_size)
-
-      remaining_capacity = batch_size - project_ids.count
-
-      if remaining_capacity > 0
-        project_ids + old_checked_project_ids(remaining_capacity)
-      else
-        project_ids
-      end
+    def project_ids
+      never_checked_project_ids(BATCH_SIZE) + old_checked_project_ids(BATCH_SIZE)
     end
 
     def never_checked_project_ids(batch_size)

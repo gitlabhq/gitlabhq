@@ -4,8 +4,10 @@ require 'fileutils'
 describe RepositoryCheck::SingleRepositoryWorker do
   subject(:worker) { described_class.new }
 
-  it 'skips when the project repo is empty' do
-    project = create(:project, :wiki_disabled)
+  it 'skips when the project has no push events' do
+    project = create(:project, :repository, :wiki_disabled)
+    project.events.destroy_all
+    break_project(project)
 
     expect(worker).not_to receive(:git_fsck)
 
@@ -14,8 +16,19 @@ describe RepositoryCheck::SingleRepositoryWorker do
     expect(project.reload.last_repository_check_failed).to eq(false)
   end
 
+  it 'fails when the project has push events and a broken repository' do
+    project = create(:project, :repository)
+    create_push_event(project)
+    break_project(project)
+
+    worker.perform(project.id)
+
+    expect(project.reload.last_repository_check_failed).to eq(true)
+  end
+
   it 'succeeds when the project repo is valid' do
     project = create(:project, :repository, :wiki_disabled)
+    create_push_event(project)
 
     expect(worker).to receive(:git_fsck).and_call_original
 
@@ -26,18 +39,10 @@ describe RepositoryCheck::SingleRepositoryWorker do
     expect(project.reload.last_repository_check_failed).to eq(false)
   end
 
-  it 'fails when the project is not empty and a broken repository' do
-    project = create(:project, :repository)
-    break_project(project)
-
-    worker.perform(project.id)
-
-    expect(project.reload.last_repository_check_failed).to eq(true)
-  end
-
   it 'fails if the wiki repository is broken' do
-    project = create(:project, :wiki_enabled)
+    project = create(:project, :repository, :wiki_enabled)
     project.create_wiki
+    create_push_event(project)
 
     # Test sanity: everything should be fine before the wiki repo is broken
     worker.perform(project.id)
@@ -78,6 +83,10 @@ describe RepositoryCheck::SingleRepositoryWorker do
     expect(Gitlab::Shell.new.exists?(project.repository_storage, project.wiki.path)).to eq(false)
   end
 
+  def create_push_event(project)
+    project.events.create(action: Event::PUSHED, author_id: create(:user).id)
+  end
+
   def break_wiki(project)
     break_repo(wiki_path(project))
   end
@@ -89,6 +98,7 @@ describe RepositoryCheck::SingleRepositoryWorker do
   def break_project(project)
     break_repo(project.repository.path_to_repo)
   end
+
 
   def break_repo(repo)
     # Create or replace blob ffffffffffffffffffffffffffffffffffffffff with an empty file
