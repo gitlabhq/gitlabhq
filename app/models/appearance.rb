@@ -1,8 +1,8 @@
 class Appearance < ActiveRecord::Base
-  include WithUploads
   include CacheMarkdownField
   include AfterCommitQueue
   include ObjectStorage::BackgroundMove
+  include WithUploads
 
   prepend EE::Appearance
 

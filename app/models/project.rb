@@ -4,7 +4,6 @@ class Project < ActiveRecord::Base
   include Gitlab::ConfigHelper
   include Gitlab::ShellAdapter
   include Gitlab::VisibilityLevel
-  include WithUploads
   include AccessRequestable
   include Avatarable
   include CacheMarkdownField
@@ -24,6 +23,7 @@ class Project < ActiveRecord::Base
   include ::Gitlab::Utils::StrongMemoize
   include ChronicDurationAttribute
   include FastDestroyAll::Helpers
+  include WithUploads
 
   # EE specific modules
   prepend EE::Project
