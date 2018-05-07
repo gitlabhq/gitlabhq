@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'Signup' do
+  include TermsHelper
+
   let(:new_user) { build_stubbed(:user) }
 
   describe 'username validation', :js do
@@ -130,6 +132,29 @@ describe 'Signup' do
 
       expect(current_path).to eq user_registration_path
       expect(page.body).not_to match(/#{new_user.password}/)
+    end
+  end
+
+  context 'when terms are enforced' do
+    before do
+      enforce_terms
+    end
+
+    it 'asks the user to accept terms before going to the dashboard' do
+      visit root_path
+
+      fill_in 'new_user_name',                with: new_user.name
+      fill_in 'new_user_username',            with: new_user.username
+      fill_in 'new_user_email',               with: new_user.email
+      fill_in 'new_user_email_confirmation',  with: new_user.email
+      fill_in 'new_user_password',            with: new_user.password
+      click_button "Register"
+
+      expect_to_be_on_terms_page
+
+      click_button 'Accept terms'
+
+      expect(current_path).to eq dashboard_projects_path
     end
   end
 end

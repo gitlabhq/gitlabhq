@@ -408,7 +408,10 @@ class GfmAutoComplete {
 
   fetchData($input, at) {
     if (this.isLoadingData[at]) return;
+
     this.isLoadingData[at] = true;
+    const dataSource = this.dataSources[GfmAutoComplete.atTypeMap[at]];
+
     if (this.cachedData[at]) {
       this.loadData($input, at, this.cachedData[at]);
     } else if (GfmAutoComplete.atTypeMap[at] === 'emojis') {
@@ -418,12 +421,14 @@ class GfmAutoComplete {
           GfmAutoComplete.glEmojiTag = glEmojiTag;
         })
         .catch(() => { this.isLoadingData[at] = false; });
-    } else {
-      AjaxCache.retrieve(this.dataSources[GfmAutoComplete.atTypeMap[at]], true)
+    } else if (dataSource) {
+      AjaxCache.retrieve(dataSource, true)
         .then((data) => {
           this.loadData($input, at, data);
         })
         .catch(() => { this.isLoadingData[at] = false; });
+    } else {
+      this.isLoadingData[at] = false;
     }
   }
 

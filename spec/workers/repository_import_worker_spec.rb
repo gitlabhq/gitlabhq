@@ -11,10 +11,12 @@ describe RepositoryImportWorker do
     let(:project) { create(:project, :import_scheduled) }
 
     context 'when worker was reset without cleanup' do
-      let(:jid) { '12345678' }
-      let(:started_project) { create(:project, :import_started, import_jid: jid) }
-
       it 'imports the project successfully' do
+        jid = '12345678'
+        started_project = create(:project)
+
+        create(:import_state, :started, project: started_project, jid: jid)
+
         allow(subject).to receive(:jid).and_return(jid)
 
         expect_any_instance_of(Projects::ImportService).to receive(:execute)

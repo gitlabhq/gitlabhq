@@ -2,6 +2,20 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.7.3 (2018-05-02)
+
+### Fixed (8 changes)
+
+- Fixed wrong avatar URL when the avatar is on object storage. !18092
+- Fix errors on pushing to an empty repository. !18462
+- Update doorkeeper to 4.3.2 to fix GitLab OAuth authentication. !18543
+- Ports omniauth-jwt gem onto GitLab OmniAuth Strategies suite. !18580
+- Fix redirection error for applications using OpenID. !18599
+- Fix commit trailer rendering when Gravatar is disabled.
+- Fix file_store for artifacts and lfs when saving.
+- Fix users not seeing labels from private groups when being a member of a child project.
+
+
 ## 10.7.2 (2018-04-25)
 
 ### Security (2 changes)

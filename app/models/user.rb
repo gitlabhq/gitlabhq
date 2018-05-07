@@ -138,6 +138,8 @@ class User < ActiveRecord::Base
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
   has_many :callouts, class_name: 'UserCallout'
   has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :term_agreements
+  belongs_to :accepted_term, class_name: 'ApplicationSetting::Term'
 
   #
   # Validations
@@ -910,7 +912,7 @@ class User < ActiveRecord::Base
 
   def delete_async(deleted_by:, params: {})
     block if params[:hard_delete]
-    DeleteUserWorker.perform_async(deleted_by.id, id, params)
+    DeleteUserWorker.perform_async(deleted_by.id, id, params.to_h)
   end
 
   def notification_service
@@ -1185,6 +1187,10 @@ class User < ActiveRecord::Base
 
   def max_member_access_for_group(group_id)
     max_member_access_for_group_ids([group_id])[group_id]
+  end
+
+  def terms_accepted?
+    accepted_term_id.present?
   end
 
   protected

@@ -63,7 +63,8 @@ module Gitlab
       end
 
       def fork_repository(new_shard_name, new_repository_relative_path)
-        Gitlab::GitalyClient.migrate(:fork_repository) do |is_enabled|
+        Gitlab::GitalyClient.migrate(:fork_repository,
+                                     status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_fork_repository(new_shard_name, new_repository_relative_path)
           else
