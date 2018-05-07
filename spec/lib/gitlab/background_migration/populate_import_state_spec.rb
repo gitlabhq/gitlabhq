@@ -1,10 +1,6 @@
 require 'spec_helper'
 
-<<<<<<< HEAD
 describe Gitlab::BackgroundMigration::PopulateImportState, :migration, schema: 20180430144643 do
-=======
-describe Gitlab::BackgroundMigration::PopulateImportState, :migration, schema: 20180502134117 do
->>>>>>> upstream/master
   let(:migration) { described_class.new }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
