@@ -37,12 +37,6 @@ describe('IDE store getters', () => {
       expect(modifiedFiles.length).toBe(1);
       expect(modifiedFiles[0].name).toBe('changed');
     });
-
-    it('returns angle left when collapsed', () => {
-      localState.rightPanelCollapsed = true;
-
-      expect(getters.collapseButtonIcon(localState)).toBe('angle-double-left');
-    });
   });
 
   describe('currentMergeRequest', () => {
