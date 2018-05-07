@@ -50,6 +50,32 @@ namespace :gettext do
     end
   end
 
+  task :updated_check do
+    # Removeing all pre-translated files speeds up `gettext:find` as the
+    # files don't need to be merged.
+    `rm locale/*/gitlab.po`
+
+    # `gettext:find` writes touches to temp files to `stderr` which would cause
+    # `static-analysis` to report failures. We can ignore these
+    silence_stream(STDERR) { Rake::Task['gettext:find'].invoke }
+
+    changed_files = `git diff --name-only`.lines.map(&:strip)
+
+    # reset the locale folder for potential next tasks
+    `git checkout locale`
+
+    if changed_files.include?('locale/gitlab.pot')
+      raise <<~MSG
+        Newly translated strings found, please add them to `gitlab.pot` by running:
+
+          bundle exec rake gettext:find; git checkout locale/*/gitlab.po;
+
+        Then check in the resulting `locale/gitlab.pot`
+
+      MSG
+    end
+  end
+
   def report_errors_for_file(file, errors_for_file)
     puts "Errors in `#{file}`:"
 

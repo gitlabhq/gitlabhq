@@ -27,6 +27,7 @@ unless Rails.env.production?
         scss_lint
         flay
         gettext:lint
+        gettext:updated_check
         lint:static_verification
       ].each do |task|
         pid = Process.fork do
