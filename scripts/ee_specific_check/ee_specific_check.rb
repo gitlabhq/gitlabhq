@@ -23,6 +23,13 @@ module EESpecificCheck
   end
 
   def find_compare_base
+    # We're still seeing errors not ignoring knapsack/ and rspec_flaky/
+    # Instead of waiting that populate over all the branches, we could
+    # just remove untracked files anyway, only on CI of course in case
+    # we're wiping people's data!
+    # See https://gitlab.com/gitlab-org/gitlab-ee/issues/5912
+    git_clean if ENV['CI']
+
     setup_canonical_remotes
 
     ce_fetch_head = fetch_remote_ce_branch
@@ -130,6 +137,10 @@ module EESpecificCheck
 
   def git_status
     run_git_command("status --porcelain")
+  end
+
+  def git_clean
+    run_git_command('clean -fd')
   end
 
   def remove_remotes
