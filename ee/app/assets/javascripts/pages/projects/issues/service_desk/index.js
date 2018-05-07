@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.js-service-desk-issues').dataset.supportBot,
   );
 
-  this.filteredSearchManager = new FilteredSearchServiceDesk(supportBotData);
+  const filteredSearchManager = new FilteredSearchServiceDesk(supportBotData);
 
-  this.filteredSearchManager.setup();
+  filteredSearchManager.setup();
 });

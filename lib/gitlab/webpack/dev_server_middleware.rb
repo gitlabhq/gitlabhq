@@ -3,8 +3,8 @@
 
 # :nocov:
 module Gitlab
-  module Middleware
-    class WebpackProxy < Rack::Proxy
+  module Webpack
+    class DevServerMiddleware < Rack::Proxy
       def initialize(app = nil, opts = {})
         @proxy_host = opts.fetch(:proxy_host, 'localhost')
         @proxy_port = opts.fetch(:proxy_port, 3808)
