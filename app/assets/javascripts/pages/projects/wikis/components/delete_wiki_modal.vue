@@ -30,9 +30,9 @@ export default {
     },
     title() {
       return sprintf(
-        s__('WikiPageConfirmDelete|Delete Page %{pageTitle}?'),
+        s__('WikiPageConfirmDelete|Delete %{pageTitle}?'),
         {
-          pageTitle: `'${_.escape(this.pageTitle)}'`,
+          pageTitle: _.escape(this.pageTitle),
         },
         false,
       );
