@@ -34,4 +34,5 @@ class MigrateImportAttributesDataFromProjectsToProjectMirrorData < ActiveRecord:
 
     queue_background_migration_jobs_by_range_at_intervals(import_state, DOWN_MIGRATION, DELAY_INTERVAL, batch_size: BATCH_SIZE)
   end
+
 end
