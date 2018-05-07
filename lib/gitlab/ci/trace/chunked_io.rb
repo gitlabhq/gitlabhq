@@ -141,7 +141,7 @@ module Gitlab
           @size = offset
 
           # remove all next chunks
-          trace_chunks.where('chunk_index > ?', chunk_index).destroy_all
+          trace_chunks.where('chunk_index > ?', chunk_index).fast_destroy_all
 
           # truncate current chunk
           current_chunk.truncate(chunk_offset)
@@ -158,7 +158,7 @@ module Gitlab
         end
 
         def destroy!
-          trace_chunks.destroy_all
+          trace_chunks.fast_destroy_all
           @tell = @size = 0
         ensure
           invalidate_chunk_cache

@@ -22,6 +22,7 @@ class Project < ActiveRecord::Base
   include DeploymentPlatform
   include ::Gitlab::Utils::StrongMemoize
   include ChronicDurationAttribute
+  include FastDestroyAll::Helpers
 
   # EE specific modules
   prepend EE::Project
@@ -85,6 +86,9 @@ class Project < ActiveRecord::Base
   after_update :update_forks_visibility_level
 
   before_destroy :remove_private_deploy_keys
+
+  use_fast_destroy :build_trace_chunks
+
   after_destroy -> { run_after_commit { remove_pages } }
   after_destroy :remove_exports
 
@@ -232,6 +236,7 @@ class Project < ActiveRecord::Base
   # still using `dependent: :destroy` here.
   has_many :builds, class_name: 'Ci::Build', inverse_of: :project, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :build_trace_section_names, class_name: 'Ci::BuildTraceSectionName'
+  has_many :build_trace_chunks, class_name: 'Ci::BuildTraceChunk', through: :builds, source: :trace_chunks
   has_many :runner_projects, class_name: 'Ci::RunnerProject'
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
   has_many :variables, class_name: 'Ci::Variable'
