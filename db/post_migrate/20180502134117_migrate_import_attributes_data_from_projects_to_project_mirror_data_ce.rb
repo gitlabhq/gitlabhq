@@ -1,4 +1,4 @@
-class MigrateImportAttributesDataFromProjectsToProjectMirrorData < ActiveRecord::Migration
+class MigrateImportAttributesDataFromProjectsToProjectMirrorDataCe < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
