@@ -100,7 +100,9 @@ module EESpecificCheck
     # CE and EE branches.
     run_git_command("rebase --onto #{ce_merge_base} canonical-ce/master #{ce_fetch_head}")
 
-    if status_clean?
+    status = git_status
+
+    if status == ''
       head_commit_sha
     else
       say <<~MESSAGE
@@ -126,12 +128,8 @@ module EESpecificCheck
     run_git_command("rev-parse HEAD")
   end
 
-  def status
+  def git_status
     run_git_command("status --porcelain")
-  end
-
-  def status_clean?
-    status == ''
   end
 
   def remove_remotes
