@@ -1,11 +1,13 @@
 require 'spec_helper'
 
-describe API::Runner do
+describe API::Runner, :clean_gitlab_redis_shared_state do
   include StubGitlabCalls
+  include RedisHelpers
 
   let(:registration_token) { 'abcdefg123456' }
 
   before do
+    stub_feature_flags(ci_enable_live_trace: true)
     stub_gitlab_calls
     stub_application_setting(runners_registration_token: registration_token)
     allow_any_instance_of(Ci::Runner).to receive(:cache_attributes)
@@ -884,6 +886,49 @@ describe API::Runner do
             expect(response.status).to eq(403)
           end
         end
+
+        context 'when trace is patched' do
+          before do
+            patch_the_trace
+          end
+
+          it 'has valid trace' do
+            expect(response.status).to eq(202)
+            expect(job.reload.trace.raw).to eq 'BUILD TRACE appended appended'
+          end
+
+          context 'when redis data are flushed' do
+            before do
+              redis_shared_state_cleanup!
+            end
+
+            it 'has empty trace' do
+              expect(job.reload.trace.raw).to eq ''
+            end
+
+            context 'when we perform partial patch' do
+              before do
+                patch_the_trace('hello', headers.merge({ 'Content-Range' => "28-32/5" }))
+              end
+
+              it 'returns an error' do
+                expect(response.status).to eq(416)
+                expect(response.header['Range']).to eq('0-0')
+              end
+            end
+
+            context 'when we resend full trace' do
+              before do
+                patch_the_trace('BUILD TRACE appended appended hello', headers.merge({ 'Content-Range' => "0-34/35" }))
+              end
+
+              it 'succeeds with updating trace' do
+                expect(response.status).to eq(202)
+                expect(job.reload.trace.raw).to eq 'BUILD TRACE appended appended hello'
+              end
+            end
+          end
+        end
       end
 
       context 'when Runner makes a force-patch' do
@@ -900,7 +945,7 @@ describe API::Runner do
       end
 
       context 'when content-range start is too big' do
-        let(:headers_with_range) { headers.merge({ 'Content-Range' => '15-20' }) }
+        let(:headers_with_range) { headers.merge({ 'Content-Range' => '15-20/6' }) }
 
         it 'gets 416 error response with range headers' do
           expect(response.status).to eq 416
@@ -910,7 +955,7 @@ describe API::Runner do
       end
 
       context 'when content-range start is too small' do
-        let(:headers_with_range) { headers.merge({ 'Content-Range' => '8-20' }) }
+        let(:headers_with_range) { headers.merge({ 'Content-Range' => '8-20/13' }) }
 
         it 'gets 416 error response with range headers' do
           expect(response.status).to eq 416

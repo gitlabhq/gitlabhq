@@ -52,6 +52,7 @@
 - pipeline_creation:create_pipeline
 - pipeline_creation:run_pipeline_schedule
 - pipeline_background:archive_trace
+- pipeline_background:ci_build_trace_chunk_flush
 - pipeline_default:build_coverage
 - pipeline_default:build_trace_sections
 - pipeline_default:pipeline_metrics
