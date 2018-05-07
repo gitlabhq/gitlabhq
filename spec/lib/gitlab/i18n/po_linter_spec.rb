@@ -5,6 +5,25 @@ describe Gitlab::I18n::PoLinter do
   let(:linter) { described_class.new(po_path) }
   let(:po_path) { 'spec/fixtures/valid.po' }
 
+  def fake_translation(id:, translation:, plural_id: nil, plurals: [])
+    data = { msgid: id, msgid_plural: plural_id }
+
+    if plural_id
+      [translation, *plurals].each_with_index do |plural, index|
+        allow(FastGettext::Translation).to receive(:n_).with(plural_id, index).and_return(plural)
+        data.merge!("msgstr[#{index}]" => plural)
+      end
+    else
+      allow(FastGettext::Translation).to receive(:_).with(id).and_return(translation)
+      data[:msgstr] = translation
+    end
+
+    Gitlab::I18n::TranslationEntry.new(
+      data,
+      plurals.size + 1
+    )
+  end
+
   describe '#errors' do
     it 'only calls validation once' do
       expect(linter).to receive(:validate_po).once.and_call_original
@@ -155,9 +174,8 @@ describe Gitlab::I18n::PoLinter do
 
   describe '#validate_entries' do
     it 'keeps track of errors for entries' do
-      fake_invalid_entry = Gitlab::I18n::TranslationEntry.new(
-        { msgid: "Hello %{world}", msgstr: "Bonjour %{monde}" }, 2
-      )
+      fake_invalid_entry = fake_translation(id: "Hello %{world}",
+                                            translation: "Bonjour %{monde}")
       allow(linter).to receive(:translation_entries) { [fake_invalid_entry] }
 
       expect(linter).to receive(:validate_entry)
@@ -177,6 +195,7 @@ describe Gitlab::I18n::PoLinter do
       expect(linter).to receive(:validate_newlines).with([], fake_entry)
       expect(linter).to receive(:validate_number_of_plurals).with([], fake_entry)
       expect(linter).to receive(:validate_unescaped_chars).with([], fake_entry)
+      expect(linter).to receive(:validate_translation).with([], fake_entry)
 
       linter.validate_entry(fake_entry)
     end
@@ -201,13 +220,12 @@ describe Gitlab::I18n::PoLinter do
   end
 
   describe '#validate_variables' do
-    it 'validates both signular and plural in a pluralized string when the entry has a singular' do
-      pluralized_entry = Gitlab::I18n::TranslationEntry.new(
-        { msgid: 'Hello %{world}',
-          msgid_plural: 'Hello all %{world}',
-          'msgstr[0]' => 'Bonjour %{world}',
-          'msgstr[1]' => 'Bonjour tous %{world}' },
-        2
+    it 'validates both singular and plural in a pluralized string when the entry has a singular' do
+      pluralized_entry = fake_translation(
+        id: 'Hello %{world}',
+        translation: 'Bonjour %{world}',
+        plural_id: 'Hello all %{world}',
+        plurals: ['Bonjour tous %{world}']
       )
 
       expect(linter).to receive(:validate_variables_in_message)
@@ -221,11 +239,10 @@ describe Gitlab::I18n::PoLinter do
     end
 
     it 'only validates plural when there is no separate singular' do
-      pluralized_entry = Gitlab::I18n::TranslationEntry.new(
-        { msgid: 'Hello %{world}',
-          msgid_plural: 'Hello all %{world}',
-          'msgstr[0]' => 'Bonjour %{world}' },
-        1
+      pluralized_entry = fake_translation(
+        id: 'Hello %{world}',
+        translation: 'Bonjour %{world}',
+        plural_id: 'Hello all %{world}'
       )
 
       expect(linter).to receive(:validate_variables_in_message)
@@ -235,10 +252,7 @@ describe Gitlab::I18n::PoLinter do
     end
 
     it 'validates the message variables' do
-      entry = Gitlab::I18n::TranslationEntry.new(
-        { msgid: 'Hello', msgstr: 'Bonjour' },
-        2
-      )
+      entry = fake_translation(id: 'Hello', translation: 'Bonjour')
 
       expect(linter).to receive(:validate_variables_in_message)
                           .with([], 'Hello', 'Bonjour')
@@ -251,21 +265,34 @@ describe Gitlab::I18n::PoLinter do
     it 'detects when a variables are used incorrectly' do
       errors = []
 
-      expected_errors = ['<hello %{world} %d> is missing: [%{hello}]',
-                         '<hello %{world} %d> is using unknown variables: [%{world}]',
-                         'is combining multiple unnamed variables']
+      expected_errors = ['<%d hello %{world} %s> is missing: [%{hello}]',
+                         '<%d hello %{world} %s> is using unknown variables: [%{world}]',
+                         'is combining multiple unnamed variables',
+                         'is combining named variables with unnamed variables']
 
-      linter.validate_variables_in_message(errors, '%{hello} world %d', 'hello %{world} %d')
+      linter.validate_variables_in_message(errors, '%d %{hello} world %s', '%d hello %{world} %s')
 
       expect(errors).to include(*expected_errors)
+    end
+
+    it 'does not allow combining 1 `%d` unnamed variable with named variables' do
+      errors = []
+
+      linter.validate_variables_in_message(errors,
+                                           '%{type} detected %d vulnerability',
+                                           '%{type} detecteerde %d kwetsbaarheid')
+
+      expect(errors).not_to be_empty
     end
   end
 
   describe '#validate_translation' do
+    let(:entry) { fake_translation(id: 'Hello %{world}', translation: 'Bonjour %{world}') }
+
     it 'succeeds with valid variables' do
       errors = []
 
-      linter.validate_translation(errors, 'Hello %{world}',  ['%{world}'])
+      linter.validate_translation(errors, entry)
 
       expect(errors).to be_empty
     end
@@ -275,43 +302,38 @@ describe Gitlab::I18n::PoLinter do
 
       expect(FastGettext::Translation).to receive(:_) { raise 'broken' }
 
-      linter.validate_translation(errors, 'Hello', [])
+      linter.validate_translation(errors, entry)
 
-      expect(errors).to include('Failure translating to en with []: broken')
+      expect(errors).to include('Failure translating to en: broken')
     end
 
     it 'adds an error message when translating fails when translating with context' do
+      entry = fake_translation(id: 'Tests|Hello', translation: 'broken')
       errors = []
 
       expect(FastGettext::Translation).to receive(:s_) { raise 'broken' }
 
-      linter.validate_translation(errors, 'Tests|Hello', [])
+      linter.validate_translation(errors, entry)
 
-      expect(errors).to include('Failure translating to en with []: broken')
+      expect(errors).to include('Failure translating to en: broken')
     end
 
     it "adds an error when trying to translate with incorrect variables when using unnamed variables" do
+      entry = fake_translation(id: 'Hello %s', translation: 'Hello %d')
       errors = []
 
-      linter.validate_translation(errors, 'Hello %d', ['%s'])
+      linter.validate_translation(errors, entry)
 
-      expect(errors.first).to start_with("Failure translating to en with")
+      expect(errors.first).to start_with("Failure translating to en")
     end
 
     it "adds an error when trying to translate with named variables when unnamed variables are expected" do
+      entry = fake_translation(id: 'Hello %s', translation: 'Hello %{thing}')
       errors = []
 
-      linter.validate_translation(errors, 'Hello %d', ['%{world}'])
+      linter.validate_translation(errors, entry)
 
-      expect(errors.first).to start_with("Failure translating to en with")
-    end
-
-    it 'adds an error when translated with incorrect variables using named variables' do
-      errors = []
-
-      linter.validate_translation(errors, 'Hello %{thing}', ['%d'])
-
-      expect(errors.first).to start_with("Failure translating to en with")
+      expect(errors.first).to start_with("Failure translating to en")
     end
   end
 

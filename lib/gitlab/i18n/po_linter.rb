@@ -1,6 +1,8 @@
 module Gitlab
   module I18n
     class PoLinter
+      include Gitlab::Utils::StrongMemoize
+
       attr_reader :po_path, :translation_entries, :metadata_entry, :locale
 
       VARIABLE_REGEX = /%{\w*}|%[a-z]/.freeze
@@ -48,7 +50,7 @@ module Gitlab
 
         translation_entries.each do |entry|
           errors_for_entry = validate_entry(entry)
-          errors[join_message(entry.msgid)] = errors_for_entry if errors_for_entry.any?
+          errors[entry.msgid] = errors_for_entry if errors_for_entry.any?
         end
 
         errors
@@ -62,6 +64,7 @@ module Gitlab
         validate_newlines(errors, entry)
         validate_number_of_plurals(errors, entry)
         validate_unescaped_chars(errors, entry)
+        validate_translation(errors, entry)
 
         errors
       end
@@ -117,41 +120,73 @@ module Gitlab
       end
 
       def validate_variables_in_message(errors, message_id, message_translation)
-        message_id = join_message(message_id)
         required_variables = message_id.scan(VARIABLE_REGEX)
 
         validate_unnamed_variables(errors, required_variables)
-        validate_translation(errors, message_id, required_variables)
         validate_variable_usage(errors, message_translation, required_variables)
       end
 
-      def validate_translation(errors, message_id, used_variables)
+      def validate_translation(errors, entry)
+        Gitlab::I18n.with_locale(locale) do
+          if entry.has_plural?
+            translate_plural(entry)
+          else
+            translate_singular(entry)
+          end
+        end
+
+      # `sprintf` could raise an `ArgumentError` when invalid passing something
+      # other than a Hash when using named variables
+      #
+      # `sprintf` could raise `TypeError` when passing a wrong type when using
+      # unnamed variables
+      #
+      # FastGettext::Translation could raise `RuntimeError` (raised as a string),
+      # or as subclassess `NoTextDomainConfigured` & `InvalidFormat`
+      #
+      # `FastGettext::Translation` could raise `ArgumentError` as subclassess
+      # `InvalidEncoding`, `IllegalSequence` & `InvalidCharacter`
+      rescue ArgumentError, TypeError, RuntimeError => e
+        errors << "Failure translating to #{locale}: #{e.message}"
+      end
+
+      def translate_singular(entry)
+        used_variables = entry.msgid.scan(VARIABLE_REGEX)
         variables = fill_in_variables(used_variables)
 
-        begin
-          Gitlab::I18n.with_locale(locale) do
-            translated = if message_id.include?('|')
-                           FastGettext::Translation.s_(message_id)
-                         else
-                           FastGettext::Translation._(message_id)
-                         end
+        translation = if entry.msgid.include?('|')
+                        FastGettext::Translation.s_(entry.msgid)
+                      else
+                        FastGettext::Translation._(entry.msgid)
+                      end
 
-            translated % variables
-          end
+        translation % variables if used_variables.any?
+      end
 
-        # `sprintf` could raise an `ArgumentError` when invalid passing something
-        # other than a Hash when using named variables
-        #
-        # `sprintf` could raise `TypeError` when passing a wrong type when using
-        # unnamed variables
-        #
-        # FastGettext::Translation could raise `RuntimeError` (raised as a string),
-        # or as subclassess `NoTextDomainConfigured` & `InvalidFormat`
-        #
-        # `FastGettext::Translation` could raise `ArgumentError` as subclassess
-        # `InvalidEncoding`, `IllegalSequence` & `InvalidCharacter`
-        rescue ArgumentError, TypeError, RuntimeError => e
-          errors << "Failure translating to #{locale} with #{variables}: #{e.message}"
+      def translate_plural(entry)
+        used_variables = entry.plural_id.scan(VARIABLE_REGEX)
+        variables = fill_in_variables(used_variables)
+
+        numbers_covering_all_plurals.map do |number|
+          translation = FastGettext::Translation.n_(entry.msgid, entry.plural_id, number)
+
+          translation % variables if used_variables.any?
+        end
+      end
+
+      def numbers_covering_all_plurals
+        @numbers_covering_all_plurals ||= Array.new(metadata_entry.expected_plurals) do |index|
+          number_for_pluralization(index)
+        end
+      end
+
+      def number_for_pluralization(counter)
+        pluralization_result = FastGettext.pluralisation_rule.call(counter)
+
+        if pluralization_result.is_a?(TrueClass) || pluralization_result.is_a?(FalseClass)
+          counter
+        else
+          pluralization_result
         end
       end
 
@@ -172,14 +207,16 @@ module Gitlab
       end
 
       def validate_unnamed_variables(errors, variables)
-        if  variables.size > 1 && variables.any? { |variable_name| unnamed_variable?(variable_name) }
+        if variables.any? { |name| unnamed_variable?(name) } && variables.any? { |name| !unnamed_variable?(name) }
+          errors << 'is combining named variables with unnamed variables'
+        end
+
+        if variables.select { |variable_name| unnamed_variable?(variable_name) }.size > 1
           errors << 'is combining multiple unnamed variables'
         end
       end
 
       def validate_variable_usage(errors, translation, required_variables)
-        translation = join_message(translation)
-
         # We don't need to validate when the message is empty.
         # In this case we fall back to the default, which has all the the
         # required variables.
@@ -204,10 +241,6 @@ module Gitlab
 
       def validate_flags(errors, entry)
         errors << "is marked #{entry.flag}" if entry.flag
-      end
-
-      def join_message(message)
-        Array(message).join
       end
     end
   end
