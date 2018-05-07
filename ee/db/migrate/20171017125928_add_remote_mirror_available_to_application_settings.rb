@@ -6,6 +6,9 @@ class AddRemoteMirrorAvailableToApplicationSettings < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
+    # When moving from CE to EE, this column may already exist
+    return if column_exists?(:application_settings, :remote_mirror_available)
+
     add_column_with_default(:application_settings, :remote_mirror_available, :boolean, default: true, allow_null: false)
   end
 
