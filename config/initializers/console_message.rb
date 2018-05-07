@@ -6,5 +6,14 @@ if defined?(Rails::Console)
   puts " Gitlab:".ljust(justify) + "#{Gitlab::VERSION} (#{Gitlab::REVISION})"
   puts " Gitlab Shell:".ljust(justify) + Gitlab::Shell.new.version
   puts " #{Gitlab::Database.adapter_name}:".ljust(justify) + Gitlab::Database.version
+
+  # EE-specific start
+  if Gitlab::Geo.enabled?
+    puts " Geo enabled:".ljust(justify) + 'yes'
+    puts " Geo server:".ljust(justify) + (Gitlab::Geo.primary? ? 'primary' : 'secondary')
+  end
+
+  # EE specific end
+
   puts "-------------------------------------------------------------------------------------"
 end
