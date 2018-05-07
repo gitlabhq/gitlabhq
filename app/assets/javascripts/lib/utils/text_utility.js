@@ -102,3 +102,16 @@ export const convertToSentenceCase = string => {
 
   return splitWord.join(' ');
 };
+
+/**
+ * Splits camelCase or PascalCase words
+ * e.g. HelloWorld => Hello World
+ *
+ * @param {*} string
+*/
+export const splitCamelCase = string => (
+  string
+  .replace(/([A-Z]+)([A-Z][a-z])/g, ' $1 $2')
+  .replace(/([a-z\d])([A-Z])/g, '$1 $2')
+  .trim()
+);
