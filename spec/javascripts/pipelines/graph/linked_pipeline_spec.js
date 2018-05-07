@@ -5,7 +5,7 @@ import mockData from './linked_pipelines_mock_data';
 const LinkedPipeline = Vue.extend(LinkedPipelineComponent);
 const mockPipeline = mockData.triggered[0];
 
-describe('Linked pipeline', () => {
+describe('Linked pipeline', function() {
   beforeEach(() => {
     this.propsData = {
       pipelineId: mockPipeline.id,
@@ -38,7 +38,9 @@ describe('Linked pipeline', () => {
   });
 
   it('should render the project name', () => {
-    const projectNameElement = this.linkedPipeline.$el.querySelector('.linked-pipeline-project-name');
+    const projectNameElement = this.linkedPipeline.$el.querySelector(
+      '.linked-pipeline-project-name',
+    );
     expect(projectNameElement.innerText).toContain(this.propsData.projectName);
   });
 
@@ -55,7 +57,9 @@ describe('Linked pipeline', () => {
 
   it('should render the correct pipeline status icon style selector', () => {
     const pipelineStatusElement = this.linkedPipeline.$el.querySelector('.linked-pipeline-status');
-    expect(pipelineStatusElement.firstChild.classList.contains('ci-status-icon-running')).toBe(true);
+    expect(pipelineStatusElement.firstChild.classList.contains('ci-status-icon-running')).toBe(
+      true,
+    );
   });
 
   it('should have a ci-status child component', () => {

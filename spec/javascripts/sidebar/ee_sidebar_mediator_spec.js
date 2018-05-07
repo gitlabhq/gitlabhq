@@ -6,7 +6,7 @@ import CESidebarStore from '~/sidebar/stores/sidebar_store';
 import SidebarService from '~/sidebar/services/sidebar_service';
 import Mock from './ee_mock_data';
 
-describe('EE Sidebar mediator', () => {
+describe('EE Sidebar mediator', function() {
   beforeEach(() => {
     Vue.http.interceptors.push(Mock.sidebarMockInterceptor);
     this.mediator = new SidebarMediator(Mock.mediator);
@@ -20,7 +20,8 @@ describe('EE Sidebar mediator', () => {
   });
 
   it('processes fetched data', () => {
-    const mockData = Mock.responseMap.GET['/gitlab-org/gitlab-shell/issues/5.json?serializer=sidebar'];
+    const mockData =
+      Mock.responseMap.GET['/gitlab-org/gitlab-shell/issues/5.json?serializer=sidebar'];
     this.mediator.processFetchedData(mockData);
 
     expect(this.mediator.store.weight).toEqual(mockData.weight);
