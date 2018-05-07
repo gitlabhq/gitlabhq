@@ -1,5 +1,5 @@
 require 'spec_helper'
-require Rails.root.join('ee', 'db', 'post_migrate', '20180430180136_migrate_mirror_attributes_data_from_projects_to_import_state.rb')
+require Rails.root.join('ee', 'db', 'post_migrate', '20180502130136_migrate_mirror_attributes_data_from_projects_to_import_state.rb')
 
 describe MigrateMirrorAttributesDataFromProjectsToImportState, :migration do
   let(:namespaces) { table(:namespaces) }
