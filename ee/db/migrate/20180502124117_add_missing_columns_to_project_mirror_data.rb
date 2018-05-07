@@ -10,38 +10,12 @@ class AddMissingColumnsToProjectMirrorData < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    # Columns missing when a CE instance is upgraded to EE
-    unless column_exists? :project_mirror_data, :retry_count
-      add_column_with_default :project_mirror_data, :retry_count, :integer, default: 0, allow_null: false
-      add_column :project_mirror_data, :last_update_started_at, :datetime
-      add_column :project_mirror_data, :last_update_scheduled_at, :datetime
-      add_column :project_mirror_data, :next_execution_timestamp, :datetime
-    end
-
-    # Columns missing on an EE instance
-    unless column_exists? :project_mirror_data, :status
-      add_column :project_mirror_data, :status, :string
-      add_column :project_mirror_data, :jid, :string
-      add_column :project_mirror_data, :last_update_at, :datetime_with_timezone
-      add_column :project_mirror_data, :last_successful_update_at, :datetime_with_timezone
-      add_column :project_mirror_data, :last_error, :text
-    end
+    add_column :project_mirror_data, :last_update_at, :datetime_with_timezone
+    add_column :project_mirror_data, :last_successful_update_at, :datetime_with_timezone
   end
 
   def down
-    if column_exists? :project_mirror_data, :retry_count
-      remove_column :project_mirror_data, :retry_count
-      remove_column :project_mirror_data, :last_update_started_at
-      remove_column :project_mirror_data, :last_update_scheduled_at
-      remove_column :project_mirror_data, :next_execution_timestamp
-    end
-
-    if column_exists? :project_mirror_data, :status
-      remove_column :project_mirror_data, :status
-      remove_column :project_mirror_data, :jid
-      remove_column :project_mirror_data, :last_update_at
-      remove_column :project_mirror_data, :last_successful_update_at
-      remove_column :project_mirror_data, :last_error
-    end
+    remove_column :project_mirror_data, :last_update_at
+    remove_column :project_mirror_data, :last_successful_update_at
   end
 end
