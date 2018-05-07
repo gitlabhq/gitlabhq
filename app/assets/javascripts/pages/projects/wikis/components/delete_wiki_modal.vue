@@ -30,7 +30,7 @@ export default {
     },
     title() {
       return sprintf(
-        s__('WikiPageConfirmDelete|Delete %{pageTitle}?'),
+        s__('WikiPageConfirmDelete|Delete page %{pageTitle}?'),
         {
           pageTitle: _.escape(this.pageTitle),
         },
@@ -51,7 +51,7 @@ export default {
     id="delete-wiki-modal"
     :header-title-text="title"
     footer-primary-button-variant="danger"
-    :footer-primary-button-text="s__('WikiPageConfirmDelete|Delete Page')"
+    :footer-primary-button-text="s__('WikiPageConfirmDelete|Delete page')"
     @submit="onSubmit"
   >
     {{ message }}
