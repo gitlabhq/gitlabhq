@@ -100,12 +100,18 @@ module EESpecificCheck
     # CE and EE branches.
     run_git_command("rebase --onto #{ce_merge_base} canonical-ce/master #{ce_fetch_head}")
 
-    if status_clean?
+    status = git_status
+
+    if status == ''
       head_commit_sha
     else
       say <<~MESSAGE
-        💥 WE HAVE CONFLICTS! This shouldn't happen. Please create an issue
+        💥 Git status not clean! This shouldn't happen. Please create an issue
         💥 and ping @godfat to investigate.
+
+        ⚠️ Git status:
+
+        #{status}
       MESSAGE
 
       run_git_command("rebase --abort")
@@ -122,8 +128,8 @@ module EESpecificCheck
     run_git_command("rev-parse HEAD")
   end
 
-  def status_clean?
-    run_git_command("status --porcelain") == ''
+  def git_status
+    run_git_command("status --porcelain")
   end
 
   def remove_remotes
