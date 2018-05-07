@@ -8,9 +8,9 @@ import * as CONSTANTS from './constants';
 
 const mountComponent = (entryPoint, component, componentName, extraProps = {}) => {
   const el = document.querySelector(entryPoint);
-  const hiddenInput = el.querySelector('input');
-
   if (!el) return false;
+
+  const hiddenInput = el.querySelector('input');
 
   return new Vue({
     el,
@@ -77,7 +77,7 @@ const initializeGapiClient = () => {
 };
 
 const initGkeDropdowns = () => {
-  if (typeof gapi === 'undefined') {
+  if (!gapi) {
     gkeDropdownErrorHandler();
     return false;
   }
