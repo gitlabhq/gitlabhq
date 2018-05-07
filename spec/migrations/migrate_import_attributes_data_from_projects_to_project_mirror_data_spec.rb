@@ -1,9 +1,5 @@
 require 'spec_helper'
-<<<<<<< HEAD
 require Rails.root.join('db', 'post_migrate', '20180430144643_migrate_import_attributes_data_from_projects_to_project_mirror_data.rb')
-=======
-require Rails.root.join('db', 'post_migrate', '20180502134117_migrate_import_attributes_data_from_projects_to_project_mirror_data.rb')
->>>>>>> upstream/master
 
 describe MigrateImportAttributesDataFromProjectsToProjectMirrorData, :sidekiq, :migration do
   let(:namespaces) { table(:namespaces) }
