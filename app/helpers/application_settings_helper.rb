@@ -251,7 +251,8 @@ module ApplicationSettingsHelper
       :version_check_enabled,
       :allow_local_requests_from_hooks_and_services,
       :enforce_terms,
-      :terms
+      :terms,
+      :mirror_available
     ]
   end
 end

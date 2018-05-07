@@ -18,14 +18,6 @@ describe Projects::UpdateRemoteMirrorService do
       allow(raw_repository).to receive(:push_remote_branches).and_return(true)
     end
 
-    it 'does nothing when unlicensed' do
-      stub_licensed_features(repository_mirrors: false)
-
-      expect(project.repository).not_to receive(:fetch_remote)
-
-      subject.execute(remote_mirror)
-    end
-
     it "fetches the remote repository" do
       expect(repository).to receive(:fetch_remote).with(remote_mirror.remote_name, no_tags: true) do
         sync_remote(repository, remote_mirror.remote_name, local_branch_names)

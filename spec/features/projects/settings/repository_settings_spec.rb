@@ -115,5 +115,20 @@ describe 'Projects > Settings > Repository settings' do
         expect(page).to have_content('Your new project deploy token has been created')
       end
     end
+
+    context 'remote mirror settings' do
+      let(:user2) { create(:user) }
+
+      before do
+        project.add_master(user2)
+
+        visit project_settings_repository_path(project)
+      end
+
+      it 'shows push mirror settings' do
+        expect(page).to have_selector('#project_remote_mirrors_attributes_0_enabled')
+        expect(page).to have_selector('#project_remote_mirrors_attributes_0_url')
+      end
+    end
   end
 end

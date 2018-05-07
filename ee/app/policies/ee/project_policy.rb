@@ -43,11 +43,6 @@ module EE
         !PushRule.global&.commit_committer_check
       end
 
-      with_scope :global
-      condition(:mirror_available, score: 0) do
-        ::Gitlab::CurrentSettings.current_application_settings.mirror_available
-      end
-
       rule { admin }.enable :change_repository_storage
 
       rule { support_bot }.enable :guest_access

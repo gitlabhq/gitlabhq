@@ -156,18 +156,6 @@ describe RemoteMirror do
       Timecop.freeze { example.run }
     end
 
-    context 'repository mirrors not licensed' do
-      before do
-        stub_licensed_features(repository_mirrors: false)
-      end
-
-      it 'does not schedule RepositoryUpdateRemoteMirrorWorker' do
-        expect(RepositoryUpdateRemoteMirrorWorker).not_to receive(:perform_in)
-
-        remote_mirror.sync
-      end
-    end
-
     context 'with remote mirroring disabled' do
       it 'returns nil' do
         remote_mirror.update_attributes(enabled: false)
