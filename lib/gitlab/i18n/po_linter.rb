@@ -109,10 +109,14 @@ module Gitlab
 
       def validate_variables(errors, entry)
         if entry.has_singular_translation?
+          validate_variables_in_message(errors, entry.msgid, entry.msgid)
+
           validate_variables_in_message(errors, entry.msgid, entry.singular_translation)
         end
 
         if entry.has_plural?
+          validate_variables_in_message(errors, entry.plural_id, entry.plural_id)
+
           entry.plural_translations.each do |translation|
             validate_variables_in_message(errors, entry.plural_id, translation)
           end

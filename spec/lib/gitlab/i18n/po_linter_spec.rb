@@ -220,6 +220,10 @@ describe Gitlab::I18n::PoLinter do
   end
 
   describe '#validate_variables' do
+    before do
+      allow(linter).to receive(:validate_variables_in_message).and_call_original
+    end
+
     it 'validates both singular and plural in a pluralized string when the entry has a singular' do
       pluralized_entry = fake_translation(
         id: 'Hello %{world}',
@@ -256,6 +260,24 @@ describe Gitlab::I18n::PoLinter do
 
       expect(linter).to receive(:validate_variables_in_message)
                           .with([], 'Hello', 'Bonjour')
+
+      linter.validate_variables([], entry)
+    end
+
+    it 'validates variable usage in message ids' do
+      entry = fake_translation(
+        id: 'Hello %{world}',
+        translation: 'Bonjour %{world}',
+        plural_id: 'Hello all %{world}',
+        plurals: ['Bonjour tous %{world}']
+      )
+
+      expect(linter).to receive(:validate_variables_in_message)
+                          .with([], 'Hello %{world}', 'Hello %{world}')
+                          .and_call_original
+      expect(linter).to receive(:validate_variables_in_message)
+                          .with([], 'Hello all %{world}', 'Hello all %{world}')
+                          .and_call_original
 
       linter.validate_variables([], entry)
     end
