@@ -33,7 +33,7 @@ describe Geo::ProjectHousekeepingService do
     it 'resets counter when syncs_since_gc > gc_period' do
       allow(service).to receive(:gc_period).and_return(1)
       allow(service).to receive(:try_obtain_lease).and_return(:the_uuid)
-      registry.increment_syncs_since_gc
+      service.increment!
 
       Sidekiq::Testing.inline! do
         expect { service.execute }.to change { registry.syncs_since_gc }.to(0)
@@ -109,7 +109,7 @@ describe Geo::ProjectHousekeepingService do
 
   describe '#increment!' do
     it 'increments the syncs_since_gc counter' do
-      expect { service.send(:increment!) }.to change { registry.syncs_since_gc }.by(1)
+      expect { service.increment! }.to change { registry.syncs_since_gc }.by(1)
     end
   end
 

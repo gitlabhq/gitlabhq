@@ -27,13 +27,13 @@ module Geo
       @registry ||= Geo::ProjectRegistry.find_or_initialize_by(project_id: project.id)
     end
 
-    private
-
     def increment!
       Gitlab::Metrics.measure(:geo_increment_syncs_since_gc) do
         registry.increment_syncs_since_gc
       end
     end
+
+    private
 
     def do_housekeeping
       lease_uuid = try_obtain_lease

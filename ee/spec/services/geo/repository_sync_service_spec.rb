@@ -7,7 +7,7 @@ describe Geo::RepositorySyncService do
   set(:secondary) { create(:geo_node) }
 
   let(:lease) { double(try_obtain: true) }
-  let(:project) { create(:project_empty_repo) }
+  set(:project) { create(:project_empty_repo) }
   let(:repository) { project.repository }
 
   subject { described_class.new(project) }
@@ -352,6 +352,20 @@ describe Geo::RepositorySyncService do
       Sidekiq::Testing.fake! do
         expect { subject.send(:schedule_repack) }.to change { GitGarbageCollectWorker.jobs.count }.by(1)
       end
+    end
+  end
+
+  context 'repository housekeeping' do
+    let(:registry) { Geo::ProjectRegistry.find_or_initialize_by(project_id: project.id) }
+
+    it 'increases sync count after execution' do
+      expect { subject.execute }.to change { registry.syncs_since_gc }.by(1)
+    end
+
+    it 'initiate housekeeping at end of execution' do
+      expect_any_instance_of(Geo::ProjectHousekeepingService).to receive(:execute)
+
+      subject.execute
     end
   end
 end
