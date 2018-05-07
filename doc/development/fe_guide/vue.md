@@ -123,7 +123,22 @@ You can read more about components in Vue.js site, [Component System][component-
 
 #### Components Gotchas
 1. Using SVGs icons in components: To use an SVG icon in a template use the `icon.vue`
-1. Using SVGs illustrations in components: To use an SVG illustrations in a template provide the path as a prop.
+1. Using SVGs illustrations in components: To use an SVG illustrations in a template provide the path as a prop and display it through a standard img tag.
+    ```javascript
+      <script>
+      export default {
+        props: {
+          svgIllustrationPath: {
+            type: String,
+            required: true,
+          },
+        },
+      };
+      <script>
+      <template>
+        <img :src="svgIllustrationPath" />
+      </template>
+    ```
 
 ### A folder for the Store
 

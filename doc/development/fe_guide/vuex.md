@@ -22,6 +22,7 @@ When using Vuex at GitLab, separate this concerns into different files to improv
   └── mutation_types.js # mutation types
 ```
 The following example shows an application that lists and adds users to the state.
+(For a more complex example implementation take a look at the security applications store in [here](https://gitlab.com/gitlab-org/gitlab-ee/tree/master/ee/app/assets/javascripts/vue_shared/security_reports/store))
 
 ### `index.js`
 This is the entry point for our store. You can use the following as a guide:
@@ -189,6 +190,7 @@ Remember that actions only describe that something happened, they don't describe
 
 #### `getters.js`
 Sometimes we may need to get derived state based on store state, like filtering for a specific prop.
+Using a getter will also cache the result based on dependencies due to [how computed props work](https://vuejs.org/v2/guide/computed.html#Computed-Caching-vs-Methods)
 This can be done through the `getters`:
 
 ```javascript
