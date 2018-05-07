@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe ApplicationController do
+  include TermsHelper
+
   let(:user) { create(:user) }
 
   describe '#check_password_expiration' do
@@ -402,6 +404,67 @@ describe ApplicationController do
           Timecop.freeze(1.hour.from_now) do
             expect(subject).to be_truthy
           end
+        end
+      end
+    end
+  end
+
+  context 'terms' do
+    controller(described_class) do
+      def index
+        render text: 'authenticated'
+      end
+    end
+
+    before do
+      stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
+      sign_in user
+    end
+
+    it 'does not query more when terms are enforced' do
+      control = ActiveRecord::QueryRecorder.new { get :index }
+
+      enforce_terms
+
+      expect { get :index }.not_to exceed_query_limit(control)
+    end
+
+    context 'when terms are enforced' do
+      before do
+        enforce_terms
+      end
+
+      it 'redirects if the user did not accept the terms'  do
+        get :index
+
+        expect(response).to have_gitlab_http_status(302)
+      end
+
+      it 'does not redirect when the user accepted terms' do
+        accept_terms(user)
+
+        get :index
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+
+      context 'for sessionless users' do
+        before do
+          sign_out user
+        end
+
+        it 'renders a 403 when the sessionless user did not accept the terms' do
+          get :index, rss_token: user.rss_token, format: :atom
+
+          expect(response).to have_gitlab_http_status(403)
+        end
+
+        it 'renders a 200 when the sessionless user accepted the terms' do
+          accept_terms(user)
+
+          get :index, rss_token: user.rss_token, format: :atom
+
+          expect(response).to have_gitlab_http_status(200)
         end
       end
     end

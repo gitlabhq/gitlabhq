@@ -301,6 +301,21 @@ describe ApplicationSetting do
         expect(subject).to be_invalid
       end
     end
+
+    describe 'enforcing terms' do
+      it 'requires the terms to present when enforcing users to accept' do
+        subject.enforce_terms = true
+
+        expect(subject).to be_invalid
+      end
+
+      it 'is valid when terms are created' do
+        create(:term)
+        subject.enforce_terms = true
+
+        expect(subject).to be_valid
+      end
+    end
   end
 
   describe '.current' do

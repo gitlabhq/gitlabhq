@@ -34,7 +34,10 @@ feature 'Multi-file editor new file', :js do
 
     wait_for_requests
 
-    click_button 'Stage all'
+    find('.js-ide-commit-mode').click
+
+    find('.multi-file-commit-list-item').hover
+    first('.multi-file-discard-btn .btn').click
 
     fill_in('commit-message', with: 'commit message ide')
 

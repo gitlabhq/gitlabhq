@@ -2,6 +2,9 @@ import actions, {
   stageAllChanges,
   unstageAllChanges,
   toggleFileFinder,
+  setCurrentBranchId,
+  setEmptyStateSvgs,
+  updateActivityBarView,
   updateTempFlagForEntry,
 } from '~/ide/stores/actions';
 import store from '~/ide/stores';
@@ -306,6 +309,7 @@ describe('Multi-file store actions', () => {
         null,
         store.state,
         [
+          { type: types.SET_LAST_COMMIT_MSG, payload: '' },
           { type: types.STAGE_CHANGE, payload: store.state.changedFiles[0].path },
           { type: types.STAGE_CHANGE, payload: store.state.changedFiles[1].path },
         ],
@@ -342,6 +346,32 @@ describe('Multi-file store actions', () => {
         })
         .then(done)
         .catch(done.fail);
+    });
+  });
+
+  describe('updateActivityBarView', () => {
+    it('commits UPDATE_ACTIVITY_BAR_VIEW', done => {
+      testAction(
+        updateActivityBarView,
+        'test',
+        {},
+        [{ type: 'UPDATE_ACTIVITY_BAR_VIEW', payload: 'test' }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('setEmptyStateSvgs', () => {
+    it('commits setEmptyStateSvgs', done => {
+      testAction(
+        setEmptyStateSvgs,
+        'svg',
+        {},
+        [{ type: 'SET_EMPTY_STATE_SVGS', payload: 'svg' }],
+        [],
+        done,
+      );
     });
   });
 
@@ -383,6 +413,19 @@ describe('Multi-file store actions', () => {
         store.state,
         [{ type: 'UPDATE_TEMP_FLAG', payload: { path: f.path, tempFile: false } }],
         [{ type: 'updateTempFlagForEntry', payload: { file: parent, tempFile: false } }],
+        done,
+      );
+    });
+  });
+
+  describe('setCurrentBranchId', () => {
+    it('commits setCurrentBranchId', done => {
+      testAction(
+        setCurrentBranchId,
+        'branchId',
+        {},
+        [{ type: 'SET_CURRENT_BRANCH', payload: 'branchId' }],
+        [],
         done,
       );
     });
