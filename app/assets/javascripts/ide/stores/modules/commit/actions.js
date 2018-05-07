@@ -210,7 +210,11 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
             );
           }
         })
-        .then(() => dispatch('updateCommitAction', consts.COMMIT_TO_CURRENT_BRANCH));
+        .then(() => dispatch('updateCommitAction', consts.COMMIT_TO_CURRENT_BRANCH))
+        .then(() => dispatch('refreshLastCommitData', {
+          projectId: rootState.currentProjectId,
+          branchId: rootState.currentBranchId,
+        }, { root: true }));
     })
     .catch(err => {
       let errMsg = __('Error committing changes. Please try again.');
