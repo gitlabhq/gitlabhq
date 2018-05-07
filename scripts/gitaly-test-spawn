@@ -13,8 +13,12 @@ end
 
 args = %W[#{gitaly_dir}/gitaly #{gitaly_dir}/config.toml]
 
-spawn('sleep 1; tail -f log/gitaly-test.log')
 system(env, 'bundle', 'config', chdir: gitaly_ruby_dir)
+
+abort 'config load failed' unless system(env, args[0], '-test-config', *args[1, args.length])
+
+# for crazy debug info
+spawn('sleep 1; tail -f log/gitaly-test.log')
 
 # Print the PID of the spawned process
 puts spawn(env, *args, [:out, :err] => 'log/gitaly-test.log')
