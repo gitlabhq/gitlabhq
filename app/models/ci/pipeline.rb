@@ -269,27 +269,39 @@ module Ci
     end
 
     def git_author_name
-      commit.try(:author_name)
+      strong_memoize(:git_author_name) do
+        commit.try(:author_name)
+      end
     end
 
     def git_author_email
-      commit.try(:author_email)
+      strong_memoize(:git_author_email) do
+        commit.try(:author_email)
+      end
     end
 
     def git_commit_message
-      commit.try(:message)
+      strong_memoize(:git_commit_message) do
+        commit.try(:message)
+      end
     end
 
     def git_commit_title
-      commit.try(:title)
+      strong_memoize(:git_commit_title) do
+        commit.try(:title)
+      end
     end
 
     def git_commit_full_title
-      commit.try(:full_title)
+      strong_memoize(:git_commit_full_title) do
+        commit.try(:full_title)
+      end
     end
 
     def git_commit_description
-      commit.try(:description)
+      strong_memoize(:git_commit_description) do
+        commit.try(:description)
+      end
     end
 
     def short_sha
