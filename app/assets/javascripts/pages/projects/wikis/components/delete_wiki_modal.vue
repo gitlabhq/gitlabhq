@@ -10,17 +10,17 @@ export default {
   props: {
     deleteWikiUrl: {
       type: String,
-      required: false,
+      required: true,
       default: '',
     },
     pageTitle: {
       type: String,
-      required: false,
+      required: true,
       default: '',
     },
     csrfToken: {
       type: String,
-      required: false,
+      required: true,
       default: '',
     },
   },
