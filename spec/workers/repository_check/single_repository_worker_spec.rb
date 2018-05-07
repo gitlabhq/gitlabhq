@@ -99,7 +99,6 @@ describe RepositoryCheck::SingleRepositoryWorker do
     break_repo(project.repository.path_to_repo)
   end
 
-
   def break_repo(repo)
     # Create or replace blob ffffffffffffffffffffffffffffffffffffffff with an empty file
     # This will make the repo invalid, _and_ 'git init' cannot fix it.
