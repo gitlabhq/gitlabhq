@@ -23,6 +23,7 @@ describe('Monitoring Paths', () => {
       generatedAreaPath: firstTimeSeries.areaPath,
       lineColor: firstTimeSeries.lineColor,
       areaColor: firstTimeSeries.areaColor,
+      showDot: false,
     });
     const metricArea = component.$el.querySelector('.metric-area');
     const metricLine = component.$el.querySelector('.metric-line');
@@ -40,6 +41,7 @@ describe('Monitoring Paths', () => {
         generatedAreaPath: firstTimeSeries.areaPath,
         lineColor: firstTimeSeries.lineColor,
         areaColor: firstTimeSeries.areaColor,
+        showDot: false,
       });
 
       component.lineStyle = 'dashed';
