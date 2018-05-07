@@ -153,8 +153,6 @@ module TestEnv
   end
 
   def start_gitaly(gitaly_dir)
-Thread.new { sleep(30); system('grep', '-v', 'level=info', 'log/gitaly-test.log') }
-
     if ENV['CI'].present?
       # Gitaly has been spawned outside this process already
       return
