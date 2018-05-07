@@ -47,12 +47,12 @@ export default {
       type: String,
       required: true,
     },
-    currentDataIndex: {
-      type: Number,
-      required: true,
-    },
     legendTitle: {
       type: String,
+      required: true,
+    },
+    currentCoordinates: {
+      type: Array,
       required: true,
     },
   },
@@ -90,10 +90,12 @@ export default {
     },
   },
   methods: {
-    seriesMetricValue(series) {
+    seriesMetricValue(seriesIndex, series) {
+      const indexFromCoordinates = this.currentCoordinates[seriesIndex]
+      ? this.currentCoordinates[seriesIndex].currentDataIndex : 0;
       const index = this.deploymentFlagData
         ? this.deploymentFlagData.seriesIndex
-        : this.currentDataIndex;
+        : indexFromCoordinates;
       const value = series.values[index] && series.values[index].value;
       if (isNaN(value)) {
         return '-';
@@ -128,7 +130,7 @@ export default {
         <h5 v-if="deploymentFlagData">
           Deployed
         </h5>
-        {{ formatDate }} at
+        {{ formatDate }}
         <strong>{{ formatTime }}</strong>
       </div>
       <div
@@ -163,9 +165,11 @@ export default {
             :key="index"
           >
             <track-line :track="series"/>
-            <td>{{ series.track }} {{ seriesMetricLabel(index, series) }}</td>
             <td>
-              <strong>{{ seriesMetricValue(series) }}</strong>
+              {{ series.track }} {{ seriesMetricLabel(index, series) }}
+            </td>
+            <td>
+              <strong>{{ seriesMetricValue(index, series) }}</strong>
             </td>
           </tr>
         </table>
