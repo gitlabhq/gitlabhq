@@ -72,3 +72,26 @@ export const getBranchData = (
       resolve(state.projects[`${projectId}`].branches[branchId]);
     }
   });
+
+export const refreshLastCommitData = (
+  { commit, state, dispatch },
+  { projectId, branchId } = {},
+) => service
+  .getBranchData(projectId, branchId)
+  .then(({ data }) => {
+    commit(types.SET_BRANCH_COMMIT, {
+      projectId,
+      branchId,
+      commit: data.commit,
+    });
+  })
+  .catch(() => {
+    flash(
+      'Error loading last commit.',
+      'alert',
+      document,
+      null,
+      false,
+      true,
+    );
+  });

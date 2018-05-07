@@ -65,61 +65,63 @@ export default {
 </script>
 
 <template>
-  <div
-    class="ide-view"
-  >
-    <find-file
-      v-show="fileFindVisible"
-    />
-    <ide-sidebar />
+  <article class="ide">
     <div
-      class="multi-file-edit-pane"
+      class="ide-view"
     >
-      <template
-        v-if="activeFile"
+      <find-file
+        v-show="fileFindVisible"
+      />
+      <ide-sidebar />
+      <div
+        class="multi-file-edit-pane"
       >
-        <repo-tabs
-          :active-file="activeFile"
-          :files="openFiles"
-          :viewer="viewer"
-          :has-changes="hasChanges"
-          :merge-request-id="currentMergeRequestId"
-        />
-        <repo-editor
-          class="multi-file-edit-pane-content"
-          :file="activeFile"
-        />
-        <ide-status-bar
-          :file="activeFile"
-        />
-      </template>
-      <template
-        v-else
-      >
-        <div
-          v-once
-          class="ide-empty-state"
+        <template
+          v-if="activeFile"
         >
-          <div class="row js-empty-state">
-            <div class="col-xs-12">
-              <div class="svg-content svg-250">
-                <img :src="emptyStateSvgPath" />
+          <repo-tabs
+            :active-file="activeFile"
+            :files="openFiles"
+            :viewer="viewer"
+            :has-changes="hasChanges"
+            :merge-request-id="currentMergeRequestId"
+          />
+          <repo-editor
+            class="multi-file-edit-pane-content"
+            :file="activeFile"
+          />
+        </template>
+        <template
+          v-else
+        >
+          <div
+            v-once
+            class="ide-empty-state"
+          >
+            <div class="row js-empty-state">
+              <div class="col-xs-12">
+                <div class="svg-content svg-250">
+                  <img :src="emptyStateSvgPath" />
+                </div>
               </div>
-            </div>
-            <div class="col-xs-12">
-              <div class="text-content text-center">
-                <h4>
-                  Welcome to the GitLab IDE
-                </h4>
-                <p>
-                  You can select a file in the left sidebar to begin
-                  editing and use the right sidebar to commit your changes.
-                </p>
+              <div class="col-xs-12">
+                <div class="text-content text-center">
+                  <h4>
+                    Welcome to the GitLab IDE
+                  </h4>
+                  <p>
+                    You can select a file in the left sidebar to begin
+                    editing and use the right sidebar to commit your changes.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </template>
+        </template>
+      </div>
     </div>
-  </div>
+    <ide-status-bar
+      :file="activeFile"
+    />
+  </article>
 </template>
