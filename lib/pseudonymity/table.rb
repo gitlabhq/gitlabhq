@@ -68,6 +68,8 @@ module Pseudonymity
       type_results.each do | type_result |
         @schema[table][type_result["column_name"]] = type_result["data_type"]
       end
+      # hard coded because all mapping keys in GL are id
+      @schema[table]["gl_mapping_key"] = "id"
     end
 
     def parse_config
