@@ -189,7 +189,7 @@ When you have object storage enabled, please consult the
 
 ## Disaster Recovery
 
-Read through the [Disaster Recovery documentation][disaster-recovery] how to use Geo to mitigate data-loss and 
+Read through the [Disaster Recovery documentation][disaster-recovery] how to use Geo to mitigate data-loss and
 restore services in a disaster scenario.
 
 ### Replicating the Container Registry
@@ -198,15 +198,14 @@ Read how to [replicate the Container Registry][docker-registry].
 
 ## Current limitations
 
-> **IMPORTANT**: This list of limitations tracks only the latest version. If you are in an older version, 
-extra limitations may be in place. 
+> **IMPORTANT**: This list of limitations tracks only the latest version. If you are in an older version,
+extra limitations may be in place.
 
 - You cannot push code to secondary nodes, see [gitlab-org/gitlab-ee#3912] for details.
 - The primary node has to be online for OAuth login to happen (existing sessions and Git are not affected)
-- The installation takes multiple manual steps that together can take about an hour depending on circumstances; we are 
+- The installation takes multiple manual steps that together can take about an hour depending on circumstances; we are
   working on improving this experience, see [gitlab-org/omnibus-gitlab#2978] for details.
 - Real-time updates of issues/merge requests (e.g. via long polling) doesn't work on the secondary
-- Broadcast messages set on the primary won't be seen on the secondary without a cache flush (e.g. gitlab-rake cache:clear)
 - [Selective synchronization](configuration.md#selective-synchronization)
   applies only to files and repositories. Other datasets are replicated to the
   secondary in full, making it inappropriate for use as an access control
