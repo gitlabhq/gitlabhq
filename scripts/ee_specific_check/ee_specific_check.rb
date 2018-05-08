@@ -98,7 +98,8 @@ module EESpecificCheck
     # where ce_merge_base..ee_merge_base is the update-to-date
     # CE/EE difference and ce_fetch_head..HEAD is the changes we made in
     # CE and EE branches.
-    run_git_command("rebase --onto #{ce_merge_base} canonical-ce/master #{ce_fetch_head}")
+    old_base = run_git_command("merge-base canonical-ce/master #{ce_fetch_head}")
+    run_git_command("rebase --onto #{ce_merge_base} #{old_base}~1 #{ce_fetch_head}")
 
     status = git_status
 
