@@ -2074,11 +2074,8 @@ describe Project do
       update_remote_mirrors
     end
 
-<<<<<<< HEAD
-=======
     # TODO: study if remote_mirror_available_overridden is still a necessary attribute considering that
     # it is no longer under any license
->>>>>>> upstream/master
     it 'does nothing when remote mirror is disabled globally and not overridden' do
       stub_application_setting(mirror_available: false)
       project.remote_mirror_available_overridden = false
