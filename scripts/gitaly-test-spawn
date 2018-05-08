@@ -1,25 +1,16 @@
 #!/usr/bin/env ruby
 
-gitaly_dir = 'tmp/tests/gitaly'
-gitaly_ruby_dir = File.expand_path(File.join(gitaly_dir, 'ruby'))
-env = { 'HOME' => File.expand_path('tmp/tests'),
-        'GEM_PATH' => Gem.path.join(':'),
-        'BUNDLE_IGNORE_CONFIG' => 'true',
-        'BUNDLE_APP_CONFIG' => nil,
-        'BUNDLE_GEMFILE' => File.join(gitaly_ruby_dir, 'Gemfile') }
+require_relative 'gitaly-test-env'
+include GitalyTest
 
-unless ENV['CI'].to_s.empty?
-  env['BUNDLE_PATH'] = File.expand_path('../vendor', __dir__)
-end
-
-args = %W[#{gitaly_dir}/gitaly #{gitaly_dir}/config.toml]
-
+# For CI debugging purposes
 system(env, 'bundle', 'config', chdir: gitaly_ruby_dir)
 
-abort 'config load failed' unless system(env, args[0], '-test-config', *args[1, args.length])
+check_gitaly_config!
 
-# for crazy debug info
-spawn('sleep 1; tail -f log/gitaly-test.log')
+# # Uncomment to see all gitaly logs in CI
+# spawn('sleep 1; tail -f log/gitaly-test.log')
 
-# Print the PID of the spawned process
-puts spawn(env, *args, [:out, :err] => 'log/gitaly-test.log')
+# Print the PID of the spawned process. This value is used by rspec.
+pid = spawn(env, *args, [:out, :err] => 'log/gitaly-test.log')
+IO.write(File.expand_path('../tmp/tests/gitaly.pid', __dir__), pid)
