@@ -7,11 +7,14 @@ class AddPipelineBuildForeignKey < ActiveRecord::Migration
 
   def up
     execute <<~SQL
-      DELETE FROM ci_builds WHERE NOT EXISTS
-        (SELECT true FROM ci_pipelines WHERE ci_pipelines.id = ci_builds.commit_id)
+      DELETE FROM ci_builds WHERE project_id IS NULL OR commit_id IS NULL
     SQL
 
-    return if foreign_key_exists?(:ci_builds, :ci_pipelines, column: :commit_id)
+    execute <<~SQL
+      DELETE FROM ci_builds WHERE NOT EXISTS
+        (SELECT true FROM ci_pipelines WHERE ci_pipelines.id = ci_builds.commit_id)
+        AND commit_id IS NOT NULL
+    SQL
 
     add_concurrent_foreign_key(:ci_builds, :ci_pipelines, column: :commit_id)
   end
