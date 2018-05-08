@@ -20,6 +20,8 @@ module WebpackHelper
       entrypoint = "pages.#{route.join('.')}"
       begin
         chunks = webpack_entrypoint_paths(entrypoint, extension: 'js')
+        preload = webpack_entrypoint_child_paths(entrypoint, type: "preload", extension: "js")
+        prefetch = webpack_entrypoint_child_paths(entrypoint, type: "prefetch", extension: "js")
       rescue Gitlab::Webpack::Manifest::AssetMissingError
         # no bundle exists for this path
       end
@@ -27,16 +29,45 @@ module WebpackHelper
     end
 
     if chunks.empty?
-      chunks = webpack_entrypoint_paths("default", extension: 'js')
+      chunks = webpack_entrypoint_paths("default", extension: "js")
+      preload = webpack_entrypoint_child_paths("default", type: "preload", extension: "js")
+      prefetch = webpack_entrypoint_child_paths("default", type: "prefetch", extension: "js")
     end
 
-    javascript_include_tag(*chunks)
+    [
+      javascript_include_tag(*chunks),
+      webpack_link_tag(*preload, rel: "preload", as: "script"),
+      webpack_link_tag(*prefetch, rel: "prefetch")
+    ].reject(&:empty?).join("\n").html_safe
   end
 
   def webpack_entrypoint_paths(source, extension: nil, exclude_duplicates: true)
     return "" unless source.present?
 
     paths = Gitlab::Webpack::Manifest.entrypoint_paths(source)
+    if extension
+      paths.select! { |p| p.ends_with? ".#{extension}" }
+    end
+
+    force_host = webpack_public_host
+    if force_host
+      paths.map! { |p| "#{force_host}#{p}" }
+    end
+
+    if exclude_duplicates
+      @used_paths ||= []
+      new_paths = paths - @used_paths
+      @used_paths += new_paths
+      new_paths
+    else
+      paths
+    end
+  end
+
+  def webpack_entrypoint_child_paths(source, type: 'preload', extension: nil, exclude_duplicates: true)
+    return "" unless source.present?
+
+    paths = Gitlab::Webpack::Manifest.entrypoint_child_paths(source, type: type)
     if extension
       paths.select! { |p| p.ends_with? ".#{extension}" }
     end
@@ -71,5 +102,13 @@ module WebpackHelper
     relative_path = Rails.application.config.relative_url_root
     webpack_path = Rails.application.config.webpack.public_path
     File.join(webpack_public_host.to_s, relative_path.to_s, webpack_path.to_s, '')
+  end
+
+  def webpack_link_tag(*paths)
+    options = paths.extract_options!.stringify_keys
+    paths.uniq.map do |path|
+      tag_options = { "href" => path }.merge!(options)
+      content_tag(:link, "", tag_options)
+    end.join("\n").html_safe
   end
 end
