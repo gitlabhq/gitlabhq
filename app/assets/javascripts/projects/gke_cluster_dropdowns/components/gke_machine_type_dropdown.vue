@@ -139,10 +139,9 @@ export default {
             v-for="result in results"
             :key="result.id"
           >
-            <a
-              href="#"
-              @click.prevent="setMachineType(result.name)"
-            >{{ result.name }}</a>
+            <button @click.prevent="setMachineType(result.name)">
+              {{ result.name }}
+            </button>
           </li>
         </ul>
       </div>

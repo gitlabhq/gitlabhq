@@ -58,7 +58,6 @@ const initializeGapiClient = () => {
   const el = document.querySelector('.js-gke-cluster-creation');
 
   gapi.client.setToken({ access_token: el.dataset.token });
-  delete el.dataset.token;
 
   gapi.client
     .load(CONSTANTS.GCP_API_CLOUD_RESOURCE_MANAGER_ENDPOINT)

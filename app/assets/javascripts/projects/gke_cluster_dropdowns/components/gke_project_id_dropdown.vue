@@ -159,10 +159,9 @@ export default {
               v-for="result in results"
               :key="result.project_number"
             >
-              <a
-                href="#"
-                @click.prevent="setProject(result)"
-              >{{ result.name }}</a>
+              <button @click.prevent="setProject(result)">
+                {{ result.name }}
+              </button>
             </li>
           </ul>
         </div>

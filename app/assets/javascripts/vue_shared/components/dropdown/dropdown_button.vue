@@ -31,7 +31,7 @@ export default {
     class="dropdown-menu-toggle dropdown-menu-full-width"
     type="button"
     data-toggle="dropdown"
-    aria-expanded="true"
+    aria-expanded="false"
     :disabled="isDisabled || isLoading"
   >
     <loading-icon
@@ -50,6 +50,6 @@ export default {
         aria-hidden="true"
         data-hidden="true"
       ></i>
-  </span>
+    </span>
   </button>
 </template>

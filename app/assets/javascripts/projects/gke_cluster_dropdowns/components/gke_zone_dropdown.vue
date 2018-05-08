@@ -124,10 +124,9 @@ export default {
             v-for="result in results"
             :key="result.id"
           >
-            <a
-              href="#"
-              @click.prevent="setZone(result.name)"
-            >{{ result.name }}</a>
+            <button @click.prevent="setZone(result.name)">
+              {{ result.name }}
+            </button>
           </li>
         </ul>
       </div>
