@@ -42,6 +42,8 @@ export default {
       renderOverflowWarning: state => state.diffs.renderOverflowWarning,
       numTotalFiles: state => state.diffs.realSize,
       numVisibleFiles: state => state.diffs.size,
+      plainDiffPath: state => state.diffs.plainDiffPath,
+      emailPatchPath: state => state.diffs.emailPatchPath,
     }),
     ...mapGetters(['isParallelView']),
   },
@@ -109,9 +111,8 @@ export default {
           v-if="renderOverflowWarning"
           :visible="numVisibleFiles"
           :total="numTotalFiles"
-          <!-- todo: psimyn. these values are both in MR widget, not sure if they should be duplicated to diffs or not -->
-          plain-diff-path=""
-          email-patch-path=""
+          :plain-diff-path="plainDiffPath"
+          :email-patch-path="emailPatchPath"
         />
 
         <div class="files">
