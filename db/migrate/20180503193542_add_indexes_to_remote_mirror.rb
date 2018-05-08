@@ -10,10 +10,6 @@ class AddIndexesToRemoteMirror < ActiveRecord::Migration
   end
 
   def down
-<<<<<<< HEAD
     # ee/db/migrate/20170208144550_add_index_to_mirrors_last_update_at_fields.rb will remove the index.
-=======
-    remove_index :remote_mirrors, :last_successful_update_at if index_exists? :remote_mirrors, :last_successful_update_at
->>>>>>> upstream/master
   end
 end
