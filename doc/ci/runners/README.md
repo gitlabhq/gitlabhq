@@ -33,7 +33,7 @@ are:
   a specific Runner to have the right credentials for this. The [usage of tags](#using-tags)
   may be useful in this case. Specific Runners process jobs using a [FIFO] queue.
 - **Group Runners** are useful when you have multiple projects under one group
-  and would like all projects to have access to a set of runners. Group Runners
+  and would like all projects to have access to a set of Runners. Group Runners
   process jobs using a [FIFO] queue.
 
 A Runner that is specific only runs for the specified project(s). A shared Runner
@@ -132,7 +132,7 @@ To enable/disable a Runner in your project:
 
 > **Note**:
 Consider that if you don't lock your specific Runner to a specific project, any
-user with Master role in you project can assign your runner to another arbitrary
+user with Master role in you project can assign your Runner to another arbitrary
 project without requiring your authorization, so use it with caution.
 
 An admin can enable/disable a specific Runner for projects:
