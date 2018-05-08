@@ -6,7 +6,15 @@ module Gitlab
       attr_reader :blob_id, :blob_size, :old_path, :new_path, :operation
 
       def initialize(raw_change)
-        parse(raw_change)
+        if raw_change.is_a?(Gitaly::GetRawChangesResponse::RawChange)
+          @blob_id = raw_change.blob_id
+          @blob_size = raw_change.size
+          @old_path = raw_change.old_path.presence
+          @new_path = raw_change.new_path.presence
+          @operation = raw_change.operation&.downcase || :unknown
+        else
+          parse(raw_change)
+        end
       end
 
       private

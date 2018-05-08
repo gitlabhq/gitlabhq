@@ -123,6 +123,8 @@ export const scrollToTab = () => {
 };
 
 export const stageAllChanges = ({ state, commit }) => {
+  commit(types.SET_LAST_COMMIT_MSG, '');
+
   state.changedFiles.forEach(file => commit(types.STAGE_CHANGE, file.path));
 };
 
@@ -138,6 +140,18 @@ export const updateDelayViewerUpdated = ({ commit }, delay) => {
   commit(types.UPDATE_DELAY_VIEWER_CHANGE, delay);
 };
 
+export const updateActivityBarView = ({ commit }, view) => {
+  commit(types.UPDATE_ACTIVITY_BAR_VIEW, view);
+};
+
+export const setEmptyStateSvgs = ({ commit }, svgs) => {
+  commit(types.SET_EMPTY_STATE_SVGS, svgs);
+};
+
+export const setCurrentBranchId = ({ commit }, currentBranchId) => {
+  commit(types.SET_CURRENT_BRANCH, currentBranchId);
+};
+
 export const updateTempFlagForEntry = ({ commit, dispatch, state }, { file, tempFile }) => {
   commit(types.UPDATE_TEMP_FLAG, { path: file.path, tempFile });
 
@@ -148,6 +162,12 @@ export const updateTempFlagForEntry = ({ commit, dispatch, state }, { file, temp
 
 export const toggleFileFinder = ({ commit }, fileFindVisible) =>
   commit(types.TOGGLE_FILE_FINDER, fileFindVisible);
+
+export const burstUnusedSeal = ({ state, commit }) => {
+  if (state.unusedSeal) {
+    commit(types.BURST_UNUSED_SEAL);
+  }
+};
 
 export * from './actions/tree';
 export * from './actions/file';

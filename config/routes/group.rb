@@ -58,6 +58,13 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     # On CE only index and show actions are needed
     resources :boards, only: [:index, :show]
+
+    resources :runners, only: [:index, :edit, :update, :destroy, :show] do
+      member do
+        post :resume
+        post :pause
+      end
+    end
   end
 
   scope(path: '*id',

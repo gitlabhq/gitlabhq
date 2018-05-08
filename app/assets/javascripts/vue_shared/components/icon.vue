@@ -65,6 +65,9 @@ export default {
     spriteHref() {
       return `${gon.sprite_icons}#${this.name}`;
     },
+    iconTestClass() {
+      return `ic-${this.name}`;
+    },
     iconSizeClass() {
       return this.size ? `s${this.size}` : '';
     },
@@ -74,7 +77,7 @@ export default {
 
 <template>
   <svg
-    :class="[iconSizeClass, cssClasses]"
+    :class="[iconSizeClass, iconTestClass, cssClasses]"
     :width="width"
     :height="height"
     :x="x"

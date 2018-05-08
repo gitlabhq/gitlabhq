@@ -19,14 +19,6 @@ module GitlabRoutingHelper
     project_commits_path(project, ref_name, *args)
   end
 
-  def runners_path(project, *args)
-    project_runners_path(project, *args)
-  end
-
-  def runner_path(runner, *args)
-    project_runner_path(@project, runner, *args)
-  end
-
   def environment_path(environment, *args)
     project_environment_path(environment.project, environment, *args)
   end

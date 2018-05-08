@@ -32,6 +32,8 @@ export default {
       return `Close ${this.tab.name}`;
     },
     showChangedIcon() {
+      if (this.tab.pending) return true;
+
       return this.fileHasChanged ? !this.tabMouseOver : false;
     },
     fileHasChanged() {
@@ -66,15 +68,32 @@ export default {
 
 <template>
   <li
+    :class="{
+      active: tab.active
+    }"
     @click="clickFile(tab)"
     @mouseover="mouseOverTab"
     @mouseout="mouseOutTab"
   >
+    <div
+      class="multi-file-tab"
+      :title="tab.url"
+    >
+      <file-icon
+        :file-name="tab.name"
+        :size="16"
+      />
+      {{ tab.name }}
+      <file-status-icon
+        :file="tab"
+      />
+    </div>
     <button
       type="button"
       class="multi-file-tab-close"
       @click.stop.prevent="closeFile(tab)"
       :aria-label="closeLabel"
+      :disabled="tab.pending"
     >
       <icon
         v-if="!showChangedIcon"
@@ -87,22 +106,5 @@ export default {
         :force-modified-icon="true"
       />
     </button>
-
-    <div
-      class="multi-file-tab"
-      :class="{
-        active: tab.active
-      }"
-      :title="tab.url"
-    >
-      <file-icon
-        :file-name="tab.name"
-        :size="16"
-      />
-      {{ tab.name }}
-      <file-status-icon
-        :file="tab"
-      />
-    </div>
   </li>
 </template>

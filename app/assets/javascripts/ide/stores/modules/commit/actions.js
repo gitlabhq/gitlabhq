@@ -8,6 +8,7 @@ import router from '../../../ide_router';
 import service from '../../../services';
 import * as types from './mutation_types';
 import * as consts from './constants';
+import { activityBarViews } from '../../../constants';
 import eventHub from '../../../eventhub';
 
 export const updateCommitMessage = ({ commit }, message) => {
@@ -75,7 +76,7 @@ export const checkCommitStatus = ({ rootState }) =>
 
 export const updateFilesAfterCommit = (
   { commit, dispatch, state, rootState, rootGetters },
-  { data, branch },
+  { data },
 ) => {
   const selectedProject = rootState.projects[rootState.currentProjectId];
   const lastCommit = {
@@ -126,15 +127,9 @@ export const updateFilesAfterCommit = (
       changed: !!changedFile,
     });
   });
-
-  if (state.commitAction === consts.COMMIT_TO_NEW_BRANCH && rootGetters.activeFile) {
-    router.push(
-      `/project/${rootState.currentProjectId}/blob/${branch}/${rootGetters.activeFile.path}`,
-    );
-  }
 };
 
-export const commitChanges = ({ commit, state, getters, dispatch, rootState }) => {
+export const commitChanges = ({ commit, state, getters, dispatch, rootState, rootGetters }) => {
   const newBranch = state.commitAction !== consts.COMMIT_TO_CURRENT_BRANCH;
   const payload = createCommitPayload(getters.branchName, newBranch, state, rootState);
   const getCommitStatus = newBranch ? Promise.resolve(false) : dispatch('checkCommitStatus');
@@ -182,8 +177,44 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState }) =
           }
 
           commit(rootTypes.CLEAR_STAGED_CHANGES, null, { root: true });
+
+          setTimeout(() => {
+            commit(rootTypes.SET_LAST_COMMIT_MSG, '', { root: true });
+          }, 5000);
         })
-        .then(() => dispatch('updateCommitAction', consts.COMMIT_TO_CURRENT_BRANCH));
+        .then(() => {
+          if (rootGetters.lastOpenedFile) {
+            dispatch(
+              'openPendingTab',
+              {
+                file: rootGetters.lastOpenedFile,
+              },
+              { root: true },
+            )
+              .then(changeViewer => {
+                if (changeViewer) {
+                  dispatch('updateViewer', 'diff', { root: true });
+                }
+              })
+              .catch(e => {
+                throw e;
+              });
+          } else {
+            dispatch('updateActivityBarView', activityBarViews.edit, { root: true });
+            dispatch('updateViewer', 'editor', { root: true });
+
+            router.push(
+              `/project/${rootState.currentProjectId}/blob/${getters.branchName}/${
+                rootGetters.activeFile.path
+              }`,
+            );
+          }
+        })
+        .then(() => dispatch('updateCommitAction', consts.COMMIT_TO_CURRENT_BRANCH))
+        .then(() => dispatch('refreshLastCommitData', {
+          projectId: rootState.currentProjectId,
+          branchId: rootState.currentBranchId,
+        }, { root: true }));
     })
     .catch(err => {
       let errMsg = __('Error committing changes. Please try again.');

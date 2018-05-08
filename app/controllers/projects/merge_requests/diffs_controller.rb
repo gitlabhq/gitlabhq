@@ -21,7 +21,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   def render_diff_file
     @environment = @merge_request.environments_for(current_user).last
 
-    render json: DiffsSerializer.new.represent(@diffs, serializeable_vars)
+    render json: DiffsSerializer.new(current_user: current_user).represent(@diffs, serializable_vars)
   end
 
   def define_diff_vars
@@ -67,7 +67,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
     end
   end
 
-  def serializeable_vars
+  def serializable_vars
     {
       environment: @environment,
       merge_request: @merge_request,
