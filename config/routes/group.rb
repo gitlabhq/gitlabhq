@@ -58,7 +58,6 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       end
     end
 
-<<<<<<< HEAD
     ## EE-specific
     resource :analytics, only: [:show]
     resource :ldap, only: [] do
@@ -109,6 +108,13 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     # On CE only index and show are needed
     resources :boards, only: [:index, :show, :create, :update, :destroy]
 
+    resources :runners, only: [:index, :edit, :update, :destroy, :show] do
+      member do
+        post :resume
+        post :pause
+      end
+    end
+
     legacy_ee_group_boards_redirect = redirect do |params, request|
       path = "/groups/#{params[:group_id]}/-/boards"
       path << "/#{params[:extra_params]}" if params[:extra_params].present?
@@ -119,17 +125,6 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     ## EE-specific
     resource :roadmap, only: [:show], controller: 'roadmap'
-=======
-    # On CE only index and show actions are needed
-    resources :boards, only: [:index, :show]
-
-    resources :runners, only: [:index, :edit, :update, :destroy, :show] do
-      member do
-        post :resume
-        post :pause
-      end
-    end
->>>>>>> upstream/master
   end
 
   scope(path: '*id',
