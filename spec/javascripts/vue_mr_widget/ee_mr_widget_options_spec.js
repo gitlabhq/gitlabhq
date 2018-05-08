@@ -57,6 +57,7 @@ describe('ee merge request widget options', () => {
           base_path: 'path.json',
           head_path: 'head_path.json',
         },
+        vulnerability_feedback_path: 'vulnerability_feedback_path',
       };
 
       Component.mr = new MRWidgetStore(gl.mrWidgetData);
@@ -67,6 +68,7 @@ describe('ee merge request widget options', () => {
       it('should render loading indicator', () => {
         mock.onGet('path.json').reply(200, sastBaseAllIssues);
         mock.onGet('head_path.json').reply(200, sastHeadAllIssues);
+        mock.onGet('vulnerability_feedback_path').reply(200, []);
 
         vm = mountComponent(Component);
         expect(vm.$el.querySelector('.js-sast-widget').textContent.trim()).toContain(
@@ -79,6 +81,7 @@ describe('ee merge request widget options', () => {
       beforeEach(() => {
         mock.onGet('path.json').reply(200, sastIssuesBase);
         mock.onGet('head_path.json').reply(200, sastIssues);
+        mock.onGet('vulnerability_feedback_path').reply(200, []);
         vm = mountComponent(Component);
       });
 
@@ -98,7 +101,8 @@ describe('ee merge request widget options', () => {
     describe('with full report and no added or fixed issues', () => {
       beforeEach(() => {
         mock.onGet('path.json').reply(200, sastBaseAllIssues);
-        mock.onGet('head_path.json').reply(200, sastHeadAllIssues);
+        mock.onGet('head_path.json').reply(200, sastBaseAllIssues);
+        mock.onGet('vulnerability_feedback_path').reply(200, []);
 
         vm = mountComponent(Component);
       });
@@ -120,6 +124,7 @@ describe('ee merge request widget options', () => {
       beforeEach(() => {
         mock.onGet('path.json').reply(200, []);
         mock.onGet('head_path.json').reply(200, []);
+        mock.onGet('vulnerability_feedback_path').reply(200, []);
 
         vm = mountComponent(Component);
       });
@@ -141,6 +146,8 @@ describe('ee merge request widget options', () => {
       beforeEach(() => {
         mock.onGet('path.json').reply(500, []);
         mock.onGet('head_path.json').reply(500, []);
+        mock.onGet('vulnerability_feedback_path').reply(500, []);
+
         vm = mountComponent(Component);
       });
 
@@ -163,6 +170,7 @@ describe('ee merge request widget options', () => {
           base_path: 'path.json',
           head_path: 'head_path.json',
         },
+        vulnerability_feedback_path: 'vulnerability_feedback_path',
       };
 
       Component.mr = new MRWidgetStore(gl.mrWidgetData);
@@ -173,6 +181,8 @@ describe('ee merge request widget options', () => {
       it('should render loading indicator', () => {
         mock.onGet('path.json').reply(200, sastIssuesBase);
         mock.onGet('head_path.json').reply(200, sastIssues);
+        mock.onGet('vulnerability_feedback_path').reply(200, []);
+
         vm = mountComponent(Component);
 
         expect(
@@ -185,6 +195,8 @@ describe('ee merge request widget options', () => {
       beforeEach(() => {
         mock.onGet('path.json').reply(200, sastIssuesBase);
         mock.onGet('head_path.json').reply(200, sastIssues);
+        mock.onGet('vulnerability_feedback_path').reply(200, []);
+
         vm = mountComponent(Component);
       });
 
@@ -196,9 +208,7 @@ describe('ee merge request widget options', () => {
                 '.js-dependency-scanning-widget .report-block-list-issue-description',
               ).textContent,
             ),
-          ).toEqual(
-            'Dependency scanning detected 2 new vulnerabilities and 1 fixed vulnerability',
-          );
+          ).toEqual('Dependency scanning detected 2 new vulnerabilities and 1 fixed vulnerability');
           done();
         }, 0);
       });
@@ -207,7 +217,8 @@ describe('ee merge request widget options', () => {
     describe('with full report and no added or fixed issues', () => {
       beforeEach(() => {
         mock.onGet('path.json').reply(200, sastBaseAllIssues);
-        mock.onGet('head_path.json').reply(200, sastHeadAllIssues);
+        mock.onGet('head_path.json').reply(200, sastBaseAllIssues);
+        mock.onGet('vulnerability_feedback_path').reply(200, []);
 
         vm = mountComponent(Component);
       });
@@ -230,6 +241,7 @@ describe('ee merge request widget options', () => {
       beforeEach(() => {
         mock.onGet('path.json').reply(200, []);
         mock.onGet('head_path.json').reply(200, []);
+        mock.onGet('vulnerability_feedback_path').reply(200, []);
 
         vm = mountComponent(Component);
       });
@@ -252,6 +264,8 @@ describe('ee merge request widget options', () => {
       beforeEach(() => {
         mock.onGet('path.json').reply(500, []);
         mock.onGet('head_path.json').reply(500, []);
+        mock.onGet('vulnerability_feedback_path').reply(500, []);
+
         vm = mountComponent(Component);
       });
 
@@ -420,8 +434,7 @@ describe('ee merge request widget options', () => {
         setTimeout(() => {
           expect(
             removeBreakLine(
-              vm.$el.querySelector('.js-performance-widget .js-code-text')
-                .textContent,
+              vm.$el.querySelector('.js-performance-widget .js-code-text').textContent,
             ),
           ).toEqual('Performance metrics improved on 2 points and degraded on 1 point');
           done();
@@ -436,9 +449,7 @@ describe('ee merge request widget options', () => {
             Vue.nextTick(() => {
               expect(
                 removeBreakLine(
-                  vm.$el.querySelector(
-                    '.js-performance-widget .js-code-text',
-                  ).textContent,
+                  vm.$el.querySelector('.js-performance-widget .js-code-text').textContent,
                 ),
               ).toEqual('Performance metrics improved on 2 points');
               done();
@@ -453,9 +464,7 @@ describe('ee merge request widget options', () => {
             Vue.nextTick(() => {
               expect(
                 removeBreakLine(
-                  vm.$el.querySelector(
-                    '.js-performance-widget .js-code-text',
-                  ).textContent,
+                  vm.$el.querySelector('.js-performance-widget .js-code-text').textContent,
                 ),
               ).toEqual('Performance metrics degraded on 1 point');
               done();
@@ -476,8 +485,7 @@ describe('ee merge request widget options', () => {
         setTimeout(() => {
           expect(
             removeBreakLine(
-              vm.$el.querySelector('.js-performance-widget .js-code-text')
-                .textContent,
+              vm.$el.querySelector('.js-performance-widget .js-code-text').textContent,
             ),
           ).toEqual('No changes to performance metrics');
           done();
@@ -495,7 +503,9 @@ describe('ee merge request widget options', () => {
       it('should render error indicator', done => {
         setTimeout(() => {
           expect(
-            removeBreakLine(vm.$el.querySelector('.js-performance-widget .js-code-text').textContent),
+            removeBreakLine(
+              vm.$el.querySelector('.js-performance-widget .js-code-text').textContent,
+            ),
           ).toContain('Failed to load performance report');
           done();
         }, 0);
@@ -511,6 +521,7 @@ describe('ee merge request widget options', () => {
           head_path: 'gl-sast-container.json',
           base_path: 'sast-container-base.json',
         },
+        vulnerability_feedback_path: 'vulnerability_feedback_path',
       };
 
       Component.mr = new MRWidgetStore(gl.mrWidgetData);
@@ -521,6 +532,8 @@ describe('ee merge request widget options', () => {
       it('should render loading indicator', () => {
         mock.onGet('gl-sast-container.json').reply(200, dockerReport);
         mock.onGet('sast-container-base.json').reply(200, dockerBaseReport);
+        mock.onGet('vulnerability_feedback_path').reply(200, []);
+
         vm = mountComponent(Component);
 
         expect(removeBreakLine(vm.$el.querySelector('.js-sast-container').textContent)).toContain(
@@ -533,6 +546,7 @@ describe('ee merge request widget options', () => {
       beforeEach(() => {
         mock.onGet('gl-sast-container.json').reply(200, dockerReport);
         mock.onGet('sast-container-base.json').reply(200, dockerBaseReport);
+        mock.onGet('vulnerability_feedback_path').reply(200, []);
 
         vm = mountComponent(Component);
       });
@@ -554,6 +568,7 @@ describe('ee merge request widget options', () => {
       beforeEach(() => {
         mock.onGet('gl-sast-container.json').reply(500, {});
         mock.onGet('sast-container-base.json').reply(500, {});
+        mock.onGet('vulnerability_feedback_path').reply(500, []);
 
         vm = mountComponent(Component);
       });
@@ -577,6 +592,7 @@ describe('ee merge request widget options', () => {
           head_path: 'dast.json',
           base_path: 'dast_base.json',
         },
+        vulnerability_feedback_path: 'vulnerability_feedback_path',
       };
 
       Component.mr = new MRWidgetStore(gl.mrWidgetData);
@@ -587,6 +603,8 @@ describe('ee merge request widget options', () => {
       it('should render loading indicator', () => {
         mock.onGet('dast.json').reply(200, dast);
         mock.onGet('dast_base.json').reply(200, dastBase);
+        mock.onGet('vulnerability_feedback_path').reply(200, []);
+
         vm = mountComponent(Component);
 
         expect(vm.$el.querySelector('.js-dast-widget').textContent.trim()).toContain(
@@ -599,6 +617,7 @@ describe('ee merge request widget options', () => {
       beforeEach(() => {
         mock.onGet('dast.json').reply(200, dast);
         mock.onGet('dast_base.json').reply(200, dastBase);
+        mock.onGet('vulnerability_feedback_path').reply(200, []);
 
         vm = mountComponent(Component);
       });
@@ -619,6 +638,7 @@ describe('ee merge request widget options', () => {
       beforeEach(() => {
         mock.onGet('dast.json').reply(500, {});
         mock.onGet('dast_base.json').reply(500, {});
+        mock.onGet('vulnerability_feedback_path').reply(500, []);
 
         vm = mountComponent(Component);
       });

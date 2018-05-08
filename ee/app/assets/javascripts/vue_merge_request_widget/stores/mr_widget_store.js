@@ -16,6 +16,9 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     this.sastContainerHelp = data.sast_container_help_path;
     this.dastHelp = data.dast_help_path;
     this.dependencyScanningHelp = data.dependency_scanning_help_path;
+    this.vulnerabilityFeedbackPath = data.vulnerability_feedback_path;
+    this.vulnerabilityFeedbackHelpPath = data.vulnerability_feedback_help_path;
+    this.securityReportsPipelineId = data.pipeline_id;
 
     this.initCodeclimate(data);
     this.initPerformanceReport(data);
@@ -30,10 +33,9 @@ export default class MergeRequestStore extends CEMergeRequestStore {
   }
 
   initSquashBeforeMerge(data) {
-    this.squashBeforeMergeHelpPath = this.squashBeforeMergeHelpPath
-      || data.squash_before_merge_help_path;
-    this.enableSquashBeforeMerge = this.enableSquashBeforeMerge
-      || data.enable_squash_before_merge;
+    this.squashBeforeMergeHelpPath =
+      this.squashBeforeMergeHelpPath || data.squash_before_merge_help_path;
+    this.enableSquashBeforeMerge = this.enableSquashBeforeMerge || data.enable_squash_before_merge;
   }
 
   initGeo(data) {
@@ -96,14 +98,15 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     const degraded = [];
     const neutral = [];
 
-    Object.keys(headMetricsIndexed).forEach((subject) => {
+    Object.keys(headMetricsIndexed).forEach(subject => {
       const subjectMetrics = headMetricsIndexed[subject];
-      Object.keys(subjectMetrics).forEach((metric) => {
+      Object.keys(subjectMetrics).forEach(metric => {
         const headMetricData = subjectMetrics[metric];
 
         if (baseMetricsIndexed[subject] && baseMetricsIndexed[subject][metric]) {
           const baseMetricData = baseMetricsIndexed[subject][metric];
-          const metricDirection = 'desiredSize' in headMetricData && headMetricData.desiredSize === 'smaller' ? -1 : 1;
+          const metricDirection =
+            'desiredSize' in headMetricData && headMetricData.desiredSize === 'smaller' ? -1 : 1;
           const metricData = {
             name: metric,
             path: subject,

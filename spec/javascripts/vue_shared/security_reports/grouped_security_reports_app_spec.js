@@ -47,6 +47,7 @@ describe('Grouped security reports app', () => {
       mock.onGet('sast_container_base.json').reply(500);
       mock.onGet('dss_head.json').reply(500);
       mock.onGet('dss_base.json').reply(500);
+      mock.onGet('vulnerability_feedback_path.json').reply(500, []);
 
       vm = mountComponent(Component, {
         headBlobPath: 'path',
@@ -63,6 +64,9 @@ describe('Grouped security reports app', () => {
         sastContainerHelpPath: 'path',
         dastHelpPath: 'path',
         dependencyScanningHelpPath: 'path',
+        vulnerabilityFeedbackPath: 'vulnerability_feedback_path.json',
+        vulnerabilityFeedbackHelpPath: 'path',
+        pipelineId: 123,
       });
     });
 
@@ -99,6 +103,7 @@ describe('Grouped security reports app', () => {
       mock.onGet('sast_container_base.json').reply(200, dockerBaseReport);
       mock.onGet('dss_head.json').reply(200, sastIssues);
       mock.onGet('dss_base.json').reply(200, sastIssuesBase);
+      mock.onGet('vulnerability_feedback_path.json').reply(200, []);
 
       vm = mountComponent(Component, {
         headBlobPath: 'path',
@@ -115,6 +120,9 @@ describe('Grouped security reports app', () => {
         sastContainerHelpPath: 'path',
         dastHelpPath: 'path',
         dependencyScanningHelpPath: 'path',
+        vulnerabilityFeedbackPath: 'vulnerability_feedback_path.json',
+        vulnerabilityFeedbackHelpPath: 'path',
+        pipelineId: 123,
       });
     });
 
@@ -142,6 +150,7 @@ describe('Grouped security reports app', () => {
       mock.onGet('sast_container_base.json').reply(200, dockerBaseReport);
       mock.onGet('dss_head.json').reply(200, sastIssues);
       mock.onGet('dss_base.json').reply(200, sastIssuesBase);
+      mock.onGet('vulnerability_feedback_path.json').reply(200, []);
 
       vm = mountComponent(Component, {
         headBlobPath: 'path',
@@ -158,6 +167,9 @@ describe('Grouped security reports app', () => {
         sastContainerHelpPath: 'path',
         dastHelpPath: 'path',
         dependencyScanningHelpPath: 'path',
+        vulnerabilityFeedbackPath: 'vulnerability_feedback_path.json',
+        vulnerabilityFeedbackHelpPath: 'path',
+        pipelineId: 123,
       });
     });
 
@@ -180,6 +192,19 @@ describe('Grouped security reports app', () => {
         done();
       }, 0);
     });
+
+    it('opens modal with more information', (done) => {
+      setTimeout(() => {
+        vm.$el.querySelector('.break-link').click();
+
+        Vue.nextTick(() => {
+          expect(vm.$el.querySelector('.modal-title').textContent.trim()).toEqual(sastIssues[0].message);
+          expect(vm.$el.querySelector('.modal-body').textContent).toContain(sastIssues[0].solution);
+
+          done();
+        });
+      }, 0);
+    });
   });
 
   describe('with all issues for sast and dependency scanning', () => {
@@ -192,6 +217,7 @@ describe('Grouped security reports app', () => {
       mock.onGet('sast_container_base.json').reply(200, dockerBaseReport);
       mock.onGet('dss_head.json').reply(200, sastHeadAllIssues);
       mock.onGet('dss_base.json').reply(200, sastBaseAllIssues);
+      mock.onGet('vulnerability_feedback_path.json').reply(200, []);
 
       vm = mountComponent(Component, {
         headBlobPath: 'path',
@@ -208,6 +234,9 @@ describe('Grouped security reports app', () => {
         sastContainerHelpPath: 'path',
         dastHelpPath: 'path',
         dependencyScanningHelpPath: 'path',
+        vulnerabilityFeedbackPath: 'vulnerability_feedback_path.json',
+        vulnerabilityFeedbackHelpPath: 'path',
+        pipelineId: 123,
       });
     });
 

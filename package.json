@@ -73,6 +73,7 @@
     "raw-loader": "^0.5.1",
     "sanitize-html": "^1.16.1",
     "select2": "3.5.2-browserify",
+    "sha1": "^1.1.1",
     "sql.js": "^0.4.0",
     "style-loader": "^0.21.0",
     "svg4everybody": "2.1.9",

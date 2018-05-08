@@ -327,6 +327,7 @@ project:
 - deploy_tokens
 - settings
 - ci_cd_settings
+- vulnerability_feedback
 award_emoji:
 - awardable
 - user

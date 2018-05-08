@@ -44,29 +44,12 @@ describe('sast container issue body', () => {
     });
   });
 
-  describe('with name link', () => {
-    it('renders name link', () => {
-      vm = mountComponent(Component, {
-        issue: sastContainerIssue,
-      });
-
-      expect(vm.$el.querySelector('a').getAttribute('href')).toEqual(sastContainerIssue.nameLink);
-      expect(vm.$el.querySelector('a').textContent.trim()).toEqual(sastContainerIssue.name);
+  it('renders name', () => {
+    vm = mountComponent(Component, {
+      issue: sastContainerIssue,
     });
-  });
 
-  describe('without name link', () => {
-    it('does not render name link', () => {
-      const issueCopy = Object.assign({}, sastContainerIssue);
-      delete issueCopy.nameLink;
-
-      vm = mountComponent(Component, {
-        issue: issueCopy,
-      });
-
-      expect(vm.$el.querySelector('a')).toBeNull();
-      expect(vm.$el.textContent.trim()).toContain(sastContainerIssue.name);
-    });
+    expect(vm.$el.querySelector('button').textContent.trim()).toEqual(sastContainerIssue.name);
   });
 
   describe('path', () => {

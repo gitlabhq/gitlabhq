@@ -110,6 +110,14 @@ module EE
                                           path: Ci::Build::DAST_FILE)
         end
       end
+
+      expose :pipeline_id, if: -> (mr, _) { mr.head_pipeline } do |merge_request|
+        merge_request.head_pipeline.id
+      end
+
+      expose :vulnerability_feedback_path do |merge_request|
+        project_vulnerability_feedback_index_path(merge_request.project)
+      end
     end
   end
 end
