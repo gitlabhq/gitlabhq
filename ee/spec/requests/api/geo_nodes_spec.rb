@@ -13,6 +13,15 @@ describe API::GeoNodes, :geo, api: true do
   set(:admin) { create(:admin) }
   set(:user) { create(:user) }
 
+  before do
+    # FIXME: Skip creating prometheus metrics in these specs as it interacts
+    # badly with specs in ee/spec/services/geo/metrics_update_spec.rb - we need
+    # to learn how to reliably clear prometheus state between specs.
+    #
+    # https://gitlab.com/gitlab-org/gitlab-ce/issues/39968
+    allow(Gitlab::Metrics).to receive(:prometheus_metrics_enabled?) { false }
+  end
+
   describe 'GET /geo_nodes' do
     it 'retrieves the Geo nodes if admin is logged in' do
       get api("/geo_nodes", admin)

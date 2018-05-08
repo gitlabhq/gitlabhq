@@ -50,7 +50,7 @@ export default class ProjectsService {
       } else {
         // Check if project is already present in frequents list
         // When found, update metadata of it.
-        storedFrequentProjects = JSON.parse(storedRawProjects).map((projectItem) => {
+        storedFrequentProjects = JSON.parse(storedRawProjects).map(projectItem => {
           if (projectItem.id === project.id) {
             matchFound = true;
             const diff = Math.abs(project.lastAccessedOn - projectItem.lastAccessedOn) / HOUR_IN_MS;
@@ -104,13 +104,17 @@ export default class ProjectsService {
       return [];
     }
 
-    if (bp.getBreakpointSize() === 'sm' ||
-        bp.getBreakpointSize() === 'xs') {
+    if (bp.getBreakpointSize() === 'sm' || bp.getBreakpointSize() === 'xs') {
       frequentProjectsCount = FREQUENT_PROJECTS.LIST_COUNT_MOBILE;
     }
 
-    const frequentProjects = storedFrequentProjects
-      .filter(project => project.frequency >= FREQUENT_PROJECTS.ELIGIBLE_FREQUENCY);
+    const frequentProjects = storedFrequentProjects.filter(
+      project => project.frequency >= FREQUENT_PROJECTS.ELIGIBLE_FREQUENCY,
+    );
+
+    if (!frequentProjects || frequentProjects.length === 0) {
+      return [];
+    }
 
     // Sort all frequent projects in decending order of frequency
     // and then by lastAccessedOn with recent most first

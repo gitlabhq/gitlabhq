@@ -68,6 +68,11 @@ describe Geo::MetricsUpdateService, :geo do
     }
   end
 
+  # FIXME: we don't clear prometheus state between specs, so these specs below
+  # create *persistent* entries in the prometheus database that may cause other
+  # specs to transiently fail.
+  #
+  # Issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/39968
   before do
     allow(Gitlab::Metrics).to receive(:prometheus_metrics_enabled?).and_return(true)
   end

@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Group elastic search', :js do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
-  let(:project) { create(:project, :repository, namespace: group) }
+  let(:project) { create(:project, :repository, :wiki_repo, namespace: group) }
 
   def choose_group(group)
     find('.js-search-group-dropdown').click

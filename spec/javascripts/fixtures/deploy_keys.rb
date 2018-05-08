@@ -7,6 +7,8 @@ describe Projects::DeployKeysController, '(JavaScript fixtures)', type: :control
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
   let(:project) { create(:project_empty_repo, namespace: namespace, path: 'todos-project') }
   let(:project2) { create(:project, :internal)}
+  let(:project3) { create(:project, :internal)}
+  let(:project4) { create(:project, :internal)}
 
   before(:all) do
     clean_frontend_fixtures('deploy_keys/')
@@ -28,6 +30,8 @@ describe Projects::DeployKeysController, '(JavaScript fixtures)', type: :control
     internal_key = create(:deploy_key, key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDNd/UJWhPrpb+b/G5oL109y57yKuCxE+WUGJGYaj7WQKsYRJmLYh1mgjrl+KVyfsWpq4ylOxIfFSnN9xBBFN8mlb0Fma5DC7YsSsibJr3MZ19ZNBprwNcdogET7aW9I0In7Wu5f2KqI6e5W/spJHCy4JVxzVMUvk6Myab0LnJ2iQ== dummy@gitlab.com')
     create(:deploy_keys_project, project: project, deploy_key: project_key)
     create(:deploy_keys_project, project: project2, deploy_key: internal_key)
+    create(:deploy_keys_project, project: project3, deploy_key: project_key)
+    create(:deploy_keys_project, project: project4, deploy_key: project_key)
 
     get :index,
       namespace_id: project.namespace.to_param,

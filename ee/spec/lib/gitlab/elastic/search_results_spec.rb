@@ -13,8 +13,8 @@ describe Gitlab::Elastic::SearchResults do
   end
 
   let(:user) { create(:user) }
-  let(:project_1) { create(:project, :repository) }
-  let(:project_2) { create(:project, :repository) }
+  let(:project_1) { create(:project, :repository, :wiki_repo) }
+  let(:project_2) { create(:project, :repository, :wiki_repo) }
   let(:limit_project_ids) { [project_1.id] }
 
   describe 'parse_search_result' do
@@ -537,8 +537,10 @@ describe Gitlab::Elastic::SearchResults do
     subject(:wiki_blobs) { results.objects('wiki_blobs') }
 
     before do
-      project_1.wiki.create_page('index_page', 'term')
-      project_1.wiki.index_blobs
+      if project_1.wiki_enabled?
+        project_1.wiki.create_page('index_page', 'term')
+        project_1.wiki.index_blobs
+      end
 
       Gitlab::Elastic::Helper.refresh_index
     end
@@ -559,7 +561,7 @@ describe Gitlab::Elastic::SearchResults do
     end
 
     it 'finds wiki blobs from public projects only' do
-      project_2 = create :project, :repository, :private
+      project_2 = create :project, :repository, :private, :wiki_repo
       project_2.wiki.create_page('index_page', 'term')
       project_2.wiki.index_blobs
       Gitlab::Elastic::Helper.refresh_index
@@ -593,7 +595,7 @@ describe Gitlab::Elastic::SearchResults do
     end
 
     context 'when wiki is internal' do
-      let(:project_1) { create(:project, :public, :repository, :wiki_private) }
+      let(:project_1) { create(:project, :public, :repository, :wiki_private, :wiki_repo) }
 
       context 'search by member' do
         let(:limit_project_ids) { [project_1.id] }
@@ -644,10 +646,10 @@ describe Gitlab::Elastic::SearchResults do
   end
 
   describe 'Visibility levels' do
-    let(:internal_project) { create(:project, :internal, :repository, description: "Internal project") }
-    let(:private_project1) { create(:project, :private, :repository, description: "Private project") }
-    let(:private_project2) { create(:project, :private, :repository, description: "Private project where I'm a member") }
-    let(:public_project) { create(:project, :public, :repository, description: "Public project") }
+    let(:internal_project) { create(:project, :internal, :repository, :wiki_repo, description: "Internal project") }
+    let(:private_project1) { create(:project, :private, :repository, :wiki_repo, description: "Private project") }
+    let(:private_project2) { create(:project, :private, :repository, :wiki_repo, description: "Private project where I'm a member") }
+    let(:public_project) { create(:project, :public, :repository, :wiki_repo, description: "Public project") }
     let(:limit_project_ids) { [private_project2.id] }
 
     before do

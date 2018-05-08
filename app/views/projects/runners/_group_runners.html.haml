@@ -1,32 +1,37 @@
-%h3 Group Runners
+- link = link_to 'Runners API', help_page_path('api/runners.md')
+
+%h3
+  = _('Group Runners')
 
 .bs-callout.bs-callout-warning
-  GitLab Group Runners can execute code for all the projects in this group.
-  They can be managed using the #{link_to 'Runners API', help_page_path('api/runners.md')}.
+  = _('GitLab Group Runners can execute code for all the projects in this group.')
+  = _('They can be managed using the %{link}.').html_safe % { link: link }
 
   - if @project.group
     %hr
     - if @project.group_runners_enabled?
-      = link_to toggle_group_runners_project_runners_path(@project), class: 'btn btn-warning', method: :post do
-        Disable group Runners
+      = link_to toggle_group_runners_project_runners_path(@project), class: 'btn btn-close', method: :post do
+        = _('Disable group Runners')
     - else
-      = link_to toggle_group_runners_project_runners_path(@project), class: 'btn btn-success', method: :post do
-        Enable group Runners
-    &nbsp; for this project
+      = link_to toggle_group_runners_project_runners_path(@project), class: 'btn btn-success btn-inverted', method: :post do
+        = _('Enable group Runners')
+    &nbsp;
+    = _('for this project')
 
 - if !@project.group
-  This project does not belong to a group and can therefore not make use of group Runners.
+  = _('This project does not belong to a group and can therefore not make use of group Runners.')
 
 - elsif @group_runners.empty?
-  This group does not provide any group Runners yet.
+  = _('This group does not provide any group Runners yet.')
 
   - if can?(current_user, :admin_pipeline, @project.group)
-    = render partial: 'ci/runner/how_to_setup_runner',
-             locals: { registration_token: @project.group.runners_token, type: 'group' }
+    - group_link = link_to 'Group CI/CD settings', group_settings_ci_cd_path(@project.group)
+    = _('Group masters can register group runners in the %{link}').html_safe % { link: group_link }
   - else
-    Ask your group master to setup a group Runner.
+    = _('Ask your group master to setup a group Runner.')
 
 - else
-  %h4.underlined-title Available group Runners : #{@group_runners.count}
+  %h4.underlined-title
+    = _('Available group Runners : %{runners}').html_safe % { runners: @group_runners.count }
   %ul.bordered-list
     = render partial: 'projects/runners/runner', collection: @group_runners, as: :runner

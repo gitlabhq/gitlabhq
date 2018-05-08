@@ -3,10 +3,10 @@
     = runner_status_icon(runner)
 
     - if @project_runners.include?(runner)
-      = link_to runner.short_sha, runner_path(runner), class: 'commit-sha'
+      = link_to runner.short_sha, project_runner_path(@project, runner), class: 'commit-sha'
 
       - if runner.locked?
-        = icon('lock', class: 'has-tooltip', title: 'Locked to current projects')
+        = icon('lock', class: 'has-tooltip', title: _('Locked to current projects'))
 
       %small.edit-runner
         = link_to edit_project_runner_path(@project, runner) do
@@ -18,18 +18,18 @@
     .pull-right
       - if @project_runners.include?(runner)
         - if runner.active?
-          = link_to 'Pause', pause_project_runner_path(@project, runner), method: :post, class: 'btn btn-sm btn-danger', data: { confirm: "Are you sure?" }
+          = link_to _('Pause'), pause_project_runner_path(@project, runner), method: :post, class: 'btn btn-sm btn-danger', data: { confirm: _("Are you sure?") }
         - else
-          = link_to 'Resume', resume_project_runner_path(@project, runner), method: :post, class: 'btn btn-success btn-sm'
+          = link_to _('Resume'), resume_project_runner_path(@project, runner), method: :post, class: 'btn btn-success btn-sm'
         - if runner.belongs_to_one_project?
-          = link_to 'Remove Runner', runner_path(runner), data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-danger btn-sm'
+          = link_to _('Remove Runner'), project_runner_path(@project, runner), data: { confirm: _("Are you sure?") }, method: :delete, class: 'btn btn-danger btn-sm'
         - else
           - runner_project = @project.runner_projects.find_by(runner_id: runner)
-          = link_to 'Disable for this project', project_runner_project_path(@project, runner_project), data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-danger btn-sm'
+          = link_to _('Disable for this project'), project_runner_project_path(@project, runner_project), data: { confirm: _("Are you sure?") }, method: :delete, class: 'btn btn-danger btn-sm'
       - elsif !(runner.is_shared? || runner.group_type?) # We can simplify this to `runner.project_type?` when migrating #runner_type is complete
         = form_for [@project.namespace.becomes(Namespace), @project, @project.runner_projects.new] do |f|
           = f.hidden_field :runner_id, value: runner.id
-          = f.submit 'Enable for this project', class: 'btn btn-sm'
+          = f.submit _('Enable for this project'), class: 'btn btn-sm'
   .pull-right
     %small.light
       \##{runner.id}

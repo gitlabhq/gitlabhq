@@ -3,13 +3,10 @@ import { mapState, mapActions, mapGetters } from 'vuex';
 import tooltip from '~/vue_shared/directives/tooltip';
 import Icon from '~/vue_shared/components/icon.vue';
 import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
-import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import CommitFilesList from './commit_sidebar/list.vue';
 import EmptyState from './commit_sidebar/empty_state.vue';
-import CommitMessageField from './commit_sidebar/message_field.vue';
-import SuccessMessage from './commit_sidebar/success_message.vue';
 import * as consts from '../stores/modules/commit/constants';
-import Actions from './commit_sidebar/actions.vue';
+import { activityBarViews } from '../constants';
 
 export default {
   components: {
@@ -17,42 +14,50 @@ export default {
     Icon,
     CommitFilesList,
     EmptyState,
-    SuccessMessage,
-    Actions,
-    LoadingButton,
-    CommitMessageField,
   },
   directives: {
     tooltip,
   },
-  props: {
-    noChangesStateSvgPath: {
-      type: String,
-      required: true,
-    },
-    committedStateSvgPath: {
-      type: String,
-      required: true,
-    },
-  },
   computed: {
+    ...mapState([
+      'changedFiles',
+      'stagedFiles',
+      'rightPanelCollapsed',
+      'lastCommitMsg',
+      'unusedSeal',
+    ]),
+    ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
+    ...mapGetters(['lastOpenedFile', 'hasChanges', 'someUncommitedChanges']),
+    ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled']),
     showStageUnstageArea() {
       return !!(this.someUncommitedChanges || this.lastCommitMsg || !this.unusedSeal);
     },
-    someUncommitedChanges() {
-      return !!(this.changedFiles.length || this.stagedFiles.length);
+  },
+  watch: {
+    hasChanges() {
+      if (!this.hasChanges) {
+        this.updateActivityBarView(activityBarViews.edit);
+      }
     },
-    ...mapState(['changedFiles', 'stagedFiles', 'rightPanelCollapsed', 'lastCommitMsg', 'unusedSeal']),
-    ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
-    ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled']),
+  },
+  mounted() {
+    if (this.lastOpenedFile) {
+      this.openPendingTab({
+        file: this.lastOpenedFile,
+      })
+        .then(changeViewer => {
+          if (changeViewer) {
+            this.updateViewer('diff');
+          }
+        })
+        .catch(e => {
+          throw e;
+        });
+    }
   },
   methods: {
-    ...mapActions('commit', [
-      'updateCommitMessage',
-      'discardDraft',
-      'commitChanges',
-      'updateCommitAction',
-    ]),
+    ...mapActions(['openPendingTab', 'updateViewer', 'updateActivityBarView']),
+    ...mapActions('commit', ['commitChanges', 'updateCommitAction']),
     forceCreateNewBranch() {
       return this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH).then(() => this.commitChanges());
     },
@@ -80,6 +85,7 @@ export default {
       v-if="showStageUnstageArea"
     >
       <commit-files-list
+        class="is-first"
         icon-name="unstaged"
         :title="__('Unstaged')"
         :file-list="changedFiles"
@@ -94,49 +100,11 @@ export default {
         action="unstageAllChanges"
         :action-btn-text="__('Unstage all')"
         item-action-component="unstage-button"
-        :show-toggle="false"
         :staged-list="true"
       />
     </template>
     <empty-state
       v-if="unusedSeal"
-      :no-changes-state-svg-path="noChangesStateSvgPath"
     />
-    <div
-      class="multi-file-commit-panel-bottom"
-    >
-      <form
-        class="form-horizontal multi-file-commit-form"
-        @submit.prevent.stop="commitChanges"
-        v-if="!rightPanelCollapsed"
-      >
-        <success-message
-          v-if="lastCommitMsg && !someUncommitedChanges"
-          :committed-state-svg-path="committedStateSvgPath"
-        />
-        <commit-message-field
-          :text="commitMessage"
-          @input="updateCommitMessage"
-        />
-        <div class="clearfix prepend-top-15">
-          <actions />
-          <loading-button
-            :loading="submitCommitLoading"
-            :disabled="commitButtonDisabled"
-            container-class="btn btn-success btn-sm pull-left"
-            :label="__('Commit')"
-            @click="commitChanges"
-          />
-          <button
-            v-if="!discardDraftButtonDisabled"
-            type="button"
-            class="btn btn-default btn-sm pull-right"
-            @click="discardDraft"
-          >
-            {{ __('Discard draft') }}
-          </button>
-        </div>
-      </form>
-    </div>
   </div>
 </template>

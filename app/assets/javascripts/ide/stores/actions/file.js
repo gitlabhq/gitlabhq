@@ -5,6 +5,7 @@ import service from '../../services';
 import * as types from '../mutation_types';
 import router from '../../ide_router';
 import { setPageTitle } from '../utils';
+import { viewerTypes } from '../../constants';
 
 export const closeFile = ({ commit, state, dispatch }, file) => {
   const path = file.path;
@@ -23,13 +24,12 @@ export const closeFile = ({ commit, state, dispatch }, file) => {
     const nextFileToOpen = state.openFiles[nextIndexToOpen];
 
     if (nextFileToOpen.pending) {
-      dispatch('updateViewer', 'diff');
+      dispatch('updateViewer', viewerTypes.diff);
       dispatch('openPendingTab', {
         file: nextFileToOpen,
         keyPrefix: nextFileToOpen.staged ? 'staged' : 'unstaged',
       });
     } else {
-      dispatch('updateDelayViewerUpdated', true);
       router.push(`/project${nextFileToOpen.url}`);
     }
   } else if (!state.openFiles.length) {
@@ -184,6 +184,7 @@ export const stageChange = ({ commit, state }, path) => {
   const stagedFile = state.stagedFiles.find(f => f.path === path);
 
   commit(types.STAGE_CHANGE, path);
+  commit(types.SET_LAST_COMMIT_MSG, '');
 
   if (stagedFile) {
     eventHub.$emit(`editor.update.model.new.content.staged-${stagedFile.key}`, stagedFile.content);
@@ -195,9 +196,7 @@ export const unstageChange = ({ commit }, path) => {
 };
 
 export const openPendingTab = ({ commit, getters, dispatch, state }, { file, keyPrefix }) => {
-  if (getters.activeFile && getters.activeFile === file && state.viewer === 'diff') {
-    return false;
-  }
+  state.openFiles.forEach(f => eventHub.$emit(`editor.update.model.dispose.${f.key}`));
 
   commit(types.ADD_PENDING_TAB, { file, keyPrefix });
 

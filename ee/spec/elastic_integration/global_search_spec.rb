@@ -26,7 +26,7 @@ describe 'GlobalSearch' do
 
   context "Respect feature visibility levels" do
     context "Private projects" do
-      let(:project) { create(:project, :private, :repository) }
+      let(:project) { create(:project, :private, :repository, :wiki_repo) }
 
       # The feature can be disabled but the data may actually exist
       it "does not find items if features are disabled" do
@@ -57,7 +57,7 @@ describe 'GlobalSearch' do
     end
 
     context "Internal projects" do
-      let(:project) { create(:project, :internal, :repository) }
+      let(:project) { create(:project, :internal, :repository, :wiki_repo) }
 
       # The feature can be disabled but the data may actually exist
       it "does not find items if features are disabled" do
@@ -101,7 +101,7 @@ describe 'GlobalSearch' do
     end
 
     context "Public projects" do
-      let(:project) { create(:project, :public, :repository) }
+      let(:project) { create(:project, :public, :repository, :wiki_repo) }
 
       # The feature can be disabled but the data may actually exist
       it "does not find items if features are disabled" do

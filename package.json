@@ -16,7 +16,7 @@
     "webpack-prod": "NODE_ENV=production webpack --config config/webpack.config.js"
   },
   "dependencies": {
-    "@gitlab-org/gitlab-svgs": "^1.18.0",
+    "@gitlab-org/gitlab-svgs": "^1.20.0",
     "autosize": "^4.0.0",
     "axios": "^0.17.1",
     "babel-core": "^6.26.3",
@@ -81,7 +81,7 @@
     "three-orbit-controls": "^82.1.0",
     "three-stl-loader": "^1.0.4",
     "timeago.js": "^3.0.2",
-    "underscore": "^1.8.3",
+    "underscore": "^1.9.0",
     "url-loader": "^1.0.1",
     "visibilityjs": "^1.2.4",
     "vue": "^2.5.16",

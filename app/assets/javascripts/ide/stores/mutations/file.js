@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import * as types from '../mutation_types';
 
 export default {
@@ -169,32 +170,24 @@ export default {
     });
   },
   [types.ADD_PENDING_TAB](state, { file, keyPrefix = 'pending' }) {
-    const key = `${keyPrefix}-${file.key}`;
-    const pendingTab = state.openFiles.find(f => f.key === key && f.pending);
-    let openFiles = state.openFiles.map(f => Object.assign(f, { active: false, opened: false }));
-
-    if (!pendingTab) {
-      const openFile = openFiles.find(f => f.path === file.path);
-
-      openFiles = openFiles.concat(openFile ? null : file).reduce((acc, f) => {
-        if (!f) return acc;
-
-        if (f.path === file.path) {
-          return acc.concat({
-            ...f,
-            content: file.content,
-            active: true,
-            pending: true,
-            opened: true,
-            key,
-          });
-        }
-
-        return acc.concat(f);
-      }, []);
-    }
-
-    Object.assign(state, { openFiles });
+    state.entries[file.path].opened = false;
+    state.entries[file.path].active = false;
+    state.entries[file.path].lastOpenedAt = new Date().getTime();
+    state.openFiles.forEach(f =>
+      Object.assign(f, {
+        opened: false,
+        active: false,
+      }),
+    );
+    state.openFiles = [
+      {
+        ...file,
+        key: `${keyPrefix}-${file.key}`,
+        pending: true,
+        opened: true,
+        active: true,
+      },
+    ];
   },
   [types.REMOVE_PENDING_TAB](state, file) {
     Object.assign(state, {

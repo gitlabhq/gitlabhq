@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::Search do
   set(:user) { create(:user) }
   set(:group) { create(:group) }
-  let(:project) { create(:project, :public, name: 'awesome project', group: group) }
+  let(:project) { create(:project, :public, :wiki_repo, name: 'awesome project', group: group) }
   let(:repo_project) { create(:project, :public, :repository, group: group) }
 
   shared_examples 'response is correct' do |schema:, size: 1|

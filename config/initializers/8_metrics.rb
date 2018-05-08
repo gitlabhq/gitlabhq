@@ -146,7 +146,14 @@ def instrument_classes(instrumentation)
 end
 # rubocop:enable Metrics/AbcSize
 
-if Gitlab::Metrics.enabled?
+# With prometheus enabled by default this breaks all specs
+# that stubs methods using `any_instance_of` for the models reloaded here.
+#
+# We should deprecate the usage of `any_instance_of` in the future
+# check: https://github.com/rspec/rspec-mocks#settings-mocks-or-stubs-on-any-instance-of-a-class
+#
+# Related issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/33587
+if Gitlab::Metrics.enabled? && !Rails.env.test?
   require 'pathname'
   require 'influxdb'
   require 'connection_pool'

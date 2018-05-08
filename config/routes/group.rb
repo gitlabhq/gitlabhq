@@ -108,6 +108,13 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     # On CE only index and show are needed
     resources :boards, only: [:index, :show, :create, :update, :destroy]
 
+    resources :runners, only: [:index, :edit, :update, :destroy, :show] do
+      member do
+        post :resume
+        post :pause
+      end
+    end
+
     legacy_ee_group_boards_redirect = redirect do |params, request|
       path = "/groups/#{params[:group_id]}/-/boards"
       path << "/#{params[:extra_params]}" if params[:extra_params].present?

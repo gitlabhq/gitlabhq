@@ -511,7 +511,10 @@ describe('IDE store file actions', () => {
         actions.stageChange,
         'path',
         store.state,
-        [{ type: types.STAGE_CHANGE, payload: 'path' }],
+        [
+          { type: types.STAGE_CHANGE, payload: 'path' },
+          { type: types.SET_LAST_COMMIT_MSG, payload: '' },
+        ],
         [],
         done,
       );
@@ -524,7 +527,10 @@ describe('IDE store file actions', () => {
         actions.unstageChange,
         'path',
         store.state,
-        [{ type: types.UNSTAGE_CHANGE, payload: 'path' }],
+        [
+          { type: types.UNSTAGE_CHANGE, payload: 'path' },
+          { type: types.SET_LAST_COMMIT_MSG, payload: '' },
+        ],
         [],
         done,
       );
@@ -585,20 +591,6 @@ describe('IDE store file actions', () => {
         .then(() => {
           expect(scrollToTabSpy).toHaveBeenCalled();
           store._actions.scrollToTab = oldScrollToTab; // eslint-disable-line
-        })
-        .then(done)
-        .catch(done.fail);
-    });
-
-    it('returns false when passed in file is active & viewer is diff', done => {
-      f.active = true;
-      store.state.openFiles.push(f);
-      store.state.viewer = 'diff';
-
-      store
-        .dispatch('openPendingTab', { file: f, keyPrefix: 'pending' })
-        .then(added => {
-          expect(added).toBe(false);
         })
         .then(done)
         .catch(done.fail);

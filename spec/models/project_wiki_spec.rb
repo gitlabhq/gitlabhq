@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe ProjectWiki do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :wiki_repo) }
   let(:repository) { project.repository }
   let(:user) { project.owner }
   let(:gitlab_shell) { Gitlab::Shell.new }
@@ -336,6 +336,8 @@ describe ProjectWiki do
   end
 
   describe '#create_repo!' do
+    let(:project) { create(:project) }
+
     it 'creates a repository' do
       expect(raw_repository.exists?).to eq(false)
       expect(subject.repository).to receive(:after_create)
@@ -347,6 +349,8 @@ describe ProjectWiki do
   end
 
   describe '#ensure_repository' do
+    let(:project) { create(:project) }
+
     it 'creates the repository if it not exist' do
       expect(raw_repository.exists?).to eq(false)
 

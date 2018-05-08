@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Global elastic search' do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :repository, namespace: user.namespace) }
+  let(:project) { create(:project, :repository, :wiki_repo, namespace: user.namespace) }
 
   before do
     stub_ee_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)

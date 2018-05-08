@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe WikiPage do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :wiki_repo) }
   let(:user) { project.owner }
   let(:wiki) { ProjectWiki.new(project, user) }
 

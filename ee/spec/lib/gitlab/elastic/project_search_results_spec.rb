@@ -34,8 +34,8 @@ describe Gitlab::Elastic::ProjectSearchResults do
 
   describe "search" do
     it "returns correct amounts" do
-      project = create :project, :public, :repository
-      project1 = create :project, :public, :repository
+      project = create :project, :public, :repository, :wiki_repo
+      project1 = create :project, :public, :repository, :wiki_repo
 
       project.repository.index_blobs
       project.repository.index_commits
@@ -64,7 +64,7 @@ describe Gitlab::Elastic::ProjectSearchResults do
 
     context 'visibility checks' do
       it 'shows wiki for guests' do
-        project = create :project, :public
+        project = create :project, :public, :wiki_repo
         guest = create :user
         project.add_guest(guest)
 

@@ -1,27 +1,9 @@
 <script>
-import { mapActions, mapState, mapGetters } from 'vuex';
-import Icon from '~/vue_shared/components/icon.vue';
-import tooltip from '~/vue_shared/directives/tooltip';
+import { mapState } from 'vuex';
 
 export default {
-  components: {
-    Icon,
-  },
-  directives: {
-    tooltip,
-  },
-  props: {
-    noChangesStateSvgPath: {
-      type: String,
-      required: true,
-    },
-  },
   computed: {
-    ...mapState(['lastCommitMsg', 'rightPanelCollapsed', 'changedFiles', 'stagedFiles']),
-    ...mapGetters(['collapseButtonIcon', 'collapseButtonTooltip']),
-  },
-  methods: {
-    ...mapActions(['toggleRightPanelCollapsed']),
+    ...mapState(['lastCommitMsg', 'noChangesStateSvgPath']),
   },
 };
 </script>
@@ -31,31 +13,8 @@ export default {
     v-if="!lastCommitMsg"
     class="multi-file-commit-panel-section ide-commit-empty-state js-empty-state"
   >
-    <header
-      class="multi-file-commit-panel-header"
-      :class="{
-        'is-collapsed': rightPanelCollapsed,
-      }"
-    >
-      <button
-        v-tooltip
-        :title="collapseButtonTooltip"
-        data-container="body"
-        data-placement="left"
-        type="button"
-        class="btn btn-transparent multi-file-commit-panel-collapse-btn"
-        :aria-label="__('Toggle sidebar')"
-        @click.stop="toggleRightPanelCollapsed"
-      >
-        <icon
-          :name="collapseButtonIcon"
-          :size="18"
-        />
-      </button>
-    </header>
     <div
       class="ide-commit-empty-state-container"
-      v-if="!rightPanelCollapsed"
     >
       <div class="svg-content svg-80">
         <img :src="noChangesStateSvgPath" />

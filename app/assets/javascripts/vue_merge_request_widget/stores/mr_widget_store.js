@@ -23,6 +23,7 @@ export default class MergeRequestStore {
     this.sourceBranch = data.source_branch;
     this.mergeStatus = data.merge_status;
     this.commitMessage = data.merge_commit_message;
+    this.shortMergeCommitSha = data.short_merge_commit_sha;
     this.commitMessageWithDescription = data.merge_commit_message_with_description;
     this.commitsCount = data.commits_count;
     this.divergedCommitsCount = data.diverged_commits_count;
@@ -68,6 +69,7 @@ export default class MergeRequestStore {
     this.createIssueToResolveDiscussionsPath = data.create_issue_to_resolve_discussions_path;
     this.mergeCheckPath = data.merge_check_path;
     this.mergeActionsContentPath = data.commit_change_content_path;
+    this.mergeCommitPath = data.merge_commit_path;
     this.isRemovingSourceBranch = this.isRemovingSourceBranch || false;
     this.isOpen = data.state === 'opened';
     this.hasMergeableDiscussionsState = data.mergeable_discussions_state === false;

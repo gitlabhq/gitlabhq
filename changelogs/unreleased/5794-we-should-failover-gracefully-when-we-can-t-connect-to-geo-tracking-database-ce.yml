@@ -1,0 +1,5 @@
+---
+title: ShaAttribute no longer stops startup if database is missing
+merge_request: 18726
+author:
+type: fixed

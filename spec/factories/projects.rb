@@ -219,6 +219,13 @@ FactoryBot.define do
     trait :wiki_repo do
       after(:create) do |project|
         raise 'Failed to create wiki repository!' unless project.create_wiki
+
+        # We delete hooks so that gitlab-shell will not try to authenticate with
+        # an API that isn't running
+        project.gitlab_shell.rm_directory(
+          project.repository_storage,
+          File.join("#{project.wiki.repository.disk_path}.git", "hooks")
+        )
       end
     end
 
