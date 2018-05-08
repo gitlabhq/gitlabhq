@@ -149,7 +149,7 @@ import { mapActions } from 'vuex';
 };
 ```
 
-#### `mutations.js`
+### `mutations.js`
 The mutations specify how the application state changes in response to actions sent to the store.
 The only way to change state in a Vuex store should be by committing a mutation.
 
@@ -188,7 +188,7 @@ Remember that actions only describe that something happened, they don't describe
   };
 ```
 
-#### `getters.js`
+### `getters.js`
 Sometimes we may need to get derived state based on store state, like filtering for a specific prop.
 Using a getter will also cache the result based on dependencies due to [how computed props work](https://vuejs.org/v2/guide/computed.html#Computed-Caching-vs-Methods)
 This can be done through the `getters`:
@@ -213,7 +213,7 @@ import { mapGetters } from 'vuex';
 };
 ```
 
-#### `mutations_types.js`
+### `mutations_types.js`
 From [vuex mutations docs][vuex-mutations]:
 > It is a commonly seen pattern to use constants for mutation types in various Flux implementations. This allows the code to take advantage of tooling like linters, and putting all constants in a single file allows your collaborators to get an at-a-glance view of what mutations are possible in the entire application.
 
