@@ -12,6 +12,15 @@ module RedisCacheable
         end
       end
     end
+
+    def cached_attr_time_reader(*attributes)
+      attributes.each do |attribute|
+        define_method("#{attribute}") do
+          cached_value = cached_attribute(attribute)
+          cached_value ? Time.zone.parse(cached_value) : read_attribute(attribute)
+        end
+      end
+    end
   end
 
   def cached_attribute(attribute)
