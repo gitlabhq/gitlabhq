@@ -2275,7 +2275,22 @@ describe Gitlab::Git::Repository, seed_helper: true do
         expect(empty_repo.checksum).to eq '0000000000000000000000000000000000000000'
       end
 
-      it 'raises a no repository exception when there is no repo' do
+      it 'raises Gitlab::Git::Repository::InvalidRepository error for non-valid git repo' do
+        FileUtils.rm_rf(File.join(storage_path, 'non-valid.git'))
+
+        system(git_env, *%W(#{Gitlab.config.git.bin_path} clone --bare #{TEST_REPO_PATH} non-valid.git),
+               chdir: SEED_STORAGE_PATH,
+               out: '/dev/null',
+               err: '/dev/null')
+
+        File.truncate(File.join(storage_path, 'non-valid.git/HEAD'), 0)
+
+        non_valid = described_class.new('default', 'non-valid.git', '')
+
+        expect { non_valid.checksum }.to raise_error(Gitlab::Git::Repository::InvalidRepository)
+      end
+
+      it 'raises Gitlab::Git::Repository::NoRepository error when there is no repo' do
         broken_repo = described_class.new('default', 'a/path.git', '')
 
         expect { broken_repo.checksum }.to raise_error(Gitlab::Git::Repository::NoRepository)
