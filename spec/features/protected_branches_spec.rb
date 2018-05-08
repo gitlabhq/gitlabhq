@@ -72,13 +72,13 @@ feature 'Protected Branches', :js do
           find(".js-allowed-to-merge").click
           click_link 'No one'
         end
-        find('body').click
+        find(form).click
 
         within form do
           find(".js-allowed-to-push").click
           click_link 'Developers + Masters'
         end
-        find('body').click
+        find(form).click
 
         visit project_protected_branches_path(project)
 
