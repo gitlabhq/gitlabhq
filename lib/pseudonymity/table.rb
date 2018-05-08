@@ -36,7 +36,7 @@ module Pseudonymity
 
     def tables_to_csv
       tables = config["tables"]
-      @csv_output = config["output"]["csv"].chomp("\/")
+      @csv_output = config["output"]["csv"].chomp("\g/")
       if not File.directory?(@csv_output)
         puts "No such directory #{@csv_output}"
         return
@@ -49,14 +49,20 @@ module Pseudonymity
       file_list_to_json
     end
 
+    def get_and_log_file_name(ext, prefix=nil, filename=nil)
+      file_timestamp = filename || "#{prefix}_#{Time.now.to_i}"
+      file_timestamp = "#{file_timestamp}.#{ext}"
+      @output_files << file_timestamp
+      "#{@csv_output}/#{file_timestamp}"
+    end
+
     def schema_to_yml
-      file_path = "#{@csv_output}/schema_#{Time.now.to_i}.yml"
-      @output_files << file_path
+      file_path = get_and_log_file_name("yml", "schema")
       File.open(file_path, 'w') { |file| file.write(@schema.to_yaml) }
     end
 
     def file_list_to_json
-      file_path = "#{@csv_output}/file_list.json"
+      file_path = get_and_log_file_name("json", nil, "file_list")
       File.open(file_path, 'w') { |file| file.write(@output_files.to_json) }
     end
 
@@ -85,7 +91,7 @@ module Pseudonymity
     end
 
     def write_to_csv_file(title, contents)
-      file_path = "#{@csv_output}/#{title}_#{Time.now.to_i}.csv"
+      file_path = get_and_log_file_name("csv", title)
       column_names = contents.first.keys
       contents = CSV.generate do | csv |
         csv << column_names
@@ -94,7 +100,6 @@ module Pseudonymity
         end
       end
       File.open(file_path, 'w') { |file| file.write(contents) }
-      @output_files << file_path
       return file_path
     end
 
