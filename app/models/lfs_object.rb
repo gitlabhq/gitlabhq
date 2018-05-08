@@ -10,8 +10,7 @@ class LfsObject < ActiveRecord::Base
   scope :with_files_stored_locally, -> { where(file_store: [nil, LfsObjectUploader::Store::LOCAL]) }
 
   validates :oid, presence: true, uniqueness: true
-
-  validate :verify_filename!
+  validate :verify_filename!, if: :file_changed?
 
   mount_uploader :file, LfsObjectUploader
 
@@ -42,7 +41,7 @@ class LfsObject < ActiveRecord::Base
   end
 
   def verify_filename!
-    unless self.file_identifier == oid[FILE_NAME_RANGE]
+    unless self.file.filename == oid[FILE_NAME_RANGE]
       self.errors.add(:filename, 'Invalid filename')
     end
   end
