@@ -175,7 +175,6 @@ RSpec.configure do |config|
 
   config.around(:each, :clean_gitlab_redis_shared_state) do |example|
     redis_shared_state_cleanup!
-<<<<<<< HEAD
 
     example.run
 
@@ -187,19 +186,6 @@ RSpec.configure do |config|
 
     example.run
 
-=======
-
-    example.run
-
-    redis_shared_state_cleanup!
-  end
-
-  config.around(:each, :clean_gitlab_redis_queues) do |example|
-    redis_queues_cleanup!
-
-    example.run
-
->>>>>>> upstream/master
     redis_queues_cleanup!
   end
 
