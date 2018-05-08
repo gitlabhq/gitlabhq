@@ -34,7 +34,6 @@ module MigrationsHelpers
     end
   end
 
-
   def reset_column_in_all_models
     clear_schema_cache!
 
