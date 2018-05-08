@@ -7,20 +7,10 @@ include GitalyTest
 
 # This script assumes tmp/tests/gitaly already contains the correct
 # Gitaly version. We just have to compile it and run its 'bundle
-# install'. We have this separate script for that because weird things
-# were happening in CI when we have a 'bundle exec' process that later
-# called 'bundle install' using a different Gemfile, as happens with
-# gitlab-ce and gitaly.
+# install'. We have this separate script for that to avoid bundle
+# poisoning in CI. This script should only be run in CI.
 
 abort 'gitaly build failed' unless system(env, 'make', chdir: tmp_tests_gitaly_dir)
-
-puts 'gitlab-ce path to gitaly-proto:'
-system('bundle', 'show', 'gitaly-proto')
-
-# Bundle config sanity check, for visual inspection in case of problems.
-system(env, 'bundle', 'config', chdir: File.dirname(gemfile))
-
-abort 'bundle list failed' unless system(env, 'bundle', 'list', chdir: File.dirname(gemfile))
 
 check_gitaly_config!
 

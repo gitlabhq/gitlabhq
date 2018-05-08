@@ -1,16 +1,16 @@
 #!/usr/bin/env ruby
 
+# This script is used both in CI and in local development 'rspec' runs.
+
 require_relative 'gitaly-test-env'
 include GitalyTest
 
-# For CI debugging purposes
-system(env, 'bundle', 'config', chdir: File.dirname(gemfile))
-
 check_gitaly_config!
 
-# # Uncomment to see all gitaly logs in CI
+# # Uncomment line below to see all gitaly logs merged into CI trace
 # spawn('sleep 1; tail -f log/gitaly-test.log')
 
-# Print the PID of the spawned process. This value is used by rspec.
 pid = spawn(env, *args, [:out, :err] => 'log/gitaly-test.log')
+
+# In local development rspec runs this pid file is used by rspec.
 IO.write(File.expand_path('../tmp/tests/gitaly.pid', __dir__), pid)

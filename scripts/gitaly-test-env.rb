@@ -1,3 +1,9 @@
+# This file contains environment settings for gitaly when it's running
+# as part of the gitlab-ce/ee test suite.
+# 
+# Please be careful when modifying this file. Your changes must work
+# both for local development rspec runs, and in CI.
+
 module GitalyTest
   def tmp_tests_gitaly_dir
     File.expand_path('../tmp/tests/gitaly', __dir__)
@@ -29,6 +35,7 @@ module GitalyTest
   end
 
   def check_gitaly_config!
+    puts 'Checking gitaly-ruby bundle...'
     abort 'bundle check failed' unless system(env, 'bundle', 'check', chdir: File.dirname(gemfile))
 
     abort 'config load failed' unless system(env, args[0], '-test-config', *args[1, args.length])
