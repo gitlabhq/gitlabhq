@@ -3,14 +3,6 @@ module GitalyTest
     File.expand_path('../tmp/tests/gitaly', __dir__)
   end
 
-  def gitaly_ruby_dir
-    File.expand_path(File.join(tmp_tests_gitaly_dir, 'ruby'))
-  end
-
-  def bundle_vendor_path
-    File.expand_path('../vendor', __dir__)
-  end
-
   def gemfile
     File.join(tmp_tests_gitaly_dir, 'ruby', 'Gemfile')
   end
@@ -22,7 +14,7 @@ module GitalyTest
       'BUNDLE_IGNORE_CONFIG' => 'true',
       'BUNDLE_APP_CONFIG' => nil,
       'BUNDLE_FLAGS' => "--jobs=4 --retry=3",
-      'BUNDLE_GEMFILE' => File.join(gitaly_ruby_dir, 'Gemfile'),
+      'BUNDLE_GEMFILE' => gemfile,
       'RUBYOPT' => nil
     }
 
