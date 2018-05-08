@@ -68,17 +68,13 @@ describe Geo::MetricsUpdateService, :geo do
     }
   end
 
-  def reset_prometheus_metrics
-    matching_files = File.join(::Prometheus::Client.configuration.multiprocess_files_dir, "*.db")
-    Dir[matching_files].map { |filename| File.delete(filename) if File.file?(filename) }
-
-    # Can't use ::Prometheus::Client.reinitialize_on_pid_change because the PID didn't change
-    ::Prometheus::Client::MmapedValue.reset_and_reinitialize
-  end
-
+  # FIXME: we don't clear prometheus state between specs, so these specs below
+  # create *persistent* entries in the prometheus database that may cause other
+  # specs to transiently fail.
+  #
+  # Issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/39968
   before do
     allow(Gitlab::Metrics).to receive(:prometheus_metrics_enabled?).and_return(true)
-    reset_prometheus_metrics
   end
 
   describe '#execute' do
