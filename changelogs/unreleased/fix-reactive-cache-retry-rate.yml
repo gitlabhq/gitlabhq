@@ -1,0 +1,5 @@
+---
+title: Update commit status from external CI services less aggressively
+merge_request: 18802
+author:
+type: fixed

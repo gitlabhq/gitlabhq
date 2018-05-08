@@ -205,7 +205,6 @@
 .project-repo-buttons,
 .group-buttons {
   .btn {
-    @include btn-gray;
     padding: 3px 10px;
 
     &:last-child {
@@ -294,7 +293,7 @@
     }
 
     .count {
-      @include btn-gray;
+      @include btn-white;
       display: inline-block;
       background: $white-light;
       border-radius: 2px;
