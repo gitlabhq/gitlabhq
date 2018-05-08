@@ -18,6 +18,10 @@ module GitalyTest
       'RUBYOPT' => nil
     }
 
+    if ENV['CI']
+      env_hash['BUNDLE_FLAGS'] << ' --deployment'
+    end
+
     env_hash
   end
 
