@@ -23,18 +23,17 @@ const createComponent = () => {
   });
 };
 
-const returnServicePromise = (data, failed) =>
-  new Promise((resolve, reject) => {
-    if (failed) {
-      reject(data);
-    } else {
-      resolve({
-        json() {
-          return data;
-        },
-      });
-    }
-  });
+const returnServicePromise = (data, failed) => new Promise((resolve, reject) => {
+  if (failed) {
+    reject(data);
+  } else {
+    resolve({
+      json() {
+        return data;
+      },
+    });
+  }
+});
 
 describe('AppComponent', () => {
   describe('computed', () => {
@@ -186,7 +185,7 @@ describe('AppComponent', () => {
     describe('fetchSearchedProjects', () => {
       const searchQuery = 'test';
 
-      it('should perform search with provided search query', done => {
+      it('should perform search with provided search query', (done) => {
         const mockData = [mockRawProject];
         spyOn(vm, 'toggleLoader');
         spyOn(vm, 'toggleSearchProjectsList');
@@ -204,7 +203,7 @@ describe('AppComponent', () => {
         }, 0);
       });
 
-      it('should update props for showing search failure', done => {
+      it('should update props for showing search failure', (done) => {
         spyOn(vm, 'toggleSearchProjectsList');
         spyOn(vm.service, 'getSearchedProjects').and.returnValue(returnServicePromise({}, true));
 
@@ -220,7 +219,7 @@ describe('AppComponent', () => {
     });
 
     describe('logCurrentProjectAccess', () => {
-      it('should log current project access via service', done => {
+      it('should log current project access via service', (done) => {
         spyOn(vm.service, 'logProjectAccess');
 
         vm.currentProject = mockProject;
@@ -258,7 +257,7 @@ describe('AppComponent', () => {
   });
 
   describe('created', () => {
-    it('should bind event listeners on eventHub', done => {
+    it('should bind event listeners on eventHub', (done) => {
       spyOn(eventHub, '$on');
 
       createComponent().$mount();
@@ -274,7 +273,7 @@ describe('AppComponent', () => {
   });
 
   describe('beforeDestroy', () => {
-    it('should unbind event listeners on eventHub', done => {
+    it('should unbind event listeners on eventHub', (done) => {
       const vm = createComponent();
       spyOn(eventHub, '$off');
 
@@ -306,7 +305,7 @@ describe('AppComponent', () => {
       expect(vm.$el.querySelector('.search-input-container')).toBeDefined();
     });
 
-    it('should render loading animation', done => {
+    it('should render loading animation', (done) => {
       vm.toggleLoader(true);
       Vue.nextTick(() => {
         const loadingEl = vm.$el.querySelector('.loading-animation');
@@ -318,7 +317,7 @@ describe('AppComponent', () => {
       });
     });
 
-    it('should render frequent projects list header', done => {
+    it('should render frequent projects list header', (done) => {
       vm.toggleFrequentProjectsList(true);
       Vue.nextTick(() => {
         const sectionHeaderEl = vm.$el.querySelector('.section-header');
@@ -329,7 +328,7 @@ describe('AppComponent', () => {
       });
     });
 
-    it('should render frequent projects list', done => {
+    it('should render frequent projects list', (done) => {
       vm.toggleFrequentProjectsList(true);
       Vue.nextTick(() => {
         expect(vm.$el.querySelector('.projects-list-frequent-container')).toBeDefined();
@@ -337,7 +336,7 @@ describe('AppComponent', () => {
       });
     });
 
-    it('should render searched projects list', done => {
+    it('should render searched projects list', (done) => {
       vm.toggleSearchProjectsList(true);
       Vue.nextTick(() => {
         expect(vm.$el.querySelector('.section-header')).toBe(null);

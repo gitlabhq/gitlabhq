@@ -32,12 +32,8 @@ module Gitlab
         def validate_permission!(permission)
           raise UserNotFoundError unless author
           raise UserBlockedError if author.blocked?
-
-          if project
-            raise ProjectNotFound unless author.can?(:read_project, project)
-          end
-
-          raise UserNotAuthorizedError unless author.can?(permission, project || noteable)
+          raise ProjectNotFound unless author.can?(:read_project, project)
+          raise UserNotAuthorizedError unless author.can?(permission, project)
         end
 
         def verify_record!(record:, invalid_exception:, record_name:)

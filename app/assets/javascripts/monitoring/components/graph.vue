@@ -81,8 +81,9 @@ export default {
         time: new Date(),
         value: 0,
       },
+      currentDataIndex: 0,
       currentXCoordinate: 0,
-      currentCoordinates: [],
+      currentFlagPosition: 0,
       showFlag: false,
       showFlagContent: false,
       timeSeries: [],
@@ -272,9 +273,6 @@ export default {
             :line-style="path.lineStyle"
             :line-color="path.lineColor"
             :area-color="path.areaColor"
-            :current-coordinates="currentCoordinates[index]"
-            :current-time-series-index="index"
-            :show-dot="showFlagContent"
           />
           <graph-deployment
             :deployment-data="reducedDeploymentData"
@@ -300,9 +298,9 @@ export default {
         :show-flag-content="showFlagContent"
         :time-series="timeSeries"
         :unit-of-display="unitOfDisplay"
+        :current-data-index="currentDataIndex"
         :legend-title="legendTitle"
         :deployment-flag-data="deploymentFlagData"
-        :current-coordinates="currentCoordinates"
       />
     </div>
     <graph-legend

@@ -161,6 +161,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
 
           get :diff_for_path
+          get :update_branches
           get :branch_from
           get :branch_to
         end
@@ -174,12 +175,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      resource :mirror, only: [:show, :update] do
-        member do
-          post :update_now
-        end
-      end
-
       resources :pipelines, only: [:index, :new, :create, :show] do
         collection do
           resource :pipelines_settings, path: 'settings', only: [:show, :update]
@@ -188,7 +183,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         member do
           get :stage
-          get :stage_ajax
           post :cancel
           post :retry
           get :builds
@@ -416,7 +410,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         collection do
           post :toggle_shared_runners
-          post :toggle_group_runners
         end
       end
 

@@ -1,4 +1,5 @@
 require 'spec_helper'
+require_relative 'email_shared_blocks'
 
 describe Gitlab::Email::Receiver do
   include_context :email_shared_context

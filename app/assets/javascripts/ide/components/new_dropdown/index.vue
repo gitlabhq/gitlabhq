@@ -17,8 +17,7 @@ export default {
     },
     path: {
       type: String,
-      required: false,
-      default: '',
+      required: true,
     },
   },
   data() {

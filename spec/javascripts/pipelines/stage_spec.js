@@ -4,7 +4,6 @@ import axios from '~/lib/utils/axios_utils';
 import stage from '~/pipelines/components/stage.vue';
 import eventHub from '~/pipelines/event_hub';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { stageReply } from './mock_data';
 
 describe('Pipelines stage component', () => {
   let StageComponent;
@@ -42,7 +41,7 @@ describe('Pipelines stage component', () => {
 
   describe('with successfull request', () => {
     beforeEach(() => {
-      mock.onGet('path.json').reply(200, stageReply);
+      mock.onGet('path.json').reply(200, { html: 'foo' });
     });
 
     it('should render the received data and emit `clickedDropdown` event', done => {
@@ -52,7 +51,7 @@ describe('Pipelines stage component', () => {
       setTimeout(() => {
         expect(
           component.$el.querySelector('.js-builds-dropdown-container ul').textContent.trim(),
-        ).toContain(stageReply.latest_statuses[0].name);
+        ).toEqual('foo');
         expect(eventHub.$emit).toHaveBeenCalledWith('clickedDropdown');
         done();
       }, 0);
@@ -75,9 +74,7 @@ describe('Pipelines stage component', () => {
 
   describe('update endpoint correctly', () => {
     beforeEach(() => {
-      const copyStage = Object.assign({}, stageReply);
-      copyStage.latest_statuses[0].name = 'this is the updated content';
-      mock.onGet('bar.json').reply(200, copyStage);
+      mock.onGet('bar.json').reply(200, { html: 'this is the updated content' });
     });
 
     it('should update the stage to request the new endpoint provided', done => {
@@ -96,7 +93,7 @@ describe('Pipelines stage component', () => {
         setTimeout(() => {
           expect(
             component.$el.querySelector('.js-builds-dropdown-container ul').textContent.trim(),
-          ).toContain('this is the updated content');
+          ).toEqual('this is the updated content');
           done();
         });
       });

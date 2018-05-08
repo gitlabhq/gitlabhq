@@ -1,8 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::GithubImport::AdvanceStageWorker, :clean_gitlab_redis_shared_state do
-  let(:project) { create(:project) }
-  let(:import_state) { create(:import_state, project: project, jid: '123') }
+  let(:project) { create(:project, import_jid: '123') }
   let(:worker) { described_class.new }
 
   describe '#perform' do
@@ -106,8 +105,7 @@ describe Gitlab::GithubImport::AdvanceStageWorker, :clean_gitlab_redis_shared_st
 
       # This test is there to make sure we only select the columns we care
       # about.
-      # TODO: enable this assertion back again
-      # expect(found.attributes).to include({ 'id' => nil, 'import_jid' => '123' })
+      expect(found.attributes).to eq({ 'id' => nil, 'import_jid' => '123' })
     end
 
     it 'returns nil if the project import is not running' do

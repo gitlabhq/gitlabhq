@@ -3,7 +3,6 @@
   import tooltip from '~/vue_shared/directives/tooltip';
   import loadingIcon from '~/vue_shared/components/loading_icon.vue';
   import { s__, __ } from '~/locale';
-  import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
   import mrWidgetAuthorTime from '../../components/mr_widget_author_time.vue';
   import statusIcon from '../mr_widget_status_icon.vue';
   import eventHub from '../../event_hub';
@@ -17,7 +16,6 @@
       mrWidgetAuthorTime,
       loadingIcon,
       statusIcon,
-      ClipboardButton,
     },
     props: {
       mr: {
@@ -164,18 +162,6 @@
           <span class="label-branch">
             <a :href="mr.targetBranchPath">{{ mr.targetBranch }}</a>
           </span>
-          with
-          <a
-            :href="mr.mergeCommitPath"
-            class="commit-sha js-mr-merged-commit-sha"
-          >
-            {{ mr.shortMergeCommitSha }}
-          </a>
-          <clipboard-button
-            :title="__('Copy commit SHA to clipboard')"
-            :text="mr.shortMergeCommitSha"
-            css-class="btn-default btn-transparent btn-clipboard js-mr-merged-copy-sha"
-          />
         </p>
         <p v-if="mr.sourceBranchRemoved">
           {{ s__("mrWidget|The source branch has been removed") }}

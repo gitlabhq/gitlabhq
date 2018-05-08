@@ -14,8 +14,7 @@ module Gitlab
               trigger_requests: Array(@command.trigger_request),
               user: @command.current_user,
               pipeline_schedule: @command.schedule,
-              protected: @command.protected_ref?,
-              variables_attributes: Array(@command.variables_attributes)
+              protected: @command.protected_ref?
             )
 
             @pipeline.set_config_source

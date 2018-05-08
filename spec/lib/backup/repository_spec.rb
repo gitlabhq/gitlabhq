@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Backup::Repository do
   let(:progress) { StringIO.new }
-  let!(:project) { create(:project, :wiki_repo) }
+  let!(:project) { create(:project) }
 
   before do
     allow(progress).to receive(:puts)
@@ -102,7 +102,7 @@ describe Backup::Repository do
       it 'invalidates the emptiness cache' do
         expect(wiki.repository).to receive(:expire_emptiness_caches).once
 
-        described_class.new.send(:empty_repo?, wiki)
+        wiki.empty?
       end
 
       context 'wiki repo has content' do

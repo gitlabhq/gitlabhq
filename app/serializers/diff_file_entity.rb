@@ -1,5 +1,4 @@
 class DiffFileEntity < Grape::Entity
-  include RequestAwareEntity
   include ActionView::Helpers::TagHelper
   include Gitlab::Routing
   include BlobHelper
@@ -8,30 +7,23 @@ class DiffFileEntity < Grape::Entity
   include IconsHelper
   include SubmoduleHelper
   include TreeHelper
-  include ChecksCollaboration
-  include Gitlab::Utils::StrongMemoize
-
 
   expose :submodule?, as: :submodule
 
   expose :submodule_link do |diff_file|
-    memoized_submodule_links(diff_file).first
+    submodule_links(diff_file.blob, diff_file.content_sha, diff_file.repository).first if diff_file.submodule?
   end
 
   expose :submodule_tree_url do |diff_file|
-    memoized_submodule_links(diff_file).last
+    submodule_links(diff_file.blob, diff_file.content_sha, diff_file.repository).last if diff_file.submodule?
   end
 
   expose :blob, using: BlobEntity
 
   expose :can_modify_blob do |diff_file|
-    merge_request = options[:merge_request]
-
-    if merge_request && current_user
-      can_modify_blob?(diff_file.blob, merge_request.source_project, merge_request.source_branch)
-    else
-      false
-    end
+    # todo: this depends on can_collaborate_with_project?, which needs current_user
+    # also maybe this should live in current_user like in merge_request entity
+    # can_modify_blob?(diff_file.blob, merge_request.project, merge_request.source_branch)
   end
 
   expose :file_hash do |diff_file|
@@ -100,10 +92,9 @@ class DiffFileEntity < Grape::Entity
   end
 
   expose :fork_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
-    merge_request = options[:merge_request]
-
-    params = edit_blob_fork_params("Edit")
-    project_forks_path(merge_request.project, namespace_key: request.current_user.namespace.id, continue: params)
+    # copypasted from helper
+    # params = edit_blob_fork_params(edit_path)
+    # project_forks_path(merge_request.project, namespace_key: request.current_user.namespace.id, continue: params)
   end
 
   expose :view_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
@@ -132,16 +123,4 @@ class DiffFileEntity < Grape::Entity
 
   # Used for parallel diffs
   expose :parallel_diff_lines, if: -> (diff_file, _) { diff_file.text? }
-
-  def current_user
-    request.current_user
-  end
-
-  def memoized_submodule_links(diff_file)
-    strong_memoize(:submodule_links) do
-      return [] unless diff_file.submodule?
-
-      submodule_links(diff_file.blob, diff_file.content_sha, diff_file.repository)
-    end
-  end
 end

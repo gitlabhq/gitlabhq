@@ -136,7 +136,6 @@ module API
 
       def self.preload_relation(projects_relation, options =  {})
         projects_relation.preload(:project_feature, :route)
-                         .preload(:import_state)
                          .preload(namespace: [:route, :owner],
                                   tags: :taggings)
       end
@@ -150,11 +149,11 @@ module API
           expose_url(api_v4_projects_path(id: project.id))
         end
 
-        expose :issues, if: -> (project, options) { issues_available?(project, options) } do |project|
+        expose :issues, if: -> (*args) { issues_available?(*args) } do |project|
           expose_url(api_v4_projects_issues_path(id: project.id))
         end
 
-        expose :merge_requests, if: -> (project, options) { mrs_available?(project, options) } do |project|
+        expose :merge_requests, if: -> (*args) { mrs_available?(*args) } do |project|
           expose_url(api_v4_projects_merge_requests_path(id: project.id))
         end
 
@@ -243,18 +242,13 @@ module API
       expose :requested_at
     end
 
-    class BasicGroupDetails < Grape::Entity
-      expose :id
-      expose :web_url
-      expose :name
-    end
-
-    class Group < BasicGroupDetails
-      expose :path, :description, :visibility
+    class Group < Grape::Entity
+      expose :id, :name, :path, :description, :visibility
       expose :lfs_enabled?, as: :lfs_enabled
       expose :avatar_url do |group, options|
         group.avatar_url(only_path: false)
       end
+      expose :web_url
       expose :request_access_enabled
       expose :full_name, :full_path
 
@@ -967,7 +961,6 @@ module API
     class Runner < Grape::Entity
       expose :id
       expose :description
-      expose :ip_address
       expose :active
       expose :is_shared
       expose :name
@@ -989,13 +982,6 @@ module API
           runner.projects
         else
           options[:current_user].authorized_projects.where(id: runner.projects)
-        end
-      end
-      expose :groups, with: Entities::BasicGroupDetails do |runner, options|
-        if options[:current_user].admin?
-          runner.groups
-        else
-          options[:current_user].authorized_groups.where(id: runner.groups)
         end
       end
     end

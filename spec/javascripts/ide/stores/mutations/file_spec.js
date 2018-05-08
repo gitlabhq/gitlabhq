@@ -267,23 +267,41 @@ describe('IDE store file mutations', () => {
     it('adds file into openFiles as pending', () => {
       mutations.ADD_PENDING_TAB(localState, { file: localFile });
 
-      expect(localState.openFiles.length).toBe(1);
-      expect(localState.openFiles[0].pending).toBe(true);
-      expect(localState.openFiles[0].key).toBe(`pending-${localFile.key}`);
+      expect(localState.openFiles.length).toBe(2);
+      expect(localState.openFiles[1].pending).toBe(true);
+      expect(localState.openFiles[1].key).toBe(`pending-${localFile.key}`);
     });
 
-    it('only allows 1 open pending file', () => {
-      const newFile = file('test');
-      localState.entries[newFile.path] = newFile;
+    it('updates open file to pending', () => {
+      mutations.ADD_PENDING_TAB(localState, { file: localState.openFiles[0] });
+
+      expect(localState.openFiles.length).toBe(1);
+    });
+
+    it('updates pending open file to active', () => {
+      localState.openFiles.push({
+        ...localFile,
+        pending: true,
+      });
 
       mutations.ADD_PENDING_TAB(localState, { file: localFile });
 
-      expect(localState.openFiles.length).toBe(1);
+      expect(localState.openFiles[1].pending).toBe(true);
+      expect(localState.openFiles[1].active).toBe(true);
+    });
 
-      mutations.ADD_PENDING_TAB(localState, { file: file('test') });
+    it('sets all openFiles to not active', () => {
+      mutations.ADD_PENDING_TAB(localState, { file: localFile });
 
-      expect(localState.openFiles.length).toBe(1);
-      expect(localState.openFiles[0].name).toBe('test');
+      expect(localState.openFiles.length).toBe(2);
+
+      localState.openFiles.forEach(f => {
+        if (f.pending) {
+          expect(f.active).toBe(true);
+        } else {
+          expect(f.active).toBe(false);
+        }
+      });
     });
   });
 

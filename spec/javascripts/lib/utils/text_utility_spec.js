@@ -75,14 +75,6 @@ describe('text_utility', () => {
         'This is a text with  html .',
       );
     });
-
-    it('passes through with null string input', () => {
-      expect(textUtils.stripHtml(null, ' ')).toEqual(null);
-    });
-
-    it('passes through with undefined string input', () => {
-      expect(textUtils.stripHtml(undefined, ' ')).toEqual(undefined);
-    });
   });
 
   describe('convertToCamelCase', () => {

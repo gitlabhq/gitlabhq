@@ -12,6 +12,7 @@
     components: {
       loadingIcon,
     },
+
     props: {
       retryUrl: {
         type: String,
@@ -23,11 +24,13 @@
         default: true,
       },
     },
+
     data() {
       return {
         isLoading: false,
       };
     },
+
     methods: {
       onClick() {
         this.isLoading = true;

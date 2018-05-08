@@ -1,6 +1,5 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
-import { __ } from '~/locale';
 import tooltip from '~/vue_shared/directives/tooltip';
 
 export default {
@@ -27,20 +26,10 @@ export default {
       required: false,
       default: false,
     },
-    disabled: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   computed: {
     ...mapState('commit', ['commitAction']),
     ...mapGetters('commit', ['newBranchName']),
-    tooltipTitle() {
-      return this.disabled
-        ? __('This option is disabled while you still have unstaged changes')
-        : '';
-    },
   },
   methods: {
     ...mapActions('commit', ['updateCommitAction', 'updateBranchName']),
@@ -50,28 +39,19 @@ export default {
 
 <template>
   <fieldset>
-    <label
-      v-tooltip
-      :title="tooltipTitle"
-      :class="{
-        'is-disabled': disabled
-      }"
-    >
+    <label>
       <input
         type="radio"
         name="commit-action"
         :value="value"
         @change="updateCommitAction($event.target.value)"
-        :checked="commitAction === value"
-        :disabled="disabled"
+        :checked="checked"
+        v-once
       />
       <span class="prepend-left-10">
-        <span
-          v-if="label"
-          class="ide-radio-label"
-        >
+        <template v-if="label">
           {{ label }}
-        </span>
+        </template>
         <slot v-else></slot>
       </span>
     </label>

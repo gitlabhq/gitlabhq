@@ -18,6 +18,7 @@ module IssuableActions
 
   def update
     @issuable = update_service.execute(issuable) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+
     respond_to do |format|
       format.html do
         recaptcha_check_if_spammable { render :edit }

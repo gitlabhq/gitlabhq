@@ -1,3 +1,5 @@
+/* eslint-disable no-new */
+
 import $ from 'jquery';
 import flash from './flash';
 import axios from './lib/utils/axios_utils';
@@ -60,7 +62,7 @@ export default class MiniPipelineGraph {
    */
   renderBuildsList(stageContainer, data) {
     const dropdownContainer = stageContainer.parentElement.querySelector(
-      `${this.dropdownListSelector} .js-builds-dropdown-list ul`,
+      `${this.dropdownListSelector} .js-builds-dropdown-list`,
     );
 
     dropdownContainer.innerHTML = data;

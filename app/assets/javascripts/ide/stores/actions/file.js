@@ -5,7 +5,6 @@ import service from '../../services';
 import * as types from '../mutation_types';
 import router from '../../ide_router';
 import { setPageTitle } from '../utils';
-import { viewerTypes } from '../../constants';
 
 export const closeFile = ({ commit, state, dispatch }, file) => {
   const path = file.path;
@@ -24,12 +23,13 @@ export const closeFile = ({ commit, state, dispatch }, file) => {
     const nextFileToOpen = state.openFiles[nextIndexToOpen];
 
     if (nextFileToOpen.pending) {
-      dispatch('updateViewer', viewerTypes.diff);
+      dispatch('updateViewer', 'diff');
       dispatch('openPendingTab', {
         file: nextFileToOpen,
         keyPrefix: nextFileToOpen.staged ? 'staged' : 'unstaged',
       });
     } else {
+      dispatch('updateDelayViewerUpdated', true);
       router.push(`/project${nextFileToOpen.url}`);
     }
   } else if (!state.openFiles.length) {
@@ -117,7 +117,7 @@ export const getRawFileData = ({ state, commit, dispatch }, { path, baseSha }) =
   });
 };
 
-export const changeFileContent = ({ commit, dispatch, state }, { path, content }) => {
+export const changeFileContent = ({ state, commit }, { path, content }) => {
   const file = state.entries[path];
   commit(types.UPDATE_FILE_CONTENT, { path, content });
 
@@ -128,8 +128,6 @@ export const changeFileContent = ({ commit, dispatch, state }, { path, content }
   } else if (!file.changed && indexOfChangedFile !== -1) {
     commit(types.REMOVE_FILE_FROM_CHANGED, path);
   }
-
-  dispatch('burstUnusedSeal', {}, { root: true });
 };
 
 export const setFileLanguage = ({ getters, commit }, { fileLanguage }) => {
@@ -184,7 +182,6 @@ export const stageChange = ({ commit, state }, path) => {
   const stagedFile = state.stagedFiles.find(f => f.path === path);
 
   commit(types.STAGE_CHANGE, path);
-  commit(types.SET_LAST_COMMIT_MSG, '');
 
   if (stagedFile) {
     eventHub.$emit(`editor.update.model.new.content.staged-${stagedFile.key}`, stagedFile.content);
@@ -196,7 +193,9 @@ export const unstageChange = ({ commit }, path) => {
 };
 
 export const openPendingTab = ({ commit, getters, dispatch, state }, { file, keyPrefix }) => {
-  state.openFiles.forEach(f => eventHub.$emit(`editor.update.model.dispose.${f.key}`));
+  if (getters.activeFile && getters.activeFile === file && state.viewer === 'diff') {
+    return false;
+  }
 
   commit(types.ADD_PENDING_TAB, { file, keyPrefix });
 

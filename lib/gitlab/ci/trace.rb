@@ -36,16 +36,16 @@ module Gitlab
       end
 
       def set(data)
-        write('w+b') do |stream|
+        write do |stream|
           data = job.hide_secrets(data)
           stream.set(data)
         end
       end
 
       def append(data, offset)
-        write('a+b') do |stream|
+        write do |stream|
           current_length = stream.size
-          break current_length unless current_length == offset
+          break -current_length unless current_length == offset
 
           data = job.hide_secrets(data)
           stream.append(data, offset)
@@ -54,15 +54,13 @@ module Gitlab
       end
 
       def exist?
-        trace_artifact&.exists? || job.trace_chunks.any? || current_path.present? || old_trace.present?
+        trace_artifact&.exists? || current_path.present? || old_trace.present?
       end
 
       def read
         stream = Gitlab::Ci::Trace::Stream.new do
           if trace_artifact
             trace_artifact.open
-          elsif job.trace_chunks.any?
-            Gitlab::Ci::Trace::ChunkedIO.new(job)
           elsif current_path
             File.open(current_path, "rb")
           elsif old_trace
@@ -75,15 +73,9 @@ module Gitlab
         stream&.close
       end
 
-      def write(mode)
+      def write
         stream = Gitlab::Ci::Trace::Stream.new do
-          if current_path
-            File.open(current_path, mode)
-          elsif Feature.enabled?('ci_enable_live_trace')
-            Gitlab::Ci::Trace::ChunkedIO.new(job)
-          else
-            File.open(ensure_path, mode)
-          end
+          File.open(ensure_path, "a+b")
         end
 
         yield(stream).tap do
@@ -100,7 +92,6 @@ module Gitlab
           FileUtils.rm(trace_path, force: true)
         end
 
-        job.trace_chunks.fast_destroy_all
         job.erase_old_trace!
       end
 
@@ -108,12 +99,7 @@ module Gitlab
         raise ArchiveError, 'Already archived' if trace_artifact
         raise ArchiveError, 'Job is not finished yet' unless job.complete?
 
-        if job.trace_chunks.any?
-          Gitlab::Ci::Trace::ChunkedIO.new(job) do |stream|
-            archive_stream!(stream)
-            stream.destroy!
-          end
-        elsif current_path
+        if current_path
           File.open(current_path) do |stream|
             archive_stream!(stream)
             FileUtils.rm(current_path)
@@ -130,7 +116,7 @@ module Gitlab
 
       def archive_stream!(stream)
         clone_file!(stream, JobArtifactUploader.workhorse_upload_path) do |clone_path|
-          create_build_trace!(job, clone_path)
+          create_job_trace!(job, clone_path)
         end
       end
 
@@ -146,7 +132,7 @@ module Gitlab
         end
       end
 
-      def create_build_trace!(job, path)
+      def create_job_trace!(job, path)
         File.open(path) do |stream|
           job.create_job_artifacts_trace!(
             project: job.project,

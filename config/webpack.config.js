@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
@@ -5,7 +6,9 @@ const webpack = require('webpack');
 const StatsWriterPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
+const NameAllModulesPlugin = require('name-all-modules-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 
 const ROOT_PATH = path.resolve(__dirname, '..');
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
@@ -18,12 +21,10 @@ const NO_COMPRESSION = process.env.NO_COMPRESSION;
 
 let autoEntriesCount = 0;
 let watchAutoEntries = [];
-const defaultEntries = ['./main'];
 
 function generateEntries() {
   // generate automatic entry points
   const autoEntries = {};
-  const autoEntriesMap = {};
   const pageEntries = glob.sync('pages/**/index.js', {
     cwd: path.join(ROOT_PATH, 'app/assets/javascripts'),
   });
@@ -32,38 +33,25 @@ function generateEntries() {
   function generateAutoEntries(path, prefix = '.') {
     const chunkPath = path.replace(/\/index\.js$/, '');
     const chunkName = chunkPath.replace(/\//g, '.');
-    autoEntriesMap[chunkName] = `${prefix}/${path}`;
+    autoEntries[chunkName] = `${prefix}/${path}`;
   }
 
   pageEntries.forEach(path => generateAutoEntries(path));
 
-  const autoEntryKeys = Object.keys(autoEntriesMap);
-  autoEntriesCount = autoEntryKeys.length;
-
-  // import ancestor entrypoints within their children
-  autoEntryKeys.forEach(entry => {
-    const entryPaths = [autoEntriesMap[entry]];
-    const segments = entry.split('.');
-    while (segments.pop()) {
-      const ancestor = segments.join('.');
-      if (autoEntryKeys.includes(ancestor)) {
-        entryPaths.unshift(autoEntriesMap[ancestor]);
-      }
-    }
-    autoEntries[entry] = defaultEntries.concat(entryPaths);
-  });
+  autoEntriesCount = Object.keys(autoEntries).length;
 
   const manualEntries = {
-    default: defaultEntries,
+    common: './commons/index.js',
+    main: './main.js',
     raven: './raven/index.js',
+    webpack_runtime: './webpack.js',
+    ide: './ide/index.js',
   };
 
   return Object.assign(manualEntries, autoEntries);
 }
 
 const config = {
-  mode: IS_PRODUCTION ? 'production' : 'development',
-
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
 
   entry: generateEntries,
@@ -71,36 +59,8 @@ const config = {
   output: {
     path: path.join(ROOT_PATH, 'public/assets/webpack'),
     publicPath: '/assets/webpack/',
-    filename: IS_PRODUCTION ? '[name].[chunkhash:8].bundle.js' : '[name].bundle.js',
-    chunkFilename: IS_PRODUCTION ? '[name].[chunkhash:8].chunk.js' : '[name].chunk.js',
-    globalObject: 'this', // allow HMR and web workers to play nice
-  },
-
-  optimization: {
-    nodeEnv: false,
-    runtimeChunk: 'single',
-    splitChunks: {
-      maxInitialRequests: 4,
-      cacheGroups: {
-        default: false,
-        common: () => ({
-          priority: 20,
-          name: 'main',
-          chunks: 'initial',
-          minChunks: autoEntriesCount * 0.9,
-        }),
-        vendors: {
-          priority: 10,
-          chunks: 'async',
-          test: /[\\/](node_modules|vendor[\\/]assets[\\/]javascripts)[\\/]/,
-        },
-        commons: {
-          chunks: 'all',
-          minChunks: 2,
-          reuseExistingChunk: true,
-        },
-      },
-    },
+    filename: IS_PRODUCTION ? '[name].[chunkhash].bundle.js' : '[name].bundle.js',
+    chunkFilename: IS_PRODUCTION ? '[name].[chunkhash].chunk.js' : '[name].chunk.js',
   },
 
   module: {
@@ -132,10 +92,10 @@ const config = {
           {
             loader: 'worker-loader',
             options: {
-              name: '[name].[hash:8].worker.js',
+              inline: true,
             },
           },
-          'babel-loader',
+          { loader: 'babel-loader' },
         ],
       },
       {
@@ -143,7 +103,7 @@ const config = {
         exclude: /node_modules/,
         loader: 'file-loader',
         options: {
-          name: '[name].[hash:8].[ext]',
+          name: '[name].[hash].[ext]',
         },
       },
       {
@@ -154,7 +114,7 @@ const config = {
           {
             loader: 'css-loader',
             options: {
-              name: '[name].[hash:8].[ext]',
+              name: '[name].[hash].[ext]',
             },
           },
         ],
@@ -164,7 +124,7 @@ const config = {
         include: /node_modules\/katex\/dist\/fonts/,
         loader: 'file-loader',
         options: {
-          name: '[name].[hash:8].[ext]',
+          name: '[name].[hash].[ext]',
         },
       },
       {
@@ -204,6 +164,54 @@ const config = {
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery',
+    }),
+
+    // assign deterministic module ids
+    new webpack.NamedModulesPlugin(),
+    new NameAllModulesPlugin(),
+
+    // assign deterministic chunk ids
+    new webpack.NamedChunksPlugin(chunk => {
+      if (chunk.name) {
+        return chunk.name;
+      }
+
+      const moduleNames = [];
+
+      function collectModuleNames(m) {
+        // handle ConcatenatedModule which does not have resource nor context set
+        if (m.modules) {
+          m.modules.forEach(collectModuleNames);
+          return;
+        }
+
+        const pagesBase = path.join(ROOT_PATH, 'app/assets/javascripts/pages');
+
+        if (m.resource.indexOf(pagesBase) === 0) {
+          moduleNames.push(
+            path
+              .relative(pagesBase, m.resource)
+              .replace(/\/index\.[a-z]+$/, '')
+              .replace(/\//g, '__')
+          );
+        } else {
+          moduleNames.push(path.relative(m.context, m.resource));
+        }
+      }
+
+      chunk.forEachModule(collectModuleNames);
+
+      const hash = crypto
+        .createHash('sha256')
+        .update(moduleNames.join('_'))
+        .digest('hex');
+
+      return `${moduleNames[0]}-${hash.substr(0, 6)}`;
+    }),
+
+    // create cacheable common library bundles
+    new webpack.optimize.CommonsChunkPlugin({
+      names: ['main', 'common', 'webpack_runtime'],
     }),
 
     // copy pre-compiled vendor libraries verbatim
@@ -252,6 +260,20 @@ const config = {
 
 if (IS_PRODUCTION) {
   config.devtool = 'source-map';
+  config.plugins.push(
+    new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      debug: false,
+    }),
+    new webpack.optimize.ModuleConcatenationPlugin(),
+    new webpack.optimize.UglifyJsPlugin({
+      sourceMap: true,
+    }),
+    new webpack.DefinePlugin({
+      'process.env': { NODE_ENV: JSON.stringify('production') },
+    })
+  );
 
   // compression can require a lot of compute time and is disabled in CI
   if (!NO_COMPRESSION) {
@@ -270,30 +292,29 @@ if (IS_DEV_SERVER) {
     hot: DEV_SERVER_LIVERELOAD,
     inline: DEV_SERVER_LIVERELOAD,
   };
-  config.plugins.push({
-    apply(compiler) {
-      compiler.hooks.emit.tapAsync('WatchForChangesPlugin', (compilation, callback) => {
-        const missingDeps = Array.from(compilation.missingDependencies);
-        const nodeModulesPath = path.join(ROOT_PATH, 'node_modules');
-        const hasMissingNodeModules = missingDeps.some(
-          file => file.indexOf(nodeModulesPath) !== -1
-        );
+  config.plugins.push(
+    // watch node_modules for changes if we encounter a missing module compile error
+    new WatchMissingNodeModulesPlugin(path.join(ROOT_PATH, 'node_modules')),
 
-        // watch for changes to missing node_modules
-        if (hasMissingNodeModules) compilation.contextDependencies.add(nodeModulesPath);
+    // watch for changes to our automatic entry point modules
+    {
+      apply(compiler) {
+        compiler.plugin('emit', (compilation, callback) => {
+          compilation.contextDependencies = [
+            ...compilation.contextDependencies,
+            ...watchAutoEntries,
+          ];
 
-        // watch for changes to automatic entrypoints
-        watchAutoEntries.forEach(watchPath => compilation.contextDependencies.add(watchPath));
+          // report our auto-generated bundle count
+          console.log(
+            `${autoEntriesCount} entries from '/pages' automatically added to webpack output.`
+          );
 
-        // report our auto-generated bundle count
-        console.log(
-          `${autoEntriesCount} entries from '/pages' automatically added to webpack output.`
-        );
-
-        callback();
-      });
-    },
-  });
+          callback();
+        });
+      },
+    }
+  );
   if (DEV_SERVER_LIVERELOAD) {
     config.plugins.push(new webpack.HotModuleReplacementPlugin());
   }

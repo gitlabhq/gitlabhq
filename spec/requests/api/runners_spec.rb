@@ -8,26 +8,21 @@ describe API::Runners do
   let(:project) { create(:project, creator_id: user.id) }
   let(:project2) { create(:project, creator_id: user.id) }
 
-  let(:group) { create(:group).tap { |group| group.add_owner(user) } }
-  let(:group2) { create(:group).tap { |group| group.add_owner(user) } }
+  let!(:shared_runner) { create(:ci_runner, :shared) }
+  let!(:unused_specific_runner) { create(:ci_runner) }
 
-  let!(:shared_runner) { create(:ci_runner, :shared, description: 'Shared runner') }
-  let!(:unused_project_runner) { create(:ci_runner) }
-
-  let!(:project_runner) do
-    create(:ci_runner, description: 'Project runner').tap do |runner|
+  let!(:specific_runner) do
+    create(:ci_runner).tap do |runner|
       create(:ci_runner_project, runner: runner, project: project)
     end
   end
 
   let!(:two_projects_runner) do
-    create(:ci_runner, description: 'Two projects runner').tap do |runner|
+    create(:ci_runner).tap do |runner|
       create(:ci_runner_project, runner: runner, project: project)
       create(:ci_runner_project, runner: runner, project: project2)
     end
   end
-
-  let!(:group_runner) { create(:ci_runner, description: 'Group runner', groups: [group]) }
 
   before do
     # Set project access for users
@@ -42,14 +37,9 @@ describe API::Runners do
         get api('/runners', user)
 
         shared = json_response.any? { |r| r['is_shared'] }
-        descriptions = json_response.map { |runner| runner['description'] }
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response[0]).to have_key('ip_address')
-        expect(descriptions).to contain_exactly(
-          'Project runner', 'Two projects runner'
-        )
         expect(shared).to be_falsey
       end
 
@@ -60,7 +50,6 @@ describe API::Runners do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response[0]).to have_key('ip_address')
         expect(shared).to be_falsey
       end
 
@@ -89,7 +78,6 @@ describe API::Runners do
           expect(response).to have_gitlab_http_status(200)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
-          expect(json_response[0]).to have_key('ip_address')
           expect(shared).to be_truthy
         end
       end
@@ -109,7 +97,6 @@ describe API::Runners do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response[0]).to have_key('ip_address')
         expect(shared).to be_falsey
       end
 
@@ -142,16 +129,10 @@ describe API::Runners do
 
       context 'when runner is not shared' do
         it "returns runner's details" do
-          get api("/runners/#{project_runner.id}", admin)
+          get api("/runners/#{specific_runner.id}", admin)
 
           expect(response).to have_gitlab_http_status(200)
-          expect(json_response['description']).to eq(project_runner.description)
-        end
-
-        it "returns the project's details for a project runner" do
-          get api("/runners/#{project_runner.id}", admin)
-
-          expect(json_response['projects'].first['id']).to eq(project.id)
+          expect(json_response['description']).to eq(specific_runner.description)
         end
       end
 
@@ -165,10 +146,10 @@ describe API::Runners do
     context "runner project's administrative user" do
       context 'when runner is not shared' do
         it "returns runner's details" do
-          get api("/runners/#{project_runner.id}", user)
+          get api("/runners/#{specific_runner.id}", user)
 
           expect(response).to have_gitlab_http_status(200)
-          expect(json_response['description']).to eq(project_runner.description)
+          expect(json_response['description']).to eq(specific_runner.description)
         end
       end
 
@@ -183,18 +164,18 @@ describe API::Runners do
     end
 
     context 'other authorized user' do
-      it "does not return project runner's details" do
-        get api("/runners/#{project_runner.id}", user2)
+      it "does not return runner's details" do
+        get api("/runners/#{specific_runner.id}", user2)
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
     context 'unauthorized user' do
-      it "does not return project runner's details" do
-        get api("/runners/#{project_runner.id}")
+      it "does not return runner's details" do
+        get api("/runners/#{specific_runner.id}")
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
   end
@@ -231,16 +212,16 @@ describe API::Runners do
 
       context 'when runner is not shared' do
         it 'updates runner' do
-          description = project_runner.description
-          runner_queue_value = project_runner.ensure_runner_queue_value
+          description = specific_runner.description
+          runner_queue_value = specific_runner.ensure_runner_queue_value
 
-          update_runner(project_runner.id, admin, description: 'test')
-          project_runner.reload
+          update_runner(specific_runner.id, admin, description: 'test')
+          specific_runner.reload
 
           expect(response).to have_gitlab_http_status(200)
-          expect(project_runner.description).to eq('test')
-          expect(project_runner.description).not_to eq(description)
-          expect(project_runner.ensure_runner_queue_value)
+          expect(specific_runner.description).to eq('test')
+          expect(specific_runner.description).not_to eq(description)
+          expect(specific_runner.ensure_runner_queue_value)
             .not_to eq(runner_queue_value)
         end
       end
@@ -266,29 +247,29 @@ describe API::Runners do
       end
 
       context 'when runner is not shared' do
-        it 'does not update project runner without access to it' do
-          put api("/runners/#{project_runner.id}", user2), description: 'test'
+        it 'does not update runner without access to it' do
+          put api("/runners/#{specific_runner.id}", user2), description: 'test'
 
-          expect(response).to have_http_status(403)
+          expect(response).to have_gitlab_http_status(403)
         end
 
-        it 'updates project runner with access to it' do
-          description = project_runner.description
-          put api("/runners/#{project_runner.id}", admin), description: 'test'
-          project_runner.reload
+        it 'updates runner with access to it' do
+          description = specific_runner.description
+          put api("/runners/#{specific_runner.id}", admin), description: 'test'
+          specific_runner.reload
 
           expect(response).to have_gitlab_http_status(200)
-          expect(project_runner.description).to eq('test')
-          expect(project_runner.description).not_to eq(description)
+          expect(specific_runner.description).to eq('test')
+          expect(specific_runner.description).not_to eq(description)
         end
       end
     end
 
     context 'unauthorized user' do
-      it 'does not delete project runner' do
-        put api("/runners/#{project_runner.id}")
+      it 'does not delete runner' do
+        put api("/runners/#{specific_runner.id}")
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
   end
@@ -312,17 +293,17 @@ describe API::Runners do
       context 'when runner is not shared' do
         it 'deletes unused runner' do
           expect do
-            delete api("/runners/#{unused_project_runner.id}", admin)
+            delete api("/runners/#{unused_specific_runner.id}", admin)
 
             expect(response).to have_gitlab_http_status(204)
           end.to change { Ci::Runner.specific.count }.by(-1)
         end
 
-        it 'deletes used project runner' do
+        it 'deletes used runner' do
           expect do
-            delete api("/runners/#{project_runner.id}", admin)
+            delete api("/runners/#{specific_runner.id}", admin)
 
-            expect(response).to have_http_status(204)
+            expect(response).to have_gitlab_http_status(204)
           end.to change { Ci::Runner.specific.count }.by(-1)
         end
       end
@@ -344,34 +325,34 @@ describe API::Runners do
 
       context 'when runner is not shared' do
         it 'does not delete runner without access to it' do
-          delete api("/runners/#{project_runner.id}", user2)
+          delete api("/runners/#{specific_runner.id}", user2)
           expect(response).to have_gitlab_http_status(403)
         end
 
-        it 'does not delete project runner with more than one associated project' do
+        it 'does not delete runner with more than one associated project' do
           delete api("/runners/#{two_projects_runner.id}", user)
           expect(response).to have_gitlab_http_status(403)
         end
 
-        it 'deletes project runner for one owned project' do
+        it 'deletes runner for one owned project' do
           expect do
-            delete api("/runners/#{project_runner.id}", user)
+            delete api("/runners/#{specific_runner.id}", user)
 
-            expect(response).to have_http_status(204)
+            expect(response).to have_gitlab_http_status(204)
           end.to change { Ci::Runner.specific.count }.by(-1)
         end
 
         it_behaves_like '412 response' do
-          let(:request) { api("/runners/#{project_runner.id}", user) }
+          let(:request) { api("/runners/#{specific_runner.id}", user) }
         end
       end
     end
 
     context 'unauthorized user' do
-      it 'does not delete project runner' do
-        delete api("/runners/#{project_runner.id}")
+      it 'does not delete runner' do
+        delete api("/runners/#{specific_runner.id}")
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
   end
@@ -380,8 +361,8 @@ describe API::Runners do
     set(:job_1) { create(:ci_build) }
     let!(:job_2) { create(:ci_build, :running, runner: shared_runner, project: project) }
     let!(:job_3) { create(:ci_build, :failed, runner: shared_runner, project: project) }
-    let!(:job_4) { create(:ci_build, :running, runner: project_runner, project: project) }
-    let!(:job_5) { create(:ci_build, :failed, runner: project_runner, project: project) }
+    let!(:job_4) { create(:ci_build, :running, runner: specific_runner, project: project) }
+    let!(:job_5) { create(:ci_build, :failed, runner: specific_runner, project: project) }
 
     context 'admin user' do
       context 'when runner exists' do
@@ -399,7 +380,7 @@ describe API::Runners do
 
         context 'when runner is specific' do
           it 'return jobs' do
-            get api("/runners/#{project_runner.id}/jobs", admin)
+            get api("/runners/#{specific_runner.id}/jobs", admin)
 
             expect(response).to have_gitlab_http_status(200)
             expect(response).to include_pagination_headers
@@ -411,7 +392,7 @@ describe API::Runners do
 
         context 'when valid status is provided' do
           it 'return filtered jobs' do
-            get api("/runners/#{project_runner.id}/jobs?status=failed", admin)
+            get api("/runners/#{specific_runner.id}/jobs?status=failed", admin)
 
             expect(response).to have_gitlab_http_status(200)
             expect(response).to include_pagination_headers
@@ -424,7 +405,7 @@ describe API::Runners do
 
         context 'when invalid status is provided' do
           it 'return 400' do
-            get api("/runners/#{project_runner.id}/jobs?status=non-existing", admin)
+            get api("/runners/#{specific_runner.id}/jobs?status=non-existing", admin)
 
             expect(response).to have_gitlab_http_status(400)
           end
@@ -452,7 +433,7 @@ describe API::Runners do
 
         context 'when runner is specific' do
           it 'return jobs' do
-            get api("/runners/#{project_runner.id}/jobs", user)
+            get api("/runners/#{specific_runner.id}/jobs", user)
 
             expect(response).to have_gitlab_http_status(200)
             expect(response).to include_pagination_headers
@@ -464,7 +445,7 @@ describe API::Runners do
 
         context 'when valid status is provided' do
           it 'return filtered jobs' do
-            get api("/runners/#{project_runner.id}/jobs?status=failed", user)
+            get api("/runners/#{specific_runner.id}/jobs?status=failed", user)
 
             expect(response).to have_gitlab_http_status(200)
             expect(response).to include_pagination_headers
@@ -477,7 +458,7 @@ describe API::Runners do
 
         context 'when invalid status is provided' do
           it 'return 400' do
-            get api("/runners/#{project_runner.id}/jobs?status=non-existing", user)
+            get api("/runners/#{specific_runner.id}/jobs?status=non-existing", user)
 
             expect(response).to have_gitlab_http_status(400)
           end
@@ -495,7 +476,7 @@ describe API::Runners do
 
     context 'other authorized user' do
       it 'does not return jobs' do
-        get api("/runners/#{project_runner.id}/jobs", user2)
+        get api("/runners/#{specific_runner.id}/jobs", user2)
 
         expect(response).to have_gitlab_http_status(403)
       end
@@ -503,7 +484,7 @@ describe API::Runners do
 
     context 'unauthorized user' do
       it 'does not return jobs' do
-        get api("/runners/#{project_runner.id}/jobs")
+        get api("/runners/#{specific_runner.id}/jobs")
 
         expect(response).to have_gitlab_http_status(401)
       end
@@ -519,7 +500,6 @@ describe API::Runners do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response[0]).to have_key('ip_address')
         expect(shared).to be_truthy
       end
     end
@@ -543,7 +523,7 @@ describe API::Runners do
 
   describe 'POST /projects/:id/runners' do
     context 'authorized user' do
-      let(:project_runner2) do
+      let(:specific_runner2) do
         create(:ci_runner).tap do |runner|
           create(:ci_runner_project, runner: runner, project: project2)
         end
@@ -551,23 +531,23 @@ describe API::Runners do
 
       it 'enables specific runner' do
         expect do
-          post api("/projects/#{project.id}/runners", user), runner_id: project_runner2.id
+          post api("/projects/#{project.id}/runners", user), runner_id: specific_runner2.id
         end.to change { project.runners.count }.by(+1)
         expect(response).to have_gitlab_http_status(201)
       end
 
       it 'avoids changes when enabling already enabled runner' do
         expect do
-          post api("/projects/#{project.id}/runners", user), runner_id: project_runner.id
+          post api("/projects/#{project.id}/runners", user), runner_id: specific_runner.id
         end.to change { project.runners.count }.by(0)
         expect(response).to have_gitlab_http_status(409)
       end
 
       it 'does not enable locked runner' do
-        project_runner2.update(locked: true)
+        specific_runner2.update(locked: true)
 
         expect do
-          post api("/projects/#{project.id}/runners", user), runner_id: project_runner2.id
+          post api("/projects/#{project.id}/runners", user), runner_id: specific_runner2.id
         end.to change { project.runners.count }.by(0)
 
         expect(response).to have_gitlab_http_status(403)
@@ -579,16 +559,10 @@ describe API::Runners do
         expect(response).to have_gitlab_http_status(403)
       end
 
-      it 'does not enable group runner' do
-        post api("/projects/#{project.id}/runners", user), runner_id: group_runner.id
-
-        expect(response).to have_http_status(403)
-      end
-
       context 'user is admin' do
         it 'enables any specific runner' do
           expect do
-            post api("/projects/#{project.id}/runners", admin), runner_id: unused_project_runner.id
+            post api("/projects/#{project.id}/runners", admin), runner_id: unused_specific_runner.id
           end.to change { project.runners.count }.by(+1)
           expect(response).to have_gitlab_http_status(201)
         end
@@ -596,7 +570,7 @@ describe API::Runners do
 
       context 'user is not admin' do
         it 'does not enable runner without access to' do
-          post api("/projects/#{project.id}/runners", user), runner_id: unused_project_runner.id
+          post api("/projects/#{project.id}/runners", user), runner_id: unused_specific_runner.id
 
           expect(response).to have_gitlab_http_status(403)
         end
@@ -645,7 +619,7 @@ describe API::Runners do
       context 'when runner have one associated projects' do
         it "does not disable project's runner" do
           expect do
-            delete api("/projects/#{project.id}/runners/#{project_runner.id}", user)
+            delete api("/projects/#{project.id}/runners/#{specific_runner.id}", user)
           end.to change { project.runners.count }.by(0)
           expect(response).to have_gitlab_http_status(403)
         end
@@ -660,7 +634,7 @@ describe API::Runners do
 
     context 'authorized user without permissions' do
       it "does not disable project's runner" do
-        delete api("/projects/#{project.id}/runners/#{project_runner.id}", user2)
+        delete api("/projects/#{project.id}/runners/#{specific_runner.id}", user2)
 
         expect(response).to have_gitlab_http_status(403)
       end
@@ -668,7 +642,7 @@ describe API::Runners do
 
     context 'unauthorized user' do
       it "does not disable project's runner" do
-        delete api("/projects/#{project.id}/runners/#{project_runner.id}")
+        delete api("/projects/#{project.id}/runners/#{specific_runner.id}")
 
         expect(response).to have_gitlab_http_status(401)
       end

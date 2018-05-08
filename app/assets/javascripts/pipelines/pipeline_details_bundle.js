@@ -29,10 +29,10 @@ export default () => {
       };
     },
     created() {
-      eventHub.$on('postAction', this.postAction);
+      eventHub.$on('graphAction', this.postAction);
     },
     beforeDestroy() {
-      eventHub.$off('postAction', this.postAction);
+      eventHub.$off('graphAction', this.postAction);
     },
     methods: {
       postAction(action) {

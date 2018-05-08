@@ -10,36 +10,28 @@ describe UserPolicy do
     it { is_expected.to be_allowed(:read_user) }
   end
 
-  shared_examples 'changing a user' do |ability|
+  describe "destroying a user" do
     context "when a regular user tries to destroy another regular user" do
-      it { is_expected.not_to be_allowed(ability) }
+      it { is_expected.not_to be_allowed(:destroy_user) }
     end
 
     context "when a regular user tries to destroy themselves" do
       let(:current_user) { user }
 
-      it { is_expected.to be_allowed(ability) }
+      it { is_expected.to be_allowed(:destroy_user) }
     end
 
     context "when an admin user tries to destroy a regular user" do
       let(:current_user) { create(:user, :admin) }
 
-      it { is_expected.to be_allowed(ability) }
+      it { is_expected.to be_allowed(:destroy_user) }
     end
 
     context "when an admin user tries to destroy a ghost user" do
       let(:current_user) { create(:user, :admin) }
       let(:user) { create(:user, :ghost) }
 
-      it { is_expected.not_to be_allowed(ability) }
+      it { is_expected.not_to be_allowed(:destroy_user) }
     end
-  end
-
-  describe "destroying a user" do
-    it_behaves_like 'changing a user', :destroy_user
-  end
-
-  describe "updating a user" do
-    it_behaves_like 'changing a user', :update_user
   end
 end

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::DataBuilder::WikiPage do
-  set(:project) { create(:project, :repository, :wiki_repo) }
+  let(:project) { create(:project, :repository) }
   let(:wiki_page) { create(:wiki_page, wiki: project.wiki) }
   let(:user) { create(:user) }
 

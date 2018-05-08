@@ -2,7 +2,6 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import flash from '~/flash';
 import store from './stores';
-import { activityBarViews } from './constants';
 
 Vue.use(VueRouter);
 
@@ -64,8 +63,6 @@ router.beforeEach((to, from, next) => {
         const fullProjectId = `${to.params.namespace}/${to.params.project}`;
 
         if (to.params.branch) {
-          store.dispatch('setCurrentBranchId', to.params.branch);
-
           store.dispatch('getBranchData', {
             projectId: fullProjectId,
             branchId: to.params.branch,
@@ -102,14 +99,14 @@ router.beforeEach((to, from, next) => {
               throw e;
             });
         } else if (to.params.mrid) {
+          store.dispatch('updateViewer', 'mrdiff');
+
           store
             .dispatch('getMergeRequestData', {
               projectId: fullProjectId,
               mergeRequestId: to.params.mrid,
             })
             .then(mr => {
-              store.dispatch('updateActivityBarView', activityBarViews.review);
-
               store.dispatch('getBranchData', {
                 projectId: fullProjectId,
                 branchId: mr.source_branch,

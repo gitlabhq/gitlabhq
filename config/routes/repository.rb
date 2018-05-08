@@ -18,7 +18,6 @@ scope format: false do
   resources :compare, only: [:index, :create] do
     collection do
       get :diff_for_path
-      get :signatures
     end
   end
 

@@ -22,8 +22,7 @@ class StuckImportJobsWorker
   end
 
   def mark_projects_with_jid_as_failed!
-    # TODO: Rollback this change to use SQL through #pluck
-    jids_and_ids = enqueued_projects_with_jid.map { |project| [project.import_jid, project.id] }.to_h
+    jids_and_ids = enqueued_projects_with_jid.pluck(:import_jid, :id).to_h
 
     # Find the jobs that aren't currently running or that exceeded the threshold.
     completed_jids = Gitlab::SidekiqStatus.completed_jids(jids_and_ids.keys)
@@ -43,15 +42,15 @@ class StuckImportJobsWorker
   end
 
   def enqueued_projects
-    Project.joins_import_state.where("(import_state.status = 'scheduled' OR import_state.status = 'started') OR (projects.import_status = 'scheduled' OR projects.import_status = 'started')")
+    Project.with_import_status(:scheduled, :started)
   end
 
   def enqueued_projects_with_jid
-    enqueued_projects.where.not("import_state.jid IS NULL AND projects.import_jid IS NULL")
+    enqueued_projects.where.not(import_jid: nil)
   end
 
   def enqueued_projects_without_jid
-    enqueued_projects.where("import_state.jid IS NULL AND projects.import_jid IS NULL")
+    enqueued_projects.where(import_jid: nil)
   end
 
   def error_message

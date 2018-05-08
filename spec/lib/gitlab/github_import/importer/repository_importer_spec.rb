@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe Gitlab::GithubImport::Importer::RepositoryImporter do
   let(:repository) { double(:repository) }
-  let(:import_state) { double(:import_state) }
   let(:client) { double(:client) }
 
   let(:project) do
@@ -13,8 +12,7 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
       repository_storage: 'foo',
       disk_path: 'foo',
       repository: repository,
-      create_wiki: true,
-      import_state: import_state
+      create_wiki: true
     )
   end
 

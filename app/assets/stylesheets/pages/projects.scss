@@ -205,6 +205,7 @@
 .project-repo-buttons,
 .group-buttons {
   .btn {
+    @include btn-gray;
     padding: 3px 10px;
 
     &:last-child {
@@ -293,7 +294,7 @@
     }
 
     .count {
-      @include btn-white;
+      @include btn-gray;
       display: inline-block;
       background: $white-light;
       border-radius: 2px;
@@ -353,48 +354,30 @@
   min-width: 200px;
 }
 
-.deploy-keys {
-  .scrolling-tabs-container {
-    position: relative;
+.deploy-key-content {
+  @media (min-width: $screen-sm-min) {
+    float: left;
+
+    &:last-child {
+      float: right;
+    }
   }
 }
 
-.deploy-key {
-  // Ensure that the fingerprint does not overflow on small screens
-  .fingerprint {
-    word-break: break-all;
-    white-space: normal;
-  }
-
-  .deploy-project-label,
-  .key-created-at {
-    svg {
-      vertical-align: text-top;
-    }
-  }
-
-  .btn svg {
-    vertical-align: top;
-  }
-
-  .key-created-at {
-    line-height: unset;
+.deploy-key-projects {
+  @media (min-width: $screen-sm-min) {
+    line-height: 42px;
   }
 }
 
-.deploy-project-list {
-  margin-bottom: -$gl-padding-4;
+a.deploy-project-label {
+  padding: 5px;
+  margin-right: 5px;
+  color: $gl-text-color;
+  background-color: $row-hover;
 
-  a.deploy-project-label {
-    margin-right: $gl-padding-4;
-    margin-bottom: $gl-padding-4;
-    color: $gl-text-color-secondary;
-    background-color: $theme-gray-100;
-    line-height: $gl-btn-line-height;
-
-    &:hover {
-      color: $gl-link-color;
-    }
+  &:hover {
+    color: $gl-link-color;
   }
 }
 

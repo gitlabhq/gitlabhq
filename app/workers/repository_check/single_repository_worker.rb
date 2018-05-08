@@ -5,34 +5,27 @@ module RepositoryCheck
 
     def perform(project_id)
       project = Project.find(project_id)
-      healthy = project_healthy?(project)
-
-      update_repository_check_status(project, healthy)
-    end
-
-    private
-
-    def update_repository_check_status(project, healthy)
       project.update_columns(
-        last_repository_check_failed: !healthy,
+        last_repository_check_failed: !check(project),
         last_repository_check_at: Time.now
       )
     end
 
-    def project_healthy?(project)
-      repo_healthy?(project) && wiki_repo_healthy?(project)
-    end
+    private
 
-    def repo_healthy?(project)
-      return true unless has_changes?(project)
+    def check(project)
+      if has_pushes?(project) && !git_fsck(project.repository)
+        false
+      elsif project.wiki_enabled?
+        # Historically some projects never had their wiki repos initialized;
+        # this happens on project creation now. Let's initialize an empty repo
+        # if it is not already there.
+        project.create_wiki
 
-      git_fsck(project.repository)
-    end
-
-    def wiki_repo_healthy?(project)
-      return true unless has_wiki_changes?(project)
-
-      git_fsck(project.wiki.repository)
+        git_fsck(project.wiki.repository)
+      else
+        true
+      end
     end
 
     def git_fsck(repository)
@@ -46,19 +39,8 @@ module RepositoryCheck
       false
     end
 
-    def has_changes?(project)
+    def has_pushes?(project)
       Project.with_push.exists?(project.id)
-    end
-
-    def has_wiki_changes?(project)
-      return false unless project.wiki_enabled?
-
-      # Historically some projects never had their wiki repos initialized;
-      # this happens on project creation now. Let's initialize an empty repo
-      # if it is not already there.
-      return false unless project.create_wiki
-
-      has_changes?(project)
     end
   end
 end

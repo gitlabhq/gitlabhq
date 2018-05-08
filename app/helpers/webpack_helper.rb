@@ -1,12 +1,12 @@
-require 'gitlab/webpack/manifest'
+require 'webpack/rails/manifest'
 
 module WebpackHelper
-  def webpack_bundle_tag(bundle)
-    javascript_include_tag(*webpack_entrypoint_paths(bundle))
+  def webpack_bundle_tag(bundle, force_same_domain: false)
+    javascript_include_tag(*gitlab_webpack_asset_paths(bundle, force_same_domain: force_same_domain))
   end
 
   def webpack_controller_bundle_tags
-    chunks = []
+    bundles = []
 
     action = case controller.action_name
              when 'create' then 'new'
@@ -16,44 +16,37 @@ module WebpackHelper
 
     route = [*controller.controller_path.split('/'), action].compact
 
-    until chunks.any? || route.empty?
-      entrypoint = "pages.#{route.join('.')}"
+    until route.empty?
       begin
-        chunks = webpack_entrypoint_paths(entrypoint, extension: 'js')
-      rescue Gitlab::Webpack::Manifest::AssetMissingError
+        asset_paths = gitlab_webpack_asset_paths("pages.#{route.join('.')}", extension: 'js')
+        bundles.unshift(*asset_paths)
+      rescue Webpack::Rails::Manifest::EntryPointMissingError
         # no bundle exists for this path
       end
+
       route.pop
     end
 
-    if chunks.empty?
-      chunks = webpack_entrypoint_paths("default", extension: 'js')
-    end
-
-    javascript_include_tag(*chunks)
+    javascript_include_tag(*bundles)
   end
 
-  def webpack_entrypoint_paths(source, extension: nil, exclude_duplicates: true)
+  # override webpack-rails gem helper until changes can make it upstream
+  def gitlab_webpack_asset_paths(source, extension: nil, force_same_domain: false)
     return "" unless source.present?
 
-    paths = Gitlab::Webpack::Manifest.entrypoint_paths(source)
+    paths = Webpack::Rails::Manifest.asset_paths(source)
     if extension
       paths.select! { |p| p.ends_with? ".#{extension}" }
     end
 
-    force_host = webpack_public_host
-    if force_host
-      paths.map! { |p| "#{force_host}#{p}" }
+    unless force_same_domain
+      force_host = webpack_public_host
+      if force_host
+        paths.map! { |p| "#{force_host}#{p}" }
+      end
     end
 
-    if exclude_duplicates
-      @used_paths ||= []
-      new_paths = paths - @used_paths
-      @used_paths += new_paths
-      new_paths
-    else
-      paths
-    end
+    paths
   end
 
   def webpack_public_host

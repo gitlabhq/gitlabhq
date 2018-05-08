@@ -3,7 +3,6 @@
 import { mapState, mapGetters, mapActions } from 'vuex';
 import flash from '~/flash';
 import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer.vue';
-import { activityBarViews, viewerTypes } from '../constants';
 import monacoLoader from '../monaco_loader';
 import Editor from '../lib/editor';
 import IdeFileButtons from './ide_file_buttons.vue';
@@ -20,14 +19,8 @@ export default {
     },
   },
   computed: {
-    ...mapState(['rightPanelCollapsed', 'viewer', 'panelResizing', 'currentActivityView']),
-    ...mapGetters([
-      'currentMergeRequest',
-      'getStagedFile',
-      'isEditModeActive',
-      'isCommitModeActive',
-      'isReviewModeActive',
-    ]),
+    ...mapState(['rightPanelCollapsed', 'viewer', 'delayViewerUpdated', 'panelResizing']),
+    ...mapGetters(['currentMergeRequest', 'getStagedFile']),
     shouldHideEditor() {
       return this.file && this.file.binary && !this.file.content;
     },
@@ -47,21 +40,6 @@ export default {
       // Compare key to allow for files opened in review mode to be cached differently
       if (newVal.key !== this.file.key) {
         this.initMonaco();
-
-        if (this.currentActivityView !== activityBarViews.edit) {
-          this.setFileViewMode({
-            file: this.file,
-            viewMode: 'edit',
-          });
-        }
-      }
-    },
-    currentActivityView() {
-      if (this.currentActivityView !== activityBarViews.edit) {
-        this.setFileViewMode({
-          file: this.file,
-          viewMode: 'edit',
-        });
       }
     },
     rightPanelCollapsed() {
@@ -99,6 +77,7 @@ export default {
       'setFileViewMode',
       'setFileEOL',
       'updateViewer',
+      'updateDelayViewerUpdated',
     ]),
     initMonaco() {
       if (this.shouldHideEditor) return;
@@ -110,6 +89,14 @@ export default {
         baseSha: this.currentMergeRequest ? this.currentMergeRequest.baseCommitSha : '',
       })
         .then(() => {
+          const viewerPromise = this.delayViewerUpdated
+            ? this.updateViewer(this.file.pending ? 'diff' : 'editor')
+            : Promise.resolve();
+
+          return viewerPromise;
+        })
+        .then(() => {
+          this.updateDelayViewerUpdated(false);
           this.createEditorInstance();
         })
         .catch(err => {
@@ -121,10 +108,10 @@ export default {
       this.editor.dispose();
 
       this.$nextTick(() => {
-        if (this.viewer === viewerTypes.edit) {
+        if (this.viewer === 'editor') {
           this.editor.createInstance(this.$refs.editor);
         } else {
-          this.editor.createDiffInstance(this.$refs.editor, !this.isReviewModeActive);
+          this.editor.createDiffInstance(this.$refs.editor);
         }
 
         this.setupEditor();
@@ -140,7 +127,7 @@ export default {
         this.file.staged && this.file.key.indexOf('unstaged-') === 0 ? head : null,
       );
 
-      if (this.viewer === viewerTypes.mr) {
+      if (this.viewer === 'mrdiff') {
         this.editor.attachMergeRequestModel(this.model);
       } else {
         this.editor.attachModel(this.model);
@@ -181,7 +168,6 @@ export default {
       });
     },
   },
-  viewerTypes,
 };
 </script>
 
@@ -190,17 +176,16 @@ export default {
     id="ide"
     class="blob-viewer-container blob-editor-container"
   >
-    <div class="ide-mode-tabs clearfix" >
+    <div class="ide-mode-tabs clearfix">
       <ul
         class="nav-links pull-left"
-        v-if="!shouldHideEditor && isEditModeActive"
-      >
+        v-if="!shouldHideEditor">
         <li :class="editTabCSS">
           <a
             href="javascript:void(0);"
             role="button"
             @click.prevent="setFileViewMode({ file, viewMode: 'edit' })">
-            <template v-if="viewer === $options.viewerTypes.edit">
+            <template v-if="viewer === 'editor'">
               {{ __('Edit') }}
             </template>
             <template v-else>
@@ -227,9 +212,6 @@ export default {
       v-show="!shouldHideEditor && file.viewMode === 'edit'"
       ref="editor"
       class="multi-file-editor-holder"
-      :class="{
-        'is-readonly': isCommitModeActive,
-      }"
     >
     </div>
     <content-viewer

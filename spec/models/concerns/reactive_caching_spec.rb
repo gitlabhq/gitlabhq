@@ -29,6 +29,12 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
     end
   end
 
+  let(:now) { Time.now.utc }
+
+  around do |example|
+    Timecop.freeze(now) { example.run }
+  end
+
   let(:calculation) { -> { 2 + 2 } }
   let(:cache_key) { "foo:666" }
   let(:instance) { CacheTest.new(666, &calculation) }
@@ -43,15 +49,13 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
     context 'when cache is empty' do
       it { is_expected.to be_nil }
 
-      it 'enqueues a background worker to bootstrap the cache' do
+      it 'queues a background worker' do
         expect(ReactiveCachingWorker).to receive(:perform_async).with(CacheTest, 666)
 
         go!
       end
 
       it 'updates the cache lifespan' do
-        expect(reactive_cache_alive?(instance)).to be_falsy
-
         go!
 
         expect(reactive_cache_alive?(instance)).to be_truthy
@@ -64,18 +68,6 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
       end
 
       it { is_expected.to eq(2) }
-
-      it 'does not enqueue a background worker' do
-        expect(ReactiveCachingWorker).not_to receive(:perform_async)
-
-        go!
-      end
-
-      it 'updates the cache lifespan' do
-        expect(Rails.cache).to receive(:write).with(alive_reactive_cache_key(instance), true, expires_in: anything)
-
-        go!
-      end
 
       context 'and expired' do
         before do

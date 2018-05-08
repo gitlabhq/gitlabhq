@@ -2,7 +2,7 @@ FactoryBot.define do
   factory :project_wiki do
     skip_create
 
-    association :project, :wiki_repo
+    project
     user { project.creator }
     initialize_with { new(project, user) }
   end

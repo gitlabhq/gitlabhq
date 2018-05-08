@@ -43,7 +43,7 @@ export default {
       return `${this.changedIcon}-solid`;
     },
     changedIconClass() {
-      return `multi-${this.changedIcon} pull-left`;
+      return `multi-${this.changedIcon} prepend-left-5 pull-left`;
     },
     tooltipTitle() {
       if (!this.showTooltip) return undefined;
@@ -79,7 +79,13 @@ export default {
     class="ide-file-changed-icon"
   >
     <icon
-      v-if="file.changed || file.tempFile || file.staged"
+      v-if="file.staged && showStagedIcon"
+      :name="stagedIcon"
+      :size="12"
+      :css-classes="changedIconClass"
+    />
+    <icon
+      v-if="file.changed || file.tempFile || (file.staged && !showStagedIcon)"
       :name="changedIcon"
       :size="12"
       :css-classes="changedIconClass"

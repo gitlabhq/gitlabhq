@@ -17,10 +17,6 @@ module Gitlab
         @changed
       end
 
-      def failed?
-        error_message.present?
-      end
-
       def error_message
         identity.validate
 

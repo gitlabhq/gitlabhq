@@ -1,14 +1,18 @@
 module Ci
   class UpdateBuildQueueService
     def execute(build)
-      tick_for(build, build.project.all_runners)
-    end
+      build.project.runners.each do |runner|
+        if runner.can_pick?(build)
+          runner.tick_runner_queue
+        end
+      end
 
-    private
+      return unless build.project.shared_runners_enabled?
 
-    def tick_for(build, runners)
-      runners.each do |runner|
-        runner.pick_build!(build)
+      Ci::Runner.shared.each do |runner|
+        if runner.can_pick?(build)
+          runner.tick_runner_queue
+        end
       end
     end
   end

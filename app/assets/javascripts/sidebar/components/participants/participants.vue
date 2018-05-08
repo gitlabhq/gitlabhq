@@ -70,9 +70,6 @@
       toggleMoreParticipants() {
         this.isShowingMoreParticipants = !this.isShowingMoreParticipants;
       },
-      onClickCollapsedIcon() {
-        this.$emit('toggleSidebar');
-      },
     },
   };
 </script>
@@ -85,7 +82,6 @@
       data-container="body"
       data-placement="left"
       :title="participantLabel"
-      @click="onClickCollapsedIcon"
     >
       <i
         class="fa fa-users"

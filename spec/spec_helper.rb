@@ -86,7 +86,6 @@ RSpec.configure do |config|
   config.include WaitForRequests, :js
   config.include LiveDebugger, :js
   config.include MigrationsHelpers, :migration
-  config.include RedisHelpers
 
   if ENV['CI']
     # This includes the first try, i.e. tests will be run 4 times before failing.
@@ -147,27 +146,21 @@ RSpec.configure do |config|
   end
 
   config.around(:each, :clean_gitlab_redis_cache) do |example|
-    redis_cache_cleanup!
+    Gitlab::Redis::Cache.with(&:flushall)
 
     example.run
 
-    redis_cache_cleanup!
+    Gitlab::Redis::Cache.with(&:flushall)
   end
 
   config.around(:each, :clean_gitlab_redis_shared_state) do |example|
-    redis_shared_state_cleanup!
+    Gitlab::Redis::SharedState.with(&:flushall)
+    Sidekiq.redis(&:flushall)
 
     example.run
 
-    redis_shared_state_cleanup!
-  end
-
-  config.around(:each, :clean_gitlab_redis_queues) do |example|
-    redis_queues_cleanup!
-
-    example.run
-
-    redis_queues_cleanup!
+    Gitlab::Redis::SharedState.with(&:flushall)
+    Sidekiq.redis(&:flushall)
   end
 
   # The :each scope runs "inside" the example, so this hook ensures the DB is in the

@@ -12,14 +12,16 @@ function fatalError(message) {
   process.exit(1);
 }
 
-// disable problematic options
-webpackConfig.entry = undefined;
-webpackConfig.mode = 'development';
-webpackConfig.optimization.runtimeChunk = false;
-webpackConfig.optimization.splitChunks = false;
-
-// use quicker sourcemap option
-webpackConfig.devtool = 'cheap-inline-source-map';
+// remove problematic plugins
+if (webpackConfig.plugins) {
+  webpackConfig.plugins = webpackConfig.plugins.filter(function(plugin) {
+    return !(
+      plugin instanceof webpack.optimize.CommonsChunkPlugin ||
+      plugin instanceof webpack.optimize.ModuleConcatenationPlugin ||
+      plugin instanceof webpack.DefinePlugin
+    );
+  });
+}
 
 const specFilters = argumentsParser
   .option(
@@ -74,6 +76,9 @@ if (specFilters.length) {
     )
   );
 }
+
+webpackConfig.entry = undefined;
+webpackConfig.devtool = 'cheap-inline-source-map';
 
 // Karma configuration
 module.exports = function(config) {

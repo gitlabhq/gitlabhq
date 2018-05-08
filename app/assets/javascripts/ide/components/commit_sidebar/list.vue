@@ -1,14 +1,16 @@
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapState, mapGetters } from 'vuex';
 import { __, sprintf } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import ListItem from './list_item.vue';
+import ListCollapsed from './list_collapsed.vue';
 
 export default {
   components: {
     Icon,
     ListItem,
+    ListCollapsed,
   },
   directives: {
     tooltip,
@@ -21,6 +23,11 @@ export default {
     fileList: {
       type: Array,
       required: true,
+    },
+    showToggle: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
     iconName: {
       type: String,
@@ -44,12 +51,9 @@ export default {
       default: false,
     },
   },
-  data() {
-    return {
-      showActionButton: false,
-    };
-  },
   computed: {
+    ...mapState(['rightPanelCollapsed']),
+    ...mapGetters(['collapseButtonIcon', 'collapseButtonTooltip']),
     titleText() {
       return sprintf(__('%{title} changes'), {
         title: this.title,
@@ -57,12 +61,9 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['stageAllChanges', 'unstageAllChanges']),
+    ...mapActions(['toggleRightPanelCollapsed', 'stageAllChanges', 'unstageAllChanges']),
     actionBtnClicked() {
       this[this.action]();
-    },
-    setShowActionButton(show) {
-      this.showActionButton = show;
     },
   },
 };
@@ -71,14 +72,19 @@ export default {
 <template>
   <div
     class="ide-commit-list-container"
+    :class="{
+      'is-collapsed': rightPanelCollapsed,
+    }"
   >
     <header
       class="multi-file-commit-panel-header"
-      @mouseenter="setShowActionButton(true)"
-      @mouseleave="setShowActionButton(false)"
     >
       <div
+        v-if="!rightPanelCollapsed"
         class="multi-file-commit-panel-header-title"
+        :class="{
+          'append-right-10': showToggle,
+        }"
       >
         <icon
           v-once
@@ -86,14 +92,7 @@ export default {
           :size="18"
         />
         {{ titleText }}
-        <span
-          v-show="!showActionButton"
-          class="ide-commit-file-count"
-        >
-          {{ fileList.length }}
-        </span>
         <button
-          v-show="showActionButton"
           type="button"
           class="btn btn-blank btn-link ide-staged-action-btn"
           @click="actionBtnClicked"
@@ -101,28 +100,52 @@ export default {
           {{ actionBtnText }}
         </button>
       </div>
-    </header>
-    <ul
-      v-if="fileList.length"
-      class="multi-file-commit-list list-unstyled append-bottom-0"
-    >
-      <li
-        v-for="file in fileList"
-        :key="file.key"
+      <button
+        v-if="showToggle"
+        v-tooltip
+        :title="collapseButtonTooltip"
+        data-container="body"
+        data-placement="left"
+        type="button"
+        class="btn btn-transparent multi-file-commit-panel-collapse-btn"
+        :aria-label="__('Toggle sidebar')"
+        @click.stop="toggleRightPanelCollapsed"
       >
-        <list-item
-          :file="file"
-          :action-component="itemActionComponent"
-          :key-prefix="title"
-          :staged-list="stagedList"
+        <icon
+          :name="collapseButtonIcon"
+          :size="18"
         />
-      </li>
-    </ul>
-    <p
-      v-else
-      class="multi-file-commit-list help-block"
-    >
-      {{ __('No changes') }}
-    </p>
+      </button>
+    </header>
+    <list-collapsed
+      v-if="rightPanelCollapsed"
+      :files="fileList"
+      :icon-name="iconName"
+      :title="title"
+    />
+    <template v-else>
+      <ul
+        v-if="fileList.length"
+        class="multi-file-commit-list list-unstyled append-bottom-0"
+      >
+        <li
+          v-for="file in fileList"
+          :key="file.key"
+        >
+          <list-item
+            :file="file"
+            :action-component="itemActionComponent"
+            :key-prefix="title"
+            :staged-list="stagedList"
+          />
+        </li>
+      </ul>
+      <p
+        v-else
+        class="multi-file-commit-list help-block"
+      >
+        {{ __('No changes') }}
+      </p>
+    </template>
   </div>
 </template>

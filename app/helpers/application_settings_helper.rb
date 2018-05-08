@@ -248,10 +248,7 @@ module ApplicationSettingsHelper
       :user_default_external,
       :user_oauth_applications,
       :version_check_enabled,
-      :allow_local_requests_from_hooks_and_services,
-      :enforce_terms,
-      :terms,
-      :mirror_available
+      :allow_local_requests_from_hooks_and_services
     ]
   end
 end

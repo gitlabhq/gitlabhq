@@ -17,20 +17,16 @@ class SentNotificationsController < ApplicationController
     flash[:notice] = "You have been unsubscribed from this thread."
 
     if current_user
-      redirect_to noteable_path(noteable)
+      case noteable
+      when Issue
+        redirect_to issue_path(noteable)
+      when MergeRequest
+        redirect_to merge_request_path(noteable)
+      else
+        redirect_to root_path
+      end
     else
       redirect_to new_user_session_path
-    end
-  end
-
-  def noteable_path(noteable)
-    case noteable
-    when Issue
-      issue_path(noteable)
-    when MergeRequest
-      merge_request_path(noteable)
-    else
-      root_path
     end
   end
 end

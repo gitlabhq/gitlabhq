@@ -145,7 +145,7 @@ describe API::ProjectImport do
 
   describe 'GET /projects/:id/import' do
     it 'returns the import status' do
-      project = create(:project, :import_started)
+      project = create(:project, import_status: 'started')
       project.add_master(user)
 
       get api("/projects/#{project.id}/import", user)
@@ -155,9 +155,8 @@ describe API::ProjectImport do
     end
 
     it 'returns the import status and the error if failed' do
-      project = create(:project, :import_failed)
+      project = create(:project, import_status: 'failed', import_error: 'error')
       project.add_master(user)
-      project.import_state.update_attributes(last_error: 'error')
 
       get api("/projects/#{project.id}/import", user)
 

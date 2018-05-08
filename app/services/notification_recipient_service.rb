@@ -45,10 +45,6 @@ module NotificationRecipientService
         target.project
       end
 
-      def group
-        project&.group || target.try(:group)
-      end
-
       def recipients
         @recipients ||= []
       end
@@ -71,7 +67,6 @@ module NotificationRecipientService
           user, type,
           reason: reason,
           project: project,
-          group: group,
           custom_action: custom_action,
           target: target,
           acting_user: acting_user
@@ -112,11 +107,11 @@ module NotificationRecipientService
 
         # Users with a notification setting on group or project
         user_ids += user_ids_notifiable_on(project, :custom)
-        user_ids += user_ids_notifiable_on(group, :custom)
+        user_ids += user_ids_notifiable_on(project.group, :custom)
 
         # Users with global level custom
         user_ids_with_project_level_global = user_ids_notifiable_on(project, :global)
-        user_ids_with_group_level_global   = user_ids_notifiable_on(group, :global)
+        user_ids_with_group_level_global   = user_ids_notifiable_on(project.group, :global)
 
         global_users_ids = user_ids_with_project_level_global.concat(user_ids_with_group_level_global)
         user_ids += user_ids_with_global_level_custom(global_users_ids, custom_action)
@@ -126,10 +121,6 @@ module NotificationRecipientService
 
       def add_project_watchers
         add_recipients(project_watchers, :watch, nil)
-      end
-
-      def add_group_watchers
-        add_recipients(group_watchers, :watch, nil)
       end
 
       # Get project users with WATCH notification level
@@ -145,14 +136,6 @@ module NotificationRecipientService
         user_ids_with_group_setting = select_group_members_ids(project.group, project_members_ids, user_ids_with_group_global, user_ids)
 
         user_scope.where(id: user_ids_with_project_setting.concat(user_ids_with_group_setting).uniq)
-      end
-
-      def group_watchers
-        user_ids_with_group_global = user_ids_notifiable_on(group, :global)
-        user_ids = user_ids_with_global_level_watch(user_ids_with_group_global)
-        user_ids_with_group_setting = select_group_members_ids(group, [], user_ids_with_group_global, user_ids)
-
-        user_scope.where(id: user_ids_with_group_setting)
       end
 
       def add_subscribed_users
@@ -298,14 +281,6 @@ module NotificationRecipientService
         note.project
       end
 
-      def group
-        if note.for_project_noteable?
-          project.group
-        else
-          target.try(:group)
-        end
-      end
-
       def build!
         # Add all users participating in the thread (author, assignee, comment authors)
         add_participants(note.author)
@@ -314,11 +289,11 @@ module NotificationRecipientService
         if note.for_project_noteable?
           # Merge project watchers
           add_project_watchers
-        else
-          add_group_watchers
+
+          # Merge project with custom notification
+          add_custom_notifications
         end
 
-        add_custom_notifications
         add_subscribed_users
       end
 

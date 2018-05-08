@@ -46,14 +46,15 @@ class Import::FogbugzController < Import::BaseController
 
     @repos = client.repos
 
-    @already_added_projects = find_already_added_projects('fogbugz')
+    @already_added_projects = current_user.created_projects.where(import_type: 'fogbugz')
     already_added_projects_names = @already_added_projects.pluck(:import_source)
 
     @repos.reject! { |repo| already_added_projects_names.include? repo.name }
   end
 
   def jobs
-    render json: find_jobs('fogbugz')
+    jobs = current_user.created_projects.where(import_type: 'fogbugz').to_json(only: [:id, :import_status])
+    render json: jobs
   end
 
   def create

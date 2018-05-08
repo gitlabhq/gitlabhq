@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe GlobalPolicy do
-  include TermsHelper
-
   let(:current_user) { create(:user) }
   let(:user) { create(:user) }
 

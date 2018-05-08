@@ -3,7 +3,7 @@ export default class DeployKeysStore {
     this.keys = {};
   }
 
-  isEnabled(id) {
-    return this.keys.enabled_keys.some(key => key.id === id);
+  findEnabledKey(id) {
+    return this.keys.enabled_keys.find(key => key.id === id);
   }
 }

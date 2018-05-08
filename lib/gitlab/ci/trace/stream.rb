@@ -39,8 +39,6 @@ module Gitlab
         end
 
         def append(data, offset)
-          data = data.force_encoding(Encoding::BINARY)
-
           stream.truncate(offset)
           stream.seek(0, IO::SEEK_END)
           stream.write(data)
@@ -48,11 +46,8 @@ module Gitlab
         end
 
         def set(data)
-          data = data.force_encoding(Encoding::BINARY)
-
-          stream.seek(0, IO::SEEK_SET)
+          truncate(0)
           stream.write(data)
-          stream.truncate(data.bytesize)
           stream.flush()
         end
 
@@ -132,11 +127,11 @@ module Gitlab
             buf += debris
             debris, *lines = buf.each_line.to_a
             lines.reverse_each do |line|
-              yield(line.force_encoding(Encoding.default_external))
+              yield(line.force_encoding('UTF-8'))
             end
           end
 
-          yield(debris.force_encoding(Encoding.default_external)) unless debris.empty?
+          yield(debris.force_encoding('UTF-8')) unless debris.empty?
         end
 
         def read_backward(length)

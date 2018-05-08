@@ -1,5 +1,5 @@
 <script>
-  import Icon from '~/vue_shared/components/icon.vue';
+  import playIconSvg from 'icons/_icon_play.svg';
   import eventHub from '../event_hub';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
   import tooltip from '../../vue_shared/directives/tooltip';
@@ -8,9 +8,9 @@
     directives: {
       tooltip,
     },
+
     components: {
       loadingIcon,
-      Icon,
     },
     props: {
       actions: {
@@ -19,16 +19,20 @@
         default: () => [],
       },
     },
+
     data() {
       return {
+        playIconSvg,
         isLoading: false,
       };
     },
+
     computed: {
       title() {
         return 'Deploy to...';
       },
     },
+
     methods: {
       onClickAction(endpoint) {
         this.isLoading = true;
@@ -61,10 +65,7 @@
       :disabled="isLoading"
     >
       <span>
-        <icon
-          name="play"
-          :size="12"
-        />
+        <span v-html="playIconSvg"></span>
         <i
           class="fa fa-caret-down"
           aria-hidden="true"
@@ -85,10 +86,7 @@
           :class="{ disabled: isActionDisabled(action) }"
           :disabled="isActionDisabled(action)"
         >
-          <icon
-            name="play"
-            :size="12"
-          />
+          <span v-html="playIconSvg"></span>
           <span>
             {{ action.name }}
           </span>

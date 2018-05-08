@@ -1,15 +1,18 @@
+import Compare from '~/compare';
 import MergeRequest from '~/merge_request';
 import initPipelines from '~/commit/pipelines/pipelines_bundle';
-import initCompare from './compare';
 
 document.addEventListener('DOMContentLoaded', () => {
   const mrNewCompareNode = document.querySelector('.js-merge-request-new-compare');
   if (mrNewCompareNode) {
-    initCompare(mrNewCompareNode);
+    new Compare({ // eslint-disable-line no-new
+      targetProjectUrl: mrNewCompareNode.dataset.targetProjectUrl,
+      sourceBranchUrl: mrNewCompareNode.dataset.sourceBranchUrl,
+      targetBranchUrl: mrNewCompareNode.dataset.targetBranchUrl,
+    });
   } else {
     const mrNewSubmitNode = document.querySelector('.js-merge-request-new-submit');
-    // eslint-disable-next-line no-new
-    new MergeRequest({
+    new MergeRequest({ // eslint-disable-line no-new
       action: mrNewSubmitNode.dataset.mrSubmitAction,
     });
     initPipelines();

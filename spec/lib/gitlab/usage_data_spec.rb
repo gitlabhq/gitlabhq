@@ -96,7 +96,6 @@ describe Gitlab::UsageData do
         pages_domains
         protected_branches
         releases
-        remote_mirrors
         snippets
         todos
         uploads

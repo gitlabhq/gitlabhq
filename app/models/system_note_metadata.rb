@@ -17,11 +17,7 @@ class SystemNoteMetadata < ActiveRecord::Base
   ].freeze
 
   validates :note, presence: true
-  validates :action, inclusion: { in: :icon_types }, allow_nil: true
+  validates :action, inclusion: ICON_TYPES, allow_nil: true
 
   belongs_to :note
-
-  def icon_types
-    ICON_TYPES
-  end
 end

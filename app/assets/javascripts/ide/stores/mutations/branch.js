@@ -23,9 +23,4 @@ export default {
       workingReference: reference,
     });
   },
-  [types.SET_BRANCH_COMMIT](state, { projectId, branchId, commit }) {
-    Object.assign(state.projects[projectId].branches[branchId], {
-      commit,
-    });
-  },
 };
