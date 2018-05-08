@@ -99,6 +99,7 @@ export default {
     >
       <div v-if="diffFiles.length">
         <compare-versions
+          v-if="mergeRequestDiffs.length > 1"
           :merge-request-diffs="mergeRequestDiffs"
         />
         <changed-files
