@@ -5,11 +5,8 @@ module Projects
 
       before_action :authorize_admin_project!
       before_action :remote_mirror, only: [:show]
-<<<<<<< HEAD
 
       prepend ::EE::Projects::Settings::RepositoryController
-=======
->>>>>>> upstream/master
 
       def show
         render_show
