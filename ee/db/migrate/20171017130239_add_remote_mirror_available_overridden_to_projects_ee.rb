@@ -1,4 +1,4 @@
-class AddRemoteMirrorAvailableOverriddenToProjects < ActiveRecord::Migration
+class AddRemoteMirrorAvailableOverriddenToProjectsEE < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
@@ -6,6 +6,9 @@ class AddRemoteMirrorAvailableOverriddenToProjects < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
+    # When moving from CE to EE, this column may already exist
+    return if column_exists?(:projects, :remote_mirror_available_overridden)
+
     add_column(:projects, :remote_mirror_available_overridden, :boolean)
   end
 
