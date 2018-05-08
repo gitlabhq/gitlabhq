@@ -11,7 +11,7 @@ Ideally, the GitLab Runner should not be installed on the same machine as GitLab
 Read the [requirements documentation](../../install/requirements.md#gitlab-runner)
 for more information.
 
-## Shared vs specific Runners
+## Shared, specific and group Runners
 
 After [installing the Runner][install], you can either register it as shared or
 specific. You can only register a shared Runner if you have admin access to
@@ -32,6 +32,9 @@ are:
   Runners. For example, if you want to deploy a certain project, you can setup
   a specific Runner to have the right credentials for this. The [usage of tags](#using-tags)
   may be useful in this case. Specific Runners process jobs using a [FIFO] queue.
+- **Group Runners** are useful when you have multiple projects under one group
+  and would like all projects to have access to a set of runners. Group Runners
+  process jobs using a [FIFO] queue.
 
 A Runner that is specific only runs for the specified project(s). A shared Runner
 can run jobs for every project that has enabled the option **Allow shared Runners**
@@ -75,6 +78,14 @@ Registering a specific Runner can be done in two ways:
 
 To create a specific Runner without having admin rights to the GitLab instance,
 visit the project you want to make the Runner work for in GitLab:
+
+1. Go to **Settings > CI/CD** to obtain the token
+1. [Register the Runner][register]
+
+## Registering a group Runner
+
+Creating a group Runner requires Master permissions for the group. To create a
+group Runner visit the group you want to make the Runner work for in GitLab:
 
 1. Go to **Settings > CI/CD** to obtain the token
 1. [Register the Runner][register]
