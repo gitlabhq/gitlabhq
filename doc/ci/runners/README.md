@@ -66,7 +66,7 @@ Runners to disabled.
 
 ## Registering a specific Runner
 
-Registering a specific can be done in two ways:
+Registering a specific Runner can be done in two ways:
 
 1. Creating a Runner with the project registration token
 1. Converting a shared Runner into a specific Runner (one-way, admin only)
