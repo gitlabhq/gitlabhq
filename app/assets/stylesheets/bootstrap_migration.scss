@@ -36,6 +36,10 @@ html [type="button"],
   cursor: pointer;
 }
 
+a {
+  color: $gl-link-color;
+}
+
 .form-group.row .col-form-label {
   // Bootstrap 4 aligns labels to the left
   // for horizontal forms
