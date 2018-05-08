@@ -84,7 +84,6 @@
 
     .ide-new-btn {
       display: none;
-      margin-right: -8px;
     }
 
     &:hover,
@@ -116,7 +115,7 @@
   display: flex;
   overflow: visible;
   align-items: center;
-  padding: 6px 12px;
+  padding: 6px $gl-padding;
 }
 
 .multi-file-loading-container {
@@ -980,8 +979,8 @@
   display: flex;
   align-items: center;
   padding: 10px 0;
-  margin-left: 10px;
-  margin-right: 10px;
+  margin-left: $gl-padding;
+  margin-right: $gl-padding;
   border-bottom: 1px solid $white-dark;
 
   .ide-new-btn {
