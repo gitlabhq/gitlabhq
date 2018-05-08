@@ -1,6 +1,6 @@
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import ReadyToMergeState from '~/vue_merge_request_widget/components/states/ready_to_merge.vue';
-import SquashBeforeMerge from './mr_widget_squash_before_merge';
+import SquashBeforeMerge from './mr_widget_squash_before_merge.vue';
 
 export default {
   extends: ReadyToMergeState,

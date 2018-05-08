@@ -9,7 +9,7 @@ module QA
                 element :head_mismatch, "The source branch HEAD has recently changed."
               end
 
-              view 'ee/app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_squash_before_merge.js' do
+              view 'ee/app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_squash_before_merge.vue' do
                 element :squash_checkbox
               end
             end
