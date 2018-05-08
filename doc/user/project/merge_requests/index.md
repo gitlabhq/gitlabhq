@@ -38,6 +38,7 @@ With **[GitLab Enterprise Edition][ee]**, you can also:
 - Analyze the impact of your changes with [Code Quality reports](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html) **[STARTER]**
 - Analyze your source code for vulnerabilities with [Static Application Security Testing](#static-application-security-testing) **[ULTIMATE]**
 - Analyze your dependencies for vulnerabilities with [Dependency Scanning](#dependency-scanning) **[ULTIMATE]**
+- Manage the licenses of your dependencies with [License Management](#license-management) **[ULTIMATE]**
 - Analyze your Docker images for vulnerabilities with [Container Scanning](#container-scanning) **[ULTIMATE]**
 - Analyze your running web applications for vulnerabilities with [Dynamic Application Security Testing](#dynamic-application-security-testing) **[ULTIMATE]**
 - Determine the performance impact of changes with [Browser Performance Testing](#browser-performance-testing) **[PREMIUM]**
@@ -49,6 +50,7 @@ A. Consider you are a software developer working in a team:
 1. You checkout a new branch, and submit your changes through a merge request
 1. You gather feedback from your team
 1. You work on the implementation optimizing code with [Code Quality reports](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html) **[STARTER]**
+1. You avoid using dependencies whose license is not compatible with your project with [License Management reports](https://docs.gitlab.com/ee/user/project/merge_requests/license-management.html) **[ULTIMATE]**
 1. You build and test your changes with GitLab CI/CD
 1. You request the [approval](#merge-request-approvals) from your manager
 1. Your manager pushes a commit with his final review, [approves the merge request](#merge-request-approvals), and set it to [merge when pipeline succeeds](#merge-when-pipeline-succeeds)
@@ -258,6 +260,17 @@ Going a step further, GitLab can show the vulnerability report right in the
 merge request widget area.
 
 [Read more about Dependency Scanning reports.](dependency_scanning.md)
+
+## License Management **[ULTIMATE]**
+
+> Introduced in [GitLab Ultimate][products] 10.8.
+
+If you are using [GitLab CI/CD][ci], you can search your dependencies for their 
+licenses using License Management.
+Going a step further, GitLab can show the licenses report right in the
+merge request widget area.
+
+[Read more about License Management reports.](license_management.md)
 
 ## Container Scanning **[ULTIMATE]**
 

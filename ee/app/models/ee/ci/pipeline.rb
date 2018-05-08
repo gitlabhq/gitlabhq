@@ -28,6 +28,10 @@ module EE
         @dependency_scanning_artifact ||= artifacts.dependency_scanning.find(&:has_dependency_scanning_json?)
       end
 
+      def license_management_artifact
+        @license_management_artifact ||= artifacts.license_management.find(&:has_license_management_json?)
+      end
+
       def sast_container_artifact
         @sast_container_artifact ||= artifacts.sast_container.find(&:has_sast_container_json?)
       end
@@ -46,6 +50,10 @@ module EE
 
       def has_dependency_scanning_data?
         dependency_scanning_artifact&.success?
+      end
+
+      def has_license_management_data?
+        license_management_artifact&.success?
       end
 
       def has_sast_container_data?
@@ -72,6 +80,11 @@ module EE
       def expose_dependency_scanning_data?
         project.feature_available?(:dependency_scanning) &&
           has_dependency_scanning_data?
+      end
+
+      def expose_license_management_data?
+        project.feature_available?(:license_management) &&
+          has_license_management_data?
       end
 
       def expose_sast_container_data?
