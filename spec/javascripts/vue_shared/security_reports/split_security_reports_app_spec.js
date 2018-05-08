@@ -34,6 +34,7 @@ describe('Slipt security reports app', () => {
     beforeEach(() => {
       mock.onGet('sast_head.json').reply(200, sastIssues);
       mock.onGet('dss_head.json').reply(200, sastIssues);
+      mock.onGet('vulnerability_feedback_path.json').reply(200, []);
 
       vm = mountComponent(Component, {
         headBlobPath: 'path',
@@ -42,6 +43,9 @@ describe('Slipt security reports app', () => {
         dependencyScanningHeadPath: 'dss_head.json',
         sastHelpPath: 'path',
         dependencyScanningHelpPath: 'path',
+        vulnerabilityFeedbackPath: 'vulnerability_feedback_path.json',
+        vulnerabilityFeedbackHelpPath: 'path',
+        pipelineId: 123,
       });
     });
 
@@ -57,6 +61,7 @@ describe('Slipt security reports app', () => {
     beforeEach(() => {
       mock.onGet('sast_head.json').reply(200, sastIssues);
       mock.onGet('dss_head.json').reply(200, sastIssues);
+      mock.onGet('vulnerability_feedback_path.json').reply(200, []);
 
       vm = mountComponent(Component, {
         headBlobPath: 'path',
@@ -65,6 +70,9 @@ describe('Slipt security reports app', () => {
         dependencyScanningHeadPath: 'dss_head.json',
         sastHelpPath: 'path',
         dependencyScanningHelpPath: 'path',
+        vulnerabilityFeedbackPath: 'vulnerability_feedback_path.json',
+        vulnerabilityFeedbackHelpPath: 'path',
+        pipelineId: 123,
       });
     });
 
@@ -86,6 +94,7 @@ describe('Slipt security reports app', () => {
     beforeEach(() => {
       mock.onGet('sast_head.json').reply(500);
       mock.onGet('dss_head.json').reply(500);
+      mock.onGet('vulnerability_feedback_path.json').reply(500, []);
 
       vm = mountComponent(Component, {
         headBlobPath: 'path',
@@ -94,6 +103,9 @@ describe('Slipt security reports app', () => {
         dependencyScanningHeadPath: 'dss_head.json',
         sastHelpPath: 'path',
         dependencyScanningHelpPath: 'path',
+        vulnerabilityFeedbackPath: 'vulnerability_feedback_path.json',
+        vulnerabilityFeedbackHelpPath: 'path',
+        pipelineId: 123,
       });
     });
 

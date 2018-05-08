@@ -385,6 +385,9 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
+      ## EE-specific
+      resources :vulnerability_feedback, only: [:index, :create, :destroy], constraints: { id: /\d+/ }
+
       resources :issues, concerns: :awardable, constraints: { id: /\d+/ } do
         member do
           post :toggle_subscription

@@ -5,6 +5,7 @@ import createFlash from '~/flash';
 import { SAST } from './store/constants';
 import store from './store';
 import ReportSection from './components/report_section.vue';
+import IssueModal from './components/modal.vue';
 import mixin from './mixins/security_report_mixin';
 import reportsMixin from './mixins/reports_mixin';
 
@@ -12,6 +13,7 @@ export default {
   store,
   components: {
     ReportSection,
+    IssueModal,
   },
   mixins: [mixin, reportsMixin],
   props: {
@@ -39,6 +41,21 @@ export default {
       required: false,
       default: null,
     },
+    vulnerabilityFeedbackPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    vulnerabilityFeedbackHelpPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    pipelineId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
   },
   sast: SAST,
   computed: {
@@ -58,6 +75,9 @@ export default {
   created() {
     // update the store with the received props
     this.setHeadBlobPath(this.headBlobPath);
+    this.setVulnerabilityFeedbackPath(this.vulnerabilityFeedbackPath);
+    this.setVulnerabilityFeedbackHelpPath(this.vulnerabilityFeedbackHelpPath);
+    this.setPipelineId(this.pipelineId);
 
     if (this.sastHeadPath) {
       this.setSastHeadPath(this.sastHeadPath);
@@ -89,6 +109,9 @@ export default {
       'setDependencyScanningHeadPath',
       'fetchSastReports',
       'fetchDependencyScanningReports',
+      'setVulnerabilityFeedbackPath',
+      'setVulnerabilityFeedbackHelpPath',
+      'setPipelineId',
     ]),
 
     summaryTextBuilder(type, issuesCount = 0) {
@@ -142,5 +165,7 @@ export default {
       :has-issues="dependencyScanning.newIssues.length > 0"
       :popover-options="dependencyScanningPopover"
     />
+
+    <issue-modal />
   </div>
 </template>

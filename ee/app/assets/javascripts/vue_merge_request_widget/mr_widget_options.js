@@ -236,6 +236,9 @@ export default {
         :dependency-scanning-head-path="mr.dependencyScanning.head_path"
         :dependency-scanning-base-path="mr.dependencyScanning.base_path"
         :dependency-scanning-help-path="mr.dependencyScanningHelp"
+        :vulnerability-feedback-path="mr.vulnerabilityFeedbackPath"
+        :vulnerability-feedback-help-path="mr.vulnerabilityFeedbackHelpPath"
+        :pipeline-id="mr.securityReportsPipelineId"
       />
       <div class="mr-widget-section">
         <component

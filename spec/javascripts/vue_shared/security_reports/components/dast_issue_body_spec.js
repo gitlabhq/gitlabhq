@@ -63,22 +63,8 @@ describe('dast issue body', () => {
       });
     });
 
-    it('renders issue name', () => {
+    it('renders button with issue name', () => {
       expect(vm.$el.textContent.trim()).toContain(dastIssue.name);
-    });
-
-    it('renders button to open modal box', () => {
-      const button = vm.$el.querySelector('.js-modal-dast');
-      expect(button.getAttribute('data-toggle')).toEqual('modal');
-      expect(button.getAttribute('data-target')).toEqual('#modal-mrwidget-issue');
-    });
-
-    it('emits event when button is clicked', () => {
-      spyOn(vm, '$emit');
-
-      vm.$el.querySelector('.js-modal-dast').click();
-
-      expect(vm.$emit).toHaveBeenCalledWith('openDastModal', dastIssue, 1);
     });
   });
 });

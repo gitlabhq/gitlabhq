@@ -1,8 +1,5 @@
 <script>
-import $ from 'jquery';
 import Icon from '~/vue_shared/components/icon.vue';
-import Modal from '~/vue_shared/components/gl_modal.vue';
-import ExpandButton from '~/vue_shared/components/expand_button.vue';
 import PerformanceIssue from 'ee/vue_merge_request_widget/components/performance_issue_body.vue';
 import CodequalityIssue from 'ee/vue_merge_request_widget/components/codequality_issue_body.vue';
 import SastIssue from './sast_issue_body.vue';
@@ -11,20 +8,10 @@ import DastIssue from './dast_issue_body.vue';
 
 import { SAST, DAST, SAST_CONTAINER } from '../store/constants';
 
-const modalDefaultData = {
-  modalId: 'modal-mrwidget-issue',
-  modalDesc: '',
-  modalTitle: '',
-  modalInstances: [],
-  modalTargetId: '#modal-mrwidget-issue',
-};
-
 export default {
   name: 'ReportIssues',
   components: {
-    Modal,
     Icon,
-    ExpandButton,
     SastIssue,
     SastContainerIssue,
     DastIssue,
@@ -46,9 +33,6 @@ export default {
       type: String,
       required: true,
     },
-  },
-  data() {
-    return modalDefaultData;
   },
   computed: {
     iconName() {
@@ -85,37 +69,6 @@ export default {
       return this.type === DAST;
     },
   },
-  mounted() {
-    $(this.$refs.modal).on('hidden.bs.modal', () => {
-      this.clearModalData();
-    });
-  },
-  methods: {
-    getmodalId(index) {
-      return `modal-mrwidget-issue-${index}`;
-    },
-    modalIdTarget(index) {
-      return `#${this.getmodalId(index)}`;
-    },
-    openDastModal(issue, index) {
-      this.modalId = this.getmodalId(index);
-      this.modalTitle = `${issue.priority}: ${issue.name}`;
-      this.modalTargetId = `#${this.getmodalId(index)}`;
-      this.modalInstances = issue.instances;
-      this.modalDesc = issue.parsedDescription;
-    },
-    /**
-     * Because of https://vuejs.org/v2/guide/list.html#Caveats
-     * we need to clear the instances to make sure everything is properly reset.
-     */
-    clearModalData() {
-      this.modalId = modalDefaultData.modalId;
-      this.modalDesc = modalDefaultData.modalDesc;
-      this.modalTitle = modalDefaultData.modalTitle;
-      this.modalInstances = modalDefaultData.modalInstances;
-      this.modalTargetId = modalDefaultData.modalTargetId;
-    },
-  },
 };
 </script>
 <template>
@@ -123,6 +76,7 @@ export default {
     <ul class="report-block-list">
       <li
         class="report-block-list-issue"
+        :class="{ 'is-dismissed': issue.isDismissed }"
         v-for="(issue, index) in issues"
         :key="index"
       >
@@ -149,8 +103,6 @@ export default {
           v-else-if="isTypeDast"
           :issue="issue"
           :issue-index="index"
-          :modal-target-id="modalTargetId"
-          @openDastModal="openDastModal"
         />
 
         <sast-container-issue
@@ -170,63 +122,5 @@ export default {
         />
       </li>
     </ul>
-
-    <modal
-      v-if="isTypeDast"
-      :id="modalId"
-      :header-title-text="modalTitle"
-      ref="modal"
-      class="modal-security-report-dast"
-    >
-
-      <slot>
-        {{ modalDesc }}
-
-        <h5 class="prepend-top-20">
-          {{ s__('ciReport|Instances') }}
-        </h5>
-
-        <ul
-          v-if="modalInstances"
-          class="report-block-list"
-        >
-          <li
-            v-for="(instance, i) in modalInstances"
-            :key="i"
-            class="report-block-list-issue"
-          >
-            <div class="report-block-list-icon append-right-5 failed">
-              <icon
-                name="status_failed_borderless"
-                :size="32"
-              />
-            </div>
-            <div class="report-block-list-issue-description prepend-top-5 append-bottom-5">
-              <div class="report-block-list-issue-description-text append-right-5">
-                {{ instance.method }}
-              </div>
-              <div class="report-block-list-issue-description-link">
-                <a
-                  :href="instance.uri"
-                  target="_blank"
-                  rel="noopener noreferrer nofollow"
-                  class="break-link"
-                >
-                  {{ instance.uri }}
-                </a>
-              </div>
-              <expand-button v-if="instance.evidence">
-                <pre
-                  slot="expanded"
-                  class="block report-block-dast-code prepend-top-10 report-block-issue-code"
-                >{{ instance.evidence }}</pre>
-              </expand-button>
-            </div>
-          </li>
-        </ul>
-      </slot>
-      <div slot="footer">
-      </div>
-    </modal>
   </div>
 </template>

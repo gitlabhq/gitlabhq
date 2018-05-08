@@ -98,4 +98,14 @@ describe MergeRequestWidgetEntity do
     expect(subject.as_json[:dast]).to include(:head_path)
     expect(subject.as_json[:dast]).to include(:base_path)
   end
+
+  it 'has vulnerability feedbacks path' do
+    expect(subject.as_json).to include(:vulnerability_feedback_path)
+  end
+
+  it 'has pipeline id' do
+    allow(merge_request).to receive(:head_pipeline).and_return(pipeline)
+
+    expect(subject.as_json).to include(:pipeline_id)
+  end
 end

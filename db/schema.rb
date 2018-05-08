@@ -2678,6 +2678,23 @@ ActiveRecord::Schema.define(version: 20180503193953) do
   add_index "users_star_projects", ["project_id"], name: "index_users_star_projects_on_project_id", using: :btree
   add_index "users_star_projects", ["user_id", "project_id"], name: "index_users_star_projects_on_user_id_and_project_id", unique: true, using: :btree
 
+  create_table "vulnerability_feedback", force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.integer "feedback_type", limit: 2, null: false
+    t.integer "category", limit: 2, null: false
+    t.integer "project_id", null: false
+    t.integer "author_id", null: false
+    t.integer "pipeline_id"
+    t.integer "issue_id"
+    t.string "project_fingerprint", limit: 40, null: false
+  end
+
+  add_index "vulnerability_feedback", ["author_id"], name: "index_vulnerability_feedback_on_author_id", using: :btree
+  add_index "vulnerability_feedback", ["issue_id"], name: "index_vulnerability_feedback_on_issue_id", using: :btree
+  add_index "vulnerability_feedback", ["pipeline_id"], name: "index_vulnerability_feedback_on_pipeline_id", using: :btree
+  add_index "vulnerability_feedback", ["project_id", "category", "feedback_type", "project_fingerprint"], name: "vulnerability_feedback_unique_idx", unique: true, using: :btree
+
   create_table "web_hook_logs", force: :cascade do |t|
     t.integer "web_hook_id", null: false
     t.string "trigger"
@@ -2930,6 +2947,10 @@ ActiveRecord::Schema.define(version: 20180503193953) do
   add_foreign_key "user_synced_attributes_metadata", "users", on_delete: :cascade
   add_foreign_key "users", "application_setting_terms", column: "accepted_term_id", name: "fk_789cd90b35", on_delete: :cascade
   add_foreign_key "users_star_projects", "projects", name: "fk_22cd27ddfc", on_delete: :cascade
+  add_foreign_key "vulnerability_feedback", "ci_pipelines", column: "pipeline_id", on_delete: :nullify
+  add_foreign_key "vulnerability_feedback", "issues", on_delete: :nullify
+  add_foreign_key "vulnerability_feedback", "projects", on_delete: :cascade
+  add_foreign_key "vulnerability_feedback", "users", column: "author_id", on_delete: :cascade
   add_foreign_key "web_hook_logs", "web_hooks", on_delete: :cascade
   add_foreign_key "web_hooks", "projects", name: "fk_0c8ca6d9d1", on_delete: :cascade
 end

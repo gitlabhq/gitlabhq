@@ -3,10 +3,12 @@
 import * as types from './mutation_types';
 import {
   parseSastIssues,
+  parseDependencyScanningIssues,
   filterByKey,
   parseSastContainer,
   parseDastIssues,
   getUnapprovedVulnerabilities,
+  findIssueIndex,
 } from './utils';
 
 export default {
@@ -16,6 +18,18 @@ export default {
 
   [types.SET_BASE_BLOB_PATH](state, path) {
     state.blobPath.base = path;
+  },
+
+  [types.SET_VULNERABILITY_FEEDBACK_PATH](state, path) {
+    state.vulnerabilityFeedbackPath = path;
+  },
+
+  [types.SET_VULNERABILITY_FEEDBACK_HELP_PATH](state, path) {
+    state.vulnerabilityFeedbackHelpPath = path;
+  },
+
+  [types.SET_PIPELINE_ID](state, id) {
+    state.pipelineId = id;
   },
 
   // SAST
@@ -49,8 +63,8 @@ export default {
   [types.RECEIVE_SAST_REPORTS](state, reports) {
     if (reports.base && reports.head) {
       const filterKey = 'cve';
-      const parsedHead = parseSastIssues(reports.head, state.blobPath.head);
-      const parsedBase = parseSastIssues(reports.base, state.blobPath.base);
+      const parsedHead = parseSastIssues(reports.head, reports.enrichData, state.blobPath.head);
+      const parsedBase = parseSastIssues(reports.base, reports.enrichData, state.blobPath.base);
 
       const newIssues = filterByKey(parsedHead, parsedBase, filterKey);
       const resolvedIssues = filterByKey(parsedBase, parsedHead, filterKey);
@@ -63,7 +77,7 @@ export default {
       state.summaryCounts.added += newIssues.length;
       state.summaryCounts.fixed += resolvedIssues.length;
     } else if (reports.head && !reports.base) {
-      const newIssues = parseSastIssues(reports.head, state.blobPath.head);
+      const newIssues = parseSastIssues(reports.head, reports.enrichData, state.blobPath.head);
 
       state.sast.newIssues = newIssues;
       state.sast.isLoading = false;
@@ -95,11 +109,11 @@ export default {
   [types.RECEIVE_SAST_CONTAINER_REPORTS](state, reports) {
     if (reports.base && reports.head) {
       const headIssues = getUnapprovedVulnerabilities(
-        parseSastContainer(reports.head.vulnerabilities),
+        parseSastContainer(reports.head.vulnerabilities, reports.enrichData),
         reports.head.unapproved,
       );
       const baseIssues = getUnapprovedVulnerabilities(
-        parseSastContainer(reports.base.vulnerabilities),
+        parseSastContainer(reports.base.vulnerabilities, reports.enrichData),
         reports.base.unapproved,
       );
       const filterKey = 'vulnerability';
@@ -114,7 +128,7 @@ export default {
       state.summaryCounts.fixed += resolvedIssues.length;
     } else if (reports.head && !reports.base) {
       const newIssues = getUnapprovedVulnerabilities(
-        parseSastContainer(reports.head.vulnerabilities),
+        parseSastContainer(reports.head.vulnerabilities, reports.enrichData),
         reports.head.unapproved,
       );
 
@@ -145,8 +159,8 @@ export default {
 
   [types.RECEIVE_DAST_REPORTS](state, reports) {
     if (reports.head && reports.base) {
-      const headIssues = parseDastIssues(reports.head.site.alerts);
-      const baseIssues = parseDastIssues(reports.base.site.alerts);
+      const headIssues = parseDastIssues(reports.head.site.alerts, reports.enrichData);
+      const baseIssues = parseDastIssues(reports.base.site.alerts, reports.enrichData);
       const filterKey = 'pluginid';
       const newIssues = filterByKey(headIssues, baseIssues, filterKey);
       const resolvedIssues = filterByKey(baseIssues, headIssues, filterKey);
@@ -157,7 +171,7 @@ export default {
       state.summaryCounts.added += newIssues.length;
       state.summaryCounts.fixed += resolvedIssues.length;
     } else if (reports.head && !reports.base) {
-      const newIssues = parseDastIssues(reports.head.site.alerts);
+      const newIssues = parseDastIssues(reports.head.site.alerts, reports.enrichData);
 
       state.dast.newIssues = newIssues;
       state.dast.isLoading = false;
@@ -202,8 +216,10 @@ export default {
   [types.RECEIVE_DEPENDENCY_SCANNING_REPORTS](state, reports) {
     if (reports.base && reports.head) {
       const filterKey = 'cve';
-      const parsedHead = parseSastIssues(reports.head, state.blobPath.head);
-      const parsedBase = parseSastIssues(reports.base, state.blobPath.base);
+      const parsedHead = parseDependencyScanningIssues(reports.head, reports.enrichData,
+        state.blobPath.head);
+      const parsedBase = parseDependencyScanningIssues(reports.base, reports.enrichData,
+        state.blobPath.base);
 
       const newIssues = filterByKey(parsedHead, parsedBase, filterKey);
       const resolvedIssues = filterByKey(parsedBase, parsedHead, filterKey);
@@ -218,7 +234,8 @@ export default {
     }
 
     if (reports.head && !reports.base) {
-      const newIssues = parseSastIssues(reports.head, state.blobPath.head);
+      const newIssues = parseDependencyScanningIssues(reports.head, reports.enrichData,
+        state.blobPath.head);
       state.dependencyScanning.newIssues = newIssues;
       state.dependencyScanning.isLoading = false;
       state.summaryCounts.added += newIssues.length;
@@ -228,5 +245,135 @@ export default {
   [types.RECEIVE_DEPENDENCY_SCANNING_ERROR](state) {
     state.dependencyScanning.isLoading = false;
     state.dependencyScanning.hasError = true;
+  },
+
+  [types.SET_ISSUE_MODAL_DATA](state, issue) {
+    state.modal.title = issue.name;
+    state.modal.data.description.value = issue.description;
+    state.modal.data.file.value = issue.file;
+    state.modal.data.file.url = issue.urlPath;
+    state.modal.data.namespace.value = issue.namespace;
+    state.modal.data.severity.value = issue.severity;
+    state.modal.data.solution.value = issue.solution;
+    state.modal.data.confidenceLevel.value = issue.confidence;
+    state.modal.data.source.value = issue.source;
+    state.modal.data.instances.value = issue.instances;
+    state.modal.vulnerability = issue;
+
+    // Link to CVE-ID for Container Scanning
+    if (issue.nameLink) {
+      state.modal.data.identifier.value = issue.name;
+      state.modal.data.identifier.isLink = true;
+      state.modal.data.identifier.url = issue.nameLink;
+    } else {
+      state.modal.data.identifier.value = issue.identifier;
+      state.modal.data.identifier.isLink = false;
+      state.modal.data.identifier.url = null;
+    }
+
+    // clear previous state
+    state.modal.error = null;
+  },
+
+  [types.REQUEST_DISMISS_ISSUE](state) {
+    state.modal.isDismissingIssue = true;
+    // reset error in case previous state was error
+    state.modal.error = null;
+  },
+
+  [types.RECEIVE_DISMISS_ISSUE_SUCCESS](state) {
+    state.modal.isDismissingIssue = false;
+  },
+
+  [types.UPDATE_SAST_ISSUE](state, issue) {
+    // Find issue in the correct list and update it
+
+    const newIssuesIndex = findIssueIndex(state.sast.newIssues, issue);
+    if (newIssuesIndex !== -1) {
+      state.sast.newIssues.splice(newIssuesIndex, 1, issue);
+      return;
+    }
+
+    const resolvedIssuesIndex = findIssueIndex(state.sast.resolvedIssues, issue);
+    if (resolvedIssuesIndex !== -1) {
+      state.sast.resolvedIssues.splice(resolvedIssuesIndex, 1, issue);
+      return;
+    }
+
+    const allIssuesIndex = findIssueIndex(state.sast.allIssues, issue);
+    if (allIssuesIndex !== -1) {
+      state.sast.allIssues.splice(allIssuesIndex, 1, issue);
+    }
+  },
+
+  [types.UPDATE_DEPENDENCY_SCANNING_ISSUE](state, issue) {
+    // Find issue in the correct list and update it
+
+    const newIssuesIndex = findIssueIndex(state.dependencyScanning.newIssues, issue);
+    if (newIssuesIndex !== -1) {
+      state.dependencyScanning.newIssues.splice(newIssuesIndex, 1, issue);
+      return;
+    }
+
+    const resolvedIssuesIndex = findIssueIndex(state.dependencyScanning.resolvedIssues, issue);
+    if (resolvedIssuesIndex !== -1) {
+      state.dependencyScanning.resolvedIssues.splice(resolvedIssuesIndex, 1, issue);
+      return;
+    }
+
+    const allIssuesIndex = findIssueIndex(state.dependencyScanning.allIssues, issue);
+    if (allIssuesIndex !== -1) {
+      state.dependencyScanning.allIssues.splice(allIssuesIndex, 1, issue);
+    }
+  },
+
+  [types.UPDATE_CONTAINER_SCANNING_ISSUE](state, issue) {
+    // Find issue in the correct list and update it
+
+    const newIssuesIndex = findIssueIndex(state.sastContainer.newIssues, issue);
+    if (newIssuesIndex !== -1) {
+      state.sastContainer.newIssues.splice(newIssuesIndex, 1, issue);
+      return;
+    }
+
+    const resolvedIssuesIndex = findIssueIndex(state.sastContainer.resolvedIssues, issue);
+    if (resolvedIssuesIndex !== -1) {
+      state.sastContainer.resolvedIssues.splice(resolvedIssuesIndex, 1, issue);
+    }
+  },
+
+  [types.UPDATE_DAST_ISSUE](state, issue) {
+    // Find issue in the correct list and update it
+
+    const newIssuesIndex = findIssueIndex(state.dast.newIssues, issue);
+    if (newIssuesIndex !== -1) {
+      state.dast.newIssues.splice(newIssuesIndex, 1, issue);
+      return;
+    }
+
+    const resolvedIssuesIndex = findIssueIndex(state.dast.resolvedIssues, issue);
+    if (resolvedIssuesIndex !== -1) {
+      state.dast.resolvedIssues.splice(resolvedIssuesIndex, 1, issue);
+    }
+  },
+
+  [types.RECEIVE_DISMISS_ISSUE_ERROR](state, error) {
+    state.modal.error = error;
+    state.modal.isDismissingIssue = false;
+  },
+
+  [types.REQUEST_CREATE_ISSUE](state) {
+    state.modal.isCreatingNewIssue = true;
+    // reset error in case previous state was error
+    state.modal.error = null;
+  },
+
+  [types.RECEIVE_CREATE_ISSUE_SUCCESS](state) {
+    state.modal.isCreatingNewIssue = false;
+  },
+
+  [types.RECEIVE_CREATE_ISSUE_ERROR](state, error) {
+    state.modal.error = error;
+    state.modal.isCreatingNewIssue = false;
   },
 };

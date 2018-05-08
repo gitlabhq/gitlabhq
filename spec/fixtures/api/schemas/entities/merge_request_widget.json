@@ -125,7 +125,8 @@
     "blob_path": {
       "head_path": { "type": "string" },
       "base_path": { "type": "string" }
-    }
+    },
+    "vulnerability_feedback_path": { "type": "string" }
   },
   "additionalProperties": false
 }

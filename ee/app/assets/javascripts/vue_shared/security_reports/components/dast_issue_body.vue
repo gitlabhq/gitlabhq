@@ -4,8 +4,13 @@
  * [priority]: [name]
  */
 
+import ModalOpenName from './modal_open_name.vue';
+
 export default {
   name: 'SastIssueBody',
+  components: {
+    ModalOpenName,
+  },
   props: {
     issue: {
       type: Object,
@@ -16,17 +21,6 @@ export default {
       type: Number,
       required: true,
     },
-
-    modalTargetId: {
-      type: String,
-      required: true,
-    },
-  },
-
-  methods: {
-    openDastModal() {
-      this.$emit('openDastModal', this.issue, this.issueIndex);
-    },
   },
 };
 </script>
@@ -35,15 +29,10 @@ export default {
     <div class="report-block-list-issue-description-text append-right-5">
       <template v-if="issue.priority">{{ issue.priority }}:</template>
 
-      <button
-        type="button"
-        @click="openDastModal()"
-        data-toggle="modal"
-        class="js-modal-dast btn-link btn-blank text-left break-link"
-        :data-target="modalTargetId"
-      >
-        {{ issue.name }}
-      </button>
+      <modal-open-name
+        :issue="issue"
+        class="js-modal-dast"
+      />
     </div>
   </div>
 </template>

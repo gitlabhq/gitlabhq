@@ -89,6 +89,10 @@
   align-content: flex-start;
 }
 
+.is-dismissed .report-block-list-issue-description {
+  text-decoration: line-through;
+}
+
 .report-block-list-issue-description {
   align-content: space-around;
   align-items: flex-start;
@@ -101,6 +105,7 @@
   .break-link {
     word-wrap: break-word;
     word-break: break-all;
+    text-decoration: inherit;
   }
 
   .btn-help svg {
@@ -109,7 +114,7 @@
 }
 
 .report-block-issue-code {
-  width: $modal-lg - 70px;
+  width: 600px;
 }
 
 .modal-security-report-dast {
@@ -118,6 +123,6 @@
   }
   // TODO remove this when gl_modal support not rendering the footer
   .modal-footer {
-    display: none;
+    display: block;
   }
 }

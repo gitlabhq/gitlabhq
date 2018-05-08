@@ -5,11 +5,17 @@ describe ProjectPolicy do
 
   set(:owner) { create(:user) }
   set(:admin) { create(:admin) }
+  set(:master) { create(:user) }
   set(:developer) { create(:user) }
+  set(:reporter) { create(:user) }
+  set(:guest) { create(:user) }
   let(:project) { create(:project, :public, namespace: owner.namespace) }
 
   before do
+    project.add_master(master)
     project.add_developer(developer)
+    project.add_reporter(reporter)
+    project.add_guest(guest)
   end
 
   context 'admin_mirror' do
@@ -180,6 +186,121 @@ describe ProjectPolicy do
 
         described_class.new(owner, project).allowed?(:read_project)
       end
+    end
+  end
+
+  describe 'read_vulnerability_feedback' do
+    subject { described_class.new(current_user, project) }
+
+    context 'with public project' do
+      let(:current_user) { nil }
+
+      it { is_expected.to be_allowed(:read_vulnerability_feedback) }
+    end
+
+    context 'with private project' do
+      let(:current_user) { admin }
+      let(:project) { create(:project, :private, namespace: owner.namespace) }
+
+      context 'with admin' do
+        let(:current_user) { admin }
+
+        it { is_expected.to be_allowed(:read_vulnerability_feedback) }
+      end
+
+      context 'with owner' do
+        let(:current_user) { owner }
+
+        it { is_expected.to be_allowed(:read_vulnerability_feedback) }
+      end
+
+      context 'with master' do
+        let(:current_user) { master }
+
+        it { is_expected.to be_allowed(:read_vulnerability_feedback) }
+      end
+
+      context 'with developer' do
+        let(:current_user) { developer }
+
+        it { is_expected.to be_allowed(:read_vulnerability_feedback) }
+      end
+
+      context 'with reporter' do
+        let(:current_user) { reporter }
+
+        it { is_expected.to be_allowed(:read_vulnerability_feedback) }
+      end
+
+      context 'with guest' do
+        let(:current_user) { guest }
+
+        it { is_expected.to be_allowed(:read_vulnerability_feedback) }
+      end
+
+      context 'with non member' do
+        let(:current_user) { create(:user) }
+
+        it { is_expected.to be_disallowed(:read_vulnerability_feedback) }
+      end
+
+      context 'with anonymous' do
+        let(:current_user) { nil }
+
+        it { is_expected.to be_disallowed(:read_vulnerability_feedback) }
+      end
+    end
+  end
+
+  describe 'admin_vulnerability_feedback' do
+    subject { described_class.new(current_user, project) }
+
+    context 'with admin' do
+      let(:current_user) { admin }
+
+      it { is_expected.to be_allowed(:admin_vulnerability_feedback) }
+    end
+
+    context 'with owner' do
+      let(:current_user) { owner }
+
+      it { is_expected.to be_allowed(:admin_vulnerability_feedback) }
+    end
+
+    context 'with master' do
+      let(:current_user) { master }
+
+      it { is_expected.to be_allowed(:admin_vulnerability_feedback) }
+    end
+
+    context 'with developer' do
+      let(:current_user) { developer }
+
+      it { is_expected.to be_allowed(:admin_vulnerability_feedback) }
+    end
+
+    context 'with reporter' do
+      let(:current_user) { reporter }
+
+      it { is_expected.to be_disallowed(:admin_vulnerability_feedback) }
+    end
+
+    context 'with guest' do
+      let(:current_user) { guest }
+
+      it { is_expected.to be_disallowed(:admin_vulnerability_feedback) }
+    end
+
+    context 'with non member' do
+      let(:current_user) { create(:user) }
+
+      it { is_expected.to be_disallowed(:admin_vulnerability_feedback) }
+    end
+
+    context 'with anonymous' do
+      let(:current_user) { nil }
+
+      it { is_expected.to be_disallowed(:admin_vulnerability_feedback) }
     end
   end
 end

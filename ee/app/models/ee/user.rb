@@ -24,6 +24,7 @@ module EE
       has_many :epics,                    foreign_key: :author_id
       has_many :assigned_epics,           foreign_key: :assignee_id, class_name: "Epic"
       has_many :path_locks,               dependent: :destroy # rubocop: disable Cop/ActiveRecordDependent
+      has_many :vulnerability_feedback,  foreign_key: :author_id
 
       has_many :approvals,                dependent: :destroy # rubocop: disable Cop/ActiveRecordDependent
       has_many :approvers,                dependent: :destroy # rubocop: disable Cop/ActiveRecordDependent

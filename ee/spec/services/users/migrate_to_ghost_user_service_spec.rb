@@ -19,4 +19,13 @@ describe Users::MigrateToGhostUserService do
       end
     end
   end
+
+  context 'vulnerability_feedback'  do
+    let!(:user)      { create(:user) }
+    let(:service)    { described_class.new(user) }
+
+    include_examples "migrating a deleted user's associated records to the ghost user", VulnerabilityFeedback, [:author] do
+      let(:created_record) { create(:vulnerability_feedback, author: user) }
+    end
+  end
 end
