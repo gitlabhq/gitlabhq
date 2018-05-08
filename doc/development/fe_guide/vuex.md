@@ -352,6 +352,18 @@ describe('component', () => {
 });
 ```
 
+#### Testing Vuex actions and getters
+Because we're currently using `babel-plugin-rewire`, you may encounter the following error when testing your Vuex actions and getters:
+`[vuex] actions should be function or object with "handler" function`
+
+To prevent this error from happening, you need to export an empty function:
+```
+// /stores/getters.js or /stores/actions.js
+
+// prevent babel-plugin-rewire from generating an invalid default during karma tests
+export default () => {};
+```
+
 [vuex-docs]: https://vuex.vuejs.org
 [vuex-structure]: https://vuex.vuejs.org/en/structure.html
 [vuex-mutations]: https://vuex.vuejs.org/en/mutations.html
