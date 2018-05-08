@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe WikiPages::CreateService do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :wiki_repo) }
   let(:user)    { create(:user) }
 
   let(:opts) do
