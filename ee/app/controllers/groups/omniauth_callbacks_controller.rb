@@ -1,6 +1,8 @@
 class Groups::OmniauthCallbacksController < OmniauthCallbacksController
   extend ::Gitlab::Utils::Override
 
+  skip_before_filter :verify_authenticity_token, only: :group_saml
+
   def group_saml
     @unauthenticated_group = Group.find_by_full_path(params[:group_id])
     saml_provider = @unauthenticated_group.saml_provider
