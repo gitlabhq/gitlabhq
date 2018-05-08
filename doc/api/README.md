@@ -329,7 +329,45 @@ In the example below, we list 50 [namespaces](namespaces.md) per page.
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/namespaces?per_page=50
 ```
 
-### Pagination Link header
+### Pagination (keyset-based)
+
+We prefer the use of keyset-based instead of offset-based pagination for (server-side)
+performance reasons. Note that this is not the default yet and must be
+selected by passing a `pagination=keyset` parameter.
+
+Besides performance benefits, keyset pagination guarantees a stable view
+at the collection and allows the client to receive the full collection
+without duplicates.
+
+[Link headers](http://www.w3.org/wiki/LinkHeader) are sent back with each
+response. They have `rel` set to next and first and contain the relevant
+URL. Please use these links instead of generating your own URLs.
+
+Note that an empty response indicates there are no more pages to fetch.
+
+In the cURL example below, we limit the output to 3 items per page
+(`per_page=3`) and request the beginning of the collection.
+
+```bash
+curl --head --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects?per_page=3&pagination=keyset
+```
+
+A response looks like this:
+
+```
+HTTP/1.1 200 OK
+Link: <https://gitlab.example.com/api/v4/projects?archived=false&ks_prev_created_at=2018-05-07+10%3A26%3A13+UTC&ks_prev_id=7&membership=false&order_by=created_at&owned=false&pagination=keyset&per_page=3&simple=false&sort=desc&starred=false&statistics=false&with_custom_attributes=false&with_issues_enabled=false&with_merge_requests_enabled=false>; rel="next", <http://localhost:3000/api/v4/projects?archived=false&membership=false&order_by=created_at&owned=false&pagination=keyset&per_page=2&simple=false&sort=desc&starred=false&statistics=false&with_custom_attributes=false&with_issues_enabled=false&with_merge_requests_enabled=false>; rel="first"
+X-Next-Page: https://gitlab.example.com/api/v4/projects?archived=false&ks_prev_created_at=2018-05-07+10%3A26%3A13+UTC&ks_prev_id=7&membership=false&order_by=created_at&owned=false&pagination=keyset&per_page=3&simple=false&sort=desc&starred=false&statistics=false&with_custom_attributes=false&with_issues_enabled=false&with_merge_requests_enabled=false
+X-Per-Page: 3
+```
+
+Further requests should use the link given in the `X-Next-Page` header
+or the `next` link in the `Link` header.
+
+### Pagination (offset-based)
+
+***Note we encourage the use of keyset pagination instead for (server-side)
+performance reasons.***
 
 [Link headers](http://www.w3.org/wiki/LinkHeader) are sent back with each
 response. They have `rel` set to prev/next/first/last and contain the relevant
@@ -364,7 +402,7 @@ X-Total: 8
 X-Total-Pages: 3
 ```
 
-### Other pagination headers
+#### Other pagination headers
 
 Additional pagination headers are also sent back.
 
