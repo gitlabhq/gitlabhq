@@ -153,16 +153,12 @@ ActiveRecord::Schema.define(version: 20180503200320) do
     t.integer "cached_markdown_version"
     t.boolean "clientside_sentry_enabled", default: false, null: false
     t.string "clientside_sentry_dsn"
-<<<<<<< HEAD
     t.boolean "check_namespace_plan", default: false, null: false
     t.integer "mirror_max_delay", default: 300, null: false
     t.integer "mirror_max_capacity", default: 100, null: false
     t.integer "mirror_capacity_threshold", default: 50, null: false
-    t.boolean "prometheus_metrics_enabled", default: false, null: false
-    t.boolean "authorized_keys_enabled", default: true, null: false
-=======
     t.boolean "prometheus_metrics_enabled", default: true, null: false
->>>>>>> upstream/master
+    t.boolean "authorized_keys_enabled", default: true, null: false
     t.boolean "help_page_hide_commercial_content", default: false
     t.string "help_page_support_url"
     t.boolean "slack_app_enabled", default: false
@@ -209,7 +205,6 @@ ActiveRecord::Schema.define(version: 20180503200320) do
     t.string "encrypted_external_auth_client_key_pass_iv"
     t.string "email_additional_text"
     t.boolean "enforce_terms", default: false
-    t.boolean "mirror_available", default: true, null: false
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -2104,7 +2099,6 @@ ActiveRecord::Schema.define(version: 20180503200320) do
     t.string "external_authorization_classification_label"
     t.string "external_webhook_token"
     t.boolean "pages_https_only", default: true
-    t.boolean "remote_mirror_available_overridden"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -2270,33 +2264,19 @@ ActiveRecord::Schema.define(version: 20180503200320) do
   create_table "remote_mirrors", force: :cascade do |t|
     t.integer "project_id"
     t.string "url"
-<<<<<<< HEAD
     t.boolean "enabled", default: false
     t.string "update_status"
     t.datetime "last_update_at"
     t.datetime "last_successful_update_at"
     t.string "last_error"
-=======
-    t.boolean "enabled", default: true
-    t.string "update_status"
-    t.datetime "last_update_at"
-    t.datetime "last_successful_update_at"
-    t.datetime "last_update_started_at"
-    t.string "last_error"
-    t.boolean "only_protected_branches", default: false, null: false
-    t.string "remote_name"
->>>>>>> upstream/master
     t.text "encrypted_credentials"
     t.string "encrypted_credentials_iv"
     t.string "encrypted_credentials_salt"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-<<<<<<< HEAD
     t.datetime "last_update_started_at"
     t.boolean "only_protected_branches", default: false, null: false
     t.string "remote_name"
-=======
->>>>>>> upstream/master
   end
 
   add_index "remote_mirrors", ["last_successful_update_at"], name: "index_remote_mirrors_on_last_successful_update_at", using: :btree
@@ -2926,12 +2906,8 @@ ActiveRecord::Schema.define(version: 20180503200320) do
   add_foreign_key "push_event_payloads", "events", name: "fk_36c74129da", on_delete: :cascade
   add_foreign_key "push_rules", "projects", name: "fk_83b29894de", on_delete: :cascade
   add_foreign_key "releases", "projects", name: "fk_47fe2a0596", on_delete: :cascade
-<<<<<<< HEAD
   add_foreign_key "remote_mirrors", "projects", name: "fk_43a9aa4ca8", on_delete: :cascade
   add_foreign_key "saml_providers", "namespaces", column: "group_id", on_delete: :cascade
-=======
-  add_foreign_key "remote_mirrors", "projects", on_delete: :cascade
->>>>>>> upstream/master
   add_foreign_key "services", "projects", name: "fk_71cce407f9", on_delete: :cascade
   add_foreign_key "slack_integrations", "services", on_delete: :cascade
   add_foreign_key "snippets", "projects", name: "fk_be41fd4bb7", on_delete: :cascade
