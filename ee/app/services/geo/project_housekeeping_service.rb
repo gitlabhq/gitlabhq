@@ -76,13 +76,13 @@ module Geo
         :gc
       elsif syncs_since_gc % full_repack_period == 0
         :full_repack
-      else
+      elsif syncs_since_gc % repack_period == 0
         :incremental_repack
       end
     end
 
     def period_match?
-      [gc_period, full_repack_period, repack_period].any? { |period| syncs_since_gc % period == 0 }
+      task.present?
     end
 
     def housekeeping_enabled?
