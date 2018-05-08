@@ -37,12 +37,6 @@ describe('IDE store getters', () => {
       expect(modifiedFiles.length).toBe(1);
       expect(modifiedFiles[0].name).toBe('changed');
     });
-
-    it('returns angle left when collapsed', () => {
-      localState.rightPanelCollapsed = true;
-
-      expect(getters.collapseButtonIcon(localState)).toBe('angle-double-left');
-    });
   });
 
   describe('currentMergeRequest', () => {
@@ -82,6 +76,89 @@ describe('IDE store getters', () => {
       localState.entries.app.lastOpenedAt = new Date().getTime();
 
       expect(getters.allBlobs(localState)[0].name).toBe('blob');
+    });
+  });
+
+  describe('getChangesInFolder', () => {
+    it('returns length of changed files for a path', () => {
+      localState.changedFiles.push(
+        {
+          path: 'test/index',
+          name: 'index',
+        },
+        {
+          path: 'app/123',
+          name: '123',
+        },
+      );
+
+      expect(getters.getChangesInFolder(localState)('test')).toBe(1);
+    });
+
+    it('returns length of changed & staged files for a path', () => {
+      localState.changedFiles.push(
+        {
+          path: 'test/index',
+          name: 'index',
+        },
+        {
+          path: 'testing/123',
+          name: '123',
+        },
+      );
+
+      localState.stagedFiles.push(
+        {
+          path: 'test/123',
+          name: '123',
+        },
+        {
+          path: 'test/index',
+          name: 'index',
+        },
+        {
+          path: 'testing/12345',
+          name: '12345',
+        },
+      );
+
+      expect(getters.getChangesInFolder(localState)('test')).toBe(2);
+    });
+
+    it('returns length of changed & tempFiles files for a path', () => {
+      localState.changedFiles.push(
+        {
+          path: 'test/index',
+          name: 'index',
+        },
+        {
+          path: 'test/newfile',
+          name: 'newfile',
+          tempFile: true,
+        },
+      );
+
+      expect(getters.getChangesInFolder(localState)('test')).toBe(2);
+    });
+  });
+
+  describe('lastCommit', () => {
+    it('returns the last commit of the current branch on the current project', () => {
+      const commitTitle = 'Example commit title';
+      const localGetters = {
+        currentProject: {
+          branches: {
+            'example-branch': {
+              commit: {
+                title: commitTitle,
+              },
+            },
+          },
+        },
+      };
+      localState.currentBranchId = 'example-branch';
+
+      expect(getters.lastCommit(localState, localGetters).title).toBe(commitTitle);
     });
   });
 });

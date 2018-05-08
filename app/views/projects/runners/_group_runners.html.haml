@@ -1,0 +1,37 @@
+- link = link_to 'Runners API', help_page_path('api/runners.md')
+
+%h3
+  = _('Group Runners')
+
+.bs-callout.bs-callout-warning
+  = _('GitLab Group Runners can execute code for all the projects in this group.')
+  = _('They can be managed using the %{link}.').html_safe % { link: link }
+
+  - if @project.group
+    %hr
+    - if @project.group_runners_enabled?
+      = link_to toggle_group_runners_project_runners_path(@project), class: 'btn btn-close', method: :post do
+        = _('Disable group Runners')
+    - else
+      = link_to toggle_group_runners_project_runners_path(@project), class: 'btn btn-success btn-inverted', method: :post do
+        = _('Enable group Runners')
+    &nbsp;
+    = _('for this project')
+
+- if !@project.group
+  = _('This project does not belong to a group and can therefore not make use of group Runners.')
+
+- elsif @group_runners.empty?
+  = _('This group does not provide any group Runners yet.')
+
+  - if can?(current_user, :admin_pipeline, @project.group)
+    - group_link = link_to 'Group CI/CD settings', group_settings_ci_cd_path(@project.group)
+    = _('Group masters can register group runners in the %{link}').html_safe % { link: group_link }
+  - else
+    = _('Ask your group master to setup a group Runner.')
+
+- else
+  %h4.underlined-title
+    = _('Available group Runners : %{runners}').html_safe % { runners: @group_runners.count }
+  %ul.bordered-list
+    = render partial: 'projects/runners/runner', collection: @group_runners, as: :runner

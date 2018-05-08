@@ -1,3 +1,5 @@
+import { activityBarViews, viewerTypes } from '../constants';
+
 export default () => ({
   currentProjectId: '',
   currentBranchId: '',
@@ -16,7 +18,9 @@ export default () => ({
   rightPanelCollapsed: false,
   panelResizing: false,
   entries: {},
-  viewer: 'editor',
+  viewer: viewerTypes.edit,
   delayViewerUpdated: false,
+  currentActivityView: activityBarViews.edit,
+  unusedSeal: true,
   fileFindVisible: false,
 });

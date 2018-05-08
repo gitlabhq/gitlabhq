@@ -1,0 +1,5 @@
+---
+title: Destroy build_chunks efficiently with FastDestroyAll module
+merge_request: 18575
+author:
+type: performance

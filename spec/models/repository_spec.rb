@@ -758,6 +758,38 @@ describe Repository do
     end
   end
 
+  describe '#async_remove_remote' do
+    before do
+      masterrev = repository.find_branch('master').dereferenced_target
+      create_remote_branch('joe', 'remote_branch', masterrev)
+    end
+
+    context 'when worker is scheduled successfully' do
+      before do
+        masterrev = repository.find_branch('master').dereferenced_target
+        create_remote_branch('remote_name', 'remote_branch', masterrev)
+
+        allow(RepositoryRemoveRemoteWorker).to receive(:perform_async).and_return('1234')
+      end
+
+      it 'returns job_id' do
+        expect(repository.async_remove_remote('joe')).to eq('1234')
+      end
+    end
+
+    context 'when worker does not schedule successfully' do
+      before do
+        allow(RepositoryRemoveRemoteWorker).to receive(:perform_async).and_return(nil)
+      end
+
+      it 'returns nil' do
+        expect(Rails.logger).to receive(:info).with("Remove remote job failed to create for #{project.id} with remote name joe.")
+
+        expect(repository.async_remove_remote('joe')).to be_nil
+      end
+    end
+  end
+
   describe '#fetch_ref' do
     let(:broken_repository) { create(:project, :broken_storage).repository }
 
@@ -2336,6 +2368,11 @@ describe Repository do
         expect(repository.route_map_for(repository.commit.parent.sha)).to be_nil
       end
     end
+  end
+
+  def create_remote_branch(remote_name, branch_name, target)
+    rugged = repository.rugged
+    rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)
   end
 
   describe '#ancestor?' do
