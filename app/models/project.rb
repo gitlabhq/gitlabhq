@@ -676,9 +676,15 @@ class Project < ActiveRecord::Base
     return if !force && (self[:import_status] == 'none' || self[:import_status].nil?)
     return unless import_state.nil?
 
-    create_import_state(import_state_args)
+    if persisted?
+      create_import_state(import_state_args)
 
-    update_column(:import_status, 'none')
+      update_column(:import_status, 'none')
+    else
+      build_import_state(import_state_args)
+
+      self[:import_status] = 'none'
+    end
   end
 
   def import_schedule
