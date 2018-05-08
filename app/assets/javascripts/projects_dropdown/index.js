@@ -10,7 +10,7 @@ import projectsDropdownApp from './components/app.vue';
 
 Vue.use(Translate);
 
-document.addEventListener('DOMContentLoaded', () => {
+export default function initProjectsDropdown() {
   const el = document.getElementById('js-projects-dropdown');
   const navEl = document.getElementById('nav-projects-dropdown');
 
@@ -63,4 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     },
   });
-});
+
+  eventHub.$emit('dropdownOpen');
+}

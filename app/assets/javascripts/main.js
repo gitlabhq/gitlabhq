@@ -26,7 +26,7 @@ import './feature_highlight/feature_highlight_options';
 import LazyLoader from './lazy_loader';
 import initLogoAnimation from './logo';
 import './milestone_select';
-import './projects_dropdown';
+import initProjectsDropdown from './projects_dropdown';
 import initBreadcrumbs from './breadcrumb';
 import initDispatcher from './dispatcher';
 
@@ -78,6 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initImporterStatus();
   initTodoToggle();
   initLogoAnimation();
+  initProjectsDropdown();
 
   // Set the default path for all cookies to GitLab's root directory
   Cookies.defaults.path = gon.relative_url_root || '/';
