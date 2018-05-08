@@ -25,7 +25,7 @@
         .prioritized-labels{ class: ('hide' if hide) }
           %h5.prepend-top-0 Prioritized Labels
           %ul.content-list.manage-labels-list.js-prioritized-labels{ "data-url" => set_priorities_project_labels_path(@project) }
-            #js-priority-labels-empty-state{ class: "#{'hidden' unless @prioritized_labels.empty?}" }
+            #js-priority-labels-empty-state.priority-labels-empty-state{ class: "#{'hidden' unless @prioritized_labels.empty?}" }
               = render 'shared/empty_states/priority_labels'
             - if @prioritized_labels.present?
               = render partial: 'shared/label', subject: @project, collection: @prioritized_labels, as: :label
