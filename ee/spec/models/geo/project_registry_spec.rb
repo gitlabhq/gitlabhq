@@ -210,4 +210,44 @@ describe Geo::ProjectRegistry do
       end
     end
   end
+
+  context 'redis shared state', :redis do
+    after do
+      subject.reset_syncs_since_gc!
+    end
+
+    describe '#syncs_since_gc' do
+      context 'without any sync' do
+        it 'returns 0' do
+          expect(subject.syncs_since_gc).to eq(0)
+        end
+      end
+
+      context 'with a number of syncs' do
+        it 'returns the number of syncs' do
+          2.times { Geo::ProjectHousekeepingService.new(project).increment! }
+
+          expect(subject.syncs_since_gc).to eq(2)
+        end
+      end
+    end
+
+    describe '#increment_syncs_since_gc' do
+      it 'increments the number of syncs since the last GC' do
+        3.times { subject.increment_syncs_since_gc! }
+
+        expect(subject.syncs_since_gc).to eq(3)
+      end
+    end
+
+    describe '#reset_syncs_since_gc' do
+      it 'resets the number of syncs since the last GC' do
+        3.times { subject.increment_syncs_since_gc! }
+
+        subject.reset_syncs_since_gc!
+
+        expect(subject.syncs_since_gc).to eq(0)
+      end
+    end
+  end
 end

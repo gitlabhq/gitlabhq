@@ -29,6 +29,7 @@ module Geo
     ensure
       clean_up_temporary_repository if redownload
       expire_repository_caches
+      execute_housekeeping
     end
 
     def mark_sync_as_successful
@@ -65,6 +66,10 @@ module Geo
 
     def schedule_repack
       GitGarbageCollectWorker.perform_async(@project.id, :full_repack, lease_key)
+    end
+
+    def execute_housekeeping
+      Geo::ProjectHousekeepingService.new(project).execute
     end
   end
 end
