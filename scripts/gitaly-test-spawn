@@ -5,6 +5,7 @@ gitaly_ruby_dir = File.expand_path(File.join(gitaly_dir, 'ruby'))
 env = { 'HOME' => File.expand_path('tmp/tests'),
         'GEM_PATH' => Gem.path.join(':'),
         'BUNDLE_IGNORE_CONFIG' => 'true',
+        'BUNDLE_APP_CONFIG' => nil,
         'BUNDLE_GEMFILE' => File.join(gitaly_ruby_dir, 'Gemfile') }
 
 unless ENV['CI'].to_s.empty?

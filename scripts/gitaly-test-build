@@ -19,7 +19,7 @@ env = {
   # This ensure the `clean` config set in `scripts/prepare_build.sh` isn't taken into account
   'BUNDLE_IGNORE_CONFIG' => 'true',
   'BUNDLE_GEMFILE' => gemfile,
-  'BUNDLE_INSTALL_FLAGS' => nil,
+  'BUNDLE_APP_CONFIG' => nil,
   'BUNDLE_FLAGS' => "--jobs=4 --path=#{bundle_vendor_path} --retry=3"
 }
 
