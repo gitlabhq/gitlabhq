@@ -35,7 +35,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
 
   describe "#execute" do
     let(:user)    { create(:user) }
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project, :repository, :wiki_repo) }
     let(:username) { 'slack_username' }
     let(:channel)  { 'slack_channel' }
     let(:issue_service_options) { { title: 'Awesome issue', description: 'please fix' } }

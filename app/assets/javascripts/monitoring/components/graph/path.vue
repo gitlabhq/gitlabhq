@@ -22,6 +22,15 @@ export default {
       type: String,
       required: true,
     },
+    currentCoordinates: {
+      type: Object,
+      required: false,
+      default: () => ({ currentX: 0, currentY: 0 }),
+    },
+    showDot: {
+      type: Boolean,
+      required: true,
+    },
   },
   computed: {
     strokeDashArray() {
@@ -33,12 +42,20 @@ export default {
 };
 </script>
 <template>
-  <g>
+  <g transform="translate(-5, 20)">
+    <circle
+      class="circle-path"
+      :cx="currentCoordinates.currentX"
+      :cy="currentCoordinates.currentY"
+      :fill="lineColor"
+      :stroke="lineColor"
+      r="3"
+      v-if="showDot"
+    />
     <path
       class="metric-area"
       :d="generatedAreaPath"
       :fill="areaColor"
-      transform="translate(-5, 20)"
     />
     <path
       class="metric-line"
@@ -47,7 +64,6 @@ export default {
       fill="none"
       stroke-width="1"
       :stroke-dasharray="strokeDashArray"
-      transform="translate(-5, 20)"
     />
   </g>
 </template>

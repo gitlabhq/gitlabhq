@@ -16,8 +16,8 @@ export default {
   <icon
     name="git-merge"
     v-tooltip
-    title="__('Part of merge request changes')"
-    css-classes="ide-file-changed-icon"
+    :title="__('Part of merge request changes')"
+    css-classes="append-right-8"
     :size="12"
   />
 </template>

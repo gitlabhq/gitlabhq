@@ -12,7 +12,7 @@
   .cover-block.user-cover-block.top-area
     .cover-controls
       - if @user == current_user
-        = link_to profile_path, class: 'btn btn-gray has-tooltip', title: 'Edit profile', 'aria-label': 'Edit profile' do
+        = link_to profile_path, class: 'btn btn-default has-tooltip', title: 'Edit profile', 'aria-label': 'Edit profile' do
           = icon('pencil')
       - elsif current_user
         - if @user.abuse_report
@@ -20,13 +20,13 @@
             data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } }
             = icon('exclamation-circle')
         - else
-          = link_to new_abuse_report_path(user_id: @user.id, ref_url: request.referrer), class: 'btn btn-gray',
+          = link_to new_abuse_report_path(user_id: @user.id, ref_url: request.referrer), class: 'btn',
             title: 'Report abuse', data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
             = icon('exclamation-circle')
-      = link_to user_path(@user, rss_url_options), class: 'btn btn-gray has-tooltip', title: 'Subscribe', 'aria-label': 'Subscribe' do
+      = link_to user_path(@user, rss_url_options), class: 'btn btn-default has-tooltip', title: 'Subscribe', 'aria-label': 'Subscribe' do
         = icon('rss')
       - if current_user && current_user.admin?
-        = link_to [:admin, @user], class: 'btn btn-gray', title: 'View user in admin area',
+        = link_to [:admin, @user], class: 'btn btn-default', title: 'View user in admin area',
           data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
           = icon('users')
 
@@ -35,7 +35,7 @@
         = link_to avatar_icon_for_user(@user, 400), target: '_blank', rel: 'noopener noreferrer' do
           = image_tag avatar_icon_for_user(@user, 90), class: "avatar s90", alt: ''
 
-      .user-info
+      .user-info.prepend-left-default.append-right-default
         .cover-title
           = @user.name
 

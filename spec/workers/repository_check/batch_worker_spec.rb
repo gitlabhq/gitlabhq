@@ -31,8 +31,8 @@ describe RepositoryCheck::BatchWorker do
 
   it 'does nothing when repository checks are disabled' do
     create(:project, created_at: 1.week.ago)
-    current_settings = double('settings', repository_checks_enabled: false)
-    expect(subject).to receive(:current_settings) { current_settings }
+
+    stub_application_setting(repository_checks_enabled: false)
 
     expect(subject.perform).to eq(nil)
   end

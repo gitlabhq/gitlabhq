@@ -23,6 +23,7 @@
   margin-top: 0;
   border-top: 1px solid $white-dark;
   border-bottom: 1px solid $white-dark;
+  padding-bottom: $ide-statusbar-height;
 
   &.is-collapsed {
     .ide-file-list {
@@ -121,14 +122,6 @@
 .multi-file-loading-container {
   margin-top: 10px;
   padding: 10px;
-
-  .animation-container {
-    background: $gray-light;
-
-    div {
-      background: $gray-light;
-    }
-  }
 }
 
 .multi-file-table-col-commit-message {
@@ -155,69 +148,56 @@
   }
 
   li {
-    position: relative;
-  }
-
-  .dropdown {
     display: flex;
-    margin-left: auto;
-    margin-bottom: 1px;
-    padding: 0 $grid-size;
-    border-left: 1px solid $white-dark;
-    background-color: $white-light;
+    align-items: center;
+    padding: $grid-size $gl-padding;
+    background-color: $gray-normal;
+    border-right: 1px solid $white-dark;
+    border-bottom: 1px solid $white-dark;
 
-    &.shadow {
-      box-shadow: 0 0 10px $dropdown-shadow-color;
-    }
-
-    .btn {
-      margin-top: auto;
-      margin-bottom: auto;
+    &.active {
+      background-color: $white-light;
+      border-bottom-color: $white-light;
     }
   }
 }
 
 .multi-file-tab {
-  @include str-truncated(150px);
-  padding: ($gl-padding / 2) ($gl-padding + 12) ($gl-padding / 2) $gl-padding;
-  background-color: $gray-normal;
-  border-right: 1px solid $white-dark;
-  border-bottom: 1px solid $white-dark;
+  @include str-truncated(141px);
   cursor: pointer;
 
   svg {
     vertical-align: middle;
   }
-
-  &.active {
-    background-color: $white-light;
-    border-bottom-color: $white-light;
-  }
 }
 
 .multi-file-tab-close {
-  position: absolute;
-  right: 8px;
-  top: 50%;
   width: 16px;
   height: 16px;
   padding: 0;
+  margin-left: $grid-size;
   background: none;
   border: 0;
   border-radius: $border-radius-default;
   color: $theme-gray-900;
-  transform: translateY(-50%);
 
   svg {
     position: relative;
     top: -1px;
   }
 
-  &:hover {
+  .ide-file-changed-icon {
+    display: block;
+    position: relative;
+    top: 1px;
+    right: -2px;
+  }
+
+  &:not([disabled]):hover {
     background-color: $theme-gray-200;
   }
 
-  &:focus {
+  &:not([disabled]):focus {
     background-color: $blue-500;
     color: $white-light;
     outline: 0;
@@ -246,6 +226,17 @@
 
   .monaco-editor .lines-content .cigr {
     display: none;
+  }
+
+  .is-readonly,
+  .editor.original {
+    .view-lines {
+      cursor: default;
+    }
+
+    .cursors-layer {
+      display: none;
+    }
   }
 
   .monaco-diff-editor.vs {
@@ -306,15 +297,12 @@
     .margin-view-overlays .delete-sign {
       opacity: 0.4;
     }
-
-    .cursors-layer {
-      display: none;
-    }
   }
 }
 
 .multi-file-editor-holder {
   height: 100%;
+  min-height: 0;
 }
 
 .preview-container {
@@ -380,6 +368,7 @@
 
 .ide-btn-group {
   padding: $gl-padding-4 $gl-vert-padding;
+  line-height: 24px;
 }
 
 .ide-status-bar {
@@ -387,7 +376,13 @@
   padding: $gl-bar-padding $gl-padding;
   background: $white-light;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  height: $ide-statusbar-height;
+
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
 
   > div + div {
     padding-left: $gl-padding;
@@ -398,6 +393,14 @@
   }
 }
 
+.ide-status-file {
+  text-align: right;
+
+  .ide-status-branch + &,
+  &:first-child {
+    margin-left: auto;
+  }
+}
 // Not great, but this is to deal with our current output
 .multi-file-preview-holder {
   height: 100%;
@@ -433,27 +436,35 @@
 .multi-file-commit-panel {
   display: flex;
   position: relative;
-  flex-direction: column;
   width: 340px;
   padding: 0;
   background-color: $gray-light;
-  padding-right: 3px;
+  padding-right: 1px;
 
-  .projects-sidebar {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
+  .context-header {
+    width: auto;
+    margin-right: 0;
 
-    .context-header {
-      width: auto;
-      margin-right: 0;
+    a:hover,
+    a:focus {
+      text-decoration: none;
     }
   }
 
+  .projects-sidebar {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
   .multi-file-commit-panel-inner {
+    position: relative;
     display: flex;
     flex-direction: column;
     height: 100%;
+    min-width: 0;
+    width: 100%;
   }
 
   .multi-file-commit-panel-inner-scroll {
@@ -461,68 +472,10 @@
     flex: 1;
     flex-direction: column;
     overflow: auto;
-  }
-
-  &.is-collapsed {
-    width: 60px;
-
-    .multi-file-commit-list {
-      padding-top: $gl-padding;
-      overflow: hidden;
-    }
-
-    .multi-file-context-bar-icon {
-      align-items: center;
-
-      svg {
-        float: none;
-        margin: 0;
-      }
-    }
-  }
-
-  .branch-container {
-    border-left: 4px solid;
-    margin-bottom: $gl-bar-padding;
-  }
-
-  .branch-header {
-    background: $white-dark;
-    display: flex;
-  }
-
-  .branch-header-title {
-    flex: 1;
-    padding: $grid-size $gl-padding;
-    font-weight: $gl-font-weight-bold;
-
-    svg {
-      vertical-align: middle;
-    }
-  }
-
-  .branch-header-btns {
-    padding: $gl-vert-padding $gl-padding;
-  }
-
-  .left-collapse-btn {
-    display: none;
-    background: $gray-light;
-    text-align: left;
+    background-color: $white-light;
+    border-left: 1px solid $white-dark;
     border-top: 1px solid $white-dark;
-
-    svg {
-      vertical-align: middle;
-    }
-  }
-}
-
-.multi-file-context-bar-icon {
-  padding: 10px;
-
-  svg {
-    margin-right: 10px;
-    float: left;
+    border-top-left-radius: $border-radius-small;
   }
 }
 
@@ -548,13 +501,13 @@
   align-items: center;
   margin-bottom: 0;
   border-bottom: 1px solid $white-dark;
-  padding: $gl-btn-padding 0;
+  padding: $gl-btn-padding $gl-padding;
 }
 
 .multi-file-commit-panel-header-title {
   display: flex;
   flex: 1;
-  padding-left: $grid-size;
+  align-items: center;
 
   svg {
     margin-right: $gl-btn-padding;
@@ -570,7 +523,7 @@
 .multi-file-commit-list {
   flex: 1;
   overflow: auto;
-  padding: $gl-padding 0;
+  padding: $gl-padding;
   min-height: 60px;
 }
 
@@ -602,14 +555,14 @@
   }
 }
 
-.multi-file-additions,
-.multi-file-additions-solid {
-  fill: $green-500;
+.multi-file-addition,
+.multi-file-addition-solid {
+  color: $green-500;
 }
 
 .multi-file-modified,
 .multi-file-modified-solid {
-  fill: $orange-500;
+  color: $orange-500;
 }
 
 .multi-file-commit-list-collapsed {
@@ -665,12 +618,24 @@
 }
 
 .multi-file-commit-form {
+  position: relative;
   padding: $gl-padding;
+  background-color: $white-light;
   border-top: 1px solid $white-dark;
+  border-left: 1px solid $white-dark;
+  transition: all 0.3s ease;
 
   .btn {
     font-size: $gl-font-size;
   }
+
+  .multi-file-commit-panel-success-message {
+    top: 0;
+  }
+}
+
+.multi-file-commit-panel-bottom {
+  position: relative;
 }
 
 .dirty-diff {
@@ -806,7 +771,7 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 3px;
+  width: 1px;
   background-color: $white-dark;
 
   &.dragright {
@@ -820,42 +785,40 @@
 
 .ide-commit-list-container {
   display: flex;
+  flex: 1;
   flex-direction: column;
   width: 100%;
-  padding: 0 16px;
+  min-height: 140px;
 
-  &:not(.is-collapsed) {
-    flex: 1;
-    min-height: 140px;
-  }
-
-  &.is-collapsed {
-    .multi-file-commit-panel-header {
-      margin-left: -$gl-padding;
-      margin-right: -$gl-padding;
-
-      svg {
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      .multi-file-commit-panel-collapse-btn {
-        margin-right: auto;
-        margin-left: auto;
-        border-left: 0;
-      }
-    }
+  &.is-first {
+    border-bottom: 1px solid $white-dark;
   }
 }
 
 .ide-staged-action-btn {
   margin-left: auto;
-  color: $gl-link-color;
+  line-height: 22px;
+}
+
+.ide-commit-file-count {
+  min-width: 22px;
+  margin-left: auto;
+  background-color: $gray-light;
+  border-radius: $border-radius-default;
+  border: 1px solid $white-dark;
+  line-height: 20px;
+  text-align: center;
 }
 
 .ide-commit-radios {
   label {
     font-weight: normal;
+
+    &.is-disabled {
+      .ide-radio-label {
+        text-decoration: line-through;
+      }
+    }
   }
 
   .help-block {
@@ -868,17 +831,58 @@
   margin-left: 25px;
 }
 
-.ide-external-links {
-  p {
-    margin: 0;
+.ide-sidebar-link {
+  display: flex;
+  align-items: center;
+  position: relative;
+  height: 60px;
+  width: 100%;
+  padding: 0 $gl-padding;
+  color: $gl-text-color-secondary;
+  background-color: transparent;
+  border: 0;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+  outline: 0;
+
+  svg {
+    margin: 0 auto;
+  }
+
+  &:hover {
+    color: $gl-text-color;
+    background-color: $theme-gray-100;
+  }
+
+  &:focus {
+    color: $gl-text-color;
+    background-color: $theme-gray-200;
+  }
+
+  &.active {
+    // extend width over border of sidebar section
+    width: calc(100% + 1px);
+    padding-right: $gl-padding + 1px;
+    background-color: $white-light;
+    border-top-color: $white-dark;
+    border-bottom-color: $white-dark;
+
+    &::after {
+      content: '';
+      position: absolute;
+      right: -1px;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: $white-light;
+    }
   }
 }
 
-.ide-sidebar-link {
-  padding: $gl-padding-8 $gl-padding;
-  display: flex;
-  align-items: center;
-  font-weight: $gl-font-weight-bold;
+.ide-activity-bar {
+  position: relative;
+  flex: 0 0 60px;
+  z-index: 1;
 }
 
 .ide-file-finder-overlay {
@@ -972,6 +976,120 @@
   resize: none;
 }
 
+.ide-tree-header {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  margin-left: 10px;
+  margin-right: 10px;
+  border-bottom: 1px solid $white-dark;
+
+  .ide-new-btn {
+    margin-left: auto;
+  }
+}
+
+.ide-sidebar-branch-title {
+  font-weight: $gl-font-weight-normal;
+
+  svg {
+    position: relative;
+    top: 3px;
+    margin-top: -1px;
+  }
+}
+
+.commit-form-compact {
+  .btn {
+    margin-bottom: 8px;
+  }
+
+  p {
+    margin-bottom: 0;
+  }
+}
+
+.commit-form-slide-up-enter-active,
+.commit-form-slide-up-leave-active {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  transition: all 0.3s ease;
+}
+
+.is-full .commit-form-slide-up-enter,
+.is-compact .commit-form-slide-up-leave-to {
+  transform: translateY(100%);
+}
+
+.is-full .commit-form-slide-up-enter-to,
+.is-compact .commit-form-slide-up-leave {
+  transform: translateY(0);
+}
+
+.commit-form-slide-up-enter,
+.commit-form-slide-up-leave-to {
+  opacity: 0;
+}
+
+.ide-review-header {
+  flex-direction: column;
+  align-items: flex-start;
+
+  .dropdown {
+    margin-left: auto;
+  }
+
+  a {
+    color: $gl-link-color;
+  }
+}
+
+.ide-review-sub-header {
+  color: $gl-text-color-secondary;
+}
+
+.ide-tree-changes {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+}
+
 .ide-new-modal-label {
   line-height: 34px;
+}
+
+.multi-file-commit-panel-success-message {
+  position: absolute;
+  top: 61px;
+  left: 1px;
+  bottom: 0;
+  right: 0;
+  z-index: 10;
+  background: $white-light;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.ide-review-button-holder {
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+.ide-context-header {
+  .avatar {
+    flex: 0 0 40px;
+  }
+}
+
+.ide-sidebar-project-title {
+  min-width: 0;
+
+  .sidebar-context-title {
+    white-space: nowrap;
+  }
 }

@@ -23,10 +23,13 @@ module API
         runner =
           if runner_registration_token_valid?
             # Create shared runner. Requires admin access
-            Ci::Runner.create(attributes.merge(is_shared: true))
+            Ci::Runner.create(attributes.merge(is_shared: true, runner_type: :instance_type))
           elsif project = Project.find_by(runners_token: params[:token])
-            # Create a specific runner for project.
-            project.runners.create(attributes)
+            # Create a specific runner for the project
+            project.runners.create(attributes.merge(runner_type: :project_type))
+          elsif group = Group.find_by(runners_token: params[:token])
+            # Create a specific runner for the group
+            group.runners.create(attributes.merge(runner_type: :group_type))
           end
 
         break forbidden! unless runner
@@ -150,9 +153,20 @@ module API
         content_range = request.headers['Content-Range']
         content_range = content_range.split('-')
 
-        stream_size = job.trace.append(request.body.read, content_range[0].to_i)
-        if stream_size < 0
-          break error!('416 Range Not Satisfiable', 416, { 'Range' => "0-#{-stream_size}" })
+        # TODO:
+        # it seems that `Content-Range` as formatted by runner is wrong,
+        # the `byte_end` should point to final byte, but it points byte+1
+        # that means that we have to calculate end of body,
+        # as we cannot use `content_length[1]`
+        # Issue: https://gitlab.com/gitlab-org/gitlab-runner/issues/3275
+
+        body_data = request.body.read
+        body_start = content_range[0].to_i
+        body_end = body_start + body_data.bytesize
+
+        stream_size = job.trace.append(body_data, body_start)
+        unless stream_size == body_end
+          break error!('416 Range Not Satisfiable', 416, { 'Range' => "0-#{stream_size}" })
         end
 
         status 202
