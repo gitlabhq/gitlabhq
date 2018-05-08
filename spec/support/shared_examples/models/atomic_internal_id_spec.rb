@@ -1,6 +1,8 @@
 require 'spec_helper'
 
-shared_examples_for 'AtomicInternalId' do
+shared_examples_for 'AtomicInternalId' do 
+  let(:validate_presence) { true }
+
   describe '.has_internal_id' do
     describe 'Module inclusion' do
       subject { described_class }
@@ -15,7 +17,14 @@ shared_examples_for 'AtomicInternalId' do
         allow(InternalId).to receive(:generate_next).and_return(nil)
       end
 
-      it { is_expected.to validate_presence_of(internal_id_attribute) }
+      it 'checks presence' do
+        if validate_presence
+          is_expected.to validate_presence_of(internal_id_attribute)
+        else
+          is_expected.not_to validate_presence_of(internal_id_attribute)
+        end
+      end
+
       it { is_expected.to validate_numericality_of(internal_id_attribute) }
     end
 
