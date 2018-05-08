@@ -231,7 +231,7 @@ period will be penalized each time it fails up to a maximum amount of time.
 ## Pushing to a remote repository **[STARTER]**
 
 >[Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/249) in
-GitLab Enterprise Edition 8.7.
+GitLab Enterprise Edition 8.7. [Moved to GitLab Community Edition][ce-18715] in 10.8.
 
 For an existing project, you can set up push mirror from your project's
 **Settings ➔ Repository** and searching for the "Push to a remote repository"
@@ -259,7 +259,7 @@ repository_mirroring/repository_mirroring_diverged_branch_push.png)
 
 ### Push only protected branches
 
->[Introduced][ee-3350] in GitLab Enterprise Edition 10.3.
+>[Introduced][ee-3350] in GitLab Enterprise Edition 10.3. [Moved to GitLab Community Edition][ce-18715] in 10.8.
 
 You can choose to only push your protected branches from GitLab to your remote repository.
 
@@ -339,6 +339,7 @@ limitations of GitFusion.
 [ee-3326]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3326
 [ee-3350]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3350
 [ee-3453]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3453
+[ce-18715]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18715
 [perms]: ../user/permissions.md
 [hooks]: ../administration/custom_hooks.html
 [deploy-key]: ../ssh/README.md#deploy-keys
