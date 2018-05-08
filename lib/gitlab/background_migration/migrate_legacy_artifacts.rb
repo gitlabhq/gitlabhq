@@ -25,11 +25,11 @@ module Gitlab
 
         ##
         # File location of the file
-        # Location 1: File.join(model.created_at.utc.strftime('%Y_%m'), model.project_id.to_s, model.id.to_s)
-        # Location 2: File.join(disk_hash[0..1], disk_hash[2..3], disk_hash, creation_date, model.job_id.to_s, model.id.to_s)
+        # legacy_path: File.join(model.created_at.utc.strftime('%Y_%m'), model.project_id.to_s, model.id.to_s)
+        # current_path: File.join(disk_hash[0..1], disk_hash[2..3], disk_hash, creation_date, model.job_id.to_s, model.id.to_s)
         enum file_location: {
-          location_2: nil,
-          location_1: 1
+          current_path: nil,
+          legacy_path: 1
         }
       end
 
@@ -43,7 +43,7 @@ module Gitlab
             project_id: build.project_id,
             job_id: build.id,
             expire_at: build.artifacts_expire_at,
-            file_location: Gitlab::BackgroundMigration::MigrateLegacyArtifacts::JobArtifact.file_locations['location_1'],
+            file_location: Gitlab::BackgroundMigration::MigrateLegacyArtifacts::JobArtifact.file_locations['legacy_path'],
             created_at: build.created_at,
             updated_at: build.created_at
           }
@@ -58,7 +58,7 @@ module Gitlab
 
           if build.artifacts_metadata
             rows << base_param.merge({
-              size: get_file_size_of_legacy_metadata(build), # `size` of legacy metadatas had not been persisted
+              size: get_legacy_metadata_size(build), # `size` of legacy metadatas had not been persisted
               file: build.artifacts_metadata,
               file_store: build.artifacts_metadata_store || JobArtifact::LOCAL_STORE,
               file_type: Gitlab::BackgroundMigration::MigrateLegacyArtifacts::JobArtifact.file_types['metadata'],
@@ -95,7 +95,7 @@ module Gitlab
       ##
       # This method is efficient that request with HEAD method and get content-length,
       # instead of pulling the whole data
-      def get_file_size_of_legacy_metadata(build)
+      def get_legacy_metadata_size(build)
         legacy_file_path = File.join(build.created_at.utc.strftime('%Y_%m'), build.project_id.to_s, build.id.to_s, build.legacy_artifacts_metadata)
 
         10 # TODO:
