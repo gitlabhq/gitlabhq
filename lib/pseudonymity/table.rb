@@ -30,6 +30,7 @@ module Pseudonymity
       @config = {}
       @csv_output = ""
       parse_config
+      @schema = {}
     end
 
     def tables_to_csv
@@ -40,17 +41,33 @@ module Pseudonymity
         return
       end
       tables.map do | k, v |
+        @schema[k] = {}
         table_to_csv(k, v["whitelist"], v["pseudo"])
       end
+      schema_to_yml
+    end
+
+    def schema_to_yml
+      file_path = "#{@csv_output}/schema_#{Time.now.to_i}.yml"
+      File.open(file_path, 'w') { |file| file.write(@schema.to_yaml) }
     end
 
     def table_to_csv(table, whitelist_columns, pseudonymity_columns)
-      sql = "SELECT #{whitelist_columns.join(",")} from #{table}"
+      sql = "SELECT #{whitelist_columns.join(",")} FROM #{table};"
+      type_sql = "SELECT column_name, data_type FROM information_schema.columns WHERE table_name = '#{table}';"
       results = ActiveRecord::Base.connection.exec_query(sql)
+      type_results = ActiveRecord::Base.connection.exec_query(type_sql)
+      set_schema_column_types(table, type_results)
       return if results.empty?
 
       anon = Anon.new(pseudonymity_columns)
       write_to_csv_file(table, anon.anonymize(results))
+    end
+
+    def set_schema_column_types(table, type_results)
+      type_results.each do | type_result |
+        @schema[table][type_result["column_name"]] = type_result["data_type"]
+      end
     end
 
     def parse_config
