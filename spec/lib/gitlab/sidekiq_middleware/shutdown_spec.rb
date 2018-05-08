@@ -42,7 +42,10 @@ describe Gitlab::SidekiqMiddleware::Shutdown do
     expect(pop_trace).to eq([:sleep, 30])
     expect(pop_trace).to eq([:kill, 'SIGTERM', pid])
 
-    expect(pop_trace).to eq([:sleep, 10])
+    expect(pop_trace).to eq([:sleep, 8])
+    expect(pop_trace).to eq([:kill, 'SIGINT', -pid])
+
+    expect(pop_trace).to eq([:sleep, 2])
     expect(pop_trace).to eq([:kill, 'SIGKILL', pid])
   end
 

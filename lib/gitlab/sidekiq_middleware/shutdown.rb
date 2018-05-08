@@ -11,6 +11,9 @@ module Gitlab
       GRACE_TIME = (ENV['SIDEKIQ_MEMORY_KILLER_GRACE_TIME'] || 15 * 60).to_s.to_i
       # Wait 30 seconds for running jobs to finish during graceful shutdown
       SHUTDOWN_WAIT = (ENV['SIDEKIQ_MEMORY_KILLER_SHUTDOWN_WAIT'] || 30).to_s.to_i
+      # Wait additional time for Sidekiq to finish terminatring
+      # and for subprocesses to terminate
+      ADDITIONAL_WAIT = 2
 
       # This exception can be used to request that the middleware start shutting down Sidekiq
       WantShutdown = Class.new(StandardError)
@@ -81,8 +84,15 @@ module Gitlab
         # then terminating itself.
         wait_and_signal(SHUTDOWN_WAIT, 'SIGTERM', 'gracefully shut down')
 
-        # Wait for Sidekiq to shutdown gracefully, and kill it if it didn't.
-        wait_and_signal(Sidekiq.options[:timeout] + 2, 'SIGKILL', 'die')
+        # Wait for Sidekiq to shutdown gracefully
+        # If it didn't then attempt to clean up any subprocesses
+        subprocesses_warning = "sending SIGINT to Sidekiq group PID-#{pid} to kill subprocesses"
+        warn_and_wait(Sidekiq.options[:timeout], subprocesses_warning) do
+          kill('SIGINT', -pid)
+        end
+
+        # Kill Sidekiq if it was unable to shutdown gracefully
+        wait_and_signal(ADDITIONAL_WAIT, 'SIGKILL', 'die')
       end
 
       def check_rss!
@@ -102,11 +112,19 @@ module Gitlab
       end
 
       def wait_and_signal(time, signal, explanation)
-        Sidekiq.logger.warn "waiting #{time} seconds before sending Sidekiq worker PID-#{pid} #{signal} (#{explanation})"
-        sleep(time)
+        warning = "sending Sidekiq worker PID-#{pid} #{signal} (#{explanation})"
 
-        Sidekiq.logger.warn "sending Sidekiq worker PID-#{pid} #{signal} (#{explanation})"
-        kill(signal, pid)
+        warn_and_wait(time, warning) do
+          kill(signal, pid)
+        end
+      end
+
+      def warn_and_wait(time, warning)
+        Sidekiq.logger.warn "waiting #{time} seconds before #{warning}"
+        sleep(time)
+        Sidekiq.logger.warn(warning)
+
+        yield
       end
 
       def pid
