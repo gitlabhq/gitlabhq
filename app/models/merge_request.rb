@@ -1034,6 +1034,10 @@ class MergeRequest < ActiveRecord::Base
     @merge_commit ||= project.commit(merge_commit_sha) if merge_commit_sha
   end
 
+  def short_merge_commit_sha
+    Commit.truncate_sha(merge_commit_sha) if merge_commit_sha
+  end
+
   def can_be_reverted?(current_user)
     return false unless merge_commit
 

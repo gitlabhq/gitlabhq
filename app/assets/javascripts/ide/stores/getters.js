@@ -1,5 +1,5 @@
-import { __ } from '~/locale';
 import { getChangesCountForFiles, filePathMatches } from './utils';
+import { activityBarViews } from '../constants';
 
 export const activeFile = state => state.openFiles.find(file => file.active) || null;
 
@@ -31,15 +31,12 @@ export const currentMergeRequest = state => {
   return null;
 };
 
-// eslint-disable-next-line no-confusing-arrow
-export const collapseButtonIcon = state =>
-  state.rightPanelCollapsed ? 'angle-double-left' : 'angle-double-right';
+export const currentProject = state => state.projects[state.currentProjectId];
+
+export const currentTree = state =>
+  state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
 
 export const hasChanges = state => !!state.changedFiles.length || !!state.stagedFiles.length;
-
-// eslint-disable-next-line no-confusing-arrow
-export const collapseButtonTooltip = state =>
-  state.rightPanelCollapsed ? __('Expand sidebar') : __('Collapse sidebar');
 
 export const hasMergeRequest = state => !!state.currentMergeRequestId;
 
@@ -59,6 +56,16 @@ export const allBlobs = state =>
 export const getChangedFile = state => path => state.changedFiles.find(f => f.path === path);
 export const getStagedFile = state => path => state.stagedFiles.find(f => f.path === path);
 
+export const lastOpenedFile = state =>
+  [...state.changedFiles, ...state.stagedFiles].sort((a, b) => b.lastOpenedAt - a.lastOpenedAt)[0];
+
+export const isEditModeActive = state => state.currentActivityView === activityBarViews.edit;
+export const isCommitModeActive = state => state.currentActivityView === activityBarViews.commit;
+export const isReviewModeActive = state => state.currentActivityView === activityBarViews.review;
+
+export const someUncommitedChanges = state =>
+  !!(state.changedFiles.length || state.stagedFiles.length);
+
 export const getChangesInFolder = state => path => {
   const changedFilesCount = state.changedFiles.filter(f => filePathMatches(f, path)).length;
   const stagedFilesCount = state.stagedFiles.filter(
@@ -73,6 +80,12 @@ export const getUnstagedFilesCountForPath = state => path =>
 
 export const getStagedFilesCountForPath = state => path =>
   getChangesCountForFiles(state.stagedFiles, path);
+
+export const lastCommit = (state, getters) => {
+  const branch = getters.currentProject && getters.currentProject.branches[state.currentBranchId];
+
+  return branch ? branch.commit : null;
+};
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

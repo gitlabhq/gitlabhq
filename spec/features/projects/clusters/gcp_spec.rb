@@ -185,4 +185,44 @@ feature 'Gcp Cluster', :js do
       expect(page).to have_link('Google account')
     end
   end
+
+  context 'when user has not dismissed GCP signup offer' do
+    before do
+      visit project_clusters_path(project)
+    end
+
+    it 'user sees offer on cluster index page' do
+      expect(page).to have_css('.gcp-signup-offer')
+    end
+
+    it 'user sees offer on cluster create page' do
+      click_link 'Add Kubernetes cluster'
+
+      expect(page).to have_css('.gcp-signup-offer')
+    end
+
+    it 'user sees offer on cluster GCP login page' do
+      click_link 'Add Kubernetes cluster'
+      click_link 'Create on Google Kubernetes Engine'
+
+      expect(page).to have_css('.gcp-signup-offer')
+    end
+  end
+
+  context 'when user has dismissed GCP signup offer' do
+    before do
+      visit project_clusters_path(project)
+    end
+
+    it 'user does not see offer after dismissing' do
+      expect(page).to have_css('.gcp-signup-offer')
+
+      find('.gcp-signup-offer .close').click
+      wait_for_requests
+
+      click_link 'Add Kubernetes cluster'
+
+      expect(page).not_to have_css('.gcp-signup-offer')
+    end
+  end
 end

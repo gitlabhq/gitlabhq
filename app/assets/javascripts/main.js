@@ -30,9 +30,12 @@ import './projects_dropdown';
 import initBreadcrumbs from './breadcrumb';
 import initDispatcher from './dispatcher';
 
+<<<<<<< HEAD
 // EE-only scripts
 import 'ee/main'; // eslint-disable-line import/first
 
+=======
+>>>>>>> upstream/master
 // expose jQuery as global (TODO: remove these)
 window.jQuery = jQuery;
 window.$ = jQuery;

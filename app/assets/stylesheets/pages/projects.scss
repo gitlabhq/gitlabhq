@@ -354,30 +354,48 @@
   min-width: 200px;
 }
 
-.deploy-key-content {
-  @media (min-width: $screen-sm-min) {
-    float: left;
+.deploy-keys {
+  .scrolling-tabs-container {
+    position: relative;
+  }
+}
 
-    &:last-child {
-      float: right;
+.deploy-key {
+  // Ensure that the fingerprint does not overflow on small screens
+  .fingerprint {
+    word-break: break-all;
+    white-space: normal;
+  }
+
+  .deploy-project-label,
+  .key-created-at {
+    svg {
+      vertical-align: text-top;
     }
   }
-}
 
-.deploy-key-projects {
-  @media (min-width: $screen-sm-min) {
-    line-height: 42px;
+  .btn svg {
+    vertical-align: top;
+  }
+
+  .key-created-at {
+    line-height: unset;
   }
 }
 
-a.deploy-project-label {
-  padding: 5px;
-  margin-right: 5px;
-  color: $gl-text-color;
-  background-color: $row-hover;
+.deploy-project-list {
+  margin-bottom: -$gl-padding-4;
 
-  &:hover {
-    color: $gl-link-color;
+  a.deploy-project-label {
+    margin-right: $gl-padding-4;
+    margin-bottom: $gl-padding-4;
+    color: $gl-text-color-secondary;
+    background-color: $theme-gray-100;
+    line-height: $gl-btn-line-height;
+
+    &:hover {
+      color: $gl-link-color;
+    }
   }
 }
 

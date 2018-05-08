@@ -164,6 +164,7 @@ describe RemoteMirror do
       end
     end
 
+<<<<<<< HEAD
     context 'as a Geo secondary' do
       it 'returns nil' do
         allow(Gitlab::Geo).to receive(:secondary?).and_return(true)
@@ -172,6 +173,8 @@ describe RemoteMirror do
       end
     end
 
+=======
+>>>>>>> upstream/master
     context 'with remote mirroring enabled' do
       context 'with only protected branches enabled' do
         context 'when it did not update in the last minute' do

@@ -176,6 +176,7 @@ describe TestHooks::ProjectService do
     end
 
     context 'wiki_page_events' do
+      let(:project) { create(:project, :wiki_repo) }
       let(:trigger) { 'wiki_page_events' }
       let(:trigger_key) { :wiki_page_hooks }
 

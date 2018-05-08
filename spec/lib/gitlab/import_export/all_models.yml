@@ -291,6 +291,7 @@ project:
 - pages_domains
 - authorized_users
 - project_authorizations
+<<<<<<< HEAD
 - mirror_user
 - push_rule
 - jenkins_service
@@ -302,6 +303,9 @@ project:
 - remote_mirrors
 - path_locks
 - approver_groups
+=======
+- remote_mirrors
+>>>>>>> upstream/master
 - route
 - redirect_routes
 - statistics

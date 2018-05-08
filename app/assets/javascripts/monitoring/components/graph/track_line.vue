@@ -19,16 +19,16 @@ export default {
 <template>
   <td>
     <svg
-      width="15"
-      height="6">
+      width="16"
+      height="8">
       <line
         :stroke-dasharray="stylizedLine"
         :stroke="track.lineColor"
         stroke-width="4"
         :x1="0"
-        :x2="15"
-        :y1="2"
-        :y2="2"
+        :x2="16"
+        :y1="4"
+        :y2="4"
       />
     </svg>
   </td>

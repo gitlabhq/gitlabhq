@@ -28,6 +28,10 @@ class CreateRemoteMirrors < ActiveRecord::Migration
   end
 
   def down
+<<<<<<< HEAD
     # ee/db/migrate/20160321161032_create_remote_mirrors_ee.rb will remove the table
+=======
+    drop_table(:remote_mirrors) if table_exists?(:remote_mirrors)
+>>>>>>> upstream/master
   end
 end

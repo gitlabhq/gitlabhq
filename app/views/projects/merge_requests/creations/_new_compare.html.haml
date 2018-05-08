@@ -4,7 +4,7 @@
 = form_for [@project.namespace.becomes(Namespace), @project, @merge_request], url: project_new_merge_request_path(@project), method: :get, html: { class: "merge-request-form form-inline js-requires-input" } do |f|
   .hide.alert.alert-danger.mr-compare-errors
   .js-merge-request-new-compare.row{ 'data-source-branch-url': project_new_merge_request_branch_from_path(@source_project), 'data-target-branch-url': project_new_merge_request_branch_to_path(@source_project) }
-    .col-md-6
+    .col-lg-6
       .panel.panel-default.panel-new-merge-request
         .panel-heading
           Source branch
@@ -31,7 +31,7 @@
           .text-center= icon('spinner spin', class: 'js-source-loading')
           %ul.list-unstyled.mr_source_commit
 
-    .col-md-6
+    .col-lg-6
       .panel.panel-default.panel-new-merge-request
         .panel-heading
           Target branch

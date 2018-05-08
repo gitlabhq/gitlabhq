@@ -202,15 +202,21 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       resource :mirror, only: [:show, :update] do
         member do
+<<<<<<< HEAD
           get :ssh_host_keys, constraints: { format: :json }
+=======
+>>>>>>> upstream/master
           post :update_now
         end
       end
 
+<<<<<<< HEAD
       ## EE-specific
       resources :push_rules, constraints: { id: /\d+/ }, only: [:update]
       ## EE-specific
 
+=======
+>>>>>>> upstream/master
       resources :pipelines, only: [:index, :new, :create, :show] do
         collection do
           resource :pipelines_settings, path: 'settings', only: [:show, :update]
@@ -219,6 +225,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         member do
           get :stage
+          get :stage_ajax
           post :cancel
           post :retry
           get :builds

@@ -23,9 +23,12 @@ class Project < ActiveRecord::Base
   include ::Gitlab::Utils::StrongMemoize
   include ChronicDurationAttribute
   include FastDestroyAll::Helpers
+<<<<<<< HEAD
 
   # EE specific modules
   prepend EE::Project
+=======
+>>>>>>> upstream/master
 
   extend Gitlab::ConfigHelper
 
@@ -69,7 +72,14 @@ class Project < ActiveRecord::Base
   default_value_for :only_mirror_protected_branches, true
 
   add_authentication_token_field :runners_token
+<<<<<<< HEAD
   before_validation :mark_remote_mirrors_for_removal
+=======
+
+  before_validation :mark_remote_mirrors_for_removal, if: -> { ActiveRecord::Base.connection.table_exists?(:remote_mirrors) }
+
+  before_save :ensure_runners_token
+>>>>>>> upstream/master
 
   before_save :ensure_runners_token
   after_save :update_project_statistics, if: :namespace_id_changed?

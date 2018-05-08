@@ -34,6 +34,11 @@ export default {
       type: Number,
       required: true,
     },
+    disableActionDropdown: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     ...mapGetters([
@@ -99,16 +104,14 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['toggleTreeOpen', 'updateDelayViewerUpdated']),
+    ...mapActions(['toggleTreeOpen']),
     clickFile() {
       // Manual Action if a tree is selected/opened
       if (this.isTree && this.$router.currentRoute.path === `/project${this.file.url}`) {
         this.toggleTreeOpen(this.file.path);
       }
 
-      return this.updateDelayViewerUpdated(true).then(() => {
-        router.push(`/project${this.file.url}`);
-      });
+      router.push(`/project${this.file.url}`);
     },
   },
 };
@@ -170,7 +173,7 @@ export default {
           />
         </span>
         <new-dropdown
-          v-if="isTree"
+          v-if="isTree && !disableActionDropdown"
           :project-id="file.projectId"
           :branch="file.branchId"
           :path="file.path"

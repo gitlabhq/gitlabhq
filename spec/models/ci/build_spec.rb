@@ -1538,7 +1538,10 @@ describe Ci::Build do
         { key: 'CI_PROJECT_VISIBILITY', value: 'private', public: true },
         { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
         { key: 'CI_CONFIG_PATH', value: pipeline.ci_yaml_file_path, public: true },
-        { key: 'CI_PIPELINE_SOURCE', value: pipeline.source, public: true }
+        { key: 'CI_PIPELINE_SOURCE', value: pipeline.source, public: true },
+        { key: 'CI_COMMIT_MESSAGE', value: pipeline.git_commit_message, public: true },
+        { key: 'CI_COMMIT_TITLE', value: pipeline.git_commit_title, public: true },
+        { key: 'CI_COMMIT_DESCRIPTION', value: pipeline.git_commit_description, public: true }
       ]
     end
 

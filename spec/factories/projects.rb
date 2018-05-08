@@ -74,14 +74,18 @@ FactoryBot.define do
 
     trait :import_scheduled do
       import_status :scheduled
+<<<<<<< HEAD
 
       after(:create) do |project, _|
         project.import_state&.update_attributes(last_update_scheduled_at: Time.now)
       end
+=======
+>>>>>>> upstream/master
     end
 
     trait :import_started do
       import_status :started
+<<<<<<< HEAD
 
       after(:create) do |project, _|
         project.import_state&.update_attributes(last_update_started_at: Time.now)
@@ -94,10 +98,17 @@ FactoryBot.define do
       import_status :finished
       mirror_last_update_at timestamp
       mirror_last_successful_update_at timestamp
+=======
+    end
+
+    trait :import_finished do
+      import_status :finished
+>>>>>>> upstream/master
     end
 
     trait :import_failed do
       import_status :failed
+<<<<<<< HEAD
       mirror_last_update_at { Time.now }
     end
 
@@ -108,6 +119,8 @@ FactoryBot.define do
       after(:create) do |project|
         project.import_state&.update_attributes(retry_count: Gitlab::Mirror::MAX_RETRY + 1)
       end
+=======
+>>>>>>> upstream/master
     end
 
     trait :disabled_mirror do
@@ -203,7 +216,10 @@ FactoryBot.define do
         url "http://foo.com"
         enabled true
       end
+<<<<<<< HEAD
 
+=======
+>>>>>>> upstream/master
       after(:create) do |project, evaluator|
         project.remote_mirrors.create!(url: evaluator.url, enabled: evaluator.enabled)
       end
@@ -219,6 +235,13 @@ FactoryBot.define do
     trait :wiki_repo do
       after(:create) do |project|
         raise 'Failed to create wiki repository!' unless project.create_wiki
+
+        # We delete hooks so that gitlab-shell will not try to authenticate with
+        # an API that isn't running
+        project.gitlab_shell.rm_directory(
+          project.repository_storage,
+          File.join("#{project.wiki.repository.disk_path}.git", "hooks")
+        )
       end
     end
 

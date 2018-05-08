@@ -40,10 +40,6 @@
         - if commit.description?
           %button.text-expander.hidden-xs.js-toggle-button{ type: "button" } ...
 
-        - if commit.description?
-          %pre.commit-row-description.js-toggle-content
-            = preserve(markdown_field(commit, :description))
-
         .commiter
           - commit_author_link = commit_author_link(commit, avatar: false, size: 24)
           - commit_timeago = time_ago_with_tooltip(commit.authored_date, placement: 'bottom')
@@ -52,6 +48,10 @@
         - if show_project_name
           %span.project_namespace
             = project.full_name
+
+        - if commit.description?
+          %pre.commit-row-description.js-toggle-content.prepend-top-8.append-bottom-8
+            = preserve(markdown_field(commit, :description))
 
       .commit-actions.flex-row.hidden-xs
         - if request.xhr?

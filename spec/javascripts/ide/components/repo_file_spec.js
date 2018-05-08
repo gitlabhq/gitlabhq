@@ -73,6 +73,43 @@ describe('RepoFile', () => {
       expect(treeChangesEl).not.toBeNull();
       expect(treeChangesEl.textContent).toContain('1');
     });
+
+    it('renders action dropdown', done => {
+      createComponent({
+        file: {
+          ...file('t4'),
+          type: 'tree',
+          branchId: 'master',
+          projectId: 'project',
+        },
+        level: 0,
+      });
+
+      setTimeout(() => {
+        expect(vm.$el.querySelector('.ide-new-btn')).not.toBeNull();
+
+        done();
+      });
+    });
+
+    it('disables action dropdown', done => {
+      createComponent({
+        file: {
+          ...file('t4'),
+          type: 'tree',
+          branchId: 'master',
+          projectId: 'project',
+        },
+        level: 0,
+        disableActionDropdown: true,
+      });
+
+      setTimeout(() => {
+        expect(vm.$el.querySelector('.ide-new-btn')).toBeNull();
+
+        done();
+      });
+    });
   });
 
   describe('locked file', () => {

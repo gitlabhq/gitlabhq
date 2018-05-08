@@ -2,7 +2,6 @@
   background: none;
   border: 0;
   padding: 0;
-  margin-top: 10px;
   word-break: normal;
   white-space: pre-wrap;
 }
@@ -20,10 +19,6 @@
   .commit-title {
     margin: 0;
     color: $gl-text-color;
-  }
-
-  .commit-description {
-    margin-top: 15px;
   }
 }
 
@@ -178,7 +173,7 @@
 .commit-detail {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: start;
   flex-grow: 1;
 
   .project_namespace {
@@ -272,20 +267,16 @@
 
   .commit-row-description {
     font-size: 14px;
-    padding: 10px 15px;
-    margin: 10px 0;
-    background: $gray-light;
+    padding: 0 0 0 $gl-padding-8;
+    border: 0;
     display: none;
     white-space: pre-wrap;
     word-break: normal;
-
-    pre {
-      border: 0;
-      background: inherit;
-      padding: 0;
-      margin: 0;
-      white-space: pre-wrap;
-    }
+    color: $gl-text-color-secondary;
+    background: none;
+    font-family: inherit;
+    border-left: 2px solid $theme-gray-300;
+    border-radius: unset;
 
     a {
       color: $gl-text-color;

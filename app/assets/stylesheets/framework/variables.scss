@@ -231,6 +231,7 @@ $row-hover: $blue-50;
 $row-hover-border: $blue-200;
 $progress-color: #c0392b;
 $header-height: 40px;
+$ide-statusbar-height: 27px;
 $fixed-layout-width: 1280px;
 $limited-layout-width: 990px;
 $limited-layout-width-sm: 790px;
@@ -268,6 +269,7 @@ $system-footer-height: $system-header-height;
 $flash-height: 52px;
 $context-header-height: 60px;
 $breadcrumb-min-height: 48px;
+$gcp-signup-offer-icon-max-width: 125px;
 
 $issue-box-upcoming-bg: #8f8f8f;
 $pages-group-name-color: #4c4e54;
@@ -342,11 +344,10 @@ $diff-jagged-border-gradient-color: darken($white-normal, 8%);
 /*
  * Fonts
  */
-$monospace_font: 'Menlo', 'DejaVu Sans Mono', 'Liberation Mono', 'Consolas',
-  'Ubuntu Mono', 'Courier New', 'andale mono', 'lucida console', monospace;
-$regular_font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-  Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif,
-  'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+$monospace_font: 'Menlo', 'DejaVu Sans Mono', 'Liberation Mono', 'Consolas', 'Ubuntu Mono',
+  'Courier New', 'andale mono', 'lucida console', monospace;
+$regular_font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell,
+  'Helvetica Neue', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 
 /*
 * Dropdowns
@@ -474,11 +475,9 @@ $issue-boards-card-shadow: rgba(186, 186, 186, 0.5);
 */
 $issue-boards-filter-height: 68px;
 $issue-boards-breadcrumbs-height-xs: 63px;
-$issue-board-list-difference-xs: $header-height +
-  $issue-boards-breadcrumbs-height-xs;
+$issue-board-list-difference-xs: $header-height + $issue-boards-breadcrumbs-height-xs;
 $issue-board-list-difference-sm: $header-height + $breadcrumb-min-height;
-$issue-board-list-difference-md: $issue-board-list-difference-sm +
-  $issue-boards-filter-height;
+$issue-board-list-difference-md: $issue-board-list-difference-sm + $issue-boards-filter-height;
 
 /*
 * Avatar
@@ -699,6 +698,8 @@ $stage-hover-bg: $gray-darker;
 $ci-action-icon-size: 22px;
 $pipeline-dropdown-line-height: 20px;
 $pipeline-dropdown-status-icon-size: 18px;
+$ci-action-dropdown-button-size: 24px;
+$ci-action-dropdown-svg-size: 12px;
 
 /*
 CI variable lists

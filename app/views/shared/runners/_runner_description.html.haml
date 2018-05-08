@@ -1,0 +1,16 @@
+.light.prepend-top-default
+  %p
+    = _("A 'Runner' is a process which runs a job. You can setup as many Runners as you need.")
+    %br
+    = _('Runners can be placed on separate users, servers, and even on your local machine.')
+
+  %p
+    = _('Each Runner can be in one of the following states:')
+  %div
+    %ul
+      %li
+        %span.label.label-success active
+        = _('- Runner is active and can process any new jobs')
+      %li
+        %span.label.label-danger paused
+        = _('- Runner is paused and will not receive any new jobs')

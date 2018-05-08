@@ -388,9 +388,9 @@ describe 'Pipelines', :js do
 
           it 'should be possible to cancel pending build' do
             find('.js-builds-dropdown-button').click
-            find('a.js-ci-action-icon').click
+            find('.js-ci-action').click
+            wait_for_requests
 
-            expect(page).to have_content('canceled')
             expect(build.reload).to be_canceled
           end
         end
@@ -407,7 +407,7 @@ describe 'Pipelines', :js do
 
             within('.js-builds-dropdown-list') do
               build_element = page.find('.mini-pipeline-graph-dropdown-item')
-              expect(build_element['data-title']).to eq('build - failed <br> (unknown failure)')
+              expect(build_element['data-original-title']).to eq('build - failed <br> (unknown failure)')
             end
           end
         end
