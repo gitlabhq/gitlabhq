@@ -26,7 +26,6 @@ import './feature_highlight/feature_highlight_options';
 import LazyLoader from './lazy_loader';
 import initLogoAnimation from './logo';
 import './milestone_select';
-import initProjectsDropdown from './projects_dropdown';
 import initBreadcrumbs from './breadcrumb';
 import initDispatcher from './dispatcher';
 
@@ -78,7 +77,13 @@ document.addEventListener('DOMContentLoaded', () => {
   initImporterStatus();
   initTodoToggle();
   initLogoAnimation();
-  initProjectsDropdown();
+
+  // Load the frequent projects menu on-demand
+  $('#nav-projects-dropdown').one('show.bs.dropdown', () => {
+    import(/* webpackPrefetch: true, webpackChunkName: 'projects_dropdown' */ './projects_dropdown')
+      .then(projectsDropdown => projectsDropdown.default())
+      .catch(() => Flash('Unable to load frequently used projects dropdown.'));
+  });
 
   // Set the default path for all cookies to GitLab's root directory
   Cookies.defaults.path = gon.relative_url_root || '/';
