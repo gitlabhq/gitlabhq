@@ -23,6 +23,7 @@
   margin-top: 0;
   border-top: 1px solid $white-dark;
   border-bottom: 1px solid $white-dark;
+  padding-bottom: $ide-statusbar-height;
 
   &.is-collapsed {
     .ide-file-list {
@@ -375,7 +376,13 @@
   padding: $gl-bar-padding $gl-padding;
   background: $white-light;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  height: $ide-statusbar-height;
+
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
 
   > div + div {
     padding-left: $gl-padding;
@@ -386,6 +393,14 @@
   }
 }
 
+.ide-status-file {
+  text-align: right;
+
+  .ide-status-branch + &,
+  &:first-child {
+    margin-left: auto;
+  }
+}
 // Not great, but this is to deal with our current output
 .multi-file-preview-holder {
   height: 100%;

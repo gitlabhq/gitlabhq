@@ -141,4 +141,24 @@ describe('IDE store getters', () => {
       expect(getters.getChangesInFolder(localState)('test')).toBe(2);
     });
   });
+
+  describe('lastCommit', () => {
+    it('returns the last commit of the current branch on the current project', () => {
+      const commitTitle = 'Example commit title';
+      const localGetters = {
+        currentProject: {
+          branches: {
+            'example-branch': {
+              commit: {
+                title: commitTitle,
+              },
+            },
+          },
+        },
+      };
+      localState.currentBranchId = 'example-branch';
+
+      expect(getters.lastCommit(localState, localGetters).title).toBe(commitTitle);
+    });
+  });
 });
