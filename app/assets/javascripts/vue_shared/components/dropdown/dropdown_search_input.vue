@@ -30,14 +30,14 @@ export default {
       autocomplete="off"
     />
     <i
-      aria-hidden="true"
       class="fa fa-search dropdown-input-search"
+      aria-hidden="true"
       data-hidden="true"
     >
     </i>
     <i
-      aria-hidden="true"
       class="fa fa-times dropdown-input-clear js-dropdown-input-clear"
+      aria-hidden="true"
       data-hidden="true"
       role="button"
     >

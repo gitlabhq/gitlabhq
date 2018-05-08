@@ -1,5 +1,5 @@
 <script>
-import { s__ } from '~/locale';
+import { __ } from '~/locale';
 import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 
 export default {
@@ -19,8 +19,8 @@ export default {
     },
     toggleText: {
       type: String,
-      required: true,
-      default: s__('ClusterIntegration|Select'),
+      required: false,
+      default: __('Select'),
     },
   },
 };
@@ -41,11 +41,15 @@ export default {
     <span class="dropdown-toggle-text">
       {{ toggleText }}
     </span>
-    <i
-      aria-hidden="true"
-      data-hidden="true"
+    <span
+      class="dropdown-toggle-icon"
       v-show="!isLoading"
-      class="fa fa-chevron-down"
-    ></i>
+    >
+      <i
+        class="fa fa-chevron-down"
+        aria-hidden="true"
+        data-hidden="true"
+      ></i>
+  </span>
   </button>
 </template>
