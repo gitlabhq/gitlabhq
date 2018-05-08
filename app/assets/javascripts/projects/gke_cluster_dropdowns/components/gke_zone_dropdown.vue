@@ -67,6 +67,9 @@ export default {
     searchPlaceholderText() {
       return s__('ClusterIntegration|Search zones');
     },
+    noSearchResultsText() {
+      return s__('ClusterIntegration|No zones matched your search');
+    },
   },
   created() {
     eventHub.$on('projectSelected', this.fetchZones);
@@ -120,6 +123,9 @@ export default {
       />
       <div class="dropdown-content">
         <ul>
+          <li v-show="!results.length">
+            <span class="menu-item">{{ noSearchResultsText }}</span>
+          </li>
           <li
             v-for="result in results"
             :key="result.id"

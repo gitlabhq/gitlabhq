@@ -73,6 +73,9 @@ export default {
     searchPlaceholderText() {
       return s__('ClusterIntegration|Search machine types');
     },
+    noSearchResultsText() {
+      return s__('ClusterIntegration|No machine types matched your search');
+    },
   },
   created() {
     eventHub.$on('zoneSelected', this.fetchMachineTypes);
@@ -135,6 +138,9 @@ export default {
       />
       <div class="dropdown-content">
         <ul>
+          <li v-show="!results.length">
+            <span class="menu-item">{{ noSearchResultsText }}</span>
+          </li>
           <li
             v-for="result in results"
             :key="result.id"

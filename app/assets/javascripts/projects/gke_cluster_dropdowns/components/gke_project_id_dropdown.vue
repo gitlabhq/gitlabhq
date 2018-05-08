@@ -57,6 +57,9 @@ export default {
     results() {
       return this.projects.filter(item => item.name.toLowerCase().indexOf(this.searchQuery) > -1);
     },
+    noSearchResultsText() {
+      return s__('ClusterIntegration|No projects matched your search');
+    },
     toggleText() {
       if (this.isLoading) {
         return s__('ClusterIntegration|Fetching projects');
@@ -155,6 +158,9 @@ export default {
         />
         <div class="dropdown-content">
           <ul>
+            <li v-show="!results.length">
+              <span class="menu-item">{{ noSearchResultsText }}</span>
+            </li>
             <li
               v-for="result in results"
               :key="result.project_number"
