@@ -13,14 +13,8 @@ Repository mirroring is very useful when, for some reason, you must use a
 project from another source.
 
 There are two kinds of repository mirroring features supported by GitLab:
-<<<<<<< HEAD
-**push** and **pull**. The **push** method mirrors the repository in GitLab
-to another location, whereas the **pull** method mirrors an external repository
-in one in GitLab.
-=======
 **push** and **pull**, the latter being only available in GitLab Enterprise Edition.
 The **push** method mirrors the repository in GitLab to another location.
->>>>>>> upstream/master
 
 Once the mirror repository is updated, all new branches,
 tags, and commits will be visible in the project's activity feed.
@@ -40,23 +34,17 @@ A few things/limitations to consider:
 - The Git LFS objects will not be synced. You'll need to push/pull them
   manually.
 
-<<<<<<< HEAD
 ## Use-cases
 
 - You migrated to GitLab but still need to keep you project in another source.
   In that case, you can simply set it up to mirror to GitLab (pull) and all the
   essential history of commits, tags and branches will be available in your
   GitLab instance.
-=======
-## Use-case
-
->>>>>>> upstream/master
 - You have old projects in another source that you don't use actively anymore,
   but don't want to remove for archiving purposes. In that case, you can create
   a push mirror so that your active GitLab repository can push its changes to the
   old location.
 
-<<<<<<< HEAD
 ## Pulling from a remote repository **[STARTER]**
 
 >[Introduced][ee-51] in GitLab Enterprise Edition 8.2.
@@ -116,7 +104,7 @@ To use this option go to your project's repository settings page under pull mirr
 
 >[Introduced][ee-4559] in GitLab Enterprise Edition 10.6.
 
-You can choose to always update your local branch with the remote version even 
+You can choose to always update your local branch with the remote version even
 if your local version has diverged from the remote.
 
 To use this option go to your project's repository settings page under pull mirror.
@@ -126,7 +114,7 @@ To use this option go to your project's repository settings page under pull mirr
 >[Introduced][ee-3117] in GitLab Enterprise Edition 10.2.
 
 Once a mirror gets retried 14 times in a row, it will get marked as hard failed,
-this will become visible in either the project main dashboard or in the 
+this will become visible in either the project main dashboard or in the
 pull mirror settings page.
 
 ![Hard failed mirror main notice](repository_mirroring/repository_mirroring_hard_failed_main.png)
@@ -244,12 +232,6 @@ period will be penalized each time it fails up to a maximum amount of time.
 
 >[Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/249) in
 GitLab Enterprise Edition 8.7.
-=======
-## Pushing to a remote repository **[STARTER]**
-
->[Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/249) in
-GitLab Enterprise Edition 8.7. [Moved to GitLab Community Edition][ce-18715] in 10.8.
->>>>>>> upstream/master
 
 For an existing project, you can set up push mirror from your project's
 **Settings ➔ Repository** and searching for the "Push to a remote repository"
@@ -259,15 +241,9 @@ effect.
 
 ![Push settings](repository_mirroring/repository_mirroring_push_settings.png)
 
-<<<<<<< HEAD
-Similarly to pull mirroring, when push mirroring is enabled, you are advised
-not to push commits directly to the mirrored repository to prevent the mirror
-diverging. All changes will end up in the mirrored repository whenever commits
-=======
 When push mirroring is enabled, you are advised not to push commits directly
 to the mirrored repository to prevent the mirror diverging.
 All changes will end up in the mirrored repository whenever commits
->>>>>>> upstream/master
 are pushed to GitLab, or when a [forced update](#forcing-an-update) is
 initiated.
 
@@ -283,26 +259,18 @@ repository_mirroring/repository_mirroring_diverged_branch_push.png)
 
 ### Push only protected branches
 
-<<<<<<< HEAD
 >[Introduced][ee-3350] in GitLab Enterprise Edition 10.3.
-=======
->[Introduced][ee-3350] in GitLab Enterprise Edition 10.3. [Moved to GitLab Community Edition][ce-18715] in 10.8.
->>>>>>> upstream/master
 
 You can choose to only push your protected branches from GitLab to your remote repository.
 
 To use this option go to your project's repository settings page under push mirror.
 
-<<<<<<< HEAD
-## Setting up a mirror from GitLab to GitHub
-=======
 ## Setting up a push mirror from GitLab to GitHub
->>>>>>> upstream/master
 
 To set up a mirror from GitLab to GitHub, you need to follow these steps:
 
 1. Create a [GitHub personal access token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/) with the "public_repo" box checked:
-    
+
     ![edit personal access token GitHub](repository_mirroring/repository_mirroring_github_edit_personal_access_token.png)
 
 1. Fill in the "Git repository URL" with the personal access token replacing the password `https://GitHubUsername:GitHubPersonalAccessToken@github.com/group/project.git`:
@@ -313,23 +281,17 @@ To set up a mirror from GitLab to GitHub, you need to follow these steps:
 1. And either wait or trigger the "Update Now" button:
 
     ![update now](repository_mirroring/repository_mirroring_gitlab_push_to_a_remote_repository_update_now.png)
-    
+
 ## Forcing an update
 
-<<<<<<< HEAD
-While mirrors are scheduled to update automatically, you can always force an update (either **push** or
-**pull**) by using the **Update now** button which is exposed in various places:
-=======
 While mirrors are scheduled to update automatically, you can always force an update
 by using the **Update now** button which is exposed in various places:
->>>>>>> upstream/master
 
 - in the commits page
 - in the branches page
 - in the tags page
 - in the **Mirror repository** settings page
 
-<<<<<<< HEAD
 ## Bidirectional mirroring
 
 > **Warning:** There is no bidirectional support without conflicts. If you
@@ -383,9 +345,3 @@ limitations of GitFusion.
 [webhook]: ../user/project/integrations/webhooks.html#push-events
 [pull-api]: ../api/projects.html#start-the-pull-mirroring-process-for-a-project
 [perforce]: ../user/project/import/perforce.html
-=======
-[ee-3350]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3350
-[ce-18715]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18715
-[perms]: ../user/permissions.md
-
->>>>>>> upstream/master
