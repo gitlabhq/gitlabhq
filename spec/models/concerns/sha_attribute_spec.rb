@@ -68,6 +68,19 @@ describe ShaAttribute do
           expect { model.sha_attribute(:name) }.to raise_error(ActiveRecord::NoDatabaseError)
         end
       end
+
+      # EE-specific start
+      context 'when Geo database is not configured' do
+        it 'allows the attribute to be added' do
+          allow(model).to receive(:table_exists?).and_raise(Geo::TrackingBase::SecondaryNotConfigured.new)
+
+          expect(model).not_to receive(:columns)
+          expect(model).to receive(:attribute)
+
+          model.sha_attribute(:name)
+        end
+      end
+      # EE specific end
     end
 
     context 'when in production' do
