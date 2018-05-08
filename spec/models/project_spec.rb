@@ -309,12 +309,12 @@ describe Project do
 
   describe 'project token' do
     it 'sets an random token if none provided' do
-      project = FactoryBot.create :project, runners_token: ''
+      project = FactoryBot.create(:project, runners_token: '')
       expect(project.runners_token).not_to eq('')
     end
 
     it 'does not set an random token if one provided' do
-      project = FactoryBot.create :project, runners_token: 'my-token'
+      project = FactoryBot.create(:project, runners_token: 'my-token')
       expect(project.runners_token).to eq('my-token')
     end
   end
@@ -639,7 +639,7 @@ describe Project do
   describe '#to_param' do
     context 'with namespace' do
       before do
-        @group = create :group, name: 'gitlab'
+        @group = create(:group, name: 'gitlab')
         @project = create(:project, name: 'gitlabhq', namespace: @group)
       end
 
@@ -866,8 +866,8 @@ describe Project do
 
   describe '#star_count' do
     it 'counts stars from multiple users' do
-      user1 = create :user
-      user2 = create :user
+      user1 = create(:user)
+      user2 = create(:user)
       project = create(:project, :public)
 
       expect(project.star_count).to eq(0)
@@ -889,7 +889,7 @@ describe Project do
     end
 
     it 'counts stars on the right project' do
-      user = create :user
+      user = create(:user)
       project1 = create(:project, :public)
       project2 = create(:project, :public)
 
@@ -1148,9 +1148,9 @@ describe Project do
 
   describe '#any_runners?' do
     context 'shared runners' do
-      let(:project) { create :project, shared_runners_enabled: shared_runners_enabled }
-      let(:specific_runner) { create :ci_runner }
-      let(:shared_runner) { create :ci_runner, :shared }
+      let(:project) { create(:project, shared_runners_enabled: shared_runners_enabled) }
+      let(:specific_runner) { create(:ci_runner) }
+      let(:shared_runner) { create(:ci_runner, :shared) }
 
       context 'for shared runners disabled' do
         let(:shared_runners_enabled) { false }
@@ -1208,9 +1208,9 @@ describe Project do
     end
 
     context 'group runners' do
-      let(:project) { create :project, group_runners_enabled: group_runners_enabled }
-      let(:group) { create :group, projects: [project] }
-      let(:group_runner) { create :ci_runner, groups: [group] }
+      let(:project) { create(:project, group_runners_enabled: group_runners_enabled) }
+      let(:group) { create(:group, projects: [project]) }
+      let(:group_runner) { create(:ci_runner, groups: [group]) }
 
       context 'for group runners disabled' do
         let(:group_runners_enabled) { false }
@@ -1292,7 +1292,7 @@ describe Project do
   end
 
   describe '#pages_deployed?' do
-    let(:project) { create :project }
+    let(:project) { create(:project) }
 
     subject { project.pages_deployed? }
 
@@ -1310,8 +1310,8 @@ describe Project do
   end
 
   describe '#pages_url' do
-    let(:group) { create :group, name: group_name }
-    let(:project) { create :project, namespace: group, name: project_name }
+    let(:group) { create(:group, name: group_name) }
+    let(:project) { create(:project, namespace: group, name: project_name) }
     let(:domain) { 'Example.com' }
 
     subject { project.pages_url }
@@ -1337,8 +1337,8 @@ describe Project do
   end
 
   describe '#pages_group_url' do
-    let(:group) { create :group, name: group_name }
-    let(:project) { create :project, namespace: group, name: project_name }
+    let(:group) { create(:group, name: group_name) }
+    let(:project) { create(:project, namespace: group, name: project_name) }
     let(:domain) { 'Example.com' }
     let(:port) { 1234 }
 
@@ -1455,8 +1455,8 @@ describe Project do
     let(:private_group)    { create(:group, visibility_level: 0)  }
     let(:internal_group)   { create(:group, visibility_level: 10) }
 
-    let(:private_project)  { create :project, :private, group: private_group }
-    let(:internal_project) { create :project, :internal, group: internal_group }
+    let(:private_project)  { create(:project, :private, group: private_group) }
+    let(:internal_project) { create(:project, :internal, group: internal_group) }
 
     context 'when group is private project can not be internal' do
       it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be_falsey }
@@ -2452,8 +2452,8 @@ describe Project do
   end
 
   describe '#pages_url' do
-    let(:group) { create :group, name: 'Group' }
-    let(:nested_group) { create :group, parent: group }
+    let(:group) { create(:group, name: 'Group') }
+    let(:nested_group) { create(:group, parent: group) }
     let(:domain) { 'Example.com' }
 
     subject { project.pages_url }
@@ -2464,7 +2464,7 @@ describe Project do
     end
 
     context 'top-level group' do
-      let(:project) { create :project, namespace: group, name: project_name }
+      let(:project) { create(:project, namespace: group, name: project_name) }
 
       context 'group page' do
         let(:project_name) { 'group.example.com' }
@@ -2480,7 +2480,7 @@ describe Project do
     end
 
     context 'nested group' do
-      let(:project) { create :project, namespace: nested_group, name: project_name }
+      let(:project) { create(:project, namespace: nested_group, name: project_name) }
       let(:expected_url) { "http://group.example.com/#{nested_group.path}/#{project.path}" }
 
       context 'group page' do
@@ -2498,7 +2498,7 @@ describe Project do
   end
 
   describe '#http_url_to_repo' do
-    let(:project) { create :project }
+    let(:project) { create(:project) }
 
     it 'returns the url to the repo without a username' do
       expect(project.http_url_to_repo).to eq("#{project.web_url}.git")
