@@ -2,8 +2,6 @@
 # class return an instance of `GitlabAccessStatus`
 module Gitlab
   class GitAccess
-    include Gitlab::Utils::StrongMemoize
-
     UnauthorizedError = Class.new(StandardError)
     NotFoundError = Class.new(StandardError)
     ProjectCreationError = Class.new(StandardError)
@@ -17,7 +15,6 @@ module Gitlab
       deploy_key_upload: 'This deploy key does not have write access to this project.',
       no_repo: 'A repository for this project does not exist yet.',
       project_not_found: 'The project you were looking for could not be found.',
-      account_blocked: 'Your account has been blocked.',
       command_not_allowed: "The command you're trying to execute is not allowed.",
       upload_pack_disabled_over_http: 'Pulling over HTTP is not allowed.',
       receive_pack_disabled_over_http: 'Pushing over HTTP is not allowed.',
@@ -109,7 +106,8 @@ module Gitlab
 
     def check_active_user!
       if user && !user_access.allowed?
-        raise UnauthorizedError, ERROR_MESSAGES[:account_blocked]
+        message = Gitlab::Auth::UserAccessDeniedReason.new(user).rejection_message
+        raise UnauthorizedError, message
       end
     end
 
