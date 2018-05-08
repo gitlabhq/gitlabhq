@@ -537,8 +537,10 @@ describe Gitlab::Elastic::SearchResults do
     subject(:wiki_blobs) { results.objects('wiki_blobs') }
 
     before do
-      project_1.wiki.create_page('index_page', 'term')
-      project_1.wiki.index_blobs
+      if project_1.wiki_enabled?
+        project_1.wiki.create_page('index_page', 'term')
+        project_1.wiki.index_blobs
+      end
 
       Gitlab::Elastic::Helper.refresh_index
     end
@@ -593,7 +595,7 @@ describe Gitlab::Elastic::SearchResults do
     end
 
     context 'when wiki is internal' do
-      let(:project_1) { create(:project, :public, :repository, :wiki_private) }
+      let(:project_1) { create(:project, :public, :repository, :wiki_private, :wiki_repo) }
 
       context 'search by member' do
         let(:limit_project_ids) { [project_1.id] }
