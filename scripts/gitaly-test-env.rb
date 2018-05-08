@@ -20,7 +20,7 @@ module GitalyTest
 
     if ENV['CI']
       # Use the top-level bundle vendor folder so that we don't install gems twice
-      env_hash['BUNDLE_PATH'] = File.expand_path('../vendor', __dir__)
+      env_hash['BUNDLE_PATH'] = File.expand_path('../vendor/ruby', __dir__)
     end
 
     env_hash
