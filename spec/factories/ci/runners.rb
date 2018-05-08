@@ -6,6 +6,7 @@ FactoryBot.define do
     is_shared false
     active    true
     access_level :not_protected
+    runner_type :project_type
 
     trait :online do
       contacted_at Time.now
@@ -13,6 +14,7 @@ FactoryBot.define do
 
     trait :shared do
       is_shared true
+      runner_type :instance_type
     end
 
     trait :specific do
