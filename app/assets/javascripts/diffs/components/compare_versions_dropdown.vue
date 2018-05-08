@@ -94,7 +94,7 @@ export default {
 </script>
 
 <template>
-  <span class="dropdown inline mr-version-dropdown">
+  <span class="dropdown inline">
     <a
       class="dropdown-toggle btn btn-default"
       data-toggle="dropdown"

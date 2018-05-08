@@ -38,6 +38,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    lineCode: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -137,7 +142,10 @@ export default {
       to ensure information is not lost.
     </div>
     <div class="flash-container timeline-content"></div>
-    <form class="edit-note common-note-form js-quick-submit gfm-form">
+    <form
+      class="edit-note common-note-form js-quick-submit gfm-form"
+      :data-line-code="lineCode"
+    >
 
       <issue-warning
         v-if="hasWarning(getNoteableData)"
@@ -172,7 +180,7 @@ js-autosize markdown-area js-vue-issue-note-form js-vue-textarea"
           type="button"
           @click="handleUpdate()"
           :disabled="isDisabled"
-          class="js-vue-issue-save btn btn-save">
+          class="js-vue-issue-save btn btn-save js-comment-button ">
           {{ saveButtonTitle }}
         </button>
         <button

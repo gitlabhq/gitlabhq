@@ -56,13 +56,17 @@ export default {
       });
 
       // FIXME: @fatihacet -- This should be fixed, no need to fetchNotes again
-      this.saveNote(postData).then(() => {
-        const endpoint = this.getNotesDataByProp('discussionsPath');
+      this.saveNote(postData)
+        .then(() => {
+          const endpoint = this.getNotesDataByProp('discussionsPath');
 
-        this.fetchNotes(endpoint).then(() => {
-          this.handleCancelCommentForm();
-        }).catch(() => {});
-      }).catch(() => {});
+          this.fetchNotes(endpoint)
+            .then(() => {
+              this.handleCancelCommentForm();
+            })
+            .catch(() => {});
+        })
+        .catch(() => {});
     },
   },
 };
@@ -76,6 +80,7 @@ export default {
       :is-editing="true"
       save-button-title="Comment"
       class="diff-comment-form"
+      :line-code="line.lineCode"
       @cancelForm="handleCancelCommentForm"
       @handleFormUpdate="handleSaveNote"
     />

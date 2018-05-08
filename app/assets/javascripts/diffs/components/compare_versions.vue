@@ -54,11 +54,13 @@ export default {
       <compare-versions-dropdown
         :other-versions="targetVersions"
         :latest-version="mergeRequestDiff"
+        class="mr-version-dropdown"
       />
       and
       <compare-versions-dropdown
         :other-versions="targetVersions"
         :base-version="baseVersion"
+        class="mr-version-compare-dropdown"
       />
     </div>
   </div>
