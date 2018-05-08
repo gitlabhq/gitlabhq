@@ -14,6 +14,9 @@ include GitalyTest
 
 abort 'gitaly build failed' unless system(env, 'make', chdir: tmp_tests_gitaly_dir)
 
+puts 'gitlab-ce path to gitaly-proto:'
+system('bundle', 'show', 'gitaly-proto')
+
 # Bundle config sanity check, for visual inspection in case of problems.
 system(env, 'bundle', 'config', chdir: File.dirname(gemfile))
 
