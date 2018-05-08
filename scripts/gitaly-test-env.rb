@@ -11,8 +11,7 @@ module GitalyTest
     env_hash = {
       'HOME' => File.expand_path('tmp/tests'),
       'GEM_PATH' => Gem.path.join(':'),
-      'BUNDLE_IGNORE_CONFIG' => 'true',
-      'BUNDLE_APP_CONFIG' => nil,
+      'BUNDLE_APP_CONFIG' => File.join(File.dirname(gemfile), '.bundle/config'),
       'BUNDLE_FLAGS' => "--jobs=4 --retry=3",
       'BUNDLE_GEMFILE' => gemfile,
       'RUBYOPT' => nil
