@@ -104,7 +104,7 @@ describe 'Merge request > User sees avatars on diff notes', :js do
           find('.diff-notes-collapse').send_keys(:return)
         end
 
-        expect(page).to have_selector('.notes_holder', visible: false)
+        expect(page).not_to have_selector('.notes_holder')
 
         page.within find_line(position.line_code(project.repository)) do
           first('img.js-diff-comment-avatar').click
