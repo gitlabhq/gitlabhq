@@ -967,6 +967,7 @@ module API
     class Runner < Grape::Entity
       expose :id
       expose :description
+      expose :ip_address
       expose :active
       expose :is_shared
       expose :name
