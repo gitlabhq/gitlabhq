@@ -1,5 +1,5 @@
 class ProjectCiCdSetting < ActiveRecord::Base
-  belongs_to :project
+  belongs_to :project, inverse_of: :ci_cd_settings
 
   # The version of the schema that first introduced this model/table.
   MINIMUM_SCHEMA_VERSION = 20180403035759

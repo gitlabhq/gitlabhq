@@ -12,7 +12,7 @@ describe "User creates wiki page" do
 
   context "when wiki is empty" do
     context "in a user namespace" do
-      let(:project) { create(:project, namespace: user.namespace) }
+      let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
 
       it "shows validation error message" do
         page.within(".wiki-form") do
@@ -142,7 +142,7 @@ describe "User creates wiki page" do
     end
 
     context "in a group namespace", :js do
-      let(:project) { create(:project, namespace: create(:group, :public)) }
+      let(:project) { create(:project, :wiki_repo, namespace: create(:group, :public)) }
 
       it "has `Create home` as a commit message" do
         expect(page).to have_field("wiki[message]", with: "Create home")
@@ -164,11 +164,11 @@ describe "User creates wiki page" do
 
   context "when wiki is not empty", :js do
     before do
-      create(:wiki_page, wiki: create(:project, namespace: user.namespace).wiki, attrs: { title: "home", content: "Home page" })
+      create(:wiki_page, wiki: create(:project, :wiki_repo, namespace: user.namespace).wiki, attrs: { title: "home", content: "Home page" })
     end
 
     context "in a user namespace" do
-      let(:project) { create(:project, namespace: user.namespace) }
+      let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
 
       context "via the `new wiki page` page" do
         it "creates a page with a single word" do
@@ -261,7 +261,7 @@ describe "User creates wiki page" do
     end
 
     context "in a group namespace" do
-      let(:project) { create(:project, namespace: create(:group, :public)) }
+      let(:project) { create(:project, :wiki_repo, namespace: create(:group, :public)) }
 
       context "via the `new wiki page` page" do
         it "creates a page" do

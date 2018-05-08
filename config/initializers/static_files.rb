@@ -34,7 +34,7 @@ if app.config.serve_static_files
       )
       app.config.middleware.insert_before(
         Gitlab::Middleware::Static,
-        Gitlab::Middleware::WebpackProxy,
+        Gitlab::Webpack::DevServerMiddleware,
         proxy_path: app.config.webpack.public_path,
         proxy_host: dev_server.host,
         proxy_port: dev_server.port

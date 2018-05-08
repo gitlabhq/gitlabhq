@@ -53,6 +53,8 @@ Example response:
    "dsa_key_restriction": 0,
    "ecdsa_key_restriction": 0,
    "ed25519_key_restriction": 0,
+   "enforce_terms": true,
+   "terms": "Hello world!",
 }
 ```
 
@@ -153,6 +155,8 @@ PUT /application/settings
 | `user_default_external`                  | boolean          | no                                            | Newly registered users will by default be external                                                                                                                                                                                                                                                                                                                                                                                                        |
 | `user_oauth_applications`                | boolean          | no                                            | Allow users to register any application to use GitLab as an OAuth provider                                                                                                                                                                                                                                                                                                                                                                                |
 | `version_check_enabled`                  | boolean          | no                                            | Let GitLab inform you when an update is available.                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `enforce_terms`                          | boolean          | no                                            | Enforce application ToS to all users                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `terms`                                  | text             | yes (if `enforce_terms` is true)              | Markdown content for the ToS                                                                                                                                                                                                                                                                                                                                                                                                                 |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/application/settings?signup_enabled=false&default_project_visibility=internal
@@ -195,5 +199,7 @@ Example response:
   "dsa_key_restriction": 0,
   "ecdsa_key_restriction": 0,
   "ed25519_key_restriction": 0,
+  "enforce_terms": true,
+  "terms": "Hello world!",
 }
 ```

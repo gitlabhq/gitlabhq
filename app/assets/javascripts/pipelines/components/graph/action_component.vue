@@ -61,7 +61,7 @@ export default {
   methods: {
     onClickAction() {
       $(this.$el).tooltip('hide');
-      eventHub.$emit('graphAction', this.link);
+      eventHub.$emit('postAction', this.link);
       this.linkRequested = this.link;
       this.isDisabled = true;
     },

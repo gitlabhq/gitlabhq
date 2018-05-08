@@ -258,7 +258,6 @@ project:
 - builds
 - runner_projects
 - runners
-- active_runners
 - variables
 - triggers
 - pipeline_schedules
@@ -269,13 +268,16 @@ project:
 - pages_domains
 - authorized_users
 - project_authorizations
+- remote_mirrors
 - route
 - redirect_routes
 - statistics
 - container_repositories
 - uploads
+- import_state
 - members_and_requesters
 - build_trace_section_names
+- build_trace_chunks
 - root_of_fork_network
 - fork_network_member
 - fork_network
@@ -286,6 +288,7 @@ project:
 - internal_ids
 - project_deploy_tokens
 - deploy_tokens
+- settings
 - ci_cd_settings
 award_emoji:
 - awardable
