@@ -1,11 +1,8 @@
 class Projects::MirrorsController < Projects::ApplicationController
   include RepositorySettingsRedirect
 
-<<<<<<< HEAD
   prepend EE::Projects::MirrorsController
 
-=======
->>>>>>> upstream/master
   # Authorize
   before_action :remote_mirror, only: [:update]
   before_action :check_mirror_available!
