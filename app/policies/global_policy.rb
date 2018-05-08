@@ -13,6 +13,10 @@ class GlobalPolicy < BasePolicy
 
   condition(:can_create_fork, scope: :user) { @user.manageable_namespaces.any? { |namespace| @user.can?(:create_projects, namespace) } }
 
+  condition(:required_terms_not_accepted, scope: :user, score: 0) do
+    @user&.required_terms_not_accepted?
+  end
+
   rule { anonymous }.policy do
     prevent :log_in
     prevent :access_api
@@ -36,6 +40,11 @@ class GlobalPolicy < BasePolicy
     prevent :access_git
     prevent :receive_notifications
     prevent :use_quick_actions
+  end
+
+  rule { required_terms_not_accepted }.policy do
+    prevent :access_api
+    prevent :access_git
   end
 
   rule { can_create_group }.policy do

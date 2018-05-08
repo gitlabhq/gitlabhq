@@ -90,4 +90,68 @@ describe GlobalPolicy do
       it { is_expected.to be_allowed(:update_custom_attribute) }
     end
   end
+
+  describe 'API access' do
+    describe 'regular user' do
+      it { is_expected.to be_allowed(:access_api) }
+    end
+
+    describe 'admin' do
+      let(:current_user) { create(:admin) }
+
+      it { is_expected.to be_allowed(:access_api) }
+    end
+
+    describe 'anonymous' do
+      let(:current_user) { nil }
+
+      it { is_expected.not_to be_allowed(:access_api) }
+    end
+
+    context 'when terms are enforced' do
+      before do
+        enforce_terms
+      end
+
+      it { is_expected.not_to be_allowed(:access_api) }
+
+      it 'allows access to the API when the user accepted the terms' do
+        accept_terms(current_user)
+
+        is_expected.to be_allowed(:access_api)
+      end
+    end
+  end
+
+  describe 'git access' do
+    describe 'regular user' do
+      it { is_expected.to be_allowed(:access_git) }
+    end
+
+    describe 'admin' do
+      let(:current_user) { create(:admin) }
+
+      it { is_expected.to be_allowed(:access_git) }
+    end
+
+    describe 'anonymous' do
+      let(:current_user) { nil }
+
+      it { is_expected.not_to be_allowed(:access_git) }
+    end
+
+    context 'when terms are enforced' do
+      before do
+        enforce_terms
+      end
+
+      it { is_expected.not_to be_allowed(:access_git) }
+
+      it 'allows access to git when terms are accepted' do
+        accept_terms(current_user)
+
+        is_expected.to be_allowed(:access_git)
+      end
+    end
+  end
 end
