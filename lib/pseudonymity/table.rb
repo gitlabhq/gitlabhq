@@ -31,11 +31,12 @@ module Pseudonymity
       @csv_output = ""
       parse_config
       @schema = {}
+      @output_files = []
     end
 
     def tables_to_csv
       tables = config["tables"]
-      @csv_output = config["output"]["csv"]
+      @csv_output = config["output"]["csv"].chomp("\/")
       if not File.directory?(@csv_output)
         puts "No such directory #{@csv_output}"
         return
@@ -45,11 +46,18 @@ module Pseudonymity
         table_to_csv(k, v["whitelist"], v["pseudo"])
       end
       schema_to_yml
+      file_list_to_json
     end
 
     def schema_to_yml
       file_path = "#{@csv_output}/schema_#{Time.now.to_i}.yml"
+      @output_files << file_path
       File.open(file_path, 'w') { |file| file.write(@schema.to_yaml) }
+    end
+
+    def file_list_to_json
+      file_path = "#{@csv_output}/file_list.json"
+      File.open(file_path, 'w') { |file| file.write(@output_files.to_json) }
     end
 
     def table_to_csv(table, whitelist_columns, pseudonymity_columns)
@@ -86,6 +94,7 @@ module Pseudonymity
         end
       end
       File.open(file_path, 'w') { |file| file.write(contents) }
+      @output_files << file_path
       return file_path
     end
 
