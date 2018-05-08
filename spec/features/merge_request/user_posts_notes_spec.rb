@@ -75,7 +75,7 @@ describe 'Merge request > User posts notes', :js do
     end
 
     it 'hides the toolbar buttons when previewing a note' do
-      find('.js-md-preview-button').click
+      find('.js-preview-link').click
       page.within('.js-main-target-form') do
         expect(page).not_to have_css('.md-header-toolbar.active')
       end
