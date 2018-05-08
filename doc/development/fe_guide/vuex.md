@@ -358,7 +358,7 @@ Because we're currently using `babel-plugin-rewire`, you may encounter the follo
 
 To prevent this error from happening, you need to export an empty function:
 ```
-// /stores/getters.js or /stores/actions.js
+// getters.js or actions.js
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};
