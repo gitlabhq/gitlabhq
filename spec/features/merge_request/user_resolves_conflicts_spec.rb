@@ -44,7 +44,9 @@ describe 'Merge request > User resolves conflicts', :js do
 
       within find('.diff-file', text: 'files/ruby/regex.rb') do
         expect(page).to have_selector('.line_content.new', text: "def username_regexp")
+        expect(page).not_to have_selector('.line_content.new', text: "def username_regex")
         expect(page).to have_selector('.line_content.new', text: "def project_name_regexp")
+        expect(page).not_to have_selector('.line_content.new', text: "def project_name_regex")
         expect(page).to have_selector('.line_content.new', text: "def path_regexp")
         expect(page).to have_selector('.line_content.new', text: "def archive_formats_regexp")
         expect(page).to have_selector('.line_content.new', text: "def git_reference_regexp")
