@@ -1,11 +1,8 @@
 class RemoteMirror < ActiveRecord::Base
   include AfterCommitQueue
 
-<<<<<<< HEAD
   prepend EE::RemoteMirror
 
-=======
->>>>>>> upstream/master
   PROTECTED_BACKOFF_DELAY   = 1.minute
   UNPROTECTED_BACKOFF_DELAY = 5.minutes
 
