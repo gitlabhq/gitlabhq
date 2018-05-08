@@ -3,10 +3,11 @@ require 'spec_helper'
 describe 'Pipeline', :js do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
+  let(:role) { :developer }
 
   before do
     sign_in(user)
-    project.add_developer(user)
+    project.add_role(user, role)
   end
 
   shared_context 'pipeline builds' do
@@ -153,9 +154,10 @@ describe 'Pipeline', :js do
     end
 
     context 'page tabs' do
-      it 'shows Pipeline and Jobs tabs with link' do
+      it 'shows Pipeline, Jobs and Failed Jobs tabs with link' do
         expect(page).to have_link('Pipeline')
         expect(page).to have_link('Jobs')
+        expect(page).to have_link('Failed Jobs')
       end
 
       it 'shows counter in Jobs tab' do
@@ -164,6 +166,16 @@ describe 'Pipeline', :js do
 
       it 'shows Pipeline tab as active' do
         expect(page).to have_css('.js-pipeline-tab-link.active')
+      end
+
+      context 'without permission to access builds' do
+        let(:project) { create(:project, :public, :repository, public_builds: false) }
+        let(:role) { :guest }
+
+        it 'does not show failed jobs tab pane' do
+          expect(page).to have_link('Pipeline')
+          expect(page).not_to have_content('Failed Jobs')
+        end
       end
     end
 
@@ -308,8 +320,7 @@ describe 'Pipeline', :js do
   end
 
   describe 'GET /:project/pipelines/:id/failures' do
-    let(:project) { create(:project, :repository) }
-    let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
+    let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: '1234') }
     let(:pipeline_failures_page) { failures_project_pipeline_path(project, pipeline) }
     let!(:failed_build) { create(:ci_build, :failed, pipeline: pipeline) }
 
@@ -340,8 +351,36 @@ describe 'Pipeline', :js do
         visit pipeline_failures_page
       end
 
-      it 'includes failed jobs' do
+      it 'shows jobs tab pane as active' do
+        expect(page).to have_content('Failed Jobs')
+        expect(page).to have_css('#js-tab-failures.active')
+      end
+
+      it 'lists failed builds' do
+        expect(page).to have_content(failed_build.name)
+        expect(page).to have_content(failed_build.stage)
+      end
+
+      it 'does not show trace' do
         expect(page).to have_content('No job trace')
+      end
+    end
+
+    context 'without permission to access builds' do
+      let(:role) { :guest }
+
+      before do
+        project.update(public_builds: false)
+      end
+
+      context 'when accessing failed jobs page' do
+        before do
+          visit pipeline_failures_page
+        end
+
+        it 'fails to access the page' do
+          expect(page).to have_content('Access Denied')
+        end
       end
     end
 
