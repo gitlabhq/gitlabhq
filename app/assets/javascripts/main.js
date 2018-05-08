@@ -143,6 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize tooltips
   $body.tooltip({
     selector: '.has-tooltip, [data-toggle="tooltip"]',
+    trigger: 'hover',
     placement(tip, el) {
       return $(el).data('placement') || 'bottom';
     },
