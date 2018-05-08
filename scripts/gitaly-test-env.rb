@@ -22,7 +22,8 @@ module GitalyTest
       'BUNDLE_IGNORE_CONFIG' => 'true',
       'BUNDLE_APP_CONFIG' => nil,
       'BUNDLE_FLAGS' => "--jobs=4 --path=#{bundle_vendor_path} --retry=3",
-      'BUNDLE_GEMFILE' => File.join(gitaly_ruby_dir, 'Gemfile')
+      'BUNDLE_GEMFILE' => File.join(gitaly_ruby_dir, 'Gemfile'),
+      'RUBYOPT' => nil
     }
 
     if ENV['CI']
