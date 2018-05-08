@@ -18,11 +18,6 @@ module GitalyTest
       'RUBYOPT' => nil
     }
 
-    if ENV['CI']
-      # Use the top-level bundle vendor folder so that we don't install gems twice
-      env_hash['BUNDLE_PATH'] = File.expand_path('../vendor/ruby', __dir__)
-    end
-
     env_hash
   end
 
@@ -31,6 +26,8 @@ module GitalyTest
   end
 
   def check_gitaly_config!
+    abort 'bundle check failed' unless system(env, 'bundle', 'check', chdir: File.dirname(gemfile))
+
     abort 'config load failed' unless system(env, args[0], '-test-config', *args[1, args.length])
   end
 end
