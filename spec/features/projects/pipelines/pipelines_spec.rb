@@ -388,9 +388,9 @@ describe 'Pipelines', :js do
 
           it 'should be possible to cancel pending build' do
             find('.js-builds-dropdown-button').click
-            find('a.js-ci-action-icon').click
+            find('.js-ci-action').click
+            wait_for_requests
 
-            expect(page).to have_content('canceled')
             expect(build.reload).to be_canceled
           end
         end
@@ -407,7 +407,7 @@ describe 'Pipelines', :js do
 
             within('.js-builds-dropdown-list') do
               build_element = page.find('.mini-pipeline-graph-dropdown-item')
-              expect(build_element['data-title']).to eq('build - failed <br> (unknown failure)')
+              expect(build_element['data-original-title']).to eq('build - failed <br> (unknown failure)')
             end
           end
         end
@@ -517,16 +517,31 @@ describe 'Pipelines', :js do
           end
 
           it 'creates a new pipeline' do
-            expect { click_on 'Run pipeline' }
+            expect { click_on 'Create pipeline' }
               .to change { Ci::Pipeline.count }.by(1)
 
             expect(Ci::Pipeline.last).to be_web
+          end
+
+          context 'when variables are specified' do
+            it 'creates a new pipeline with variables' do
+              page.within '.ci-variable-row-body' do
+                fill_in "Input variable key", with: "key_name"
+                fill_in "Input variable value", with: "value"
+              end
+
+              expect { click_on 'Create pipeline' }
+                .to change { Ci::Pipeline.count }.by(1)
+
+              expect(Ci::Pipeline.last.variables.map { |var| var.slice(:key, :secret_value) })
+                .to eq [{ key: "key_name", secret_value: "value" }.with_indifferent_access]
+            end
           end
         end
 
         context 'without gitlab-ci.yml' do
           before do
-            click_on 'Run pipeline'
+            click_on 'Create pipeline'
           end
 
           it { expect(page).to have_content('Missing .gitlab-ci.yml file') }
@@ -539,7 +554,7 @@ describe 'Pipelines', :js do
               click_link 'master'
             end
 
-            expect { click_on 'Run pipeline' }
+            expect { click_on 'Create pipeline' }
               .to change { Ci::Pipeline.count }.by(1)
           end
         end
@@ -557,7 +572,7 @@ describe 'Pipelines', :js do
         it 'has field to add a new pipeline' do
           expect(page).to have_selector('.js-branch-select')
           expect(find('.js-branch-select')).to have_content project.default_branch
-          expect(page).to have_content('Run on')
+          expect(page).to have_content('Create for')
         end
       end
 

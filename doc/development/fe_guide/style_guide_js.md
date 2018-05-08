@@ -310,7 +310,7 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
     }));
   ```
 
-1. Don not use a singleton for the service or the store
+1. Do not use a singleton for the service or the store
   ```javascript
     // bad
     class Store {
@@ -328,9 +328,11 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
       }
     }
   ```
+1. Use `.vue` for Vue templates. Do not use `%template` in HAML.
 
 #### Naming
-1. **Extensions**: Use `.vue` extension for Vue components.
+
+1. **Extensions**: Use `.vue` extension for Vue components. Do not use `.js` as file extension ([#34371]).
 1. **Reference Naming**: Use PascalCase for their instances:
   ```javascript
     // bad
@@ -363,6 +365,8 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
     // good
     <component my-prop="prop" />
   ```
+
+[#34371]: https://gitlab.com/gitlab-org/gitlab-ce/issues/34371
 
 #### Alignment
 1. Follow these alignment styles for the template method:

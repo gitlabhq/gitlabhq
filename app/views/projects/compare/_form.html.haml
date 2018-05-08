@@ -1,4 +1,4 @@
-= form_tag project_compare_index_path(@project), method: :post, class: 'form-inline js-requires-input' do
+= form_tag project_compare_index_path(@project), method: :post, class: 'form-inline js-requires-input js-signature-container', data: { 'signatures-path' => signatures_namespace_project_compare_index_path } do
   .clearfix
     - if params[:to] && params[:from]
       .compare-switch-container

@@ -107,6 +107,16 @@
   padding-top: 10px;
 }
 
+.referenced-commands {
+  background: $blue-50;
+  padding: $gl-padding-8 $gl-padding;
+  border-radius: $border-radius-default;
+
+  p {
+    margin: 0;
+  }
+}
+
 .md-preview-holder {
   min-height: 167px;
   padding: 10px 0;
