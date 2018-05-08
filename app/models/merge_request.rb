@@ -1,5 +1,6 @@
 class MergeRequest < ActiveRecord::Base
   include AtomicInternalId
+  include IIDRoutes
   include Issuable
   include Noteable
   include Referable

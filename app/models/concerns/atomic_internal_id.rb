@@ -25,7 +25,7 @@ module AtomicInternalId
   extend ActiveSupport::Concern
 
   module ClassMethods
-    def has_internal_id(column, scope:, init:, presence: true, to_param: true) # rubocop:disable Naming/PredicateName
+    def has_internal_id(column, scope:, init:, presence: true) # rubocop:disable Naming/PredicateName
       before_validation :"ensure_#{column}!", on: :create
       validates column, presence: presence, numericality: true
 
@@ -42,10 +42,6 @@ module AtomicInternalId
 
         read_attribute(column)
       end
-
-      define_method("to_param") do
-        read_attribute(column)
-      end if to_param
     end
   end
 end

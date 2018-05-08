@@ -14,7 +14,7 @@ module Ci
     belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
     belongs_to :pipeline_schedule, class_name: 'Ci::PipelineSchedule'
 
-    has_internal_id :iid, scope: :project, presence: false, to_param: false, init: -> do |s|
+    has_internal_id :iid, scope: :project, presence: false, init: -> do |s|
       s&.project&.pipelines&.maximum(:iid) || s&.project&.pipelines.count
     end
 
