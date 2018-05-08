@@ -353,7 +353,7 @@ describe('component', () => {
 ```
 
 #### Testing Vuex actions and getters
-Because we're currently using `babel-plugin-rewire`, you may encounter the following error when testing your Vuex actions and getters:
+Because we're currently using [`babel-plugin-rewire`](https://github.com/speedskater/babel-plugin-rewire), you may encounter the following error when testing your Vuex actions and getters:
 `[vuex] actions should be function or object with "handler" function`
 
 To prevent this error from happening, you need to export an empty function:
