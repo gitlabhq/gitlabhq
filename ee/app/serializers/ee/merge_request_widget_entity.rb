@@ -69,6 +69,20 @@ module EE
         end
       end
 
+      expose :license_management, if: -> (mr, _) { mr.expose_license_management_data? } do
+        expose :head_path, if: -> (mr, _) { can?(current_user, :read_build, mr.head_license_management_artifact) } do |merge_request|
+          raw_project_build_artifacts_url(merge_request.source_project,
+                                          merge_request.head_license_management_artifact,
+                                          path: Ci::Build::LICENSE_MANAGEMENT_FILE)
+        end
+
+        expose :base_path, if: -> (mr, _) { mr.base_has_license_management_data? && can?(current_user, :read_build, mr.base_license_management_artifact) } do |merge_request|
+          raw_project_build_artifacts_url(merge_request.target_project,
+                                          merge_request.base_license_management_artifact,
+                                          path: Ci::Build::LICENSE_MANAGEMENT_FILE)
+        end
+      end
+
       expose :sast_container, if: -> (mr, _) { mr.expose_sast_container_data? } do
         expose :head_path, if: -> (mr, _) { can?(current_user, :read_build, mr.head_sast_container_artifact) } do |merge_request|
           raw_project_build_artifacts_url(merge_request.source_project,

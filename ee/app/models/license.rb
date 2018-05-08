@@ -64,6 +64,7 @@ class License < ActiveRecord::Base
 
   EEU_FEATURES = EEP_FEATURES + %i[
     dependency_scanning
+    license_management
     sast
     sast_container
     cluster_health
