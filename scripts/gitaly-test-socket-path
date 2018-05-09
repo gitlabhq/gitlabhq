@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+require 'toml-rb'
+
+puts TomlRB.load_file(ARGV.first)['socket_path']

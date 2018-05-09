@@ -4,6 +4,8 @@
 # Please be careful when modifying this file. Your changes must work
 # both for local development rspec runs, and in CI.
 
+require 'socket'
+
 module GitalyTest
   def tmp_tests_gitaly_dir
     File.expand_path('../tmp/tests/gitaly', __dir__)
@@ -30,14 +32,57 @@ module GitalyTest
     env_hash
   end
 
-  def args
-    %W[#{tmp_tests_gitaly_dir}/gitaly #{tmp_tests_gitaly_dir}/config.toml]
+  def config_path
+    File.join(tmp_tests_gitaly_dir, 'config.toml')
+  end
+
+  def spawn_gitaly
+    args = %W[#{tmp_tests_gitaly_dir}/gitaly #{config_path}]
+    spawn(env, *args, [:out, :err] => 'log/gitaly-test.log')
   end
 
   def check_gitaly_config!
     puts 'Checking gitaly-ruby bundle...'
     abort 'bundle check failed' unless system(env, 'bundle', 'check', chdir: File.dirname(gemfile))
 
-    abort 'config load failed' unless system(env, args[0], '-test-config', *args[1, args.length])
+    begin
+      pid = spawn_gitaly
+      try_connect!
+    ensure
+      Process.kill('TERM', pid)
+    end
+  end
+
+  def read_socket_path
+    # This is an external script because it needs bundler, we don't want to
+    # poison the current process with 'bundle exec'.
+    script = File.expand_path('gitaly-test-socket-path', __dir__)
+
+    path = IO.popen(['bundle', 'exec', script, config_path], &:read).chomp
+    raise "#{script} failed" unless $?.success?
+    path
+  end
+
+  def try_connect!
+    print "Trying to connect to gitaly: "
+    timeout = 20
+    delay = 0.1
+    socket = read_socket_path
+
+    Integer(timeout/delay).times do
+      begin
+        UNIXSocket.new(socket)
+        puts ' OK'
+  
+        return
+      rescue Errno::ENOENT
+        print '.'
+        sleep delay
+      end
+    end
+  
+    puts ' FAILED'
+  
+    raise "could not connect to #{socket}"
   end
 end
