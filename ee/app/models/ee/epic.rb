@@ -4,7 +4,7 @@ module EE
 
     prepended do
       include AtomicInternalId
-      include Issuable
+      include ::Issuable
       include Noteable
       include Referable
       include Awardable
