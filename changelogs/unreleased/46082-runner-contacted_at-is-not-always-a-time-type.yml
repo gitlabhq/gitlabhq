@@ -1,0 +1,5 @@
+---
+title: Make Runner#contacted_at always a Time type.
+merge_request: 18810
+author:
+type: fixed
