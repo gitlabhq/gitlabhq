@@ -73,7 +73,7 @@ describe('GkeMachineTypeDropdown', () => {
     });
 
     it('returns machine type name if machine type selected', () => {
-      vm.setMachineType(selectedMachineTypeMock);
+      vm.setItem(selectedMachineTypeMock);
 
       expect(vm.toggleText).toBe(selectedMachineTypeMock);
     });

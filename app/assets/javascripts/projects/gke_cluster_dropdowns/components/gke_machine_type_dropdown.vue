@@ -2,57 +2,21 @@
 import _ from 'underscore';
 import { s__ } from '~/locale';
 import { mapState, mapGetters, mapActions } from 'vuex';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
-import DropdownSearchInput from '~/vue_shared/components/dropdown/dropdown_search_input.vue';
-import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidden_input.vue';
-import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
 
-import store from '../stores';
+import gcpDropdownMixin from './gcp_dropdown_mixin';
 
 export default {
   name: 'GkeMachineTypeDropdown',
-  store,
-  components: {
-    LoadingIcon,
-    DropdownButton,
-    DropdownSearchInput,
-    DropdownHiddenInput,
-  },
-  props: {
-    fieldId: {
-      type: String,
-      required: true,
-    },
-    fieldName: {
-      type: String,
-      required: true,
-    },
-    defaultValue: {
-      type: String,
-      required: false,
-      default: '',
-    },
-  },
-  data() {
-    return {
-      isLoading: false,
-      hasErrors: false,
-      searchQuery: '',
-    };
-  },
+  mixins: [gcpDropdownMixin],
   computed: {
-    ...mapState(['selectedProject', 'selectedZone', 'selectedMachineType', 'machineTypes']),
+    ...mapState(['selectedProject', 'selectedZone', 'selectedMachineType']),
+    ...mapState({ items: 'machineTypes' }),
     ...mapGetters(['hasProject', 'hasZone', 'hasMachineType']),
     allDropdownsSelected() {
       return this.hasProject && this.hasZone && this.hasMachineType;
     },
     isDisabled() {
       return !this.selectedProject || !this.selectedZone;
-    },
-    results() {
-      return this.machineTypes.filter(
-        item => item.name.toLowerCase().indexOf(this.searchQuery) > -1,
-      );
     },
     toggleText() {
       if (this.isLoading) {
@@ -80,38 +44,19 @@ export default {
   },
   watch: {
     selectedZone() {
-      this.fetchMachineTypes();
+      this.isLoading = true;
+
+      this.getMachineTypes()
+        .then(this.fetchSuccessHandler)
+        .catch(this.fetchFailureHandler);
     },
     selectedMachineType() {
       this.enableSubmit();
     },
   },
   methods: {
-    ...mapActions(['setMachineType', 'getMachineTypes']),
-    fetchMachineTypes() {
-      this.isLoading = true;
-
-      this.getMachineTypes()
-        .then(() => {
-          if (this.defaultValue) {
-            const machineTypeToSelect = _.find(
-              this.machineTypes,
-              item => item.name === this.defaultValue,
-            );
-
-            if (machineTypeToSelect) {
-              this.setMachineType(machineTypeToSelect.name);
-            }
-          }
-
-          this.isLoading = false;
-          this.hasErrors = false;
-        })
-        .catch(() => {
-          this.isLoading = false;
-          this.hasErrors = true;
-        });
-    },
+    ...mapActions(['getMachineTypes']),
+    ...mapActions({ setItem: 'setMachineType' }),
     enableSubmit() {
       if (this.allDropdownsSelected) {
         const submitButtonEl = document.querySelector('.js-gke-cluster-creation-submit');
@@ -154,7 +99,7 @@ export default {
             v-for="result in results"
             :key="result.id"
           >
-            <button @click.prevent="setMachineType(result.name)">
+            <button @click.prevent="setItem(result.name)">
               {{ result.name }}
             </button>
           </li>

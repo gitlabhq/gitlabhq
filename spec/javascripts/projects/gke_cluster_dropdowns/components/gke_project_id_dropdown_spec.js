@@ -45,7 +45,7 @@ describe('GkeProjectIdDropdown', () => {
     it('returns default toggle text', done => {
       vm.$nextTick(() => {
         vm.$nextTick(() => {
-          vm.setProject(emptyProjectMock);
+          vm.setItem(emptyProjectMock);
 
           expect(vm.toggleText).toBe(LABELS.DEFAULT);
           done();
@@ -65,7 +65,7 @@ describe('GkeProjectIdDropdown', () => {
     it('returns empty toggle text', done => {
       vm.$nextTick(() => {
         vm.$store.commit(SET_PROJECTS, []);
-        vm.setProject(emptyProjectMock);
+        vm.setItem(emptyProjectMock);
 
         vm.$nextTick(() => {
           expect(vm.toggleText).toBe(LABELS.EMPTY);

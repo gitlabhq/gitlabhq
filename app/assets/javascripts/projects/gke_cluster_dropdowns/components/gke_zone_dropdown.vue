@@ -1,53 +1,18 @@
 <script>
-import _ from 'underscore';
 import { s__ } from '~/locale';
 import { mapState, mapGetters, mapActions } from 'vuex';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
-import DropdownSearchInput from '~/vue_shared/components/dropdown/dropdown_search_input.vue';
-import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidden_input.vue';
-import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
 
-import store from '../stores';
+import gcpDropdownMixin from './gcp_dropdown_mixin';
 
 export default {
   name: 'GkeZoneDropdown',
-  store,
-  components: {
-    LoadingIcon,
-    DropdownButton,
-    DropdownSearchInput,
-    DropdownHiddenInput,
-  },
-  props: {
-    fieldId: {
-      type: String,
-      required: true,
-    },
-    fieldName: {
-      type: String,
-      required: true,
-    },
-    defaultValue: {
-      type: String,
-      required: false,
-      default: '',
-    },
-  },
-  data() {
-    return {
-      isLoading: false,
-      hasErrors: false,
-      searchQuery: '',
-    };
-  },
+  mixins: [gcpDropdownMixin],
   computed: {
-    ...mapState(['selectedProject', 'selectedZone', 'zones']),
+    ...mapState(['selectedProject', 'selectedZone']),
+    ...mapState({ items: 'zones' }),
     ...mapGetters(['hasProject']),
     isDisabled() {
       return !this.hasProject;
-    },
-    results() {
-      return this.zones.filter(item => item.name.toLowerCase().indexOf(this.searchQuery) > -1);
     },
     toggleText() {
       if (this.isLoading) {
@@ -71,32 +36,16 @@ export default {
   },
   watch: {
     selectedProject() {
-      this.fetchZones();
-    },
-  },
-  methods: {
-    ...mapActions(['setZone', 'getZones']),
-    fetchZones() {
       this.isLoading = true;
 
       this.getZones()
-        .then(() => {
-          if (this.defaultValue) {
-            const zoneToSelect = _.find(this.zones, item => item.name === this.defaultValue);
-
-            if (zoneToSelect) {
-              this.setZone(zoneToSelect.name);
-            }
-          }
-
-          this.isLoading = false;
-          this.hasErrors = false;
-        })
-        .catch(() => {
-          this.isLoading = false;
-          this.hasErrors = true;
-        });
+        .then(this.fetchSuccessHandler)
+        .catch(this.fetchFailureHandler);
     },
+  },
+  methods: {
+    ...mapActions(['getZones']),
+    ...mapActions({ setItem: 'setZone' }),
   },
 };
 </script>
@@ -130,7 +79,7 @@ export default {
             v-for="result in results"
             :key="result.id"
           >
-            <button @click.prevent="setZone(result.name)">
+            <button @click.prevent="setItem(result.name)">
               {{ result.name }}
             </button>
           </li>

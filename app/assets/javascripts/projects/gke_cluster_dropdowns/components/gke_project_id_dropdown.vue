@@ -2,59 +2,32 @@
 import _ from 'underscore';
 import { s__, sprintf } from '~/locale';
 import { mapState, mapGetters, mapActions } from 'vuex';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
-import DropdownSearchInput from '~/vue_shared/components/dropdown/dropdown_search_input.vue';
-import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidden_input.vue';
-import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
 
-import store from '../stores';
+import gcpDropdownMixin from './gcp_dropdown_mixin';
 
 export default {
   name: 'GkeProjectIdDropdown',
-  store,
-  components: {
-    LoadingIcon,
-    DropdownButton,
-    DropdownSearchInput,
-    DropdownHiddenInput,
-  },
+  mixins: [gcpDropdownMixin],
   props: {
     docsUrl: {
       type: String,
       required: true,
     },
-    fieldId: {
-      type: String,
-      required: true,
-    },
-    fieldName: {
-      type: String,
-      required: true,
-    },
-    defaultValue: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   data() {
     return {
       isLoading: true,
-      hasErrors: false,
-      searchQuery: '',
     };
   },
   computed: {
-    ...mapState(['selectedProject', 'projects']),
+    ...mapState(['selectedProject']),
+    ...mapState({ items: 'projects' }),
     ...mapGetters(['hasProject']),
     hasOneProject() {
-      return this.projects.length === 1;
+      return this.items.length === 1;
     },
     isDisabled() {
-      return this.projects.length < 2;
-    },
-    results() {
-      return this.projects.filter(item => item.name.toLowerCase().indexOf(this.searchQuery) > -1);
+      return this.items.length < 2;
     },
     noSearchResultsText() {
       return s__('ClusterIntegration|No projects matched your search');
@@ -68,7 +41,7 @@ export default {
         return this.selectedProject.name;
       }
 
-      return !this.projects.length
+      return !this.items.length
         ? s__('ClusterIntegration|No projects found')
         : s__('ClusterIntegration|Select project');
     },
@@ -82,7 +55,7 @@ export default {
           'ClusterIntegration|We were unable to fetch any projects. Ensure that you have a project on %{docsLinkStart}Google Cloud Platform%{docsLinkEnd}.';
       }
 
-      message = this.projects.length
+      message = this.items.length
         ? 'ClusterIntegration|To use a new project, first create one on %{docsLinkStart}Google Cloud Platform%{docsLinkEnd}.'
         : 'ClusterIntegration|To create a cluster, first create a project on %{docsLinkStart}Google Cloud Platform%{docsLinkEnd}.';
 
@@ -99,34 +72,29 @@ export default {
     },
   },
   created() {
-    this.fetchProjects();
+    this.getProjects()
+      .then(() => {
+        if (this.defaultValue) {
+          const projectToSelect = _.find(this.items, item => item.projectId === this.defaultValue);
+
+          if (projectToSelect) {
+            this.setItem(projectToSelect);
+          }
+        } else if (this.items.length === 1) {
+          this.setItem(this.items[0]);
+        }
+
+        this.isLoading = false;
+        this.hasErrors = false;
+      })
+      .catch(() => {
+        this.isLoading = false;
+        this.hasErrors = true;
+      });
   },
   methods: {
-    ...mapActions(['setProject', 'getProjects']),
-    fetchProjects() {
-      this.getProjects()
-        .then(() => {
-          if (this.defaultValue) {
-            const projectToSelect = _.find(
-              this.projects,
-              item => item.projectId === this.defaultValue,
-            );
-
-            if (projectToSelect) {
-              this.setProject(projectToSelect);
-            }
-          } else if (this.projects.length === 1) {
-            this.setProject(this.projects[0]);
-          }
-
-          this.isLoading = false;
-          this.hasErrors = false;
-        })
-        .catch(() => {
-          this.isLoading = false;
-          this.hasErrors = true;
-        });
-    },
+    ...mapActions(['getProjects']),
+    ...mapActions({ setItem: 'setProject' }),
   },
 };
 </script>
@@ -164,7 +132,7 @@ export default {
               v-for="result in results"
               :key="result.project_number"
             >
-              <button @click.prevent="setProject(result)">
+              <button @click.prevent="setItem(result)">
                 {{ result.name }}
               </button>
             </li>

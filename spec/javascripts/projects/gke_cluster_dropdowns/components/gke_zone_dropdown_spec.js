@@ -55,7 +55,7 @@ describe('GkeZoneDropdown', () => {
     });
 
     it('returns project name if project selected', () => {
-      vm.setZone(selectedZoneMock);
+      vm.setItem(selectedZoneMock);
 
       expect(vm.toggleText).toBe(selectedZoneMock);
     });
