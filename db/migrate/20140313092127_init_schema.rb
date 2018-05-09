@@ -1,4 +1,6 @@
 class InitSchema < ActiveRecord::Migration
+  DOWNTIME = true
+
   def up
     create_table "broadcast_messages", force: :cascade do |t|
       t.text "message", null: false
