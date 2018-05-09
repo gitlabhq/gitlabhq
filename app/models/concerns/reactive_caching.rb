@@ -60,13 +60,16 @@ module ReactiveCaching
     end
 
     def with_reactive_cache(*args, &blk)
-      within_reactive_cache_lifetime(*args) do
+      bootstrap = !within_reactive_cache_lifetime?(*args)
+      Rails.cache.write(alive_reactive_cache_key(*args), true, expires_in: self.class.reactive_cache_lifetime)
+
+      if bootstrap
+        ReactiveCachingWorker.perform_async(self.class, id, *args)
+        nil
+      else
         data = Rails.cache.read(full_reactive_cache_key(*args))
         yield data if data.present?
       end
-    ensure
-      Rails.cache.write(alive_reactive_cache_key(*args), true, expires_in: self.class.reactive_cache_lifetime)
-      ReactiveCachingWorker.perform_async(self.class, id, *args)
     end
 
     def clear_reactive_cache!(*args)
@@ -75,7 +78,7 @@ module ReactiveCaching
 
     def exclusively_update_reactive_cache!(*args)
       locking_reactive_cache(*args) do
-        within_reactive_cache_lifetime(*args) do
+        if within_reactive_cache_lifetime?(*args)
           enqueuing_update(*args) do
             value = calculate_reactive_cache(*args)
             Rails.cache.write(full_reactive_cache_key(*args), value)
@@ -105,8 +108,8 @@ module ReactiveCaching
       Gitlab::ExclusiveLease.cancel(full_reactive_cache_key(*args), uuid)
     end
 
-    def within_reactive_cache_lifetime(*args)
-      yield if Rails.cache.read(alive_reactive_cache_key(*args))
+    def within_reactive_cache_lifetime?(*args)
+      !!Rails.cache.read(alive_reactive_cache_key(*args))
     end
 
     def enqueuing_update(*args)

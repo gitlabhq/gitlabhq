@@ -198,7 +198,7 @@ describe Ci::Runner do
   end
 
   describe '#assign_to' do
-    let!(:project) { FactoryBot.create :project }
+    let!(:project) { FactoryBot.create(:project) }
     let!(:shared_runner) { FactoryBot.create(:ci_runner, :shared) }
 
     before do
