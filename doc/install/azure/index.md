@@ -1,3 +1,8 @@
+---
+description: 'Learn how to spin up a 
+pre-configured GitLab VM on Microsoft Azure and have your very own private GitLab instance up and running in around 30 minutes.'
+---
+
 # Install GitLab on Microsoft Azure
 
 > _This article was originally written by Dave Wentzel and [published on the GitLab Blog][Original-Blog-Post]._
