@@ -1,3 +1,8 @@
+export const emptyProjectMock = {
+  projectId: '',
+  name: '',
+};
+
 export const selectedProjectMock = {
   projectId: 'gcp-project-123',
   name: 'gcp-project',
