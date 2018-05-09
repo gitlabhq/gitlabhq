@@ -44,6 +44,9 @@ export default {
   computed: {
     ...mapState(['selectedProject', 'selectedZone', 'selectedMachineType', 'machineTypes']),
     ...mapGetters(['hasProject', 'hasZone', 'hasMachineType']),
+    allDropdownsSelected() {
+      return this.hasProject && this.hasZone && this.hasMachineType;
+    },
     isDisabled() {
       return !this.selectedProject || !this.selectedZone;
     },
@@ -107,7 +110,7 @@ export default {
         });
     },
     enableSubmit() {
-      if (this.hasProject && this.hasZone && this.hasMachineType) {
+      if (this.allDropdownsSelected) {
         const submitButtonEl = document.querySelector('.js-gke-cluster-creation-submit');
 
         if (submitButtonEl) {
