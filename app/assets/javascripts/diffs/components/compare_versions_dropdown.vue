@@ -29,11 +29,16 @@ export default {
       required: false,
       default: 0,
     },
+    showCommitCount: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     targetVersions() {
       if (this.latestVersion) {
-        return [this.latestVersion, ...this.otherVersions];
+        return this.otherVersions;
       }
       return [...this.otherVersions, this.baseVersion];
     },
@@ -55,19 +60,15 @@ export default {
         : this.targetVersions[this.selectedIndex];
       return this.versionName(selectedVersion);
     },
-    commitsText() {
-      if (!this.version) {
-        return '';
-      }
-
-      return n__(
-        `${this.version.commitsCount} commit,`,
-        `${this.version.commitsCount} commits,`,
-        this.version.commitsCount,
-      );
-    },
   },
   methods: {
+    commitsText(version) {
+      return n__(
+        `${version.commitsCount} commit,`,
+        `${version.commitsCount} commits,`,
+        version.commitsCount,
+      );
+    },
     versionName(version) {
       if (this.isLatest(version)) {
         return __('latest version');
@@ -134,8 +135,8 @@ export default {
               </div>
               <div>
                 <small>
-                  <template v-if="version.commitsCount">
-                    {{ commitsText }}
+                  <template v-if="showCommitCount">
+                    {{ commitsText(version) }}
                   </template>
                   <time-ago
                     class="js-timeago js-timeago-render"

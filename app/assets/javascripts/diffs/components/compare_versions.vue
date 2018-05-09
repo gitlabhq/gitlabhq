@@ -1,14 +1,6 @@
 <script>
 import CompareVersionsDropdown from './compare_versions_dropdown.vue';
-
-const mergeRequestDiff = {
-  latest: true,
-  path: 'www.blah.com', // link_to merge_request_version_path(@project, @merge_request, merge_request_diff, @start_sha)
-  versionIndex: 4, // version #{version_index(merge_request_diff)}
-  shortCommitSha: 'abcd1234', // short_sha(merge_request_diff.head_commit_sha)
-  commitsCount: 3, // merge_request_diff.commits_count
-  createdAt: '2017-03-14T21:27:21Z', // .created_at
-};
+import { removeParamQueryString } from '~/lib/utils/url_utility';
 
 const baseVersion = {
   latest: true,
@@ -32,16 +24,19 @@ export default {
   },
   computed: {
     targetVersions() {
-      return this.mergeRequestDiffs;
+      return this.mergeRequestDiffs.map(diff => ({
+        ...diff,
+        path: removeParamQueryString(diff.path, 'start_sha'),
+      }));
     },
     baseVersions() {
-      return this.mergeRequestDiffs;
+      return this.mergeRequestDiffs.slice(1);
     },
     baseVersion() {
       return baseVersion;
     },
     mergeRequestDiff() {
-      return mergeRequestDiff;
+      return this.mergeRequestDiffs[0];
     },
   },
 };
@@ -54,11 +49,12 @@ export default {
       <compare-versions-dropdown
         :other-versions="targetVersions"
         :latest-version="mergeRequestDiff"
+        :show-commit-count="true"
         class="mr-version-dropdown"
       />
       and
       <compare-versions-dropdown
-        :other-versions="targetVersions"
+        :other-versions="baseVersions"
         :base-version="baseVersion"
         class="mr-version-compare-dropdown"
       />
