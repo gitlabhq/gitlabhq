@@ -205,7 +205,7 @@ module API
 
         status 200
         content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
-        JobArtifactUploader.workhorse_authorize
+        JobArtifactUploader.workhorse_authorize(has_length: false, maximum_size: max_artifacts_size)
       end
 
       desc 'Upload artifacts for job' do
