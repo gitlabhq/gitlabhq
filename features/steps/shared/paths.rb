@@ -248,10 +248,6 @@ module SharedPaths
     visit project_settings_integrations_path(@project)
   end
 
-  step 'I visit project deploy keys page' do
-    visit project_deploy_keys_path(@project)
-  end
-
   step 'I visit project find file page' do
     visit project_find_file_path(@project, root_ref)
   end
