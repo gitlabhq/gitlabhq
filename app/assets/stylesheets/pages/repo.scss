@@ -502,7 +502,7 @@
   align-items: center;
   margin-bottom: 0;
   border-bottom: 1px solid $white-dark;
-  padding: $grid-size 0;
+  padding: 12px 0;
 }
 
 .multi-file-commit-panel-header-title {
@@ -995,7 +995,7 @@
 .ide-tree-header {
   display: flex;
   align-items: center;
-  padding: 10px 0;
+  padding: 12px 0;
   border-bottom: 1px solid $white-dark;
 
   .ide-new-btn {
