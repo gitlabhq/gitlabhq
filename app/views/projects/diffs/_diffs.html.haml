@@ -15,7 +15,7 @@
         - elsif current_controller?('projects/merge_requests/diffs')
           = diff_merge_request_whitespace_link(diffs.project, @merge_request, class: 'd-none d-sm-block')
         - elsif current_controller?(:compare)
-          = diff_compare_whitespace_link(diffs.project, params[:from], params[:to], class: 'd-none d-sm-block')
+          = diff_compare_whitespace_link(diffs.project, params[:from], params[:to], class: 'd-none d-sm-inline-block')
       .btn-group
         = inline_diff_btn
         = parallel_diff_btn
