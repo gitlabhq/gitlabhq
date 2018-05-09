@@ -1,7 +1,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class MakeRemoteMirrorsDisabledByDefault < ActiveRecord::Migration
+class MakeRemoteMirrorsDisabledByDefaultEE < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   # When using the methods "add_concurrent_index" or "add_column_with_default"
