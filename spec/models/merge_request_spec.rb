@@ -2242,4 +2242,39 @@ describe MergeRequest do
       expect(merge_request.can_allow_maintainer_to_push?(user)).to be_truthy
     end
   end
+
+  describe '#merge_participants' do
+    it 'contains author' do
+      expect(subject.merge_participants).to eq([subject.author])
+    end
+
+    describe 'when merge_when_pipeline_succeeds? is true' do
+      describe 'when merge user is author' do
+        let(:user) { create(:user) }
+        subject do
+          create(:merge_request,
+                 merge_when_pipeline_succeeds: true,
+                 merge_user: user,
+                 author: user)
+        end
+
+        it 'contains author only' do
+          expect(subject.merge_participants).to eq([subject.author])
+        end
+      end
+
+      describe 'when merge user and author are different users' do
+        let(:merge_user) { create(:user) }
+        subject do
+          create(:merge_request,
+                 merge_when_pipeline_succeeds: true,
+                 merge_user: merge_user)
+        end
+
+        it 'contains author and merge user' do
+          expect(subject.merge_participants).to eq([subject.author, merge_user])
+        end
+      end
+    end
+  end
 end
