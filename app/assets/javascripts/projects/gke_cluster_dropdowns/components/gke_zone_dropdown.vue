@@ -7,7 +7,6 @@ import DropdownSearchInput from '~/vue_shared/components/dropdown/dropdown_searc
 import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidden_input.vue';
 import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
 
-import eventHub from '../eventhub';
 import store from '../stores';
 
 export default {
@@ -70,8 +69,10 @@ export default {
       return s__('ClusterIntegration|No zones matched your search');
     },
   },
-  created() {
-    eventHub.$on('projectSelected', this.fetchZones);
+  watch: {
+    selectedProject() {
+      this.fetchZones();
+    },
   },
   methods: {
     ...mapActions(['setZone', 'getZones']),

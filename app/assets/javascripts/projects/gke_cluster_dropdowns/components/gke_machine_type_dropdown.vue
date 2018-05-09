@@ -7,7 +7,6 @@ import DropdownSearchInput from '~/vue_shared/components/dropdown/dropdown_searc
 import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidden_input.vue';
 import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
 
-import eventHub from '../eventhub';
 import store from '../stores';
 
 export default {
@@ -79,9 +78,13 @@ export default {
       return s__('ClusterIntegration|No machine types matched your search');
     },
   },
-  created() {
-    eventHub.$on('zoneSelected', this.fetchMachineTypes);
-    eventHub.$on('machineTypeSelected', this.enableSubmit);
+  watch: {
+    selectedZone() {
+      this.fetchMachineTypes();
+    },
+    selectedMachineType() {
+      this.enableSubmit();
+    },
   },
   methods: {
     ...mapActions(['setMachineType', 'getMachineTypes']),
