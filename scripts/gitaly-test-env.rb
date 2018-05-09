@@ -54,13 +54,18 @@ module GitalyTest
   end
 
   def read_socket_path
-    # This is an external script because it needs bundler, we don't want to
-    # poison the current process with 'bundle exec'.
-    script = File.expand_path('gitaly-test-socket-path', __dir__)
+    # This code needs to work in an environment where we cannot use bundler,
+    # so we cannot easily use the toml-rb gem. This ad-hoc parser should be
+    # good enough.
+    config_text = IO.read(config_path)
 
-    path = IO.popen(['bundle', 'exec', script, config_path], &:read).chomp
-    raise "#{script} failed" unless $?.success?
-    path
+    config_text.lines.each do |line|
+      match_data = line.match(/^\s*socket_path\s*=\s*"([^"]*)"$/)
+
+      return match_data[1] if match_data
+    end
+    
+    raise "failed to find socket_path in #{config_path}"
   end
 
   def try_connect!
