@@ -38,21 +38,23 @@ module GitalyTest
     File.join(tmp_tests_gitaly_dir, 'config.toml')
   end
 
-  def spawn_gitaly
+  def start_gitaly
     args = %W[#{tmp_tests_gitaly_dir}/gitaly #{config_path}]
-    spawn(env, *args, [:out, :err] => 'log/gitaly-test.log')
+    pid = spawn(env, *args, [:out, :err] => 'log/gitaly-test.log')
+
+    begin
+      try_connect!
+    rescue
+      Process.kill('TERM', pid)
+      raise
+    end
+
+    pid
   end
 
   def check_gitaly_config!
     puts 'Checking gitaly-ruby bundle...'
     abort 'bundle check failed' unless system(env, 'bundle', 'check', chdir: File.dirname(gemfile))
-
-    begin
-      pid = spawn_gitaly
-      try_connect!
-    ensure
-      Process.kill('TERM', pid)
-    end
   end
 
   def read_socket_path
@@ -82,7 +84,7 @@ module GitalyTest
         puts ' OK'
   
         return
-      rescue Errno::ENOENT
+      rescue Errno::ENOENT, Errno::ECONNREFUSED
         print '.'
         sleep delay
       end

@@ -82,7 +82,7 @@ module TestEnv
     # Setup GitLab shell for test instance
     setup_gitlab_shell
 
-    setup_gitaly(start: opts.fetch(:start_gitaly, true))
+    setup_gitaly
 
     # Create repository for FactoryBot.create(:project)
     setup_factory_repo
@@ -136,7 +136,7 @@ module TestEnv
       task: 'gitlab:shell:install')
   end
 
-  def setup_gitaly(start: true)
+  def setup_gitaly
     socket_path = Gitlab::GitalyClient.address('default').sub(/\Aunix:/, '')
     gitaly_dir = File.dirname(socket_path)
 
@@ -148,20 +148,23 @@ module TestEnv
       # Always re-create config, in case it's outdated. This is fast anyway.
       Gitlab::SetupHelper.create_gitaly_configuration(gitaly_dir, force: true)
 
-      start_gitaly(gitaly_dir) if start
+      start_gitaly(gitaly_dir)
     end
   end
 
   def start_gitaly(gitaly_dir)
-    unless ENV['CI'].present?
-      spawn_script = Rails.root.join('scripts/gitaly-test-spawn').to_s
-      Bundler.with_original_env do
-        raise "gitaly spawn failed" unless system(spawn_script)
-      end
-      @gitaly_pid = Integer(File.read('tmp/tests/gitaly.pid'))
-
-      Kernel.at_exit { stop_gitaly }
+    if ENV['CI'].present?
+      # Gitaly has been spawned outside this process already
+      return
     end
+
+    spawn_script = Rails.root.join('scripts/gitaly-test-spawn').to_s
+    Bundler.with_original_env do
+      raise "gitaly spawn failed" unless system(spawn_script)
+    end
+    @gitaly_pid = Integer(File.read('tmp/tests/gitaly.pid'))
+
+    Kernel.at_exit { stop_gitaly }
 
     wait_gitaly
   end

@@ -14,6 +14,10 @@ abort 'gitaly build failed' unless system(env, 'make', chdir: tmp_tests_gitaly_d
 
 check_gitaly_config!
 
+# Starting gitaly further validates its configuration
+pid = start_gitaly
+Process.kill('TERM', pid)
+
 # Make the 'gitaly' executable look newer than 'GITALY_SERVER_VERSION'.
 # Without this a gitaly executable created in the setup-test-env job
 # will look stale compared to GITALY_SERVER_VERSION.
