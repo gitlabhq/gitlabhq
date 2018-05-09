@@ -1,6 +1,6 @@
 # This file contains environment settings for gitaly when it's running
 # as part of the gitlab-ce/ee test suite.
-# 
+#
 # Please be careful when modifying this file. Your changes must work
 # both for local development rspec runs, and in CI.
 
@@ -68,7 +68,7 @@ module GitalyTest
 
       return match_data[1] if match_data
     end
-    
+
     raise "failed to find socket_path in #{config_path}"
   end
 
@@ -78,20 +78,20 @@ module GitalyTest
     delay = 0.1
     socket = read_socket_path
 
-    Integer(timeout/delay).times do
+    Integer(timeout / delay).times do
       begin
         UNIXSocket.new(socket)
         puts ' OK'
-  
+
         return
       rescue Errno::ENOENT, Errno::ECONNREFUSED
         print '.'
         sleep delay
       end
     end
-  
+
     puts ' FAILED'
-  
+
     raise "could not connect to #{socket}"
   end
 end
