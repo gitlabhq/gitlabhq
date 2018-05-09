@@ -343,6 +343,16 @@ class MergeRequest < ActiveRecord::Base
     update_column(:merge_jid, jid)
   end
 
+  def merge_participants
+    participants = [author]
+
+    if merge_when_pipeline_succeeds? && !participants.include?(merge_user)
+      participants << merge_user
+    end
+
+    participants
+  end
+
   def first_commit
     merge_request_diff ? merge_request_diff.first_commit : compare_commits.first
   end
