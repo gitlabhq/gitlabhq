@@ -35,10 +35,10 @@ module WebpackHelper
     end
 
     [
+      *webpack_link_tags(preload, rel: "preload", as: "script"),
+      *webpack_link_tags(prefetch, rel: "prefetch"),
       javascript_include_tag(*chunks),
-      webpack_link_tag(*preload, rel: "preload", as: "script"),
-      webpack_link_tag(*prefetch, rel: "prefetch")
-    ].reject(&:empty?).join("\n").html_safe
+    ].join("\n").html_safe
   end
 
   def webpack_entrypoint_paths(source, extension: nil, exclude_duplicates: true)
@@ -104,11 +104,13 @@ module WebpackHelper
     File.join(webpack_public_host.to_s, relative_path.to_s, webpack_path.to_s, '')
   end
 
-  def webpack_link_tag(*paths)
-    options = paths.extract_options!.stringify_keys
+  def webpack_link_tags(paths, options = {})
     paths.uniq.map do |path|
-      tag_options = { "href" => path }.merge!(options)
+      tag_options = {
+        rel: "prefetch",
+        href: path
+      }.merge!(options)
       content_tag(:link, "", tag_options)
-    end.join("\n").html_safe
+    end
   end
 end
