@@ -3,11 +3,11 @@ import _ from 'underscore';
 import { s__, sprintf } from '~/locale';
 import { mapState, mapGetters, mapActions } from 'vuex';
 
-import gcpDropdownMixin from './gcp_dropdown_mixin';
+import gkeDropdownMixin from './gke_dropdown_mixin';
 
 export default {
   name: 'GkeProjectIdDropdown',
-  mixins: [gcpDropdownMixin],
+  mixins: [gkeDropdownMixin],
   props: {
     docsUrl: {
       type: String,
@@ -17,6 +17,8 @@ export default {
   data() {
     return {
       isLoading: true,
+      searchPlaceholderText: s__('ClusterIntegration|Search projects'),
+      noSearchResultsText: s__('ClusterIntegration|No projects matched your search'),
     };
   },
   computed: {
@@ -28,9 +30,6 @@ export default {
     },
     isDisabled() {
       return this.items.length < 2;
-    },
-    noSearchResultsText() {
-      return s__('ClusterIntegration|No projects matched your search');
     },
     toggleText() {
       if (this.isLoading) {
@@ -44,9 +43,6 @@ export default {
       return !this.items.length
         ? s__('ClusterIntegration|No projects found')
         : s__('ClusterIntegration|Select project');
-    },
-    searchPlaceholderText() {
-      return s__('ClusterIntegration|Search projects');
     },
     helpText() {
       let message;
@@ -73,25 +69,26 @@ export default {
   },
   created() {
     this.getProjects()
-      .then(() => {
-        if (this.defaultValue) {
-          const projectToSelect = _.find(this.items, item => item.projectId === this.defaultValue);
-
-          if (projectToSelect) {
-            this.setItem(projectToSelect);
-          }
-        } else if (this.items.length === 1) {
-          this.setItem(this.items[0]);
-        }
-
-        this.isLoading = false;
-        this.hasErrors = false;
-      })
+      .then(this.fetchSuccessHandler)
       .catch(this.fetchFailureHandler);
   },
   methods: {
     ...mapActions(['getProjects']),
     ...mapActions({ setItem: 'setProject' }),
+    fetchSuccessHandler() {
+      if (this.defaultValue) {
+        const projectToSelect = _.find(this.items, item => item.projectId === this.defaultValue);
+
+        if (projectToSelect) {
+          this.setItem(projectToSelect);
+        }
+      } else if (this.items.length === 1) {
+        this.setItem(this.items[0]);
+      }
+
+      this.isLoading = false;
+      this.hasErrors = false;
+    },
   },
 };
 </script>

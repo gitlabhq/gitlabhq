@@ -2,11 +2,17 @@
 import { s__ } from '~/locale';
 import { mapState, mapGetters, mapActions } from 'vuex';
 
-import gcpDropdownMixin from './gcp_dropdown_mixin';
+import gkeDropdownMixin from './gke_dropdown_mixin';
 
 export default {
   name: 'GkeZoneDropdown',
-  mixins: [gcpDropdownMixin],
+  mixins: [gkeDropdownMixin],
+  data() {
+    return {
+      searchPlaceholderText: s__('ClusterIntegration|Search zones'),
+      noSearchResultsText: s__('ClusterIntegration|No zones matched your search'),
+    };
+  },
   computed: {
     ...mapState(['selectedProject', 'selectedZone']),
     ...mapState({ items: 'zones' }),
@@ -26,12 +32,6 @@ export default {
       return !this.hasProject
         ? s__('ClusterIntegration|Select project to choose zone')
         : s__('ClusterIntegration|Select zone');
-    },
-    searchPlaceholderText() {
-      return s__('ClusterIntegration|Search zones');
-    },
-    noSearchResultsText() {
-      return s__('ClusterIntegration|No zones matched your search');
     },
   },
   watch: {

@@ -3,11 +3,17 @@ import _ from 'underscore';
 import { s__ } from '~/locale';
 import { mapState, mapGetters, mapActions } from 'vuex';
 
-import gcpDropdownMixin from './gcp_dropdown_mixin';
+import gkeDropdownMixin from './gke_dropdown_mixin';
 
 export default {
   name: 'GkeMachineTypeDropdown',
-  mixins: [gcpDropdownMixin],
+  mixins: [gkeDropdownMixin],
+  data() {
+    return {
+      searchPlaceholderText: s__('ClusterIntegration|Search machine types'),
+      noSearchResultsText: s__('ClusterIntegration|No machine types matched your search'),
+    };
+  },
   computed: {
     ...mapState(['selectedProject', 'selectedZone', 'selectedMachineType']),
     ...mapState({ items: 'machineTypes' }),
@@ -34,12 +40,6 @@ export default {
       return !this.hasZone
         ? s__('ClusterIntegration|Select zone to choose machine type')
         : s__('ClusterIntegration|Select machine type');
-    },
-    searchPlaceholderText() {
-      return s__('ClusterIntegration|Search machine types');
-    },
-    noSearchResultsText() {
-      return s__('ClusterIntegration|No machine types matched your search');
     },
   },
   watch: {
