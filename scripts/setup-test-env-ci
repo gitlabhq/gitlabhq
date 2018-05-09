@@ -1,2 +1,0 @@
-#!/bin/sh
-bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init(start_gitaly: false)'
