@@ -458,6 +458,8 @@ retrieve-tests-metadata:
     - //@gitlab-org/gitlab-ee
   except:
     - master
+    - /^[\d-]+-stable(-ee)?$/
+    - /\bce\-to\-ee\b/
 
 ee-files-location-check:
   <<: *ee-specific-check
