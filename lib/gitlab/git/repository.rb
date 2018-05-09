@@ -30,6 +30,7 @@ module Gitlab
       EMPTY_REPOSITORY_CHECKSUM = '0000000000000000000000000000000000000000'.freeze
 
       NoRepository = Class.new(StandardError)
+      InvalidRepository = Class.new(StandardError)
       InvalidBlobName = Class.new(StandardError)
       InvalidRef = Class.new(StandardError)
       GitError = Class.new(StandardError)
@@ -1584,7 +1585,7 @@ module Gitlab
 
       def checksum
         gitaly_migrate(:calculate_checksum,
-                      status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
+                       status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_repository_client.calculate_checksum
           else
@@ -2533,10 +2534,12 @@ module Gitlab
         output, status = run_git(args)
 
         if status.nil? || !status.zero?
-          # Empty repositories return with a non-zero status and an empty output.
-          return EMPTY_REPOSITORY_CHECKSUM if output&.empty?
+          # Non-valid git repositories return 128 as the status code and an error output
+          raise InvalidRepository if status == 128 && output.to_s.downcase =~ /not a git repository/
+          # Empty repositories returns with a non-zero status and an empty output.
+          raise ChecksumError, output unless output.blank?
 
-          raise ChecksumError, output
+          return EMPTY_REPOSITORY_CHECKSUM
         end
 
         refs = output.split("\n")

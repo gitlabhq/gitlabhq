@@ -96,7 +96,7 @@
     "worker-loader": "^1.1.1"
   },
   "devDependencies": {
-    "axios-mock-adapter": "^1.10.0",
+    "axios-mock-adapter": "^1.15.0",
     "babel-eslint": "^8.0.2",
     "babel-plugin-istanbul": "^4.1.6",
     "babel-plugin-rewire": "^1.1.0",

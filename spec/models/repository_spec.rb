@@ -1733,7 +1733,8 @@ describe Repository do
         :gitlab_ci,
         :avatar,
         :issue_template,
-        :merge_request_template
+        :merge_request_template,
+        :xcode_config
       ])
 
       repository.after_change_head
@@ -2055,6 +2056,36 @@ describe Repository do
       expect(cache).to receive(:expire).with(:exists?)
 
       repository.expire_exists_cache
+    end
+  end
+
+  describe '#xcode_project?' do
+    before do
+      allow(repository).to receive(:tree).with(:head).and_return(double(:tree, blobs: [blob]))
+    end
+
+    context 'when the root contains a *.xcodeproj file' do
+      let(:blob) { double(:blob, path: 'Foo.xcodeproj') }
+
+      it 'returns true' do
+        expect(repository.xcode_project?).to be_truthy
+      end
+    end
+
+    context 'when the root contains a *.xcworkspace file' do
+      let(:blob) { double(:blob, path: 'Foo.xcworkspace') }
+
+      it 'returns true' do
+        expect(repository.xcode_project?).to be_truthy
+      end
+    end
+
+    context 'when the root contains no XCode config file' do
+      let(:blob) { double(:blob, path: 'subdir/Foo.xcworkspace') }
+
+      it 'returns false' do
+        expect(repository.xcode_project?).to be_falsey
+      end
     end
   end
 

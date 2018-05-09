@@ -1,5 +1,6 @@
 ---
 comments: false
+description: Read through the GitLab installation methods.
 ---
 
 # Installation
