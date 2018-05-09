@@ -439,6 +439,7 @@ setup-test-env:
     paths:
       - tmp/tests
       - config/secrets.yml
+      - vendor/gitaly-ruby
 
 rspec-pg 0 28: *rspec-metadata-pg
 rspec-pg 1 28: *rspec-metadata-pg
