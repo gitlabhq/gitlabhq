@@ -3,6 +3,19 @@ require('spec_helper')
 describe ProfilesController, :request_store do
   let(:user) { create(:user) }
 
+  describe 'POST update' do
+    it 'does not update password' do
+      sign_in(user)
+
+      expect do
+        post :update,
+          user: { password: 'hello12345', password_confirmation: 'hello12345' }
+      end.not_to change { user.reload.encrypted_password }
+
+      expect(response.status).to eq(302)
+    end
+  end
+
   describe 'PUT update' do
     it 'allows an email update from a user without an external email address' do
       sign_in(user)
