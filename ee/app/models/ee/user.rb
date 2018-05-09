@@ -5,6 +5,7 @@ module EE
   # and be prepended in the `User` model
   module User
     extend ActiveSupport::Concern
+    extend ::Gitlab::Utils::Override
     include AuditorUserHelper
 
     included do
@@ -90,6 +91,11 @@ module EE
 
     def email_opted_in_source
       email_opted_in_source_id == EMAIL_OPT_IN_SOURCE_ID_GITLAB_COM ? 'GitLab.com' : ''
+    end
+
+    override :increment_failed_attempts!
+    def increment_failed_attempts!
+      super if ::Gitlab::Database.read_write?
     end
   end
 end
