@@ -99,6 +99,8 @@ class DiffFileEntity < Grape::Entity
       options)
   end
 
+  # TODO Simon we need to move this into MergeRequestEntity
+  # or Userentity or ProjectEntity
   expose :fork_path, if: -> (_, options) { options[:merge_request] && current_user } do |diff_file|
     merge_request = options[:merge_request]
 
