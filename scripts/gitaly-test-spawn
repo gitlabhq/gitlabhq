@@ -12,5 +12,5 @@ check_gitaly_config!
 
 pid = spawn_gitaly
 
-# In local development rspec runs this pid file is used by rspec.
+# In local development this pid file is used by rspec.
 IO.write(File.expand_path('../tmp/tests/gitaly.pid', __dir__), pid)
