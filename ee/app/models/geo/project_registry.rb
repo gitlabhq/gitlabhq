@@ -72,10 +72,16 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
     Gitlab::Redis::SharedState.with { |redis| redis.del(fetches_since_gc_redis_key) }
   end
 
+  def set_syncs_since_gc!(value)
+    return false if !value.is_a?(Integer) || value < 0
+
+    Gitlab::Redis::SharedState.with { |redis| redis.set(fetches_since_gc_redis_key, value) }
+  end
+
   private
 
   def fetches_since_gc_redis_key
-    "projects/#{project.id}/fetches_since_gc"
+    "projects/#{project_id}/fetches_since_gc"
   end
 
   def never_synced_repository?
