@@ -159,6 +159,7 @@ export default {
             )"
             :key="line.left.lineCode || line.right.lineCode"
             class="notes_holder"
+            :class="hasDiscussion(line) ? '' : 'js-temp-notes-holder'"
           >
             <td class="notes_line old"></td>
             <td class="notes_content parallel old">
