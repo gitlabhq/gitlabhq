@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180508055821) do
+ActiveRecord::Schema.define(version: 20180509091305) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1987,8 +1987,6 @@ ActiveRecord::Schema.define(version: 20180508055821) do
     t.datetime "last_update_started_at"
     t.datetime "last_update_scheduled_at"
     t.datetime "next_execution_timestamp"
-    t.datetime "created_at"
-    t.datetime "updated_at"
     t.string "status"
     t.string "jid"
     t.datetime_with_timezone "last_update_at"
