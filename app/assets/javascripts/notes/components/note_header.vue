@@ -78,10 +78,13 @@ export default {
           v-html="actionTextHtml"
           class="system-note-message">
         </span>
+        <span class="system-note-separator">
+          &middot;
+        </span>
         <a
           :href="noteTimestampLink"
           @click="updateTargetNoteHash"
-          class="note-timestamp">
+          class="note-timestamp system-note-separator">
           <time-ago-tooltip
             :time="createdAt"
             tooltip-placement="bottom"
