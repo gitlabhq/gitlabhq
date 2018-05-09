@@ -1,4 +1,5 @@
-## Configure GitLab using an external PostgreSQL service
+# Configure GitLab using an external PostgreSQL service
+
 If you're hosting GitLab on a cloud provider, you can optionally use a
 managed service for PostgreSQL. For example, AWS offers a managed Relational
 Database Service (RDS) that runs PostgreSQL.

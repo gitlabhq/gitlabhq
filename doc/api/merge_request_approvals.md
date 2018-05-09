@@ -1,4 +1,4 @@
-# Merge request approvals **[STARTER]**
+# Merge request approvals API **[STARTER]**
 
 Configuration for approvals on all Merge Requests (MR) in the project. Must be authenticated for all endpoints.
 

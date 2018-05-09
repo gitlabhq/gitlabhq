@@ -1,9 +1,9 @@
+# Geo security review (Q&A)
+
 The following security review of the Geo feature set focuses on security
 aspects of the feature as they apply to customers running their own GitLab
 instances. The review questions are based in part on the [application security architecture](https://www.owasp.org/index.php/Application_Security_Architecture_Cheat_Sheet)
 questions from [owasp.org](https://www.owasp.org).
-
-
 
 ## Business Model
 
@@ -12,8 +12,6 @@ questions from [owasp.org](https://www.owasp.org).
 - This varies by customer. Geo allows customers to deploy to multiple areas,
    and they get to choose where they are.
 - Region and node selection is entirely manual.
-
-
 
 ## Data Essentials
 
@@ -38,8 +36,6 @@ only less-sensitive projects to be replicated to a secondary if desired.
 
 - Geo is designed to provide replication of a certain subset of the application
 data. It is part of the solution, rather than part of the problem.
-
-
 
 ## End-Users
 
@@ -70,8 +66,6 @@ information on the primary by querying the secondary.
 - Attackers must not be able to impersonate the secondary to the primary, and
 thus gain access to privileged information.
 
-
-
 ## Administrators
 
 ### Who has administrative capabilities in the application?
@@ -89,8 +83,6 @@ configured with the application, typically by system administrators.
 administrative access.
 - The replication process may be controlled (start/stop) via the Sidekiq
 administrative controls.
-
-
 
 ## Network
 
@@ -118,8 +110,6 @@ capacity.
 geographically separated, it is envisioned that replication traffic will pass
 over the public Internet in a typical deployment, but this is not a requirement.
 
-
-
 ## Systems
 
 ### What operating systems support the application?
@@ -127,7 +117,6 @@ over the public Internet in a typical deployment, but this is not a requirement.
 - Geo imposes no additional restrictions on operating system (see the
   [GitLab installation](https://about.gitlab.com/installation/) page for more
   details), however we recommend using the operating systems listed in the [Geo documentation](http://docs.gitlab.com/ee/gitlab-geo/#geo-recommendations). 
-
 
 ### What details regarding required OS components and lock‐down needs have been defined?
 
@@ -144,8 +133,6 @@ https://docs.gitlab.com/ee/gitlab-geo/
   situation: security updates to OpenSSH would be provided to the user via the
   usual distribution channels. Geo introduces no delay there.
 
-
-
 ## Infrastructure Monitoring
 
 ### What network and system performance monitoring requirements have been defined?
@@ -159,8 +146,6 @@ https://docs.gitlab.com/ee/gitlab-geo/
 ### What network and system security monitoring requirements have been defined?
 
 - None specific to Geo.
-
-
 
 ## Virtualization and Externalization
 
@@ -181,8 +166,6 @@ product. Deployment in clouds is a common and supported scenario.
 ## If applicable, what approach(es) to cloud computing will be taken (Managed Hosting versus "Pure" Cloud, a "full machine" approach such as AWS-EC2 versus a "hosted database" approach such as AWS-RDS and Azure, etc)?
 
 - To be decided by our customers, according to their operational needs.
-
-
 
 ## Environment
 
@@ -209,8 +192,6 @@ key (`db_key_base`) which is used to decrypt certain columns in the database.
 The `db_key_base` secret is stored unencrypted on the filesystem, in
 `/etc/gitlab/gitlab-secrets.json`, along with a number of other secrets. There is
 no at-rest protection for them.
-
-
 
 ## Data Processing
 
@@ -266,8 +247,6 @@ PostgreSQL.
 - Data must have the option to be encrypted in transit, and be secure against
 both passive and active attack (e.g., MITM attacks should not be possible).
 
-
-
 ## Access
 
 ### What user privilege levels does the application support?
@@ -298,8 +277,6 @@ regenerated.
 replication proceeds, for instance. This endpoint is only accessible with a JWT
 token.
 - The primary also makes calls to the secondary to get status information.
-
-
 
 ## Application Monitoring
 
