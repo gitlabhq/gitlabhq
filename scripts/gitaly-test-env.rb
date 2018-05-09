@@ -27,7 +27,8 @@ module GitalyTest
     }
 
     if ENV['CI']
-      env_hash['BUNDLE_FLAGS'] << ' --deployment'
+      bundle_path = File.expand_path('../vendor/gitaly-ruby', __dir__)
+      env_hash['BUNDLE_FLAGS'] << " --path=#{bundle_path}"
     end
 
     env_hash
