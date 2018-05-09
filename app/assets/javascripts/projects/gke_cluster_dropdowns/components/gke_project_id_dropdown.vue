@@ -87,10 +87,7 @@ export default {
         this.isLoading = false;
         this.hasErrors = false;
       })
-      .catch(() => {
-        this.isLoading = false;
-        this.hasErrors = true;
-      });
+      .catch(this.fetchFailureHandler);
   },
   methods: {
     ...mapActions(['getProjects']),
