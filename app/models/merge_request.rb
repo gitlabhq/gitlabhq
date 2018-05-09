@@ -131,6 +131,7 @@ class MergeRequest < ActiveRecord::Base
 
     after_transition unchecked: :cannot_be_merged do |merge_request, transition|
       NotificationService.new.merge_request_unmergeable(merge_request)
+      TodoService.new.merge_request_became_unmergeable(merge_request)
     end
 
     def check_state?(merge_status)
