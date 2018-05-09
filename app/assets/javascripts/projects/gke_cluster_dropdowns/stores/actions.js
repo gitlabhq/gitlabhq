@@ -16,92 +16,68 @@ export const setMachineType = ({ commit }, selectedMachineType) => {
   commit(types.SET_MACHINE_TYPE, selectedMachineType);
 };
 
-export const getProjects = ({ commit }) =>
+const displayError = (resp, errorMessage) => {
+  if (resp.result && resp.result.error) {
+    Flash(sprintf(s__(errorMessage), { error: resp.result.error.message }));
+  }
+};
+
+const gapiRequest = ({ service, params, commit, mutation, payloadKey, errorMessage }) =>
   new Promise((resolve, reject) => {
-    const request = gapi.client.cloudresourcemanager.projects.list();
+    const request = service.list(params);
 
     return request.then(
       resp => {
-        commit(types.SET_PROJECTS, resp.result.projects);
+        const { result } = resp;
+
+        commit(mutation, result[payloadKey]);
 
         resolve();
       },
       resp => {
-        if (resp.result.error) {
-          Flash(
-            sprintf(
-              s__(
-                'ClusterIntegration|An error occured while trying to fetch your projects: %{error}',
-              ),
-              {
-                error: resp.result.error.message,
-              },
-            ),
-          );
-        }
+        displayError(resp, errorMessage);
 
         reject();
       },
     );
+  });
+
+export const getProjects = ({ commit }) =>
+  gapiRequest({
+    service: gapi.client.cloudresourcemanager.projects,
+    params: {},
+    commit,
+    mutation: types.SET_PROJECTS,
+    payloadKey: 'projects',
+    errorMessage:
+      'ClusterIntegration|An error occured while trying to fetch your projects: %{error}',
   });
 
 export const getZones = ({ commit, state }) =>
-  new Promise((resolve, reject) => {
-    const request = gapi.client.compute.zones.list({
+  gapiRequest({
+    service: gapi.client.compute.zones,
+    params: {
       project: state.selectedProject.projectId,
-    });
-
-    return request.then(
-      resp => {
-        commit(types.SET_ZONES, resp.result.items);
-
-        resolve();
-      },
-      resp => {
-        if (resp.result.error) {
-          Flash(
-            sprintf(
-              s__(
-                'ClusterIntegration|An error occured while trying to fetch project zones: %{error}',
-              ),
-              { error: resp.result.error.message },
-            ),
-          );
-        }
-
-        reject();
-      },
-    );
+    },
+    commit,
+    mutation: types.SET_ZONES,
+    payloadKey: 'items',
+    errorMessage:
+      'ClusterIntegration|An error occured while trying to fetch project zones: %{error}',
   });
 
 export const getMachineTypes = ({ commit, state }) =>
-  new Promise((resolve, reject) => {
-    const request = gapi.client.compute.machineTypes.list({
+  gapiRequest({
+    service: gapi.client.compute.machineTypes,
+    params: {
       project: state.selectedProject.projectId,
       zone: state.selectedZone,
-    });
-
-    return request.then(
-      resp => {
-        commit(types.SET_MACHINE_TYPES, resp.result.items);
-
-        resolve();
-      },
-      resp => {
-        if (resp.result.error) {
-          Flash(
-            sprintf(
-              s__(
-                'ClusterIntegration|An error occured while trying to fetch zone machine types: %{error}',
-              ),
-              { error: resp.result.error.message },
-            ),
-          );
-        }
-
-        reject();
-      },
-    );
+    },
+    commit,
+    mutation: types.SET_MACHINE_TYPES,
+    payloadKey: 'items',
+    errorMessage:
+      'ClusterIntegration|An error occured while trying to fetch zone machine types: %{error}',
   });
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
