@@ -30,6 +30,16 @@ module MigrationsHelpers
     end
   end
 
+  def foreign_key_exists?(source, target = nil, column: nil)
+    ActiveRecord::Base.connection.foreign_keys(source).any? do |key|
+      if column
+        key.options[:column].to_s == column.to_s
+      else
+        key.to_table.to_s == target.to_s
+      end
+    end
+  end
+
   def reset_column_in_all_models
     clear_schema_cache!
 

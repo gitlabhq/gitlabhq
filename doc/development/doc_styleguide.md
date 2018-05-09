@@ -1,3 +1,7 @@
+---
+description: 'Writing styles, markup, formatting, and reusing regular expressions throughout the GitLab Documentation.'
+---
+
 # Documentation style guidelines
 
 The documentation style guide defines the markup structure used in
