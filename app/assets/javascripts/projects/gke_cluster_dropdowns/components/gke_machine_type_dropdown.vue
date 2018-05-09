@@ -109,7 +109,11 @@ export default {
     },
     enableSubmit() {
       if (this.hasProject && this.hasZone && this.hasMachineType) {
-        document.querySelector('.js-gke-cluster-creation-submit').removeAttribute('disabled');
+        const submitButtonEl = document.querySelector('.js-gke-cluster-creation-submit');
+
+        if (submitButtonEl) {
+          submitButtonEl.removeAttribute('disabled');
+        }
       }
     },
   },
