@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Geo::MetricsUpdateService, :geo do
+describe Geo::MetricsUpdateService, :geo, :prometheus do
   include ::EE::GeoHelpers
 
   set(:primary) { create(:geo_node, :primary) }
