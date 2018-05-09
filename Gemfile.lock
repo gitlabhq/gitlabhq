@@ -147,8 +147,6 @@ GEM
     creole (0.5.0)
     css_parser (1.5.0)
       addressable
-    d3_rails (3.5.11)
-      railties (>= 3.1.0)
     daemons (1.2.3)
     database_cleaner (1.5.3)
     debug_inspector (0.0.2)
@@ -1024,7 +1022,6 @@ DEPENDENCIES
   concurrent-ruby (~> 1.0.5)
   connection_pool (~> 2.0)
   creole (~> 0.5.0)
-  d3_rails (~> 3.5.0)
   database_cleaner (~> 1.5.0)
   deckar01-task_list (= 2.0.0)
   default_value_for (~> 3.0.0)
