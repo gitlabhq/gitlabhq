@@ -15,6 +15,7 @@
 
 #contributors-master {
   @include media-breakpoint-up(md) {
+    @include make-col-ready();
     @include make-col(12);
   }
 
@@ -36,6 +37,7 @@
 
   .person {
     @include media-breakpoint-up(md) {
+      @include make-col-ready();
       @include make-col(6);
     }
 
