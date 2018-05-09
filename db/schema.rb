@@ -1982,11 +1982,15 @@ ActiveRecord::Schema.define(version: 20180509091305) do
   add_index "project_import_data", ["project_id"], name: "index_project_import_data_on_project_id", using: :btree
 
   create_table "project_mirror_data", force: :cascade do |t|
+<<<<<<< HEAD
     t.integer "project_id"
     t.integer "retry_count", default: 0, null: false
     t.datetime "last_update_started_at"
     t.datetime "last_update_scheduled_at"
     t.datetime "next_execution_timestamp"
+=======
+    t.integer "project_id", null: false
+>>>>>>> upstream/master
     t.string "status"
     t.string "jid"
     t.datetime_with_timezone "last_update_at"
@@ -1995,8 +1999,11 @@ ActiveRecord::Schema.define(version: 20180509091305) do
   end
 
   add_index "project_mirror_data", ["jid"], name: "index_project_mirror_data_on_jid", using: :btree
+<<<<<<< HEAD
   add_index "project_mirror_data", ["last_successful_update_at"], name: "index_project_mirror_data_on_last_successful_update_at", using: :btree
   add_index "project_mirror_data", ["next_execution_timestamp", "retry_count"], name: "index_mirror_data_on_next_execution_and_retry_count", using: :btree
+=======
+>>>>>>> upstream/master
   add_index "project_mirror_data", ["project_id"], name: "index_project_mirror_data_on_project_id", unique: true, using: :btree
   add_index "project_mirror_data", ["status"], name: "index_project_mirror_data_on_status", using: :btree
 
@@ -2753,6 +2760,7 @@ ActiveRecord::Schema.define(version: 20180509091305) do
   add_foreign_key "ci_build_trace_sections", "ci_builds", column: "build_id", name: "fk_4ebe41f502", on_delete: :cascade
   add_foreign_key "ci_build_trace_sections", "projects", on_delete: :cascade
   add_foreign_key "ci_builds", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_a2141b1522", on_delete: :nullify
+  add_foreign_key "ci_builds", "ci_pipelines", column: "commit_id", name: "fk_d3130c9a7f", on_delete: :cascade
   add_foreign_key "ci_builds", "ci_stages", column: "stage_id", name: "fk_3a9eaa254d", on_delete: :cascade
   add_foreign_key "ci_builds", "projects", name: "fk_befce0568a", on_delete: :cascade
   add_foreign_key "ci_builds_metadata", "ci_builds", column: "build_id", on_delete: :cascade

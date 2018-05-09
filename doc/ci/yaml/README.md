@@ -738,9 +738,14 @@ cache:
 rspec:
   script: test
   cache:
+    key: rspec
     paths:
     - binaries/
 ```
+
+Note that since cache is shared between jobs, if you're using different
+paths for different jobs, you should also set a different **cache:key**
+otherwise cache content can be overwritten.
 
 ### `cache:key`
 
@@ -756,10 +761,9 @@ or any other way that fits your workflow. This way, you can fine tune caching,
 allowing you to cache data between different jobs or even different branches.
 
 The `cache:key` variable can use any of the
-[predefined variables](../variables/README.md), and the default key, if not set,
-is `$CI_JOB_NAME-$CI_COMMIT_REF_NAME` which translates as "per-job and
-per-branch". It is the default across the project, therefore everything is
-shared between pipelines and jobs running on the same branch by default.
+[predefined variables](../variables/README.md), and the default key, if not
+set, is just literal `default` which means everything is shared between each
+pipelines and jobs by default, starting from GitLab 9.0.
 
 NOTE: **Note:**
 The `cache:key` variable cannot contain the `/` character, or the equivalent
@@ -779,7 +783,7 @@ If you use **Windows Batch** to run your shell scripts you need to replace
 
 ```yaml
 cache:
-  key: "%CI_JOB_STAGE%-%CI_COMMIT_REF_SLUG%"
+  key: "%CI_COMMIT_REF_SLUG%"
   paths:
   - binaries/
 ```
@@ -789,7 +793,7 @@ If you use **Windows PowerShell** to run your shell scripts you need to replace
 
 ```yaml
 cache:
-  key: "$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_SLUG"
+  key: "$env:CI_COMMIT_REF_SLUG"
   paths:
   - binaries/
 ```
@@ -1751,7 +1755,7 @@ capitalization, the commit will be created but the pipeline will be skipped.
 ## Validate the .gitlab-ci.yml
 
 Each instance of GitLab CI has an embedded debug tool called Lint, which validates the
-content of your `.gitlab-ci.yml` files. You can find the Lint under the page `ci/lint` of your 
+content of your `.gitlab-ci.yml` files. You can find the Lint under the page `ci/lint` of your
 project namespace (e.g, `http://gitlab-example.com/gitlab-org/project-123/-/ci/lint`)
 
 ## Using reserved keywords

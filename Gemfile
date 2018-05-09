@@ -228,9 +228,6 @@ gem 'ruby-fogbugz', '~> 0.2.1'
 # Kubernetes integration
 gem 'kubeclient', '~> 3.0'
 
-# d3
-gem 'd3_rails', '~> 3.5.0'
-
 # Sanitize user input
 gem 'sanitize', '~> 2.0'
 gem 'babosa', '~> 1.0.2'
