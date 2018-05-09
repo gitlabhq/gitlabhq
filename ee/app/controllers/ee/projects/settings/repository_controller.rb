@@ -5,6 +5,8 @@ module EE
         extend ActiveSupport::Concern
 
         prepended do
+          include SafeMirrorParams
+
           before_action :push_rule, only: [:show]
         end
 
