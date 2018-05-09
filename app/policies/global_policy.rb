@@ -1,17 +1,17 @@
 class GlobalPolicy < BasePolicy
   desc "User is blocked"
   with_options scope: :user, score: 0
-  condition(:blocked) { @user.blocked? }
+  condition(:blocked) { @user&.blocked? }
 
   desc "User is an internal user"
   with_options scope: :user, score: 0
-  condition(:internal) { @user.internal? }
+  condition(:internal) { @user&.internal? }
 
   desc "User's access has been locked"
   with_options scope: :user, score: 0
-  condition(:access_locked) { @user.access_locked? }
+  condition(:access_locked) { @user&.access_locked? }
 
-  condition(:can_create_fork, scope: :user) { @user.manageable_namespaces.any? { |namespace| @user.can?(:create_projects, namespace) } }
+  condition(:can_create_fork, scope: :user) { @user && @user.manageable_namespaces.any? { |namespace| @user.can?(:create_projects, namespace) } }
 
   condition(:required_terms_not_accepted, scope: :user, score: 0) do
     @user&.required_terms_not_accepted?
@@ -19,8 +19,6 @@ class GlobalPolicy < BasePolicy
 
   rule { anonymous }.policy do
     prevent :log_in
-    prevent :access_api
-    prevent :access_git
     prevent :receive_notifications
     prevent :use_quick_actions
     prevent :create_group
