@@ -17,8 +17,8 @@ export default new Vuex.Store({
     },
     selectedZone: '',
     selectedMachineType: '',
-    fetchedProjects: [],
-    fetchedZones: [],
-    fetchedMachineTypes: [],
+    projects: [],
+    zones: [],
+    machineTypes: [],
   },
 });

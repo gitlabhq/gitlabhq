@@ -42,8 +42,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['selectedProject', 'selectedZone']),
-    ...mapState({ zones: 'fetchedZones' }),
+    ...mapState(['selectedProject', 'selectedZone', 'zones']),
     ...mapGetters(['hasProject']),
     isDisabled() {
       return !this.hasProject;

@@ -42,8 +42,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['selectedProject', 'selectedZone', 'selectedMachineType']),
-    ...mapState({ machineTypes: 'fetchedMachineTypes' }),
+    ...mapState(['selectedProject', 'selectedZone', 'selectedMachineType', 'machineTypes']),
     ...mapGetters(['hasProject', 'hasZone', 'hasMachineType']),
     isDisabled() {
       return !this.selectedProject || !this.selectedZone;

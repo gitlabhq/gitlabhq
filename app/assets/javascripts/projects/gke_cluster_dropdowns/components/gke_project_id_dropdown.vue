@@ -45,8 +45,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['selectedProject']),
-    ...mapState({ projects: 'fetchedProjects' }),
+    ...mapState(['selectedProject', 'projects']),
     ...mapGetters(['hasProject']),
     hasOneProject() {
       return this.projects.length === 1;

@@ -52,45 +52,45 @@ describe('GCP Cluster Dropdown Store Mutations', () => {
     });
   });
 
-  describe('SET_FETCHED_PROJECTS', () => {
-    it('should set Google API Projects response as fetchedProjects', () => {
+  describe('SET_PROJECTS', () => {
+    it('should set Google API Projects response as projects', () => {
       const state = {
-        fetchedProjects: [],
+        projects: [],
       };
 
-      expect(state.fetchedProjects.length).toEqual(0);
+      expect(state.projects.length).toEqual(0);
 
-      mutations.SET_FETCHED_PROJECTS(state, gapiProjectsResponseMock.projects);
+      mutations.SET_PROJECTS(state, gapiProjectsResponseMock.projects);
 
-      expect(state.fetchedProjects.length).toEqual(gapiProjectsResponseMock.projects.length);
+      expect(state.projects.length).toEqual(gapiProjectsResponseMock.projects.length);
     });
   });
 
-  describe('SET_FETCHED_ZONES', () => {
-    it('should set Google API Zones response as fetchedZones', () => {
+  describe('SET_ZONES', () => {
+    it('should set Google API Zones response as zones', () => {
       const state = {
-        fetchedZones: [],
+        zones: [],
       };
 
-      expect(state.fetchedZones.length).toEqual(0);
+      expect(state.zones.length).toEqual(0);
 
-      mutations.SET_FETCHED_ZONES(state, gapiZonesResponseMock.items);
+      mutations.SET_ZONES(state, gapiZonesResponseMock.items);
 
-      expect(state.fetchedZones.length).toEqual(gapiZonesResponseMock.items.length);
+      expect(state.zones.length).toEqual(gapiZonesResponseMock.items.length);
     });
   });
 
-  describe('SET_FETCHED_MACHINE_TYPES', () => {
-    it('should set Google API Machine Types response as fetchedMachineTypes', () => {
+  describe('SET_MACHINE_TYPES', () => {
+    it('should set Google API Machine Types response as machineTypes', () => {
       const state = {
-        fetchedMachineTypes: [],
+        machineTypes: [],
       };
 
-      expect(state.fetchedMachineTypes.length).toEqual(0);
+      expect(state.machineTypes.length).toEqual(0);
 
-      mutations.SET_FETCHED_MACHINE_TYPES(state, gapiMachineTypesResponseMock.items);
+      mutations.SET_MACHINE_TYPES(state, gapiMachineTypesResponseMock.items);
 
-      expect(state.fetchedMachineTypes.length).toEqual(gapiMachineTypesResponseMock.items.length);
+      expect(state.machineTypes.length).toEqual(gapiMachineTypesResponseMock.items.length);
     });
   });
 });

@@ -3,8 +3,8 @@ import GkeMachineTypeDropdown from '~/projects/gke_cluster_dropdowns/components/
 import {
   SET_PROJECT,
   SET_ZONE,
-  SET_FETCHED_ZONES,
-  SET_FETCHED_MACHINE_TYPES,
+  SET_ZONES,
+  SET_MACHINE_TYPES,
 } from '~/projects/gke_cluster_dropdowns/stores/mutation_types';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
@@ -84,7 +84,7 @@ describe('GkeMachineTypeDropdown', () => {
   describe('form input', () => {
     it('reflects new value when dropdown item is clicked', done => {
       expect(vm.$el.querySelector('input').value).toBe('');
-      vm.$store.commit(SET_FETCHED_MACHINE_TYPES, gapiMachineTypesResponseMock.items);
+      vm.$store.commit(SET_MACHINE_TYPES, gapiMachineTypesResponseMock.items);
 
       vm.$nextTick(() => {
         vm.$el.querySelector('.dropdown-content button').click();

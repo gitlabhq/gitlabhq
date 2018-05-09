@@ -29,7 +29,7 @@ export const getProjects = ({ commit }) =>
 
     return request.then(
       resp => {
-        commit(types.SET_FETCHED_PROJECTS, resp.result.projects);
+        commit(types.SET_PROJECTS, resp.result.projects);
 
         resolve();
       },
@@ -60,7 +60,7 @@ export const getZones = ({ commit, state }) =>
 
     return request.then(
       resp => {
-        commit(types.SET_FETCHED_ZONES, resp.result.items);
+        commit(types.SET_ZONES, resp.result.items);
 
         resolve();
       },
@@ -90,7 +90,7 @@ export const getMachineTypes = ({ commit, state }) =>
 
     return request.then(
       resp => {
-        commit(types.SET_FETCHED_MACHINE_TYPES, resp.result.items);
+        commit(types.SET_MACHINE_TYPES, resp.result.items);
 
         resolve();
       },

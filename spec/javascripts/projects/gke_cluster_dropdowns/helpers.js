@@ -13,9 +13,9 @@ export const resetStore = store => {
     },
     selectedZone: '',
     selectedMachineType: '',
-    fetchedProjects: [],
-    fetchedZones: [],
-    fetchedMachineTypes: [],
+    projects: [],
+    zones: [],
+    machineTypes: [],
   });
 };
 

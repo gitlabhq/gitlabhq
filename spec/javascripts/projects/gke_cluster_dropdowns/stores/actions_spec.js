@@ -56,8 +56,8 @@ describe('GCP Cluster Dropdown Store Actions', () => {
         store
           .dispatch('getProjects')
           .then(() => {
-            expect(store.state.fetchedProjects[0].projectId).toEqual(selectedProjectMock.projectId);
-            expect(store.state.fetchedProjects[0].name).toEqual(selectedProjectMock.name);
+            expect(store.state.projects[0].projectId).toEqual(selectedProjectMock.projectId);
+            expect(store.state.projects[0].name).toEqual(selectedProjectMock.name);
 
             done();
           })
@@ -70,7 +70,7 @@ describe('GCP Cluster Dropdown Store Actions', () => {
         store
           .dispatch('getZones')
           .then(() => {
-            expect(store.state.fetchedZones[0].name).toEqual(selectedZoneMock);
+            expect(store.state.zones[0].name).toEqual(selectedZoneMock);
 
             done();
           })
@@ -83,7 +83,7 @@ describe('GCP Cluster Dropdown Store Actions', () => {
         store
           .dispatch('getMachineTypes')
           .then(() => {
-            expect(store.state.fetchedMachineTypes[0].name).toEqual(selectedMachineTypeMock);
+            expect(store.state.machineTypes[0].name).toEqual(selectedMachineTypeMock);
 
             done();
           })

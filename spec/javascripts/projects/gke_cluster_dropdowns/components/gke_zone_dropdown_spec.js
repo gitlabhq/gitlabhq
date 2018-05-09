@@ -1,9 +1,6 @@
 import Vue from 'vue';
 import GkeZoneDropdown from '~/projects/gke_cluster_dropdowns/components/gke_zone_dropdown.vue';
-import {
-  SET_PROJECT,
-  SET_FETCHED_ZONES,
-} from '~/projects/gke_cluster_dropdowns/stores/mutation_types';
+import { SET_PROJECT, SET_ZONES } from '~/projects/gke_cluster_dropdowns/stores/mutation_types';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 import { resetStore } from '../helpers';
@@ -67,7 +64,7 @@ describe('GkeZoneDropdown', () => {
   describe('selectItem', () => {
     it('reflects new value when dropdown item is clicked', done => {
       expect(vm.$el.querySelector('input').value).toBe('');
-      vm.$store.commit(SET_FETCHED_ZONES, gapiZonesResponseMock.items);
+      vm.$store.commit(SET_ZONES, gapiZonesResponseMock.items);
 
       vm.$nextTick(() => {
         vm.$el.querySelector('.dropdown-content button').click();
