@@ -12,17 +12,13 @@ class EnsureProjectMirrorData < ActiveRecord::Migration
         retry_count,
         last_update_started_at,
         last_update_scheduled_at,
-        next_execution_timestamp,
-        created_at,
-        updated_at
+        next_execution_timestamp
       )
       SELECT id AS project_id,
         0 AS retry_count,
         CAST(NULL AS TIMESTAMP) AS last_update_started_at,
         CAST(NULL AS TIMESTAMP) AS last_update_scheduled_at,
-        NOW() AS next_execution_timestamp,
-        NOW() AS created_at,
-        NOW() as updated_at
+        NOW() AS next_execution_timestamp
       FROM projects
       WHERE mirror IS TRUE
       AND NOT EXISTS (
