@@ -59,6 +59,7 @@ module Ci
     validate :tag_constraints
     validate :either_projects_or_group
     validates :access_level, presence: true
+    validates :runner_type, presence: true
 
     acts_as_taggable
 
