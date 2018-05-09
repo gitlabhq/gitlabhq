@@ -61,6 +61,7 @@ describe 'Merge request > User posts notes', :js do
       page.within('.js-main-target-form') do
         expect(page).to have_no_field('note[note]', with: 'This is awesome!')
       end
+      wait_for_requests
       page.within('.js-main-target-form') do
         is_expected.to have_css('.js-vue-comment-form', visible: true)
       end
@@ -83,11 +84,6 @@ describe 'Merge request > User posts notes', :js do
   end
 
   describe 'when editing a note' do
-    it 'there should be a hidden edit form' do
-      is_expected.to have_css('.note-edit-form:not(.mr-note-edit-form)', visible: false, count: 1)
-      is_expected.to have_css('.note-edit-form.mr-note-edit-form', visible: false, count: 1)
-    end
-
     describe 'editing the note' do
       before do
         find('.note').hover
@@ -107,8 +103,8 @@ describe 'Merge request > User posts notes', :js do
         within('.current-note-edit-form') do
           fill_in 'note[note]', with: 'Some new content'
           find('.btn-cancel').click
-          expect(find('.js-note-text', visible: false).text).to eq ''
         end
+        expect(page).not_to have_selector('.js-note-text')
       end
 
       it 'allows using markdown buttons after saving a note and then trying to edit it again' do
@@ -117,8 +113,8 @@ describe 'Merge request > User posts notes', :js do
           find('.btn-save').click
         end
 
-        wait_for_requests
         find('.note').hover
+        wait_for_requests
 
         find('.js-note-edit').click
 
