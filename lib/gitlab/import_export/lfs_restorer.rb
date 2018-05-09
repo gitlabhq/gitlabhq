@@ -26,7 +26,12 @@ module Gitlab
         oid = LfsObject.calculate_oid(path)
 
         lfs_object = LfsObject.find_or_initialize_by(oid: oid, size: size)
-        lfs_object.file = File.open(path) unless lfs_object.file&.exists?
+
+        unless lfs_object.file&.exists?
+          lfs_object.file = UploadedFile.new(path,
+            filename: oid[LfsObject::FILE_NAME_RANGE],
+            content_type: 'application/octet-stream')
+        end
 
         @project.all_lfs_objects << lfs_object
       end

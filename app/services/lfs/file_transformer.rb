@@ -55,7 +55,11 @@ module Lfs
 
     def create_lfs_object!(lfs_pointer_file, file_content)
       LfsObject.find_or_create_by(oid: lfs_pointer_file.sha256, size: lfs_pointer_file.size) do |lfs_object|
-        lfs_object.file = CarrierWaveStringFile.new(file_content)
+        lfs_object.file = {
+          "tempfile" => StringIO.new(file_content),
+          "filename" => lfs_pointer_file.sha256[LfsObject::FILE_NAME_RANGE],
+          "content_type" => "application/octet-stream"
+        }
       end
     end
 

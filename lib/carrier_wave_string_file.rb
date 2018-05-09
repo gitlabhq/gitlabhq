@@ -1,5 +1,5 @@
-class CarrierWaveStringFile < StringIO
-  def original_filename
-    ""
-  end
-end
+# class CarrierWaveStringFile < StringIO
+#   def original_filename
+#     ""
+#   end
+# end
