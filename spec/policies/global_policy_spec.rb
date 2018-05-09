@@ -91,21 +91,31 @@ describe GlobalPolicy do
     end
   end
 
+  shared_examples 'access allowed when terms accepted' do |ability|
+    it { is_expected.not_to be_allowed(ability) }
+
+    it "allows #{ability} when the user accepted the terms" do
+      accept_terms(current_user)
+
+      is_expected.to be_allowed(ability)
+    end
+  end
+
   describe 'API access' do
-    describe 'regular user' do
+    context 'regular user' do
       it { is_expected.to be_allowed(:access_api) }
     end
 
-    describe 'admin' do
+    context 'admin' do
       let(:current_user) { create(:admin) }
 
       it { is_expected.to be_allowed(:access_api) }
     end
 
-    describe 'anonymous' do
+    context 'anonymous' do
       let(:current_user) { nil }
 
-      it { is_expected.not_to be_allowed(:access_api) }
+      it { is_expected.to be_allowed(:access_api) }
     end
 
     context 'when terms are enforced' do
@@ -113,12 +123,20 @@ describe GlobalPolicy do
         enforce_terms
       end
 
-      it { is_expected.not_to be_allowed(:access_api) }
+      context 'regular user' do
+        it_behaves_like 'access allowed when terms accepted', :access_api
+      end
 
-      it 'allows access to the API when the user accepted the terms' do
-        accept_terms(current_user)
+      context 'admin' do
+        let(:current_user) { create(:admin) }
 
-        is_expected.to be_allowed(:access_api)
+        it_behaves_like 'access allowed when terms accepted', :access_api
+      end
+
+      context 'anonymous' do
+        let(:current_user) { nil }
+
+        it { is_expected.to be_allowed(:access_api) }
       end
     end
   end
@@ -137,7 +155,7 @@ describe GlobalPolicy do
     describe 'anonymous' do
       let(:current_user) { nil }
 
-      it { is_expected.not_to be_allowed(:access_git) }
+      it { is_expected.to be_allowed(:access_git) }
     end
 
     context 'when terms are enforced' do
@@ -145,12 +163,20 @@ describe GlobalPolicy do
         enforce_terms
       end
 
-      it { is_expected.not_to be_allowed(:access_git) }
+      context 'regular user' do
+        it_behaves_like 'access allowed when terms accepted', :access_git
+      end
 
-      it 'allows access to git when terms are accepted' do
-        accept_terms(current_user)
+      context 'admin' do
+        let(:current_user) { create(:admin) }
 
-        is_expected.to be_allowed(:access_git)
+        it_behaves_like 'access allowed when terms accepted', :access_git
+      end
+
+      context 'anonymous' do
+        let(:current_user) { nil }
+
+        it { is_expected.to be_allowed(:access_git) }
       end
     end
   end
