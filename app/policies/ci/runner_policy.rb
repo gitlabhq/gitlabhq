@@ -3,7 +3,7 @@ module Ci
     with_options scope: :subject, score: 0
     condition(:locked, scope: :subject) { @subject.locked? }
 
-    condition(:authorized_runner) { @user.ci_authorized_runners.include?(@subject) }
+    condition(:authorized_runner) { @user.ci_authorized_runners.exists?(@subject.id) }
 
     rule { anonymous }.prevent_all
     rule { admin | authorized_runner }.enable :assign_runner
