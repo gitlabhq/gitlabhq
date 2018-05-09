@@ -44,7 +44,7 @@ module Gitlab
       end
 
       def destination_path_for_object(lfs_object)
-        File.join(lfs_export_path, lfs_object.oid) # Is this correct??
+        File.join(lfs_export_path, lfs_object.oid)
       end
 
       def lfs_export_path
