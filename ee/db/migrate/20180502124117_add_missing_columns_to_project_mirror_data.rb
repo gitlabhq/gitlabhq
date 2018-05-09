@@ -10,8 +10,8 @@ class AddMissingColumnsToProjectMirrorData < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    add_column :project_mirror_data, :last_update_at, :datetime_with_timezone
-    add_column :project_mirror_data, :last_successful_update_at, :datetime_with_timezone
+    add_column :project_mirror_data, :last_update_at, :datetime_with_timezone unless column_exists?(:project_mirror_data, :last_update_at)
+    add_column :project_mirror_data, :last_successful_update_at, :datetime_with_timezone unless column_exists?(:project_mirror_data, :last_successful_update_at)
   end
 
   def down
