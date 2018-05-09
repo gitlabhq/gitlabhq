@@ -27,7 +27,7 @@ describe API::Runners do
     end
   end
 
-  let!(:group_runner) { create(:ci_runner, description: 'Group runner', groups: [group]) }
+  let!(:group_runner) { create(:ci_runner, description: 'Group runner', groups: [group], runner_type: :group_type) }
 
   before do
     # Set project access for users
@@ -48,7 +48,7 @@ describe API::Runners do
         expect(json_response).to be_an Array
         expect(json_response[0]).to have_key('ip_address')
         expect(descriptions).to contain_exactly(
-          'Project runner', 'Two projects runner'
+          'Project runner', 'Two projects runner', 'Group runner'
         )
         expect(shared).to be_falsey
       end

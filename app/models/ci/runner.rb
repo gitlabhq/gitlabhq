@@ -52,7 +52,7 @@ module Ci
       #        Without that, placeholders would miss one and couldn't match.
       where(locked: false)
         .where.not("ci_runners.id IN (#{project.runners.select(:id).to_sql})")
-        .specific
+        .project_type
     end
 
     validate :tag_constraints
