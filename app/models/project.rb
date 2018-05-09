@@ -680,19 +680,11 @@ class Project < ActiveRecord::Base
 
     if persisted?
       create_import_state(import_state_args)
-<<<<<<< HEAD
 
       update_column(:import_status, 'none')
     else
       build_import_state(import_state_args)
 
-=======
-
-      update_column(:import_status, 'none')
-    else
-      build_import_state(import_state_args)
-
->>>>>>> upstream/master
       self[:import_status] = 'none'
     end
   end
