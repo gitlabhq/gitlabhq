@@ -129,6 +129,10 @@ class MergeRequest < ActiveRecord::Base
       Gitlab::Timeless.timeless(merge_request, &block)
     end
 
+    after_transition unchecked: :cannot_be_merged do |merge_request, transition|
+      NotificationService.new.merge_request_unmergeable(merge_request)
+    end
+
     def check_state?(merge_status)
       [:unchecked, :cannot_be_merged_recheck].include?(merge_status.to_sym)
     end

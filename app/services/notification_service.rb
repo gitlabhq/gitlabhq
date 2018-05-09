@@ -152,6 +152,15 @@ class NotificationService
     end
   end
 
+  # When a merge request is found to be unmergeable, we should send an email to:
+  #
+  #  * mr author
+  #  * mr merge user if set
+  #
+  def merge_request_unmergeable(merge_request)
+    merge_request_unmergeable_email(merge_request)
+  end
+
   # When merge request text is updated, we should send an email to:
   #
   #  * newly mentioned project team members with notification level higher than Participating
@@ -505,6 +514,14 @@ class NotificationService
 
     recipients.each do |recipient|
       mailer.send(method, recipient.user.id, target.id, status, current_user.id, recipient.reason).deliver_later
+    end
+  end
+
+  def merge_request_unmergeable_email(merge_request)
+    recipients = NotificationRecipientService.build_merge_request_unmergeable_recipients(merge_request)
+
+    recipients.each do |recipient|
+      mailer.merge_request_unmergeable_email(recipient.user.id, merge_request.id).deliver_later
     end
   end
 
