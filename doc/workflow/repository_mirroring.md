@@ -36,7 +36,7 @@ A few things/limitations to consider:
 
 ## Use-cases
 
-- You migrated to GitLab but still need to keep you project in another source.
+- You migrated to GitLab but still need to keep your project in another source.
   In that case, you can simply set it up to mirror to GitLab (pull) and all the
   essential history of commits, tags and branches will be available in your
   GitLab instance.
