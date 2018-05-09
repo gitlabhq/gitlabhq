@@ -8,8 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2018-05-04 17:37+0200\n"
 "PO-Revision-Date: 2018-05-04 17:37+0200\n"
+=======
+"POT-Creation-Date: 2018-05-09 09:24+0200\n"
+"PO-Revision-Date: 2018-05-09 09:24+0200\n"
+>>>>>>> upstream/master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -143,6 +148,12 @@ msgstr ""
 msgid "+ %{moreCount} more"
 msgstr ""
 
+msgid "- Runner is active and can process any new jobs"
+msgstr ""
+
+msgid "- Runner is paused and will not receive any new jobs"
+msgstr ""
+
 msgid "- show less"
 msgstr ""
 
@@ -193,6 +204,9 @@ msgid "2FA enabled"
 msgstr ""
 
 msgid "<strong>Removes</strong> source branch"
+msgstr ""
+
+msgid "A 'Runner' is a process which runs a job. You can setup as many Runners as you need."
 msgstr ""
 
 msgid "A collection of graphs regarding Continuous Integration"
@@ -477,10 +491,14 @@ msgstr ""
 msgid "Artifacts"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Ascending"
 msgstr ""
 
 msgid "Assertion consumer service URL"
+=======
+msgid "Ask your group master to setup a group Runner."
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Assign custom color like #FF0000"
@@ -568,6 +586,12 @@ msgid "AutoDevOps|enable Auto DevOps (Beta)"
 msgstr ""
 
 msgid "Available"
+msgstr ""
+
+msgid "Available group Runners : %{runners}"
+msgstr ""
+
+msgid "Available group Runners : %{runners}."
 msgstr ""
 
 msgid "Avatar will be removed. Are you sure?"
@@ -884,7 +908,11 @@ msgstr ""
 msgid "CI/CD configuration"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "CI/CD for external repo"
+=======
+msgid "CI/CD settings"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "CICD|An explicit %{ci_file} needs to be specified before you can begin using Continuous Integration and Delivery."
@@ -918,6 +946,9 @@ msgid "CICD|The Auto DevOps pipeline configuration will be used when there is no
 msgstr ""
 
 msgid "CICD|You need to specify a domain if you want to use Auto Review Apps and Auto Deploy stages."
+msgstr ""
+
+msgid "Can run untagged jobs"
 msgstr ""
 
 msgid "Cancel"
@@ -1919,6 +1950,15 @@ msgstr ""
 msgid "Disable"
 msgstr ""
 
+<<<<<<< HEAD
+=======
+msgid "Disable for this project"
+msgstr ""
+
+msgid "Disable group Runners"
+msgstr ""
+
+>>>>>>> upstream/master
 msgid "Discard changes"
 msgstr ""
 
@@ -1979,7 +2019,11 @@ msgstr ""
 msgid "Due date"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "During this process, you’ll be asked for URLs from GitLab’s side. Use the URLs shown below."
+=======
+msgid "Each Runner can be in one of the following states:"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Edit"
@@ -2027,7 +2071,14 @@ msgstr ""
 msgid "Enable and configure Prometheus metrics."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Enable classification control using an external service"
+=======
+msgid "Enable for this project"
+msgstr ""
+
+msgid "Enable group Runners"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Enable or disable version check and usage ping."
@@ -2323,7 +2374,14 @@ msgstr ""
 msgid "GeoNodes|Checksummed"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "GeoNodes|Data replication lag:"
+=======
+msgid "GitLab Group Runners can execute code for all the projects in this group."
+msgstr ""
+
+msgid "GitLab Runner section"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "GeoNodes|Disabling a node stops the sync process. Are you sure?"
@@ -2347,10 +2405,26 @@ msgstr ""
 msgid "GeoNodes|Health status:"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "GeoNodes|Last event ID seen from primary:"
 msgstr ""
 
 msgid "GeoNodes|Latest event log status:"
+=======
+msgid "Group CI/CD settings"
+msgstr ""
+
+msgid "Group ID"
+msgstr ""
+
+msgid "Group Runners"
+msgstr ""
+
+msgid "Group masters can register group runners in the %{link}"
+msgstr ""
+
+msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "GeoNodes|Loading nodes"
@@ -2908,16 +2982,27 @@ msgstr ""
 msgid "Lock %{issuableDisplayName}"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Lock not found"
+=======
+msgid "Lock to current projects"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Locked"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Locked Files"
 msgstr ""
 
 msgid "Locks give the ability to lock specific file or folder."
+=======
+msgid "Locked to current projects"
+msgstr ""
+
+msgid "Locked to this project"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Login"
@@ -2954,6 +3039,9 @@ msgid "Markdown enabled"
 msgstr ""
 
 msgid "Maximum git storage failures"
+msgstr ""
+
+msgid "Maximum job timeout"
 msgstr ""
 
 msgid "May"
@@ -3183,7 +3271,11 @@ msgstr ""
 msgid "New tag"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "No Label"
+=======
+msgid "No"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "No assignee"
@@ -3400,6 +3492,9 @@ msgid "Part of merge request changes"
 msgstr ""
 
 msgid "Password"
+msgstr ""
+
+msgid "Pause"
 msgstr ""
 
 msgid "Pending"
@@ -3942,7 +4037,11 @@ msgstr ""
 msgid "Register / Sign In"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Registry"
+=======
+msgid "Register and see your runners for this group."
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Related Commits"
@@ -3972,6 +4071,12 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
+<<<<<<< HEAD
+=======
+msgid "Remove Runner"
+msgstr ""
+
+>>>>>>> upstream/master
 msgid "Remove avatar"
 msgstr ""
 
@@ -4020,7 +4125,11 @@ msgstr ""
 msgid "Resolve discussion"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Response metrics (Custom)"
+=======
+msgid "Resume"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Retry"
@@ -4062,6 +4171,15 @@ msgid "Run CI/CD pipelines for external repositories"
 msgstr ""
 
 msgid "Runners"
+msgstr ""
+
+msgid "Runners API"
+msgstr ""
+
+msgid "Runners can be placed on separate users, servers, and even on your local machine."
+msgstr ""
+
+msgid "Runners settings"
 msgstr ""
 
 msgid "Running"
@@ -4236,6 +4354,9 @@ msgid "SharedRunnersMinutesSettings|Reset pipeline minutes"
 msgstr ""
 
 msgid "SharedRunnersMinutesSettings|Reset used pipeline minutes"
+msgstr ""
+
+msgid "Shared Runners"
 msgstr ""
 
 msgid "Show command"
@@ -4427,6 +4548,9 @@ msgid "Spam Logs"
 msgstr ""
 
 msgid "Spam and Anti-bot Protection"
+msgstr ""
+
+msgid "Specific Runners"
 msgstr ""
 
 msgid "Specify the following URL during the Runner setup:"
@@ -4719,13 +4843,24 @@ msgstr ""
 msgid "There was an error when unsubscribing from this label."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "This board\\'s scope is reduced"
+=======
+msgid "They can be managed using the %{link}."
+msgstr ""
+
+msgid "This GitLab instance does not provide any shared Runners yet. Instance administrators can register shared Runners in the admin area."
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "This directory"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "This group allows you to sign in with your %{group_name} Single Sign-On account. This will redirect you to an external sign in page."
+=======
+msgid "This group does not provide any group Runners yet."
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "This is a confidential issue."
@@ -4783,6 +4918,9 @@ msgid "This page will be removed in a future release."
 msgstr ""
 
 msgid "This project"
+msgstr ""
+
+msgid "This project does not belong to a group and can therefore not make use of group Runners."
 msgstr ""
 
 msgid "This repository"
@@ -4993,10 +5131,14 @@ msgstr ""
 msgid "To import an SVN repository, check out %{svn_link}."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "To only use CI/CD features for an external repository, choose <strong>CI/CD for external repo</strong>."
 msgstr ""
 
 msgid "To set up SAML authentication for your group through an identity provider like Azure, Okta, Onelogin, Ping Identity, or your custom SAML 2.0 provider:"
+=======
+msgid "To start serving your jobs you can add Runners to your group"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "To validate your GitLab CI configurations, go to 'CI/CD → Pipelines' inside your project, and click on the 'CI Lint' button."
@@ -5218,6 +5360,7 @@ msgstr ""
 msgid "Web terminal"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
 msgstr ""
 
@@ -5225,6 +5368,9 @@ msgid "Weight"
 msgstr ""
 
 msgid "Weight %{weight}"
+=======
+msgid "When a runner is locked, it cannot be assigned to other projects"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "When enabled, users cannot use GitLab until the terms have been accepted."
@@ -5348,6 +5494,9 @@ msgid "Withdraw Access Request"
 msgstr ""
 
 msgid "Write a commit message..."
+msgstr ""
+
+msgid "Yes"
 msgstr ""
 
 msgid "You are going to remove %{group_name}. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?"
@@ -5655,7 +5804,11 @@ msgstr ""
 msgid "estimateCommand|%{slash_command} will update the estimated time with the latest command."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "here"
+=======
+msgid "for this project"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "importing"
