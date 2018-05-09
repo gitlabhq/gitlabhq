@@ -46,6 +46,7 @@ describe API::Runners do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
+        expect(json_response[0]).to have_key('ip_address')
         expect(descriptions).to contain_exactly(
           'Project runner', 'Two projects runner'
         )
@@ -59,6 +60,7 @@ describe API::Runners do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
+        expect(json_response[0]).to have_key('ip_address')
         expect(shared).to be_falsey
       end
 
@@ -87,6 +89,7 @@ describe API::Runners do
           expect(response).to have_gitlab_http_status(200)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
+          expect(json_response[0]).to have_key('ip_address')
           expect(shared).to be_truthy
         end
       end
@@ -106,6 +109,7 @@ describe API::Runners do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
+        expect(json_response[0]).to have_key('ip_address')
         expect(shared).to be_falsey
       end
 
@@ -515,6 +519,7 @@ describe API::Runners do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
+        expect(json_response[0]).to have_key('ip_address')
         expect(shared).to be_truthy
       end
     end
