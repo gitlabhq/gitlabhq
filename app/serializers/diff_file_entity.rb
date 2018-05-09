@@ -99,11 +99,11 @@ class DiffFileEntity < Grape::Entity
       options)
   end
 
-  expose :fork_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
+  expose :fork_path, if: -> (_, options) { options[:merge_request] && current_user } do |diff_file|
     merge_request = options[:merge_request]
 
     params = edit_blob_fork_params("Edit")
-    project_forks_path(merge_request.project, namespace_key: request.current_user.namespace.id, continue: params)
+    project_forks_path(merge_request.project, namespace_key: current_user.namespace.id, continue: params)
   end
 
   expose :view_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
