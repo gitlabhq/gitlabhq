@@ -83,8 +83,6 @@ class ProfilesController < Profiles::ApplicationController
       :linkedin,
       :location,
       :name,
-      :password,
-      :password_confirmation,
       :public_email,
       :skype,
       :twitter,
