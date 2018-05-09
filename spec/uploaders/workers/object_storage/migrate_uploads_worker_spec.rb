@@ -11,7 +11,7 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
   let(:uploads) { Upload.all }
   let(:to_store) { ObjectStorage::Store::REMOTE }
 
-  shared_examples "correctly" do
+  shared_examples "uploads migration worker" do
     describe '.enqueue!' do
       def enqueue!
         described_class.enqueue!(uploads, Project, mounted_as, to_store)
@@ -122,7 +122,7 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
       stub_uploads_object_storage(AvatarUploader)
     end
 
-    it_behaves_like "correctly"
+    it_behaves_like "uploads migration worker"
   end
 
   context "for FileUploader" do
@@ -139,6 +139,6 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
       end
     end
 
-    it_behaves_like "correctly"
+    it_behaves_like "uploads migration worker"
   end
 end
