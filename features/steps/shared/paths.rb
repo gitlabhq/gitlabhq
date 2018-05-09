@@ -336,11 +336,6 @@ module SharedPaths
     wait_for_requests
   end
 
-  step 'I visit merge request page "Bug NS-05"' do
-    visit merge_request_path("Bug NS-05")
-    wait_for_requests
-  end
-
   step 'I visit merge request page "Bug NS-07"' do
     visit merge_request_path("Bug NS-07")
     wait_for_requests

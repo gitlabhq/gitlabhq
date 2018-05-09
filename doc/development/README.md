@@ -1,5 +1,6 @@
 ---
 comments: false
+description: 'Learn how to contribute to GitLab.'
 ---
 
 # GitLab development guides
@@ -18,6 +19,7 @@ comments: false
 - [Code review guidelines](code_review.md) for reviewing code and having code reviewed.
 - [Automatic CE->EE merge](automatic_ce_ee_merge.md)
 - [Guidelines for implementing Enterprise Edition features](ee_features.md)
+- [Security process for developers](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md#security-releases-critical-non-critical-as-a-developer)
 
 ## UX and frontend guides
 
