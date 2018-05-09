@@ -1,3 +1,7 @@
+---
+description: Learn how to contribute to GitLab Documentation.
+---
+
 # GitLab Documentation guidelines
 
   - **General Documentation**: written by the [developers responsible by creating features](#contributing-to-docs). Should be submitted in the same merge request containing code. Feature proposals (by GitLab contributors) should also be accompanied by its respective documentation. They can be later improved by PMs and Technical Writers.
