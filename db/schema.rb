@@ -1529,14 +1529,14 @@ ActiveRecord::Schema.define(version: 20180508055821) do
   add_index "project_import_data", ["project_id"], name: "index_project_import_data_on_project_id", using: :btree
 
   create_table "project_mirror_data", force: :cascade do |t|
-    t.integer "project_id"
+    t.integer "project_id", null: false
     t.string "status"
     t.string "jid"
     t.text "last_error"
   end
 
   add_index "project_mirror_data", ["jid"], name: "index_project_mirror_data_on_jid", using: :btree
-  add_index "project_mirror_data", ["project_id"], name: "index_project_mirror_data_on_project_id", using: :btree
+  add_index "project_mirror_data", ["project_id"], name: "index_project_mirror_data_on_project_id", unique: true, using: :btree
   add_index "project_mirror_data", ["status"], name: "index_project_mirror_data_on_status", using: :btree
 
   create_table "project_statistics", force: :cascade do |t|
