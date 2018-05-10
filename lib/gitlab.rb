@@ -1,4 +1,3 @@
-require_dependency 'settings'
 require_dependency 'gitlab/popen'
 
 module Gitlab
@@ -30,6 +29,6 @@ module Gitlab
   end
 
   def self.dev_env_or_com?
-    Rails.env.test? || Rails.env.development? || org? || com?
+    Rails.env.development? || org? || com?
   end
 end
