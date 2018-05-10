@@ -97,7 +97,7 @@ export default {
         <a
           :href="resolveAllDiscussionsIssuePath"
           v-tooltip
-          title="Resolve all discussions in new issue"
+          :title="s__('Resolve all discussions in new issue')"
           data-container="body"
           class="new-issue-for-discussion btn btn-default discussion-create-issue-btn">
           <span v-html="mrIssueSvg"></span>
