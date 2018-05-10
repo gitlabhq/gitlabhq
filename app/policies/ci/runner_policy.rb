@@ -10,7 +10,6 @@ module Ci
     rule { admin | owned_runner }.enable :read_runner
     rule { admin | owned_runner }.enable :update_runner
     rule { admin | owned_runner }.enable :delete_runner
-    rule { admin | owned_runner  }.enable :list_runner_jobs
     rule { ~admin & locked }.prevent :assign_runner
   end
 end
