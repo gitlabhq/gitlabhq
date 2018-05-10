@@ -588,7 +588,6 @@ module Gitlab
       # the result of this method is an array of Gitlab::Git::RawDiffChange
       def raw_changes_between(old_rev, new_rev)
         @raw_changes_between ||= {}
-<<<<<<< HEAD
 
         @raw_changes_between[[old_rev, new_rev]] ||= begin
           return [] if new_rev.blank? || new_rev == Gitlab::Git::BLANK_SHA
@@ -606,25 +605,6 @@ module Gitlab
                 Open3.pipeline_r(git_diff_cmd(old_rev, new_rev), format_git_cat_file_script, git_cat_file_cmd) do |last_stdout, wait_threads|
                   last_stdout.each_line { |line| result << ::Gitlab::Git::RawDiffChange.new(line.chomp!) }
 
-=======
-
-        @raw_changes_between[[old_rev, new_rev]] ||= begin
-          return [] if new_rev.blank? || new_rev == Gitlab::Git::BLANK_SHA
-
-          gitaly_migrate(:raw_changes_between) do |is_enabled|
-            if is_enabled
-              gitaly_repository_client.raw_changes_between(old_rev, new_rev)
-                .each_with_object([]) do |msg, arr|
-                msg.raw_changes.each { |change| arr << ::Gitlab::Git::RawDiffChange.new(change) }
-              end
-            else
-              result = []
-
-              circuit_breaker.perform do
-                Open3.pipeline_r(git_diff_cmd(old_rev, new_rev), format_git_cat_file_script, git_cat_file_cmd) do |last_stdout, wait_threads|
-                  last_stdout.each_line { |line| result << ::Gitlab::Git::RawDiffChange.new(line.chomp!) }
-
->>>>>>> upstream/master
                   if wait_threads.any? { |waiter| !waiter.value&.success? }
                     raise ::Gitlab::Git::Repository::GitError, "Unabled to obtain changes between #{old_rev} and #{new_rev}"
                   end
