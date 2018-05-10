@@ -1006,7 +1006,7 @@ pre.light-well {
     margin-top: -20px;
 
     @include media-breakpoint-up(sm) {
-      margin: 0 $gl-padding-8 0;
+      margin: 0 $gl-padding-8;
       width: auto;
     }
   }
