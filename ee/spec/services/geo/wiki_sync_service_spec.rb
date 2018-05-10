@@ -90,6 +90,7 @@ RSpec.describe Geo::WikiSyncService do
 
       subject.execute
 
+      expect(Geo::ProjectRegistry.last.resync_wiki).to be true
       expect(Geo::ProjectRegistry.last.wiki_retry_count).to eq(1)
     end
 
@@ -104,6 +105,18 @@ RSpec.describe Geo::WikiSyncService do
 
       expect(registry.reload.resync_wiki).to be false
       expect(registry.last_wiki_successful_sync_at).not_to be nil
+    end
+
+    it 'marks resync as true after a failure' do
+      subject.execute
+
+      allow(repository).to receive(:fetch_as_mirror)
+        .with(url_to_repo, remote_name: 'geo', forced: true)
+        .and_raise(Gitlab::Git::Repository::NoRepository)
+
+      subject.execute
+
+      expect(Geo::ProjectRegistry.last.resync_wiki).to be true
     end
 
     context 'tracking database' do

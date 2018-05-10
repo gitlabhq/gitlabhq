@@ -176,6 +176,7 @@ module Geo
     def fail_registry!(message, error, attrs = {})
       log_error(message, error)
 
+      attrs["resync_#{type}"] = true
       attrs["last_#{type}_sync_failure"] = "#{message}: #{error.message}"
       attrs["#{type}_retry_count"] = retry_count + 1
 
