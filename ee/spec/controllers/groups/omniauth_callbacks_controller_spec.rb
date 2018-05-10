@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Groups::OmniauthCallbacksController do
   include LoginHelpers
+  include ForgeryProtection
 
   let(:uid) { 'my-uid' }
   let(:user) { create(:user) }
@@ -55,6 +56,15 @@ describe Groups::OmniauthCallbacksController do
 
         it 'uses existing linked identity' do
           expect { post provider, group_id: group }.not_to change(linked_accounts, :count)
+        end
+
+        it 'skips authenticity token based forgery protection' do
+          with_forgery_protection do
+            post provider, group_id: group
+
+            expect(response).not_to be_client_error
+            expect(response).not_to be_server_error
+          end
         end
       end
 
