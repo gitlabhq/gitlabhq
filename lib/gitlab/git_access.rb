@@ -105,7 +105,9 @@ module Gitlab
     end
 
     def check_active_user!
-      if user && !user_access.allowed?
+      return unless user
+
+      unless user_access.allowed?
         message = Gitlab::Auth::UserAccessDeniedReason.new(user).rejection_message
         raise UnauthorizedError, message
       end
@@ -338,6 +340,8 @@ module Gitlab
     def user_access
       @user_access ||= if ci?
                          CiAccess.new
+                       elsif user && request_from_ci_build?
+                         BuildAccess.new(user, project: project)
                        else
                          UserAccess.new(user, project: project)
                        end
