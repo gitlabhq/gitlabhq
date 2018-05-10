@@ -1130,6 +1130,7 @@ module Gitlab
         end
       end
 
+      # What is it trying to fetch?
       def with_repo_branch_commit(start_repository, start_branch_name)
         Gitlab::Git.check_namespace!(start_repository)
         start_repository = RemoteRepository.new(start_repository) unless start_repository.is_a?(RemoteRepository)
@@ -1183,15 +1184,34 @@ module Gitlab
       end
 
       def compare_source_branch(target_branch_name, source_repository, source_branch_name, straight:)
-        with_repo_branch_commit(source_repository, source_branch_name) do |commit|
-          break unless commit
+        return unless source_branch_name
 
+        # Copying a few things from with_repo_branch_commit method.
+        # TODO: Refactor
+        #
+        Gitlab::Git.check_namespace!(source_repository)
+        source_repository = RemoteRepository.new(source_repository) unless source_repository.is_a?(RemoteRepository)
+
+        return if source_repository.empty?
+
+        if source_repository.same_repository?(self) && ::Commit.valid_hash?(source_branch_name)
           Gitlab::Git::Compare.new(
             self,
             target_branch_name,
-            commit.sha,
+            source_branch_name,
             straight: straight
           )
+        else
+          with_repo_branch_commit(source_repository, source_branch_name) do |commit|
+            break unless commit
+
+            Gitlab::Git::Compare.new(
+              self,
+              target_branch_name,
+              commit.sha,
+              straight: straight
+            )
+          end
         end
       end
 

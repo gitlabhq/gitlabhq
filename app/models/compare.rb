@@ -24,37 +24,37 @@ class Compare
     @commits ||= Commit.decorate(@compare.commits, project)
   end
 
-  def start_commit
-    strong_memoize(:start_commit) do
-      commit = @compare.base
+  # def start_commit
+  #   strong_memoize(:start_commit) do
+  #     commit = @compare.base
+  #
+  #     ::Commit.new(commit, project) if commit
+  #   end
+  # end
 
-      ::Commit.new(commit, project) if commit
-    end
-  end
-
-  def head_commit
-    strong_memoize(:head_commit) do
-      commit = @compare.head
-
-      ::Commit.new(commit, project) if commit
-    end
-  end
-  alias_method :commit, :head_commit
+  # def head_commit
+  #   strong_memoize(:head_commit) do
+  #     commit = @compare.head
+  #
+  #     ::Commit.new(commit, project) if commit
+  #   end
+  # end
+  # alias_method :commit, :head_commit
 
   def start_commit_sha
-    start_commit&.sha
+    @compare.base
   end
 
   def base_commit_sha
     strong_memoize(:base_commit) do
-      next unless start_commit && head_commit
+      next unless start_commit_sha && head_commit_sha
 
-      @base_sha || project.merge_base_commit(start_commit.id, head_commit.id)&.sha
+      @base_sha || project.merge_base_commit(start_commit_sha, head_commit_sha)&.sha
     end
   end
 
   def head_commit_sha
-    commit&.sha
+    @compare.head
   end
 
   def raw_diffs(*args)

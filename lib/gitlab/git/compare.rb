@@ -8,27 +8,26 @@ module Gitlab
       def initialize(repository, base, head, straight: false)
         @repository = repository
         @straight = straight
+        @base = base
+        @head = head
 
         unless base && head
           @commits = []
           return
         end
 
-        @base = Gitlab::Git::Commit.find(repository, base.try(:strip))
-        @head = Gitlab::Git::Commit.find(repository, head.try(:strip))
-
         @commits = [] unless @base && @head
         @commits = [] if same
       end
 
       def same
-        @base && @head && @base.id == @head.id
+        @base && @head && @base == @head
       end
 
       def commits
         return @commits if defined?(@commits)
 
-        @commits = Gitlab::Git::Commit.between(@repository, @base.id, @head.id)
+        @commits = Gitlab::Git::Commit.between(@repository, @base, @head)
       end
 
       def diffs(options = {})
@@ -38,7 +37,7 @@ module Gitlab
 
         paths = options.delete(:paths) || []
         options[:straight] = @straight
-        Gitlab::Git::Diff.between(@repository, @head.id, @base.id, options, *paths)
+        Gitlab::Git::Diff.between(@repository, @head, @base, options, *paths)
       end
     end
   end
