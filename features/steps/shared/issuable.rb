@@ -6,13 +6,6 @@ module SharedIssuable
     find('.js-issuable-edit', visible: true).click
   end
 
-  step 'project "Community" has "Community issue" open issue' do
-    create_issuable_for_project(
-      project_name: 'Community',
-      title: 'Community issue'
-    )
-  end
-
   step 'project "Community" has "Community fix" open merge request' do
     create_issuable_for_project(
       project_name: 'Community',
@@ -61,30 +54,9 @@ module SharedIssuable
     wait_for_requests
   end
 
-  step 'I visit issue page "Community issue"' do
-    issue = Issue.find_by(title: 'Community issue')
-    visit project_issue_path(issue.project, issue)
-  end
-
   step 'I visit issue page "Community fix"' do
     mr = MergeRequest.find_by(title: 'Community fix')
     visit project_merge_request_path(mr.target_project, mr)
-  end
-
-  step 'I should not see any related merge requests' do
-    page.within '.issue-details' do
-      expect(page).not_to have_content('#merge-requests .merge-requests-title')
-    end
-  end
-
-  step 'I should see the "Enterprise fix" related merge request' do
-    page.within '#merge-requests .merge-requests-title' do
-      expect(page).to have_content('1 Related Merge Request')
-    end
-
-    page.within '#merge-requests ul' do
-      expect(page).to have_content('Enterprise fix')
-    end
   end
 
   step 'I should see a note linking to "Enterprise fix" merge request' do
