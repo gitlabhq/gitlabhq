@@ -44,6 +44,7 @@ export const dataStructure = () => ({
   size: 0,
   parentPath: null,
   lastOpenedAt: 0,
+  mrChange: null,
 });
 
 export const decorateData = entity => {
