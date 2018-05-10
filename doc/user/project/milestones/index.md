@@ -92,7 +92,7 @@ Not all features in the project milestone view are available in the group milest
 | Start date and due date | ✓ | ✓ |
 | Total issue time spent | ✓ | ✓ |
 | Total issue weight | ✓ |  |
-| Burndown chart | ✓ |  |
+| Burndown chart | ✓ | ✓ |
 
 The milestone view shows the title and description.
 
@@ -105,13 +105,15 @@ These features are only available for project milestones and not group milestone
 - Participants and labels that are used in issues and merge requests that have the milestone assigned are displayed.
 - [Burndown chart](#burndown-charts).
 
-### Burndown Charts **[STARTER]**
+### Project Burndown Charts **[STARTER]**
 
-For project milestones only, and in [GitLab Starter](https://about.gitlab.com/products), a [burndown chart](burndown_charts.md) is in the milestone view, showing the progress of completing a milestone.
+For project milestones in [GitLab Starter](https://about.gitlab.com/products), a [burndown chart](burndown_charts.md) is in the milestone view, showing the progress of completing a milestone.
 
 ![burndown chart](img/burndown_chart.png)
 
-A burndown chart will be shown in group milestones [in the future](https://gitlab.com/gitlab-org/gitlab-ee/issues/3064).
+### Group Burndown Charts **[PREMIUM]**
+
+For group milestones in [GitLab Premium](https://about.gitlab.com/products), a [burndown chart](burndown_charts.md) is in the milestone view, showing the progress of completing a milestone.
 
 ### Milestone sidebar
 
