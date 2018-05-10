@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-shared_examples_for 'AtomicInternalId' do 
+shared_examples_for 'AtomicInternalId' do
   let(:validate_presence) { true }
 
   describe '.has_internal_id' do
@@ -11,21 +11,16 @@ shared_examples_for 'AtomicInternalId' do
     end
 
     describe 'Validation' do
-      subject { instance }
-
       before do
-        allow(InternalId).to receive(:generate_next).and_return(nil)
+        allow_any_instance_of(described_class).to receive(:ensure_iid!) {}
       end
 
-      it 'checks presence' do
-        if validate_presence
-          is_expected.to validate_presence_of(internal_id_attribute)
-        else
-          is_expected.not_to validate_presence_of(internal_id_attribute)
-        end
-      end
+      it 'validates presence' do
+        instance.valid?
 
-      it { is_expected.to validate_numericality_of(internal_id_attribute) }
+        expect(instance.errors[:iid]).to include("can't be blank") if validate_presence
+        expect(instance.errors[:iid]).to include("is not a number") # numericality
+      end
     end
 
     describe 'Creating an instance' do
