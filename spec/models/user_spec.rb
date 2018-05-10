@@ -1786,7 +1786,7 @@ describe User do
     end
   end
 
-  describe '#ci_authorized_runners' do
+  describe '#ci_owned_runners' do
     let(:user) { create(:user) }
     let(:runner_1) { create(:ci_runner) }
     let(:runner_2) { create(:ci_runner) }
@@ -1796,7 +1796,7 @@ describe User do
       let!(:group) { create(:group) }
 
       it 'does not load' do
-        expect(user.ci_authorized_runners).to be_empty
+        expect(user.ci_owned_runners).to be_empty
       end
     end
 
@@ -1805,7 +1805,7 @@ describe User do
       let!(:project) { create(:project, namespace: namespace, runners: [runner_1]) }
 
       it 'loads' do
-        expect(user.ci_authorized_runners).to contain_exactly(runner_1)
+        expect(user.ci_owned_runners).to contain_exactly(runner_1)
       end
     end
 
@@ -1818,7 +1818,7 @@ describe User do
       end
 
       it 'loads' do
-        expect(user.ci_authorized_runners).to contain_exactly(runner_2)
+        expect(user.ci_owned_runners).to contain_exactly(runner_2)
       end
     end
 
@@ -1833,7 +1833,7 @@ describe User do
       end
 
       it 'loads' do
-        expect(user.ci_authorized_runners).to contain_exactly(runner_1, runner_2)
+        expect(user.ci_owned_runners).to contain_exactly(runner_1, runner_2)
       end
     end
 
@@ -1844,7 +1844,7 @@ describe User do
         end
 
         it 'loads' do
-          expect(user.ci_authorized_runners).to contain_exactly(runner_1)
+          expect(user.ci_owned_runners).to contain_exactly(runner_1)
         end
       end
 
@@ -1854,7 +1854,7 @@ describe User do
         end
 
         it 'does not load' do
-          expect(user.ci_authorized_runners).to be_empty
+          expect(user.ci_owned_runners).to be_empty
         end
       end
     end

@@ -999,8 +999,8 @@ class User < ActiveRecord::Base
     !solo_owned_groups.present?
   end
 
-  def ci_authorized_runners
-    @ci_authorized_runners ||= begin
+  def ci_owned_runners
+    @ci_owned_runners ||= begin
       project_runner_ids = Ci::RunnerProject
         .where(project: authorized_projects(Gitlab::Access::MASTER))
         .select(:runner_id)
