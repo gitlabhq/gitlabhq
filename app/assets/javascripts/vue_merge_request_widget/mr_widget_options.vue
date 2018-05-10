@@ -1,12 +1,13 @@
+<script>
+
 import Project from '~/pages/projects/project';
 import SmartInterval from '~/smart_interval';
-import Flash from '../flash';
+import createFlash from '../flash';
 import {
   WidgetHeader,
   WidgetMergeHelp,
   WidgetPipeline,
   Deployment,
-  WidgetMaintainerEdit,
   WidgetRelatedLinks,
   MergedState,
   ClosedState,
@@ -99,7 +100,7 @@ export default {
             cb.call(null, data);
           }
         })
-        .catch(() => new Flash('Something went wrong. Please try again.'));
+        .catch(() => createFlash('Something went wrong. Please try again.'));
     },
     initPolling() {
       this.pollingInterval = new SmartInterval({
@@ -134,7 +135,7 @@ export default {
           }
         })
         .catch(() => {
-          new Flash('Something went wrong while fetching the environments for this merge request. Please try again.'); // eslint-disable-line
+          createFlash('Something went wrong while fetching the environments for this merge request. Please try again.'); // eslint-disable-line
         });
     },
     fetchActionsContent() {
@@ -147,7 +148,7 @@ export default {
             Project.initRefSwitcher();
           }
         })
-        .catch(() => new Flash('Something went wrong. Please try again.'));
+        .catch(() => createFlash('Something went wrong. Please try again.'));
     },
     handleNotification(data) {
       if (data.ci_status === this.mr.ciStatus) return;
@@ -214,7 +215,6 @@ export default {
     'mr-widget-merge-help': WidgetMergeHelp,
     'mr-widget-pipeline': WidgetPipeline,
     Deployment,
-    'mr-widget-maintainer-edit': WidgetMaintainerEdit,
     'mr-widget-related-links': WidgetRelatedLinks,
     'mr-widget-merged': MergedState,
     'mr-widget-closed': ClosedState,
@@ -227,7 +227,7 @@ export default {
     'mr-widget-not-allowed': NotAllowedState,
     'mr-widget-missing-branch': MissingBranchState,
     'mr-widget-ready-to-merge': ReadyToMergeState,
-    'mr-widget-sha-mismatch': ShaMismatchState,
+    'sha-mismatch': ShaMismatchState,
     'mr-widget-squash-before-merge': SquashBeforeMerge,
     'mr-widget-checking': CheckingState,
     'mr-widget-unresolved-discussions': UnresolvedDiscussionsState,
@@ -238,40 +238,53 @@ export default {
     'mr-widget-rebase': RebaseState,
     SourceBranchRemovalStatus,
   },
-  template: `
-    <div class="mr-state-widget prepend-top-default">
-      <mr-widget-header :mr="mr" />
-      <mr-widget-pipeline
-        v-if="shouldRenderPipelines"
-        :pipeline="mr.pipeline"
-        :ci-status="mr.ciStatus"
-        :has-ci="mr.hasCI"
-        />
-      <deployment
-        v-for="deployment in mr.deployments"
-        :key="deployment.id"
-        :deployment="deployment"
-      />
-      <div class="mr-widget-section">
-        <component
-          :is="componentName"
-          :mr="mr"
-          :service="service" />
-        <mr-widget-maintainer-edit
-          :maintainerEditAllowed="mr.maintainerEditAllowed" />
-        <mr-widget-related-links
-          v-if="shouldRenderRelatedLinks"
-          :state="mr.state"
-          :related-links="mr.relatedLinks" />
-        <source-branch-removal-status
-          v-if="shouldRenderSourceBranchRemovalStatus"
-        />
-      </div>
-      <div
-        class="mr-widget-footer"
-        v-if="shouldRenderMergeHelp">
-        <mr-widget-merge-help />
-      </div>
-    </div>
-  `,
 };
+</script>
+<template>
+  <div class="mr-state-widget prepend-top-default">
+    <mr-widget-header
+      :mr="mr"
+    />
+    <mr-widget-pipeline
+      v-if="shouldRenderPipelines"
+      :pipeline="mr.pipeline"
+      :ci-status="mr.ciStatus"
+      :has-ci="mr.hasCI"
+    />
+    <deployment
+      v-for="deployment in mr.deployments"
+      :key="deployment.id"
+      :deployment="deployment"
+    />
+    <div class="mr-widget-section">
+      <component
+        :is="componentName"
+        :mr="mr"
+        :service="service"
+      />
+
+      <section
+        v-if="mr.maintainerEditAllowed"
+        class="mr-info-list mr-links"
+      >
+        {{ s__("mrWidget|Allows edits from maintainers") }}
+      </section>
+
+      <mr-widget-related-links
+        v-if="shouldRenderRelatedLinks"
+        :state="mr.state"
+        :related-links="mr.relatedLinks"
+      />
+
+      <source-branch-removal-status
+        v-if="shouldRenderSourceBranchRemovalStatus"
+      />
+    </div>
+    <div
+      class="mr-widget-footer"
+      v-if="shouldRenderMergeHelp"
+    >
+      <mr-widget-merge-help />
+    </div>
+  </div>
+</template>
