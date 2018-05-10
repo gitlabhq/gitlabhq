@@ -7,9 +7,8 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
   describe '#calculate_reactive_cache' do
     subject { service.calculate_reactive_cache }
 
-    let!(:cluster) { create(:cluster, :project, enabled: enabled, platform_kubernetes: service) }
+    let!(:cluster) { create(:cluster, :project, enabled: true, platform_kubernetes: service) }
     let(:service) { create(:cluster_platform_kubernetes, :configured) }
-    let(:enabled) { true }
 
     context 'when kubernetes responds with valid pods and deployments' do
       before do
@@ -18,15 +17,6 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
       end
 
       it { is_expected.to eq(pods: [kube_pod], deployments: [kube_deployment]) }
-    end
-
-    context 'when kubernetes responds with 500s' do
-      before do
-        stub_kubeclient_pods(status: 500)
-        stub_kubeclient_deployments(status: 500)
-      end
-
-      it { expect { subject }.to raise_error(Kubeclient::HttpError) }
     end
 
     context 'when kubernetes responds with 404s' do
