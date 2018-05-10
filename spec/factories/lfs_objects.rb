@@ -17,9 +17,7 @@ FactoryBot.define do
 
       UploadedFile.new(tmp_file.path,
         filename: file_sha256[4..-1],
-        content_type: 'application/octet-stream',
-        sha256: file_sha256,
-        remote_id: nil)
+        content_type: 'application/octet-stream')
     end
 
     oid { Digest::SHA256.file(file.path).hexdigest }

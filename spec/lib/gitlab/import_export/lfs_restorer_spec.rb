@@ -26,7 +26,10 @@ describe Gitlab::ImportExport::LfsRestorer do
         File.write(dummy_lfs_file.path, content)
         size = dummy_lfs_file.size
         oid = LfsObject.calculate_oid(dummy_lfs_file.path)
-        LfsObject.create!(oid: oid, size: size, file: dummy_lfs_file)
+        LfsObject.create(oid: oid, size: size,
+                         file: UploadedFile.new(dummy_lfs_file.path,
+                                               filename: oid[4..-1],
+                                               content_type: 'application/octet-stream'))
       end
 
       before do
