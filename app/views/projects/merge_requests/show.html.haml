@@ -63,7 +63,7 @@
                   noteable_data: serialize_issuable(@merge_request),
                   noteable_type: 'MergeRequest',
                   target_type: 'merge_request',
-                  current_user_data: UserSerializer.new(project: @project).represent(current_user).to_json} }
+                  current_user_data: UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestUserEntity).to_json} }
               - else
                 = render "projects/merge_requests/discussion"
 

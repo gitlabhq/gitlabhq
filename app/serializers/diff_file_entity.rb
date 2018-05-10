@@ -11,7 +11,6 @@ class DiffFileEntity < Grape::Entity
   include ChecksCollaboration
   include Gitlab::Utils::StrongMemoize
 
-
   expose :submodule?, as: :submodule
 
   expose :submodule_link do |diff_file|
@@ -97,15 +96,6 @@ class DiffFileEntity < Grape::Entity
     project_edit_blob_path(merge_request.source_project,
       tree_join(merge_request.source_branch, diff_file.new_path),
       options)
-  end
-
-  # TODO Simon we need to move this into MergeRequestEntity
-  # or Userentity or ProjectEntity
-  expose :fork_path, if: -> (_, options) { options[:merge_request] && current_user } do |diff_file|
-    merge_request = options[:merge_request]
-
-    params = edit_blob_fork_params("Edit")
-    project_forks_path(merge_request.project, namespace_key: current_user.namespace.id, continue: params)
   end
 
   expose :view_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
