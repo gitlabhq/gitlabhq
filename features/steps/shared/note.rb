@@ -18,8 +18,4 @@ module SharedNote
       expect(find('.js-md-preview')).to have_content('Nothing to preview.')
     end
   end
-
-  step 'I should see no notes at all' do
-    expect(page).not_to have_css('.note')
-  end
 end
