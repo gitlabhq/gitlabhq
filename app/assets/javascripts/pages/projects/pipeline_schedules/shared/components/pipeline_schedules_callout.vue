@@ -34,7 +34,7 @@
     <div class="bordered-box landing content-block">
       <button
         id="dismiss-callout-btn"
-        class="btn btn-secondary close"
+        class="btn btn-default close"
         @click="dismissCallout">
         <i
           aria-hidden="true"

@@ -18,7 +18,7 @@ export default {
     btnCssClass: {
       type: String,
       required: false,
-      default: 'btn-secondary',
+      default: 'btn-default',
     },
   },
   data() {

@@ -41,7 +41,7 @@ export default {
     cssClass: {
       type: String,
       required: false,
-      default: 'btn-secondary',
+      default: 'btn-default',
     },
   },
 };

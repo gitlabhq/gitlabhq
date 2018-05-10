@@ -64,7 +64,7 @@
       </i>
     </button>
     <button
-      class="btn btn-secondary float-right"
+      class="btn btn-default float-right"
       type="button"
       @click="closeForm">
       Cancel

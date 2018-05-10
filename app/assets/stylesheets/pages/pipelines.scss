@@ -37,7 +37,7 @@
     .pipeline-actions {
       min-width: 170px; //Guarantees buttons don't break in several lines.
 
-      .btn-secondary {
+      .btn-default {
         color: $gl-text-color-secondary;
       }
 
@@ -68,7 +68,7 @@
 
       .btn-group {
         &.open {
-          .btn-secondary {
+          .btn-default {
             background-color: $white-normal;
             border-color: $border-white-normal;
           }

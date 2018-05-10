@@ -212,7 +212,7 @@ export default {
           class="btn-group prepend-top-5"
           role="group">
           <a
-            class="js-cancel-job btn btn-sm btn-secondary"
+            class="js-cancel-job btn btn-sm btn-default"
             :href="job.cancel_path"
             data-method="post"
             rel="nofollow"

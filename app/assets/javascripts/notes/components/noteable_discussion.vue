@@ -281,7 +281,7 @@ Please check your network connection and try again.`;
                         <button
                           @click="resolveHandler()"
                           type="button"
-                          class="btn btn-secondary"
+                          class="btn btn-default"
                         >
                           <i
                             v-if="isResolving"
@@ -304,7 +304,7 @@ Please check your network connection and try again.`;
                             :href="note.resolve_with_issue_path"
                             v-tooltip
                             class="new-issue-for-discussion btn
-                              btn-secondary discussion-create-issue-btn"
+                              btn-default discussion-create-issue-btn"
                             title="Resolve this discussion in a new issue"
                             data-container="body"
                           >
@@ -318,7 +318,7 @@ Please check your network connection and try again.`;
                           <button
                             @click="jumpToDiscussion"
                             v-tooltip
-                            class="btn btn-secondary discussion-next-btn"
+                            class="btn btn-default discussion-next-btn"
                             title="Jump to next unresolved discussion"
                             data-container="body"
                           >

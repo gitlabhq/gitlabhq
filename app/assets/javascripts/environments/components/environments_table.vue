@@ -117,7 +117,7 @@ export default {
             <div class="text-center prepend-top-10">
               <a
                 :href="folderUrl(model)"
-                class="btn btn-secondary"
+                class="btn btn-default"
               >
                 {{ s__("Environments|Show all") }}
               </a>

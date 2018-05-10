@@ -5,7 +5,7 @@
 - is_dynamic_milestone = milestone.legacy_group_milestone? || milestone.dashboard_milestone?
 
 .detail-page-header
-  %a.btn.btn-secondary.btn-grouped.float-right.d-block.d-sm-none.js-sidebar-toggle{ href: "#" }
+  %a.btn.btn-default.btn-grouped.float-right.d-block.d-sm-none.js-sidebar-toggle{ href: "#" }
     = icon('angle-double-left')
 
   .status-box{ class: "status-box-#{milestone.closed? ? 'closed' : 'open'}" }
