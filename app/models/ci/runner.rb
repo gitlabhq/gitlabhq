@@ -111,6 +111,8 @@ module Ci
       if shared?
         self.is_shared = false if shared?
         self.runner_type = :project_type
+      elsif group_type?
+        raise ArgumentError, 'Transitioning a group runner to a project runner is not supported'
       end
 
       self.save
