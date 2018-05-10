@@ -30,7 +30,6 @@ variables:
   GIT_SUBMODULE_STRATEGY: "none"
   GET_SOURCES_ATTEMPTS: "3"
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-master.json
-  KNAPSACK_SPINACH_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/spinach_report-master.json
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec_flaky/report-suite.json
 
 before_script:
@@ -178,46 +177,6 @@ stages:
   <<: *rspec-metadata-mysql
   <<: *rails5
 
-.spinach-metadata: &spinach-metadata
-  <<: *dedicated-runner
-  <<: *except-docs-and-qa
-  <<: *pull-cache
-  <<: *rails5-variables
-  stage: test
-  script:
-    - JOB_NAME=( $CI_JOB_NAME )
-    - export CI_NODE_INDEX=${JOB_NAME[-2]}
-    - export CI_NODE_TOTAL=${JOB_NAME[-1]}
-    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
-    - export KNAPSACK_GENERATE_REPORT=true
-    - export CACHE_CLASSES=true
-    - cp ${KNAPSACK_SPINACH_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
-    - scripts/gitaly-test-spawn
-    - knapsack spinach "-r rerun" -b || retry '[[ -e tmp/spinach-rerun.txt ]] && bundle exec spinach -b -r rerun $(cat tmp/spinach-rerun.txt)'
-  artifacts:
-    expire_in: 31d
-    when: always
-    paths:
-      - coverage/
-      - knapsack/
-      - tmp/capybara/
-
-.spinach-metadata-pg: &spinach-metadata-pg
-  <<: *spinach-metadata
-  <<: *use-pg
-
-.spinach-metadata-pg-rails5: &spinach-metadata-pg-rails5
-  <<: *spinach-metadata-pg
-  <<: *rails5
-
-.spinach-metadata-mysql: &spinach-metadata-mysql
-  <<: *spinach-metadata
-  <<: *use-mysql
-
-.spinach-metadata-mysql-rails5: &spinach-metadata-mysql-rails5
-  <<: *spinach-metadata-mysql
-  <<: *rails5
-
 .only-canonical-masters: &only-canonical-masters
   only:
     - master@gitlab-org/gitlab-ce
@@ -349,9 +308,7 @@ retrieve-tests-metadata:
   script:
     - mkdir -p knapsack/${CI_PROJECT_NAME}/
     - wget -O $KNAPSACK_RSPEC_SUITE_REPORT_PATH http://${TESTS_METADATA_S3_BUCKET}.s3.amazonaws.com/$KNAPSACK_RSPEC_SUITE_REPORT_PATH || rm $KNAPSACK_RSPEC_SUITE_REPORT_PATH
-    - wget -O $KNAPSACK_SPINACH_SUITE_REPORT_PATH http://${TESTS_METADATA_S3_BUCKET}.s3.amazonaws.com/$KNAPSACK_SPINACH_SUITE_REPORT_PATH || rm $KNAPSACK_SPINACH_SUITE_REPORT_PATH
     - '[[ -f $KNAPSACK_RSPEC_SUITE_REPORT_PATH ]] || echo "{}" > ${KNAPSACK_RSPEC_SUITE_REPORT_PATH}'
-    - '[[ -f $KNAPSACK_SPINACH_SUITE_REPORT_PATH ]] || echo "{}" > ${KNAPSACK_SPINACH_SUITE_REPORT_PATH}'
     - mkdir -p rspec_flaky/
     - wget -O $FLAKY_RSPEC_SUITE_REPORT_PATH http://${TESTS_METADATA_S3_BUCKET}.s3.amazonaws.com/$FLAKY_RSPEC_SUITE_REPORT_PATH || rm $FLAKY_RSPEC_SUITE_REPORT_PATH
     - '[[ -f $FLAKY_RSPEC_SUITE_REPORT_PATH ]] || echo "{}" > ${FLAKY_RSPEC_SUITE_REPORT_PATH}'
@@ -369,10 +326,9 @@ update-tests-metadata:
   script:
     - retry gem install fog-aws mime-types activesupport
     - scripts/merge-reports ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec-pg_node_*.json
-    - scripts/merge-reports ${KNAPSACK_SPINACH_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/spinach-pg_node_*.json
     - scripts/merge-reports ${FLAKY_RSPEC_SUITE_REPORT_PATH} rspec_flaky/all_*_*.json
     - FLAKY_RSPEC_GENERATE_REPORT=1 scripts/prune-old-flaky-specs ${FLAKY_RSPEC_SUITE_REPORT_PATH}
-    - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $KNAPSACK_RSPEC_SUITE_REPORT_PATH $KNAPSACK_SPINACH_SUITE_REPORT_PATH'
+    - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $KNAPSACK_RSPEC_SUITE_REPORT_PATH'
     - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $FLAKY_RSPEC_SUITE_REPORT_PATH'
     - rm -f knapsack/${CI_PROJECT_NAME}/*_node_*.json
     - rm -f rspec_flaky/all_*.json rspec_flaky/new_*.json
@@ -497,12 +453,6 @@ rspec-mysql 25 28: *rspec-metadata-mysql
 rspec-mysql 26 28: *rspec-metadata-mysql
 rspec-mysql 27 28: *rspec-metadata-mysql
 
-spinach-pg 0 2: *spinach-metadata-pg
-spinach-pg 1 2: *spinach-metadata-pg
-
-spinach-mysql 0 2: *spinach-metadata-mysql
-spinach-mysql 1 2: *spinach-metadata-mysql
-
 rspec-pg-rails5 0 28: *rspec-metadata-pg-rails5
 rspec-pg-rails5 1 28: *rspec-metadata-pg-rails5
 rspec-pg-rails5 2 28: *rspec-metadata-pg-rails5
@@ -560,12 +510,6 @@ rspec-mysql-rails5 24 28: *rspec-metadata-mysql-rails5
 rspec-mysql-rails5 25 28: *rspec-metadata-mysql-rails5
 rspec-mysql-rails5 26 28: *rspec-metadata-mysql-rails5
 rspec-mysql-rails5 27 28: *rspec-metadata-mysql-rails5
-
-spinach-pg-rails5 0 2: *spinach-metadata-pg-rails5
-spinach-pg-rails5 1 2: *spinach-metadata-pg-rails5
-
-spinach-mysql-rails5 0 2: *spinach-metadata-mysql-rails5
-spinach-mysql-rails5 1 2: *spinach-metadata-mysql-rails5
 
 static-analysis:
   <<: *dedicated-no-docs-no-db-pull-cache-job
