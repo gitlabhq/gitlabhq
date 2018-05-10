@@ -25,7 +25,6 @@ class DiscussionEntity < Grape::Entity
   expose :resolve_with_issue_path, if: -> (d, _) { d.resolvable? } do |discussion|
     new_project_issue_path(discussion.project, merge_request_to_resolve_discussions_of: discussion.noteable.iid, discussion_to_resolve: discussion.id)
   end
-  expose :resolved_by_push?, as: :resolved_by_push
 
   expose :diff_file, using: DiffFileEntity, if: -> (discussion, _) { discussion.respond_to?(:diff_file) }
 
