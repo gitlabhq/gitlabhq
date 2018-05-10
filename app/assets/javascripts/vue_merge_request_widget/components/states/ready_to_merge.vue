@@ -32,7 +32,7 @@ export default {
   },
   computed: {
     shouldShowMergeWhenPipelineSucceedsText() {
-      return this.mr.isPipelineActive;
+      return this.mr.isPipelineActive && !this.mr.isMergeAllowed;
     },
     commitMessageLinkTitle() {
       const withDesc = 'Include description in commit message';
@@ -45,7 +45,7 @@ export default {
 
       if (hasCI && !ciStatus) {
         return 'failed';
-      } else if (!pipeline) {
+      } else if (!pipeline || this.mr.isMergeAllowed) {
         return 'success';
       } else if (isPipelineActive) {
         return 'pending';
