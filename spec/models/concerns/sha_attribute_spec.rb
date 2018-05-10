@@ -36,24 +36,26 @@ describe ShaAttribute do
       end
 
       context 'when the table does not exist' do
-        it 'allows the attribute to be added' do
+        it 'allows the attribute to be added and issues a warning' do
           allow(model).to receive(:table_exists?).and_return(false)
 
           expect(model).not_to receive(:columns)
           expect(model).to receive(:attribute)
+          expect(model).to receive(:warn)
 
           model.sha_attribute(:name)
         end
       end
 
       context 'when the column does not exist' do
-        it 'raises ArgumentError' do
+        it 'allows the attribute to be added and issues a warning' do
           allow(model).to receive(:table_exists?).and_return(true)
 
           expect(model).to receive(:columns)
-          expect(model).not_to receive(:attribute)
+          expect(model).to receive(:attribute)
+          expect(model).to receive(:warn)
 
-          expect { model.sha_attribute(:no_name) }.to raise_error(ArgumentError)
+          model.sha_attribute(:no_name)
         end
       end
 
