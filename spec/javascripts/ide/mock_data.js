@@ -12,4 +12,5 @@ export const projectData = {
     },
   },
   mergeRequests: {},
+  merge_requests_enabled: true,
 };
