@@ -59,7 +59,7 @@ GEM
     asciidoctor (1.5.6.2)
     asciidoctor-plantuml (0.0.8)
       asciidoctor (~> 1.5)
-    asset_sync (2.2.0)
+    asset_sync (2.4.0)
       activemodel (>= 4.1.0)
       fog-core
       mime-types (>= 2.99)
@@ -147,8 +147,6 @@ GEM
     creole (0.5.0)
     css_parser (1.5.0)
       addressable
-    d3_rails (3.5.11)
-      railties (>= 3.1.0)
     daemons (1.2.3)
     database_cleaner (1.5.3)
     debug_inspector (0.0.2)
@@ -197,7 +195,7 @@ GEM
     et-orbi (1.0.3)
       tzinfo
     eventmachine (1.0.8)
-    excon (0.60.0)
+    excon (0.62.0)
     execjs (2.6.0)
     expression_parser (0.9.0)
     factory_bot (4.8.2)
@@ -334,9 +332,8 @@ GEM
       activesupport (>= 4.2.0)
     gollum-grit_adapter (1.0.1)
       gitlab-grit (~> 2.7, >= 2.7.1)
-    gon (6.1.0)
+    gon (6.2.0)
       actionpack (>= 3.0)
-      json
       multi_json
       request_store (>= 1.0)
     google-api-client (0.19.8)
@@ -634,7 +631,7 @@ GEM
       parser
       unparser
     procto (0.0.3)
-    prometheus-client-mmap (0.9.1)
+    prometheus-client-mmap (0.9.2)
     pry (0.10.4)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -998,7 +995,7 @@ DEPENDENCIES
   asana (~> 0.6.0)
   asciidoctor (~> 1.5.6)
   asciidoctor-plantuml (= 0.0.8)
-  asset_sync (~> 2.2.0)
+  asset_sync (~> 2.4)
   attr_encrypted (~> 3.1.0)
   awesome_print (~> 1.2.0)
   babosa (~> 1.0.2)
@@ -1024,7 +1021,6 @@ DEPENDENCIES
   concurrent-ruby (~> 1.0.5)
   connection_pool (~> 2.0)
   creole (~> 0.5.0)
-  d3_rails (~> 3.5.0)
   database_cleaner (~> 1.5.0)
   deckar01-task_list (= 2.0.0)
   default_value_for (~> 3.0.0)
@@ -1068,7 +1064,7 @@ DEPENDENCIES
   gitlab-markup (~> 1.6.2)
   gitlab-styles (~> 2.3)
   gitlab_omniauth-ldap (~> 2.0.4)
-  gon (~> 6.1.0)
+  gon (~> 6.2)
   google-api-client (~> 0.19.8)
   google-protobuf (= 3.5.1)
   gpgme
@@ -1133,7 +1129,7 @@ DEPENDENCIES
   peek-sidekiq (~> 1.0.3)
   pg (~> 0.18.2)
   premailer-rails (~> 1.9.7)
-  prometheus-client-mmap (~> 0.9.1)
+  prometheus-client-mmap (~> 0.9.2)
   pry-byebug (~> 3.4.1)
   pry-rails (~> 0.3.4)
   rack-attack (~> 4.4.1)

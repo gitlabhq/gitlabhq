@@ -569,6 +569,22 @@ describe('IDE store file actions', () => {
         .catch(done.fail);
     });
 
+    it('returns false when already opened', done => {
+      store.state.openFiles.push({
+        ...f,
+        active: true,
+        key: `pending-${f.key}`,
+      });
+
+      store
+        .dispatch('openPendingTab', { file: f, keyPrefix: 'pending' })
+        .then(added => {
+          expect(added).toBe(false);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
     it('pushes router URL when added', done => {
       store.state.currentBranchId = 'master';
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180508055821) do
+ActiveRecord::Schema.define(version: 20180508135515) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -497,7 +497,7 @@ ActiveRecord::Schema.define(version: 20180508055821) do
     t.integer "access_level", default: 0, null: false
     t.string "ip_address"
     t.integer "maximum_timeout"
-    t.integer "runner_type", limit: 2
+    t.integer "runner_type", limit: 2, null: false
   end
 
   add_index "ci_runners", ["contacted_at"], name: "index_ci_runners_on_contacted_at", using: :btree
@@ -1529,14 +1529,14 @@ ActiveRecord::Schema.define(version: 20180508055821) do
   add_index "project_import_data", ["project_id"], name: "index_project_import_data_on_project_id", using: :btree
 
   create_table "project_mirror_data", force: :cascade do |t|
-    t.integer "project_id"
+    t.integer "project_id", null: false
     t.string "status"
     t.string "jid"
     t.text "last_error"
   end
 
   add_index "project_mirror_data", ["jid"], name: "index_project_mirror_data_on_jid", using: :btree
-  add_index "project_mirror_data", ["project_id"], name: "index_project_mirror_data_on_project_id", using: :btree
+  add_index "project_mirror_data", ["project_id"], name: "index_project_mirror_data_on_project_id", unique: true, using: :btree
   add_index "project_mirror_data", ["status"], name: "index_project_mirror_data_on_status", using: :btree
 
   create_table "project_statistics", force: :cascade do |t|
@@ -2148,6 +2148,7 @@ ActiveRecord::Schema.define(version: 20180508055821) do
   add_foreign_key "ci_build_trace_sections", "ci_builds", column: "build_id", name: "fk_4ebe41f502", on_delete: :cascade
   add_foreign_key "ci_build_trace_sections", "projects", on_delete: :cascade
   add_foreign_key "ci_builds", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_a2141b1522", on_delete: :nullify
+  add_foreign_key "ci_builds", "ci_pipelines", column: "commit_id", name: "fk_d3130c9a7f", on_delete: :cascade
   add_foreign_key "ci_builds", "ci_stages", column: "stage_id", name: "fk_3a9eaa254d", on_delete: :cascade
   add_foreign_key "ci_builds", "projects", name: "fk_befce0568a", on_delete: :cascade
   add_foreign_key "ci_builds_metadata", "ci_builds", column: "build_id", on_delete: :cascade

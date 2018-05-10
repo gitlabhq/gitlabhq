@@ -20,11 +20,11 @@
         %span.light Indicates whether this runner can pick jobs without tags
   - unless runner.group_type?
     .form-group.row
-      = label :locked, 'Lock to current projects', class: 'col-form-label col-sm-2'
+      = label :locked, _('Lock to current projects'), class: 'col-form-label col-sm-2'
       .col-sm-10
         .form-check
           = f.check_box :locked
-          %span.light When a runner is locked, it cannot be assigned to other projects
+          %span.light= _('When a runner is locked, it cannot be assigned to other projects')
   .form-group.row
     = label_tag :token, class: 'col-form-label col-sm-2' do
       Token
