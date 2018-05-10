@@ -1242,6 +1242,22 @@ describe Gitlab::GitAccess do
 
       it_behaves_like 'access after accepting terms'
     end
+
+    describe 'when a ci build clones the project' do
+      let(:protocol) { 'http' }
+      let(:authentication_abilities) { [:build_download_code] }
+      let(:auth_result_type) { :build }
+
+      before do
+        project.add_developer(user)
+      end
+
+      it "doesn't block http pull" do
+        aggregate_failures do
+          expect { pull_access_check }.not_to raise_error
+        end
+      end
+    end
   end
 
   private

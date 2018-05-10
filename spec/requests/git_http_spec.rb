@@ -1,6 +1,7 @@
 require "spec_helper"
 
 describe 'Git HTTP requests' do
+  include TermsHelper
   include GitHttpHelpers
   include WorkhorseHelpers
   include UserActivitiesHelpers
@@ -946,6 +947,58 @@ describe 'Git HTTP requests' do
           it_behaves_like 'pushes are allowed'
         end
       end
+    end
+  end
+
+  context 'when terms are enforced' do
+    let(:project) { create(:project, :repository) }
+    let(:user) { create(:user) }
+    let(:path) { "#{project.full_path}.git" }
+    let(:env) { { user: user.username, password: user.password } }
+
+    before do
+      project.add_master(user)
+      enforce_terms
+    end
+
+    it 'blocks git access when the user did not accept terms', :aggregate_failures do
+      clone_get(path, env) do |response|
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+
+      download(path, env) do |response|
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+
+      upload(path, env) do |response|
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when the user accepted the terms' do
+      before do
+        accept_terms(user)
+      end
+
+      it 'allows clones' do
+        clone_get(path, env) do |response|
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      it_behaves_like 'pulls are allowed'
+      it_behaves_like 'pushes are allowed'
+    end
+
+    context 'from CI' do
+      let(:build) { create(:ci_build, :running) }
+      let(:env) { { user: 'gitlab-ci-token', password: build.token } }
+
+      before do
+        build.update!(user: user, project: project)
+      end
+
+      it_behaves_like 'pulls are allowed'
     end
   end
 end
