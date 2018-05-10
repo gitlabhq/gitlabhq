@@ -8,13 +8,13 @@ import GroupedSecurityReportsApp from '../vue_shared/security_reports/grouped_se
 import reportsMixin from '../vue_shared/security_reports/mixins/reports_mixin';
 
 export default {
-  extends: CEWidgetOptions,
   components: {
     'mr-widget-approvals': WidgetApprovals,
     'mr-widget-geo-secondary-node': GeoSecondaryNode,
     GroupedSecurityReportsApp,
     ReportSection,
   },
+  extends: CEWidgetOptions,
   mixins: [reportsMixin],
   data() {
     return {
@@ -273,4 +273,4 @@ export default {
       <mr-widget-merge-help />
     </div>
   </div>
-</template
+</template>
