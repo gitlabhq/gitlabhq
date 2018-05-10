@@ -8,19 +8,6 @@ class Projects::NotesController < Projects::ApplicationController
   before_action :authorize_create_note!, only: [:create]
   before_action :authorize_resolve_note!, only: [:resolve, :unresolve]
 
-  #
-  # This is a fix to make spinach feature tests passing:
-  # Controller actions are returned from AbstractController::Base and methods of parent classes are
-  #   excluded in order to return only specific controller related methods.
-  # That is ok for the app (no :create method in ancestors)
-  #   but fails for tests because there is a :create method on FactoryBot (one of the ancestors)
-  #
-  # see https://github.com/rails/rails/blob/v4.2.7/actionpack/lib/abstract_controller/base.rb#L78
-  #
-  def create
-    super
-  end
-
   def delete_attachment
     note.remove_attachment!
     note.update_attribute(:attachment, nil)
