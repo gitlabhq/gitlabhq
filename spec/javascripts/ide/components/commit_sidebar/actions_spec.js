@@ -15,9 +15,7 @@ describe('IDE commit sidebar actions', () => {
 
     vm.$store.state.currentBranchId = 'master';
     vm.$store.state.currentProjectId = 'abcproject';
-    vm.$store.state.projects.abcproject = {
-      ...projectData,
-    };
+    Vue.set(vm.$store.state.projects, 'abcproject', { ...projectData });
 
     vm.$mount();
 
@@ -39,11 +37,7 @@ describe('IDE commit sidebar actions', () => {
   });
 
   it('hides merge request option when project merge requests are disabled', done => {
-    vm.$destroy();
-
     vm.$store.state.projects.abcproject.merge_requests_enabled = false;
-
-    vm.$mount();
 
     vm.$nextTick(() => {
       expect(vm.$el.querySelectorAll('input[type="radio"]').length).toBe(2);

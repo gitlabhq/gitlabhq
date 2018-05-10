@@ -4,6 +4,7 @@ import CommitForm from '~/ide/components/commit_sidebar/form.vue';
 import { activityBarViews } from '~/ide/constants';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
+import { projectData } from 'spec/ide/mock_data';
 import { resetStore } from '../../helpers';
 
 describe('IDE commit form', () => {
@@ -14,6 +15,8 @@ describe('IDE commit form', () => {
     spyOnProperty(window, 'innerHeight').and.returnValue(800);
 
     store.state.changedFiles.push('test');
+    store.state.currentProjectId = 'abcproject';
+    Vue.set(store.state.projects, 'abcproject', { ...projectData });
 
     vm = createComponentWithStore(Component, store).$mount();
   });
