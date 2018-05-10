@@ -41,10 +41,39 @@ import { setFavicon } from '../lib/utils/common_utils';
 export default {
   el: '#js-vue-mr-widget',
   name: 'MRWidget',
+  components: {
+    'mr-widget-header': WidgetHeader,
+    'mr-widget-merge-help': WidgetMergeHelp,
+    'mr-widget-pipeline': WidgetPipeline,
+    Deployment,
+    'mr-widget-related-links': WidgetRelatedLinks,
+    'mr-widget-merged': MergedState,
+    'mr-widget-closed': ClosedState,
+    'mr-widget-merging': MergingState,
+    'mr-widget-failed-to-merge': FailedToMerge,
+    'mr-widget-wip': WorkInProgressState,
+    'mr-widget-archived': ArchivedState,
+    'mr-widget-conflicts': ConflictsState,
+    'mr-widget-nothing-to-merge': NothingToMergeState,
+    'mr-widget-not-allowed': NotAllowedState,
+    'mr-widget-missing-branch': MissingBranchState,
+    'mr-widget-ready-to-merge': ReadyToMergeState,
+    'sha-mismatch': ShaMismatchState,
+    'mr-widget-squash-before-merge': SquashBeforeMerge,
+    'mr-widget-checking': CheckingState,
+    'mr-widget-unresolved-discussions': UnresolvedDiscussionsState,
+    'mr-widget-pipeline-blocked': PipelineBlockedState,
+    'mr-widget-pipeline-failed': PipelineFailedState,
+    'mr-widget-merge-when-pipeline-succeeds': MergeWhenPipelineSucceedsState,
+    'mr-widget-auto-merge-failed': AutoMergeFailed,
+    'mr-widget-rebase': RebaseState,
+    SourceBranchRemovalStatus,
+  },
   props: {
     mrData: {
       type: Object,
       required: false,
+      default: () => ({}),
     },
   },
   data() {
@@ -72,6 +101,13 @@ export default {
       return !this.mr.canRemoveSourceBranch && this.mr.shouldRemoveSourceBranch &&
         (!this.mr.isNothingToMergeState && !this.mr.isMergedState);
     },
+  },
+  created() {
+    this.initPolling();
+    this.bindEventHubListeners();
+  },
+  mounted() {
+    this.handleMounted();
   },
   methods: {
     createService(store) {
@@ -203,41 +239,6 @@ export default {
       this.setFaviconHelper();
       this.initDeploymentsPolling();
     },
-  },
-  created() {
-    this.initPolling();
-    this.bindEventHubListeners();
-  },
-  mounted() {
-    this.handleMounted();
-  },
-  components: {
-    'mr-widget-header': WidgetHeader,
-    'mr-widget-merge-help': WidgetMergeHelp,
-    'mr-widget-pipeline': WidgetPipeline,
-    Deployment,
-    'mr-widget-related-links': WidgetRelatedLinks,
-    'mr-widget-merged': MergedState,
-    'mr-widget-closed': ClosedState,
-    'mr-widget-merging': MergingState,
-    'mr-widget-failed-to-merge': FailedToMerge,
-    'mr-widget-wip': WorkInProgressState,
-    'mr-widget-archived': ArchivedState,
-    'mr-widget-conflicts': ConflictsState,
-    'mr-widget-nothing-to-merge': NothingToMergeState,
-    'mr-widget-not-allowed': NotAllowedState,
-    'mr-widget-missing-branch': MissingBranchState,
-    'mr-widget-ready-to-merge': ReadyToMergeState,
-    'sha-mismatch': ShaMismatchState,
-    'mr-widget-squash-before-merge': SquashBeforeMerge,
-    'mr-widget-checking': CheckingState,
-    'mr-widget-unresolved-discussions': UnresolvedDiscussionsState,
-    'mr-widget-pipeline-blocked': PipelineBlockedState,
-    'mr-widget-pipeline-failed': PipelineFailedState,
-    'mr-widget-merge-when-pipeline-succeeds': MergeWhenPipelineSucceedsState,
-    'mr-widget-auto-merge-failed': AutoMergeFailed,
-    'mr-widget-rebase': RebaseState,
-    SourceBranchRemovalStatus,
   },
 };
 </script>
