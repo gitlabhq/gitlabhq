@@ -1,5 +1,4 @@
 <script>
-  import { s__, sprintf } from '~/locale';
   import { formatDate } from '~/lib/utils/datetime_utility';
   import timeAgoMixin from '~/vue_shared/mixins/timeago';
   import tooltip from '~/vue_shared/directives/tooltip';
@@ -35,11 +34,6 @@
         return formatDate(this.timeStamp);
       },
       eventString() {
-        if (this.eventTypeLogStatus) {
-          return sprintf(s__('GeoNodes|%{eventId} events behind'), {
-            eventId: this.eventId,
-          });
-        }
         return this.eventId;
       },
     },
