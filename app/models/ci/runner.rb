@@ -108,7 +108,11 @@ module Ci
     end
 
     def assign_to(project, current_user = nil)
-      self.is_shared = false if shared?
+      if shared?
+        self.is_shared = false if shared?
+        self.runner_type = :project_type
+      end
+
       self.save
       project.runner_projects.create(runner_id: self.id)
     end

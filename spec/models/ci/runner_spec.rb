@@ -207,6 +207,7 @@ describe Ci::Runner do
     end
 
     it { expect(shared_runner).to be_specific }
+    it { expect(shared_runner).to be_project_type }
     it { expect(shared_runner.projects).to eq([project]) }
     it { expect(shared_runner.only_for?(project)).to be_truthy }
   end
