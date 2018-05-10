@@ -5,31 +5,30 @@
 
 %section.settings.project-mirror-settings.js-mirror-settings.no-animate{ class: ('expanded' if expanded) }
   .settings-header
-    %h4
-      Mirroring repositories
+    %h4= _('Mirroring repositories')
     %button.btn.js-settings-toggle
-      = expanded ? 'Collapse' : 'Expand'
+      = expanded ? _('Collapse') : _('Expand')
     %p
-      Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically.
-      = link_to 'Read more', help_page_path('workflow/repository_mirroring'), target: '_blank'
+      = _('Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically.')
+      = link_to _('Read more'), help_page_path('workflow/repository_mirroring'), target: '_blank'
 
   .settings-content
     = form_for @project, url: project_mirror_path(@project), html: { class: 'gl-show-field-errors js-mirror-form', autocomplete: 'false', data: { project_mirror_ssh_endpoint: ssh_host_keys_project_mirror_path(@project, :json), project_mirror_endpoint: project_mirror_path(@project) } } do |f|
       .panel.panel-default
         .panel-heading
-          %h3.panel-title Mirror a repository
+          %h3.panel-title= _('Mirror a repository')
         .panel-body
           %div= form_errors(@project)
 
           .form-group.has-feedback
-            = label_tag :url, 'Git repository URL', class: 'label-light-but-actually-light-i-promise'
+            = label_tag :url, _('Git repository URL'), class: 'label-light-but-actually-light-i-promise'
             = text_field_tag :url, nil, class: 'form-control js-mirror-url js-repo-url', placeholder: 'Input your repository URL', required: 'required', pattern: "(#{protocols}):\/\/.+"
 
           = render 'projects/mirrors/instructions'
 
           .form-group
-            = label_tag :mirror_direction, 'Mirror direction', class: 'label-light-but-actually-light-i-promise'
-            = select_tag :mirror_direction, options_for_select([['Push', 'push'], ['Pull', 'pull']]), class: 'form-control js-mirror-direction'
+            = label_tag :mirror_direction, _('Mirror direction'), class: 'label-light-but-actually-light-i-promise'
+            = select_tag :mirror_direction, options_for_select([[_('Push'), 'push'], [_('Pull'), 'pull']]), class: 'form-control js-mirror-direction'
 
           .js-form-insertion-point
 
@@ -49,7 +48,7 @@
               = render partial: 'projects/mirrors/pull/authentication_method', locals: { f: import_form }
 
             .form-group
-              = f.label :mirror_user_id, 'Mirror user', class: 'label-light-but-actually-light-i-promise'
+              = f.label :mirror_user_id, _('Mirror user'), class: 'label-light-but-actually-light-i-promise'
               - if is_one_user_option
                 = select_tag(:mirror_user_id_select, options_for_mirror_user, class: 'js-mirror-user select2 lg append-bottom-5', required: true, disabled: true)
                 = f.hidden_field :mirror_user_id, value: default_mirror_users.first.id if is_one_user_option
@@ -57,18 +56,14 @@
                 = f.select(:mirror_user_id, options_for_mirror_user, {}, class: 'js-mirror-user select2 lg append-bottom-5', required: true)
 
               .help-block
-                This user will be the author of all events in the activity feed that are the result of an update,
-                like new branches being created or new commits being pushed to existing branches.
-                Upon creation or when reassigning you can only assign yourself to be the mirror user.
+                = _('This user will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches. Upon creation or when reassigning you can only assign yourself to be the mirror user.')
 
             .form-group
               = f.check_box :mirror_overwrites_diverged_branches, class: 'pull-left', checked: false
               .prepend-left-20
                 = f.label :mirror_overwrites_diverged_branches, 'Overwrite diverged branches', class: 'label-light-but-actually-light-i-promise'
                 .help-block
-                  If disabled, a diverged local branch will not be automatically updated with commits from its remote counterpart,
-                  to prevent local data loss. If the default branch (#{@project.default_branch}) has diverged and cannot be updated,
-                  mirroring will fail. Other diverged branches are silently ignored.
+                  = _("If disabled, a diverged local branch will not be automatically updated with commits from its remote counterpart, to prevent local data loss. If the default branch (%{default_branch}) has diverged and cannot be updated, mirroring will fail. Other diverged branches are silently ignored.") % { default_branch: @project.default_branch }
 
             - if @project.builds_enabled?
               = render 'shared/mirror_trigger_builds_setting', f: f, checked: false
@@ -76,53 +71,53 @@
           .form-group
             = check_box_tag :only_protected_branches, '1', false, class: 'pull-left js-mirror-protected'
             .prepend-left-20
-              = label_tag :only_protected_branches, 'Only mirror protected branches', class: 'label-light-but-actually-light-i-promise'
+              = label_tag :only_protected_branches, _('Only mirror protected branches'), class: 'label-light-but-actually-light-i-promise'
               = link_to icon('question-circle'), help_page_path('user/project/protected_branches')
 
         .panel-footer
-          = f.submit 'Mirror repository', class: 'btn btn-create', name: :update_remote_mirror
+          = f.submit _('Mirror repository'), class: 'btn btn-create', name: :update_remote_mirror
 
     .panel.panel-default
       .table-responsive
         %table.table
           %thead
             %tr
-              %th Mirrored repositories (#{mirrored_repositories_count})
-              %th Direction
-              %th Last update
+              %th= "#{_('Mirrored repositories')} (#{mirrored_repositories_count})"
+              %th= _('Direction')
+              %t= _('Last update')
               %th
               %th
           %tbody.js-mirrors-table-body
             - if @project.mirror
               %tr
                 %td= @project.username_only_import_url
-                %td Pull
-                %td= @project.mirror_last_update_at.present? ? time_ago_with_tooltip(@project.mirror_last_update_at) : 'Never'
+                %td= _('Pull')
+                %td= @project.mirror_last_update_at.present? ? time_ago_with_tooltip(@project.mirror_last_update_at) : _('Never')
                 %td
                   - if @project.import_error.present?
-                    .badge.mirror-error-badge{ data: { toggle: 'tooltip', html: 'true' }, title: html_escape(@project.import_error.try(:strip)) } Error
+                    .badge.mirror-error-badge{ data: { toggle: 'tooltip', html: 'true' }, title: html_escape(@project.import_error.try(:strip)) }= _('Error')
                 %td
                   .btn-group.mirror-actions-group{ role: 'group' }
                     - if @project.mirror? && can?(current_user, :push_code, @project)
                       - if @project.mirror_about_to_update? || @project.updating_mirror?
-                        %button.btn.disabled{ type: 'button', data: { container: 'body', toggle: 'tooltip' }, title: 'Updating' }= icon("refresh spin")
+                        %button.btn.disabled{ type: 'button', data: { container: 'body', toggle: 'tooltip' }, title: _('Updating') }= icon("refresh spin")
                       - else
-                        = link_to update_now_project_mirror_path(@project), method: :post, class: 'btn', data: { container: 'body', toggle: 'tooltip' }, title: 'Update now' do
+                        = link_to update_now_project_mirror_path(@project), method: :post, class: 'btn', data: { container: 'body', toggle: 'tooltip' }, title: _('Update now') do
                           = icon("refresh")
-                    %button.js-delete-mirror.js-delete-pull-mirror.btn.btn-danger{ type: 'button', data: { toggle: 'tooltip', container: 'body' }, title: 'Remove' }= icon('trash-o')
+                    %button.js-delete-mirror.js-delete-pull-mirror.btn.btn-danger{ type: 'button', data: { toggle: 'tooltip', container: 'body' }, title: _('Remove') }= icon('trash-o')
             - @project.remote_mirrors.each_with_index do |mirror, index|
               - if mirror.enabled
                 %tr
                   %td= mirror.safe_url
-                  %td Push
-                  %td= mirror.last_update_at.present? ? time_ago_with_tooltip(mirror.last_update_at) : 'Never'
+                  %td= _('Push')
+                  %td= mirror.last_update_at.present? ? time_ago_with_tooltip(mirror.last_update_at) : _('Never')
                   %td
                     - if mirror.last_error.present?
-                      .badge.mirror-error-badge{ data: { toggle: 'tooltip', html: 'true' }, title: html_escape(mirror.last_error.try(:strip)) } Error
+                      .badge.mirror-error-badge{ data: { toggle: 'tooltip', html: 'true' }, title: html_escape(mirror.last_error.try(:strip)) }= _('Error')
                   %td
                     .btn-group.mirror-actions-group{ role: 'group' }
                       = render 'shared/remote_mirror_update_button', remote_mirror: mirror
-                      %button.js-delete-mirror.btn.btn-danger{ type: 'button', data: { mirror_id: mirror.id, toggle: 'tooltip', container: 'body' }, title: 'Remove' }= icon('trash-o')
+                      %button.js-delete-mirror.btn.btn-danger{ type: 'button', data: { mirror_id: mirror.id, toggle: 'tooltip', container: 'body' }, title: _('Remove') }= icon('trash-o')
 
       %template.js-tr-template
         %tr
