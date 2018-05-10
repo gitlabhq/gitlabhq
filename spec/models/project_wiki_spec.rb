@@ -167,6 +167,17 @@ describe ProjectWiki do
           expect(page.title).to eq("autre pagé")
         end
       end
+
+      context 'pages with invalidly-encoded content' do
+        before do
+          create_page("encoding is fun", "f\xFCr".b)
+        end
+
+        it "can find the page" do
+          page = subject.find_page("encoding is fun")
+          expect(page.content).to eq("fr")
+        end
+      end
     end
 
     context 'when Gitaly wiki_find_page is enabled' do
