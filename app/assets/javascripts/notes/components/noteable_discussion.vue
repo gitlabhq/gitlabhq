@@ -274,7 +274,21 @@ Please check your network connection and try again.`;
               :action-text-html="actionTextHtml"
             />
             <note-edited-text
-              v-if="lastUpdatedAt"
+              v-if="discussion.resolved && discussion.resolved_by_push"
+              :edited-at="discussion.resolved_at"
+              :edited-by="discussion.resolved_by"
+              action-text="Automatically resolved with a push"
+              class-name="discussion-headline-light js-discussion-headline"
+            />
+            <note-edited-text
+              v-if="discussion.resolved && !discussion.resolved_by_push"
+              :edited-at="discussion.resolved_at"
+              :edited-by="discussion.resolved_by"
+              action-text="Resolved"
+              class-name="discussion-headline-light js-discussion-headline"
+            />
+            <note-edited-text
+              v-if="lastUpdatedAt && !discussion.resolved"
               :edited-at="lastUpdatedAt"
               :edited-by="lastUpdatedBy"
               action-text="Last updated"
@@ -282,7 +296,7 @@ Please check your network connection and try again.`;
             />
           </div>
           <div
-            v-if="note.expanded || alwaysExpanded"
+            v-show="note.expanded || alwaysExpanded"
             class="discussion-body">
             <component
               :is="wrapperComponent"
