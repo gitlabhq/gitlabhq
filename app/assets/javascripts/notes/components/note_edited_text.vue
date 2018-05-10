@@ -13,7 +13,7 @@ export default {
     },
     editedAt: {
       type: String,
-      required: true,
+      required: false,
     },
     editedBy: {
       type: Object,
@@ -33,6 +33,7 @@ export default {
   <div :class="className">
     {{ actionText }}
     <time-ago-tooltip
+      v-if="editedAt"
       :time="editedAt"
       tooltip-placement="bottom"
     />
