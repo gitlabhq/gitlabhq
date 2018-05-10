@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Ci::Runner do
   describe 'validation' do
     it { is_expected.to validate_presence_of(:access_level) }
+    it { is_expected.to validate_presence_of(:runner_type) }
 
     context 'when runner is not allowed to pick untagged jobs' do
       context 'when runner does not have tags' do
