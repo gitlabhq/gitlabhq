@@ -38,9 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const pushPullContainer = document.querySelector('.js-mirror-settings');
 
-  if (!pushPullContainer) return;
-
-  PushPull.init(pushPullContainer);
+  if (pushPullContainer) PushPull.init(pushPullContainer);
 
   new DueDateSelectors();
 });
