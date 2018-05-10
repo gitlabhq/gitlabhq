@@ -23,15 +23,6 @@ rspec:
   only:
     - branches
 
-spinach:
-  script: "rake spinach"
-  allow_failure: true
-  tags:
-    - ruby
-    - mysql
-  except:
-    - tags
-
 staging:
   variables:
     KEY1: value1
