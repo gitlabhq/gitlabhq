@@ -34,7 +34,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['targetNoteHash', 'getUserData']),
+    ...mapGetters(['targetNoteHash', 'getNoteableData', 'getUserData']),
     author() {
       return this.note.author;
     },
@@ -91,7 +91,7 @@ export default {
       const data = {
         endpoint: this.note.path,
         note: {
-          target_type: this.noteableType,
+          target_type: this.getNoteableData.targetType,
           target_id: this.note.noteable_id,
           note: { note: noteText },
         },

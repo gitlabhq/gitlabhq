@@ -52,7 +52,7 @@ export function getNoteFormData(params) {
     merge_request_diff_head_sha: diffFile.diffRefs.headSha,
     in_reply_to_discussion_id: '',
     note_project_id: '',
-    target_type: noteableType,
+    target_type: noteableData.targetType,
     target_id: noteableData.id,
     note: {
       note,

@@ -124,7 +124,7 @@ describe 'Merge request > User selects branches for new MR', :js do
     expect(page).to have_css('a.btn.active', text: 'Inline')
     expect(page).not_to have_css('a.btn.active', text: 'Side-by-side')
 
-    click_link 'Side-by-side'
+    click_button 'Side-by-side'
 
     within '.merge-request' do
       expect(page).not_to have_css('a.btn.active', text: 'Inline')

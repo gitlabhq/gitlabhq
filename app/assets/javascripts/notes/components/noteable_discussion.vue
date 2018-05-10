@@ -200,7 +200,7 @@ export default {
         flashContainer: this.$el,
         data: {
           in_reply_to_discussion_id: this.note.reply_id,
-          target_type: this.noteableType,
+          target_type: this.getNoteableData.targetType,
           target_id: this.discussion.noteable_id,
           note: { note: noteText },
         },
@@ -245,7 +245,7 @@ Please check your network connection and try again.`;
 </script>
 
 <template>
-  <li class="note note-discussion timeline-entry">
+  <li class="note-discussion timeline-entry">
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
         <user-avatar-link
@@ -272,7 +272,6 @@ Please check your network connection and try again.`;
               :expanded="note.expanded"
               @toggleHandler="toggleDiscussionHandler"
               :action-text-html="actionTextHtml"
-              class="discussion"
             />
             <note-edited-text
               v-if="lastUpdatedAt"
@@ -290,7 +289,7 @@ Please check your network connection and try again.`;
               :discussion="shouldRenderDiffs ? discussion : undefined"
               :class="wrapperClass"
             >
-              <div class="discussion-notes js-discussion-note-form">
+              <div class="discussion-notes">
                 <ul class="notes">
                   <component
                     v-for="note in note.notes"

@@ -204,7 +204,7 @@ export default {
       >
         <button
           :class="{ active: isDiscussionsExpanded }"
-          class="btn"
+          class="btn js-toggle-diff-comments"
           :title="s__('MergeRequests|Toggle comments for this file')"
           type="button"
         >

@@ -18,6 +18,7 @@ document.addEventListener(
         let currentUserData = {};
 
         noteableData.noteableType = notesDataset.noteableType;
+        noteableData.targetType = notesDataset.targetType;
 
         if (parsedUserData) {
           currentUserData = {

@@ -91,7 +91,7 @@ describe 'User comments on a diff', :js do
 
           # Check the same comments in the side-by-side view.
           execute_script("window.scrollTo(0,0);")
-          click_link('Side-by-side')
+          click_button 'Side-by-side'
 
           wait_for_requests
 

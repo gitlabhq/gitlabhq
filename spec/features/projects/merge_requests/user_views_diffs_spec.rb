@@ -32,7 +32,7 @@ describe 'User views diffs', :js do
 
   context 'when in the side-by-side view' do
     before do
-      click_link('Side-by-side')
+      click_button 'Side-by-side'
 
       wait_for_requests
     end
