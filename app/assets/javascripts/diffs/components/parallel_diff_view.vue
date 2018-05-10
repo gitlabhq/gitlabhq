@@ -43,7 +43,7 @@ export default {
 
       return {
         [type]: type,
-        [LINE_UNFOLD_CLASS_NAME]: this.isLoggedIn && isMatchLine,
+        [LINE_UNFOLD_CLASS_NAME]: isMatchLine,
         [LINE_HOVER_CLASS_NAME]:
           this.isLoggedIn && isContextLine && isSameLine && isSameSection && !isMetaLine,
       };
