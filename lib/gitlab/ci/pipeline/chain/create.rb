@@ -6,8 +6,8 @@ module Gitlab
           include Chain::Helpers
 
           def perform!
-            # TODO: allocate next IID outside of transaction
-            pipeline.ensure_iid!
+            # Allocate next IID outside of transaction
+            pipeline.ensure_project_iid!
 
             ::Ci::Pipeline.transaction do
               pipeline.save!
