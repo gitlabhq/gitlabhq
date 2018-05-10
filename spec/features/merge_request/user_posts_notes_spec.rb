@@ -132,8 +132,8 @@ describe 'Merge request > User posts notes', :js do
         end
 
         page.within("#note_#{note.id}") do
-          is_expected.to have_css('.note_edited_ago')
-          expect(find('.note_edited_ago').text)
+          is_expected.to have_css('.edited-text time')
+          expect(find('.edited-text time').text)
             .to match(/less than a minute ago/)
         end
       end
