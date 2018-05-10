@@ -253,6 +253,11 @@
   }
 }
 
+.btn-secondary {
+  // btn-default has been renamed btn-secondary; need to change all instances of btn-default
+  @include btn-default;
+}
+
 .btn-terminal {
   svg {
     height: 14px;

@@ -133,8 +133,3 @@ table {
     @extend .border-0;
   }
 }
-
-.btn-secondary {
-  // btn-default has been renamed btn-secondary; need to change all instances of btn-default
-  @include btn-default;
-}
