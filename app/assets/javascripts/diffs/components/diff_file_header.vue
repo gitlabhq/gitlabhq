@@ -1,5 +1,4 @@
 <script>
-import $ from 'jquery';
 import _ from 'underscore';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';

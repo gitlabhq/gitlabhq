@@ -14,6 +14,7 @@ export default {
     editedAt: {
       type: String,
       required: false,
+      default: null,
     },
     editedBy: {
       type: Object,

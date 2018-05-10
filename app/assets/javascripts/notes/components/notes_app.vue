@@ -137,7 +137,6 @@ export default {
     },
     checkLocationHash() {
       const hash = getLocationHash();
-      const noteAnchor = document.querySelector(`a[href="${hash}"]`);
       const noteId = hash && hash.replace(/^note_/, '');
 
       if (noteId) {
@@ -145,7 +144,8 @@ export default {
           if (discussion.notes) {
             discussion.notes.forEach(note => {
               if (`${note.id}` === `${noteId}`) {
-                discussion.expanded = true;
+                // FIXME: this modifies the store state without using a mutation/action
+                Object.assign(discussion, { expanded: true });
               }
             });
           }

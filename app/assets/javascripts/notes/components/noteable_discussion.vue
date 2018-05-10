@@ -111,13 +111,6 @@ export default {
     newNotePath() {
       return this.getNoteableData.create_note_path;
     },
-    lastNote() {
-      if (notes.length > 1) {
-        return notes[notes.length - 1];
-      }
-
-      return null;
-    },
     lastUpdatedBy() {
       const { notes } = this.note;
 

@@ -134,7 +134,8 @@ export default {
       v-if="forkMessageVisible"
       class="js-file-fork-suggestion-section file-fork-suggestion">
       <span class="file-fork-suggestion-note">
-        <!-- TODO: psimyn this button can be Replace/Delete/Edit. This seems excessive, do we actually need to specify edit? -->
+        <!-- TODO: psimyn this button can be Replace/Delete/Edit.
+        This seems excessive, do we actually need to specify edit? -->
         <!-- see modify_file_button helper in haml -->
         You're not allowed to <span class="js-file-fork-suggestion-section-action">edit</span>
         files in this project directly. Please fork this project,

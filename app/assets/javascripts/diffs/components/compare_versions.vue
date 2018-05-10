@@ -1,6 +1,6 @@
 <script>
-import CompareVersionsDropdown from './compare_versions_dropdown.vue';
 import { removeParamQueryString } from '~/lib/utils/url_utility';
+import CompareVersionsDropdown from './compare_versions_dropdown.vue';
 
 const baseVersion = {
   latest: true,
