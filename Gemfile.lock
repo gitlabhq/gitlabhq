@@ -1165,6 +1165,7 @@ DEPENDENCIES
   rubocop-rspec (~> 1.22.1)
   ruby-fogbugz (~> 0.2.1)
   ruby-prof (~> 0.17.0)
+  ruby-progressbar
   ruby_parser (~> 3.8)
   rufus-scheduler (~> 3.4)
   rugged (~> 0.27)

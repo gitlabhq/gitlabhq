@@ -174,6 +174,9 @@ gem 'httparty', '~> 0.13.3'
 # Colored output to console
 gem 'rainbow', '~> 2.2'
 
+# Progress bar
+gem 'ruby-progressbar'
+
 # GitLab settings
 gem 'settingslogic', '~> 2.0.9'
 
