@@ -1,6 +1,8 @@
 namespace :geo do
   namespace :git do
     namespace :housekeeping do
+      using ProgressBar::Refinements::Enumerator
+
       desc "GitLab | Git | Housekeeping | Garbage Collection"
       task gc: :gitlab_environment do
         flag_for_housekeeping(Gitlab::CurrentSettings.housekeeping_gc_period)
@@ -17,7 +19,7 @@ namespace :geo do
       end
 
       def flag_for_housekeeping(period)
-        Geo::ProjectRegistry.select(:id, :project_id).find_in_batches do |batches|
+        Geo::ProjectRegistry.select(:id, :project_id).find_in_batches.with_progressbar(format: '%t: |%B| %p%% %e') do |batches|
           batches.each do |registry|
             registry.set_syncs_since_gc!(period - 1)
           end

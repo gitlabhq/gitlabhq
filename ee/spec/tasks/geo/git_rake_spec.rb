@@ -14,6 +14,7 @@ describe 'geo:git:housekeeping' do
 
   before do
     Rake.application.rake_require 'tasks/geo/git'
+    silence_progress_bar
   end
 
   after do
