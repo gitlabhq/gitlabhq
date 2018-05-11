@@ -62,7 +62,7 @@ describe "Admin Runners" do
 
     context 'group runner' do
       let(:group) { create(:group) }
-      let!(:runner) { create(:ci_runner, groups: [group], runner_type: :group_type) }
+      let!(:runner) { create(:ci_runner, :group, groups: [group]) }
 
       it 'shows the label and does not show the project count' do
         visit admin_runners_path
