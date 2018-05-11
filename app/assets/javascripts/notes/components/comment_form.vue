@@ -120,6 +120,9 @@ export default {
     endpoint() {
       return this.getNoteableData.create_note_path;
     },
+    issuableTypeTitle() {
+      return this.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE ? 'merge request' : 'issue';
+    },
   },
   watch: {
     note(newNote) {
@@ -308,8 +311,8 @@ Please check your network connection and try again.`;
   <div>
     <note-signed-out-widget v-if="!isLoggedIn" />
     <discussion-locked-widget
-      issuable-type="issue"
-      v-else-if="isLocked(getNoteableData) && !canCreateNote"
+      :issuable-type="issuableTypeTitle"
+      v-else-if="!canCreateNote"
     />
     <ul
       v-else-if="canCreateNote"
