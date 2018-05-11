@@ -42,10 +42,6 @@ module SharedProject
   # Visibility level
   # ----------------------------------------
 
-  step 'private project "Enterprise"' do
-    create(:project, :private, :repository, name: 'Enterprise')
-  end
-
   step 'I should see project "Enterprise"' do
     expect(page).to have_content "Enterprise"
   end
@@ -70,10 +66,6 @@ module SharedProject
     end
   end
 
-  step 'public project "Community"' do
-    create(:project, :public, :repository, name: 'Community')
-  end
-
   step 'I should see project "Community"' do
     expect(page).to have_content "Community"
   end
@@ -89,26 +81,11 @@ module SharedProject
     )
   end
 
-  step '"Mary Jane" owns private project "Enterprise"' do
-    user_owns_project(
-      user_name: 'Mary Jane',
-      project_name: 'Enterprise'
-    )
-  end
-
   step '"John Doe" owns internal project "Internal"' do
     user_owns_project(
       user_name: 'John Doe',
       project_name: 'Internal',
       visibility: :internal
-    )
-  end
-
-  step '"John Doe" owns public project "Community"' do
-    user_owns_project(
-      user_name: 'John Doe',
-      project_name: 'Community',
-      visibility: :public
     )
   end
 

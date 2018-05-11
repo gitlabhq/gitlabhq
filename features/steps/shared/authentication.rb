@@ -22,24 +22,12 @@ module SharedAuthentication
     sign_in(@user)
   end
 
-  step 'I sign in as "John Doe"' do
-    gitlab_sign_in(user_exists("John Doe"))
-  end
-
-  step 'I sign in as "Mary Jane"' do
-    gitlab_sign_in(user_exists("Mary Jane"))
-  end
-
   step 'I sign in as "Pete Peters"' do
     gitlab_sign_in(user_exists("Pete Peters"))
   end
 
   step 'I should be redirected to sign in page' do
     expect(current_path).to eq new_user_session_path
-  end
-
-  step "I logout" do
-    gitlab_sign_out
   end
 
   step "I logout directly" do
