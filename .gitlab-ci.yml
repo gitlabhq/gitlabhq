@@ -460,6 +460,7 @@ retrieve-tests-metadata:
     - master
     - /^[\d-]+-stable(-ee)?$/
     - /\bce\-to\-ee\b/
+    - /(^docs[\/-].*|.*-docs$)/
 
 ee-files-location-check:
   <<: *ee-specific-check
