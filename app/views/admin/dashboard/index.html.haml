@@ -39,35 +39,35 @@
             %p
               Forks
               %span.light.pull-right
-                = number_with_delimiter(ForkedProjectLink.count)
+                = limited_counter_with_delimiter(ForkedProjectLink)
             %p
               Issues
               %span.light.pull-right
-                = number_with_delimiter(Issue.count)
+                = limited_counter_with_delimiter(Issue)
             %p
               Merge Requests
               %span.light.pull-right
-                = number_with_delimiter(MergeRequest.count)
+                = limited_counter_with_delimiter(MergeRequest)
             %p
               Notes
               %span.light.pull-right
-                = number_with_delimiter(Note.count)
+                = limited_counter_with_delimiter(Note)
             %p
               Snippets
               %span.light.pull-right
-                = number_with_delimiter(Snippet.count)
+                = limited_counter_with_delimiter(Snippet)
             %p
               SSH Keys
               %span.light.pull-right
-                = number_with_delimiter(Key.count)
+                = limited_counter_with_delimiter(Key)
             %p
               Milestones
               %span.light.pull-right
-                = number_with_delimiter(Milestone.count)
+                = limited_counter_with_delimiter(Milestone)
             %p
               Active Users
               %span.light.pull-right
-                = number_with_delimiter(User.active.count)
+                = limited_counter_with_delimiter(User.active)
       .col-md-4
         .info-well
           .well-segment.admin-well.admin-well-features

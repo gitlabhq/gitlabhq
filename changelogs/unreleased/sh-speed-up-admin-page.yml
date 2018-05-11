@@ -1,0 +1,5 @@
+---
+title: Improve performance of /admin page by limiting counters to 1000+
+merge_request:
+author:
+type: performance
