@@ -20,10 +20,10 @@
                   = brand_header_logo
                   - logo_text = brand_header_logo_type
                   - if logo_text.present?
-                    %span.logo-text.hidden-xs.prepend-left-8
+                    %span.logo-text.prepend-left-8
                       = logo_text
                 - if header_link?(:user_dropdown)
-                  .navbar-collapse.collapse
+                  .navbar-collapse
                     %ul.nav.navbar-nav
                       %li.header-user.dropdown
                         = link_to current_user, class: user_dropdown_class, data: { toggle: "dropdown" } do

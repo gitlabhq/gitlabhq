@@ -109,12 +109,12 @@ export default {
               rel="noopener noreferrer nofollow"
               class="deploy-link js-deploy-url"
             >
+              {{ deployment.external_url_formatted }}
               <i
                 class="fa fa-external-link"
                 aria-hidden="true"
               >
               </i>
-              {{ deployment.external_url_formatted }}
             </a>
           </template>
           <span

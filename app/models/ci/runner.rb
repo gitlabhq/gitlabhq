@@ -108,7 +108,13 @@ module Ci
     end
 
     def assign_to(project, current_user = nil)
-      self.is_shared = false if shared?
+      if shared?
+        self.is_shared = false if shared?
+        self.runner_type = :project_type
+      elsif group_type?
+        raise ArgumentError, 'Transitioning a group runner to a project runner is not supported'
+      end
+
       self.save
       project.runner_projects.create(runner_id: self.id)
     end
