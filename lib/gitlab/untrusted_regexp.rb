@@ -9,7 +9,7 @@ module Gitlab
   # there is a strict limit on total execution time. See the RE2 documentation
   # at https://github.com/google/re2/wiki/Syntax for more details.
   class UntrustedRegexp
-    delegate :===, to: :regexp
+    delegate :===, :source, to: :regexp
 
     def initialize(pattern)
       @regexp = RE2::Regexp.new(pattern, log_errors: false)
@@ -29,6 +29,10 @@ module Gitlab
 
     def replace(text, rewrite)
       RE2.Replace(text, regexp, rewrite)
+    end
+
+    def ==(other)
+      self.source == other.source
     end
 
     private
