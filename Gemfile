@@ -257,7 +257,7 @@ gem 'addressable', '~> 2.5.2'
 gem 'bootstrap-sass', '~> 3.3.0'
 gem 'font-awesome-rails', '~> 4.7'
 gem 'gemojione', '~> 3.3'
-gem 'gon', '~> 6.1.0'
+gem 'gon', '~> 6.2'
 gem 'jquery-atwho-rails', '~> 1.3.2'
 gem 'request_store', '~> 1.3'
 gem 'select2-rails', '~> 3.5.9'
@@ -294,7 +294,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~> 0.9.1'
+  gem 'prometheus-client-mmap', '~> 0.9.2'
   gem 'raindrops', '~> 0.18'
 end
 
