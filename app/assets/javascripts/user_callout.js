@@ -23,12 +23,15 @@ export default class UserCallout {
     const $currentTarget = $(e.currentTarget);
 
     if (this.options.setCalloutPerProject) {
-      Cookies.set(this.cookieName, 'true', { expires: 365, path: this.userCalloutBody.data('projectPath') });
+      Cookies.set(this.cookieName, 'true', {
+        expires: 365,
+        path: this.userCalloutBody.data('projectPath'),
+      });
     } else {
       Cookies.set(this.cookieName, 'true', { expires: 365 });
     }
 
-    if ($currentTarget.hasClass('close')) {
+    if ($currentTarget.hasClass('close') || $currentTarget.hasClass('js-close')) {
       this.userCalloutBody.remove();
     }
   }
