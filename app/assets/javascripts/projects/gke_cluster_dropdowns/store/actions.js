@@ -18,7 +18,7 @@ export const setMachineType = ({ commit }, selectedMachineType) => {
 
 const displayError = (resp, errorMessage) => {
   if (resp.result && resp.result.error) {
-    Flash(sprintf(s__(errorMessage), { error: resp.result.error.message }));
+    Flash(sprintf(errorMessage, { error: resp.result.error.message }));
   }
 };
 
@@ -49,8 +49,9 @@ export const getProjects = ({ commit }) =>
     commit,
     mutation: types.SET_PROJECTS,
     payloadKey: 'projects',
-    errorMessage:
+    errorMessage: s__(
       'ClusterIntegration|An error occured while trying to fetch your projects: %{error}',
+    ),
   });
 
 export const getZones = ({ commit, state }) =>
@@ -62,8 +63,9 @@ export const getZones = ({ commit, state }) =>
     commit,
     mutation: types.SET_ZONES,
     payloadKey: 'items',
-    errorMessage:
+    errorMessage: s__(
       'ClusterIntegration|An error occured while trying to fetch project zones: %{error}',
+    ),
   });
 
 export const getMachineTypes = ({ commit, state }) =>
@@ -76,8 +78,9 @@ export const getMachineTypes = ({ commit, state }) =>
     commit,
     mutation: types.SET_MACHINE_TYPES,
     payloadKey: 'items',
-    errorMessage:
+    errorMessage: s__(
       'ClusterIntegration|An error occured while trying to fetch zone machine types: %{error}',
+    ),
   });
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
