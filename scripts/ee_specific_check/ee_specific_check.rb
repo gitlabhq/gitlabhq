@@ -18,6 +18,10 @@ module EESpecificCheck
 
   module_function
 
+  def git_version
+    say run_git_command('--version')
+  end
+
   def say(message)
     puts "\n#{message}", "\n" # puts would eat trailing newline
   end
