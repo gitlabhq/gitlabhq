@@ -592,6 +592,15 @@ describe API::Runners do
           end.to change { project.runners.count }.by(+1)
           expect(response).to have_gitlab_http_status(201)
         end
+
+        it 'enables a shared runner' do
+          expect do
+            post api("/projects/#{project.id}/runners", admin), runner_id: shared_runner.id
+          end.to change { project.runners.count }.by(1)
+
+          expect(shared_runner.reload).not_to be_shared
+          expect(response).to have_gitlab_http_status(201)
+        end
       end
 
       context 'user is not admin' do

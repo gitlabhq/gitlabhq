@@ -203,11 +203,11 @@ module API
       end
 
       def authenticate_enable_runner!(runner)
-        forbidden!("Runner is shared") if runner.is_shared?
-        forbidden!("Runner is locked") if runner.locked?
         forbidden!("Runner is a group runner") if runner.group_type?
+
         return if current_user.admin?
 
+        forbidden!("Runner is locked") if runner.locked?
         forbidden!("No access granted") unless can?(current_user, :assign_runner, runner)
       end
 
