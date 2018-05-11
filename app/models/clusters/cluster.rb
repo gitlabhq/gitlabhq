@@ -8,7 +8,8 @@ module Clusters
       Applications::Helm.application_name => Applications::Helm,
       Applications::Ingress.application_name => Applications::Ingress,
       Applications::Prometheus.application_name => Applications::Prometheus,
-      Applications::Runner.application_name => Applications::Runner
+      Applications::Runner.application_name => Applications::Runner,
+      Applications::Jupyter.application_name => Applications::Jupyter
     }.freeze
     DEFAULT_ENVIRONMENT = '*'.freeze
 
