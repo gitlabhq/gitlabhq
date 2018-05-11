@@ -43,34 +43,28 @@ describe('GkeProjectIdDropdown', () => {
     });
 
     it('returns default toggle text', done => {
-      vm.$nextTick(() => {
-        vm.$nextTick(() => {
-          vm.setItem(emptyProjectMock);
+      return vm.$nextTick().then(() => {
+        vm.setItem(emptyProjectMock);
 
-          expect(vm.toggleText).toBe(LABELS.DEFAULT);
-          done();
-        });
+        expect(vm.toggleText).toBe(LABELS.DEFAULT);
+        done();
       });
     });
 
     it('returns project name if project selected', done => {
-      vm.$nextTick(() => {
-        vm.$nextTick(() => {
-          expect(vm.toggleText).toBe(selectedProjectMock.name);
-          done();
-        });
+      return vm.$nextTick().then(() => {
+        expect(vm.toggleText).toBe(selectedProjectMock.name);
+        done();
       });
     });
 
     it('returns empty toggle text', done => {
-      vm.$nextTick(() => {
+      return vm.$nextTick().then(() => {
         vm.$store.commit(SET_PROJECTS, []);
         vm.setItem(emptyProjectMock);
 
-        vm.$nextTick(() => {
-          expect(vm.toggleText).toBe(LABELS.EMPTY);
-          done();
-        });
+        expect(vm.toggleText).toBe(LABELS.EMPTY);
+        done();
       });
     });
   });
@@ -79,13 +73,12 @@ describe('GkeProjectIdDropdown', () => {
     it('reflects new value when dropdown item is clicked', done => {
       expect(vm.$el.querySelector('input').value).toBe('');
 
-      vm.$nextTick(() => {
-        vm.$nextTick(() => {
-          vm.$el.querySelector('.dropdown-content button').click();
-          vm.$nextTick(() => {
-            expect(vm.$el.querySelector('input').value).toBe(selectedProjectMock.projectId);
-            done();
-          });
+      return vm.$nextTick().then(() => {
+        vm.$el.querySelector('.dropdown-content button').click();
+
+        return vm.$nextTick().then(() => {
+          expect(vm.$el.querySelector('input').value).toBe(selectedProjectMock.projectId);
+          done();
         });
       });
     });

@@ -84,10 +84,10 @@ describe('GkeMachineTypeDropdown', () => {
       expect(vm.$el.querySelector('input').value).toBe('');
       vm.$store.commit(SET_MACHINE_TYPES, gapiMachineTypesResponseMock.items);
 
-      vm.$nextTick(() => {
+      return vm.$nextTick().then(() => {
         vm.$el.querySelector('.dropdown-content button').click();
 
-        vm.$nextTick(() => {
+        return vm.$nextTick().then(() => {
           expect(vm.$el.querySelector('input').value).toBe(selectedMachineTypeMock);
           done();
         });

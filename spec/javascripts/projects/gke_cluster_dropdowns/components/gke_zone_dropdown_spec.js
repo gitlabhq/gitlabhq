@@ -66,10 +66,10 @@ describe('GkeZoneDropdown', () => {
       expect(vm.$el.querySelector('input').value).toBe('');
       vm.$store.commit(SET_ZONES, gapiZonesResponseMock.items);
 
-      vm.$nextTick(() => {
+      return vm.$nextTick().then(() => {
         vm.$el.querySelector('.dropdown-content button').click();
 
-        vm.$nextTick(() => {
+        return vm.$nextTick().then(() => {
           expect(vm.$el.querySelector('input').value).toBe(selectedZoneMock);
           done();
         });
