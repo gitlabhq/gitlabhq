@@ -238,7 +238,7 @@
       },
       handleRetryClick() {
         this.isRetrying = true;
-        eventHub.$emit('postAction', this.pipeline.retry_path);
+        eventHub.$emit('retryPipeline', this.pipeline.retry_path);
       },
     },
   };

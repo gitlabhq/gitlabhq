@@ -166,8 +166,8 @@ describe('Pipelines Table Row', () => {
       expect(component.$el.querySelector('.js-pipelines-cancel-button')).not.toBeNull();
     });
 
-    it('emits `postAction` event when retry button is clicked and toggles loading', () => {
-      eventHub.$on('postAction', (endpoint) => {
+    it('emits `retryPipeline` event when retry button is clicked and toggles loading', () => {
+      eventHub.$on('retryPipeline', (endpoint) => {
         expect(endpoint).toEqual('/retry');
       });
 
