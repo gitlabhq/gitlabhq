@@ -13,7 +13,9 @@ module Projects
       import_data = params.delete(:import_data)
       @skip_wiki = params.delete(:skip_wiki)
 
-      @project = Project.new(params)
+      @project = Project.new(params.merge(
+        template_name: params.delete(:created_from_template)
+      ))
 
       # Make sure that the user is allowed to use the specified visibility level
       unless Gitlab::VisibilityLevel.allowed_for?(current_user, @project.visibility_level)

@@ -10,6 +10,7 @@ module Projects
 
       override_params = params.dup
       params[:file] = file
+      params[:created_from_template] = template_name
 
       GitlabProjectsImportService.new(current_user, params, override_params).execute
 
