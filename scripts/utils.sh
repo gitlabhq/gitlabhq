@@ -12,3 +12,11 @@ retry() {
     done
     return 1
 }
+
+setup_db() {
+    bundle exec rake db:drop db:create db:schema:load db:migrate
+
+    if [ "$GITLAB_DATABASE" = "mysql" ]; then
+        bundle exec rake add_limits_mysql
+    fi
+}
