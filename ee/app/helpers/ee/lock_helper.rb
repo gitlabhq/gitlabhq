@@ -1,6 +1,7 @@
 module EE
   module LockHelper
     def lock_file_link(project = @project, path = @path, html_options: {})
+      return unless project.feature_available?(:file_locks)
       return unless current_user
       return if path.blank?
 
