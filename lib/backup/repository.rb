@@ -96,6 +96,7 @@ module Backup
       prepare_directories
       gitlab_shell = Gitlab::Shell.new
       Project.find_each(batch_size: 1000) do |project|
+        progress.print " * #{project.name} ... "
         path_to_project_bundle = path_to_bundle(project)
         path_to_project_repo = path_to_repo(project)
         project.ensure_storage_path_exists
