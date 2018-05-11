@@ -4,7 +4,7 @@ import {
   SET_PROJECT,
   SET_ZONE,
   SET_MACHINE_TYPES,
-} from '~/projects/gke_cluster_dropdowns/stores/mutation_types';
+} from '~/projects/gke_cluster_dropdowns/store/mutation_types';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 import { resetStore } from '../helpers';

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import GkeZoneDropdown from '~/projects/gke_cluster_dropdowns/components/gke_zone_dropdown.vue';
-import { SET_PROJECT, SET_ZONES } from '~/projects/gke_cluster_dropdowns/stores/mutation_types';
+import { SET_PROJECT, SET_ZONES } from '~/projects/gke_cluster_dropdowns/store/mutation_types';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 import { resetStore } from '../helpers';

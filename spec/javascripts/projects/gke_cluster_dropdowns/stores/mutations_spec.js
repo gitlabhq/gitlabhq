@@ -1,4 +1,4 @@
-import mutations from '~/projects/gke_cluster_dropdowns/stores/mutations';
+import mutations from '~/projects/gke_cluster_dropdowns/store/mutations';
 import {
   selectedProjectMock,
   selectedZoneMock,

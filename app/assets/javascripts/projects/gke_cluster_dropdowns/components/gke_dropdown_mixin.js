@@ -4,7 +4,7 @@ import DropdownSearchInput from '~/vue_shared/components/dropdown/dropdown_searc
 import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidden_input.vue';
 import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
 
-import store from '../stores';
+import store from '../store';
 
 export default {
   store,
