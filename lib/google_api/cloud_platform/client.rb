@@ -43,40 +43,6 @@ module GoogleApi
         true
       end
 
-      def projects_list
-        service = Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService.new
-        service.authorization = access_token
-
-        service.fetch_all(items: :projects) do |token|
-          service.list_projects(page_token: token, options: user_agent_header)
-        end
-      end
-
-      def projects_get_billing_info(project_id)
-        service = Google::Apis::CloudbillingV1::CloudbillingService.new
-        service.authorization = access_token
-
-        service.get_project_billing_info("projects/#{project_id}", options: user_agent_header)
-      end
-
-      def projects_zones_list(project_id)
-        service = Google::Apis::ComputeV1::ComputeService.new
-        service.authorization = access_token
-
-        service.fetch_all do |token|
-          service.list_zones(project_id, page_token: token, options: user_agent_header)
-        end
-      end
-
-      def projects_zones_machine_types_list(project_id, zone)
-        service = Google::Apis::ComputeV1::ComputeService.new
-        service.authorization = access_token
-
-        service.fetch_all do |token|
-          service.list_machine_types(project_id, zone, page_token: token, options: user_agent_header)
-        end
-      end
-
       def projects_zones_clusters_get(project_id, zone, cluster_id)
         service = Google::Apis::ContainerV1::ContainerService.new
         service.authorization = access_token
