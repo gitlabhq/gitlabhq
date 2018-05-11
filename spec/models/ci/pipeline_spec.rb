@@ -41,7 +41,7 @@ describe Ci::Pipeline, :mailer do
       let(:instance) { build(:ci_pipeline) }
       let(:scope_attrs) { { project: instance.project } }
       let(:usage) { :ci_pipelines }
-      let(:validate_presence) { false }
+      let(:allow_nil) { true }
     end
   end
 

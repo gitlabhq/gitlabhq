@@ -37,21 +37,38 @@ describe Gitlab::Ci::Pipeline::Chain::Create do
   end
 
   context 'when pipeline has validation errors' do
-    let(:pipeline) do
-      build(:ci_pipeline, project: project, ref: nil)
+    shared_examples_for 'expectations' do
+      it 'breaks the chain' do
+        expect(step.break?).to be true
+      end
+  
+      it 'appends validation error' do
+        expect(pipeline.errors.to_a)
+          .to include /Failed to persist the pipeline/
+      end
+    end
+    
+    context 'when ref is nil' do
+      let(:pipeline) do
+        build(:ci_pipeline, project: project, ref: nil)
+      end
+
+      before do
+        step.perform!
+      end
+
+      it_behaves_like 'expectations'
     end
 
-    before do
-      step.perform!
-    end
+    context 'when pipeline has a duplicate iid' do
+      before do
+        allow_any_instance_of(Ci::Pipeline).to receive(:ensure_project_iid!) { |p| p.send(:write_attribute, :iid, 1) }
+        create(:ci_pipeline, project: project)
+  
+        step.perform!
+      end
 
-    it 'breaks the chain' do
-      expect(step.break?).to be true
-    end
-
-    it 'appends validation error' do
-      expect(pipeline.errors.to_a)
-        .to include /Failed to persist the pipeline/
+      it_behaves_like 'expectations'
     end
   end
 end

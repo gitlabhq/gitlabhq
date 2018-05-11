@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 shared_examples_for 'AtomicInternalId' do
-  let(:validate_presence) { true }
+  let(:allow_nil) { false }
 
   describe '.has_internal_id' do
     describe 'Module inclusion' do
@@ -18,7 +18,11 @@ shared_examples_for 'AtomicInternalId' do
       it 'validates presence' do
         instance.valid?
 
-        expect(instance.errors[:iid]).to include("can't be blank") if validate_presence
+        if allow_nil
+          expect(instance.errors[:iid]).to be_empty
+        else
+          expect(instance.errors[:iid]).to include("can't be blank")
+        end
       end
     end
 
