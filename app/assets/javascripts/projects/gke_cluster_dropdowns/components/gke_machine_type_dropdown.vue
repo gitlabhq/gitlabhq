@@ -1,5 +1,5 @@
 <script>
-import { s__ } from '~/locale';
+import { sprintf, s__ } from '~/locale';
 import { mapState, mapGetters, mapActions } from 'vuex';
 
 import gkeDropdownMixin from './gke_dropdown_mixin';
@@ -34,6 +34,14 @@ export default {
         ? s__('ClusterIntegration|Select zone to choose machine type')
         : s__('ClusterIntegration|Select machine type');
     },
+    errorMessage() {
+      return sprintf(
+        s__(
+          'ClusterIntegration|An error occured while trying to fetch zone machine types: %{error}',
+        ),
+        { error: this.gapiError },
+      );
+    },
   },
   watch: {
     selectedZone() {
@@ -64,48 +72,57 @@ export default {
 </script>
 
 <template>
-  <div
-    class="js-gcp-machine-type-dropdown dropdown"
-    :class="{ 'gl-show-field-errors': hasErrors }"
-  >
-    <dropdown-hidden-input
-      :name="fieldName"
-      :value="selectedMachineType"
-    />
-    <dropdown-button
-      :class="{ 'gl-field-error-outline': hasErrors }"
-      :is-disabled="isDisabled"
-      :is-loading="isLoading"
-      :toggle-text="toggleText"
-    />
-    <div class="dropdown-menu dropdown-select">
-      <dropdown-search-input
-        v-model="searchQuery"
-        :placeholder-text="s__('ClusterIntegration|Search machine types')"
+  <div>
+    <div
+      class="js-gcp-machine-type-dropdown dropdown"
+      :class="{ 'gl-show-field-errors': hasErrors }"
+    >
+      <dropdown-hidden-input
+        :name="fieldName"
+        :value="selectedMachineType"
       />
-      <div class="dropdown-content">
-        <ul>
-          <li v-show="!results.length">
-            <span class="menu-item">
-              {{ s__('ClusterIntegration|No machine types matched your search') }}
-            </span>
-          </li>
-          <li
-            v-for="result in results"
-            :key="result.id"
-          >
-            <button
-              type="button"
-              @click.prevent="setItem(result.name)"
+      <dropdown-button
+        :class="{ 'gl-field-error-outline': hasErrors }"
+        :is-disabled="isDisabled"
+        :is-loading="isLoading"
+        :toggle-text="toggleText"
+      />
+      <div class="dropdown-menu dropdown-select">
+        <dropdown-search-input
+          v-model="searchQuery"
+          :placeholder-text="s__('ClusterIntegration|Search machine types')"
+        />
+        <div class="dropdown-content">
+          <ul>
+            <li v-show="!results.length">
+              <span class="menu-item">
+                {{ s__('ClusterIntegration|No machine types matched your search') }}
+              </span>
+            </li>
+            <li
+              v-for="result in results"
+              :key="result.id"
             >
-              {{ result.name }}
-            </button>
-          </li>
-        </ul>
-      </div>
-      <div class="dropdown-loading">
-        <loading-icon />
+              <button
+                type="button"
+                @click.prevent="setItem(result.name)"
+              >
+                {{ result.name }}
+              </button>
+            </li>
+          </ul>
+        </div>
+        <div class="dropdown-loading">
+          <loading-icon />
+        </div>
       </div>
     </div>
+    <span
+      class="help-block"
+      :class="{ 'gl-field-error': hasErrors }"
+      v-if="hasErrors"
+    >
+      {{ errorMessage }}
+    </span>
   </div>
 </template>

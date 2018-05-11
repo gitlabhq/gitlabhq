@@ -1,5 +1,4 @@
 /* global gapi */
-import createFlash, { hideFlash } from '~/flash';
 import { s__, sprintf } from '~/locale';
 
 import * as types from './mutation_types';
@@ -16,21 +15,7 @@ export const setMachineType = ({ commit }, selectedMachineType) => {
   commit(types.SET_MACHINE_TYPE, selectedMachineType);
 };
 
-const displayError = (resp, errorMessage) => {
-  if (resp.result && resp.result.error) {
-    createFlash(sprintf(errorMessage, { error: resp.result.error.message }));
-  }
-};
-
-const hideError = () => {
-  const flashEl = document.querySelector('.flash-alert');
-
-  if (flashEl) {
-    hideFlash(flashEl);
-  }
-};
-
-const gapiRequest = ({ service, params, commit, mutation, payloadKey, errorMessage }) =>
+const gapiRequest = ({ service, params, commit, mutation, payloadKey }) =>
   new Promise((resolve, reject) => {
     const request = service.list(params);
 
@@ -38,15 +23,12 @@ const gapiRequest = ({ service, params, commit, mutation, payloadKey, errorMessa
       resp => {
         const { result } = resp;
 
-        hideError();
         commit(mutation, result[payloadKey]);
 
         resolve();
       },
       resp => {
-        displayError(resp, errorMessage);
-
-        reject();
+        reject(resp);
       },
     );
   });
@@ -58,9 +40,6 @@ export const getProjects = ({ commit }) =>
     commit,
     mutation: types.SET_PROJECTS,
     payloadKey: 'projects',
-    errorMessage: s__(
-      'ClusterIntegration|An error occured while trying to fetch your projects: %{error}',
-    ),
   });
 
 export const getZones = ({ commit, state }) =>
@@ -72,9 +51,6 @@ export const getZones = ({ commit, state }) =>
     commit,
     mutation: types.SET_ZONES,
     payloadKey: 'items',
-    errorMessage: s__(
-      'ClusterIntegration|An error occured while trying to fetch project zones: %{error}',
-    ),
   });
 
 export const getMachineTypes = ({ commit, state }) =>
@@ -87,9 +63,6 @@ export const getMachineTypes = ({ commit, state }) =>
     commit,
     mutation: types.SET_MACHINE_TYPES,
     payloadKey: 'items',
-    errorMessage: s__(
-      'ClusterIntegration|An error occured while trying to fetch zone machine types: %{error}',
-    ),
   });
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

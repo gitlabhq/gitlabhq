@@ -34,6 +34,7 @@ export default {
       isLoading: false,
       hasErrors: false,
       searchQuery: '',
+      gapiError: '',
     };
   },
   computed: {
@@ -58,9 +59,13 @@ export default {
       this.isLoading = false;
       this.hasErrors = false;
     },
-    fetchFailureHandler() {
+    fetchFailureHandler(resp) {
       this.isLoading = false;
       this.hasErrors = true;
+
+      if (resp.result && resp.result.error) {
+        this.gapiError = resp.result.error.message;
+      }
     },
   },
 };

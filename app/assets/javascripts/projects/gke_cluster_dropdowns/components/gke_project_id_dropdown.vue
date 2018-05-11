@@ -66,6 +66,12 @@ export default {
         false,
       );
     },
+    errorMessage() {
+      return sprintf(
+        s__('ClusterIntegration|An error occured while trying to fetch your projects: %{error}'),
+        { error: this.gapiError },
+      );
+    },
   },
   created() {
     this.isLoading = true;
@@ -146,7 +152,7 @@ export default {
     </div>
     <span
       class="help-block"
-      :class="{ 'gl-field-error-message': hasErrors }"
+      :class="{ 'gl-field-error': hasErrors }"
       v-html="helpText"
     ></span>
   </div>

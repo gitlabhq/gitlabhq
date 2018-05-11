@@ -1,5 +1,5 @@
 <script>
-import { s__ } from '~/locale';
+import { sprintf, s__ } from '~/locale';
 import { mapState, mapGetters, mapActions } from 'vuex';
 
 import gkeDropdownMixin from './gke_dropdown_mixin';
@@ -8,7 +8,7 @@ export default {
   name: 'GkeZoneDropdown',
   mixins: [gkeDropdownMixin],
   computed: {
-    ...mapState(['selectedProject', 'selectedZone']),
+    ...mapState(['selectedProject', 'selectedZone', 'projects']),
     ...mapState({ items: 'zones' }),
     ...mapGetters(['hasProject']),
     isDisabled() {
@@ -26,6 +26,12 @@ export default {
       return !this.hasProject
         ? s__('ClusterIntegration|Select project to choose zone')
         : s__('ClusterIntegration|Select zone');
+    },
+    errorMessage() {
+      return sprintf(
+        s__('ClusterIntegration|An error occured while trying to fetch project zones: %{error}'),
+        { error: this.gapiError },
+      );
     },
   },
   watch: {
@@ -45,48 +51,57 @@ export default {
 </script>
 
 <template>
-  <div
-    class="js-gcp-zone-dropdown dropdown"
-    :class="{ 'gl-show-field-errors': hasErrors }"
-  >
-    <dropdown-hidden-input
-      :name="fieldName"
-      :value="selectedZone"
-    />
-    <dropdown-button
-      :class="{ 'gl-field-error-outline': hasErrors }"
-      :is-disabled="isDisabled"
-      :is-loading="isLoading"
-      :toggle-text="toggleText"
-    />
-    <div class="dropdown-menu dropdown-select">
-      <dropdown-search-input
-        v-model="searchQuery"
-        :placeholder-text="s__('ClusterIntegration|Search zones')"
+  <div>
+    <div
+      class="js-gcp-zone-dropdown dropdown"
+      :class="{ 'gl-show-field-errors': hasErrors }"
+    >
+      <dropdown-hidden-input
+        :name="fieldName"
+        :value="selectedZone"
       />
-      <div class="dropdown-content">
-        <ul>
-          <li v-show="!results.length">
-            <span class="menu-item">
-              {{ s__('ClusterIntegration|No zones matched your search') }}
-            </span>
-          </li>
-          <li
-            v-for="result in results"
-            :key="result.id"
-          >
-            <button
-              type="button"
-              @click.prevent="setItem(result.name)"
+      <dropdown-button
+        :class="{ 'gl-field-error-outline': hasErrors }"
+        :is-disabled="isDisabled"
+        :is-loading="isLoading"
+        :toggle-text="toggleText"
+      />
+      <div class="dropdown-menu dropdown-select">
+        <dropdown-search-input
+          v-model="searchQuery"
+          :placeholder-text="s__('ClusterIntegration|Search zones')"
+        />
+        <div class="dropdown-content">
+          <ul>
+            <li v-show="!results.length">
+              <span class="menu-item">
+                {{ s__('ClusterIntegration|No zones matched your search') }}
+              </span>
+            </li>
+            <li
+              v-for="result in results"
+              :key="result.id"
             >
-              {{ result.name }}
-            </button>
-          </li>
-        </ul>
-      </div>
-      <div class="dropdown-loading">
-        <loading-icon />
+              <button
+                type="button"
+                @click.prevent="setItem(result.name)"
+              >
+                {{ result.name }}
+              </button>
+            </li>
+          </ul>
+        </div>
+        <div class="dropdown-loading">
+          <loading-icon />
+        </div>
       </div>
     </div>
+    <span
+      class="help-block"
+      :class="{ 'gl-field-error': hasErrors }"
+      v-if="hasErrors"
+    >
+      {{ errorMessage }}
+    </span>
   </div>
 </template>
