@@ -190,14 +190,12 @@ module API
       def authenticate_update_runner!(runner)
         return if current_user.admin?
 
-        forbidden!("Runner is shared") if runner.is_shared?
         forbidden!("No access granted") unless can?(current_user, :update_runner, runner)
       end
 
       def authenticate_delete_runner!(runner)
         return if current_user.admin?
 
-        forbidden!("Runner is shared") if runner.is_shared?
         forbidden!("Runner associated with more than one project") if runner.projects.count > 1
         forbidden!("No access granted") unless can?(current_user, :delete_runner, runner)
       end
