@@ -4,6 +4,10 @@ module QA
   #
   module EE
     module Page
+      module Dashboard
+        autoload :Projects, 'qa/ee/page/dashboard/projects'
+      end
+
       module Main
         autoload :Banner, 'qa/ee/page/main/banner'
       end
@@ -24,6 +28,8 @@ module QA
       end
 
       module Project
+        autoload :Show, 'qa/ee/page/project/show'
+
         module Settings
           autoload :ProtectedBranches, 'qa/ee/page/project/settings/protected_branches'
         end

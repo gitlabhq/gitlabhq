@@ -36,12 +36,20 @@ module QA
           end
 
           Page::Dashboard::Projects.perform do |dashboard|
+            dashboard.wait_for_project_replication(project.name)
+
             dashboard.go_to_project(project.name)
           end
 
           Page::Menu::Side.act { click_issues }
 
           Page::Project::Issue::Index.perform do |index|
+            # wait for DB replication of issue
+            index.wait do
+              # we may want to filter by title here if the project is reused by other specs
+              page.has_content?(issue.title)
+            end
+
             index.go_to_issue(issue.title)
           end
 
