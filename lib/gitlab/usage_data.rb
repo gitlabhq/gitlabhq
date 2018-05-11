@@ -71,6 +71,7 @@ module Gitlab
             projects_imported_from_github: Project.where(import_type: 'github').count,
             protected_branches: ProtectedBranch.count,
             releases: Release.count,
+            remote_mirrors: RemoteMirror.count,
             snippets: Snippet.count,
             todos: Todo.count,
             uploads: Upload.count,

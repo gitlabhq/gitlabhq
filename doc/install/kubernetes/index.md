@@ -1,4 +1,9 @@
+---
+description: 'Read through the different methods to deploy GitLab on Kubernetes.'
+---
+
 # Installing GitLab on Kubernetes
+
 > **Note**: These charts have been tested on Google Kubernetes Engine and Azure Container Service. Other Kubernetes installations may work as well, if not please [open an issue](https://gitlab.com/charts/charts.gitlab.io/issues).
 
 The easiest method to deploy GitLab on [Kubernetes](https://kubernetes.io/) is
@@ -16,6 +21,7 @@ should be deployed, upgraded, and configured.
   * [Community Contributed Charts](#community-contributed-charts): Community contributed charts, deprecated by the official GitLab chart.
 
 ## GitLab-Omnibus Chart (Recommended)
+
 > **Note**: This chart is in beta while [additional features](https://gitlab.com/charts/charts.gitlab.io/issues/68) are being added.
 
 This chart is the best available way to operate GitLab on Kubernetes. It deploys and configures nearly all features of GitLab, including: a [Runner](https://docs.gitlab.com/runner/), [Container Registry](../../user/project/container_registry.html#gitlab-container-registry), [Mattermost](https://docs.gitlab.com/omnibus/gitlab-mattermost/), [automatic SSL](https://github.com/kubernetes/charts/tree/master/stable/kube-lego), and a [load balancer](https://github.com/kubernetes/ingress/tree/master/controllers/nginx). It is based on our [GitLab Omnibus Docker Images](https://docs.gitlab.com/omnibus/docker/README.html).

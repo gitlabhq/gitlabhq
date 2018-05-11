@@ -100,9 +100,10 @@ export default {
     fetchSearchedProjects(searchQuery) {
       this.searchQuery = searchQuery;
       this.toggleLoader(true);
-      this.service.getSearchedProjects(this.searchQuery)
+      this.service
+        .getSearchedProjects(this.searchQuery)
         .then(res => res.json())
-        .then((results) => {
+        .then(results => {
           this.toggleSearchProjectsList(true);
           this.store.setSearchedProjects(results);
         })

@@ -1,0 +1,5 @@
+---
+title: Inform the user when there are no project import options available
+merge_request: 18716
+author: George Tsiolis
+type: changed

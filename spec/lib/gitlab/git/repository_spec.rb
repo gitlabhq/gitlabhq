@@ -1068,40 +1068,50 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#raw_changes_between' do
-    let(:old_rev) { }
-    let(:new_rev) { }
-    let(:changes) { repository.raw_changes_between(old_rev, new_rev) }
+    shared_examples 'raw changes' do
+      let(:old_rev) { }
+      let(:new_rev) { }
+      let(:changes) { repository.raw_changes_between(old_rev, new_rev) }
 
-    context 'initial commit' do
-      let(:old_rev) { Gitlab::Git::BLANK_SHA }
-      let(:new_rev) { '1a0b36b3cdad1d2ee32457c102a8c0b7056fa863' }
+      context 'initial commit' do
+        let(:old_rev) { Gitlab::Git::BLANK_SHA }
+        let(:new_rev) { '1a0b36b3cdad1d2ee32457c102a8c0b7056fa863' }
 
-      it 'returns the changes' do
-        expect(changes).to be_present
-        expect(changes.size).to eq(3)
+        it 'returns the changes' do
+          expect(changes).to be_present
+          expect(changes.size).to eq(3)
+        end
+      end
+
+      context 'with an invalid rev' do
+        let(:old_rev) { 'foo' }
+        let(:new_rev) { 'bar' }
+
+        it 'returns an error' do
+          expect { changes }.to raise_error(Gitlab::Git::Repository::GitError)
+        end
+      end
+
+      context 'with valid revs' do
+        let(:old_rev) { 'fa1b1e6c004a68b7d8763b86455da9e6b23e36d6' }
+        let(:new_rev) { '4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6' }
+
+        it 'returns the changes' do
+          expect(changes.size).to eq(9)
+          expect(changes.first.operation).to eq(:modified)
+          expect(changes.first.new_path).to eq('.gitmodules')
+          expect(changes.last.operation).to eq(:added)
+          expect(changes.last.new_path).to eq('files/lfs/picture-invalid.png')
+        end
       end
     end
 
-    context 'with an invalid rev' do
-      let(:old_rev) { 'foo' }
-      let(:new_rev) { 'bar' }
-
-      it 'returns an error' do
-        expect { changes }.to raise_error(Gitlab::Git::Repository::GitError)
-      end
+    context 'when gitaly is enabled' do
+      it_behaves_like 'raw changes'
     end
 
-    context 'with valid revs' do
-      let(:old_rev) { 'fa1b1e6c004a68b7d8763b86455da9e6b23e36d6' }
-      let(:new_rev) { '4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6' }
-
-      it 'returns the changes' do
-        expect(changes.size).to eq(9)
-        expect(changes.first.operation).to eq(:modified)
-        expect(changes.first.new_path).to eq('.gitmodules')
-        expect(changes.last.operation).to eq(:added)
-        expect(changes.last.new_path).to eq('files/lfs/picture-invalid.png')
-      end
+    context 'when gitaly is disabled', :disable_gitaly do
+      it_behaves_like 'raw changes'
     end
   end
 
@@ -2265,7 +2275,22 @@ describe Gitlab::Git::Repository, seed_helper: true do
         expect(empty_repo.checksum).to eq '0000000000000000000000000000000000000000'
       end
 
-      it 'raises a no repository exception when there is no repo' do
+      it 'raises Gitlab::Git::Repository::InvalidRepository error for non-valid git repo' do
+        FileUtils.rm_rf(File.join(storage_path, 'non-valid.git'))
+
+        system(git_env, *%W(#{Gitlab.config.git.bin_path} clone --bare #{TEST_REPO_PATH} non-valid.git),
+               chdir: SEED_STORAGE_PATH,
+               out: '/dev/null',
+               err: '/dev/null')
+
+        File.truncate(File.join(storage_path, 'non-valid.git/HEAD'), 0)
+
+        non_valid = described_class.new('default', 'non-valid.git', '')
+
+        expect { non_valid.checksum }.to raise_error(Gitlab::Git::Repository::InvalidRepository)
+      end
+
+      it 'raises Gitlab::Git::Repository::NoRepository error when there is no repo' do
         broken_repo = described_class.new('default', 'a/path.git', '')
 
         expect { broken_repo.checksum }.to raise_error(Gitlab::Git::Repository::NoRepository)

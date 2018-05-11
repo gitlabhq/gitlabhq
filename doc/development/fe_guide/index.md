@@ -1,5 +1,8 @@
 # Frontend Development Guidelines
 
+> **Notice:**
+We are currently in the process of re-writing our development guide to make it easier to find information. The new guide is still WIP but viewable in [development/new_fe_guide](../new_fe_guide/index.md)
+
 This document describes various guidelines to ensure consistency and quality
 across GitLab's frontend team.
 
@@ -44,6 +47,9 @@ Common JavaScript design patterns in GitLab's codebase.
 
 ## [Vue.js Best Practices](vue.md)
 Vue specific design patterns and practices.
+
+## [Vuex](vuex.md)
+Vuex specific design patterns and practices.
 
 ## [Axios](axios.md)
 Axios specific practices and gotchas.

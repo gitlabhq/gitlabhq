@@ -5,99 +5,10 @@ module SharedIssuable
     find('.js-issuable-edit', visible: true).click
   end
 
-  step 'project "Community" has "Community issue" open issue' do
-    create_issuable_for_project(
-      project_name: 'Community',
-      title: 'Community issue'
-    )
-  end
-
-  step 'project "Community" has "Community fix" open merge request' do
-    create_issuable_for_project(
-      project_name: 'Community',
-      type: :merge_request,
-      title: 'Community fix'
-    )
-  end
-
-  step 'project "Enterprise" has "Enterprise issue" open issue' do
-    create_issuable_for_project(
-      project_name: 'Enterprise',
-      title: 'Enterprise issue'
-    )
-  end
-
-  step 'project "Enterprise" has "Enterprise fix" open merge request' do
-    create_issuable_for_project(
-      project_name: 'Enterprise',
-      type: :merge_request,
-      title: 'Enterprise fix'
-    )
-  end
-
   step 'I leave a comment referencing issue "Community issue"' do
     leave_reference_comment(
       issuable: Issue.find_by(title: 'Community issue'),
       from_project_name: 'Enterprise'
-    )
-  end
-
-  step 'I leave a comment referencing issue "Community fix"' do
-    leave_reference_comment(
-      issuable: MergeRequest.find_by(title: 'Community fix'),
-      from_project_name: 'Enterprise'
-    )
-  end
-
-  step 'I visit issue page "Enterprise issue"' do
-    issue = Issue.find_by(title: 'Enterprise issue')
-    visit project_issue_path(issue.project, issue)
-  end
-
-  step 'I visit merge request page "Enterprise fix"' do
-    mr = MergeRequest.find_by(title: 'Enterprise fix')
-    visit project_merge_request_path(mr.target_project, mr)
-  end
-
-  step 'I visit issue page "Community issue"' do
-    issue = Issue.find_by(title: 'Community issue')
-    visit project_issue_path(issue.project, issue)
-  end
-
-  step 'I visit issue page "Community fix"' do
-    mr = MergeRequest.find_by(title: 'Community fix')
-    visit project_merge_request_path(mr.target_project, mr)
-  end
-
-  step 'I should not see any related merge requests' do
-    page.within '.issue-details' do
-      expect(page).not_to have_content('#merge-requests .merge-requests-title')
-    end
-  end
-
-  step 'I should see the "Enterprise fix" related merge request' do
-    page.within '#merge-requests .merge-requests-title' do
-      expect(page).to have_content('1 Related Merge Request')
-    end
-
-    page.within '#merge-requests ul' do
-      expect(page).to have_content('Enterprise fix')
-    end
-  end
-
-  step 'I should see a note linking to "Enterprise fix" merge request' do
-    visible_note(
-      issuable: MergeRequest.find_by(title: 'Enterprise fix'),
-      from_project_name: 'Community',
-      user_name: 'Mary Jane'
-    )
-  end
-
-  step 'I should see a note linking to "Enterprise issue" issue' do
-    visible_note(
-      issuable: Issue.find_by(title: 'Enterprise issue'),
-      from_project_name: 'Community',
-      user_name: 'Mary Jane'
     )
   end
 

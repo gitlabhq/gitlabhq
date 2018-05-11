@@ -37,7 +37,7 @@ class Repository
                       changelog license_blob license_key gitignore koding_yml
                       gitlab_ci_yml branch_names tag_names branch_count
                       tag_count avatar exists? root_ref has_visible_content?
-                      issue_template_names merge_request_template_names).freeze
+                      issue_template_names merge_request_template_names xcode_project?).freeze
 
   # Methods that use cache_method but only memoize the value
   MEMOIZED_CACHED_METHODS = %i(license).freeze
@@ -55,7 +55,8 @@ class Repository
     gitlab_ci: :gitlab_ci_yml,
     avatar: :avatar,
     issue_template: :issue_template_names,
-    merge_request_template: :merge_request_template_names
+    merge_request_template: :merge_request_template_names,
+    xcode_config: :xcode_project?
   }.freeze
 
   def initialize(full_path, project, disk_path: nil, is_wiki: false)
@@ -594,6 +595,11 @@ class Repository
   end
   cache_method :gitlab_ci_yml
 
+  def xcode_project?
+    file_on_head(:xcode_config).present?
+  end
+  cache_method :xcode_project?
+
   def head_commit
     @head_commit ||= commit(self.root_ref)
   end
@@ -854,11 +860,25 @@ class Repository
     add_remote(remote_name, url, mirror_refmap: refmap)
     fetch_remote(remote_name, forced: forced, prune: prune)
   ensure
-    remove_remote(remote_name) if tmp_remote_name
+    async_remove_remote(remote_name) if tmp_remote_name
   end
 
   def fetch_remote(remote, forced: false, ssh_auth: nil, no_tags: false, prune: true)
     gitlab_shell.fetch_remote(raw_repository, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags, prune: prune)
+  end
+
+  def async_remove_remote(remote_name)
+    return unless remote_name
+
+    job_id = RepositoryRemoveRemoteWorker.perform_async(project.id, remote_name)
+
+    if job_id
+      Rails.logger.info("Remove remote job scheduled for #{project.id} with remote name: #{remote_name} job ID #{job_id}.")
+    else
+      Rails.logger.info("Remove remote job failed to create for #{project.id} with remote name #{remote_name}.")
+    end
+
+    job_id
   end
 
   def fetch_source_branch!(source_repository, source_branch, local_ref)

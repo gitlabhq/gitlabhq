@@ -20,6 +20,9 @@ module Gitlab
         GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE
       ].freeze
       SEARCH_CONTEXT_LINES = 3
+      # In https://gitlab.com/gitlab-org/gitaly/merge_requests/698
+      # We copied these two prefixes into gitaly-go, so don't change these
+      # or things will break! (REBASE_WORKTREE_PREFIX and SQUASH_WORKTREE_PREFIX)
       REBASE_WORKTREE_PREFIX = 'rebase'.freeze
       SQUASH_WORKTREE_PREFIX = 'squash'.freeze
       GITALY_INTERNAL_URL = 'ssh://gitaly/internal.git'.freeze
@@ -27,6 +30,7 @@ module Gitlab
       EMPTY_REPOSITORY_CHECKSUM = '0000000000000000000000000000000000000000'.freeze
 
       NoRepository = Class.new(StandardError)
+      InvalidRepository = Class.new(StandardError)
       InvalidBlobName = Class.new(StandardError)
       InvalidRef = Class.new(StandardError)
       GitError = Class.new(StandardError)
@@ -575,22 +579,44 @@ module Gitlab
         count_commits(from: from, to: to, **options)
       end
 
+      # Counts the amount of commits between `from` and `to`.
+      def count_commits_between(from, to, options = {})
+        count_commits(from: from, to: to, **options)
+      end
+
       # old_rev and new_rev are commit ID's
       # the result of this method is an array of Gitlab::Git::RawDiffChange
       def raw_changes_between(old_rev, new_rev)
-        result = []
+        @raw_changes_between ||= {}
 
-        circuit_breaker.perform do
-          Open3.pipeline_r(git_diff_cmd(old_rev, new_rev), format_git_cat_file_script, git_cat_file_cmd) do |last_stdout, wait_threads|
-            last_stdout.each_line { |line| result << ::Gitlab::Git::RawDiffChange.new(line.chomp!) }
+        @raw_changes_between[[old_rev, new_rev]] ||= begin
+          return [] if new_rev.blank? || new_rev == Gitlab::Git::BLANK_SHA
 
-            if wait_threads.any? { |waiter| !waiter.value&.success? }
-              raise ::Gitlab::Git::Repository::GitError, "Unabled to obtain changes between #{old_rev} and #{new_rev}"
+          gitaly_migrate(:raw_changes_between) do |is_enabled|
+            if is_enabled
+              gitaly_repository_client.raw_changes_between(old_rev, new_rev)
+                .each_with_object([]) do |msg, arr|
+                msg.raw_changes.each { |change| arr << ::Gitlab::Git::RawDiffChange.new(change) }
+              end
+            else
+              result = []
+
+              circuit_breaker.perform do
+                Open3.pipeline_r(git_diff_cmd(old_rev, new_rev), format_git_cat_file_script, git_cat_file_cmd) do |last_stdout, wait_threads|
+                  last_stdout.each_line { |line| result << ::Gitlab::Git::RawDiffChange.new(line.chomp!) }
+
+                  if wait_threads.any? { |waiter| !waiter.value&.success? }
+                    raise ::Gitlab::Git::Repository::GitError, "Unabled to obtain changes between #{old_rev} and #{new_rev}"
+                  end
+                end
+              end
+
+              result
             end
           end
         end
-
-        result
+      rescue ArgumentError => e
+        raise Gitlab::Git::Repository::GitError.new(e)
       end
 
       # Returns the SHA of the most recent common ancestor of +from+ and +to+
@@ -1569,7 +1595,8 @@ module Gitlab
       end
 
       def checksum
-        gitaly_migrate(:calculate_checksum) do |is_enabled|
+        gitaly_migrate(:calculate_checksum,
+                       status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_repository_client.calculate_checksum
           else
@@ -1670,10 +1697,14 @@ module Gitlab
         end
       end
 
+      # This function is duplicated in Gitaly-Go, don't change it!
+      # https://gitlab.com/gitlab-org/gitaly/merge_requests/698
       def fresh_worktree?(path)
         File.exist?(path) && !clean_stuck_worktree(path)
       end
 
+      # This function is duplicated in Gitaly-Go, don't change it!
+      # https://gitlab.com/gitlab-org/gitaly/merge_requests/698
       def clean_stuck_worktree(path)
         return false unless File.mtime(path) < 15.minutes.ago
 
@@ -2514,10 +2545,12 @@ module Gitlab
         output, status = run_git(args)
 
         if status.nil? || !status.zero?
-          # Empty repositories return with a non-zero status and an empty output.
-          return EMPTY_REPOSITORY_CHECKSUM if output&.empty?
+          # Non-valid git repositories return 128 as the status code and an error output
+          raise InvalidRepository if status == 128 && output.to_s.downcase =~ /not a git repository/
+          # Empty repositories returns with a non-zero status and an empty output.
+          raise ChecksumError, output unless output.blank?
 
-          raise ChecksumError, output
+          return EMPTY_REPOSITORY_CHECKSUM
         end
 
         refs = output.split("\n")

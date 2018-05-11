@@ -4,7 +4,9 @@ module Routable
   extend ActiveSupport::Concern
 
   included do
-    has_one :route, as: :source, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+    # Remove `inverse_of: source` when upgraded to rails 5.2
+    # See https://github.com/rails/rails/pull/28808
+    has_one :route, as: :source, autosave: true, dependent: :destroy, inverse_of: :source # rubocop:disable Cop/ActiveRecordDependent
     has_many :redirect_routes, as: :source, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
     validates :route, presence: true

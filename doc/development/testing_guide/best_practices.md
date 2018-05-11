@@ -230,6 +230,11 @@ describe "#==" do
 end
 ```
 
+### Prometheus tests
+
+Prometheus metrics may be preserved from one test run to another. To ensure that metrics are
+reset before each example, add the `:prometheus` tag to the Rspec test.
+
 ### Matchers
 
 Custom matchers should be created to clarify the intent and/or hide the

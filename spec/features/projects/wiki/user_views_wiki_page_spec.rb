@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'User views a wiki page' do
   shared_examples 'wiki page user view' do
     let(:user) { create(:user) }
-    let(:project) { create(:project, namespace: user.namespace) }
+    let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
     let(:wiki_page) do
       create(:wiki_page,
         wiki: project.wiki,

@@ -6,7 +6,7 @@ end
 gem_versions = {}
 gem_versions['activerecord_sane_schema_dumper'] = rails5? ? '1.0'      : '0.2'
 gem_versions['default_value_for']               = rails5? ? '~> 3.0.5' : '~> 3.0.0'
-gem_versions['rails']                           = rails5? ? '5.0.6'    : '4.2.10'
+gem_versions['rails']                           = rails5? ? '5.0.7'    : '4.2.10'
 gem_versions['rails-i18n']                      = rails5? ? '~> 5.1'   : '~> 4.0.9'
 # --- The end of special code for migrating to Rails 5.0 ---
 
@@ -33,7 +33,7 @@ gem 'grape-route-helpers', '~> 2.1.0'
 gem 'faraday', '~> 0.12'
 
 # Authentication libraries
-gem 'devise', '~> 4.2'
+gem 'devise', '~> 4.4'
 gem 'doorkeeper', '~> 4.3'
 gem 'doorkeeper-openid_connect', '~> 1.3'
 gem 'omniauth', '~> 1.8'
@@ -41,7 +41,7 @@ gem 'omniauth-auth0', '~> 2.0.0'
 gem 'omniauth-azure-oauth2', '~> 0.0.9'
 gem 'omniauth-cas3', '~> 1.1.4'
 gem 'omniauth-facebook', '~> 4.0.0'
-gem 'omniauth-github', '~> 1.1.1'
+gem 'omniauth-github', '~> 1.3'
 gem 'omniauth-gitlab', '~> 1.0.2'
 gem 'omniauth-google-oauth2', '~> 0.5.3'
 gem 'omniauth-kerberos', '~> 0.3.0', group: :kerberos
@@ -90,7 +90,7 @@ gem 'github-linguist', '~> 5.3.3', require: 'linguist'
 
 # API
 gem 'grape', '~> 1.0'
-gem 'grape-entity', '~> 0.6.0'
+gem 'grape-entity', '~> 0.7.1'
 gem 'rack-cors', '~> 1.0.0', require: 'rack/cors'
 
 # Disable strong_params so that Mash does not respond to :permitted?
@@ -218,9 +218,6 @@ gem 'ruby-fogbugz', '~> 0.2.1'
 # Kubernetes integration
 gem 'kubeclient', '~> 3.0'
 
-# d3
-gem 'd3_rails', '~> 3.5.0'
-
 # Sanitize user input
 gem 'sanitize', '~> 2.0'
 gem 'babosa', '~> 1.0.2'
@@ -260,7 +257,7 @@ gem 'addressable', '~> 2.5.2'
 gem 'bootstrap-sass', '~> 3.3.0'
 gem 'font-awesome-rails', '~> 4.7'
 gem 'gemojione', '~> 3.3'
-gem 'gon', '~> 6.1.0'
+gem 'gon', '~> 6.2'
 gem 'jquery-atwho-rails', '~> 1.3.2'
 gem 'request_store', '~> 1.3'
 gem 'select2-rails', '~> 3.5.9'
@@ -297,7 +294,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~> 0.9.1'
+  gem 'prometheus-client-mmap', '~> 0.9.2'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -416,7 +413,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.97.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.99.0', require: 'gitaly'
 gem 'grpc', '~> 1.11.0'
 
 # Locked until https://github.com/google/protobuf/issues/4210 is closed
@@ -434,4 +431,4 @@ gem 'lograge', '~> 0.5'
 gem 'grape_logging', '~> 1.7'
 
 # Asset synchronization
-gem 'asset_sync', '~> 2.2.0'
+gem 'asset_sync', '~> 2.4'
