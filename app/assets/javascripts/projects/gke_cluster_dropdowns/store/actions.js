@@ -1,5 +1,5 @@
 /* global gapi */
-import Flash from '~/flash';
+import createFlash, { hideFlash } from '~/flash';
 import { s__, sprintf } from '~/locale';
 
 import * as types from './mutation_types';
@@ -18,7 +18,15 @@ export const setMachineType = ({ commit }, selectedMachineType) => {
 
 const displayError = (resp, errorMessage) => {
   if (resp.result && resp.result.error) {
-    Flash(sprintf(errorMessage, { error: resp.result.error.message }));
+    createFlash(sprintf(errorMessage, { error: resp.result.error.message }));
+  }
+};
+
+const hideError = () => {
+  const flashEl = document.querySelector('.flash-alert');
+
+  if (flashEl) {
+    hideFlash(flashEl);
   }
 };
 
@@ -30,6 +38,7 @@ const gapiRequest = ({ service, params, commit, mutation, payloadKey, errorMessa
       resp => {
         const { result } = resp;
 
+        hideError();
         commit(mutation, result[payloadKey]);
 
         resolve();
