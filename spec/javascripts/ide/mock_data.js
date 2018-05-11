@@ -93,3 +93,11 @@ export const fullPipelinesResponse = {
     ],
   },
 };
+
+export const mergeRequests = [
+  {
+    iid: 1,
+    title: 'Test merge request',
+    project_id: 1,
+  },
+];
