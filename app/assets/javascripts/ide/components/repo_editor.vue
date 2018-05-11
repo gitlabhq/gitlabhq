@@ -140,7 +140,7 @@ export default {
         this.file.staged && this.file.key.indexOf('unstaged-') === 0 ? head : null,
       );
 
-      if (this.viewer === viewerTypes.mr) {
+      if (this.viewer === viewerTypes.mr && this.file.mrChange) {
         this.editor.attachMergeRequestModel(this.model);
       } else {
         this.editor.attachModel(this.model);
