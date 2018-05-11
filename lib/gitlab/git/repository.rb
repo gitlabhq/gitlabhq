@@ -579,11 +579,6 @@ module Gitlab
         count_commits(from: from, to: to, **options)
       end
 
-      # Counts the amount of commits between `from` and `to`.
-      def count_commits_between(from, to, options = {})
-        count_commits(from: from, to: to, **options)
-      end
-
       # old_rev and new_rev are commit ID's
       # the result of this method is an array of Gitlab::Git::RawDiffChange
       def raw_changes_between(old_rev, new_rev)
