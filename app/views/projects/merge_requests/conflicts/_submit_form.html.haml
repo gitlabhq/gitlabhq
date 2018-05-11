@@ -1,13 +1,17 @@
+%hr
 .form-horizontal.resolve-conflicts-form
   .form-group
-    %label.col-sm-2.control-label{ "for" => "commit-message" }
-      #{ _('Commit message') }
-    .col-sm-10
+    .col-md-4
+      %h4 Resolve conflicts on source branch
+      .resolve-info Resolve the merge conflict by choosing Ours or Theirs in all the conflicted files above. Commit these changes into {{conflictsData.sourceBranch}}.
+    .col-md-8
+      %label.label-light{ "for" => "commit-message" }
+        #{ _('Commit message') }
       .commit-message-container
         .max-width-marker
         %textarea.form-control.js-commit-message#commit-message{ "v-model" => "conflictsData.commitMessage", "rows" => "5" }
   .form-group
-    .col-sm-offset-2.col-sm-10
+    .col-md-offset-4.col-md-8
       .row
         .col-xs-6
           %button.btn.btn-success.js-submit-button{ type: "button", "@click" => "commit()", ":disabled" => "!readyToCommit" }
