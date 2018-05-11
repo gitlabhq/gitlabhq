@@ -31,6 +31,8 @@ module RedisCacheable
     Gitlab::Redis::SharedState.with do |redis|
       redis.set(cache_attribute_key, values.to_json, ex: CACHED_ATTRIBUTES_EXPIRY_TIME)
     end
+
+    clear_memoization(:cached_attributes)
   end
 
   private
