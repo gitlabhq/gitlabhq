@@ -13,8 +13,7 @@ class ApplicationController < ActionController::Base
 
   before_action :authenticate_sessionless_user!
   before_action :authenticate_user!
-  before_action :enforce_terms!, if: -> { Gitlab::CurrentSettings.current_application_settings.enforce_terms },
-                                 unless: :peek_request?
+  before_action :enforce_terms!, if: :should_enforce_terms?
   before_action :validate_user_service_ticket!
   before_action :check_password_expiration
   before_action :ldap_security_check
@@ -380,5 +379,11 @@ class ApplicationController < ActionController::Base
 
   def peek_request?
     request.path.start_with?('/-/peek')
+  end
+
+  def should_enforce_terms?
+    return false unless Gitlab::CurrentSettings.current_application_settings.enforce_terms
+
+    !(peek_request? || devise_controller?)
   end
 end
