@@ -21,6 +21,19 @@ FactoryBot.define do
       is_shared false
     end
 
+    trait :group do
+      runner_type :group_type
+    end
+
+    trait :project do
+      runner_type :project_type
+    end
+
+    trait :instance do
+      is_shared true
+      runner_type :instance_type
+    end
+
     trait :inactive do
       active false
     end
