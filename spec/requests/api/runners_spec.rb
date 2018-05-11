@@ -27,7 +27,7 @@ describe API::Runners do
     end
   end
 
-  let!(:group_runner) { create(:ci_runner, description: 'Group runner', groups: [group], runner_type: :group_type) }
+  let!(:group_runner) { create(:ci_runner, :group, description: 'Group runner', groups: [group]) }
 
   before do
     # Set project access for users

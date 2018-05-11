@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Groups::RunnersController do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
-  let(:runner) { create(:ci_runner) }
+  let(:runner) { create(:ci_runner, :group) }
 
   let(:params) do
     {

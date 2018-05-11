@@ -57,7 +57,9 @@ module Ci
     end
 
     validate :tag_constraints
-    validate :either_projects_or_group
+    validate :no_projects, unless: :project_type?
+    validate :no_groups, unless: :group_type?
+    validate :only_one_group, if: :group_type?
     validates :access_level, presence: true
     validates :runner_type, presence: true
 
@@ -254,13 +256,21 @@ module Ci
       self.class.owned_or_shared(project_id).where(id: self.id).any?
     end
 
-    def either_projects_or_group
+    def no_projects
+      if projects.any?
+        errors.add(:runner, 'cannot assign project to a non-project runner')
+      end
+    end
+
+    def no_groups
+      if groups.any?
+        errors.add(:runner, 'cannot assign group to a non-group runner')
+      end
+    end
+
+    def only_one_group
       if groups.many?
         errors.add(:runner, 'can only be assigned to one group')
-      end
-
-      if assigned_to_group? && assigned_to_project?
-        errors.add(:runner, 'can only be assigned either to projects or to a group')
       end
     end
 
