@@ -63,6 +63,18 @@ module API
         end
       end
 
+      def serializer_options_for(merge_requests)
+        options = { with: Entities::MergeRequestBasic, current_user: current_user }
+
+        if params[:view] == 'simple'
+          options[:with] = Entities::MergeRequestSimple
+        else
+          options[:issuable_metadata] = issuable_meta_data(merge_requests, 'MergeRequest')
+        end
+
+        options
+      end
+
       params :merge_requests_params do
         optional :state, type: String, values: %w[opened closed merged all], default: 'all',
                          desc: 'Return opened, closed, merged, or all merge requests'
@@ -102,16 +114,27 @@ module API
         authenticate! unless params[:scope] == 'all'
         merge_requests = find_merge_requests
 
-        options = { with: Entities::MergeRequestBasic,
-                    current_user: current_user }
+        present merge_requests, serializer_options_for(merge_requests)
+      end
+    end
 
-        if params[:view] == 'simple'
-          options[:with] = Entities::MergeRequestSimple
-        else
-          options[:issuable_metadata] = issuable_meta_data(merge_requests, 'MergeRequest')
-        end
+    params do
+      requires :id, type: String, desc: 'The ID of a group'
+    end
+    resource :groups, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+      desc 'Get a list of group merge requests' do
+        success Entities::MergeRequestBasic
+      end
+      params do
+        use :merge_requests_params
+        optional :iids, type: Array[Integer], desc: 'The IID array of merge requests'
+      end
+      get ":id/merge_requests" do
+        group = find_group!(params[:id])
 
-        present merge_requests, options
+        merge_requests = find_merge_requests(group_id: group.id, include_subgroups: true)
+
+        present merge_requests, serializer_options_for(merge_requests)
       end
     end
 
@@ -162,15 +185,8 @@ module API
 
         merge_requests = find_merge_requests(project_id: user_project.id)
 
-        options = { with: Entities::MergeRequestBasic,
-                    current_user: current_user,
-                    project: user_project }
-
-        if params[:view] == 'simple'
-          options[:with] = Entities::MergeRequestSimple
-        else
-          options[:issuable_metadata] = issuable_meta_data(merge_requests, 'MergeRequest')
-        end
+        options = serializer_options_for(merge_requests)
+        options[:project] = user_project
 
         present merge_requests, options
       end
