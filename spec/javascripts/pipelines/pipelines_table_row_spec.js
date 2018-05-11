@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import tableRowComp from '~/pipelines/components/pipelines_table_row.vue';
+import eventHub from '~/pipelines/event_hub';
 
 describe('Pipelines Table Row', () => {
   const jsonFixtureName = 'pipelines/pipelines.json';
@@ -151,13 +152,37 @@ describe('Pipelines Table Row', () => {
 
   describe('actions column', () => {
     beforeEach(() => {
-      component = buildComponent(pipeline);
+      const withActions = Object.assign({}, pipeline);
+      withActions.flags.cancelable = true;
+      withActions.flags.retryable = true;
+      withActions.cancel_path = '/cancel';
+      withActions.retry_path = '/retry';
+
+      component = buildComponent(withActions);
     });
 
     it('should render the provided actions', () => {
-      expect(
-        component.$el.querySelectorAll('.table-section:nth-child(6) ul li').length,
-      ).toEqual(pipeline.details.manual_actions.length);
+      expect(component.$el.querySelector('.js-pipelines-retry-button')).not.toBeNull();
+      expect(component.$el.querySelector('.js-pipelines-cancel-button')).not.toBeNull();
+    });
+
+    it('emits `retryPipeline` event when retry button is clicked and toggles loading', () => {
+      eventHub.$on('retryPipeline', (endpoint) => {
+        expect(endpoint).toEqual('/retry');
+      });
+
+      component.$el.querySelector('.js-pipelines-retry-button').click();
+      expect(component.isRetrying).toEqual(true);
+    });
+
+    it('emits `openConfirmationModal` event when cancel button is clicked and toggles loading', () => {
+      eventHub.$on('openConfirmationModal', (data) => {
+        expect(data.endpoint).toEqual('/cancel');
+        expect(data.pipelineId).toEqual(pipeline.id);
+      });
+
+      component.$el.querySelector('.js-pipelines-cancel-button').click();
+      expect(component.isCancelling).toEqual(true);
     });
   });
 });
