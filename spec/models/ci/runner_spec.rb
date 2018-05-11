@@ -198,16 +198,11 @@ describe Ci::Runner do
   end
 
   describe '#assign_to' do
-<<<<<<< HEAD
-    let!(:project) { FactoryBot.create :project }
-    let!(:shared_runner) { FactoryBot.create(:ci_runner, :shared) }
-=======
     let!(:project) { FactoryBot.create(:project) }
->>>>>>> f91aaccf4d0... Merge branch 'correct-runner-type-when-assigning-shared-to-project' into 'master'
 
     subject { runner.assign_to(project) }
 
-    context 'with shared_runner' do
+    context 'with shared runner' do
       let!(:runner) { FactoryBot.create(:ci_runner, :shared) }
 
       it 'transitions shared runner to project runner and assigns project' do
