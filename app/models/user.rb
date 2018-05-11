@@ -1219,6 +1219,11 @@ class User < ActiveRecord::Base
     accepted_term_id.present?
   end
 
+  def required_terms_not_accepted?
+    Gitlab::CurrentSettings.current_application_settings.enforce_terms? &&
+      !terms_accepted?
+  end
+
   protected
 
   # override, from Devise::Validatable

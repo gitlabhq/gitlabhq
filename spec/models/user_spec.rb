@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe User do
   include ProjectForksHelper
+  include TermsHelper
 
   describe 'modules' do
     subject { described_class }
@@ -2829,6 +2830,32 @@ describe User do
 
       expect { create(:user, username: 'foo') }
         .to change { RedirectRoute.where(path: 'foo').count }.by(-1)
+    end
+  end
+
+  describe '#required_terms_not_accepted?' do
+    let(:user) { build(:user) }
+    subject { user.required_terms_not_accepted? }
+
+    context "when terms are not enforced" do
+      it { is_expected.to be_falsy }
+    end
+
+    context "when terms are enforced and accepted by the user" do
+      before do
+        enforce_terms
+        accept_terms(user)
+      end
+
+      it { is_expected.to be_falsy }
+    end
+
+    context "when terms are enforced but the user has not accepted" do
+      before do
+        enforce_terms
+      end
+
+      it { is_expected.to be_truthy }
     end
   end
 end

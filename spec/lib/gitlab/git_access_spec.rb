@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 describe Gitlab::GitAccess do
-  set(:user) { create(:user) }
+  include TermsHelper
+
+  let(:user) { create(:user) }
 
   let(:actor) { user }
   let(:project) { create(:project, :repository) }
@@ -1166,6 +1168,96 @@ describe Gitlab::GitAccess do
 
     it { expect { pull_access_check }.not_to raise_error }
     it { expect { push_access_check }.to raise_unauthorized(Gitlab::GitAccess::ERROR_MESSAGES[:upload]) }
+  end
+
+  context 'terms are enforced' do
+    before do
+      enforce_terms
+    end
+
+    shared_examples 'access after accepting terms' do
+      let(:actions) do
+        [-> { pull_access_check },
+         -> { push_access_check }]
+      end
+
+      it 'blocks access when the user did not accept terms', :aggregate_failures do
+        actions.each do |action|
+          expect { action.call }.to raise_unauthorized(/You must accept the Terms of Service in order to perform this action/)
+        end
+      end
+
+      it 'allows access when the user accepted the terms', :aggregate_failures do
+        accept_terms(user)
+
+        actions.each do |action|
+          expect { action.call }.not_to raise_error
+        end
+      end
+    end
+
+    describe 'as an anonymous user to a public project' do
+      let(:actor) { nil }
+      let(:project) { create(:project, :public, :repository) }
+
+      it { expect { pull_access_check }.not_to raise_error }
+    end
+
+    describe 'as a guest to a public project' do
+      let(:project) { create(:project, :public, :repository) }
+
+      it_behaves_like 'access after accepting terms' do
+        let(:actions) { [-> { pull_access_check }] }
+      end
+    end
+
+    describe 'as a reporter to the project' do
+      before do
+        project.add_reporter(user)
+      end
+
+      it_behaves_like 'access after accepting terms' do
+        let(:actions) { [-> { pull_access_check }] }
+      end
+    end
+
+    describe 'as a developer of the project' do
+      before do
+        project.add_developer(user)
+      end
+
+      it_behaves_like 'access after accepting terms'
+    end
+
+    describe 'as a master of the project' do
+      before do
+        project.add_master(user)
+      end
+
+      it_behaves_like 'access after accepting terms'
+    end
+
+    describe 'as an owner of the project' do
+      let(:project) { create(:project, :repository, namespace: user.namespace) }
+
+      it_behaves_like 'access after accepting terms'
+    end
+
+    describe 'when a ci build clones the project' do
+      let(:protocol) { 'http' }
+      let(:authentication_abilities) { [:build_download_code] }
+      let(:auth_result_type) { :build }
+
+      before do
+        project.add_developer(user)
+      end
+
+      it "doesn't block http pull" do
+        aggregate_failures do
+          expect { pull_access_check }.not_to raise_error
+        end
+      end
+    end
   end
 
   private
