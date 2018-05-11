@@ -1576,14 +1576,12 @@ module Gitlab
       end
 
       def checksum
-        gitaly_migrate(:calculate_checksum,
-                       status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.calculate_checksum
-          else
-            calculate_checksum_by_shelling_out
-          end
-        end
+        # The exists? RPC is much cheaper, so we perform this request first
+        raise NoRepository, "Repository does not exists" unless exists?
+
+        gitaly_repository_client.calculate_checksum
+      rescue GRPC::NotFound
+        raise NoRepository # Guard against data races.
       end
 
       private
@@ -2496,36 +2494,6 @@ module Gitlab
 
       def sha_from_ref(ref)
         rev_parse_target(ref).oid
-      end
-
-      def calculate_checksum_by_shelling_out
-        raise NoRepository unless exists?
-
-        args = %W(--git-dir=#{path} show-ref --heads --tags)
-        output, status = run_git(args)
-
-        if status.nil? || !status.zero?
-          # Non-valid git repositories return 128 as the status code and an error output
-          raise InvalidRepository if status == 128 && output.to_s.downcase =~ /not a git repository/
-          # Empty repositories returns with a non-zero status and an empty output.
-          raise ChecksumError, output unless output.blank?
-
-          return EMPTY_REPOSITORY_CHECKSUM
-        end
-
-        refs = output.split("\n")
-
-        result = refs.inject(nil) do |checksum, ref|
-          value = Digest::SHA1.hexdigest(ref).hex
-
-          if checksum.nil?
-            value
-          else
-            checksum ^ value
-          end
-        end
-
-        result.to_s(16)
       end
 
       def build_git_cmd(*args)
