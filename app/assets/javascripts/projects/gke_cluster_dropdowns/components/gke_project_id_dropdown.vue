@@ -19,10 +19,10 @@ export default {
     ...mapState({ items: 'projects' }),
     ...mapGetters(['hasProject']),
     hasOneProject() {
-      return this.items.length === 1;
+      return this.items && this.items.length === 1;
     },
     isDisabled() {
-      return this.items.length < 2;
+      return this.items && this.items.length < 2;
     },
     toggleText() {
       if (this.isLoading) {
@@ -33,20 +33,27 @@ export default {
         return this.selectedProject.name;
       }
 
-      return !this.items.length
-        ? s__('ClusterIntegration|No projects found')
-        : s__('ClusterIntegration|Select project');
+      if (!this.items) {
+        return s__('ClusterIntegration|No projects found');
+      }
+
+      return s__('ClusterIntegration|Select project');
     },
     helpText() {
       let message;
       if (this.hasErrors) {
+        message = this.gapiError;
+      }
+
+      if (!this.items) {
         message =
           'ClusterIntegration|We were unable to fetch any projects. Ensure that you have a project on %{docsLinkStart}Google Cloud Platform%{docsLinkEnd}.';
       }
 
-      message = this.items.length
-        ? 'ClusterIntegration|To use a new project, first create one on %{docsLinkStart}Google Cloud Platform%{docsLinkEnd}.'
-        : 'ClusterIntegration|To create a cluster, first create a project on %{docsLinkStart}Google Cloud Platform%{docsLinkEnd}.';
+      message =
+        this.items && this.items.length
+          ? 'ClusterIntegration|To use a new project, first create one on %{docsLinkStart}Google Cloud Platform%{docsLinkEnd}.'
+          : 'ClusterIntegration|To create a cluster, first create a project on %{docsLinkStart}Google Cloud Platform%{docsLinkEnd}.';
 
       return sprintf(
         s__(message),

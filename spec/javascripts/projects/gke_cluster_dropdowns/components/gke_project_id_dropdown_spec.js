@@ -58,7 +58,7 @@ describe('GkeProjectIdDropdown', () => {
 
     it('returns empty toggle text', done =>
       vm.$nextTick().then(() => {
-        vm.$store.commit(SET_PROJECTS, []);
+        vm.$store.commit(SET_PROJECTS, null);
         vm.setItem(emptyProjectMock);
 
         expect(vm.toggleText).toBe(LABELS.EMPTY);

@@ -38,6 +38,10 @@ export default {
   },
   computed: {
     results() {
+      if (!this.items) {
+        return [];
+      }
+
       return this.items.filter(item => item.name.toLowerCase().indexOf(this.searchQuery) > -1);
     },
   },
