@@ -34,7 +34,7 @@ class Projects::PipelinesController < Projects::ApplicationController
           pipelines: PipelineSerializer
             .new(project: @project, current_user: @current_user)
             .with_pagination(request, response)
-            .represent(@pipelines),
+            .represent(@pipelines, disable_coverage: true),
           count: {
             all: @pipelines_count,
             running: @running_count,

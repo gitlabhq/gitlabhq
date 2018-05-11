@@ -41,6 +41,12 @@ describe Projects::PipelinesController do
       expect(json_response['count']['finished']).to eq '1'
     end
 
+    it 'does not include coverage data for the pipelines' do
+      subject
+
+      expect(json_response['pipelines'][0]).not_to include('coverage')
+    end
+
     context 'when performing gitaly calls', :request_store do
       it 'limits the Gitaly requests' do
         expect { subject }.to change { Gitlab::GitalyClient.get_request_count }.by(3)
