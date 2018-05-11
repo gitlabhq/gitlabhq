@@ -147,13 +147,6 @@ module Backup
             progress.puts "Error #{e}".color(:red)
           end
         end
-
-        gitaly_migrate(:create_hooks) do |is_enabled|
-          # TODO: Need to find a way to do this for gitaly
-          unless is_enabled
-            Gitlab::Git::Repository.create_hooks(path_to_project_repo, Gitlab.config.gitlab_shell.hooks_path)
-          end
-        end
       end
     end
     # rubocop:enable Metrics/AbcSize
