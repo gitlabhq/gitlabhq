@@ -7,12 +7,6 @@ import gkeDropdownMixin from './gke_dropdown_mixin';
 export default {
   name: 'GkeZoneDropdown',
   mixins: [gkeDropdownMixin],
-  data() {
-    return {
-      searchPlaceholderText: s__('ClusterIntegration|Search zones'),
-      noSearchResultsText: s__('ClusterIntegration|No zones matched your search'),
-    };
-  },
   computed: {
     ...mapState(['selectedProject', 'selectedZone']),
     ...mapState({ items: 'zones' }),
@@ -68,18 +62,23 @@ export default {
     <div class="dropdown-menu dropdown-select">
       <dropdown-search-input
         v-model="searchQuery"
-        :placeholder-text="searchPlaceholderText"
+        :placeholder-text="s__('ClusterIntegration|Search zones')"
       />
       <div class="dropdown-content">
         <ul>
           <li v-show="!results.length">
-            <span class="menu-item">{{ noSearchResultsText }}</span>
+            <span class="menu-item">
+              {{ s__('ClusterIntegration|No zones matched your search') }}
+            </span>
           </li>
           <li
             v-for="result in results"
             :key="result.id"
           >
-            <button @click.prevent="setItem(result.name)">
+            <button
+              type="button"
+              @click.prevent="setItem(result.name)"
+            >
               {{ result.name }}
             </button>
           </li>

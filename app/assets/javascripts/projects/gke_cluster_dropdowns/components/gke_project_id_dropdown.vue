@@ -14,12 +14,6 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      searchPlaceholderText: s__('ClusterIntegration|Search projects'),
-      noSearchResultsText: s__('ClusterIntegration|No projects matched your search'),
-    };
-  },
   computed: {
     ...mapState(['selectedProject']),
     ...mapState({ items: 'projects' }),
@@ -116,18 +110,23 @@ export default {
       <div class="dropdown-menu dropdown-select">
         <dropdown-search-input
           v-model="searchQuery"
-          :placeholder-text="searchPlaceholderText"
+          :placeholder-text="s__('ClusterIntegration|Search projects')"
         />
         <div class="dropdown-content">
           <ul>
             <li v-show="!results.length">
-              <span class="menu-item">{{ noSearchResultsText }}</span>
+              <span class="menu-item">
+                {{ s__('ClusterIntegration|No projects matched your search') }}
+              </span>
             </li>
             <li
               v-for="result in results"
               :key="result.project_number"
             >
-              <button @click.prevent="setItem(result)">
+              <button
+                type="button"
+                @click.prevent="setItem(result)"
+              >
                 {{ result.name }}
               </button>
             </li>
