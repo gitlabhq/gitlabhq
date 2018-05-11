@@ -16,7 +16,6 @@ export default {
   },
   data() {
     return {
-      isLoading: true,
       searchPlaceholderText: s__('ClusterIntegration|Search projects'),
       noSearchResultsText: s__('ClusterIntegration|No projects matched your search'),
     };
@@ -68,6 +67,8 @@ export default {
     },
   },
   created() {
+    this.isLoading = true;
+
     this.getProjects()
       .then(this.fetchSuccessHandler)
       .catch(this.fetchFailureHandler);
