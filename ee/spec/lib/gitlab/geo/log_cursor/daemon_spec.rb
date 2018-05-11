@@ -66,11 +66,48 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
   end
 
   describe '#run_once!' do
+    context 'when associated shard is unhealthy' do
+      let(:project) { create(:project, :broken_storage) }
+      let(:repository_created_event) { create(:geo_repository_created_event, project: project) }
+      let(:event_log) { create(:geo_event_log, repository_created_event: repository_created_event) }
+      let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
+
+      before do
+        expect(Gitlab::Geo::ShardHealthCache).to receive(:healthy_shard?).with('broken').and_return(false)
+      end
+
+      it 'skips handling the event' do
+        t = Time.now
+        expect(Geo::ProjectSyncWorker).not_to receive(:perform_async).with(project.id, t)
+        Timecop.freeze(t) { daemon.run_once! }
+      end
+    end
+
+    context 'when there is no associated shard for the event' do
+      let(:event_log) { create(:geo_event_log, :job_artifact_deleted_event) }
+      let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
+      let(:job_artifact_deleted_event) { event_log.job_artifact_deleted_event }
+      let(:job_artifact) { job_artifact_deleted_event.job_artifact }
+
+      before do
+        create(:geo_job_artifact_registry, artifact_id: job_artifact.id)
+      end
+
+      it 'handles the event' do
+        expect(Gitlab::Geo::ShardHealthCache).not_to receive(:healthy_shard?).with('default')
+        expect { daemon.run_once! }.to change(Geo::JobArtifactRegistry, :count).by(-1)
+      end
+    end
+
     context 'when replaying a repository created event' do
       let(:project) { create(:project) }
       let(:repository_created_event) { create(:geo_repository_created_event, project: project) }
       let(:event_log) { create(:geo_event_log, repository_created_event: repository_created_event) }
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
+
+      before do
+        allow(Gitlab::Geo::ShardHealthCache).to receive(:healthy_shard?).with('default').and_return(true)
+      end
 
       it 'creates a new project registry' do
         expect { daemon.run_once! }.to change(Geo::ProjectRegistry, :count).by(1)
@@ -107,6 +144,10 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
       let(:repository_updated_event) { create(:geo_repository_updated_event, project: project) }
       let(:event_log) { create(:geo_event_log, repository_updated_event: repository_updated_event) }
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
+
+      before do
+        allow(Gitlab::Geo::ShardHealthCache).to receive(:healthy_shard?).with('default').and_return(true)
+      end
 
       it 'creates a new project registry if it does not exist' do
         expect { daemon.run_once! }.to change(Geo::ProjectRegistry, :count).by(1)
@@ -234,6 +275,10 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
       let!(:registry) { create(:geo_project_registry, :synced, project: project) }
 
+      before do
+        allow(Gitlab::Geo::ShardHealthCache).to receive(:healthy_shard?).with('default').and_return(true)
+      end
+
       it 'replays events for projects that belong to selected namespaces to replicate' do
         secondary.update!(namespaces: [group_1])
 
@@ -355,6 +400,10 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
       let(:lfs_object_deleted_event) { event_log.lfs_object_deleted_event }
       let(:lfs_object) { lfs_object_deleted_event.lfs_object }
+
+      before do
+        allow(Gitlab::Geo::ShardHealthCache).to receive(:healthy_shard?).with('default').and_return(true)
+      end
 
       it 'does not create a tracking database entry' do
         expect { daemon.run_once! }.not_to change(Geo::FileRegistry, :count)
