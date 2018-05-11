@@ -37,11 +37,15 @@ module Ci
     delegate :id, to: :project, prefix: true
     delegate :full_path, to: :project, prefix: true
 
-    validates :source, exclusion: { in: %w(unknown), unless: :importing? }, on: :create
     validates :sha, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
     validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
+
+    # Replace validator below with
+    # `validates :source, presence: { unless: :importing? }, on: :create`
+    # when removing Gitlab.rails5? code.
+    validate :valid_source, unless: :importing?, on: :create
 
     after_create :keep_around_commits, unless: :importing?
 
@@ -600,6 +604,12 @@ module Ci
 
       project.repository.keep_around(self.sha)
       project.repository.keep_around(self.before_sha)
+    end
+
+    def valid_source
+      if source.nil? || source == "unknown"
+        errors.add(:source, "invalid source")
+      end
     end
   end
 end
