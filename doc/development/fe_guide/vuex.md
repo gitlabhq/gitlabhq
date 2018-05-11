@@ -68,7 +68,7 @@ Often we need to provide data from haml to our Vue application. Let's store it i
 You can use `mapState` to access state properties in the components.
 
 ### `actions.js`
-An action is a playload of information to send data from our application to our store.
+An action is a payload of information to send data from our application to our store.
 
 An action is usually composed by a `type` and a `payload` and they describe what happened.
 Enforcing that every change is described as an action lets us have a clear understanting of what is going on in the app.
