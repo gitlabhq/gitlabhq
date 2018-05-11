@@ -69,12 +69,5 @@ if [ "$CREATE_DB_USER" != "false" ]; then
 fi
 
 if [ "$SETUP_DB" != "false" ]; then
-    bundle exec rake db:drop db:create db:schema:load db:migrate
-
-    if [ "$GITLAB_DATABASE" = "mysql" ]; then
-        bundle exec rake add_limits_mysql
-    fi
-
-    # EE-only
-    bundle exec rake geo:db:drop geo:db:create geo:db:schema:load geo:db:migrate
+    setup_db
 fi
