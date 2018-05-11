@@ -207,3 +207,4 @@ Largely based on the [thoughtbot code review guide].
 [projects]: https://about.gitlab.com/handbook/engineering/projects/
 [team]: https://about.gitlab.com/team/
 [build handbook]: https://about.gitlab.com/handbook/build/handbook/build#how-to-work-with-build
+[^1]: Please note that specs other than JavaScript specs are considered backend code.
