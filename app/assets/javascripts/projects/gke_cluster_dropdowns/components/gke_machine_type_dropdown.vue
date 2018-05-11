@@ -1,5 +1,4 @@
 <script>
-import _ from 'underscore';
 import { s__ } from '~/locale';
 import { mapState, mapGetters, mapActions } from 'vuex';
 
