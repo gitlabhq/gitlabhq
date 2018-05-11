@@ -23,13 +23,11 @@ module EESpecificCheck
   end
 
   def say(message)
-    puts "\n#{message}", "\n" # puts would eat trailing newline
+    warn "\n#{message}", "\n" # puts would eat trailing newline
   end
 
   def find_compare_base
     git_clean
-
-    setup_canonical_remotes
 
     ce_fetch_head = fetch_remote_ce_branch
     ce_fetch_base = run_git_command("merge-base canonical-ce/master #{ce_fetch_head}")
@@ -57,6 +55,8 @@ module EESpecificCheck
   end
 
   def fetch_remote_ce_branch
+    setup_canonical_remotes
+
     remote_to_fetch, branch_to_fetch = find_remote_ce_branch
 
     run_git_command("fetch #{remote_to_fetch} #{branch_to_fetch} --quiet")
@@ -220,7 +220,7 @@ module EESpecificCheck
 
   def run_command(*commands)
     commands.map do |cmd|
-      puts "=> Running `#{cmd}`"
+      warn "=> Running `#{cmd}`"
 
       `#{cmd}`.strip
     end
