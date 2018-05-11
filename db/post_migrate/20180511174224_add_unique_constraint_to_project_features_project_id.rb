@@ -2,6 +2,7 @@ class AddUniqueConstraintToProjectFeaturesProjectId < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
+  DELETE_BATCH_SIZE = 1000
 
   disable_ddl_transaction!
 
@@ -24,7 +25,9 @@ class AddUniqueConstraintToProjectFeaturesProjectId < ActiveRecord::Migration
   def remove_duplicates
     select_all('SELECT MAX(id) max, COUNT(id), project_id FROM project_features GROUP BY project_id HAVING COUNT(id) > 1').each do |feature|
       bad_feature_ids = select_all("SELECT id FROM project_features WHERE project_id = #{feature['project_id']} AND id <> #{feature['max']}").map { |x| x["id"] }
-      execute("DELETE FROM project_features WHERE id IN(#{bad_feature_ids.join(', ')})")
+      bad_feature_ids.each_slice(DELETE_BATCH_SIZE) do |batch|
+        execute("DELETE FROM project_features WHERE id IN(#{batch.join(', ')})")
+      end
     end
   end
 end
