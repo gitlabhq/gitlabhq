@@ -12,14 +12,13 @@ shared_examples_for 'AtomicInternalId' do
 
     describe 'Validation' do
       before do
-        allow_any_instance_of(described_class).to receive(:ensure_iid!) {}
+        allow_any_instance_of(described_class).to receive(:"ensure_#{scope_attrs.keys.first}_#{internal_id_attribute}!") {}
       end
 
       it 'validates presence' do
         instance.valid?
 
         expect(instance.errors[:iid]).to include("can't be blank") if validate_presence
-        expect(instance.errors[:iid]).to include("is not a number") # numericality
       end
     end
 

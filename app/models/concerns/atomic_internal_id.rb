@@ -27,7 +27,7 @@ module AtomicInternalId
   module ClassMethods
     def has_internal_id(column, scope:, init:, presence: true) # rubocop:disable Naming/PredicateName
       before_validation :"ensure_#{scope}_#{column}!", on: :create
-      validates column, presence: presence, numericality: true
+      validates column, presence: presence
 
       define_method("ensure_#{scope}_#{column}!") do
         scope_value = association(scope).reader
