@@ -1,0 +1,5 @@
+---
+title: Add missing fields to the API documentation for the status of Geo Nodes
+merge_request: 3865
+author:
+type: fixed
