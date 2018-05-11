@@ -55,7 +55,7 @@ export default (action, payload, state, expectedMutations, expectedActions, done
   };
 
   // call the action with mocked store and arguments
-  action({ commit, state, dispatch }, payload);
+  action({ commit, state, dispatch, rootState: state }, payload);
 
   // check if no mutations should have been dispatched
   if (expectedMutations.length === 0) {
