@@ -3,6 +3,7 @@
 require_relative 'ee_specific_check/ee_specific_check'
 
 include EESpecificCheck # rubocop:disable Style/MixinUsage
+git_version
 
 base = find_compare_base
 
