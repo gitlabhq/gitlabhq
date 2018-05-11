@@ -1,4 +1,4 @@
-module IIDRoutes
+module IidRoutes
   ##
   # This automagically enforces all related routes to use `iid` instead of `id`
   # If you want to use `iid` for some routes and `id` for other routes, this module should not to be included,

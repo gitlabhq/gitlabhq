@@ -2,7 +2,7 @@ require 'carrierwave/orm/activerecord'
 
 class Issue < ActiveRecord::Base
   include AtomicInternalId
-  include IIDRoutes
+  include IidRoutes
   include Issuable
   include Noteable
   include Referable

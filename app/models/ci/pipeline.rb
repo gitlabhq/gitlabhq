@@ -15,7 +15,7 @@ module Ci
     belongs_to :pipeline_schedule, class_name: 'Ci::PipelineSchedule'
 
     has_internal_id :iid, scope: :project, presence: false, init: ->(s) do
-      s&.project&.pipelines&.maximum(:iid) || s&.project&.pipelines.count
+      s&.project&.pipelines&.maximum(:iid) || s&.project&.pipelines&.count
     end
 
     has_many :stages

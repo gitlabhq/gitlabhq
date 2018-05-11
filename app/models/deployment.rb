@@ -1,6 +1,6 @@
 class Deployment < ActiveRecord::Base
   include AtomicInternalId
-  include IIDRoutes
+  include IidRoutes
 
   belongs_to :project, required: true
   belongs_to :environment, required: true
