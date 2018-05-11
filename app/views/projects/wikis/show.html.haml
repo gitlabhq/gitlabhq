@@ -24,7 +24,7 @@
     - history_link = link_to s_("WikiHistoricalPage|history"), project_wiki_history_path(@project, @page)
     = (s_("WikiHistoricalPage|You can view the %{most_recent_link} or browse the %{history_link}.") % { most_recent_link: most_recent_link, history_link: history_link }).html_safe
 
-.wiki-holder.prepend-top-default.append-bottom-default
+.prepend-top-default.append-bottom-default
   .wiki
     = render_wiki_content(@page)
 
