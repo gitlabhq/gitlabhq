@@ -96,7 +96,7 @@ module Backup
       prepare_directories
       gitlab_shell = Gitlab::Shell.new
       Project.find_each(batch_size: 1000) do |project|
-        progress.print " * #{project.name} ... "
+        progress.print " * #{project.full_path} ... "
         path_to_project_bundle = path_to_bundle(project)
         path_to_project_repo = path_to_repo(project)
         project.ensure_storage_path_exists
@@ -116,9 +116,9 @@ module Backup
         end
 
         if restore_repo_status
-          progress.puts "[DONE] restoring #{project.name} repository".color(:green)
+          progress.puts "[DONE]".color(:green)
         else
-          progress.puts "[Failed] restoring #{project.name} repository".color(:red)
+          progress.puts "[Failed] restoring #{project.full_path} repository".color(:red)
         end
 
         gitaly_migrate(:restore_custom_hooks) do |is_enabled|
@@ -139,12 +139,13 @@ module Backup
         path_to_wiki_bundle = path_to_bundle(wiki)
 
         if File.exist?(path_to_wiki_bundle)
+          progress.print " * #{wiki.full_path} ... "
           begin
-            gitlab_shell.remove_repository(project.wiki.repository_storage, project.wiki.disk_path) if project.wiki_repository_exists?
-            project.repository.create_from_bundle(path_to_wiki_bundle)
-            progress.puts "[DONE] restoring #{project.name} wiki".color(:green)
+            gitlab_shell.remove_repository(wiki.repository_storage, wiki.disk_path) if wiki.repository_exists?
+            wiki.repository.create_from_bundle(path_to_wiki_bundle)
+            progress.puts "[DONE]".color(:green)
           rescue StandardError => e
-            progress.puts "[Failed] restoring #{project.name} wiki".color(:red)
+            progress.puts "[Failed] restoring #{wiki.full_path} wiki".color(:red)
             progress.puts "Error #{e}".color(:red)
           end
         end
