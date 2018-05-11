@@ -1,6 +1,4 @@
 /* global gapi */
-import { s__, sprintf } from '~/locale';
-
 import * as types from './mutation_types';
 
 export const setProject = ({ commit }, selectedProject) => {
