@@ -20,3 +20,5 @@ export const fetchMergeRequests = ({ dispatch, state }) => {
     })
     .catch(() => dispatch('receiveMergeRequestsError'));
 };
+
+export default () => {};
