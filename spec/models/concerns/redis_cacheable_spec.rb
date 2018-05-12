@@ -42,7 +42,7 @@ describe RedisCacheable do
     end
   end
 
-  describe '#cached_attr_reader' do
+  describe '#cached_attr_reader', :clean_gitlab_redis_shared_state do
     subject { instance.name }
 
     before do
@@ -51,7 +51,6 @@ describe RedisCacheable do
 
     context 'when there is no cached value' do
       it 'checks the cached value first then reads the attribute' do
-        expect(instance).to receive(:cached_attribute).and_return(nil)
         expect(instance).to receive(:read_attribute).and_return(payload[:name])
 
         expect(subject).to eq(payload[:name])
@@ -60,15 +59,14 @@ describe RedisCacheable do
 
     context 'when there is a cached value' do
       it 'reads the cached value' do
-        expect(instance).to receive(:cached_attribute).and_return(payload[:name])
-        expect(instance).not_to receive(:read_attribute)
+        instance.cache_attributes(payload)
 
         expect(subject).to eq(payload[:name])
       end
     end
   end
 
-  describe '#cached_attr_time_reader' do
+  describe '#cached_attr_time_reader', :clean_gitlab_redis_shared_state do
     subject { instance.time }
 
     before do
@@ -77,7 +75,6 @@ describe RedisCacheable do
 
     context 'when there is no cached value' do
       it 'checks the cached value first then reads the attribute' do
-        expect(instance).to receive(:cached_attribute).and_return(nil)
         expect(instance).to receive(:read_attribute).and_return(Time.zone.now)
 
         expect(subject).to be_instance_of(ActiveSupport::TimeWithZone)
@@ -87,8 +84,7 @@ describe RedisCacheable do
 
     context 'when there is a cached value' do
       it 'reads the cached value' do
-        expect(instance).to receive(:cached_attribute).and_return(Time.zone.now.to_s)
-        expect(instance).not_to receive(:read_attribute)
+        instance.cache_attributes(time: Time.zone.now)
 
         expect(subject).to be_instance_of(ActiveSupport::TimeWithZone)
         expect(subject).to be_within(1.minute).of(Time.zone.now)
