@@ -16,6 +16,6 @@ class AddNotNullConstraintToProjectFeaturesProjectId < ActiveRecord::Migration
   end
 
   def down
-    change_column_null :project_features, :project_id, false
+    change_column_null :project_features, :project_id, true
   end
 end
