@@ -9,7 +9,7 @@ describe RedisCacheable do
     end
   end
 
-  let(:payload) { { name: 'value' } }
+  let(:payload) { { name: 'value', time: Time.zone.now } }
   let(:instance) { model.new(1, payload) }
   let(:cache_key) { instance.__send__(:cache_attribute_key) }
 
@@ -50,9 +50,7 @@ describe RedisCacheable do
     end
 
     context 'when there is no cached value' do
-      it 'checks the cached value first then reads the attribute' do
-        expect(instance).to receive(:read_attribute).and_return(payload[:name])
-
+      it 'reads the attribute' do
         expect(subject).to eq(payload[:name])
       end
     end
@@ -64,6 +62,14 @@ describe RedisCacheable do
         expect(subject).to eq(payload[:name])
       end
     end
+
+    it 'always returns the latest values' do
+      expect(instance.name).to eq(payload[:name])
+
+      instance.cache_attributes(name: 'new_value')
+
+      expect(instance.name).to eq('new_value')
+    end
   end
 
   describe '#cached_attr_time_reader', :clean_gitlab_redis_shared_state do
@@ -74,9 +80,7 @@ describe RedisCacheable do
     end
 
     context 'when there is no cached value' do
-      it 'checks the cached value first then reads the attribute' do
-        expect(instance).to receive(:read_attribute).and_return(Time.zone.now)
-
+      it 'reads the attribute' do
         expect(subject).to be_instance_of(ActiveSupport::TimeWithZone)
         expect(subject).to be_within(1.minute).of(Time.zone.now)
       end
@@ -89,6 +93,14 @@ describe RedisCacheable do
         expect(subject).to be_instance_of(ActiveSupport::TimeWithZone)
         expect(subject).to be_within(1.minute).of(Time.zone.now)
       end
+    end
+
+    it 'always returns the latest values' do
+      expect(instance.time).to be_within(1.minute).of(Time.zone.now)
+
+      instance.cache_attributes(time: 1.hour.ago)
+
+      expect(instance.time).to be_within(1.minute).of(1.hour.ago)
     end
   end
 end
