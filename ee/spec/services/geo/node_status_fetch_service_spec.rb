@@ -79,6 +79,18 @@ describe Geo::NodeStatusFetchService, :geo do
       expect(status.success).to be true
     end
 
+    it 'handles invalid JSON response' do
+      request = double(success?: true,
+                       code: 200,
+                       message: 'Something here',
+                       parsed_response: 'Something here')
+      allow(Gitlab::HTTP).to receive(:get).and_return(request)
+
+      status = subject.call(secondary)
+
+      expect(status.status_message).to eq("A JSON response was not received")
+    end
+
     it 'omits full response text in status' do
       request = double(success?: false,
                        code: 401,
