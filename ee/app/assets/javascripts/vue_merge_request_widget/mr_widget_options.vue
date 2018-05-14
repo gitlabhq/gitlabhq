@@ -1,5 +1,6 @@
+<script>
 import { n__, s__, __, sprintf } from '~/locale';
-import CEWidgetOptions from '~/vue_merge_request_widget/mr_widget_options';
+import CEWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
 import WidgetApprovals from './components/approvals/mr_widget_approvals';
 import GeoSecondaryNode from './components/states/mr_widget_secondary_geo_node';
 import ReportSection from '../vue_shared/security_reports/components/report_section.vue';
@@ -7,13 +8,13 @@ import GroupedSecurityReportsApp from '../vue_shared/security_reports/grouped_se
 import reportsMixin from '../vue_shared/security_reports/mixins/reports_mixin';
 
 export default {
-  extends: CEWidgetOptions,
   components: {
     'mr-widget-approvals': WidgetApprovals,
     'mr-widget-geo-secondary-node': GeoSecondaryNode,
     GroupedSecurityReportsApp,
     ReportSection,
   },
+  extends: CEWidgetOptions,
   mixins: [reportsMixin],
   data() {
     return {
@@ -118,6 +119,15 @@ export default {
       return this.checkReportStatus(this.isLoadingPerformance, this.loadingPerformanceFailed);
     },
   },
+  created() {
+    if (this.shouldRenderCodeQuality) {
+      this.fetchCodeQuality();
+    }
+
+    if (this.shouldRenderPerformance) {
+      this.fetchPerformance();
+    }
+  },
   methods: {
     fetchCodeQuality() {
       const { head_path, base_path } = this.mr.codeclimate;
@@ -167,97 +177,100 @@ export default {
       };
     },
   },
-  created() {
-    if (this.shouldRenderCodeQuality) {
-      this.fetchCodeQuality();
-    }
-
-    if (this.shouldRenderPerformance) {
-      this.fetchPerformance();
-    }
-  },
-  template: `
-    <div class="mr-state-widget prepend-top-default">
-      <mr-widget-header :mr="mr" />
-      <mr-widget-pipeline
-        v-if="shouldRenderPipelines"
-        :pipeline="mr.pipeline"
-        :ci-status="mr.ciStatus"
-        :has-ci="mr.hasCI"
-        />
-      <deployment
-        v-for="deployment in mr.deployments"
-        :key="deployment.id"
-        :deployment="deployment"
-      />
-      <mr-widget-approvals
-        v-if="shouldRenderApprovals"
+};
+</script>
+<template>
+  <div class="mr-state-widget prepend-top-default">
+    <mr-widget-header :mr="mr" />
+    <mr-widget-pipeline
+      v-if="shouldRenderPipelines"
+      :pipeline="mr.pipeline"
+      :ci-status="mr.ciStatus"
+      :has-ci="mr.hasCI"
+    />
+    <deployment
+      v-for="deployment in mr.deployments"
+      :key="deployment.id"
+      :deployment="deployment"
+    />
+    <mr-widget-approvals
+      v-if="shouldRenderApprovals"
+      :mr="mr"
+      :service="service"
+    />
+    <report-section
+      class="js-codequality-widget mr-widget-border-top"
+      v-if="shouldRenderCodeQuality"
+      type="codequality"
+      :status="codequalityStatus"
+      :loading-text="translateText('codeclimate').loading"
+      :error-text="translateText('codeclimate').error"
+      :success-text="codequalityText"
+      :unresolved-issues="mr.codeclimateMetrics.newIssues"
+      :resolved-issues="mr.codeclimateMetrics.resolvedIssues"
+      :has-issues="hasCodequalityIssues"
+    />
+    <report-section
+      class="js-performance-widget mr-widget-border-top"
+      v-if="shouldRenderPerformance"
+      type="performance"
+      :status="performanceStatus"
+      :loading-text="translateText('performance').loading"
+      :error-text="translateText('performance').error"
+      :success-text="performanceText"
+      :unresolved-issues="mr.performanceMetrics.degraded"
+      :resolved-issues="mr.performanceMetrics.improved"
+      :neutral-issues="mr.performanceMetrics.neutral"
+      :has-issues="hasPerformanceMetrics"
+    />
+    <grouped-security-reports-app
+      v-if="shouldRenderSecurityReport"
+      :head-blob-path="mr.headBlobPath"
+      :base-blob-path="mr.baseBlobPath"
+      :sast-head-path="mr.sast.head_path"
+      :sast-base-path="mr.sast.base_path"
+      :sast-help-path="mr.sastHelp"
+      :dast-head-path="mr.dast.head_path"
+      :dast-base-path="mr.dast.base_path"
+      :dast-help-path="mr.dastHelp"
+      :sast-container-head-path="mr.sastContainer.head_path"
+      :sast-container-base-path="mr.sastContainer.base_path"
+      :sast-container-help-path="mr.sastContainerHelp"
+      :dependency-scanning-head-path="mr.dependencyScanning.head_path"
+      :dependency-scanning-base-path="mr.dependencyScanning.base_path"
+      :dependency-scanning-help-path="mr.dependencyScanningHelp"
+      :vulnerability-feedback-path="mr.vulnerabilityFeedbackPath"
+      :vulnerability-feedback-help-path="mr.vulnerabilityFeedbackHelpPath"
+      :pipeline-id="mr.securityReportsPipelineId"
+    />
+    <div class="mr-widget-section">
+      <component
+        :is="componentName"
         :mr="mr"
         :service="service"
       />
-      <report-section
-        class="js-codequality-widget mr-widget-border-top"
-        v-if="shouldRenderCodeQuality"
-        type="codequality"
-        :status="codequalityStatus"
-        :loading-text="translateText('codeclimate').loading"
-        :error-text="translateText('codeclimate').error"
-        :success-text="codequalityText"
-        :unresolved-issues="mr.codeclimateMetrics.newIssues"
-        :resolved-issues="mr.codeclimateMetrics.resolvedIssues"
-        :has-issues="hasCodequalityIssues"
+
+      <section
+        v-if="mr.maintainerEditAllowed"
+        class="mr-info-list mr-links"
+      >
+        {{ s__("mrWidget|Allows edits from maintainers") }}
+      </section>
+
+      <mr-widget-related-links
+        v-if="shouldRenderRelatedLinks"
+        :state="mr.state"
+        :related-links="mr.relatedLinks"
       />
-      <report-section
-        class="js-performance-widget mr-widget-border-top"
-        v-if="shouldRenderPerformance"
-        type="performance"
-        :status="performanceStatus"
-        :loading-text="translateText('performance').loading"
-        :error-text="translateText('performance').error"
-        :success-text="performanceText"
-        :unresolved-issues="mr.performanceMetrics.degraded"
-        :resolved-issues="mr.performanceMetrics.improved"
-        :neutral-issues="mr.performanceMetrics.neutral"
-        :has-issues="hasPerformanceMetrics"
+      <source-branch-removal-status
+        v-if="shouldRenderSourceBranchRemovalStatus"
       />
-      <grouped-security-reports-app
-        v-if="shouldRenderSecurityReport"
-        :head-blob-path="mr.headBlobPath"
-        :base-blob-path="mr.baseBlobPath"
-        :sast-head-path="mr.sast.head_path"
-        :sast-base-path="mr.sast.base_path"
-        :sast-help-path="mr.sastHelp"
-        :dast-head-path="mr.dast.head_path"
-        :dast-base-path="mr.dast.base_path"
-        :dast-help-path="mr.dastHelp"
-        :sast-container-head-path="mr.sastContainer.head_path"
-        :sast-container-base-path="mr.sastContainer.base_path"
-        :sast-container-help-path="mr.sastContainerHelp"
-        :dependency-scanning-head-path="mr.dependencyScanning.head_path"
-        :dependency-scanning-base-path="mr.dependencyScanning.base_path"
-        :dependency-scanning-help-path="mr.dependencyScanningHelp"
-        :vulnerability-feedback-path="mr.vulnerabilityFeedbackPath"
-        :vulnerability-feedback-help-path="mr.vulnerabilityFeedbackHelpPath"
-        :pipeline-id="mr.securityReportsPipelineId"
-      />
-      <div class="mr-widget-section">
-        <component
-          :is="componentName"
-          :mr="mr"
-          :service="service" />
-        <mr-widget-maintainer-edit
-          :maintainerEditAllowed="mr.maintainerEditAllowed" />
-        <mr-widget-related-links
-          v-if="shouldRenderRelatedLinks"
-          :state="mr.state"
-          :related-links="mr.relatedLinks" />
-        <source-branch-removal-status
-          v-if="shouldRenderSourceBranchRemovalStatus"
-        />
-      </div>
-      <div class="mr-widget-footer" v-if="shouldRenderMergeHelp">
-        <mr-widget-merge-help />
-      </div>
     </div>
-  `,
-};
+    <div
+      class="mr-widget-footer"
+      v-if="shouldRenderMergeHelp"
+    >
+      <mr-widget-merge-help />
+    </div>
+  </div>
+</template>
