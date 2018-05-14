@@ -38,7 +38,7 @@ abort("Wrong version format #{options[:version].bold}".red) unless options[:vers
 branch = [BRANCH_PREFIX, options[:branch], options[:version]].join('-').freeze
 stable_branch = "#{BRANCH_PREFIX}-#{options[:version]}".freeze
 
-command = ""git fetch #{REMOTE} #{stable_branch} && git checkout #{stable_branch} && git pull #{REMOTE} #{stable_branch} && git checkout -B #{branch} && git cherry-pick #{options[:sha]} && git push #{REMOTE} #{branch}"
+command = "git fetch #{REMOTE} #{stable_branch} && git checkout #{stable_branch} && git pull #{REMOTE} #{stable_branch} && git checkout -B #{branch} && git cherry-pick #{options[:sha]} && git push #{REMOTE} #{branch}"
 
 _stdin, stdout, stderr = Open3.popen3(command)
 
