@@ -66,6 +66,13 @@ describe Ci::Runner do
         expect(instance_runner).not_to be_valid
         expect(instance_runner.errors.full_messages).to include('Runner cannot assign project to a non-project runner')
       end
+
+      it 'should fail to save a group assigned to a project runner even if the runner is already saved' do
+        group_runner
+
+        expect { create(:group, runners: [project_runner]) }
+          .to raise_error(ActiveRecord::RecordInvalid)
+      end
     end
   end
 
