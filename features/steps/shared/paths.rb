@@ -252,10 +252,6 @@ module SharedPaths
     visit project_path(project)
   end
 
-  step 'I visit project "Forked Shop" merge requests page' do
-    visit project_merge_requests_path(@forked_project)
-  end
-
   step 'I visit edit project "Shop" page' do
     visit edit_project_path(project)
   end
