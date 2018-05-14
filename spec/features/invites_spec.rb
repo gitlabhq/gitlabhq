@@ -152,7 +152,7 @@ describe 'Invites' do
     context 'email confirmation enabled' do
       let(:send_email_confirmation) { true }
 
-      it 'signs up and redirects to the dashboard page with all the project/groups invitation automatically accepted' do
+      it 'signs up and redirects to root page with all the project/groups invitation automatically accepted' do
         fill_in_sign_up_form(new_user)
         confirm_email_and_sign_in(new_user)
 
