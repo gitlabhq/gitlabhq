@@ -12,16 +12,16 @@ shared_examples_for 'AtomicInternalId' do
 
     describe 'Validation' do
       before do
-        allow_any_instance_of(described_class).to receive(:"ensure_#{scope_attrs.keys.first}_#{internal_id_attribute}!") {}
+        allow_any_instance_of(described_class).to receive(:"ensure_#{scope}_#{internal_id_attribute}!") {}
       end
 
       it 'validates presence' do
         instance.valid?
 
         if allow_nil
-          expect(instance.errors[:iid]).to be_empty
+          expect(instance.errors[internal_id_attribute]).to be_empty
         else
-          expect(instance.errors[:iid]).to include("can't be blank")
+          expect(instance.errors[internal_id_attribute]).to include("can't be blank")
         end
       end
     end

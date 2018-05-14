@@ -39,6 +39,7 @@ describe Ci::Pipeline, :mailer do
     it_behaves_like 'AtomicInternalId' do
       let(:internal_id_attribute) { :iid }
       let(:instance) { build(:ci_pipeline) }
+      let(:scope) { :project }
       let(:scope_attrs) { { project: instance.project } }
       let(:usage) { :ci_pipelines }
       let(:allow_nil) { true }
