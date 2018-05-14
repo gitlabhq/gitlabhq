@@ -51,6 +51,21 @@ describe SendFileUpload do
       end
     end
 
+    context 'with attachment' do
+      subject { controller.send_upload(uploader, attachment: 'test.js') }
+
+      it 'sends a file with content-type of text/plain' do
+        expected_params = {
+          content_type: 'text/plain',
+          filename: 'test.js',
+          disposition: 'attachment'
+        }
+        expect(controller).to receive(:send_file).with(uploader.path, expected_params)
+
+        subject
+      end
+    end
+
     context 'when remote file is used' do
       before do
         stub_uploads_object_storage(uploader: uploader_class)

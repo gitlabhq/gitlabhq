@@ -1,0 +1,5 @@
+---
+title: Fix cross-origin errors when attempting to download JavaScript attachments
+merge_request:
+author:
+type: fixed
