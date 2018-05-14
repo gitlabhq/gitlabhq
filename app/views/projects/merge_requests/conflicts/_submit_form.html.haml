@@ -9,7 +9,7 @@
         or
         %code Use theirs
         in all the conflicted files above. Commit these changes into
-        %strong {{conflictsData.sourceBranch}}.
+        #{link_to @merge_request.source_branch, project_tree_path(@merge_request.project, @merge_request.source_branch)}.
     .col-md-8
       %label.label-light{ "for" => "commit-message" }
         #{ _('Commit message') }
