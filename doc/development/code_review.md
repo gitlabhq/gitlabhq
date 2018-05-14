@@ -29,6 +29,10 @@ There are a few rules to get your merge request accepted:
     to ask one of the [Merge request coaches][team].
   1. The reviewer will assign the merge request to a maintainer once the
     reviewer is satisfied with the state of the merge request.
+1. Keep in mind that maintainers are also going to perform a final code review.
+   The ideal scenario is that the reviewer has already addressed any concerns
+   the maintainer would have found, and the maintainer only has to perform the
+   merge, but be prepared for further review comments.
 
 For more guidance, see [CONTRIBUTING.md](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md).
 
@@ -207,3 +211,4 @@ Largely based on the [thoughtbot code review guide].
 [projects]: https://about.gitlab.com/handbook/engineering/projects/
 [team]: https://about.gitlab.com/team/
 [build handbook]: https://about.gitlab.com/handbook/build/handbook/build#how-to-work-with-build
+[^1]: Please note that specs other than JavaScript specs are considered backend code.
