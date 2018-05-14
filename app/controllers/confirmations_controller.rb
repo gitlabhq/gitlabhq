@@ -13,7 +13,7 @@ class ConfirmationsController < Devise::ConfirmationsController
   end
 
   def after_confirmation_path_for(resource_name, resource)
-    accept_pending_invitations_for(resource)
+    accept_pending_invitations
 
     # incoming resource can either be a :user or an :email
     if signed_in?(:user)

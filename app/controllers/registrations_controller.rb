@@ -17,7 +17,7 @@ class RegistrationsController < Devise::RegistrationsController
     end
 
     if !Gitlab::Recaptcha.load_configurations! || verify_recaptcha
-      accept_pending_invitations_for(resource)
+      accept_pending_invitations
       super
     else
       flash[:alert] = 'There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'

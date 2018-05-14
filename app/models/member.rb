@@ -192,6 +192,14 @@ class Member < ActiveRecord::Base
       Gitlab::Access.sym_options
     end
 
+    def accept_pending_invitations(user)
+      members = where(invite_email: user.email).invite
+
+      members.select do |member|
+        member.accept_invite!(user)
+      end
+    end
+
     private
 
     def parse_users_list(source, list)

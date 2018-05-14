@@ -15,9 +15,9 @@ describe 'Invites' do
   end
 
   def confirm_email_and_sign_in(new_user)
-    User.find_by_email(new_user.email).confirm
+    new_user_token = User.find_by_email(new_user.email).confirmation_token
 
-    visit new_user_session_path
+    visit user_confirmation_path(confirmation_token: new_user_token)
     fill_in_sign_in_form(new_user)
   end
 
@@ -122,8 +122,8 @@ describe 'Invites' do
     let!(:project_invite) { create(:project_member, :invited, project: project, invite_email: invite_email) }
 
     before do
-      visit invite_path(group_invite.raw_invite_token)
       stub_application_setting(send_user_confirmation_email: send_email_confirmation)
+      visit invite_path(group_invite.raw_invite_token)
     end
 
     context 'email confirmation disabled' do
@@ -132,6 +132,7 @@ describe 'Invites' do
       it 'signs up and redirects to the dashboard page with all the projects/groups invitations automatically accepted' do
         fill_in_sign_up_form(new_user)
 
+        expect(current_path).to eq(dashboard_projects_path)
         expect(page).to have_content(project.full_name)
         visit group_path(group)
         expect(page).to have_content(group.full_name)
@@ -158,6 +159,14 @@ describe 'Invites' do
         expect(page).to have_content(project.full_name)
         visit group_path(group)
         expect(page).to have_content(group.full_name)
+      end
+
+      it "doesn't accept invitations until the user confirm his email" do
+        fill_in_sign_up_form(new_user)
+        sign_in(owner)
+
+        visit project_project_members_path(project)
+        expect(page).to have_content 'Invited'
       end
 
       context 'the user sign-up using a different email address' do

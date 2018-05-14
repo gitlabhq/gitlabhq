@@ -461,16 +461,6 @@ class User < ActiveRecord::Base
     skip_reconfirmation! if bool
   end
 
-  def accept_pending_invitations
-    accepted_invite_tokens = []
-    Member.where(invite_email: email).invite.each do |member|
-      accepted_invite_tokens << member.invite_token
-      member.accept_invite!(self)
-    end
-
-    accepted_invite_tokens
-  end
-
   def generate_reset_token
     @reset_token, enc = Devise.token_generator.generate(self.class, :reset_password_token)
 
