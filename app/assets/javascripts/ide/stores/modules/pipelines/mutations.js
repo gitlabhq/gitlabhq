@@ -10,10 +10,13 @@ export default {
   },
   [types.RECEIVE_LASTEST_PIPELINE_SUCCESS](state, pipeline) {
     state.isLoadingPipeline = false;
-    state.latestPipeline = {
-      id: pipeline.id,
-      status: pipeline.status,
-    };
+
+    if (pipeline) {
+      state.latestPipeline = {
+        id: pipeline.id,
+        status: pipeline.status,
+      };
+    }
   },
   [types.REQUEST_JOBS](state) {
     state.isLoadingJobs = true;

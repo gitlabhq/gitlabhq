@@ -7,7 +7,7 @@ describe('IDE pipelines mutations', () => {
   let mockedState;
 
   beforeEach(() => {
-    mockedState = state;
+    mockedState = state();
   });
 
   describe(types.REQUEST_LATEST_PIPELINE, () => {
@@ -40,6 +40,12 @@ describe('IDE pipelines mutations', () => {
         id: pipelines[0].id,
         status: pipelines[0].status,
       });
+    });
+
+    it('does not set latest pipeline if pipeline is null', () => {
+      mutations[types.RECEIVE_LASTEST_PIPELINE_SUCCESS](mockedState, null);
+
+      expect(mockedState.latestPipeline).toEqual(null);
     });
   });
 

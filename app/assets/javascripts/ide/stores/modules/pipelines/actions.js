@@ -16,9 +16,7 @@ export const fetchLatestPipeline = ({ dispatch, rootState }, sha) => {
 
   return Api.pipelines(rootState.currentProjectId, { sha, per_page: '1' })
     .then(({ data }) => {
-      if (data.length) {
-        dispatch('receiveLatestPipelineSuccess', data.pop());
-      }
+      dispatch('receiveLatestPipelineSuccess', data.pop());
     })
     .catch(() => dispatch('receiveLatestPipelineError'));
 };
