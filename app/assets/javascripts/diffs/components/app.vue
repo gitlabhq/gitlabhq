@@ -27,6 +27,10 @@ export default {
       required: false,
       default: false,
     },
+    currentUser: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -121,6 +125,7 @@ export default {
             v-for="file in diffFiles"
             :key="file.newPath"
             :file="file"
+            :current-user="currentUser"
             @setActive="setActive(file.filePath)"
             @unsetActive="unsetActive(file.filePath)"
           />

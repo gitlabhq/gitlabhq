@@ -3,23 +3,11 @@ export default {
   props: {
     editPath: {
       type: String,
-      required: false,
-      default: '',
+      required: true,
     },
     currentUser: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    canCreateMergeReqest: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    canFork: {
-      type: Boolean,
-      required: false,
-      default: false,
+      type: Object,
+      required: true,
     },
     canModifyBlob: {
       type: Boolean,
@@ -34,7 +22,7 @@ export default {
         return;
       }
 
-      if (this.canFork && this.canCreateMergeRequest) {
+      if (this.currentUser.canFork && this.currentUser.canCreateMergeRequest) {
         evt.preventDefault();
         this.$emit('showForkMessage');
       }

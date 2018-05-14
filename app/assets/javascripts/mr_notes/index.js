@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { mapActions, mapState } from 'vuex';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import notesApp from '../notes/components/notes_app.vue';
 import diffsApp from '../diffs/components/app.vue';
 import discussionCounter from '../notes/components/discussion_counter.vue';
@@ -86,6 +87,9 @@ export default function initMrNotes() {
 
       return {
         endpoint: dataset.endpoint,
+        currentUser: convertObjectPropsToCamelCase(JSON.parse(dataset.currentUserData), {
+          deep: true,
+        }),
       };
     },
     computed: {
@@ -97,6 +101,7 @@ export default function initMrNotes() {
       return createElement('diffs-app', {
         props: {
           endpoint: this.endpoint,
+          currentUser: this.currentUser,
           shouldShow: this.activeTab === 'diffs',
         },
       });

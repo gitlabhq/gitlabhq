@@ -18,6 +18,10 @@ export default {
       type: Object,
       required: true,
     },
+    currentUser: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -120,6 +124,7 @@ export default {
     :id="file.fileHash"
   >
     <diff-file-header
+      :current-user="currentUser"
       :diff-file="file"
       :collapsible="true"
       :expanded="!isCollapsed"
@@ -134,18 +139,16 @@ export default {
       v-if="forkMessageVisible"
       class="js-file-fork-suggestion-section file-fork-suggestion">
       <span class="file-fork-suggestion-note">
-        <!-- TODO: psimyn this button can be Replace/Delete/Edit.
-        This seems excessive, do we actually need to specify edit? -->
-        <!-- see modify_file_button helper in haml -->
         You're not allowed to <span class="js-file-fork-suggestion-section-action">edit</span>
         files in this project directly. Please fork this project,
         make your changes there, and submit a merge request.
       </span>
-      <button
+      <a
+        :href="diffFiel.forkPath"
         class="js-fork-suggestion-button btn btn-grouped btn-inverted btn-success"
       >
         Fork
-      </button>
+      </a>
       <button
         class="js-cancel-fork-suggestion-button btn btn-grouped"
         type="button"

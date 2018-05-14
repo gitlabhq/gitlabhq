@@ -41,6 +41,10 @@ export default {
       required: false,
       default: true,
     },
+    currentUser: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -211,7 +215,8 @@ export default {
         </button>
 
         <edit-button
-          :href="diffFile.editPath"
+          :current-user="currentUser"
+          :edit-path="diffFile.editPath"
           @showForkMessage="showForkMessage"
         />
       </template>
