@@ -189,7 +189,7 @@ stages:
   <<: *dedicated-no-docs-and-no-qa-pull-cache-job
   <<: *use-pg
   variables:
-    CREATE_DB_USER: "true"
+    SETUP_DB: "false"
   script:
     # Manually clone gitlab-test and only seed this project in
     # db/fixtures/development/04_project.rb thanks to SIZE=1 below
@@ -233,7 +233,6 @@ stages:
 .migration-paths: &migration-paths
   <<: *dedicated-no-docs-and-no-qa-pull-cache-job
   variables:
-    CREATE_DB_USER: "true"
     SETUP_DB: "false"
   script:
     - git fetch https://gitlab.com/gitlab-org/gitlab-ce.git v9.3.0
