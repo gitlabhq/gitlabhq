@@ -71,7 +71,7 @@ You can use `mapState` to access state properties in the components.
 An action is a payload of information to send data from our application to our store.
 
 An action is usually composed by a `type` and a `payload` and they describe what happened.
-Enforcing that every change is described as an action lets us have a clear understanting of what is going on in the app.
+Enforcing that every change is described as an action lets us have a clear understanding of what is going on in the app.
 
 In this file, we will write the actions that will call the respective mutations:
 
@@ -126,7 +126,7 @@ The component MUST only dispatch the `fetchNamespace` action. Actions namespaced
 The `fetch` action will be responsible to dispatch `requestNamespace`, `receiveNamespaceSuccess` and `receiveNamespaceError`
 
 By following this pattern we guarantee:
-1. All aplications follow the same pattern, making it easier for anyone to maintain the code
+1. All applications follow the same pattern, making it easier for anyone to maintain the code
 1. All data in the application follows the same lifecycle pattern
 1. Actions are contained and human friendly
 1. Unit tests are easier
@@ -289,7 +289,7 @@ export default {
 ```
 
 ### Vuex Gotchas
-1. Do not call a mutation directly. Always use an action to commit a mutation. Doing so will keep consistency through out the application. From Vuex docs:
+1. Do not call a mutation directly. Always use an action to commit a mutation. Doing so will keep consistency throughout the application. From Vuex docs:
 
   >  why don't we just call store.commit('action') directly? Well, remember that mutations must be synchronous? Actions aren't. We can perform asynchronous operations inside an action.
 
@@ -342,7 +342,7 @@ describe('component', () => {
     };
 
     // populate the store
-    store.dipatch('addUser', user);
+    store.dispatch('addUser', user);
 
     vm = new Component({
       store,
