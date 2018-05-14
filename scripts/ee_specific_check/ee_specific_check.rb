@@ -37,14 +37,17 @@ module EESpecificCheck
     setup_canonical_remotes
 
     ce_fetch_head = fetch_remote_ce_branch
+    ce_fetch_base = run_git_command("merge-base canonical-ce/master #{ce_fetch_head}")
     ce_merge_base = run_git_command("merge-base canonical-ce/master canonical-ee/master")
     ee_merge_base = run_git_command("merge-base canonical-ee/master HEAD")
 
     ce_updated_base =
-      if ce_fetch_head.start_with?('canonical-ce')
-        ce_merge_base # Compare with merge-base if no specific CE branch
+      if ce_fetch_head.start_with?('canonical-ce') || # No specific CE branch
+          ce_fetch_base == ce_merge_base # Up-to-date, no rebase needed
+        ce_merge_base
       else
-        checkout_and_rebase_ce_fetch_head_onto_ce_merge_base(ce_merge_base, ce_fetch_head)
+        checkout_and_rebase_ce_fetch_head_onto_ce_merge_base(
+          ce_fetch_head, ce_fetch_base, ce_merge_base)
       end
 
     CompareBase.new(ce_merge_base, ee_merge_base, ce_updated_base)
@@ -66,12 +69,13 @@ module EESpecificCheck
     "#{remote_to_fetch}/#{branch_to_fetch}"
   end
 
-  def checkout_and_rebase_ce_fetch_head_onto_ce_merge_base(ce_merge_base, ce_fetch_head)
+  def checkout_and_rebase_ce_fetch_head_onto_ce_merge_base(
+    ce_fetch_head, ce_fetch_base, ce_merge_base)
     # So that we could switch back
     head = head_commit_sha
 
     # Use detached HEAD so that we don't update HEAD
-    run_git_command("checkout #{ce_fetch_head}")
+    run_git_command("checkout -f #{ce_fetch_head}")
 
     # We rebase onto the commit which is the latest commit presented in both
     # CE and EE, i.e. ce_merge_base, cutting off commits aren't merged into
@@ -82,7 +86,7 @@ module EESpecificCheck
     # * !: Commits we want to cut off from CE branch
     #
     #                ^-> o CE branch (ce_fetch_head)
-    #               /
+    #               / (ce_fetch_base)
     #     o -> o -> ! -> x CE master
     #          v (ce_merge_base)
     #     o -> o -> o -> x EE master
@@ -92,7 +96,7 @@ module EESpecificCheck
     # We want to rebase above into this: (we only change the connection)
     #
     #            -> - -> o CE branch (ce_fetch_head)
-    #           /
+    #           / (ce_fetch_base)
     #     o -> o -> ! -> x CE master
     #          v (ce_merge_base)
     #     o -> o -> o -> x EE master
@@ -109,8 +113,7 @@ module EESpecificCheck
     # where ce_merge_base..ee_merge_base is the update-to-date
     # CE/EE difference and ce_fetch_head..HEAD is the changes we made in
     # CE and EE branches.
-    old_base = run_git_command("merge-base canonical-ce/master #{ce_fetch_head}")
-    run_git_command("rebase --onto #{ce_merge_base} #{old_base}~1 #{ce_fetch_head}")
+    run_git_command("rebase --onto #{ce_merge_base} #{ce_fetch_base}~1 #{ce_fetch_head}")
 
     status = git_status
 
@@ -133,7 +136,7 @@ module EESpecificCheck
 
   ensure # ensure would still run if we call exit, don't worry
     # Make sure to switch back
-    run_git_command("checkout #{head}")
+    run_git_command("checkout -f #{head}")
   end
 
   def head_commit_sha
