@@ -3,6 +3,8 @@ module Gitlab
     module Pipeline
       module Expression
         class Parser
+          ParserError = Class.new(Statement::StatementError)
+
           def initialize(tokens)
             @tokens = tokens.to_enum
             @nodes = []

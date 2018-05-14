@@ -47,9 +47,16 @@ describe Gitlab::Ci::Pipeline::Expression::Lexeme::Pattern do
 
   describe '#evaluate' do
     it 'returns a regular expression' do
-      string = described_class.new('abc')
+      regexp = described_class.new('abc')
 
-      expect(string.evaluate).to eq Gitlab::UntrustedRegexp.new('abc')
+      expect(regexp.evaluate).to eq Gitlab::UntrustedRegexp.new('abc')
+    end
+
+    it 'raises error if evaluated regexp is not valid' do
+      regexp = described_class.new('invalid ( .*')
+
+      expect { regexp.evaluate }
+        .to raise_error(Gitlab::Ci::Pipeline::Expression::Parser::ParserError)
     end
   end
 end

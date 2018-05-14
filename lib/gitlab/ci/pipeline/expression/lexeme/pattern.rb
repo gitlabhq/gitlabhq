@@ -11,8 +11,10 @@ module Gitlab
             end
 
             def evaluate(variables = {})
-              Gitlab::UntrustedRegexp.new(@value.to_s)
-              # TODO raise LexerError / ParserError in case of RegexpError
+              # TODO multiline support
+              @regexp = Gitlab::UntrustedRegexp.new(@value)
+            rescue RegexpError
+              raise Parser::ParserError, 'Invalid regular expression!'
             end
 
             def self.build(string)
