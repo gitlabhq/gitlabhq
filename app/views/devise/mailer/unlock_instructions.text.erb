@@ -1,7 +1,7 @@
 Hello, <%= @resource.name %>!
 
 Your GitLab account has been locked due to an excessive amount of unsuccessful
-sign in attempts. Your account will automatically unlock in <%= time_ago_in_words(Devise.unlock_in.from_now) %>
+sign in attempts. Your account will automatically unlock in <%= distance_of_time_in_words(Devise.unlock_in) %>
 or you may click the link below to unlock now.
 
 <%= unlock_url(@resource, unlock_token: @token) %>

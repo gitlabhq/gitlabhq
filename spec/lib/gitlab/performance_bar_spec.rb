@@ -25,6 +25,12 @@ describe Gitlab::PerformanceBar do
       expect(described_class.enabled?(nil)).to be_falsy
     end
 
+    it 'returns true when given user is an admin' do
+      user = build_stubbed(:user, :admin)
+
+      expect(described_class.enabled?(user)).to be_truthy
+    end
+
     it 'returns false when allowed_group_id is nil' do
       expect(described_class).to receive(:allowed_group_id).and_return(nil)
 

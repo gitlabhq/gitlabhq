@@ -1,6 +1,4 @@
 class PackagistService < Service
-  include HTTParty
-
   prop_accessor :username, :token, :server
 
   validates :username, presence: true, if: :activated?

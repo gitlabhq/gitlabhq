@@ -62,4 +62,22 @@ describe('Confidential Issue Sidebar Block', () => {
       done();
     });
   });
+
+  it('displays the edit form when opened from collapsed state', (done) => {
+    expect(vm1.edit).toBe(false);
+
+    vm1.$el.querySelector('.sidebar-collapsed-icon').click();
+
+    expect(vm1.edit).toBe(true);
+
+    setTimeout(() => {
+      expect(
+        vm1.$el
+          .innerHTML
+          .includes('You are going to turn off the confidentiality.'),
+      ).toBe(true);
+
+      done();
+    });
+  });
 });

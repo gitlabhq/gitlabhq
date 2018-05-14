@@ -1,9 +1,9 @@
 import Vue from 'vue';
-import nothingToMergeComponent from '~/vue_merge_request_widget/components/states/mr_widget_nothing_to_merge';
+import NothingToMerge from '~/vue_merge_request_widget/components/states/nothing_to_merge.vue';
 
-describe('MRWidgetNothingToMerge', () => {
+describe('NothingToMerge', () => {
   describe('template', () => {
-    const Component = Vue.extend(nothingToMergeComponent);
+    const Component = Vue.extend(NothingToMerge);
     const newBlobPath = '/foo';
     const vm = new Component({
       el: document.createElement('div'),

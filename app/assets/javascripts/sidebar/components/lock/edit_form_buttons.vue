@@ -1,14 +1,12 @@
 <script>
+import $ from 'jquery';
+import eventHub from '../../event_hub';
+
 export default {
   props: {
     isLocked: {
       required: true,
       type: Boolean,
-    },
-
-    toggleForm: {
-      required: true,
-      type: Function,
     },
 
     updateLockedAttribute: {
@@ -26,6 +24,17 @@ export default {
       return !this.isLocked;
     },
   },
+
+  methods: {
+    closeForm() {
+      eventHub.$emit('closeLockForm');
+      $(this.$el).trigger('hidden.gl.dropdown');
+    },
+    submitForm() {
+      this.closeForm();
+      this.updateLockedAttribute(this.toggleLock);
+    },
+  },
 };
 </script>
 
@@ -34,7 +43,7 @@ export default {
     <button
       type="button"
       class="btn btn-default append-right-10"
-      @click="toggleForm"
+      @click="closeForm"
     >
       {{ __('Cancel') }}
     </button>
@@ -42,7 +51,7 @@ export default {
     <button
       type="button"
       class="btn btn-close"
-      @click.prevent="updateLockedAttribute(toggleLock)"
+      @click.prevent="submitForm"
     >
       {{ buttonText }}
     </button>

@@ -16,6 +16,6 @@ feature 'User visits the notifications tab', :js do
     first('#notifications-button').click
     click_link('On mention')
 
-    expect(page).to have_content('On mention')
+    expect(page).to have_selector('#notifications-button', text: 'On mention')
   end
 end

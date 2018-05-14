@@ -65,10 +65,9 @@ class Environment < ActiveRecord::Base
   end
 
   def predefined_variables
-    [
-      { key: 'CI_ENVIRONMENT_NAME', value: name, public: true },
-      { key: 'CI_ENVIRONMENT_SLUG', value: slug, public: true }
-    ]
+    Gitlab::Ci::Variables::Collection.new
+      .append(key: 'CI_ENVIRONMENT_NAME', value: name)
+      .append(key: 'CI_ENVIRONMENT_SLUG', value: slug)
   end
 
   def recently_updated_on_branch?(ref)
@@ -225,7 +224,7 @@ class Environment < ActiveRecord::Base
   end
 
   def deployment_platform
-    project.deployment_platform(environment: self)
+    project.deployment_platform(environment: self.name)
   end
 
   private

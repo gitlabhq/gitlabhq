@@ -156,7 +156,7 @@ describe Projects::ImportService do
         result = described_class.new(project, user).execute
 
         expect(result[:status]).to eq :error
-        expect(result[:message]).to end_with 'Blocked import URL.'
+        expect(result[:message]).to include('Requests to localhost are not allowed')
       end
 
       it 'fails with port 25' do
@@ -165,7 +165,7 @@ describe Projects::ImportService do
         result = described_class.new(project, user).execute
 
         expect(result[:status]).to eq :error
-        expect(result[:message]).to end_with 'Blocked import URL.'
+        expect(result[:message]).to include('Only allowed ports are 22, 80, 443')
       end
     end
 

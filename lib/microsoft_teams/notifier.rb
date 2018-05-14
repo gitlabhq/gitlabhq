@@ -9,14 +9,15 @@ module MicrosoftTeams
       result = false
 
       begin
-        response = HTTParty.post(
+        response = Gitlab::HTTP.post(
           @webhook.to_str,
           headers: @header,
+          allow_local_requests: true,
           body: body(options)
         )
 
         result = true if response
-      rescue HTTParty::Error, StandardError => error
+      rescue Gitlab::HTTP::Error, StandardError => error
         Rails.logger.info("#{self.class.name}: Error while connecting to #{@webhook}: #{error.message}")
       end
 

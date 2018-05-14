@@ -1,15 +1,13 @@
 <script>
-  import Icon from '~/vue_shared/components/icon.vue';
-  import Issuable from '~/vue_shared/mixins/issuable';
+import Icon from '~/vue_shared/components/icon.vue';
+import Issuable from '~/vue_shared/mixins/issuable';
 
-  export default {
-    components: {
-      Icon,
-    },
-    mixins: [
-      Issuable,
-    ],
-  };
+export default {
+  components: {
+    Icon,
+  },
+  mixins: [Issuable],
+};
 </script>
 
 <template>

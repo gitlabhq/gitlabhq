@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import GlFieldError from './gl_field_error';
 
 const customValidationFlag = 'gl-field-error-ignore';

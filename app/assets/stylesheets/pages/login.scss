@@ -154,26 +154,10 @@
       a {
         width: 100%;
         font-size: 18px;
-        margin-right: 0;
-
-        &:hover {
-          border: 1px solid transparent;
-        }
       }
 
-      &.active {
-        border-bottom: 1px solid $border-color;
-
-        a {
-          border: 0;
-          border-bottom: 2px solid $link-underline-blue;
-          margin-right: 0;
-          color: $black;
-
-          &:hover {
-            border-bottom: 2px solid $link-underline-blue;
-          }
-        }
+      &.active > a {
+        cursor: default;
       }
     }
   }

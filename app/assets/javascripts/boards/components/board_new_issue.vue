@@ -1,4 +1,5 @@
 <script>
+import $ from 'jquery';
 import eventHub from '../eventhub';
 import ProjectSelect from './project_select.vue';
 import ListIssue from '../models/issue';

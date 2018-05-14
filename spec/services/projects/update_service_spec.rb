@@ -190,17 +190,17 @@ describe Projects::UpdateService do
 
     context 'when renaming a project' do
       let(:repository_storage) { 'default' }
-      let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
+      let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage].legacy_disk_path }
 
       context 'with legacy storage' do
         let(:project) { create(:project, :legacy_storage, :repository, creator: user, namespace: user.namespace) }
 
         before do
-          gitlab_shell.add_repository(repository_storage, "#{user.namespace.full_path}/existing")
+          gitlab_shell.create_repository(repository_storage, "#{user.namespace.full_path}/existing")
         end
 
         after do
-          gitlab_shell.remove_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
+          gitlab_shell.remove_repository(repository_storage, "#{user.namespace.full_path}/existing")
         end
 
         it 'does not allow renaming when new path matches existing repository on disk' do
@@ -239,6 +239,27 @@ describe Projects::UpdateService do
           status: :error,
           message: "Name can contain only letters, digits, emojis, '_', '.', dash, space. It must start with letter, digit, emoji or '_'."
         })
+      end
+    end
+
+    context 'when updating #pages_https_only', :https_pages_enabled do
+      subject(:call_service) do
+        update_project(project, admin, pages_https_only: false)
+      end
+
+      it 'updates the attribute' do
+        expect { call_service }
+          .to change { project.pages_https_only? }
+          .to(false)
+      end
+
+      it 'calls Projects::UpdatePagesConfigurationService' do
+        expect(Projects::UpdatePagesConfigurationService)
+          .to receive(:new)
+          .with(project)
+          .and_call_original
+
+        call_service
       end
     end
   end

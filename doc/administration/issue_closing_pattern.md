@@ -24,11 +24,11 @@ Because Rubular doesn't understand `%{issue_ref}`, you can replace this by
 **For Omnibus installations**
 
 1. Open `/etc/gitlab/gitlab.rb` with your editor.
-1. Change the value of `gitlab_rails['issue_closing_pattern']` to a regular
+1. Change the value of `gitlab_rails['gitlab_issue_closing_pattern']` to a regular
    expression of your liking:
 
     ```ruby
-    gitlab_rails['issue_closing_pattern'] = "((?:[Cc]los(?:e[sd]|ing)|[Ff]ix(?:e[sd]|ing)?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?))+)"
+    gitlab_rails['gitlab_issue_closing_pattern'] = "((?:[Cc]los(?:e[sd]|ing)|[Ff]ix(?:e[sd]|ing)?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?))+)"
     ```
 1. [Reconfigure] GitLab for the changes to take effect.
 

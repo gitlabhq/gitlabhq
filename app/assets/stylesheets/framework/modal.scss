@@ -4,9 +4,15 @@
 
   .page-title,
   .modal-title {
+    .modal-title-with-label span {
+      vertical-align: middle;
+      display: inline-block;
+    }
+
     .color-label {
       font-size: $gl-font-size;
       padding: $gl-vert-padding $label-padding-modal;
+      vertical-align: middle;
     }
   }
 

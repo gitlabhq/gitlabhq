@@ -22,15 +22,18 @@ export default {
   },
   toggleResolveNote(endpoint, isResolved) {
     const { RESOLVE_NOTE_METHOD_NAME, UNRESOLVE_NOTE_METHOD_NAME } = constants;
-    const method = isResolved ? UNRESOLVE_NOTE_METHOD_NAME : RESOLVE_NOTE_METHOD_NAME;
+    const method = isResolved
+      ? UNRESOLVE_NOTE_METHOD_NAME
+      : RESOLVE_NOTE_METHOD_NAME;
 
     return Vue.http[method](endpoint);
   },
   poll(data = {}) {
-    const { endpoint, lastFetchedAt } = data;
+    const endpoint = data.notesData.notesPath;
+    const lastFetchedAt = data.lastFetchedAt;
     const options = {
       headers: {
-        'X-Last-Fetched-At': lastFetchedAt,
+        'X-Last-Fetched-At': lastFetchedAt ? `${lastFetchedAt}` : undefined,
       },
     };
 

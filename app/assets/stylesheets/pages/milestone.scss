@@ -53,10 +53,6 @@
 }
 
 .milestone-sidebar {
-  .gutter-toggle {
-    margin-bottom: 10px;
-  }
-
   .milestone-progress {
     .title {
       padding-top: 5px;
@@ -102,7 +98,17 @@
     margin-right: 0;
   }
 
+  .right-sidebar-expanded & {
+    .gutter-toggle {
+      margin-bottom: $sidebar-milestone-toggle-bottom-margin;
+    }
+  }
+
   .right-sidebar-collapsed & {
+    .milestone-progress {
+      padding-top: 0;
+    }
+
     .reference {
       border-top: 1px solid $border-gray-normal;
     }
@@ -193,4 +199,39 @@
 
 .issuable-row {
   background-color: $white-light;
+}
+
+.milestone-deprecation-message {
+  .popover {
+    padding: 0;
+  }
+
+  .popover-content {
+    padding: 0;
+  }
+}
+
+.milestone-popover-body {
+  padding: $gl-padding-8;
+  background-color: $gray-light;
+}
+
+.milestone-popover-footer {
+  padding: $gl-padding-8 $gl-padding;
+  border-top: 1px solid $white-dark;
+}
+
+.milestone-popover-instructions-list {
+  padding-left: 2em;
+
+  > li {
+    padding-left: 1em;
+  }
+}
+
+@media (max-width: $screen-xs-max) {
+  .milestone-banner-text,
+  .milestone-banner-link {
+    display: inline;
+  }
 }

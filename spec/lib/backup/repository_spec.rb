@@ -2,11 +2,13 @@ require 'spec_helper'
 
 describe Backup::Repository do
   let(:progress) { StringIO.new }
-  let!(:project) { create(:project) }
+  let!(:project) { create(:project, :wiki_repo) }
 
   before do
     allow(progress).to receive(:puts)
     allow(progress).to receive(:print)
+    allow(FileUtils).to receive(:mkdir_p).and_return(true)
+    allow(FileUtils).to receive(:mv).and_return(true)
 
     allow_any_instance_of(String).to receive(:color) do |string, _color|
       string
@@ -33,7 +35,7 @@ describe Backup::Repository do
     let(:timestamp) { Time.utc(2017, 3, 22) }
     let(:temp_dirs) do
       Gitlab.config.repositories.storages.map do |name, storage|
-        File.join(storage['path'], '..', 'repositories.old.' + timestamp.to_i.to_s)
+        File.join(storage.legacy_disk_path, '..', 'repositories.old.' + timestamp.to_i.to_s)
       end
     end
 
@@ -68,6 +70,29 @@ describe Backup::Repository do
         end
       end
     end
+
+    describe 'folders without permissions' do
+      before do
+        allow(FileUtils).to receive(:mv).and_raise(Errno::EACCES)
+      end
+
+      it 'shows error message' do
+        expect(subject).to receive(:access_denied_error)
+        subject.restore
+      end
+    end
+
+    describe 'folder that is a mountpoint' do
+      before do
+        allow(FileUtils).to receive(:mv).and_raise(Errno::EBUSY)
+      end
+
+      it 'shows error message' do
+        expect(subject).to receive(:resource_busy_error).and_call_original
+
+        expect { subject.restore }.to raise_error(/is a mountpoint/)
+      end
+    end
   end
 
   describe '#empty_repo?' do
@@ -77,7 +102,7 @@ describe Backup::Repository do
       it 'invalidates the emptiness cache' do
         expect(wiki.repository).to receive(:expire_emptiness_caches).once
 
-        wiki.empty?
+        described_class.new.send(:empty_repo?, wiki)
       end
 
       context 'wiki repo has content' do

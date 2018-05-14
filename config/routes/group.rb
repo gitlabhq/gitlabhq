@@ -24,6 +24,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
         constraints: { group_id: Gitlab::PathRegex.full_namespace_route_regex }) do
     namespace :settings do
       resource :ci_cd, only: [:show], controller: 'ci_cd'
+      resources :badges, only: [:index]
     end
 
     resource :variables, only: [:show, :update]
@@ -57,6 +58,13 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     # On CE only index and show actions are needed
     resources :boards, only: [:index, :show]
+
+    resources :runners, only: [:index, :edit, :update, :destroy, :show] do
+      member do
+        post :resume
+        post :pause
+      end
+    end
   end
 
   scope(path: '*id',

@@ -1,11 +1,12 @@
+/app/assets/javascripts/locale/**/app.js
+/config/
 /builds/
 /coverage/
 /coverage-javascript/
 /node_modules/
 /public/
+/scripts/
 /tmp/
 /vendor/
 karma.config.js
 webpack.config.js
-svg.config.js
-/app/assets/javascripts/locale/**/app.js

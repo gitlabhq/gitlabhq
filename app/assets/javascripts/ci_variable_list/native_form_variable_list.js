@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import VariableList from './ci_variable_list';
 
 // Used for the variable list on scheduled pipeline edit page

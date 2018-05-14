@@ -220,12 +220,15 @@ class ApplicationSetting < ActiveRecord::Base
     end
   end
 
+  validate :terms_exist, if: :enforce_terms?
+
   before_validation :ensure_uuid!
 
   before_save :ensure_runners_registration_token
   before_save :ensure_health_check_access_token
 
   after_commit do
+    reset_memoized_terms
     Rails.cache.write(CACHE_KEY, self)
   end
 
@@ -330,7 +333,9 @@ class ApplicationSetting < ActiveRecord::Base
       usage_ping_enabled: Settings.gitlab['usage_ping_enabled'],
       gitaly_timeout_fast: 10,
       gitaly_timeout_medium: 30,
-      gitaly_timeout_default: 55
+      gitaly_timeout_default: 55,
+      allow_local_requests_from_hooks_and_services: false,
+      mirror_available: true
     }
   end
 
@@ -347,15 +352,15 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def home_page_url_column_exists?
-    ActiveRecord::Base.connection.column_exists?(:application_settings, :home_page_url)
+    ::Gitlab::Database.cached_column_exists?(:application_settings, :home_page_url)
   end
 
   def help_page_support_url_column_exists?
-    ActiveRecord::Base.connection.column_exists?(:application_settings, :help_page_support_url)
+    ::Gitlab::Database.cached_column_exists?(:application_settings, :help_page_support_url)
   end
 
   def sidekiq_throttling_column_exists?
-    ActiveRecord::Base.connection.column_exists?(:application_settings, :sidekiq_throttling_enabled)
+    ::Gitlab::Database.cached_column_exists?(:application_settings, :sidekiq_throttling_enabled)
   end
 
   def domain_whitelist_raw
@@ -506,6 +511,16 @@ class ApplicationSetting < ActiveRecord::Base
     password_authentication_enabled_for_web? || password_authentication_enabled_for_git?
   end
 
+  delegate :terms, to: :latest_terms, allow_nil: true
+  def latest_terms
+    @latest_terms ||= Term.latest
+  end
+
+  def reset_memoized_terms
+    @latest_terms = nil
+    latest_terms
+  end
+
   private
 
   def ensure_uuid!
@@ -518,5 +533,11 @@ class ApplicationSetting < ActiveRecord::Base
     invalid = repository_storages - Gitlab.config.repositories.storages.keys
     errors.add(:repository_storages, "can't include: #{invalid.join(", ")}") unless
       invalid.empty?
+  end
+
+  def terms_exist
+    return unless enforce_terms?
+
+    errors.add(:terms, "You need to set terms to be enforced") unless terms.present?
   end
 end

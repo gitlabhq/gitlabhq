@@ -65,17 +65,35 @@ describe('text_utility', () => {
 
   describe('stripHtml', () => {
     it('replaces html tag with the default replacement', () => {
-      expect(textUtils.stripHtml('This is a text with <p>html</p>.')).toEqual('This is a text with html.');
+      expect(textUtils.stripHtml('This is a text with <p>html</p>.')).toEqual(
+        'This is a text with html.',
+      );
     });
 
     it('replaces html tags with the provided replacement', () => {
-      expect(textUtils.stripHtml('This is a text with <p>html</p>.', ' ')).toEqual('This is a text with  html .');
+      expect(textUtils.stripHtml('This is a text with <p>html</p>.', ' ')).toEqual(
+        'This is a text with  html .',
+      );
+    });
+
+    it('passes through with null string input', () => {
+      expect(textUtils.stripHtml(null, ' ')).toEqual(null);
+    });
+
+    it('passes through with undefined string input', () => {
+      expect(textUtils.stripHtml(undefined, ' ')).toEqual(undefined);
     });
   });
 
   describe('convertToCamelCase', () => {
     it('converts snake_case string to camelCase string', () => {
       expect(textUtils.convertToCamelCase('snake_case')).toBe('snakeCase');
+    });
+  });
+
+  describe('convertToSentenceCase', () => {
+    it('converts Sentence Case to Sentence case', () => {
+      expect(textUtils.convertToSentenceCase('Hello World')).toBe('Hello world');
     });
   });
 });

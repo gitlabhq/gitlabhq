@@ -14,13 +14,13 @@ describe Gitlab::Shell do
     allow(Project).to receive(:find).and_return(project)
 
     allow(gitlab_shell).to receive(:gitlab_projects)
-      .with(project.repository_storage_path, project.disk_path + '.git')
+      .with(project.repository_storage, project.disk_path + '.git')
       .and_return(gitlab_projects)
   end
 
   it { is_expected.to respond_to :add_key }
   it { is_expected.to respond_to :remove_key }
-  it { is_expected.to respond_to :add_repository }
+  it { is_expected.to respond_to :create_repository }
   it { is_expected.to respond_to :remove_repository }
   it { is_expected.to respond_to :fork_repository }
 
@@ -402,10 +402,10 @@ describe Gitlab::Shell do
       allow(Gitlab.config.gitlab_shell).to receive(:git_timeout).and_return(800)
     end
 
-    describe '#add_repository' do
-      shared_examples '#add_repository' do
+    describe '#create_repository' do
+      shared_examples '#create_repository' do
         let(:repository_storage) { 'default' }
-        let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
+        let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage].legacy_disk_path }
         let(:repo_name) { 'project/path' }
         let(:created_path) { File.join(repository_storage_path, repo_name + '.git') }
 
@@ -414,7 +414,7 @@ describe Gitlab::Shell do
         end
 
         it 'creates a repository' do
-          expect(gitlab_shell.add_repository(repository_storage, repo_name)).to be_truthy
+          expect(gitlab_shell.create_repository(repository_storage, repo_name)).to be_truthy
 
           expect(File.stat(created_path).mode & 0o777).to eq(0o770)
 
@@ -426,19 +426,19 @@ describe Gitlab::Shell do
         it 'returns false when the command fails' do
           FileUtils.mkdir_p(File.dirname(created_path))
           # This file will block the creation of the repo's .git directory. That
-          # should cause #add_repository to fail.
+          # should cause #create_repository to fail.
           FileUtils.touch(created_path)
 
-          expect(gitlab_shell.add_repository(repository_storage, repo_name)).to be_falsy
+          expect(gitlab_shell.create_repository(repository_storage, repo_name)).to be_falsy
         end
       end
 
       context 'with gitaly' do
-        it_behaves_like '#add_repository'
+        it_behaves_like '#create_repository'
       end
 
       context 'without gitaly', :skip_gitaly_mock do
-        it_behaves_like '#add_repository'
+        it_behaves_like '#create_repository'
       end
     end
 
@@ -447,18 +447,18 @@ describe Gitlab::Shell do
       let(:disk_path) { "#{project.disk_path}.git" }
 
       it 'returns true when the command succeeds' do
-        expect(gitlab_shell.exists?(project.repository_storage_path, disk_path)).to be(true)
+        expect(gitlab_shell.exists?(project.repository_storage, disk_path)).to be(true)
 
-        expect(gitlab_shell.remove_repository(project.repository_storage_path, project.disk_path)).to be(true)
+        expect(gitlab_shell.remove_repository(project.repository_storage, project.disk_path)).to be(true)
 
-        expect(gitlab_shell.exists?(project.repository_storage_path, disk_path)).to be(false)
+        expect(gitlab_shell.exists?(project.repository_storage, disk_path)).to be(false)
       end
 
       it 'keeps the namespace directory' do
-        gitlab_shell.remove_repository(project.repository_storage_path, project.disk_path)
+        gitlab_shell.remove_repository(project.repository_storage, project.disk_path)
 
-        expect(gitlab_shell.exists?(project.repository_storage_path, disk_path)).to be(false)
-        expect(gitlab_shell.exists?(project.repository_storage_path, project.disk_path.gsub(project.name, ''))).to be(true)
+        expect(gitlab_shell.exists?(project.repository_storage, disk_path)).to be(false)
+        expect(gitlab_shell.exists?(project.repository_storage, project.disk_path.gsub(project.name, ''))).to be(true)
       end
     end
 
@@ -469,39 +469,39 @@ describe Gitlab::Shell do
         old_path = project2.disk_path
         new_path = "project/new_path"
 
-        expect(gitlab_shell.exists?(project2.repository_storage_path, "#{old_path}.git")).to be(true)
-        expect(gitlab_shell.exists?(project2.repository_storage_path, "#{new_path}.git")).to be(false)
+        expect(gitlab_shell.exists?(project2.repository_storage, "#{old_path}.git")).to be(true)
+        expect(gitlab_shell.exists?(project2.repository_storage, "#{new_path}.git")).to be(false)
 
-        expect(gitlab_shell.mv_repository(project2.repository_storage_path, old_path, new_path)).to be_truthy
+        expect(gitlab_shell.mv_repository(project2.repository_storage, old_path, new_path)).to be_truthy
 
-        expect(gitlab_shell.exists?(project2.repository_storage_path, "#{old_path}.git")).to be(false)
-        expect(gitlab_shell.exists?(project2.repository_storage_path, "#{new_path}.git")).to be(true)
+        expect(gitlab_shell.exists?(project2.repository_storage, "#{old_path}.git")).to be(false)
+        expect(gitlab_shell.exists?(project2.repository_storage, "#{new_path}.git")).to be(true)
       end
 
       it 'returns false when the command fails' do
-        expect(gitlab_shell.mv_repository(project2.repository_storage_path, project2.disk_path, '')).to be_falsy
-        expect(gitlab_shell.exists?(project2.repository_storage_path, "#{project2.disk_path}.git")).to be(true)
+        expect(gitlab_shell.mv_repository(project2.repository_storage, project2.disk_path, '')).to be_falsy
+        expect(gitlab_shell.exists?(project2.repository_storage, "#{project2.disk_path}.git")).to be(true)
       end
     end
 
     describe '#fork_repository' do
       subject do
         gitlab_shell.fork_repository(
-          project.repository_storage_path,
+          project.repository_storage,
           project.disk_path,
-          'new/storage',
+          'nfs-file05',
           'fork/path'
         )
       end
 
       it 'returns true when the command succeeds' do
-        expect(gitlab_projects).to receive(:fork_repository).with('new/storage', 'fork/path.git') { true }
+        expect(gitlab_projects).to receive(:fork_repository).with('nfs-file05', 'fork/path.git') { true }
 
         is_expected.to be_truthy
       end
 
       it 'return false when the command fails' do
-        expect(gitlab_projects).to receive(:fork_repository).with('new/storage', 'fork/path.git') { false }
+        expect(gitlab_projects).to receive(:fork_repository).with('nfs-file05', 'fork/path.git') { false }
 
         is_expected.to be_falsy
       end
@@ -661,7 +661,7 @@ describe Gitlab::Shell do
       it 'returns true when the command succeeds' do
         expect(gitlab_projects).to receive(:import_project).with(import_url, timeout) { true }
 
-        result = gitlab_shell.import_repository(project.repository_storage_path, project.disk_path, import_url)
+        result = gitlab_shell.import_repository(project.repository_storage, project.disk_path, import_url)
 
         expect(result).to be_truthy
       end
@@ -671,7 +671,7 @@ describe Gitlab::Shell do
         expect(gitlab_projects).to receive(:import_project) { false }
 
         expect do
-          gitlab_shell.import_repository(project.repository_storage_path, project.disk_path, import_url)
+          gitlab_shell.import_repository(project.repository_storage, project.disk_path, import_url)
         end.to raise_error(Gitlab::Shell::Error, "error")
       end
     end
@@ -679,55 +679,55 @@ describe Gitlab::Shell do
 
   describe 'namespace actions' do
     subject { described_class.new }
-    let(:storage_path) { Gitlab.config.repositories.storages.default.path }
+    let(:storage) { Gitlab.config.repositories.storages.keys.first }
 
     describe '#add_namespace' do
       it 'creates a namespace' do
-        subject.add_namespace(storage_path, "mepmep")
+        subject.add_namespace(storage, "mepmep")
 
-        expect(subject.exists?(storage_path, "mepmep")).to be(true)
+        expect(subject.exists?(storage, "mepmep")).to be(true)
       end
     end
 
     describe '#exists?' do
       context 'when the namespace does not exist' do
         it 'returns false' do
-          expect(subject.exists?(storage_path, "non-existing")).to be(false)
+          expect(subject.exists?(storage, "non-existing")).to be(false)
         end
       end
 
       context 'when the namespace exists' do
         it 'returns true' do
-          subject.add_namespace(storage_path, "mepmep")
+          subject.add_namespace(storage, "mepmep")
 
-          expect(subject.exists?(storage_path, "mepmep")).to be(true)
+          expect(subject.exists?(storage, "mepmep")).to be(true)
         end
       end
     end
 
     describe '#remove' do
       it 'removes the namespace' do
-        subject.add_namespace(storage_path, "mepmep")
-        subject.rm_namespace(storage_path, "mepmep")
+        subject.add_namespace(storage, "mepmep")
+        subject.rm_namespace(storage, "mepmep")
 
-        expect(subject.exists?(storage_path, "mepmep")).to be(false)
+        expect(subject.exists?(storage, "mepmep")).to be(false)
       end
     end
 
     describe '#mv_namespace' do
       it 'renames the namespace' do
-        subject.add_namespace(storage_path, "mepmep")
-        subject.mv_namespace(storage_path, "mepmep", "2mep")
+        subject.add_namespace(storage, "mepmep")
+        subject.mv_namespace(storage, "mepmep", "2mep")
 
-        expect(subject.exists?(storage_path, "mepmep")).to be(false)
-        expect(subject.exists?(storage_path, "2mep")).to be(true)
+        expect(subject.exists?(storage, "mepmep")).to be(false)
+        expect(subject.exists?(storage, "2mep")).to be(true)
       end
     end
   end
 
   def find_in_authorized_keys_file(key_id)
     gitlab_shell.batch_read_key_ids do |ids|
-      return true if ids.include?(key_id)
+      return true if ids.include?(key_id) # rubocop:disable Cop/AvoidReturnFromBlocks
     end
 
     false

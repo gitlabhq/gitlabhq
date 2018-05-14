@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import _ from 'underscore';
 import importU2FLibrary from './util';
 import U2FError from './error';

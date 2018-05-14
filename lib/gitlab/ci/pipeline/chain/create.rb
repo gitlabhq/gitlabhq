@@ -9,11 +9,16 @@ module Gitlab
             ::Ci::Pipeline.transaction do
               pipeline.save!
 
-              @command.seeds_block&.call(pipeline)
-
-              ::Ci::CreatePipelineStagesService
-                .new(project, current_user)
-                .execute(pipeline)
+              ##
+              # Create environments before the pipeline starts.
+              #
+              pipeline.builds.each do |build|
+                if build.has_environment?
+                  project.environments.find_or_create_by(
+                    name: build.expanded_environment_name
+                  )
+                end
+              end
             end
           rescue ActiveRecord::RecordInvalid => e
             error("Failed to persist the pipeline: #{e}")

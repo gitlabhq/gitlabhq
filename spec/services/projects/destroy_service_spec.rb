@@ -18,8 +18,8 @@ describe Projects::DestroyService do
     it 'deletes the project' do
       expect(Project.unscoped.all).not_to include(project)
 
-      expect(project.gitlab_shell.exists?(project.repository_storage_path, path + '.git')).to be_falsey
-      expect(project.gitlab_shell.exists?(project.repository_storage_path, remove_path + '.git')).to be_falsey
+      expect(project.gitlab_shell.exists?(project.repository_storage, path + '.git')).to be_falsey
+      expect(project.gitlab_shell.exists?(project.repository_storage, remove_path + '.git')).to be_falsey
     end
   end
 
@@ -65,7 +65,26 @@ describe Projects::DestroyService do
       Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
     end
 
+    context 'when has remote mirrors' do
+      let!(:project) do
+        create(:project, :repository, namespace: user.namespace).tap do |project|
+          project.remote_mirrors.create(url: 'http://test.com')
+        end
+      end
+      let!(:async) { true }
+
+      it 'destroys them' do
+        expect(RemoteMirror.count).to eq(0)
+      end
+    end
+
     it_behaves_like 'deleting the project'
+
+    it 'invalidates personal_project_count cache' do
+      expect(user).to receive(:invalidate_personal_projects_count)
+
+      destroy_project(project, user)
+    end
   end
 
   context 'Sidekiq fake' do
@@ -239,6 +258,28 @@ describe Projects::DestroyService do
 
       expect(fork_network.deleted_root_project_name).to eq(project.full_name)
       expect(fork_network.root_project).to be_nil
+    end
+  end
+
+  context '#attempt_restore_repositories' do
+    let(:path) { project.disk_path + '.git' }
+
+    before do
+      expect(project.gitlab_shell.exists?(project.repository_storage, path)).to be_truthy
+      expect(project.gitlab_shell.exists?(project.repository_storage, remove_path)).to be_falsey
+
+      # Dont run sidekiq to check if renamed repository exists
+      Sidekiq::Testing.fake! { destroy_project(project, user, {}) }
+
+      expect(project.gitlab_shell.exists?(project.repository_storage, path)).to be_falsey
+      expect(project.gitlab_shell.exists?(project.repository_storage, remove_path)).to be_truthy
+    end
+
+    it 'restores the repositories' do
+      Sidekiq::Testing.fake! { described_class.new(project, user).attempt_repositories_rollback }
+
+      expect(project.gitlab_shell.exists?(project.repository_storage, path)).to be_truthy
+      expect(project.gitlab_shell.exists?(project.repository_storage, remove_path)).to be_falsey
     end
   end
 

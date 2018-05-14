@@ -1,0 +1,28 @@
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    %p
+      Enable a Prometheus metrics endpoint at
+      %code= metrics_path
+      to expose a variety of statistics on the health and performance of GitLab. Additional information on authenticating and connecting to the metrics endpoint is available
+      = link_to 'here', admin_health_check_path
+      \. This setting requires a
+      = link_to 'restart', help_page_path('administration/restart_gitlab')
+      to take effect.
+      = link_to icon('question-circle'), help_page_path('administration/monitoring/prometheus/index')
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :prometheus_metrics_enabled do
+            = f.check_box :prometheus_metrics_enabled
+            Enable Prometheus Metrics
+          - unless Gitlab::Metrics.metrics_folder_present?
+            .help-block
+              %strong.cred WARNING:
+              Environment variable
+              %code prometheus_multiproc_dir
+              does not exist or is not pointing to a valid directory.
+              = link_to icon('question-circle'), help_page_path('administration/monitoring/prometheus/gitlab_metrics', anchor: 'metrics-shared-directory')
+
+  = f.submit 'Save changes', class: "btn btn-success"

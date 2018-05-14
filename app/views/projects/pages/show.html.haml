@@ -1,17 +1,19 @@
 - page_title 'Pages'
 
-%h3.page_title
+%h3.page-title.with-button
   Pages
 
   - if can?(current_user, :update_pages, @project) && (Gitlab.config.pages.external_http || Gitlab.config.pages.external_https)
     = link_to new_project_pages_domain_path(@project), class: 'btn btn-new pull-right', title: 'New Domain' do
-      %i.fa.fa-plus
       New Domain
 
 %p.light
   With GitLab Pages you can host your static websites on GitLab.
   Combined with the power of GitLab CI and the help of GitLab Runner
   you can deploy static pages for your individual projects, your user or your group.
+
+- if Gitlab.config.pages.external_https
+  = render 'https_only'
 
 %hr.clearfix
 

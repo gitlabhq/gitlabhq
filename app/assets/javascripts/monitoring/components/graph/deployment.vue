@@ -1,32 +1,30 @@
 <script>
-  export default {
-    props: {
-      deploymentData: {
-        type: Array,
-        required: true,
-      },
-      graphHeight: {
-        type: Number,
-        required: true,
-      },
-      graphHeightOffset: {
-        type: Number,
-        required: true,
-      },
+export default {
+  props: {
+    deploymentData: {
+      type: Array,
+      required: true,
     },
-
-    computed: {
-      calculatedHeight() {
-        return this.graphHeight - this.graphHeightOffset;
-      },
+    graphHeight: {
+      type: Number,
+      required: true,
     },
-
-    methods: {
-      transformDeploymentGroup(deployment) {
-        return `translate(${Math.floor(deployment.xPos) - 5}, 20)`;
-      },
+    graphHeightOffset: {
+      type: Number,
+      required: true,
     },
-  };
+  },
+  computed: {
+    calculatedHeight() {
+      return this.graphHeight - this.graphHeightOffset;
+    },
+  },
+  methods: {
+    transformDeploymentGroup(deployment) {
+      return `translate(${Math.floor(deployment.xPos) - 5}, 20)`;
+    },
+  },
+};
 </script>
 <template>
   <g class="deploy-info">

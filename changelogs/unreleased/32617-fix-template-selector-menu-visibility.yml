@@ -1,0 +1,6 @@
+---
+title: Fix template selector menu visibility when toggling preview mode in file edit
+  view
+merge_request: 18118
+author: Fabian Schneider
+type: fixed

@@ -1,5 +1,6 @@
 /* eslint-disable no-useless-return, max-len */
 
+import $ from 'jquery';
 import Api from '../api';
 import TemplateSelector from '../blob/template_selector';
 

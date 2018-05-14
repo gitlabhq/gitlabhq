@@ -65,6 +65,13 @@ module API
 
         present feature, with: Entities::Feature, current_user: current_user
       end
+
+      desc 'Remove the gate value for the given feature'
+      delete ':name' do
+        Feature.get(params[:name]).remove
+
+        status 204
+      end
     end
   end
 end

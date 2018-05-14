@@ -19,15 +19,19 @@
         type: String,
         required: true,
       },
+      groupName: {
+        type: String,
+        required: true,
+      },
     },
     computed: {
       title() {
         return sprintf(s__('Milestones|Promote %{milestoneTitle} to group milestone?'), { milestoneTitle: this.milestoneTitle });
       },
       text() {
-        return s__(`Milestones|Promoting this milestone will make it available for all projects inside the group.
+        return sprintf(s__(`Milestones|Promoting %{milestoneTitle} will make it available for all projects inside %{groupName}.
         Existing project milestones with the same title will be merged.
-        This action cannot be reversed.`);
+        This action cannot be reversed.`), { milestoneTitle: this.milestoneTitle, groupName: this.groupName });
       },
     },
     methods: {

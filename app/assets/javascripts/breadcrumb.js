@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 export const addTooltipToEl = (el) => {
   const textEl = el.querySelector('.js-breadcrumb-item-text');
 

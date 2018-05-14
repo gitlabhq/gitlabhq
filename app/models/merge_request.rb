@@ -1,5 +1,5 @@
 class MergeRequest < ActiveRecord::Base
-  include InternalId
+  include AtomicInternalId
   include Issuable
   include Noteable
   include Referable
@@ -17,6 +17,8 @@ class MergeRequest < ActiveRecord::Base
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
   belongs_to :merge_user, class_name: "User"
+
+  has_internal_id :iid, scope: :target_project, init: ->(s) { s&.target_project&.merge_requests&.maximum(:iid) }
 
   has_many :merge_request_diffs
 
@@ -321,7 +323,7 @@ class MergeRequest < ActiveRecord::Base
   # updates `merge_jid` with the MergeWorker#jid.
   # This helps tracking enqueued and ongoing merge jobs.
   def merge_async(user_id, params)
-    jid = MergeWorker.perform_async(id, user_id, params)
+    jid = MergeWorker.perform_async(id, user_id, params.to_h)
     update_column(:merge_jid, jid)
   end
 
@@ -536,18 +538,25 @@ class MergeRequest < ActiveRecord::Base
     merge_request_diff(true)
   end
 
-  def merge_request_diff_for(diff_refs_or_sha)
-    @merge_request_diffs_by_diff_refs_or_sha ||= Hash.new do |h, diff_refs_or_sha|
-      diffs = merge_request_diffs.viewable
-      h[diff_refs_or_sha] =
-        if diff_refs_or_sha.is_a?(Gitlab::Diff::DiffRefs)
-          diffs.find_by_diff_refs(diff_refs_or_sha)
-        else
-          diffs.find_by(head_commit_sha: diff_refs_or_sha)
-        end
-    end
+  def viewable_diffs
+    @viewable_diffs ||= merge_request_diffs.viewable.to_a
+  end
 
-    @merge_request_diffs_by_diff_refs_or_sha[diff_refs_or_sha]
+  def merge_request_diff_for(diff_refs_or_sha)
+    matcher =
+      if diff_refs_or_sha.is_a?(Gitlab::Diff::DiffRefs)
+        {
+          'start_commit_sha' => diff_refs_or_sha.start_sha,
+          'head_commit_sha' => diff_refs_or_sha.head_sha,
+          'base_commit_sha' => diff_refs_or_sha.base_sha
+        }
+      else
+        { 'head_commit_sha' => diff_refs_or_sha }
+      end
+
+    viewable_diffs.find do |diff|
+      diff.attributes.slice(*matcher.keys) == matcher
+    end
   end
 
   def version_params_for(diff_refs)
@@ -579,9 +588,10 @@ class MergeRequest < ActiveRecord::Base
     return unless open?
 
     old_diff_refs = self.diff_refs
+    new_diff = create_merge_request_diff
 
-    create_merge_request_diff
-    MergeRequests::MergeRequestDiffCacheService.new.execute(self)
+    MergeRequests::MergeRequestDiffCacheService.new.execute(self, new_diff)
+
     new_diff_refs = self.diff_refs
 
     update_diff_discussion_positions(
@@ -995,6 +1005,10 @@ class MergeRequest < ActiveRecord::Base
 
   def merge_commit
     @merge_commit ||= project.commit(merge_commit_sha) if merge_commit_sha
+  end
+
+  def short_merge_commit_sha
+    Commit.truncate_sha(merge_commit_sha) if merge_commit_sha
   end
 
   def can_be_reverted?(current_user)

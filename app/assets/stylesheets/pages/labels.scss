@@ -26,9 +26,15 @@
   }
 }
 
+.dropdown-menu-labels {
+  .dropdown-content {
+    max-height: 135px;
+  }
+}
+
 .dropdown-new-label {
   .dropdown-content {
-    max-height: 260px;
+    max-height: 136px;
   }
 }
 
@@ -307,6 +313,10 @@
 .label-link {
   display: inline-flex;
   vertical-align: top;
+
+  &:hover .color-label {
+    text-decoration: underline;
+  }
 
   .label {
     vertical-align: inherit;

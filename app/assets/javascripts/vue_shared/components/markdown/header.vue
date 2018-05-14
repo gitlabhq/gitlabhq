@@ -1,4 +1,5 @@
 <script>
+  import $ from 'jquery';
   import tooltip from '../../directives/tooltip';
   import toolbarButton from './toolbar_button.vue';
   import icon from '../icon.vue';
@@ -26,20 +27,22 @@
       $(document).off('markdown-preview:hide.vue', this.writeMarkdownTab);
     },
     methods: {
-      isMarkdownForm(form) {
-        return form && !form.find('.js-vue-markdown-field').length;
+      isValid(form) {
+        return !form ||
+          form.find('.js-vue-markdown-field').length ||
+          $(this.$el).closest('form') === form[0];
       },
 
       previewMarkdownTab(event, form) {
         if (event.target.blur) event.target.blur();
-        if (this.isMarkdownForm(form)) return;
+        if (!this.isValid(form)) return;
 
         this.$emit('preview-markdown');
       },
 
       writeMarkdownTab(event, form) {
         if (event.target.blur) event.target.blur();
-        if (this.isMarkdownForm(form)) return;
+        if (!this.isValid(form)) return;
 
         this.$emit('write-markdown');
       },

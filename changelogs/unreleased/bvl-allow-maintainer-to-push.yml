@@ -1,5 +1,0 @@
----
-title: Allow maintainers to push to forks of their projects when a merge request is open
-merge_request: 17395
-author:
-type: added

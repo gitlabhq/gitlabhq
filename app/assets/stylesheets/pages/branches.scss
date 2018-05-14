@@ -1,6 +1,17 @@
+.content-list > .branch-item,
+.branch-title {
+  display: flex;
+  align-items: center;
+}
+
+.branch-info {
+  flex: auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
 .divergence-graph {
-  padding: 12px 12px 0 0;
-  float: right;
+  padding: 0 6px;
 
   .graph-side {
     position: relative;
@@ -52,4 +63,10 @@
     float: left;
     background-color: $divergence-graph-separator-bg;
   }
+}
+
+.divergence-graph,
+.branch-item .controls {
+  flex: 0 0 auto;
+  white-space: nowrap;
 }

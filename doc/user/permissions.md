@@ -1,3 +1,7 @@
+---
+description: 'Understand and explore the user permission levels in GitLab, and what features each of them grants you access to.'
+---
+
 # Permissions
 
 Users have different abilities depending on the access level they have in a
@@ -15,6 +19,10 @@ GitLab [administrators](../README.md#administrator-documentation) receive all pe
 To add or import a user, you can follow the
 [project members documentation](../user/project/members/index.md).
 
+## Principles behind permissions
+
+See our [product handbook on permissions](https://about.gitlab.com/handbook/product#permissions-in-gitlab)
+
 ## Project members permissions
 
 The following table depicts the various user permission levels in a project.
@@ -25,7 +33,8 @@ The following table depicts the various user permission levels in a project.
 | Create confidential issue             | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
 | View confidential issues              | (✓) [^2] | ✓         | ✓           | ✓        | ✓      |
 | Leave comments                        | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
-| Lock discussions (issues and merge requests) |  |            |             | ✓        | ✓      |
+| Lock issue discussions                |         | ✓          | ✓           | ✓        | ✓      |
+| Lock merge request discussions        |         |            | ✓           | ✓        | ✓      |
 | See a list of jobs                    | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
 | See a job log                         | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
 | Download and browse job artifacts     | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |

@@ -8,7 +8,7 @@
       .discussion.js-toggle-container{ data: { discussion_id: discussion.id } }
         .discussion-header
           .discussion-actions
-            %button.note-action-button.discussion-toggle-button.js-toggle-button{ type: "button" }
+            %button.note-action-button.discussion-toggle-button.js-toggle-button{ type: "button", class: ("js-toggle-lazy-diff" unless expanded) }
               - if expanded
                 = icon("chevron-up")
               - else

@@ -217,6 +217,23 @@ describe Banzai::Filter::RelativeLinkFilter do
       end
     end
 
+    context 'when ref name contains special chars' do
+      let(:ref) {'mark#\'@],+;-._/#@!$&()+down'}
+
+      it 'correctly escapes the ref' do
+        # Adressable won't escape the '#', so we do this manually
+        ref_escaped = 'mark%23\'@%5D,+;-._/%23@!$&()+down'
+
+        # Stub this method so the branch doesn't actually need to be in the repo
+        allow_any_instance_of(described_class).to receive(:uri_type).and_return(:raw)
+
+        doc = filter(link('files/images/logo-black.png'))
+
+        expect(doc.at_css('a')['href'])
+          .to eq "/#{project_path}/raw/#{ref_escaped}/files/images/logo-black.png"
+      end
+    end
+
     context 'when requested path is a directory with space in the repo' do
       let(:ref) { 'master' }
       let(:commit) { project.commit('38008cb17ce1466d8fec2dfa6f6ab8dcfe5cf49e') }

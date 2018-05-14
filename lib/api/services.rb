@@ -735,7 +735,7 @@ module API
           required: false,
           name: event_name.to_sym,
           type: String,
-          desc: ServicesHelper.service_event_description(event_name)
+          desc: service.event_description(event_name)
         }
       end
     end

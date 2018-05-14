@@ -1,5 +1,6 @@
 /* eslint-disable no-new */
 
+import $ from 'jquery';
 import Diff from '~/diff';
 import ShortcutsNavigation from '~/shortcuts_navigation';
 import GLForm from '~/gl_form';

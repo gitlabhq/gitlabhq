@@ -65,4 +65,41 @@ describe Projects::PagesController do
       end
     end
   end
+
+  describe 'PATCH update' do
+    let(:request_params) do
+      {
+        namespace_id: project.namespace,
+        project_id: project,
+        project: { pages_https_only: false }
+      }
+    end
+
+    let(:update_service) { double(execute: { status: :success }) }
+
+    before do
+      allow(Projects::UpdateService).to receive(:new) { update_service }
+    end
+
+    it 'returns 302 status' do
+      patch :update, request_params
+
+      expect(response).to have_gitlab_http_status(:found)
+    end
+
+    it 'redirects back to the pages settings' do
+      patch :update, request_params
+
+      expect(response).to redirect_to(project_pages_path(project))
+    end
+
+    it 'calls the update service' do
+      expect(Projects::UpdateService)
+        .to receive(:new)
+        .with(project, user, request_params[:project])
+        .and_return(update_service)
+
+      patch :update, request_params
+    end
+  end
 end

@@ -23,6 +23,8 @@ class ListIssue {
     };
     this.isLoading = {};
     this.sidebarInfoEndpoint = obj.issue_sidebar_endpoint;
+    this.referencePath = obj.reference_path;
+    this.path = obj.real_path;
     this.toggleSubscriptionEndpoint = obj.toggle_subscription_endpoint;
     this.milestone_id = obj.milestone_id;
     this.project_id = obj.project_id;
@@ -98,7 +100,7 @@ class ListIssue {
     this.isLoading[key] = value;
   }
 
-  update (url) {
+  update () {
     const data = {
       issue: {
         milestone_id: this.milestone ? this.milestone.id : null,
@@ -113,7 +115,7 @@ class ListIssue {
     }
 
     const projectPath = this.project ? this.project.path : '';
-    return Vue.http.patch(url.replace(':project_path', projectPath), data);
+    return Vue.http.patch(`${this.path}.json`, data);
   }
 }
 

@@ -1,4 +1,4 @@
-import textUtils from '~/lib/utils/text_markdown';
+import { insertMarkdownText } from '~/lib/utils/text_markdown';
 
 describe('init markdown', () => {
   let textArea;
@@ -21,7 +21,7 @@ describe('init markdown', () => {
       textArea.selectionStart = 0;
       textArea.selectionEnd = 0;
 
-      textUtils.insertText(textArea, textArea.value, '*', null, '', false);
+      insertMarkdownText(textArea, textArea.value, '*', null, '', false);
 
       expect(textArea.value).toEqual(`${initialValue}* `);
     });
@@ -32,7 +32,7 @@ describe('init markdown', () => {
       textArea.value = initialValue;
       textArea.setSelectionRange(initialValue.length, initialValue.length);
 
-      textUtils.insertText(textArea, textArea.value, '*', null, '', false);
+      insertMarkdownText(textArea, textArea.value, '*', null, '', false);
 
       expect(textArea.value).toEqual(`${initialValue}\n* `);
     });
@@ -43,7 +43,7 @@ describe('init markdown', () => {
       textArea.value = initialValue;
       textArea.setSelectionRange(initialValue.length, initialValue.length);
 
-      textUtils.insertText(textArea, textArea.value, '*', null, '', false);
+      insertMarkdownText(textArea, textArea.value, '*', null, '', false);
 
       expect(textArea.value).toEqual(`${initialValue}* `);
     });
@@ -54,7 +54,7 @@ describe('init markdown', () => {
       textArea.value = initialValue;
       textArea.setSelectionRange(initialValue.length, initialValue.length);
 
-      textUtils.insertText(textArea, textArea.value, '*', null, '', false);
+      insertMarkdownText(textArea, textArea.value, '*', null, '', false);
 
       expect(textArea.value).toEqual(`${initialValue}* `);
     });

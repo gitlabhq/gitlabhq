@@ -1,0 +1,12 @@
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :allow_local_requests_from_hooks_and_services do
+            = f.check_box :allow_local_requests_from_hooks_and_services
+            Allow requests to the local network from hooks and services
+
+  = f.submit 'Save changes', class: "btn btn-success"

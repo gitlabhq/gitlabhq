@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 /**
  * Linked Tabs
  *

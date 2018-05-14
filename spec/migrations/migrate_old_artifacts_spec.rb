@@ -16,18 +16,18 @@ describe MigrateOldArtifacts do
   end
 
   context 'with migratable data' do
-    set(:project1) { create(:project, ci_id: 2) }
-    set(:project2) { create(:project, ci_id: 3) }
-    set(:project3) { create(:project) }
+    set(:project1) { create(:project, ci_id: 2) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
+    set(:project2) { create(:project, ci_id: 3) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
+    set(:project3) { create(:project) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
 
-    set(:pipeline1) { create(:ci_empty_pipeline, project: project1) }
-    set(:pipeline2) { create(:ci_empty_pipeline, project: project2) }
-    set(:pipeline3) { create(:ci_empty_pipeline, project: project3) }
+    set(:pipeline1) { create(:ci_empty_pipeline, project: project1) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
+    set(:pipeline2) { create(:ci_empty_pipeline, project: project2) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
+    set(:pipeline3) { create(:ci_empty_pipeline, project: project3) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
 
-    let!(:build_with_legacy_artifacts) { create(:ci_build, pipeline: pipeline1) }
-    let!(:build_without_artifacts) { create(:ci_build, pipeline: pipeline1) }
-    let!(:build2) { create(:ci_build, pipeline: pipeline2) }
-    let!(:build3) { create(:ci_build, pipeline: pipeline3) }
+    let!(:build_with_legacy_artifacts) { create(:ci_build, pipeline: pipeline1) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
+    let!(:build_without_artifacts) { create(:ci_build, pipeline: pipeline1) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
+    let!(:build2) { create(:ci_build, pipeline: pipeline2) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
+    let!(:build3) { create(:ci_build, pipeline: pipeline3) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
 
     before do
       setup_builds(build2, build3)
@@ -66,7 +66,7 @@ describe MigrateOldArtifacts do
         end
 
         it 'all files do have artifacts' do
-          Ci::Build.with_artifacts do |build|
+          Ci::Build.with_artifacts_archive do |build|
             expect(build).to have_artifacts
           end
         end

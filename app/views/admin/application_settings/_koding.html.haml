@@ -1,0 +1,24 @@
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :koding_enabled do
+            = f.check_box :koding_enabled
+            Enable Koding
+        .help-block
+          Koding integration has been deprecated since GitLab 10.0. If you disable your Koding integration, you will not be able to enable it again.
+    .form-group
+      = f.label :koding_url, 'Koding URL', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :koding_url, class: 'form-control', placeholder: 'http://gitlab.your-koding-instance.com:8090'
+        .help-block
+          Koding has integration enabled out of the box for the
+          %strong gitlab
+          team, and you need to provide that team's URL here. Learn more in the
+          = succeed "." do
+            = link_to "Koding administration documentation", help_page_path("administration/integration/koding")
+
+  = f.submit 'Save changes', class: "btn btn-success"

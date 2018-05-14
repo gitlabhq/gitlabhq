@@ -1,4 +1,6 @@
 module ImportHelper
+  include ::Gitlab::Utils::StrongMemoize
+
   def has_ci_cd_only_params?
     false
   end
@@ -75,17 +77,18 @@ module ImportHelper
   private
 
   def github_project_url(full_path)
-    "#{github_root_url}/#{full_path}"
+    URI.join(github_root_url, full_path).to_s
   end
 
   def github_root_url
-    return @github_url if defined?(@github_url)
+    strong_memoize(:github_url) do
+      provider = Gitlab::Auth::OAuth::Provider.config_for('github')
 
-    provider = Gitlab.config.omniauth.providers.find { |p| p.name == 'github' }
-    @github_url = provider.fetch('url', 'https://github.com') if provider
+      provider&.dig('url').presence || 'https://github.com'
+    end
   end
 
   def gitea_project_url(full_path)
-    "#{@gitea_host_url.sub(%r{/+\z}, '')}/#{full_path}"
+    URI.join(@gitea_host_url, full_path).to_s
   end
 end

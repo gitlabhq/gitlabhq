@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import OAuthRememberMe from '~/pages/sessions/new/oauth_remember_me';
 
 describe('OAuthRememberMe', () => {

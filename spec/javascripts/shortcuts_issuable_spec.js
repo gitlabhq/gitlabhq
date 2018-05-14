@@ -1,9 +1,10 @@
-import initCopyAsGFM from '~/behaviors/copy_as_gfm';
+import $ from 'jquery';
+import initCopyAsGFM from '~/behaviors/markdown/copy_as_gfm';
 import ShortcutsIssuable from '~/shortcuts_issuable';
 
 initCopyAsGFM();
 
-describe('ShortcutsIssuable', () => {
+describe('ShortcutsIssuable', function () {
   const fixtureName = 'merge_requests/diff_comment.html.raw';
   preloadFixtures(fixtureName);
   beforeEach(() => {

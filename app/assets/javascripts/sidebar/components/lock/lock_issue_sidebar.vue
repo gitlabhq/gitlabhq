@@ -1,70 +1,108 @@
 <script>
-  import Flash from '~/flash';
-  import editForm from './edit_form.vue';
-  import issuableMixin from '../../../vue_shared/mixins/issuable';
-  import Icon from '../../../vue_shared/components/icon.vue';
+import { __ } from '~/locale';
+import Flash from '~/flash';
+import tooltip from '~/vue_shared/directives/tooltip';
+import issuableMixin from '~/vue_shared/mixins/issuable';
+import Icon from '~/vue_shared/components/icon.vue';
+import eventHub from '~/sidebar/event_hub';
+import editForm from './edit_form.vue';
 
-  export default {
-    components: {
-      editForm,
-      Icon,
-    },
-    mixins: [
-      issuableMixin,
-    ],
+export default {
+  components: {
+    editForm,
+    Icon,
+  },
 
-    props: {
-      isLocked: {
-        required: true,
-        type: Boolean,
-      },
+  directives: {
+    tooltip,
+  },
 
-      isEditable: {
-        required: true,
-        type: Boolean,
-      },
+  mixins: [issuableMixin],
 
-      mediator: {
-        required: true,
-        type: Object,
-        validator(mediatorObject) {
-          return mediatorObject.service && mediatorObject.service.update && mediatorObject.store;
-        },
-      },
+  props: {
+    isLocked: {
+      required: true,
+      type: Boolean,
     },
 
-    computed: {
-      lockIcon() {
-        return this.isLocked ? 'lock' : 'lock-open';
-      },
-
-      isLockDialogOpen() {
-        return this.mediator.store.isLockDialogOpen;
-      },
+    isEditable: {
+      required: true,
+      type: Boolean,
     },
 
-    methods: {
-      toggleForm() {
-        this.mediator.store.isLockDialogOpen = !this.mediator.store.isLockDialogOpen;
+    mediator: {
+      required: true,
+      type: Object,
+      validator(mediatorObject) {
+        return (
+          mediatorObject.service &&
+          mediatorObject.service.update &&
+          mediatorObject.store
+        );
       },
+    },
+  },
 
-      updateLockedAttribute(locked) {
-        this.mediator.service.update(this.issuableType, {
+  computed: {
+    lockIcon() {
+      return this.isLocked ? 'lock' : 'lock-open';
+    },
+
+    isLockDialogOpen() {
+      return this.mediator.store.isLockDialogOpen;
+    },
+
+    tooltipLabel() {
+      return this.isLocked ? __('Locked') : __('Unlocked');
+    },
+  },
+
+  created() {
+    eventHub.$on('closeLockForm', this.toggleForm);
+  },
+
+  beforeDestroy() {
+    eventHub.$off('closeLockForm', this.toggleForm);
+  },
+
+  methods: {
+    toggleForm() {
+      this.mediator.store.isLockDialogOpen = !this.mediator.store
+        .isLockDialogOpen;
+    },
+
+    updateLockedAttribute(locked) {
+      this.mediator.service
+        .update(this.issuableType, {
           discussion_locked: locked,
         })
         .then(() => location.reload())
-        .catch(() => Flash(this.__(`Something went wrong trying to change the locked state of this ${this.issuableDisplayName}`)));
-      },
+        .catch(() =>
+          Flash(
+            this.__(
+              `Something went wrong trying to change the locked state of this ${
+                this.issuableDisplayName
+              }`,
+            ),
+          ),
+        );
     },
-  };
+  },
+};
 </script>
 
 <template>
   <div class="block issuable-sidebar-item lock">
-    <div class="sidebar-collapsed-icon">
+    <div
+      class="sidebar-collapsed-icon"
+      @click="toggleForm"
+      v-tooltip
+      data-container="body"
+      data-placement="left"
+      :title="tooltipLabel"
+    >
       <icon
         :name="lockIcon"
-        :size="16"
         aria-hidden="true"
         class="sidebar-item-icon is-active"
       />
@@ -85,7 +123,6 @@
     <div class="value sidebar-item-value hide-collapsed">
       <edit-form
         v-if="isLockDialogOpen"
-        :toggle-form="toggleForm"
         :is-locked="isLocked"
         :update-locked-attribute="updateLockedAttribute"
         :issuable-type="issuableType"

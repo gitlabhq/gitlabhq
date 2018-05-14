@@ -1,5 +1,0 @@
----
-title: Create empty wiki when import from GitLab and wiki is not there
-merge_request:
-author:
-type: fixed

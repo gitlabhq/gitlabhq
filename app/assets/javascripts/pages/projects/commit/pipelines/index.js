@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import MiniPipelineGraph from '~/mini_pipeline_graph_dropdown';
 import initPipelines from '~/commit/pipelines/pipelines_bundle';
 

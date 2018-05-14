@@ -1,5 +1,8 @@
 # Project badges API
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17082)
+in GitLab 10.6.
+
 ## Placeholder tokens
 
 Badges support placeholders that will be replaced in real time in both the link and image URL. The allowed placeholders are:
@@ -179,7 +182,7 @@ curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/a
 Example response:
 
 ```json
-{  
+{
   "link_url": "http://example.com/ci_status.svg?project=%{project_path}&ref=%{default_branch}",
   "image_url": "https://shields.io/my/badge",
   "rendered_link_url": "http://example.com/ci_status.svg?project=example-org/example-project&ref=master",

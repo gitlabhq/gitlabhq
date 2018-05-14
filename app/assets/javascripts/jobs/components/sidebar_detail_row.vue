@@ -11,10 +11,18 @@
         type: String,
         required: true,
       },
+      helpUrl: {
+        type: String,
+        required: false,
+        default: '',
+      },
     },
     computed: {
       hasTitle() {
         return this.title.length > 0;
+      },
+      hasHelpURL() {
+        return this.helpUrl.length > 0;
       },
     },
   };
@@ -28,5 +36,21 @@
       {{ title }}:
     </span>
     {{ value }}
+
+    <span
+      v-if="hasHelpURL"
+      class="help-button pull-right"
+    >
+      <a
+        :href="helpUrl"
+        target="_blank"
+        rel="noopener noreferrer nofollow"
+      >
+        <i
+          class="fa fa-question-circle"
+          aria-hidden="true"
+        ></i>
+      </a>
+    </span>
   </p>
 </template>

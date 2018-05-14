@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import DiffWithNote from '~/notes/components/diff_with_note.vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 const discussionFixture = 'merge_requests/diff_discussion.json';
 const imageDiscussionFixture = 'merge_requests/image_diff_discussion.json';

@@ -8,6 +8,7 @@ describe Banzai::Filter::IssuableStateFilter do
   let(:context) { { current_user: user, issuable_state_filter_enabled: true } }
   let(:closed_issue) { create_issue(:closed) }
   let(:project) { create(:project, :public) }
+  let(:group) { create(:group) }
   let(:other_project) { create(:project, :public) }
 
   def create_link(text, data)
@@ -73,6 +74,13 @@ describe Banzai::Filter::IssuableStateFilter do
   it 'handles cross project references' do
     link = create_link(closed_issue.to_reference(other_project), issue: closed_issue.id, reference_type: 'issue')
     doc = filter(link, context.merge(project: other_project))
+
+    expect(doc.css('a').last.text).to eq("#{closed_issue.to_reference(other_project)} (closed)")
+  end
+
+  it 'handles references from group scopes' do
+    link = create_link(closed_issue.to_reference(other_project), issue: closed_issue.id, reference_type: 'issue')
+    doc = filter(link, context.merge(project: nil, group: group))
 
     expect(doc.css('a').last.text).to eq("#{closed_issue.to_reference(other_project)} (closed)")
   end

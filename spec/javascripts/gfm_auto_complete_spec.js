@@ -1,5 +1,6 @@
 /* eslint no-param-reassign: "off" */
 
+import $ from 'jquery';
 import GfmAutoComplete from '~/gfm_auto_complete';
 
 import 'vendor/jquery.caret';
@@ -80,12 +81,20 @@ describe('GfmAutoComplete', function () {
     });
 
     it('should quote if value contains any non-alphanumeric characters', () => {
-      expect(beforeInsert(atwhoInstance, '~label-20')).toBe('~"label-20"');
+      expect(beforeInsert(atwhoInstance, '~label-20')).toBe('~"label\\-20"');
       expect(beforeInsert(atwhoInstance, '~label 20')).toBe('~"label 20"');
     });
 
     it('should quote integer labels', () => {
       expect(beforeInsert(atwhoInstance, '~1234')).toBe('~"1234"');
+    });
+
+    it('should escape Markdown emphasis characters, except in the first character', () => {
+      expect(beforeInsert(atwhoInstance, '@_group')).toEqual('@\\_group');
+      expect(beforeInsert(atwhoInstance, '~_bug')).toEqual('~\\_bug');
+      expect(beforeInsert(atwhoInstance, '~a `bug`')).toEqual('~"a \\`bug\\`"');
+      expect(beforeInsert(atwhoInstance, '~a ~bug')).toEqual('~"a \\~bug"');
+      expect(beforeInsert(atwhoInstance, '~a **bug')).toEqual('~"a \\*\\*bug"');
     });
   });
 

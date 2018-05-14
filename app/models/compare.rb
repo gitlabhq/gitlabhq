@@ -1,4 +1,6 @@
 class Compare
+  include Gitlab::Utils::StrongMemoize
+
   delegate :same, :head, :base, to: :@compare
 
   attr_reader :project
@@ -11,9 +13,10 @@ class Compare
     end
   end
 
-  def initialize(compare, project, straight: false)
+  def initialize(compare, project, base_sha: nil, straight: false)
     @compare = compare
     @project = project
+    @base_sha = base_sha
     @straight = straight
   end
 
@@ -22,40 +25,36 @@ class Compare
   end
 
   def start_commit
-    return @start_commit if defined?(@start_commit)
+    strong_memoize(:start_commit) do
+      commit = @compare.base
 
-    commit = @compare.base
-    @start_commit = commit ? ::Commit.new(commit, project) : nil
+      ::Commit.new(commit, project) if commit
+    end
   end
 
   def head_commit
-    return @head_commit if defined?(@head_commit)
+    strong_memoize(:head_commit) do
+      commit = @compare.head
 
-    commit = @compare.head
-    @head_commit = commit ? ::Commit.new(commit, project) : nil
+      ::Commit.new(commit, project) if commit
+    end
   end
   alias_method :commit, :head_commit
 
-  def base_commit
-    return @base_commit if defined?(@base_commit)
-
-    @base_commit = if start_commit && head_commit
-                     project.merge_base_commit(start_commit.id, head_commit.id)
-                   else
-                     nil
-                   end
-  end
-
   def start_commit_sha
-    start_commit.try(:sha)
+    start_commit&.sha
   end
 
   def base_commit_sha
-    base_commit.try(:sha)
+    strong_memoize(:base_commit) do
+      next unless start_commit && head_commit
+
+      @base_sha || project.merge_base_commit(start_commit.id, head_commit.id)&.sha
+    end
   end
 
   def head_commit_sha
-    commit.try(:sha)
+    commit&.sha
   end
 
   def raw_diffs(*args)

@@ -6,6 +6,7 @@ module Ci
     include AfterCommitQueue
     include Presentable
     include Gitlab::OptimisticLocking
+    include Gitlab::Utils::StrongMemoize
 
     belongs_to :project, inverse_of: :pipelines
     belongs_to :user
@@ -14,7 +15,7 @@ module Ci
 
     has_many :stages
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
-    has_many :builds, foreign_key: :commit_id
+    has_many :builds, foreign_key: :commit_id, inverse_of: :pipeline
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id # rubocop:disable Cop/ActiveRecordDependent
     has_many :variables, class_name: 'Ci::PipelineVariable'
 
@@ -31,14 +32,20 @@ module Ci
     has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: 'auto_canceled_by_id'
     has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: 'auto_canceled_by_id'
 
+    accepts_nested_attributes_for :variables, reject_if: :persisted?
+
     delegate :id, to: :project, prefix: true
     delegate :full_path, to: :project, prefix: true
 
-    validates :source, exclusion: { in: %w(unknown), unless: :importing? }, on: :create
     validates :sha, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
     validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
+
+    # Replace validator below with
+    # `validates :source, presence: { unless: :importing? }, on: :create`
+    # when removing Gitlab.rails5? code.
+    validate :valid_source, unless: :importing?, on: :create
 
     after_create :keep_around_commits, unless: :importing?
 
@@ -268,19 +275,39 @@ module Ci
     end
 
     def git_author_name
-      commit.try(:author_name)
+      strong_memoize(:git_author_name) do
+        commit.try(:author_name)
+      end
     end
 
     def git_author_email
-      commit.try(:author_email)
+      strong_memoize(:git_author_email) do
+        commit.try(:author_email)
+      end
     end
 
     def git_commit_message
-      commit.try(:message)
+      strong_memoize(:git_commit_message) do
+        commit.try(:message)
+      end
     end
 
     def git_commit_title
-      commit.try(:title)
+      strong_memoize(:git_commit_title) do
+        commit.try(:title)
+      end
+    end
+
+    def git_commit_full_title
+      strong_memoize(:git_commit_full_title) do
+        commit.try(:full_title)
+      end
+    end
+
+    def git_commit_description
+      strong_memoize(:git_commit_description) do
+        commit.try(:description)
+      end
     end
 
     def short_sha
@@ -361,19 +388,21 @@ module Ci
     def stage_seeds
       return [] unless config_processor
 
-      @stage_seeds ||= config_processor.stage_seeds(self)
+      strong_memoize(:stage_seeds) do
+        seeds = config_processor.stages_attributes.map do |attributes|
+          Gitlab::Ci::Pipeline::Seed::Stage.new(self, attributes)
+        end
+
+        seeds.select(&:included?)
+      end
     end
 
     def seeds_size
-      @seeds_size ||= stage_seeds.sum(&:size)
+      stage_seeds.sum(&:size)
     end
 
     def has_kubernetes_active?
       project.deployment_platform&.active?
-    end
-
-    def has_stage_seeds?
-      stage_seeds.any?
     end
 
     def has_warnings?
@@ -388,6 +417,9 @@ module Ci
       end
     end
 
+    ##
+    # TODO, setting yaml_errors should be moved to the pipeline creation chain.
+    #
     def config_processor
       return unless ci_yaml_file
       return @config_processor if defined?(@config_processor)
@@ -472,12 +504,22 @@ module Ci
       end
     end
 
+    def protected_ref?
+      strong_memoize(:protected_ref) { project.protected_for?(ref) }
+    end
+
+    def legacy_trigger
+      strong_memoize(:legacy_trigger) { trigger_requests.first }
+    end
+
     def predefined_variables
-      [
-        { key: 'CI_PIPELINE_ID', value: id.to_s, public: true },
-        { key: 'CI_CONFIG_PATH', value: ci_yaml_file_path, public: true },
-        { key: 'CI_PIPELINE_SOURCE', value: source.to_s, public: true }
-      ]
+      Gitlab::Ci::Variables::Collection.new
+        .append(key: 'CI_PIPELINE_ID', value: id.to_s)
+        .append(key: 'CI_CONFIG_PATH', value: ci_yaml_file_path)
+        .append(key: 'CI_PIPELINE_SOURCE', value: source.to_s)
+        .append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message)
+        .append(key: 'CI_COMMIT_TITLE', value: git_commit_full_title)
+        .append(key: 'CI_COMMIT_DESCRIPTION', value: git_commit_description)
     end
 
     def queued_duration
@@ -514,7 +556,18 @@ module Ci
       # We purposely cast the builds to an Array here. Because we always use the
       # rows if there are more than 0 this prevents us from having to run two
       # queries: one to get the count and one to get the rows.
-      @latest_builds_with_artifacts ||= builds.latest.with_artifacts.to_a
+      @latest_builds_with_artifacts ||= builds.latest.with_artifacts_archive.to_a
+    end
+
+    # Rails 5.0 autogenerated question mark enum methods return wrong result if enum value is nil.
+    # They always return `false`.
+    # These methods overwrite autogenerated ones to return correct results.
+    def unknown?
+      Gitlab.rails5? ? source.nil? : super
+    end
+
+    def unknown_source?
+      Gitlab.rails5? ? config_source.nil? : super
     end
 
     private
@@ -551,6 +604,12 @@ module Ci
 
       project.repository.keep_around(self.sha)
       project.repository.keep_around(self.before_sha)
+    end
+
+    def valid_source
+      if source.nil? || source == "unknown"
+        errors.add(:source, "invalid source")
+      end
     end
   end
 end

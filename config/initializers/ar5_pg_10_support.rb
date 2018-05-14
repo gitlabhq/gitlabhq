@@ -1,6 +1,5 @@
-raise "Vendored ActiveRecord 5 code! Delete #{__FILE__}!" if ActiveRecord::VERSION::MAJOR >= 5
-
-if Gitlab::Database.postgresql?
+# Remove this file when upgraded to rails 5.0.
+if !Gitlab.rails5? && Gitlab::Database.postgresql?
   require 'active_record/connection_adapters/postgresql_adapter'
   require 'active_record/connection_adapters/postgresql/schema_statements'
 

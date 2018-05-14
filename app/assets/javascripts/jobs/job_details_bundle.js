@@ -35,9 +35,11 @@ export default () => {
   });
 
   // Sidebar information block
+  const detailsBlockElement = document.getElementById('js-details-block-vue');
+  const detailsBlockDataset = detailsBlockElement.dataset;
   // eslint-disable-next-line
   new Vue({
-    el: '#js-details-block-vue',
+    el: detailsBlockElement,
     components: {
       detailsBlock,
     },
@@ -50,7 +52,9 @@ export default () => {
       return createElement('details-block', {
         props: {
           isLoading: this.mediator.state.isLoading,
+          canUserRetry: !!('canUserRetry' in detailsBlockDataset),
           job: this.mediator.store.state.job,
+          runnerHelpUrl: dataset.runnerHelpUrl,
         },
       });
     },

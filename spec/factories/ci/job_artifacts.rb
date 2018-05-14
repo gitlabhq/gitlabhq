@@ -5,6 +5,10 @@ FactoryBot.define do
     job factory: :ci_build
     file_type :archive
 
+    trait :remote_store do
+      file_store JobArtifactUploader::Store::REMOTE
+    end
+
     after :build do |artifact|
       artifact.project ||= artifact.job.project
     end
@@ -33,6 +37,12 @@ FactoryBot.define do
       after(:build) do |artifact, evaluator|
         artifact.file = fixture_file_upload(
           Rails.root.join('spec/fixtures/trace/sample_trace'), 'text/plain')
+      end
+    end
+
+    trait :correct_checksum do
+      after(:build) do |artifact, evaluator|
+        artifact.file_sha256 = Digest::SHA256.file(artifact.file.path).hexdigest
       end
     end
   end

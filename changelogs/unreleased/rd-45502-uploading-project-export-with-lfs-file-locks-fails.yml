@@ -1,0 +1,5 @@
+---
+title: Don't include lfs_file_locks data in export bundle
+merge_request: 18495
+author:
+type: fixed

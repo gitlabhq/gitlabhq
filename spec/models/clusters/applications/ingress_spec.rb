@@ -11,6 +11,18 @@ describe Clusters::Applications::Ingress do
     allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_async)
   end
 
+  describe '.installed' do
+    subject { described_class.installed }
+
+    let!(:cluster) { create(:clusters_applications_ingress, :installed) }
+
+    before do
+      create(:clusters_applications_ingress, :errored)
+    end
+
+    it { is_expected.to contain_exactly(cluster) }
+  end
+
   describe '#make_installed!' do
     before do
       application.make_installed!

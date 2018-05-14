@@ -84,7 +84,7 @@ module Banzai
           relative_url_root,
           project.full_path,
           uri_type(file_path),
-          Addressable::URI.escape(ref),
+          Addressable::URI.escape(ref).gsub('#', '%23'),
           Addressable::URI.escape(file_path)
         ].compact.join('/').squeeze('/').chomp('/')
 

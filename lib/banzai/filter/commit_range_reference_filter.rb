@@ -23,6 +23,8 @@ module Banzai
       end
 
       def find_object(project, id)
+        return unless project.is_a?(Project)
+
         range = CommitRange.new(id, project)
 
         range.valid_commits? ? range : nil
@@ -34,7 +36,7 @@ module Banzai
                                         range.to_param.merge(only_path: context[:only_path]))
       end
 
-      def object_link_title(range)
+      def object_link_title(range, matches)
         nil
       end
     end

@@ -1,6 +1,5 @@
 import Vue from 'vue';
-
-const ModalStore = gl.issueBoards.ModalStore;
+import ModalStore from '../../stores/modal_store';
 
 gl.issueBoards.ModalFooterListsDropdown = Vue.extend({
   data() {

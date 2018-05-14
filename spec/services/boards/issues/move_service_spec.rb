@@ -48,7 +48,7 @@ describe Boards::Issues::MoveService do
         parent.add_developer(user)
       end
 
-      it_behaves_like 'issues move service'
+      it_behaves_like 'issues move service', true
     end
   end
 end

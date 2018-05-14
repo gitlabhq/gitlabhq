@@ -501,28 +501,6 @@ describe Repository do
     end
   end
 
-  describe '#create_hooks' do
-    let(:hook_path) { File.join(repository.path_to_repo, 'hooks') }
-
-    it 'symlinks the global hooks directory' do
-      repository.create_hooks
-
-      expect(File.symlink?(hook_path)).to be true
-      expect(File.readlink(hook_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
-    end
-
-    it 'replaces existing symlink with the right directory' do
-      FileUtils.mkdir_p(hook_path)
-
-      expect(File.symlink?(hook_path)).to be false
-
-      repository.create_hooks
-
-      expect(File.symlink?(hook_path)).to be true
-      expect(File.readlink(hook_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
-    end
-  end
-
   describe "#create_dir" do
     it "commits a change that creates a new directory" do
       expect do
@@ -780,6 +758,38 @@ describe Repository do
     end
   end
 
+  describe '#async_remove_remote' do
+    before do
+      masterrev = repository.find_branch('master').dereferenced_target
+      create_remote_branch('joe', 'remote_branch', masterrev)
+    end
+
+    context 'when worker is scheduled successfully' do
+      before do
+        masterrev = repository.find_branch('master').dereferenced_target
+        create_remote_branch('remote_name', 'remote_branch', masterrev)
+
+        allow(RepositoryRemoveRemoteWorker).to receive(:perform_async).and_return('1234')
+      end
+
+      it 'returns job_id' do
+        expect(repository.async_remove_remote('joe')).to eq('1234')
+      end
+    end
+
+    context 'when worker does not schedule successfully' do
+      before do
+        allow(RepositoryRemoveRemoteWorker).to receive(:perform_async).and_return(nil)
+      end
+
+      it 'returns nil' do
+        expect(Rails.logger).to receive(:info).with("Remove remote job failed to create for #{project.id} with remote name joe.")
+
+        expect(repository.async_remove_remote('joe')).to be_nil
+      end
+    end
+  end
+
   describe '#fetch_ref' do
     let(:broken_repository) { create(:project, :broken_storage).repository }
 
@@ -895,7 +905,7 @@ describe Repository do
     end
 
     it 'returns nil when the content is not recognizable' do
-      repository.create_file(user, 'LICENSE', 'Copyright!',
+      repository.create_file(user, 'LICENSE', 'Gitlab B.V.',
         message: 'Add LICENSE', branch_name: 'master')
 
       expect(repository.license_key).to be_nil
@@ -939,7 +949,7 @@ describe Repository do
     end
 
     it 'returns nil when the content is not recognizable' do
-      repository.create_file(user, 'LICENSE', 'Copyright!',
+      repository.create_file(user, 'LICENSE', 'Gitlab B.V.',
         message: 'Add LICENSE', branch_name: 'master')
 
       expect(repository.license).to be_nil
@@ -1246,31 +1256,21 @@ describe Repository do
     end
   end
 
-  shared_examples 'repo exists check' do
+  describe '#exists?' do
     it 'returns true when a repository exists' do
-      expect(repository.exists?).to eq(true)
+      expect(repository.exists?).to be(true)
     end
 
     it 'returns false if no full path can be constructed' do
       allow(repository).to receive(:full_path).and_return(nil)
 
-      expect(repository.exists?).to eq(false)
+      expect(repository.exists?).to be(false)
     end
 
     context 'with broken storage', :broken_storage do
       it 'should raise a storage error' do
         expect_to_raise_storage_error { broken_repository.exists? }
       end
-    end
-  end
-
-  describe '#exists?' do
-    context 'when repository_exists is disabled' do
-      it_behaves_like 'repo exists check'
-    end
-
-    context 'when repository_exists is enabled', :skip_gitaly_mock do
-      it_behaves_like 'repo exists check'
     end
   end
 
@@ -1456,6 +1456,12 @@ describe Repository do
       allow(repository).to receive(:empty?).and_return(false)
 
       expect(cache).not_to receive(:expire).with(:has_visible_content?)
+
+      repository.expire_emptiness_caches
+    end
+
+    it 'expires the memoized repository cache' do
+      allow(repository.raw_repository).to receive(:expire_has_local_branches_cache).and_call_original
 
       repository.expire_emptiness_caches
     end
@@ -1727,7 +1733,8 @@ describe Repository do
         :gitlab_ci,
         :avatar,
         :issue_template,
-        :merge_request_template
+        :merge_request_template,
+        :xcode_config
       ])
 
       repository.after_change_head
@@ -2052,6 +2059,36 @@ describe Repository do
     end
   end
 
+  describe '#xcode_project?' do
+    before do
+      allow(repository).to receive(:tree).with(:head).and_return(double(:tree, blobs: [blob]))
+    end
+
+    context 'when the root contains a *.xcodeproj file' do
+      let(:blob) { double(:blob, path: 'Foo.xcodeproj') }
+
+      it 'returns true' do
+        expect(repository.xcode_project?).to be_truthy
+      end
+    end
+
+    context 'when the root contains a *.xcworkspace file' do
+      let(:blob) { double(:blob, path: 'Foo.xcworkspace') }
+
+      it 'returns true' do
+        expect(repository.xcode_project?).to be_truthy
+      end
+    end
+
+    context 'when the root contains no XCode config file' do
+      let(:blob) { double(:blob, path: 'subdir/Foo.xcworkspace') }
+
+      it 'returns false' do
+        expect(repository.xcode_project?).to be_falsey
+      end
+    end
+  end
+
   describe "#keep_around" do
     it "does not fail if we attempt to reference bad commit" do
       expect(repository.kept_around?('abc1234')).to be_falsey
@@ -2166,15 +2203,6 @@ describe Repository do
         .with(%i(size commit_count))
 
       repository.expire_statistics_caches
-    end
-  end
-
-  describe '#expire_method_caches' do
-    it 'expires the caches of the given methods' do
-      expect_any_instance_of(RepositoryCache).to receive(:expire).with(:readme)
-      expect_any_instance_of(RepositoryCache).to receive(:expire).with(:gitignore)
-
-      repository.expire_method_caches(%i(readme gitignore))
     end
   end
 
@@ -2323,66 +2351,6 @@ describe Repository do
     end
   end
 
-  describe '#cache_method_output', :use_clean_rails_memory_store_caching do
-    let(:fallback) { 10 }
-
-    context 'with a non-existing repository' do
-      let(:project) { create(:project) } # No repository
-
-      subject do
-        repository.cache_method_output(:cats, fallback: fallback) do
-          repository.cats_call_stub
-        end
-      end
-
-      it 'returns the fallback value' do
-        expect(subject).to eq(fallback)
-      end
-
-      it 'avoids calling the original method' do
-        expect(repository).not_to receive(:cats_call_stub)
-
-        subject
-      end
-    end
-
-    context 'with a method throwing a non-existing-repository error' do
-      subject do
-        repository.cache_method_output(:cats, fallback: fallback) do
-          raise Gitlab::Git::Repository::NoRepository
-        end
-      end
-
-      it 'returns the fallback value' do
-        expect(subject).to eq(fallback)
-      end
-
-      it 'does not cache the data' do
-        subject
-
-        expect(repository.instance_variable_defined?(:@cats)).to eq(false)
-        expect(repository.send(:cache).exist?(:cats)).to eq(false)
-      end
-    end
-
-    context 'with an existing repository' do
-      it 'caches the output' do
-        object = double
-
-        expect(object).to receive(:number).once.and_return(10)
-
-        2.times do
-          val = repository.cache_method_output(:cats) { object.number }
-
-          expect(val).to eq(10)
-        end
-
-        expect(repository.send(:cache).exist?(:cats)).to eq(true)
-        expect(repository.instance_variable_get(:@cats)).to eq(10)
-      end
-    end
-  end
-
   describe '#refresh_method_caches' do
     it 'refreshes the caches of the given types' do
       expect(repository).to receive(:expire_method_caches)
@@ -2431,6 +2399,11 @@ describe Repository do
         expect(repository.route_map_for(repository.commit.parent.sha)).to be_nil
       end
     end
+  end
+
+  def create_remote_branch(remote_name, branch_name, target)
+    rugged = repository.rugged
+    rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)
   end
 
   describe '#ancestor?' do

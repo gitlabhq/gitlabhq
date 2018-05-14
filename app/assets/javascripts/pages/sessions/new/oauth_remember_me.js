@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 /**
  * OAuth-based login buttons have a separate "remember me" checkbox.
  *

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import UsernameValidator from './username_validator';
 import SigninTabsMemoizer from './signin_tabs_memoizer';
 import OAuthRememberMe from './oauth_remember_me';

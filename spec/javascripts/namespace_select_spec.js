@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import NamespaceSelect from '~/namespace_select';
 
 describe('NamespaceSelect', () => {

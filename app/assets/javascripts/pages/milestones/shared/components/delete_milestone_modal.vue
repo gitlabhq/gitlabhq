@@ -2,14 +2,14 @@
   import axios from '~/lib/utils/axios_utils';
 
   import Flash from '~/flash';
-  import modal from '~/vue_shared/components/modal.vue';
+  import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
   import { n__, s__, sprintf } from '~/locale';
   import { redirectTo } from '~/lib/utils/url_utility';
   import eventHub from '../event_hub';
 
   export default {
     components: {
-      modal,
+      DeprecatedModal,
     },
     props: {
       issueCount: {
@@ -92,7 +92,7 @@ Once deleted, it cannot be undone or recovered.`),
 </script>
 
 <template>
-  <modal
+  <deprecated-modal
     id="delete-milestone-modal"
     :title="title"
     :text="text"
@@ -106,5 +106,5 @@ Once deleted, it cannot be undone or recovered.`),
       <p v-html="props.text"></p>
     </template>
 
-  </modal>
+  </deprecated-modal>
 </template>

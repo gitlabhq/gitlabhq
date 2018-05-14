@@ -67,16 +67,34 @@ describe Gitlab::Database::MigrationHelpers do
 
           model.add_concurrent_index(:users, :foo, unique: true)
         end
+
+        it 'does nothing if the index exists already' do
+          expect(model).to receive(:index_exists?)
+            .with(:users, :foo, { algorithm: :concurrently, unique: true }).and_return(true)
+          expect(model).not_to receive(:add_index)
+
+          model.add_concurrent_index(:users, :foo, unique: true)
+        end
       end
 
       context 'using MySQL' do
-        it 'creates a regular index' do
-          expect(Gitlab::Database).to receive(:postgresql?).and_return(false)
+        before do
+          allow(Gitlab::Database).to receive(:postgresql?).and_return(false)
+        end
 
+        it 'creates a regular index' do
           expect(model).to receive(:add_index)
             .with(:users, :foo, {})
 
           model.add_concurrent_index(:users, :foo)
+        end
+
+        it 'does nothing if the index exists already' do
+          expect(model).to receive(:index_exists?)
+            .with(:users, :foo, { unique: true }).and_return(true)
+          expect(model).not_to receive(:add_index)
+
+          model.add_concurrent_index(:users, :foo, unique: true)
         end
       end
     end
@@ -95,6 +113,7 @@ describe Gitlab::Database::MigrationHelpers do
     context 'outside a transaction' do
       before do
         allow(model).to receive(:transaction_open?).and_return(false)
+        allow(model).to receive(:index_exists?).and_return(true)
       end
 
       context 'using PostgreSQL' do
@@ -103,18 +122,41 @@ describe Gitlab::Database::MigrationHelpers do
           allow(model).to receive(:disable_statement_timeout)
         end
 
-        it 'removes the index concurrently by column name' do
-          expect(model).to receive(:remove_index)
-            .with(:users, { algorithm: :concurrently, column: :foo })
+        describe 'by column name' do
+          it 'removes the index concurrently' do
+            expect(model).to receive(:remove_index)
+              .with(:users, { algorithm: :concurrently, column: :foo })
 
-          model.remove_concurrent_index(:users, :foo)
+            model.remove_concurrent_index(:users, :foo)
+          end
+
+          it 'does nothing if the index does not exist' do
+            expect(model).to receive(:index_exists?)
+              .with(:users, :foo, { algorithm: :concurrently, unique: true }).and_return(false)
+            expect(model).not_to receive(:remove_index)
+
+            model.remove_concurrent_index(:users, :foo, unique: true)
+          end
         end
 
-        it 'removes the index concurrently by index name' do
-          expect(model).to receive(:remove_index)
-            .with(:users, { algorithm: :concurrently, name: "index_x_by_y" })
+        describe 'by index name' do
+          before do
+            allow(model).to receive(:index_exists_by_name?).with(:users, "index_x_by_y").and_return(true)
+          end
 
-          model.remove_concurrent_index_by_name(:users, "index_x_by_y")
+          it 'removes the index concurrently by index name' do
+            expect(model).to receive(:remove_index)
+              .with(:users, { algorithm: :concurrently, name: "index_x_by_y" })
+
+            model.remove_concurrent_index_by_name(:users, "index_x_by_y")
+          end
+
+          it 'does nothing if the index does not exist' do
+            expect(model).to receive(:index_exists_by_name?).with(:users, "index_x_by_y").and_return(false)
+            expect(model).not_to receive(:remove_index)
+
+            model.remove_concurrent_index_by_name(:users, "index_x_by_y")
+          end
         end
       end
 
@@ -141,6 +183,10 @@ describe Gitlab::Database::MigrationHelpers do
   end
 
   describe '#add_concurrent_foreign_key' do
+    before do
+      allow(model).to receive(:foreign_key_exists?).and_return(false)
+    end
+
     context 'inside a transaction' do
       it 'raises an error' do
         expect(model).to receive(:transaction_open?).and_return(true)
@@ -157,11 +203,20 @@ describe Gitlab::Database::MigrationHelpers do
       end
 
       context 'using MySQL' do
-        it 'creates a regular foreign key' do
+        before do
           allow(Gitlab::Database).to receive(:mysql?).and_return(true)
+        end
 
+        it 'creates a regular foreign key' do
           expect(model).to receive(:add_foreign_key)
             .with(:projects, :users, column: :user_id, on_delete: :cascade)
+
+          model.add_concurrent_foreign_key(:projects, :users, column: :user_id)
+        end
+
+        it 'does not create a foreign key if it exists already' do
+          expect(model).to receive(:foreign_key_exists?).with(:projects, :users, column: :user_id).and_return(true)
+          expect(model).not_to receive(:add_foreign_key)
 
           model.add_concurrent_foreign_key(:projects, :users, column: :user_id)
         end
@@ -189,6 +244,14 @@ describe Gitlab::Database::MigrationHelpers do
                                            column: :user_id,
                                            on_delete: :nullify)
         end
+
+        it 'does not create a foreign key if it exists already' do
+          expect(model).to receive(:foreign_key_exists?).with(:projects, :users, column: :user_id).and_return(true)
+          expect(model).not_to receive(:execute).with(/ADD CONSTRAINT/)
+          expect(model).to receive(:execute).with(/VALIDATE CONSTRAINT/)
+
+          model.add_concurrent_foreign_key(:projects, :users, column: :user_id)
+        end
       end
     end
   end
@@ -200,6 +263,29 @@ describe Gitlab::Database::MigrationHelpers do
 
       expect(name).to be_an_instance_of(String)
       expect(name.length).to eq(13)
+    end
+  end
+
+  describe '#foreign_key_exists?' do
+    before do
+      key = ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(:projects, :users, { column: :non_standard_id })
+      allow(model).to receive(:foreign_keys).with(:projects).and_return([key])
+    end
+
+    it 'finds existing foreign keys by column' do
+      expect(model.foreign_key_exists?(:projects, :users, column: :non_standard_id)).to be_truthy
+    end
+
+    it 'finds existing foreign keys by target table only' do
+      expect(model.foreign_key_exists?(:projects, :users)).to be_truthy
+    end
+
+    it 'compares by column name if given' do
+      expect(model.foreign_key_exists?(:projects, :users, column: :user_id)).to be_falsey
+    end
+
+    it 'compares by target if no column given' do
+      expect(model.foreign_key_exists?(:projects, :other_table)).to be_falsey
     end
   end
 
@@ -1123,6 +1209,35 @@ describe Gitlab::Database::MigrationHelpers do
         .and_return(false)
 
       expect(model.perform_background_migration_inline?).to eq(false)
+    end
+  end
+
+  describe '#index_exists_by_name?' do
+    it 'returns true if an index exists' do
+      expect(model.index_exists_by_name?(:projects, 'index_projects_on_path'))
+        .to be_truthy
+    end
+
+    it 'returns false if the index does not exist' do
+      expect(model.index_exists_by_name?(:projects, 'this_does_not_exist'))
+        .to be_falsy
+    end
+
+    context 'when an index with a function exists', :postgresql do
+      before do
+        ActiveRecord::Base.connection.execute(
+          'CREATE INDEX test_index ON projects (LOWER(path));'
+        )
+      end
+
+      after do
+        'DROP INDEX IF EXISTS test_index;'
+      end
+
+      it 'returns true if an index exists' do
+        expect(model.index_exists_by_name?(:projects, 'test_index'))
+          .to be_truthy
+      end
     end
   end
 end

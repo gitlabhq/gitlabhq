@@ -12,15 +12,14 @@ class Import::GitlabController < Import::BaseController
   def status
     @repos = client.projects
 
-    @already_added_projects = current_user.created_projects.where(import_type: "gitlab")
+    @already_added_projects = find_already_added_projects('gitlab')
     already_added_projects_names = @already_added_projects.pluck(:import_source)
 
     @repos = @repos.to_a.reject { |repo| already_added_projects_names.include? repo["path_with_namespace"] }
   end
 
   def jobs
-    jobs = current_user.created_projects.where(import_type: "gitlab").to_json(only: [:id, :import_status])
-    render json: jobs
+    render json: find_jobs('gitlab')
   end
 
   def create

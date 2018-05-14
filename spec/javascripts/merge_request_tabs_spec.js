@@ -1,7 +1,8 @@
 /* eslint-disable no-var, comma-dangle, object-shorthand */
+
+import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import * as urlUtils from '~/lib/utils/url_utility';
 import MergeRequestTabs from '~/merge_request_tabs';
 import '~/commit/pipelines/pipelines_bundle';
 import '~/breakpoints';
@@ -354,7 +355,7 @@ import 'vendor/jquery.scrollTo';
 
         describe('with note fragment hash', () => {
           it('should expand and scroll to linked fragment hash #note_xxx', function (done) {
-            spyOn(urlUtils, 'getLocationHash').and.returnValue(noteId);
+            spyOnDependency(MergeRequestTabs, 'getLocationHash').and.returnValue(noteId);
             this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
 
             setTimeout(() => {
@@ -370,7 +371,7 @@ import 'vendor/jquery.scrollTo';
           });
 
           it('should gracefully ignore non-existant fragment hash', function (done) {
-            spyOn(urlUtils, 'getLocationHash').and.returnValue('note_something-that-does-not-exist');
+            spyOnDependency(MergeRequestTabs, 'getLocationHash').and.returnValue('note_something-that-does-not-exist');
             this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
 
             setTimeout(() => {
@@ -383,7 +384,7 @@ import 'vendor/jquery.scrollTo';
 
         describe('with line number fragment hash', () => {
           it('should gracefully ignore line number fragment hash', function () {
-            spyOn(urlUtils, 'getLocationHash').and.returnValue(noteLineNumId);
+            spyOnDependency(MergeRequestTabs, 'getLocationHash').and.returnValue(noteLineNumId);
             this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
 
             expect(noteLineNumId.length).toBeGreaterThan(0);
@@ -420,7 +421,7 @@ import 'vendor/jquery.scrollTo';
 
         describe('with note fragment hash', () => {
           it('should expand and scroll to linked fragment hash #note_xxx', function (done) {
-            spyOn(urlUtils, 'getLocationHash').and.returnValue(noteId);
+            spyOnDependency(MergeRequestTabs, 'getLocationHash').and.returnValue(noteId);
 
             this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
 
@@ -437,7 +438,7 @@ import 'vendor/jquery.scrollTo';
           });
 
           it('should gracefully ignore non-existant fragment hash', function (done) {
-            spyOn(urlUtils, 'getLocationHash').and.returnValue('note_something-that-does-not-exist');
+            spyOnDependency(MergeRequestTabs, 'getLocationHash').and.returnValue('note_something-that-does-not-exist');
             this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
 
             setTimeout(() => {
@@ -449,7 +450,7 @@ import 'vendor/jquery.scrollTo';
 
         describe('with line number fragment hash', () => {
           it('should gracefully ignore line number fragment hash', function () {
-            spyOn(urlUtils, 'getLocationHash').and.returnValue(noteLineNumId);
+            spyOnDependency(MergeRequestTabs, 'getLocationHash').and.returnValue(noteLineNumId);
             this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
 
             expect(noteLineNumId.length).toBeGreaterThan(0);

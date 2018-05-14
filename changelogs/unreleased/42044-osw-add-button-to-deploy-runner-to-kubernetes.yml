@@ -1,5 +1,0 @@
----
-title: Add a button to deploy a runner to a Kubernetes cluster in the settings page
-merge_request: 17278
-author:
-type: changed

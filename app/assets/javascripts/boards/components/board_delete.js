@@ -1,5 +1,6 @@
 /* eslint-disable comma-dangle, space-before-function-paren, no-alert */
 
+import $ from 'jquery';
 import Vue from 'vue';
 
 window.gl = window.gl || {};

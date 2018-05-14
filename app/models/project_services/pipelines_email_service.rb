@@ -39,10 +39,6 @@ class PipelinesEmailService < Service
     project.pipelines.any?
   end
 
-  def disabled_title
-    'Please setup a pipeline on your repository.'
-  end
-
   def test_data(project, user)
     data = Gitlab::DataBuilder::Pipeline.build(project.pipelines.last)
     data[:user] = user.hook_attrs

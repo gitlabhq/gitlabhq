@@ -72,7 +72,7 @@ module API
 
     class ProjectHook < Hook
       expose :project_id, :issues_events, :confidential_issues_events
-      expose :note_events, :pipeline_events, :wiki_page_events
+      expose :note_events, :confidential_note_events, :pipeline_events, :wiki_page_events
       expose :job_events
     end
 
@@ -136,6 +136,7 @@ module API
 
       def self.preload_relation(projects_relation, options =  {})
         projects_relation.preload(:project_feature, :route)
+                         .preload(:import_state)
                          .preload(namespace: [:route, :owner],
                                   tags: :taggings)
       end
@@ -149,11 +150,11 @@ module API
           expose_url(api_v4_projects_path(id: project.id))
         end
 
-        expose :issues, if: -> (*args) { issues_available?(*args) } do |project|
+        expose :issues, if: -> (project, options) { issues_available?(project, options) } do |project|
           expose_url(api_v4_projects_issues_path(id: project.id))
         end
 
-        expose :merge_requests, if: -> (*args) { mrs_available?(*args) } do |project|
+        expose :merge_requests, if: -> (project, options) { mrs_available?(project, options) } do |project|
           expose_url(api_v4_projects_merge_requests_path(id: project.id))
         end
 
@@ -206,6 +207,7 @@ module API
       expose :request_access_enabled
       expose :only_allow_merge_if_all_discussions_are_resolved
       expose :printing_merge_request_link_enabled
+      expose :merge_method
 
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
 
@@ -241,13 +243,18 @@ module API
       expose :requested_at
     end
 
-    class Group < Grape::Entity
-      expose :id, :name, :path, :description, :visibility
+    class BasicGroupDetails < Grape::Entity
+      expose :id
+      expose :web_url
+      expose :name
+    end
+
+    class Group < BasicGroupDetails
+      expose :path, :description, :visibility
       expose :lfs_enabled?, as: :lfs_enabled
       expose :avatar_url do |group, options|
         group.avatar_url(only_path: false)
       end
-      expose :web_url
       expose :request_access_enabled
       expose :full_name, :full_path
 
@@ -283,6 +290,10 @@ module API
           options: { only_shared: true }
         ).execute
       end
+    end
+
+    class DiffRefs < Grape::Entity
+      expose :base_sha, :head_sha, :start_sha
     end
 
     class Commit < Grape::Entity
@@ -405,6 +416,7 @@ module API
 
     class IssueBasic < ProjectEntity
       expose :closed_at
+      expose :closed_by, using: Entities::UserBasic
       expose :labels do |issue, options|
         # Avoids an N+1 query since labels are preloaded
         issue.labels.map(&:title).sort
@@ -599,6 +611,8 @@ module API
         merge_request.metrics&.pipeline
       end
 
+      expose :diff_refs, using: Entities::DiffRefs
+
       def build_available?(options)
         options[:project]&.feature_available?(:builds, options[:current_user])
       end
@@ -640,6 +654,11 @@ module API
       expose :id, :key, :created_at
     end
 
+    class DiffPosition < Grape::Entity
+      expose :base_sha, :start_sha, :head_sha, :old_path, :new_path,
+        :position_type
+    end
+
     class Note < Grape::Entity
       # Only Issue and MergeRequest have iid
       NOTEABLE_TYPES_WITH_IID = %w(Issue MergeRequest).freeze
@@ -652,6 +671,14 @@ module API
       expose :created_at, :updated_at
       expose :system?, as: :system
       expose :noteable_id, :noteable_type
+
+      expose :position, if: ->(note, options) { note.diff_note? } do |note|
+        note.position.to_h
+      end
+
+      expose :resolvable?, as: :resolvable
+      expose :resolved?, as: :resolved, if: ->(note, options) { note.resolvable? }
+      expose :resolved_by, using: Entities::UserBasic, if: ->(note, options) { note.resolvable? }
 
       # Avoid N+1 queries as much as possible
       expose(:noteable_iid) { |note| note.noteable.iid if NOTEABLE_TYPES_WITH_IID.include?(note.noteable_type) }
@@ -792,7 +819,7 @@ module API
       expose :id, :title, :created_at, :updated_at, :active
       expose :push_events, :issues_events, :confidential_issues_events
       expose :merge_requests_events, :tag_push_events, :note_events
-      expose :pipeline_events, :wiki_page_events
+      expose :confidential_note_events, :pipeline_events, :wiki_page_events
       expose :job_events
       # Expose serialized properties
       expose :properties do |service, options|
@@ -926,7 +953,7 @@ module API
     end
 
     class Tag < Grape::Entity
-      expose :name, :message
+      expose :name, :message, :target
 
       expose :commit, using: Entities::Commit do |repo_tag, options|
         options[:project].repository.commit(repo_tag.dereferenced_target)
@@ -940,6 +967,7 @@ module API
     class Runner < Grape::Entity
       expose :id
       expose :description
+      expose :ip_address
       expose :active
       expose :is_shared
       expose :name
@@ -951,6 +979,7 @@ module API
       expose :tag_list
       expose :run_untagged
       expose :locked
+      expose :maximum_timeout
       expose :access_level
       expose :version, :revision, :platform, :architecture
       expose :contacted_at
@@ -960,6 +989,13 @@ module API
           runner.projects
         else
           options[:current_user].authorized_projects.where(id: runner.projects)
+        end
+      end
+      expose :groups, with: Entities::BasicGroupDetails do |runner, options|
+        if options[:current_user].admin?
+          runner.groups
+        else
+          options[:current_user].authorized_groups.where(id: runner.groups)
         end
       end
     end
@@ -1119,7 +1155,7 @@ module API
       end
 
       class RunnerInfo < Grape::Entity
-        expose :timeout
+        expose :metadata_timeout, as: :timeout
       end
 
       class Step < Grape::Entity

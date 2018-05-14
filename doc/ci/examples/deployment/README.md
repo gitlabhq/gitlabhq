@@ -111,7 +111,7 @@ We also use two secure variables:
 ## Storing API keys
 
 Secure Variables can added by going to your project's
-**Settings ➔ Pipelines ➔ Secret variables**. The variables that are defined
+**Settings ➔ CI / CD ➔ Secret variables**. The variables that are defined
 in the project settings are sent along with the build script to the Runner.
 The secure variables are stored out of the repository. Never store secrets in
 your project's `.gitlab-ci.yml`. It is also important that the secret's value

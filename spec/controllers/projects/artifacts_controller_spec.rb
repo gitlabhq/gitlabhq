@@ -145,7 +145,21 @@ describe Projects::ArtifactsController do
       context 'when using local file storage' do
         it_behaves_like 'a valid file' do
           let(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
+          let(:store) { ObjectStorage::Store::LOCAL }
           let(:archive_path) { JobArtifactUploader.root }
+        end
+      end
+
+      context 'when using remote file storage' do
+        before do
+          stub_artifacts_object_storage
+        end
+
+        it_behaves_like 'a valid file' do
+          let!(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: job) }
+          let!(:job) { create(:ci_build, :success, pipeline: pipeline) }
+          let(:store) { ObjectStorage::Store::REMOTE }
+          let(:archive_path) { 'https://' }
         end
       end
     end

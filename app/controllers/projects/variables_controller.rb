@@ -12,7 +12,7 @@ class Projects::VariablesController < Projects::ApplicationController
   def update
     if @project.update(variables_params)
       respond_to do |format|
-        format.json { return render_variables }
+        format.json { render_variables }
       end
     else
       respond_to do |format|
@@ -36,6 +36,6 @@ class Projects::VariablesController < Projects::ApplicationController
   end
 
   def variable_params_attributes
-    %i[id key value protected _destroy]
+    %i[id key secret_value protected _destroy]
   end
 end

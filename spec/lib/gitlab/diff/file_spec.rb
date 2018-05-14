@@ -455,5 +455,17 @@ describe Gitlab::Diff::File do
         expect(diff_file.size).to be_zero
       end
     end
+
+    describe '#different_type?' do
+      it 'returns false' do
+        expect(diff_file).not_to be_different_type
+      end
+    end
+
+    describe '#content_changed?' do
+      it 'returns false' do
+        expect(diff_file).not_to be_content_changed
+      end
+    end
   end
 end

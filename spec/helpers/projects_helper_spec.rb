@@ -274,16 +274,16 @@ describe ProjectsHelper do
     end
   end
 
-  describe '#sanitized_import_error' do
+  describe '#sanitizerepo_repo_path' do
     let(:project) { create(:project, :repository) }
+    let(:storage_path) { Gitlab.config.repositories.storages.default.legacy_disk_path }
 
     before do
-      allow(project).to receive(:repository_storage_path).and_return('/base/repo/path')
       allow(Settings.shared).to receive(:[]).with('path').and_return('/base/repo/export/path')
     end
 
     it 'removes the repo path' do
-      repo = '/base/repo/path/namespace/test.git'
+      repo = File.join(storage_path, 'namespace/test.git')
       import_error = "Could not clone #{repo}\n"
 
       expect(sanitize_repo_path(project, import_error)).to eq('Could not clone [REPOS PATH]/namespace/test.git')
@@ -319,74 +319,6 @@ describe ProjectsHelper do
       expect(user).to receive(:recent_push).with(project).and_return(event)
 
       expect(helper.last_push_event).to eq(event)
-    end
-  end
-
-  describe "#project_feature_access_select" do
-    let(:project) { create(:project, :public) }
-    let(:user)    { create(:user) }
-
-    context "when project is internal or public" do
-      it "shows all options" do
-        helper.instance_variable_set(:@project, project)
-        result = helper.project_feature_access_select(:issues_access_level)
-        expect(result).to include("Disabled")
-        expect(result).to include("Only team members")
-        expect(result).to include("Everyone with access")
-      end
-    end
-
-    context "when project is private" do
-      before do
-        project.update_attributes(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
-      end
-
-      it "shows only allowed options" do
-        helper.instance_variable_set(:@project, project)
-        result = helper.project_feature_access_select(:issues_access_level)
-        expect(result).to include("Disabled")
-        expect(result).to include("Only team members")
-        expect(result).to have_selector('option[disabled]', text: "Everyone with access")
-      end
-    end
-
-    context "when project moves from public to private" do
-      before do
-        project.update_attributes(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
-      end
-
-      it "shows the highest allowed level selected" do
-        helper.instance_variable_set(:@project, project)
-        result = helper.project_feature_access_select(:issues_access_level)
-
-        expect(result).to include("Disabled")
-        expect(result).to include("Only team members")
-        expect(result).to have_selector('option[disabled]', text: "Everyone with access")
-        expect(result).to have_selector('option[selected]', text: "Only team members")
-      end
-    end
-  end
-
-  describe "#visibility_select_options" do
-    let(:project) { create(:project, :repository) }
-    let(:user)    { create(:user) }
-
-    before do
-      allow(helper).to receive(:current_user).and_return(user)
-
-      stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
-    end
-
-    it "does not include the Public restricted level" do
-      expect(helper.send(:visibility_select_options, project, Gitlab::VisibilityLevel::PRIVATE)).not_to include('Public')
-    end
-
-    it "includes the Internal level" do
-      expect(helper.send(:visibility_select_options, project, Gitlab::VisibilityLevel::PRIVATE)).to include('Internal')
-    end
-
-    it "includes the Private level" do
-      expect(helper.send(:visibility_select_options, project, Gitlab::VisibilityLevel::PRIVATE)).to include('Private')
     end
   end
 

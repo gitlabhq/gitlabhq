@@ -240,7 +240,7 @@ describe Group do
 
     it "is false if avatar is html page" do
       group.update_attribute(:avatar, 'uploads/avatar.html')
-      expect(group.avatar_type).to eq(["only images allowed"])
+      expect(group.avatar_type).to eq(["file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff"])
     end
   end
 
@@ -421,6 +421,95 @@ describe Group do
     it 'returns parents members' do
       expect(group.members_with_parents).to include(developer)
       expect(group.members_with_parents).to include(master)
+    end
+  end
+
+  describe '#direct_and_indirect_members', :nested_groups do
+    let!(:group) { create(:group, :nested) }
+    let!(:sub_group) { create(:group, parent: group) }
+    let!(:master) { group.parent.add_user(create(:user), GroupMember::MASTER) }
+    let!(:developer) { group.add_user(create(:user), GroupMember::DEVELOPER) }
+    let!(:other_developer) { group.add_user(create(:user), GroupMember::DEVELOPER) }
+
+    it 'returns parents members' do
+      expect(group.direct_and_indirect_members).to include(developer)
+      expect(group.direct_and_indirect_members).to include(master)
+    end
+
+    it 'returns descendant members' do
+      expect(group.direct_and_indirect_members).to include(other_developer)
+    end
+  end
+
+  describe '#users_with_descendants', :nested_groups do
+    let(:user_a) { create(:user) }
+    let(:user_b) { create(:user) }
+
+    let(:group) { create(:group) }
+    let(:nested_group) { create(:group, parent: group) }
+    let(:deep_nested_group) { create(:group, parent: nested_group) }
+
+    it 'returns member users on every nest level without duplication' do
+      group.add_developer(user_a)
+      nested_group.add_developer(user_b)
+      deep_nested_group.add_developer(user_a)
+
+      expect(group.users_with_descendants).to contain_exactly(user_a, user_b)
+      expect(nested_group.users_with_descendants).to contain_exactly(user_a, user_b)
+      expect(deep_nested_group.users_with_descendants).to contain_exactly(user_a)
+    end
+  end
+
+  describe '#direct_and_indirect_users', :nested_groups do
+    let(:user_a) { create(:user) }
+    let(:user_b) { create(:user) }
+    let(:user_c) { create(:user) }
+    let(:user_d) { create(:user) }
+
+    let(:group) { create(:group) }
+    let(:nested_group) { create(:group, parent: group) }
+    let(:deep_nested_group) { create(:group, parent: nested_group) }
+    let(:project) { create(:project, namespace: group) }
+
+    before do
+      group.add_developer(user_a)
+      group.add_developer(user_c)
+      nested_group.add_developer(user_b)
+      deep_nested_group.add_developer(user_a)
+      project.add_developer(user_d)
+    end
+
+    it 'returns member users on every nest level without duplication' do
+      expect(group.direct_and_indirect_users).to contain_exactly(user_a, user_b, user_c, user_d)
+      expect(nested_group.direct_and_indirect_users).to contain_exactly(user_a, user_b, user_c)
+      expect(deep_nested_group.direct_and_indirect_users).to contain_exactly(user_a, user_b, user_c)
+    end
+
+    it 'does not return members of projects belonging to ancestor groups' do
+      expect(nested_group.direct_and_indirect_users).not_to include(user_d)
+    end
+  end
+
+  describe '#project_users_with_descendants', :nested_groups do
+    let(:user_a) { create(:user) }
+    let(:user_b) { create(:user) }
+    let(:user_c) { create(:user) }
+
+    let(:group) { create(:group) }
+    let(:nested_group) { create(:group, parent: group) }
+    let(:deep_nested_group) { create(:group, parent: nested_group) }
+    let(:project_a) { create(:project, namespace: group) }
+    let(:project_b) { create(:project, namespace: nested_group) }
+    let(:project_c) { create(:project, namespace: deep_nested_group) }
+
+    it 'returns members of all projects in group and subgroups' do
+      project_a.add_developer(user_a)
+      project_b.add_developer(user_b)
+      project_c.add_developer(user_c)
+
+      expect(group.project_users_with_descendants).to contain_exactly(user_a, user_b, user_c)
+      expect(nested_group.project_users_with_descendants).to contain_exactly(user_b, user_c)
+      expect(deep_nested_group.project_users_with_descendants).to contain_exactly(user_c)
     end
   end
 

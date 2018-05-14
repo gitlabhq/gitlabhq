@@ -20,6 +20,7 @@ Disallow: /projects/new
 Disallow: /groups/new
 Disallow: /groups/*/edit
 Disallow: /users
+Disallow: /help
 
 # Global snippets
 User-Agent: *

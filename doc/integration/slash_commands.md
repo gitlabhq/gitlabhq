@@ -15,9 +15,10 @@ Taking the trigger term as `project-name`, the commands are:
 | `/project-name issue new <title> <shift+return> <description>` | Creates a new issue with title `<title>` and description `<description>` |
 | `/project-name issue show <id>` | Shows the issue with id `<id>` |
 | `/project-name issue search <query>` | Shows up to 5 issues matching `<query>` |
+| `/project-name issue move <id> to <project>` | Moves issue ID `<id>` to `<project>` |
 | `/project-name deploy <from> to <to>` | Deploy from the `<from>` environment to the `<to>` environment |
 
-Note that if you are using the [GitLab Slack application](https://docs.gitlab.com/ee/user/project/integrations/gitlab_slack_application.html) for 
+Note that if you are using the [GitLab Slack application](https://docs.gitlab.com/ee/user/project/integrations/gitlab_slack_application.html) for
 your GitLab.com projects, you need to [add the `gitlab` keyword at the beginning of the command](https://docs.gitlab.com/ee/user/project/integrations/gitlab_slack_application.html#usage).
 
 ## Issue commands

@@ -1,6 +1,6 @@
 - merge_request = issuable
 .block.assignee
-  .sidebar-collapsed-icon.sidebar-collapsed-user{ data: { toggle: "tooltip", placement: "left", container: "body" }, title: (merge_request.assignee.name if merge_request.assignee) }
+  .sidebar-collapsed-icon.sidebar-collapsed-user{ data: { toggle: "tooltip", placement: "left", container: "body" }, title: sidebar_assignee_tooltip_label(issuable) }
     - if merge_request.assignee
       = link_to_member(@project, merge_request.assignee, size: 24)
     - else

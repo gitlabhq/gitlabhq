@@ -1,5 +1,7 @@
 /* eslint-disable func-names, space-before-function-paren, consistent-return, no-var, no-else-return, prefer-arrow-callback, max-len */
 
+import $ from 'jquery';
+
 // Syntax Highlighter
 //
 // Applies a syntax highlighting color scheme CSS class to any element with the

@@ -4,7 +4,7 @@ module Gitlab
       module Expression
         module Lexeme
           class String < Lexeme::Value
-            PATTERN = /("(?<string>.+?)")|('(?<string>.+?)')/.freeze
+            PATTERN = /("(?<string>.*?)")|('(?<string>.*?)')/.freeze
 
             def initialize(value)
               @value = value

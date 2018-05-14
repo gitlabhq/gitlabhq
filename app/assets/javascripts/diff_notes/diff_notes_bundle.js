@@ -1,6 +1,7 @@
 /* eslint-disable func-names, comma-dangle, new-cap, no-new, max-len */
 /* global ResolveCount */
 
+import $ from 'jquery';
 import Vue from 'vue';
 import './models/discussion';
 import './models/note';

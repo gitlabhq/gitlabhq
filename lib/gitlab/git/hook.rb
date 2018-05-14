@@ -95,13 +95,13 @@ module Gitlab
         args = [ref, oldrev, newrev]
 
         stdout, stderr, status = Open3.capture3(env, path, *args, options)
-        [status.success?, (stderr.presence || stdout).gsub(/\R/, "<br>").html_safe]
+        [status.success?, Gitlab::Utils.nlbr(stderr.presence || stdout)]
       end
 
       def retrieve_error_message(stderr, stdout)
         err_message = stderr.read
         err_message = err_message.blank? ? stdout.read : err_message
-        err_message.gsub(/\R/, "<br>").html_safe
+        Gitlab::Utils.nlbr(err_message)
       end
     end
   end

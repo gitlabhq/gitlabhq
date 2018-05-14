@@ -1,5 +1,6 @@
 ---
 comments: false
+description: 'Learn how to contribute to GitLab.'
 ---
 
 # GitLab development guides
@@ -18,6 +19,7 @@ comments: false
 - [Code review guidelines](code_review.md) for reviewing code and having code reviewed.
 - [Automatic CE->EE merge](automatic_ce_ee_merge.md)
 - [Guidelines for implementing Enterprise Edition features](ee_features.md)
+- [Security process for developers](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md#security-releases-critical-non-critical-as-a-developer)
 
 ## UX and frontend guides
 
@@ -39,9 +41,9 @@ comments: false
 - [Sidekiq debugging](sidekiq_debugging.md)
 - [Gotchas](gotchas.md) to avoid
 - [Avoid modules with instance variables](module_with_instance_variables.md) if possible
-- [Issue and merge requests state models](object_state_models.md)
 - [How to dump production data to staging](db_dump.md)
 - [Working with the GitHub importer](github_importer.md)
+- [Working with Merge Request diffs](diffs.md)
 
 ## Performance guides
 

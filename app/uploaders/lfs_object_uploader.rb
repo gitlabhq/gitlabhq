@@ -1,10 +1,6 @@
 class LfsObjectUploader < GitlabUploader
   extend Workhorse::UploadPath
-
-  # LfsObject are in `tmp/upload` instead of `tmp/uploads`
-  def self.workhorse_upload_path
-    File.join(root, 'tmp/upload')
-  end
+  include ObjectStorage::Concern
 
   storage_options Gitlab.config.lfs
 

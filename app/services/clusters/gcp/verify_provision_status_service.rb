@@ -17,7 +17,7 @@ module Clusters
           when 'DONE'
             finalize_creation
           else
-            return provider.make_errored!("Unexpected operation status; #{operation.status} #{operation.status_message}")
+            provider.make_errored!("Unexpected operation status; #{operation.status} #{operation.status_message}")
           end
         end
       end

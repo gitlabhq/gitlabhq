@@ -82,7 +82,7 @@ describe Clusters::CreateService do
 
     context 'when project has a cluster' do
       include_context 'valid params'
-      let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+      let!(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, projects: [project]) }
 
       it 'does not create a cluster' do
         expect(ClusterProvisionWorker).not_to receive(:perform_async)

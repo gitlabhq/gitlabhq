@@ -56,6 +56,7 @@
               type: 'button',
               data: { url: promote_project_milestone_path(milestone.project, milestone),
                       milestone_title: milestone.title,
+                      group_name: @project.group.name,
                       target: '#promote-milestone-modal',
                       container: 'body',
                       toggle: 'modal' } }

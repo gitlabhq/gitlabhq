@@ -89,4 +89,19 @@ describe GitlabRoutingHelper do
       expect(preview_markdown_path(project)).to eq("/#{project.full_path}/preview_markdown")
     end
   end
+
+  describe '#edit_milestone_path' do
+    it 'returns group milestone edit path when given entity parent is a Group' do
+      group = create(:group)
+      milestone = create(:milestone, group: group)
+
+      expect(edit_milestone_path(milestone)).to eq("/groups/#{group.path}/-/milestones/#{milestone.iid}/edit")
+    end
+
+    it 'returns project milestone edit path when given entity parent is not a Group' do
+      milestone = create(:milestone, group: nil)
+
+      expect(edit_milestone_path(milestone)).to eq("/#{milestone.project.full_path}/milestones/#{milestone.iid}/edit")
+    end
+  end
 end

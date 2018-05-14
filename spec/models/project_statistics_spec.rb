@@ -4,26 +4,6 @@ describe ProjectStatistics do
   let(:project) { create :project }
   let(:statistics) { project.statistics }
 
-  describe 'constants' do
-    describe 'STORAGE_COLUMNS' do
-      it 'is an array of symbols' do
-        expect(described_class::STORAGE_COLUMNS).to be_kind_of Array
-        expect(described_class::STORAGE_COLUMNS.map(&:class).uniq).to eq [Symbol]
-      end
-    end
-
-    describe 'STATISTICS_COLUMNS' do
-      it 'is an array of symbols' do
-        expect(described_class::STATISTICS_COLUMNS).to be_kind_of Array
-        expect(described_class::STATISTICS_COLUMNS.map(&:class).uniq).to eq [Symbol]
-      end
-
-      it 'includes all storage columns' do
-        expect(described_class::STATISTICS_COLUMNS & described_class::STORAGE_COLUMNS).to eq described_class::STORAGE_COLUMNS
-      end
-    end
-  end
-
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:namespace) }
@@ -63,7 +43,6 @@ describe ProjectStatistics do
       allow(statistics).to receive(:update_commit_count)
       allow(statistics).to receive(:update_repository_size)
       allow(statistics).to receive(:update_lfs_objects_size)
-      allow(statistics).to receive(:update_build_artifacts_size)
       allow(statistics).to receive(:update_storage_size)
     end
 
@@ -76,7 +55,6 @@ describe ProjectStatistics do
         expect(statistics).to have_received(:update_commit_count)
         expect(statistics).to have_received(:update_repository_size)
         expect(statistics).to have_received(:update_lfs_objects_size)
-        expect(statistics).to have_received(:update_build_artifacts_size)
       end
     end
 
@@ -89,7 +67,6 @@ describe ProjectStatistics do
         expect(statistics).to have_received(:update_lfs_objects_size)
         expect(statistics).not_to have_received(:update_commit_count)
         expect(statistics).not_to have_received(:update_repository_size)
-        expect(statistics).not_to have_received(:update_build_artifacts_size)
       end
     end
   end
@@ -131,40 +108,6 @@ describe ProjectStatistics do
     end
   end
 
-  describe '#update_build_artifacts_size' do
-    let!(:pipeline) { create(:ci_pipeline, project: project) }
-
-    context 'when new job artifacts are calculated' do
-      let(:ci_build) { create(:ci_build, pipeline: pipeline) }
-
-      before do
-        create(:ci_job_artifact, :archive, project: pipeline.project, job: ci_build)
-      end
-
-      it "stores the size of related build artifacts" do
-        statistics.update_build_artifacts_size
-
-        expect(statistics.build_artifacts_size).to be(106365)
-      end
-
-      it 'calculates related build artifacts by project' do
-        expect(Ci::JobArtifact).to receive(:artifacts_size_for).with(project) { 0 }
-
-        statistics.update_build_artifacts_size
-      end
-    end
-
-    context 'when legacy artifacts are used' do
-      let!(:ci_build) { create(:ci_build, pipeline: pipeline, artifacts_size: 10.megabytes) }
-
-      it "stores the size of related build artifacts" do
-        statistics.update_build_artifacts_size
-
-        expect(statistics.build_artifacts_size).to eq(10.megabytes)
-      end
-    end
-  end
-
   describe '#update_storage_size' do
     it "sums all storage counters" do
       statistics.update!(
@@ -175,6 +118,29 @@ describe ProjectStatistics do
       statistics.reload
 
       expect(statistics.storage_size).to eq 5
+    end
+  end
+
+  describe '.increment_statistic' do
+    it 'increases the statistic by that amount' do
+      expect { described_class.increment_statistic(project.id, :build_artifacts_size, 13) }
+        .to change { statistics.reload.build_artifacts_size }
+        .by(13)
+    end
+
+    context 'when the amount is 0' do
+      it 'does not execute a query' do
+        project
+        expect { described_class.increment_statistic(project.id, :build_artifacts_size, 0) }
+          .not_to exceed_query_limit(0)
+      end
+    end
+
+    context 'when using an invalid column' do
+      it 'raises an error' do
+        expect { described_class.increment_statistic(project.id, :id, 13) }
+          .to raise_error(ArgumentError, "Cannot increment attribute: id")
+      end
     end
   end
 end

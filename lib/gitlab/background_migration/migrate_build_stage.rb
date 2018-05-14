@@ -12,6 +12,7 @@ module Gitlab
 
         class Build < ActiveRecord::Base
           self.table_name = 'ci_builds'
+          self.inheritance_column = :_type_disabled
 
           def ensure_stage!(attempts: 2)
             find_stage || create_stage!

@@ -1,5 +1,7 @@
 /* eslint-disable class-methods-use-this, no-unused-vars */
 
+import $ from 'jquery';
+
 export default class TemplateSelector {
   constructor({ dropdown, data, pattern, wrapper, editor, $input } = {}) {
     this.pattern = pattern;
@@ -76,7 +78,7 @@ export default class TemplateSelector {
 
     if (!skipFocus) this.editor.focus();
 
-    if (this.editor instanceof jQuery) {
+    if (this.editor instanceof $) {
       this.editor.get(0).dispatchEvent(this.autosizeUpdateEvent);
     }
   }

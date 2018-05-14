@@ -1,5 +1,0 @@
----
-title: 'Ensure users cannot create environments with leading or trailing slashes (Fixes #39885)'
-merge_request: 15273
-author:
-type: fixed

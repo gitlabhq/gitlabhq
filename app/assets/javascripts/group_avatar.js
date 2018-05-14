@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 export default function groupAvatar() {
   $('.js-choose-group-avatar-button').on('click', function onClickGroupAvatar() {
     const form = $(this).closest('form');

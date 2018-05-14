@@ -84,7 +84,7 @@ module API
           values: %w(projects issues merge_requests milestones)
         use :pagination
       end
-      get ':id/-/search' do
+      get ':id/(-/)search' do
         present search(group_id: user_group.id), with: entity
       end
     end
@@ -103,7 +103,7 @@ module API
           values: %w(issues merge_requests milestones notes wiki_blobs commits blobs)
         use :pagination
       end
-      get ':id/-/search' do
+      get ':id/(-/)search' do
         present search(project_id: user_project.id), with: entity
       end
     end

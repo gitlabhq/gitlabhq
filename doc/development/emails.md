@@ -60,16 +60,10 @@ See the [Rails guides] for more info.
 
     As mentioned, the part after `+` is ignored, and this will end up in the mailbox for `gitlab-incoming@gmail.com`.
 
-1. Uncomment the `mail_room` line in your `Procfile`:
-
-    ```yaml
-    mail_room: bundle exec mail_room -q -c config/mail_room.yml
-    ```
-
-1. Restart GitLab:
+1. Run this command in the GitLab root directory to launch `mail_room`:
 
     ```sh
-    bundle exec foreman start
+    bundle exec mail_room -q -c config/mail_room.yml
     ```
 
 1. Verify that everything is configured correctly:
@@ -79,6 +73,24 @@ See the [Rails guides] for more info.
     ```
 
 1. Reply by email should now be working.
+
+## Email namespace
+
+If you need to implement a new feature which requires a new email handler, follow these rules:
+
+ - You must choose a namespace. The namespace cannot contain `/` or `+`, and cannot match `\h{16}`.
+ - If your feature is related to a project, you will append the namespace **after** the project path, separated by a `+`
+ - If you have different actions in the namespace, you add the actions **after** the namespace separated by a `+`. The action name cannot contain `/` or `+`, , and cannot match `\h{16}`.
+ - You will register your handlers in `lib/gitlab/email/handler.rb`
+
+Therefore, these are the only valid formats for an email handler:
+
+ - `path/to/project+namespace`
+ - `path/to/project+namespace+action`
+ - `namespace`
+ - `namespace+action`
+
+Please note that `path/to/project` is used in GitLab Premium as handler for the Service Desk feature.
 
 ---
 

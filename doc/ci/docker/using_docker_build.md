@@ -1,26 +1,29 @@
-# Using Docker Build
+# Building Docker images with GitLab CI/CD
 
-GitLab CI allows you to use Docker Engine to build and test docker-based projects.
+GitLab CI/CD allows you to use Docker Engine to build and test docker-based projects.
 
-**This also allows to you to use `docker-compose` and other docker-enabled tools.**
+TIP: **Tip:**
+This also allows to you to use `docker-compose` and other docker-enabled tools.
 
 One of the new trends in Continuous Integration/Deployment is to:
 
-1. create an application image,
-1. run tests against the created image,
-1. push image to a remote registry, and
-1. deploy to a server from the pushed image.
+1. Create an application image
+1. Run tests against the created image
+1. Push image to a remote registry
+1. Deploy to a server from the pushed image
 
-It's also useful when your application already has the `Dockerfile` that can be used to create and test an image:
+It's also useful when your application already has the `Dockerfile` that can be
+used to create and test an image:
 
 ```bash
-$ docker build -t my-image dockerfiles/
-$ docker run my-docker-image /script/to/run/tests
-$ docker tag my-image my-registry:5000/my-image
-$ docker push my-registry:5000/my-image
+docker build -t my-image dockerfiles/
+docker run my-docker-image /script/to/run/tests
+docker tag my-image my-registry:5000/my-image
+docker push my-registry:5000/my-image
 ```
 
-This requires special configuration of GitLab Runner to enable `docker` support during jobs.
+This requires special configuration of GitLab Runner to enable `docker` support
+during jobs.
 
 ## Runner Configuration
 
@@ -74,8 +77,8 @@ GitLab Runner then executes job scripts as the `gitlab-runner` user.
 
 5. You can now use `docker` command and install `docker-compose` if needed.
 
-> **Note:**
-* By adding `gitlab-runner` to the `docker` group you are effectively granting `gitlab-runner` full root permissions.
+NOTE: **Note:**
+By adding `gitlab-runner` to the `docker` group you are effectively granting `gitlab-runner` full root permissions.
 For more information please read [On Docker security: `docker` group considered harmful](https://www.andreas-jung.com/contents/on-docker-security-docker-group-considered-harmful).
 
 ### Use docker-in-docker executor
@@ -98,12 +101,12 @@ In order to do that, follow the steps:
       --registration-token REGISTRATION_TOKEN \
       --executor docker \
       --description "My Docker Runner" \
-      --docker-image "docker:latest" \
+      --docker-image "docker:stable" \
       --docker-privileged
     ```
 
     The above command will register a new Runner to use the special
-    `docker:latest` image which is provided by Docker. **Notice that it's using
+    `docker:stable` image which is provided by Docker. **Notice that it's using
     the `privileged` mode to start the build and service containers.** If you
     want to use [docker-in-docker] mode, you always have to use `privileged = true`
     in your Docker containers.
@@ -117,7 +120,7 @@ In order to do that, follow the steps:
       executor = "docker"
       [runners.docker]
         tls_verify = false
-        image = "docker:latest"
+        image = "docker:stable"
         privileged = true
         disable_cache = false
         volumes = ["/cache"]
@@ -129,7 +132,7 @@ In order to do that, follow the steps:
    `docker:dind` service):
 
     ```yaml
-    image: docker:latest
+    image: docker:stable
 
     # When using dind, it's wise to use the overlayfs driver for
     # improved performance.
@@ -198,12 +201,12 @@ In order to do that, follow the steps:
       --registration-token REGISTRATION_TOKEN \
       --executor docker \
       --description "My Docker Runner" \
-      --docker-image "docker:latest" \
+      --docker-image "docker:stable" \
       --docker-volumes /var/run/docker.sock:/var/run/docker.sock
     ```
 
     The above command will register a new Runner to use the special
-    `docker:latest` image which is provided by Docker. **Notice that it's using
+    `docker:stable` image which is provided by Docker. **Notice that it's using
     the Docker daemon of the Runner itself, and any containers spawned by docker
     commands will be siblings of the Runner rather than children of the runner.**
     This may have complications and limitations that are unsuitable for your workflow.
@@ -217,7 +220,7 @@ In order to do that, follow the steps:
       executor = "docker"
       [runners.docker]
         tls_verify = false
-        image = "docker:latest"
+        image = "docker:stable"
         privileged = false
         disable_cache = false
         volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
@@ -229,7 +232,7 @@ In order to do that, follow the steps:
    include the `docker:dind` service as when using the Docker in Docker executor):
 
     ```yaml
-    image: docker:latest
+    image: docker:stable
 
     before_script:
     - docker info
@@ -259,7 +262,65 @@ aware of the following implications:
     docker run --rm -t -i -v $(pwd)/src:/home/app/src test-image:latest run_app_tests
     ```
 
+## Making docker-in-docker builds faster with Docker layer caching
+
+When using docker-in-docker, Docker will download all layers of your image every
+time you create a build. Recent versions of Docker (Docker 1.13 and above) can
+use a pre-existing image as a cache during the `docker build` step, considerably
+speeding up the build process.
+
+### How Docker caching works
+
+When running `docker build`, each command in `Dockerfile` results in a layer.
+These layers are kept around as a cache and can be reused if there haven't been
+any changes. Change in one layer causes all subsequent layers to be recreated.
+
+You can specify a tagged image to be used as a cache source for the `docker build`
+command by using the `--cache-from` argument. Multiple images can be specified
+as a cache source by using multiple `--cache-from` arguments. Keep in mind that
+any image that's used with the `--cache-from` argument must first be pulled
+(using `docker pull`) before it can be used as a cache source.
+
+### Using Docker caching
+
+Here's a simple `.gitlab-ci.yml` file showing how Docker caching can be utilized:
+
+```yaml
+image: docker:stable
+
+services:
+  - docker:dind
+
+variables:
+  CONTAINER_IMAGE: registry.gitlab.com/$CI_PROJECT_PATH
+  DOCKER_DRIVER: overlay2
+
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+
+build:
+  stage: build
+  script:
+    - docker pull $CONTAINER_IMAGE:latest || true
+    - docker build --cache-from $CONTAINER_IMAGE:latest --tag $CONTAINER_IMAGE:$CI_BUILD_REF --tag $CONTAINER_IMAGE:latest .
+    - docker push $CONTAINER_IMAGE:$CI_BUILD_REF
+    - docker push $CONTAINER_IMAGE:latest
+```
+
+The steps in the `script` section for the `build` stage can be summed up to:
+
+1. The first command tries to pull the image from the registry so that it can be
+   used as a cache for the `docker build` command.
+1. The second command builds a Docker image using the pulled image as a
+   cache (notice the `--cache-from $CONTAINER_IMAGE:latest` argument) if
+   available, and tags it.
+1. The last two commands push the tagged Docker images to the container registry
+   so that they may also be used as cache for subsequent builds.
+
 ## Using the OverlayFS driver
+
+NOTE: **Note:**
+The shared Runners on GitLab.com use the `overlay2` driver by default.
 
 By default, when using `docker:dind`, Docker uses the `vfs` storage driver which
 copies the filesystem on every run. This is a very disk-intensive operation
@@ -327,7 +388,7 @@ could look like:
 
 ```yaml
  build:
-   image: docker:latest
+   image: docker:stable
    services:
    - docker:dind
    stage: build
@@ -373,7 +434,7 @@ when needed. Changes to `master` also get tagged as `latest` and deployed using
 an application-specific deploy script:
 
 ```yaml
-image: docker:latest
+image: docker:stable
 services:
 - docker:dind
 

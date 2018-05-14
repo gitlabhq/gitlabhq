@@ -2,6 +2,11 @@
 
 > Introduced in GitLab 8.8.
 
+NOTE: **Note:**
+If you have a [mirrored repository where GitLab pulls from](https://docs.gitlab.com/ee/workflow/repository_mirroring.html#pulling-from-a-remote-repository),
+you may need to enable pipeline triggering in your project's
+**Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
+
 ## Pipelines
 
 A pipeline is a group of [jobs][] that get executed in [stages][](batches).
@@ -68,6 +73,23 @@ cancel the job, retry it, or erase the job trace.
 
 ![Pipelines example](img/pipelines.png)
 
+## Seeing the failure reason for jobs
+
+> [Introduced][ce-17782] in GitLab 10.7.
+
+When a pipeline fails or is allowed to fail, there are several places where you
+can quickly check the reason it failed:
+
+- **In the pipeline graph** present on the pipeline detail view.
+- **In the pipeline widgets** present in the merge requests and commit pages.
+- **In the job views** present in the global and detailed views of a job.
+
+In any case, if you hover over the failed job you can see the reason it failed.
+
+![Pipeline detail](img/job_failure_reason.png)
+
+From [GitLab 10.8][ce-17814] you can also see the reason it failed on the Job detail page.
+
 ## Pipeline graphs
 
 > [Introduced][ce-5742] in GitLab 8.11.
@@ -121,9 +143,8 @@ The basic requirements is that there are two numbers separated with one of
 the following (you can even use them interchangeably):
 
 - a space
-- a forward slash (`/`)
+- a slash (`/`)
 - a colon (`:`)
-- a dot (`.`)
 
 >**Note:**
 More specifically, [it uses][regexp] this regular expression: `\d+[\s:\/\\]+\d+\s*`.
@@ -259,4 +280,6 @@ runners will not use regular runners, they must be tagged accordingly.
 [ce-6242]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6242
 [ce-7931]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7931
 [ce-9760]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9760
+[ce-17782]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17782
+[ce-17814]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17814
 [regexp]: https://gitlab.com/gitlab-org/gitlab-ce/blob/2f3dc314f42dbd79813e6251792853bc231e69dd/app/models/commit_status.rb#L99

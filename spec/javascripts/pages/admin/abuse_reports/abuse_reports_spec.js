@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import '~/lib/utils/text_utility';
 import AbuseReports from '~/pages/admin/abuse_reports/abuse_reports';
 

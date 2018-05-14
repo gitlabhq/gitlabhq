@@ -1,3 +1,5 @@
+- breadcrumb_title _("Details")
+
 %h2
   %i.fa.fa-warning
   #{ _('No repository') }
@@ -10,7 +12,7 @@
 
 .no-repo-actions
   = link_to project_repository_path(@project), method: :post, class: 'btn btn-primary' do
-    #{ _('Create empty bare repository') }
+    #{ _('Create empty repository') }
 
   %strong.prepend-left-10.append-right-10 or
 
@@ -19,4 +21,4 @@
 
 - if can? current_user, :remove_project, @project
   .prepend-top-20
-    = link_to _('Remove project'), project_path(@project), data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn btn-remove pull-right"
+    = link_to _('Remove project'), project_path(@project), data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn btn-inverted btn-remove pull-right"

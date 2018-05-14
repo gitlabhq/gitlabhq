@@ -1,4 +1,6 @@
 /* eslint-disable no-return-assign, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-unused-vars, no-cond-assign, consistent-return, object-shorthand, prefer-arrow-callback, func-names, space-before-function-paren, prefer-template, quotes, class-methods-use-this, no-sequences, wrap-iife, no-lonely-if, no-else-return, no-param-reassign, vars-on-top, max-len */
+
+import $ from 'jquery';
 import axios from './lib/utils/axios_utils';
 import DropdownUtils from './filtered_search/dropdown_utils';
 import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from './lib/utils/common_utils';
@@ -231,21 +233,21 @@ export default class SearchAutocomplete {
     const issueItems = [
       {
         text: 'Issues assigned to me',
-        url: `${issuesPath}/?assignee_username=${userName}`,
+        url: `${issuesPath}/?assignee_id=${userId}`,
       },
       {
         text: "Issues I've created",
-        url: `${issuesPath}/?author_username=${userName}`,
+        url: `${issuesPath}/?author_id=${userId}`,
       },
     ];
     const mergeRequestItems = [
       {
         text: 'Merge requests assigned to me',
-        url: `${mrPath}/?assignee_username=${userName}`,
+        url: `${mrPath}/?assignee_id=${userId}`,
       },
       {
         text: "Merge requests I've created",
-        url: `${mrPath}/?author_username=${userName}`,
+        url: `${mrPath}/?author_id=${userId}`,
       },
     ];
 

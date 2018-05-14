@@ -33,9 +33,7 @@ class Projects::NotesController < Projects::ApplicationController
   def resolve
     return render_404 unless note.resolvable?
 
-    note.resolve!(current_user)
-
-    MergeRequests::ResolvedDiscussionNotificationService.new(project, current_user).execute(note.noteable)
+    Notes::ResolveService.new(project, current_user).execute(note)
 
     discussion = note.discussion
 
@@ -68,7 +66,7 @@ class Projects::NotesController < Projects::ApplicationController
   private
 
   def render_json_with_notes_serializer
-    Notes::RenderService.new(current_user).execute([note], project)
+    Notes::RenderService.new(current_user).execute([note])
 
     render json: note_serializer.represent(note)
   end

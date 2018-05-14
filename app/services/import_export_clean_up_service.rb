@@ -10,7 +10,7 @@ class ImportExportCleanUpService
 
   def execute
     Gitlab::Metrics.measure(:import_export_clean_up) do
-      return unless File.directory?(path)
+      next unless File.directory?(path)
 
       clean_up_export_files
     end

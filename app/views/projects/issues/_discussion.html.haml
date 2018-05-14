@@ -8,4 +8,5 @@
 %section.js-vue-notes-event
   #js-vue-notes{ data: { notes_data: notes_data(@issue),
     noteable_data: serialize_issuable(@issue),
+    noteable_type: 'issue',
     current_user_data: UserSerializer.new.represent(current_user, only_path: true).to_json } }

@@ -1,5 +1,5 @@
 %h4.prepend-top-20
   = s_('ClusterIntegration|Enter the details for your Kubernetes cluster')
 %p
-  - link_to_help_page = link_to(s_('ClusterIntegration|documentation'), help_page_path('user/project/clusters/index'), target: '_blank', rel: 'noopener noreferrer')
+  - link_to_help_page = link_to(s_('ClusterIntegration|documentation'), help_page_path('user/project/clusters/index', anchor: 'adding-an-existing-kubernetes-cluster'), target: '_blank', rel: 'noopener noreferrer')
   = s_('ClusterIntegration|Please enter access information for your Kubernetes cluster. If you need help, you can read our %{link_to_help_page} on Kubernetes').html_safe % { link_to_help_page: link_to_help_page }

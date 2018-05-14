@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import ContextualSidebar from './contextual_sidebar';
 import initFlyOutNav from './fly_out_nav';
 

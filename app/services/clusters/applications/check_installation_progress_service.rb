@@ -12,7 +12,7 @@ module Clusters
         else
           check_timeout
         end
-      rescue KubeException => ke
+      rescue Kubeclient::HttpError => ke
         app.make_errored!("Kubernetes error: #{ke.message}") unless app.errored?
       end
 

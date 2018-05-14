@@ -1,5 +1,7 @@
 /* global Terminal */
 
+import $ from 'jquery';
+
 (() => {
   class GLTerminal {
 

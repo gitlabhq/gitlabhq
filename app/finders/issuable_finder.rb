@@ -159,7 +159,10 @@ class IssuableFinder
         finder_options = { include_subgroups: params[:include_subgroups], only_owned: true }
         GroupProjectsFinder.new(group: group, current_user: current_user, options: finder_options).execute
       else
-        ProjectsFinder.new(current_user: current_user, project_ids_relation: item_project_ids(items)).execute
+        opts = { current_user: current_user }
+        opts[:project_ids_relation] = item_project_ids(items) if items
+
+        ProjectsFinder.new(opts).execute
       end
 
     @projects = projects.with_feature_available_for_user(klass, current_user).reorder(nil)
@@ -316,9 +319,9 @@ class IssuableFinder
   def by_project(items)
     items =
       if project?
-        items.of_projects(projects(items)).references_project
-      elsif projects(items)
-        items.merge(projects(items).reorder(nil)).join_project
+        items.of_projects(projects).references_project
+      elsif projects
+        items.merge(projects.reorder(nil)).join_project
       else
         items.none
       end
@@ -337,7 +340,7 @@ class IssuableFinder
   def sort(items)
     # Ensure we always have an explicit sort order (instead of inheriting
     # multiple orders when combining ActiveRecord::Relation objects).
-    params[:sort] ? items.sort(params[:sort], excluded_labels: label_names) : items.reorder(id: :desc)
+    params[:sort] ? items.sort_by_attribute(params[:sort], excluded_labels: label_names) : items.reorder(id: :desc)
   end
 
   def by_assignee(items)

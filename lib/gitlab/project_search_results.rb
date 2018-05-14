@@ -58,7 +58,7 @@ module Gitlab
       data = ""
       startline = 0
 
-      result.strip.each_line.each_with_index do |line, index|
+      result.each_line.each_with_index do |line, index|
         prefix ||= line.match(/^(?<ref>[^:]*):(?<filename>.*)\x00(?<startline>\d+)\x00/)&.tap do |matches|
           ref = matches[:ref]
           filename = matches[:filename]

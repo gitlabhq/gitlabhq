@@ -80,7 +80,7 @@ describe Projects::PipelineSchedulesController do
       context 'when variables_attributes has one variable' do
         let(:schedule) do
           basic_param.merge({
-            variables_attributes: [{ key: 'AAA', value: 'AAA123' }]
+            variables_attributes: [{ key: 'AAA', secret_value: 'AAA123' }]
           })
         end
 
@@ -101,7 +101,8 @@ describe Projects::PipelineSchedulesController do
       context 'when variables_attributes has two variables and duplicated' do
         let(:schedule) do
           basic_param.merge({
-            variables_attributes: [{ key: 'AAA', value: 'AAA123' }, { key: 'AAA', value: 'BBB123' }]
+            variables_attributes: [{ key: 'AAA', secret_value: 'AAA123' },
+                                   { key: 'AAA', secret_value: 'BBB123' }]
           })
         end
 
@@ -152,7 +153,7 @@ describe Projects::PipelineSchedulesController do
         context 'when params include one variable' do
           let(:schedule) do
             basic_param.merge({
-              variables_attributes: [{ key: 'AAA', value: 'AAA123' }]
+              variables_attributes: [{ key: 'AAA', secret_value: 'AAA123' }]
             })
           end
 
@@ -169,7 +170,8 @@ describe Projects::PipelineSchedulesController do
         context 'when params include two duplicated variables' do
           let(:schedule) do
             basic_param.merge({
-              variables_attributes: [{ key: 'AAA', value: 'AAA123' }, { key: 'AAA', value: 'BBB123' }]
+              variables_attributes: [{ key: 'AAA', secret_value: 'AAA123' },
+                                     { key: 'AAA', secret_value: 'BBB123' }]
             })
           end
 
@@ -194,7 +196,7 @@ describe Projects::PipelineSchedulesController do
         context 'when adds a new variable' do
           let(:schedule) do
             basic_param.merge({
-              variables_attributes: [{ key: 'AAA', value: 'AAA123' }]
+              variables_attributes: [{ key: 'AAA', secret_value: 'AAA123' }]
             })
           end
 
@@ -209,7 +211,7 @@ describe Projects::PipelineSchedulesController do
         context 'when adds a new duplicated variable' do
           let(:schedule) do
             basic_param.merge({
-              variables_attributes: [{ key: 'CCC', value: 'AAA123' }]
+              variables_attributes: [{ key: 'CCC', secret_value: 'AAA123' }]
             })
           end
 
@@ -224,7 +226,7 @@ describe Projects::PipelineSchedulesController do
         context 'when updates a variable' do
           let(:schedule) do
             basic_param.merge({
-              variables_attributes: [{ id: pipeline_schedule_variable.id, value: 'new_value' }]
+              variables_attributes: [{ id: pipeline_schedule_variable.id, secret_value: 'new_value' }]
             })
           end
 
@@ -252,7 +254,7 @@ describe Projects::PipelineSchedulesController do
           let(:schedule) do
             basic_param.merge({
               variables_attributes: [{ id: pipeline_schedule_variable.id, _destroy: true },
-                                     { key: 'CCC', value: 'CCC123' }]
+                                     { key: 'CCC', secret_value: 'CCC123' }]
             })
           end
 

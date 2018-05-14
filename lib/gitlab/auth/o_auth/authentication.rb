@@ -12,6 +12,7 @@ module Gitlab
           @user = user
         end
 
+        # Implementation must return user object if login successful
         def login(login, password)
           raise NotImplementedError
         end

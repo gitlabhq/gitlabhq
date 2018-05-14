@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Shortcuts from '~/shortcuts';
 
 describe('Shortcuts', () => {

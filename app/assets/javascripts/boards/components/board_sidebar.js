@@ -1,11 +1,12 @@
 /* eslint-disable comma-dangle, space-before-function-paren, no-new */
 
+import $ from 'jquery';
 import Vue from 'vue';
 import Flash from '../../flash';
 import { __ } from '../../locale';
 import Sidebar from '../../right_sidebar';
 import eventHub from '../../sidebar/event_hub';
-import assigneeTitle from '../../sidebar/components/assignees/assignee_title';
+import assigneeTitle from '../../sidebar/components/assignees/assignee_title.vue';
 import assignees from '../../sidebar/components/assignees/assignees.vue';
 import DueDateSelectors from '../../due_date_select';
 import './sidebar/remove_issue';
@@ -59,10 +60,6 @@ gl.issueBoards.BoardSidebar = Vue.extend({
 
         this.issue = this.detail.issue;
         this.list = this.detail.list;
-
-        this.$nextTick(() => {
-          this.endpoint = this.$refs.assigneeDropdown.dataset.issueUpdate;
-        });
       },
       deep: true
     },
@@ -90,7 +87,7 @@ gl.issueBoards.BoardSidebar = Vue.extend({
     saveAssignees () {
       this.loadingAssignees = true;
 
-      gl.issueBoards.BoardsStore.detail.issue.update(this.endpoint)
+      gl.issueBoards.BoardsStore.detail.issue.update()
         .then(() => {
           this.loadingAssignees = false;
         })

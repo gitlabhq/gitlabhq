@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Flash from './flash';
 
 export default function notificationsDropdown() {

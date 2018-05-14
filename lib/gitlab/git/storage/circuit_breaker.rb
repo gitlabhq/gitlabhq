@@ -25,7 +25,7 @@ module Gitlab
 
           if !config.present?
             NullCircuitBreaker.new(storage, hostname, error: Misconfiguration.new("Storage '#{storage}' is not configured"))
-          elsif !config['path'].present?
+          elsif !config.legacy_disk_path.present?
             NullCircuitBreaker.new(storage, hostname, error: Misconfiguration.new("Path for storage '#{storage}' is not configured"))
           else
             new(storage, hostname)

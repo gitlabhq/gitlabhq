@@ -24,8 +24,8 @@ def docs_branch
   # The maximum string length a file can have on a filesystem (ext4)
   # is 63 characters. Let's use something smaller to be 100% sure.
   max = 42
-  # Prefix the remote branch with 'preview-' in order to avoid
-  # name conflicts in the rare case the branch name already
+  # Prefix the remote branch with the slug of the project in order
+  # to avoid name conflicts in the rare case the branch name already
   # exists in the docs repo and truncate to max length.
   "#{slug}-#{ENV["CI_COMMIT_REF_SLUG"]}"[0...max]
 end
@@ -41,12 +41,21 @@ def create_remote_branch
   Gitlab.create_branch(GITLAB_DOCS_REPO, docs_branch, 'master')
   puts "=> Remote branch '#{docs_branch}' created"
 
-  # Get the latest pipeline ID which is also the first
-  pipeline_id = Gitlab.pipelines(GITLAB_DOCS_REPO, { ref: docs_branch }).last.id
+  pipelines = nil
+
+  # Wait until the pipeline is started
+  loop do
+    sleep 1
+    puts "=> Waiting for pipeline to start..."
+    pipelines = Gitlab.pipelines(GITLAB_DOCS_REPO, { ref: docs_branch })
+    break if pipelines.any?
+  end
+
+  # Get the first pipeline ID which should be the only one for the branch
+  pipeline_id = pipelines.first.id
 
   # Cancel the pipeline
   Gitlab.cancel_pipeline(GITLAB_DOCS_REPO, pipeline_id)
-  puts "=> Canceled uneeded pipeline #{pipeline_id} for '#{docs_branch}'"
 rescue Gitlab::Error::BadRequest
   puts "=> Remote branch '#{docs_branch}' already exists"
 end

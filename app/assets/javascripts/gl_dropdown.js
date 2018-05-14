@@ -1,5 +1,7 @@
 /* eslint-disable func-names, no-underscore-dangle, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, prefer-rest-params, max-len, vars-on-top, wrap-iife, no-unused-vars, quotes, no-shadow, no-cond-assign, prefer-arrow-callback, no-return-assign, no-else-return, camelcase, comma-dangle, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, prefer-template, no-param-reassign, no-loop-func, no-mixed-operators */
 /* global fuzzaldrinPlus */
+
+import $ from 'jquery';
 import _ from 'underscore';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import axios from './lib/utils/axios_utils';
@@ -576,7 +578,7 @@ GitLabDropdown = (function() {
       for (var i = 0; i < html.length; i += 1) {
         var el = html[i];
 
-        if (el instanceof jQuery) {
+        if (el instanceof $) {
           el = el.get(0);
         }
 
@@ -751,7 +753,7 @@ GitLabDropdown = (function() {
     }
 
     if (this.options.isSelectable && !this.options.isSelectable(selectedObject, el)) {
-      return;
+      return [selectedObject];
     }
 
     if (el.hasClass(ACTIVE_CLASS) && value !== 0) {

@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe API::Features do
-  let(:user)  { create(:user) }
-  let(:admin) { create(:admin) }
+  set(:user)  { create(:user) }
+  set(:admin) { create(:admin) }
 
   before do
     Flipper.unregister_groups
@@ -245,6 +245,45 @@ describe API::Features do
               { 'key' => 'boolean', 'value' => false },
               { 'key' => 'percentage_of_time', 'value' => 30 }
             ])
+        end
+      end
+    end
+  end
+
+  describe 'DELETE /feature/:name' do
+    let(:feature_name) { 'my_feature' }
+
+    context 'when the user has no access' do
+      it 'returns a 401 for anonymous users' do
+        delete api("/features/#{feature_name}")
+
+        expect(response).to have_gitlab_http_status(401)
+      end
+
+      it 'returns a 403 for users' do
+        delete api("/features/#{feature_name}", user)
+
+        expect(response).to have_gitlab_http_status(403)
+      end
+    end
+
+    context 'when the user has access' do
+      it 'returns 204 when the value is not set' do
+        delete api("/features/#{feature_name}", admin)
+
+        expect(response).to have_gitlab_http_status(204)
+      end
+
+      context 'when the gate value was set' do
+        before do
+          Feature.get(feature_name).enable
+        end
+
+        it 'deletes an enabled feature' do
+          delete api("/features/#{feature_name}", admin)
+
+          expect(response).to have_gitlab_http_status(204)
+          expect(Feature.get(feature_name)).not_to be_enabled
         end
       end
     end

@@ -1,0 +1,54 @@
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :throttle_unauthenticated_enabled do
+            = f.check_box :throttle_unauthenticated_enabled
+            Enable unauthenticated request rate limit
+          %span.help-block
+            Helps reduce request volume (e.g. from crawlers or abusive bots)
+    .form-group
+      = f.label :throttle_unauthenticated_requests_per_period, 'Max requests per period per IP', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :throttle_unauthenticated_requests_per_period, class: 'form-control'
+    .form-group
+      = f.label :throttle_unauthenticated_period_in_seconds, 'Rate limit period in seconds', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :throttle_unauthenticated_period_in_seconds, class: 'form-control'
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :throttle_authenticated_api_enabled do
+            = f.check_box :throttle_authenticated_api_enabled
+            Enable authenticated API request rate limit
+          %span.help-block
+            Helps reduce request volume (e.g. from crawlers or abusive bots)
+    .form-group
+      = f.label :throttle_authenticated_api_requests_per_period, 'Max requests per period per user', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :throttle_authenticated_api_requests_per_period, class: 'form-control'
+    .form-group
+      = f.label :throttle_authenticated_api_period_in_seconds, 'Rate limit period in seconds', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :throttle_authenticated_api_period_in_seconds, class: 'form-control'
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :throttle_authenticated_web_enabled do
+            = f.check_box :throttle_authenticated_web_enabled
+            Enable authenticated web request rate limit
+          %span.help-block
+            Helps reduce request volume (e.g. from crawlers or abusive bots)
+    .form-group
+      = f.label :throttle_authenticated_web_requests_per_period, 'Max requests per period per user', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :throttle_authenticated_web_requests_per_period, class: 'form-control'
+    .form-group
+      = f.label :throttle_authenticated_web_period_in_seconds, 'Rate limit period in seconds', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :throttle_authenticated_web_period_in_seconds, class: 'form-control'
+
+  = f.submit 'Save changes', class: "btn btn-success"

@@ -1,4 +1,6 @@
 module MilestonesHelper
+  include EntityDateHelper
+
   def milestones_filter_path(opts = {})
     if @project
       project_milestones_path(@project, opts)
@@ -72,6 +74,19 @@ module MilestonesHelper
     end
   end
 
+  def milestone_progress_tooltip_text(milestone)
+    has_issues = milestone.total_issues_count(current_user) > 0
+
+    if has_issues
+      [
+        _('Progress'),
+        _("%{percent}%% complete") % { percent: milestone.percent_complete(current_user) }
+      ].join('<br />')
+    else
+      _('Progress')
+    end
+  end
+
   def milestone_progress_bar(milestone)
     options = {
       class: 'progress-bar progress-bar-success',
@@ -95,27 +110,69 @@ module MilestonesHelper
   end
 
   def milestone_tooltip_title(milestone)
-    if milestone.due_date
-      [milestone.due_date.to_s(:medium), "(#{milestone_remaining_days(milestone)})"].join(' ')
+    if milestone
+      "#{milestone.title}<br />#{milestone_tooltip_due_date(milestone)}"
+    else
+      _('Milestone')
     end
   end
 
-  def milestone_remaining_days(milestone)
-    if milestone.expired?
-      content_tag(:strong, 'Past due')
-    elsif milestone.upcoming?
-      content_tag(:strong, 'Upcoming')
-    elsif milestone.due_date
-      time_ago = time_ago_in_words(milestone.due_date)
-      content = time_ago.gsub(/\d+/) { |match| "<strong>#{match}</strong>" }
-      content.slice!("about ")
-      content << " remaining"
+  def milestone_time_for(date, date_type)
+    title = date_type == :start ? "Start date" : "End date"
+
+    if date
+      time_ago = time_ago_in_words(date)
+      time_ago.slice!("about ")
+
+      time_ago << if date.past?
+                    " ago"
+                  else
+                    " remaining"
+                  end
+
+      content = [
+        title,
+        "<br />",
+        date.to_s(:medium),
+        "(#{time_ago})"
+      ].join(" ")
+
       content.html_safe
-    elsif milestone.start_date && milestone.start_date.past?
-      days    = milestone.elapsed_days
-      content = content_tag(:strong, days)
-      content << " #{'day'.pluralize(days)} elapsed"
-      content.html_safe
+    else
+      title
+    end
+  end
+
+  def milestone_issues_tooltip_text(milestone)
+    issues = milestone.count_issues_by_state(current_user)
+
+    return _("Issues") if issues.empty?
+
+    content = []
+
+    content << n_("1 open issue", "%d open issues", issues["opened"]) % issues["opened"] if issues["opened"]
+    content << n_("1 closed issue", "%d closed issues", issues["closed"]) % issues["closed"] if issues["closed"]
+
+    content.join('<br />').html_safe
+  end
+
+  def milestone_merge_requests_tooltip_text(milestone)
+    merge_requests = milestone.merge_requests
+
+    return _("Merge requests") if merge_requests.empty?
+
+    content = []
+
+    content << n_("1 open merge request", "%d open merge requests", merge_requests.opened.count) % merge_requests.opened.count if merge_requests.opened.any?
+    content << n_("1 closed merge request", "%d closed merge requests", merge_requests.closed.count) % merge_requests.closed.count if merge_requests.closed.any?
+    content << n_("1 merged merge request", "%d merged merge requests", merge_requests.merged.count) % merge_requests.merged.count if merge_requests.merged.any?
+
+    content.join('<br />').html_safe
+  end
+
+  def milestone_tooltip_due_date(milestone)
+    if milestone.due_date
+      "#{milestone.due_date.to_s(:medium)} (#{remaining_days_in_words(milestone)})"
     end
   end
 

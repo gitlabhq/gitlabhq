@@ -84,12 +84,14 @@ checks using those checksums can be run. These checks also detect missing files.
 
 Currently, integrity checks are supported for the following types of file:
 
-* LFS objects
-* User uploads
+* CI artifacts (Available from version 10.7.0)
+* LFS objects (Available from version 10.6.0)
+* User uploads (Available from version 10.6.0)
 
 **Omnibus Installation**
 
 ```
+sudo gitlab-rake gitlab:artifacts:check
 sudo gitlab-rake gitlab:lfs:check
 sudo gitlab-rake gitlab:uploads:check
 ```
@@ -97,6 +99,7 @@ sudo gitlab-rake gitlab:uploads:check
 **Source Installation**
 
 ```bash
+sudo -u git -H bundle exec rake gitlab:artifacts:check RAILS_ENV=production
 sudo -u git -H bundle exec rake gitlab:lfs:check RAILS_ENV=production
 sudo -u git -H bundle exec rake gitlab:uploads:check RAILS_ENV=production
 ```
@@ -112,6 +115,7 @@ Variable  | Type    | Description
 `VERBOSE` | boolean | Causes failures to be listed individually, rather than being summarized.
 
 ```bash
+sudo gitlab-rake gitlab:artifacts:check BATCH=100 ID_FROM=50 ID_TO=250
 sudo gitlab-rake gitlab:lfs:check BATCH=100 ID_FROM=50 ID_TO=250
 sudo gitlab-rake gitlab:uploads:check BATCH=100 ID_FROM=50 ID_TO=250
 ```

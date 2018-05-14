@@ -17,8 +17,6 @@ describe 'Projects (JavaScript fixtures)', type: :controller do
   end
 
   before do
-    # EE-specific start
-    # EE specific end
     project.add_master(admin)
     sign_in(admin)
   end

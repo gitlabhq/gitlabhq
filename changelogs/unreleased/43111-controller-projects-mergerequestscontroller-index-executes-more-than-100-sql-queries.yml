@@ -1,0 +1,5 @@
+---
+title: Reduce queries on merge requests list page for merge requests from forks
+merge_request: 18561
+author:
+type: performance

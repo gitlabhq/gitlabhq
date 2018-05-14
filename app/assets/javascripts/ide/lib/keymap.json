@@ -1,0 +1,11 @@
+[
+  {
+    "id": "file-finder",
+    "label": "File finder",
+    "bindings": ["CtrlCmd+KEY_P"],
+    "action": {
+      "name": "toggleFileFinder",
+      "params": true
+    }
+  }
+]

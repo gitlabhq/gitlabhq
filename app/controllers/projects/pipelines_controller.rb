@@ -87,7 +87,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def failures
-    if @pipeline.statuses.latest.failed.present?
+    if @pipeline.failed_builds.present?
       render_show
     else
       redirect_to pipeline_path(@pipeline)
@@ -104,9 +104,18 @@ class Projects::PipelinesController < Projects::ApplicationController
     @stage = pipeline.legacy_stage(params[:stage])
     return not_found unless @stage
 
-    respond_to do |format|
-      format.json { render json: { html: view_to_html_string('projects/pipelines/_stage') } }
-    end
+    render json: StageSerializer
+      .new(project: @project, current_user: @current_user)
+      .represent(@stage, details: true)
+  end
+
+  # TODO: This endpoint is used by mini-pipeline-graph
+  # TODO: This endpoint should be migrated to `stage.json`
+  def stage_ajax
+    @stage = pipeline.legacy_stage(params[:stage])
+    return not_found unless @stage
+
+    render json: { html: view_to_html_string('projects/pipelines/_stage') }
   end
 
   def retry
@@ -157,7 +166,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def create_params
-    params.require(:pipeline).permit(:ref)
+    params.require(:pipeline).permit(:ref, variables_attributes: %i[key secret_value])
   end
 
   def pipeline

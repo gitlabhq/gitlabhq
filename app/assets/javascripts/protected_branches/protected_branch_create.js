@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import _ from 'underscore';
 import ProtectedBranchAccessDropdown from './protected_branch_access_dropdown';
 import CreateItemDropdown from '../create_item_dropdown';

@@ -26,8 +26,8 @@ export default class FilteredSearchDropdownManager {
     this.filteredSearchInput = this.container.querySelector('.filtered-search');
     this.page = page;
     this.groupsOnly = isGroup;
-    this.groupAncestor = isGroupAncestor;
-    this.isGroupDecendent = isGroupDecendent;
+    this.includeAncestorGroups = isGroupAncestor;
+    this.includeDescendantGroups = isGroupDecendent;
 
     this.setupMapping();
 
@@ -108,7 +108,19 @@ export default class FilteredSearchDropdownManager {
   }
 
   getLabelsEndpoint() {
-    const endpoint = `${this.baseEndpoint}/labels.json`;
+    let endpoint = `${this.baseEndpoint}/labels.json?`;
+
+    if (this.groupsOnly) {
+      endpoint = `${endpoint}only_group_labels=true&`;
+    }
+
+    if (this.includeAncestorGroups) {
+      endpoint = `${endpoint}include_ancestor_groups=true&`;
+    }
+
+    if (this.includeDescendantGroups) {
+      endpoint = `${endpoint}include_descendant_groups=true`;
+    }
 
     return endpoint;
   }

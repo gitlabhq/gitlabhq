@@ -35,7 +35,7 @@ In Google's side:
 
 1. You should now be able to see a Client ID and Client secret. Note them down
    or keep this page open as you will need them later.
-1. From the **Dashboard** select **ENABLE APIS AND SERVICES > Compute > Google Container Engine API > Enable**
+1. From the **Dashboard** select **ENABLE APIS AND SERVICES > Compute > Google Kubernetes Engine API > Enable**
 
 On your GitLab server:
 

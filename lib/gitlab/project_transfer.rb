@@ -1,12 +1,18 @@
 module Gitlab
+  # This class is used to move local, unhashed files owned by projects to their new location
   class ProjectTransfer
-    def move_project(project_path, namespace_path_was, namespace_path)
-      new_namespace_folder = File.join(root_dir, namespace_path)
-      FileUtils.mkdir_p(new_namespace_folder) unless Dir.exist?(new_namespace_folder)
-      from = File.join(root_dir, namespace_path_was, project_path)
-      to = File.join(root_dir, namespace_path, project_path)
+    # nil parent_path (or parent_path_was) represents a root namespace
+    def move_namespace(path, parent_path_was, parent_path)
+      parent_path_was ||= ''
+      parent_path ||= ''
+      new_parent_folder = File.join(root_dir, parent_path)
+      FileUtils.mkdir_p(new_parent_folder)
+      from = File.join(root_dir, parent_path_was, path)
+      to = File.join(root_dir, parent_path, path)
       move(from, to, "")
     end
+
+    alias_method :move_project, :move_namespace
 
     def rename_project(path_was, path, namespace_path)
       base_dir = File.join(root_dir, namespace_path)

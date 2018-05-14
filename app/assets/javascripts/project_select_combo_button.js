@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import AccessorUtilities from './lib/utils/accessor';
 
 export default class ProjectSelectComboButton {

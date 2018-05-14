@@ -1,5 +1,6 @@
 /* eslint-disable space-before-function-paren, no-var, no-return-assign, quotes */
 
+import $ from 'jquery';
 import syntaxHighlight from '~/syntax_highlight';
 
 describe('Syntax Highlighter', function() {

@@ -25,4 +25,18 @@ feature 'Projects tree' do
       expect(page).to have_selector('.label-lfs', text: 'LFS')
     end
   end
+
+  context 'web IDE', :js do
+    before do
+      visit project_tree_path(project, File.join('master', 'bar'))
+
+      click_link 'Web IDE'
+
+      find('.ide-file-list')
+    end
+
+    it 'opens folder in IDE' do
+      expect(page).to have_selector('.is-open', text: 'bar')
+    end
+  end
 end

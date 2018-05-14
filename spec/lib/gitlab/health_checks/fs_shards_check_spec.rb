@@ -26,7 +26,7 @@ describe Gitlab::HealthChecks::FsShardsCheck do
 
   let(:storages_paths) do
     {
-      default: { path: tmp_dir }
+      default: Gitlab::GitalyClient::StorageSettings.new('path' => tmp_dir)
     }.with_indifferent_access
   end
 
@@ -56,7 +56,7 @@ describe Gitlab::HealthChecks::FsShardsCheck do
       context 'storage points to not existing folder' do
         let(:storages_paths) do
           {
-            default: { path: 'tmp/this/path/doesnt/exist' }
+            default: Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/this/path/doesnt/exist')
           }.with_indifferent_access
         end
 
@@ -102,7 +102,7 @@ describe Gitlab::HealthChecks::FsShardsCheck do
       context 'storage points to not existing folder' do
         let(:storages_paths) do
           {
-            default: { path: 'tmp/this/path/doesnt/exist' }
+            default: Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/this/path/doesnt/exist')
           }.with_indifferent_access
         end
 

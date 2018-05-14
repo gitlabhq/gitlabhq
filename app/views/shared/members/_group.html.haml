@@ -8,7 +8,7 @@
     %strong
       = link_to group.full_name, group_path(group)
     .cgray
-      Joined #{time_ago_with_tooltip(group.created_at)}
+      Given access #{time_ago_with_tooltip(group_link.created_at)}
       - if group_link.expires?
         ·
         %span{ class: ('text-warning' if group_link.expires_soon?) }

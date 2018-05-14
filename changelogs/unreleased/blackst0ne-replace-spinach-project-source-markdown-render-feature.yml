@@ -1,0 +1,5 @@
+---
+title: Replace the `project/source/markdown_render.feature` spinach test with an rspec analog
+merge_request: 18525
+author: "@blackst0ne"
+type: other

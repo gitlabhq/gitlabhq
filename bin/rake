@@ -1,9 +1,14 @@
 #!/usr/bin/env ruby
-begin
-  load File.expand_path('../spring', __FILE__)
-rescue LoadError => e
-  raise unless e.message.include?('spring')
+
+# Remove this block when upgraded to rails 5.0.
+unless %w[1 true].include?(ENV["RAILS5"])
+  begin
+    load File.expand_path('../spring', __FILE__)
+  rescue LoadError => e
+    raise unless e.message.include?('spring')
+  end
 end
+
 require_relative '../config/boot'
 require 'rake'
 Rake.application.run

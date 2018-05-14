@@ -36,7 +36,7 @@ class GemnasiumService < Service
       after: data[:after],
       token: token,
       api_key: api_key,
-      repo: project.repository.path_to_repo
+      repo: project.repository.path_to_repo # Gitaly: fixed by https://gitlab.com/gitlab-org/security-products/gemnasium-migration/issues/9
     )
   end
 end

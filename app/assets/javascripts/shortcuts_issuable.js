@@ -1,8 +1,9 @@
+import $ from 'jquery';
 import Mousetrap from 'mousetrap';
 import _ from 'underscore';
 import Sidebar from './right_sidebar';
 import Shortcuts from './shortcuts';
-import { CopyAsGFM } from './behaviors/copy_as_gfm';
+import { CopyAsGFM } from './behaviors/markdown/copy_as_gfm';
 
 export default class ShortcutsIssuable extends Shortcuts {
   constructor(isMergeRequest) {

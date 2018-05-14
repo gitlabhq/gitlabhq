@@ -34,7 +34,7 @@ describe Clusters::Applications::InstallService do
 
     context 'when k8s cluster communication fails' do
       before do
-        error = KubeException.new(500, 'system failure', nil)
+        error = Kubeclient::HttpError.new(500, 'system failure', nil)
         expect(helm_client).to receive(:install).with(install_command).and_raise(error)
       end
 

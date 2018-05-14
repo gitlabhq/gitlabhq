@@ -13,7 +13,7 @@ module Gitlab
       end
 
       def call(env)
-        ReadOnly::Controller.new(@app, env).call
+        ::Gitlab::Middleware::ReadOnly::Controller.new(@app, env).call
       end
     end
   end

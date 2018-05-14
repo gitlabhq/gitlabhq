@@ -58,7 +58,7 @@ your job and is linked to the Docker image that the `image` keyword defines.
 This allows you to access the service image during build time.
 
 The service image can run any application, but the most common use case is to
-run a database container, eg. `mysql`. It's easier and faster to use an
+run a database container, e.g., `mysql`. It's easier and faster to use an
 existing image and run it as an additional container than install `mysql` every
 time the project is built.
 
@@ -82,6 +82,67 @@ The service container for MySQL will be accessible under the hostname `mysql`.
 So, in order to access your database service you have to connect to the host
 named `mysql` instead of a socket or `localhost`. Read more in [accessing the
 services](#accessing-the-services).
+
+### How the health check of services works
+
+Services are designed to provide additional functionality which is **network accessible**.
+It may be a database like MySQL, or Redis, and even `docker:stable-dind` which
+allows you to use Docker in Docker. It can be practically anything that is
+required for the CI/CD job to proceed and is accessed by network.
+
+To make sure this works, the Runner:
+
+1. checks which ports are exposed from the container by default
+1. starts a special container that waits for these ports to be accessible
+
+When the second stage of the check fails, either because there is no opened port in the
+service, or the service was not started properly before the timeout and the port is not
+responding, it prints the warning: `*** WARNING: Service XYZ probably didn't start properly`.
+
+In most cases it will affect the job, but there may be situations when the job
+will still succeed even if that warning was printed. For example:
+
+- The service was started a little after the warning was raised, and the job is
+  not using the linked service from the very beginning. In that case, when the
+  job needed to access the service, it may have been already there waiting for
+  connections.
+- The service container is not providing any networking service, but it's doing
+  something with the job's directory (all services have the job directory mounted
+  as a volume under `/builds`). In that case, the service will do its job, and
+  since the job is not trying to connect to it, it won't fail.
+
+### What services are not for
+
+As it was mentioned before, this feature is designed to provide **network accessible**
+services. A database is the simplest example of such a service.
+
+NOTE: **Note:**
+The services feature is not designed to, and will not add any software from the
+defined `services` image(s) to the job's container.
+
+For example, if you have the following `services` defined in your job, the `php`,
+`node` or `go` commands will **not** be available for your script, and thus
+the job will fail:
+
+```yaml
+job:
+  services:
+  - php:7
+  - node:latest
+  - golang:1.10
+  image: alpine:3.7
+  script:
+  - php -v
+  - node -v
+  - go version
+```
+
+If you need to have `php`, `node` and `go` available for your script, you should
+either:
+
+- choose an existing Docker image that contains all required tools, or
+- create your own Docker image, which will have all the required tools included
+  and use that in your job
 
 ### Accessing the services
 

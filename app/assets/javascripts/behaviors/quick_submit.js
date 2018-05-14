@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import '../commons/bootstrap';
 import { isInIssuePage } from '../lib/utils/common_utils';
 

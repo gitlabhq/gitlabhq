@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe Gitlab::UrlBlocker do
   describe '#blocked_url?' do
+    let(:valid_ports) { Project::VALID_IMPORT_PORTS }
+
     it 'allows imports from configured web host and port' do
       import_url = "http://#{Gitlab.config.gitlab.host}:#{Gitlab.config.gitlab.port}/t.git"
       expect(described_class.blocked_url?(import_url)).to be false
@@ -17,7 +19,7 @@ describe Gitlab::UrlBlocker do
     end
 
     it 'returns true for bad port' do
-      expect(described_class.blocked_url?('https://gitlab.com:25/foo/foo.git')).to be true
+      expect(described_class.blocked_url?('https://gitlab.com:25/foo/foo.git', valid_ports: valid_ports)).to be true
     end
 
     it 'returns true for alternative version of 127.0.0.1 (0177.1)' do
@@ -70,6 +72,47 @@ describe Gitlab::UrlBlocker do
 
     it 'returns false for legitimate URL' do
       expect(described_class.blocked_url?('https://gitlab.com/foo/foo.git')).to be false
+    end
+
+    context 'when allow_local_network is' do
+      let(:local_ips) { ['192.168.1.2', '10.0.0.2', '172.16.0.2'] }
+      let(:fake_domain) { 'www.fakedomain.fake' }
+
+      context 'true (default)' do
+        it 'does not block urls from private networks' do
+          local_ips.each do |ip|
+            stub_domain_resolv(fake_domain, ip)
+
+            expect(described_class).not_to be_blocked_url("http://#{fake_domain}")
+
+            unstub_domain_resolv
+
+            expect(described_class).not_to be_blocked_url("http://#{ip}")
+          end
+        end
+      end
+
+      context 'false' do
+        it 'blocks urls from private networks' do
+          local_ips.each do |ip|
+            stub_domain_resolv(fake_domain, ip)
+
+            expect(described_class).to be_blocked_url("http://#{fake_domain}", allow_local_network: false)
+
+            unstub_domain_resolv
+
+            expect(described_class).to be_blocked_url("http://#{ip}", allow_local_network: false)
+          end
+        end
+      end
+
+      def stub_domain_resolv(domain, ip)
+        allow(Addrinfo).to receive(:getaddrinfo).with(domain, any_args).and_return([double(ip_address: ip, ipv4_private?: true)])
+      end
+
+      def unstub_domain_resolv
+        allow(Addrinfo).to receive(:getaddrinfo).and_call_original
+      end
     end
   end
 

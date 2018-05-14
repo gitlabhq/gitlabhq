@@ -1,5 +1,0 @@
----
-title: Don't delete todos or unassign issues and MRs when a user leaves a project
-merge_request:
-author:
-type: fixed

@@ -33,7 +33,7 @@
               = form.text_field field[:name], class: "form-control", placeholder: field[:placeholder]
 
           %p.light
-            = service_event_description(event)
+            = @service.class.event_description(event)
 
   - @service.global_fields.each do |field|
     - type = field[:type]

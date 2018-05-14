@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 export default () => {
   const modal = $('#modal_merge_info');
 

@@ -28,16 +28,17 @@ class GitGarbageCollectWorker
 
     task = task.to_sym
     cmd = command(task)
-    repo_path = project.repository.path_to_repo
-    description = "'#{cmd.join(' ')}' in #{repo_path}"
-
-    Gitlab::GitLogger.info(description)
 
     gitaly_migrate(GITALY_MIGRATED_TASKS[task]) do |is_enabled|
       if is_enabled
         gitaly_call(task, project.repository.raw_repository)
       else
+        repo_path = project.repository.path_to_repo
+        description = "'#{cmd.join(' ')}' in #{repo_path}"
+        Gitlab::GitLogger.info(description)
+
         output, status = Gitlab::Popen.popen(cmd, repo_path)
+
         Gitlab::GitLogger.error("#{description} failed:\n#{output}") unless status.zero?
       end
     end

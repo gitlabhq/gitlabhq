@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe 'Merge request > User sees merge widget', :js do
+  include ProjectForksHelper
+
   let(:project) { create(:project, :repository) }
   let(:project_only_mwps) { create(:project, :repository, only_allow_merge_if_pipeline_succeeds: true) }
   let(:user) { project.creator }
@@ -285,7 +287,29 @@ describe 'Merge request > User sees merge widget', :js do
     end
 
     it 'user cannot remove source branch' do
-      expect(page).to have_field('remove-source-branch-input', disabled: true)
+      expect(page).not_to have_field('remove-source-branch-input')
+    end
+  end
+
+  context 'user cannot merge project and cannot push to fork', :js do
+    let(:forked_project) { fork_project(project, nil, repository: true) }
+    let(:user2) { create(:user) }
+
+    before do
+      project.add_developer(user2)
+      sign_out(:user)
+      sign_in(user2)
+      merge_request.update(
+        source_project: forked_project,
+        target_project: project,
+        merge_params: { 'force_remove_source_branch' => '1' }
+      )
+      visit project_merge_request_path(project, merge_request)
+    end
+
+    it 'user cannot remove source branch' do
+      expect(page).not_to have_field('remove-source-branch-input')
+      expect(page).to have_content('Removes source branch')
     end
   end
 

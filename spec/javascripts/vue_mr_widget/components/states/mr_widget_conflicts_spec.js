@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import conflictsComponent from '~/vue_merge_request_widget/components/states/mr_widget_conflicts.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import { removeBreakLine } from 'spec/helpers/vue_component_helper';
 
 describe('MRWidgetConflicts', () => {
   let Component;
@@ -78,8 +79,9 @@ describe('MRWidgetConflicts', () => {
     });
 
     it('should tell you to rebase locally', () => {
-      expect(vm.$el.textContent.trim().replace(/\s\s+/g, ' ')).toContain('Fast-forward merge is not possible.');
-      expect(vm.$el.textContent.trim().replace(/\s\s+/g, ' ')).toContain('To merge this request, first rebase locally');
+      expect(
+        removeBreakLine(vm.$el.textContent).trim(),
+      ).toContain('Fast-forward merge is not possible. To merge this request, first rebase locally.');
     });
   });
 });

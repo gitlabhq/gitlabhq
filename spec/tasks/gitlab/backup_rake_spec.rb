@@ -195,19 +195,24 @@ describe 'gitlab:app namespace rake task' do
     end
 
     context 'multiple repository storages' do
-      let(:gitaly_address) { Gitlab.config.repositories.storages.default.gitaly_address }
+      let(:test_second_storage) do
+        Gitlab::GitalyClient::StorageSettings.new(@default_storage_hash.merge('path' => 'tmp/tests/custom_storage'))
+      end
       let(:storages) do
         {
-          'default' => { 'path' => Settings.absolute('tmp/tests/default_storage'), 'gitaly_address' => gitaly_address  },
-          'test_second_storage' => { 'path' => Settings.absolute('tmp/tests/custom_storage'), 'gitaly_address' => gitaly_address }
+          'default' => Gitlab.config.repositories.storages.default,
+          'test_second_storage' => test_second_storage
         }
+      end
+
+      before(:all) do
+        @default_storage_hash = Gitlab.config.repositories.storages.default.to_h
       end
 
       before do
         # We only need a backup of the repositories for this test
         stub_env('SKIP', 'db,uploads,builds,artifacts,lfs,registry')
-        FileUtils.mkdir(Settings.absolute('tmp/tests/default_storage'))
-        FileUtils.mkdir(Settings.absolute('tmp/tests/custom_storage'))
+
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
 
         # Avoid asking gitaly about the root ref (which will fail beacuse of the
@@ -216,13 +221,22 @@ describe 'gitlab:app namespace rake task' do
       end
 
       after do
-        FileUtils.rm_rf(Settings.absolute('tmp/tests/default_storage'))
         FileUtils.rm_rf(Settings.absolute('tmp/tests/custom_storage'))
       end
 
       it 'includes repositories in all repository storages' do
-        project_a = create(:project, :repository, repository_storage: 'default')
+        project_a = create(:project, :repository)
         project_b = create(:project, :repository, repository_storage: 'test_second_storage')
+
+        b_storage_dir = File.join(Settings.absolute('tmp/tests/custom_storage'), File.dirname(project_b.disk_path))
+
+        FileUtils.mkdir_p(b_storage_dir)
+
+        # Even when overriding the storage, we have to move it there, so it exists
+        FileUtils.mv(
+          File.join(Settings.absolute(storages['default'].legacy_disk_path), project_b.repository.disk_path + '.git'),
+          Rails.root.join(storages['test_second_storage'].legacy_disk_path, project_b.repository.disk_path + '.git')
+        )
 
         expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout
 

@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe WikiPage do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :wiki_repo) }
   let(:user) { project.owner }
   let(:wiki) { ProjectWiki.new(project, user) }
 
@@ -561,7 +561,7 @@ describe WikiPage do
   end
 
   def commit_details
-    Gitlab::Git::Wiki::CommitDetails.new(user.name, user.email, "test commit")
+    Gitlab::Git::Wiki::CommitDetails.new(user.id, user.username, user.name, user.email, "test commit")
   end
 
   def create_page(name, content)

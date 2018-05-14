@@ -24,7 +24,7 @@ module Gitlab
             address = val['gitaly_address']
           end
 
-          storages << { name: key, path: val['path'] }
+          storages << { name: key, path: val.legacy_disk_path }
         end
 
         if Rails.env.test?

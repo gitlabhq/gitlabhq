@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 feature 'Milestones sorting', :js do
-  include SortingHelper
   let(:user)    { create(:user) }
   let(:project) { create(:project, name: 'test', namespace: user.namespace) }
 

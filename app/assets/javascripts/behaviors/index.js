@@ -1,6 +1,7 @@
 import './autosize';
 import './bind_in_out';
-import initCopyAsGFM from './copy_as_gfm';
+import './markdown/render_gfm';
+import initCopyAsGFM from './markdown/copy_as_gfm';
 import initCopyToClipboard from './copy_to_clipboard';
 import './details_behavior';
 import installGlEmojiElement from './gl_emoji';

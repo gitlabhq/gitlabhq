@@ -54,7 +54,7 @@ module API
         present key, with: Entities::DeployKeysProject
       end
 
-      desc 'Add new deploy key to currently authenticated user' do
+      desc 'Add new deploy key to a project' do
         success Entities::DeployKeysProject
       end
       params do
@@ -66,33 +66,32 @@ module API
         params[:key].strip!
 
         # Check for an existing key joined to this project
-        key = user_project.deploy_keys_projects
+        deploy_key_project = user_project.deploy_keys_projects
                           .joins(:deploy_key)
                           .find_by(keys: { key: params[:key] })
 
-        if key
-          present key, with: Entities::DeployKeysProject
+        if deploy_key_project
+          present deploy_key_project, with: Entities::DeployKeysProject
           break
         end
 
         # Check for available deploy keys in other projects
         key = current_user.accessible_deploy_keys.find_by(key: params[:key])
         if key
-          added_key = add_deploy_keys_project(user_project, deploy_key: key, can_push: !!params[:can_push])
+          deploy_key_project = add_deploy_keys_project(user_project, deploy_key: key, can_push: !!params[:can_push])
 
-          present added_key, with: Entities::DeployKeysProject
+          present deploy_key_project, with: Entities::DeployKeysProject
           break
         end
 
         # Create a new deploy key
-        key_attributes = { can_push: !!params[:can_push],
-                           deploy_key_attributes: declared_params.except(:can_push) }
-        key = add_deploy_keys_project(user_project, key_attributes)
+        deploy_key_attributes = declared_params.except(:can_push).merge(user: current_user)
+        deploy_key_project = add_deploy_keys_project(user_project, deploy_key_attributes: deploy_key_attributes, can_push: !!params[:can_push])
 
-        if key.valid?
-          present key, with: Entities::DeployKeysProject
+        if deploy_key_project.valid?
+          present deploy_key_project, with: Entities::DeployKeysProject
         else
-          render_validation_error!(key)
+          render_validation_error!(deploy_key_project)
         end
       end
 

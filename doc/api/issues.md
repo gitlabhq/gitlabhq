@@ -100,6 +100,7 @@ Example response:
       },
       "updated_at" : "2016-01-04T15:31:51.081Z",
       "closed_at" : null,
+      "closed_by" : null,
       "id" : 76,
       "title" : "Consequatur vero maxime deserunt laboriosam est voluptas dolorem.",
       "created_at" : "2016-01-04T15:31:51.081Z",
@@ -121,6 +122,8 @@ Example response:
 ```
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
+**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
 ## List group issues
 
@@ -216,6 +219,7 @@ Example response:
       "updated_at" : "2016-01-04T15:31:46.176Z",
       "created_at" : "2016-01-04T15:31:46.176Z",
       "closed_at" : null,
+      "closed_by" : null,
       "user_notes_count": 1,
       "due_date": null,
       "web_url": "http://example.com/example/example/issues/1",
@@ -232,6 +236,8 @@ Example response:
 ```
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
+**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
 ## List project issues
 
@@ -326,6 +332,14 @@ Example response:
       "updated_at" : "2016-01-04T15:31:46.176Z",
       "created_at" : "2016-01-04T15:31:46.176Z",
       "closed_at" : "2016-01-05T15:31:46.176Z",
+      "closed_by" : {
+         "state" : "active",
+         "web_url" : "https://gitlab.example.com/root",
+         "avatar_url" : null,
+         "username" : "root",
+         "id" : 1,
+         "name" : "Administrator"
+      },
       "user_notes_count": 1,
       "due_date": "2016-07-22",
       "web_url": "http://example.com/example/example/issues/1",
@@ -342,6 +356,8 @@ Example response:
 ```
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
+**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
 ## Single issue
 
@@ -409,6 +425,8 @@ Example response:
    "title" : "Ut commodi ullam eos dolores perferendis nihil sunt.",
    "updated_at" : "2016-01-04T15:31:46.176Z",
    "created_at" : "2016-01-04T15:31:46.176Z",
+   "closed_at" : null,
+   "closed_by" : null,
    "subscribed": false,
    "user_notes_count": 1,
    "due_date": null,
@@ -431,6 +449,8 @@ Example response:
 ```
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
+**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
 ## New issue
 
@@ -484,6 +504,7 @@ Example response:
    "description" : null,
    "updated_at" : "2016-01-07T12:44:33.959Z",
    "closed_at" : null,
+   "closed_by" : null,
    "milestone" : null,
    "subscribed" : true,
    "user_notes_count": 0,
@@ -507,6 +528,8 @@ Example response:
 ```
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
+**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
 ## Edit issue
 
@@ -556,6 +579,14 @@ Example response:
    "description" : null,
    "updated_at" : "2016-01-07T12:55:16.213Z",
    "closed_at" : "2016-01-08T12:55:16.213Z",
+   "closed_by" : {
+      "state" : "active",
+      "web_url" : "https://gitlab.example.com/root",
+      "avatar_url" : null,
+      "username" : "root",
+      "id" : 1,
+      "name" : "Administrator"
+    },
    "iid" : 15,
    "labels" : [
       "bug"
@@ -586,6 +617,8 @@ Example response:
 ```
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
+**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
 ## Delete an issue
 
@@ -640,6 +673,7 @@ Example response:
   "created_at": "2016-04-05T21:41:45.652Z",
   "updated_at": "2016-04-07T12:20:17.596Z",
   "closed_at": null,
+  "closed_by": null,
   "labels": [],
   "milestone": null,
   "assignees": [{
@@ -686,6 +720,8 @@ Example response:
 ```
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
+**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
 ## Subscribe to an issue
 
@@ -719,6 +755,7 @@ Example response:
   "created_at": "2016-04-05T21:41:45.652Z",
   "updated_at": "2016-04-07T12:20:17.596Z",
   "closed_at": null,
+  "closed_by": null,
   "labels": [],
   "milestone": null,
   "assignees": [{
@@ -765,6 +802,9 @@ Example response:
 ```
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
+
+**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
 ## Unsubscribe from an issue
 
@@ -807,6 +847,8 @@ Example response:
     "avatar_url": "http://www.gravatar.com/avatar/3e6f06a86cf27fa8b56f3f74f7615987?s=80&d=identicon",
     "web_url": "https://gitlab.example.com/keyon"
   },
+  "closed_at": null,
+  "closed_by": null,
   "author": {
     "name": "Vivian Hermann",
     "username": "orville",
@@ -926,6 +968,9 @@ Example response:
 ```
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
+
+**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
 ## Set a time estimate for an issue
 
@@ -1112,6 +1157,8 @@ Example response:
     "assignee": null,
     "source_project_id": 1,
     "target_project_id": 1,
+    "closed_at": null,
+    "closed_by": null,
     "labels": [],
     "work_in_progress": false,
     "milestone": null,
@@ -1206,3 +1253,4 @@ Example response:
 
 [ce-13004]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13004
 [ce-14016]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14016
+[ce-17042]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17042

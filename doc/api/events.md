@@ -42,6 +42,10 @@ Dates for the `before` and `after` parameters should be supplied in the followin
 YYYY-MM-DD
 ```
 
+### Event Time Period Limit
+
+GitLab removes events older than 1 year from the events table for performance reasons. The range of 1 year was chosen because user contribution calendars only show contributions of the past year.
+
 ## List currently authenticated user's events
 
 >**Note:** This endpoint was introduced in GitLab 9.3.

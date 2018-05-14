@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'User manages project members' do
+describe 'Projects > Settings > User manages project members' do
   let(:group) { create(:group, name: 'OpenSource') }
   let(:project) { create(:project) }
   let(:project2) { create(:project) }

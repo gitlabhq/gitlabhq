@@ -29,7 +29,7 @@ module QA
           filter_by_name(name)
 
           wait(reload: false) do
-            return false if page.has_content?('Sorry, no groups or projects matched your search')
+            break false if page.has_content?('Sorry, no groups or projects matched your search')
 
             page.has_link?(name)
           end

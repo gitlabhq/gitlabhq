@@ -4,7 +4,7 @@
     - if can_admin_issue?
       = icon("spinner spin", class: "block-loading")
       = link_to "Edit", "#", class: "js-sidebar-dropdown-toggle edit-link pull-right"
-  .value.issuable-show-labels
+  .value.issuable-show-labels.dont-hide
     %span.no-value{ "v-if" => "issue.labels && issue.labels.length === 0" }
       None
     %a{ href: "#",
@@ -26,8 +26,7 @@
             project_id: @project&.try(:id),
             labels: labels_filter_path(false),
             namespace_path: @namespace_path,
-            project_path: @project.try(:path) },
-          ":data-issue-update" => "'#{build_issue_link_base}/' + issue.iid + '.json'" }
+            project_path: @project.try(:path) } }
           %span.dropdown-toggle-text
             Label
           = icon('chevron-down')

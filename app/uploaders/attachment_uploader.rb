@@ -1,8 +1,8 @@
 class AttachmentUploader < GitlabUploader
-  include UploaderHelper
   include RecordsUploads::Concern
-
-  storage :file
+  include ObjectStorage::Concern
+  prepend ObjectStorage::Extension::RecordsUploads
+  include UploaderHelper
 
   private
 

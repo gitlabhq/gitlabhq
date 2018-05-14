@@ -71,7 +71,7 @@ class BuildkiteService < CiService
   end
 
   def calculate_reactive_cache(sha, ref)
-    response = HTTParty.get(commit_status_path(sha), verify: false)
+    response = Gitlab::HTTP.get(commit_status_path(sha), verify: false)
 
     status =
       if response.code == 200 && response['status']

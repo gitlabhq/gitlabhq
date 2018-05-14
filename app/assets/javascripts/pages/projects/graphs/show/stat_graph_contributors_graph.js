@@ -1,4 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, max-len, no-restricted-syntax, vars-on-top, no-use-before-define, no-param-reassign, new-cap, no-underscore-dangle, wrap-iife, comma-dangle, no-return-assign, prefer-arrow-callback, quotes, prefer-template, newline-per-chained-call, no-else-return, no-shadow */
+
+import $ from 'jquery';
 import _ from 'underscore';
 import { extent, max } from 'd3-array';
 import { select, event as d3Event } from 'd3-selection';

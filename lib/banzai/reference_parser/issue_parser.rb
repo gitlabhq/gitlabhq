@@ -5,15 +5,10 @@ module Banzai
 
       def nodes_visible_to_user(user, nodes)
         issues = records_for_nodes(nodes)
-        issues_to_check = issues.values
+        issues_to_check, cross_project_issues = partition_issues(issues, user)
 
-        unless can?(user, :read_cross_project)
-          issues_to_check, cross_project_issues = issues_to_check.partition do |issue|
-            issue.project == project
-          end
-        end
-
-        readable_issues = Ability.issues_readable_by_user(issues_to_check, user).to_set
+        readable_issues =
+          Ability.issues_readable_by_user(issues_to_check, user).to_set
 
         nodes.select do |node|
           issue_in_node = issues[node]
@@ -25,12 +20,38 @@ module Banzai
           # but not the issue.
           if readable_issues.include?(issue_in_node)
             true
-          elsif cross_project_issues&.include?(issue_in_node)
+          elsif cross_project_issues.include?(issue_in_node)
             can_read_reference?(user, issue_in_node)
           else
             false
           end
         end
+      end
+
+      # issues - A Hash mapping HTML nodes to their corresponding Issue
+      #          instances.
+      # user - The current User.
+      def partition_issues(issues, user)
+        return [issues.values, []] if can?(user, :read_cross_project)
+
+        issues_to_check = []
+        cross_project_issues = []
+
+        # We manually partition the data since our input is a Hash and our
+        # output has to be an Array of issues; not an Array of (node, issue)
+        # pairs.
+        issues.each do |node, issue|
+          target =
+            if issue.project == project_for_node(node)
+              issues_to_check
+            else
+              cross_project_issues
+            end
+
+          target << issue
+        end
+
+        [issues_to_check, cross_project_issues]
       end
 
       def records_for_nodes(nodes)

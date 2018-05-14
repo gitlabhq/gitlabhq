@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 /**
  * Instances of SmartInterval extend the functionality of `setInterval`, make it configurable
  * and controllable by a public API.

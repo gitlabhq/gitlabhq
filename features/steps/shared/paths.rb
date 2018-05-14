@@ -48,10 +48,6 @@ module SharedPaths
     visit group_group_members_path(Group.find_by(name: "Owned"))
   end
 
-  step 'I visit group "Owned" settings page' do
-    visit edit_group_path(Group.find_by(name: "Owned"))
-  end
-
   step 'I visit group "Owned" projects page' do
     visit projects_group_path(Group.find_by(name: "Owned"))
   end
@@ -94,10 +90,6 @@ module SharedPaths
 
   step 'I visit dashboard issues page' do
     visit assigned_issues_dashboard_path
-  end
-
-  step 'I visit dashboard merge requests page' do
-    visit assigned_mrs_dashboard_path
   end
 
   step 'I visit dashboard search page' do
@@ -200,16 +192,8 @@ module SharedPaths
   # Generic Project
   # ----------------------------------------
 
-  step "I visit my project's home page" do
-    visit project_path(@project)
-  end
-
   step "I visit my project's settings page" do
     visit edit_project_path(@project)
-  end
-
-  step "I visit my project's files page" do
-    visit project_tree_path(@project, root_ref)
   end
 
   step 'I visit a binary file in the repo' do
@@ -256,10 +240,6 @@ module SharedPaths
     visit project_settings_integrations_path(@project)
   end
 
-  step 'I visit project deploy keys page' do
-    visit project_deploy_keys_path(@project)
-  end
-
   step 'I visit project find file page' do
     visit project_find_file_path(@project, root_ref)
   end
@@ -272,24 +252,8 @@ module SharedPaths
     visit project_path(project)
   end
 
-  step 'I visit project "Shop" activity page' do
-    visit activity_project_path(project)
-  end
-
-  step 'I visit project "Forked Shop" merge requests page' do
-    visit project_merge_requests_path(@forked_project)
-  end
-
   step 'I visit edit project "Shop" page' do
     visit edit_project_path(project)
-  end
-
-  step 'I visit project branches page' do
-    visit project_branches_path(@project)
-  end
-
-  step 'I visit project protected branches page' do
-    visit project_protected_branches_path(@project)
   end
 
   step 'I visit compare refs page' do
@@ -335,22 +299,9 @@ module SharedPaths
     visit project_tags_path(@project)
   end
 
-  step 'I visit project commit page' do
-    visit project_commit_path(@project, sample_commit.id)
-  end
-
-  step 'I visit project "Shop" issues page' do
-    visit project_issues_path(project)
-  end
-
   step 'I visit issue page "Release 0.4"' do
     issue = Issue.find_by(title: "Release 0.4")
     visit project_issue_path(issue.project, issue)
-  end
-
-  step 'I visit project "Shop" labels page' do
-    project = Project.find_by(name: 'Shop')
-    visit project_labels_path(project)
   end
 
   step 'I visit project "Forum" labels page' do
@@ -373,11 +324,6 @@ module SharedPaths
     wait_for_requests
   end
 
-  step 'I visit merge request page "Bug NS-05"' do
-    visit merge_request_path("Bug NS-05")
-    wait_for_requests
-  end
-
   step 'I visit merge request page "Bug NS-07"' do
     visit merge_request_path("Bug NS-07")
     wait_for_requests
@@ -394,16 +340,8 @@ module SharedPaths
     wait_for_requests
   end
 
-  step 'I visit project "Shop" merge requests page' do
-    visit project_merge_requests_path(project)
-  end
-
   step 'I visit forked project "Shop" merge requests page' do
     visit project_merge_requests_path(project)
-  end
-
-  step 'I visit project "Shop" milestones page' do
-    visit project_milestones_path(project)
   end
 
   step 'I visit project "Shop" team page' do
@@ -417,11 +355,6 @@ module SharedPaths
   # ----------------------------------------
   # Visibility Projects
   # ----------------------------------------
-
-  step 'I visit project "Community" page' do
-    project = Project.find_by(name: "Community")
-    visit project_path(project)
-  end
 
   step 'I visit project "Community" source page' do
     project = Project.find_by(name: 'Community')
@@ -441,11 +374,6 @@ module SharedPaths
   # ----------------------------------------
   # Empty Projects
   # ----------------------------------------
-
-  step "I visit empty project page" do
-    project = Project.find_by(name: "Empty Public Project")
-    visit project_path(project)
-  end
 
   step "I should not see command line instructions" do
     expect(page).not_to have_css('.empty_wrapper')
@@ -481,13 +409,5 @@ module SharedPaths
   def merge_request_path(title)
     mr = MergeRequest.find_by(title: title)
     project_merge_request_path(mr.target_project, mr)
-  end
-
-  # ----------------------------------------
-  # Errors
-  # ----------------------------------------
-
-  step 'page status code should be 404' do
-    expect(status_code).to eq 404
   end
 end

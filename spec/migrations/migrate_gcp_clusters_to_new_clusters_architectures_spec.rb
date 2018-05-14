@@ -4,8 +4,24 @@ require Rails.root.join('db', 'post_migrate', '20171013104327_migrate_gcp_cluste
 describe MigrateGcpClustersToNewClustersArchitectures, :migration do
   let(:projects) { table(:projects) }
   let(:project) { projects.create }
-  let(:user) { create(:user) }
-  let(:service) { create(:kubernetes_service, project_id: project.id) }
+  let(:users) { table(:users) }
+  let(:user) { users.create! }
+  let(:service) { GcpMigrationSpec::KubernetesService.create!(project_id: project.id) }
+
+  module GcpMigrationSpec
+    class KubernetesService < ActiveRecord::Base
+      self.table_name = 'services'
+
+      serialize :properties, JSON # rubocop:disable Cop/ActiveRecordSerialize
+
+      default_value_for :active, true
+      default_value_for :type, 'KubernetesService'
+      default_value_for :properties, {
+        api_url: 'https://kubernetes.example.com',
+        token: 'a' * 40
+      }
+    end
+  end
 
   context 'when cluster is being created' do
     let(:project_id) { project.id }

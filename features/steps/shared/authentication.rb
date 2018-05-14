@@ -15,27 +15,8 @@ module SharedAuthentication
     gitlab_sign_in(create(:user))
   end
 
-  step 'I sign in as an admin' do
-    sign_out(@user) if @user
-
-    @user = create(:admin)
-    sign_in(@user)
-  end
-
-  step 'I sign in as "John Doe"' do
-    gitlab_sign_in(user_exists("John Doe"))
-  end
-
-  step 'I sign in as "Mary Jane"' do
-    gitlab_sign_in(user_exists("Mary Jane"))
-  end
-
   step 'I should be redirected to sign in page' do
     expect(current_path).to eq new_user_session_path
-  end
-
-  step "I logout" do
-    gitlab_sign_out
   end
 
   step "I logout directly" do

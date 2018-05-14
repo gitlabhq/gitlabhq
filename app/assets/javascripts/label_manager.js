@@ -1,4 +1,6 @@
 /* eslint-disable comma-dangle, class-methods-use-this, no-underscore-dangle, no-param-reassign, no-unused-vars, consistent-return, func-names, space-before-function-paren, max-len */
+
+import $ from 'jquery';
 import Sortable from 'vendor/Sortable';
 
 import flash from './flash';

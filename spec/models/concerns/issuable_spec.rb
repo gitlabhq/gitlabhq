@@ -34,7 +34,7 @@ describe Issuable do
     subject { build(:issue) }
 
     before do
-      allow(subject).to receive(:set_iid).and_return(false)
+      allow(InternalId).to receive(:generate_next).and_return(nil)
     end
 
     it { is_expected.to validate_presence_of(:project) }
@@ -176,7 +176,7 @@ describe Issuable do
     end
   end
 
-  describe "#sort" do
+  describe "#sort_by_attribute" do
     let(:project) { create(:project) }
 
     context "by milestone due date" do
@@ -193,12 +193,12 @@ describe Issuable do
       let!(:issue3) { create(:issue, project: project) }
 
       it "sorts desc" do
-        issues = project.issues.sort('milestone_due_desc')
+        issues = project.issues.sort_by_attribute('milestone_due_desc')
         expect(issues).to match_array([issue2, issue1, issue, issue3])
       end
 
       it "sorts asc" do
-        issues = project.issues.sort('milestone_due_asc')
+        issues = project.issues.sort_by_attribute('milestone_due_asc')
         expect(issues).to match_array([issue1, issue2, issue, issue3])
       end
     end
@@ -210,7 +210,7 @@ describe Issuable do
 
       it 'has no duplicates across pages' do
         sorted_issue_ids = 1.upto(10).map do |i|
-          project.issues.sort('milestone_due_desc').page(i).per(1).first.id
+          project.issues.sort_by_attribute('milestone_due_desc').page(i).per(1).first.id
         end
 
         expect(sorted_issue_ids).to eq(sorted_issue_ids.uniq)
@@ -495,6 +495,14 @@ describe Issuable do
 
         expect(issue.total_time_spent).to eq(1800)
       end
+
+      it 'updates issues updated_at' do
+        issue
+
+        Timecop.travel(1.minute.from_now) do
+          expect { spend_time(1800) }.to change { issue.updated_at }
+        end
+      end
     end
 
     context 'substracting time' do
@@ -510,9 +518,13 @@ describe Issuable do
 
       context 'when time to substract exceeds the total time spent' do
         it 'raise a validation error' do
-          expect do
-            spend_time(-3600)
-          end.to raise_error(ActiveRecord::RecordInvalid)
+          Timecop.travel(1.minute.from_now) do
+            expect do
+              expect do
+                spend_time(-3600)
+              end.to raise_error(ActiveRecord::RecordInvalid)
+            end.not_to change { issue.updated_at }
+          end
         end
       end
     end

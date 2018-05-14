@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   include Gitlab::GonHelper
   include GitlabRoutingHelper
   include PageLayoutHelper
+  include SafeParamsHelper
   include SentryHelper
   include WorkhorseHelper
   include EnforcesTwoFactorAuthentication
@@ -12,12 +13,13 @@ class ApplicationController < ActionController::Base
 
   before_action :authenticate_sessionless_user!
   before_action :authenticate_user!
+  before_action :enforce_terms!, if: :should_enforce_terms?
   before_action :validate_user_service_ticket!
   before_action :check_password_expiration
   before_action :ldap_security_check
   before_action :sentry_context
   before_action :default_headers
-  before_action :add_gon_variables, unless: -> { request.path.start_with?('/-/peek') }
+  before_action :add_gon_variables, unless: :peek_request?
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :require_email, unless: :devise_controller?
 
@@ -109,7 +111,8 @@ class ApplicationController < ActionController::Base
   def log_exception(exception)
     Raven.capture_exception(exception) if sentry_enabled?
 
-    application_trace = ActionDispatch::ExceptionWrapper.new(env, exception).application_trace
+    backtrace_cleaner = Gitlab.rails5? ? env["action_dispatch.backtrace_cleaner"] : env
+    application_trace = ActionDispatch::ExceptionWrapper.new(backtrace_cleaner, exception).application_trace
     application_trace.map! { |t| "  #{t}\n" }
     logger.error "\n#{exception.class.name} (#{exception.message}):\n#{application_trace.join}"
   end
@@ -229,10 +232,6 @@ class ApplicationController < ActionController::Base
     @event_filter ||= EventFilter.new(filters)
   end
 
-  def gitlab_ldap_access(&block)
-    Gitlab::Auth::LDAP::Access.open { |access| yield(access) }
-  end
-
   # JSON for infinite scroll via Pager object
   def pager_json(partial, count, locals = {})
     html = render_to_string(
@@ -268,6 +267,27 @@ class ApplicationController < ActionController::Base
   def require_email
     if current_user && current_user.temp_oauth_email? && session[:impersonator_id].nil?
       return redirect_to profile_path, notice: 'Please complete your profile with email address'
+    end
+  end
+
+  def enforce_terms!
+    return unless current_user
+    return if current_user.terms_accepted?
+
+    if sessionless_user?
+      render_403
+    else
+      # Redirect to the destination if the request is a get.
+      # Redirect to the source if it was a post, so the user can re-submit after
+      # accepting the terms.
+      redirect_path = if request.get?
+                        request.fullpath
+                      else
+                        URI(request.referer).path if request.referer
+                      end
+
+      flash[:notice] = _("Please accept the Terms of Service before continuing.")
+      redirect_to terms_path(redirect: redirect_path), status: :found
     end
   end
 
@@ -343,5 +363,19 @@ class ApplicationController < ActionController::Base
   def set_page_title_header
     # Per https://tools.ietf.org/html/rfc5987, headers need to be ISO-8859-1, not UTF-8
     response.headers['Page-Title'] = URI.escape(page_title('GitLab'))
+  end
+
+  def sessionless_user?
+    current_user && !session.keys.include?('warden.user.user.key')
+  end
+
+  def peek_request?
+    request.path.start_with?('/-/peek')
+  end
+
+  def should_enforce_terms?
+    return false unless Gitlab::CurrentSettings.current_application_settings.enforce_terms
+
+    !(peek_request? || devise_controller?)
   end
 end

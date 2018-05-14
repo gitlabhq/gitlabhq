@@ -28,10 +28,9 @@ A Todo appears in your Todos dashboard when:
 - an issue or merge request is assigned to you,
 - you are `@mentioned` in an issue or merge request, be it the description of
   the issue/merge request or in a comment,
+- you are `@mentioned` in a comment on a commit,
 - a job in the CI pipeline running for your merge request failed, but this
   job is not allowed to fail.
-
->**Note:** Commenting on a commit will _not_ trigger a Todo.
 
 ### Directly addressed Todos
 
@@ -93,9 +92,9 @@ corresponding **Done** button, and it will disappear from your Todo list.
 ![A Todo in the Todos dashboard](img/todo_list_item.png)
 
 A Todo can also be marked as done from the issue or merge request sidebar using
-the "Mark done" button.
+the "Mark todo as done" button.
 
-![Mark Done from the issuable sidebar](img/todos_mark_done_sidebar.png)
+![Mark todo as done from the issuable sidebar](img/todos_mark_done_sidebar.png)
 
 You can mark all your Todos as done at once by clicking on the **Mark all as
 done** button.

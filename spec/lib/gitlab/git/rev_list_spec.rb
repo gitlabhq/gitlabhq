@@ -3,17 +3,6 @@ require 'spec_helper'
 describe Gitlab::Git::RevList do
   let(:repository) { create(:project, :repository).repository.raw }
   let(:rev_list) { described_class.new(repository, newrev: 'newrev') }
-  let(:env_hash) do
-    {
-      'GIT_OBJECT_DIRECTORY' => 'foo',
-      'GIT_ALTERNATE_OBJECT_DIRECTORIES' => 'bar'
-    }
-  end
-  let(:command_env) { { 'GIT_ALTERNATE_OBJECT_DIRECTORIES' => 'foo:bar' } }
-
-  before do
-    allow(Gitlab::Git::Env).to receive(:all).and_return(env_hash)
-  end
 
   def args_for_popen(args_list)
     [Gitlab.config.git.bin_path, 'rev-list', *args_list]
@@ -23,7 +12,7 @@ describe Gitlab::Git::RevList do
     params = [
       args_for_popen(additional_args),
       repository.path,
-      command_env,
+      {},
       hash_including(lazy_block: with_lazy_block ? anything : nil)
     ]
 

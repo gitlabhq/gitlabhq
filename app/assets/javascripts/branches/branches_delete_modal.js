@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 const MODAL_SELECTOR = '#modal-delete-branch';
 
 class DeleteModal {
@@ -14,6 +16,7 @@ class DeleteModal {
   bindEvents() {
     this.$toggleBtns.on('click', this.setModalData.bind(this));
     this.$confirmInput.on('input', this.setDeleteDisabled.bind(this));
+    this.$deleteBtn.on('click', this.setDisableDeleteButton.bind(this));
   }
 
   setModalData(e) {
@@ -26,6 +29,16 @@ class DeleteModal {
 
   setDeleteDisabled(e) {
     this.$deleteBtn.attr('disabled', e.currentTarget.value !== this.branchName);
+  }
+
+  setDisableDeleteButton(e) {
+    if (this.$deleteBtn.is('[disabled]')) {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    }
+
+    return true;
   }
 
   updateModal() {

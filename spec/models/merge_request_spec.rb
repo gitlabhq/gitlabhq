@@ -17,11 +17,17 @@ describe MergeRequest do
   describe 'modules' do
     subject { described_class }
 
-    it { is_expected.to include_module(InternalId) }
     it { is_expected.to include_module(Issuable) }
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Sortable) }
     it { is_expected.to include_module(Taskable) }
+
+    it_behaves_like 'AtomicInternalId' do
+      let(:internal_id_attribute) { :iid }
+      let(:instance) { build(:merge_request) }
+      let(:scope_attrs) { { project: instance.target_project } }
+      let(:usage) { :merge_requests }
+    end
   end
 
   describe 'validation' do
@@ -1063,6 +1069,22 @@ describe MergeRequest do
     end
   end
 
+  describe '#short_merge_commit_sha' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+
+    it 'returns short id when there is a merge_commit_sha' do
+      merge_request.merge_commit_sha = 'f7ce827c314c9340b075657fd61c789fb01cf74d'
+
+      expect(merge_request.short_merge_commit_sha).to eq('f7ce827c')
+    end
+
+    it 'returns nil when there is no merge_commit_sha' do
+      merge_request.merge_commit_sha = nil
+
+      expect(merge_request.short_merge_commit_sha).to be_nil
+    end
+  end
+
   describe '#can_be_reverted?' do
     context 'when there is no merge_commit for the MR' do
       before do
@@ -1207,7 +1229,7 @@ describe MergeRequest do
     it 'enqueues MergeWorker job and updates merge_jid' do
       merge_request = create(:merge_request)
       user_id = double(:user_id)
-      params = double(:params)
+      params = {}
       merge_jid = 'hash-123'
 
       expect(MergeWorker).to receive(:perform_async).with(merge_request.id, user_id, params) do
@@ -1544,7 +1566,7 @@ describe MergeRequest do
     end
 
     it "executes diff cache service" do
-      expect_any_instance_of(MergeRequests::MergeRequestDiffCacheService).to receive(:execute).with(subject)
+      expect_any_instance_of(MergeRequests::MergeRequestDiffCacheService).to receive(:execute).with(subject, an_instance_of(MergeRequestDiff))
 
       subject.reload_diff
     end
@@ -1960,6 +1982,17 @@ describe MergeRequest do
       it 'returns the diffs' do
         expect(subject.merge_request_diff_for(merge_request_diff3.head_commit_sha)).to eq(merge_request_diff3)
       end
+    end
+
+    it 'runs a single query on the initial call, and none afterwards' do
+      expect { subject.merge_request_diff_for(merge_request_diff1.diff_refs) }
+        .not_to exceed_query_limit(1)
+
+      expect { subject.merge_request_diff_for(merge_request_diff2.diff_refs) }
+        .not_to exceed_query_limit(0)
+
+      expect { subject.merge_request_diff_for(merge_request_diff3.head_commit_sha) }
+        .not_to exceed_query_limit(0)
     end
   end
 

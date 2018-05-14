@@ -30,6 +30,7 @@
           %button.js-promote-project-milestone-button.btn.btn-grouped{ data: { toggle: 'modal',
             target: '#promote-milestone-modal',
             milestone_title: @milestone.title,
+            group_name: @project.group.name,
             url: promote_project_milestone_path(@milestone.project, @milestone),
             container: 'body' },
             disabled: true,

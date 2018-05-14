@@ -63,7 +63,7 @@ module Gitlab
           log " * Created #{project.name} (#{project_full_path})".color(:green)
 
           project.write_repository_config
-          project.repository.create_hooks
+          Gitlab::Git::Repository.create_hooks(project.repository.path_to_repo, Gitlab.config.gitlab_shell.hooks_path)
 
           ProjectCacheWorker.perform_async(project.id)
         else
@@ -75,10 +75,11 @@ module Gitlab
       end
 
       def mv_repo(project)
-        FileUtils.mv(repo_path, File.join(project.repository_storage_path, project.disk_path + '.git'))
+        storage_path = storage_path_for_shard(project.repository_storage)
+        FileUtils.mv(repo_path, project.repository.path_to_repo)
 
         if bare_repo.wiki_exists?
-          FileUtils.mv(wiki_path, File.join(project.repository_storage_path, project.disk_path + '.wiki.git'))
+          FileUtils.mv(wiki_path, File.join(storage_path, project.disk_path + '.wiki.git'))
         end
 
         true
@@ -86,6 +87,10 @@ module Gitlab
         log " * Failed to move repo: #{e.message}".color(:red)
 
         false
+      end
+
+      def storage_path_for_shard(shard)
+        Gitlab.config.repositories.storages[shard].legacy_disk_path
       end
 
       def find_or_create_groups

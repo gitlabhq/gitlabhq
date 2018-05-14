@@ -5,7 +5,8 @@ module Gitlab
 
       attr_reader :full_path
 
-      def initialize(project:, current_user:, shared:)
+      def initialize(project:, current_user:, shared:, params: {})
+        @params = params
         @project = project
         @current_user = current_user
         @shared = shared
@@ -25,6 +26,10 @@ module Gitlab
       private
 
       def project_json_tree
+        if @params[:description].present?
+          project_json['description'] = @params[:description]
+        end
+
         project_json['project_members'] += group_members_json
 
         project_json.to_json

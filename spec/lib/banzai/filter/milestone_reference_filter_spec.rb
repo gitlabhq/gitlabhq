@@ -343,13 +343,21 @@ describe Banzai::Filter::MilestoneReferenceFilter do
   end
 
   context 'group context' do
+    let(:context) { { project: nil, group: create(:group) } }
+    let(:milestone) { create(:milestone, project: project) }
+
     it 'links to a valid reference' do
-      milestone = create(:milestone, project: project)
       reference = "#{project.full_path}%#{milestone.iid}"
 
-      result = reference_filter("See #{reference}", { project: nil, group: create(:group) } )
+      result = reference_filter("See #{reference}", context)
 
       expect(result.css('a').first.attr('href')).to eq(urls.milestone_url(milestone))
+    end
+
+    it 'ignores internal references' do
+      exp = act = "See %#{milestone.iid}"
+
+      expect(reference_filter(act, context).to_html).to eq exp
     end
   end
 

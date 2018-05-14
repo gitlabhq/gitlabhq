@@ -1,47 +1,37 @@
 import Vue from 'vue';
-import unresolvedDiscussionsComponent from '~/vue_merge_request_widget/components/states/mr_widget_unresolved_discussions';
+import UnresolvedDiscussions from '~/vue_merge_request_widget/components/states/unresolved_discussions.vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
-describe('MRWidgetUnresolvedDiscussions', () => {
-  describe('props', () => {
-    it('should have props', () => {
-      const { mr } = unresolvedDiscussionsComponent.props;
+describe('UnresolvedDiscussions', () => {
+  const Component = Vue.extend(UnresolvedDiscussions);
+  let vm;
 
-      expect(mr.type instanceof Object).toBeTruthy();
-      expect(mr.required).toBeTruthy();
-    });
+  afterEach(() => {
+    vm.$destroy();
   });
 
-  describe('template', () => {
-    let el;
-    let vm;
-    const path = 'foo/bar';
-
+  describe('with discussions path', () => {
     beforeEach(() => {
-      const Component = Vue.extend(unresolvedDiscussionsComponent);
-      const mr = {
-        createIssueToResolveDiscussionsPath: path,
-      };
-      vm = new Component({
-        el: document.createElement('div'),
-        propsData: { mr },
-      });
-      el = vm.$el;
+      vm = mountComponent(Component, { mr: {
+        createIssueToResolveDiscussionsPath: gl.TEST_HOST,
+      } });
     });
 
     it('should have correct elements', () => {
-      expect(el.classList.contains('mr-widget-body')).toBeTruthy();
-      expect(el.innerText).toContain('There are unresolved discussions. Please resolve these discussions');
-      expect(el.innerText).toContain('Create an issue to resolve them later');
-      expect(el.querySelector('.js-create-issue').getAttribute('href')).toEqual(path);
+      expect(vm.$el.innerText).toContain('There are unresolved discussions. Please resolve these discussions');
+      expect(vm.$el.innerText).toContain('Create an issue to resolve them later');
+      expect(vm.$el.querySelector('.js-create-issue').getAttribute('href')).toEqual(gl.TEST_HOST);
+    });
+  });
+
+  describe('without discussions path', () => {
+    beforeEach(() => {
+      vm = mountComponent(Component, { mr: {} });
     });
 
-    it('should not show create issue button if user cannot create issue', (done) => {
-      vm.mr.createIssueToResolveDiscussionsPath = '';
-
-      Vue.nextTick(() => {
-        expect(el.querySelector('.js-create-issue')).toEqual(null);
-        done();
-      });
+    it('should not show create issue link if user cannot create issue', () => {
+      expect(vm.$el.innerText).toContain('There are unresolved discussions. Please resolve these discussions');
+      expect(vm.$el.querySelector('.js-create-issue')).toEqual(null);
     });
   });
 });

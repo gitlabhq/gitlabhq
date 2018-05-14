@@ -1,0 +1,36 @@
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :sentry_enabled do
+            = f.check_box :sentry_enabled
+            Enable Sentry
+          .help-block
+            %p This setting requires a restart to take effect.
+            Sentry is an error reporting and logging tool which is currently not shipped with GitLab, get it here:
+            %a{ href: 'https://getsentry.com', target: '_blank', rel: 'noopener noreferrer' } https://getsentry.com
+
+    .form-group
+      = f.label :sentry_dsn, 'Sentry DSN', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :sentry_dsn, class: 'form-control'
+
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :clientside_sentry_enabled do
+            = f.check_box :clientside_sentry_enabled
+            Enable Clientside Sentry
+          .help-block
+            Sentry can also be used for reporting and logging clientside exceptions.
+            %a{ href: 'https://sentry.io/for/javascript/', target: '_blank', rel: 'noopener noreferrer' } https://sentry.io/for/javascript/
+
+    .form-group
+      = f.label :clientside_sentry_dsn, 'Clientside Sentry DSN', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :clientside_sentry_dsn, class: 'form-control'
+
+  = f.submit 'Save changes', class: "btn btn-success"

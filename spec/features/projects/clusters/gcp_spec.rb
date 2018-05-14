@@ -33,7 +33,7 @@ feature 'Gcp Cluster', :js do
           visit project_clusters_path(project)
 
           click_link 'Add Kubernetes cluster'
-          click_link 'Create on GKE'
+          click_link 'Create on Google Kubernetes Engine'
         end
 
         context 'when user filled form with valid parameters' do
@@ -139,7 +139,7 @@ feature 'Gcp Cluster', :js do
         visit project_clusters_path(project)
 
         click_link 'Add Kubernetes cluster'
-        click_link 'Create on GKE'
+        click_link 'Create on Google Kubernetes Engine'
 
         fill_in 'cluster_provider_gcp_attributes_gcp_project_id', with: 'gcp-project-123'
         fill_in 'cluster_name', with: 'dev-cluster'
@@ -159,7 +159,7 @@ feature 'Gcp Cluster', :js do
         visit project_clusters_path(project)
 
         click_link 'Add Kubernetes cluster'
-        click_link 'Create on GKE'
+        click_link 'Create on Google Kubernetes Engine'
 
         fill_in 'cluster_provider_gcp_attributes_gcp_project_id', with: 'gcp-project-123'
         fill_in 'cluster_name', with: 'dev-cluster'
@@ -177,11 +177,51 @@ feature 'Gcp Cluster', :js do
       visit project_clusters_path(project)
 
       click_link 'Add Kubernetes cluster'
-      click_link 'Create on GKE'
+      click_link 'Create on Google Kubernetes Engine'
     end
 
     it 'user sees a login page' do
       expect(page).to have_css('.signin-with-google')
+    end
+  end
+
+  context 'when user has not dismissed GCP signup offer' do
+    before do
+      visit project_clusters_path(project)
+    end
+
+    it 'user sees offer on cluster index page' do
+      expect(page).to have_css('.gcp-signup-offer')
+    end
+
+    it 'user sees offer on cluster create page' do
+      click_link 'Add Kubernetes cluster'
+
+      expect(page).to have_css('.gcp-signup-offer')
+    end
+
+    it 'user sees offer on cluster GCP login page' do
+      click_link 'Add Kubernetes cluster'
+      click_link 'Create on Google Kubernetes Engine'
+
+      expect(page).to have_css('.gcp-signup-offer')
+    end
+  end
+
+  context 'when user has dismissed GCP signup offer' do
+    before do
+      visit project_clusters_path(project)
+    end
+
+    it 'user does not see offer after dismissing' do
+      expect(page).to have_css('.gcp-signup-offer')
+
+      find('.gcp-signup-offer .close').click
+      wait_for_requests
+
+      click_link 'Add Kubernetes cluster'
+
+      expect(page).not_to have_css('.gcp-signup-offer')
     end
   end
 end

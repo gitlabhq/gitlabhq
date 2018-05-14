@@ -122,14 +122,10 @@ describe Banzai::Filter::AutolinkFilter do
     end
 
     it 'does not include trailing punctuation' do
-      doc = filter("See #{link}.")
-      expect(doc.at_css('a').text).to eq link
-
-      doc = filter("See #{link}, ok?")
-      expect(doc.at_css('a').text).to eq link
-
-      doc = filter("See #{link}...")
-      expect(doc.at_css('a').text).to eq link
+      ['.', ', ok?', '...', '?', '!', ': is that ok?'].each do |trailing_punctuation|
+        doc = filter("See #{link}#{trailing_punctuation}")
+        expect(doc.at_css('a').text).to eq link
+      end
     end
 
     it 'includes trailing punctuation when part of a balanced pair' do
@@ -169,6 +165,15 @@ describe Banzai::Filter::AutolinkFilter do
 
       expect(actual).to eq(Rinku.auto_link(complicated_link))
       expect(actual).to eq(expected_complicated_link)
+    end
+
+    it 'does not double-encode HTML entities' do
+      encoded_link = "#{link}?foo=bar&amp;baz=quux"
+      expected_encoded_link = %Q{<a href="#{encoded_link}">#{encoded_link}</a>}
+      actual = unescape(filter(encoded_link).to_html)
+
+      expect(actual).to eq(Rinku.auto_link(encoded_link))
+      expect(actual).to eq(expected_encoded_link)
     end
 
     it 'does not include trailing HTML entities' do

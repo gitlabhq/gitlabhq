@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import '~/profile/gl_crop';
 import Profile from '~/profile/profile';
 

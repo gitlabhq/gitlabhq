@@ -35,6 +35,14 @@ describe 'Merge request > User awards emoji', :js do
 
       expect(page).to have_selector('.emoji-menu', count: 1)
     end
+
+    describe 'the project is archived' do
+      let(:project) { create(:project, :public, :repository, :archived) }
+
+      it 'does not see award menu button' do
+        expect(page).not_to have_selector('.js-award-holder')
+      end
+    end
   end
 
   describe 'logged out' do

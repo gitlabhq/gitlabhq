@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'Merge request > User uses quick actions', :js do
-  include QuickActionsHelpers
+  include Spec::Support::Helpers::Features::NotesHelpers
 
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
@@ -33,7 +33,7 @@ describe 'Merge request > User uses quick actions', :js do
     describe 'toggling the WIP prefix in the title from note' do
       context 'when the current user can toggle the WIP prefix' do
         it 'adds the WIP: prefix to the title' do
-          write_note("/wip")
+          add_note("/wip")
 
           expect(page).not_to have_content '/wip'
           expect(page).to have_content 'Commands applied'
@@ -44,7 +44,7 @@ describe 'Merge request > User uses quick actions', :js do
         it 'removes the WIP: prefix from the title' do
           merge_request.title = merge_request.wip_title
           merge_request.save
-          write_note("/wip")
+          add_note("/wip")
 
           expect(page).not_to have_content '/wip'
           expect(page).to have_content 'Commands applied'
@@ -62,7 +62,7 @@ describe 'Merge request > User uses quick actions', :js do
         end
 
         it 'does not change the WIP prefix' do
-          write_note("/wip")
+          add_note("/wip")
 
           expect(page).not_to have_content '/wip'
           expect(page).not_to have_content 'Commands applied'
@@ -75,7 +75,7 @@ describe 'Merge request > User uses quick actions', :js do
     describe 'merging the MR from the note' do
       context 'when the current user can merge the MR' do
         it 'merges the MR' do
-          write_note("/merge")
+          add_note("/merge")
 
           expect(page).to have_content 'Commands applied'
 
@@ -90,7 +90,7 @@ describe 'Merge request > User uses quick actions', :js do
         end
 
         it 'does not merge the MR' do
-          write_note("/merge")
+          add_note("/merge")
 
           expect(page).not_to have_content 'Your commands have been executed!'
 
@@ -107,7 +107,7 @@ describe 'Merge request > User uses quick actions', :js do
         end
 
         it 'does not merge the MR' do
-          write_note("/merge")
+          add_note("/merge")
 
           expect(page).not_to have_content 'Your commands have been executed!'
 
@@ -118,7 +118,7 @@ describe 'Merge request > User uses quick actions', :js do
 
     describe 'adding a due date from note' do
       it 'does not recognize the command nor create a note' do
-        write_note('/due 2016-08-28')
+        add_note('/due 2016-08-28')
 
         expect(page).not_to have_content '/due 2016-08-28'
       end
@@ -162,7 +162,7 @@ describe 'Merge request > User uses quick actions', :js do
     describe '/target_branch command from note' do
       context 'when the current user can change target branch' do
         it 'changes target branch from a note' do
-          write_note("message start \n/target_branch merge-test\n message end.")
+          add_note("message start \n/target_branch merge-test\n message end.")
 
           wait_for_requests
           expect(page).not_to have_content('/target_branch')
@@ -173,7 +173,7 @@ describe 'Merge request > User uses quick actions', :js do
         end
 
         it 'does not fail when target branch does not exists' do
-          write_note('/target_branch totally_not_existing_branch')
+          add_note('/target_branch totally_not_existing_branch')
 
           expect(page).not_to have_content('/target_branch')
 
@@ -190,7 +190,7 @@ describe 'Merge request > User uses quick actions', :js do
         end
 
         it 'does not change target branch' do
-          write_note('/target_branch merge-test')
+          add_note('/target_branch merge-test')
 
           expect(page).not_to have_content '/target_branch merge-test'
 

@@ -7,8 +7,8 @@ module Gitlab
 
       def initialize(opts = {})
         @id = opts.fetch(:id, nil)
-        @filename = opts.fetch(:filename, nil)
-        @basename = opts.fetch(:basename, nil)
+        @filename = encode_utf8(opts.fetch(:filename, nil))
+        @basename = encode_utf8(opts.fetch(:basename, nil))
         @ref = opts.fetch(:ref, nil)
         @startline = opts.fetch(:startline, nil)
         @data = encode_utf8(opts.fetch(:data, nil))
