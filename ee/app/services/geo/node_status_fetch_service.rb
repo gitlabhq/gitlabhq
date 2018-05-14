@@ -11,7 +11,11 @@ module Geo
         data[:success] = response.success?
 
         if response.success?
-          data.merge!(response.parsed_response)
+          if response.parsed_response.is_a?(Hash)
+            data.merge!(response.parsed_response)
+          else
+            data[:health] = 'A JSON response was not received'
+          end
         else
           message = "Could not connect to Geo node - HTTP Status Code: #{response.code} #{response.message}"
           payload = response.parsed_response
