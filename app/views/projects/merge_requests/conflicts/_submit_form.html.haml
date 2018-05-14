@@ -3,7 +3,13 @@
   .form-group
     .col-md-4
       %h4 Resolve conflicts on source branch
-      .resolve-info Resolve the merge conflict by choosing Ours or Theirs in all the conflicted files above. Commit these changes into {{conflictsData.sourceBranch}}.
+      .resolve-info
+        Resolve the merge conflict by choosing
+        %code Use ours
+        or
+        %code Use theirs
+        in all the conflicted files above. Commit these changes into
+        %strong {{conflictsData.sourceBranch}}.
     .col-md-8
       %label.label-light{ "for" => "commit-message" }
         #{ _('Commit message') }
