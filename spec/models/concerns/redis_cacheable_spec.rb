@@ -51,12 +51,16 @@ describe RedisCacheable do
 
     context 'when there is no cached value' do
       it 'reads the attribute' do
+        expect(instance).to receive(:read_attribute).and_call_original
+
         expect(subject).to eq(payload[:name])
       end
     end
 
     context 'when there is a cached value' do
       it 'reads the cached value' do
+        expect(instance).not_to receive(:read_attribute)
+
         instance.cache_attributes(payload)
 
         expect(subject).to eq(payload[:name])
@@ -81,6 +85,8 @@ describe RedisCacheable do
 
     context 'when there is no cached value' do
       it 'reads the attribute' do
+        expect(instance).to receive(:read_attribute).and_call_original
+
         expect(subject).to be_instance_of(ActiveSupport::TimeWithZone)
         expect(subject).to be_within(1.minute).of(Time.zone.now)
       end
@@ -88,6 +94,8 @@ describe RedisCacheable do
 
     context 'when there is a cached value' do
       it 'reads the cached value' do
+        expect(instance).not_to receive(:read_attribute)
+
         instance.cache_attributes(time: Time.zone.now)
 
         expect(subject).to be_instance_of(ActiveSupport::TimeWithZone)
