@@ -1074,7 +1074,7 @@ export default class Notes {
     addForm = false;
     let lineTypeSelector = '';
     rowCssToAdd =
-      '<tr class="notes_holder js-temp-notes-holder"><td class="notes_line" colspan="2"></td><td class="notes_content"><div class="content"></div></td></tr>';
+      '<tr class="notes_holder js-temp-notes-holder"><td class="notes_content" colspan="3"><div class="content"></div></td></tr>';
     // In parallel view, look inside the correct left/right pane
     if (this.isParallelView()) {
       lineTypeSelector = `.${lineType}`;
