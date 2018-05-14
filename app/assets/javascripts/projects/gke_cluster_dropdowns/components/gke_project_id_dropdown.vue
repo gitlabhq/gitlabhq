@@ -76,12 +76,12 @@ export default {
   created() {
     this.isLoading = true;
 
-    this.getProjects()
+    this.fetchProjects()
       .then(this.fetchSuccessHandler)
       .catch(this.fetchFailureHandler);
   },
   methods: {
-    ...mapActions(['getProjects']),
+    ...mapActions(['fetchProjects']),
     ...mapActions({ setItem: 'setProject' }),
     fetchSuccessHandler() {
       if (this.defaultValue) {

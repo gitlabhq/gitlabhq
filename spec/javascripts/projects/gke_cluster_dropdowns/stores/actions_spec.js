@@ -51,10 +51,10 @@ describe('GCP Cluster Dropdown Store Actions', () => {
   describe('async fetch methods', () => {
     window.gapi = gapi();
 
-    describe('getProjects', () => {
+    describe('fetchProjects', () => {
       it('fetches projects from Google API', done => {
         store
-          .dispatch('getProjects')
+          .dispatch('fetchProjects')
           .then(() => {
             expect(store.state.projects[0].projectId).toEqual(selectedProjectMock.projectId);
             expect(store.state.projects[0].name).toEqual(selectedProjectMock.name);
@@ -65,10 +65,10 @@ describe('GCP Cluster Dropdown Store Actions', () => {
       });
     });
 
-    describe('getZones', () => {
+    describe('fetchZones', () => {
       it('fetches zones from Google API', done => {
         store
-          .dispatch('getZones')
+          .dispatch('fetchZones')
           .then(() => {
             expect(store.state.zones[0].name).toEqual(selectedZoneMock);
 
@@ -78,10 +78,10 @@ describe('GCP Cluster Dropdown Store Actions', () => {
       });
     });
 
-    describe('getMachineTypes', () => {
+    describe('fetchMachineTypes', () => {
       it('fetches machine types from Google API', done => {
         store
-          .dispatch('getMachineTypes')
+          .dispatch('fetchMachineTypes')
           .then(() => {
             expect(store.state.machineTypes[0].name).toEqual(selectedMachineTypeMock);
 

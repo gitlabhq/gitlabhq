@@ -1,18 +1,6 @@
 /* global gapi */
 import * as types from './mutation_types';
 
-export const setProject = ({ commit }, selectedProject) => {
-  commit(types.SET_PROJECT, selectedProject);
-};
-
-export const setZone = ({ commit }, selectedZone) => {
-  commit(types.SET_ZONE, selectedZone);
-};
-
-export const setMachineType = ({ commit }, selectedMachineType) => {
-  commit(types.SET_MACHINE_TYPE, selectedMachineType);
-};
-
 const gapiRequest = ({ service, params, commit, mutation, payloadKey }) =>
   new Promise((resolve, reject) => {
     const request = service.list(params);
@@ -31,7 +19,19 @@ const gapiRequest = ({ service, params, commit, mutation, payloadKey }) =>
     );
   });
 
-export const getProjects = ({ commit }) =>
+export const setProject = ({ commit }, selectedProject) => {
+  commit(types.SET_PROJECT, selectedProject);
+};
+
+export const setZone = ({ commit }, selectedZone) => {
+  commit(types.SET_ZONE, selectedZone);
+};
+
+export const setMachineType = ({ commit }, selectedMachineType) => {
+  commit(types.SET_MACHINE_TYPE, selectedMachineType);
+};
+
+export const fetchProjects = ({ commit }) =>
   gapiRequest({
     service: gapi.client.cloudresourcemanager.projects,
     params: {},
@@ -40,7 +40,7 @@ export const getProjects = ({ commit }) =>
     payloadKey: 'projects',
   });
 
-export const getZones = ({ commit, state }) =>
+export const fetchZones = ({ commit, state }) =>
   gapiRequest({
     service: gapi.client.compute.zones,
     params: {
@@ -51,7 +51,7 @@ export const getZones = ({ commit, state }) =>
     payloadKey: 'items',
   });
 
-export const getMachineTypes = ({ commit, state }) =>
+export const fetchMachineTypes = ({ commit, state }) =>
   gapiRequest({
     service: gapi.client.compute.machineTypes,
     params: {

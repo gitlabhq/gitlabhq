@@ -38,13 +38,13 @@ export default {
     selectedProject() {
       this.isLoading = true;
 
-      this.getZones()
+      this.fetchZones()
         .then(this.fetchSuccessHandler)
         .catch(this.fetchFailureHandler);
     },
   },
   methods: {
-    ...mapActions(['getZones']),
+    ...mapActions(['fetchZones']),
     ...mapActions({ setItem: 'setZone' }),
   },
 };

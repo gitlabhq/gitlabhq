@@ -47,7 +47,7 @@ export default {
     selectedZone() {
       this.isLoading = true;
 
-      this.getMachineTypes()
+      this.fetchMachineTypes()
         .then(this.fetchSuccessHandler)
         .catch(this.fetchFailureHandler);
     },
@@ -56,7 +56,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['getMachineTypes']),
+    ...mapActions(['fetchMachineTypes']),
     ...mapActions({ setItem: 'setMachineType' }),
     enableSubmit() {
       if (this.allDropdownsSelected) {
