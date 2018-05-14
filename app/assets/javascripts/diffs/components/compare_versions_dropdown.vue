@@ -14,7 +14,7 @@ export default {
       required: false,
       default: () => [],
     },
-    latestVersion: {
+    mergeRequestVersion: {
       type: Object,
       required: false,
       default: null,
@@ -24,11 +24,6 @@ export default {
       required: false,
       default: null,
     },
-    selectedIndex: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
     showCommitCount: {
       type: Boolean,
       required: false,
@@ -37,27 +32,27 @@ export default {
   },
   computed: {
     targetVersions() {
-      if (this.latestVersion) {
+      if (this.mergeRequestVersion) {
         return this.otherVersions;
       }
       return [...this.otherVersions, this.baseVersion];
     },
     baseVersionSelected() {
+      const last = this.targetVersions.length - 1;
       return (
-        this.baseVersion &&
-        (this.baseVersion.versionIndex === this.selectedIndex || !this.selectedIndex)
+        this.baseVersion && this.baseVersion.versionIndex === this.targetVersions[last].versionIndex
       );
     },
     latestVersionSelected() {
       return (
-        this.latestVersion &&
-        (this.latestVersion.versionIndex === this.selectedIndex || !this.selectedIndex)
+        this.mergeRequestVersion &&
+        this.mergeRequestVersion.versionIndex === this.targetVersions[0].versionIndex
       );
     },
     selectedVersionName() {
       const selectedVersion = this.baseVersionSelected
         ? this.baseVersion
-        : this.targetVersions[this.selectedIndex];
+        : this.mergeRequestVersion;
       return this.versionName(selectedVersion);
     },
   },
@@ -79,16 +74,17 @@ export default {
       return `version ${version.versionIndex}`;
     },
     isActive(version) {
-      if (this.isLatest(version) || this.isBase(version)) {
+      if (this.baseVersion) {
         return true;
+      } else {
+        return version.versionIndex === this.mergeRequestVersion.versionIndex;
       }
-      return version.versionIndex === this.selectedIndex;
     },
     isBase(version) {
       return this.baseVersion && version.versionIndex === this.baseVersion.versionIndex;
     },
     isLatest(version) {
-      return this.latestVersion && version.versionIndex === this.latestVersion.versionIndex;
+      return !this.baseVersion && version.versionIndex === this.targetVersions[0].versionIndex;
     },
   },
 };

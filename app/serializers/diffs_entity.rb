@@ -13,6 +13,10 @@ class DiffsEntity < Grape::Entity
     options[:commit]
   end
 
+  expose :merge_request_diff, using: MergeRequestDiffEntity do |diffs|
+    options[:merge_request_diff]
+  end
+
   expose :start_version do |diffs|
     options[:start_version]
   end

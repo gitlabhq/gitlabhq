@@ -21,11 +21,16 @@ export default {
       type: Array,
       required: true,
     },
+    mergeRequestDiff: {
+      type: Object,
+      required: true,
+    },
   },
   computed: {
     targetVersions() {
       return this.mergeRequestDiffs.map(diff => ({
         ...diff,
+        // TODO @psimyn: this probably means URL should be changed..
         path: removeParamQueryString(diff.path, 'start_sha'),
       }));
     },
@@ -34,9 +39,6 @@ export default {
     },
     baseVersion() {
       return baseVersion;
-    },
-    mergeRequestDiff() {
-      return this.mergeRequestDiffs[0];
     },
   },
 };
@@ -48,7 +50,7 @@ export default {
       Changes between
       <compare-versions-dropdown
         :other-versions="targetVersions"
-        :latest-version="mergeRequestDiff"
+        :merge-request-version="mergeRequestDiff"
         :show-commit-count="true"
         class="mr-version-dropdown"
       />

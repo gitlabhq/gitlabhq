@@ -43,6 +43,7 @@ export default {
       diffFiles: state => state.diffs.diffFiles,
       diffViewType: state => state.diffs.diffViewType,
       mergeRequestDiffs: state => state.diffs.mergeRequestDiffs,
+      mergeRequestDiff: state => state.diffs.mergeRequestDiff,
       renderOverflowWarning: state => state.diffs.renderOverflowWarning,
       numTotalFiles: state => state.diffs.realSize,
       numVisibleFiles: state => state.diffs.size,
@@ -105,6 +106,7 @@ export default {
         <compare-versions
           v-if="mergeRequestDiffs.length > 1"
           :merge-request-diffs="mergeRequestDiffs"
+          :merge-request-diff="mergeRequestDiff"
         />
         <changed-files
           v-if="diffFiles.length > 0"
