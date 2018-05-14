@@ -10,6 +10,7 @@ image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.7-golang-1.9-git
   paths:
     - vendor/ruby
     - .yarn-cache/
+    - vendor/gitaly-ruby
 
 .push-cache: &push-cache
   cache:
@@ -438,6 +439,7 @@ setup-test-env:
     paths:
       - tmp/tests
       - config/secrets.yml
+      - vendor/gitaly-ruby
 
 rspec-pg 0 28: *rspec-metadata-pg
 rspec-pg 1 28: *rspec-metadata-pg
