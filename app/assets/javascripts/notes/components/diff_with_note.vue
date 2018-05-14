@@ -1,5 +1,6 @@
 <script>
 import $ from 'jquery';
+import { mapState } from 'vuex';
 import syntaxHighlight from '~/syntax_highlight';
 import imageDiffHelper from '~/image_diff/helpers/index';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
@@ -16,6 +17,15 @@ export default {
     },
   },
   computed: {
+    ...mapState({
+      noteableData: state => state.notes.noteableData,
+    }),
+    isDiscussionsExpanded() {
+      return true; // TODO: @fatihacet - Fix this.
+    },
+    isCollapsed() {
+      return this.diffFile.collapsed || false;
+    },
     isImageDiff() {
       return !this.diffFile.text;
     },
@@ -32,16 +42,15 @@ export default {
     imageDiffHtml() {
       return this.discussion.imageDiffHtml;
     },
+    currentUser() {
+      return this.noteableData.current_user;
+    },
   },
   mounted() {
     if (this.isImageDiff) {
       const canCreateNote = false;
       const renderCommentBadge = true;
-      imageDiffHelper.initImageDiff(
-        this.$refs.fileHolder,
-        canCreateNote,
-        renderCommentBadge,
-      );
+      imageDiffHelper.initImageDiff(this.$refs.fileHolder, canCreateNote, renderCommentBadge);
     } else {
       const fileHolder = $(this.$refs.fileHolder);
       this.$nextTick(() => {
@@ -65,6 +74,9 @@ export default {
   >
     <diff-file-header
       :diff-file="diffFile"
+      :current-user="currentUser"
+      :discussions-expanded="isDiscussionsExpanded"
+      :expanded="!isCollapsed"
     />
     <div
       v-if="diffFile.text"
