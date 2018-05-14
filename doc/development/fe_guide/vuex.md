@@ -87,7 +87,7 @@ In this file, we will write the actions that will call the respective mutations:
   export const fetchUsers = ({ state, dispatch }) => {
     dispatch('requestUsers');
 
-    axios.get(state.endoint)
+    axios.get(state.endpoint)
       .then(({ data }) => dispatch('receiveUsersSuccess', data))
       .catch((error) => {
         dispatch('receiveUsersError', error)
@@ -102,7 +102,7 @@ In this file, we will write the actions that will call the respective mutations:
   export const addUser = ({ state, dispatch }, user) => {
     dispatch('requestAddUser');
 
-    axios.post(state.endoint, user)
+    axios.post(state.endpoint, user)
       .then(({ data }) => dispatch('receiveAddUserSuccess', data))
       .catch((error) => dispatch('receiveAddUserError', error));
   }
