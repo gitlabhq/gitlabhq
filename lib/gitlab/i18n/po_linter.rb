@@ -36,7 +36,7 @@ module Gitlab
         end
 
         @translation_entries = entries.map do |entry_data|
-          Gitlab::I18n::TranslationEntry.new(entry_data, metadata_entry.expected_plurals)
+          Gitlab::I18n::TranslationEntry.new(entry_data, metadata_entry.expected_forms)
         end
 
         nil
@@ -84,25 +84,25 @@ module Gitlab
       end
 
       def validate_number_of_plurals(errors, entry)
-        return unless metadata_entry&.expected_plurals
+        return unless metadata_entry&.expected_forms
         return unless entry.translated?
 
-        if entry.has_plural? && entry.all_translations.size != metadata_entry.expected_plurals
-          errors << "should have #{metadata_entry.expected_plurals} "\
-                    "#{'translations'.pluralize(metadata_entry.expected_plurals)}"
+        if entry.has_plural? && entry.all_translations.size != metadata_entry.expected_forms
+          errors << "should have #{metadata_entry.expected_forms} "\
+                    "#{'translations'.pluralize(metadata_entry.expected_forms)}"
         end
       end
 
       def validate_newlines(errors, entry)
-        if entry.msgid_contains_newlines?
+        if entry.msgid_has_multiple_lines?
           errors << 'is defined over multiple lines, this breaks some tooling.'
         end
 
-        if entry.plural_id_contains_newlines?
+        if entry.plural_id_has_multiple_lines?
           errors << 'plural is defined over multiple lines, this breaks some tooling.'
         end
 
-        if entry.translations_contain_newlines?
+        if entry.translations_have_multiple_lines?
           errors << 'has translations defined over multiple lines, this breaks some tooling.'
         end
       end
@@ -179,16 +179,41 @@ module Gitlab
       end
 
       def numbers_covering_all_plurals
-        @numbers_covering_all_plurals ||= Array.new(metadata_entry.expected_plurals) do |index|
-          number_for_pluralization(index)
-        end
+        @numbers_covering_all_plurals ||= calculate_numbers_covering_all_plurals
       end
 
-      def number_for_pluralization(counter)
-        pluralization_result = FastGettext.pluralisation_rule.call(counter)
+      def calculate_numbers_covering_all_plurals
+        required_numbers = []
+        discovered_indexes = []
+        counter = 0
 
-        if pluralization_result.is_a?(TrueClass) || pluralization_result.is_a?(FalseClass)
-          counter
+        while discovered_indexes.size < metadata_entry.forms_to_test && counter < Gitlab::I18n::MetadataEntry::MAX_FORMS_TO_TEST
+          index_for_count = index_for_pluralization(counter)
+
+          unless discovered_indexes.include?(index_for_count)
+            discovered_indexes << index_for_count
+            required_numbers << counter
+          end
+
+          counter += 1
+        end
+
+        required_numbers
+      end
+
+      def index_for_pluralization(counter)
+        # This calls the C function that defines the pluralization rule, it can
+        # return a boolean (`false` represents 0, `true` represents 1) or an integer
+        # that specifies the plural form to be used for the given number
+        pluralization_result = Gitlab::I18n.with_locale(locale) do
+          FastGettext.pluralisation_rule.call(counter)
+        end
+
+        case pluralization_result
+        when false
+          0
+        when true
+          1
         else
           pluralization_result
         end
@@ -211,11 +236,13 @@ module Gitlab
       end
 
       def validate_unnamed_variables(errors, variables)
-        if variables.any? { |name| unnamed_variable?(name) } && variables.any? { |name| !unnamed_variable?(name) }
+        unnamed_variables, named_variables = variables.partition { |name| unnamed_variable?(name) }
+
+        if unnamed_variables.any? && named_variables.any?
           errors << 'is combining named variables with unnamed variables'
         end
 
-        if variables.select { |variable_name| unnamed_variable?(variable_name) }.size > 1
+        if unnamed_variables.size > 1
           errors << 'is combining multiple unnamed variables'
         end
       end

@@ -51,7 +51,7 @@ namespace :gettext do
   end
 
   task :updated_check do
-    # Removeing all pre-translated files speeds up `gettext:find` as the
+    # Removing all pre-translated files speeds up `gettext:find` as the
     # files don't need to be merged.
     `rm locale/*/gitlab.po`
 
@@ -62,15 +62,15 @@ namespace :gettext do
     changed_files = `git diff --name-only`.lines.map(&:strip)
 
     # reset the locale folder for potential next tasks
-    `git checkout locale`
+    `git checkout -- locale`
 
     if changed_files.include?('locale/gitlab.pot')
       raise <<~MSG
         Newly translated strings found, please add them to `gitlab.pot` by running:
 
-          bundle exec rake gettext:find; git checkout locale/*/gitlab.po;
+          bundle exec rake gettext:find; git checkout -- locale/*/gitlab.po;
 
-        Then check in the resulting `locale/gitlab.pot`
+        Then commit and push the resulting changes to `locale/gitlab.pot`.
 
       MSG
     end

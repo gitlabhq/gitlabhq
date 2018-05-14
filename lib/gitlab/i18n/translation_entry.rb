@@ -53,15 +53,15 @@ module Gitlab
         nplurals > 1 || !has_plural?
       end
 
-      def msgid_contains_newlines?
+      def msgid_has_multiple_lines?
         entry_data[:msgid].is_a?(Array)
       end
 
-      def plural_id_contains_newlines?
+      def plural_id_has_multiple_lines?
         entry_data[:msgid_plural].is_a?(Array)
       end
 
-      def translations_contain_newlines?
+      def translations_have_multiple_lines?
         translation_entries.any? { |translation| translation.is_a?(Array) }
       end
 
