@@ -25,51 +25,53 @@ describe 'Merge request > User posts diff notes', :js do
 
     context 'with an old line on the left and no line on the right' do
       it 'allows commenting on the left side' do
-        should_allow_commenting(find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_23_22"]').find(:xpath, '..'), 'left')
+        should_allow_commenting(find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_23_22"]'), 'left')
       end
 
       it 'does not allow commenting on the right side' do
-        should_not_allow_commenting(find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_23_22"]').find(:xpath, '..'), 'right')
+        should_not_allow_commenting(find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_23_22"]'), 'right')
       end
     end
 
     context 'with no line on the left and a new line on the right' do
       it 'does not allow commenting on the left side' do
-        should_not_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_15"]').find(:xpath, '..'), 'left')
+        should_not_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_15"]'), 'left')
       end
 
       it 'allows commenting on the right side' do
-        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_15"]').find(:xpath, '..'), 'right')
+        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_15"]'), 'right')
       end
     end
 
     context 'with an old line on the left and a new line on the right' do
       it 'allows commenting on the left side' do
-        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"]').find(:xpath, '..'), 'left')
+        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"]'), 'left')
       end
 
       it 'allows commenting on the right side' do
-        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"]').find(:xpath, '..'), 'right')
+        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"]'), 'right')
       end
     end
 
     context 'with an unchanged line on the left and an unchanged line on the right' do
       it 'allows commenting on the left side' do
-        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]', match: :first).find(:xpath, '..'), 'left')
+        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]', match: :first), 'left')
       end
 
       it 'allows commenting on the right side' do
-        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]', match: :first).find(:xpath, '..'), 'right')
+        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]', match: :first), 'right')
       end
     end
 
     context 'with a match line' do
       it 'does not allow commenting on the left side' do
-        should_not_allow_commenting(find('.match', match: :first).find(:xpath, '..'), 'left')
+        line_holder = find('.match', match: :first).find(:xpath, '..')
+        should_not_allow_commenting(line_holder, 'left')
       end
 
       it 'does not allow commenting on the right side' do
-        should_not_allow_commenting(find('.match', match: :first).find(:xpath, '..'), 'right')
+        line_holder = find('.match', match: :first).find(:xpath, '..')
+        should_not_allow_commenting(line_holder, 'right')
       end
     end
 
@@ -81,7 +83,7 @@ describe 'Merge request > User posts diff notes', :js do
 
       # The first `.js-unfold` unfolds upwards, therefore the first
       # `.line_holder` will be an unfolded line.
-      let(:line_holder) { first('.line_holder[id="1"]') }
+      let(:line_holder) { first('.line_holder[id="a5cc2925ca8258af241be7e5b0381edf30266302_1_1"]') }
 
       it 'does not allow commenting on the left side' do
         should_not_allow_commenting(line_holder, 'left')
@@ -143,7 +145,7 @@ describe 'Merge request > User posts diff notes', :js do
 
       # The first `.js-unfold` unfolds upwards, therefore the first
       # `.line_holder` will be an unfolded line.
-      let(:line_holder) { first('.line_holder[id="1"]') }
+      let(:line_holder) { first('.line_holder[id="a5cc2925ca8258af241be7e5b0381edf30266302_1_1"]') }
 
       it 'does not allow commenting' do
         should_not_allow_commenting line_holder

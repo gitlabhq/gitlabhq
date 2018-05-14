@@ -192,7 +192,7 @@ js-autosize markdown-area js-vue-issue-note-form js-vue-textarea"
         </button>
         <button
           @click="cancelHandler()"
-          class="btn btn-cancel note-edit-cancel"
+          class="btn btn-cancel note-edit-cancel js-close-discussion-note-form"
           type="button">
           Cancel
         </button>

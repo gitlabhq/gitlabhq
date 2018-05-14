@@ -41,7 +41,7 @@ export default {
         v-for="(line, index) in normalizedDiffLines"
       >
         <tr
-          :id="line.lineCode"
+          :id="line.lineCode || `${fileHash}_${line.oldLine}_${line.newLine}`"
           :key="line.lineCode"
           :class="getRowClass(line)"
           class="line_holder"
@@ -89,6 +89,7 @@ export default {
           v-if="isDiscussionExpanded(line.lineCode) || diffLineCommentForms[line.lineCode]"
           :key="index"
           class="notes_holder"
+          :class="discussionsByLineCode[line.lineCode] ? '' : 'js-temp-notes-holder'"
         >
           <td
             class="notes_line"

@@ -81,6 +81,14 @@ export default {
 
       return isLeftExpanded || isRightExpanded;
     },
+    getLineCode(line) {
+      const lineCode = line.left.lineCode || line.right.lineCode;
+      if (lineCode) {
+        return lineCode;
+      }
+
+      return `${this.fileHash}_${line.left.oldLine}_${line.right.newLine}`;
+    },
   },
 };
 </script>
@@ -96,6 +104,7 @@ export default {
         >
           <tr
             :key="index"
+            :id="getLineCode(line)"
             :class="getRowClass(line)"
             class="line_holder parallel"
             @mouseover="handleMouse($event, line, true)"
