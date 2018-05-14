@@ -116,7 +116,10 @@ export default {
     handleMergeButtonClick(mergeWhenBuildSucceeds, mergeImmediately) {
       // TODO: Remove no-param-reassign
       if (mergeWhenBuildSucceeds === undefined) {
-        mergeWhenBuildSucceeds = this.mr.isPipelineActive && !this.mr.isMergeAllowed; // eslint-disable-line no-param-reassign
+        /* eslint-disable no-param-reassign */
+        mergeWhenBuildSucceeds = this.mr.isPipelineActive &&
+          !this.mr.isMergeAllowed;
+        /* eslint-enable no-param-reassign */
       } else if (mergeImmediately) {
         this.isMergingImmediately = true;
       }
