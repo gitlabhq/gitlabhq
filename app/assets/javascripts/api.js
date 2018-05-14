@@ -230,12 +230,12 @@ const Api = {
     return axios.get(url, { params });
   },
 
-  pipelineJobs(projectPath, pipelineId) {
+  pipelineJobs(projectPath, pipelineId, params = {}) {
     const url = Api.buildUrl(this.pipelineJobsPath)
       .replace(':id', encodeURIComponent(projectPath))
       .replace(':pipeline_id', pipelineId);
 
-    return axios.get(url);
+    return axios.get(url, { params });
   },
 
   buildUrl(url) {

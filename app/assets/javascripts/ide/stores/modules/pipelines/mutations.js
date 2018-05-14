@@ -26,12 +26,28 @@ export default {
   },
   [types.RECEIVE_JOBS_SUCCESS](state, jobs) {
     state.isLoadingJobs = false;
-    state.jobs = jobs.map(job => ({
-      id: job.id,
-      name: job.name,
-      status: job.status,
-      stage: job.stage,
-      duration: job.duration,
-    }));
+
+    state.stages = jobs.reduce((acc, job) => {
+      let stage = acc.find(s => s.title === job.stage);
+
+      if (!stage) {
+        stage = {
+          title: job.stage,
+          jobs: [],
+        };
+
+        acc.push(stage);
+      }
+
+      stage.jobs = stage.jobs.concat({
+        id: job.id,
+        name: job.name,
+        status: job.status,
+        stage: job.stage,
+        duration: job.duration,
+      });
+
+      return acc;
+    }, state.stages);
   },
 };

@@ -51,4 +51,11 @@ export const jobs = [
     stage: 'test',
     duration: 1,
   },
+  {
+    id: 4,
+    name: 'test 3',
+    status: 'failed',
+    stage: 'build',
+    duration: 1,
+  },
 ];

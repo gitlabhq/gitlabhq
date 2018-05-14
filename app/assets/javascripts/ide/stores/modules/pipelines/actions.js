@@ -28,12 +28,20 @@ export const receiveJobsError = ({ commit }) => {
 };
 export const receiveJobsSuccess = ({ commit }, data) => commit(types.RECEIVE_JOBS_SUCCESS, data);
 
-export const fetchJobs = ({ dispatch, state, rootState }) => {
+export const fetchJobs = ({ dispatch, state, rootState }, page = '1') => {
   dispatch('requestJobs');
 
-  Api.pipelineJobs(rootState.currentProjectId, state.latestPipeline.id)
-    .then(({ data }) => {
+  Api.pipelineJobs(rootState.currentProjectId, state.latestPipeline.id, {
+    page,
+  })
+    .then(({ data, headers }) => {
+      const nextPage = headers && headers['x-next-page'];
+
       dispatch('receiveJobsSuccess', data);
+
+      if (nextPage) {
+        dispatch('fetchJobs', nextPage);
+      }
     })
     .catch(() => dispatch('receiveJobsError'));
 };

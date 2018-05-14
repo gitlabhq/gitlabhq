@@ -182,13 +182,21 @@ describe('IDE pipelines actions', () => {
   });
 
   describe('fetchJobs', () => {
+    let page = '';
+
     beforeEach(() => {
       mockedState.latestPipeline = pipelines[0];
     });
 
     describe('success', () => {
       beforeEach(() => {
-        mock.onGet(/\/api\/v4\/projects\/(.*)\/pipelines\/(.*)\/jobs/).replyOnce(200, jobs);
+        mock.onGet(/\/api\/v4\/projects\/(.*)\/pipelines\/(.*)\/jobs/).replyOnce(() => [
+          200,
+          jobs,
+          {
+            'x-next-page': page,
+          },
+        ]);
       });
 
       it('dispatches request', done => {
@@ -213,12 +221,51 @@ describe('IDE pipelines actions', () => {
         );
       });
 
+      it('dispatches twice for both pages', done => {
+        page = '2';
+
+        testAction(
+          fetchJobs,
+          null,
+          mockedState,
+          [],
+          [
+            { type: 'requestJobs' },
+            { type: 'receiveJobsSuccess', payload: jobs },
+            { type: 'fetchJobs', payload: '2' },
+            { type: 'requestJobs' },
+            { type: 'receiveJobsSuccess', payload: jobs },
+          ],
+          done,
+        );
+      });
+
       it('calls axios with correct URL', () => {
         const apiSpy = spyOn(axios, 'get').and.callThrough();
 
         fetchJobs({ dispatch() {}, state: mockedState, rootState: mockedState });
 
-        expect(apiSpy).toHaveBeenCalledWith('/api/v4/projects/test%2Fproject/pipelines/1/jobs');
+        expect(apiSpy).toHaveBeenCalledWith('/api/v4/projects/test%2Fproject/pipelines/1/jobs', {
+          params: { page: '1' },
+        });
+      });
+
+      it('calls axios with page next page', () => {
+        const apiSpy = spyOn(axios, 'get').and.callThrough();
+
+        fetchJobs({ dispatch() {}, state: mockedState, rootState: mockedState });
+
+        expect(apiSpy).toHaveBeenCalledWith('/api/v4/projects/test%2Fproject/pipelines/1/jobs', {
+          params: { page: '1' },
+        });
+
+        page = '2';
+
+        fetchJobs({ dispatch() {}, state: mockedState, rootState: mockedState }, page);
+
+        expect(apiSpy).toHaveBeenCalledWith('/api/v4/projects/test%2Fproject/pipelines/1/jobs', {
+          params: { page: '2' },
+        });
       });
     });
 

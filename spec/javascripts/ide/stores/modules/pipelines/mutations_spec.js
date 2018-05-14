@@ -72,19 +72,49 @@ describe('IDE pipelines mutations', () => {
       expect(mockedState.isLoadingJobs).toBe(false);
     });
 
-    it('sets jobs', () => {
+    it('sets stages', () => {
       mutations[types.RECEIVE_JOBS_SUCCESS](mockedState, jobs);
 
-      expect(mockedState.jobs.length).toBe(3);
-      expect(mockedState.jobs).toEqual(
-        jobs.map(job => ({
-          id: job.id,
-          name: job.name,
-          status: job.status,
-          stage: job.stage,
-          duration: job.duration,
-        })),
-      );
+      expect(mockedState.stages.length).toBe(2);
+      expect(mockedState.stages).toEqual([
+        {
+          title: 'test',
+          jobs: jasmine.anything(),
+        },
+        {
+          title: 'build',
+          jobs: jasmine.anything(),
+        },
+      ]);
+    });
+
+    it('sets jobs in stages', () => {
+      mutations[types.RECEIVE_JOBS_SUCCESS](mockedState, jobs);
+
+      expect(mockedState.stages[0].jobs.length).toBe(3);
+      expect(mockedState.stages[1].jobs.length).toBe(1);
+      expect(mockedState.stages).toEqual([
+        {
+          title: jasmine.anything(),
+          jobs: jobs.filter(job => job.stage === 'test').map(job => ({
+            id: job.id,
+            name: job.name,
+            status: job.status,
+            stage: job.stage,
+            duration: job.duration,
+          })),
+        },
+        {
+          title: jasmine.anything(),
+          jobs: jobs.filter(job => job.stage === 'build').map(job => ({
+            id: job.id,
+            name: job.name,
+            status: job.status,
+            stage: job.stage,
+            duration: job.duration,
+          })),
+        },
+      ]);
     });
   });
 });
