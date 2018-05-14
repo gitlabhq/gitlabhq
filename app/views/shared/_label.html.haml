@@ -4,6 +4,7 @@
 - toggle_subscription_path = toggle_subscription_label_path(label, @project) if current_user
 - show_label_merge_requests_link = show_label_issuables_link?(label, :merge_requests, project: @project)
 - show_label_issues_link = show_label_issuables_link?(label, :issues, project: @project)
+- unsubscribe_tooltip_title = status.subscribed?(current_user, label.group) ? 'Unsubscribe at group level' : status.subscribed?(current_user, @project) ? 'Unsubscribe at project level' : 'Unsubscribe'
 
 %li.label-list-item{ id: label_css_id, data: { id: label.id } }
   = render "shared/label_row", label: label, subject: subject
@@ -44,7 +45,7 @@
     - if current_user
       %li.inline.label-subscription
         - if can_subscribe_to_label_in_different_levels?(label)
-          %button.js-unsubscribe-button.label-subscribe-button.btn.btn-default{ class: ('hidden' if status.unsubscribed?), data: { url: toggle_subscription_path } }
+          %button.js-unsubscribe-button.label-subscribe-button.btn.btn-default{ class: ('hidden' if status.unsubscribed?), data: { url: toggle_subscription_path, toggle: 'tooltip' }, title: unsubscribe_tooltip_title, test: status.subscribed?(current_user, label.group), test_two: status.subscribed? }
             %span Unsubscribe
           .dropdown.dropdown-group-label{ class: ('hidden' unless status.unsubscribed?) }
             %button.label-subscribe-button.btn.btn-default{ data: { toggle: 'dropdown' } }
