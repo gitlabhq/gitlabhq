@@ -175,7 +175,7 @@ Remember that actions only describe that something happened, they don't describe
       state.isLoading = false;
     },
     [types.REQUEST_ADD_USER](state, user) {
-     state.isAddingUser = true;
+      state.isAddingUser = true;
     },
     [types.RECEIVE_ADD_USER_SUCCESS](state, user) {
       state.isAddingUser = false;
@@ -183,7 +183,7 @@ Remember that actions only describe that something happened, they don't describe
     },
     [types.REQUEST_ADD_USER_ERROR](state, error) {
       state.isAddingUser = true;
-      state.errorAddingUser = error∂;
+      state.errorAddingUser = error;
     },
   };
 ```
