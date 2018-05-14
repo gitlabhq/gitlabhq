@@ -79,6 +79,8 @@ describe RedisCacheable do
   describe '#cached_attr_time_reader', :clean_gitlab_redis_shared_state do
     subject { instance.time }
 
+    let(:other_time) { Time.zone.parse('May 14 2018') }
+
     before do
       model.cached_attr_time_reader(:time)
     end
@@ -88,7 +90,7 @@ describe RedisCacheable do
         expect(instance).to receive(:read_attribute).and_call_original
 
         expect(subject).to be_instance_of(ActiveSupport::TimeWithZone)
-        expect(subject).to be_within(1.minute).of(Time.zone.now)
+        expect(subject).to eq(payload[:time])
       end
     end
 
@@ -96,19 +98,19 @@ describe RedisCacheable do
       it 'reads the cached value' do
         expect(instance).not_to receive(:read_attribute)
 
-        instance.cache_attributes(time: Time.zone.now)
+        instance.cache_attributes(time: other_time)
 
         expect(subject).to be_instance_of(ActiveSupport::TimeWithZone)
-        expect(subject).to be_within(1.minute).of(Time.zone.now)
+        expect(subject).to eq(other_time)
       end
     end
 
     it 'always returns the latest values' do
-      expect(instance.time).to be_within(1.minute).of(Time.zone.now)
+      expect(instance.time).to eq(payload[:time])
 
-      instance.cache_attributes(time: 1.hour.ago)
+      instance.cache_attributes(time: other_time)
 
-      expect(instance.time).to be_within(1.minute).of(1.hour.ago)
+      expect(instance.time).to eq(other_time)
     end
   end
 end
