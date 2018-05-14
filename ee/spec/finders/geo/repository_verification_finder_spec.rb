@@ -43,6 +43,16 @@ describe Geo::RepositoryVerificationFinder, :postgresql do
 
       expect(subject.find_outdated_projects(batch_size: 10)).to be_empty
     end
+
+    it 'returns less active projects first' do
+      less_active_project = create(:project)
+      create(:repository_state, :repository_outdated, project: project)
+      create(:repository_state, :repository_outdated, project: less_active_project)
+      project.update_column(:last_repository_updated_at, 30.minutes.ago)
+      less_active_project.update_column(:last_repository_updated_at, 2.days.ago)
+
+      expect(subject.find_outdated_projects(batch_size: 10)).to eq [less_active_project, project]
+    end
   end
 
   describe '#find_unverified_projects' do
