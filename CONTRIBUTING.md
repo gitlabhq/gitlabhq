@@ -747,6 +747,3 @@ When your code contains more than 500 changes, any major breaking changes, or an
 [polling-etag]: https://docs.gitlab.com/ce/development/polling.html
 [testing]: doc/development/testing_guide/index.md
 [us-english]: https://en.wikipedia.org/wiki/American_English
-
-[^1]: Please note that specs other than JavaScript specs are considered backend
-      code.

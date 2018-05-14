@@ -41,7 +41,7 @@ module EventsHelper
     key = key.to_s
     active = 'active' if @event_filter.active?(key)
     link_opts = {
-      class: "event-filter-link has-tooltip",
+      class: "event-filter-link",
       id:    "#{key}_event_filter",
       title: tooltip
     }
