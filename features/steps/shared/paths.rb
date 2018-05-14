@@ -303,10 +303,6 @@ module SharedPaths
     visit project_tags_path(@project)
   end
 
-  step 'I visit project commit page' do
-    visit project_commit_path(@project, sample_commit.id)
-  end
-
   step 'I visit issue page "Release 0.4"' do
     issue = Issue.find_by(title: "Release 0.4")
     visit project_issue_path(issue.project, issue)
