@@ -13,13 +13,6 @@ module SharedProject
     @project.add_master(@user)
   end
 
-  # Create a specific project called "Shop"
-  step 'I own project "Shop"' do
-    @project = Project.find_by(name: "Shop")
-    @project ||= create(:project, :repository, name: "Shop", namespace: @user.namespace)
-    @project.add_master(@user)
-  end
-
   def current_project
     @project ||= Project.first
   end

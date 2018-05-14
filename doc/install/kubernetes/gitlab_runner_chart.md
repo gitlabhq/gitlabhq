@@ -1,6 +1,6 @@
 # GitLab Runner Helm Chart
 > **Note:**
-These charts have been tested on Google Kubernetes Engine and Azure Container Service. Other Kubernetes installations may work as well, if not please [open an issue](https://gitlab.com/charts/charts.gitlab.io/issues).
+These charts have been tested on Google Kubernetes Engine and Azure Container Service. Other Kubernetes installations may work as well, if not please [open an issue](https://gitlab.com/charts/gitlab-runner/issues).
 
 The `gitlab-runner` Helm chart deploys a GitLab Runner instance into your
 Kubernetes cluster.
@@ -25,7 +25,7 @@ For more information on available GitLab Helm Charts, please see our [overview](
 Create a `values.yaml` file for your GitLab Runner configuration. See [Helm docs](https://github.com/kubernetes/helm/blob/master/docs/chart_template_guide/values_files.md)
 for information on how your values file will override the defaults.
 
-The default configuration can always be found in the [values.yaml](https://gitlab.com/charts/charts.gitlab.io/blob/master/charts/gitlab-runner/values.yaml) in the chart repository.
+The default configuration can always be found in the [values.yaml](https://gitlab.com/charts/gitlab-runner/blob/master/values.yaml) in the chart repository.
 
 ### Required configuration
 
@@ -39,7 +39,7 @@ Unless you need to specify additional configuration, you are [ready to install](
 
 ### Other configuration
 
-The rest of the configuration is [documented in the `values.yaml`](https://gitlab.com/charts/charts.gitlab.io/blob/master/charts/gitlab-runner/values.yaml) in the chart repository.
+The rest of the configuration is [documented in the `values.yaml`](https://gitlab.com/charts/gitlab-runner/blob/master/values.yaml) in the chart repository.
 
 Here is a snippet of the important settings:
 
