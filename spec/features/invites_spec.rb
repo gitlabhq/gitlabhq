@@ -156,6 +156,7 @@ describe 'Invites' do
         fill_in_sign_up_form(new_user)
         confirm_email_and_sign_in(new_user)
 
+        expect(current_path).to eq(root_path)
         expect(page).to have_content(project.full_name)
         visit group_path(group)
         expect(page).to have_content(group.full_name)
