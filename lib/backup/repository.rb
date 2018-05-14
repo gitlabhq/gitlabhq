@@ -70,6 +70,7 @@ module Backup
       Gitlab.config.repositories.storages.each do |name, repository_storage|
         gitaly_migrate(:remove_repositories) do |is_enabled|
           # TODO: Need to find a way to do this for gitaly
+          # Gitaly discussion issue: https://gitlab.com/gitlab-org/gitaly/issues/1194
           unless is_enabled
             path = repository_storage.legacy_disk_path
             next unless File.exist?(path)
@@ -101,21 +102,21 @@ module Backup
         path_to_project_repo = path_to_repo(project)
         project.ensure_storage_path_exists
 
-        restore_repo_status = nil
+        restore_repo_success = nil
         if File.exist?(path_to_project_bundle)
           begin
             gitlab_shell.remove_repository(project.repository_storage, project.disk_path) if project.repository_exists?
             project.repository.create_from_bundle path_to_project_bundle
-            restore_repo_status = true
+            restore_repo_success = true
           rescue => e
-            restore_repo_status = false
+            restore_repo_success = false
             progress.puts "Error: #{e}".color(:red)
           end
         else
-          restore_repo_status = gitlab_shell.create_repository(project.repository_storage, project.disk_path)
+          restore_repo_success = gitlab_shell.create_repository(project.repository_storage, project.disk_path)
         end
 
-        if restore_repo_status
+        if restore_repo_success
           progress.puts "[DONE]".color(:green)
         else
           progress.puts "[Failed] restoring #{project.full_path} repository".color(:red)
@@ -123,6 +124,7 @@ module Backup
 
         gitaly_migrate(:restore_custom_hooks) do |is_enabled|
           # TODO: Need to find a way to do this for gitaly
+          # Gitaly migration issue: https://gitlab.com/gitlab-org/gitaly/issues/1195
           unless is_enabled
             in_path(path_to_tars(project)) do |dir|
               cmd = %W(tar -xf #{path_to_tars(project, dir)} -C #{path_to_project_repo} #{dir})
@@ -144,7 +146,7 @@ module Backup
             gitlab_shell.remove_repository(wiki.repository_storage, wiki.disk_path) if wiki.repository_exists?
             wiki.repository.create_from_bundle(path_to_wiki_bundle)
             progress.puts "[DONE]".color(:green)
-          rescue StandardError => e
+          rescue => e
             progress.puts "[Failed] restoring #{wiki.full_path} wiki".color(:red)
             progress.puts "Error #{e}".color(:red)
           end
