@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'fast_spec_helper'
 
 describe Gitlab::Ci::Pipeline::Expression::Statement do
   subject do
@@ -114,7 +114,8 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
       ['$UNDEFINED_VARIABLE == null', true],
       ['$PRESENT_VARIABLE', true],
       ['$UNDEFINED_VARIABLE', false],
-      ['$EMPTY_VARIABLE', false]
+      ['$EMPTY_VARIABLE', false],
+      ['$INVALID = 1', false]
     ]
 
     statements.each do |expression, value|
@@ -124,6 +125,17 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
         it "returns `#{value.inspect}`" do
           expect(subject.truthful?).to eq value
         end
+      end
+    end
+
+    context 'when evaluating expression raises an error' do
+      let(:text) { '$PRESENT_VARIABLE' }
+
+      it 'returns false' do
+        allow(subject).to receive(:evaluate)
+          .and_raise(described_class::StatementError)
+
+        expect(subject.truthful?).to be_falsey
       end
     end
   end

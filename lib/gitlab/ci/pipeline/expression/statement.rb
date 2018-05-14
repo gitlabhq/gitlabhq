@@ -35,6 +35,8 @@ module Gitlab
 
           def truthful?
             evaluate.present?
+          rescue StatementError
+            false
           end
 
           def valid?
