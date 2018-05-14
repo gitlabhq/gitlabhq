@@ -278,7 +278,6 @@ stages:
   <<: *use-pg
   variables:
     SETUP_DB: "false"
-    CREATE_DB_USER: "true"
   script:
     # Manually clone gitlab-test and only seed this project in
     # db/fixtures/development/04_project.rb thanks to SIZE=1 below
@@ -322,7 +321,6 @@ stages:
 .migration-paths: &migration-paths
   <<: *dedicated-no-docs-and-no-qa-pull-cache-job
   variables:
-    CREATE_DB_USER: "true"
     SETUP_DB: "false"
   script:
     - git fetch https://gitlab.com/gitlab-org/gitlab-ee.git v9.3.0-ee
@@ -342,7 +340,6 @@ stages:
 .migration-paths-upgrade-ce-to-ee: &migration-paths-upgrade-ce-to-ee
   <<: *dedicated-no-docs-and-no-qa-pull-cache-job
   variables:
-    CREATE_DB_USER: "true"
     SETUP_DB: "false"
   script:
     - CE_HEAD=$(ruby -r./scripts/ee_specific_check/ee_specific_check -e'puts EESpecificCheck.fetch_remote_ce_branch')
