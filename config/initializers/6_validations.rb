@@ -26,17 +26,6 @@ def validate_storages_config
   Gitlab.config.repositories.storages.each do |name, repository_storage|
     storage_validation_error("\"#{name}\" is not a valid storage name") unless storage_name_valid?(name)
 
-    if repository_storage.is_a?(String)
-      raise "#{name} is not a valid storage, because it has no `path` key. " \
-        "It may be configured as:\n\n#{name}:\n  path: #{repository_storage}\n\n" \
-        "For source installations, update your config/gitlab.yml Refer to gitlab.yml.example for an updated example.\n\n" \
-        "If you're using the Gitlab Development Kit, you can update your configuration running `gdk reconfigure`.\n"
-    end
-
-    if !repository_storage.is_a?(Gitlab::GitalyClient::StorageSettings) || repository_storage.legacy_disk_path.nil?
-      storage_validation_error("#{name} is not a valid storage, because it has no `path` key. Refer to gitlab.yml.example for an updated example")
-    end
-
     %w(failure_count_threshold failure_reset_time storage_timeout).each do |setting|
       # Falling back to the defaults is fine!
       next if repository_storage[setting].nil?

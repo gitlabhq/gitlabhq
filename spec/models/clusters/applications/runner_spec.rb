@@ -55,12 +55,8 @@ describe Clusters::Applications::Runner do
 
     context 'without a runner' do
       let(:project) { create(:project) }
-      let(:cluster) { create(:cluster) }
+      let(:cluster) { create(:cluster, projects: [project]) }
       let(:gitlab_runner) { create(:clusters_applications_runner, cluster: cluster) }
-
-      before do
-        cluster.projects << project
-      end
 
       it 'creates a runner' do
         expect do
