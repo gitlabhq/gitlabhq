@@ -44,7 +44,9 @@ export default {
         e.preventDefault();
       }
 
-      this.toggleFileFinder(!this.fileFindVisible);
+      if (!e.target.classList.contains('inputarea')) {
+        this.toggleFileFinder(!this.fileFindVisible);
+      }
     });
 
     Mousetrap.stopCallback = (e, el, combo) => this.mousetrapStopCallback(e, el, combo);
