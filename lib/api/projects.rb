@@ -58,16 +58,9 @@ module API
         projects = paginate(projects)
         projects, options = with_custom_attributes(projects, options)
 
-        if current_user
-          project_members = current_user.project_members.preload(:source, user: [notification_settings: :source])
-          group_members = current_user.group_members.preload(:source, user: [notification_settings: :source])
-        end
-
         options = options.reverse_merge(
           with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
           statistics: params[:statistics],
-          project_members: project_members,
-          group_members: group_members,
           current_user: current_user
         )
         options[:with] = Entities::BasicProjectDetails if params[:simple]
