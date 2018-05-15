@@ -274,14 +274,18 @@ CAUTION: **Warning:**
 This feature is currently experimental and while you can start using it,
 it may receive important changes in the future.
 
-Each security vulnerability in the report is actionable which means that you can:
+Each security vulnerability in the report is actionable. Clicking on an entry,
+a detailed information will pop up with two different possible options:
 
-- **Dismiss it** - Dismissing a vulnerability will place a ~~strikethrough~~
-  styling on it.
-- **Revert your dismissal** - Reverting a dismissal will undo the
-  ~~strikethrough~~ styling.
-- **Create an issue out of it** - The new issue will have the title and
-  description pre-populated with the information of the vulnerability report.
+- **Dismiss vulnerability** - Dismissing a vulnerability will place a
+  ~~strikethrough~~ styling on it.
+- **Create issue** - The new issue will have the title and description
+  pre-populated with the information of the vulnerability report.
+
+![Interacting with security reports](img/interactive_reports.png)
+
+You can also revert your dismissal or see the linked issue after the action has
+been taken.
 
 ## Live preview with Review Apps
 
