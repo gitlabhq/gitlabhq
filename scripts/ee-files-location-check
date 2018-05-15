@@ -8,7 +8,7 @@ git_version
 base = find_compare_base
 
 new_files_in_this_branch_not_at_the_ee_top_level =
-  run_git_command("diff #{base.ee_merge_base}...HEAD --name-status --diff-filter=A -- ./ ':!ee' | cut -f2").lines.map(&:strip)
+  run_git_command("diff #{base.ee_fetch_base}...HEAD --name-status --diff-filter=A -- ./ ':!ee' | cut -f2").lines.map(&:strip)
 
 ee_specific_files_in_ce_master_not_at_the_ee_top_level =
   run_git_command("diff #{base.ce_updated_base}..HEAD --name-status --diff-filter=A -- ./ ':!ee' | cut -f2").lines.map(&:strip)
