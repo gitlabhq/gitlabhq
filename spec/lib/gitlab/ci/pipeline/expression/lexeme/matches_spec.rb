@@ -63,5 +63,18 @@ describe Gitlab::Ci::Pipeline::Expression::Lexeme::Matches do
 
       expect(operator.evaluate).to eq true
     end
+
+    it 'supports regexp flags' do
+      allow(left).to receive(:evaluate).and_return <<~TEXT
+        My AWESOME content
+      TEXT
+
+      allow(right).to receive(:evaluate)
+        .and_return(Gitlab::UntrustedRegexp.new('(?i)awesome'))
+
+      operator = described_class.new(left, right)
+
+      expect(operator.evaluate).to eq true
+    end
   end
 end

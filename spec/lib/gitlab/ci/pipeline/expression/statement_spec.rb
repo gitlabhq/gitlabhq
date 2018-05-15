@@ -100,6 +100,7 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
       "$PRESENT_VARIABLE =~ /^var.*/"      | false
       "$EMPTY_VARIABLE =~ /var.*/"         | false
       "$UNDEFINED_VARIABLE =~ /var.*/"     | false
+      "$PRESENT_VARIABLE =~ /(?i)VAR.*/"   | true
     end
 
     with_them do
