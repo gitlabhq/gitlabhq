@@ -49,7 +49,7 @@ export default {
       return [...this.otherVersions, this.targetBranch];
     },
     selectedVersionName() {
-      const selectedVersion = this.startVersion || this.mergeRequestVersion;
+      const selectedVersion = this.startVersion || this.targetBranch || this.mergeRequestVersion;
       return this.versionName(selectedVersion);
     },
   },
@@ -87,9 +87,9 @@ export default {
       if (!version || !this.targetBranch) {
         return false;
       }
-      if (!version.versionIndex) return !this.startVersion;
-      const last = this.targetVersions.length - 1;
-      return version.versionIndex === this.targetVersions[last].versionIndex;
+      if (version.versionIndex === -1) {
+        return true;
+      }
     },
     isLatest(version) {
       return (

@@ -49,6 +49,7 @@ export default {
       mergeRequestDiffs: state => state.diffs.mergeRequestDiffs,
       mergeRequestDiff: state => state.diffs.mergeRequestDiff,
       startVersion: state => state.diffs.startVersion,
+      commit: state => state.diffs.commit,
       targetBranchName: state => state.diffs.targetBranchName,
       renderOverflowWarning: state => state.diffs.renderOverflowWarning,
       numTotalFiles: state => state.diffs.realSize,
@@ -65,7 +66,9 @@ export default {
       };
     },
     notAllCommentsDisplayed() {
-      if (this.startVersion) {
+      if (this.commit) {
+        return __('Only comments from the following commit are shown below');
+      } else if (this.startVersion) {
         return __(
           `Not all comments are displayed because you're comparing two versions of the diff.`,
         );
@@ -74,6 +77,12 @@ export default {
           `Not all comments are displayed because you're viewing an old version of the diff.`,
         );
       }
+    },
+    showLatestVersion() {
+      if (this.commit) {
+        return __('Show latest version of the diff');
+      }
+      return __('Show latest version');
     },
     latestDiffHref() {
       return this.mergeRequestDiffs[0].path;
@@ -130,7 +139,7 @@ export default {
       class="diffs tab-pane"
     >
       <compare-versions
-        v-if="mergeRequestDiffs.length > 1"
+        v-if="!commit && mergeRequestDiffs.length > 1"
         :merge-request-diffs="mergeRequestDiffs"
         :comparable-diffs="comparableDiffs"
         :merge-request-diff="mergeRequestDiff"
@@ -147,20 +156,18 @@ export default {
       />
 
       <div
-        v-if="mergeRequestDiff && !mergeRequestDiff.latest"
+        v-if="commit || startVersion || (mergeRequestDiff && !mergeRequestDiff.latest)"
         class="mr-version-controls"
       >
         <div class="content-block comments-disabled-notif clearfix">
           <i class="fa fa-info-circle"></i>
-          <!-- if @commit else -->
           {{ notAllCommentsDisplayed }}
           <div class="pull-right">
             <a
               :href="latestDiffHref"
               class="btn btn-sm"
             >
-              {{ __('Show latest version') }}
-            <!-- = "of the diff" if @commit -->
+              {{ showLatestVersion }}
             </a>
           </div>
         </div>
