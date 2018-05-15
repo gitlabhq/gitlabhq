@@ -16,3 +16,5 @@ source project, and only lasts while the merge request is open.
 Enable this functionality while creating a merge request:
 
 ![Enable maintainer edits](./img/allow_maintainer_push.png)
+
+[ce-17395]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17395
