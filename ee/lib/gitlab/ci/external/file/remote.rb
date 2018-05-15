@@ -11,7 +11,7 @@ module Gitlab
 
             @content = strong_memoize(:content) do
               begin
-                Gitlab::HTTP.get(location, allow_local_requests: true)
+                Gitlab::HTTP.get(location)
               rescue Gitlab::HTTP::Error, Timeout::Error, SocketError
                 nil
               end
