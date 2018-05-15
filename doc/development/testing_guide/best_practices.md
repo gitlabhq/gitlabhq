@@ -141,20 +141,14 @@ dependencies. `fast_spec_helper` also loads all ActiveSupport extensions,
 including core extensions that are commonly used in the Rails environment.
 
 Note that in some cases, you might still have to load some dependencies using
-`require_dependency` in your `*_spec.rb` file, like when a code is using gems.
+`require_dependency` when a code is using gems or a dependency is not located
+in `lib/`.
 
 For example, if you want to test your code that is calling the
 `Gitlab::UntrustedRegexp` class, which under the hood uses `re2` library, you
-should be able to define a test using follow code snippet.
-
-```ruby
-require 'fast_spec_helper'
-require_dependency 're2'
-
-describe Gitlab::MyModule::MyClass do
-  # ...
-end
-```
+should either add `require_dependency 're2'` to files in your library that
+need `re2` gem, to make this requirement explicit, or you can add it to the
+spec itself, but the former is preferred.
 
 It takes around one second to load tests that are using `fast_spec_helper`
 instead of 30+ seconds in case of a regular `spec_helper`.
