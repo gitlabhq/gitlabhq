@@ -360,17 +360,6 @@ class ApplicationSetting < ActiveRecord::Base
     Array(read_attribute(:repository_storages))
   end
 
-  # DEPRECATED
-  # repository_storage is still required in the API. Remove in 9.0
-  # Still used in API v3
-  def repository_storage
-    repository_storages.first
-  end
-
-  def repository_storage=(value)
-    self.repository_storages = [value]
-  end
-
   def default_project_visibility=(level)
     super(Gitlab::VisibilityLevel.level_value(level))
   end
