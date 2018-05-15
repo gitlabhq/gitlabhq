@@ -29,8 +29,17 @@ export default {
     };
   },
   computed: {
-    ...mapState(['currentBranchId']),
-    ...mapGetters(['currentProject', 'lastCommit']),
+    ...mapState(['currentBranchId', 'currentProjectId']),
+    ...mapGetters(['currentProject', 'lastCommit', 'lastCommitPipeline']),
+  },
+  watch: {
+    lastCommit(newCommit) {
+      this.$store.dispatch('getCommitPipeline', {
+        projectId: this.currentProjectId,
+        branchId: this.currentBranchId,
+        commitSha: newCommit.id,
+      });
+    },
   },
   mounted() {
     this.startTimer();
@@ -66,14 +75,16 @@ export default {
     >
       <span
         class="ide-status-pipeline"
-        v-if="lastCommitPipeline"
+        v-if="lastCommitPipeline && lastCommitPipeline.details"
       >
         <ci-icon
-          :status="lastCommitPipeline.statusObject "
-          :title="lastCommitPipeline.statusObject.text" />
+          :status="lastCommitPipeline.details.status"
+          v-tooltip
+          :title="lastCommitPipeline.details.status.text"
+        />
         Pipeline
-        <a :href="lastCommitPipeline.statusObject.details_path">#{{ lastCommitPipeline.id }}</a>
-        {{ lastCommitPipeline.statusObject.text }}
+        <a :href="lastCommitPipeline.details.status.details_path">#{{ lastCommitPipeline.id }}</a>
+        {{ lastCommitPipeline.details.status.text }}
         for
       </span>
 

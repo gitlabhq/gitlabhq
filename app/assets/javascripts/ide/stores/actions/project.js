@@ -73,25 +73,41 @@ export const getBranchData = (
     }
   });
 
-export const refreshLastCommitData = (
-  { commit, state, dispatch },
-  { projectId, branchId } = {},
-) => service
-  .getBranchData(projectId, branchId)
-  .then(({ data }) => {
-    commit(types.SET_BRANCH_COMMIT, {
-      projectId,
-      branchId,
-      commit: data.commit,
+export const refreshLastCommitData = ({ commit, state, dispatch }, { projectId, branchId } = {}) =>
+  service
+    .getBranchData(projectId, branchId)
+    .then(({ data }) => {
+      commit(types.SET_BRANCH_COMMIT, {
+        projectId,
+        branchId,
+        commit: data.commit,
+      });
+
+      dispatch('getCommitPipeline', {
+        projectId,
+        branchId,
+        commitSha: data.commit.sha,
+      });
+    })
+    .catch(() => {
+      flash('Error loading last commit.', 'alert', document, null, false, true);
     });
-  })
-  .catch(() => {
-    flash(
-      'Error loading last commit.',
-      'alert',
-      document,
-      null,
-      false,
-      true,
-    );
-  });
+
+export const getCommitPipeline = (
+  { commit, state, dispatch },
+  { projectId, branchId, commitSha } = {},
+) =>
+  service
+    .commitPipelines(projectId, commitSha)
+    .then(({ data }) => {
+      const pipeline = data.pipelines && data.pipelines.length ? data.pipelines[0] : null;
+
+      commit(types.SET_LAST_COMMIT_PIPELINE, {
+        projectId,
+        branchId,
+        pipeline,
+      });
+    })
+    .catch(() => {
+      flash('Error loading the pipeline of last commit.', 'alert', document, null, false, true);
+    });
