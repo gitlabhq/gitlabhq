@@ -2,15 +2,18 @@ import Vue from 'vue';
 
 import NodeDetailsSectionOtherComponent from 'ee/geo_nodes/components/node_detail_sections/node_details_section_other.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { mockNodeDetails } from '../../mock_data';
 
 const createComponent = (
   nodeDetails = Object.assign({}, mockNodeDetails),
+  nodeTypePrimary = false,
 ) => {
   const Component = Vue.extend(NodeDetailsSectionOtherComponent);
 
   return mountComponent(Component, {
     nodeDetails,
+    nodeTypePrimary,
   });
 };
 
@@ -28,6 +31,10 @@ describe('NodeDetailsSectionOther', () => {
   describe('data', () => {
     it('returns default data props', () => {
       expect(vm.showSectionItems).toBe(false);
+      expect(Array.isArray(vm.primaryNodeDetailItems)).toBe(true);
+      expect(Array.isArray(vm.secondaryNodeDetailItems)).toBe(true);
+      expect(vm.primaryNodeDetailItems.length > 0).toBe(true);
+      expect(vm.secondaryNodeDetailItems.length > 0).toBe(true);
     });
   });
 
@@ -71,6 +78,32 @@ describe('NodeDetailsSectionOther', () => {
 
       it('returns CSS class `node-detail-value-bold node-detail-value-error` when `nodeDetails.storageShardsMatch` is false', () => {
         expect(vm.storageShardsCssClass).toBe('node-detail-value-bold node-detail-value-error');
+      });
+    });
+  });
+
+  describe('methods', () => {
+    describe('getPrimaryNodeDetailItems', () => {
+      it('returns array containing items to show under primary node', () => {
+        const items = vm.getPrimaryNodeDetailItems();
+
+        expect(items.length).toBe(2);
+        expect(items[0].itemTitle).toBe('Replication slots');
+        expect(items[0].itemValue).toBe(mockNodeDetails.replicationSlots);
+        expect(items[1].itemTitle).toBe('Replication slot WAL');
+        expect(items[1].itemValue).toBe(numberToHumanSize(mockNodeDetails.replicationSlotWAL));
+      });
+    });
+
+    describe('getSecondaryNodeDetailItems', () => {
+      it('returns array containing items to show under secondary node', () => {
+        vm.nodeDetails.storageShardsMatch = true;
+
+        const items = vm.getSecondaryNodeDetailItems();
+
+        expect(items.length).toBe(1);
+        expect(items[0].itemTitle).toBe('Storage config');
+        expect(items[0].itemValue).toBe('OK');
       });
     });
   });

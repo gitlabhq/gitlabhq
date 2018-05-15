@@ -66,10 +66,6 @@ describe('NodeDetailsSectionVerification', () => {
           title: 'Wiki checksum progress',
           valueProp: 'wikisChecksummed',
         },
-        {
-          title: 'Replication slots',
-          valueProp: 'replicationSlots',
-        },
       ];
 
       it('returns array containing items to show under primary node', () => {

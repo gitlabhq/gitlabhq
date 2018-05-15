@@ -75,8 +75,8 @@
       :node-type-primary="node.primary"
     />
     <node-details-section-other
-      v-if="!node.primary"
       :node-details="nodeDetails"
+      :node-type-primary="node.primary"
     />
     <div
       v-if="hasError || hasVersionMismatch"

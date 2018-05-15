@@ -1,6 +1,5 @@
 <script>
   import { s__ } from '~/locale';
-  import { numberToHumanSize } from '~/lib/utils/number_utils';
 
   import { VALUE_TYPE, HELP_INFO_URL } from '../../constants';
 
@@ -73,27 +72,6 @@
                 url: HELP_INFO_URL,
                 urlText: s__('GeoNodes|Learn more about Wiki checksum progress'),
               },
-            },
-          );
-        }
-
-        primaryNodeDetailItems.push(
-          {
-            itemTitle: s__('GeoNodes|Replication slots'),
-            itemValue: this.nodeDetails.replicationSlots,
-            itemValueType: VALUE_TYPE.GRAPH,
-            successLabel: s__('GeoNodes|Used slots'),
-            neutraLabel: s__('GeoNodes|Unused slots'),
-          },
-        );
-
-        if (this.nodeDetails.replicationSlots.totalCount) {
-          primaryNodeDetailItems.push(
-            {
-              itemTitle: s__('GeoNodes|Replication slot WAL'),
-              itemValue: numberToHumanSize(this.nodeDetails.replicationSlotWAL),
-              itemValueType: VALUE_TYPE.PLAIN,
-              cssClass: 'node-detail-value-bold',
             },
           );
         }
