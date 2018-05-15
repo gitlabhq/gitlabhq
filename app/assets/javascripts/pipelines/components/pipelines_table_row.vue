@@ -297,6 +297,7 @@
             v-for="(stage, index) in pipeline.details.stages"
             :key="index">
             <pipeline-stage
+              type="PIPELINES_TABLE"
               :stage="stage"
               :update-dropdown="updateGraphDropdown"
             />

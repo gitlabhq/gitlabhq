@@ -102,4 +102,53 @@ describe('Pipelines stage component', () => {
       });
     });
   });
+
+  describe('pipelineActionRequestComplete', () => {
+    beforeEach(() => {
+      mock.onGet('path.json').reply(200, stageReply);
+
+      mock.onPost(`${stageReply.latest_statuses[0].status.action.path}.json`).reply(200);
+    });
+
+    describe('within pipeline table', () => {
+      it('emits `clickedDropdown` event when `pipelineActionRequestComplete` is triggered', done => {
+        spyOn(eventHub, '$emit');
+
+        component.type = 'PIPELINES_TABLE';
+        component.$el.querySelector('button').click();
+
+        setTimeout(() => {
+          component.$el.querySelector('.js-ci-action').click();
+          component.$nextTick()
+          .then(() => {
+            expect(eventHub.$emit).toHaveBeenCalledWith('clickedDropdown');
+
+            expect(eventHub.$emit).toHaveBeenCalledTimes(2);
+          })
+          .then(done)
+          .catch(done.fail);
+        }, 0);
+      });
+    });
+
+    describe('without a type', () => {
+      it('fetches dropdown content again', done => {
+        spyOn(component, 'fetchJobs').and.callThrough();
+
+        component.$el.querySelector('button').click();
+
+        expect(component.fetchJobs).toHaveBeenCalledTimes(1);
+
+        setTimeout(() => {
+          component.$el.querySelector('.js-ci-action').click();
+          component.$nextTick()
+            .then(() => {
+              expect(component.fetchJobs).toHaveBeenCalledTimes(2);
+            })
+            .then(done)
+            .catch(done.fail);
+        }, 0);
+      });
+    });
+  });
 });

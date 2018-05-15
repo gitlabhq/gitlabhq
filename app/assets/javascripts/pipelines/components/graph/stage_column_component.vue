@@ -30,11 +30,6 @@ export default {
       default: '',
     },
 
-    requestFinishedFor: {
-      type: String,
-      required: false,
-      default: '',
-    },
     hasTriggeredBy: {
       type: Boolean,
       required: true,
@@ -52,6 +47,10 @@ export default {
 
     buildConnnectorClass(index) {
       return index === 0 && !this.isFirstColumn ? 'left-connector' : '';
+    },
+
+    pipelineActionRequestComplete() {
+      this.$emit('refreshPipelineGraph');
     },
   },
 };
@@ -81,12 +80,13 @@ export default {
             v-if="job.size === 1"
             :job="job"
             css-class-job-name="build-content"
+            @pipelineActionRequestComplete="pipelineActionRequestComplete"
           />
 
           <dropdown-job-component
             v-if="job.size > 1"
             :job="job"
-            :request-finished-for="requestFinishedFor"
+            @pipelineActionRequestComplete="pipelineActionRequestComplete"
           />
 
         </li>

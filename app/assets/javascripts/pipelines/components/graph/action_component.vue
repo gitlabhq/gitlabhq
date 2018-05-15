@@ -1,15 +1,27 @@
 <script>
 import $ from 'jquery';
-import tooltip from '../../../vue_shared/directives/tooltip';
-import Icon from '../../../vue_shared/components/icon.vue';
-import { dasherize } from '../../../lib/utils/text_utility';
-import eventHub from '../../event_hub';
+import axios from '~/lib/utils/axios_utils';
+import { dasherize } from '~/lib/utils/text_utility';
+import { __ } from '~/locale';
+import createFlash from '~/flash';
+import tooltip from '~/vue_shared/directives/tooltip';
+import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
+import Icon from '~/vue_shared/components/icon.vue';
+
 /**
- * Renders either a cancel, retry or play icon pointing to the given path.
+ * Renders either a cancel, retry or play icon button and handles the post request
+ *
+ * Used in:
+ * - mr widget mini pipeline graph: `mr_widget_pipeline.vue`
+ * - pipelines table
+ * - pipelines table in merge request page
+ * - pipelines table in commit page
+ * - pipelines detail page in big graph
  */
 export default {
   components: {
     Icon,
+    LoadingIcon,
   },
 
   directives: {
@@ -32,16 +44,10 @@ export default {
       required: true,
     },
 
-    requestFinishedFor: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   data() {
     return {
-      isDisabled: false,
-      linkRequested: '',
+      isLoading: false,
     };
   },
 
@@ -51,19 +57,28 @@ export default {
       return `${actionIconDash} js-icon-${actionIconDash}`;
     },
   },
-  watch: {
-    requestFinishedFor() {
-      if (this.requestFinishedFor === this.linkRequested) {
-        this.isDisabled = false;
-      }
-    },
-  },
   methods: {
+    /**
+     * The request should not be handled here.
+     * However due to this component being used in several
+     * different apps it avoids repetition & complexity.
+     *
+     */
     onClickAction() {
       $(this.$el).tooltip('hide');
-      eventHub.$emit('postAction', this.link);
-      this.linkRequested = this.link;
-      this.isDisabled = true;
+
+      this.isLoading = true;
+
+      axios.post(`${this.link}.json`)
+        .then(() => {
+          this.isLoading = false;
+          this.$emit('pipelineActionRequestComplete');
+        })
+        .catch(() => {
+          this.isLoading = false;
+
+          createFlash(__('An error occurred while making the request.'));
+        });
     },
   },
 };
@@ -78,8 +93,12 @@ export default {
 btn-transparent ci-action-icon-container ci-action-icon-wrapper"
     :class="cssClass"
     data-container="body"
-    :disabled="isDisabled"
+    :disabled="isLoading"
   >
-    <icon :name="actionIcon" />
+    <icon
+      v-if="!isLoading"
+      :name="actionIcon"
+    />
+    <loading-icon v-else />
   </button>
 </template>
