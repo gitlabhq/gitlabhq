@@ -2,7 +2,7 @@ module API
   module Helpers
     module Pagination
       def paginate(relation)
-        strategy = if params[:pagination] == 'keyset'
+        strategy = if params[:pagination] == 'keyset' && Feature.enabled?('api_keyset_pagination')
                      KeysetPaginationStrategy
                    else
                      DefaultPaginationStrategy
