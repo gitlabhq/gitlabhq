@@ -44,6 +44,12 @@ export default {
       required: false,
       default: false,
     },
+
+    type: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
 
   data() {
@@ -133,6 +139,16 @@ export default {
     isDropdownOpen() {
       return this.$el.classList.contains('open');
     },
+
+    pipelineActionRequestComplete() {
+      if (this.type === 'PIPELINES_TABLE') {
+        // warn the table to update
+        eventHub.$emit('clickedDropdown');
+      } else {
+        // refresh the content
+        this.fetchJobs();
+      }
+    },
   },
 };
 </script>
@@ -188,6 +204,7 @@ export default {
             <job-component
               :job="job"
               css-class-job-name="mini-pipeline-graph-dropdown-item"
+              @pipelineActionRequestComplete="pipelineActionRequestComplete"
             />
           </li>
         </ul>
