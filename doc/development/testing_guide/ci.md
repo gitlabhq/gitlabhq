@@ -24,7 +24,11 @@ Our current CI parallelization setup is as follows:
   uploaded to S3.
 
 After that, the next pipeline will use the up-to-date
+<<<<<<< HEAD
 `knapsack/${CI_PROJECT_NAME}/rspec_report-master.json` file.
+=======
+`knapsack/${CI_PROJECT_NAME}/rspec_report-master.json` file. 
+>>>>>>> upstream/master
 
 ### Monitoring
 
