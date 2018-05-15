@@ -43,7 +43,6 @@ project in an easy and automatic way:
 1. [Auto Code Quality](#auto-code-quality)
 1. [Auto SAST (Static Application Security Testing)](#auto-sast)
 1. [Auto Dependency Scanning](#auto-dependency-scanning)
-1. [Auto License Management](#auto-license-management)
 1. [Auto Container Scanning](#auto-container-scanning)
 1. [Auto Review Apps](#auto-review-apps)
 1. [Auto DAST (Dynamic Application Security Testing)](#auto-dast)
@@ -258,19 +257,6 @@ check out.
 
 In GitLab Ultimate, any security warnings are also
 [shown in the merge request widget](../../user/project/merge_requests/dependency_scanning.md).
-
-### Auto License Management **[ULTIMATE]**
-
-> Introduced in [GitLab Ultimate][ee] 10.8.
-
-License Management uses the
-[License Management Docker image](https://gitlab.com/gitlab-org/security-products/license_management)
-to search the project dependencies for their license. Once the
-report is created, it's uploaded as an artifact which you can later download and
-check out.
-
-In GitLab Ultimate, any license are also
-[shown in the merge request widget](../../user/project/merge_requests/license_management.md).
 
 ### Auto Container Scanning
 
