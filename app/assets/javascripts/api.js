@@ -21,6 +21,7 @@ const Api = {
   issuableTemplatePath: '/:namespace_path/:project_path/templates/:type/:key',
   usersPath: '/api/:version/users.json',
   commitPath: '/api/:version/projects/:id/repository/commits',
+  commitPipelinesPath: '/:project_id/commit/:sha/pipelines',
   branchSinglePath: '/api/:version/projects/:id/repository/branches/:branch',
   createBranchPath: '/api/:version/projects/:id/repository/branches',
   pipelinesPath: '/api/:version/projects/:id/pipelines',
@@ -164,6 +165,16 @@ const Api = {
         'Content-Type': 'application/json; charset=utf-8',
       },
     });
+  },
+
+  commitPipelines(projectId, sha) {
+    const [namespace, project] = projectId.split('/');
+
+    const url = Api.buildUrl(Api.commitPipelinesPath)
+      .replace(':project_id', `${encodeURIComponent(namespace)}/${encodeURIComponent(project)}`)
+      .replace(':sha', encodeURIComponent(sha));
+
+    return axios.get(url);
   },
 
   branchSingle(id, branch) {
