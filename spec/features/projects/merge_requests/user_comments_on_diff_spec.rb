@@ -138,7 +138,8 @@ describe 'User comments on a diff', :js do
   end
 
   context 'when deleting comments' do
-    it 'deletes a comment' do
+    # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+    xit 'deletes a comment' do
       click_diff_line(find("[id='#{sample_commit.line_code}']"))
 
       page.within('.js-discussion-note-form') do
