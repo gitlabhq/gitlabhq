@@ -80,7 +80,11 @@ module Pseudonymity
 
     def set_schema_column_types(table, type_results)
       type_results.each do | type_result |
-        @schema[table][type_result["column_name"]] = type_result["data_type"]
+        data_type = type_result["data_type"]
+        if @config["tables"][table]["pseudo"].include?(type_result["column_name"])
+          data_type = "character varying"
+        end
+        @schema[table][type_result["column_name"]] = data_type
       end
       # hard coded because all mapping keys in GL are id
       @schema[table]["gl_mapping_key"] = "id"
