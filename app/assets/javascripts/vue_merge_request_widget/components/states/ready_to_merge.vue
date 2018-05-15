@@ -32,7 +32,7 @@ export default {
   },
   computed: {
     shouldShowMergeWhenPipelineSucceedsText() {
-      return this.mr.isPipelineActive && !this.mr.isMergeAllowed;
+      return this.mr.isPipelineActive;
     },
     commitMessageLinkTitle() {
       const withDesc = 'Include description in commit message';
@@ -45,7 +45,7 @@ export default {
 
       if (hasCI && !ciStatus) {
         return 'failed';
-      } else if (!pipeline || this.mr.isMergeAllowed) {
+      } else if (!pipeline) {
         return 'success';
       } else if (isPipelineActive) {
         return 'pending';
@@ -116,10 +116,7 @@ export default {
     handleMergeButtonClick(mergeWhenBuildSucceeds, mergeImmediately) {
       // TODO: Remove no-param-reassign
       if (mergeWhenBuildSucceeds === undefined) {
-        /* eslint-disable no-param-reassign */
-        mergeWhenBuildSucceeds = this.mr.isPipelineActive &&
-          !this.mr.isMergeAllowed;
-        /* eslint-enable no-param-reassign */
+        mergeWhenBuildSucceeds = this.mr.isPipelineActive; // eslint-disable-line no-param-reassign
       } else if (mergeImmediately) {
         this.isMergingImmediately = true;
       }

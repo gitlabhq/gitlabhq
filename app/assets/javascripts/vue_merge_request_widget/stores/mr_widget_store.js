@@ -14,6 +14,7 @@ export default class MergeRequestStore {
   setData(data) {
     const currentUser = data.current_user;
     const pipelineStatus = data.pipeline ? data.pipeline.details.status : null;
+
     this.title = data.title;
     this.targetBranch = data.target_branch;
     this.sourceBranch = data.source_branch;
@@ -91,7 +92,7 @@ export default class MergeRequestStore {
     this.isPipelinePassing = this.ciStatus === 'success' || this.ciStatus === 'success_with_warnings';
     this.isPipelineSkipped = this.ciStatus === 'skipped';
     this.pipelineDetailedStatus = pipelineStatus;
-    this.isPipelineActive = data.pipeline ? data.pipeline.active : false;
+    this.isPipelineActive = this.isMergeAllowed ? false : data.pipeline ? data.pipeline.active : false;
     this.isPipelineBlocked = pipelineStatus ? pipelineStatus.group === 'manual' : false;
     this.ciStatusFaviconPath = pipelineStatus ? pipelineStatus.favicon : null;
 
