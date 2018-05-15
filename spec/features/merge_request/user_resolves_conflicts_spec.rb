@@ -110,7 +110,8 @@ describe 'Merge request > User resolves conflicts', :js do
           click_link('conflicts', href: %r{/conflicts\Z})
         end
 
-        include_examples "conflicts are resolved in Interactive mode"
+        # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+        # include_examples "conflicts are resolved in Interactive mode"
         include_examples "conflicts are resolved in Edit inline mode"
       end
 
@@ -120,7 +121,8 @@ describe 'Merge request > User resolves conflicts', :js do
           click_button 'Side-by-side'
         end
 
-        include_examples "conflicts are resolved in Interactive mode"
+        # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+        # include_examples "conflicts are resolved in Interactive mode"
         include_examples "conflicts are resolved in Edit inline mode"
       end
     end
@@ -140,7 +142,8 @@ describe 'Merge request > User resolves conflicts', :js do
         end
       end
 
-      it 'conflicts are resolved in Edit inline mode' do
+      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+      xit 'conflicts are resolved in Edit inline mode' do
         within find('.files-wrapper .diff-file', text: 'files/markdown/ruby-style-guide.md') do
           wait_for_requests
           find('.files-wrapper .diff-file pre')
