@@ -12,8 +12,7 @@ module Gitlab
             %w[variable equals null],
             %w[string equals variable],
             %w[null equals variable],
-            %w[variable matches pattern],
-            %w[pattern matches variable]
+            %w[variable matches pattern]
           ].freeze
 
           def initialize(statement, variables = {})
