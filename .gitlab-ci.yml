@@ -620,6 +620,7 @@ ee_compat_check:
     - /^security-/
     - branches@gitlab-org/gitlab-ee
     - branches@gitlab/gitlab-ee
+    - changes_tab_vue_refactoring
   retry: 0
   artifacts:
     name: "${CI_JOB_NAME}_${CI_COMIT_REF_NAME}_${CI_COMMIT_SHA}"
