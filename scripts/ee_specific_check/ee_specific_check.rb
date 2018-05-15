@@ -27,12 +27,7 @@ module EESpecificCheck
   end
 
   def find_compare_base
-    # We're still seeing errors not ignoring knapsack/ and rspec_flaky/
-    # Instead of waiting that populate over all the branches, we could
-    # just remove untracked files anyway, only on CI of course in case
-    # we're wiping people's data!
-    # See https://gitlab.com/gitlab-org/gitlab-ee/issues/5912
-    git_clean if ENV['CI']
+    git_clean
 
     setup_canonical_remotes
 
@@ -76,6 +71,7 @@ module EESpecificCheck
 
     # Use detached HEAD so that we don't update HEAD
     run_git_command("checkout -f #{ce_fetch_head}")
+    git_clean
 
     # We rebase onto the commit which is the latest commit presented in both
     # CE and EE, i.e. ce_merge_base, cutting off commits aren't merged into
@@ -137,6 +133,7 @@ module EESpecificCheck
   ensure # ensure would still run if we call exit, don't worry
     # Make sure to switch back
     run_git_command("checkout -f #{head}")
+    git_clean
   end
 
   def head_commit_sha
@@ -148,7 +145,13 @@ module EESpecificCheck
   end
 
   def git_clean
-    run_git_command('clean -fd')
+    # We're still seeing errors not ignoring knapsack/ and rspec_flaky/
+    # Instead of waiting that populate over all the branches, we could
+    # just remove untracked files anyway, only on CI of course in case
+    # we're wiping people's data!
+    # See https://gitlab.com/gitlab-org/gitlab-ee/issues/5912
+    # Also see https://gitlab.com/gitlab-org/gitlab-ee/-/jobs/68194333
+    run_git_command('clean -fd') if ENV['CI']
   end
 
   def remove_remotes
