@@ -35,9 +35,9 @@ describe 'Merge request > User sees diff', :js do
   end
 
   context 'when merge request has overflow' do
-    # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-    xit 'displays warning' do
+    it 'displays warning' do
       allow(Commit).to receive(:max_diff_options).and_return(max_files: 3)
+      allow_any_instance_of(DiffHelper).to receive(:render_overflow_warning?).and_return(true)
 
       visit diffs_project_merge_request_path(project, merge_request)
 
