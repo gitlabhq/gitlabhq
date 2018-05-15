@@ -185,6 +185,7 @@ project:
 - cluster
 - clusters
 - cluster_project
+- cluster_ingresses
 - creator
 - group
 - namespace
