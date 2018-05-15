@@ -13,9 +13,12 @@ class MigrateLegacyArtifactsToJobArtifacts < ActiveRecord::Migration
     self.inheritance_column = :_type_disabled # disable STI
 
     ##
-    # TODO: Consider when unique constraint violation of job_artifacts (i.e. duplicates inserts)
+    # Jobs which have a value on `artifacts_file` column are targetted.
+    # In addition, jobs which have had job_artifacts already are untargetted.
+    # This usually doesn't happen, however, to avoid unique constraint violation, it's safe to have the condition.
     scope :legacy_artifacts, -> do
-      where('artifacts_file IS NOT NULL AND artifacts_file <> ?', '')
+      where('artifacts_file IS NOT NULL AND artifacts_file <> ?', '').
+      where('NOT EXISTS (SELECT 1 FROM ci_job_artifacts WHERE ci_job_artifacts.id == ci_builds.id AND (file_type == 1 OR file_type == 2))')
     end
   end
 
