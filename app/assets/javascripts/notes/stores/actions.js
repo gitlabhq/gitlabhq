@@ -310,6 +310,16 @@ export const toggleAwardRequest = ({ commit, getters, dispatch }, data) => {
     });
 };
 
+// Merge all related system notes on initial load
+export const mergeRelatedSystemNotes = ({ commit }, notes) => {
+  commit(types.MERGE_RELATED_SYSTEM_NOTES, notes);
+};
+
+// Merge newest description system note
+export const mergeLatestRelatedSystemNote = ({ commit }, note) => {
+  commit(types.MERGE_LATEST_RELATED_SYSTEM_NOTE, note);
+};
+
 export const scrollToNoteIfNeeded = (context, el) => {
   if (!isInViewport(el[0])) {
     scrollToElement(el);

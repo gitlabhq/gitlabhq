@@ -97,6 +97,7 @@ export default {
       setUserData: 'setUserData',
       setLastFetchedAt: 'setLastFetchedAt',
       setTargetNoteHash: 'setTargetNoteHash',
+      mergeRelatedSystemNotes: 'mergeRelatedSystemNotes',
     }),
     getComponentName(note) {
       if (note.isSkeletonNote) {
@@ -121,6 +122,7 @@ export default {
         .then(() => this.initPolling())
         .then(() => {
           this.isLoading = false;
+          this.mergeRelatedSystemNotes(this.notes);
         })
         .then(() => this.$nextTick())
         .then(() => this.checkLocationHash())

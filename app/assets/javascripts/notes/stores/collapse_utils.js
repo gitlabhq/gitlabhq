@@ -1,8 +1,7 @@
 import { n__, s__, sprintf } from '~/locale';
+import { DESCRIPTION_TYPE } from '../constants';
 
-const DESCRIPTION_TYPE = 'changed the description';
-
-const changeDescriptionNote = (note, descriptionChangedTimes, timeDifferenceMinutes) => {
+export const changeDescriptionNote = (note, descriptionChangedTimes, timeDifferenceMinutes) => {
   const descriptionNote = note;
 
   descriptionNote.note_html = sprintf(s__(`MergeRequest|
@@ -16,7 +15,7 @@ const changeDescriptionNote = (note, descriptionChangedTimes, timeDifferenceMinu
   return descriptionNote;
 };
 
-const getTimeDifferenceMinutes = (noteBeggining, noteEnd) => {
+export const getTimeDifferenceMinutes = (noteBeggining, noteEnd) => {
   const descriptionNoteBegin = new Date(noteBeggining.created_at);
   const descriptionNoteEnd = new Date(noteEnd.created_at);
   let timeDifferenceMinutes = (descriptionNoteEnd - descriptionNoteBegin) / 1000 / 60;
@@ -26,7 +25,7 @@ const getTimeDifferenceMinutes = (noteBeggining, noteEnd) => {
   return timeDifferenceMinutes;
 };
 
-const collapseSystemNotes = (notes) => {
+export const collapseSystemNotes = (notes) => {
   let descriptionChangedTimes = 1;
   let descriptionNote = null;
   let descriptionNoteIndex = -1;
@@ -99,4 +98,7 @@ const collapseSystemNotes = (notes) => {
   return collapsedNotes;
 };
 
-export default collapseSystemNotes;
+export const isSystemNote = note => note.system && note.note === DESCRIPTION_TYPE;
+
+// for babel-rewire
+export default {};
