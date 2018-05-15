@@ -1454,8 +1454,6 @@ module Gitlab
         raise NoRepository.new(e)
       rescue GRPC::InvalidArgument => e
         raise ArgumentError.new(e)
-      rescue GRPC::DataLoss => e
-        raise InvalidRepository.new(e)
       rescue GRPC::BadStatus => e
         raise CommandError.new(e)
       end
