@@ -75,8 +75,7 @@ module Ci
       project_type: 3
     }
 
-    cached_attr_reader :version, :revision, :platform, :architecture, :ip_address
-    cached_attr_time_reader :contacted_at
+    cached_attr_reader :version, :revision, :platform, :architecture, :ip_address, :contacted_at
 
     chronic_duration_attr :maximum_timeout_human_readable, :maximum_timeout
 

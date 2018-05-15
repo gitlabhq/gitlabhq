@@ -6,6 +6,10 @@ describe RedisCacheable do
       def read_attribute(attribute)
         attributes[attribute]
       end
+
+      def cast_value_from_cache(attribute, cached_value)
+        cached_value
+      end
     end
   end
 
@@ -73,44 +77,6 @@ describe RedisCacheable do
       instance.cache_attributes(name: 'new_value')
 
       expect(instance.name).to eq('new_value')
-    end
-  end
-
-  describe '#cached_attr_time_reader', :clean_gitlab_redis_shared_state do
-    subject { instance.time }
-
-    let(:other_time) { Time.zone.parse('May 14 2018') }
-
-    before do
-      model.cached_attr_time_reader(:time)
-    end
-
-    context 'when there is no cached value' do
-      it 'reads the attribute' do
-        expect(instance).to receive(:read_attribute).and_call_original
-
-        expect(subject).to be_instance_of(ActiveSupport::TimeWithZone)
-        expect(subject).to eq(payload[:time])
-      end
-    end
-
-    context 'when there is a cached value' do
-      it 'reads the cached value' do
-        expect(instance).not_to receive(:read_attribute)
-
-        instance.cache_attributes(time: other_time)
-
-        expect(subject).to be_instance_of(ActiveSupport::TimeWithZone)
-        expect(subject).to eq(other_time)
-      end
-    end
-
-    it 'always returns the latest values' do
-      expect(instance.time).to eq(payload[:time])
-
-      instance.cache_attributes(time: other_time)
-
-      expect(instance.time).to eq(other_time)
     end
   end
 end
