@@ -51,16 +51,17 @@ module Gitlab
         # Clean columns of ci_builds
         #
         # Targets
-        # "artifacts_file", "artifacts_metadata", "artifacts_size", "artifacts_file_store"
+        # "artifacts_file", "artifacts_metadata", "artifacts_size", "artifacts_file_store", "artifacts_metadata_store"
         # Ignore
         # "artifacts_expire_at" ... This is widely used for showing expiration time of artifacts
         MigrateLegacyArtifacts::Build
           .legacy_artifacts
           .where(id: (start_id..stop_id))
           .update_all(artifacts_file: nil,
-                      artifacts_metadata: nil,
+                      artifacts_file_store: nil,
                       artifacts_size: nil,
-                      artifacts_file_store: nil)
+                      artifacts_metadata: nil,
+                      artifacts_metadata_store: nil)
       end
 
       private
