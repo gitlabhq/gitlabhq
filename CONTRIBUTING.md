@@ -728,6 +728,3 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [polling-etag]: https://docs.gitlab.com/ce/development/polling.html
 [testing]: doc/development/testing_guide/index.md
 [us-english]: https://en.wikipedia.org/wiki/American_English
-
-[^1]: Please note that specs other than JavaScript specs are considered backend
-      code.
