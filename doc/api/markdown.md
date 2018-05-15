@@ -13,8 +13,8 @@ POST /api/v4/markdown
 | Attribute | Type    | Required      | Description                                |
 | --------- | ------- | ------------- | ------------------------------------------ |
 | `text`    | string  | yes           | The markdown text to render                |
-| `gfm`     | boolean | no (optional) | Render text using GitLab Flavored Markdown |
-| `project` | string  | no (optional) | The full path of a project to use as the context when creating references using GitLab Flavored Markdown |
+| `gfm`     | boolean | no (optional) | Render text using GitLab Flavored Markdown (default: `false`) |
+| `project` | string  | no if `gfm` is false<br>yes if `gfm` is true | The full path of a project to use as the context when creating references using GitLab Flavored Markdown |
 
 ```bash
 curl -H Content-Type:application/json -d '{"text":"Hello world! :tada:", "gfm":true, "project":"group_example/project_example"}' https://gitlab.example.com/api/v4/markdown
