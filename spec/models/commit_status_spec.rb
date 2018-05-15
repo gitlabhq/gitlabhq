@@ -565,4 +565,13 @@ describe CommitStatus do
       it_behaves_like 'commit status enqueued'
     end
   end
+
+  describe '#present' do
+    let(:generic_commit_status) { create(:generic_commit_status) }
+
+    it 'returns a presenter' do
+      expect(commit_status.present).to be_a(Ci::BuildPresenter)
+      expect(generic_commit_status.present).to be_a(Ci::BuildPresenter)
+    end
+  end
 end
