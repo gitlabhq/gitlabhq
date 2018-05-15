@@ -116,7 +116,7 @@ export default {
             class="js-link-vulnerabilityFeedbackHelpPath"
             :href="vulnerabilityFeedbackHelpPath"
           >
-            Learn more about interacting with security reports (experimental).
+            Learn more about interacting with security reports (Alpha).
           </a>
         </div>
       </div>

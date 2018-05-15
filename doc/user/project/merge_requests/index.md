@@ -271,8 +271,7 @@ following security reports are available:
 > Introduced in [GitLab Ultimate][products] 10.8.
 
 CAUTION: **Warning:**
-This feature is currently experimental and while you can start using it,
-it may receive important changes in the future.
+This feature is currently [Alpha](https://about.gitlab.com/handbook/product/#alpha-beta-ga) and while you can start using it, it may receive important changes in the future.
 
 Each security vulnerability in the report is actionable. Clicking on an entry,
 a detailed information will pop up with two different possible options:
