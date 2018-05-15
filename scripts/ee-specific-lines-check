@@ -7,8 +7,8 @@ git_version
 
 base = find_compare_base
 
-current_numstat = updated_diff_numstat(base.ce_merge_base, base.ee_fetch_base)
-updated_numstat = updated_diff_numstat(base.ce_updated_base, 'HEAD')
+current_numstat = updated_diff_numstat(base.ce_base, base.ee_base)
+updated_numstat = updated_diff_numstat(base.ce_head, base.ee_head)
 
 offenses = updated_numstat.select do |file, updated_delta|
   current_delta = current_numstat[file]
