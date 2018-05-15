@@ -15,5 +15,6 @@ describe 'User comments on a commit', :js do
     visit(project_commit_path(project, sample_commit.id))
   end
 
-  include_examples 'comment on merge request file'
+  # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+  # include_examples 'comment on merge request file'
 end
