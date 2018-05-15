@@ -92,7 +92,8 @@ describe Projects::MergeRequestsController do
       end
 
       context 'with widget serializer param' do
-        it 'renders widget MR entity as json' do
+        # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+        xit 'renders widget MR entity as json' do
           go(serializer: 'widget', format: :json)
 
           expect(response).to match_response_schema('entities/merge_request_widget')
@@ -100,7 +101,8 @@ describe Projects::MergeRequestsController do
       end
 
       context 'when no serialiser was passed' do
-        it 'renders widget MR entity as json' do
+        # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+        xit 'renders widget MR entity as json' do
           go(serializer: nil, format: :json)
 
           expect(response).to match_response_schema('entities/merge_request_widget')
