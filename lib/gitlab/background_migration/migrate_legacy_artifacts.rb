@@ -39,33 +39,9 @@ module Gitlab
         # Build rows
         MigrateLegacyArtifacts::Build
           .legacy_artifacts
-          .where(id: (start_id..stop_id)).each do |build|
-          base_param = {
-            project_id: build.project_id,
-            job_id: build.id,
-            expire_at: build.artifacts_expire_at,
-            file_location: MigrateLegacyArtifacts::JobArtifact.file_locations['legacy_path'],
-            created_at: build.created_at,
-            updated_at: build.created_at
-          }
-
-          rows << base_param.merge({
-            size: build.artifacts_size,
-            file: build.artifacts_file,
-            file_store: build.artifacts_file_store || JobArtifact::LOCAL_STORE,
-            file_type: MigrateLegacyArtifacts::JobArtifact.file_types['archive'],
-            file_sha256: nil # `file_sha256` of legacy artifacts had not been persisted
-          })
-
-          if build.artifacts_metadata
-            rows << base_param.merge({
-              size: nil, # `size` of legacy metadatas had not been persisted
-              file: build.artifacts_metadata,
-              file_store: build.artifacts_metadata_store || JobArtifact::LOCAL_STORE,
-              file_type: MigrateLegacyArtifacts::JobArtifact.file_types['metadata'],
-              file_sha256: nil # `file_sha256` of legacy artifacts had not been persisted
-            })
-          end
+          .where(id: (start_id..stop_id)).find_each do |build|
+          rows << build_archive_row(build)
+          rows << build_metadata_row(build) if build.artifacts_metadata
         end
 
         # Bulk insert
@@ -75,10 +51,7 @@ module Gitlab
         # Clean columns of ci_builds
         #
         # Targets
-        # "artifacts_file"
-        # "artifacts_metadata"
-        # "artifacts_size"
-        # "artifacts_file_store"
+        # "artifacts_file", "artifacts_metadata", "artifacts_size", "artifacts_file_store"
         # Ignore
         # "artifacts_expire_at" ... This is widely used for showing expiration time of artifacts
         MigrateLegacyArtifacts::Build
@@ -88,6 +61,39 @@ module Gitlab
                       artifacts_metadata: nil,
                       artifacts_size: nil,
                       artifacts_file_store: nil)
+      end
+
+      private
+
+      def build_archive_row(build)
+        build_base_row(build).merge({
+          size: build.artifacts_size,
+          file: build.artifacts_file,
+          file_store: build.artifacts_file_store || JobArtifact::LOCAL_STORE,
+          file_type: MigrateLegacyArtifacts::JobArtifact.file_types['archive'],
+          file_sha256: nil # `file_sha256` of legacy artifacts had not been persisted
+        })
+      end
+
+      def build_metadata_row(build)
+        build_base_row(build).merge({
+          size: nil, # `size` of legacy metadatas had not been persisted
+          file: build.artifacts_metadata,
+          file_store: build.artifacts_metadata_store || JobArtifact::LOCAL_STORE,
+          file_type: MigrateLegacyArtifacts::JobArtifact.file_types['metadata'],
+          file_sha256: nil # `file_sha256` of legacy artifacts had not been persisted
+        })
+      end
+
+      def build_base_row(build)
+        {
+          project_id: build.project_id,
+          job_id: build.id,
+          expire_at: build.artifacts_expire_at,
+          file_location: MigrateLegacyArtifacts::JobArtifact.file_locations['legacy_path'],
+          created_at: build.created_at,
+          updated_at: build.created_at
+        }
       end
     end
   end
