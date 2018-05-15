@@ -39,6 +39,16 @@ describe Gitlab::Ci::Pipeline::Expression::Lexeme::Matches do
       expect(operator.evaluate).to eq true
     end
 
+    it 'supports matching against a nil value' do
+      allow(left).to receive(:evaluate).and_return(nil)
+      allow(right).to receive(:evaluate)
+        .and_return(Gitlab::UntrustedRegexp.new('pattern'))
+
+      operator = described_class.new(left, right)
+
+      expect(operator.evaluate).to eq false
+    end
+
     it 'supports multiline strings' do
       allow(left).to receive(:evaluate).and_return <<~TEXT
         My awesome contents

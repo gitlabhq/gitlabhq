@@ -10,8 +10,10 @@ module Gitlab
           LEXEMES = [
             Expression::Lexeme::Variable,
             Expression::Lexeme::String,
+            Expression::Lexeme::Pattern,
             Expression::Lexeme::Null,
-            Expression::Lexeme::Equals
+            Expression::Lexeme::Equals,
+            Expression::Lexeme::Matches
           ].freeze
 
           MAX_TOKENS = 100

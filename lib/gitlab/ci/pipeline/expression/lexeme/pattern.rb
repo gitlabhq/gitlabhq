@@ -3,6 +3,8 @@ module Gitlab
     module Pipeline
       module Expression
         module Lexeme
+          require_dependency 're2'
+
           class Pattern < Lexeme::Value
             PATTERN = %r{/(?<regexp>.+)/}.freeze
 

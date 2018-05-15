@@ -15,7 +15,7 @@ module Gitlab
               text = @left.evaluate(variables)
               regexp = @right.evaluate(variables)
 
-              regexp.scan(text).any?
+              regexp.scan(text.to_s).any?
             end
 
             def self.build(_value, behind, ahead)

@@ -84,7 +84,6 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
   describe '#evaluate' do
     statements = [
       ['$PRESENT_VARIABLE == "my variable"', true],
-      ["$PRESENT_VARIABLE == 'my variable'", true],
       ['"my variable" == $PRESENT_VARIABLE', true],
       ['$PRESENT_VARIABLE == null', false],
       ['$EMPTY_VARIABLE == null', false],
@@ -93,7 +92,11 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
       ['$UNDEFINED_VARIABLE == null', true],
       ['null == $UNDEFINED_VARIABLE', true],
       ['$PRESENT_VARIABLE', 'my variable'],
-      ['$UNDEFINED_VARIABLE', nil]
+      ['$UNDEFINED_VARIABLE', nil],
+      ["$PRESENT_VARIABLE =~ /var.*e$/", true],
+      ["$PRESENT_VARIABLE =~ /^var.*/", false],
+      ["$EMPTY_VARIABLE =~ /var.*/", false],
+      ["$UNDEFINED_VARIABLE =~ /var.*/", false]
     ]
 
     statements.each do |expression, value|
@@ -115,7 +118,9 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
       ['$PRESENT_VARIABLE', true],
       ['$UNDEFINED_VARIABLE', false],
       ['$EMPTY_VARIABLE', false],
-      ['$INVALID = 1', false]
+      ['$INVALID = 1', false],
+      ["$PRESENT_VARIABLE =~ /var.*/", true],
+      ["$UNDEFINED_VARIABLE =~ /var.*/", false]
     ]
 
     statements.each do |expression, value|
