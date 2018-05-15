@@ -4,12 +4,12 @@
     .col-md-4
       %h4 Resolve conflicts on source branch
       .resolve-info
-        Resolve the merge conflict by choosing
+        You can resolve the merge conflict using either the Interactive mode, by choosing
         %code Use ours
         or
         %code Use theirs
-        in all the conflicted files above. Commit these changes into
-        #{link_to @merge_request.source_branch, project_tree_path(@merge_request.project, @merge_request.source_branch)}.
+        buttons, or by editing the files directly. Commit these changes into
+        #{link_to @merge_request.source_branch, project_tree_path(@merge_request.project, @merge_request.source_branch), class: "ref-name"}.
     .col-md-8
       %label.label-light{ "for" => "commit-message" }
         #{ _('Commit message') }
