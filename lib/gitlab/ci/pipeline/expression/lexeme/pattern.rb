@@ -13,7 +13,7 @@ module Gitlab
             end
 
             def evaluate(variables = {})
-              @regexp = Gitlab::UntrustedRegexp.new(@value)
+              Gitlab::UntrustedRegexp.new(@value)
             rescue RegexpError
               raise Expression::RuntimeError, 'Invalid regular expression!'
             end
