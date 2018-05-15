@@ -113,6 +113,9 @@ describe 'Merge request > User resolves conflicts', :js do
         # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
         # include_examples "conflicts are resolved in Interactive mode"
         # include_examples "conflicts are resolved in Edit inline mode"
+
+        it 'prevents RSpec/EmptyExampleGroup' do
+        end
       end
 
       context 'in Parallel view mode' do
@@ -124,6 +127,9 @@ describe 'Merge request > User resolves conflicts', :js do
         # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
         # include_examples "conflicts are resolved in Interactive mode"
         # include_examples "conflicts are resolved in Edit inline mode"
+
+        it 'prevents RSpec/EmptyExampleGroup' do
+        end
       end
     end
 

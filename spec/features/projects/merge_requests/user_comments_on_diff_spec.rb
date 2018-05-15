@@ -112,6 +112,9 @@ describe 'User comments on a diff', :js do
   context 'when adding comments' do
     # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
     # include_examples 'comment on merge request file'
+
+    it 'prevents RSpec/EmptyExampleGroup' do
+    end
   end
 
   context 'when editing comments' do
