@@ -23,7 +23,7 @@ export default {
       :key="notesArr.id"
       class="discussion-notes diff-discussions"
     >
-      <ul class="notes">
+      <ul class="notes" :data-discussion-id="notesArr.id">
         <noteable-discussion
           :note="notesArr"
           :render-header="false"

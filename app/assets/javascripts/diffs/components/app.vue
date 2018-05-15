@@ -1,6 +1,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
+import { __ } from '~/locale';
 import LoadingIcon from '../../vue_shared/components/loading_icon.vue';
 import CompareVersions from './compare_versions.vue';
 import ChangedFiles from './changed_files.vue';
@@ -63,6 +64,20 @@ export default {
         path: '',
       };
     },
+    notAllCommentsDisplayed() {
+      if (this.startVersion) {
+        return __(
+          `Not all comments are displayed because you're comparing two versions of the diff.`,
+        );
+      } else {
+        return __(
+          `Not all comments are displayed because you're viewing an old version of the diff.`,
+        );
+      }
+    },
+    latestDiffHref() {
+      return this.mergeRequestDiffs[0].path;
+    },
   },
   watch: {
     diffViewType() {
@@ -122,11 +137,6 @@ export default {
         :start-version="startVersion"
         :target-branch="targetBranch"
       />
-      <changed-files
-        v-if="diffFiles.length > 0"
-        :diff-files="diffFiles"
-        :active-file="activeFile"
-      />
 
       <hidden-files-warning
         v-if="renderOverflowWarning"
@@ -137,9 +147,33 @@ export default {
       />
 
       <div
-        v-if="diffFiles.length"
+        v-if="mergeRequestDiff && !mergeRequestDiff.latest"
+        class="mr-version-controls"
+      >
+        <div class="content-block comments-disabled-notif clearfix">
+          <i class="fa fa-info-circle"></i>
+          <!-- if @commit else -->
+          {{ notAllCommentsDisplayed }}
+          <div class="pull-right">
+            <a
+              :href="latestDiffHref"
+              class="btn btn-sm"
+            >
+              {{ __('Show latest version') }}
+            <!-- = "of the diff" if @commit -->
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div
+        v-if="diffFiles.length > 0"
         class="files"
       >
+        <changed-files
+          :diff-files="diffFiles"
+          :active-file="activeFile"
+        />
         <diff-file
           v-for="file in diffFiles"
           :key="file.newPath"
