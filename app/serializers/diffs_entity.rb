@@ -9,6 +9,10 @@ class DiffsEntity < Grape::Entity
     options[:merge_request]&.source_branch
   end
 
+  expose :target_branch_name do |diffs|
+    options[:merge_request]&.target_branch
+  end
+
   expose :commit do |diffs|
     options[:commit]
   end
@@ -17,7 +21,7 @@ class DiffsEntity < Grape::Entity
     options[:merge_request_diff]
   end
 
-  expose :start_version do |diffs|
+  expose :start_version, using: MergeRequestDiffEntity do |diffs|
     options[:start_version]
   end
 
@@ -57,5 +61,9 @@ class DiffsEntity < Grape::Entity
 
   expose :merge_request_diffs, using: MergeRequestDiffEntity, if: -> (_, options) { options[:merge_request_diffs].any? } do |diffs|
     options[:merge_request_diffs]
+  end
+
+  expose :comparable_diffs, using: MergeRequestDiffEntity do |diffs|
+    options[:comparable_diffs]
   end
 end

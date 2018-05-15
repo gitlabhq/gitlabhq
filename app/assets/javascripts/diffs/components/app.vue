@@ -1,5 +1,6 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
+import Icon from '~/vue_shared/components/icon.vue';
 import LoadingIcon from '../../vue_shared/components/loading_icon.vue';
 import CompareVersions from './compare_versions.vue';
 import ChangedFiles from './changed_files.vue';
@@ -10,6 +11,7 @@ import HiddenFilesWarning from './hidden_files_warning.vue';
 export default {
   name: 'DiffsApp',
   components: {
+    Icon,
     LoadingIcon,
     CompareVersions,
     ChangedFiles,
@@ -42,8 +44,11 @@ export default {
       isLoading: state => state.diffs.isLoading,
       diffFiles: state => state.diffs.diffFiles,
       diffViewType: state => state.diffs.diffViewType,
+      comparableDiffs: state => state.diffs.comparableDiffs,
       mergeRequestDiffs: state => state.diffs.mergeRequestDiffs,
       mergeRequestDiff: state => state.diffs.mergeRequestDiff,
+      startVersion: state => state.diffs.startVersion,
+      targetBranchName: state => state.diffs.targetBranchName,
       renderOverflowWarning: state => state.diffs.renderOverflowWarning,
       numTotalFiles: state => state.diffs.realSize,
       numVisibleFiles: state => state.diffs.size,
@@ -51,6 +56,13 @@ export default {
       emailPatchPath: state => state.diffs.emailPatchPath,
     }),
     ...mapGetters(['isParallelView']),
+    targetBranch() {
+      return {
+        branchName: this.targetBranchName,
+        versionIndex: -1,
+        path: '',
+      };
+    },
   },
   watch: {
     diffViewType() {
@@ -102,36 +114,40 @@ export default {
       id="diffs"
       class="diffs tab-pane"
     >
-      <div v-if="diffFiles.length">
-        <compare-versions
-          v-if="mergeRequestDiffs.length > 1"
-          :merge-request-diffs="mergeRequestDiffs"
-          :merge-request-diff="mergeRequestDiff"
-        />
-        <changed-files
-          v-if="diffFiles.length > 0"
-          :diff-files="diffFiles"
-          :active-file="activeFile"
-        />
+      <compare-versions
+        v-if="mergeRequestDiffs.length > 1"
+        :merge-request-diffs="mergeRequestDiffs"
+        :comparable-diffs="comparableDiffs"
+        :merge-request-diff="mergeRequestDiff"
+        :start-version="startVersion"
+        :target-branch="targetBranch"
+      />
+      <changed-files
+        v-if="diffFiles.length > 0"
+        :diff-files="diffFiles"
+        :active-file="activeFile"
+      />
 
-        <hidden-files-warning
-          v-if="renderOverflowWarning"
-          :visible="numVisibleFiles"
-          :total="numTotalFiles"
-          :plain-diff-path="plainDiffPath"
-          :email-patch-path="emailPatchPath"
-        />
+      <hidden-files-warning
+        v-if="renderOverflowWarning"
+        :visible="numVisibleFiles"
+        :total="numTotalFiles"
+        :plain-diff-path="plainDiffPath"
+        :email-patch-path="emailPatchPath"
+      />
 
-        <div class="files">
-          <diff-file
-            v-for="file in diffFiles"
-            :key="file.newPath"
-            :file="file"
-            :current-user="currentUser"
-            @setActive="setActive(file.filePath)"
-            @unsetActive="unsetActive(file.filePath)"
-          />
-        </div>
+      <div
+        v-if="diffFiles.length"
+        class="files"
+      >
+        <diff-file
+          v-for="file in diffFiles"
+          :key="file.newPath"
+          :file="file"
+          :current-user="currentUser"
+          @setActive="setActive(file.filePath)"
+          @unsetActive="unsetActive(file.filePath)"
+        />
       </div>
       <no-changes v-else />
     </div>

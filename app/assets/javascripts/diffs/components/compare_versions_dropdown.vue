@@ -19,7 +19,12 @@ export default {
       required: false,
       default: null,
     },
-    baseVersion: {
+    startVersion: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+    targetBranch: {
       type: Object,
       required: false,
       default: null,
@@ -31,28 +36,20 @@ export default {
     },
   },
   computed: {
+    baseVersion() {
+      return {
+        name: 'hii',
+        versionIndex: -1,
+      };
+    },
     targetVersions() {
       if (this.mergeRequestVersion) {
         return this.otherVersions;
       }
-      return [...this.otherVersions, this.baseVersion];
-    },
-    baseVersionSelected() {
-      const last = this.targetVersions.length - 1;
-      return (
-        this.baseVersion && this.baseVersion.versionIndex === this.targetVersions[last].versionIndex
-      );
-    },
-    latestVersionSelected() {
-      return (
-        this.mergeRequestVersion &&
-        this.mergeRequestVersion.versionIndex === this.targetVersions[0].versionIndex
-      );
+      return [...this.otherVersions, this.targetBranch];
     },
     selectedVersionName() {
-      const selectedVersion = this.baseVersionSelected
-        ? this.baseVersion
-        : this.mergeRequestVersion;
+      const selectedVersion = this.startVersion || this.mergeRequestVersion;
       return this.versionName(selectedVersion);
     },
   },
@@ -68,23 +65,36 @@ export default {
       if (this.isLatest(version)) {
         return __('latest version');
       }
-      if (this.isBase(version)) {
-        return this.baseVersion.branchName;
+      if (this.targetBranch && (this.isBase(version) || !version)) {
+        return this.targetBranch.branchName;
       }
       return `version ${version.versionIndex}`;
     },
     isActive(version) {
-      if (this.baseVersion) {
-        return true;
+      if (!version) {
+        return false;
+      }
+      if (this.targetBranch) {
+        return (
+          (this.isBase(version) && !this.startVersion) ||
+          (this.startVersion && this.startVersion.versionIndex === version.versionIndex)
+        );
       } else {
         return version.versionIndex === this.mergeRequestVersion.versionIndex;
       }
     },
     isBase(version) {
-      return this.baseVersion && version.versionIndex === this.baseVersion.versionIndex;
+      if (!version || !this.targetBranch) {
+        return false;
+      }
+      if (!version.versionIndex) return !this.startVersion;
+      const last = this.targetVersions.length - 1;
+      return version.versionIndex === this.targetVersions[last].versionIndex;
     },
     isLatest(version) {
-      return !this.baseVersion && version.versionIndex === this.targetVersions[0].versionIndex;
+      return (
+        this.mergeRequestVersion && version.versionIndex === this.targetVersions[0].versionIndex
+      );
     },
   },
 };
@@ -135,6 +145,7 @@ export default {
                     {{ commitsText(version) }}
                   </template>
                   <time-ago
+                    v-if="version.createdAt"
                     class="js-timeago js-timeago-render"
                     :time="version.createdAt"
                   />
