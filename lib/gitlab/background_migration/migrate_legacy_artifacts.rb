@@ -36,14 +36,14 @@ module Gitlab
       def perform(start_id, stop_id)
         rows = []
 
-        Gitlab::BackgroundMigration::MigrateLegacyArtifacts::Build
+        MigrateLegacyArtifacts::Build
           .legacy_artifacts
           .where(id: (start_id..stop_id)).each do |build|
           base_param = {
             project_id: build.project_id,
             job_id: build.id,
             expire_at: build.artifacts_expire_at,
-            file_location: Gitlab::BackgroundMigration::MigrateLegacyArtifacts::JobArtifact.file_locations['legacy_path'],
+            file_location: MigrateLegacyArtifacts::JobArtifact.file_locations['legacy_path'],
             created_at: build.created_at,
             updated_at: build.created_at
           }
@@ -52,7 +52,7 @@ module Gitlab
             size: build.artifacts_size,
             file: build.artifacts_file,
             file_store: build.artifacts_file_store || JobArtifact::LOCAL_STORE,
-            file_type: Gitlab::BackgroundMigration::MigrateLegacyArtifacts::JobArtifact.file_types['archive'],
+            file_type: MigrateLegacyArtifacts::JobArtifact.file_types['archive'],
             file_sha256: nil # `file_sha256` of legacy artifacts had not been persisted
           })
 
@@ -61,14 +61,14 @@ module Gitlab
               size: get_legacy_metadata_size(build), # `size` of legacy metadatas had not been persisted
               file: build.artifacts_metadata,
               file_store: build.artifacts_metadata_store || JobArtifact::LOCAL_STORE,
-              file_type: Gitlab::BackgroundMigration::MigrateLegacyArtifacts::JobArtifact.file_types['metadata'],
+              file_type: MigrateLegacyArtifacts::JobArtifact.file_types['metadata'],
               file_sha256: nil # `file_sha256` of legacy artifacts had not been persisted
             })
           end
         end
 
         Gitlab::Database
-          .bulk_insert(Gitlab::BackgroundMigration::MigrateLegacyArtifacts::JobArtifact.table_name, rows)
+          .bulk_insert(MigrateLegacyArtifacts::JobArtifact.table_name, rows)
 
         # TODO: Do we need to verify the file existance with created job artifacts?
 
@@ -81,7 +81,7 @@ module Gitlab
         # "artifacts_file_store"
         # Ignore
         # "artifacts_expire_at" ,,, This is widely used for showing expiration time of artifacts
-        Gitlab::BackgroundMigration::MigrateLegacyArtifacts::Build
+        MigrateLegacyArtifacts::Build
           .legacy_artifacts
           .where(id: (start_id..stop_id))
           .update_all(artifacts_file: nil,
