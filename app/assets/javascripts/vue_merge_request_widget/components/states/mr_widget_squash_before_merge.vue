@@ -10,6 +10,6 @@ In EE, the configuration extends this object to add a functioning squash-before-
 button.
 */
 
-export default {
-  template: '',
-};
+<script>
+  export default {};
+</script>
