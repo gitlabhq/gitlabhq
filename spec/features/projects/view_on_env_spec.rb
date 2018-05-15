@@ -57,7 +57,8 @@ describe 'View on environment', :js do
           wait_for_requests
         end
 
-        it 'has a "View on env" button' do
+        # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+        xit 'has a "View on env" button' do
           within '.diffs' do
             expect(page).to have_link('View on feature.review.example.com', href: 'http://feature.review.example.com/ruby/feature')
           end
