@@ -165,7 +165,7 @@ module API
         body_start = content_range[0].to_i
         body_end = body_start + body_data.bytesize
 
-        stream_size = job.trace.append(body_data, body_start)
+        stream_size = job.trace.append(body_data, body_start)  if job.running?
         unless stream_size == body_end
           break error!('416 Range Not Satisfiable', 416, { 'Range' => "0-#{stream_size}" })
         end
