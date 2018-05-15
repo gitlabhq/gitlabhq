@@ -70,7 +70,7 @@ module Ci
     end
 
     def update_project_statistics_after_destroy
-      update_project_statistics(-self.size) if self.size
+      update_project_statistics(-self.size.to_i)
     end
 
     def update_project_statistics(difference)
