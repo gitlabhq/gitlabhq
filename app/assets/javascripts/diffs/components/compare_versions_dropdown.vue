@@ -76,9 +76,9 @@ export default {
     isActive(version) {
       if (this.baseVersion) {
         return true;
-      } else {
-        return version.versionIndex === this.mergeRequestVersion.versionIndex;
       }
+
+      return version.versionIndex === this.mergeRequestVersion.versionIndex;
     },
     isBase(version) {
       return this.baseVersion && version.versionIndex === this.baseVersion.versionIndex;

@@ -14,4 +14,7 @@ describe 'Discussion Comments Merge Request', :js do
 
   # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
   # it_behaves_like 'discussion comments', 'merge request'
+
+  it 'prevents RSpec/EmptyExampleGroup' do
+  end
 end

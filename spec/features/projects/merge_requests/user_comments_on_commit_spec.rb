@@ -17,4 +17,7 @@ describe 'User comments on a commit', :js do
 
   # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
   # include_examples 'comment on merge request file'
+
+  it 'prevents RSpec/EmptyExampleGroup' do
+  end
 end
