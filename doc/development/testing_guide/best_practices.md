@@ -12,8 +12,7 @@ Here are some things to keep in mind regarding test performance:
 - `FactoryBot.build(...)` and `.build_stubbed` are faster than `.create`.
 - Don't `create` an object when `build`, `build_stubbed`, `attributes_for`,
   `spy`, or `double` will do. Database persistence is slow!
-- Don't mark a feature as requiring JavaScript (through `@javascript` in
-  Spinach or `:js` in RSpec) unless it's _actually_ required for the test
+- Don't mark a feature as requiring JavaScript (through `:js` in RSpec) unless it's _actually_ required for the test
   to be valid. Headless browser testing is slow!
 
 [parallelization]: ci.md#test-suite-parallelization-on-the-ci

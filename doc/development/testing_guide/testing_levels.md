@@ -81,7 +81,6 @@ possible).
 | Tests path | Testing engine | Notes |
 | ---------- | -------------- | ----- |
 | `spec/features/` | [Capybara] + [RSpec] | If your spec has the `:js` metadata, the browser driver will be [Poltergeist], otherwise it's using [RackTest]. |
-| `features/` | Spinach | Spinach tests are deprecated, [you shouldn't add new Spinach tests](#spinach-feature-tests). |
 
 ### Consider **not** writing a system test!
 
