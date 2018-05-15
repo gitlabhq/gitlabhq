@@ -56,7 +56,7 @@ describe Gitlab::Ci::Pipeline::Expression::Lexeme::Pattern do
       regexp = described_class.new('invalid ( .*')
 
       expect { regexp.evaluate }
-        .to raise_error(Gitlab::Ci::Pipeline::Expression::Parser::ParserError)
+        .to raise_error(Gitlab::Ci::Pipeline::Expression::RuntimeError)
     end
   end
 end

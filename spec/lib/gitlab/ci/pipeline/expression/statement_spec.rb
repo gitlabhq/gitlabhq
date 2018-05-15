@@ -36,7 +36,7 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
         '== "123"',      # invalid left side
         '"some string"', # only string provided
         '$VAR ==',       # invalid right side
-        '12345',         # unknown syntax
+        'null',          # missing lexemes
         ''               # empty statement
       ]
 
@@ -44,7 +44,7 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
         context "when expression grammar is #{syntax.inspect}" do
           let(:text) { syntax }
 
-          it 'aises a statement error exception' do
+          it 'raises a statement error exception' do
             expect { subject.parse_tree }
               .to raise_error described_class::StatementError
           end
