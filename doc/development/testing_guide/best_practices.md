@@ -134,11 +134,30 @@ really fast since:
 - gitlab-shell and Gitaly setup are skipped
 - Test repositories setup are skipped
 
-Note that in some cases, you might have to add some `require_dependency 'foo'`
-in your file under test since Rails autoloading is not available in these cases.
+`fast_spec_helper` also support autoloading classes that are located inside the
+`lib/` directory. It means that as long as your class / module is using only
+code from the `lib/` directory you will not need to explicitly load any
+dependencies. `fast_spec_helper` also loads all ActiveSupport extensions,
+including core extensions that are commonly used in the Rails environment.
 
-This shouldn't be a problem since explicitely listing dependencies should be
-considered a good practice anyway.
+Note that in some cases, you might still have to load some dependencies using
+`require_dependency` in your `*_spec.rb` file, like when a code is using gems.
+
+For example, if you want to test your code that is calling the
+`Gitlab::UntrustedRegexp` class, which under the hood uses `re2` library, you
+should be able to define a test using follow code snippet.
+
+```ruby
+require 'fast_spec_helper'
+require_dependency 're2'
+
+describe Gitlab::MyModule::MyClass do
+  # ...
+end
+```
+
+It takes around one second to load tests that are using `fast_spec_helper`
+instead of 30+ seconds in case of a regular `spec_helper`.
 
 ### `let` variables
 
