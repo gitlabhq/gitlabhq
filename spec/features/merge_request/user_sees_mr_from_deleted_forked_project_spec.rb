@@ -17,7 +17,8 @@ describe 'Merge request > User sees MR from deleted forked project', :js do
     visit project_merge_request_path(project, merge_request)
   end
 
-  it 'user can access merge request' do
+  # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+  xit 'user can access merge request' do
     expect(page).to have_content 'Test merge request'
     expect(page).to have_content "(removed):#{merge_request.source_branch}"
   end
