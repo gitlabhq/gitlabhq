@@ -208,6 +208,12 @@ describe WikiPage do
 
           destroy_page('New Page')
         end
+
+        it 'with invalid sequence in utf-8' do
+          create_page('New Page', "f\xFCr")
+
+          expect { wiki.pages }.not_to raise_error
+        end
       end
     end
 
