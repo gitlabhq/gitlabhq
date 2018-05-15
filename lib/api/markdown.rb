@@ -13,13 +13,19 @@ module API
       post do
         # Explicitly set CommonMark as markdown engine to use.
         # Remove this set when https://gitlab.com/gitlab-org/gitlab-ce/issues/43011 is done.
-        context = { markdown_engine: :common_mark }
+        context = { markdown_engine: :common_mark, only_path: false }
 
         if params[:gfm]
-          context[:project] = Project.find_by_full_path(params[:project])
+          project = Project.find_by_full_path(params[:project])
+
+          not_found!("Project") unless can?(current_user, :read_project, project)
+
+          context[:project] = project
         else
           context[:pipeline] = :plain_markdown
         end
+
+        content_type "text/html"
 
         present Banzai.render(params[:text], context)
       end
