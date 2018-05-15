@@ -224,7 +224,7 @@ export default {
     base_path: 'blob_path',
     head_path: 'blob_path',
   },
-  vulnerability_feedback_help_path: '/help/user/project/merge_requests/index#interacting-with-security-reports',
+  vulnerability_feedback_help_path: '/help/user/project/merge_requests/index#interacting-with-security-reports-ultimate',
   merge_commit_path: 'http://localhost:3000/root/acets-app/commit/53027d060246c8f47e4a9310fb332aa52f221775',
 };
 // Codeclimate
