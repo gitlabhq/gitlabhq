@@ -31,7 +31,7 @@ class JobArtifactUploader < GitlabUploader
 
     creation_date = model.created_at.utc.strftime('%Y_%m_%d')
 
-    if model.current_path?
+    if model.hashed_path?
       File.join(disk_hash[0..1], disk_hash[2..3], disk_hash,
                 creation_date, model.job_id.to_s, model.id.to_s)
     elsif model.legacy_path?
