@@ -112,7 +112,7 @@ module Mattermost
     end
 
     def destroy
-      post('/api/v3/users/logout')
+      post('/api/v4/users/logout')
     end
 
     def oauth_uri
@@ -120,7 +120,7 @@ module Mattermost
 
       @oauth_uri = nil
 
-      response = get("/api/v3/oauth/gitlab/login", follow_redirects: false)
+      response = get('/oauth/gitlab/login', follow_redirects: false, format: 'text/html')
       return unless (300...400) === response.code
 
       redirect_uri = response.headers['location']

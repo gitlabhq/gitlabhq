@@ -1,0 +1,5 @@
+---
+title: Updated Mattermost integration to use API v4
+merge_request: 19043
+author: Harrison Healey
+type: changed
