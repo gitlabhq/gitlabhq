@@ -1,15 +1,38 @@
+-# TODO: Combine gcp/new and user/new views
 - breadcrumb_title 'Kubernetes'
 - page_title _("Kubernetes Cluster")
+- active_tab = local_assigns.fetch(:active_tab, 'new')
+= javascript_include_tag 'https://apis.google.com/js/api.js'
+
 
 = render_gcp_signup_offer
 
 .row.prepend-top-default
-  .col-sm-4
+  .col-sm-3
     = render 'sidebar'
-  .col-sm-8
-    %h4.prepend-top-0= s_('ClusterIntegration|Choose how to set up Kubernetes cluster integration')
+  .col-lg-9.js-toggle-container
+    %ul.nav-links.gitlab-tabs{ role: 'tablist' }
+      %li{ class: active_when(active_tab == 'new'), role: 'presentation' }
+        %a{ href: '#create-new-cluster-pane', id: 'create-new-cluster-tab', data: { toggle: 'tab' }, role: 'tab' }
+          %span Create new Cluster on GKE
+      %li{ class: active_when(active_tab == 'existing'), role: 'presentation' }
+        %a{ href: '#add-existing-cluster-pane', id: 'add-existing-cluster-tab', data: { toggle: 'tab' }, role: 'tab' }
+          %span Add existing cluster
 
-    %p= s_('ClusterIntegration|Create a new Kubernetes cluster on Google Kubernetes Engine right from GitLab')
-    = link_to s_('ClusterIntegration|Create on Google Kubernetes Engine'), gcp_new_namespace_project_clusters_path(@project.namespace, @project), class: 'btn append-bottom-20'
-    %p= s_('ClusterIntegration|Enter the details for an existing Kubernetes cluster')
-    = link_to s_('ClusterIntegration|Add an existing Kubernetes cluster'), user_new_namespace_project_clusters_path(@project.namespace, @project), class: 'btn append-bottom-20'
+    .tab-content.gitlab-tab-content
+      .tab-pane{ id: 'create-new-cluster-pane', class: active_when(active_tab == 'new'), role: 'tabpanel' }
+        = render 'projects/clusters/gcp/header'
+        - if @token_in_session
+          = render 'projects/clusters/gcp/form'
+        - elsif @authorize_url
+          = link_to @authorize_url do
+            = image_tag('auth_buttons/signin_with_google.png', width: '191px')
+          = _('or')
+          = link_to('create a new Google account', 'https://accounts.google.com/SignUpWithoutGmail?service=cloudconsole&continue=https%3A%2F%2Fconsole.cloud.google.com%2Ffreetrial%3Futm_campaign%3D2018_cpanel%26utm_source%3Dgitlab%26utm_medium%3Dreferral', target: '_blank', rel: 'noopener noreferrer')
+        - else
+          - link = link_to(s_('ClusterIntegration|properly configured'), help_page_path("integration/google"), target: '_blank', rel: 'noopener noreferrer')
+          = s_('Google authentication is not %{link_to_documentation}. Ask your GitLab administrator if you want to use this service.').html_safe % { link_to_documentation: link }
+
+      .tab-pane{ id: 'add-existing-cluster-pane', class: active_when(active_tab == 'existing'), role: 'tabpanel' }
+        = render 'projects/clusters/user/header'
+        = render 'projects/clusters/user/form'

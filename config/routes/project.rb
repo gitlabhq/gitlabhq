@@ -206,14 +206,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       resources :clusters, except: [:edit, :create] do
         collection do
-          scope :providers do
-            get '/user/new', to: 'clusters/user#new'
-            post '/user', to: 'clusters/user#create'
-
-            get '/gcp/new', to: 'clusters/gcp#new'
-            get '/gcp/login', to: 'clusters/gcp#login'
-            post '/gcp', to: 'clusters/gcp#create'
-          end
+          post '/new', to: 'clusters#create_cluster'
         end
 
         member do
