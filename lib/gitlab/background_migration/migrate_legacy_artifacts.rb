@@ -36,6 +36,7 @@ module Gitlab
       def perform(start_id, stop_id)
         rows = []
 
+        # Build rows
         MigrateLegacyArtifacts::Build
           .legacy_artifacts
           .where(id: (start_id..stop_id)).each do |build|
@@ -58,7 +59,7 @@ module Gitlab
 
           if build.artifacts_metadata
             rows << base_param.merge({
-              size: get_legacy_metadata_size(build), # `size` of legacy metadatas had not been persisted
+              size: nil, # `size` of legacy metadatas had not been persisted
               file: build.artifacts_metadata,
               file_store: build.artifacts_metadata_store || JobArtifact::LOCAL_STORE,
               file_type: MigrateLegacyArtifacts::JobArtifact.file_types['metadata'],
@@ -67,10 +68,9 @@ module Gitlab
           end
         end
 
+        # Bulk insert
         Gitlab::Database
           .bulk_insert(MigrateLegacyArtifacts::JobArtifact.table_name, rows)
-
-        # TODO: Do we need to verify the file existance with created job artifacts?
 
         # Clean columns of ci_builds
         #
@@ -80,7 +80,7 @@ module Gitlab
         # "artifacts_size"
         # "artifacts_file_store"
         # Ignore
-        # "artifacts_expire_at" ,,, This is widely used for showing expiration time of artifacts
+        # "artifacts_expire_at" ... This is widely used for showing expiration time of artifacts
         MigrateLegacyArtifacts::Build
           .legacy_artifacts
           .where(id: (start_id..stop_id))
@@ -88,17 +88,6 @@ module Gitlab
                       artifacts_metadata: nil,
                       artifacts_size: nil,
                       artifacts_file_store: nil)
-      end
-
-      private
-
-      ##
-      # This method is efficient that request with HEAD method and get content-length,
-      # instead of pulling the whole data
-      def get_legacy_metadata_size(build)
-        legacy_file_path = File.join(build.created_at.utc.strftime('%Y_%m'), build.project_id.to_s, build.id.to_s, build.legacy_artifacts_metadata)
-
-        10 # TODO:
       end
     end
   end
