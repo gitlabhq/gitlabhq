@@ -21,9 +21,9 @@ export const ContributorsGraph = (function() {
 
   ContributorsGraph.prototype.MARGIN = {
     top: 20,
-    right: 20,
+    right: 10,
     bottom: 30,
-    left: 50
+    left: 40
   };
 
   ContributorsGraph.prototype.x_domain = null;
@@ -114,7 +114,7 @@ export const ContributorsMasterGraph = (function(superClass) {
 
     this.data = data1;
     this.update_content = this.update_content.bind(this);
-    this.width = this.determine_width($('.stat-graph').width(), $parentElement);
+    this.width = this.determine_width($('.js-graphs-show').width(), $parentElement);
     this.height = 200;
     this.x = null;
     this.y = null;
@@ -155,7 +155,14 @@ export const ContributorsMasterGraph = (function(superClass) {
   };
 
   ContributorsMasterGraph.prototype.create_svg = function() {
-    return this.svg = d3.select("#contributors-master").append("svg").attr("width", this.width + this.MARGIN.left + this.MARGIN.right).attr("height", this.height + this.MARGIN.top + this.MARGIN.bottom).attr("class", "tint-box").append("g").attr("transform", "translate(" + this.MARGIN.left + "," + this.MARGIN.top + ")");
+    this.svg = d3.select("#contributors-master")
+      .append("svg")
+      .attr("width", this.width + this.MARGIN.left + this.MARGIN.right)
+      .attr("height", this.height + this.MARGIN.top + this.MARGIN.bottom)
+      .attr("class", "tint-box")
+      .append("g")
+      .attr("transform", "translate(" + this.MARGIN.left + "," + this.MARGIN.top + ")");
+    return this.svg;
   };
 
   ContributorsMasterGraph.prototype.create_area = function(x, y) {
@@ -225,10 +232,10 @@ export const ContributorsAuthorGraph = (function(superClass) {
 
     this.data = data1;
     // Don't split graph size in half for mobile devices.
-    if ($(window).width() < 768) {
-      this.width = this.determine_width($('.stat-graph').width(), $parentElements);
+    if ($(window).width() < 790) {
+      this.width = this.determine_width($('.js-graphs-show').width(), $parentElements);
     } else {
-      this.width = this.determine_width($('.stat-graph').width() / 2, $parentElements);
+      this.width = this.determine_width($('.js-graphs-show').width() / 2, $parentElements);
     }
     this.height = 200;
     this.x = null;
@@ -270,7 +277,14 @@ export const ContributorsAuthorGraph = (function(superClass) {
   ContributorsAuthorGraph.prototype.create_svg = function() {
     const persons = document.querySelectorAll('.person');
     this.list_item = persons[persons.length - 1];
-    return this.svg = d3.select(this.list_item).append("svg").attr("width", this.width + this.MARGIN.left + this.MARGIN.right).attr("height", this.height + this.MARGIN.top + this.MARGIN.bottom).attr("class", "spark").append("g").attr("transform", "translate(" + this.MARGIN.left + "," + this.MARGIN.top + ")");
+    this.svg = d3.select(this.list_item)
+      .append("svg")
+      .attr("width", this.width + this.MARGIN.left + this.MARGIN.right)
+      .attr("height", this.height + this.MARGIN.top + this.MARGIN.bottom)
+      .attr("class", "spark")
+      .append("g")
+      .attr("transform", "translate(" + this.MARGIN.left + "," + this.MARGIN.top + ")");
+    return this.svg;
   };
 
   ContributorsAuthorGraph.prototype.draw_path = function(data) {
