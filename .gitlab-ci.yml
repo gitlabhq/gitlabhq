@@ -208,7 +208,6 @@ stages:
   <<: *rspec-metadata-mysql
   <<: *rails5
 
-<<<<<<< HEAD
 .rspec-metadata-ee: &rspec-metadata-ee
   <<: *rspec-metadata
   stage: test
@@ -267,8 +266,6 @@ stages:
   <<: *rspec-metadata-pg-geo-10-2
   <<: *rails5
 
-=======
->>>>>>> upstream/master
 .only-canonical-masters: &only-canonical-masters
   only:
     - master@gitlab-org/gitlab-ce
@@ -446,17 +443,11 @@ update-tests-metadata:
   script:
     - retry gem install fog-aws mime-types activesupport
     - scripts/merge-reports ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec-pg_node_*.json
-<<<<<<< HEAD
     - scripts/merge-reports ${EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec-pg-ee_node_*.json
     - scripts/merge-reports ${FLAKY_RSPEC_SUITE_REPORT_PATH} rspec_flaky/all_*_*.json
     - FLAKY_RSPEC_GENERATE_REPORT=1 scripts/prune-old-flaky-specs ${FLAKY_RSPEC_SUITE_REPORT_PATH}
     - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $KNAPSACK_RSPEC_SUITE_REPORT_PATH'
     - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH'
-=======
-    - scripts/merge-reports ${FLAKY_RSPEC_SUITE_REPORT_PATH} rspec_flaky/all_*_*.json
-    - FLAKY_RSPEC_GENERATE_REPORT=1 scripts/prune-old-flaky-specs ${FLAKY_RSPEC_SUITE_REPORT_PATH}
-    - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $KNAPSACK_RSPEC_SUITE_REPORT_PATH'
->>>>>>> upstream/master
     - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $FLAKY_RSPEC_SUITE_REPORT_PATH'
     - rm -f knapsack/${CI_PROJECT_NAME}/*_node_*.json
     - rm -f rspec_flaky/all_*.json rspec_flaky/new_*.json
@@ -524,7 +515,6 @@ setup-test-env:
       - config/secrets.yml
       - vendor/gitaly-ruby
 
-<<<<<<< HEAD
 # EE jobs
 rspec-pg-ee 0 2: *rspec-ee-pg
 rspec-pg-ee 1 2: *rspec-ee-pg
@@ -541,8 +531,6 @@ rspec-pg-geo-rails5 0 2: *rspec-metadata-pg-geo-9-6-rails5
 rspec-pg-geo-rails5 1 2: *rspec-metadata-pg-geo-10-2-rails5
 ## EE jobs
 
-=======
->>>>>>> upstream/master
 rspec-pg 0 30: *rspec-metadata-pg
 rspec-pg 1 30: *rspec-metadata-pg
 rspec-pg 2 30: *rspec-metadata-pg
