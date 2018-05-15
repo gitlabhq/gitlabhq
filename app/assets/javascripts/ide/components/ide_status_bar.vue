@@ -1,8 +1,11 @@
 <script>
+import Visibility from 'visibilityjs';
 import { mapState, mapGetters } from 'vuex';
 import icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import timeAgoMixin from '~/vue_shared/mixins/timeago';
+import Poll from '../../lib/utils/poll';
+import service from '../services';
 import CiIcon from '../../vue_shared/components/ci_icon.vue';
 import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
 
@@ -26,11 +29,12 @@ export default {
   data() {
     return {
       lastCommitFormatedAge: null,
+      lastCommitPipeline: null,
     };
   },
   computed: {
     ...mapState(['currentBranchId', 'currentProjectId']),
-    ...mapGetters(['currentProject', 'lastCommit', 'lastCommitPipeline']),
+    ...mapGetters(['currentProject', 'lastCommit']),
   },
   watch: {
     lastCommit(newCommit) {
@@ -39,6 +43,10 @@ export default {
         branchId: this.currentBranchId,
         commitSha: newCommit.id,
       });
+
+      if (!this.poll) {
+        this.initPipelinePolling();
+      }
     },
   },
   mounted() {
@@ -48,12 +56,49 @@ export default {
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
+    if (this.poll) {
+      this.poll.stop();
+    }
   },
   methods: {
     startTimer() {
       this.intervalId = setInterval(() => {
         this.commitAgeUpdate();
+        this.lastCommitPipeline =
+          this.lastCommit && this.lastCommit.pipeline && this.lastCommit.pipeline.details
+            ? this.lastCommit.pipeline
+            : null;
       }, 1000);
+    },
+    initPipelinePolling() {
+      this.poll = new Poll({
+        resource: this,
+        method: 'pipelinePoll',
+        successCallback: this.handlePipelinesResult,
+        errorCallback(err) {
+          throw new Error(err);
+        },
+      });
+
+      this.service = service;
+
+      if (!Visibility.hidden()) {
+        this.poll.makeRequest();
+      }
+
+      Visibility.change(() => {
+        if (!Visibility.hidden()) {
+          this.poll.restart();
+        } else {
+          this.poll.stop();
+        }
+      });
+    },
+    pipelinePoll() {
+      return this.service.commitPipelines(this.currentProjectId, this.lastCommit.id);
+    },
+    handlePipelinesResult(data) {
+      this.$store.dispatch('handleCommitPipeline', data);
     },
     commitAgeUpdate() {
       if (this.lastCommit) {
@@ -75,7 +120,7 @@ export default {
     >
       <span
         class="ide-status-pipeline"
-        v-if="lastCommitPipeline && lastCommitPipeline.details"
+        v-if="lastCommitPipeline"
       >
         <ci-icon
           :status="lastCommitPipeline.details.status"
