@@ -195,22 +195,6 @@ describe ApplicationSetting do
 
           expect(setting.pick_repository_storage).to eq('random')
         end
-
-        describe '#repository_storage' do
-          it 'returns the first storage' do
-            setting.repository_storages = %w(good bad)
-
-            expect(setting.repository_storage).to eq('good')
-          end
-        end
-
-        describe '#repository_storage=' do
-          it 'overwrites repository_storages' do
-            setting.repository_storage = 'overwritten'
-
-            expect(setting.repository_storages).to eq(['overwritten'])
-          end
-        end
       end
     end
 

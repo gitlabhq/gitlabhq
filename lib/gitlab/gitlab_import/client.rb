@@ -29,28 +29,28 @@ module Gitlab
       end
 
       def user
-        api.get("/api/v3/user").parsed
+        api.get("/api/v4/user").parsed
       end
 
       def issues(project_identifier)
         lazy_page_iterator(PER_PAGE) do |page|
-          api.get("/api/v3/projects/#{project_identifier}/issues?per_page=#{PER_PAGE}&page=#{page}").parsed
+          api.get("/api/v4/projects/#{project_identifier}/issues?per_page=#{PER_PAGE}&page=#{page}").parsed
         end
       end
 
       def issue_comments(project_identifier, issue_id)
         lazy_page_iterator(PER_PAGE) do |page|
-          api.get("/api/v3/projects/#{project_identifier}/issues/#{issue_id}/notes?per_page=#{PER_PAGE}&page=#{page}").parsed
+          api.get("/api/v4/projects/#{project_identifier}/issues/#{issue_id}/notes?per_page=#{PER_PAGE}&page=#{page}").parsed
         end
       end
 
       def project(id)
-        api.get("/api/v3/projects/#{id}").parsed
+        api.get("/api/v4/projects/#{id}").parsed
       end
 
       def projects
         lazy_page_iterator(PER_PAGE) do |page|
-          api.get("/api/v3/projects?per_page=#{PER_PAGE}&page=#{page}").parsed
+          api.get("/api/v4/projects?per_page=#{PER_PAGE}&page=#{page}").parsed
         end
       end
 
