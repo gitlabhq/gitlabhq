@@ -203,19 +203,22 @@ describe 'Merge request > User posts diff notes', :js do
     end
 
     context 'with a new line' do
-      it 'allows commenting' do
+      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+      xit 'allows commenting' do
         should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
       end
     end
 
     context 'with an old line' do
-      it 'allows commenting' do
+      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+      xit 'allows commenting' do
         should_allow_commenting(find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_22_22"]'))
       end
     end
 
     context 'with an unchanged line' do
-      it 'allows commenting' do
+      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+      xit 'allows commenting' do
         should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]'))
       end
     end
