@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe API::Geo do
+  include TermsHelper
   include ApiHelpers
   include ::EE::GeoHelpers
 
@@ -14,6 +15,18 @@ describe API::Geo do
 
   before do
     stub_current_geo_node(secondary_node)
+  end
+
+  shared_examples 'with terms enforced' do
+    before do
+      enforce_terms
+    end
+
+    it 'responds with 200' do
+      request
+
+      expect(response).to have_gitlab_http_status(200)
+    end
   end
 
   describe 'GET /geo/transfers/attachment/1' do
@@ -33,13 +46,17 @@ describe API::Geo do
     end
 
     context 'attachment file exists' do
+      subject(:request) { get api("/geo/transfers/attachment/#{upload.id}"), nil, req_header }
+
       it 'responds with 200 with X-Sendfile' do
-        get api("/geo/transfers/attachment/#{upload.id}"), nil, req_header
+        request
 
         expect(response).to have_gitlab_http_status(200)
         expect(response.headers['Content-Type']).to eq('application/octet-stream')
         expect(response.headers['X-Sendfile']).to eq(note.attachment.path)
       end
+
+      it_behaves_like 'with terms enforced'
     end
 
     context 'attachment does not exist' do
@@ -68,13 +85,17 @@ describe API::Geo do
     end
 
     context 'avatar file exists' do
+      subject(:request) { get api("/geo/transfers/avatar/#{upload.id}"), nil, req_header }
+
       it 'responds with 200 with X-Sendfile' do
-        get api("/geo/transfers/avatar/#{upload.id}"), nil, req_header
+        request
 
         expect(response).to have_gitlab_http_status(200)
         expect(response.headers['Content-Type']).to eq('application/octet-stream')
         expect(response.headers['X-Sendfile']).to eq(user.avatar.path)
       end
+
+      it_behaves_like 'with terms enforced'
     end
 
     context 'avatar does not exist' do
@@ -105,13 +126,17 @@ describe API::Geo do
 
     context 'when the Upload record exists' do
       context 'when the file exists' do
+        subject(:request) { get api("/geo/transfers/file/#{upload.id}"), nil, req_header }
+
         it 'responds with 200 with X-Sendfile' do
-          get api("/geo/transfers/file/#{upload.id}"), nil, req_header
+          request
 
           expect(response).to have_gitlab_http_status(200)
           expect(response.headers['Content-Type']).to eq('application/octet-stream')
           expect(response.headers['X-Sendfile']).to end_with('dk.png')
         end
+
+        it_behaves_like 'with terms enforced'
       end
 
       context 'file does not exist' do
@@ -154,13 +179,17 @@ describe API::Geo do
 
     context 'LFS object exists' do
       context 'file exists' do
+        subject(:request) { get api("/geo/transfers/lfs/#{lfs_object.id}"), nil, req_header }
+
         it 'responds with 200 with X-Sendfile' do
-          get api("/geo/transfers/lfs/#{lfs_object.id}"), nil, req_header
+          request
 
           expect(response).to have_gitlab_http_status(200)
           expect(response.headers['Content-Type']).to eq('application/octet-stream')
           expect(response.headers['X-Sendfile']).to eq(lfs_object.file.path)
         end
+
+        it_behaves_like 'with terms enforced'
       end
 
       context 'file does not exist' do
@@ -185,7 +214,9 @@ describe API::Geo do
   end
 
   describe 'GET /geo/status', :postgresql do
-    let(:request) { Gitlab::Geo::BaseRequest.new }
+    let(:geo_base_request) { Gitlab::Geo::BaseRequest.new }
+
+    subject(:request) { get api('/geo/status'), nil, geo_base_request.headers }
 
     it 'responds with 401 with invalid auth header' do
       get api('/geo/status'), nil, Authorization: 'Test'
@@ -196,7 +227,7 @@ describe API::Geo do
     it 'responds with 401 when the db_key_base is wrong' do
       allow_any_instance_of(Gitlab::Geo::JwtRequestDecoder).to receive(:decode).and_raise(Gitlab::Geo::InvalidDecryptionKeyError)
 
-      get api('/geo/status'), nil, request.headers
+      request
 
       expect(response).to have_gitlab_http_status(401)
     end
@@ -204,31 +235,34 @@ describe API::Geo do
     context 'when requesting secondary node with valid auth header' do
       before do
         stub_current_geo_node(secondary_node)
-        allow(request).to receive(:requesting_node) { primary_node }
+        allow(geo_base_request).to receive(:requesting_node) { primary_node }
+        allow(::GeoNodeStatus).to receive(:fast_current_node_status).and_return(::GeoNodeStatus.current_node_status)
       end
 
       it 'responds with 200' do
-        allow(::GeoNodeStatus).to receive(:fast_current_node_status).and_return(::GeoNodeStatus.current_node_status)
-
-        get api('/geo/status'), nil, request.headers
+        request
 
         expect(response).to have_gitlab_http_status(200)
         expect(response).to match_response_schema('public_api/v4/geo_node_status', dir: 'ee')
       end
+
+      it_behaves_like 'with terms enforced'
     end
 
     context 'when requesting primary node with valid auth header' do
       before do
         stub_current_geo_node(primary_node)
-        allow(request).to receive(:requesting_node) { secondary_node }
+        allow(geo_base_request).to receive(:requesting_node) { secondary_node }
       end
 
       it 'responds with 200' do
-        get api('/geo/status'), nil, request.headers
+        request
 
         expect(response).to have_gitlab_http_status(200)
         expect(response).to match_response_schema('public_api/v4/geo_node_status', dir: 'ee')
       end
+
+      it_behaves_like 'with terms enforced'
     end
   end
 end
