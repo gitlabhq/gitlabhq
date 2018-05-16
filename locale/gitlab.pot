@@ -8,8 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2018-05-14 12:46+0200\n"
 "PO-Revision-Date: 2018-05-14 12:46+0200\n"
+=======
+"POT-Creation-Date: 2018-05-14 10:49+0200\n"
+"PO-Revision-Date: 2018-05-14 10:49+0200\n"
+>>>>>>> upstream/master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -100,9 +105,12 @@ msgstr[1] ""
 msgid "%{loadingIcon} Started"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "%{lock_path} is locked by GitLab User %{lock_user_id}"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "%{nip_domain} can be used as an alternative to a custom domain."
 msgstr ""
 

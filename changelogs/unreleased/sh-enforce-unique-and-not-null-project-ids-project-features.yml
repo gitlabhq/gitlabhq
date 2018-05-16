@@ -1,0 +1,5 @@
+---
+title: Add a unique and not null constraint on the project_features.project_id column
+merge_request:
+author:
+type: fixed
