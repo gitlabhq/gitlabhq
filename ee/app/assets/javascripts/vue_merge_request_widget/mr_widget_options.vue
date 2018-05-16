@@ -1,8 +1,8 @@
 <script>
 import { n__, s__, __, sprintf } from '~/locale';
 import CEWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
-import WidgetApprovals from './components/approvals/mr_widget_approvals';
-import GeoSecondaryNode from './components/states/mr_widget_secondary_geo_node';
+import WidgetApprovals from './components/approvals/mr_widget_approvals.vue';
+import GeoSecondaryNode from './components/states/mr_widget_secondary_geo_node.vue';
 import ReportSection from '../vue_shared/security_reports/components/report_section.vue';
 import GroupedSecurityReportsApp from '../vue_shared/security_reports/grouped_security_reports_app.vue';
 import reportsMixin from '../vue_shared/security_reports/mixins/reports_mixin';

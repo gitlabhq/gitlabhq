@@ -1,3 +1,4 @@
+<script>
 // Analogue of link_to_member_avatar in app/helpers/projects_helper.rb
 import pendingAvatarSvg from 'ee_icons/_icon_dotted_circle.svg';
 
@@ -6,6 +7,7 @@ export default {
     avatarUrl: {
       type: String,
       required: false,
+      default: '',
     },
     profileUrl: {
       type: String,
@@ -15,6 +17,7 @@ export default {
     displayName: {
       type: String,
       required: false,
+      default: '',
     },
     extraAvatarClass: {
       type: String,
@@ -39,10 +42,7 @@ export default {
     tooltipContainer: {
       type: String,
       required: false,
-    },
-    avatarHtml: {
-      type: String,
-      required: false,
+      default: 'body',
     },
     avatarSize: {
       type: Number,
@@ -75,32 +75,33 @@ export default {
     linkClass() {
       return `author_link ${this.tooltipClass} ${this.extraLinkClass} ${this.disabledClass}`;
     },
-    tooltipContainerAttr() {
-      return this.tooltipContainer || 'body';
-    },
   },
-  template: `
-    <div class="link-to-member-avatar">
-      <a
-        :href="profileUrl"
-        :class="linkClass"
-        :title="displayName"
-        :data-container="tooltipContainerAttr">
-        <img
-          v-if="avatarUrl"
-          :class="avatarClass"
-          :src="avatarUrl"
-          :width="avatarSize"
-          :height="avatarSize"
-          :alt="displayName"/>
-        <span
-          v-else
-          v-html="pendingAvatarSvg"
-          :class="avatarHtmlClass"
-          :width="avatarSize"
-          :height="avatarSize">
-        </span>
-      </a>
-    </div>
-  `,
 };
+</script>
+<template>
+  <div class="link-to-member-avatar">
+    <a
+      :href="profileUrl"
+      :class="linkClass"
+      :title="displayName"
+      :data-container="tooltipContainer"
+    >
+      <img
+        v-if="avatarUrl"
+        :class="avatarClass"
+        :src="avatarUrl"
+        :width="avatarSize"
+        :height="avatarSize"
+        :alt="displayName"
+      />
+      <span
+        v-else
+        v-html="pendingAvatarSvg"
+        :class="avatarHtmlClass"
+        :width="avatarSize"
+        :height="avatarSize"
+      >
+      </span>
+    </a>
+  </div>
+</template>

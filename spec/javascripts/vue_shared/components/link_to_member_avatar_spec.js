@@ -1,78 +1,81 @@
-/* eslint-disable no-restricted-syntax */
-
-import $ from 'jquery';
 import Vue from 'vue';
-import linkToMemberAvatar from 'ee/vue_shared/components/link_to_member_avatar';
+import linkToMemberAvatar from 'ee/vue_shared/components/link_to_member_avatar.vue';
 
-(() => {
-  function initComponent(propsData = {}) {
-    setFixtures(`
-      <div>
-        <div id="mock-container"></div>
-      </div>
-    `);
+describe('Link To Members Components', () => {
+  let vm;
+  const propsData = {
+    avatarSize: 32,
+    avatarUrl: 'myavatarurl.com',
+    profileUrl: 'profileUrl.com',
+    displayName: 'mydisplayname',
+    extraAvatarClass: 'myextraavatarclass',
+    extraLinkClass: 'myextralinkclass',
+    showTooltip: true,
+  };
+
+  beforeEach(() => {
+    setFixtures('<div id="mock-container"></div>');
 
     const LinkToMembersComponent = Vue.extend(linkToMemberAvatar);
 
-    this.component = new LinkToMembersComponent({
+    vm = new LinkToMembersComponent({
       el: '#mock-container',
       propsData,
     }).$mount();
+  });
 
-    this.$document = $(document);
-  }
+  afterEach(() => {
+    vm.$destroy();
+  });
 
-  describe('Link To Members Components', function () {
-    describe('Initialization', function () {
-      beforeEach(function () {
-        const propsData = this.propsData = {
-          avatarSize: 32,
-          avatarUrl: 'myavatarurl.com',
-          displayName: 'mydisplayname',
-          extraAvatarClass: 'myextraavatarclass',
-          extraLinkClass: 'myextralinkclass',
-          showTooltip: true,
-        };
-        initComponent.call(this, {
-          propsData,
-        });
-      });
+  it('should default to the body as tooltip container', () => {
+    expect(vm.tooltipContainer).toBe('body');
+  });
 
-      it('should return a defined Vue component', function () {
-        expect(this.component).toBeDefined();
-        expect(this.component.$data).toBeDefined();
-      });
+  it('should return a defined Vue component', () => {
+    expect(vm).toBeDefined();
+    expect(vm.$data).toBeDefined();
+  });
 
-      it('should have <a> and <svg> children', function () {
-        const componentLink = this.component.$el.querySelector('a');
-        const componentPlaceholder = componentLink.querySelector('svg');
+  it('should have <a> children', () => {
+    const componentLink = vm.$el.querySelector('a');
 
-        expect(componentLink).not.toBeNull();
-        expect(componentPlaceholder).not.toBeNull();
-      });
+    expect(componentLink).not.toBeNull();
+    expect(componentLink.getAttribute('href')).toBe(propsData.profileUrl);
+  });
 
-      it('should correctly compute computed values', function (done) {
-        const correctVals = {
-          disabledClass: '',
-          avatarSizeClass: 's32',
-          avatarHtmlClass: 's32 avatar avatar-inline avatar-placeholder',
-          avatarClass: 'avatar avatar-inline s32 ',
-          tooltipClass: 'has-tooltip',
-          linkClass: 'author_link has-tooltip  ',
-          tooltipContainerAttr: 'body',
-        };
+  it('should show a <img> if the avatarUrl is set', () => {
+    const avatarImg = vm.$el.querySelector('a img');
 
-        Vue.nextTick(() => {
-          for (const computedKey in correctVals) {
-            if (Object.prototype.hasOwnProperty.call(correctVals, computedKey)) {
-              const expectedVal = correctVals[computedKey];
-              const actualComputed = this.component[computedKey];
-              expect(actualComputed).toBe(expectedVal);
-            }
-          }
-          done();
-        });
-      });
+    expect(avatarImg).not.toBeNull();
+    expect(avatarImg.getAttribute('src')).toBe(propsData.avatarUrl);
+  });
+
+  it('should fallback to a <svg> if the avatarUrl is not set', done => {
+    vm.avatarUrl = undefined;
+
+    Vue.nextTick(() => {
+      const avatarImg = vm.$el.querySelector('a svg');
+
+      expect(avatarImg).not.toBeNull();
+      done();
     });
   });
-})();
+
+  it('should correctly compute computed values', () => {
+    const correctVals = {
+      disabledClass: '',
+      avatarSizeClass: 's32',
+      avatarHtmlClass: 's32 avatar avatar-inline avatar-placeholder',
+      avatarClass: 'avatar avatar-inline s32 myextraavatarclass',
+      tooltipClass: 'has-tooltip',
+      linkClass: 'author_link has-tooltip myextralinkclass ',
+    };
+
+    Object.keys(correctVals).forEach(computedKey => {
+      const expectedVal = correctVals[computedKey];
+      const actualComputed = vm[computedKey];
+      expect(actualComputed).toBe(expectedVal);
+    });
+  });
+});
