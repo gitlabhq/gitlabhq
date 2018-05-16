@@ -24,7 +24,7 @@ module Banzai
       end
 
       def call
-        return doc if project.nil? && group.nil? && !skip_project_check?
+        return doc if skip_project_check? || (project.nil? && group.nil?)
 
         ref_pattern = User.reference_pattern
         ref_pattern_start = /\A#{ref_pattern}\z/
