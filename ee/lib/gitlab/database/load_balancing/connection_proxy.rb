@@ -16,7 +16,6 @@ module Gitlab
           delete
           delete_all
           insert
-          transaction
           update
           update_all
         ).freeze
@@ -46,6 +45,19 @@ module Gitlab
           end
         end
 
+        def transaction(*args, &block)
+          Session.current.enter_transaction
+
+          write_using_load_balancer(:transaction, args, sticky: true, &block)
+        ensure
+          Session.current.leave_transaction
+
+          # When the transaction finishes we need to store the last WAL pointer
+          # since individual writes in a transaction don't perform this
+          # operation.
+          record_last_write_location
+        end
+
         # Delegates all unknown messages to a read-write connection.
         def method_missing(name, *args, &block)
           write_using_load_balancer(name, args, &block)
@@ -55,9 +67,7 @@ module Gitlab
         #
         # name - The name of the method to call on a connection object.
         def read_using_load_balancer(name, args, &block)
-          method = Session.current.use_primary? ? :read_write : :read
-
-          @load_balancer.send(method) do |connection|
+          @load_balancer.send(load_balancer_method_for_read) do |connection|
             connection.send(name, *args, &block)
           end
         end
@@ -77,7 +87,44 @@ module Gitlab
             connection.send(name, *args, &block)
           end
 
+          # We only want to record the last write location if we actually
+          # performed a write, and not for all queries sent to the primary.
+          record_last_write_location if sticky
+
           result
+        end
+
+        # Returns the method to use for performing a read-only query.
+        def load_balancer_method_for_read
+          session = Session.current
+
+          return :read unless session.use_primary?
+
+          # If we are still inside an explicit transaction we _must_ send the
+          # queries to the primary.
+          return :read_write if session.in_transaction?
+
+          # If we are not in an explicit transaction we are free to return to
+          # using the secondaries once they are all in sync.
+          if @load_balancer.all_caught_up?(session.last_write_location)
+            session.reset!
+
+            :read
+          else
+            :read_write
+          end
+        end
+
+        def record_last_write_location
+          session = Session.current
+
+          # When we are in a transaction it's likely we will perform many
+          # writes. In this case it's pointless to keep retrieving and storing
+          # the WAL location, as we only care about the location once the
+          # transaction finishes.
+          return if session.in_transaction?
+
+          session.last_write_location = @load_balancer.primary_write_location
         end
       end
     end
