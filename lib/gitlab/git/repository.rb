@@ -776,13 +776,9 @@ module Gitlab
       end
 
       def add_branch(branch_name, user:, target:)
-        gitaly_migrate(:operation_user_create_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_add_branch(branch_name, user, target)
-          else
-            rugged_add_branch(branch_name, user, target)
-          end
-        end
+        gitaly_operation_client.user_create_branch(branch_name, user, target)
+      rescue GRPC::FailedPrecondition => ex
+        raise InvalidRef, ex
       end
 
       def add_tag(tag_name, user:, target:, message: nil)
@@ -2195,22 +2191,6 @@ module Gitlab
                         tree: revert_tree_id,
                         parents: [start_commit.sha])
         end
-      end
-
-      def gitaly_add_branch(branch_name, user, target)
-        gitaly_operation_client.user_create_branch(branch_name, user, target)
-      rescue GRPC::FailedPrecondition => ex
-        raise InvalidRef, ex
-      end
-
-      def rugged_add_branch(branch_name, user, target)
-        target_object = Ref.dereference_object(lookup(target))
-        raise InvalidRef.new("target not found: #{target}") unless target_object
-
-        OperationService.new(user, self).add_branch(branch_name, target_object.oid)
-        find_branch(branch_name)
-      rescue Rugged::ReferenceError => ex
-        raise InvalidRef, ex
       end
 
       def rugged_cherry_pick(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
