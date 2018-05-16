@@ -48,23 +48,11 @@ describe('pipeline graph action component', () => {
     expect(component.$el.querySelector('svg')).toBeDefined();
   });
 
-  it('renders a loading icon while component is loading', done => {
-    component.isLoading = true;
-
-    component.$nextTick()
-      .then(() => {
-        expect(component.$el.querySelector('.fa-spin')).not.toBeNull();
-      })
-      .then(done)
-      .catch(done.fail);
-  });
-
   describe('on click', () => {
     it('emits `pipelineActionRequestComplete` after a successfull request', done => {
       spyOn(component, '$emit');
 
       component.$el.click();
-      expect(component.isLoading).toEqual(true);
 
       component.$nextTick()
         .then(() => {
