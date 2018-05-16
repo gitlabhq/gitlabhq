@@ -1,4 +1,5 @@
 import axios from '../../lib/utils/axios_utils';
+import { JUPYTER } from '../constants';
 
 export default class ClusterService {
   constructor(options = {}) {
@@ -8,6 +9,7 @@ export default class ClusterService {
       ingress: this.options.installIngressEndpoint,
       runner: this.options.installRunnerEndpoint,
       prometheus: this.options.installPrometheusEndpoint,
+      jupyter: this.options.installJupyterEndpoint,
     };
   }
 
@@ -16,7 +18,13 @@ export default class ClusterService {
   }
 
   installApplication(appId) {
-    return axios.post(this.appInstallEndpointMap[appId]);
+    const data = {};
+
+    if (appId === JUPYTER) {
+      data.hostname = document.getElementById('jupyter-hostname').value;
+    }
+
+    return axios.post(this.appInstallEndpointMap[appId], data);
   }
 
   static updateCluster(endpoint, data) {

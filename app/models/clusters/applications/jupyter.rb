@@ -12,16 +12,38 @@ module Clusters
       default_value_for :version, VERSION
 
       def chart
-        # TODO: publish jupyterhub charts that we can use for our installation
-        # and provide path to it here.
+        "#{name}/jupyterhub"
+      end
+
+      def repository
+        'https://jupyterhub.github.io/helm-chart/'
+      end
+
+      def values
+        content_values.to_yaml
       end
 
       def install_command
         Gitlab::Kubernetes::Helm::InstallCommand.new(
           name,
           chart: chart,
-          values: values
+          values: values,
+          repository: repository
         )
+      end
+
+      private
+
+      def specification
+        {
+          "ingress" => { "hosts" => [hostname] },
+          "hub" => { "cookieSecret" => SecureRandom.hex(32) },
+          "proxy" => { "secretToken" => SecureRandom.hex(32) }
+        }
+      end
+
+      def content_values
+        YAML.load_file(chart_values_file).deep_merge!(specification)
       end
     end
   end

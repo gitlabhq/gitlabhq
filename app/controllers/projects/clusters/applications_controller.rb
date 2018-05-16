@@ -6,6 +6,7 @@ class Projects::Clusters::ApplicationsController < Projects::ApplicationControll
 
   def create
     application = @application_class.find_or_create_by!(cluster: @cluster)
+    application.update(hostname: params[:hostname]) if application.respond_to?(:hostname)
 
     Clusters::Applications::ScheduleInstallationService.new(project, current_user).execute(application)
 

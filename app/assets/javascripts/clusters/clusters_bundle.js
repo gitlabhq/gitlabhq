@@ -31,6 +31,7 @@ export default class Clusters {
       installHelmPath,
       installIngressPath,
       installRunnerPath,
+      installJupyterPath,
       installPrometheusPath,
       managePrometheusPath,
       clusterStatus,
@@ -51,6 +52,7 @@ export default class Clusters {
       installIngressEndpoint: installIngressPath,
       installRunnerEndpoint: installRunnerPath,
       installPrometheusEndpoint: installPrometheusPath,
+      installJupyterEndpoint: installJupyterPath,
     });
 
     this.installApplication = this.installApplication.bind(this);

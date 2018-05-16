@@ -135,16 +135,13 @@ ActiveRecord::Schema.define(version: 20180521171529) do
     t.boolean "clientside_sentry_enabled", default: false, null: false
     t.string "clientside_sentry_dsn"
     t.boolean "prometheus_metrics_enabled", default: true, null: false
+    t.boolean "authorized_keys_enabled", default: true, null: false
     t.boolean "help_page_hide_commercial_content", default: false
     t.string "help_page_support_url"
     t.integer "performance_bar_allowed_group_id"
     t.boolean "hashed_storage_enabled", default: false, null: false
     t.boolean "project_export_enabled", default: true, null: false
     t.boolean "auto_devops_enabled", default: false, null: false
-    t.integer "circuitbreaker_failure_count_threshold", default: 3
-    t.integer "circuitbreaker_failure_reset_time", default: 1800
-    t.integer "circuitbreaker_storage_timeout", default: 15
-    t.integer "circuitbreaker_access_retries", default: 3
     t.boolean "throttle_unauthenticated_enabled", default: false, null: false
     t.integer "throttle_unauthenticated_requests_per_period", default: 3600, null: false
     t.integer "throttle_unauthenticated_period_in_seconds", default: 3600, null: false
@@ -154,13 +151,16 @@ ActiveRecord::Schema.define(version: 20180521171529) do
     t.boolean "throttle_authenticated_web_enabled", default: false, null: false
     t.integer "throttle_authenticated_web_requests_per_period", default: 7200, null: false
     t.integer "throttle_authenticated_web_period_in_seconds", default: 3600, null: false
-    t.integer "circuitbreaker_check_interval", default: 1, null: false
-    t.boolean "password_authentication_enabled_for_web"
-    t.boolean "password_authentication_enabled_for_git", default: true
+    t.integer "circuitbreaker_failure_count_threshold", default: 3
+    t.integer "circuitbreaker_failure_reset_time", default: 1800
+    t.integer "circuitbreaker_storage_timeout", default: 15
+    t.integer "circuitbreaker_access_retries", default: 3
     t.integer "gitaly_timeout_default", default: 55, null: false
     t.integer "gitaly_timeout_medium", default: 30, null: false
     t.integer "gitaly_timeout_fast", default: 10, null: false
-    t.boolean "authorized_keys_enabled", default: true, null: false
+    t.boolean "password_authentication_enabled_for_web"
+    t.boolean "password_authentication_enabled_for_git", default: true, null: false
+    t.integer "circuitbreaker_check_interval", default: 1, null: false
     t.string "auto_devops_domain"
     t.boolean "pages_domain_verification_enabled", default: true, null: false
     t.boolean "allow_local_requests_from_hooks_and_services", default: false, null: false
@@ -375,12 +375,12 @@ ActiveRecord::Schema.define(version: 20180521171529) do
     t.integer "project_id", null: false
     t.integer "job_id", null: false
     t.integer "file_type", null: false
-    t.integer "file_store"
     t.integer "size", limit: 8
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
     t.datetime_with_timezone "expire_at"
     t.string "file"
+    t.integer "file_store"
     t.binary "file_sha256"
   end
 
@@ -448,8 +448,8 @@ ActiveRecord::Schema.define(version: 20180521171529) do
     t.integer "auto_canceled_by_id"
     t.integer "pipeline_schedule_id"
     t.integer "source"
-    t.integer "config_source"
     t.boolean "protected"
+    t.integer "config_source"
     t.integer "failure_reason"
   end
 
@@ -495,8 +495,8 @@ ActiveRecord::Schema.define(version: 20180521171529) do
     t.boolean "run_untagged", default: true, null: false
     t.boolean "locked", default: false, null: false
     t.integer "access_level", default: 0, null: false
-    t.string "ip_address"
     t.integer "maximum_timeout"
+    t.string "ip_address"
     t.integer "runner_type", limit: 2, null: false
   end
 
@@ -633,6 +633,16 @@ ActiveRecord::Schema.define(version: 20180521171529) do
     t.string "cluster_ip"
     t.text "status_reason"
     t.string "external_ip"
+  end
+
+  create_table "clusters_applications_jupyters", force: :cascade do |t|
+    t.integer "cluster_id", null: false
+    t.integer "status", null: false
+    t.string "version", null: false
+    t.string "hostname"
+    t.text "status_reason"
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
   end
 
   create_table "clusters_applications_prometheus", force: :cascade do |t|
@@ -904,8 +914,8 @@ ActiveRecord::Schema.define(version: 20180521171529) do
   add_index "gpg_signatures", ["project_id"], name: "index_gpg_signatures_on_project_id", using: :btree
 
   create_table "group_custom_attributes", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
     t.integer "group_id", null: false
     t.string "key", null: false
     t.string "value", null: false
@@ -987,6 +997,7 @@ ActiveRecord::Schema.define(version: 20180521171529) do
   add_index "issues", ["moved_to_id"], name: "index_issues_on_moved_to_id", where: "(moved_to_id IS NOT NULL)", using: :btree
   add_index "issues", ["project_id", "created_at", "id", "state"], name: "index_issues_on_project_id_and_created_at_and_id_and_state", using: :btree
   add_index "issues", ["project_id", "due_date", "id", "state"], name: "idx_issues_on_project_id_and_due_date_and_id_and_state_partial", where: "(due_date IS NOT NULL)", using: :btree
+  add_index "issues", ["project_id", "due_date", "id", "state"], name: "index_issues_on_project_id_and_due_date_and_id_and_state", using: :btree
   add_index "issues", ["project_id", "iid"], name: "index_issues_on_project_id_and_iid", unique: true, using: :btree
   add_index "issues", ["project_id", "updated_at", "id", "state"], name: "index_issues_on_project_id_and_updated_at_and_id_and_state", using: :btree
   add_index "issues", ["relative_position"], name: "index_issues_on_relative_position", using: :btree
@@ -1203,6 +1214,7 @@ ActiveRecord::Schema.define(version: 20180521171529) do
     t.boolean "merge_when_pipeline_succeeds", default: false, null: false
     t.integer "merge_user_id"
     t.string "merge_commit_sha"
+    t.string "rebase_commit_sha"
     t.string "in_progress_merge_commit_sha"
     t.integer "lock_version"
     t.text "title_html"
@@ -1215,7 +1227,6 @@ ActiveRecord::Schema.define(version: 20180521171529) do
     t.string "merge_jid"
     t.boolean "discussion_locked"
     t.integer "latest_merge_request_diff_id"
-    t.string "rebase_commit_sha"
     t.boolean "allow_maintainer_to_push"
   end
 
@@ -1475,8 +1486,8 @@ ActiveRecord::Schema.define(version: 20180521171529) do
   add_index "project_ci_cd_settings", ["project_id"], name: "index_project_ci_cd_settings_on_project_id", unique: true, using: :btree
 
   create_table "project_custom_attributes", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
     t.integer "project_id", null: false
     t.string "key", null: false
     t.string "value", null: false
@@ -1568,8 +1579,10 @@ ActiveRecord::Schema.define(version: 20180521171529) do
     t.string "avatar"
     t.string "import_status"
     t.integer "star_count", default: 0, null: false
+    t.boolean "merge_requests_rebase_enabled", default: false, null: false
     t.string "import_type"
     t.string "import_source"
+    t.boolean "merge_requests_ff_only_enabled", default: false, null: false
     t.text "import_error"
     t.integer "ci_id"
     t.boolean "shared_runners_enabled", default: true, null: false
@@ -1585,6 +1598,7 @@ ActiveRecord::Schema.define(version: 20180521171529) do
     t.boolean "only_allow_merge_if_pipeline_succeeds", default: false, null: false
     t.boolean "has_external_issue_tracker"
     t.string "repository_storage", default: "default", null: false
+    t.boolean "repository_read_only"
     t.boolean "request_access_enabled", default: false, null: false
     t.boolean "has_external_wiki"
     t.string "ci_config_path"
@@ -1599,9 +1613,6 @@ ActiveRecord::Schema.define(version: 20180521171529) do
     t.datetime "last_repository_updated_at"
     t.integer "storage_version", limit: 2
     t.boolean "resolve_outdated_diff_discussions"
-    t.boolean "repository_read_only"
-    t.boolean "merge_requests_ff_only_enabled", default: false
-    t.boolean "merge_requests_rebase_enabled", default: false, null: false
     t.integer "jobs_cache_index"
     t.boolean "pages_https_only", default: true
     t.boolean "remote_mirror_available_overridden"
@@ -1945,9 +1956,9 @@ ActiveRecord::Schema.define(version: 20180521171529) do
     t.string "model_type"
     t.string "uploader", null: false
     t.datetime "created_at", null: false
+    t.integer "store"
     t.string "mount_point"
     t.string "secret"
-    t.integer "store"
   end
 
   add_index "uploads", ["checksum"], name: "index_uploads_on_checksum", using: :btree
@@ -2179,8 +2190,9 @@ ActiveRecord::Schema.define(version: 20180521171529) do
   add_foreign_key "cluster_providers_gcp", "clusters", on_delete: :cascade
   add_foreign_key "clusters", "users", on_delete: :nullify
   add_foreign_key "clusters_applications_helm", "clusters", on_delete: :cascade
-  add_foreign_key "clusters_applications_ingress", "clusters", name: "fk_753a7b41c1", on_delete: :cascade
-  add_foreign_key "clusters_applications_prometheus", "clusters", name: "fk_557e773639", on_delete: :cascade
+  add_foreign_key "clusters_applications_ingress", "clusters", on_delete: :cascade
+  add_foreign_key "clusters_applications_jupyters", "clusters", on_delete: :cascade
+  add_foreign_key "clusters_applications_prometheus", "clusters", on_delete: :cascade
   add_foreign_key "clusters_applications_runners", "ci_runners", column: "runner_id", name: "fk_02de2ded36", on_delete: :nullify
   add_foreign_key "clusters_applications_runners", "clusters", on_delete: :cascade
   add_foreign_key "container_repositories", "projects"
@@ -2285,8 +2297,8 @@ ActiveRecord::Schema.define(version: 20180521171529) do
   add_foreign_key "u2f_registrations", "users"
   add_foreign_key "user_callouts", "users", on_delete: :cascade
   add_foreign_key "user_custom_attributes", "users", on_delete: :cascade
-  add_foreign_key "user_interacted_projects", "projects", name: "fk_722ceba4f7", on_delete: :cascade
-  add_foreign_key "user_interacted_projects", "users", name: "fk_0894651f08", on_delete: :cascade
+  add_foreign_key "user_interacted_projects", "projects", on_delete: :cascade
+  add_foreign_key "user_interacted_projects", "users", on_delete: :cascade
   add_foreign_key "user_synced_attributes_metadata", "users", on_delete: :cascade
   add_foreign_key "users", "application_setting_terms", column: "accepted_term_id", name: "fk_789cd90b35", on_delete: :cascade
   add_foreign_key "users_star_projects", "projects", name: "fk_22cd27ddfc", on_delete: :cascade
