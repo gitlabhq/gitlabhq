@@ -4077,6 +4077,18 @@ msgstr ""
 msgid "Promote to Group Milestone"
 msgstr ""
 
+msgid "Promotions|Don't show me this again"
+msgstr ""
+
+msgid "Promotions|Epics let you manage your portfolio of projects more efficiently and with less effort by tracking groups of issues that share a theme, across projects and milestones."
+msgstr ""
+
+msgid "Promotions|This feature is locked."
+msgstr ""
+
+msgid "Promotions|Upgrade plan"
+msgstr ""
+
 msgid "Protip:"
 msgstr ""
 
