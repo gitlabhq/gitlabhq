@@ -4,7 +4,9 @@ import store from '~/mr_notes/stores';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import diffFileMockData from '../mock_data/diff_file';
 
-describe('DiffFile', () => {
+// TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+// eslint-disable-next-line jasmine/no-disabled-tests
+xdescribe('DiffFile', () => {
   let vm;
   const getDiffFileMock = () => Object.assign({}, diffFileMockData);
 
