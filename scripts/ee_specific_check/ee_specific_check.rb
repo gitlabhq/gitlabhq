@@ -21,6 +21,7 @@ module EESpecificCheck
 
   def git_version
     say run_git_command('--version')
+    say run_git_command('mergetool')
   end
 
   def say(message)
