@@ -17,7 +17,7 @@ POST /api/v4/markdown
 | `project` | string  | no (optional) | Use `project` as a context when creating references using GitLab Flavored Markdown. `PRIVATE-TOKEN` is required if a project is not public.  |
 
 ```bash
-curl -H Content-Type:application/json -d '{"text":"Hello world! :tada:", "gfm":true, "project":"group_example/project_example"}' https://gitlab.example.com/api/v4/markdown
+curl --header Content-Type:application/json --data '{"text":"Hello world! :tada:", "gfm":true, "project":"group_example/project_example"}' https://gitlab.example.com/api/v4/markdown
 ```
 
 Response example:
