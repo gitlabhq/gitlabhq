@@ -233,6 +233,10 @@ all your changes will be available to preview by anyone with the Review Apps lin
 
 [Read more about Review Apps.](../../../ci/review_apps/index.md)
 
+## Bulk editing merge requests
+
+Find out about [bulk editing merge requests](../../project/bulk_editing.md).
+
 ## Tips
 
 Here are some tips that will help you be more efficient with merge requests in
