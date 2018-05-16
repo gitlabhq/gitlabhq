@@ -1,6 +1,12 @@
 require 'spec_helper'
 
 describe EE::User do
+  describe 'associations' do
+    subject { build(:user) }
+
+    it { is_expected.to have_many(:vulnerability_feedback) }
+  end
+
   describe '#access_level=' do
     let(:user) { build(:user) }
 

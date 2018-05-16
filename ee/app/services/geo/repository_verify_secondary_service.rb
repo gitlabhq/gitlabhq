@@ -53,7 +53,7 @@ module Geo
 
     def calculate_checksum
       repository.checksum
-    rescue Gitlab::Git::Repository::NoRepository
+    rescue Gitlab::Git::Repository::NoRepository, Gitlab::Git::Repository::InvalidRepository
       Gitlab::Git::Repository::EMPTY_REPOSITORY_CHECKSUM
     end
 

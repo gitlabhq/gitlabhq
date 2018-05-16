@@ -3,7 +3,8 @@ require 'spec_helper'
 feature 'Project mirror', :js do
   include ReactiveCachingHelpers
 
-  let(:project) { create(:project, :mirror, :import_finished, :repository, creator: user, name: 'Victorialand') }
+  let(:project) { create(:project, :repository, creator: user, name: 'Victorialand') }
+  let(:import_state) { create(:import_state, :mirror, :finished, project: project) }
   let(:user) { create(:user) }
 
   describe 'On a project' do
@@ -12,30 +13,16 @@ feature 'Project mirror', :js do
       sign_in user
     end
 
-    context 'unlicensed' do
-      before do
-        stub_licensed_features(repository_mirrors: false)
-      end
-
-      it 'returns 404' do
-        reqs = inspect_requests do
-          visit project_mirror_path(project)
-        end
-
-        expect(reqs.first.status_code).to eq(404)
-      end
-    end
-
     context 'with Update now button' do
       let(:timestamp) { Time.now }
 
       before do
-        project.mirror_data.update_attributes(next_execution_timestamp: timestamp + 10.minutes)
+        import_state.update_attributes(next_execution_timestamp: timestamp + 10.minutes)
       end
 
       context 'when able to force update' do
         it 'forces import' do
-          project.update_attributes(mirror_last_update_at: timestamp - 8.minutes)
+          import_state.update_attributes(last_update_at: timestamp - 8.minutes)
 
           expect_any_instance_of(EE::Project).to receive(:force_import_job!)
 
@@ -49,7 +36,7 @@ feature 'Project mirror', :js do
 
       context 'when unable to force update' do
         it 'does not force import' do
-          project.update_attributes(mirror_last_update_at: timestamp - 3.minutes)
+          import_state.update_attributes(last_update_at: timestamp - 3.minutes)
 
           expect_any_instance_of(EE::Project).not_to receive(:force_import_job!)
 

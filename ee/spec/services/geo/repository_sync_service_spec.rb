@@ -7,7 +7,7 @@ describe Geo::RepositorySyncService do
   set(:secondary) { create(:geo_node) }
 
   let(:lease) { double(try_obtain: true) }
-  let(:project) { create(:project_empty_repo) }
+  set(:project) { create(:project_empty_repo) }
   let(:repository) { project.repository }
 
   subject { described_class.new(project) }
@@ -111,6 +111,7 @@ describe Geo::RepositorySyncService do
 
       subject.execute
 
+      expect(Geo::ProjectRegistry.last.resync_repository).to be true
       expect(Geo::ProjectRegistry.last.repository_retry_count).to eq(1)
     end
 
@@ -125,6 +126,18 @@ describe Geo::RepositorySyncService do
 
       expect(registry.reload.resync_repository).to be false
       expect(registry.reload.last_repository_successful_sync_at).not_to be nil
+    end
+
+    it 'marks resync as true after a failure' do
+      subject.execute
+
+      allow(repository).to receive(:fetch_as_mirror)
+        .with(url_to_repo, remote_name: 'geo', forced: true)
+        .and_raise(Gitlab::Git::Repository::NoRepository)
+
+      subject.execute
+
+      expect(Geo::ProjectRegistry.last.resync_repository).to be true
     end
 
     context 'tracking database' do
@@ -299,7 +312,8 @@ describe Geo::RepositorySyncService do
         )
 
         expect(subject).to receive(:fetch_geo_mirror)
-        expect(subject).to receive(:clean_up_temporary_repository).twice
+        expect(subject).to receive(:clean_up_temporary_repository).twice.and_call_original
+        expect(subject.gitlab_shell).to receive(:exists?).twice.with(project.repository_storage, /.git$/)
 
         subject.execute
       end
@@ -351,6 +365,20 @@ describe Geo::RepositorySyncService do
       Sidekiq::Testing.fake! do
         expect { subject.send(:schedule_repack) }.to change { GitGarbageCollectWorker.jobs.count }.by(1)
       end
+    end
+  end
+
+  context 'repository housekeeping' do
+    let(:registry) { Geo::ProjectRegistry.find_or_initialize_by(project_id: project.id) }
+
+    it 'increases sync count after execution' do
+      expect { subject.execute }.to change { registry.syncs_since_gc }.by(1)
+    end
+
+    it 'initiate housekeeping at end of execution' do
+      expect_any_instance_of(Geo::ProjectHousekeepingService).to receive(:execute)
+
+      subject.execute
     end
   end
 end

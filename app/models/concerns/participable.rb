@@ -23,6 +23,7 @@
 #     users = issue.participants
 module Participable
   extend ActiveSupport::Concern
+  prepend EE::Participable
 
   module ClassMethods
     # Adds a list of participant attributes. Attributes can either be symbols or
@@ -98,6 +99,10 @@ module Participable
 
     participants.merge(ext.users)
 
+    filter_by_ability(participants)
+  end
+
+  def filter_by_ability(participants)
     case self
     when PersonalSnippet
       Ability.users_that_can_read_personal_snippet(participants.to_a, self)

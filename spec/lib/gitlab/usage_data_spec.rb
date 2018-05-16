@@ -117,7 +117,6 @@ describe Gitlab::UsageData do
         protected_branches
         releases
         remote_mirrors
-        services
         snippets
         todos
         uploads

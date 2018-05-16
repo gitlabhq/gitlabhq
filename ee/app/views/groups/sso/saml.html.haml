@@ -1,0 +1,10 @@
+- page_title = _('SAML SSO for %{group_name}') % { group_name: @group_name }
+
+= render 'devise/shared/tab_single', tab_title: _('SAML SSO')
+.login-box
+  .login-body
+    %h4= _("Sign in to %{group_name}") % { group_name: @group_name }
+
+    %p= _("This group allows you to sign in with your %{group_name} Single Sign-On account. This will redirect you to an external sign in page.") % { group_name: @group_name }
+
+    = saml_link _('Sign in with Single Sign-On'), @group_path, html_class: 'btn btn-save btn-block'

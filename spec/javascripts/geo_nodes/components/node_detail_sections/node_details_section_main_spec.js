@@ -75,7 +75,7 @@ describe('NodeDetailsSectionMain', () => {
     });
 
     it('renders node version element', () => {
-      expect(vm.$el.querySelector('.node-detail-title').innerText.trim()).toBe('GitLab version:');
+      expect(vm.$el.querySelector('.node-detail-title').innerText.trim()).toBe('GitLab version');
       expect(vm.$el.querySelector('.node-detail-value').innerText.trim()).toBe('10.4.0-pre (b93c51849b)');
     });
   });

@@ -1,5 +1,0 @@
----
-title: Fix errors on pushing to an empty repository
-merge_request: 18462
-author:
-type: fixed

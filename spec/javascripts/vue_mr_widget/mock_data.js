@@ -18,6 +18,7 @@ export default {
   human_total_time_spent: null,
   in_progress_merge_commit_sha: null,
   merge_commit_sha: '53027d060246c8f47e4a9310fb332aa52f221775',
+  short_merge_commit_sha: '53027d06',
   merge_error: null,
   merge_params: {
     force_remove_source_branch: null,
@@ -223,6 +224,8 @@ export default {
     base_path: 'blob_path',
     head_path: 'blob_path',
   },
+  vulnerability_feedback_help_path: '/help/user/project/merge_requests/index#interacting-with-security-reports-ultimate',
+  merge_commit_path: 'http://localhost:3000/root/acets-app/commit/53027d060246c8f47e4a9310fb332aa52f221775',
 };
 // Codeclimate
 export const headIssues = [

@@ -1,6 +1,9 @@
 import Vue from 'vue';
 import _ from 'underscore';
 import Cookies from 'js-cookie';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
+
 import epicSidebar from 'ee/epics/sidebar/components/sidebar_app.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { props } from '../../epic_show/mock_data';
@@ -15,7 +18,22 @@ describe('epicSidebar', () => {
     labelsWebUrl,
     epicsWebUrl,
     labels,
+    participants,
+    subscribed,
+    toggleSubscriptionPath,
   } = props;
+
+  const defaultPropsData = {
+    endpoint: gl.TEST_HOST,
+    initialLabels: labels,
+    initialParticipants: participants,
+    initialSubscribed: subscribed,
+    updatePath: updateEndpoint,
+    toggleSubscriptionPath,
+    labelsPath,
+    labelsWebUrl,
+    epicsWebUrl,
+  };
 
   beforeEach(() => {
     setFixtures(`
@@ -27,14 +45,7 @@ describe('epicSidebar', () => {
     originalCookieState = Cookies.get('collapsed_gutter');
     Cookies.set('collapsed_gutter', null);
     EpicSidebar = Vue.extend(epicSidebar);
-    vm = mountComponent(EpicSidebar, {
-      endpoint: gl.TEST_HOST,
-      initialLabels: labels,
-      updatePath: updateEndpoint,
-      labelsPath,
-      labelsWebUrl,
-      epicsWebUrl,
-    }, '#epic-sidebar');
+    vm = mountComponent(EpicSidebar, defaultPropsData, '#epic-sidebar');
   });
 
   afterEach(() => {
@@ -46,44 +57,22 @@ describe('epicSidebar', () => {
   });
 
   it('should render min date sidebar-date-picker', () => {
-    vm = mountComponent(EpicSidebar, {
-      endpoint: gl.TEST_HOST,
-      initialStartDate: '2017-01-01',
-      initialLabels: labels,
-      updatePath: updateEndpoint,
-      labelsPath,
-      labelsWebUrl,
-      epicsWebUrl,
-    });
+    vm = mountComponent(EpicSidebar, Object.assign({}, defaultPropsData, { initialStartDate: '2017-01-01' }));
 
     expect(vm.$el.querySelector('.value-content strong').innerText.trim()).toEqual('Jan 1, 2017');
   });
 
   it('should render max date sidebar-date-picker', () => {
-    vm = mountComponent(EpicSidebar, {
-      endpoint: gl.TEST_HOST,
-      initialEndDate: '2018-01-01',
-      initialLabels: labels,
-      updatePath: updateEndpoint,
-      labelsPath,
-      labelsWebUrl,
-      epicsWebUrl,
-    });
+    vm = mountComponent(EpicSidebar, Object.assign({}, defaultPropsData, { initialEndDate: '2018-01-01' }));
 
     expect(vm.$el.querySelector('.value-content strong').innerText.trim()).toEqual('Jan 1, 2018');
   });
 
   it('should render both sidebar-date-picker', () => {
-    vm = mountComponent(EpicSidebar, {
-      endpoint: gl.TEST_HOST,
+    vm = mountComponent(EpicSidebar, Object.assign({}, defaultPropsData, {
       initialStartDate: '2017-01-01',
       initialEndDate: '2018-01-01',
-      initialLabels: labels,
-      updatePath: updateEndpoint,
-      labelsPath,
-      labelsWebUrl,
-      epicsWebUrl,
-    });
+    }));
 
     const startDatePicker = vm.$el.querySelector('.block.start-date');
     const endDatePicker = vm.$el.querySelector('.block.end-date');
@@ -94,15 +83,7 @@ describe('epicSidebar', () => {
   describe('when collapsed', () => {
     beforeEach(() => {
       Cookies.set('collapsed_gutter', 'true');
-      vm = mountComponent(EpicSidebar, {
-        endpoint: gl.TEST_HOST,
-        initialStartDate: '2017-01-01',
-        initialLabels: labels,
-        updatePath: updateEndpoint,
-        labelsPath,
-        labelsWebUrl,
-        epicsWebUrl,
-      });
+      vm = mountComponent(EpicSidebar, Object.assign({}, defaultPropsData, { initialStartDate: '2017-01-01' }));
     });
 
     it('should render right-sidebar-collapsed class', () => {
@@ -138,30 +119,20 @@ describe('epicSidebar', () => {
   });
 
   describe('saveDate', () => {
-    let interceptor;
     let component;
+    let mock;
 
     beforeEach(() => {
-      interceptor = (request, next) => {
-        next(request.respondWith(JSON.stringify({}), {
-          status: 200,
-        }));
-      };
-      Vue.http.interceptors.push(interceptor);
+      mock = new MockAdapter(axios);
+      mock.onPut(gl.TEST_HOST).reply(() => [200, JSON.stringify({})]);
+
       component = new EpicSidebar({
-        propsData: {
-          endpoint: gl.TEST_HOST,
-          initialLabels: labels,
-          updatePath: updateEndpoint,
-          labelsPath,
-          labelsWebUrl,
-          epicsWebUrl,
-        },
+        propsData: defaultPropsData,
       });
     });
 
     afterEach(() => {
-      Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+      mock.restore();
     });
 
     it('should save startDate', (done) => {
@@ -253,14 +224,7 @@ describe('epicSidebar', () => {
       };
       Vue.http.interceptors.push(interceptor);
       component = new EpicSidebar({
-        propsData: {
-          endpoint: gl.TEST_HOST,
-          initialLabels: labels,
-          updatePath: updateEndpoint,
-          labelsPath,
-          labelsWebUrl,
-          epicsWebUrl,
-        },
+        propsData: defaultPropsData,
       });
     });
 

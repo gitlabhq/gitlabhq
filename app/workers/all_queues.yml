@@ -52,6 +52,7 @@
 - pipeline_creation:create_pipeline
 - pipeline_creation:run_pipeline_schedule
 - pipeline_background:archive_trace
+- pipeline_background:ci_build_trace_chunk_flush
 - pipeline_default:build_coverage
 - pipeline_default:build_trace_sections
 - pipeline_default:pipeline_metrics
@@ -113,6 +114,7 @@
 - update_user_activity
 - upload_checksum
 - web_hook
+- repository_update_remote_mirror
 
 # EE-specific queues
 
@@ -172,5 +174,4 @@
 - project_update_repository_storage
 - rebase
 - repository_update_mirror
-- repository_update_remote_mirror
 - chat_notification

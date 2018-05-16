@@ -33,10 +33,10 @@ export default () => {
       };
     },
     created() {
-      eventHub.$on('graphAction', this.postAction);
+      eventHub.$on('postAction', this.postAction);
     },
     beforeDestroy() {
-      eventHub.$off('graphAction', this.postAction);
+      eventHub.$off('postAction', this.postAction);
     },
     methods: {
       postAction(action) {
@@ -108,7 +108,7 @@ export default () => {
   const securityTab = document.getElementById('js-security-report-app');
   const sastSummary = document.querySelector('.js-sast-summary');
 
-  const updateBadgeCount = (count) => {
+  const updateBadgeCount = count => {
     const badge = document.querySelector('.js-sast-counter');
     if (badge.textContent !== '') {
       badge.textContent = parseInt(badge.textContent, 10) + count;
@@ -124,8 +124,12 @@ export default () => {
     const datasetOptions = securityTab.dataset;
     const endpoint = datasetOptions.endpoint;
     const blobPath = datasetOptions.blobPath;
+    const sastHelpPath = datasetOptions.sastHelpPath;
     const dependencyScanningEndpoint = datasetOptions.dependencyScanningEndpoint;
-
+    const dependencyScanningHelpPath = datasetOptions.dependencyScanningHelpPath;
+    const vulnerabilityFeedbackPath = datasetOptions.vulnerabilityFeedbackPath;
+    const vulnerabilityFeedbackHelpPath = datasetOptions.vulnerabilityFeedbackHelpPath;
+    const pipelineId = parseInt(datasetOptions.pipelineId, 10);
     // Widget summary
     // eslint-disable-next-line no-new
     new Vue({
@@ -166,7 +170,12 @@ export default () => {
           props: {
             headBlobPath: blobPath,
             sastHeadPath: endpoint,
+            sastHelpPath,
             dependencyScanningHeadPath: dependencyScanningEndpoint,
+            dependencyScanningHelpPath,
+            vulnerabilityFeedbackPath,
+            vulnerabilityFeedbackHelpPath,
+            pipelineId,
           },
           on: {
             updateBadgeCount: this.updateBadge,

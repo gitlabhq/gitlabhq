@@ -259,6 +259,7 @@ module ProjectsHelper
 
     if project.builds_enabled? && can?(current_user, :read_pipeline, project)
       nav_tabs << :pipelines
+      nav_tabs << :operations
     end
 
     if project.external_issue_tracker
@@ -493,7 +494,7 @@ module ProjectsHelper
       visibilityHelpPath: help_page_path('public_access/public_access'),
       registryAvailable: Gitlab.config.registry.enabled,
       registryHelpPath: help_page_path('user/project/container_registry'),
-      lfsAvailable: Gitlab.config.lfs.enabled && current_user.admin?,
+      lfsAvailable: Gitlab.config.lfs.enabled,
       lfsHelpPath: help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
     }
 

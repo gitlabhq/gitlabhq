@@ -106,6 +106,18 @@ describe Gitlab::ProjectSearchResults do
         end
       end
 
+      context 'when the matching content contains multiple null bytes' do
+        let(:search_result) { "master:testdata/foo.txt\x001\x00blah\x001\x00foo" }
+
+        it 'returns a valid FoundBlob' do
+          expect(subject.filename).to eq('testdata/foo.txt')
+          expect(subject.basename).to eq('testdata/foo')
+          expect(subject.ref).to eq('master')
+          expect(subject.startline).to eq(1)
+          expect(subject.data).to eq("blah\x001\x00foo")
+        end
+      end
+
       context 'when the search result ends with an empty line' do
         let(:results) { project.repository.search_files_by_content('Role models', 'master') }
 
@@ -175,14 +187,14 @@ describe Gitlab::ProjectSearchResults do
   end
 
   describe 'wiki search' do
-    let(:project) { create(:project, :public) }
+    let(:project) { create(:project, :public, :wiki_repo) }
     let(:wiki) { build(:project_wiki, project: project) }
     let!(:wiki_page) { wiki.create_page('Title', 'Content') }
 
     subject(:results) { described_class.new(user, project, 'Content').objects('wiki_blobs') }
 
     context 'when wiki is disabled' do
-      let(:project) { create(:project, :public, :wiki_disabled) }
+      let(:project) { create(:project, :public, :wiki_repo, :wiki_disabled) }
 
       it 'hides wiki blobs from members' do
         project.add_reporter(user)
@@ -196,7 +208,7 @@ describe Gitlab::ProjectSearchResults do
     end
 
     context 'when wiki is internal' do
-      let(:project) { create(:project, :public, :wiki_private) }
+      let(:project) { create(:project, :public, :wiki_repo, :wiki_private) }
 
       it 'finds wiki blobs for guest' do
         project.add_guest(user)

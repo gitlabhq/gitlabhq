@@ -6,8 +6,9 @@ module QA
       class Client
         attr_reader :address
 
-        def initialize(address = :gitlab)
+        def initialize(address = :gitlab, personal_access_token = nil)
           @address = address
+          @personal_access_token = personal_access_token
         end
 
         def personal_access_token

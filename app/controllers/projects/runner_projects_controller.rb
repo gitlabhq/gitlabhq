@@ -8,7 +8,7 @@ class Projects::RunnerProjectsController < Projects::ApplicationController
 
     return head(403) unless can?(current_user, :assign_runner, @runner)
 
-    path = runners_path(project)
+    path = project_runners_path(project)
     runner_project = @runner.assign_to(project, current_user)
 
     if runner_project.persisted?
@@ -22,6 +22,6 @@ class Projects::RunnerProjectsController < Projects::ApplicationController
     runner_project = project.runner_projects.find(params[:id])
     runner_project.destroy
 
-    redirect_to runners_path(project), status: 302
+    redirect_to project_runners_path(project), status: 302
   end
 end

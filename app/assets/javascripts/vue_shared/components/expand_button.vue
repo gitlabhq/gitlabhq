@@ -22,6 +22,9 @@ export default {
       return __('Click to expand text');
     },
   },
+  destroyed() {
+    this.isCollapsed = true;
+  },
   methods: {
     onClick() {
       this.isCollapsed = !this.isCollapsed;

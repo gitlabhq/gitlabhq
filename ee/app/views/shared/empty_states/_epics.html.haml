@@ -1,3 +1,5 @@
+- has_filters_applied = params[:label_name].present? || params[:author_username].present? || params[:search].present?
+
 .row.empty-state
   .col-xs-12
     .svg-content
@@ -5,8 +7,14 @@
   .col-xs-12
     .text-content
       %h4
-        = _('Epics let you manage your portfolio of projects more efficiently and with less effort')
+        - if has_filters_applied
+          = _('Sorry, no epics matched your search')
+        - else
+          = _('Epics let you manage your portfolio of projects more efficiently and with less effort')
       %p
-        = _('Track groups of issues that share a theme, across projects and milestones')
+        - if has_filters_applied
+          = _('To widen your search, change or remove filters. If something is missing, create an epic.')
+        - else
+          = _('Track groups of issues that share a theme, across projects and milestones')
       - if can?(current_user, :create_epic, @group)
         #new-epic-app{ data: { endpoint: request.url } }

@@ -87,6 +87,15 @@ describe API::Issues, :mailer do
       expect(json_response['error']).to eq('weight does not have a valid value')
     end
 
+    it 'adds a note when the weight is changed' do
+      expect do
+        put api("/projects/#{project.id}/issues/#{issue.iid}", user), weight: 9
+      end.to change { Note.count }.by(1)
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response['weight']).to eq(9)
+    end
+
     context 'issuable weights unlicensed' do
       before do
         stub_licensed_features(issue_weights: false)

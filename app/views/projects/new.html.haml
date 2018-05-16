@@ -65,54 +65,11 @@
         .tab-pane.import-project-pane.js-toggle-container{ id: 'import-project-pane', class: active_when(active_tab == 'import'), role: 'tabpanel' }
           = form_for @project, html: { class: 'new_project' } do |f|
             - if import_sources_enabled?
-              .project-import.row
-                .col-lg-12
-                  .form-group.import-btn-container.clearfix
-                    = f.label :visibility_level, class: 'label-light' do #the label here seems wrong
-                      Import project from
-                    .import-buttons
-                      - if gitlab_project_import_enabled?
-                        .import_gitlab_project.has-tooltip{ data: { container: 'body' } }
-                          = link_to new_import_gitlab_project_path, class: 'btn btn_import_gitlab_project project-submit' do
-                            = icon('gitlab', text: 'GitLab export')
-                      %div
-                        - if github_import_enabled?
-                          = link_to new_import_github_path, class: 'btn js-import-github' do
-                            = icon('github', text: 'GitHub')
-                      %div
-                        - if bitbucket_import_enabled?
-                          = link_to status_import_bitbucket_path, class: "btn import_bitbucket #{'how_to_import_link' unless bitbucket_import_configured?}" do
-                            = icon('bitbucket', text: 'Bitbucket')
-                          - unless bitbucket_import_configured?
-                            = render 'bitbucket_import_modal'
-                      %div
-                        - if gitlab_import_enabled?
-                          = link_to status_import_gitlab_path, class: "btn import_gitlab #{'how_to_import_link' unless gitlab_import_configured?}" do
-                            = icon('gitlab', text: 'GitLab.com')
-                          - unless gitlab_import_configured?
-                            = render 'gitlab_import_modal'
-                      %div
-                        - if google_code_import_enabled?
-                          = link_to new_import_google_code_path, class: 'btn import_google_code' do
-                            = icon('google', text: 'Google Code')
-                      %div
-                        - if fogbugz_import_enabled?
-                          = link_to new_import_fogbugz_path, class: 'btn import_fogbugz' do
-                            = icon('bug', text: 'Fogbugz')
-                      %div
-                        - if gitea_import_enabled?
-                          = link_to new_import_gitea_path, class: 'btn import_gitea' do
-                            = custom_icon('go_logo')
-                            Gitea
-                      %div
-                        - if git_import_enabled?
-                          %button.btn.js-toggle-button.js-import-git-toggle-button{ type: "button", data: { toggle_open_class: 'active' } }
-                            = icon('git', text: 'Repo by URL')
-                .col-lg-12
-                  .js-toggle-content.toggle-import-form{ class: ('hide' if active_tab != 'import') }
-                    %hr
-                      = render "shared/import_form", f: f
-                      = render 'new_project_fields', f: f, project_name_id: "import-url-name"
+              = render 'import_project_pane', f: f, active_tab: active_tab
+            - else
+              .nothing-here-block
+                %h4 No import options available
+                %p Contact an administrator to enable options for importing your project.
 
         -# EE-specific start
         = render 'new_ci_cd_only_project_pane', active_tab: active_tab

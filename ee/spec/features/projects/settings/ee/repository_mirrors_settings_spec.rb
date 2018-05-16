@@ -24,25 +24,5 @@ describe 'Project settings > [EE] repository' do
       expect(page).to have_no_selector('#project_mirror_user_id', visible: false)
       expect(page).to have_no_selector('#project_mirror_trigger_builds')
     end
-
-    it 'does not show push mirror settings' do
-      expect(page).to have_no_selector('#project_remote_mirrors_attributes_0_enabled')
-      expect(page).to have_no_selector('#project_remote_mirrors_attributes_0_url')
-    end
-  end
-
-  describe 'mirror settings', :js do
-    let(:user2) { create(:user) }
-
-    before do
-      project.add_master(user2)
-
-      visit project_settings_repository_path(project)
-    end
-
-    it 'shows push mirror settings' do
-      expect(page).to have_selector('#project_remote_mirrors_attributes_0_enabled')
-      expect(page).to have_selector('#project_remote_mirrors_attributes_0_url')
-    end
   end
 end

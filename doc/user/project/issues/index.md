@@ -162,3 +162,7 @@ or Bugzilla.
 ### Issue's API
 
 Read through the [API documentation](../../../api/issues.md).
+
+### Bulk editing issues
+
+Find out about [bulk editing issues](../../project/bulk_editing.md).

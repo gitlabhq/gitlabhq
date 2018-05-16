@@ -16,8 +16,8 @@ module Geo
           super
         end
 
-        def eligible_shards
-          selective_sync_filter(healthy_shards)
+        def eligible_shard_names
+          selective_sync_filter(healthy_shard_names)
         end
 
         def selective_sync_filter(shards)

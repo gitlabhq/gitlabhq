@@ -24,13 +24,15 @@ describe API::ProjectMirror do
 
       context 'when import state is' do
         def project_in_state(state)
-          project = create(:project, :repository, :mirror, state, namespace: user.namespace)
-          project.mirror_data.update_attributes(next_execution_timestamp: 10.minutes.from_now)
+          project = create(:project, :repository, namespace: user.namespace)
+          import_state = create(:import_state, :mirror, state, project: project)
+          import_state.update_attributes(next_execution_timestamp: 10.minutes.from_now)
+
           project
         end
 
         it 'none it triggers the pull mirroring operation' do
-          project = project_in_state(:import_none)
+          project = project_in_state(:none)
 
           expect(UpdateAllMirrorsWorker).to receive(:perform_async).once
 
@@ -40,7 +42,7 @@ describe API::ProjectMirror do
         end
 
         it 'failed it triggers the pull mirroring operation' do
-          project = project_in_state(:import_failed)
+          project = project_in_state(:failed)
 
           expect(UpdateAllMirrorsWorker).to receive(:perform_async).once
 
@@ -50,7 +52,7 @@ describe API::ProjectMirror do
         end
 
         it 'finished it triggers the pull mirroring operation' do
-          project = project_in_state(:import_finished)
+          project = project_in_state(:finished)
 
           expect(UpdateAllMirrorsWorker).to receive(:perform_async).once
 
@@ -60,7 +62,7 @@ describe API::ProjectMirror do
         end
 
         it 'scheduled does not trigger the pull mirroring operation and returns 200' do
-          project = project_in_state(:import_scheduled)
+          project = project_in_state(:scheduled)
 
           expect(UpdateAllMirrorsWorker).not_to receive(:perform_async)
 
@@ -70,7 +72,7 @@ describe API::ProjectMirror do
         end
 
         it 'started does not trigger the pull mirroring operation and returns 200' do
-          project = project_in_state(:import_started)
+          project = project_in_state(:started)
 
           expect(UpdateAllMirrorsWorker).not_to receive(:perform_async)
 

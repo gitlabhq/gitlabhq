@@ -30,8 +30,78 @@ describe API::V3::Github do
   end
 
   describe 'GET /-/jira/pulls' do
-    it 'returns an empty array' do
+    let(:assignee) { create(:user) }
+    let!(:merge_request) do
+      create(:merge_request, source_project: project, target_project: project, author: user, assignee: assignee)
+    end
+
+    it 'returns an array of merge requests with github format' do
+      stub_licensed_features(jira_dev_panel_integration: true)
+
       get v3_api('/repos/-/jira/pulls', user)
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response).to be_an(Array)
+      expect(json_response.size).to eq(1)
+      expect(response).to match_response_schema('entities/github/pull_requests', dir: 'ee')
+    end
+  end
+
+  describe 'GET /-/jira/issues/:id/comments' do
+    context 'when user has access to the merge request' do
+      let(:merge_request) do
+        create(:merge_request, source_project: project, target_project: project)
+      end
+      let!(:note) do
+        create(:note, project: project, noteable: merge_request)
+      end
+
+      it 'returns an array of notes' do
+        stub_licensed_features(jira_dev_panel_integration: true)
+
+        get v3_api("/repos/-/jira/issues/#{merge_request.id}/comments", user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to be_an(Array)
+        expect(json_response.size).to eq(1)
+      end
+    end
+
+    context 'when user has no access to the merge request' do
+      let(:private_project) { create(:project, :private) }
+      let(:merge_request) do
+        create(:merge_request, source_project: private_project, target_project: private_project)
+      end
+      let!(:note) do
+        create(:note, project: private_project, noteable: merge_request)
+      end
+
+      before do
+        private_project.add_guest(user)
+      end
+
+      it 'returns 404' do
+        stub_licensed_features(jira_dev_panel_integration: true)
+
+        get v3_api("/repos/-/jira/issues/#{merge_request.id}/comments", user)
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+  end
+
+  describe 'GET /-/jira/pulls/:id/commits' do
+    it 'returns an empty array' do
+      get v3_api("/repos/-/jira/pulls/xpto/commits", user)
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response).to eq([])
+    end
+  end
+
+  describe 'GET /-/jira/pulls/:id/comments' do
+    it 'returns an empty array' do
+      get v3_api("/repos/-/jira/pulls/xpto/comments", user)
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response).to eq([])

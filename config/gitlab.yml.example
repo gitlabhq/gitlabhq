@@ -886,6 +886,7 @@ test:
     external_providers: []
 
     providers:
+      - { name: 'group_saml' }
       - { name: 'cas3',
           label: 'cas3',
           args: { url: 'https://sso.example.com',

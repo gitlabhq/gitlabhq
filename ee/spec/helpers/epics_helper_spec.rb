@@ -8,10 +8,12 @@ describe EpicsHelper do
       user = create(:user)
       @epic = create(:epic, author: user)
 
-      data = epic_show_app_data(@epic, initial: {}, author_icon: 'icon_path')
+      allow(helper).to receive(:current_user).and_return(user)
+
+      data = helper.epic_show_app_data(@epic, initial: {}, author_icon: 'icon_path')
       meta_data = JSON.parse(data[:meta])
 
-      expected_keys = %i(initial meta namespace labels_path labels_web_url epics_web_url)
+      expected_keys = %i(initial meta namespace labels_path toggle_subscription_path labels_web_url epics_web_url)
       expect(data.keys).to match_array(expected_keys)
       expect(meta_data.keys).to match_array(%w[created author start_date end_date])
       expect(meta_data['author']).to eq({

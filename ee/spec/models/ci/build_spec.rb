@@ -142,6 +142,7 @@ describe Ci::Build do
     has_performance_json?: Ci::Build::PERFORMANCE_FILE,
     has_sast_json?: Ci::Build::SAST_FILE,
     has_dependency_scanning_json?: Ci::Build::DEPENDENCY_SCANNING_FILE,
+    has_license_management_json?: Ci::Build::LICENSE_MANAGEMENT_FILE,
     has_sast_container_json?: Ci::Build::SAST_CONTAINER_FILE,
     has_dast_json?: Ci::Build::DAST_FILE
   }.freeze

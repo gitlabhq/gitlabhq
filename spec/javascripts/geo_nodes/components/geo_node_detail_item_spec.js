@@ -8,7 +8,7 @@ import { rawMockNodeDetails } from '../mock_data';
 const createComponent = (config) => {
   const Component = Vue.extend(geoNodeDetailItemComponent);
   const defaultConfig = Object.assign({
-    itemTitle: 'GitLab version:',
+    itemTitle: 'GitLab version',
     cssClass: 'node-version',
     itemValue: '10.4.0-pre',
     successLabel: 'Synced',
@@ -26,7 +26,7 @@ describe('GeoNodeDetailItemComponent', () => {
       const vm = createComponent();
       expect(vm.$el.classList.contains('node-detail-item')).toBeTruthy();
       expect(vm.$el.querySelectorAll('.node-detail-title').length).not.toBe(0);
-      expect(vm.$el.querySelector('.node-detail-title').innerText.trim()).toBe('GitLab version:');
+      expect(vm.$el.querySelector('.node-detail-title').innerText.trim()).toBe('GitLab version');
       vm.$destroy();
     });
 
@@ -34,6 +34,16 @@ describe('GeoNodeDetailItemComponent', () => {
       const vm = createComponent();
       expect(vm.$el.querySelectorAll('.node-detail-value').length).not.toBe(0);
       expect(vm.$el.querySelector('.node-detail-value').innerText.trim()).toBe('10.4.0-pre');
+      vm.$destroy();
+    });
+
+    it('renders item title help info icon and popover with help info', () => {
+      const helpInfo = { title: 'Foo title tooltip', url: 'https://docs.gitlab.com', urlText: 'Help' };
+      const vm = createComponent({ helpInfo });
+      const helpTextIconEl = vm.$el.querySelector('.node-detail-help-text');
+
+      expect(helpTextIconEl).not.toBeNull();
+      expect(helpTextIconEl.querySelector('use').getAttribute('xlink:href')).toContain('question');
       vm.$destroy();
     });
 

@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import reportIssues from 'ee/vue_shared/security_reports/components/report_issues.vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import store from 'ee/vue_shared/security_reports/store';
+import mountComponent, { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import {
   codequalityParsedIssues,
 } from 'spec/vue_mr_widget/mock_data';
@@ -120,12 +121,9 @@ describe('Report issues', () => {
       ).toContain(dockerReportParsed.unapproved[0].priority);
     });
 
-    it('renders CVE link', () => {
+    it('renders CVE name', () => {
       expect(
-        vm.$el.querySelector('.report-block-list a').getAttribute('href'),
-      ).toEqual(dockerReportParsed.unapproved[0].nameLink);
-      expect(
-        vm.$el.querySelector('.report-block-list a').textContent.trim(),
+        vm.$el.querySelector('.report-block-list button').textContent.trim(),
       ).toEqual(dockerReportParsed.unapproved[0].name);
     });
 
@@ -141,31 +139,18 @@ describe('Report issues', () => {
 
   describe('for dast issues', () => {
     beforeEach(() => {
-      vm = mountComponent(ReportIssues, {
-        issues: parsedDast,
-        type: 'DAST',
-        status: 'failed',
+      vm = mountComponentWithStore(ReportIssues, { store,
+        props: {
+          issues: parsedDast,
+          type: 'DAST',
+          status: 'failed',
+        },
       });
     });
 
     it('renders priority and name', () => {
       expect(vm.$el.textContent).toContain(parsedDast[0].name);
       expect(vm.$el.textContent).toContain(parsedDast[0].priority);
-    });
-
-    it('opens modal with more information and list of instances', (done) => {
-      vm.$el.querySelector('.js-modal-dast').click();
-
-      Vue.nextTick(() => {
-        expect(vm.$el.querySelector('.modal-title').textContent.trim()).toEqual('Low (Medium): Absence of Anti-CSRF Tokens');
-        expect(vm.$el.querySelector('.modal-body').textContent).toContain('No Anti-CSRF tokens were found in a HTML submission form.');
-
-        const instance = vm.$el.querySelector('.modal-body li').textContent;
-        expect(instance).toContain('http://192.168.32.236:3001/explore?sort=latest_activity_desc');
-        expect(instance).toContain('GET');
-
-        done();
-      });
     });
   });
 });

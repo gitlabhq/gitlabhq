@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe NotificationService, :mailer do
   include EmailSpec::Matchers
+  include NotificationHelpers
 
   let(:notification) { described_class.new }
   let(:assignee) { create(:user) }
@@ -13,12 +14,6 @@ describe NotificationService, :mailer do
   end
 
   shared_examples 'notifications for new mentions' do
-    def send_notifications(*new_mentions)
-      mentionable.description = new_mentions.map(&:to_reference).join(' ')
-
-      notification.send(notification_method, mentionable, new_mentions, @u_disabled)
-    end
-
     it 'sends no emails when no new mentions are present' do
       send_notifications
       should_not_email_anyone
@@ -1954,30 +1949,6 @@ describe NotificationService, :mailer do
     @g_global_watcher = create_global_setting_for(create(:user), :watch)
     group.add_users([@g_watcher, @g_global_watcher], :master)
     group
-  end
-
-  def create_global_setting_for(user, level)
-    setting = user.global_notification_setting
-    setting.level = level
-    setting.save
-
-    user
-  end
-
-  def create_user_with_notification(level, username, resource = project)
-    user = create(:user, username: username)
-    setting = user.notification_settings_for(resource)
-    setting.level = level
-    setting.save
-
-    user
-  end
-
-  # Create custom notifications
-  # When resource is nil it means global notification
-  def update_custom_notification(event, user, resource: nil, value: true)
-    setting = user.notification_settings_for(resource)
-    setting.update!(event => value)
   end
 
   def add_users_with_subscription(project, issuable)

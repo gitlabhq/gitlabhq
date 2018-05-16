@@ -26,7 +26,7 @@
 <template>
   <div class="prepend-top-15 detail-section-item">
     <div class="node-detail-title">
-      {{ s__('GeoNodes|Health status:') }}
+      {{ s__('GeoNodes|Health status') }}
     </div>
     <div
       class="node-detail-value node-health-status"

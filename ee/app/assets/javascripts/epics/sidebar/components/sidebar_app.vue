@@ -3,12 +3,15 @@
   import _ from 'underscore';
   import Cookies from 'js-cookie';
   import Flash from '~/flash';
+  import { __ } from '~/locale';
   import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
   import ListLabel from '~/vue_shared/models/label';
   import SidebarDatePicker from '~/vue_shared/components/sidebar/date_picker.vue';
   import SidebarCollapsedGroupedDatePicker from '~/vue_shared/components/sidebar/collapsed_grouped_date_picker.vue';
   import ToggleSidebar from '~/vue_shared/components/sidebar/toggle_sidebar.vue';
   import SidebarLabelsSelect from '~/vue_shared/components/sidebar/labels_select/base.vue';
+  import SidebarParticipants from './sidebar_participants.vue';
+  import SidebarSubscriptions from './sidebar_subscriptions.vue';
   import SidebarService from '../services/sidebar_service';
   import Store from '../stores/sidebar_store';
 
@@ -19,6 +22,8 @@
       SidebarDatePicker,
       SidebarCollapsedGroupedDatePicker,
       SidebarLabelsSelect,
+      SidebarParticipants,
+      SidebarSubscriptions,
     },
     props: {
       endpoint: {
@@ -42,6 +47,14 @@
         type: Array,
         required: true,
       },
+      initialParticipants: {
+        type: Array,
+        required: true,
+      },
+      initialSubscribed: {
+        type: Boolean,
+        required: true,
+      },
       namespace: {
         type: String,
         required: false,
@@ -52,6 +65,10 @@
         required: true,
       },
       labelsPath: {
+        type: String,
+        required: true,
+      },
+      toggleSubscriptionPath: {
         type: String,
         required: true,
       },
@@ -68,6 +85,7 @@
       const store = new Store({
         startDate: this.initialStartDate,
         endDate: this.initialEndDate,
+        subscribed: this.initialSubscribed,
       });
 
       return {
@@ -77,7 +95,8 @@
         autoExpanded: false,
         savingStartDate: false,
         savingEndDate: false,
-        service: new SidebarService(this.endpoint),
+        savingSubscription: false,
+        service: new SidebarService(this.endpoint, this.toggleSubscriptionPath),
         epicContext: {
           labels: this.initialLabels,
         },
@@ -158,6 +177,19 @@
           this.toggleSidebar();
         }
       },
+      handleToggleSubscribed() {
+        this.service.toggleSubscribed()
+          .then(() => {
+            this.store.setSubscribed(!this.store.subscribed);
+          })
+          .catch(() => {
+            if (this.store.subscribed) {
+              Flash(__('An error occurred while unsubscribing to notifications.'));
+            } else {
+              Flash(__('An error occurred while subscribing to notifications.'));
+            }
+          });
+      },
     },
   };
 </script>
@@ -222,6 +254,16 @@
       >
         {{ __('None') }}
       </sidebar-labels-select>
+      <sidebar-participants
+        :participants="initialParticipants"
+        @toggleCollapse="toggleSidebar"
+      />
+      <sidebar-subscriptions
+        :loading="savingSubscription"
+        :subscribed="store.subscribed"
+        @toggleSubscription="handleToggleSubscribed"
+        @toggleCollapse="toggleSidebar"
+      />
     </div>
   </aside>
 </template>

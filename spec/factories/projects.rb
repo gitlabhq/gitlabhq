@@ -15,14 +15,18 @@ FactoryBot.define do
     namespace
     creator { group ? create(:user) : namespace&.owner }
 
-    # Nest Project Feature attributes
     transient do
+      # Nest Project Feature attributes
       wiki_access_level ProjectFeature::ENABLED
       builds_access_level ProjectFeature::ENABLED
       snippets_access_level ProjectFeature::ENABLED
       issues_access_level ProjectFeature::ENABLED
       merge_requests_access_level ProjectFeature::ENABLED
       repository_access_level ProjectFeature::ENABLED
+
+      # we can't assign the delegated `#ci_cd_settings` attributes directly, as the
+      # `#ci_cd_settings` relation needs to be created first
+      group_runners_enabled nil
     end
 
     after(:create) do |project, evaluator|
@@ -47,6 +51,9 @@ FactoryBot.define do
       end
 
       project.group&.refresh_members_authorized_projects
+
+      # assign the delegated `#ci_cd_settings` attributes after create
+      project.reload.group_runners_enabled = evaluator.group_runners_enabled unless evaluator.group_runners_enabled.nil?
     end
 
     trait :public do
@@ -69,7 +76,7 @@ FactoryBot.define do
       import_status :scheduled
 
       after(:create) do |project, _|
-        project.mirror_data&.update_attributes(last_update_scheduled_at: Time.now)
+        project.import_state&.update_attributes(last_update_scheduled_at: Time.now)
       end
     end
 
@@ -77,7 +84,7 @@ FactoryBot.define do
       import_status :started
 
       after(:create) do |project, _|
-        project.mirror_data&.update_attributes(last_update_started_at: Time.now)
+        project.import_state&.update_attributes(last_update_started_at: Time.now)
       end
     end
 
@@ -99,8 +106,14 @@ FactoryBot.define do
       mirror_last_update_at { Time.now - 1.minute }
 
       after(:create) do |project|
-        project.mirror_data&.update_attributes(retry_count: Gitlab::Mirror::MAX_RETRY + 1)
+        project.import_state&.update_attributes(retry_count: Gitlab::Mirror::MAX_RETRY + 1)
       end
+    end
+
+    trait :disabled_mirror do
+      mirror false
+      import_url { generate(:url) }
+      mirror_user_id { creator_id }
     end
 
     trait :mirror do
@@ -206,6 +219,13 @@ FactoryBot.define do
     trait :wiki_repo do
       after(:create) do |project|
         raise 'Failed to create wiki repository!' unless project.create_wiki
+
+        # We delete hooks so that gitlab-shell will not try to authenticate with
+        # an API that isn't running
+        project.gitlab_shell.rm_directory(
+          project.repository_storage,
+          File.join("#{project.wiki.repository.disk_path}.git", "hooks")
+        )
       end
     end
 

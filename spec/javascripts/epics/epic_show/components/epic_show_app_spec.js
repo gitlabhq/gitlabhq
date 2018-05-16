@@ -40,6 +40,9 @@ describe('EpicShowApp', () => {
       labelsWebUrl,
       epicsWebUrl,
       labels,
+      participants,
+      subscribed,
+      toggleSubscriptionPath,
     } = props;
 
     const EpicShowApp = Vue.extend(epicShowApp);
@@ -68,6 +71,7 @@ describe('EpicShowApp', () => {
       projectPath: props.groupPath,
       projectNamespace: '',
       showInlineEditButton: true,
+      toggleSubscriptionPath,
     });
 
     const EpicSidebar = Vue.extend(epicSidebar);
@@ -77,7 +81,10 @@ describe('EpicShowApp', () => {
       initialStartDate: startDate,
       initialEndDate: endDate,
       initialLabels: labels,
+      initialParticipants: participants,
+      initialSubscribed: subscribed,
       updatePath: updateEndpoint,
+      toggleSubscriptionPath,
       labelsPath,
       labelsWebUrl,
       epicsWebUrl,

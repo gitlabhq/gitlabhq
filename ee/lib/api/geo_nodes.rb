@@ -48,7 +48,7 @@ module API
       get '/current/failures' do
         geo_node = Gitlab::Geo.current_node
 
-        not_found('Geo node not found') unless geo_node
+        not_found!('Geo node not found') unless geo_node
 
         finder = ::Geo::ProjectRegistryFinder.new(current_node: geo_node)
         project_registries = paginate(finder.find_failed_project_registries(params[:type]))

@@ -123,6 +123,7 @@ function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, xDom
       linePath: lineFunction(timeSeries.values),
       areaPath: areaFunction(timeSeries.values),
       timeSeriesScaleX,
+      timeSeriesScaleY,
       values: timeSeries.values,
       max: maximumValue,
       average: accum / timeSeries.values.length,

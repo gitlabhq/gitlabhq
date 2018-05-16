@@ -18,6 +18,7 @@ describe 'Promotions', :js do
     it 'should show no promotion at all' do
       sign_in(user)
       visit edit_project_path(project)
+
       expect(page).not_to have_selector('#promote_service_desk')
     end
   end
@@ -33,12 +34,14 @@ describe 'Promotions', :js do
       it 'should have the contact admin line' do
         sign_in(user)
         visit edit_project_path(project)
+
         expect(find('#promote_service_desk')).to have_content 'Contact your Administrator to upgrade your license.'
       end
 
       it 'should have the start trial button' do
         sign_in(admin)
         visit edit_project_path(project)
+
         expect(find('#promote_service_desk')).to have_content 'Start GitLab Ultimate trial'
       end
     end
@@ -58,11 +61,13 @@ describe 'Promotions', :js do
 
       it 'should have the Upgrade your plan button' do
         visit edit_project_path(project)
+
         expect(find('#promote_service_desk')).to have_content 'Upgrade your plan'
       end
 
       it 'should have the contact owner line' do
         visit edit_project_path(otherproject)
+
         expect(find('#promote_service_desk')).to have_content 'Contact owner'
       end
     end
@@ -79,6 +84,7 @@ describe 'Promotions', :js do
 
     it 'should appear in project edit page' do
       visit edit_project_path(project)
+
       expect(find('#promote_service_desk')).to have_content 'Improve customer support with GitLab Service Desk.'
     end
 
@@ -108,6 +114,7 @@ describe 'Promotions', :js do
 
     it 'should appear in project edit page' do
       visit edit_project_path(project)
+
       expect(find('#promote_mr_features')).to have_content 'Improve Merge Requests'
     end
 
@@ -165,6 +172,7 @@ describe 'Promotions', :js do
 
     it 'should appear in new MR page' do
       visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'feature' })
+
       expect(find('#promote_squash_commits')).to have_content 'Improve Merge Requests with Squash Commit and GitLab Enterprise Edition.'
     end
 
@@ -192,6 +200,7 @@ describe 'Promotions', :js do
 
     it 'should appear in milestone page' do
       visit project_milestone_path(project, milestone)
+
       expect(find('#promote_burndown_charts')).to have_content "Upgrade your plan to improve milestones with Burndown Charts."
     end
 
@@ -219,6 +228,7 @@ describe 'Promotions', :js do
 
     it 'should appear in milestone page' do
       visit project_boards_path(project)
+
       expect(find('.board-promotion-state')).to have_content "Upgrade your plan to improve Issue boards"
     end
 
@@ -246,8 +256,61 @@ describe 'Promotions', :js do
 
     it 'should appear on export modal' do
       visit project_issues_path(project)
+
       click_on 'Export as CSV'
+
       expect(find('.issues-export-modal')).to have_content 'Export issues with GitLab Enterprise Edition.'
+    end
+  end
+
+  describe 'for epics in issues sidebar', :js do
+    before do
+      allow(License).to receive(:current).and_return(nil)
+      stub_application_setting(check_namespace_plan: false)
+
+      project.add_master(user)
+      sign_in(user)
+    end
+
+    it 'should appear on the page' do
+      visit project_issue_path(project, issue)
+      wait_for_requests
+
+      find('.js-epics-sidebar-callout .btn-link').click
+
+      expect(find('.promotion-issue-sidebar-message')).to have_content 'Epics let you manage your portfolio of projects more efficiently'
+    end
+
+    it 'should be removed after dismissal' do
+      visit project_issue_path(project, issue)
+      wait_for_requests
+
+      find('.js-epics-sidebar-callout .btn-link').click
+      find('.js-epics-sidebar-callout .js-close-callout').click
+
+      expect(page).not_to have_selector('.js-epics-sidebar-callout')
+    end
+
+    it 'should not appear on page after dismissal and reload' do
+      visit project_issue_path(project, issue)
+      wait_for_requests
+
+      find('.js-epics-sidebar-callout .btn-link').click
+      find('.js-epics-sidebar-callout .js-close-callout').click
+      visit project_issue_path(project, issue)
+
+      expect(page).not_to have_selector('.js-epics-sidebar-callout')
+    end
+
+    it 'should close dialog when clicking on X, but not dismiss it' do
+      visit project_issue_path(project, issue)
+      wait_for_requests
+
+      find('.js-epics-sidebar-callout .btn-link').click
+      find('.js-epics-sidebar-callout .dropdown-menu-close').click
+
+      expect(page).to have_selector('.js-epics-sidebar-callout')
+      expect(page).to have_selector('.promotion-issue-sidebar-message', visible: false)
     end
   end
 
@@ -263,8 +326,42 @@ describe 'Promotions', :js do
     it 'should appear on the page', :js do
       visit project_issue_path(project, issue)
       wait_for_requests
-      find('.promote-weight-link').click
-      expect(find('.promotion-info-weight-message')).to have_content 'Improve issues management with Issue weight and GitLab Enterprise Edition'
+
+      find('.js-weight-sidebar-callout .btn-link').click
+
+      expect(find('.promotion-issue-sidebar-message')).to have_content 'Improve issues management with Issue weight and GitLab Enterprise Edition'
+    end
+
+    it 'should be removed after dismissal' do
+      visit project_issue_path(project, issue)
+      wait_for_requests
+
+      find('.js-weight-sidebar-callout .btn-link').click
+      find('.js-weight-sidebar-callout .js-close-callout').click
+
+      expect(page).not_to have_selector('.js-weight-sidebar-callout')
+    end
+
+    it 'should not appear on page after dismissal and reload' do
+      visit project_issue_path(project, issue)
+      wait_for_requests
+
+      find('.js-weight-sidebar-callout .btn-link').click
+      find('.js-weight-sidebar-callout .js-close-callout').click
+      visit project_issue_path(project, issue)
+
+      expect(page).not_to have_selector('.js-weight-sidebar-callout')
+    end
+
+    it 'should close dialog when clicking on X, but not dismiss it' do
+      visit project_issue_path(project, issue)
+      wait_for_requests
+
+      find('.js-weight-sidebar-callout .btn-link').click
+      find('.js-weight-sidebar-callout .dropdown-menu-close').click
+
+      expect(page).to have_selector('.js-weight-sidebar-callout')
+      expect(page).to have_selector('.promotion-issue-sidebar-message', visible: false)
     end
   end
 
@@ -280,7 +377,9 @@ describe 'Promotions', :js do
     it 'should appear on the page', :js do
       visit new_project_issue_path(project)
       wait_for_requests
+
       find('#promotion-issue-template-link').click
+
       expect(find('.promotion-issue-template-message')).to have_content 'Description templates allow you to define context-specific templates for issue and merge request description fields for your project.'
     end
   end
@@ -296,6 +395,7 @@ describe 'Promotions', :js do
 
     it 'should appear on the page' do
       visit project_audit_events_path(project)
+
       expect(find('.user-callout-copy')).to have_content 'Track your project with Audit Events'
     end
   end
@@ -311,6 +411,7 @@ describe 'Promotions', :js do
 
     it 'should appear on the page' do
       visit group_analytics_path(group)
+
       expect(find('.user-callout-copy')).to have_content 'Track activity with Contribution Analytics.'
     end
   end
@@ -326,6 +427,7 @@ describe 'Promotions', :js do
 
     it 'should appear on the page' do
       visit group_hooks_path(group)
+
       expect(find('.user-callout-copy')).to have_content 'Add Group Webhooks'
     end
   end

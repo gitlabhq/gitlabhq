@@ -98,12 +98,16 @@ module KubernetesHelpers
 
   # This is a partial response, it will have many more elements in reality but
   # these are the ones we care about at the moment
-  def kube_pod(name: "kube-pod", app: "valid-pod-label")
+  def kube_pod(name: "kube-pod", app: "valid-pod-label", status: "Running", track: nil)
     {
       "metadata" => {
         "name" => name,
+        "generate_name" => "generated-name-with-suffix",
         "creationTimestamp" => "2016-11-25T19:55:19Z",
-        "labels" => { "app" => app }
+        "labels" => {
+          "app" => app,
+          "track" => track
+        }
       },
       "spec" => {
         "containers" => [
@@ -111,7 +115,7 @@ module KubernetesHelpers
           { "name" => "container-1" }
         ]
       },
-      "status" => { "phase" => "Running" }
+      "status" => { "phase" => status }
     }
   end
 
@@ -154,10 +158,10 @@ module KubernetesHelpers
   end
 
   def kube_deployment_rollout_status
-    ::Gitlab::Kubernetes::RolloutStatus.from_specs(kube_deployment)
+    ::Gitlab::Kubernetes::RolloutStatus.from_deployments(kube_deployment)
   end
 
   def empty_deployment_rollout_status
-    ::Gitlab::Kubernetes::RolloutStatus.from_specs()
+    ::Gitlab::Kubernetes::RolloutStatus.from_deployments()
   end
 end

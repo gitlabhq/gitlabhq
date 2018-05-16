@@ -143,7 +143,7 @@ describe API::Wikis do
     let(:url) { "/projects/#{project.id}/wikis" }
 
     context 'when wiki is disabled' do
-      let(:project) { create(:project, :wiki_disabled) }
+      let(:project) { create(:project, :wiki_repo, :wiki_disabled) }
 
       context 'when user is guest' do
         before do
@@ -175,7 +175,7 @@ describe API::Wikis do
     end
 
     context 'when wiki is available only for team members' do
-      let(:project) { create(:project, :wiki_private) }
+      let(:project) { create(:project, :wiki_repo, :wiki_private) }
 
       context 'when user is guest' do
         before do
@@ -203,7 +203,7 @@ describe API::Wikis do
     end
 
     context 'when wiki is available for everyone with access' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :wiki_repo) }
 
       context 'when user is guest' do
         before do
@@ -236,7 +236,7 @@ describe API::Wikis do
     let(:url) { "/projects/#{project.id}/wikis/#{page.slug}" }
 
     context 'when wiki is disabled' do
-      let(:project) { create(:project, :wiki_disabled) }
+      let(:project) { create(:project, :wiki_repo, :wiki_disabled) }
 
       context 'when user is guest' do
         before do
@@ -268,7 +268,7 @@ describe API::Wikis do
     end
 
     context 'when wiki is available only for team members' do
-      let(:project) { create(:project, :wiki_private) }
+      let(:project) { create(:project, :wiki_repo, :wiki_private) }
 
       context 'when user is guest' do
         before do
@@ -311,7 +311,7 @@ describe API::Wikis do
     end
 
     context 'when wiki is available for everyone with access' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :wiki_repo) }
 
       context 'when user is guest' do
         before do
@@ -360,7 +360,7 @@ describe API::Wikis do
     let(:url) { "/projects/#{project.id}/wikis" }
 
     context 'when wiki is disabled' do
-      let(:project) { create(:project, :wiki_disabled) }
+      let(:project) { create(:project, :wiki_disabled, :wiki_repo) }
 
       context 'when user is guest' do
         before do
@@ -390,7 +390,7 @@ describe API::Wikis do
     end
 
     context 'when wiki is available only for team members' do
-      let(:project) { create(:project, :wiki_private) }
+      let(:project) { create(:project, :wiki_private, :wiki_repo) }
 
       context 'when user is guest' do
         before do
@@ -418,7 +418,7 @@ describe API::Wikis do
     end
 
     context 'when wiki is available for everyone with access' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :wiki_repo) }
 
       context 'when user is guest' do
         before do
@@ -452,7 +452,7 @@ describe API::Wikis do
     let(:url) { "/projects/#{project.id}/wikis/#{page.slug}" }
 
     context 'when wiki is disabled' do
-      let(:project) { create(:project, :wiki_disabled) }
+      let(:project) { create(:project, :wiki_disabled, :wiki_repo) }
 
       context 'when user is guest' do
         before do
@@ -484,7 +484,7 @@ describe API::Wikis do
     end
 
     context 'when wiki is available only for team members' do
-      let(:project) { create(:project, :wiki_private) }
+      let(:project) { create(:project, :wiki_private, :wiki_repo) }
 
       context 'when user is guest' do
         before do
@@ -528,7 +528,7 @@ describe API::Wikis do
     end
 
     context 'when wiki is available for everyone with access' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :wiki_repo) }
 
       context 'when user is guest' do
         before do
@@ -572,7 +572,7 @@ describe API::Wikis do
     end
 
     context 'when wiki belongs to a group project' do
-      let(:project) { create(:project, namespace: group) }
+      let(:project) { create(:project, :wiki_repo, namespace: group) }
 
       before do
         put(api(url, user), payload)
@@ -587,7 +587,7 @@ describe API::Wikis do
     let(:url) { "/projects/#{project.id}/wikis/#{page.slug}" }
 
     context 'when wiki is disabled' do
-      let(:project) { create(:project, :wiki_disabled) }
+      let(:project) { create(:project, :wiki_disabled, :wiki_repo) }
 
       context 'when user is guest' do
         before do
@@ -619,7 +619,7 @@ describe API::Wikis do
     end
 
     context 'when wiki is available only for team members' do
-      let(:project) { create(:project, :wiki_private) }
+      let(:project) { create(:project, :wiki_private, :wiki_repo) }
 
       context 'when user is guest' do
         before do
@@ -651,7 +651,7 @@ describe API::Wikis do
     end
 
     context 'when wiki is available for everyone with access' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :wiki_repo) }
 
       context 'when user is guest' do
         before do
@@ -689,7 +689,7 @@ describe API::Wikis do
     end
 
     context 'when wiki belongs to a group project' do
-      let(:project) { create(:project, namespace: group) }
+      let(:project) { create(:project, :wiki_repo, namespace: group) }
 
       before do
         delete(api(url, user))

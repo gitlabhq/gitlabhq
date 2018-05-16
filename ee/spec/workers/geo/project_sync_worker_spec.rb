@@ -3,10 +3,17 @@ require 'rails_helper'
 RSpec.describe Geo::ProjectSyncWorker do
   describe '#perform' do
     let(:project) { create(:project) }
+    let(:project_with_broken_storage) { create(:project, :broken_storage) }
     let(:repository_sync_service) { spy }
     let(:wiki_sync_service) { spy }
 
     before do
+      allow(Gitlab::Geo::ShardHealthCache).to receive(:healthy_shard?)
+        .with(project.repository_storage).once.and_return(true)
+
+      allow(Gitlab::Geo::ShardHealthCache).to receive(:healthy_shard?)
+        .with(project_with_broken_storage.repository_storage).once.and_return(false)
+
       allow(Geo::RepositorySyncService).to receive(:new)
         .with(instance_of(Project)).once.and_return(repository_sync_service)
 
@@ -15,8 +22,20 @@ RSpec.describe Geo::ProjectSyncWorker do
     end
 
     context 'when project could not be found' do
-      it 'does not raise an error' do
+      it 'logs an error and returns' do
+        expect(subject).to receive(:log_error).with("Couldn't find project, skipping syncing", project_id: 999)
+
         expect { subject.perform(999, Time.now) }.not_to raise_error
+      end
+    end
+
+    context 'when the shard associated to the project is unhealthy' do
+      it 'logs an error and returns' do
+        expect(subject).to receive(:log_error).with("Project shard '#{project_with_broken_storage.repository_storage}' is unhealthy, skipping syncing", project_id: project_with_broken_storage.id)
+        expect(repository_sync_service).not_to receive(:execute)
+        expect(wiki_sync_service).not_to receive(:execute)
+
+        subject.perform(project_with_broken_storage.id, Time.now)
       end
     end
 

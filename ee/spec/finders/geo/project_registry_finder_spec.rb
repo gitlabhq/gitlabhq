@@ -3,6 +3,10 @@ require 'spec_helper'
 describe Geo::ProjectRegistryFinder, :geo do
   include ::EE::GeoHelpers
 
+  # Using let() instead of set() because set() does not work properly
+  # when using the :delete DatabaseCleaner strategy, which is required for FDW
+  # tests because a foreign table can't see changes inside a transaction of a
+  # different connection.
   let(:secondary) { create(:geo_node) }
   let(:synced_group) { create(:group) }
   let!(:project_not_synced) { create(:project) }
@@ -505,10 +509,10 @@ describe Geo::ProjectRegistryFinder, :geo do
         repository_outdated_secondary = create(:repository_state, :repository_verified, :wiki_verified).project
         wiki_outdated_secondary       = create(:repository_state, :repository_verified, :wiki_verified).project
 
-        registry_unverified_secondary          = create(:geo_project_registry, project: project_unverified_secondary)
-        registry_outdated_secondary            = create(:geo_project_registry, :repository_verification_outdated, :wiki_verification_outdated, project: project_outdated_secondary)
-        registry_repository_outdated_secondary = create(:geo_project_registry, :repository_verification_outdated, :wiki_verified, project: repository_outdated_secondary)
-        registry_wiki_outdated_secondary       = create(:geo_project_registry, :repository_verified, :wiki_verification_outdated, project: wiki_outdated_secondary)
+        registry_unverified_secondary          = create(:geo_project_registry, :synced, project: project_unverified_secondary)
+        registry_outdated_secondary            = create(:geo_project_registry, :synced, :repository_verification_outdated, :wiki_verification_outdated, project: project_outdated_secondary)
+        registry_repository_outdated_secondary = create(:geo_project_registry, :synced, :repository_verification_outdated, :wiki_verified, project: repository_outdated_secondary)
+        registry_wiki_outdated_secondary       = create(:geo_project_registry, :synced, :repository_verified, :wiki_verification_outdated, project: wiki_outdated_secondary)
 
         expect(subject.find_registries_to_verify(batch_size: 100))
           .to match_array([
@@ -532,9 +536,9 @@ describe Geo::ProjectRegistryFinder, :geo do
         repository_failed_primary   = create(:repository_state, :repository_failed, :wiki_verified).project
         wiki_failed_primary         = create(:repository_state, :repository_verified, :wiki_failed).project
 
-        create(:geo_project_registry, project: verification_failed_primary)
-        registry_repository_failed_primary = create(:geo_project_registry, project: repository_failed_primary)
-        registry_wiki_failed_primary       = create(:geo_project_registry, project: wiki_failed_primary)
+        create(:geo_project_registry, :synced, project: verification_failed_primary)
+        registry_repository_failed_primary = create(:geo_project_registry, :synced, project: repository_failed_primary)
+        registry_wiki_failed_primary       = create(:geo_project_registry, :synced, project: wiki_failed_primary)
 
         expect(subject.find_registries_to_verify(batch_size: 100))
           .to match_array([
@@ -552,6 +556,20 @@ describe Geo::ProjectRegistryFinder, :geo do
         create(:geo_project_registry, :repository_verification_failed, :wiki_verification_failed, project: verification_failed_secondary)
         create(:geo_project_registry, :repository_verification_failed, project: repository_failed_secondary)
         create(:geo_project_registry, :wiki_verification_failed, project: wiki_failed_secondary)
+
+        expect(subject.find_registries_to_verify(batch_size: 100)).to be_empty
+      end
+
+      it 'does not return registries when the repo needs to be resynced' do
+        project_verified = create(:repository_state, :repository_verified).project
+        create(:geo_project_registry, :repository_sync_failed, project: project_verified)
+
+        expect(subject.find_registries_to_verify(batch_size: 100)).to be_empty
+      end
+
+      it 'does not return registries when the wiki needs to be resynced' do
+        project_verified = create(:repository_state, :wiki_verified).project
+        create(:geo_project_registry, :wiki_sync_failed, project: project_verified)
 
         expect(subject.find_registries_to_verify(batch_size: 100)).to be_empty
       end

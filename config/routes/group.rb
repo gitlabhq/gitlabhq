@@ -68,7 +68,9 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     resources :ldap_group_links, only: [:index, :create, :destroy]
 
+    ## EE-specific
     resource :saml_providers, path: 'saml', only: [:show, :create, :update] do
+      post :callback, to: 'omniauth_callbacks#group_saml'
       get :sso, to: 'sso#saml'
     end
 
@@ -82,11 +84,18 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       end
     end
 
+    resources :autocomplete_sources, only: [] do
+      collection do
+        get 'members'
+      end
+    end
+
     resources :billings, only: [:index]
     resources :epics, concerns: :awardable, constraints: { id: /\d+/ } do
       member do
         get :discussions, format: :json
         get :realtime_changes
+        post :toggle_subscription
       end
 
       resources :epic_issues, only: [:index, :create, :destroy, :update], as: 'issues', path: 'issues'
@@ -98,6 +107,13 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     # On CE only index and show are needed
     resources :boards, only: [:index, :show, :create, :update, :destroy]
+
+    resources :runners, only: [:index, :edit, :update, :destroy, :show] do
+      member do
+        post :resume
+        post :pause
+      end
+    end
 
     legacy_ee_group_boards_redirect = redirect do |params, request|
       path = "/groups/#{params[:group_id]}/-/boards"

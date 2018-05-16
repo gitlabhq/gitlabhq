@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'tempfile'
 
-feature 'Jobs' do
+feature 'Jobs', :clean_gitlab_redis_shared_state do
   let(:user) { create(:user) }
   let(:user_access_level) { :developer }
   let(:project) { create(:project, :repository) }
@@ -282,7 +282,7 @@ feature 'Jobs' do
         it 'loads job trace' do
           expect(page).to have_content 'BUILD TRACE'
 
-          job.trace.write do |stream|
+          job.trace.write('a+b') do |stream|
             stream.append(' and more trace', 11)
           end
 
@@ -600,48 +600,6 @@ feature 'Jobs' do
             visit raw_project_job_path(project, job2)
           end
           expect(requests.first.status_code).to eq(404)
-        end
-      end
-    end
-
-    context 'storage form' do
-      let(:existing_file) { Tempfile.new('existing-trace-file').path }
-
-      before do
-        job.run!
-      end
-
-      context 'when job has trace in file', :js do
-        let(:paths) do
-          [existing_file]
-        end
-
-        before do
-          allow_any_instance_of(Gitlab::Ci::Trace)
-            .to receive(:paths)
-            .and_return([existing_file])
-        end
-
-        it 'sends the right headers' do
-          requests = inspect_requests(inject_headers: { 'X-Sendfile-Type' => 'X-Sendfile' }) do
-            visit raw_project_job_path(project, job)
-          end
-          expect(requests.first.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
-          expect(requests.first.response_headers['X-Sendfile']).to eq(existing_file)
-        end
-      end
-
-      context 'when job has trace in the database', :js do
-        before do
-          allow_any_instance_of(Gitlab::Ci::Trace)
-            .to receive(:paths)
-            .and_return([])
-
-          visit project_job_path(project, job)
-        end
-
-        it 'sends the right headers' do
-          expect(page).not_to have_selector('.js-raw-link-controller')
         end
       end
     end

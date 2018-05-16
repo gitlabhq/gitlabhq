@@ -1,0 +1,6 @@
+---
+title: Block access to the API & git for users that did not accept enforced Terms
+  of Service
+merge_request: 18816
+author:
+type: other

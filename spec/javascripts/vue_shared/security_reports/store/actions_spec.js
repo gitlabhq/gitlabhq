@@ -1,6 +1,51 @@
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import * as actions from 'ee/vue_shared/security_reports/store/actions';
+import actions, {
+  setHeadBlobPath,
+  setBaseBlobPath,
+  setVulnerabilityFeedbackPath,
+  setVulnerabilityFeedbackHelpPath,
+  setPipelineId,
+  setSastHeadPath,
+  setSastBasePath,
+  requestSastReports,
+  receiveSastReports,
+  receiveSastError,
+  fetchSastReports,
+  setSastContainerHeadPath,
+  setSastContainerBasePath,
+  requestSastContainerReports,
+  receiveSastContainerReports,
+  receiveSastContainerError,
+  fetchSastContainerReports,
+  setDastHeadPath,
+  setDastBasePath,
+  requestDastReports,
+  receiveDastReports,
+  receiveDastError,
+  fetchDastReports,
+  setDependencyScanningHeadPath,
+  setDependencyScanningBasePath,
+  requestDependencyScanningReports,
+  receiveDependencyScanningError,
+  receiveDependencyScanningReports,
+  fetchDependencyScanningReports,
+  openModal,
+  setModalData,
+  requestDismissIssue,
+  receiveDismissIssue,
+  receiveDismissIssueError,
+  dismissIssue,
+  revertDismissIssue,
+  requestCreateIssue,
+  receiveCreateIssue,
+  receiveCreateIssueError,
+  createNewIssue,
+  updateSastIssue,
+  updateDependencyScanningIssue,
+  updateContainerScanningIssue,
+  updateDastIssue,
+} from 'ee/vue_shared/security_reports/store/actions';
 import * as types from 'ee/vue_shared/security_reports/store/mutation_types';
 import state from 'ee/vue_shared/security_reports/store/state';
 import testAction from '../../../helpers/vuex_action_helper';
@@ -11,6 +56,9 @@ import {
   dastBase,
   dockerReport,
   dockerBaseReport,
+  sastFeedbacks,
+  dastFeedbacks,
+  containerScanningFeedbacks,
 } from '../mock_data';
 
 describe('security reports actions', () => {
@@ -29,7 +77,7 @@ describe('security reports actions', () => {
   describe('setHeadBlobPath', () => {
     it('should commit set head blob path', done => {
       testAction(
-        actions.setHeadBlobPath,
+        setHeadBlobPath,
         'path',
         mockedState,
         [
@@ -47,7 +95,7 @@ describe('security reports actions', () => {
   describe('setBaseBlobPath', () => {
     it('should commit set head blob path', done => {
       testAction(
-        actions.setBaseBlobPath,
+        setBaseBlobPath,
         'path',
         mockedState,
         [
@@ -62,10 +110,64 @@ describe('security reports actions', () => {
     });
   });
 
+  describe('setVulnerabilityFeedbackPath', () => {
+    it('should commit set vulnerabulity feedback path', done => {
+      testAction(
+        setVulnerabilityFeedbackPath,
+        'path',
+        mockedState,
+        [
+          {
+            type: types.SET_VULNERABILITY_FEEDBACK_PATH,
+            payload: 'path',
+          },
+        ],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('setVulnerabilityFeedbackHelpPath', () => {
+    it('should commit set vulnerabulity feedback help path', done => {
+      testAction(
+        setVulnerabilityFeedbackHelpPath,
+        'path',
+        mockedState,
+        [
+          {
+            type: types.SET_VULNERABILITY_FEEDBACK_HELP_PATH,
+            payload: 'path',
+          },
+        ],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('setPipelineId', () => {
+    it('should commit set vulnerability feedback path', done => {
+      testAction(
+        setPipelineId,
+        123,
+        mockedState,
+        [
+          {
+            type: types.SET_PIPELINE_ID,
+            payload: 123,
+          },
+        ],
+        [],
+        done,
+      );
+    });
+  });
+
   describe('setSastHeadPath', () => {
     it('should commit set head blob path', done => {
       testAction(
-        actions.setSastHeadPath,
+        setSastHeadPath,
         'path',
         mockedState,
         [
@@ -83,7 +185,7 @@ describe('security reports actions', () => {
   describe('setSastBasePath', () => {
     it('should commit set head blob path', done => {
       testAction(
-        actions.setSastBasePath,
+        setSastBasePath,
         'path',
         mockedState,
         [
@@ -101,7 +203,7 @@ describe('security reports actions', () => {
   describe('requestSastReports', () => {
     it('should commit request mutation', done => {
       testAction(
-        actions.requestSastReports,
+        requestSastReports,
         null,
         mockedState,
         [
@@ -118,7 +220,7 @@ describe('security reports actions', () => {
   describe('receiveSastReports', () => {
     it('should commit request mutation', done => {
       testAction(
-        actions.receiveSastReports,
+        receiveSastReports,
         {},
         mockedState,
         [
@@ -136,7 +238,7 @@ describe('security reports actions', () => {
   describe('receiveSastError', () => {
     it('should commit sast error mutation', done => {
       testAction(
-        actions.receiveSastError,
+        receiveSastError,
         null,
         mockedState,
         [
@@ -155,12 +257,19 @@ describe('security reports actions', () => {
       it('should dispatch `receiveSastReports`', done => {
         mock.onGet('foo').reply(200, sastIssues);
         mock.onGet('bar').reply(200, sastIssuesBase);
+        mock
+          .onGet('vulnerabilities_path', {
+            params: {
+              category: 'sast',
+            },
+          })
+          .reply(200, sastFeedbacks);
 
         mockedState.sast.paths.head = 'foo';
         mockedState.sast.paths.base = 'bar';
-
+        mockedState.vulnerabilityFeedbackPath = 'vulnerabilities_path';
         testAction(
-          actions.fetchSastReports,
+          fetchSastReports,
           null,
           mockedState,
           [],
@@ -170,7 +279,7 @@ describe('security reports actions', () => {
             },
             {
               type: 'receiveSastReports',
-              payload: { head: sastIssues, base: sastIssuesBase },
+              payload: { head: sastIssues, base: sastIssuesBase, enrichData: sastFeedbacks },
             },
           ],
           done,
@@ -183,7 +292,7 @@ describe('security reports actions', () => {
         mockedState.sast.paths.base = 'bar';
 
         testAction(
-          actions.fetchSastReports,
+          fetchSastReports,
           null,
           mockedState,
           [],
@@ -203,11 +312,19 @@ describe('security reports actions', () => {
     describe('with head', () => {
       it('should dispatch `receiveSastReports`', done => {
         mock.onGet('foo').reply(200, sastIssues);
+        mock
+          .onGet('vulnerabilities_path', {
+            params: {
+              category: 'sast',
+            },
+          })
+          .reply(200, sastFeedbacks);
 
         mockedState.sast.paths.head = 'foo';
+        mockedState.vulnerabilityFeedbackPath = 'vulnerabilities_path';
 
         testAction(
-          actions.fetchSastReports,
+          fetchSastReports,
           null,
           mockedState,
           [],
@@ -217,7 +334,7 @@ describe('security reports actions', () => {
             },
             {
               type: 'receiveSastReports',
-              payload: { head: sastIssues, base: null },
+              payload: { head: sastIssues, base: null, enrichData: sastFeedbacks },
             },
           ],
           done,
@@ -229,7 +346,7 @@ describe('security reports actions', () => {
         mockedState.sast.paths.head = 'foo';
 
         testAction(
-          actions.fetchSastReports,
+          fetchSastReports,
           null,
           mockedState,
           [],
@@ -250,7 +367,7 @@ describe('security reports actions', () => {
   describe('setSastContainerHeadPath', () => {
     it('should commit set head blob path', done => {
       testAction(
-        actions.setSastContainerHeadPath,
+        setSastContainerHeadPath,
         'path',
         mockedState,
         [
@@ -268,7 +385,7 @@ describe('security reports actions', () => {
   describe('setSastContainerBasePath', () => {
     it('should commit set head blob path', done => {
       testAction(
-        actions.setSastContainerBasePath,
+        setSastContainerBasePath,
         'path',
         mockedState,
         [
@@ -286,7 +403,7 @@ describe('security reports actions', () => {
   describe('requestSastContainerReports', () => {
     it('should commit request mutation', done => {
       testAction(
-        actions.requestSastContainerReports,
+        requestSastContainerReports,
         null,
         mockedState,
         [
@@ -303,7 +420,7 @@ describe('security reports actions', () => {
   describe('receiveSastContainerReports', () => {
     it('should commit sast receive mutation', done => {
       testAction(
-        actions.receiveSastContainerReports,
+        receiveSastContainerReports,
         {},
         mockedState,
         [
@@ -321,7 +438,7 @@ describe('security reports actions', () => {
   describe('receiveSastContainerError', () => {
     it('should commit sast error mutation', done => {
       testAction(
-        actions.receiveSastContainerError,
+        receiveSastContainerError,
         null,
         mockedState,
         [
@@ -340,12 +457,20 @@ describe('security reports actions', () => {
       it('should dispatch `receiveSastContainerReports`', done => {
         mock.onGet('foo').reply(200, dockerReport);
         mock.onGet('bar').reply(200, dockerBaseReport);
+        mock
+          .onGet('vulnerabilities_path', {
+            params: {
+              category: 'container_scanning',
+            },
+          })
+          .reply(200, containerScanningFeedbacks);
 
+        mockedState.vulnerabilityFeedbackPath = 'vulnerabilities_path';
         mockedState.sastContainer.paths.head = 'foo';
         mockedState.sastContainer.paths.base = 'bar';
 
         testAction(
-          actions.fetchSastContainerReports,
+          fetchSastContainerReports,
           null,
           mockedState,
           [],
@@ -355,7 +480,11 @@ describe('security reports actions', () => {
             },
             {
               type: 'receiveSastContainerReports',
-              payload: { head: dockerReport, base: dockerBaseReport },
+              payload: {
+                head: dockerReport,
+                base: dockerBaseReport,
+                enrichData: containerScanningFeedbacks,
+              },
             },
           ],
           done,
@@ -368,7 +497,7 @@ describe('security reports actions', () => {
         mockedState.sastContainer.paths.base = 'bar';
 
         testAction(
-          actions.fetchSastContainerReports,
+          fetchSastContainerReports,
           null,
           mockedState,
           [],
@@ -388,11 +517,20 @@ describe('security reports actions', () => {
     describe('with head', () => {
       it('should dispatch `receiveSastContainerReports`', done => {
         mock.onGet('foo').reply(200, dockerReport);
+        mock
+          .onGet('vulnerabilities_path', {
+            params: {
+              category: 'container_scanning',
+            },
+          })
+          .reply(200, containerScanningFeedbacks);
+
+        mockedState.vulnerabilityFeedbackPath = 'vulnerabilities_path';
 
         mockedState.sastContainer.paths.head = 'foo';
 
         testAction(
-          actions.fetchSastContainerReports,
+          fetchSastContainerReports,
           null,
           mockedState,
           [],
@@ -402,7 +540,7 @@ describe('security reports actions', () => {
             },
             {
               type: 'receiveSastContainerReports',
-              payload: { head: dockerReport, base: null },
+              payload: { head: dockerReport, base: null, enrichData: containerScanningFeedbacks },
             },
           ],
           done,
@@ -414,7 +552,7 @@ describe('security reports actions', () => {
         mockedState.sastContainer.paths.head = 'foo';
 
         testAction(
-          actions.fetchSastContainerReports,
+          fetchSastContainerReports,
           null,
           mockedState,
           [],
@@ -435,7 +573,7 @@ describe('security reports actions', () => {
   describe('setDastHeadPath', () => {
     it('should commit set head blob path', done => {
       testAction(
-        actions.setDastHeadPath,
+        setDastHeadPath,
         'path',
         mockedState,
         [
@@ -453,7 +591,7 @@ describe('security reports actions', () => {
   describe('setDastBasePath', () => {
     it('should commit set head blob path', done => {
       testAction(
-        actions.setDastBasePath,
+        setDastBasePath,
         'path',
         mockedState,
         [
@@ -471,7 +609,7 @@ describe('security reports actions', () => {
   describe('requestDastReports', () => {
     it('should commit request mutation', done => {
       testAction(
-        actions.requestDastReports,
+        requestDastReports,
         null,
         mockedState,
         [
@@ -488,7 +626,7 @@ describe('security reports actions', () => {
   describe('receiveDastReports', () => {
     it('should commit sast receive mutation', done => {
       testAction(
-        actions.receiveDastReports,
+        receiveDastReports,
         {},
         mockedState,
         [
@@ -506,7 +644,7 @@ describe('security reports actions', () => {
   describe('receiveDastError', () => {
     it('should commit sast error mutation', done => {
       testAction(
-        actions.receiveDastError,
+        receiveDastError,
         null,
         mockedState,
         [
@@ -526,11 +664,20 @@ describe('security reports actions', () => {
         mock.onGet('foo').reply(200, dast);
         mock.onGet('bar').reply(200, dastBase);
 
+        mock
+          .onGet('vulnerabilities_path', {
+            params: {
+              category: 'dast',
+            },
+          })
+          .reply(200, dastFeedbacks);
+
+        mockedState.vulnerabilityFeedbackPath = 'vulnerabilities_path';
         mockedState.dast.paths.head = 'foo';
         mockedState.dast.paths.base = 'bar';
 
         testAction(
-          actions.fetchDastReports,
+          fetchDastReports,
           null,
           mockedState,
           [],
@@ -540,7 +687,7 @@ describe('security reports actions', () => {
             },
             {
               type: 'receiveDastReports',
-              payload: { head: dast, base: dastBase },
+              payload: { head: dast, base: dastBase, enrichData: dastFeedbacks },
             },
           ],
           done,
@@ -553,7 +700,7 @@ describe('security reports actions', () => {
         mockedState.dast.paths.base = 'bar';
 
         testAction(
-          actions.fetchDastReports,
+          fetchDastReports,
           null,
           mockedState,
           [],
@@ -573,10 +720,19 @@ describe('security reports actions', () => {
     describe('with head', () => {
       it('should dispatch `receiveSastContainerReports`', done => {
         mock.onGet('foo').reply(200, dast);
+        mock
+          .onGet('vulnerabilities_path', {
+            params: {
+              category: 'dast',
+            },
+          })
+          .reply(200, dastFeedbacks);
+
+        mockedState.vulnerabilityFeedbackPath = 'vulnerabilities_path';
         mockedState.dast.paths.head = 'foo';
 
         testAction(
-          actions.fetchDastReports,
+          fetchDastReports,
           null,
           mockedState,
           [],
@@ -586,7 +742,7 @@ describe('security reports actions', () => {
             },
             {
               type: 'receiveDastReports',
-              payload: { head: dast, base: null },
+              payload: { head: dast, base: null, enrichData: dastFeedbacks },
             },
           ],
           done,
@@ -598,7 +754,7 @@ describe('security reports actions', () => {
         mockedState.dast.paths.head = 'foo';
 
         testAction(
-          actions.fetchDastReports,
+          fetchDastReports,
           null,
           mockedState,
           [],
@@ -619,7 +775,7 @@ describe('security reports actions', () => {
   describe('setDependencyScanningHeadPath', () => {
     it('should commit set head blob path', done => {
       testAction(
-        actions.setDependencyScanningHeadPath,
+        setDependencyScanningHeadPath,
         'path',
         mockedState,
         [
@@ -637,7 +793,7 @@ describe('security reports actions', () => {
   describe('setDependencyScanningBasePath', () => {
     it('should commit set head blob path', done => {
       testAction(
-        actions.setDependencyScanningBasePath,
+        setDependencyScanningBasePath,
         'path',
         mockedState,
         [
@@ -655,7 +811,7 @@ describe('security reports actions', () => {
   describe('requestDependencyScanningReports', () => {
     it('should commit request mutation', done => {
       testAction(
-        actions.requestDependencyScanningReports,
+        requestDependencyScanningReports,
         null,
         mockedState,
         [
@@ -672,7 +828,7 @@ describe('security reports actions', () => {
   describe('receiveDependencyScanningReports', () => {
     it('should commit sast receive mutation', done => {
       testAction(
-        actions.receiveDependencyScanningReports,
+        receiveDependencyScanningReports,
         {},
         mockedState,
         [
@@ -690,7 +846,7 @@ describe('security reports actions', () => {
   describe('receiveDependencyScanningError', () => {
     it('should commit sast error mutation', done => {
       testAction(
-        actions.receiveDependencyScanningError,
+        receiveDependencyScanningError,
         null,
         mockedState,
         [
@@ -709,12 +865,20 @@ describe('security reports actions', () => {
       it('should dispatch `receiveDependencyScanningReports`', done => {
         mock.onGet('foo').reply(200, sastIssues);
         mock.onGet('bar').reply(200, sastIssuesBase);
+        mock
+          .onGet('vulnerabilities_path', {
+            params: {
+              category: 'dependency_scanning',
+            },
+          })
+          .reply(200, sastFeedbacks);
 
+        mockedState.vulnerabilityFeedbackPath = 'vulnerabilities_path';
         mockedState.dependencyScanning.paths.head = 'foo';
         mockedState.dependencyScanning.paths.base = 'bar';
 
         testAction(
-          actions.fetchDependencyScanningReports,
+          fetchDependencyScanningReports,
           null,
           mockedState,
           [],
@@ -724,7 +888,7 @@ describe('security reports actions', () => {
             },
             {
               type: 'receiveDependencyScanningReports',
-              payload: { head: sastIssues, base: sastIssuesBase },
+              payload: { head: sastIssues, base: sastIssuesBase, enrichData: sastFeedbacks },
             },
           ],
           done,
@@ -737,7 +901,7 @@ describe('security reports actions', () => {
         mockedState.dependencyScanning.paths.base = 'bar';
 
         testAction(
-          actions.fetchDependencyScanningReports,
+          fetchDependencyScanningReports,
           null,
           mockedState,
           [],
@@ -757,10 +921,19 @@ describe('security reports actions', () => {
     describe('with head', () => {
       it('should dispatch `receiveDependencyScanningReports`', done => {
         mock.onGet('foo').reply(200, sastIssues);
+        mock
+          .onGet('vulnerabilities_path', {
+            params: {
+              category: 'dependency_scanning',
+            },
+          })
+          .reply(200, sastFeedbacks);
+
+        mockedState.vulnerabilityFeedbackPath = 'vulnerabilities_path';
         mockedState.dependencyScanning.paths.head = 'foo';
 
         testAction(
-          actions.fetchDependencyScanningReports,
+          fetchDependencyScanningReports,
           null,
           mockedState,
           [],
@@ -770,7 +943,7 @@ describe('security reports actions', () => {
             },
             {
               type: 'receiveDependencyScanningReports',
-              payload: { head: sastIssues, base: null },
+              payload: { head: sastIssues, base: null, enrichData: sastFeedbacks },
             },
           ],
           done,
@@ -782,7 +955,7 @@ describe('security reports actions', () => {
         mockedState.dependencyScanning.paths.head = 'foo';
 
         testAction(
-          actions.fetchDependencyScanningReports,
+          fetchDependencyScanningReports,
           null,
           mockedState,
           [],
@@ -797,6 +970,596 @@ describe('security reports actions', () => {
           done,
         );
       });
+    });
+  });
+
+  describe('openModal', () => {
+    it('dispatches setModalData action', done => {
+      testAction(
+        openModal,
+        { id: 1 },
+        mockedState,
+        [],
+        [
+          {
+            type: 'setModalData',
+            payload: { id: 1 },
+          },
+        ],
+        done,
+      );
+    });
+  });
+
+  describe('setModalData', () => {
+    it('commits set issue modal data', done => {
+      testAction(
+        setModalData,
+        { id: 1 },
+        mockedState,
+        [
+          {
+            type: types.SET_ISSUE_MODAL_DATA,
+            payload: { id: 1 },
+          },
+        ],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('requestDismissIssue', () => {
+    it('commits request dismiss issue', done => {
+      testAction(
+        requestDismissIssue,
+        null,
+        mockedState,
+        [
+          {
+            type: types.REQUEST_DISMISS_ISSUE,
+          },
+        ],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('receiveDismissIssue', () => {
+    it('commits receive dismiss issue', done => {
+      testAction(
+        receiveDismissIssue,
+        null,
+        mockedState,
+        [
+          {
+            type: types.RECEIVE_DISMISS_ISSUE_SUCCESS,
+          },
+        ],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('receiveDismissIssueError', () => {
+    it('commits receive dismiss issue error with payload', done => {
+      testAction(
+        receiveDismissIssueError,
+        'error',
+        mockedState,
+        [
+          {
+            type: types.RECEIVE_DISMISS_ISSUE_ERROR,
+            payload: 'error',
+          },
+        ],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('dismissIssue', () => {
+    describe('with success', () => {
+      let dismissalFeedback;
+      beforeEach(() => {
+        dismissalFeedback = {
+          foo: 'bar',
+        };
+        mock.onPost('dismiss_issue_path').reply(200, dismissalFeedback);
+        mockedState.vulnerabilityFeedbackPath = 'dismiss_issue_path';
+      });
+
+      it('with success should dispatch `receiveDismissIssue`', done => {
+        testAction(
+          dismissIssue,
+          null,
+          mockedState,
+          [],
+          [
+            {
+              type: 'requestDismissIssue',
+            },
+            {
+              type: 'receiveDismissIssue',
+            },
+          ],
+          done,
+        );
+      });
+
+      it('should dispatch `updateSastIssue` for sast issue', done => {
+        mockedState.modal.vulnerability.category = 'sast';
+        const expectedUpdatePayload = {
+          ...mockedState.modal.vulnerability,
+          isDismissed: true,
+          dismissalFeedback,
+        };
+
+        testAction(
+          dismissIssue,
+          null,
+          mockedState,
+          [],
+          [
+            {
+              type: 'requestDismissIssue',
+            },
+            {
+              type: 'receiveDismissIssue',
+            },
+            {
+              type: 'updateSastIssue',
+              payload: expectedUpdatePayload,
+            },
+          ],
+          done,
+        );
+      });
+
+      it('should dispatch `updateDependencyScanningIssue` for dependency scanning issue', done => {
+        mockedState.modal.vulnerability.category = 'dependency_scanning';
+        const expectedUpdatePayload = {
+          ...mockedState.modal.vulnerability,
+          isDismissed: true,
+          dismissalFeedback,
+        };
+
+        testAction(
+          dismissIssue,
+          null,
+          mockedState,
+          [],
+          [
+            {
+              type: 'requestDismissIssue',
+            },
+            {
+              type: 'receiveDismissIssue',
+            },
+            {
+              type: 'updateDependencyScanningIssue',
+              payload: expectedUpdatePayload,
+            },
+          ],
+          done,
+        );
+      });
+
+      it('should dispatch `updateContainerScanningIssue` for container scanning issue', done => {
+        mockedState.modal.vulnerability.category = 'container_scanning';
+        const expectedUpdatePayload = {
+          ...mockedState.modal.vulnerability,
+          isDismissed: true,
+          dismissalFeedback,
+        };
+
+        testAction(
+          dismissIssue,
+          null,
+          mockedState,
+          [],
+          [
+            {
+              type: 'requestDismissIssue',
+            },
+            {
+              type: 'receiveDismissIssue',
+            },
+            {
+              type: 'updateContainerScanningIssue',
+              payload: expectedUpdatePayload,
+            },
+          ],
+          done,
+        );
+      });
+
+      it('should dispatch `updateDastIssue` for dast issue', done => {
+        mockedState.modal.vulnerability.category = 'dast';
+        const expectedUpdatePayload = {
+          ...mockedState.modal.vulnerability,
+          isDismissed: true,
+          dismissalFeedback,
+        };
+
+        testAction(
+          dismissIssue,
+          null,
+          mockedState,
+          [],
+          [
+            {
+              type: 'requestDismissIssue',
+            },
+            {
+              type: 'receiveDismissIssue',
+            },
+            {
+              type: 'updateDastIssue',
+              payload: expectedUpdatePayload,
+            },
+          ],
+          done,
+        );
+      });
+    });
+
+    it('with error should dispatch `receiveDismissIssueError`', done => {
+      mock.onPost('dismiss_issue_path').reply(500, {});
+      mockedState.vulnerabilityFeedbackPath = 'dismiss_issue_path';
+
+      testAction(
+        dismissIssue,
+        null,
+        mockedState,
+        [],
+        [
+          {
+            type: 'requestDismissIssue',
+          },
+          {
+            type: 'receiveDismissIssueError',
+          },
+        ],
+        done,
+      );
+    });
+  });
+
+  describe('revertDismissIssue', () => {
+    describe('with success', () => {
+      beforeEach(() => {
+        mock.onDelete('dismiss_issue_path/123').reply(200, {});
+        mockedState.modal.vulnerability.dismissalFeedback = { id: 123 };
+        mockedState.vulnerabilityFeedbackPath = 'dismiss_issue_path';
+      });
+
+      it('should dispatch `receiveDismissIssue`', done => {
+        testAction(
+          revertDismissIssue,
+          null,
+          mockedState,
+          [],
+          [
+            {
+              type: 'requestDismissIssue',
+            },
+            {
+              type: 'receiveDismissIssue',
+            },
+          ],
+          done,
+        );
+      });
+
+      it('should dispatch `updateSastIssue` for sast issue', done => {
+        mockedState.modal.vulnerability.category = 'sast';
+        const expectedUpdatePayload = {
+          ...mockedState.modal.vulnerability,
+          isDismissed: false,
+          dismissalFeedback: null,
+        };
+
+        testAction(
+          revertDismissIssue,
+          null,
+          mockedState,
+          [],
+          [
+            {
+              type: 'requestDismissIssue',
+            },
+            {
+              type: 'receiveDismissIssue',
+            },
+            {
+              type: 'updateSastIssue',
+              payload: expectedUpdatePayload,
+            },
+          ],
+          done,
+        );
+      });
+
+      it('should dispatch `updateDependencyScanningIssue` for dependency scanning issue', done => {
+        mockedState.modal.vulnerability.category = 'dependency_scanning';
+        const expectedUpdatePayload = {
+          ...mockedState.modal.vulnerability,
+          isDismissed: false,
+          dismissalFeedback: null,
+        };
+
+        testAction(
+          revertDismissIssue,
+          null,
+          mockedState,
+          [],
+          [
+            {
+              type: 'requestDismissIssue',
+            },
+            {
+              type: 'receiveDismissIssue',
+            },
+            {
+              type: 'updateDependencyScanningIssue',
+              payload: expectedUpdatePayload,
+            },
+          ],
+          done,
+        );
+      });
+
+      it('should dispatch `updateContainerScanningIssue` for container scanning issue', done => {
+        mockedState.modal.vulnerability.category = 'container_scanning';
+        const expectedUpdatePayload = {
+          ...mockedState.modal.vulnerability,
+          isDismissed: false,
+          dismissalFeedback: null,
+        };
+
+        testAction(
+          revertDismissIssue,
+          null,
+          mockedState,
+          [],
+          [
+            {
+              type: 'requestDismissIssue',
+            },
+            {
+              type: 'receiveDismissIssue',
+            },
+            {
+              type: 'updateContainerScanningIssue',
+              payload: expectedUpdatePayload,
+            },
+          ],
+          done,
+        );
+      });
+
+      it('should dispatch `updateDastIssue` for dast issue', done => {
+        mockedState.modal.vulnerability.category = 'dast';
+        const expectedUpdatePayload = {
+          ...mockedState.modal.vulnerability,
+          isDismissed: false,
+          dismissalFeedback: null,
+        };
+
+        testAction(
+          revertDismissIssue,
+          null,
+          mockedState,
+          [],
+          [
+            {
+              type: 'requestDismissIssue',
+            },
+            {
+              type: 'receiveDismissIssue',
+            },
+            {
+              type: 'updateDastIssue',
+              payload: expectedUpdatePayload,
+            },
+          ],
+          done,
+        );
+      });
+    });
+
+    it('with error should dispatch `receiveDismissIssueError`', done => {
+      mock.onDelete('dismiss_issue_path/123').reply(500, {});
+      mockedState.modal.vulnerability.dismissalFeedback = { id: 123 };
+      mockedState.vulnerabilityFeedbackPath = 'dismiss_issue_path';
+
+      testAction(
+        revertDismissIssue,
+        null,
+        mockedState,
+        [],
+        [
+          {
+            type: 'requestDismissIssue',
+          },
+          {
+            type: 'receiveDismissIssueError',
+          },
+        ],
+        done,
+      );
+    });
+  });
+
+  describe('requestCreateIssue', () => {
+    it('commits request create issue', done => {
+      testAction(
+        requestCreateIssue,
+        null,
+        mockedState,
+        [
+          {
+            type: types.REQUEST_CREATE_ISSUE,
+          },
+        ],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('receiveCreateIssue', () => {
+    it('commits receive create issue', done => {
+      testAction(
+        receiveCreateIssue,
+        null,
+        mockedState,
+        [
+          {
+            type: types.RECEIVE_CREATE_ISSUE_SUCCESS,
+          },
+        ],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('receiveCreateIssueError', () => {
+    it('commits receive create issue error with payload', done => {
+      testAction(
+        receiveCreateIssueError,
+        'error',
+        mockedState,
+        [
+          {
+            type: types.RECEIVE_CREATE_ISSUE_ERROR,
+            payload: 'error',
+          },
+        ],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('createNewIssue', () => {
+    beforeEach(() => {
+      spyOnDependency(actions, 'visitUrl');
+    });
+
+    it('with success should dispatch `receiveDismissIssue`', done => {
+      mock.onPost('create_issue_path').reply(200, { issue_path: 'new_issue' });
+      mockedState.vulnerabilityFeedbackPath = 'create_issue_path';
+
+      testAction(
+        createNewIssue,
+        null,
+        mockedState,
+        [],
+        [
+          {
+            type: 'requestCreateIssue',
+          },
+          {
+            type: 'receiveCreateIssue',
+          },
+        ],
+        done,
+      );
+    });
+
+    it('with error should dispatch `receiveCreateIssueError`', done => {
+      mock.onPost('create_issue_path').reply(500, {});
+      mockedState.vulnerabilityFeedbackPath = 'create_issue_path';
+
+      testAction(
+        createNewIssue,
+        null,
+        mockedState,
+        [],
+        [
+          {
+            type: 'requestCreateIssue',
+          },
+          {
+            type: 'receiveCreateIssueError',
+          },
+        ],
+        done,
+      );
+    });
+  });
+
+  describe('updateSastIssue', () => {
+    it('commits update sast issue', done => {
+      testAction(
+        updateSastIssue,
+        null,
+        mockedState,
+        [
+          {
+            type: types.UPDATE_SAST_ISSUE,
+          },
+        ],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('updateDependencyScanningIssue', () => {
+    it('commits update dependency scanning issue', done => {
+      testAction(
+        updateDependencyScanningIssue,
+        null,
+        mockedState,
+        [
+          {
+            type: types.UPDATE_DEPENDENCY_SCANNING_ISSUE,
+          },
+        ],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('updateContainerScanningIssue', () => {
+    it('commits update container scanning issue', done => {
+      testAction(
+        updateContainerScanningIssue,
+        null,
+        mockedState,
+        [
+          {
+            type: types.UPDATE_CONTAINER_SCANNING_ISSUE,
+          },
+        ],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('updateDastIssue', () => {
+    it('commits update dast issue', done => {
+      testAction(
+        updateDastIssue,
+        null,
+        mockedState,
+        [
+          {
+            type: types.UPDATE_DAST_ISSUE,
+          },
+        ],
+        [],
+        done,
+      );
     });
   });
 });

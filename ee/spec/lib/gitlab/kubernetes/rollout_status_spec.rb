@@ -7,6 +7,10 @@ describe Gitlab::Kubernetes::RolloutStatus do
   let(:specs) { specs_all_finished }
   let(:specs_none) { [] }
 
+  let(:pods) do
+    create_pods(name: "one", count: 3, track: 'stable') + create_pods(name: "two", count: 3, track: "canary")
+  end
+
   let(:specs_all_finished) do
     [
       kube_deployment(name: 'one'),
@@ -18,11 +22,10 @@ describe Gitlab::Kubernetes::RolloutStatus do
     [
       kube_deployment(name: 'one'),
       kube_deployment(name: 'two', track: track)
-        .deep_merge('status' => { 'availableReplicas' => 0 })
     ]
   end
 
-  subject(:rollout_status) { described_class.from_specs(*specs) }
+  subject(:rollout_status) { described_class.from_deployments(*specs, pods: pods) }
 
   describe '#deployments' do
     it 'stores the deployments' do
@@ -34,14 +37,20 @@ describe Gitlab::Kubernetes::RolloutStatus do
 
   describe '#instances' do
     context 'for stable track' do
+      let(:track) { "any" }
+
+      let(:pods) do
+        create_pods(name: "one", count: 3, track: 'stable') + create_pods(name: "two", count: 3, track: "any")
+      end
+
       it 'stores the union of deployment instances' do
         expected = [
-          { status: 'finished', tooltip: 'one (pod 0) Finished', track: 'stable', stable: true },
-          { status: 'finished', tooltip: 'one (pod 1) Finished', track: 'stable', stable: true },
-          { status: 'finished', tooltip: 'one (pod 2) Finished', track: 'stable', stable: true },
-          { status: 'finished', tooltip: 'two (pod 0) Finished', track: 'stable', stable: true },
-          { status: 'finished', tooltip: 'two (pod 1) Finished', track: 'stable', stable: true },
-          { status: 'finished', tooltip: 'two (pod 2) Finished', track: 'stable', stable: true }
+          { status: 'running', tooltip: 'two (two) Running', track: 'any', stable: false },
+          { status: 'running', tooltip: 'two (two) Running', track: 'any', stable: false },
+          { status: 'running', tooltip: 'two (two) Running', track: 'any', stable: false },
+          { status: 'running', tooltip: 'one (one) Running', track: 'stable', stable: true },
+          { status: 'running', tooltip: 'one (one) Running', track: 'stable', stable: true },
+          { status: 'running', tooltip: 'one (one) Running', track: 'stable', stable: true }
         ]
 
         expect(rollout_status.instances).to eq(expected)
@@ -51,14 +60,18 @@ describe Gitlab::Kubernetes::RolloutStatus do
     context 'for stable track' do
       let(:track) { 'canary' }
 
+      let(:pods) do
+        create_pods(name: "one", count: 3, track: 'stable') + create_pods(name: "two", count: 3, track: track)
+      end
+
       it 'stores the union of deployment instances' do
         expected = [
-          { status: 'finished', tooltip: 'two (pod 0) Finished', track: 'canary', stable: false },
-          { status: 'finished', tooltip: 'two (pod 1) Finished', track: 'canary', stable: false },
-          { status: 'finished', tooltip: 'two (pod 2) Finished', track: 'canary', stable: false },
-          { status: 'finished', tooltip: 'one (pod 0) Finished', track: 'stable', stable: true },
-          { status: 'finished', tooltip: 'one (pod 1) Finished', track: 'stable', stable: true },
-          { status: 'finished', tooltip: 'one (pod 2) Finished', track: 'stable', stable: true }
+          { status: 'running', tooltip: 'two (two) Running', track: 'canary', stable: false },
+          { status: 'running', tooltip: 'two (two) Running', track: 'canary', stable: false },
+          { status: 'running', tooltip: 'two (two) Running', track: 'canary', stable: false },
+          { status: 'running', tooltip: 'one (one) Running', track: 'stable', stable: true },
+          { status: 'running', tooltip: 'one (one) Running', track: 'stable', stable: true },
+          { status: 'running', tooltip: 'one (one) Running', track: 'stable', stable: true }
         ]
 
         expect(rollout_status.instances).to eq(expected)
@@ -74,6 +87,12 @@ describe Gitlab::Kubernetes::RolloutStatus do
     end
 
     context 'when half of the instances are finished' do
+      let(:track) { "canary" }
+
+      let(:pods) do
+        create_pods(name: "one", count: 3, track: 'stable') + create_pods(name: "two", count: 3, track: track, status: "Pending")
+      end
+
       let(:specs) { specs_half_finished }
 
       it { is_expected.to eq(50) }
@@ -88,6 +107,12 @@ describe Gitlab::Kubernetes::RolloutStatus do
     end
 
     context 'when half of the instances are finished' do
+      let(:track) { "canary" }
+
+      let(:pods) do
+        create_pods(name: "one", count: 3, track: 'stable') + create_pods(name: "two", count: 3, track: track, status: "Pending")
+      end
+
       let(:specs) { specs_half_finished }
 
       it { is_expected.to be_falsy}
@@ -122,5 +147,9 @@ describe Gitlab::Kubernetes::RolloutStatus do
     subject { described_class.loading }
 
     it { is_expected.to be_loading }
+  end
+
+  def create_pods(name:, count:, track: nil, status: 'Running' )
+    Array.new(count, kube_pod(name: name, status: status, track: track))
   end
 end

@@ -85,13 +85,6 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     render layout: false
   end
 
-  def update_branches
-    @target_project = selected_target_project
-    @target_branches = @target_project ? @target_project.repository.branch_names : []
-
-    render layout: false
-  end
-
   private
 
   def build_merge_request

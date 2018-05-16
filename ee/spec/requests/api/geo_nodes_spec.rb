@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::GeoNodes, :geo, api: true do
+describe API::GeoNodes, :geo, :prometheus, api: true do
   include ApiHelpers
   include ::EE::GeoHelpers
 

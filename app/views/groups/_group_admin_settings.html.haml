@@ -1,29 +1,28 @@
-- if current_user.admin?
-  .form-group
-    = f.label :lfs_enabled, 'Large File Storage', class: 'control-label'
-    .col-sm-10
-      .checkbox
-        = f.label :lfs_enabled do
-          = f.check_box :lfs_enabled, checked: @group.lfs_enabled?
-          %strong
-            Allow projects within this group to use Git LFS
-            = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
-          %br/
-          %span.descr This setting can be overridden in each project.
+.form-group
+  = f.label :lfs_enabled, 'Large File Storage', class: 'control-label'
+  .col-sm-10
+    .checkbox
+      = f.label :lfs_enabled do
+        = f.check_box :lfs_enabled, checked: @group.lfs_enabled?
+        %strong
+          Allow projects within this group to use Git LFS
+          = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
+        %br/
+        %span.descr This setting can be overridden in each project.
 
-- if can? current_user, :admin_group, @group
-  = render partial: 'groups/ee/project_creation_level', locals: { form: f, group: @group }
-  .form-group
-    = f.label :require_two_factor_authentication, 'Two-factor authentication', class: 'control-label col-sm-2'
-    .col-sm-10
-      .checkbox
-        = f.label :require_two_factor_authentication do
-          = f.check_box :require_two_factor_authentication
-          %strong
-            Require all users in this group to setup Two-factor authentication
-            = link_to icon('question-circle'), help_page_path('security/two_factor_authentication', anchor: 'enforcing-2fa-for-all-users-in-a-group')
-  .form-group
-    .col-sm-offset-2.col-sm-10
-      .checkbox
-        = f.text_field :two_factor_grace_period, class: 'form-control'
-        .help-block Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication
+= render partial: 'groups/ee/project_creation_level', locals: { form: f, group: @group }
+
+.form-group
+  = f.label :require_two_factor_authentication, 'Two-factor authentication', class: 'control-label col-sm-2'
+  .col-sm-10
+    .checkbox
+      = f.label :require_two_factor_authentication do
+        = f.check_box :require_two_factor_authentication
+        %strong
+          Require all users in this group to setup Two-factor authentication
+          = link_to icon('question-circle'), help_page_path('security/two_factor_authentication', anchor: 'enforcing-2fa-for-all-users-in-a-group')
+.form-group
+  .col-sm-offset-2.col-sm-10
+    .checkbox
+      = f.text_field :two_factor_grace_period, class: 'form-control'
+      .help-block Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication

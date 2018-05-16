@@ -176,6 +176,7 @@ module Geo
     def fail_registry!(message, error, attrs = {})
       log_error(message, error)
 
+      attrs["resync_#{type}"] = true
       attrs["last_#{type}_sync_failure"] = "#{message}: #{error.message}"
       attrs["#{type}_retry_count"] = retry_count + 1
 
@@ -220,7 +221,7 @@ module Geo
     end
 
     def clean_up_temporary_repository
-      exists = gitlab_shell.exists?(project.repository_storage, disk_path_temp)
+      exists = gitlab_shell.exists?(project.repository_storage, disk_path_temp + '.git')
 
       if exists && !gitlab_shell.remove_repository(project.repository_storage, disk_path_temp)
         raise Gitlab::Shell::Error, "Temporary #{type} can not be removed"

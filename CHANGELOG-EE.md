@@ -1,5 +1,14 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.7.3 (2018-05-02)
+
+### Fixed (3 changes)
+
+- Geo - Fix undefined method pending_delete for nil class. !5470
+- Geo: Admin page will not crash with 500 because of InvalidSignatureTimeError. !5495
+- Fix DB LB errors when escaping input.
+
+
 ## 10.7.2 (2018-04-25)
 
 - No changes.

@@ -67,8 +67,8 @@
         // Avoid the potential for the real-time data to say APPLICATION_INSTALLABLE but
         // we already made a request to install and are just waiting for the real-time
         // to sync up.
-        return (this.status !== APPLICATION_INSTALLABLE &&
-          this.status !== APPLICATION_ERROR) ||
+        return (this.status !== APPLICATION_INSTALLABLE
+          && this.status !== APPLICATION_ERROR) ||
           this.requestStatus === REQUEST_LOADING ||
           this.requestStatus === REQUEST_SUCCESS;
       },
@@ -179,7 +179,7 @@
       role="row"
     >
       <div
-        class="alert alert-danger alert-block append-bottom-0 table-section section-100"
+        class="alert alert-danger alert-block append-bottom-0"
         role="gridcell"
       >
         <div>

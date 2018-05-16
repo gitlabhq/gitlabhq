@@ -1,5 +1,8 @@
+import sha1 from 'sha1';
 import {
+  findIssueIndex,
   parseSastIssues,
+  parseDependencyScanningIssues,
   parseSastContainer,
   parseDastIssues,
   filterByKey,
@@ -7,20 +10,93 @@ import {
   textBuilder,
   statusIcon,
 } from 'ee/vue_shared/security_reports/store/utils';
-import { sastIssues, dockerReport, dast, parsedDast } from '../mock_data';
+import {
+  sastIssues,
+  sastFeedbacks,
+  dependencyScanningIssues,
+  dependencyScanningFeedbacks,
+  dockerReport,
+  containerScanningFeedbacks,
+  dast,
+  dastFeedbacks,
+  parsedDast,
+} from '../mock_data';
 
 describe('security reports utils', () => {
+  describe('findIssueIndex', () => {
+    let issuesList;
+
+    beforeEach(() => {
+      issuesList = [
+        { project_fingerprint: 'abc123' },
+        { project_fingerprint: 'abc456' },
+        { project_fingerprint: 'abc789' },
+      ];
+    });
+
+    it('returns index of found issue', () => {
+      const issue = {
+        project_fingerprint: 'abc456',
+      };
+
+      expect(findIssueIndex(issuesList, issue)).toEqual(1);
+    });
+
+    it('returns -1 when issue is not found', () => {
+      const issue = {
+        project_fingerprint: 'foo',
+      };
+
+      expect(findIssueIndex(issuesList, issue)).toEqual(-1);
+    });
+  });
+
   describe('parseSastIssues', () => {
     it('should parse the received issues', () => {
-      const security = parseSastIssues(sastIssues, 'path')[0];
-      expect(security.name).toEqual(sastIssues[0].message);
-      expect(security.path).toEqual(sastIssues[0].file);
+      const parsed = parseSastIssues(sastIssues, [], 'path')[0];
+      expect(parsed.name).toEqual(sastIssues[0].message);
+      expect(parsed.path).toEqual(sastIssues[0].file);
+      expect(parsed.project_fingerprint).toEqual(sha1(sastIssues[0].cve));
+    });
+
+    it('includes vulnerability feedbacks', () => {
+      const parsed = parseSastIssues(
+        sastIssues,
+        sastFeedbacks,
+        'path',
+      )[0];
+      expect(parsed.hasIssue).toEqual(true);
+      expect(parsed.isDismissed).toEqual(true);
+      expect(parsed.dismissalFeedback).toEqual(sastFeedbacks[0]);
+      expect(parsed.issueFeedback).toEqual(sastFeedbacks[1]);
+    });
+  });
+
+  describe('parseDependencyScanningIssues', () => {
+    it('should parse the received issues', () => {
+      const parsed = parseDependencyScanningIssues(dependencyScanningIssues, [], 'path')[0];
+      expect(parsed.name).toEqual(dependencyScanningIssues[0].message);
+      expect(parsed.path).toEqual(dependencyScanningIssues[0].file);
+      expect(parsed.project_fingerprint).toEqual(sha1(dependencyScanningIssues[0].cve));
+    });
+
+    it('includes vulnerability feedbacks', () => {
+      const parsed = parseDependencyScanningIssues(
+        dependencyScanningIssues,
+        dependencyScanningFeedbacks,
+        'path',
+      )[0];
+      expect(parsed.hasIssue).toEqual(true);
+      expect(parsed.isDismissed).toEqual(true);
+      expect(parsed.dismissalFeedback).toEqual(dependencyScanningFeedbacks[0]);
+      expect(parsed.issueFeedback).toEqual(dependencyScanningFeedbacks[1]);
     });
   });
 
   describe('parseSastContainer', () => {
     it('parses sast container issues', () => {
       const parsed = parseSastContainer(dockerReport.vulnerabilities)[0];
+      const issue = dockerReport.vulnerabilities[0];
 
       expect(parsed.name).toEqual(dockerReport.vulnerabilities[0].vulnerability);
       expect(parsed.priority).toEqual(dockerReport.vulnerabilities[0].severity);
@@ -30,12 +106,36 @@ describe('security reports utils', () => {
           dockerReport.vulnerabilities[0].vulnerability
         }`,
       );
+      expect(parsed.project_fingerprint).toEqual(
+        sha1(`${issue.namespace}:${issue.vulnerability}:${issue.featurename}:${issue.featureversion}`));
+    });
+
+    it('includes vulnerability feedbacks', () => {
+      const parsed = parseSastContainer(
+        dockerReport.vulnerabilities,
+        containerScanningFeedbacks,
+      )[0];
+      expect(parsed.hasIssue).toEqual(true);
+      expect(parsed.isDismissed).toEqual(true);
+      expect(parsed.dismissalFeedback).toEqual(containerScanningFeedbacks[0]);
+      expect(parsed.issueFeedback).toEqual(containerScanningFeedbacks[1]);
     });
   });
 
   describe('parseDastIssues', () => {
-    it('parsed dast report', () => {
+    it('parses dast report', () => {
       expect(parseDastIssues(dast.site.alerts)).toEqual(parsedDast);
+    });
+
+    it('includes vulnerability feedbacks', () => {
+      const parsed = parseDastIssues(
+        dast.site.alerts,
+        dastFeedbacks,
+      )[0];
+      expect(parsed.hasIssue).toEqual(true);
+      expect(parsed.isDismissed).toEqual(true);
+      expect(parsed.dismissalFeedback).toEqual(dastFeedbacks[0]);
+      expect(parsed.issueFeedback).toEqual(dastFeedbacks[1]);
     });
   });
 
@@ -64,7 +164,9 @@ describe('security reports utils', () => {
   describe('textBuilder', () => {
     describe('with no issues', () => {
       it('should return no vulnerabiltities text', () => {
-        expect(textBuilder('', { head: 'foo', base: 'bar' }, 0, 0, 0)).toEqual(' detected no security vulnerabilities');
+        expect(textBuilder('', { head: 'foo', base: 'bar' }, 0, 0, 0)).toEqual(
+          ' detected no security vulnerabilities',
+        );
       });
     });
 

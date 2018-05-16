@@ -6,7 +6,7 @@ describe ProjectWiki, :elastic do
   end
 
   it "searches wiki page" do
-    project = create :project
+    project = create :project, :wiki_repo
 
     Sidekiq::Testing.inline! do
       project.wiki.create_page("index_page", "Bla bla term1")

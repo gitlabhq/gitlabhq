@@ -1,5 +1,7 @@
 module Emails
   module Notes
+    prepend Emails::EE::Notes
+
     def note_commit_email(recipient_id, note_id)
       setup_note_mail(note_id, recipient_id)
 
@@ -43,7 +45,7 @@ module Emails
     private
 
     def note_target_url_options
-      [@project, @note.noteable, anchor: "note_#{@note.id}"]
+      [@project || @group, @note.noteable, anchor: "note_#{@note.id}"]
     end
 
     def note_thread_options(recipient_id)
@@ -58,8 +60,9 @@ module Emails
       # `note_id` is a `Note` when originating in `NotifyPreview`
       @note = note_id.is_a?(Note) ? note_id : Note.find(note_id)
       @project = @note.project
+      @group = @note.noteable.try(:group)
 
-      if @project && @note.persisted?
+      if (@project || @group) && @note.persisted?
         @sent_notification = SentNotification.record_note(@note, recipient_id, reply_key)
       end
     end

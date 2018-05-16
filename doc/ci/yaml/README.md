@@ -738,9 +738,14 @@ cache:
 rspec:
   script: test
   cache:
+    key: rspec
     paths:
     - binaries/
 ```
+
+Note that since cache is shared between jobs, if you're using different
+paths for different jobs, you should also set a different **cache:key**
+otherwise cache content can be overwritten.
 
 ### `cache:key`
 
@@ -756,10 +761,9 @@ or any other way that fits your workflow. This way, you can fine tune caching,
 allowing you to cache data between different jobs or even different branches.
 
 The `cache:key` variable can use any of the
-[predefined variables](../variables/README.md), and the default key, if not set,
-is `$CI_JOB_NAME-$CI_COMMIT_REF_NAME` which translates as "per-job and
-per-branch". It is the default across the project, therefore everything is
-shared between pipelines and jobs running on the same branch by default.
+[predefined variables](../variables/README.md), and the default key, if not
+set, is just literal `default` which means everything is shared between each
+pipelines and jobs by default, starting from GitLab 9.0.
 
 NOTE: **Note:**
 The `cache:key` variable cannot contain the `/` character, or the equivalent
@@ -779,7 +783,7 @@ If you use **Windows Batch** to run your shell scripts you need to replace
 
 ```yaml
 cache:
-  key: "%CI_JOB_STAGE%-%CI_COMMIT_REF_SLUG%"
+  key: "%CI_COMMIT_REF_SLUG%"
   paths:
   - binaries/
 ```
@@ -789,7 +793,7 @@ If you use **Windows PowerShell** to run your shell scripts you need to replace
 
 ```yaml
 cache:
-  key: "$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_SLUG"
+  key: "$env:CI_COMMIT_REF_SLUG"
   paths:
   - binaries/
 ```
@@ -1201,6 +1205,7 @@ test:
 
 > Introduced in [GitLab Edition Premium][ee] 10.5.
 > Available for Starter, Premium and Ultimate [versions][gitlab-versions] since 10.6.
+> Behaviour expanded in GitLab 10.8 to allow more flexible overriding
 
 Using the `include` keyword, you can allow the inclusion of external YAML files.
 
@@ -1276,10 +1281,16 @@ include:
 
 ---
 
-Since external files defined by `include` are evaluated first, the content of
-`.gitlab-ci.yml` will always take precedence over the content of the external
-files, no matter of the position of the `include` keyword. This allows you to
-override values and functions with local definitions. For example:
+
+Since GitLab 10.8 we are now recursively merging the files defined in `include`
+with those in `.gitlab-ci.yml`. Files defined by `include` are always
+evaluated first and recursively merged with the content of `.gitlab-ci.yml`, no
+matter the position of the `include` keyword. You can take advantage of
+recursive merging to customize and override details in included CI
+configurations with local definitions.
+
+The following example shows specific YAML-defined variables and details of the
+`production` job from an include file being customized in `.gitlab-ci.yml`.
 
 ```yaml
 # Content of https://company.com/autodevops-template.yml
@@ -1311,7 +1322,6 @@ image: alpine:latest
 variables:
   POSTGRES_USER: root
   POSTGRES_PASSWORD: secure_password
-  POSTGRES_DB: company_database
 
 stages:
   - build
@@ -1319,25 +1329,56 @@ stages:
   - production
 
 production:
-  stage: production
-  script:
-    - install_dependencies
-    - deploy
   environment:
-    name: production
     url: https://domain.com
-  only:
-    - master
 ```
 
-In this case, the variables `POSTGRES_USER`, `POSTGRES_PASSWORD` and
-`POSTGRES_DB` along with the `production` job defined in
-`autodevops-template.yml` will be overridden by the ones defined in
+In this case, the variables `POSTGRES_USER` and `POSTGRES_PASSWORD` along
+with the environment url of the `production` job defined in
+`autodevops-template.yml` have been overridden by new values defined in
 `.gitlab-ci.yml`.
 
 NOTE: **Note:**
 Recursive includes are not supported meaning your external files
 should not use the `include` keyword, as it will be ignored.
+
+Recursive merging lets you extend and override dictionary mappings, but
+you cannot add or modify items to an included array. For example, to add
+an additional item to the production job script, you must repeat the
+existing script items.
+
+```yaml
+# Content of https://company.com/autodevops-template.yml
+
+production:
+  stage: production
+  script:
+    - install_dependencies
+    - deploy
+```
+
+```yaml
+# Content of .gitlab-ci.yml
+
+include: 'https://company.com/autodevops-template.yml'
+
+stages:
+  - production
+
+production:
+  script:
+    - install_depedencies
+    - deploy
+    - notify_owner
+```
+
+In this case, if `install_dependencies` and `deploy` were not repeated in
+`.gitlab-ci.yml`, they would not be part of the script for the `production`
+job in the combined CI configuration.
+
+NOTE: **Note:**
+We currently do not support using YAML aliases across different YAML files
+sourced by `include`. You must only refer to aliases in the same file.
 
 ## `variables`
 
@@ -1714,7 +1755,7 @@ capitalization, the commit will be created but the pipeline will be skipped.
 ## Validate the .gitlab-ci.yml
 
 Each instance of GitLab CI has an embedded debug tool called Lint, which validates the
-content of your `.gitlab-ci.yml` files. You can find the Lint under the page `ci/lint` of your 
+content of your `.gitlab-ci.yml` files. You can find the Lint under the page `ci/lint` of your
 project namespace (e.g, `http://gitlab-example.com/gitlab-org/project-123/-/ci/lint`)
 
 ## Using reserved keywords

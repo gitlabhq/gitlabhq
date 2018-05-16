@@ -1285,6 +1285,22 @@ describe MergeRequest do
     end
   end
 
+  describe '#short_merge_commit_sha' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+
+    it 'returns short id when there is a merge_commit_sha' do
+      merge_request.merge_commit_sha = 'f7ce827c314c9340b075657fd61c789fb01cf74d'
+
+      expect(merge_request.short_merge_commit_sha).to eq('f7ce827c')
+    end
+
+    it 'returns nil when there is no merge_commit_sha' do
+      merge_request.merge_commit_sha = nil
+
+      expect(merge_request.short_merge_commit_sha).to be_nil
+    end
+  end
+
   describe '#can_be_reverted?' do
     context 'when there is no merge_commit for the MR' do
       before do
@@ -1429,7 +1445,7 @@ describe MergeRequest do
     it 'enqueues MergeWorker job and updates merge_jid' do
       merge_request = create(:merge_request)
       user_id = double(:user_id)
-      params = double(:params)
+      params = {}
       merge_jid = 'hash-123'
 
       expect(MergeWorker).to receive(:perform_async).with(merge_request.id, user_id, params) do

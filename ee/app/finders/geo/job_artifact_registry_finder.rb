@@ -1,34 +1,34 @@
 module Geo
   class JobArtifactRegistryFinder < RegistryFinder
-    def count_local_job_artifacts
-      local_job_artifacts.count
+    def count_syncable
+      syncable.count
     end
 
-    def count_synced_job_artifacts
+    def count_synced
       if aggregate_pushdown_supported?
-        find_synced_job_artifacts.count
+        find_synced.count
       else
-        legacy_find_synced_job_artifacts.count
+        legacy_find_synced.count
       end
     end
 
-    def count_failed_job_artifacts
+    def count_failed
       if aggregate_pushdown_supported?
-        find_failed_job_artifacts.count
+        find_failed.count
       else
-        legacy_find_failed_job_artifacts.count
+        legacy_find_failed.count
       end
     end
 
-    def count_synced_missing_on_primary_job_artifacts
+    def count_synced_missing_on_primary
       if aggregate_pushdown_supported?
-        find_synced_missing_on_primary_job_artifacts.count
+        find_synced_missing_on_primary.count
       else
-        legacy_find_synced_missing_on_primary_job_artifacts.count
+        legacy_find_synced_missing_on_primary.count
       end
     end
 
-    def count_registry_job_artifacts
+    def count_registry
       Geo::JobArtifactRegistry.count
     end
 
@@ -42,29 +42,49 @@ module Geo
     #
     # @param [Integer] batch_size used to limit the results returned
     # @param [Array<Integer>] except_artifact_ids ids that will be ignored from the query
-    def find_unsynced_job_artifacts(batch_size:, except_artifact_ids: [])
+    def find_unsynced(batch_size:, except_artifact_ids: [])
       relation =
         if use_legacy_queries?
-          legacy_find_unsynced_job_artifacts(except_artifact_ids: except_artifact_ids)
+          legacy_find_unsynced(except_artifact_ids: except_artifact_ids)
         else
-          fdw_find_unsynced_job_artifacts(except_artifact_ids: except_artifact_ids)
+          fdw_find_unsynced(except_artifact_ids: except_artifact_ids)
         end
 
       relation.limit(batch_size)
     end
 
-    def find_migrated_local_job_artifacts(batch_size:, except_artifact_ids: [])
+    def find_migrated_local(batch_size:, except_artifact_ids: [])
       relation =
         if use_legacy_queries?
-          legacy_find_migrated_local_job_artifacts(except_artifact_ids: except_artifact_ids)
+          legacy_find_migrated_local(except_artifact_ids: except_artifact_ids)
         else
-          fdw_find_migrated_local_job_artifacts(except_artifact_ids: except_artifact_ids)
+          fdw_find_migrated_local(except_artifact_ids: except_artifact_ids)
         end
 
       relation.limit(batch_size)
     end
 
-    def job_artifacts
+    def syncable
+      all.geo_syncable
+    end
+
+    def find_retryable_failed_registries(batch_size:, except_artifact_ids: [])
+      find_failed_registries
+        .retry_due
+        .where.not(artifact_id: except_artifact_ids)
+        .limit(batch_size)
+    end
+
+    def find_retryable_synced_missing_on_primary_registries(batch_size:, except_artifact_ids: [])
+      find_synced_missing_on_primary_registries
+        .retry_due
+        .where.not(artifact_id: except_artifact_ids)
+        .limit(batch_size)
+    end
+
+    private
+
+    def all
       if selective_sync?
         Ci::JobArtifact.joins(:project).where(projects: { id: current_node.projects })
       else
@@ -72,87 +92,67 @@ module Geo
       end
     end
 
-    def local_job_artifacts
-      job_artifacts.with_files_stored_locally
+    def find_synced
+      if use_legacy_queries?
+        legacy_find_synced
+      else
+        fdw_find.merge(find_synced_registries)
+      end
     end
 
-    def find_retryable_failed_job_artifacts_registries(batch_size:, except_artifact_ids: [])
-      find_failed_job_artifacts_registries
-        .retry_due
-        .where.not(artifact_id: except_artifact_ids)
-        .limit(batch_size)
+    def find_synced_missing_on_primary
+      if use_legacy_queries?
+        legacy_find_synced_missing_on_primary
+      else
+        fdw_find.merge(find_synced_missing_on_primary_registries)
+      end
     end
 
-    def find_retryable_synced_missing_on_primary_job_artifacts_registries(batch_size:, except_artifact_ids: [])
-      find_synced_missing_on_primary_job_artifacts_registries
-        .retry_due
-        .where.not(artifact_id: except_artifact_ids)
-        .limit(batch_size)
+    def find_failed
+      if use_legacy_queries?
+        legacy_find_failed
+      else
+        fdw_find.merge(find_failed_registries)
+      end
     end
 
-    def find_synced_job_artifacts_registries
+    def find_synced_registries
       Geo::JobArtifactRegistry.synced
     end
 
-    def find_synced_missing_on_primary_job_artifacts_registries
-      Geo::JobArtifactRegistry.synced.missing_on_primary
+    def find_synced_missing_on_primary_registries
+      find_synced_registries.missing_on_primary
     end
 
-    def find_failed_job_artifacts_registries
+    def find_failed_registries
       Geo::JobArtifactRegistry.failed
-    end
-
-    private
-
-    def find_synced_job_artifacts
-      if use_legacy_queries?
-        legacy_find_synced_job_artifacts
-      else
-        fdw_find_job_artifacts.merge(find_synced_job_artifacts_registries)
-      end
-    end
-
-    def find_synced_missing_on_primary_job_artifacts
-      if use_legacy_queries?
-        legacy_find_synced_missing_on_primary_job_artifacts
-      else
-        fdw_find_job_artifacts.merge(find_synced_missing_on_primary_job_artifacts_registries)
-      end
-    end
-
-    def find_failed_job_artifacts
-      if use_legacy_queries?
-        legacy_find_failed_job_artifacts
-      else
-        fdw_find_job_artifacts.merge(find_failed_job_artifacts_registries)
-      end
     end
 
     #
     # FDW accessors
     #
 
-    def fdw_find_job_artifacts
-      fdw_job_artifacts.joins("INNER JOIN job_artifact_registry ON job_artifact_registry.artifact_id = #{fdw_job_artifacts_table}.id")
-        .with_files_stored_locally
+    def fdw_find
+      fdw_all.joins("INNER JOIN job_artifact_registry ON job_artifact_registry.artifact_id = #{fdw_table}.id")
+        .geo_syncable
     end
 
-    def fdw_find_unsynced_job_artifacts(except_artifact_ids:)
-      fdw_job_artifacts.joins("LEFT OUTER JOIN job_artifact_registry
-                               ON job_artifact_registry.artifact_id = #{fdw_job_artifacts_table}.id")
-        .with_files_stored_locally
+    def fdw_find_unsynced(except_artifact_ids:)
+      fdw_all.joins("LEFT OUTER JOIN job_artifact_registry
+                               ON job_artifact_registry.artifact_id = #{fdw_table}.id")
+        .geo_syncable
         .where(job_artifact_registry: { artifact_id: nil })
         .where.not(id: except_artifact_ids)
     end
 
-    def fdw_find_migrated_local_job_artifacts(except_artifact_ids:)
-      fdw_job_artifacts.joins("INNER JOIN job_artifact_registry ON job_artifact_registry.artifact_id = #{fdw_job_artifacts_table}.id")
+    def fdw_find_migrated_local(except_artifact_ids:)
+      fdw_all.joins("INNER JOIN job_artifact_registry ON job_artifact_registry.artifact_id = #{fdw_table}.id")
         .with_files_stored_remotely
         .where.not(id: except_artifact_ids)
         .merge(Geo::JobArtifactRegistry.all)
     end
 
-    def fdw_job_artifacts
+    def fdw_all
       if selective_sync?
         Geo::Fdw::Ci::JobArtifact.joins(:project).where(projects: { id: current_node.projects })
       else
@@ -160,7 +160,7 @@ module Geo
       end
     end
 
-    def fdw_job_artifacts_table
+    def fdw_table
       Geo::Fdw::Ci::JobArtifact.table_name
     end
 
@@ -168,51 +168,46 @@ module Geo
     # Legacy accessors (non FDW)
     #
 
-    def legacy_find_synced_job_artifacts
+    def legacy_find_synced
       legacy_inner_join_registry_ids(
-        local_job_artifacts,
-        find_synced_job_artifacts_registries.pluck(:artifact_id),
+        syncable,
+        find_synced_registries.pluck(:artifact_id),
         Ci::JobArtifact
       )
     end
 
-    def legacy_find_failed_job_artifacts
+    def legacy_find_failed
       legacy_inner_join_registry_ids(
-        local_job_artifacts,
-        find_failed_job_artifacts_registries.pluck(:artifact_id),
+        syncable,
+        find_failed_registries.pluck(:artifact_id),
         Ci::JobArtifact
       )
     end
 
-    def legacy_find_unsynced_job_artifacts(except_artifact_ids:)
-      registry_artifact_ids = legacy_pluck_artifact_ids(include_registry_ids: except_artifact_ids)
+    def legacy_find_unsynced(except_artifact_ids:)
+      registry_artifact_ids = Geo::JobArtifactRegistry.pluck(:artifact_id) | except_artifact_ids
 
       legacy_left_outer_join_registry_ids(
-        local_job_artifacts,
+        syncable,
         registry_artifact_ids,
         Ci::JobArtifact
       )
     end
 
-    def legacy_pluck_artifact_ids(include_registry_ids:)
-      ids = Geo::JobArtifactRegistry.pluck(:artifact_id)
-      (ids + include_registry_ids).uniq
-    end
-
-    def legacy_find_migrated_local_job_artifacts(except_artifact_ids:)
-      registry_file_ids = Geo::JobArtifactRegistry.pluck(:artifact_id) - except_artifact_ids
+    def legacy_find_migrated_local(except_artifact_ids:)
+      registry_artifact_ids = Geo::JobArtifactRegistry.pluck(:artifact_id) - except_artifact_ids
 
       legacy_inner_join_registry_ids(
-        job_artifacts.with_files_stored_remotely,
-        registry_file_ids,
+        all.with_files_stored_remotely,
+        registry_artifact_ids,
         Ci::JobArtifact
       )
     end
 
-    def legacy_find_synced_missing_on_primary_job_artifacts
+    def legacy_find_synced_missing_on_primary
       legacy_inner_join_registry_ids(
-        local_job_artifacts,
-        find_synced_missing_on_primary_job_artifacts_registries.pluck(:artifact_id),
+        syncable,
+        find_synced_missing_on_primary_registries.pluck(:artifact_id),
         Ci::JobArtifact
       )
     end

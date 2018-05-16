@@ -235,6 +235,7 @@ feature 'Issues > User uses quick actions', :js do
 
         before do
           target_project.add_master(user)
+          gitlab_sign_out
           sign_in(user)
           visit project_issue_path(project, issue)
         end
@@ -252,9 +253,10 @@ feature 'Issues > User uses quick actions', :js do
       end
 
       context 'when the project is valid but the user not authorized' do
-        let(:project_unauthorized) {create(:project, :public)}
+        let(:project_unauthorized) { create(:project, :public) }
 
         before do
+          gitlab_sign_out
           sign_in(user)
           visit project_issue_path(project, issue)
         end
@@ -269,6 +271,7 @@ feature 'Issues > User uses quick actions', :js do
 
       context 'when the project is invalid' do
         before do
+          gitlab_sign_out
           sign_in(user)
           visit project_issue_path(project, issue)
         end
@@ -292,6 +295,7 @@ feature 'Issues > User uses quick actions', :js do
 
         before do
           target_project.add_master(user)
+          gitlab_sign_out
           sign_in(user)
           visit project_issue_path(project, issue)
         end

@@ -50,7 +50,7 @@ module Users
       migrate_merge_requests
       migrate_notes
       migrate_abuse_reports
-      migrate_award_emojis
+      migrate_award_emoji
     end
 
     def migrate_issues
@@ -71,7 +71,7 @@ module Users
       user.reported_abuse_reports.update_all(reporter_id: ghost_user.id)
     end
 
-    def migrate_award_emojis
+    def migrate_award_emoji
       user.award_emoji.update_all(user_id: ghost_user.id)
     end
   end

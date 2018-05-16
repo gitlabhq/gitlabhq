@@ -3,6 +3,10 @@ require 'spec_helper'
 describe Geo::AttachmentRegistryFinder, :geo do
   include ::EE::GeoHelpers
 
+  # Using let() instead of set() because set() does not work properly
+  # when using the :delete DatabaseCleaner strategy, which is required for FDW
+  # tests because a foreign table can't see changes inside a transaction of a
+  # different connection.
   let(:secondary) { create(:geo_node) }
 
   let(:synced_group) { create(:group) }
@@ -30,7 +34,7 @@ describe Geo::AttachmentRegistryFinder, :geo do
   end
 
   shared_examples 'counts all the things' do
-    describe '#count_local_attachments' do
+    describe '#count_syncable' do
       before do
         upload_1
         upload_2
@@ -39,13 +43,13 @@ describe Geo::AttachmentRegistryFinder, :geo do
       end
 
       it 'counts attachments' do
-        expect(subject.count_local_attachments).to eq 4
+        expect(subject.count_syncable).to eq 4
       end
 
       it 'ignores remote attachments' do
         upload_1.update!(store: ObjectStorage::Store::REMOTE)
 
-        expect(subject.count_local_attachments).to eq 3
+        expect(subject.count_syncable).to eq 3
       end
 
       context 'with selective sync' do
@@ -54,32 +58,32 @@ describe Geo::AttachmentRegistryFinder, :geo do
         end
 
         it 'counts attachments' do
-          expect(subject.count_local_attachments).to eq 2
+          expect(subject.count_syncable).to eq 2
         end
 
         it 'ignores remote attachments' do
           upload_1.update!(store: ObjectStorage::Store::REMOTE)
 
-          expect(subject.count_local_attachments).to eq 1
+          expect(subject.count_syncable).to eq 1
         end
       end
     end
 
-    describe '#count_synced_attachments' do
-      it 'delegates to #legacy_find_synced_attachments' do
+    describe '#count_synced' do
+      it 'delegates to #legacy_find_synced' do
         allow(subject).to receive(:aggregate_pushdown_supported?).and_return(false)
 
-        expect(subject).to receive(:legacy_find_synced_attachments).and_call_original
+        expect(subject).to receive(:legacy_find_synced).and_call_original
 
-        subject.count_synced_attachments
+        subject.count_synced
       end
 
-      it 'delegates to #find_synced_attachments for PostgreSQL 10' do
+      it 'delegates to #find_synced for PostgreSQL 10' do
         allow(subject).to receive(:aggregate_pushdown_supported?).and_return(true)
 
-        expect(subject).to receive(:find_synced_attachments).and_call_original
+        expect(subject).to receive(:find_synced).and_call_original
 
-        subject.count_synced_attachments
+        subject.count_synced
       end
 
       it 'counts attachments that have been synced' do
@@ -87,7 +91,7 @@ describe Geo::AttachmentRegistryFinder, :geo do
         create(:geo_file_registry, :attachment, file_id: upload_2.id)
         create(:geo_file_registry, :attachment, file_id: upload_3.id)
 
-        expect(subject.count_synced_attachments).to eq 2
+        expect(subject.count_synced).to eq 2
       end
 
       it 'ignores remote attachments' do
@@ -95,18 +99,18 @@ describe Geo::AttachmentRegistryFinder, :geo do
         create(:geo_file_registry, :attachment, file_id: upload_2.id)
         create(:geo_file_registry, :attachment, file_id: upload_3.id)
 
-        expect(subject.count_synced_attachments).to eq 2
+        expect(subject.count_synced).to eq 2
       end
 
-      context 'with selective sync' do
+      context 'with selective sync by namespace' do
         before do
           secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
         end
 
-        it 'delegates to #legacy_find_synced_attachments' do
-          expect(subject).to receive(:legacy_find_synced_attachments).and_call_original
+        it 'delegates to #legacy_find_synced' do
+          expect(subject).to receive(:legacy_find_synced).and_call_original
 
-          subject.count_synced_attachments
+          subject.count_synced
         end
 
         it 'counts attachments that has been synced' do
@@ -114,7 +118,7 @@ describe Geo::AttachmentRegistryFinder, :geo do
           create(:geo_file_registry, :attachment, file_id: upload_2.id)
           create(:geo_file_registry, :attachment, file_id: upload_3.id)
 
-          expect(subject.count_synced_attachments).to eq 1
+          expect(subject.count_synced).to eq 1
         end
 
         it 'ignores remote attachments' do
@@ -122,26 +126,54 @@ describe Geo::AttachmentRegistryFinder, :geo do
           create(:geo_file_registry, :attachment, file_id: upload_2.id)
           create(:geo_file_registry, :attachment, file_id: upload_3.id)
 
-          expect(subject.count_synced_attachments).to eq 1
+          expect(subject.count_synced).to eq 1
+        end
+      end
+
+      context 'with selective sync by shard' do
+        before do
+          secondary.update!(selective_sync_type: 'shards', selective_sync_shards: ['default'])
+        end
+
+        it 'delegates to #legacy_find_synced' do
+          expect(subject).to receive(:legacy_find_synced).and_call_original
+
+          subject.count_synced
+        end
+
+        it 'counts attachments that has been synced' do
+          create(:geo_file_registry, :attachment, file_id: upload_1.id, success: false)
+          create(:geo_file_registry, :attachment, file_id: upload_2.id)
+          create(:geo_file_registry, :attachment, file_id: upload_3.id)
+
+          expect(subject.count_synced).to eq 1
+        end
+
+        it 'ignores remote attachments' do
+          create(:geo_file_registry, :attachment, file_id: upload_remote_1.id)
+          create(:geo_file_registry, :attachment, file_id: upload_2.id)
+          create(:geo_file_registry, :attachment, file_id: upload_3.id)
+
+          expect(subject.count_synced).to eq 1
         end
       end
     end
 
-    describe '#count_failed_attachments' do
-      it 'delegates to #legacy_find_failed_attachments' do
+    describe '#count_failed' do
+      it 'delegates to #legacy_find_failed' do
         allow(subject).to receive(:aggregate_pushdown_supported?).and_return(false)
 
-        expect(subject).to receive(:legacy_find_failed_attachments).and_call_original
+        expect(subject).to receive(:legacy_find_failed).and_call_original
 
-        subject.count_failed_attachments
+        subject.count_failed
       end
 
-      it 'delegates to #find_failed_attachments' do
+      it 'delegates to #find_failed' do
         allow(subject).to receive(:aggregate_pushdown_supported?).and_return(true)
 
-        expect(subject).to receive(:find_failed_attachments).and_call_original
+        expect(subject).to receive(:find_failed).and_call_original
 
-        subject.count_failed_attachments
+        subject.count_failed
       end
 
       it 'counts attachments that sync has failed' do
@@ -149,7 +181,7 @@ describe Geo::AttachmentRegistryFinder, :geo do
         create(:geo_file_registry, :attachment, file_id: upload_2.id)
         create(:geo_file_registry, :attachment, file_id: upload_3.id, success: false)
 
-        expect(subject.count_failed_attachments).to eq 2
+        expect(subject.count_failed).to eq 2
       end
 
       it 'ignores remote attachments' do
@@ -157,31 +189,31 @@ describe Geo::AttachmentRegistryFinder, :geo do
         create(:geo_file_registry, :attachment, file_id: upload_2.id, success: false)
         create(:geo_file_registry, :attachment, file_id: upload_3.id, success: false)
 
-        expect(subject.count_failed_attachments).to eq 2
+        expect(subject.count_failed).to eq 2
       end
 
-      context 'with selective sync' do
+      context 'with selective sync by namespace' do
         before do
           secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
         end
 
-        it 'delegates to #legacy_find_failed_attachments' do
-          expect(subject).to receive(:legacy_find_failed_attachments).and_call_original
+        it 'delegates to #legacy_find_failed' do
+          expect(subject).to receive(:legacy_find_failed).and_call_original
 
-          subject.count_failed_attachments
+          subject.count_failed
         end
 
         it 'counts attachments that sync has failed' do
           create(:geo_file_registry, :attachment, file_id: upload_1.id, success: false)
           create(:geo_file_registry, :attachment, file_id: upload_3.id)
 
-          expect(subject.count_failed_attachments).to eq 1
+          expect(subject.count_failed).to eq 1
         end
 
         it 'does not count attachments of unsynced projects' do
           create(:geo_file_registry, :attachment, file_id: upload_2.id, success: false)
 
-          expect(subject.count_failed_attachments).to eq 0
+          expect(subject.count_failed).to eq 0
         end
 
         it 'ignores remote attachments' do
@@ -190,51 +222,85 @@ describe Geo::AttachmentRegistryFinder, :geo do
           create(:geo_file_registry, :attachment, file_id: upload_3.id, success: false)
           upload_1.update!(store: ObjectStorage::Store::REMOTE)
 
-          expect(subject.count_failed_attachments).to eq 1
+          expect(subject.count_failed).to eq 1
+        end
+      end
+
+      context 'with selective sync by shard' do
+        before do
+          secondary.update!(selective_sync_type: 'shards', selective_sync_shards: ['default'])
+        end
+
+        it 'delegates to #legacy_find_failed' do
+          expect(subject).to receive(:legacy_find_failed).and_call_original
+
+          subject.count_failed
+        end
+
+        it 'counts attachments that sync has failed' do
+          create(:geo_file_registry, :attachment, file_id: upload_1.id, success: false)
+          create(:geo_file_registry, :attachment, file_id: upload_3.id)
+
+          expect(subject.count_failed).to eq 1
+        end
+
+        it 'does not count attachments of unsynced projects' do
+          create(:geo_file_registry, :attachment, file_id: upload_2.id, success: false)
+
+          expect(subject.count_failed).to eq 0
+        end
+
+        it 'ignores remote attachments' do
+          create(:geo_file_registry, :attachment, file_id: upload_1.id, success: false)
+          create(:geo_file_registry, :attachment, file_id: upload_2.id, success: false)
+          create(:geo_file_registry, :attachment, file_id: upload_3.id, success: false)
+          upload_1.update!(store: ObjectStorage::Store::REMOTE)
+
+          expect(subject.count_failed).to eq 1
         end
       end
     end
 
-    describe '#count_synced_missing_on_primary_attachments' do
-      it 'delegates to #legacy_find_synced_missing_on_primary_attachments' do
+    describe '#count_synced_missing_on_primary' do
+      it 'delegates to #legacy_find_synced_missing_on_primary' do
         allow(subject).to receive(:aggregate_pushdown_supported?).and_return(false)
 
-        expect(subject).to receive(:legacy_find_synced_missing_on_primary_attachments).and_call_original
+        expect(subject).to receive(:legacy_find_synced_missing_on_primary).and_call_original
 
-        subject.count_synced_missing_on_primary_attachments
+        subject.count_synced_missing_on_primary
       end
 
-      it 'delegates to #fdw_find_synced_missing_on_primary_attachments for PostgreSQL 10' do
+      it 'delegates to #fdw_find_synced_missing_on_primary for PostgreSQL 10' do
         allow(subject).to receive(:aggregate_pushdown_supported?).and_return(true)
         allow(subject).to receive(:use_legacy_queries?).and_return(false)
 
-        expect(subject).to receive(:fdw_find_synced_missing_on_primary_attachments).and_return(double(count: 1))
+        expect(subject).to receive(:fdw_find_synced_missing_on_primary).and_return(double(count: 1))
 
-        subject.count_synced_missing_on_primary_attachments
+        subject.count_synced_missing_on_primary
       end
 
       it 'counts attachments that have been synced and are missing on the primary' do
         create(:geo_file_registry, :attachment, file_id: upload_1.id, missing_on_primary: true)
 
-        expect(subject.count_synced_missing_on_primary_attachments).to eq 1
+        expect(subject.count_synced_missing_on_primary).to eq 1
       end
 
       it 'excludes attachments that are not missing on the primary' do
         create(:geo_file_registry, :attachment, file_id: upload_1.id)
 
-        expect(subject.count_synced_missing_on_primary_attachments).to eq 0
+        expect(subject.count_synced_missing_on_primary).to eq 0
       end
 
       it 'excludes attachments that are not synced' do
         create(:geo_file_registry, :attachment, file_id: upload_1.id, success: false, missing_on_primary: true)
 
-        expect(subject.count_synced_missing_on_primary_attachments).to eq 0
+        expect(subject.count_synced_missing_on_primary).to eq 0
       end
 
       it 'ignores remote attachments' do
         create(:geo_file_registry, :attachment, file_id: upload_remote_1.id, missing_on_primary: true)
 
-        expect(subject.count_synced_missing_on_primary_attachments).to eq 0
+        expect(subject.count_synced_missing_on_primary).to eq 0
       end
 
       context 'with selective sync' do
@@ -242,10 +308,10 @@ describe Geo::AttachmentRegistryFinder, :geo do
           secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
         end
 
-        it 'delegates to #legacy_find_synced_missing_on_primary_attachments' do
-          expect(subject).to receive(:legacy_find_synced_missing_on_primary_attachments).and_call_original
+        it 'delegates to #legacy_find_synced_missing_on_primary' do
+          expect(subject).to receive(:legacy_find_synced_missing_on_primary).and_call_original
 
-          subject.count_synced_missing_on_primary_attachments
+          subject.count_synced_missing_on_primary
         end
 
         it 'counts attachments that has been synced' do
@@ -253,164 +319,36 @@ describe Geo::AttachmentRegistryFinder, :geo do
           create(:geo_file_registry, :attachment, file_id: upload_2.id, missing_on_primary: true)
           create(:geo_file_registry, :attachment, file_id: upload_3.id, missing_on_primary: true)
 
-          expect(subject.count_synced_missing_on_primary_attachments).to eq 2
+          expect(subject.count_synced_missing_on_primary).to eq 2
         end
 
         it 'ignores remote attachments' do
           create(:geo_file_registry, :attachment, file_id: upload_remote_1.id, missing_on_primary: true)
 
-          expect(subject.count_synced_missing_on_primary_attachments).to eq 0
+          expect(subject.count_synced_missing_on_primary).to eq 0
         end
       end
     end
   end
 
   shared_examples 'finds all the things' do
-    describe '#find_synced_attachments' do
+    describe '#find_unsynced' do
       it 'delegates to the correct method' do
-        expect(subject).to receive("#{method_prefix}_find_synced_attachments".to_sym).and_call_original
+        expect(subject).to receive("#{method_prefix}_find_unsynced".to_sym).and_call_original
 
-        subject.find_synced_attachments
-      end
-
-      it 'returns synced avatars, attachment, personal snippets and files' do
-        create(:geo_file_registry, :avatar, file_id: upload_1.id)
-        create(:geo_file_registry, :avatar, file_id: upload_2.id)
-        create(:geo_file_registry, :avatar, file_id: upload_3.id, success: false)
-        create(:geo_file_registry, :avatar, file_id: upload_6.id)
-        create(:geo_file_registry, :avatar, file_id: upload_7.id)
-        create(:geo_file_registry, :lfs, file_id: lfs_object.id)
-
-        synced_attachments = subject.find_synced_attachments
-
-        expect(synced_attachments).to match_ids(upload_1, upload_2, upload_6, upload_7)
-      end
-
-      it 'only finds local attachments' do
-        create(:geo_file_registry, :avatar, file_id: upload_1.id)
-        create(:geo_file_registry, :avatar, file_id: upload_2.id)
-        upload_1.update!(store: ObjectStorage::Store::REMOTE)
-
-        synced_attachments = subject.find_synced_attachments
-
-        expect(synced_attachments).to match_ids(upload_2)
-      end
-
-      context 'with selective sync by namespace' do
-        it 'returns synced avatars, attachment, personal snippets and files' do
-          create(:geo_file_registry, :avatar, file_id: upload_1.id)
-          create(:geo_file_registry, :avatar, file_id: upload_2.id)
-          create(:geo_file_registry, :avatar, file_id: upload_3.id)
-          create(:geo_file_registry, :avatar, file_id: upload_4.id)
-          create(:geo_file_registry, :avatar, file_id: upload_5.id, success: false)
-          create(:geo_file_registry, :avatar, file_id: upload_6.id)
-          create(:geo_file_registry, :avatar, file_id: upload_7.id)
-          create(:geo_file_registry, :lfs, file_id: lfs_object.id)
-
-          secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
-
-          synced_attachments = subject.find_synced_attachments
-
-          expect(synced_attachments).to match_ids(upload_1, upload_3, upload_6, upload_7)
-        end
-      end
-
-      context 'with selective sync by shard' do
-        it 'returns synced avatars, attachment, personal snippets and files' do
-          create(:geo_file_registry, :avatar, file_id: upload_1.id)
-          create(:geo_file_registry, :avatar, file_id: upload_2.id)
-          create(:geo_file_registry, :avatar, file_id: upload_3.id)
-          create(:geo_file_registry, :avatar, file_id: upload_4.id)
-          create(:geo_file_registry, :avatar, file_id: upload_5.id, success: false)
-          create(:geo_file_registry, :avatar, file_id: upload_6.id)
-          create(:geo_file_registry, :avatar, file_id: upload_7.id)
-          create(:geo_file_registry, :lfs, file_id: lfs_object.id)
-
-          secondary.update!(selective_sync_type: 'shards', selective_sync_shards: ['default'])
-
-          synced_attachments = subject.find_synced_attachments
-
-          expect(synced_attachments).to match_ids(upload_1, upload_3, upload_6)
-        end
-      end
-    end
-
-    describe '#find_failed_attachments' do
-      it 'delegates to the correct method' do
-        expect(subject).to receive("#{method_prefix}_find_failed_attachments".to_sym).and_call_original
-
-        subject.find_failed_attachments
-      end
-
-      it 'returns failed avatars, attachment, personal snippets and files' do
-        create(:geo_file_registry, :avatar, file_id: upload_1.id)
-        create(:geo_file_registry, :avatar, file_id: upload_2.id)
-        create(:geo_file_registry, :avatar, file_id: upload_3.id, success: false)
-        create(:geo_file_registry, :avatar, file_id: upload_6.id, success: false)
-        create(:geo_file_registry, :avatar, file_id: upload_7.id, success: false)
-        create(:geo_file_registry, :lfs, file_id: lfs_object.id, success: false)
-
-        failed_attachments = subject.find_failed_attachments
-
-        expect(failed_attachments).to match_ids(upload_3, upload_6, upload_7)
-      end
-
-      context 'with selective sync by namespace' do
-        it 'returns failed avatars, attachment, personal snippets and files' do
-          create(:geo_file_registry, :avatar, file_id: upload_1.id, success: false)
-          create(:geo_file_registry, :avatar, file_id: upload_2.id)
-          create(:geo_file_registry, :avatar, file_id: upload_3.id, success: false)
-          create(:geo_file_registry, :avatar, file_id: upload_4.id, success: false)
-          create(:geo_file_registry, :avatar, file_id: upload_5.id)
-          create(:geo_file_registry, :avatar, file_id: upload_6.id, success: false)
-          create(:geo_file_registry, :avatar, file_id: upload_7.id, success: false)
-          create(:geo_file_registry, :lfs, file_id: lfs_object.id, success: false)
-
-          secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
-
-          failed_attachments = subject.find_failed_attachments
-
-          expect(failed_attachments).to match_ids(upload_1, upload_3, upload_6, upload_7)
-        end
-      end
-
-      context 'with selective sync by shard' do
-        it 'returns failed avatars, attachment, personal snippets and files' do
-          create(:geo_file_registry, :avatar, file_id: upload_1.id, success: false)
-          create(:geo_file_registry, :avatar, file_id: upload_2.id)
-          create(:geo_file_registry, :avatar, file_id: upload_3.id, success: false)
-          create(:geo_file_registry, :avatar, file_id: upload_4.id, success: false)
-          create(:geo_file_registry, :avatar, file_id: upload_5.id)
-          create(:geo_file_registry, :avatar, file_id: upload_6.id, success: false)
-          create(:geo_file_registry, :avatar, file_id: upload_7.id, success: false)
-          create(:geo_file_registry, :lfs, file_id: lfs_object.id, success: false)
-
-          secondary.update!(selective_sync_type: 'shards', selective_sync_shards: ['default'])
-
-          failed_attachments = subject.find_failed_attachments
-
-          expect(failed_attachments).to match_ids(upload_1, upload_3, upload_6)
-        end
-      end
-    end
-
-    describe '#find_unsynced_attachments' do
-      it 'delegates to the correct method' do
-        expect(subject).to receive("#{method_prefix}_find_unsynced_attachments".to_sym).and_call_original
-
-        subject.find_unsynced_attachments(batch_size: 10)
+        subject.find_unsynced(batch_size: 10)
       end
 
       it 'returns uploads without an entry on the tracking database' do
         create(:geo_file_registry, :avatar, file_id: upload_1.id, success: true)
 
-        uploads = subject.find_unsynced_attachments(batch_size: 10)
+        uploads = subject.find_unsynced(batch_size: 10)
 
         expect(uploads).to match_ids(upload_2, upload_3, upload_4)
       end
 
       it 'excludes uploads in the except_file_ids option' do
-        uploads = subject.find_unsynced_attachments(batch_size: 10, except_file_ids: [upload_2.id])
+        uploads = subject.find_unsynced(batch_size: 10, except_file_ids: [upload_2.id])
 
         expect(uploads).to match_ids(upload_1, upload_3, upload_4)
       end
@@ -418,24 +356,24 @@ describe Geo::AttachmentRegistryFinder, :geo do
       it 'excludes remote uploads' do
         upload_1.update!(store: ObjectStorage::Store::REMOTE)
 
-        uploads = subject.find_unsynced_attachments(batch_size: 10)
+        uploads = subject.find_unsynced(batch_size: 10)
 
         expect(uploads).to match_ids(upload_2, upload_3, upload_4)
       end
     end
 
-    describe '#find_migrated_local_attachments' do
+    describe '#find_migrated_local' do
       it 'delegates to the correct method' do
-        expect(subject).to receive("#{method_prefix}_find_migrated_local_attachments".to_sym).and_call_original
+        expect(subject).to receive("#{method_prefix}_find_migrated_local".to_sym).and_call_original
 
-        subject.find_migrated_local_attachments(batch_size: 100)
+        subject.find_migrated_local(batch_size: 100)
       end
 
       it 'returns uploads stored remotely and successfully synced locally' do
         upload = create(:upload, :object_storage, model: synced_group)
         create(:geo_file_registry, :avatar, file_id: upload.id)
 
-        uploads = subject.find_migrated_local_attachments(batch_size: 100)
+        uploads = subject.find_migrated_local(batch_size: 100)
 
         expect(uploads).to match_ids(upload)
       end
@@ -443,7 +381,7 @@ describe Geo::AttachmentRegistryFinder, :geo do
       it 'excludes uploads stored remotely, but not synced yet' do
         create(:upload, :object_storage, model: synced_group)
 
-        uploads = subject.find_migrated_local_attachments(batch_size: 100)
+        uploads = subject.find_migrated_local(batch_size: 100)
 
         expect(uploads).to be_empty
       end
@@ -451,7 +389,7 @@ describe Geo::AttachmentRegistryFinder, :geo do
       it 'excludes synced uploads that are stored locally' do
         create(:geo_file_registry, :avatar, file_id: upload_5.id)
 
-        uploads = subject.find_migrated_local_attachments(batch_size: 100)
+        uploads = subject.find_migrated_local(batch_size: 100)
 
         expect(uploads).to be_empty
       end
@@ -462,54 +400,12 @@ describe Geo::AttachmentRegistryFinder, :geo do
         create(:geo_file_registry, :avatar, file_id: upload_a.id, success: true)
         create(:geo_file_registry, :avatar, file_id: upload_b.id, success: true)
 
-        uploads = subject.find_migrated_local_attachments(batch_size: 10, except_file_ids: [upload_a.id])
+        uploads = subject.find_migrated_local(batch_size: 10, except_file_ids: [upload_a.id])
 
         expect(uploads).to match_ids(upload_b)
       end
     end
   end
 
-  # Disable transactions via :delete method because a foreign table
-  # can't see changes inside a transaction of a different connection.
-  context 'FDW', :delete do
-    before do
-      skip('FDW is not configured') if Gitlab::Database.postgresql? && !Gitlab::Geo::Fdw.enabled?
-    end
-
-    include_examples 'counts all the things'
-
-    include_examples 'finds all the things' do
-      let(:method_prefix) { 'fdw' }
-    end
-
-    context 'with selective sync' do
-      before do
-        secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
-      end
-
-      it '#find_synced_attachments falls back to legacy queries' do
-        expect(subject).to receive(:legacy_find_synced_attachments)
-
-        subject.find_synced_attachments
-      end
-
-      it '#find_failed_attachments falls back to legacy queries' do
-        expect(subject).to receive(:legacy_find_failed_attachments)
-
-        subject.find_failed_attachments
-      end
-    end
-  end
-
-  context 'Legacy' do
-    before do
-      allow(Gitlab::Geo::Fdw).to receive(:enabled?).and_return(false)
-    end
-
-    include_examples 'counts all the things'
-
-    include_examples 'finds all the things' do
-      let(:method_prefix) { 'legacy' }
-    end
-  end
+  it_behaves_like 'a file registry finder'
 end

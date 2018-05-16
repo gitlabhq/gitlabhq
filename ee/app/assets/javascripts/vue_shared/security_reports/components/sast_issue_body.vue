@@ -4,12 +4,14 @@
  * [priority]: [name] in [link] : [line]
  */
 import ReportLink from './report_link.vue';
+import ModalOpenName from './modal_open_name.vue';
 
 export default {
   name: 'SastIssueBody',
 
   components: {
     ReportLink,
+    ModalOpenName,
   },
 
   props: {
@@ -25,7 +27,7 @@ export default {
     <div class="report-block-list-issue-description-text append-right-5">
       <template v-if="issue.priority">{{ issue.priority }}:</template>
 
-      {{ issue.name }}
+      <modal-open-name :issue="issue" />
     </div>
 
     <report-link

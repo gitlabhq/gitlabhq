@@ -87,6 +87,28 @@ describe('Multi-file store mutations', () => {
     });
   });
 
+  describe('UPDATE_ACTIVITY_BAR_VIEW', () => {
+    it('updates currentActivityBar', () => {
+      mutations.UPDATE_ACTIVITY_BAR_VIEW(localState, 'test');
+
+      expect(localState.currentActivityView).toBe('test');
+    });
+  });
+
+  describe('SET_EMPTY_STATE_SVGS', () => {
+    it('updates empty state SVGs', () => {
+      mutations.SET_EMPTY_STATE_SVGS(localState, {
+        emptyStateSvgPath: 'emptyState',
+        noChangesStateSvgPath: 'noChanges',
+        committedStateSvgPath: 'commited',
+      });
+
+      expect(localState.emptyStateSvgPath).toBe('emptyState');
+      expect(localState.noChangesStateSvgPath).toBe('noChanges');
+      expect(localState.committedStateSvgPath).toBe('commited');
+    });
+  });
+
   describe('UPDATE_TEMP_FLAG', () => {
     beforeEach(() => {
       localState.entries.test = {
@@ -114,6 +136,16 @@ describe('Multi-file store mutations', () => {
       mutations.TOGGLE_FILE_FINDER(localState, true);
 
       expect(localState.fileFindVisible).toBe(true);
+    });
+  });
+
+  describe('BURST_UNUSED_SEAL', () => {
+    it('updates unusedSeal', () => {
+      expect(localState.unusedSeal).toBe(true);
+
+      mutations.BURST_UNUSED_SEAL(localState);
+
+      expect(localState.unusedSeal).toBe(false);
     });
   });
 });

@@ -9,6 +9,7 @@ module EE
 
       CODEQUALITY_FILE = 'codeclimate.json'.freeze
       DEPENDENCY_SCANNING_FILE = 'gl-dependency-scanning-report.json'.freeze
+      LICENSE_MANAGEMENT_FILE = 'gl-license-report.json'.freeze
       SAST_FILE = 'gl-sast-report.json'.freeze
       PERFORMANCE_FILE = 'performance.json'.freeze
       SAST_CONTAINER_FILE = 'gl-sast-container-report.json'.freeze
@@ -19,6 +20,7 @@ module EE
         scope :performance, -> { where(name: %w[performance deploy]) }
         scope :sast, -> { where(name: 'sast') }
         scope :dependency_scanning, -> { where(name: 'dependency_scanning') }
+        scope :license_management, -> { where(name: 'license_management') }
         scope :sast_container, -> { where(name: %w[container_scanning sast:container]) }
         scope :dast, -> { where(name: 'dast') }
 
@@ -56,6 +58,10 @@ module EE
 
       def has_dependency_scanning_json?
         has_artifact?(DEPENDENCY_SCANNING_FILE)
+      end
+
+      def has_license_management_json?
+        has_artifact?(LICENSE_MANAGEMENT_FILE)
       end
 
       def has_sast_container_json?

@@ -1,9 +1,8 @@
 module Projects
   module Settings
     class RepositoryController < Projects::ApplicationController
-      include SafeMirrorParams
-
       before_action :authorize_admin_project!
+      before_action :remote_mirror, only: [:show]
 
       prepend ::EE::Projects::Settings::RepositoryController
 
@@ -29,6 +28,7 @@ module Projects
 
         define_deploy_token
         define_protected_refs
+        remote_mirror
 
         render 'show'
       end
@@ -43,6 +43,10 @@ module Projects
         @protected_tags_count = @protected_tags.reduce(0) { |sum, tag| sum + tag.matching(@project.repository.tags).size }
 
         load_gon_index
+      end
+
+      def remote_mirror
+        @remote_mirror = project.remote_mirrors.first_or_initialize
       end
 
       def access_levels_options

@@ -347,7 +347,7 @@ describe "Admin::Users" do
     it "lists group projects" do
       within(:css, '.append-bottom-default + .panel') do
         expect(page).to have_content 'Group projects'
-        expect(page).to have_link group.name, admin_group_path(group)
+        expect(page).to have_link group.name, href: admin_group_path(group)
       end
     end
 

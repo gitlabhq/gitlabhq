@@ -113,64 +113,38 @@ describe Geo::RepositoryVerification::Primary::ShardWorker, :postgresql, :clean_
         allow(subject).to receive(:db_retrieve_batch_size) { 1 }
       end
 
-      let(:project_repo_verified)   { create(:repository_state, :repository_verified).project }
-      let(:project_repo_failed)     { create(:repository_state, :repository_failed).project }
-      let(:project_wiki_verified)   { create(:repository_state, :wiki_verified).project }
-      let(:project_wiki_failed)     { create(:repository_state, :wiki_failed).project }
-      let(:project_both_verified)   { create(:repository_state, :repository_verified, :wiki_verified).project }
-      let(:project_both_failed)     { create(:repository_state, :repository_failed, :wiki_failed).project }
+      let(:project_repo_verified) { create(:repository_state, :repository_verified).project }
+      let(:project_repo_failed) { create(:repository_state, :repository_failed).project }
+      let(:project_wiki_verified) { create(:repository_state, :wiki_verified).project }
+      let(:project_wiki_failed) { create(:repository_state, :wiki_failed).project }
+      let(:project_both_verified) { create(:repository_state, :repository_verified, :wiki_verified).project }
+      let(:project_both_failed) { create(:repository_state, :repository_failed, :wiki_failed).project }
       let(:project_repo_unverified) { create(:repository_state).project }
       let(:project_wiki_unverified) { create(:repository_state).project }
+      let(:project_repo_failed_wiki_verified) { create(:repository_state, :repository_failed, :wiki_verified).project }
+      let(:project_repo_verified_wiki_failed) { create(:repository_state, :repository_verified, :wiki_failed).project }
 
       it 'handles multiple batches of projects needing verification' do
-        project1 = project_repo_unverified
-        project2 = project_wiki_unverified
+        expect(primary_singleworker).to receive(:perform_async).with(project_repo_unverified.id).once.and_call_original
+        expect(primary_singleworker).to receive(:perform_async).with(project_wiki_unverified.id).once.and_call_original
 
-        expect(primary_singleworker).to receive(:perform_async).with(project1.id).once
-
-        subject.perform(shard_name)
-
-        project1.repository_state.update_attributes!(
-          repository_verification_checksum: 'f079a831cab27bcda7d81cd9b48296d0c3dd92ee',
-          wiki_verification_checksum: 'e079a831cab27bcda7d81cd9b48296d0c3dd92ef')
-
-        expect(primary_singleworker).to receive(:perform_async).with(project2.id).once
-
-        subject.perform(shard_name)
+        3.times do
+          Sidekiq::Testing.inline! { subject.perform(shard_name) }
+        end
       end
 
       it 'handles multiple batches of projects needing verification, skipping failed repos' do
-        project1 = project_repo_unverified
-        project2 = project_wiki_unverified
-        project3 = project_both_failed      # rubocop:disable Lint/UselessAssignment
-        project4 = project_repo_verified
-        project5 = project_wiki_verified
+        expect(primary_singleworker).to receive(:perform_async).with(project_repo_unverified.id).once.and_call_original
+        expect(primary_singleworker).to receive(:perform_async).with(project_wiki_unverified.id).once.and_call_original
+        expect(primary_singleworker).to receive(:perform_async).with(project_repo_verified.id).once.and_call_original
+        expect(primary_singleworker).to receive(:perform_async).with(project_wiki_verified.id).once.and_call_original
+        expect(primary_singleworker).not_to receive(:perform_async).with(project_both_failed.id)
+        expect(primary_singleworker).not_to receive(:perform_async).with(project_repo_failed_wiki_verified.id)
+        expect(primary_singleworker).not_to receive(:perform_async).with(project_repo_verified_wiki_failed.id)
 
-        expect(primary_singleworker).to receive(:perform_async).with(project1.id).once
-
-        subject.perform(shard_name)
-
-        project1.repository_state.update_attributes!(
-          repository_verification_checksum: 'f079a831cab27bcda7d81cd9b48296d0c3dd92ee',
-          wiki_verification_checksum: 'e079a831cab27bcda7d81cd9b48296d0c3dd92ef')
-
-        expect(primary_singleworker).to receive(:perform_async).with(project2.id).once
-
-        subject.perform(shard_name)
-
-        project2.repository_state.update_attributes!(
-          repository_verification_checksum: 'f079a831cab27bcda7d81cd9b48296d0c3dd92ee',
-          wiki_verification_checksum: 'e079a831cab27bcda7d81cd9b48296d0c3dd92ef')
-
-        expect(primary_singleworker).to receive(:perform_async).with(project4.id).once
-
-        subject.perform(shard_name)
-
-        project4.repository_state.update_attributes!(last_wiki_verification_failure: 'Failed!')
-
-        expect(primary_singleworker).to receive(:perform_async).with(project5.id).once
-
-        subject.perform(shard_name)
+        8.times do
+          Sidekiq::Testing.inline! { subject.perform(shard_name) }
+        end
       end
     end
   end

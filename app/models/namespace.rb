@@ -22,6 +22,9 @@ class Namespace < ActiveRecord::Base
   has_many :projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :project_statistics
 
+  has_many :runner_namespaces, class_name: 'Ci::RunnerNamespace'
+  has_many :runners, through: :runner_namespaces, source: :runner, class_name: 'Ci::Runner'
+
   # This should _not_ be `inverse_of: :namespace`, because that would also set
   # `user.namespace` when this user creates a group with themselves as `owner`.
   belongs_to :owner, class_name: "User"
@@ -167,6 +170,13 @@ class Namespace < ActiveRecord::Base
 
   def shared_runners_enabled?
     projects.with_shared_runners.any?
+  end
+
+  # Returns all ancestors, self, and descendants of the current namespace.
+  def self_and_hierarchy
+    Gitlab::GroupHierarchy
+      .new(self.class.where(id: id))
+      .all_groups
   end
 
   # Returns all the ancestors of the current namespaces.

@@ -15,7 +15,7 @@ module EE
 
     def external_authorization_url_help_text
       _("When leaving the URL blank, classification labels can still be "\
-        "specified whitout disabling cross project features or performing "\
+        "specified without disabling cross project features or performing "\
         "external authorization checks.")
     end
 
@@ -55,8 +55,7 @@ module EE
         :slack_app_id,
         :slack_app_secret,
         :slack_app_verification_token,
-        :allow_group_owners_to_manage_ldap,
-        :mirror_available
+        :allow_group_owners_to_manage_ldap
       ]
     end
 

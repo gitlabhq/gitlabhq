@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 describe Gitlab::GitAccess do
-  set(:user) { create(:user) }
+  include TermsHelper
+
+  let(:user) { create(:user) }
 
   let(:actor) { user }
   let(:project) { create(:project, :repository) }
@@ -1039,154 +1041,6 @@ describe Gitlab::GitAccess do
       end
     end
 
-    describe "push_rule_check" do
-      let(:start_sha) { '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9' }
-      let(:end_sha)   { '570e7b2abdd848b95f2f578043fc23bd6f6fd24d' }
-
-      before do
-        project.add_developer(user)
-
-        allow(project.repository).to receive(:new_commits)
-          .and_return(project.repository.commits_between(start_sha, end_sha))
-      end
-
-      describe "author email check" do
-        it 'returns true' do
-          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.not_to raise_error
-        end
-
-        it 'returns false' do
-          project.create_push_rule(commit_message_regex: "@only.com")
-
-          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.to raise_error(described_class::UnauthorizedError)
-        end
-
-        it 'returns true for tags' do
-          project.create_push_rule(commit_message_regex: "@only.com")
-
-          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/tags/v1") }.not_to raise_error
-        end
-
-        it 'allows githook for new branch with an old bad commit' do
-          bad_commit = double("Commit", safe_message: 'Some change').as_null_object
-          ref_object = double(name: 'heads/master')
-          allow(bad_commit).to receive(:refs).and_return([ref_object])
-          allow_any_instance_of(Repository).to receive(:commits_between).and_return([bad_commit])
-
-          project.create_push_rule(commit_message_regex: "Change some files")
-
-          # push to new branch, so use a blank old rev and new ref
-          expect { access.send(:check_push_access!, "#{Gitlab::Git::BLANK_SHA} #{end_sha} refs/heads/new-branch") }.not_to raise_error
-        end
-
-        it 'allows githook for any change with an old bad commit' do
-          bad_commit = double("Commit", safe_message: 'Some change').as_null_object
-          ref_object = double(name: 'heads/master')
-          allow(bad_commit).to receive(:refs).and_return([ref_object])
-          allow(project.repository).to receive(:commits_between).and_return([bad_commit])
-
-          project.create_push_rule(commit_message_regex: "Change some files")
-
-          # push to new branch, so use a blank old rev and new ref
-          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.not_to raise_error
-        end
-
-        it 'does not allow any change from Web UI with bad commit' do
-          bad_commit = double("Commit", safe_message: 'Some change').as_null_object
-          # We use tmp ref a a temporary for Web UI commiting
-          ref_object = double(name: 'refs/tmp')
-          allow(bad_commit).to receive(:refs).and_return([ref_object])
-          allow(project.repository).to receive(:commits_between).and_return([bad_commit])
-          allow(project.repository).to receive(:new_commits).and_return([bad_commit])
-
-          project.create_push_rule(commit_message_regex: "Change some files")
-
-          # push to new branch, so use a blank old rev and new ref
-          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.to raise_error(described_class::UnauthorizedError)
-        end
-      end
-
-      describe "member_check" do
-        before do
-          project.create_push_rule(member_check: true)
-        end
-
-        it 'returns false for non-member user' do
-          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.to raise_error(described_class::UnauthorizedError)
-        end
-
-        it 'returns true if committer is a gitlab member' do
-          create(:user, email: 'dmitriy.zaporozhets@gmail.com')
-
-          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.not_to raise_error
-        end
-      end
-
-      describe "file names check" do
-        let(:start_sha) { '913c66a37b4a45b9769037c55c2d238bd0942d2e' }
-        let(:end_sha)   { '33f3729a45c02fc67d00adb1b8bca394b0e761d9' }
-
-        before do
-          allow(project.repository).to receive(:new_commits)
-            .and_return(project.repository.commits_between(start_sha, end_sha))
-        end
-
-        it 'returns false when filename is prohibited' do
-          project.create_push_rule(file_name_regex: "jpg$")
-
-          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.to raise_error(described_class::UnauthorizedError)
-        end
-
-        it 'returns true if file name is allowed' do
-          project.create_push_rule(file_name_regex: "exe$")
-
-          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.not_to raise_error
-        end
-      end
-
-      describe "max file size check" do
-        let(:start_sha) { 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660' }
-        let(:end_sha)   { 'c84ff944ff4529a70788a5e9003c2b7feae29047' }
-
-        it "returns false when size is too large" do
-          project.create_push_rule(max_file_size: 1)
-
-          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.to raise_error(described_class::UnauthorizedError)
-        end
-
-        it "returns true when size is allowed" do
-          project.create_push_rule(max_file_size: 2)
-
-          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.not_to raise_error
-        end
-
-        it "returns true when size is nil" do
-          allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(nil)
-          project.create_push_rule(max_file_size: 2)
-
-          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.not_to raise_error
-        end
-      end
-
-      describe 'repository size restrictions' do
-        before do
-          project.update_attribute(:repository_size_limit, 50.megabytes)
-        end
-
-        it 'returns false when blob is too big' do
-          allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(100.megabytes.to_i)
-
-          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.to raise_error(described_class::UnauthorizedError)
-        end
-
-        it 'returns true when blob is just right' do
-          allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(2.megabytes.to_i)
-
-          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.not_to raise_error
-        end
-      end
-    end
-
     context 'when pushing to a project' do
       let(:project) { create(:project, :public, :repository) }
       let(:changes) { "#{Gitlab::Git::BLANK_SHA} 570e7b2ab refs/heads/wow" }
@@ -1314,6 +1168,96 @@ describe Gitlab::GitAccess do
 
     it { expect { pull_access_check }.not_to raise_error }
     it { expect { push_access_check }.to raise_unauthorized(Gitlab::GitAccess::ERROR_MESSAGES[:upload]) }
+  end
+
+  context 'terms are enforced' do
+    before do
+      enforce_terms
+    end
+
+    shared_examples 'access after accepting terms' do
+      let(:actions) do
+        [-> { pull_access_check },
+         -> { push_access_check }]
+      end
+
+      it 'blocks access when the user did not accept terms', :aggregate_failures do
+        actions.each do |action|
+          expect { action.call }.to raise_unauthorized(/You must accept the Terms of Service in order to perform this action/)
+        end
+      end
+
+      it 'allows access when the user accepted the terms', :aggregate_failures do
+        accept_terms(user)
+
+        actions.each do |action|
+          expect { action.call }.not_to raise_error
+        end
+      end
+    end
+
+    describe 'as an anonymous user to a public project' do
+      let(:actor) { nil }
+      let(:project) { create(:project, :public, :repository) }
+
+      it { expect { pull_access_check }.not_to raise_error }
+    end
+
+    describe 'as a guest to a public project' do
+      let(:project) { create(:project, :public, :repository) }
+
+      it_behaves_like 'access after accepting terms' do
+        let(:actions) { [-> { pull_access_check }] }
+      end
+    end
+
+    describe 'as a reporter to the project' do
+      before do
+        project.add_reporter(user)
+      end
+
+      it_behaves_like 'access after accepting terms' do
+        let(:actions) { [-> { pull_access_check }] }
+      end
+    end
+
+    describe 'as a developer of the project' do
+      before do
+        project.add_developer(user)
+      end
+
+      it_behaves_like 'access after accepting terms'
+    end
+
+    describe 'as a master of the project' do
+      before do
+        project.add_master(user)
+      end
+
+      it_behaves_like 'access after accepting terms'
+    end
+
+    describe 'as an owner of the project' do
+      let(:project) { create(:project, :repository, namespace: user.namespace) }
+
+      it_behaves_like 'access after accepting terms'
+    end
+
+    describe 'when a ci build clones the project' do
+      let(:protocol) { 'http' }
+      let(:authentication_abilities) { [:build_download_code] }
+      let(:auth_result_type) { :build }
+
+      before do
+        project.add_developer(user)
+      end
+
+      it "doesn't block http pull" do
+        aggregate_failures do
+          expect { pull_access_check }.not_to raise_error
+        end
+      end
+    end
   end
 
   private

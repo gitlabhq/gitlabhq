@@ -14,7 +14,6 @@ module Geo
        .with_route
        .joins(left_join_repository_state)
        .where(repository_never_verified)
-       .order(last_repository_updated_at_asc)
        .limit(batch_size)
     end
 

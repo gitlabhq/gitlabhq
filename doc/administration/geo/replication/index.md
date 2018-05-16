@@ -1,14 +1,14 @@
 # Geo (Geo Replication) **[PREMIUM ONLY]**
 
 > **Notes:**
-- Geo is part of [GitLab Premium][ee].
-- Introduced in GitLab Enterprise Edition 8.9.
+- Geo is part of [GitLab Premium][ee]
+- Introduced in GitLab Enterprise Edition 8.9
   We recommend you use it with at least GitLab Enterprise Edition 10.0 for
-  basic Geo features, or latest version for a better experience.
-- You should make sure that all nodes run the same GitLab version.
+  basic Geo features, or latest version for a better experience
+- You should make sure that all nodes run the same GitLab version
 - Geo requires PostgreSQL 9.6 and Git 2.9 in addition to GitLab's usual
   [minimum requirements][install-requirements]
-- Using Geo in combination with High Availability is considered **GA** in GitLab Enterprise Edition 10.4
+- Using Geo in combination with High Availability (HA) is considered **Generally Available** (GA) in GitLab Enterprise Edition 10.4
 
 >**Note:**
 Geo changes significantly from release to release. Upgrades **are**
@@ -189,7 +189,7 @@ When you have object storage enabled, please consult the
 
 ## Disaster Recovery
 
-Read through the [Disaster Recovery documentation][disaster-recovery] how to use Geo to mitigate data-loss and 
+Read through the [Disaster Recovery documentation][disaster-recovery] how to use Geo to mitigate data-loss and
 restore services in a disaster scenario.
 
 ### Replicating the Container Registry
@@ -198,15 +198,14 @@ Read how to [replicate the Container Registry][docker-registry].
 
 ## Current limitations
 
-> **IMPORTANT**: This list of limitations tracks only the latest version. If you are in an older version, 
-extra limitations may be in place. 
+> **IMPORTANT**: This list of limitations tracks only the latest version. If you are in an older version,
+extra limitations may be in place.
 
 - You cannot push code to secondary nodes, see [gitlab-org/gitlab-ee#3912] for details.
 - The primary node has to be online for OAuth login to happen (existing sessions and Git are not affected)
-- The installation takes multiple manual steps that together can take about an hour depending on circumstances; we are 
+- The installation takes multiple manual steps that together can take about an hour depending on circumstances; we are
   working on improving this experience, see [gitlab-org/omnibus-gitlab#2978] for details.
 - Real-time updates of issues/merge requests (e.g. via long polling) doesn't work on the secondary
-- Broadcast messages set on the primary won't be seen on the secondary without a cache flush (e.g. gitlab-rake cache:clear)
 - [Selective synchronization](configuration.md#selective-synchronization)
   applies only to files and repositories. Other datasets are replicated to the
   secondary in full, making it inappropriate for use as an access control
@@ -214,11 +213,9 @@ extra limitations may be in place.
 
 ### Limitations on replication
 
-Only the following items are replicated to the secondary. Any data not on this
-list will not be available on the secondary, and failing over without manually
-replicating it will cause the data to be **lost**:
+Only the following items are replicated to the secondary. Data not on this list is unavailable on the secondary. Failing over without manually replicating it will cause the data to be **lost**:
 
-- All database content (e.g., snippets, epics, issues, merge requests, groups, project metadata, etc)
+- All database content (e.g. snippets, epics, issues, merge requests, groups, project metadata, etc)
 - Project repositories
 - Project wiki repositories
 - User uploads (e.g. attachments to issues, merge requests and epics, avatars, etc)

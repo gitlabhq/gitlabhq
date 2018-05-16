@@ -6,6 +6,7 @@ module EE
       board
       issue_link
       approvers
+      vulnerability_feedback
     ].freeze
 
     prepended do
@@ -43,11 +44,6 @@ module EE
         !PushRule.global&.commit_committer_check
       end
 
-      with_scope :global
-      condition(:mirror_available, score: 0) do
-        ::Gitlab::CurrentSettings.current_application_settings.mirror_available
-      end
-
       rule { admin }.enable :change_repository_storage
 
       rule { support_bot }.enable :guest_access
@@ -77,7 +73,12 @@ module EE
         enable :admin_epic_issue
       end
 
-      rule { can?(:developer_access) }.enable :admin_board
+      rule { can?(:developer_access) }.policy do
+        enable :admin_board
+        enable :admin_vulnerability_feedback
+      end
+
+      rule { can?(:read_project) }.enable :read_vulnerability_feedback
 
       rule { repository_mirrors_enabled & ((mirror_available & can?(:admin_project)) | admin) }.enable :admin_mirror
 

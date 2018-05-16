@@ -1,4 +1,6 @@
 module IssuablesHelper
+  prepend EE::IssuablesHelper
+
   include GitlabRoutingHelper
 
   def sidebar_gutter_toggle_icon
@@ -390,9 +392,7 @@ module IssuablesHelper
       editable: can_edit_issuable,
       currentUser: UserSerializer.new.represent(current_user),
       rootPath: root_path,
-      fullPath: @project.full_path,
-      weightOptions: Issue.weight_options,
-      weightNoneValue: Issue::WEIGHT_NONE
+      fullPath: @project.full_path
     }
   end
 

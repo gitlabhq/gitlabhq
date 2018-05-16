@@ -229,12 +229,12 @@
   justify-content: center;
   align-items: center;
 
-  &-finished {
+  &-running {
     background-color: $green-100;
     border-color: $green-400;
   }
 
-  &-deploying {
+  &-succeeded {
     background-color: $green-50;
     border-color: $green-400;
   }
@@ -244,17 +244,12 @@
     border-color: $red-500;
   }
 
-  &-ready {
-    background-color: lighten($border-color, 1%);
-    border-color: $border-color;
+  &-unknown {
+    background-color: $red-200;
+    border-color: $red-500;
   }
 
-  &-preparing {
-    background-color: lighten($border-color, 5%);
-    border-color: $border-color;
-  }
-
-  &-waiting {
+  &-pending {
     background-color: $white-light;
     border-color: $border-color;
   }
@@ -443,28 +438,59 @@
   }
 
   &.popover {
+    padding: 0;
+    border: 1px solid $border-color;
+
     &.left {
       left: auto;
       right: 0;
       margin-right: 10px;
+
+      > .arrow {
+        right: -16px;
+        border-left-color: $border-color;
+      }
+
+      > .arrow::after {
+        border-left-color: $theme-gray-50;
+      }
     }
 
     &.right {
       left: 0;
       right: auto;
       margin-left: 10px;
+
+      > .arrow {
+        left: -16px;
+        border-right-color: $border-color;
+      }
+
+      > .arrow::after {
+        border-right-color: $theme-gray-50;
+      }
     }
 
     > .arrow {
-      top: 40px;
+      top: 16px;
+      margin-top: -8px;
+      border-width: 8px;
     }
 
     > .popover-title,
     > .popover-content {
-      padding: 5px 8px;
+      padding: 8px;
       font-size: 12px;
       white-space: nowrap;
     }
+
+    > .popover-title {
+      background-color: $theme-gray-50;
+    }
+  }
+
+  strong {
+    font-weight: 600;
   }
 }
 
@@ -477,7 +503,7 @@
     vertical-align: middle;
 
     + td {
-      padding-left: 5px;
+      padding-left: 8px;
       vertical-align: top;
     }
   }

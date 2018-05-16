@@ -181,12 +181,10 @@ module Geo
     # @return [ActiveRecord::Relation<Geo::ProjectRegistry>] list of registries that need verification
     def fdw_find_registries_to_verify(batch_size:)
       repo_condition =
-        local_registry_table[:repository_verification_checksum_sha].eq(nil)
-          .and(local_registry_table[:last_repository_verification_failure].eq(nil))
+        local_repo_condition
           .and(fdw_repository_state_table[:repository_verification_checksum].not_eq(nil))
       wiki_condition =
-        local_registry_table[:wiki_verification_checksum_sha].eq(nil)
-          .and(local_registry_table[:last_wiki_verification_failure].eq(nil))
+        local_wiki_condition
           .and(fdw_repository_state_table[:wiki_verification_checksum].not_eq(nil))
 
       Geo::ProjectRegistry
@@ -316,12 +314,8 @@ module Geo
 
     # @return [ActiveRecord::Relation<Geo::ProjectRegistry>] list of registries that need verification
     def legacy_find_registries_to_verify(batch_size:)
-      repo_condition =
-        local_registry_table[:repository_verification_checksum_sha].eq(nil)
-          .and(local_registry_table[:last_repository_verification_failure].eq(nil))
-      wiki_condition =
-        local_registry_table[:wiki_verification_checksum_sha].eq(nil)
-          .and(local_registry_table[:last_wiki_verification_failure].eq(nil))
+      repo_condition = local_repo_condition
+      wiki_condition = local_wiki_condition
 
       registries = Geo::ProjectRegistry
         .where(repo_condition.or(wiki_condition))
@@ -355,10 +349,6 @@ module Geo
       Geo::ProjectRegistry.where(project_id: project_ids)
     end
 
-    def local_registry_table
-      Geo::ProjectRegistry.arel_table
-    end
-
     def legacy_repository_state_table
       ::ProjectRepositoryState.arel_table
     end
@@ -369,6 +359,22 @@ module Geo
 
     def fdw_repository_state_table
       Geo::Fdw::ProjectRepositoryState.arel_table
+    end
+
+    def local_registry_table
+      Geo::ProjectRegistry.arel_table
+    end
+
+    def local_repo_condition
+      local_registry_table[:repository_verification_checksum_sha].eq(nil)
+        .and(local_registry_table[:last_repository_verification_failure].eq(nil))
+        .and(local_registry_table[:resync_repository].eq(false))
+    end
+
+    def local_wiki_condition
+      local_registry_table[:wiki_verification_checksum_sha].eq(nil)
+        .and(local_registry_table[:last_wiki_verification_failure].eq(nil))
+        .and(local_registry_table[:resync_wiki].eq(false))
     end
   end
 end

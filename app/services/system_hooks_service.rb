@@ -130,6 +130,7 @@ class SystemHooksService
     {
       group_name: model.group.name,
       group_path: model.group.path,
+      group_plan: model.group.plan&.name,
       group_id: model.group.id,
       user_username: model.user.username,
       user_name: model.user.name,

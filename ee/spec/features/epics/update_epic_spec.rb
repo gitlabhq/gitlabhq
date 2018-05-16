@@ -83,11 +83,10 @@ feature 'Update Epic', :js do
         expect(link).to match(link_match)
       end
 
-      # Autocomplete is disabled for epics until #4084 is resolved
-      describe 'autocomplete disabled' do
-        it 'does not open atwho container' do
+      describe 'autocomplete enabled' do
+        it 'opens atwho container' do
           find('#issue-description').native.send_keys('@')
-          expect(page).not_to have_selector('.atwho-container')
+          expect(page).to have_selector('.atwho-container')
         end
       end
     end

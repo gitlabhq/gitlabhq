@@ -1,0 +1,5 @@
+---
+title: "[Geo] Fix rake geo:status when event_log is not found"
+merge_request:
+author:
+type: fixed

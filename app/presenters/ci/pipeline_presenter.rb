@@ -1,12 +1,21 @@
 module Ci
   class PipelinePresenter < Gitlab::View::Presenter::Delegated
     prepend ::EE::Ci::PipelinePresenter
+    include Gitlab::Utils::StrongMemoize
 
     FAILURE_REASONS = {
       config_error: 'CI/CD YAML configuration error!'
     }.merge(EE_FAILURE_REASONS)
 
     presents :pipeline
+
+    def failed_builds
+      return [] unless can?(current_user, :read_build, pipeline)
+
+      strong_memoize(:failed_builds) do
+        pipeline.builds.latest.failed
+      end
+    end
 
     def failure_reason
       return unless pipeline.failure_reason?

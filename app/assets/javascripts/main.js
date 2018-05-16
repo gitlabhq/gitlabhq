@@ -1,21 +1,18 @@
-/* eslint-disable import/first */
 /* global $ */
 
 import jQuery from 'jquery';
 import Cookies from 'js-cookie';
 import svg4everybody from 'svg4everybody';
 
-// expose common libraries as globals (TODO: remove these)
-window.jQuery = jQuery;
-window.$ = jQuery;
+// bootstrap webpack, common libs, polyfills, and behaviors
+import './webpack';
+import './commons';
+import './behaviors';
 
 // lib/utils
 import { handleLocationHash, addSelectOnFocusBehaviour } from './lib/utils/common_utils';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import { getLocationHash, visitUrl } from './lib/utils/url_utility';
-
-// behaviors
-import './behaviors/';
 
 // everything else
 import loadAwardsHandler from './awards_handler';
@@ -31,11 +28,14 @@ import initLogoAnimation from './logo';
 import './milestone_select';
 import './projects_dropdown';
 import initBreadcrumbs from './breadcrumb';
+import initDispatcher from './dispatcher';
 
 // EE-only scripts
-import 'ee/main';
+import 'ee/main'; // eslint-disable-line import/first
 
-import initDispatcher from './dispatcher';
+// expose jQuery as global (TODO: remove these)
+window.jQuery = jQuery;
+window.$ = jQuery;
 
 // inject test utilities if necessary
 if (process.env.NODE_ENV !== 'production' && gon && gon.test_env) {
@@ -55,10 +55,14 @@ document.addEventListener('beforeunload', () => {
 });
 
 window.addEventListener('hashchange', handleLocationHash);
-window.addEventListener('load', function onLoad() {
-  window.removeEventListener('load', onLoad, false);
-  handleLocationHash();
-}, false);
+window.addEventListener(
+  'load',
+  function onLoad() {
+    window.removeEventListener('load', onLoad, false);
+    handleLocationHash();
+  },
+  false,
+);
 
 gl.lazyLoader = new LazyLoader({
   scrollContainer: window,
@@ -92,9 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (bootstrapBreakpoint === 'xs') {
     const $rightSidebar = $('aside.right-sidebar, .layout-page');
 
-    $rightSidebar
-      .removeClass('right-sidebar-expanded')
-      .addClass('right-sidebar-collapsed');
+    $rightSidebar.removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
   }
 
   // prevent default action for disabled buttons
@@ -111,7 +113,8 @@ document.addEventListener('DOMContentLoaded', () => {
   addSelectOnFocusBehaviour('.js-select-on-focus');
 
   $('.remove-row').on('ajax:success', function removeRowAjaxSuccessCallback() {
-    $(this).tooltip('destroy')
+    $(this)
+      .tooltip('destroy')
       .closest('li')
       .fadeOut();
   });
@@ -121,7 +124,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   $('.js-remove-tr').on('ajax:success', function removeTRAjaxSuccessCallback() {
-    $(this).closest('tr').fadeOut();
+    $(this)
+      .closest('tr')
+      .fadeOut();
   });
 
   // Initialize select2 selects
@@ -158,7 +163,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Form submitter
   $('.trigger-submit').on('change', function triggerSubmitCallback() {
-    $(this).parents('form').submit();
+    $(this)
+      .parents('form')
+      .submit();
   });
 
   localTimeAgo($('abbr.timeago, .js-timeago'), true);
@@ -207,9 +214,15 @@ document.addEventListener('DOMContentLoaded', () => {
     $this.toggleClass('active');
 
     if ($this.hasClass('active')) {
-      notesHolders.show().find('.hide, .content').show();
+      notesHolders
+        .show()
+        .find('.hide, .content')
+        .show();
     } else {
-      notesHolders.hide().find('.content').hide();
+      notesHolders
+        .hide()
+        .find('.content')
+        .hide();
     }
 
     $(document).trigger('toggle.comments');
@@ -250,9 +263,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const flashContainer = document.querySelector('.flash-container');
 
   if (flashContainer && flashContainer.children.length) {
-    flashContainer.querySelectorAll('.flash-alert, .flash-notice, .flash-success').forEach((flashEl) => {
-      removeFlashClickListener(flashEl);
-    });
+    flashContainer
+      .querySelectorAll('.flash-alert, .flash-notice, .flash-success')
+      .forEach(flashEl => {
+        removeFlashClickListener(flashEl);
+      });
   }
 
   initDispatcher();

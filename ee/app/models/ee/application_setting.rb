@@ -96,7 +96,6 @@ module EE
           mirror_capacity_threshold: Settings.gitlab['mirror_capacity_threshold'],
           mirror_max_capacity: Settings.gitlab['mirror_max_capacity'],
           mirror_max_delay: Settings.gitlab['mirror_max_delay'],
-          mirror_available: true,
           repository_size_limit: 0,
           slack_app_enabled: false,
           slack_app_id: nil,

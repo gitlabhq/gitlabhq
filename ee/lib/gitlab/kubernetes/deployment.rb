@@ -1,12 +1,17 @@
 module Gitlab
   module Kubernetes
     class Deployment
-      def initialize(attributes = {})
+      include Gitlab::Utils::StrongMemoize
+
+      STABLE_TRACK_VALUE = 'stable'.freeze
+
+      def initialize(attributes = {}, pods: {})
         @attributes = attributes
+        @pods = pods
       end
 
       def name
-        metadata['name']
+        metadata['name'] || 'unknown'
       end
 
       def labels
@@ -14,7 +19,7 @@ module Gitlab
       end
 
       def track
-        labels.fetch('track', 'stable')
+        labels.fetch('track', STABLE_TRACK_VALUE)
       end
 
       def stable?
@@ -29,47 +34,56 @@ module Gitlab
         observed_generation < generation
       end
 
-      def wanted_replicas
+      def wanted_instances
         spec.fetch('replicas', 0)
       end
 
-      def finished_replicas
-        status.fetch('availableReplicas', 0)
+      def created_instances
+        filtered_pods_by_track.map do |pod|
+          metadata = pod.fetch('metadata', {})
+          pod_name = metadata['name'] || metadata['generate_name']
+          pod_status = pod.dig('status', 'phase')
+
+          deployment_instance(pod_name: pod_name, pod_status: pod_status)
+        end
       end
 
-      def deploying_replicas
-        updated_replicas - finished_replicas
+      # These are replicas that did not get created yet,
+      # So they still do not have any associated pod,
+      # these are marked as pending instances.
+      def not_created_instances
+        pending_instances_count = wanted_instances - filtered_pods_by_track.count
+
+        return [] if pending_instances_count <= 0
+
+        Array.new(pending_instances_count, deployment_instance(pod_name: 'Not provided', pod_status: 'Pending'))
       end
 
-      def waiting_replicas
-        wanted_replicas - updated_replicas
+      def filtered_pods_by_track
+        strong_memoize(:filtered_pods_by_track) do
+          @pods.select { |pod| has_same_track?(pod) }
+        end
       end
 
       def instances
-        return deployment_instances(wanted_replicas, 'unknown', 'waiting') if name.nil?
-        return deployment_instances(wanted_replicas, name, 'waiting') if outdated?
-
-        out = deployment_instances(finished_replicas, name, 'finished')
-        out.push(*deployment_instances(deploying_replicas, name, 'deploying', out.size))
-        out.push(*deployment_instances(waiting_replicas, name, 'waiting', out.size))
-        out
+        created_instances + not_created_instances
       end
 
       private
 
-      def deployment_instances(n, name, status, offset = 0)
-        return [] if n < 0
-
-        Array.new(n) { |idx| deployment_instance(idx + offset, name, status) }
-      end
-
-      def deployment_instance(n, name, status)
+      def deployment_instance(pod_name:, pod_status:)
         {
-          status: status,
-          tooltip: "#{name} (pod #{n}) #{status.capitalize}",
+          status: pod_status&.downcase,
+          tooltip: "#{name} (#{pod_name}) #{pod_status}",
           track: track,
           stable: stable?
         }
+      end
+
+      def has_same_track?(pod)
+        pod_track = pod.dig('metadata', 'labels', 'track') || STABLE_TRACK_VALUE
+
+        pod_track == track
       end
 
       def metadata
@@ -82,10 +96,6 @@ module Gitlab
 
       def status
         @attributes.fetch('status', {})
-      end
-
-      def updated_replicas
-        status.fetch('updatedReplicas', 0)
       end
 
       def generation

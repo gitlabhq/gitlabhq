@@ -333,7 +333,7 @@ class MergeRequest < ActiveRecord::Base
   # updates `merge_jid` with the MergeWorker#jid.
   # This helps tracking enqueued and ongoing merge jobs.
   def merge_async(user_id, params)
-    jid = MergeWorker.perform_async(id, user_id, params)
+    jid = MergeWorker.perform_async(id, user_id, params.to_h)
     update_column(:merge_jid, jid)
   end
 
@@ -1032,6 +1032,10 @@ class MergeRequest < ActiveRecord::Base
 
   def merge_commit
     @merge_commit ||= project.commit(merge_commit_sha) if merge_commit_sha
+  end
+
+  def short_merge_commit_sha
+    Commit.truncate_sha(merge_commit_sha) if merge_commit_sha
   end
 
   def can_be_reverted?(current_user)

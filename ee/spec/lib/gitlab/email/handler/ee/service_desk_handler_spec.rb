@@ -1,5 +1,4 @@
 require 'spec_helper'
-require Rails.root.join('spec/lib/gitlab/email/email_shared_blocks')
 
 describe Gitlab::Email::Handler::EE::ServiceDeskHandler do
   include_context :email_shared_context

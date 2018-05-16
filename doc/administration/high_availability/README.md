@@ -33,10 +33,10 @@ cases components can be combined on the same nodes to reduce complexity.
 
 - Unicorn/Workhorse - Web-requests (UI, API, Git over HTTP)
 - Sidekiq - Asynchronous/Background jobs
-- PostgreSQL - Database
-  - Consul - Database service discovery and health checks/failover
-  - PGBouncer - Database pool manager
-- Redis - Key/Value store (User sessions, cache, queue for Sidekiq)
+- [PostgreSQL](database.md) - Database
+  - [Consul](consul.md) - Database service discovery and health checks/failover
+  - [PGBouncer](pgbouncer.md) - Database pool manager
+- [Redis](redis.md) - Key/Value store (User sessions, cache, queue for Sidekiq)
   - Sentinel - Redis health check/failover manager
 
 ## Architecture Examples

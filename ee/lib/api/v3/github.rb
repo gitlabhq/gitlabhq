@@ -6,6 +6,8 @@
 module API
   module V3
     class Github < Grape::API
+      JIRA_DEV_PANEL_FEATURE = :jira_dev_panel_integration.freeze
+
       include PaginationParams
 
       before do
@@ -25,8 +27,35 @@ module API
 
         def find_project_with_access(full_path)
           project = find_project!(full_path)
-          not_found! unless project.feature_available?(:jira_dev_panel_integration)
+          not_found! unless licensed_project?(project)
           project
+        end
+
+        def find_merge_requests
+          merge_requests = authorized_merge_requests.reorder(updated_at: :desc).preload(:target_project)
+          merge_requests = paginate(merge_requests)
+          merge_requests.select { |mr| licensed_project?(mr.target_project) }
+        end
+
+        def find_merge_request_with_access(id, access_level = :read_merge_request)
+          merge_request = authorized_merge_requests.find_by(id: id)
+          not_found! unless can?(current_user, access_level, merge_request)
+          merge_request
+        end
+
+        def authorized_merge_requests
+          MergeRequestsFinder.new(current_user, authorized_only: true).execute
+        end
+
+        def find_notes(noteable)
+          # They're not presented on Jira Dev Panel ATM. A comments count with a
+          # redirect link is presented.
+          notes = paginate(noteable.notes.user.reorder(nil))
+          notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
+        end
+
+        def licensed_project?(project)
+          project.feature_available?(JIRA_DEV_PANEL_FEATURE)
         end
       end
 
@@ -47,14 +76,43 @@ module API
           use :pagination
         end
         get ':namespace/repos' do
-          projects = current_user.authorized_projects.select { |project| project.feature_available?(:jira_dev_panel_integration) }
+          projects = current_user.authorized_projects.select { |project| licensed_project?(project) }
           projects = ::Kaminari.paginate_array(projects)
           present paginate(projects), with: ::API::Github::Entities::Repository
         end
       end
 
+      # Jira dev panel integration weirdly requests for "/-/jira/pulls" instead
+      # "/api/v3/repos/<namespace>/<project>/pulls". This forces us into
+      # returning _all_ Merge Requests from authorized projects (user is a member),
+      # instead just the authorized MRs from a project.
+      # Jira handles the filtering, presenting just MRs mentioning the Jira
+      # issue ID on the MR title / description.
       resource :repos do
         get '/-/jira/pulls' do
+          present find_merge_requests, with: ::API::Github::Entities::PullRequest
+        end
+
+        # In Github, each Merge Request is automatically also an issue.
+        # Therefore we return its comments here.
+        # It'll present _just_ the comments counting with a link to GitLab on
+        # Jira dev panel, not the actual note content.
+        #
+        get '/-/jira/issues/:id/comments' do
+          merge_request = find_merge_request_with_access(params[:id])
+
+          present find_notes(merge_request), with: ::API::Github::Entities::NoteableComment
+        end
+
+        # This refers to "review" comments but Jira dev panel doesn't seem to
+        # present it accordingly.
+        get '/-/jira/pulls/:id/comments' do
+          present []
+        end
+
+        # Commits are not presented within "Pull Requests" modal on Jira dev
+        # panel.
+        get '/-/jira/pulls/:id/commits' do
           present []
         end
 

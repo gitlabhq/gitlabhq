@@ -1,5 +1,6 @@
 class SamlProvider < ActiveRecord::Base
   belongs_to :group
+  has_many :identities
 
   validates :group, presence: true, top_level_group: true
   validates :sso_url, presence: true, url: { protocols: %w(https) }

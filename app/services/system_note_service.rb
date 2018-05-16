@@ -3,6 +3,7 @@
 # Used for creating system notes (e.g., when a user references a merge request
 # from an issue, an issue's assignee changes, an issue is closed, etc.)
 module SystemNoteService
+  prepend EE::SystemNoteService
   extend self
 
   # Called when commits are added to a Merge Request

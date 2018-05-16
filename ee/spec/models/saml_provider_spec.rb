@@ -3,6 +3,7 @@ require 'spec_helper'
 describe SamlProvider do
   describe "Associations" do
     it { is_expected.to belong_to :group }
+    it { is_expected.to have_many :identities }
   end
 
   describe 'Validations' do

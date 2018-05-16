@@ -1,4 +1,6 @@
 module EmailsHelper
+  prepend EE::EmailsHelper
+
   include AppearancesHelper
 
   # Google Actions

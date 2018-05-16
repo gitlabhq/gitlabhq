@@ -39,5 +39,11 @@ module EE
                                       pipeline.dependency_scanning_artifact,
                                       path: Ci::Build::DEPENDENCY_SCANNING_FILE)
     end
+
+    def license_management_artifact_url(pipeline)
+      raw_project_build_artifacts_url(pipeline.project,
+                                      pipeline.license_management_artifact,
+                                      path: Ci::Build::LICENSE_MANAGEMENT_FILE)
+    end
   end
 end

@@ -70,9 +70,8 @@ describe Clusters::Applications::Runner do
 
       it 'assigns the new runner to runner' do
         subject
-        gitlab_runner.reload
 
-        expect(gitlab_runner.runner).not_to be_nil
+        expect(gitlab_runner.reload.runner).to be_project_type
       end
     end
 

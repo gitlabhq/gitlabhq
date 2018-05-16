@@ -94,6 +94,19 @@ describe Ci::BuildPolicy do
           end
         end
       end
+
+      context 'when maintainer is allowed to push to pipeline branch' do
+        let(:project) { create(:project, :public) }
+        let(:owner) { user }
+
+        it 'enables update_build if user is maintainer' do
+          allow_any_instance_of(Project).to receive(:empty_repo?).and_return(false)
+          allow_any_instance_of(Project).to receive(:branch_allows_maintainer_push?).and_return(true)
+
+          expect(policy).to be_allowed :update_build
+          expect(policy).to be_allowed :update_commit_status
+        end
+      end
     end
 
     describe 'rules for protected ref' do

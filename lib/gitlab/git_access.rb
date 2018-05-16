@@ -5,7 +5,6 @@ module Gitlab
     prepend ::EE::Gitlab::GitAccess
     include ActionView::Helpers::SanitizeHelper
     include PathLocksHelper
-    include Gitlab::Utils::StrongMemoize
 
     UnauthorizedError = Class.new(StandardError)
     NotFoundError = Class.new(StandardError)
@@ -20,7 +19,6 @@ module Gitlab
       deploy_key_upload: 'This deploy key does not have write access to this project.',
       no_repo: 'A repository for this project does not exist yet.',
       project_not_found: 'The project you were looking for could not be found.',
-      account_blocked: 'Your account has been blocked.',
       command_not_allowed: "The command you're trying to execute is not allowed.",
       upload_pack_disabled_over_http: 'Pulling over HTTP is not allowed.',
       receive_pack_disabled_over_http: 'Pushing over HTTP is not allowed.',
@@ -111,8 +109,11 @@ module Gitlab
     end
 
     def check_active_user!
-      if user && !user_access.allowed?
-        raise UnauthorizedError, ERROR_MESSAGES[:account_blocked]
+      return unless user
+
+      unless user_access.allowed?
+        message = Gitlab::Auth::UserAccessDeniedReason.new(user).rejection_message
+        raise UnauthorizedError, message
       end
     end
 
@@ -270,13 +271,36 @@ module Gitlab
         check_single_change_access(change, skip_lfs_integrity_check: !first_change)
 
         if project.size_limit_enabled?
-          push_size_in_bytes += EE::Gitlab::Deltas.delta_size_check(change, project.repository)
+          push_size_in_bytes += push_size(change)
         end
       end
 
       if project.changes_will_exceed_size_limit?(push_size_in_bytes)
         raise UnauthorizedError, Gitlab::RepositorySizeError.new(project).new_changes_error
       end
+    end
+
+    def push_size(change)
+      old_rev, new_rev = change.values_at(:oldrev, :newrev)
+      current_changes_size = 0
+      old_paths = []
+
+      repository.raw_changes_between(old_rev, new_rev).each do |c|
+        case c.operation
+        when :deleted
+          current_changes_size -= c.blob_size
+        when :added
+          current_changes_size += c.blob_size
+        when :copied, :modified, :renamed, :type_changed
+          current_changes_size += c.blob_size
+
+          old_paths << [old_rev, c.old_path]
+        end
+      end
+
+      old_changes_size = Gitlab::Git::Blob.batch_metadata(repository, old_paths).sum(&:size)
+
+      current_changes_size - old_changes_size
     end
 
     def check_single_change_access(change, skip_lfs_integrity_check: false)
@@ -363,6 +387,8 @@ module Gitlab
     def user_access
       @user_access ||= if ci?
                          CiAccess.new
+                       elsif user && request_from_ci_build?
+                         BuildAccess.new(user, project: project)
                        else
                          UserAccess.new(user, project: project)
                        end

@@ -206,6 +206,7 @@ project:
 - cluster
 - clusters
 - cluster_project
+- cluster_ingresses
 - creator
 - group
 - namespace
@@ -281,7 +282,6 @@ project:
 - builds
 - runner_projects
 - runners
-- active_runners
 - variables
 - triggers
 - pipeline_schedules
@@ -308,12 +308,13 @@ project:
 - statistics
 - container_repositories
 - uploads
-- mirror_data
+- import_state
 - repository_state
 - source_pipelines
 - sourced_pipelines
 - members_and_requesters
 - build_trace_section_names
+- build_trace_chunks
 - root_of_fork_network
 - fork_network_member
 - fork_network
@@ -325,7 +326,9 @@ project:
 - internal_ids
 - project_deploy_tokens
 - deploy_tokens
+- settings
 - ci_cd_settings
+- vulnerability_feedback
 award_emoji:
 - awardable
 - user
