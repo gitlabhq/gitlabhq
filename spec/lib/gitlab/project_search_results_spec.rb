@@ -106,6 +106,18 @@ describe Gitlab::ProjectSearchResults do
         end
       end
 
+      context 'when the matching content contains multiple null bytes' do
+        let(:search_result) { "master:testdata/foo.txt\x001\x00blah\x001\x00foo" }
+
+        it 'returns a valid FoundBlob' do
+          expect(subject.filename).to eq('testdata/foo.txt')
+          expect(subject.basename).to eq('testdata/foo')
+          expect(subject.ref).to eq('master')
+          expect(subject.startline).to eq(1)
+          expect(subject.data).to eq("blah\x001\x00foo")
+        end
+      end
+
       context 'when the search result ends with an empty line' do
         let(:results) { project.repository.search_files_by_content('Role models', 'master') }
 

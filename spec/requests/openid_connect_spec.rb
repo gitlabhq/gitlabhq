@@ -159,7 +159,9 @@ describe 'OpenID Connect requests' do
       get '/.well-known/openid-configuration'
 
       expect(response).to have_gitlab_http_status(200)
-      expect(json_response).to have_key('issuer')
+      expect(json_response['issuer']).to eq('http://localhost')
+      expect(json_response['jwks_uri']).to eq('http://www.example.com/oauth/discovery/keys')
+      expect(json_response['scopes_supported']).to eq(%w[api read_user sudo read_repository openid])
     end
   end
 end
