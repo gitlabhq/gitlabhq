@@ -64,7 +64,8 @@ describe 'User creates branch and merge request on issue page', :js do
       end
 
       context 'when branch name is auto-generated' do
-        it 'creates a merge request' do
+        # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+        xit 'creates a merge request' do
           perform_enqueued_jobs do
             select_dropdown_option('create-mr')
 
@@ -93,7 +94,8 @@ describe 'User creates branch and merge request on issue page', :js do
       context 'when branch name is custom' do
         let(:branch_name) { 'custom-branch-name' }
 
-        it 'creates a merge request' do
+        # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+        xit 'creates a merge request' do
           perform_enqueued_jobs do
             select_dropdown_option('create-mr', branch_name)
 

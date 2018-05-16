@@ -34,7 +34,8 @@ feature 'Editing file blob', :js do
         edit_and_commit
       end
 
-      it 'returns me to the mr' do
+      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+      xit 'returns me to the mr' do
         expect(page).to have_content(merge_request.title)
       end
     end

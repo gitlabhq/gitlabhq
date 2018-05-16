@@ -119,7 +119,7 @@ class MergeRequestWidgetEntity < IssuableEntity
     end
 
     expose :can_create_note do |issue|
-      #TODO correct issue to merge_request where applicable
+      # TODO correct issue to merge_request where applicable
       can?(request.current_user, :create_note, issue)
     end
 

@@ -83,7 +83,8 @@ describe 'Merge request > User sees avatars on diff notes', :js do
         wait_for_requests
       end
 
-      it 'shows note avatar' do
+      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+      xit 'shows note avatar' do
         page.within find_line(position.line_code(project.repository)) do
           find('.diff-notes-collapse').send_keys(:return)
 
@@ -91,7 +92,8 @@ describe 'Merge request > User sees avatars on diff notes', :js do
         end
       end
 
-      it 'shows comment on note avatar' do
+      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+      xit 'shows comment on note avatar' do
         page.within find_line(position.line_code(project.repository)) do
           find('.diff-notes-collapse').send_keys(:return)
 
@@ -99,7 +101,8 @@ describe 'Merge request > User sees avatars on diff notes', :js do
         end
       end
 
-      it 'toggles comments when clicking avatar' do
+      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+      xit 'toggles comments when clicking avatar' do
         page.within find_line(position.line_code(project.repository)) do
           find('.diff-notes-collapse').send_keys(:return)
         end
@@ -113,7 +116,8 @@ describe 'Merge request > User sees avatars on diff notes', :js do
         expect(page).to have_selector('.notes_holder')
       end
 
-      it 'removes avatar when note is deleted' do
+      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+      xit 'removes avatar when note is deleted' do
         open_more_actions_dropdown(note)
 
         page.within find(".note-row-#{note.id}") do
@@ -127,7 +131,8 @@ describe 'Merge request > User sees avatars on diff notes', :js do
         end
       end
 
-      it 'adds avatar when commenting' do
+      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+      xit 'adds avatar when commenting' do
         click_button 'Reply...'
 
         page.within '.js-discussion-note-form' do
@@ -145,7 +150,8 @@ describe 'Merge request > User sees avatars on diff notes', :js do
         end
       end
 
-      it 'adds multiple comments' do
+      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+      xit 'adds multiple comments' do
         3.times do
           click_button 'Reply...'
 
@@ -173,7 +179,8 @@ describe 'Merge request > User sees avatars on diff notes', :js do
           wait_for_requests
         end
 
-        it 'shows extra comment count' do
+        # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+        xit 'shows extra comment count' do
           page.within find_line(position.line_code(project.repository)) do
             find('.diff-notes-collapse').send_keys(:return)
 

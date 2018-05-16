@@ -82,6 +82,8 @@ export default {
       } else {
         return version.versionIndex === this.mergeRequestVersion.versionIndex;
       }
+
+      return version.versionIndex === this.mergeRequestVersion.versionIndex;
     },
     isBase(version) {
       if (!version || !this.targetBranch) {
