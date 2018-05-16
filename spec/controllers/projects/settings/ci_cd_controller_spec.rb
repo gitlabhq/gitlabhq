@@ -19,11 +19,11 @@ describe Projects::Settings::CiCdController do
     end
 
     context 'with group runners' do
-      let(:group_runner) { create(:ci_runner) }
+      let(:group_runner) { create(:ci_runner, runner_type: :group_type) }
       let(:parent_group) { create(:group) }
       let(:group) { create(:group, runners: [group_runner], parent: parent_group) }
       let(:other_project) { create(:project, group: group) }
-      let!(:project_runner) { create(:ci_runner, projects: [other_project]) }
+      let!(:project_runner) { create(:ci_runner, projects: [other_project], runner_type: :project_type) }
       let!(:shared_runner) { create(:ci_runner, :shared) }
 
       it 'sets assignable project runners only' do
@@ -31,7 +31,7 @@ describe Projects::Settings::CiCdController do
 
         get :show, namespace_id: project.namespace, project_id: project
 
-        expect(assigns(:assignable_runners)).to eq [project_runner]
+        expect(assigns(:assignable_runners)).to contain_exactly(project_runner)
       end
     end
   end
