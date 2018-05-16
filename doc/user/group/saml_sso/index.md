@@ -4,14 +4,6 @@
 
 This allows SAML to be used for adding users to a group on GitLab.com and other instances where using [site-wide SAML](../../../integration/saml.md) is not possible.
 
-## Enable the beta
-
-Enable the beta by setting the `enable_group_saml` cookie. This can be done with the below JavaScript snippet:
-
-```javascript
-javascript:void((function(d){document.cookie='enable_group_saml=' + (document.cookie.indexOf('enable_group_saml=true') >= 0 ?  'false' : 'true') + ';domain=.' + window.location.hostname + ';path=/;expires=' + new Date(Date.now() + 31536000000).toUTCString(); location.reload();})(document));
-```
-
 ## How to configure
 
 1. Navigate to the group and click Settings -> SAML SSO.
