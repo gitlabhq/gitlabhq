@@ -1,12 +1,16 @@
-import _ from 'underscore';
 import Vue from 'vue';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import eventHub from '~/deploy_keys/eventhub';
 import deployKeysApp from '~/deploy_keys/components/app.vue';
+import { TEST_HOST } from 'spec/test_constants';
 
 describe('Deploy keys app component', () => {
   const data = getJSONFixture('deploy_keys/keys.json');
   let vm;
+  let mock;
 
+<<<<<<< HEAD
   const deployKeysResponse = (request, next) => {
     next(request.respondWith(JSON.stringify(data), {
       status: 200,
@@ -14,13 +18,23 @@ describe('Deploy keys app component', () => {
   };
 
   beforeEach((done) => {
-    const Component = Vue.extend(deployKeysApp);
+=======
+  beforeEach((done) => {
+    // setup axios mock before component
+    mock = new MockAdapter(axios);
+    mock.onGet(`${TEST_HOST}/dummy/`).replyOnce(200, data);
 
-    Vue.http.interceptors.push(deployKeysResponse);
+>>>>>>> master
+    const Component = Vue.extend(deployKeysApp);
 
     vm = new Component({
       propsData: {
+<<<<<<< HEAD
         endpoint: '/test',
+=======
+        endpoint: `${TEST_HOST}/dummy`,
+        projectId: '8',
+>>>>>>> master
       },
     }).$mount();
 
@@ -28,7 +42,7 @@ describe('Deploy keys app component', () => {
   });
 
   afterEach(() => {
-    Vue.http.interceptors = _.without(Vue.http.interceptors, deployKeysResponse);
+    mock.restore();
   });
 
   it('renders loading icon', (done) => {

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Ci::RetryPipelineService, '#execute' do
+  include ProjectForksHelper
+
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
@@ -263,6 +265,33 @@ describe Ci::RetryPipelineService, '#execute' do
         expect { service.execute(pipeline) }
           .to raise_error Gitlab::Access::AccessDeniedError
       end
+    end
+  end
+
+  context 'when maintainer is allowed to push to forked project' do
+    let(:user) { create(:user) }
+    let(:project) { create(:project, :public) }
+    let(:forked_project) { fork_project(project) }
+    let(:pipeline) { create(:ci_pipeline, project: forked_project, ref: 'fixes') }
+
+    before do
+      project.add_master(user)
+      create(:merge_request,
+        source_project: forked_project,
+        target_project: project,
+        source_branch: 'fixes',
+        allow_maintainer_to_push: true)
+      create_build('rspec 1', :failed, 1)
+    end
+
+    it 'allows to retry failed pipeline' do
+      allow_any_instance_of(Project).to receive(:fetch_branch_allows_maintainer_push?).and_return(true)
+      allow_any_instance_of(Project).to receive(:empty_repo?).and_return(false)
+
+      service.execute(pipeline)
+
+      expect(build('rspec 1')).to be_pending
+      expect(pipeline.reload).to be_running
     end
   end
 

@@ -28,4 +28,21 @@ module UsersHelper
   def get_profile_tabs
     [:activity, :groups, :contributed, :projects, :snippets]
   end
+<<<<<<< HEAD
+=======
+
+  def get_current_user_menu_items
+    items = []
+
+    items << :sign_out if current_user
+
+    return items if current_user&.required_terms_not_accepted?
+
+    items << :help
+    items << :profile if can?(current_user, :read_user, current_user)
+    items << :settings if can?(current_user, :update_user, current_user)
+
+    items
+  end
+>>>>>>> master
 end

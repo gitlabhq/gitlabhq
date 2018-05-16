@@ -28,6 +28,10 @@ describe('Multi-file editor library model', () => {
     expect(model.originalModel).not.toBeNull();
     expect(model.model).not.toBeNull();
     expect(model.baseModel).not.toBeNull();
+
+    expect(model.originalModel.uri.path).toBe('original/path--path');
+    expect(model.model.uri.path).toBe('path--path');
+    expect(model.baseModel.uri.path).toBe('target/path--path');
   });
 
   it('creates model with head file to compare against', () => {

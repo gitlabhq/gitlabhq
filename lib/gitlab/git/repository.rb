@@ -27,6 +27,7 @@ module Gitlab
       EMPTY_REPOSITORY_CHECKSUM = '0000000000000000000000000000000000000000'.freeze
 
       NoRepository = Class.new(StandardError)
+      InvalidRepository = Class.new(StandardError)
       InvalidBlobName = Class.new(StandardError)
       InvalidRef = Class.new(StandardError)
       GitError = Class.new(StandardError)
@@ -578,6 +579,7 @@ module Gitlab
       # old_rev and new_rev are commit ID's
       # the result of this method is an array of Gitlab::Git::RawDiffChange
       def raw_changes_between(old_rev, new_rev)
+<<<<<<< HEAD
         result = []
 
         circuit_breaker.perform do
@@ -586,6 +588,33 @@ module Gitlab
 
             if wait_threads.any? { |waiter| !waiter.value&.success? }
               raise ::Gitlab::Git::Repository::GitError, "Unabled to obtain changes between #{old_rev} and #{new_rev}"
+=======
+        @raw_changes_between ||= {}
+
+        @raw_changes_between[[old_rev, new_rev]] ||= begin
+          return [] if new_rev.blank? || new_rev == Gitlab::Git::BLANK_SHA
+
+          gitaly_migrate(:raw_changes_between) do |is_enabled|
+            if is_enabled
+              gitaly_repository_client.raw_changes_between(old_rev, new_rev)
+                .each_with_object([]) do |msg, arr|
+                msg.raw_changes.each { |change| arr << ::Gitlab::Git::RawDiffChange.new(change) }
+              end
+            else
+              result = []
+
+              circuit_breaker.perform do
+                Open3.pipeline_r(git_diff_cmd(old_rev, new_rev), format_git_cat_file_script, git_cat_file_cmd) do |last_stdout, wait_threads|
+                  last_stdout.each_line { |line| result << ::Gitlab::Git::RawDiffChange.new(line.chomp!) }
+
+                  if wait_threads.any? { |waiter| !waiter.value&.success? }
+                    raise ::Gitlab::Git::Repository::GitError, "Unabled to obtain changes between #{old_rev} and #{new_rev}"
+                  end
+                end
+              end
+
+              result
+>>>>>>> master
             end
           end
         end
@@ -1446,25 +1475,11 @@ module Gitlab
       end
 
       def branch_names_contains_sha(sha)
-        gitaly_migrate(:branch_names_contains_sha,
-                      status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.branch_names_contains_sha(sha)
-          else
-            refs_contains_sha('refs/heads/', sha)
-          end
-        end
+        gitaly_ref_client.branch_names_contains_sha(sha)
       end
 
       def tag_names_contains_sha(sha)
-        gitaly_migrate(:tag_names_contains_sha,
-                       status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.tag_names_contains_sha(sha)
-          else
-            refs_contains_sha('refs/tags/', sha)
-          end
-        end
+        gitaly_ref_client.tag_names_contains_sha(sha)
       end
 
       def search_files_by_content(query, ref)
@@ -1569,7 +1584,12 @@ module Gitlab
       end
 
       def checksum
+<<<<<<< HEAD
         gitaly_migrate(:calculate_checksum) do |is_enabled|
+=======
+        gitaly_migrate(:calculate_checksum,
+                       status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
+>>>>>>> master
           if is_enabled
             gitaly_repository_client.calculate_checksum
           else
@@ -1596,27 +1616,6 @@ module Gitlab
         else
           rugged_write_ref(ref_path, ref)
         end
-      end
-
-      def refs_contains_sha(refs_prefix, sha)
-        refs_prefix << "/" unless refs_prefix.ends_with?('/')
-
-        # By forcing the output to %(refname) each line wiht a ref will start with
-        # the ref prefix. All other lines can be discarded.
-        args = %W(for-each-ref --contains=#{sha} --format=%(refname) #{refs_prefix})
-        names, code = run_git(args)
-
-        return [] unless code.zero?
-
-        refs = []
-        left_slice_count = refs_prefix.length
-        names.lines.each do |line|
-          next unless line.start_with?(refs_prefix)
-
-          refs << encode_utf8(line.rstrip[left_slice_count..-1])
-        end
-
-        refs
       end
 
       def rugged_write_config(full_path:)
@@ -2514,10 +2513,12 @@ module Gitlab
         output, status = run_git(args)
 
         if status.nil? || !status.zero?
-          # Empty repositories return with a non-zero status and an empty output.
-          return EMPTY_REPOSITORY_CHECKSUM if output&.empty?
+          # Non-valid git repositories return 128 as the status code and an error output
+          raise InvalidRepository if status == 128 && output.to_s.downcase =~ /not a git repository/
+          # Empty repositories returns with a non-zero status and an empty output.
+          raise ChecksumError, output unless output.blank?
 
-          raise ChecksumError, output
+          return EMPTY_REPOSITORY_CHECKSUM
         end
 
         refs = output.split("\n")

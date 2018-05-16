@@ -12,7 +12,7 @@ describe Gitlab::Git::RawDiffChange do
       expect(change.operation).to eq(:unknown)
       expect(change.old_path).to be_blank
       expect(change.new_path).to be_blank
-      expect(change.blob_size).to be_blank
+      expect(change.blob_size).to eq(0)
     end
   end
 

@@ -13,6 +13,10 @@ class ApplicationController < ActionController::Base
 
   before_action :authenticate_sessionless_user!
   before_action :authenticate_user!
+<<<<<<< HEAD
+=======
+  before_action :enforce_terms!, if: :should_enforce_terms?
+>>>>>>> master
   before_action :validate_user_service_ticket!
   before_action :check_password_expiration
   before_action :ldap_security_check
@@ -342,4 +346,21 @@ class ApplicationController < ActionController::Base
     # Per https://tools.ietf.org/html/rfc5987, headers need to be ISO-8859-1, not UTF-8
     response.headers['Page-Title'] = URI.escape(page_title('GitLab'))
   end
+<<<<<<< HEAD
+=======
+
+  def sessionless_user?
+    current_user && !session.keys.include?('warden.user.user.key')
+  end
+
+  def peek_request?
+    request.path.start_with?('/-/peek')
+  end
+
+  def should_enforce_terms?
+    return false unless Gitlab::CurrentSettings.current_application_settings.enforce_terms
+
+    !(peek_request? || devise_controller?)
+  end
+>>>>>>> master
 end

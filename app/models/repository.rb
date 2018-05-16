@@ -37,7 +37,7 @@ class Repository
                       changelog license_blob license_key gitignore koding_yml
                       gitlab_ci_yml branch_names tag_names branch_count
                       tag_count avatar exists? root_ref has_visible_content?
-                      issue_template_names merge_request_template_names).freeze
+                      issue_template_names merge_request_template_names xcode_project?).freeze
 
   # Methods that use cache_method but only memoize the value
   MEMOIZED_CACHED_METHODS = %i(license).freeze
@@ -55,7 +55,8 @@ class Repository
     gitlab_ci: :gitlab_ci_yml,
     avatar: :avatar,
     issue_template: :issue_template_names,
-    merge_request_template: :merge_request_template_names
+    merge_request_template: :merge_request_template_names,
+    xcode_config: :xcode_project?
   }.freeze
 
   def initialize(full_path, project, disk_path: nil, is_wiki: false)
@@ -593,6 +594,11 @@ class Repository
     file_on_head(:gitlab_ci)
   end
   cache_method :gitlab_ci_yml
+
+  def xcode_project?
+    file_on_head(:xcode_config).present?
+  end
+  cache_method :xcode_project?
 
   def head_commit
     @head_commit ||= commit(self.root_ref)

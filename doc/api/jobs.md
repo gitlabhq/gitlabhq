@@ -82,7 +82,7 @@ Example of response
     "artifacts_file": null,
     "finished_at": "2015-12-24T17:54:24.921Z",
     "id": 6,
-    "name": "spinach:other",
+    "name": "rspec:other",
     "pipeline": {
       "id": 6,
       "ref": "master",
@@ -196,7 +196,7 @@ Example of response
     "artifacts_file": null,
     "finished_at": "2015-12-24T17:54:24.921Z",
     "id": 6,
-    "name": "spinach:other",
+    "name": "rspec:other",
     "pipeline": {
       "id": 6,
       "ref": "master",

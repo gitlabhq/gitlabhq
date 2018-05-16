@@ -120,6 +120,7 @@
               <div class="svg-content svg-250">
                 <img :src="emptyStateSvgPath" />
               </div>
+<<<<<<< HEAD
             </div>
             <div class="col-xs-12">
               <div class="text-content text-center">
@@ -130,6 +131,18 @@
                   You can select a file in the left sidebar to begin
                   editing and use the right sidebar to commit your changes.
                 </p>
+=======
+              <div class="col-xs-12">
+                <div class="text-content text-center">
+                  <h4>
+                    Welcome to the GitLab IDE
+                  </h4>
+                  <p>
+                    Select a file from the left sidebar to begin editing.
+                    Afterwards, you'll be able to commit your changes.
+                  </p>
+                </div>
+>>>>>>> master
               </div>
             </div>
           </div>

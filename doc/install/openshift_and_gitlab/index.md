@@ -6,7 +6,7 @@ article_type: tutorial
 date: 2016-06-28
 ---
 
-# Getting started with OpenShift Origin 3 and GitLab
+# How to install GitLab on OpenShift Origin 3
 
 ## Introduction
 

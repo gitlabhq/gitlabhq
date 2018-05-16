@@ -495,6 +495,14 @@ describe Issuable do
 
         expect(issue.total_time_spent).to eq(1800)
       end
+
+      it 'updates issues updated_at' do
+        issue
+
+        Timecop.travel(1.minute.from_now) do
+          expect { spend_time(1800) }.to change { issue.updated_at }
+        end
+      end
     end
 
     context 'substracting time' do
@@ -510,9 +518,13 @@ describe Issuable do
 
       context 'when time to substract exceeds the total time spent' do
         it 'raise a validation error' do
-          expect do
-            spend_time(-3600)
-          end.to raise_error(ActiveRecord::RecordInvalid)
+          Timecop.travel(1.minute.from_now) do
+            expect do
+              expect do
+                spend_time(-3600)
+              end.to raise_error(ActiveRecord::RecordInvalid)
+            end.not_to change { issue.updated_at }
+          end
         end
       end
     end
