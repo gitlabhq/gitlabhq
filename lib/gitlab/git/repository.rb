@@ -1467,25 +1467,11 @@ module Gitlab
       end
 
       def branch_names_contains_sha(sha)
-        gitaly_migrate(:branch_names_contains_sha,
-                      status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.branch_names_contains_sha(sha)
-          else
-            refs_contains_sha('refs/heads/', sha)
-          end
-        end
+        gitaly_ref_client.branch_names_contains_sha(sha)
       end
 
       def tag_names_contains_sha(sha)
-        gitaly_migrate(:tag_names_contains_sha,
-                       status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.tag_names_contains_sha(sha)
-          else
-            refs_contains_sha('refs/tags/', sha)
-          end
-        end
+        gitaly_ref_client.tag_names_contains_sha(sha)
       end
 
       def search_files_by_content(query, ref)
@@ -1618,27 +1604,6 @@ module Gitlab
         else
           rugged_write_ref(ref_path, ref)
         end
-      end
-
-      def refs_contains_sha(refs_prefix, sha)
-        refs_prefix << "/" unless refs_prefix.ends_with?('/')
-
-        # By forcing the output to %(refname) each line wiht a ref will start with
-        # the ref prefix. All other lines can be discarded.
-        args = %W(for-each-ref --contains=#{sha} --format=%(refname) #{refs_prefix})
-        names, code = run_git(args)
-
-        return [] unless code.zero?
-
-        refs = []
-        left_slice_count = refs_prefix.length
-        names.lines.each do |line|
-          next unless line.start_with?(refs_prefix)
-
-          refs << encode_utf8(line.rstrip[left_slice_count..-1])
-        end
-
-        refs
       end
 
       def rugged_write_config(full_path:)

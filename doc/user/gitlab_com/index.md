@@ -75,7 +75,6 @@ Shared Runners on GitLab.com run in [autoscale mode] and powered by
 Google Cloud Platform and DigitalOcean. Autoscaling means reduced
 waiting times to spin up CI/CD jobs, and isolated VMs for each project,
 thus maximizing security.
-
 They're free to use for public open source projects and limited to 2000 CI
 minutes per month per group for private projects. Read about all
 [GitLab.com plans](https://about.gitlab.com/pricing/).
@@ -89,6 +88,10 @@ In case of Google Cloud Platform based Runners, all your CI/CD jobs run on
 ephemeral instances with 3.75GB of RAM, CoreOS and the latest Docker Engine
 installed. Instances provide 1 vCPU and 25GB of HDD disk space. The default
 region of the VMs is US East1.
+
+Jobs handled by the shared Runners on GitLab.com (`shared-runners-manager-X.gitlab.com`),
+**will be timed out after 3 hours**, regardless of the timeout configured in a
+project. Check the issues [4010] and [4070] for the reference.
 
 Below are the shared Runners settings.
 
@@ -340,3 +343,5 @@ High Performance TCP/HTTP Load Balancer:
 [mailgun]: https://www.mailgun.com/ "Mailgun website"
 [sidekiq]: http://sidekiq.org/ "Sidekiq website"
 [unicorn-worker-killer]: https://rubygems.org/gems/unicorn-worker-killer "unicorn-worker-killer"
+[4010]: https://gitlab.com/gitlab-com/infrastructure/issues/4010 "Find a good value for maximum timeout for Shared Runners"
+[4070]: https://gitlab.com/gitlab-com/infrastructure/issues/4070 "Configure per-runner timeout for shared-runners-manager-X on GitLab.com"
