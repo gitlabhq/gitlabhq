@@ -3,7 +3,6 @@ require 'spec_helper'
 describe Ci::Runner do
   describe 'validation' do
     it { is_expected.to validate_presence_of(:access_level) }
-    it { is_expected.to validate_presence_of(:runner_type) }
 
     context 'when runner is not allowed to pick untagged jobs' do
       context 'when runner does not have tags' do
@@ -68,30 +67,16 @@ describe Ci::Runner do
   end
 
   describe '#assign_to' do
-    let!(:project) { FactoryBot.create(:project) }
+    let!(:project) { FactoryBot.create :project }
+    let!(:shared_runner) { FactoryBot.create(:ci_runner, :shared) }
 
-    subject { runner.assign_to(project) }
-
-    context 'with shared_runner' do
-      let!(:runner) { FactoryBot.create(:ci_runner, :shared) }
-
-      it 'transitions shared runner to project runner and assigns project' do
-        subject
-        expect(runner).to be_specific
-        expect(runner).to be_project_type
-        expect(runner.projects).to eq([project])
-        expect(runner.only_for?(project)).to be_truthy
-      end
+    before do
+      shared_runner.assign_to(project)
     end
 
-    context 'with group runner' do
-      let!(:runner) { FactoryBot.create(:ci_runner, runner_type: :group_type) }
-
-      it 'raises an error' do
-        expect { subject }
-          .to raise_error(ArgumentError, 'Transitioning a group runner to a project runner is not supported')
-      end
-    end
+    it { expect(shared_runner).to be_specific }
+    it { expect(shared_runner.projects).to eq([project]) }
+    it { expect(shared_runner.only_for?(project)).to be_truthy }
   end
 
   describe '.online' do

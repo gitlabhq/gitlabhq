@@ -5,7 +5,7 @@ module Gitlab
     def initialize(*collections, per_page: nil)
       raise ArgumentError.new('Only 2 collections are supported') if collections.size != 2
 
-      @per_page = (per_page || Kaminari.config.default_per_page).to_i
+      @per_page = per_page || Kaminari.config.default_per_page
       @first_collection, @second_collection = collections
     end
 

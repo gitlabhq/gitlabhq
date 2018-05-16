@@ -82,6 +82,7 @@ export default () => {
 
         this.service
           .fetchCycleAnalyticsData(fetchOptions)
+          .then(resp => resp.json())
           .then((response) => {
             this.store.setCycleAnalyticsData(response);
             this.selectDefaultStage();
@@ -115,6 +116,7 @@ export default () => {
             stage,
             startDate: this.startDate,
           })
+          .then(resp => resp.json())
           .then((response) => {
             this.isEmptyStage = !response.events.length;
             this.store.setStageEvents(response.events, stage);

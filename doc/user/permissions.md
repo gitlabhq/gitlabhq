@@ -1,7 +1,3 @@
----
-description: 'Understand and explore the user permission levels in GitLab, and what features each of them grants you access to.'
----
-
 # Permissions
 
 Users have different abilities depending on the access level they have in a

@@ -1,6 +1,0 @@
----
-title: Raise NoRepository error for non-valid repositories when calculating repository
-  checksum
-merge_request: 18594
-author:
-type: fixed

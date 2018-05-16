@@ -1,7 +1,3 @@
----
-description: 'Read through the GitLab User documentation to learn how to use, configure, and customize GitLab and GitLab.com to your own needs.'
----
-
 # User documentation
 
 Welcome to GitLab! We're glad to have you here!

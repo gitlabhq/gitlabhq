@@ -53,12 +53,10 @@ export default {
     });
 
     eventHub.$on('postAction', this.postAction);
-    eventHub.$on('retryPipeline', this.postAction);
     eventHub.$on('clickedDropdown', this.updateTable);
   },
   beforeDestroy() {
     eventHub.$off('postAction', this.postAction);
-    eventHub.$off('retryPipeline', this.postAction);
     eventHub.$off('clickedDropdown', this.updateTable);
   },
   destroyed() {

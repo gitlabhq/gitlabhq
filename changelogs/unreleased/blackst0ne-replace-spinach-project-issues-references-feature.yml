@@ -1,5 +1,0 @@
----
-title: 'Replace the `project/issues/references.feature` spinach test with an rspec analog'
-merge_request: 18769
-author: '@blackst0ne'
-type: other

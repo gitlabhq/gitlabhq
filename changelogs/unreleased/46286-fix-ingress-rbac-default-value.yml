@@ -1,5 +1,0 @@
----
-title: Disables RBAC on nginx-ingress
-merge_request: 18947
-author:
-type: fixed

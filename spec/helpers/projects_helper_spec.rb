@@ -283,7 +283,7 @@ describe ProjectsHelper do
     end
 
     it 'removes the repo path' do
-      repo = File.join(storage_path, 'namespace/test.git')
+      repo = "#{storage_path}/namespace/test.git"
       import_error = "Could not clone #{repo}\n"
 
       expect(sanitize_repo_path(project, import_error)).to eq('Could not clone [REPOS PATH]/namespace/test.git')

@@ -127,11 +127,7 @@ export default {
         this.file.staged && this.file.key.indexOf('unstaged-') === 0 ? head : null,
       );
 
-<<<<<<< HEAD
       if (this.viewer === 'mrdiff') {
-=======
-      if (this.viewer === viewerTypes.mr && this.file.mrChange) {
->>>>>>> master
         this.editor.attachMergeRequestModel(this.model);
       } else {
         this.editor.attachModel(this.model);

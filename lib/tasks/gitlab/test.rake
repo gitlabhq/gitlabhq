@@ -4,6 +4,7 @@ namespace :gitlab do
     cmds = [
       %w(rake brakeman),
       %w(rake rubocop),
+      %w(rake spinach),
       %w(rake spec),
       %w(rake karma)
     ]

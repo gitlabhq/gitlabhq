@@ -16,11 +16,7 @@
     "webpack-prod": "NODE_ENV=production webpack --config config/webpack.config.js"
   },
   "dependencies": {
-<<<<<<< HEAD
     "@gitlab-org/gitlab-svgs": "^1.18.0",
-=======
-    "@gitlab-org/gitlab-svgs": "^1.22.0",
->>>>>>> master
     "autosize": "^4.0.0",
     "axios": "^0.17.1",
     "babel-core": "^6.26.0",
@@ -100,7 +96,7 @@
     "worker-loader": "^1.1.0"
   },
   "devDependencies": {
-    "axios-mock-adapter": "^1.15.0",
+    "axios-mock-adapter": "^1.10.0",
     "babel-eslint": "^8.0.2",
     "babel-plugin-istanbul": "^4.1.6",
     "babel-plugin-rewire": "^1.1.0",

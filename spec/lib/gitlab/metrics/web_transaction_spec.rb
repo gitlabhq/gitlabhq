@@ -180,11 +180,11 @@ describe Gitlab::Metrics::WebTransaction do
     end
 
     context 'when request goes to ActionController' do
-      let(:request_format) { :html }
+      let(:content_type) { 'text/html' }
 
       before do
         klass = double(:klass, name: 'TestController')
-        controller = double(:controller, class: klass, action_name: 'show', request_format: request_format)
+        controller = double(:controller, class: klass, action_name: 'show', content_type: content_type)
 
         env['action_controller.instance'] = controller
       end
@@ -195,7 +195,7 @@ describe Gitlab::Metrics::WebTransaction do
       end
 
       context 'when the response content type is not :html' do
-        let(:request_format) { :json }
+        let(:content_type) { 'application/json' }
 
         it 'appends the mime type to the transaction action' do
           expect(transaction.labels).to eq({ controller: 'TestController', action: 'show.json' })

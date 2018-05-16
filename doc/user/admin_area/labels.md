@@ -1,4 +1,4 @@
-# Labels administration **[CORE ONLY]**
+# Labels
 
 ## Default Labels
 

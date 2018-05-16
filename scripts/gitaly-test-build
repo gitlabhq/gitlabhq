@@ -2,29 +2,28 @@
 
 require 'fileutils'
 
-require_relative 'gitaly_test'
-
 # This script assumes tmp/tests/gitaly already contains the correct
 # Gitaly version. We just have to compile it and run its 'bundle
-# install'. We have this separate script for that to avoid bundle
-# poisoning in CI. This script should only be run in CI.
-class GitalyTestBuild
-  include GitalyTest
+# install'. We have this separate script for that because weird things
+# were happening in CI when we have a 'bundle exec' process that later
+# called 'bundle install' using a different Gemfile, as happens with
+# gitlab-ce and gitaly.
 
-  def run
-    abort 'gitaly build failed' unless system(env, 'make', chdir: tmp_tests_gitaly_dir)
+tmp_tests_gitaly_dir = File.expand_path('../tmp/tests/gitaly', __dir__)
 
-    check_gitaly_config!
+# Use the top-level bundle vendor folder so that we don't reinstall gems twice
+bundle_vendor_path = File.expand_path('../vendor', __dir__)
 
-    # Starting gitaly further validates its configuration
-    pid = start_gitaly
-    Process.kill('TERM', pid)
+env = {
+  # This ensure the `clean` config set in `scripts/prepare_build.sh` isn't taken into account
+  'BUNDLE_IGNORE_CONFIG' => 'true',
+  'BUNDLE_GEMFILE' => File.join(tmp_tests_gitaly_dir, 'ruby', 'Gemfile'),
+  'BUNDLE_FLAGS' => "--jobs=4 --path=#{bundle_vendor_path} --retry=3"
+}
 
-    # Make the 'gitaly' executable look newer than 'GITALY_SERVER_VERSION'.
-    # Without this a gitaly executable created in the setup-test-env job
-    # will look stale compared to GITALY_SERVER_VERSION.
-    FileUtils.touch(File.join(tmp_tests_gitaly_dir, 'gitaly'), mtime: Time.now + (1 << 24))
-  end
-end
+abort 'gitaly build failed' unless system(env, 'make', chdir: tmp_tests_gitaly_dir)
 
-GitalyTestBuild.new.run
+# Make the 'gitaly' executable look newer than 'GITALY_SERVER_VERSION'.
+# Without this a gitaly executable created in the setup-test-env job
+# will look stale compared to GITALY_SERVER_VERSION.
+FileUtils.touch(File.join(tmp_tests_gitaly_dir, 'gitaly'), mtime: Time.now + (1 << 24))

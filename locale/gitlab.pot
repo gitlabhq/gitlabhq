@@ -8,13 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
 "POT-Creation-Date: 2018-04-27 21:02+0200\n"
 "PO-Revision-Date: 2018-04-27 21:02+0200\n"
-=======
-"POT-Creation-Date: 2018-05-14 10:49+0200\n"
-"PO-Revision-Date: 2018-05-14 10:49+0200\n"
->>>>>>> master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -82,9 +77,6 @@ msgstr[1] ""
 msgid "%{loadingIcon} Started"
 msgstr ""
 
-msgid "%{nip_domain} can be used as an alternative to a custom domain."
-msgstr ""
-
 msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
 msgstr ""
 
@@ -115,12 +107,6 @@ msgid "(checkout the %{link} for information on how to install it)."
 msgstr ""
 
 msgid "+ %{moreCount} more"
-msgstr ""
-
-msgid "- Runner is active and can process any new jobs"
-msgstr ""
-
-msgid "- Runner is paused and will not receive any new jobs"
 msgstr ""
 
 msgid "- show less"
@@ -173,9 +159,6 @@ msgid "2FA enabled"
 msgstr ""
 
 msgid "<strong>Removes</strong> source branch"
-msgstr ""
-
-msgid "A 'Runner' is a process which runs a job. You can setup as many Runners as you need."
 msgstr ""
 
 msgid "A collection of graphs regarding Continuous Integration"
@@ -406,9 +389,6 @@ msgstr ""
 msgid "Artifacts"
 msgstr ""
 
-msgid "Ask your group master to setup a group Runner."
-msgstr ""
-
 msgid "Assign custom color like #FF0000"
 msgstr ""
 
@@ -494,12 +474,6 @@ msgid "AutoDevOps|enable Auto DevOps (Beta)"
 msgstr ""
 
 msgid "Available"
-msgstr ""
-
-msgid "Available group Runners : %{runners}"
-msgstr ""
-
-msgid "Available group Runners : %{runners}."
 msgstr ""
 
 msgid "Avatar will be removed. Are you sure?"
@@ -744,12 +718,6 @@ msgstr ""
 msgid "CI/CD configuration"
 msgstr ""
 
-msgid "CI/CD settings"
-msgstr ""
-
-msgid "CICD|A domain is required to use Auto Review Apps and Auto Deploy Stages."
-msgstr ""
-
 msgid "CICD|An explicit %{ci_file} needs to be specified before you can begin using Continuous Integration and Delivery."
 msgstr ""
 
@@ -780,7 +748,7 @@ msgstr ""
 msgid "CICD|The Auto DevOps pipeline configuration will be used when there is no %{ci_file} in the project."
 msgstr ""
 
-msgid "Can run untagged jobs"
+msgid "CICD|You need to specify a domain if you want to use Auto Review Apps and Auto Deploy stages."
 msgstr ""
 
 msgid "Cancel"
@@ -1689,15 +1657,6 @@ msgstr ""
 msgid "Directory name"
 msgstr ""
 
-msgid "Disable"
-msgstr ""
-
-msgid "Disable for this project"
-msgstr ""
-
-msgid "Disable group Runners"
-msgstr ""
-
 msgid "Discard changes"
 msgstr ""
 
@@ -1749,9 +1708,6 @@ msgstr ""
 msgid "Due date"
 msgstr ""
 
-msgid "Each Runner can be in one of the following states:"
-msgstr ""
-
 msgid "Edit"
 msgstr ""
 
@@ -1773,9 +1729,6 @@ msgstr ""
 msgid "Embed"
 msgstr ""
 
-msgid "Enable"
-msgstr ""
-
 msgid "Enable Auto DevOps"
 msgstr ""
 
@@ -1786,12 +1739,6 @@ msgid "Enable and configure InfluxDB metrics."
 msgstr ""
 
 msgid "Enable and configure Prometheus metrics."
-msgstr ""
-
-msgid "Enable for this project"
-msgstr ""
-
-msgid "Enable group Runners"
 msgstr ""
 
 msgid "Enable or disable version check and usage ping."
@@ -2039,9 +1986,6 @@ msgstr ""
 msgid "GitLab CI Linter has been moved"
 msgstr ""
 
-msgid "GitLab Group Runners can execute code for all the projects in this group."
-msgstr ""
-
 msgid "GitLab Runner section"
 msgstr ""
 
@@ -2066,16 +2010,7 @@ msgstr ""
 msgid "Got it!"
 msgstr ""
 
-msgid "Group CI/CD settings"
-msgstr ""
-
 msgid "Group ID"
-msgstr ""
-
-msgid "Group Runners"
-msgstr ""
-
-msgid "Group masters can register group runners in the %{link}"
 msgstr ""
 
 msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
@@ -2394,16 +2329,7 @@ msgstr ""
 msgid "Lock %{issuableDisplayName}"
 msgstr ""
 
-msgid "Lock to current projects"
-msgstr ""
-
 msgid "Locked"
-msgstr ""
-
-msgid "Locked to current projects"
-msgstr ""
-
-msgid "Locked to this project"
 msgstr ""
 
 msgid "Login"
@@ -2431,9 +2357,6 @@ msgid "Mark todo as done"
 msgstr ""
 
 msgid "Maximum git storage failures"
-msgstr ""
-
-msgid "Maximum job timeout"
 msgstr ""
 
 msgid "May"
@@ -2586,9 +2509,6 @@ msgid "New subgroup"
 msgstr ""
 
 msgid "New tag"
-msgstr ""
-
-msgid "No"
 msgstr ""
 
 msgid "No assignee"
@@ -2781,9 +2701,6 @@ msgid "Part of merge request changes"
 msgstr ""
 
 msgid "Password"
-msgstr ""
-
-msgid "Pause"
 msgstr ""
 
 msgid "Pending"
@@ -3248,9 +3165,6 @@ msgstr ""
 msgid "Register / Sign In"
 msgstr ""
 
-msgid "Register and see your runners for this group."
-msgstr ""
-
 msgid "Related Commits"
 msgstr ""
 
@@ -3273,12 +3187,6 @@ msgid "Related merge requests"
 msgstr ""
 
 msgid "Remind later"
-msgstr ""
-
-msgid "Remove"
-msgstr ""
-
-msgid "Remove Runner"
 msgstr ""
 
 msgid "Remove avatar"
@@ -3311,9 +3219,6 @@ msgstr ""
 msgid "Resolve discussion"
 msgstr ""
 
-msgid "Resume"
-msgstr ""
-
 msgid "Retry"
 msgstr ""
 
@@ -3344,15 +3249,6 @@ msgid "Reviewing (merge request !%{mergeRequestId})"
 msgstr ""
 
 msgid "Runners"
-msgstr ""
-
-msgid "Runners API"
-msgstr ""
-
-msgid "Runners can be placed on separate users, servers, and even on your local machine."
-msgstr ""
-
-msgid "Runners settings"
 msgstr ""
 
 msgid "Running"
@@ -3479,9 +3375,6 @@ msgid "Setup a specific Runner automatically"
 msgstr ""
 
 msgid "Share"
-msgstr ""
-
-msgid "Shared Runners"
 msgstr ""
 
 msgid "Show command"
@@ -3649,9 +3542,6 @@ msgid "Spam Logs"
 msgstr ""
 
 msgid "Spam and Anti-bot Protection"
-msgstr ""
-
-msgid "Specific Runners"
 msgstr ""
 
 msgid "Specify the following URL during the Runner setup:"
@@ -3905,16 +3795,7 @@ msgstr ""
 msgid "There was an error when unsubscribing from this label."
 msgstr ""
 
-msgid "They can be managed using the %{link}."
-msgstr ""
-
-msgid "This GitLab instance does not provide any shared Runners yet. Instance administrators can register shared Runners in the admin area."
-msgstr ""
-
 msgid "This directory"
-msgstr ""
-
-msgid "This group does not provide any group Runners yet."
 msgstr ""
 
 msgid "This is a confidential issue."
@@ -3972,9 +3853,6 @@ msgid "This page will be removed in a future release."
 msgstr ""
 
 msgid "This project"
-msgstr ""
-
-msgid "This project does not belong to a group and can therefore not make use of group Runners."
 msgstr ""
 
 msgid "This repository"
@@ -4161,9 +4039,6 @@ msgstr ""
 msgid "To import an SVN repository, check out %{svn_link}."
 msgstr ""
 
-msgid "To start serving your jobs you can add Runners to your group"
-msgstr ""
-
 msgid "To validate your GitLab CI configurations, go to 'CI/CD → Pipelines' inside your project, and click on the 'CI Lint' button."
 msgstr ""
 
@@ -4335,15 +4210,6 @@ msgstr ""
 msgid "Web terminal"
 msgstr ""
 
-<<<<<<< HEAD
-=======
-msgid "When a runner is locked, it cannot be assigned to other projects"
-msgstr ""
-
-msgid "When enabled, users cannot use GitLab until the terms have been accepted."
-msgstr ""
-
->>>>>>> master
 msgid "Wiki"
 msgstr ""
 
@@ -4456,9 +4322,6 @@ msgid "Withdraw Access Request"
 msgstr ""
 
 msgid "Write a commit message..."
-msgstr ""
-
-msgid "Yes"
 msgstr ""
 
 msgid "You are going to remove %{group_name}. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?"
@@ -4602,9 +4465,6 @@ msgid "enabled"
 msgstr ""
 
 msgid "estimateCommand|%{slash_command} will update the estimated time with the latest command."
-msgstr ""
-
-msgid "for this project"
 msgstr ""
 
 msgid "importing"

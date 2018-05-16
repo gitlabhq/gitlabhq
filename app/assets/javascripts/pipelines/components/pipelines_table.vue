@@ -1,7 +1,7 @@
 <script>
-  import Modal from '~/vue_shared/components/gl_modal.vue';
+  import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
   import { s__, sprintf } from '~/locale';
-  import PipelinesTableRowComponent from './pipelines_table_row.vue';
+  import pipelinesTableRowComponent from './pipelines_table_row.vue';
   import eventHub from '../event_hub';
 
   /**
@@ -11,8 +11,8 @@
    */
   export default {
     components: {
-      PipelinesTableRowComponent,
-      Modal,
+      pipelinesTableRowComponent,
+      DeprecatedModal,
     },
     props: {
       pipelines: {
@@ -37,18 +37,30 @@
       return {
         pipelineId: '',
         endpoint: '',
+        type: '',
       };
     },
     computed: {
       modalTitle() {
-        return sprintf(s__('Pipeline|Stop pipeline #%{pipelineId}?'), {
-          pipelineId: `${this.pipelineId}`,
-        }, false);
+        return this.type === 'stop' ?
+          sprintf(s__('Pipeline|Stop pipeline #%{pipelineId}?'), {
+            pipelineId: `'${this.pipelineId}'`,
+          }, false) :
+          sprintf(s__('Pipeline|Retry pipeline #%{pipelineId}?'), {
+            pipelineId: `'${this.pipelineId}'`,
+          }, false);
       },
       modalText() {
-        return sprintf(s__('Pipeline|You’re about to stop pipeline %{pipelineId}.'), {
-          pipelineId: `<strong>#${this.pipelineId}</strong>`,
-        }, false);
+        return this.type === 'stop' ?
+          sprintf(s__('Pipeline|You’re about to stop pipeline %{pipelineId}.'), {
+            pipelineId: `<strong>#${this.pipelineId}</strong>`,
+          }, false) :
+          sprintf(s__('Pipeline|You’re about to retry pipeline %{pipelineId}.'), {
+            pipelineId: `<strong>#${this.pipelineId}</strong>`,
+          }, false);
+      },
+      primaryButtonLabel() {
+        return this.type === 'stop' ? s__('Pipeline|Stop pipeline') : s__('Pipeline|Retry pipeline');
       },
     },
     created() {
@@ -61,6 +73,7 @@
       setModalData(data) {
         this.pipelineId = data.pipelineId;
         this.endpoint = data.endpoint;
+        this.type = data.type;
       },
       onSubmit() {
         eventHub.$emit('postAction', this.endpoint);
@@ -107,16 +120,20 @@
       :auto-devops-help-path="autoDevopsHelpPath"
       :view-type="viewType"
     />
-
-    <modal
+    <deprecated-modal
       id="confirmation-modal"
-      :header-title-text="modalTitle"
-      footer-primary-button-variant="danger"
-      :footer-primary-button-text="s__('Pipeline|Stop pipeline')"
+      :title="modalTitle"
+      :text="modalText"
+      kind="danger"
+      :primary-button-label="primaryButtonLabel"
       @submit="onSubmit"
     >
-      <span v-html="modalText"></span>
-    </modal>
-
+      <template
+        slot="body"
+        slot-scope="props"
+      >
+        <p v-html="props.text"></p>
+      </template>
+    </deprecated-modal>
   </div>
 </template>

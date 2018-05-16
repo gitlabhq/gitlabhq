@@ -615,22 +615,32 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#branch_names_contains_sha' do
-    let(:head_id) { repository.rugged.head.target.oid }
-    let(:new_branch) { head_id }
-    let(:utf8_branch) { 'branch-é' }
+    shared_examples 'returning the right branches' do
+      let(:head_id) { repository.rugged.head.target.oid }
+      let(:new_branch) { head_id }
+      let(:utf8_branch) { 'branch-é' }
 
-    before do
-      repository.create_branch(new_branch, 'master')
-      repository.create_branch(utf8_branch, 'master')
+      before do
+        repository.create_branch(new_branch, 'master')
+        repository.create_branch(utf8_branch, 'master')
+      end
+
+      after do
+        repository.delete_branch(new_branch)
+        repository.delete_branch(utf8_branch)
+      end
+
+      it 'displays that branch' do
+        expect(repository.branch_names_contains_sha(head_id)).to include('master', new_branch, utf8_branch)
+      end
     end
 
-    after do
-      repository.delete_branch(new_branch)
-      repository.delete_branch(utf8_branch)
+    context 'when Gitaly is enabled' do
+      it_behaves_like 'returning the right branches'
     end
 
-    it 'displays that branch' do
-      expect(repository.branch_names_contains_sha(head_id)).to include('master', new_branch, utf8_branch)
+    context 'when Gitaly is disabled', :disable_gitaly do
+      it_behaves_like 'returning the right branches'
     end
   end
 
@@ -2255,22 +2265,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
         expect(empty_repo.checksum).to eq '0000000000000000000000000000000000000000'
       end
 
-      it 'raises Gitlab::Git::Repository::InvalidRepository error for non-valid git repo' do
-        FileUtils.rm_rf(File.join(storage_path, 'non-valid.git'))
-
-        system(git_env, *%W(#{Gitlab.config.git.bin_path} clone --bare #{TEST_REPO_PATH} non-valid.git),
-               chdir: SEED_STORAGE_PATH,
-               out: '/dev/null',
-               err: '/dev/null')
-
-        File.truncate(File.join(storage_path, 'non-valid.git/HEAD'), 0)
-
-        non_valid = described_class.new('default', 'non-valid.git', '')
-
-        expect { non_valid.checksum }.to raise_error(Gitlab::Git::Repository::InvalidRepository)
-      end
-
-      it 'raises Gitlab::Git::Repository::NoRepository error when there is no repo' do
+      it 'raises a no repository exception when there is no repo' do
         broken_repo = described_class.new('default', 'a/path.git', '')
 
         expect { broken_repo.checksum }.to raise_error(Gitlab::Git::Repository::NoRepository)

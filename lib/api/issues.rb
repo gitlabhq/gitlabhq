@@ -2,7 +2,7 @@ module API
   class Issues < Grape::API
     include PaginationParams
 
-    before { authenticate_non_get! }
+    before { authenticate! }
 
     helpers ::Gitlab::IssuableMetadata
 
@@ -70,7 +70,6 @@ module API
                          desc: 'Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all`'
       end
       get do
-        authenticate! unless params[:scope] == 'all'
         issues = paginate(find_issues)
 
         options = {

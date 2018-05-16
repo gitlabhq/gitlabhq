@@ -111,13 +111,7 @@
           </td>
 
           <td>
-            <span
-              v-tooltip
-              :title="tooltipTitle(item.createdAt)"
-              data-placement="bottom"
-            >
-              {{ timeFormated(item.createdAt) }}
-            </span>
+            {{ timeFormated(item.createdAt) }}
           </td>
 
           <td class="content">

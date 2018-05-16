@@ -4,8 +4,7 @@
 # User-specific stuff
 .idea/**/workspace.xml
 .idea/**/tasks.xml
-.idea/**/dictionaries
-.idea/**/shelf
+.idea/dictionaries
 
 # Sensitive or high-churn files
 .idea/**/dataSources/

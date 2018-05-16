@@ -1,14 +1,13 @@
 <script>
-  import eventHub from '../event_hub';
-  import PipelinesActionsComponent from './pipelines_actions.vue';
-  import PipelinesArtifactsComponent from './pipelines_artifacts.vue';
-  import CiBadge from '../../vue_shared/components/ci_badge_link.vue';
-  import PipelineStage from './stage.vue';
-  import PipelineUrl from './pipeline_url.vue';
-  import PipelinesTimeago from './time_ago.vue';
-  import CommitComponent from '../../vue_shared/components/commit.vue';
-  import LoadingButton from '../../vue_shared/components/loading_button.vue';
-  import Icon from '../../vue_shared/components/icon.vue';
+  /* eslint-disable no-param-reassign */
+  import asyncButtonComponent from './async_button.vue';
+  import pipelinesActionsComponent from './pipelines_actions.vue';
+  import pipelinesArtifactsComponent from './pipelines_artifacts.vue';
+  import ciBadge from '../../vue_shared/components/ci_badge_link.vue';
+  import pipelineStage from './stage.vue';
+  import pipelineUrl from './pipeline_url.vue';
+  import pipelinesTimeago from './time_ago.vue';
+  import commitComponent from '../../vue_shared/components/commit.vue';
 
   /**
    * Pipeline table row.
@@ -17,15 +16,14 @@
    */
   export default {
     components: {
-      PipelinesActionsComponent,
-      PipelinesArtifactsComponent,
-      CommitComponent,
-      PipelineStage,
-      PipelineUrl,
-      CiBadge,
-      PipelinesTimeago,
-      LoadingButton,
-      Icon,
+      asyncButtonComponent,
+      pipelinesActionsComponent,
+      pipelinesArtifactsComponent,
+      commitComponent,
+      pipelineStage,
+      pipelineUrl,
+      ciBadge,
+      pipelinesTimeago,
     },
     props: {
       pipeline: {
@@ -45,12 +43,6 @@
         type: String,
         required: true,
       },
-    },
-    data() {
-      return {
-        isRetrying: false,
-        isCancelling: false,
-      };
     },
     computed: {
       /**
@@ -127,10 +119,8 @@
         if (this.pipeline.ref) {
           return Object.keys(this.pipeline.ref).reduce((accumulator, prop) => {
             if (prop === 'path') {
-              // eslint-disable-next-line no-param-reassign
               accumulator.ref_url = this.pipeline.ref[prop];
             } else {
-              // eslint-disable-next-line no-param-reassign
               accumulator[prop] = this.pipeline.ref[prop];
             }
             return accumulator;
@@ -226,21 +216,6 @@
         return this.viewType === 'child';
       },
     },
-
-    methods: {
-      handleCancelClick() {
-        this.isCancelling = true;
-
-        eventHub.$emit('openConfirmationModal', {
-          pipelineId: this.pipeline.id,
-          endpoint: this.pipeline.cancel_path,
-        });
-      },
-      handleRetryClick() {
-        this.isRetrying = true;
-        eventHub.$emit('retryPipeline', this.pipeline.retry_path);
-      },
-    },
   };
 </script>
 <template>
@@ -312,8 +287,7 @@
 
     <div
       v-if="displayPipelineActions"
-      class="table-section section-20 table-button-footer pipeline-actions"
-    >
+      class="table-section section-20 table-button-footer pipeline-actions">
       <div class="btn-group table-action-buttons">
         <pipelines-actions-component
           v-if="pipeline.details.manual_actions.length"
@@ -326,27 +300,29 @@
           :artifacts="pipeline.details.artifacts"
         />
 
-        <loading-button
+        <async-button-component
           v-if="pipeline.flags.retryable"
-          @click="handleRetryClick"
-          container-class="js-pipelines-retry-button btn btn-default btn-retry"
-          :loading="isRetrying"
-          :disabled="isRetrying"
-        >
-          <icon name="repeat" />
-        </loading-button>
-
-        <loading-button
-          v-if="pipeline.flags.cancelable"
-          @click="handleCancelClick"
+          :endpoint="pipeline.retry_path"
+          css-class="js-pipelines-retry-button btn-default btn-retry"
+          title="Retry"
+          icon="repeat"
+          :pipeline-id="pipeline.id"
           data-toggle="modal"
           data-target="#confirmation-modal"
-          container-class="js-pipelines-cancel-button btn btn-remove"
-          :loading="isCancelling"
-          :disabled="isCancelling"
-        >
-          <icon name="close" />
-        </loading-button>
+          type="retry"
+        />
+
+        <async-button-component
+          v-if="pipeline.flags.cancelable"
+          :endpoint="pipeline.cancel_path"
+          css-class="js-pipelines-cancel-button btn-remove"
+          title="Stop"
+          icon="close"
+          :pipeline-id="pipeline.id"
+          data-toggle="modal"
+          data-target="#confirmation-modal"
+          type="stop"
+        />
       </div>
     </div>
   </div>

@@ -1,4 +1,4 @@
-# Namespaces
+# Features
 
 ## Enable usernames and namespaces for user projects
 

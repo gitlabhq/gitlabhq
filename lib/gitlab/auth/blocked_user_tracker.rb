@@ -17,9 +17,7 @@ module Gitlab
         # message passed along by Warden.
         return unless message == User::BLOCKED_MESSAGE
 
-        # Check for either LDAP or regular GitLab account logins
-        login = env.dig(ACTIVE_RECORD_REQUEST_PARAMS, 'username') ||
-          env.dig(ACTIVE_RECORD_REQUEST_PARAMS, 'user', 'login')
+        login = env.dig(ACTIVE_RECORD_REQUEST_PARAMS, 'user', 'login')
 
         return unless login.present?
 

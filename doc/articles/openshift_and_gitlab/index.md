@@ -1,4 +1,1 @@
----
-redirect_to: '../../install/openshift_and_gitlab/index.html'
----
-
+This document was moved to [another location](../../install/openshift_and_gitlab/index.html).

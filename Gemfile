@@ -6,7 +6,7 @@ end
 gem_versions = {}
 gem_versions['activerecord_sane_schema_dumper'] = rails5? ? '1.0'      : '0.2'
 gem_versions['default_value_for']               = rails5? ? '~> 3.0.5' : '~> 3.0.0'
-gem_versions['rails']                           = rails5? ? '5.0.7'    : '4.2.10'
+gem_versions['rails']                           = rails5? ? '5.0.6'    : '4.2.10'
 gem_versions['rails-i18n']                      = rails5? ? '~> 5.1'   : '~> 4.0.9'
 # --- The end of special code for migrating to Rails 5.0 ---
 
@@ -160,7 +160,7 @@ gem 'state_machines-activerecord', '~> 0.5.1'
 gem 'acts-as-taggable-on', '~> 5.0'
 
 # Background jobs
-gem 'sidekiq', '~> 5.1'
+gem 'sidekiq', '~> 5.0'
 gem 'sidekiq-cron', '~> 0.6.0'
 gem 'redis-namespace', '~> 1.5.2'
 gem 'sidekiq-limit_fetch', '~> 3.4', require: false
@@ -218,6 +218,9 @@ gem 'ruby-fogbugz', '~> 0.2.1'
 # Kubernetes integration
 gem 'kubeclient', '~> 3.0'
 
+# d3
+gem 'd3_rails', '~> 3.5.0'
+
 # Sanitize user input
 gem 'sanitize', '~> 2.0'
 gem 'babosa', '~> 1.0.2'
@@ -257,7 +260,7 @@ gem 'addressable', '~> 2.5.2'
 gem 'bootstrap-sass', '~> 3.3.0'
 gem 'font-awesome-rails', '~> 4.7'
 gem 'gemojione', '~> 3.3'
-gem 'gon', '~> 6.2'
+gem 'gon', '~> 6.1.0'
 gem 'jquery-atwho-rails', '~> 1.3.2'
 gem 'request_store', '~> 1.3'
 gem 'select2-rails', '~> 3.5.9'
@@ -294,7 +297,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~> 0.9.2'
+  gem 'prometheus-client-mmap', '~> 0.9.1'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -325,6 +328,8 @@ group :development, :test do
   gem 'factory_bot_rails', '~> 4.8.2'
   gem 'rspec-rails', '~> 3.6.0'
   gem 'rspec-retry', '~> 0.4.5'
+  gem 'spinach-rails', '~> 0.2.1'
+  gem 'spinach-rerun-reporter', '~> 0.0.2'
   gem 'rspec_profiling', '~> 0.0.5'
   gem 'rspec-set', '~> 0.1.3'
   gem 'rspec-parameterized', require: false
@@ -341,6 +346,7 @@ group :development, :test do
 
   gem 'spring', '~> 2.0.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
+  gem 'spring-commands-spinach', '~> 1.1.0'
 
   gem 'gitlab-styles', '~> 2.3', require: false
   # Pin these dependencies, otherwise a new rule could break the CI pipelines

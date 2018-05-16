@@ -1,7 +1,3 @@
----
-description: 'Learn how to install, configure, update, and maintain your GitLab instance.'
----
-
 # Administrator documentation **[CORE ONLY]**
 
 Learn how to administer your GitLab instance (Community Edition and

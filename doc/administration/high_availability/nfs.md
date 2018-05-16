@@ -1,7 +1,7 @@
 # NFS
 
 You can view information and options set for each of the mounted NFS file
-systems by running `nfsstat -m` and `cat /etc/fstab`.
+systems by running `sudo nfsstat -m`.
 
 ## NFS Server features
 

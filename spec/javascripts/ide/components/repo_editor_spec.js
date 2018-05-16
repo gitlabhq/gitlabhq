@@ -23,7 +23,7 @@ describe('RepoEditor', () => {
     f.active = true;
     f.tempFile = true;
     vm.$store.state.openFiles.push(f);
-    Vue.set(vm.$store.state.entries, f.path, f);
+    vm.$store.state.entries[f.path] = f;
     vm.monaco = true;
 
     vm.$mount();
@@ -212,30 +212,6 @@ describe('RepoEditor', () => {
       vm.setupEditor();
 
       expect(vm.editor.attachModel).toHaveBeenCalledWith(vm.model);
-    });
-
-    it('attaches model to merge request editor', () => {
-      vm.$store.state.viewer = 'mrdiff';
-      vm.file.mrChange = true;
-      spyOn(vm.editor, 'attachMergeRequestModel');
-
-      Editor.editorInstance.modelManager.dispose();
-
-      vm.setupEditor();
-
-      expect(vm.editor.attachMergeRequestModel).toHaveBeenCalledWith(vm.model);
-    });
-
-    it('does not attach model to merge request editor when not a MR change', () => {
-      vm.$store.state.viewer = 'mrdiff';
-      vm.file.mrChange = false;
-      spyOn(vm.editor, 'attachMergeRequestModel');
-
-      Editor.editorInstance.modelManager.dispose();
-
-      vm.setupEditor();
-
-      expect(vm.editor.attachMergeRequestModel).not.toHaveBeenCalledWith(vm.model);
     });
 
     it('adds callback methods', () => {

@@ -41,11 +41,6 @@ FactoryBot.define do
       state :merged
     end
 
-    trait :merged_target do
-      source_branch "merged-target"
-      target_branch "improve/awesome"
-    end
-
     trait :closed do
       state :closed
     end

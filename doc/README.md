@@ -1,6 +1,5 @@
 ---
 comments: false
-description: 'Learn how to use and administer GitLab, the most scalable Git-based fully integrated platform for software development.'
 ---
 
 # GitLab Documentation
@@ -241,7 +240,7 @@ GitLab.com is hosted, managed, and administered by GitLab, Inc., with
 and teams: Free, Bronze, Silver, and Gold.
 
 GitLab.com subscriptions grants access
-to the same features available in GitLab self-hosted, **except
+to the same features available in GitLab self-hosted, **expect
 [administration](administration/index.md) tools and settings**:
 
 - GitLab.com Free includes the same features available in Core

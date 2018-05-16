@@ -15,7 +15,10 @@ module Gitlab
 
       def each
         @blames.each do |blame|
-          yield(blame.commit, blame.line)
+          yield(
+            Gitlab::Git::Commit.new(@repo, blame.commit),
+            blame.line
+          )
         end
       end
 
@@ -57,8 +60,9 @@ module Gitlab
           end
         end
 
-        Gitlab::Git::Commit.batch_by_oid(@repo, commits.keys).each do |commit|
-          commits[commit.sha] = commit
+        # load all commits in single call
+        commits.keys.each do |key|
+          commits[key] = @repo.lookup(key)
         end
 
         # get it together

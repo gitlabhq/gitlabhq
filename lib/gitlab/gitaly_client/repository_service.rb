@@ -292,8 +292,6 @@ module Gitlab
         request  = Gitaly::CalculateChecksumRequest.new(repository: @gitaly_repo)
         response = GitalyClient.call(@storage, :repository_service, :calculate_checksum, request)
         response.checksum.presence
-      rescue GRPC::DataLoss => e
-        raise Gitlab::Git::Repository::InvalidRepository.new(e)
       end
     end
   end

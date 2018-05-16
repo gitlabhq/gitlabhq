@@ -4,8 +4,8 @@ FactoryBot.define do
     name 'test-cluster'
 
     trait :project do
-      before(:create) do |cluster, evaluator|
-        cluster.projects << create(:project, :repository)
+      after(:create) do |cluster, evaluator|
+        cluster.projects << create(:project)
       end
     end
 

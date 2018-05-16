@@ -36,9 +36,7 @@ ul.notes-form,
 .gutter-toggle,
 .issuable-details .content-block-small,
 .edit-link,
-.note-action-button,
-.right-sidebar,
-.flash-container {
+.note-action-button {
   display: none !important;
 }
 
@@ -54,8 +52,4 @@ pre {
 
 .right-sidebar {
   top: 0;
-}
-
-a[href]::after {
-  content: none !important;
 }

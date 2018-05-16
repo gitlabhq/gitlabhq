@@ -4,6 +4,18 @@ module Gitlab
       CONTROLLER_KEY = 'action_controller.instance'.freeze
       ENDPOINT_KEY = 'api.endpoint'.freeze
 
+      CONTENT_TYPES = {
+        'text/html' => :html,
+        'text/plain' => :txt,
+        'application/json' => :json,
+        'text/js' => :js,
+        'application/atom+xml' => :atom,
+        'image/png' => :png,
+        'image/jpeg' => :jpeg,
+        'image/gif' => :gif,
+        'image/svg+xml' => :svg
+      }.freeze
+
       def initialize(env)
         super()
         @env = env
@@ -28,7 +40,7 @@ module Gitlab
         controller = @env[CONTROLLER_KEY]
 
         action = "#{controller.action_name}"
-        suffix = controller.request_format
+        suffix = CONTENT_TYPES[controller.content_type]
 
         if suffix && suffix != :html
           action += ".#{suffix}"

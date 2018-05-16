@@ -40,7 +40,6 @@ module Ci
 
     validate :tag_constraints
     validates :access_level, presence: true
-    validates :runner_type, presence: true
 
     acts_as_taggable
 
@@ -84,13 +83,7 @@ module Ci
     end
 
     def assign_to(project, current_user = nil)
-      if shared?
-        self.is_shared = false if shared?
-        self.runner_type = :project_type
-      elsif group_type?
-        raise ArgumentError, 'Transitioning a group runner to a project runner is not supported'
-      end
-
+      self.is_shared = false if shared?
       self.save
       project.runner_projects.create(runner_id: self.id)
     end

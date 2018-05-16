@@ -1,20 +1,16 @@
-import axios from '~/lib/utils/axios_utils';
+import Vue from 'vue';
+import VueResource from 'vue-resource';
+
+Vue.use(VueResource);
 
 export default class CycleAnalyticsService {
   constructor(options) {
-    this.axios = axios.create({
-      baseURL: options.requestPath,
-    });
+    this.requestPath = options.requestPath;
+    this.cycleAnalytics = Vue.resource(this.requestPath);
   }
 
   fetchCycleAnalyticsData(options = { startDate: 30 }) {
-    return this.axios
-      .get('', {
-        params: {
-          'cycle_analytics[start_date]': options.startDate,
-        },
-      })
-      .then(x => x.data);
+    return this.cycleAnalytics.get({ cycle_analytics: { start_date: options.startDate } });
   }
 
   fetchStageData(options) {
@@ -23,12 +19,12 @@ export default class CycleAnalyticsService {
       startDate,
     } = options;
 
-    return this.axios
-      .get(`events/${stage.name}.json`, {
-        params: {
-          'cycle_analytics[start_date]': startDate,
+    return Vue.http.get(`${this.requestPath}/events/${stage.name}.json`, {
+      params: {
+        cycle_analytics: {
+          start_date: startDate,
         },
-      })
-      .then(x => x.data);
+      },
+    });
   }
 }
