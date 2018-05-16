@@ -1,6 +1,8 @@
 module Projects
   module Settings
     class IntegrationsController < Projects::ApplicationController
+      prepend EE::Projects::Settings::IntegrationsController
+
       include ServiceParams
 
       before_action :authorize_admin_project!
@@ -18,17 +20,7 @@ module Projects
 
       # Returns a list of services that should be hidden from the list
       def service_exceptions
-        exceptions = @project.disabled_services.dup
-
-        exceptions << slack_service
-      end
-
-      def slack_service
-        if Gitlab::CurrentSettings.slack_app_enabled
-          'slack_slash_commands'
-        else
-          'gitlab_slack_application'
-        end
+        @project.disabled_services.dup
       end
     end
   end
