@@ -69,7 +69,7 @@ module Projects
         @project_runners = @project.runners.ordered
 
         @assignable_runners = current_user
-          .ci_authorized_runners
+          .ci_owned_runners
           .assignable_for(project)
           .ordered
           .page(params[:page]).per(20)

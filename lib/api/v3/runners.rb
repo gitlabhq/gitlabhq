@@ -58,7 +58,7 @@ module API
         end
 
         def user_can_access_runner?(runner)
-          current_user.ci_authorized_runners.exists?(runner.id)
+          current_user.ci_owned_runners.exists?(runner.id)
         end
       end
     end
