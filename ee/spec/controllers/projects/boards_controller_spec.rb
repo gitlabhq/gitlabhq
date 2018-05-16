@@ -36,6 +36,12 @@ describe Projects::BoardsController do
     end
   end
 
+  describe 'GET show' do
+    let(:parent) { project }
+
+    it_behaves_like 'multiple issue boards show'
+  end
+
   describe 'POST create' do
     context 'with the multiple issue boards available' do
       before do
@@ -102,7 +108,7 @@ describe Projects::BoardsController do
     end
 
     it 'renders a 404 when multiple issue boards are not available' do
-      stub_licensed_features(multiple_issue_boards: false)
+      stub_licensed_features(multiple_project_issue_boards: false)
 
       create_board name: 'Backend'
 
