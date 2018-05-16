@@ -45,10 +45,10 @@ module RedisCacheable
   end
 
   def cast_value_from_cache(attribute, value)
-    if self.class.column_for_attribute(attribute).respond_to?(:type_cast_from_database)
-      self.class.column_for_attribute(attribute).type_cast_from_database(value)
-    else
+    if Gitlab.rails5?
       self.class.type_for_attribute(attribute).cast(value)
+    else
+      self.class.column_for_attribute(attribute).type_cast_from_database(value)
     end
   end
 end
