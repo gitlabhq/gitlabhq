@@ -231,7 +231,7 @@ module EESpecificCheck
 
   def find_forward_ce_head(ce_merge_base, ce_fetch_head)
     with_detached_head(ce_fetch_head) do
-      run_git_command("merge #{ce_merge_base}")
+      run_git_command("merge #{ce_merge_base} -s recursive -X patience")
 
       status = git_status
 
