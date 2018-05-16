@@ -11,8 +11,8 @@ describe RedisCacheable do
         cached_value
       end
 
-      def has_attribute?(attribute)
-        attributes.has_key?(attribute)
+      def self.attribute_names
+        %w[name time]
       end
     end
   end

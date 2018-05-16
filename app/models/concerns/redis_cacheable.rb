@@ -7,9 +7,9 @@ module RedisCacheable
   class_methods do
     def cached_attr_reader(*attributes)
       attributes.each do |attribute|
-        define_method(attribute) do
-          raise ArgumentError, "Not a database attribute" unless self.has_attribute?(attribute)
+        raise ArgumentError, "Not a database attribute" unless self.attribute_names.include?(attribute.to_s)
 
+        define_method(attribute) do
           cached_attribute(attribute) || read_attribute(attribute)
         end
       end
