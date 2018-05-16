@@ -8,8 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2018-05-15 15:07+0200\n"
 "PO-Revision-Date: 2018-05-15 15:07+0200\n"
+=======
+"POT-Creation-Date: 2018-05-15 15:05+0200\n"
+"PO-Revision-Date: 2018-05-15 15:05+0200\n"
+>>>>>>> upstream/master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -76,11 +81,14 @@ msgid_plural "%d unstaged changes"
 msgstr[0] ""
 msgstr[1] ""
 
+<<<<<<< HEAD
 msgid "%d vulnerability"
 msgid_plural "%d vulnerabilities"
 msgstr[0] ""
 msgstr[1] ""
 
+=======
+>>>>>>> upstream/master
 msgid "%s additional commit has been omitted to prevent performance issues."
 msgid_plural "%s additional commits have been omitted to prevent performance issues."
 msgstr[0] ""
@@ -132,11 +140,14 @@ msgstr ""
 msgid "%{title} changes"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "%{type} detected %d vulnerability"
 msgid_plural "%{type} detected %d vulnerabilities"
 msgstr[0] ""
 msgstr[1] ""
 
+=======
+>>>>>>> upstream/master
 msgid "%{unstaged} unstaged and %{staged} staged changes"
 msgstr ""
 
@@ -381,6 +392,7 @@ msgstr ""
 msgid "An error occurred when toggling the notification subscription"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "An error occurred when updating the issue weight"
 msgstr ""
 
@@ -390,6 +402,8 @@ msgstr ""
 msgid "An error occurred while detecting host keys"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "An error occurred while dismissing the alert. Refresh the page and try again."
 msgstr ""
 
@@ -1599,7 +1613,11 @@ msgstr ""
 msgid "Configure limits for web and API requests."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Configure push and pull mirrors."
+=======
+msgid "Configure push mirrors."
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Configure storage path and circuit breaker settings."
@@ -1797,9 +1815,12 @@ msgstr ""
 msgid "Created"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Creating epic"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Cron Timezone"
 msgstr ""
 
@@ -2102,12 +2123,15 @@ msgstr ""
 msgid "Edit files in the editor and commit changes here"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Elasticsearch"
 msgstr ""
 
 msgid "Elasticsearch intergration. Elasticsearch AWS IAM."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Email"
 msgstr ""
 
@@ -2153,9 +2177,12 @@ msgstr ""
 msgid "Enable the Performance Bar for a given group."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Enabled"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Environments"
 msgstr ""
 
@@ -2820,6 +2847,7 @@ msgstr ""
 msgid "IDE|Review"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Identity provider single sign on URL"
 msgstr ""
 
@@ -2829,6 +2857,8 @@ msgstr ""
 msgid "If using GitHub, you’ll see pipeline statuses on GitHub for your commits and pull requests. %{more_info_link}"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "If you already have files you can push them using the %{link_to_cli} below."
 msgstr ""
 
@@ -3055,9 +3085,12 @@ msgstr ""
 msgid "Leave project"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "License"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "List"
 msgstr ""
 
@@ -3942,6 +3975,7 @@ msgstr ""
 msgid "ProjectLifecycle|Stage"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "ProjectSettings|Contact an admin to change this setting."
 msgstr ""
 
@@ -3966,6 +4000,8 @@ msgstr ""
 msgid "ProjectSettings|Users can only push commits to this repository that were committed with one of their own verified emails."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Projects"
 msgstr ""
 
@@ -5404,9 +5440,12 @@ msgstr ""
 msgid "Verified"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "View epics list"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "View file @ "
 msgstr ""
 

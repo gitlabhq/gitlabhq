@@ -56,10 +56,6 @@
           .catch(() => this.showError(errorMessagesTypes.FETCH_REGISTRY));
       },
 
-      clipboardText(text) {
-        return `docker pull ${text}`;
-      },
-
       showError(message) {
         Flash(errorMessages[message]);
       },
@@ -89,7 +85,7 @@
             <clipboard-button
               v-if="item.location"
               :title="item.location"
-              :text="clipboardText(item.location)"
+              :text="item.location"
               css-class="btn-default btn-transparent btn-clipboard"
             />
           </td>
