@@ -8,16 +8,15 @@ module RedisCacheable
     def cached_attr_reader(*attributes)
       attributes.each do |attribute|
         define_method(attribute) do
-          cached_value = cached_attribute(attribute)
-          cached_value = cast_value_from_cache(attribute, cached_value) if cached_value
-          cached_value || read_attribute(attribute)
+          cached_attribute(attribute) || read_attribute(attribute)
         end
       end
     end
   end
 
   def cached_attribute(attribute)
-    (cached_attributes || {})[attribute]
+    cached_value = (cached_attributes || {})[attribute]
+    cast_value_from_cache(attribute, cached_value) if cached_value
   end
 
   def cache_attributes(values)
