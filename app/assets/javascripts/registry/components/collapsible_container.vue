@@ -28,11 +28,6 @@
         isOpen: false,
       };
     },
-    computed: {
-      clipboardText() {
-        return `docker pull ${this.repo.location}`;
-      },
-    },
     methods: {
       ...mapActions([
         'fetchRepos',
@@ -84,7 +79,7 @@
 
       <clipboard-button
         v-if="repo.location"
-        :text="clipboardText"
+        :text="repo.location"
         :title="repo.location"
         css-class="btn-default btn-transparent btn-clipboard"
       />

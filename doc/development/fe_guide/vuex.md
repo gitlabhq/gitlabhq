@@ -68,10 +68,10 @@ Often we need to provide data from haml to our Vue application. Let's store it i
 You can use `mapState` to access state properties in the components.
 
 ### `actions.js`
-An action is a playload of information to send data from our application to our store.
+An action is a payload of information to send data from our application to our store.
 
 An action is usually composed by a `type` and a `payload` and they describe what happened.
-Enforcing that every change is described as an action lets us have a clear understanting of what is going on in the app.
+Enforcing that every change is described as an action lets us have a clear understanding of what is going on in the app.
 
 In this file, we will write the actions that will call the respective mutations:
 
@@ -87,7 +87,7 @@ In this file, we will write the actions that will call the respective mutations:
   export const fetchUsers = ({ state, dispatch }) => {
     dispatch('requestUsers');
 
-    axios.get(state.endoint)
+    axios.get(state.endpoint)
       .then(({ data }) => dispatch('receiveUsersSuccess', data))
       .catch((error) => {
         dispatch('receiveUsersError', error)
@@ -102,7 +102,7 @@ In this file, we will write the actions that will call the respective mutations:
   export const addUser = ({ state, dispatch }, user) => {
     dispatch('requestAddUser');
 
-    axios.post(state.endoint, user)
+    axios.post(state.endpoint, user)
       .then(({ data }) => dispatch('receiveAddUserSuccess', data))
       .catch((error) => dispatch('receiveAddUserError', error));
   }
@@ -126,7 +126,7 @@ The component MUST only dispatch the `fetchNamespace` action. Actions namespaced
 The `fetch` action will be responsible to dispatch `requestNamespace`, `receiveNamespaceSuccess` and `receiveNamespaceError`
 
 By following this pattern we guarantee:
-1. All aplications follow the same pattern, making it easier for anyone to maintain the code
+1. All applications follow the same pattern, making it easier for anyone to maintain the code
 1. All data in the application follows the same lifecycle pattern
 1. Actions are contained and human friendly
 1. Unit tests are easier
@@ -149,7 +149,7 @@ import { mapActions } from 'vuex';
 };
 ```
 
-#### `mutations.js`
+### `mutations.js`
 The mutations specify how the application state changes in response to actions sent to the store.
 The only way to change state in a Vuex store should be by committing a mutation.
 
@@ -175,7 +175,7 @@ Remember that actions only describe that something happened, they don't describe
       state.isLoading = false;
     },
     [types.REQUEST_ADD_USER](state, user) {
-     state.isAddingUser = true;
+      state.isAddingUser = true;
     },
     [types.RECEIVE_ADD_USER_SUCCESS](state, user) {
       state.isAddingUser = false;
@@ -183,12 +183,12 @@ Remember that actions only describe that something happened, they don't describe
     },
     [types.REQUEST_ADD_USER_ERROR](state, error) {
       state.isAddingUser = true;
-      state.errorAddingUser = error∂;
+      state.errorAddingUser = error;
     },
   };
 ```
 
-#### `getters.js`
+### `getters.js`
 Sometimes we may need to get derived state based on store state, like filtering for a specific prop.
 Using a getter will also cache the result based on dependencies due to [how computed props work](https://vuejs.org/v2/guide/computed.html#Computed-Caching-vs-Methods)
 This can be done through the `getters`:
@@ -213,7 +213,7 @@ import { mapGetters } from 'vuex';
 };
 ```
 
-#### `mutations_types.js`
+### `mutations_types.js`
 From [vuex mutations docs][vuex-mutations]:
 > It is a commonly seen pattern to use constants for mutation types in various Flux implementations. This allows the code to take advantage of tooling like linters, and putting all constants in a single file allows your collaborators to get an at-a-glance view of what mutations are possible in the entire application.
 
@@ -289,7 +289,7 @@ export default {
 ```
 
 ### Vuex Gotchas
-1. Do not call a mutation directly. Always use an action to commit a mutation. Doing so will keep consistency through out the application. From Vuex docs:
+1. Do not call a mutation directly. Always use an action to commit a mutation. Doing so will keep consistency throughout the application. From Vuex docs:
 
   >  why don't we just call store.commit('action') directly? Well, remember that mutations must be synchronous? Actions aren't. We can perform asynchronous operations inside an action.
 
@@ -342,7 +342,7 @@ describe('component', () => {
     };
 
     // populate the store
-    store.dipatch('addUser', user);
+    store.dispatch('addUser', user);
 
     vm = new Component({
       store,
@@ -350,6 +350,18 @@ describe('component', () => {
     }).$mount();
   });
 });
+```
+
+#### Testing Vuex actions and getters
+Because we're currently using [`babel-plugin-rewire`](https://github.com/speedskater/babel-plugin-rewire), you may encounter the following error when testing your Vuex actions and getters:
+`[vuex] actions should be function or object with "handler" function`
+
+To prevent this error from happening, you need to export an empty function as `default`:
+```
+// getters.js or actions.js
+
+// prevent babel-plugin-rewire from generating an invalid default during karma tests
+export default () => {};
 ```
 
 [vuex-docs]: https://vuex.vuejs.org

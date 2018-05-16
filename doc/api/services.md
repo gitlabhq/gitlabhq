@@ -968,7 +968,7 @@ Group Chat Software
 Set Microsoft Teams service for a project.
 
 ```
-PUT /projects/:id/services/microsoft_teams
+PUT /projects/:id/services/microsoft-teams
 ```
 
 Parameters:
@@ -982,7 +982,7 @@ Parameters:
 Delete Microsoft Teams service for a project.
 
 ```
-DELETE /projects/:id/services/microsoft_teams
+DELETE /projects/:id/services/microsoft-teams
 ```
 
 ### Get Microsoft Teams service settings
@@ -990,7 +990,7 @@ DELETE /projects/:id/services/microsoft_teams
 Get Microsoft Teams service settings for a project.
 
 ```
-GET /projects/:id/services/microsoft_teams
+GET /projects/:id/services/microsoft-teams
 ```
 
 ## Mattermost notifications
