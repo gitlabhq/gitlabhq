@@ -100,12 +100,9 @@ msgstr[1] ""
 msgid "%{loadingIcon} Started"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "%{lock_path} is locked by GitLab User %{lock_user_id}"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "%{nip_domain} can be used as an alternative to a custom domain."
 msgstr ""
 
