@@ -1302,6 +1302,20 @@ ActiveRecord::Schema.define(version: 20180521171529) do
   add_index "namespaces", ["runners_token"], name: "index_namespaces_on_runners_token", unique: true, using: :btree
   add_index "namespaces", ["type"], name: "index_namespaces_on_type", using: :btree
 
+  create_table "note_diff_files", force: :cascade do |t|
+    t.integer "diff_note_id", null: false
+    t.text "diff", null: false
+    t.boolean "new_file", null: false
+    t.boolean "renamed_file", null: false
+    t.boolean "deleted_file", null: false
+    t.string "a_mode", null: false
+    t.string "b_mode", null: false
+    t.text "new_path", null: false
+    t.text "old_path", null: false
+  end
+
+  add_index "note_diff_files", ["diff_note_id"], name: "index_note_diff_files_on_diff_note_id", unique: true, using: :btree
+
   create_table "notes", force: :cascade do |t|
     t.text "note"
     t.string "noteable_type"
@@ -2243,6 +2257,7 @@ ActiveRecord::Schema.define(version: 20180521171529) do
   add_foreign_key "merge_requests_closing_issues", "merge_requests", on_delete: :cascade
   add_foreign_key "milestones", "namespaces", column: "group_id", name: "fk_95650a40d4", on_delete: :cascade
   add_foreign_key "milestones", "projects", name: "fk_9bd0a0c791", on_delete: :cascade
+  add_foreign_key "note_diff_files", "notes", column: "diff_note_id", on_delete: :cascade
   add_foreign_key "notes", "projects", name: "fk_99e097b079", on_delete: :cascade
   add_foreign_key "oauth_openid_requests", "oauth_access_grants", column: "access_grant_id", name: "fk_oauth_openid_requests_oauth_access_grants_access_grant_id"
   add_foreign_key "pages_domains", "projects", name: "fk_ea2f6dfc6f", on_delete: :cascade
