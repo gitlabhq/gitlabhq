@@ -61,7 +61,10 @@ describe('DiffsStoreActions', () => {
           { type: types.SET_DIFF_DATA, payload: res },
         ],
         [],
-        done,
+        () => {
+          mock.restore();
+          done();
+        },
       );
     });
   });
@@ -154,7 +157,10 @@ describe('DiffsStoreActions', () => {
           },
         ],
         [],
-        done,
+        () => {
+          mock.restore();
+          done();
+        },
       );
     });
   });
@@ -177,7 +183,10 @@ describe('DiffsStoreActions', () => {
           },
         ],
         [],
-        done,
+        () => {
+          mock.restore();
+          done();
+        },
       );
     });
   });
@@ -187,7 +196,7 @@ describe('DiffsStoreActions', () => {
       testAction(
         actions.expandAllFiles,
         null,
-        { },
+        {},
         [
           {
             type: types.EXPAND_ALL_FILES,
