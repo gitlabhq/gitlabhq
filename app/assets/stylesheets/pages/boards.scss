@@ -284,6 +284,9 @@
   box-shadow: 0 1px 2px $issue-boards-card-shadow;
   list-style: none;
 
+  // as a fallback, hide overflow content so that dragging and dropping still works
+  overflow: hidden;
+
   &:not(:last-child) {
     margin-bottom: 5px;
   }
@@ -310,14 +313,13 @@
 }
 
 .card-title {
+  @include overflow-break-word();
   margin: 0 30px 0 0;
   font-size: 1em;
   line-height: inherit;
 
   a {
     color: $gl-text-color;
-    word-wrap: break-word;
-    word-break: break-word;
     margin-right: 2px;
   }
 }
@@ -462,8 +464,8 @@
   }
 
   .issuable-header-text {
+    @include overflow-break-word();
     padding-right: 35px;
-    word-break: break-word;
 
     > strong {
       font-weight: $gl-font-weight-bold;

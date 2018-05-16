@@ -7,3 +7,8 @@ controller:
   podAnnotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "10254"
+
+rbac:
+  create: false
+  createRole: false
+  createClusterRole: false

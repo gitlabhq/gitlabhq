@@ -151,7 +151,8 @@ The next step is to configure a Runner so that it picks the pending jobs.
 In GitLab, Runners run the jobs that you define in `.gitlab-ci.yml`. A Runner
 can be a virtual machine, a VPS, a bare-metal machine, a docker container or
 even a cluster of containers. GitLab and the Runners communicate through an API,
-so the only requirement is that the Runner's machine has [Internet] access.
+so the only requirement is that the Runner's machine has network access to the
+GitLab server.
 
 A Runner can be specific to a certain project or serve multiple projects in
 GitLab. If it serves all projects it's called a _Shared Runner_.
@@ -226,4 +227,3 @@ CI with various languages.
 [enabled]: ../enable_or_disable_ci.md
 [stages]: ../yaml/README.md#stages
 [pipeline]: ../pipelines.md
-[internet]: https://about.gitlab.com/images/theinternet.png

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180508135515) do
+ActiveRecord::Schema.define(version: 20180512061621) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -503,6 +503,7 @@ ActiveRecord::Schema.define(version: 20180508135515) do
   add_index "ci_runners", ["contacted_at"], name: "index_ci_runners_on_contacted_at", using: :btree
   add_index "ci_runners", ["is_shared"], name: "index_ci_runners_on_is_shared", using: :btree
   add_index "ci_runners", ["locked"], name: "index_ci_runners_on_locked", using: :btree
+  add_index "ci_runners", ["runner_type"], name: "index_ci_runners_on_runner_type", using: :btree
   add_index "ci_runners", ["token"], name: "index_ci_runners_on_token", using: :btree
 
   create_table "ci_stages", force: :cascade do |t|
@@ -1493,7 +1494,7 @@ ActiveRecord::Schema.define(version: 20180508135515) do
   add_index "project_deploy_tokens", ["project_id", "deploy_token_id"], name: "index_project_deploy_tokens_on_project_id_and_deploy_token_id", unique: true, using: :btree
 
   create_table "project_features", force: :cascade do |t|
-    t.integer "project_id"
+    t.integer "project_id", null: false
     t.integer "merge_requests_access_level"
     t.integer "issues_access_level"
     t.integer "wiki_access_level"
@@ -1504,7 +1505,7 @@ ActiveRecord::Schema.define(version: 20180508135515) do
     t.integer "repository_access_level", default: 20, null: false
   end
 
-  add_index "project_features", ["project_id"], name: "index_project_features_on_project_id", using: :btree
+  add_index "project_features", ["project_id"], name: "index_project_features_on_project_id", unique: true, using: :btree
 
   create_table "project_group_links", force: :cascade do |t|
     t.integer "project_id", null: false

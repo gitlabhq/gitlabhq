@@ -181,4 +181,8 @@ class Projects::PipelinesController < Projects::ApplicationController
     # Also see https://gitlab.com/gitlab-org/gitlab-ce/issues/42343
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42339')
   end
+
+  def authorize_update_pipeline!
+    return access_denied! unless can?(current_user, :update_pipeline, @pipeline)
+  end
 end
