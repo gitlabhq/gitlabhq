@@ -191,6 +191,8 @@ module Gitlab
       metadata['call_site'] = feature.to_s if feature
       metadata['gitaly-servers'] = address_metadata(remote_storage) if remote_storage
 
+      metadata.merge!(server_feature_flags(feature))
+
       result = { metadata: metadata }
 
       # nil timeout indicates that we should use the default
@@ -207,6 +209,20 @@ module Gitlab
       result[:deadline] = deadline
 
       result
+    end
+
+    SERVER_FEATURE_FLAGS = {
+      find_commit: ["gogit-findcommit"]
+    }.freeze
+
+    # Other than data on the disk, Gitaly is stateless. Rails will thus set
+    # feature flags in the request metadata.
+    def self.server_feature_flags(feature)
+      return {} unless SERVER_FEATURE_FLAGS.key?(feature)
+
+      SERVER_FEATURE_FLAGS[feature]
+        .map { |f| ["gitaly-feature-#{f}", feature_enabled?(f).to_s] }
+        .to_h
     end
 
     def self.token(storage)
