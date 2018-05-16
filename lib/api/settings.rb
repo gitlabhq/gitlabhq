@@ -5,7 +5,7 @@ module API
     helpers do
       def current_settings
         @current_setting ||=
-          (ApplicationSetting.current || ApplicationSetting.create_from_defaults)
+          (ApplicationSetting.current_without_cache || ApplicationSetting.create_from_defaults)
       end
     end
 
