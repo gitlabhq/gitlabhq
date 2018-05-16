@@ -70,13 +70,12 @@ export default {
         return __('Only comments from the following commit are shown below');
       } else if (this.startVersion) {
         return __(
-          `Not all comments are displayed because you're comparing two versions of the diff.`,
-        );
-      } else {
-        return __(
-          `Not all comments are displayed because you're viewing an old version of the diff.`,
+          'Not all comments are displayed because you\'re comparing two versions of the diff.',
         );
       }
+      return __(
+        'Not all comments are displayed because you\'re viewing an old version of the diff.',
+      );
     },
     showLatestVersion() {
       if (this.commit) {

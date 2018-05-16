@@ -1,5 +1,4 @@
 <script>
-import { removeParamQueryString } from '~/lib/utils/url_utility';
 import CompareVersionsDropdown from './compare_versions_dropdown.vue';
 
 export default {

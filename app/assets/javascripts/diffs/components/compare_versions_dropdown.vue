@@ -79,19 +79,14 @@ export default {
           (this.isBase(version) && !this.startVersion) ||
           (this.startVersion && this.startVersion.versionIndex === version.versionIndex)
         );
-      } else {
-        return version.versionIndex === this.mergeRequestVersion.versionIndex;
       }
-
       return version.versionIndex === this.mergeRequestVersion.versionIndex;
     },
     isBase(version) {
       if (!version || !this.targetBranch) {
         return false;
       }
-      if (version.versionIndex === -1) {
-        return true;
-      }
+      return version.versionIndex === -1;
     },
     isLatest(version) {
       return (
