@@ -615,32 +615,22 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#branch_names_contains_sha' do
-    shared_examples 'returning the right branches' do
-      let(:head_id) { repository.rugged.head.target.oid }
-      let(:new_branch) { head_id }
-      let(:utf8_branch) { 'branch-é' }
+    let(:head_id) { repository.rugged.head.target.oid }
+    let(:new_branch) { head_id }
+    let(:utf8_branch) { 'branch-é' }
 
-      before do
-        repository.create_branch(new_branch, 'master')
-        repository.create_branch(utf8_branch, 'master')
-      end
-
-      after do
-        repository.delete_branch(new_branch)
-        repository.delete_branch(utf8_branch)
-      end
-
-      it 'displays that branch' do
-        expect(repository.branch_names_contains_sha(head_id)).to include('master', new_branch, utf8_branch)
-      end
+    before do
+      repository.create_branch(new_branch, 'master')
+      repository.create_branch(utf8_branch, 'master')
     end
 
-    context 'when Gitaly is enabled' do
-      it_behaves_like 'returning the right branches'
+    after do
+      repository.delete_branch(new_branch)
+      repository.delete_branch(utf8_branch)
     end
 
-    context 'when Gitaly is disabled', :disable_gitaly do
-      it_behaves_like 'returning the right branches'
+    it 'displays that branch' do
+      expect(repository.branch_names_contains_sha(head_id)).to include('master', new_branch, utf8_branch)
     end
   end
 
