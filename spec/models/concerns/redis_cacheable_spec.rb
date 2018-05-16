@@ -10,6 +10,10 @@ describe RedisCacheable do
       def cast_value_from_cache(attribute, cached_value)
         cached_value
       end
+
+      def has_attribute?(attribute)
+        attributes.has_key?(attribute)
+      end
     end
   end
 
