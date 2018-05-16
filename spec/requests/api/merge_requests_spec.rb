@@ -307,18 +307,19 @@ describe API::MergeRequests do
 
       it 'returns merge_request by "iids" array' do
         other_project = create(:project, :public, namespace: group)
-        create(:merge_request, state: "merged", author: user, assignee: user, source_project: other_project)
-
+        other_project_merge_request = create(:merge_request, state: "merged", author: user, assignee: user, source_project: other_project)
         subgroup_project = create(:project, :public, namespace: subgroup)
-        subgroup_project_mr = create(:merge_request, state: "merged", author: user, assignee: user, source_project: subgroup_project, created_at: base_time + 10.seconds)
+        subgroup_project_merge_request = create(:merge_request, state: "merged", author: user, assignee: user, source_project: subgroup_project, created_at: base_time + 10.seconds)
+        iids = [subgroup_project_merge_request.iid,  merge_request_closed.iid, merge_request.iid, merge_request_merged.iid, other_project_merge_request.iid]
 
-        get api(endpoint_path, user), iids: [1, 2]
+        get api(endpoint_path, user), iids: iids
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
-        expect(json_response.length).to eq(4)
-        expect(json_response.first['title']).to eq subgroup_project_mr.title
-        expect(json_response.first['id']).to eq subgroup_project_mr.id
+        expect(json_response.length).to eq(5)
+        expect(json_response.first['title']).to eq subgroup_project_merge_request.title
+        expect(json_response.first['id']).to eq subgroup_project_merge_request.id
+        expect(json_response.map { |mr| mr['iid'] }.uniq).to match_array(iids.uniq)
       end
     end
   end
