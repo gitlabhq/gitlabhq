@@ -143,10 +143,10 @@ export default {
     pipelineActionRequestComplete() {
       if (this.type === 'PIPELINES_TABLE') {
         // warn the table to update
-        eventHub.$emit('clickedDropdown');
+        eventHub.$emit('refreshPipelinesTable');
       } else {
-        // refresh the content
-        this.fetchJobs();
+        // close the dropdown in mr widget
+        $(this.$refs.dropdown).dropdown('toggle');
       }
     },
   },
@@ -167,6 +167,7 @@ export default {
       id="stageDropdown"
       aria-haspopup="true"
       aria-expanded="false"
+      ref="dropdown"
     >
 
       <span

@@ -5,7 +5,6 @@ import { dasherize } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
 import createFlash from '~/flash';
 import tooltip from '~/vue_shared/directives/tooltip';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 
 /**
@@ -21,7 +20,6 @@ import Icon from '~/vue_shared/components/icon.vue';
 export default {
   components: {
     Icon,
-    LoadingIcon,
   },
 
   directives: {
@@ -47,7 +45,7 @@ export default {
   },
   data() {
     return {
-      isLoading: false,
+      isDisabled: false,
     };
   },
 
@@ -67,15 +65,15 @@ export default {
     onClickAction() {
       $(this.$el).tooltip('hide');
 
-      this.isLoading = true;
+      this.isDisabled = true;
 
       axios.post(`${this.link}.json`)
         .then(() => {
-          this.isLoading = false;
+          this.isDisabled = false;
           this.$emit('pipelineActionRequestComplete');
         })
         .catch(() => {
-          this.isLoading = false;
+          this.isDisabled = false;
 
           createFlash(__('An error occurred while making the request.'));
         });
@@ -93,12 +91,8 @@ export default {
 btn-transparent ci-action-icon-container ci-action-icon-wrapper"
     :class="cssClass"
     data-container="body"
-    :disabled="isLoading"
+    :disabled="isDisabled"
   >
-    <icon
-      v-if="!isLoading"
-      :name="actionIcon"
-    />
-    <loading-icon v-else />
+    <icon :name="actionIcon"/>
   </button>
 </template>
