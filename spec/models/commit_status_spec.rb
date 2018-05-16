@@ -567,11 +567,8 @@ describe CommitStatus do
   end
 
   describe '#present' do
-    let(:generic_commit_status) { create(:generic_commit_status) }
+    subject { commit_status.present }
 
-    it 'returns a presenter' do
-      expect(commit_status.present).to be_a(Ci::BuildPresenter)
-      expect(generic_commit_status.present).to be_a(Ci::BuildPresenter)
-    end
+    it { is_expected.to be_a(CommitStatusPresenter) }
   end
 end
