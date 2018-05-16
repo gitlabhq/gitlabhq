@@ -83,7 +83,7 @@
             - if @project.feature_available?(:file_locks)
               = nav_link(controller: [:path_locks]) do
                 = link_to project_path_locks_path(@project) do
-                  #{ _('Locked Files') }
+                  = _('Locked Files')
 
       - if project_nav_tab? :issues
         = nav_link(controller: @project.issues_enabled? ? [:issues, :labels, :milestones, :boards] : :issues) do
