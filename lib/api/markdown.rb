@@ -25,10 +25,9 @@ module API
         end
 
         context[:pipeline] = params[:gfm] ? :full : :plain_markdown
+        result = { html: Banzai.render(params[:text], context) }
 
-        content_type "text/html"
-
-        present Banzai.render(params[:text], context)
+        present result
       end
     end
   end

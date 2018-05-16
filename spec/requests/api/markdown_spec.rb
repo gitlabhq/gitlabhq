@@ -13,8 +13,9 @@ describe API::Markdown do
     shared_examples "rendered markdown text without GFM" do
       it "renders markdown text" do
         expect(response).to have_http_status(201)
-        expect(response.headers["Content-Type"]).to eq("text/html")
-        expect(response.body).to eq("<p>#{text}</p>")
+        expect(response.headers["Content-Type"]).to eq("application/json")
+        expect(json_response).to be_a(Hash)
+        expect(json_response["html"]).to eq("<p>#{text}</p>")
       end
     end
 
@@ -79,13 +80,14 @@ describe API::Markdown do
 
           it "renders markdown text" do
             expect(response).to have_http_status(201)
-            expect(response.headers["Content-Type"]).to eq("text/html")
-            expect(response.body).to include("Hello world!")
-                                .and include('data-name="tada"')
-                                .and include('data-name="100"')
-                                .and include("#1")
-                                .and exclude("<a href=\"#{IssuesHelper.url_for_issue(issue.iid, project)}\"")
-                                .and exclude("#1</a>")
+            expect(response.headers["Content-Type"]).to eq("application/json")
+            expect(json_response).to be_a(Hash)
+            expect(json_response["html"]).to include("Hello world!")
+                                        .and include('data-name="tada"')
+                                        .and include('data-name="100"')
+                                        .and include("#1")
+                                        .and exclude("<a href=\"#{IssuesHelper.url_for_issue(issue.iid, project)}\"")
+                                        .and exclude("#1</a>")
           end
         end
 
@@ -95,12 +97,13 @@ describe API::Markdown do
 
           it "renders markdown text" do
             expect(response).to have_http_status(201)
-            expect(response.headers["Content-Type"]).to eq("text/html")
-            expect(response.body).to include("Hello world!")
-                                .and include('data-name="tada"')
-                                .and include('data-name="100"')
-                                .and include("<a href=\"#{IssuesHelper.url_for_issue(issue.iid, project)}\"")
-                                .and include("#1</a>")
+            expect(response.headers["Content-Type"]).to eq("application/json")
+            expect(json_response).to be_a(Hash)
+            expect(json_response["html"]).to include("Hello world!")
+                                        .and include('data-name="tada"')
+                                        .and include('data-name="100"')
+                                        .and include("<a href=\"#{IssuesHelper.url_for_issue(issue.iid, project)}\"")
+                                        .and include("#1</a>")
           end
         end
       end
