@@ -1,6 +1,9 @@
 class Admin::DashboardController < Admin::ApplicationController
+<<<<<<< HEAD
   prepend ::EE::Admin::DashboardController
 
+=======
+>>>>>>> upstream/master
   include CountHelper
 
   def index
