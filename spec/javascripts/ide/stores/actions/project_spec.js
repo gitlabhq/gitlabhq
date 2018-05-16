@@ -1,7 +1,4 @@
-import {
-  refreshLastCommitData,
-  getLastCommitPipeline,
-} from '~/ide/stores/actions';
+import { refreshLastCommitData, getCommitPipeline } from '~/ide/stores/actions';
 import store from '~/ide/stores';
 import service from '~/ide/services';
 import { resetStore } from '../../helpers';
@@ -59,14 +56,16 @@ describe('IDE store project actions', () => {
           branchId: store.state.currentBranchId,
         },
         store.state,
-        [{
-          type: 'SET_BRANCH_COMMIT',
-          payload: {
-            projectId: 'abcproject',
-            branchId: 'master',
-            commit: { id: '123' },
+        [
+          {
+            type: 'SET_BRANCH_COMMIT',
+            payload: {
+              projectId: 'abcproject',
+              branchId: 'master',
+              commit: { id: '123' },
+            },
           },
-        }], // mutations
+        ], // mutations
         [
           {
             type: 'getLastCommitPipeline',
@@ -82,7 +81,43 @@ describe('IDE store project actions', () => {
     });
   });
 
-  describe('getLastCommitPipeline', () => {
+  describe('getCommitPipeline', () => {
+    const fullPipelinesResponse = Promise.resolve({
+      data: {
+        count: {
+          all: 2,
+        },
+        pipelines: [
+          {
+            id: '51',
+            details: {
+              status: {
+                icon: 'status_failed',
+                text: 'failed',
+              },
+            },
+          },
+          {
+            id: '50',
+            details: {
+              status: {
+                icon: 'status_passed',
+                text: 'passed',
+              },
+            },
+          },
+        ],
+      },
+    });
+    const emptyPipelinesResponse = Promise.resolve({
+      data: {
+        count: {
+          all: 0,
+        },
+        pipelines: [],
+      },
+    });
+
     beforeEach(() => {
       store.state.currentProjectId = 'abcproject';
       store.state.currentBranchId = 'master';
@@ -97,25 +132,24 @@ describe('IDE store project actions', () => {
           },
         },
       };
-      spyOn(service, 'getPipelinesForProject').and.returnValue(
-        Promise.resolve({
-          data: [
-            { id: '1', ref: 'master', sha: 'lkj987ihg654fed321cba', status: 'failed' },
-            { id: '2', ref: 'master', sha: 'abc123def456ghi789jkl', status: 'passed' },
-          ],
-        }),
-      );
     });
 
     it('calls the service', done => {
+      spyOn(service, 'commitPipelines').and.returnValue(fullPipelinesResponse);
+
       store
-        .dispatch('getLastCommitPipeline', {
+        .dispatch('getCommitPipeline', {
           projectId: store.state.currentProjectId,
-          projectIdNumber: store.state.projects[store.state.currentProjectId].id,
           branchId: store.state.currentBranchId,
+          commitSha:
+            store.state.projects[store.state.currentProjectId].branches[store.state.currentBranchId]
+              .commit.id,
         })
         .then(() => {
-          expect(service.getPipelinesForProject).toHaveBeenCalledWith(4);
+          expect(service.commitPipelines).toHaveBeenCalledWith(
+            'abcproject',
+            'abc123def456ghi789jkl',
+          );
 
           done();
         })
@@ -123,37 +157,44 @@ describe('IDE store project actions', () => {
     });
 
     it('commits correct pipeline', done => {
+      spyOn(service, 'commitPipelines').and.returnValue(fullPipelinesResponse);
+
       testAction(
-        getLastCommitPipeline,
+        getCommitPipeline,
         {
           projectId: 'abcproject',
           projectIdNumber: store.state.projects.abcproject.id,
           branchId: 'master',
         },
         store.state,
-        [{
-          type: 'SET_LAST_COMMIT_PIPELINE',
-          payload: {
-            projectId: 'abcproject',
-            branchId: 'master',
-            pipeline: {
-              id: '2',
-              ref: 'master',
-              sha: 'abc123def456ghi789jkl',
-              status: 'passed',
+        [
+          {
+            type: 'SET_LAST_COMMIT_PIPELINE',
+            payload: {
+              projectId: 'abcproject',
+              branchId: 'master',
+              pipeline: {
+                id: '51',
+                details: {
+                  status: {
+                    icon: 'status_failed',
+                    text: 'failed',
+                  },
+                },
+              },
             },
           },
-        }], // mutations
+        ], // mutations
         [], // action
         done,
       );
     });
 
-    it('doesn\'t commit anything if no pipeline exists for last commit', done => {
-      store.state.projects.abcproject.branches.master.commit.id = 'nonexistanthash';
+    it("doesn't commit anything if no pipeline exists for last commit", done => {
+      spyOn(service, 'commitPipelines').and.returnValue(emptyPipelinesResponse);
 
       testAction(
-        getLastCommitPipeline,
+        getCommitPipeline,
         {
           projectId: 'abcproject',
           projectIdNumber: store.state.projects.abcproject.id,
