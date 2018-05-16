@@ -249,10 +249,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     subject(:metadata) { repository.archive_metadata(ref, storage_path, format, append_sha: append_sha) }
 
-    it 'sets RepoPath to the repository path' do
-      expect(metadata['RepoPath']).to eq(repository.path)
-    end
-
     it 'sets CommitId to the commit SHA' do
       expect(metadata['CommitId']).to eq(SeedRepo::LastCommit::ID)
     end
