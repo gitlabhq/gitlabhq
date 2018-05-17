@@ -18,6 +18,10 @@
 
 .group-row {
   @include basic-list-stats;
+
+  .description p {
+    margin-bottom: 0;
+  }
 }
 
 .ldap-group-links {

@@ -279,7 +279,6 @@ ul.indent-list {
   padding: 10px 0 0 30px;
 }
 
-
 // Specific styles for tree list
 @keyframes spin-avatar {
   from { transform: rotate(0deg); }
@@ -424,18 +423,10 @@ ul.indent-list {
     &:first-child {
       border-top: 1px solid $white-normal;
     }
-
-    &:last-of-type {
-      .group-row-contents:not(:hover) {
-        border-bottom: 1px solid transparent;
-      }
-    }
   }
 
   .group-row-contents {
-    padding: 10px 10px 8px;
-    border-top: solid 1px transparent;
-    border-bottom: solid 1px $white-normal;
+    padding: $gl-padding-top;
 
     &:hover {
       border-color: $row-hover-border;
