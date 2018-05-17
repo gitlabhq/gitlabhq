@@ -5,9 +5,7 @@ import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 const discussionFixture = 'merge_requests/diff_discussion.json';
 
-// TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-// eslint-disable-next-line jasmine/no-disabled-tests
-xdescribe('diff_file_header', () => {
+describe('diff_file_header', () => {
   let vm;
   let props;
   const Component = Vue.extend(DiffFileHeader);
@@ -17,6 +15,7 @@ xdescribe('diff_file_header', () => {
     const diffFile = convertObjectPropsToCamelCase(diffDiscussionMock.diff_file, { deep: true });
     props = {
       diffFile,
+      currentUser: {},
     };
   });
 
