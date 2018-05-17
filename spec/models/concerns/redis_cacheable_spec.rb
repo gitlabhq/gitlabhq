@@ -85,34 +85,12 @@ describe RedisCacheable do
   end
 
   describe '#cast_value_from_cache' do
-    let(:instance) { Ci::Runner.new }
-
     subject { instance.__send__(:cast_value_from_cache, attribute, value) }
 
-    shared_context 'runner contacted_at context' do
+    context 'with runner contacted_at' do
+      let(:instance) { Ci::Runner.new }
       let(:attribute) { :contacted_at }
       let(:value) { '2018-05-07 13:53:08 UTC' }
-    end
-
-    context 'on rails5' do
-      include_context 'runner contacted_at context'
-
-      before do
-        allow(Gitlab).to receive(:rails5?).and_return(true)
-      end
-
-      it 'converts cache string to appropriate type' do
-        pending 'Migration to rails5'
-        expect(subject).to be_an_instance_of(ActiveSupport::TimeWithZone)
-      end
-    end
-
-    context 'not on rails5' do
-      include_context 'runner contacted_at context'
-
-      before do
-        allow(Gitlab).to receive(:rails5?).and_return(false)
-      end
 
       it 'converts cache string to appropriate type' do
         expect(subject).to be_an_instance_of(ActiveSupport::TimeWithZone)
