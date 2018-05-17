@@ -41,6 +41,7 @@
   flex: 1;
   padding-left: $gl-padding;
   padding-right: $gl-padding;
+  padding-bottom: $grid-size;
 
   .file {
     cursor: pointer;
@@ -523,7 +524,7 @@
 .multi-file-commit-list {
   flex: 1;
   overflow: auto;
-  padding: $gl-padding 0;
+  padding: $grid-size 0;
   margin-left: -$grid-size;
   margin-right: -$grid-size;
   min-height: 60px;
@@ -531,6 +532,11 @@
   .multi-file-commit-list-item {
     margin-left: 0;
     margin-right: 0;
+  }
+
+  &.help-block {
+    margin-left: 0;
+    right: 0;
   }
 }
 
@@ -994,6 +1000,7 @@
 .ide-tree-header {
   display: flex;
   align-items: center;
+  margin-bottom: 8px;
   padding: 12px 0;
   border-bottom: 1px solid $white-dark;
 
