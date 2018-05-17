@@ -52,6 +52,7 @@ export default {
         :other-versions="comparableDiffs"
         :start-version="startVersion"
         :target-branch="targetBranch"
+        :compare="true"
         class="mr-version-compare-dropdown"
       />
     </div>

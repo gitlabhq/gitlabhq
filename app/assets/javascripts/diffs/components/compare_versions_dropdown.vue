@@ -34,14 +34,13 @@ export default {
       required: false,
       default: false,
     },
+    compare: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
-    baseVersion() {
-      return {
-        name: 'hii',
-        versionIndex: -1,
-      };
-    },
     targetVersions() {
       if (this.mergeRequestVersion) {
         return this.otherVersions;
@@ -93,6 +92,12 @@ export default {
         this.mergeRequestVersion && version.versionIndex === this.targetVersions[0].versionIndex
       );
     },
+    path(version) {
+      if (this.compare) {
+        return version.comparePath;
+      }
+      return version.path;
+    },
   },
 };
 </script>
@@ -121,7 +126,7 @@ export default {
           >
             <a
               :class="{ 'is-active': isActive(version) }"
-              :href="version.path"
+              :href="version.comparePath"
             >
               <div>
                 <strong>
