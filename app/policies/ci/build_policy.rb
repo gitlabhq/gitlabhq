@@ -14,11 +14,20 @@ module Ci
       @subject.triggered_by?(@user)
     end
 
+    condition(:branch_allows_maintainer_push) do
+      @subject.project.branch_allows_maintainer_push?(@user, @subject.ref)
+    end
+
     rule { protected_ref }.policy do
       prevent :update_build
       prevent :erase_build
     end
 
     rule { can?(:admin_build) | (can?(:update_build) & owner_of_job) }.enable :erase_build
+
+    rule { can?(:public_access) & branch_allows_maintainer_push }.policy do
+      enable :update_build
+      enable :update_commit_status
+    end
   end
 end

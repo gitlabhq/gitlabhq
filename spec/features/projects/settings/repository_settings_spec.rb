@@ -54,7 +54,7 @@ describe 'Projects > Settings > Repository settings' do
         project.deploy_keys << private_deploy_key
         visit project_settings_repository_path(project)
 
-        find('li', text: private_deploy_key.title).click_link('Edit')
+        find('.deploy-key', text: private_deploy_key.title).find('.ic-pencil').click()
 
         fill_in 'deploy_key_title', with: 'updated_deploy_key'
         check 'deploy_key_deploy_keys_projects_attributes_0_can_push'
@@ -71,10 +71,14 @@ describe 'Projects > Settings > Repository settings' do
 
         visit project_settings_repository_path(project)
 
-        find('li', text: private_deploy_key.title).click_link('Edit')
+        find('.js-deployKeys-tab-available_project_keys').click()
+
+        find('.deploy-key', text: private_deploy_key.title).find('.ic-pencil').click()
 
         fill_in 'deploy_key_title', with: 'updated_deploy_key'
         click_button 'Save changes'
+
+        find('.js-deployKeys-tab-available_project_keys').click()
 
         expect(page).to have_content('updated_deploy_key')
       end
@@ -83,7 +87,7 @@ describe 'Projects > Settings > Repository settings' do
         project.deploy_keys << private_deploy_key
         visit project_settings_repository_path(project)
 
-        accept_confirm { find('li', text: private_deploy_key.title).click_button('Remove') }
+        accept_confirm { find('.deploy-key', text: private_deploy_key.title).find('.ic-remove').click() }
 
         expect(page).not_to have_content(private_deploy_key.title)
       end
@@ -113,6 +117,21 @@ describe 'Projects > Settings > Repository settings' do
         click_button 'Create deploy token'
 
         expect(page).to have_content('Your new project deploy token has been created')
+      end
+    end
+
+    context 'remote mirror settings' do
+      let(:user2) { create(:user) }
+
+      before do
+        project.add_master(user2)
+
+        visit project_settings_repository_path(project)
+      end
+
+      it 'shows push mirror settings' do
+        expect(page).to have_selector('#project_remote_mirrors_attributes_0_enabled')
+        expect(page).to have_selector('#project_remote_mirrors_attributes_0_url')
       end
     end
   end

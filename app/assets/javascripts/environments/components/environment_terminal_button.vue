@@ -3,14 +3,16 @@
   * Renders a terminal button to open a web terminal.
   * Used in environments table.
   */
-  import terminalIconSvg from 'icons/_icon_terminal.svg';
+  import Icon from '~/vue_shared/components/icon.vue';
   import tooltip from '../../vue_shared/directives/tooltip';
 
   export default {
+    components: {
+      Icon,
+    },
     directives: {
       tooltip,
     },
-
     props: {
       terminalPath: {
         type: String,
@@ -18,13 +20,6 @@
         default: '',
       },
     },
-
-    data() {
-      return {
-        terminalIconSvg,
-      };
-    },
-
     computed: {
       title() {
         return 'Terminal';
@@ -40,7 +35,10 @@
     :title="title"
     :aria-label="title"
     :href="terminalPath"
-    v-html="terminalIconSvg"
   >
+    <icon
+      name="terminal"
+      :size="12"
+    />
   </a>
 </template>

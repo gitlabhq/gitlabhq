@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Ci::Runner do
   describe 'validation' do
     it { is_expected.to validate_presence_of(:access_level) }
+    it { is_expected.to validate_presence_of(:runner_type) }
 
     context 'when runner is not allowed to pick untagged jobs' do
       context 'when runner does not have tags' do
@@ -17,6 +18,63 @@ describe Ci::Runner do
           runner = build(:ci_runner, tag_list: ['tag'], run_untagged: false)
           expect(runner).to be_valid
         end
+      end
+    end
+
+    context 'either_projects_or_group' do
+      let(:group) { create(:group) }
+
+      it 'disallows assigning to a group if already assigned to a group' do
+        runner = create(:ci_runner, groups: [group])
+
+        runner.groups << build(:group)
+
+        expect(runner).not_to be_valid
+        expect(runner.errors.full_messages).to eq ['Runner can only be assigned to one group']
+      end
+
+      it 'disallows assigning to a group if already assigned to a project' do
+        project = create(:project)
+        runner = create(:ci_runner, projects: [project])
+
+        runner.groups << build(:group)
+
+        expect(runner).not_to be_valid
+        expect(runner.errors.full_messages).to eq ['Runner can only be assigned either to projects or to a group']
+      end
+
+      it 'disallows assigning to a project if already assigned to a group' do
+        runner = create(:ci_runner, groups: [group])
+
+        runner.projects << build(:project)
+
+        expect(runner).not_to be_valid
+        expect(runner.errors.full_messages).to eq ['Runner can only be assigned either to projects or to a group']
+      end
+
+      it 'allows assigning to a group if not assigned to a group nor a project' do
+        runner = create(:ci_runner)
+
+        runner.groups << build(:group)
+
+        expect(runner).to be_valid
+      end
+
+      it 'allows assigning to a project if not assigned to a group nor a project' do
+        runner = create(:ci_runner)
+
+        runner.projects << build(:project)
+
+        expect(runner).to be_valid
+      end
+
+      it 'allows assigning to a project if already assigned to a project' do
+        project = create(:project)
+        runner = create(:ci_runner, projects: [project])
+
+        runner.projects << build(:project)
+
+        expect(runner).to be_valid
       end
     end
   end
@@ -49,6 +107,80 @@ describe Ci::Runner do
     end
   end
 
+  describe '.shared' do
+    let(:group) { create(:group) }
+    let(:project) { create(:project) }
+
+    it 'returns the shared group runner' do
+      runner = create(:ci_runner, :shared, groups: [group])
+
+      expect(described_class.shared).to eq [runner]
+    end
+
+    it 'returns the shared project runner' do
+      runner = create(:ci_runner, :shared, projects: [project])
+
+      expect(described_class.shared).to eq [runner]
+    end
+  end
+
+  describe '.belonging_to_project' do
+    it 'returns the specific project runner' do
+      # own
+      specific_project = create(:project)
+      specific_runner = create(:ci_runner, :specific, projects: [specific_project])
+
+      # other
+      other_project = create(:project)
+      create(:ci_runner, :specific, projects: [other_project])
+
+      expect(described_class.belonging_to_project(specific_project.id)).to eq [specific_runner]
+    end
+  end
+
+  describe '.belonging_to_parent_group_of_project' do
+    let(:project) { create(:project, group: group) }
+    let(:group) { create(:group) }
+    let(:runner) { create(:ci_runner, :specific, groups: [group]) }
+    let!(:unrelated_group) { create(:group) }
+    let!(:unrelated_project) { create(:project, group: unrelated_group) }
+    let!(:unrelated_runner) { create(:ci_runner, :specific, groups: [unrelated_group]) }
+
+    it 'returns the specific group runner' do
+      expect(described_class.belonging_to_parent_group_of_project(project.id)).to contain_exactly(runner)
+    end
+
+    context 'with a parent group with a runner', :nested_groups do
+      let(:runner) { create(:ci_runner, :specific, groups: [parent_group]) }
+      let(:project) { create(:project, group: group) }
+      let(:group) { create(:group, parent: parent_group) }
+      let(:parent_group) { create(:group) }
+
+      it 'returns the group runner from the parent group' do
+        expect(described_class.belonging_to_parent_group_of_project(project.id)).to contain_exactly(runner)
+      end
+    end
+  end
+
+  describe '.owned_or_shared' do
+    it 'returns a globally shared, a project specific and a group specific runner' do
+      # group specific
+      group = create(:group)
+      project = create(:project, group: group)
+      group_runner = create(:ci_runner, :specific, groups: [group])
+
+      # project specific
+      project_runner = create(:ci_runner, :specific, projects: [project])
+
+      # globally shared
+      shared_runner = create(:ci_runner, :shared)
+
+      expect(described_class.owned_or_shared(project.id)).to contain_exactly(
+        group_runner, project_runner, shared_runner
+      )
+    end
+  end
+
   describe '#display_name' do
     it 'returns the description if it has a value' do
       runner = FactoryBot.build(:ci_runner, description: 'Linux/Ruby-1.9.3-p448')
@@ -67,16 +199,30 @@ describe Ci::Runner do
   end
 
   describe '#assign_to' do
-    let!(:project) { FactoryBot.create :project }
-    let!(:shared_runner) { FactoryBot.create(:ci_runner, :shared) }
+    let!(:project) { FactoryBot.create(:project) }
 
-    before do
-      shared_runner.assign_to(project)
+    subject { runner.assign_to(project) }
+
+    context 'with shared_runner' do
+      let!(:runner) { FactoryBot.create(:ci_runner, :shared) }
+
+      it 'transitions shared runner to project runner and assigns project' do
+        subject
+        expect(runner).to be_specific
+        expect(runner).to be_project_type
+        expect(runner.projects).to eq([project])
+        expect(runner.only_for?(project)).to be_truthy
+      end
     end
 
-    it { expect(shared_runner).to be_specific }
-    it { expect(shared_runner.projects).to eq([project]) }
-    it { expect(shared_runner.only_for?(project)).to be_truthy }
+    context 'with group runner' do
+      let!(:runner) { FactoryBot.create(:ci_runner, runner_type: :group_type) }
+
+      it 'raises an error' do
+        expect { subject }
+          .to raise_error(ArgumentError, 'Transitioning a group runner to a project runner is not supported')
+      end
+    end
   end
 
   describe '.online' do
@@ -163,12 +309,21 @@ describe Ci::Runner do
   describe '#can_pick?' do
     let(:pipeline) { create(:ci_pipeline) }
     let(:build) { create(:ci_build, pipeline: pipeline) }
-    let(:runner) { create(:ci_runner) }
+    let(:runner) { create(:ci_runner, tag_list: tag_list, run_untagged: run_untagged) }
+    let(:tag_list) { [] }
+    let(:run_untagged) { true }
 
     subject { runner.can_pick?(build) }
 
     before do
       build.project.runners << runner
+    end
+
+    context 'a different runner' do
+      it 'cannot handle builds' do
+        other_runner = create(:ci_runner)
+        expect(other_runner.can_pick?(build)).to be_falsey
+      end
     end
 
     context 'when runner does not have tags' do
@@ -184,9 +339,7 @@ describe Ci::Runner do
     end
 
     context 'when runner has tags' do
-      before do
-        runner.tag_list = %w(bb cc)
-      end
+      let(:tag_list) { %w(bb cc) }
 
       shared_examples 'tagged build picker' do
         it 'can handle build with matching tags' do
@@ -211,9 +364,7 @@ describe Ci::Runner do
       end
 
       context 'when runner cannot pick untagged jobs' do
-        before do
-          runner.run_untagged = false
-        end
+        let(:run_untagged) { false }
 
         it 'cannot handle builds without tags' do
           expect(runner.can_pick?(build)).to be_falsey
@@ -224,8 +375,9 @@ describe Ci::Runner do
     end
 
     context 'when runner is shared' do
+      let(:runner) { create(:ci_runner, :shared) }
+
       before do
-        runner.is_shared = true
         build.project.runners = []
       end
 
@@ -234,9 +386,7 @@ describe Ci::Runner do
       end
 
       context 'when runner is locked' do
-        before do
-          runner.locked = true
-        end
+        let(:runner) { create(:ci_runner, :shared, locked: true) }
 
         it 'can handle builds' do
           expect(runner.can_pick?(build)).to be_truthy
@@ -258,6 +408,17 @@ describe Ci::Runner do
 
         it 'cannot handle builds' do
           expect(runner.can_pick?(build)).to be_falsey
+        end
+      end
+
+      context 'when runner is assigned to a group' do
+        before do
+          build.project.runners = []
+          runner.groups << create(:group, projects: [build.project])
+        end
+
+        it 'can handle builds' do
+          expect(runner.can_pick?(build)).to be_truthy
         end
       end
     end
@@ -581,6 +742,78 @@ describe Ci::Runner do
 
     it 'returns runners with a matching description regardless of the casing' do
       expect(described_class.search(runner.description.upcase)).to eq([runner])
+    end
+  end
+
+  describe '#assigned_to_group?' do
+    subject { runner.assigned_to_group? }
+
+    context 'when project runner' do
+      let(:runner) { create(:ci_runner, description: 'Project runner', projects: [project]) }
+      let(:project) { create(:project) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when shared runner' do
+      let(:runner) { create(:ci_runner, :shared, description: 'Shared runner') }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when group runner' do
+      let(:group) { create(:group) }
+      let(:runner) { create(:ci_runner, description: 'Group runner', groups: [group]) }
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
+  describe '#assigned_to_project?' do
+    subject { runner.assigned_to_project? }
+
+    context 'when group runner' do
+      let(:runner) { create(:ci_runner, description: 'Group runner', groups: [group]) }
+      let(:group) { create(:group) }
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when shared runner' do
+      let(:runner) { create(:ci_runner, :shared, description: 'Shared runner') }
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when project runner' do
+      let(:runner) { create(:ci_runner, description: 'Group runner', projects: [project]) }
+      let(:project) { create(:project) }
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
+  describe '#pick_build!' do
+    context 'runner can pick the build' do
+      it 'calls #tick_runner_queue' do
+        ci_build = build(:ci_build)
+        runner = build(:ci_runner)
+        allow(runner).to receive(:can_pick?).with(ci_build).and_return(true)
+
+        expect(runner).to receive(:tick_runner_queue)
+
+        runner.pick_build!(ci_build)
+      end
+    end
+
+    context 'runner cannot pick the build' do
+      it 'does not call #tick_runner_queue' do
+        ci_build = build(:ci_build)
+        runner = build(:ci_runner)
+        allow(runner).to receive(:can_pick?).with(ci_build).and_return(false)
+
+        expect(runner).not_to receive(:tick_runner_queue)
+
+        runner.pick_build!(ci_build)
+      end
     end
   end
 end

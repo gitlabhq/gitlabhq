@@ -14,7 +14,7 @@ describe 'User updates wiki page' do
       end
 
       context 'in a user namespace' do
-        let(:project) { create(:project, namespace: user.namespace) }
+        let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
 
         it 'redirects back to the home edit page' do
           page.within(:css, '.wiki-form .form-actions') do
@@ -66,7 +66,7 @@ describe 'User updates wiki page' do
       end
 
       context 'in a user namespace' do
-        let(:project) { create(:project, namespace: user.namespace) }
+        let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
 
         it 'updates a page' do
           click_link('Edit')
@@ -134,7 +134,7 @@ describe 'User updates wiki page' do
       end
 
       context 'in a group namespace' do
-        let(:project) { create(:project, namespace: create(:group, :public)) }
+        let(:project) { create(:project, :wiki_repo, namespace: create(:group, :public)) }
 
         it 'updates a page' do
           click_link('Edit')
@@ -154,7 +154,7 @@ describe 'User updates wiki page' do
     end
 
     context 'when the page is in a subdir' do
-      let!(:project) { create(:project, namespace: user.namespace) }
+      let!(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
       let(:project_wiki) { create(:project_wiki, project: project, user: project.creator) }
       let(:page_name) { 'page_name' }
       let(:page_dir) { "foo/bar/#{page_name}" }

@@ -80,6 +80,10 @@ export default {
           (this.startVersion && this.startVersion.versionIndex === version.versionIndex)
         );
       }
+      if (this.baseVersion) {
+        return true;
+      }
+
       return version.versionIndex === this.mergeRequestVersion.versionIndex;
     },
     isBase(version) {

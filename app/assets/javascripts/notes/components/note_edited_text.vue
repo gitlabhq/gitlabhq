@@ -33,18 +33,17 @@ export default {
 <template>
   <div :class="className">
     {{ actionText }}
-    <time-ago-tooltip
-      v-if="editedAt"
-      :time="editedAt"
-      tooltip-placement="bottom"
-    />
     <template v-if="editedBy">
-      by
+      {{ s__('ByAuthor|by') }}
       <a
         :href="editedBy.path"
         class="js-vue-author author_link">
         {{ editedBy.name }}
       </a>
     </template>
+    <time-ago-tooltip
+      :time="editedAt"
+      tooltip-placement="bottom"
+    />
   </div>
 </template>

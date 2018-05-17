@@ -15,4 +15,26 @@ describe('Multi-file store branch mutations', () => {
       expect(localState.currentBranchId).toBe('master');
     });
   });
+
+  describe('SET_BRANCH_COMMIT', () => {
+    it('sets the last commit on current project', () => {
+      localState.projects = {
+        Example: {
+          branches: {
+            master: {},
+          },
+        },
+      };
+
+      mutations.SET_BRANCH_COMMIT(localState, {
+        projectId: 'Example',
+        branchId: 'master',
+        commit: {
+          title: 'Example commit',
+        },
+      });
+
+      expect(localState.projects.Example.branches.master.commit.title).toBe('Example commit');
+    });
+  });
 });

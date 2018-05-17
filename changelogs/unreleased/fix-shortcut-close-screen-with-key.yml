@@ -1,0 +1,5 @@
+---
+title: Fix close keyboard shortcuts dialog using the keyboard shortcut
+merge_request: 18783
+author: Lars Greiss
+type: fixed

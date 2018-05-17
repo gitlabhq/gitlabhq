@@ -1,3 +1,7 @@
+---
+description: 'Learn how to administer GitLab Pages.'
+---
+
 # GitLab Pages administration
 
 > **Notes:**
@@ -7,8 +11,6 @@
 - This guide is for Omnibus GitLab installations. If you have installed
   GitLab from source, follow the [Pages source installation document](source.md).
 - To learn how to use GitLab Pages, read the [user documentation][pages-userguide].
-
----
 
 This document describes how to set up the _latest_ GitLab Pages feature. Make
 sure to read the [changelog](#changelog) if you are upgrading to a new GitLab
@@ -23,8 +25,6 @@ custom domains and custom certificates. It supports dynamic certificates through
 SNI and exposes pages using HTTP2 by default.
 You are encouraged to read its [README][pages-readme] to fully understand how
 it works.
-
----
 
 In the case of [custom domains](#custom-domains) (but not
 [wildcard domains](#wildcard-domains)), the Pages daemon needs to listen on

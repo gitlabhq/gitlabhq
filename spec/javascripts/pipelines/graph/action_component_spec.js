@@ -22,7 +22,7 @@ describe('pipeline graph action component', () => {
   });
 
   it('should emit an event with the provided link', () => {
-    eventHub.$on('graphAction', link => {
+    eventHub.$on('postAction', link => {
       expect(link).toEqual('foo');
     });
   });

@@ -1,0 +1,5 @@
+---
+title: Fix system hook not firing for blocked users when LDAP sign-in is used
+merge_request:
+author:
+type: fixed

@@ -47,8 +47,25 @@
       },
     },
     methods: {
+      /**
+       * We need to emit this event on both component & eventHub
+       * for 2 dependencies;
+       *
+       * 1. eventHub: This component is used in Issue Boards sidebar
+       *              where component template is part of HAML
+       *              and event listeners are tied to app's eventHub.
+       * 2. Component: This compone is also used in Epics in EE
+       *               where listeners are tied to component event.
+       */
       toggleSubscription() {
+        // App's eventHub event emission.
         eventHub.$emit('toggleSubscription', this.id);
+
+        // Component event emission.
+        this.$emit('toggleSubscription', this.id);
+      },
+      onClickCollapsedIcon() {
+        this.$emit('toggleSidebar');
       },
     },
   };
@@ -56,7 +73,10 @@
 
 <template>
   <div>
-    <div class="sidebar-collapsed-icon">
+    <div
+      class="sidebar-collapsed-icon"
+      @click="onClickCollapsedIcon"
+    >
       <span
         v-tooltip
         :title="notificationTooltip"

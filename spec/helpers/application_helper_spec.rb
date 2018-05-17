@@ -151,4 +151,16 @@ describe ApplicationHelper do
       end
     end
   end
+
+  describe '#autocomplete_data_sources' do
+    let(:project) { create(:project) }
+    let(:noteable_type) { Issue }
+    it 'returns paths for autocomplete_sources_controller' do
+      sources = helper.autocomplete_data_sources(project, noteable_type)
+      expect(sources.keys).to match_array([:members, :issues, :merge_requests, :labels, :milestones, :commands])
+      sources.keys.each do |key|
+        expect(sources[key]).not_to be_nil
+      end
+    end
+  end
 end
