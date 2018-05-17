@@ -1021,12 +1021,19 @@ class User < ActiveRecord::Base
     !solo_owned_groups.present?
   end
 
-  def ci_authorized_runners
-    @ci_authorized_runners ||= begin
-      runner_ids = Ci::RunnerProject
+  def ci_owned_runners
+    @ci_owned_runners ||= begin
+      project_runner_ids = Ci::RunnerProject
         .where(project: authorized_projects(Gitlab::Access::MASTER))
         .select(:runner_id)
-      Ci::Runner.specific.where(id: runner_ids)
+
+      group_runner_ids = Ci::RunnerNamespace
+        .where(namespace_id: owned_or_masters_groups.select(:id))
+        .select(:runner_id)
+
+      union = Gitlab::SQL::Union.new([project_runner_ids, group_runner_ids])
+
+      Ci::Runner.specific.where("ci_runners.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
     end
   end
 
@@ -1225,6 +1232,11 @@ class User < ActiveRecord::Base
   def required_terms_not_accepted?
     Gitlab::CurrentSettings.current_application_settings.enforce_terms? &&
       !terms_accepted?
+  end
+
+  def owned_or_masters_groups
+    union = Gitlab::SQL::Union.new([owned_groups, masters_groups])
+    Group.from("(#{union.to_sql}) namespaces")
   end
 
   protected

@@ -155,6 +155,7 @@ module API
 
           group = find_group!(params[:id])
           authorize! :admin_group, group
+          Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/46285')
           present ::Groups::DestroyService.new(group, current_user).execute, with: Entities::GroupDetail, current_user: current_user
         end
 
