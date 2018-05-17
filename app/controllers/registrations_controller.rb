@@ -1,12 +1,8 @@
 class RegistrationsController < Devise::RegistrationsController
   include Recaptcha::Verify
-<<<<<<< HEAD
-  prepend EE::RegistrationsController
-
-  before_action :whitelist_query_limiting, only: [:destroy]
-=======
   include AcceptsPendingInvitations
->>>>>>> upstream/master
+
+  prepend EE::RegistrationsController
 
   before_action :whitelist_query_limiting, only: [:destroy]
 
