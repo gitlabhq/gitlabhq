@@ -342,21 +342,6 @@ module Gitlab
         parent_ids.first
       end
 
-      # Shows the diff between the commit's parent and the commit.
-      #
-      # Cuts out the header and stats from #to_patch and returns only the diff.
-      #
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/324
-      def to_diff
-        Gitlab::GitalyClient.migrate(:commit_patch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            @repository.gitaly_commit_client.patch(id)
-          else
-            rugged_diff_from_parent.patch
-          end
-        end
-      end
-
       # Returns a diff object for the changes from this commit's first parent.
       # If there is no parent, then the diff is between this commit and an
       # empty repo. See Repository#diff for keys allowed in the +options+
@@ -430,16 +415,6 @@ module Gitlab
 
       def stats
         Gitlab::Git::CommitStats.new(@repository, self)
-      end
-
-      def to_patch(options = {})
-        begin
-          rugged_commit.to_mbox(options)
-        rescue Rugged::InvalidError => ex
-          if ex.message =~ /commit \w+ is a merge commit/i
-            'Patch format is not currently supported for merge commits.'
-          end
-        end
       end
 
       # Get ref names collection
