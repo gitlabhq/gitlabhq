@@ -325,8 +325,8 @@
   fill: currentColor;
 }
 
-.header-user .dropdown-menu-nav,
-.header-new .dropdown-menu-nav {
+.header-user .dropdown-menu,
+.header-new .dropdown-menu {
   margin-top: $dropdown-vertical-offset;
 }
 
@@ -515,7 +515,7 @@
 }
 
 .header-user {
-  .dropdown-menu-nav {
+  .dropdown-menu {
     width: auto;
     min-width: 160px;
     margin-top: 4px;
