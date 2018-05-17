@@ -28,17 +28,7 @@
             #js-priority-labels-empty-state.priority-labels-empty-state{ class: "#{'hidden' unless @prioritized_labels.empty?}" }
               = render 'shared/empty_states/priority_labels'
             - if @prioritized_labels.present?
-              %table
-                %thead
-                  %tr
-                    %th
-                    %th
-                    %th
-                    %th
-                    %th
-                    %th
-                    %th
-                %tbody.js-prioritized-labels-sortable= render partial: 'shared/label', subject: @project, collection: @prioritized_labels, as: :label
+              = render partial: 'shared/label', subject: @project, collection: @prioritized_labels, as: :label
 
       - if @labels.present?
         .other-labels
