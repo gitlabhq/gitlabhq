@@ -29,7 +29,10 @@ setup_db() {
     if [ "$GITLAB_DATABASE" = "mysql" ]; then
         bundle exec rake add_limits_mysql
     fi
+<<<<<<< HEAD
 
     # EE-only
     bundle exec rake geo:db:drop geo:db:create geo:db:schema:load geo:db:migrate
+=======
+>>>>>>> upstream/master
 }
