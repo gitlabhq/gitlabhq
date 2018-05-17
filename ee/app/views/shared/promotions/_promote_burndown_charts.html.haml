@@ -2,7 +2,7 @@
 
 - if show_burndown_charts_promotion?(milestone) && show_callout?(callout_id)
   .user-callout.promotion-callout#promote_burndown_charts{ data: { uid: callout_id } }
-    .bordered-box.content-block
+    .bordered-box.content-block.promotion-burndown-charts-content
       %button.btn.btn-default.close.js-close-callout{ type: 'button', 'aria-label' => 'Dismiss burndown charts promotion' }
         = icon('times', class: 'dismiss-icon', 'aria-hidden' => 'true')
       .svg-container
