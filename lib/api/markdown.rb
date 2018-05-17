@@ -27,7 +27,7 @@ module API
         context[:pipeline] = params[:gfm] ? :full : :plain_markdown
         result = { html: Banzai.render(params[:text], context) }
 
-        present result
+        present JSON.dump(result)
       end
     end
   end
