@@ -67,6 +67,8 @@ module Backup
     end
 
     def prepare_directories
+      return if GitalyClient.feature_enabled?(:backup_skip_prepare_directories)
+
       Gitlab.config.repositories.storages.each do |name, repository_storage|
         gitaly_migrate(:remove_repositories) do |is_enabled|
           # TODO: Need to find a way to do this for gitaly
