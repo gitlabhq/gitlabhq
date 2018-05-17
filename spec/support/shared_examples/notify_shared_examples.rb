@@ -197,3 +197,35 @@ end
 shared_examples 'an email with a labels subscriptions link in its footer' do
   it { is_expected.to have_body_text('label subscriptions') }
 end
+
+shared_examples 'a note email' do
+  it_behaves_like 'it should have Gmail Actions links'
+
+  it 'is sent to the given recipient as the author' do
+    sender = subject.header[:from].addrs[0]
+
+    aggregate_failures do
+      expect(sender.display_name).to eq(note_author.name)
+      expect(sender.address).to eq(gitlab_sender)
+      expect(subject).to deliver_to(recipient.notification_email)
+    end
+  end
+
+  it 'contains the message from the note' do
+    is_expected.to have_html_escaped_body_text note.note
+  end
+
+  it 'does not contain note author' do
+    is_expected.not_to have_body_text note.author_name
+  end
+
+  context 'when enabled email_author_in_body' do
+    before do
+      stub_application_setting(email_author_in_body: true)
+    end
+
+    it 'contains a link to note author' do
+      is_expected.to have_html_escaped_body_text note.author_name
+    end
+  end
+end

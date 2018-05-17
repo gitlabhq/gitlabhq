@@ -62,6 +62,12 @@ module Gitlab
           end
         end
 
+        # Returns an array of Blob instances just with the metadata, that means
+        # the data attribute has no content.
+        def batch_metadata(repository, blob_references)
+          batch(repository, blob_references, blob_size_limit: 0)
+        end
+
         # Find LFS blobs given an array of sha ids
         # Returns array of Gitlab::Git::Blob
         # Does not guarantee blob data will be set

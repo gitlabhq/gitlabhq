@@ -70,12 +70,14 @@
       />
     </transition>
     <transition name="fade">
-      <span
-        v-if="label"
-        class="js-loading-button-label"
-      >
-        {{ label }}
-      </span>
+      <slot>
+        <span
+          v-if="label"
+          class="js-loading-button-label"
+        >
+          {{ label }}
+        </span>
+      </slot>
     </transition>
   </button>
 </template>

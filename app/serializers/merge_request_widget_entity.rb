@@ -2,6 +2,7 @@ class MergeRequestWidgetEntity < IssuableEntity
   expose :state
   expose :in_progress_merge_commit_sha
   expose :merge_commit_sha
+  expose :short_merge_commit_sha
   expose :merge_error
   expose :merge_params
   expose :merge_status

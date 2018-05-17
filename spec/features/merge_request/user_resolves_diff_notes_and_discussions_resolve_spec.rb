@@ -101,7 +101,8 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         end
 
         describe 'timeline view' do
-          it 'hides when resolve discussion is clicked' do
+          # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+          xit 'hides when resolve discussion is clicked' do
             expect(page).to have_selector('.discussion-body', visible: false)
           end
 

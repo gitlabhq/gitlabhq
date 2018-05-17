@@ -87,7 +87,7 @@ module Projects
       new_path = removal_path(path)
 
       if mv_repository(path, new_path)
-        log_info("Repository \"#{path}\" moved to \"#{new_path}\"")
+        log_info(%Q{Repository "#{path}" moved to "#{new_path}" for project "#{project.full_path}"})
 
         project.run_after_commit do
           # self is now project

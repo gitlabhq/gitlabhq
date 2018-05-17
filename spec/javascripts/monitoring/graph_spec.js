@@ -30,7 +30,6 @@ describe('Graph', () => {
   it('has a title', () => {
     const component = createComponent({
       graphData: convertedMetrics[1],
-      classType: 'col-md-6',
       updateAspectRatio: false,
       deploymentData,
       tagsPath,
@@ -46,7 +45,6 @@ describe('Graph', () => {
     it('axisTransform translates an element Y position depending of its height', () => {
       const component = createComponent({
         graphData: convertedMetrics[1],
-        classType: 'col-md-6',
         updateAspectRatio: false,
         deploymentData,
         tagsPath,
@@ -62,7 +60,6 @@ describe('Graph', () => {
     it('outerViewBox gets a width and height property based on the DOM size of the element', () => {
       const component = createComponent({
         graphData: convertedMetrics[1],
-        classType: 'col-md-6',
         updateAspectRatio: false,
         deploymentData,
         tagsPath,
@@ -79,7 +76,6 @@ describe('Graph', () => {
   it('sends an event to the eventhub when it has finished resizing', done => {
     const component = createComponent({
       graphData: convertedMetrics[1],
-      classType: 'col-md-6',
       updateAspectRatio: false,
       deploymentData,
       tagsPath,
@@ -97,7 +93,6 @@ describe('Graph', () => {
   it('has a title for the y-axis and the chart legend that comes from the backend', () => {
     const component = createComponent({
       graphData: convertedMetrics[1],
-      classType: 'col-md-6',
       updateAspectRatio: false,
       deploymentData,
       tagsPath,
@@ -111,7 +106,6 @@ describe('Graph', () => {
   it('sets the currentData object based on the hovered data index', () => {
     const component = createComponent({
       graphData: convertedMetrics[1],
-      classType: 'col-md-6',
       updateAspectRatio: false,
       deploymentData,
       graphIdentifier: 0,
@@ -125,6 +119,5 @@ describe('Graph', () => {
 
     component.positionFlag();
     expect(component.currentData).toBe(component.timeSeries[0].values[10]);
-    expect(component.currentDataIndex).toEqual(10);
   });
 });

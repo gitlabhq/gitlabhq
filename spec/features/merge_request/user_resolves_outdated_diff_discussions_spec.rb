@@ -61,7 +61,8 @@ feature 'Merge request > User resolves outdated diff discussions', :js do
       visit project_merge_request_path(project, merge_request)
     end
 
-    it 'shows that as automatically resolved' do
+    # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+    xit 'shows that as automatically resolved' do
       within(".discussion[data-discussion-id='#{outdated_discussion.id}']") do
         expect(page).to have_css('.discussion-body', visible: false)
         expect(page).to have_content('Automatically resolved')

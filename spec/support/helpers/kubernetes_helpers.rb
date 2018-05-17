@@ -9,8 +9,13 @@ module KubernetesHelpers
     kube_response(kube_pods_body)
   end
 
+  def kube_deployments_response
+    kube_response(kube_deployments_body)
+  end
+
   def stub_kubeclient_discover(api_url)
     WebMock.stub_request(:get, api_url + '/api/v1').to_return(kube_response(kube_v1_discovery_body))
+    WebMock.stub_request(:get, api_url + '/apis/extensions/v1beta1').to_return(kube_response(kube_v1beta1_discovery_body))
   end
 
   def stub_kubeclient_pods(response = nil)
@@ -18,6 +23,13 @@ module KubernetesHelpers
     pods_url = service.api_url + "/api/v1/namespaces/#{service.actual_namespace}/pods"
 
     WebMock.stub_request(:get, pods_url).to_return(response || kube_pods_response)
+  end
+
+  def stub_kubeclient_deployments(response = nil)
+    stub_kubeclient_discover(service.api_url)
+    deployments_url = service.api_url + "/apis/extensions/v1beta1/namespaces/#{service.actual_namespace}/deployments"
+
+    WebMock.stub_request(:get, deployments_url).to_return(response || kube_deployments_response)
   end
 
   def stub_kubeclient_get_secrets(api_url, **options)
@@ -53,6 +65,18 @@ module KubernetesHelpers
       "kind" => "APIResourceList",
       "resources" => [
         { "name" => "pods", "namespaced" => true, "kind" => "Pod" },
+        { "name" => "deployments", "namespaced" => true, "kind" => "Deployment" },
+        { "name" => "secrets", "namespaced" => true, "kind" => "Secret" }
+      ]
+    }
+  end
+
+  def kube_v1beta1_discovery_body
+    {
+      "kind" => "APIResourceList",
+      "resources" => [
+        { "name" => "pods", "namespaced" => true, "kind" => "Pod" },
+        { "name" => "deployments", "namespaced" => true, "kind" => "Deployment" },
         { "name" => "secrets", "namespaced" => true, "kind" => "Secret" }
       ]
     }
@@ -65,14 +89,25 @@ module KubernetesHelpers
     }
   end
 
+  def kube_deployments_body
+    {
+      "kind" => "DeploymentList",
+      "items" => [kube_deployment]
+    }
+  end
+
   # This is a partial response, it will have many more elements in reality but
   # these are the ones we care about at the moment
-  def kube_pod(name: "kube-pod", app: "valid-pod-label")
+  def kube_pod(name: "kube-pod", app: "valid-pod-label", status: "Running", track: nil)
     {
       "metadata" => {
         "name" => name,
+        "generate_name" => "generated-name-with-suffix",
         "creationTimestamp" => "2016-11-25T19:55:19Z",
-        "labels" => { "app" => app }
+        "labels" => {
+          "app" => app,
+          "track" => track
+        }
       },
       "spec" => {
         "containers" => [
@@ -80,7 +115,27 @@ module KubernetesHelpers
           { "name" => "container-1" }
         ]
       },
-      "status" => { "phase" => "Running" }
+      "status" => { "phase" => status }
+    }
+  end
+
+  def kube_deployment(name: "kube-deployment", app: "valid-deployment-label", track: nil)
+    {
+      "metadata" => {
+        "name" => name,
+        "generation" => 4,
+        "labels" => {
+          "app" => app,
+          "track" => track
+        }.compact
+      },
+      "spec" => { "replicas" => 3 },
+      "status" => {
+        "observedGeneration" => 4,
+        "replicas" => 3,
+        "updatedReplicas" => 3,
+        "availableReplicas" => 3
+      }
     }
   end
 
@@ -100,5 +155,13 @@ module KubernetesHelpers
       terminal[:ca_pem] = service.ca_pem if service.ca_pem.present?
       terminal
     end
+  end
+
+  def kube_deployment_rollout_status
+    ::Gitlab::Kubernetes::RolloutStatus.from_deployments(kube_deployment)
+  end
+
+  def empty_deployment_rollout_status
+    ::Gitlab::Kubernetes::RolloutStatus.from_deployments()
   end
 end

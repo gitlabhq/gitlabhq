@@ -87,7 +87,8 @@ export default {
       data-toggle="dropdown"
       data-container="body"
       class="dropdown-menu-toggle build-content"
-      :title="tooltipText">
+      :title="tooltipText"
+    >
 
       <job-name-component
         :name="job.name"
@@ -104,7 +105,8 @@ export default {
         <ul>
           <li
             v-for="(item, i) in job.jobs"
-            :key="i">
+            :key="i"
+          >
             <job-component
               :job="item"
               css-class-job-name="mini-pipeline-graph-dropdown-item"

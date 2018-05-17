@@ -107,6 +107,21 @@ export default {
       delayViewerUpdated,
     });
   },
+  [types.UPDATE_ACTIVITY_BAR_VIEW](state, currentActivityView) {
+    Object.assign(state, {
+      currentActivityView,
+    });
+  },
+  [types.SET_EMPTY_STATE_SVGS](
+    state,
+    { emptyStateSvgPath, noChangesStateSvgPath, committedStateSvgPath },
+  ) {
+    Object.assign(state, {
+      emptyStateSvgPath,
+      noChangesStateSvgPath,
+      committedStateSvgPath,
+    });
+  },
   [types.TOGGLE_FILE_FINDER](state, fileFindVisible) {
     Object.assign(state, {
       fileFindVisible,
@@ -126,6 +141,11 @@ export default {
         author: lastCommit.commit.author_name,
         updatedAt: lastCommit.commit.authored_date,
       }),
+    });
+  },
+  [types.BURST_UNUSED_SEAL](state) {
+    Object.assign(state, {
+      unusedSeal: false,
     });
   },
   ...projectMutations,
