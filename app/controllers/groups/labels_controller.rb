@@ -9,11 +9,11 @@ class Groups::LabelsController < Groups::ApplicationController
   respond_to :html
 
   def index
-    @prioritized_labels = @available_labels.prioritized(@group)
-    @labels = @available_labels.unprioritized(@group).page(params[:page])
+    @labels = @group.labels.page(params[:page])
 
     respond_to do |format|
-      format.html
+      format.html do
+      end
       format.json do
         render json: LabelSerializer.new.represent_appearance(@available_labels)
       end
