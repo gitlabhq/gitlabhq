@@ -105,7 +105,10 @@ export default {
           :stage-connector-class="stageConnectorClass(index, stage)"
           :is-first-column="isFirstColumn(index)"
           @refreshPipelineGraph="refreshPipelineGraph"
+<<<<<<< HEAD
           :has-triggered-by="hasTriggeredBy"
+=======
+>>>>>>> upstream/master
         />
       </ul>
 
