@@ -66,7 +66,7 @@ export default {
     updateContent(parameters) {
       this.updateInternalState(parameters);
       // fetch new data
-      return this.service.get(this.requestData)
+      return this.service.fetchEnvironments(this.requestData)
         .then(response => this.successCallback(response))
         .then(() => {
           // restart polling
@@ -101,7 +101,7 @@ export default {
     fetchEnvironments() {
       this.isLoading = true;
 
-      return this.service.get(this.requestData)
+      return this.service.fetchEnvironments(this.requestData)
         .then(this.successCallback)
         .catch(this.errorCallback);
     },
@@ -137,7 +137,7 @@ export default {
 
     this.poll = new Poll({
       resource: this.service,
-      method: 'get',
+      method: 'fetchEnvironments',
       data: this.requestData,
       successCallback: this.successCallback,
       errorCallback: this.errorCallback,
