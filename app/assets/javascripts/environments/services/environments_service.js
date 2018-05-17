@@ -6,7 +6,7 @@ export default class EnvironmentsService {
     this.folderResults = 3;
   }
 
-  get(options = {}) {
+  fetchEnvironments(options = {}) {
     const { scope, page } = options;
     return axios.get(this.environmentsEndpoint, { params: { scope, page } });
   }
