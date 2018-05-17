@@ -1,0 +1,5 @@
+---
+title: Remove the deprecated kubernetes service page from Project > Integrations
+merge_request: 18905
+author:
+type: removed
