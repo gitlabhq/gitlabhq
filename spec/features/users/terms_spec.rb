@@ -81,6 +81,7 @@ describe 'Users > Terms' do
       expect(find_field('issue_description').value).to eq("We don't want to lose what the user typed")
     end
   end
+<<<<<<< HEAD
 
   context 'when the terms are enforced' do
     before do
@@ -99,4 +100,6 @@ describe 'Users > Terms' do
       end
     end
   end
+=======
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 end

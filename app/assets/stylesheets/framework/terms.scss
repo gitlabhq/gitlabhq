@@ -17,7 +17,10 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+<<<<<<< HEAD
       line-height: $line-height-base;
+=======
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 
       .title {
         display: flex;
@@ -34,6 +37,7 @@
 
       .navbar-collapse {
         padding-right: 0;
+<<<<<<< HEAD
 
         .navbar-nav {
           margin: 0;
@@ -42,6 +46,12 @@
 
       .nav li {
         float: none;
+=======
+      }
+
+      .nav li a {
+        color: $theme-gray-700;
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
       }
     }
 

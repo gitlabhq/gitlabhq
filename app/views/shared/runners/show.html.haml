@@ -21,17 +21,17 @@
         %th Value
     %tr
       %td Active
-      %td= @runner.active? ? _('Yes') : _('No')
+      %td= @runner.active? ? 'Yes' : 'No'
     %tr
       %td Protected
-      %td= @runner.ref_protected? ? _('Yes') : _('No')
+      %td= @runner.ref_protected? ? 'Yes' : 'No'
     %tr
-      %td= _('Can run untagged jobs')
-      %td= @runner.run_untagged? ? _('Yes') : _('No')
+      %td Can run untagged jobs
+      %td= @runner.run_untagged? ? 'Yes' : 'No'
     - unless @runner.group_type?
       %tr
-        %td= _('Locked to this project')
-        %td= @runner.locked? ? _('Yes') : _('No')
+        %td Locked to this project
+        %td= @runner.locked? ? 'Yes' : 'No'
     %tr
       %td Tags
       %td
@@ -60,7 +60,7 @@
       %td Description
       %td= @runner.description
     %tr
-      %td= _('Maximum job timeout')
+      %td Maximum job timeout
       %td= @runner.maximum_timeout_human_readable
     %tr
       %td Last contact

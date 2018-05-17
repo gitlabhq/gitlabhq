@@ -8,18 +8,36 @@ import { TEST_HOST } from 'spec/test_constants';
 describe('Deploy keys app component', () => {
   const data = getJSONFixture('deploy_keys/keys.json');
   let vm;
+<<<<<<< HEAD
   let mock;
 
   beforeEach((done) => {
     // setup axios mock before component
     mock = new MockAdapter(axios);
     mock.onGet(`${TEST_HOST}/dummy/`).replyOnce(200, data);
+=======
+
+  const deployKeysResponse = (request, next) => {
+    next(
+      request.respondWith(JSON.stringify(data), {
+        status: 200,
+      }),
+    );
+  };
+
+  beforeEach(done => {
+    const Component = Vue.extend(deployKeysApp);
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 
     const Component = Vue.extend(deployKeysApp);
 
     vm = new Component({
       propsData: {
+<<<<<<< HEAD
         endpoint: `${TEST_HOST}/dummy`,
+=======
+        endpoint: '/test',
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
         projectId: '8',
       },
     }).$mount();

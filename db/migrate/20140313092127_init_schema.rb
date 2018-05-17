@@ -1,6 +1,9 @@
 class InitSchema < ActiveRecord::Migration
+<<<<<<< HEAD
   DOWNTIME = true
 
+=======
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
   def up
     create_table "broadcast_messages", force: :cascade do |t|
       t.text "message", null: false

@@ -42,11 +42,30 @@ module UsersHelper
 
     items << :sign_out if current_user
 
+<<<<<<< HEAD
     return items if current_user&.required_terms_not_accepted?
 
     items << :help
     items << :profile if can?(current_user, :read_user, current_user)
     items << :settings if can?(current_user, :update_user, current_user)
+=======
+    # TODO: Remove these conditions when the permissions are prevented in
+    # https://gitlab.com/gitlab-org/gitlab-ce/issues/45849
+    terms_not_enforced = !Gitlab::CurrentSettings
+                                .current_application_settings
+                                .enforce_terms?
+    required_terms_accepted = terms_not_enforced || current_user.terms_accepted?
+
+    items << :help if required_terms_accepted
+
+    if can?(current_user, :read_user, current_user) && required_terms_accepted
+      items << :profile
+    end
+
+    if can?(current_user, :update_user, current_user) && required_terms_accepted
+      items << :settings
+    end
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 
     items
   end

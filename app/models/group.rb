@@ -10,7 +10,10 @@ class Group < Namespace
   include LoadedInGroupList
   include GroupDescendant
   include TokenAuthenticatable
+<<<<<<< HEAD
   include WithUploads
+=======
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 
   has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   alias_method :members, :group_members

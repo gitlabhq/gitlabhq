@@ -318,6 +318,11 @@
 
   a {
     color: $gl-text-color;
+<<<<<<< HEAD
+=======
+    word-wrap: break-word;
+    word-break: break-word;
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
     margin-right: 2px;
   }
 }
@@ -464,6 +469,7 @@
   .issuable-header-text {
     @include overflow-break-word();
     padding-right: 35px;
+    word-break: break-word;
 
     > strong {
       font-weight: $gl-font-weight-bold;

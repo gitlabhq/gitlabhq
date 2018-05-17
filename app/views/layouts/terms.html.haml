@@ -20,10 +20,17 @@
                   = brand_header_logo
                   - logo_text = brand_header_logo_type
                   - if logo_text.present?
+<<<<<<< HEAD
                     %span.logo-text.prepend-left-8
                       = logo_text
                 - if header_link?(:user_dropdown)
                   .navbar-collapse
+=======
+                    %span.logo-text.hidden-xs.prepend-left-8
+                      = logo_text
+                - if header_link?(:user_dropdown)
+                  .navbar-collapse.collapse
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
                     %ul.nav.navbar-nav
                       %li.header-user.dropdown
                         = link_to current_user, class: user_dropdown_class, data: { toggle: "dropdown" } do

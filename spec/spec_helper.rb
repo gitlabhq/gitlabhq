@@ -163,6 +163,7 @@ RSpec.configure do |config|
 
   config.around(:each, :clean_gitlab_redis_shared_state) do |example|
     redis_shared_state_cleanup!
+<<<<<<< HEAD
 
     example.run
 
@@ -174,6 +175,19 @@ RSpec.configure do |config|
 
     example.run
 
+=======
+
+    example.run
+
+    redis_shared_state_cleanup!
+  end
+
+  config.around(:each, :clean_gitlab_redis_queues) do |example|
+    redis_queues_cleanup!
+
+    example.run
+
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
     redis_queues_cleanup!
   end
 

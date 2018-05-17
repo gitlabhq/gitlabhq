@@ -68,10 +68,17 @@ Often we need to provide data from haml to our Vue application. Let's store it i
 You can use `mapState` to access state properties in the components.
 
 ### `actions.js`
+<<<<<<< HEAD
 An action is a payload of information to send data from our application to our store.
 
 An action is usually composed by a `type` and a `payload` and they describe what happened.
 Enforcing that every change is described as an action lets us have a clear understanding of what is going on in the app.
+=======
+An action is a playload of information to send data from our application to our store.
+
+An action is usually composed by a `type` and a `payload` and they describe what happened.
+Enforcing that every change is described as an action lets us have a clear understanting of what is going on in the app.
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 
 In this file, we will write the actions that will call the respective mutations:
 
@@ -87,7 +94,11 @@ In this file, we will write the actions that will call the respective mutations:
   export const fetchUsers = ({ state, dispatch }) => {
     dispatch('requestUsers');
 
+<<<<<<< HEAD
     axios.get(state.endpoint)
+=======
+    axios.get(state.endoint)
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
       .then(({ data }) => dispatch('receiveUsersSuccess', data))
       .catch((error) => {
         dispatch('receiveUsersError', error)
@@ -102,7 +113,11 @@ In this file, we will write the actions that will call the respective mutations:
   export const addUser = ({ state, dispatch }, user) => {
     dispatch('requestAddUser');
 
+<<<<<<< HEAD
     axios.post(state.endpoint, user)
+=======
+    axios.post(state.endoint, user)
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
       .then(({ data }) => dispatch('receiveAddUserSuccess', data))
       .catch((error) => dispatch('receiveAddUserError', error));
   }
@@ -126,7 +141,11 @@ The component MUST only dispatch the `fetchNamespace` action. Actions namespaced
 The `fetch` action will be responsible to dispatch `requestNamespace`, `receiveNamespaceSuccess` and `receiveNamespaceError`
 
 By following this pattern we guarantee:
+<<<<<<< HEAD
 1. All applications follow the same pattern, making it easier for anyone to maintain the code
+=======
+1. All aplications follow the same pattern, making it easier for anyone to maintain the code
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 1. All data in the application follows the same lifecycle pattern
 1. Actions are contained and human friendly
 1. Unit tests are easier
@@ -149,7 +168,11 @@ import { mapActions } from 'vuex';
 };
 ```
 
+<<<<<<< HEAD
 ### `mutations.js`
+=======
+#### `mutations.js`
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 The mutations specify how the application state changes in response to actions sent to the store.
 The only way to change state in a Vuex store should be by committing a mutation.
 
@@ -175,7 +198,11 @@ Remember that actions only describe that something happened, they don't describe
       state.isLoading = false;
     },
     [types.REQUEST_ADD_USER](state, user) {
+<<<<<<< HEAD
       state.isAddingUser = true;
+=======
+     state.isAddingUser = true;
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
     },
     [types.RECEIVE_ADD_USER_SUCCESS](state, user) {
       state.isAddingUser = false;
@@ -183,12 +210,20 @@ Remember that actions only describe that something happened, they don't describe
     },
     [types.REQUEST_ADD_USER_ERROR](state, error) {
       state.isAddingUser = true;
+<<<<<<< HEAD
       state.errorAddingUser = error;
+=======
+      state.errorAddingUser = error∂;
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
     },
   };
 ```
 
+<<<<<<< HEAD
 ### `getters.js`
+=======
+#### `getters.js`
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 Sometimes we may need to get derived state based on store state, like filtering for a specific prop.
 Using a getter will also cache the result based on dependencies due to [how computed props work](https://vuejs.org/v2/guide/computed.html#Computed-Caching-vs-Methods)
 This can be done through the `getters`:
@@ -213,7 +248,11 @@ import { mapGetters } from 'vuex';
 };
 ```
 
+<<<<<<< HEAD
 ### `mutations_types.js`
+=======
+#### `mutations_types.js`
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 From [vuex mutations docs][vuex-mutations]:
 > It is a commonly seen pattern to use constants for mutation types in various Flux implementations. This allows the code to take advantage of tooling like linters, and putting all constants in a single file allows your collaborators to get an at-a-glance view of what mutations are possible in the entire application.
 
@@ -289,7 +328,11 @@ export default {
 ```
 
 ### Vuex Gotchas
+<<<<<<< HEAD
 1. Do not call a mutation directly. Always use an action to commit a mutation. Doing so will keep consistency throughout the application. From Vuex docs:
+=======
+1. Do not call a mutation directly. Always use an action to commit a mutation. Doing so will keep consistency through out the application. From Vuex docs:
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 
   >  why don't we just call store.commit('action') directly? Well, remember that mutations must be synchronous? Actions aren't. We can perform asynchronous operations inside an action.
 
@@ -342,7 +385,11 @@ describe('component', () => {
     };
 
     // populate the store
+<<<<<<< HEAD
     store.dispatch('addUser', user);
+=======
+    store.dipatch('addUser', user);
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 
     vm = new Component({
       store,
@@ -352,6 +399,7 @@ describe('component', () => {
 });
 ```
 
+<<<<<<< HEAD
 #### Testing Vuex actions and getters
 Because we're currently using [`babel-plugin-rewire`](https://github.com/speedskater/babel-plugin-rewire), you may encounter the following error when testing your Vuex actions and getters:
 `[vuex] actions should be function or object with "handler" function`
@@ -364,6 +412,8 @@ To prevent this error from happening, you need to export an empty function as `d
 export default () => {};
 ```
 
+=======
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 [vuex-docs]: https://vuex.vuejs.org
 [vuex-structure]: https://vuex.vuejs.org/en/structure.html
 [vuex-mutations]: https://vuex.vuejs.org/en/mutations.html

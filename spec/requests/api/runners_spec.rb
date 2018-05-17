@@ -27,7 +27,11 @@ describe API::Runners do
     end
   end
 
+<<<<<<< HEAD
   let!(:group_runner) { create(:ci_runner, description: 'Group runner', groups: [group], runner_type: :group_type) }
+=======
+  let!(:group_runner) { create(:ci_runner, description: 'Group runner', groups: [group]) }
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 
   before do
     # Set project access for users
@@ -48,7 +52,11 @@ describe API::Runners do
         expect(json_response).to be_an Array
         expect(json_response[0]).to have_key('ip_address')
         expect(descriptions).to contain_exactly(
+<<<<<<< HEAD
           'Project runner', 'Two projects runner', 'Group runner'
+=======
+          'Project runner', 'Two projects runner'
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
         )
         expect(shared).to be_falsey
       end

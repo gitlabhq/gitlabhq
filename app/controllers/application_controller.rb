@@ -13,7 +13,12 @@ class ApplicationController < ActionController::Base
 
   before_action :authenticate_sessionless_user!
   before_action :authenticate_user!
+<<<<<<< HEAD
   before_action :enforce_terms!, if: :should_enforce_terms?
+=======
+  before_action :enforce_terms!, if: -> { Gitlab::CurrentSettings.current_application_settings.enforce_terms },
+                                 unless: :peek_request?
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
   before_action :validate_user_service_ticket!
   before_action :check_password_expiration
   before_action :ldap_security_check
@@ -372,10 +377,13 @@ class ApplicationController < ActionController::Base
   def peek_request?
     request.path.start_with?('/-/peek')
   end
+<<<<<<< HEAD
 
   def should_enforce_terms?
     return false unless Gitlab::CurrentSettings.current_application_settings.enforce_terms
 
     !(peek_request? || devise_controller?)
   end
+=======
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 end

@@ -2,7 +2,10 @@ class CleanupBuildStageMigration < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
+<<<<<<< HEAD
   TMP_INDEX = 'tmp_id_stage_partial_null_index'.freeze
+=======
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 
   disable_ddl_transaction!
 
@@ -14,6 +17,7 @@ class CleanupBuildStageMigration < ActiveRecord::Migration
   end
 
   def up
+<<<<<<< HEAD
     disable_statement_timeout
 
     ##
@@ -40,11 +44,16 @@ class CleanupBuildStageMigration < ActiveRecord::Migration
     # that when this migration is done we are confident that all rows are
     # already migrated.
     #
+=======
+    Gitlab::BackgroundMigration.steal('MigrateBuildStage')
+
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
     Build.where('stage_id IS NULL').each_batch(of: 50) do |batch|
       range = batch.pluck('MIN(id)', 'MAX(id)').first
 
       Gitlab::BackgroundMigration::MigrateBuildStage.new.perform(*range)
     end
+<<<<<<< HEAD
 
     ##
     # We remove temporary index, because it is not required during standard
@@ -57,5 +66,11 @@ class CleanupBuildStageMigration < ActiveRecord::Migration
     if index_exists_by_name?(:ci_builds, TMP_INDEX)
       remove_concurrent_index_by_name(:ci_builds, TMP_INDEX)
     end
+=======
+  end
+
+  def down
+    # noop
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
   end
 end

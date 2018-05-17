@@ -10,6 +10,10 @@ class DiffFileEntity < Grape::Entity
   include TreeHelper
   include ChecksCollaboration
   include Gitlab::Utils::StrongMemoize
+<<<<<<< HEAD
+=======
+
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 
   expose :submodule?, as: :submodule
 
@@ -98,6 +102,16 @@ class DiffFileEntity < Grape::Entity
       options)
   end
 
+<<<<<<< HEAD
+=======
+  expose :fork_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
+    merge_request = options[:merge_request]
+
+    params = edit_blob_fork_params("Edit")
+    project_forks_path(merge_request.project, namespace_key: request.current_user.namespace.id, continue: params)
+  end
+
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
   expose :view_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
     merge_request = options[:merge_request]
 
@@ -131,11 +145,17 @@ class DiffFileEntity < Grape::Entity
 
   def memoized_submodule_links(diff_file)
     strong_memoize(:submodule_links) do
+<<<<<<< HEAD
       if diff_file.submodule?
         submodule_links(diff_file.blob, diff_file.content_sha, diff_file.repository)
       else
         []
       end
+=======
+      return [] unless diff_file.submodule?
+
+      submodule_links(diff_file.blob, diff_file.content_sha, diff_file.repository)
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
     end
   end
 end

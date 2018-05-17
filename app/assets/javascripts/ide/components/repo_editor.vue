@@ -140,7 +140,11 @@ export default {
         this.file.staged && this.file.key.indexOf('unstaged-') === 0 ? head : null,
       );
 
+<<<<<<< HEAD
       if (this.viewer === viewerTypes.mr && this.file.mrChange) {
+=======
+      if (this.viewer === viewerTypes.mr) {
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
         this.editor.attachMergeRequestModel(this.model);
       } else {
         this.editor.attachModel(this.model);

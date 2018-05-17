@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 - link = link_to _('Runners API'), help_page_path('api/runners.md')
+=======
+- link = link_to 'Runners API', help_page_path('api/runners.md')
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 
 %h3
   = _('Group Runners')
@@ -25,7 +29,11 @@
   = _('This group does not provide any group Runners yet.')
 
   - if can?(current_user, :admin_pipeline, @project.group)
+<<<<<<< HEAD
     - group_link = link_to _('Group CI/CD settings'), group_settings_ci_cd_path(@project.group)
+=======
+    - group_link = link_to 'Group CI/CD settings', group_settings_ci_cd_path(@project.group)
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
     = _('Group masters can register group runners in the %{link}').html_safe % { link: group_link }
   - else
     = _('Ask your group master to setup a group Runner.')

@@ -3,10 +3,13 @@ module Users
     include InternalRedirect
 
     skip_before_action :enforce_terms!
+<<<<<<< HEAD
     skip_before_action :check_password_expiration
     skip_before_action :check_two_factor_requirement
     skip_before_action :require_email
 
+=======
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
     before_action :terms
 
     layout 'terms'

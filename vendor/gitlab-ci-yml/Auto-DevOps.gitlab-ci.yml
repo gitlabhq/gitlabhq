@@ -90,6 +90,14 @@ codequality:
   artifacts:
     paths: [codeclimate.json]
 
+license_management:
+  image: registry.gitlab.com/gitlab-org/security-products/license-management:latest
+  allow_failure: true
+  script:
+    - license_management
+  artifacts:
+    paths: [gl-license-report.json]
+
 performance:
   stage: performance
   image: docker:stable
@@ -239,6 +247,12 @@ staging:
     kubernetes: active
     variables:
       - $STAGING_ENABLED
+<<<<<<< HEAD
+=======
+  except:
+    variables:
+      - $INCREMENTAL_ROLLOUT_ENABLED
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 
 # Canaries are disabled by default, but if you want them,
 # and know what the downsides are, enable this job by removing the dot (.).
@@ -281,6 +295,7 @@ staging:
   artifacts:
     paths: [environment_url.txt]
 
+<<<<<<< HEAD
 production:
   <<: *production_template
   only:
@@ -296,6 +311,65 @@ production_manual:
   <<: *production_template
   when: manual
   allow_failure: false
+  only:
+    refs:
+      - master
+    kubernetes: active
+    variables:
+      - $STAGING_ENABLED
+  except:
+    variables:
+      - $INCREMENTAL_ROLLOUT_ENABLED
+
+# This job implements incremental rollout on for every push to `master`.
+
+.rollout: &rollout_template
+=======
+.production: &production_template
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
+  stage: production
+  script:
+    - check_kube_domain
+    - install_dependencies
+    - download_chart
+    - ensure_namespace
+    - install_tiller
+    - create_secret
+    - deploy rollout $ROLLOUT_PERCENTAGE
+    - scale stable $((100-ROLLOUT_PERCENTAGE))
+    - delete canary
+    - delete rollout
+    - persist_environment_url
+  environment:
+    name: production
+    url: http://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
+  artifacts:
+    paths: [environment_url.txt]
+
+<<<<<<< HEAD
+rollout 10%:
+  <<: *rollout_template
+  variables:
+    ROLLOUT_PERCENTAGE: 10
+  when: manual
+=======
+production:
+  <<: *production_template
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
+  only:
+    refs:
+      - master
+    kubernetes: active
+<<<<<<< HEAD
+=======
+  except:
+    variables:
+      - $STAGING_ENABLED
+      - $INCREMENTAL_ROLLOUT_ENABLED
+
+production_manual:
+  <<: *production_template
+  when: manual
   only:
     refs:
       - master
@@ -331,11 +405,11 @@ rollout 10%:
   <<: *rollout_template
   variables:
     ROLLOUT_PERCENTAGE: 10
-  when: manual
   only:
     refs:
       - master
     kubernetes: active
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
     variables:
       - $INCREMENTAL_ROLLOUT_ENABLED
 
@@ -366,7 +440,10 @@ rollout 50%:
 rollout 100%:
   <<: *production_template
   when: manual
+<<<<<<< HEAD
   allow_failure: false
+=======
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
   only:
     refs:
       - master
@@ -414,6 +491,14 @@ rollout 100%:
                --volume "$PWD":/code \
                --volume /var/run/docker.sock:/var/run/docker.sock \
                "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
+  }
+
+  function license_management() {
+    if echo $GITLAB_FEATURES |grep license_management > /dev/null ; then
+      /run.sh .
+    else
+      echo "License management is not available in your subscription"
+    fi
   }
 
   function sast() {
@@ -542,6 +627,7 @@ rollout 100%:
 
     replicas=$(get_replicas "$track" "$percentage")
 
+<<<<<<< HEAD
     if [[ -n "$(helm ls -q "^$name$")" ]]; then
       helm upgrade --reuse-values \
         --wait \
@@ -550,6 +636,14 @@ rollout 100%:
         "$name" \
         chart/
     fi
+=======
+    helm upgrade --reuse-values \
+      --wait \
+      --set replicaCount="$replicas" \
+      --namespace="$KUBE_NAMESPACE" \
+      "$name" \
+      chart/
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
   }
 
   function install_dependencies() {

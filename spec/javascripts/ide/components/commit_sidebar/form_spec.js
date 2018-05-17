@@ -4,7 +4,10 @@ import CommitForm from '~/ide/components/commit_sidebar/form.vue';
 import { activityBarViews } from '~/ide/constants';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
+<<<<<<< HEAD
 import { projectData } from 'spec/ide/mock_data';
+=======
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 import { resetStore } from '../../helpers';
 
 describe('IDE commit form', () => {
@@ -15,8 +18,11 @@ describe('IDE commit form', () => {
     spyOnProperty(window, 'innerHeight').and.returnValue(800);
 
     store.state.changedFiles.push('test');
+<<<<<<< HEAD
     store.state.currentProjectId = 'abcproject';
     Vue.set(store.state.projects, 'abcproject', { ...projectData });
+=======
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 
     vm = createComponentWithStore(Component, store).$mount();
   });

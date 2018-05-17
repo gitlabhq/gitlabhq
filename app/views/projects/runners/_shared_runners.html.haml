@@ -18,7 +18,12 @@
   &nbsp; for this project
 
 - if @shared_runners_count.zero?
+<<<<<<< HEAD
   = _('This GitLab instance does not provide any shared Runners yet. Instance administrators can register shared Runners in the admin area.')
+=======
+  This GitLab instance does not provide any shared Runners yet. Instance
+  administrators can register shared Runners in the admin area.
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 - else
   %h4.underlined-title Available shared Runners : #{@shared_runners_count}
   %ul.bordered-list.available-shared-runners

@@ -36,18 +36,26 @@ describe ShaAttribute do
       end
 
       context 'when the table does not exist' do
+<<<<<<< HEAD
         it 'allows the attribute to be added and issues a warning' do
+=======
+        it 'allows the attribute to be added' do
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
           allow(model).to receive(:table_exists?).and_return(false)
 
           expect(model).not_to receive(:columns)
           expect(model).to receive(:attribute)
+<<<<<<< HEAD
           expect(model).to receive(:warn)
+=======
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 
           model.sha_attribute(:name)
         end
       end
 
       context 'when the column does not exist' do
+<<<<<<< HEAD
         it 'allows the attribute to be added and issues a warning' do
           allow(model).to receive(:table_exists?).and_return(true)
 
@@ -56,6 +64,15 @@ describe ShaAttribute do
           expect(model).to receive(:warn)
 
           model.sha_attribute(:no_name)
+=======
+        it 'raises ArgumentError' do
+          allow(model).to receive(:table_exists?).and_return(true)
+
+          expect(model).to receive(:columns)
+          expect(model).not_to receive(:attribute)
+
+          expect { model.sha_attribute(:no_name) }.to raise_error(ArgumentError)
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
         end
       end
 

@@ -69,7 +69,11 @@ module Projects
         @project_runners = @project.runners.ordered
 
         @assignable_runners = current_user
+<<<<<<< HEAD
           .ci_owned_runners
+=======
+          .ci_authorized_runners
+>>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
           .assignable_for(project)
           .ordered
           .page(params[:page]).per(20)
