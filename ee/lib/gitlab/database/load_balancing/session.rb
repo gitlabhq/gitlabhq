@@ -9,6 +9,8 @@ module Gitlab
       class Session
         CACHE_KEY = :gitlab_load_balancer_session
 
+        attr_accessor :last_write_location
+
         def self.current
           RequestStore[CACHE_KEY] ||= new
         end
@@ -18,12 +20,31 @@ module Gitlab
         end
 
         def initialize
+          @transaction_nesting = 0
+
+          reset!
+        end
+
+        def reset!
+          @last_write_location = nil
           @use_primary = false
           @performed_write = false
         end
 
         def use_primary?
           @use_primary
+        end
+
+        def enter_transaction
+          @transaction_nesting += 1
+        end
+
+        def leave_transaction
+          @transaction_nesting -= 1
+        end
+
+        def in_transaction?
+          @transaction_nesting.positive?
         end
 
         def use_primary!

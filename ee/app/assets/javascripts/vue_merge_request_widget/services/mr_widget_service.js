@@ -10,22 +10,19 @@ export default class MRWidgetService extends CEWidgetService {
   }
 
   fetchApprovals() {
-    return axios.get(this.approvalsPath)
-      .then(res => res.data);
+    return axios.get(this.approvalsPath).then(res => res.data);
   }
 
   approveMergeRequest() {
-    return axios.post(this.approvalsPath)
-      .then(res => res.data);
+    return axios.post(this.approvalsPath).then(res => res.data);
   }
 
   unapproveMergeRequest() {
-    return axios.delete(this.approvalsPath)
-      .then(res => res.data);
+    return axios.delete(this.approvalsPath).then(res => res.data);
   }
 
-  fetchReport(endpoint) { // eslint-disable-line
-    return axios.get(endpoint)
-      .then(res => res.data);
+  // eslint-disable-next-line class-methods-use-this
+  fetchReport(endpoint) {
+    return axios.get(endpoint).then(res => res.data);
   }
 }

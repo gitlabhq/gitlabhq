@@ -13,7 +13,7 @@
             = link_to admin_projects_path do
               %h3.text-center
                 Projects:
-                = number_with_delimiter(Project.cached_count)
+                = approximate_count_with_delimiters(Project)
             %hr
             = link_to('New project', new_project_path, class: "btn btn-new")
       .col-sm-4
@@ -22,7 +22,7 @@
             = link_to admin_users_path do
               %h3.text-center
                 Users:
-                = number_with_delimiter(User.count)
+                = approximate_count_with_delimiters(User)
             -# EE specific
             .text-center
               = link_to 'Users statistics', admin_dashboard_stats_path
@@ -34,7 +34,7 @@
             = link_to admin_groups_path do
               %h3.text-center
                 Groups:
-                = number_with_delimiter(Group.count)
+                = approximate_count_with_delimiters(Group)
             %hr
             = link_to 'New group', new_admin_group_path, class: "btn btn-new"
     .row
@@ -45,31 +45,31 @@
             %p
               Forks
               %span.light.pull-right
-                = number_with_delimiter(ForkedProjectLink.count)
+                = approximate_count_with_delimiters(ForkedProjectLink)
             %p
               Issues
               %span.light.pull-right
-                = number_with_delimiter(Issue.count)
+                = approximate_count_with_delimiters(Issue)
             %p
               Merge Requests
               %span.light.pull-right
-                = number_with_delimiter(MergeRequest.count)
+                = approximate_count_with_delimiters(MergeRequest)
             %p
               Notes
               %span.light.pull-right
-                = number_with_delimiter(Note.count)
+                = approximate_count_with_delimiters(Note)
             %p
               Snippets
               %span.light.pull-right
-                = number_with_delimiter(Snippet.count)
+                = approximate_count_with_delimiters(Snippet)
             %p
               SSH Keys
               %span.light.pull-right
-                = number_with_delimiter(Key.count)
+                = approximate_count_with_delimiters(Key)
             %p
               Milestones
               %span.light.pull-right
-                = number_with_delimiter(Milestone.count)
+                = approximate_count_with_delimiters(Milestone)
             %p
               Active Users
               %span.light.pull-right

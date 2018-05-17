@@ -1,10 +1,14 @@
+<script>
 import { n__, s__, sprintf } from '~/locale';
 import Flash from '~/flash';
-import MRWidgetAuthor from '~/vue_merge_request_widget/components/mr_widget_author.vue';
+import MrWidgetAuthor from '~/vue_merge_request_widget/components/mr_widget_author.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 
 export default {
-  name: 'approvals-body',
+  name: 'ApprovalsBody',
+  components: {
+    MrWidgetAuthor,
+  },
   props: {
     mr: {
       type: Object,
@@ -17,26 +21,28 @@ export default {
     approvedBy: {
       type: Array,
       required: false,
+      default: () => [],
     },
     approvalsLeft: {
       type: Number,
       required: false,
+      default: 0,
     },
     userCanApprove: {
       type: Boolean,
       required: false,
+      default: false,
     },
     userHasApproved: {
       type: Boolean,
       required: false,
+      default: false,
     },
     suggestedApprovers: {
       type: Array,
       required: false,
+      default: () => [],
     },
-  },
-  components: {
-    'mr-widget-author': MRWidgetAuthor,
   },
   data() {
     return {
@@ -102,32 +108,39 @@ export default {
         });
     },
   },
-  template: `
-    <div class="approvals-body space-children">
-      <span v-if="showApproveButton" class="approvals-approve-button-wrap">
-        <button
-          :disabled="approving"
-          @click="approveMergeRequest"
-          class="btn btn-primary btn-sm approve-btn"
-          :class="approveButtonClass">
-          <i
-            v-if="approving"
-            class="fa fa-spinner fa-spin"
-            aria-hidden="true" />
-          {{approveButtonText}}
-        </button>
-      </span>
-      <span class="approvals-required-text bold">
-        {{approvalsRequiredStringified}}
-        <span v-if="showSuggestedApprovers">
-          <mr-widget-author
-            v-for="approver in suggestedApprovers"
-            :key="approver.username"
-            :author="approver"
-            :show-author-name="false"
-            :show-author-tooltip="true" />
-        </span>
-      </span>
-    </div>
-  `,
 };
+</script>
+<template>
+  <div class="approvals-body space-children">
+    <span
+      v-if="showApproveButton"
+      class="approvals-approve-button-wrap"
+    >
+      <button
+        :disabled="approving"
+        @click="approveMergeRequest"
+        class="btn btn-primary btn-sm approve-btn"
+        :class="approveButtonClass"
+      >
+        <i
+          v-if="approving"
+          class="fa fa-spinner fa-spin"
+          aria-hidden="true"
+        ></i>
+        {{ approveButtonText }}
+      </button>
+    </span>
+    <span class="approvals-required-text bold">
+      {{ approvalsRequiredStringified }}
+      <span v-if="showSuggestedApprovers">
+        <mr-widget-author
+          v-for="approver in suggestedApprovers"
+          :key="approver.username"
+          :author="approver"
+          :show-author-name="false"
+          :show-author-tooltip="true"
+        />
+      </span>
+    </span>
+  </div>
+</template>

@@ -179,7 +179,7 @@
       role="row"
     >
       <div
-        class="alert alert-danger alert-block append-bottom-0 table-section section-100"
+        class="alert alert-danger alert-block append-bottom-0"
         role="gridcell"
       >
         <div>

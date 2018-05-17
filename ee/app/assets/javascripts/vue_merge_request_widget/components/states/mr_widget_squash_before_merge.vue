@@ -51,7 +51,8 @@ export default {
     >
       <i
         class="fa fa-question-circle"
-        aria-hidden="true">
+        aria-hidden="true"
+      >
       </i>
     </a>
   </div>

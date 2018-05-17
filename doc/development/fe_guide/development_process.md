@@ -22,9 +22,9 @@ Please use your best judgement when to use it and please contribute new points t
 - [ ] Are all [departments](https://about.gitlab.com/handbook/engineering/#engineering-teams) that are needed from your perspective already involved in the issue? (For example is UX missing?)
 - [ ] Is the specification complete? Are you missing decisions? How about error handling/defaults/edge cases? Take your time to understand the needed implementation and go through its flow.
 - [ ] Are all necessary UX specifications available that you will need in order to implement? Are there new UX components/patterns in the designs? Then contact the UI component team early on. How should error messages or validation be handled?
-- [ ] **Library usage** Use Vuex as soon as you have even a medium state to manage, use Vue router if you need to have different views internally and want to link from the outside. Check what libraries we already have for which occassions.
+- [ ] **Library usage** Use Vuex as soon as you have even a medium state to manage, use Vue router if you need to have different views internally and want to link from the outside. Check what libraries we already have for which occasions.
 - [ ] **Plan your implementation:**
-    - [ ] **Architecture plan:** Create a plan aligned with GitLab's architecture, how you are going to do the implementation, for example Vue application setup and its components (through [onion skinning](https://gitlab.com/gitlab-org/gitlab-ce/issues/35873#note_39994091)), Store structure and data flow, which existing Vue components can you reuse. Its a good idea to go through your plan with another engineer to refine it.
+    - [ ] **Architecture plan:** Create a plan aligned with GitLab's architecture, how you are going to do the implementation, for example Vue application setup and its components (through [onion skinning](https://gitlab.com/gitlab-org/gitlab-ce/issues/35873#note_39994091)), Store structure and data flow, which existing Vue components can you reuse. It's a good idea to go through your plan with another engineer to refine it.
     - [ ] **Backend:** The best way is to kickoff the implementation in a call and discuss with the assigned Backend engineer what you will need from the backend and also when. Can you reuse existing API's? How is the performance with the planned architecture? Maybe create together a JSON mock object to already start with development.
     - [ ] **Communication:** It also makes sense to have for bigger features an own slack channel (normally called #f_{feature_name}) and even weekly demo calls with all people involved.
     - [ ] **Dependency Plan:** Are there big dependencies in the plan between you and others, then maybe create an execution diagram to show what is blocking which part and the order of the different parts.
@@ -56,7 +56,7 @@ Please use your best judgement when to use it and please contribute new points t
 - [ ] If you have multiple MR's then also smoke test against the final merge.
 - [ ] Are there any big changes on how and especially how frequently we use the API then let production know about it
 - [ ] Smoke test of the RC on dev., staging., canary deployments and .com
-- [ ] Follow up on issues that came out of the review. Create isssues for discovered edge cases that should be covered in future iterations.
+- [ ] Follow up on issues that came out of the review. Create issues for discovered edge cases that should be covered in future iterations.
 
 ---
 

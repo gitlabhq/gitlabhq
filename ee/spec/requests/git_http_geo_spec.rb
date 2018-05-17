@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe "Git HTTP requests (Geo)" do
+  include TermsHelper
   include ::EE::GeoHelpers
   include GitHttpHelpers
   include WorkhorseHelpers
@@ -75,6 +76,14 @@ describe "Git HTTP requests (Geo)" do
     end
 
     it_behaves_like 'Geo sync request'
+
+    context 'when terms are enforced' do
+      before do
+        enforce_terms
+      end
+
+      it_behaves_like 'Geo sync request'
+    end
   end
 
   describe 'POST upload_pack' do
@@ -83,6 +92,14 @@ describe "Git HTTP requests (Geo)" do
     end
 
     it_behaves_like 'Geo sync request'
+
+    context 'when terms are enforced' do
+      before do
+        enforce_terms
+      end
+
+      it_behaves_like 'Geo sync request'
+    end
   end
 
   def valid_geo_env

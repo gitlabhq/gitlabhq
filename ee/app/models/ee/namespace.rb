@@ -51,17 +51,19 @@ module EE
 
       if succeeded
         all_projects.each do |project|
-          old_path_with_namespace = File.join(full_path_was, project.path)
-
           ::Geo::RepositoryRenamedEventStore.new(
             project,
             old_path: project.path,
-            old_path_with_namespace: old_path_with_namespace
+            old_path_with_namespace: old_path_with_namespace_for(project)
           ).create
         end
       end
 
       succeeded
+    end
+
+    def old_path_with_namespace_for(project)
+      project.full_path.sub(/\A#{Regexp.escape(full_path)}/, full_path_was)
     end
 
     # Checks features (i.e. https://about.gitlab.com/products/) availabily

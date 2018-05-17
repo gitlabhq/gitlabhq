@@ -18,7 +18,7 @@
           = render "shared/issuable/sidebar_todo", todo: todo, issuable: issuable, is_collapsed: true
       .block.assignee
         = render "shared/issuable/sidebar_assignees", issuable: issuable, can_edit_issuable: can_edit_issuable, signed_in: current_user.present?
-      = render "shared/issuable/sidebar_item_epic", issuable: issuable
+      = render_sidebar_epic(issuable)
       .block.milestone
         .sidebar-collapsed-icon.has-tooltip{ title: milestone_tooltip_title(issuable.milestone), data: { container: 'body', html: 1, placement: 'left' } }
           = icon('clock-o', 'aria-hidden': 'true')

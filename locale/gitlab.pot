@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-09 14:38+0200\n"
-"PO-Revision-Date: 2018-05-09 14:38+0200\n"
+"POT-Creation-Date: 2018-05-16 14:41+0200\n"
+"PO-Revision-Date: 2018-05-16 14:41+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -101,6 +101,9 @@ msgid "%{loadingIcon} Started"
 msgstr ""
 
 msgid "%{lock_path} is locked by GitLab User %{lock_user_id}"
+msgstr ""
+
+msgid "%{nip_domain} can be used as an alternative to a custom domain."
 msgstr ""
 
 msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
@@ -917,6 +920,9 @@ msgstr ""
 msgid "CI/CD settings"
 msgstr ""
 
+msgid "CICD|A domain is required to use Auto Review Apps and Auto Deploy Stages."
+msgstr ""
+
 msgid "CICD|An explicit %{ci_file} needs to be specified before you can begin using Continuous Integration and Delivery."
 msgstr ""
 
@@ -945,9 +951,6 @@ msgid "CICD|Learn more about Auto DevOps"
 msgstr ""
 
 msgid "CICD|The Auto DevOps pipeline configuration will be used when there is no %{ci_file} in the project."
-msgstr ""
-
-msgid "CICD|You need to specify a domain if you want to use Auto Review Apps and Auto Deploy stages."
 msgstr ""
 
 msgid "Can run untagged jobs"
@@ -2153,6 +2156,9 @@ msgstr ""
 msgid "Enabled"
 msgstr ""
 
+msgid "Environments"
+msgstr ""
+
 msgid "Environments|An error occurred while fetching the environments."
 msgstr ""
 
@@ -2413,6 +2419,9 @@ msgstr ""
 msgid "GPG Keys"
 msgstr ""
 
+msgid "General"
+msgstr ""
+
 msgid "Generate a default set of labels"
 msgstr ""
 
@@ -2426,9 +2435,6 @@ msgid "GeoNodeSyncStatus|Node is failing or broken."
 msgstr ""
 
 msgid "GeoNodeSyncStatus|Node is slow, overloaded, or it just recovered after an outage."
-msgstr ""
-
-msgid "GeoNodes|%{eventId}"
 msgstr ""
 
 msgid "GeoNodes|Checksummed"
@@ -2458,10 +2464,10 @@ msgstr ""
 msgid "GeoNodes|Health status"
 msgstr ""
 
-msgid "GeoNodes|Last event ID seen from primary"
+msgid "GeoNodes|Last event ID processed by cursor"
 msgstr ""
 
-msgid "GeoNodes|Last event ID processed by cursor"
+msgid "GeoNodes|Last event ID seen from primary"
 msgstr ""
 
 msgid "GeoNodes|Learn more about Repository checksum progress"
@@ -2654,6 +2660,9 @@ msgid "Google authentication is not %{link_to_documentation}. Ask your GitLab ad
 msgstr ""
 
 msgid "Got it!"
+msgstr ""
+
+msgid "Graph"
 msgstr ""
 
 msgid "Group CI/CD settings"
@@ -3244,6 +3253,9 @@ msgstr ""
 msgid "Milestone"
 msgstr ""
 
+msgid "Milestones"
+msgstr ""
+
 msgid "Milestones|Delete milestone"
 msgstr ""
 
@@ -3540,6 +3552,9 @@ msgstr ""
 msgid "Opens in a new window"
 msgstr ""
 
+msgid "Operations"
+msgstr ""
+
 msgid "Options"
 msgstr ""
 
@@ -3714,12 +3729,6 @@ msgstr ""
 msgid "Pipeline|Existing branch name or tag"
 msgstr ""
 
-msgid "Pipeline|Retry pipeline"
-msgstr ""
-
-msgid "Pipeline|Retry pipeline #%{pipelineId}?"
-msgstr ""
-
 msgid "Pipeline|Run Pipeline"
 msgstr ""
 
@@ -3736,9 +3745,6 @@ msgid "Pipeline|Stop pipeline #%{pipelineId}?"
 msgstr ""
 
 msgid "Pipeline|Variables"
-msgstr ""
-
-msgid "Pipeline|You’re about to retry pipeline %{pipelineId}."
 msgstr ""
 
 msgid "Pipeline|You’re about to stop pipeline %{pipelineId}."
@@ -3867,6 +3873,9 @@ msgstr ""
 msgid "Progress"
 msgstr ""
 
+msgid "Project"
+msgstr ""
+
 msgid "Project '%{project_name}' is in the process of being deleted."
 msgstr ""
 
@@ -3931,9 +3940,6 @@ msgid "ProjectLastActivity|Never"
 msgstr ""
 
 msgid "ProjectLifecycle|Stage"
-msgstr ""
-
-msgid "ProjectNetworkGraph|Graph"
 msgstr ""
 
 msgid "ProjectSettings|Contact an admin to change this setting."
@@ -4072,6 +4078,18 @@ msgid "Promote to Group Label"
 msgstr ""
 
 msgid "Promote to Group Milestone"
+msgstr ""
+
+msgid "Promotions|Don't show me this again"
+msgstr ""
+
+msgid "Promotions|Epics let you manage your portfolio of projects more efficiently and with less effort by tracking groups of issues that share a theme, across projects and milestones."
+msgstr ""
+
+msgid "Promotions|This feature is locked."
+msgstr ""
+
+msgid "Promotions|Upgrade plan"
 msgstr ""
 
 msgid "Protip:"
@@ -5519,6 +5537,12 @@ msgid "WikiNewPageTitle|New Wiki Page"
 msgstr ""
 
 msgid "WikiPageConfirmDelete|Are you sure you want to delete this page?"
+msgstr ""
+
+msgid "WikiPageConfirmDelete|Delete page"
+msgstr ""
+
+msgid "WikiPageConfirmDelete|Delete page %{pageTitle}?"
 msgstr ""
 
 msgid "WikiPageConflictMessage|Someone edited the page the same time you did. Please check out %{page_link} and make sure your changes will not unintentionally remove theirs."

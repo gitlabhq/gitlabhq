@@ -776,13 +776,9 @@ module Gitlab
       end
 
       def add_branch(branch_name, user:, target:)
-        gitaly_migrate(:operation_user_create_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_add_branch(branch_name, user, target)
-          else
-            rugged_add_branch(branch_name, user, target)
-          end
-        end
+        gitaly_operation_client.user_create_branch(branch_name, user, target)
+      rescue GRPC::FailedPrecondition => ex
+        raise InvalidRef, ex
       end
 
       def add_tag(tag_name, user:, target:, message: nil)
@@ -1454,8 +1450,6 @@ module Gitlab
         raise NoRepository.new(e)
       rescue GRPC::InvalidArgument => e
         raise ArgumentError.new(e)
-      rescue GRPC::DataLoss => e
-        raise InvalidRepository.new(e)
       rescue GRPC::BadStatus => e
         raise CommandError.new(e)
       end
@@ -1473,25 +1467,11 @@ module Gitlab
       end
 
       def branch_names_contains_sha(sha)
-        gitaly_migrate(:branch_names_contains_sha,
-                      status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.branch_names_contains_sha(sha)
-          else
-            refs_contains_sha('refs/heads/', sha)
-          end
-        end
+        gitaly_ref_client.branch_names_contains_sha(sha)
       end
 
       def tag_names_contains_sha(sha)
-        gitaly_migrate(:tag_names_contains_sha,
-                       status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.tag_names_contains_sha(sha)
-          else
-            refs_contains_sha('refs/tags/', sha)
-          end
-        end
+        gitaly_ref_client.tag_names_contains_sha(sha)
       end
 
       def search_files_by_content(query, ref)
@@ -1634,27 +1614,6 @@ module Gitlab
         else
           rugged_write_ref(ref_path, ref)
         end
-      end
-
-      def refs_contains_sha(refs_prefix, sha)
-        refs_prefix << "/" unless refs_prefix.ends_with?('/')
-
-        # By forcing the output to %(refname) each line wiht a ref will start with
-        # the ref prefix. All other lines can be discarded.
-        args = %W(for-each-ref --contains=#{sha} --format=%(refname) #{refs_prefix})
-        names, code = run_git(args)
-
-        return [] unless code.zero?
-
-        refs = []
-        left_slice_count = refs_prefix.length
-        names.lines.each do |line|
-          next unless line.start_with?(refs_prefix)
-
-          refs << encode_utf8(line.rstrip[left_slice_count..-1])
-        end
-
-        refs
       end
 
       def rugged_write_config(full_path:)
@@ -2246,22 +2205,6 @@ module Gitlab
                         tree: revert_tree_id,
                         parents: [start_commit.sha])
         end
-      end
-
-      def gitaly_add_branch(branch_name, user, target)
-        gitaly_operation_client.user_create_branch(branch_name, user, target)
-      rescue GRPC::FailedPrecondition => ex
-        raise InvalidRef, ex
-      end
-
-      def rugged_add_branch(branch_name, user, target)
-        target_object = Ref.dereference_object(lookup(target))
-        raise InvalidRef.new("target not found: #{target}") unless target_object
-
-        OperationService.new(user, self).add_branch(branch_name, target_object.oid)
-        find_branch(branch_name)
-      rescue Rugged::ReferenceError => ex
-        raise InvalidRef, ex
       end
 
       def rugged_cherry_pick(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
