@@ -18,11 +18,6 @@ export default {
       type: Object,
       required: true,
     },
-    requestFinishedFor: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
 
   computed: {
@@ -66,6 +61,10 @@ export default {
 
       return className;
     },
+
+    refreshPipelineGraph() {
+      this.$emit('refreshPipelineGraph');
+    },
   },
 };
 </script>
@@ -105,7 +104,7 @@ export default {
           :key="stage.name"
           :stage-connector-class="stageConnectorClass(index, stage)"
           :is-first-column="isFirstColumn(index)"
-          :request-finished-for="requestFinishedFor"
+          @refreshPipelineGraph="refreshPipelineGraph"
           :has-triggered-by="hasTriggeredBy"
         />
       </ul>
