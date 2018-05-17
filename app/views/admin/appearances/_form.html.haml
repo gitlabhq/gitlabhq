@@ -72,7 +72,9 @@
       = f.hidden_field :favicon_cache
       = f.file_field :favicon, class: ''
       .hint
-        Maximum file size is 1MB. The resulting favicons will be cropped to be square and scaled down to a size of 32x32 px.
+        Maximum file size is 1MB. Allowed image formats are #{favicon_extension_whitelist}.
+        %br
+        The resulting favicons will be cropped to be square and scaled down to a size of 32x32 px.
 
   .form-actions
     = f.submit 'Save', class: 'btn btn-save append-right-10'
