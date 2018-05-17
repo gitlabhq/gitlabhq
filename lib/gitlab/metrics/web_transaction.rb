@@ -28,7 +28,11 @@ module Gitlab
         controller = @env[CONTROLLER_KEY]
 
         action = "#{controller.action_name}"
-        suffix = controller.request_format
+
+        # Devise exposes a method called "request_format" that does the below.
+        # However, this method is not available to all controllers (e.g. certain
+        # Doorkeeper controllers). As such we use the underlying code directly.
+        suffix = controller.request.format.try(:ref)
 
         if suffix && suffix != :html
           action += ".#{suffix}"
