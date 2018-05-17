@@ -537,11 +537,8 @@ Below you can find supported syntax reference:
     It is possible perform pattern matching against a variable and regular
     expression. Expression like this evaluates to truth if matches are found.
 
-    Pattern matching is case-sensitive by default. Prepend `(?i)` to a
-    match-group to make a pattern case-insensitive.
-
-    Under the hood we are using [RE2 library][re2-library], see
-    [syntax documentation][re2-syntax] for reference.
+    Pattern matching is case-sensitive by default. Use `i` flag modifier, like
+    `/pattern/i` to make a pattern case-insensitive.
 
 ### Unsupported predefined variables
 
@@ -583,5 +580,3 @@ These variables are also not supported in a context of a
 [builds-policies]: ../yaml/README.md#only-and-except-complex
 [dynamic-environments]: ../environments.md#dynamic-environments
 [gitlab-deploy-token]: ../../user/project/deploy_tokens/index.md#gitlab-deploy-token
-[re2-library]: https://github.com/google/re2
-[re2-syntax]: https://github.com/google/re2/wiki/Syntax
