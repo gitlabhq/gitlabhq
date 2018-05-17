@@ -182,7 +182,6 @@ eos
     it { is_expected.to respond_to(:date) }
     it { is_expected.to respond_to(:diffs) }
     it { is_expected.to respond_to(:id) }
-    it { is_expected.to respond_to(:to_patch) }
   end
 
   describe '#closes_issues' do
