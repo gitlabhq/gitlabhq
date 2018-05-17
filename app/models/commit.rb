@@ -224,8 +224,34 @@ class Commit
     Gitlab::ClosingIssueExtractor.new(project, current_user).closed_by_message(safe_message)
   end
 
+  def lazy_author
+    BatchLoader.for(author_email.downcase).batch do |emails, loader|
+      # A Hash that maps user Emails to the corresponding User objects. The
+      # Emails at this point are the _primary_ Emails of the Users.
+      users_for_emails = User
+        .by_any_email(emails)
+        .each_with_object({}) { |user, hash| hash[user.email] = user }
+
+      users_for_ids = users_for_emails
+        .values
+        .each_with_object({}) { |user, hash| hash[user.id] = user }
+
+      # Some commits may have used an alternative Email address. In this case we
+      # need to query the "emails" table to map those addresses to User objects.
+      Email
+        .where(email: emails - users_for_emails.keys)
+        .pluck(:email, :user_id)
+        .each { |(email, id)| users_for_emails[email] = users_for_ids[id] }
+
+      users_for_emails.each { |email, user| loader.call(email, user) }
+    end
+  end
+
   def author
-    User.find_by_any_email(author_email.downcase)
+    # We use __sync so that we get the actual objects back (including an actual
+    # nil), instead of a wrapper, as returning a wrapped nil breaks a lot of
+    # code.
+    lazy_author.__sync
   end
   request_cache(:author) { author_email.downcase }
 

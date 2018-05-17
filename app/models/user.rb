@@ -878,6 +878,16 @@ class User < ActiveRecord::Base
     confirmed? && !temp_oauth_email?
   end
 
+  def accept_pending_invitations!
+    pending_invitations.select do |member|
+      member.accept_invite!(self)
+    end
+  end
+
+  def pending_invitations
+    Member.where(invite_email: verified_emails).invite
+  end
+
   def all_emails
     all_emails = []
     all_emails << email unless temp_oauth_email?

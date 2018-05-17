@@ -1,6 +1,8 @@
 class ConfirmationsController < Devise::ConfirmationsController
   prepend ::EE::ConfirmationsController
 
+  include AcceptsPendingInvitations
+
   def almost_there
     flash[:notice] = nil
     render layout: "devise_empty"
@@ -13,6 +15,8 @@ class ConfirmationsController < Devise::ConfirmationsController
   end
 
   def after_confirmation_path_for(resource_name, resource)
+    accept_pending_invitations
+
     # incoming resource can either be a :user or an :email
     if signed_in?(:user)
       after_sign_in(resource)
