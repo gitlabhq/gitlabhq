@@ -8,13 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
-"POT-Creation-Date: 2018-05-16 22:37+0200\n"
-"PO-Revision-Date: 2018-05-16 22:37+0200\n"
-=======
-"POT-Creation-Date: 2018-05-15 15:05+0200\n"
-"PO-Revision-Date: 2018-05-15 15:05+0200\n"
->>>>>>> gitlab.com/master
+"POT-Creation-Date: 2018-05-17 19:47+0200\n"
+"PO-Revision-Date: 2018-05-17 19:47+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -1862,12 +1857,9 @@ msgid "Edit files in the editor and commit changes here"
 msgstr ""
 
 msgid "Email"
-<<<<<<< HEAD
 msgstr ""
 
 msgid "Email patch"
-=======
->>>>>>> gitlab.com/master
 msgstr ""
 
 msgid "Emails"
