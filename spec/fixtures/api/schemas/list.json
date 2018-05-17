@@ -17,7 +17,6 @@
       "required": [
         "id",
         "color",
-        "text_color",
         "description",
         "title",
         "priority"
@@ -30,7 +29,6 @@
         },
         "description": { "type": ["string", "null"] },
         "title": { "type": "string" },
-        "title": { "text_color": "string" },
         "priority": { "type": ["integer", "null"] }
       }
     },

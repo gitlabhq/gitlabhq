@@ -31,8 +31,7 @@ class List < ActiveRecord::Base
       if options.key?(:label)
         json[:label] = label.as_json(
           project: board.project,
-          only: [:id, :title, :description, :color],
-          methods: [:text_color]
+          only: [:id, :title, :description, :color]
         )
       end
     end
