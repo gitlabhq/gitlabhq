@@ -6,14 +6,14 @@ module Gitlab
           require_dependency 're2'
 
           class Pattern < Lexeme::Value
-            PATTERN = %r{/(?<regexp>.+)/}.freeze
+            PATTERN = %r{^(?<regexp>/.+/[ismU]*)$}.freeze
 
             def initialize(regexp)
               @value = regexp
             end
 
             def evaluate(variables = {})
-              Gitlab::UntrustedRegexp.new(@value)
+              Gitlab::UntrustedRegexp.fabricate(@value)
             rescue RegexpError
               raise Expression::RuntimeError, 'Invalid regular expression!'
             end

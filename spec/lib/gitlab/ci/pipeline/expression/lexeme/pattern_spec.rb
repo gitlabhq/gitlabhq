@@ -42,6 +42,34 @@ describe Gitlab::Ci::Pipeline::Expression::Lexeme::Pattern do
 
       expect(token).to be_nil
     end
+
+    it 'support single flag' do
+      scanner = StringScanner.new('/pattern/i')
+
+      token = described_class.scan(scanner)
+
+      expect(token).not_to be_nil
+      expect(token.build.evaluate)
+        .to eq Gitlab::UntrustedRegexp.new('(?i)pattern')
+    end
+
+    it 'support multiple flags' do
+      scanner = StringScanner.new('/pattern/im')
+
+      token = described_class.scan(scanner)
+
+      expect(token).not_to be_nil
+      expect(token.build.evaluate)
+        .to eq Gitlab::UntrustedRegexp.new('(?im)pattern')
+    end
+
+    it 'does not support arbitrary flags' do
+      scanner = StringScanner.new('/pattern/x')
+
+      token = described_class.scan(scanner)
+
+      expect(token).to be_nil
+    end
   end
 
   describe '#evaluate' do
