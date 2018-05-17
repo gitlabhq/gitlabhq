@@ -30,8 +30,6 @@ class KubernetesService < DeploymentService
       message: Gitlab::Regex.kubernetes_namespace_regex_message
     }
 
-  after_save :clear_reactive_cache!
-
   def initialize_properties
     self.properties = {} if properties.nil?
   end
@@ -89,6 +87,17 @@ class KubernetesService < DeploymentService
   TEMPLATE_PLACEHOLDER = 'Kubernetes namespace'.freeze
 
   private
+
+  def namespace_placeholder
+    default_namespace || TEMPLATE_PLACEHOLDER
+  end
+
+  def default_namespace
+    return unless project
+
+    slug = "#{project.path}-#{project.id}".downcase
+    slug.gsub(/[^-a-z0-9]/, '-').gsub(/^-+/, '')
+  end
 
   def enforce_namespace_to_lower_case
     self.namespace = self.namespace&.downcase
