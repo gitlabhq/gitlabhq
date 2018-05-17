@@ -10,6 +10,10 @@ module Gitlab
 
             def initialize(regexp)
               @value = regexp
+
+              unless Gitlab::UntrustedRegexp.valid?(@value)
+                raise Lexer::SyntaxError, 'Invalid regular expression!'
+              end
             end
 
             def evaluate(variables = {})

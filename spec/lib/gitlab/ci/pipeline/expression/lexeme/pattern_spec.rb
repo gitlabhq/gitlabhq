@@ -6,6 +6,11 @@ describe Gitlab::Ci::Pipeline::Expression::Lexeme::Pattern do
       expect(described_class.build('/.*/'))
         .to be_a(described_class)
     end
+
+    it 'raises an error if pattern is invalid' do
+      expect { described_class.build('/ some ( thin/i') }
+        .to raise_error(Gitlab::Ci::Pipeline::Expression::Lexer::SyntaxError)
+    end
   end
 
   describe '.type' do
@@ -80,6 +85,8 @@ describe Gitlab::Ci::Pipeline::Expression::Lexeme::Pattern do
     end
 
     it 'raises error if evaluated regexp is not valid' do
+      allow(Gitlab::UntrustedRegexp).to receive(:valid?).and_return(true)
+
       regexp = described_class.new('invalid ( .*')
 
       expect { regexp.evaluate }
