@@ -1,5 +1,0 @@
----
-title: Use less aggressive sticking for DB load balancing
-merge_request:
-author:
-type: performance
