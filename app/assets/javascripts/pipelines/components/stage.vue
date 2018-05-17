@@ -21,10 +21,7 @@ import Icon from '../../vue_shared/components/icon.vue';
 import LoadingIcon from '../../vue_shared/components/loading_icon.vue';
 import JobComponent from './graph/job_component.vue';
 import tooltip from '../../vue_shared/directives/tooltip';
-<<<<<<< HEAD
 import { PIPELINES_TABLE } from '../constants';
-=======
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 
 export default {
   components: {
@@ -48,15 +45,12 @@ export default {
       required: false,
       default: false,
     },
-<<<<<<< HEAD
 
     type: {
       type: String,
       required: false,
       default: '',
     },
-=======
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
   },
 
   data() {
@@ -145,7 +139,6 @@ export default {
 
     isDropdownOpen() {
       return this.$el.classList.contains('open');
-<<<<<<< HEAD
     },
 
     pipelineActionRequestComplete() {
@@ -156,8 +149,6 @@ export default {
         // close the dropdown in mr widget
         $(this.$refs.dropdown).dropdown('toggle');
       }
-=======
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
     },
   },
 };
@@ -215,10 +206,7 @@ export default {
             <job-component
               :job="job"
               css-class-job-name="mini-pipeline-graph-dropdown-item"
-<<<<<<< HEAD
               @pipelineActionRequestComplete="pipelineActionRequestComplete"
-=======
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
             />
           </li>
         </ul>

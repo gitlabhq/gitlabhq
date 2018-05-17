@@ -1014,11 +1014,7 @@ DEPENDENCIES
   deckar01-task_list (= 2.0.0)
   default_value_for (~> 3.0.5)
   device_detector
-<<<<<<< HEAD
   devise (~> 4.4)
-=======
-  devise (~> 4.2)
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
   devise-two-factor (~> 3.0.0)
   diffy (~> 3.1.0)
   doorkeeper (~> 4.3)

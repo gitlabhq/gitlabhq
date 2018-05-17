@@ -1,9 +1,5 @@
 <script>
-<<<<<<< HEAD
 import { mapActions, mapState, mapGetters } from 'vuex';
-=======
-import { mapActions, mapState } from 'vuex';
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 import { sprintf, __ } from '~/locale';
 import * as consts from '../../stores/modules/commit/constants';
 import RadioGroup from './radio_group.vue';
@@ -14,10 +10,7 @@ export default {
   },
   computed: {
     ...mapState(['currentBranchId', 'changedFiles', 'stagedFiles']),
-<<<<<<< HEAD
     ...mapGetters(['currentProject']),
-=======
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
     commitToCurrentBranchText() {
       return sprintf(
         __('Commit to %{branchName} branch'),

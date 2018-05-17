@@ -19,19 +19,11 @@ describe Projects::Settings::CiCdController do
     end
 
     context 'with group runners' do
-<<<<<<< HEAD
       let(:group_runner) { create(:ci_runner, runner_type: :group_type) }
       let(:parent_group) { create(:group) }
       let(:group) { create(:group, runners: [group_runner], parent: parent_group) }
       let(:other_project) { create(:project, group: group) }
       let!(:project_runner) { create(:ci_runner, projects: [other_project], runner_type: :project_type) }
-=======
-      let(:group_runner) { create(:ci_runner) }
-      let(:parent_group) { create(:group) }
-      let(:group) { create(:group, runners: [group_runner], parent: parent_group) }
-      let(:other_project) { create(:project, group: group) }
-      let!(:project_runner) { create(:ci_runner, projects: [other_project]) }
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
       let!(:shared_runner) { create(:ci_runner, :shared) }
 
       it 'sets assignable project runners only' do
@@ -39,11 +31,7 @@ describe Projects::Settings::CiCdController do
 
         get :show, namespace_id: project.namespace, project_id: project
 
-<<<<<<< HEAD
         expect(assigns(:assignable_runners)).to contain_exactly(project_runner)
-=======
-        expect(assigns(:assignable_runners)).to eq [project_runner]
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
       end
     end
   end

@@ -15,11 +15,7 @@
           ":title" => '(list.label ? list.label.description : "")',
           data: { container: "body", placement: "bottom" },
           class: "label color-label title board-title-text",
-<<<<<<< HEAD
           ":style" => "{ backgroundColor: (list.label && list.label.color ? list.label.color : null), color: (list.label && list.label.textColor ? list.label.textColor : \"#2e2e2e\") }" }
-=======
-          ":style" => "{ backgroundColor: (list.label && list.label.color ? list.label.color : null), color: (list.label && list.label.text_color ? list.label.text_color : \"#2e2e2e\") }" }
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
           {{ list.title }}
 
         - if can?(current_user, :admin_list, current_board_parent)

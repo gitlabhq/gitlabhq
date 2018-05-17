@@ -1,50 +1,25 @@
 class DiffFileEntity < Grape::Entity
-  include RequestAwareEntity
-  include ActionView::Helpers::TagHelper
-  include Gitlab::Routing
-  include BlobHelper
-  include CommitsHelper
   include DiffHelper
-  include IconsHelper
   include SubmoduleHelper
-  include TreeHelper
-  include ChecksCollaboration
-  include Gitlab::Utils::StrongMemoize
-<<<<<<< HEAD
-=======
-
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
+  include BlobHelper
+  include IconsHelper
+  include ActionView::Helpers::TagHelper
 
   expose :submodule?, as: :submodule
 
   expose :submodule_link do |diff_file|
-    memoized_submodule_links(diff_file).first
+    submodule_links(diff_file.blob, diff_file.content_sha, diff_file.repository).first
   end
 
-  expose :submodule_tree_url do |diff_file|
-    memoized_submodule_links(diff_file).last
+  expose :blob_path do |diff_file|
+    diff_file.blob.path
   end
 
-  expose :blob, using: BlobEntity
-
-  expose :can_modify_blob do |diff_file|
-    merge_request = options[:merge_request]
-
-    if merge_request && current_user
-      can_modify_blob?(diff_file.blob, merge_request.source_project, merge_request.source_branch)
-    else
-      false
-    end
-  end
-
-  expose :file_hash do |diff_file|
-    Digest::SHA1.hexdigest(diff_file.file_path)
+  expose :blob_icon do |diff_file|
+    blob_icon(diff_file.b_mode, diff_file.file_path)
   end
 
   expose :file_path
-  expose :too_large?, as: :too_large
-  expose :collapsed?, as: :collapsed
-  expose :new_file?, as: :new_file
   expose :deleted_file?, as: :deleted_file
   expose :renamed_file?, as: :renamed_file
   expose :old_path
@@ -53,34 +28,6 @@ class DiffFileEntity < Grape::Entity
   expose :a_mode
   expose :b_mode
   expose :text?, as: :text
-  expose :added_lines
-  expose :removed_lines
-  expose :diff_refs
-  expose :content_sha
-  expose :stored_externally?, as: :stored_externally
-  expose :external_storage
-
-  expose :load_collapsed_diff_url, if: -> (diff_file, options) { diff_file.text? && options[:merge_request] } do |diff_file|
-    merge_request = options[:merge_request]
-    project = merge_request.source_project
-
-    diff_for_path_namespace_project_merge_request_path(
-      namespace_id: project.namespace.to_param,
-      project_id: project.to_param,
-      id: merge_request.iid,
-      old_path: diff_file.old_path,
-      new_path: diff_file.new_path,
-      file_identifier: diff_file.file_identifier
-    )
-  end
-
-  expose :formatted_external_url, if: -> (_, options) { options[:environment] } do |diff_file|
-    options[:environment].formatted_external_url
-  end
-
-  expose :external_url, if: -> (_, options) { options[:environment] } do |diff_file|
-    options[:environment].external_url_for(diff_file.content_sha, diff_file.new_path)
-  end
 
   expose :old_path_html do |diff_file|
     old_path = mark_inline_diffs(diff_file.old_path, diff_file.new_path)
@@ -90,72 +37,5 @@ class DiffFileEntity < Grape::Entity
   expose :new_path_html do |diff_file|
     _, new_path = mark_inline_diffs(diff_file.old_path, diff_file.new_path)
     new_path
-  end
-
-  expose :edit_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
-    merge_request = options[:merge_request]
-
-    options = merge_request.persisted? ? { from_merge_request_iid: merge_request.iid } : {}
-
-    project_edit_blob_path(merge_request.source_project,
-      tree_join(merge_request.source_branch, diff_file.new_path),
-      options)
-  end
-
-<<<<<<< HEAD
-=======
-  expose :fork_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
-    merge_request = options[:merge_request]
-
-    params = edit_blob_fork_params("Edit")
-    project_forks_path(merge_request.project, namespace_key: request.current_user.namespace.id, continue: params)
-  end
-
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
-  expose :view_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
-    merge_request = options[:merge_request]
-
-    project_blob_path(merge_request.source_project, tree_join(diff_file.content_sha, diff_file.new_path))
-  end
-
-  expose :replaced_view_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
-    image_diff = diff_file.rich_viewer && diff_file.rich_viewer.partial_name == 'image'
-    image_replaced = diff_file.old_content_sha && diff_file.old_content_sha != diff_file.content_sha
-
-    merge_request = options[:merge_request]
-
-    project_blob_path(merge_request.source_project, tree_join(diff_file.old_content_sha, diff_file.old_path)) if image_diff && image_replaced
-  end
-
-  expose :context_lines_path, if: -> (diff_file, _) { diff_file.text? } do |diff_file|
-    project_blob_diff_path(diff_file.repository.project, tree_join(diff_file.content_sha, diff_file.file_path))
-  end
-
-  # Used for inline diffs
-  expose :highlighted_diff_lines, if: -> (diff_file, _) { diff_file.text? } do |diff_file|
-    diff_file.diff_lines_for_serializer
-  end
-
-  # Used for parallel diffs
-  expose :parallel_diff_lines, if: -> (diff_file, _) { diff_file.text? }
-
-  def current_user
-    request.current_user
-  end
-
-  def memoized_submodule_links(diff_file)
-    strong_memoize(:submodule_links) do
-<<<<<<< HEAD
-      if diff_file.submodule?
-        submodule_links(diff_file.blob, diff_file.content_sha, diff_file.repository)
-      else
-        []
-      end
-=======
-      return [] unless diff_file.submodule?
-
-      submodule_links(diff_file.blob, diff_file.content_sha, diff_file.repository)
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
-    end
   end
 end

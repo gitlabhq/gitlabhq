@@ -138,10 +138,6 @@ class User < ActiveRecord::Base
 
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
   has_many :callouts, class_name: 'UserCallout'
-<<<<<<< HEAD
-=======
-  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
   has_many :term_agreements
   belongs_to :accepted_term, class_name: 'ApplicationSetting::Term'
 
@@ -1221,7 +1217,6 @@ class User < ActiveRecord::Base
     accepted_term_id.present?
   end
 
-<<<<<<< HEAD
   def required_terms_not_accepted?
     Gitlab::CurrentSettings.current_application_settings.enforce_terms? &&
       !terms_accepted?
@@ -1232,8 +1227,6 @@ class User < ActiveRecord::Base
     Group.from("(#{union.to_sql}) namespaces")
   end
 
-=======
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
   protected
 
   # override, from Devise::Validatable

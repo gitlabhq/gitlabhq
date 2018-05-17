@@ -27,15 +27,6 @@ export default () => {
         mediator,
       };
     },
-<<<<<<< HEAD
-=======
-    created() {
-      eventHub.$on('postAction', this.postAction);
-    },
-    beforeDestroy() {
-      eventHub.$off('postAction', this.postAction);
-    },
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
     methods: {
       requestRefreshPipelineGraph() {
         // When an action is clicked

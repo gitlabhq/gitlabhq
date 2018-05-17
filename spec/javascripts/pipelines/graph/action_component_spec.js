@@ -28,15 +28,6 @@ describe('pipeline graph action component', () => {
     component.$destroy();
   });
 
-<<<<<<< HEAD
-=======
-  it('should emit an event with the provided link', () => {
-    eventHub.$on('postAction', link => {
-      expect(link).toEqual('foo');
-    });
-  });
-
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
   it('should render the provided title as a bootstrap tooltip', () => {
     expect(component.$el.getAttribute('data-original-title')).toEqual('bar');
   });

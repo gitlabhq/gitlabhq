@@ -64,12 +64,7 @@ export default {
      */
     onClickAction() {
       $(this.$el).tooltip('hide');
-<<<<<<< HEAD
 
-=======
-      eventHub.$emit('postAction', this.link);
-      this.linkRequested = this.link;
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
       this.isDisabled = true;
 
       axios.post(`${this.link}.json`)

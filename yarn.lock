@@ -54,15 +54,9 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-<<<<<<< HEAD
 "@gitlab-org/gitlab-svgs@^1.22.0":
   version "1.22.0"
   resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.22.0.tgz#9f2daefebcda911cba8341313c8c464c8087fe44"
-=======
-"@gitlab-org/gitlab-svgs@^1.20.0":
-  version "1.20.0"
-  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.20.0.tgz#4c3fa3a91e0693114654b0066fb1ef04c0602047"
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
@@ -9082,7 +9076,6 @@ webpack-bundle-analyzer@^2.11.1:
 webpack-cli@^2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/webpack-cli/-/webpack-cli-2.1.2.tgz#9c9a4b90584f7b8acaf591238ef0667e04c817f6"
-<<<<<<< HEAD
   dependencies:
     chalk "^2.3.2"
     cross-spawn "^6.0.5"
@@ -9115,40 +9108,6 @@ webpack-dev-middleware@3.1.3:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/webpack-dev-middleware/-/webpack-dev-middleware-3.1.3.tgz#8b32aa43da9ae79368c1bf1183f2b6cf5e1f39ed"
   dependencies:
-=======
-  dependencies:
-    chalk "^2.3.2"
-    cross-spawn "^6.0.5"
-    diff "^3.5.0"
-    enhanced-resolve "^4.0.0"
-    envinfo "^4.4.2"
-    glob-all "^3.1.0"
-    global-modules "^1.0.0"
-    got "^8.2.0"
-    import-local "^1.0.0"
-    inquirer "^5.1.0"
-    interpret "^1.0.4"
-    jscodeshift "^0.5.0"
-    listr "^0.13.0"
-    loader-utils "^1.1.0"
-    lodash "^4.17.5"
-    log-symbols "^2.2.0"
-    mkdirp "^0.5.1"
-    p-each-series "^1.0.0"
-    p-lazy "^1.0.0"
-    prettier "^1.5.3"
-    supports-color "^5.3.0"
-    v8-compile-cache "^1.1.2"
-    webpack-addons "^1.1.5"
-    yargs "^11.1.0"
-    yeoman-environment "^2.0.0"
-    yeoman-generator "^2.0.4"
-
-webpack-dev-middleware@3.1.3:
-  version "3.1.3"
-  resolved "https://registry.yarnpkg.com/webpack-dev-middleware/-/webpack-dev-middleware-3.1.3.tgz#8b32aa43da9ae79368c1bf1183f2b6cf5e1f39ed"
-  dependencies:
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
     loud-rejection "^1.6.0"
     memory-fs "~0.4.1"
     mime "^2.1.0"

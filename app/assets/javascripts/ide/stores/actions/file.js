@@ -196,11 +196,8 @@ export const unstageChange = ({ commit }, path) => {
 };
 
 export const openPendingTab = ({ commit, getters, dispatch, state }, { file, keyPrefix }) => {
-<<<<<<< HEAD
   if (getters.activeFile && getters.activeFile.key === `${keyPrefix}-${file.key}`) return false;
 
-=======
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
   state.openFiles.forEach(f => eventHub.$emit(`editor.update.model.dispose.${f.key}`));
 
   commit(types.ADD_PENDING_TAB, { file, keyPrefix });

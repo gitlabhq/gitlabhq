@@ -110,13 +110,8 @@ export default {
                     Welcome to the GitLab IDE
                   </h4>
                   <p>
-<<<<<<< HEAD
                     Select a file from the left sidebar to begin editing.
                     Afterwards, you'll be able to commit your changes.
-=======
-                    You can select a file in the left sidebar to begin
-                    editing and use the right sidebar to commit your changes.
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
                   </p>
                 </div>
               </div>

@@ -437,7 +437,6 @@ feature 'Login' do
 
       expect(current_path).to eq(root_path)
     end
-<<<<<<< HEAD
 
     context 'when 2FA is required for the user' do
       before do
@@ -540,7 +539,5 @@ feature 'Login' do
         expect(page).to have_content('Profile was successfully updated')
       end
     end
-=======
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
   end
 end

@@ -1148,15 +1148,9 @@ describe Project do
 
   describe '#any_runners?' do
     context 'shared runners' do
-<<<<<<< HEAD
       let(:project) { create(:project, shared_runners_enabled: shared_runners_enabled) }
       let(:specific_runner) { create(:ci_runner) }
       let(:shared_runner) { create(:ci_runner, :shared) }
-=======
-      let(:project) { create :project, shared_runners_enabled: shared_runners_enabled }
-      let(:specific_runner) { create :ci_runner }
-      let(:shared_runner) { create :ci_runner, :shared }
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 
       context 'for shared runners disabled' do
         let(:shared_runners_enabled) { false }
@@ -1214,7 +1208,6 @@ describe Project do
     end
 
     context 'group runners' do
-<<<<<<< HEAD
       let(:project) { create(:project, group_runners_enabled: group_runners_enabled) }
       let(:group) { create(:group, projects: [project]) }
       let(:group_runner) { create(:ci_runner, groups: [group]) }
@@ -1229,22 +1222,6 @@ describe Project do
         it 'has a group runner, but they are prohibited to use' do
           group_runner
 
-=======
-      let(:project) { create :project, group_runners_enabled: group_runners_enabled }
-      let(:group) { create :group, projects: [project] }
-      let(:group_runner) { create :ci_runner, groups: [group] }
-
-      context 'for group runners disabled' do
-        let(:group_runners_enabled) { false }
-
-        it 'has no runners available' do
-          expect(project.any_runners?).to be_falsey
-        end
-
-        it 'has a group runner, but they are prohibited to use' do
-          group_runner
-
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
           expect(project.any_runners?).to be_falsey
         end
       end

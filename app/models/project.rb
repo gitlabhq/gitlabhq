@@ -23,10 +23,7 @@ class Project < ActiveRecord::Base
   include ::Gitlab::Utils::StrongMemoize
   include ChronicDurationAttribute
   include FastDestroyAll::Helpers
-<<<<<<< HEAD
   include WithUploads
-=======
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
 
   extend Gitlab::ConfigHelper
 

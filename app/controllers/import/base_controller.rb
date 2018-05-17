@@ -7,15 +7,9 @@ class Import::BaseController < ApplicationController
 
   def find_jobs(import_type)
     current_user.created_projects
-<<<<<<< HEAD
       .includes(:import_state)
       .where(import_type: import_type)
       .to_json(only: [:id], methods: [:import_status])
-=======
-        .includes(:import_state)
-        .where(import_type: import_type)
-        .to_json(only: [:id], methods: [:import_status])
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
   end
 
   def find_or_create_namespace(names, owner)

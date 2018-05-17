@@ -22,12 +22,8 @@ module ShaAttribute
       column = columns.find { |c| c.name == name.to_s }
 
       unless column
-<<<<<<< HEAD
         warn "WARNING: sha_attribute #{name.inspect} is invalid since the column doesn't exist - you may need to run database migrations"
         return
-=======
-        raise ArgumentError.new("sha_attribute #{name.inspect} is invalid since the column doesn't exist")
->>>>>>> f67fa26c271... Undo unrelated changes from b1fa486b74875df8cddb4aab8f6d31c036b38137
       end
 
       unless column.type == :binary
