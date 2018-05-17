@@ -9,6 +9,8 @@ module Gitlab
   # there is a strict limit on total execution time. See the RE2 documentation
   # at https://github.com/google/re2/wiki/Syntax for more details.
   class UntrustedRegexp
+    require_dependency 're2'
+
     delegate :===, :source, to: :regexp
 
     def initialize(pattern, multiline: false)
@@ -50,6 +52,27 @@ module Gitlab
       UntrustedRegexp.new(pattern, multiline: multiline)
     rescue RegexpError
       Regexp.new(pattern)
+    end
+
+    def self.valid?(pattern)
+      self.fabricate(pattern)
+    rescue RegexpError
+      false
+    end
+
+    def self.fabricate(pattern)
+      matches = pattern.match(%r{^/(?<regexp>.+)/(?<flags>[ismU]*)$})
+
+      if matches
+        expression = matches[:regexp]
+        flags = matches[:flags]
+
+        expression.prepend("(?#{flags})") if flags.present?
+
+        self.new(expression, multiline: false)
+      else
+        self.new(pattern, multiline: false)
+      end
     end
 
     private
