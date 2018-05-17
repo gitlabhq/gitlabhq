@@ -10,6 +10,7 @@ class Group < Namespace
   include LoadedInGroupList
   include GroupDescendant
   include TokenAuthenticatable
+  include WithUploads
 
   has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   alias_method :members, :group_members
@@ -29,8 +30,6 @@ class Group < Namespace
   has_many :labels, class_name: 'GroupLabel'
   has_many :variables, class_name: 'Ci::GroupVariable'
   has_many :custom_attributes, class_name: 'GroupCustomAttribute'
-
-  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :boards
   has_many :badges, class_name: 'GroupBadge'

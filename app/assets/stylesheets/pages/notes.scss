@@ -455,6 +455,10 @@ ul.notes {
     white-space: normal;
   }
 
+  .system-note-separator {
+    color: $gl-text-color-disabled;
+  }
+
   a:hover {
     text-decoration: underline;
   }
