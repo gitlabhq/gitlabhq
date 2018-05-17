@@ -9,7 +9,7 @@ import axios from './lib/utils/axios_utils';
 export default class LabelManager {
   constructor({ togglePriorityButton, prioritizedLabels, otherLabels } = {}) {
     this.togglePriorityButton = togglePriorityButton || $('.js-toggle-priority');
-    this.prioritizedLabels = prioritizedLabels || $('.js-prioritized-labels-sortable');
+    this.prioritizedLabels = prioritizedLabels || $('.js-prioritized-labels');
     this.otherLabels = otherLabels || $('.js-other-labels');
     this.errorMessage = 'Unable to update label prioritization at this time';
     this.emptyState = document.querySelector('#js-priority-labels-empty-state');
@@ -102,7 +102,6 @@ export default class LabelManager {
   }
 
   onPrioritySortUpdate() {
-    debugger;
     this.savePrioritySort()
       .catch(() => flash(this.errorMessage));
   }
