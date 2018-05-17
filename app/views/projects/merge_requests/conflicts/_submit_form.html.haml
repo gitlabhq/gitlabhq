@@ -2,13 +2,13 @@
 .form-horizontal.resolve-conflicts-form
   .form-group
     .col-md-4
-      %h4 Resolve conflicts on source branch
+      %h4= _('Resolve conflicts on source branch')
       .resolve-info
-        You can resolve the merge conflict using either the Interactive mode, by choosing
+        #{ _('You can resolve the merge conflict using either the Interactive mode, by choosing') }
         %code Use ours
-        or
+        #{ _('or') }
         %code Use theirs
-        buttons, or by editing the files directly. Commit these changes into
+        #{ _('buttons, or by editing the files directly. Commit these changes into') }
         #{link_to @merge_request.source_branch, project_tree_path(@merge_request.project, @merge_request.source_branch), class: "ref-name"}.
     .col-md-8
       %label.label-light{ "for" => "commit-message" }

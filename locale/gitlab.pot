@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-16 18:52+0200\n"
-"PO-Revision-Date: 2018-05-16 18:52+0200\n"
+"POT-Creation-Date: 2018-05-17 09:05-0700\n"
+"PO-Revision-Date: 2018-05-17 09:05-0700\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -3407,6 +3407,9 @@ msgstr ""
 msgid "Reset runners registration token"
 msgstr ""
 
+msgid "Resolve conflicts on source branch"
+msgstr ""
+
 msgid "Resolve discussion"
 msgstr ""
 
@@ -4599,6 +4602,9 @@ msgstr ""
 msgid "You can only edit files when you are on a branch"
 msgstr ""
 
+msgid "You can resolve the merge conflict using either the Interactive mode, by choosing"
+msgstr ""
+
 msgid "You cannot write to this read-only GitLab instance."
 msgstr ""
 
@@ -4684,6 +4690,9 @@ msgid "assign yourself"
 msgstr ""
 
 msgid "branch name"
+msgstr ""
+
+msgid "buttons, or by editing the files directly. Commit these changes into"
 msgstr ""
 
 msgid "command line instructions"
