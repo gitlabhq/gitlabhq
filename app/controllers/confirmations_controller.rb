@@ -1,9 +1,7 @@
 class ConfirmationsController < Devise::ConfirmationsController
-<<<<<<< HEAD
   prepend ::EE::ConfirmationsController
-=======
+
   include AcceptsPendingInvitations
->>>>>>> upstream/master
 
   def almost_there
     flash[:notice] = nil
