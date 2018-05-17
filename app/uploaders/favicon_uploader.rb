@@ -1,4 +1,6 @@
 class FaviconUploader < AttachmentUploader
+  EXTENSION_WHITELIST = %w[png ico].freeze
+
   include CarrierWave::MiniMagick
 
   version :favicon_main do
@@ -11,7 +13,7 @@ class FaviconUploader < AttachmentUploader
   end
 
   def extension_whitelist
-    %w[png ico]
+    EXTENSION_WHITELIST
   end
 
   private
