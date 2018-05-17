@@ -9,7 +9,7 @@
   import CommitComponent from '../../vue_shared/components/commit.vue';
   import LoadingButton from '../../vue_shared/components/loading_button.vue';
   import Icon from '../../vue_shared/components/icon.vue';
-  import { PIPELINES_TABLE } from '../constants.js'
+  import { PIPELINES_TABLE } from '../constants';
 
   /**
    * Pipeline table row.
