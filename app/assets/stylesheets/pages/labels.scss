@@ -261,6 +261,8 @@
 }
 
 .label-list-item {
+  overflow-x: scroll;
+
   .content-list &:before,
   .content-list &:after {
     content: none;
