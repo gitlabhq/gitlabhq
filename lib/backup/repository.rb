@@ -67,7 +67,7 @@ module Backup
     end
 
     def prepare_directories
-      return if GitalyClient.feature_enabled?(:backup_skip_prepare_directories)
+      return if Gitlab::GitalyClient.feature_enabled?(:backup_skip_prepare_directories)
 
       Gitlab.config.repositories.storages.each do |name, repository_storage|
         gitaly_migrate(:remove_repositories) do |is_enabled|
@@ -89,6 +89,24 @@ module Backup
               access_denied_error(path)
             rescue Errno::EBUSY
               resource_busy_error(path)
+            end
+          end
+        end
+      end
+    end
+
+    def restore_custom_hooks
+      gitaly_migrate(:restore_custom_hooks) do |is_enabled|
+        # TODO: Need to find a way to do this for gitaly
+        # Gitaly migration issue: https://gitlab.com/gitlab-org/gitaly/issues/1195
+        unless is_enabled
+          in_path(path_to_tars(project)) do |dir|
+            path_to_project_repo = path_to_repo(project)
+            cmd = %W(tar -xf #{path_to_tars(project, dir)} -C #{path_to_project_repo} #{dir})
+
+            output, status = Gitlab::Popen.popen(cmd)
+            unless status.zero?
+              progress_warn(project, cmd.join(' '), output)
             end
           end
         end
@@ -123,21 +141,7 @@ module Backup
           progress.puts "[Failed] restoring #{project.full_path} repository".color(:red)
         end
 
-        gitaly_migrate(:restore_custom_hooks) do |is_enabled|
-          # TODO: Need to find a way to do this for gitaly
-          # Gitaly migration issue: https://gitlab.com/gitlab-org/gitaly/issues/1195
-          unless is_enabled
-            in_path(path_to_tars(project)) do |dir|
-              path_to_project_repo = path_to_repo(project)
-              cmd = %W(tar -xf #{path_to_tars(project, dir)} -C #{path_to_project_repo} #{dir})
-
-              output, status = Gitlab::Popen.popen(cmd)
-              unless status.zero?
-                progress_warn(project, cmd.join(' '), output)
-              end
-            end
-          end
-        end
+        restore_custom_hooks unless Gitlab::GitalyClient.feature_enabled?(:backup_skip_restore_custom_hooks)
 
         wiki = ProjectWiki.new(project)
         path_to_wiki_bundle = path_to_bundle(wiki)
