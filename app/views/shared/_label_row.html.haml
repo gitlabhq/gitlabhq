@@ -16,7 +16,7 @@
       - if show_label_merge_requests_link
         &middot;
         %li.label-link-item.inline
-          = link_to_label(label, subject: subject, type: :merge_request) { 'Merge requests' }
+          = link_to_label(label, subject: subject, type: :merge_request) { _('Merge requests') }
       - if label.priority?
         %li.label-link-item.js-priority-badge.inline.prepend-left-10
-          .label-badge.label-badge-blue Prioritized label
+          .label-badge.label-badge-blue= _('Prioritized label')

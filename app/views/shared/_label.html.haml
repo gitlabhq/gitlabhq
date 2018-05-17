@@ -15,9 +15,9 @@
       - if @project.present?
         %li.inline.js-toggle-priority{ data: { url: remove_priority_project_label_path(@project, label),
           dom_id: dom_id(label), type: label.type } }
-          %button.label-action.add-priority.btn.btn-transparent.has-tooltip{ title: 'Prioritize', type: 'button', :'data-placement' => 'top' }
+          %button.label-action.add-priority.btn.btn-transparent.has-tooltip{ title: _('Prioritize'), type: 'button', :'data-placement' => 'top' }
             = sprite_icon('star-o')
-          %button.label-action.remove-priority.btn.btn-transparent.has-tooltip{ title: 'Remove priority', type: 'button', :'data-placement' => 'top' }
+          %button.label-action.remove-priority.btn.btn-transparent.has-tooltip{ title: _('Remove priority'), type: 'button', :'data-placement' => 'top' }
             = sprite_icon('star')
       %li.inline
         = link_to edit_label_path(label), class: 'btn btn-transparent label-action' do
@@ -39,27 +39,27 @@
                           target: '#promote-label-modal',
                           container: 'body',
                           toggle: 'modal' } }
-                  Promote to group label
+                  = _('Promote to group label')
             %li
-              = link_to 'Delete', destroy_label_path(label), title: 'Delete', method: :delete, data: { confirm: 'Remove this label? Are you sure?' }, class: 'text-danger'
+              = link_to _('Delete'), destroy_label_path(label), title: 'Delete', method: :delete, data: { confirm: _('Remove this label? Are you sure?') }, class: 'text-danger'
     - if current_user
       %li.inline.label-subscription
         - if can_subscribe_to_label_in_different_levels?(label)
           %button.js-unsubscribe-button.test.label-subscribe-button.btn.btn-default{ class: ('hidden' if status.unsubscribed?), data: { url: toggle_subscription_path, toggle: 'tooltip' }, title: tooltip_title }
-            %span Unsubscribe
+            %span= _('Unsubscribe')
           .dropdown.dropdown-group-label{ class: ('hidden' unless status.unsubscribed?) }
             %button.label-subscribe-button.btn.btn-default{ data: { toggle: 'dropdown' } }
               %span
-                Subscribe
+                = _('Subscribe')
                 = sprite_icon('chevron-down')
             .dropdown-menu.dropdown-menu-align-right
               %ul
                 %li
                   %button.js-subscribe-button.label-subscribe-button.btn.btn-default{ class: ('hidden' unless status.unsubscribed?), data: { status: status, url: toggle_subscription_project_label_path(@project, label) } }
-                    %span Subscribe at project level
+                    %span= _('Subscribe at project level')
                 %li
                   %button.js-subscribe-button.label-subscribe-button.btn.btn-default{ class: ('hidden' unless status.unsubscribed?), data: { status: status, url: toggle_subscription_group_label_path(label.group, label) } }
-                    %span Subscribe at group level
+                    %span= _('Subscribe at group level')
         - else
           %button.js-subscribe-button.label-subscribe-button.btn.btn-default{ data: { status: status, url: toggle_subscription_path, toggle: 'tooltip' }, title: tooltip_title }
             %span= label_subscription_toggle_button_text(label, @project)
