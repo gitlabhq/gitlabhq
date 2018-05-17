@@ -59,7 +59,7 @@ module API
           status: true,
           gl_repository: gl_repository,
           gl_username: user&.username,
-          repository_path: repository_path,
+          repository_path: nil,
           gitaly: gitaly_payload(params[:action])
         }
       end
