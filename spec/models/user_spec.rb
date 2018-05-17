@@ -1223,6 +1223,24 @@ describe User do
     end
   end
 
+  describe '#accept_pending_invitations!' do
+    let(:user) { create(:user, email: 'user@email.com') }
+    let!(:project_member_invite) { create(:project_member, :invited, invite_email: user.email) }
+    let!(:group_member_invite) { create(:group_member, :invited, invite_email: user.email) }
+    let!(:external_project_member_invite) { create(:project_member, :invited, invite_email: 'external@email.com') }
+    let!(:external_group_member_invite) { create(:group_member, :invited, invite_email: 'external@email.com') }
+
+    it 'accepts all the user members pending invitations and returns the accepted_members' do
+      accepted_members = user.accept_pending_invitations!
+
+      expect(accepted_members).to match_array([project_member_invite, group_member_invite])
+      expect(group_member_invite.reload).not_to be_invite
+      expect(project_member_invite.reload).not_to be_invite
+      expect(external_project_member_invite.reload).to be_invite
+      expect(external_group_member_invite.reload).to be_invite
+    end
+  end
+
   describe '#all_emails' do
     let(:user) { create(:user) }
 
