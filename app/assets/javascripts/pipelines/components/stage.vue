@@ -21,6 +21,7 @@ import Icon from '../../vue_shared/components/icon.vue';
 import LoadingIcon from '../../vue_shared/components/loading_icon.vue';
 import JobComponent from './graph/job_component.vue';
 import tooltip from '../../vue_shared/directives/tooltip';
+import { PIPELINES_TABLE } from '../constants.js'
 
 export default {
   components: {
@@ -141,7 +142,7 @@ export default {
     },
 
     pipelineActionRequestComplete() {
-      if (this.type === 'PIPELINES_TABLE') {
+      if (this.type === PIPELINES_TABLE) {
         // warn the table to update
         eventHub.$emit('refreshPipelinesTable');
       } else {
