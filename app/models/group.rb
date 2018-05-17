@@ -13,6 +13,7 @@ class Group < Namespace
   include LoadedInGroupList
   include GroupDescendant
   include TokenAuthenticatable
+  include WithUploads
 
   has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   alias_method :members, :group_members
@@ -35,7 +36,6 @@ class Group < Namespace
 
   has_many :ldap_group_links, foreign_key: 'group_id', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :hooks, dependent: :destroy, class_name: 'GroupHook' # rubocop:disable Cop/ActiveRecordDependent
-  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :boards
 

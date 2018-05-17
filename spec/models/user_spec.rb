@@ -44,7 +44,7 @@ describe User do
     it { is_expected.to have_many(:builds).dependent(:nullify) }
     it { is_expected.to have_many(:pipelines).dependent(:nullify) }
     it { is_expected.to have_many(:chat_names).dependent(:destroy) }
-    it { is_expected.to have_many(:uploads).dependent(:destroy) }
+    it { is_expected.to have_many(:uploads) }
     it { is_expected.to have_many(:reported_abuse_reports).dependent(:destroy).class_name('AbuseReport') }
     it { is_expected.to have_many(:custom_attributes).class_name('UserCustomAttribute') }
 
@@ -2870,6 +2870,14 @@ describe User do
       allow(Gitlab::Database).to receive(:read_only?) { true }
 
       expect { user.increment_failed_attempts! }.not_to change(user, :failed_attempts)
+    end
+  end
+
+  context 'with uploads' do
+    it_behaves_like 'model with mounted uploader', false do
+      let(:model_object) { create(:user, :with_avatar) }
+      let(:upload_attribute) { :avatar }
+      let(:uploader_class) { AttachmentUploader }
     end
   end
 end
