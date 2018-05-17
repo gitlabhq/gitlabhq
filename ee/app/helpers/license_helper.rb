@@ -22,7 +22,7 @@ module LicenseHelper
 
     message << expiration_message
 
-    message << link_to('Buy now!', Gitlab::SUBSCRIPTIONS_PLANS_URL, target: '_blank') if is_trial
+    message << link_to('Buy now!', ::EE::SUBSCRIPTIONS_PLANS_URL, target: '_blank') if is_trial
 
     if current_license.expired? && current_license.will_block_changes?
       message << 'Pushing code and creation of issues and merge requests'
@@ -69,7 +69,7 @@ module LicenseHelper
 
   def new_trial_url
     return_to_url = CGI.escape(Gitlab.config.gitlab.url)
-    uri = URI.parse(Gitlab::SUBSCRIPTIONS_URL)
+    uri = URI.parse(::EE::SUBSCRIPTIONS_URL)
     uri.path = '/trials/new'
     uri.query = "return_to=#{return_to_url}"
     uri.to_s

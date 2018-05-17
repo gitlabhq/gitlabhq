@@ -15,11 +15,6 @@ module Gitlab
   VERSION = File.read(root.join("VERSION")).strip.freeze
   REVISION = Gitlab::Popen.popen(%W(#{config.git.bin_path} log --pretty=format:%h -n 1)).first.chomp.freeze
 
-  # EE constants START
-  SUBSCRIPTIONS_URL = 'https://customers.gitlab.com'.freeze
-  SUBSCRIPTIONS_PLANS_URL = "#{SUBSCRIPTIONS_URL}/plans".freeze
-  # EE constants END
-
   def self.com?
     # Check `gl_subdomain?` as well to keep parity with gitlab.com
     Gitlab.config.gitlab.url == COM_URL || gl_subdomain?
