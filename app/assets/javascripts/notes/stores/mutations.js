@@ -1,10 +1,4 @@
 import * as utils from './utils';
-import {
-  collapseSystemNotes,
-  getTimeDifferenceMinutes,
-  isSystemNote,
-  changeDescriptionNote,
-} from './collapse_utils';
 import * as types from './mutation_types';
 import * as constants from '../constants';
 import { isInMRPage } from '../../lib/utils/common_utils';
@@ -31,28 +25,7 @@ export default {
         noteData.resolve_with_issue_path = note.resolve_with_issue_path;
       }
 
-      // last system note
-      let changedNote = {};
-      // TODO: change this to the actual system note
-      const lastSystemNote = state.notes[state.notes.length - 1];
-      const currentNotes = state.notes.slice(0);
-      const timeDifference = getTimeDifferenceMinutes(lastSystemNote.notes[0], noteData.notes[0]);
-      const bothAreSystemNotes =
-        isSystemNote(noteData.notes[0]) && isSystemNote(lastSystemNote.notes[0]);
-      if (bothAreSystemNotes && timeDifference < 10) {
-        const timesUpdated = lastSystemNote.notes[0].times_updated;
-        if (!timesUpdated) {
-          changedNote =
-            changeDescriptionNote(lastSystemNote.notes[0], 2, timeDifference);
-        } else {
-          changedNote =
-            changeDescriptionNote(lastSystemNote.notes[0], timesUpdated + 1, timeDifference);
-        }
-        currentNotes[currentNotes.length - 1].notes[0] = changedNote;
-        Object.assign(state, { notes: currentNotes });
-      } else {
-        state.notes.push(noteData);
-      }
+      state.notes.push(noteData);
       document.dispatchEvent(new CustomEvent('refreshLegacyNotes'));
     }
   },
@@ -237,11 +210,5 @@ export default {
 
   [types.TOGGLE_STATE_BUTTON_LOADING](state, value) {
     Object.assign(state, { isToggleStateButtonLoading: value });
-  },
-
-  [types.MERGE_RELATED_SYSTEM_NOTES](state, notes) {
-    const collapsedNotes = collapseSystemNotes(notes.slice(0));
-
-    Object.assign(state, { notes: collapsedNotes });
   },
 };

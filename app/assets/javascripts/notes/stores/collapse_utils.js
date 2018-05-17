@@ -25,6 +25,8 @@ export const getTimeDifferenceMinutes = (noteBeggining, noteEnd) => {
   return timeDifferenceMinutes;
 };
 
+export const isSystemNote = note => note.system && note.note === DESCRIPTION_TYPE;
+
 export const collapseSystemNotes = (notes) => {
   let descriptionChangedTimes = 1;
   let descriptionNote = null;
@@ -36,15 +38,13 @@ export const collapseSystemNotes = (notes) => {
 
   notes.forEach((note) => {
     const currentNote = note.notes[0];
-    const isDescriptionNote = currentNote.system &&
-      currentNote.note === DESCRIPTION_TYPE;
 
-    if (isDescriptionNote && !descriptionNote) {
+    if (isSystemNote(currentNote) && !descriptionNote) {
       descriptionNote = currentNote;
       descriptionNoteIndex = noteCounter;
       collapsedNotes.push(note);
       noteCounter += 1;
-    } else if (isDescriptionNote && descriptionNote) {
+    } else if (isSystemNote(currentNote) && descriptionNote) {
       timeDifferenceMinutes =
         getTimeDifferenceMinutes(descriptionNote, currentNote);
 
@@ -58,7 +58,7 @@ export const collapseSystemNotes = (notes) => {
 
           collapsedNotes[descriptionNoteIndex].notes[0] = descriptionNote;
         }
-        if (isDescriptionNote) {
+        if (isSystemNote(currentNote)) {
           descriptionNote = currentNote;
           descriptionNoteIndex = noteCounter;
           collapsedNotes.push(note);
@@ -97,8 +97,6 @@ export const collapseSystemNotes = (notes) => {
 
   return collapsedNotes;
 };
-
-export const isSystemNote = note => note.system && note.note === DESCRIPTION_TYPE;
 
 // for babel-rewire
 export default {};
