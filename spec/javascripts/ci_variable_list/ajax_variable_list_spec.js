@@ -4,7 +4,7 @@ import axios from '~/lib/utils/axios_utils';
 import AjaxFormVariableList from '~/ci_variable_list/ajax_variable_list';
 
 const VARIABLE_PATCH_ENDPOINT = 'http://test.host/frontend-fixtures/builds-project/variables';
-const HIDE_CLASS = 'hidden';
+const HIDE_CLASS = 'hide';
 
 describe('AjaxFormVariableList', () => {
   preloadFixtures('projects/ci_cd_settings.html.raw');
