@@ -10,7 +10,7 @@ describe Ci::BuildPresenter do
   end
 
   it 'inherits from Gitlab::View::Presenter::Delegated' do
-    expect(described_class.superclass).to eq(Gitlab::View::Presenter::Delegated)
+    expect(described_class.ancestors).to include(Gitlab::View::Presenter::Delegated)
   end
 
   describe '#initialize' do

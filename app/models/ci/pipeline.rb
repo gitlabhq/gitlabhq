@@ -406,7 +406,18 @@ module Ci
     end
 
     def has_warnings?
-      builds.latest.failed_but_allowed.any?
+      number_of_warnings.positive?
+    end
+
+    def number_of_warnings
+      BatchLoader.for(id).batch(default_value: 0) do |pipeline_ids, loader|
+        Build.where(commit_id: pipeline_ids)
+          .latest
+          .failed_but_allowed
+          .group(:commit_id)
+          .count
+          .each { |id, amount| loader.call(id, amount) }
+      end
     end
 
     def set_config_source

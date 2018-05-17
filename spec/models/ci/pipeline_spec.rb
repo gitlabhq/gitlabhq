@@ -774,6 +774,33 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#number_of_warnings' do
+    it 'returns the number of warnings' do
+      create(:ci_build, :allowed_to_fail, :failed, pipeline: pipeline, name: 'rubocop')
+
+      expect(pipeline.number_of_warnings).to eq(1)
+    end
+
+    it 'supports eager loading of the number of warnings' do
+      pipeline2 = create(:ci_empty_pipeline, status: :created, project: project)
+
+      create(:ci_build, :allowed_to_fail, :failed, pipeline: pipeline, name: 'rubocop')
+      create(:ci_build, :allowed_to_fail, :failed, pipeline: pipeline2, name: 'rubocop')
+
+      pipelines = project.pipelines.to_a
+
+      pipelines.each(&:number_of_warnings)
+
+      # To run the queries we need to actually use the lazy objects, which we do
+      # by just sending "to_i" to them.
+      amount = ActiveRecord::QueryRecorder
+        .new { pipelines.each { |p| p.number_of_warnings.to_i } }
+        .count
+
+      expect(amount).to eq(1)
+    end
+  end
+
   shared_context 'with some outdated pipelines' do
     before do
       create_pipeline(:canceled, 'ref', 'A', project)

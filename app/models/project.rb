@@ -23,6 +23,7 @@ class Project < ActiveRecord::Base
   include ::Gitlab::Utils::StrongMemoize
   include ChronicDurationAttribute
   include FastDestroyAll::Helpers
+  include WithUploads
 
   extend Gitlab::ConfigHelper
 
@@ -300,8 +301,6 @@ class Project < ActiveRecord::Base
     presence: true,
     inclusion: { in: ->(_object) { Gitlab.config.repositories.storages.keys } }
   validates :variables, variable_duplicates: { scope: :environment_scope }
-
-  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   # Scopes
   scope :pending_delete, -> { where(pending_delete: true) }
@@ -998,7 +997,7 @@ class Project < ActiveRecord::Base
 
     available_services_names = Service.available_services_names - exceptions
 
-    available_services_names.map do |service_name|
+    available_services = available_services_names.map do |service_name|
       service = find_service(services, service_name)
 
       if service
@@ -1015,6 +1014,14 @@ class Project < ActiveRecord::Base
         end
       end
     end
+
+    available_services.reject do |service|
+      disabled_services.include?(service.to_param)
+    end
+  end
+
+  def disabled_services
+    []
   end
 
   def find_or_initialize_service(name)
