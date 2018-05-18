@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
 const webpack = require('webpack');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const StatsWriterPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
@@ -114,7 +115,7 @@ const config = {
     rules: [
       {
         test: /\.js$/,
-        exclude: /(node_modules|vendor\/assets)/,
+        exclude: path => /node_modules|vendor[\\/]assets/.test(path) && !/\.vue\.js/.test(path),
         loader: 'babel-loader',
         options: {
           cacheDirectory: path.join(ROOT_PATH, 'tmp/cache/babel-loader'),
@@ -154,10 +155,9 @@ const config = {
         },
       },
       {
-        test: /katex.min.css$/,
-        include: /node_modules\/katex\/dist/,
+        test: /.css$/,
         use: [
-          { loader: 'style-loader' },
+          'vue-style-loader',
           {
             loader: 'css-loader',
             options: {
@@ -203,6 +203,9 @@ const config = {
         return JSON.stringify(stats, null, 2);
       },
     }),
+
+    // enable vue-loader to use existing loader rules for other module types
+    new VueLoaderPlugin(),
 
     // prevent pikaday from including moment.js
     new webpack.IgnorePlugin(/moment/, /pikaday/),
