@@ -7,11 +7,11 @@ module RedisCacheable
   class_methods do
     def cached_attr_reader(*attributes)
       attributes.each do |attribute|
-        define_method(attribute) do
-          unless self.has_attribute?(attribute)
-            raise ArgumentError, "`cached_attr_reader` requires the #{self.class.name}\##{attribute} attribute to have a database column"
-          end
+        unless self.column_names.include?(attribute.to_s)
+          raise ArgumentError, "`cached_attr_reader` requires the #{self.name}##{attribute} to be a database attribute"
+        end
 
+        define_method(attribute) do
           cached_attribute(attribute) || read_attribute(attribute)
         end
       end
@@ -50,7 +50,9 @@ module RedisCacheable
     if Gitlab.rails5?
       self.class.type_for_attribute(attribute).cast(value)
     else
-      self.class.column_for_attribute(attribute).type_cast_from_database(value)
+      ActiveSupport::Deprecation.silence do
+        self.class.column_for_attribute(attribute).type_cast_from_database(value)
+      end
     end
   end
 end
