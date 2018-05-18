@@ -28,10 +28,11 @@ class FillFileStore < ActiveRecord::Migration
   class Upload < ActiveRecord::Base
     include EachBatch
     self.table_name = 'uploads'
+    self.inheritance_column = :_type_disabled # Disable STI
     BATCH_SIZE = 10_000
 
     def self.params_for_background_migration
-      yield self.where(store: nil), 'FillFileStoreUpload', 5.minutes, BATCH_SIZE
+      yield self.where(store: nil), 'FillStoreUpload', 5.minutes, BATCH_SIZE
     end
   end
 
