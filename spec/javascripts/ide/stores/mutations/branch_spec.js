@@ -54,15 +54,23 @@ describe('Multi-file store branch mutations', () => {
         projectId: 'Example',
         branchId: 'master',
         pipeline: {
-          id: 42,
-          ref: 'master',
-          status: 'failed',
+          id: '50',
+          details: {
+            status: {
+              icon: 'status_passed',
+              text: 'passed',
+            },
+          },
         },
       });
 
-      expect(localState.projects.Example.branches.master.commit.pipeline.id).toBe(42);
-      expect(localState.projects.Example.branches.master.commit.pipeline.ref).toBe('master');
-      expect(localState.projects.Example.branches.master.commit.pipeline.status).toBe('failed');
+      expect(localState.projects.Example.branches.master.commit.pipeline.id).toBe('50');
+      expect(localState.projects.Example.branches.master.commit.pipeline.details.status.text).toBe(
+        'passed',
+      );
+      expect(localState.projects.Example.branches.master.commit.pipeline.details.status.icon).toBe(
+        'status_passed',
+      );
     });
   });
 });

@@ -1,12 +1,58 @@
-import { refreshLastCommitData, getCommitPipeline } from '~/ide/stores/actions';
+import Visibility from 'visibilityjs';
+import { refreshLastCommitData, pollSuccessCallBack } from '~/ide/stores/actions';
 import store from '~/ide/stores';
 import service from '~/ide/services';
+import axios from '~/lib/utils/axios_utils';
 import { resetStore } from '../../helpers';
 import testAction from '../../../helpers/vuex_action_helper';
 
 describe('IDE store project actions', () => {
+  const fullPipelinesResponse = {
+    data: {
+      count: {
+        all: 2,
+      },
+      pipelines: [
+        {
+          id: '51',
+          details: {
+            status: {
+              icon: 'status_failed',
+              text: 'failed',
+            },
+          },
+        },
+        {
+          id: '50',
+          details: {
+            status: {
+              icon: 'status_passed',
+              text: 'passed',
+            },
+          },
+        },
+      ],
+    },
+  };
+  const setProjectState = () => {
+    store.state.currentProjectId = 'abc/def';
+    store.state.currentBranchId = 'master';
+    store.state.projects['abc/def'] = {
+      id: 4,
+      path_with_namespace: 'abc/def',
+      branches: {
+        master: {
+          commit: {
+            id: 'abc123def456ghi789jkl',
+            title: 'example',
+          },
+        },
+      },
+    };
+  };
+
   beforeEach(() => {
-    store.state.projects.abcproject = {};
+    store.state.projects['abc/def'] = {};
   });
 
   afterEach(() => {
@@ -15,9 +61,9 @@ describe('IDE store project actions', () => {
 
   describe('refreshLastCommitData', () => {
     beforeEach(() => {
-      store.state.currentProjectId = 'abcproject';
+      store.state.currentProjectId = 'abc/def';
       store.state.currentBranchId = 'master';
-      store.state.projects.abcproject = {
+      store.state.projects['abc/def'] = {
         id: 4,
         branches: {
           master: {
@@ -41,7 +87,7 @@ describe('IDE store project actions', () => {
           branchId: store.state.currentBranchId,
         })
         .then(() => {
-          expect(service.getBranchData).toHaveBeenCalledWith('abcproject', 'master');
+          expect(service.getBranchData).toHaveBeenCalledWith('abc/def', 'master');
 
           done();
         })
@@ -60,7 +106,7 @@ describe('IDE store project actions', () => {
           {
             type: 'SET_BRANCH_COMMIT',
             payload: {
-              projectId: 'abcproject',
+              projectId: 'abc/def',
               branchId: 'master',
               commit: { id: '123' },
             },
@@ -70,8 +116,8 @@ describe('IDE store project actions', () => {
           {
             type: 'getLastCommitPipeline',
             payload: {
-              projectId: 'abcproject',
-              projectIdNumber: store.state.projects.abcproject.id,
+              projectId: 'abc/def',
+              projectIdNumber: store.state.projects['abc/def'].id,
               branchId: 'master',
             },
           },
@@ -80,3 +126,91 @@ describe('IDE store project actions', () => {
       );
     });
   });
+
+  describe('pipelinePoll', () => {
+    beforeEach(() => {
+      setProjectState();
+      jasmine.clock().install();
+      spyOn(axios, 'get').and.returnValue(
+        Promise.resolve({
+          status: 200,
+          headers: {
+            'poll-interval': '10000',
+          },
+          data: {
+            foo: 'bar',
+          },
+        }),
+      );
+    });
+
+    afterEach(() => {
+      jasmine.clock().uninstall();
+    });
+
+    it('calls service with last fetched state', done => {
+      spyOn(Visibility, 'hidden').and.returnValue(false);
+
+      store
+        .dispatch('pipelinePoll')
+        .then(() => {
+          jasmine.clock().tick(1000);
+
+          expect(axios.get).toHaveBeenCalled();
+          expect(axios.get.calls.count()).toBe(1);
+        })
+        .then(() => new Promise(resolve => requestAnimationFrame(resolve)))
+        .then(() => {
+          jasmine.clock().tick(10000);
+          expect(axios.get.calls.count()).toBe(2);
+        })
+        .then(() => new Promise(resolve => requestAnimationFrame(resolve)))
+        .then(() => {
+          jasmine.clock().tick(10000);
+          expect(axios.get.calls.count()).toBe(3);
+        })
+        .then(() => new Promise(resolve => requestAnimationFrame(resolve)))
+        .then(() => {
+          jasmine.clock().tick(10000);
+          expect(axios.get.calls.count()).toBe(4);
+        })
+
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
+  describe('pollSuccessCallBack', () => {
+    beforeEach(() => {
+      setProjectState();
+    });
+
+    it('commits correct pipeline', done => {
+      testAction(
+        pollSuccessCallBack,
+        fullPipelinesResponse,
+        store.state,
+        [
+          {
+            type: 'SET_LAST_COMMIT_PIPELINE',
+            payload: {
+              projectId: 'abc/def',
+              branchId: 'master',
+              pipeline: {
+                id: '51',
+                details: {
+                  status: {
+                    icon: 'status_failed',
+                    text: 'failed',
+                  },
+                },
+              },
+            },
+          },
+        ], // mutations
+        [], // action
+        done,
+      );
+    });
+  });
+});

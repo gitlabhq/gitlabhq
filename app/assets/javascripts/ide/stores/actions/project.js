@@ -91,19 +91,19 @@ export const refreshLastCommitData = ({ commit, state, dispatch }, { projectId, 
       flash('Error loading last commit.', 'alert', document, null, false, true);
     });
 
-const pollSuccessCallBack = (resp, commit, state) => {
-  if (resp.pipelines && resp.pipelines.length) {
+export const pollSuccessCallBack = ({ commit, state, dispatch }, { data }) => {
+  if (data.pipelines && data.pipelines.length) {
     commit(types.SET_LAST_COMMIT_PIPELINE, {
       projectId: state.currentProjectId,
       branchId: state.currentBranchId,
-      pipeline: resp.pipelines[0] || {},
+      pipeline: data.pipelines[0] || {},
     });
   }
 
-  return resp;
+  return data;
 };
 
-export const pipelinePoll = ({ commit, state, getters }) => {
+export const pipelinePoll = ({ getters, dispatch }) => {
   eTagPoll = new Poll({
     resource: service,
     method: 'commitPipelines',
@@ -111,7 +111,7 @@ export const pipelinePoll = ({ commit, state, getters }) => {
       projectId: getters.currentProject.path_with_namespace,
       commitSha: getters.lastCommit.id,
     },
-    successCallback: resp => pollSuccessCallBack(resp.data, commit, state, getters),
+    successCallback: resp => dispatch('pollSuccessCallBack', { data: resp.data }),
     errorCallback: () => flash('Something went wrong while fetching the latest pipeline status.'),
   });
 
