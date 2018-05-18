@@ -1,6 +1,6 @@
-Merge Request #{@merge_request.to_reference} can no longer be merged due to the following reason(s):
+Merge Request #{@merge_request.to_reference} can no longer be merged due to the following #{pluralize(@reasons, 'reason')}:
 
-- @merge_request_presenter.unmergeable_reasons.each do |reason|
+- @reasons.each do |reason|
   * #{reason}
 
 Merge Request url: #{project_merge_request_url(@merge_request.target_project, @merge_request)}

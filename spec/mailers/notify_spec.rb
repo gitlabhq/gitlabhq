@@ -422,6 +422,7 @@ describe Notify do
           aggregate_failures do
             is_expected.to have_referable_subject(merge_request, reply: true)
             is_expected.to have_body_text(project_merge_request_path(project, merge_request))
+            is_expected.to have_body_text('reasons:')
             reasons.each do |reason|
               is_expected.to have_body_text(reason)
             end
