@@ -167,6 +167,28 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#persisted_variables' do
+    context 'when pipeline is not persisted yet' do
+      subject { build(:ci_pipeline).persisted_variables }
+
+      it 'does not contain some variables' do
+        keys = subject.map { |variable| variable[:key] }
+
+        expect(keys).not_to include 'CI_PIPELINE_ID'
+      end
+    end
+
+    context 'when pipeline is persisted' do
+      subject { build_stubbed(:ci_pipeline).persisted_variables }
+
+      it 'does not contain some variables' do
+        keys = subject.map { |variable| variable[:key] }
+
+        expect(keys).to include 'CI_PIPELINE_ID'
+      end
+    end
+  end
+
   describe '#predefined_variables' do
     subject { pipeline.predefined_variables }
 
