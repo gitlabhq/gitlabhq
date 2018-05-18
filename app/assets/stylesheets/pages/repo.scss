@@ -306,8 +306,18 @@
 }
 
 .preview-container {
-  height: 100%;
-  overflow: auto;
+  flex-grow: 1;
+  position: relative;
+
+  .md-previewer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    padding: $gl-padding;
+  }
 
   .file-container {
     background-color: $gray-darker;
@@ -346,10 +356,6 @@
       font-size: $label-font-size;
       color: $diff-image-info-color;
     }
-  }
-
-  .md-previewer {
-    padding: $gl-padding;
   }
 }
 
