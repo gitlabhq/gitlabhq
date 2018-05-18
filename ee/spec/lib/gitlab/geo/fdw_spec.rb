@@ -36,6 +36,18 @@ describe Gitlab::Geo::Fdw, :geo do
     end
   end
 
+  describe '.gitlab_tables' do
+    it 'excludes pg_ tables' do
+      tables = described_class.gitlab_tables
+
+      ActiveRecord::Base.connection.create_table(:pg_gitlab_test)
+
+      expect(described_class.gitlab_tables).to eq(tables)
+
+      ActiveRecord::Base.connection.drop_table(:pg_gitlab_test)
+    end
+  end
+
   describe 'fdw_capable?' do
     context 'with mocked FDW environment' do
       it 'returns true when PostgreSQL FDW is enabled' do
@@ -69,6 +81,20 @@ describe Gitlab::Geo::Fdw, :geo do
     context 'with functional FDW environment' do
       it 'returns true' do
         expect(described_class.fdw_capable?).to be_truthy
+      end
+
+      context 'with a pg_ table' do
+        before do
+          ActiveRecord::Base.connection.create_table(:pg_gitlab_test)
+        end
+
+        after do
+          ActiveRecord::Base.connection.drop_table(:pg_gitlab_test)
+        end
+
+        it 'returns true' do
+          expect(described_class.fdw_capable?).to be_truthy
+        end
       end
     end
   end
