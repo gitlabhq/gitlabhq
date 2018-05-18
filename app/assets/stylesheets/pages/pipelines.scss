@@ -392,19 +392,8 @@
       &:not(:first-child) {
         margin-left: 44px;
 
-<<<<<<< HEAD
         .left-connector {
           @include flat-connector-before;
-=======
-        .left-connector::before {
-          content: '';
-          position: absolute;
-          top: 48%;
-          left: -44px;
-          border-top: 2px solid $border-color;
-          width: 44px;
-          height: 1px;
->>>>>>> upstream/master
         }
       }
     }
