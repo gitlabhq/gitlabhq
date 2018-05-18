@@ -149,6 +149,7 @@ module API
       end
       patch '/:id/trace' do
         job = authenticate_job!
+        forbidden!('Job is not running') unless job.running?
 
         error!('400 Missing header Content-Range', 400) unless request.headers.key?('Content-Range')
         content_range = request.headers['Content-Range']
@@ -165,7 +166,7 @@ module API
         body_start = content_range[0].to_i
         body_end = body_start + body_data.bytesize
 
-        stream_size = job.trace.append(body_data, body_start)  if job.running?
+        stream_size = job.trace.append(body_data, body_start)
         unless stream_size == body_end
           break error!('416 Range Not Satisfiable', 416, { 'Range' => "0-#{stream_size}" })
         end
