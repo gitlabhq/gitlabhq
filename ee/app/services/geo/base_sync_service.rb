@@ -16,8 +16,7 @@ module Geo
     GEO_REMOTE_NAME = 'geo'.freeze
     LEASE_TIMEOUT    = 8.hours.freeze
     LEASE_KEY_PREFIX = 'geo_sync_service'.freeze
-    RETRY_BEFORE_REDOWNLOAD = 5
-    RETRY_LIMIT = 8
+    RETRIES_BEFORE_REDOWNLOAD = 5
 
     def initialize(project)
       @project = project
@@ -29,13 +28,8 @@ module Geo
 
         if should_be_retried?
           sync_repository
-        elsif should_be_redownloaded?
-          sync_repository(true)
         else
-          # Clean up the state of sync to start a new cycle
-          registry.delete
-          log_info("Clean up #{type} sync status")
-          break
+          sync_repository(true)
         end
 
         log_info("Finished #{type} sync")
@@ -97,13 +91,7 @@ module Geo
     def should_be_retried?
       return false if registry.public_send("force_to_redownload_#{type}")  # rubocop:disable GitlabSecurity/PublicSend
 
-      retry_count <= RETRY_BEFORE_REDOWNLOAD
-    end
-
-    def should_be_redownloaded?
-      return true if registry.public_send("force_to_redownload_#{type}") # rubocop:disable GitlabSecurity/PublicSend
-
-      (RETRY_BEFORE_REDOWNLOAD..RETRY_LIMIT) === retry_count
+      retry_count <= RETRIES_BEFORE_REDOWNLOAD
     end
 
     def current_node
