@@ -1,0 +1,5 @@
+---
+title: Memoize Gitlab::Database.version
+merge_request:
+author:
+type: performance
