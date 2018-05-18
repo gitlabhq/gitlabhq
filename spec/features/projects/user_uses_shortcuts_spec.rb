@@ -13,6 +13,8 @@ describe 'User uses shortcuts', :js do
 
   context 'when navigating to the Project pages' do
     it 'redirects to the details page' do
+      visit project_issues_path(project)
+
       find('body').native.send_key('g')
       find('body').native.send_key('p')
 
@@ -22,7 +24,7 @@ describe 'User uses shortcuts', :js do
 
     it 'redirects to the activity page' do
       find('body').native.send_key('g')
-      find('body').native.send_key('e')
+      find('body').native.send_key('v')
 
       expect(page).to have_active_navigation('Project')
       expect(page).to have_active_sub_navigation('Activity')
@@ -72,10 +74,19 @@ describe 'User uses shortcuts', :js do
       expect(page).to have_active_sub_navigation('List')
     end
 
+    it 'redirects to the issue board page' do
+      find('body').native.send_key('g')
+      find('body').native.send_key('b')
+
+      expect(page).to have_active_navigation('Issues')
+      expect(page).to have_active_sub_navigation('Board')
+    end
+
     it 'redirects to the new issue page' do
       find('body').native.send_key('i')
 
       expect(page).to have_content(project.title)
+      expect(page).to have_content('New Issue')
     end
   end
 
@@ -85,6 +96,34 @@ describe 'User uses shortcuts', :js do
       find('body').native.send_key('m')
 
       expect(page).to have_active_navigation('Merge Requests')
+    end
+  end
+
+  context 'when navigating to the CI / CD pages' do
+    it 'redirects to the Jobs page' do
+      find('body').native.send_key('g')
+      find('body').native.send_key('j')
+
+      expect(page).to have_active_navigation('CI / CD')
+      expect(page).to have_active_sub_navigation('Jobs')
+    end
+  end
+
+  context 'when navigating to the Operations pages' do
+    it 'redirects to the Environments page' do
+      find('body').native.send_key('g')
+      find('body').native.send_key('e')
+
+      expect(page).to have_active_navigation('Operations')
+      expect(page).to have_active_sub_navigation('Environments')
+    end
+
+    it 'redirects to the Kubernetes page' do
+      find('body').native.send_key('g')
+      find('body').native.send_key('k')
+
+      expect(page).to have_active_navigation('Operations')
+      expect(page).to have_active_sub_navigation('Kubernetes')
     end
   end
 

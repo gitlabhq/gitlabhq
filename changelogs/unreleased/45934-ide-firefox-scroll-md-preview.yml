@@ -1,0 +1,5 @@
+---
+title: Fix unscrollable Markdown preview of WebIDE on Firefox
+merge_request:
+author:
+type: fixed
