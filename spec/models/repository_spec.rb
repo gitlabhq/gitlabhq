@@ -2021,27 +2021,27 @@ describe Repository do
 
   describe '#xcode_project?' do
     before do
-      allow(repository).to receive(:tree).with(:head).and_return(double(:tree, blobs: [blob]))
+      allow(repository).to receive(:tree).with(:head).and_return(double(:tree, trees: [tree]))
     end
 
-    context 'when the root contains a *.xcodeproj file' do
-      let(:blob) { double(:blob, path: 'Foo.xcodeproj') }
+    context 'when the root contains a *.xcodeproj directory' do
+      let(:tree) { double(:tree, path: 'Foo.xcodeproj') }
 
       it 'returns true' do
         expect(repository.xcode_project?).to be_truthy
       end
     end
 
-    context 'when the root contains a *.xcworkspace file' do
-      let(:blob) { double(:blob, path: 'Foo.xcworkspace') }
+    context 'when the root contains a *.xcworkspace directory' do
+      let(:tree) { double(:tree, path: 'Foo.xcworkspace') }
 
       it 'returns true' do
         expect(repository.xcode_project?).to be_truthy
       end
     end
 
-    context 'when the root contains no XCode config file' do
-      let(:blob) { double(:blob, path: 'subdir/Foo.xcworkspace') }
+    context 'when the root contains no Xcode config directory' do
+      let(:tree) { double(:tree, path: 'Foo') }
 
       it 'returns false' do
         expect(repository.xcode_project?).to be_falsey
