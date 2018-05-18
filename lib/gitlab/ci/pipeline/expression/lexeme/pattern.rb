@@ -6,7 +6,7 @@ module Gitlab
           require_dependency 're2'
 
           class Pattern < Lexeme::Value
-            PATTERN = %r{^(?<regexp>/.+/[ismU]*)$}.freeze
+            PATTERN = %r{^/.+/[ismU]*$}.freeze
 
             def initialize(regexp)
               @value = regexp
@@ -23,7 +23,7 @@ module Gitlab
             end
 
             def self.build(string)
-              new(string.match(PATTERN)[:regexp])
+              new(string)
             end
           end
         end
