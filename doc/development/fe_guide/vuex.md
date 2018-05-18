@@ -37,12 +37,13 @@ import state from './state';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+export const createStore = () => new Vuex.Store({
   actions,
   getters,
   mutations,
   state,
 });
+export default createStore();
 ```
 
 ### `state.js`
@@ -320,10 +321,11 @@ In order to write unit tests for those components, we need to include the store 
 ```javascript
 //component_spec.js
 import Vue from 'vue';
-import store from './store';
+import { createStore } from './store';
 import component from './component.vue'
 
 describe('component', () => {
+  let store;
   let vm;
   let Component;
 
@@ -340,6 +342,8 @@ describe('component', () => {
       name: 'Foo',
       age: '30',
     };
+    
+    store = createStore();
 
     // populate the store
     store.dispatch('addUser', user);

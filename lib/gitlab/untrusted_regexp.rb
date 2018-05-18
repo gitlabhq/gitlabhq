@@ -9,7 +9,9 @@ module Gitlab
   # there is a strict limit on total execution time. See the RE2 documentation
   # at https://github.com/google/re2/wiki/Syntax for more details.
   class UntrustedRegexp
-    delegate :===, to: :regexp
+    require_dependency 're2'
+
+    delegate :===, :source, to: :regexp
 
     def initialize(pattern, multiline: false)
       if multiline
@@ -35,6 +37,10 @@ module Gitlab
       RE2.Replace(text, regexp, rewrite)
     end
 
+    def ==(other)
+      self.source == other.source
+    end
+
     # Handles regular expressions with the preferred RE2 library where possible
     # via UntustedRegex. Falls back to Ruby's built-in regular expression library
     # when the syntax would be invalid in RE2.
@@ -46,6 +52,24 @@ module Gitlab
       UntrustedRegexp.new(pattern, multiline: multiline)
     rescue RegexpError
       Regexp.new(pattern)
+    end
+
+    def self.valid?(pattern)
+      !!self.fabricate(pattern)
+    rescue RegexpError
+      false
+    end
+
+    def self.fabricate(pattern)
+      matches = pattern.match(%r{^/(?<regexp>.+)/(?<flags>[ismU]*)$})
+
+      raise RegexpError, 'Invalid regular expression!' if matches.nil?
+
+      expression = matches[:regexp]
+      flags = matches[:flags]
+      expression.prepend("(?#{flags})") if flags.present?
+
+      self.new(expression, multiline: false)
     end
 
     private
