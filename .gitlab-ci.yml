@@ -307,9 +307,8 @@ cloud-native-image:
   stage: build
   allow_failure: true
   cache: {}
-  retry: 0
   before_script:
-    - gem install gitlab --no-doc
+    - gem install gitlab --no-rdoc --no-ri
     - chmod 755 ./scripts/trigger-build-cloud-native
   script:
     - ./scripts/trigger-build-cloud-native
