@@ -55,6 +55,54 @@ describe('NodeDetailsSectionVerification', () => {
     });
   });
 
+  describe('methods', () => {
+    describe('getPrimaryNodeDetailItems', () => {
+      const primaryItems = [
+        {
+          title: 'Repository checksum progress',
+          valueProp: 'repositoriesChecksummed',
+        },
+        {
+          title: 'Wiki checksum progress',
+          valueProp: 'wikisChecksummed',
+        },
+        {
+          title: 'Replication slots',
+          valueProp: 'replicationSlots',
+        },
+      ];
+
+      it('returns array containing items to show under primary node', () => {
+        const actualPrimaryItems = vm.getPrimaryNodeDetailItems();
+        primaryItems.forEach((item, index) => {
+          expect(actualPrimaryItems[index].itemTitle).toBe(item.title);
+          expect(actualPrimaryItems[index].itemValue).toBe(mockNodeDetails[item.valueProp]);
+        });
+      });
+    });
+
+    describe('getSecondaryNodeDetailItems', () => {
+      const secondaryItems = [
+        {
+          title: 'Repository verification progress',
+          valueProp: 'verifiedRepositories',
+        },
+        {
+          title: 'Wiki verification progress',
+          valueProp: 'verifiedWikis',
+        },
+      ];
+
+      it('returns array containing items to show under secondary node', () => {
+        const actualSecondaryItems = vm.getSecondaryNodeDetailItems();
+        secondaryItems.forEach((item, index) => {
+          expect(actualSecondaryItems[index].itemTitle).toBe(item.title);
+          expect(actualSecondaryItems[index].itemValue).toBe(mockNodeDetails[item.valueProp]);
+        });
+      });
+    });
+  });
+
   describe('template', () => {
     it('renders component container element', () => {
       expect(vm.$el.classList.contains('verification-section')).toBe(true);

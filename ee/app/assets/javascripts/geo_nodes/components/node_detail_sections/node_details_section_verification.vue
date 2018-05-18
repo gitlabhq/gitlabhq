@@ -50,7 +50,7 @@
           primaryNodeDetailItems.push(
             {
               itemTitle: s__('GeoNodes|Repository checksum progress'),
-              itemValue: this.nodeDetails.verifiedRepositories,
+              itemValue: this.nodeDetails.repositoriesChecksummed,
               itemValueType: VALUE_TYPE.GRAPH,
               successLabel: s__('GeoNodes|Checksummed'),
               neutraLabel: s__('GeoNodes|Not checksummed'),
@@ -63,7 +63,7 @@
             },
             {
               itemTitle: s__('GeoNodes|Wiki checksum progress'),
-              itemValue: this.nodeDetails.verifiedWikis,
+              itemValue: this.nodeDetails.wikisChecksummed,
               itemValueType: VALUE_TYPE.GRAPH,
               successLabel: s__('GeoNodes|Checksummed'),
               neutraLabel: s__('GeoNodes|Not checksummed'),
