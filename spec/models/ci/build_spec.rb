@@ -629,6 +629,14 @@ describe Ci::Build do
 
         it { is_expected.to eq('review/host') }
       end
+
+      context 'when using persisted variables' do
+        let(:build) do
+          create(:ci_build, environment: 'review/x$CI_BUILD_ID')
+        end
+
+        it { is_expected.to eq('review/x') }
+      end
     end
 
     describe '#starts_environment?' do

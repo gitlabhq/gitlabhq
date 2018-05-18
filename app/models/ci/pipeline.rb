@@ -530,7 +530,7 @@ module Ci
     end
 
     def predefined_variables
-      persisted_variables
+      Gitlab::Ci::Variables::Collection.new
         .append(key: 'CI_CONFIG_PATH', value: ci_yaml_file_path)
         .append(key: 'CI_PIPELINE_SOURCE', value: source.to_s)
         .append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message)
