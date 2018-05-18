@@ -1,9 +1,5 @@
 module Gitlab
   module Auth
-    #
-    # Exceptions
-    #
-
     AuthenticationError = Class.new(StandardError)
     MissingTokenError = Class.new(AuthenticationError)
     TokenNotFoundError = Class.new(AuthenticationError)
@@ -19,12 +15,12 @@ module Gitlab
     end
 
     module UserAuthFinders
+      prepend ::EE::Gitlab::Auth::UserAuthFinders
+
       include Gitlab::Utils::StrongMemoize
 
       PRIVATE_TOKEN_HEADER = 'HTTP_PRIVATE_TOKEN'.freeze
       PRIVATE_TOKEN_PARAM = :private_token
-      JOB_TOKEN_HEADER = "HTTP_JOB_TOKEN".freeze
-      JOB_TOKEN_PARAM = :job_token
 
       # Check the Rails session for valid authentication details
       def find_user_from_warden
@@ -46,20 +42,6 @@ module Gitlab
         validate_access_token!
 
         access_token.user || raise(UnauthorizedError)
-      end
-
-      def find_user_from_job_token
-        return unless route_authentication_setting[:job_token_allowed]
-
-        token = (params[JOB_TOKEN_PARAM] || env[JOB_TOKEN_HEADER]).to_s
-        return unless token.present?
-
-        job = ::Ci::Build.find_by(token: token)
-        raise UnauthorizedError unless job
-
-        @job_token_authentication = true # rubocop:disable Gitlab/ModuleWithInstanceVariables
-
-        job.user
       end
 
       def validate_access_token!(scopes: [])
