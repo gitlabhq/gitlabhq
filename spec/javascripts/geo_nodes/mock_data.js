@@ -182,14 +182,24 @@ export const mockNodeDetails = {
     successCount: 0,
     failureCount: 0,
   },
+  repositoriesChecksummed: {
+    totalCount: 12,
+    successCount: 12,
+    failureCount: 0,
+  },
+  wikisChecksummed: {
+    totalCount: 12,
+    successCount: 12,
+    failureCount: 0,
+  },
   verifiedRepositories: {
-    totalCount: 0,
-    successCount: 0,
+    totalCount: 12,
+    successCount: 12,
     failureCount: 0,
   },
   verifiedWikis: {
-    totalCount: 0,
-    successCount: 0,
+    totalCount: 12,
+    successCount: 12,
     failureCount: 0,
   },
   lastEvent: {
