@@ -91,40 +91,6 @@ export const refreshLastCommitData = ({ commit, state, dispatch }, { projectId, 
       flash('Error loading last commit.', 'alert', document, null, false, true);
     });
 
-export const getCommitPipeline = (
-  { commit, state, dispatch },
-  { projectId, branchId, commitSha } = {},
-) =>
-  service
-    .commitPipelines(projectId, commitSha)
-    .then(({ data }) => {
-      const pipeline = data.pipelines && data.pipelines.length ? data.pipelines[0] : null;
-
-      commit(types.SET_LAST_COMMIT_PIPELINE, {
-        projectId,
-        branchId,
-        pipeline,
-      });
-    })
-    .catch(() => {
-      flash('Error loading the pipeline of last commit.', 'alert', document, null, false, true);
-    });
-
-export const handleCommitPipeline = ({ commit, state, dispatch }, responseData) => {
-  const projectId = state.currentProjectId;
-  const branchId = state.currentBranchId;
-  const pipeline =
-    responseData.data.pipelines && responseData.data.pipelines.length
-      ? responseData.data.pipelines[0]
-      : null;
-
-  commit(types.SET_LAST_COMMIT_PIPELINE, {
-    projectId,
-    branchId,
-    pipeline,
-  });
-};
-
 const pollSuccessCallBack = (resp, commit, state) => {
   if (resp.pipelines && resp.pipelines.length) {
     commit(types.SET_LAST_COMMIT_PIPELINE, {
