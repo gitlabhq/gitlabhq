@@ -181,10 +181,10 @@ describe Ci::Pipeline, :mailer do
     context 'when pipeline is persisted' do
       subject { build_stubbed(:ci_pipeline).persisted_variables }
 
-      it 'does not contain some variables' do
+      it 'does contains persisted variables' do
         keys = subject.map { |variable| variable[:key] }
 
-        expect(keys).to include 'CI_PIPELINE_ID'
+        expect(keys).to eq %w[CI_PIPELINE_ID]
       end
     end
   end
@@ -195,7 +195,11 @@ describe Ci::Pipeline, :mailer do
     it 'includes all predefined variables in a valid order' do
       keys = subject.map { |variable| variable[:key] }
 
-      expect(keys).to eq %w[CI_PIPELINE_ID CI_CONFIG_PATH CI_PIPELINE_SOURCE CI_COMMIT_MESSAGE CI_COMMIT_TITLE CI_COMMIT_DESCRIPTION]
+      expect(keys).to eq %w[CI_CONFIG_PATH
+                            CI_PIPELINE_SOURCE
+                            CI_COMMIT_MESSAGE
+                            CI_COMMIT_TITLE
+                            CI_COMMIT_DESCRIPTION]
     end
   end
 

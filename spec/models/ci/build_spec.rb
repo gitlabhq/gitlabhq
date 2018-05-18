@@ -1493,6 +1493,7 @@ describe Ci::Build do
     let(:container_registry_enabled) { false }
     let(:predefined_variables) do
       [
+        { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
         { key: 'CI_JOB_ID', value: build.id.to_s, public: true },
         { key: 'CI_JOB_TOKEN', value: build.token, public: false },
         { key: 'CI_BUILD_ID', value: build.id.to_s, public: true },
@@ -1524,7 +1525,6 @@ describe Ci::Build do
         { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true },
         { key: 'CI_PROJECT_URL', value: project.web_url, public: true },
         { key: 'CI_PROJECT_VISIBILITY', value: 'private', public: true },
-        { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
         { key: 'CI_CONFIG_PATH', value: pipeline.ci_yaml_file_path, public: true },
         { key: 'CI_PIPELINE_SOURCE', value: pipeline.source, public: true },
         { key: 'CI_COMMIT_MESSAGE', value: pipeline.git_commit_message, public: true },
