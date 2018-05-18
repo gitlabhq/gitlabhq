@@ -184,7 +184,7 @@ module Ci
     end
 
     def playable?
-      action? && (manual? || complete?)
+      action? && (manual? || retryable?)
     end
 
     def action?

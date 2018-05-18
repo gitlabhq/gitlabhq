@@ -1270,6 +1270,46 @@ describe Ci::Build do
     end
   end
 
+  describe '#playable?' do
+    context 'when build is a manual action' do
+      context 'when build has been skipped' do
+        subject { build_stubbed(:ci_build, :manual, status: :skipped) }
+
+        it { is_expected.not_to be_playable }
+      end
+
+      context 'when build has been canceled' do
+        subject { build_stubbed(:ci_build, :manual, status: :canceled) }
+
+        it { is_expected.to be_playable }
+      end
+
+      context 'when build is successful' do
+        subject { build_stubbed(:ci_build, :manual, status: :success) }
+
+        it { is_expected.to be_playable }
+      end
+
+      context 'when build has failed' do
+        subject { build_stubbed(:ci_build, :manual, status: :failed) }
+
+        it { is_expected.to be_playable }
+      end
+
+      context 'when build is a manual untriggered action' do
+        subject { build_stubbed(:ci_build, :manual, status: :manual) }
+
+        it { is_expected.to be_playable }
+      end
+    end
+
+    context 'when build is not a manual action' do
+      subject { build_stubbed(:ci_build, :success) }
+
+      it { is_expected.not_to be_playable }
+    end
+  end
+
   describe 'project settings' do
     describe '#allow_git_fetch' do
       it 'return project allow_git_fetch configuration' do
