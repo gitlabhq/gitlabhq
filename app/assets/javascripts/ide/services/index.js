@@ -75,7 +75,7 @@ export default {
       },
     });
   },
-  commitPipelines(projectId, commitSha) {
+  commitPipelines({ projectId, commitSha }) {
     return Api.commitPipelines(projectId, commitSha);
   },
 };

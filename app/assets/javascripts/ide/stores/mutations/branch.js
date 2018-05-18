@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import * as types from '../mutation_types';
 
 export default {
@@ -29,8 +30,6 @@ export default {
     });
   },
   [types.SET_LAST_COMMIT_PIPELINE](state, { projectId, branchId, pipeline }) {
-    Object.assign(state.projects[projectId].branches[branchId].commit, {
-      pipeline,
-    });
+    Vue.set(state.projects[projectId].branches[branchId].commit, 'pipeline', pipeline);
   },
 };
