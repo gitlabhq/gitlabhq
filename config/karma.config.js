@@ -1,47 +1,87 @@
-var path = require('path');
-var webpack = require('webpack');
-var argumentsParser = require('commander');
-var webpackConfig = require('./webpack.config.js');
-var ROOT_PATH = path.resolve(__dirname, '..');
+const path = require('path');
+const glob = require('glob');
+const chalk = require('chalk');
+const webpack = require('webpack');
+const argumentsParser = require('commander');
+const webpackConfig = require('./webpack.config.js');
 
-// remove problematic plugins
-if (webpackConfig.plugins) {
-  webpackConfig.plugins = webpackConfig.plugins.filter(function(plugin) {
-    return !(
-      plugin instanceof webpack.optimize.CommonsChunkPlugin ||
-      plugin instanceof webpack.optimize.ModuleConcatenationPlugin ||
-      plugin instanceof webpack.DefinePlugin
-    );
-  });
+const ROOT_PATH = path.resolve(__dirname, '..');
+
+function fatalError(message) {
+  console.error(chalk.red(`\nError: ${message}\n`));
+  process.exit(1);
 }
 
-var testFiles = argumentsParser
+// disable problematic options
+webpackConfig.entry = undefined;
+webpackConfig.mode = 'development';
+webpackConfig.optimization.runtimeChunk = false;
+webpackConfig.optimization.splitChunks = false;
+
+// use quicker sourcemap option
+webpackConfig.devtool = 'cheap-inline-source-map';
+
+const specFilters = argumentsParser
   .option(
     '-f, --filter-spec [filter]',
     'Filter run spec files by path. Multiple filters are like a logical OR.',
-    (val, memo) => {
-      memo.push(val);
+    (filter, memo) => {
+      memo.push(filter, filter.replace(/\/?$/, '/**/*.js'));
       return memo;
     },
     []
   )
   .parse(process.argv).filterSpec;
 
-webpackConfig.plugins.push(
-  new webpack.DefinePlugin({
-    'process.env.TEST_FILES': JSON.stringify(testFiles),
-  })
-);
+if (specFilters.length) {
+  const specsPath = /^(?:\.[\\\/])?spec[\\\/]javascripts[\\\/]/;
 
-webpackConfig.devtool = process.env.BABEL_ENV !== 'coverage' && 'cheap-inline-source-map';
+  // resolve filters
+  let filteredSpecFiles = specFilters.map(filter =>
+    glob
+      .sync(filter, {
+        root: ROOT_PATH,
+        matchBase: true,
+      })
+      .filter(path => path.endsWith('spec.js'))
+  );
+
+  // flatten
+  filteredSpecFiles = Array.prototype.concat.apply([], filteredSpecFiles);
+
+  // remove duplicates
+  filteredSpecFiles = [...new Set(filteredSpecFiles)];
+
+  if (filteredSpecFiles.length < 1) {
+    fatalError('Your filter did not match any test files.');
+  }
+
+  if (!filteredSpecFiles.every(file => specsPath.test(file))) {
+    fatalError('Test files must be located within /spec/javascripts.');
+  }
+
+  const newContext = filteredSpecFiles.reduce((context, file) => {
+    const relativePath = file.replace(specsPath, '');
+    context[file] = `./${relativePath}`;
+    return context;
+  }, {});
+
+  webpackConfig.plugins.push(
+    new webpack.ContextReplacementPlugin(
+      /spec[\\\/]javascripts$/,
+      path.join(ROOT_PATH, 'spec/javascripts'),
+      newContext
+    )
+  );
+}
 
 // Karma configuration
 module.exports = function(config) {
   process.env.TZ = 'Etc/UTC';
 
-  var progressReporter = process.env.CI ? 'mocha' : 'progress';
+  const progressReporter = process.env.CI ? 'mocha' : 'progress';
 
-  var karmaConfig = {
+  const karmaConfig = {
     basePath: ROOT_PATH,
     browsers: ['ChromeHeadlessCustom'],
     customLaunchers: {

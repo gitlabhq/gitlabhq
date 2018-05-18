@@ -5,6 +5,7 @@ import store from '~/ide/stores';
 import repoEditor from '~/ide/components/repo_editor.vue';
 import monacoLoader from '~/ide/monaco_loader';
 import Editor from '~/ide/lib/editor';
+import { activityBarViews } from '~/ide/constants';
 import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
 import setTimeoutPromise from '../../helpers/set_timeout_promise_helper';
 import { file, resetStore } from '../helpers';
@@ -23,7 +24,7 @@ describe('RepoEditor', () => {
     f.active = true;
     f.tempFile = true;
     vm.$store.state.openFiles.push(f);
-    vm.$store.state.entries[f.path] = f;
+    Vue.set(vm.$store.state.entries, f.path, f);
     vm.monaco = true;
 
     vm.$mount();
@@ -214,6 +215,30 @@ describe('RepoEditor', () => {
       expect(vm.editor.attachModel).toHaveBeenCalledWith(vm.model);
     });
 
+    it('attaches model to merge request editor', () => {
+      vm.$store.state.viewer = 'mrdiff';
+      vm.file.mrChange = true;
+      spyOn(vm.editor, 'attachMergeRequestModel');
+
+      Editor.editorInstance.modelManager.dispose();
+
+      vm.setupEditor();
+
+      expect(vm.editor.attachMergeRequestModel).toHaveBeenCalledWith(vm.model);
+    });
+
+    it('does not attach model to merge request editor when not a MR change', () => {
+      vm.$store.state.viewer = 'mrdiff';
+      vm.file.mrChange = false;
+      spyOn(vm.editor, 'attachMergeRequestModel');
+
+      Editor.editorInstance.modelManager.dispose();
+
+      vm.setupEditor();
+
+      expect(vm.editor.attachMergeRequestModel).not.toHaveBeenCalledWith(vm.model);
+    });
+
     it('adds callback methods', () => {
       spyOn(vm.editor, 'onPositionChange').and.callThrough();
 
@@ -290,6 +315,32 @@ describe('RepoEditor', () => {
       vm.$nextTick(() => {
         expect(vm.editor.updateDimensions).not.toHaveBeenCalled();
         expect(vm.editor.updateDiffView).not.toHaveBeenCalled();
+
+        done();
+      });
+    });
+  });
+
+  describe('show tabs', () => {
+    it('shows tabs in edit mode', () => {
+      expect(vm.$el.querySelector('.nav-links')).not.toBe(null);
+    });
+
+    it('hides tabs in review mode', done => {
+      vm.$store.state.currentActivityView = activityBarViews.review;
+
+      vm.$nextTick(() => {
+        expect(vm.$el.querySelector('.nav-links')).toBe(null);
+
+        done();
+      });
+    });
+
+    it('hides tabs in commit mode', done => {
+      vm.$store.state.currentActivityView = activityBarViews.commit;
+
+      vm.$nextTick(() => {
+        expect(vm.$el.querySelector('.nav-links')).toBe(null);
 
         done();
       });

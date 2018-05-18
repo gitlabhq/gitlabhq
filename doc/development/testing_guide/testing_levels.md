@@ -28,7 +28,7 @@ records should use stubs/doubles as much as possible.
 | `app/uploaders/` | `spec/uploaders/` | RSpec | |
 | `app/views/` | `spec/views/` | RSpec | |
 | `app/workers/` | `spec/workers/` | RSpec | |
-| `app/assets/javascripts/` | `spec/javascripts/` | Karma | More details in the [Frontent Testing guide](frontend_testing.md) section. |
+| `app/assets/javascripts/` | `spec/javascripts/` | Karma | More details in the [Frontend Testing guide](frontend_testing.md) section. |
 
 ## Integration tests
 
@@ -81,7 +81,6 @@ possible).
 | Tests path | Testing engine | Notes |
 | ---------- | -------------- | ----- |
 | `spec/features/` | [Capybara] + [RSpec] | If your spec has the `:js` metadata, the browser driver will be [Poltergeist], otherwise it's using [RackTest]. |
-| `features/` | Spinach | Spinach tests are deprecated, [you shouldn't add new Spinach tests](#spinach-feature-tests). |
 
 ### Consider **not** writing a system test!
 

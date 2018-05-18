@@ -73,3 +73,6 @@
   - [object_storage, 1]
   - [plugin, 1]
   - [pipeline_background, 1]
+  - [repository_update_remote_mirror, 1]
+  - [repository_remove_remote, 1]
+ 

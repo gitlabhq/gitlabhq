@@ -1,0 +1,5 @@
+---
+title: Move SquashBeforeMerge vue component
+merge_request: 18813
+author: George Tsiolis
+type: performance

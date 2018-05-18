@@ -10,6 +10,14 @@ class Ability
       end
     end
 
+    # Given a list of users and a group this method returns the users that can
+    # read the given group.
+    def users_that_can_read_group(users, group)
+      DeclarativePolicy.subject_scope do
+        users.select { |u| allowed?(u, :read_group, group) }
+      end
+    end
+
     # Given a list of users and a snippet this method returns the users that can
     # read the given snippet.
     def users_that_can_read_personal_snippet(users, snippet)

@@ -35,10 +35,16 @@ describe Projects::PipelinesController do
 
       expect(json_response).to include('pipelines')
       expect(json_response['pipelines'].count).to eq 4
-      expect(json_response['count']['all']).to eq 4
-      expect(json_response['count']['running']).to eq 1
-      expect(json_response['count']['pending']).to eq 1
-      expect(json_response['count']['finished']).to eq 1
+      expect(json_response['count']['all']).to eq '4'
+      expect(json_response['count']['running']).to eq '1'
+      expect(json_response['count']['pending']).to eq '1'
+      expect(json_response['count']['finished']).to eq '1'
+    end
+
+    it 'does not include coverage data for the pipelines' do
+      subject
+
+      expect(json_response['pipelines'][0]).not_to include('coverage')
     end
 
     context 'when performing gitaly calls', :request_store do
@@ -109,8 +115,7 @@ describe Projects::PipelinesController do
 
       it 'returns html source for stage dropdown' do
         expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to render_template('projects/pipelines/_stage')
-        expect(json_response).to include('html')
+        expect(response).to match_response_schema('pipeline_stage')
       end
     end
 
@@ -130,6 +135,42 @@ describe Projects::PipelinesController do
                   id: pipeline.id,
                   stage: name,
                   format: :json
+    end
+  end
+
+  describe 'GET stages_ajax.json' do
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+
+    context 'when accessing existing stage' do
+      before do
+        create(:ci_build, pipeline: pipeline, stage: 'build')
+
+        get_stage_ajax('build')
+      end
+
+      it 'returns html source for stage dropdown' do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template('projects/pipelines/_stage')
+        expect(json_response).to include('html')
+      end
+    end
+
+    context 'when accessing unknown stage' do
+      before do
+        get_stage_ajax('test')
+      end
+
+      it 'responds with not found' do
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    def get_stage_ajax(name)
+      get :stage_ajax, namespace_id: project.namespace,
+                       project_id: project,
+                       id: pipeline.id,
+                       stage: name,
+                       format: :json
     end
   end
 

@@ -1,0 +1,5 @@
+---
+title: Allow group masters to configure runners for groups
+merge_request: 9646
+author: Alexis Reigel
+type: added

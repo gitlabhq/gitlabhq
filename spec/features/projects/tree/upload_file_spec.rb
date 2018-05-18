@@ -35,17 +35,4 @@ feature 'Multi-file editor upload file', :js do
     expect(page).to have_selector('.multi-file-tab', text: 'doc_sample.txt')
     expect(find('.blob-editor-container .lines-content')['innerText']).to have_content(File.open(txt_file, &:readline))
   end
-
-  it 'uploads image file' do
-    find('.add-to-tree').click
-
-    # make the field visible so capybara can use it
-    execute_script('document.querySelector("#file-upload").classList.remove("hidden")')
-    attach_file('file-upload', img_file)
-
-    find('.add-to-tree').click
-
-    expect(page).to have_selector('.multi-file-tab', text: 'dk.png')
-    expect(page).not_to have_selector('.monaco-editor')
-  end
 end

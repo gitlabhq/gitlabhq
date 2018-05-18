@@ -26,17 +26,24 @@ export default {
       required: false,
       default: false,
     },
+    forceModifiedIcon: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     changedIcon() {
       const suffix = this.file.staged && !this.showStagedIcon ? '-solid' : '';
-      return this.file.tempFile ? `file-addition${suffix}` : `file-modified${suffix}`;
+      return this.file.tempFile && !this.forceModifiedIcon
+        ? `file-addition${suffix}`
+        : `file-modified${suffix}`;
     },
     stagedIcon() {
       return `${this.changedIcon}-solid`;
     },
     changedIconClass() {
-      return `multi-${this.changedIcon} prepend-left-5 pull-left`;
+      return `multi-${this.changedIcon} pull-left`;
     },
     tooltipTitle() {
       if (!this.showTooltip) return undefined;
@@ -72,13 +79,7 @@ export default {
     class="ide-file-changed-icon"
   >
     <icon
-      v-if="file.staged && showStagedIcon"
-      :name="stagedIcon"
-      :size="12"
-      :css-classes="changedIconClass"
-    />
-    <icon
-      v-if="file.changed || file.tempFile || (file.staged && !showStagedIcon)"
+      v-if="file.changed || file.tempFile || file.staged"
       :name="changedIcon"
       :size="12"
       :css-classes="changedIconClass"

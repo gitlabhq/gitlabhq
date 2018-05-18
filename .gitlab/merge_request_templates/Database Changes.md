@@ -37,12 +37,14 @@ When removing columns, tables, indexes or other structures:
 - [ ] [Documentation created/updated](https://docs.gitlab.com/ee/development/doc_styleguide.html)
 - [ ] API support added
 - [ ] Tests added for this feature/bug
-- Review
-  - [ ] Has been reviewed by Backend
-  - [ ] Has been reviewed by Database
+- Conform by the [code review guidelines](https://docs.gitlab.com/ee/development/code_review.html)
+  - [ ] Has been reviewed by a Backend maintainer
+  - [ ] Has been reviewed by a Database specialist
 - [ ] Conform by the [merge request performance guides](https://docs.gitlab.com/ee/development/merge_request_performance_guidelines.html)
 - [ ] Conform by the [style guides](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/CONTRIBUTING.md#style-guides)
-- [ ] [Squashed related commits together](https://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits)
+- [ ] If you have multiple commits, please combine them into a few logically organized commits by [squashing them](https://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits)
 - [ ] Internationalization required/considered
 - [ ] If paid feature, have we considered GitLab.com plan and how it works for groups and is there a design for promoting it to users who aren't on the correct plan
 - [ ] End-to-end tests pass (`package-and-qa` manual pipeline job)
+
+/label ~database

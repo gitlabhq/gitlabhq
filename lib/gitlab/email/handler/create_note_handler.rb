@@ -8,6 +8,7 @@ module Gitlab
         include ReplyProcessing
 
         delegate :project, to: :sent_notification, allow_nil: true
+        delegate :noteable, to: :sent_notification
 
         def can_handle?
           mail_key =~ /\A\w+\z/
@@ -18,7 +19,7 @@ module Gitlab
 
           validate_permission!(:create_note)
 
-          raise NoteableNotFoundError unless sent_notification.noteable
+          raise NoteableNotFoundError unless noteable
           raise EmptyEmailError if message.blank?
 
           verify_record!(

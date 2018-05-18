@@ -86,6 +86,7 @@ RSpec.configure do |config|
   config.include WaitForRequests, :js
   config.include LiveDebugger, :js
   config.include MigrationsHelpers, :migration
+  config.include RedisHelpers
 
   if ENV['CI']
     # This includes the first try, i.e. tests will be run 4 times before failing.
@@ -113,10 +114,10 @@ RSpec.configure do |config|
       m.call(*args)
 
       shard_name, repository_relative_path = args
-      shard_path = Gitlab.config.repositories.storages.fetch(shard_name).legacy_disk_path
       # We can't leave the hooks in place after a fork, as those would fail in tests
       # The "internal" API is not available
-      FileUtils.rm_rf(File.join(shard_path, repository_relative_path, 'hooks'))
+      Gitlab::Shell.new.rm_directory(shard_name,
+                                     File.join(repository_relative_path, 'hooks'))
     end
 
     # Enable all features by default for testing
@@ -136,6 +137,13 @@ RSpec.configure do |config|
     reset_delivered_emails!
   end
 
+  config.before(:example, :prometheus) do
+    matching_files = File.join(::Prometheus::Client.configuration.multiprocess_files_dir, "*.db")
+    Dir[matching_files].map { |filename| File.delete(filename) if File.file?(filename) }
+
+    Gitlab::Metrics.reset_registry!
+  end
+
   config.around(:each, :use_clean_rails_memory_store_caching) do |example|
     caching_store = Rails.cache
     Rails.cache = ActiveSupport::Cache::MemoryStore.new
@@ -146,21 +154,27 @@ RSpec.configure do |config|
   end
 
   config.around(:each, :clean_gitlab_redis_cache) do |example|
-    Gitlab::Redis::Cache.with(&:flushall)
+    redis_cache_cleanup!
 
     example.run
 
-    Gitlab::Redis::Cache.with(&:flushall)
+    redis_cache_cleanup!
   end
 
   config.around(:each, :clean_gitlab_redis_shared_state) do |example|
-    Gitlab::Redis::SharedState.with(&:flushall)
-    Sidekiq.redis(&:flushall)
+    redis_shared_state_cleanup!
 
     example.run
 
-    Gitlab::Redis::SharedState.with(&:flushall)
-    Sidekiq.redis(&:flushall)
+    redis_shared_state_cleanup!
+  end
+
+  config.around(:each, :clean_gitlab_redis_queues) do |example|
+    redis_queues_cleanup!
+
+    example.run
+
+    redis_queues_cleanup!
   end
 
   # The :each scope runs "inside" the example, so this hook ensures the DB is in the

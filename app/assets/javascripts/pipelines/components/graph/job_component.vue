@@ -46,11 +46,6 @@ export default {
       required: false,
       default: '',
     },
-    requestFinishedFor: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   computed: {
     status() {
@@ -84,6 +79,11 @@ export default {
       return this.job.status && this.job.status.action && this.job.status.action.path;
     },
   },
+  methods: {
+    pipelineActionRequestComplete() {
+      this.$emit('pipelineActionRequestComplete');
+    },
+  },
 };
 </script>
 <template>
@@ -108,7 +108,7 @@ export default {
     <div
       v-else
       v-tooltip
-      class="js-job-component-tooltip"
+      class="js-job-component-tooltip non-details-job-component"
       :title="tooltipText"
       :class="cssClassJobName"
       data-html="true"
@@ -126,7 +126,7 @@ export default {
       :tooltip-text="status.action.title"
       :link="status.action.path"
       :action-icon="status.action.icon"
-      :request-finished-for="requestFinishedFor"
+      @pipelineActionRequestComplete="pipelineActionRequestComplete"
     />
   </div>
 </template>

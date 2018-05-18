@@ -554,22 +554,8 @@ describe Gitlab::Git::Commit, seed_helper: true do
     it_should_behave_like '#stats'
   end
 
-  describe '#to_diff' do
-    subject { commit.to_diff }
-
-    it { is_expected.not_to include "From #{SeedRepo::Commit::ID}" }
-    it { is_expected.to include 'diff --git a/files/ruby/popen.rb b/files/ruby/popen.rb'}
-  end
-
   describe '#has_zero_stats?' do
     it { expect(commit.has_zero_stats?).to eq(false) }
-  end
-
-  describe '#to_patch' do
-    subject { commit.to_patch }
-
-    it { is_expected.to include "From #{SeedRepo::Commit::ID}" }
-    it { is_expected.to include 'diff --git a/files/ruby/popen.rb b/files/ruby/popen.rb'}
   end
 
   describe '#to_hash' do

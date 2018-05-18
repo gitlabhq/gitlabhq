@@ -49,20 +49,8 @@ sed -i 's/localhost/redis/g' config/redis.queues.yml
 cp config/redis.shared_state.yml.example config/redis.shared_state.yml
 sed -i 's/localhost/redis/g' config/redis.shared_state.yml
 
-# Some tasks (e.g. db:seed_fu) need to have a properly-configured database
-# user but not necessarily a full schema loaded
-if [ "$CREATE_DB_USER" != "false" ]; then
-    if [ "$GITLAB_DATABASE" = 'postgresql' ]; then
-        . scripts/create_postgres_user.sh
-    else
-        . scripts/create_mysql_user.sh
-    fi
-fi
-
 if [ "$SETUP_DB" != "false" ]; then
-    bundle exec rake db:drop db:create db:schema:load db:migrate
-
-    if [ "$GITLAB_DATABASE" = "mysql" ]; then
-        bundle exec rake add_limits_mysql
-    fi
+    setup_db
+elif getent hosts postgres || getent hosts mysql; then
+    setup_db_user_only
 fi

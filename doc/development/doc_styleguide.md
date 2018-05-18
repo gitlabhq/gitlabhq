@@ -1,10 +1,14 @@
+---
+description: 'Writing styles, markup, formatting, and reusing regular expressions throughout the GitLab Documentation.'
+---
+
 # Documentation style guidelines
 
 The documentation style guide defines the markup structure used in
 GitLab documentation. Check the
 [documentation guidelines](writing_documentation.md) for general development instructions.
 
-Check the GitLab hanbook for the [writing styles guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines).
+Check the GitLab handbook for the [writing styles guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines).
 
 ## Text
 
@@ -19,25 +23,41 @@ Check the GitLab hanbook for the [writing styles guidelines](https://about.gitla
 - Unless there's a logical reason not to, add documents in alphabetical order
 - Write in US English
 - Use [single spaces][] instead of double spaces
-- Jump a line between different markups (e.g., after every paragraph, hearder, list, etc)
+- Jump a line between different markups (e.g., after every paragraph, header, list, etc)
 - Capitalize "G" and "L" in GitLab
-- Capitalize feature, products, and methods names. E.g.: GitLab Runner, Geo,
-Issue Boards, Git, Prometheus, Continuous Integration.
+- Use sentence case for titles, headings, labels, menu items, and buttons.
+- Use title case when referring to [features](https://about.gitlab.com/features/) or [products](https://about.gitlab.com/pricing/), and methods. Note that some features are also objects (e.g. "Merge Requests" and "merge requests"). E.g.: GitLab Runner, Geo, Issue Boards, Git, Prometheus, Continuous Integration.
 
 ## Formatting
 
+- Use double asterisks (`**`) to mark a word or text in bold (`**bold**`)
+- Use undescore (`_`) for text in italics (`_italic_`)
+- Jump a line between different markups, for example:
+
+    ```md
+    ## Header
+
+    Paragraph.
+
+    - List item
+    - List item
+    ```
+
+### Punctuation
+
+For punctuation rules, please refer to the [GitLab UX guide](https://design.gitlab.com/content/punctuation/).
+
+### Ordered and unordered lists
+
 - Use dashes (`-`) for unordered lists instead of asterisks (`*`)
 - Use the number one (`1`) for ordered lists
-- Use underscores (`_`) to mark a word or text in italics
-- Use double asterisks (`**`) to mark a word or text in bold
-- When using lists, prefer not to end each item with a period. You can use
-  them if there are multiple sentences, just keep the last sentence without
-  a period
+- For punctuation in bullet lists, please refer to the [GitLab UX guide](https://design.gitlab.com/content/punctuation/)
 
 ## Headings
 
-- Add only one H1 title in each document, by adding `#` at the beginning of
-  it (when using markdown). For subheadings, use `##`, `###` and so on
+- Add **only one H1** in each document, by adding `#` at the beginning of
+  it (when using markdown). The `h1` will be the document `<title>`.
+- For subheadings, use `##`, `###` and so on
 - Avoid putting numbers in headings. Numbers shift, hence documentation anchor
   links shift too, which eventually leads to dead links. If you think it is
   compelling to add numbers in headings, make sure to at least discuss it with
@@ -106,21 +126,75 @@ Inside the document:
 - If a heading is placed right after an image, always add three dashes (`---`)
   between the image and the heading
 
-## Notes
+## Alert boxes
 
-- Notes should be quoted with the word `Note:` being bold. Use this form:
+Whenever you want to call the attention to a particular sentence,
+use the following markup for highlighting.
 
-    ```md
-    >**Note:**
-    This is something to note.
-    ```
+_Note that the alert boxes only work for one paragraph only. Multiple paragraphs,
+lists, headers, etc will not render correctly._
 
-    which renders to:
+### Note
 
-    >**Note:**
-    This is something to note.
+```md
+NOTE: **Note:**
+This is something to note.
+```
 
-    If the note spans across multiple lines it's OK to split the line.
+How it renders in docs.gitlab.com:
+
+NOTE: **Note:**
+This is something to note.
+
+### Tip
+
+```md
+TIP: **Tip:**
+This is a tip.
+```
+
+How it renders in docs.gitlab.com:
+
+TIP: **Tip:**
+This is a tip.
+
+### Caution
+
+```md
+CAUTION: **Caution:**
+This is something to be cautious about.
+```
+
+How it renders in docs.gitlab.com:
+
+CAUTION: **Caution:**
+This is something to be cautious about.
+
+### Danger
+
+```md
+DANGER: **Danger:**
+This is a breaking change, a bug, or something very important to note.
+```
+
+How it renders in docs.gitlab.com:
+
+DANGER: **Danger:**
+This is a breaking change, a bug, or something very important to note.
+
+## Blockquotes
+
+For highlighting a text within a blue blockquote, use this format:
+
+```md
+> This is a blockquote.
+```
+
+which renders in docs.gitlab.com to:
+
+> This is a blockquote.
+
+If the text spans across multiple lines it's OK to split the line.
 
 ## Specific sections and terms
 
@@ -137,7 +211,7 @@ below.
     > Introduced in GitLab 8.3.
     ```
 
-- If possible every feature should have a link to the MR, issue, or epic that introduced it.
+- Whenever possible, every feature should have a link to the MR, issue, or epic that introduced it.
   The above note would be then transformed to:
 
     ```md
@@ -152,10 +226,8 @@ below.
   the feature is available in:
 
     ```md
-    > [Introduced][ee-1234] in [GitLab Starter](https://about.gitlab.com/products/) 8.3.
+    > [Introduced][ee-1234] in [GitLab Starter](https://about.gitlab.com/pricing/) 8.3.
     ```
-
-    Otherwise, leave this mention out.
 
 ### Product badges
 

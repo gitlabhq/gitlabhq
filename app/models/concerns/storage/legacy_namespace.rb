@@ -45,25 +45,25 @@ module Storage
 
     # Hooks
 
-    # Save the storage paths before the projects are destroyed to use them on after destroy
+    # Save the storages before the projects are destroyed to use them on after destroy
     def prepare_for_destroy
-      old_repository_storage_paths
+      old_repository_storages
     end
 
     private
 
     def move_repositories
-      # Move the namespace directory in all storage paths used by member projects
-      repository_storage_paths.each do |repository_storage_path|
+      # Move the namespace directory in all storages used by member projects
+      repository_storages.each do |repository_storage|
         # Ensure old directory exists before moving it
-        gitlab_shell.add_namespace(repository_storage_path, full_path_was)
+        gitlab_shell.add_namespace(repository_storage, full_path_was)
 
         # Ensure new directory exists before moving it (if there's a parent)
-        gitlab_shell.add_namespace(repository_storage_path, parent.full_path) if parent
+        gitlab_shell.add_namespace(repository_storage, parent.full_path) if parent
 
-        unless gitlab_shell.mv_namespace(repository_storage_path, full_path_was, full_path)
+        unless gitlab_shell.mv_namespace(repository_storage, full_path_was, full_path)
 
-          Rails.logger.error "Exception moving path #{repository_storage_path} from #{full_path_was} to #{full_path}"
+          Rails.logger.error "Exception moving path #{repository_storage} from #{full_path_was} to #{full_path}"
 
           # if we cannot move namespace directory we should rollback
           # db changes in order to prevent out of sync between db and fs
@@ -72,33 +72,33 @@ module Storage
       end
     end
 
-    def old_repository_storage_paths
-      @old_repository_storage_paths ||= repository_storage_paths
+    def old_repository_storages
+      @old_repository_storage_paths ||= repository_storages
     end
 
-    def repository_storage_paths
+    def repository_storages
       # We need to get the storage paths for all the projects, even the ones that are
       # pending delete. Unscoping also get rids of the default order, which causes
       # problems with SELECT DISTINCT.
       Project.unscoped do
-        all_projects.select('distinct(repository_storage)').to_a.map(&:repository_storage_path)
+        all_projects.select('distinct(repository_storage)').to_a.map(&:repository_storage)
       end
     end
 
     def rm_dir
       # Remove the namespace directory in all storages paths used by member projects
-      old_repository_storage_paths.each do |repository_storage_path|
+      old_repository_storages.each do |repository_storage|
         # Move namespace directory into trash.
         # We will remove it later async
         new_path = "#{full_path}+#{id}+deleted"
 
-        if gitlab_shell.mv_namespace(repository_storage_path, full_path, new_path)
+        if gitlab_shell.mv_namespace(repository_storage, full_path, new_path)
           Gitlab::AppLogger.info %Q(Namespace directory "#{full_path}" moved to "#{new_path}")
 
           # Remove namespace directroy async with delay so
           # GitLab has time to remove all projects first
           run_after_commit do
-            GitlabShellWorker.perform_in(5.minutes, :rm_namespace, repository_storage_path, new_path)
+            GitlabShellWorker.perform_in(5.minutes, :rm_namespace, repository_storage, new_path)
           end
         end
       end

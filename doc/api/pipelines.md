@@ -14,6 +14,7 @@ GET /projects/:id/pipelines
 | `scope`   | string  | no       | The scope of pipelines, one of: `running`, `pending`, `finished`, `branches`, `tags` |
 | `status`  | string  | no       | The status of pipelines, one of: `running`, `pending`, `success`, `failed`, `canceled`, `skipped` |
 | `ref`     | string  | no       | The ref of pipelines |
+| `sha`     | string  | no       | The sha or pipelines |
 | `yaml_errors`| boolean  | no       | Returns pipelines with invalid configurations |
 | `name`| string  | no       | The name of the user who triggered pipelines |
 | `username`| string  | no       | The username of the user who triggered pipelines |
