@@ -422,6 +422,7 @@ gem 'toml-rb', '~> 1.0.0', require: false
 
 # Feature toggles
 gem 'flipper', '~> 0.13.0'
+gem 'flipper-ui', '~> 0.13.0'
 gem 'flipper-active_record', '~> 0.13.0'
 gem 'flipper-active_support_cache_store', '~> 0.13.0'
 

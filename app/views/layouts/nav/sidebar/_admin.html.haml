@@ -72,6 +72,10 @@
             = link_to admin_background_jobs_path, title: 'Background Jobs' do
               %span
                 Background Jobs
+          = nav_link(controller: :features) do
+            = link_to admin_features_path, title: 'Features' do
+              %span
+                Features
           = nav_link(controller: :logs) do
             = link_to admin_logs_path, title: 'Logs' do
               %span
