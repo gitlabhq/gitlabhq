@@ -543,6 +543,7 @@ We do not support variables containing tokens because of security reasons.
 
 You can find a full list of unsupported variables below:
 
+- `CI_PIPELINE_ID`
 - `CI_JOB_ID`
 - `CI_JOB_TOKEN`
 - `CI_BUILD_ID`
