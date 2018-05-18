@@ -1473,10 +1473,19 @@ module Gitlab
       def search_files_by_content(query, ref)
         return [] if empty? || query.blank?
 
-        offset = 2
-        args = %W(grep -i -I -n -z --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
+        safe_query = Regexp.escape(query)
+        ref ||= root_ref
 
-        run_git(args).first.scrub.split(/^--\n/)
+        gitaly_migrate(:search_files_by_content) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.search_files_by_content(ref, safe_query)
+          else
+            offset = 2
+            args = %W(grep -i -I -n -z --before-context #{offset} --after-context #{offset} -E -e #{safe_query} #{ref})
+
+            run_git(args).first.scrub.split(/^--\n/)
+          end
+        end
       end
 
       def can_be_merged?(source_sha, target_branch)
@@ -1491,12 +1500,19 @@ module Gitlab
 
       def search_files_by_name(query, ref)
         safe_query = Regexp.escape(query.sub(%r{^/*}, ""))
+        ref ||= root_ref
 
         return [] if empty? || safe_query.blank?
 
-        args = %W(ls-tree -r --name-status --full-tree #{ref || root_ref} -- #{safe_query})
+        gitaly_migrate(:search_files_by_name) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.search_files_by_name(ref, safe_query)
+          else
+            args = %W(ls-tree -r --name-status --full-tree #{ref} -- #{safe_query})
 
-        run_git(args).first.lines.map(&:strip)
+            run_git(args).first.lines.map(&:strip)
+          end
+        end
       end
 
       def find_commits_by_message(query, ref, path, limit, offset)
