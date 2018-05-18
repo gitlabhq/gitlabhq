@@ -72,6 +72,7 @@ module QA
 
       module Integration
         autoload :LDAP, 'qa/scenario/test/integration/ldap'
+        autoload :Kubernetes, 'qa/scenario/test/integration/kubernetes'
         autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
       end
 
