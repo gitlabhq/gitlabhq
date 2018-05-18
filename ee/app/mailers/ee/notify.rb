@@ -4,6 +4,10 @@ module EE
     extend ::Gitlab::Utils::Override
 
     included do
+      include ::Emails::AdminNotification
+      include ::Emails::CsvExport
+      include ::Emails::ServiceDesk
+
       attr_reader :group
     end
 

@@ -1,12 +1,10 @@
 class Notify < BaseMailer
-  prepend EE::Notify
+  prepend ::EE::Notify
 
   include ActionDispatch::Routing::PolymorphicRoutes
   include GitlabRoutingHelper
 
-  include Emails::AdminNotification
   include Emails::Issues
-  include Emails::CsvExport
   include Emails::MergeRequests
   include Emails::Notes
   include Emails::PagesDomains
@@ -14,8 +12,6 @@ class Notify < BaseMailer
   include Emails::Profile
   include Emails::Pipelines
   include Emails::Members
-
-  include Emails::EE::ServiceDesk
 
   helper MergeRequestsHelper
   helper DiffHelper
