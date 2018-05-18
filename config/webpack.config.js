@@ -13,7 +13,7 @@ const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 const IS_DEV_SERVER = process.argv.join(' ').indexOf('webpack-dev-server') !== -1;
 const DEV_SERVER_HOST = process.env.DEV_SERVER_HOST || 'localhost';
 const DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
-const DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
+const DEV_SERVER_LIVERELOAD = IS_DEV_SERVER && process.env.DEV_SERVER_LIVERELOAD !== 'false';
 const WEBPACK_REPORT = process.env.WEBPACK_REPORT;
 const NO_COMPRESSION = process.env.NO_COMPRESSION;
 
@@ -69,7 +69,7 @@ function generateEntries() {
   return Object.assign(manualEntries, autoEntries);
 }
 
-const config = {
+module.exports = {
   mode: IS_PRODUCTION ? 'production' : 'development',
 
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
@@ -84,36 +84,28 @@ const config = {
     globalObject: 'this', // allow HMR and web workers to play nice
   },
 
-  devtool: IS_PRODUCTION ? 'source-map' : 'cheap-module-eval-source-map',
+  resolve: {
+    extensions: ['.js'],
+    alias: {
+      '~': path.join(ROOT_PATH, 'app/assets/javascripts'),
+      emojis: path.join(ROOT_PATH, 'fixtures/emojis'),
+      empty_states: path.join(ROOT_PATH, 'app/views/shared/empty_states'),
+      icons: path.join(ROOT_PATH, 'app/views/shared/icons'),
+      images: path.join(ROOT_PATH, 'app/assets/images'),
+      vendor: path.join(ROOT_PATH, 'vendor/assets/javascripts'),
+      vue$: 'vue/dist/vue.esm.js',
+      spec: path.join(ROOT_PATH, 'spec/javascripts'),
 
-  optimization: {
-    nodeEnv: false,
-    runtimeChunk: 'single',
-    splitChunks: {
-      maxInitialRequests: 4,
-      cacheGroups: {
-        default: false,
-        common: () => ({
-          priority: 20,
-          name: 'main',
-          chunks: 'initial',
-          minChunks: autoEntriesCount * 0.9,
-        }),
-        vendors: {
-          priority: 10,
-          chunks: 'async',
-          test: /[\\/](node_modules|vendor[\\/]assets[\\/]javascripts)[\\/]/,
-        },
-        commons: {
-          chunks: 'all',
-          minChunks: 2,
-          reuseExistingChunk: true,
-        },
-      },
+      // EE-only
+      ee: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
+      ee_empty_states: path.join(ROOT_PATH, 'ee/app/views/shared/empty_states'),
+      ee_icons: path.join(ROOT_PATH, 'ee/app/views/shared/icons'),
+      ee_images: path.join(ROOT_PATH, 'ee/app/assets/images'),
     },
   },
 
   module: {
+    strictExportPresence: true,
     rules: [
       {
         test: /\.js$/,
@@ -184,9 +176,34 @@ const config = {
         ],
       },
     ],
-
     noParse: [/monaco-editor\/\w+\/vs\//],
-    strictExportPresence: true,
+  },
+
+  optimization: {
+    nodeEnv: false,
+    runtimeChunk: 'single',
+    splitChunks: {
+      maxInitialRequests: 4,
+      cacheGroups: {
+        default: false,
+        common: () => ({
+          priority: 20,
+          name: 'main',
+          chunks: 'initial',
+          minChunks: autoEntriesCount * 0.9,
+        }),
+        vendors: {
+          priority: 10,
+          chunks: 'async',
+          test: /[\\/](node_modules|vendor[\\/]assets[\\/]javascripts)[\\/]/,
+        },
+        commons: {
+          chunks: 'all',
+          minChunks: 2,
+          reuseExistingChunk: true,
+        },
+      },
+    },
   },
 
   plugins: [
@@ -240,43 +257,52 @@ const config = {
         },
       },
     ]),
-  ],
 
-  resolve: {
-    extensions: ['.js'],
-    alias: {
-      '~': path.join(ROOT_PATH, 'app/assets/javascripts'),
-      emojis: path.join(ROOT_PATH, 'fixtures/emojis'),
-      empty_states: path.join(ROOT_PATH, 'app/views/shared/empty_states'),
-      icons: path.join(ROOT_PATH, 'app/views/shared/icons'),
-      images: path.join(ROOT_PATH, 'app/assets/images'),
-      vendor: path.join(ROOT_PATH, 'vendor/assets/javascripts'),
-      vue$: 'vue/dist/vue.esm.js',
-      spec: path.join(ROOT_PATH, 'spec/javascripts'),
+    // compression can require a lot of compute time and is disabled in CI
+    IS_PRODUCTION && !NO_COMPRESSION && new CompressionPlugin(),
 
-      // EE-only
-      ee: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
-      ee_empty_states: path.join(ROOT_PATH, 'ee/app/views/shared/empty_states'),
-      ee_icons: path.join(ROOT_PATH, 'ee/app/views/shared/icons'),
-      ee_images: path.join(ROOT_PATH, 'ee/app/assets/images'),
+    // WatchForChangesPlugin
+    // TODO: publish this as a separate plugin
+    IS_DEV_SERVER && {
+      apply(compiler) {
+        compiler.hooks.emit.tapAsync('WatchForChangesPlugin', (compilation, callback) => {
+          const missingDeps = Array.from(compilation.missingDependencies);
+          const nodeModulesPath = path.join(ROOT_PATH, 'node_modules');
+          const hasMissingNodeModules = missingDeps.some(
+            file => file.indexOf(nodeModulesPath) !== -1
+          );
+
+          // watch for changes to missing node_modules
+          if (hasMissingNodeModules) compilation.contextDependencies.add(nodeModulesPath);
+
+          // watch for changes to automatic entrypoints
+          watchAutoEntries.forEach(watchPath => compilation.contextDependencies.add(watchPath));
+
+          // report our auto-generated bundle count
+          console.log(
+            `${autoEntriesCount} entries from '/pages' automatically added to webpack output.`
+          );
+
+          callback();
+        });
+      },
     },
-  },
 
-  // sqljs requires fs
-  node: {
-    fs: 'empty',
-  },
-};
+    // enable HMR only in webpack-dev-server
+    DEV_SERVER_LIVERELOAD && new webpack.HotModuleReplacementPlugin(),
 
-if (IS_PRODUCTION) {
-  // compression can require a lot of compute time and is disabled in CI
-  if (!NO_COMPRESSION) {
-    config.plugins.push(new CompressionPlugin());
-  }
-}
+    // optionally generate webpack bundle analysis
+    WEBPACK_REPORT &&
+      new BundleAnalyzerPlugin({
+        analyzerMode: 'static',
+        generateStatsFile: true,
+        openAnalyzer: false,
+        reportFilename: path.join(ROOT_PATH, 'webpack-report/index.html'),
+        statsFilename: path.join(ROOT_PATH, 'webpack-report/stats.json'),
+      }),
+  ].filter(Boolean),
 
-if (IS_DEV_SERVER) {
-  config.devServer = {
+  devServer: {
     host: DEV_SERVER_HOST,
     port: DEV_SERVER_PORT,
     disableHostCheck: true,
@@ -284,46 +310,10 @@ if (IS_DEV_SERVER) {
     stats: 'errors-only',
     hot: DEV_SERVER_LIVERELOAD,
     inline: DEV_SERVER_LIVERELOAD,
-  };
-  config.plugins.push({
-    apply(compiler) {
-      compiler.hooks.emit.tapAsync('WatchForChangesPlugin', (compilation, callback) => {
-        const missingDeps = Array.from(compilation.missingDependencies);
-        const nodeModulesPath = path.join(ROOT_PATH, 'node_modules');
-        const hasMissingNodeModules = missingDeps.some(
-          file => file.indexOf(nodeModulesPath) !== -1
-        );
+  },
 
-        // watch for changes to missing node_modules
-        if (hasMissingNodeModules) compilation.contextDependencies.add(nodeModulesPath);
+  devtool: IS_PRODUCTION ? 'source-map' : 'cheap-module-eval-source-map',
 
-        // watch for changes to automatic entrypoints
-        watchAutoEntries.forEach(watchPath => compilation.contextDependencies.add(watchPath));
-
-        // report our auto-generated bundle count
-        console.log(
-          `${autoEntriesCount} entries from '/pages' automatically added to webpack output.`
-        );
-
-        callback();
-      });
-    },
-  });
-  if (DEV_SERVER_LIVERELOAD) {
-    config.plugins.push(new webpack.HotModuleReplacementPlugin());
-  }
-}
-
-if (WEBPACK_REPORT) {
-  config.plugins.push(
-    new BundleAnalyzerPlugin({
-      analyzerMode: 'static',
-      generateStatsFile: true,
-      openAnalyzer: false,
-      reportFilename: path.join(ROOT_PATH, 'webpack-report/index.html'),
-      statsFilename: path.join(ROOT_PATH, 'webpack-report/stats.json'),
-    })
-  );
-}
-
-module.exports = config;
+  // sqljs requires fs
+  node: { fs: 'empty' },
+};
