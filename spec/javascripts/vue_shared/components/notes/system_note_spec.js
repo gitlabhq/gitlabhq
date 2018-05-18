@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import issueSystemNote from '~/vue_shared/components/notes/system_note.vue';
-import store from '~/notes/stores';
+import createStore from '~/notes/stores';
 
 describe('system note component', () => {
   let vm;
@@ -24,6 +24,7 @@ describe('system note component', () => {
       },
     };
 
+    const store = createStore();
     store.dispatch('setTargetNoteHash', `note_${props.note.id}`);
 
     const Component = Vue.extend(issueSystemNote);

@@ -1,15 +1,17 @@
 import Vue from 'vue';
-import store from '~/notes/stores';
+import createStore from '~/notes/stores';
 import awardsNote from '~/notes/components/note_awards_list.vue';
 import { noteableDataMock, notesDataMock } from '../mock_data';
 
 describe('note_awards_list component', () => {
+  let store;
   let vm;
   let awardsMock;
 
   beforeEach(() => {
     const Component = Vue.extend(awardsNote);
 
+    store = createStore();
     store.dispatch('setNoteableData', noteableDataMock);
     store.dispatch('setNotesData', notesDataMock);
     awardsMock = [
@@ -41,7 +43,9 @@ describe('note_awards_list component', () => {
 
   it('should render awarded emojis', () => {
     expect(vm.$el.querySelector('.js-awards-block button [data-name="flag_tz"]')).toBeDefined();
-    expect(vm.$el.querySelector('.js-awards-block button [data-name="cartwheel_tone3"]')).toBeDefined();
+    expect(
+      vm.$el.querySelector('.js-awards-block button [data-name="cartwheel_tone3"]'),
+    ).toBeDefined();
   });
 
   it('should be possible to remove awarded emoji', () => {

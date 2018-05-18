@@ -1,14 +1,16 @@
 import Vue from 'vue';
-import store from '~/notes/stores';
+import createStore from '~/notes/stores';
 import issueDiscussion from '~/notes/components/noteable_discussion.vue';
 import { noteableDataMock, discussionMock, notesDataMock } from '../mock_data';
 
 describe('issue_discussion component', () => {
+  let store;
   let vm;
 
   beforeEach(() => {
     const Component = Vue.extend(issueDiscussion);
 
+    store = createStore();
     store.dispatch('setNoteableData', noteableDataMock);
     store.dispatch('setNotesData', notesDataMock);
 

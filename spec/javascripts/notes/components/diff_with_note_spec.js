@@ -1,13 +1,14 @@
 import Vue from 'vue';
 import DiffWithNote from '~/notes/components/diff_with_note.vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import store from '~/notes/stores';
+import createStore from '~/notes/stores';
 import { mountComponentWithStore } from 'spec/helpers';
 
 const discussionFixture = 'merge_requests/diff_discussion.json';
 const imageDiscussionFixture = 'merge_requests/image_diff_discussion.json';
 
 describe('diff_with_note', () => {
+  let store;
   let vm;
   const diffDiscussionMock = getJSONFixture(discussionFixture)[0];
   const diffDiscussion = convertObjectPropsToCamelCase(diffDiscussionMock);
@@ -31,6 +32,7 @@ describe('diff_with_note', () => {
   };
 
   beforeEach(() => {
+    store = createStore();
     store.replaceState({
       ...store.state,
       notes: {

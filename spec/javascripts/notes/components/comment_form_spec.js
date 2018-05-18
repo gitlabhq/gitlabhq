@@ -1,18 +1,20 @@
 import $ from 'jquery';
 import Vue from 'vue';
 import Autosize from 'autosize';
-import store from '~/notes/stores';
+import createStore from '~/notes/stores';
 import CommentForm from '~/notes/components/comment_form.vue';
 import * as constants from '~/notes/constants';
 import { loggedOutnoteableData, notesDataMock, userDataMock, noteableDataMock } from '../mock_data';
 import { keyboardDownEvent } from '../../issue_show/helpers';
 
 describe('issue_comment_form component', () => {
+  let store;
   let vm;
   const Component = Vue.extend(CommentForm);
   let mountComponent;
 
   beforeEach(() => {
+    store = createStore();
     mountComponent = (noteableType = 'issue') =>
       new Component({
         propsData: {

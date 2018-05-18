@@ -2,7 +2,7 @@ import Vue from 'vue';
 import _ from 'underscore';
 import { headersInterceptor } from 'spec/helpers/vue_resource_helper';
 import * as actions from '~/notes/stores/actions';
-import store from '~/notes/stores';
+import createStore from '~/notes/stores';
 import testAction from '../../helpers/vuex_action_helper';
 import { resetStore } from '../helpers';
 import {
@@ -14,6 +14,12 @@ import {
 } from '../mock_data';
 
 describe('Actions Notes Store', () => {
+  let store;
+
+  beforeEach(() => {
+    store = createStore();
+  });
+
   afterEach(() => {
     resetStore(store);
   });
@@ -194,7 +200,14 @@ describe('Actions Notes Store', () => {
     });
 
     it('sets issue state as reopened', done => {
-      testAction(actions.toggleIssueLocalState, 'reopened', {}, [{ type: 'REOPEN_ISSUE' }], [], done);
+      testAction(
+        actions.toggleIssueLocalState,
+        'reopened',
+        {},
+        [{ type: 'REOPEN_ISSUE' }],
+        [],
+        done,
+      );
     });
   });
 

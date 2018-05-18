@@ -3,7 +3,7 @@ import _ from 'underscore';
 import Vue from 'vue';
 import notesApp from '~/notes/components/notes_app.vue';
 import service from '~/notes/services/notes_service';
-import store from '~/notes/stores';
+import createStore from '~/notes/stores';
 import '~/behaviors/markdown/render_gfm';
 import { mountComponentWithStore } from 'spec/helpers';
 import * as mockData from '../mock_data';
@@ -24,6 +24,7 @@ const vueMatchers = {
 describe('note_app', () => {
   let mountComponent;
   let vm;
+  let store;
 
   beforeEach(() => {
     jasmine.addMatchers(vueMatchers);
@@ -31,6 +32,7 @@ describe('note_app', () => {
 
     const IssueNotesApp = Vue.extend(notesApp);
 
+    store = createStore();
     mountComponent = data => {
       const props = data || {
         noteableData: mockData.noteableDataMock,
@@ -67,9 +69,7 @@ describe('note_app', () => {
       Vue.http.interceptors = _.without(Vue.http.interceptors, responseInterceptor);
     });
 
-    // TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-    // eslint-disable-next-line jasmine/no-disabled-tests
-    xit('should set notes data', () => {
+    it('should set notes data', () => {
       expect(vm.$store.state.notesData).toEqual(mockData.notesDataMock);
     });
 

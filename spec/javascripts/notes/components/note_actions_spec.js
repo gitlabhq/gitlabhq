@@ -1,14 +1,16 @@
 import Vue from 'vue';
-import store from '~/notes/stores';
+import createStore from '~/notes/stores';
 import noteActions from '~/notes/components/note_actions.vue';
 import { userDataMock } from '../mock_data';
 
 describe('issue_note_actions component', () => {
   let vm;
+  let store;
   let Component;
 
   beforeEach(() => {
     Component = Vue.extend(noteActions);
+    store = createStore();
   });
 
   afterEach(() => {
