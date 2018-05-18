@@ -26,6 +26,31 @@ describe MergeRequestWidgetEntity do
     expect(subject.as_json[:blob_path]).to include(:head_path)
   end
 
+  # methods for old artifact are deprecated and replaced with ones for the new name (#5779)
+  it 'has codeclimate data (with old artifact name codeclimate,json)' do
+    build = create(:ci_build, name: 'job')
+
+    allow(merge_request).to receive_messages(
+      expose_codeclimate_data?: true,
+      base_codeclimate_artifact: build,
+      head_codeclimate_artifact: build
+    )
+
+    expect(subject.as_json).to include(:codeclimate)
+  end
+
+  it 'has codeclimate data (with new artifact name gl-code-quality-report.json)' do
+    build = create(:ci_build, name: 'job')
+
+    allow(merge_request).to receive_messages(
+      expose_code_quality_data?: true,
+      base_code_quality_artifact: build,
+      head_code_quality_artifact: build
+    )
+
+    expect(subject.as_json).to include(:codeclimate)
+  end
+
   it 'has performance data' do
     build = create(:ci_build, name: 'job')
 

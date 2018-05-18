@@ -18,7 +18,8 @@ describe Ci::Pipeline do
   end
 
   PIPELINE_ARTIFACTS_METHODS = [
-    { method: :codeclimate_artifact, options: [Ci::Build::CODEQUALITY_FILE, 'codequality'] },
+    { method: :codeclimate_artifact, options: [Ci::Build::CODECLIMATE_FILE, 'codequality'] },
+    { method: :code_quality_artifact, options: [Ci::Build::CODEQUALITY_FILE, 'code_quality'] },
     { method: :performance_artifact, options: [Ci::Build::PERFORMANCE_FILE, 'performance'] },
     { method: :sast_artifact, options: [Ci::Build::SAST_FILE, 'sast'] },
     { method: :dependency_scanning_artifact, options: [Ci::Build::DEPENDENCY_SCANNING_FILE, 'dependency_scanning'] },
@@ -54,7 +55,7 @@ describe Ci::Pipeline do
         it { expect(pipeline.send(method)).to eq(build) }
       end
 
-      context 'no code_quality job' do
+      context 'no corresponding job' do
         before do
           create(:ci_build, pipeline: pipeline)
         end
@@ -64,7 +65,7 @@ describe Ci::Pipeline do
     end
   end
 
-  %w(sast dast performance sast_container container_scanning).each do |type|
+  %w(sast dependency_scanning dast performance sast_container container_scanning codeclimate code_quality).each do |type|
     method = "has_#{type}_data?"
 
     describe "##{method}" do
@@ -78,7 +79,7 @@ describe Ci::Pipeline do
     end
   end
 
-  %w(sast dast performance sast_container container_scanning).each do |type|
+  %w(sast dependency_scanning dast performance sast_container container_scanning codeclimate code_quality).each do |type|
     method = "expose_#{type}_data?"
 
     describe "##{method}" do

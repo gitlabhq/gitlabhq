@@ -7,7 +7,9 @@ module EE
     module Build
       extend ActiveSupport::Concern
 
-      CODEQUALITY_FILE = 'gl-code-quality-report.json'.freeze
+      # CODECLIMATE_FILE is deprecated and replaced with CODE_QUALITY_FILE (#5779)
+      CODECLIMATE_FILE = 'codeclimate.json'.freeze
+      CODE_QUALITY_FILE = 'gl-code-quality-report.json'.freeze
       DEPENDENCY_SCANNING_FILE = 'gl-dependency-scanning-report.json'.freeze
       LICENSE_MANAGEMENT_FILE = 'gl-license-report.json'.freeze
       SAST_FILE = 'gl-sast-report.json'.freeze
@@ -18,7 +20,9 @@ module EE
       DAST_FILE = 'gl-dast-report.json'.freeze
 
       included do
-        scope :codequality, -> { where(name: %w[code_quality codequality]) }
+        # codeclimate is deprecated and replaced with code_quality (#5779)
+        scope :codeclimate, -> { where(name: %w[codeclimate codequality]) }
+        scope :code_quality, -> { where(name: 'code_quality') }
         scope :performance, -> { where(name: %w[performance deploy]) }
         scope :sast, -> { where(name: 'sast') }
         scope :dependency_scanning, -> { where(name: 'dependency_scanning') }
@@ -46,8 +50,13 @@ module EE
         ::Gitlab::Database::LoadBalancing::Sticking.stick(:build, id)
       end
 
+      # has_codeclimate_json? is deprecated and replaced with has_code_quality_json? (#5779)
       def has_codeclimate_json?
-        has_artifact?(CODEQUALITY_FILE)
+        has_artifact?(CODECLIMATE_FILE)
+      end
+
+      def has_code_quality_json?
+        has_artifact?(CODE_QUALITY_FILE)
       end
 
       def has_performance_json?
