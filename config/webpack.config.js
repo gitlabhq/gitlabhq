@@ -84,6 +84,8 @@ const config = {
     globalObject: 'this', // allow HMR and web workers to play nice
   },
 
+  devtool: IS_PRODUCTION ? 'source-map' : 'cheap-module-eval-source-map',
+
   optimization: {
     nodeEnv: false,
     runtimeChunk: 'single',
@@ -267,8 +269,6 @@ const config = {
 };
 
 if (IS_PRODUCTION) {
-  config.devtool = 'source-map';
-
   // compression can require a lot of compute time and is disabled in CI
   if (!NO_COMPRESSION) {
     config.plugins.push(new CompressionPlugin());
@@ -276,7 +276,6 @@ if (IS_PRODUCTION) {
 }
 
 if (IS_DEV_SERVER) {
-  config.devtool = 'cheap-module-eval-source-map';
   config.devServer = {
     host: DEV_SERVER_HOST,
     port: DEV_SERVER_PORT,
