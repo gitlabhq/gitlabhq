@@ -2,6 +2,8 @@ module Gitlab
   module Auth
     module Saml
       class Config
+        prepend ::EE::Gitlab::Auth::Saml::Config
+
         class << self
           def options
             Gitlab::Auth::OAuth::Provider.config_for('saml')
@@ -13,10 +15,6 @@ module Gitlab
 
           def external_groups
             options[:external_groups]
-          end
-
-          def required_groups
-            Array(options[:required_groups])
           end
 
           def admin_groups
