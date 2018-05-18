@@ -21,6 +21,12 @@ module OmniAuth
         super
       end
 
+      # Prevent access to SLO and metadata endpoints
+      # These will need addtional work to securely support
+      def other_phase
+        call_app!
+      end
+
       def self.callback?(env)
         env['PATH_INFO'] =~ Gitlab::PathRegex.saml_callback_regex
       end
