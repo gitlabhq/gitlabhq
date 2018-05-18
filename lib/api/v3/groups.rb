@@ -131,8 +131,9 @@ module API
         delete ":id" do
           group = find_group!(params[:id])
           authorize! :admin_group, group
-          Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/46285')
-          present ::Groups::DestroyService.new(group, current_user).execute, with: Entities::GroupDetail, current_user: current_user
+          ::Groups::DestroyService.new(group, current_user).async_execute
+
+          accepted!
         end
 
         desc 'Get a list of projects in this group.' do
