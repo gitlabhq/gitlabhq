@@ -207,6 +207,10 @@ class MergeRequestWidgetEntity < IssuableEntity
     commit_change_content_project_merge_request_path(merge_request.project, merge_request)
   end
 
+  expose :builds_enabled do |merge_request|
+    merge_request.project.builds_enabled?
+  end
+
   private
 
   delegate :current_user, to: :request
