@@ -84,6 +84,10 @@ describe Gitlab::IncomingEmail do
       expect(described_class.key_from_address("replies+key@example.com")).to eq("key")
     end
 
+    it 'does not match emails with extra bits' do
+      expect(described_class.key_from_address('somereplies+somekey@example.com.someotherdomain.com')).to be nil
+    end
+
     context "on GitLab.com" do
       before do
         allow(Gitlab).to receive(:com?).and_return(true)
