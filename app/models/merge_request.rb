@@ -108,8 +108,8 @@ class MergeRequest < ActiveRecord::Base
 
   state_machine :merge_status, initial: :unchecked do
     event :mark_as_unchecked do
-      transition [:can_be_merged] => :unchecked
-      transition [:cannot_be_merged] => :cannot_be_merged_recheck
+      transition [:can_be_merged, :unchecked] => :unchecked
+      transition [:cannot_be_merged, :cannot_be_merged_recheck] => :cannot_be_merged_recheck
     end
 
     event :mark_as_mergeable do
