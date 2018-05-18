@@ -141,7 +141,7 @@ export default {
       return this.$el.classList.contains('open');
     },
 
-     pipelineActionRequestComplete() {
+    pipelineActionRequestComplete() {
       if (this.type === PIPELINES_TABLE) {
         // warn the table to update
         eventHub.$emit('refreshPipelinesTable');
