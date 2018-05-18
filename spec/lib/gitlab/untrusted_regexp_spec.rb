@@ -4,9 +4,13 @@ require 'support/shared_examples/malicious_regexp_shared_examples'
 describe Gitlab::UntrustedRegexp do
   describe '.valid?' do
     it 'returns true if regexp is valid' do
+      expect(described_class.valid?('/some ( thing/'))
+        .to be false
     end
 
     it 'returns true if regexp is invalid' do
+      expect(described_class.valid?('/some .* thing/'))
+        .to be true
     end
   end
 
@@ -32,17 +36,9 @@ describe Gitlab::UntrustedRegexp do
       end
     end
 
-    context 'when regexp is not plain pattern' do
-      it 'fabricates regexp without flags' do
-        regexp = described_class.fabricate('something')
-
-        expect(regexp).to eq described_class.new('something')
-      end
-    end
-
-    context 'when regexp is invalid' do
+    context 'when regexp is a raw pattern' do
       it 'raises an error' do
-        expect { described_class.fabricate('/some ( thing/') }
+        expect { described_class.fabricate('some .* thing') }
           .to raise_error(RegexpError)
       end
     end

@@ -79,7 +79,7 @@ describe Gitlab::Ci::Pipeline::Expression::Lexeme::Pattern do
 
   describe '#evaluate' do
     it 'returns a regular expression' do
-      regexp = described_class.new('abc')
+      regexp = described_class.new('/abc/')
 
       expect(regexp.evaluate).to eq Gitlab::UntrustedRegexp.new('abc')
     end
@@ -87,7 +87,7 @@ describe Gitlab::Ci::Pipeline::Expression::Lexeme::Pattern do
     it 'raises error if evaluated regexp is not valid' do
       allow(Gitlab::UntrustedRegexp).to receive(:valid?).and_return(true)
 
-      regexp = described_class.new('invalid ( .*')
+      regexp = described_class.new('/invalid ( .*/')
 
       expect { regexp.evaluate }
         .to raise_error(Gitlab::Ci::Pipeline::Expression::RuntimeError)
