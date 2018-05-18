@@ -12,7 +12,7 @@ module EE
       LICENSE_MANAGEMENT_FILE = 'gl-license-report.json'.freeze
       SAST_FILE = 'gl-sast-report.json'.freeze
       PERFORMANCE_FILE = 'performance.json'.freeze
-      SAST_CONTAINER_FILE = 'gl-sast-container-report.json'.freeze
+      SAST_CONTAINER_FILE = 'gl-container-scanning-report.json'.freeze
       DAST_FILE = 'gl-dast-report.json'.freeze
 
       included do
@@ -21,7 +21,7 @@ module EE
         scope :sast, -> { where(name: 'sast') }
         scope :dependency_scanning, -> { where(name: 'dependency_scanning') }
         scope :license_management, -> { where(name: 'license_management') }
-        scope :sast_container, -> { where(name: %w[container_scanning sast:container]) }
+        scope :sast_container, -> { where(name: 'container_scanning') }
         scope :dast, -> { where(name: 'dast') }
 
         after_save :stick_build_if_status_changed
