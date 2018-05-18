@@ -551,6 +551,16 @@ Below you can find supported syntax reference:
     `$STAGING` value needs to a string, with length higher than zero.
     Variable that contains only whitespace characters is not an empty variable.
 
+1. Pattern matching  _(added in 11.0)_
+
+    > Example: `$VARIABLE =~ /^content.*/`
+
+    It is possible perform pattern matching against a variable and regular
+    expression. Expression like this evaluates to truth if matches are found.
+
+    Pattern matching is case-sensitive by default. Use `i` flag modifier, like
+    `/pattern/i` to make a pattern case-insensitive.
+
 ### Unsupported predefined variables
 
 Because GitLab evaluates variables before creating jobs, we do not support a
