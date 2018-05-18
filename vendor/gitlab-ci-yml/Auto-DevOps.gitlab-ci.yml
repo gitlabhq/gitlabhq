@@ -77,7 +77,7 @@ test:
   only:
     - branches
 
-codequality:
+code_quality:
   image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
@@ -86,9 +86,9 @@ codequality:
     - docker:stable-dind
   script:
     - setup_docker
-    - codeclimate
+    - code_quality
   artifacts:
-    paths: [codeclimate.json]
+    paths: [gl-code-quality-report.json]
 
 performance:
   stage: performance
@@ -409,7 +409,7 @@ rollout 100%:
     ./clair-scanner -c http://docker:6060 --ip $(hostname -i) -r gl-container-scanning-report.json -l clair.log -w clair-whitelist.yml ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} || true
   }
 
-  function codeclimate() {
+  function code_quality() {
     docker run --env SOURCE_CODE="$PWD" \
                --volume "$PWD":/code \
                --volume /var/run/docker.sock:/var/run/docker.sock \

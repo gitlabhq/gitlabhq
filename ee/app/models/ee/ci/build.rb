@@ -7,7 +7,7 @@ module EE
     module Build
       extend ActiveSupport::Concern
 
-      CODEQUALITY_FILE = 'codeclimate.json'.freeze
+      CODEQUALITY_FILE = 'gl-code-quality-report.json'.freeze
       DEPENDENCY_SCANNING_FILE = 'gl-dependency-scanning-report.json'.freeze
       LICENSE_MANAGEMENT_FILE = 'gl-license-report.json'.freeze
       SAST_FILE = 'gl-sast-report.json'.freeze
@@ -18,7 +18,7 @@ module EE
       DAST_FILE = 'gl-dast-report.json'.freeze
 
       included do
-        scope :codequality, -> { where(name: %w[codequality codeclimate]) }
+        scope :codequality, -> { where(name: %w[code_quality codequality]) }
         scope :performance, -> { where(name: %w[performance deploy]) }
         scope :sast, -> { where(name: 'sast') }
         scope :dependency_scanning, -> { where(name: 'dependency_scanning') }

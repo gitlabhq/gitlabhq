@@ -16,14 +16,14 @@ describe Ci::Build do
   describe '.codequality' do
     subject { described_class.codequality }
 
-    context 'when a job name is codequality' do
-      let!(:job) { create(:ci_build, pipeline: pipeline, name: 'codequality') }
+    context 'when a job name is code_quality' do
+      let!(:job) { create(:ci_build, pipeline: pipeline, name: 'code_quality') }
 
       it { is_expected.to include(job) }
     end
 
-    context 'when a job name is codeclimate' do
-      let!(:job) { create(:ci_build, pipeline: pipeline, name: 'codeclimate') }
+    context 'when a job name is codequality' do
+      let!(:job) { create(:ci_build, pipeline: pipeline, name: 'codequality') }
 
       it { is_expected.to include(job) }
     end

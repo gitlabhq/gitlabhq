@@ -54,7 +54,7 @@ describe Ci::Pipeline do
         it { expect(pipeline.send(method)).to eq(build) }
       end
 
-      context 'no codequality job' do
+      context 'no code_quality job' do
         before do
           create(:ci_build, pipeline: pipeline)
         end
