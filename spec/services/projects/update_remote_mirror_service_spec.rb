@@ -343,7 +343,11 @@ describe Projects::UpdateRemoteMirrorService do
       tag = repository.find_tag(name)
       target = tag.try(:target)
       target_commit = tag.try(:dereferenced_target)
-      tags << Gitlab::Git::Tag.new(repository.raw_repository, name, target, target_commit)
+      tags << Gitlab::Git::Tag.new(repository.raw_repository, {
+        name: name,
+        target: target,
+        target_commit: target_commit
+      })
     end
   end
 

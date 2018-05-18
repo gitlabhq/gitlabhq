@@ -6,6 +6,7 @@ module Gitlab
 
       attr_accessor :raw_commit, :head
 
+      MAX_COMMIT_MESSAGE_DISPLAY_SIZE = 10.megabytes
       MIN_SHA_LENGTH = 7
       SERIALIZE_KEYS = [
         :id, :message, :parent_ids,
@@ -63,9 +64,7 @@ module Gitlab
             if is_enabled
               repo.gitaly_commit_client.find_commit(commit_id)
             else
-              obj = repo.rev_parse_target(commit_id)
-
-              obj.is_a?(Rugged::Commit) ? obj : nil
+              rugged_find(repo, commit_id)
             end
           end
 
@@ -74,6 +73,12 @@ module Gitlab
                Gitlab::Git::CommandError, Gitlab::Git::Repository::NoRepository,
                Rugged::OdbError, Rugged::TreeError, ArgumentError
           nil
+        end
+
+        def rugged_find(repo, commit_id)
+          obj = repo.rev_parse_target(commit_id)
+
+          obj.is_a?(Rugged::Commit) ? obj : nil
         end
 
         # Get last commit for HEAD
@@ -297,10 +302,39 @@ module Gitlab
             nil
           end
         end
+
+        def get_message(repository, commit_id)
+          BatchLoader.for({ repository: repository, commit_id: commit_id }).batch do |items, loader|
+            items_by_repo = items.group_by { |i| i[:repository] }
+
+            items_by_repo.each do |repo, items|
+              commit_ids = items.map { |i| i[:commit_id] }
+
+              messages = get_messages(repository, commit_ids)
+
+              messages.each do |commit_sha, message|
+                loader.call({ repository: repository, commit_id: commit_sha }, message)
+              end
+            end
+          end
+        end
+
+        def get_messages(repository, commit_ids)
+          repository.gitaly_migrate(:commit_messages) do |is_enabled|
+            if is_enabled
+              repository.gitaly_commit_client.get_commit_messages(commit_ids)
+            else
+              commit_ids.map { |id| [id, rugged_find(repository, id).message] }.to_h
+            end
+          end
+        end
       end
 
       def initialize(repository, raw_commit, head = nil)
         raise "Nil as raw commit passed" unless raw_commit
+
+        @repository = repository
+        @head = head
 
         case raw_commit
         when Hash
@@ -312,9 +346,6 @@ module Gitlab
         else
           raise "Invalid raw commit type: #{raw_commit.class}"
         end
-
-        @repository = repository
-        @head = head
       end
 
       def sha
@@ -518,7 +549,7 @@ module Gitlab
         # TODO: Once gitaly "takes over" Rugged consider separating the
         # subject from the message to make it clearer when there's one
         # available but not the other.
-        @message = (commit.body.presence || commit.subject).dup
+        @message = message_from_gitaly_body
         @authored_date = Time.at(commit.author.date.seconds).utc
         @author_name = commit.author.name.dup
         @author_email = commit.author.email.dup
@@ -569,6 +600,25 @@ module Gitlab
       #
       def refs(repo)
         repo.refs_hash[id]
+      end
+
+      def message_from_gitaly_body
+        return @raw_commit.subject.dup if @raw_commit.body_size.zero?
+        return @raw_commit.body.dup if full_body_fetched_from_gitaly?
+
+        if @raw_commit.body_size > MAX_COMMIT_MESSAGE_DISPLAY_SIZE
+          "#{@raw_commit.subject}\n\n--commit message is too big".strip
+        else
+          fetch_body_from_gitaly
+        end
+      end
+
+      def full_body_fetched_from_gitaly?
+        @raw_commit.body.bytesize == @raw_commit.body_size
+      end
+
+      def fetch_body_from_gitaly
+        self.class.get_message(@repository, id)
       end
     end
   end
