@@ -41,6 +41,7 @@ export default {
       type: String,
       required: true,
     },
+
   },
   data() {
     return {
@@ -55,6 +56,12 @@ export default {
     },
   },
   methods: {
+    /**
+     * The request should not be handled here.
+     * However due to this component being used in several
+     * different apps it avoids repetition & complexity.
+     *
+     */
     onClickAction() {
       $(this.$el).tooltip('hide');
 
