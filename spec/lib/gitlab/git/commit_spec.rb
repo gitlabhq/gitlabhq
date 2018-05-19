@@ -66,7 +66,8 @@ describe Gitlab::Git::Commit, seed_helper: true do
   describe "Commit info from gitaly commit" do
     let(:subject) { "My commit".force_encoding('ASCII-8BIT') }
     let(:body) { subject + "My body".force_encoding('ASCII-8BIT') }
-    let(:gitaly_commit) { build(:gitaly_commit, subject: subject, body: body) }
+    let(:body_size) { body.length }
+    let(:gitaly_commit) { build(:gitaly_commit, subject: subject, body: body, body_size: body_size) }
     let(:id) { gitaly_commit.id }
     let(:committer) { gitaly_commit.committer }
     let(:author) { gitaly_commit.author }
@@ -83,10 +84,30 @@ describe Gitlab::Git::Commit, seed_helper: true do
     it { expect(commit.committer_email).to eq(committer.email) }
     it { expect(commit.parent_ids).to eq(gitaly_commit.parent_ids) }
 
-    context 'no body' do
+    context 'body_size != body.size' do
       let(:body) { "".force_encoding('ASCII-8BIT') }
 
-      it { expect(commit.safe_message).to eq(subject) }
+      context 'zero body_size' do
+        it { expect(commit.safe_message).to eq(subject) }
+      end
+
+      context 'body_size less than threshold' do
+        let(:body_size) { 123 }
+
+        it 'fetches commit message seperately' do
+          expect(described_class).to receive(:get_message).with(repository, id)
+
+          commit.safe_message
+        end
+      end
+
+      context 'body_size greater than threshold' do
+        let(:body_size) { described_class::MAX_COMMIT_MESSAGE_DISPLAY_SIZE + 1 }
+
+        it 'returns the suject plus a notice about message size' do
+          expect(commit.safe_message).to eq("My commit\n\n--commit message is too big")
+        end
+      end
     end
   end
 
@@ -587,6 +608,35 @@ describe Gitlab::Git::Commit, seed_helper: true do
     end
     it { is_expected.to include("master") }
     it { is_expected.not_to include("feature") }
+  end
+
+  describe '.get_message' do
+    let(:commit_ids) { %w[6d394385cf567f80a8fd85055db1ab4c5295806f cfe32cf61b73a0d5e9f13e774abde7ff789b1660] }
+
+    subject do
+      commit_ids.map { |id| described_class.get_message(repository, id) }
+    end
+
+    shared_examples 'getting commit messages' do
+      it 'gets commit messages' do
+        expect(subject).to contain_exactly(
+          "Added contributing guide\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n",
+          "Add submodule\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n"
+        )
+      end
+    end
+
+    context 'when Gitaly commit_messages feature is enabled' do
+      it_behaves_like 'getting commit messages'
+
+      it 'gets messages in one batch', :request_store do
+        expect { subject.map(&:itself) }.to change { Gitlab::GitalyClient.get_request_count }.by(1)
+      end
+    end
+
+    context 'when Gitaly commit_messages feature is disabled', :disable_gitaly do
+      it_behaves_like 'getting commit messages'
+    end
   end
 
   def sample_commit_hash
