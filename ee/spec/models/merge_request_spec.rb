@@ -164,7 +164,7 @@ describe MergeRequest do
     end
   end
 
-  %w(sast dast sast_container).each do |type|
+  %w(sast dast sast_container container_scanning).each do |type|
     it { is_expected.to delegate_method(:"expose_#{type}_data?").to(:head_pipeline) }
     it { is_expected.to delegate_method(:"has_#{type}_data?").to(:base_pipeline).with_prefix(:base) }
     it { is_expected.to delegate_method(:"#{type}_artifact").to(:head_pipeline).with_prefix(:head) }
