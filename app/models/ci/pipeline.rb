@@ -548,7 +548,10 @@ module Ci
 
     def persisted_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
-        variables.append(key: 'CI_PIPELINE_ID', value: id.to_s) if persisted?
+        break variables unless persisted?
+
+        variables.append(key: 'CI_PIPELINE_ID', value: id.to_s)
+        variables.append(key: 'CI_PIPELINE_URL', value: Gitlab::Routing.url_helpers.project_pipeline_url(project, self))
       end
     end
 

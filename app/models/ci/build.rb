@@ -611,6 +611,7 @@ module Ci
         variables
           .concat(pipeline.persisted_variables)
           .append(key: 'CI_JOB_ID', value: id.to_s)
+          .append(key: 'CI_JOB_URL', value: Gitlab::Routing.url_helpers.project_job_url(project, self))
           .append(key: 'CI_JOB_TOKEN', value: token, public: false)
           .append(key: 'CI_BUILD_ID', value: id.to_s)
           .append(key: 'CI_BUILD_TOKEN', value: token, public: false)
