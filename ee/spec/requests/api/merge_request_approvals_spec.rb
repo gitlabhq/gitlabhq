@@ -165,6 +165,22 @@ describe API::MergeRequestApprovals do
           expect(response).to have_gitlab_http_status(200)
           expect(json_response['approvers']).to eq([])
         end
+
+        context 'when sending form-encoded data' do
+          it 'removes approvers not in the payload' do
+            merge_request.approvers.create(user: approver)
+            merge_request.approver_groups.create(group: approver_group)
+
+            expect do
+              put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/approvers", current_user),
+                approver_ids: '', approver_group_ids: ''
+            end.to change { merge_request.approvers.count }.from(1).to(0)
+              .and change { merge_request.approver_groups.count }.from(1).to(0)
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(json_response['approvers']).to eq([])
+          end
+        end
       end
     end
 
