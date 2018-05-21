@@ -801,7 +801,7 @@ GitLabDropdown = (function() {
     if (this.options.filterable) {
       const initialScrollTop = $(window).scrollTop();
 
-      if (this.dropdown.is('.show')) {
+      if (this.dropdown.is('.show') && !this.filterInput.is(':focus')) {
         this.filterInput.focus();
       }
 
