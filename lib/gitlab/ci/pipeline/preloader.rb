@@ -6,7 +6,7 @@ module Gitlab
       # Class for preloading data associated with pipelines such as commit
       # authors.
       module Preloader
-        def self.preload(pipelines)
+        def self.preload(project, pipelines)
           # This ensures that all the pipeline commits are eager loaded before we
           # start using them.
           pipelines.each(&:commit)
