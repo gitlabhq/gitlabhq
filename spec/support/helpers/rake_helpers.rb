@@ -13,6 +13,10 @@ module RakeHelpers
     allow(main_object).to receive(:print)
   end
 
+  def silence_progress_bar
+    allow_any_instance_of(ProgressBar::Output).to receive(:stream).and_return(double().as_null_object)
+  end
+
   def main_object
     @main_object ||= TOPLEVEL_BINDING.eval('self')
   end
