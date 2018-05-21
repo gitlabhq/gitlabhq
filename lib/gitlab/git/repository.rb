@@ -2339,7 +2339,7 @@ module Gitlab
       end
 
       def gitaly_delete_refs(*ref_names)
-        gitaly_ref_client.delete_refs(refs: ref_names)
+        gitaly_ref_client.delete_refs(refs: ref_names) if ref_names.any?
       end
 
       def rugged_remove_remote(remote_name)

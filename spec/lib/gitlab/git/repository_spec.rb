@@ -600,6 +600,10 @@ describe Gitlab::Git::Repository, seed_helper: true do
         end
       end
 
+      it 'does not fail when deleting an empty list of refs' do
+        expect { repo.delete_refs(*[]) }.not_to raise_error
+      end
+
       it 'raises an error if it failed' do
         expect { repo.delete_refs('refs\heads\fix') }.to raise_error(Gitlab::Git::Repository::GitError)
       end
