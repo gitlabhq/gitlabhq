@@ -403,10 +403,10 @@ module Gitlab
         prefix = archive_prefix(ref, commit.id, append_sha: append_sha)
 
         {
-          'RepoPath' => path,
           'ArchivePrefix' => prefix,
           'ArchivePath' => archive_file_path(storage_path, commit.id, prefix, format),
-          'CommitId' => commit.id
+          'CommitId' => commit.id,
+          'GitalyRepository' => gitaly_repository.to_h
         }
       end
 
