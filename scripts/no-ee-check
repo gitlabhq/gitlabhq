@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+ee_path = File.join(File.expand_path(File.dirname(__FILE__)), '../ee')
+result = Dir.exist?(ee_path)
+
+if result
+  puts 'The repository contains /ee directory. There should be no /ee directory in CE repo.'
+  exit 1
+end
