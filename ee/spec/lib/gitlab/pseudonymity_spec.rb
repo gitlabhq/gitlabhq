@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Gitlab::Pseudonymity do
-
   let!(:project) { create(:project) }
   let(:base_dir) { Dir.mktmpdir }
   subject(:pseudo) { Pseudonymity::Table.new }
@@ -16,20 +15,13 @@ describe Gitlab::Pseudonymity do
       pseudo.config["output"]["csv"] = base_dir
       pseudo.config["tables"] = {
         "projects" => {
-          "whitelist" => [
-            "id",
-            "name",
-            "path",
-            "description"
-          ],
-          "pseudo" => [
-            "id"
-          ]
+          "whitelist" => %w(id name path description),
+          "pseudo" => %w(id)
         }
       }
 
       expect(pseudo.config["output"]["csv"]).to eq(base_dir)
-      
+
       # grab the first table it outputs. There would only be 1.
       project_table_file = pseudo.tables_to_csv[0]
 
@@ -44,14 +36,14 @@ describe Gitlab::Pseudonymity do
         if line_num == 0
           columns = line.split(",")
         end
+
         if line_num == 1
           project_data = line.split(",")
           break
         end
       end
-
       # check if CSV columns are correct
-      expect(columns.to_set).to eq(["id", "name", "path", "description\n"].to_set)
+      expect(columns.to_set).to eq(%W(id name path description\n).to_set)
 
       # is it pseudonymous
       expect(project_data[0]).not_to eq(1)

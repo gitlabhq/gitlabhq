@@ -13,7 +13,7 @@ module Pseudonymity
       columns = results.columns # Assume they all have the same table
       to_filter = @anon_fields & columns
 
-      Enumerator.new do | yielder |
+      Enumerator.new do |yielder|
         results.each do |result|
           to_filter.each do |field|
             secret = Rails.application.secrets[:secret_key_base]
@@ -39,10 +39,12 @@ module Pseudonymity
     def tables_to_csv
       tables = config["tables"]
       @csv_output = config["output"]["csv"]
-      if !File.directory?(@csv_output)
+
+      unless File.directory?(@csv_output)
         raise "No such directory #{@csv_output}"
       end
-      tables.each do | k, v |
+
+      tables.each do |k, v|
         @schema[k] = {}
         table_to_csv(k, v["whitelist"], v["pseudo"])
       end
@@ -50,7 +52,7 @@ module Pseudonymity
       file_list_to_json
     end
 
-    def get_and_log_file_name(ext, prefix=nil, filename=nil)
+    def get_and_log_file_name(ext, prefix = nil, filename = nil)
       file_timestamp = filename || "#{prefix}_#{Time.now.to_i}"
       file_timestamp = "#{file_timestamp}.#{ext}"
       @output_files << file_timestamp
@@ -69,19 +71,19 @@ module Pseudonymity
 
     def table_to_csv(table, whitelist_columns, pseudonymity_columns)
       sql = "SELECT #{whitelist_columns.join(",")} FROM #{table};"
-      # type_sql = "SELECT column_name, data_type FROM information_schema.columns WHERE table_name = '#{table}';"
       results = ActiveRecord::Base.connection.exec_query(sql)
-      # type_results = ActiveRecord::Base.connection.exec_query(type_sql)
-      
+
       type_results = ActiveRecord::Base.connection.columns(table)
-      type_results = type_results.select do |c| 
+      type_results = type_results.select do |c|
         @config["tables"][table]["whitelist"].include?(c.name)
       end
       type_results = type_results.map do |c|
         data_type = c.sql_type
+
         if @config["tables"][table]["pseudo"].include?(c.name)
           data_type = "character varying"
         end
+
         { name: c.name, data_type: data_type }
       end
       set_schema_column_types(table, type_results)
@@ -92,7 +94,7 @@ module Pseudonymity
     end
 
     def set_schema_column_types(table, type_results)
-      type_results.each do | type_result |
+      type_results.each do |type_result|
         @schema[table][type_result[:name]] = type_result[:data_type]
       end
       # hard coded because all mapping keys in GL are id
@@ -106,14 +108,14 @@ module Pseudonymity
     def write_to_csv_file(title, contents)
       file_path = get_and_log_file_name("csv", title)
       column_names = contents.first.keys
-      contents = CSV.generate do | csv |
+      contents = CSV.generate do |csv|
         csv << column_names
         contents.each do |x|
           csv << x.values
         end
       end
       File.open(file_path, 'w') { |file| file.write(contents) }
-      return file_path
+      file_path
     end
 
     private :write_to_csv_file
