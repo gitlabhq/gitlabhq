@@ -8,8 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2018-05-16 14:41+0200\n"
 "PO-Revision-Date: 2018-05-16 14:41+0200\n"
+=======
+"POT-Creation-Date: 2018-05-16 18:52+0200\n"
+"PO-Revision-Date: 2018-05-16 18:52+0200\n"
+>>>>>>> upstream/master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -2153,7 +2158,11 @@ msgstr ""
 msgid "Enable the Performance Bar for a given group."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Enabled"
+=======
+msgid "Ends at (UTC)"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Environments"
@@ -4693,7 +4702,11 @@ msgstr ""
 msgid "Started"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "State your message to activate"
+=======
+msgid "Starts at (UTC)"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Status"
