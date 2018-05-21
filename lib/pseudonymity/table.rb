@@ -1,4 +1,4 @@
-require 'OpenSSL'
+require 'openssl'
 require 'digest'
 require 'csv'
 require 'yaml'
