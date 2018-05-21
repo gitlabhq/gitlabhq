@@ -228,21 +228,4 @@ describe('Store', () => {
       expect(store.getOpenFolders()[0]).toEqual(store.state.environments[1]);
     });
   });
-
-  describe('getOpenDeployBoards', () => {
-    it('should return open deploy boards', () => {
-      const environment = {
-        name: 'foo',
-        size: 1,
-        latest: {
-          id: 1,
-        },
-        rollout_status: deployBoardMockData,
-      };
-
-      store.storeEnvironments([environment]);
-
-      expect(store.getOpenDeployBoards().length).toEqual(1);
-    });
-  });
 });
