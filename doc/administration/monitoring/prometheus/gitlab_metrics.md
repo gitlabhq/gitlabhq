@@ -1,7 +1,7 @@
 # GitLab Prometheus metrics
 
 >**Note:**
-Available since [Omnibus GitLab 9.3][29118]. Currently experimental. For
+Available since [Omnibus GitLab 9.3][29118]. For
 installations from source you'll have to configure it yourself.
 
 To enable the GitLab Prometheus metrics:
@@ -24,7 +24,7 @@ server, because the embedded server configuration is overwritten once every
 
 ## Metrics available
 
-In this experimental phase, only a few metrics are available:
+The following metrics are available:
 
 | Metric                            | Type      | Since | Description |
 |:--------------------------------- |:--------- |:----- |:----------- |

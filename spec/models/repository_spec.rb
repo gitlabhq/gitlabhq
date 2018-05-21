@@ -671,7 +671,7 @@ describe Repository do
     end
   end
 
-  describe "search_files_by_content" do
+  shared_examples "search_files_by_content" do
     let(:results) { repository.search_files_by_content('feature', 'master') }
     subject { results }
 
@@ -718,7 +718,7 @@ describe Repository do
     end
   end
 
-  describe "search_files_by_name" do
+  shared_examples "search_files_by_name" do
     let(:results) { repository.search_files_by_name('files', 'master') }
 
     it 'returns result' do
@@ -756,6 +756,16 @@ describe Repository do
         expect_to_raise_storage_error { broken_repository.search_files_by_name('files', 'master') }
       end
     end
+  end
+
+  describe 'with gitaly enabled' do
+    it_behaves_like 'search_files_by_content'
+    it_behaves_like 'search_files_by_name'
+  end
+
+  describe 'with gitaly disabled', :disable_gitaly do
+    it_behaves_like 'search_files_by_content'
+    it_behaves_like 'search_files_by_name'
   end
 
   describe '#async_remove_remote' do

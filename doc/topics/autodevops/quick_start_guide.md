@@ -23,6 +23,10 @@ page](https://gitlab.com/auto-devops-examples/minimal-ruby-app) and press the
 **Fork** button. Soon you should have a project under your namespace with the
 necessary files.
 
+You can also start a new project from a
+[GitLab project template](https://gitlab.com/gitlab-org/project-templates) if
+you want to use a different language.
+
 ## Setup your own cluster on Google Kubernetes Engine
 
 If you do not already have a Google Cloud account, create one at

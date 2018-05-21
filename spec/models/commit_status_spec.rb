@@ -565,4 +565,10 @@ describe CommitStatus do
       it_behaves_like 'commit status enqueued'
     end
   end
+
+  describe '#present' do
+    subject { commit_status.present }
+
+    it { is_expected.to be_a(CommitStatusPresenter) }
+  end
 end

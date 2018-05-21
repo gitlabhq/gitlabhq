@@ -33,6 +33,7 @@ following locations:
 - [Jobs](jobs.md)
 - [Keys](keys.md)
 - [Labels](labels.md)
+- [Markdown](markdown.md)
 - [Merge Requests](merge_requests.md)
 - [Project milestones](milestones.md)
 - [Group milestones](group_milestones.md)

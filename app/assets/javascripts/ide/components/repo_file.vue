@@ -122,11 +122,11 @@ export default {
     <div
       class="file"
       :class="fileClass"
+      @click="clickFile"
+      role="button"
     >
       <div
         class="file-name"
-        @click="clickFile"
-        role="button"
       >
         <span
           class="ide-file-name str-truncated"
