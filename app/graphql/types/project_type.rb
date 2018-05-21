@@ -31,6 +31,7 @@ Types::ProjectType = GraphQL::ObjectType.define do
   field :container_registry_enabled, types.Boolean
   field :shared_runners_enabled, types.Boolean
   field :lfs_enabled, types.Boolean
+  field :ff_only_enabled, types.Boolean, property: :merge_requests_ff_only_enabled
 
   field :avatar_url, types.String do
     resolve ->(project, args, ctx) { project.avatar_url(only_path: false) }
