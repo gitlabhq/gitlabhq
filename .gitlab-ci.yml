@@ -298,6 +298,24 @@ review-docs-cleanup:
   script:
     - ./trigger-build-docs cleanup
 
+##
+# Trigger a docker image build in CNG (Cloud Native GitLab) repository
+#
+cloud-native-image:
+  image: ruby:2.4-alpine
+  before_script: []
+  stage: build
+  allow_failure: true
+  cache: {}
+  before_script:
+    - gem install gitlab --no-rdoc --no-ri
+    - chmod 755 ./scripts/trigger-build-cloud-native
+  script:
+    - ./scripts/trigger-build-cloud-native
+  only:
+    - tags@gitlab-org/gitlab-ce
+    - tags@gitlab-org/gitlab-ee
+
 # Retrieve knapsack and rspec_flaky reports
 retrieve-tests-metadata:
   <<: *tests-metadata-state
