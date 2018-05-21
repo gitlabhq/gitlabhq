@@ -71,6 +71,7 @@
       :node-details="nodeDetails"
     />
     <node-details-section-verification
+      v-if="nodeDetails.repositoryVerificationEnabled"
       :node-details="nodeDetails"
       :node-type-primary="node.primary"
     />
