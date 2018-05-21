@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe GraphqlController do
   describe 'execute' do
+    let(:user) { nil }
+
     before do
       sign_in(user) if user
 
@@ -39,17 +41,26 @@ describe GraphqlController do
         is_expected.to eq('echo' => '"Simon" says: test success')
       end
     end
+
+    context 'invalid variables' do
+      it 'returns an error' do
+        run_test_query!(variables: "This is not JSON")
+
+        expect(response).to have_gitlab_http_status(422)
+        expect(json_response['errors'].first['message']).not_to be_nil
+      end
+    end
   end
 
   # Chosen to exercise all the moving parts in GraphqlController#execute
-  def run_test_query!
+  def run_test_query!(variables: { 'text' => 'test success' })
     query = <<~QUERY
       query Echo($text: String) {
         echo(text: $text)
       }
     QUERY
 
-    post :execute, query: query, operationName: 'Echo', variables: { 'text' => 'test success' }
+    post :execute, query: query, operationName: 'Echo', variables: variables
   end
 
   def query_response
