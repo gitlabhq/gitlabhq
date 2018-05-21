@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-17 09:05-0700\n"
-"PO-Revision-Date: 2018-05-17 09:05-0700\n"
+"POT-Creation-Date: 2018-05-21 12:38-0700\n"
+"PO-Revision-Date: 2018-05-21 12:38-0700\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -80,6 +80,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "%{loadingIcon} Started"
+msgstr ""
+
+msgid "%{lock_path} is locked by GitLab User %{lock_user_id}"
 msgstr ""
 
 msgid "%{nip_domain} can be used as an alternative to a custom domain."
@@ -1447,7 +1450,7 @@ msgstr ""
 msgid "ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images."
 msgstr ""
 
-msgid "ContainerRegistry|You can also %{deploy_token} for read-only access to the registry images."
+msgid "ContainerRegistry|You can also use a %{deploy_token} for read-only access to the registry images."
 msgstr ""
 
 msgid "Continuous Integration and Deployment"
@@ -2485,6 +2488,9 @@ msgid "Lock"
 msgstr ""
 
 msgid "Lock %{issuableDisplayName}"
+msgstr ""
+
+msgid "Lock not found"
 msgstr ""
 
 msgid "Lock to current projects"
@@ -4281,6 +4287,9 @@ msgstr ""
 msgid "Toggle Sidebar"
 msgstr ""
 
+msgid "Toggle discussion"
+msgstr ""
+
 msgid "Toggle sidebar"
 msgstr ""
 
@@ -4602,13 +4611,19 @@ msgstr ""
 msgid "You can only edit files when you are on a branch"
 msgstr ""
 
-msgid "You can resolve the merge conflict using either the Interactive mode, by choosing"
+msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
 msgstr ""
 
 msgid "You cannot write to this read-only GitLab instance."
 msgstr ""
 
+msgid "You have no permissions"
+msgstr ""
+
 msgid "You have reached your project limit"
+msgstr ""
+
+msgid "You must have master access to force delete a lock"
 msgstr ""
 
 msgid "You must sign in to star a project"
@@ -4690,9 +4705,6 @@ msgid "assign yourself"
 msgstr ""
 
 msgid "branch name"
-msgstr ""
-
-msgid "buttons, or by editing the files directly. Commit these changes into"
 msgstr ""
 
 msgid "command line instructions"
