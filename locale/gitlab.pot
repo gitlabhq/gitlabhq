@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-15 15:05+0200\n"
-"PO-Revision-Date: 2018-05-15 15:05+0200\n"
+"POT-Creation-Date: 2018-05-16 18:52+0200\n"
+"PO-Revision-Date: 2018-05-16 18:52+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -1870,6 +1870,9 @@ msgid "Enable reCAPTCHA or Akismet and set IP limits."
 msgstr ""
 
 msgid "Enable the Performance Bar for a given group."
+msgstr ""
+
+msgid "Ends at (UTC)"
 msgstr ""
 
 msgid "Environments"
@@ -3778,6 +3781,9 @@ msgid "Start the Runner!"
 msgstr ""
 
 msgid "Started"
+msgstr ""
+
+msgid "Starts at (UTC)"
 msgstr ""
 
 msgid "Status"
