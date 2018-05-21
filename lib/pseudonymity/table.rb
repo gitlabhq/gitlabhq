@@ -38,12 +38,11 @@ module Pseudonymity
 
     def tables_to_csv
       tables = config["tables"]
-      @csv_output = config["output"]["csv"].chomp("\g/")
-      if not File.directory?(@csv_output)
-        puts "No such directory #{@csv_output}"
-        return
+      @csv_output = config["output"]["csv"]
+      if !File.directory?(@csv_output)
+        raise "No such directory #{@csv_output}"
       end
-      tables.map do | k, v |
+      tables.each do | k, v |
         @schema[k] = {}
         table_to_csv(k, v["whitelist"], v["pseudo"])
       end
@@ -55,7 +54,7 @@ module Pseudonymity
       file_timestamp = filename || "#{prefix}_#{Time.now.to_i}"
       file_timestamp = "#{file_timestamp}.#{ext}"
       @output_files << file_timestamp
-      "#{@csv_output}/#{file_timestamp}"
+      File.join(@csv_output, file_timestamp)
     end
 
     def schema_to_yml
@@ -70,9 +69,21 @@ module Pseudonymity
 
     def table_to_csv(table, whitelist_columns, pseudonymity_columns)
       sql = "SELECT #{whitelist_columns.join(",")} FROM #{table};"
-      type_sql = "SELECT column_name, data_type FROM information_schema.columns WHERE table_name = '#{table}';"
+      # type_sql = "SELECT column_name, data_type FROM information_schema.columns WHERE table_name = '#{table}';"
       results = ActiveRecord::Base.connection.exec_query(sql)
-      type_results = ActiveRecord::Base.connection.exec_query(type_sql)
+      # type_results = ActiveRecord::Base.connection.exec_query(type_sql)
+      
+      type_results = ActiveRecord::Base.connection.columns(table)
+      type_results = type_results.select do |c| 
+        @config["tables"][table]["whitelist"].include?(c.name)
+      end
+      type_results = type_results.map do |c|
+        data_type = c.sql_type
+        if @config["tables"][table]["pseudo"].include?(c.name)
+          data_type = "character varying"
+        end
+        { name: c.name, data_type: data_type }
+      end
       set_schema_column_types(table, type_results)
       return if results.empty?
 
@@ -82,18 +93,14 @@ module Pseudonymity
 
     def set_schema_column_types(table, type_results)
       type_results.each do | type_result |
-        data_type = type_result["data_type"]
-        if @config["tables"][table]["pseudo"].include?(type_result["column_name"])
-          data_type = "character varying"
-        end
-        @schema[table][type_result["column_name"]] = data_type
+        @schema[table][type_result[:name]] = type_result[:data_type]
       end
       # hard coded because all mapping keys in GL are id
       @schema[table]["gl_mapping_key"] = "id"
     end
 
     def parse_config
-      @config = YAML.load_file('./lib/assets/pseudonymity_dump.yml')
+      @config = YAML.load_file(Rails.root.join('lib/assets/pseudonymity_dump.yml'))
     end
 
     def write_to_csv_file(title, contents)
