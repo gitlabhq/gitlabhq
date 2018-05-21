@@ -1,5 +1,13 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.7.4 (2018-05-21)
+
+### Fixed (2 changes)
+
+- Does not log failed sign-in attempts when in a GitLab read-only instance. !5643
+- Fix: Geo: BaseSyncService should prune the @geo-temporary directory before fetching.
+
+
 ## 10.7.3 (2018-05-02)
 
 ### Fixed (3 changes)

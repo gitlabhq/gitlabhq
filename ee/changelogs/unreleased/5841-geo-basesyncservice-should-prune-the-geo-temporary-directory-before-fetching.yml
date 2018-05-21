@@ -1,6 +1,0 @@
----
-title: 'Fix: Geo: BaseSyncService should prune the @geo-temporary directory before
-  fetching'
-merge_request:
-author:
-type: fixed
