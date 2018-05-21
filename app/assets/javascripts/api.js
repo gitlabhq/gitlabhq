@@ -168,10 +168,13 @@ const Api = {
   },
 
   commitPipelines(projectId, sha) {
-    const [namespace, project] = projectId.split('/');
+    const encodedProjectId = projectId
+      .split('/')
+      .map(fragment => encodeURIComponent(fragment))
+      .join('/');
 
     const url = Api.buildUrl(Api.commitPipelinesPath)
-      .replace(':project_id', `${encodeURIComponent(namespace)}/${encodeURIComponent(project)}`)
+      .replace(':project_id', encodedProjectId)
       .replace(':sha', encodeURIComponent(sha));
 
     return axios.get(url);
