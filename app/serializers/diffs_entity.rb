@@ -62,8 +62,4 @@ class DiffsEntity < Grape::Entity
   expose :merge_request_diffs, using: MergeRequestDiffEntity, if: -> (_, options) { options[:merge_request_diffs].any? } do |diffs|
     options[:merge_request_diffs]
   end
-
-  expose :comparable_diffs, using: MergeRequestDiffEntity do |diffs|
-    options[:comparable_diffs]
-  end
 end
