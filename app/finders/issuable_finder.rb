@@ -6,7 +6,7 @@
 #   klass - actual class like Issue or MergeRequest
 #   current_user - which user use
 #   params:
-#     scope: 'created-by-me' or 'assigned-to-me' or 'all'
+#     scope: 'created_by_me' or 'assigned_to_me' or 'all'
 #     state: 'opened' or 'closed' or 'all'
 #     group_id: integer
 #     project_id: integer
@@ -282,9 +282,9 @@ class IssuableFinder
     return items.none if current_user_related? && !current_user
 
     case params[:scope]
-    when 'created-by-me', 'authored'
+    when 'created_by_me', 'authored'
       items.where(author_id: current_user.id)
-    when 'assigned-to-me'
+    when 'assigned_to_me'
       items.assigned_to(current_user)
     else
       items
@@ -426,6 +426,7 @@ class IssuableFinder
   end
 
   def current_user_related?
-    params[:scope] == 'created-by-me' || params[:scope] == 'authored' || params[:scope] == 'assigned-to-me'
+    scope = params[:scope]
+    scope == 'created_by_me' || scope == 'authored' || scope == 'assigned_to_me'
   end
 end
