@@ -52,8 +52,7 @@ in our case its named `clair-whitelist.yml`.
 TIP: **Tip:**
 Starting with [GitLab Ultimate][ee] 10.4, this information will
 be automatically extracted and shown right in the merge request widget. To do
-so, the CI/CD job must be named `container_scanning
-scanning` and the artifact path must be
+so, the CI/CD job must be named `container_scanning` and the artifact path must be
 `gl-container-scanning-report.json`.
 [Learn more on container scanning results shown in merge requests](https://docs.gitlab.com/ee/user/project/merge_requests/container_scanning.html).
 
