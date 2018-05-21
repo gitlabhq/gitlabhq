@@ -1,5 +1,0 @@
----
-title: Rubocop rule to avoid returning from a block
-merge_request: 18000
-author: Jacopo Beschi @jacopo-beschi
-type: added
