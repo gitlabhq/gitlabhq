@@ -10,7 +10,13 @@ namespace :gitlab do
         abort %(Please specify the directory where you want to install gitaly:\n  rake "gitlab:gitaly:install[/home/git/gitaly]")
       end
 
-      args.with_defaults(repo: 'https://gitlab.com/gitlab-org/gitaly.git')
+      default_repo_url =
+        if ENV.key?('ALTERNATIVE_SOURCES') # rubocop:disable Cop/LineBreakAroundConditionalBlock
+          'https://dev.gitlab.org/gitlab/gitaly.git'
+        else
+          'https://gitlab.com/gitlab-org/gitaly.git'
+        end
+      args.with_defaults(repo: default_repo_url)
 
       version = Gitlab::GitalyClient.expected_server_version
 

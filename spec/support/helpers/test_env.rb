@@ -207,7 +207,12 @@ module TestEnv
   end
 
   def setup_repo(repo_path, repo_path_bare, repo_name, refs)
-    clone_url = "https://gitlab.com/gitlab-org/#{repo_name}.git"
+    clone_url =
+      if ENV.key?('ALTERNATIVE_SOURCES')
+        "https://dev.gitlab.org/gitlab/#{repo_name}.git"
+      else
+        "https://gitlab.com/gitlab-org/#{repo_name}.git"
+      end
 
     unless File.directory?(repo_path)
       system(*%W(#{Gitlab.config.git.bin_path} clone -q #{clone_url} #{repo_path}))

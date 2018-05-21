@@ -193,8 +193,8 @@ stages:
   script:
     # Manually clone gitlab-test and only seed this project in
     # db/fixtures/development/04_project.rb thanks to SIZE=1 below
-    - git clone https://gitlab.com/gitlab-org/gitlab-test.git
-       /home/git/repositories/gitlab-org/gitlab-test.git
+    - GITLAB_GIT_TEST_REPO_URL=$(echo $CI_PROJECT_URL | sed "s|$CI_PROJECT_PATH|$CI_PROJECT_NAMESPACE|")/gitlab-test.git
+    - git clone $GITLAB_GIT_TEST_REPO_URL /home/git/repositories/gitlab-org/gitlab-test.git
     - scripts/gitaly-test-spawn
     - force=yes SIZE=1 FIXTURE_PATH="db/fixtures/development" bundle exec rake gitlab:setup
   artifacts:
@@ -235,7 +235,7 @@ stages:
   variables:
     SETUP_DB: "false"
   script:
-    - git fetch https://gitlab.com/gitlab-org/gitlab-ce.git v9.3.0
+    - git fetch $CI_PROJECT_URL.git v9.3.0
     - git checkout -f FETCH_HEAD
     - bundle install $BUNDLE_INSTALL_FLAGS
     - date
