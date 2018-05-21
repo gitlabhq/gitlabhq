@@ -3,37 +3,11 @@ import { refreshLastCommitData, pollSuccessCallBack } from '~/ide/stores/actions
 import store from '~/ide/stores';
 import service from '~/ide/services';
 import axios from '~/lib/utils/axios_utils';
+import { fullPipelinesResponse } from '../../mock_data';
 import { resetStore } from '../../helpers';
 import testAction from '../../../helpers/vuex_action_helper';
 
 describe('IDE store project actions', () => {
-  const fullPipelinesResponse = {
-    data: {
-      count: {
-        all: 2,
-      },
-      pipelines: [
-        {
-          id: '51',
-          details: {
-            status: {
-              icon: 'status_failed',
-              text: 'failed',
-            },
-          },
-        },
-        {
-          id: '50',
-          details: {
-            status: {
-              icon: 'status_passed',
-              text: 'passed',
-            },
-          },
-        },
-      ],
-    },
-  };
   const setProjectState = () => {
     store.state.currentProjectId = 'abc/def';
     store.state.currentBranchId = 'master';
