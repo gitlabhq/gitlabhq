@@ -67,48 +67,41 @@ module Backup
     end
 
     def prepare_directories
+      # TODO: Need to find a way to do this for gitaly
+      # Gitaly discussion issue: https://gitlab.com/gitlab-org/gitaly/issues/1194
+
       return if Gitlab::GitalyClient.feature_enabled?(:backup_skip_prepare_directories)
 
       Gitlab.config.repositories.storages.each do |name, repository_storage|
-        gitaly_migrate(:remove_repositories) do |is_enabled|
-          # TODO: Need to find a way to do this for gitaly
-          # Gitaly discussion issue: https://gitlab.com/gitlab-org/gitaly/issues/1194
-          unless is_enabled
-            path = repository_storage.legacy_disk_path
-            next unless File.exist?(path)
+        path = repository_storage.legacy_disk_path
+        next unless File.exist?(path)
 
-            # Move all files in the existing repos directory except . and .. to
-            # repositories.old.<timestamp> directory
-            bk_repos_path = File.join(Gitlab.config.backup.path, "tmp", "#{name}-repositories.old." + Time.now.to_i.to_s)
-            FileUtils.mkdir_p(bk_repos_path, mode: 0700)
-            files = Dir.glob(File.join(path, "*"), File::FNM_DOTMATCH) - [File.join(path, "."), File.join(path, "..")]
+        # Move all files in the existing repos directory except . and .. to
+        # repositories.old.<timestamp> directory
+        bk_repos_path = File.join(Gitlab.config.backup.path, "tmp", "#{name}-repositories.old." + Time.now.to_i.to_s)
+        FileUtils.mkdir_p(bk_repos_path, mode: 0700)
+        files = Dir.glob(File.join(path, "*"), File::FNM_DOTMATCH) - [File.join(path, "."), File.join(path, "..")]
 
-            begin
-              FileUtils.mv(files, bk_repos_path)
-            rescue Errno::EACCES
-              access_denied_error(path)
-            rescue Errno::EBUSY
-              resource_busy_error(path)
-            end
-          end
+        begin
+          FileUtils.mv(files, bk_repos_path)
+        rescue Errno::EACCES
+          access_denied_error(path)
+        rescue Errno::EBUSY
+          resource_busy_error(path)
         end
       end
     end
 
     def restore_custom_hooks
-      gitaly_migrate(:restore_custom_hooks) do |is_enabled|
-        # TODO: Need to find a way to do this for gitaly
-        # Gitaly migration issue: https://gitlab.com/gitlab-org/gitaly/issues/1195
-        unless is_enabled
-          in_path(path_to_tars(project)) do |dir|
-            path_to_project_repo = path_to_repo(project)
-            cmd = %W(tar -xf #{path_to_tars(project, dir)} -C #{path_to_project_repo} #{dir})
+      # TODO: Need to find a way to do this for gitaly
+      # Gitaly migration issue: https://gitlab.com/gitlab-org/gitaly/issues/1195
+      in_path(path_to_tars(project)) do |dir|
+        path_to_project_repo = path_to_repo(project)
+        cmd = %W(tar -xf #{path_to_tars(project, dir)} -C #{path_to_project_repo} #{dir})
 
-            output, status = Gitlab::Popen.popen(cmd)
-            unless status.zero?
-              progress_warn(project, cmd.join(' '), output)
-            end
-          end
+        output, status = Gitlab::Popen.popen(cmd)
+        unless status.zero?
+          progress_warn(project, cmd.join(' '), output)
         end
       end
     end
