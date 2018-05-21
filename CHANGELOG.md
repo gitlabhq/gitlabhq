@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.7.4 (2018-05-21)
+
+### Fixed (1 change)
+
+- Fix error when deleting an empty list of refs.
+
+
 ## 10.7.3 (2018-05-02)
 
 ### Fixed (8 changes)
