@@ -18,6 +18,10 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         allow_any_instance_of(Gitlab::Git::Repository).to receive(:create_branch)
 
         project_tree_restorer = described_class.new(user: @user, shared: @shared, project: @project)
+
+        expect(Gitlab::ImportExport::RelationFactory).to receive(:create).with(hash_including(excluded_keys: ['whatever'])).and_call_original.at_least(:once)
+        allow(project_tree_restorer).to receive(:excluded_keys_for_relation).and_return(['whatever'])
+
         @restored_project_json = project_tree_restorer.restore
       end
     end
@@ -241,6 +245,11 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
       expect(labels.where(type: "ProjectLabel").count).to eq(results.fetch(:first_issue_labels, 0))
       expect(labels.where(type: "ProjectLabel").where.not(group_id: nil).count).to eq(0)
+    end
+
+    it 'does not set params that are excluded from import_export settings' do
+      expect(project.import_type).to be_nil
+      expect(project.creator_id).not_to eq 123
     end
   end
 

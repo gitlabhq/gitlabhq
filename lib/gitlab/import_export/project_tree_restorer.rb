@@ -75,7 +75,7 @@ module Gitlab
       end
 
       def default_relation_list
-        Gitlab::ImportExport::Reader.new(shared: @shared).tree.reject do |model|
+        reader.tree.reject do |model|
           model.is_a?(Hash) && model[:project_members]
         end
       end
@@ -88,7 +88,14 @@ module Gitlab
       end
 
       def project_params
-        @tree_hash.reject do |key, value|
+        # Cleaning all imported and overridden params
+        @project_params ||= Gitlab::ImportExport::AttributeCleaner.clean(relation_hash: json_params,
+                                                                         relation_class: Project,
+                                                                         excluded_keys: excluded_keys_for_relation(:project))
+      end
+
+      def json_params
+        @json_params ||= @tree_hash.reject do |key, value|
           # return params that are not 1 to many or 1 to 1 relations
           value.respond_to?(:each) && !Project.column_names.include?(key)
         end
@@ -158,7 +165,8 @@ module Gitlab
                                                        relation_hash: parsed_relation_hash(relation_hash, relation.to_sym),
                                                        members_mapper: members_mapper,
                                                        user: @user,
-                                                       project: @restored_project)
+                                                       project: @restored_project,
+                                                       excluded_keys: excluded_keys_for_relation(relation))
         end.compact
 
         relation_hash_list.is_a?(Array) ? relation_array : relation_array.first
@@ -174,6 +182,14 @@ module Gitlab
         end
 
         relation_hash.merge(params)
+      end
+
+      def reader
+        @reader ||= Gitlab::ImportExport::Reader.new(shared: @shared)
+      end
+
+      def excluded_keys_for_relation(relation)
+        @reader.attributes_finder.find_excluded_keys(relation)
       end
     end
   end
