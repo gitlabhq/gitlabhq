@@ -1,0 +1,5 @@
+---
+title: Fix corrupted environment pages with unathorized proxy url
+merge_request: 18989
+author:
+type: fixed
