@@ -7,6 +7,7 @@ module QA
           element :settings_link, 'link_to edit_project_path'
           element :repository_link, "title: 'Repository'"
           element :pipelines_settings_link, "title: 'CI / CD'"
+          element :operations_kubernetes_link, "title: 'Kubernetes'"
           element :issues_link, /link_to.*shortcuts-issues/
           element :issues_link_text, "Issues"
           element :top_level_items, '.sidebar-top-level-items'
@@ -29,6 +30,14 @@ module QA
           hover_settings do
             within_submenu do
               click_link('CI / CD')
+            end
+          end
+        end
+
+        def click_operations_kubernetes
+          hover_operations do
+            within_submenu do
+              click_link('Kubernetes')
             end
           end
         end
@@ -56,6 +65,14 @@ module QA
         def hover_settings
           within_sidebar do
             find('.qa-settings-item').hover
+
+            yield
+          end
+        end
+
+        def hover_operations
+          within_sidebar do
+            find('.shortcuts-operations').hover
 
             yield
           end
