@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import _ from 'underscore';
+import StickyFill from 'stickyfilljs';
 import axios from './lib/utils/axios_utils';
 import { visitUrl } from './lib/utils/url_utility';
 import bp from './breakpoints';
@@ -82,17 +83,11 @@ export default class Job {
     /**
       If the browser does not support position sticky, it returns the position as static.
       If the browser does support sticky, then we allow the browser to handle it, if not
-      then we default back to Bootstraps affix
+      then we use a polyfill
     **/
     if (this.$topBar.css('position') !== 'static') return;
 
-    const offsetTop = this.$buildTrace.offset().top;
-
-    this.$topBar.affix({
-      offset: {
-        top: offsetTop,
-      },
-    });
+    StickyFill.add(this.$topBar);
   }
 
   // eslint-disable-next-line class-methods-use-this
