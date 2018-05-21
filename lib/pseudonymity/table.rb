@@ -1,3 +1,4 @@
+require 'OpenSSL'
 require 'digest'
 require 'csv'
 require 'yaml'
@@ -15,7 +16,8 @@ module Pseudonymity
       Enumerator.new do | yielder |
         results.each do |result|
           to_filter.each do |field|
-            result[field] = Digest::SHA2.new(256).hexdigest(result[field]) unless result[field].nil?
+            secret = Rails.application.secrets[:secret_key_base]
+            result[field] = OpenSSL::HMAC.hexdigest('SHA256', secret, result[field]) unless result[field].nil?
           end
           yielder << result
         end

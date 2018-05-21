@@ -635,8 +635,6 @@ tables:
     - last_update_started_at
     - last_update_scheduled_at
     - next_execution_timestamp
-    - created_at
-    - updated_at
     pseudo:
     - id
     - project_id
