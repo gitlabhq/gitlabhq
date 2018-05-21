@@ -404,7 +404,8 @@ describe Ci::CreatePipelineService do
         config = YAML.dump(
           deploy: {
             environment: { name: "review/id1$CI_PIPELINE_ID/id2$CI_BUILD_ID" },
-            script: 'ls' }
+            script: 'ls'
+          }
         )
 
         stub_ci_pipeline_yaml_file(config)
