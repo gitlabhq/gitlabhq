@@ -61,6 +61,12 @@ export default {
         version.commitsCount,
       );
     },
+    href(version) {
+      if (this.showCommitCount) {
+        return version.versionPath;
+      }
+      return version.comparePath;
+    },
     versionName(version) {
       if (this.isLatest(version)) {
         return __('latest version');
@@ -121,11 +127,11 @@ export default {
         <ul>
           <li
             v-for="version in targetVersions"
-            :key="version.path"
+            :key="version.id"
           >
             <a
               :class="{ 'is-active': isActive(version) }"
-              :href="version.path"
+              :href="href(version)"
             >
               <div>
                 <strong>

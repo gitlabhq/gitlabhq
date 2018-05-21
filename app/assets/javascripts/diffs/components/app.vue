@@ -45,7 +45,6 @@ export default {
       isLoading: state => state.diffs.isLoading,
       diffFiles: state => state.diffs.diffFiles,
       diffViewType: state => state.diffs.diffViewType,
-      comparableDiffs: state => state.diffs.comparableDiffs,
       mergeRequestDiffs: state => state.diffs.mergeRequestDiffs,
       mergeRequestDiff: state => state.diffs.mergeRequestDiff,
       startVersion: state => state.diffs.startVersion,
@@ -70,11 +69,11 @@ export default {
         return __('Only comments from the following commit are shown below');
       } else if (this.startVersion) {
         return __(
-          'Not all comments are displayed because you\'re comparing two versions of the diff.',
+          "Not all comments are displayed because you're comparing two versions of the diff.",
         );
       }
       return __(
-        'Not all comments are displayed because you\'re viewing an old version of the diff.',
+        "Not all comments are displayed because you're viewing an old version of the diff.",
       );
     },
     showLatestVersion() {
@@ -140,7 +139,6 @@ export default {
       <compare-versions
         v-if="!commit && mergeRequestDiffs.length > 1"
         :merge-request-diffs="mergeRequestDiffs"
-        :comparable-diffs="comparableDiffs"
         :merge-request-diff="mergeRequestDiff"
         :start-version="startVersion"
         :target-branch="targetBranch"
