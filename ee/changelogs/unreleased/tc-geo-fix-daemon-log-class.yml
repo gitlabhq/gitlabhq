@@ -1,5 +1,0 @@
----
-title: Refactor the Geo LogCursor Logger to make class more descriptive
-merge_request: 5483
-author:
-type: fixed

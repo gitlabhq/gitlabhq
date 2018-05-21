@@ -1,5 +1,0 @@
----
-title: Improves database performance of mirrors, forks and imports
-merge_request: 5522
-author:
-type: performance

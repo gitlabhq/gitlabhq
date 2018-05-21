@@ -1,5 +1,0 @@
----
-title: Prevent Geo from unnecessarily syncing expired CI job artifacts
-merge_request:
-author:
-type: performance

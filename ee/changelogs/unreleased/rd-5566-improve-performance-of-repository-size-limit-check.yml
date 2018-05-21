@@ -1,5 +1,0 @@
----
-title: Improve performance of repository size limit check
-merge_request: 5476
-author:
-type: performance

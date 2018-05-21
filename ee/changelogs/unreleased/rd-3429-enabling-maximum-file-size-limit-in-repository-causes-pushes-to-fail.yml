@@ -1,5 +1,0 @@
----
-title: Large pushes were failing when max file size push rule was active
-merge_request: 4989
-author:
-type: fixed
