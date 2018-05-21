@@ -458,7 +458,7 @@ export default class AccessDropdown {
       <li>
         <a href="#" class="${isActiveClass}">
           <img src="${user.avatar_url}" class="avatar avatar-inline" width="30">
-          <strong class="dropdown-menu-user-full-name">${user.name}</strong>
+          <strong class="dropdown-menu-user-full-name">${_.escape(user.name)}</strong>
           <span class="dropdown-menu-user-username">${user.username}</span>
         </a>
       </li>
