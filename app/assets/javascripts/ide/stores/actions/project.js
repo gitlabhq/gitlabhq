@@ -1,5 +1,6 @@
 import Visibility from 'visibilityjs';
 import flash from '~/flash';
+import { __ } from '~/locale';
 import service from '../../services';
 import * as types from '../mutation_types';
 import Poll from '../../../lib/utils/poll';
@@ -25,7 +26,7 @@ export const getProjectData = (
         })
         .catch(() => {
           flash(
-            'Error loading project data. Please try again.',
+            __('Error loading project data. Please try again.'),
             'alert',
             document,
             null,
@@ -63,7 +64,7 @@ export const getBranchData = (
         })
         .catch(() => {
           flash(
-            'Error loading branch data. Please try again.',
+            __('Error loading branch data. Please try again.'),
             'alert',
             document,
             null,
@@ -88,7 +89,7 @@ export const refreshLastCommitData = ({ commit, state, dispatch }, { projectId, 
       });
     })
     .catch(() => {
-      flash('Error loading last commit.', 'alert', document, null, false, true);
+      flash(__('Error loading last commit.'), 'alert', document, null, false, true);
     });
 
 export const pollSuccessCallBack = ({ commit, state, dispatch }, { data }) => {
@@ -112,7 +113,16 @@ export const pipelinePoll = ({ getters, dispatch }) => {
       commitSha: getters.lastCommit.id,
     },
     successCallback: resp => dispatch('pollSuccessCallBack', { data: resp.data }),
-    errorCallback: () => flash('Something went wrong while fetching the latest pipeline status.'),
+    errorCallback: () => {
+      flash(
+        __('Something went wrong while fetching the latest pipeline status.'),
+        'alert',
+        document,
+        null,
+        false,
+        true,
+      );
+    },
   });
 
   if (!Visibility.hidden()) {
