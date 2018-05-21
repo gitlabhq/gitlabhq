@@ -1,0 +1,16 @@
+# rubocop:disable Style/SignalException
+
+db_schema_updated = !git.modified_files.grep(%r{\A(ee/)?(db/(geo/)?(post_)?migrate)/}).empty?
+migration_created = !git.added_files.grep(%r{\A(db/(post_)?migrate)/}).empty?
+geo_migration_created = !git.added_files.grep(%r{\Aee/(db/geo/(post_)?migrate)/}).empty?
+
+if (migration_created || geo_migration_created) && !db_schema_updated
+  msg = ["New migrations were added but #{gitlab.html_link("db/schema.rb")}"]
+  msg << "(nor #{gitlab.html_link("ee/db/geo/schema.rb")})" if geo_migration_created
+  msg << "wasn't. Usually, when adding new migrations, #{gitlab.html_link("db/schema.rb")}"
+  msg << "(and #{gitlab.html_link("ee/db/geo/schema.rb")})" if geo_migration_created
+  msg << "should be updated too (unless your migrations are data migrations and your"
+  msg << "migration isn't the most recent one)."
+
+  warn msg.join(" ")
+end

@@ -348,6 +348,20 @@ retrieve-tests-metadata:
     - wget -O $FLAKY_RSPEC_SUITE_REPORT_PATH http://${TESTS_METADATA_S3_BUCKET}.s3.amazonaws.com/$FLAKY_RSPEC_SUITE_REPORT_PATH || rm $FLAKY_RSPEC_SUITE_REPORT_PATH
     - '[[ -f $FLAKY_RSPEC_SUITE_REPORT_PATH ]] || echo "{}" > ${FLAKY_RSPEC_SUITE_REPORT_PATH}'
 
+danger-review:
+  image: registry.gitlab.com/gitlab-org/gitaly/dangercontainer:latest
+  stage: prepare
+  before_script:
+    - source scripts/utils.sh
+    - retry gem install danger --no-ri --no-rdoc
+  cache: {}
+  except:
+    - tags
+    - master
+  script:
+    - git version
+    - danger --fail-on-errors=true
+
 update-tests-metadata:
   <<: *tests-metadata-state
   <<: *only-canonical-masters

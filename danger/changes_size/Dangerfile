@@ -1,0 +1,9 @@
+# rubocop:disable Style/SignalException
+
+if git.lines_of_code > 500
+  warn "This merge request is quite big, please consider splitting it into multiple merge requests."
+end
+
+if git.lines_of_code > 5_000
+  fail "This merge request is definitely too big, please split it into multiple merge requests."
+end

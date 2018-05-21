@@ -1,0 +1,39 @@
+# rubocop:disable Style/SignalException
+
+require 'yaml'
+
+def check_changelog(path)
+  yaml = YAML.safe_load(File.read(path))
+
+  fail "`title` should be set, in #{gitlab.html_link(path)}." if yaml["title"].nil?
+  fail "`type` should be set, in #{gitlab.html_link(path)}." if yaml["type"].nil?
+
+  if yaml["merge_request"].nil?
+    message "Consider setting `merge_request` to #{gitlab.mr_json["iid"]} in #{gitlab.html_link(path)}."
+  elsif yaml["merge_request"] != gitlab.mr_json["iid"]
+    fail "Merge request IID was not set to #{gitlab.mr_json["iid"]}!"
+  end
+rescue StandardError
+  # YAML could not be parsed, fail the build.
+  fail "#{gitlab.html_link(path)} isn't valid YAML!"
+end
+
+changelog_needed = !gitlab.mr_labels.include?("backstage")
+changelog_found = git.added_files.find { |path| path =~ %r{\A(ee/)?(changelogs/unreleased)(-ee)?/} }
+
+if git.modified_files.include?("CHANGELOG.md")
+  fail "CHANGELOG.md was edited. Please remove the additions and create an entry with `bin/changelog -m #{gitlab.mr_json["iid"]}` instead."
+end
+
+if changelog_needed
+  if changelog_found
+    check_changelog(path)
+  else
+    msg = [
+      "This merge request is missing a CHANGELOG entry, you can create one with `bin/changelog -m #{gitlab.mr_json["iid"]}`.",
+      "If your merge request doesn't warrant a CHANGELOG entry, consider adding the ~backstage label."
+    ]
+
+    warn msg.join(" ")
+  end
+end

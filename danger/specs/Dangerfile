@@ -1,0 +1,13 @@
+# rubocop:disable Style/SignalException
+
+has_app_changes = !git.modified_files.grep(%r{\A(ee/)?(app|lib|db/(geo/)?(post_)?migrate)/}).empty?
+has_spec_changes = !git.modified_files.grep(/spec/).empty?
+
+if has_app_changes && !has_spec_changes
+  msg = [
+    "You've made some app changes, but didn't add any tests.",
+    "That's OK as long as you're refactoring existing code (please consider adding the ~backstage label in that case)."
+  ]
+
+  warn msg.join(" "), sticky: false
+end
