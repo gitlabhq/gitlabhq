@@ -26,15 +26,45 @@
     data() {
       return {
         showSectionItems: false,
-        primaryNodeDetailItems: this.getPrimaryNodeDetailItems(),
-        secondaryNodeDetailItems: this.getSecondaryNodeDetailItems(),
       };
     },
     computed: {
       nodeDetailItems() {
-        return this.nodeTypePrimary ?
-          this.getPrimaryNodeDetailItems() :
-          this.getSecondaryNodeDetailItems();
+        if (this.nodeTypePrimary) {
+          // Return primary node detail items
+          const primaryNodeDetailItems = [
+            {
+              itemTitle: s__('GeoNodes|Replication slots'),
+              itemValue: this.nodeDetails.replicationSlots,
+              itemValueType: VALUE_TYPE.GRAPH,
+              successLabel: s__('GeoNodes|Used slots'),
+              neutraLabel: s__('GeoNodes|Unused slots'),
+            },
+          ];
+
+          if (this.nodeDetails.replicationSlots.totalCount) {
+            primaryNodeDetailItems.push(
+              {
+                itemTitle: s__('GeoNodes|Replication slot WAL'),
+                itemValue: numberToHumanSize(this.nodeDetails.replicationSlotWAL),
+                itemValueType: VALUE_TYPE.PLAIN,
+                cssClass: 'node-detail-value-bold',
+              },
+            );
+          }
+
+          return primaryNodeDetailItems;
+        }
+
+        // Return secondary node detail items
+        return [
+          {
+            itemTitle: s__('GeoNodes|Storage config'),
+            itemValue: this.storageShardsStatus,
+            itemValueType: VALUE_TYPE.PLAIN,
+            cssClass: this.storageShardsCssClass,
+          },
+        ];
       },
       storageShardsStatus() {
         if (this.nodeDetails.storageShardsMatch == null) {
@@ -48,42 +78,6 @@
       },
     },
     methods: {
-      getPrimaryNodeDetailItems() {
-        const primaryNodeDetailItems = [
-          {
-            itemTitle: s__('GeoNodes|Replication slots'),
-            itemValue: this.nodeDetails.replicationSlots,
-            itemValueType: VALUE_TYPE.GRAPH,
-            successLabel: s__('GeoNodes|Used slots'),
-            neutraLabel: s__('GeoNodes|Unused slots'),
-          },
-        ];
-
-        if (this.nodeDetails.replicationSlots.totalCount) {
-          primaryNodeDetailItems.push(
-            {
-              itemTitle: s__('GeoNodes|Replication slot WAL'),
-              itemValue: numberToHumanSize(this.nodeDetails.replicationSlotWAL),
-              itemValueType: VALUE_TYPE.PLAIN,
-              cssClass: 'node-detail-value-bold',
-            },
-          );
-        }
-
-        return primaryNodeDetailItems;
-      },
-      getSecondaryNodeDetailItems() {
-        const secondaryNodeDetailItems = [
-          {
-            itemTitle: s__('GeoNodes|Storage config'),
-            itemValue: this.storageShardsStatus,
-            itemValueType: VALUE_TYPE.PLAIN,
-            cssClass: this.storageShardsCssClass,
-          },
-        ];
-
-        return secondaryNodeDetailItems;
-      },
       handleSectionToggle(toggleState) {
         this.showSectionItems = toggleState;
       },

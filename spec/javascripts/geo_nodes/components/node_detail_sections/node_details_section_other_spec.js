@@ -31,14 +31,33 @@ describe('NodeDetailsSectionOther', () => {
   describe('data', () => {
     it('returns default data props', () => {
       expect(vm.showSectionItems).toBe(false);
-      expect(Array.isArray(vm.primaryNodeDetailItems)).toBe(true);
-      expect(Array.isArray(vm.secondaryNodeDetailItems)).toBe(true);
-      expect(vm.primaryNodeDetailItems.length > 0).toBe(true);
-      expect(vm.secondaryNodeDetailItems.length > 0).toBe(true);
     });
   });
 
   describe('computed', () => {
+    describe('nodeDetailItems', () => {
+      it('returns array containing items to show under primary node when prop `nodeTypePrimary` is true', () => {
+        const vmNodePrimary = createComponent(mockNodeDetails, true);
+
+        const items = vmNodePrimary.nodeDetailItems;
+
+        expect(items.length).toBe(2);
+        expect(items[0].itemTitle).toBe('Replication slots');
+        expect(items[0].itemValue).toBe(mockNodeDetails.replicationSlots);
+        expect(items[1].itemTitle).toBe('Replication slot WAL');
+        expect(items[1].itemValue).toBe(numberToHumanSize(mockNodeDetails.replicationSlotWAL));
+
+        vmNodePrimary.$destroy();
+      });
+
+      it('returns array containing items to show under secondary node when prop `nodeTypePrimary` is false', () => {
+        const items = vm.nodeDetailItems;
+
+        expect(items.length).toBe(1);
+        expect(items[0].itemTitle).toBe('Storage config');
+      });
+    });
+
     describe('storageShardsStatus', () => {
       it('returns `Unknown` when `nodeDetails.storageShardsMatch` is null', (done) => {
         vm.nodeDetails.storageShardsMatch = null;
@@ -78,32 +97,6 @@ describe('NodeDetailsSectionOther', () => {
 
       it('returns CSS class `node-detail-value-bold node-detail-value-error` when `nodeDetails.storageShardsMatch` is false', () => {
         expect(vm.storageShardsCssClass).toBe('node-detail-value-bold node-detail-value-error');
-      });
-    });
-  });
-
-  describe('methods', () => {
-    describe('getPrimaryNodeDetailItems', () => {
-      it('returns array containing items to show under primary node', () => {
-        const items = vm.getPrimaryNodeDetailItems();
-
-        expect(items.length).toBe(2);
-        expect(items[0].itemTitle).toBe('Replication slots');
-        expect(items[0].itemValue).toBe(mockNodeDetails.replicationSlots);
-        expect(items[1].itemTitle).toBe('Replication slot WAL');
-        expect(items[1].itemValue).toBe(numberToHumanSize(mockNodeDetails.replicationSlotWAL));
-      });
-    });
-
-    describe('getSecondaryNodeDetailItems', () => {
-      it('returns array containing items to show under secondary node', () => {
-        vm.nodeDetails.storageShardsMatch = true;
-
-        const items = vm.getSecondaryNodeDetailItems();
-
-        expect(items.length).toBe(1);
-        expect(items[0].itemTitle).toBe('Storage config');
-        expect(items[0].itemValue).toBe('OK');
       });
     });
   });
