@@ -699,4 +699,37 @@ describe Group do
       let(:uploader_class) { AttachmentUploader }
     end
   end
+
+  describe '#discovery_token' do
+    it 'returns existing tokens' do
+      group = create(:group, discovery_token: 'existing')
+
+      expect(group.discovery_token).to eq 'existing'
+    end
+
+    context 'when missing on read' do
+      it 'generates a token' do
+        expect(group.discovery_token.length).to eq 8
+      end
+
+      it 'saves the generated token' do
+        expect { group.discovery_token }.to change { group.reload.read_attribute(:discovery_token) }
+      end
+
+      context 'in read only mode' do
+        before do
+          allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+          allow(group).to receive(:create_or_update).and_raise(ActiveRecord::ReadOnlyRecord)
+        end
+
+        it "doesn't raise an error as that could expose group existance" do
+          expect { group.discovery_token }.not_to raise_error
+        end
+
+        it 'returns a random value to prevent access' do
+          expect(group.discovery_token).not_to be_blank
+        end
+      end
+    end
+  end
 end

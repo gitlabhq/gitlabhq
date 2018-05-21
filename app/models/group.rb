@@ -334,6 +334,17 @@ class Group < Namespace
     ensure_runners_token!
   end
 
+  # Helps avoid revealing that a group exists on a given path
+  # The token conveys that the anonymous user is allowed to know of the group
+  def discovery_token
+    super.presence || begin
+      self.discovery_token = Devise.friendly_token(8)
+
+      save if Gitlab::Database.read_write?
+      super
+    end
+  end
+
   private
 
   def update_two_factor_requirement

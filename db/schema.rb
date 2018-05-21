@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180512061621) do
+ActiveRecord::Schema.define(version: 20180520211048) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1289,6 +1289,7 @@ ActiveRecord::Schema.define(version: 20180512061621) do
     t.integer "two_factor_grace_period", default: 48, null: false
     t.integer "cached_markdown_version"
     t.string "runners_token"
+    t.string "discovery_token"
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree
