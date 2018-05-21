@@ -1,5 +1,5 @@
 class Projects::PipelinesController < Projects::ApplicationController
-  before_action :whitelist_query_limiting, only: [:create, :retry]
+  # before_action :whitelist_query_limiting, only: [:create, :retry]
   before_action :pipeline, except: [:index, :new, :create, :charts]
   before_action :commit, only: [:show, :builds, :failures]
   before_action :authorize_read_pipeline!
@@ -15,6 +15,7 @@ class Projects::PipelinesController < Projects::ApplicationController
     @pipelines = PipelinesFinder
       .new(project, scope: @scope)
       .execute
+      .preload(:stages)
       .page(params[:page])
       .per(30)
 
@@ -23,7 +24,7 @@ class Projects::PipelinesController < Projects::ApplicationController
     @finished_count = limited_pipelines_count(project, 'finished')
     @pipelines_count = limited_pipelines_count(project)
 
-    Gitlab::Ci::Pipeline::Preloader.preload(@pipelines)
+    Gitlab::Ci::Pipeline::Preloader.preload(@project, @pipelines)
 
     respond_to do |format|
       format.html

@@ -79,5 +79,23 @@ module Ci
         end
       end
     end
+
+    def groups
+      @groups ||= statuses.ordered.latest
+        .sort_by(&:sortable_name).group_by(&:group_name)
+        .map do |group_name, grouped_statuses|
+          Ci::Group.new(self, name: group_name, jobs: grouped_statuses)
+        end
+    end
+
+    def has_warnings?
+      statuses.latest.failed_but_allowed.any?
+    end
+
+    def detailed_status(current_user)
+      Gitlab::Ci::Status::Stage::Factory
+        .new(self, current_user)
+        .fabricate!
+    end
   end
 end

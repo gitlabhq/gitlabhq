@@ -19,16 +19,21 @@ describe Projects::PipelinesController do
     before do
       %w(pending running created success).each_with_index do |status, index|
         sha = project.commit("HEAD~#{index}")
-        create(:ci_empty_pipeline, status: status, project: project, sha: sha)
+
+        pipeline = create(:ci_empty_pipeline, status: status,
+                                              project: project,
+                                              sha: sha)
+
+
+        create_build(pipeline, 'test', 1, 'unit')
+        create_build(pipeline, 'test', 1, 'feature')
+        create_build(pipeline, 'review', 2, 'staging')
+        create_build(pipeline, 'deploy', 3, 'production')
       end
     end
 
-    subject do
-      get :index, namespace_id: project.namespace, project_id: project, format: :json
-    end
-
-    it 'returns JSON with serialized pipelines' do
-      subject
+    it 'returns JSON with serialized pipelines', :request_store do
+      queries = ActiveRecord::QueryRecorder.new { get_pipelines_index_json }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('pipeline')
@@ -39,22 +44,35 @@ describe Projects::PipelinesController do
       expect(json_response['count']['running']).to eq '1'
       expect(json_response['count']['pending']).to eq '1'
       expect(json_response['count']['finished']).to eq '1'
+      puts queries.log
+      expect(queries.count).to be < 25
     end
 
     it 'does not include coverage data for the pipelines' do
-      subject
+      get_pipelines_index_json
 
       expect(json_response['pipelines'][0]).not_to include('coverage')
     end
 
     context 'when performing gitaly calls', :request_store do
       it 'limits the Gitaly requests' do
-        expect { subject }.to change { Gitlab::GitalyClient.get_request_count }.by(3)
+        expect { get_pipelines_index_json }
+          .to change { Gitlab::GitalyClient.get_request_count }.by(2)
       end
+    end
+
+    def get_pipelines_index_json
+      get :index, namespace_id: project.namespace,
+                  project_id: project,
+                  format: :json
+    end
+
+    def create_build(pipeline, stage, stage_idx, name)
+      create(:ci_build, pipeline: pipeline, stage: stage, stage_idx: stage_idx, name: name)
     end
   end
 
-  describe 'GET show JSON' do
+  describe 'GET show.json' do
     let(:pipeline) { create(:ci_pipeline_with_one_job, project: project) }
 
     it 'returns the pipeline' do
@@ -67,16 +85,19 @@ describe Projects::PipelinesController do
     end
 
     context 'when the pipeline has multiple stages and groups', :request_store do
+      let(:project) { create(:project, :repository) }
+
+      let(:pipeline) do
+        create(:ci_empty_pipeline, project: project,
+                                   user: user,
+                                   sha: project.commit.id)
+      end
+
       before do
         create_build('build', 0, 'build')
         create_build('test', 1, 'rspec 0')
         create_build('deploy', 2, 'production')
         create_build('post deploy', 3, 'pages 0')
-      end
-
-      let(:project) { create(:project, :repository) }
-      let(:pipeline) do
-        create(:ci_empty_pipeline, project: project, user: user, sha: project.commit.id)
       end
 
       it 'does not perform N + 1 queries' do
@@ -90,6 +111,7 @@ describe Projects::PipelinesController do
         create_build('post deploy', 3, 'pages 2')
 
         new_count = ActiveRecord::QueryRecorder.new { get_pipeline_json }.count
+
         expect(new_count).to be_within(12).of(control_count)
       end
     end
