@@ -107,6 +107,7 @@ describe('Environment', () => {
             expect(component.updateContent).toHaveBeenCalledWith({ scope: 'stopped', page: '1' });
             done();
           }, 0);
+<<<<<<< HEAD
         });
       });
 
@@ -118,6 +119,8 @@ describe('Environment', () => {
             ).toBeDefined();
             done();
           }, 0);
+=======
+>>>>>>> upstream/master
         });
       });
     });
