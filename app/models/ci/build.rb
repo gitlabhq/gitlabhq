@@ -665,7 +665,7 @@ module Ci
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         break variables unless gitlab_deploy_token
 
-        variables.append(key: 'CI_DEPLOY_USER', value: gitlab_deploy_token.name)
+        variables.append(key: 'CI_DEPLOY_USER', value: gitlab_deploy_token.username)
         variables.append(key: 'CI_DEPLOY_PASSWORD', value: gitlab_deploy_token.token, public: false)
       end
     end
