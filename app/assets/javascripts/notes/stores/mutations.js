@@ -119,8 +119,10 @@ export default {
 
   [types.SHOW_PLACEHOLDER_NOTE](state, data) {
     let notesArr = state.notes;
-    if (data.replyId) {
-      notesArr = utils.findNoteObjectById(notesArr, data.replyId).notes;
+
+    const existingDiscussion = utils.findNoteObjectById(notesArr, data.replyId);
+    if (existingDiscussion) {
+      notesArr = existingDiscussion.notes;
     }
 
     notesArr.push({
