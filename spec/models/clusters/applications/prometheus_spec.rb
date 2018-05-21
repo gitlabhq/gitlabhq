@@ -88,7 +88,7 @@ describe Clusters::Applications::Prometheus do
 
       context 'when cluster is not reachable' do
         before do
-          allow(kube_client).to receive(:proxy_url).with(anything, anything, anything, anything).and_raise(Kubeclient::HttpError.new(401, 'Unauthorized', nil))
+          allow(kube_client).to receive(:proxy_url).and_raise(Kubeclient::HttpError.new(401, 'Unauthorized', nil))
         end
 
         it 'returns nil' do
