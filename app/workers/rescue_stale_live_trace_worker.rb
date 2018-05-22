@@ -8,15 +8,18 @@ class RescueStaleLiveTraceWorker
     # The target jobs are with the following conditions
     # - Finished 1 day ago, but it has not had an acthived trace yet
     #   Jobs finished 1 day ago should have an archived trace. Probably ArchiveTraceWorker failed by Sidekiq's inconsistancy
-    Ci::Build.finished
-      .where('finished_at BETWEEN ? AND ?', 1.week.ago, 1.day.ago)
-      .where('NOT EXISTS (?)', Ci::JobArtifact.select(1).trace.where('ci_builds.id = ci_job_artifacts.job_id'))
-      .find_in_batch(batch_size: 100) do |jobs|
-        job_ids = jobs.map { |job| [job.id] }
+    Ci::BuildTraceChunk
+      .select(:build_id)
+      .group(:build_id)
+      .joins(:build)
+      .merge(Ci::Build.finished)
+      .where('ci_builds.finished_at < ?', 1.hour.ago)
+      .each do |chunks| # TODO: find_each gives an error because of group_by
+        build_ids = chunks.map { |chunk| [chunk.build_id] }
 
-        ArchiveTraceWorker.bulk_perform_async(job_ids)
+        ArchiveTraceWorker.bulk_perform_async(build_ids)
 
-        Rails.logger.warning "Scheduled to archive stale live traces from #{job_ids.min} to #{job_ids.max}"
+        Rails.logger.warning "Scheduled to archive stale live traces from #{build_ids.min} to #{build_ids.max}"
       end
   end
 end
