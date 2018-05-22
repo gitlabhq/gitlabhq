@@ -112,7 +112,7 @@ export const pipelinePoll = ({ getters, dispatch }) => {
       projectId: getters.currentProject.path_with_namespace,
       commitSha: getters.lastCommit.id,
     },
-    successCallback: resp => dispatch('pollSuccessCallBack', { data: resp.data }),
+    successCallback: ({ data }) => dispatch('pollSuccessCallBack', { data }),
     errorCallback: () => {
       flash(
         __('Something went wrong while fetching the latest pipeline status.'),
