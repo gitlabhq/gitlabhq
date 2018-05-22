@@ -36,8 +36,6 @@ describe Projects::PipelinesController do
       expect(json_response['count']['running']).to eq '1'
       expect(json_response['count']['pending']).to eq '1'
       expect(json_response['count']['finished']).to eq '2'
-      puts queries.log
-      puts "Queries count: #{queries.count}"
       expect(queries.count).to be < 32
     end
 
