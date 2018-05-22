@@ -71,19 +71,6 @@ class Projects::ClustersController < Projects::ApplicationController
                                  .present(current_user: current_user)
   end
 
-  def create_params
-    params.require(:cluster).permit(
-      :enabled,
-      :name,
-      :provider_type,
-      provider_gcp_attributes: [
-        :gcp_project_id,
-        :zone,
-        :num_nodes,
-        :machine_type
-      ])
-  end
-
   def update_params
     if cluster.managed?
       params.require(:cluster).permit(
