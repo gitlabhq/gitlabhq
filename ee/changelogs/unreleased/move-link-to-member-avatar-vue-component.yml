@@ -1,0 +1,5 @@
+---
+title: Reorder LinkToMemberAvatar vue component props values
+merge_request: 5692
+author: George Tsiolis
+type: performance
