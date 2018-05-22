@@ -1,6 +1,48 @@
 module QA
-  feature 'Auto Devops', :kubernetes, :docker do
+  feature 'Auto Devops', :kubernetes do
     let(:executor) { "qa-runner-#{Time.now.to_i}" }
+    let(:config_ru) do
+      <<~EOF
+        run lambda { |env| [200, {'Content-Type'=>'text/plain'}, StringIO.new("Hello World!\n")] }
+      EOF
+    end
+    let(:gemfile) do
+      <<~EOF
+        source 'https://rubygems.org'
+        gem 'rack'
+        gem 'rake'
+      EOF
+    end
+    let(:gemfile_lock) do
+      <<~EOF
+        GEM
+          remote: https://rubygems.org/
+          specs:
+            rack (2.0.4)
+            rake (12.3.0)
+
+        PLATFORMS
+          ruby
+
+        DEPENDENCIES
+          rack
+          rake
+
+        BUNDLED WITH
+           1.16.1
+      EOF
+    end
+    let(:rakefile) do
+      <<~EOF
+        require 'rake/testtask'
+
+        task default: %w[test]
+
+        task :test do
+          puts "ok"
+        end
+      EOF
+    end
 
     after do
       @cluster&.remove!
@@ -10,81 +52,49 @@ module QA
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 
-      #@cluster = Service::KubernetesCluster.new.create!
+      @cluster = Service::KubernetesCluster.new.create!
 
-      project = Factory::Resource::Project.fabricate! do |project|
-        project.name = 'project-with-autodevops'
-        project.description = 'Project with Auto Devops'
+      # Create the K8s cluster
+      project = Factory::Resource::Project.fabricate! do |p|
+        p.name = 'project-with-autodevops'
+        p.description = 'Project with Auto Devops'
       end
 
-      #Factory::Repository::Push.fabricate! do |push|
-      #  push.project = project
-      #  push.file_name = 'config.ru'
-      #  push.commit_message = 'Add config.ru'
-      #  push.file_content = <<~EOF run lambda { |env| [200, {'Content-Type'=>'text/plain'}, StringIO.new("Hello World!\n")] }
-      #  EOF
-      #end
+      # Create Auto Devops compatible repo
+      project.visit!
+      Git::Repository.perform do |repository|
+        repository.uri = Page::Project::Show.act do
+          choose_repository_clone_http
+          repository_location.uri
+        end
 
-      #Factory::Repository::Push.fabricate! do |push|
-      #  push.project = project
-      #  push.file_name = 'Gemfile'
-      #  push.commit_message = 'Add Gemfile'
-      #  push.file_content = <<~EOF
-      #    source 'https://rubygems.org'
-      #    gem 'rack'
-      #    gem 'rake'
-      #  EOF
-      #end
+        repository.use_default_credentials
+        repository.clone
+        repository.configure_identity('GitLab QA', 'root@gitlab.com')
 
-      #Factory::Repository::Push.fabricate! do |push|
-      #  push.project = project
-      #  push.file_name = 'Gemfile.lock'
-      #  push.commit_message = 'Add Gemfile.lock'
-      #  push.file_content = <<~EOF
-      #    GEM
-      #      remote: https://rubygems.org/
-      #      specs:
-      #        rack (2.0.4)
-      #        rake (12.3.0)
+        repository.checkout_new_branch('master')
+        repository.add_file('config.ru', config_ru)
+        repository.add_file('Gemfile', gemfile)
+        repository.add_file('Gemfile.lock', gemfile_lock)
+        repository.add_file('Rakefile', rakefile)
+        repository.commit('Create auto devops repo')
+        repository.push_changes("master:master")
+      end
 
-      #    PLATFORMS
-      #      ruby
-
-      #    DEPENDENCIES
-      #      rack
-      #      rake
-
-      #    BUNDLED WITH
-      #       1.16.1
-      #  EOF
-      #end
-
-      #Factory::Repository::Push.fabricate! do |push|
-      #  push.project = project
-      #  push.file_name = 'Rakefile'
-      #  push.commit_message = 'Add Rakefile'
-      #  push.file_content = <<~EOF
-      #    require 'rake/testtask'
-
-      #    task default: %w[test]
-
-      #    task :test do
-      #      puts "ok"
-      #    end
-      #  EOF
-      #end
-
+      # Connect GitLab to the K8s cluster
       Factory::Resource::KubernetesCluster.fabricate! do |c|
         c.project = project
-        c.cluster_name = "blah1"#@cluster.cluster_name
-        c.api_url = "blah2"#@cluster.api_url
-        c.ca_certificate = "blah3"#@cluster.ca_certificate
-        c.token = "blah4"#@cluster.token
+        c.cluster_name = @cluster.cluster_name
+        c.api_url = @cluster.api_url
+        c.ca_certificate = @cluster.ca_certificate
+        c.token = @cluster.token
         c.install_helm_tiller = true
         c.install_ingress = true
         c.install_prometheus = true
         c.install_runner = true
       end
+
+      require 'pry'; binding.pry
 
       #Page::Project::Settings::CICD.act { enable_auto_devops_with_nip_domain }
 
