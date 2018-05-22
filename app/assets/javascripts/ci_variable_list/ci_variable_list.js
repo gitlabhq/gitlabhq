@@ -142,7 +142,7 @@ export default class VariableList {
     });
 
     // Close any dropdowns
-    $rowClone.find('.show').each((index, $dropdown) => {
+    $rowClone.find('.dropdown.show').each((index, $dropdown) => {
       $dropdown.classList.remove('show');
     });
 
