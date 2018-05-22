@@ -133,48 +133,6 @@ export default class EnvironmentsStore {
     return count;
   }
 
-  /**
-   * Toggles deploy board visibility for the provided environment ID.
-   *
-   * @param  {Object} environment
-   * @return {Array}
-   */
-  toggleDeployBoard(environmentID) {
-    const environments = this.state.environments.slice();
-
-    this.state.environments = environments.map((env) => {
-      let updated = Object.assign({}, env);
-
-      if (env.id === environmentID) {
-        updated = Object.assign({}, updated, { isDeployBoardVisible: !env.isDeployBoardVisible });
-      }
-      return updated;
-    });
-
-    return this.state.environments;
-  }
-
-  /**
-   * Store deploy board data for given environment.
-   *
-   * @param  {Number} environmentID
-   * @param  {Object} deployBoard
-   * @return {Array}
-   */
-  storeDeployBoard(environmentID, deployBoard) {
-    const environments = Object.assign([], this.state.environments);
-
-    this.state.environments = environments.map((env) => {
-      let updated = Object.assign({}, env);
-
-      if (env.id === environmentID) {
-        updated = Object.assign({}, updated, { deployBoardData: deployBoard });
-      }
-      return updated;
-    });
-    return this.state.environments;
-  }
-
   /*
     * Toggles folder open property for the given folder.
     *
@@ -241,7 +199,24 @@ export default class EnvironmentsStore {
     return environments.filter(env => env.isFolder && env.isOpen);
   }
 
-  getOpenDeployBoards() {
-    return this.state.environments.filter(env => env.isDeployBoardVisible);
+  /**
+   * Toggles deploy board visibility for the provided environment ID.
+   *
+   * @param  {Object} environment
+   * @return {Array}
+   */
+  toggleDeployBoard(environmentID) {
+    const environments = this.state.environments.slice();
+
+    this.state.environments = environments.map((env) => {
+      let updated = Object.assign({}, env);
+
+      if (env.id === environmentID) {
+        updated = Object.assign({}, updated, { isDeployBoardVisible: !env.isDeployBoardVisible });
+      }
+      return updated;
+    });
+
+    return this.state.environments;
   }
 }

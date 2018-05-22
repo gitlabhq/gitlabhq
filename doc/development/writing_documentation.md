@@ -1,3 +1,7 @@
+---
+description: Learn how to contribute to GitLab Documentation.
+---
+
 # GitLab Documentation guidelines
 
   - **General Documentation**: written by the [developers responsible by creating features](#contributing-to-docs). Should be submitted in the same merge request containing code. Feature proposals (by GitLab contributors) should also be accompanied by its respective documentation. They can be later improved by PMs and Technical Writers.
@@ -200,6 +204,19 @@ Things to note:
 - The `*.md` extension is not used when a document is linked to GitLab's
   built-in help page, that's why we omit it in `git grep`.
 - Use the checklist on the documentation MR description template.
+
+#### Alternative redirection method
+
+Alternatively to the method described above, you can simply replace the content
+of the old file with a frontmatter containing a redirect link:
+
+```yaml
+---
+redirect_to: '../path/to/file/README.md'
+---
+```
+
+It supports both full and relative URLs, e.g. `https://docs.gitlab.com/ee/path/to/file.html`, `../path/to/file.html`, `path/to/file.md`. Note that any `*.md` paths will be compiled to `*.html`.
 
 ### Redirections for pages with Disqus comments
 

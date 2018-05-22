@@ -11,13 +11,14 @@ module API
         requires :token, type: String, desc: 'Registration token'
         optional :description, type: String, desc: %q(Runner's description)
         optional :info, type: Hash, desc: %q(Runner's metadata)
+        optional :active, type: Boolean, desc: 'Should Runner be active'
         optional :locked, type: Boolean, desc: 'Should Runner be locked for current project'
         optional :run_untagged, type: Boolean, desc: 'Should Runner handle untagged jobs'
         optional :tag_list, type: Array[String], desc: %q(List of Runner's tags)
         optional :maximum_timeout, type: Integer, desc: 'Maximum timeout set when this Runner will handle the job'
       end
       post '/' do
-        attributes = attributes_for_keys([:description, :locked, :run_untagged, :tag_list, :maximum_timeout])
+        attributes = attributes_for_keys([:description, :active, :locked, :run_untagged, :tag_list, :maximum_timeout])
           .merge(get_runner_details_from_request)
 
         runner =
@@ -148,6 +149,7 @@ module API
       end
       patch '/:id/trace' do
         job = authenticate_job!
+        forbidden!('Job is not running') unless job.running?
 
         error!('400 Missing header Content-Range', 400) unless request.headers.key?('Content-Range')
         content_range = request.headers['Content-Range']

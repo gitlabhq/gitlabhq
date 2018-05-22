@@ -14,36 +14,36 @@ module EESpecificCheck
     'locale/gitlab.pot'
   ].freeze
 
-  CompareBase = Struct.new(:ce_merge_base, :ee_merge_base, :ce_updated_base)
+  CompareBase = Struct.new(:ce_merge_base, :ee_fetch_base, :ce_updated_base)
 
   module_function
 
+  def git_version
+    say run_git_command('--version')
+  end
+
   def say(message)
-    puts "\n#{message}", "\n" # puts would eat trailing newline
+    warn "\n#{message}", "\n" # puts would eat trailing newline
   end
 
   def find_compare_base
-    # We're still seeing errors not ignoring knapsack/ and rspec_flaky/
-    # Instead of waiting that populate over all the branches, we could
-    # just remove untracked files anyway, only on CI of course in case
-    # we're wiping people's data!
-    # See https://gitlab.com/gitlab-org/gitlab-ee/issues/5912
-    git_clean if ENV['CI']
-
-    setup_canonical_remotes
+    git_clean
 
     ce_fetch_head = fetch_remote_ce_branch
+    ce_fetch_base = run_git_command("merge-base canonical-ce/master #{ce_fetch_head}")
     ce_merge_base = run_git_command("merge-base canonical-ce/master canonical-ee/master")
-    ee_merge_base = run_git_command("merge-base canonical-ee/master HEAD")
+    ee_fetch_base = run_git_command("merge-base canonical-ee/master HEAD")
 
     ce_updated_base =
-      if ce_fetch_head.start_with?('canonical-ce')
-        ce_merge_base # Compare with merge-base if no specific CE branch
+      if ce_fetch_head.start_with?('canonical-ce') || # No specific CE branch
+          ce_fetch_base == ce_merge_base # Up-to-date, no rebase needed
+        ce_merge_base
       else
-        checkout_and_rebase_ce_fetch_head_onto_ce_merge_base(ce_merge_base, ce_fetch_head)
+        checkout_and_rebase_ce_fetch_head_onto_ce_merge_base(
+          ce_fetch_head, ce_fetch_base, ce_merge_base)
       end
 
-    CompareBase.new(ce_merge_base, ee_merge_base, ce_updated_base)
+    CompareBase.new(ce_merge_base, ee_fetch_base, ce_updated_base)
   end
 
   def setup_canonical_remotes
@@ -55,6 +55,8 @@ module EESpecificCheck
   end
 
   def fetch_remote_ce_branch
+    setup_canonical_remotes
+
     remote_to_fetch, branch_to_fetch = find_remote_ce_branch
 
     run_git_command("fetch #{remote_to_fetch} #{branch_to_fetch} --quiet")
@@ -62,12 +64,14 @@ module EESpecificCheck
     "#{remote_to_fetch}/#{branch_to_fetch}"
   end
 
-  def checkout_and_rebase_ce_fetch_head_onto_ce_merge_base(ce_merge_base, ce_fetch_head)
+  def checkout_and_rebase_ce_fetch_head_onto_ce_merge_base(
+    ce_fetch_head, ce_fetch_base, ce_merge_base)
     # So that we could switch back
     head = head_commit_sha
 
     # Use detached HEAD so that we don't update HEAD
-    run_git_command("checkout #{ce_fetch_head}")
+    run_git_command("checkout -f #{ce_fetch_head}")
+    git_clean
 
     # We rebase onto the commit which is the latest commit presented in both
     # CE and EE, i.e. ce_merge_base, cutting off commits aren't merged into
@@ -78,21 +82,21 @@ module EESpecificCheck
     # * !: Commits we want to cut off from CE branch
     #
     #                ^-> o CE branch (ce_fetch_head)
-    #               /
+    #               / (ce_fetch_base)
     #     o -> o -> ! -> x CE master
     #          v (ce_merge_base)
     #     o -> o -> o -> x EE master
-    #               \ (ee_merge_base)
+    #               \ (ee_fetch_base)
     #                v-> o EE branch
     #
     # We want to rebase above into this: (we only change the connection)
     #
     #            -> - -> o CE branch (ce_fetch_head)
-    #           /
+    #           / (ce_fetch_base)
     #     o -> o -> ! -> x CE master
     #          v (ce_merge_base)
     #     o -> o -> o -> x EE master
-    #               \ (ee_merge_base)
+    #               \ (ee_fetch_base)
     #                v-> o EE branch
     #
     # Therefore we rebase onto ce_merge_base, which is based off CE master,
@@ -101,12 +105,11 @@ module EESpecificCheck
     # merged into EE yet, therefore won't be available in the EE branch.
     #
     # After rebase is done, then we could compare against
-    # ce_merge_base..ee_merge_base along with ce_fetch_head..HEAD (EE branch)
-    # where ce_merge_base..ee_merge_base is the update-to-date
+    # ce_merge_base..ee_fetch_base along with ce_fetch_head..HEAD (EE branch)
+    # where ce_merge_base..ee_fetch_base is the update-to-date
     # CE/EE difference and ce_fetch_head..HEAD is the changes we made in
     # CE and EE branches.
-    old_base = run_git_command("merge-base canonical-ce/master #{ce_fetch_head}")
-    run_git_command("rebase --onto #{ce_merge_base} #{old_base}~1 #{ce_fetch_head}")
+    run_git_command("rebase --onto #{ce_merge_base} #{ce_fetch_base}~1 #{ce_fetch_head}")
 
     status = git_status
 
@@ -129,7 +132,8 @@ module EESpecificCheck
 
   ensure # ensure would still run if we call exit, don't worry
     # Make sure to switch back
-    run_git_command("checkout #{head}")
+    run_git_command("checkout -f #{head}")
+    git_clean
   end
 
   def head_commit_sha
@@ -141,7 +145,13 @@ module EESpecificCheck
   end
 
   def git_clean
-    run_git_command('clean -fd')
+    # We're still seeing errors not ignoring knapsack/ and rspec_flaky/
+    # Instead of waiting that populate over all the branches, we could
+    # just remove untracked files anyway, only on CI of course in case
+    # we're wiping people's data!
+    # See https://gitlab.com/gitlab-org/gitlab-ee/issues/5912
+    # Also see https://gitlab.com/gitlab-org/gitlab-ee/-/jobs/68194333
+    run_git_command('clean -fd') if ENV['CI']
   end
 
   def remove_remotes
@@ -210,7 +220,7 @@ module EESpecificCheck
 
   def run_command(*commands)
     commands.map do |cmd|
-      puts "=> Running `#{cmd}`"
+      warn "=> Running `#{cmd}`"
 
       `#{cmd}`.strip
     end

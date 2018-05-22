@@ -37,6 +37,7 @@ following locations:
 - [Keys](keys.md)
 - [Labels](labels.md)
 - [License](license.md)
+- [Markdown](markdown.md)
 - [Merge Requests](merge_requests.md)
 - [Merge Request Approvals](merge_request_approvals.md) **[STARTER]**
 - [Project milestones](milestones.md)

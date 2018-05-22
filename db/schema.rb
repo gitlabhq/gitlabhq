@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180503200320) do
+ActiveRecord::Schema.define(version: 20180512061621) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -593,12 +593,13 @@ ActiveRecord::Schema.define(version: 20180503200320) do
     t.integer "access_level", default: 0, null: false
     t.string "ip_address"
     t.integer "maximum_timeout"
-    t.integer "runner_type", limit: 2
+    t.integer "runner_type", limit: 2, null: false
   end
 
   add_index "ci_runners", ["contacted_at"], name: "index_ci_runners_on_contacted_at", using: :btree
   add_index "ci_runners", ["is_shared"], name: "index_ci_runners_on_is_shared", using: :btree
   add_index "ci_runners", ["locked"], name: "index_ci_runners_on_locked", using: :btree
+  add_index "ci_runners", ["runner_type"], name: "index_ci_runners_on_runner_type", using: :btree
   add_index "ci_runners", ["token"], name: "index_ci_runners_on_token", using: :btree
 
   create_table "ci_sources_pipelines", force: :cascade do |t|
@@ -1946,7 +1947,7 @@ ActiveRecord::Schema.define(version: 20180503200320) do
   add_index "project_deploy_tokens", ["project_id", "deploy_token_id"], name: "index_project_deploy_tokens_on_project_id_and_deploy_token_id", unique: true, using: :btree
 
   create_table "project_features", force: :cascade do |t|
-    t.integer "project_id"
+    t.integer "project_id", null: false
     t.integer "merge_requests_access_level"
     t.integer "issues_access_level"
     t.integer "wiki_access_level"
@@ -1957,7 +1958,7 @@ ActiveRecord::Schema.define(version: 20180503200320) do
     t.integer "repository_access_level", default: 20, null: false
   end
 
-  add_index "project_features", ["project_id"], name: "index_project_features_on_project_id", using: :btree
+  add_index "project_features", ["project_id"], name: "index_project_features_on_project_id", unique: true, using: :btree
 
   create_table "project_group_links", force: :cascade do |t|
     t.integer "project_id", null: false
@@ -1982,13 +1983,11 @@ ActiveRecord::Schema.define(version: 20180503200320) do
   add_index "project_import_data", ["project_id"], name: "index_project_import_data_on_project_id", using: :btree
 
   create_table "project_mirror_data", force: :cascade do |t|
-    t.integer "project_id"
+    t.integer "project_id", null: false
     t.integer "retry_count", default: 0, null: false
     t.datetime "last_update_started_at"
     t.datetime "last_update_scheduled_at"
     t.datetime "next_execution_timestamp"
-    t.datetime "created_at"
-    t.datetime "updated_at"
     t.string "status"
     t.string "jid"
     t.datetime_with_timezone "last_update_at"
@@ -2755,6 +2754,7 @@ ActiveRecord::Schema.define(version: 20180503200320) do
   add_foreign_key "ci_build_trace_sections", "ci_builds", column: "build_id", name: "fk_4ebe41f502", on_delete: :cascade
   add_foreign_key "ci_build_trace_sections", "projects", on_delete: :cascade
   add_foreign_key "ci_builds", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_a2141b1522", on_delete: :nullify
+  add_foreign_key "ci_builds", "ci_pipelines", column: "commit_id", name: "fk_d3130c9a7f", on_delete: :cascade
   add_foreign_key "ci_builds", "ci_stages", column: "stage_id", name: "fk_3a9eaa254d", on_delete: :cascade
   add_foreign_key "ci_builds", "projects", name: "fk_befce0568a", on_delete: :cascade
   add_foreign_key "ci_builds_metadata", "ci_builds", column: "build_id", on_delete: :cascade

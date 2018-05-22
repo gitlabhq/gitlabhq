@@ -9,10 +9,10 @@ class CreateProjectMirrorDataEE < ActiveRecord::Migration
     # When moving from CE to EE, project_mirror_data may already exist, but will
     # not have all the required columns.
     if table_exists?(:project_mirror_data)
-      add_column_with_default :project_mirror_data, :retry_count, :integer, default: 0, allow_null: false
-      add_column :project_mirror_data, :last_update_started_at, :datetime_with_timezone
-      add_column :project_mirror_data, :last_update_scheduled_at, :datetime_with_timezone
-      add_column :project_mirror_data, :next_execution_timestamp, :datetime_with_timezone
+      add_column_with_default :project_mirror_data, :retry_count, :integer, default: 0, allow_null: false unless column_exists?(:project_mirror_data, :retry_count)
+      add_column :project_mirror_data, :last_update_started_at, :datetime_with_timezone unless column_exists?(:project_mirror_data, :last_update_started_at)
+      add_column :project_mirror_data, :last_update_scheduled_at, :datetime_with_timezone unless column_exists?(:project_mirror_data, :last_update_scheduled_at)
+      add_column :project_mirror_data, :next_execution_timestamp, :datetime_with_timezone unless column_exists?(:project_mirror_data, :next_execution_timestamp)
     else
       execute <<-SQL
         CREATE TABLE project_mirror_data
@@ -21,9 +21,7 @@ class CreateProjectMirrorDataEE < ActiveRecord::Migration
             0 AS retry_count,
             CAST(NULL AS #{timestamp}) AS last_update_started_at,
             CAST(NULL AS #{timestamp}) AS last_update_scheduled_at,
-            NOW() AS next_execution_timestamp,
-            NOW() AS created_at,
-            NOW() AS updated_at
+            NOW() AS next_execution_timestamp
           FROM projects
           WHERE mirror IS TRUE
         );

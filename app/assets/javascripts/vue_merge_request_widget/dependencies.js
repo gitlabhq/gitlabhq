@@ -15,7 +15,6 @@ export { default as WidgetHeader } from './components/mr_widget_header.vue';
 export { default as WidgetMergeHelp } from './components/mr_widget_merge_help.vue';
 export { default as WidgetPipeline } from './components/mr_widget_pipeline.vue';
 export { default as Deployment } from './components/deployment.vue';
-export { default as WidgetMaintainerEdit } from './components/mr_widget_maintainer_edit.vue';
 export { default as WidgetRelatedLinks } from './components/mr_widget_related_links.vue';
 export { default as MergedState } from './components/states/mr_widget_merged.vue';
 export { default as FailedToMerge } from './components/states/mr_widget_failed_to_merge.vue';
@@ -27,7 +26,7 @@ export { default as ConflictsState } from './components/states/mr_widget_conflic
 export { default as NothingToMergeState } from './components/states/nothing_to_merge.vue';
 export { default as MissingBranchState } from './components/states/mr_widget_missing_branch.vue';
 export { default as NotAllowedState } from './components/states/mr_widget_not_allowed.vue';
-export { default as ReadyToMergeState } from 'ee/vue_merge_request_widget/components/states/mr_widget_ready_to_merge';
+export { default as ReadyToMergeState } from 'ee/vue_merge_request_widget/components/states/mr_widget_ready_to_merge.vue';
 export { default as ShaMismatchState } from './components/states/sha_mismatch.vue';
 export { default as UnresolvedDiscussionsState } from './components/states/unresolved_discussions.vue';
 export { default as PipelineBlockedState } from './components/states/mr_widget_pipeline_blocked.vue';
@@ -41,8 +40,8 @@ export { default as MRWidgetService } from 'ee/vue_merge_request_widget/services
 export { default as eventHub } from './event_hub';
 export { default as getStateKey } from 'ee/vue_merge_request_widget/stores/get_state_key';
 export { default as stateMaps } from 'ee/vue_merge_request_widget/stores/state_maps';
-export { default as SquashBeforeMerge } from 'ee/vue_merge_request_widget/components/states/mr_widget_squash_before_merge';
+export { default as SquashBeforeMerge } from 'ee/vue_merge_request_widget/components/states/mr_widget_squash_before_merge.vue';
 export { default as notify } from '../lib/utils/notify';
 export { default as SourceBranchRemovalStatus } from './components/source_branch_removal_status.vue';
 
-export { default as mrWidgetOptions } from 'ee/vue_merge_request_widget/mr_widget_options';
+export { default as mrWidgetOptions } from 'ee/vue_merge_request_widget/mr_widget_options.vue';

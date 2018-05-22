@@ -21,7 +21,7 @@ module Gitlab
 
         unless Gitlab::Geo::Fdw.fdw_up_to_date?
           return "The Geo database has an outdated FDW remote schema.".tap do |output|
-            output << " It contains #{Gitlab::Geo::Fdw.count_tables} of #{ActiveRecord::Schema.tables.count} expected tables." unless Gitlab::Geo::Fdw.count_tables_match?
+            output << " It contains #{Gitlab::Geo::Fdw.count_tables} of #{Gitlab::Geo::Fdw.gitlab_tables.count} expected tables." unless Gitlab::Geo::Fdw.count_tables_match?
           end
         end
 

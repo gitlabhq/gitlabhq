@@ -448,15 +448,7 @@ module EE
       ).create
     end
 
-    # Override to reject disabled services
-    def find_or_initialize_services(exceptions: [])
-      available_services = super
-
-      available_services.reject do |service|
-        disabled_services.include?(service.to_param)
-      end
-    end
-
+    override :disabled_services
     def disabled_services
       strong_memoize(:disabled_services) do
         disabled_services = []

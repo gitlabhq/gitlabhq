@@ -9,18 +9,20 @@ class Gitlab::Seeder::Burndown
   def seed!
     Timecop.travel 10.days.ago
 
-    Sidekiq::Testing.inline! do
-      create_milestone
-      puts '.'
+    Sidekiq::Worker.skipping_transaction_check do
+      Sidekiq::Testing.inline! do
+        create_milestone
+        puts '.'
 
-      create_issues
-      puts '.'
+        create_issues
+        puts '.'
 
-      close_issues
-      puts '.'
+        close_issues
+        puts '.'
 
-      reopen_issues
-      puts '.'
+        reopen_issues
+        puts '.'
+      end
     end
 
     Timecop.return

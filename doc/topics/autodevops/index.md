@@ -43,7 +43,6 @@ project in an easy and automatic way:
 1. [Auto Code Quality](#auto-code-quality)
 1. [Auto SAST (Static Application Security Testing)](#auto-sast)
 1. [Auto Dependency Scanning](#auto-dependency-scanning)
-1. [Auto License Management](#auto-license-management)
 1. [Auto Container Scanning](#auto-container-scanning)
 1. [Auto Review Apps](#auto-review-apps)
 1. [Auto DAST (Dynamic Application Security Testing)](#auto-dast)
@@ -258,19 +257,6 @@ check out.
 
 In GitLab Ultimate, any security warnings are also
 [shown in the merge request widget](../../user/project/merge_requests/dependency_scanning.md).
-
-### Auto License Management **[ULTIMATE]**
-
-> Introduced in [GitLab Ultimate][ee] 10.8.
-
-License Management uses the
-[License Management Docker image](https://gitlab.com/gitlab-org/security-products/license_management)
-to search the project dependencies for their license. Once the
-report is created, it's uploaded as an artifact which you can later download and
-check out.
-
-In GitLab Ultimate, any license are also
-[shown in the merge request widget](../../user/project/merge_requests/license_management.md).
 
 ### Auto Container Scanning
 
@@ -513,6 +499,7 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | `SAST_CONFIDENCE_LEVEL`      | The minimum confidence level of security issues you want to be reported; `1` for Low, `2` for Medium, `3` for High; defaults to `3`.|
 | `DEP_SCAN_DISABLE_REMOTE_CHECKS` | Whether remote Dependency Scanning checks are disabled; defaults to `"false"`. Set to `"true"` to disable checks that send data to GitLab central servers. [Read more about remote checks](https://gitlab.com/gitlab-org/security-products/dependency-scanning#remote-checks).|
 | `STAGING_ENABLED`            | From GitLab 10.8, this variable can be used to define a [deploy policy for staging and production environments](#deploy-policy-for-staging-and-production-environments). |
+| `INCREMENTAL_ROLLOUT_ENABLED`| From GitLab 10.8, this variable can be used to enable an [incremental rollout](#incremental-rollout-to-production) of your application for the production environment. |
 
 TIP: **Tip:**
 Set up the replica variables using a
@@ -594,6 +581,57 @@ If `STAGING_ENABLED` is defined in your project (e.g., set `STAGING_ENABLED` to
 `1` as a secret variable), then the application will be automatically deployed
 to a `staging` environment, and a  `production_manual` job will be created for
 you when you're ready to manually deploy to production.
+
+#### Incremental rollout to production **[PREMIUM]**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5415) in GitLab 10.8.
+
+When you have a new version of your app to deploy in production, you may want
+to use an incremental rollout to replace just a few pods with the latest code.
+This will allow you to first check how the app is behaving, and later manually
+increasing the rollout up to 100%.
+
+If `INCREMENTAL_ROLLOUT_ENABLED` is defined in your project (e.g., set
+`INCREMENTAL_ROLLOUT_ENABLED` to `1` as a secret variable), then instead of the
+standard `production` job, 4 different
+[manual jobs](../../ci/pipelines.md#manual-actions-from-the-pipeline-graph)
+will be created:
+
+1. `rollout 10%`
+1. `rollout 25%`
+1. `rollout 50%`
+1. `rollout 100%`
+
+The percentage is based on the `REPLICAS` variable and defines the number of
+pods you want to have for your deployment. If you say `10`, and then you run
+the `10%` rollout job, there will be `1` new pod + `9` old ones.
+
+To start a job, click on the play icon next to the job's name. You are not
+required to go from `10%` to `100%`, you can jump to whatever job you want.
+You can also scale down by running a lower percentage job, just before hitting
+`100%`. Once you get to `100%`, you cannot scale down, and you'd have to roll
+back by redeploying the old version using the
+[rollback button](../../ci/environments.md#rolling-back-changes) in the
+environment page.
+
+Below, you can see how the pipeline will look if the rollout or staging
+variables are defined.
+
+- **Without `INCREMENTAL_ROLLOUT_ENABLED` and without `STAGING_ENABLED`**
+
+    ![Staging and rollout disabled](img/rollout_staging_disabled.png)
+
+- **Without `INCREMENTAL_ROLLOUT_ENABLED` and with `STAGING_ENABLED`**
+
+    ![Staging enabled](img/staging_enabled.png)
+
+- **With `INCREMENTAL_ROLLOUT_ENABLED` and without `STAGING_ENABLED`**
+
+    ![Rollout enabled](img/rollout_enabled.png)
+
+- **With `INCREMENTAL_ROLLOUT_ENABLED` and with `STAGING_ENABLED`**
+
+    ![Rollout and staging enabled](img/rollout_staging_enabled.png)
 
 ## Currently supported languages
 

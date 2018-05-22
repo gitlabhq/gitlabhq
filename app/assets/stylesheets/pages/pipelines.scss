@@ -93,13 +93,9 @@
         }
       }
 
-      .btn-group {
-        &.open {
-          .btn-default {
-            background-color: $white-normal;
-            border-color: $border-white-normal;
-          }
-        }
+      .btn-group.open .btn-default {
+        background-color: $white-normal;
+        border-color: $border-white-normal;
       }
 
       .btn .text-center {
@@ -414,22 +410,16 @@
     &:last-child:not(.has-downstream) {
       .build {
         // Remove right connecting horizontal line from first build in last stage
-        &:first-child {
-          &::after {
-            border: 0;
-          }
+        &:first-child::after {
+          border: 0;
         }
         // Remove right curved connectors from all builds in last stage
-        &:not(:first-child) {
-          &::after {
-            border: 0;
-          }
+        &:not(:first-child)::after {
+          border: 0;
         }
         // Remove opposite curve
-        .curve {
-          &::before {
-            display: none;
-          }
+        .curve::before {
+          display: none;
         }
       }
     }
@@ -438,16 +428,12 @@
     &:first-child:not(.has-upstream) {
       .build {
         // Remove left curved connectors from all builds in first stage
-        &:not(:first-child) {
-          &::before {
-            border: 0;
-          }
+        &:not(:first-child)::before {
+          border: 0;
         }
         // Remove opposite curve
-        .curve {
-          &::after {
-            display: none;
-          }
+        .curve::after {
+          display: none;
         }
       }
     }

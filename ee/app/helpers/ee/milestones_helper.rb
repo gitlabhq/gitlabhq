@@ -10,6 +10,10 @@ module EE
       burndown&.valid? && !burndown&.empty?
     end
 
+    def show_burndown_charts_promotion?(milestone)
+      milestone.is_a?(EE::Milestone) && !milestone.supports_burndown_charts? && show_promotions?
+    end
+
     def show_burndown_placeholder?(milestone, warning)
       return false if cookies['hide_burndown_message'].present?
       return false unless milestone.supports_burndown_charts?

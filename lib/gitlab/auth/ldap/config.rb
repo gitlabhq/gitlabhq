@@ -3,7 +3,7 @@ module Gitlab
   module Auth
     module LDAP
       class Config
-        include ::EE::Gitlab::Auth::LDAP::Config
+        prepend ::EE::Gitlab::Auth::LDAP::Config
 
         NET_LDAP_ENCRYPTION_METHOD = {
           simple_tls: :simple_tls,
@@ -26,7 +26,11 @@ module Gitlab
         def self.available_servers
           return [] unless enabled?
 
-          ::License.feature_available?(:multiple_ldap_servers) ? servers : Array.wrap(servers.first)
+          _available_servers
+        end
+
+        def self._available_servers
+          Array.wrap(servers.first)
         end
 
         def self.providers

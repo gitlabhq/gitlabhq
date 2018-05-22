@@ -256,18 +256,22 @@ namespace :geo do
 
     print 'Last event ID seen from primary: '.rjust(COLUMN_WIDTH)
     last_event = Geo::EventLog.last
-    print last_event&.id
-    puts "(#{time_ago_in_words(last_event&.created_at)} ago)"
+    if last_event
+      print last_event&.id
+      puts " (#{time_ago_in_words(last_event&.created_at)} ago)"
 
-    print 'Last event ID processed by cursor: '.rjust(COLUMN_WIDTH)
-    cursor_last_event_id = Geo::EventLogState.last_processed&.event_id
+      print 'Last event ID processed by cursor: '.rjust(COLUMN_WIDTH)
+      cursor_last_event_id = Geo::EventLogState.last_processed&.event_id
 
-    if cursor_last_event_id
-      print cursor_last_event_id
-
-      last_cursor_event_date = Geo::EventLog.find_by(id: cursor_last_event_id)&.created_at
-
-      puts "(#{time_ago_in_words(last_cursor_event_date)} ago)" if last_cursor_event_date
+      if cursor_last_event_id
+        print cursor_last_event_id
+        last_cursor_event_date = Geo::EventLog.find_by(id: cursor_last_event_id)&.created_at
+        puts " (#{time_ago_in_words(last_cursor_event_date)} ago)" if last_cursor_event_date
+      else
+        puts 'N/A'
+      end
+    else
+      puts 'N/A'
     end
 
     print 'Last status was pulled by primary node: '.rjust(COLUMN_WIDTH)
@@ -279,5 +283,7 @@ namespace :geo do
       # we get unsaved record where updated_at is nil
       puts "Never"
     end
+
+    puts
   end
 end

@@ -40,20 +40,20 @@ In GitLab, a namespace is a unique name to be used as a user name, a group name,
 - `http://gitlab.example.com/groupname`
 - `http://gitlab.example.com/groupname/subgroup_name`
 
-For example, consider a user called John:
+For example, consider a user named Alex:
 
-1. John creates his account on GitLab.com with the username `john`;
-his profile will be accessed under `https://gitlab.example.com/john`
-1. John creates a group for his team with the groupname `john-team`;
-his group and its projects will be accessed under `https://gitlab.example.com/john-team`
-1. John creates a subgroup of `john-team` with the subgroup name `marketing`;
-his subgroup and its projects will be accessed under `https://gitlab.example.com/john-team/marketing`
+1. Alex creates an account on GitLab.com with the username `alex`;
+their profile will be accessed under `https://gitlab.example.com/alex`
+1. Alex creates a group for their team with the groupname `alex-team`;
+the group and its projects will be accessed under `https://gitlab.example.com/alex-team`
+1. Alex creates a subgroup of `alex-team` with the subgroup name `marketing`;
+this subgroup and its projects will be accessed under `https://gitlab.example.com/alex-team/marketing`
 
 By doing so:
 
-- Any team member mentions John with `@john`
-- John mentions everyone from his team with `@john-team`
-- John mentions only his marketing team with `@john-team/marketing`
+- Any team member mentions Alex with `@alex`
+- Alex mentions everyone from their team with `@alex-team`
+- Alex mentions only the marketing team with `@alex-team/marketing`
 
 ## Issues and merge requests within a group
 

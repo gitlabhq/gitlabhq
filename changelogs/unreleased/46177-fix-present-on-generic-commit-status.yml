@@ -1,0 +1,5 @@
+---
+title: Allow CommitStatus class to use presentable methods
+merge_request: 18979
+author:
+type: fixed

@@ -12,8 +12,7 @@ Here are some things to keep in mind regarding test performance:
 - `FactoryBot.build(...)` and `.build_stubbed` are faster than `.create`.
 - Don't `create` an object when `build`, `build_stubbed`, `attributes_for`,
   `spy`, or `double` will do. Database persistence is slow!
-- Don't mark a feature as requiring JavaScript (through `@javascript` in
-  Spinach or `:js` in RSpec) unless it's _actually_ required for the test
+- Don't mark a feature as requiring JavaScript (through `:js` in RSpec) unless it's _actually_ required for the test
   to be valid. Headless browser testing is slow!
 
 [parallelization]: ci.md#test-suite-parallelization-on-the-ci
@@ -134,11 +133,24 @@ really fast since:
 - gitlab-shell and Gitaly setup are skipped
 - Test repositories setup are skipped
 
-Note that in some cases, you might have to add some `require_dependency 'foo'`
-in your file under test since Rails autoloading is not available in these cases.
+`fast_spec_helper` also support autoloading classes that are located inside the
+`lib/` directory. It means that as long as your class / module is using only
+code from the `lib/` directory you will not need to explicitly load any
+dependencies. `fast_spec_helper` also loads all ActiveSupport extensions,
+including core extensions that are commonly used in the Rails environment.
 
-This shouldn't be a problem since explicitely listing dependencies should be
-considered a good practice anyway.
+Note that in some cases, you might still have to load some dependencies using
+`require_dependency` when a code is using gems or a dependency is not located
+in `lib/`.
+
+For example, if you want to test your code that is calling the
+`Gitlab::UntrustedRegexp` class, which under the hood uses `re2` library, you
+should either add `require_dependency 're2'` to files in your library that
+need `re2` gem, to make this requirement explicit, or you can add it to the
+spec itself, but the former is preferred.
+
+It takes around one second to load tests that are using `fast_spec_helper`
+instead of 30+ seconds in case of a regular `spec_helper`.
 
 ### `let` variables
 
@@ -229,6 +241,11 @@ describe "#==" do
   end
 end
 ```
+
+### Prometheus tests
+
+Prometheus metrics may be preserved from one test run to another. To ensure that metrics are
+reset before each example, add the `:prometheus` tag to the Rspec test.
 
 ### Matchers
 

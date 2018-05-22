@@ -1,5 +1,7 @@
 module Clusters
   class CreateService < BaseService
+    prepend EE::Clusters::CreateService
+
     attr_reader :access_token
 
     def execute(access_token = nil)
@@ -29,9 +31,7 @@ module Clusters
     end
 
     def can_create_cluster?
-      return true if project.clusters.empty?
-
-      project.feature_available?(:multiple_clusters)
+      project.clusters.empty?
     end
   end
 end

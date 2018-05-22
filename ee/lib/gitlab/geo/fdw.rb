@@ -61,6 +61,7 @@ module Gitlab
               FROM information_schema.tables
              WHERE table_schema = '#{FDW_SCHEMA}'
                AND table_type = 'FOREIGN TABLE'
+               AND table_name NOT LIKE 'pg_%'
           SQL
 
           ::Geo::TrackingBase.connection.execute(sql).first.fetch('count').to_i
@@ -72,18 +73,26 @@ module Gitlab
       # @return [Boolean] whether schemas match and are not empty
       def self.foreign_schema_tables_match?
         Gitlab::Geo.cache_value(:geo_fdw_schema_tables_match) do
-          secondary = retrieve_schema_tables(ActiveRecord::Base, ActiveRecord::Base.connection_config[:database], DEFAULT_SCHEMA)
-          fdw = retrieve_schema_tables(::Geo::TrackingBase, Rails.configuration.geo_database['database'], FDW_SCHEMA)
+          schema = gitlab_schema
 
-          s = secondary.to_a
-          f = fdw.to_a
-
-          s.present? && s == f
+          schema.present? && schema == fdw_schema
         end
       end
 
       def self.count_tables_match?
-        ActiveRecord::Schema.tables.count == count_tables
+        gitlab_tables.count == count_tables
+      end
+
+      def self.gitlab_tables
+        ActiveRecord::Schema.tables.reject { |table| table.start_with?('pg_') }
+      end
+
+      def self.gitlab_schema
+        retrieve_schema_tables(ActiveRecord::Base, ActiveRecord::Base.connection_config[:database], DEFAULT_SCHEMA).to_a
+      end
+
+      def self.fdw_schema
+        retrieve_schema_tables(::Geo::TrackingBase, Rails.configuration.geo_database['database'], FDW_SCHEMA).to_a
       end
 
       def self.retrieve_schema_tables(adapter, database, schema)
@@ -92,10 +101,11 @@ module Gitlab
               FROM information_schema.columns
              WHERE table_catalog = '#{database}'
                AND table_schema = '#{schema}'
+               AND table_name NOT LIKE 'pg_%'
           ORDER BY table_name, column_name, data_type
         SQL
 
-        adapter.connection.execute(sql)
+        adapter.connection.select_all(sql)
       end
       private_class_method :retrieve_schema_tables
     end

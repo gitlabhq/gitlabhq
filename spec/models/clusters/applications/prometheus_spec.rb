@@ -85,6 +85,16 @@ describe Clusters::Applications::Prometheus do
       it 'copies options and headers from kube client to proxy client' do
         expect(subject.prometheus_client.options).to eq(kube_client.rest_client.options.merge(headers: kube_client.headers))
       end
+
+      context 'when cluster is not reachable' do
+        before do
+          allow(kube_client).to receive(:proxy_url).and_raise(Kubeclient::HttpError.new(401, 'Unauthorized', nil))
+        end
+
+        it 'returns nil' do
+          expect(subject.prometheus_client).to be_nil
+        end
+      end
     end
   end
 

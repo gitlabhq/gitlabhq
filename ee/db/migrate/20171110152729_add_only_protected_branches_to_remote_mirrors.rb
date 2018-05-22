@@ -6,6 +6,9 @@ class AddOnlyProtectedBranchesToRemoteMirrors < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
+    # When moving from CE to EE, this column may already exist
+    return if column_exists?(:remote_mirrors, :only_protected_branches)
+
     add_column_with_default(:remote_mirrors, :only_protected_branches, :boolean, default: false, allow_null: false)
   end
 

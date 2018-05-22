@@ -5,7 +5,7 @@
 # Arguments:
 #   current_user - which user use
 #   params:
-#     scope: 'created-by-me' or 'assigned-to-me' or 'all'
+#     scope: 'created_by_me' or 'assigned_to_me' or 'all'
 #     state: 'open' or 'closed' or 'all'
 #     group_id: integer
 #     project_id: integer

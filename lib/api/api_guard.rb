@@ -46,7 +46,9 @@ module API
         user = find_user_from_sources
         return unless user
 
-        forbidden!('User is blocked') unless Gitlab::UserAccess.new(user).allowed? && user.can?(:access_api)
+        unless api_access_allowed?(user)
+          forbidden!(api_access_denied_message(user))
+        end
 
         user
       end
@@ -72,6 +74,14 @@ module API
               end
             end
           end
+      end
+
+      def api_access_allowed?(user)
+        Gitlab::UserAccess.new(user).allowed? && user.can?(:access_api)
+      end
+
+      def api_access_denied_message(user)
+        Gitlab::Auth::UserAccessDeniedReason.new(user).rejection_message
       end
     end
 

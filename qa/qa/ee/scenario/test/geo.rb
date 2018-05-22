@@ -11,7 +11,7 @@ module QA
           attribute :geo_secondary_name, '--secondary-name SECONDARY_NAME'
           attribute :geo_skip_setup?, '--without-setup'
 
-          def perform(options, *files)
+          def perform(options, *rspec_options)
             unless options[:geo_skip_setup?]
               Geo::Primary.act do
                 add_license
@@ -27,6 +27,7 @@ module QA
             Specs::Runner.perform do |specs|
               specs.tty = true
               specs.tags = %w[geo]
+              specs.options = rspec_options.any? ? rspec_options : 'qa/specs/features'
             end
           end
 

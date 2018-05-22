@@ -403,10 +403,10 @@ module Gitlab
         prefix = archive_prefix(ref, commit.id, append_sha: append_sha)
 
         {
-          'RepoPath' => path,
           'ArchivePrefix' => prefix,
           'ArchivePath' => archive_file_path(storage_path, commit.id, prefix, format),
-          'CommitId' => commit.id
+          'CommitId' => commit.id,
+          'GitalyRepository' => gitaly_repository.to_h
         }
       end
 
@@ -582,26 +582,32 @@ module Gitlab
       # old_rev and new_rev are commit ID's
       # the result of this method is an array of Gitlab::Git::RawDiffChange
       def raw_changes_between(old_rev, new_rev)
-        gitaly_migrate(:raw_changes_between) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.raw_changes_between(old_rev, new_rev)
-              .each_with_object([]) do |msg, arr|
-              msg.raw_changes.each { |change| arr << ::Gitlab::Git::RawDiffChange.new(change) }
-            end
-          else
-            result = []
+        @raw_changes_between ||= {}
 
-            circuit_breaker.perform do
-              Open3.pipeline_r(git_diff_cmd(old_rev, new_rev), format_git_cat_file_script, git_cat_file_cmd) do |last_stdout, wait_threads|
-                last_stdout.each_line { |line| result << ::Gitlab::Git::RawDiffChange.new(line.chomp!) }
+        @raw_changes_between[[old_rev, new_rev]] ||= begin
+          return [] if new_rev.blank? || new_rev == Gitlab::Git::BLANK_SHA
 
-                if wait_threads.any? { |waiter| !waiter.value&.success? }
-                  raise ::Gitlab::Git::Repository::GitError, "Unabled to obtain changes between #{old_rev} and #{new_rev}"
+          gitaly_migrate(:raw_changes_between) do |is_enabled|
+            if is_enabled
+              gitaly_repository_client.raw_changes_between(old_rev, new_rev)
+                .each_with_object([]) do |msg, arr|
+                msg.raw_changes.each { |change| arr << ::Gitlab::Git::RawDiffChange.new(change) }
+              end
+            else
+              result = []
+
+              circuit_breaker.perform do
+                Open3.pipeline_r(git_diff_cmd(old_rev, new_rev), format_git_cat_file_script, git_cat_file_cmd) do |last_stdout, wait_threads|
+                  last_stdout.each_line { |line| result << ::Gitlab::Git::RawDiffChange.new(line.chomp!) }
+
+                  if wait_threads.any? { |waiter| !waiter.value&.success? }
+                    raise ::Gitlab::Git::Repository::GitError, "Unabled to obtain changes between #{old_rev} and #{new_rev}"
+                  end
                 end
               end
-            end
 
-            result
+              result
+            end
           end
         end
       rescue ArgumentError => e
@@ -770,13 +776,9 @@ module Gitlab
       end
 
       def add_branch(branch_name, user:, target:)
-        gitaly_migrate(:operation_user_create_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_add_branch(branch_name, user, target)
-          else
-            rugged_add_branch(branch_name, user, target)
-          end
-        end
+        gitaly_operation_client.user_create_branch(branch_name, user, target)
+      rescue GRPC::FailedPrecondition => ex
+        raise InvalidRef, ex
       end
 
       def add_tag(tag_name, user:, target:, message: nil)
@@ -1448,8 +1450,6 @@ module Gitlab
         raise NoRepository.new(e)
       rescue GRPC::InvalidArgument => e
         raise ArgumentError.new(e)
-      rescue GRPC::DataLoss => e
-        raise InvalidRepository.new(e)
       rescue GRPC::BadStatus => e
         raise CommandError.new(e)
       end
@@ -1467,34 +1467,29 @@ module Gitlab
       end
 
       def branch_names_contains_sha(sha)
-        gitaly_migrate(:branch_names_contains_sha,
-                      status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.branch_names_contains_sha(sha)
-          else
-            refs_contains_sha('refs/heads/', sha)
-          end
-        end
+        gitaly_ref_client.branch_names_contains_sha(sha)
       end
 
       def tag_names_contains_sha(sha)
-        gitaly_migrate(:tag_names_contains_sha,
-                       status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.tag_names_contains_sha(sha)
-          else
-            refs_contains_sha('refs/tags/', sha)
-          end
-        end
+        gitaly_ref_client.tag_names_contains_sha(sha)
       end
 
       def search_files_by_content(query, ref)
         return [] if empty? || query.blank?
 
-        offset = 2
-        args = %W(grep -i -I -n -z --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
+        safe_query = Regexp.escape(query)
+        ref ||= root_ref
 
-        run_git(args).first.scrub.split(/^--\n/)
+        gitaly_migrate(:search_files_by_content) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.search_files_by_content(ref, safe_query)
+          else
+            offset = 2
+            args = %W(grep -i -I -n -z --before-context #{offset} --after-context #{offset} -E -e #{safe_query} #{ref})
+
+            run_git(args).first.scrub.split(/^--\n/)
+          end
+        end
       end
 
       def can_be_merged?(source_sha, target_branch)
@@ -1509,12 +1504,19 @@ module Gitlab
 
       def search_files_by_name(query, ref)
         safe_query = Regexp.escape(query.sub(%r{^/*}, ""))
+        ref ||= root_ref
 
         return [] if empty? || safe_query.blank?
 
-        args = %W(ls-tree -r --name-status --full-tree #{ref || root_ref} -- #{safe_query})
+        gitaly_migrate(:search_files_by_name) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.search_files_by_name(ref, safe_query)
+          else
+            args = %W(ls-tree -r --name-status --full-tree #{ref} -- #{safe_query})
 
-        run_git(args).first.lines.map(&:strip)
+            run_git(args).first.lines.map(&:strip)
+          end
+        end
       end
 
       def find_commits_by_message(query, ref, path, limit, offset)
@@ -1600,14 +1602,12 @@ module Gitlab
       end
 
       def checksum
-        gitaly_migrate(:calculate_checksum,
-                      status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.calculate_checksum
-          else
-            calculate_checksum_by_shelling_out
-          end
-        end
+        # The exists? RPC is much cheaper, so we perform this request first
+        raise NoRepository, "Repository does not exists" unless exists?
+
+        gitaly_repository_client.calculate_checksum
+      rescue GRPC::NotFound
+        raise NoRepository # Guard against data races.
       end
 
       private
@@ -1628,27 +1628,6 @@ module Gitlab
         else
           rugged_write_ref(ref_path, ref)
         end
-      end
-
-      def refs_contains_sha(refs_prefix, sha)
-        refs_prefix << "/" unless refs_prefix.ends_with?('/')
-
-        # By forcing the output to %(refname) each line wiht a ref will start with
-        # the ref prefix. All other lines can be discarded.
-        args = %W(for-each-ref --contains=#{sha} --format=%(refname) #{refs_prefix})
-        names, code = run_git(args)
-
-        return [] unless code.zero?
-
-        refs = []
-        left_slice_count = refs_prefix.length
-        names.lines.each do |line|
-          next unless line.start_with?(refs_prefix)
-
-          refs << encode_utf8(line.rstrip[left_slice_count..-1])
-        end
-
-        refs
       end
 
       def rugged_write_config(full_path:)
@@ -1997,7 +1976,12 @@ module Gitlab
           end
 
           target_commit = Gitlab::Git::Commit.find(self, ref.target)
-          Gitlab::Git::Tag.new(self, ref.name, ref.target, target_commit, message)
+          Gitlab::Git::Tag.new(self, {
+            name: ref.name,
+            target: ref.target,
+            target_commit: target_commit,
+            message: message
+          })
         end.sort_by(&:name)
       end
 
@@ -2242,22 +2226,6 @@ module Gitlab
         end
       end
 
-      def gitaly_add_branch(branch_name, user, target)
-        gitaly_operation_client.user_create_branch(branch_name, user, target)
-      rescue GRPC::FailedPrecondition => ex
-        raise InvalidRef, ex
-      end
-
-      def rugged_add_branch(branch_name, user, target)
-        target_object = Ref.dereference_object(lookup(target))
-        raise InvalidRef.new("target not found: #{target}") unless target_object
-
-        OperationService.new(user, self).add_branch(branch_name, target_object.oid)
-        find_branch(branch_name)
-      rescue Rugged::ReferenceError => ex
-        raise InvalidRef, ex
-      end
-
       def rugged_cherry_pick(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
         OperationService.new(user, self).with_branch(
           branch_name,
@@ -2413,7 +2381,7 @@ module Gitlab
       end
 
       def gitaly_delete_refs(*ref_names)
-        gitaly_ref_client.delete_refs(refs: ref_names)
+        gitaly_ref_client.delete_refs(refs: ref_names) if ref_names.any?
       end
 
       def rugged_remove_remote(remote_name)
@@ -2549,36 +2517,6 @@ module Gitlab
 
       def sha_from_ref(ref)
         rev_parse_target(ref).oid
-      end
-
-      def calculate_checksum_by_shelling_out
-        raise NoRepository unless exists?
-
-        args = %W(--git-dir=#{path} show-ref --heads --tags)
-        output, status = run_git(args)
-
-        if status.nil? || !status.zero?
-          # Non-valid git repositories return 128 as the status code and an error output
-          raise InvalidRepository if status == 128 && output.to_s.downcase =~ /not a git repository/
-          # Empty repositories returns with a non-zero status and an empty output.
-          raise ChecksumError, output unless output.blank?
-
-          return EMPTY_REPOSITORY_CHECKSUM
-        end
-
-        refs = output.split("\n")
-
-        result = refs.inject(nil) do |checksum, ref|
-          value = Digest::SHA1.hexdigest(ref).hex
-
-          if checksum.nil?
-            value
-          else
-            checksum ^ value
-          end
-        end
-
-        result.to_s(16)
       end
 
       def build_git_cmd(*args)

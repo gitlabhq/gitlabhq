@@ -292,12 +292,24 @@ module Gitlab
         request  = Gitaly::CalculateChecksumRequest.new(repository: @gitaly_repo)
         response = GitalyClient.call(@storage, :repository_service, :calculate_checksum, request)
         response.checksum.presence
+      rescue GRPC::DataLoss => e
+        raise Gitlab::Git::Repository::InvalidRepository.new(e)
       end
 
       def raw_changes_between(from, to)
         request = Gitaly::GetRawChangesRequest.new(repository: @gitaly_repo, from_revision: from, to_revision: to)
 
         GitalyClient.call(@storage, :repository_service, :get_raw_changes, request)
+      end
+
+      def search_files_by_name(ref, query)
+        request = Gitaly::SearchFilesByNameRequest.new(repository: @gitaly_repo, ref: ref, query: query)
+        GitalyClient.call(@storage, :repository_service, :search_files_by_name, request).flat_map(&:files)
+      end
+
+      def search_files_by_content(ref, query)
+        request = Gitaly::SearchFilesByContentRequest.new(repository: @gitaly_repo, ref: ref, query: query)
+        GitalyClient.call(@storage, :repository_service, :search_files_by_content, request).flat_map(&:matches)
       end
     end
   end

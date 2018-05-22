@@ -1,91 +1,74 @@
 import Vue from 'vue';
-import _ from 'underscore';
 import pendingAvatarSvg from 'ee_icons/_icon_dotted_circle.svg';
-import ApprovalsFooter from 'ee/vue_merge_request_widget/components/approvals/approvals_footer';
+import ApprovalsFooter from 'ee/vue_merge_request_widget/components/approvals/approvals_footer.vue';
+import { TEST_HOST } from 'spec/test_constants';
 
-(() => {
-  gl.ApprovalsStore = {
-    data: {},
-    initStoreOnce() {
-      return {
-        then() {},
-      };
+describe('Approvals Footer Component', () => {
+  let vm;
+  const initialData = {
+    mr: {
+      state: 'readyToMerge',
     },
+    service: {},
+    userCanApprove: false,
+    userHasApproved: true,
+    approvedBy: [],
+    approvalsLeft: 1,
+    pendingAvatarSvg,
   };
 
-  function initApprovalsFooterComponent() {
-    setFixtures(`
-      <div>
-        <div id="mock-container"></div>
-      </div>
-    `);
-
-    this.initialData = {
-      mr: {
-        state: 'readyToMerge',
-      },
-      service: {},
-      userCanApprove: false,
-      userHasApproved: true,
-      approvedBy: [],
-      approvalsLeft: 1,
-      pendingAvatarSvg,
-    };
-
+  beforeEach(() => {
+    setFixtures('<div id="mock-container"></div>');
     const ApprovalsFooterComponent = Vue.extend(ApprovalsFooter);
 
-    this.approvalsFooter = new ApprovalsFooterComponent({
+    vm = new ApprovalsFooterComponent({
       el: '#mock-container',
-      propsData: this.initialData,
-      beforeCreate() {},
+      propsData: initialData,
     });
-  }
+  });
 
-  describe('Approvals Footer Component', function () {
-    beforeEach(function () {
-      initApprovalsFooterComponent.call(this);
+  afterEach(() => {
+    vm.$destroy();
+  });
+
+  it('should correctly set component props', () => {
+    Object.keys(vm).forEach(propKey => {
+      if (initialData[propKey]) {
+        expect(vm[propKey]).toBe(initialData[propKey]);
+      }
     });
+  });
 
-    it('should correctly set component props', function () {
-      const approvalsFooter = this.approvalsFooter;
-      _.each(approvalsFooter, (propValue, propKey) => {
-        if (this.initialData[propKey]) {
-          expect(approvalsFooter[propKey]).toBe(this.initialData[propKey]);
-        }
-      });
-    });
-
-    describe('Computed properties', function () {
-      it('should correctly set showUnapproveButton when the user can unapprove', function () {
-        expect(this.approvalsFooter.showUnapproveButton).toBeTruthy();
-        this.approvalsFooter.mr.state = 'merged';
-        expect(this.approvalsFooter.showUnapproveButton).toBeFalsy();
-      });
-
-      it('should correctly set showUnapproveButton when the user can not unapprove', function (done) {
-        this.approvalsFooter.userCanApprove = true;
-
-        Vue.nextTick(() => {
-          expect(this.approvalsFooter.showUnapproveButton).toBe(false);
-          done();
-        });
-      });
+  describe('Computed properties', () => {
+    it('should correctly set showUnapproveButton when the user can unapprove', () => {
+      expect(vm.showUnapproveButton).toBeTruthy();
+      vm.mr.state = 'merged';
+      expect(vm.showUnapproveButton).toBeFalsy();
     });
 
-    describe('approvers list', function () {
-      it('shows link to member avatar for for each approver', function (done) {
-        this.approvalsFooter.approvedBy.push({
-          user: {
-            avatar_url: '/dummy.jpg',
-          },
-        });
+    it('should correctly set showUnapproveButton when the user can not unapprove', done => {
+      vm.userCanApprove = true;
 
-        Vue.nextTick(() => {
-          const memberImage = document.querySelector('.approvers-list img');
-          expect(memberImage.src).toMatch(/dummy\.jpg$/);
-          done();
-        });
+      Vue.nextTick(() => {
+        expect(vm.showUnapproveButton).toBe(false);
+        done();
       });
     });
   });
-})(window.gl || (window.gl = {}));
+
+  describe('approvers list', () => {
+    it('shows link to member avatar for for each approver', done => {
+      vm.approvedBy.push({
+        user: {
+          avatar_url: `${TEST_HOST}/dummy.jpg`,
+        },
+      });
+
+      Vue.nextTick(() => {
+        const memberImage = document.querySelector('.approvers-list img');
+        expect(memberImage.src).toMatch(/dummy\.jpg$/);
+        done();
+      });
+    });
+  });
+});

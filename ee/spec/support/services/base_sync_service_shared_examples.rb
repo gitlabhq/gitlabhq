@@ -119,7 +119,7 @@ shared_examples 'geo base sync fetch and repack' do
 end
 
 shared_examples 'sync retries use the snapshot RPC' do
-  let(:retry_count) { Geo::BaseSyncService::RETRY_BEFORE_REDOWNLOAD }
+  let(:retry_count) { Geo::BaseSyncService::RETRIES_BEFORE_REDOWNLOAD }
 
   context 'snapshot synchronization method' do
     before do

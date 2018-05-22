@@ -98,26 +98,41 @@ describe Namespace do
       set(:primary) { create(:geo_node, :primary) }
       set(:secondary) { create(:geo_node) }
       let(:gitlab_shell) { Gitlab::Shell.new }
+      let(:parent_group) { create(:group) }
+      let(:child_group) { create(:group, name: 'child', path: 'child', parent: parent_group) }
+      let!(:project_legacy) { create(:project_empty_repo, :legacy_storage, namespace: parent_group) }
+      let!(:project_child_hashed) { create(:project, namespace: child_group) }
+      let!(:project_child_legacy) { create(:project_empty_repo, :legacy_storage, namespace: child_group) }
+      let!(:full_path_was) { "#{parent_group.full_path}_old" }
 
-      it 'logs the Geo::RepositoryRenamedEvent for each project inside namespace' do
-        parent = create(:namespace)
-        child = create(:group, name: 'child', path: 'child', parent: parent)
-        project_legacy_storage = create(:project_empty_repo, :legacy_storage, namespace: parent)
-        create(:project, namespace: child)
-        create(:project_empty_repo, :legacy_storage, namespace: child)
-        full_path_was = "#{parent.full_path}_old"
-        new_path = parent.full_path
+      before do
+        new_path = parent_group.full_path
 
-        allow(parent).to receive(:gitlab_shell).and_return(gitlab_shell)
-        allow(parent).to receive(:path_changed?).and_return(true)
-        allow(parent).to receive(:full_path_was).and_return(full_path_was)
-        allow(parent).to receive(:full_path).and_return(new_path)
+        allow(parent_group).to receive(:gitlab_shell).and_return(gitlab_shell)
+        allow(parent_group).to receive(:path_changed?).and_return(true)
+        allow(parent_group).to receive(:full_path_was).and_return(full_path_was)
+        allow(parent_group).to receive(:full_path).and_return(new_path)
 
         allow(gitlab_shell).to receive(:mv_namespace)
-          .with(project_legacy_storage.repository_storage, full_path_was, new_path)
+          .with(project_legacy.repository_storage, full_path_was, new_path)
           .and_return(true)
+      end
 
-        expect { parent.move_dir }.to change(Geo::RepositoryRenamedEvent, :count).by(3)
+      it 'logs the Geo::RepositoryRenamedEvent for each project inside namespace' do
+        expect { parent_group.move_dir }.to change(Geo::RepositoryRenamedEvent, :count).by(3)
+      end
+
+      it 'properly builds old_path_with_namespace' do
+        parent_group.move_dir
+
+        actual = Geo::RepositoryRenamedEvent.last(3).map(&:old_path_with_namespace)
+        expected = %W[
+          #{full_path_was}/#{project_legacy.path}
+          #{full_path_was}/child/#{project_child_hashed.path}
+          #{full_path_was}/child/#{project_child_legacy.path}
+        ]
+
+        expect(actual).to match_array(expected)
       end
     end
   end

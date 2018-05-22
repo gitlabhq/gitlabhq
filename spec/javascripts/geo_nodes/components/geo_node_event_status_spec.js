@@ -45,7 +45,7 @@ describe('GeoNodeEventStatus', () => {
     describe('eventString', () => {
       it('returns computed event string when `eventTypeLogStatus` prop is true', () => {
         const vmWithLogStatus = createComponent({ eventTypeLogStatus: true });
-        expect(vmWithLogStatus.eventString).toBe(`${mockNodeDetails.lastEvent.id} events behind`);
+        expect(vmWithLogStatus.eventString).toBe(mockNodeDetails.lastEvent.id);
         vmWithLogStatus.$destroy();
       });
 

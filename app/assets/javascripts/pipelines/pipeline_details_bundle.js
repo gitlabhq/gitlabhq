@@ -29,30 +29,14 @@ export default () => {
     data() {
       return {
         mediator,
-        requestFinishedFor: null,
       };
     },
-    created() {
-      eventHub.$on('postAction', this.postAction);
-    },
-    beforeDestroy() {
-      eventHub.$off('postAction', this.postAction);
-    },
     methods: {
-      postAction(action) {
-        // Click was made, reset this variable
-        this.requestFinishedFor = null;
-
-        this.mediator.service
-          .postAction(action)
-          .then(() => {
-            this.mediator.refreshPipeline();
-            this.requestFinishedFor = action;
-          })
-          .catch(() => {
-            this.requestFinishedFor = action;
-            Flash(__('An error occurred while making the request.'));
-          });
+      requestRefreshPipelineGraph() {
+        // When an action is clicked
+        // (wether in the dropdown or in the main nodes, we refresh the big graph)
+        this.mediator.refreshPipeline()
+          .catch(() => Flash(__('An error occurred while making the request.')));
       },
     },
     render(createElement) {
@@ -60,7 +44,9 @@ export default () => {
         props: {
           isLoading: this.mediator.state.isLoading,
           pipeline: this.mediator.store.state.pipeline,
-          requestFinishedFor: this.requestFinishedFor,
+        },
+        on: {
+          refreshPipelineGraph: this.requestRefreshPipelineGraph,
         },
       });
     },

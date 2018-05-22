@@ -80,6 +80,15 @@ describe('security reports utils', () => {
       expect(parsed.project_fingerprint).toEqual(sha1(dependencyScanningIssues[0].cve));
     });
 
+    it('uses message to generate sha1 when cve is undefined', () => {
+      const issuesWithoutCve = dependencyScanningIssues.map(issue => ({
+        ...issue,
+        cve: undefined,
+      }));
+      const parsed = parseDependencyScanningIssues(issuesWithoutCve, [], 'path')[0];
+      expect(parsed.project_fingerprint).toEqual(sha1(dependencyScanningIssues[0].message));
+    });
+
     it('includes vulnerability feedbacks', () => {
       const parsed = parseDependencyScanningIssues(
         dependencyScanningIssues,

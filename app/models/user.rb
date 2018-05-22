@@ -17,6 +17,7 @@ class User < ActiveRecord::Base
   include IgnorableColumn
   include BulkMemberAccessLoad
   include BlocksJsonSerialization
+  include WithUploads
 
   prepend EE::User
 
@@ -139,7 +140,6 @@ class User < ActiveRecord::Base
 
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
   has_many :callouts, class_name: 'UserCallout'
-  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :term_agreements
   belongs_to :accepted_term, class_name: 'ApplicationSetting::Term'
 
@@ -246,14 +246,18 @@ class User < ActiveRecord::Base
   scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'DESC')) }
   scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'ASC')) }
 
-  def self.with_two_factor
+  def self.with_two_factor_indistinct
     joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id")
-      .where("u2f.id IS NOT NULL OR otp_required_for_login = ?", true).distinct(arel_table[:id])
+      .where("u2f.id IS NOT NULL OR users.otp_required_for_login = ?", true)
+  end
+
+  def self.with_two_factor
+    with_two_factor_indistinct.distinct(arel_table[:id])
   end
 
   def self.without_two_factor
     joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id")
-      .where("u2f.id IS NULL AND otp_required_for_login = ?", false)
+      .where("u2f.id IS NULL AND users.otp_required_for_login = ?", false)
   end
 
   #
@@ -874,6 +878,16 @@ class User < ActiveRecord::Base
     confirmed? && !temp_oauth_email?
   end
 
+  def accept_pending_invitations!
+    pending_invitations.select do |member|
+      member.accept_invite!(self)
+    end
+  end
+
+  def pending_invitations
+    Member.where(invite_email: verified_emails).invite
+  end
+
   def all_emails
     all_emails = []
     all_emails << email unless temp_oauth_email?
@@ -1017,12 +1031,19 @@ class User < ActiveRecord::Base
     !solo_owned_groups.present?
   end
 
-  def ci_authorized_runners
-    @ci_authorized_runners ||= begin
-      runner_ids = Ci::RunnerProject
+  def ci_owned_runners
+    @ci_owned_runners ||= begin
+      project_runner_ids = Ci::RunnerProject
         .where(project: authorized_projects(Gitlab::Access::MASTER))
         .select(:runner_id)
-      Ci::Runner.specific.where(id: runner_ids)
+
+      group_runner_ids = Ci::RunnerNamespace
+        .where(namespace_id: owned_or_masters_groups.select(:id))
+        .select(:runner_id)
+
+      union = Gitlab::SQL::Union.new([project_runner_ids, group_runner_ids])
+
+      Ci::Runner.specific.where("ci_runners.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
     end
   end
 
@@ -1115,8 +1136,11 @@ class User < ActiveRecord::Base
   #   <https://github.com/plataformatec/devise/blob/v4.0.0/lib/devise/models/lockable.rb#L92>
   #
   def increment_failed_attempts!
+    return if ::Gitlab::Database.read_only?
+
     self.failed_attempts ||= 0
     self.failed_attempts += 1
+
     if attempts_exceeded?
       lock_access! unless access_locked?
     else
@@ -1213,6 +1237,16 @@ class User < ActiveRecord::Base
 
   def terms_accepted?
     accepted_term_id.present?
+  end
+
+  def required_terms_not_accepted?
+    Gitlab::CurrentSettings.current_application_settings.enforce_terms? &&
+      !terms_accepted?
+  end
+
+  def owned_or_masters_groups
+    union = Gitlab::SQL::Union.new([owned_groups, masters_groups])
+    Group.from("(#{union.to_sql}) namespaces")
   end
 
   protected

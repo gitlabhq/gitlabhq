@@ -41,6 +41,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           expect(json_response['id']).to eq(runner.id)
           expect(json_response['token']).to eq(runner.token)
           expect(runner.run_untagged).to be true
+          expect(runner.active).to be true
           expect(runner.token).not_to eq(registration_token)
           expect(runner).to be_instance_type
         end
@@ -126,6 +127,28 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
           expect(response).to have_gitlab_http_status 201
           expect(Ci::Runner.first.locked).to be true
+        end
+      end
+
+      context 'when option for activating a Runner is provided' do
+        context 'when active is set to true' do
+          it 'creates runner' do
+            post api('/runners'), token: registration_token,
+                                  active: true
+
+            expect(response).to have_gitlab_http_status 201
+            expect(Ci::Runner.first.active).to be true
+          end
+        end
+
+        context 'when active is set to false' do
+          it 'creates runner' do
+            post api('/runners'), token: registration_token,
+                                  active: false
+
+            expect(response).to have_gitlab_http_status 201
+            expect(Ci::Runner.first.active).to be false
+          end
         end
       end
 
@@ -895,6 +918,22 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           it 'has valid trace' do
             expect(response.status).to eq(202)
             expect(job.reload.trace.raw).to eq 'BUILD TRACE appended appended'
+          end
+
+          context 'when job is cancelled' do
+            before do
+              job.cancel
+            end
+
+            context 'when trace is patched' do
+              before do
+                patch_the_trace
+              end
+
+              it 'returns Forbidden ' do
+                expect(response.status).to eq(403)
+              end
+            end
           end
 
           context 'when redis data are flushed' do

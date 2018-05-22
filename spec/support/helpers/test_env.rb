@@ -160,7 +160,11 @@ module TestEnv
     end
 
     spawn_script = Rails.root.join('scripts/gitaly-test-spawn').to_s
-    @gitaly_pid = Bundler.with_original_env { IO.popen([spawn_script], &:read).to_i }
+    Bundler.with_original_env do
+      raise "gitaly spawn failed" unless system(spawn_script)
+    end
+    @gitaly_pid = Integer(File.read('tmp/tests/gitaly.pid'))
+
     Kernel.at_exit { stop_gitaly }
 
     wait_gitaly

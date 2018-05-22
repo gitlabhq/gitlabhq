@@ -53,12 +53,13 @@ module Ci
       #        Without that, placeholders would miss one and couldn't match.
       where(locked: false)
         .where.not("ci_runners.id IN (#{project.runners.select(:id).to_sql})")
-        .specific
+        .project_type
     end
 
     validate :tag_constraints
     validate :either_projects_or_group
     validates :access_level, presence: true
+    validates :runner_type, presence: true
 
     acts_as_taggable
 
@@ -75,7 +76,7 @@ module Ci
       project_type: 3
     }
 
-    cached_attr_reader :version, :revision, :platform, :architecture, :contacted_at, :ip_address
+    cached_attr_reader :version, :revision, :platform, :architecture, :ip_address, :contacted_at
 
     chronic_duration_attr :maximum_timeout_human_readable, :maximum_timeout
 
@@ -108,7 +109,13 @@ module Ci
     end
 
     def assign_to(project, current_user = nil)
-      self.is_shared = false if shared?
+      if shared?
+        self.is_shared = false if shared?
+        self.runner_type = :project_type
+      elsif group_type?
+        raise ArgumentError, 'Transitioning a group runner to a project runner is not supported'
+      end
+
       self.save
       project.runner_projects.create(runner_id: self.id)
     end

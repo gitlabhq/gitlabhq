@@ -22,7 +22,6 @@
     align-items: flex-start;
 
     .close {
-
       .dismiss-icon {
         color: $gray-darkest;
       }
@@ -32,13 +31,11 @@
           color: $text-color;
         }
       }
-
     }
 
     .svg-container {
       margin-right: 15px;
     }
-
   }
 
   &.promotion-empty-page {
@@ -67,10 +64,22 @@
       margin-left: 0;
     }
   }
+
+  .promotion-burndown-charts-content {
+    justify-content: end;
+  
+    .svg-container {
+      margin-left: 4px;
+      margin-right: 24px;
+    }
+
+    .user-callout-copy {
+      margin: 0;
+    }
+  }
 }
 
 .promotion-modal {
-
   .modal-dialog {
     width: 540px;
   }
@@ -87,7 +96,6 @@
   .modal-footer {
     border-top: 0;
   }
-
 }
 
 .promotion-backdrop {
@@ -100,11 +108,17 @@
   }
 }
 
-.promotion-info-weight-message {
-  padding: $gl-padding-top;
+.promotion-issue-sidebar {
+  .promotion-issue-sidebar-message {
+    padding: $gl-padding-top;
 
-  .dropdown-title {
-    margin: 0 0 10px;
+    .dropdown-title {
+      margin: 0 0 10px;
+    }
+
+    .btn + .btn {
+      margin-top: $gl-padding-4;
+    }
   }
 
   .btn {
@@ -114,7 +128,7 @@
     line-height: $line-height-base;
   }
 
-  .btn-link {
+  .right-sidebar & .btn-link {
     display: inline;
     color: $gl-link-color;
     background-color: transparent;
@@ -126,7 +140,6 @@
     }
   }
 }
-
 
 .promotion-issue-template-message {
   padding: $gl-padding 30px 20px $gl-padding;
@@ -160,4 +173,3 @@
     }
   }
 }
-

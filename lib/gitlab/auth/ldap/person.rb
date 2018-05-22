@@ -1,5 +1,3 @@
-# Contains methods common to both GitLab CE and EE.
-# All EE methods should be in `EE::Gitlab::Auth::LDAP::Person` only.
 module Gitlab
   module Auth
     module LDAP

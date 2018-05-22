@@ -1,3 +1,7 @@
+---
+description: 'Learn how to use GitLab Pages to deploy a static website at no additional cost.'
+---
+
 # GitLab Pages
 
 With GitLab Pages it's easy to publish your project website. GitLab Pages is a hosting service for static websites, at no additional cost.

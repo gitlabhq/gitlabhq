@@ -5,7 +5,7 @@ describe Appearance do
 
   it { is_expected.to be_valid }
 
-  it { is_expected.to have_many(:uploads).dependent(:destroy) }
+  it { is_expected.to have_many(:uploads) }
 
   describe '.current', :use_clean_rails_memory_store_caching do
     let!(:appearance) { create(:appearance) }
@@ -39,6 +39,14 @@ describe Appearance do
       new_row.save
 
       expect(new_row.valid?).to eq(false)
+    end
+  end
+
+  context 'with uploads' do
+    it_behaves_like 'model with mounted uploader', false do
+      let(:model_object) { create(:appearance, :with_logo) }
+      let(:upload_attribute) { :logo }
+      let(:uploader_class) { AttachmentUploader }
     end
   end
 end

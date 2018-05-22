@@ -65,7 +65,7 @@
             customType: CUSTOM_TYPE.EVENT,
           },
           {
-            itemTitle: s__('GeoNodes|Latest event log status'),
+            itemTitle: s__('GeoNodes|Last event ID processed by cursor'),
             itemValue: this.cursorLastEventStatus(),
             itemValueType: VALUE_TYPE.CUSTOM,
             customType: CUSTOM_TYPE.EVENT,

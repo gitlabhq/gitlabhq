@@ -43,7 +43,7 @@ module Gitlab
     end
 
     def self.version
-      database_version.match(/\A(?:PostgreSQL |)([^\s]+).*\z/)[1]
+      @version ||= database_version.match(/\A(?:PostgreSQL |)([^\s]+).*\z/)[1]
     end
 
     def self.postgresql_9_or_less?

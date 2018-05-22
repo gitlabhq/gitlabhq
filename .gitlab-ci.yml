@@ -10,6 +10,7 @@ image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.7-golang-1.9-git
   paths:
     - vendor/ruby
     - .yarn-cache/
+    - vendor/gitaly-ruby
 
 .push-cache: &push-cache
   cache:
@@ -30,7 +31,6 @@ variables:
   GIT_SUBMODULE_STRATEGY: "none"
   GET_SOURCES_ATTEMPTS: "3"
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-master.json
-  KNAPSACK_SPINACH_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/spinach_report-master.json
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec_flaky/report-suite.json
   ## EE specific variables ##
   # This hack is needed to make ES not that memory hungry
@@ -156,6 +156,23 @@ stages:
   <<: *dedicated-no-docs-pull-cache-job
   <<: *except-docs-and-qa
 
+.single-script-job: &single-script-job
+  image: ruby:2.4-alpine
+  before_script: []
+  stage: build
+  cache: {}
+  dependencies: []
+  variables: &single-script-job-variables
+    GIT_STRATEGY: none
+  before_script:
+    # We need to download the script rather than clone the repo since the
+    # package-and-qa job will not be able to run when the branch gets
+    # deleted (when merging the MR).
+    - export SCRIPT_NAME="${SCRIPT_NAME:-$CI_JOB_NAME}"
+    - apk add --update openssl
+    - wget $CI_PROJECT_URL/raw/$CI_COMMIT_SHA/scripts/$SCRIPT_NAME
+    - chmod 755 $SCRIPT_NAME
+
 .rake-exec: &rake-exec
   <<: *dedicated-no-docs-no-db-pull-cache-job
   script:
@@ -266,46 +283,6 @@ stages:
   <<: *rspec-metadata-pg-geo-10-2
   <<: *rails5
 
-.spinach-metadata: &spinach-metadata
-  <<: *dedicated-runner
-  <<: *except-docs-and-qa
-  <<: *pull-cache
-  <<: *rails5-variables
-  stage: test
-  script:
-    - JOB_NAME=( $CI_JOB_NAME )
-    - export CI_NODE_INDEX=${JOB_NAME[-2]}
-    - export CI_NODE_TOTAL=${JOB_NAME[-1]}
-    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
-    - export KNAPSACK_GENERATE_REPORT=true
-    - export CACHE_CLASSES=true
-    - cp ${KNAPSACK_SPINACH_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
-    - scripts/gitaly-test-spawn
-    - knapsack spinach "-r rerun" -b || retry '[[ -e tmp/spinach-rerun.txt ]] && bundle exec spinach -b -r rerun $(cat tmp/spinach-rerun.txt)'
-  artifacts:
-    expire_in: 31d
-    when: always
-    paths:
-      - coverage/
-      - knapsack/
-      - tmp/capybara/
-
-.spinach-metadata-pg: &spinach-metadata-pg
-  <<: *spinach-metadata
-  <<: *use-pg
-
-.spinach-metadata-pg-rails5: &spinach-metadata-pg-rails5
-  <<: *spinach-metadata-pg
-  <<: *rails5
-
-.spinach-metadata-mysql: &spinach-metadata-mysql
-  <<: *spinach-metadata
-  <<: *use-mysql
-
-.spinach-metadata-mysql-rails5: &spinach-metadata-mysql-rails5
-  <<: *spinach-metadata-mysql
-  <<: *rails5
-
 .only-canonical-masters: &only-canonical-masters
   only:
     - master@gitlab-org/gitlab-ce
@@ -318,7 +295,6 @@ stages:
   <<: *use-pg
   variables:
     SETUP_DB: "false"
-    CREATE_DB_USER: "true"
   script:
     # Manually clone gitlab-test and only seed this project in
     # db/fixtures/development/04_project.rb thanks to SIZE=1 below
@@ -336,19 +312,10 @@ stages:
 .review-docs: &review-docs
   <<: *dedicated-runner
   <<: *except-qa
-  image: ruby:2.4-alpine
-  before_script:
-    - gem install gitlab --no-doc
-    # We need to download the script rather than clone the repo since the
-    # review-docs-cleanup job will not be able to run when the branch gets
-    # deleted (when merging the MR).
-    - apk add --update openssl
-    - wget https://gitlab.com/gitlab-org/gitlab-ce/raw/master/scripts/trigger-build-docs
-    - chmod 755 trigger-build-docs
-  cache: {}
-  dependencies: []
+  <<: *single-script-job
   variables:
-    GIT_STRATEGY: none
+    <<: *single-script-job-variables
+    SCRIPT_NAME: trigger-build-docs
   when: manual
   only:
     - branches
@@ -362,7 +329,7 @@ stages:
 .migration-paths: &migration-paths
   <<: *dedicated-no-docs-and-no-qa-pull-cache-job
   variables:
-    CREATE_DB_USER: "true"
+    SETUP_DB: "false"
   script:
     - git fetch https://gitlab.com/gitlab-org/gitlab-ee.git v9.3.0-ee
     - git checkout -f FETCH_HEAD
@@ -371,8 +338,26 @@ stages:
     - cp config/gitlab.yml.example config/gitlab.yml
     - bundle exec rake db:drop db:create db:schema:load db:seed_fu
     - date
-    - git checkout $CI_COMMIT_SHA
+    - git checkout -f $CI_COMMIT_SHA
     - bundle install $BUNDLE_INSTALL_FLAGS
+    - date
+    - . scripts/prepare_build.sh
+    - date
+    - bundle exec rake db:migrate
+
+.migration-paths-upgrade-ce-to-ee: &migration-paths-upgrade-ce-to-ee
+  <<: *dedicated-no-docs-and-no-qa-pull-cache-job
+  variables:
+    SETUP_DB: "false"
+  script:
+    - CE_HEAD=$(ruby -r./scripts/ee_specific_check/ee_specific_check -e'puts EESpecificCheck.fetch_remote_ce_branch')
+    - git checkout -f $CE_HEAD
+    - . scripts/utils.sh
+    - . scripts/prepare_build.sh
+    - date
+    - setup_db
+    - date
+    - git checkout -f $CI_COMMIT_SHA
     - date
     - . scripts/prepare_build.sh
     - date
@@ -382,23 +367,14 @@ stages:
 # Trigger a package build in omnibus-gitlab repository
 #
 package-and-qa:
-  image: ruby:2.4-alpine
-  before_script: []
-  stage: build
-  cache: {}
-  when: manual
+  <<: *single-script-job
   variables:
-    GIT_STRATEGY: none
+    <<: *single-script-job-variables
+    SCRIPT_NAME: trigger-build-omnibus
   retry: 0
-  before_script:
-    # We need to download the script rather than clone the repo since the
-    # package-and-qa job will not be able to run when the branch gets
-    # deleted (when merging the MR).
-    - apk add --update openssl
-    - wget https://gitlab.com/$CI_PROJECT_PATH/raw/$CI_COMMIT_SHA/scripts/trigger-build-omnibus
-    - chmod 755 trigger-build-omnibus
   script:
-    - ./trigger-build-omnibus
+    - ./$SCRIPT_NAME
+  when: manual
   only:
     - //@gitlab-org/gitlab-ce
     - //@gitlab-org/gitlab-ee
@@ -415,7 +391,8 @@ review-docs-deploy:
     url: http://$DOCS_GITLAB_REPO_SUFFIX-$CI_COMMIT_REF_SLUG.$DOCS_REVIEW_APPS_DOMAIN/$DOCS_GITLAB_REPO_SUFFIX
     on_stop: review-docs-cleanup
   script:
-    - ./trigger-build-docs deploy
+    - gem install gitlab --no-ri --no-rdoc
+    - ./$SCRIPT_NAME deploy
 
 # Cleanup remote environment of gitlab-docs
 review-docs-cleanup:
@@ -425,7 +402,26 @@ review-docs-cleanup:
     name: review-docs/$CI_COMMIT_REF_NAME
     action: stop
   script:
-    - ./trigger-build-docs cleanup
+    - gem install gitlab --no-ri --no-rdoc
+    - ./SCRIPT_NAME cleanup
+
+##
+# Trigger a docker image build in CNG (Cloud Native GitLab) repository
+#
+cloud-native-image:
+  image: ruby:2.4-alpine
+  before_script: []
+  stage: build
+  allow_failure: true
+  cache: {}
+  before_script:
+    - gem install gitlab --no-rdoc --no-ri
+    - chmod 755 ./scripts/trigger-build-cloud-native
+  script:
+    - ./scripts/trigger-build-cloud-native
+  only:
+    - tags@gitlab-org/gitlab-ce
+    - tags@gitlab-org/gitlab-ee
 
 # Retrieve knapsack and rspec_flaky reports
 retrieve-tests-metadata:
@@ -438,9 +434,7 @@ retrieve-tests-metadata:
   script:
     - mkdir -p knapsack/${CI_PROJECT_NAME}/
     - wget -O $KNAPSACK_RSPEC_SUITE_REPORT_PATH http://${TESTS_METADATA_S3_BUCKET}.s3.amazonaws.com/$KNAPSACK_RSPEC_SUITE_REPORT_PATH || rm $KNAPSACK_RSPEC_SUITE_REPORT_PATH
-    - wget -O $KNAPSACK_SPINACH_SUITE_REPORT_PATH http://${TESTS_METADATA_S3_BUCKET}.s3.amazonaws.com/$KNAPSACK_SPINACH_SUITE_REPORT_PATH || rm $KNAPSACK_SPINACH_SUITE_REPORT_PATH
     - '[[ -f $KNAPSACK_RSPEC_SUITE_REPORT_PATH ]] || echo "{}" > ${KNAPSACK_RSPEC_SUITE_REPORT_PATH}'
-    - '[[ -f $KNAPSACK_SPINACH_SUITE_REPORT_PATH ]] || echo "{}" > ${KNAPSACK_SPINACH_SUITE_REPORT_PATH}'
     - mkdir -p rspec_flaky/
     - wget -O $FLAKY_RSPEC_SUITE_REPORT_PATH http://${TESTS_METADATA_S3_BUCKET}.s3.amazonaws.com/$FLAKY_RSPEC_SUITE_REPORT_PATH || rm $FLAKY_RSPEC_SUITE_REPORT_PATH
     - '[[ -f $FLAKY_RSPEC_SUITE_REPORT_PATH ]] || echo "{}" > ${FLAKY_RSPEC_SUITE_REPORT_PATH}'
@@ -458,6 +452,9 @@ retrieve-tests-metadata:
     - //@gitlab-org/gitlab-ee
   except:
     - master
+    - /^[\d-]+-stable(-ee)?$/
+    - /\bce\-to\-ee\b/
+    - /(^docs[\/-].*|.*-docs$)/
 
 ee-files-location-check:
   <<: *ee-specific-check
@@ -480,13 +477,12 @@ update-tests-metadata:
       - rspec_flaky/
     policy: push
   script:
-    - retry gem install fog-aws mime-types activesupport
+    - retry gem install fog-aws mime-types activesupport --no-ri --no-rdoc
     - scripts/merge-reports ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec-pg_node_*.json
-    - scripts/merge-reports ${KNAPSACK_SPINACH_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/spinach-pg_node_*.json
     - scripts/merge-reports ${EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec-pg-ee_node_*.json
     - scripts/merge-reports ${FLAKY_RSPEC_SUITE_REPORT_PATH} rspec_flaky/all_*_*.json
     - FLAKY_RSPEC_GENERATE_REPORT=1 scripts/prune-old-flaky-specs ${FLAKY_RSPEC_SUITE_REPORT_PATH}
-    - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $KNAPSACK_RSPEC_SUITE_REPORT_PATH $KNAPSACK_SPINACH_SUITE_REPORT_PATH'
+    - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $KNAPSACK_RSPEC_SUITE_REPORT_PATH'
     - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH'
     - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $FLAKY_RSPEC_SUITE_REPORT_PATH'
     - rm -f knapsack/${CI_PROJECT_NAME}/*_node_*.json
@@ -553,6 +549,7 @@ setup-test-env:
     paths:
       - tmp/tests
       - config/secrets.yml
+      - vendor/gitaly-ruby
 
 # EE jobs
 rspec-pg-ee 0 2: *rspec-ee-pg
@@ -570,133 +567,129 @@ rspec-pg-geo-rails5 0 2: *rspec-metadata-pg-geo-9-6-rails5
 rspec-pg-geo-rails5 1 2: *rspec-metadata-pg-geo-10-2-rails5
 ## EE jobs
 
-rspec-pg 0 28: *rspec-metadata-pg
-rspec-pg 1 28: *rspec-metadata-pg
-rspec-pg 2 28: *rspec-metadata-pg
-rspec-pg 3 28: *rspec-metadata-pg
-rspec-pg 4 28: *rspec-metadata-pg
-rspec-pg 5 28: *rspec-metadata-pg
-rspec-pg 6 28: *rspec-metadata-pg
-rspec-pg 7 28: *rspec-metadata-pg
-rspec-pg 8 28: *rspec-metadata-pg
-rspec-pg 9 28: *rspec-metadata-pg
-rspec-pg 10 28: *rspec-metadata-pg
-rspec-pg 11 28: *rspec-metadata-pg
-rspec-pg 12 28: *rspec-metadata-pg
-rspec-pg 13 28: *rspec-metadata-pg
-rspec-pg 14 28: *rspec-metadata-pg
-rspec-pg 15 28: *rspec-metadata-pg
-rspec-pg 16 28: *rspec-metadata-pg
-rspec-pg 17 28: *rspec-metadata-pg
-rspec-pg 18 28: *rspec-metadata-pg
-rspec-pg 19 28: *rspec-metadata-pg
-rspec-pg 20 28: *rspec-metadata-pg
-rspec-pg 21 28: *rspec-metadata-pg
-rspec-pg 22 28: *rspec-metadata-pg
-rspec-pg 23 28: *rspec-metadata-pg
-rspec-pg 24 28: *rspec-metadata-pg
-rspec-pg 25 28: *rspec-metadata-pg
-rspec-pg 26 28: *rspec-metadata-pg
-rspec-pg 27 28: *rspec-metadata-pg
+rspec-pg 0 30: *rspec-metadata-pg
+rspec-pg 1 30: *rspec-metadata-pg
+rspec-pg 2 30: *rspec-metadata-pg
+rspec-pg 3 30: *rspec-metadata-pg
+rspec-pg 4 30: *rspec-metadata-pg
+rspec-pg 5 30: *rspec-metadata-pg
+rspec-pg 6 30: *rspec-metadata-pg
+rspec-pg 7 30: *rspec-metadata-pg
+rspec-pg 8 30: *rspec-metadata-pg
+rspec-pg 9 30: *rspec-metadata-pg
+rspec-pg 10 30: *rspec-metadata-pg
+rspec-pg 11 30: *rspec-metadata-pg
+rspec-pg 12 30: *rspec-metadata-pg
+rspec-pg 13 30: *rspec-metadata-pg
+rspec-pg 14 30: *rspec-metadata-pg
+rspec-pg 15 30: *rspec-metadata-pg
+rspec-pg 16 30: *rspec-metadata-pg
+rspec-pg 17 30: *rspec-metadata-pg
+rspec-pg 18 30: *rspec-metadata-pg
+rspec-pg 19 30: *rspec-metadata-pg
+rspec-pg 20 30: *rspec-metadata-pg
+rspec-pg 21 30: *rspec-metadata-pg
+rspec-pg 22 30: *rspec-metadata-pg
+rspec-pg 23 30: *rspec-metadata-pg
+rspec-pg 24 30: *rspec-metadata-pg
+rspec-pg 25 30: *rspec-metadata-pg
+rspec-pg 26 30: *rspec-metadata-pg
+rspec-pg 27 30: *rspec-metadata-pg
+rspec-pg 28 30: *rspec-metadata-pg
+rspec-pg 29 30: *rspec-metadata-pg
 
-rspec-mysql 0 28: *rspec-metadata-mysql
-rspec-mysql 1 28: *rspec-metadata-mysql
-rspec-mysql 2 28: *rspec-metadata-mysql
-rspec-mysql 3 28: *rspec-metadata-mysql
-rspec-mysql 4 28: *rspec-metadata-mysql
-rspec-mysql 5 28: *rspec-metadata-mysql
-rspec-mysql 6 28: *rspec-metadata-mysql
-rspec-mysql 7 28: *rspec-metadata-mysql
-rspec-mysql 8 28: *rspec-metadata-mysql
-rspec-mysql 9 28: *rspec-metadata-mysql
-rspec-mysql 10 28: *rspec-metadata-mysql
-rspec-mysql 11 28: *rspec-metadata-mysql
-rspec-mysql 12 28: *rspec-metadata-mysql
-rspec-mysql 13 28: *rspec-metadata-mysql
-rspec-mysql 14 28: *rspec-metadata-mysql
-rspec-mysql 15 28: *rspec-metadata-mysql
-rspec-mysql 16 28: *rspec-metadata-mysql
-rspec-mysql 17 28: *rspec-metadata-mysql
-rspec-mysql 18 28: *rspec-metadata-mysql
-rspec-mysql 19 28: *rspec-metadata-mysql
-rspec-mysql 20 28: *rspec-metadata-mysql
-rspec-mysql 21 28: *rspec-metadata-mysql
-rspec-mysql 22 28: *rspec-metadata-mysql
-rspec-mysql 23 28: *rspec-metadata-mysql
-rspec-mysql 24 28: *rspec-metadata-mysql
-rspec-mysql 25 28: *rspec-metadata-mysql
-rspec-mysql 26 28: *rspec-metadata-mysql
-rspec-mysql 27 28: *rspec-metadata-mysql
+rspec-mysql 0 30: *rspec-metadata-mysql
+rspec-mysql 1 30: *rspec-metadata-mysql
+rspec-mysql 2 30: *rspec-metadata-mysql
+rspec-mysql 3 30: *rspec-metadata-mysql
+rspec-mysql 4 30: *rspec-metadata-mysql
+rspec-mysql 5 30: *rspec-metadata-mysql
+rspec-mysql 6 30: *rspec-metadata-mysql
+rspec-mysql 7 30: *rspec-metadata-mysql
+rspec-mysql 8 30: *rspec-metadata-mysql
+rspec-mysql 9 30: *rspec-metadata-mysql
+rspec-mysql 10 30: *rspec-metadata-mysql
+rspec-mysql 11 30: *rspec-metadata-mysql
+rspec-mysql 12 30: *rspec-metadata-mysql
+rspec-mysql 13 30: *rspec-metadata-mysql
+rspec-mysql 14 30: *rspec-metadata-mysql
+rspec-mysql 15 30: *rspec-metadata-mysql
+rspec-mysql 16 30: *rspec-metadata-mysql
+rspec-mysql 17 30: *rspec-metadata-mysql
+rspec-mysql 18 30: *rspec-metadata-mysql
+rspec-mysql 19 30: *rspec-metadata-mysql
+rspec-mysql 20 30: *rspec-metadata-mysql
+rspec-mysql 21 30: *rspec-metadata-mysql
+rspec-mysql 22 30: *rspec-metadata-mysql
+rspec-mysql 23 30: *rspec-metadata-mysql
+rspec-mysql 24 30: *rspec-metadata-mysql
+rspec-mysql 25 30: *rspec-metadata-mysql
+rspec-mysql 26 30: *rspec-metadata-mysql
+rspec-mysql 27 30: *rspec-metadata-mysql
+rspec-mysql 28 30: *rspec-metadata-mysql
+rspec-mysql 29 30: *rspec-metadata-mysql
 
-spinach-pg 0 2: *spinach-metadata-pg
-spinach-pg 1 2: *spinach-metadata-pg
+rspec-pg-rails5 0 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 1 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 2 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 3 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 4 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 5 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 6 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 7 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 8 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 9 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 10 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 11 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 12 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 13 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 14 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 15 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 16 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 17 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 18 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 19 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 20 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 21 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 22 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 23 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 24 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 25 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 26 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 27 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 28 30: *rspec-metadata-pg-rails5
+rspec-pg-rails5 29 30: *rspec-metadata-pg-rails5
 
-spinach-mysql 0 2: *spinach-metadata-mysql
-spinach-mysql 1 2: *spinach-metadata-mysql
-
-rspec-pg-rails5 0 28: *rspec-metadata-pg-rails5
-rspec-pg-rails5 1 28: *rspec-metadata-pg-rails5
-rspec-pg-rails5 2 28: *rspec-metadata-pg-rails5
-rspec-pg-rails5 3 28: *rspec-metadata-pg-rails5
-rspec-pg-rails5 4 28: *rspec-metadata-pg-rails5
-rspec-pg-rails5 5 28: *rspec-metadata-pg-rails5
-rspec-pg-rails5 6 28: *rspec-metadata-pg-rails5
-rspec-pg-rails5 7 28: *rspec-metadata-pg-rails5
-rspec-pg-rails5 8 28: *rspec-metadata-pg-rails5
-rspec-pg-rails5 9 28: *rspec-metadata-pg-rails5
-rspec-pg-rails5 10 28: *rspec-metadata-pg-rails5
-rspec-pg-rails5 11 28: *rspec-metadata-pg-rails5
-rspec-pg-rails5 12 28: *rspec-metadata-pg-rails5
-rspec-pg-rails5 13 28: *rspec-metadata-pg-rails5
-rspec-pg-rails5 14 28: *rspec-metadata-pg-rails5
-rspec-pg-rails5 15 28: *rspec-metadata-pg-rails5
-rspec-pg-rails5 16 28: *rspec-metadata-pg-rails5
-rspec-pg-rails5 17 28: *rspec-metadata-pg-rails5
-rspec-pg-rails5 18 28: *rspec-metadata-pg-rails5
-rspec-pg-rails5 19 28: *rspec-metadata-pg-rails5
-rspec-pg-rails5 20 28: *rspec-metadata-pg-rails5
-rspec-pg-rails5 21 28: *rspec-metadata-pg-rails5
-rspec-pg-rails5 22 28: *rspec-metadata-pg-rails5
-rspec-pg-rails5 23 28: *rspec-metadata-pg-rails5
-rspec-pg-rails5 24 28: *rspec-metadata-pg-rails5
-rspec-pg-rails5 25 28: *rspec-metadata-pg-rails5
-rspec-pg-rails5 26 28: *rspec-metadata-pg-rails5
-rspec-pg-rails5 27 28: *rspec-metadata-pg-rails5
-
-rspec-mysql-rails5 0 28: *rspec-metadata-mysql-rails5
-rspec-mysql-rails5 1 28: *rspec-metadata-mysql-rails5
-rspec-mysql-rails5 2 28: *rspec-metadata-mysql-rails5
-rspec-mysql-rails5 3 28: *rspec-metadata-mysql-rails5
-rspec-mysql-rails5 4 28: *rspec-metadata-mysql-rails5
-rspec-mysql-rails5 5 28: *rspec-metadata-mysql-rails5
-rspec-mysql-rails5 6 28: *rspec-metadata-mysql-rails5
-rspec-mysql-rails5 7 28: *rspec-metadata-mysql-rails5
-rspec-mysql-rails5 8 28: *rspec-metadata-mysql-rails5
-rspec-mysql-rails5 9 28: *rspec-metadata-mysql-rails5
-rspec-mysql-rails5 10 28: *rspec-metadata-mysql-rails5
-rspec-mysql-rails5 11 28: *rspec-metadata-mysql-rails5
-rspec-mysql-rails5 12 28: *rspec-metadata-mysql-rails5
-rspec-mysql-rails5 13 28: *rspec-metadata-mysql-rails5
-rspec-mysql-rails5 14 28: *rspec-metadata-mysql-rails5
-rspec-mysql-rails5 15 28: *rspec-metadata-mysql-rails5
-rspec-mysql-rails5 16 28: *rspec-metadata-mysql-rails5
-rspec-mysql-rails5 17 28: *rspec-metadata-mysql-rails5
-rspec-mysql-rails5 18 28: *rspec-metadata-mysql-rails5
-rspec-mysql-rails5 19 28: *rspec-metadata-mysql-rails5
-rspec-mysql-rails5 20 28: *rspec-metadata-mysql-rails5
-rspec-mysql-rails5 21 28: *rspec-metadata-mysql-rails5
-rspec-mysql-rails5 22 28: *rspec-metadata-mysql-rails5
-rspec-mysql-rails5 23 28: *rspec-metadata-mysql-rails5
-rspec-mysql-rails5 24 28: *rspec-metadata-mysql-rails5
-rspec-mysql-rails5 25 28: *rspec-metadata-mysql-rails5
-rspec-mysql-rails5 26 28: *rspec-metadata-mysql-rails5
-rspec-mysql-rails5 27 28: *rspec-metadata-mysql-rails5
-
-spinach-pg-rails5 0 2: *spinach-metadata-pg-rails5
-spinach-pg-rails5 1 2: *spinach-metadata-pg-rails5
-
-spinach-mysql-rails5 0 2: *spinach-metadata-mysql-rails5
-spinach-mysql-rails5 1 2: *spinach-metadata-mysql-rails5
+rspec-mysql-rails5 0 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 1 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 2 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 3 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 4 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 5 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 6 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 7 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 8 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 9 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 10 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 11 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 12 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 13 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 14 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 15 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 16 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 17 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 18 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 19 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 20 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 21 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 22 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 23 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 24 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 25 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 26 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 27 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 28 30: *rspec-metadata-mysql-rails5
+rspec-mysql-rails5 29 30: *rspec-metadata-mysql-rails5
 
 static-analysis:
   <<: *dedicated-no-docs-no-db-pull-cache-job
@@ -779,6 +772,14 @@ migration:path-pg:
 
 migration:path-mysql:
   <<: *migration-paths
+  <<: *use-mysql
+
+migration:upgrade-pg-ce-to-ee:
+  <<: *migration-paths-upgrade-ce-to-ee
+  <<: *use-pg
+
+migration:upgrade-mysql-ce-to-ee:
+  <<: *migration-paths-upgrade-ce-to-ee
   <<: *use-mysql
 
 .db-rollback: &db-rollback

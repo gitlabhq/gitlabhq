@@ -17,6 +17,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      line-height: $line-height-base;
 
       .title {
         display: flex;
@@ -33,10 +34,14 @@
 
       .navbar-collapse {
         padding-right: 0;
+
+        .navbar-nav {
+          margin: 0;
+        }
       }
 
-      .nav li a {
-        color: $theme-gray-700;
+      .nav li {
+        float: none;
       }
     }
 

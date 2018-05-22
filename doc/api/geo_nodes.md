@@ -69,6 +69,8 @@ Example response:
 
 Updates an existing Geo secondary node. The primary node cannot be edited.
 
+_This can only be run against a primary Geo node._
+
 ```
 PUT /geo_nodes/:id
 ```
@@ -112,6 +114,8 @@ DELETE /geo_nodes/:id
 
 To repair the OAuth authentication of a Geo node.
 
+_This can only be run against a primary Geo node._
+
 ```
 POST /geo_nodes/:id/repair
 ```
@@ -131,7 +135,7 @@ Example response:
 }
 ```
 
-## Retrieve status about all secondary Geo nodes
+## Retrieve status about all Geo nodes
 
 ```
 GET /geo_nodes/status
@@ -145,6 +149,62 @@ Example response:
 
 ```json
 [
+  {
+    "geo_node_id": 1,
+    "healthy": true,
+    "health": "Healthy",
+    "health_status": "Healthy",
+    "missing_oauth_application": false,
+    "attachments_count": 1,
+    "attachments_synced_count": nil,
+    "attachments_failed_count": nil,
+    "attachments_synced_missing_on_primary_count": 0,
+    "attachments_synced_in_percentage": "0.00%",
+    "db_replication_lag_seconds": nil,
+    "lfs_objects_count": 0,
+    "lfs_objects_synced_count": nil,
+    "lfs_objects_failed_count": nil,
+    "lfs_objects_synced_missing_on_primary_count": 0,
+    "lfs_objects_synced_in_percentage": "0.00%",
+    "job_artifacts_count": 2,
+    "job_artifacts_synced_count": nil,
+    "job_artifacts_failed_count": nil,
+    "job_artifacts_synced_missing_on_primary_count": 0,
+    "job_artifacts_synced_in_percentage": "0.00%",
+    "repositories_count": 41,
+    "repositories_failed_count": nil,
+    "repositories_synced_count": nil,
+    "repositories_synced_in_percentage": "0.00%",
+    "wikis_count": 41,
+    "wikis_failed_count": nil,
+    "wikis_synced_count": nil,
+    "wikis_synced_in_percentage": "0.00%",
+    "replication_slots_count": 1,
+    "replication_slots_used_count": 1,
+    "replication_slots_used_in_percentage": "100.00%",
+    "replication_slots_max_retained_wal_bytes": 0,
+    "repositories_checksummed_count": 20,
+    "repositories_checksum_failed_count": 5,
+    "repositories_checksummed_in_percentage": "48.78%",
+    "wikis_checksummed_count": 10,
+    "wikis_checksum_failed_count": 3,
+    "wikis_checksummed_in_percentage": "24.39%",
+    "repositories_verified_count": 20,
+    "repositories_verification_failed_count": 5,
+    "repositories_verified_in_percentage": "48.78%",
+    "repositories_checksum_mismatch_count": 3,
+    "wikis_verified_count": 10,
+    "wikis_verification_failed_count": 3,
+    "wikis_verified_in_percentage": "24.39%",
+    "wikis_checksum_mismatch_count": 1,
+    "last_event_id": 23,
+    "last_event_timestamp": 1509681166,
+    "cursor_last_event_id": nil,
+    "cursor_last_event_timestamp": 0,
+    "last_successful_status_check_timestamp": 1510125024,
+    "version": "10.3.0",
+    "revision": "33d33a096a",
+  },
   {
     "geo_node_id": 2,
     "healthy": true,
@@ -175,6 +235,10 @@ Example response:
     "wikis_failed_count": 0,
     "wikis_synced_count": 41,
     "wikis_synced_in_percentage": "100.00%",
+    "replication_slots_count": nil,
+    "replication_slots_used_count": nil,
+    "replication_slots_used_in_percentage": "0.00%",
+    "replication_slots_max_retained_wal_bytes": nil,
     "repositories_checksummed_count": 20,
     "repositories_checksum_failed_count": 5,
     "repositories_checksummed_in_percentage": "48.78%",
@@ -200,7 +264,7 @@ Example response:
 ]
 ```
 
-## Retrieve status about a specific secondary Geo node
+## Retrieve status about a specific Geo node
 
 ```
 GET /geo_nodes/:id/status
@@ -239,6 +303,14 @@ Example response:
   "repositories_failed_count": 1,
   "repositories_synced_count": 40,
   "repositories_synced_in_percentage": "97.56%",
+  "wikis_count": 41,
+  "wikis_failed_count": 0,
+  "wikis_synced_count": 41,
+  "wikis_synced_in_percentage": "100.00%",
+  "replication_slots_count": nil,
+  "replication_slots_used_count": nil,
+  "replication_slots_used_in_percentage": "0.00%",
+  "replication_slots_max_retained_wal_bytes": nil,
   "last_event_id": 23,
   "last_event_timestamp": 1509681166,
   "cursor_last_event_id": 23,

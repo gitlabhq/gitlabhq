@@ -1,0 +1,29 @@
+- promotion_feature = 'promote_epics_sidebar_dismissed'
+
+- if !@project.feature_available?(:epics) && show_promotions? && show_callout?(promotion_feature)
+  .block.js-epics-sidebar-callout.promotion-issue-sidebar{ data: { uid: promotion_feature } }
+    .sidebar-collapsed-icon{ data: { toggle: "dropdown", target: ".js-epics-sidebar-callout" } }
+      %span{ data: { toggle: "tooltip", placement: "left", container: "body" }, title: _('Epic') }
+        = sprite_icon('epic', size: 16)
+        %span
+          = _('None')
+    .title.hide-collapsed
+      = _('Epic')
+    .dropdown
+      .dropdown-menu.promotion-issue-sidebar-message
+        .dropdown-title
+          %span
+            = _('Epic')
+          %button.dropdown-title-button.dropdown-menu-close{ "aria-label" => _('Close'), :type => "button" }
+            %i.fa.fa-times.dropdown-menu-close-icon{ "aria-hidden" => "true", "data-hidden" => "true" }
+        %div
+          %p
+            = s_('Promotions|Epics let you manage your portfolio of projects more efficiently and with less effort by tracking groups of issues that share a theme, across projects and milestones.')
+            = link_to s_('Read more'), 'https://docs.gitlab.com/ee/user/group/epics/', class: 'btn-link', target: '_blank'
+          %div
+            = render 'shared/promotions/promotion_link_project', short_form: true
+            = link_to s_("Promotions|Don't show me this again"), '#', class: ['btn', 'js-close', 'js-close-callout']
+
+    .hide-collapsed
+      = s_('Promotions|This feature is locked.')
+      = link_to s_('Promotions|Upgrade plan') , '#', class: 'btn-link', data: { toggle: "dropdown", target: ".js-epics-sidebar-callout" }
