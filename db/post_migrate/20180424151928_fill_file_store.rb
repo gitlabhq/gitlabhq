@@ -37,8 +37,6 @@ class FillFileStore < ActiveRecord::Migration
   end
 
   def up
-    disable_statement_timeout
-
     # NOTE: Schedule background migrations that fill 'NULL' value by '1'(ObjectStorage::Store::LOCAL) on `file_store`, `store` columns
     # 
     # Here are the target columns
