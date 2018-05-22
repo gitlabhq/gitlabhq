@@ -9,6 +9,7 @@ const CompressionPlugin = require('compression-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const ROOT_PATH = path.resolve(__dirname, '..');
+const CACHE_PATH = path.join(ROOT_PATH, 'tmp/cache');
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 const IS_DEV_SERVER = process.argv.join(' ').indexOf('webpack-dev-server') !== -1;
 const DEV_SERVER_HOST = process.env.DEV_SERVER_HOST || 'localhost';
@@ -16,6 +17,9 @@ const DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
 const DEV_SERVER_LIVERELOAD = IS_DEV_SERVER && process.env.DEV_SERVER_LIVERELOAD !== 'false';
 const WEBPACK_REPORT = process.env.WEBPACK_REPORT;
 const NO_COMPRESSION = process.env.NO_COMPRESSION;
+
+const VUE_VERSION = require('vue/package.json').version;
+const VUE_LOADER_VERSION = require('vue-loader/package.json').version;
 
 let autoEntriesCount = 0;
 let watchAutoEntries = [];
@@ -99,12 +103,21 @@ module.exports = {
         exclude: path => /node_modules|vendor[\\/]assets/.test(path) && !/\.vue\.js/.test(path),
         loader: 'babel-loader',
         options: {
-          cacheDirectory: path.join(ROOT_PATH, 'tmp/cache/babel-loader'),
+          cacheDirectory: path.join(CACHE_PATH, 'babel-loader'),
         },
       },
       {
         test: /\.vue$/,
         loader: 'vue-loader',
+        options: {
+          cacheDirectory: path.join(CACHE_PATH, 'vue-loader'),
+          cacheIdentifier: [
+            process.env.NODE_ENV || 'development',
+            webpack.version,
+            VUE_VERSION,
+            VUE_LOADER_VERSION,
+          ].join('|'),
+        },
       },
       {
         test: /\.svg$/,
