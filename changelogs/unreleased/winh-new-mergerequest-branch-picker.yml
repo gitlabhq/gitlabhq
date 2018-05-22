@@ -1,5 +1,0 @@
----
-title: Load branches on new merge request page asynchronously
-merge_request: 18315
-author:
-type: changed

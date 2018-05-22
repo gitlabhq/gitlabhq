@@ -46,15 +46,19 @@ You can see GitLab's keyboard shortcuts by using 'shift + ?'
 | Keyboard Shortcut | Description |
 | ----------------- | ----------- |
 | <kbd>g</kbd> + <kbd>p</kbd> | Go to the project's home page |
-| <kbd>g</kbd> + <kbd>e</kbd> | Go to the project's activity feed |
+| <kbd>g</kbd> + <kbd>v</kbd> | Go to the project's activity feed |
 | <kbd>g</kbd> + <kbd>f</kbd> | Go to files |
 | <kbd>g</kbd> + <kbd>c</kbd> | Go to commits |
-| <kbd>g</kbd> + <kbd>b</kbd> | Go to jobs |
+| <kbd>g</kbd> + <kbd>j</kbd> | Go to jobs |
 | <kbd>g</kbd> + <kbd>n</kbd> | Go to network graph |
-| <kbd>g</kbd> + <kbd>g</kbd> | Go to repository charts |
+| <kbd>g</kbd> + <kbd>d</kbd> | Go to repository charts |
 | <kbd>g</kbd> + <kbd>i</kbd> | Go to issues |
+| <kbd>g</kbd> + <kbd>b</kbd> | Go to issue boards |
 | <kbd>g</kbd> + <kbd>m</kbd> | Go to merge requests |
+| <kbd>g</kbd> + <kbd>e</kbd> | Go to environments |
+| <kbd>g</kbd> + <kbd>k</kbd> | Go to kubernetes |
 | <kbd>g</kbd> + <kbd>s</kbd> | Go to snippets |
+| <kbd>g</kbd> + <kbd>w</kbd> | Go to wiki |
 | <kbd>t</kbd> | Go to finding file |
 | <kbd>i</kbd> | New issue |
 
@@ -84,3 +88,9 @@ You can see GitLab's keyboard shortcuts by using 'shift + ?'
 | Keyboard Shortcut | Description |
 | ----------------- | ----------- |
 | <kbd>e</kbd> | Edit wiki page|
+
+## Web IDE
+
+| Keyboard Shortcut | Description |
+| ----------------- | ----------- |
+| <kbd>⌘</kbd> + <kbd>p</kbd> | Go to file |

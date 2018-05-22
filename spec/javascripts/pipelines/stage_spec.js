@@ -102,4 +102,31 @@ describe('Pipelines stage component', () => {
       });
     });
   });
+
+  describe('pipelineActionRequestComplete', () => {
+    beforeEach(() => {
+      mock.onGet('path.json').reply(200, stageReply);
+
+      mock.onPost(`${stageReply.latest_statuses[0].status.action.path}.json`).reply(200);
+    });
+
+    describe('within pipeline table', () => {
+      it('emits `refreshPipelinesTable` event when `pipelineActionRequestComplete` is triggered', done => {
+        spyOn(eventHub, '$emit');
+
+        component.type = 'PIPELINES_TABLE';
+        component.$el.querySelector('button').click();
+
+        setTimeout(() => {
+          component.$el.querySelector('.js-ci-action').click();
+          component.$nextTick()
+          .then(() => {
+            expect(eventHub.$emit).toHaveBeenCalledWith('refreshPipelinesTable');
+          })
+          .then(done)
+          .catch(done.fail);
+        }, 0);
+      });
+    });
+  });
 });

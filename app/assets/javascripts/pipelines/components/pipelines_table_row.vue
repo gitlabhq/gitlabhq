@@ -9,6 +9,7 @@
   import CommitComponent from '../../vue_shared/components/commit.vue';
   import LoadingButton from '../../vue_shared/components/loading_button.vue';
   import Icon from '../../vue_shared/components/icon.vue';
+  import { PIPELINES_TABLE } from '../constants';
 
   /**
    * Pipeline table row.
@@ -46,6 +47,7 @@
         required: true,
       },
     },
+    pipelinesTable: PIPELINES_TABLE,
     data() {
       return {
         isRetrying: false,
@@ -297,6 +299,7 @@
             v-for="(stage, index) in pipeline.details.stages"
             :key="index">
             <pipeline-stage
+              :type="$options.pipelinesTable"
               :stage="stage"
               :update-dropdown="updateGraphDropdown"
             />

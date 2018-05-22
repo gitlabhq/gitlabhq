@@ -55,11 +55,13 @@ export default {
     eventHub.$on('postAction', this.postAction);
     eventHub.$on('retryPipeline', this.postAction);
     eventHub.$on('clickedDropdown', this.updateTable);
+    eventHub.$on('refreshPipelinesTable', this.fetchPipelines);
   },
   beforeDestroy() {
     eventHub.$off('postAction', this.postAction);
     eventHub.$off('retryPipeline', this.postAction);
     eventHub.$off('clickedDropdown', this.updateTable);
+    eventHub.$off('refreshPipelinesTable', this.fetchPipelines);
   },
   destroyed() {
     this.poll.stop();

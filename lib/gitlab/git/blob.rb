@@ -104,25 +104,22 @@ module Gitlab
         #       file.rb      # oid: 4a
         #
         #
-        # Blob.find_entry_by_path(repo, '1a', 'app/file.rb') # => '4a'
+        # Blob.find_entry_by_path(repo, '1a', 'blog', 'app', 'file.rb') # => '4a'
         #
-        def find_entry_by_path(repository, root_id, path)
+        def find_entry_by_path(repository, root_id, *path_parts)
           root_tree = repository.lookup(root_id)
-          # Strip leading slashes
-          path[%r{^/*}] = ''
-          path_arr = path.split('/')
 
           entry = root_tree.find do |entry|
-            entry[:name] == path_arr[0]
+            entry[:name] == path_parts[0]
           end
 
           return nil unless entry
 
-          if path_arr.size > 1
+          if path_parts.size > 1
             return nil unless entry[:type] == :tree
 
-            path_arr.shift
-            find_entry_by_path(repository, entry[:oid], path_arr.join('/'))
+            path_parts.shift
+            find_entry_by_path(repository, entry[:oid], *path_parts)
           else
             [:blob, :commit].include?(entry[:type]) ? entry : nil
           end
@@ -185,10 +182,13 @@ module Gitlab
         def find_by_rugged(repository, sha, path, limit:)
           return unless path
 
+          # Strip any leading / characters from the path
+          path = path.sub(%r{\A/*}, '')
+
           rugged_commit = repository.lookup(sha)
           root_tree = rugged_commit.tree
 
-          blob_entry = find_entry_by_path(repository, root_tree.oid, path)
+          blob_entry = find_entry_by_path(repository, root_tree.oid, *path.split('/'))
 
           return nil unless blob_entry
 

@@ -11,7 +11,14 @@ module Projects
         @hook = ProjectHook.new
 
         # Services
-        @services = @project.find_or_initialize_services
+        @services = @project.find_or_initialize_services(exceptions: service_exceptions)
+      end
+
+      private
+
+      # Returns a list of services that should be hidden from the list
+      def service_exceptions
+        @project.disabled_services.dup
       end
     end
   end

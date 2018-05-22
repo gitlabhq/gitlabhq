@@ -35,7 +35,11 @@ module Gitlab
           next if name =~ /\^\{\}\Z/
 
           target_commit = Gitlab::Git::Commit.find(self, target)
-          Gitlab::Git::Tag.new(self, name, target, target_commit)
+          Gitlab::Git::Tag.new(self, {
+            name: name,
+            target: target,
+            target_commit: target_commit
+          })
         end.compact
       end
 

@@ -126,6 +126,15 @@ describe API::Issues do
       it 'returns issues assigned to me' do
         issue2 = create(:issue, assignees: [user2], project: project)
 
+        get api('/issues', user2), scope: 'assigned_to_me'
+
+        expect_paginated_array_response(size: 1)
+        expect(first_issue['id']).to eq(issue2.id)
+      end
+
+      it 'returns issues assigned to me (kebab-case)' do
+        issue2 = create(:issue, assignees: [user2], project: project)
+
         get api('/issues', user2), scope: 'assigned-to-me'
 
         expect_paginated_array_response(size: 1)

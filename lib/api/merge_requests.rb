@@ -38,6 +38,7 @@ module API
 
         args[:milestone_title] = args.delete(:milestone)
         args[:label_name] = args.delete(:labels)
+        args[:scope] = args[:scope].underscore if args[:scope]
 
         merge_requests = MergeRequestsFinder.new(current_user, args).execute
                            .reorder(args[:order_by] => args[:sort])
@@ -79,8 +80,8 @@ module API
         optional :view, type: String, values: %w[simple], desc: 'If simple, returns the `iid`, URL, title, description, and basic state of merge request'
         optional :author_id, type: Integer, desc: 'Return merge requests which are authored by the user with the given ID'
         optional :assignee_id, type: Integer, desc: 'Return merge requests which are assigned to the user with the given ID'
-        optional :scope, type: String, values: %w[created-by-me assigned-to-me all],
-                         desc: 'Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`'
+        optional :scope, type: String, values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all],
+                         desc: 'Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`'
         optional :my_reaction_emoji, type: String, desc: 'Return issues reacted by the authenticated user by the given emoji'
         optional :source_branch, type: String, desc: 'Return merge requests with the given source branch'
         optional :target_branch, type: String, desc: 'Return merge requests with the given target branch'
@@ -95,8 +96,8 @@ module API
       end
       params do
         use :merge_requests_params
-        optional :scope, type: String, values: %w[created-by-me assigned-to-me all], default: 'created-by-me',
-                         desc: 'Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`'
+        optional :scope, type: String, values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all], default: 'created_by_me',
+                         desc: 'Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`'
       end
       get do
         authenticate! unless params[:scope] == 'all'

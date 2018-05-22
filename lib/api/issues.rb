@@ -13,6 +13,7 @@ module API
         args.delete(:id)
         args[:milestone_title] = args.delete(:milestone)
         args[:label_name] = args.delete(:labels)
+        args[:scope] = args[:scope].underscore if args[:scope]
 
         issues = IssuesFinder.new(current_user, args).execute
           .preload(:assignees, :labels, :notes, :timelogs)
@@ -36,8 +37,8 @@ module API
         optional :updated_before, type: DateTime, desc: 'Return issues updated before the specified time'
         optional :author_id, type: Integer, desc: 'Return issues which are authored by the user with the given ID'
         optional :assignee_id, type: Integer, desc: 'Return issues which are assigned to the user with the given ID'
-        optional :scope, type: String, values: %w[created-by-me assigned-to-me all],
-                         desc: 'Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all`'
+        optional :scope, type: String, values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all],
+                         desc: 'Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`'
         optional :my_reaction_emoji, type: String, desc: 'Return issues reacted by the authenticated user by the given emoji'
         use :pagination
       end
@@ -66,8 +67,8 @@ module API
         optional :state, type: String, values: %w[opened closed all], default: 'all',
                          desc: 'Return opened, closed, or all issues'
         use :issues_params
-        optional :scope, type: String, values: %w[created-by-me assigned-to-me all], default: 'created-by-me',
-                         desc: 'Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all`'
+        optional :scope, type: String, values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all], default: 'created_by_me',
+                         desc: 'Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`'
       end
       get do
         authenticate! unless params[:scope] == 'all'
