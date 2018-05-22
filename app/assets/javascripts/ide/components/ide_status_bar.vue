@@ -89,7 +89,7 @@ export default {
           :title="lastCommit.pipeline.details.status.text"
         />
         Pipeline
-        <a :href="lastCommit.pipeline.details.status.details_path">#{{ lastCommit.pipeline.id }}</a>
+        <a class="monospace" :href="lastCommit.pipeline.details.status.details_path">#{{ lastCommit.pipeline.id }}</a>
         {{ lastCommit.pipeline.details.status.text }}
         for
       </span>
