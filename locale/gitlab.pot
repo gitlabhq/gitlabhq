@@ -8,8 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2018-05-22 07:03+0000\n"
 "PO-Revision-Date: 2018-05-22 07:03+0000\n"
+=======
+"POT-Creation-Date: 2018-05-21 12:38-0700\n"
+"PO-Revision-Date: 2018-05-21 12:38-0700\n"
+>>>>>>> upstream/master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -4230,6 +4235,9 @@ msgstr ""
 msgid "Reset runners registration token"
 msgstr ""
 
+msgid "Resolve conflicts on source branch"
+msgstr ""
+
 msgid "Resolve discussion"
 msgstr ""
 
@@ -5650,15 +5658,22 @@ msgstr ""
 msgid "You can only edit files when you are on a branch"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "You cannot write to a read-only secondary GitLab Geo instance. Please use %{link_to_primary_node} instead."
+=======
+msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "You cannot write to this read-only GitLab instance."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "You do not have the correct permissions to override the settings from the LDAP group sync."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "You have no permissions"
 msgstr ""
 
