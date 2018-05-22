@@ -1,4 +1,5 @@
 import Visibility from 'visibilityjs';
+import MockAdapter from 'axios-mock-adapter';
 import { refreshLastCommitData, pollSuccessCallBack } from '~/ide/stores/actions';
 import store from '~/ide/stores';
 import service from '~/ide/services';
@@ -102,24 +103,22 @@ describe('IDE store project actions', () => {
   });
 
   describe('pipelinePoll', () => {
+    let mock;
+
     beforeEach(() => {
       setProjectState();
       jasmine.clock().install();
-      spyOn(axios, 'get').and.returnValue(
-        Promise.resolve({
-          status: 200,
-          headers: {
-            'poll-interval': '10000',
-          },
-          data: {
-            foo: 'bar',
-          },
-        }),
-      );
+      mock = new MockAdapter(axios);
+      mock
+        .onGet('/abc/def/commit/abc123def456ghi789jkl/pipelines')
+        .reply(200, { data: { foo: 'bar' } }, { 'poll-interval': '10000' });
+
+      spyOn(axios, 'get').and.callThrough();
     });
 
     afterEach(() => {
       jasmine.clock().uninstall();
+      mock.restore();
     });
 
     it('calls service with last fetched state', done => {
