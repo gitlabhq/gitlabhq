@@ -68,6 +68,9 @@ export const fullPipelinesResponse = {
     pipelines: [
       {
         id: '51',
+        commit: {
+          id: 'xxxxxxxxxxxxxxxxxxxx',
+        },
         details: {
           status: {
             icon: 'status_failed',
@@ -77,6 +80,9 @@ export const fullPipelinesResponse = {
       },
       {
         id: '50',
+        commit: {
+          id: 'abc123def456ghi789jkl',
+        },
         details: {
           status: {
             icon: 'status_passed',

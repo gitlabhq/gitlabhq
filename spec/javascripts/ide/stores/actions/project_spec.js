@@ -171,11 +171,14 @@ describe('IDE store project actions', () => {
               projectId: 'abc/def',
               branchId: 'master',
               pipeline: {
-                id: '51',
+                id: '50',
+                commit: {
+                  id: 'abc123def456ghi789jkl',
+                },
                 details: {
                   status: {
-                    icon: 'status_failed',
-                    text: 'failed',
+                    icon: 'status_passed',
+                    text: 'passed',
                   },
                 },
               },

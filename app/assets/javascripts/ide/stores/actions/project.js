@@ -92,9 +92,10 @@ export const refreshLastCommitData = ({ commit, state, dispatch }, { projectId, 
       flash(__('Error loading last commit.'), 'alert', document, null, false, true);
     });
 
-export const pollSuccessCallBack = ({ commit, state, dispatch, getters }, { data }) => {
+export const pollSuccessCallBack = ({ commit, state, dispatch }, { data }) => {
   if (data.pipelines && data.pipelines.length) {
-    const lastCommitHash = getters.lastCommit.id;
+    const lastCommitHash =
+      state.projects[state.currentProjectId].branches[state.currentBranchId].commit.id;
     const lastCommitPipeline = data.pipelines.find(
       pipeline => pipeline.commit.id === lastCommitHash,
     );
