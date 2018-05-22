@@ -18,8 +18,8 @@ describe Projects::PipelinesController do
   describe 'GET index.json' do
     before do
       %w(pending running success failed).each_with_index do |status, index|
-          create_pipeline(status, project.commit("HEAD~#{index}"))
-        end
+        create_pipeline(status, project.commit("HEAD~#{index}"))
+      end
     end
 
     it 'returns JSON with serialized pipelines', :request_store do
