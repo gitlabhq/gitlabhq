@@ -75,6 +75,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   private
 
   def omniauth_flow(auth_module, identity_linker: nil)
+    omniauth_params = request.env['omniauth.params']
+
+    if omniauth_params.present? && omniauth_params['redirect_fragment'].present?
+      store_redirect_fragment(omniauth_params['redirect_fragment'])
+    end
+
     if current_user
       log_audit_event(current_user, with: oauth['provider'])
 
@@ -188,5 +194,15 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def remember_me?
     request_params = request.env['omniauth.params']
     (request_params['remember_me'] == '1') if request_params.present?
+  end
+
+  def store_redirect_fragment(redirect_fragment)
+    key = stored_location_key_for(:user)
+    location = session[key]
+    unless location.to_s.strip.empty?
+      uri = URI.parse(location)
+      uri.fragment = redirect_fragment
+      store_location_for(:user, uri.to_s)
+    end
   end
 end
