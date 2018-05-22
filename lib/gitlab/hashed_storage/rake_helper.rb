@@ -39,31 +39,29 @@ module Gitlab
       end
 
       def self.projects_list(relation_name, relation)
-        relation_count = relation_summary(relation_name, relation)
-        return unless relation_count > 0
-
-        projects = relation.with_route
-        limit = listing_limit
-
-        $stdout.puts "  ! Displaying first #{limit} #{relation_name}..." if relation_count > limit
-
-        projects.find_each(batch_size: batch_size).with_index do |project, index|
+        listing(relation_name, relation.with_route) do |project|
           $stdout.puts "  - #{project.full_path} (id: #{project.id})".color(:red)
-
-          break if index + 1 >= limit
         end
       end
 
       def self.attachments_list(relation_name, relation)
+        listing(relation_name, relation) do |upload|
+          $stdout.puts "  - #{upload.path} (id: #{upload.id})".color(:red)
+        end
+      end
+
+      def self.listing(relation_name, relation)
         relation_count = relation_summary(relation_name, relation)
         return unless relation_count > 0
 
         limit = listing_limit
 
-        $stdout.puts "  ! Displaying first #{limit} #{relation_name}..." if relation_count > limit
+        if relation_count > limit
+          $stdout.puts "  ! Displaying first #{limit} #{relation_name}..."
+        end
 
-        relation.find_each(batch_size: batch_size).with_index do |upload, index|
-          $stdout.puts "  - #{upload.path} (id: #{upload.id})".color(:red)
+        relation.find_each(batch_size: batch_size).with_index do |element, index|
+          yield element
 
           break if index + 1 >= limit
         end
