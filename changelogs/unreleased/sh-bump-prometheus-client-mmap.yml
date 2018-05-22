@@ -1,0 +1,5 @@
+---
+title: Bump prometheus-client-mmap to 0.9.3 to fix nil exception error
+merge_request:
+author:
+type: fixed
