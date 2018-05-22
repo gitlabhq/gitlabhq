@@ -56,6 +56,9 @@ table {
   pointer-events: none;
 }
 
+.popover {
+  font-size: 14px;
+}
 
 @each $breakpoint in map-keys($grid-breakpoints) {
   @include media-breakpoint-up($breakpoint) {
