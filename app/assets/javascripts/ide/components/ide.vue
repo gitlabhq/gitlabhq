@@ -44,9 +44,7 @@ export default {
         e.preventDefault();
       }
 
-      if (!e.target.classList.contains('inputarea')) {
-        this.toggleFileFinder(!this.fileFindVisible);
-      }
+      this.toggleFileFinder(!this.fileFindVisible);
     });
 
     Mousetrap.stopCallback = (e, el, combo) => this.mousetrapStopCallback(e, el, combo);
@@ -54,7 +52,10 @@ export default {
   methods: {
     ...mapActions(['toggleFileFinder']),
     mousetrapStopCallback(e, el, combo) {
-      if (combo === 't' && el.classList.contains('dropdown-input-field')) {
+      if (
+        (combo === 't' && el.classList.contains('dropdown-input-field')) ||
+        el.classList.contains('inputarea')
+      ) {
         return true;
       } else if (combo === 'command+p' || combo === 'ctrl+p') {
         return false;
