@@ -84,21 +84,11 @@ beforeEach(() => {
 
 const axiosDefaultAdapter = getDefaultAdapter();
 
-let testFiles = process.env.TEST_FILES || [];
-if (testFiles.length > 0) {
-  testFiles = testFiles.map(path => path.replace(/^spec\/javascripts\//, '').replace(/\.js$/, ''));
-  console.log(`Running only tests matching: ${testFiles}`);
-} else {
-  console.log('Running all tests');
-}
-
 // render all of our tests
 const testsContext = require.context('.', true, /_spec$/);
 testsContext.keys().forEach(function(path) {
   try {
-    if (testFiles.length === 0 || testFiles.some(p => path.includes(p))) {
-      testsContext(path);
-    }
+    testsContext(path);
   } catch (err) {
     console.error('[ERROR] Unable to load spec: ', path);
     describe('Test bundle', function() {

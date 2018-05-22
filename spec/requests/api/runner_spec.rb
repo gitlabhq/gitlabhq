@@ -1,11 +1,13 @@
 require 'spec_helper'
 
-describe API::Runner do
+describe API::Runner, :clean_gitlab_redis_shared_state do
   include StubGitlabCalls
+  include RedisHelpers
 
   let(:registration_token) { 'abcdefg123456' }
 
   before do
+    stub_feature_flags(ci_enable_live_trace: true)
     stub_gitlab_calls
     stub_application_setting(runners_registration_token: registration_token)
     allow_any_instance_of(Ci::Runner).to receive(:cache_attributes)
@@ -39,19 +41,38 @@ describe API::Runner do
           expect(json_response['id']).to eq(runner.id)
           expect(json_response['token']).to eq(runner.token)
           expect(runner.run_untagged).to be true
+          expect(runner.active).to be true
           expect(runner.token).not_to eq(registration_token)
+          expect(runner).to be_instance_type
         end
 
         context 'when project token is used' do
           let(:project) { create(:project) }
 
-          it 'creates runner' do
+          it 'creates project runner' do
             post api('/runners'), token: project.runners_token
 
             expect(response).to have_gitlab_http_status 201
             expect(project.runners.size).to eq(1)
-            expect(Ci::Runner.first.token).not_to eq(registration_token)
-            expect(Ci::Runner.first.token).not_to eq(project.runners_token)
+            runner = Ci::Runner.first
+            expect(runner.token).not_to eq(registration_token)
+            expect(runner.token).not_to eq(project.runners_token)
+            expect(runner).to be_project_type
+          end
+        end
+
+        context 'when group token is used' do
+          let(:group) { create(:group) }
+
+          it 'creates a group runner' do
+            post api('/runners'), token: group.runners_token
+
+            expect(response).to have_http_status 201
+            expect(group.runners.size).to eq(1)
+            runner = Ci::Runner.first
+            expect(runner.token).not_to eq(registration_token)
+            expect(runner.token).not_to eq(group.runners_token)
+            expect(runner).to be_group_type
           end
         end
       end
@@ -106,6 +127,28 @@ describe API::Runner do
 
           expect(response).to have_gitlab_http_status 201
           expect(Ci::Runner.first.locked).to be true
+        end
+      end
+
+      context 'when option for activating a Runner is provided' do
+        context 'when active is set to true' do
+          it 'creates runner' do
+            post api('/runners'), token: registration_token,
+                                  active: true
+
+            expect(response).to have_gitlab_http_status 201
+            expect(Ci::Runner.first.active).to be true
+          end
+        end
+
+        context 'when active is set to false' do
+          it 'creates runner' do
+            post api('/runners'), token: registration_token,
+                                  active: false
+
+            expect(response).to have_gitlab_http_status 201
+            expect(Ci::Runner.first.active).to be false
+          end
         end
       end
 
@@ -864,6 +907,49 @@ describe API::Runner do
             expect(response.status).to eq(403)
           end
         end
+
+        context 'when trace is patched' do
+          before do
+            patch_the_trace
+          end
+
+          it 'has valid trace' do
+            expect(response.status).to eq(202)
+            expect(job.reload.trace.raw).to eq 'BUILD TRACE appended appended'
+          end
+
+          context 'when redis data are flushed' do
+            before do
+              redis_shared_state_cleanup!
+            end
+
+            it 'has empty trace' do
+              expect(job.reload.trace.raw).to eq ''
+            end
+
+            context 'when we perform partial patch' do
+              before do
+                patch_the_trace('hello', headers.merge({ 'Content-Range' => "28-32/5" }))
+              end
+
+              it 'returns an error' do
+                expect(response.status).to eq(416)
+                expect(response.header['Range']).to eq('0-0')
+              end
+            end
+
+            context 'when we resend full trace' do
+              before do
+                patch_the_trace('BUILD TRACE appended appended hello', headers.merge({ 'Content-Range' => "0-34/35" }))
+              end
+
+              it 'succeeds with updating trace' do
+                expect(response.status).to eq(202)
+                expect(job.reload.trace.raw).to eq 'BUILD TRACE appended appended hello'
+              end
+            end
+          end
+        end
       end
 
       context 'when Runner makes a force-patch' do
@@ -880,7 +966,7 @@ describe API::Runner do
       end
 
       context 'when content-range start is too big' do
-        let(:headers_with_range) { headers.merge({ 'Content-Range' => '15-20' }) }
+        let(:headers_with_range) { headers.merge({ 'Content-Range' => '15-20/6' }) }
 
         it 'gets 416 error response with range headers' do
           expect(response.status).to eq 416
@@ -890,7 +976,7 @@ describe API::Runner do
       end
 
       context 'when content-range start is too small' do
-        let(:headers_with_range) { headers.merge({ 'Content-Range' => '8-20' }) }
+        let(:headers_with_range) { headers.merge({ 'Content-Range' => '8-20/13' }) }
 
         it 'gets 416 error response with range headers' do
           expect(response.status).to eq 416
@@ -1330,7 +1416,7 @@ describe API::Runner do
 
               it 'download artifacts' do
                 expect(response).to have_http_status(200)
-                expect(response.headers).to include download_headers
+                expect(response.headers.to_h).to include download_headers
               end
             end
 
@@ -1345,7 +1431,7 @@ describe API::Runner do
 
                 it 'uses workhorse send-url' do
                   expect(response).to have_gitlab_http_status(200)
-                  expect(response.headers).to include(
+                  expect(response.headers.to_h).to include(
                     'Gitlab-Workhorse-Send-Data' => /send-url:/)
                 end
               end

@@ -64,6 +64,13 @@ If you are running GitLab within a Docker container, you can run the backup from
 docker exec -t <container name> gitlab-rake gitlab:backup:create
 ```
 
+If you are using the gitlab-omnibus helm chart on a Kubernetes cluster, you can
+run the backup task on the gitlab application pod using kubectl
+
+```
+kubectl exec -it <gitlab-gitlab pod> gitlab-rake gitlab:backup:create
+```
+
 Example output:
 
 ```
@@ -600,6 +607,34 @@ sudo gitlab-rake gitlab:check SANITIZE=true
 If there is a GitLab version mismatch between your backup tar file and the installed
 version of GitLab, the restore command will abort with an error. Install the
 [correct GitLab version](https://packages.gitlab.com/gitlab/) and try again.
+
+### Restore for Docker image and gitlab-omnibus helm chart
+
+For GitLab installations using docker image or the gitlab-omnibus helm chart on
+a Kubernetes cluster, restore task expects the restore directories to be empty.
+However, with docker and Kubernetes volume mounts, some system level directories
+may be created at the volume roots, like `lost+found` directory found in Linux
+operating systems. These directories are usually owned by `root`, which can
+cause access permission errors since the restore rake task runs as `git` user.
+So, to restore a GitLab installation, users have to confirm the restore target
+directories are empty.
+
+For both these installation types, the backup tarball has to be available in the
+backup location (default location is `/var/opt/gitlab/backups`).
+
+For docker installations, the restore task can be run from host using the
+command
+
+```
+docker exec -it <name of container> gitlab-rake gitlab:backup:restore
+```
+
+Similarly, for gitlab-omnibus helm chart, the restore task can be run on the
+gitlab application pod using kubectl
+
+```
+kubectl exec -it <gitlab-gitlab pod> gitlab-rake gitlab:backup:restore
+```
 
 ## Alternative backup strategies
 

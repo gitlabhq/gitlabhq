@@ -8,8 +8,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     omniauth_flow(Gitlab::Auth::OAuth)
   end
 
-  Gitlab.config.omniauth.providers.each do |provider|
-    alias_method provider['name'], :handle_omniauth
+  AuthHelper.providers_for_base_controller.each do |provider|
+    alias_method provider, :handle_omniauth
   end
 
   # Extend the standard implementation to also increment
@@ -82,7 +82,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       if identity_linker.changed?
         redirect_identity_linked
-      elsif identity_linker.error_message.present?
+      elsif identity_linker.failed?
         redirect_identity_link_failed(identity_linker.error_message)
       else
         redirect_identity_exists

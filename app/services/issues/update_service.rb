@@ -30,7 +30,7 @@ module Issues
 
       if issue.assignees != old_assignees
         create_assignee_note(issue, old_assignees)
-        notification_service.reassigned_issue(issue, current_user, old_assignees)
+        notification_service.async.reassigned_issue(issue, current_user, old_assignees)
         todo_service.reassigned_issue(issue, current_user, old_assignees)
       end
 
@@ -41,13 +41,13 @@ module Issues
       added_labels = issue.labels - old_labels
 
       if added_labels.present?
-        notification_service.relabeled_issue(issue, added_labels, current_user)
+        notification_service.async.relabeled_issue(issue, added_labels, current_user)
       end
 
       added_mentions = issue.mentioned_users - old_mentioned_users
 
       if added_mentions.present?
-        notification_service.new_mentions_in_issue(issue, added_mentions, current_user)
+        notification_service.async.new_mentions_in_issue(issue, added_mentions, current_user)
       end
     end
 

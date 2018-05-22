@@ -3,6 +3,7 @@ import { mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import StageButton from './stage_button.vue';
 import UnstageButton from './unstage_button.vue';
+import { viewerTypes } from '../../constants';
 
 export default {
   components: {
@@ -36,7 +37,7 @@ export default {
       return this.file.tempFile ? `file-addition${prefix}` : `file-modified${prefix}`;
     },
     iconClass() {
-      return `multi-file-${this.file.tempFile ? 'additions' : 'modified'} append-right-8`;
+      return `multi-file-${this.file.tempFile ? 'addition' : 'modified'} append-right-8`;
     },
   },
   methods: {
@@ -53,7 +54,7 @@ export default {
         keyPrefix: this.keyPrefix.toLowerCase(),
       }).then(changeViewer => {
         if (changeViewer) {
-          this.updateViewer('diff');
+          this.updateViewer(viewerTypes.diff);
         }
       });
     },

@@ -24,7 +24,7 @@ Some examples where background migrations can be useful:
 
 * Migrating events from one table to multiple separate tables.
 * Populating one column based on JSON stored in another column.
-* Migrating data that depends on the output of exernal services (e.g. an API).
+* Migrating data that depends on the output of external services (e.g. an API).
 
 ## Isolation
 
@@ -46,7 +46,7 @@ See [Sidekiq best practices guidelines](https://github.com/mperham/sidekiq/wiki/
 for more details.
 
 Make sure that in case that your migration job is going to be retried data
-integrity is guarateed.
+integrity is guaranteed.
 
 ## How It Works
 

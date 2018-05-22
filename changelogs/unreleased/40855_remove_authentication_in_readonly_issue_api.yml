@@ -1,0 +1,5 @@
+---
+title: made listing and showing public issue apis available without authentication
+merge_request: 18638
+author: haseebeqx
+type: changed

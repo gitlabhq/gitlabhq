@@ -68,7 +68,10 @@ eslint-report.html
 /shared/*
 /.gitlab_workhorse_secret
 /webpack-report/
+/knapsack/
+/rspec_flaky/
 /locale/**/LC_MESSAGES
 /locale/**/*.time_stamp
 /.rspec
 /plugins/*
+/.gitlab_pages_secret

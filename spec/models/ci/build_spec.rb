@@ -1270,6 +1270,46 @@ describe Ci::Build do
     end
   end
 
+  describe '#playable?' do
+    context 'when build is a manual action' do
+      context 'when build has been skipped' do
+        subject { build_stubbed(:ci_build, :manual, status: :skipped) }
+
+        it { is_expected.not_to be_playable }
+      end
+
+      context 'when build has been canceled' do
+        subject { build_stubbed(:ci_build, :manual, status: :canceled) }
+
+        it { is_expected.to be_playable }
+      end
+
+      context 'when build is successful' do
+        subject { build_stubbed(:ci_build, :manual, status: :success) }
+
+        it { is_expected.to be_playable }
+      end
+
+      context 'when build has failed' do
+        subject { build_stubbed(:ci_build, :manual, status: :failed) }
+
+        it { is_expected.to be_playable }
+      end
+
+      context 'when build is a manual untriggered action' do
+        subject { build_stubbed(:ci_build, :manual, status: :manual) }
+
+        it { is_expected.to be_playable }
+      end
+    end
+
+    context 'when build is not a manual action' do
+      subject { build_stubbed(:ci_build, :success) }
+
+      it { is_expected.not_to be_playable }
+    end
+  end
+
   describe 'project settings' do
     describe '#allow_git_fetch' do
       it 'return project allow_git_fetch configuration' do
@@ -1518,7 +1558,10 @@ describe Ci::Build do
         { key: 'CI_PROJECT_VISIBILITY', value: 'private', public: true },
         { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
         { key: 'CI_CONFIG_PATH', value: pipeline.ci_yaml_file_path, public: true },
-        { key: 'CI_PIPELINE_SOURCE', value: pipeline.source, public: true }
+        { key: 'CI_PIPELINE_SOURCE', value: pipeline.source, public: true },
+        { key: 'CI_COMMIT_MESSAGE', value: pipeline.git_commit_message, public: true },
+        { key: 'CI_COMMIT_TITLE', value: pipeline.git_commit_title, public: true },
+        { key: 'CI_COMMIT_DESCRIPTION', value: pipeline.git_commit_description, public: true }
       ]
     end
 

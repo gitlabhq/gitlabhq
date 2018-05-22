@@ -163,7 +163,7 @@ Some tickets need specific knowledge or a deep understanding of a particular com
 
 - Aim to have a good understanding of the problems that customers are facing
 - Aim to have gained experience in scheduling and participating in calls with customers
-- Aim to have a good understanding of ticket flow through Zendesk and how to interat with our various channels
+- Aim to have a good understanding of ticket flow through Zendesk and how to interact with our various channels
 
 ### Stage 4
 

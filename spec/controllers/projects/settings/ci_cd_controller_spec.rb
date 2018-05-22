@@ -17,6 +17,23 @@ describe Projects::Settings::CiCdController do
       expect(response).to have_gitlab_http_status(200)
       expect(response).to render_template(:show)
     end
+
+    context 'with group runners' do
+      let(:group_runner) { create(:ci_runner, runner_type: :group_type) }
+      let(:parent_group) { create(:group) }
+      let(:group) { create(:group, runners: [group_runner], parent: parent_group) }
+      let(:other_project) { create(:project, group: group) }
+      let!(:project_runner) { create(:ci_runner, projects: [other_project], runner_type: :project_type) }
+      let!(:shared_runner) { create(:ci_runner, :shared) }
+
+      it 'sets assignable project runners only' do
+        group.add_master(user)
+
+        get :show, namespace_id: project.namespace, project_id: project
+
+        expect(assigns(:assignable_runners)).to contain_exactly(project_runner)
+      end
+    end
   end
 
   describe '#reset_cache' do

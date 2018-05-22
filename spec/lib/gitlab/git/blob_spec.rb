@@ -251,6 +251,26 @@ describe Gitlab::Git::Blob, seed_helper: true do
     end
   end
 
+  describe '.batch_metadata' do
+    let(:blob_references) do
+      [
+        [SeedRepo::Commit::ID, "files/ruby/popen.rb"],
+        [SeedRepo::Commit::ID, 'six']
+      ]
+    end
+
+    subject { described_class.batch_metadata(repository, blob_references) }
+
+    it 'returns an empty data attribute' do
+      first_blob, last_blob = subject
+
+      expect(first_blob.data).to be_blank
+      expect(first_blob.path).to eq("files/ruby/popen.rb")
+      expect(last_blob.data).to be_blank
+      expect(last_blob.path).to eq("six")
+    end
+  end
+
   describe '.batch_lfs_pointers' do
     let(:tree_object) { repository.rugged.rev_parse('master^{tree}') }
 

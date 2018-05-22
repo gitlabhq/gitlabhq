@@ -2,43 +2,71 @@ require 'spec_helper'
 
 describe GroupsFinder do
   describe '#execute' do
-    let(:user)            { create(:user) }
+    let(:user) { create(:user) }
 
-    context 'root level groups' do
-      let!(:private_group)  { create(:group, :private) }
-      let!(:internal_group) { create(:group, :internal) }
-      let!(:public_group)   { create(:group, :public) }
+    describe 'root level groups' do
+      using RSpec::Parameterized::TableSyntax
 
-      context 'without a user' do
-        subject { described_class.new.execute }
+      where(:user_type, :params, :results) do
+        nil | { all_available: true  } | %i(public_group user_public_group)
+        nil | { all_available: false  } | %i(public_group user_public_group)
+        nil | {} | %i(public_group user_public_group)
 
-        it { is_expected.to eq([public_group]) }
+        :regular | { all_available: true  } | %i(public_group internal_group user_public_group user_internal_group
+                                                 user_private_group)
+        :regular | { all_available: false  } | %i(user_public_group user_internal_group user_private_group)
+        :regular | {} | %i(public_group internal_group user_public_group user_internal_group user_private_group)
+
+        :external | { all_available: true  } | %i(public_group user_public_group user_internal_group user_private_group)
+        :external | { all_available: false  } | %i(user_public_group user_internal_group user_private_group)
+        :external | {} | %i(public_group user_public_group user_internal_group user_private_group)
+
+        :admin | { all_available: true  } | %i(public_group internal_group private_group user_public_group
+                                               user_internal_group user_private_group)
+        :admin | { all_available: false  } | %i(user_public_group user_internal_group user_private_group)
+        :admin | {} | %i(public_group internal_group private_group user_public_group user_internal_group
+                         user_private_group)
       end
 
-      context 'with a user' do
-        subject { described_class.new(user).execute }
+      with_them do
+        before do
+          # Fixme: Because of an issue: https://github.com/tomykaira/rspec-parameterized/issues/8#issuecomment-381888428
+          # The groups need to be created here, not with let syntax, and also compared by name and not ids
 
-        context 'normal user' do
-          it { is_expected.to contain_exactly(public_group, internal_group) }
-        end
+          @groups = {
+            private_group: create(:group, :private, name: 'private_group'),
+            internal_group: create(:group, :internal, name: 'internal_group'),
+            public_group: create(:group, :public, name: 'public_group'),
 
-        context 'external user' do
-          let(:user) { create(:user, external: true) }
+            user_private_group: create(:group, :private, name: 'user_private_group'),
+            user_internal_group: create(:group, :internal, name: 'user_internal_group'),
+            user_public_group: create(:group, :public, name: 'user_public_group')
+          }
 
-          it { is_expected.to contain_exactly(public_group) }
-        end
-
-        context 'user is member of the private group' do
-          before do
-            private_group.add_guest(user)
+          if user_type
+            user =
+              case user_type
+              when :regular
+                create(:user)
+              when :external
+                create(:user, external: true)
+              when :admin
+                create(:user, :admin)
+              end
+            @groups.values_at(:user_private_group, :user_internal_group, :user_public_group).each do |group|
+              group.add_developer(user)
+            end
           end
-
-          it { is_expected.to contain_exactly(public_group, internal_group, private_group) }
         end
+
+        subject { described_class.new(User.last, params).execute.to_a }
+
+        it { is_expected.to match_array(@groups.values_at(*results)) }
       end
     end
 
     context 'subgroups', :nested_groups do
+      let(:user) { create(:user) }
       let!(:parent_group) { create(:group, :public) }
       let!(:public_subgroup) { create(:group, :public, parent: parent_group) }
       let!(:internal_subgroup) { create(:group, :internal, parent: parent_group) }

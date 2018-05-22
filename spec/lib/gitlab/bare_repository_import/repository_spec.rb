@@ -67,7 +67,7 @@ describe ::Gitlab::BareRepositoryImport::Repository do
     end
 
     after do
-      gitlab_shell.remove_repository(root_path, hashed_path)
+      gitlab_shell.remove_repository(repository_storage, hashed_path)
     end
 
     subject { described_class.new(root_path, repo_path) }

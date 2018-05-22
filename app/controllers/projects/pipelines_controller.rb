@@ -18,19 +18,12 @@ class Projects::PipelinesController < Projects::ApplicationController
       .page(params[:page])
       .per(30)
 
-    @running_count = PipelinesFinder
-      .new(project, scope: 'running').execute.count
+    @running_count = limited_pipelines_count(project, 'running')
+    @pending_count = limited_pipelines_count(project, 'pending')
+    @finished_count = limited_pipelines_count(project, 'finished')
+    @pipelines_count = limited_pipelines_count(project)
 
-    @pending_count = PipelinesFinder
-      .new(project, scope: 'pending').execute.count
-
-    @finished_count = PipelinesFinder
-      .new(project, scope: 'finished').execute.count
-
-    @pipelines_count = PipelinesFinder
-      .new(project).execute.count
-
-    @pipelines.map(&:commit) # List commits for batch loading
+    Gitlab::Ci::Pipeline::Preloader.preload(@pipelines)
 
     respond_to do |format|
       format.html
@@ -41,7 +34,7 @@ class Projects::PipelinesController < Projects::ApplicationController
           pipelines: PipelineSerializer
             .new(project: @project, current_user: @current_user)
             .with_pagination(request, response)
-            .represent(@pipelines),
+            .represent(@pipelines, disable_coverage: true),
           count: {
             all: @pipelines_count,
             running: @running_count,
@@ -87,7 +80,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def failures
-    if @pipeline.statuses.latest.failed.present?
+    if @pipeline.failed_builds.present?
       render_show
     else
       redirect_to pipeline_path(@pipeline)
@@ -104,9 +97,18 @@ class Projects::PipelinesController < Projects::ApplicationController
     @stage = pipeline.legacy_stage(params[:stage])
     return not_found unless @stage
 
-    respond_to do |format|
-      format.json { render json: { html: view_to_html_string('projects/pipelines/_stage') } }
-    end
+    render json: StageSerializer
+      .new(project: @project, current_user: @current_user)
+      .represent(@stage, details: true)
+  end
+
+  # TODO: This endpoint is used by mini-pipeline-graph
+  # TODO: This endpoint should be migrated to `stage.json`
+  def stage_ajax
+    @stage = pipeline.legacy_stage(params[:stage])
+    return not_found unless @stage
+
+    render json: { html: view_to_html_string('projects/pipelines/_stage') }
   end
 
   def retry
@@ -157,7 +159,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def create_params
-    params.require(:pipeline).permit(:ref)
+    params.require(:pipeline).permit(:ref, variables_attributes: %i[key secret_value])
   end
 
   def pipeline
@@ -171,5 +173,15 @@ class Projects::PipelinesController < Projects::ApplicationController
   def whitelist_query_limiting
     # Also see https://gitlab.com/gitlab-org/gitlab-ce/issues/42343
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42339')
+  end
+
+  def authorize_update_pipeline!
+    return access_denied! unless can?(current_user, :update_pipeline, @pipeline)
+  end
+
+  def limited_pipelines_count(project, scope = nil)
+    finder = PipelinesFinder.new(project, scope: scope)
+
+    view_context.limited_counter_with_delimiter(finder.execute)
   end
 end

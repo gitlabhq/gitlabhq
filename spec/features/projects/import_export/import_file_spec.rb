@@ -46,7 +46,7 @@ feature 'Import/Export - project import integration test', :js do
         expect(project.merge_requests).not_to be_empty
         expect(project_hook_exists?(project)).to be true
         expect(wiki_exists?(project)).to be true
-        expect(project.import_status).to eq('finished')
+        expect(project.import_state.status).to eq('finished')
       end
     end
 

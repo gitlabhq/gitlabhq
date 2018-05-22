@@ -234,59 +234,72 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :tag_names
   end
 
-  shared_examples 'archive check' do |extenstion|
-    it { expect(metadata['ArchivePath']).to match(%r{tmp/gitlab-git-test.git/gitlab-git-test-master-#{SeedRepo::LastCommit::ID}}) }
-    it { expect(metadata['ArchivePath']).to end_with extenstion }
-  end
+  describe '#archive_metadata' do
+    let(:storage_path) { '/tmp' }
+    let(:cache_key) { File.join(repository.gl_repository, SeedRepo::LastCommit::ID) }
 
-  describe '#archive_prefix' do
-    let(:project_name) { 'project-name'}
+    let(:append_sha) { true }
+    let(:ref) { 'master' }
+    let(:format) { nil }
 
-    before do
-      expect(repository).to receive(:name).once.and_return(project_name)
+    let(:expected_extension) { 'tar.gz' }
+    let(:expected_filename) { "#{expected_prefix}.#{expected_extension}" }
+    let(:expected_path) { File.join(storage_path, cache_key, expected_filename) }
+    let(:expected_prefix) { "gitlab-git-test-#{ref}-#{SeedRepo::LastCommit::ID}" }
+
+    subject(:metadata) { repository.archive_metadata(ref, storage_path, format, append_sha: append_sha) }
+
+    it 'sets RepoPath to the repository path' do
+      expect(metadata['RepoPath']).to eq(repository.path)
     end
 
-    it 'returns parameterised string for a ref containing slashes' do
-      prefix = repository.archive_prefix('test/branch', 'SHA', append_sha: nil)
-
-      expect(prefix).to eq("#{project_name}-test-branch-SHA")
+    it 'sets CommitId to the commit SHA' do
+      expect(metadata['CommitId']).to eq(SeedRepo::LastCommit::ID)
     end
 
-    it 'returns correct string for a ref containing dots' do
-      prefix = repository.archive_prefix('test.branch', 'SHA', append_sha: nil)
-
-      expect(prefix).to eq("#{project_name}-test.branch-SHA")
+    it 'sets ArchivePrefix to the expected prefix' do
+      expect(metadata['ArchivePrefix']).to eq(expected_prefix)
     end
 
-    it 'returns string with sha when append_sha is false' do
-      prefix = repository.archive_prefix('test.branch', 'SHA', append_sha: false)
+    it 'sets ArchivePath to the expected globally-unique path' do
+      # This is really important from a security perspective. Think carefully
+      # before changing it: https://gitlab.com/gitlab-org/gitlab-ce/issues/45689
+      expect(expected_path).to include(File.join(repository.gl_repository, SeedRepo::LastCommit::ID))
 
-      expect(prefix).to eq("#{project_name}-test.branch")
+      expect(metadata['ArchivePath']).to eq(expected_path)
     end
-  end
 
-  describe '#archive' do
-    let(:metadata) { repository.archive_metadata('master', '/tmp', append_sha: true) }
+    context 'append_sha varies archive path and filename' do
+      where(:append_sha, :ref, :expected_prefix) do
+        sha = SeedRepo::LastCommit::ID
 
-    it_should_behave_like 'archive check', '.tar.gz'
-  end
+        true  | 'master' | "gitlab-git-test-master-#{sha}"
+        true  | sha      | "gitlab-git-test-#{sha}-#{sha}"
+        false | 'master' | "gitlab-git-test-master"
+        false | sha      | "gitlab-git-test-#{sha}"
+        nil   | 'master' | "gitlab-git-test-master-#{sha}"
+        nil   | sha      | "gitlab-git-test-#{sha}"
+      end
 
-  describe '#archive_zip' do
-    let(:metadata) { repository.archive_metadata('master', '/tmp', 'zip', append_sha: true) }
+      with_them do
+        it { expect(metadata['ArchivePrefix']).to eq(expected_prefix) }
+        it { expect(metadata['ArchivePath']).to eq(expected_path) }
+      end
+    end
 
-    it_should_behave_like 'archive check', '.zip'
-  end
+    context 'format varies archive path and filename' do
+      where(:format, :expected_extension) do
+        nil      | 'tar.gz'
+        'madeup' | 'tar.gz'
+        'tbz2'   | 'tar.bz2'
+        'zip'    | 'zip'
+      end
 
-  describe '#archive_bz2' do
-    let(:metadata) { repository.archive_metadata('master', '/tmp', 'tbz2', append_sha: true) }
-
-    it_should_behave_like 'archive check', '.tar.bz2'
-  end
-
-  describe '#archive_fallback' do
-    let(:metadata) { repository.archive_metadata('master', '/tmp', 'madeup', append_sha: true) }
-
-    it_should_behave_like 'archive check', '.tar.gz'
+      with_them do
+        it { expect(metadata['ArchivePrefix']).to eq(expected_prefix) }
+        it { expect(metadata['ArchivePath']).to eq(expected_path) }
+      end
+    end
   end
 
   describe '#size' do
@@ -602,32 +615,22 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#branch_names_contains_sha' do
-    shared_examples 'returning the right branches' do
-      let(:head_id) { repository.rugged.head.target.oid }
-      let(:new_branch) { head_id }
-      let(:utf8_branch) { 'branch-é' }
+    let(:head_id) { repository.rugged.head.target.oid }
+    let(:new_branch) { head_id }
+    let(:utf8_branch) { 'branch-é' }
 
-      before do
-        repository.create_branch(new_branch, 'master')
-        repository.create_branch(utf8_branch, 'master')
-      end
-
-      after do
-        repository.delete_branch(new_branch)
-        repository.delete_branch(utf8_branch)
-      end
-
-      it 'displays that branch' do
-        expect(repository.branch_names_contains_sha(head_id)).to include('master', new_branch, utf8_branch)
-      end
+    before do
+      repository.create_branch(new_branch, 'master')
+      repository.create_branch(utf8_branch, 'master')
     end
 
-    context 'when Gitaly is enabled' do
-      it_behaves_like 'returning the right branches'
+    after do
+      repository.delete_branch(new_branch)
+      repository.delete_branch(utf8_branch)
     end
 
-    context 'when Gitaly is disabled', :disable_gitaly do
-      it_behaves_like 'returning the right branches'
+    it 'displays that branch' do
+      expect(repository.branch_names_contains_sha(head_id)).to include('master', new_branch, utf8_branch)
     end
   end
 
@@ -689,7 +692,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     after do
-      Gitlab::Shell.new.remove_repository(storage_path, 'my_project')
+      Gitlab::Shell.new.remove_repository('default', 'my_project')
     end
 
     shared_examples 'repository mirror fecthing' do
@@ -1055,40 +1058,50 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#raw_changes_between' do
-    let(:old_rev) { }
-    let(:new_rev) { }
-    let(:changes) { repository.raw_changes_between(old_rev, new_rev) }
+    shared_examples 'raw changes' do
+      let(:old_rev) { }
+      let(:new_rev) { }
+      let(:changes) { repository.raw_changes_between(old_rev, new_rev) }
 
-    context 'initial commit' do
-      let(:old_rev) { Gitlab::Git::BLANK_SHA }
-      let(:new_rev) { '1a0b36b3cdad1d2ee32457c102a8c0b7056fa863' }
+      context 'initial commit' do
+        let(:old_rev) { Gitlab::Git::BLANK_SHA }
+        let(:new_rev) { '1a0b36b3cdad1d2ee32457c102a8c0b7056fa863' }
 
-      it 'returns the changes' do
-        expect(changes).to be_present
-        expect(changes.size).to eq(3)
+        it 'returns the changes' do
+          expect(changes).to be_present
+          expect(changes.size).to eq(3)
+        end
+      end
+
+      context 'with an invalid rev' do
+        let(:old_rev) { 'foo' }
+        let(:new_rev) { 'bar' }
+
+        it 'returns an error' do
+          expect { changes }.to raise_error(Gitlab::Git::Repository::GitError)
+        end
+      end
+
+      context 'with valid revs' do
+        let(:old_rev) { 'fa1b1e6c004a68b7d8763b86455da9e6b23e36d6' }
+        let(:new_rev) { '4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6' }
+
+        it 'returns the changes' do
+          expect(changes.size).to eq(9)
+          expect(changes.first.operation).to eq(:modified)
+          expect(changes.first.new_path).to eq('.gitmodules')
+          expect(changes.last.operation).to eq(:added)
+          expect(changes.last.new_path).to eq('files/lfs/picture-invalid.png')
+        end
       end
     end
 
-    context 'with an invalid rev' do
-      let(:old_rev) { 'foo' }
-      let(:new_rev) { 'bar' }
-
-      it 'returns an error' do
-        expect { changes }.to raise_error(Gitlab::Git::Repository::GitError)
-      end
+    context 'when gitaly is enabled' do
+      it_behaves_like 'raw changes'
     end
 
-    context 'with valid revs' do
-      let(:old_rev) { 'fa1b1e6c004a68b7d8763b86455da9e6b23e36d6' }
-      let(:new_rev) { '4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6' }
-
-      it 'returns the changes' do
-        expect(changes.size).to eq(9)
-        expect(changes.first.operation).to eq(:modified)
-        expect(changes.first.new_path).to eq('.gitmodules')
-        expect(changes.last.operation).to eq(:added)
-        expect(changes.last.new_path).to eq('files/lfs/picture-invalid.png')
-      end
+    context 'when gitaly is disabled', :disable_gitaly do
+      it_behaves_like 'raw changes'
     end
   end
 
@@ -2252,7 +2265,22 @@ describe Gitlab::Git::Repository, seed_helper: true do
         expect(empty_repo.checksum).to eq '0000000000000000000000000000000000000000'
       end
 
-      it 'raises a no repository exception when there is no repo' do
+      it 'raises Gitlab::Git::Repository::InvalidRepository error for non-valid git repo' do
+        FileUtils.rm_rf(File.join(storage_path, 'non-valid.git'))
+
+        system(git_env, *%W(#{Gitlab.config.git.bin_path} clone --bare #{TEST_REPO_PATH} non-valid.git),
+               chdir: SEED_STORAGE_PATH,
+               out: '/dev/null',
+               err: '/dev/null')
+
+        File.truncate(File.join(storage_path, 'non-valid.git/HEAD'), 0)
+
+        non_valid = described_class.new('default', 'non-valid.git', '')
+
+        expect { non_valid.checksum }.to raise_error(Gitlab::Git::Repository::InvalidRepository)
+      end
+
+      it 'raises Gitlab::Git::Repository::NoRepository error when there is no repo' do
         broken_repo = described_class.new('default', 'a/path.git', '')
 
         expect { broken_repo.checksum }.to raise_error(Gitlab::Git::Repository::NoRepository)

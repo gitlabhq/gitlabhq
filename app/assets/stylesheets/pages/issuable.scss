@@ -197,9 +197,21 @@
     }
 
     &.assignee {
-      .author_link:hover {
-        .author {
-          text-decoration: underline;
+      .author_link {
+        display: block;
+        padding-left: 42px;
+        position: relative;
+
+        &:hover {
+          .author {
+            text-decoration: underline;
+          }
+        }
+
+        .avatar {
+          left: 0;
+          position: absolute;
+          top: 0;
         }
       }
     }

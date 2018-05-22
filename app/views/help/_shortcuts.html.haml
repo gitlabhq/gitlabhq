@@ -1,5 +1,5 @@
 #modal-shortcuts.modal{ tabindex: -1 }
-  .modal-dialog
+  .modal-dialog.modal-lg
     .modal-content
       .modal-header
         %a.close{ href: "#", "data-dismiss" => "modal" } ×
@@ -121,7 +121,7 @@
                 %tr
                   %td.shortcut
                     .key g
-                    .key e
+                    .key v
                   %td
                     Go to the project's activity feed
                 %tr
@@ -172,6 +172,18 @@
                     .key m
                   %td
                     Go to merge requests
+                %tr
+                  %td.shortcut
+                    .key g
+                    .key e
+                  %td
+                    Go to environments
+                %tr
+                  %td.shortcut
+                    .key g
+                    .key k
+                  %td
+                    Go to kubernetes
                 %tr
                   %td.shortcut
                     .key g

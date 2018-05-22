@@ -6,6 +6,14 @@ import mountComponent from 'spec/helpers/vue_mount_component_helper';
 describe('MRWidgetMerged', () => {
   let vm;
   const targetBranch = 'foo';
+  const selectors = {
+    get copyMergeShaButton() {
+      return vm.$el.querySelector('button.js-mr-merged-copy-sha');
+    },
+    get mergeCommitShaLink() {
+      return vm.$el.querySelector('a.js-mr-merged-commit-sha');
+    },
+  };
 
   beforeEach(() => {
     const Component = Vue.extend(mergedComponent);
@@ -31,6 +39,9 @@ describe('MRWidgetMerged', () => {
         readableClosedAt: '',
       },
       updatedAt: 'mergedUpdatedAt',
+      shortMergeCommitSha: 'asdf1234',
+      mergeCommitPath: 'http://localhost:3000/root/nautilus/commit/f7ce827c314c9340b075657fd61c789fb01cf74d',
+      sourceBranch: 'bar',
       targetBranch,
     };
 
@@ -138,6 +149,17 @@ describe('MRWidgetMerged', () => {
   it('shows revert and cherry-pick buttons', () => {
     expect(vm.$el.textContent).toContain('Revert');
     expect(vm.$el.textContent).toContain('Cherry-pick');
+  });
+
+  it('shows button to copy commit SHA to clipboard', () => {
+    expect(selectors.copyMergeShaButton).toExist();
+    expect(selectors.copyMergeShaButton.getAttribute('data-clipboard-text')).toBe(vm.mr.shortMergeCommitSha);
+  });
+
+  it('shows merge commit SHA link', () => {
+    expect(selectors.mergeCommitShaLink).toExist();
+    expect(selectors.mergeCommitShaLink.text).toContain(vm.mr.shortMergeCommitSha);
+    expect(selectors.mergeCommitShaLink.href).toBe(vm.mr.mergeCommitPath);
   });
 
   it('should not show source branch removed text', (done) => {

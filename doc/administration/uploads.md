@@ -104,7 +104,7 @@ _The uploads are stored by default in
     ```
 
 >**Note:**
-If you are using AWS IAM profiles, be sure to omit the AWS access key and secret acces key/value pairs.
+If you are using AWS IAM profiles, be sure to omit the AWS access key and secret access key/value pairs.
 
     ```ruby
     gitlab_rails['uploads_object_store_connection'] = {

@@ -12,8 +12,8 @@ describe MailScheduler::IssueDueWorker do
       create(:issue, :opened, project: project, due_date: 2.days.from_now) # due on another day
       create(:issue, :opened, due_date: Date.tomorrow) # different project
 
-      expect_any_instance_of(NotificationService).to receive(:issue_due).with(issue1)
-      expect_any_instance_of(NotificationService).to receive(:issue_due).with(issue2)
+      expect(worker.notification_service).to receive(:issue_due).with(issue1)
+      expect(worker.notification_service).to receive(:issue_due).with(issue2)
 
       worker.perform(project.id)
     end

@@ -21,6 +21,7 @@ FactoryBot.define do
     pipeline factory: :ci_empty_pipeline
 
     name 'test'
+    position 1
     status 'pending'
   end
 end

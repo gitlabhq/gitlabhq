@@ -2,11 +2,13 @@ require 'spec_helper'
 
 module Ci
   describe RegisterJobService do
-    let!(:project) { FactoryBot.create :project, shared_runners_enabled: false }
-    let!(:pipeline) { FactoryBot.create :ci_pipeline, project: project }
-    let!(:pending_job) { FactoryBot.create :ci_build, pipeline: pipeline }
-    let!(:shared_runner) { FactoryBot.create(:ci_runner, is_shared: true) }
-    let!(:specific_runner) { FactoryBot.create(:ci_runner, is_shared: false) }
+    set(:group) { create(:group) }
+    set(:project) { create(:project, group: group, shared_runners_enabled: false, group_runners_enabled: false) }
+    set(:pipeline) { create(:ci_pipeline, project: project) }
+    let!(:shared_runner) { create(:ci_runner, is_shared: true) }
+    let!(:specific_runner) { create(:ci_runner, is_shared: false) }
+    let!(:group_runner) { create(:ci_runner, groups: [group], runner_type: :group_type) }
+    let!(:pending_job) { create(:ci_build, pipeline: pipeline) }
 
     before do
       specific_runner.assign_to(project)
@@ -150,7 +152,7 @@ module Ci
 
       context 'disallow when builds are disabled' do
         before do
-          project.update(shared_runners_enabled: true)
+          project.update(shared_runners_enabled: true, group_runners_enabled: true)
           project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
         end
 
@@ -160,8 +162,85 @@ module Ci
           it { expect(build).to be_nil }
         end
 
-        context 'and uses specific runner' do
+        context 'and uses group runner' do
+          let(:build) { execute(group_runner) }
+
+          it { expect(build).to be_nil }
+        end
+
+        context 'and uses project runner' do
           let(:build) { execute(specific_runner) }
+
+          it { expect(build).to be_nil }
+        end
+      end
+
+      context 'allow group runners' do
+        before do
+          project.update!(group_runners_enabled: true)
+        end
+
+        context 'for multiple builds' do
+          let!(:project2) { create :project, group_runners_enabled: true, group: group }
+          let!(:pipeline2) { create :ci_pipeline, project: project2 }
+          let!(:project3) { create :project, group_runners_enabled: true, group: group }
+          let!(:pipeline3) { create :ci_pipeline, project: project3 }
+
+          let!(:build1_project1) { pending_job }
+          let!(:build2_project1) { create :ci_build, pipeline: pipeline }
+          let!(:build3_project1) { create :ci_build, pipeline: pipeline }
+          let!(:build1_project2) { create :ci_build, pipeline: pipeline2 }
+          let!(:build2_project2) { create :ci_build, pipeline: pipeline2 }
+          let!(:build1_project3) { create :ci_build, pipeline: pipeline3 }
+
+          # these shouldn't influence the scheduling
+          let!(:unrelated_group) { create :group }
+          let!(:unrelated_project) { create :project, group_runners_enabled: true, group: unrelated_group }
+          let!(:unrelated_pipeline) { create :ci_pipeline, project: unrelated_project }
+          let!(:build1_unrelated_project) { create :ci_build, pipeline: unrelated_pipeline }
+          let!(:unrelated_group_runner) { create :ci_runner, groups: [unrelated_group] }
+
+          it 'does not consider builds from other group runners' do
+            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 6
+            execute(group_runner)
+
+            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 5
+            execute(group_runner)
+
+            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 4
+            execute(group_runner)
+
+            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 3
+            execute(group_runner)
+
+            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 2
+            execute(group_runner)
+
+            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 1
+            execute(group_runner)
+
+            expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 0
+            expect(execute(group_runner)).to be_nil
+          end
+        end
+
+        context 'group runner' do
+          let(:build) { execute(group_runner) }
+
+          it { expect(build).to be_kind_of(Build) }
+          it { expect(build).to be_valid }
+          it { expect(build).to be_running }
+          it { expect(build.runner).to eq(group_runner) }
+        end
+      end
+
+      context 'disallow group runners' do
+        before do
+          project.update!(group_runners_enabled: false)
+        end
+
+        context 'group runner' do
+          let(:build) { execute(group_runner) }
 
           it { expect(build).to be_nil }
         end
@@ -178,7 +257,7 @@ module Ci
           let!(:other_build) { create :ci_build, pipeline: pipeline }
 
           before do
-            allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_specific_runner)
+            allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_project_runner)
               .and_return(Ci::Build.where(id: [pending_job, other_build]))
           end
 
@@ -190,7 +269,7 @@ module Ci
 
         context 'when single build is in queue' do
           before do
-            allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_specific_runner)
+            allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_project_runner)
               .and_return(Ci::Build.where(id: pending_job))
           end
 
@@ -201,7 +280,7 @@ module Ci
 
         context 'when there is no build in queue' do
           before do
-            allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_specific_runner)
+            allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_project_runner)
               .and_return(Ci::Build.none)
           end
 

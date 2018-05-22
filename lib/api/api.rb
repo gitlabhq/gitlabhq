@@ -8,14 +8,15 @@ module API
     PROJECT_ENDPOINT_REQUIREMENTS = { id: NO_SLASH_URL_PART_REGEX }.freeze
     COMMIT_ENDPOINT_REQUIREMENTS = PROJECT_ENDPOINT_REQUIREMENTS.merge(sha: NO_SLASH_URL_PART_REGEX).freeze
 
-    use GrapeLogging::Middleware::RequestLogger,
-        logger: Logger.new(LOG_FILENAME),
-        formatter: Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp.new,
-        include: [
-          GrapeLogging::Loggers::FilterParameters.new,
-          GrapeLogging::Loggers::ClientEnv.new,
-          Gitlab::GrapeLogging::Loggers::UserLogger.new
-        ]
+    insert_before Grape::Middleware::Error,
+                  GrapeLogging::Middleware::RequestLogger,
+                  logger: Logger.new(LOG_FILENAME),
+                  formatter: Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp.new,
+                  include: [
+                    GrapeLogging::Loggers::FilterParameters.new,
+                    GrapeLogging::Loggers::ClientEnv.new,
+                    Gitlab::GrapeLogging::Loggers::UserLogger.new
+                  ]
 
     allow_access_with_scope :api
     prefix :api
@@ -139,6 +140,7 @@ module API
     mount ::API::Keys
     mount ::API::Labels
     mount ::API::Lint
+    mount ::API::Markdown
     mount ::API::Members
     mount ::API::MergeRequestDiffs
     mount ::API::MergeRequests
