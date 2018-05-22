@@ -333,6 +333,10 @@
   &.invalid {
     @include status-color($gray-dark, $gray, $gray-darkest);
     border-color: $gray-darkest;
+
+    &:not(span):hover {
+      color: $gray;
+    }
   }
 }
 
