@@ -60,7 +60,7 @@ export default {
       const failedClass = `${defaultClass} btn-danger`;
       const inActionClass = `${defaultClass} btn-info`;
 
-      if (this.status === 'failed' && this.mr.isPipelineActive) {
+      if (this.status === 'failed') {
         return failedClass;
       } else if (this.status === 'pending') {
         return inActionClass;
@@ -69,10 +69,8 @@ export default {
       return defaultClass;
     },
     iconClass() {
-      if (this.status === 'failed' && this.mr.isPipelineActive ||
-        !this.commitMessage.length ||
-        !this.mr.isMergeAllowed ||
-        this.mr.preventMerge) {
+      if (this.status === 'failed' || !this.commitMessage.length ||
+        !this.mr.isMergeAllowed || this.mr.preventMerge) {
         return 'warning';
       }
       return 'success';

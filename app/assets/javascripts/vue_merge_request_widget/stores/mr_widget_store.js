@@ -86,18 +86,14 @@ export default class MergeRequestStore {
 
     // CI related
     this.ciEnvironmentsStatusPath = data.ci_environments_status_path;
-    this.hasCI = data.has_ci;
+    this.hasCI = data.has_ci && data.builds_enabled;
+    // this.isPipelineFeatureEnabled = data.builds_enabled;
     this.ciStatus = data.ci_status;
     this.isPipelineFailed = this.ciStatus === 'failed' || this.ciStatus === 'canceled';
     this.isPipelinePassing = this.ciStatus === 'success' || this.ciStatus === 'success_with_warnings';
     this.isPipelineSkipped = this.ciStatus === 'skipped';
     this.pipelineDetailedStatus = pipelineStatus;
-    this.isPipelineFeatureEnabled = data.builds_enabled;
-    if (this.isPipelineFeatureEnabled) {
-      this.isPipelineActive = data.pipeline ? data.pipeline.active : false;
-    } else {
-      this.isPipelineActive = false;
-    }
+    this.isPipelineActive = data.pipeline ? data.pipeline.active : false;
     this.isPipelineBlocked = pipelineStatus ? pipelineStatus.group === 'manual' : false;
     this.ciStatusFaviconPath = pipelineStatus ? pipelineStatus.favicon : null;
 
