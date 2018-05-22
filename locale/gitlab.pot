@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-16 14:41+0200\n"
-"PO-Revision-Date: 2018-05-16 14:41+0200\n"
+"POT-Creation-Date: 2018-05-22 07:03+0000\n"
+"PO-Revision-Date: 2018-05-22 07:03+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -1668,7 +1668,7 @@ msgstr ""
 msgid "ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images."
 msgstr ""
 
-msgid "ContainerRegistry|You can also %{deploy_token} for read-only access to the registry images."
+msgid "ContainerRegistry|You can also use a %{deploy_token} for read-only access to the registry images."
 msgstr ""
 
 msgid "Continuous Integration and Deployment"
@@ -2154,6 +2154,9 @@ msgid "Enable the Performance Bar for a given group."
 msgstr ""
 
 msgid "Enabled"
+msgstr ""
+
+msgid "Ends at (UTC)"
 msgstr ""
 
 msgid "Environments"
@@ -4693,6 +4696,9 @@ msgstr ""
 msgid "Started"
 msgstr ""
 
+msgid "Starts at (UTC)"
+msgstr ""
+
 msgid "State your message to activate"
 msgstr ""
 
@@ -5255,6 +5261,9 @@ msgid "Todo"
 msgstr ""
 
 msgid "Toggle Sidebar"
+msgstr ""
+
+msgid "Toggle discussion"
 msgstr ""
 
 msgid "Toggle sidebar"
@@ -5994,9 +6003,6 @@ msgid "mrWidget|Allows edits from maintainers"
 msgstr ""
 
 msgid "mrWidget|An error occured while removing your approval."
-msgstr ""
-
-msgid "mrWidget|An error occured while retrieving approval data for this merge request."
 msgstr ""
 
 msgid "mrWidget|An error occured while submitting your approval."
