@@ -1,13 +1,13 @@
 <script>
   import Flash from '../../../flash';
   import statusIcon from '../mr_widget_status_icon.vue';
-  import mrWidgetAuthor from '../../components/mr_widget_author.vue';
+  import MrWidgetAuthor from '../../components/mr_widget_author.vue';
   import eventHub from '../../event_hub';
 
   export default {
     name: 'MRWidgetMergeWhenPipelineSucceeds',
     components: {
-      mrWidgetAuthor,
+      MrWidgetAuthor,
       statusIcon,
     },
     props: {
