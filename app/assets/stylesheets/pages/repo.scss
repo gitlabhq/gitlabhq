@@ -398,14 +398,7 @@
   }
 
   svg {
-    vertical-align: middle;
-  }
-}
-
-.ide-status-pipeline {
-  .ci-status-icon {
-    position: relative;
-    top: -2px;
+    vertical-align: sub;
   }
 }
 
