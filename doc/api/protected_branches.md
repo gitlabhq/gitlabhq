@@ -131,7 +131,7 @@ Example response:
       "access_level": 30,
       "user_id": null,
       "group_id": null,
-      "access_level_description": "Developers + Masters"
+      "access_level_description": "Developers + Maintainers"
     }
   ],
   "merge_access_levels": [
@@ -139,7 +139,7 @@ Example response:
       "access_level": 30,
       "user_id": null,
       "group_id": null,
-      "access_level_description": "Developers + Masters"
+      "access_level_description": "Developers + Maintainers"
   ],
   "unprotect_access_levels": [
     {
