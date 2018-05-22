@@ -22,7 +22,6 @@
   height: calc(100vh - #{$header-height});
   margin-top: 0;
   border-top: 1px solid $white-dark;
-  border-bottom: 1px solid $white-dark;
   padding-bottom: $ide-statusbar-height;
 
   &.is-collapsed {
@@ -380,7 +379,7 @@
 
 .ide-status-bar {
   border-top: 1px solid $white-dark;
-  padding: $gl-bar-padding $gl-padding-8;
+  padding: 2px $gl-padding-8 0;
   background: $white-light;
   display: flex;
   justify-content: space-between;
@@ -391,12 +390,22 @@
   left: 0;
   width: 100%;
 
+  font-size: 12px;
+  line-height: 22px;
+
   > div + div {
     padding-left: $gl-padding;
   }
 
   svg {
     vertical-align: middle;
+  }
+}
+
+.ide-status-pipeline {
+  .ci-status-icon {
+    position: relative;
+    top: -2px;
   }
 }
 
