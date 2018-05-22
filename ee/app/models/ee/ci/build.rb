@@ -23,7 +23,7 @@ module EE
         scope :sast, -> { where(name: 'sast') }
         scope :dependency_scanning, -> { where(name: 'dependency_scanning') }
         scope :license_management, -> { where(name: 'license_management') }
-        scope :sast_container, -> { where(name: 'container_scanning') }
+        scope :sast_container, -> { where(name: %w[sast:container container_scanning]) }
         scope :dast, -> { where(name: 'dast') }
 
         after_save :stick_build_if_status_changed

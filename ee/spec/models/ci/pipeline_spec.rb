@@ -24,7 +24,7 @@ describe Ci::Pipeline do
     dependency_scanning_artifact: [Ci::Build::DEPENDENCY_SCANNING_FILE, 'dependency_scanning'],
     license_management_artifact: [Ci::Build::LICENSE_MANAGEMENT_FILE, 'license_management'],
     # sast_container_artifact is deprecated and replaced with container_scanning_artifact (#5778)
-    sast_container_artifact: [Ci::Build::SAST_CONTAINER_FILE, 'container_scanning'],
+    sast_container_artifact: [Ci::Build::SAST_CONTAINER_FILE, 'sast:container'],
     container_scanning_artifact: [Ci::Build::CONTAINER_SCANNING_FILE, 'container_scanning'],
     dast_artifact: [Ci::Build::DAST_FILE, 'dast']
   }.freeze
@@ -61,7 +61,7 @@ describe Ci::Pipeline do
     end
   end
 
-  %w(sast dast performance sast_container).each do |type|
+  %w(sast dast performance sast_container container_scanning).each do |type|
     method = "has_#{type}_data?"
 
     describe "##{method}" do
@@ -75,7 +75,7 @@ describe Ci::Pipeline do
     end
   end
 
-  %w(sast dast performance sast_container).each do |type|
+  %w(sast dast performance sast_container container_scanning).each do |type|
     method = "expose_#{type}_data?"
 
     describe "##{method}" do

@@ -2,4 +2,4 @@
 title: Rename Container Scanning job and artifact
 merge_request: 5770
 author:
-type: changed
+type: deprecated
