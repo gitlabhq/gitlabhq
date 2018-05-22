@@ -30,7 +30,10 @@ export default {
     ...mapState({
       diffLineCommentForms: state => state.diffs.diffLineCommentForms,
     }),
-    ...mapGetters(['discussionsByLineCode', 'isLoggedIn']),
+    ...mapGetters(['discussionsByLineCode', 'isLoggedIn', 'commit']),
+    commitId() {
+      return this.commit && this.commit.id;
+    },
     userColorScheme() {
       return window.gon.user_color_scheme;
     },

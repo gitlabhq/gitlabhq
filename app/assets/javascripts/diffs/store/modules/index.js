@@ -13,6 +13,7 @@ export default {
   state: {
     isLoading: true,
     endpoint: '',
+    commit: null,
     diffFiles: [],
     mergeRequestDiffs: [],
     diffLineCommentForms: {},

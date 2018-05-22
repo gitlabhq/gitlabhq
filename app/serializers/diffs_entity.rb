@@ -29,6 +29,12 @@ class DiffsEntity < Grape::Entity
     options[:latest_diff]
   end
 
+  expose :latest_version_path do |diffs|
+    merge_request = options[:merge_request]
+
+    diffs_project_merge_request_path(merge_request&.project, merge_request)
+  end
+
   expose :added_lines do |diffs|
     diffs.diff_files.sum(&:added_lines)
   end

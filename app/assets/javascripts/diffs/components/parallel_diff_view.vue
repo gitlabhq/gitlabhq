@@ -96,6 +96,7 @@ export default {
 <template>
   <div
     :class="userColorScheme"
+    :data-commit-id="commitId"
     class="code diff-wrap-lines js-syntax-highlight text-file">
     <table>
       <tbody>

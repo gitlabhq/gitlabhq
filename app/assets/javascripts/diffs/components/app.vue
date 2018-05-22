@@ -47,6 +47,7 @@ export default {
       diffViewType: state => state.diffs.diffViewType,
       mergeRequestDiffs: state => state.diffs.mergeRequestDiffs,
       mergeRequestDiff: state => state.diffs.mergeRequestDiff,
+      latestVersionPath: state => state.diffs.latestVersionPath,
       startVersion: state => state.diffs.startVersion,
       commit: state => state.diffs.commit,
       targetBranchName: state => state.diffs.targetBranchName,
@@ -81,9 +82,6 @@ export default {
         return __('Show latest version of the diff');
       }
       return __('Show latest version');
-    },
-    latestDiffHref() {
-      return this.mergeRequestDiffs[0].path;
     },
   },
   watch: {
@@ -161,7 +159,7 @@ export default {
           {{ notAllCommentsDisplayed }}
           <div class="pull-right">
             <a
-              :href="latestDiffHref"
+              :href="latestVersionPath"
               class="btn btn-sm"
             >
               {{ showLatestVersion }}
@@ -170,14 +168,15 @@ export default {
         </div>
       </div>
 
+      <changed-files
+        :diff-files="diffFiles"
+        :active-file="activeFile"
+      />
+
       <div
         v-if="diffFiles.length > 0"
         class="files"
       >
-        <changed-files
-          :diff-files="diffFiles"
-          :active-file="activeFile"
-        />
         <diff-file
           v-for="file in diffFiles"
           :key="file.newPath"
