@@ -297,7 +297,11 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
+<<<<<<< HEAD
   gem 'prometheus-client-mmap', '~> 0.9.1'
+=======
+  gem 'prometheus-client-mmap', '~> 0.9.3'
+>>>>>>> b884cfc6c2... Merge branch 'sh-bump-prometheus-client-mmap' into 'master'
   gem 'raindrops', '~> 0.18'
 end
 
