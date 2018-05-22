@@ -115,13 +115,13 @@ Example response:
   "push_access_levels": [
     {
       "access_level": 30,
-      "access_level_description": "Developers + Masters"
+      "access_level_description": "Developers + Maintainers"
     }
   ],
   "merge_access_levels": [
     {
       "access_level": 30,
-      "access_level_description": "Developers + Masters"
+      "access_level_description": "Developers + Maintainers"
     }
   ]
 }

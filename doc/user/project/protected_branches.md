@@ -50,14 +50,14 @@ allow/prohibit Masters and/or Developers to push to a protected branch.
 Using the "Allowed to push" and "Allowed to merge" settings, you can control
 the actions that different roles can perform with the protected branch.
 For example, you could set "Allowed to push" to "No one", and "Allowed to merge"
-to "Developers + Masters", to require _everyone_ to submit a merge request for
+to "Developers + Maintainers", to require _everyone_ to submit a merge request for
 changes going into the protected branch. This is compatible with workflows like
 the [GitLab workflow](../../workflow/gitlab_flow.md).
 
 However, there are workflows where that is not needed, and only protecting from
 force pushes and branch removal is useful. For those workflows, you can allow
 everyone with write access to push to a protected branch by setting
-"Allowed to push" to "Developers + Masters".
+"Allowed to push" to "Developers + Maintainers".
 
 You can set the "Allowed to push" and "Allowed to merge" options while creating
 a protected branch or afterwards by selecting the option you want from the
