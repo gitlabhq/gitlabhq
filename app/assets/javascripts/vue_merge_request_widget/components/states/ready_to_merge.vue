@@ -69,8 +69,7 @@ export default {
       return defaultClass;
     },
     iconClass() {
-      if (this.status === 'failed' || !this.commitMessage.length ||
-        !this.mr.isMergeAllowed || this.mr.preventMerge) {
+      if (this.status === 'failed' || !this.commitMessage.length || !this.mr.isMergeAllowed || this.mr.preventMerge) {
         return 'warning';
       }
       return 'success';
