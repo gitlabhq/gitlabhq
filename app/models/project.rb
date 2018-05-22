@@ -1443,7 +1443,9 @@ class Project < ActiveRecord::Base
   end
 
   def any_runners?(&block)
-    all_runners.active.any?(&block)
+    @active_runners ||= all_runners.active
+
+    @active_runners.any?(&block)
   end
 
   def valid_runners_token?(token)
