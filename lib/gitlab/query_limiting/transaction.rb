@@ -47,8 +47,6 @@ module Gitlab
 
       # Sends a notification based on the number of executed SQL queries.
       def act_upon_results
-        puts "XXXX\n\n\n\n\n #{count} \n\n\nXXXX"
-
         return unless threshold_exceeded?
 
         error = ThresholdExceededError.new(error_message)
