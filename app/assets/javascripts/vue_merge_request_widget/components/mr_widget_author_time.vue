@@ -1,10 +1,10 @@
 <script>
-  import mrWidgetAuthor from './mr_widget_author.vue';
+  import MrWidgetAuthor from './mr_widget_author.vue';
 
   export default {
     name: 'MRWidgetAuthorTime',
     components: {
-      mrWidgetAuthor,
+      MrWidgetAuthor,
     },
     props: {
       actionText: {

@@ -174,6 +174,9 @@ gem 'httparty', '~> 0.13.3'
 # Colored output to console
 gem 'rainbow', '~> 2.2'
 
+# Progress bar
+gem 'ruby-progressbar'
+
 # GitLab settings
 gem 'settingslogic', '~> 2.0.9'
 
@@ -293,7 +296,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~> 0.9.2'
+  gem 'prometheus-client-mmap', '~> 0.9.3'
   gem 'raindrops', '~> 0.18'
 end
 

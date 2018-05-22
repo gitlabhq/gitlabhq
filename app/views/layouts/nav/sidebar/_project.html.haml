@@ -19,7 +19,7 @@
           = nav_link(path: 'projects#show', html_options: { class: "fly-out-top-item" } ) do
             = link_to project_path(@project) do
               %strong.fly-out-top-item-name
-                = _('Overview')
+                = _('Project')
           %li.divider.fly-out-top-item
           = nav_link(path: 'projects#show') do
             = link_to project_path(@project), title: _('Project details'), class: 'shortcuts-project' do

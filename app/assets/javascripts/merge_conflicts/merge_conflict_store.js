@@ -351,7 +351,7 @@ import Cookies from 'js-cookie';
     },
 
     getCommitButtonText() {
-      const initial = 'Commit conflict resolution';
+      const initial = 'Commit to source branch';
       const inProgress = 'Committing...';
 
       return this.state ? this.state.isSubmitting ? inProgress : initial : initial;
