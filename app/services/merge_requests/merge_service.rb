@@ -36,31 +36,6 @@ module MergeRequests
       handle_merge_error(log_message: e.message, save_message_on_model: true)
     end
 
-    def hooks_validation_pass?(merge_request)
-      @merge_request = merge_request
-
-      return true if project.merge_requests_ff_only_enabled
-      return true unless project.feature_available?(:push_rules)
-
-      push_rule = merge_request.project.push_rule
-      return true unless push_rule
-
-      unless push_rule.commit_message_allowed?(params[:commit_message])
-        handle_merge_error(log_message: "Commit message does not follow the pattern '#{push_rule.commit_message_regex}'", save_message_on_model: true)
-        return false
-      end
-
-      unless push_rule.author_email_allowed?(current_user.email)
-        handle_merge_error(log_message: "Commit author's email '#{current_user.email}' does not follow the pattern '#{push_rule.author_email_regex}'", save_message_on_model: true)
-        return false
-      end
-
-      true
-    rescue PushRule::MatchError => e
-      handle_merge_error(log_message: e.message, save_message_on_model: true)
-      false
-    end
-
     private
 
     def error_check!
