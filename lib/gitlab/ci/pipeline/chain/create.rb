@@ -23,7 +23,7 @@ module Gitlab
                 end
               end
             end
-          rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
+          rescue ActiveRecord::RecordInvalid => e
             error("Failed to persist the pipeline: #{e}")
           end
 

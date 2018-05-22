@@ -3,8 +3,6 @@ class AddPipelineIidToCiPipelines < ActiveRecord::Migration
 
   DOWNTIME = false
 
-  disable_ddl_transaction!
-
   def up
     add_column :ci_pipelines, :iid, :integer
   end
