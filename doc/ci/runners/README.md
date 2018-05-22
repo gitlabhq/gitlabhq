@@ -84,7 +84,7 @@ visit the project you want to make the Runner work for in GitLab:
 
 ## Registering a group Runner
 
-Creating a group Runner requires Master permissions for the group. To create a
+Creating a group Runner requires Maintainer permissions for the group. To create a
 group Runner visit the group you want to make the Runner work for in GitLab:
 
 1. Go to **Settings > CI/CD** to obtain the token
@@ -120,9 +120,9 @@ To lock/unlock a Runner:
 
 ## Assigning a Runner to another project
 
-If you are Master on a project where a specific Runner is assigned to, and the
+If you are Maintainer on a project where a specific Runner is assigned to, and the
 Runner is not [locked only to that project](#locking-a-specific-runner-from-being-enabled-for-other-projects),
-you can enable the Runner also on any other project where you have Master permissions.
+you can enable the Runner also on any other project where you have Maintainer permissions.
 
 To enable/disable a Runner in your project:
 
@@ -132,7 +132,7 @@ To enable/disable a Runner in your project:
 
 > **Note**:
 Consider that if you don't lock your specific Runner to a specific project, any
-user with Master role in you project can assign your Runner to another arbitrary
+user with Maintainer role in you project can assign your Runner to another arbitrary
 project without requiring your authorization, so use it with caution.
 
 An admin can enable/disable a specific Runner for projects:

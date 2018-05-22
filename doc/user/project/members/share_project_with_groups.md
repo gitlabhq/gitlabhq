@@ -42,7 +42,7 @@ Admins are able to share projects with any group in the system.
 
 ## Maximum access level
 
-In the example above, the maximum access level of 'Developer' for members from 'Engineering' means that users with higher access levels in 'Engineering' ('Master' or 'Owner') will only have 'Developer' access to 'Project Acme'.
+In the example above, the maximum access level of 'Developer' for members from 'Engineering' means that users with higher access levels in 'Engineering' ('Maintainer' or 'Owner') will only have 'Developer' access to 'Project Acme'.
 
 ## Share project with group lock
 

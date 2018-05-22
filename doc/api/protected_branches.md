@@ -8,7 +8,7 @@ The access levels are defined in the `ProtectedRefAccess::ALLOWED_ACCESS_LEVELS`
 ```
 0  => No access
 30 => Developer access
-40 => Master access
+40 => Maintainer access
 60 => Admin access
 ```
 
@@ -39,7 +39,7 @@ Example response:
         "access_level": 40,
         "user_id": null,
         "group_id": null,
-        "access_level_description": "Masters"
+        "access_level_description": "Maintainers"
       }
     ],
     "merge_access_levels": [
@@ -82,7 +82,7 @@ Example response:
       "access_level": 40,
       "user_id": null,
       "group_id": null,
-      "access_level_description": "Masters"
+      "access_level_description": "Maintainers"
     }
   ],
   "merge_access_levels": [
@@ -146,7 +146,7 @@ Example response:
       "access_level": 40,
       "user_id": null,
       "group_id": null,
-      "access_level_description": "Masters"
+      "access_level_description": "Maintainers"
     }
   ]
 }
@@ -179,14 +179,14 @@ Example response:
       "access_level":40,
       "user_id":null,
       "group_id":null,
-      "access_level_description":"Masters"
+      "access_level_description":"Maintainers"
   ],
   "unprotect_access_levels": [
     {
       "access_level":40,
       "user_id":null,
       "group_id":null,
-      "access_level_description":"Masters"
+      "access_level_description":"Maintainers"
     }
   ]
 }
