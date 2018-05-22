@@ -10,8 +10,8 @@ module Gitlab
       end
 
       def perform(start_id, stop_id)
-        Gitlab::BackgroundMigration::FillFileStoreLfsObject::LfsObject
-          .where('file_store is NULL')
+        FillFileStoreLfsObject::LfsObject
+          .where(file_store: nil)
           .where(id: (start_id..stop_id))
           .update_all(file_store: 1)
       end

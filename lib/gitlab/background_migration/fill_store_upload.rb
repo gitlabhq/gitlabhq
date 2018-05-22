@@ -11,8 +11,8 @@ module Gitlab
       end
 
       def perform(start_id, stop_id)
-        Gitlab::BackgroundMigration::FillStoreUpload::Upload
-          .where('store is NULL')
+        FillStoreUpload::Upload
+          .where(store: nil)
           .where(id: (start_id..stop_id))
           .update_all(store: 1)
       end
