@@ -111,7 +111,7 @@ class User < ActiveRecord::Base
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
   has_many :users_star_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :starred_projects, through: :users_star_projects, source: :project
-  has_many :project_authorizations
+  has_many :project_authorizations, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_many :authorized_projects, through: :project_authorizations, source: :project
 
   has_many :user_interacted_projects

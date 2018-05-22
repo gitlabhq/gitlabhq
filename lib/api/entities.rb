@@ -125,7 +125,7 @@ module API
         # (fixed in https://github.com/rails/rails/pull/25976).
         project.tags.map(&:name).sort
       end
-      expose :ssh_url_to_repo, :http_url_to_repo, :web_url
+      expose :ssh_url_to_repo, :http_url_to_repo, :web_url, :readme_url
       expose :avatar_url do |project, options|
         project.avatar_url(only_path: false)
       end

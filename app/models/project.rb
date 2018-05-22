@@ -911,6 +911,13 @@ class Project < ActiveRecord::Base
     Gitlab::Routing.url_helpers.project_url(self)
   end
 
+  def readme_url
+    readme = repository.readme
+    if readme
+      Gitlab::Routing.url_helpers.project_blob_url(self, File.join(default_branch, readme.path))
+    end
+  end
+
   def new_issuable_address(author, address_type)
     return unless Gitlab::IncomingEmail.supports_issue_creation? && author
 
