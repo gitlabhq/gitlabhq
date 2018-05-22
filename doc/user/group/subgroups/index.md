@@ -145,8 +145,8 @@ permissions.
 
 For example, if User0 was first added to group `group-1/group-1-1` with Developer
 permissions, then they will inherit those permissions in every other subgroup
-of `group-1/group-1-1`. To give them Master access to `group-1/group-1-1/group1-1-1`,
-you would add them again in that group as Master. Removing them from that group,
+of `group-1/group-1-1`. To give them Maintainer access to `group-1/group-1-1/group1-1-1`,
+you would add them again in that group as Maintainer. Removing them from that group,
 the permissions will fallback to those of the ancestor group.
 
 ## Mentioning subgroups

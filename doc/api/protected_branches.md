@@ -8,7 +8,7 @@ The access levels are defined in the `ProtectedRefAccess::ALLOWED_ACCESS_LEVELS`
 ```
 0  => No access
 30 => Developer access
-40 => Master access
+40 => Maintainer access
 ```
 
 ## List protected branches
@@ -36,13 +36,13 @@ Example response:
     "push_access_levels": [
       {
         "access_level": 40,
-        "access_level_description": "Masters"
+        "access_level_description": "Maintainers"
       }
     ],
     "merge_access_levels": [
       {
         "access_level": 40,
-        "access_level_description": "Masters"
+        "access_level_description": "Maintainers"
       }
     ]
   },
@@ -75,13 +75,13 @@ Example response:
   "push_access_levels": [
     {
       "access_level": 40,
-      "access_level_description": "Masters"
+      "access_level_description": "Maintainers"
     }
   ],
   "merge_access_levels": [
     {
       "access_level": 40,
-      "access_level_description": "Masters"
+      "access_level_description": "Maintainers"
     }
   ]
 }

@@ -43,7 +43,7 @@ level to the project.
 You can import another project's users in your own project by hitting the
 **Import members** button on the upper right corner of the **Members** menu.
 
-In the dropdown menu, you can see only the projects you are Master on.
+In the dropdown menu, you can see only the projects you are Maintainer on.
 
 ![Import members from another project](img/add_user_import_members_from_another_project.png)
 
