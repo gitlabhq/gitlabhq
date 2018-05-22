@@ -11,6 +11,7 @@
 .card-header {
   padding: $gl-vert-padding $gl-padding;
   line-height: 36px;
+  color: $white-light;
 
   .controls {
     margin-top: -2px;
@@ -47,6 +48,7 @@
 
 .card-body {
   padding: $gl-padding;
+  background-color: $white-light;
 
   .form-actions {
     margin: -$gl-padding;

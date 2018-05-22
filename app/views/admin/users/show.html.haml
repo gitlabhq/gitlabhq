@@ -178,7 +178,7 @@
             %p Deleting a user has the following effects:
             = render 'users/deletion_guidance', user: @user
             %br
-            %button.delete-user-button.btn.text-danger{ data: { toggle: 'modal',
+            %button.delete-user-button.btn.btn-danger{ data: { toggle: 'modal',
               target: '#delete-user-modal',
               delete_user_url: admin_user_path(@user),
               block_user_url: block_admin_user_path(@user),
@@ -210,7 +210,7 @@
               the user, and projects in them, will also be removed. Commits
               to other projects are unaffected.
             %br
-              %button.delete-user-button.btn.text-danger{ data: { toggle: 'modal',
+              %button.delete-user-button.btn.btn-danger{ data: { toggle: 'modal',
                 target: '#delete-user-modal',
                 delete_user_url: admin_user_path(@user, hard_delete: true),
                 block_user_url: block_admin_user_path(@user),
