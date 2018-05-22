@@ -81,6 +81,7 @@ GET /projects
     "ssh_url_to_repo": "git@example.com:diaspora/diaspora-client.git",
     "http_url_to_repo": "http://example.com/diaspora/diaspora-client.git",
     "web_url": "http://example.com/diaspora/diaspora-client",
+    "readme_url": "http://example.com/diaspora/diaspora-client/blob/master/README.md",
     "tag_list": [
       "example",
       "disapora client"
@@ -151,6 +152,7 @@ GET /projects
     "ssh_url_to_repo": "git@example.com:brightbox/puppet.git",
     "http_url_to_repo": "http://example.com/brightbox/puppet.git",
     "web_url": "http://example.com/brightbox/puppet",
+    "readme_url": "http://example.com/brightbox/puppet/blob/master/README.md",
     "tag_list": [
       "example",
       "puppet"
@@ -269,6 +271,7 @@ GET /users/:user_id/projects
     "ssh_url_to_repo": "git@example.com:diaspora/diaspora-client.git",
     "http_url_to_repo": "http://example.com/diaspora/diaspora-client.git",
     "web_url": "http://example.com/diaspora/diaspora-client",
+    "readme_url": "http://example.com/diaspora/diaspora-client/blob/master/README.md",
     "tag_list": [
       "example",
       "disapora client"
@@ -338,6 +341,7 @@ GET /users/:user_id/projects
     "ssh_url_to_repo": "git@example.com:brightbox/puppet.git",
     "http_url_to_repo": "http://example.com/brightbox/puppet.git",
     "web_url": "http://example.com/brightbox/puppet",
+    "readme_url": "http://example.com/brightbox/puppet/blob/master/README.md",
     "tag_list": [
       "example",
       "puppet"
@@ -437,6 +441,7 @@ GET /projects/:id
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
+  "readme_url": "http://example.com/diaspora/diaspora-project-site/blob/master/README.md",
   "tag_list": [
     "example",
     "disapora project"
@@ -737,6 +742,7 @@ Example responses:
     "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
     "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
     "web_url": "http://example.com/diaspora/diaspora-project-site",
+    "readme_url": "http://example.com/diaspora/diaspora-project-site/blob/master/README.md",
     "tag_list": [
       "example",
       "disapora project"
@@ -815,6 +821,7 @@ Example response:
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
+  "readme_url": "http://example.com/diaspora/diaspora-project-site/blob/master/README.md",
   "tag_list": [
     "example",
     "disapora project"
@@ -892,6 +899,7 @@ Example response:
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
+  "readme_url": "http://example.com/diaspora/diaspora-project-site/blob/master/README.md",
   "tag_list": [
     "example",
     "disapora project"
@@ -993,6 +1001,7 @@ Example response:
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
+  "readme_url": "http://example.com/diaspora/diaspora-project-site/blob/master/README.md",
   "tag_list": [
     "example",
     "disapora project"
@@ -1088,6 +1097,7 @@ Example response:
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
+  "readme_url": "http://example.com/diaspora/diaspora-project-site/blob/master/README.md",
   "tag_list": [
     "example",
     "disapora project"

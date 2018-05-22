@@ -2,7 +2,11 @@ import Vue from 'vue';
 import MrWidgetAuthor from '~/vue_merge_request_widget/components/mr_widget_author.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
+<<<<<<< HEAD
 describe('MrRWidgetAuthor', () => {
+=======
+describe('MrWidgetAuthor', () => {
+>>>>>>> upstream/master
   let vm;
 
   beforeEach(() => {
