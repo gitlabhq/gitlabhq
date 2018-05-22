@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe JiraService do
   include Gitlab::Routing
+  include AssetsHelpers
 
   describe '#options' do
     let(:service) do
@@ -164,7 +165,7 @@ describe JiraService do
     it "creates Remote Link reference in JIRA for comment" do
       @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
 
-      favicon_path = "http://localhost/assets/#{Rails.application.assets.find_asset('favicon.png').digest_path}"
+      favicon_path = "http://localhost/assets/#{find_asset('favicon.png').digest_path}"
 
       # Creates comment
       expect(WebMock).to have_requested(:post, @comment_url)

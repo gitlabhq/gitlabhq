@@ -4,6 +4,7 @@ describe SystemNoteService do
   include ProjectForksHelper
   include Gitlab::Routing
   include RepoHelpers
+  include AssetsHelpers
 
   set(:group)    { create(:group) }
   let(:project)  { create(:project, :repository, group: group) }
@@ -771,7 +772,7 @@ describe SystemNoteService do
     end
 
     describe "new reference" do
-      let(:favicon_path) { "http://localhost/assets/#{Rails.application.assets.find_asset('favicon.png').digest_path}" }
+      let(:favicon_path) { "http://localhost/assets/#{find_asset('favicon.png').digest_path}" }
 
       before do
         allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
