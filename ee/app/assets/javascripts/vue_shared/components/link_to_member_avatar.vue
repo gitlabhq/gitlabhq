@@ -21,13 +21,13 @@ export default {
     },
     extraAvatarClass: {
       type: String,
-      default: '',
       required: false,
+      default: '',
     },
     extraLinkClass: {
       type: String,
-      default: '',
       required: false,
+      default: '',
     },
     showTooltip: {
       type: Boolean,
@@ -36,8 +36,8 @@ export default {
     },
     clickable: {
       type: Boolean,
-      default: true,
       required: false,
+      default: true,
     },
     tooltipContainer: {
       type: String,
@@ -78,6 +78,7 @@ export default {
   },
 };
 </script>
+
 <template>
   <div class="link-to-member-avatar">
     <a
