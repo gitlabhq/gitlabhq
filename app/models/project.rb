@@ -1442,10 +1442,14 @@ class Project < ActiveRecord::Base
     Ci::Runner.from("(#{union.to_sql}) ci_runners")
   end
 
-  def any_runners?(&block)
-    @active_runners ||= all_runners.active
+  def active_runners
+    strong_memoize(:active_runners) do
+      all_runners.active
+    end
+  end
 
-    @active_runners.any?(&block)
+  def any_runners?(&block)
+    active_runners.any?(&block)
   end
 
   def valid_runners_token?(token)
