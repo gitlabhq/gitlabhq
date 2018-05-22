@@ -331,7 +331,7 @@
     border-color: $gray-darkest;
 
     &:not(span):hover {
-      color: $gray;
+      color: color("gray");
     }
   }
 }
