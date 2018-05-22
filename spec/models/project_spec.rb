@@ -504,13 +504,14 @@ describe Project do
     end
   end
 
-<<<<<<< HEAD
   describe "#kerberos_url_to_repo" do
     let(:project) { create(:project, path: "somewhere") }
 
     it 'returns valid kerberos url for this repo' do
       expect(project.kerberos_url_to_repo).to eq("#{Gitlab.config.build_gitlab_kerberos_url}/#{project.namespace.path}/somewhere.git")
-=======
+    end
+  end
+
   describe "#readme_url" do
     let(:project) { create(:project, :repository, path: "somewhere") }
 
@@ -536,7 +537,6 @@ describe Project do
           expect(project.readme_url).to eql("#{Gitlab.config.gitlab.url}/#{project.namespace.full_path}/somewhere/blob/master/README.md")
         end
       end
->>>>>>> upstream/master
     end
   end
 
