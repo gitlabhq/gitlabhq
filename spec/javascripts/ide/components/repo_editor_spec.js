@@ -346,4 +346,23 @@ describe('RepoEditor', () => {
       });
     });
   });
+
+  it('calls removePendingTab when old file is pending', done => {
+    spyOn(vm, 'removePendingTab');
+
+    vm.file.pending = true;
+
+    vm
+      .$nextTick()
+      .then(() => {
+        vm.file = file('testing');
+
+        return vm.$nextTick();
+      })
+      .then(() => {
+        expect(vm.removePendingTab).toHaveBeenCalled();
+      })
+      .then(done)
+      .catch(done.fail);
+  });
 });
