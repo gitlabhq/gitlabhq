@@ -3,6 +3,19 @@ module EE
     module GroupMembersController
       extend ActiveSupport::Concern
 
+      class_methods do
+        extend ::Gitlab::Utils::Override
+
+        override :admin_not_required_endpoints
+        def admin_not_required_endpoints
+          super.concat(%i[update override])
+        end
+      end
+
+      included do
+        before_action :authorize_update_group_member!, only: [:update, :override]
+      end
+
       # rubocop:disable Gitlab/ModuleWithInstanceVariables
       def override
         member = @group.members.find_by!(id: params[:id])

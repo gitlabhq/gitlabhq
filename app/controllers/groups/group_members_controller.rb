@@ -5,13 +5,12 @@ class Groups::GroupMembersController < Groups::ApplicationController
   include MembersPresentation
   include SortingHelper
 
-  # Authorize
-  before_action :authorize_admin_group_member!, except: [:index, :leave, :request_access, :update, :override]
-  before_action :authorize_update_group_member!, only: [:update, :override]
+  def self.admin_not_required_endpoints
+    %i[index leave request_access]
+  end
 
-  skip_cross_project_access_check :index, :create, :update, :destroy, :request_access,
-                                  :approve_access_request, :leave, :resend_invite,
-                                  :override
+  # Authorize
+  before_action :authorize_admin_group_member!, except: admin_not_required_endpoints
 
   skip_cross_project_access_check :index, :create, :update, :destroy, :request_access,
                                   :approve_access_request, :leave, :resend_invite,
