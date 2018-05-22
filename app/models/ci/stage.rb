@@ -89,7 +89,18 @@ module Ci
     end
 
     def has_warnings?
-      statuses.latest.failed_but_allowed.any?
+      number_of_warnings.positive?
+    end
+
+    def number_of_warnings
+      BatchLoader.for(id).batch(default_value: 0) do |stage_ids, loader|
+        ::Ci::Build.where(stage_id: stage_ids)
+          .latest
+          .failed_but_allowed
+          .group(:stage_id)
+          .count
+          .each { |id, amount| loader.call(id, amount) }
+      end
     end
 
     def detailed_status(current_user)
