@@ -6,7 +6,7 @@ module Gitlab
       # Class for preloading data associated with pipelines such as commit
       # authors.
       module Preloader
-        def self.preload(project, pipelines)
+        def self.preload(pipelines)
           # This ensures that all the pipeline commits are eager loaded before we
           # start using them.
           pipelines.each(&:commit)
@@ -20,6 +20,11 @@ module Gitlab
             # that Ci::Pipeline#has_warnings? doesn't execute any additional
             # queries.
             pipeline.number_of_warnings
+
+            # This preloads the number of warnings for every stage, ensuring
+            # that Ci::Stage#has_warnings? doesn't execute any additional
+            # queries.
+            pipeline.stages.each { |stage| stage.number_of_warnings }
           end
         end
       end

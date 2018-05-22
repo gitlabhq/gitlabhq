@@ -17,35 +17,27 @@ describe Projects::PipelinesController do
 
   describe 'GET index.json' do
     before do
-      %w(pending running created success).each_with_index do |status, index|
-        sha = project.commit("HEAD~#{index}")
-
-        pipeline = create(:ci_empty_pipeline, status: status,
-                                              project: project,
-                                              sha: sha)
-
-
-        create_build(pipeline, 'test', 1, 'unit')
-        create_build(pipeline, 'test', 1, 'feature')
-        create_build(pipeline, 'review', 2, 'staging')
-        create_build(pipeline, 'deploy', 3, 'production')
-      end
+      %w(pending running running success canceled)
+        .each_with_index do |status, index|
+          create_pipeline(status, project.commit("HEAD~#{index}"))
+        end
     end
 
     it 'returns JSON with serialized pipelines', :request_store do
-      queries = ActiveRecord::QueryRecorder.new { get_pipelines_index_json }
+      queries = ActiveRecord::QueryRecorder.new do
+        get_pipelines_index_json
+      end
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('pipeline')
 
       expect(json_response).to include('pipelines')
-      expect(json_response['pipelines'].count).to eq 4
-      expect(json_response['count']['all']).to eq '4'
-      expect(json_response['count']['running']).to eq '1'
+      expect(json_response['pipelines'].count).to eq 5
+      expect(json_response['count']['all']).to eq '5'
+      expect(json_response['count']['running']).to eq '2'
       expect(json_response['count']['pending']).to eq '1'
-      expect(json_response['count']['finished']).to eq '1'
-      puts queries.log
-      expect(queries.count).to be < 25
+      expect(json_response['count']['finished']).to eq '2'
+      expect(queries.count).to be < 32
     end
 
     it 'does not include coverage data for the pipelines' do
@@ -67,8 +59,19 @@ describe Projects::PipelinesController do
                   format: :json
     end
 
+    def create_pipeline(status, sha)
+      pipeline = create(:ci_empty_pipeline, status: status,
+                                            project: project,
+                                            sha: sha)
+
+      create_build(pipeline, 'build', 1, 'build')
+      create_build(pipeline, 'test', 2, 'test')
+      create_build(pipeline, 'deploy', 3, 'deploy')
+    end
+
     def create_build(pipeline, stage, stage_idx, name)
-      create(:ci_build, pipeline: pipeline, stage: stage, stage_idx: stage_idx, name: name)
+      status = %w[created running pending success failed canceled].sample
+      create(:ci_build, pipeline: pipeline, stage: stage, stage_idx: stage_idx, name: name, status: status)
     end
   end
 

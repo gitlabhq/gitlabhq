@@ -424,7 +424,7 @@ module Ci
 
     def number_of_warnings
       BatchLoader.for(id).batch(default_value: 0) do |pipeline_ids, loader|
-        Build.where(commit_id: pipeline_ids)
+        ::Ci::Build.where(commit_id: pipeline_ids)
           .latest
           .failed_but_allowed
           .group(:commit_id)

@@ -26,7 +26,7 @@ class Projects::PipelinesController < Projects::ApplicationController
     @finished_count = limited_pipelines_count(project, 'finished')
     @pipelines_count = limited_pipelines_count(project)
 
-    Gitlab::Ci::Pipeline::Preloader.preload(@project, @pipelines)
+    Gitlab::Ci::Pipeline::Preloader.preload(@pipelines)
 
     respond_to do |format|
       format.html
