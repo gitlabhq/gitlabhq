@@ -75,7 +75,8 @@ export default {
       },
     });
   },
-  commitPipelines({ projectId, commitSha }) {
-    return Api.commitPipelines(projectId, commitSha);
+  lastCommitPipelines({ getters }) {
+    const commitSha = getters.lastCommit.id;
+    return Api.commitPipelines(getters.currentProject.path_with_namespace, commitSha);
   },
 };

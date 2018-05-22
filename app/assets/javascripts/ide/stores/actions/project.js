@@ -92,12 +92,16 @@ export const refreshLastCommitData = ({ commit, state, dispatch }, { projectId, 
       flash(__('Error loading last commit.'), 'alert', document, null, false, true);
     });
 
-export const pollSuccessCallBack = ({ commit, state, dispatch }, { data }) => {
+export const pollSuccessCallBack = ({ commit, state, dispatch, getters }, { data }) => {
   if (data.pipelines && data.pipelines.length) {
+    const lastCommitHash = getters.lastCommit.id;
+    const lastCommitPipeline = data.pipelines.find(
+      pipeline => pipeline.commit.id === lastCommitHash,
+    );
     commit(types.SET_LAST_COMMIT_PIPELINE, {
       projectId: state.currentProjectId,
       branchId: state.currentBranchId,
-      pipeline: data.pipelines[0] || {},
+      pipeline: lastCommitPipeline || {},
     });
   }
 
@@ -107,10 +111,9 @@ export const pollSuccessCallBack = ({ commit, state, dispatch }, { data }) => {
 export const pipelinePoll = ({ getters, dispatch }) => {
   eTagPoll = new Poll({
     resource: service,
-    method: 'commitPipelines',
+    method: 'lastCommitPipelines',
     data: {
-      projectId: getters.currentProject.path_with_namespace,
-      commitSha: getters.lastCommit.id,
+      getters,
     },
     successCallback: ({ data }) => dispatch('pollSuccessCallBack', { data }),
     errorCallback: () => {
