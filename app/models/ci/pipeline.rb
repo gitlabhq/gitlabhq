@@ -262,6 +262,16 @@ module Ci
       stage unless stage.statuses_count.zero?
     end
 
+    ##
+    # TODO consider switching to persisted stages only in pipelines table
+    # (not necessairly in the show pipeline page because of #23257.
+    # Hide this behind two feature flags - enabled / disabled and only
+    # gitlab-ce / everywhere.
+    #
+    def stages
+      super
+    end
+
     def legacy_stages
       # TODO, this needs refactoring, see gitlab-ce#26481.
 

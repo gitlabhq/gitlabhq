@@ -17,8 +17,7 @@ describe Projects::PipelinesController do
 
   describe 'GET index.json' do
     before do
-      %w(pending running running success canceled)
-        .each_with_index do |status, index|
+      %w(pending running success failed).each_with_index do |status, index|
           create_pipeline(status, project.commit("HEAD~#{index}"))
         end
     end
@@ -32,11 +31,13 @@ describe Projects::PipelinesController do
       expect(response).to match_response_schema('pipeline')
 
       expect(json_response).to include('pipelines')
-      expect(json_response['pipelines'].count).to eq 5
-      expect(json_response['count']['all']).to eq '5'
-      expect(json_response['count']['running']).to eq '2'
+      expect(json_response['pipelines'].count).to eq 4
+      expect(json_response['count']['all']).to eq '4'
+      expect(json_response['count']['running']).to eq '1'
       expect(json_response['count']['pending']).to eq '1'
       expect(json_response['count']['finished']).to eq '2'
+      puts queries.log
+      puts "Queries count: #{queries.count}"
       expect(queries.count).to be < 32
     end
 
