@@ -903,11 +903,8 @@ describe API::Projects do
         expect(json_response['only_allow_merge_if_pipeline_succeeds']).to eq(project.only_allow_merge_if_pipeline_succeeds)
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
         expect(json_response['merge_method']).to eq(project.merge_method.to_s)
-<<<<<<< HEAD
-        expect(json_response).not_to have_key('repository_storage')
-=======
         expect(json_response['readme_url']).to eq(project.readme_url)
->>>>>>> upstream/master
+        expect(json_response).not_to have_key('repository_storage')
       end
 
       it 'returns a project by path name' do
