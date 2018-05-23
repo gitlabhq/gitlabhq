@@ -55,7 +55,8 @@ export default class MergeRequestStore {
     this.sourceBranchRemoved = !data.source_branch_exists;
     this.shouldRemoveSourceBranch = data.remove_source_branch || false;
     this.buildsEnabled = data.builds_enabled;
-    this.onlyAllowMergeIfPipelineSucceeds = data.only_allow_merge_if_pipeline_succeeds && this.buildsEnabled || false;
+    this.onlyAllowMergeIfPipelineSucceeds =
+      data.only_allow_merge_if_pipeline_succeeds && this.buildsEnabled || false;
     this.mergeWhenPipelineSucceeds = data.merge_when_pipeline_succeeds || false;
     this.mergePath = data.merge_path;
     this.ffOnlyEnabled = data.ff_only_enabled;
