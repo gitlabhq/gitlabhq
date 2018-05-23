@@ -2,9 +2,9 @@ import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import component from 'ee/vue_shared/security_reports/split_security_reports_app.vue';
+import createStore from 'ee/vue_shared/security_reports/store';
 import state from 'ee/vue_shared/security_reports/store/state';
-
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import { mountComponentWithStore } from '../../helpers/vue_mount_component_helper';
 import { sastIssues } from './mock_data';
 
 describe('Slipt security reports app', () => {
@@ -36,16 +36,19 @@ describe('Slipt security reports app', () => {
       mock.onGet('dss_head.json').reply(200, sastIssues);
       mock.onGet('vulnerability_feedback_path.json').reply(200, []);
 
-      vm = mountComponent(Component, {
-        headBlobPath: 'path',
-        baseBlobPath: 'path',
-        sastHeadPath: 'sast_head.json',
-        dependencyScanningHeadPath: 'dss_head.json',
-        sastHelpPath: 'path',
-        dependencyScanningHelpPath: 'path',
-        vulnerabilityFeedbackPath: 'vulnerability_feedback_path.json',
-        vulnerabilityFeedbackHelpPath: 'path',
-        pipelineId: 123,
+      vm = mountComponentWithStore(Component, {
+        store: createStore(),
+        props: {
+          headBlobPath: 'path',
+          baseBlobPath: 'path',
+          sastHeadPath: 'sast_head.json',
+          dependencyScanningHeadPath: 'dss_head.json',
+          sastHelpPath: 'path',
+          dependencyScanningHelpPath: 'path',
+          vulnerabilityFeedbackPath: 'vulnerability_feedback_path.json',
+          vulnerabilityFeedbackHelpPath: 'path',
+          pipelineId: 123,
+        },
       });
     });
 
@@ -63,16 +66,19 @@ describe('Slipt security reports app', () => {
       mock.onGet('dss_head.json').reply(200, sastIssues);
       mock.onGet('vulnerability_feedback_path.json').reply(200, []);
 
-      vm = mountComponent(Component, {
-        headBlobPath: 'path',
-        baseBlobPath: 'path',
-        sastHeadPath: 'sast_head.json',
-        dependencyScanningHeadPath: 'dss_head.json',
-        sastHelpPath: 'path',
-        dependencyScanningHelpPath: 'path',
-        vulnerabilityFeedbackPath: 'vulnerability_feedback_path.json',
-        vulnerabilityFeedbackHelpPath: 'path',
-        pipelineId: 123,
+      vm = mountComponentWithStore(Component, {
+        store: createStore(),
+        props: {
+          headBlobPath: 'path',
+          baseBlobPath: 'path',
+          sastHeadPath: 'sast_head.json',
+          dependencyScanningHeadPath: 'dss_head.json',
+          sastHelpPath: 'path',
+          dependencyScanningHelpPath: 'path',
+          vulnerabilityFeedbackPath: 'vulnerability_feedback_path.json',
+          vulnerabilityFeedbackHelpPath: 'path',
+          pipelineId: 123,
+        },
       });
     });
 
@@ -96,16 +102,19 @@ describe('Slipt security reports app', () => {
       mock.onGet('dss_head.json').reply(500);
       mock.onGet('vulnerability_feedback_path.json').reply(500, []);
 
-      vm = mountComponent(Component, {
-        headBlobPath: 'path',
-        baseBlobPath: 'path',
-        sastHeadPath: 'sast_head.json',
-        dependencyScanningHeadPath: 'dss_head.json',
-        sastHelpPath: 'path',
-        dependencyScanningHelpPath: 'path',
-        vulnerabilityFeedbackPath: 'vulnerability_feedback_path.json',
-        vulnerabilityFeedbackHelpPath: 'path',
-        pipelineId: 123,
+      vm = mountComponentWithStore(Component, {
+        store: createStore(),
+        props: {
+          headBlobPath: 'path',
+          baseBlobPath: 'path',
+          sastHeadPath: 'sast_head.json',
+          dependencyScanningHeadPath: 'dss_head.json',
+          sastHelpPath: 'path',
+          dependencyScanningHelpPath: 'path',
+          vulnerabilityFeedbackPath: 'vulnerability_feedback_path.json',
+          vulnerabilityFeedbackHelpPath: 'path',
+          pipelineId: 123,
+        },
       });
     });
 

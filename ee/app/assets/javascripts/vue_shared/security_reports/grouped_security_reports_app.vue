@@ -1,7 +1,7 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { SAST, DAST, SAST_CONTAINER } from './store/constants';
-import store from './store';
+import createStore from './store';
 import ReportSection from './components/report_section.vue';
 import SummaryRow from './components/summary_row.vue';
 import IssuesList from './components/issues_list.vue';
@@ -9,7 +9,7 @@ import IssueModal from './components/modal.vue';
 import securityReportsMixin from './mixins/security_report_mixin';
 
 export default {
-  store,
+  store: createStore(),
   components: {
     ReportSection,
     SummaryRow,

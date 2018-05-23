@@ -9,7 +9,7 @@ import eventHub from './event_hub';
 
 import SecurityReportApp from 'ee/vue_shared/security_reports/split_security_reports_app.vue'; // eslint-disable-line import/first
 import SastSummaryWidget from 'ee/pipelines/components/security_reports/report_summary_widget.vue'; // eslint-disable-line import/first
-import store from 'ee/vue_shared/security_reports/store'; // eslint-disable-line import/first
+import createStore from 'ee/vue_shared/security_reports/store'; // eslint-disable-line import/first
 
 Vue.use(Translate);
 
@@ -116,6 +116,8 @@ export default () => {
     const vulnerabilityFeedbackPath = datasetOptions.vulnerabilityFeedbackPath;
     const vulnerabilityFeedbackHelpPath = datasetOptions.vulnerabilityFeedbackHelpPath;
     const pipelineId = parseInt(datasetOptions.pipelineId, 10);
+
+    const store = createStore();
     // Widget summary
     // eslint-disable-next-line no-new
     new Vue({
