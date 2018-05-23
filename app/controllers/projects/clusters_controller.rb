@@ -1,6 +1,9 @@
 class Projects::ClustersController < Projects::ApplicationController
-  before_action :cluster, except: [:index, :new, :create_cluster]
+  before_action :cluster, except: [:index, :new, :create]
   before_action :authorize_read_cluster!
+  before_action :generate_gcp_authorize_url, only: [:new]
+  before_action :new_cluster, only: [:new]
+  before_action :existing_cluster, only: [:new]
   before_action :authorize_create_cluster!, only: [:new]
   before_action :authorize_update_cluster!, only: [:update]
   before_action :authorize_admin_cluster!, only: [:destroy]
@@ -14,9 +17,6 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def new
-    generate_gcp_authorize_url
-    tap_new_cluster
-    tap_existing_cluster
   end
 
   def status
@@ -67,22 +67,7 @@ class Projects::ClustersController < Projects::ApplicationController
     end
   end
 
-  def tap_new_cluster
-    if GoogleApi::CloudPlatform::Client.new(token_in_session, nil)
-      .validate_token(expires_at_in_session)
-      @new_cluster = ::Clusters::Cluster.new.tap do |cluster|
-        cluster.build_provider_gcp
-      end
-    end
-  end
-
-  def tap_existing_cluster
-    @existing_cluster = ::Clusters::Cluster.new.tap do |cluster|
-      cluster.build_platform_kubernetes
-    end
-  end
-
-  def create_cluster
+  def create
     case params[:type]
     when 'new'
       cluster_params = create_new_cluster_params
@@ -118,19 +103,6 @@ class Projects::ClustersController < Projects::ApplicationController
   def cluster
     @cluster ||= project.clusters.find(params[:id])
                                  .present(current_user: current_user)
-  end
-
-  def create_params
-    params.require(:cluster).permit(
-      :enabled,
-      :name,
-      :provider_type,
-      provider_gcp_attributes: [
-        :gcp_project_id,
-        :zone,
-        :num_nodes,
-        :machine_type
-      ])
   end
 
   def update_params
@@ -197,6 +169,21 @@ class Projects::ClustersController < Projects::ApplicationController
       state: state).authorize_url
   rescue GoogleApi::Auth::ConfigMissingError
     # no-op
+  end
+
+  def new_cluster
+    if GoogleApi::CloudPlatform::Client.new(token_in_session, nil)
+      .validate_token(expires_at_in_session)
+      @new_cluster = ::Clusters::Cluster.new.tap do |cluster|
+        cluster.build_provider_gcp
+      end
+    end
+  end
+
+  def existing_cluster
+    @existing_cluster = ::Clusters::Cluster.new.tap do |cluster|
+      cluster.build_platform_kubernetes
+    end
   end
 
   def token_in_session

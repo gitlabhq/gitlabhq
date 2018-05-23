@@ -206,7 +206,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       resources :clusters, except: [:edit, :create] do
         collection do
-          post '/new', to: 'clusters#create_cluster'
+          post '/new', to: 'clusters#create'
         end
 
         member do
