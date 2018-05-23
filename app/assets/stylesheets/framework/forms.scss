@@ -120,6 +120,14 @@ label {
   @include box-shadow(none);
   border-radius: 2px;
   padding: $gl-vert-padding $gl-input-padding;
+
+  &.input-short {
+    width: $input-short-width;
+
+    @media (min-width: $screen-md-min) {
+      width: $input-short-md-width;
+    }
+  }
 }
 
 .select-wrapper {
