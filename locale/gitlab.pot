@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-22 07:03+0000\n"
-"PO-Revision-Date: 2018-05-22 07:03+0000\n"
+"POT-Creation-Date: 2018-05-23 08:29+0200\n"
+"PO-Revision-Date: 2018-05-23 08:29+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -4230,6 +4230,9 @@ msgstr ""
 msgid "Reset runners registration token"
 msgstr ""
 
+msgid "Resolve conflicts on source branch"
+msgstr ""
+
 msgid "Resolve discussion"
 msgstr ""
 
@@ -5193,10 +5196,10 @@ msgstr ""
 msgid "Timeago|in 1 year"
 msgstr ""
 
-msgid "Timeago|in a while"
+msgid "Timeago|less than a minute ago"
 msgstr ""
 
-msgid "Timeago|less than a minute ago"
+msgid "Timeago|right now"
 msgstr ""
 
 msgid "Time|hr"
@@ -5648,6 +5651,9 @@ msgid "You can only add files when you are on a branch"
 msgstr ""
 
 msgid "You can only edit files when you are on a branch"
+msgstr ""
+
+msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
 msgstr ""
 
 msgid "You cannot write to a read-only secondary GitLab Geo instance. Please use %{link_to_primary_node} instead."
