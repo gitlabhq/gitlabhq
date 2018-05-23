@@ -11,7 +11,7 @@ describe API::Runners do
   let(:group) { create(:group).tap { |group| group.add_owner(user) } }
   let(:group2) { create(:group).tap { |group| group.add_owner(user) } }
 
-  let!(:shared_runner) { create(:ci_runner, :shared, description: 'Shared runner') }
+  let!(:shared_runner) { create(:ci_runner, :instance, description: 'Shared runner') }
   let!(:unused_project_runner) { create(:ci_runner) }
 
   let!(:project_runner) do
