@@ -9,6 +9,10 @@ FactoryBot.define do
     is_shared true
     runner_type :instance_type
 
+    trait :online do
+      contacted_at Time.now
+    end
+
     trait :instance do
       is_shared true
       runner_type :instance_type
