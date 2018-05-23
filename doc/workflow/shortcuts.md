@@ -11,7 +11,7 @@ You can see GitLab's keyboard shortcuts by using 'shift + ?'
 | <kbd>f</kbd> | Focus filter |
 | <kbd>p</kbd> + <kbd>b</kbd> | Show/hide the Performance Bar |
 | <kbd>?</kbd> | Show/hide this dialog |
-| <kbd>⌘</kbd> + <kbd>shift</kbd> + <kbd>p</kbd> | Toggle markdown preview |
+| <kbd>Cmd</kbd>/<kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>p</kbd> | Toggle markdown preview |
 | <kbd>↑</kbd> | Edit last comment (when focused on an empty textarea) |
 
 ## Project Files Browsing
@@ -70,8 +70,8 @@ You can see GitLab's keyboard shortcuts by using 'shift + ?'
 | <kbd>→</kbd> or <kbd>l</kbd> | Scroll right |
 | <kbd>↑</kbd> or <kbd>k</kbd> | Scroll up |
 | <kbd>↓</kbd> or <kbd>j</kbd> | Scroll down |
-| <kbd>shift</kbd> + <kbd>↑</kbd> or <kbd>shift</kbd> + <kbd>k</kbd> | Scroll to top |
-| <kbd>shift</kbd> + <kbd>↓</kbd> or <kbd>shift</kbd> + <kbd>j</kbd> | Scroll to bottom |
+| <kbd>Shift</kbd> + <kbd>↑</kbd> or <kbd>Shift</kbd> + <kbd>k</kbd> | Scroll to top |
+| <kbd>Shift</kbd> + <kbd>↓</kbd> or <kbd>Shift</kbd> + <kbd>j</kbd> | Scroll to bottom |
 
 ## Issues and Merge Requests
 
