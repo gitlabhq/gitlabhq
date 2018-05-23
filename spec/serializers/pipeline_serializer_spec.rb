@@ -120,7 +120,7 @@ describe PipelineSerializer do
         it 'verifies number of queries', :request_store do
           recorded = ActiveRecord::QueryRecorder.new { subject }
 
-          expect(recorded.count).to be_within(1).of(48)
+          expect(recorded.count).to be_within(1).of(38)
           expect(recorded.cached_count).to eq(0)
         end
       end
@@ -139,7 +139,7 @@ describe PipelineSerializer do
           # pipeline. With the same ref this check is cached but if refs are
           # different then there is an extra query per ref
           # https://gitlab.com/gitlab-org/gitlab-ce/issues/46368
-          expect(recorded.count).to be_within(1).of(56)
+          expect(recorded.count).to be_within(1).of(45)
           expect(recorded.cached_count).to eq(0)
         end
       end
