@@ -6,10 +6,6 @@ export default {
     CompareVersionsDropdown,
   },
   props: {
-    comparableDiffs: {
-      type: Array,
-      required: true,
-    },
     mergeRequestDiffs: {
       type: Array,
       required: true,
@@ -30,7 +26,7 @@ export default {
     },
   },
   computed: {
-    baseVersions() {
+    comparableDiffs() {
       return this.mergeRequestDiffs.slice(1);
     },
   },

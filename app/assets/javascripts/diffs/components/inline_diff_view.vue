@@ -35,6 +35,7 @@ export default {
 <template>
   <table
     :class="userColorScheme"
+    :data-commit-id="commitId"
     class="code diff-wrap-lines js-syntax-highlight text-file">
     <tbody>
       <template

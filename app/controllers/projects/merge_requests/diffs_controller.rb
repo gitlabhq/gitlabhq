@@ -73,8 +73,8 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
       merge_request: @merge_request,
       merge_request_diff: @merge_request_diff,
       merge_request_diffs: @merge_request_diffs,
-      comparable_diffs: @comparable_diffs,
       start_version: @start_version,
+      start_sha: @start_sha,
       commit: @commit,
       latest_diff: @merge_request_diff&.latest?
     }
