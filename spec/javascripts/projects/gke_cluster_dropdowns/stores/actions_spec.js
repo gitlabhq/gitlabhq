@@ -69,14 +69,17 @@ describe('GCP Cluster Dropdown Store Actions', () => {
 
     describe('validateProjectBilling', () => {
       it('checks project billing status from Google API', done => {
-        store
-          .dispatch('validateProjectBilling')
-          .then(() => {
-            expect(store.state.projectHasBillingEnabled).toBeTruthy();
-
-            done();
-          })
-          .catch(done.fail);
+        testAction(
+          actions.validateProjectBilling,
+          true,
+          {
+            selectedProject: selectedProjectMock,
+            projectHasBillingEnabled: null,
+          },
+          [{ type: 'SET_PROJECT_BILLING_STATUS', payload: true }],
+          [],
+          done,
+        );
       });
     });
 
