@@ -148,10 +148,9 @@ describe Ci::Build do
     end
 
     context 'when there are runners' do
-      let(:runner) { create(:ci_runner) }
+      let(:runner) { create(:ci_runner, :project, projects: [build.project]) }
 
       before do
-        build.project.runners << runner
         runner.update_attributes(contacted_at: 1.second.ago)
       end
 
@@ -1380,12 +1379,7 @@ describe Ci::Build do
       it { is_expected.to be_truthy }
 
       context "and there are specific runner" do
-        let(:runner) { create(:ci_runner, contacted_at: 1.second.ago) }
-
-        before do
-          build.project.runners << runner
-          runner.save
-        end
+        let!(:runner) { create(:ci_runner, :project, projects: [build.project], contacted_at: 1.second.ago) }
 
         it { is_expected.to be_falsey }
       end

@@ -29,11 +29,7 @@ feature 'Runners' do
     end
 
     context 'when a project_type runner is activated on the project' do
-      given(:specific_runner) { create(:ci_runner, :project) }
-
-      background do
-        project.runners << specific_runner
-      end
+      given(:specific_runner) { create(:ci_runner, :project, projects: [specific_runner]) }
 
       scenario 'user sees the specific runner' do
         visit project_runners_path(project)
@@ -126,11 +122,10 @@ feature 'Runners' do
 
     context 'when a specific runner exists in another project' do
       given(:another_project) { create(:project) }
-      given(:specific_runner) { create(:ci_runner, :project) }
+      given(:specific_runner) { create(:ci_runner, :project, projects: [another_project]) }
 
       background do
         another_project.add_master(user)
-        another_project.runners << specific_runner
       end
 
       scenario 'user enables and disables a specific runner' do

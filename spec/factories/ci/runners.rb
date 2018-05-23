@@ -3,35 +3,25 @@ FactoryBot.define do
     sequence(:description) { |n| "My runner#{n}" }
 
     platform  "darwin"
-    is_shared false
     active    true
     access_level :not_protected
-    runner_type :project_type
 
-    trait :online do
-      contacted_at Time.now
-    end
-
-    trait :shared do
-      is_shared true
-      runner_type :instance_type
-    end
-
-    trait :specific do
-      is_shared false
-    end
-
-    trait :group do
-      runner_type :group_type
-    end
-
-    trait :project do
-      runner_type :project_type
-    end
+    is_shared true
+    runner_type :instance_type
 
     trait :instance do
       is_shared true
       runner_type :instance_type
+    end
+
+    trait :group do
+      is_shared false
+      runner_type :group_type
+    end
+
+    trait :project do
+      is_shared false
+      runner_type :project_type
     end
 
     trait :inactive do

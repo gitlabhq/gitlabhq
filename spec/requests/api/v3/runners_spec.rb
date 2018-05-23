@@ -8,7 +8,7 @@ describe API::V3::Runners do
   let(:project) { create(:project, creator_id: user.id) }
   let(:project2) { create(:project, creator_id: user.id) }
 
-  let!(:shared_runner) { create(:ci_runner, :shared) }
+  let!(:shared_runner) { create(:ci_runner, :instance) }
   let!(:unused_specific_runner) { create(:ci_runner) }
 
   let!(:specific_runner) do

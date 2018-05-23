@@ -6,13 +6,9 @@ describe Ci::UpdateBuildQueueService do
   let(:pipeline) { create(:ci_pipeline, project: project) }
 
   context 'when updating specific runners' do
-    let(:runner) { create(:ci_runner, :project) }
+    let(:runner) { create(:ci_runner, :project, projects: [project]) }
 
     context 'when there is a runner that can pick build' do
-      before do
-        build.project.runners << runner
-      end
-
       it 'ticks runner queue value' do
         expect { subject.execute(build) }.to change { runner.ensure_runner_queue_value }
       end
