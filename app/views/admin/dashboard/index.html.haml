@@ -2,6 +2,8 @@
 - breadcrumb_title "Dashboard"
 
 %div{ class: container_class }
+  = render_if_exists "admin/licenses/breakdown", license: @license
+
   .admin-dashboard.prepend-top-default
     .row
       .col-sm-4
@@ -20,6 +22,7 @@
               %h3.text-center
                 Users:
                 = approximate_count_with_delimiters(User)
+            = render_if_exists 'users_statistics'
             %hr
             = link_to 'New user', new_admin_user_path, class: "btn btn-new"
       .col-sm-4
@@ -97,6 +100,9 @@
               = reply_email
               %span.light.pull-right
                 = boolean_to_icon Gitlab::IncomingEmail.enabled?
+
+            = render_if_exists 'elastic_and_geo'
+
             - container_reg = "Container Registry"
             %p{ "aria-label" => "#{container_reg}: status " + (Gitlab.config.registry.enabled ? "on" : "off") }
               = container_reg
@@ -144,6 +150,9 @@
                 GitLab Pages
                 %span.pull-right
                   = Gitlab::Pages::VERSION
+
+            = render_if_exists 'geo'
+
             %p
               Ruby
               %span.pull-right
