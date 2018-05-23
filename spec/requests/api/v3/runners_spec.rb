@@ -9,20 +9,9 @@ describe API::V3::Runners do
   let(:project2) { create(:project, creator_id: user.id) }
 
   let!(:shared_runner) { create(:ci_runner, :instance) }
-  let!(:unused_specific_runner) { create(:ci_runner) }
 
-  let!(:specific_runner) do
-    create(:ci_runner).tap do |runner|
-      create(:ci_runner_project, runner: runner, project: project)
-    end
-  end
-
-  let!(:two_projects_runner) do
-    create(:ci_runner).tap do |runner|
-      create(:ci_runner_project, runner: runner, project: project)
-      create(:ci_runner_project, runner: runner, project: project2)
-    end
-  end
+  let!(:specific_runner) { create(:ci_runner, :project, projects: [project]) }
+  let!(:two_projects_runner) { create(:ci_runner, :project, projects: [project, project2])
 
   before do
     # Set project access for users
@@ -43,14 +32,6 @@ describe API::V3::Runners do
       end
 
       context 'when runner is not shared' do
-        it 'deletes unused runner' do
-          expect do
-            delete v3_api("/runners/#{unused_specific_runner.id}", admin)
-
-            expect(response).to have_gitlab_http_status(200)
-          end.to change { Ci::Runner.specific.count }.by(-1)
-        end
-
         it 'deletes used runner' do
           expect do
             delete v3_api("/runners/#{specific_runner.id}", admin)
