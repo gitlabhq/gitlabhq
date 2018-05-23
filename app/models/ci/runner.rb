@@ -57,11 +57,14 @@ module Ci
     end
 
     validate :tag_constraints
-    validate :no_projects, unless: :project_type?
-    validate :no_groups, unless: :group_type?
-    validate :only_one_group, if: :group_type?
     validates :access_level, presence: true
     validates :runner_type, presence: true
+
+    validate :no_projects, unless: :project_type?
+    validate :no_groups, unless: :group_type?
+    validate :any_project, if: :project_type?
+    validate :exactly_one_group, if: :group_type?
+    validate :is_shared_is_valid
 
     acts_as_taggable
 
@@ -118,8 +121,8 @@ module Ci
         raise ArgumentError, 'Transitioning a group runner to a project runner is not supported'
       end
 
-      self.save
-      project.runner_projects.create(runner_id: self.id)
+      self.projects << project
+      self.save!
     end
 
     def display_name
@@ -258,19 +261,31 @@ module Ci
 
     def no_projects
       if projects.any?
-        errors.add(:runner, 'cannot assign project to a non-project runner')
+        errors.add(:runner, 'cannot have projects assigned')
       end
     end
 
     def no_groups
       if groups.any?
-        errors.add(:runner, 'cannot assign group to a non-group runner')
+        errors.add(:runner, 'cannot have groups assigned')
       end
     end
 
-    def only_one_group
-      if groups.many?
-        errors.add(:runner, 'can only be assigned to one group')
+    def any_project
+      unless projects.any?
+        errors.add(:runner, 'needs to be assigned to at least one project')
+      end
+    end
+
+    def exactly_one_group
+      unless groups.one?
+        errors.add(:runner, 'needs to be assigned to exactly one group')
+      end
+    end
+
+    def is_shared_is_valid
+      unless is_shared? == instance_type?
+        errors.add(:is_shared, 'is not equal to instance_type?')
       end
     end
 

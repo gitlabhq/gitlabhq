@@ -1907,8 +1907,7 @@ describe User do
 
   describe '#ci_owned_runners' do
     let(:user) { create(:user) }
-    let(:runner_1) { create(:ci_runner) }
-    let(:runner_2) { create(:ci_runner) }
+    let(:runner) { create(:ci_runner, :project, projects: [project]) }
 
     context 'without any projects nor groups' do
       let!(:project) { create(:project, runners: [runner_1]) }

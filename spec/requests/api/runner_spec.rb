@@ -262,7 +262,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
   describe '/api/v4/jobs' do
     let(:project) { create(:project, shared_runners_enabled: false) }
     let(:pipeline) { create(:ci_pipeline_without_jobs, project: project, ref: 'master') }
-    let(:runner) { create(:ci_runner) }
+    let(:runner) { create(:ci_runner, :project, projects: [project]) }
     let(:job) do
       create(:ci_build, :artifacts, :extended_options,
              pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0, commands: "ls\ndate")
@@ -271,7 +271,6 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
     before do
       stub_artifacts_object_storage
       job
-      project.runners << runner
     end
 
     describe 'POST /api/v4/jobs/request' do
@@ -381,7 +380,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         end
 
         context 'when shared runner requests job for project without shared_runners_enabled' do
-          let(:runner) { create(:ci_runner, :shared) }
+          let(:runner) { create(:ci_runner, :instance) }
 
           it_behaves_like 'no jobs available'
         end

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe RunnerJobsFinder do
   let(:project) { create(:project) }
-  let(:runner) { create(:ci_runner, :shared) }
+  let(:runner) { create(:ci_runner, :instance) }
 
   subject { described_class.new(runner, params).execute }
 
