@@ -1,5 +1,0 @@
----
-title: Fixes deploy token variables on Ci::Build
-merge_request: 19047
-author:
-type: fixed
