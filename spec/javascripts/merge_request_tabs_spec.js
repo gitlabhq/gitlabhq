@@ -8,7 +8,6 @@ import '~/lib/utils/common_utils';
 import 'vendor/jquery.scrollTo';
 import initMrPage from './helpers/init_vue_mr_page_helper';
 
-// eslint-disable-next-line jasmine/no-disabled-tests
 describe('MergeRequestTabs', function() {
   var stubLocation = {};
   var setLocation = function(stubs) {
