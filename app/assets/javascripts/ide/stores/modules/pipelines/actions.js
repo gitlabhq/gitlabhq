@@ -35,7 +35,6 @@ export const fetchStages = ({ dispatch, state, rootState }) => {
 
   Api.pipelineJobs(rootState.currentProjectId, state.latestPipeline.id)
     .then(({ data }) => dispatch('receiveStagesSuccess', data))
-    .then(() => state.stages.forEach(stage => dispatch('fetchJobs', stage)))
     .catch(() => dispatch('receiveStagesError'));
 };
 

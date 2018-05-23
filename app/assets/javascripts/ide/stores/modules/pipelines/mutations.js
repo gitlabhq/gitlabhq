@@ -27,13 +27,16 @@ export default {
   [types.RECEIVE_STAGES_SUCCESS](state, stages) {
     state.isLoadingJobs = false;
 
-    state.stages = stages.map((stage, i) => ({
-      ...stage,
-      id: i,
-      isCollapsed: false,
-      isLoading: false,
-      jobs: [],
-    }));
+    state.stages = stages.map((stage, i) => {
+      const foundStage = state.stages.find(s => s.id === i);
+      return {
+        ...stage,
+        id: i,
+        isCollapsed: foundStage ? foundStage.isCollapsed : false,
+        isLoading: foundStage ? foundStage.isLoading : false,
+        jobs: foundStage ? foundStage.jobs : [],
+      };
+    });
   },
   [types.REQUEST_JOBS](state, id) {
     state.stages = state.stages.reduce(

@@ -31,19 +31,20 @@ export default {
       class="multi-file-commit-panel-inner"
       v-if="rightPane"
     >
-      <keep-alive>
-        <component :is="rightPane" />
-      </keep-alive>
+      <component :is="rightPane" />
     </div>
     <nav class="ide-activity-bar">
       <ul class="list-unstyled">
-        <li v-once>
+        <li>
           <button
             v-tooltip
             data-container="body"
             data-placement="left"
             :title="__('Pipelines')"
-            class="ide-sidebar-link"
+            class="ide-sidebar-link is-right"
+            :class="{
+              active: rightPane === $options.rightSidebarViews.pipelines
+            }"
             type="button"
             @click="setRightPane($options.rightSidebarViews.pipelines)"
           >

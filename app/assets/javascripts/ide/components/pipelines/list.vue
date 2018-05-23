@@ -20,7 +20,7 @@ export default {
       };
     },
   },
-  mounted() {
+  created() {
     this.fetchLatestPipeline();
   },
   methods: {
@@ -32,7 +32,7 @@ export default {
 <template>
   <div>
     <loading-icon
-      v-if="isLoadingPipeline"
+      v-if="isLoadingPipeline && !latestPipeline"
       class="prepend-top-default"
       size="2"
     />

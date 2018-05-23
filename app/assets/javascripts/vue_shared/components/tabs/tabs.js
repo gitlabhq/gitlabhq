@@ -32,7 +32,9 @@ export default {
           h(
             'a',
             {
-              href: '#',
+              attrs: {
+                href: '#',
+              },
               on: {
                 click: () => this.setTab(i),
               },

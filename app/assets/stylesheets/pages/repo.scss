@@ -903,6 +903,13 @@
       width: 1px;
       background: $white-light;
     }
+
+    &.is-right {
+      &::after {
+        right: auto;
+        left: -1px;
+      }
+    }
   }
 }
 
