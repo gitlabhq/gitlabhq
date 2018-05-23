@@ -85,7 +85,7 @@ export default {
 
         return sprintf(
           s__(
-            'Please <a href=%{linkToBilling} target="_blank" rel="noopener noreferrer">enable billing for one of your projects to be able to create a Kubernetes cluster</a>, then try again.',
+            'This project does not have billing enabled. To create a cluster, <a href=%{linkToBilling} target="_blank" rel="noopener noreferrer">enable billing <i class="fa fa-external-link" aria-hidden="true"></i></a> and try again.',
           ),
           {
             linkToBilling:
