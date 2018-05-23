@@ -1,5 +1,6 @@
 /* eslint-disable no-var, comma-dangle, object-shorthand */
 import $ from 'jquery';
+import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import MergeRequestTabs from '~/merge_request_tabs';
 import '~/commit/pipelines/pipelines_bundle';
@@ -9,6 +10,7 @@ import 'vendor/jquery.scrollTo';
 import initMrPage from './helpers/init_vue_mr_page_helper';
 
 describe('MergeRequestTabs', function() {
+  let mrPageMock;
   var stubLocation = {};
   var setLocation = function(stubs) {
     var defaults = {
@@ -19,18 +21,13 @@ describe('MergeRequestTabs', function() {
     $.extend(stubLocation, defaults, stubs || {});
   };
 
-  const inlineChangesTabJsonFixture = 'merge_request_diffs/inline_changes_tab_with_comments.json';
-  const parallelChangesTabJsonFixture =
-    'merge_request_diffs/parallel_changes_tab_with_comments.json';
   preloadFixtures(
     'merge_requests/merge_request_with_task_list.html.raw',
     'merge_requests/diff_comment.html.raw',
-    inlineChangesTabJsonFixture,
-    parallelChangesTabJsonFixture,
   );
 
   beforeEach(function() {
-    initMrPage();
+    mrPageMock = initMrPage();
     this.class = new MergeRequestTabs({ stubLocation: stubLocation });
     setLocation();
 
@@ -42,6 +39,7 @@ describe('MergeRequestTabs', function() {
   afterEach(function() {
     this.class.unbindEvents();
     this.class.destroyPipelinesView();
+    mrPageMock.restore();
   });
 
   describe('opensInNewTab', function() {
@@ -52,8 +50,6 @@ describe('MergeRequestTabs', function() {
       loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
 
       tabUrl = $('.commits-tab a').attr('href');
-
-      spyOn($.fn, 'attr').and.returnValue(tabUrl);
     });
 
     describe('meta click', () => {
@@ -127,9 +123,16 @@ describe('MergeRequestTabs', function() {
   });
 
   describe('setCurrentAction', function() {
+    let mock;
+
     beforeEach(function() {
-      spyOn(axios, 'get').and.returnValue(Promise.resolve({ data: {} }));
+      mock = new MockAdapter(axios);
+      mock.onAny().reply({ data: {} });
       this.subject = this.class.setCurrentAction;
+    });
+
+    afterEach(() => {
+      mock.restore();
     });
 
     it('changes from commits', function() {

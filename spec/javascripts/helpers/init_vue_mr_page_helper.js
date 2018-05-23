@@ -36,4 +36,5 @@ export default function initVueMRPage() {
   });
 
   initMRPage();
+  return mock;
 }
