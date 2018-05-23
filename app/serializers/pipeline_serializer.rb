@@ -1,14 +1,12 @@
 class PipelineSerializer < BaseSerializer
   include WithPagination
-
-  InvalidResourceError = Class.new(StandardError)
-
   entity PipelineDetailsEntity
 
   def represent(resource, opts = {})
     if resource.is_a?(ActiveRecord::Relation)
 
       resource = resource.preload([
+        :stages,
         :retryable_builds,
         :cancelable_statuses,
         :trigger_requests,
@@ -19,11 +17,12 @@ class PipelineSerializer < BaseSerializer
       ])
     end
 
-    if paginated?
-      super(@paginator.paginate(resource), opts)
-    else
-      super(resource, opts)
+    if opts.delete(:preload)
+      resource = @paginator.paginate(resource) if paginated?
+      resource = Gitlab::Ci::Pipeline::Preloader.preload!(resource)
     end
+
+    super(resource, opts)
   end
 
   def represent_status(resource)
