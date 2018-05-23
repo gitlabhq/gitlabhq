@@ -36,7 +36,7 @@ describe Projects::PipelinesController do
       expect(json_response['count']['running']).to eq '1'
       expect(json_response['count']['pending']).to eq '1'
       expect(json_response['count']['finished']).to eq '2'
-      expect(queries.count).to be < 32
+      expect(queries.count).to be_within(2).of(29)
     end
 
     it 'does not include coverage data for the pipelines' do

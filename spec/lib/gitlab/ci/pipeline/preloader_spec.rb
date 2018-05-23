@@ -18,5 +18,15 @@ describe Gitlab::Ci::Pipeline::Preloader do
 
       described_class.preload!([pipeline])
     end
+
+    it 'returns original collection' do
+      allow(commit).to receive(:lazy_author)
+      allow(pipeline).to receive(:number_of_warnings)
+      allow(stage).to receive(:number_of_warnings)
+
+      pipelines = [pipeline, pipeline]
+
+      expect(described_class.preload!(pipelines)).to eq pipelines
+    end
   end
 end
