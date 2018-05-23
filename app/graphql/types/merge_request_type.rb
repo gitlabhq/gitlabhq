@@ -1,46 +1,47 @@
-Types::MergeRequestType = GraphQL::ObjectType.define do
-  present_using MergeRequestPresenter
+module Types
+  class MergeRequestType < BaseObject
+    present_using MergeRequestPresenter
 
-  name 'MergeRequest'
+    graphql_name 'MergeRequest'
 
-  field :id, !types.ID
-  field :iid, !types.ID
-  field :title, !types.String
-  field :description, types.String
-  field :state, types.String
-  field :created_at, !Types::TimeType
-  field :updated_at, !Types::TimeType
-  field :source_project, Types::ProjectType
-  field :target_project, !Types::ProjectType
-  # Alias for target_project
-  field :project, !Types::ProjectType
-  field :project_id, !types.Int, property: :target_project_id
-  field :source_project_id, types.Int
-  field :target_project_id, !types.Int
-  field :source_branch, !types.String
-  field :target_branch, !types.String
-  field :work_in_progress, types.Boolean, property: :work_in_progress?
-  field :merge_when_pipeline_succeeds, types.Boolean
-  field :sha, types.String, property: :diff_head_sha
-  field :merge_commit_sha, types.String
-  field :user_notes_count, types.Int
-  field :should_remove_source_branch, types.Boolean, property: :should_remove_source_branch?
-  field :force_remove_source_branch, types.Boolean, property: :force_remove_source_branch?
-  field :merge_status, types.String
-  field :in_progress_merge_commit_sha, types.String
-  field :merge_error, types.String
-  field :allow_maintainer_to_push, types.Boolean
-  field :should_be_rebased, types.Boolean, property: :should_be_rebased?
-  field :rebase_commit_sha, types.String
-  field :rebase_in_progress, types.Boolean, property: :rebase_in_progress?
-  field :diff_head_sha, types.String
-  field :merge_commit_message, types.String
-  field :merge_ongoing, types.Boolean, property: :merge_ongoing?
-  field :work_in_progress, types.Boolean, property: :work_in_progress?
-  field :source_branch_exists, types.Boolean, property: :source_branch_exists?
-  field :mergeable_discussions_state, types.Boolean
-  field :web_url, types.String, property: :web_url
-  field :upvotes, types.Int
-  field :downvotes, types.Int
-  field :subscribed, types.Boolean, property: :subscribed?
+    field :id, GraphQL::ID_TYPE, null: false
+    field :iid, GraphQL::ID_TYPE, null: false
+    field :title, GraphQL::STRING_TYPE, null: false
+    field :description, GraphQL::STRING_TYPE, null: true
+    field :state, GraphQL::STRING_TYPE, null: true
+    field :created_at, Types::TimeType, null: false
+    field :updated_at, Types::TimeType, null: false
+    field :source_project, Types::ProjectType, null: true
+    field :target_project, Types::ProjectType, null: false
+    # Alias for target_project
+    field :project, Types::ProjectType, null: false
+    field :project_id, GraphQL::INT_TYPE, null: false, method: :target_project_id
+    field :source_project_id, GraphQL::INT_TYPE, null: true
+    field :target_project_id, GraphQL::INT_TYPE, null: false
+    field :source_branch, GraphQL::STRING_TYPE, null: false
+    field :target_branch, GraphQL::STRING_TYPE, null: false
+    field :work_in_progress, GraphQL::BOOLEAN_TYPE, method: :work_in_progress?, null: false
+    field :merge_when_pipeline_succeeds, GraphQL::BOOLEAN_TYPE, null: true
+    field :diff_head_sha, GraphQL::STRING_TYPE, null: true
+    field :merge_commit_sha, GraphQL::STRING_TYPE, null: true
+    field :user_notes_count, GraphQL::INT_TYPE, null: true
+    field :should_remove_source_branch, GraphQL::BOOLEAN_TYPE, method: :should_remove_source_branch?, null: true
+    field :force_remove_source_branch, GraphQL::BOOLEAN_TYPE, method: :force_remove_source_branch?, null: true
+    field :merge_status, GraphQL::STRING_TYPE, null: true
+    field :in_progress_merge_commit_sha, GraphQL::STRING_TYPE, null: true
+    field :merge_error, GraphQL::STRING_TYPE, null: true
+    field :allow_collaboration, GraphQL::BOOLEAN_TYPE, null: true
+    field :should_be_rebased, GraphQL::BOOLEAN_TYPE, method: :should_be_rebased?, null: false
+    field :rebase_commit_sha, GraphQL::STRING_TYPE, null: true
+    field :rebase_in_progress, GraphQL::BOOLEAN_TYPE, method: :rebase_in_progress?, null: false
+    field :diff_head_sha, GraphQL::STRING_TYPE, null: true
+    field :merge_commit_message, GraphQL::STRING_TYPE, null: true
+    field :merge_ongoing, GraphQL::BOOLEAN_TYPE, method: :merge_ongoing?, null: false
+    field :source_branch_exists, GraphQL::BOOLEAN_TYPE, method: :source_branch_exists?, null: false
+    field :mergeable_discussions_state, GraphQL::BOOLEAN_TYPE, null: true
+    field :web_url, GraphQL::STRING_TYPE, null: true
+    field :upvotes, GraphQL::INT_TYPE, null: false
+    field :downvotes, GraphQL::INT_TYPE, null: false
+    field :subscribed, GraphQL::BOOLEAN_TYPE, method: :subscribed?, null: false
+  end
 end

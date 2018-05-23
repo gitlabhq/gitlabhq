@@ -1,5 +1,7 @@
-Types::MutationType = GraphQL::ObjectType.define do
-  name "Mutation"
+module Types
+  class MutationType < BaseObject
+    graphql_name "Mutation"
 
-  # TODO: Add Mutations as fields
+    # TODO: Add Mutations as fields
+  end
 end

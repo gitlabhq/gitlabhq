@@ -6,26 +6,25 @@ describe GitlabSchema do
   end
 
   it 'enables the preload instrumenter' do
-    expect(field_instrumenters).to include(instance_of(::GraphQL::Preload::Instrument))
+    expect(field_instrumenters).to include(BatchLoader::GraphQL)
   end
 
   it 'enables the authorization instrumenter' do
-    expect(field_instrumenters).to include(instance_of(::Gitlab::Graphql::Authorize))
+    expect(field_instrumenters).to include(instance_of(::Gitlab::Graphql::Authorize::Instrumentation))
   end
 
   it 'enables using presenters' do
-    expect(field_instrumenters).to include(instance_of(::Gitlab::Graphql::Present))
+    expect(field_instrumenters).to include(instance_of(::Gitlab::Graphql::Present::Instrumentation))
   end
 
   it 'has the base mutation' do
-    pending <<~REASON
-      Having empty mutations breaks the automatic documentation in Graphiql, so removed for now."
-    REASON
-    expect(described_class.mutation).to eq(::Types::MutationType)
+    pending('Adding an empty mutation breaks the documentation explorer')
+
+    expect(described_class.mutation).to eq(::Types::MutationType.to_graphql)
   end
 
   it 'has the base query' do
-    expect(described_class.query).to eq(::Types::QueryType)
+    expect(described_class.query).to eq(::Types::QueryType.to_graphql)
   end
 
   def field_instrumenters

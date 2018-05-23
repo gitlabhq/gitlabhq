@@ -94,8 +94,7 @@ gem 'grape-entity', '~> 0.7.1'
 gem 'rack-cors', '~> 1.0.0', require: 'rack/cors'
 
 # GraphQL API
-gem 'graphql', '~> 1.7.14'
-gem 'graphql-preload', '~> 2.0.0'
+gem 'graphql', '~> 1.8.0'
 gem 'graphiql-rails', '~> 1.4.10'
 
 # Disable strong_params so that Mash does not respond to :permitted?

@@ -1,13 +1,11 @@
-module Loaders::FullPathLoader
-  include Loaders::BaseLoader
+module Resolvers
+  module FullPathResolver
+    extend ActiveSupport::Concern
 
-  class << self
-    def project(obj, args, ctx)
-      project_by_full_path(args[:full_path])
-    end
-
-    def project_by_full_path(full_path)
-      model_by_full_path(Project, full_path)
+    prepended do
+      argument :full_path, GraphQL::ID_TYPE,
+               required: true,
+               description: 'The full path of the project or namespace, e.g., "gitlab-org/gitlab-ce"'
     end
 
     def model_by_full_path(model, full_path)

@@ -1,7 +1,16 @@
 module GraphqlHelpers
+  # makes an underscored string look like a fieldname
+  # "merge_request" => "mergeRequest"
+  def self.fieldnamerize(underscored_field_name)
+    graphql_field_name = underscored_field_name.to_s.camelize
+    graphql_field_name[0] = graphql_field_name[0].downcase
+
+    graphql_field_name
+  end
+
   # Run a loader's named resolver
-  def resolve(kls, name, obj: nil, args: {}, ctx: {})
-    kls[name].call(obj, args, ctx)
+  def resolve(resolver_class, obj: nil, args: {}, ctx: {})
+    resolver_class.new(object: obj, context: ctx).resolve(args)
   end
 
   # Runs a block inside a BatchLoader::Executor wrapper
@@ -24,8 +33,20 @@ module GraphqlHelpers
     end
   end
 
-  def all_graphql_fields_for(klass)
-    type = GitlabSchema.types[klass.name]
+  def graphql_query_for(name, attributes = {}, fields = nil)
+    fields ||= all_graphql_fields_for(name.classify)
+    attributes = attributes_to_graphql(attributes)
+    <<~QUERY
+    {
+      #{name}(#{attributes}) {
+        #{fields}
+      }
+    }
+    QUERY
+  end
+
+  def all_graphql_fields_for(class_name)
+    type = GitlabSchema.types[class_name.to_s]
     return "" unless type
 
     type.fields.map do |name, field|
@@ -37,8 +58,22 @@ module GraphqlHelpers
     end.join("\n")
   end
 
-  def post_graphql(query)
-    post '/api/graphql', query: query
+  def attributes_to_graphql(attributes)
+    attributes.map do |name, value|
+      "#{GraphqlHelpers.fieldnamerize(name.to_s)}: \"#{value}\""
+    end.join(", ")
+  end
+
+  def post_graphql(query, current_user: nil)
+    post api('/', current_user, version: 'graphql'), query: query
+  end
+
+  def graphql_data
+    json_response['data']
+  end
+
+  def graphql_errors
+    json_response['data']
   end
 
   def scalar?(field)

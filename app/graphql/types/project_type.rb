@@ -1,63 +1,65 @@
-Types::ProjectType = GraphQL::ObjectType.define do
-  name 'Project'
+module Types
+  class ProjectType < BaseObject
+    graphql_name 'Project'
 
-  field :id, !types.ID
+    field :id, GraphQL::ID_TYPE, null: false
 
-  field :full_path, !types.ID
-  field :path, !types.String
+    field :full_path, GraphQL::ID_TYPE, null: false
+    field :path, GraphQL::STRING_TYPE, null: false
 
-  field :name_with_namespace, !types.String
-  field :name, !types.String
+    field :name_with_namespace, GraphQL::STRING_TYPE, null: false
+    field :name, GraphQL::STRING_TYPE, null: false
 
-  field :description, types.String
+    field :description, GraphQL::STRING_TYPE, null: true
 
-  field :default_branch, types.String
-  field :tag_list, types.String
+    field :default_branch, GraphQL::STRING_TYPE, null: true
+    field :tag_list, GraphQL::STRING_TYPE, null: true
 
-  field :ssh_url_to_repo, types.String
-  field :http_url_to_repo, types.String
-  field :web_url, types.String
+    field :ssh_url_to_repo, GraphQL::STRING_TYPE, null: true
+    field :http_url_to_repo, GraphQL::STRING_TYPE, null: true
+    field :web_url, GraphQL::STRING_TYPE, null: true
 
-  field :star_count, !types.Int
-  field :forks_count, !types.Int
+    field :star_count, GraphQL::INT_TYPE, null: false
+    field :forks_count, GraphQL::INT_TYPE, null: false
 
-  field :created_at, Types::TimeType
-  field :last_activity_at, Types::TimeType
+    field :created_at, Types::TimeType, null: true
+    field :last_activity_at, Types::TimeType, null: true
 
-  field :archived, types.Boolean
+    field :archived, GraphQL::BOOLEAN_TYPE, null: true
 
-  field :visibility, types.String
+    field :visibility, GraphQL::STRING_TYPE, null: true
 
-  field :container_registry_enabled, types.Boolean
-  field :shared_runners_enabled, types.Boolean
-  field :lfs_enabled, types.Boolean
-  field :ff_only_enabled, types.Boolean, property: :merge_requests_ff_only_enabled
+    field :container_registry_enabled, GraphQL::BOOLEAN_TYPE, null: true
+    field :shared_runners_enabled, GraphQL::BOOLEAN_TYPE, null: true
+    field :lfs_enabled, GraphQL::BOOLEAN_TYPE, null: true
+    field :merge_requests_ff_only_enabled, GraphQL::BOOLEAN_TYPE, null: true
 
-  field :avatar_url, types.String do
-    resolve ->(project, args, ctx) { project.avatar_url(only_path: false) }
-  end
-
-  %i[issues merge_requests wiki snippets].each do |feature|
-    field "#{feature}_enabled", types.Boolean do
-      resolve ->(project, args, ctx) { project.feature_available?(feature, ctx[:current_user]) }
+    field :avatar_url, GraphQL::STRING_TYPE, null: true, resolve: -> (project, args, ctx) do
+      project.avatar_url(only_path: false)
     end
+
+    %i[issues merge_requests wiki snippets].each do |feature|
+      field "#{feature}_enabled", GraphQL::BOOLEAN_TYPE, null: true, resolve: -> (project, args, ctx) do
+        project.feature_available?(feature, ctx[:current_user])
+      end
+    end
+
+    field :jobs_enabled, GraphQL::BOOLEAN_TYPE, null: true, resolve: -> (project, args, ctx) do
+      project.feature_available?(:builds, ctx[:current_user])
+    end
+
+    field :public_jobs, GraphQL::BOOLEAN_TYPE, method: :public_builds, null: true
+
+    field :open_issues_count, GraphQL::INT_TYPE, null: true, resolve: -> (project, args, ctx) do
+      project.open_issues_count if project.feature_available?(:issues, ctx[:current_user])
+    end
+
+    field :import_status, GraphQL::STRING_TYPE, null: true
+    field :ci_config_path, GraphQL::STRING_TYPE, null: true
+
+    field :only_allow_merge_if_pipeline_succeeds, GraphQL::BOOLEAN_TYPE, null: true
+    field :request_access_enabled, GraphQL::BOOLEAN_TYPE, null: true
+    field :only_allow_merge_if_all_discussions_are_resolved, GraphQL::BOOLEAN_TYPE, null: true
+    field :printing_merge_request_link_enabled, GraphQL::BOOLEAN_TYPE, null: true
   end
-
-  field :jobs_enabled, types.Boolean do
-    resolve ->(project, args, ctx) { project.feature_available?(:builds, ctx[:current_user]) }
-  end
-
-  field :public_jobs, types.Boolean, property: :public_builds
-
-  field :open_issues_count, types.Int do
-    resolve ->(project, args, ctx) { project.open_issues_count if project.feature_available?(:issues, ctx[:current_user]) }
-  end
-
-  field :import_status, types.String
-  field :ci_config_path, types.String
-
-  field :only_allow_merge_if_pipeline_succeeds, types.Boolean
-  field :request_access_enabled, types.Boolean
-  field :only_allow_merge_if_all_discussions_are_resolved, types.Boolean
-  field :printing_merge_request_link_enabled, types.Boolean
 end
