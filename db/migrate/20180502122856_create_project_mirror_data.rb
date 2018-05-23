@@ -4,17 +4,13 @@ class CreateProjectMirrorData < ActiveRecord::Migration
   DOWNTIME = false
 
   def up
-    if table_exists?(:project_mirror_data)
-      add_column :project_mirror_data, :status, :string unless column_exists?(:project_mirror_data, :status)
-      add_column :project_mirror_data, :jid, :string unless column_exists?(:project_mirror_data, :jid)
-      add_column :project_mirror_data, :last_error, :text unless column_exists?(:project_mirror_data, :last_error)
-    else
-      create_table :project_mirror_data do |t|
-        t.references :project, index: true, foreign_key: { on_delete: :cascade }
-        t.string :status
-        t.string :jid
-        t.text :last_error
-      end
+    return if table_exists?(:project_mirror_data)
+
+    create_table :project_mirror_data do |t|
+      t.references :project, index: true, foreign_key: { on_delete: :cascade }
+      t.string :status
+      t.string :jid
+      t.text :last_error
     end
   end
 
