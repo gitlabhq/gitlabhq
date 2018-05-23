@@ -9,6 +9,7 @@ class Kubeclient::Client
       else
         @entities[kind.to_s].resource_name
       end
+
     ns_prefix = build_namespace_prefix(namespace)
     rest_client["#{ns_prefix}#{entity_name_plural}/#{name}:#{port}/proxy"].url
   end
