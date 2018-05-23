@@ -125,7 +125,7 @@ label {
   &.input-short {
     width: $input-short-width;
 
-    @media (min-width: $screen-md-min) {
+    @include media-breakpoint-up(md) {
       width: $input-short-md-width;
     }
   }
