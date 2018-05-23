@@ -1,12 +1,14 @@
 import testAction from 'spec/helpers/vuex_action_helper';
 import * as actions from '~/projects/gke_cluster_dropdowns/store/actions';
-import store from '~/projects/gke_cluster_dropdowns/store';
-import { resetStore, gapi } from '../helpers';
+import { createStore } from '~/projects/gke_cluster_dropdowns/store';
+import { gapi } from '../helpers';
 import { selectedProjectMock, selectedZoneMock, selectedMachineTypeMock } from '../mock_data';
 
 describe('GCP Cluster Dropdown Store Actions', () => {
-  afterEach(() => {
-    resetStore(store);
+  let store;
+
+  beforeEach(() => {
+    store = createStore();
   });
 
   describe('setProject', () => {

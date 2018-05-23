@@ -1,4 +1,4 @@
-export default {
+export const state = () => ({
   selectedProject: {
     projectId: '',
     name: '',
@@ -9,4 +9,6 @@ export default {
   projects: [],
   zones: [],
   machineTypes: [],
-};
+});
+
+export default state();

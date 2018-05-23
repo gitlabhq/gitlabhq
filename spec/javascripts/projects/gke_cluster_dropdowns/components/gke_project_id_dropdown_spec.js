@@ -1,9 +1,8 @@
 import Vue from 'vue';
 import GkeProjectIdDropdown from '~/projects/gke_cluster_dropdowns/components/gke_project_id_dropdown.vue';
+import { createStore } from '~/projects/gke_cluster_dropdowns/store';
 import { SET_PROJECTS } from '~/projects/gke_cluster_dropdowns/store/mutation_types';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
-
-import { resetStore } from '../helpers';
+import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { emptyProjectMock, selectedProjectMock } from '../mock_data';
 
 const componentConfig = {
@@ -18,23 +17,27 @@ const LABELS = {
   EMPTY: 'No projects found',
 };
 
-const createComponent = (config = componentConfig) => {
+const createComponent = (store, props = componentConfig) => {
   const Component = Vue.extend(GkeProjectIdDropdown);
 
-  return mountComponent(Component, config);
+  return mountComponentWithStore(Component, {
+    el: null,
+    props,
+    store,
+  });
 };
 
 describe('GkeProjectIdDropdown', () => {
   let vm;
+  let store;
 
   beforeEach(() => {
-    vm = createComponent();
+    store = createStore();
+    vm = createComponent(store);
   });
 
   afterEach(() => {
     vm.$destroy();
-
-    resetStore(vm.$store);
   });
 
   describe('toggleText', () => {

@@ -1,13 +1,13 @@
 import Vue from 'vue';
 import GkeMachineTypeDropdown from '~/projects/gke_cluster_dropdowns/components/gke_machine_type_dropdown.vue';
+import { createStore } from '~/projects/gke_cluster_dropdowns/store';
 import {
   SET_PROJECT,
+  SET_PROJECT_BILLING_STATUS,
   SET_ZONE,
   SET_MACHINE_TYPES,
 } from '~/projects/gke_cluster_dropdowns/store/mutation_types';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
-
-import { resetStore } from '../helpers';
+import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import {
   selectedZoneMock,
   selectedProjectMock,
@@ -27,23 +27,27 @@ const LABELS = {
   DEFAULT: 'Select machine type',
 };
 
-const createComponent = (config = componentConfig) => {
+const createComponent = (store, props = componentConfig) => {
   const Component = Vue.extend(GkeMachineTypeDropdown);
 
-  return mountComponent(Component, config);
+  return mountComponentWithStore(Component, {
+    el: null,
+    props,
+    store,
+  });
 };
 
 describe('GkeMachineTypeDropdown', () => {
   let vm;
+  let store;
 
   beforeEach(() => {
-    vm = createComponent();
+    store = createStore();
+    vm = createComponent(store);
   });
 
   afterEach(() => {
     vm.$destroy();
-
-    resetStore(vm.$store);
   });
 
   describe('shows various toggle text depending on state', () => {
@@ -53,6 +57,7 @@ describe('GkeMachineTypeDropdown', () => {
 
     it('returns disabled state toggle text when no zone is selected', () => {
       vm.$store.commit(SET_PROJECT, selectedProjectMock);
+      vm.$store.commit(SET_PROJECT_BILLING_STATUS, true);
 
       expect(vm.toggleText).toBe(LABELS.DISABLED_NO_ZONE);
     });
@@ -67,6 +72,7 @@ describe('GkeMachineTypeDropdown', () => {
       expect(vm.toggleText).toBe(LABELS.DISABLED_NO_PROJECT);
 
       vm.$store.commit(SET_PROJECT, selectedProjectMock);
+      vm.$store.commit(SET_PROJECT_BILLING_STATUS, true);
       vm.$store.commit(SET_ZONE, selectedZoneMock);
 
       expect(vm.toggleText).toBe(LABELS.DEFAULT);

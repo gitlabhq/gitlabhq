@@ -1,9 +1,12 @@
 import Vue from 'vue';
 import GkeZoneDropdown from '~/projects/gke_cluster_dropdowns/components/gke_zone_dropdown.vue';
-import { SET_PROJECT, SET_ZONES } from '~/projects/gke_cluster_dropdowns/store/mutation_types';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
-
-import { resetStore } from '../helpers';
+import { createStore } from '~/projects/gke_cluster_dropdowns/store';
+import {
+  SET_PROJECT,
+  SET_ZONES,
+  SET_PROJECT_BILLING_STATUS,
+} from '~/projects/gke_cluster_dropdowns/store/mutation_types';
+import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { selectedZoneMock, selectedProjectMock, gapiZonesResponseMock } from '../mock_data';
 
 const componentConfig = {
@@ -17,23 +20,27 @@ const LABELS = {
   DEFAULT: 'Select zone',
 };
 
-const createComponent = (config = componentConfig) => {
+const createComponent = (store, props = componentConfig) => {
   const Component = Vue.extend(GkeZoneDropdown);
 
-  return mountComponent(Component, config);
+  return mountComponentWithStore(Component, {
+    el: null,
+    props,
+    store,
+  });
 };
 
 describe('GkeZoneDropdown', () => {
   let vm;
+  let store;
 
   beforeEach(() => {
-    vm = createComponent();
+    store = createStore();
+    vm = createComponent(store);
   });
 
   afterEach(() => {
     vm.$destroy();
-
-    resetStore(vm.$store);
   });
 
   describe('toggleText', () => {
@@ -51,6 +58,8 @@ describe('GkeZoneDropdown', () => {
       expect(vm.toggleText).toBe(LABELS.DISABLED);
 
       vm.$store.commit(SET_PROJECT, selectedProjectMock);
+      vm.$store.commit(SET_PROJECT_BILLING_STATUS, true);
+
       expect(vm.toggleText).toBe(LABELS.DEFAULT);
     });
 
