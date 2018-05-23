@@ -56,19 +56,20 @@ const gkeDropdownErrorHandler = () => {
 
 const initializeGapiClient = () => {
   const el = document.querySelector('.js-gke-cluster-creation');
-
-  gapi.client.setToken({ access_token: el.dataset.token });
+  if (!el) return false;
 
   gapi.client
-    .load(CONSTANTS.GCP_API_CLOUD_RESOURCE_MANAGER_ENDPOINT)
-    .then(() => {
-      mountGkeProjectIdDropdown();
+    .init({
+      discoveryDocs: [
+        CONSTANTS.GCP_API_CLOUD_BILLING_ENDPOINT,
+        CONSTANTS.GCP_API_CLOUD_RESOURCE_MANAGER_ENDPOINT,
+        CONSTANTS.GCP_API_COMPUTE_ENDPOINT,
+      ],
     })
-    .catch(gkeDropdownErrorHandler);
-
-  gapi.client
-    .load(CONSTANTS.GCP_API_COMPUTE_ENDPOINT)
     .then(() => {
+      gapi.client.setToken({ access_token: el.dataset.token });
+
+      mountGkeProjectIdDropdown();
       mountGkeZoneDropdown();
       mountGkeMachineTypeDropdown();
     })
