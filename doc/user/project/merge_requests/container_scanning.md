@@ -33,11 +33,11 @@ GitLab will then check this file and show the information inside the merge reque
 For more information on how the `container_scanning` job should look like, check the
 example on [analyzing a Docker image for vulnerabilities][cc-docs].
 
->**Note:**
+CAUTION: **Caution:**
 Container Scanning was previously using `sast:container` for job name and
 `gl-sast-container-report.json` for the artifact name. While these old names
 are still maintained they have been deprecated with GitLab 11.0 and may be removed
-in next major release. You are advised to update your current `.gitlab-ci.yml`
+in next major release, GitLab 12.0. You are advised to update your current `.gitlab-ci.yml`
 configuration to reflect that change.
 
 [ee-3672]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3672
