@@ -55,7 +55,7 @@ describe Ci::Group do
 
     it 'returns an array of three groups' do
       expect(stage.groups).to be_a Array
-      expect(stage.groups).to all(be_a Ci::Group)
+      expect(stage.groups).to all(be_a described_class)
       expect(stage.groups.size).to eq 3
     end
 
