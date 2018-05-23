@@ -20,9 +20,7 @@ module EE
       DAST_FILE = 'gl-dast-report.json'.freeze
 
       included do
-        # codeclimate is deprecated and replaced with code_quality (#5779)
-        scope :codeclimate, -> { where(name: %w[codeclimate codequality]) }
-        scope :code_quality, -> { where(name: 'code_quality') }
+        scope :code_quality, -> { where(name: %w[codeclimate codequality code_quality]) }
         scope :performance, -> { where(name: %w[performance deploy]) }
         scope :sast, -> { where(name: 'sast') }
         scope :dependency_scanning, -> { where(name: 'dependency_scanning') }

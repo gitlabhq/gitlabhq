@@ -14,7 +14,7 @@ module EE
 
       # codeclimate_artifact is deprecated and replaced with code_quality_artifact (#5779)
       def codeclimate_artifact
-        @codeclimate_artifact ||= artifacts.codeclimate.find(&:has_codeclimate_json?)
+        @codeclimate_artifact ||= artifacts.code_quality.find(&:has_codeclimate_json?)
       end
 
       def code_quality_artifact

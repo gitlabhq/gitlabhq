@@ -18,8 +18,13 @@ describe Ci::Pipeline do
   end
 
   PIPELINE_ARTIFACTS_METHODS = [
+    # codeclimate_artifact is deprecated and replaced with code_quality_artifact  (#5779)
+    { method: :codeclimate_artifact, options: [Ci::Build::CODECLIMATE_FILE, 'codeclimate'] },
     { method: :codeclimate_artifact, options: [Ci::Build::CODECLIMATE_FILE, 'codequality'] },
-    { method: :code_quality_artifact, options: [Ci::Build::CODEQUALITY_FILE, 'code_quality'] },
+    { method: :codeclimate_artifact, options: [Ci::Build::CODECLIMATE_FILE, 'code_quality'] },
+    { method: :code_quality_artifact, options: [Ci::Build::CODE_QUALITY_FILE, 'codeclimate'] },
+    { method: :code_quality_artifact, options: [Ci::Build::CODE_QUALITY_FILE, 'codequality'] },
+    { method: :code_quality_artifact, options: [Ci::Build::CODE_QUALITY_FILE, 'code_quality'] },
     { method: :performance_artifact, options: [Ci::Build::PERFORMANCE_FILE, 'performance'] },
     { method: :sast_artifact, options: [Ci::Build::SAST_FILE, 'sast'] },
     { method: :dependency_scanning_artifact, options: [Ci::Build::DEPENDENCY_SCANNING_FILE, 'dependency_scanning'] },
