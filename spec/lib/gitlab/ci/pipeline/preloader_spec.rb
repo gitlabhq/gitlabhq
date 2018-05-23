@@ -10,13 +10,13 @@ describe Gitlab::Ci::Pipeline::Preloader do
     double(:pipeline, commit: commit, stages: [stage])
   end
 
-  describe '#preload!' do
+  describe '.preload!' do
     it 'preloads commit authors and number of warnings' do
       expect(commit).to receive(:lazy_author)
       expect(pipeline).to receive(:number_of_warnings)
       expect(stage).to receive(:number_of_warnings)
 
-      described_class.new([pipeline]).preload!
+      described_class.preload!([pipeline])
     end
   end
 end
