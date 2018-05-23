@@ -115,11 +115,6 @@ export default {
       this.isValidatingProjectBilling = false;
     },
   },
-  data() {
-    return {
-      isValidatingProjectBilling: false,
-    };
-  },
   created() {
     this.isLoading = true;
 
