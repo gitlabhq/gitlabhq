@@ -18,8 +18,8 @@ module Geo
           return if project.nil? || project.pending_delete?
 
           try_obtain_lease do
-            calculate_repository_checksum if repository_state.repository_checksum_outdated?
-            calculate_wiki_checksum if repository_state.wiki_checksum_outdated?
+            calculate_repository_checksum if repository_state.repository_verification_checksum.nil?
+            calculate_wiki_checksum if repository_state.wiki_verification_checksum.nil?
           end
         end
 
