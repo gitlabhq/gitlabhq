@@ -344,16 +344,27 @@ job:
     kubernetes: active
 ```
 
-Example of using variables expressions:
+Examples of using variables expressions:
 
 ```yaml
 deploy:
+  script: cap staging deploy
   only:
     refs:
       - branches
     variables:
       - $RELEASE == "staging"
       - $STAGING
+```
+
+Another use case is exluding jobs depending on a commit message _(added in 11.0)_:
+
+```yaml
+end-to-end:
+  script: rake test:end-to-end
+  except:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /skip-end-to-end-tests/
 ```
 
 Learn more about variables expressions on [a separate page][variables-expressions].

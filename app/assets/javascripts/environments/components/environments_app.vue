@@ -68,8 +68,7 @@
         this.store.updateEnvironmentProp(folder, 'isLoadingFolderContent', showLoader);
 
         this.service.getFolderContent(folder.folder_path)
-          .then(resp => resp.json())
-          .then(response => this.store.setfolderContent(folder, response.environments))
+          .then(response => this.store.setfolderContent(folder, response.data.environments))
           .then(() => this.store.updateEnvironmentProp(folder, 'isLoadingFolderContent', false))
           .catch(() => {
             Flash(s__('Environments|An error occurred while fetching the environments.'));

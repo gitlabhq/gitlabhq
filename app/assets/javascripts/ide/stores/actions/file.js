@@ -63,7 +63,9 @@ export const getFileData = ({ state, commit, dispatch }, { path, makeFileActive 
   const file = state.entries[path];
   commit(types.TOGGLE_LOADING, { entry: file });
   return service
-    .getFileData(`${gon.relative_url_root ? gon.relative_url_root : ''}${file.url}`)
+    .getFileData(
+      `${gon.relative_url_root ? gon.relative_url_root : ''}${file.url.replace('/-/', '/')}`,
+    )
     .then(res => {
       const pageTitle = decodeURI(normalizeHeaders(res.headers)['PAGE-TITLE']);
       setPageTitle(pageTitle);

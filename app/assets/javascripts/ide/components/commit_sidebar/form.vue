@@ -5,7 +5,7 @@ import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import CommitMessageField from './message_field.vue';
 import Actions from './actions.vue';
 import SuccessMessage from './success_message.vue';
-import { activityBarViews, MAX_WINDOW_HEIGHT_COMPACT, COMMIT_ITEM_PADDING } from '../../constants';
+import { activityBarViews, MAX_WINDOW_HEIGHT_COMPACT } from '../../constants';
 
 export default {
   components: {
@@ -70,7 +70,7 @@ export default {
         ? this.$refs.formEl && this.$refs.formEl.offsetHeight
         : this.$refs.compactEl && this.$refs.compactEl.offsetHeight;
 
-      this.componentHeight = elHeight + COMMIT_ITEM_PADDING;
+      this.componentHeight = elHeight;
     },
     enterTransition() {
       this.$nextTick(() => {
@@ -78,7 +78,7 @@ export default {
           ? this.$refs.compactEl && this.$refs.compactEl.offsetHeight
           : this.$refs.formEl && this.$refs.formEl.offsetHeight;
 
-        this.componentHeight = elHeight + COMMIT_ITEM_PADDING;
+        this.componentHeight = elHeight;
       });
     },
     afterEndTransition() {

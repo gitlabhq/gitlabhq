@@ -53,6 +53,9 @@ stub_licensed_features(variable_environment_scope: true)
 
 EE-specific comments should not be backported to CE.
 
+**Note:** This is only meant as a workaround, we should follow up and
+resolve this soon.
+
 ### Detection of EE-only files
 
 For each commit (except on `master`), the `ee-files-location-check` CI job tries
@@ -105,11 +108,14 @@ is applied not only to models. Here's a list of other examples:
 - `ee/app/services/foo/create_service.rb`
 - `ee/app/validators/foo_attr_validator.rb`
 - `ee/app/workers/foo_worker.rb`
+- `ee/app/views/foo.html.haml`
+- `ee/app/views/foo/_bar.html.haml`
 
 This works because for every path that are present in CE's eager-load/auto-load
 paths, we add the same `ee/`-prepended path in [`config/application.rb`].
+This also applies to views.
 
-[`config/application.rb`]: https://gitlab.com/gitlab-org/gitlab-ee/blob/d278b76d6600a0e27d8019a0be27971ba23ab640/config/application.rb#L41-51
+[`config/application.rb`]: https://gitlab.com/gitlab-org/gitlab-ee/blob/925d3d4ebc7a2c72964ce97623ae41b8af12538d/config/application.rb#L42-52
 
 ### EE features based on CE features
 
@@ -359,8 +365,36 @@ Blocks of code that are EE-specific should be moved to partials. This
 avoids conflicts with big chunks of HAML code that that are not fun to
 resolve when you add the indentation to the equation.
 
-EE-specific views should be placed in `ee/app/views/ee/`, using extra
+EE-specific views should be placed in `ee/app/views/`, using extra
 sub-directories if appropriate.
+
+Instead of using regular `render`, we should use `render_if_exists`, which
+will not render anything if it cannot find the specific partial. We use this
+so that we could put `render_if_exists` in CE, keeping code the same between
+CE and EE.
+
+Also, it should search for the EE partial first, and then CE partial, and
+then if nothing found, render nothing.
+
+This has two uses:
+
+- CE renders nothing, and EE renders its EE partial.
+- CE renders its CE partial, and EE renders its EE partial, while the view
+  file stays the same.
+
+The advantages of this:
+
+- Minimal code difference between CE and EE.
+- Very clear hints about where we're extending EE views while reading CE codes.
+- Whenever we want to show something different in CE, we could just add CE
+  partials. Same applies the other way around. If we just use
+  `render_if_exists`, it would be very easy to change the content in EE.
+
+The disadvantage of this:
+
+- Slightly more work while developing EE features, because now we need to
+  port `render_if_exists` to CE.
+- If we have typos in the partial name, it would be silently ignored.
 
 ### Code in `lib/`
 

@@ -9,6 +9,10 @@ module Gitlab
     Settings
   end
 
+  def self.migrations_hash
+    @_migrations_hash ||= Digest::MD5.hexdigest(ActiveRecord::Migrator.get_all_versions.to_s)
+  end
+
   COM_URL = 'https://gitlab.com'.freeze
   APP_DIRS_PATTERN = %r{^/?(app|config|ee|lib|spec|\(\w*\))}
   SUBDOMAIN_REGEX = %r{\Ahttps://[a-z0-9]+\.gitlab\.com\z}

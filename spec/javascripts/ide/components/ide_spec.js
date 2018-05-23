@@ -107,5 +107,11 @@ describe('ide component', () => {
         vm.mousetrapStopCallback(null, vm.$el.querySelector('.dropdown-input-field'), 't'),
       ).toBe(true);
     });
+
+    it('stops callback in monaco editor', () => {
+      setFixtures('<div class="inputarea"></div>');
+
+      expect(vm.mousetrapStopCallback(null, document.querySelector('.inputarea'), 't')).toBe(true);
+    });
   });
 });

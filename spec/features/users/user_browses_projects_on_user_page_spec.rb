@@ -27,8 +27,8 @@ describe 'Users > User browses projects on user page', :js do
   end
 
   it 'paginates projects', :js do
-    project = create(:project, namespace: user.namespace)
-    project2 = create(:project, namespace: user.namespace)
+    project = create(:project, namespace: user.namespace, updated_at: 2.minutes.since)
+    project2 = create(:project, namespace: user.namespace, updated_at: 1.minute.since)
     allow(Project).to receive(:default_per_page).and_return(1)
 
     sign_in(user)
@@ -41,11 +41,11 @@ describe 'Users > User browses projects on user page', :js do
 
     wait_for_requests
 
-    expect(page).to have_content(project2.name)
+    expect(page).to have_content(project.name)
 
     click_link('Next')
 
-    expect(page).to have_content(project.name)
+    expect(page).to have_content(project2.name)
   end
 
   context 'when not signed in' do

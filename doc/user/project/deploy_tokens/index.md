@@ -76,7 +76,7 @@ pull images from your Container Registry.
 > [Introduced][ce-18414] in GitLab 10.8.
 
 There's a special case when it comes to Deploy Tokens, if a user creates one
-named `gitlab-deploy-token`, the name and token of the Deploy Token will be 
+named `gitlab-deploy-token`, the username and token of the Deploy Token will be 
 automatically exposed to the CI/CD jobs as environment variables: `CI_DEPLOY_USER` and 
 `CI_DEPLOY_PASSWORD`, respectively.
 

@@ -46,6 +46,20 @@ describe Gitlab::Email::Handler::CreateIssueHandler do
         expect(issue.description).to eq('')
       end
     end
+
+    context "when there are quotes in email" do
+      let(:email_raw) { fixture_file("emails/valid_new_issue_with_quote.eml") }
+
+      it "creates a new issue" do
+        expect { receiver.execute }.to change { project.issues.count }.by(1)
+        issue = project.issues.last
+
+        expect(issue.author).to eq(user)
+        expect(issue.title).to eq('New Issue by email')
+        expect(issue.description).to include('reply by email')
+        expect(issue.description).to include('> this is a quote')
+      end
+    end
   end
 
   context "something is wrong" do
