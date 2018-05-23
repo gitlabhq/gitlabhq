@@ -348,6 +348,7 @@ describe('RepoEditor', () => {
   });
 
   it('calls removePendingTab when old file is pending', done => {
+    spyOnProperty(vm, 'shouldHideEditor').and.returnValue(true);
     spyOn(vm, 'removePendingTab');
 
     vm.file.pending = true;
