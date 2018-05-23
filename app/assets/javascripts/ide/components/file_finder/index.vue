@@ -39,12 +39,10 @@ export default {
         return this.allBlobs.slice(0, MAX_FILE_FINDER_RESULTS);
       }
 
-      return fuzzaldrinPlus
-        .filter(this.allBlobs, searchText, {
-          key: 'path',
-          maxResults: MAX_FILE_FINDER_RESULTS,
-        })
-        .sort((a, b) => b.lastOpenedAt - a.lastOpenedAt);
+      return fuzzaldrinPlus.filter(this.allBlobs, searchText, {
+        key: 'path',
+        maxResults: MAX_FILE_FINDER_RESULTS,
+      });
     },
     filteredBlobsLength() {
       return this.filteredBlobs.length;
