@@ -6760,26 +6760,6 @@
       "wiki_page_events": true
     },
     {
-      "id": 92,
-      "title": "Gemnasium",
-      "project_id": 5,
-      "created_at": "2016-06-14T15:01:51.202Z",
-      "updated_at": "2016-06-14T15:01:51.202Z",
-      "active": false,
-      "properties": {},
-      "template": false,
-      "push_events": true,
-      "issues_events": true,
-      "merge_requests_events": true,
-      "tag_push_events": true,
-      "note_events": true,
-      "job_events": true,
-      "type": "GemnasiumService",
-      "category": "common",
-      "default": false,
-      "wiki_page_events": true
-    },
-    {
       "id": 91,
       "title": "Flowdock",
       "project_id": 5,
