@@ -223,9 +223,10 @@ namespace :gitlab do
 
       task restore: :gitlab_environment do
         $progress.puts "Restoring container registry images ... ".color(:blue)
+        object_storage = ENV['REGISTRY_OBJECT_STORAGE'] == 'true'
 
         if Gitlab.config.registry.enabled
-          Backup::Registry.new.restore
+          Backup::Registry.new(object_storage).restore
           $progress.puts "done".color(:green)
         else
           $progress.puts "[DISABLED]".color(:cyan)
