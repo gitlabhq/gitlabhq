@@ -128,14 +128,6 @@
 
       /* Large devices (large desktops, 1200px and up) */
       @include media-breakpoint-up(lg) { width: 250px; }
-
-      &.input-short {
-        /* Medium devices (desktops, 992px and up) */
-        @include media-breakpoint-up(md) { width: 170px; }
-
-        /* Large devices (large desktops, 1200px and up) */
-        @include media-breakpoint-up(lg) { width: 210px; }
-      }
     }
 
     @include media-breakpoint-down(xs) {
@@ -162,10 +154,6 @@
           width: 100%;
           margin: 0 0 10px;
         }
-      }
-
-      .input-short {
-        width: 100%;
       }
 
       .icon-label {

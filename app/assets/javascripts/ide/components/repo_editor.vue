@@ -43,9 +43,13 @@ export default {
     },
   },
   watch: {
-    file(oldVal, newVal) {
+    file(newVal, oldVal) {
+      if (oldVal.pending) {
+        this.removePendingTab(oldVal);
+      }
+
       // Compare key to allow for files opened in review mode to be cached differently
-      if (newVal.key !== this.file.key) {
+      if (oldVal.key !== this.file.key) {
         this.initMonaco();
 
         if (this.currentActivityView !== activityBarViews.edit) {
@@ -99,6 +103,7 @@ export default {
       'setFileViewMode',
       'setFileEOL',
       'updateViewer',
+      'removePendingTab',
     ]),
     initMonaco() {
       if (this.shouldHideEditor) return;

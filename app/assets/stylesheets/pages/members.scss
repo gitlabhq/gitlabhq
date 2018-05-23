@@ -99,16 +99,6 @@
     @include media-breakpoint-up(sm) {
       width: 250px;
     }
-
-    &.input-short {
-      @include media-breakpoint-up(md) {
-        width: 170px;
-      }
-
-      @include media-breakpoint-up(lg) {
-        width: 210px;
-      }
-    }
   }
 }
 

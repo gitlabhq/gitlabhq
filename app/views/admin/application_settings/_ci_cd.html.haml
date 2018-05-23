@@ -7,7 +7,7 @@
         .form-check
           = f.label :auto_devops_enabled do
             = f.check_box :auto_devops_enabled
-            Enabled Auto DevOps (Beta) for projects by default
+            Enabled Auto DevOps for projects by default
         .form-text.text-muted
           It will automatically build, test, and deploy applications based on a predefined CI/CD configuration
           = link_to icon('question-circle'), help_page_path('topics/autodevops/index.md')

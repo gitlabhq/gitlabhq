@@ -41,7 +41,7 @@ const router = new VueRouter({
       component: EmptyRouterComponent,
       children: [
         {
-          path: ':targetmode(edit|tree|blob)/:branch/*',
+          path: ':targetmode(edit|tree|blob)/*',
           component: EmptyRouterComponent,
         },
         {
@@ -63,23 +63,27 @@ router.beforeEach((to, from, next) => {
       .then(() => {
         const fullProjectId = `${to.params.namespace}/${to.params.project}`;
 
-        if (to.params.branch) {
-          store.dispatch('setCurrentBranchId', to.params.branch);
+        const baseSplit = to.params[0].split('/-/');
+        const branchId = baseSplit[0].slice(-1) === '/' ? baseSplit[0].slice(0, -1) : baseSplit[0];
+
+        if (branchId) {
+          const basePath = baseSplit.length > 1 ? baseSplit[1] : '';
+
+          store.dispatch('setCurrentBranchId', branchId);
 
           store.dispatch('getBranchData', {
             projectId: fullProjectId,
-            branchId: to.params.branch,
+            branchId,
           });
 
           store
             .dispatch('getFiles', {
               projectId: fullProjectId,
-              branchId: to.params.branch,
+              branchId,
             })
             .then(() => {
-              if (to.params[0]) {
-                const path =
-                  to.params[0].slice(-1) === '/' ? to.params[0].slice(0, -1) : to.params[0];
+              if (basePath) {
+                const path = basePath.slice(-1) === '/' ? basePath.slice(0, -1) : basePath;
                 const treeEntryKey = Object.keys(store.state.entries).find(
                   key => key === path && !store.state.entries[key].pending,
                 );

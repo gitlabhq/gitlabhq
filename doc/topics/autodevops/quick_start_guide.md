@@ -1,7 +1,5 @@
 # Auto DevOps: quick start guide
 
-DANGER: Auto DevOps is currently in **Beta** and _not recommended for production use_.
-
 > [Introduced][ce-37115] in GitLab 10.0.
 
 This is a step-by-step guide to deploying a project hosted on GitLab.com to
