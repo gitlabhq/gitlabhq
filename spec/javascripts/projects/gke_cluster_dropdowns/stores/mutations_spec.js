@@ -1,4 +1,5 @@
-import mutations from '~/projects/gke_cluster_dropdowns/store/mutations';
+import { createStore } from '~/projects/gke_cluster_dropdowns/store';
+import * as types from '~/projects/gke_cluster_dropdowns/store/mutation_types';
 import {
   selectedProjectMock,
   selectedZoneMock,
@@ -9,99 +10,78 @@ import {
 } from '../mock_data';
 
 describe('GCP Cluster Dropdown Store Mutations', () => {
+  let store;
+
+  beforeEach(() => {
+    store = createStore();
+  });
+
   describe('SET_PROJECT', () => {
     it('should set GCP project as selectedProject', () => {
-      const state = {
-        selectedProject: {
-          projectId: '',
-          name: '',
-        },
-      };
       const projectToSelect = gapiProjectsResponseMock.projects[0];
 
-      mutations.SET_PROJECT(state, projectToSelect);
+      store.commit(types.SET_PROJECT, projectToSelect);
 
-      expect(state.selectedProject.projectId).toEqual(selectedProjectMock.projectId);
-      expect(state.selectedProject.name).toEqual(selectedProjectMock.name);
+      expect(store.state.selectedProject.projectId).toEqual(selectedProjectMock.projectId);
+      expect(store.state.selectedProject.name).toEqual(selectedProjectMock.name);
     });
   });
 
   describe('SET_PROJECT_BILLING_STATUS', () => {
     it('should set project billing status', () => {
-      const state = {
-        projectHasBillingEnabled: null,
-      };
-      mutations.SET_PROJECT_BILLING_STATUS(state, true);
+      store.commit(types.SET_PROJECT_BILLING_STATUS, true);
 
-      expect(state.projectHasBillingEnabled).toBeTruthy();
+      expect(store.state.projectHasBillingEnabled).toBeTruthy();
     });
   });
 
   describe('SET_ZONE', () => {
     it('should set GCP zone as selectedZone', () => {
-      const state = {
-        selectedZone: '',
-      };
       const zoneToSelect = gapiZonesResponseMock.items[0].name;
 
-      mutations.SET_ZONE(state, zoneToSelect);
+      store.commit(types.SET_ZONE, zoneToSelect);
 
-      expect(state.selectedZone).toEqual(selectedZoneMock);
+      expect(store.state.selectedZone).toEqual(selectedZoneMock);
     });
   });
 
   describe('SET_MACHINE_TYPE', () => {
     it('should set GCP machine type as selectedMachineType', () => {
-      const state = {
-        selectedMachineType: '',
-      };
       const machineTypeToSelect = gapiMachineTypesResponseMock.items[0].name;
 
-      mutations.SET_MACHINE_TYPE(state, machineTypeToSelect);
+      store.commit(types.SET_MACHINE_TYPE, machineTypeToSelect);
 
-      expect(state.selectedMachineType).toEqual(selectedMachineTypeMock);
+      expect(store.state.selectedMachineType).toEqual(selectedMachineTypeMock);
     });
   });
 
   describe('SET_PROJECTS', () => {
     it('should set Google API Projects response as projects', () => {
-      const state = {
-        projects: [],
-      };
+      expect(store.state.projects.length).toEqual(0);
 
-      expect(state.projects.length).toEqual(0);
+      store.commit(types.SET_PROJECTS, gapiProjectsResponseMock.projects);
 
-      mutations.SET_PROJECTS(state, gapiProjectsResponseMock.projects);
-
-      expect(state.projects.length).toEqual(gapiProjectsResponseMock.projects.length);
+      expect(store.state.projects.length).toEqual(gapiProjectsResponseMock.projects.length);
     });
   });
 
   describe('SET_ZONES', () => {
     it('should set Google API Zones response as zones', () => {
-      const state = {
-        zones: [],
-      };
+      expect(store.state.zones.length).toEqual(0);
 
-      expect(state.zones.length).toEqual(0);
+      store.commit(types.SET_ZONES, gapiZonesResponseMock.items);
 
-      mutations.SET_ZONES(state, gapiZonesResponseMock.items);
-
-      expect(state.zones.length).toEqual(gapiZonesResponseMock.items.length);
+      expect(store.state.zones.length).toEqual(gapiZonesResponseMock.items.length);
     });
   });
 
   describe('SET_MACHINE_TYPES', () => {
     it('should set Google API Machine Types response as machineTypes', () => {
-      const state = {
-        machineTypes: [],
-      };
+      expect(store.state.machineTypes.length).toEqual(0);
 
-      expect(state.machineTypes.length).toEqual(0);
+      store.commit(types.SET_MACHINE_TYPES, gapiMachineTypesResponseMock.items);
 
-      mutations.SET_MACHINE_TYPES(state, gapiMachineTypesResponseMock.items);
-
-      expect(state.machineTypes.length).toEqual(gapiMachineTypesResponseMock.items.length);
+      expect(store.state.machineTypes.length).toEqual(gapiMachineTypesResponseMock.items.length);
     });
   });
 });
