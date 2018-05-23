@@ -67,6 +67,19 @@ describe('GCP Cluster Dropdown Store Actions', () => {
       });
     });
 
+    describe('validateProjectBilling', () => {
+      it('checks project billing status from Google API', done => {
+        store
+          .dispatch('validateProjectBilling')
+          .then(() => {
+            expect(store.state.projectHasBillingEnabled).toBeTruthy();
+
+            done();
+          })
+          .catch(done.fail);
+      });
+    });
+
     describe('fetchZones', () => {
       it('fetches zones from Google API', done => {
         store

@@ -13,6 +13,7 @@ const componentConfig = {
 
 const LABELS = {
   LOADING: 'Fetching projects',
+  VALIDATING_PROJECT_BILLING: 'Validating project billing status',
   DEFAULT: 'Select project',
   EMPTY: 'No projects found',
 };
@@ -43,6 +44,11 @@ describe('GkeProjectIdDropdown', () => {
   describe('toggleText', () => {
     it('returns loading toggle text', () => {
       expect(vm.toggleText).toBe(LABELS.LOADING);
+    });
+
+    it('returns project billing validation text', () => {
+      vm.isValidatingProjectBilling = true;
+      expect(vm.toggleText).toBe(LABELS.VALIDATING_PROJECT_BILLING);
     });
 
     it('returns default toggle text', done =>

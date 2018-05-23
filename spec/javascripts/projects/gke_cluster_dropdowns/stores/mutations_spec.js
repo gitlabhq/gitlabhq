@@ -26,6 +26,17 @@ describe('GCP Cluster Dropdown Store Mutations', () => {
     });
   });
 
+  describe('SET_PROJECT_BILLING_STATUS', () => {
+    it('should set project billing status', () => {
+      const state = {
+        projectHasBillingEnabled: null,
+      };
+      mutations.SET_PROJECT_BILLING_STATUS(state, true);
+
+      expect(state.projectHasBillingEnabled).toBeTruthy();
+    });
+  });
+
   describe('SET_ZONE', () => {
     it('should set GCP zone as selectedZone', () => {
       const state = {
