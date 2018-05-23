@@ -23,6 +23,7 @@ class Project < ActiveRecord::Base
   include ::Gitlab::Utils::StrongMemoize
   include ChronicDurationAttribute
   include FastDestroyAll::Helpers
+  include WithUploads
 
   extend Gitlab::ConfigHelper
 
@@ -217,6 +218,7 @@ class Project < ActiveRecord::Base
 
   has_one :cluster_project, class_name: 'Clusters::Project'
   has_many :clusters, through: :cluster_project, class_name: 'Clusters::Cluster'
+  has_many :cluster_ingresses, through: :clusters, source: :application_ingress, class_name: 'Clusters::Applications::Ingress'
 
   # Container repositories need to remove data from the container registry,
   # which is not managed by the DB. Hence we're still using dependent: :destroy
@@ -299,8 +301,6 @@ class Project < ActiveRecord::Base
     presence: true,
     inclusion: { in: ->(_object) { Gitlab.config.repositories.storages.keys } }
   validates :variables, variable_duplicates: { scope: :environment_scope }
-
-  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   # Scopes
   scope :pending_delete, -> { where(pending_delete: true) }
@@ -894,6 +894,13 @@ class Project < ActiveRecord::Base
     Gitlab::Routing.url_helpers.project_url(self)
   end
 
+  def readme_url
+    readme = repository.readme
+    if readme
+      Gitlab::Routing.url_helpers.project_blob_url(self, File.join(default_branch, readme.path))
+    end
+  end
+
   def new_issuable_address(author, address_type)
     return unless Gitlab::IncomingEmail.supports_issue_creation? && author
 
@@ -997,7 +1004,7 @@ class Project < ActiveRecord::Base
 
     available_services_names = Service.available_services_names - exceptions
 
-    available_services_names.map do |service_name|
+    available_services = available_services_names.map do |service_name|
       service = find_service(services, service_name)
 
       if service
@@ -1014,6 +1021,14 @@ class Project < ActiveRecord::Base
         end
       end
     end
+
+    available_services.reject do |service|
+      disabled_services.include?(service.to_param)
+    end
+  end
+
+  def disabled_services
+    []
   end
 
   def find_or_initialize_service(name)

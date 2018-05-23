@@ -73,6 +73,8 @@ GitLab Community Edition (CE) is available freely under the MIT Expat license.
 
 All third party components incorporated into the GitLab Software are licensed under the original license provided by the owner of the applicable component.
 
+All Documentation content that resides under the doc/ directory of this repository is licensed under Creative Commons: CC BY-SA 4.0.
+
 ## Install a development environment
 
 To work on GitLab itself, we recommend setting up your development environment with [the GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit).

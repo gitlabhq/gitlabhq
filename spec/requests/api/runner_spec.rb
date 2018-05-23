@@ -918,6 +918,22 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             expect(job.reload.trace.raw).to eq 'BUILD TRACE appended appended'
           end
 
+          context 'when job is cancelled' do
+            before do
+              job.cancel
+            end
+
+            context 'when trace is patched' do
+              before do
+                patch_the_trace
+              end
+
+              it 'returns Forbidden ' do
+                expect(response.status).to eq(403)
+              end
+            end
+          end
+
           context 'when redis data are flushed' do
             before do
               redis_shared_state_cleanup!

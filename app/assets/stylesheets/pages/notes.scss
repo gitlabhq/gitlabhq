@@ -407,10 +407,6 @@ ul.notes {
 .note-header {
   display: flex;
   justify-content: space-between;
-
-  @include notes-media('max', $screen-xs-max) {
-    flex-flow: row wrap;
-  }
 }
 
 .note-header-info {
@@ -459,6 +455,10 @@ ul.notes {
     white-space: normal;
   }
 
+  .system-note-separator {
+    color: $gl-text-color-disabled;
+  }
+
   a:hover {
     text-decoration: underline;
   }
@@ -472,11 +472,6 @@ ul.notes {
   float: right;
   margin-left: 10px;
   color: $gray-darkest;
-
-  @include notes-media('max', $screen-md-max) {
-    float: none;
-    margin-left: 0;
-  }
 
   .btn-group > .discussion-next-btn {
     margin-left: -1px;

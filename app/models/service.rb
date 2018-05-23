@@ -253,7 +253,6 @@ class Service < ActiveRecord::Base
       emails_on_push
       external_wiki
       flowdock
-      gemnasium
       hipchat
       irker
       jira

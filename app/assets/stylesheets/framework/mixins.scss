@@ -210,3 +210,15 @@
     margin-left: -$size;
   }
 }
+
+/*
+ * Mixin that fixes wrapping issues with long strings (e.g. URLs)
+ *
+ * Note: the width needs to be set for it to work in Firefox
+ */
+@mixin overflow-break-word {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
+}

@@ -16,7 +16,7 @@
     "webpack-prod": "NODE_ENV=production webpack --config config/webpack.config.js"
   },
   "dependencies": {
-    "@gitlab-org/gitlab-svgs": "^1.20.0",
+    "@gitlab-org/gitlab-svgs": "^1.22.0",
     "autosize": "^4.0.0",
     "axios": "^0.17.1",
     "babel-core": "^6.26.3",
@@ -27,6 +27,7 @@
     "blackst0ne-mermaid": "^7.1.0-fixed",
     "bootstrap-sass": "^3.3.6",
     "brace-expansion": "^1.1.8",
+    "cache-loader": "^1.2.2",
     "chart.js": "1.0.2",
     "classlist-polyfill": "^1.2.0",
     "clipboard": "^1.7.1",
@@ -83,7 +84,7 @@
     "url-loader": "^1.0.1",
     "visibilityjs": "^1.2.4",
     "vue": "^2.5.16",
-    "vue-loader": "^14.1.1",
+    "vue-loader": "^15.2.0",
     "vue-resource": "^1.5.0",
     "vue-router": "^3.0.1",
     "vue-template-compiler": "^2.5.16",

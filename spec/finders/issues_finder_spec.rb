@@ -372,7 +372,7 @@ describe IssuesFinder do
     end
 
     context 'personal scope' do
-      let(:scope) { 'assigned-to-me' }
+      let(:scope) { 'assigned_to_me' }
 
       it 'returns issue assigned to the user' do
         expect(issues).to contain_exactly(issue1, issue2)

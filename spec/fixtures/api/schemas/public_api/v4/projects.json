@@ -20,6 +20,7 @@
       "ssh_url_to_repo": { "type": "string" },
       "http_url_to_repo": { "type": "string" },
       "web_url": { "type": "string" },
+      "readme_url": { "type": ["string", "null"] },
       "avatar_url": { "type": ["string", "null"] },
       "star_count": { "type": "integer" },
       "forks_count": { "type": "integer" },

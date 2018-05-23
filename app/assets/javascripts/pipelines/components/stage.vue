@@ -21,6 +21,7 @@ import Icon from '../../vue_shared/components/icon.vue';
 import LoadingIcon from '../../vue_shared/components/loading_icon.vue';
 import JobComponent from './graph/job_component.vue';
 import tooltip from '../../vue_shared/directives/tooltip';
+import { PIPELINES_TABLE } from '../constants';
 
 export default {
   components: {
@@ -43,6 +44,12 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+
+    type: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
 
@@ -133,6 +140,16 @@ export default {
     isDropdownOpen() {
       return this.$el.classList.contains('open');
     },
+
+    pipelineActionRequestComplete() {
+      if (this.type === PIPELINES_TABLE) {
+        // warn the table to update
+        eventHub.$emit('refreshPipelinesTable');
+      } else {
+        // close the dropdown in mr widget
+        $(this.$refs.dropdown).dropdown('toggle');
+      }
+    },
   },
 };
 </script>
@@ -151,6 +168,7 @@ export default {
       id="stageDropdown"
       aria-haspopup="true"
       aria-expanded="false"
+      ref="dropdown"
     >
 
       <span
@@ -188,6 +206,7 @@ export default {
             <job-component
               :job="job"
               css-class-job-name="mini-pipeline-graph-dropdown-item"
+              @pipelineActionRequestComplete="pipelineActionRequestComplete"
             />
           </li>
         </ul>

@@ -671,7 +671,7 @@ describe Repository do
     end
   end
 
-  describe "search_files_by_content" do
+  shared_examples "search_files_by_content" do
     let(:results) { repository.search_files_by_content('feature', 'master') }
     subject { results }
 
@@ -718,7 +718,7 @@ describe Repository do
     end
   end
 
-  describe "search_files_by_name" do
+  shared_examples "search_files_by_name" do
     let(:results) { repository.search_files_by_name('files', 'master') }
 
     it 'returns result' do
@@ -756,6 +756,16 @@ describe Repository do
         expect_to_raise_storage_error { broken_repository.search_files_by_name('files', 'master') }
       end
     end
+  end
+
+  describe 'with gitaly enabled' do
+    it_behaves_like 'search_files_by_content'
+    it_behaves_like 'search_files_by_name'
+  end
+
+  describe 'with gitaly disabled', :disable_gitaly do
+    it_behaves_like 'search_files_by_content'
+    it_behaves_like 'search_files_by_name'
   end
 
   describe '#async_remove_remote' do
@@ -990,65 +1000,25 @@ describe Repository do
 
     subject { repository.add_branch(user, branch_name, target) }
 
-    context 'with Gitaly enabled' do
-      it "calls Gitaly's OperationService" do
-        expect_any_instance_of(Gitlab::GitalyClient::OperationService)
-          .to receive(:user_create_branch).with(branch_name, user, target)
-          .and_return(nil)
+    it "calls Gitaly's OperationService" do
+      expect_any_instance_of(Gitlab::GitalyClient::OperationService)
+        .to receive(:user_create_branch).with(branch_name, user, target)
+        .and_return(nil)
 
-        subject
-      end
-
-      it 'creates_the_branch' do
-        expect(subject.name).to eq(branch_name)
-        expect(repository.find_branch(branch_name)).not_to be_nil
-      end
-
-      context 'with a non-existing target' do
-        let(:target) { 'fake-target' }
-
-        it "returns false and doesn't create the branch" do
-          expect(subject).to be(false)
-          expect(repository.find_branch(branch_name)).to be_nil
-        end
-      end
+      subject
     end
 
-    context 'with Gitaly disabled', :disable_gitaly do
-      context 'when pre hooks were successful' do
-        it 'runs without errors' do
-          hook = double(trigger: [true, nil])
-          expect(Gitlab::Git::Hook).to receive(:new).exactly(3).times.and_return(hook)
+    it 'creates_the_branch' do
+      expect(subject.name).to eq(branch_name)
+      expect(repository.find_branch(branch_name)).not_to be_nil
+    end
 
-          expect { subject }.not_to raise_error
-        end
+    context 'with a non-existing target' do
+      let(:target) { 'fake-target' }
 
-        it 'creates the branch' do
-          allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
-
-          expect(subject.name).to eq(branch_name)
-        end
-
-        it 'calls the after_create_branch hook' do
-          expect(repository).to receive(:after_create_branch)
-
-          subject
-        end
-      end
-
-      context 'when pre hooks failed' do
-        it 'gets an error' do
-          allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
-
-          expect { subject }.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
-        end
-
-        it 'does not create the branch' do
-          allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
-
-          expect { subject }.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
-          expect(repository.find_branch(branch_name)).to be_nil
-        end
+      it "returns false and doesn't create the branch" do
+        expect(subject).to be(false)
+        expect(repository.find_branch(branch_name)).to be_nil
       end
     end
   end
@@ -2061,27 +2031,27 @@ describe Repository do
 
   describe '#xcode_project?' do
     before do
-      allow(repository).to receive(:tree).with(:head).and_return(double(:tree, blobs: [blob]))
+      allow(repository).to receive(:tree).with(:head).and_return(double(:tree, trees: [tree]))
     end
 
-    context 'when the root contains a *.xcodeproj file' do
-      let(:blob) { double(:blob, path: 'Foo.xcodeproj') }
+    context 'when the root contains a *.xcodeproj directory' do
+      let(:tree) { double(:tree, path: 'Foo.xcodeproj') }
 
       it 'returns true' do
         expect(repository.xcode_project?).to be_truthy
       end
     end
 
-    context 'when the root contains a *.xcworkspace file' do
-      let(:blob) { double(:blob, path: 'Foo.xcworkspace') }
+    context 'when the root contains a *.xcworkspace directory' do
+      let(:tree) { double(:tree, path: 'Foo.xcworkspace') }
 
       it 'returns true' do
         expect(repository.xcode_project?).to be_truthy
       end
     end
 
-    context 'when the root contains no XCode config file' do
-      let(:blob) { double(:blob, path: 'subdir/Foo.xcworkspace') }
+    context 'when the root contains no Xcode config directory' do
+      let(:tree) { double(:tree, path: 'Foo') }
 
       it 'returns false' do
         expect(repository.xcode_project?).to be_falsey

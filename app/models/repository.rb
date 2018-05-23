@@ -596,7 +596,7 @@ class Repository
   cache_method :gitlab_ci_yml
 
   def xcode_project?
-    file_on_head(:xcode_config).present?
+    file_on_head(:xcode_config, :tree).present?
   end
   cache_method :xcode_project?
 
@@ -920,11 +920,21 @@ class Repository
     end
   end
 
-  def file_on_head(type)
-    if head = tree(:head)
-      head.blobs.find do |blob|
-        Gitlab::FileDetector.type_of(blob.path) == type
+  def file_on_head(type, object_type = :blob)
+    return unless head = tree(:head)
+
+    objects =
+      case object_type
+      when :blob
+        head.blobs
+      when :tree
+        head.trees
+      else
+        raise ArgumentError, "Object type #{object_type} is not supported"
       end
+
+    objects.find do |object|
+      Gitlab::FileDetector.type_of(object.path) == type
     end
   end
 

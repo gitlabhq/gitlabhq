@@ -2,6 +2,7 @@ class CommitStatus < ActiveRecord::Base
   include HasStatus
   include Importable
   include AfterCommitQueue
+  include Presentable
 
   self.table_name = 'ci_builds'
 

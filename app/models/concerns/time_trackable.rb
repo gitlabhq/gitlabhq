@@ -53,6 +53,10 @@ module TimeTrackable
     Gitlab::TimeTrackingFormatter.output(time_estimate)
   end
 
+  def time_estimate=(val)
+    val.is_a?(Integer) ? super([val, Gitlab::Database::MAX_INT_VALUE].min) : super(val)
+  end
+
   private
 
   def touchable?

@@ -1,5 +1,0 @@
----
-title: Move TimeTrackingSpentOnlyPane vue component
-merge_request: 18710
-author: George Tsiolis
-type: performance
