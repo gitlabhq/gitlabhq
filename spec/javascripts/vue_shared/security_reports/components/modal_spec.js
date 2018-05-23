@@ -1,11 +1,12 @@
 import Vue from 'vue';
 import component from 'ee/vue_shared/security_reports/components/modal.vue';
-import store from 'ee/vue_shared/security_reports/store';
+import createStore from 'ee/vue_shared/security_reports/store';
 import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 
 describe('Security Reports modal', () => {
   const Component = Vue.extend(component);
   let vm;
+  const store = createStore();
 
   beforeEach(() => {
     store.dispatch('setVulnerabilityFeedbackPath', 'path');
