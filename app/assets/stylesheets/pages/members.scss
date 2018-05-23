@@ -9,6 +9,10 @@
   }
 }
 
+.member-sort-dropdown {
+  margin-left: $gl-padding-8;
+}
+
 .member {
   .list-item-name {
     @include media-breakpoint-up(sm) {

@@ -61,7 +61,7 @@
                     title: 'Resend invite'
 
         - if user != current_user && member.can_update?
-          = form_for member, remote: true, html: { class: 'js-edit-member-form' } do |f|
+          = form_for member, remote: true, html: { class: 'js-edit-member-form form-horizontal' } do |f|
             = f.hidden_field :access_level
             .member-form-control.dropdown.append-right-5
               %button.dropdown-menu-toggle.js-member-permissions-dropdown{ type: "button",
@@ -93,7 +93,7 @@
                     method: :post,
                     class: 'btn btn-success prepend-left-10',
                     title: 'Grant access' do
-            %span{ class: ('.d-block.d-sm-none' unless force_mobile_view) }
+            %span{ class: ('d-block d-sm-none' unless force_mobile_view) }
               Grant access
             - unless force_mobile_view
               = icon('check inverse', class: 'd-none d-sm-block')
@@ -110,7 +110,7 @@
                       data: { confirm: remove_member_message(member) },
                       class: 'btn btn-remove prepend-left-10',
                       title: remove_member_title(member) do
-              %span{ class: ('.d-block.d-sm-none' unless force_mobile_view) }
+              %span{ class: ('d-block d-sm-none' unless force_mobile_view) }
                 Delete
               - unless force_mobile_view
                 = icon('trash', class: 'd-none d-sm-block')
