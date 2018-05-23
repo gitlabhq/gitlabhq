@@ -24,12 +24,12 @@ describe Gitlab::Pseudonymity do
 
       # grab the first table it outputs. There would only be 1.
       project_table_file = pseudo.tables_to_csv[0]
-
       # Ignore the `.` and `..` in the directory.
+
       entry = Dir.entries(base_dir)[2]
+
       expect(project_table_file.include? "projects_").to be true
       expect(project_table_file.include? ".csv").to be true
-      expect(project_table_file.include? entry).to be true
       columns = []
       project_data = []
       File.foreach(project_table_file).with_index do |line, line_num|

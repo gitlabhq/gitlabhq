@@ -44,12 +44,13 @@ module Pseudonymity
         raise "No such directory #{@csv_output}"
       end
 
-      tables.each do |k, v|
+      new_tables = tables.map do |k, v|
         @schema[k] = {}
         table_to_csv(k, v["whitelist"], v["pseudo"])
       end
       schema_to_yml
       file_list_to_json
+      new_tables
     end
 
     def get_and_log_file_name(ext, prefix = nil, filename = nil)
@@ -102,7 +103,7 @@ module Pseudonymity
     end
 
     def parse_config
-      @config = YAML.load_file(Rails.root.join('lib/assets/pseudonymity_dump.yml'))
+      @config = YAML.load_file(Rails.root.join('./ee/lib/assets/pseudonymity_dump.yml'))
     end
 
     def write_to_csv_file(title, contents)
