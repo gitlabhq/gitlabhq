@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 import * as actions from './actions';
 import * as getters from './getters';
 import mutations from './mutations';
-import { state } from './state';
+import createState from './state';
 
 Vue.use(Vuex);
 
@@ -12,7 +12,7 @@ export const createStore = () =>
     actions,
     getters,
     mutations,
-    state: state(),
+    state: createState(),
   });
 
 export default createStore();
