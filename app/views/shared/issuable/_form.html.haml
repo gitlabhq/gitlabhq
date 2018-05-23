@@ -29,6 +29,8 @@
 
 = render 'shared/issuable/form/metadata', issuable: issuable, form: form
 
+= render_if_exists 'shared/issuable/approvals', issuable: issuable, form: form
+
 = render 'shared/issuable/form/branch_chooser', issuable: issuable, form: form
 
 = render 'shared/issuable/form/merge_params', issuable: issuable
@@ -77,5 +79,6 @@
       %strong= link_to('contribution guidelines', guide_url)
       for this project.
 
+= render_if_exists 'shared/issuable/remove_approver'
 
 = form.hidden_field :lock_version
