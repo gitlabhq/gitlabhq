@@ -63,8 +63,7 @@ feature 'Resolve an open discussion in a merge request by creating an issue', :j
         expect(discussion_field.value).to eq(discussion.id.to_s)
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      # it_behaves_like 'creating an issue for a discussion'
+      it_behaves_like 'creating an issue for a discussion'
     end
   end
 
