@@ -1,62 +1,68 @@
 <script>
-  import key from './key.vue';
+import deployKey from './key.vue';
 
-  export default {
-    components: {
-      key,
+export default {
+  components: {
+    deployKey,
+  },
+  props: {
+    keys: {
+      type: Array,
+      required: true,
     },
-    props: {
-      title: {
-        type: String,
-        required: true,
-      },
-      keys: {
-        type: Array,
-        required: true,
-      },
-      showHelpBox: {
-        type: Boolean,
-        required: false,
-        default: true,
-      },
-      store: {
-        type: Object,
-        required: true,
-      },
-      endpoint: {
-        type: String,
-        required: true,
-      },
+    store: {
+      type: Object,
+      required: true,
     },
-  };
+    endpoint: {
+      type: String,
+      required: true,
+    },
+    projectId: {
+      type: String,
+      required: false,
+      default: null,
+    },
+  },
+};
 </script>
 
 <template>
-  <div class="deploy-keys-panel">
-    <h5>
-      {{ title }}
-      ({{ keys.length }})
-    </h5>
-    <ul
-      class="well-list"
-      v-if="keys.length"
-    >
-      <li
+  <div class="deploy-keys-panel table-holder">
+    <template v-if="keys.length > 0">
+      <div
+        role="row"
+        class="gl-responsive-table-row table-row-header">
+        <div
+          role="rowheader"
+          class="table-section section-40">
+          {{ s__('DeployKeys|Deploy key') }}
+        </div>
+        <div
+          role="rowheader"
+          class="table-section section-30">
+          {{ s__('DeployKeys|Project usage') }}
+        </div>
+        <div
+          role="rowheader"
+          class="table-section section-15 text-right">
+          {{ __('Created') }}
+        </div>
+      </div>
+      <deploy-key
         v-for="deployKey in keys"
         :key="deployKey.id"
-      >
-        <key
-          :deploy-key="deployKey"
-          :store="store"
-          :endpoint="endpoint"
-        />
-      </li>
-    </ul>
+        :deploy-key="deployKey"
+        :store="store"
+        :endpoint="endpoint"
+        :project-id="projectId"
+      />
+    </template>
     <div
       class="settings-message text-center"
-      v-else-if="showHelpBox"
+      v-else
     >
-      No deploy keys found. Create one with the form above.
+      {{ s__('DeployKeys|No deploy keys found. Create one with the form above.') }}
     </div>
   </div>
 </template>

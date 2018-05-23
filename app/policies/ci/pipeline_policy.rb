@@ -4,7 +4,15 @@ module Ci
 
     condition(:protected_ref) { ref_protected?(@user, @subject.project, @subject.tag?, @subject.ref) }
 
+    condition(:branch_allows_maintainer_push) do
+      @subject.project.branch_allows_maintainer_push?(@user, @subject.ref)
+    end
+
     rule { protected_ref }.prevent :update_pipeline
+
+    rule { can?(:public_access) & branch_allows_maintainer_push }.policy do
+      enable :update_pipeline
+    end
 
     def ref_protected?(user, project, tag, ref)
       access = ::Gitlab::UserAccess.new(user, project: project)

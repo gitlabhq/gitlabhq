@@ -19,6 +19,7 @@ module Ci
 
     has_one :last_deployment, -> { order('deployments.id DESC') }, as: :deployable, class_name: 'Deployment'
     has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
+    has_many :trace_chunks, class_name: 'Ci::BuildTraceChunk', foreign_key: :build_id
 
     has_many :job_artifacts, class_name: 'Ci::JobArtifact', foreign_key: :job_id, dependent: :destroy, inverse_of: :job # rubocop:disable Cop/ActiveRecordDependent
     has_one :job_artifacts_archive, -> { where(file_type: Ci::JobArtifact.file_types[:archive]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
@@ -27,6 +28,7 @@ module Ci
 
     has_one :metadata, class_name: 'Ci::BuildMetadata'
     delegate :timeout, to: :metadata, prefix: true, allow_nil: true
+    delegate :gitlab_deploy_token, to: :project
 
     ##
     # The "environment" field for builds is a String, and is the unexpanded name!
@@ -182,7 +184,7 @@ module Ci
     end
 
     def playable?
-      action? && (manual? || complete?)
+      action? && (manual? || retryable?)
     end
 
     def action?
@@ -597,6 +599,7 @@ module Ci
         break variables unless persisted?
 
         variables
+          .concat(pipeline.persisted_variables)
           .append(key: 'CI_JOB_ID', value: id.to_s)
           .append(key: 'CI_JOB_TOKEN', value: token, public: false)
           .append(key: 'CI_BUILD_ID', value: id.to_s)
@@ -604,6 +607,7 @@ module Ci
           .append(key: 'CI_REGISTRY_USER', value: CI_REGISTRY_USER)
           .append(key: 'CI_REGISTRY_PASSWORD', value: token, public: false)
           .append(key: 'CI_REPOSITORY_URL', value: repo_url, public: false)
+          .concat(deploy_token_variables)
       end
     end
 
@@ -651,6 +655,15 @@ module Ci
         # and we need to make sure that CI_ENVIRONMENT_NAME and
         # CI_ENVIRONMENT_SLUG so on are available for the URL be expanded.
         variables.append(key: 'CI_ENVIRONMENT_URL', value: environment_url) if environment_url
+      end
+    end
+
+    def deploy_token_variables
+      Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        break variables unless gitlab_deploy_token
+
+        variables.append(key: 'CI_DEPLOY_USER', value: gitlab_deploy_token.username)
+        variables.append(key: 'CI_DEPLOY_PASSWORD', value: gitlab_deploy_token.token, public: false)
       end
     end
 

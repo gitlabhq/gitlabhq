@@ -170,6 +170,8 @@ feature 'Labels Hierarchy', :js, :nested_groups do
 
     context 'on issue sidebar' do
       before do
+        project_1.add_developer(user)
+
         visit project_issue_path(project_1, issue)
       end
 
@@ -180,6 +182,8 @@ feature 'Labels Hierarchy', :js, :nested_groups do
       let(:board)   { create(:board, project: project_1) }
 
       before do
+        project_1.add_developer(user)
+
         visit project_board_path(project_1, board)
 
         wait_for_requests
@@ -194,6 +198,8 @@ feature 'Labels Hierarchy', :js, :nested_groups do
       let(:board)   { create(:board, group: parent) }
 
       before do
+        parent.add_developer(user)
+
         visit group_board_path(parent, board)
 
         wait_for_requests
@@ -211,6 +217,8 @@ feature 'Labels Hierarchy', :js, :nested_groups do
 
     context 'on project issuable list' do
       before do
+        project_1.add_developer(user)
+
         visit project_issues_path(project_1)
       end
 
@@ -237,6 +245,8 @@ feature 'Labels Hierarchy', :js, :nested_groups do
       let(:board) { create(:board, project: project_1) }
 
       before do
+        project_1.add_developer(user)
+
         visit project_board_path(project_1, board)
       end
 
@@ -247,6 +257,8 @@ feature 'Labels Hierarchy', :js, :nested_groups do
       let(:board) { create(:board, group: parent) }
 
       before do
+        parent.add_developer(user)
+
         visit group_board_path(parent, board)
       end
 
@@ -259,6 +271,7 @@ feature 'Labels Hierarchy', :js, :nested_groups do
       let(:board) { create(:board, project: project_1) }
 
       before do
+        project_1.add_developer(user)
         visit project_board_path(project_1, board)
         find('.js-new-board-list').click
         wait_for_requests
@@ -281,6 +294,7 @@ feature 'Labels Hierarchy', :js, :nested_groups do
       let(:board) { create(:board, group: parent) }
 
       before do
+        parent.add_developer(user)
         visit group_board_path(parent, board)
         find('.js-new-board-list').click
         wait_for_requests

@@ -17,6 +17,7 @@ class User < ActiveRecord::Base
   include IgnorableColumn
   include BulkMemberAccessLoad
   include BlocksJsonSerialization
+  include WithUploads
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -108,7 +109,7 @@ class User < ActiveRecord::Base
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
   has_many :users_star_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :starred_projects, through: :users_star_projects, source: :project
-  has_many :project_authorizations
+  has_many :project_authorizations, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_many :authorized_projects, through: :project_authorizations, source: :project
 
   has_many :user_interacted_projects
@@ -137,7 +138,8 @@ class User < ActiveRecord::Base
 
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
   has_many :callouts, class_name: 'UserCallout'
-  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :term_agreements
+  belongs_to :accepted_term, class_name: 'ApplicationSetting::Term'
 
   #
   # Validations
@@ -163,8 +165,7 @@ class User < ActiveRecord::Base
   validate :signup_domain_valid?, on: :create, if: ->(user) { !user.created_by_id }
 
   before_validation :sanitize_attrs
-  before_validation :set_notification_email, if: :email_changed?
-  before_save :set_notification_email, if: :email_changed? # in case validation is skipped
+  before_validation :set_notification_email, if: :new_record?
   before_validation :set_public_email, if: :public_email_changed?
   before_save :set_public_email, if: :public_email_changed? # in case validation is skipped
   before_save :ensure_incoming_email_token
@@ -177,8 +178,21 @@ class User < ActiveRecord::Base
   after_update :username_changed_hook, if: :username_changed?
   after_destroy :post_destroy_hook
   after_destroy :remove_key_cache
-  after_commit :update_emails_with_primary_email, on: :update, if: -> { previous_changes.key?('email') }
-  after_commit :update_invalid_gpg_signatures, on: :update, if: -> { previous_changes.key?('email') }
+  after_commit(on: :update) do
+    if previous_changes.key?('email')
+      # Grab previous_email here since previous_changes changes after
+      # #update_emails_with_primary_email and #update_notification_email are called
+      previous_email = previous_changes[:email][0]
+
+      update_emails_with_primary_email(previous_email)
+      update_invalid_gpg_signatures
+
+      if previous_email == notification_email
+        self.notification_email = email
+        save
+      end
+    end
+  end
 
   after_initialize :set_projects_limit
 
@@ -235,14 +249,18 @@ class User < ActiveRecord::Base
   scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'DESC')) }
   scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'ASC')) }
 
-  def self.with_two_factor
+  def self.with_two_factor_indistinct
     joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id")
-      .where("u2f.id IS NOT NULL OR otp_required_for_login = ?", true).distinct(arel_table[:id])
+      .where("u2f.id IS NOT NULL OR users.otp_required_for_login = ?", true)
+  end
+
+  def self.with_two_factor
+    with_two_factor_indistinct.distinct(arel_table[:id])
   end
 
   def self.without_two_factor
     joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id")
-      .where("u2f.id IS NULL AND otp_required_for_login = ?", false)
+      .where("u2f.id IS NULL AND users.otp_required_for_login = ?", false)
   end
 
   #
@@ -540,8 +558,7 @@ class User < ActiveRecord::Base
   # hash and `_was` variables getting munged.
   # By using an `after_commit` instead of `after_update`, we avoid the recursive callback
   # scenario, though it then requires us to use the `previous_changes` hash
-  def update_emails_with_primary_email
-    previous_email = previous_changes[:email][0]  # grab this before the DestroyService is called
+  def update_emails_with_primary_email(previous_email)
     primary_email_record = emails.find_by(email: email)
     Emails::DestroyService.new(self, user: self).execute(primary_email_record) if primary_email_record
 
@@ -766,13 +783,13 @@ class User < ActiveRecord::Base
   end
 
   def set_notification_email
-    if notification_email.blank? || !all_emails.include?(notification_email)
+    if notification_email.blank? || all_emails.exclude?(notification_email)
       self.notification_email = email
     end
   end
 
   def set_public_email
-    if public_email.blank? || !all_emails.include?(public_email)
+    if public_email.blank? || all_emails.exclude?(public_email)
       self.public_email = ''
     end
   end
@@ -854,6 +871,16 @@ class User < ActiveRecord::Base
     confirmed? && !temp_oauth_email?
   end
 
+  def accept_pending_invitations!
+    pending_invitations.select do |member|
+      member.accept_invite!(self)
+    end
+  end
+
+  def pending_invitations
+    Member.where(invite_email: verified_emails).invite
+  end
+
   def all_emails
     all_emails = []
     all_emails << email unless temp_oauth_email?
@@ -910,7 +937,7 @@ class User < ActiveRecord::Base
 
   def delete_async(deleted_by:, params: {})
     block if params[:hard_delete]
-    DeleteUserWorker.perform_async(deleted_by.id, id, params)
+    DeleteUserWorker.perform_async(deleted_by.id, id, params.to_h)
   end
 
   def notification_service
@@ -993,12 +1020,19 @@ class User < ActiveRecord::Base
     !solo_owned_groups.present?
   end
 
-  def ci_authorized_runners
-    @ci_authorized_runners ||= begin
-      runner_ids = Ci::RunnerProject
+  def ci_owned_runners
+    @ci_owned_runners ||= begin
+      project_runner_ids = Ci::RunnerProject
         .where(project: authorized_projects(Gitlab::Access::MASTER))
         .select(:runner_id)
-      Ci::Runner.specific.where(id: runner_ids)
+
+      group_runner_ids = Ci::RunnerNamespace
+        .where(namespace_id: owned_or_masters_groups.select(:id))
+        .select(:runner_id)
+
+      union = Gitlab::SQL::Union.new([project_runner_ids, group_runner_ids])
+
+      Ci::Runner.specific.where("ci_runners.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
     end
   end
 
@@ -1091,8 +1125,11 @@ class User < ActiveRecord::Base
   #   <https://github.com/plataformatec/devise/blob/v4.0.0/lib/devise/models/lockable.rb#L92>
   #
   def increment_failed_attempts!
+    return if ::Gitlab::Database.read_only?
+
     self.failed_attempts ||= 0
     self.failed_attempts += 1
+
     if attempts_exceeded?
       lock_access! unless access_locked?
     else
@@ -1185,6 +1222,20 @@ class User < ActiveRecord::Base
 
   def max_member_access_for_group(group_id)
     max_member_access_for_group_ids([group_id])[group_id]
+  end
+
+  def terms_accepted?
+    accepted_term_id.present?
+  end
+
+  def required_terms_not_accepted?
+    Gitlab::CurrentSettings.current_application_settings.enforce_terms? &&
+      !terms_accepted?
+  end
+
+  def owned_or_masters_groups
+    union = Gitlab::SQL::Union.new([owned_groups, masters_groups])
+    Group.from("(#{union.to_sql}) namespaces")
   end
 
   protected

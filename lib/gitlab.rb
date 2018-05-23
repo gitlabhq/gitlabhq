@@ -1,4 +1,3 @@
-require_dependency 'settings'
 require_dependency 'gitlab/popen'
 
 module Gitlab
@@ -8,6 +7,10 @@ module Gitlab
 
   def self.config
     Settings
+  end
+
+  def self.migrations_hash
+    @_migrations_hash ||= Digest::MD5.hexdigest(ActiveRecord::Migrator.get_all_versions.to_s)
   end
 
   COM_URL = 'https://gitlab.com'.freeze
@@ -30,6 +33,6 @@ module Gitlab
   end
 
   def self.dev_env_or_com?
-    Rails.env.test? || Rails.env.development? || org? || com?
+    Rails.env.development? || org? || com?
   end
 end

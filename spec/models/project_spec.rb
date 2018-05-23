@@ -63,7 +63,6 @@ describe Project do
     it { is_expected.to have_many(:build_trace_section_names)}
     it { is_expected.to have_many(:runner_projects) }
     it { is_expected.to have_many(:runners) }
-    it { is_expected.to have_many(:active_runners) }
     it { is_expected.to have_many(:variables) }
     it { is_expected.to have_many(:triggers) }
     it { is_expected.to have_many(:pages_domains) }
@@ -77,7 +76,7 @@ describe Project do
     it { is_expected.to have_many(:project_group_links) }
     it { is_expected.to have_many(:notification_settings).dependent(:delete_all) }
     it { is_expected.to have_many(:forks).through(:forked_project_links) }
-    it { is_expected.to have_many(:uploads).dependent(:destroy) }
+    it { is_expected.to have_many(:uploads) }
     it { is_expected.to have_many(:pipeline_schedules) }
     it { is_expected.to have_many(:members_and_requesters) }
     it { is_expected.to have_many(:clusters) }
@@ -90,6 +89,23 @@ describe Project do
     context 'after initialized' do
       it "has a project_feature" do
         expect(described_class.new.project_feature).to be_present
+      end
+    end
+
+    context 'when creating a new project' do
+      it 'automatically creates a CI/CD settings row' do
+        project = create(:project)
+
+        expect(project.ci_cd_settings).to be_an_instance_of(ProjectCiCdSetting)
+        expect(project.ci_cd_settings).to be_persisted
+      end
+    end
+
+    context 'updating cd_cd_settings' do
+      it 'does not raise an error' do
+        project = create(:project)
+
+        expect { project.update(ci_cd_settings: nil) }.not_to raise_exception
       end
     end
 
@@ -293,12 +309,12 @@ describe Project do
 
   describe 'project token' do
     it 'sets an random token if none provided' do
-      project = FactoryBot.create :project, runners_token: ''
+      project = FactoryBot.create(:project, runners_token: '')
       expect(project.runners_token).not_to eq('')
     end
 
     it 'does not set an random token if one provided' do
-      project = FactoryBot.create :project, runners_token: 'my-token'
+      project = FactoryBot.create(:project, runners_token: 'my-token')
       expect(project.runners_token).to eq('my-token')
     end
   end
@@ -440,14 +456,6 @@ describe Project do
     end
   end
 
-  describe '#repository_storage_path' do
-    let(:project) { create(:project) }
-
-    it 'returns the repository storage path' do
-      expect(Dir.exist?(project.repository_storage_path)).to be(true)
-    end
-  end
-
   it 'returns valid url to repo' do
     project = described_class.new(path: 'somewhere')
     expect(project.url_to_repo).to eq(Gitlab.config.gitlab_shell.ssh_path_prefix + 'somewhere.git')
@@ -458,6 +466,34 @@ describe Project do
 
     it 'returns the full web URL for this repo' do
       expect(project.web_url).to eq("#{Gitlab.config.gitlab.url}/#{project.namespace.full_path}/somewhere")
+    end
+  end
+
+  describe "#readme_url" do
+    let(:project) { create(:project, :repository, path: "somewhere") }
+
+    context 'with a non-existing repository' do
+      it 'returns nil' do
+        allow(project.repository).to receive(:tree).with(:head).and_return(nil)
+
+        expect(project.readme_url).to be_nil
+      end
+    end
+
+    context 'with an existing repository' do
+      context 'when no README exists' do
+        it 'returns nil' do
+          allow_any_instance_of(Tree).to receive(:readme).and_return(nil)
+
+          expect(project.readme_url).to be_nil
+        end
+      end
+
+      context 'when a README exists' do
+        it 'returns the README' do
+          expect(project.readme_url).to eql("#{Gitlab.config.gitlab.url}/#{project.namespace.full_path}/somewhere/blob/master/README.md")
+        end
+      end
     end
   end
 
@@ -631,7 +667,7 @@ describe Project do
   describe '#to_param' do
     context 'with namespace' do
       before do
-        @group = create :group, name: 'gitlab'
+        @group = create(:group, name: 'gitlab')
         @project = create(:project, name: 'gitlabhq', namespace: @group)
       end
 
@@ -858,8 +894,8 @@ describe Project do
 
   describe '#star_count' do
     it 'counts stars from multiple users' do
-      user1 = create :user
-      user2 = create :user
+      user1 = create(:user)
+      user2 = create(:user)
       project = create(:project, :public)
 
       expect(project.star_count).to eq(0)
@@ -881,7 +917,7 @@ describe Project do
     end
 
     it 'counts stars on the right project' do
-      user = create :user
+      user = create(:user)
       project1 = create(:project, :public)
       project2 = create(:project, :public)
 
@@ -1099,7 +1135,7 @@ describe Project do
   end
 
   context 'repository storage by default' do
-    let(:project) { create(:project) }
+    let(:project) { build(:project) }
 
     before do
       storages = {
@@ -1138,45 +1174,106 @@ describe Project do
     end
   end
 
-  describe '#any_runners' do
-    let(:project) { create(:project, shared_runners_enabled: shared_runners_enabled) }
-    let(:specific_runner) { create(:ci_runner) }
-    let(:shared_runner) { create(:ci_runner, :shared) }
+  describe '#any_runners?' do
+    context 'shared runners' do
+      let(:project) { create(:project, shared_runners_enabled: shared_runners_enabled) }
+      let(:specific_runner) { create(:ci_runner) }
+      let(:shared_runner) { create(:ci_runner, :shared) }
 
-    context 'for shared runners disabled' do
-      let(:shared_runners_enabled) { false }
+      context 'for shared runners disabled' do
+        let(:shared_runners_enabled) { false }
 
-      it 'has no runners available' do
-        expect(project.any_runners?).to be_falsey
+        it 'has no runners available' do
+          expect(project.any_runners?).to be_falsey
+        end
+
+        it 'has a specific runner' do
+          project.runners << specific_runner
+
+          expect(project.any_runners?).to be_truthy
+        end
+
+        it 'has a shared runner, but they are prohibited to use' do
+          shared_runner
+
+          expect(project.any_runners?).to be_falsey
+        end
+
+        it 'checks the presence of specific runner' do
+          project.runners << specific_runner
+
+          expect(project.any_runners? { |runner| runner == specific_runner }).to be_truthy
+        end
+
+        it 'returns false if match cannot be found' do
+          project.runners << specific_runner
+
+          expect(project.any_runners? { false }).to be_falsey
+        end
       end
 
-      it 'has a specific runner' do
-        project.runners << specific_runner
-        expect(project.any_runners?).to be_truthy
-      end
+      context 'for shared runners enabled' do
+        let(:shared_runners_enabled) { true }
 
-      it 'has a shared runner, but they are prohibited to use' do
-        shared_runner
-        expect(project.any_runners?).to be_falsey
-      end
+        it 'has a shared runner' do
+          shared_runner
 
-      it 'checks the presence of specific runner' do
-        project.runners << specific_runner
-        expect(project.any_runners? { |runner| runner == specific_runner }).to be_truthy
+          expect(project.any_runners?).to be_truthy
+        end
+
+        it 'checks the presence of shared runner' do
+          shared_runner
+
+          expect(project.any_runners? { |runner| runner == shared_runner }).to be_truthy
+        end
+
+        it 'returns false if match cannot be found' do
+          shared_runner
+
+          expect(project.any_runners? { false }).to be_falsey
+        end
       end
     end
 
-    context 'for shared runners enabled' do
-      let(:shared_runners_enabled) { true }
+    context 'group runners' do
+      let(:project) { create(:project, group_runners_enabled: group_runners_enabled) }
+      let(:group) { create(:group, projects: [project]) }
+      let(:group_runner) { create(:ci_runner, groups: [group]) }
 
-      it 'has a shared runner' do
-        shared_runner
-        expect(project.any_runners?).to be_truthy
+      context 'for group runners disabled' do
+        let(:group_runners_enabled) { false }
+
+        it 'has no runners available' do
+          expect(project.any_runners?).to be_falsey
+        end
+
+        it 'has a group runner, but they are prohibited to use' do
+          group_runner
+
+          expect(project.any_runners?).to be_falsey
+        end
       end
 
-      it 'checks the presence of shared runner' do
-        shared_runner
-        expect(project.any_runners? { |runner| runner == shared_runner }).to be_truthy
+      context 'for group runners enabled' do
+        let(:group_runners_enabled) { true }
+
+        it 'has a group runner' do
+          group_runner
+
+          expect(project.any_runners?).to be_truthy
+        end
+
+        it 'checks the presence of group runner' do
+          group_runner
+
+          expect(project.any_runners? { |runner| runner == group_runner }).to be_truthy
+        end
+
+        it 'returns false if match cannot be found' do
+          group_runner
+
+          expect(project.any_runners? { false }).to be_falsey
+        end
       end
     end
   end
@@ -1223,7 +1320,7 @@ describe Project do
   end
 
   describe '#pages_deployed?' do
-    let(:project) { create :project }
+    let(:project) { create(:project) }
 
     subject { project.pages_deployed? }
 
@@ -1241,8 +1338,8 @@ describe Project do
   end
 
   describe '#pages_url' do
-    let(:group) { create :group, name: group_name }
-    let(:project) { create :project, namespace: group, name: project_name }
+    let(:group) { create(:group, name: group_name) }
+    let(:project) { create(:project, namespace: group, name: project_name) }
     let(:domain) { 'Example.com' }
 
     subject { project.pages_url }
@@ -1268,8 +1365,8 @@ describe Project do
   end
 
   describe '#pages_group_url' do
-    let(:group) { create :group, name: group_name }
-    let(:project) { create :project, namespace: group, name: project_name }
+    let(:group) { create(:group, name: group_name) }
+    let(:project) { create(:project, namespace: group, name: project_name) }
     let(:domain) { 'Example.com' }
     let(:port) { 1234 }
 
@@ -1386,8 +1483,8 @@ describe Project do
     let(:private_group)    { create(:group, visibility_level: 0)  }
     let(:internal_group)   { create(:group, visibility_level: 10) }
 
-    let(:private_project)  { create :project, :private, group: private_group }
-    let(:internal_project) { create :project, :internal, group: internal_group }
+    let(:private_project)  { create(:project, :private, group: private_group) }
+    let(:internal_project) { create(:project, :internal, group: internal_group) }
 
     context 'when group is private project can not be internal' do
       it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be_falsey }
@@ -1452,7 +1549,7 @@ describe Project do
         .and_return(false)
 
       allow(shell).to receive(:create_repository)
-        .with(project.repository_storage_path, project.disk_path)
+        .with(project.repository_storage, project.disk_path)
         .and_return(true)
 
       expect(project).to receive(:create_repository).with(force: true)
@@ -1480,52 +1577,6 @@ describe Project do
         .and_return(true)
 
       project.ensure_repository
-    end
-  end
-
-  describe '#user_can_push_to_empty_repo?' do
-    let(:project) { create(:project) }
-    let(:user)    { create(:user) }
-
-    it 'returns false when default_branch_protection is in full protection and user is developer' do
-      project.add_developer(user)
-      stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_FULL)
-
-      expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
-    end
-
-    it 'returns false when default_branch_protection only lets devs merge and user is dev' do
-      project.add_developer(user)
-      stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
-
-      expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
-    end
-
-    it 'returns true when default_branch_protection lets devs push and user is developer' do
-      project.add_developer(user)
-      stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
-
-      expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
-    end
-
-    it 'returns true when default_branch_protection is unprotected and user is developer' do
-      project.add_developer(user)
-      stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
-
-      expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
-    end
-
-    it 'returns true when user is master' do
-      project.add_master(user)
-
-      expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
-    end
-
-    it 'returns false when the repo is not empty' do
-      project.add_master(user)
-      expect(project).to receive(:empty_repo?).and_return(false)
-
-      expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
     end
   end
 
@@ -1680,7 +1731,8 @@ describe Project do
 
       it 'resets project import_error' do
         error_message = 'Some error'
-        mirror = create(:project_empty_repo, :import_started, import_error: error_message)
+        mirror = create(:project_empty_repo, :import_started)
+        mirror.import_state.update_attributes(last_error: error_message)
 
         expect { mirror.import_finish }.to change { mirror.import_error }.from(error_message).to(nil)
       end
@@ -1826,6 +1878,83 @@ describe Project do
     subject(:project) { build(:project, import_type: 'gitea') }
 
     it { expect(project.gitea_import?).to be true }
+  end
+
+  describe '#has_remote_mirror?' do
+    let(:project) { create(:project, :remote_mirror, :import_started) }
+    subject { project.has_remote_mirror? }
+
+    before do
+      allow_any_instance_of(RemoteMirror).to receive(:refresh_remote)
+    end
+
+    it 'returns true when a remote mirror is enabled' do
+      is_expected.to be_truthy
+    end
+
+    it 'returns false when remote mirror is disabled' do
+      project.remote_mirrors.first.update_attributes(enabled: false)
+
+      is_expected.to be_falsy
+    end
+  end
+
+  describe '#update_remote_mirrors' do
+    let(:project) { create(:project, :remote_mirror, :import_started) }
+    delegate :update_remote_mirrors, to: :project
+
+    before do
+      allow_any_instance_of(RemoteMirror).to receive(:refresh_remote)
+    end
+
+    it 'syncs enabled remote mirror' do
+      expect_any_instance_of(RemoteMirror).to receive(:sync)
+
+      update_remote_mirrors
+    end
+
+    it 'does nothing when remote mirror is disabled globally and not overridden' do
+      stub_application_setting(mirror_available: false)
+      project.remote_mirror_available_overridden = false
+
+      expect_any_instance_of(RemoteMirror).not_to receive(:sync)
+
+      update_remote_mirrors
+    end
+
+    it 'does not sync disabled remote mirrors' do
+      project.remote_mirrors.first.update_attributes(enabled: false)
+
+      expect_any_instance_of(RemoteMirror).not_to receive(:sync)
+
+      update_remote_mirrors
+    end
+  end
+
+  describe '#remote_mirror_available?' do
+    let(:project) { create(:project) }
+
+    context 'when remote mirror global setting is enabled' do
+      it 'returns true' do
+        expect(project.remote_mirror_available?).to be(true)
+      end
+    end
+
+    context 'when remote mirror global setting is disabled' do
+      before do
+        stub_application_setting(mirror_available: false)
+      end
+
+      it 'returns true when overridden' do
+        project.remote_mirror_available_overridden = true
+
+        expect(project.remote_mirror_available?).to be(true)
+      end
+
+      it 'returns false when not overridden' do
+        expect(project.remote_mirror_available?).to be(false)
+      end
+    end
   end
 
   describe '#ancestors_upto', :nested_groups do
@@ -2349,8 +2478,8 @@ describe Project do
   end
 
   describe '#pages_url' do
-    let(:group) { create :group, name: 'Group' }
-    let(:nested_group) { create :group, parent: group }
+    let(:group) { create(:group, name: 'Group') }
+    let(:nested_group) { create(:group, parent: group) }
     let(:domain) { 'Example.com' }
 
     subject { project.pages_url }
@@ -2361,7 +2490,7 @@ describe Project do
     end
 
     context 'top-level group' do
-      let(:project) { create :project, namespace: group, name: project_name }
+      let(:project) { create(:project, namespace: group, name: project_name) }
 
       context 'group page' do
         let(:project_name) { 'group.example.com' }
@@ -2377,7 +2506,7 @@ describe Project do
     end
 
     context 'nested group' do
-      let(:project) { create :project, namespace: nested_group, name: project_name }
+      let(:project) { create(:project, namespace: nested_group, name: project_name) }
       let(:expected_url) { "http://group.example.com/#{nested_group.path}/#{project.path}" }
 
       context 'group page' do
@@ -2395,7 +2524,7 @@ describe Project do
   end
 
   describe '#http_url_to_repo' do
-    let(:project) { create :project }
+    let(:project) { create(:project) }
 
     it 'returns the url to the repo without a username' do
       expect(project.http_url_to_repo).to eq("#{project.web_url}.git")
@@ -2673,7 +2802,7 @@ describe Project do
 
     describe '#ensure_storage_path_exists' do
       it 'delegates to gitlab_shell to ensure namespace is created' do
-        expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage_path, project.base_dir)
+        expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage, project.base_dir)
 
         project.ensure_storage_path_exists
       end
@@ -2712,12 +2841,12 @@ describe Project do
 
         expect(gitlab_shell).to receive(:mv_repository)
           .ordered
-          .with(project.repository_storage_path, "#{project.namespace.full_path}/foo", "#{project.full_path}")
+          .with(project.repository_storage, "#{project.namespace.full_path}/foo", "#{project.full_path}")
           .and_return(true)
 
         expect(gitlab_shell).to receive(:mv_repository)
           .ordered
-          .with(project.repository_storage_path, "#{project.namespace.full_path}/foo.wiki", "#{project.full_path}.wiki")
+          .with(project.repository_storage, "#{project.namespace.full_path}/foo.wiki", "#{project.full_path}.wiki")
           .and_return(true)
 
         expect_any_instance_of(SystemHooksService)
@@ -2866,7 +2995,7 @@ describe Project do
       it 'delegates to gitlab_shell to ensure namespace is created' do
         allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
 
-        expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage_path, hashed_prefix)
+        expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage, hashed_prefix)
 
         project.ensure_storage_path_exists
       end
@@ -3324,7 +3453,8 @@ describe Project do
 
     context 'with an import JID' do
       it 'unsets the import JID' do
-        project = create(:project, import_jid: '123')
+        project = create(:project)
+        create(:import_state, project: project, jid: '123')
 
         expect(Gitlab::SidekiqStatus)
           .to receive(:unset)
@@ -3583,6 +3713,66 @@ describe Project do
       end
 
       it { is_expected.not_to be_valid }
+    end
+  end
+
+  describe '#toggle_ci_cd_settings!' do
+    it 'toggles the value on #settings' do
+      project = create(:project, group_runners_enabled: false)
+
+      expect(project.group_runners_enabled).to be false
+
+      project.toggle_ci_cd_settings!(:group_runners_enabled)
+
+      expect(project.group_runners_enabled).to be true
+    end
+  end
+
+  describe '#gitlab_deploy_token' do
+    let(:project) { create(:project) }
+
+    subject { project.gitlab_deploy_token }
+
+    context 'when there is a gitlab deploy token associated' do
+      let!(:deploy_token) { create(:deploy_token, :gitlab_deploy_token, projects: [project]) }
+
+      it { is_expected.to eq(deploy_token) }
+    end
+
+    context 'when there is no a gitlab deploy token associated' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there is a gitlab deploy token associated but is has been revoked' do
+      let!(:deploy_token) { create(:deploy_token, :gitlab_deploy_token, :revoked, projects: [project]) }
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there is a gitlab deploy token associated but it is expired' do
+      let!(:deploy_token) { create(:deploy_token, :gitlab_deploy_token, :expired, projects: [project]) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there is a deploy token associated with a different name' do
+      let!(:deploy_token) { create(:deploy_token, projects: [project]) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there is a deploy token associated to a different project' do
+      let(:project_2) { create(:project) }
+      let!(:deploy_token) { create(:deploy_token, projects: [project_2]) }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  context 'with uploads' do
+    it_behaves_like 'model with mounted uploader', true do
+      let(:model_object) { create(:project, :with_avatar) }
+      let(:upload_attribute) { :avatar }
+      let(:uploader_class) { AttachmentUploader }
     end
   end
 end

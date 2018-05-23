@@ -16,5 +16,5 @@
     %span.ci-build-text= subject.name
 
 - if status.has_action?
-  = link_to status.action_path, class: "ci-action-icon-wrapper js-ci-action-icon", method: status.action_method, data: { toggle: 'tooltip', title: status.action_title, container: 'body' }  do
+  = link_to status.action_path, class: "ci-action-icon-container ci-action-icon-wrapper js-ci-action-icon", method: status.action_method, data: { toggle: 'tooltip', title: status.action_title, container: 'body' }  do
     = sprite_icon(status.action_icon, css_class: "icon-action-#{status.action_icon}")

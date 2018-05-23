@@ -111,7 +111,7 @@ in the table below.
 | ----- | ----------- |
 | `Web URL` | The base URL to the JIRA instance web interface which is being linked to this GitLab project. E.g., `https://jira.example.com`. |
 | `JIRA API URL` | The base URL to the JIRA instance API. Web URL value will be used if not set. E.g., `https://jira-api.example.com`. |
-| `Username` | The user name created in [configuring JIRA step](#configuring-jira). |
+| `Username` | The user name created in [configuring JIRA step](#configuring-jira). Using the email address will cause `401 unauthorized`. |
 | `Password` |The password of the user created in [configuring JIRA step](#configuring-jira). |
 | `Transition ID` | This is the ID of a transition that moves issues to the desired state.  **Closing JIRA issues via commits or Merge Requests won't work if you don't set the ID correctly.** |
 

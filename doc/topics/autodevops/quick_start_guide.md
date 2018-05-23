@@ -1,7 +1,5 @@
 # Auto DevOps: quick start guide
 
-DANGER: Auto DevOps is currently in **Beta** and _not recommended for production use_.
-
 > [Introduced][ce-37115] in GitLab 10.0.
 
 This is a step-by-step guide to deploying a project hosted on GitLab.com to
@@ -22,6 +20,10 @@ Let’s start by forking our sample application. Go to [the project
 page](https://gitlab.com/auto-devops-examples/minimal-ruby-app) and press the
 **Fork** button. Soon you should have a project under your namespace with the
 necessary files.
+
+You can also start a new project from a
+[GitLab project template](https://gitlab.com/gitlab-org/project-templates) if
+you want to use a different language.
 
 ## Setup your own cluster on Google Kubernetes Engine
 

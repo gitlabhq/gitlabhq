@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe User do
   include ProjectForksHelper
+  include TermsHelper
 
   describe 'modules' do
     subject { described_class }
@@ -38,7 +39,7 @@ describe User do
     it { is_expected.to have_many(:builds).dependent(:nullify) }
     it { is_expected.to have_many(:pipelines).dependent(:nullify) }
     it { is_expected.to have_many(:chat_names).dependent(:destroy) }
-    it { is_expected.to have_many(:uploads).dependent(:destroy) }
+    it { is_expected.to have_many(:uploads) }
     it { is_expected.to have_many(:reported_abuse_reports).dependent(:destroy).class_name('AbuseReport') }
     it { is_expected.to have_many(:custom_attributes).class_name('UserCustomAttribute') }
 
@@ -392,24 +393,6 @@ describe User do
   end
 
   describe 'after commit hook' do
-    describe '.update_invalid_gpg_signatures' do
-      let(:user) do
-        create(:user, email: 'tula.torphy@abshire.ca').tap do |user|
-          user.skip_reconfirmation!
-        end
-      end
-
-      it 'does nothing when the name is updated' do
-        expect(user).not_to receive(:update_invalid_gpg_signatures)
-        user.update_attributes!(name: 'Bette')
-      end
-
-      it 'synchronizes the gpg keys when the email is updated' do
-        expect(user).to receive(:update_invalid_gpg_signatures).at_most(:twice)
-        user.update_attributes!(email: 'shawnee.ritchie@denesik.com')
-      end
-    end
-
     describe '#update_emails_with_primary_email' do
       before do
         @user = create(:user, email: 'primary@example.com').tap do |user|
@@ -447,6 +430,76 @@ describe User do
 
         expect(@user.emails.count).to eq 1
         expect(@user.emails.first.confirmed_at).not_to eq nil
+      end
+    end
+
+    describe '#update_notification_email' do
+      # Regression: https://gitlab.com/gitlab-org/gitlab-ce/issues/22846
+      context 'when changing :email' do
+        let(:user) { create(:user) }
+        let(:new_email) { 'new-email@example.com' }
+
+        it 'sets :unconfirmed_email' do
+          expect do
+            user.tap { |u| u.update!(email: new_email) }.reload
+          end.to change(user, :unconfirmed_email).to(new_email)
+        end
+
+        it 'does not change :notification_email' do
+          expect do
+            user.tap { |u| u.update!(email: new_email) }.reload
+          end.not_to change(user, :notification_email)
+        end
+
+        it 'updates :notification_email to the new email once confirmed' do
+          user.update!(email: new_email)
+
+          expect do
+            user.tap(&:confirm).reload
+          end.to change(user, :notification_email).to eq(new_email)
+        end
+
+        context 'and :notification_email is set to a secondary email' do
+          let!(:email_attrs) { attributes_for(:email, :confirmed, user: user) }
+          let(:secondary) { create(:email, :confirmed, email: 'secondary@example.com', user: user) }
+
+          before do
+            user.emails.create(email_attrs)
+            user.tap { |u| u.update!(notification_email: email_attrs[:email]) }.reload
+          end
+
+          it 'does not change :notification_email to :email' do
+            expect do
+              user.tap { |u| u.update!(email: new_email) }.reload
+            end.not_to change(user, :notification_email)
+          end
+
+          it 'does not change :notification_email to :email once confirmed' do
+            user.update!(email: new_email)
+
+            expect do
+              user.tap(&:confirm).reload
+            end.not_to change(user, :notification_email)
+          end
+        end
+      end
+    end
+
+    describe '#update_invalid_gpg_signatures' do
+      let(:user) do
+        create(:user, email: 'tula.torphy@abshire.ca').tap do |user|
+          user.skip_reconfirmation!
+        end
+      end
+
+      it 'does nothing when the name is updated' do
+        expect(user).not_to receive(:update_invalid_gpg_signatures)
+        user.update_attributes!(name: 'Bette')
+      end
+
+      it 'synchronizes the gpg keys when the email is updated' do
+        expect(user).to receive(:update_invalid_gpg_signatures).at_most(:twice)
+        user.update_attributes!(email: 'shawnee.ritchie@denesik.com')
       end
     end
   end
@@ -1222,6 +1275,24 @@ describe User do
     end
   end
 
+  describe '#accept_pending_invitations!' do
+    let(:user) { create(:user, email: 'user@email.com') }
+    let!(:project_member_invite) { create(:project_member, :invited, invite_email: user.email) }
+    let!(:group_member_invite) { create(:group_member, :invited, invite_email: user.email) }
+    let!(:external_project_member_invite) { create(:project_member, :invited, invite_email: 'external@email.com') }
+    let!(:external_group_member_invite) { create(:group_member, :invited, invite_email: 'external@email.com') }
+
+    it 'accepts all the user members pending invitations and returns the accepted_members' do
+      accepted_members = user.accept_pending_invitations!
+
+      expect(accepted_members).to match_array([project_member_invite, group_member_invite])
+      expect(group_member_invite.reload).not_to be_invite
+      expect(project_member_invite.reload).not_to be_invite
+      expect(external_project_member_invite.reload).to be_invite
+      expect(external_group_member_invite.reload).to be_invite
+    end
+  end
+
   describe '#all_emails' do
     let(:user) { create(:user) }
 
@@ -1785,28 +1856,54 @@ describe User do
     end
   end
 
-  describe '#ci_authorized_runners' do
+  describe '#ci_owned_runners' do
     let(:user) { create(:user) }
-    let(:runner) { create(:ci_runner) }
+    let(:runner_1) { create(:ci_runner) }
+    let(:runner_2) { create(:ci_runner) }
 
-    before do
-      project.runners << runner
-    end
-
-    context 'without any projects' do
-      let(:project) { create(:project) }
+    context 'without any projects nor groups' do
+      let!(:project) { create(:project, runners: [runner_1]) }
+      let!(:group) { create(:group) }
 
       it 'does not load' do
-        expect(user.ci_authorized_runners).to be_empty
+        expect(user.ci_owned_runners).to be_empty
       end
     end
 
     context 'with personal projects runners' do
       let(:namespace) { create(:namespace, owner: user) }
-      let(:project) { create(:project, namespace: namespace) }
+      let!(:project) { create(:project, namespace: namespace, runners: [runner_1]) }
 
       it 'loads' do
-        expect(user.ci_authorized_runners).to contain_exactly(runner)
+        expect(user.ci_owned_runners).to contain_exactly(runner_1)
+      end
+    end
+
+    context 'with personal group runner' do
+      let!(:project) { create(:project, runners: [runner_1]) }
+      let!(:group) do
+        create(:group, runners: [runner_2]).tap do |group|
+          group.add_owner(user)
+        end
+      end
+
+      it 'loads' do
+        expect(user.ci_owned_runners).to contain_exactly(runner_2)
+      end
+    end
+
+    context 'with personal project and group runner' do
+      let(:namespace) { create(:namespace, owner: user) }
+      let!(:project) { create(:project, namespace: namespace, runners: [runner_1]) }
+
+      let!(:group) do
+        create(:group, runners: [runner_2]).tap do |group|
+          group.add_owner(user)
+        end
+      end
+
+      it 'loads' do
+        expect(user.ci_owned_runners).to contain_exactly(runner_1, runner_2)
       end
     end
 
@@ -1817,7 +1914,7 @@ describe User do
         end
 
         it 'loads' do
-          expect(user.ci_authorized_runners).to contain_exactly(runner)
+          expect(user.ci_owned_runners).to contain_exactly(runner_1)
         end
       end
 
@@ -1827,14 +1924,28 @@ describe User do
         end
 
         it 'does not load' do
-          expect(user.ci_authorized_runners).to be_empty
+          expect(user.ci_owned_runners).to be_empty
         end
       end
     end
 
     context 'with groups projects runners' do
       let(:group) { create(:group) }
-      let(:project) { create(:project, group: group) }
+      let!(:project) { create(:project, group: group, runners: [runner_1]) }
+
+      def add_user(access)
+        group.add_user(user, access)
+      end
+
+      it_behaves_like :member
+    end
+
+    context 'with groups runners' do
+      let!(:group) do
+        create(:group, runners: [runner_1]).tap do |group|
+          group.add_owner(user)
+        end
+      end
 
       def add_user(access)
         group.add_user(user, access)
@@ -1844,7 +1955,7 @@ describe User do
     end
 
     context 'with other projects runners' do
-      let(:project) { create(:project) }
+      let!(:project) { create(:project, runners: [runner_1]) }
 
       def add_user(access)
         project.add_role(user, access)
@@ -1857,7 +1968,7 @@ describe User do
       let(:group) { create(:group) }
       let(:another_user) { create(:user) }
       let(:subgroup) { create(:group, parent: group) }
-      let(:project) { create(:project, group: subgroup) }
+      let!(:project) { create(:project, group: subgroup, runners: [runner_1]) }
 
       def add_user(access)
         group.add_user(user, access)
@@ -2726,6 +2837,54 @@ describe User do
 
       expect { create(:user, username: 'foo') }
         .to change { RedirectRoute.where(path: 'foo').count }.by(-1)
+    end
+  end
+
+  describe '#required_terms_not_accepted?' do
+    let(:user) { build(:user) }
+    subject { user.required_terms_not_accepted? }
+
+    context "when terms are not enforced" do
+      it { is_expected.to be_falsy }
+    end
+
+    context "when terms are enforced and accepted by the user" do
+      before do
+        enforce_terms
+        accept_terms(user)
+      end
+
+      it { is_expected.to be_falsy }
+    end
+
+    context "when terms are enforced but the user has not accepted" do
+      before do
+        enforce_terms
+      end
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
+  describe '#increment_failed_attempts!' do
+    subject(:user) { create(:user, failed_attempts: 0) }
+
+    it 'logs failed sign-in attempts' do
+      expect { user.increment_failed_attempts! }.to change(user, :failed_attempts).from(0).to(1)
+    end
+
+    it 'does not log failed sign-in attempts when in a GitLab read-only instance' do
+      allow(Gitlab::Database).to receive(:read_only?) { true }
+
+      expect { user.increment_failed_attempts! }.not_to change(user, :failed_attempts)
+    end
+  end
+
+  context 'with uploads' do
+    it_behaves_like 'model with mounted uploader', false do
+      let(:model_object) { create(:user, :with_avatar) }
+      let(:upload_attribute) { :avatar }
+      let(:uploader_class) { AttachmentUploader }
     end
   end
 end

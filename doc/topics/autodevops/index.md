@@ -1,7 +1,5 @@
 # Auto DevOps
 
-DANGER: Auto DevOps is currently in **Beta** and _not recommended for production use_.
-
 > [Introduced][ce-37115] in GitLab 10.0.
 
 Auto DevOps automatically detects, builds, tests, deploys, and monitors your
@@ -10,8 +8,30 @@ applications.
 ## Overview
 
 With Auto DevOps, the software development process becomes easier to set up
-as every project can have a complete workflow from build to deploy and monitoring,
-with minimal to zero configuration.
+as every project can have a complete workflow from verification to monitoring
+without needing to configure anything. Just push your code and GitLab takes
+care of everything else. This makes it easier to start new projects and brings
+consistency to how applications are set up throughout a company.
+
+## Comparison to application platforms and PaaS
+
+Auto DevOps provides functionality described by others as an application
+platform or as a Platform as a Service (PaaS). It takes inspiration from the
+innovative work done by [Heroku](https://www.heroku.com/) and goes beyond it
+in a couple of ways:
+
+1. Auto DevOps works with any Kubernetes cluster, you're not limited to running
+   on GitLab's infrastructure (note that many features also work without Kubernetes).
+1. There is no additional cost (no markup on the infrastructure costs), and you
+   can use a self-hosted Kubernetes cluster or Containers as a Service on any
+   public cloud (for example [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine/)).
+1. Auto DevOps has more features including security testing, performance testing,
+   and code quality testing.
+1. It offers an incremental graduation path. If you need advanced customizations
+   you can start modifying the templates without having to start over on a
+   completely different platform.
+
+## Features
 
 Comprised of a set of stages, Auto DevOps brings these best practices to your
 project in an easy and automatic way:
@@ -112,6 +132,11 @@ where `example.com` is the domain name under which the deployed apps will be ser
 and `1.2.3.4` is the IP address of your load balancer; generally NGINX
 ([see prerequisites](#prerequisites)). How to set up the DNS record is beyond
 the scope of this document; you should check with your DNS provider.
+
+Alternatively you can use free public services like [xip.io](http://xip.io) or
+[nip.io](http://nip.io) which provide automatic wildcard DNS without any
+configuration. Just set the Auto DevOps base domain to `1.2.3.4.xip.io` or
+`1.2.3.4.nip.io`.
 
 Once set up, all requests will hit the load balancer, which in turn will route
 them to the Kubernetes pods that run your application(s).
@@ -362,7 +387,7 @@ If you have installed GitLab using a different method, you need to:
 1. [Deploy Prometheus](../../user/project/integrations/prometheus.md#configuring-your-own-prometheus-server-within-kubernetes) into your Kubernetes cluster
 1. If you would like response metrics, ensure you are running at least version
    0.9.0 of NGINX Ingress and
-   [enable Prometheus metrics](https://github.com/kubernetes/ingress/blob/master/examples/customization/custom-vts-metrics/nginx/nginx-vts-metrics-conf.yaml).
+   [enable Prometheus metrics](https://github.com/kubernetes/ingress-nginx/blob/master/docs/examples/customization/custom-vts-metrics-prometheus/nginx-vts-metrics-conf.yaml).
 1. Finally, [annotate](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/)
    the NGINX Ingress deployment to be scraped by Prometheus using
    `prometheus.io/scrape: "true"` and `prometheus.io/port: "10254"`.
@@ -468,6 +493,17 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | `POSTGRES_PASSWORD`          | The PostgreSQL password; defaults to `testing-password`. Set it to use a custom password.                                                                                                                                     |
 | `POSTGRES_DB`                | The PostgreSQL database name; defaults to the value of [`$CI_ENVIRONMENT_SLUG`](../../ci/variables/README.md#predefined-variables-environment-variables). Set it to use a custom database name.                               |
 | `BUILDPACK_URL`              | The buildpack's full URL. It can point to either Git repositories or a tarball URL. For Git repositories, it is possible to point to a specific `ref`, for example `https://github.com/heroku/heroku-buildpack-ruby.git#v142` |
+| `STAGING_ENABLED`            | From GitLab 10.8, this variable can be used to define a [deploy policy for staging and production environments](#deploy-policy-for-staging-and-production-environments). |
+| `CANARY_ENABLED`             | From GitLab 11.0, this variable can be used to define a [deploy policy for canary environments](#deploy-policy-for-canary-environments). |
+| `INCREMENTAL_ROLLOUT_ENABLED`| From GitLab 10.8, this variable can be used to enable an [incremental rollout](#incremental-rollout-to-production) of your application for the production environment. |
+| `TEST_DISABLED`              | From GitLab 11.0, this variable can be used to disable the `test` job. If the variable is present, the job will not be created. |
+| `CODEQUALITY_DISABLED`       | From GitLab 11.0, this variable can be used to disable the `codequality` job. If the variable is present, the job will not be created. |
+| `SAST_DISABLED`              | From GitLab 11.0, this variable can be used to disable the `sast` job. If the variable is present, the job will not be created. |
+| `DEPENDENCY_SCANNING_DISABLED` | From GitLab 11.0, this variable can be used to disable the `dependency_scanning` job. If the variable is present, the job will not be created. |
+| `CONTAINER_SCANNING_DISABLED` | From GitLab 11.0, this variable can be used to disable the `sast:container` job. If the variable is present, the job will not be created. |
+| `REVIEW_DISABLED`            | From GitLab 11.0, this variable can be used to disable the `review` and the manual `review:stop` job. If the variable is present, these jobs will not be created. |
+| `DAST_DISABLED`              | From GitLab 11.0, this variable can be used to disable the `dast` job. If the variable is present, the job will not be created. |
+| `PERFORMANCE_DISABLED`       | From GitLab 11.0, this variable can be used to disable the `performance` job. If the variable is present, the job will not be created. |
 
 TIP: **Tip:**
 Set up the replica variables using a
@@ -533,6 +569,88 @@ service:
   externalPort: 5000
   internalPort: 5000
 ```
+
+#### Deploy policy for staging and production environments
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ci-yml/merge_requests/160)
+in GitLab 10.8.
+
+The normal behavior of Auto DevOps is to use Continuous Deployment, pushing
+automatically to the `production` environment every time a new pipeline is run
+on the default branch. However, there are cases where you might want to use a
+staging environment and deploy to production manually. For this scenario, the
+`STAGING_ENABLED` environment variable was introduced.
+
+If `STAGING_ENABLED` is defined in your project (e.g., set `STAGING_ENABLED` to
+`1` as a secret variable), then the application will be automatically deployed
+to a `staging` environment, and a  `production_manual` job will be created for
+you when you're ready to manually deploy to production.
+
+#### Deploy policy for canary environments **[PREMIUM]**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ci-yml/merge_requests/171)
+in GitLab 11.0.
+
+A [canary environment](https://docs.gitlab.com/ee/user/project/canary_deployments.html) can be used
+before any changes are deployed to production.
+
+If `CANARY_ENABLED` is defined in your project (e.g., set `CANARY_ENABLED` to
+`1` as a secret variable) then two manual jobs will be created:
+
+- `canary` which will deploy the application to the canary environment
+- `production_manual` which is to be used by you when you're ready to manually
+  deploy to production.
+
+#### Incremental rollout to production **[PREMIUM]**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5415) in GitLab 10.8.
+
+When you have a new version of your app to deploy in production, you may want
+to use an incremental rollout to replace just a few pods with the latest code.
+This will allow you to first check how the app is behaving, and later manually
+increasing the rollout up to 100%.
+
+If `INCREMENTAL_ROLLOUT_ENABLED` is defined in your project (e.g., set
+`INCREMENTAL_ROLLOUT_ENABLED` to `1` as a secret variable), then instead of the
+standard `production` job, 4 different
+[manual jobs](../../ci/pipelines.md#manual-actions-from-the-pipeline-graph)
+will be created:
+
+1. `rollout 10%`
+1. `rollout 25%`
+1. `rollout 50%`
+1. `rollout 100%`
+
+The percentage is based on the `REPLICAS` variable and defines the number of
+pods you want to have for your deployment. If you say `10`, and then you run
+the `10%` rollout job, there will be `1` new pod + `9` old ones.
+
+To start a job, click on the play icon next to the job's name. You are not
+required to go from `10%` to `100%`, you can jump to whatever job you want.
+You can also scale down by running a lower percentage job, just before hitting
+`100%`. Once you get to `100%`, you cannot scale down, and you'd have to roll
+back by redeploying the old version using the
+[rollback button](../../ci/environments.md#rolling-back-changes) in the
+environment page.
+
+Below, you can see how the pipeline will look if the rollout or staging
+variables are defined.
+
+- **Without `INCREMENTAL_ROLLOUT_ENABLED` and without `STAGING_ENABLED`**
+
+    ![Staging and rollout disabled](img/rollout_staging_disabled.png)
+
+- **Without `INCREMENTAL_ROLLOUT_ENABLED` and with `STAGING_ENABLED`**
+
+    ![Staging enabled](img/staging_enabled.png)
+
+- **With `INCREMENTAL_ROLLOUT_ENABLED` and without `STAGING_ENABLED`**
+
+    ![Rollout enabled](img/rollout_enabled.png)
+
+- **With `INCREMENTAL_ROLLOUT_ENABLED` and with `STAGING_ENABLED`**
+
+    ![Rollout and staging enabled](img/rollout_staging_enabled.png)
 
 ## Currently supported languages
 

@@ -4,6 +4,7 @@ class DeployToken < ActiveRecord::Base
   add_authentication_token_field :token
 
   AVAILABLE_SCOPES = %i(read_repository read_registry).freeze
+  GITLAB_DEPLOY_TOKEN_NAME = 'gitlab-deploy-token'.freeze
 
   default_value_for(:expires_at) { Forever.date }
 
@@ -16,6 +17,10 @@ class DeployToken < ActiveRecord::Base
   accepts_nested_attributes_for :project_deploy_tokens
 
   scope :active, -> { where("revoked = false AND expires_at >= NOW()") }
+
+  def self.gitlab_deploy_token
+    active.find_by(name: GITLAB_DEPLOY_TOKEN_NAME)
+  end
 
   def revoke!
     update!(revoked: true)

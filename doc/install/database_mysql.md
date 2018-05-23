@@ -91,7 +91,7 @@ Follow the below instructions to ensure you use the most up to date requirements
 
 #### Check for InnoDB File-Per-Table Tablespaces
 
-We need to check, enable and maybe convert your existing GitLab DB tables to the [InnoDB File-Per-Table Tablespaces](http://dev.mysql.com/doc/refman/5.7/en/innodb-multiple-tablespaces.html) as a prerequise for supporting **utfb8mb4 with long indexes** required by recent GitLab databases.
+We need to check, enable and maybe convert your existing GitLab DB tables to the [InnoDB File-Per-Table Tablespaces](http://dev.mysql.com/doc/refman/5.7/en/innodb-multiple-tablespaces.html) as a prerequisite for supporting **utfb8mb4 with long indexes** required by recent GitLab databases.
 
     # Login to MySQL
     mysql -u root -p

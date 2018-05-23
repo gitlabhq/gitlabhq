@@ -112,7 +112,7 @@ module LoginHelpers
         }
       }
     })
-    Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:saml]
+    Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[provider.to_sym]
   end
 
   def mock_saml_config
@@ -129,7 +129,7 @@ module LoginHelpers
     env = env_from_context(context)
 
     set_devise_mapping(context: context)
-    env['omniauth.auth'] = OmniAuth.config.mock_auth[provider]
+    env['omniauth.auth'] = OmniAuth.config.mock_auth[provider.to_sym]
   end
 
   def stub_omniauth_saml_config(messages)

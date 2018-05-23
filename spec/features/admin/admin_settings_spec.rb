@@ -2,10 +2,13 @@ require 'spec_helper'
 
 feature 'Admin updates settings' do
   include StubENV
+  include TermsHelper
+
+  let(:admin) { create(:admin) }
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
-    sign_in(create(:admin))
+    sign_in(admin)
     visit admin_application_settings_path
   end
 
@@ -85,6 +88,22 @@ feature 'Admin updates settings' do
     expect(page).to have_content "Application settings saved successfully"
   end
 
+  scenario 'Terms of Service' do
+    # Already have the admin accept terms, so they don't need to accept in this spec.
+    _existing_terms = create(:term)
+    accept_terms(admin)
+
+    page.within('.as-terms') do
+      check 'Require all users to accept Terms of Service when they access GitLab.'
+      fill_in 'Terms of Service Agreement', with: 'Be nice!'
+      click_button 'Save changes'
+    end
+
+    expect(Gitlab::CurrentSettings.enforce_terms).to be(true)
+    expect(Gitlab::CurrentSettings.terms).to eq 'Be nice!'
+    expect(page).to have_content 'Application settings saved successfully'
+  end
+
   scenario 'Modify oauth providers' do
     expect(Gitlab::CurrentSettings.disabled_oauth_sign_in_sources).to be_empty
 
@@ -133,7 +152,7 @@ feature 'Admin updates settings' do
 
   scenario 'Change CI/CD settings' do
     page.within('.as-ci-cd') do
-      check 'Enabled Auto DevOps (Beta) for projects by default'
+      check 'Enabled Auto DevOps for projects by default'
       fill_in 'Auto devops domain', with: 'domain.com'
       click_button 'Save changes'
     end

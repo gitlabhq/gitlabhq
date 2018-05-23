@@ -8,7 +8,7 @@
   .top-area
     = render 'shared/issuable/nav', type: :issues
     .nav-controls
-      = link_to params.merge(rss_url_options), class: 'btn' do
+      = link_to safe_params.merge(rss_url_options), class: 'btn' do
         = icon('rss')
         %span.icon-label
           Subscribe

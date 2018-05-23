@@ -3,6 +3,9 @@ require 'spec_helper'
 describe ApplicationSetting do
   let(:setting) { described_class.create_from_defaults }
 
+  it { include(CacheableAttributes) }
+  it { expect(described_class.current_without_cache).to eq(described_class.last) }
+
   it { expect(setting).to be_valid }
   it { expect(setting.uuid).to be_present }
   it { expect(setting).to have_db_column(:auto_devops_enabled) }
@@ -301,31 +304,19 @@ describe ApplicationSetting do
         expect(subject).to be_invalid
       end
     end
-  end
 
-  describe '.current' do
-    context 'redis unavailable' do
-      it 'returns an ApplicationSetting' do
-        allow(Rails.cache).to receive(:fetch).and_call_original
-        allow(described_class).to receive(:last).and_return(:last)
-        expect(Rails.cache).to receive(:fetch).with(ApplicationSetting::CACHE_KEY).and_raise(ArgumentError)
+    describe 'enforcing terms' do
+      it 'requires the terms to present when enforcing users to accept' do
+        subject.enforce_terms = true
 
-        expect(described_class.current).to eq(:last)
+        expect(subject).to be_invalid
       end
-    end
 
-    context 'when an ApplicationSetting is not yet present' do
-      it 'does not cache nil object' do
-        # when missing settings a nil object is returned, but not cached
-        allow(described_class).to receive(:last).and_return(nil).twice
-        expect(described_class.current).to be_nil
+      it 'is valid when terms are created' do
+        create(:term)
+        subject.enforce_terms = true
 
-        # when the settings are set the method returns a valid object
-        allow(described_class).to receive(:last).and_return(:last)
-        expect(described_class.current).to eq(:last)
-
-        # subsequent calls get everything from cache
-        expect(described_class.current).to eq(:last)
+        expect(subject).to be_valid
       end
     end
   end

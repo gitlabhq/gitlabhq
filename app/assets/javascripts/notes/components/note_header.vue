@@ -62,6 +62,21 @@ export default {
 
 <template>
   <div class="note-header-info">
+    <div
+      v-if="includeToggle"
+      class="discussion-actions">
+      <button
+        @click="handleToggle"
+        class="note-action-button discussion-toggle-button js-vue-toggle-button"
+        type="button">
+        <i
+          :class="toggleChevronClass"
+          class="fa"
+          aria-hidden="true">
+        </i>
+        {{ __('Toggle discussion') }}
+      </button>
+    </div>
     <a :href="author.path">
       <span class="note-header-author-name">{{ author.name }}</span>
       <span class="note-headline-light">
@@ -78,10 +93,13 @@ export default {
           v-html="actionTextHtml"
           class="system-note-message">
         </span>
+        <span class="system-note-separator">
+          &middot;
+        </span>
         <a
           :href="noteTimestampLink"
           @click="updateTargetNoteHash"
-          class="note-timestamp">
+          class="note-timestamp system-note-separator">
           <time-ago-tooltip
             :time="createdAt"
             tooltip-placement="bottom"
@@ -95,20 +113,5 @@ export default {
         </i>
       </span>
     </span>
-    <div
-      v-if="includeToggle"
-      class="discussion-actions">
-      <button
-        @click="handleToggle"
-        class="note-action-button discussion-toggle-button js-vue-toggle-button"
-        type="button">
-        <i
-          :class="toggleChevronClass"
-          class="fa"
-          aria-hidden="true">
-        </i>
-        Toggle discussion
-      </button>
-    </div>
   </div>
 </template>

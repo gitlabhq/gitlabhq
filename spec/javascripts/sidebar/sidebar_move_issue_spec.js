@@ -7,7 +7,7 @@ import SidebarService from '~/sidebar/services/sidebar_service';
 import SidebarMoveIssue from '~/sidebar/lib/sidebar_move_issue';
 import Mock from './mock_data';
 
-describe('SidebarMoveIssue', () => {
+describe('SidebarMoveIssue', function () {
   beforeEach(() => {
     Vue.http.interceptors.push(Mock.sidebarMockInterceptor);
     this.mediator = new SidebarMediator(Mock.mediator);
@@ -68,6 +68,15 @@ describe('SidebarMoveIssue', () => {
       this.sidebarMoveIssue.initDropdown();
 
       expect($.fn.glDropdown).toHaveBeenCalled();
+    });
+
+    it('escapes html from project name', (done) => {
+      this.$toggleButton.dropdown('toggle');
+
+      setTimeout(() => {
+        expect(this.$content.find('.js-move-issue-dropdown-item')[1].innerHTML.trim()).toEqual('&lt;img src=x onerror=alert(document.domain)&gt; foo / bar');
+        done();
+      });
     });
   });
 

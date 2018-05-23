@@ -1,6 +1,13 @@
-import * as urlUtils from '~/lib/utils/url_utility';
+import actions, {
+  stageAllChanges,
+  unstageAllChanges,
+  toggleFileFinder,
+  setCurrentBranchId,
+  setEmptyStateSvgs,
+  updateActivityBarView,
+  updateTempFlagForEntry,
+} from '~/ide/stores/actions';
 import store from '~/ide/stores';
-import * as actions from '~/ide/stores/actions';
 import * as types from '~/ide/stores/mutation_types';
 import router from '~/ide/ide_router';
 import { resetStore, file } from '../helpers';
@@ -17,12 +24,12 @@ describe('Multi-file store actions', () => {
 
   describe('redirectToUrl', () => {
     it('calls visitUrl', done => {
-      spyOn(urlUtils, 'visitUrl');
+      const visitUrl = spyOnDependency(actions, 'visitUrl');
 
       store
         .dispatch('redirectToUrl', 'test')
         .then(() => {
-          expect(urlUtils.visitUrl).toHaveBeenCalledWith('test');
+          expect(visitUrl).toHaveBeenCalledWith('test');
 
           done();
         })
@@ -298,10 +305,11 @@ describe('Multi-file store actions', () => {
       store.state.changedFiles.push(file(), file('new'));
 
       testAction(
-        actions.stageAllChanges,
+        stageAllChanges,
         null,
         store.state,
         [
+          { type: types.SET_LAST_COMMIT_MSG, payload: '' },
           { type: types.STAGE_CHANGE, payload: store.state.changedFiles[0].path },
           { type: types.STAGE_CHANGE, payload: store.state.changedFiles[1].path },
         ],
@@ -316,7 +324,7 @@ describe('Multi-file store actions', () => {
       store.state.stagedFiles.push(file(), file('new'));
 
       testAction(
-        actions.unstageAllChanges,
+        unstageAllChanges,
         null,
         store.state,
         [
@@ -338,6 +346,101 @@ describe('Multi-file store actions', () => {
         })
         .then(done)
         .catch(done.fail);
+    });
+  });
+
+  describe('updateActivityBarView', () => {
+    it('commits UPDATE_ACTIVITY_BAR_VIEW', done => {
+      testAction(
+        updateActivityBarView,
+        'test',
+        {},
+        [{ type: 'UPDATE_ACTIVITY_BAR_VIEW', payload: 'test' }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('setEmptyStateSvgs', () => {
+    it('commits setEmptyStateSvgs', done => {
+      testAction(
+        setEmptyStateSvgs,
+        'svg',
+        {},
+        [{ type: 'SET_EMPTY_STATE_SVGS', payload: 'svg' }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('updateTempFlagForEntry', () => {
+    it('commits UPDATE_TEMP_FLAG', done => {
+      const f = {
+        ...file(),
+        path: 'test',
+        tempFile: true,
+      };
+      store.state.entries[f.path] = f;
+
+      testAction(
+        updateTempFlagForEntry,
+        { file: f, tempFile: false },
+        store.state,
+        [{ type: 'UPDATE_TEMP_FLAG', payload: { path: f.path, tempFile: false } }],
+        [],
+        done,
+      );
+    });
+
+    it('commits UPDATE_TEMP_FLAG and dispatches for parent', done => {
+      const parent = {
+        ...file(),
+        path: 'testing',
+      };
+      const f = {
+        ...file(),
+        path: 'test',
+        parentPath: 'testing',
+      };
+      store.state.entries[parent.path] = parent;
+      store.state.entries[f.path] = f;
+
+      testAction(
+        updateTempFlagForEntry,
+        { file: f, tempFile: false },
+        store.state,
+        [{ type: 'UPDATE_TEMP_FLAG', payload: { path: f.path, tempFile: false } }],
+        [{ type: 'updateTempFlagForEntry', payload: { file: parent, tempFile: false } }],
+        done,
+      );
+    });
+  });
+
+  describe('setCurrentBranchId', () => {
+    it('commits setCurrentBranchId', done => {
+      testAction(
+        setCurrentBranchId,
+        'branchId',
+        {},
+        [{ type: 'SET_CURRENT_BRANCH', payload: 'branchId' }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('toggleFileFinder', () => {
+    it('commits TOGGLE_FILE_FINDER', done => {
+      testAction(
+        toggleFileFinder,
+        true,
+        null,
+        [{ type: 'TOGGLE_FILE_FINDER', payload: true }],
+        [],
+        done,
+      );
     });
   });
 });

@@ -1,7 +1,7 @@
+import actions from '~/ide/stores/actions';
 import store from '~/ide/stores';
 import service from '~/ide/services';
 import router from '~/ide/ide_router';
-import * as urlUtils from '~/lib/utils/url_utility';
 import eventHub from '~/ide/eventhub';
 import * as consts from '~/ide/stores/modules/commit/constants';
 import { resetStore, file } from 'spec/ide/helpers';
@@ -289,26 +289,13 @@ describe('IDE commit module actions', () => {
         .then(done)
         .catch(done.fail);
     });
-
-    it('pushes route to new branch if commitAction is new branch', done => {
-      store.state.commit.commitAction = consts.COMMIT_TO_NEW_BRANCH;
-
-      store
-        .dispatch('commit/updateFilesAfterCommit', {
-          data,
-          branch,
-        })
-        .then(() => {
-          expect(router.push).toHaveBeenCalledWith(`/project/abcproject/blob/master/${f.path}`);
-        })
-        .then(done)
-        .catch(done.fail);
-    });
   });
 
   describe('commitChanges', () => {
+    let visitUrl;
+
     beforeEach(() => {
-      spyOn(urlUtils, 'visitUrl');
+      visitUrl = spyOnDependency(actions, 'visitUrl');
 
       document.body.innerHTML += '<div class="flash-container"></div>';
 
@@ -389,21 +376,6 @@ describe('IDE commit module actions', () => {
           .catch(done.fail);
       });
 
-      it('pushes router to new route', done => {
-        store
-          .dispatch('commit/commitChanges')
-          .then(() => {
-            expect(router.push).toHaveBeenCalledWith(
-              `/project/${store.state.currentProjectId}/blob/${
-                store.getters['commit/newBranchName']
-              }/changed`,
-            );
-
-            done();
-          })
-          .catch(done.fail);
-      });
-
       it('sets last Commit Msg', done => {
         store
           .dispatch('commit/commitChanges')
@@ -461,7 +433,7 @@ describe('IDE commit module actions', () => {
           store
             .dispatch('commit/commitChanges')
             .then(() => {
-              expect(urlUtils.visitUrl).toHaveBeenCalledWith(
+              expect(visitUrl).toHaveBeenCalledWith(
                 `webUrl/merge_requests/new?merge_request[source_branch]=${
                   store.getters['commit/newBranchName']
                 }&merge_request[target_branch]=master`,

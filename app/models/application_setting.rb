@@ -1,11 +1,11 @@
 class ApplicationSetting < ActiveRecord::Base
+  include CacheableAttributes
   include CacheMarkdownField
   include TokenAuthenticatable
 
   add_authentication_token_field :runners_registration_token
   add_authentication_token_field :health_check_access_token
 
-  CACHE_KEY = 'application_setting.last'.freeze
   DOMAIN_LIST_SEPARATOR = %r{\s*[,;]\s*     # comma or semicolon, optionally surrounded by whitespace
                             |               # or
                             \s              # any whitespace character
@@ -220,46 +220,15 @@ class ApplicationSetting < ActiveRecord::Base
     end
   end
 
+  validate :terms_exist, if: :enforce_terms?
+
   before_validation :ensure_uuid!
 
   before_save :ensure_runners_registration_token
   before_save :ensure_health_check_access_token
 
   after_commit do
-    Rails.cache.write(CACHE_KEY, self)
-  end
-
-  def self.current
-    ensure_cache_setup
-
-    Rails.cache.fetch(CACHE_KEY) do
-      ApplicationSetting.last.tap do |settings|
-        # do not cache nils
-        raise 'missing settings' unless settings
-      end
-    end
-  rescue
-    # Fall back to an uncached value if there are any problems (e.g. redis down)
-    ApplicationSetting.last
-  end
-
-  def self.expire
-    Rails.cache.delete(CACHE_KEY)
-  rescue
-    # Gracefully handle when Redis is not available. For example,
-    # omnibus may fail here during gitlab:assets:compile.
-  end
-
-  def self.cached
-    value = Rails.cache.read(CACHE_KEY)
-    ensure_cache_setup if value.present?
-    value
-  end
-
-  def self.ensure_cache_setup
-    # This is a workaround for a Rails bug that causes attribute methods not
-    # to be loaded when read from cache: https://github.com/rails/rails/issues/27348
-    ApplicationSetting.define_attribute_methods
+    reset_memoized_terms
   end
 
   def self.defaults
@@ -331,7 +300,8 @@ class ApplicationSetting < ActiveRecord::Base
       gitaly_timeout_fast: 10,
       gitaly_timeout_medium: 30,
       gitaly_timeout_default: 55,
-      allow_local_requests_from_hooks_and_services: false
+      allow_local_requests_from_hooks_and_services: false,
+      mirror_available: true
     }
   end
 
@@ -507,6 +477,16 @@ class ApplicationSetting < ActiveRecord::Base
     password_authentication_enabled_for_web? || password_authentication_enabled_for_git?
   end
 
+  delegate :terms, to: :latest_terms, allow_nil: true
+  def latest_terms
+    @latest_terms ||= Term.latest
+  end
+
+  def reset_memoized_terms
+    @latest_terms = nil
+    latest_terms
+  end
+
   private
 
   def ensure_uuid!
@@ -519,5 +499,11 @@ class ApplicationSetting < ActiveRecord::Base
     invalid = repository_storages - Gitlab.config.repositories.storages.keys
     errors.add(:repository_storages, "can't include: #{invalid.join(", ")}") unless
       invalid.empty?
+  end
+
+  def terms_exist
+    return unless enforce_terms?
+
+    errors.add(:terms, "You need to set terms to be enforced") unless terms.present?
   end
 end

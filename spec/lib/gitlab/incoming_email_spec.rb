@@ -24,7 +24,7 @@ describe Gitlab::IncomingEmail do
   end
 
   describe 'self.supports_wildcard?' do
-    context 'address contains the wildard placeholder' do
+    context 'address contains the wildcard placeholder' do
       before do
         stub_incoming_email_setting(address: 'replies+%{key}@example.com')
       end
@@ -49,7 +49,7 @@ describe Gitlab::IncomingEmail do
         stub_incoming_email_setting(address: nil)
       end
 
-      it 'returns that wildard is not supported' do
+      it 'returns that wildcard is not supported' do
         expect(described_class.supports_wildcard?).to be_falsey
       end
     end
@@ -82,6 +82,10 @@ describe Gitlab::IncomingEmail do
 
     it "returns reply key" do
       expect(described_class.key_from_address("replies+key@example.com")).to eq("key")
+    end
+
+    it 'does not match emails with extra bits' do
+      expect(described_class.key_from_address('somereplies+somekey@example.com.someotherdomain.com')).to be nil
     end
   end
 

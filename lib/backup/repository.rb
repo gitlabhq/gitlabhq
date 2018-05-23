@@ -81,6 +81,8 @@ module Backup
           FileUtils.mv(files, bk_repos_path)
         rescue Errno::EACCES
           access_denied_error(path)
+        rescue Errno::EBUSY
+          resource_busy_error(path)
         end
       end
     end

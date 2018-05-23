@@ -16,8 +16,12 @@ module Gitlab
           @message ||= process_message
         end
 
-        def process_message
-          message = ReplyParser.new(mail).execute.strip
+        def message_including_reply
+          @message_with_reply ||= process_message(trim_reply: false)
+        end
+
+        def process_message(**kwargs)
+          message = ReplyParser.new(mail, **kwargs).execute.strip
           add_attachments(message)
         end
 
@@ -32,8 +36,12 @@ module Gitlab
         def validate_permission!(permission)
           raise UserNotFoundError unless author
           raise UserBlockedError if author.blocked?
-          raise ProjectNotFound unless author.can?(:read_project, project)
-          raise UserNotAuthorizedError unless author.can?(permission, project)
+
+          if project
+            raise ProjectNotFound unless author.can?(:read_project, project)
+          end
+
+          raise UserNotAuthorizedError unless author.can?(permission, project || noteable)
         end
 
         def verify_record!(record:, invalid_exception:, record_name:)

@@ -4,6 +4,7 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
   let!(:admin) { create(:admin) }
   let!(:base_dir) { Dir.mktmpdir + '/' }
   let(:bare_repository) { Gitlab::BareRepositoryImport::Repository.new(base_dir, File.join(base_dir, "#{project_path}.git")) }
+  let(:gitlab_shell) { Gitlab::Shell.new }
 
   subject(:importer) { described_class.new(admin, bare_repository) }
 
@@ -84,12 +85,14 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
         importer.create_project_if_needed
 
         project = Project.find_by_full_path(project_path)
-        repo_path = File.join(project.repository_storage_path, project.disk_path + '.git')
+        repo_path = "#{project.disk_path}.git"
         hook_path = File.join(repo_path, 'hooks')
 
-        expect(File).to exist(repo_path)
-        expect(File.symlink?(hook_path)).to be true
-        expect(File.readlink(hook_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
+        expect(gitlab_shell.exists?(project.repository_storage, repo_path)).to be(true)
+        expect(gitlab_shell.exists?(project.repository_storage, hook_path)).to be(true)
+
+        full_hook_path = File.join(project.repository.path_to_repo, 'hooks')
+        expect(File.readlink(full_hook_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
       end
 
       context 'hashed storage enabled' do
@@ -144,8 +147,8 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
 
       project = Project.find_by_full_path("#{admin.full_path}/#{project_path}")
 
-      expect(File).to exist(File.join(project.repository_storage_path, project.disk_path + '.git'))
-      expect(File).to exist(File.join(project.repository_storage_path, project.disk_path + '.wiki.git'))
+      expect(gitlab_shell.exists?(project.repository_storage, project.disk_path + '.git')).to be(true)
+      expect(gitlab_shell.exists?(project.repository_storage, project.disk_path + '.wiki.git')).to be(true)
     end
 
     it 'moves an existing project to the correct path' do
@@ -155,7 +158,9 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
       project = build(:project, :legacy_storage, :repository)
       original_commit_count = project.repository.commit_count
 
-      bare_repo = Gitlab::BareRepositoryImport::Repository.new(project.repository_storage_path, project.repository.path)
+      legacy_path = Gitlab.config.repositories.storages[project.repository_storage].legacy_disk_path
+
+      bare_repo = Gitlab::BareRepositoryImport::Repository.new(legacy_path, project.repository.path)
       gitlab_importer = described_class.new(admin, bare_repo)
 
       expect(gitlab_importer).to receive(:create_project).and_call_original
@@ -183,7 +188,7 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
 
       project = Project.find_by_full_path(project_path)
 
-      expect(File).to exist(File.join(project.repository_storage_path, project.disk_path + '.wiki.git'))
+      expect(gitlab_shell.exists?(project.repository_storage, project.disk_path + '.wiki.git')).to be(true)
     end
   end
 

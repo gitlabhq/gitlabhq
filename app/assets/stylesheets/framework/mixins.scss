@@ -17,6 +17,16 @@
  */
 @mixin markdown-table {
   width: auto;
+  display: inline-block;
+  overflow-x: auto;
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 0;
+
+  @supports(width: fit-content) {
+    display: block;
+    width: fit-content;
+  }
 }
 
 /*
@@ -199,4 +209,16 @@
     border-width: $size;
     margin-left: -$size;
   }
+}
+
+/*
+ * Mixin that fixes wrapping issues with long strings (e.g. URLs)
+ *
+ * Note: the width needs to be set for it to work in Firefox
+ */
+@mixin overflow-break-word {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
 }

@@ -1,0 +1,5 @@
+---
+title: "Use case in-sensitive ordering by name for dashboard"
+merge_request: 18553
+author: "@vedharish"
+type: fixed

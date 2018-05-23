@@ -32,6 +32,13 @@
       required: true,
       title: 'You can choose a descriptive name different from the path.'
 
+- if @group.persisted?
+  .form-group.group-name-holder
+    = f.label :id, class: 'control-label' do
+      = _("Group ID")
+    .col-sm-10
+      = f.text_field :id, class: 'form-control', readonly: true
+
 .form-group.group-description-holder
   = f.label :description, class: 'control-label'
   .col-sm-10

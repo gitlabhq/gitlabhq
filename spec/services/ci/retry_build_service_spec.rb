@@ -6,7 +6,9 @@ describe Ci::RetryBuildService do
   set(:pipeline) { create(:ci_pipeline, project: project) }
 
   let(:stage) do
-    Ci::Stage.create!(project: project, pipeline: pipeline, name: 'test')
+    create(:ci_stage_entity, project: project,
+                             pipeline: pipeline,
+                             name: 'test')
   end
 
   let(:build) { create(:ci_build, pipeline: pipeline, stage_id: stage.id) }
@@ -30,7 +32,7 @@ describe Ci::RetryBuildService do
        runner_id tag_taggings taggings tags trigger_request_id
        user_id auto_canceled_by_id retried failure_reason
        artifacts_file_store artifacts_metadata_store
-       metadata].freeze
+       metadata trace_chunks].freeze
 
   shared_examples 'build duplication' do
     let(:another_pipeline) { create(:ci_empty_pipeline, project: project) }

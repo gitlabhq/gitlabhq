@@ -17,7 +17,8 @@ module Gitlab
                     auto_devops: :project_auto_devops,
                     label: :project_label,
                     custom_attributes: 'ProjectCustomAttribute',
-                    project_badges: 'Badge' }.freeze
+                    project_badges: 'Badge',
+                    ci_cd_settings: 'ProjectCiCdSetting' }.freeze
 
       USER_REFERENCES = %w[author_id assignee_id updated_by_id user_id created_by_id last_edited_by_id merge_user_id resolved_by_id closed_by_id].freeze
 
@@ -27,7 +28,7 @@ module Gitlab
 
       IMPORTED_OBJECT_MAX_RETRIES = 5.freeze
 
-      EXISTING_OBJECT_CHECK = %i[milestone milestones label labels project_label project_labels group_label group_labels].freeze
+      EXISTING_OBJECT_CHECK = %i[milestone milestones label labels project_label project_labels group_label group_labels project_feature].freeze
 
       TOKEN_RESET_MODELS = %w[Ci::Trigger Ci::Build ProjectHook].freeze
 
