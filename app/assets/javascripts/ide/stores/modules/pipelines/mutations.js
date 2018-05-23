@@ -33,6 +33,7 @@ export default {
       if (!stage) {
         stage = {
           title: job.stage,
+          isCollapsed: false,
           jobs: [],
         };
 

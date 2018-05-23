@@ -148,6 +148,9 @@ export default {
       unusedSeal: false,
     });
   },
+  [types.SET_RIGHT_PANE](state, view) {
+    state.rightPane = state.rightPane === view ? null : view;
+  },
   ...projectMutations,
   ...mergeRequestMutation,
   ...fileMutations,

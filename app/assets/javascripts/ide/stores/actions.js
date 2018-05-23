@@ -169,6 +169,10 @@ export const burstUnusedSeal = ({ state, commit }) => {
   }
 };
 
+export const setRightPane = ({ commit }, view) => {
+  commit(types.SET_RIGHT_PANE, view);
+};
+
 export * from './actions/tree';
 export * from './actions/file';
 export * from './actions/project';

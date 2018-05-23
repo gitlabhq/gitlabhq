@@ -1,7 +1,9 @@
 <script>
+import { mapActions, mapState } from 'vuex';
 import tooltip from '../../../vue_shared/directives/tooltip';
 import Icon from '../../../vue_shared/components/icon.vue';
-import Pipelines from './pipelines.vue';
+import { rightSidebarViews } from '../../constants';
+import PipelinesList from '../pipelines/list.vue';
 
 export default {
   directives: {
@@ -9,8 +11,15 @@ export default {
   },
   components: {
     Icon,
-    Pipelines,
+    PipelinesList,
   },
+  computed: {
+    ...mapState(['rightPane']),
+  },
+  methods: {
+    ...mapActions(['setRightPane']),
+  },
+  rightSidebarViews,
 };
 </script>
 
@@ -18,25 +27,31 @@ export default {
   <div
     class="multi-file-commit-panel ide-right-sidebar"
   >
-    <div class="multi-file-commit-panel-inner">
-      <pipelines />
+    <div
+      class="multi-file-commit-panel-inner"
+      v-if="rightPane"
+    >
+      <keep-alive>
+        <component :is="rightPane" />
+      </keep-alive>
     </div>
     <nav class="ide-activity-bar">
       <ul class="list-unstyled">
         <li v-once>
-          <a
+          <button
             v-tooltip
             data-container="body"
             data-placement="left"
             :title="__('Pipelines')"
             class="ide-sidebar-link"
-            href="a"
+            type="button"
+            @click="setRightPane($options.rightSidebarViews.pipelines)"
           >
             <icon
               :size="16"
-              name="log"
+              name="pipeline"
             />
-          </a>
+          </button>
         </li>
       </ul>
     </nav>
@@ -55,6 +70,7 @@ export default {
 
 .ide-right-sidebar .multi-file-commit-panel-inner {
   width: 300px;
+  padding: 8px 16px;
   background-color: #fff;
   border-left: 1px solid #eaeaea;
 }
