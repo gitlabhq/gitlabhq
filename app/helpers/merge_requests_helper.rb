@@ -87,6 +87,7 @@ module MergeRequestsHelper
 
   def version_index(merge_request_diff)
     return nil if @merge_request_diffs.empty?
+
     @merge_request_diffs.size - @merge_request_diffs.index(merge_request_diff)
   end
 
