@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-29 11:32+0200\n"
-"PO-Revision-Date: 2018-05-29 11:32+0200\n"
+"POT-Creation-Date: 2018-05-30 10:16-0400\n"
+"PO-Revision-Date: 2018-05-30 10:16-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -5889,6 +5889,9 @@ msgstr ""
 msgid "ciReport|Dismiss vulnerability"
 msgstr ""
 
+msgid "ciReport|Dismissed by"
+msgstr ""
+
 msgid "ciReport|Dynamic Application Security Testing (DAST) detects known vulnerabilities in your web application."
 msgstr ""
 
@@ -5980,6 +5983,9 @@ msgid "ciReport|Unapproved vulnerabilities (red) can be marked as approved."
 msgstr ""
 
 msgid "ciReport|no vulnerabilities"
+msgstr ""
+
+msgid "ciReport|on pipeline"
 msgstr ""
 
 msgid "command line instructions"
