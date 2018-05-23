@@ -55,9 +55,15 @@ describe('ChangedFiles', () => {
         expect(parallelButton).toBeDefined();
       });
 
-      it('should add active class to Inline button', () => {
-        expect(inlineButton.classList.contains('active')).toEqual(true);
-        expect(parallelButton.classList.contains('active')).toEqual(false);
+      it('should add active class to Inline button', done => {
+        vm.$store.state.diffs.diffViewType = 'inline';
+
+        vm.$nextTick(() => {
+          expect(inlineButton.classList.contains('active')).toEqual(true);
+          expect(parallelButton.classList.contains('active')).toEqual(false);
+
+          done();
+        });
       });
 
       it('should toggle active state of buttons when diff view type changed', done => {

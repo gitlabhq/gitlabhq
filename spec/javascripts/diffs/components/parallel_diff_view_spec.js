@@ -189,15 +189,13 @@ describe('ParallelDiffView', () => {
       expect(el.textContent.indexOf('Bad dates') > -1).toEqual(true);
     });
 
-    // TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-    // eslint-disable-next-line jasmine/no-disabled-tests
-    xit('should render discussions', done => {
+    it('should render discussions', done => {
       const el = component.$el;
       component.$store.dispatch('setInitialNotes', getDiscussionsMockData());
 
       Vue.nextTick(() => {
         expect(el.querySelectorAll('.notes_holder').length).toEqual(1);
-        expect(el.querySelectorAll('.notes_holder .note.note-discussion li').length).toEqual(5);
+        expect(el.querySelectorAll('.notes_holder .note-discussion li').length).toEqual(5);
         expect(el.innerText.indexOf('comment 5') > -1).toEqual(true);
         component.$store.dispatch('setInitialNotes', []);
 
