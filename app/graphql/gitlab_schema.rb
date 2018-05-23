@@ -1,12 +1,8 @@
-Gitlab::Graphql::Authorize.register!
-Gitlab::Graphql::Present.register!
-
-GitlabSchema = GraphQL::Schema.define do
+class GitlabSchema < GraphQL::Schema
   use BatchLoader::GraphQL
-
-  enable_preloading
-  enable_authorization
-  enable_presenting
+  use Gitlab::Graphql::Authorize
+  use Gitlab::Graphql::Present
 
   query(Types::QueryType)
+  # mutation(Types::MutationType)
 end

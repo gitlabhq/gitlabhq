@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Loaders::FullPathLoader do
+describe Resolvers::ProjectResolver do
   include GraphqlHelpers
 
   set(:project1) { create(:project) }
@@ -8,7 +8,7 @@ describe Loaders::FullPathLoader do
 
   set(:other_project) { create(:project) }
 
-  describe '.project' do
+  describe '#resolve' do
     it 'batch-resolves projects by full path' do
       paths = [project1.full_path, project2.full_path]
 
@@ -27,6 +27,6 @@ describe Loaders::FullPathLoader do
   end
 
   def resolve_project(full_path)
-    resolve(described_class, :project, args: { full_path: full_path })
+    resolve(described_class, args: { full_path: full_path })
   end
 end

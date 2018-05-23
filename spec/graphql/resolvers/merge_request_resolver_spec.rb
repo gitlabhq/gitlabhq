@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Loaders::IidLoader do
+describe Resolvers::MergeRequestResolver do
   include GraphqlHelpers
 
   set(:project) { create(:project, :repository) }
@@ -17,7 +17,7 @@ describe Loaders::IidLoader do
   let(:other_full_path) { other_project.full_path }
   let(:other_iid) { other_merge_request.iid }
 
-  describe '.merge_request' do
+  describe '#resolve' do
     it 'batch-resolves merge requests by target project full path and IID' do
       path = full_path # avoid database query
 
@@ -53,6 +53,6 @@ describe Loaders::IidLoader do
   end
 
   def resolve_mr(full_path, iid)
-    resolve(described_class, :merge_request, args: { project: full_path, iid: iid })
+    resolve(described_class, args: { full_path: full_path, iid: iid })
   end
 end

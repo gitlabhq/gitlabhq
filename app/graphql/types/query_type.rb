@@ -1,38 +1,21 @@
-Types::QueryType = GraphQL::ObjectType.define do
-  name 'Query'
+module Types
+  class QueryType < BaseObject
+    graphql_name 'Query'
 
-  field :project, Types::ProjectType do
-    argument :full_path, !types.ID do
-      description 'The full path of the project, e.g., "gitlab-org/gitlab-ce"'
+    field :project, Types::ProjectType,
+          null: true,
+          resolver: Resolvers::ProjectResolver,
+          description: "Find a project" do
+      authorize :read_project
     end
 
-    authorize :read_project
-
-    resolve Loaders::FullPathLoader[:project]
-  end
-
-  field :merge_request, Types::MergeRequestType do
-    argument :project, !types.ID do
-      description 'The full path of the target project, e.g., "gitlab-org/gitlab-ce"'
+    field :merge_request, Types::MergeRequestType,
+          null: true,
+          resolver: Resolvers::MergeRequestResolver,
+          description: "Find a merge request" do
+      authorize :read_merge_request
     end
 
-    argument :iid, !types.ID do
-      description 'The IID of the merge request, e.g., "1"'
-    end
-
-    authorize :read_merge_request
-
-    resolve Loaders::IidLoader[:merge_request]
-  end
-
-  # Testing endpoint to validate the API with
-  field :echo, types.String do
-    argument :text, types.String
-
-    resolve -> (obj, args, ctx) do
-      username = ctx[:current_user]&.username
-
-      "#{username.inspect} says: #{args[:text]}"
-    end
+    field :echo, GraphQL::STRING_TYPE, null: false, function: Functions::Echo.new
   end
 end

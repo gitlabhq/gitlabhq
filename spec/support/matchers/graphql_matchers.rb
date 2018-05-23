@@ -1,31 +1,40 @@
 RSpec::Matchers.define :require_graphql_authorizations do |*expected|
   match do |field|
-    authorizations = field.metadata[:authorize]
-
-    expect(authorizations).to contain_exactly(*expected)
+    field_definition = field.metadata[:type_class]
+    expect(field_definition).to respond_to(:required_permissions)
+    expect(field_definition.required_permissions).to contain_exactly(*expected)
   end
 end
 
 RSpec::Matchers.define :have_graphql_fields do |*expected|
   match do |kls|
-    expect(kls.fields.keys).to contain_exactly(*expected.map(&:to_s))
+    field_names = expected.map { |name| GraphqlHelpers.fieldnamerize(name) }
+    expect(kls.fields.keys).to contain_exactly(*field_names)
   end
 end
 
 RSpec::Matchers.define :have_graphql_arguments do |*expected|
+  include GraphqlHelpers
+
   match do |field|
-    expect(field.arguments.keys).to contain_exactly(*expected.map(&:to_s))
+    argument_names = expected.map { |name| GraphqlHelpers.fieldnamerize(name) }
+    expect(field.arguments.keys).to contain_exactly(*argument_names)
   end
 end
 
 RSpec::Matchers.define :have_graphql_type do |expected|
   match do |field|
-    expect(field.type).to eq(expected)
+    expect(field.type).to eq(expected.to_graphql)
   end
 end
 
 RSpec::Matchers.define :have_graphql_resolver do |expected|
   match do |field|
-    expect(field.resolve_proc).to eq(expected)
+    case expected
+    when Method
+      expect(field.metadata[:type_class].resolve_proc).to eq(expected)
+    else
+      expect(field.metadata[:type_class].resolver).to eq(expected)
+    end
   end
 end

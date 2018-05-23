@@ -1,16 +1,16 @@
 require 'spec_helper'
 
 describe GitlabSchema.types['Time'] do
-  let(:float) { 1504630455.96215 }
-  let(:time) { Time.at(float) }
+  let(:iso) { "2018-06-04T15:23:50+02:00" }
+  let(:time) { Time.parse(iso) }
 
-  it { expect(described_class.name).to eq('Time') }
+  it { expect(described_class.graphql_name).to eq('Time') }
 
-  it 'coerces Time into fractional seconds since epoch' do
-    expect(described_class.coerce_isolated_result(time)).to eq(float)
+  it 'coerces Time object into ISO 8601' do
+    expect(described_class.coerce_isolated_result(time)).to eq(iso)
   end
 
-  it 'coerces fractional seconds since epoch into Time' do
-    expect(described_class.coerce_isolated_input(float)).to eq(time)
+  it 'coerces an ISO-time into Time object' do
+    expect(described_class.coerce_isolated_input(iso)).to eq(time)
   end
 end
