@@ -1,5 +1,15 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.8.1 (2018-05-23)
+
+### Fixed (4 changes)
+
+- Geo: Fix repo, wiki, and upload replication when renaming a namespace that has subgroups. !5704
+- Shows the correct data in the verification information section for the primary node in Geo admin screen. !5722
+- [Geo] Don't remove project registry records.
+- Geo: Exclude tables that start with pg_ from FDW check.
+
+
 ## 10.8.0 (2018-05-22)
 
 ### Removed (1 change)

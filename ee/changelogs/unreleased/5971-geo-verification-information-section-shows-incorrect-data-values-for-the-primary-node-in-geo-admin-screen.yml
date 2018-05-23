@@ -1,5 +1,0 @@
----
-title: Shows the correct data in the verification information section for the primary node in Geo admin screen
-merge_request: 5722
-author:
-type: fixed
