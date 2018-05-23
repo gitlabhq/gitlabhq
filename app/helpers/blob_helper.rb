@@ -17,7 +17,9 @@ module BlobHelper
   end
 
   def ide_edit_path(project = @project, ref = @ref, path = @path, options = {})
-    "#{ide_path}/project#{url_for([project, "edit", "blob", id: [ref, path], script_name: "/"])}"
+    segments = [ide_path, 'project', project.full_path, 'edit', ref]
+    segments.concat(['-', path]) if path.present?
+    File.join(segments)
   end
 
   def edit_blob_button(project = @project, ref = @ref, path = @path, options = {})
@@ -331,7 +333,6 @@ module BlobHelper
     if !on_top_of_branch?(project, ref)
       edit_disabled_button_tag(text, common_classes)
       # This condition only applies to users who are logged in
-      # Web IDE (Beta) requires the user to have this feature enabled
     elsif !current_user || (current_user && can_modify_blob?(blob, project, ref))
       edit_link_tag(text, edit_path, common_classes)
     elsif can?(current_user, :fork_project, project) && can?(current_user, :create_merge_request_in, project)
