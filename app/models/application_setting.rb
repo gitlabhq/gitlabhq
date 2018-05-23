@@ -1,11 +1,11 @@
 class ApplicationSetting < ActiveRecord::Base
+  include CacheableAttributes
   include CacheMarkdownField
   include TokenAuthenticatable
 
   add_authentication_token_field :runners_registration_token
   add_authentication_token_field :health_check_access_token
 
-  CACHE_KEY = 'application_setting.last'.freeze
   DOMAIN_LIST_SEPARATOR = %r{\s*[,;]\s*     # comma or semicolon, optionally surrounded by whitespace
                             |               # or
                             \s              # any whitespace character
@@ -229,40 +229,6 @@ class ApplicationSetting < ActiveRecord::Base
 
   after_commit do
     reset_memoized_terms
-    Rails.cache.write(CACHE_KEY, self)
-  end
-
-  def self.current
-    ensure_cache_setup
-
-    Rails.cache.fetch(CACHE_KEY) do
-      ApplicationSetting.last.tap do |settings|
-        # do not cache nils
-        raise 'missing settings' unless settings
-      end
-    end
-  rescue
-    # Fall back to an uncached value if there are any problems (e.g. redis down)
-    ApplicationSetting.last
-  end
-
-  def self.expire
-    Rails.cache.delete(CACHE_KEY)
-  rescue
-    # Gracefully handle when Redis is not available. For example,
-    # omnibus may fail here during gitlab:assets:compile.
-  end
-
-  def self.cached
-    value = Rails.cache.read(CACHE_KEY)
-    ensure_cache_setup if value.present?
-    value
-  end
-
-  def self.ensure_cache_setup
-    # This is a workaround for a Rails bug that causes attribute methods not
-    # to be loaded when read from cache: https://github.com/rails/rails/issues/27348
-    ApplicationSetting.define_attribute_methods
   end
 
   def self.defaults
