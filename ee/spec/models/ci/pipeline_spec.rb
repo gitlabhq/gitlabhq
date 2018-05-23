@@ -17,19 +17,22 @@ describe Ci::Pipeline do
     end
   end
 
-  PIPELINE_ARTIFACTS_METHODS = {
-    codeclimate_artifact: [Ci::Build::CODEQUALITY_FILE, 'codequality'],
-    performance_artifact: [Ci::Build::PERFORMANCE_FILE, 'performance'],
-    sast_artifact: [Ci::Build::SAST_FILE, 'sast'],
-    dependency_scanning_artifact: [Ci::Build::DEPENDENCY_SCANNING_FILE, 'dependency_scanning'],
-    license_management_artifact: [Ci::Build::LICENSE_MANAGEMENT_FILE, 'license_management'],
+  PIPELINE_ARTIFACTS_METHODS = [
+    { method: :codeclimate_artifact, options: [Ci::Build::CODEQUALITY_FILE, 'codequality'] },
+    { method: :performance_artifact, options: [Ci::Build::PERFORMANCE_FILE, 'performance'] },
+    { method: :sast_artifact, options: [Ci::Build::SAST_FILE, 'sast'] },
+    { method: :dependency_scanning_artifact, options: [Ci::Build::DEPENDENCY_SCANNING_FILE, 'dependency_scanning'] },
+    { method: :license_management_artifact, options: [Ci::Build::LICENSE_MANAGEMENT_FILE, 'license_management'] },
     # sast_container_artifact is deprecated and replaced with container_scanning_artifact (#5778)
-    sast_container_artifact: [Ci::Build::SAST_CONTAINER_FILE, 'sast:container'],
-    container_scanning_artifact: [Ci::Build::CONTAINER_SCANNING_FILE, 'container_scanning'],
-    dast_artifact: [Ci::Build::DAST_FILE, 'dast']
-  }.freeze
+    { method: :sast_container_artifact, options: [Ci::Build::SAST_CONTAINER_FILE, 'sast:container'] },
+    { method: :sast_container_artifact, options: [Ci::Build::SAST_CONTAINER_FILE, 'container_scanning'] },
+    { method: :container_scanning_artifact, options: [Ci::Build::CONTAINER_SCANNING_FILE, 'sast:container'] },
+    { method: :container_scanning_artifact, options: [Ci::Build::CONTAINER_SCANNING_FILE, 'container_scanning'] },
+    { method: :dast_artifact, options: [Ci::Build::DAST_FILE, 'dast'] }
+  ].freeze
 
-  PIPELINE_ARTIFACTS_METHODS.each do |method, options|
+  PIPELINE_ARTIFACTS_METHODS.each do |method_test|
+    method, options = method_test.values_at(:method, :options)
     describe method.to_s do
       context 'has corresponding job' do
         let!(:build) do
