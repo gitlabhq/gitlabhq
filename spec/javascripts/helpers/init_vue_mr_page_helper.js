@@ -26,6 +26,7 @@ export default function initVueMRPage() {
   const diffsAppEl = document.createElement('div');
   diffsAppEl.id = 'js-diffs-app';
   diffsAppEl.setAttribute('data-endpoint', diffsAppEndpoint);
+  diffsAppEl.setAttribute('data-current-user-data', JSON.stringify(userDataMock));
   document.body.appendChild(diffsAppEl);
 
   const mock = new MockAdapter(axios);
