@@ -24,12 +24,9 @@ const Api = {
   commitPath: '/api/:version/projects/:id/repository/commits',
   branchSinglePath: '/api/:version/projects/:id/repository/branches/:branch',
   createBranchPath: '/api/:version/projects/:id/repository/branches',
-<<<<<<< HEAD
-  geoNodesPath: '/api/:version/geo_nodes',
-=======
   pipelinesPath: '/api/:version/projects/:id/pipelines',
   pipelineJobsPath: '/api/:version/projects/:id/pipelines/:pipeline_id/jobs',
->>>>>>> upstream/master
+  geoNodesPath: '/api/:version/geo_nodes',
 
   group(groupId, callback) {
     const url = Api.buildUrl(Api.groupPath).replace(':id', groupId);
@@ -229,35 +226,6 @@ const Api = {
     });
   },
 
-<<<<<<< HEAD
-  approverUsers(search, options, callback = $.noop) {
-    const url = Api.buildUrl('/autocomplete/users.json');
-    return axios.get(url, {
-      params: Object.assign({
-        search,
-        per_page: 20,
-      }, options),
-    }).then(({ data }) => {
-      callback(data);
-
-      return data;
-    });
-  },
-
-  ldap_groups(query, provider, callback) {
-    const url = Api.buildUrl(this.ldapGroupsPath).replace(':provider', provider);
-    return axios.get(url, {
-      params: {
-        search: query,
-        per_page: 20,
-        active: true,
-      },
-    }).then(({ data }) => {
-      callback(data);
-
-      return data;
-    });
-=======
   pipelines(projectPath, params = {}) {
     const url = Api.buildUrl(this.pipelinesPath).replace(':id', encodeURIComponent(projectPath));
 
@@ -270,7 +238,42 @@ const Api = {
       .replace(':pipeline_id', pipelineId);
 
     return axios.get(url, { params });
->>>>>>> upstream/master
+  },
+
+  approverUsers(search, options, callback = $.noop) {
+    const url = Api.buildUrl('/autocomplete/users.json');
+    return axios
+      .get(url, {
+        params: Object.assign(
+          {
+            search,
+            per_page: 20,
+          },
+          options,
+        ),
+      })
+      .then(({ data }) => {
+        callback(data);
+
+        return data;
+      });
+  },
+
+  ldap_groups(query, provider, callback) {
+    const url = Api.buildUrl(this.ldapGroupsPath).replace(':provider', provider);
+    return axios
+      .get(url, {
+        params: {
+          search: query,
+          per_page: 20,
+          active: true,
+        },
+      })
+      .then(({ data }) => {
+        callback(data);
+
+        return data;
+      });
   },
 
   buildUrl(url) {
