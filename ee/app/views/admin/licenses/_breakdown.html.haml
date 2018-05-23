@@ -1,3 +1,5 @@
+- return unless local_assigns.fetch(:license)
+
 - if license.restricted?(:active_user_count)
   - restricted = license.restrictions[:active_user_count]
   - licensed_users = number_with_delimiter(restricted)
