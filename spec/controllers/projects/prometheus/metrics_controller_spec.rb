@@ -14,44 +14,67 @@ describe Projects::Prometheus::MetricsController do
   end
 
   describe 'GET #active_common' do
-    before do
-      allow(controller).to receive(:prometheus_adapter).and_return(prometheus_adapter)
+    context 'when prometheus_adapter can query' do
+      before do
+        allow(controller).to receive(:prometheus_adapter).and_return(prometheus_adapter)
+      end
+
+      context 'when prometheus metrics are enabled' do
+        context 'when data is not present' do
+          before do
+            allow(prometheus_adapter).to receive(:query).with(:matched_metrics).and_return({})
+          end
+
+          it 'returns no content response' do
+            get :active_common, project_params(format: :json)
+
+            expect(response).to have_gitlab_http_status(204)
+          end
+        end
+
+        context 'when data is available' do
+          let(:sample_response) { { some_data: 1 } }
+
+          before do
+            allow(prometheus_adapter).to receive(:query).with(:matched_metrics).and_return(sample_response)
+          end
+
+          it 'returns no content response' do
+            get :active_common, project_params(format: :json)
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(json_response).to eq(sample_response.deep_stringify_keys)
+          end
+        end
+
+        context 'when requesting non json response' do
+          it 'returns not found response' do
+            get :active_common, project_params
+
+            expect(response).to have_gitlab_http_status(404)
+          end
+        end
+      end
     end
 
-    context 'when prometheus metrics are enabled' do
-      context 'when data is not present' do
-        before do
-          allow(prometheus_adapter).to receive(:query).with(:matched_metrics).and_return({})
-        end
+    context 'when prometheus_adapter cannot query' do
+      it 'renders 404' do
+        prometheus_adapter = double('prometheus_adapter', can_query?: false)
 
-        it 'returns no content response' do
-          get :active_common, project_params(format: :json)
+        allow(controller).to receive(:prometheus_adapter).and_return(prometheus_adapter)
+        allow(prometheus_adapter).to receive(:query).with(:matched_metrics).and_return({})
 
-          expect(response).to have_gitlab_http_status(204)
-        end
+        get :active_common, project_params(format: :json)
+
+        expect(response).to have_gitlab_http_status(404)
       end
+    end
 
-      context 'when data is available' do
-        let(:sample_response) { { some_data: 1 } }
+    context 'when prometheus_adapter is disabled' do
+      it 'renders 404' do
+        get :active_common, project_params(format: :json)
 
-        before do
-          allow(prometheus_adapter).to receive(:query).with(:matched_metrics).and_return(sample_response)
-        end
-
-        it 'returns no content response' do
-          get :active_common, project_params(format: :json)
-
-          expect(response).to have_gitlab_http_status(200)
-          expect(json_response).to eq(sample_response.deep_stringify_keys)
-        end
-      end
-
-      context 'when requesting non json response' do
-        it 'returns not found response' do
-          get :active_common, project_params
-
-          expect(response).to have_gitlab_http_status(404)
-        end
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
