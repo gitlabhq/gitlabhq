@@ -77,7 +77,9 @@ module Gitlab
 
       def write(mode)
         stream = Gitlab::Ci::Trace::Stream.new do
-          if current_path
+          if trace_artifact
+            # no op. It's already archived.
+          elsif current_path
             File.open(current_path, mode)
           elsif Feature.enabled?('ci_enable_live_trace')
             Gitlab::Ci::Trace::ChunkedIO.new(job)
