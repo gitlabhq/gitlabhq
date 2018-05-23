@@ -53,8 +53,8 @@ module Projects
     def changing_default_branch?
       new_branch = params[:default_branch]
 
-      project.repository.exists? &&
-        new_branch && new_branch != project.default_branch
+      new_branch && project.repository.exists? &&
+        new_branch != project.default_branch
     end
 
     def enabling_wiki?
