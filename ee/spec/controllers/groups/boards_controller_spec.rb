@@ -51,4 +51,12 @@ describe Groups::BoardsController do
       get :index, group_id: group, format: format
     end
   end
+
+  describe 'GET show' do
+    context 'for multiple issue boards' do
+      let(:parent) { group }
+
+      it_behaves_like 'multiple issue boards show'
+    end
+  end
 end
