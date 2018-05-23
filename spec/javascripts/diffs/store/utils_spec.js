@@ -97,10 +97,10 @@ describe('DiffsStoreUtils', () => {
   });
 
   describe('getNoteFormData', () => {
-    // TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-    // eslint-disable-next-line jasmine/no-disabled-tests
-    xit('should properly create note form data', () => {
+    it('should properly create note form data', () => {
       const diffFile = getDiffFileMock();
+      noteableDataMock.targetType = MERGE_REQUEST_NOTEABLE_TYPE;
+
       const options = {
         note: 'Hello world!',
         noteableData: noteableDataMock,
