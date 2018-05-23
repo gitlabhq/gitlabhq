@@ -2,11 +2,8 @@ require 'digest/md5'
 require 'uri'
 
 module ApplicationHelper
-<<<<<<< HEAD
   prepend EE::ApplicationHelper
 
-=======
->>>>>>> upstream/master
   # See https://docs.gitlab.com/ee/development/ee_features.html#code-in-app-views
   def render_if_exists(partial, locals = {})
     render(partial, locals) if lookup_context.exists?(partial, [], true)
