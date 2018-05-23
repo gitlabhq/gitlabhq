@@ -2,8 +2,7 @@
 - breadcrumb_title "Dashboard"
 
 %div{ class: container_class }
-  - if @license
-    = render "admin/licenses/breakdown", license: @license
+  = render_if_exists "admin/licenses/breakdown", license: @license
 
   .admin-dashboard.prepend-top-default
     .row
@@ -23,9 +22,7 @@
               %h3.text-center
                 Users:
                 = approximate_count_with_delimiters(User)
-            -# EE specific
-            .text-center
-              = link_to 'Users statistics', admin_dashboard_stats_path
+            = render_if_exists 'users_statistics'
             %hr
             = link_to 'New user', new_admin_user_path, class: "btn btn-new"
       .col-sm-4
@@ -104,16 +101,7 @@
               %span.light.pull-right
                 = boolean_to_icon Gitlab::IncomingEmail.enabled?
 
-            - elastic = "Elasticsearch"
-            %p{ "aria-label" => "#{elastic}: status " + (Gitlab::CurrentSettings.elasticsearch_search? ? "on" : "off") }
-              = elastic
-              %span.light.pull-right
-                = boolean_to_icon Gitlab::CurrentSettings.elasticsearch_search?
-            - geo = link_to 'Geo', admin_geo_nodes_path
-            %p{ "aria-label" => "#{geo}: status " + (Gitlab::Geo.enabled? ? "on" : "off") }
-              = geo
-              %span.light.pull-right
-                = boolean_to_icon Gitlab::Geo.enabled?
+            = render_if_exists 'elastic_and_geo'
 
             - container_reg = "Container Registry"
             %p{ "aria-label" => "#{container_reg}: status " + (Gitlab.config.registry.enabled ? "on" : "off") }
@@ -162,14 +150,9 @@
                 GitLab Pages
                 %span.pull-right
                   = Gitlab::Pages::VERSION
-            - if Gitlab::Geo.enabled?
-              %p
-                = link_to 'Geo', admin_geo_nodes_path
-                %span.pull-right
-                  - if Gitlab::Geo.current_node
-                    = Gitlab::Geo.current_node.primary ? 'Primary node' : 'Secondary node'
-                  - else
-                    Undefined
+
+            = render_if_exists 'geo'
+
             %p
               Ruby
               %span.pull-right
