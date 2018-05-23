@@ -8,14 +8,14 @@ export default {
   name: 'GkeMachineTypeDropdown',
   mixins: [gkeDropdownMixin],
   computed: {
-    ...mapState(['selectedProject', 'selectedZone', 'selectedMachineType']),
+    ...mapState(['projectHasBillingEnabled', 'selectedZone', 'selectedMachineType']),
     ...mapState({ items: 'machineTypes' }),
-    ...mapGetters(['hasProject', 'hasZone', 'hasMachineType']),
+    ...mapGetters(['hasZone', 'hasMachineType']),
     allDropdownsSelected() {
-      return this.hasProject && this.hasZone && this.hasMachineType;
+      return this.projectHasBillingEnabled && this.hasZone && this.hasMachineType;
     },
     isDisabled() {
-      return !this.selectedProject || !this.selectedZone;
+      return !this.projectHasBillingEnabled || !this.selectedZone;
     },
     toggleText() {
       if (this.isLoading) {
@@ -26,7 +26,7 @@ export default {
         return this.selectedMachineType;
       }
 
-      if (!this.hasProject && !this.hasZone) {
+      if (!this.projectHasBillingEnabled && !this.hasZone) {
         return s__('ClusterIntegration|Select project and zone to choose machine type');
       }
 

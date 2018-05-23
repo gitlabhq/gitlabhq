@@ -5,6 +5,7 @@ export default {
   },
   selectedZone: '',
   selectedMachineType: '',
+  projectHasBillingEnabled: null,
   projects: [],
   zones: [],
   machineTypes: [],

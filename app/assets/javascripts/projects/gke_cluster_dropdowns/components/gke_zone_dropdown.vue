@@ -1,6 +1,6 @@
 <script>
 import { sprintf, s__ } from '~/locale';
-import { mapState, mapGetters, mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 import gkeDropdownMixin from './gke_dropdown_mixin';
 
@@ -8,11 +8,10 @@ export default {
   name: 'GkeZoneDropdown',
   mixins: [gkeDropdownMixin],
   computed: {
-    ...mapState(['selectedProject', 'selectedZone', 'projects']),
+    ...mapState(['selectedProject', 'selectedZone', 'projects', 'projectHasBillingEnabled']),
     ...mapState({ items: 'zones' }),
-    ...mapGetters(['hasProject']),
     isDisabled() {
-      return !this.hasProject;
+      return !this.projectHasBillingEnabled;
     },
     toggleText() {
       if (this.isLoading) {
@@ -23,7 +22,7 @@ export default {
         return this.selectedZone;
       }
 
-      return !this.hasProject
+      return !this.projectHasBillingEnabled
         ? s__('ClusterIntegration|Select project to choose zone')
         : s__('ClusterIntegration|Select zone');
     },
@@ -35,10 +34,11 @@ export default {
     },
   },
   watch: {
-    selectedProject() {
+    projectHasBillingEnabled(billingEnabled) {
+      if (!billingEnabled) return false;
       this.isLoading = true;
 
-      this.fetchZones()
+      return this.fetchZones()
         .then(this.fetchSuccessHandler)
         .catch(this.fetchFailureHandler);
     },
