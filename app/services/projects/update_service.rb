@@ -5,16 +5,8 @@ module Projects
     prepend ::EE::Projects::UpdateService
 
     def execute
-      # Repository size limit comes as MB from the view
-      limit = params.delete(:repository_size_limit)
-      project.repository_size_limit = Gitlab::Utils.try_megabytes_to_bytes(limit) if limit
-
       unless valid_visibility_level_change?(project, params[:visibility_level])
         return error('New visibility level not allowed!')
-      end
-
-      if changing_storage_size?
-        project.change_repository_storage(params.delete(:repository_storage))
       end
 
       if renaming_project_with_container_registry_tags?

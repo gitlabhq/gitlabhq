@@ -16,6 +16,14 @@ module EE
         should_remove_old_approvers = params.delete(:remove_old_approvers)
         wiki_was_enabled = project.wiki_enabled?
 
+        # Repository size limit comes as MB from the view
+        limit = params.delete(:repository_size_limit)
+        project.repository_size_limit = ::Gitlab::Utils.try_megabytes_to_bytes(limit) if limit
+
+        if changing_storage_size?
+          project.change_repository_storage(params.delete(:repository_storage))
+        end
+
         result = super
 
         if result[:status] == :success
