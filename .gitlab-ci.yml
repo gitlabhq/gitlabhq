@@ -413,6 +413,8 @@ cloud-native-image:
   before_script: []
   stage: build
   allow_failure: true
+  variables:
+    GIT_DEPTH: "1"
   cache: {}
   before_script:
     - gem install gitlab --no-rdoc --no-ri
