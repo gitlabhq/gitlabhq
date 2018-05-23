@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.8.1 (2018-05-23)
+
+### Fixed (9 changes)
+
+- Allow CommitStatus class to use presentable methods. !18979
+- Fix corrupted environment pages with unathorized proxy url. !18989
+- Fixes deploy token variables on Ci::Build. !19047
+- Fix project mirror database inconsistencies when upgrading from EE to CE. !19109
+- Render 404 when prometheus adapter is disabled in Prometheus metrics controller. !19110
+- Fix error when deleting an empty list of refs.
+- Fixed U2F login when used with LDAP.
+- Bump prometheus-client-mmap to 0.9.3 to fix nil exception error.
+- Fix system hook not firing for blocked users when LDAP sign-in is used.
+
+
 ## 10.8.0 (2018-05-22)
 
 ### Security (3 changes, 1 of them is from the community)
