@@ -18,37 +18,52 @@ export default {
       };
     }
   },
-  [types.REQUEST_JOBS](state) {
+  [types.REQUEST_STAGES](state) {
     state.isLoadingJobs = true;
   },
-  [types.RECEIVE_JOBS_ERROR](state) {
+  [types.RECEIVE_STAGES_ERROR](state) {
     state.isLoadingJobs = false;
   },
-  [types.RECEIVE_JOBS_SUCCESS](state, jobs) {
+  [types.RECEIVE_STAGES_SUCCESS](state, stages) {
     state.isLoadingJobs = false;
 
-    state.stages = jobs.reduce((acc, job) => {
-      let stage = acc.find(s => s.title === job.stage);
-
-      if (!stage) {
-        stage = {
-          title: job.stage,
-          isCollapsed: false,
-          jobs: [],
-        };
-
-        acc.push(stage);
-      }
-
-      stage.jobs = stage.jobs.concat({
-        id: job.id,
-        name: job.name,
-        status: job.status,
-        stage: job.stage,
-        duration: job.duration,
-      });
-
-      return acc;
-    }, state.stages);
+    state.stages = stages.map((stage, i) => ({
+      ...stage,
+      id: i,
+      isCollapsed: false,
+      isLoading: false,
+      jobs: [],
+    }));
+  },
+  [types.REQUEST_JOBS](state, id) {
+    state.stages = state.stages.reduce(
+      (acc, stage) =>
+        acc.concat({
+          ...stage,
+          isLoading: id === stage.id ? true : stage.isLoading,
+        }),
+      [],
+    );
+  },
+  [types.RECEIVE_JOBS_ERROR](state, id) {
+    state.stages = state.stages.reduce(
+      (acc, stage) =>
+        acc.concat({
+          ...stage,
+          isLoading: id === stage.id ? false : stage.isLoading,
+        }),
+      [],
+    );
+  },
+  [types.RECEIVE_JOBS_SUCCESS](state, { id, data }) {
+    state.stages = state.stages.reduce(
+      (acc, stage) =>
+        acc.concat({
+          ...stage,
+          isLoading: id === stage.id ? false : stage.isLoading,
+          jobs: id === stage.id ? data.latest_statuses : stage.jobs,
+        }),
+      [],
+    );
   },
 };

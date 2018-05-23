@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { __ } from '../../../../locale';
 import Api from '../../../../api';
 import flash from '../../../../flash';
@@ -21,29 +22,40 @@ export const fetchLatestPipeline = ({ dispatch, rootState }, sha) => {
     .catch(() => dispatch('receiveLatestPipelineError'));
 };
 
-export const requestJobs = ({ commit }) => commit(types.REQUEST_JOBS);
-export const receiveJobsError = ({ commit }) => {
-  flash(__('There was an error loading jobs'));
-  commit(types.RECEIVE_JOBS_ERROR);
+export const requestStages = ({ commit }) => commit(types.REQUEST_STAGES);
+export const receiveStagesError = ({ commit }) => {
+  flash(__('There was an error loading job stages'));
+  commit(types.RECEIVE_STAGES_ERROR);
 };
-export const receiveJobsSuccess = ({ commit }, data) => commit(types.RECEIVE_JOBS_SUCCESS, data);
+export const receiveStagesSuccess = ({ commit }, data) =>
+  commit(types.RECEIVE_STAGES_SUCCESS, data);
 
-export const fetchJobs = ({ dispatch, state, rootState }, page = '1') => {
-  dispatch('requestJobs');
+export const fetchStages = ({ dispatch, state, rootState }) => {
+  dispatch('requestStages');
 
-  Api.pipelineJobs(rootState.currentProjectId, state.latestPipeline.id, {
-    page,
-  })
-    .then(({ data, headers }) => {
-      const nextPage = headers && headers['x-next-page'];
+  Api.pipelineJobs(rootState.currentProjectId, state.latestPipeline.id)
+    .then(({ data }) => dispatch('receiveStagesSuccess', data))
+    .then(() => state.stages.forEach(stage => dispatch('fetchJobs', stage)))
+    .catch(() => dispatch('receiveStagesError'));
+};
 
-      dispatch('receiveJobsSuccess', data);
+export const requestJobs = ({ commit }, id) => commit(types.REQUEST_JOBS, id);
+export const receiveJobsError = ({ commit }, id) => {
+  flash(__('There was an error loading jobs'));
+  commit(types.RECEIVE_JOBS_ERROR, id);
+};
+export const receiveJobsSuccess = ({ commit }, { id, data }) =>
+  commit(types.RECEIVE_JOBS_SUCCESS, { id, data });
 
-      if (nextPage) {
-        dispatch('fetchJobs', nextPage);
-      }
+export const fetchJobs = ({ dispatch }, stage) => {
+  dispatch('requestJobs', stage.id);
+
+  axios
+    .get(stage.dropdown_path)
+    .then(({ data }) => {
+      dispatch('receiveJobsSuccess', { id: stage.id, data });
     })
-    .catch(() => dispatch('receiveJobsError'));
+    .catch(() => dispatch('receiveJobsError', stage.id));
 };
 
 export default () => {};

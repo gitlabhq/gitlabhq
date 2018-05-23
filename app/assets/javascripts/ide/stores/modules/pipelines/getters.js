@@ -1,9 +1,9 @@
 export const hasLatestPipeline = state => !state.isLoadingPipeline && !!state.latestPipeline;
 
-export const failedJobs = state =>
+export const failedJobsCount = state =>
   state.stages.reduce(
-    (acc, stage) => acc.concat(stage.jobs.filter(job => job.status === 'failed')),
-    [],
+    (acc, stage) => acc + stage.jobs.filter(j => j.status.label === 'failed').length,
+    0,
   );
 
 export const jobsCount = state => state.stages.reduce((acc, stage) => acc + stage.jobs.length, 0);
