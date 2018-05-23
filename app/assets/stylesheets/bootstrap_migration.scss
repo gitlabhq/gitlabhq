@@ -46,6 +46,12 @@ a {
   text-align: right;
 }
 
+.form-control,
+.search form {
+  // Bootstrap 4 does not have a height
+  height: 34px;
+}
+
 table {
   // Remove any table border lines
   border-spacing: 0;
