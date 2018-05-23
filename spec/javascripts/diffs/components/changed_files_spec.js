@@ -55,9 +55,7 @@ describe('ChangedFiles', () => {
         expect(parallelButton).toBeDefined();
       });
 
-      // TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      // eslint-disable-next-line jasmine/no-disabled-tests
-      xit('should add active class to Inline button', () => {
+      it('should add active class to Inline button', () => {
         expect(inlineButton.classList.contains('active')).toEqual(true);
         expect(parallelButton.classList.contains('active')).toEqual(false);
       });
