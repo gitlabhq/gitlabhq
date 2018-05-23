@@ -13,9 +13,8 @@ describe Ci::Build do
 
   let(:job) { create(:ci_build, pipeline: pipeline) }
 
-  # .codeclimate is deprecated and replaced with .code_quality_artifact (#5779)
-  describe '.codeclimate' do
-    subject { described_class.codeclimate }
+  describe '.code_quality' do
+    subject { described_class.code_quality }
 
     context 'when a job name is codeclimate' do
       let!(:job) { create(:ci_build, pipeline: pipeline, name: 'codeclimate') }
@@ -28,16 +27,6 @@ describe Ci::Build do
 
       it { is_expected.to include(job) }
     end
-
-    context 'when a job name is irrelevant' do
-      let!(:job) { create(:ci_build, pipeline: pipeline, name: 'codechecker') }
-
-      it { is_expected.not_to include(job) }
-    end
-  end
-
-  describe '.code_quality' do
-    subject { described_class.code_quality }
 
     context 'when a job name is code_quality' do
       let!(:job) { create(:ci_build, pipeline: pipeline, name: 'code_quality') }
