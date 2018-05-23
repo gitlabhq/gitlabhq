@@ -70,8 +70,6 @@ module Backup
       # TODO: Need to find a way to do this for gitaly
       # Gitaly discussion issue: https://gitlab.com/gitlab-org/gitaly/issues/1194
 
-      return if Gitlab::GitalyClient.feature_enabled?(:backup_skip_prepare_directories)
-
       Gitlab.config.repositories.storages.each do |name, repository_storage|
         path = repository_storage.legacy_disk_path
         next unless File.exist?(path)
@@ -92,7 +90,7 @@ module Backup
       end
     end
 
-    def restore_custom_hooks
+    def restore_custom_hooks(project)
       # TODO: Need to find a way to do this for gitaly
       # Gitaly migration issue: https://gitlab.com/gitlab-org/gitaly/issues/1195
       in_path(path_to_tars(project)) do |dir|
@@ -134,7 +132,7 @@ module Backup
           progress.puts "[Failed] restoring #{project.full_path} repository".color(:red)
         end
 
-        restore_custom_hooks unless Gitlab::GitalyClient.feature_enabled?(:backup_skip_restore_custom_hooks)
+        restore_custom_hooks(project)
 
         wiki = ProjectWiki.new(project)
         path_to_wiki_bundle = path_to_bundle(wiki)
