@@ -5,9 +5,9 @@ class RescueStaleLiveTraceWorker
   def perform
     # Reschedule to archive live traces
     #
-    # The target jobs are with the following conditions
-    # - Finished 1 hour ago, but it has not had an acthived trace yet
-    #   Jobs finished 1 hour ago should have an archived trace. Probably ArchiveTraceWorker failed by Sidekiq's inconsistancy
+    # The targets are jobs with the following conditions
+    # - It had been finished 1 hour ago, but it has not had an acthived trace yet
+    #   This case happens when sidekiq-jobs of archiving traces are lost in order to restart sidekiq instace which hit RSS limit
     Ci::BuildTraceChunk
       .include(EachBatch)
       .select(:build_id)
