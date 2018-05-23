@@ -1,0 +1,5 @@
+---
+title: Fixed U2F login when used with LDAP
+merge_request:
+author:
+type: fixed

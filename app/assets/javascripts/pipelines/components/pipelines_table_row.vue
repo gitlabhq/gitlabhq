@@ -8,6 +8,7 @@
   import pipelineUrl from './pipeline_url.vue';
   import pipelinesTimeago from './time_ago.vue';
   import commitComponent from '../../vue_shared/components/commit.vue';
+  import { PIPELINES_TABLE } from '../constants';
 
   /**
    * Pipeline table row.
@@ -44,6 +45,7 @@
         required: true,
       },
     },
+    pipelinesTable: PIPELINES_TABLE,
     computed: {
       /**
        * If provided, returns the commit tag.
@@ -272,6 +274,7 @@
             v-for="(stage, index) in pipeline.details.stages"
             :key="index">
             <pipeline-stage
+              :type="$options.pipelinesTable"
               :stage="stage"
               :update-dropdown="updateGraphDropdown"
             />

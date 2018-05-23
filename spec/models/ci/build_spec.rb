@@ -2044,7 +2044,7 @@ describe Ci::Build do
 
       let(:deploy_token_variables) do
         [
-          { key: 'CI_DEPLOY_USER', value: deploy_token.name, public: true },
+          { key: 'CI_DEPLOY_USER', value: deploy_token.username, public: true },
           { key: 'CI_DEPLOY_PASSWORD', value: deploy_token.token, public: false }
         ]
       end
