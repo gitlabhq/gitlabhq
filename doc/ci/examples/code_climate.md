@@ -37,6 +37,13 @@ so, the CI/CD job must be named `code_quality` and the artifact path must be
 `gl-code-quality-report.json`.
 [Learn more on code quality diffs in merge requests](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html).
 
+CAUTION: **Caution:**
+Code Quality was previously using `codeclimate` and `codequality` for job name and
+`codeclimate.json` for the artifact name. While these old names
+are still maintained they have been deprecated with GitLab 11.0 and may be removed
+in next major release, GitLab 12.0. You are advised to update your current `.gitlab-ci.yml`
+configuration to reflect that change.
+
 [cli]: https://github.com/codeclimate/codeclimate
 [dind]: ../docker/using_docker_build.md#use-docker-in-docker-executor
 [ee]: https://about.gitlab.com/products/

@@ -42,6 +42,13 @@ report will be shown properly.
 For more information on how the `code_quality` job should look like, check the
 example on [analyzing a project's code quality with Code Climate CLI][cc-docs].
 
+CAUTION: **Caution:**
+Code Quality was previously using `codeclimate` and `codequality` for job name and
+`codeclimate.json` for the artifact name. While these old names
+are still maintained they have been deprecated with GitLab 11.0 and may be removed
+in next major release, GitLab 12.0. You are advised to update your current `.gitlab-ci.yml`
+configuration to reflect that change.
+
 [ee-1984]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1984
 [ee]: https://about.gitlab.com/products/
 [ci]: ../../../ci/README.md
