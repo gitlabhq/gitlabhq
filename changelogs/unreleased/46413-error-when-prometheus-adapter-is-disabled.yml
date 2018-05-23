@@ -1,0 +1,5 @@
+---
+title: Render 404 when prometheus adapter is disabled in Prometheus metrics controller
+merge_request: 19110
+author:
+type: fixed
