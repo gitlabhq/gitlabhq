@@ -25,9 +25,9 @@ describe('Slipt security reports app', () => {
   });
 
   afterEach(() => {
+    vm.$store.replaceState(state());
     vm.$destroy();
     mock.restore();
-    vm.$store.replaceState(state());
   });
 
   describe('while loading', () => {
@@ -52,11 +52,15 @@ describe('Slipt security reports app', () => {
       });
     });
 
-    it('renders loading summary text + spinner', () => {
+    it('renders loading summary text + spinner', done => {
       expect(vm.$el.querySelector('.fa-spinner')).not.toBeNull();
 
       expect(vm.$el.textContent).toContain('SAST is loading');
       expect(vm.$el.textContent).toContain('Dependency scanning is loading');
+
+      setTimeout(() => {
+        done();
+      }, 0);
     });
   });
 
