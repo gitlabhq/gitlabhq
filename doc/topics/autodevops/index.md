@@ -497,7 +497,16 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | `SAST_CONFIDENCE_LEVEL`      | The minimum confidence level of security issues you want to be reported; `1` for Low, `2` for Medium, `3` for High; defaults to `3`.|
 | `DEP_SCAN_DISABLE_REMOTE_CHECKS` | Whether remote Dependency Scanning checks are disabled; defaults to `"false"`. Set to `"true"` to disable checks that send data to GitLab central servers. [Read more about remote checks](https://gitlab.com/gitlab-org/security-products/dependency-scanning#remote-checks).|
 | `STAGING_ENABLED`            | From GitLab 10.8, this variable can be used to define a [deploy policy for staging and production environments](#deploy-policy-for-staging-and-production-environments). |
+| `CANARY_ENABLED`             | From GitLab 11.0, this variable can be used to define a [deploy policy for canary environments](#deploy-policy-for-canary-environments). |
 | `INCREMENTAL_ROLLOUT_ENABLED`| From GitLab 10.8, this variable can be used to enable an [incremental rollout](#incremental-rollout-to-production) of your application for the production environment. |
+| `TEST_DISABLED`              | From GitLab 11.0, this variable can be used to disable the `test` job. If the variable is present, the job will not be created. |
+| `CODEQUALITY_DISABLED`       | From GitLab 11.0, this variable can be used to disable the `codequality` job. If the variable is present, the job will not be created. |
+| `SAST_DISABLED`              | From GitLab 11.0, this variable can be used to disable the `sast` job. If the variable is present, the job will not be created. |
+| `DEPENDENCY_SCANNING_DISABLED` | From GitLab 11.0, this variable can be used to disable the `dependency_scanning` job. If the variable is present, the job will not be created. |
+| `CONTAINER_SCANNING_DISABLED` | From GitLab 11.0, this variable can be used to disable the `sast:container` job. If the variable is present, the job will not be created. |
+| `REVIEW_DISABLED`            | From GitLab 11.0, this variable can be used to disable the `review` and the manual `review:stop` job. If the variable is present, these jobs will not be created. |
+| `DAST_DISABLED`              | From GitLab 11.0, this variable can be used to disable the `dast` job. If the variable is present, the job will not be created. |
+| `PERFORMANCE_DISABLED`       | From GitLab 11.0, this variable can be used to disable the `performance` job. If the variable is present, the job will not be created. |
 
 TIP: **Tip:**
 Set up the replica variables using a
@@ -579,6 +588,21 @@ If `STAGING_ENABLED` is defined in your project (e.g., set `STAGING_ENABLED` to
 `1` as a secret variable), then the application will be automatically deployed
 to a `staging` environment, and a  `production_manual` job will be created for
 you when you're ready to manually deploy to production.
+
+#### Deploy policy for canary environments **[PREMIUM]**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ci-yml/merge_requests/171)
+in GitLab 11.0.
+
+A [canary environment](https://docs.gitlab.com/ee/user/project/canary_deployments.html) can be used
+before any changes are deployed to production.
+
+If `CANARY_ENABLED` is defined in your project (e.g., set `CANARY_ENABLED` to
+`1` as a secret variable) then two manual jobs will be created:
+
+- `canary` which will deploy the application to the canary environment
+- `production_manual` which is to be used by you when you're ready to manually
+  deploy to production.
 
 #### Incremental rollout to production **[PREMIUM]**
 

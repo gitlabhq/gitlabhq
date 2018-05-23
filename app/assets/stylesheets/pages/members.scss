@@ -105,16 +105,6 @@
     @media (min-width: $screen-sm-min) {
       width: 250px;
     }
-
-    &.input-short {
-      @media (min-width: $screen-md-min) {
-        width: 170px;
-      }
-
-      @media (min-width: $screen-lg-min) {
-        width: 210px;
-      }
-    }
   }
 }
 
