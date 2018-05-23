@@ -5,14 +5,10 @@ module Ci
     set(:group) { create(:group) }
     set(:project) { create(:project, group: group, shared_runners_enabled: false, group_runners_enabled: false) }
     set(:pipeline) { create(:ci_pipeline, project: project) }
-    let!(:shared_runner) { create(:ci_runner, is_shared: true) }
-    let!(:specific_runner) { create(:ci_runner, is_shared: false) }
+    let!(:shared_runner) { create(:ci_runner, :instance) }
+    let!(:specific_runner) { create(:ci_runner, :project, projects: [project]) }
     let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
     let!(:pending_job) { create(:ci_build, pipeline: pipeline) }
-
-    before do
-      specific_runner.assign_to(project)
-    end
 
     describe '#execute' do
       context 'runner follow tag list' do
