@@ -84,6 +84,11 @@ module QA
               # Avoid Selenium::WebDriver::Error::StaleElementReferenceError
               # without sleeping. I.e. this completes fast on fast machines.
               page.refresh
+
+              # It is possible for the protected branch row to "disappear" at first
+              page.wait do
+                page.has_content?(branch_name)
+              end
             end
           end
         end
