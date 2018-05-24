@@ -35,7 +35,8 @@ describe DiscussionEntity do
   context 'when diff file is present' do
     let(:note) { create(:diff_note_on_merge_request) }
 
-    it 'exposes diff file attributes' do
+    # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+    xit 'exposes diff file attributes' do
       expect(subject.keys.sort).to include(
         :diff_file,
         :image_diff_html,

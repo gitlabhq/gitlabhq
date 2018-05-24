@@ -203,6 +203,7 @@ export default {
           in_reply_to_discussion_id: this.note.reply_id,
           target_type: this.getNoteableData.targetType,
           target_id: this.discussion.noteable_id,
+          // head_commit_sha:
           note: { note: noteText },
         },
       };

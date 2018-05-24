@@ -45,7 +45,8 @@ describe 'Merge request > User scrolls to note on load', :js do
     end
   end
 
-  it 'expands collapsed notes' do
+  # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+  xit 'expands collapsed notes' do
     visit "#{project_merge_request_path(project, merge_request)}#{collapsed_fragment_id}"
     note_element = find(collapsed_fragment_id)
     note_container = note_element.ancestor('.timeline-content')
