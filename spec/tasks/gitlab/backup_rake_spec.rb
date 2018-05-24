@@ -125,6 +125,16 @@ describe 'gitlab:app namespace rake task' do
           expect(Dir.entries(File.join(project.repository.path, 'custom_hooks'))).to include("dummy.txt")
         end
       end
+
+      context 'specific backup tasks' do
+        let(:task_list) { %w(db repo uploads builds artifacts pages lfs registry) }
+
+        it 'prints a progress message to stdout' do
+          task_list.each do |task|
+            expect { run_rake_task("gitlab:backup:#{task}:create") }.to output(/Dumping /).to_stdout
+          end
+        end
+      end
     end
 
     context 'tar creation' do

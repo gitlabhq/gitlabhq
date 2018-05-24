@@ -6,6 +6,12 @@ module Backup
     include Backup::Helper
     # rubocop:disable Metrics/AbcSize
 
+    attr_reader :progress
+
+    def initialize(progress)
+      @progress = progress
+    end
+
     def dump
       prepare
 
@@ -67,6 +73,9 @@ module Backup
     end
 
     def prepare_directories
+      # TODO: Need to find a way to do this for gitaly
+      # Gitaly discussion issue: https://gitlab.com/gitlab-org/gitaly/issues/1194
+
       Gitlab.config.repositories.storages.each do |name, repository_storage|
         path = repository_storage.legacy_disk_path
         next unless File.exist?(path)
@@ -87,69 +96,64 @@ module Backup
       end
     end
 
-    def restore
-      prepare_directories
-      Project.find_each(batch_size: 1000) do |project|
-        progress.print " * #{display_repo_path(project)} ... "
+    def restore_custom_hooks(project)
+      # TODO: Need to find a way to do this for gitaly
+      # Gitaly migration issue: https://gitlab.com/gitlab-org/gitaly/issues/1195
+      in_path(path_to_tars(project)) do |dir|
         path_to_project_repo = path_to_repo(project)
-        path_to_project_bundle = path_to_bundle(project)
-
-        project.ensure_storage_path_exists
-
-        cmd = if File.exist?(path_to_project_bundle)
-                %W(#{Gitlab.config.git.bin_path} clone --bare --mirror #{path_to_project_bundle} #{path_to_project_repo})
-              else
-                %W(#{Gitlab.config.git.bin_path} init --bare #{path_to_project_repo})
-              end
+        cmd = %W(tar -xf #{path_to_tars(project, dir)} -C #{path_to_project_repo} #{dir})
 
         output, status = Gitlab::Popen.popen(cmd)
-        if status.zero?
-          progress.puts "[DONE]".color(:green)
-        else
+        unless status.zero?
           progress_warn(project, cmd.join(' '), output)
         end
+      end
+    end
 
-        in_path(path_to_tars(project)) do |dir|
-          cmd = %W(tar -xf #{path_to_tars(project, dir)} -C #{path_to_project_repo} #{dir})
+    def restore
+      prepare_directories
+      gitlab_shell = Gitlab::Shell.new
+      Project.find_each(batch_size: 1000) do |project|
+        progress.print " * #{project.full_path} ... "
+        path_to_project_bundle = path_to_bundle(project)
+        project.ensure_storage_path_exists
 
-          output, status = Gitlab::Popen.popen(cmd)
-          unless status.zero?
-            progress_warn(project, cmd.join(' '), output)
+        restore_repo_success = nil
+        if File.exist?(path_to_project_bundle)
+          begin
+            gitlab_shell.remove_repository(project.repository_storage, project.disk_path) if project.repository_exists?
+            project.repository.create_from_bundle path_to_project_bundle
+            restore_repo_success = true
+          rescue => e
+            restore_repo_success = false
+            progress.puts "Error: #{e}".color(:red)
           end
+        else
+          restore_repo_success = gitlab_shell.create_repository(project.repository_storage, project.disk_path)
         end
 
+        if restore_repo_success
+          progress.puts "[DONE]".color(:green)
+        else
+          progress.puts "[Failed] restoring #{project.full_path} repository".color(:red)
+        end
+
+        restore_custom_hooks(project)
+
         wiki = ProjectWiki.new(project)
-        path_to_wiki_repo = path_to_repo(wiki)
         path_to_wiki_bundle = path_to_bundle(wiki)
 
         if File.exist?(path_to_wiki_bundle)
-          progress.print " * #{display_repo_path(wiki)} ... "
-
-          # If a wiki bundle exists, first remove the empty repo
-          # that was initialized with ProjectWiki.new() and then
-          # try to restore with 'git clone --bare'.
-          FileUtils.rm_rf(path_to_wiki_repo)
-          cmd = %W(#{Gitlab.config.git.bin_path} clone --bare #{path_to_wiki_bundle} #{path_to_wiki_repo})
-
-          output, status = Gitlab::Popen.popen(cmd)
-          if status.zero?
-            progress.puts " [DONE]".color(:green)
-          else
-            progress_warn(project, cmd.join(' '), output)
+          progress.print " * #{wiki.full_path} ... "
+          begin
+            gitlab_shell.remove_repository(wiki.repository_storage, wiki.disk_path) if wiki.repository_exists?
+            wiki.repository.create_from_bundle(path_to_wiki_bundle)
+            progress.puts "[DONE]".color(:green)
+          rescue => e
+            progress.puts "[Failed] restoring #{wiki.full_path} wiki".color(:red)
+            progress.puts "Error #{e}".color(:red)
           end
         end
-      end
-
-      progress.print 'Put GitLab hooks in repositories dirs'.color(:yellow)
-      cmd = %W(#{Gitlab.config.gitlab_shell.path}/bin/create-hooks) + repository_storage_paths_args
-
-      output, status = Gitlab::Popen.popen(cmd)
-      if status.zero?
-        progress.puts " [DONE]".color(:green)
-      else
-        puts " [FAILED]".color(:red)
-        puts "failed: #{cmd}"
-        puts output
       end
     end
     # rubocop:enable Metrics/AbcSize
@@ -215,10 +219,6 @@ module Backup
 
     def repository_storage_paths_args
       Gitlab.config.repositories.storages.values.map { |rs| rs.legacy_disk_path }
-    end
-
-    def progress
-      $progress
     end
 
     def display_repo_path(project)

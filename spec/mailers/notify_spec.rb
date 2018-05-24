@@ -390,6 +390,46 @@ describe Notify do
         end
       end
 
+      describe 'that are unmergeable' do
+        set(:merge_request) do
+          create(:merge_request, :conflict,
+                 source_project: project,
+                 target_project: project,
+                 author: current_user,
+                 assignee: assignee,
+                 description: 'Awesome description')
+        end
+
+        subject { described_class.merge_request_unmergeable_email(recipient.id, merge_request.id) }
+
+        it_behaves_like 'a multiple recipients email'
+        it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+          let(:model) { merge_request }
+        end
+        it_behaves_like 'it should show Gmail Actions View Merge request link'
+        it_behaves_like 'an unsubscribeable thread'
+
+        it 'is sent as the merge request author' do
+          sender = subject.header[:from].addrs[0]
+          expect(sender.display_name).to eq(merge_request.author.name)
+          expect(sender.address).to eq(gitlab_sender)
+        end
+
+        it 'has the correct subject and body' do
+          reasons = %w[foo bar]
+
+          allow_any_instance_of(MergeRequestPresenter).to receive(:unmergeable_reasons).and_return(reasons)
+          aggregate_failures do
+            is_expected.to have_referable_subject(merge_request, reply: true)
+            is_expected.to have_body_text(project_merge_request_path(project, merge_request))
+            is_expected.to have_body_text('reasons:')
+            reasons.each do |reason|
+              is_expected.to have_body_text(reason)
+            end
+          end
+        end
+      end
+
       shared_examples 'a push to an existing merge request' do
         let(:push_user) { create(:user) }
 
