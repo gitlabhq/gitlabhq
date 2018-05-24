@@ -3,8 +3,11 @@ class PipelineSerializer < BaseSerializer
   entity PipelineDetailsEntity
 
   def represent(resource, opts = {})
-    if resource.is_a?(ActiveRecord::Relation)
+    if paginated? && !resource.respond_to?(:page)
+      raise Gitlab::Serializer::Pagination::InvalidResourceError
+    end
 
+    if resource.is_a?(ActiveRecord::Relation)
       resource = resource.preload([
         :stages,
         :retryable_builds,
@@ -18,7 +21,6 @@ class PipelineSerializer < BaseSerializer
     end
 
     if opts.delete(:preload)
-      resource = @paginator.paginate(resource) if paginated?
       resource = Gitlab::Ci::Pipeline::Preloader.preload!(resource)
     end
 
@@ -35,7 +37,7 @@ class PipelineSerializer < BaseSerializer
   def represent_stages(resource)
     return {} unless resource.present?
 
-    data = represent(resource, { only: [{ details: [:stages] }] })
+    data = represent(resource, { only: [{ details: [:stages] }], preload: true })
     data.dig(:details, :stages) || []
   end
 end
