@@ -142,6 +142,11 @@ $border-gray-normal-dashed: darken($gray-normal, $darken-border-dashed-factor);
 $border-gray-dark: darken($white-normal, $darken-border-factor);
 
 /*
+ * Override Bootstrap 4 variables
+ */
+$secondary: $gray-light;
+
+/*
  * UI elements
  */
 $border-color: #e5e5e5;
