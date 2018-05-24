@@ -52,6 +52,16 @@
         type: String,
         required: false,
       },
+      disableInstallButton: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+      installApplicationRequestParams: {
+        type: Object,
+        required: false,
+        default: () => ({}),
+      },
     },
     computed: {
       rowJsClass() {
@@ -67,7 +77,7 @@
         // Avoid the potential for the real-time data to say APPLICATION_INSTALLABLE but
         // we already made a request to install and are just waiting for the real-time
         // to sync up.
-        return (this.status !== APPLICATION_INSTALLABLE
+        return this.disableInstallButton || (this.status !== APPLICATION_INSTALLABLE
           && this.status !== APPLICATION_ERROR) ||
           this.requestStatus === REQUEST_LOADING ||
           this.requestStatus === REQUEST_SUCCESS;
@@ -109,7 +119,10 @@
     },
     methods: {
       installClicked() {
-        eventHub.$emit('installApplication', this.id);
+        eventHub.$emit('installApplication', {
+          id: this.id,
+          params: this.installApplicationRequestParams,
+        });
       },
     },
   };

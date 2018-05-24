@@ -91,8 +91,26 @@ describe('Clusters Store', () => {
             requestStatus: null,
             requestReason: null,
           },
+          jupyter: {
+            title: 'JupyterHub',
+            status: mockResponseData.applications[4].status,
+            statusReason: mockResponseData.applications[4].status_reason,
+            requestStatus: null,
+            requestReason: null,
+            hostname: '',
+          },
         },
       });
+    });
+
+    it('sets default hostname for jupyter when ingress has a ip address', () => {
+      const mockResponseData = CLUSTERS_MOCK_DATA.GET['/gitlab-org/gitlab-shell/clusters/2/status.json'].data;
+
+      store.updateStateFromServer(mockResponseData);
+
+      expect(
+        store.state.applications.jupyter.hostname,
+      ).toEqual(`jupyter.${store.state.applications.ingress.externalIp}.xip.io`);
     });
   });
 });

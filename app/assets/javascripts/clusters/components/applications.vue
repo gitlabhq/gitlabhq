@@ -37,11 +37,6 @@ export default {
       default: '',
     },
   },
-  data() {
-    return {
-      jupyterSuggestHostnameValue: '',
-    };
-  },
   computed: {
     generalApplicationDescription() {
       return sprintf(
@@ -131,14 +126,6 @@ export default {
     },
     jupyterHostname() {
       return this.applications.jupyter.hostname;
-    },
-    jupyterSuggestHostname() {
-      return `jupyter.${this.applications.ingress.externalIp}.xip.io`;
-    },
-  },
-  watch: {
-    jupyterSuggestHostname() {
-      this.jupyterSuggestHostnameValue = this.jupyterSuggestHostname;
     },
   },
 };
@@ -305,6 +292,8 @@ export default {
           :status-reason="applications.jupyter.statusReason"
           :request-status="applications.jupyter.requestStatus"
           :request-reason="applications.jupyter.requestReason"
+          :disable-install-button="!ingressInstalled"
+          :install-application-request-params="{ hostname: applications.jupyter.hostname }"
         >
           <div slot="description">
             <p>
@@ -314,45 +303,23 @@ export default {
                 notebooks to a class of students, a corporate data science group,
                 or a scientific research group.`) }}
             </p>
-            <template v-if="jupyterInstalled">
+
+            <template v-if="ingressInstalled">
               <div class="form-group">
                 <label for="jupyter-hostname">
                   {{ s__('ClusterIntegration|Jupyter Hostname') }}
                 </label>
-                <div
-                  v-if="jupyterHostname"
-                  class="input-group"
-                >
-                  <input
-                    type="text"
-                    id="jupyter-hostname"
-                    class="form-control js-hostname"
-                    :value="jupyterHostname"
-                    readonly
-                  />
-                  <span class="input-group-btn">
-                    <clipboard-button
-                      :text="jupyterHostname"
-                      :title="s__('ClusterIntegration|Copy Jupyter Hostname to clipboard')"
-                      class="js-clipboard-btn"
-                    />
-                  </span>
-                </div>
-              </div>
-            </template>
-            <template v-else-if="ingressInstalled">
-              <div class="form-group">
-                <label for="jupyter-hostname">
-                  {{ s__('ClusterIntegration|Jupyter Hostname') }}
-                </label>
+
                 <div class="input-group">
                   <input
                     type="text"
-                    id="jupyter-hostname"
                     class="form-control js-hostname"
-                    v-model="jupyterSuggestHostnameValue"
+                    v-model="applications.jupyter.hostname"
+                    :readonly="jupyterInstalled"
                   />
-                  <span class="input-group-btn">
+                  <span
+                    class="input-group-btn"
+                  >
                     <clipboard-button
                       :text="jupyterHostname"
                       :title="s__('ClusterIntegration|Copy Jupyter Hostname to clipboard')"
@@ -361,7 +328,7 @@ export default {
                   </span>
                 </div>
               </div>
-              <p>
+              <p v-if="ingressInstalled">
                 {{ s__(`ClusterIntegration|Replace this with your own hostname if you want.
                 If you do so, point hostname to Ingress IP Address from above.`) }}
                 <a
