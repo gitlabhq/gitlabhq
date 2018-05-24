@@ -2,17 +2,22 @@
 import { mapActions, mapGetters, mapState } from 'vuex';
 import LoadingIcon from '../../../vue_shared/components/loading_icon.vue';
 import CiIcon from '../../../vue_shared/components/ci_icon.vue';
-import JobsList from './jobs.vue';
+import Tabs from '../../../vue_shared/components/tabs/tabs';
+import Tab from '../../../vue_shared/components/tabs/tab.vue';
+import JobsList from '../jobs/list.vue';
 
 export default {
   components: {
     LoadingIcon,
     CiIcon,
+    Tabs,
+    Tab,
     JobsList,
   },
   computed: {
     ...mapGetters(['currentProject']),
-    ...mapState('pipelines', ['isLoadingPipeline', 'latestPipeline']),
+    ...mapGetters('pipelines', ['jobsCount', 'failedJobsCount', 'failedStages']),
+    ...mapState('pipelines', ['isLoadingPipeline', 'latestPipeline', 'stages', 'isLoadingJobs']),
     statusIcon() {
       return {
         group: this.latestPipeline.status,
@@ -21,10 +26,10 @@ export default {
     },
   },
   created() {
-    this.fetchLatestPipeline();
+    return this.fetchLatestPipeline().then(() => this.fetchStages());
   },
   methods: {
-    ...mapActions('pipelines', ['fetchLatestPipeline']),
+    ...mapActions('pipelines', ['fetchLatestPipeline', 'fetchStages']),
   },
 };
 </script>
@@ -56,7 +61,38 @@ export default {
           </a>
         </span>
       </header>
-      <jobs-list />
+      <tabs>
+        <tab active>
+          <template slot="title">
+            Jobs
+            <span
+              v-if="!isLoadingJobs || jobsCount"
+              class="badge"
+            >
+              {{ jobsCount }}
+            </span>
+          </template>
+          <jobs-list
+            :loading="isLoadingJobs"
+            :stages="stages"
+          />
+        </tab>
+        <tab>
+          <template slot="title">
+            Failed Jobs
+            <span
+              v-if="!isLoadingJobs || failedJobsCount"
+              class="badge"
+            >
+              {{ failedJobsCount }}
+            </span>
+          </template>
+          <jobs-list
+            :loading="isLoadingJobs"
+            :stages="failedStages"
+          />
+        </tab>
+      </tabs>
     </template>
   </div>
 </template>

@@ -1,5 +1,4 @@
 <script>
-import { mapState } from 'vuex';
 import LoadingIcon from '../../../vue_shared/components/loading_icon.vue';
 import Stage from './stage.vue';
 
@@ -13,9 +12,10 @@ export default {
       type: Array,
       required: true,
     },
-  },
-  computed: {
-    ...mapState('pipelines', ['isLoadingJobs']),
+    loading: {
+      type: Boolean,
+      required: true,
+    },
   },
 };
 </script>
@@ -23,7 +23,7 @@ export default {
 <template>
   <div>
     <loading-icon
-      v-if="isLoadingJobs && !stages.length"
+      v-if="loading && !stages.length"
       class="prepend-top-default"
       size="2"
     />

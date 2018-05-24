@@ -31,6 +31,12 @@ export default {
     collapseIcon() {
       return this.stage.isCollapsed ? 'angle-left' : 'angle-down';
     },
+    showLoadingIcon() {
+      return this.stage.isLoading && !this.stage.jobs.length;
+    },
+    jobsCount() {
+      return this.stage.jobs.length;
+    },
   },
   created() {
     this.fetchJobs(this.stage);
@@ -69,7 +75,7 @@ export default {
       </strong>
       <div class="append-right-8">
         <span class="badge">
-          {{ stage.jobs.length }}
+          {{ jobsCount }}
         </span>
       </div>
       <icon
@@ -82,7 +88,7 @@ export default {
       v-show="!stage.isCollapsed"
     >
       <loading-icon
-        v-if="stage.isLoading && !stage.jobs.length"
+        v-if="showLoadingIcon"
       />
       <template v-else>
         <item
