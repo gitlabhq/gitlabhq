@@ -42,6 +42,7 @@ export default {
       >
         <ci-icon
           :status="statusIcon"
+          :size="24"
         />
         <span class="prepend-left-8">
           <strong>

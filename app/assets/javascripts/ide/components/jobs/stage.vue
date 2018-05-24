@@ -1,11 +1,15 @@
 <script>
 import { mapActions } from 'vuex';
+import tooltip from '../../../vue_shared/directives/tooltip';
 import Icon from '../../../vue_shared/components/icon.vue';
 import CiIcon from '../../../vue_shared/components/ci_icon.vue';
 import LoadingIcon from '../../../vue_shared/components/loading_icon.vue';
 import Item from './item.vue';
 
 export default {
+  directives: {
+    tooltip,
+  },
   components: {
     Icon,
     CiIcon,
@@ -18,6 +22,11 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      showTooltip: false,
+    };
+  },
   computed: {
     collapseIcon() {
       return this.stage.isCollapsed ? 'angle-left' : 'angle-down';
@@ -25,6 +34,11 @@ export default {
   },
   created() {
     this.fetchJobs(this.stage);
+  },
+  mounted() {
+    const { stageTitle } = this.$refs;
+
+    this.showTooltip = stageTitle.scrollWidth > stageTitle.offsetWidth;
   },
   methods: {
     ...mapActions('pipelines', ['fetchJobs']),
@@ -42,11 +56,18 @@ export default {
     >
       <ci-icon
         :status="stage.status"
+        :size="24"
       />
-      <span class="prepend-left-8">
-        {{ stage.title }}
-      </span>
-      <div>
+      <strong
+        v-tooltip="showTooltip"
+        :title="showTooltip ? stage.name : null"
+        data-container="body"
+        class="prepend-left-8 ide-stage-title"
+        ref="stageTitle"
+      >
+        {{ stage.name }}
+      </strong>
+      <div class="append-right-8">
         <span class="badge">
           {{ stage.jobs.length }}
         </span>
@@ -86,5 +107,15 @@ export default {
 
 .panel-heading .pull-right {
   margin: auto 0 auto auto;
+}
+
+.panel-body {
+  padding: 0;
+}
+
+.ide-stage-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

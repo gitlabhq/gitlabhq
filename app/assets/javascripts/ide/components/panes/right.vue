@@ -70,7 +70,7 @@ export default {
 }
 
 .ide-right-sidebar .multi-file-commit-panel-inner {
-  width: 300px;
+  width: 350px;
   padding: 8px 16px;
   background-color: #fff;
   border-left: 1px solid #eaeaea;

@@ -12,7 +12,7 @@ export default {
   },
   computed: {
     ...mapGetters('pipelines', ['jobsCount', 'failedJobsCount', 'failedStages']),
-    ...mapState('pipelines', ['stages']),
+    ...mapState('pipelines', ['stages', 'isLoadingJobs']),
   },
   created() {
     this.fetchStages();
@@ -28,7 +28,13 @@ export default {
     <tabs>
       <tab active>
         <template slot="title">
-          Jobs <span class="badge">{{ jobsCount }}</span>
+          Jobs
+          <span
+            v-if="!isLoadingJobs || jobsCount"
+            class="badge"
+          >
+            {{ jobsCount }}
+          </span>
         </template>
         <jobs-list
           :stages="stages"
@@ -36,7 +42,13 @@ export default {
       </tab>
       <tab>
         <template slot="title">
-          Failed Jobs <span class="badge">{{ failedJobsCount }}</span>
+          Failed Jobs
+          <span
+            v-if="!isLoadingJobs || failedJobsCount"
+            class="badge"
+          >
+            {{ failedJobsCount }}
+          </span>
         </template>
         <jobs-list
           :stages="failedStages"
