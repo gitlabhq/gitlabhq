@@ -6,7 +6,15 @@ class Projects::Clusters::ApplicationsController < Projects::ApplicationControll
 
   def create
     application = @application_class.find_or_create_by!(cluster: @cluster)
-    application.update(hostname: params[:hostname]) if application.respond_to?(:hostname)
+
+    if application.respond_to?(:hostname)
+      application.update(hostname: params[:hostname])
+    end
+
+    if application.respond_to?(:oauth_application)
+      application.oauth_application = create_oauth_application(application)
+      application.save
+    end
 
     Clusters::Applications::ScheduleInstallationService.new(project, current_user).execute(application)
 
@@ -23,5 +31,16 @@ class Projects::Clusters::ApplicationsController < Projects::ApplicationControll
 
   def application_class
     @application_class ||= Clusters::Cluster::APPLICATIONS[params[:application]] || render_404
+  end
+
+  def create_oauth_application(application)
+    oauth_application_params = {
+      name: params[:application],
+      redirect_uri: application.callback_url,
+      scopes: 'api read_user openid',
+      owner: current_user
+    }
+
+    Applications::CreateService.new(current_user, oauth_application_params).execute
   end
 end

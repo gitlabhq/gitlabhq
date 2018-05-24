@@ -9,6 +9,8 @@ module Clusters
       include ::Clusters::Concerns::ApplicationStatus
       include ::Clusters::Concerns::ApplicationData
 
+      belongs_to :oauth_application, class_name: 'Doorkeeper::Application'
+
       default_value_for :version, VERSION
 
       def chart
@@ -32,14 +34,38 @@ module Clusters
         )
       end
 
+      def callback_url
+        "http://#{hostname}/hub/oauth_callback"
+      end
+
       private
 
       def specification
         {
-          "ingress" => { "hosts" => [hostname] },
-          "hub" => { "cookieSecret" => SecureRandom.hex(32) },
-          "proxy" => { "secretToken" => SecureRandom.hex(32) }
+          "ingress" => {
+            "hosts" => [hostname]
+          },
+          "hub" => {
+            "extraEnv" => {
+              "GITLAB_HOST" => gitlab_url
+            },
+            "cookieSecret" => SecureRandom.hex(32)
+          },
+          "proxy" => {
+            "secretToken" => SecureRandom.hex(32)
+          },
+          "auth" => {
+            "gitlab" => {
+              "clientId" => oauth_application.uid,
+              "clientSecret" => oauth_application.secret,
+              "callbackUrl" => callback_url
+            }
+          }
         }
+      end
+
+      def gitlab_url
+        Gitlab.config.gitlab.url
       end
 
       def content_values

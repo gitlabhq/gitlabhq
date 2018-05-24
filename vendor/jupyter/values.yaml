@@ -7,6 +7,9 @@ hub:
   extraConfig: |
     c.KubeSpawner.cmd = ['jupyter-labhub']
 
+auth:
+  type: gitlab
+
 singleuser:
   defaultUrl: "/lab"
 
