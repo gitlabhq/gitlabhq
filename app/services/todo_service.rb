@@ -98,12 +98,12 @@ class TodoService
 
   # When a build fails on the HEAD of a merge request we should:
   #
-  #  * create a todo for author of MR to fix it
-  #  * create a todo for merge_user to keep an eye on it
+  #  * create a todo for each merge participant
   #
   def merge_request_build_failed(merge_request)
-    create_build_failed_todo(merge_request, merge_request.author)
-    create_build_failed_todo(merge_request, merge_request.merge_user) if merge_request.merge_when_pipeline_succeeds?
+    merge_request.merge_participants.each do |user|
+      create_build_failed_todo(merge_request, user)
+    end
   end
 
   # When a new commit is pushed to a merge request we should:
@@ -116,20 +116,22 @@ class TodoService
 
   # When a build is retried to a merge request we should:
   #
-  #  * mark all pending todos related to the merge request for the author as done
-  #  * mark all pending todos related to the merge request for the merge_user as done
+  #  * mark all pending todos related to the merge request as done for each merge participant
   #
   def merge_request_build_retried(merge_request)
-    mark_pending_todos_as_done(merge_request, merge_request.author)
-    mark_pending_todos_as_done(merge_request, merge_request.merge_user) if merge_request.merge_when_pipeline_succeeds?
+    merge_request.merge_participants.each do |user|
+      mark_pending_todos_as_done(merge_request, user)
+    end
   end
 
-  # When a merge request could not be automatically merged due to its unmergeable state we should:
+  # When a merge request could not be merged due to its unmergeable state we should:
   #
-  #  * create a todo for a merge_user
+  #  * create a todo for each merge participant
   #
   def merge_request_became_unmergeable(merge_request)
-    create_unmergeable_todo(merge_request, merge_request.merge_user) if merge_request.merge_when_pipeline_succeeds?
+    merge_request.merge_participants.each do |user|
+      create_unmergeable_todo(merge_request, user)
+    end
   end
 
   # When create a note we should:
@@ -275,9 +277,9 @@ class TodoService
     create_todos(todo_author, attributes)
   end
 
-  def create_unmergeable_todo(merge_request, merge_user)
-    attributes = attributes_for_todo(merge_request.project, merge_request, merge_user, Todo::UNMERGEABLE)
-    create_todos(merge_user, attributes)
+  def create_unmergeable_todo(merge_request, todo_author)
+    attributes = attributes_for_todo(merge_request.project, merge_request, todo_author, Todo::UNMERGEABLE)
+    create_todos(todo_author, attributes)
   end
 
   def attributes_for_target(target)
