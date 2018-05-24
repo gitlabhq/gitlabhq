@@ -9,7 +9,13 @@ module Gitlab
         self.table_name = 'ci_builds'
         self.inheritance_column = :_type_disabled
 
-        scope :legacy_artifacts, -> { where('artifacts_file IS NOT NULL OR artifacts_file <> ?', '') }
+        scope :legacy_artifacts, -> do
+          where('artifacts_file IS NOT NULL AND artifacts_file <> ?', '')
+        end
+
+        scope :without_new_artifacts, -> do
+          where('NOT EXISTS (SELECT 1 FROM ci_job_artifacts WHERE ci_job_artifacts.id = ci_builds.id AND (file_type = 1 OR file_type = 2))')
+        end
       end
 
       class JobArtifact < ActiveRecord::Base
@@ -38,7 +44,7 @@ module Gitlab
 
         # Build rows
         MigrateLegacyArtifacts::Build
-          .legacy_artifacts
+          .legacy_artifacts.without_new_artifacts
           .where(id: (start_id..stop_id)).find_each do |build|
           rows << build_archive_row(build)
           rows << build_metadata_row(build) if build.artifacts_metadata
