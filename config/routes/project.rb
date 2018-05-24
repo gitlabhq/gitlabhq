@@ -204,11 +204,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :clusters, except: [:edit, :create] do
-        collection do
-          post '/new', to: 'clusters#create'
-        end
-
+      resources :clusters, except: [:edit] do
         member do
           get :status, format: :json
 

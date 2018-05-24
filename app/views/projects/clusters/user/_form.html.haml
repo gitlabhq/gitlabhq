@@ -1,4 +1,4 @@
-= form_for @existing_cluster, url: new_namespace_project_clusters_path(@project.namespace, @project, { type: 'existing' }), as: :cluster do |field|
+= form_for @existing_cluster, url: namespace_project_clusters_path(@project.namespace, @project, { type: 'existing' }), as: :cluster do |field|
   = form_errors(@existing_cluster)
   .form-group
     = field.label :name, s_('ClusterIntegration|Kubernetes cluster name')

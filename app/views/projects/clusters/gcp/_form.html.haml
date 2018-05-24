@@ -6,7 +6,7 @@
 
 %p= link_to('Select a different Google account', @authorize_url)
 
-= form_for @new_cluster, html: { class: 'js-gke-cluster-creation prepend-top-20', data: { token: @token_in_session } }, url: new_namespace_project_clusters_path(@project.namespace, @project, { type: 'new' }), as: :cluster do |field|
+= form_for @new_cluster, html: { class: 'js-gke-cluster-creation prepend-top-20', data: { token: @token_in_session } }, url:  namespace_project_clusters_path(@project.namespace, @project, { type: 'new' }), as: :cluster do |field|
   = form_errors(@new_cluster)
   .form-group
     = field.label :name, s_('ClusterIntegration|Kubernetes cluster name')
