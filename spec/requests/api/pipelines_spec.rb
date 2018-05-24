@@ -294,11 +294,26 @@ describe API::Pipelines do
         it 'creates and returns a new pipeline' do
           expect do
             post api("/projects/#{project.id}/pipeline", user), ref: project.default_branch
-          end.to change { Ci::Pipeline.count }.by(1)
+          end.to change { project.pipelines.count }.by(1)
 
           expect(response).to have_gitlab_http_status(201)
           expect(json_response).to be_a Hash
           expect(json_response['sha']).to eq project.commit.id
+        end
+
+        context 'variables given' do
+          let(:variables_attributes) { [{ 'key' => 'UPLOAD_TO_S3', 'value' => 'true' }] }
+
+          it 'creates and returns a new pipeline using the given variables' do
+            expect do
+              post api("/projects/#{project.id}/pipeline", user), ref: project.default_branch, variables_attributes: variables_attributes
+            end.to change { project.pipelines.count }.by(1)
+
+            expect(response).to have_gitlab_http_status(201)
+            expect(json_response).to be_a Hash
+            expect(json_response['sha']).to eq project.commit.id
+            expect(json_response['variables']).to eq variables_attributes
+          end
         end
 
         it 'fails when using an invalid ref' do

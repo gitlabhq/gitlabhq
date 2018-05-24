@@ -41,6 +41,7 @@ module API
       end
       params do
         requires :ref, type: String,  desc: 'Reference'
+        optional :variables_attributes, Array, desc: 'Array of variables available in the pipeline'
       end
       post ':id/pipeline' do
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42124')
