@@ -54,7 +54,7 @@ class JobEntity < Grape::Entity
   end
 
   def failed?
-    build.failed?
+    build.failed? && !build.script_failure?
   end
 
   def callout_message
