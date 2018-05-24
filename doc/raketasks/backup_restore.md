@@ -31,8 +31,8 @@ sudo apt-get install -y rsync
 
 >**Note:**
 In GitLab 9.2 the timestamp format was changed from `EPOCH_YYYY_MM_DD` to
-`EPOCH_YYYY_MM_DD_GitLab version`, for example `1493107454_2017_04_25`
-would become `1493107454_2017_04_25_9.1.0`.
+`EPOCH_YYYY_MM_DD_GitLab_version`, for example `1493107454_2018_04_25`
+would become `1493107454_2018_04_25_10.6.4-ce`.
 
 The backup archive will be saved in `backup_path`, which is specified in the
 `config/gitlab.yml` file.
@@ -41,8 +41,8 @@ identifies the time at which each backup was created, plus the GitLab version.
 The timestamp is needed if you need to restore GitLab and multiple backups are
 available.
 
-For example, if the backup name is `1493107454_2017_04_25_9.1.0_gitlab_backup.tar`,
-then the timestamp is `1493107454_2017_04_25_9.1.0`.
+For example, if the backup name is `1493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar`,
+then the timestamp is `1493107454_2018_04_25_10.6.4-ce`.
 
 ### Creating a backup of the GitLab system
 
@@ -574,7 +574,7 @@ First make sure your backup tar file is in the backup directory described in the
 `/var/opt/gitlab/backups`.
 
 ```shell
-sudo cp 1493107454_2017_04_25_9.1.0_gitlab_backup.tar /var/opt/gitlab/backups/
+sudo cp 11493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar /var/opt/gitlab/backups/
 ```
 
 Stop the processes that are connected to the database.  Leave the rest of GitLab
@@ -592,7 +592,7 @@ restore:
 
 ```shell
 # This command will overwrite the contents of your GitLab database!
-sudo gitlab-rake gitlab:backup:restore BACKUP=1493107454_2017_04_25_9.1.0
+sudo gitlab-rake gitlab:backup:restore BACKUP=1493107454_2018_04_25_10.6.4-ce
 ```
 
 Next, restore `/etc/gitlab/gitlab-secrets.json` if necessary as mentioned above.
