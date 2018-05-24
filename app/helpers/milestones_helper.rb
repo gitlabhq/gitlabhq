@@ -112,8 +112,6 @@ module MilestonesHelper
   def milestone_tooltip_title(milestone)
     if milestone
       "#{milestone.title}<br />#{milestone_tooltip_due_date(milestone)}"
-    else
-      _('Milestone')
     end
   end
 
