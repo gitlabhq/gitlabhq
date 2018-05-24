@@ -10,7 +10,7 @@ describe 'Merge request > User resolves conflicts', :js do
   end
 
   def create_merge_request(source_branch)
-    create(:merge_request, source_branch: source_branch, target_branch: 'conflict-start', source_project: project) do |mr|
+    create(:merge_request, source_branch: source_branch, target_branch: 'conflict-start', source_project: project, merge_status: :unchecked) do |mr|
       mr.mark_as_unmergeable
     end
   end
