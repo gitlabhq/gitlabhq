@@ -157,7 +157,7 @@ class GeoNodeStatus < ActiveRecord::Base
     self.storage_shards = StorageShard.all
 
     self.version = Gitlab::VERSION
-    self.revision = Gitlab::REVISION
+    self.revision = Gitlab.revision
 
     self.event_log_count = Geo::EventLog.count
     # Geo::PruneEventLogWorker might remove old events, so log maximum id
