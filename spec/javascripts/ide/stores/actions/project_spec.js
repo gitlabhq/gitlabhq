@@ -112,8 +112,6 @@ describe('IDE store project actions', () => {
       mock
         .onGet('/abc/def/commit/abc123def456ghi789jkl/pipelines')
         .reply(200, { data: { foo: 'bar' } }, { 'poll-interval': '10000' });
-
-      spyOn(axios, 'get').and.callThrough();
     });
 
     afterEach(() => {
@@ -122,6 +120,7 @@ describe('IDE store project actions', () => {
     });
 
     it('calls service with last fetched state', done => {
+      spyOn(axios, 'get').and.callThrough();
       spyOn(Visibility, 'hidden').and.returnValue(false);
 
       store
