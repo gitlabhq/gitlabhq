@@ -50,10 +50,12 @@ module Gitlab
 
         # Clean columns of ci_builds
         #
-        # Targets
+        # Included
         # "artifacts_file", "artifacts_metadata", "artifacts_size", "artifacts_file_store", "artifacts_metadata_store"
-        # Ignore
-        # "artifacts_expire_at" ... This is widely used for showing expiration time of artifacts
+        # Excluded
+        # - "artifacts_expire_at"
+        # This is still used to process the expiration logic of job artifacts.
+        # We also store the same value to `ci_job_artifacts.expire_at`, however it's not used at the moment.
         MigrateLegacyArtifacts::Build
           .legacy_artifacts
           .where(id: (start_id..stop_id))
