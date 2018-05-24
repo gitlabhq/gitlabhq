@@ -6,12 +6,12 @@ import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer
 import { activityBarViews, viewerTypes } from '../constants';
 import monacoLoader from '../monaco_loader';
 import Editor from '../lib/editor';
-import IdeFileButtons from './ide_file_buttons.vue';
+import FileView from './file_view.vue';
 
 export default {
   components: {
     ContentViewer,
-    IdeFileButtons,
+    FileView,
   },
   props: {
     file: {
@@ -224,7 +224,7 @@ export default {
           </a>
         </li>
       </ul>
-      <ide-file-buttons
+      <file-view
         :file="file"
       />
     </div>
