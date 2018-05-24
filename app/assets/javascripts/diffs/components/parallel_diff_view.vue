@@ -82,7 +82,7 @@ export default {
       return isLeftExpanded || isRightExpanded;
     },
     getLineCode(line, side) {
-      const lineCode = side.lineCode
+      const lineCode = side.lineCode;
       if (lineCode) {
         return lineCode;
       }
