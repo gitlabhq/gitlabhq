@@ -20,8 +20,11 @@ module EE
       delegate :dependency_scanning_artifact, to: :base_pipeline, prefix: :base, allow_nil: true
       delegate :license_management_artifact, to: :head_pipeline, prefix: :head, allow_nil: true
       delegate :license_management_artifact, to: :base_pipeline, prefix: :base, allow_nil: true
+      # sast_container_artifact is deprecated and replaced with container_scanning_artifact (#5778)
       delegate :sast_container_artifact, to: :head_pipeline, prefix: :head, allow_nil: true
       delegate :sast_container_artifact, to: :base_pipeline, prefix: :base, allow_nil: true
+      delegate :container_scanning_artifact, to: :head_pipeline, prefix: :head, allow_nil: true
+      delegate :container_scanning_artifact, to: :base_pipeline, prefix: :base, allow_nil: true
       delegate :dast_artifact, to: :head_pipeline, prefix: :head, allow_nil: true
       delegate :dast_artifact, to: :base_pipeline, prefix: :base, allow_nil: true
       delegate :sha, to: :head_pipeline, prefix: :head_pipeline, allow_nil: true
@@ -29,12 +32,16 @@ module EE
       delegate :has_sast_data?, to: :base_pipeline, prefix: :base, allow_nil: true
       delegate :has_dependency_scanning_data?, to: :base_pipeline, prefix: :base, allow_nil: true
       delegate :has_license_management_data?, to: :base_pipeline, prefix: :base, allow_nil: true
+      # has_sast_container_data? is deprecated and replaced with has_container_scanning_data? (#5778)
       delegate :has_sast_container_data?, to: :base_pipeline, prefix: :base, allow_nil: true
+      delegate :has_container_scanning_data?, to: :base_pipeline, prefix: :base, allow_nil: true
       delegate :has_dast_data?, to: :base_pipeline, prefix: :base, allow_nil: true
       delegate :expose_sast_data?, to: :head_pipeline, allow_nil: true
       delegate :expose_dependency_scanning_data?, to: :head_pipeline, allow_nil: true
       delegate :expose_license_management_data?, to: :head_pipeline, allow_nil: true
+      # expose_sast_container_data? is deprecated and replaced with expose_container_scanning_data? (#5778)
       delegate :expose_sast_container_data?, to: :head_pipeline, allow_nil: true
+      delegate :expose_container_scanning_data?, to: :head_pipeline, allow_nil: true
       delegate :expose_dast_data?, to: :head_pipeline, allow_nil: true
     end
 

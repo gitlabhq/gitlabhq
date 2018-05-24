@@ -34,9 +34,9 @@ container_scanning:
     - retries=0
     - echo "Waiting for clair daemon to start"
     - while( ! wget -T 10 -q -O /dev/null http://docker:6060/v1/namespaces ) ; do sleep 1 ; echo -n "." ; if [ $retries -eq 10 ] ; then echo " Timeout, aborting." ; exit 1 ; fi ; retries=$(($retries+1)) ; done
-    - ./clair-scanner -c http://docker:6060 --ip $(hostname -i) -r gl-sast-container-report.json -l clair.log -w clair-whitelist.yml ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} || true
+    - ./clair-scanner -c http://docker:6060 --ip $(hostname -i) -r gl-container-scanning-report.json -l clair.log -w clair-whitelist.yml ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} || true
   artifacts:
-    paths: [gl-sast-container-report.json]
+    paths: [gl-container-scanning-report.json]
 ```
 
 The above example will create a `container_scanning` job in your CI/CD pipeline, pull
@@ -53,7 +53,14 @@ TIP: **Tip:**
 Starting with [GitLab Ultimate][ee] 10.4, this information will
 be automatically extracted and shown right in the merge request widget. To do
 so, the CI/CD job must be named `container_scanning` and the artifact path must be
-`gl-sast-container-report.json`.
+`gl-container-scanning-report.json`.
 [Learn more on container scanning results shown in merge requests](https://docs.gitlab.com/ee/user/project/merge_requests/container_scanning.html).
+
+CAUTION: **Caution:**
+Container Scanning was previously using `sast:container` for job name and
+`gl-sast-container-report.json` for the artifact name. While these old names
+are still maintained they have been deprecated with GitLab 11.0 and may be removed
+in next major release, GitLab 12.0. You are advised to update your current `.gitlab-ci.yml`
+configuration to reflect that change.
 
 [ee]: https://about.gitlab.com/products/
