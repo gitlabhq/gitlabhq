@@ -2,7 +2,7 @@ describe QA::Scenario::Test::Sanity::Selectors do
   let(:validator) { spy('validator') }
 
   before do
-    stub_const('QA::Page::Validator', validator)
+    stub_const('Gitlab::QA::Framework::Page::Validator', validator)
   end
 
   context 'when there are errors detected' do
@@ -28,7 +28,7 @@ describe QA::Scenario::Test::Sanity::Selectors do
     it 'processes pages module' do
       described_class.perform
 
-      expect(validator).to have_received(:new).with(QA::Page)
+      expect(validator).to have_received(:new).with(Gitlab::QA::Framework::Page)
     end
 
     it 'triggers validation' do

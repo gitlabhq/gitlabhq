@@ -2,7 +2,7 @@ module QA
   module Page
     module Project
       module Settings
-        class Main < Page::Base
+        class Main < Gitlab::QA::Framework::Page::Base
           include Common
 
           view 'app/views/projects/edit.html.haml' do

@@ -1,7 +1,7 @@
 module QA
   module Page
     module Menu
-      class Profile < Page::Base
+      class Profile < Gitlab::QA::Framework::Page::Base
         view 'app/views/layouts/nav/sidebar/_profile.html.haml' do
           element :access_token_link, 'link_to profile_personal_access_tokens_path'
           element :access_token_title, 'Access Tokens'

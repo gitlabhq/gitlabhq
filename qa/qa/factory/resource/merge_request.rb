@@ -3,7 +3,7 @@ require 'securerandom'
 module QA
   module Factory
     module Resource
-      class MergeRequest < Factory::Base
+      class MergeRequest < Gitlab::QA::Framework::Factory::Base
         attr_accessor :title,
                       :description,
                       :source_branch,

@@ -1,7 +1,7 @@
 module QA
   module Page
     module Group
-      class Show < Page::Base
+      class Show < Gitlab::QA::Framework::Page::Base
         view 'app/views/groups/show.html.haml' do
           element :new_project_or_subgroup_dropdown, '.new-project-subgroup'
           element :new_project_or_subgroup_dropdown_toggle, '.dropdown-toggle'

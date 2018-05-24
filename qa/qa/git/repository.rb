@@ -5,7 +5,7 @@ require 'open3'
 module QA
   module Git
     class Repository
-      include Scenario::Actable
+      include Gitlab::QA::Framework::Scenario::Actable
 
       attr_reader :push_error
 

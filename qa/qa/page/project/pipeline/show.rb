@@ -1,6 +1,6 @@
 module QA::Page
   module Project::Pipeline
-    class Show < QA::Page::Base
+    class Show < QA::Gitlab::QA::Framework::Page::Base
       view 'app/assets/javascripts/vue_shared/components/header_ci_component.vue' do
         element :pipeline_header, /header class.*ci-header-container.*/
       end

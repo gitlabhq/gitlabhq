@@ -2,7 +2,7 @@ module QA
   module Page
     module Project
       module Settings
-        class Repository < Page::Base
+        class Repository < Gitlab::QA::Framework::Page::Base
           include Common
 
           view 'app/views/projects/deploy_keys/_index.html.haml' do

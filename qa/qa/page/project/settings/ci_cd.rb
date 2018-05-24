@@ -2,7 +2,7 @@ module QA # rubocop:disable Naming/FileName
   module Page
     module Project
       module Settings
-        class CICD < Page::Base
+        class CICD < Gitlab::QA::Framework::Page::Base
           include Common
 
           view 'app/views/projects/settings/ci_cd/show.html.haml' do

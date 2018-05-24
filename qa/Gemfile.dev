@@ -1,0 +1,3 @@
+gemfile = File.expand_path("../Gemfile", __FILE__)
+
+eval(File.read(gemfile), nil, gemfile)

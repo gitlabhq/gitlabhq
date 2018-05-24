@@ -4,7 +4,7 @@ module QA
       ##
       # Create a personal access token that can be used by the api
       #
-      class PersonalAccessToken < Factory::Base
+      class PersonalAccessToken < Gitlab::QA::Framework::Factory::Base
         attr_accessor :name
 
         product :access_token do

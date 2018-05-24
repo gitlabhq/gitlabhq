@@ -1,7 +1,7 @@
 module QA
   module Factory
     module Resource
-      class Group < Factory::Base
+      class Group < Gitlab::QA::Framework::Factory::Base
         attr_writer :path, :description
 
         dependency Factory::Resource::Sandbox, as: :sandbox

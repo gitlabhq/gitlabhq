@@ -1,6 +1,6 @@
 module QA::Page
   module Project::Pipeline
-    class Index < QA::Page::Base
+    class Index < QA::Gitlab::QA::Framework::Page::Base
       view 'app/assets/javascripts/pipelines/components/pipeline_url.vue' do
         element :pipeline_link, 'class="js-pipeline-url-link"'
       end

@@ -1,7 +1,7 @@
 module QA
   module Factory
     module Settings
-      class HashedStorage < Factory::Base
+      class HashedStorage < Gitlab::QA::Framework::Factory::Base
         def fabricate!(*traits)
           raise ArgumentError unless traits.include?(:enabled)
 

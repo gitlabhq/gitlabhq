@@ -1,7 +1,7 @@
 module QA
   module Page
     module Project
-      class Show < Page::Base
+      class Show < Gitlab::QA::Framework::Page::Base
         view 'app/views/shared/_clone_panel.html.haml' do
           element :clone_dropdown
           element :clone_options_dropdown, '.clone-options-dropdown'

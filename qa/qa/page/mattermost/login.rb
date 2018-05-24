@@ -1,7 +1,7 @@
 module QA
   module Page
     module Mattermost
-      class Login < Page::Base
+      class Login < Gitlab::QA::Framework::Page::Base
         ##
         # TODO, define all selectors required by this page object
         #

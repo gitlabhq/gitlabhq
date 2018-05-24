@@ -2,7 +2,7 @@ module QA
   module Page
     module Project
       module Issue
-        class Show < Page::Base
+        class Show < Gitlab::QA::Framework::Page::Base
           view 'app/views/projects/issues/show.html.haml' do
             element :issue_details, '.issue-details'
             element :title, '.title'

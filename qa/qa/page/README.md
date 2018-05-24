@@ -50,7 +50,7 @@ problem by introducing coupling between GitLab CE / EE views and GitLab QA.
 
 ## How did we solve fragile tests problem?
 
-Currently, when you add a new `Page::Base` derived class, you will also need to
+Currently, when you add a new `Gitlab::QA::Framework::Page::Base` derived class, you will also need to
 define all selectors that your page objects depends on.
 
 Whenever you push your code to CE / EE repository, `qa:selectors` sanity test
@@ -62,13 +62,15 @@ or invalid views / selectors definition.
 
 ## How to properly implement a page object?
 
-We have built a DSL to define coupling between a page object and GitLab views
+[dsl]: https://gitlab.com/gitlab-org/gitlab-qa/tree/master/lib/gitlab/qa/framework/page
+
+We have built a [DSL][dsl] to define coupling between a page object and GitLab views
 it is actually implemented by. See an example below.
 
 ```ruby
 module Page
   module Main
-    class Login < Page::Base
+    class Login < Gitlab::QA::Framework::Page::Base
       view 'app/views/devise/passwords/edit.html.haml' do
         element :password_field, 'password_field :password'
         element :password_confirmation, 'password_field :password_confirmation'

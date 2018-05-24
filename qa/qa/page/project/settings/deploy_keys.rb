@@ -2,7 +2,7 @@ module QA
   module Page
     module Project
       module Settings
-        class DeployKeys < Page::Base
+        class DeployKeys < Gitlab::QA::Framework::Page::Base
           view 'app/views/projects/deploy_keys/_form.html.haml' do
             element :deploy_key_title, 'text_field :title'
             element :deploy_key_key, 'text_area :key'

@@ -1,7 +1,7 @@
 module QA
   module Factory
     module Resource
-      class DeployKey < Factory::Base
+      class DeployKey < Gitlab::QA::Framework::Factory::Base
         attr_accessor :title, :key
 
         product :fingerprint do |resource|

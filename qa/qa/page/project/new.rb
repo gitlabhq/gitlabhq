@@ -1,7 +1,7 @@
 module QA
   module Page
     module Project
-      class New < Page::Base
+      class New < Gitlab::QA::Framework::Page::Base
         view 'app/views/projects/_new_project_fields.html.haml' do
           element :project_namespace_select
           element :project_namespace_field, /select :namespace_id.*class: 'select2/

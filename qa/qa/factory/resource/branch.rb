@@ -1,7 +1,7 @@
 module QA
   module Factory
     module Resource
-      class Branch < Factory::Base
+      class Branch < Gitlab::QA::Framework::Factory::Base
         attr_accessor :project, :branch_name,
                       :allow_to_push, :allow_to_merge, :protected
 

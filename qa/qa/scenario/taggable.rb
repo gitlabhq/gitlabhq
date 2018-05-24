@@ -1,17 +1,13 @@
 module QA
   module Scenario
     module Taggable
-      # rubocop:disable Gitlab/ModuleWithInstanceVariables
-
       def tags(*tags)
-        @tags = tags
+        @tags = tags # rubocop:disable Gitlab/ModuleWithInstanceVariables
       end
 
       def focus
-        @tags.to_a
+        @tags.to_a # rubocop:disable Gitlab/ModuleWithInstanceVariables
       end
-
-      # rubocop:enable Gitlab/ModuleWithInstanceVariables
     end
   end
 end

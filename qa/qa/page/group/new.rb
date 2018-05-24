@@ -1,7 +1,7 @@
 module QA
   module Page
     module Group
-      class New < Page::Base
+      class New < Gitlab::QA::Framework::Page::Base
         view 'app/views/shared/_group_form.html.haml' do
           element :group_path_field, 'text_field :path'
           element :group_name_field, 'text_field :name'

@@ -3,8 +3,7 @@ require 'securerandom'
 module QA
   module Service
     class Runner
-      include Scenario::Actable
-      include Service::Shellout
+      include Gitlab::QA::Framework::Scenario::Actable
 
       attr_accessor :token, :address, :tags, :image
 
@@ -16,7 +15,7 @@ module QA
       end
 
       def network
-        shell "docker network inspect #{@network}"
+        Gitlab::QA::Framework::Docker::Shellout.new("docker network inspect #{@network}").execute!
       rescue CommandError
         'bridge'
       else
@@ -24,7 +23,7 @@ module QA
       end
 
       def pull
-        shell "docker pull #{@image}"
+        Gitlab::QA::Framework::Docker::Shellout.new("docker pull #{@image}").execute!
       end
 
       def register!
@@ -42,7 +41,7 @@ module QA
       end
 
       def remove!
-        shell "docker rm -f #{@name}"
+        Gitlab::QA::Framework::Docker::Shellout.new("docker rm -f #{@name}").execute!
       end
     end
   end

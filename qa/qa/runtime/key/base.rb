@@ -19,9 +19,9 @@ module QA
         private
 
         def ssh_keygen(name, bits, path)
-          cmd = %W[ssh-keygen -t #{name} -b #{bits} -f #{path} -N] << ''
+          cmd = %Q[ssh-keygen -t #{name} -b #{bits} -f #{path} -N\n]
 
-          Service::Shellout.shell(cmd)
+          Gitlab::QA::Framework::Docker::Shellout.new(cmd).execute!
         end
 
         def populate_key_data(path)

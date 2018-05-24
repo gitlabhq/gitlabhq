@@ -2,13 +2,15 @@ require 'rspec/core'
 
 module QA
   module Specs
-    class Runner < Scenario::Template
+    class Runner
+      include Gitlab::QA::Framework::Scenario::Template
+
       attr_accessor :tty, :tags, :options
 
       def initialize
         @tty = false
         @tags = []
-        @options = [File.expand_path('./features', __dir__)]
+        @options = [File.expand_path('../../features', __dir__)]
       end
 
       def perform

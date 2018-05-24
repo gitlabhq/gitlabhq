@@ -2,7 +2,7 @@ module QA
   module Page
     module Project
       module Settings
-        class SecretVariables < Page::Base
+        class SecretVariables < Gitlab::QA::Framework::Page::Base
           include Common
 
           view 'app/views/ci/variables/_variable_row.html.haml' do

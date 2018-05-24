@@ -58,6 +58,16 @@ options there. For example, passing `--backtrace` and also line number:
 bin/qa Test::Instance http://localhost qa/specs/features/login/standard_spec.rb:3 --backtrace
 ```
 
+### Running Geo integrations test against live servers
+
+```
+CHROME_HEADLESS=0 GITLAB_USERNAME=gitlab-qa GITLAB_SANDBOX_NAME=mkozono-gitlab-qa-sandbox \
+  bin/qa QA::EE::Scenario::Test::Geo \
+  --primary-address https://staging.gitlab.com --primary-name primary \
+  --secondary-address https://gstg.gitlab.com --secondary-name secondary \
+  --without-setup
+```
+
 ### Overriding the authenticated user
 
 Unless told otherwise, the QA tests will run as the default `root` user seeded
@@ -67,7 +77,8 @@ If you need to authenticate as a different user, you can provide the
 `GITLAB_USERNAME` and `GITLAB_PASSWORD` environment variables:
 
 ```
-GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password bin/qa Test::Instance https://gitlab.example.com
+GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password \
+  bin/qa Test::Instance https://gitlab.example.com
 ```
 
 If your user doesn't have permission to default sandbox group
@@ -75,13 +86,16 @@ If your user doesn't have permission to default sandbox group
 `GITLAB_SANDBOX_NAME`:
 
 ```
-GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password GITLAB_SANDBOX_NAME=jsmith-qa-sandbox bin/qa Test::Instance https://gitlab.example.com
+GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password GITLAB_SANDBOX_NAME=jsmith-qa-sandbox \
+  bin/qa Test::Instance https://gitlab.example.com
 ```
 
 In addition, the `GITLAB_USER_TYPE` can be set to "ldap" to sign in as an LDAP user:
 
 ```
-GITLAB_USER_TYPE=ldap GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password GITLAB_SANDBOX_NAME=jsmith-qa-sandbox bin/qa Test::Instance https://gitlab.example.com
+GITLAB_USER_TYPE=ldap GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password \
+  GITLAB_SANDBOX_NAME=jsmith-qa-sandbox \
+  bin/qa Test::Instance https://gitlab.example.com
 ```
 
 All [supported environment variables are here](https://gitlab.com/gitlab-org/gitlab-qa#supported-environment-variables).

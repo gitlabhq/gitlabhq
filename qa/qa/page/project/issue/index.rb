@@ -2,7 +2,7 @@ module QA
   module Page
     module Project
       module Issue
-        class Index < Page::Base
+        class Index < Gitlab::QA::Framework::Page::Base
           view 'app/views/projects/issues/_issue.html.haml' do
             element :issue_link, 'link_to issue.title'
           end

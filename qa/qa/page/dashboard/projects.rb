@@ -1,7 +1,7 @@
 module QA
   module Page
     module Dashboard
-      class Projects < Page::Base
+      class Projects < Gitlab::QA::Framework::Page::Base
         view 'app/views/dashboard/projects/index.html.haml'
         view 'app/views/shared/projects/_search_form.html.haml' do
           element :form_filter_by_name, /form_tag.+id: 'project-filter-form'/

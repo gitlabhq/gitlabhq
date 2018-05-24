@@ -1,6 +1,6 @@
 module QA::Page
   module Project::Job
-    class Show < QA::Page::Base
+    class Show < QA::Gitlab::QA::Framework::Page::Base
       COMPLETED_STATUSES = %w[passed failed canceled blocked skipped manual].freeze # excludes created, pending, running
       PASSED_STATUS = 'passed'.freeze
 

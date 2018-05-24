@@ -5,8 +5,8 @@ module QA
       # Base class for running the suite against any GitLab instance,
       # including staging and on-premises installation.
       #
-      class Instance < Template
-        include Bootable
+      class Instance
+        include Gitlab::QA::Framework::Scenario::Template
         extend Taggable
 
         tags :core
@@ -26,7 +26,7 @@ module QA
               if rspec_options.any?
                 rspec_options
               else
-                File.expand_path('../../specs/features', __dir__)
+                File.expand_path('../../../scenarios', __dir__)
               end
           end
         end

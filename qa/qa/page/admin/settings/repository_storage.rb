@@ -2,7 +2,7 @@ module QA
   module Page
     module Admin
       module Settings
-        class RepositoryStorage < Page::Base
+        class RepositoryStorage < Gitlab::QA::Framework::Page::Base
           view 'app/views/admin/application_settings/_repository_storage.html.haml' do
             element :submit, "submit 'Save changes'"
             element :hashed_storage,

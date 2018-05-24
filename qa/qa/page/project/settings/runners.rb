@@ -2,7 +2,7 @@ module QA
   module Page
     module Project
       module Settings
-        class Runners < Page::Base
+        class Runners < Gitlab::QA::Framework::Page::Base
           view 'app/views/ci/runner/_how_to_setup_runner.html.haml' do
             element :registration_token, '%code#registration_token'
             element :coordinator_address, '%code#coordinator_address'

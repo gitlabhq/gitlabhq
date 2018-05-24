@@ -1,4 +1,5 @@
-$: << File.expand_path(File.dirname(__FILE__))
+lib = File.expand_path(__dir__)
+$:.unshift(lib) unless $:.include?(lib)
 
 module QA
   ##
@@ -10,7 +11,7 @@ module QA
     autoload :Namespace, 'qa/runtime/namespace'
     autoload :Scenario, 'qa/runtime/scenario'
     autoload :Browser, 'qa/runtime/browser'
-    autoload :Env, 'qa/runtime/env'
+    autoload :Env, File.expand_path('qa/runtime/env', __dir__)
     autoload :Address, 'qa/runtime/address'
     autoload :API, 'qa/runtime/api'
 
@@ -26,10 +27,6 @@ module QA
   # GitLab QA fabrication mechanisms
   #
   module Factory
-    autoload :Base, 'qa/factory/base'
-    autoload :Dependency, 'qa/factory/dependency'
-    autoload :Product, 'qa/factory/product'
-
     module Resource
       autoload :Sandbox, 'qa/factory/resource/sandbox'
       autoload :Group, 'qa/factory/resource/group'
@@ -59,10 +56,7 @@ module QA
     ##
     # Support files
     #
-    autoload :Bootable, 'qa/scenario/bootable'
-    autoload :Actable, 'qa/scenario/actable'
     autoload :Taggable, 'qa/scenario/taggable'
-    autoload :Template, 'qa/scenario/template'
 
     ##
     # Test scenario entrypoints.
@@ -87,11 +81,6 @@ module QA
   # Needed to execute click-driven-only black-box tests.
   #
   module Page
-    autoload :Base, 'qa/page/base'
-    autoload :View, 'qa/page/view'
-    autoload :Element, 'qa/page/element'
-    autoload :Validator, 'qa/page/validator'
-
     module Main
       autoload :Login, 'qa/page/main/login'
       autoload :OAuth, 'qa/page/main/oauth'
@@ -194,7 +183,6 @@ module QA
   # with these services, like through the shell.
   #
   module Service
-    autoload :Shellout, 'qa/service/shellout'
     autoload :Omnibus, 'qa/service/omnibus'
     autoload :Runner, 'qa/service/runner'
   end
@@ -209,3 +197,5 @@ module QA
 end
 
 QA::Runtime::Release.extend_autoloads!
+
+require 'gitlab/qa/framework'

@@ -3,7 +3,7 @@ require 'securerandom'
 module QA
   module Factory
     module Resource
-      class Runner < Factory::Base
+      class Runner < Gitlab::QA::Framework::Factory::Base
         attr_writer :name, :tags, :image
 
         dependency Factory::Resource::Project, as: :project do |project|

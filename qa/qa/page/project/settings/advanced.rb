@@ -2,7 +2,7 @@ module QA
   module Page
     module Project
       module Settings
-        class Advanced < Page::Base
+        class Advanced < Gitlab::QA::Framework::Page::Base
           view 'app/views/projects/edit.html.haml' do
             element :project_path_field, 'f.text_field :path'
             element :project_name_field, 'f.text_field :name'

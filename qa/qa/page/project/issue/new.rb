@@ -2,7 +2,7 @@ module QA
   module Page
     module Project
       module Issue
-        class New < Page::Base
+        class New < Gitlab::QA::Framework::Page::Base
           view 'app/views/shared/issuable/_form.html.haml' do
             element :submit_issue_button, 'form.submit "Submit'
           end

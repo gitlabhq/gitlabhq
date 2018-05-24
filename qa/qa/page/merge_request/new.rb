@@ -1,7 +1,7 @@
 module QA
   module Page
     module MergeRequest
-      class New < Page::Base
+      class New < Gitlab::QA::Framework::Page::Base
         view 'app/views/shared/issuable/_form.html.haml' do
           element :issuable_create_button
         end

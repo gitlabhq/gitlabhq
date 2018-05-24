@@ -2,7 +2,7 @@ module QA
   module Page
     module Project
       module Settings
-        class ProtectedBranches < Page::Base
+        class ProtectedBranches < Gitlab::QA::Framework::Page::Base
           view 'app/views/projects/protected_branches/shared/_dropdown.html.haml' do
             element :protected_branch_select
             element :protected_branch_dropdown

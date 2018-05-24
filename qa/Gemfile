@@ -1,5 +1,10 @@
 source 'https://rubygems.org'
 
+if ENV['GITLAB_QA_SOURCE']
+  gem 'gitlab-qa', ENV.fetch('GITLAB_QA_PROTOCOL', 'path') => ENV['GITLAB_QA_SOURCE']
+else
+  gem 'gitlab-qa', '~> 1.0'
+end
 gem 'pry-byebug', '~> 3.5.1', platform: :mri
 gem 'capybara', '~> 2.16.1'
 gem 'capybara-screenshot', '~> 1.0.18'

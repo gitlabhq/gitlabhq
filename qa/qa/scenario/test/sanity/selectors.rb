@@ -2,14 +2,14 @@ module QA
   module Scenario
     module Test
       module Sanity
-        class Selectors < Scenario::Template
-          include Scenario::Bootable
+        class Selectors
+          include Gitlab::QA::Framework::Scenario::Template
 
-          PAGES = [QA::Page].freeze
+          PAGES = [Gitlab::QA::Framework::Page].freeze
 
           def perform(*)
             validators = PAGES.map do |pages|
-              Page::Validator.new(pages)
+              Gitlab::QA::Framework::Page::Validator.new(pages)
             end
 
             validators.map(&:errors).flatten.tap do |errors|

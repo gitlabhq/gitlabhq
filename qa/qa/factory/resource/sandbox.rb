@@ -5,7 +5,7 @@ module QA
       # Ensure we're in our sandbox namespace, either by navigating to it or by
       # creating it if it doesn't yet exist.
       #
-      class Sandbox < Factory::Base
+      class Sandbox < Gitlab::QA::Framework::Factory::Base
         def initialize
           @name = Runtime::Namespace.sandbox_name
         end

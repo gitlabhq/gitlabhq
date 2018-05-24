@@ -1,7 +1,7 @@
 module QA
   module Page
     module Profile
-      class PersonalAccessTokens < Page::Base
+      class PersonalAccessTokens < Gitlab::QA::Framework::Page::Base
         view 'app/views/shared/_personal_access_tokens_form.html.haml' do
           element :personal_access_token_name_field, 'text_field :name'
           element :create_token_button, 'submit "Create #{type} token"' # rubocop:disable Lint/InterpolationCheck

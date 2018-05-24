@@ -2,7 +2,7 @@ module QA
   module Page
     module Project
       module Settings
-        class MergeRequest < QA::Page::Base
+        class MergeRequest < Gitlab::QA::Framework::Page::Base
           include Common
 
           view 'app/views/projects/_merge_request_fast_forward_settings.html.haml' do

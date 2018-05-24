@@ -6,7 +6,7 @@ require 'selenium-webdriver'
 module QA
   module Runtime
     class Browser
-      include QA::Scenario::Actable
+      include Gitlab::QA::Framework::Scenario::Actable
 
       def initialize
         self.class.configure!

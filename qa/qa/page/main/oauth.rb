@@ -1,7 +1,7 @@
 module QA
   module Page
     module Main
-      class OAuth < Page::Base
+      class OAuth < Gitlab::QA::Framework::Page::Base
         view 'app/views/doorkeeper/authorizations/new.html.haml' do
           element :authorization_button, 'submit_tag "Authorize"'
         end

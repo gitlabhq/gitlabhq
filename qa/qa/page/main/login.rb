@@ -1,7 +1,7 @@
 module QA
   module Page
     module Main
-      class Login < Page::Base
+      class Login < Gitlab::QA::Framework::Page::Base
         view 'app/views/devise/passwords/edit.html.haml' do
           element :password_field, 'password_field :password'
           element :password_confirmation, 'password_field :password_confirmation'

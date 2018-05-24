@@ -1,7 +1,7 @@
 module QA
   module Factory
     module Resource
-      class Issue < Factory::Base
+      class Issue < Gitlab::QA::Framework::Factory::Base
         attr_writer :title, :description, :project
 
         dependency Factory::Resource::Project, as: :project do |project|

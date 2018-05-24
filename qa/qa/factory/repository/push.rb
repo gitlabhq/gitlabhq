@@ -1,7 +1,7 @@
 module QA
   module Factory
     module Repository
-      class Push < Factory::Base
+      class Push < Gitlab::QA::Framework::Factory::Base
         attr_accessor :file_name, :file_content, :commit_message,
                       :branch_name, :new_branch
 

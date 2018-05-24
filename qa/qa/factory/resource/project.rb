@@ -3,7 +3,7 @@ require 'securerandom'
 module QA
   module Factory
     module Resource
-      class Project < Factory::Base
+      class Project < Gitlab::QA::Framework::Factory::Base
         attr_writer :description
 
         dependency Factory::Resource::Group, as: :group
