@@ -217,6 +217,7 @@ export default {
         <edit-button
           :current-user="currentUser"
           :edit-path="diffFile.editPath"
+          :can-modify-blob="diffFile.canModifyBlob"
           @showForkMessage="showForkMessage"
         />
       </template>
