@@ -222,13 +222,5 @@ module Backup
     def display_repo_path(project)
       project.hashed_storage?(:repository) ? "#{project.full_path} (#{project.disk_path})" : project.full_path
     end
-
-    def gitaly_migrate(method, status: Gitlab::GitalyClient::MigrationStatus::OPT_IN, &block)
-      Gitlab::GitalyClient.migrate(method, status: status, &block)
-    rescue GRPC::NotFound, GRPC::BadStatus => e
-      # Old Popen code returns [Error, output] to the caller, so we
-      # need to do the same here...
-      raise Error, e
-    end
   end
 end
