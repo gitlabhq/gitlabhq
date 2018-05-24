@@ -224,8 +224,10 @@ export default {
     base_path: 'blob_path',
     head_path: 'blob_path',
   },
-  vulnerability_feedback_help_path: '/help/user/project/merge_requests/index#interacting-with-security-reports-ultimate',
-  merge_commit_path: 'http://localhost:3000/root/acets-app/commit/53027d060246c8f47e4a9310fb332aa52f221775',
+  vulnerability_feedback_help_path:
+    '/help/user/project/merge_requests/index#interacting-with-security-reports-ultimate',
+  merge_commit_path:
+    'http://localhost:3000/root/acets-app/commit/53027d060246c8f47e4a9310fb332aa52f221775',
 };
 // Codeclimate
 export const headIssues = [
@@ -394,5 +396,143 @@ export const codequalityParsedIssues = [
     path: 'Gemfile.lock',
     line: 12,
     urlPath: 'foo/Gemfile.lock',
+  },
+];
+
+export const licenseBaseIssues = {
+  licenses: [
+    {
+      count: 1,
+      name: 'MIT',
+    },
+  ],
+  dependencies: [
+    {
+      license: {
+        name: 'MIT',
+        url: 'http://opensource.org/licenses/mit-license',
+      },
+      dependency: {
+        name: 'bundler',
+        url: 'http://bundler.io',
+        description: 'The best way to manage your application\'s dependencies',
+        pathes: [
+          '.',
+        ],
+      },
+    },
+  ],
+};
+
+export const licenseHeadIssues = {
+  licenses: [
+    {
+      count: 3,
+      name: 'New BSD',
+    },
+    {
+      count: 1,
+      name: 'MIT',
+    },
+  ],
+  dependencies: [
+    {
+      license: {
+        name: 'New BSD',
+        url: 'http://opensource.org/licenses/BSD-3-Clause',
+      },
+      dependency: {
+        name: 'pg',
+        url: 'https://bitbucket.org/ged/ruby-pg',
+        description:
+          'Pg is the Ruby interface to the {PostgreSQL RDBMS}[http://www.postgresql.org/]',
+        pathes: ['.'],
+      },
+    },
+    {
+      license: {
+        name: 'New BSD',
+        url: 'http://opensource.org/licenses/BSD-3-Clause',
+      },
+      dependency: {
+        name: 'puma',
+        url: 'http://puma.io',
+        description:
+          'Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server for Ruby/Rack applications',
+        pathes: ['.'],
+      },
+    },
+    {
+      license: {
+        name: 'New BSD',
+        url: 'http://opensource.org/licenses/BSD-3-Clause',
+      },
+      dependency: {
+        name: 'foo',
+        url: 'http://foo.io',
+        description:
+          'Foo is a simple, fast, threaded, and highly concurrent HTTP 1.1 server for Ruby/Rack applications',
+        pathes: ['.'],
+      },
+    },
+    {
+      license: {
+        name: 'MIT',
+        url: 'http://opensource.org/licenses/mit-license',
+      },
+      dependency: {
+        name: 'execjs',
+        url: 'https://github.com/rails/execjs',
+        description: 'Run JavaScript code from Ruby',
+        pathes: [
+          '.',
+        ],
+      },
+    },
+  ],
+};
+
+export const licenseReport = [
+  {
+    name: 'New BSD',
+    count: 5,
+    url: 'http://opensource.org/licenses/BSD-3-Clause',
+    packages: [
+      {
+        name: 'pg',
+        url: 'https://bitbucket.org/ged/ruby-pg',
+        description:
+          'Pg is the Ruby interface to the {PostgreSQL RDBMS}[http://www.postgresql.org/]',
+        pathes: ['.'],
+      },
+      {
+        name: 'puma',
+        url: 'http://puma.io',
+        description:
+          'Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server for Ruby/Rack applications',
+        pathes: ['.'],
+      },
+      {
+        name: 'foo',
+        url: 'https://bitbucket.org/ged/ruby-pg',
+        description:
+          'Pg is the Ruby interface to the {PostgreSQL RDBMS}[http://www.postgresql.org/]',
+        pathes: ['.'],
+      },
+      {
+        name: 'bar',
+        url: 'http://puma.io',
+        description:
+          'Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server for Ruby/Rack applications',
+        pathes: ['.'],
+      },
+      {
+        name: 'baz',
+        url: 'https://bitbucket.org/ged/ruby-pg',
+        description:
+          'Pg is the Ruby interface to the {PostgreSQL RDBMS}[http://www.postgresql.org/]',
+        pathes: ['.'],
+      },
+    ],
   },
 ];
