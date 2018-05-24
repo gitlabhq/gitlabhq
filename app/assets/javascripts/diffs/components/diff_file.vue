@@ -144,7 +144,7 @@ export default {
         make your changes there, and submit a merge request.
       </span>
       <a
-        :href="diffFiel.forkPath"
+        :href="file.forkPath"
         class="js-fork-suggestion-button btn btn-grouped btn-inverted btn-success"
       >
         Fork

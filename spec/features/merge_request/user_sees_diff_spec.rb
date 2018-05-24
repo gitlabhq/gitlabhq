@@ -70,8 +70,7 @@ describe 'Merge request > User sees diff', :js do
     end
 
     context 'as user who needs to fork' do
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'shows fork/cancel confirmation' do
+      it 'shows fork/cancel confirmation' do
         sign_in(user)
         visit diffs_project_merge_request_path(project, merge_request)
 
