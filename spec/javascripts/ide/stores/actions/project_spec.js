@@ -117,9 +117,10 @@ describe('IDE store project actions', () => {
     afterEach(() => {
       jasmine.clock().uninstall();
       mock.restore();
+      store.dispatch('stopPipelinePolling');
     });
 
-    it('calls service with last fetched state', done => {
+    it('calls service periodically', done => {
       spyOn(axios, 'get').and.callThrough();
       spyOn(Visibility, 'hidden').and.returnValue(false);
 
