@@ -83,18 +83,17 @@ class Projects::ClustersController < Projects::ApplicationController
       redirect_to project_cluster_path(project, @cluster)
     else
       generate_gcp_authorize_url
-      active_tab = params[:type]
 
       case params[:type]
       when 'new'
         @new_cluster = @cluster
-        tap_existing_cluster
+        existing_cluster
       when 'existing'
         @existing_cluster = @cluster
-        tap_new_cluster
+        new_cluster
       end
 
-      render :new, locals: { active_tab: active_tab }
+      render :new, locals: { active_tab: params[:type] }
     end
   end
 
