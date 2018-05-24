@@ -33,7 +33,7 @@ export default {
       <span>Open in file view</span>
       <icon
         name="external-link"
-        cssClasses="vertical-align-middle"
+        css-classes="vertical-align-middle"
         :size="16"
       />
     </a>
