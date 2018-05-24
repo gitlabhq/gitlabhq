@@ -6,6 +6,12 @@ module Backup
     include Backup::Helper
     # rubocop:disable Metrics/AbcSize
 
+    attr_reader :progress
+
+    def initialize(progress)
+      @progress = progress
+    end
+
     def dump
       prepare
 
@@ -215,10 +221,6 @@ module Backup
 
     def repository_storage_paths_args
       Gitlab.config.repositories.storages.values.map { |rs| rs.legacy_disk_path }
-    end
-
-    def progress
-      $progress
     end
 
     def display_repo_path(project)

@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Backup::Repository do
   let(:progress) { StringIO.new }
   let!(:project) { create(:project, :wiki_repo) }
+  subject { described_class.new(progress) }
 
   before do
     allow(progress).to receive(:puts)
@@ -24,14 +25,12 @@ describe Backup::Repository do
       end
 
       it 'does not raise error' do
-        expect { described_class.new.dump }.not_to raise_error
+        expect { subject.dump }.not_to raise_error
       end
     end
   end
 
   describe '#restore' do
-    subject { described_class.new }
-
     let(:timestamp) { Time.utc(2017, 3, 22) }
     let(:temp_dirs) do
       Gitlab.config.repositories.storages.map do |name, storage|
@@ -102,20 +101,20 @@ describe Backup::Repository do
       it 'invalidates the emptiness cache' do
         expect(wiki.repository).to receive(:expire_emptiness_caches).once
 
-        described_class.new.send(:empty_repo?, wiki)
+        subject.send(:empty_repo?, wiki)
       end
 
       context 'wiki repo has content' do
         let!(:wiki_page) { create(:wiki_page, wiki: wiki) }
 
         it 'returns true, regardless of bad cache value' do
-          expect(described_class.new.send(:empty_repo?, wiki)).to be(false)
+          expect(subject.send(:empty_repo?, wiki)).to be(false)
         end
       end
 
       context 'wiki repo does not have content' do
         it 'returns true, regardless of bad cache value' do
-          expect(described_class.new.send(:empty_repo?, wiki)).to be_truthy
+          expect(subject.send(:empty_repo?, wiki)).to be_truthy
         end
       end
     end
