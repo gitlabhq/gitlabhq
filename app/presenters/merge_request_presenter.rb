@@ -1,4 +1,6 @@
 class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
+  prepend EE::MergeRequestPresenter
+
   include ActionView::Helpers::UrlHelper
   include GitlabRoutingHelper
   include MarkupHelper
@@ -110,12 +112,6 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   def source_branch_path
     if source_branch_exists?
       project_branch_path(source_project, source_branch)
-    end
-  end
-
-  def approvals_path
-    if requires_approve?
-      approvals_project_merge_request_path(project, merge_request)
     end
   end
 
