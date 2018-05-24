@@ -33,13 +33,15 @@ module QA
     end
 
     keys = [
-      Runtime::Key::RSA.new(8192),
-      Runtime::Key::ECDSA.new(521),
-      Runtime::Key::ED25519.new
+      [Runtime::Key::RSA, 8192],
+      [Runtime::Key::ECDSA, 521],
+      [Runtime::Key::ED25519]
     ]
 
-    keys.each do |key|
-      scenario "user sets up a deploy key with #{key.name}(#{key.bits}) to clone code using pipelines" do
+    keys.each do |(key_class, bits)|
+      scenario "user sets up a deploy key with #{key_class}(#{bits}) to clone code using pipelines" do
+        key = key_class.new(*bits)
+
         login
 
         Factory::Resource::DeployKey.fabricate! do |resource|

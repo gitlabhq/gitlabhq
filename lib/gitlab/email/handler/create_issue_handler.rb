@@ -47,7 +47,7 @@ module Gitlab
             project,
             author,
             title:       mail.subject,
-            description: message
+            description: message_including_reply
           ).execute
         end
       end

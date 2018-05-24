@@ -204,17 +204,23 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
             dispatch('updateViewer', 'editor', { root: true });
 
             router.push(
-              `/project/${rootState.currentProjectId}/blob/${getters.branchName}/${
+              `/project/${rootState.currentProjectId}/blob/${getters.branchName}/-/${
                 rootGetters.activeFile.path
               }`,
             );
           }
         })
         .then(() => dispatch('updateCommitAction', consts.COMMIT_TO_CURRENT_BRANCH))
-        .then(() => dispatch('refreshLastCommitData', {
-          projectId: rootState.currentProjectId,
-          branchId: rootState.currentBranchId,
-        }, { root: true }));
+        .then(() =>
+          dispatch(
+            'refreshLastCommitData',
+            {
+              projectId: rootState.currentProjectId,
+              branchId: rootState.currentBranchId,
+            },
+            { root: true },
+          ),
+        );
     })
     .catch(err => {
       let errMsg = __('Error committing changes. Please try again.');

@@ -167,8 +167,10 @@ module API
 
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/46285')
         destroy_conditionally!(group) do |group|
-          ::Groups::DestroyService.new(group, current_user).execute
+          ::Groups::DestroyService.new(group, current_user).async_execute
         end
+
+        accepted!
       end
 
       desc 'Get a list of projects in this group.' do

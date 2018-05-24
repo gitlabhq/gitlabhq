@@ -149,6 +149,7 @@ module API
       end
       patch '/:id/trace' do
         job = authenticate_job!
+        forbidden!('Job is not running') unless job.running?
 
         error!('400 Missing header Content-Range', 400) unless request.headers.key?('Content-Range')
         content_range = request.headers['Content-Range']

@@ -65,12 +65,7 @@ module Gitlab
         params = repository.archive_metadata(ref, Gitlab.config.gitlab.repository_downloads_path, format, append_sha: append_sha)
         raise "Repository or ref not found" if params.empty?
 
-        if Gitlab::GitalyClient.feature_enabled?(:workhorse_archive, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT)
-          params.merge!(
-            'GitalyServer' => gitaly_server_hash(repository),
-            'GitalyRepository' => repository.gitaly_repository.to_h
-          )
-        end
+        params['GitalyServer'] = gitaly_server_hash(repository)
 
         # If present DisableCache must be a Boolean. Otherwise workhorse ignores it.
         params['DisableCache'] = true if git_archive_cache_disabled?
