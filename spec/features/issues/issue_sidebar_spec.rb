@@ -180,10 +180,6 @@ feature 'Issue Sidebar' do
         resize_screen_sm
       end
 
-      after do
-        restore_window_size
-      end
-
       it 'confidentiality block expands then collapses sidebar' do
         expect(page).to have_css(collapsed_sidebar_selector)
 
