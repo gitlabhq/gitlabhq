@@ -3,14 +3,12 @@ module EE
     module RefreshService
       extend ::Gitlab::Utils::Override
 
-      override :execute
-      def execute(oldrev, newrev, ref)
-        return true unless ::Gitlab::Git.branch_ref?(ref)
+      private
 
+      override :do_execute
+      def do_execute(oldrev, newrev, ref)
         super && reset_approvals_for_merge_requests(ref, newrev)
       end
-
-      private
 
       # Note: Closed merge requests also need approvals reset.
       def reset_approvals_for_merge_requests(ref, newrev)
