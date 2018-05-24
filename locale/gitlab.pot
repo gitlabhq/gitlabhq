@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-21 12:38-0700\n"
-"PO-Revision-Date: 2018-05-21 12:38-0700\n"
+"POT-Creation-Date: 2018-05-24 12:35+0200\n"
+"PO-Revision-Date: 2018-05-24 12:35+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -217,7 +217,7 @@ msgstr ""
 msgid "Account"
 msgstr ""
 
-msgid "Account and limit settings"
+msgid "Account and limit"
 msgstr ""
 
 msgid "Active"
@@ -484,7 +484,7 @@ msgstr ""
 msgid "Auto Review Apps and Auto Deploy need a domain name to work correctly."
 msgstr ""
 
-msgid "AutoDevOps|Auto DevOps (Beta)"
+msgid "AutoDevOps|Auto DevOps"
 msgstr ""
 
 msgid "AutoDevOps|Auto DevOps documentation"
@@ -505,7 +505,7 @@ msgstr ""
 msgid "AutoDevOps|add a Kubernetes cluster"
 msgstr ""
 
-msgid "AutoDevOps|enable Auto DevOps (Beta)"
+msgid "AutoDevOps|enable Auto DevOps"
 msgstr ""
 
 msgid "Available"
@@ -768,7 +768,7 @@ msgstr ""
 msgid "CICD|An explicit %{ci_file} needs to be specified before you can begin using Continuous Integration and Delivery."
 msgstr ""
 
-msgid "CICD|Auto DevOps (Beta)"
+msgid "CICD|Auto DevOps"
 msgstr ""
 
 msgid "CICD|Auto DevOps will automatically build, test, and deploy your application based on a predefined Continuous Integration and Delivery configuration."
@@ -3392,7 +3392,7 @@ msgstr ""
 msgid "Repository maintenance"
 msgstr ""
 
-msgid "Repository mirror settings"
+msgid "Repository mirror"
 msgstr ""
 
 msgid "Repository storage"
@@ -3998,6 +3998,12 @@ msgstr ""
 msgid "There are problems accessing Git storage: "
 msgstr ""
 
+msgid "There was an error loading jobs"
+msgstr ""
+
+msgid "There was an error loading latest pipeline"
+msgstr ""
+
 msgid "There was an error loading users activity calendar."
 msgstr ""
 
@@ -4241,10 +4247,10 @@ msgstr ""
 msgid "Timeago|in 1 year"
 msgstr ""
 
-msgid "Timeago|in a while"
+msgid "Timeago|less than a minute ago"
 msgstr ""
 
-msgid "Timeago|less than a minute ago"
+msgid "Timeago|right now"
 msgstr ""
 
 msgid "Time|hr"
