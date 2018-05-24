@@ -81,8 +81,8 @@ export default {
 
       return isLeftExpanded || isRightExpanded;
     },
-    getLineCode(line) {
-      const lineCode = line.left.lineCode || line.right.lineCode;
+    getLineCode(line, side) {
+      const lineCode = side.lineCode
       if (lineCode) {
         return lineCode;
       }
@@ -105,7 +105,6 @@ export default {
         >
           <tr
             :key="index"
-            :id="getLineCode(line)"
             :class="getRowClass(line)"
             class="line_holder parallel"
             @mouseover="handleMouse($event, line, true)"
@@ -132,6 +131,7 @@ export default {
             <td
               :class="getClassName(line, 'left')"
               ref="leftLines"
+              :id="getLineCode(line, line.left)"
               v-html="line.left.richText"
               class="line_content parallel left-side"
             >
@@ -157,6 +157,7 @@ export default {
             <td
               :class="getClassName(line, 'right')"
               ref="rightLines"
+              :id="getLineCode(line, line.right)"
               v-html="line.right.richText"
               class="line_content parallel right-side"
             >
