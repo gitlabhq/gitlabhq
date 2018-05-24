@@ -612,32 +612,16 @@ describe Ci::Runner do
   end
 
   describe '.assignable_for' do
-    let(:runner) { create(:ci_runner, :project, projects: [project]) }
     let(:project) { create(:project) }
+    let(:group) { create(:group) }
     let(:another_project) { create(:project) }
+    let!(:unlocked_project_runner) { create(:ci_runner, :project, projects: [project]) }
+    let!(:locked_project_runner) { create(:ci_runner, :project, locked: true, projects: [project]) }
+    let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
+    let!(:instance_runner) { create(:ci_runner, :instance) }
 
-    context 'with shared runners' do
-      let(:runner) { create(:ci_runner, :instance) }
-
-      context 'does not give owned runner' do
-        subject { described_class.assignable_for(project) }
-
-        it { is_expected.to be_empty }
-      end
-
-      context 'does not give shared runner' do
-        subject { described_class.assignable_for(another_project) }
-
-        it { is_expected.to be_empty }
-      end
-    end
-
-    context 'with unlocked runner' do
-      context 'does not give owned runner' do
-        subject { described_class.assignable_for(project) }
-
-        it { is_expected.to be_empty }
-      end
+    context 'with already assigned project' do
+      subject { described_class.assignable_for(project) }
 
       it { is_expected.to be_empty }
     end
