@@ -182,10 +182,8 @@ describe('Pipelines Table Row', () => {
       expect(component.isRetrying).toEqual(true);
     });
 
-    // TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-    // eslint-disable-next-line jasmine/no-disabled-tests
-    xit('emits `openConfirmationModal` event when cancel button is clicked and toggles loading', () => {
-      eventHub.$on('openConfirmationModal', data => {
+    it('emits `openConfirmationModal` event when cancel button is clicked and toggles loading', () => {
+      eventHub.$once('openConfirmationModal', data => {
         expect(data.endpoint).toEqual('/cancel');
         expect(data.pipelineId).toEqual(pipeline.id);
       });

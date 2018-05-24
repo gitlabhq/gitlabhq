@@ -40,7 +40,7 @@ describe('Pipelines Async Button', () => {
 
   describe('With confirm dialog', () => {
     it('should call the service when confimation is positive', () => {
-      eventHub.$on('openConfirmationModal', (data) => {
+      eventHub.$once('openConfirmationModal', data => {
         expect(data.pipelineId).toEqual(123);
         expect(data.type).toEqual('explode');
       });
