@@ -306,7 +306,10 @@ module.exports = {
     host: DEV_SERVER_HOST,
     port: DEV_SERVER_PORT,
     disableHostCheck: true,
-    headers: { 'Access-Control-Allow-Origin': '*' },
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': '*',
+    },
     stats: 'errors-only',
     hot: DEV_SERVER_LIVERELOAD,
     inline: DEV_SERVER_LIVERELOAD,
