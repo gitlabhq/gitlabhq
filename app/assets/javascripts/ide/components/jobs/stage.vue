@@ -3,12 +3,14 @@ import { mapActions } from 'vuex';
 import Icon from '../../../vue_shared/components/icon.vue';
 import CiIcon from '../../../vue_shared/components/ci_icon.vue';
 import LoadingIcon from '../../../vue_shared/components/loading_icon.vue';
+import Item from './item.vue';
 
 export default {
   components: {
     Icon,
     CiIcon,
     LoadingIcon,
+    Item,
   },
   props: {
     stage: {
@@ -62,17 +64,11 @@ export default {
         v-if="stage.isLoading && !stage.jobs.length"
       />
       <template v-else>
-        <div
+        <item
           v-for="job in stage.jobs"
           :key="job.id"
-        >
-          <ci-icon :status="job.status" />
-          {{ job.name }}
-          <a
-            :href="job.build_path"
-            target="_blank"
-          >#{{ job.id }}</a>
-        </div>
+          :job="job"
+        />
       </template>
     </div>
   </div>
