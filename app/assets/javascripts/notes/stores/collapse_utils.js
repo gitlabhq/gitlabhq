@@ -2,13 +2,21 @@ import { n__, s__, sprintf } from '~/locale';
 import { DESCRIPTION_TYPE } from '../constants';
 
 export const changeDescriptionNote = (note, descriptionChangedTimes, timeDifferenceMinutes) => {
-  const descriptionNote = note;
+  const descriptionNote = Object.assign({}, note);
 
-  descriptionNote.note_html = sprintf(s__(`MergeRequest|
-  <p dir="auto">changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}</p>`), {
-    descriptionChangedTimes,
-    timeDifferenceMinutes: n__('within %d minute, ', 'within %d minutes, ', timeDifferenceMinutes),
-  }, false);
+  descriptionNote.note_html = sprintf(
+    s__(`MergeRequest|
+  <p dir="auto">changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}</p>`),
+    {
+      descriptionChangedTimes,
+      timeDifferenceMinutes: n__(
+        'within %d minute, ',
+        'within %d minutes, ',
+        timeDifferenceMinutes,
+      ),
+    },
+    false,
+  );
 
   descriptionNote.times_updated = descriptionChangedTimes;
 
@@ -27,72 +35,75 @@ export const getTimeDifferenceMinutes = (noteBeggining, noteEnd) => {
 
 export const isSystemNote = note => note.system && note.note === DESCRIPTION_TYPE;
 
-export const collapseSystemNotes = (notes) => {
+export const collapseSystemNotes = notes => {
+  let lastValidSystemNoteIndex = -1;
+  let previousSystemNote = null;
   let descriptionChangedTimes = 1;
-  let descriptionNote = null;
-  let descriptionNoteIndex = -1;
-  let noteCounter = 0;
-  let lastValidTimeNote = {};
   let timeDifferenceMinutes = 0;
-  const collapsedNotes = [];
+  let lastValidTimeNote = null;
 
-  notes.forEach((note) => {
-    const currentNote = note.notes[0];
-
-    if (isSystemNote(currentNote) && !descriptionNote) {
-      descriptionNote = currentNote;
-      descriptionNoteIndex = noteCounter;
-      collapsedNotes.push(note);
-      noteCounter += 1;
-    } else if (isSystemNote(currentNote) && descriptionNote) {
-      timeDifferenceMinutes =
-        getTimeDifferenceMinutes(descriptionNote, currentNote);
+  const collapsedNotes = notes.slice(0).reduce((acc, current) => {
+    if (isSystemNote(current.notes[0]) && !previousSystemNote) {
+      previousSystemNote = current.notes[0];
+      lastValidSystemNoteIndex = acc.length;
+      acc.push(current);
+    } else if (isSystemNote(current.notes[0]) && previousSystemNote) {
+      timeDifferenceMinutes = getTimeDifferenceMinutes(previousSystemNote, current.notes[0]);
 
       if (timeDifferenceMinutes < 10) {
         descriptionChangedTimes += 1;
-        lastValidTimeNote = currentNote;
+        lastValidTimeNote = current.notes[0];
       } else if (timeDifferenceMinutes === 10) {
         if (descriptionChangedTimes > 1) {
-          descriptionNote =
-            changeDescriptionNote(descriptionNote, descriptionChangedTimes, timeDifferenceMinutes);
-
-          collapsedNotes[descriptionNoteIndex].notes[0] = descriptionNote;
+          const changedNote = changeDescriptionNote(
+            previousSystemNote,
+            descriptionChangedTimes,
+            timeDifferenceMinutes,
+          );
+          const noteInfo = acc[lastValidSystemNoteIndex];
+          noteInfo.notes[0] = changedNote;
+          acc.splice(lastValidSystemNoteIndex, 1, noteInfo);
         }
-        if (isSystemNote(currentNote)) {
-          descriptionNote = currentNote;
-          descriptionNoteIndex = noteCounter;
-          collapsedNotes.push(note);
-          noteCounter += 1;
+        if (isSystemNote(current.notes[0])) {
+          previousSystemNote = current.notes[0];
+          lastValidSystemNoteIndex = acc.length;
+          acc.push(current);
         } else {
-          descriptionNote = null;
+          previousSystemNote = null;
         }
         descriptionChangedTimes = 1;
       } else {
-        timeDifferenceMinutes =
-          getTimeDifferenceMinutes(descriptionNote, lastValidTimeNote);
+        timeDifferenceMinutes = getTimeDifferenceMinutes(previousSystemNote, lastValidTimeNote);
 
         if (descriptionChangedTimes > 1) {
-          descriptionNote =
-            changeDescriptionNote(descriptionNote, descriptionChangedTimes, timeDifferenceMinutes);
-          collapsedNotes[descriptionNoteIndex].notes[0] = descriptionNote;
+          const changedNote = changeDescriptionNote(
+            previousSystemNote,
+            descriptionChangedTimes,
+            timeDifferenceMinutes,
+          );
+          const noteInfo = acc[lastValidSystemNoteIndex];
+          noteInfo.notes[0] = changedNote;
+          acc.splice(lastValidSystemNoteIndex, 1, noteInfo);
         }
 
-        descriptionNote = currentNote;
-        descriptionNoteIndex = noteCounter;
+        previousSystemNote = current.notes[0];
+        lastValidSystemNoteIndex = acc.length;
         descriptionChangedTimes = 1;
-        collapsedNotes.push(note);
-        noteCounter += 1;
+        acc.push(current);
       }
     } else {
-      collapsedNotes.push(note);
-      noteCounter += 1;
+      acc.push(current);
     }
-  });
+    return acc;
+  }, []);
 
-  if (descriptionNote && descriptionNoteIndex !== -1 && descriptionChangedTimes > 1) {
-    descriptionNote =
-      changeDescriptionNote(descriptionNote, descriptionChangedTimes, timeDifferenceMinutes);
-    collapsedNotes[descriptionNoteIndex].notes[0] = descriptionNote;
+  if (previousSystemNote && lastValidSystemNoteIndex !== -1 && descriptionChangedTimes > 1) {
+    previousSystemNote = changeDescriptionNote(
+      previousSystemNote,
+      descriptionChangedTimes,
+      timeDifferenceMinutes,
+    );
+    collapsedNotes[lastValidSystemNoteIndex].notes[0] = previousSystemNote;
   }
 
   return collapsedNotes;
