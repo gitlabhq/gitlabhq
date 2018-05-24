@@ -21,7 +21,7 @@ class Projects::DiscussionsController < Projects::ApplicationController
 
   def show
     render json: {
-      discussion_html: view_to_html_string('discussions/_diff_with_notes', discussion: discussion, expanded: true)
+      truncated_diff_lines: discussion.truncated_diff_lines
     }
   end
 

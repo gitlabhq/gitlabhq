@@ -101,13 +101,12 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         end
 
         describe 'timeline view' do
-          # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-          xit 'hides when resolve discussion is clicked' do
-            expect(page).to have_selector('.discussion-body', visible: false)
+          it 'hides when resolve discussion is clicked' do
+            expect(page).to have_selector('.discussion-header')
+            expect(page).not_to have_selector('.discussion-body')
           end
 
-          # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-          xit 'shows resolved discussion when toggled' do
+          it 'shows resolved discussion when toggled' do
             find(".timeline-content .discussion[data-discussion-id='#{note.discussion_id}'] .discussion-toggle-button").click
 
             expect(page.find(".line-holder-placeholder")).to be_visible
@@ -130,9 +129,8 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
             page.find('#parallel-diff-btn').click
           end
 
-          # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-          xit 'hides when resolve discussion is clicked' do
-            expect(page).to have_selector('.diffs .diff-file .notes_holder', visible: false)
+          it 'hides when resolve discussion is clicked' do
+            expect(page).not_to have_selector('.diffs .diff-file .notes_holder')
           end
 
           it 'shows resolved discussion when toggled' do
@@ -228,7 +226,6 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         expect(page).to have_content("Resolved by #{user.name}")
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
       xit 'hides jump to next discussion button' do
         page.within '.discussion-reply-holder' do
           expect(page).not_to have_selector('.discussion-next-btn')
@@ -242,8 +239,7 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         visit_merge_request
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'does not mark discussion as resolved when resolving single note' do
+      it 'does not mark discussion as resolved when resolving single note' do
         page.within("#note_#{note.id}") do
           first('.line-resolve-btn').click
 
