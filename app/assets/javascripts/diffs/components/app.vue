@@ -45,9 +45,9 @@ export default {
       isLoading: state => state.diffs.isLoading,
       diffFiles: state => state.diffs.diffFiles,
       diffViewType: state => state.diffs.diffViewType,
-      comparableDiffs: state => state.diffs.comparableDiffs,
       mergeRequestDiffs: state => state.diffs.mergeRequestDiffs,
       mergeRequestDiff: state => state.diffs.mergeRequestDiff,
+      latestVersionPath: state => state.diffs.latestVersionPath,
       startVersion: state => state.diffs.startVersion,
       commit: state => state.diffs.commit,
       targetBranchName: state => state.diffs.targetBranchName,
@@ -70,11 +70,11 @@ export default {
         return __('Only comments from the following commit are shown below');
       } else if (this.startVersion) {
         return __(
-          'Not all comments are displayed because you\'re comparing two versions of the diff.',
+          "Not all comments are displayed because you're comparing two versions of the diff.",
         );
       }
       return __(
-        'Not all comments are displayed because you\'re viewing an old version of the diff.',
+        "Not all comments are displayed because you're viewing an old version of the diff.",
       );
     },
     showLatestVersion() {
@@ -82,9 +82,6 @@ export default {
         return __('Show latest version of the diff');
       }
       return __('Show latest version');
-    },
-    latestDiffHref() {
-      return this.mergeRequestDiffs[0].path;
     },
   },
   watch: {
@@ -140,7 +137,6 @@ export default {
       <compare-versions
         v-if="!commit && mergeRequestDiffs.length > 1"
         :merge-request-diffs="mergeRequestDiffs"
-        :comparable-diffs="comparableDiffs"
         :merge-request-diff="mergeRequestDiff"
         :start-version="startVersion"
         :target-branch="targetBranch"
@@ -163,7 +159,7 @@ export default {
           {{ notAllCommentsDisplayed }}
           <div class="pull-right">
             <a
-              :href="latestDiffHref"
+              :href="latestVersionPath"
               class="btn btn-sm"
             >
               {{ showLatestVersion }}
@@ -172,14 +168,15 @@ export default {
         </div>
       </div>
 
+      <changed-files
+        :diff-files="diffFiles"
+        :active-file="activeFile"
+      />
+
       <div
         v-if="diffFiles.length > 0"
         class="files"
       >
-        <changed-files
-          :diff-files="diffFiles"
-          :active-file="activeFile"
-        />
         <diff-file
           v-for="file in diffFiles"
           :key="file.newPath"

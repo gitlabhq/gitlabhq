@@ -94,7 +94,8 @@ export default {
     discussion() {
       return {
         ...this.note.notes[0],
-        truncatedDiffLines: this.note.truncated_diff_lines,
+        truncatedDiffLines: this.note.truncated_diff_lines || [],
+        truncatedDiffLinesPath: this.note.truncated_diff_lines_path,
         diffFile: this.note.diff_file,
         diffDiscussion: this.note.diff_discussion,
         imageDiffHtml: this.note.image_diff_html,

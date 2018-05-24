@@ -33,7 +33,6 @@ export function getNoteFormData(params) {
     linePosition,
   } = params;
 
-  // TODO: Discuss with @felipe_arthur to remove this JSON.stringify
   const position = JSON.stringify({
     base_sha: diffFile.diffRefs.baseSha,
     start_sha: diffFile.diffRefs.startSha,
@@ -45,7 +44,6 @@ export function getNoteFormData(params) {
     new_line: noteTargetLine.newLine,
   });
 
-  // TODO: @fatihacet - Double check empty strings
   const postData = {
     view: diffViewType,
     line_type: linePosition === LINE_POSITION_RIGHT ? NEW_LINE_TYPE : OLD_LINE_TYPE,

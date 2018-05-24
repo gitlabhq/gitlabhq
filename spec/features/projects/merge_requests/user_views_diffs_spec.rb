@@ -41,6 +41,14 @@ describe 'User views diffs', :js do
       expect(page).to have_css('.parallel')
     end
 
+    it 'toggles container class' do
+      expect(page).not_to have_css('.content-wrapper > .container-fluid.container-limited')
+
+      click_link 'Commits'
+
+      expect(page).to have_css('.content-wrapper > .container-fluid.container-limited')
+    end
+
     include_examples 'unfold diffs'
   end
 end

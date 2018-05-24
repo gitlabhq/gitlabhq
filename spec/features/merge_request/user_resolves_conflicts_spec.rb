@@ -27,7 +27,7 @@ describe 'Merge request > User resolves conflicts', :js do
         end
       end
 
-      find_button('Commit conflict resolution').send_keys(:return)
+      find_button('Commit to source branch').send_keys(:return)
 
       expect(page).to have_content('All merge conflicts were resolved')
       merge_request.reload_diff
@@ -73,7 +73,7 @@ describe 'Merge request > User resolves conflicts', :js do
         execute_script('ace.edit($(".files-wrapper .diff-file pre")[1]).setValue("Gregor Samsa woke from troubled dreams");')
       end
 
-      find_button('Commit conflict resolution').send_keys(:return)
+      find_button('Commit to source branch').send_keys(:return)
 
       expect(page).to have_content('All merge conflicts were resolved')
       merge_request.reload_diff
@@ -156,7 +156,7 @@ describe 'Merge request > User resolves conflicts', :js do
           execute_script('ace.edit($(".files-wrapper .diff-file pre")[0]).setValue("Gregor Samsa woke from troubled dreams");')
         end
 
-        click_button 'Commit conflict resolution'
+        click_button 'Commit to source branch'
 
         expect(page).to have_content('All merge conflicts were resolved')
 

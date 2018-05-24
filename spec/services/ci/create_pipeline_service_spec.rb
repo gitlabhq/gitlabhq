@@ -395,7 +395,27 @@ describe Ci::CreatePipelineService do
         result = execute_service
 
         expect(result).to be_persisted
-        expect(Environment.find_by(name: "review/master")).not_to be_nil
+        expect(Environment.find_by(name: "review/master")).to be_present
+      end
+    end
+
+    context 'with environment name including persisted variables' do
+      before do
+        config = YAML.dump(
+          deploy: {
+            environment: { name: "review/id1$CI_PIPELINE_ID/id2$CI_BUILD_ID" },
+            script: 'ls'
+          }
+        )
+
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      it 'skipps persisted variables in environment name' do
+        result = execute_service
+
+        expect(result).to be_persisted
+        expect(Environment.find_by(name: "review/id1/id2")).to be_present
       end
     end
 

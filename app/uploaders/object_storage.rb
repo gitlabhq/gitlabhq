@@ -103,6 +103,7 @@ module ObjectStorage
     end
 
     included do
+      include AfterCommitQueue
       after_save on: [:create, :update] do
         background_upload(changed_mounts)
       end

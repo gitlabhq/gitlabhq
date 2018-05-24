@@ -120,7 +120,7 @@ To disable the monitoring of Kubernetes:
 
 ## GitLab Prometheus metrics
 
-> Introduced as an experimental feature in GitLab 9.3.
+> Introduced in GitLab 9.3.
 
 GitLab monitors its own internal service metrics, and makes them available at the `/-/metrics` endpoint. Unlike other exporters, this endpoint requires authentication as it is available on the same URL and port as user traffic.
 

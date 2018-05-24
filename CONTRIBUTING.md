@@ -168,7 +168,7 @@ hits. They are not always necessary, but very convenient.
 
 If you are an expert in a particular area, it makes it easier to find issues to
 work on. You can also subscribe to those labels to receive an email each time an
-issue is labelled with a subject label corresponding to your expertise.
+issue is labeled with a subject label corresponding to your expertise.
 
 Examples of subject labels are ~wiki, ~"container registry", ~ldap, ~api,
 ~issues, ~"merge requests", ~labels, and ~"container registry".
@@ -296,7 +296,24 @@ any potential community contributor to @-mention per above.
 
 ## Implement design & UI elements
 
-Please see the [UX Guide for GitLab].
+For guidance on UX implementation at GitLab, please refer to our [Design System](https://design.gitlab.com/).
+
+The UX team uses labels to manage their workflow.
+
+The  ~"UX" label on an issue is a signal to the UX team that it will need UX attention. 
+To better understand the priority by which UX tackles issues, see the [UX section](https://about.gitlab.com/handbook/ux/) of the handbook.
+
+Once an issue has been worked on and is ready for development, a UXer applies the ~"UX ready" label to that issue.
+
+The UX team has a special type label called ~"design artifact". This label indicates that the final output 
+for an issue is a UX solution/design. The solution will be developed by frontend and/or backend in a subsequent milestone. 
+Any issue labeled ~"design artifact" should not also be labeled ~"frontend" or ~"backend" since no development is 
+needed until the solution has been decided.
+
+~"design artifact" issues are like any other issue and should contain a milestone label, ~"Deliverable" or ~"Stretch", when scheduled in the current milestone.
+
+Once the ~"design artifact" issue has been completed, the UXer removes the ~"design artifact" label and applies the ~"UX ready" label. The Product Manager can use the 
+existing issue or decide to create a whole new issue for the purpose of development. 
 
 ## Issue tracker
 

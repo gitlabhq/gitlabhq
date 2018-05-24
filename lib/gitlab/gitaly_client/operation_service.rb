@@ -40,7 +40,7 @@ module Gitlab
           raise Gitlab::Git::Repository::TagExistsError
         end
 
-        Util.gitlab_tag_from_gitaly_tag(@repository, response.tag)
+        Gitlab::Git::Tag.new(@repository, response.tag)
       rescue GRPC::FailedPrecondition => e
         raise Gitlab::Git::Repository::InvalidRef, e
       end

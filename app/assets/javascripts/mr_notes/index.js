@@ -1,8 +1,7 @@
 import Vue from 'vue';
 import { mapActions, mapState } from 'vuex';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import initDiffsApp from '../diffs';
 import notesApp from '../notes/components/notes_app.vue';
-import diffsApp from '../diffs/components/app.vue';
 import discussionCounter from '../notes/components/discussion_counter.vue';
 import store from './stores';
 import MergeRequest from '../merge_request';
@@ -74,37 +73,5 @@ export default function initMrNotes() {
     },
   });
 
-  // eslint-disable-next-line no-new
-  new Vue({
-    el: '#js-diffs-app',
-    name: 'DiffsApp',
-    components: {
-      diffsApp,
-    },
-    store,
-    data() {
-      const { dataset } = document.querySelector(this.$options.el);
-
-      return {
-        endpoint: dataset.endpoint,
-        currentUser: convertObjectPropsToCamelCase(JSON.parse(dataset.currentUserData), {
-          deep: true,
-        }),
-      };
-    },
-    computed: {
-      ...mapState({
-        activeTab: state => state.page.activeTab,
-      }),
-    },
-    render(createElement) {
-      return createElement('diffs-app', {
-        props: {
-          endpoint: this.endpoint,
-          currentUser: this.currentUser,
-          shouldShow: this.activeTab === 'diffs',
-        },
-      });
-    },
-  });
+  initDiffsApp(store);
 }

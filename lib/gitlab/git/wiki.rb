@@ -131,7 +131,7 @@ module Gitlab
       def page_formatted_data(title:, dir: nil, version: nil)
         version = version&.id
 
-        @repository.gitaly_migrate(:wiki_page_formatted_data) do |is_enabled|
+        @repository.gitaly_migrate(:wiki_page_formatted_data, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_wiki_client.get_formatted_data(title: title, dir: dir, version: version)
           else

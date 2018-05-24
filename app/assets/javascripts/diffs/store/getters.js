@@ -10,4 +10,7 @@ export default {
   areAllFilesCollapsed(state) {
     return state.diffFiles.every(file => file.collapsed);
   },
+  commit(state) {
+    return state.commit;
+  },
 };

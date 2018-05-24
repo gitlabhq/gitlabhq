@@ -1,5 +1,4 @@
 /* eslint-disable no-var, comma-dangle, object-shorthand */
-
 import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
@@ -7,14 +6,11 @@ import MergeRequestTabs from '~/merge_request_tabs';
 import '~/commit/pipelines/pipelines_bundle';
 import '~/breakpoints';
 import '~/lib/utils/common_utils';
-import Diff from '~/diff';
-import Notes from '~/notes';
 import 'vendor/jquery.scrollTo';
 import initMrPage from './helpers/init_vue_mr_page_helper';
 
-// TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-// eslint-disable-next-line jasmine/no-disabled-tests
-xdescribe('MergeRequestTabs', function() {
+describe('MergeRequestTabs', function() {
+  let mrPageMock;
   var stubLocation = {};
   var setLocation = function(stubs) {
     var defaults = {
@@ -25,18 +21,13 @@ xdescribe('MergeRequestTabs', function() {
     $.extend(stubLocation, defaults, stubs || {});
   };
 
-  const inlineChangesTabJsonFixture = 'merge_request_diffs/inline_changes_tab_with_comments.json';
-  const parallelChangesTabJsonFixture =
-    'merge_request_diffs/parallel_changes_tab_with_comments.json';
   preloadFixtures(
     'merge_requests/merge_request_with_task_list.html.raw',
     'merge_requests/diff_comment.html.raw',
-    inlineChangesTabJsonFixture,
-    parallelChangesTabJsonFixture,
   );
 
   beforeEach(function() {
-    initMrPage();
+    mrPageMock = initMrPage();
     this.class = new MergeRequestTabs({ stubLocation: stubLocation });
     setLocation();
 
@@ -48,33 +39,7 @@ xdescribe('MergeRequestTabs', function() {
   afterEach(function() {
     this.class.unbindEvents();
     this.class.destroyPipelinesView();
-  });
-
-  describe('activateTab', function() {
-    beforeEach(function() {
-      loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
-      this.subject = this.class.activateTab;
-    });
-
-    it('shows the notes tab when action is show', function() {
-      this.subject('show');
-
-      expect($('#notes')).toHaveClass('active');
-    });
-
-    it('shows the commits tab when action is commits', function() {
-      this.subject('commits');
-
-      expect($('#commits')).toHaveClass('active');
-    });
-
-    it('shows the diffs tab when action is diffs', function(done) {
-      this.subject('diffs');
-      setTimeout(() => {
-        expect($('#diffs')).toHaveClass('active');
-        done();
-      });
-    });
+    mrPageMock.restore();
   });
 
   describe('opensInNewTab', function() {
@@ -85,8 +50,6 @@ xdescribe('MergeRequestTabs', function() {
       loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
 
       tabUrl = $('.commits-tab a').attr('href');
-
-      spyOn($.fn, 'attr').and.returnValue(tabUrl);
     });
 
     describe('meta click', () => {
@@ -160,9 +123,16 @@ xdescribe('MergeRequestTabs', function() {
   });
 
   describe('setCurrentAction', function() {
+    let mock;
+
     beforeEach(function() {
-      spyOn(axios, 'get').and.returnValue(Promise.resolve({ data: {} }));
+      mock = new MockAdapter(axios);
+      mock.onAny().reply({ data: {} });
       this.subject = this.class.setCurrentAction;
+    });
+
+    afterEach(() => {
+      mock.restore();
     });
 
     it('changes from commits', function() {
@@ -233,258 +203,6 @@ xdescribe('MergeRequestTabs', function() {
       });
 
       expect(this.subject('show')).toBe('/foo/bar/merge_requests/1');
-    });
-  });
-
-  describe('tabShown', () => {
-    let mock;
-
-    beforeEach(function() {
-      mock = new MockAdapter(axios);
-      mock.onGet(/(.*)\/diffs\.json/).reply(200, {
-        data: { html: '' },
-      });
-
-      loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
-    });
-
-    afterEach(() => {
-      mock.restore();
-    });
-
-    describe('with "Side-by-side"/parallel diff view', () => {
-      beforeEach(function() {
-        this.class.diffViewType = () => 'parallel';
-        Diff.prototype.diffViewType = () => 'parallel';
-      });
-
-      it('maintains `container-limited` for pipelines tab', function(done) {
-        const asyncClick = function(selector) {
-          return new Promise(resolve => {
-            setTimeout(() => {
-              document.querySelector(selector).click();
-              resolve();
-            });
-          });
-        };
-        asyncClick('.merge-request-tabs .pipelines-tab a')
-          .then(() => asyncClick('.merge-request-tabs .diffs-tab a'))
-          .then(() => asyncClick('.merge-request-tabs .pipelines-tab a'))
-          .then(() => {
-            const hasContainerLimitedClass = document
-              .querySelector('.content-wrapper .container-fluid')
-              .classList.contains('container-limited');
-            expect(hasContainerLimitedClass).toBe(true);
-          })
-          .then(done)
-          .catch(err => {
-            done.fail(`Something went wrong clicking MR tabs: ${err.message}\n${err.stack}`);
-          });
-      });
-
-      it('maintains `container-limited` when switching from "Changes" tab before it loads', function(done) {
-        const asyncClick = function(selector) {
-          return new Promise(resolve => {
-            setTimeout(() => {
-              document.querySelector(selector).click();
-              resolve();
-            });
-          });
-        };
-
-        asyncClick('.merge-request-tabs .diffs-tab a')
-          .then(() => asyncClick('.merge-request-tabs .notes-tab a'))
-          .then(() => {
-            const hasContainerLimitedClass = document
-              .querySelector('.content-wrapper .container-fluid')
-              .classList.contains('container-limited');
-
-            expect(hasContainerLimitedClass).toBe(true);
-          })
-          .then(done)
-          .catch(err => {
-            done.fail(`Something went wrong clicking MR tabs: ${err.message}\n${err.stack}`);
-          });
-      });
-    });
-  });
-
-  describe('loadDiff', function() {
-    beforeEach(() => {
-      loadFixtures('merge_requests/diff_comment.html.raw');
-      $('body').attr('data-page', 'projects:merge_requests:show');
-      window.gl.ImageFile = () => {};
-      Notes.initialize('', []);
-      spyOn(Notes.instance, 'toggleDiffNote').and.callThrough();
-    });
-
-    afterEach(() => {
-      delete window.gl.ImageFile;
-      delete window.notes;
-
-      // Undo what we did to the shared <body>
-      $('body').removeAttr('data-page');
-    });
-
-    it('triggers Ajax request to JSON endpoint', function(done) {
-      const url = '/foo/bar/merge_requests/1/diffs';
-
-      spyOn(axios, 'get').and.callFake(reqUrl => {
-        expect(reqUrl).toBe(`${url}.json`);
-
-        done();
-
-        return Promise.resolve({ data: {} });
-      });
-
-      this.class.loadDiff(url);
-    });
-
-    it('triggers scroll event when diff already loaded', function(done) {
-      spyOn(axios, 'get').and.callFake(done.fail);
-      spyOn(document, 'dispatchEvent');
-
-      this.class.diffsLoaded = true;
-      this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
-
-      expect(document.dispatchEvent).toHaveBeenCalledWith(new CustomEvent('scroll'));
-      done();
-    });
-
-    describe('with inline diff', () => {
-      let noteId;
-      let noteLineNumId;
-      let mock;
-
-      beforeEach(() => {
-        const diffsResponse = getJSONFixture(inlineChangesTabJsonFixture);
-
-        const $html = $(diffsResponse.html);
-        noteId = $html.find('.note').attr('id');
-        noteLineNumId = $html
-          .find('.note')
-          .closest('.notes_holder')
-          .prev('.line_holder')
-          .find('a[data-linenumber]')
-          .attr('href')
-          .replace('#', '');
-
-        mock = new MockAdapter(axios);
-        mock.onGet(/(.*)\/diffs\.json/).reply(200, diffsResponse);
-      });
-
-      afterEach(() => {
-        mock.restore();
-      });
-
-      describe('with note fragment hash', () => {
-        it('should expand and scroll to linked fragment hash #note_xxx', function(done) {
-          spyOnDependency(MergeRequestTabs, 'getLocationHash').and.returnValue(noteId);
-          this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
-
-          setTimeout(() => {
-            expect(noteId.length).toBeGreaterThan(0);
-            expect(Notes.instance.toggleDiffNote).toHaveBeenCalledWith({
-              target: jasmine.any(Object),
-              lineType: 'old',
-              forceShow: true,
-            });
-
-            done();
-          });
-        });
-
-        it('should gracefully ignore non-existant fragment hash', function(done) {
-          spyOnDependency(MergeRequestTabs, 'getLocationHash').and.returnValue(
-            'note_something-that-does-not-exist',
-          );
-          this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
-
-          setTimeout(() => {
-            expect(Notes.instance.toggleDiffNote).not.toHaveBeenCalled();
-
-            done();
-          });
-        });
-      });
-
-      describe('with line number fragment hash', () => {
-        it('should gracefully ignore line number fragment hash', function() {
-          spyOnDependency(MergeRequestTabs, 'getLocationHash').and.returnValue(noteLineNumId);
-          this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
-
-          expect(noteLineNumId.length).toBeGreaterThan(0);
-          expect(Notes.instance.toggleDiffNote).not.toHaveBeenCalled();
-        });
-      });
-    });
-
-    describe('with parallel diff', () => {
-      let noteId;
-      let noteLineNumId;
-      let mock;
-
-      beforeEach(() => {
-        const diffsResponse = getJSONFixture(parallelChangesTabJsonFixture);
-
-        const $html = $(diffsResponse.html);
-        noteId = $html.find('.note').attr('id');
-        noteLineNumId = $html
-          .find('.note')
-          .closest('.notes_holder')
-          .prev('.line_holder')
-          .find('a[data-linenumber]')
-          .attr('href')
-          .replace('#', '');
-
-        mock = new MockAdapter(axios);
-        mock.onGet(/(.*)\/diffs\.json/).reply(200, diffsResponse);
-      });
-
-      afterEach(() => {
-        mock.restore();
-      });
-
-      describe('with note fragment hash', () => {
-        it('should expand and scroll to linked fragment hash #note_xxx', function(done) {
-          spyOnDependency(MergeRequestTabs, 'getLocationHash').and.returnValue(noteId);
-
-          this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
-
-          setTimeout(() => {
-            expect(noteId.length).toBeGreaterThan(0);
-            expect(Notes.instance.toggleDiffNote).toHaveBeenCalledWith({
-              target: jasmine.any(Object),
-              lineType: 'new',
-              forceShow: true,
-            });
-
-            done();
-          });
-        });
-
-        it('should gracefully ignore non-existant fragment hash', function(done) {
-          spyOnDependency(MergeRequestTabs, 'getLocationHash').and.returnValue(
-            'note_something-that-does-not-exist',
-          );
-          this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
-
-          setTimeout(() => {
-            expect(Notes.instance.toggleDiffNote).not.toHaveBeenCalled();
-            done();
-          });
-        });
-      });
-
-      describe('with line number fragment hash', () => {
-        it('should gracefully ignore line number fragment hash', function() {
-          spyOnDependency(MergeRequestTabs, 'getLocationHash').and.returnValue(noteLineNumId);
-          this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
-
-          expect(noteLineNumId.length).toBeGreaterThan(0);
-          expect(Notes.instance.toggleDiffNote).not.toHaveBeenCalled();
-        });
-      });
     });
   });
 

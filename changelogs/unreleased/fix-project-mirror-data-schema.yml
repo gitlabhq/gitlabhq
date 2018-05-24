@@ -1,6 +1,0 @@
----
-title: Fixes database inconsistencies between Community and Enterprise Edition on
-  import state
-merge_request: 18811
-author:
-type: fixed

@@ -738,13 +738,16 @@ describe API::Groups do
   describe "DELETE /groups/:id" do
     context "when authenticated as user" do
       it "removes group" do
-        delete api("/groups/#{group1.id}", user1)
+        Sidekiq::Testing.fake! do
+          expect { delete api("/groups/#{group1.id}", user1) }.to change(GroupDestroyWorker.jobs, :size).by(1)
+        end
 
-        expect(response).to have_gitlab_http_status(204)
+        expect(response).to have_gitlab_http_status(202)
       end
 
       it_behaves_like '412 response' do
         let(:request) { api("/groups/#{group1.id}", user1) }
+        let(:success_status) { 202 }
       end
 
       it "does not remove a group if not an owner" do
@@ -773,7 +776,7 @@ describe API::Groups do
       it "removes any existing group" do
         delete api("/groups/#{group2.id}", admin)
 
-        expect(response).to have_gitlab_http_status(204)
+        expect(response).to have_gitlab_http_status(202)
       end
 
       it "does not remove a non existing group" do
