@@ -24,7 +24,7 @@
         - if can_admin_label
           %h5{ class: ('hide' if hide) } Labels
         %ul.content-list.manage-labels-list.js-other-labels
-          = render partial: 'shared/label', subject: @group, collection: @labels, as: :label
+          = render partial: 'shared/label', subject: @group, collection: @labels, as: :label, locals: { use_label_priority: true }
           = paginate @labels, theme: 'gitlab'
 - else
   = render 'shared/empty_states/labels'

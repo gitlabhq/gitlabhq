@@ -1,4 +1,5 @@
 - subject = local_assigns[:subject]
+- force_priority = local_assigns.fetch(:force_priority, false)
 - show_label_issues_link = show_label_issuables_link?(label, :issues, project: @project)
 - show_label_merge_requests_link = show_label_issuables_link?(label, :merge_requests, project: @project)
 
@@ -17,6 +18,6 @@
         &middot;
         %li.label-link-item.inline
           = link_to_label(label, subject: subject, type: :merge_request) { _('Merge requests') }
-      - if label.priority?
+      - if force_priority
         %li.label-link-item.js-priority-badge.inline.prepend-left-10
           .label-badge.label-badge-blue= _('Prioritized label')

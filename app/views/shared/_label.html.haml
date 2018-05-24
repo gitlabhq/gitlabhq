@@ -1,13 +1,15 @@
 - label_css_id = dom_id(label)
 - status = label_subscription_status(label, @project).inquiry if current_user
 - subject = local_assigns[:subject]
+- use_label_priority = local_assigns.fetch(:use_label_priority, false)
+- force_priority = local_assigns.fetch(:force_priority, use_label_priority ? label.priority? : false)
 - toggle_subscription_path = toggle_subscription_label_path(label, @project) if current_user
 - show_label_merge_requests_link = show_label_issuables_link?(label, :merge_requests, project: @project)
 - show_label_issues_link = show_label_issuables_link?(label, :issues, project: @project)
 - tooltip_title = "#{status.unsubscribed? ? 'Subscribe' : 'Unsubscribe'} at #{label.is_a?(ProjectLabel) ? 'project' : 'group'} level"
 
 %li.label-list-item{ id: label_css_id, data: { id: label.id } }
-  = render "shared/label_row", label: label, subject: subject
+  = render "shared/label_row", label: label, subject: subject, force_priority: force_priority
   %ul.label-actions-list
     - if controller.is_a?(Projects::LabelsController)
       %li.inline
