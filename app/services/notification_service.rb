@@ -525,6 +525,7 @@ class NotificationService
     end
   end
 
+<<<<<<< HEAD
   def approve_mr_email(merge_request, project, current_user)
     recipients = NotificationRecipientService.build_recipients(merge_request, current_user, action: 'approve')
 
@@ -549,6 +550,8 @@ class NotificationService
     end
   end
 
+=======
+>>>>>>> upstream/master
   def mailer
     Notify
   end

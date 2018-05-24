@@ -104,6 +104,7 @@ class TodoService
     merge_request.merge_participants.each do |user|
       create_build_failed_todo(merge_request, user)
     end
+<<<<<<< HEAD
   end
 
   # When new approvers are added for a merge request:
@@ -112,6 +113,8 @@ class TodoService
   #
   def add_merge_request_approvers(merge_request, approvers)
     create_approval_required_todos(merge_request, approvers, merge_request.author)
+=======
+>>>>>>> upstream/master
   end
 
   # When a new commit is pushed to a merge request we should:
