@@ -27,8 +27,9 @@ module Ci
 
     ##
     # File location of the file
-    # legacy_path: File.join(model.created_at.utc.strftime('%Y_%m'), model.project_id.to_s, model.id.to_s)
-    # hashed_path: File.join(disk_hash[0..1], disk_hash[2..3], disk_hash, creation_date, model.job_id.to_s, model.id.to_s)
+    # hashed_path: `File.join(disk_hash[0..1], disk_hash[2..3], disk_hash, creation_date, model.job_id.to_s, model.id.to_s)`
+    #              `disk_hash` is `Digest::SHA2.hexdigest(model.project_id.to_s)`
+    # legacy_path: `File.join(model.created_at.utc.strftime('%Y_%m'), model.project_id.to_s, model.id.to_s)`
     enum file_location: {
       hashed_path: nil,
       legacy_path: 1
