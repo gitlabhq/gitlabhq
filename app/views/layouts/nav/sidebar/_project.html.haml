@@ -89,7 +89,7 @@
               = _('Issues')
             - if @project.issues_enabled?
               %span.badge.badge-pill.count.issue_counter
-                = number_with_delimiter(@project.open_issues_count)
+                = number_with_delimiter(@project.open_issues_count(current_user))
 
           %ul.sidebar-sub-level-items
             = nav_link(controller: :issues, html_options: { class: "fly-out-top-item" } ) do
@@ -98,7 +98,7 @@
                   = _('Issues')
                 - if @project.issues_enabled?
                   %span.badge.badge-pill.count.issue_counter.fly-out-badge
-                    = number_with_delimiter(@project.open_issues_count)
+                    = number_with_delimiter(@project.open_issues_count(current_user))
             %li.divider.fly-out-top-item
             = nav_link(controller: :issues, action: :index) do
               = link_to project_issues_path(@project), title: 'Issues' do

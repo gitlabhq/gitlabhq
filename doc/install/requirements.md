@@ -27,8 +27,8 @@ Please see the [installation from source guide](installation.md) and the [instal
 
 ### Non-Unix operating systems such as Windows
 
-GitLab is developed for Unix operating systems.
-GitLab does **not** run on Windows and we have no plans of supporting it in the near future.
+GitLab is developed for Unix operating systems. 
+It does **not** run on Windows, and we have no plans to support it in the near future. For the latest development status view this [issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/46567).
 Please consider using a virtual machine to run GitLab.
 
 ## Ruby versions

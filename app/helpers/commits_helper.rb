@@ -63,7 +63,7 @@ module CommitsHelper
   # Returns a link formatted as a commit branch link
   def commit_branch_link(url, text)
     link_to(url, class: 'badge badge-gray ref-name branch-link') do
-      sprite_icon('fork', size: 12, css_class: 'fork-svg') + "#{text}"
+      sprite_icon('branch', size: 12, css_class: 'fork-svg') + "#{text}"
     end
   end
 
@@ -77,7 +77,7 @@ module CommitsHelper
   # Returns a link formatted as a commit tag link
   def commit_tag_link(url, text)
     link_to(url, class: 'badge badge-gray ref-name') do
-      icon('tag', class: 'append-right-5') + "#{text}"
+      sprite_icon('tag', size: 12, css_class: 'append-right-5 vertical-align-middle') + "#{text}"
     end
   end
 

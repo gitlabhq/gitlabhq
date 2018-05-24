@@ -326,4 +326,12 @@ describe Note, ResolvableNote do
       end
     end
   end
+
+  describe "#potentially_resolvable?" do
+    it 'returns false if noteable could not be found' do
+      allow(subject).to receive(:noteable).and_return(nil)
+
+      expect(subject.potentially_resolvable?).to be_falsey
+    end
+  end
 end
