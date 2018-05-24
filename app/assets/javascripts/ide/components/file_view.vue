@@ -1,14 +1,10 @@
 <script>
 import { __ } from '~/locale';
-import tooltip from '~/vue_shared/directives/tooltip';
 import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   components: {
     Icon,
-  },
-  directives: {
-    tooltip,
   },
   props: {
     file: {
@@ -20,9 +16,6 @@ export default {
     showButtons() {
       return this.file.permalink;
     },
-    rawDownloadButtonLabel() {
-      return this.file.binary ? __('Download') : __('Raw');
-    },
   },
 };
 </script>
@@ -33,15 +26,14 @@ export default {
     class="pull-right ide-btn-group"
   >
     <a
-      v-tooltip
       :href="file.permalink"
       target="_blank"
-      class="btn btn-xs btn-transparent raw"
-      rel="noopener noreferrer"
-      :title="rawDownloadButtonLabel">
+      class="vertical-align-middle"
+      rel="noopener noreferrer">
       <span>Open in file view</span>
       <icon
         name="external-link"
+        cssClasses="vertical-align-middle"
         :size="16"
       />
     </a>
