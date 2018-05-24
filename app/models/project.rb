@@ -1028,7 +1028,7 @@ class Project < ActiveRecord::Base
   end
 
   def disabled_services
-    []
+    %w[kubernetes]
   end
 
   def find_or_initialize_service(name)
