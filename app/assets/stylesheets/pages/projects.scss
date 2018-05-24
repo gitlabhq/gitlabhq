@@ -251,7 +251,7 @@
     margin: 15px 5px 0 0;
 
     input {
-      height: 29px;
+      height: 28px;
     }
   }
 
@@ -875,6 +875,7 @@ pre.light-well {
 
 .git-clone-holder {
   width: 380px;
+  height: 28px;
 
   .btn-clipboard {
     border: 1px solid $border-color;
@@ -890,7 +891,8 @@ pre.light-well {
 
   .form-control {
     @extend .monospace;
-    background: $white-light;
+    background-color: $white-light;
+    border-color: $border-color;
     font-size: 14px;
     margin-left: -1px;
     cursor: auto;
