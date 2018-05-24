@@ -1,6 +1,7 @@
 module Geo
   class EventLog < ActiveRecord::Base
     include Geo::Model
+    include ::EachBatch
 
     belongs_to :repository_created_event,
       class_name: 'Geo::RepositoryCreatedEvent',

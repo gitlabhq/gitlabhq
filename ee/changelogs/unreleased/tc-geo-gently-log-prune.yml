@@ -1,0 +1,5 @@
+---
+title: Make Geo::PruneEventLogWorker delete rows more gently
+merge_request: 5835
+author:
+type: performance

@@ -45,7 +45,8 @@ describe Geo::PruneEventLogWorker, :geo do
         it 'deletes everything from the Geo event log' do
           create_list(:geo_event_log, 2)
 
-          expect(worker).to receive(:log_info).with('No secondary nodes, delete all Geo Event Log entries')
+          expect(worker).to receive(:log_info).with('No secondary nodes, truncate the Geo Event Log table')
+          expect(ActiveRecord::Base.connection).to receive(:truncate).with('geo_event_log').and_call_original
 
           expect { worker.perform }.to change { Geo::EventLog.count }.by(-2)
         end
@@ -79,13 +80,13 @@ describe Geo::PruneEventLogWorker, :geo do
         end
 
         it 'takes the integer-minimum value of all cursor_last_event_ids' do
-          events = create_list(:geo_event_log, 12)
+          events = create_list(:geo_event_log, 5)
 
           create(:geo_node_status, :healthy, cursor_last_event_id: events[3].id, geo_node_id: secondary.id)
           create(:geo_node_status, :healthy, cursor_last_event_id: events.last.id, geo_node_id: secondary2.id)
           expect(worker).to receive(:log_info).with('Delete Geo Event Log entries up to id', geo_event_log_id: events[3].id)
 
-          expect { worker.perform }.to change { Geo::EventLog.count }.by(-3)
+          expect { worker.perform }.to change { Geo::EventLog.count }.by(-4)
         end
       end
     end
