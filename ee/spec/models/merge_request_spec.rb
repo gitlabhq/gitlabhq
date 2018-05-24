@@ -188,6 +188,23 @@ describe MergeRequest do
     end
   end
 
+  describe '#expose_code_quality_data?' do
+    context 'with code_quality data' do
+      let(:pipeline) { double(expose_code_quality_data?: true) }
+
+      before do
+        allow(subject).to receive(:head_pipeline).and_return(pipeline)
+        allow(subject).to receive(:base_pipeline).and_return(pipeline)
+      end
+
+      it { expect(subject.expose_code_quality_data?).to be_truthy }
+    end
+
+    context 'without code_quality data' do
+      it { expect(subject.expose_code_quality_data?).to be_falsey }
+    end
+  end
+
   describe '#expose_performance_data?' do
     context 'with performance data' do
       let(:pipeline) { double(expose_performance_data?: true) }

@@ -13,8 +13,14 @@ describe Ci::Build do
 
   let(:job) { create(:ci_build, pipeline: pipeline) }
 
-  describe '.codequality' do
-    subject { described_class.codequality }
+  describe '.code_quality' do
+    subject { described_class.code_quality }
+
+    context 'when a job name is codeclimate' do
+      let!(:job) { create(:ci_build, pipeline: pipeline, name: 'codeclimate') }
+
+      it { is_expected.to include(job) }
+    end
 
     context 'when a job name is codequality' do
       let!(:job) { create(:ci_build, pipeline: pipeline, name: 'codequality') }
@@ -22,8 +28,8 @@ describe Ci::Build do
       it { is_expected.to include(job) }
     end
 
-    context 'when a job name is codeclimate' do
-      let!(:job) { create(:ci_build, pipeline: pipeline, name: 'codeclimate') }
+    context 'when a job name is code_quality' do
+      let!(:job) { create(:ci_build, pipeline: pipeline, name: 'code_quality') }
 
       it { is_expected.to include(job) }
     end
@@ -138,7 +144,9 @@ describe Ci::Build do
   end
 
   BUILD_ARTIFACTS_METHODS = {
-    has_codeclimate_json?: Ci::Build::CODEQUALITY_FILE,
+    # has_codeclimate_json? is deprecated and replaced with code_quality_artifact (#5779)
+    has_codeclimate_json?: Ci::Build::CODECLIMATE_FILE,
+    has_code_quality_json?: Ci::Build::CODE_QUALITY_FILE,
     has_performance_json?: Ci::Build::PERFORMANCE_FILE,
     has_sast_json?: Ci::Build::SAST_FILE,
     has_dependency_scanning_json?: Ci::Build::DEPENDENCY_SCANNING_FILE,

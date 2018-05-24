@@ -12,8 +12,13 @@ module EE
         has_one :chat_data, class_name: 'Ci::PipelineChatData'
       end
 
+      # codeclimate_artifact is deprecated and replaced with code_quality_artifact (#5779)
       def codeclimate_artifact
-        @codeclimate_artifact ||= artifacts.codequality.find(&:has_codeclimate_json?)
+        @codeclimate_artifact ||= artifacts.code_quality.find(&:has_codeclimate_json?)
+      end
+
+      def code_quality_artifact
+        @code_quality_artifact ||= artifacts.code_quality.find(&:has_code_quality_json?)
       end
 
       def performance_artifact
@@ -78,8 +83,13 @@ module EE
         performance_artifact&.success?
       end
 
+      # has_codeclimate_data? is deprecated and replaced with has_code_quality_data? (#5779)
       def has_codeclimate_data?
         codeclimate_artifact&.success?
+      end
+
+      def has_code_quality_data?
+        code_quality_artifact&.success?
       end
 
       def expose_sast_data?
@@ -118,8 +128,13 @@ module EE
           has_performance_data?
       end
 
+      # expose_codeclimate_data? is deprecated and replaced with expose_code_quality_data? (#5779)
       def expose_codeclimate_data?
         has_codeclimate_data?
+      end
+
+      def expose_code_quality_data?
+        has_code_quality_data?
       end
     end
   end
