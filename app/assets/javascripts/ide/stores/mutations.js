@@ -149,7 +149,9 @@ export default {
     });
   },
   [types.SET_RIGHT_PANE](state, view) {
-    state.rightPane = state.rightPane === view ? null : view;
+    Object.assign(state, {
+      rightPane: state.rightPane === view ? null : view,
+    });
   },
   ...projectMutations,
   ...mergeRequestMutation,

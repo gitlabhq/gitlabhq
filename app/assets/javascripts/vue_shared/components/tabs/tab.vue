@@ -27,7 +27,9 @@ export default {
     this.isTab = true;
   },
   updated() {
-    this.$parent.$forceUpdate();
+    if (this.$parent) {
+      this.$parent.$forceUpdate();
+    }
   },
 };
 </script>

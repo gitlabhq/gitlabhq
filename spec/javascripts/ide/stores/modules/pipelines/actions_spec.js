@@ -5,15 +5,15 @@ import actions, {
   receiveLatestPipelineError,
   receiveLatestPipelineSuccess,
   fetchLatestPipeline,
-  requestJobs,
-  receiveJobsError,
-  receiveJobsSuccess,
-  fetchJobs,
+  requestStages,
+  receiveStagesError,
+  receiveStagesSuccess,
+  fetchStages,
 } from '~/ide/stores/modules/pipelines/actions';
 import state from '~/ide/stores/modules/pipelines/state';
 import * as types from '~/ide/stores/modules/pipelines/mutation_types';
 import testAction from '../../../../helpers/vuex_action_helper';
-import { pipelines, jobs } from '../../../mock_data';
+import { pipelines, stages } from '../../../mock_data';
 
 describe('IDE pipelines actions', () => {
   let mockedState;
@@ -141,19 +141,19 @@ describe('IDE pipelines actions', () => {
     });
   });
 
-  describe('requestJobs', () => {
+  describe('requestStages', () => {
     it('commits request', done => {
-      testAction(requestJobs, null, mockedState, [{ type: types.REQUEST_JOBS }], [], done);
+      testAction(requestStages, null, mockedState, [{ type: types.REQUEST_STAGES }], [], done);
     });
   });
 
   describe('receiveJobsError', () => {
     it('commits error', done => {
       testAction(
-        receiveJobsError,
+        receiveStagesError,
         null,
         mockedState,
-        [{ type: types.RECEIVE_JOBS_ERROR }],
+        [{ type: types.RECEIVE_STAGES_ERROR }],
         [],
         done,
       );
@@ -162,80 +162,53 @@ describe('IDE pipelines actions', () => {
     it('creates flash message', () => {
       const flashSpy = spyOnDependency(actions, 'flash');
 
-      receiveJobsError({ commit() {} });
+      receiveStagesError({ commit() {} });
 
       expect(flashSpy).toHaveBeenCalled();
     });
   });
 
-  describe('receiveJobsSuccess', () => {
+  describe('receiveStagesSuccess', () => {
     it('commits jobs', done => {
       testAction(
-        receiveJobsSuccess,
-        jobs,
+        receiveStagesSuccess,
+        stages,
         mockedState,
-        [{ type: types.RECEIVE_JOBS_SUCCESS, payload: jobs }],
+        [{ type: types.RECEIVE_STAGES_SUCCESS, payload: stages }],
         [],
         done,
       );
     });
   });
 
-  describe('fetchJobs', () => {
-    let page = '';
-
+  describe('fetchStages', () => {
     beforeEach(() => {
       mockedState.latestPipeline = pipelines[0];
     });
 
     describe('success', () => {
       beforeEach(() => {
-        mock.onGet(/\/api\/v4\/projects\/(.*)\/pipelines\/(.*)\/jobs/).replyOnce(() => [
-          200,
-          jobs,
-          {
-            'x-next-page': page,
-          },
-        ]);
+        mock.onGet(/\/(.*)\/pipelines\/(.*)\/builds.json/).replyOnce(200, stages);
       });
 
       it('dispatches request', done => {
         testAction(
-          fetchJobs,
+          fetchStages,
           null,
           mockedState,
           [],
-          [{ type: 'requestJobs' }, { type: 'receiveJobsSuccess' }],
+          [{ type: 'requestStages' }, { type: 'receiveStagesSuccess' }],
           done,
         );
       });
 
       it('dispatches success with latest pipeline', done => {
         testAction(
-          fetchJobs,
+          fetchStages,
           null,
           mockedState,
           [],
-          [{ type: 'requestJobs' }, { type: 'receiveJobsSuccess', payload: jobs }],
-          done,
-        );
-      });
-
-      it('dispatches twice for both pages', done => {
-        page = '2';
-
-        testAction(
-          fetchJobs,
-          null,
-          mockedState,
-          [],
-          [
-            { type: 'requestJobs' },
-            { type: 'receiveJobsSuccess', payload: jobs },
-            { type: 'fetchJobs', payload: '2' },
-            { type: 'requestJobs' },
-            { type: 'receiveJobsSuccess', payload: jobs },
-          ],
+          [{ type: 'requestStages' }, { type: 'receiveStagesSuccess', payload: stages }],
           done,
         );
       });
@@ -243,44 +216,27 @@ describe('IDE pipelines actions', () => {
       it('calls axios with correct URL', () => {
         const apiSpy = spyOn(axios, 'get').and.callThrough();
 
-        fetchJobs({ dispatch() {}, state: mockedState, rootState: mockedState });
+        fetchStages({ dispatch() {}, state: mockedState, rootState: mockedState });
 
-        expect(apiSpy).toHaveBeenCalledWith('/api/v4/projects/test%2Fproject/pipelines/1/jobs', {
-          params: { page: '1' },
-        });
-      });
-
-      it('calls axios with page next page', () => {
-        const apiSpy = spyOn(axios, 'get').and.callThrough();
-
-        fetchJobs({ dispatch() {}, state: mockedState, rootState: mockedState });
-
-        expect(apiSpy).toHaveBeenCalledWith('/api/v4/projects/test%2Fproject/pipelines/1/jobs', {
-          params: { page: '1' },
-        });
-
-        page = '2';
-
-        fetchJobs({ dispatch() {}, state: mockedState, rootState: mockedState }, page);
-
-        expect(apiSpy).toHaveBeenCalledWith('/api/v4/projects/test%2Fproject/pipelines/1/jobs', {
-          params: { page: '2' },
-        });
+        expect(apiSpy).toHaveBeenCalledWith(
+          '/test/project/pipelines/1/builds.json',
+          jasmine.anything(),
+        );
       });
     });
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(/\/api\/v4\/projects\/(.*)\/pipelines(.*)/).replyOnce(500);
+        mock.onGet(/\/(.*)\/pipelines\/(.*)\/builds.json/).replyOnce(500);
       });
 
       it('dispatches error', done => {
         testAction(
-          fetchJobs,
+          fetchStages,
           null,
           mockedState,
           [],
-          [{ type: 'requestJobs' }, { type: 'receiveJobsError' }],
+          [{ type: 'requestStages' }, { type: 'receiveStagesError' }],
           done,
         );
       });

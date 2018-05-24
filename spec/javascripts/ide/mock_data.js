@@ -29,6 +29,27 @@ export const pipelines = [
   },
 ];
 
+export const stages = [
+  {
+    dropdown_path: 'testing',
+    name: 'build',
+    status: {
+      icon: 'status_failed',
+      group: 'failed',
+      text: 'Failed',
+    },
+  },
+  {
+    dropdown_path: 'testing',
+    name: 'test',
+    status: {
+      icon: 'status_failed',
+      group: 'failed',
+      text: 'Failed',
+    },
+  },
+];
+
 export const jobs = [
   {
     id: 1,
