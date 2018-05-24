@@ -29,7 +29,7 @@ module QA
     context 'when developers and maintainers are allowed to push to a protected branch' do
       let!(:protected_branch) { fabricate_branch(allow_to_push: true) }
 
-      scenario 'a push by the owner succeeds' do
+      scenario 'user with push rights successfully pushes to the protected branch' do
         expect(protected_branch.name).to have_content(branch_name)
         expect(protected_branch.push_allowance).to have_content('Developers + Maintainers')
 
@@ -44,7 +44,7 @@ module QA
     end
 
     context 'when developers and maintainers are not allowed to push to a protected branch' do
-      scenario 'a push by the owner fails' do
+      scenario 'user without push rights fails to push to the protected branch' do
         fabricate_branch(allow_to_push: false)
 
         project.visit!
