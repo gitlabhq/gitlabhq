@@ -21,7 +21,7 @@ class Projects::DiscussionsController < Projects::ApplicationController
 
   def show
     render json: {
-      truncated_diff_lines: discussion.truncated_diff_lines
+      truncated_diff_lines: (discussion.truncated_diff_lines if defined?(discussion.truncated_diff_lines))
     }
   end
 
