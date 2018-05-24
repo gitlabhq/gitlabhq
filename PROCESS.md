@@ -230,6 +230,11 @@ For instance, if 10.5.0 adds a feature, and that feature doesn't work correctly,
 then this is a regression in 10.5. If 10.5.1 then fixes that, but 10.5.3 somehow
 reintroduces the bug, then this bug is still a regression in 10.5.
 
+In addition, if a regression appears in 10.5.0 for example and we are no longer
+doing regular patch releases for 10.5 versions, the fix will not be patched for
+the subsequent releases unless it is critical. In the event that the fix needs
+to be patched for the subsequent releases, an [exception request](#asking-for-an-exception) can be made.
+
 Because GitLab.com runs release candidates of new releases, a regression can be
 reported in a release before its 'official' release date on the 22nd of the
 month. When we say 'the most recent monthly release', this can refer to either
