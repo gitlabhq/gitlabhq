@@ -6,12 +6,12 @@ module QA # rubocop:disable Naming/FileName
           include Common
 
           view 'app/views/projects/settings/ci_cd/show.html.haml' do
-            element :runners_settings, 'Runners settings'
+            element :runners_settings, 'Runners'
             element :secret_variables, 'Secret variables'
           end
 
           def expand_runners_settings(&block)
-            expand_section('Runners settings') do
+            expand_section('Runners') do
               Settings::Runners.perform(&block)
             end
           end
