@@ -121,8 +121,9 @@ module Ci
         raise ArgumentError, 'Transitioning a group runner to a project runner is not supported'
       end
 
-      self.projects << project
+      runner_project = project.runner_projects.create(runner_id: self.id)
       self.save!
+      runner_project
     end
 
     def display_name
