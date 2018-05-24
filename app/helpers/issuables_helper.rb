@@ -359,7 +359,8 @@ module IssuablesHelper
       url: project_todos_path(@project),
       delete_path: (dashboard_todo_path(todo) if todo),
       placement: (is_collapsed ? 'left' : nil),
-      container: (is_collapsed ? 'body' : nil)
+      container: (is_collapsed ? 'body' : nil),
+      boundary: 'viewport'
     }
   end
 

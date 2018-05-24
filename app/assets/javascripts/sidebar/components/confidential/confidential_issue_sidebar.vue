@@ -75,6 +75,7 @@ export default {
       v-tooltip
       data-container="body"
       data-placement="left"
+      data-boundary="viewport"
       :title="tooltipLabel"
     >
       <icon

@@ -7,7 +7,7 @@
       - if current_user
         %span.issuable-header-text.hide-collapsed.float-left
           = _('Todo')
-      %a.gutter-toggle.float-right.js-sidebar-toggle.has-tooltip{ role: "button", href: "#", "aria-label" => "Toggle sidebar", title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left' } }
+      %a.gutter-toggle.float-right.js-sidebar-toggle.has-tooltip{ role: "button", href: "#", "aria-label" => "Toggle sidebar", title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left', boundary: 'viewport' } }
         = sidebar_gutter_toggle_icon
       - if current_user
         = render "shared/issuable/sidebar_todo", todo: todo, issuable: issuable
@@ -19,12 +19,11 @@
       .block.assignee
         = render "shared/issuable/sidebar_assignees", issuable: issuable, can_edit_issuable: can_edit_issuable, signed_in: current_user.present?
       .block.milestone
-        .sidebar-collapsed-icon.has-tooltip{ title: milestone_tooltip_title(issuable.milestone), data: { container: 'body', html: 'true', placement: 'left' } }
+        .sidebar-collapsed-icon.has-tooltip{ title: milestone_tooltip_title(issuable.milestone), data: { container: 'body', html: 'true', placement: 'left', boundary: 'viewport' } }
           = icon('clock-o', 'aria-hidden': 'true')
           %span.milestone-title
             - if issuable.milestone
-              %span.has-tooltip{ title: "#{issuable.milestone.title}<br>#{milestone_tooltip_title(issuable.milestone)}", data: { container: 'body', html: 'true', placement: 'left' } }
-                = issuable.milestone.title
+              = issuable.milestone.title
             - else
               = _('None')
         .title.hide-collapsed
@@ -50,7 +49,7 @@
             = icon('spinner spin', 'aria-hidden': 'true')
       - if issuable.has_attribute?(:due_date)
         .block.due_date
-          .sidebar-collapsed-icon.has-tooltip{ data: { placement: 'left', container: 'body', html: 'true' }, title: sidebar_due_date_tooltip_label(issuable) }
+          .sidebar-collapsed-icon.has-tooltip{ data: { placement: 'left', container: 'body', html: 'true', boundary: 'viewport' }, title: sidebar_due_date_tooltip_label(issuable) }
             = icon('calendar', 'aria-hidden': 'true')
             %span.js-due-date-sidebar-value
               = issuable.due_date.try(:to_s, :medium) || 'None'
@@ -87,7 +86,7 @@
       - if @labels
         - selected_labels = issuable.labels
         .block.labels
-          .sidebar-collapsed-icon.js-sidebar-labels-tooltip{ title: issuable_labels_tooltip(issuable.labels_array), data: { placement: "left", container: "body" } }
+          .sidebar-collapsed-icon.js-sidebar-labels-tooltip{ title: issuable_labels_tooltip(issuable.labels_array), data: { placement: "left", container: "body", boundary: 'viewport' } }
             = icon('tags', 'aria-hidden': 'true')
             %span
               = selected_labels.size
@@ -134,7 +133,7 @@
       - project_ref = cross_project_reference(@project, issuable)
       .block.project-reference
         .sidebar-collapsed-icon.dont-change-state
-          = clipboard_button(text: project_ref, title: _('Copy reference to clipboard'), placement: "left")
+          = clipboard_button(text: project_ref, title: _('Copy reference to clipboard'), placement: "left", boundary: 'viewport')
         .cross-project-reference.hide-collapsed
           %span
             = _('Reference:')
@@ -143,7 +142,7 @@
           = clipboard_button(text: project_ref, title: _('Copy reference to clipboard'), placement: "left")
       - if current_user && issuable.can_move?(current_user)
         .block.js-sidebar-move-issue-block
-          .sidebar-collapsed-icon{ data: { toggle: 'tooltip', placement: 'left', container: 'body' }, title: _('Move issue') }
+          .sidebar-collapsed-icon{ data: { toggle: 'tooltip', placement: 'left', container: 'body', boundary: 'viewport' }, title: _('Move issue') }
             = custom_icon('icon_arrow_right')
           .dropdown.sidebar-move-issue-dropdown.hide-collapsed
             %button.btn.btn-default.btn-block.js-sidebar-dropdown-toggle.js-move-issue{ type: 'button',

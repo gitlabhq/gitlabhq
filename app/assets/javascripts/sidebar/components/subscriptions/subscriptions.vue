@@ -82,6 +82,7 @@
         :title="notificationTooltip"
         data-container="body"
         data-placement="left"
+        data-boundary="viewport"
       >
         <icon
           :name="notificationIcon"
