@@ -24,50 +24,42 @@ describe 'Merge request > User posts diff notes', :js do
     end
 
     context 'with an old line on the left and no line on the right' do
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'allows commenting on the left side' do
-        should_allow_commenting(find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_23_22"]'), 'left')
+      it 'allows commenting on the left side' do
+        should_allow_commenting(find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_23_22"]').find(:xpath, '..'), 'left')
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'does not allow commenting on the right side' do
-        should_not_allow_commenting(find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_23_22"]'), 'right')
+      it 'does not allow commenting on the right side' do
+        should_not_allow_commenting(find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_23_22"]').find(:xpath, '..'), 'right')
       end
     end
 
     context 'with no line on the left and a new line on the right' do
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'does not allow commenting on the left side' do
-        should_not_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_15"]'), 'left')
+      it 'does not allow commenting on the left side' do
+        should_not_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_15"]').find(:xpath, '..'), 'left')
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'allows commenting on the right side' do
-        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_15"]'), 'right')
+      it 'allows commenting on the right side' do
+        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_15"]').find(:xpath, '..'), 'right')
       end
     end
 
     context 'with an old line on the left and a new line on the right' do
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'allows commenting on the left side' do
-        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"]'), 'left')
+      it 'allows commenting on the left side' do
+        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"]').find(:xpath, '..'), 'left')
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'allows commenting on the right side' do
-        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"]'), 'right')
+      it 'allows commenting on the right side' do
+        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"]').find(:xpath, '..'), 'right')
       end
     end
 
     context 'with an unchanged line on the left and an unchanged line on the right' do
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'allows commenting on the left side' do
-        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]', match: :first), 'left')
+      it 'allows commenting on the left side' do
+        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]', match: :first).find(:xpath, '..'), 'left')
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'allows commenting on the right side' do
-        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]', match: :first), 'right')
+      it 'allows commenting on the right side' do
+        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]', match: :first).find(:xpath, '..'), 'right')
       end
     end
 
