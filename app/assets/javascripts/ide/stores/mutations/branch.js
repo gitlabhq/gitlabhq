@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import * as types from '../mutation_types';
 
 export default {
@@ -15,6 +14,10 @@ export default {
           treeId: `${projectPath}/${branchName}`,
           active: true,
           workingReference: '',
+          commit: {
+            ...branch.commit,
+            pipeline: {},
+          },
         },
       },
     });
@@ -30,6 +33,8 @@ export default {
     });
   },
   [types.SET_LAST_COMMIT_PIPELINE](state, { projectId, branchId, pipeline }) {
-    Vue.set(state.projects[projectId].branches[branchId].commit, 'pipeline', pipeline);
+    Object.assign(state.projects[projectId].branches[branchId].commit, {
+      pipeline,
+    });
   },
 };
