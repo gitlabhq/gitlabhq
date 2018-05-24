@@ -1016,6 +1016,20 @@ describe Projects::IssuesController do
           .not_to exceed_query_limit(control)
       end
 
+      context 'when user has set discussion filter to comments only' do
+        before do
+          user.set_discussion_filter(UserPreference::DISCUSSION_FILTERS[:comments], issue)
+        end
+
+        it 'returns no system note' do
+          create(:discussion_note_on_issue, :system, noteable: issue, project: issue.project)
+
+          get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
+
+          expect(JSON.parse(response.body).count).to eq(1)
+        end
+      end
+
       context 'with cross-reference system note', :request_store do
         let(:new_issue) { create(:issue) }
         let(:cross_reference) { "mentioned in #{new_issue.to_reference(issue.project)}" }

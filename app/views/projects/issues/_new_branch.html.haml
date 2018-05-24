@@ -14,6 +14,12 @@
         = icon('spinner', class: 'fa-spin')
         %span.text
           Checking branch availability…
+
+    -# Changing this needs to toggle /noteable/issue/89/notes?discussion_filter=0 or 1
+    - if current_user
+      = select_tag :discussion_filter,
+        options_for_select(UserPreference::DISCUSSION_FILTERS, current_user.discussion_filter(@issue))
+
     .btn-group.available.hidden
       %button.btn.js-create-merge-request.btn-success.btn-inverted{ type: 'button', data: { action: data_action } }
         = value

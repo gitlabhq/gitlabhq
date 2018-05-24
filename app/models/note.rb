@@ -107,6 +107,15 @@ class Note < ActiveRecord::Base
              :system_note_metadata, :note_diff_file)
   end
 
+  scope :with_discussion_filter, -> (discussion_filter) do
+    case discussion_filter
+    when UserPreference::DISCUSSION_FILTERS[:comments]
+      user
+    else
+      all
+    end
+  end
+
   scope :diff_notes, -> { where(type: %w(LegacyDiffNote DiffNote)) }
   scope :new_diff_notes, -> { where(type: 'DiffNote') }
   scope :non_diff_notes, -> { where(type: ['Note', 'DiscussionNote', nil]) }

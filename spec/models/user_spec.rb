@@ -715,6 +715,32 @@ describe User do
     end
   end
 
+  describe 'ensure user preference' do
+    it 'has user preference upon user initialization' do
+      user = build(:user)
+
+      expect(user.user_preference).to be_present
+      expect(user.user_preference).not_to be_persisted
+    end
+
+    it 'has persisted user preference upon user creation' do
+      user = create(:user)
+
+      expect(user.user_preference).to be_present
+      expect(user.user_preference).to be_persisted
+    end
+
+    it 'initializes user preference if it does not exists' do
+      user = create(:user)
+      user.user_preference.destroy!
+
+      user.reload
+
+      expect(user.user_preference).to be_present
+      expect(user.user_preference).to be_persisted
+    end
+  end
+
   describe 'ensure incoming email token' do
     it 'has incoming email token' do
       user = create(:user)
