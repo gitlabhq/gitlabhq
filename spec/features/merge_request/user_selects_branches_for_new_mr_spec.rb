@@ -179,7 +179,7 @@ describe 'Merge request > User selects branches for new MR', :js do
     it 'escapes quotes in branch names' do
       special_branch_name = '"with-quotes"'
       CreateBranchService.new(project, user)
-      .execute(special_branch_name, 'add-pdf-file')
+        .execute(special_branch_name, 'add-pdf-file')
 
       visit project_new_merge_request_path(project)
       select_source_branch(special_branch_name)
@@ -191,7 +191,7 @@ describe 'Merge request > User selects branches for new MR', :js do
     it 'does not escape unicode in branch names' do
       special_branch_name = 'ʕ•ᴥ•ʔ'
       CreateBranchService.new(project, user)
-      .execute(special_branch_name, 'add-pdf-file')
+        .execute(special_branch_name, 'add-pdf-file')
 
       visit project_new_merge_request_path(project)
       select_source_branch(special_branch_name)
