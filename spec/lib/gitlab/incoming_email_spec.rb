@@ -83,6 +83,10 @@ describe Gitlab::IncomingEmail do
     it "returns reply key" do
       expect(described_class.key_from_address("replies+key@example.com")).to eq("key")
     end
+
+    it 'does not match emails with extra bits' do
+      expect(described_class.key_from_address('somereplies+somekey@example.com.someotherdomain.com')).to be nil
+    end
   end
 
   context 'self.key_from_fallback_message_id' do

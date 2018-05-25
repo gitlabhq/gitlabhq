@@ -2,6 +2,11 @@ require 'digest/md5'
 require 'uri'
 
 module ApplicationHelper
+  # See https://docs.gitlab.com/ee/development/ee_features.html#code-in-app-views
+  def render_if_exists(partial, locals = {})
+    render(partial, locals) if lookup_context.exists?(partial, [], true)
+  end
+
   # Check if a particular controller is the current one
   #
   # args - One or more controller names to check

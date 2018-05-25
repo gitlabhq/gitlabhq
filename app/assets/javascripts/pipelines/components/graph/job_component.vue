@@ -46,11 +46,6 @@ export default {
       required: false,
       default: '',
     },
-    requestFinishedFor: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   computed: {
     status() {
@@ -84,6 +79,11 @@ export default {
       return this.job.status && this.job.status.action && this.job.status.action.path;
     },
   },
+  methods: {
+    pipelineActionRequestComplete() {
+      this.$emit('pipelineActionRequestComplete');
+    },
+  },
 };
 </script>
 <template>
@@ -96,6 +96,7 @@ export default {
       :class="cssClassJobName"
       data-container="body"
       data-html="true"
+      data-boundary="viewport"
       class="js-pipeline-graph-job-link"
     >
 
@@ -126,7 +127,7 @@ export default {
       :tooltip-text="status.action.title"
       :link="status.action.path"
       :action-icon="status.action.icon"
-      :request-finished-for="requestFinishedFor"
+      @pipelineActionRequestComplete="pipelineActionRequestComplete"
     />
   </div>
 </template>

@@ -35,10 +35,16 @@ describe Projects::PipelinesController do
 
       expect(json_response).to include('pipelines')
       expect(json_response['pipelines'].count).to eq 4
-      expect(json_response['count']['all']).to eq 4
-      expect(json_response['count']['running']).to eq 1
-      expect(json_response['count']['pending']).to eq 1
-      expect(json_response['count']['finished']).to eq 1
+      expect(json_response['count']['all']).to eq '4'
+      expect(json_response['count']['running']).to eq '1'
+      expect(json_response['count']['pending']).to eq '1'
+      expect(json_response['count']['finished']).to eq '1'
+    end
+
+    it 'does not include coverage data for the pipelines' do
+      subject
+
+      expect(json_response['pipelines'][0]).not_to include('coverage')
     end
 
     context 'when performing gitaly calls', :request_store do

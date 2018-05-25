@@ -257,6 +257,7 @@ module ProjectsHelper
 
     if project.builds_enabled? && can?(current_user, :read_pipeline, project)
       nav_tabs << :pipelines
+      nav_tabs << :operations
     end
 
     if project.external_issue_tracker

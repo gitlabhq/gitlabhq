@@ -9,6 +9,7 @@
   import CommitComponent from '../../vue_shared/components/commit.vue';
   import LoadingButton from '../../vue_shared/components/loading_button.vue';
   import Icon from '../../vue_shared/components/icon.vue';
+  import { PIPELINES_TABLE } from '../constants';
 
   /**
    * Pipeline table row.
@@ -45,11 +46,16 @@
         type: String,
         required: true,
       },
+      cancelingPipeline: {
+        type: String,
+        required: false,
+        default: null,
+      },
     },
+    pipelinesTable: PIPELINES_TABLE,
     data() {
       return {
         isRetrying: false,
-        isCancelling: false,
       };
     },
     computed: {
@@ -225,12 +231,14 @@
       isChildView() {
         return this.viewType === 'child';
       },
+
+      isCancelling() {
+        return this.cancelingPipeline === this.pipeline.id;
+      },
     },
 
     methods: {
       handleCancelClick() {
-        this.isCancelling = true;
-
         eventHub.$emit('openConfirmationModal', {
           pipelineId: this.pipeline.id,
           endpoint: this.pipeline.cancel_path,
@@ -297,6 +305,7 @@
             v-for="(stage, index) in pipeline.details.stages"
             :key="index">
             <pipeline-stage
+              :type="$options.pipelinesTable"
               :stage="stage"
               :update-dropdown="updateGraphDropdown"
             />
@@ -322,7 +331,7 @@
 
         <pipelines-artifacts-component
           v-if="pipeline.details.artifacts.length"
-          class="hidden-xs hidden-sm"
+          class="d-none d-sm-none d-md-block"
           :artifacts="pipeline.details.artifacts"
         />
 

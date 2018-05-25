@@ -14,7 +14,7 @@
     white-space: nowrap;
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     display: block;
   }
 }
@@ -25,7 +25,7 @@
   display: flex;
   flex-grow: 1;
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     padding-left: 0;
     padding-right: 0;
   }
@@ -36,7 +36,7 @@
   flex-shrink: 0;
   flex: 0 0 auto;
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     width: 100%;
     margin-top: 10px;
 

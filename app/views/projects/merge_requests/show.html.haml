@@ -30,26 +30,26 @@
         .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
           .fade-left= icon('angle-left')
           .fade-right= icon('angle-right')
-          .nav-links.scrolling-tabs
-            %ul.merge-request-tabs
+          .nav-links.scrolling-tabs.nav.nav-tabs
+            %ul.merge-request-tabs.nav-tabs.nav
               %li.notes-tab
                 = tab_link_for @merge_request, :show, force_link: @commit.present? do
                   Discussion
-                  %span.badge= @merge_request.related_notes.user.count
+                  %span.badge.badge-pill= @merge_request.related_notes.user.count
               - if @merge_request.source_project
                 %li.commits-tab
                   = tab_link_for @merge_request, :commits do
                     Commits
-                    %span.badge= @commits_count
+                    %span.badge.badge-pill= @commits_count
               - if @pipelines.any?
                 %li.pipelines-tab
                   = tab_link_for @merge_request, :pipelines do
                     Pipelines
-                    %span.badge.js-pipelines-mr-count= @pipelines.size
+                    %span.badge.badge-pill.js-pipelines-mr-count= @pipelines.size
               %li.diffs-tab
                 = tab_link_for @merge_request, :diffs do
                   Changes
-                  %span.badge= @merge_request.diff_size
+                  %span.badge.badge-pill= @merge_request.diff_size
 
         - if has_vue_discussions_cookie?
           #js-vue-discussion-counter

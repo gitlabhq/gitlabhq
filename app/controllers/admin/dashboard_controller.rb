@@ -1,4 +1,6 @@
 class Admin::DashboardController < Admin::ApplicationController
+  include CountHelper
+
   def index
     @projects = Project.order_id_desc.without_deleted.with_route.limit(10)
     @users = User.order_id_desc.limit(10)

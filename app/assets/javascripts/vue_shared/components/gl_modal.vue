@@ -53,6 +53,11 @@ export default {
       <div class="modal-content">
         <div class="modal-header">
           <slot name="header">
+            <h4 class="modal-title">
+              <slot name="title">
+                {{ headerTitleText }}
+              </slot>
+            </h4>
             <button
               type="button"
               class="close js-modal-close-action"
@@ -62,11 +67,6 @@ export default {
             >
               <span aria-hidden="true">&times;</span>
             </button>
-            <h4 class="modal-title">
-              <slot name="title">
-                {{ headerTitleText }}
-              </slot>
-            </h4>
           </slot>
         </div>
 

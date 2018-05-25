@@ -5,7 +5,7 @@
 - is_dynamic_milestone = milestone.legacy_group_milestone? || milestone.dashboard_milestone?
 
 .detail-page-header
-  %a.btn.btn-default.btn-grouped.pull-right.visible-xs-block.js-sidebar-toggle{ href: "#" }
+  %a.btn.btn-default.btn-grouped.float-right.d-block.d-sm-none.js-sidebar-toggle{ href: "#" }
     = icon('angle-double-left')
 
   .status-box{ class: "status-box-#{milestone.closed? ? 'closed' : 'open'}" }
@@ -22,7 +22,7 @@
       &nbsp;&middot;
       = milestone_date_range(milestone)
   - if group
-    .pull-right
+    .float-right
       - if can?(current_user, :admin_milestones, group)
         - if milestone.group_milestone?
           = link_to edit_group_milestone_path(group, milestone), class: "btn btn btn-grouped" do

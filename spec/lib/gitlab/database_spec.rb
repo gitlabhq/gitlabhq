@@ -32,6 +32,12 @@ describe Gitlab::Database do
   end
 
   describe '.version' do
+    around do |example|
+      described_class.instance_variable_set(:@version, nil)
+      example.run
+      described_class.instance_variable_set(:@version, nil)
+    end
+
     context "on mysql" do
       it "extracts the version number" do
         allow(described_class).to receive(:database_version)
@@ -48,6 +54,14 @@ describe Gitlab::Database do
 
         expect(described_class.version).to eq '9.4.4'
       end
+    end
+
+    it 'memoizes the result' do
+      count = ActiveRecord::QueryRecorder
+        .new { 2.times { described_class.version } }
+        .count
+
+      expect(count).to eq(1)
     end
   end
 

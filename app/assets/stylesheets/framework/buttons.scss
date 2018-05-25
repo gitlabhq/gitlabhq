@@ -304,7 +304,8 @@
   padding: 0 5px;
 }
 
-.input-group-btn {
+.input-group-prepend,
+.input-group-append {
   .btn {
     @include btn-middle;
 
@@ -393,7 +394,7 @@
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@include media-breakpoint-down(xs) {
   .btn-wide-on-xs {
     width: 100%;
   }

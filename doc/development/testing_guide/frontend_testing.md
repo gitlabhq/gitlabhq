@@ -280,26 +280,6 @@ describe "Admin::AbuseReports", :js do
 end
 ```
 
-### Spinach errors due to missing JavaScript
-
-NOTE: **Note:** Since we are discouraging the use of Spinach when writing new
-feature tests, you shouldn't ever need to use this. This information is kept
-available for legacy purposes only.
-
-In Spinach, the JavaScript driver is enabled differently. In the `*.feature`
-file for the failing spec, add the `@javascript` flag above the Scenario:
-
-```
-@javascript
-Scenario: Developer can approve merge request
-  Given I am a "Shop" developer
-  And I visit project "Shop" merge requests page
-  And merge request 'Bug NS-04' must be approved
-  And I click link "Bug NS-04"
-  When I click link "Approve"
-  Then I should see approved merge request "Bug NS-04"
-```
-
 [jasmine-focus]: https://jasmine.github.io/2.5/focused_specs.html
 [jasmine-jquery]: https://github.com/velesin/jasmine-jquery
 [karma]: http://karma-runner.github.io/

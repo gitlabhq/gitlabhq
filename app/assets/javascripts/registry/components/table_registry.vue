@@ -56,10 +56,6 @@
           .catch(() => this.showError(errorMessagesTypes.FETCH_REGISTRY));
       },
 
-      clipboardText(text) {
-        return `docker pull ${text}`;
-      },
-
       showError(message) {
         Flash(errorMessages[message]);
       },
@@ -89,7 +85,7 @@
             <clipboard-button
               v-if="item.location"
               :title="item.location"
-              :text="clipboardText(item.location)"
+              :text="item.location"
               css-class="btn-default btn-transparent btn-clipboard"
             />
           </td>
@@ -124,7 +120,7 @@
             <button
               v-if="item.canDelete"
               type="button"
-              class="js-delete-registry btn btn-danger hidden-xs pull-right"
+              class="js-delete-registry btn btn-danger d-none d-sm-block float-right"
               :title="s__('ContainerRegistry|Remove tag')"
               :aria-label="s__('ContainerRegistry|Remove tag')"
               data-container="body"

@@ -3,7 +3,7 @@
     Milestone
     - if can_admin_issue?
       = icon("spinner spin", class: "block-loading")
-      = link_to "Edit", "#", class: "js-sidebar-dropdown-toggle edit-link pull-right"
+      = link_to "Edit", "#", class: "js-sidebar-dropdown-toggle edit-link float-right"
   .value
     %span.no-value{ "v-if" => "!issue.milestone" }
       None

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::Auth::LDAP::User do
+  include LdapHelpers
+
   let(:ldap_user) { described_class.new(auth_hash) }
   let(:gl_user) { ldap_user.gl_user }
   let(:info) do
@@ -177,8 +179,7 @@ describe Gitlab::Auth::LDAP::User do
 
   describe 'blocking' do
     def configure_block(value)
-      allow_any_instance_of(Gitlab::Auth::LDAP::Config)
-          .to receive(:block_auto_created_users).and_return(value)
+      stub_ldap_config(block_auto_created_users: value)
     end
 
     context 'signup' do

@@ -122,11 +122,11 @@ export default {
     <div
       class="file"
       :class="fileClass"
+      @click="clickFile"
+      role="button"
     >
       <div
         class="file-name"
-        @click="clickFile"
-        role="button"
       >
         <span
           class="ide-file-name str-truncated"
@@ -144,7 +144,7 @@ export default {
             :file="file"
           />
         </span>
-        <span class="pull-right ide-file-icon-holder">
+        <span class="float-right ide-file-icon-holder">
           <mr-file-icon
             v-if="file.mrChange"
           />
@@ -177,7 +177,7 @@ export default {
           :project-id="file.projectId"
           :branch="file.branchId"
           :path="file.path"
-          class="pull-right prepend-left-8"
+          class="float-right prepend-left-8"
         />
       </div>
     </div>

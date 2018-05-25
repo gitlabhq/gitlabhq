@@ -266,6 +266,19 @@ describe Issuable do
     end
   end
 
+  describe '#time_estimate=' do
+    it 'coerces the value below Gitlab::Database::MAX_INT_VALUE' do
+      expect { issue.time_estimate = 100 }.to change { issue.time_estimate }.to(100)
+      expect { issue.time_estimate = Gitlab::Database::MAX_INT_VALUE + 100 }.to change { issue.time_estimate }.to(Gitlab::Database::MAX_INT_VALUE)
+    end
+
+    it 'skips coercion for not Integer values' do
+      expect { issue.time_estimate = nil }.to change { issue.time_estimate }.to(nil)
+      expect { issue.time_estimate = 'invalid time' }.not_to raise_error(StandardError)
+      expect { issue.time_estimate = 22.33 }.not_to raise_error(StandardError)
+    end
+  end
+
   describe '#to_hook_data' do
     let(:builder) { double }
 

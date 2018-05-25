@@ -37,11 +37,15 @@ module Ci
     delegate :id, to: :project, prefix: true
     delegate :full_path, to: :project, prefix: true
 
-    validates :source, exclusion: { in: %w(unknown), unless: :importing? }, on: :create
     validates :sha, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
     validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
+
+    # Replace validator below with
+    # `validates :source, presence: { unless: :importing? }, on: :create`
+    # when removing Gitlab.rails5? code.
+    validate :valid_source, unless: :importing?, on: :create
 
     after_create :keep_around_commits, unless: :importing?
 
@@ -402,7 +406,18 @@ module Ci
     end
 
     def has_warnings?
-      builds.latest.failed_but_allowed.any?
+      number_of_warnings.positive?
+    end
+
+    def number_of_warnings
+      BatchLoader.for(id).batch(default_value: 0) do |pipeline_ids, loader|
+        Build.where(commit_id: pipeline_ids)
+          .latest
+          .failed_but_allowed
+          .group(:commit_id)
+          .count
+          .each { |id, amount| loader.call(id, amount) }
+      end
     end
 
     def set_config_source
@@ -508,9 +523,14 @@ module Ci
       strong_memoize(:legacy_trigger) { trigger_requests.first }
     end
 
+    def persisted_variables
+      Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        variables.append(key: 'CI_PIPELINE_ID', value: id.to_s) if persisted?
+      end
+    end
+
     def predefined_variables
       Gitlab::Ci::Variables::Collection.new
-        .append(key: 'CI_PIPELINE_ID', value: id.to_s)
         .append(key: 'CI_CONFIG_PATH', value: ci_yaml_file_path)
         .append(key: 'CI_PIPELINE_SOURCE', value: source.to_s)
         .append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message)
@@ -600,6 +620,12 @@ module Ci
 
       project.repository.keep_around(self.sha)
       project.repository.keep_around(self.before_sha)
+    end
+
+    def valid_source
+      if source.nil? || source == "unknown"
+        errors.add(:source, "invalid source")
+      end
     end
   end
 end

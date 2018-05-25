@@ -22,6 +22,6 @@ describe 'admin/dashboard/index.html.haml' do
   it "includes revision of GitLab" do
     render
 
-    expect(rendered).to have_content "#{Gitlab::VERSION} (#{Gitlab::REVISION})"
+    expect(rendered).to have_content "#{Gitlab::VERSION} (#{Gitlab.revision})"
   end
 end

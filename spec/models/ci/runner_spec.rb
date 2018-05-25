@@ -626,62 +626,26 @@ describe Ci::Runner do
   end
 
   describe '.assignable_for' do
-    let(:runner) { create(:ci_runner) }
+    let!(:unlocked_project_runner) { create(:ci_runner, runner_type: :project_type, projects: [project]) }
+    let!(:locked_project_runner) { create(:ci_runner, runner_type: :project_type, locked: true, projects: [project]) }
+    let!(:group_runner) { create(:ci_runner, runner_type: :group_type) }
+    let!(:instance_runner) { create(:ci_runner, :shared) }
     let(:project) { create(:project) }
     let(:another_project) { create(:project) }
 
-    before do
-      project.runners << runner
+    context 'with already assigned project' do
+      subject { described_class.assignable_for(project) }
+
+      it { is_expected.to be_empty }
     end
 
-    context 'with shared runners' do
-      before do
-        runner.update(is_shared: true)
-      end
+    context 'with a different project' do
+      subject { described_class.assignable_for(another_project) }
 
-      context 'does not give owned runner' do
-        subject { described_class.assignable_for(project) }
-
-        it { is_expected.to be_empty }
-      end
-
-      context 'does not give shared runner' do
-        subject { described_class.assignable_for(another_project) }
-
-        it { is_expected.to be_empty }
-      end
-    end
-
-    context 'with unlocked runner' do
-      context 'does not give owned runner' do
-        subject { described_class.assignable_for(project) }
-
-        it { is_expected.to be_empty }
-      end
-
-      context 'does give a specific runner' do
-        subject { described_class.assignable_for(another_project) }
-
-        it { is_expected.to contain_exactly(runner) }
-      end
-    end
-
-    context 'with locked runner' do
-      before do
-        runner.update(locked: true)
-      end
-
-      context 'does not give owned runner' do
-        subject { described_class.assignable_for(project) }
-
-        it { is_expected.to be_empty }
-      end
-
-      context 'does not give a locked runner' do
-        subject { described_class.assignable_for(another_project) }
-
-        it { is_expected.to be_empty }
-      end
+      it { is_expected.to include(unlocked_project_runner) }
+      it { is_expected.not_to include(group_runner) }
+      it { is_expected.not_to include(locked_project_runner) }
+      it { is_expected.not_to include(instance_runner) }
     end
   end
 

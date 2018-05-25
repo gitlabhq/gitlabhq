@@ -1,5 +1,0 @@
----
-title: Fix confirmation modal for deleting a protected branch
-merge_request: 18176
-author: Paul Bonaud @PaulRbR
-type: fixed

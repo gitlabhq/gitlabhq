@@ -28,11 +28,6 @@
         isOpen: false,
       };
     },
-    computed: {
-      clipboardText() {
-        return `docker pull ${this.repo.location}`;
-      },
-    },
     methods: {
       ...mapActions([
         'fetchRepos',
@@ -84,12 +79,12 @@
 
       <clipboard-button
         v-if="repo.location"
-        :text="clipboardText"
+        :text="repo.location"
         :title="repo.location"
         css-class="btn-default btn-transparent btn-clipboard"
       />
 
-      <div class="controls hidden-xs pull-right">
+      <div class="controls d-none d-sm-block float-right">
         <button
           v-if="repo.canDelete"
           type="button"
