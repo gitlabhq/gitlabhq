@@ -30,7 +30,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="ide-pipeline">
     <loading-icon
       v-if="isLoadingPipeline && !latestPipeline"
       class="prepend-top-default"
@@ -61,7 +61,7 @@ export default {
           </a>
         </span>
       </header>
-      <tabs>
+      <tabs class="ide-pipeline-list">
         <tab
           :active="!pipelineFailed"
         >
@@ -101,7 +101,22 @@ export default {
   </div>
 </template>
 
-<style>
+<style scoped>
+.ide-pipeline {
+  display: flex;
+  flex-direction: column;
+}
+
+.ide-pipeline-list {
+  flex: 1;
+  overflow: auto;
+}
+
+.ide-pipeline-header {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
 .ide-pipeline-header .ci-status-icon {
   display: flex;
 }
