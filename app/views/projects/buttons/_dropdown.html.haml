@@ -11,7 +11,7 @@
     %a.btn.dropdown-toggle.has-tooltip{ href: '#', title: _('Create new...'), 'data-toggle' => 'dropdown', 'data-container' => 'body', 'aria-label' => _('Create new...') }
       = icon('plus')
       = icon("caret-down")
-    %ul.dropdown-menu.dropdown-menu-align-right.project-home-dropdown
+    %ul.dropdown-menu.dropdown-menu-right.project-home-dropdown
       - if can_create_issue || merge_project || can_create_project_snippet
         %li.dropdown-header= _('This project')
 

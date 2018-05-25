@@ -6,10 +6,10 @@ export default {
   },
 
   componentUpdated(el) {
-    $(el).tooltip('fixTitle');
+    $(el).tooltip('_fixTitle');
   },
 
   unbind(el) {
-    $(el).tooltip('destroy');
+    $(el).tooltip('dispose');
   },
 };

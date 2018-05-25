@@ -69,9 +69,6 @@ GEM
     attr_encrypted (3.1.0)
       encryptor (~> 3.0.0)
     attr_required (1.0.0)
-    autoprefixer-rails (6.2.3)
-      execjs
-      json
     awesome_print (1.2.0)
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)
@@ -91,9 +88,6 @@ GEM
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     blankslate (2.1.2.4)
-    bootstrap-sass (3.3.6)
-      autoprefixer-rails (>= 5.2.1)
-      sass (>= 3.3.4)
     bootstrap_form (2.7.0)
     brakeman (4.2.1)
     browser (2.2.0)
@@ -529,8 +523,9 @@ GEM
       rack (>= 1.6.2, < 3)
     omniauth-auth0 (2.0.0)
       omniauth-oauth2 (~> 1.4)
-    omniauth-authentiq (0.3.1)
-      omniauth-oauth2 (~> 1.3, >= 1.3.1)
+    omniauth-authentiq (0.3.3)
+      jwt (>= 1.5)
+      omniauth-oauth2 (>= 1.5)
     omniauth-azure-oauth2 (0.0.9)
       jwt (~> 1.0)
       omniauth (~> 1.0)
@@ -991,7 +986,6 @@ DEPENDENCIES
   benchmark-ips (~> 2.3.0)
   better_errors (~> 2.1.0)
   binding_of_caller (~> 0.7.2)
-  bootstrap-sass (~> 3.3.0)
   bootstrap_form (~> 2.7.0)
   brakeman (~> 4.2)
   browser (~> 2.2)
@@ -1092,7 +1086,7 @@ DEPENDENCIES
   octokit (~> 4.8)
   omniauth (~> 1.8)
   omniauth-auth0 (~> 2.0.0)
-  omniauth-authentiq (~> 0.3.1)
+  omniauth-authentiq (~> 0.3.3)
   omniauth-azure-oauth2 (~> 0.0.9)
   omniauth-cas3 (~> 1.1.4)
   omniauth-facebook (~> 4.0.0)
@@ -1197,4 +1191,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.16.1
+   1.16.2

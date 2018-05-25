@@ -1,25 +1,25 @@
-= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
-    .form-group
-      .col-sm-offset-2.col-sm-10
-        .checkbox
+    .form-group.row
+      .offset-sm-2.col-sm-10
+        .form-check
           = f.label :version_check_enabled do
             = f.check_box :version_check_enabled
             Enable version check
-          .help-block
+          .form-text.text-muted
             GitLab will inform you if a new version is available.
             = link_to 'Learn more', help_page_path("user/admin_area/settings/usage_statistics", anchor: "version-check")
             about what information is shared with GitLab Inc.
-    .form-group
-      .col-sm-offset-2.col-sm-10
+    .form-group.row
+      .offset-sm-2.col-sm-10
         - can_be_configured = @application_setting.usage_ping_can_be_configured?
-        .checkbox
+        .form-check
           = f.label :usage_ping_enabled do
             = f.check_box :usage_ping_enabled, disabled: !can_be_configured
             Enable usage ping
-          .help-block
+          .form-text.text-muted
             - if can_be_configured
               To help improve GitLab and its user experience, GitLab will
               periodically collect usage information.

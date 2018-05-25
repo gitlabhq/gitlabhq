@@ -51,7 +51,7 @@ export const rstrip = (val) => {
   return val;
 };
 
-export const updateTooltipTitle = ($tooltipEl, newTitle) => $tooltipEl.attr('title', newTitle).tooltip('fixTitle');
+export const updateTooltipTitle = ($tooltipEl, newTitle) => $tooltipEl.attr('title', newTitle).tooltip('_fixTitle');
 
 export const disableButtonIfEmptyField = (fieldSelector, buttonSelector, eventName = 'input') => {
   const field = $(fieldSelector);
