@@ -1,6 +1,9 @@
-- if issuable.is_a?(Issue)
-  .block.epic
-    #js-vue-sidebar-item-epic
-      .title.hide-collapsed
-        Epic
-        = icon('spinner spin')
+- if issuable.project.feature_available?(:epics)
+  - if issuable.is_a?(Issue)
+    .block.epic
+      #js-vue-sidebar-item-epic
+        .title.hide-collapsed
+          Epic
+          = icon('spinner spin')
+- else
+  = render 'shared/promotions/promote_epics'
