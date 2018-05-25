@@ -6,12 +6,12 @@ import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer
 import { activityBarViews, viewerTypes } from '../constants';
 import monacoLoader from '../monaco_loader';
 import Editor from '../lib/editor';
-import FileView from './file_view.vue';
+import ExternalLink from './external_link.vue';
 
 export default {
   components: {
     ContentViewer,
-    FileView,
+    ExternalLink,
   },
   props: {
     file: {
@@ -224,7 +224,7 @@ export default {
           </a>
         </li>
       </ul>
-      <file-view
+      <external-link
         :file="file"
       />
     </div>
