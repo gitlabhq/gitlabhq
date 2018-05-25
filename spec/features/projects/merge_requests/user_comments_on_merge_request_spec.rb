@@ -14,10 +14,9 @@ describe 'User comments on a merge request', :js do
     visit(merge_request_path(merge_request))
   end
 
-  # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-  xit 'adds a comment' do
+  it 'adds a comment' do
     page.within('.js-main-target-form') do
-      fill_in(:note_note, with: '# Comment with a header')
+      fill_in('note[note]', with: '# Comment with a header')
       click_button('Comment')
     end
 
