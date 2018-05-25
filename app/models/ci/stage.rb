@@ -74,8 +74,7 @@ module Ci
         when 'failed' then drop
         when 'canceled' then cancel
         when 'manual' then block
-        when 'skipped' then skip
-        else skip
+        when 'skipped', nil then skip
         end
       end
     end
