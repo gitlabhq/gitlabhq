@@ -13,6 +13,14 @@ module Clusters
 
       default_value_for :version, VERSION
 
+      def set_initial_status
+        return unless not_installable?
+
+        if cluster&.application_ingress_installed? && cluster.application_ingress.external_ip
+          self.status = 'installable'
+        end
+      end
+
       def chart
         "#{name}/jupyterhub"
       end

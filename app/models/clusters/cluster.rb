@@ -41,6 +41,7 @@ module Clusters
 
     delegate :active?, to: :platform_kubernetes, prefix: true, allow_nil: true
     delegate :installed?, to: :application_helm, prefix: true, allow_nil: true
+    delegate :installed?, to: :application_ingress, prefix: true, allow_nil: true
 
     enum platform_type: {
       kubernetes: 1
