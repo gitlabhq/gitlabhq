@@ -113,6 +113,7 @@ export default {
 }
 
 .ide-pipeline-header {
+  min-height: 50px;
   padding-left: 16px;
   padding-right: 16px;
 }
