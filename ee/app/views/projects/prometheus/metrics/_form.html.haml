@@ -8,12 +8,12 @@
       = s_('Metrics|Edit metric')
     - else
       = s_('Metrics|New metric')
-  = form_for [project.namespace.becomes(Namespace), project, metric], html: { class: 'col-lg-8 col-lg-offset-2' } do |f|
+  = form_for [project.namespace.becomes(Namespace), project, metric], html: { class: 'col-lg-8 offset-lg-2' } do |f|
     = form_errors(metric)
     .form-group
       = f.label :title, s_('Metrics|Name'), class: 'label-light'
       = f.text_field :title, required: true, class: 'form-control', placeholder: s_('Metrics|e.g. Throughput'), autofocus: true
-      %span.help-block
+      %span.form-text.text-muted
         = s_('Metrics|Used as a title for the chart')
     .form-group
       = label_tag :group, s_("Metrics|Type"), class: 'append-bottom-10'
@@ -33,7 +33,7 @@
     .form-group
       = f.label :query, s_('Metrics|Query'), class: 'label-light'
       = f.text_field :query, required: true, class: 'form-control', placeholder: s_('Metrics|e.g. rate(http_requests_total[5m])')
-      %span.help-block
+      %span.form-text.text-muted
         = s_('Metrics|Must be a valid PromQL query.')
         = link_to "https://prometheus.io/docs/prometheus/latest/querying/basics/", target: "_blank", rel: "noopener noreferrer" do
           = sprite_icon("external-link", size: 12)
@@ -41,7 +41,7 @@
     .form-group
       = f.label :y_label, s_('Metrics|Y-axis label'), class: 'label-light'
       = f.text_field :y_label, class: 'form-control', placeholder: s_('Metrics|e.g. Requests/second')
-      %span.help-block
+      %span.form-text.text-muted
         = s_("Metrics|Label of the chart's vertical axis. Usually the type of the unit being charted. The horizontal axis (X-axis) always represents time.")
     .form-group
       = f.label :unit, s_('Metrics|Unit label'), class: 'label-light'
@@ -49,11 +49,11 @@
     .form-group
       = f.label :legend, s_('Metrics|Legend label (optional)'), class: 'label-light'
       = f.text_field :legend, class: 'form-control', placeholder: s_('Metrics|e.g. HTTP requests')
-      %span.help-block
+      %span.form-text.text-muted
         = s_('Metrics|Used if the query returns a single series. If it returns multiple series, their legend labels will be picked up from the response.')
 
     .form-actions
       = f.submit save_button_text, class: 'btn btn-success'
-      = link_to _('Cancel'), edit_project_service_path(project, PrometheusService), class: 'btn btn-default pull-right'
+      = link_to _('Cancel'), edit_project_service_path(project, PrometheusService), class: 'btn btn-default float-right'
       - if metric.persisted?
-        = link_to _('Delete'), project_prometheus_metric_path(project, metric), data: { confirm: s_("This will delete the custom metric, Are you sure?") }, method: :delete, class: "btn btn-danger pull-right append-right-default"
+        = link_to _('Delete'), project_prometheus_metric_path(project, metric), data: { confirm: s_("This will delete the custom metric, Are you sure?") }, method: :delete, class: "btn btn-danger float-right append-right-default"

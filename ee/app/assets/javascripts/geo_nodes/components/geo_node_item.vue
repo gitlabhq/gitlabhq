@@ -81,7 +81,7 @@ export default {
 
 <template>
   <div
-    class="panel panel-default geo-node-item"
+    class="card geo-node-item"
     :class="{ 'node-action-active': node.nodeActionActive }"
   >
     <geo-node-header

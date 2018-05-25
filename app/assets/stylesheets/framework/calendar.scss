@@ -4,7 +4,7 @@
   border-top: 0;
   direction: rtl;
 
-  @media (min-width: $screen-sm-min) and (max-width: $screen-md-max) {
+  @media (min-width: map-get($grid-breakpoints, sm)) and (max-width: map-get($grid-breakpoints, sm)) {
     overflow-x: auto;
   }
 }

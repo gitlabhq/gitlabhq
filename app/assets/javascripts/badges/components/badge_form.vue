@@ -160,7 +160,7 @@ export default {
         @input="debouncedPreview"
       />
       <span
-        class="help-block"
+        class="form-text text-muted"
         v-html="helpText"
       ></span>
     </div>
@@ -176,7 +176,7 @@ export default {
         @input="debouncedPreview"
       />
       <span
-        class="help-block"
+        class="form-text text-muted"
         v-html="helpText"
       ></span>
     </div>

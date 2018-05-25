@@ -77,7 +77,7 @@ export default {
 
 <template>
   <li
-    class="card"
+    class="board-card"
     :class="{
       'user-can-drag': !disabled && issue.id,
       'is-disabled': disabled || !issue.id,

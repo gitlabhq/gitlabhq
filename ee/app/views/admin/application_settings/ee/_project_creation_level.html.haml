@@ -2,6 +2,6 @@
 - form = local_assigns.fetch(:form)
 - application_setting = local_assigns.fetch(:application_setting)
 .form-group
-  = form.label s_('ProjectCreationLevel|Default project creation protection'), class: 'control-label col-sm-2'
+  = form.label s_('ProjectCreationLevel|Default project creation protection'), class: 'col-form-label col-sm-2'
   .col-sm-10
     = form.select :default_project_creation, options_for_select(Gitlab::Access.project_creation_options, application_setting.default_project_creation), {}, class: 'form-control'

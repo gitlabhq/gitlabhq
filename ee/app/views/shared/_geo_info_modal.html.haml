@@ -12,7 +12,7 @@
         .form-group
           .input-group
             %input#geo-info-1.form-control{ value: "git clone " + default_url_to_repo(), readonly: "readonly" }
-            .input-group-btn
+            .input-group-append
               = clipboard_button(target: '#geo-info-1', class: "btn-default", container: "#modal-geo-info")
         %p
           %strong= 'Step 2.'
@@ -24,7 +24,7 @@
         .form-group
           .input-group
             %input#geo-info-2.form-control{ value: "git remote set-url --push origin &lt;clone url for primary repository&gt;", readonly: "readonly" }
-            .input-group-btn
+            .input-group-append
               = clipboard_button(target: '#geo-info-2', class: "btn-default", container: "#modal-geo-info")
         %p
           %strong= 'Done.'

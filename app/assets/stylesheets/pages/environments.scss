@@ -1,4 +1,4 @@
-@media (max-width: $screen-md-max) {
+@include media-breakpoint-down(md) {
   .deployments-container {
     width: 100%;
     overflow: auto;
@@ -269,7 +269,7 @@
 .deploy-board-icon {
   display: none;
 
-  @media (min-width: $screen-md-min) {
+  @include media-breakpoint-up(md) {
     float: left;
     display: block;
   }
@@ -293,7 +293,7 @@
   border-left: 0;
   border-right: 0;
 
-  @media (min-width: $screen-sm-max) {
+  @media (min-width: map-get($grid-breakpoints, md)-1) {
     border-top: 0;
   }
 }
@@ -406,7 +406,7 @@
     font-size: 16px;
   }
 
-  @media (max-width: $screen-sm-max) {
+  @include media-breakpoint-down(sm) {
     min-width: 100%;
   }
 }
@@ -587,7 +587,7 @@
       }
     }
 
-    @media (max-width: $screen-sm-max) {
+    @include media-breakpoint-down(sm) {
       .label-axis-text,
       .text-metric-usage,
       .legend-axis-text {

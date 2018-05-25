@@ -31,7 +31,7 @@
     - projects.each do |project|
       %tr
         %td
-          .avatar-container.s20.hidden-xs
+          .avatar-container.s20.d-none.d-sm-block
             = project_icon(project, alt: '', class: 'avatar project-avatar s20')
           %strong= link_to project.full_name, project
         %td

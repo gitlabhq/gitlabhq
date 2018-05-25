@@ -143,7 +143,7 @@ describe('GeoNodeItemComponent', () => {
 
   describe('template', () => {
     it('renders container element', () => {
-      expect(vm.$el.classList.contains('panel', 'panel-default', 'geo-node-item')).toBe(true);
+      expect(vm.$el.classList.contains('card', 'geo-node-item')).toBe(true);
     });
 
     it('renders node error message', (done) => {

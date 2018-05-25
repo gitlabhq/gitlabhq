@@ -49,9 +49,9 @@ document.addEventListener('beforeunload', () => {
   // Unbind scroll events
   $(document).off('scroll');
   // Close any open tooltips
-  $('.has-tooltip, [data-toggle="tooltip"]').tooltip('destroy');
+  $('.has-tooltip, [data-toggle="tooltip"]').tooltip('dispose');
   // Close any open popover
-  $('[data-toggle="popover"]').popover('destroy');
+  $('[data-toggle="popover"]').popover('dispose');
 });
 
 window.addEventListener('hashchange', handleLocationHash);
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   $('.remove-row').on('ajax:success', function removeRowAjaxSuccessCallback() {
     $(this)
-      .tooltip('destroy')
+      .tooltip('dispose')
       .closest('li')
       .fadeOut();
   });
@@ -144,9 +144,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Initialize tooltips
-  $.fn.tooltip.Constructor.DEFAULTS.trigger = 'hover';
   $body.tooltip({
     selector: '.has-tooltip, [data-toggle="tooltip"]',
+    trigger: 'hover',
     placement(tip, el) {
       return $(el).data('placement') || 'bottom';
     },
@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
     $container.remove();
   });
 
-  $('.navbar-toggle').on('click', () => {
+  $('.navbar-toggler').on('click', () => {
     $('.header-content').toggleClass('menu-expanded');
     gl.lazyLoader.loadCheck();
   });

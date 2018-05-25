@@ -32,7 +32,7 @@ describe('ServiceDeskSetting', () => {
         });
 
         it('should see main panel with the email info', () => {
-          expect(vm.$el.querySelector('.panel')).toBeDefined();
+          expect(vm.$el.querySelector('.card')).toBeDefined();
         });
 
         it('should see loading spinner', () => {
@@ -71,7 +71,7 @@ describe('ServiceDeskSetting', () => {
     });
 
     it('should not see panel', () => {
-      expect(vm.$el.querySelector('.panel')).toBeNull();
+      expect(vm.$el.querySelector('.card')).toBeNull();
     });
 
     it('should not see warning message', () => {

@@ -63,7 +63,7 @@
 }
 
 .geo-node-item {
-  .panel-body {
+  .card-body {
     padding: 0;
 
     .node-detail-section {
@@ -154,7 +154,7 @@
     }
   }
 
-  @media (max-width: $screen-sm-max) {
+  @include media-breakpoint-down(sm) {
     display: block;
     width: 100%;
 

@@ -15,8 +15,8 @@
         = form_errors(@project)
       = render "shared/remote_mirror_update_button", remote_mirror: @remote_mirror
       - if @remote_mirror.last_error.present?
-        .panel.panel-danger
-          .panel-heading
+        .card.bg-danger
+          .card-header
             - if @remote_mirror.last_update_at
               The remote repository failed to update #{time_ago_with_tooltip(@remote_mirror.last_update_at)}.
             - else
@@ -24,13 +24,13 @@
 
             - if @remote_mirror.last_successful_update_at
               Last successful update #{time_ago_with_tooltip(@remote_mirror.last_successful_update_at)}.
-          .panel-body
+          .card-body
             %pre
               :preserve
                 #{h(@remote_mirror.last_error.strip)}
       = f.fields_for :remote_mirrors, @remote_mirror do |rm_form|
         .form-group
-          = rm_form.check_box :enabled, class: "pull-left"
+          = rm_form.check_box :enabled, class: "float-left"
           .prepend-left-20
             = rm_form.label :enabled, "Remote mirror repository", class: "label-light append-bottom-0"
             %p.light.append-bottom-0
@@ -42,7 +42,7 @@
           = render "projects/mirrors/instructions"
 
         .form-group
-          = rm_form.check_box :only_protected_branches, class: 'pull-left'
+          = rm_form.check_box :only_protected_branches, class: 'float-left'
           .prepend-left-20
             = rm_form.label :only_protected_branches, class: 'label-light'
             = link_to icon('question-circle'), help_page_path('user/project/protected_branches')

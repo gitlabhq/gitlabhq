@@ -70,7 +70,7 @@
     </button>
     <div
       class="dropdown-menu"
-      :class="{ 'dropdown-menu-align-right' : alignRight }"
+      :class="{ 'dropdown-menu-right' : alignRight }"
     >
       <input
         ref="title"

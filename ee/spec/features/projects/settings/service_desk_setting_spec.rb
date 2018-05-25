@@ -25,6 +25,6 @@ describe 'Service Desk Setting', :js do
     project.reload
     expect(project.service_desk_enabled).to be_truthy
     expect(project.service_desk_address).to be_present
-    expect(find('.js-service-desk-setting-wrapper .panel-body')).to have_content(project.service_desk_address)
+    expect(find('.js-service-desk-setting-wrapper .card-body')).to have_content(project.service_desk_address)
   end
 end
