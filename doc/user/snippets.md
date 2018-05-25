@@ -28,7 +28,7 @@ You can download the raw content of a snippet.
 
 By default snippets will be downloaded with Linux-style line endings (`LF`). If you want to preserve the original line endings you need to add a parameter `line_ending=raw` (eg. `https://gitlab.com/snippets/SNIPPET_ID/raw?line_ending=raw`). In case a snippet was created using the GitLab web interface the original line ending is Windows-like (`CRLF`).
 
-## Embedded Snippets
+## Embedded snippets
 
 > Introduced in GitLab 10.8.
 
