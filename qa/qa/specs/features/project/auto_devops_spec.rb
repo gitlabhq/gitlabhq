@@ -52,8 +52,6 @@ module QA
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 
-      @cluster = Service::KubernetesCluster.new.create!
-
       # Create the K8s cluster
       project = Factory::Resource::Project.fabricate! do |p|
         p.name = 'project-with-autodevops'
@@ -81,8 +79,9 @@ module QA
         repository.push_changes("master:master")
       end
 
-      # Connect GitLab to the K8s cluster
-      Factory::Resource::KubernetesCluster.fabricate! do |c|
+      # Create and connect K8s cluster
+      @cluster = Service::KubernetesCluster.new.create!
+      kubernetes_cluster = Factory::Resource::KubernetesCluster.fabricate! do |c|
         c.project = project
         c.cluster_name = @cluster.cluster_name
         c.api_url = @cluster.api_url
@@ -94,20 +93,23 @@ module QA
         c.install_runner = true
       end
 
-      require 'pry'; binding.pry
+      project.visit!
+      Page::Menu::Side.act { click_ci_cd_settings }
+      Page::Project::Settings::CICD.perform do |p|
+        p.enable_auto_devops_with_domain("#{kubernetes_cluster.ingress_ip}.nip.io")
+      end
 
-      #Page::Project::Settings::CICD.act { enable_auto_devops_with_nip_domain }
+      project.visit!
+      Page::Menu::Side.act { click_ci_cd_pipelines }
+      Page::Project::Pipeline::Index.act { go_to_latest_pipeline }
 
-      #puts 'Waiting for the runner to process the pipeline'
-      #sleep 15 # Runner should process all jobs within 15 seconds.
-
-      #Page::Project::Pipeline::Index.act { go_to_latest_pipeline }
-
-      #Page::Project::Pipeline::Show.perform do |pipeline|
-      #  expect(pipeline).to have_build('build', status: :success)
-      #  expect(pipeline).to have_build('test', status: :success)
-      #  expect(pipeline).to have_build('production', status: :success)
-      #end
+      Page::Project::Pipeline::Show.perform do |pipeline|
+        expect(pipeline).to have_build('build', status: :success, wait: 600)
+        expect(pipeline).to have_build('test', status: :success, wait: 600)
+        expect(pipeline).to have_build('sast', status: :success, wait: 600)
+        expect(pipeline).to have_build('production', status: :success, wait: 600)
+        expect(pipeline).to have_build('performance', status: :success, wait: 600)
+      end
     end
   end
 end

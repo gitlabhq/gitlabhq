@@ -7,6 +7,12 @@ module QA
 
         attr_writer :project, :cluster_name, :api_url, :ca_certificate, :token, :install_helm_tiller, :install_ingress, :install_prometheus, :install_runner
 
+        product :ingress_ip do
+          Page::Project::Operations::Kubernetes::Show.perform do |p|
+            p.ingress_ip
+          end
+        end
+
         def fabricate!
           @project.visit!
 

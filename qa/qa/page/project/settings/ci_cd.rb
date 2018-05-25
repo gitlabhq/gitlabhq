@@ -23,9 +23,11 @@ module QA # rubocop:disable Naming/FileName
             end
           end
 
-          def expand_auto_devops(&block)
-            expand_section('Auto DevOps (Beta)') do
-              Settings::SecretVariables.perform(&block)
+          def enable_auto_devops_with_domain(domain)
+            expand_section('Auto DevOps') do
+              choose 'Enable Auto DevOps'
+              fill_in 'Domain', with: domain
+              click_on 'Save changes'
             end
           end
         end
