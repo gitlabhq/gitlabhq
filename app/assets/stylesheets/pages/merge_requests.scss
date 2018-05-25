@@ -491,7 +491,11 @@
 }
 
 .card-new-merge-request {
+<<<<<<< HEAD
   .card-heading {
+=======
+  .card-header {
+>>>>>>> gitlab-ce/master
     padding: 5px 10px;
     font-weight: $gl-font-weight-bold;
     line-height: 25px;

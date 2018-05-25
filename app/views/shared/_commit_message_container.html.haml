@@ -1,7 +1,11 @@
 .form-group.row.commit_message-group
   - nonce = SecureRandom.hex
   - descriptions = local_assigns.slice(:message_with_description, :message_without_description)
+<<<<<<< HEAD
   = label_tag "commit_message-#{nonce}", class: 'col-form-label' do
+=======
+  = label_tag "commit_message-#{nonce}", class: 'col-form-label col-sm-2' do
+>>>>>>> gitlab-ce/master
     #{ _('Commit message') }
   .col-sm-10
     .commit-message-container

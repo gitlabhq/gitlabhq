@@ -1,53 +1,89 @@
 = form_for runner, url: runner_form_url do |f|
   = form_errors(runner)
   .form-group.row
+<<<<<<< HEAD
     = label :active, "Active", class: 'col-form-label'
+=======
+    = label :active, "Active", class: 'col-form-label col-sm-2'
+>>>>>>> gitlab-ce/master
     .col-sm-10
       .form-check
         = f.check_box :active
         %span.light Paused Runners don't accept new jobs
   .form-group.row
+<<<<<<< HEAD
     = label :protected, "Protected", class: 'col-form-label'
+=======
+    = label :protected, "Protected", class: 'col-form-label col-sm-2'
+>>>>>>> gitlab-ce/master
     .col-sm-10
       .form-check
         = f.check_box :access_level, {}, 'ref_protected', 'not_protected'
         %span.light This runner will only run on pipelines triggered on protected branches
   .form-group.row
+<<<<<<< HEAD
     = label :run_untagged, 'Run untagged jobs', class: 'col-form-label'
+=======
+    = label :run_untagged, 'Run untagged jobs', class: 'col-form-label col-sm-2'
+>>>>>>> gitlab-ce/master
     .col-sm-10
       .form-check
         = f.check_box :run_untagged
         %span.light Indicates whether this runner can pick jobs without tags
   - unless runner.group_type?
     .form-group.row
+<<<<<<< HEAD
       = label :locked, _('Lock to current projects'), class: 'col-form-label'
+=======
+      = label :locked, _('Lock to current projects'), class: 'col-form-label col-sm-2'
+>>>>>>> gitlab-ce/master
       .col-sm-10
-        .checkbox
+        .form-check
           = f.check_box :locked
           %span.light= _('When a runner is locked, it cannot be assigned to other projects')
   .form-group.row
+<<<<<<< HEAD
     = label_tag :token, class: 'col-form-label' do
+=======
+    = label_tag :token, class: 'col-form-label col-sm-2' do
+>>>>>>> gitlab-ce/master
       Token
     .col-sm-10
       = f.text_field :token, class: 'form-control', readonly: true
   .form-group.row
+<<<<<<< HEAD
     = label_tag :ip_address, class: 'col-form-label' do
+=======
+    = label_tag :ip_address, class: 'col-form-label col-sm-2' do
+>>>>>>> gitlab-ce/master
       IP Address
     .col-sm-10
       = f.text_field :ip_address, class: 'form-control', readonly: true
   .form-group.row
+<<<<<<< HEAD
     = label_tag :description, class: 'col-form-label' do
+=======
+    = label_tag :description, class: 'col-form-label col-sm-2' do
+>>>>>>> gitlab-ce/master
       Description
     .col-sm-10
       = f.text_field :description, class: 'form-control'
   .form-group.row
+<<<<<<< HEAD
     = label_tag :maximum_timeout_human_readable, class: 'col-form-label' do
+=======
+    = label_tag :maximum_timeout_human_readable, class: 'col-form-label col-sm-2' do
+>>>>>>> gitlab-ce/master
       Maximum job timeout
     .col-sm-10
       = f.text_field :maximum_timeout_human_readable, class: 'form-control'
       .form-text.text-muted This timeout will take precedence when lower than Project-defined timeout
   .form-group.row
+<<<<<<< HEAD
     = label_tag :tag_list, class: 'col-form-label' do
+=======
+    = label_tag :tag_list, class: 'col-form-label col-sm-2' do
+>>>>>>> gitlab-ce/master
       Tags
     .col-sm-10
       = f.text_field :tag_list, value: runner.tag_list.sort.join(', '), class: 'form-control'

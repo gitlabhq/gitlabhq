@@ -1285,8 +1285,13 @@ boom@5.x.x:
     hoek "4.x.x"
 
 bootstrap@4.1:
+<<<<<<< HEAD
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.1.1.tgz#3aec85000fa619085da8d2e4983dfd67cf2114cb"
+=======
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.1.0.tgz#110b05c31a236d56dbc9adcda6dd16f53738a28a"
+>>>>>>> gitlab-ce/master
 
 boxen@^1.2.1:
   version "1.3.0"

@@ -16,12 +16,21 @@
           %i Owners
 
     .light
+<<<<<<< HEAD
       - if can_admin_project_members && project_can_be_shared?
         - if !membership_locked? && @project.allowed_to_share_with_group?
           %ul.nav-links.nav.nav-tabs.gitlab-tabs{ role: 'tablist' }
             %li.active{ role: 'presentation' }
               %a{ href: '#add-member-pane', id: 'add-member-tab', data: { toggle: 'tab' }, role: 'tab' } Add member
             %li{ role: 'presentation', class: ('active' if membership_locked?) }
+=======
+      - if can?(current_user, :admin_project_member, @project)
+        %ul.nav-links.nav.nav-tabs.gitlab-tabs{ role: 'tablist' }
+          %li.active{ role: 'presentation' }
+            %a{ href: '#add-member-pane', id: 'add-member-tab', data: { toggle: 'tab' }, role: 'tab' } Add member
+          - if @project.allowed_to_share_with_group?
+            %li{ role: 'presentation' }
+>>>>>>> gitlab-ce/master
               %a{ href: '#share-with-group-pane', id: 'share-with-group-tab', data: { toggle: 'tab' }, role: 'tab' } Share with group
 
           .tab-content.gitlab-tab-content

@@ -251,13 +251,13 @@ describe('Issue card component', () => {
 
     it('renders list label', () => {
       expect(
-        component.$el.querySelectorAll('.label').length,
+        component.$el.querySelectorAll('.badge').length,
       ).toBe(2);
     });
 
     it('renders label', () => {
       const nodes = [];
-      component.$el.querySelectorAll('.label').forEach((label) => {
+      component.$el.querySelectorAll('.badge').forEach((label) => {
         nodes.push(label.title);
       });
 
@@ -268,13 +268,13 @@ describe('Issue card component', () => {
 
     it('sets label description as title', () => {
       expect(
-        component.$el.querySelector('.label').getAttribute('title'),
+        component.$el.querySelector('.badge').getAttribute('title'),
       ).toContain(label1.description);
     });
 
     it('sets background color of button', () => {
       const nodes = [];
-      component.$el.querySelectorAll('.label').forEach((label) => {
+      component.$el.querySelectorAll('.badge').forEach((label) => {
         nodes.push(label.style.backgroundColor);
       });
 
@@ -291,7 +291,7 @@ describe('Issue card component', () => {
       Vue.nextTick()
         .then(() => {
           expect(
-            component.$el.querySelectorAll('.label').length,
+            component.$el.querySelectorAll('.badge').length,
           ).toBe(2);
           expect(
             component.$el.textContent,

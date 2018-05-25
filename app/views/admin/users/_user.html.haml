@@ -6,9 +6,12 @@
       = link_to user.name, [:admin, user]
     - if user.blocked?
       %span.badge.badge-danger blocked
+<<<<<<< HEAD
     - if user.note.present?
       = link_to "#", { "data-toggle" => "tooltip", title: user.note, class: "user-note"} do
         = icon("sticky-note-o cgrey")
+=======
+>>>>>>> gitlab-ce/master
     - if user.admin?
       %span.badge.badge-success Admin
     - if user.external?

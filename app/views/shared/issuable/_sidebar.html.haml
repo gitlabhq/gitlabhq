@@ -34,7 +34,11 @@
             = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right'
         .value.hide-collapsed
           - if issuable.milestone
+<<<<<<< HEAD
             = link_to issuable.milestone.title, milestone_path(issuable.milestone), class: "bold has-tooltip", title: milestone_tooltip_due_date(issuable.milestone), data: { container: "body", html: 'true', boundary: 'viewport' }
+=======
+            = link_to issuable.milestone.title, milestone_path(issuable.milestone), class: "bold has-tooltip", title: milestone_tooltip_due_date(issuable.milestone), data: { container: "body", html: 'true' }
+>>>>>>> gitlab-ce/master
           - else
             %span.no-value
               = _('None')

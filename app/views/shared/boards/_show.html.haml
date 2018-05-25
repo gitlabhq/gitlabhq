@@ -15,7 +15,11 @@
 
 #board-app.boards-app{ "v-cloak" => true, data: board_data, ":class" => "{ 'is-compact': detailIssueVisible }" }
   .d-none.d-sm-none.d-md-block
+<<<<<<< HEAD
     = render 'shared/issuable/search_bar', type: :boards, board: board
+=======
+    = render 'shared/issuable/search_bar', type: :boards
+>>>>>>> gitlab-ce/master
 
   .boards-list
     .boards-app-loading.text-center{ "v-if" => "loading" }

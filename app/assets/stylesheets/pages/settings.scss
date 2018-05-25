@@ -174,7 +174,7 @@
 
     .option-description,
     .option-disabled-reason {
-      margin-left: 29px;
+      margin-left: 45px;
       color: $project-option-descr-color;
     }
 
@@ -234,7 +234,11 @@
       line-height: 12px;
     }
 
+<<<<<<< HEAD
     .card-heading .label-count {
+=======
+    .card-header .label-count {
+>>>>>>> gitlab-ce/master
       color: $white-light;
       background: $common-gray-dark;
     }

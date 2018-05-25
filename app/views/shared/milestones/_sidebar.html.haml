@@ -78,7 +78,11 @@
           %span= milestone.issues_visible_to_user(current_user).count
         .title.hide-collapsed
           Issues
+<<<<<<< HEAD
           %span.badge.badge-pill= milestone.issues_visible_to_user(current_user).count
+=======
+          %span.badg.badge-pille= milestone.issues_visible_to_user(current_user).count
+>>>>>>> gitlab-ce/master
           - if show_new_issue_link?(project)
             = link_to new_project_issue_path(project, issue: { milestone_id: milestone.id }), class: "float-right", title: "New Issue" do
               New issue

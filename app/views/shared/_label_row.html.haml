@@ -24,9 +24,12 @@
       .description-text
         = markdown_field(label, :description)
     .d-none.d-sm-none.d-md-block
+<<<<<<< HEAD
       - if show_label_epics_link
         = link_to 'Epics', group_epics_path(@group, label_name:[label.name])
         &middot;
+=======
+>>>>>>> gitlab-ce/master
       - if show_label_issues_link
         = link_to_label(label, subject: subject) { 'Issues' }
       - if show_label_merge_requests_link

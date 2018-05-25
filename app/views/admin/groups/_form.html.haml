@@ -2,6 +2,7 @@
   = form_errors(@group)
   = render 'shared/group_form', f: f
 
+<<<<<<< HEAD
   = render 'shared/repository_size_limit_setting', form: f, type: :group
 
   - if Gitlab::CurrentSettings.should_check_namespace_plan?
@@ -9,6 +10,10 @@
 
   .form-group.row.group-description-holder
     = f.label :avatar, "Group avatar", class: 'col-form-label'
+=======
+  .form-group.row.group-description-holder
+    = f.label :avatar, "Group avatar", class: 'col-form-label col-sm-2'
+>>>>>>> gitlab-ce/master
     .col-sm-10
       = render 'shared/choose_group_avatar_button', f: f
 

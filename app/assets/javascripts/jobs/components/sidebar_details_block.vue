@@ -48,7 +48,11 @@ export default {
       return `${this.job.runner.description} (#${this.job.runner.id})`;
     },
     retryButtonClass() {
+<<<<<<< HEAD
       let className = 'js-retry-button float-right btn btn-retry d-none d-md-block d-lg-block d-xl-block';
+=======
+      let className = 'js-retry-button pull-right btn btn-retry d-none d-md-block d-lg-block d-xl-block';
+>>>>>>> gitlab-ce/master
       className +=
         this.job.status && this.job.recoverable
           ? ' btn-primary'
@@ -104,8 +108,13 @@ export default {
       <button
         type="button"
         :aria-label="__('Toggle Sidebar')"
+<<<<<<< HEAD
         class="btn btn-blank gutter-toggle float-right
           d-block d-md-none js-sidebar-build-toggle"
+=======
+        class="btn btn-blank gutter-toggle pull-right
+          d-block d-sm-block d-md-none js-sidebar-build-toggle"
+>>>>>>> gitlab-ce/master
       >
         <i
           aria-hidden="true"
