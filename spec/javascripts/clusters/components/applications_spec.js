@@ -114,7 +114,7 @@ describe('Applications', () => {
     });
 
     describe('Jupyter application', () => {
-      describe('with ingress installed & jupyter not installed', () => {
+      describe('with ingress installed with ip & jupyter installable', () => {
         it('renders hostname active input', () => {
           vm = mountComponent(Applications, {
             applications: {
@@ -122,12 +122,13 @@ describe('Applications', () => {
               ingress: { title: 'Ingress', status: 'installed', externalIp: '1.1.1.1' },
               runner: { title: 'GitLab Runner' },
               prometheus: { title: 'Prometheus' },
-              jupyter: { title: 'JupyterHub', hostname: '' },
+              jupyter: { title: 'JupyterHub', hostname: '', status: 'installable' },
             },
           });
 
           expect(vm.$el.querySelector('.js-hostname').getAttribute('readonly')).toEqual(null);
         });
+
         describe('with ingress & jupyter installed', () => {
           it('renders readonly input', () => {
             vm = mountComponent(Applications, {
@@ -153,7 +154,7 @@ describe('Applications', () => {
               ingress: { title: 'Ingress' },
               runner: { title: 'GitLab Runner' },
               prometheus: { title: 'Prometheus' },
-              jupyter: { title: 'JupyterHub' },
+              jupyter: { title: 'JupyterHub', status: 'not_installable' },
             },
           });
         });

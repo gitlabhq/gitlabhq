@@ -211,16 +211,6 @@ describe('Application Row', () => {
 
       expect(eventHub.$emit).not.toHaveBeenCalled();
     });
-
-    it('is disabled when disableInstallButton prop is provided', () => {
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_INSTALLING,
-        disableInstallButton: true,
-      });
-
-      expect(vm.installButtonDisabled).toEqual(true);
-    });
   });
 
   describe('Error block', () => {

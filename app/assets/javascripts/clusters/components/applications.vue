@@ -292,7 +292,6 @@ export default {
           :status-reason="applications.jupyter.statusReason"
           :request-status="applications.jupyter.requestStatus"
           :request-reason="applications.jupyter.requestReason"
-          :disable-install-button="!ingressInstalled"
           :install-application-request-params="{ hostname: applications.jupyter.hostname }"
         >
           <div slot="description">
@@ -304,7 +303,7 @@ export default {
                 or a scientific research group.`) }}
             </p>
 
-            <template v-if="ingressInstalled">
+            <template v-if="ingressExternalIp">
               <div class="form-group">
                 <label for="jupyter-hostname">
                   {{ s__('ClusterIntegration|Jupyter Hostname') }}
