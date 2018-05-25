@@ -15,6 +15,9 @@ module CarrierWave
             begin
               file_body = ::File.open(file_body.path) if file_body.closed? # Reopen if it's closed
               file_body.read
+            rescue Errno::ENOENT
+              @file = nil # rubocop:disable Gitlab/ModuleWithInstanceVariables
+              file.body
             ensure
               file_body.close
             end
