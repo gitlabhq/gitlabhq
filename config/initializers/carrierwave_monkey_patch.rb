@@ -24,16 +24,16 @@ module CarrierWave
           end
 
           def store(new_file)
-            if new_file.is_a?(self.class) # rubocop:disable Gitlab/LineBreakAroundConditionalBlock
+            if new_file.is_a?(self.class) # rubocop:disable Cop/LineBreakAroundConditionalBlock
               new_file.copy_to(path)
             else
               fog_file = new_file.to_file
               @content_type ||= new_file.content_type # rubocop:disable Gitlab/ModuleWithInstanceVariables
               @file = directory.files.create({ # rubocop:disable Gitlab/ModuleWithInstanceVariables
-                :body         => fog_file ? fog_file : new_file.read, # rubocop:disable Gitlab/HashSyntax
-                :content_type => @content_type, # rubocop:disable Gitlab/HashSyntax,Gitlab/ModuleWithInstanceVariables
-                :key          => path, # rubocop:disable Gitlab/HashSyntax
-                :public       => @uploader.fog_public # rubocop:disable Gitlab/HashSyntax,Gitlab/ModuleWithInstanceVariables
+                :body         => fog_file ? fog_file : new_file.read, # rubocop:disable Style/HashSyntax
+                :content_type => @content_type, # rubocop:disable Style/HashSyntax,Gitlab/ModuleWithInstanceVariables
+                :key          => path, # rubocop:disable Style/HashSyntax
+                :public       => @uploader.fog_public # rubocop:disable Style/HashSyntax,Gitlab/ModuleWithInstanceVariables
               }.merge(@uploader.fog_attributes)) # rubocop:disable Gitlab/ModuleWithInstanceVariables
               fog_file.close if fog_file && !fog_file.closed?
             end
