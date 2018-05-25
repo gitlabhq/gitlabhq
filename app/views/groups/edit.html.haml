@@ -48,14 +48,14 @@
         = f.submit _('Save group'), class: "btn btn-save"
 
 .panel.panel-danger
-  .panel-heading 
+  .panel-heading
     = s_('GroupSettings|Remove group')
   .panel-body
     = form_tag(@group, method: :delete) do
       %p
         = s_('GroupSettings|Removing group will cause all child projects and resources to be removed.')
         %br
-        %strong 
+        %strong
           = s_('GroupSettings|Removed group can not be restored!')
 
       .form-actions
@@ -63,7 +63,7 @@
 
 - if supports_nested_groups?
   .panel.panel-warning
-    .panel-heading 
+    .panel-heading
       = s_('GroupSettings|Transfer group')
     .panel-body
       = form_for @group, url: transfer_group_path(@group), method: :put do |f|
@@ -73,12 +73,12 @@
 
         %ul
           %li
-            = sprintf(s_("GroupSettings|Be careful. Changing a group's parent can have unintended %{value}."), { value: "#{link_to 'side effects', 'https://docs.gitlab.com/ce/user/project/index.html#redirects-when-changing-repository-paths', target: 'blank'}" }).html_safe; 
-          %li 
+            = sprintf(s_("GroupSettings|Be careful. Changing a group's parent can have unintended %{value}."), { value: "#{link_to 'side effects', 'https://docs.gitlab.com/ce/user/project/index.html#redirects-when-changing-repository-paths', target: 'blank'}" }).html_safe;
+          %li
             = s_('GroupSettings|You can only transfer the group to a group you manage.')
-          %li 
+          %li
             = s_('GroupSettings|You will need to update your local repositories to point to the new location.')
-          %li 
+          %li
             = s_('GroupSettings|If the parent group\'s visibility is lower than the group current visibility, visibility levels for subgroups and projects will be changed to match the new parent group\'s visibility.')
         = f.submit _('Transfer group'), class: "btn btn-warning"
 
