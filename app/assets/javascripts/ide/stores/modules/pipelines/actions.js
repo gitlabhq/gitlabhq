@@ -1,41 +1,55 @@
+import Visibility from 'visibilityjs';
 import axios from 'axios';
 import { __ } from '../../../../locale';
-import Api from '../../../../api';
 import flash from '../../../../flash';
+import Poll from '../../../../lib/utils/poll';
+import service from '../../../services';
 import * as types from './mutation_types';
 
+let eTagPoll;
+
+export const stopPipelinePolling = () => eTagPoll.stop();
+export const restartPipelinePolling = () => eTagPoll.restart();
+
 export const requestLatestPipeline = ({ commit }) => commit(types.REQUEST_LATEST_PIPELINE);
-export const receiveLatestPipelineError = ({ commit }) => {
+export const receiveLatestPipelineError = ({ commit, dispatch }) => {
   flash(__('There was an error loading latest pipeline'));
   commit(types.RECEIVE_LASTEST_PIPELINE_ERROR);
+  dispatch('stopPipelinePolling');
 };
-export const receiveLatestPipelineSuccess = ({ commit }, pipeline) =>
-  commit(types.RECEIVE_LASTEST_PIPELINE_SUCCESS, pipeline);
+export const receiveLatestPipelineSuccess = ({ rootGetters, commit }, { pipelines }) => {
+  if (pipelines && pipelines.length) {
+    const lastCommitHash = rootGetters.lastCommit && rootGetters.lastCommit.id;
+    const lastCommitPipeline = pipelines.find(pipeline => pipeline.commit.id === lastCommitHash);
 
-export const fetchLatestPipeline = ({ dispatch, rootState }, sha) => {
+    commit(types.RECEIVE_LASTEST_PIPELINE_SUCCESS, lastCommitPipeline);
+  }
+};
+
+export const fetchLatestPipeline = ({ dispatch, rootGetters }) => {
+  if (eTagPoll) return;
+
   dispatch('requestLatestPipeline');
 
-  return Api.pipelines(rootState.currentProjectId, { sha, per_page: '1' })
-    .then(({ data }) => {
-      dispatch('receiveLatestPipelineSuccess', data.pop());
-    })
-    .catch(() => dispatch('receiveLatestPipelineError'));
-};
+  eTagPoll = new Poll({
+    resource: service,
+    method: 'lastCommitPipelines',
+    data: { getters: rootGetters },
+    successCallback: ({ data }) => dispatch('receiveLatestPipelineSuccess', data),
+    errorCallback: () => dispatch('receiveLatestPipelineError'),
+  });
 
-export const requestStages = ({ commit }) => commit(types.REQUEST_STAGES);
-export const receiveStagesError = ({ commit }) => {
-  flash(__('There was an error loading job stages'));
-  commit(types.RECEIVE_STAGES_ERROR);
-};
-export const receiveStagesSuccess = ({ commit }, data) =>
-  commit(types.RECEIVE_STAGES_SUCCESS, data);
+  if (!Visibility.hidden()) {
+    eTagPoll.makeRequest();
+  }
 
-export const fetchStages = ({ dispatch, state, rootState }) => {
-  dispatch('requestStages');
-
-  Api.pipelineJobs(rootState.currentProjectId, state.latestPipeline.id)
-    .then(({ data }) => dispatch('receiveStagesSuccess', data))
-    .catch(() => dispatch('receiveStagesError'));
+  Visibility.change(() => {
+    if (!Visibility.hidden()) {
+      eTagPoll.restart();
+    } else {
+      eTagPoll.stop();
+    }
+  });
 };
 
 export const requestJobs = ({ commit }, id) => commit(types.REQUEST_JOBS, id);
@@ -51,9 +65,7 @@ export const fetchJobs = ({ dispatch }, stage) => {
 
   axios
     .get(stage.dropdown_path)
-    .then(({ data }) => {
-      dispatch('receiveJobsSuccess', { id: stage.id, data });
-    })
+    .then(({ data }) => dispatch('receiveJobsSuccess', { id: stage.id, data }))
     .catch(() => dispatch('receiveJobsError', stage.id));
 };
 

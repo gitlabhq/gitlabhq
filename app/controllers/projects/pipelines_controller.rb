@@ -76,16 +76,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def builds
-    respond_to do |format|
-      format.html do
-        render_show
-      end
-      format.json do
-        render json: PipelineSerializer
-          .new(project: @project, current_user: @current_user)
-          .represent_stages(@pipeline)
-      end
-    end
+    render_show
   end
 
   def failures

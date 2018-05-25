@@ -12,31 +12,18 @@ export default {
     state.isLoadingPipeline = false;
 
     if (pipeline) {
-      state.latestPipeline = {
-        id: pipeline.id,
-        status: pipeline.status,
-      };
+      state.latestPipeline = pipeline;
+      state.stages = pipeline.details.stages.map((stage, i) => {
+        const foundStage = state.stages.find(s => s.id === i);
+        return {
+          ...stage,
+          id: i,
+          isCollapsed: foundStage ? foundStage.isCollapsed : false,
+          isLoading: foundStage ? foundStage.isLoading : false,
+          jobs: foundStage ? foundStage.jobs : [],
+        };
+      });
     }
-  },
-  [types.REQUEST_STAGES](state) {
-    state.isLoadingJobs = true;
-  },
-  [types.RECEIVE_STAGES_ERROR](state) {
-    state.isLoadingJobs = false;
-  },
-  [types.RECEIVE_STAGES_SUCCESS](state, stages) {
-    state.isLoadingJobs = false;
-
-    state.stages = stages.map((stage, i) => {
-      const foundStage = state.stages.find(s => s.id === i);
-      return {
-        ...stage,
-        id: i,
-        isCollapsed: foundStage ? foundStage.isCollapsed : false,
-        isLoading: foundStage ? foundStage.isLoading : false,
-        jobs: foundStage ? foundStage.jobs : [],
-      };
-    });
   },
   [types.REQUEST_JOBS](state, id) {
     state.stages = state.stages.reduce(

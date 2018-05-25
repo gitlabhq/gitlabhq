@@ -73,7 +73,10 @@ export default {
       >
         {{ stage.name }}
       </strong>
-      <div class="append-right-8">
+      <div
+        v-if="!stage.isLoading || stage.jobs.length"
+        class="append-right-8"
+      >
         <span class="badge">
           {{ jobsCount }}
         </span>

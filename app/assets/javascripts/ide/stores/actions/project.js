@@ -1,11 +1,7 @@
-import Visibility from 'visibilityjs';
 import flash from '~/flash';
 import { __ } from '~/locale';
 import service from '../../services';
 import * as types from '../mutation_types';
-import Poll from '../../../lib/utils/poll';
-
-let eTagPoll;
 
 export const getProjectData = (
   { commit, state, dispatch },
@@ -91,61 +87,3 @@ export const refreshLastCommitData = ({ commit, state, dispatch }, { projectId, 
     .catch(() => {
       flash(__('Error loading last commit.'), 'alert', document, null, false, true);
     });
-
-export const pollSuccessCallBack = ({ commit, state, dispatch }, { data }) => {
-  if (data.pipelines && data.pipelines.length) {
-    const lastCommitHash =
-      state.projects[state.currentProjectId].branches[state.currentBranchId].commit.id;
-    const lastCommitPipeline = data.pipelines.find(
-      pipeline => pipeline.commit.id === lastCommitHash,
-    );
-    commit(types.SET_LAST_COMMIT_PIPELINE, {
-      projectId: state.currentProjectId,
-      branchId: state.currentBranchId,
-      pipeline: lastCommitPipeline || {},
-    });
-  }
-
-  return data;
-};
-
-export const pipelinePoll = ({ getters, dispatch }) => {
-  eTagPoll = new Poll({
-    resource: service,
-    method: 'lastCommitPipelines',
-    data: {
-      getters,
-    },
-    successCallback: ({ data }) => dispatch('pollSuccessCallBack', { data }),
-    errorCallback: () => {
-      flash(
-        __('Something went wrong while fetching the latest pipeline status.'),
-        'alert',
-        document,
-        null,
-        false,
-        true,
-      );
-    },
-  });
-
-  if (!Visibility.hidden()) {
-    eTagPoll.makeRequest();
-  }
-
-  Visibility.change(() => {
-    if (!Visibility.hidden()) {
-      eTagPoll.restart();
-    } else {
-      eTagPoll.stop();
-    }
-  });
-};
-
-export const stopPipelinePolling = () => {
-  eTagPoll.stop();
-};
-
-export const restartPipelinePolling = () => {
-  eTagPoll.restart();
-};

@@ -15,21 +15,14 @@ export default {
     JobsList,
   },
   computed: {
-    ...mapGetters(['currentProject']),
     ...mapGetters('pipelines', ['jobsCount', 'failedJobsCount', 'failedStages']),
     ...mapState('pipelines', ['isLoadingPipeline', 'latestPipeline', 'stages', 'isLoadingJobs']),
-    statusIcon() {
-      return {
-        group: this.latestPipeline.status,
-        icon: `status_${this.latestPipeline.status}`,
-      };
-    },
   },
   created() {
-    return this.fetchLatestPipeline().then(() => this.fetchStages());
+    this.fetchLatestPipeline();
   },
   methods: {
-    ...mapActions('pipelines', ['fetchLatestPipeline', 'fetchStages']),
+    ...mapActions('pipelines', ['fetchLatestPipeline']),
   },
 };
 </script>
@@ -46,7 +39,7 @@ export default {
         class="ide-tree-header ide-pipeline-header"
       >
         <ci-icon
-          :status="statusIcon"
+          :status="latestPipeline.details.status"
           :size="24"
         />
         <span class="prepend-left-8">
@@ -54,7 +47,7 @@ export default {
             Pipeline
           </strong>
           <a
-            :href="currentProject.web_url + '/pipelines/' + latestPipeline.id"
+            :href="latestPipeline.details.status.details_path"
             target="_blank"
           >
             #{{ latestPipeline.id }}
@@ -66,7 +59,7 @@ export default {
           <template slot="title">
             Jobs
             <span
-              v-if="!isLoadingJobs || jobsCount"
+              v-if="jobsCount"
               class="badge"
             >
               {{ jobsCount }}
@@ -81,7 +74,7 @@ export default {
           <template slot="title">
             Failed Jobs
             <span
-              v-if="!isLoadingJobs || failedJobsCount"
+              v-if="failedJobsCount"
               class="badge"
             >
               {{ failedJobsCount }}
