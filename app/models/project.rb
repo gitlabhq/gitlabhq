@@ -1449,8 +1449,8 @@ class Project < ActiveRecord::Base
     self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
   end
 
-  def open_issues_count
-    Projects::OpenIssuesCountService.new(self).count
+  def open_issues_count(current_user = nil)
+    Projects::OpenIssuesCountService.new(self, current_user).count
   end
 
   def open_merge_requests_count
