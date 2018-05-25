@@ -57,10 +57,10 @@ module Clusters
             "extraEnv" => {
               "GITLAB_HOST" => gitlab_url
             },
-            "cookieSecret" => SecureRandom.hex(32)
+            "cookieSecret" => cookie_secret
           },
           "proxy" => {
-            "secretToken" => SecureRandom.hex(32)
+            "secretToken" => secret_token
           },
           "auth" => {
             "gitlab" => {
@@ -78,6 +78,14 @@ module Clusters
 
       def content_values
         YAML.load_file(chart_values_file).deep_merge!(specification)
+      end
+
+      def secret_token
+        @secret_token ||= SecureRandom.hex(32)
+      end
+
+      def cookie_secret
+        @cookie_secret ||= SecureRandom.hex(32)
       end
     end
   end
