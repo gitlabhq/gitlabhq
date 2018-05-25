@@ -2,8 +2,8 @@
 - translation =_('You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}') % { use_ours: '<code>Use Ours</code>', use_theirs: '<code>Use Theirs</code>', branch_name: branch_name }
 
 %hr
-.form-horizontal.resolve-conflicts-form
-  .form-group
+.resolve-conflicts-form
+  .form-group.row
     .col-md-4
       %h4= _('Resolve conflicts on source branch')
       .resolve-info
@@ -14,11 +14,11 @@
       .commit-message-container
         .max-width-marker
         %textarea.form-control.js-commit-message#commit-message{ "v-model" => "conflictsData.commitMessage", "rows" => "5" }
-  .form-group
-    .col-md-offset-4.col-md-8
+  .form-group.row
+    .offset-md-4.col-md-8
       .row
-        .col-xs-6
+        .col-6
           %button.btn.btn-success.js-submit-button{ type: "button", "@click" => "commit()", ":disabled" => "!readyToCommit" }
             %span {{commitButtonText}}
-        .col-xs-6.text-right
+        .col-6.text-right
           = link_to "Cancel", project_merge_request_path(@merge_request.project, @merge_request), class: "btn btn-cancel"

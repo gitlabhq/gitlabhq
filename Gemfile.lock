@@ -69,9 +69,6 @@ GEM
     attr_encrypted (3.1.0)
       encryptor (~> 3.0.0)
     attr_required (1.0.0)
-    autoprefixer-rails (6.2.3)
-      execjs
-      json
     awesome_print (1.2.0)
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)
@@ -91,9 +88,6 @@ GEM
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     blankslate (2.1.2.4)
-    bootstrap-sass (3.3.6)
-      autoprefixer-rails (>= 5.2.1)
-      sass (>= 3.3.4)
     bootstrap_form (2.7.0)
     brakeman (4.2.1)
     browser (2.2.0)
@@ -992,7 +986,6 @@ DEPENDENCIES
   benchmark-ips (~> 2.3.0)
   better_errors (~> 2.1.0)
   binding_of_caller (~> 0.7.2)
-  bootstrap-sass (~> 3.3.0)
   bootstrap_form (~> 2.7.0)
   brakeman (~> 4.2)
   browser (~> 2.2)

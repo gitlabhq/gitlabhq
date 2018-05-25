@@ -1,4 +1,4 @@
-= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
@@ -11,14 +11,14 @@
       = link_to 'restart', help_page_path('administration/restart_gitlab')
       to take effect.
       = link_to icon('question-circle'), help_page_path('administration/monitoring/prometheus/index')
-    .form-group
-      .col-sm-offset-2.col-sm-10
-        .checkbox
+    .form-group.row
+      .offset-sm-2.col-sm-10
+        .form-check
           = f.label :prometheus_metrics_enabled do
             = f.check_box :prometheus_metrics_enabled
             Enable Prometheus Metrics
           - unless Gitlab::Metrics.metrics_folder_present?
-            .help-block
+            .form-text.text-muted
               %strong.cred WARNING:
               Environment variable
               %code prometheus_multiproc_dir
