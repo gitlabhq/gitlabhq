@@ -1,5 +1,4 @@
 <script>
-import { __ } from "~/locale";
 import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
@@ -28,7 +27,7 @@ export default {
     <a
       :href="file.permalink"
       target="_blank"
-      :title="__('IDE|Open in file view')"
+      :title="s__('IDE|Open in file view')"
       rel="noopener noreferrer"
     >
       <span class="vertical-align-middle">Open in file view</span>
