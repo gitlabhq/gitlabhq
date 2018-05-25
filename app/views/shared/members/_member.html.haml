@@ -121,10 +121,7 @@
                 Delete
               - unless force_mobile_view
                 = icon('trash', class: 'd-none d-sm-block')
-<<<<<<< HEAD
         = render 'shared/members/ee/override_member_buttons', group: @group, member: member, user: user, action: :edit, can_override: member.can_override?
-=======
->>>>>>> gitlab-ce/master
       - else
         %span.member-access-text= member.human_access
 
