@@ -46,12 +46,9 @@
           %a{ href: '#import-project-pane', id: 'import-project-tab', data: { toggle: 'tab' }, role: 'tab' }
             %span.d-none.d-sm-block Import project
             %span.d-block.d-sm-none Import
-<<<<<<< HEAD
         -# EE-specific start
         = render 'new_ci_cd_only_project_tab', active_tab: active_tab
         -# EE-specific end
-=======
->>>>>>> gitlab-ce/master
 
       .tab-content.gitlab-tab-content
         .tab-pane{ id: 'blank-project-pane', class: active_when(active_tab == 'blank'), role: 'tabpanel' }
@@ -74,15 +71,11 @@
                 %h4 No import options available
                 %p Contact an administrator to enable options for importing your project.
 
-<<<<<<< HEAD
         -# EE-specific start
         = render 'new_ci_cd_only_project_pane', active_tab: active_tab
         -# EE-specific end
 
-.save-project-loader.hide
-=======
 .save-project-loader.d-none
->>>>>>> gitlab-ce/master
   .center
     %h2
       %i.fa.fa-spinner.fa-spin
