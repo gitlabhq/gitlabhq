@@ -7,7 +7,6 @@
       = link_to s_('PrometheusService|More information'), help_page_path('user/project/integrations/prometheus_library/metrics'), target: '_blank', rel: "noopener noreferrer"
 
   .col-lg-9
-<<<<<<< HEAD
     .card.custom-monitored-metrics.js-panel-custom-monitored-metrics{ data: { active_custom_metrics: project_prometheus_metrics_path(@project), environments_data: environments_list_data } }
       .card-header
         %h3.card-title
@@ -26,8 +25,6 @@
           = link_to s_('PrometheusService|New metric'), new_project_prometheus_metric_path(@project), class: 'btn btn-success prepend-top-10 prepend-left-10 append-bottom-10'
         %ul.list-unstyled.metrics-list.hidden.js-custom-metrics-list
 
-=======
->>>>>>> gitlab-ce/master
     .card.js-panel-monitored-metrics{ data: { active_metrics: active_common_project_prometheus_metrics_path(@project, :json), metrics_help_path: help_page_path('user/project/integrations/prometheus_library/metrics') } }
       .card-header
         %h3.card-title
