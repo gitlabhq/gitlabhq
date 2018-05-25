@@ -169,8 +169,8 @@
     color: $color-800;
   }
 
-  .nav-links li.active a {
-    border-bottom-color: $color-500;
+  .nav-links li a.active {
+    border-bottom: 2px solid $color-500;
 
     .badge.badge-pill {
       font-weight: $gl-font-weight-bold;
