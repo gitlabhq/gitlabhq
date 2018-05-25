@@ -17,7 +17,7 @@ describe('ParallelDiffView', () => {
     component = createComponentWithStore(Vue.extend(ParallelDiffView), store, {
       diffFile,
       diffLines: diffFile.parallelDiffLines,
-    }).$mount(document.createElement('div'));
+    }).$mount();
   });
 
   describe('computed', () => {

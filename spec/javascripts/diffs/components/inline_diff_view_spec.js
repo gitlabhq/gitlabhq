@@ -17,7 +17,7 @@ describe('InlineDiffView', () => {
     component = createComponentWithStore(Vue.extend(InlineDiffView), store, {
       diffFile,
       diffLines: diffFile.highlightedDiffLines,
-    }).$mount(document.createElement('div'));
+    }).$mount();
   });
 
   describe('methods', () => {
