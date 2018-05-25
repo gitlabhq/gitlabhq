@@ -348,7 +348,7 @@ Please check your network connection and try again.`;
                 <textarea
                   id="note-body"
                   name="note[note]"
-                  class="note-textarea js-vue-comment-form
+                  class="note-textarea js-vue-comment-form js-note-text
 js-gfm-input js-autosize markdown-area js-vue-textarea"
                   data-supports-quick-actions="true"
                   aria-label="Description"

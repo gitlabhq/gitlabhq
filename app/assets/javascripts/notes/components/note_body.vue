@@ -105,6 +105,7 @@ export default {
       :edited-at="note.last_edited_at"
       :edited-by="note.last_edited_by"
       action-text="Edited"
+      class="note_edited_ago"
     />
     <note-awards-list
       v-if="note.award_emoji.length"

@@ -149,7 +149,7 @@
       </div>
     </div>
     <div
-      class="md md-preview-holder md-preview"
+      class="md md-preview-holder md-preview js-md-preview"
       v-show="previewMarkdown"
     >
       <div
