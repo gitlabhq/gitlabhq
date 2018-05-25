@@ -5,11 +5,7 @@
     %legend
       Navigation bar:
   .form-group.row
-<<<<<<< HEAD
-    = f.label :header_logo, 'Header logo', class: 'col-form-label'
-=======
     = f.label :header_logo, 'Header logo', class: 'col-sm-2 col-form-label'
->>>>>>> gitlab-ce/master
     .col-sm-10
       - if @appearance.header_logo?
         = image_tag @appearance.header_logo_url, class: 'appearance-light-logo-preview'
@@ -28,29 +24,17 @@
     %legend
       Sign in/Sign up pages:
   .form-group.row
-<<<<<<< HEAD
-    = f.label :title, class: 'col-form-label'
-    .col-sm-10
-      = f.text_field :title, class: "form-control"
-  .form-group.row
-    = f.label :description, class: 'col-form-label'
-=======
     = f.label :title, class: 'col-sm-2 col-form-label'
     .col-sm-10
       = f.text_field :title, class: "form-control"
   .form-group.row
     = f.label :description, class: 'col-sm-2 col-form-label'
->>>>>>> gitlab-ce/master
     .col-sm-10
       = f.text_area :description, class: "form-control", rows: 10
       .hint
         Description parsed with #{link_to "GitLab Flavored Markdown", help_page_path('user/markdown'), target: '_blank'}.
   .form-group.row
-<<<<<<< HEAD
-    = f.label :logo, class: 'col-form-label'
-=======
     = f.label :logo, class: 'col-sm-2 col-form-label'
->>>>>>> gitlab-ce/master
     .col-sm-10
       - if @appearance.logo?
         = image_tag @appearance.logo_url, class: 'appearance-logo-preview'
@@ -67,11 +51,7 @@
     %legend
       New project pages:
   .form-group.row
-<<<<<<< HEAD
-    = f.label :new_project_guidelines, class: 'col-form-label'
-=======
     = f.label :new_project_guidelines, class: 'col-sm-2 col-form-label'
->>>>>>> gitlab-ce/master
     .col-sm-10
       = f.text_area :new_project_guidelines, class: "form-control", rows: 10
       .hint
