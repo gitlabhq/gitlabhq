@@ -8,7 +8,11 @@
   Enterprise Edition
   - if user_signed_in?
     %span= Gitlab::VERSION
+<<<<<<< HEAD
     %small= link_to Gitlab.revision, Gitlab::COM_URL + namespace_project_commits_path('gitlab-org', 'gitlab-ee', Gitlab.revision)
+=======
+    %small= link_to Gitlab.revision, Gitlab::COM_URL + namespace_project_commits_path('gitlab-org', 'gitlab-ce', Gitlab.revision)
+>>>>>>> upstream/master
     = version_status_badge
   %hr
 
