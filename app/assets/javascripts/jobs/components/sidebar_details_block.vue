@@ -48,11 +48,7 @@ export default {
       return `${this.job.runner.description} (#${this.job.runner.id})`;
     },
     retryButtonClass() {
-<<<<<<< HEAD
       let className = 'js-retry-button float-right btn btn-retry d-none d-md-block d-lg-block d-xl-block';
-=======
-      let className = 'js-retry-button pull-right btn btn-retry d-none d-md-block d-lg-block d-xl-block';
->>>>>>> gitlab-ce/master
       className +=
         this.job.status && this.job.recoverable
           ? ' btn-primary'
