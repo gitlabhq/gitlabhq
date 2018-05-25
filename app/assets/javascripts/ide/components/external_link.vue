@@ -28,11 +28,10 @@ export default {
     <a
       :href="file.permalink"
       target="_blank"
-      class="vertical-align-middle"
       :title="__('IDE|Open in file view')"
       rel="noopener noreferrer"
     >
-      <span>Open in file view</span>
+      <span class="vertical-align-middle">Open in file view</span>
       <icon
         name="external-link"
         css-classes="vertical-align-middle"
