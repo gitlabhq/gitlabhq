@@ -7,9 +7,16 @@ module Gitlab
       # authors.
       class Preloader
         def self.preload!(pipelines)
+          ##
+          # This preloads all commits at once, because `Ci::Pipeline#commit` is
+          # using a lazy batch loading, what results in only one batched Gitaly
+          # call.
+          #
+          pipelines.each(&:commit)
+
           pipelines.each do |pipeline|
             self.new(pipeline).tap do |preloader|
-              preloader.preload_commits
+              preloader.preload_commit_authors
               preloader.preload_pipeline_warnings
               preloader.preload_stages_warnings
             end
@@ -20,10 +27,7 @@ module Gitlab
           @pipeline = pipeline
         end
 
-        def preload_commits
-          # This ensures that all the pipeline commits are eager loaded before we
-          # start using them.
-          #
+        def preload_commit_authors
           # This also preloads the author of every commit. We're using "lazy_author"
           # here since "author" immediately loads the data on the first call.
           @pipeline.commit.try(:lazy_author)

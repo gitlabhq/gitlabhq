@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 describe Gitlab::Ci::Pipeline::Preloader do
   let(:stage) { double(:stage) }
@@ -11,6 +11,23 @@ describe Gitlab::Ci::Pipeline::Preloader do
   end
 
   describe '.preload!' do
+    context 'when preloading multiple commits' do
+      let(:project) { create(:project, :repository) }
+
+      it 'preloads all commits once' do
+        expect(Commit).to receive(:decorate).once.and_call_original
+
+        pipelines = [build_pipeline(ref: 'HEAD'),
+                     build_pipeline(ref: 'HEAD~1')]
+
+        described_class.preload!(pipelines)
+      end
+
+      def build_pipeline(ref:)
+        build_stubbed(:ci_pipeline, project: project, sha: project.commit(ref).id)
+      end
+    end
+
     it 'preloads commit authors and number of warnings' do
       expect(commit).to receive(:lazy_author)
       expect(pipeline).to receive(:number_of_warnings)
