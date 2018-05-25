@@ -171,8 +171,7 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def new_cluster
-    if GoogleApi::CloudPlatform::Client.new(token_in_session, nil)
-      .validate_token(expires_at_in_session)
+    if valid_gcp_token
       @new_cluster = ::Clusters::Cluster.new.tap do |cluster|
         cluster.build_provider_gcp
       end
@@ -183,6 +182,11 @@ class Projects::ClustersController < Projects::ApplicationController
     @existing_cluster = ::Clusters::Cluster.new.tap do |cluster|
       cluster.build_platform_kubernetes
     end
+  end
+
+  def valid_gcp_token
+    @valid_gcp_token = GoogleApi::CloudPlatform::Client.new(token_in_session, nil)
+      .validate_token(expires_at_in_session)
   end
 
   def token_in_session

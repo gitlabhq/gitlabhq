@@ -20,7 +20,7 @@
     .tab-content.gitlab-tab-content
       .tab-pane{ id: 'create-new-cluster-pane', class: active_when(active_tab == 'new'), role: 'tabpanel' }
         = render 'projects/clusters/gcp/header'
-        - if @token_in_session
+        - if @valid_gcp_token
           = render 'projects/clusters/gcp/form'
         - elsif @authorize_url
           = link_to @authorize_url do
