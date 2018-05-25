@@ -71,7 +71,7 @@
         :class="{ active: previewMarkdown }"
       >
         <a
-          class="js-preview-link"
+          class="js-preview-link js-md-preview-button"
           href="#md-preview-holder"
           tabindex="-1"
           @click.prevent="previewMarkdownTab($event)"

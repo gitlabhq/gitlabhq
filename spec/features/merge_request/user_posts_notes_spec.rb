@@ -22,13 +22,11 @@ describe 'Merge request > User posts notes', :js do
   subject { page }
 
   describe 'the note form' do
-    # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-    xit 'is valid' do
+    it 'is valid' do
       is_expected.to have_css('.js-main-target-form', visible: true, count: 1)
-      expect(find('.js-main-target-form .js-comment-button').value)
-        .to eq('Comment')
+      expect(find('.js-main-target-form')).to have_selector('button', text: 'Comment')
       page.within('.js-main-target-form') do
-        expect(page).not_to have_link('Cancel')
+        expect(page).not_to have_button('Cancel')
       end
     end
 
@@ -39,8 +37,7 @@ describe 'Merge request > User posts notes', :js do
         end
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'has enable submit button and preview button' do
+      it 'has enable submit button and preview button' do
         page.within('.js-main-target-form') do
           expect(page).not_to have_css('.js-comment-button[disabled]')
           expect(page).to have_css('.js-md-preview-button', visible: true)
@@ -58,8 +55,7 @@ describe 'Merge request > User posts notes', :js do
       end
     end
 
-    # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-    xit 'is added and form reset' do
+    it 'is added and form reset' do
       is_expected.to have_content('This is awesome!')
       page.within('.js-main-target-form') do
         expect(page).to have_no_field('note[note]', with: 'This is awesome!')
@@ -79,8 +75,8 @@ describe 'Merge request > User posts notes', :js do
       end
     end
 
-    # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-    xit 'hides the toolbar buttons when previewing a note' do
+    it 'hides the toolbar buttons when previewing a note' do
+      wait_for_requests
       find('.js-md-preview-button').click
       page.within('.js-main-target-form') do
         expect(page).not_to have_css('.md-header-toolbar.active')
@@ -109,7 +105,7 @@ describe 'Merge request > User posts notes', :js do
           fill_in 'note[note]', with: 'Some new content'
           find('.btn-cancel').click
         end
-        expect(page).not_to have_selector('.js-note-text')
+        expect(find('.js-note-text').text).to eq ''
       end
 
       it 'allows using markdown buttons after saving a note and then trying to edit it again' do
@@ -130,8 +126,7 @@ describe 'Merge request > User posts notes', :js do
         end
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'appends the edited at time to the note' do
+      it 'appends the edited at time to the note' do
         page.within('.current-note-edit-form') do
           fill_in 'note[note]', with: 'Some new content'
           find('.btn-save').click
