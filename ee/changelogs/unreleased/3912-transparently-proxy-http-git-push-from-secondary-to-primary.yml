@@ -1,0 +1,5 @@
+---
+title: 'Geo: HTTP git push to secondary now redirects to the primary'
+merge_request: 5785
+author:
+type: added
