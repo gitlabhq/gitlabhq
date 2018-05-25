@@ -2,6 +2,7 @@
 import { mapState, mapGetters, mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import { __ } from '~/locale';
+import createFlash from '~/flash';
 import LoadingIcon from '../../vue_shared/components/loading_icon.vue';
 import CompareVersions from './compare_versions.vue';
 import ChangedFiles from './changed_files.vue';
@@ -94,7 +95,11 @@ export default {
   },
   mounted() {
     this.setEndpoint(this.endpoint);
-    this.fetchDiffFiles(); // TODO: @fatihacet Error handling
+    this
+      .fetchDiffFiles()
+      .catch(() => {
+        createFlash(__('Something went wrong on our end. Please try again!'));
+      });
   },
   created() {
     this.adjustView();

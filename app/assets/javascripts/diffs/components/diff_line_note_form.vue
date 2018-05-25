@@ -55,7 +55,6 @@ export default {
         linePosition: this.position,
       });
 
-      // FIXME: @fatihacet -- This should be fixed, no need to fetchNotes again
       this.saveNote(postData)
         .then(() => {
           const endpoint = this.getNotesDataByProp('discussionsPath');

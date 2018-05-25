@@ -12,7 +12,7 @@ describe('DiffGutterAvatars', () => {
   beforeEach(() => {
     component = createComponentWithStore(Vue.extend(DiffGutterAvatarsComponent), store, {
       discussions: getDiscussionsMockData(),
-    }).$mount(document.createElement('div'));
+    }).$mount();
   });
 
   describe('computed', () => {

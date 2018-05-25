@@ -20,7 +20,7 @@ describe('DiffLineGutterContent', () => {
     props.fileHash = getDiffFileMock().fileHash;
     props.contextLinesPath = '/context/lines/path';
 
-    return createComponentWithStore(cmp, store, props).$mount(document.createElement('div'));
+    return createComponentWithStore(cmp, store, props).$mount();
   };
   const setDiscussions = component => {
     component.$store.dispatch('setInitialNotes', getDiscussionsMockData());

@@ -12,7 +12,7 @@ describe('DiffFile', () => {
     vm = createComponentWithStore(Vue.extend(DiffFileComponent), store, {
       file: getDiffFileMock(),
       currentUser: {},
-    }).$mount(document.createElement('div'));
+    }).$mount();
   });
 
   describe('template', () => {

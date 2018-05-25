@@ -19,7 +19,7 @@ describe('DiffLineNoteForm', () => {
       diffLines,
       line: diffLines[0],
       noteTargetLine: diffLines[0],
-    }).$mount(document.createElement('div'));
+    }).$mount();
   });
 
   describe('methods', () => {

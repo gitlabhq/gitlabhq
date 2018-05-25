@@ -64,6 +64,13 @@ export default {
         this.hoveredSection = null;
       }
     },
+    shouldRenderDiscussionsRow(line) {
+      const hasDiscussion = this.hasDiscussion(line) && this.hasAnyExpandedDiscussion(line);
+      const hasCommentFormOnLeft = this.diffLineCommentForms[line.left.lineCode];
+      const hasCommentFormOnRight = this.diffLineCommentForms[line.right.lineCode];
+
+      return hasDiscussion || hasCommentFormOnLeft || hasCommentFormOnRight;
+    },
     shouldRenderDiscussions(line, position) {
       const { lineCode } = line[position];
       let render = this.discussionsByLineCode[lineCode] && this.isDiscussionExpanded(lineCode);
@@ -164,10 +171,7 @@ export default {
             </td>
           </tr>
           <tr
-            v-if="(
-              (hasDiscussion(line) && hasAnyExpandedDiscussion(line)) ||
-              diffLineCommentForms[line.left.lineCode] || diffLineCommentForms[line.right.lineCode]
-            )"
+            v-if="shouldRenderDiscussionsRow(line)"
             :key="line.left.lineCode || line.right.lineCode"
             class="notes_holder"
             :class="hasDiscussion(line) ? '' : 'js-temp-notes-holder'"
