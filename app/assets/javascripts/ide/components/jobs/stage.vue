@@ -54,10 +54,13 @@ export default {
 
 <template>
   <div
-    class="panel panel-default prepend-top-default"
+    class="card prepend-top-default"
   >
     <div
-      class="panel-heading"
+      class="card-header"
+      :class="{
+        'border-bottom-0': stage.isCollapsed
+      }"
       @click="toggleStageCollapsed(stage.id)"
     >
       <ci-icon
@@ -75,9 +78,9 @@ export default {
       </strong>
       <div
         v-if="!stage.isLoading || stage.jobs.length"
-        class="append-right-8"
+        class="append-right-8 prepend-left-4"
       >
-        <span class="badge">
+        <span class="badge badge-pill">
           {{ jobsCount }}
         </span>
       </div>
@@ -87,7 +90,7 @@ export default {
       />
     </div>
     <div
-      class="panel-body"
+      class="card-body"
       v-show="!stage.isCollapsed"
     >
       <loading-icon
@@ -105,20 +108,20 @@ export default {
 </template>
 
 <style scoped>
-.panel-heading {
+.card-header {
   display: flex;
   cursor: pointer;
 }
-.panel-heading .ci-status-icon {
+.card-header .ci-status-icon {
   display: flex;
   align-items: center;
 }
 
-.panel-heading .pull-right {
+.card-header .pull-right {
   margin: auto 0 auto auto;
 }
 
-.panel-body {
+.card-body {
   padding: 0;
 }
 

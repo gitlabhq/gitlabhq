@@ -65,17 +65,19 @@ describe('IDE pipelines mutations', () => {
       expect(mockedState.stages.length).toBe(2);
       expect(mockedState.stages).toEqual([
         {
-          ...stages[0],
-          dropdownPath: stages[0].dropdownPath,
           id: 0,
+          dropdownPath: stages[0].dropdown_path,
+          name: stages[0].name,
+          status: stages[0].status,
           isCollapsed: false,
           isLoading: false,
           jobs: [],
         },
         {
-          ...stages[1],
-          dropdownPath: stages[1].dropdownPath,
           id: 1,
+          dropdownPath: stages[1].dropdown_path,
+          name: stages[1].name,
+          status: stages[1].status,
           isCollapsed: false,
           isLoading: false,
           jobs: [],

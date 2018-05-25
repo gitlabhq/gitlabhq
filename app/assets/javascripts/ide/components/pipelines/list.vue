@@ -69,7 +69,7 @@ export default {
             Jobs
             <span
               v-if="jobsCount"
-              class="badge"
+              class="badge badge-pill"
             >
               {{ jobsCount }}
             </span>
@@ -86,7 +86,7 @@ export default {
             Failed Jobs
             <span
               v-if="failedJobsCount"
-              class="badge"
+              class="badge badge-pill"
             >
               {{ failedJobsCount }}
             </span>

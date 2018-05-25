@@ -26,12 +26,12 @@ export default {
         'li',
         {
           key: i,
-          class: tab.localActive ? 'active' : null,
         },
         [
           h(
             'a',
             {
+              class: tab.localActive ? 'active' : null,
               attrs: {
                 href: '#',
               },

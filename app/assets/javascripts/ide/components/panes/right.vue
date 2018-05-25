@@ -18,6 +18,11 @@ export default {
   },
   methods: {
     ...mapActions(['setRightPane']),
+    clickTab(e, view) {
+      e.target.blur();
+
+      this.setRightPane(view);
+    },
   },
   rightSidebarViews,
 };
@@ -46,7 +51,7 @@ export default {
               active: rightPane === $options.rightSidebarViews.pipelines
             }"
             type="button"
-            @click="setRightPane($options.rightSidebarViews.pipelines)"
+            @click="clickTab($event, $options.rightSidebarViews.pipelines)"
           >
             <icon
               :size="16"
