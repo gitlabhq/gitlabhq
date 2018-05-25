@@ -783,7 +783,7 @@ describe GeoNodeStatus, :geo do
   end
 
   describe '#revision' do
-    it {  expect(status.revision).to eq(Gitlab::REVISION) }
+    it {  expect(status.revision).to eq(Gitlab.revision) }
   end
 
   describe '#[]' do
