@@ -65,7 +65,31 @@ describe Ci::Stage, :models do
       end
     end
 
-    context 'when stage is skipped' do
+    context 'when stage has only created builds' do
+      let(:stage) { create(:ci_stage_entity, status: :created) }
+
+      before do
+        create(:ci_build, :created, stage_id: stage.id)
+      end
+
+      it 'updates status to skipped' do
+        expect(stage.reload.status).to eq 'created'
+      end
+    end
+
+    context 'when stage is skipped because of skipped builds' do
+      before do
+        create(:ci_build, :skipped, stage_id: stage.id)
+      end
+
+      it 'updates status to skipped' do
+        expect { stage.update_status }
+          .to change { stage.reload.status }
+          .to 'skipped'
+      end
+    end
+
+    context 'when stage is skipped because is empty' do
       it 'updates status to skipped' do
         expect { stage.update_status }
           .to change { stage.reload.status }
