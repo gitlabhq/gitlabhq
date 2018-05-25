@@ -342,7 +342,6 @@ describe('Api', () => {
     });
   });
 
-<<<<<<< HEAD
   describe('ldap_groups', () => {
     it('calls callback on completion', done => {
       const query = 'query';
@@ -350,29 +349,36 @@ describe('Api', () => {
       const callback = jasmine.createSpy();
       const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/ldap/${provider}/groups.json`;
 
-=======
-  describe('commitPipelines', () => {
-    it('fetches pipelines for a given commit', done => {
-      const projectId = 'example/foobar';
-      const commitSha = 'abc123def';
-      const expectedUrl = `${dummyUrlRoot}/${projectId}/commit/${commitSha}/pipelines`;
->>>>>>> upstream/master
       mock.onGet(expectedUrl).reply(200, [
         {
           name: 'test',
         },
       ]);
 
-<<<<<<< HEAD
       Api.ldap_groups(query, provider, callback)
         .then(response => {
           expect(callback).toHaveBeenCalledWith(response);
-=======
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
+  describe('commitPipelines', () => {
+    it('fetches pipelines for a given commit', done => {
+      const projectId = 'example/foobar';
+      const commitSha = 'abc123def';
+      const expectedUrl = `${dummyUrlRoot}/${projectId}/commit/${commitSha}/pipelines`;
+      mock.onGet(expectedUrl).reply(200, [
+        {
+          name: 'test',
+        },
+      ]);
+
       Api.commitPipelines(projectId, commitSha)
         .then(({ data }) => {
           expect(data.length).toBe(1);
           expect(data[0].name).toBe('test');
->>>>>>> upstream/master
         })
         .then(done)
         .catch(done.fail);
