@@ -65,9 +65,12 @@ export const fetchJobs = ({ dispatch }, stage) => {
   dispatch('requestJobs', stage.id);
 
   axios
-    .get(stage.dropdown_path)
+    .get(stage.dropdownPath)
     .then(({ data }) => dispatch('receiveJobsSuccess', { id: stage.id, data }))
     .catch(() => dispatch('receiveJobsError', stage.id));
 };
+
+export const toggleStageCollapsed = ({ commit }, stageId) =>
+  commit(types.TOGGLE_STAGE_COLLAPSE, stageId);
 
 export default () => {};

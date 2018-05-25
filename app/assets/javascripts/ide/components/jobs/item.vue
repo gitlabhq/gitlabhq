@@ -29,7 +29,7 @@ export default {
     <span class="prepend-left-8">
       {{ job.name }}
       <a
-        :href="job.build_path"
+        :href="job.path"
         target="_blank"
         v-text="jobId"
       >

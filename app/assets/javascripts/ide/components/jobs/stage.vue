@@ -47,7 +47,7 @@ export default {
     this.showTooltip = stageTitle.scrollWidth > stageTitle.offsetWidth;
   },
   methods: {
-    ...mapActions('pipelines', ['fetchJobs']),
+    ...mapActions('pipelines', ['fetchJobs', 'toggleStageCollapsed']),
   },
 };
 </script>
@@ -58,7 +58,7 @@ export default {
   >
     <div
       class="panel-heading"
-      @click="() => stage.isCollapsed = !stage.isCollapsed"
+      @click="toggleStageCollapsed(stage.id)"
     >
       <ci-icon
         :status="stage.status"

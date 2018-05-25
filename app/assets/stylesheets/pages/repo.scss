@@ -911,6 +911,9 @@
     }
 
     &.is-right {
+      padding-right: $gl-padding;
+      padding-left: $gl-padding + 1px;
+
       &::after {
         right: auto;
         left: -1px;
