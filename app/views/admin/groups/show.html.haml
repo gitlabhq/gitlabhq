@@ -60,7 +60,6 @@
             = group_lfs_status(@group)
             = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
 
-<<<<<<< HEAD
         = render partial: "namespaces/shared_runner_status", locals: { namespace: @group }
 
     - if Gitlab::Auth::LDAP::Config.group_sync_enabled? && @group.ldap_synced?
@@ -73,8 +72,6 @@
               as
               %strong= ldap_group_link.human_access
 
-=======
->>>>>>> gitlab-ce/master
     .card
       .card-header
         %h3.card-title
