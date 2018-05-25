@@ -23,8 +23,10 @@ feature 'Prioritize labels' do
       expect(page).to have_content('Star labels to start sorting by priority')
 
       page.within('.other-labels') do
+        screenshot_and_open_image
         all('.js-toggle-priority')[1].click
         wait_for_requests
+        screenshot_and_open_image
         expect(page).not_to have_content('feature')
       end
 

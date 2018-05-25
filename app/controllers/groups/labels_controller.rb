@@ -2,17 +2,16 @@ class Groups::LabelsController < Groups::ApplicationController
   include ToggleSubscriptionAction
 
   before_action :label, only: [:edit, :update, :destroy]
-  before_action :find_labels, only: [:index]
+  before_action :available_labels, only: [:index]
   before_action :authorize_admin_labels!, only: [:new, :create, :edit, :update, :destroy]
   before_action :save_previous_label_path, only: [:edit]
 
   respond_to :html
 
   def index
-    @labels = @group.labels.page(params[:page])
-
     respond_to do |format|
       format.html do
+        @labels = @group.labels.page(params[:page])
       end
       format.json do
         render json: LabelSerializer.new.represent_appearance(@available_labels)
@@ -107,7 +106,7 @@ class Groups::LabelsController < Groups::ApplicationController
     session[:previous_labels_path] = URI(request.referer || '').path
   end
 
-  def find_labels
+  def available_labels
     @available_labels ||=
       LabelsFinder.new(
         current_user,
