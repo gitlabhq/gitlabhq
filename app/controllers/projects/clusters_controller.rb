@@ -2,6 +2,7 @@ class Projects::ClustersController < Projects::ApplicationController
   before_action :cluster, except: [:index, :new, :create]
   before_action :authorize_read_cluster!
   before_action :generate_gcp_authorize_url, only: [:new]
+  before_action :validate_gcp_token, only: [:new]
   before_action :new_cluster, only: [:new]
   before_action :existing_cluster, only: [:new]
   before_action :authorize_create_cluster!, only: [:new]
@@ -83,6 +84,7 @@ class Projects::ClustersController < Projects::ApplicationController
       redirect_to project_cluster_path(project, @cluster)
     else
       generate_gcp_authorize_url
+      validate_gcp_token
 
       case params[:type]
       when 'new'
@@ -171,10 +173,8 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def new_cluster
-    if valid_gcp_token
-      @new_cluster = ::Clusters::Cluster.new.tap do |cluster|
-        cluster.build_provider_gcp
-      end
+    @new_cluster = ::Clusters::Cluster.new.tap do |cluster|
+      cluster.build_provider_gcp
     end
   end
 
@@ -184,7 +184,7 @@ class Projects::ClustersController < Projects::ApplicationController
     end
   end
 
-  def valid_gcp_token
+  def validate_gcp_token
     @valid_gcp_token = GoogleApi::CloudPlatform::Client.new(token_in_session, nil)
       .validate_token(expires_at_in_session)
   end
