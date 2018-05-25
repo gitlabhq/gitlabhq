@@ -9,8 +9,8 @@ import * as types from './mutation_types';
 let eTagPoll;
 
 export const clearEtagPoll = () => (eTagPoll = null);
-export const stopPipelinePolling = () => eTagPoll.stop();
-export const restartPipelinePolling = () => eTagPoll.restart();
+export const stopPipelinePolling = () => eTagPoll && eTagPoll.stop();
+export const restartPipelinePolling = () => eTagPoll && eTagPoll.restart();
 
 export const requestLatestPipeline = ({ commit }) => commit(types.REQUEST_LATEST_PIPELINE);
 export const receiveLatestPipelineError = ({ commit, dispatch }) => {

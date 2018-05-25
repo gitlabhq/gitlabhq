@@ -66,6 +66,7 @@ describe('IDE pipelines mutations', () => {
       expect(mockedState.stages).toEqual([
         {
           ...stages[0],
+          dropdownPath: stages[0].dropdownPath,
           id: 0,
           isCollapsed: false,
           isLoading: false,
@@ -73,6 +74,7 @@ describe('IDE pipelines mutations', () => {
         },
         {
           ...stages[1],
+          dropdownPath: stages[1].dropdownPath,
           id: 1,
           isCollapsed: false,
           isLoading: false,
