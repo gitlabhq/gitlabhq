@@ -6,6 +6,6 @@ describe Issuable::CommonSystemNotesService do
   let(:issuable) { create(:issue) }
 
   describe '#execute' do
-    it_behaves_like 'system note creation', { weight: 5 }, 'changed weight to **5**,'
+    it_behaves_like 'system note creation', { weight: 5 }, 'changed weight to **5**'
   end
 end
