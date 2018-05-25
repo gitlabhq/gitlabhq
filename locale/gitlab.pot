@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-24 12:35+0200\n"
-"PO-Revision-Date: 2018-05-24 12:35+0200\n"
+"POT-Creation-Date: 2018-05-25 20:31+0200\n"
+"PO-Revision-Date: 2018-05-25 20:31+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -217,9 +217,6 @@ msgstr ""
 msgid "Account"
 msgstr ""
 
-msgid "Account and limit"
-msgstr ""
-
 msgid "Active"
 msgstr ""
 
@@ -275,6 +272,12 @@ msgid "AdminProjects|Delete Project %{projectName}?"
 msgstr ""
 
 msgid "AdminProjects|Delete project"
+msgstr ""
+
+msgid "AdminSettings|Account and limit"
+msgstr ""
+
+msgid "AdminSettings|Repository mirror"
 msgstr ""
 
 msgid "AdminSettings|Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages."
@@ -2159,7 +2162,25 @@ msgstr ""
 msgid "Group masters can register group runners in the %{link}"
 msgstr ""
 
+msgid "GroupSettings|Be careful. Changing a group's parent can have unintended %{value}."
+msgstr ""
+
+msgid "GroupSettings|General"
+msgstr ""
+
+msgid "GroupSettings|If the parent group's visibility is lower than the group current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility."
+msgstr ""
+
 msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
+msgstr ""
+
+msgid "GroupSettings|Remove group"
+msgstr ""
+
+msgid "GroupSettings|Removed group can not be restored!"
+msgstr ""
+
+msgid "GroupSettings|Removing group will cause all child projects and resources to be removed."
 msgstr ""
 
 msgid "GroupSettings|Share with group lock"
@@ -2175,6 +2196,15 @@ msgid "GroupSettings|This setting is applied on %{ancestor_group}. You can overr
 msgstr ""
 
 msgid "GroupSettings|This setting will be applied to all subgroups unless overridden by a group owner. Groups that already have access to the project will continue to have access unless removed manually."
+msgstr ""
+
+msgid "GroupSettings|Transfer group"
+msgstr ""
+
+msgid "GroupSettings|You can only transfer the group to a group you manage."
+msgstr ""
+
+msgid "GroupSettings|You will need to update your local repositories to point to the new location."
 msgstr ""
 
 msgid "GroupSettings|cannot be disabled when the parent group \"Share with group lock\" is enabled, except by the owner of the parent group"
@@ -3392,9 +3422,6 @@ msgstr ""
 msgid "Repository maintenance"
 msgstr ""
 
-msgid "Repository mirror"
-msgstr ""
-
 msgid "Repository storage"
 msgstr ""
 
@@ -3470,6 +3497,9 @@ msgid "SSH Keys"
 msgstr ""
 
 msgid "Save changes"
+msgstr ""
+
+msgid "Save group"
 msgstr ""
 
 msgid "Save pipeline schedule"
@@ -4317,6 +4347,9 @@ msgstr ""
 msgid "Track time with quick actions"
 msgstr ""
 
+msgid "Transfer group"
+msgstr ""
+
 msgid "Trigger this manual action"
 msgstr ""
 
@@ -4605,6 +4638,9 @@ msgstr ""
 msgid "You can also star a label to make it a priority label."
 msgstr ""
 
+msgid "You can change the group avatar here"
+msgstr ""
+
 msgid "You can easily install a Runner on a Kubernetes cluster. %{link_to_help_page}"
 msgstr ""
 
@@ -4618,6 +4654,9 @@ msgid "You can only edit files when you are on a branch"
 msgstr ""
 
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
+msgstr ""
+
+msgid "You can upload a group avatar here"
 msgstr ""
 
 msgid "You cannot write to this read-only GitLab instance."
