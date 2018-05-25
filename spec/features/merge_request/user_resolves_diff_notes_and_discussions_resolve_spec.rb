@@ -289,9 +289,8 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         end
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'allows user to mark all notes as resolved' do
-        page.all('.line-resolve-btn').each do |btn|
+      it 'allows user to mark all notes as resolved' do
+        page.all('.note .line-resolve-btn', count: 2).each do |btn|
           btn.click
         end
 
@@ -301,9 +300,8 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         end
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'allows user user to mark all discussions as resolved' do
-        page.all('.discussion-reply-holder').each do |reply_holder|
+      it 'allows user user to mark all discussions as resolved' do
+        page.all('.discussion-reply-holder', count: 2).each do |reply_holder|
           page.within reply_holder do
             click_button 'Resolve discussion'
           end
@@ -315,9 +313,8 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         end
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'allows user to quickly scroll to next unresolved discussion' do
-        page.within first('.discussion-reply-holder') do
+      it 'allows user to quickly scroll to next unresolved discussion' do
+        page.within('.discussion-reply-holder', match: :first) do
           click_button 'Resolve discussion'
         end
 
@@ -330,7 +327,7 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
 
       # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
       xit 'updates updated text after resolving note' do
-        page.within first('.diff-content .note') do
+        page.within('.diff-content .note', match: :first) do
           find('.line-resolve-btn').click
         end
 
@@ -338,7 +335,7 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
       end
 
       it 'shows jump to next discussion button' do
-        expect(page.all('.discussion-reply-holder')).to all(have_selector('.discussion-next-btn'))
+        expect(page.all('.discussion-reply-holder', count: 2)).to all(have_selector('.discussion-next-btn'))
       end
 
       # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
