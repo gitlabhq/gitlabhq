@@ -34,7 +34,7 @@
           </h4>
 
           <p>
-            {{ s__(`Pipelines|Continous Integration can help
+            {{ s__(`Pipelines|Continuous Integration can help
                 catch bugs by running your tests automatically,
                 while Continuous Deployment can help you deliver
                 code to your product environment.`) }}
