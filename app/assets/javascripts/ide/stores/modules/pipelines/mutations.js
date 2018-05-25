@@ -12,7 +12,14 @@ export default {
     state.isLoadingPipeline = false;
 
     if (pipeline) {
-      state.latestPipeline = pipeline;
+      state.latestPipeline = {
+        id: pipeline.id,
+        path: pipeline.path,
+        commit: pipeline.commit,
+        details: {
+          status: pipeline.details.status,
+        },
+      };
       state.stages = pipeline.details.stages.map((stage, i) => {
         const foundStage = state.stages.find(s => s.id === i);
         return {

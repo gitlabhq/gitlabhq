@@ -89,14 +89,16 @@ export const fullPipelinesResponse = {
     pipelines: [
       {
         id: '51',
+        path: 'test',
         commit: {
-          id: 'xxxxxxxxxxxxxxxxxxxx',
+          id: '123',
         },
         details: {
           status: {
             icon: 'status_failed',
             text: 'failed',
           },
+          stages: [...stages],
         },
       },
       {
@@ -109,6 +111,7 @@ export const fullPipelinesResponse = {
             icon: 'status_passed',
             text: 'passed',
           },
+          stages: [...stages],
         },
       },
     ],

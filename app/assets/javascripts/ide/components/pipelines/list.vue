@@ -47,7 +47,7 @@ export default {
             Pipeline
           </strong>
           <a
-            :href="latestPipeline.details.status.details_path"
+            :href="latestPipeline.path"
             target="_blank"
           >
             #{{ latestPipeline.id }}

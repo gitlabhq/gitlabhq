@@ -1,7 +1,7 @@
 import mutations from '~/ide/stores/modules/pipelines/mutations';
 import state from '~/ide/stores/modules/pipelines/state';
 import * as types from '~/ide/stores/modules/pipelines/mutation_types';
-import { pipelines, stages } from '../../../mock_data';
+import { fullPipelinesResponse, stages } from '../../../mock_data';
 
 describe('IDE pipelines mutations', () => {
   let mockedState;
@@ -28,17 +28,25 @@ describe('IDE pipelines mutations', () => {
 
   describe(types.RECEIVE_LASTEST_PIPELINE_SUCCESS, () => {
     it('sets loading to false on success', () => {
-      mutations[types.RECEIVE_LASTEST_PIPELINE_SUCCESS](mockedState, pipelines[0]);
+      mutations[types.RECEIVE_LASTEST_PIPELINE_SUCCESS](
+        mockedState,
+        fullPipelinesResponse.data.pipelines[0],
+      );
 
       expect(mockedState.isLoadingPipeline).toBe(false);
     });
 
     it('sets latestPipeline', () => {
-      mutations[types.RECEIVE_LASTEST_PIPELINE_SUCCESS](mockedState, pipelines[0]);
+      mutations[types.RECEIVE_LASTEST_PIPELINE_SUCCESS](
+        mockedState,
+        fullPipelinesResponse.data.pipelines[0],
+      );
 
       expect(mockedState.latestPipeline).toEqual({
-        id: pipelines[0].id,
-        status: pipelines[0].status,
+        id: '51',
+        path: 'test',
+        commit: { id: '123' },
+        details: { status: jasmine.any(Object) },
       });
     });
 
@@ -47,33 +55,12 @@ describe('IDE pipelines mutations', () => {
 
       expect(mockedState.latestPipeline).toEqual(null);
     });
-  });
-
-  describe(types.REQUEST_STAGES, () => {
-    it('sets stages loading to true', () => {
-      mutations[types.REQUEST_STAGES](mockedState);
-
-      expect(mockedState.isLoadingJobs).toBe(true);
-    });
-  });
-
-  describe(types.RECEIVE_STAGES_ERROR, () => {
-    it('sets jobs loading to false', () => {
-      mutations[types.RECEIVE_STAGES_ERROR](mockedState);
-
-      expect(mockedState.isLoadingJobs).toBe(false);
-    });
-  });
-
-  describe(types.RECEIVE_STAGES_SUCCESS, () => {
-    it('sets jobs loading to false on success', () => {
-      mutations[types.RECEIVE_STAGES_SUCCESS](mockedState, stages);
-
-      expect(mockedState.isLoadingJobs).toBe(false);
-    });
 
     it('sets stages', () => {
-      mutations[types.RECEIVE_STAGES_SUCCESS](mockedState, stages);
+      mutations[types.RECEIVE_LASTEST_PIPELINE_SUCCESS](
+        mockedState,
+        fullPipelinesResponse.data.pipelines[0],
+      );
 
       expect(mockedState.stages.length).toBe(2);
       expect(mockedState.stages).toEqual([
