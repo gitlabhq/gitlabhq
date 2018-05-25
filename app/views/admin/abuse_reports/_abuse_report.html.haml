@@ -1,11 +1,7 @@
 - reporter = abuse_report.reporter
 - user = abuse_report.user
 %tr
-<<<<<<< HEAD
-  %th.d-block.d-md-none
-=======
   %th.d-block.d-sm-none.d-md-none
->>>>>>> gitlab-ce/master
     %strong User
   %td
     - if user
@@ -15,11 +11,7 @@
     - else
       (removed)
   %td
-<<<<<<< HEAD
-    %strong.subheading.d-block.d-md-none Reported by
-=======
     %strong.subheading.d-block.d-sm-none.d-md-none Reported by
->>>>>>> gitlab-ce/master
     - if reporter
       = link_to reporter.name, reporter
     - else
@@ -27,11 +19,7 @@
     .light.small
       = time_ago_with_tooltip(abuse_report.created_at)
   %td
-<<<<<<< HEAD
-    %strong.subheading.d-block.d-md-none Message
-=======
     %strong.subheading.d-block.d-sm-none.d-md-none Message
->>>>>>> gitlab-ce/master
     .message
       = markdown_field(abuse_report, :message)
   %td
