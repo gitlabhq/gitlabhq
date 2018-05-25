@@ -80,3 +80,37 @@ export const jobs = [
     duration: 1,
   },
 ];
+
+export const fullPipelinesResponse = {
+  data: {
+    count: {
+      all: 2,
+    },
+    pipelines: [
+      {
+        id: '51',
+        commit: {
+          id: 'xxxxxxxxxxxxxxxxxxxx',
+        },
+        details: {
+          status: {
+            icon: 'status_failed',
+            text: 'failed',
+          },
+        },
+      },
+      {
+        id: '50',
+        commit: {
+          id: 'abc123def456ghi789jkl',
+        },
+        details: {
+          status: {
+            icon: 'status_passed',
+            text: 'passed',
+          },
+        },
+      },
+    ],
+  },
+};

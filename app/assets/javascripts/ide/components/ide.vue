@@ -129,8 +129,6 @@ export default {
         v-if="currentProjectId"
       />
     </div>
-    <ide-status-bar
-      :file="activeFile"
-    />
+    <ide-status-bar :file="activeFile"/>
   </article>
 </template>

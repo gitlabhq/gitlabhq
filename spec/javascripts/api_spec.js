@@ -341,4 +341,25 @@ describe('Api', () => {
         .catch(done.fail);
     });
   });
+
+  describe('commitPipelines', () => {
+    it('fetches pipelines for a given commit', done => {
+      const projectId = 'example/foobar';
+      const commitSha = 'abc123def';
+      const expectedUrl = `${dummyUrlRoot}/${projectId}/commit/${commitSha}/pipelines`;
+      mock.onGet(expectedUrl).reply(200, [
+        {
+          name: 'test',
+        },
+      ]);
+
+      Api.commitPipelines(projectId, commitSha)
+        .then(({ data }) => {
+          expect(data.length).toBe(1);
+          expect(data[0].name).toBe('test');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
 });
