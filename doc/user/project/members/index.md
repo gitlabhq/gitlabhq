@@ -4,7 +4,7 @@ You can manage the groups and users and their access levels in all of your
 projects. You can also personalize the access level you give each user,
 per-project.
 
-You should have `master` or `owner` [permissions](../../permissions.md) to add
+You should have Maintainer or Owner [permissions](../../permissions.md) to add
 or import a new user to your project.
 
 To view, edit, add, and remove project's members, go to your
@@ -99,7 +99,7 @@ side of your screen.
 
 ---
 
-Project owners & masters will be notified of your request and will be able to approve or
+Project owners & maintainers will be notified of your request and will be able to approve or
 decline it on the members page.
 
 ![Manage access requests](img/access_requests_management.png)
