@@ -3,13 +3,17 @@ module QA
     module Repository
       class Push < Factory::Base
         attr_accessor :file_name, :file_content, :commit_message,
-                      :branch_name, :new_branch
+                      :branch_name, :new_branch, :output
 
         attr_writer :remote_branch
 
         dependency Factory::Resource::Project, as: :project do |project|
           project.name = 'project-with-code'
           project.description = 'Project with repository'
+        end
+
+        product :output do |factory|
+          factory.output
         end
 
         def initialize
@@ -58,7 +62,7 @@ module QA
             end
 
             repository.commit(commit_message)
-            repository.push_changes("#{branch_name}:#{remote_branch}")
+            @output = repository.push_changes("#{branch_name}:#{remote_branch}")
           end
         end
       end
