@@ -1,3 +1,4 @@
+import Visibility from 'visibilityjs';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import actions, {
@@ -5,15 +6,13 @@ import actions, {
   receiveLatestPipelineError,
   receiveLatestPipelineSuccess,
   fetchLatestPipeline,
-  requestStages,
-  receiveStagesError,
-  receiveStagesSuccess,
-  fetchStages,
+  stopPipelinePolling,
+  clearEtagPoll,
 } from '~/ide/stores/modules/pipelines/actions';
 import state from '~/ide/stores/modules/pipelines/state';
 import * as types from '~/ide/stores/modules/pipelines/mutation_types';
 import testAction from '../../../../helpers/vuex_action_helper';
-import { pipelines, stages } from '../../../mock_data';
+import { pipelines } from '../../../mock_data';
 
 describe('IDE pipelines actions', () => {
   let mockedState;
@@ -51,7 +50,7 @@ describe('IDE pipelines actions', () => {
         null,
         mockedState,
         [{ type: types.RECEIVE_LASTEST_PIPELINE_ERROR }],
-        [],
+        [{ type: 'stopPipelinePolling' }],
         done,
       );
     });
@@ -59,7 +58,7 @@ describe('IDE pipelines actions', () => {
     it('creates flash message', () => {
       const flashSpy = spyOnDependency(actions, 'flash');
 
-      receiveLatestPipelineError({ commit() {} });
+      receiveLatestPipelineError({ commit() {}, dispatch() {} });
 
       expect(flashSpy).toHaveBeenCalled();
     });
@@ -79,166 +78,88 @@ describe('IDE pipelines actions', () => {
   });
 
   describe('fetchLatestPipeline', () => {
-    describe('success', () => {
-      beforeEach(() => {
-        mock.onGet(/\/api\/v4\/projects\/(.*)\/pipelines(.*)/).replyOnce(200, pipelines);
-      });
-
-      it('dispatches request', done => {
-        testAction(
-          fetchLatestPipeline,
-          '123',
-          mockedState,
-          [],
-          [{ type: 'requestLatestPipeline' }, { type: 'receiveLatestPipelineSuccess' }],
-          done,
-        );
-      });
-
-      it('dispatches success with latest pipeline', done => {
-        testAction(
-          fetchLatestPipeline,
-          '123',
-          mockedState,
-          [],
-          [
-            { type: 'requestLatestPipeline' },
-            { type: 'receiveLatestPipelineSuccess', payload: pipelines[0] },
-          ],
-          done,
-        );
-      });
-
-      it('calls axios with correct params', () => {
-        const apiSpy = spyOn(axios, 'get').and.callThrough();
-
-        fetchLatestPipeline({ dispatch() {}, rootState: state }, '123');
-
-        expect(apiSpy).toHaveBeenCalledWith(jasmine.anything(), {
-          params: {
-            sha: '123',
-            per_page: '1',
-          },
-        });
-      });
-    });
-
-    describe('error', () => {
-      beforeEach(() => {
-        mock.onGet(/\/api\/v4\/projects\/(.*)\/pipelines(.*)/).replyOnce(500);
-      });
-
-      it('dispatches error', done => {
-        testAction(
-          fetchLatestPipeline,
-          '123',
-          mockedState,
-          [],
-          [{ type: 'requestLatestPipeline' }, { type: 'receiveLatestPipelineError' }],
-          done,
-        );
-      });
-    });
-  });
-
-  describe('requestStages', () => {
-    it('commits request', done => {
-      testAction(requestStages, null, mockedState, [{ type: types.REQUEST_STAGES }], [], done);
-    });
-  });
-
-  describe('receiveJobsError', () => {
-    it('commits error', done => {
-      testAction(
-        receiveStagesError,
-        null,
-        mockedState,
-        [{ type: types.RECEIVE_STAGES_ERROR }],
-        [],
-        done,
-      );
-    });
-
-    it('creates flash message', () => {
-      const flashSpy = spyOnDependency(actions, 'flash');
-
-      receiveStagesError({ commit() {} });
-
-      expect(flashSpy).toHaveBeenCalled();
-    });
-  });
-
-  describe('receiveStagesSuccess', () => {
-    it('commits jobs', done => {
-      testAction(
-        receiveStagesSuccess,
-        stages,
-        mockedState,
-        [{ type: types.RECEIVE_STAGES_SUCCESS, payload: stages }],
-        [],
-        done,
-      );
-    });
-  });
-
-  describe('fetchStages', () => {
     beforeEach(() => {
-      mockedState.latestPipeline = pipelines[0];
+      jasmine.clock().install();
+    });
+
+    afterEach(() => {
+      jasmine.clock().uninstall();
+      stopPipelinePolling();
+      clearEtagPoll();
     });
 
     describe('success', () => {
       beforeEach(() => {
-        mock.onGet(/\/(.*)\/pipelines\/(.*)\/builds.json/).replyOnce(200, stages);
+        mock
+          .onGet('/abc/def/commit/abc123def456ghi789jkl/pipelines')
+          .reply(200, { data: { foo: 'bar' } }, { 'poll-interval': '10000' });
       });
 
       it('dispatches request', done => {
-        testAction(
-          fetchStages,
-          null,
-          mockedState,
-          [],
-          [{ type: 'requestStages' }, { type: 'receiveStagesSuccess' }],
-          done,
-        );
-      });
+        spyOn(axios, 'get').and.callThrough();
+        spyOn(Visibility, 'hidden').and.returnValue(false);
 
-      it('dispatches success with latest pipeline', done => {
-        testAction(
-          fetchStages,
-          null,
-          mockedState,
-          [],
-          [{ type: 'requestStages' }, { type: 'receiveStagesSuccess', payload: stages }],
-          done,
-        );
-      });
+        const dispatch = jasmine.createSpy('dispatch');
+        const rootGetters = {
+          lastCommit: { id: 'abc123def456ghi789jkl' },
+          currentProject: { path_with_namespace: 'abc/def' },
+        };
 
-      it('calls axios with correct URL', () => {
-        const apiSpy = spyOn(axios, 'get').and.callThrough();
+        fetchLatestPipeline({ dispatch, rootGetters });
 
-        fetchStages({ dispatch() {}, state: mockedState, rootState: mockedState });
+        expect(dispatch.calls.argsFor(0)).toEqual(['requestLatestPipeline']);
 
-        expect(apiSpy).toHaveBeenCalledWith(
-          '/test/project/pipelines/1/builds.json',
-          jasmine.anything(),
-        );
+        jasmine.clock().tick(1000);
+
+        new Promise(resolve => requestAnimationFrame(resolve))
+          .then(() => {
+            expect(axios.get).toHaveBeenCalled();
+            expect(axios.get.calls.count()).toBe(1);
+
+            expect(dispatch.calls.argsFor(1)).toEqual([
+              'receiveLatestPipelineSuccess',
+              jasmine.anything(),
+            ]);
+
+            jasmine.clock().tick(10000);
+          })
+          .then(() => new Promise(resolve => requestAnimationFrame(resolve)))
+          .then(() => {
+            expect(axios.get).toHaveBeenCalled();
+            expect(axios.get.calls.count()).toBe(2);
+
+            expect(dispatch.calls.argsFor(2)).toEqual([
+              'receiveLatestPipelineSuccess',
+              jasmine.anything(),
+            ]);
+          })
+          .then(done)
+          .catch(done.fail);
       });
     });
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(/\/(.*)\/pipelines\/(.*)\/builds.json/).replyOnce(500);
+        mock.onGet('/abc/def/commit/abc123def456ghi789jkl/pipelines').reply(500);
       });
 
       it('dispatches error', done => {
-        testAction(
-          fetchStages,
-          null,
-          mockedState,
-          [],
-          [{ type: 'requestStages' }, { type: 'receiveStagesError' }],
-          done,
-        );
+        const dispatch = jasmine.createSpy('dispatch');
+        const rootGetters = {
+          lastCommit: { id: 'abc123def456ghi789jkl' },
+          currentProject: { path_with_namespace: 'abc/def' },
+        };
+
+        fetchLatestPipeline({ dispatch, rootGetters });
+
+        jasmine.clock().tick(1500);
+
+        new Promise(resolve => requestAnimationFrame(resolve))
+          .then(() => {
+            expect(dispatch.calls.argsFor(1)).toEqual(['receiveLatestPipelineError']);
+          })
+          .then(done)
+          .catch(done.fail);
       });
     });
   });
