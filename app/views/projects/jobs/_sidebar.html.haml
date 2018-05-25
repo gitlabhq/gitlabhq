@@ -18,11 +18,7 @@
               %span= time_ago_with_tooltip @build.artifacts_expire_at
 
           - if @build.artifacts?
-<<<<<<< HEAD
             .btn-group.d-flex{ role: :group }
-=======
-            .btn-group.btn-group.d-flex{ role: :group }
->>>>>>> gitlab-ce/master
               - if @build.has_expiring_artifacts? && can?(current_user, :update_build, @build)
                 = link_to keep_project_job_artifacts_path(@project, @build), class: 'btn btn-sm btn-default', method: :post do
                   Keep
@@ -46,11 +42,7 @@
 
           - if @build.trigger_variables.any?
             %p
-<<<<<<< HEAD
               %button.btn.group.js-reveal-variables Reveal Variables
-=======
-              %button.btn.group.btn-group.js-reveal-variables Reveal Variables
->>>>>>> gitlab-ce/master
 
             %dl.js-build-variables.trigger-build-variables.hide
               - @build.trigger_variables.each do |trigger_variable|
