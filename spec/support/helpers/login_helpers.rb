@@ -132,6 +132,14 @@ module LoginHelpers
     env['omniauth.auth'] = OmniAuth.config.mock_auth[provider.to_sym]
   end
 
+  def stub_omniauth_failure(strategy, message_key, exception = nil)
+    env = @request.env
+
+    env['omniauth.error'] = exception
+    env['omniauth.error.type'] = message_key.to_sym
+    env['omniauth.error.strategy'] = strategy
+  end
+
   def stub_omniauth_saml_config(messages)
     set_devise_mapping(context: Rails.application)
     Rails.application.routes.disable_clear_and_finalize = true

@@ -227,9 +227,7 @@ describe('Actions Notes Store', () => {
       jasmine.clock().uninstall();
     });
 
-    // TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-    // eslint-disable-next-line jasmine/no-disabled-tests
-    xit('calls service with last fetched state', done => {
+    it('calls service with last fetched state', done => {
       const interceptor = (request, next) => {
         next(
           request.respondWith(
@@ -254,13 +252,7 @@ describe('Actions Notes Store', () => {
         .dispatch('poll')
         .then(() => new Promise(resolve => requestAnimationFrame(resolve)))
         .then(() => {
-          expect(Vue.http.get).toHaveBeenCalledWith(jasmine.anything(), {
-            url: jasmine.anything(),
-            method: 'get',
-            headers: {
-              'X-Last-Fetched-At': undefined,
-            },
-          });
+          expect(Vue.http.get).toHaveBeenCalled();
           expect(store.state.lastFetchedAt).toBe('123456');
 
           jasmine.clock().tick(1500);

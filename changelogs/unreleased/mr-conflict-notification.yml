@@ -1,0 +1,5 @@
+---
+title: When MR becomes unmergeable, notify and create todo for author and merge user
+merge_request: 18042
+author:
+type: added
