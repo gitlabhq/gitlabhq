@@ -3,10 +3,6 @@ class PipelineSerializer < BaseSerializer
   entity PipelineDetailsEntity
 
   def represent(resource, opts = {})
-    if paginated? && !resource.respond_to?(:page)
-      raise Gitlab::Serializer::Pagination::InvalidResourceError
-    end
-
     if resource.is_a?(ActiveRecord::Relation)
       resource = resource.preload([
         :stages,
@@ -20,6 +16,10 @@ class PipelineSerializer < BaseSerializer
         :artifacts,
         { pending_builds: :project }
       ])
+    end
+
+    if paginated?
+      resource = paginator.paginate(resource)
     end
 
     if opts.delete(:preload)
