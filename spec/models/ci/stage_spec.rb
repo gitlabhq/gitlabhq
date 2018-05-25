@@ -112,7 +112,6 @@ describe Ci::Stage, :models do
     end
   end
 
-
   describe '#detailed_status' do
     using RSpec::Parameterized::TableSyntax
 
@@ -134,9 +133,9 @@ describe Ci::Stage, :models do
       before do
         statuses.each do |status|
           create(:commit_status, project: stage.project,
-                                pipeline: stage.pipeline,
-                                stage_id: stage.id,
-                                status: status)
+                                 pipeline: stage.pipeline,
+                                 stage_id: stage.id,
+                                 status: status)
 
           stage.update_status
         end
@@ -149,13 +148,13 @@ describe Ci::Stage, :models do
 
     context 'when stage has warnings' do
       before do
-          create(:ci_build, project: stage.project,
-                            pipeline: stage.pipeline,
-                            stage_id: stage.id,
-                            status: :failed,
-                            allow_failure: true)
+        create(:ci_build, project: stage.project,
+                          pipeline: stage.pipeline,
+                          stage_id: stage.id,
+                          status: :failed,
+                          allow_failure: true)
 
-          stage.update_status
+        stage.update_status
       end
 
       it 'is passed with warnings' do
