@@ -87,19 +87,19 @@ describe('Board list component', () => {
 
   it('renders issues', () => {
     expect(
-      component.$el.querySelectorAll('.card').length,
+      component.$el.querySelectorAll('.board-card').length,
     ).toBe(1);
   });
 
   it('renders link properly in issue', () => {
     expect(
-      component.$el.querySelector('.card .card-title a').getAttribute('href'),
+      component.$el.querySelector('.board-card .board-card-title a').getAttribute('href'),
     ).not.toContain(':project_path');
   });
 
   it('sets data attribute with issue id', () => {
     expect(
-      component.$el.querySelector('.card').getAttribute('data-issue-id'),
+      component.$el.querySelector('.board-card').getAttribute('data-issue-id'),
     ).toBe('1');
   });
 

@@ -8,7 +8,7 @@
         .issuable-info
           %span.issuable-reference
             = epic.to_reference(@group)
-          %span.issuable-authored.hidden-xs
+          %span.issuable-authored.d-none.d-sm-inline-block
             &middot;
             opened #{time_ago_with_tooltip(epic.created_at, placement: 'bottom')}
             by #{link_to_member(@group, epic.author, avatar: false)}

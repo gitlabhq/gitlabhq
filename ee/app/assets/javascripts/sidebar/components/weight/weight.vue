@@ -160,6 +160,7 @@
       v-tooltip
       data-container="body"
       data-placement="left"
+      data-boundary="viewport"
       :title="tooltipTitle"
       @click="onCollapsedClick"
     >
@@ -187,7 +188,7 @@
       />
       <a
         v-if="editable"
-        class="pull-right js-weight-edit-link"
+        class="float-right js-weight-edit-link"
         href="#"
         @click="showDropdown"
       >

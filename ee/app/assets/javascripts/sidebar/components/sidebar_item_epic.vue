@@ -62,7 +62,8 @@
       :title="tooltipTitle"
       data-container="body"
       data-placement="left"
-      data-html="1"
+      data-html="true"
+      data-boundary="viewport"
       v-tooltip
     >
       <div v-html="epicIcon"></div>

@@ -77,7 +77,7 @@
       <button
         v-if="canEdit"
         type="button"
-        class="edit-link btn btn-blank pull-right"
+        class="edit-link btn btn-blank float-right"
       >
         Edit
       </button>

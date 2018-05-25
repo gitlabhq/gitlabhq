@@ -2,7 +2,7 @@
 - can_override_approvers = project.can_override_approvers?
 
 .form-group.reset-approvals-on-push
-  .checkbox
+  .form-check
     = label_tag :require_approvals do
       = check_box_tag :require_approvals, nil, project.approvals_before_merge.nonzero?, class: 'js-require-approvals-toggle'
       %strong Merge request approvals
@@ -18,11 +18,11 @@
       = hidden_field_tag :approver_user_and_group_ids, '', { class: 'js-select-user-and-group input-large', tabindex: 1, 'data-name': 'project' }
       %button.btn.btn-success.js-add-approvers{ type: 'button', title: 'Add approvers(s)' }
         Add
-    .help-block
+    .form-text.text-muted
       Add users or groups who are allowed to approve every merge request
 
-    .panel.panel-default.prepend-top-10.js-current-approvers
-      .panel-heading
+    .card.prepend-top-10.js-current-approvers
+      .card-header
         Approvers
         %span.badge
           - ids = []
@@ -39,7 +39,7 @@
         - project.approvers.each do |approver|
           %li.approver.settings-flex-row.js-approver{ data: { id: approver.user_id } }
             = link_to approver.user.name, approver.user
-            .pull-right
+            .float-right
               %button{ href: project_approver_path(project, approver), data: { confirm: "Are you sure you want to remove approver #{approver.user.name}"}, class: "btn btn-remove js-approver-remove", title: 'Remove approver' }
                 = icon("trash")
         - project.approver_groups.each do |approver_group|
@@ -50,7 +50,7 @@
               = link_to approver_group.group.name, approver_group.group
               %span.badge
                 = approver_group.group.members.count
-            .pull-right
+            .float-right
               %button{ href: project_approver_group_path(project, approver_group), data: { confirm: "Are you sure you want to remove group #{approver_group.group.name}" }, class: "btn btn-remove js-approver-remove", title: 'Remove group' }
                 = icon("trash")
         - if project.approvers.empty? && project.approver_groups.empty?
@@ -60,18 +60,18 @@
     = form.label :approvals_before_merge, class: 'label-light' do
       Approvals required
     = form.number_field :approvals_before_merge, class: "form-control", min: 0
-    .help-block
+    .form-text.text-muted
       Set number of approvers required before open merge requests can be merged
 
   .form-group
-    .checkbox
+    .form-check
       = form.label :disable_overriding_approvers_per_merge_request do
         = form.check_box(:disable_overriding_approvers_per_merge_request, { checked: can_override_approvers }, false, true)
         %strong Can override approvers and approvals required per merge request
         = link_to icon('question-circle'), help_page_path("user/project/merge_requests/merge_request_approvals", anchor: 'overriding-the-merge-request-approvals-default-settings'), target: '_blank'
 
   .form-group.reset-approvals-on-push
-    .checkbox
+    .form-check
       = form.label :reset_approvals_on_push do
         = form.check_box :reset_approvals_on_push
         %strong Remove all approvals in a merge request when new commits are pushed to its source branch

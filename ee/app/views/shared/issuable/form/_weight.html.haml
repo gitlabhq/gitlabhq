@@ -5,8 +5,8 @@
 - has_due_date = issuable.has_attribute?(:due_date)
 - form = local_assigns.fetch(:form)
 
-.form-group
-  = form.label :label_ids, class: "control-label #{"col-lg-4" if has_due_date}" do
+.form-group.row
+  = form.label :label_ids, class: "col-form-label #{"col-lg-4" if has_due_date}" do
     Weight
   .col-sm-10{ class: ("col-lg-8" if has_due_date) }
     .issuable-form-select-holder

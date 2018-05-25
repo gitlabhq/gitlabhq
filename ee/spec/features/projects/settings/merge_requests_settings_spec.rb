@@ -50,7 +50,7 @@ describe 'Project settings > [EE] Merge Requests', :js do
     wait_for_requests
 
     within('.js-current-approvers') do
-      expect(find('.panel-heading .badge')).to have_content('0')
+      expect(find('.card-header .badge')).to have_content('0')
     end
 
     expect(find('.select2-results')).to have_content(group.name)
@@ -62,7 +62,7 @@ describe 'Project settings > [EE] Merge Requests', :js do
 
     expect(page).to have_css('.js-current-approvers li.approver-group', count: 1)
     within('.js-current-approvers') do
-      expect(find('.panel-heading .badge')).to have_content('2')
+      expect(find('.card-header .badge')).to have_content('2')
     end
   end
 

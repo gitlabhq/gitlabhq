@@ -295,7 +295,7 @@ export default () => {
           if (this.disabled) {
             $tooltip.tooltip();
           } else {
-            $tooltip.tooltip('destroy');
+            $tooltip.tooltip('dispose');
           }
         });
       },

@@ -45,10 +45,10 @@ feature 'Labels Hierarchy', :js, :nested_groups do
 
         wait_for_requests
 
-        expect(page).to have_selector('.card', count: label.issues.count)
+        expect(page).to have_selector('.board-card', count: label.issues.count)
 
         label.issues.each do |issue|
-          expect(page).to have_selector('.card-title') do |card|
+          expect(page).to have_selector('.board-card-title') do |card|
             expect(card).to have_selector('a', text: issue.title)
           end
         end

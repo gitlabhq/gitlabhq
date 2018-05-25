@@ -4,7 +4,7 @@
 - push_rule = local_assigns.fetch(:push_rule)
 
 .form-group
-  = form.check_box :commit_committer_check, class: "pull-left", disabled: !can_change_push_rule?(form.object, :commit_committer_check)
+  = form.check_box :commit_committer_check, class: "float-left", disabled: !can_change_push_rule?(form.object, :commit_committer_check)
   .prepend-left-20
     = form.label :commit_committer_check, class: "label-light append-bottom-0" do
       = s_("PushRule|Committer restriction")

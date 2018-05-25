@@ -92,7 +92,7 @@
 }
 
 .project-mirror-text {
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     float: left;
     line-height: 35px;
   }
@@ -101,7 +101,7 @@
 .project-mirror-button {
   margin-top: 10px;
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     float: right;
     margin-top: 0;
   }

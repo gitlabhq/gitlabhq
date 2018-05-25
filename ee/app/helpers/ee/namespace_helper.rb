@@ -35,7 +35,7 @@ module EE
         end
 
       options = {
-        class: "progress-bar progress-bar-#{status}",
+        class: "progress-bar bg-#{status}",
         style: "width: #{percent}%;"
       }
 

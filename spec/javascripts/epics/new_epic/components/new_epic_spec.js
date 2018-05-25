@@ -24,14 +24,14 @@ describe('newEpic', () => {
   });
 
   describe('alignRight', () => {
-    it('should not add dropdown-menu-align-right by default', () => {
-      expect(vm.$el.querySelector('.dropdown-menu').classList.contains('dropdown-menu-align-right')).toEqual(false);
+    it('should not add dropdown-menu-right by default', () => {
+      expect(vm.$el.querySelector('.dropdown-menu').classList.contains('dropdown-menu-right')).toEqual(false);
     });
 
-    it('should add dropdown-menu-align-right when alignRight', (done) => {
+    it('should add dropdown-menu-right when alignRight', (done) => {
       vm.alignRight = true;
       Vue.nextTick(() => {
-        expect(vm.$el.querySelector('.dropdown-menu').classList.contains('dropdown-menu-align-right')).toEqual(true);
+        expect(vm.$el.querySelector('.dropdown-menu').classList.contains('dropdown-menu-right')).toEqual(true);
         done();
       });
     });

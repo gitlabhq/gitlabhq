@@ -17,13 +17,13 @@
         = (_("Share the <strong>%{sso_label}</strong> with members so they can sign in to your group through your identity provider") % { sso_label: _('GitLab single sign on URL') }).html_safe
   .well-segment.borderless
     = render 'info_row', field: :assertion_consumer_service_url, label_text: _('Assertion consumer service URL')
-    .help-block= _('Also called "Relying party service URL" or "Reply URL"')
+    .form-text.text-muted= _('Also called "Relying party service URL" or "Reply URL"')
   .well-segment.borderless
     = render 'info_row', field: :issuer, label_text: 'Identifier'
-    .help-block= _('Also called "Issuer" or "Relying party trust identifier"')
+    .form-text.text-muted= _('Also called "Issuer" or "Relying party trust identifier"')
   - if @saml_provider.persisted?
     .well-segment.borderless
       %label= _("GitLab single sign on URL")
       - user_login_url = sso_group_saml_providers_url(@group)
       %div= link_to user_login_url, user_login_url
-      .help-block= _("Used by members to sign in to your group in GitLab")
+      .form-text.text-muted= _("Used by members to sign in to your group in GitLab")

@@ -345,7 +345,7 @@ class AwardsHandler {
       counter.text(counterNumber - 1);
       this.removeYouFromUserList($emojiButton);
     } else if (emoji === 'thumbsup' || emoji === 'thumbsdown') {
-      $emojiButton.tooltip('destroy');
+      $emojiButton.tooltip('dispose');
       counter.text('0');
       this.removeYouFromUserList($emojiButton);
       if ($emojiButton.parents('.note').length) {
@@ -358,7 +358,7 @@ class AwardsHandler {
   }
 
   removeEmoji($emojiButton) {
-    $emojiButton.tooltip('destroy');
+    $emojiButton.tooltip('dispose');
     $emojiButton.remove();
     const $votesBlock = this.getVotesBlock();
     if ($votesBlock.find('.js-emoji-btn').length === 0) {
@@ -392,7 +392,7 @@ class AwardsHandler {
       .removeAttr('data-title')
       .removeAttr('data-original-title')
       .attr('title', this.toSentence(authors))
-      .tooltip('fixTitle');
+      .tooltip('_fixTitle');
   }
 
   addYouToUserList(votesBlock, emoji) {
@@ -405,7 +405,7 @@ class AwardsHandler {
     users.unshift('You');
     return awardBlock
       .attr('title', this.toSentence(users))
-      .tooltip('fixTitle');
+      .tooltip('_fixTitle');
   }
 
   createAwardButtonForVotesBlock(votesBlock, emojiName) {

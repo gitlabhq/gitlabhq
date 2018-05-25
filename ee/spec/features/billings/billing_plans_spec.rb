@@ -59,19 +59,19 @@ describe 'Billing plan pages', :feature do
   shared_examples 'displays all plans and correct actions' do
     it 'displays all plans' do
       page.within('.billing-plans') do
-        panels = page.all('.panel')
+        panels = page.all('.card')
 
         expect(panels.length).to eq(plans_data.length)
 
         plans_data.each.with_index do |data, index|
-          expect(panels[index].find('.panel-heading')).to have_content(data[:name])
+          expect(panels[index].find('.card-header')).to have_content(data[:name])
         end
       end
     end
 
     it 'displays correct plan actions' do
       expected_actions = plans_data.map { |data| data.fetch(:purchase_link).fetch(:action) }
-      plan_actions = page.all('.billing-plans .panel .plan-action')
+      plan_actions = page.all('.billing-plans .card .plan-action')
       expect(plan_actions.length).to eq(expected_actions.length)
 
       expected_actions.each_with_index do |expected_action, index|
@@ -192,10 +192,10 @@ describe 'Billing plan pages', :feature do
 
     it 'displays all plans' do
       page.within('.billing-plans') do
-        panels = page.all('.panel')
+        panels = page.all('.card')
         expect(panels.length).to eq(plans_data.length)
         plans_data.each_with_index do |data, index|
-          expect(panels[index].find('.panel-heading')).to have_content(data[:name])
+          expect(panels[index].find('.card-header')).to have_content(data[:name])
         end
       end
     end

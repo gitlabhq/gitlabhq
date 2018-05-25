@@ -202,7 +202,7 @@ function UsersSelect(currentUser, els, options = {}) {
               tooltipTitle = __('Assignee');
             }
             $value.html(assigneeTemplate(user));
-            $collapsedSidebar.attr('title', tooltipTitle).tooltip('fixTitle');
+            $collapsedSidebar.attr('title', tooltipTitle).tooltip('_fixTitle');
             return $collapsedSidebar.html(collapsedAssigneeTemplate(user));
           });
       };

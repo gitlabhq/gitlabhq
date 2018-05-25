@@ -1,8 +1,8 @@
-.panel{ class: ('current' if current_plan?(plan)) }
-  .panel-heading
+.card{ class: ('current' if current_plan?(plan)) }
+  .card-header
     = plan.name
 
-  .panel-body
+  .card-body
     .price-per-month
       .append-right-5
         = number_to_plan_currency(plan.price_per_month)

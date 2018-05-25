@@ -26,7 +26,7 @@ feature 'Groups > Pipeline Quota' do
 
       page.within('.pipeline-quota') do
         expect(page).to have_content("400 / Unlimited minutes")
-        expect(page).to have_selector('.progress-bar-success')
+        expect(page).to have_selector('.bg-success')
       end
     end
   end
@@ -46,7 +46,7 @@ feature 'Groups > Pipeline Quota' do
 
       page.within('.pipeline-quota') do
         expect(page).to have_content("300 / Unlimited minutes")
-        expect(page).to have_selector('.progress-bar-success')
+        expect(page).to have_selector('.bg-success')
       end
 
       page.within('.pipeline-project-metrics') do
@@ -70,7 +70,7 @@ feature 'Groups > Pipeline Quota' do
       page.within('.pipeline-quota') do
         expect(page).to have_content("300 / 500 minutes")
         expect(page).to have_content("60% used")
-        expect(page).to have_selector('.progress-bar-success')
+        expect(page).to have_selector('.bg-success')
       end
     end
   end
@@ -91,7 +91,7 @@ feature 'Groups > Pipeline Quota' do
       page.within('.pipeline-quota') do
         expect(page).to have_content("1000 / 500 minutes")
         expect(page).to have_content("200% used")
-        expect(page).to have_selector('.progress-bar-danger')
+        expect(page).to have_selector('.bg-danger')
       end
 
       page.within('.pipeline-project-metrics') do

@@ -21,7 +21,7 @@ export default {
 
 <template>
   <span
-    class="card-weight card-number prepend-left-5"
+    class="board-card-weight card-number prepend-left-5"
     v-tooltip
     data-container="body"
     data-placement="bottom"

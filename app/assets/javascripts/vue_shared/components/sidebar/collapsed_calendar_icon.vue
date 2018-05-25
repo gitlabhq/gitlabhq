@@ -43,7 +43,8 @@
     v-tooltip
     data-container="body"
     data-placement="left"
-    data-html="1"
+    data-html="true"
+    data-boundary="viewport"
     :title="tooltipText"
   >
     <i

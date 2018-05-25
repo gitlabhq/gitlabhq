@@ -2,9 +2,9 @@
 
 .form-group
   %hr
-  = f.label :membership_lock, class: 'control-label' do
+  = f.label :membership_lock, class: 'col-form-label' do
     Member lock
   .col-sm-10
-    .checkbox
+    .form-check
       = f.check_box :membership_lock
       %span.descr Prevent adding new members to project membership within this group

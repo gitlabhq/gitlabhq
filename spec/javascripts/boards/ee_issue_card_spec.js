@@ -31,7 +31,7 @@ describe('Issue card component', () => {
     });
 
     expect(
-      vm.$el.querySelector('.card-weight'),
+      vm.$el.querySelector('.board-card-weight'),
     ).toBeNull();
   });
 
@@ -46,7 +46,7 @@ describe('Issue card component', () => {
       rootPath: '/',
       groupId: null,
     });
-    const el = vm.$el.querySelector('.card-weight');
+    const el = vm.$el.querySelector('.board-card-weight');
 
     expect(el).not.toBeNull();
     expect(el.textContent.trim()).toBe('2');
