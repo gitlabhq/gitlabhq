@@ -209,11 +209,7 @@
 }
 
 .dropdown-menu,
-<<<<<<< HEAD
-.dropdown-menu {
-=======
 .dropdown-menu-nav {
->>>>>>> gitlab-ce/master
   display: none;
   position: absolute;
   width: auto;
@@ -332,11 +328,7 @@
   }
 
   .badge.badge-pill + span:not(.badge.badge-pill) {
-<<<<<<< HEAD
-    // Expects up to 3 digits on the .badge.badge-pill
-=======
     // Expects up to 3 digits on the badge
->>>>>>> gitlab-ce/master
     margin-right: 40px;
   }
 }
