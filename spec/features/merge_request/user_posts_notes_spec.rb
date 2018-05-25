@@ -59,7 +59,7 @@ describe 'Merge request > User posts notes', :js do
       is_expected.to have_content('This is awesome!')
       page.within('.js-main-target-form') do
         expect(page).to have_no_field('note[note]', with: 'This is awesome!')
-        expect(page).to have_css('.js-md-preview', visible: :hidden)
+        expect(page).to have_css('.js-vue-md-preview', visible: :hidden)
       end
       wait_for_requests
       page.within('.js-main-target-form') do
