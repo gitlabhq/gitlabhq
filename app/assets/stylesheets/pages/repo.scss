@@ -1135,3 +1135,16 @@
     white-space: nowrap;
   }
 }
+
+.ide-external-link {
+  svg {
+    display: none;
+  }
+
+  &:hover,
+  &:focus {
+    svg {
+      display: inline-block;
+    }
+  }
+}

@@ -1,5 +1,8 @@
 export const hasLatestPipeline = state => !state.isLoadingPipeline && !!state.latestPipeline;
 
+export const pipelineFailed = state =>
+  state.latestPipeline && state.latestPipeline.details.status.text === 'failed';
+
 export const failedStages = state =>
   state.stages.filter(stage => stage.status.text === 'failed').map(stage => ({
     ...stage,

@@ -1,8 +1,10 @@
 <script>
+import Icon from '../../../vue_shared/components/icon.vue';
 import CiIcon from '../../../vue_shared/components/ci_icon.vue';
 
 export default {
   components: {
+    Icon,
     CiIcon,
   },
   props: {
@@ -31,8 +33,13 @@ export default {
       <a
         :href="job.path"
         target="_blank"
-        v-text="jobId"
+        class="ide-external-link"
       >
+        {{ jobId }}
+        <icon
+          name="external-link"
+          :size="12"
+        />
       </a>
     </span>
   </div>

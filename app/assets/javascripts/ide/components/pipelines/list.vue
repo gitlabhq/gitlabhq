@@ -1,6 +1,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import LoadingIcon from '../../../vue_shared/components/loading_icon.vue';
+import Icon from '../../../vue_shared/components/icon.vue';
 import CiIcon from '../../../vue_shared/components/ci_icon.vue';
 import Tabs from '../../../vue_shared/components/tabs/tabs';
 import Tab from '../../../vue_shared/components/tabs/tab.vue';
@@ -9,13 +10,14 @@ import JobsList from '../jobs/list.vue';
 export default {
   components: {
     LoadingIcon,
+    Icon,
     CiIcon,
     Tabs,
     Tab,
     JobsList,
   },
   computed: {
-    ...mapGetters('pipelines', ['jobsCount', 'failedJobsCount', 'failedStages']),
+    ...mapGetters('pipelines', ['jobsCount', 'failedJobsCount', 'failedStages', 'pipelineFailed']),
     ...mapState('pipelines', ['isLoadingPipeline', 'latestPipeline', 'stages', 'isLoadingJobs']),
   },
   created() {
@@ -49,13 +51,20 @@ export default {
           <a
             :href="latestPipeline.path"
             target="_blank"
+            class="ide-external-link"
           >
             #{{ latestPipeline.id }}
+            <icon
+              name="external-link"
+              :size="12"
+            />
           </a>
         </span>
       </header>
       <tabs>
-        <tab active>
+        <tab
+          :active="!pipelineFailed"
+        >
           <template slot="title">
             Jobs
             <span
@@ -70,7 +79,9 @@ export default {
             :stages="stages"
           />
         </tab>
-        <tab>
+        <tab
+          :active="pipelineFailed"
+        >
           <template slot="title">
             Failed Jobs
             <span
