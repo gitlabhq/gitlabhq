@@ -123,8 +123,6 @@ export default {
         </template>
       </div>
     </div>
-    <ide-status-bar
-      :file="activeFile"
-    />
+    <ide-status-bar :file="activeFile"/>
   </article>
 </template>
