@@ -7,7 +7,7 @@ export default {
   [types.ADD_NEW_NOTE](state, note) {
     const { discussion_id, type } = note;
     const [exists] = state.notes.filter(n => n.id === note.discussion_id);
-    const isDiscussion = type === constants.DISCUSSION_NOTE;
+    const isDiscussion = type === constants.DISCUSSION_NOTE || type === constants.DIFF_NOTE;
 
     if (!exists) {
       const noteData = {
