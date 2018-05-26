@@ -320,7 +320,7 @@ group :development, :test do
   gem 'pry-byebug', '~> 3.4.1', platform: :mri
   gem 'pry-rails', '~> 0.3.4'
 
-  gem 'awesome_print', '~> 1.2.0', require: false
+  gem 'awesome_print', '~> 1.8.0', require: false
   gem 'fuubar', '~> 2.2.0'
 
   gem 'database_cleaner', '~> 1.5.0'
