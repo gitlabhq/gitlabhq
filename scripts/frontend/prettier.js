@@ -73,12 +73,12 @@ if (!files.length) {
 
 console.log(`${shouldSave ? 'Updating' : 'Checking'} ${files.length} file(s)`);
 
-prettier
-  .resolveConfig('.')
-  .then(options => {
-    console.log('Found options : ', options);
-    files.forEach(file => {
-      try {
+
+files.forEach(file => {
+  try {
+    prettier
+      .resolveConfig(file)
+      .then(options => {
         const fileExtension = file.split('.').pop();
         Object.assign(options, {
           parser: config.parsers[fileExtension],
@@ -101,17 +101,17 @@ prettier
           }
           console.log(`Prettify Manually : ${file}`);
         }
-      } catch (error) {
-        didError = true;
-        console.log(`\n\nError with ${file}: ${error.message}`);
-      }
-    });
+      })
+      .catch(e => {
+        console.log(`Error on loading the Config File: ${e.message}`);
+        process.exit(1);
+      });
+  } catch (error) {
+    didError = true;
+    console.log(`\n\nError with ${file}: ${error.message}`);
+  }
+});
 
-    if (didWarn || didError) {
-      process.exit(1);
-    }
-  })
-  .catch(e => {
-    console.log(`Error on loading the Config File: ${e.message}`);
-    process.exit(1);
-  });
+if (didWarn || didError) {
+  process.exit(1);
+}
