@@ -8,7 +8,7 @@
     = f.hidden_field :last_commit_sha, value: @page.last_commit_sha
 
   .form-group.row
-    .col-sm-12= f.label :title, class: 'col-form-label-full-width'
+    .col-sm-12= f.label :title, class: 'control-label-full-width'
     .col-sm-12
       = f.text_field :title, class: 'form-control', value: @page.title
       - if @page.persisted?
@@ -17,12 +17,12 @@
           = s_("WikiEditPageTip|Tip: You can move this page by adding the path to the beginning of the title.")
           = link_to icon('question-circle'), help_page_path('user/project/wiki/index', anchor: 'moving-a-wiki-page'), target: '_blank'
   .form-group.row
-    .col-sm-12= f.label :format, class: 'col-form-label-full-width'
+    .col-sm-12= f.label :format, class: 'control-label-full-width'
     .col-sm-12
       = f.select :format, options_for_select(ProjectWiki::MARKUPS, {selected: @page.format}), {}, class: 'form-control'
 
   .form-group.row
-    .col-sm-12= f.label :content, class: 'col-form-label-full-width'
+    .col-sm-12= f.label :content, class: 'control-label-full-width'
     .col-sm-12
       = render layout: 'projects/md_preview', locals: { url: project_wiki_preview_markdown_path(@project, @page.slug) } do
         = render 'projects/zen', f: f, attr: :content, classes: 'note-textarea', placeholder: s_("WikiPage|Write your content or drag files here...")
@@ -40,7 +40,7 @@
           = (s_("WikiMarkdownDocs|More examples are in the %{docs_link}") % { docs_link: markdown_link }).html_safe
 
   .form-group.row
-    .col-sm-12= f.label :commit_message, class: 'col-form-label-full-width'
+    .col-sm-12= f.label :commit_message, class: 'control-label-full-width'
     .col-sm-12= f.text_field :message, class: 'form-control', rows: 18, value: commit_message
 
   .form-actions

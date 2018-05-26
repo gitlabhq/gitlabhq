@@ -195,7 +195,7 @@ export default {
                     <clipboard-button
                       :text="ingressExternalIp"
                       :title="s__('ClusterIntegration|Copy Ingress IP Address to clipboard')"
-                      class="js-clipboard-btn"
+                      class="input-group-text js-clipboard-btn"
                     />
                   </span>
                 </div>

@@ -12,13 +12,13 @@
 
   - unless @user.password_automatically_set?
     .form-group.row
-      = f.label :current_password, class: 'col-form-label'
+      = f.label :current_password, class: 'col-form-label col-sm-2'
       .col-sm-10= f.password_field :current_password, required: true, class: 'form-control'
   .form-group.row
-    = f.label :password, class: 'col-form-label'
+    = f.label :password, class: 'col-form-label col-sm-2'
     .col-sm-10= f.password_field :password, required: true, class: 'form-control'
   .form-group.row
-    = f.label :password_confirmation, class: 'col-form-label'
+    = f.label :password_confirmation, class: 'col-form-label col-sm-2'
     .col-sm-10
       = f.password_field :password_confirmation, required: true, class: 'form-control'
   .form-actions

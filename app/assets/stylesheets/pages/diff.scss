@@ -610,10 +610,6 @@
       top: 76px;
     }
 
-    &:not(.is-stuck) .diff-stats-additions-deletions-collapsed {
-      display: none;
-    }
-
     &.is-stuck {
       padding-top: 0;
       padding-bottom: 0;
@@ -622,7 +618,15 @@
 
       .diff-stats-additions-deletions-expanded,
       .inline-parallel-buttons {
-        display: none;
+        display: none !important;
+      }
+    }
+  }
+
+  @include media-breakpoint-up(lg) {
+    &.is-stuck {
+      .diff-stats-additions-deletions-collapsed {
+        display: block !important;
       }
     }
   }

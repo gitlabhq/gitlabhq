@@ -45,7 +45,7 @@
       display: none;
     }
 
-    .page {
+    .page-item {
       display: none;
 
       &.active {
@@ -64,7 +64,7 @@
       padding: 6px 10px;
     }
 
-    .page {
+    .page-item {
       display: none;
 
       &.active {
@@ -79,7 +79,7 @@
  */
 @media (min-width: map-get($grid-breakpoints, xs)) and (max-width: map-get($grid-breakpoints, sm)) {
   .gl-pagination {
-    .page {
+    .page-item {
       display: none;
 
       &.active,

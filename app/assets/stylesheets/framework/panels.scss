@@ -7,8 +7,7 @@
   margin-bottom: $gl-vert-padding;
 }
 
-
-.card-heading {
+.card-header {
   padding: $gl-vert-padding $gl-padding;
   line-height: 36px;
 
@@ -21,7 +20,7 @@
     line-height: 20px;
   }
 
-  .badge {
+  .badge.badge-pill {
     margin-top: -2px;
     margin-left: 5px;
   }

@@ -7,12 +7,12 @@
 
   = f.hidden_field :user_id
   .form-group.row
-    = f.label :user_id, class: 'col-form-label'
+    = f.label :user_id, class: 'col-sm-2 col-form-label'
     .col-sm-10
       - name = "#{@abuse_report.user.name} (@#{@abuse_report.user.username})"
       = text_field_tag :user_name, name, class: "form-control", readonly: true
   .form-group.row
-    = f.label :message, class: 'col-form-label'
+    = f.label :message, class: 'col-sm-2 col-form-label'
     .col-sm-10
       = f.text_area :message, class: "form-control", rows: 2, required: true, value: sanitize(@ref_url)
       .form-text.text-muted

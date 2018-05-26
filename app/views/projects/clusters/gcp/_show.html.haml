@@ -29,7 +29,7 @@
       .input-group
         = platform_kubernetes_field.text_field :token, class: 'form-control js-cluster-token js-select-on-focus', type: 'password', placeholder: s_('ClusterIntegration|Token'), readonly: true
         %span.input-group-append
-          %button.btn.btn-default.js-show-cluster-token{ type: 'button' }
+          %button.btn.btn-default.input-group-text.js-show-cluster-token{ type: 'button' }
             = s_('ClusterIntegration|Show')
           = clipboard_button(text: @cluster.platform_kubernetes.token, title: s_('ClusterIntegration|Copy Token'), class: 'btn-default')
 
