@@ -15,6 +15,11 @@
     "webpack": "webpack --config config/webpack.config.js",
     "webpack-prod": "NODE_ENV=production webpack --config config/webpack.config.js"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn prettier-staged-save"
+    }
+  },
   "dependencies": {
     "@gitlab-org/gitlab-svgs": "^1.23.0",
     "autosize": "^4.0.0",
@@ -116,6 +121,7 @@
     "eslint-plugin-jasmine": "^2.1.0",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-vue": "^4.0.1",
+    "husky": "^1.0.0-rc.7",
     "ignore": "^3.3.7",
     "istanbul": "^0.4.5",
     "jasmine-core": "^2.9.0",
