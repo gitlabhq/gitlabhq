@@ -313,7 +313,7 @@ describe('Issue card component', () => {
       Vue.nextTick()
         .then(() => {
           expect(
-            component.$el.querySelectorAll('.label').length,
+            component.$el.querySelectorAll('.badge').length,
           ).toBe(3);
           expect(
             component.$el.textContent,
@@ -335,7 +335,7 @@ describe('Issue card component', () => {
       Vue.nextTick()
         .then(() => {
           expect(
-            component.$el.querySelectorAll('.label').length,
+            component.$el.querySelectorAll('.badge').length,
           ).toBe(3);
           expect(
             component.$el.textContent,
