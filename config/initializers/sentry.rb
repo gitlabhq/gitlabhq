@@ -20,6 +20,9 @@ def configure_sentry
       # Sanitize authentication headers
       config.sanitize_http_headers = %w[Authorization Private-Token]
       config.tags = { program: Gitlab::Sentry.program_context }
+      config.async = lambda do |event|
+        SentryWorker.perform_async(event)
+      end
     end
   end
 end

@@ -1,0 +1,5 @@
+---
+title: Move Sentry notifications to a Sidekiq process
+merge_request:
+author:
+type: performance
