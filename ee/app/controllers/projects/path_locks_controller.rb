@@ -58,7 +58,12 @@ class Projects::PathLocksController < Projects::ApplicationController
     path_lock = PathLocks::LockService.new(project, current_user).execute(params[:path])
 
     if path_lock.persisted? && sync_with_lfs?
-      Lfs::LockFileService.new(project, current_user, path: params[:path]).execute
+      Lfs::LockFileService.new(
+        project,
+        current_user,
+        path: params[:path],
+        create_path_lock: false
+      ).execute
     end
   end
 
@@ -70,13 +75,18 @@ class Projects::PathLocksController < Projects::ApplicationController
     end
   end
 
-  # Override get_id from ExtractsPath in this case is just the root of the default branch.
+  # Override get_id from ExtractsPath.
+  # We don't support file locking per branch, that's why we use the root branch.
   def get_id
-    @ref ||= project.repository.root_ref
+    id = project.repository.root_ref
+    id += "/#{params[:path]}" if params[:path].present?
+    id
   end
 
   def lfs_file?
-    blob = project.repository.blob_at_branch(get_id, params[:path])
+    blob = project.repository.blob_at_branch(@ref, @path)
+
+    return false unless blob
 
     @lfs_blob_ids.include?(blob.id)
   end
