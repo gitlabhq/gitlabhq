@@ -104,13 +104,7 @@ export default {
       <button
         type="button"
         :aria-label="__('Toggle Sidebar')"
-<<<<<<< HEAD
-        class="btn btn-blank gutter-toggle float-right
-          d-block d-md-none js-sidebar-build-toggle"
-=======
-        class="btn btn-blank gutter-toggle pull-right
-          d-block d-sm-block d-md-none js-sidebar-build-toggle"
->>>>>>> gitlab-ce/master
+        class="btn btn-blank gutter-toggle float-right d-block d-md-none js-sidebar-build-toggle"
       >
         <i
           aria-hidden="true"
