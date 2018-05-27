@@ -6,23 +6,32 @@ module CarrierWave
     class Fog < Abstract
       class File
         module MonkeyPatch
+          ##
+          # Read content of file from service
+          #
+          # === Returns
+          #
+          # [String] contents of file
           def read
             file_body = file.body
 
             return if file_body.nil?
             return file_body unless file_body.is_a?(::File)
 
-            begin
-              file_body = ::File.open(file_body.path) if file_body.closed? # Reopen if it's closed
-              file_body.read
-            rescue Errno::ENOENT
-              @file = nil # rubocop:disable Gitlab/ModuleWithInstanceVariables
-              file.body
-            ensure
-              file_body.close
-            end
+            # Fog::Storage::XXX::File#body could return the source file which was upoloaded to the remote server.
+            read_source_file(file_body) if ::File.exist?(file_body.path)
+
+            # If the source file doesn't exist, the remote content is read
+            @file = nil # rubocop:disable Gitlab/ModuleWithInstanceVariables
+            file.body
           end
 
+          ##
+          # Write file to service
+          #
+          # === Returns
+          #
+          # [Boolean] true on success or raises error
           def store(new_file)
             if new_file.is_a?(self.class) # rubocop:disable Cop/LineBreakAroundConditionalBlock
               new_file.copy_to(path)
@@ -38,6 +47,19 @@ module CarrierWave
               fog_file.close if fog_file && !fog_file.closed?
             end
             true
+          end
+
+          private
+
+          def read_source_file(file_body)
+            return unless ::File.exist?(file_body.path)
+
+            begin
+              file_body = ::File.open(file_body.path) if file_body.closed? # Reopen if it's already closed
+              file_body.read
+            ensure
+              file_body.close
+            end
           end
         end
 
