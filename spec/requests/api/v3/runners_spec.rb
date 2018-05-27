@@ -11,7 +11,7 @@ describe API::V3::Runners do
   let!(:shared_runner) { create(:ci_runner, :instance) }
 
   let!(:specific_runner) { create(:ci_runner, :project, projects: [project]) }
-  let!(:two_projects_runner) { create(:ci_runner, :project, projects: [project, project2])
+  let!(:two_projects_runner) { create(:ci_runner, :project, projects: [project, project2]) }
 
   before do
     # Set project access for users
