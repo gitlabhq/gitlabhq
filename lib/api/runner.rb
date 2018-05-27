@@ -132,9 +132,9 @@ module API
 
         case params[:state].to_s
         when 'success'
-          job.success
+          job.success!
         when 'failed'
-          job.drop(params[:failure_reason] || :unknown_failure)
+          job.drop!(params[:failure_reason] || :unknown_failure)
         end
       end
 
