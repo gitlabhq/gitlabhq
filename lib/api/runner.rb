@@ -123,6 +123,7 @@ module API
       end
       put '/:id' do
         job = authenticate_job!
+        forbidden!('Job is not running') unless job.running?
 
         job.trace.set(params[:trace]) if params[:trace]
 
