@@ -15,6 +15,9 @@ describe Ci::UpdateBuildQueueService do
     end
 
     context 'when there is no runner that can pick build' do
+      let(:another_project) { create(:project) }
+      let(:runner) { create(:ci_runner, :project, projects: [another_project]) }
+
       it 'does not tick runner queue value' do
         expect { subject.execute(build) }.not_to change { runner.ensure_runner_queue_value }
       end
