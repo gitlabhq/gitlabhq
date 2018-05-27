@@ -151,6 +151,15 @@ Host gitlab.company.com
 RSAAuthentication yes
 IdentityFile ~/.ssh/config/private-key-filename
 ```
+If you want to use different keys depending on the repository you are working
+on, you can issue the following command while inside your repository:
+
+```
+git config core.sshCommand "ssh -o IdentitiesOnly=yes -i ~/.ssh/private-key-filename-for-this-repository -F /dev/null"
+```
+
+Please note that such a configuration will not use the SSH Agent and requires
+at least Git 2.10.
 
 Due to the wide variety of SSH clients and their very large number of
 configuration options, further explanation of these topics is beyond the scope
