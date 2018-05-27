@@ -59,9 +59,7 @@ module Gitlab
 
       def read
         stream = Gitlab::Ci::Trace::Stream.new do
-          if trace_artifact
-            trace_artifact.open
-          elsif job.trace_chunks.any?
+          if job.trace_chunks.any?
             Gitlab::Ci::Trace::ChunkedIO.new(job)
           elsif current_path
             File.open(current_path, "rb")
