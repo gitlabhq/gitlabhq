@@ -13,7 +13,7 @@ describe API::Runners do
 
   let!(:shared_runner) { create(:ci_runner, :instance, description: 'Shared runner') }
   let!(:project_runner) { create(:ci_runner, :project, description: 'Project runner', projects: [project]) }
-  let!(:two_projects_runner) { create(:ci_runner, :project, description: 'Two projects runner', projects: [project, project2])
+  let!(:two_projects_runner) { create(:ci_runner, :project, description: 'Two projects runner', projects: [project, project2]) }
   let!(:group_runner) { create(:ci_runner, :group, description: 'Group runner', groups: [group]) }
 
   before do
