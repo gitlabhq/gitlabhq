@@ -17,8 +17,6 @@ module Gitlab
         end
       end
 
-      private
-
       # Methods needed by `API::Helpers::Pagination`
       #
 

@@ -10,14 +10,14 @@
   display: flex;
   align-items: flex-start;
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     align-items: flex-end;
   }
 
   &:not(:last-child) {
     margin-bottom: $gl-btn-padding;
 
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       margin-bottom: 3 * $gl-btn-padding;
     }
   }
@@ -26,7 +26,7 @@
     .ci-variable-body-item:last-child {
       margin-right: $ci-variable-remove-button-width;
 
-      @media (max-width: $screen-xs-max) {
+      @include media-breakpoint-down(xs) {
         margin-right: 0;
       }
     }
@@ -35,7 +35,7 @@
       display: none;
     }
 
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       .ci-variable-row-body {
         margin-right: $ci-variable-remove-button-width;
       }
@@ -48,7 +48,7 @@
   align-items: flex-start;
   width: 100%;
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     display: block;
   }
 }
@@ -59,7 +59,7 @@
   &:not(:last-child) {
     margin-right: $gl-btn-padding;
 
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       margin-right: 0;
       margin-bottom: $gl-btn-padding;
     }

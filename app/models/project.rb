@@ -894,6 +894,13 @@ class Project < ActiveRecord::Base
     Gitlab::Routing.url_helpers.project_url(self)
   end
 
+  def readme_url
+    readme = repository.readme
+    if readme
+      Gitlab::Routing.url_helpers.project_blob_url(self, File.join(default_branch, readme.path))
+    end
+  end
+
   def new_issuable_address(author, address_type)
     return unless Gitlab::IncomingEmail.supports_issue_creation? && author
 
@@ -1424,8 +1431,8 @@ class Project < ActiveRecord::Base
     self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
   end
 
-  def open_issues_count
-    Projects::OpenIssuesCountService.new(self).count
+  def open_issues_count(current_user = nil)
+    Projects::OpenIssuesCountService.new(self, current_user).count
   end
 
   def open_merge_requests_count

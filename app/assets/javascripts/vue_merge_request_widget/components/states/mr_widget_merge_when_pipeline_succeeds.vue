@@ -1,13 +1,13 @@
 <script>
   import Flash from '../../../flash';
   import statusIcon from '../mr_widget_status_icon.vue';
-  import mrWidgetAuthor from '../../components/mr_widget_author.vue';
+  import MrWidgetAuthor from '../../components/mr_widget_author.vue';
   import eventHub from '../../event_hub';
 
   export default {
     name: 'MRWidgetMergeWhenPipelineSucceeds',
     components: {
-      mrWidgetAuthor,
+      MrWidgetAuthor,
       statusIcon,
     },
     props: {
@@ -94,7 +94,7 @@
           :disabled="isCancellingAutoMerge"
           role="button"
           href="#"
-          class="btn btn-xs btn-default js-cancel-auto-merge">
+          class="btn btn-sm btn-default js-cancel-auto-merge">
           <i
             v-if="isCancellingAutoMerge"
             class="fa fa-spinner fa-spin"
@@ -129,7 +129,7 @@
             :disabled="isRemovingSourceBranch"
             @click.prevent="removeSourceBranch"
             role="button"
-            class="btn btn-xs btn-default js-remove-source-branch"
+            class="btn btn-sm btn-default js-remove-source-branch"
             href="#"
           >
             <i

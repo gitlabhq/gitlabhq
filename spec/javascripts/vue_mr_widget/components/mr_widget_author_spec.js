@@ -1,12 +1,12 @@
 import Vue from 'vue';
-import authorComponent from '~/vue_merge_request_widget/components/mr_widget_author.vue';
+import MrWidgetAuthor from '~/vue_merge_request_widget/components/mr_widget_author.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
-describe('MRWidgetAuthor', () => {
+describe('MrWidgetAuthor', () => {
   let vm;
 
   beforeEach(() => {
-    const Component = Vue.extend(authorComponent);
+    const Component = Vue.extend(MrWidgetAuthor);
 
     vm = mountComponent(Component, {
       author: {

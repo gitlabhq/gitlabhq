@@ -82,6 +82,7 @@
         :title="notificationTooltip"
         data-container="body"
         data-placement="left"
+        data-boundary="viewport"
       >
         <icon
           :name="notificationIcon"
@@ -91,12 +92,12 @@
         />
       </span>
     </div>
-    <span class="issuable-header-text hide-collapsed pull-left">
+    <span class="issuable-header-text hide-collapsed float-left">
       {{ __('Notifications') }}
     </span>
     <toggle-button
       ref="toggleButton"
-      class="pull-right hide-collapsed js-issuable-subscribe-button"
+      class="float-right hide-collapsed js-issuable-subscribe-button"
       :is-loading="showLoadingState"
       :value="subscribed"
       @change="toggleSubscription"

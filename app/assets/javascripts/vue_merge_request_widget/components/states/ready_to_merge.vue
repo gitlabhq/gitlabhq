@@ -312,7 +312,7 @@ export default {
               v-else
               @click="toggleCommitMessageEditor"
               :disabled="isMergeButtonDisabled"
-              class="js-modify-commit-message-button btn btn-default btn-xs"
+              class="js-modify-commit-message-button btn btn-default btn-sm"
               type="button">
               Modify commit message
             </button>
@@ -329,7 +329,7 @@ export default {
         class="prepend-top-default commit-message-editor">
         <div class="form-group clearfix">
           <label
-            class="control-label"
+            class="col-form-label"
             for="commit-message">
             Commit message
           </label>

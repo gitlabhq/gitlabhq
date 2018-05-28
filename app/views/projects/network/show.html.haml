@@ -9,7 +9,7 @@
         = button_tag class: 'btn btn-success' do
           = icon('search')
         .inline.prepend-left-20
-          .checkbox.light
+          .form-check.light
             = label_tag :filter_ref do
               = check_box_tag :filter_ref, 1, @options[:filter_ref]
               %span= _("Begin with the selected commit")

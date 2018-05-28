@@ -5,7 +5,7 @@
     = link_to 'Edit', admin_group_edit_path(group), id: "edit_#{dom_id(group)}", class: 'btn'
     = link_to 'Delete', [:admin, group], data: { confirm: "Are you sure you want to remove #{group.name}?" }, method: :delete, class: 'btn btn-remove'
   .stats
-    %span.badge
+    %span.badge.badge-pill
       = storage_counter(group.storage_size)
 
     %span
@@ -20,7 +20,7 @@
       = visibility_level_icon(group.visibility_level, fw: false)
 
   .avatar-container.s40
-    = group_icon(group, class: "avatar s40 hidden-xs")
+    = group_icon(group, class: "avatar s40 d-none d-sm-block")
   .title
     = link_to [:admin, group], class: 'group-name' do
       = group.full_name

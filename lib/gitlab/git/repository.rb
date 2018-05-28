@@ -1048,7 +1048,7 @@ module Gitlab
         return @info_attributes if @info_attributes
 
         content =
-          gitaly_migrate(:get_info_attributes) do |is_enabled|
+          gitaly_migrate(:get_info_attributes, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
             if is_enabled
               gitaly_repository_client.info_attributes
             else
@@ -1334,7 +1334,7 @@ module Gitlab
       end
 
       def squash_in_progress?(squash_id)
-        gitaly_migrate(:squash_in_progress) do |is_enabled|
+        gitaly_migrate(:squash_in_progress, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_repository_client.squash_in_progress?(squash_id)
           else

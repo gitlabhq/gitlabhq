@@ -2,19 +2,24 @@ const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
 const webpack = require('webpack');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const StatsWriterPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const ROOT_PATH = path.resolve(__dirname, '..');
+const CACHE_PATH = path.join(ROOT_PATH, 'tmp/cache');
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 const IS_DEV_SERVER = process.argv.join(' ').indexOf('webpack-dev-server') !== -1;
 const DEV_SERVER_HOST = process.env.DEV_SERVER_HOST || 'localhost';
 const DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
-const DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
+const DEV_SERVER_LIVERELOAD = IS_DEV_SERVER && process.env.DEV_SERVER_LIVERELOAD !== 'false';
 const WEBPACK_REPORT = process.env.WEBPACK_REPORT;
 const NO_COMPRESSION = process.env.NO_COMPRESSION;
+
+const VUE_VERSION = require('vue/package.json').version;
+const VUE_LOADER_VERSION = require('vue-loader/package.json').version;
 
 let autoEntriesCount = 0;
 let watchAutoEntries = [];
@@ -61,7 +66,7 @@ function generateEntries() {
   return Object.assign(manualEntries, autoEntries);
 }
 
-const config = {
+module.exports = {
   mode: IS_PRODUCTION ? 'production' : 'development',
 
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
@@ -76,46 +81,43 @@ const config = {
     globalObject: 'this', // allow HMR and web workers to play nice
   },
 
-  optimization: {
-    nodeEnv: false,
-    runtimeChunk: 'single',
-    splitChunks: {
-      maxInitialRequests: 4,
-      cacheGroups: {
-        default: false,
-        common: () => ({
-          priority: 20,
-          name: 'main',
-          chunks: 'initial',
-          minChunks: autoEntriesCount * 0.9,
-        }),
-        vendors: {
-          priority: 10,
-          chunks: 'async',
-          test: /[\\/](node_modules|vendor[\\/]assets[\\/]javascripts)[\\/]/,
-        },
-        commons: {
-          chunks: 'all',
-          minChunks: 2,
-          reuseExistingChunk: true,
-        },
-      },
+  resolve: {
+    extensions: ['.js'],
+    alias: {
+      '~': path.join(ROOT_PATH, 'app/assets/javascripts'),
+      emojis: path.join(ROOT_PATH, 'fixtures/emojis'),
+      empty_states: path.join(ROOT_PATH, 'app/views/shared/empty_states'),
+      icons: path.join(ROOT_PATH, 'app/views/shared/icons'),
+      images: path.join(ROOT_PATH, 'app/assets/images'),
+      vendor: path.join(ROOT_PATH, 'vendor/assets/javascripts'),
+      vue$: 'vue/dist/vue.esm.js',
+      spec: path.join(ROOT_PATH, 'spec/javascripts'),
     },
   },
 
   module: {
+    strictExportPresence: true,
     rules: [
       {
         test: /\.js$/,
-        exclude: /(node_modules|vendor\/assets)/,
+        exclude: path => /node_modules|vendor[\\/]assets/.test(path) && !/\.vue\.js/.test(path),
         loader: 'babel-loader',
         options: {
-          cacheDirectory: path.join(ROOT_PATH, 'tmp/cache/babel-loader'),
+          cacheDirectory: path.join(CACHE_PATH, 'babel-loader'),
         },
       },
       {
         test: /\.vue$/,
         loader: 'vue-loader',
+        options: {
+          cacheDirectory: path.join(CACHE_PATH, 'vue-loader'),
+          cacheIdentifier: [
+            process.env.NODE_ENV || 'development',
+            webpack.version,
+            VUE_VERSION,
+            VUE_LOADER_VERSION,
+          ].join('|'),
+        },
       },
       {
         test: /\.svg$/,
@@ -147,10 +149,9 @@ const config = {
         },
       },
       {
-        test: /katex.min.css$/,
-        include: /node_modules\/katex\/dist/,
+        test: /.css$/,
         use: [
-          { loader: 'style-loader' },
+          'vue-style-loader',
           {
             loader: 'css-loader',
             options: {
@@ -175,9 +176,34 @@ const config = {
         ],
       },
     ],
-
     noParse: [/monaco-editor\/\w+\/vs\//],
-    strictExportPresence: true,
+  },
+
+  optimization: {
+    nodeEnv: false,
+    runtimeChunk: 'single',
+    splitChunks: {
+      maxInitialRequests: 4,
+      cacheGroups: {
+        default: false,
+        common: () => ({
+          priority: 20,
+          name: 'main',
+          chunks: 'initial',
+          minChunks: autoEntriesCount * 0.9,
+        }),
+        vendors: {
+          priority: 10,
+          chunks: 'async',
+          test: /[\\/](node_modules|vendor[\\/]assets[\\/]javascripts)[\\/]/,
+        },
+        commons: {
+          chunks: 'all',
+          minChunks: 2,
+          reuseExistingChunk: true,
+        },
+      },
+    },
   },
 
   plugins: [
@@ -196,6 +222,9 @@ const config = {
         return JSON.stringify(stats, null, 2);
       },
     }),
+
+    // enable vue-loader to use existing loader rules for other module types
+    new VueLoaderPlugin(),
 
     // prevent pikaday from including moment.js
     new webpack.IgnorePlugin(/moment/, /pikaday/),
@@ -228,87 +257,66 @@ const config = {
         },
       },
     ]),
-  ],
 
-  resolve: {
-    extensions: ['.js'],
-    alias: {
-      '~': path.join(ROOT_PATH, 'app/assets/javascripts'),
-      emojis: path.join(ROOT_PATH, 'fixtures/emojis'),
-      empty_states: path.join(ROOT_PATH, 'app/views/shared/empty_states'),
-      icons: path.join(ROOT_PATH, 'app/views/shared/icons'),
-      images: path.join(ROOT_PATH, 'app/assets/images'),
-      vendor: path.join(ROOT_PATH, 'vendor/assets/javascripts'),
-      vue$: 'vue/dist/vue.esm.js',
-      spec: path.join(ROOT_PATH, 'spec/javascripts'),
+    // compression can require a lot of compute time and is disabled in CI
+    IS_PRODUCTION && !NO_COMPRESSION && new CompressionPlugin(),
+
+    // WatchForChangesPlugin
+    // TODO: publish this as a separate plugin
+    IS_DEV_SERVER && {
+      apply(compiler) {
+        compiler.hooks.emit.tapAsync('WatchForChangesPlugin', (compilation, callback) => {
+          const missingDeps = Array.from(compilation.missingDependencies);
+          const nodeModulesPath = path.join(ROOT_PATH, 'node_modules');
+          const hasMissingNodeModules = missingDeps.some(
+            file => file.indexOf(nodeModulesPath) !== -1
+          );
+
+          // watch for changes to missing node_modules
+          if (hasMissingNodeModules) compilation.contextDependencies.add(nodeModulesPath);
+
+          // watch for changes to automatic entrypoints
+          watchAutoEntries.forEach(watchPath => compilation.contextDependencies.add(watchPath));
+
+          // report our auto-generated bundle count
+          console.log(
+            `${autoEntriesCount} entries from '/pages' automatically added to webpack output.`
+          );
+
+          callback();
+        });
+      },
     },
-  },
 
-  // sqljs requires fs
-  node: {
-    fs: 'empty',
-  },
-};
+    // enable HMR only in webpack-dev-server
+    DEV_SERVER_LIVERELOAD && new webpack.HotModuleReplacementPlugin(),
 
-if (IS_PRODUCTION) {
-  config.devtool = 'source-map';
+    // optionally generate webpack bundle analysis
+    WEBPACK_REPORT &&
+      new BundleAnalyzerPlugin({
+        analyzerMode: 'static',
+        generateStatsFile: true,
+        openAnalyzer: false,
+        reportFilename: path.join(ROOT_PATH, 'webpack-report/index.html'),
+        statsFilename: path.join(ROOT_PATH, 'webpack-report/stats.json'),
+      }),
+  ].filter(Boolean),
 
-  // compression can require a lot of compute time and is disabled in CI
-  if (!NO_COMPRESSION) {
-    config.plugins.push(new CompressionPlugin());
-  }
-}
-
-if (IS_DEV_SERVER) {
-  config.devtool = 'cheap-module-eval-source-map';
-  config.devServer = {
+  devServer: {
     host: DEV_SERVER_HOST,
     port: DEV_SERVER_PORT,
     disableHostCheck: true,
-    headers: { 'Access-Control-Allow-Origin': '*' },
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': '*',
+    },
     stats: 'errors-only',
     hot: DEV_SERVER_LIVERELOAD,
     inline: DEV_SERVER_LIVERELOAD,
-  };
-  config.plugins.push({
-    apply(compiler) {
-      compiler.hooks.emit.tapAsync('WatchForChangesPlugin', (compilation, callback) => {
-        const missingDeps = Array.from(compilation.missingDependencies);
-        const nodeModulesPath = path.join(ROOT_PATH, 'node_modules');
-        const hasMissingNodeModules = missingDeps.some(
-          file => file.indexOf(nodeModulesPath) !== -1
-        );
+  },
 
-        // watch for changes to missing node_modules
-        if (hasMissingNodeModules) compilation.contextDependencies.add(nodeModulesPath);
+  devtool: IS_PRODUCTION ? 'source-map' : 'cheap-module-eval-source-map',
 
-        // watch for changes to automatic entrypoints
-        watchAutoEntries.forEach(watchPath => compilation.contextDependencies.add(watchPath));
-
-        // report our auto-generated bundle count
-        console.log(
-          `${autoEntriesCount} entries from '/pages' automatically added to webpack output.`
-        );
-
-        callback();
-      });
-    },
-  });
-  if (DEV_SERVER_LIVERELOAD) {
-    config.plugins.push(new webpack.HotModuleReplacementPlugin());
-  }
-}
-
-if (WEBPACK_REPORT) {
-  config.plugins.push(
-    new BundleAnalyzerPlugin({
-      analyzerMode: 'static',
-      generateStatsFile: true,
-      openAnalyzer: false,
-      reportFilename: path.join(ROOT_PATH, 'webpack-report/index.html'),
-      statsFilename: path.join(ROOT_PATH, 'webpack-report/stats.json'),
-    })
-  );
-}
-
-module.exports = config;
+  // sqljs requires fs
+  node: { fs: 'empty' },
+};
