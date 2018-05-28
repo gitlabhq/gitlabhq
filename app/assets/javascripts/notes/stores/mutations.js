@@ -52,6 +52,12 @@ export default {
     }
   },
 
+  [types.EXPAND_DISCUSSION](state, { discussionId }) {
+    const discussion = utils.findNoteObjectById(state.notes, discussionId);
+
+    discussion.expanded = true;
+  },
+
   [types.REMOVE_PLACEHOLDER_NOTES](state) {
     const { notes } = state;
 

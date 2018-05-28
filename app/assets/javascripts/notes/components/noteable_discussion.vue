@@ -171,7 +171,13 @@ export default {
     this.nextDiscussionsSvg = nextDiscussionsSvg;
   },
   methods: {
-    ...mapActions(['saveNote', 'toggleDiscussion', 'removePlaceholderNotes', 'toggleResolveNote']),
+    ...mapActions([
+      'saveNote',
+      'toggleDiscussion',
+      'removePlaceholderNotes',
+      'toggleResolveNote',
+      'expandDiscussion',
+    ]),
     componentName(note) {
       if (note.isPlaceholderNote) {
         if (note.placeholderType === SYSTEM_NOTE) {
@@ -233,7 +239,7 @@ Please check your network connection and try again.`;
           });
         });
     },
-    jumpToDiscussion() {
+    jumpToNextDiscussion() {
       const discussionIds = this.allDiscussions.map(d => d.id);
       const unresolvedIds = this.unresolvedDiscussions.map(d => d.id);
       const currentIndex = discussionIds.indexOf(this.note.id);
@@ -245,6 +251,7 @@ Please check your network connection and try again.`;
         const el = document.querySelector(`[data-discussion-id="${nextId}"]`);
 
         if (el) {
+          this.expandDiscussion({ discussionId: nextId });
           scrollToElement(el);
         }
       }
@@ -372,7 +379,7 @@ Please check your network connection and try again.`;
                           class="btn-group"
                           role="group">
                           <button
-                            @click="jumpToDiscussion"
+                            @click="jumpToNextDiscussion"
                             v-tooltip
                             class="btn btn-default discussion-next-btn"
                             title="Jump to next unresolved discussion"

@@ -95,4 +95,37 @@ describe('issue_discussion component', () => {
       });
     });
   });
+
+  describe('methods', () => {
+    describe('jumpToNextDiscussion', () => {
+      it('expands next unresolved discussion', () => {
+        spyOn(vm, 'expandDiscussion').and.stub();
+        const notes = [
+          discussionMock,
+          {
+            ...discussionMock,
+            id: discussionMock.id + 1,
+            notes: [{ ...discussionMock.notes[0], resolved: true }],
+          },
+          {
+            ...discussionMock,
+            id: discussionMock.id + 2,
+            notes: [{ ...discussionMock.notes[0], resolved: false }],
+          },
+        ];
+        const nextDiscussionId = discussionMock.id + 2;
+        store.replaceState({
+          ...store.state,
+          notes,
+        });
+        setFixtures(`
+          <div data-discussion-id="${nextDiscussionId}"></div>
+        `);
+
+        vm.jumpToNextDiscussion();
+
+        expect(vm.expandDiscussion).toHaveBeenCalledWith({ discussionId: nextDiscussionId });
+      });
+    });
+  });
 });

@@ -1,5 +1,12 @@
 import mutations from '~/notes/stores/mutations';
-import { note, discussionMock, notesDataMock, userDataMock, noteableDataMock, individualNote } from '../mock_data';
+import {
+  note,
+  discussionMock,
+  notesDataMock,
+  userDataMock,
+  noteableDataMock,
+  individualNote,
+} from '../mock_data';
 
 describe('Notes Store mutations', () => {
   describe('ADD_NEW_NOTE', () => {
@@ -50,6 +57,20 @@ describe('Notes Store mutations', () => {
       mutations.DELETE_NOTE(state, toDelete);
 
       expect(state.notes[0].notes.length).toEqual(lengthBefore - 1);
+    });
+  });
+
+  describe('EXPAND_DISCUSSION', () => {
+    it('should expand a collapsed discussion', () => {
+      const discussion = Object.assign({}, discussionMock, { expanded: false });
+
+      const state = {
+        notes: [discussion],
+      };
+
+      mutations.EXPAND_DISCUSSION(state, { discussionId: discussion.id });
+
+      expect(state.notes[0].expanded).toEqual(true);
     });
   });
 
@@ -104,11 +125,14 @@ describe('Notes Store mutations', () => {
       const legacyNote = {
         id: 2,
         individual_note: true,
-        notes: [{
-          note: '1',
-        }, {
-          note: '2',
-        }],
+        notes: [
+          {
+            note: '1',
+          },
+          {
+            note: '2',
+          },
+        ],
       };
 
       mutations.SET_INITIAL_NOTES(state, [note, legacyNote]);

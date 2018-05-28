@@ -346,8 +346,7 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         expect(page.all('.discussion-reply-holder', count: 2)).to all(have_selector('.discussion-next-btn'))
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'displays next discussion even if hidden' do
+      it 'displays next discussion even if hidden' do
         page.all('.note-discussion', count: 2).each do |discussion|
           page.within discussion do
             click_button 'Toggle discussion'
