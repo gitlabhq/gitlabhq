@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-25 20:31+0200\n"
-"PO-Revision-Date: 2018-05-25 20:31+0200\n"
+"POT-Creation-Date: 2018-05-28 17:32+0200\n"
+"PO-Revision-Date: 2018-05-28 17:32+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -765,6 +765,30 @@ msgstr ""
 msgid "CI/CD settings"
 msgstr ""
 
+msgid "CICDSettings|Access your runner token, customize your pipeline configuration, and view your pipeline status and coverage report."
+msgstr ""
+
+msgid "CICDSettings|CI / CD"
+msgstr ""
+
+msgid "CICDSettings|CI / CD Settings"
+msgstr ""
+
+msgid "CICDSettings|General pipelines settings"
+msgstr ""
+
+msgid "CICDSettings|Pipeline triggers"
+msgstr ""
+
+msgid "CICDSettings|Register and see your runners for this project."
+msgstr ""
+
+msgid "CICDSettings|Runners settings"
+msgstr ""
+
+msgid "CICDSettings|Triggers can force a specific branch or tag to get rebuilt with an API call. These tokens will impersonate their associated user including their access to projects and their project permissions."
+msgstr ""
+
 msgid "CICD|A domain is required to use Auto Review Apps and Auto Deploy Stages."
 msgstr ""
 
@@ -865,6 +889,9 @@ msgid "Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to s
 msgstr ""
 
 msgid "Choose file..."
+msgstr ""
+
+msgid "Choose file…"
 msgstr ""
 
 msgid "Choose which repositories you want to import."
@@ -2168,6 +2195,9 @@ msgstr ""
 msgid "GroupSettings|General"
 msgstr ""
 
+msgid "GroupSettings|General Settings"
+msgstr ""
+
 msgid "GroupSettings|If the parent group's visibility is lower than the group current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility."
 msgstr ""
 
@@ -3225,6 +3255,150 @@ msgid "ProjectLastActivity|Never"
 msgstr ""
 
 msgid "ProjectLifecycle|Stage"
+msgstr ""
+
+msgid "ProjectSettings|Advanced"
+msgstr ""
+
+msgid "ProjectSettings|Archive project"
+msgstr ""
+
+msgid "ProjectSettings|Archiving the project will make it entirely read-only. It is hidden from the dashboard and doesn't show up in searches."
+msgstr ""
+
+msgid "ProjectSettings|Are you sure that you want to archive this project?"
+msgstr ""
+
+msgid "ProjectSettings|Are you sure that you want to unarchive this project?"
+msgstr ""
+
+msgid "ProjectSettings|Be careful. Changing the project's namespace can have unintended side effects."
+msgstr ""
+
+msgid "ProjectSettings|Be careful. Renaming a project's repository can have unintended side effects."
+msgstr ""
+
+msgid "ProjectSettings|Customize your merge request restrictions."
+msgstr ""
+
+msgid "ProjectSettings|Default branch"
+msgstr ""
+
+msgid "ProjectSettings|Enable or disable certain project features and choose access levels."
+msgstr ""
+
+msgid "ProjectSettings|General"
+msgstr ""
+
+msgid "ProjectSettings|General Settings"
+msgstr ""
+
+msgid "ProjectSettings|Housekeeping"
+msgstr ""
+
+msgid "ProjectSettings|Merge request"
+msgstr ""
+
+msgid "ProjectSettings|Merge requests"
+msgstr ""
+
+msgid "ProjectSettings|Once active this project shows up in the search and on the dashboard."
+msgstr ""
+
+msgid "ProjectSettings|Once removed, the fork relationship cannot be restored and you will no longer be able to send merge requests to the source."
+msgstr ""
+
+msgid "ProjectSettings|Path"
+msgstr ""
+
+msgid "ProjectSettings|Perform advanced options such as housekeeping, archiving, renaming, transferring, or removing your project."
+msgstr ""
+
+msgid "ProjectSettings|Permissions"
+msgstr ""
+
+msgid "ProjectSettings|Please wait a moment, this page will automatically refresh when ready."
+msgstr ""
+
+msgid "ProjectSettings|Project ID"
+msgstr ""
+
+msgid "ProjectSettings|Project description"
+msgstr ""
+
+msgid "ProjectSettings|Project name"
+msgstr ""
+
+msgid "ProjectSettings|Project visibility level will be changed to match namespace rules when transferring to a group."
+msgstr ""
+
+msgid "ProjectSettings|Remove fork relationship"
+msgstr ""
+
+msgid "ProjectSettings|Remove project"
+msgstr ""
+
+msgid "ProjectSettings|Removed projects cannot be restored!"
+msgstr ""
+
+msgid "ProjectSettings|Removing the project will delete its repository and all related resources including issues, merge requests etc."
+msgstr ""
+
+msgid "ProjectSettings|Rename project"
+msgstr ""
+
+msgid "ProjectSettings|Rename repository"
+msgstr ""
+
+msgid "ProjectSettings|Run housekeeping"
+msgstr ""
+
+msgid "ProjectSettings|Runs a number of housekeeping tasks within the current repository, such as compressing file revisions and removing unreachable objects."
+msgstr ""
+
+msgid "ProjectSettings|Save changes"
+msgstr ""
+
+msgid "ProjectSettings|Saving project."
+msgstr ""
+
+msgid "ProjectSettings|Select a new namespace"
+msgstr ""
+
+msgid "ProjectSettings|Separate tags with commas."
+msgstr ""
+
+msgid "ProjectSettings|Tagsdescription"
+msgstr ""
+
+msgid "ProjectSettings|The repository can be committed to, and issues, comments and other entities can be created."
+msgstr ""
+
+msgid "ProjectSettings|The repository cannot be committed to, and no issues, comments or other entities can be created."
+msgstr ""
+
+msgid "ProjectSettings|This will remove the fork relationship to source project"
+msgstr ""
+
+msgid "ProjectSettings|Transfer project"
+msgstr ""
+
+msgid "ProjectSettings|Unarchive project"
+msgstr ""
+
+msgid "ProjectSettings|Unarchiving the project will restore people's ability to make changes to it."
+msgstr ""
+
+msgid "ProjectSettings|Update your project name, description, avatar, and other general settings."
+msgstr ""
+
+msgid "ProjectSettings|You can only transfer the project to namespaces you manage."
+msgstr ""
+
+msgid "ProjectSettings|You will need to update your local repositories to point to the new location."
+msgstr ""
+
+msgid "ProjectSettings|Your deployment services will be broken, you will need to manually fix the services after renaming."
 msgstr ""
 
 msgid "Projects"
