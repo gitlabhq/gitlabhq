@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.8.2 (2018-05-28)
+
+### Security (3 changes)
+
+- Prevent user passwords from being changed without providing the previous password.
+- Fix API to remove deploy key from project instead of deleting it entirely.
+- Fixed bug that allowed importing arbitrary project attributes.
+
+
 ## 10.8.1 (2018-05-23)
 
 ### Fixed (9 changes)
