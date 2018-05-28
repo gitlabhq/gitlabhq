@@ -18,7 +18,7 @@
 = cache(cache_key, expires_in: 1.day) do
   %li.commit.flex-row.js-toggle-container{ id: "commit-#{commit.short_id}" }
 
-    .avatar-cell.hidden-xs
+    .avatar-cell.d-none.d-sm-block
       = author_avatar(commit, size: 36)
 
     .commit-detail.flex-list
@@ -27,14 +27,14 @@
           = link_to commit.title, project_commit_path(project, commit.id, merge_request_iid: merge_request.iid), class: "commit-row-message item-title"
         - else
           = link_to_markdown_field(commit, :title, link, class: "commit-row-message item-title")
-        %span.commit-row-message.visible-xs-inline
+        %span.commit-row-message.d-block.d-sm-none
           &middot;
           = commit.short_id
         - if commit.status(ref)
-          .visible-xs-inline
+          .d-block.d-sm-none
             = render_commit_status(commit, ref: ref)
         - if commit.description?
-          %button.text-expander.hidden-xs.js-toggle-button{ type: "button" } ...
+          %button.text-expander.d-none.d-sm-inline-block.js-toggle-button{ type: "button" } ...
 
         .commiter
           - commit_author_link = commit_author_link(commit, avatar: false, size: 24)
@@ -46,7 +46,7 @@
           %pre.commit-row-description.js-toggle-content.prepend-top-8.append-bottom-8
             = preserve(markdown_field(commit, :description))
 
-      .commit-actions.flex-row.hidden-xs
+      .commit-actions.flex-row.d-none.d-sm-flex
         - if request.xhr?
           = render partial: 'projects/commit/signature', object: commit.signature
         - else

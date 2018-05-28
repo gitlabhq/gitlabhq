@@ -15,7 +15,7 @@
 
           %ul.breadcrumb.repo-breadcrumb
             = commits_breadcrumbs
-        .tree-controls.hidden-xs.hidden-sm
+        .tree-controls.d-none.d-sm-none.d-md-block
           - if @merge_request.present?
             .control
               = link_to _("View open merge request"), project_merge_request_path(@project, @merge_request), class: 'btn'

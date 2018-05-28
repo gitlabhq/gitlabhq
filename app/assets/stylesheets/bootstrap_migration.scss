@@ -1,0 +1,149 @@
+/*
+ *  Scss to help with bootstrap 3 to 4 migration
+ */
+
+$text-color: $gl-text-color;
+
+$brand-primary: $gl-primary;
+$brand-success: $gl-success;
+$brand-info: $gl-info;
+$brand-warning: $gl-warning;
+$brand-danger: $gl-danger;
+
+$border-radius-base: 3px !default;
+
+$modal-body-bg: $white-light;
+$input-border: $border-color;
+$input-border-focus: $focus-border-color;
+
+$padding-base-vertical: $gl-vert-padding;
+$padding-base-horizontal: $gl-padding;
+
+html {
+  // Override default font size used in bs4
+  font-size: 14px;
+}
+
+button,
+html [type="button"],
+[type="reset"],
+[type="submit"] {
+  // Override bootstrap reboot
+  -webkit-appearance: inherit;
+}
+
+[role="button"] {
+  cursor: pointer;
+}
+
+a {
+  color: $gl-link-color;
+}
+
+.form-group.row .col-form-label {
+  // Bootstrap 4 aligns labels to the left
+  // for horizontal forms
+  @include media-breakpoint-up(md) {
+    text-align: right;
+  }
+}
+
+table {
+  // Remove any table border lines
+  border-spacing: 0;
+}
+
+.tooltip {
+  // Fix bootstrap4 bug whereby tooltips flicker when they are hovered over their borders
+  pointer-events: none;
+}
+
+.popover {
+  font-size: 14px;
+}
+
+@each $breakpoint in map-keys($grid-breakpoints) {
+  @include media-breakpoint-up($breakpoint) {
+    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+
+    .d#{$infix}-table-header-group { display: table-header-group !important; }
+  }
+}
+
+.text-secondary {
+  // Override Bootstrap's light secondary color
+  // We have to use !important because bootstrap has that set as well
+  color: $gl-text-color-secondary !important;
+}
+
+// Polyfill deprecated selectors
+
+.hidden {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+.hide {
+  display: none;
+}
+
+.dropdown-toggle::after {
+  // Remove bootstrap's dropdown caret
+  display: none;
+}
+
+.badge {
+  padding: 4px 5px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: $gl-font-weight-normal;
+  display: inline-block;
+
+  &.badge-gray {
+    background-color: $label-gray-bg;
+    color: $gl-text-color;
+    text-shadow: none;
+  }
+
+  &.badge-inverse {
+    background-color: $label-inverse-bg;
+  }
+}
+
+.divider {
+  @extend .dropdown-divider;
+}
+
+.info-well {
+  background: $theme-gray-50;
+  color: $gl-text-color;
+  border: 1px solid $border-color;
+  border-radius: 4px;
+  margin-bottom: 16px;
+
+  .well-segment {
+    padding: 16px;
+
+    &:not(:last-of-type) {
+      border-bottom: 1px solid $well-inner-border;
+    }
+  }
+}
+
+.card {
+  &.card-without-border {
+    @extend .border-0;
+  }
+
+  &.card-without-margin {
+    margin: 0;
+  }
+
+  &.bg-light {
+    @extend .border-0;
+  }
+}
+
+.nav-tabs .nav-link {
+  border: 0;
+}

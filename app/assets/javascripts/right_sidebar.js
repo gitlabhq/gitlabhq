@@ -108,7 +108,7 @@ Sidebar.prototype.todoUpdateDone = function(data) {
       .attr('title', $el.data(`${attrPrefix}Text`));
 
     if ($el.hasClass('has-tooltip')) {
-      $el.tooltip('fixTitle');
+      $el.tooltip('_fixTitle');
     }
 
     if ($el.data(`${attrPrefix}Icon`)) {

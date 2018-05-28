@@ -57,7 +57,7 @@ export default {
     <div
       class="dropdown"
       :class="{
-        open: dropdownOpen,
+        show: dropdownOpen,
       }"
     >
       <button
@@ -69,12 +69,12 @@ export default {
         <icon
           name="plus"
           :size="12"
-          css-classes="pull-left"
+          css-classes="float-left"
         />
         <icon
           name="arrow-down"
           :size="12"
-          css-classes="pull-left"
+          css-classes="float-left"
         />
       </button>
       <ul

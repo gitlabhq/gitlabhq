@@ -47,6 +47,7 @@ input[type="checkbox"]:hover {
   }
 
   .location-badge {
+    white-space: nowrap;
     height: 32px;
     font-size: 12px;
     margin: -4px 4px -4px -4px;
@@ -166,7 +167,7 @@ input[type="checkbox"]:hover {
 }
 
 .search-holder {
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     display: -webkit-flex;
     display: flex;
   }
@@ -178,7 +179,7 @@ input[type="checkbox"]:hover {
     position: relative;
     margin-right: 0;
 
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       margin-right: 5px;
     }
   }
@@ -202,7 +203,7 @@ input[type="checkbox"]:hover {
     width: 100%;
     margin-top: 5px;
 
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       width: auto;
       margin-top: 0;
       margin-left: 5px;
@@ -210,7 +211,7 @@ input[type="checkbox"]:hover {
   }
 
   .dropdown {
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       margin-left: 5px;
       margin-right: 5px;
     }
@@ -220,7 +221,7 @@ input[type="checkbox"]:hover {
     width: 100%;
     margin-top: 5px;
 
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       width: 180px;
       margin-top: 0;
     }

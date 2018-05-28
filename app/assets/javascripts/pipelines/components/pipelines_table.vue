@@ -37,6 +37,7 @@
       return {
         pipelineId: '',
         endpoint: '',
+        cancelingPipeline: null,
       };
     },
     computed: {
@@ -64,6 +65,7 @@
       },
       onSubmit() {
         eventHub.$emit('postAction', this.endpoint);
+        this.cancelingPipeline = this.pipelineId;
       },
     },
   };
@@ -106,6 +108,7 @@
       :update-graph-dropdown="updateGraphDropdown"
       :auto-devops-help-path="autoDevopsHelpPath"
       :view-type="viewType"
+      :canceling-pipeline="cancelingPipeline"
     />
 
     <modal

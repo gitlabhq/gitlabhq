@@ -5,7 +5,7 @@
     .form-group
       = f.label :mirror_available, 'Enable mirror configuration', class: 'control-label col-sm-2'
       .col-sm-10
-        .checkbox
+        .form-check
           = f.label :mirror_available do
             = f.check_box :mirror_available
             Allow mirrors to be setup for projects

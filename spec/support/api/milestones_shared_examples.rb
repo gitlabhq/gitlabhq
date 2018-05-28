@@ -196,6 +196,12 @@ shared_examples_for 'group and project milestones' do |route_definition|
 
       expect(json_response['state']).to eq('closed')
     end
+
+    it 'updates milestone with only start date' do
+      put api(resource_route, user), start_date: Date.tomorrow
+
+      expect(response).to have_gitlab_http_status(200)
+    end
   end
 
   describe "GET #{route_definition}/:milestone_id/issues" do

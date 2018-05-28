@@ -1,6 +1,6 @@
 .prepend-top-default
-  .panel.panel-default
-    .panel-heading
+  .card
+    .card-header
       %strong
         = t('sherlock.general')
     %ul.well-list
@@ -23,10 +23,10 @@
           = t('sherlock.line')
           = frame.line
 
-  .panel.panel-default
-    .panel-heading
-      .pull-right
-        %button.js-clipboard-trigger.btn.btn-xs{ title: t('sherlock.copy_to_clipboard'), type: :button }
+  .card
+    .card-header
+      .float-right
+        %button.js-clipboard-trigger.btn.btn-sm{ title: t('sherlock.copy_to_clipboard'), type: :button }
           %i.fa.fa-clipboard
         %pre.hidden
           = @query.formatted_query
@@ -38,10 +38,10 @@
           :preserve
             #{highlight("#{@query.id}.sql", @query.formatted_query)}
 
-  .panel.panel-default
-    .panel-heading
-      .pull-right
-        %button.js-clipboard-trigger.btn.btn-xs{ title: t('sherlock.copy_to_clipboard'), type: :button }
+  .card
+    .card-header
+      .float-right
+        %button.js-clipboard-trigger.btn.btn-sm{ title: t('sherlock.copy_to_clipboard'), type: :button }
           %i.fa.fa-clipboard
         %pre.hidden
           = @query.explain

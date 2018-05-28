@@ -9,14 +9,14 @@
   New Branch
 %hr
 
-= form_tag namespace_project_branches_path, method: :post, id: "new-branch-form", class: "form-horizontal js-create-branch-form js-requires-input" do
-  .form-group
-    = label_tag :branch_name, nil, class: 'control-label'
+= form_tag namespace_project_branches_path, method: :post, id: "new-branch-form", class: "js-create-branch-form js-requires-input" do
+  .form-group.row
+    = label_tag :branch_name, nil, class: 'col-form-label col-sm-2'
     .col-sm-10
       = text_field_tag :branch_name, params[:branch_name], required: true, autofocus: true, class: 'form-control js-branch-name'
-      .help-block.text-danger.js-branch-name-error
-  .form-group
-    = label_tag :ref, 'Create from', class: 'control-label'
+      .form-text.text-muted.text-danger.js-branch-name-error
+  .form-group.row
+    = label_tag :ref, 'Create from', class: 'col-form-label col-sm-2'
     .col-sm-10.create-from
       .dropdown
         = hidden_field_tag :ref, default_ref
@@ -24,7 +24,7 @@
           .text-left.dropdown-toggle-text= default_ref
           = icon('chevron-down')
         = render 'shared/ref_dropdown', dropdown_class: 'wide'
-      .help-block Existing branch name, tag, or commit SHA
+      .form-text.text-muted Existing branch name, tag, or commit SHA
   .form-actions
     = button_tag 'Create branch', class: 'btn btn-create', tabindex: 3
     = link_to 'Cancel', project_branches_path(@project), class: 'btn btn-cancel'

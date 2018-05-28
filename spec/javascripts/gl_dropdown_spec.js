@@ -70,9 +70,9 @@ describe('glDropdown', function describeDropdown() {
 
   it('should open on click', () => {
     initDropDown.call(this, false);
-    expect(this.dropdownContainerElement).not.toHaveClass('open');
+    expect(this.dropdownContainerElement).not.toHaveClass('show');
     this.dropdownButtonElement.click();
-    expect(this.dropdownContainerElement).toHaveClass('open');
+    expect(this.dropdownContainerElement).toHaveClass('show');
   });
 
   it('escapes HTML as text', () => {
@@ -134,12 +134,12 @@ describe('glDropdown', function describeDropdown() {
     });
 
     it('should click the selected item on ENTER keypress', () => {
-      expect(this.dropdownContainerElement).toHaveClass('open');
+      expect(this.dropdownContainerElement).toHaveClass('show');
       const randomIndex = Math.floor(Math.random() * (this.projectsData.length - 1)) + 0;
       navigateWithKeys('down', randomIndex, () => {
         const visitUrl = spyOnDependency(GLDropdown, 'visitUrl').and.stub();
         navigateWithKeys('enter', null, () => {
-          expect(this.dropdownContainerElement).not.toHaveClass('open');
+          expect(this.dropdownContainerElement).not.toHaveClass('show');
           const link = $(`${ITEM_SELECTOR}:eq(${randomIndex}) a`, this.$dropdownMenuElement);
           expect(link).toHaveClass('is-active');
           const linkedLocation = link.attr('href');
@@ -149,13 +149,13 @@ describe('glDropdown', function describeDropdown() {
     });
 
     it('should close on ESC keypress', () => {
-      expect(this.dropdownContainerElement).toHaveClass('open');
+      expect(this.dropdownContainerElement).toHaveClass('show');
       this.dropdownContainerElement.trigger({
         type: 'keyup',
         which: ARROW_KEYS.ESC,
         keyCode: ARROW_KEYS.ESC
       });
-      expect(this.dropdownContainerElement).not.toHaveClass('open');
+      expect(this.dropdownContainerElement).not.toHaveClass('show');
     });
   });
 

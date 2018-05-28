@@ -20,6 +20,17 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     end
   end
 
+  def unmergeable_reasons
+    strong_memoize(:unmergeable_reasons) do
+      reasons = []
+      reasons << "no commits" if merge_request.has_no_commits?
+      reasons << "source branch is missing" unless merge_request.source_branch_exists?
+      reasons << "target branch is missing" unless merge_request.target_branch_exists?
+      reasons << "has merge conflicts" unless merge_request.project.repository.can_be_merged?(merge_request.diff_head_sha, merge_request.target_branch)
+      reasons
+    end
+  end
+
   def cancel_merge_when_pipeline_succeeds_path
     if can_cancel_merge_when_pipeline_succeeds?(current_user)
       cancel_merge_when_pipeline_succeeds_project_merge_request_path(project, merge_request)

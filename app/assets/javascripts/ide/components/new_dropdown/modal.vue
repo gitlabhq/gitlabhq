@@ -70,12 +70,12 @@ export default {
     @submit="createEntryInStore"
   >
     <form
-      class="form-horizontal"
       slot="body"
       @submit.prevent="createEntryInStore"
+      class="form-group row append-bottom-0"
     >
       <fieldset class="form-group append-bottom-0">
-        <label class="label-light col-sm-3 ide-new-modal-label">
+        <label class="label-light col-form-label col-sm-3 ide-new-modal-label">
           {{ __('Name') }}
         </label>
         <div class="col-sm-9">
