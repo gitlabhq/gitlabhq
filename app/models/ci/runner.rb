@@ -63,7 +63,7 @@ module Ci
     validate :no_groups, unless: :group_type?
     validate :any_project, if: :project_type?
     validate :exactly_one_group, if: :group_type?
-    validate :is_shared_is_valid
+    validate :validate_is_shared
 
     acts_as_taggable
 
@@ -282,7 +282,7 @@ module Ci
       end
     end
 
-    def is_shared_is_valid
+    def validate_is_shared
       unless is_shared? == instance_type?
         errors.add(:is_shared, 'is not equal to instance_type?')
       end
