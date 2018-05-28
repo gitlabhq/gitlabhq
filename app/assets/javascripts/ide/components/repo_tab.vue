@@ -26,13 +26,18 @@ export default {
   },
   computed: {
     closeLabel() {
-      if (this.tab.changed || this.tab.tempFile) {
+      if (this.fileHasChanged) {
         return `${this.tab.name} changed`;
       }
       return `Close ${this.tab.name}`;
     },
     showChangedIcon() {
-      return this.tab.changed ? !this.tabMouseOver : false;
+      if (this.tab.pending) return true;
+
+      return this.fileHasChanged ? !this.tabMouseOver : false;
+    },
+    fileHasChanged() {
+      return this.tab.changed || this.tab.tempFile || this.tab.staged;
     },
   },
 
@@ -42,18 +47,18 @@ export default {
       this.updateDelayViewerUpdated(true);
 
       if (tab.pending) {
-        this.openPendingTab(tab);
+        this.openPendingTab({ file: tab, keyPrefix: tab.staged ? 'staged' : 'unstaged' });
       } else {
         this.$router.push(`/project${tab.url}`);
       }
     },
     mouseOverTab() {
-      if (this.tab.changed) {
+      if (this.fileHasChanged) {
         this.tabMouseOver = true;
       }
     },
     mouseOutTab() {
-      if (this.tab.changed) {
+      if (this.fileHasChanged) {
         this.tabMouseOver = false;
       }
     },
@@ -63,32 +68,15 @@ export default {
 
 <template>
   <li
+    :class="{
+      active: tab.active
+    }"
     @click="clickFile(tab)"
     @mouseover="mouseOverTab"
     @mouseout="mouseOutTab"
   >
-    <button
-      type="button"
-      class="multi-file-tab-close"
-      @click.stop.prevent="closeFile(tab)"
-      :aria-label="closeLabel"
-    >
-      <icon
-        v-if="!showChangedIcon"
-        name="close"
-        :size="12"
-      />
-      <changed-file-icon
-        v-else
-        :file="tab"
-      />
-    </button>
-
     <div
       class="multi-file-tab"
-      :class="{
-        active: tab.active
-      }"
       :title="tab.url"
     >
       <file-icon
@@ -100,5 +88,23 @@ export default {
         :file="tab"
       />
     </div>
+    <button
+      type="button"
+      class="multi-file-tab-close"
+      @click.stop.prevent="closeFile(tab)"
+      :aria-label="closeLabel"
+      :disabled="tab.pending"
+    >
+      <icon
+        v-if="!showChangedIcon"
+        name="close"
+        :size="12"
+      />
+      <changed-file-icon
+        v-else
+        :file="tab"
+        :force-modified-icon="true"
+      />
+    </button>
   </li>
 </template>

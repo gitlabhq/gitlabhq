@@ -6,10 +6,10 @@ class JobArtifactUploader < GitlabUploader
 
   storage_options Gitlab.config.artifacts
 
-  def size
-    return super if model.size.nil?
+  def cached_size
+    return model.size if model.size.present? && !model.file_changed?
 
-    model.size
+    size
   end
 
   def store_dir
@@ -20,7 +20,7 @@ class JobArtifactUploader < GitlabUploader
     if file_storage?
       File.open(path, "rb") if path
     else
-      ::Gitlab::Ci::Trace::HttpIO.new(url, size) if url
+      ::Gitlab::Ci::Trace::HttpIO.new(url, cached_size) if url
     end
   end
 

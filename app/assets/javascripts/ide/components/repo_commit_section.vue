@@ -1,64 +1,63 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex';
 import tooltip from '~/vue_shared/directives/tooltip';
-import icon from '~/vue_shared/components/icon.vue';
+import Icon from '~/vue_shared/components/icon.vue';
 import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
-import LoadingButton from '~/vue_shared/components/loading_button.vue';
-import commitFilesList from './commit_sidebar/list.vue';
-import CommitMessageField from './commit_sidebar/message_field.vue';
+import CommitFilesList from './commit_sidebar/list.vue';
+import EmptyState from './commit_sidebar/empty_state.vue';
 import * as consts from '../stores/modules/commit/constants';
-import Actions from './commit_sidebar/actions.vue';
+import { activityBarViews } from '../constants';
 
 export default {
   components: {
     DeprecatedModal,
-    icon,
-    commitFilesList,
-    Actions,
-    LoadingButton,
-    CommitMessageField,
+    Icon,
+    CommitFilesList,
+    EmptyState,
   },
   directives: {
     tooltip,
   },
-  props: {
-    noChangesStateSvgPath: {
-      type: String,
-      required: true,
-    },
-    committedStateSvgPath: {
-      type: String,
-      required: true,
-    },
-  },
   computed: {
     ...mapState([
-      'currentProjectId',
-      'currentBranchId',
+      'changedFiles',
+      'stagedFiles',
       'rightPanelCollapsed',
       'lastCommitMsg',
-      'changedFiles',
+      'unusedSeal',
     ]),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
-    ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled', 'branchName']),
-    statusSvg() {
-      return this.lastCommitMsg ? this.committedStateSvgPath : this.noChangesStateSvgPath;
+    ...mapGetters(['lastOpenedFile', 'hasChanges', 'someUncommitedChanges']),
+    ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled']),
+    showStageUnstageArea() {
+      return !!(this.someUncommitedChanges || this.lastCommitMsg || !this.unusedSeal);
     },
   },
-  methods: {
-    ...mapActions(['setPanelCollapsedStatus']),
-    ...mapActions('commit', [
-      'updateCommitMessage',
-      'discardDraft',
-      'commitChanges',
-      'updateCommitAction',
-    ]),
-    toggleCollapsed() {
-      this.setPanelCollapsedStatus({
-        side: 'right',
-        collapsed: !this.rightPanelCollapsed,
-      });
+  watch: {
+    hasChanges() {
+      if (!this.hasChanges) {
+        this.updateActivityBarView(activityBarViews.edit);
+      }
     },
+  },
+  mounted() {
+    if (this.lastOpenedFile) {
+      this.openPendingTab({
+        file: this.lastOpenedFile,
+      })
+        .then(changeViewer => {
+          if (changeViewer) {
+            this.updateViewer('diff');
+          }
+        })
+        .catch(e => {
+          throw e;
+        });
+    }
+  },
+  methods: {
+    ...mapActions(['openPendingTab', 'updateViewer', 'updateActivityBarView']),
+    ...mapActions('commit', ['commitChanges', 'updateCommitAction']),
     forceCreateNewBranch() {
       return this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH).then(() => this.commitChanges());
     },
@@ -69,9 +68,6 @@ export default {
 <template>
   <div
     class="multi-file-commit-panel-section"
-    :class="{
-      'multi-file-commit-empty-state-container': !changedFiles.length
-    }"
   >
     <deprecated-modal
       id="ide-create-branch-modal"
@@ -85,76 +81,30 @@ export default {
           Would you like to create a new branch?`) }}
       </template>
     </deprecated-modal>
-    <commit-files-list
-      title="Staged"
-      :file-list="changedFiles"
-      :collapsed="rightPanelCollapsed"
-      @toggleCollapsed="toggleCollapsed"
-    />
     <template
-      v-if="changedFiles.length"
+      v-if="showStageUnstageArea"
     >
-      <form
-        class="form-horizontal multi-file-commit-form"
-        @submit.prevent.stop="commitChanges"
-        v-if="!rightPanelCollapsed"
-      >
-        <commit-message-field
-          :text="commitMessage"
-          @input="updateCommitMessage"
-        />
-        <div class="clearfix prepend-top-15">
-          <actions />
-          <loading-button
-            :loading="submitCommitLoading"
-            :disabled="commitButtonDisabled"
-            container-class="btn btn-success btn-sm pull-left"
-            :label="__('Commit')"
-            @click="commitChanges"
-          />
-          <button
-            v-if="!discardDraftButtonDisabled"
-            type="button"
-            class="btn btn-default btn-sm pull-right"
-            @click="discardDraft"
-          >
-            {{ __('Discard draft') }}
-          </button>
-        </div>
-      </form>
+      <commit-files-list
+        class="is-first"
+        icon-name="unstaged"
+        :title="__('Unstaged')"
+        :file-list="changedFiles"
+        action="stageAllChanges"
+        :action-btn-text="__('Stage all')"
+        item-action-component="stage-button"
+      />
+      <commit-files-list
+        icon-name="staged"
+        :title="__('Staged')"
+        :file-list="stagedFiles"
+        action="unstageAllChanges"
+        :action-btn-text="__('Unstage all')"
+        item-action-component="unstage-button"
+        :staged-list="true"
+      />
     </template>
-    <div
-      v-else-if="!rightPanelCollapsed"
-      class="row js-empty-state"
-    >
-      <div class="col-xs-10 col-xs-offset-1">
-        <div class="svg-content svg-80">
-          <img :src="statusSvg" />
-        </div>
-      </div>
-      <div class="col-xs-10 col-xs-offset-1">
-        <div
-          class="text-content text-center"
-          v-if="!lastCommitMsg"
-        >
-          <h4>
-            {{ __('No changes') }}
-          </h4>
-          <p>
-            {{ __('Edit files in the editor and commit changes here') }}
-          </p>
-        </div>
-        <div
-          class="text-content text-center"
-          v-else
-        >
-          <h4>
-            {{ __('All changes are committed') }}
-          </h4>
-          <p v-html="lastCommitMsg">
-          </p>
-        </div>
-      </div>
-    </div>
+    <empty-state
+      v-if="unusedSeal"
+    />
   </div>
 </template>

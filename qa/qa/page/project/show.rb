@@ -38,11 +38,7 @@ module QA
         end
 
         def repository_location
-          find('#project_clone').value
-        end
-
-        def repository_location_uri
-          Git::Location.new(repository_location)
+          Git::Location.new(find('#project_clone').value)
         end
 
         def project_name
@@ -91,7 +87,7 @@ module QA
             end
 
             # Ensure git clone textbox was updated
-            repository_location.include?(detect_text)
+            repository_location.git_uri.include?(detect_text)
           end
         end
       end

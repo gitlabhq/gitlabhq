@@ -28,11 +28,11 @@ Set the title to: `[Security] Description of the original issue`
     - [ ] Add the ~security label and prefix with the version `WIP: [X.Y]` the title of the MR
 - [ ] Make sure all MRs have a link in the [links section](#links) and are assigned to a Release Manager.
 
-[seckpick documentation]: https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/process.md#secpick-script
+[seckpick documentation]: https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md#secpick-script
 
 #### Documentation and final details
 
-- [ ] Check the topic on #security to see when the next release is going ot happen and add a link to the [links section](#links)
+- [ ] Check the topic on #security to see when the next release is going to happen and add a link to the [links section](#links)
 - [ ] Find out the versions affected (the Git history of the files affected may help you with this) and add them to the [details section](#details)
 - [ ] Fill in any upgrade notes that users may need to take into account in the [details section](#details)
 - [ ] Add Yes/No and further details if needed to the migration and settings columns in the [details section](#details)

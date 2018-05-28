@@ -12,8 +12,10 @@
 # AUTO_DEVOPS_DOMAIN must also be set as a variable at the group or project
 # level, or manually added below.
 #
-# If you want to deploy to staging first, or enable canary deploys,
-# uncomment the relevant jobs in the pipeline below.
+# Continuous deployment to production is enabled by default.
+# If you want to deploy to staging first, or enable incremental rollouts,
+# set STAGING_ENABLED or INCREMENTAL_ROLLOUT_ENABLED environment variables.
+# If you want to use canary deployments, uncomment the canary job.
 #
 # If Auto DevOps fails to detect the proper buildpack, or if you want to
 # specify a custom buildpack, set a project variable `BUILDPACK_URL` to the
@@ -75,7 +77,7 @@ test:
   only:
     - branches
 
-codequality:
+code_quality:
   image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
@@ -84,9 +86,9 @@ codequality:
     - docker:stable-dind
   script:
     - setup_docker
-    - codeclimate
+    - code_quality
   artifacts:
-    paths: [codeclimate.json]
+    paths: [gl-code-quality-report.json]
 
 performance:
   stage: performance
@@ -133,7 +135,8 @@ dependency_scanning:
     - dependency_scanning
   artifacts:
     paths: [gl-dependency-scanning-report.json]
-sast:container:
+
+container_scanning:
   image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
@@ -142,9 +145,9 @@ sast:container:
     - docker:stable-dind
   script:
     - setup_docker
-    - sast_container
+    - container_scanning
   artifacts:
-    paths: [gl-sast-container-report.json]
+    paths: [gl-container-scanning-report.json]
 
 dast:
   stage: dast
@@ -214,10 +217,10 @@ stop_review:
 # Staging deploys are disabled by default since
 # continuous deployment to production is enabled by default
 # If you prefer to automatically deploy to staging and
-# only manually promote to production, enable this job by removing the dot (.),
-# and uncomment the `when: manual` line in the `production` job.
+# only manually promote to production, enable this job by setting
+# STAGING_ENABLED.
 
-.staging:
+staging:
   stage: staging
   script:
     - check_kube_domain
@@ -234,10 +237,11 @@ stop_review:
     refs:
       - master
     kubernetes: active
+    variables:
+      - $STAGING_ENABLED
 
 # Canaries are disabled by default, but if you want them,
-# and know what the downsides are, enable this job by removing the dot (.),
-# and uncomment the `when: manual` line in the `production` job.
+# and know what the downsides are, enable this job by removing the dot (.).
 
 .canary:
   stage: canary
@@ -258,12 +262,7 @@ stop_review:
       - master
     kubernetes: active
 
-# This job continuously deploys to production on every push to `master`.
-# To make this a manual process, either because you're enabling `staging`
-# or `canary` deploys, or you simply want more control over when you deploy
-# to production, uncomment the `when: manual` line in the `production` job.
-
-production:
+.production: &production_template
   stage: production
   script:
     - check_kube_domain
@@ -274,17 +273,106 @@ production:
     - create_secret
     - deploy
     - delete canary
+    - delete rollout
     - persist_environment_url
   environment:
     name: production
     url: http://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
   artifacts:
     paths: [environment_url.txt]
-#  when: manual
+
+production:
+  <<: *production_template
   only:
     refs:
       - master
     kubernetes: active
+  except:
+    variables:
+      - $STAGING_ENABLED
+      - $INCREMENTAL_ROLLOUT_ENABLED
+
+production_manual:
+  <<: *production_template
+  when: manual
+  allow_failure: false
+  only:
+    refs:
+      - master
+    kubernetes: active
+    variables:
+      - $STAGING_ENABLED
+  except:
+    variables:
+      - $INCREMENTAL_ROLLOUT_ENABLED
+
+# This job implements incremental rollout on for every push to `master`.
+
+.rollout: &rollout_template
+  stage: production
+  script:
+    - check_kube_domain
+    - install_dependencies
+    - download_chart
+    - ensure_namespace
+    - install_tiller
+    - create_secret
+    - deploy rollout $ROLLOUT_PERCENTAGE
+    - scale stable $((100-ROLLOUT_PERCENTAGE))
+    - delete canary
+    - persist_environment_url
+  environment:
+    name: production
+    url: http://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
+  artifacts:
+    paths: [environment_url.txt]
+
+rollout 10%:
+  <<: *rollout_template
+  variables:
+    ROLLOUT_PERCENTAGE: 10
+  when: manual
+  only:
+    refs:
+      - master
+    kubernetes: active
+    variables:
+      - $INCREMENTAL_ROLLOUT_ENABLED
+
+rollout 25%:
+  <<: *rollout_template
+  variables:
+    ROLLOUT_PERCENTAGE: 25
+  when: manual
+  only:
+    refs:
+      - master
+    kubernetes: active
+    variables:
+      - $INCREMENTAL_ROLLOUT_ENABLED
+
+rollout 50%:
+  <<: *rollout_template
+  variables:
+    ROLLOUT_PERCENTAGE: 50
+  when: manual
+  only:
+    refs:
+      - master
+    kubernetes: active
+    variables:
+      - $INCREMENTAL_ROLLOUT_ENABLED
+
+rollout 100%:
+  <<: *production_template
+  when: manual
+  allow_failure: false
+  only:
+    refs:
+      - master
+    kubernetes: active
+    variables:
+      - $INCREMENTAL_ROLLOUT_ENABLED
 
 # ---------------------------------------------------------------------------
 
@@ -300,7 +388,7 @@ production:
   # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable" for Security Products
   export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
 
-  function sast_container() {
+  function container_scanning() {
     if [[ -n "$CI_REGISTRY_USER" ]]; then
       echo "Logging to GitLab Container Registry with CI credentials..."
       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
@@ -308,18 +396,20 @@ production:
     fi
 
     docker run -d --name db arminc/clair-db:latest
-    docker run -p 6060:6060 --link db:postgres -d --name clair arminc/clair-local-scan:v2.0.1
+    docker run -p 6060:6060 --link db:postgres -d --name clair --restart on-failure arminc/clair-local-scan:v2.0.1
     apk add -U wget ca-certificates
     docker pull ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}
     wget https://github.com/arminc/clair-scanner/releases/download/v8/clair-scanner_linux_amd64
     mv clair-scanner_linux_amd64 clair-scanner
     chmod +x clair-scanner
     touch clair-whitelist.yml
-    while( ! wget -q -O /dev/null http://docker:6060/v1/namespaces ) ; do sleep 1 ; done
-    ./clair-scanner -c http://docker:6060 --ip $(hostname -i) -r gl-sast-container-report.json -l clair.log -w clair-whitelist.yml ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} || true
+    retries=0
+    echo "Waiting for clair daemon to start"
+    while( ! wget -T 10 -q -O /dev/null http://docker:6060/v1/namespaces ) ; do sleep 1 ; echo -n "." ; if [ $retries -eq 10 ] ; then echo " Timeout, aborting." ; exit 1 ; fi ; retries=$(($retries+1)) ; done
+    ./clair-scanner -c http://docker:6060 --ip $(hostname -i) -r gl-container-scanning-report.json -l clair.log -w clair-whitelist.yml ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} || true
   }
 
-  function codeclimate() {
+  function code_quality() {
     docker run --env SOURCE_CODE="$PWD" \
                --volume "$PWD":/code \
                --volume /var/run/docker.sock:/var/run/docker.sock \
@@ -361,30 +451,19 @@ production:
     esac
   }
 
-  function deploy() {
-    track="${1-stable}"
-    name="$CI_ENVIRONMENT_SLUG"
-
-    if [[ "$track" != "stable" ]]; then
-      name="$name-$track"
-    fi
-
-    replicas="1"
-    service_enabled="false"
-    postgres_enabled="$POSTGRES_ENABLED"
-    # canary uses stable db
-    [[ "$track" == "canary" ]] && postgres_enabled="false"
+  function get_replicas() {
+    track="${1:-stable}"
+    percentage="${2:-100}"
 
     env_track=$( echo $track | tr -s  '[:lower:]'  '[:upper:]' )
     env_slug=$( echo ${CI_ENVIRONMENT_SLUG//-/_} | tr -s  '[:lower:]'  '[:upper:]' )
 
-    if [[ "$track" == "stable" ]]; then
+    if [[ "$track" == "stable" ]] || [[ "$track" == "rollout" ]]; then
       # for stable track get number of replicas from `PRODUCTION_REPLICAS`
       eval new_replicas=\$${env_slug}_REPLICAS
       if [[ -z "$new_replicas" ]]; then
         new_replicas=$REPLICAS
       fi
-      service_enabled="true"
     else
       # for all tracks get number of replicas from `CANARY_PRODUCTION_REPLICAS`
       eval new_replicas=\$${env_track}_${env_slug}_REPLICAS
@@ -392,9 +471,36 @@ production:
         eval new_replicas=\${env_track}_REPLICAS
       fi
     fi
-    if [[ -n "$new_replicas" ]]; then
-      replicas="$new_replicas"
+
+    replicas="${new_replicas:-1}"
+    replicas="$(($replicas * $percentage / 100))"
+
+    # always return at least one replicas
+    if [[ $replicas -gt 0 ]]; then
+      echo "$replicas"
+    else
+      echo 1
     fi
+  }
+
+  function deploy() {
+    track="${1-stable}"
+    percentage="${2:-100}"
+    name="$CI_ENVIRONMENT_SLUG"
+
+    replicas="1"
+    service_enabled="true"
+    postgres_enabled="$POSTGRES_ENABLED"
+
+    # if track is different than stable,
+    # re-use all attached resources
+    if [[ "$track" != "stable" ]]; then
+      name="$name-$track"
+      service_enabled="false"
+      postgres_enabled="false"
+    fi
+
+    replicas=$(get_replicas "$track" "$percentage")
 
     if [[ "$CI_PROJECT_VISIBILITY" != "public" ]]; then
       secret_name='gitlab-registry'
@@ -423,6 +529,27 @@ production:
       --version="$CI_PIPELINE_ID-$CI_JOB_ID" \
       "$name" \
       chart/
+  }
+
+  function scale() {
+    track="${1-stable}"
+    percentage="${2-100}"
+    name="$CI_ENVIRONMENT_SLUG"
+
+    if [[ "$track" != "stable" ]]; then
+      name="$name-$track"
+    fi
+
+    replicas=$(get_replicas "$track" "$percentage")
+
+    if [[ -n "$(helm ls -q "^$name$")" ]]; then
+      helm upgrade --reuse-values \
+        --wait \
+        --set replicaCount="$replicas" \
+        --namespace="$KUBE_NAMESPACE" \
+        "$name" \
+        chart/
+    fi
   }
 
   function install_dependencies() {
@@ -546,8 +673,8 @@ production:
     kubectl create secret -n "$KUBE_NAMESPACE" \
       docker-registry gitlab-registry \
       --docker-server="$CI_REGISTRY" \
-      --docker-username="$CI_REGISTRY_USER" \
-      --docker-password="$CI_REGISTRY_PASSWORD" \
+      --docker-username="${CI_DEPLOY_USER:-$CI_REGISTRY_USER}" \
+      --docker-password="${CI_DEPLOY_PASSWORD:-$CI_REGISTRY_PASSWORD}" \
       --docker-email="$GITLAB_USER_EMAIL" \
       -o yaml --dry-run | kubectl replace -n "$KUBE_NAMESPACE" --force -f -
   }

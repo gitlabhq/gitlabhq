@@ -15,6 +15,7 @@ export const dataStructure = () => ({
   opened: false,
   active: false,
   changed: false,
+  staged: false,
   lastCommitPath: '',
   lastCommit: {
     id: '',
@@ -41,6 +42,9 @@ export const dataStructure = () => ({
   viewMode: 'edit',
   previewMode: null,
   size: 0,
+  parentPath: null,
+  lastOpenedAt: 0,
+  mrChange: null,
 });
 
 export const decorateData = entity => {
@@ -63,6 +67,7 @@ export const decorateData = entity => {
     previewMode,
     file_lock,
     html,
+    parentPath = '',
   } = entity;
 
   return {
@@ -86,6 +91,7 @@ export const decorateData = entity => {
     previewMode,
     file_lock,
     html,
+    parentPath,
   };
 };
 
@@ -101,7 +107,7 @@ export const setPageTitle = title => {
 export const createCommitPayload = (branch, newBranch, state, rootState) => ({
   branch,
   commit_message: state.commitMessage,
-  actions: rootState.changedFiles.map(f => ({
+  actions: rootState.stagedFiles.map(f => ({
     action: f.tempFile ? 'create' : 'update',
     file_path: f.path,
     content: f.content,
@@ -119,8 +125,8 @@ const sortTreesByTypeAndName = (a, b) => {
   } else if (a.type === 'blob' && b.type === 'tree') {
     return 1;
   }
-  if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
-  if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+  if (a.name < b.name) return -1;
+  if (a.name > b.name) return 1;
   return 0;
 };
 
@@ -132,3 +138,9 @@ export const sortTree = sortedTree =>
       }),
     )
     .sort(sortTreesByTypeAndName);
+
+export const filePathMatches = (f, path) =>
+  f.path.replace(new RegExp(`${f.name}$`), '').indexOf(`${path}/`) === 0;
+
+export const getChangesCountForFiles = (files, path) =>
+  files.filter(f => filePathMatches(f, path)).length;

@@ -212,6 +212,18 @@ describe API::Users do
         expect(json_response.last['id']).to eq(user.id)
       end
 
+      it 'returns users with 2fa enabled' do
+        admin
+        user
+        user_with_2fa = create(:user, :two_factor_via_otp)
+
+        get api('/users', admin), { two_factor: 'enabled' }
+
+        expect(response).to match_response_schema('public_api/v4/user/admins')
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['id']).to eq(user_with_2fa.id)
+      end
+
       it 'returns 400 when provided incorrect sort params' do
         get api('/users', admin), { order_by: 'magic', sort: 'asc' }
 
@@ -476,10 +488,6 @@ describe API::Users do
   describe "PUT /users/:id" do
     let!(:admin_user) { create(:admin) }
 
-    before do
-      admin
-    end
-
     it "updates user with new bio" do
       put api("/users/#{user.id}", admin), { bio: 'new test bio' }
 
@@ -513,27 +521,28 @@ describe API::Users do
       expect(json_response['avatar_url']).to include(user.avatar_path)
     end
 
-    it 'updates user with his own email' do
-      put api("/users/#{user.id}", admin), email: user.email
-
-      expect(response).to have_gitlab_http_status(200)
-      expect(json_response['email']).to eq(user.email)
-      expect(user.reload.email).to eq(user.email)
-    end
-
     it 'updates user with a new email' do
+      old_email = user.email
+      old_notification_email = user.notification_email
       put api("/users/#{user.id}", admin), email: 'new@email.com'
-
-      expect(response).to have_gitlab_http_status(200)
-      expect(user.reload.notification_email).to eq('new@email.com')
-    end
-
-    it 'skips reconfirmation when requested' do
-      put api("/users/#{user.id}", admin), { skip_reconfirmation: true }
 
       user.reload
 
-      expect(user.confirmed_at).to be_present
+      expect(response).to have_gitlab_http_status(200)
+      expect(user).to be_confirmed
+      expect(user.email).to eq(old_email)
+      expect(user.notification_email).to eq(old_notification_email)
+      expect(user.unconfirmed_email).to eq('new@email.com')
+    end
+
+    it 'skips reconfirmation when requested' do
+      put api("/users/#{user.id}", admin), email: 'new@email.com', skip_reconfirmation: true
+
+      user.reload
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(user).to be_confirmed
+      expect(user.email).to eq('new@email.com')
     end
 
     it 'updates user with his own username' do

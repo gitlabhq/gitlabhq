@@ -28,11 +28,12 @@ class Projects::RepositoriesController < Projects::ApplicationController
   end
 
   def assign_archive_vars
-    @id = params[:id]
-
-    return unless @id
-
-    @ref, @filename = extract_ref(@id)
+    if params[:id]
+      @ref, @filename = extract_ref(params[:id])
+    else
+      @ref = params[:ref]
+      @filename = nil
+    end
   rescue InvalidPathError
     render_404
   end

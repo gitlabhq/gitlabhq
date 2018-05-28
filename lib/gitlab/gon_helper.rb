@@ -15,10 +15,11 @@ module Gitlab
       gon.user_color_scheme      = Gitlab::ColorSchemes.for_user(current_user).css_class
       gon.sentry_dsn             = Gitlab::CurrentSettings.clientside_sentry_dsn if Gitlab::CurrentSettings.clientside_sentry_enabled
       gon.gitlab_url             = Gitlab.config.gitlab.url
-      gon.revision               = Gitlab::REVISION
+      gon.revision               = Gitlab.revision
       gon.gitlab_logo            = ActionController::Base.helpers.asset_path('gitlab_logo.png')
       gon.sprite_icons           = IconsHelper.sprite_icon_path
       gon.sprite_file_icons      = IconsHelper.sprite_file_icons_path
+      gon.emoji_sprites_css_path = ActionController::Base.helpers.stylesheet_path('emoji_sprites')
       gon.test_env               = Rails.env.test?
       gon.suggested_label_colors = LabelsHelper.suggested_colors
 

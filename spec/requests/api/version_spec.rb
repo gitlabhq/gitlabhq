@@ -18,7 +18,7 @@ describe API::Version do
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['version']).to eq(Gitlab::VERSION)
-        expect(json_response['revision']).to eq(Gitlab::REVISION)
+        expect(json_response['revision']).to eq(Gitlab.revision)
       end
     end
   end

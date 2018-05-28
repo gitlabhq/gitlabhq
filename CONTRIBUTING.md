@@ -9,6 +9,10 @@ terms.
 
 [DCO + License](https://gitlab.com/gitlab-org/dco/blob/master/README.md)
 
+All Documentation content that resides under the [doc/ directory](/doc) of this
+repository is licensed under Creative Commons:
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+
 _This notice should stay as the first item in the CONTRIBUTING.md file._
 
 ---
@@ -25,10 +29,12 @@ _This notice should stay as the first item in the CONTRIBUTING.md file._
 - [Workflow labels](#workflow-labels)
   - [Type labels (~"feature proposal", ~bug, ~customer, etc.)](#type-labels-feature-proposal-bug-customer-etc)
   - [Subject labels (~wiki, ~"container registry", ~ldap, ~api, etc.)](#subject-labels-wiki-container-registry-ldap-api-etc)
-  - [Team labels (~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.)](#team-labels-cicd-discussion-edge-platform-etc)
-  - [Priority labels (~Deliverable, ~Stretch, ~"Next Patch Release")](#priority-labels-deliverable-stretch-next-patch-release)
+  - [Team labels (~"CI/CD", ~Discussion, ~Quality, ~Platform, etc.)](#team-labels-cicd-discussion-quality-platform-etc)
+  - [Milestone labels (~Deliverable, ~Stretch, ~"Next Patch Release")](#milestone-labels-deliverable-stretch-next-patch-release)
+  - [Priority labels (~P1, ~P2, ~P3 , ~P4)](#bug-priority-labels-p1-p2-p3-p4)
+  - [Severity labels (~S1, ~S2, ~S3 , ~S4)](#bug-severity-labels-s1-s2-s3-s4)
   - [Label for community contributors (~"Accepting Merge Requests")](#label-for-community-contributors-accepting-merge-requests)
-- [Implement design & UI elements](#implement-design-ui-elements)
+- [Implement design & UI elements](#implement-design--ui-elements)
 - [Issue tracker](#issue-tracker)
   - [Issue triaging](#issue-triaging)
   - [Feature proposals](#feature-proposals)
@@ -112,7 +118,7 @@ is a great place to start. Issues with a lower weight (1 or 2) are deemed
 suitable for beginners. These issues will be of reasonable size and challenge,
 for anyone to start contributing to GitLab. If you have any questions or need help visit [Getting Help](https://about.gitlab.com/getting-help/#discussion) to
 learn how to communicate with GitLab. If you're looking for a Gitter or Slack channel
-please consider we favor 
+please consider we favor
 [asynchronous communication](https://about.gitlab.com/handbook/communication/#internal-communication) over real time communication. Thanks for your contribution!
 
 ## Workflow labels
@@ -125,8 +131,10 @@ Most issues will have labels for at least one of the following:
 
 - Type: ~"feature proposal", ~bug, ~customer, etc.
 - Subject: ~wiki, ~"container registry", ~ldap, ~api, ~frontend, etc.
-- Team: ~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.
-- Priority: ~Deliverable, ~Stretch, ~"Next Patch Release"
+- Team: ~"CI/CD", ~Discussion, ~Quality, ~Platform, etc.
+- Milestone: ~Deliverable, ~Stretch, ~"Next Patch Release"
+- Priority: ~P1, ~P2, ~P3, ~P4
+- Severity: ~S1, ~S2, ~S3, ~S4
 
 All labels, their meaning and priority are defined on the
 [labels page][labels-page].
@@ -160,20 +168,20 @@ hits. They are not always necessary, but very convenient.
 
 If you are an expert in a particular area, it makes it easier to find issues to
 work on. You can also subscribe to those labels to receive an email each time an
-issue is labelled with a subject label corresponding to your expertise.
+issue is labeled with a subject label corresponding to your expertise.
 
 Examples of subject labels are ~wiki, ~"container registry", ~ldap, ~api,
 ~issues, ~"merge requests", ~labels, and ~"container registry".
 
 Subject labels are always all-lowercase.
 
-### Team labels (~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.)
+### Team labels (~"CI/CD", ~Discussion, ~Quality, ~Platform, etc.)
 
 Team labels specify what team is responsible for this issue.
 Assigning a team label makes sure issues get the attention of the appropriate
 people.
 
-The current team labels are ~Build, ~"CI/CD", ~Discussion, ~Documentation, ~Edge,
+The current team labels are ~Build, ~"CI/CD", ~Discussion, ~Documentation, ~Quality,
 ~Geo, ~Gitaly, ~Monitoring, ~Platform, ~Release, ~"Security Products" and ~"UX".
 
 The descriptions on the [labels page][labels-page] explain what falls under the
@@ -185,34 +193,56 @@ indicate if an issue needs backend work, frontend work, or both.
 Team labels are always capitalized so that they show up as the first label for
 any issue.
 
-### Priority labels (~Deliverable, ~Stretch, ~"Next Patch Release")
+### Milestone labels (~Deliverable, ~Stretch, ~"Next Patch Release")
 
-Priority labels help us clearly communicate expectations of the work for the
-release. There are two levels of priority labels:
+Milestone labels help us clearly communicate expectations of the work for the
+release. There are three levels of Milestone labels:
 
 - ~Deliverable: Issues that are expected to be delivered in the current
   milestone.
 - ~Stretch: Issues that are a stretch goal for delivering in the current
   milestone. If these issues are not done in the current release, they will
   strongly be considered for the next release.
-- ~"Next Patch Release": Issues to put in the next patch release. Work on these 
+- ~"Next Patch Release": Issues to put in the next patch release. Work on these
   first, and add the "Pick Into X" label to the merge request, along with the
   appropriate milestone.
 
 Each issue scheduled for the current milestone should be labeled ~Deliverable
-or ~"Stretch". Any open issue for a previous milestone should be labeled 
+or ~"Stretch". Any open issue for a previous milestone should be labeled
 ~"Next Patch Release", or otherwise rescheduled to a different milestone.
 
-### Severity labels (~S1, ~S2, etc.)
+### Bug Priority labels (~P1, ~P2, ~P3, ~P4)
+
+Bug Priority labels help us define the time a ~bug fix should be completed. Priority determines how quickly the defect turnaround time must be. 
+If there are multiple defects, the priority decides which defect has to be fixed immediately versus later.
+This label documents the planned timeline & urgency which is used to measure against our actual SLA on delivering ~bug fixes.
+
+| Label | Meaning         | Estimate time to fix                                             | Guidance |
+|-------|-----------------|------------------------------------------------------------------|----------|
+| ~P1   | Urgent Priority | The current release + potentially immediate hotfix to GitLab.com |  |
+| ~P2   | High Priority   | The next release                                                 |  |
+| ~P3   | Medium Priority | Within the next 3 releases (approx one quarter)                  |  |
+| ~P4   | Low Priority    | Anything outside the next 3 releases (approx beyond one quarter) | The issue is prominent but does not impact user workflow and a workaround is documented  |
+
+### Bug Severity labels (~S1, ~S2, ~S3, ~S4)
 
 Severity labels help us clearly communicate the impact of a ~bug on users.
 
-| Label | Meaning                                  | Example |
-|-------|------------------------------------------|---------|
-| ~S1   | Feature broken, no workaround            | Unable to create an issue |
-| ~S2   | Feature broken, workaround unacceptable  | Can push commits, but only via the command line |
-| ~S3   | Feature broken, workaround acceptable    | Can create merge requests only from the Merge Requests page, not through the Issue |
-| ~S4   | Cosmetic issue                           | Label colors are incorrect / not being displayed |       
+| Label | Meaning           | Impact of the defect                                  | Example |
+|-------|-------------------|-------------------------------------------------------|---------|
+| ~S1   | Blocker           | Outage, broken feature with no workaround             | Unable to create an issue. Data corruption/loss. Security breach. |
+| ~S2   | Critical Severity | Broken Feature, workaround too complex & unacceptable | Can push commits, but only via the command line. |
+| ~S3   | Major Severity    | Broken Feature, workaround acceptable                 | Can create merge requests only from the Merge Requests page, not through the Issue. |
+| ~S4   | Low Severity      | Functionality inconvenience or cosmetic issue         | Label colors are incorrect / not being displayed. |
+
+#### Severity impact guidance
+
+| Label | Security Impact                                                     | Availability / Performance Impact                            |
+|-------|---------------------------------------------------------------------|--------------------------------------------------------------|
+| ~S1   | >50% users impacted (possible company extinction level event)       |                                                              |
+| ~S2   | Many users or multiple paid customers impacted (but not apocalyptic)| The issue is (almost) guaranteed to occur in the near future |  
+| ~S3   | A few users or a single paid customer impacted                      | The issue is likely to occur in the near future              |
+| ~S4   | No paid users/customer impacted, or expected impact within 30 days  | The issue _may_ occur but it's not likely                    |
 
 ### Label for community contributors (~"Accepting Merge Requests")
 
@@ -266,7 +296,24 @@ any potential community contributor to @-mention per above.
 
 ## Implement design & UI elements
 
-Please see the [UX Guide for GitLab].
+For guidance on UX implementation at GitLab, please refer to our [Design System](https://design.gitlab.com/).
+
+The UX team uses labels to manage their workflow.
+
+The  ~"UX" label on an issue is a signal to the UX team that it will need UX attention. 
+To better understand the priority by which UX tackles issues, see the [UX section](https://about.gitlab.com/handbook/ux/) of the handbook.
+
+Once an issue has been worked on and is ready for development, a UXer applies the ~"UX ready" label to that issue.
+
+The UX team has a special type label called ~"design artifact". This label indicates that the final output 
+for an issue is a UX solution/design. The solution will be developed by frontend and/or backend in a subsequent milestone. 
+Any issue labeled ~"design artifact" should not also be labeled ~"frontend" or ~"backend" since no development is 
+needed until the solution has been decided.
+
+~"design artifact" issues are like any other issue and should contain a milestone label, ~"Deliverable" or ~"Stretch", when scheduled in the current milestone.
+
+Once the ~"design artifact" issue has been completed, the UXer removes the ~"design artifact" label and applies the ~"UX ready" label. The Product Manager can use the 
+existing issue or decide to create a whole new issue for the purpose of development. 
 
 ## Issue tracker
 
@@ -690,7 +737,3 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [polling-etag]: https://docs.gitlab.com/ce/development/polling.html
 [testing]: doc/development/testing_guide/index.md
 [us-english]: https://en.wikipedia.org/wiki/American_English
-
-[^1]: Please note that specs other than JavaScript specs are considered backend
-      code.
-      

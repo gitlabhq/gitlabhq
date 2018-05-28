@@ -26,6 +26,11 @@ export default {
       return labelsString;
     },
   },
+  methods: {
+    handleClick() {
+      this.$emit('onValueClick');
+    },
+  },
 };
 </script>
 
@@ -36,6 +41,7 @@ export default {
     data-placement="left"
     data-container="body"
     :title="labelsList"
+    @click="handleClick"
   >
     <i
       aria-hidden="true"

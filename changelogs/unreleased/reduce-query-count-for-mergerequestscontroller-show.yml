@@ -1,5 +1,0 @@
----
-title: Reduce number of queries when viewing a merge request
-merge_request:
-author:
-type: performance

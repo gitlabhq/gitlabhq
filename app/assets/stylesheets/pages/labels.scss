@@ -61,6 +61,7 @@
   padding: 0 $grid-size;
   line-height: 16px;
   border-radius: $label-border-radius;
+  color: $white-light;
 }
 
 .dropdown-labels-error {
@@ -216,6 +217,10 @@
 .label-link {
   display: inline-flex;
   vertical-align: top;
+
+  &:hover .color-label {
+    text-decoration: underline;
+  }
 
   .label {
     vertical-align: inherit;

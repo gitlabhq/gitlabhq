@@ -31,6 +31,9 @@ A Todo appears in your Todos dashboard when:
 - you are `@mentioned` in a comment on a commit,
 - a job in the CI pipeline running for your merge request failed, but this
   job is not allowed to fail.
+- a merge request becomes unmergeable, and you are either:
+  - the author, or
+  - have set it to automatically merge once pipeline succeeds.
 
 ### Directly addressed Todos
 
@@ -92,9 +95,9 @@ corresponding **Done** button, and it will disappear from your Todo list.
 ![A Todo in the Todos dashboard](img/todo_list_item.png)
 
 A Todo can also be marked as done from the issue or merge request sidebar using
-the "Mark done" button.
+the "Mark todo as done" button.
 
-![Mark Done from the issuable sidebar](img/todos_mark_done_sidebar.png)
+![Mark todo as done from the issuable sidebar](img/todos_mark_done_sidebar.png)
 
 You can mark all your Todos as done at once by clicking on the **Mark all as
 done** button.

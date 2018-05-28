@@ -243,5 +243,10 @@ FactoryBot.define do
       failed
       failure_reason 1
     end
+
+    trait :api_failure do
+      failed
+      failure_reason 2
+    end
   end
 end

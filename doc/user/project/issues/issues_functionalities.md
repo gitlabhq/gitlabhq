@@ -28,7 +28,7 @@ Comments and system notes also appear automatically in response to various actio
 #### 2. Todos
 
 - Add todo: add that issue to your [GitLab Todo](../../../workflow/todos.html) list
-- Mark done: mark that issue as done (reflects on the Todo list)
+- Mark todo as done: mark that issue as done (reflects on the Todo list)
 
 #### 3. Assignee
 
@@ -152,7 +152,7 @@ know you like it without spamming them.
 These text fields also fully support
 [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm).
 
-#### 17. Comment, start a discusion, or comment and close
+#### 17. Comment, start a discussion, or comment and close
 
 Once you wrote your comment, you can either:
 

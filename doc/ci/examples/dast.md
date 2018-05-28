@@ -42,9 +42,9 @@ dast:
   allow_failure: true
   script:
     - mkdir /zap/wrk/
-    - /zap/zap-baseline.py -J gl-dast-report.json -t $website \
-        --auth-url $login_url \
-        --auth-username "john.doe@example.com" \
+    - /zap/zap-baseline.py -J gl-dast-report.json -t $website
+        --auth-url $login_url
+        --auth-username "john.doe@example.com"
         --auth-password "john-doe-password" || true
     - cp /zap/wrk/gl-dast-report.json .
   artifacts:

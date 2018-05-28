@@ -1,5 +1,0 @@
----
-title: Reuse root_ref_hash for performance on Branches
-merge_request: 17998
-author: Takuya Noguchi
-type: performance

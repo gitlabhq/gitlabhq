@@ -46,8 +46,7 @@ describe LfsObjectUploader do
   end
 
   describe 'remote file' do
-    let(:remote) { described_class::Store::REMOTE }
-    let(:lfs_object) { create(:lfs_object, file_store: remote) }
+    let(:lfs_object) { create(:lfs_object, :object_storage, :with_file) }
 
     context 'with object storage enabled' do
       before do
@@ -57,16 +56,11 @@ describe LfsObjectUploader do
       it 'can store file remotely' do
         allow(ObjectStorage::BackgroundMoveWorker).to receive(:perform_async)
 
-        store_file(lfs_object)
+        lfs_object
 
-        expect(lfs_object.file_store).to eq remote
+        expect(lfs_object.file_store).to eq(described_class::Store::REMOTE)
         expect(lfs_object.file.path).not_to be_blank
       end
     end
-  end
-
-  def store_file(lfs_object)
-    lfs_object.file = fixture_file_upload(Rails.root.join("spec/fixtures/dk.png"), "`/png")
-    lfs_object.save!
   end
 end

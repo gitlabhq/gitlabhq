@@ -62,9 +62,7 @@ describe LfsObject do
               .with('LfsObjectUploader', described_class.name, :file, kind_of(Numeric))
               .once
 
-            lfs_object = create(:lfs_object)
-            lfs_object.file = fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "`/png")
-            lfs_object.save!
+            create(:lfs_object, :with_file)
           end
         end
       end
@@ -78,6 +76,45 @@ describe LfsObject do
           expect(ObjectStorage::BackgroundMoveWorker).not_to receive(:perform_async)
 
           subject
+        end
+      end
+    end
+
+    describe 'file is being stored' do
+      let(:lfs_object) { create(:lfs_object, :with_file) }
+
+      context 'when object has nil store' do
+        before do
+          lfs_object.update_column(:file_store, nil)
+          lfs_object.reload
+        end
+
+        it 'is stored locally' do
+          expect(lfs_object.file_store).to be(nil)
+          expect(lfs_object.file).to be_file_storage
+          expect(lfs_object.file.object_store).to eq(ObjectStorage::Store::LOCAL)
+        end
+      end
+
+      context 'when existing object has local store' do
+        it 'is stored locally' do
+          expect(lfs_object.file_store).to be(ObjectStorage::Store::LOCAL)
+          expect(lfs_object.file).to be_file_storage
+          expect(lfs_object.file.object_store).to eq(ObjectStorage::Store::LOCAL)
+        end
+      end
+
+      context 'when direct upload is enabled' do
+        before do
+          stub_lfs_object_storage(direct_upload: true)
+        end
+
+        context 'when file is stored' do
+          it 'is stored remotely' do
+            expect(lfs_object.file_store).to eq(ObjectStorage::Store::REMOTE)
+            expect(lfs_object.file).not_to be_file_storage
+            expect(lfs_object.file.object_store).to eq(ObjectStorage::Store::REMOTE)
+          end
         end
       end
     end

@@ -109,12 +109,12 @@ export default {
               rel="noopener noreferrer nofollow"
               class="deploy-link js-deploy-url"
             >
+              {{ deployment.external_url_formatted }}
               <i
                 class="fa fa-external-link"
                 aria-hidden="true"
               >
               </i>
-              {{ deployment.external_url_formatted }}
             </a>
           </template>
           <span
@@ -127,7 +127,7 @@ export default {
           </span>
           <loading-button
             v-if="deployment.stop_url"
-            container-class="btn btn-default btn-xs prepend-left-default"
+            container-class="btn btn-default btn-sm prepend-left-default"
             label="Stop environment"
             :loading="isStopping"
             @click="stopEnvironment"

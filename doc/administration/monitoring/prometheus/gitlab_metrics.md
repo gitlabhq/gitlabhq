@@ -1,7 +1,7 @@
 # GitLab Prometheus metrics
 
 >**Note:**
-Available since [Omnibus GitLab 9.3][29118]. Currently experimental. For
+Available since [Omnibus GitLab 9.3][29118]. For
 installations from source you'll have to configure it yourself.
 
 To enable the GitLab Prometheus metrics:
@@ -24,7 +24,7 @@ server, because the embedded server configuration is overwritten once every
 
 ## Metrics available
 
-In this experimental phase, only a few metrics are available:
+The following metrics are available:
 
 | Metric                            | Type      | Since | Description |
 |:--------------------------------- |:--------- |:----- |:----------- |
@@ -46,7 +46,7 @@ In this experimental phase, only a few metrics are available:
 | redis_ping_latency_seconds        | Gauge     | 9.4   | Round trip time of the redis ping |
 | user_session_logins_total         | Counter   | 9.4   | Counter of how many users have logged in |
 | filesystem_circuitbreaker_latency_seconds | Gauge | 9.5 | Time spent validating if a storage is accessible |
-| filesystem_circuitbreaker         | Gauge     | 9.5   | Wether or not the circuit for a certain shard is broken or not |
+| filesystem_circuitbreaker         | Gauge     | 9.5   | Whether or not the circuit for a certain shard is broken or not |
 | circuitbreaker_storage_check_duration_seconds | Histogram | 10.3 | Time a single storage probe took |
 
 ## Metrics shared directory

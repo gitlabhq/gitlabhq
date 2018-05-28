@@ -36,16 +36,17 @@ describe 'layouts/nav/sidebar/_project' do
       expect(rendered).to have_text 'Registry'
     end
 
-    it 'highlights only one tab' do
+    it 'highlights sidebar item and flyout' do
       render
 
-      expect(rendered).to have_css('.active', count: 1)
+      expect(rendered).to have_css('.sidebar-top-level-items > li.active', count: 1)
+      expect(rendered).to have_css('.is-fly-out-only > li.active', count: 1)
     end
 
-    it 'highlights container registry tab only' do
+    it 'highlights container registry tab' do
       render
 
-      expect(rendered).to have_css('.active', text: 'Registry')
+      expect(rendered).to have_css('.sidebar-top-level-items > li.active', text: 'Registry')
     end
   end
 end

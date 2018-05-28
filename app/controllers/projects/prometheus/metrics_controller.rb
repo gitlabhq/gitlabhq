@@ -25,7 +25,7 @@ module Projects
       end
 
       def require_prometheus_metrics!
-        render_404 unless prometheus_adapter.can_query?
+        render_404 unless prometheus_adapter&.can_query?
       end
     end
   end

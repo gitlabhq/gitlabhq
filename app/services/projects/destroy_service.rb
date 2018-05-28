@@ -51,11 +51,11 @@ module Projects
 
       flush_caches(@project)
 
-      unless mv_repository(removal_path(repo_path), repo_path)
+      unless rollback_repository(removal_path(repo_path), repo_path)
         raise_error('Failed to restore project repository. Please contact the administrator.')
       end
 
-      unless mv_repository(removal_path(wiki_path), wiki_path)
+      unless rollback_repository(removal_path(wiki_path), wiki_path)
         raise_error('Failed to restore wiki repository. Please contact the administrator.')
       end
     end
@@ -84,25 +84,38 @@ module Projects
       # Skip repository removal. We use this flag when remove user or group
       return true if params[:skip_repo] == true
 
+      # There is a possibility project does not have repository or wiki
+      return true unless repo_exists?(path)
+
       new_path = removal_path(path)
 
       if mv_repository(path, new_path)
-        log_info("Repository \"#{path}\" moved to \"#{new_path}\"")
+        log_info(%Q{Repository "#{path}" moved to "#{new_path}" for project "#{project.full_path}"})
 
         project.run_after_commit do
           # self is now project
-          GitlabShellWorker.perform_in(5.minutes, :remove_repository, self.repository_storage_path, new_path)
+          GitlabShellWorker.perform_in(5.minutes, :remove_repository, self.repository_storage, new_path)
         end
       else
         false
       end
     end
 
-    def mv_repository(from_path, to_path)
+    def rollback_repository(old_path, new_path)
       # There is a possibility project does not have repository or wiki
-      return true unless gitlab_shell.exists?(project.repository_storage_path, from_path + '.git')
+      return true unless repo_exists?(old_path)
 
-      gitlab_shell.mv_repository(project.repository_storage_path, from_path, to_path)
+      mv_repository(old_path, new_path)
+    end
+
+    def repo_exists?(path)
+      gitlab_shell.exists?(project.repository_storage, path + '.git')
+    end
+
+    def mv_repository(from_path, to_path)
+      return true unless gitlab_shell.exists?(project.repository_storage, from_path + '.git')
+
+      gitlab_shell.mv_repository(project.repository_storage, from_path, to_path)
     end
 
     def attempt_rollback(project, message)

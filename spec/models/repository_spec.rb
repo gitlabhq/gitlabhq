@@ -671,7 +671,7 @@ describe Repository do
     end
   end
 
-  describe "search_files_by_content" do
+  shared_examples "search_files_by_content" do
     let(:results) { repository.search_files_by_content('feature', 'master') }
     subject { results }
 
@@ -718,7 +718,7 @@ describe Repository do
     end
   end
 
-  describe "search_files_by_name" do
+  shared_examples "search_files_by_name" do
     let(:results) { repository.search_files_by_name('files', 'master') }
 
     it 'returns result' do
@@ -754,6 +754,48 @@ describe Repository do
     describe 'when storage is broken', :broken_storage  do
       it 'should raise a storage error' do
         expect_to_raise_storage_error { broken_repository.search_files_by_name('files', 'master') }
+      end
+    end
+  end
+
+  describe 'with gitaly enabled' do
+    it_behaves_like 'search_files_by_content'
+    it_behaves_like 'search_files_by_name'
+  end
+
+  describe 'with gitaly disabled', :disable_gitaly do
+    it_behaves_like 'search_files_by_content'
+    it_behaves_like 'search_files_by_name'
+  end
+
+  describe '#async_remove_remote' do
+    before do
+      masterrev = repository.find_branch('master').dereferenced_target
+      create_remote_branch('joe', 'remote_branch', masterrev)
+    end
+
+    context 'when worker is scheduled successfully' do
+      before do
+        masterrev = repository.find_branch('master').dereferenced_target
+        create_remote_branch('remote_name', 'remote_branch', masterrev)
+
+        allow(RepositoryRemoveRemoteWorker).to receive(:perform_async).and_return('1234')
+      end
+
+      it 'returns job_id' do
+        expect(repository.async_remove_remote('joe')).to eq('1234')
+      end
+    end
+
+    context 'when worker does not schedule successfully' do
+      before do
+        allow(RepositoryRemoveRemoteWorker).to receive(:perform_async).and_return(nil)
+      end
+
+      it 'returns nil' do
+        expect(Rails.logger).to receive(:info).with("Remove remote job failed to create for #{project.id} with remote name joe.")
+
+        expect(repository.async_remove_remote('joe')).to be_nil
       end
     end
   end
@@ -958,65 +1000,25 @@ describe Repository do
 
     subject { repository.add_branch(user, branch_name, target) }
 
-    context 'with Gitaly enabled' do
-      it "calls Gitaly's OperationService" do
-        expect_any_instance_of(Gitlab::GitalyClient::OperationService)
-          .to receive(:user_create_branch).with(branch_name, user, target)
-          .and_return(nil)
+    it "calls Gitaly's OperationService" do
+      expect_any_instance_of(Gitlab::GitalyClient::OperationService)
+        .to receive(:user_create_branch).with(branch_name, user, target)
+        .and_return(nil)
 
-        subject
-      end
-
-      it 'creates_the_branch' do
-        expect(subject.name).to eq(branch_name)
-        expect(repository.find_branch(branch_name)).not_to be_nil
-      end
-
-      context 'with a non-existing target' do
-        let(:target) { 'fake-target' }
-
-        it "returns false and doesn't create the branch" do
-          expect(subject).to be(false)
-          expect(repository.find_branch(branch_name)).to be_nil
-        end
-      end
+      subject
     end
 
-    context 'with Gitaly disabled', :disable_gitaly do
-      context 'when pre hooks were successful' do
-        it 'runs without errors' do
-          hook = double(trigger: [true, nil])
-          expect(Gitlab::Git::Hook).to receive(:new).exactly(3).times.and_return(hook)
+    it 'creates_the_branch' do
+      expect(subject.name).to eq(branch_name)
+      expect(repository.find_branch(branch_name)).not_to be_nil
+    end
 
-          expect { subject }.not_to raise_error
-        end
+    context 'with a non-existing target' do
+      let(:target) { 'fake-target' }
 
-        it 'creates the branch' do
-          allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
-
-          expect(subject.name).to eq(branch_name)
-        end
-
-        it 'calls the after_create_branch hook' do
-          expect(repository).to receive(:after_create_branch)
-
-          subject
-        end
-      end
-
-      context 'when pre hooks failed' do
-        it 'gets an error' do
-          allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
-
-          expect { subject }.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
-        end
-
-        it 'does not create the branch' do
-          allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
-
-          expect { subject }.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
-          expect(repository.find_branch(branch_name)).to be_nil
-        end
+      it "returns false and doesn't create the branch" do
+        expect(subject).to be(false)
+        expect(repository.find_branch(branch_name)).to be_nil
       end
     end
   end
@@ -1224,31 +1226,21 @@ describe Repository do
     end
   end
 
-  shared_examples 'repo exists check' do
+  describe '#exists?' do
     it 'returns true when a repository exists' do
-      expect(repository.exists?).to eq(true)
+      expect(repository.exists?).to be(true)
     end
 
     it 'returns false if no full path can be constructed' do
       allow(repository).to receive(:full_path).and_return(nil)
 
-      expect(repository.exists?).to eq(false)
+      expect(repository.exists?).to be(false)
     end
 
     context 'with broken storage', :broken_storage do
       it 'should raise a storage error' do
         expect_to_raise_storage_error { broken_repository.exists? }
       end
-    end
-  end
-
-  describe '#exists?' do
-    context 'when repository_exists is disabled' do
-      it_behaves_like 'repo exists check'
-    end
-
-    context 'when repository_exists is enabled', :skip_gitaly_mock do
-      it_behaves_like 'repo exists check'
     end
   end
 
@@ -1711,7 +1703,8 @@ describe Repository do
         :gitlab_ci,
         :avatar,
         :issue_template,
-        :merge_request_template
+        :merge_request_template,
+        :xcode_config
       ])
 
       repository.after_change_head
@@ -2036,6 +2029,36 @@ describe Repository do
     end
   end
 
+  describe '#xcode_project?' do
+    before do
+      allow(repository).to receive(:tree).with(:head).and_return(double(:tree, trees: [tree]))
+    end
+
+    context 'when the root contains a *.xcodeproj directory' do
+      let(:tree) { double(:tree, path: 'Foo.xcodeproj') }
+
+      it 'returns true' do
+        expect(repository.xcode_project?).to be_truthy
+      end
+    end
+
+    context 'when the root contains a *.xcworkspace directory' do
+      let(:tree) { double(:tree, path: 'Foo.xcworkspace') }
+
+      it 'returns true' do
+        expect(repository.xcode_project?).to be_truthy
+      end
+    end
+
+    context 'when the root contains no Xcode config directory' do
+      let(:tree) { double(:tree, path: 'Foo') }
+
+      it 'returns false' do
+        expect(repository.xcode_project?).to be_falsey
+      end
+    end
+  end
+
   describe "#keep_around" do
     it "does not fail if we attempt to reference bad commit" do
       expect(repository.kept_around?('abc1234')).to be_falsey
@@ -2346,6 +2369,11 @@ describe Repository do
         expect(repository.route_map_for(repository.commit.parent.sha)).to be_nil
       end
     end
+  end
+
+  def create_remote_branch(remote_name, branch_name, target)
+    rugged = repository.rugged
+    rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)
   end
 
   describe '#ancestor?' do

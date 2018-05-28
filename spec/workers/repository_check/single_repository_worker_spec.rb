@@ -2,44 +2,60 @@ require 'spec_helper'
 require 'fileutils'
 
 describe RepositoryCheck::SingleRepositoryWorker do
-  subject { described_class.new }
+  subject(:worker) { described_class.new }
 
-  it 'passes when the project has no push events' do
-    project = create(:project_empty_repo, :wiki_disabled)
+  it 'skips when the project has no push events' do
+    project = create(:project, :repository, :wiki_disabled)
     project.events.destroy_all
-    break_repo(project)
+    break_project(project)
 
-    subject.perform(project.id)
+    expect(worker).not_to receive(:git_fsck)
+
+    worker.perform(project.id)
 
     expect(project.reload.last_repository_check_failed).to eq(false)
   end
 
   it 'fails when the project has push events and a broken repository' do
-    project = create(:project_empty_repo)
+    project = create(:project, :repository)
     create_push_event(project)
-    break_repo(project)
+    break_project(project)
 
-    subject.perform(project.id)
+    worker.perform(project.id)
 
     expect(project.reload.last_repository_check_failed).to eq(true)
   end
 
+  it 'succeeds when the project repo is valid' do
+    project = create(:project, :repository, :wiki_disabled)
+    create_push_event(project)
+
+    expect(worker).to receive(:git_fsck).and_call_original
+
+    expect do
+      worker.perform(project.id)
+    end.to change { project.reload.last_repository_check_at }
+
+    expect(project.reload.last_repository_check_failed).to eq(false)
+  end
+
   it 'fails if the wiki repository is broken' do
-    project = create(:project_empty_repo, :wiki_enabled)
+    project = create(:project, :repository, :wiki_enabled)
     project.create_wiki
+    create_push_event(project)
 
     # Test sanity: everything should be fine before the wiki repo is broken
-    subject.perform(project.id)
+    worker.perform(project.id)
     expect(project.reload.last_repository_check_failed).to eq(false)
 
     break_wiki(project)
-    subject.perform(project.id)
+    worker.perform(project.id)
 
     expect(project.reload.last_repository_check_failed).to eq(true)
   end
 
   it 'skips wikis when disabled' do
-    project = create(:project_empty_repo, :wiki_disabled)
+    project = create(:project, :wiki_disabled)
     # Make sure the test would fail if the wiki repo was checked
     break_wiki(project)
 
@@ -49,8 +65,8 @@ describe RepositoryCheck::SingleRepositoryWorker do
   end
 
   it 'creates missing wikis' do
-    project = create(:project_empty_repo, :wiki_enabled)
-    FileUtils.rm_rf(wiki_path(project))
+    project = create(:project, :wiki_enabled)
+    Gitlab::Shell.new.rm_directory(project.repository_storage, project.wiki.path)
 
     subject.perform(project.id)
 
@@ -58,34 +74,39 @@ describe RepositoryCheck::SingleRepositoryWorker do
   end
 
   it 'does not create a wiki if the main repo does not exist at all' do
-    project = create(:project_empty_repo)
-    create_push_event(project)
-    FileUtils.rm_rf(project.repository.path_to_repo)
-    FileUtils.rm_rf(wiki_path(project))
+    project = create(:project, :repository)
+    Gitlab::Shell.new.rm_directory(project.repository_storage, project.path)
+    Gitlab::Shell.new.rm_directory(project.repository_storage, project.wiki.path)
 
     subject.perform(project.id)
 
-    expect(File.exist?(wiki_path(project))).to eq(false)
-  end
-
-  def break_wiki(project)
-    objects_dir = wiki_path(project) + '/objects'
-
-    # Replace the /objects directory with a file so that the repo is
-    # invalid, _and_ 'git init' cannot fix it.
-    FileUtils.rm_rf(objects_dir)
-    FileUtils.touch(objects_dir) if File.directory?(wiki_path(project))
-  end
-
-  def wiki_path(project)
-    project.wiki.repository.path_to_repo
+    expect(Gitlab::Shell.new.exists?(project.repository_storage, project.wiki.path)).to eq(false)
   end
 
   def create_push_event(project)
     project.events.create(action: Event::PUSHED, author_id: create(:user).id)
   end
 
-  def break_repo(project)
-    FileUtils.rm_rf(File.join(project.repository.path_to_repo, 'objects'))
+  def break_wiki(project)
+    break_repo(wiki_path(project))
+  end
+
+  def wiki_path(project)
+    project.wiki.repository.path_to_repo
+  end
+
+  def break_project(project)
+    break_repo(project.repository.path_to_repo)
+  end
+
+  def break_repo(repo)
+    # Create or replace blob ffffffffffffffffffffffffffffffffffffffff with an empty file
+    # This will make the repo invalid, _and_ 'git init' cannot fix it.
+    path = File.join(repo, 'objects', 'ff')
+    file = File.join(path, 'ffffffffffffffffffffffffffffffffffffff')
+
+    FileUtils.mkdir_p(path)
+    FileUtils.rm_f(file)
+    FileUtils.touch(file)
   end
 end

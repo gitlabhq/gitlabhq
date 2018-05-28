@@ -1,7 +1,6 @@
 import $ from 'jquery';
 import Vue from 'vue';
-import descriptionComponent from '~/issue_show/components/description.vue';
-import * as taskList from '~/task_list';
+import Description from '~/issue_show/components/description.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('Description component', () => {
@@ -17,7 +16,7 @@ describe('Description component', () => {
   };
 
   beforeEach(() => {
-    DescriptionComponent = Vue.extend(descriptionComponent);
+    DescriptionComponent = Vue.extend(Description);
 
     if (!document.querySelector('.issuable-meta')) {
       const metaData = document.createElement('div');
@@ -82,18 +81,20 @@ describe('Description component', () => {
   });
 
   describe('TaskList', () => {
+    let TaskList;
+
     beforeEach(() => {
       vm = mountComponent(DescriptionComponent, Object.assign({}, props, {
         issuableType: 'issuableType',
       }));
-      spyOn(taskList, 'default');
+      TaskList = spyOnDependency(Description, 'TaskList');
     });
 
     it('re-inits the TaskList when description changed', (done) => {
       vm.descriptionHtml = 'changed';
 
       setTimeout(() => {
-        expect(taskList.default).toHaveBeenCalled();
+        expect(TaskList).toHaveBeenCalled();
         done();
       });
     });
@@ -103,7 +104,7 @@ describe('Description component', () => {
       vm.descriptionHtml = 'changed';
 
       setTimeout(() => {
-        expect(taskList.default).not.toHaveBeenCalled();
+        expect(TaskList).not.toHaveBeenCalled();
         done();
       });
     });
@@ -112,7 +113,7 @@ describe('Description component', () => {
       vm.descriptionHtml = 'changed';
 
       setTimeout(() => {
-        expect(taskList.default).toHaveBeenCalledWith({
+        expect(TaskList).toHaveBeenCalledWith({
           dataType: 'issuableType',
           fieldName: 'description',
           selector: '.detail-page-description',

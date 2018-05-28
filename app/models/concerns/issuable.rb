@@ -48,7 +48,7 @@ module Issuable
     end
 
     has_many :label_links, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-    has_many :labels, -> { auto_include(false) }, through: :label_links
+    has_many :labels, through: :label_links
     has_many :todos, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
     has_one :metrics

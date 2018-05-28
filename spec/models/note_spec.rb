@@ -91,6 +91,23 @@ describe Note do
     it "keeps the commit around" do
       expect(note.project.repository.kept_around?(commit.id)).to be_truthy
     end
+
+    it 'does not generate N+1 queries for participants', :request_store do
+      def retrieve_participants
+        commit.notes_with_associations.map(&:participants).to_a
+      end
+
+      # Project authorization checks are cached, establish a baseline
+      retrieve_participants
+
+      control_count = ActiveRecord::QueryRecorder.new do
+        retrieve_participants
+      end
+
+      create(:note_on_commit, project: note.project, note: 'another note', noteable_id: commit.id)
+
+      expect { retrieve_participants }.not_to exceed_query_limit(control_count)
+    end
   end
 
   describe 'authorization' do

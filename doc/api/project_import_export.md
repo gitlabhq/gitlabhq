@@ -112,13 +112,13 @@ POST /projects/import
 | `file` | string | yes | The file to be uploaded |
 | `path` | string | yes | Name and path for new project |
 | `overwrite` | boolean | no | If there is a project with the same path the import will overwrite it. Default to false |
-| `override_params` | Hash | no | Supports all fields defined in the [Project API](projects.md)] |
+| `override_params` | Hash | no | Supports all fields defined in the [Project API](projects.md) |
 
-The override params passed will take precendence over all values defined inside the export file.
+The override params passed will take precedence over all values defined inside the export file.
 
-To upload a file from your filesystem, use the `--form` argument. This causes
+To upload a file from your file system, use the `--form` argument. This causes
 cURL to post data using the header `Content-Type: multipart/form-data`.
-The `file=` parameter must point to a file on your filesystem and be preceded
+The `file=` parameter must point to a file on your file system and be preceded
 by `@`. For example:
 
 ```console

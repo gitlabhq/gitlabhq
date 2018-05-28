@@ -7,7 +7,6 @@ export default {
     StageColumnComponent,
     LoadingIcon,
   },
-
   props: {
     isLoading: {
       type: Boolean,
@@ -16,11 +15,6 @@ export default {
     pipeline: {
       type: Object,
       required: true,
-    },
-    actionDisabled: {
-      type: String,
-      required: false,
-      default: null,
     },
   },
 
@@ -52,6 +46,10 @@ export default {
 
       return className;
     },
+
+    refreshPipelineGraph() {
+      this.$emit('refreshPipelineGraph');
+    },
   },
 };
 </script>
@@ -75,7 +73,7 @@ export default {
           :key="stage.name"
           :stage-connector-class="stageConnectorClass(index, stage)"
           :is-first-column="isFirstColumn(index)"
-          :action-disabled="actionDisabled"
+          @refreshPipelineGraph="refreshPipelineGraph"
         />
       </ul>
     </div>

@@ -115,6 +115,6 @@ class DroneCiService < CiService
 
   def merge_request_valid?(data)
     data[:object_attributes][:state] == 'opened' &&
-      data[:object_attributes][:merge_status] == 'unchecked'
+      MergeRequest.state_machines[:merge_status].check_state?(data[:object_attributes][:merge_status])
   end
 end

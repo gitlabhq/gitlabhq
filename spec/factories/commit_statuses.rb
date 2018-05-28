@@ -2,6 +2,7 @@ FactoryBot.define do
   factory :commit_status, class: CommitStatus do
     name 'default'
     stage 'test'
+    stage_idx 0
     status 'success'
     description 'commit status'
     pipeline factory: :ci_pipeline_with_one_job

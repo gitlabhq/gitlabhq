@@ -252,6 +252,7 @@ including predefined, secure variables and `.gitlab-ci.yml`
 [`variables`](yaml/README.md#variables). You however cannot use variables
 defined under `script` or on the Runner's side. There are other variables that
 are unsupported in environment name context:
+- `CI_PIPELINE_ID`
 - `CI_JOB_ID`
 - `CI_JOB_TOKEN`
 - `CI_BUILD_ID`
@@ -260,6 +261,8 @@ are unsupported in environment name context:
 - `CI_REGISTRY_PASSWORD`
 - `CI_REPOSITORY_URL`
 - `CI_ENVIRONMENT_URL`
+- `CI_DEPLOY_USER`
+- `CI_DEPLOY_PASSWORD`
 
 GitLab Runner exposes various [environment variables][variables] when a job runs,
 and as such, you can use them as environment names. Let's add another job in

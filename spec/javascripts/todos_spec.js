@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import * as urlUtils from '~/lib/utils/url_utility';
 import Todos from '~/pages/dashboard/todos/index/todos';
 import '~/lib/utils/common_utils';
 
@@ -18,7 +17,7 @@ describe('Todos', () => {
     it('opens the todo url', (done) => {
       const todoLink = todoItem.dataset.url;
 
-      spyOn(urlUtils, 'visitUrl').and.callFake((url) => {
+      spyOnDependency(Todos, 'visitUrl').and.callFake((url) => {
         expect(url).toEqual(todoLink);
         done();
       });
@@ -33,7 +32,7 @@ describe('Todos', () => {
 
       beforeEach(() => {
         metakeyEvent = $.Event('click', { keyCode: 91, ctrlKey: true });
-        visitUrlSpy = spyOn(urlUtils, 'visitUrl').and.callFake(() => {});
+        visitUrlSpy = spyOnDependency(Todos, 'visitUrl').and.callFake(() => {});
         windowOpenSpy = spyOn(window, 'open').and.callFake(() => {});
       });
 

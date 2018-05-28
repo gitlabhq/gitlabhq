@@ -89,7 +89,7 @@ A [copy](https://git-scm.com/docs/git-clone) of a repository stored on your mach
 
 ### Code Review
 
-Examination of a progam's code. The main aim is to maintain high quality standards of code that is being shipped. Merge requests [serve as a code review tool](https://about.gitlab.com/2014/09/29/gitlab-flow/) in GitLab.
+Examination of a program's code. The main aim is to maintain high quality standards of code that is being shipped. Merge requests [serve as a code review tool](https://about.gitlab.com/2014/09/29/gitlab-flow/) in GitLab.
 
 ### Code Snippet
 

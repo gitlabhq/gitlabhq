@@ -1,7 +1,5 @@
 module Ci
-  class BuildPresenter < Gitlab::View::Presenter::Delegated
-    presents :build
-
+  class BuildPresenter < CommitStatusPresenter
     def erased_by_user?
       # Build can be erased through API, therefore it does not have
       # `erased_by` user assigned in that case.

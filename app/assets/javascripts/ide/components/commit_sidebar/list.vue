@@ -1,66 +1,128 @@
 <script>
-  import { mapState } from 'vuex';
-  import icon from '~/vue_shared/components/icon.vue';
-  import listItem from './list_item.vue';
-  import listCollapsed from './list_collapsed.vue';
+import { mapActions } from 'vuex';
+import { __, sprintf } from '~/locale';
+import Icon from '~/vue_shared/components/icon.vue';
+import tooltip from '~/vue_shared/directives/tooltip';
+import ListItem from './list_item.vue';
 
-  export default {
-    components: {
-      icon,
-      listItem,
-      listCollapsed,
+export default {
+  components: {
+    Icon,
+    ListItem,
+  },
+  directives: {
+    tooltip,
+  },
+  props: {
+    title: {
+      type: String,
+      required: true,
     },
-    props: {
-      title: {
-        type: String,
-        required: true,
-      },
-      fileList: {
-        type: Array,
-        required: true,
-      },
+    fileList: {
+      type: Array,
+      required: true,
     },
-    computed: {
-      ...mapState([
-        'currentProjectId',
-        'currentBranchId',
-        'rightPanelCollapsed',
-      ]),
-      isCommitInfoShown() {
-        return this.rightPanelCollapsed || this.fileList.length;
-      },
+    iconName: {
+      type: String,
+      required: true,
     },
-    methods: {
-      toggleCollapsed() {
-        this.$emit('toggleCollapsed');
-      },
+    action: {
+      type: String,
+      required: true,
     },
-  };
+    actionBtnText: {
+      type: String,
+      required: true,
+    },
+    itemActionComponent: {
+      type: String,
+      required: true,
+    },
+    stagedList: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+  data() {
+    return {
+      showActionButton: false,
+    };
+  },
+  computed: {
+    titleText() {
+      return sprintf(__('%{title} changes'), {
+        title: this.title,
+      });
+    },
+  },
+  methods: {
+    ...mapActions(['stageAllChanges', 'unstageAllChanges']),
+    actionBtnClicked() {
+      this[this.action]();
+    },
+    setShowActionButton(show) {
+      this.showActionButton = show;
+    },
+  },
+};
 </script>
 
 <template>
   <div
-    :class="{
-      'multi-file-commit-list': isCommitInfoShown
-    }"
+    class="ide-commit-list-container"
   >
-    <list-collapsed
-      v-if="rightPanelCollapsed"
-    />
-    <template v-else>
-      <ul
-        v-if="fileList.length"
-        class="list-unstyled append-bottom-0"
+    <header
+      class="multi-file-commit-panel-header"
+      @mouseenter="setShowActionButton(true)"
+      @mouseleave="setShowActionButton(false)"
+    >
+      <div
+        class="multi-file-commit-panel-header-title"
       >
-        <li
-          v-for="file in fileList"
-          :key="file.key"
+        <icon
+          v-once
+          :name="iconName"
+          :size="18"
+        />
+        {{ titleText }}
+        <span
+          v-show="!showActionButton"
+          class="ide-commit-file-count"
         >
-          <list-item
-            :file="file"
-          />
-        </li>
-      </ul>
-    </template>
+          {{ fileList.length }}
+        </span>
+        <button
+          v-show="showActionButton"
+          type="button"
+          class="btn btn-blank btn-link ide-staged-action-btn"
+          @click="actionBtnClicked"
+        >
+          {{ actionBtnText }}
+        </button>
+      </div>
+    </header>
+    <ul
+      v-if="fileList.length"
+      class="multi-file-commit-list list-unstyled append-bottom-0"
+    >
+      <li
+        v-for="file in fileList"
+        :key="file.key"
+      >
+        <list-item
+          :file="file"
+          :action-component="itemActionComponent"
+          :key-prefix="title"
+          :staged-list="stagedList"
+        />
+      </li>
+    </ul>
+    <p
+      v-else
+      class="multi-file-commit-list help-block"
+    >
+      {{ __('No changes') }}
+    </p>
   </div>
 </template>

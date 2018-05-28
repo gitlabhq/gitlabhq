@@ -8,9 +8,9 @@
 
     .label-container
       - if trigger.legacy?
-        %span.label.label-primary.has-tooltip{ title: "Trigger makes use of deprecated functionality" } legacy
+        %span.badge.badge-primary.has-tooltip{ title: "Trigger makes use of deprecated functionality" } legacy
       - if !trigger.can_access_project?
-        %span.label.label-danger.has-tooltip{ title: "Trigger user has insufficient permissions to project" } invalid
+        %span.badge.badge-danger.has-tooltip{ title: "Trigger user has insufficient permissions to project" } invalid
 
   %td
     - if trigger.description? && trigger.description.length > 15
@@ -25,7 +25,7 @@
 
   %td
     - if trigger.last_used
-      #{time_ago_in_words(trigger.last_used)} ago
+      = time_ago_with_tooltip trigger.last_used
     - else
       Never
 

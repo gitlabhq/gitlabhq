@@ -142,7 +142,7 @@ module Gitlab
           :repository_service,
           :is_rebase_in_progress,
           request,
-          timeout: GitalyClient.default_timeout
+          timeout: GitalyClient.fast_timeout
         )
 
         response.in_progress
@@ -159,7 +159,7 @@ module Gitlab
           :repository_service,
           :is_squash_in_progress,
           request,
-          timeout: GitalyClient.default_timeout
+          timeout: GitalyClient.fast_timeout
         )
 
         response.in_progress
@@ -235,6 +235,22 @@ module Gitlab
         )
       end
 
+      def create_from_snapshot(http_url, http_auth)
+        request = Gitaly::CreateRepositoryFromSnapshotRequest.new(
+          repository: @gitaly_repo,
+          http_url: http_url,
+          http_auth: http_auth
+        )
+
+        GitalyClient.call(
+          @storage,
+          :repository_service,
+          :create_repository_from_snapshot,
+          request,
+          timeout: GitalyClient.default_timeout
+        )
+      end
+
       def write_ref(ref_path, ref, old_ref, shell)
         request = Gitaly::WriteRefRequest.new(
           repository: @gitaly_repo,
@@ -276,6 +292,24 @@ module Gitlab
         request  = Gitaly::CalculateChecksumRequest.new(repository: @gitaly_repo)
         response = GitalyClient.call(@storage, :repository_service, :calculate_checksum, request)
         response.checksum.presence
+      rescue GRPC::DataLoss => e
+        raise Gitlab::Git::Repository::InvalidRepository.new(e)
+      end
+
+      def raw_changes_between(from, to)
+        request = Gitaly::GetRawChangesRequest.new(repository: @gitaly_repo, from_revision: from, to_revision: to)
+
+        GitalyClient.call(@storage, :repository_service, :get_raw_changes, request)
+      end
+
+      def search_files_by_name(ref, query)
+        request = Gitaly::SearchFilesByNameRequest.new(repository: @gitaly_repo, ref: ref, query: query)
+        GitalyClient.call(@storage, :repository_service, :search_files_by_name, request).flat_map(&:files)
+      end
+
+      def search_files_by_content(ref, query)
+        request = Gitaly::SearchFilesByContentRequest.new(repository: @gitaly_repo, ref: ref, query: query)
+        GitalyClient.call(@storage, :repository_service, :search_files_by_content, request).flat_map(&:matches)
       end
     end
   end

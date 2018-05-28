@@ -629,6 +629,14 @@ describe Ci::Build do
 
         it { is_expected.to eq('review/host') }
       end
+
+      context 'when using persisted variables' do
+        let(:build) do
+          create(:ci_build, environment: 'review/x$CI_BUILD_ID')
+        end
+
+        it { is_expected.to eq('review/x') }
+      end
     end
 
     describe '#starts_environment?' do
@@ -1270,6 +1278,46 @@ describe Ci::Build do
     end
   end
 
+  describe '#playable?' do
+    context 'when build is a manual action' do
+      context 'when build has been skipped' do
+        subject { build_stubbed(:ci_build, :manual, status: :skipped) }
+
+        it { is_expected.not_to be_playable }
+      end
+
+      context 'when build has been canceled' do
+        subject { build_stubbed(:ci_build, :manual, status: :canceled) }
+
+        it { is_expected.to be_playable }
+      end
+
+      context 'when build is successful' do
+        subject { build_stubbed(:ci_build, :manual, status: :success) }
+
+        it { is_expected.to be_playable }
+      end
+
+      context 'when build has failed' do
+        subject { build_stubbed(:ci_build, :manual, status: :failed) }
+
+        it { is_expected.to be_playable }
+      end
+
+      context 'when build is a manual untriggered action' do
+        subject { build_stubbed(:ci_build, :manual, status: :manual) }
+
+        it { is_expected.to be_playable }
+      end
+    end
+
+    context 'when build is not a manual action' do
+      subject { build_stubbed(:ci_build, :success) }
+
+      it { is_expected.not_to be_playable }
+    end
+  end
+
   describe 'project settings' do
     describe '#allow_git_fetch' do
       it 'return project allow_git_fetch configuration' do
@@ -1384,29 +1432,51 @@ describe Ci::Build do
     end
   end
 
-  describe '#update_project_statistics' do
+  context 'when updating the build' do
+    let(:build) { create(:ci_build, artifacts_size: 23) }
+
+    it 'updates project statistics' do
+      build.artifacts_size = 42
+
+      expect(build).to receive(:update_project_statistics_after_save).and_call_original
+
+      expect { build.save! }
+        .to change { build.project.statistics.reload.build_artifacts_size }
+        .by(19)
+    end
+
+    context 'when the artifact size stays the same' do
+      it 'does not update project statistics' do
+        build.name = 'changed'
+
+        expect(build).not_to receive(:update_project_statistics_after_save)
+
+        build.save!
+      end
+    end
+  end
+
+  context 'when destroying the build' do
     let!(:build) { create(:ci_build, artifacts_size: 23) }
 
-    it 'updates project statistics when the artifact size changes' do
-      expect(ProjectCacheWorker).to receive(:perform_async)
-        .with(build.project_id, [], [:build_artifacts_size])
+    it 'updates project statistics' do
+      expect(ProjectStatistics)
+        .to receive(:increment_statistic)
+        .and_call_original
 
-      build.artifacts_size = 42
-      build.save!
+      expect { build.destroy! }
+        .to change { build.project.statistics.reload.build_artifacts_size }
+        .by(-23)
     end
 
-    it 'does not update project statistics when the artifact size stays the same' do
-      expect(ProjectCacheWorker).not_to receive(:perform_async)
+    context 'when the build is destroyed due to the project being destroyed' do
+      it 'does not update the project statistics' do
+        expect(ProjectStatistics)
+          .not_to receive(:increment_statistic)
 
-      build.name = 'changed'
-      build.save!
-    end
-
-    it 'updates project statistics when the build is destroyed' do
-      expect(ProjectCacheWorker).to receive(:perform_async)
-        .with(build.project_id, [], [:build_artifacts_size])
-
-      build.destroy
+        build.project.update_attributes(pending_delete: true)
+        build.project.destroy!
+      end
     end
   end
 
@@ -1463,6 +1533,7 @@ describe Ci::Build do
     let(:container_registry_enabled) { false }
     let(:predefined_variables) do
       [
+        { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
         { key: 'CI_JOB_ID', value: build.id.to_s, public: true },
         { key: 'CI_JOB_TOKEN', value: build.token, public: false },
         { key: 'CI_BUILD_ID', value: build.id.to_s, public: true },
@@ -1472,10 +1543,10 @@ describe Ci::Build do
         { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false },
         { key: 'CI', value: 'true', public: true },
         { key: 'GITLAB_CI', value: 'true', public: true },
-        { key: 'GITLAB_FEATURES', value: project.namespace.features.join(','), public: true },
+        { key: 'GITLAB_FEATURES', value: project.licensed_features.join(','), public: true },
         { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
         { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
-        { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true },
+        { key: 'CI_SERVER_REVISION', value: Gitlab.revision, public: true },
         { key: 'CI_JOB_NAME', value: 'test', public: true },
         { key: 'CI_JOB_STAGE', value: 'test', public: true },
         { key: 'CI_COMMIT_SHA', value: build.sha, public: true },
@@ -1494,9 +1565,11 @@ describe Ci::Build do
         { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true },
         { key: 'CI_PROJECT_URL', value: project.web_url, public: true },
         { key: 'CI_PROJECT_VISIBILITY', value: 'private', public: true },
-        { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
         { key: 'CI_CONFIG_PATH', value: pipeline.ci_yaml_file_path, public: true },
-        { key: 'CI_PIPELINE_SOURCE', value: pipeline.source, public: true }
+        { key: 'CI_PIPELINE_SOURCE', value: pipeline.source, public: true },
+        { key: 'CI_COMMIT_MESSAGE', value: pipeline.git_commit_message, public: true },
+        { key: 'CI_COMMIT_TITLE', value: pipeline.git_commit_title, public: true },
+        { key: 'CI_COMMIT_DESCRIPTION', value: pipeline.git_commit_description, public: true }
       ]
     end
 
@@ -2013,6 +2086,34 @@ describe Ci::Build do
         expect(build).not_to be_persisted
       end
     end
+
+    context 'for deploy tokens' do
+      let(:deploy_token) { create(:deploy_token, :gitlab_deploy_token) }
+
+      let(:deploy_token_variables) do
+        [
+          { key: 'CI_DEPLOY_USER', value: deploy_token.username, public: true },
+          { key: 'CI_DEPLOY_PASSWORD', value: deploy_token.token, public: false }
+        ]
+      end
+
+      context 'when gitlab-deploy-token exists' do
+        before do
+          project.deploy_tokens << deploy_token
+        end
+
+        it 'should include deploy token variables' do
+          is_expected.to include(*deploy_token_variables)
+        end
+      end
+
+      context 'when gitlab-deploy-token does not exist' do
+        it 'should not include deploy token variables' do
+          expect(subject.find { |v| v[:key] == 'CI_DEPLOY_USER'}).to be_nil
+          expect(subject.find { |v| v[:key] == 'CI_DEPLOY_PASSWORD'}).to be_nil
+        end
+      end
+    end
   end
 
   describe '#scoped_variables' do
@@ -2061,7 +2162,9 @@ describe Ci::Build do
                   CI_REGISTRY_USER
                   CI_REGISTRY_PASSWORD
                   CI_REPOSITORY_URL
-                  CI_ENVIRONMENT_URL]
+                  CI_ENVIRONMENT_URL
+                  CI_DEPLOY_USER
+                  CI_DEPLOY_PASSWORD]
 
         build.scoped_variables.map { |env| env[:key] }.tap do |names|
           expect(names).not_to include(*keys)

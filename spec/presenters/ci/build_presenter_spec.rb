@@ -10,7 +10,7 @@ describe Ci::BuildPresenter do
   end
 
   it 'inherits from Gitlab::View::Presenter::Delegated' do
-    expect(described_class.superclass).to eq(Gitlab::View::Presenter::Delegated)
+    expect(described_class.ancestors).to include(Gitlab::View::Presenter::Delegated)
   end
 
   describe '#initialize' do
@@ -214,6 +214,41 @@ describe Ci::BuildPresenter do
         tooltip = subject.tooltip_message
 
         expect(tooltip).to eq("#{build.name} - passed (retried)")
+      end
+    end
+  end
+
+  describe '#callout_failure_message' do
+    let(:build) { create(:ci_build, :failed, :script_failure) }
+
+    it 'returns a verbose failure reason' do
+      description = subject.callout_failure_message
+      expect(description).to eq('There has been a script failure. Check the job log for more information')
+    end
+  end
+
+  describe '#recoverable?' do
+    let(:build) { create(:ci_build, :failed, :script_failure) }
+
+    context 'when is a script or missing dependency failure' do
+      let(:failure_reasons) { %w(script_failure missing_dependency_failure) }
+
+      it 'should return false' do
+        failure_reasons.each do |failure_reason|
+          build.update_attribute(:failure_reason, failure_reason)
+          expect(presenter.recoverable?).to be_falsy
+        end
+      end
+    end
+
+    context 'when is any other failure type' do
+      let(:failure_reasons) { %w(unknown_failure api_failure stuck_or_timeout_failure runner_system_failure) }
+
+      it 'should return true' do
+        failure_reasons.each do |failure_reason|
+          build.update_attribute(:failure_reason, failure_reason)
+          expect(presenter.recoverable?).to be_truthy
+        end
       end
     end
   end

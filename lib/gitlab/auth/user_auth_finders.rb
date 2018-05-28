@@ -1,9 +1,5 @@
 module Gitlab
   module Auth
-    #
-    # Exceptions
-    #
-
     AuthenticationError = Class.new(StandardError)
     MissingTokenError = Class.new(AuthenticationError)
     TokenNotFoundError = Class.new(AuthenticationError)
@@ -60,6 +56,12 @@ module Gitlab
       end
 
       private
+
+      def route_authentication_setting
+        return {} unless respond_to?(:route_setting)
+
+        route_setting(:authentication) || {}
+      end
 
       def access_token
         strong_memoize(:access_token) do

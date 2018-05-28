@@ -20,6 +20,9 @@ module Gitlab
         GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE
       ].freeze
       SEARCH_CONTEXT_LINES = 3
+      # In https://gitlab.com/gitlab-org/gitaly/merge_requests/698
+      # We copied these two prefixes into gitaly-go, so don't change these
+      # or things will break! (REBASE_WORKTREE_PREFIX and SQUASH_WORKTREE_PREFIX)
       REBASE_WORKTREE_PREFIX = 'rebase'.freeze
       SQUASH_WORKTREE_PREFIX = 'squash'.freeze
       GITALY_INTERNAL_URL = 'ssh://gitaly/internal.git'.freeze
@@ -27,6 +30,7 @@ module Gitlab
       EMPTY_REPOSITORY_CHECKSUM = '0000000000000000000000000000000000000000'.freeze
 
       NoRepository = Class.new(StandardError)
+      InvalidRepository = Class.new(StandardError)
       InvalidBlobName = Class.new(StandardError)
       InvalidRef = Class.new(StandardError)
       GitError = Class.new(StandardError)
@@ -142,15 +146,7 @@ module Gitlab
       end
 
       def exists?
-        Gitlab::GitalyClient.migrate(:repository_exists, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
-          if enabled
-            gitaly_repository_client.exists?
-          else
-            circuit_breaker.perform do
-              File.exist?(File.join(path, 'refs'))
-            end
-          end
-        end
+        gitaly_repository_client.exists?
       end
 
       # Returns an Array of branch names
@@ -399,6 +395,26 @@ module Gitlab
         nil
       end
 
+      def archive_metadata(ref, storage_path, format = "tar.gz", append_sha:)
+        ref ||= root_ref
+        commit = Gitlab::Git::Commit.find(self, ref)
+        return {} if commit.nil?
+
+        prefix = archive_prefix(ref, commit.id, append_sha: append_sha)
+
+        {
+          'ArchivePrefix' => prefix,
+          'ArchivePath' => archive_file_path(storage_path, commit.id, prefix, format),
+          'CommitId' => commit.id,
+          'GitalyRepository' => gitaly_repository.to_h
+        }
+      end
+
+      # This is both the filename of the archive (missing the extension) and the
+      # name of the top-level member of the archive under which all files go
+      #
+      # FIXME: The generated prefix is incorrect for projects with hashed
+      # storage enabled
       def archive_prefix(ref, sha, append_sha:)
         append_sha = (ref != sha) if append_sha.nil?
 
@@ -410,23 +426,23 @@ module Gitlab
 
         prefix_segments.join('-')
       end
+      private :archive_prefix
 
-      def archive_metadata(ref, storage_path, format = "tar.gz", append_sha:)
-        ref ||= root_ref
-        commit = Gitlab::Git::Commit.find(self, ref)
-        return {} if commit.nil?
-
-        prefix = archive_prefix(ref, commit.id, append_sha: append_sha)
-
-        {
-          'RepoPath' => path,
-          'ArchivePrefix' => prefix,
-          'ArchivePath' => archive_file_path(prefix, storage_path, format),
-          'CommitId' => commit.id
-        }
-      end
-
-      def archive_file_path(name, storage_path, format = "tar.gz")
+      # The full path on disk where the archive should be stored. This is used
+      # to cache the archive between requests.
+      #
+      # The path is a global namespace, so needs to be globally unique. This is
+      # achieved by including `gl_repository` in the path.
+      #
+      # Archives relating to a particular ref when the SHA is not present in the
+      # filename must be invalidated when the ref is updated to point to a new
+      # SHA. This is achieved by including the SHA in the path.
+      #
+      # As this is a full path on disk, it is not "cloud native". This should
+      # be resolved by either removing the cache, or moving the implementation
+      # into Gitaly and removing the ArchivePath parameter from the git-archive
+      # senddata response.
+      def archive_file_path(storage_path, sha, name, format = "tar.gz")
         # Build file path
         return nil unless name
 
@@ -444,8 +460,9 @@ module Gitlab
           end
 
         file_name = "#{name}.#{extension}"
-        File.join(storage_path, self.name, file_name)
+        File.join(storage_path, self.gl_repository, sha, file_name)
       end
+      private :archive_file_path
 
       # Return repo size in megabytes
       def size
@@ -565,19 +582,36 @@ module Gitlab
       # old_rev and new_rev are commit ID's
       # the result of this method is an array of Gitlab::Git::RawDiffChange
       def raw_changes_between(old_rev, new_rev)
-        result = []
+        @raw_changes_between ||= {}
 
-        circuit_breaker.perform do
-          Open3.pipeline_r(git_diff_cmd(old_rev, new_rev), format_git_cat_file_script, git_cat_file_cmd) do |last_stdout, wait_threads|
-            last_stdout.each_line { |line| result << ::Gitlab::Git::RawDiffChange.new(line.chomp!) }
+        @raw_changes_between[[old_rev, new_rev]] ||= begin
+          return [] if new_rev.blank? || new_rev == Gitlab::Git::BLANK_SHA
 
-            if wait_threads.any? { |waiter| !waiter.value&.success? }
-              raise ::Gitlab::Git::Repository::GitError, "Unabled to obtain changes between #{old_rev} and #{new_rev}"
+          gitaly_migrate(:raw_changes_between) do |is_enabled|
+            if is_enabled
+              gitaly_repository_client.raw_changes_between(old_rev, new_rev)
+                .each_with_object([]) do |msg, arr|
+                msg.raw_changes.each { |change| arr << ::Gitlab::Git::RawDiffChange.new(change) }
+              end
+            else
+              result = []
+
+              circuit_breaker.perform do
+                Open3.pipeline_r(git_diff_cmd(old_rev, new_rev), format_git_cat_file_script, git_cat_file_cmd) do |last_stdout, wait_threads|
+                  last_stdout.each_line { |line| result << ::Gitlab::Git::RawDiffChange.new(line.chomp!) }
+
+                  if wait_threads.any? { |waiter| !waiter.value&.success? }
+                    raise ::Gitlab::Git::Repository::GitError, "Unabled to obtain changes between #{old_rev} and #{new_rev}"
+                  end
+                end
+              end
+
+              result
             end
           end
         end
-
-        result
+      rescue ArgumentError => e
+        raise Gitlab::Git::Repository::GitError.new(e)
       end
 
       # Returns the SHA of the most recent common ancestor of +from+ and +to+
@@ -742,13 +776,9 @@ module Gitlab
       end
 
       def add_branch(branch_name, user:, target:)
-        gitaly_migrate(:operation_user_create_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_add_branch(branch_name, user, target)
-          else
-            rugged_add_branch(branch_name, user, target)
-          end
-        end
+        gitaly_operation_client.user_create_branch(branch_name, user, target)
+      rescue GRPC::FailedPrecondition => ex
+        raise InvalidRef, ex
       end
 
       def add_tag(tag_name, user:, target:, message: nil)
@@ -1018,7 +1048,7 @@ module Gitlab
         return @info_attributes if @info_attributes
 
         content =
-          gitaly_migrate(:get_info_attributes) do |is_enabled|
+          gitaly_migrate(:get_info_attributes, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
             if is_enabled
               gitaly_repository_client.info_attributes
             else
@@ -1187,6 +1217,8 @@ module Gitlab
           if is_enabled
             gitaly_fetch_ref(source_repository, source_ref: source_ref, target_ref: target_ref)
           else
+            # When removing this code, also remove source_repository#path
+            # to remove deprecated method calls
             local_fetch_ref(source_repository.path, source_ref: source_ref, target_ref: target_ref)
           end
         end
@@ -1258,6 +1290,10 @@ module Gitlab
         true
       end
 
+      def create_from_snapshot(url, auth)
+        gitaly_repository_client.create_from_snapshot(url, auth)
+      end
+
       def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
         gitaly_migrate(:rebase) do |is_enabled|
           if is_enabled
@@ -1298,7 +1334,7 @@ module Gitlab
       end
 
       def squash_in_progress?(squash_id)
-        gitaly_migrate(:squash_in_progress) do |is_enabled|
+        gitaly_migrate(:squash_in_progress, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_repository_client.squash_in_progress?(squash_id)
           else
@@ -1427,34 +1463,29 @@ module Gitlab
       end
 
       def branch_names_contains_sha(sha)
-        gitaly_migrate(:branch_names_contains_sha,
-                      status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.branch_names_contains_sha(sha)
-          else
-            refs_contains_sha('refs/heads/', sha)
-          end
-        end
+        gitaly_ref_client.branch_names_contains_sha(sha)
       end
 
       def tag_names_contains_sha(sha)
-        gitaly_migrate(:tag_names_contains_sha,
-                       status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.tag_names_contains_sha(sha)
-          else
-            refs_contains_sha('refs/tags/', sha)
-          end
-        end
+        gitaly_ref_client.tag_names_contains_sha(sha)
       end
 
       def search_files_by_content(query, ref)
         return [] if empty? || query.blank?
 
-        offset = 2
-        args = %W(grep -i -I -n -z --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
+        safe_query = Regexp.escape(query)
+        ref ||= root_ref
 
-        run_git(args).first.scrub.split(/^--\n/)
+        gitaly_migrate(:search_files_by_content) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.search_files_by_content(ref, safe_query)
+          else
+            offset = 2
+            args = %W(grep -i -I -n -z --before-context #{offset} --after-context #{offset} -E -e #{safe_query} #{ref})
+
+            run_git(args).first.scrub.split(/^--\n/)
+          end
+        end
       end
 
       def can_be_merged?(source_sha, target_branch)
@@ -1469,12 +1500,19 @@ module Gitlab
 
       def search_files_by_name(query, ref)
         safe_query = Regexp.escape(query.sub(%r{^/*}, ""))
+        ref ||= root_ref
 
         return [] if empty? || safe_query.blank?
 
-        args = %W(ls-tree -r --name-status --full-tree #{ref || root_ref} -- #{safe_query})
+        gitaly_migrate(:search_files_by_name) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.search_files_by_name(ref, safe_query)
+          else
+            args = %W(ls-tree -r --name-status --full-tree #{ref} -- #{safe_query})
 
-        run_git(args).first.lines.map(&:strip)
+            run_git(args).first.lines.map(&:strip)
+          end
+        end
       end
 
       def find_commits_by_message(query, ref, path, limit, offset)
@@ -1550,13 +1588,12 @@ module Gitlab
       end
 
       def checksum
-        gitaly_migrate(:calculate_checksum) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.calculate_checksum
-          else
-            calculate_checksum_by_shelling_out
-          end
-        end
+        # The exists? RPC is much cheaper, so we perform this request first
+        raise NoRepository, "Repository does not exists" unless exists?
+
+        gitaly_repository_client.calculate_checksum
+      rescue GRPC::NotFound
+        raise NoRepository # Guard against data races.
       end
 
       private
@@ -1577,27 +1614,6 @@ module Gitlab
         else
           rugged_write_ref(ref_path, ref)
         end
-      end
-
-      def refs_contains_sha(refs_prefix, sha)
-        refs_prefix << "/" unless refs_prefix.ends_with?('/')
-
-        # By forcing the output to %(refname) each line wiht a ref will start with
-        # the ref prefix. All other lines can be discarded.
-        args = %W(for-each-ref --contains=#{sha} --format=%(refname) #{refs_prefix})
-        names, code = run_git(args)
-
-        return [] unless code.zero?
-
-        refs = []
-        left_slice_count = refs_prefix.length
-        names.lines.each do |line|
-          next unless line.start_with?(refs_prefix)
-
-          refs << encode_utf8(line.rstrip[left_slice_count..-1])
-        end
-
-        refs
       end
 
       def rugged_write_config(full_path:)
@@ -1651,10 +1667,14 @@ module Gitlab
         end
       end
 
+      # This function is duplicated in Gitaly-Go, don't change it!
+      # https://gitlab.com/gitlab-org/gitaly/merge_requests/698
       def fresh_worktree?(path)
         File.exist?(path) && !clean_stuck_worktree(path)
       end
 
+      # This function is duplicated in Gitaly-Go, don't change it!
+      # https://gitlab.com/gitlab-org/gitaly/merge_requests/698
       def clean_stuck_worktree(path)
         return false unless File.mtime(path) < 15.minutes.ago
 
@@ -1942,7 +1962,12 @@ module Gitlab
           end
 
           target_commit = Gitlab::Git::Commit.find(self, ref.target)
-          Gitlab::Git::Tag.new(self, ref.name, ref.target, target_commit, message)
+          Gitlab::Git::Tag.new(self, {
+            name: ref.name,
+            target: ref.target,
+            target_commit: target_commit,
+            message: message
+          })
         end.sort_by(&:name)
       end
 
@@ -2187,22 +2212,6 @@ module Gitlab
         end
       end
 
-      def gitaly_add_branch(branch_name, user, target)
-        gitaly_operation_client.user_create_branch(branch_name, user, target)
-      rescue GRPC::FailedPrecondition => ex
-        raise InvalidRef, ex
-      end
-
-      def rugged_add_branch(branch_name, user, target)
-        target_object = Ref.dereference_object(lookup(target))
-        raise InvalidRef.new("target not found: #{target}") unless target_object
-
-        OperationService.new(user, self).add_branch(branch_name, target_object.oid)
-        find_branch(branch_name)
-      rescue Rugged::ReferenceError => ex
-        raise InvalidRef, ex
-      end
-
       def rugged_cherry_pick(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
         OperationService.new(user, self).with_branch(
           branch_name,
@@ -2358,7 +2367,7 @@ module Gitlab
       end
 
       def gitaly_delete_refs(*ref_names)
-        gitaly_ref_client.delete_refs(refs: ref_names)
+        gitaly_ref_client.delete_refs(refs: ref_names) if ref_names.any?
       end
 
       def rugged_remove_remote(remote_name)
@@ -2486,34 +2495,6 @@ module Gitlab
 
       def sha_from_ref(ref)
         rev_parse_target(ref).oid
-      end
-
-      def calculate_checksum_by_shelling_out
-        raise NoRepository unless exists?
-
-        args = %W(--git-dir=#{path} show-ref --heads --tags)
-        output, status = run_git(args)
-
-        if status.nil? || !status.zero?
-          # Empty repositories return with a non-zero status and an empty output.
-          return EMPTY_REPOSITORY_CHECKSUM if output&.empty?
-
-          raise ChecksumError, output
-        end
-
-        refs = output.split("\n")
-
-        result = refs.inject(nil) do |checksum, ref|
-          value = Digest::SHA1.hexdigest(ref).hex
-
-          if checksum.nil?
-            value
-          else
-            checksum ^ value
-          end
-        end
-
-        result.to_s(16)
       end
 
       def build_git_cmd(*args)

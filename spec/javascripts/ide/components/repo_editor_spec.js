@@ -5,6 +5,7 @@ import store from '~/ide/stores';
 import repoEditor from '~/ide/components/repo_editor.vue';
 import monacoLoader from '~/ide/monaco_loader';
 import Editor from '~/ide/lib/editor';
+import { activityBarViews } from '~/ide/constants';
 import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
 import setTimeoutPromise from '../../helpers/set_timeout_promise_helper';
 import { file, resetStore } from '../helpers';
@@ -23,7 +24,7 @@ describe('RepoEditor', () => {
     f.active = true;
     f.tempFile = true;
     vm.$store.state.openFiles.push(f);
-    vm.$store.state.entries[f.path] = f;
+    Vue.set(vm.$store.state.entries, f.path, f);
     vm.monaco = true;
 
     vm.$mount();
@@ -200,7 +201,7 @@ describe('RepoEditor', () => {
 
       vm.setupEditor();
 
-      expect(vm.editor.createModel).toHaveBeenCalledWith(vm.file);
+      expect(vm.editor.createModel).toHaveBeenCalledWith(vm.file, null);
       expect(vm.model).not.toBeNull();
     });
 
@@ -214,6 +215,30 @@ describe('RepoEditor', () => {
       expect(vm.editor.attachModel).toHaveBeenCalledWith(vm.model);
     });
 
+    it('attaches model to merge request editor', () => {
+      vm.$store.state.viewer = 'mrdiff';
+      vm.file.mrChange = true;
+      spyOn(vm.editor, 'attachMergeRequestModel');
+
+      Editor.editorInstance.modelManager.dispose();
+
+      vm.setupEditor();
+
+      expect(vm.editor.attachMergeRequestModel).toHaveBeenCalledWith(vm.model);
+    });
+
+    it('does not attach model to merge request editor when not a MR change', () => {
+      vm.$store.state.viewer = 'mrdiff';
+      vm.file.mrChange = false;
+      spyOn(vm.editor, 'attachMergeRequestModel');
+
+      Editor.editorInstance.modelManager.dispose();
+
+      vm.setupEditor();
+
+      expect(vm.editor.attachMergeRequestModel).not.toHaveBeenCalledWith(vm.model);
+    });
+
     it('adds callback methods', () => {
       spyOn(vm.editor, 'onPositionChange').and.callThrough();
 
@@ -222,7 +247,7 @@ describe('RepoEditor', () => {
       vm.setupEditor();
 
       expect(vm.editor.onPositionChange).toHaveBeenCalled();
-      expect(vm.model.events.size).toBe(1);
+      expect(vm.model.events.size).toBe(2);
     });
 
     it('updates state when model content changed', done => {
@@ -233,6 +258,20 @@ describe('RepoEditor', () => {
 
         done();
       });
+    });
+
+    it('sets head model as staged file', () => {
+      spyOn(vm.editor, 'createModel').and.callThrough();
+
+      Editor.editorInstance.modelManager.dispose();
+
+      vm.$store.state.stagedFiles.push({ ...vm.file, key: 'staged' });
+      vm.file.staged = true;
+      vm.file.key = `unstaged-${vm.file.key}`;
+
+      vm.setupEditor();
+
+      expect(vm.editor.createModel).toHaveBeenCalledWith(vm.file, vm.$store.state.stagedFiles[0]);
     });
   });
 
@@ -280,5 +319,51 @@ describe('RepoEditor', () => {
         done();
       });
     });
+  });
+
+  describe('show tabs', () => {
+    it('shows tabs in edit mode', () => {
+      expect(vm.$el.querySelector('.nav-links')).not.toBe(null);
+    });
+
+    it('hides tabs in review mode', done => {
+      vm.$store.state.currentActivityView = activityBarViews.review;
+
+      vm.$nextTick(() => {
+        expect(vm.$el.querySelector('.nav-links')).toBe(null);
+
+        done();
+      });
+    });
+
+    it('hides tabs in commit mode', done => {
+      vm.$store.state.currentActivityView = activityBarViews.commit;
+
+      vm.$nextTick(() => {
+        expect(vm.$el.querySelector('.nav-links')).toBe(null);
+
+        done();
+      });
+    });
+  });
+
+  it('calls removePendingTab when old file is pending', done => {
+    spyOnProperty(vm, 'shouldHideEditor').and.returnValue(true);
+    spyOn(vm, 'removePendingTab');
+
+    vm.file.pending = true;
+
+    vm
+      .$nextTick()
+      .then(() => {
+        vm.file = file('testing');
+
+        return vm.$nextTick();
+      })
+      .then(() => {
+        expect(vm.removePendingTab).toHaveBeenCalled();
+      })
+      .then(done)
+      .catch(done.fail);
   });
 });

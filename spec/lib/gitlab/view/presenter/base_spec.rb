@@ -48,4 +48,11 @@ describe Gitlab::View::Presenter::Base do
       end
     end
   end
+
+  describe '#present' do
+    it 'returns self' do
+      presenter = presenter_class.new(build_stubbed(:project))
+      expect(presenter.present).to eq(presenter)
+    end
+  end
 end

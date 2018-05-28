@@ -65,7 +65,7 @@
     display: block;
   }
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     &.has-sidebar-toggle {
       padding-right: 40px;
     }
@@ -81,7 +81,7 @@
     }
   }
 
-  @media (min-width: $screen-md-min) {
+  @include media-breakpoint-up(md) {
     &.has-sidebar-toggle {
       padding-right: 0;
     }
@@ -178,11 +178,6 @@ ul.wiki-pages-list.content-list {
       padding: 5px 0;
     }
   }
-}
-
-.wiki-holder {
-  overflow-x: auto;
-  overflow-y: hidden;
 }
 
 .wiki {

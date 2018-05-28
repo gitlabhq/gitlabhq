@@ -39,7 +39,9 @@ export default class ProjectLabelSubscription {
         const $button = $(button);
         const originalTitle = $button.attr('data-original-title');
 
-        if (originalTitle) ProjectLabelSubscription.setNewTitle($button, originalTitle, newStatus, newAction);
+        if (originalTitle) {
+          ProjectLabelSubscription.setNewTitle($button, originalTitle, newStatus, newAction);
+        }
 
         return button;
       });
@@ -51,6 +53,6 @@ export default class ProjectLabelSubscription {
     const actionRegexp = new RegExp(newStatusVerb, 'i');
     const newTitle = originalTitle.replace(actionRegexp, newAction);
 
-    $button.tooltip('hide').attr('data-original-title', newTitle).tooltip('fixTitle');
+    $button.tooltip('hide').attr('data-original-title', newTitle).tooltip('_fixTitle');
   }
 }

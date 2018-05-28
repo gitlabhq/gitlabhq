@@ -53,8 +53,8 @@ class RemoveDotGitFromUsernames < ActiveRecord::Migration
     select_all("SELECT id, path FROM routes WHERE path = '#{quote_string(path)}'").present?
   end
 
-  def path_exists?(path, repository_storage_path)
-    repository_storage_path && gitlab_shell.exists?(repository_storage_path, path)
+  def path_exists?(shard, repository_storage_path)
+    repository_storage_path && gitlab_shell.exists?(shard, repository_storage_path)
   end
 
   # Accepts invalid path like test.git and returns test_git or
@@ -70,8 +70,8 @@ class RemoveDotGitFromUsernames < ActiveRecord::Migration
   def check_routes(base, counter, path)
     route_exists = route_exists?(path)
 
-    Gitlab.config.repositories.storages.each_value do |storage|
-      if route_exists || path_exists?(path, storage.legacy_disk_path)
+    Gitlab.config.repositories.storages.each do |shard, storage|
+      if route_exists || path_exists?(shard, storage.legacy_disk_path)
         counter += 1
         path = "#{base}#{counter}"
 
@@ -83,17 +83,17 @@ class RemoveDotGitFromUsernames < ActiveRecord::Migration
   end
 
   def move_namespace(namespace_id, path_was, path)
-    repository_storage_paths = select_all("SELECT distinct(repository_storage) FROM projects WHERE namespace_id = #{namespace_id}").map do |row|
-      Gitlab.config.repositories.storages[row['repository_storage']].legacy_disk_path
+    repository_storages = select_all("SELECT distinct(repository_storage) FROM projects WHERE namespace_id = #{namespace_id}").map do |row|
+      row['repository_storage']
     end.compact
 
-    # Move the namespace directory in all storages paths used by member projects
-    repository_storage_paths.each do |repository_storage_path|
+    # Move the namespace directory in all storages used by member projects
+    repository_storages.each do |repository_storage|
       # Ensure old directory exists before moving it
-      gitlab_shell.add_namespace(repository_storage_path, path_was)
+      gitlab_shell.add_namespace(repository_storage, path_was)
 
-      unless gitlab_shell.mv_namespace(repository_storage_path, path_was, path)
-        Rails.logger.error "Exception moving path #{repository_storage_path} from #{path_was} to #{path}"
+      unless gitlab_shell.mv_namespace(repository_storage, path_was, path)
+        Rails.logger.error "Exception moving on shard #{repository_storage} from #{path_was} to #{path}"
 
         # if we cannot move namespace directory we should rollback
         # db changes in order to prevent out of sync between db and fs

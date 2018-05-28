@@ -32,41 +32,18 @@ require 'rainbow/ext/string'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
+# Requires helpers, and shared contexts/examples first since they're used in other support files
+Dir[Rails.root.join("spec/support/helpers/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/support/shared_contexts/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/support/shared_examples/*.rb")].each { |f| require f }
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
 RSpec.configure do |config|
   config.use_transactional_fixtures = false
   config.use_instantiated_fixtures  = false
-  config.mock_with :rspec
 
   config.verbose_retry = true
   config.display_try_failure_messages = true
-
-  config.include Devise::Test::ControllerHelpers, type: :controller
-  config.include Devise::Test::ControllerHelpers, type: :view
-  config.include Devise::Test::IntegrationHelpers, type: :feature
-  config.include Warden::Test::Helpers, type: :request
-  config.include LoginHelpers, type: :feature
-  config.include SearchHelpers, type: :feature
-  config.include CookieHelper, :js
-  config.include InputHelper, :js
-  config.include SelectionHelper, :js
-  config.include InspectRequests, :js
-  config.include WaitForRequests, :js
-  config.include LiveDebugger, :js
-  config.include StubConfiguration
-  config.include EmailHelpers, :mailer, type: :mailer
-  config.include TestEnv
-  config.include ActiveJob::TestHelper
-  config.include ActiveSupport::Testing::TimeHelpers
-  config.include StubGitlabCalls
-  config.include StubGitlabData
-  config.include ApiHelpers, :api
-  config.include Gitlab::Routing, type: :routing
-  config.include MigrationsHelpers, :migration
-  config.include StubFeatureFlags
-  config.include StubENV
-  config.include ExpectOffense
 
   config.infer_spec_type_from_file_location!
 
@@ -82,7 +59,34 @@ RSpec.configure do |config|
     metadata[:type] = match[1].singularize.to_sym if match
   end
 
-  config.raise_errors_for_deprecations!
+  config.include ActiveJob::TestHelper
+  config.include ActiveSupport::Testing::TimeHelpers
+  config.include CycleAnalyticsHelpers
+  config.include ExpectOffense
+  config.include FactoryBot::Syntax::Methods
+  config.include FixtureHelpers
+  config.include GitlabRoutingHelper
+  config.include StubFeatureFlags
+  config.include StubGitlabCalls
+  config.include StubGitlabData
+  config.include TestEnv
+  config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Devise::Test::IntegrationHelpers, type: :feature
+  config.include LoginHelpers, type: :feature
+  config.include SearchHelpers, type: :feature
+  config.include EmailHelpers, :mailer, type: :mailer
+  config.include Warden::Test::Helpers, type: :request
+  config.include Gitlab::Routing, type: :routing
+  config.include Devise::Test::ControllerHelpers, type: :view
+  config.include ApiHelpers, :api
+  config.include CookieHelper, :js
+  config.include InputHelper, :js
+  config.include SelectionHelper, :js
+  config.include InspectRequests, :js
+  config.include WaitForRequests, :js
+  config.include LiveDebugger, :js
+  config.include MigrationsHelpers, :migration
+  config.include RedisHelpers
 
   if ENV['CI']
     # This includes the first try, i.e. tests will be run 4 times before failing.
@@ -110,10 +114,10 @@ RSpec.configure do |config|
       m.call(*args)
 
       shard_name, repository_relative_path = args
-      shard_path = Gitlab.config.repositories.storages.fetch(shard_name).legacy_disk_path
       # We can't leave the hooks in place after a fork, as those would fail in tests
       # The "internal" API is not available
-      FileUtils.rm_rf(File.join(shard_path, repository_relative_path, 'hooks'))
+      Gitlab::Shell.new.rm_directory(shard_name,
+                                     File.join(repository_relative_path, 'hooks'))
     end
 
     # Enable all features by default for testing
@@ -133,6 +137,13 @@ RSpec.configure do |config|
     reset_delivered_emails!
   end
 
+  config.before(:example, :prometheus) do
+    matching_files = File.join(::Prometheus::Client.configuration.multiprocess_files_dir, "*.db")
+    Dir[matching_files].map { |filename| File.delete(filename) if File.file?(filename) }
+
+    Gitlab::Metrics.reset_registry!
+  end
+
   config.around(:each, :use_clean_rails_memory_store_caching) do |example|
     caching_store = Rails.cache
     Rails.cache = ActiveSupport::Cache::MemoryStore.new
@@ -143,21 +154,27 @@ RSpec.configure do |config|
   end
 
   config.around(:each, :clean_gitlab_redis_cache) do |example|
-    Gitlab::Redis::Cache.with(&:flushall)
+    redis_cache_cleanup!
 
     example.run
 
-    Gitlab::Redis::Cache.with(&:flushall)
+    redis_cache_cleanup!
   end
 
   config.around(:each, :clean_gitlab_redis_shared_state) do |example|
-    Gitlab::Redis::SharedState.with(&:flushall)
-    Sidekiq.redis(&:flushall)
+    redis_shared_state_cleanup!
 
     example.run
 
-    Gitlab::Redis::SharedState.with(&:flushall)
-    Sidekiq.redis(&:flushall)
+    redis_shared_state_cleanup!
+  end
+
+  config.around(:each, :clean_gitlab_redis_queues) do |example|
+    redis_queues_cleanup!
+
+    example.run
+
+    redis_queues_cleanup!
   end
 
   # The :each scope runs "inside" the example, so this hook ensures the DB is in the

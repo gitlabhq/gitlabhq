@@ -1,5 +1,5 @@
 <script>
-import { mapState } from 'vuex';
+import { mapActions, mapState, mapGetters } from 'vuex';
 import { sprintf, __ } from '~/locale';
 import * as consts from '../../stores/modules/commit/constants';
 import RadioGroup from './radio_group.vue';
@@ -9,7 +9,8 @@ export default {
     RadioGroup,
   },
   computed: {
-    ...mapState(['currentBranchId']),
+    ...mapState(['currentBranchId', 'changedFiles', 'stagedFiles']),
+    ...mapGetters(['currentProject']),
     commitToCurrentBranchText() {
       return sprintf(
         __('Commit to %{branchName} branch'),
@@ -17,6 +18,17 @@ export default {
         false,
       );
     },
+    disableMergeRequestRadio() {
+      return this.changedFiles.length > 0 && this.stagedFiles.length > 0;
+    },
+  },
+  mounted() {
+    if (this.disableMergeRequestRadio) {
+      this.updateCommitAction(consts.COMMIT_TO_CURRENT_BRANCH);
+    }
+  },
+  methods: {
+    ...mapActions('commit', ['updateCommitAction']),
   },
   commitToCurrentBranch: consts.COMMIT_TO_CURRENT_BRANCH,
   commitToNewBranch: consts.COMMIT_TO_NEW_BRANCH,
@@ -41,9 +53,11 @@ export default {
       :show-input="true"
     />
     <radio-group
+      v-if="currentProject.merge_requests_enabled"
       :value="$options.commitToNewBranchMR"
       :label="__('Create a new branch and merge request')"
       :show-input="true"
+      :disabled="disableMergeRequestRadio"
     />
   </div>
 </template>

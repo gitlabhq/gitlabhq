@@ -1,5 +1,0 @@
----
-title: Improve performance of loading issues with lots of references to merge requests
-merge_request: 17986
-author:
-type: performance

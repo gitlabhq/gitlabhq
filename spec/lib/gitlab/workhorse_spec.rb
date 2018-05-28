@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Workhorse do
-  let(:project)    { create(:project, :repository) }
+  set(:project)    { create(:project, :repository) }
   let(:repository) { project.repository }
 
   def decode_workhorse_header(array)
@@ -52,16 +52,6 @@ describe Gitlab::Workhorse do
           _, _, params = decode_workhorse_header(subject)
           expect(params).to include({ 'DisableCache' => true })
         end
-      end
-    end
-
-    context 'when Gitaly workhorse_archive feature is disabled', :disable_gitaly do
-      it 'sets the header correctly' do
-        key, command, params = decode_workhorse_header(subject)
-
-        expect(key).to eq('Gitlab-Workhorse-Send-Data')
-        expect(command).to eq('git-archive')
-        expect(params).to eq(base_params)
       end
     end
 
@@ -480,6 +470,28 @@ describe Gitlab::Workhorse do
         'URL' => url,
         'AllowRedirects' => false
       }.deep_stringify_keys)
+    end
+  end
+
+  describe '.send_git_snapshot' do
+    let(:url) { 'http://example.com' }
+
+    subject(:request) { described_class.send_git_snapshot(repository) }
+
+    it 'sets the header correctly' do
+      key, command, params = decode_workhorse_header(request)
+
+      expect(key).to eq("Gitlab-Workhorse-Send-Data")
+      expect(command).to eq('git-snapshot')
+      expect(params).to eq(
+        'GitalyServer' => {
+          'address' => Gitlab::GitalyClient.address(project.repository_storage),
+          'token' => Gitlab::GitalyClient.token(project.repository_storage)
+        },
+        'GetSnapshotRequest' => Gitaly::GetSnapshotRequest.new(
+          repository: repository.gitaly_repository
+        ).to_json
+      )
     end
   end
 end

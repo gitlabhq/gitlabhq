@@ -61,8 +61,8 @@ export default class CreateMergeRequestDropdown {
   }
 
   available() {
-    this.availableButton.classList.remove('hide');
-    this.unavailableButton.classList.add('hide');
+    this.availableButton.classList.remove('hidden');
+    this.unavailableButton.classList.add('hidden');
   }
 
   bindEvents() {
@@ -84,20 +84,21 @@ export default class CreateMergeRequestDropdown {
         if (data.can_create_branch) {
           this.available();
           this.enable();
+          this.updateBranchName(data.suggested_branch_name);
 
           if (!this.droplabInitialized) {
             this.droplabInitialized = true;
             this.initDroplab();
             this.bindEvents();
           }
-        } else if (data.has_related_branch) {
+        } else {
           this.hide();
         }
       })
       .catch(() => {
         this.unavailable();
         this.disable();
-        Flash('Failed to check if a new branch can be created.');
+        Flash(__('Failed to check related branches.'));
       });
   }
 
@@ -231,7 +232,7 @@ export default class CreateMergeRequestDropdown {
   }
 
   hide() {
-    this.wrapperEl.classList.add('hide');
+    this.wrapperEl.classList.add('hidden');
   }
 
   init() {
@@ -405,16 +406,19 @@ export default class CreateMergeRequestDropdown {
   }
 
   unavailable() {
-    this.availableButton.classList.add('hide');
-    this.unavailableButton.classList.remove('hide');
+    this.availableButton.classList.add('hidden');
+    this.unavailableButton.classList.remove('hidden');
+  }
+
+  updateBranchName(suggestedBranchName) {
+    this.branchInput.value = suggestedBranchName;
+    this.updateCreatePaths('branch', suggestedBranchName);
   }
 
   updateInputState(target, ref, result) {
     // target - 'branch' or 'ref' - which the input field we are searching a ref for.
     // ref - string - what a user typed.
     // result - string - what has been found on backend.
-
-    const pathReplacement = `$1${ref}`;
 
     // If a found branch equals exact the same text a user typed,
     // that means a new branch cannot be created as it already exists.
@@ -426,18 +430,12 @@ export default class CreateMergeRequestDropdown {
         this.refIsValid = true;
         this.refInput.dataset.value = ref;
         this.showAvailableMessage('ref');
-        this.createBranchPath = this.createBranchPath.replace(this.regexps.ref.createBranchPath,
-          pathReplacement);
-        this.createMrPath = this.createMrPath.replace(this.regexps.ref.createMrPath,
-          pathReplacement);
+        this.updateCreatePaths(target, ref);
       }
     } else if (target === 'branch') {
       this.branchIsValid = true;
       this.showAvailableMessage('branch');
-      this.createBranchPath = this.createBranchPath.replace(this.regexps.branch.createBranchPath,
-        pathReplacement);
-      this.createMrPath = this.createMrPath.replace(this.regexps.branch.createMrPath,
-        pathReplacement);
+      this.updateCreatePaths(target, ref);
     } else {
       this.refIsValid = false;
       this.refInput.dataset.value = ref;
@@ -456,5 +454,16 @@ export default class CreateMergeRequestDropdown {
     } else {
       this.disableCreateAction();
     }
+  }
+
+  // target - 'branch' or 'ref'
+  // ref - string - the new value to use as branch or ref
+  updateCreatePaths(target, ref) {
+    const pathReplacement = `$1${ref}`;
+
+    this.createBranchPath = this.createBranchPath.replace(this.regexps[target].createBranchPath,
+      pathReplacement);
+    this.createMrPath = this.createMrPath.replace(this.regexps[target].createMrPath,
+      pathReplacement);
   }
 }

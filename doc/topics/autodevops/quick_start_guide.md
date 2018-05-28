@@ -1,7 +1,5 @@
 # Auto DevOps: quick start guide
 
-DANGER: Auto DevOps is currently in **Beta** and _not recommended for production use_.
-
 > [Introduced][ce-37115] in GitLab 10.0.
 
 This is a step-by-step guide to deploying a project hosted on GitLab.com to
@@ -22,6 +20,10 @@ Let’s start by forking our sample application. Go to [the project
 page](https://gitlab.com/auto-devops-examples/minimal-ruby-app) and press the
 **Fork** button. Soon you should have a project under your namespace with the
 necessary files.
+
+You can also start a new project from a
+[GitLab project template](https://gitlab.com/gitlab-org/project-templates) if
+you want to use a different language.
 
 ## Setup your own cluster on Google Kubernetes Engine
 
@@ -124,10 +126,10 @@ Next, a pipeline needs to be triggered. Since the test project doesn't have a
 manually visit `https://gitlab.com/<username>/minimal-ruby-app/pipelines/new`,
 where `<username>` is your username.
 
-This will create a new pipeline with several jobs: `build`, `test`, `codequality`,
+This will create a new pipeline with several jobs: `build`, `test`, `code_quality`,
 and `production`. The `build` job will create a Docker image with your new
 change and push it to the Container Registry. The `test` job will test your
-changes, whereas the `codequality` job will run static analysis on your changes.
+changes, whereas the `code_quality` job will run static analysis on your changes.
 Finally, the `production` job will deploy your changes to a production application.
 
 Once the deploy job succeeds you should be able to see your application by

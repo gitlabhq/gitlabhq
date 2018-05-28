@@ -26,6 +26,8 @@ class JobEntity < Grape::Entity
   expose :created_at
   expose :updated_at
   expose :detailed_status, as: :status, with: StatusEntity
+  expose :callout_message, if: -> (*) { failed? }
+  expose :recoverable, if: -> (*) { failed? }
 
   private
 
@@ -49,5 +51,21 @@ class JobEntity < Grape::Entity
 
   def path_to(route, build)
     send("#{route}_path", build.project.namespace, build.project, build) # rubocop:disable GitlabSecurity/PublicSend
+  end
+
+  def failed?
+    build.failed?
+  end
+
+  def callout_message
+    build_presenter.callout_failure_message
+  end
+
+  def recoverable
+    build_presenter.recoverable?
+  end
+
+  def build_presenter
+    @build_presenter ||= build.present
   end
 end

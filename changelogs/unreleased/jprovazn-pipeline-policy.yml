@@ -1,0 +1,6 @@
+---
+title: Allow maintainers to retry pipelines on forked projects (if allowed in merge
+  request)
+merge_request:
+author:
+type: fixed

@@ -1,5 +1,0 @@
----
-title: Fixes unresolved discussions rendering the error state instead of the diff
-merge_request:
-author:
-type: fixed

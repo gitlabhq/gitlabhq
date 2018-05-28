@@ -37,7 +37,7 @@
   flex: 0 0 100%;
   margin-bottom: 15px;
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     flex: 0 0 49%;
 
     &:nth-child(odd) {
@@ -67,7 +67,7 @@
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     display: flex;
     align-items: center;
     padding: 50px 30px;
@@ -89,12 +89,12 @@
   }
 
   .blank-state-body {
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       text-align: center;
       margin-top: 20px;
     }
 
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       padding-left: 20px;
     }
   }

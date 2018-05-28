@@ -12,7 +12,6 @@
     components: {
       loadingIcon,
     },
-
     props: {
       retryUrl: {
         type: String,
@@ -24,13 +23,11 @@
         default: true,
       },
     },
-
     data() {
       return {
         isLoading: false,
       };
     },
-
     methods: {
       onClick() {
         this.isLoading = true;
@@ -43,7 +40,7 @@
 <template>
   <button
     type="button"
-    class="btn hidden-xs hidden-sm"
+    class="btn d-none d-sm-none d-md-block"
     @click="onClick"
     :disabled="isLoading"
   >

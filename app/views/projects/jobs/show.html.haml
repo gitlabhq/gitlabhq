@@ -15,7 +15,7 @@
             - elsif @build.tags.any?
               This job is stuck, because you don't have any active runners online with any of these tags assigned to them:
               - @build.tags.each do |tag|
-                %span.label.label-primary
+                %span.badge.badge-primary
                   = tag
             - else
               This job is stuck, because you don't have any active runners that can run this job.
@@ -58,13 +58,13 @@
     - if @build.running? || @build.has_trace?
       .build-trace-container.prepend-top-default
         .top-bar.js-top-bar
-          .js-truncated-info.truncated-info.hidden-xs.pull-left.hidden<
+          .js-truncated-info.truncated-info.d-none.d-sm-block.float-left.hidden<
             Showing last
             %span.js-truncated-info-size.truncated-info-size><
             of log -
             %a.js-raw-link.raw-link{ href: raw_project_job_path(@project, @build) }>< Complete Raw
 
-          .controllers.pull-right
+          .controllers.float-right
             - if @build.has_trace?
               = link_to raw_project_job_path(@project, @build),
                       title: 'Show complete raw',

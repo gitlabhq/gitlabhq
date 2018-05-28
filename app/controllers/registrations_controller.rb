@@ -1,5 +1,6 @@
 class RegistrationsController < Devise::RegistrationsController
   include Recaptcha::Verify
+  include AcceptsPendingInvitations
 
   before_action :whitelist_query_limiting, only: [:destroy]
 
@@ -16,6 +17,7 @@ class RegistrationsController < Devise::RegistrationsController
     end
 
     if !Gitlab::Recaptcha.load_configurations! || verify_recaptcha
+      accept_pending_invitations
       super
     else
       flash[:alert] = 'There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'
@@ -60,7 +62,7 @@ class RegistrationsController < Devise::RegistrationsController
 
   def after_sign_up_path_for(user)
     Gitlab::AppLogger.info("User Created: username=#{user.username} email=#{user.email} ip=#{request.remote_ip} confirmed:#{user.confirmed?}")
-    user.confirmed? ? dashboard_projects_path : users_almost_there_path
+    user.confirmed? ? stored_location_for(user) || dashboard_projects_path : users_almost_there_path
   end
 
   def after_inactive_sign_up_path_for(resource)

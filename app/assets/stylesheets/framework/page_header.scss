@@ -3,7 +3,7 @@
   padding: 10px 0;
   margin-bottom: 0;
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     display: flex;
     align-items: center;
 
@@ -19,7 +19,7 @@
       margin-right: 3px;
     }
 
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       .btn {
         width: 100%;
         margin-top: 10px;
@@ -35,7 +35,7 @@
     @extend .avatar-inline;
     margin-left: 0;
 
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       margin-left: 4px;
     }
   }

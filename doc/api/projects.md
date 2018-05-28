@@ -66,6 +66,7 @@ GET /projects
     "ssh_url_to_repo": "git@example.com:diaspora/diaspora-client.git",
     "http_url_to_repo": "http://example.com/diaspora/diaspora-client.git",
     "web_url": "http://example.com/diaspora/diaspora-client",
+    "readme_url": "http://example.com/diaspora/diaspora-client/blob/master/README.md",
     "tag_list": [
       "example",
       "disapora client"
@@ -135,6 +136,7 @@ GET /projects
     "ssh_url_to_repo": "git@example.com:brightbox/puppet.git",
     "http_url_to_repo": "http://example.com/brightbox/puppet.git",
     "web_url": "http://example.com/brightbox/puppet",
+    "readme_url": "http://example.com/brightbox/puppet/blob/master/README.md",
     "tag_list": [
       "example",
       "puppet"
@@ -252,6 +254,7 @@ GET /users/:user_id/projects
     "ssh_url_to_repo": "git@example.com:diaspora/diaspora-client.git",
     "http_url_to_repo": "http://example.com/diaspora/diaspora-client.git",
     "web_url": "http://example.com/diaspora/diaspora-client",
+    "readme_url": "http://example.com/diaspora/diaspora-client/blob/master/README.md",
     "tag_list": [
       "example",
       "disapora client"
@@ -321,6 +324,7 @@ GET /users/:user_id/projects
     "ssh_url_to_repo": "git@example.com:brightbox/puppet.git",
     "http_url_to_repo": "http://example.com/brightbox/puppet.git",
     "web_url": "http://example.com/brightbox/puppet",
+    "readme_url": "http://example.com/brightbox/puppet/blob/master/README.md",
     "tag_list": [
       "example",
       "puppet"
@@ -420,6 +424,7 @@ GET /projects/:id
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
+  "readme_url": "http://example.com/diaspora/diaspora-project-site/blob/master/README.md",
   "tag_list": [
     "example",
     "disapora project"
@@ -710,6 +715,7 @@ Example responses:
     "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
     "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
     "web_url": "http://example.com/diaspora/diaspora-project-site",
+    "readme_url": "http://example.com/diaspora/diaspora-project-site/blob/master/README.md",
     "tag_list": [
       "example",
       "disapora project"
@@ -788,6 +794,7 @@ Example response:
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
+  "readme_url": "http://example.com/diaspora/diaspora-project-site/blob/master/README.md",
   "tag_list": [
     "example",
     "disapora project"
@@ -865,6 +872,7 @@ Example response:
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
+  "readme_url": "http://example.com/diaspora/diaspora-project-site/blob/master/README.md",
   "tag_list": [
     "example",
     "disapora project"
@@ -966,6 +974,7 @@ Example response:
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
+  "readme_url": "http://example.com/diaspora/diaspora-project-site/blob/master/README.md",
   "tag_list": [
     "example",
     "disapora project"
@@ -1061,6 +1070,7 @@ Example response:
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
+  "readme_url": "http://example.com/diaspora/diaspora-project-site/blob/master/README.md",
   "tag_list": [
     "example",
     "disapora project"
@@ -1399,3 +1409,25 @@ Read more in the [Project Badges](project_badges.md) documentation.
 ## Issue and merge request description templates
 
 The non-default [issue and merge request description templates](../user/project/description_templates.md) are managed inside the project's repository. So you can manage them via the API through the [Repositories API](repositories.md) and the [Repository Files API](repository_files.md).
+
+## Download snapshot of a git repository
+
+> Introduced in GitLab 10.7
+
+This endpoint may only be accessed by an administrative user.
+
+Download a snapshot of the project (or wiki, if requested) git repository. This
+snapshot is always in uncompressed [tar](https://en.wikipedia.org/wiki/Tar_(computing))
+format.
+
+If a repository is corrupted to the point where `git clone` does not work, the
+snapshot may allow some of the data to be retrieved.
+
+```
+GET /projects/:id/snapshot
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `wiki`    | boolean | no | Whether to download the wiki, rather than project, repository |
