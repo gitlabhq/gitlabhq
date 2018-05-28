@@ -200,7 +200,7 @@ describe Ci::Runner do
       let(:runner) { create(:ci_runner, :instance) }
 
       it 'transitions shared runner to project runner and assigns project' do
-        subject
+        expect(subject).to be_truthy
 
         expect(runner).to be_specific
         expect(runner).to be_project_type
