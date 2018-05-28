@@ -21,24 +21,26 @@ module API
         attributes = attributes_for_keys([:description, :active, :locked, :run_untagged, :tag_list, :maximum_timeout])
           .merge(get_runner_details_from_request)
 
-        runner =
+        attributes =
           if runner_registration_token_valid?
             # Create shared runner. Requires admin access
-            Ci::Runner.create(attributes.merge(is_shared: true, runner_type: :instance_type))
+            attributes.merge(is_shared: true, runner_type: :instance_type)
           elsif project = Project.find_by(runners_token: params[:token])
             # Create a specific runner for the project
-            project.runners.create(attributes.merge(runner_type: :project_type))
+            attributes.merge(is_shared: false, runner_type: :project_type, projects: [project])
           elsif group = Group.find_by(runners_token: params[:token])
             # Create a specific runner for the group
-            group.runners.create(attributes.merge(runner_type: :group_type))
+            attributes.merge(is_shared: false, runner_type: :group_type, groups: [group])
+          else
+            forbidden!
           end
 
-        break forbidden! unless runner
+        runner = Ci::Runner.create(attributes)
 
-        if runner.id
+        if runner.persisted?
           present runner, with: Entities::RunnerRegistrationDetails
         else
-          not_found!
+          render_validation_error!(runner)
         end
       end
 
