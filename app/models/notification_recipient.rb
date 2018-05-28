@@ -1,4 +1,6 @@
 class NotificationRecipient
+  include Gitlab::Utils::StrongMemoize
+
   attr_reader :user, :type, :reason
   def initialize(user, type, **opts)
     unless NotificationSetting.levels.key?(type) || type == :subscription
@@ -142,10 +144,33 @@ class NotificationRecipient
 
     return project_setting unless project_setting.nil? || project_setting.global?
 
-    group_setting = @group && user.notification_settings_for(@group)
+    group_setting = closest_non_global_group_notification_settting
 
-    return group_setting unless group_setting.nil? || group_setting.global?
+    return group_setting unless group_setting.nil?
 
     user.global_notification_setting
+  end
+
+  # Returns the notificaton_setting of the lowest group in hierarchy with non global level
+  def closest_non_global_group_notification_settting
+    return unless @group
+    return if indexed_group_notification_settings.empty?
+
+    notification_setting = nil
+
+    @group.self_and_ancestors_ids.each do |id|
+      notification_setting = indexed_group_notification_settings[id]
+      break if notification_setting
+    end
+
+    notification_setting
+  end
+
+  def indexed_group_notification_settings
+    strong_memoize(:indexed_group_notification_settings) do
+      @group.notification_settings.where(user_id: user.id)
+        .where.not(level: NotificationSetting.levels[:global])
+        .index_by(&:source_id)
+    end
   end
 end
