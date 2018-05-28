@@ -36,6 +36,14 @@ FactoryBot.define do
       end
     end
 
+    trait :without_projects do
+      # we use that to create invalid runner:
+      # the one without projects
+      after(:create) do |runner, evaluator|
+        runner.runner_projects.delete_all
+      end
+    end
+
     trait :inactive do
       active false
     end

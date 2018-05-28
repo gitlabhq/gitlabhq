@@ -128,6 +128,18 @@ describe API::Runners do
       end
 
       context 'when runner is not shared' do
+        context 'when unused runner is present' do
+          let!(:unused_project_runner) { create(:ci_runner, :project, :without_projects) }
+
+          it 'deletes unused runner' do
+            expect do
+              delete api("/runners/#{unused_project_runner.id}", admin)
+
+              expect(response).to have_gitlab_http_status(204)
+            end.to change { Ci::Runner.specific.count }.by(-1)
+          end
+        end
+
         it "returns runner's details" do
           get api("/runners/#{project_runner.id}", admin)
 
@@ -561,6 +573,17 @@ describe API::Runners do
       end
 
       context 'user is admin' do
+        context 'when project runner is used' do
+          let!(:new_project_runner) { create(:ci_runner, :project) }
+
+          it 'enables any specific runner' do
+            expect do
+              post api("/projects/#{project.id}/runners", admin), runner_id: new_project_runner.id
+            end.to change { project.runners.count }.by(+1)
+            expect(response).to have_gitlab_http_status(201)
+          end
+        end
+
         it 'enables a shared runner' do
           expect do
             post api("/projects/#{project.id}/runners", admin), runner_id: shared_runner.id
@@ -575,6 +598,16 @@ describe API::Runners do
         post api("/projects/#{project.id}/runners", admin)
 
         expect(response).to have_gitlab_http_status(400)
+      end
+    end
+
+    context 'user is not admin' do
+      let!(:new_project_runner) { create(:ci_runner, :project) }
+
+      it 'does not enable runner without access to' do
+        post api("/projects/#{project.id}/runners", user), runner_id: new_project_runner.id
+
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
