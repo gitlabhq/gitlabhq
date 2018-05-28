@@ -3,6 +3,7 @@
 - can_admin_label = can?(current_user, :admin_label, @group)
 - hide_class = ''
 - hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1')
+- issuables = ['issues', 'merge requests']
 
 - if can_admin_label
   - content_for(:header_content) do
