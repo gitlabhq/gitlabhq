@@ -115,7 +115,9 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             post api('/runners'), token: registration_token,
                                   run_untagged: false
 
-            expect(response).to have_gitlab_http_status 404
+            expect(response).to have_gitlab_http_status 400
+            expect(json_response['message']).to include(
+              'tags_list' => ['can not be empty when runner is not allowed to pick untagged jobs'])
           end
         end
       end
@@ -720,7 +722,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               end
 
               context 'when runner specifies lower timeout' do
-                let(:runner) { create(:ci_runner, maximum_timeout: 1000) }
+                let(:runner) { create(:ci_runner, :project, maximum_timeout: 1000, projects: [project]) }
 
                 it 'contains info about timeout overridden by runner' do
                   request_job
@@ -731,7 +733,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               end
 
               context 'when runner specifies bigger timeout' do
-                let(:runner) { create(:ci_runner, maximum_timeout: 2000) }
+                let(:runner) { create(:ci_runner, :project, maximum_timeout: 2000, projects: [project]) }
 
                 it 'contains info about timeout not overridden by runner' do
                   request_job
