@@ -9,7 +9,7 @@
           = link_to 'Learn more', help_page_path('user/group/index', anchor: 'changing-a-groups-path'), target: '_blank'
 
       .input-group.gl-field-error-anchor
-        .group-root-path.input-group-prepend.has-tooltip{ title: group_path, :'data-placement' => 'bottom' }
+        .group-root-path.input-group-prepend.has-tooltip{ title: group_path(@group), :'data-placement' => 'bottom' }
           .input-group-text
             %span>= root_url
             - if parent

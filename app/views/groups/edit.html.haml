@@ -3,7 +3,7 @@
 - expanded = Rails.env.test?
 
 
-%section.settings.as-general.no-animate#js-general-settings{ class: ('expanded' if expanded) }
+%section.settings.gs-general.no-animate#js-general-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
       = _('General group settings')
@@ -14,7 +14,7 @@
   .settings-content
     = render 'groups/settings/general'
 
-%section.settings.as-permissions.no-animate#js-permissions-settings{ class: ('expanded' if expanded) }
+%section.settings.gs-permissions.no-animate#js-permissions-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
       = _('Permissions')
@@ -25,7 +25,7 @@
   .settings-content
     = render 'groups/settings/permissions'
 
-%section.settings.as-advanced-settings.no-animate#js-advanced-settings{ class: ('expanded' if expanded) }
+%section.settings.gs-advanced.no-animate#js-advanced-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
       = _('Advanced settings')
