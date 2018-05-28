@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.6.6 (2018-05-28)
+
+### Security (4 changes)
+
+- Do not allow non-members to create MRs via forked projects when MRs are private.
+- Prevent user passwords from being changed without providing the previous password.
+- Fix API to remove deploy key from project instead of deleting it entirely.
+- Fixed bug that allowed importing arbitrary project attributes.
+
+
 ## 10.6.5 (2018-04-24)
 
 ### Security (1 change)
