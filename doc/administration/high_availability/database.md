@@ -33,16 +33,7 @@ If you use a cloud-managed service, or provide your own PostgreSQL:
     external_url 'https://gitlab.example.com'
 
     # Disable all components except PostgreSQL
-    postgresql['enable'] = true
-    bootstrap['enable'] = false
-    nginx['enable'] = false
-    unicorn['enable'] = false
-    sidekiq['enable'] = false
-    redis['enable'] = false
-    prometheus['enable'] = false
-    gitaly['enable'] = false
-    gitlab_workhorse['enable'] = false
-    mailroom['enable'] = false
+    roles ['postgres_role']
 
     # PostgreSQL configuration
     gitlab_rails['db_password'] = 'DB password'
