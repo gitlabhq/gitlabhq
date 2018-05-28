@@ -101,6 +101,10 @@ export default {
         imageDiffHtml: this.note.image_diff_html,
         active: this.note.active,
         discussionPath: this.note.discussion_path,
+        resolved: this.note.resolved,
+        resolvedBy: this.note.resolved_by,
+        resolvedByPush: this.note.resolved_by_push,
+        resolvedAt: this.note.resolved_at,
       };
     },
     author() {
@@ -129,6 +133,9 @@ export default {
       }
 
       return null;
+    },
+    resolvedText() {
+      return this.discussion.resolvedByPush ? 'Automatically resolved' : 'Resolved';
     },
     hasUnresolvedDiscussion() {
       return this.unresolvedDiscussions.length > 0;
@@ -276,7 +283,14 @@ Please check your network connection and try again.`;
               :action-text-html="actionTextHtml"
             />
             <note-edited-text
-              v-if="lastUpdatedAt"
+              v-if="discussion.resolved"
+              :edited-at="discussion.resolvedAt"
+              :edited-by="discussion.resolvedBy"
+              :action-text="resolvedText"
+              class-name="discussion-headline-light js-discussion-headline"
+            />
+            <note-edited-text
+              v-else-if="lastUpdatedAt"
               :edited-at="lastUpdatedAt"
               :edited-by="lastUpdatedBy"
               action-text="Last updated"
