@@ -177,7 +177,7 @@ export default {
       v-else
     >
       <button
-        v-if="shouldShowCommentButton"
+        v-show="shouldShowCommentButton"
         @click="handleCommentButton"
         type="button"
         class="add-diff-note js-add-diff-note-button"
