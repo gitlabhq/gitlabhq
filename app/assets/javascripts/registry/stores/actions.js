@@ -29,9 +29,11 @@ export const fetchList = ({ commit }, { repo, page }) => {
   });
 };
 
-export const deleteRepo = ({ commit }, repo) => Vue.http.delete(repo.destroyPath); // eslint-disable-line no-unused-vars
+// eslint-disable-next-line no-unused-vars
+export const deleteRepo = ({ commit }, repo) => Vue.http.delete(repo.destroyPath);
 
-export const deleteRegistry = ({ commit }, image) => Vue.http.delete(image.destroyPath); // eslint-disable-line no-unused-vars
+// eslint-disable-next-line no-unused-vars
+export const deleteRegistry = ({ commit }, image) => Vue.http.delete(image.destroyPath);
 
 export const setMainEndpoint = ({ commit }, data) => commit(types.SET_MAIN_ENDPOINT, data);
 export const toggleLoading = ({ commit }) => commit(types.TOGGLE_MAIN_LOADING);
