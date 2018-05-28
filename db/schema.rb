@@ -2898,11 +2898,8 @@ ActiveRecord::Schema.define(version: 20180521171529) do
   add_foreign_key "merge_requests_closing_issues", "merge_requests", on_delete: :cascade
   add_foreign_key "milestones", "namespaces", column: "group_id", name: "fk_95650a40d4", on_delete: :cascade
   add_foreign_key "milestones", "projects", name: "fk_9bd0a0c791", on_delete: :cascade
-<<<<<<< HEAD
   add_foreign_key "namespace_statistics", "namespaces", on_delete: :cascade
   add_foreign_key "namespaces", "plans", name: "fk_fdd12e5b80", on_delete: :nullify
-=======
->>>>>>> upstream/master
   add_foreign_key "note_diff_files", "notes", column: "diff_note_id", on_delete: :cascade
   add_foreign_key "notes", "projects", name: "fk_99e097b079", on_delete: :cascade
   add_foreign_key "oauth_openid_requests", "oauth_access_grants", column: "access_grant_id", name: "fk_oauth_openid_requests_oauth_access_grants_access_grant_id"
