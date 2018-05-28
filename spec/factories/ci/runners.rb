@@ -21,11 +21,19 @@ FactoryBot.define do
     trait :group do
       is_shared false
       runner_type :group_type
+
+      after(:build) do |runner, evaluator|
+        runner.groups << build(:group) if runner.groups.empty?
+      end
     end
 
     trait :project do
       is_shared false
       runner_type :project_type
+
+      after(:build) do |runner, evaluator|
+        runner.projects << build(:project) if runner.projects.empty?
+      end
     end
 
     trait :inactive do
