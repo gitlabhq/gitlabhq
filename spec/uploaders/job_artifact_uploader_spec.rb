@@ -79,6 +79,33 @@ describe JobArtifactUploader do
     it { is_expected.to end_with("ci_build_artifacts.zip") }
   end
 
+  describe '#dynamic_segment' do
+    let(:uploaded_content) { File.read(Rails.root + 'spec/fixtures/ci_build_artifacts.zip') }
+    let(:model) { uploader.model }
+
+    context 'when a job artifact is stored in legacy_path' do
+      let(:job_artifact) { create(:ci_job_artifact, :legacy_archive) }
+
+      it { expect(model.file.path).to include(File.join(model.created_at.utc.strftime('%Y_%m'), model.project_id.to_s, model.job_id.to_s)) }
+
+      it 'can open the file' do
+        expect(::File.read(model.file.path)).to eq(uploaded_content)
+      end
+    end
+
+    context 'when the artifact file is stored in hashed_path' do
+      let(:job_artifact) { create(:ci_job_artifact, :archive) }
+      let(:disk_hash) { Digest::SHA2.hexdigest(model.project_id.to_s) }
+      let(:creation_date) { model.created_at.utc.strftime('%Y_%m_%d') }
+
+      it { expect(model.file.path).to include(File.join(disk_hash[0..1], disk_hash[2..3], disk_hash, creation_date, model.job_id.to_s, model.id.to_s)) }
+
+      it 'can open the file' do
+        expect(::File.read(model.file.path)).to eq(uploaded_content)
+      end
+    end
+  end
+
   describe "#migrate!" do
     before do
       uploader.store!(fixture_file_upload(Rails.root.join('spec/fixtures/trace/sample_trace')))
