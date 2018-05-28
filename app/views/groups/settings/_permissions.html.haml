@@ -21,8 +21,8 @@
             %br
             %span.descr= share_with_group_lock_help_text(@group)
 
-    = render 'group_admin_settings', f: f
+    = render 'groups/group_admin_settings', f: f
 
-    = render_if_exists 'member_lock_setting', f: f, group: @group
+    = render_if_exists 'groups/member_lock_setting', f: f, group: @group
 
   = f.submit 'Save group', class: 'btn btn-success'
