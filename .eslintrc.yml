@@ -38,7 +38,7 @@ rules:
     - allow:
       - __
       - _links
-  no-mixed-operators: 0
+  no-mixed-operators: off
   vue/html-self-closing:
     - error
     - html:
@@ -48,7 +48,9 @@ rules:
       svg: always
       math: always
   ## Conflicting rules with prettier:
-  space-before-function-paren: 0
-  curly: 0
-  arrow-parens: 0
-  function-paren-newline: 0
+  space-before-function-paren: off
+  curly: off
+  arrow-parens: off
+  function-paren-newline: off
+  object-curly-newline: off
+  padded-blocks: off
