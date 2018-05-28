@@ -121,8 +121,15 @@ module Ci
         raise ArgumentError, 'Transitioning a group runner to a project runner is not supported'
       end
 
-      self.projects << project
-      self.save
+      begin
+        transaction do
+          self.projects << project
+          self.save!
+        end
+      rescue ActiveRecord::RecordInvalid => e
+        self.errors.add(:assign_to, e.message)
+        false
+      end
     end
 
     def display_name
