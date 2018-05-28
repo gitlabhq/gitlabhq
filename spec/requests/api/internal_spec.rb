@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe API::Internal do
-  let(:user) { create(:user) }
+  set(:user) { create(:user) }
   let(:key) { create(:key, user: user) }
-  let(:project) { create(:project, :repository, :wiki_repo) }
+  set(:project) { create(:project, :repository, :wiki_repo) }
   let(:secret_token) { Gitlab::Shell.secret_token }
   let(:gl_repository) { "project-#{project.id}" }
   let(:reference_counter) { double('ReferenceCounter') }
@@ -277,7 +277,7 @@ describe API::Internal do
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_truthy
-          expect(json_response["repository_path"]).to eq(project.wiki.repository.path_to_repo)
+          expect(json_response["repository_path"]).to eq('/')
           expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
           expect(user).not_to have_an_activity_record
         end
@@ -289,7 +289,7 @@ describe API::Internal do
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_truthy
-          expect(json_response["repository_path"]).to eq(project.wiki.repository.path_to_repo)
+          expect(json_response["repository_path"]).to eq('/')
           expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
           expect(user).to have_an_activity_record
         end
@@ -301,7 +301,7 @@ describe API::Internal do
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_truthy
-          expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+          expect(json_response["repository_path"]).to eq('/')
           expect(json_response["gl_repository"]).to eq("project-#{project.id}")
           expect(json_response["gitaly"]).not_to be_nil
           expect(json_response["gitaly"]["repository"]).not_to be_nil
@@ -320,7 +320,7 @@ describe API::Internal do
 
             expect(response).to have_gitlab_http_status(200)
             expect(json_response["status"]).to be_truthy
-            expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+            expect(json_response["repository_path"]).to eq('/')
             expect(json_response["gl_repository"]).to eq("project-#{project.id}")
             expect(json_response["gitaly"]).not_to be_nil
             expect(json_response["gitaly"]["repository"]).not_to be_nil
