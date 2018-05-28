@@ -228,7 +228,7 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         end
       end
 
-      xit 'hides jump to next discussion button' do
+      it 'hides jump to next discussion button' do
         page.within '.discussion-reply-holder' do
           expect(page).not_to have_selector('.discussion-next-btn')
         end

@@ -137,8 +137,8 @@ export default {
     resolvedText() {
       return this.discussion.resolvedByPush ? 'Automatically resolved' : 'Resolved';
     },
-    hasUnresolvedDiscussion() {
-      return this.unresolvedDiscussions.length > 0;
+    hasMultipleUnresolvedDiscussions() {
+      return this.unresolvedDiscussions.length > 1;
     },
     shouldRenderDiffs() {
       const { diffDiscussion, diffFile } = this.discussion;
@@ -368,7 +368,7 @@ Please check your network connection and try again.`;
                           </a>
                         </div>
                         <div
-                          v-if="hasUnresolvedDiscussion"
+                          v-if="hasMultipleUnresolvedDiscussions"
                           class="btn-group"
                           role="group">
                           <button
