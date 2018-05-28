@@ -50,6 +50,19 @@ describe('GCP Cluster Dropdown Store Actions', () => {
     });
   });
 
+  describe('setIsValidatingProjectBilling', () => {
+    it('should set machine type', done => {
+      testAction(
+        actions.setIsValidatingProjectBilling,
+        true,
+        { isValidatingProjectBilling: null },
+        [{ type: 'SET_IS_VALIDATING_PROJECT_BILLING', payload: true }],
+        [],
+        done,
+      );
+    });
+  });
+
   describe('async fetch methods', () => {
     window.gapi = gapi();
 
@@ -74,10 +87,16 @@ describe('GCP Cluster Dropdown Store Actions', () => {
           true,
           {
             selectedProject: selectedProjectMock,
+            selectedZone: '',
+            selectedMachineType: '',
             projectHasBillingEnabled: null,
           },
-          [{ type: 'SET_PROJECT_BILLING_STATUS', payload: true }],
-          [],
+          [
+            { type: 'SET_ZONE', payload: '' },
+            { type: 'SET_MACHINE_TYPE', payload: '' },
+            { type: 'SET_PROJECT_BILLING_STATUS', payload: true },
+          ],
+          [{ type: 'setIsValidatingProjectBilling', payload: false }],
           done,
         );
       });
