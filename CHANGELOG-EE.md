@@ -1,5 +1,14 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.8.2 (2018-05-28)
+
+### Security (3 changes)
+
+- Fixed XSS in protected branches & tags access dropdown.
+- Escape name in merge request approvers dropdown.
+- Fixes include directive to not allow SSRF requests.
+
+
 ## 10.8.1 (2018-05-23)
 
 ### Fixed (4 changes)
