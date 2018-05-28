@@ -1,6 +1,5 @@
-# This is a monkey patch until https://github.com/carrierwaveuploader/carrierwave/pull/2314 has been merged
-# This fixes a problem https://gitlab.com/gitlab-org/gitlab-ce/issues/46182 that carrierwave loads large files into memory
-# and triggers sidekiq shutdown by hitting RSS limit.
+# This fixes the problem https://gitlab.com/gitlab-org/gitlab-ce/issues/46182 that carrierwave eagerly loads upoloading files into memory
+# There is an PR https://github.com/carrierwaveuploader/carrierwave/pull/2314 which has the identical change.
 module CarrierWave
   module Storage
     class Fog < Abstract
