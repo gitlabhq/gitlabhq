@@ -48,7 +48,7 @@
     - if current_user
       %li.inline.label-subscription
         - if can_subscribe_to_label_in_different_levels?(label)
-          %button.js-unsubscribe-button.test.label-subscribe-button.btn.btn-default{ class: ('hidden' if status.unsubscribed?), data: { url: toggle_subscription_path, toggle: 'tooltip' }, title: tooltip_title }
+          %button.js-unsubscribe-button.label-subscribe-button.btn.btn-default{ class: ('hidden' if status.unsubscribed?), data: { url: toggle_subscription_path, toggle: 'tooltip' }, title: tooltip_title }
             %span= _('Unsubscribe')
           .dropdown.dropdown-group-label{ class: ('hidden' unless status.unsubscribed?) }
             %button.label-subscribe-button.btn.btn-default{ data: { toggle: 'dropdown' } }
