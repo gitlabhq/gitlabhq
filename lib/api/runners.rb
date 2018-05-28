@@ -136,7 +136,7 @@ module API
         if runner.assign_to(user_project)
           present runner, with: Entities::Runner
         else
-          conflict!("Runner was already enabled for this project")
+          render_validation_error!(runner)
         end
       end
 

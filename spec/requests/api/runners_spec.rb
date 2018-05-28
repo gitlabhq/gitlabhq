@@ -522,11 +522,7 @@ describe API::Runners do
 
   describe 'POST /projects/:id/runners' do
     context 'authorized user' do
-      let(:project_runner2) do
-        create(:ci_runner).tap do |runner|
-          create(:ci_runner_project, runner: runner, project: project2)
-        end
-      end
+      let(:project_runner2) { create(:ci_runner, :project, projects: [project2]) }
 
       it 'enables specific runner' do
         expect do
@@ -539,7 +535,7 @@ describe API::Runners do
         expect do
           post api("/projects/#{project.id}/runners", user), runner_id: project_runner.id
         end.to change { project.runners.count }.by(0)
-        expect(response).to have_gitlab_http_status(409)
+        expect(response).to have_gitlab_http_status(400)
       end
 
       it 'does not enable locked runner' do
