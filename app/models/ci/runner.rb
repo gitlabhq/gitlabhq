@@ -120,7 +120,7 @@ module Ci
         raise ArgumentError, 'Transitioning a group runner to a project runner is not supported'
       end
 
-      self.projects << project
+      self.runner_projects.build(project: project)
       self.save
     end
 
@@ -259,25 +259,25 @@ module Ci
     end
 
     def no_projects
-      if projects.any?
+      if runner_projects.any?
         errors.add(:runner, 'cannot have projects assigned')
       end
     end
 
     def no_groups
-      if groups.any?
+      if runner_namespaces.any?
         errors.add(:runner, 'cannot have groups assigned')
       end
     end
 
     def any_project
-      unless projects.any?
+      unless runner_projects.any?
         errors.add(:runner, 'needs to be assigned to at least one project')
       end
     end
 
     def exactly_one_group
-      unless groups.one?
+      unless runner_namespaces.one?
         errors.add(:runner, 'needs to be assigned to exactly one group')
       end
     end
