@@ -99,7 +99,7 @@
           = _('Time tracking')
           = icon('spinner spin')
 
-    = render 'shared/milestones/weight', milestone: milestone
+    = render_if_exists 'shared/milestones/weight', milestone: milestone
 
     .block.merge-requests
       .sidebar-collapsed-icon.has-tooltip{ title: milestone_merge_requests_tooltip_text(milestone), data: { container: 'body', html: 'true', placement: 'left', boundary: 'viewport' } }
