@@ -3517,7 +3517,7 @@ msgstr ""
 msgid "Seconds to wait for a storage access attempt"
 msgstr ""
 
-msgid "Secret variables"
+msgid "Variables"
 msgstr ""
 
 msgid "Select Archive Format"
