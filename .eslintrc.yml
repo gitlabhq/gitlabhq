@@ -55,6 +55,20 @@ rules:
   object-curly-newline: off
   padded-blocks: off
   # Disabled for now, to make the eslint 3 -> eslint 4 update smoother
+  ## Indent rule. We are using the old for now: https://eslint.org/docs/user-guide/migrating-to-4.0.0#indent-rewrite
+  indent: off
+  indent-legacy:
+    - error
+    - 2
+    - SwitchCase: 1
+      VariableDeclarator: 1
+      outerIIFEBody: 1
+      FunctionDeclaration:
+        parameters: 1
+        body: 1
+      FunctionExpression:
+        parameters: 1
+        body: 1
   ## Destructuring: https://eslint.org/docs/rules/prefer-destructuring
   prefer-destructuring: off
   ## no-restricted-globals: https://eslint.org/docs/3.0.0/rules/no-restricted-globals
