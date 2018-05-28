@@ -314,7 +314,7 @@ describe Ci::Runner do
     context 'a different runner' do
       let(:other_project) { create(:project) }
       let(:other_runner) { create(:ci_runner, :project, projects: [other_project], tag_list: tag_list, run_untagged: run_untagged) }
- 
+
       it 'cannot handle builds' do
         expect(other_runner.can_pick?(build)).to be_falsey
       end
