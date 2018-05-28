@@ -35,15 +35,22 @@ export default class ProjectLabelSubscription {
       this.$buttons.attr('data-status', newStatus);
       this.$buttons.find('> span').text(newAction);
 
-      this.$buttons.map((button) => {
+      this.$buttons.map((i, button) => {
         const $button = $(button);
+        const originalTitle = $button.attr('data-original-title');
 
-        if ($button.attr('data-original-title')) {
-          $button.tooltip('hide').attr('data-original-title', newAction).tooltip('fixTitle');
-        }
+        if (originalTitle) ProjectLabelSubscription.setNewTitle($button, originalTitle, newStatus, newAction);
 
         return button;
       });
     }).catch(() => flash(__('There was an error subscribing to this label.')));
+  }
+
+  static setNewTitle($button, originalTitle, newStatus, newAction) {
+    const newStatusVerb = newStatus.slice(0, -1);
+    const actionRegexp = new RegExp(newStatusVerb, 'i');
+    const newTitle = originalTitle.replace(actionRegexp, newAction);
+
+    $button.tooltip('hide').attr('data-original-title', newTitle).tooltip('fixTitle');
   }
 }

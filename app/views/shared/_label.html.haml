@@ -6,7 +6,7 @@
 - toggle_subscription_path = toggle_subscription_label_path(label, @project) if current_user
 - show_label_merge_requests_link = show_label_issuables_link?(label, :merge_requests, project: @project)
 - show_label_issues_link = show_label_issuables_link?(label, :issues, project: @project)
-- tooltip_title = "#{status.unsubscribed? ? 'Subscribe' : 'Unsubscribe'} at #{label.is_a?(ProjectLabel) ? 'project' : 'group'} level"
+- tooltip_title = "#{status.unsubscribed? ? 'Subscribe' : 'Unsubscribe'} at #{status.sub('-', ' ')}"
 
 %li.label-list-item{ id: label_css_id, data: { id: label.id } }
   = render "shared/label_row", label: label, subject: subject, force_priority: force_priority
@@ -61,7 +61,7 @@
                   %button.js-subscribe-button.label-subscribe-button.btn.btn-default{ class: ('hidden' unless status.unsubscribed?), data: { status: status, url: toggle_subscription_project_label_path(@project, label) } }
                     %span= _('Subscribe at project level')
                 %li
-                  %button.js-subscribe-button.label-subscribe-button.btn.btn-default{ class: ('hidden' unless status.unsubscribed?), data: { status: status, url: toggle_subscription_group_label_path(label.group, label) } }
+                  %button.js-subscribe-button.js-group-level.label-subscribe-button.btn.btn-default{ class: ('hidden' unless status.unsubscribed?), data: { status: status, url: toggle_subscription_group_label_path(label.group, label) } }
                     %span= _('Subscribe at group level')
         - else
           %button.js-subscribe-button.label-subscribe-button.btn.btn-default{ data: { status: status, url: toggle_subscription_path, toggle: 'tooltip' }, title: tooltip_title }

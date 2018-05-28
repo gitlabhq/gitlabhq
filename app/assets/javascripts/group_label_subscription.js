@@ -35,6 +35,7 @@ export default class GroupLabelSubscription {
     this.$unsubscribeButtons.attr('data-url', url);
 
     axios.post(url)
+      .then(() => GroupLabelSubscription.setNewTooltip($btn))
       .then(() => this.toggleSubscriptionButtons())
       .catch(() => flash(__('There was an error when subscribing to this label.')));
   }
@@ -43,5 +44,15 @@ export default class GroupLabelSubscription {
     this.$dropdown.toggleClass('hidden');
     this.$subscribeButtons.toggleClass('hidden');
     this.$unsubscribeButtons.toggleClass('hidden');
+  }
+
+  static setNewTooltip($button) {
+    if (!$button.hasClass('js-subscribe-button')) return;
+
+    const type = $button.hasClass('js-group-level') ? 'group' : 'project';
+    const title = `Unsubscribe at ${type} level`;
+    const $unsubscribeButton = $('.js-unsubscribe-button', $button.closest('.label-actions-list'));
+
+    $unsubscribeButton.tooltip('hide').attr('title', title).tooltip('fixTitle');
   }
 }
