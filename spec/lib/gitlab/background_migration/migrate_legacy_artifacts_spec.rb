@@ -75,7 +75,7 @@ describe Gitlab::BackgroundMigration::MigrateLegacyArtifacts, :migration, schema
             expect(jobs.pluck('artifacts_file_store, artifacts_metadata_store')).to eq([[nil, nil]])
 
             described_class.new.perform(*range)
-  
+
             expect(job_artifacts.pluck('file_store')).to eq([1, 1])
           end
         end
@@ -87,7 +87,7 @@ describe Gitlab::BackgroundMigration::MigrateLegacyArtifacts, :migration, schema
 
           it 'does not migrate' do
             described_class.new.perform(*range)
-  
+
             expect(job_artifacts.pluck('id')).to eq([1])
           end
         end

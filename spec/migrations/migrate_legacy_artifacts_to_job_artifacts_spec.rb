@@ -26,7 +26,7 @@ describe MigrateLegacyArtifactsToJobArtifacts, :migration, :sidekiq do
       Sidekiq::Testing.fake! do
         Timecop.freeze do
           migrate!
-  
+
           expect(migration_name).to be_scheduled_delayed_migration(5.minutes, 1, 1)
           expect(BackgroundMigrationWorker.jobs.size).to eq 1
         end
@@ -41,7 +41,7 @@ describe MigrateLegacyArtifactsToJobArtifacts, :migration, :sidekiq do
       it 'does not schedule background migrations' do
         Sidekiq::Testing.fake! do
           migrate!
-  
+
           expect(BackgroundMigrationWorker.jobs.size).to eq 0
         end
       end
