@@ -764,4 +764,20 @@ describe Ci::Runner do
       end
     end
   end
+
+  describe 'project runner without projects is destroyable' do
+    subject { create(:ci_runner, :project) }
+
+    before do
+      subject.runner_projects.delete_all
+    end
+
+    it 'does not have projects' do
+      expect(subject.runner_projects).to be_empty
+    end
+
+    it 'can be destroyed' do
+      expect { subject.destroy }.to change { Ci::Runner.count }.by(-1)
+    end
+  end
 end
