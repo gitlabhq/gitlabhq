@@ -19,7 +19,7 @@
         %span.light (optional)
       = f.text_area :description, class: 'form-control', rows: 3, maxlength: 250
 
-    = render 'shared/repository_size_limit_setting', form: f, type: :group
+    = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :group
 
     .form-group.row
       .col-sm-12
