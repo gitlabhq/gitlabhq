@@ -4,6 +4,9 @@ export default {
   [types.SET_PROJECT](state, selectedProject) {
     Object.assign(state, { selectedProject });
   },
+  [types.SET_IS_VALIDATING_PROJECT_BILLING](state, isValidatingProjectBilling) {
+    Object.assign(state, { isValidatingProjectBilling });
+  },
   [types.SET_PROJECT_BILLING_STATUS](state, projectHasBillingEnabled) {
     Object.assign(state, { projectHasBillingEnabled });
   },

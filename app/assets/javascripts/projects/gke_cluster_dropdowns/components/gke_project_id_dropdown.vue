@@ -14,20 +14,17 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      isValidatingProjectBilling: false,
-    };
-  },
   computed: {
-    ...mapState(['selectedProject', 'projectHasBillingEnabled']),
+    ...mapState(['selectedProject', 'isValidatingProjectBilling', 'projectHasBillingEnabled']),
     ...mapState({ items: 'projects' }),
     ...mapGetters(['hasProject']),
     hasOneProject() {
       return this.items && this.items.length === 1;
     },
     isDisabled() {
-      return this.items && this.items.length < 2;
+      return (
+        this.isLoading || this.isValidatingProjectBilling || (this.items && this.items.length < 2)
+      );
     },
     toggleText() {
       if (this.isValidatingProjectBilling) {
@@ -103,16 +100,11 @@ export default {
   },
   watch: {
     selectedProject() {
-      this.isLoading = true;
-      this.isValidatingProjectBilling = true;
+      this.setIsValidatingProjectBilling(true);
 
       this.validateProjectBilling()
         .then(this.validateProjectBillingSuccessHandler)
         .catch(this.validateProjectBillingFailureHandler);
-    },
-    projectHasBillingEnabled(billingEnabled) {
-      this.hasErrors = !billingEnabled;
-      this.isValidatingProjectBilling = false;
     },
   },
   created() {
@@ -123,7 +115,7 @@ export default {
       .catch(this.fetchFailureHandler);
   },
   methods: {
-    ...mapActions(['fetchProjects', 'validateProjectBilling']),
+    ...mapActions(['fetchProjects', 'setIsValidatingProjectBilling', 'validateProjectBilling']),
     ...mapActions({ setItem: 'setProject' }),
     fetchSuccessHandler() {
       if (this.defaultValue) {
@@ -140,10 +132,9 @@ export default {
       this.hasErrors = false;
     },
     validateProjectBillingSuccessHandler() {
-      this.isLoading = false;
+      this.hasErrors = !this.projectHasBillingEnabled;
     },
     validateProjectBillingFailureHandler(resp) {
-      this.isLoading = false;
       this.hasErrors = true;
 
       this.gapiError = resp.result ? resp.result.error.message : resp;

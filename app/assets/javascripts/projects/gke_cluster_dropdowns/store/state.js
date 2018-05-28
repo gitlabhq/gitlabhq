@@ -5,6 +5,7 @@ export default () => ({
   },
   selectedZone: '',
   selectedMachineType: '',
+  isValidatingProjectBilling: null,
   projectHasBillingEnabled: null,
   projects: [],
   zones: [],

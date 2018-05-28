@@ -8,10 +8,16 @@ export default {
   name: 'GkeZoneDropdown',
   mixins: [gkeDropdownMixin],
   computed: {
-    ...mapState(['selectedProject', 'selectedZone', 'projects', 'projectHasBillingEnabled']),
+    ...mapState([
+      'selectedProject',
+      'selectedZone',
+      'projects',
+      'isValidatingProjectBilling',
+      'projectHasBillingEnabled',
+    ]),
     ...mapState({ items: 'zones' }),
     isDisabled() {
-      return !this.projectHasBillingEnabled;
+      return this.isLoading || this.isValidatingProjectBilling || !this.projectHasBillingEnabled;
     },
     toggleText() {
       if (this.isLoading) {
@@ -34,13 +40,16 @@ export default {
     },
   },
   watch: {
-    projectHasBillingEnabled(billingEnabled) {
-      if (!billingEnabled) return false;
-      this.isLoading = true;
+    isValidatingProjectBilling(isValidating) {
+      this.hasErrors = false;
 
-      return this.fetchZones()
-        .then(this.fetchSuccessHandler)
-        .catch(this.fetchFailureHandler);
+      if (!isValidating && this.projectHasBillingEnabled) {
+        this.isLoading = true;
+
+        this.fetchZones()
+          .then(this.fetchSuccessHandler)
+          .catch(this.fetchFailureHandler);
+      }
     },
   },
   methods: {
