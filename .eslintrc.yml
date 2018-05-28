@@ -54,3 +54,6 @@ rules:
   function-paren-newline: off
   object-curly-newline: off
   padded-blocks: off
+  # Disabled for now, to make the eslint 3 -> eslint 4 update smoother
+  ## Destructuring: https://eslint.org/docs/rules/prefer-destructuring
+  prefer-destructuring: off
