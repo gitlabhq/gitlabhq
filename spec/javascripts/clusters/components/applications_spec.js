@@ -128,21 +128,37 @@ describe('Applications', () => {
 
           expect(vm.$el.querySelector('.js-hostname').getAttribute('readonly')).toEqual(null);
         });
+      });
 
-        describe('with ingress & jupyter installed', () => {
-          it('renders readonly input', () => {
-            vm = mountComponent(Applications, {
-              applications: {
-                helm: { title: 'Helm Tiller', status: 'installed' },
-                ingress: { title: 'Ingress', status: 'installed', externalIp: '1.1.1.1' },
-                runner: { title: 'GitLab Runner' },
-                prometheus: { title: 'Prometheus' },
-                jupyter: { title: 'JupyterHub', status: 'installed', hostname: '' },
-              },
-            });
-
-            expect(vm.$el.querySelector('.js-hostname').getAttribute('readonly')).toEqual('readonly');
+      describe('with ingress installed without external ip', () => {
+        it('does not render hostname input', () => {
+          vm = mountComponent(Applications, {
+            applications: {
+              helm: { title: 'Helm Tiller', status: 'installed' },
+              ingress: { title: 'Ingress', status: 'installed' },
+              runner: { title: 'GitLab Runner' },
+              prometheus: { title: 'Prometheus' },
+              jupyter: { title: 'JupyterHub', hostname: '', status: 'installable' },
+            },
           });
+
+          expect(vm.$el.querySelector('.js-hostname')).toBe(null);
+        });
+      });
+
+      describe('with ingress & jupyter installed', () => {
+        it('renders readonly input', () => {
+          vm = mountComponent(Applications, {
+            applications: {
+              helm: { title: 'Helm Tiller', status: 'installed' },
+              ingress: { title: 'Ingress', status: 'installed', externalIp: '1.1.1.1' },
+              runner: { title: 'GitLab Runner' },
+              prometheus: { title: 'Prometheus' },
+              jupyter: { title: 'JupyterHub', status: 'installed', hostname: '' },
+            },
+          });
+
+          expect(vm.$el.querySelector('.js-hostname').getAttribute('readonly')).toEqual('readonly');
         });
       });
 

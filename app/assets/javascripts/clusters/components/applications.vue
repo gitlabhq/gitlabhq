@@ -345,7 +345,6 @@ export default {
           NOTE: Don't forget to update `clusters.scss`
           min-height for this block and uncomment `application_spec` tests
         -->
-        <!-- Add Jupyter row, all other plumbing is complete -->
       </div>
     </div>
   </section>

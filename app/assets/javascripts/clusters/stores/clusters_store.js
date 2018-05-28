@@ -92,7 +92,11 @@ export default class ClusterStore {
       if (appId === INGRESS) {
         this.state.applications.ingress.externalIp = serverAppEntry.external_ip;
       } else if (appId === JUPYTER) {
-        this.state.applications.jupyter.hostname = serverAppEntry.hostname || this.state.applications.ingress.externalIp ? `jupyter.${this.state.applications.ingress.externalIp}.xip.io` : '';
+        this.state.applications.jupyter.hostname =
+          serverAppEntry.hostname ||
+          (this.state.applications.ingress.externalIp
+            ? `jupyter.${this.state.applications.ingress.externalIp}.xip.io`
+            : '');
       }
     });
   }
