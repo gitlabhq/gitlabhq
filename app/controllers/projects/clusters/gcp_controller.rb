@@ -2,6 +2,7 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
   before_action :authorize_read_cluster!
   before_action :authorize_create_cluster!, only: [:new, :create]
   before_action :authorize_google_api, except: :login
+  helper_method :token_in_session
 
   def login
     begin
@@ -59,8 +60,7 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
   end
 
   def token_in_session
-    @token_in_session ||=
-      session[GoogleApi::CloudPlatform::Client.session_key_for_token]
+    session[GoogleApi::CloudPlatform::Client.session_key_for_token]
   end
 
   def expires_at_in_session
