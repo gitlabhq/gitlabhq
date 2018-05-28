@@ -84,11 +84,11 @@ export const getFileData = ({ state, commit, dispatch }, { path, makeFileActive 
     });
 };
 
-export const setFileMrChange = ({ state, commit }, { file, mrChange }) => {
+export const setFileMrChange = ({ commit }, { file, mrChange }) => {
   commit(types.SET_FILE_MERGE_REQUEST_CHANGE, { file, mrChange });
 };
 
-export const getRawFileData = ({ state, commit, dispatch }, { path, baseSha }) => {
+export const getRawFileData = ({ state, commit }, { path, baseSha }) => {
   const file = state.entries[path];
   return new Promise((resolve, reject) => {
     service
@@ -156,7 +156,7 @@ export const setEditorPosition = ({ getters, commit }, { editorRow, editorColumn
   }
 };
 
-export const setFileViewMode = ({ state, commit }, { file, viewMode }) => {
+export const setFileViewMode = ({ commit }, { file, viewMode }) => {
   commit(types.SET_FILE_VIEWMODE, { file, viewMode });
 };
 
