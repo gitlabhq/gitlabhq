@@ -52,6 +52,8 @@ class EpicsFinder < IssuableFinder
   private
 
   def groups_user_can_read_epics(groups)
+    groups = Gitlab::GroupPlansPreloader.new.preload(groups)
+
     DeclarativePolicy.user_scope do
       groups.select { |g| Ability.allowed?(current_user, :read_epic, g) }
     end

@@ -53,6 +53,12 @@ describe EpicsFinder do
           expect(epics).to contain_exactly(epic1, epic2, epic3)
         end
 
+        it 'does not execute more than 7 SQL queries' do
+          amount = ActiveRecord::QueryRecorder.new { epics.to_a }.count
+
+          expect(amount).to be <= 7
+        end
+
         context 'by created_at' do
           it 'returns all epics created before the given date' do
             expect(epics(created_before: 2.days.ago)).to contain_exactly(epic1, epic2)
@@ -96,6 +102,24 @@ describe EpicsFinder do
 
           it 'returns all epics that belong to the given group and its subgroups' do
             expect(epics).to contain_exactly(epic1, epic2, epic3, subepic1, subepic2)
+          end
+
+          it 'does not execute more than 9 SQL queries' do
+            amount = ActiveRecord::QueryRecorder.new { epics.to_a }.count
+
+            expect(amount).to be <= 9
+          end
+
+          it 'does not execute more than 11 SQL queries when checking namespace plans' do
+            allow(Gitlab::CurrentSettings)
+              .to receive(:should_check_namespace_plan?)
+              .and_return(true)
+
+            group.update(plan: create(:gold_plan))
+
+            amount = ActiveRecord::QueryRecorder.new { epics.to_a }.count
+
+            expect(amount).to be <= 10
           end
         end
 
