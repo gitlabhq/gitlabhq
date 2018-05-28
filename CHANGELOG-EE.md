@@ -88,6 +88,15 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Remove `features/group_active_tab.feature`. !5554 (@blackst0ne)
 
 
+## 10.7.5 (2018-05-28)
+
+### Security (3 changes)
+
+- Fixed XSS in protected branches & tags access dropdown.
+- Escape name in merge request approvers dropdown.
+- Fixes include directive to not allow SSRF requests.
+
+
 ## 10.7.4 (2018-05-21)
 
 ### Fixed (2 changes)
