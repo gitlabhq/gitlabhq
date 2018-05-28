@@ -75,24 +75,23 @@ for each GitLab application server in your environment.
     servers should point to the external url that users will use to access GitLab.
     In a typical HA setup, this will be the url of the load balancer which will
     route traffic to all GitLab application servers in the HA cluster.
-
-1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
+    
+    > **Note:** When you specify `https` in the `external_url`, as in the example
+    above, GitLab assumes you have SSL certificates in `/etc/gitlab/ssl/`. If
+    certificates are not present, Nginx will fail to start. See
+    [Nginx documentation](http://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
+    for more information.
 
 ## First GitLab application server
 
-As a final step, run the setup rake task on the first GitLab application server.
-It is not necessary to run this on additional application servers.
+As a final step, run the setup rake task **only on** the first GitLab application server.
+Do not run this on additional application servers.
 
 1. Initialize the database by running `sudo gitlab-rake gitlab:setup`.
+1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
 
 > **WARNING:** Only run this setup task on **NEW** GitLab instances because it
   will wipe any existing data.
-
-> **Note:** When you specify `https` in the `external_url`, as in the example
-  above, GitLab assumes you have SSL certificates in `/etc/gitlab/ssl/`. If
-  certificates are not present, Nginx will fail to start. See
-  [Nginx documentation](http://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
-  for more information.
 
 ## Extra configuration for additional GitLab application servers
 
@@ -101,8 +100,7 @@ need some extra configuration.
 
 1. Configure shared secrets. These values can be obtained from the primary
    GitLab server in `/etc/gitlab/gitlab-secrets.json`. Add these to
-   `/etc/gitlab/gitlab.rb` **prior to** running the first `reconfigure` in
-   the steps above.
+   `/etc/gitlab/gitlab.rb` **prior to** running the first `reconfigure`.
 
     ```ruby
     gitlab_shell['secret_token'] = 'fbfb19c355066a9afb030992231c4a363357f77345edd0f2e772359e5be59b02538e1fa6cae8f93f7d23355341cea2b93600dab6d6c3edcdced558fc6d739860'
@@ -114,6 +112,8 @@ need some extra configuration.
 1. Run `touch /etc/gitlab/skip-auto-migrations` to prevent database migrations
    from running on upgrade. Only the primary GitLab application server should
    handle migrations.
+
+1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
 
 ## Troubleshooting
 
