@@ -31,6 +31,8 @@ feature 'Gcp Cluster', :js do
       end
 
       context 'when user filled form with valid parameters' do
+        subject { click_button 'Create Kubernetes cluster' }
+
         before do
           allow_any_instance_of(GoogleApi::CloudPlatform::Client)
             .to receive(:projects_zones_clusters_create) do
@@ -52,10 +54,15 @@ feature 'Gcp Cluster', :js do
           fill_in 'cluster[provider_gcp_attributes][gcp_project_id]', with: 'gcp-project-123'
           fill_in 'cluster[provider_gcp_attributes][zone]', with: 'us-central1-a'
           fill_in 'cluster[provider_gcp_attributes][machine_type]', with: 'n1-standard-2'
-          click_button 'Create Kubernetes cluster'
+        end
+
+        it 'users sees a form with the GCP token' do
+          expect(page).to have_selector(:css, 'form[data-token="token"]')
         end
 
         it 'user sees a cluster details page and creation status' do
+          subject
+
           expect(page).to have_content('Kubernetes cluster is being created on Google Kubernetes Engine...')
 
           Clusters::Cluster.last.provider.make_created!
@@ -64,6 +71,8 @@ feature 'Gcp Cluster', :js do
         end
 
         it 'user sees a error if something wrong during creation' do
+          subject
+
           expect(page).to have_content('Kubernetes cluster is being created on Google Kubernetes Engine...')
 
           Clusters::Cluster.last.provider.make_errored!('Something wrong!')
