@@ -48,11 +48,10 @@ export default {
       return `${this.job.runner.description} (#${this.job.runner.id})`;
     },
     retryButtonClass() {
-      let className = 'js-retry-button float-right btn btn-retry d-none d-md-block d-lg-block d-xl-block';
+      let className =
+        'js-retry-button float-right btn btn-retry d-none d-md-block d-lg-block d-xl-block';
       className +=
-        this.job.status && this.job.recoverable
-          ? ' btn-primary'
-          : ' btn-inverted-secondary';
+        this.job.status && this.job.recoverable ? ' btn-primary' : ' btn-inverted-secondary';
       return className;
     },
     hasTimeout() {
