@@ -24,7 +24,6 @@ describe "Jira", :js do
       build_note
     end
 
-    # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
     it "creates a link to the referenced issue on the preview" do
       find(".js-md-preview-button").click
 
@@ -35,7 +34,6 @@ describe "Jira", :js do
       end
     end
 
-    # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
     it "creates a link to the referenced issue after submit" do
       click_button("Comment")
 
@@ -46,7 +44,6 @@ describe "Jira", :js do
       end
     end
 
-    # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
     it "creates a note on the referenced issues" do
       click_button("Comment")
 
