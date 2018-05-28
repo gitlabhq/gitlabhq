@@ -1183,7 +1183,7 @@ describe Gitlab::GitAccess do
 
       it 'blocks access when the user did not accept terms', :aggregate_failures do
         actions.each do |action|
-          expect { action.call }.to raise_unauthorized(/You must accept the Terms of Service in order to perform this action/)
+          expect { action.call }.to raise_unauthorized(/must accept the Terms of Service in order to perform this action/)
         end
       end
 

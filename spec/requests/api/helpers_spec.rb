@@ -174,7 +174,7 @@ describe API::Helpers do
         end
 
         it 'returns a 403 when a user has not accepted the terms' do
-          expect { current_user }.to raise_error /You must accept the Terms of Service/
+          expect { current_user }.to raise_error /must accept the Terms of Service/
         end
 
         it 'sets the current user when the user accepted the terms' do

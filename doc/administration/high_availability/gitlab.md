@@ -76,24 +76,23 @@ for each GitLab application server in your environment.
     servers should point to the external url that users will use to access GitLab.
     In a typical HA setup, this will be the url of the load balancer which will
     route traffic to all GitLab application servers in the HA cluster.
-
-1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
+    
+    > **Note:** When you specify `https` in the `external_url`, as in the example
+    above, GitLab assumes you have SSL certificates in `/etc/gitlab/ssl/`. If
+    certificates are not present, Nginx will fail to start. See
+    [Nginx documentation](http://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
+    for more information.
 
 ## First GitLab application server
 
-As a final step, run the setup rake task on the first GitLab application server.
-It is not necessary to run this on additional application servers.
+As a final step, run the setup rake task **only on** the first GitLab application server.
+Do not run this on additional application servers.
 
 1. Initialize the database by running `sudo gitlab-rake gitlab:setup`.
+1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
 
 > **WARNING:** Only run this setup task on **NEW** GitLab instances because it
   will wipe any existing data.
-
-> **Note:** When you specify `https` in the `external_url`, as in the example
-  above, GitLab assumes you have SSL certificates in `/etc/gitlab/ssl/`. If
-  certificates are not present, Nginx will fail to start. See
-  [Nginx documentation](http://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
-  for more information.
 
 ## Extra configuration for additional GitLab application servers
 
@@ -101,19 +100,35 @@ Additional GitLab servers (servers configured **after** the first GitLab server)
 need some extra configuration.
 
 1. Configure shared secrets. These values can be obtained from the primary
+<<<<<<< HEAD
    GitLab server in `/etc/gitlab/gitlab-secrets.json`. Copy this file to the
    secondary servers **prior to** running the first `reconfigure` in the steps
    above.
+=======
+   GitLab server in `/etc/gitlab/gitlab-secrets.json`. Add these to
+   `/etc/gitlab/gitlab.rb` **prior to** running the first `reconfigure`.
+
+    ```ruby
+    gitlab_shell['secret_token'] = 'fbfb19c355066a9afb030992231c4a363357f77345edd0f2e772359e5be59b02538e1fa6cae8f93f7d23355341cea2b93600dab6d6c3edcdced558fc6d739860'
+    gitlab_rails['otp_key_base'] = 'b719fe119132c7810908bba18315259ed12888d4f5ee5430c42a776d840a396799b0a5ef0a801348c8a357f07aa72bbd58e25a84b8f247a25c72f539c7a6c5fa'
+    gitlab_rails['secret_key_base'] = '6e657410d57c71b4fc3ed0d694e7842b1895a8b401d812c17fe61caf95b48a6d703cb53c112bc01ebd197a85da81b18e29682040e99b4f26594772a4a2c98c6d'
+    gitlab_rails['db_key_base'] = 'bf2e47b68d6cafaef1d767e628b619365becf27571e10f196f98dc85e7771042b9203199d39aff91fcb6837c8ed83f2a912b278da50999bb11a2fbc0fba52964'
+    ```
+>>>>>>> upstream/master
 
 1. Run `touch /etc/gitlab/skip-auto-migrations` to prevent database migrations
    from running on upgrade. Only the primary GitLab application server should
    handle migrations.
 
+<<<<<<< HEAD
 1. **Optional** Configure host keys. Copy all contents(primary and public keys) inside `/etc/ssh/` on 
    the primary application server to `/ets/ssh` on all secondary servers. This 
    prevents false man-in-the-middle-attack alerts when accesing servers in your
    High Availability cluster behind a load balancer.
 
+=======
+1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
+>>>>>>> upstream/master
 
 ## Troubleshooting
 

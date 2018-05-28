@@ -216,6 +216,7 @@ On each Consul node perform the following:
 1. Edit `/etc/gitlab/gitlab.rb` replacing values noted in the `# START user configuration` section:
 
     ```ruby
+<<<<<<< HEAD
     # Disable all components except Consul
     roles ['consul_role']
 
@@ -270,6 +271,11 @@ On each database node perform the following:
 
     ```ruby
     # Disable all components except PostgreSQL and Repmgr and Consul
+=======
+    external_url 'https://gitlab.example.com'
+
+    # Disable all components except PostgreSQL
+>>>>>>> upstream/master
     roles ['postgres_role']
 
     # PostgreSQL configuration
