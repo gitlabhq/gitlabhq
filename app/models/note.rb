@@ -66,6 +66,7 @@ class Note < ActiveRecord::Base
   has_many :todos
   has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_one :system_note_metadata
+  has_one :note_diff_file, inverse_of: :diff_note, foreign_key: :diff_note_id
 
   delegate :gfm_reference, :local_reference, to: :noteable
   delegate :name, to: :project, prefix: true
@@ -104,7 +105,8 @@ class Note < ActiveRecord::Base
   scope :inc_author_project, -> { includes(:project, :author) }
   scope :inc_author, -> { includes(:author) }
   scope :inc_relations_for_view, -> do
-    includes(:project, :author, :updated_by, :resolved_by, :award_emoji, :system_note_metadata)
+    includes(:project, :author, :updated_by, :resolved_by, :award_emoji,
+             :system_note_metadata, :note_diff_file)
   end
 
   scope :diff_notes, -> { where(type: %w(LegacyDiffNote DiffNote)) }
