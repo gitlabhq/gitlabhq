@@ -131,10 +131,9 @@ describe NotesFinder do
         expect(notes.count).to eq(1)
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'raises an exception for an invalid target_type' do
+      it 'raises an exception for an invalid target_type' do
         params[:target_type] = 'invalid'
-        expect { described_class.new(project, user, params).execute }.to raise_error('invalid target_type')
+        expect { described_class.new(project, user, params).execute }.to raise_error("invalid target_type '#{params[:target_type]}'")
       end
 
       it 'filters out old notes' do
