@@ -830,7 +830,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         end
       end
 
-      context 'when job has been finished' do
+      context 'when job has already been finished' do
         before do
           job.trace.set('Job failed')
           job.drop!(:script_failure)
