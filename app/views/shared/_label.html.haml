@@ -2,7 +2,7 @@
 - status = label_subscription_status(label, @project).inquiry if current_user
 - subject = local_assigns[:subject]
 - use_label_priority = local_assigns.fetch(:use_label_priority, false)
-- force_priority = local_assigns.fetch(:force_priority, use_label_priority ? label.priority.present? : false)
+- force_priority = local_assigns.fetch(:force_priority, use_label_priority ? label.priority? : false)
 - toggle_subscription_path = toggle_subscription_label_path(label, @project) if current_user
 - show_label_merge_requests_link = show_label_issuables_link?(label, :merge_requests, project: @project)
 - show_label_issues_link = show_label_issuables_link?(label, :issues, project: @project)
