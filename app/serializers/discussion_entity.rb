@@ -17,7 +17,10 @@ class DiscussionEntity < Grape::Entity
   end
 
   expose :individual_note?, as: :individual_note
-  expose :resolvable?, as: :resolvable
+  expose :resolvable do |discussion|
+    discussion.can_resolve?(current_user)
+  end
+
   expose :resolved?, as: :resolved
   expose :resolved_by_push?, as: :resolved_by_push
   expose :resolved_by
@@ -50,5 +53,11 @@ class DiscussionEntity < Grape::Entity
       layout: false,
       formats: [:html]
     )
+  end
+
+  private
+
+  def current_user
+    request.current_user
   end
 end

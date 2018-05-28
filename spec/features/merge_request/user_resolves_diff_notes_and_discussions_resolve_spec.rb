@@ -460,8 +460,7 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         visit_merge_request
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'does not allow user to mark note as resolved' do
+      it 'does not allow user to mark note as resolved' do
         page.within '.diff-content .note' do
           expect(page).not_to have_selector('.line-resolve-btn')
         end
