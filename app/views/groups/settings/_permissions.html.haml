@@ -23,4 +23,6 @@
 
     = render 'group_admin_settings', f: f
 
+    = render_if_exists 'member_lock_setting', f: f, group: @group
+
   = f.submit 'Save group', class: 'btn btn-success'
