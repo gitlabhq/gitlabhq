@@ -111,7 +111,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         end
 
         context 'when tags are not provided' do
-          it 'returns 404 error' do
+          it 'returns 400 error' do
             post api('/runners'), token: registration_token,
                                   run_untagged: false
 
