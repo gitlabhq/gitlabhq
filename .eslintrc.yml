@@ -57,3 +57,5 @@ rules:
   # Disabled for now, to make the eslint 3 -> eslint 4 update smoother
   ## Destructuring: https://eslint.org/docs/rules/prefer-destructuring
   prefer-destructuring: off
+  ## no-restricted-globals: https://eslint.org/docs/3.0.0/rules/no-restricted-globals
+  no-restricted-globals: off
