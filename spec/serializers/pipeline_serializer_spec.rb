@@ -8,6 +8,10 @@ describe PipelineSerializer do
     described_class.new(current_user: user)
   end
 
+  before do
+    stub_feature_flags(ci_pipeline_persisted_stages: true)
+  end
+
   subject { serializer.represent(resource) }
 
   describe '#represent' do
