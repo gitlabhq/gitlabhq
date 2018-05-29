@@ -13,7 +13,7 @@
     .card
       .card-header
         Group info:
-      %ul.well-list
+      %ul.content-list
         %li
           .avatar-container.s60
             = group_icon(@group, class: "avatar s60")
@@ -78,7 +78,7 @@
           Projects
           %span.badge.badge-pill
             #{@group.projects.count}
-      %ul.well-list
+      %ul.content-list
         - @projects.each do |project|
           %li
             %strong
@@ -96,7 +96,7 @@
           Projects shared with #{@group.name}
           %span.badge.badge-pill
             #{@group.shared_projects.count}
-        %ul.well-list
+        %ul.content-list
           - @group.shared_projects.sort_by(&:name).each do |project|
             %li
               %strong
@@ -132,7 +132,7 @@
         %span.badge.badge-pill= @group.members.size
         .float-right
           = link_to icon('pencil-square-o', text: 'Manage access'), polymorphic_url([@group, :members]), class: "btn btn-sm"
-      %ul.well-list.group-users-list.content-list.members-list
+      %ul.content-list.group-users-list.content-list.members-list
         = render partial: 'shared/members/member', collection: @members, as: :member, locals: { show_controls: false }
       .card-footer
         = paginate @members, param_name: 'members_page', theme: 'gitlab'
