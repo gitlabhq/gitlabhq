@@ -1617,7 +1617,6 @@ ActiveRecord::Schema.define(version: 20180521171529) do
     t.text "title_html"
     t.text "description_html"
     t.integer "time_estimate"
-    t.boolean "squash", default: false, null: false
     t.integer "cached_markdown_version"
     t.datetime "last_edited_at"
     t.integer "last_edited_by_id"
@@ -1626,6 +1625,7 @@ ActiveRecord::Schema.define(version: 20180521171529) do
     t.boolean "discussion_locked"
     t.integer "latest_merge_request_diff_id"
     t.boolean "allow_maintainer_to_push"
+    t.boolean "squash", default: false, null: false
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree

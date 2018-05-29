@@ -316,8 +316,8 @@ describe Projects::MergeRequestsController do
     end
 
     context 'when the sha parameter matches the source SHA' do
-      def merge_with_sha
-        post :merge, base_params.merge(sha: merge_request.diff_head_sha)
+      def merge_with_sha(params = {})
+        post :merge, base_params.merge(sha: merge_request.diff_head_sha).merge(params)
       end
 
       it 'returns :success' do
@@ -330,6 +330,24 @@ describe Projects::MergeRequestsController do
         expect(MergeWorker).to receive(:perform_async).with(merge_request.id, anything, anything)
 
         merge_with_sha
+      end
+
+      context 'when squash is passed as 1' do
+        it 'updates the squash attribute on the MR to true' do
+          merge_request.update(squash: false)
+          merge_with_sha(squash: '1')
+
+          expect(merge_request.reload.squash).to be_truthy
+        end
+      end
+
+      context 'when squash is passed as 0' do
+        it 'updates the squash attribute on the MR to false' do
+          merge_request.update(squash: true)
+          merge_with_sha(squash: '0')
+
+          expect(merge_request.reload.squash).to be_falsey
+        end
       end
 
       context 'when the pipeline succeeds is passed' do

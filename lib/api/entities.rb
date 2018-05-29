@@ -570,6 +570,8 @@ module API
       expose :time_stats, using: 'API::Entities::IssuableTimeStats' do |merge_request|
         merge_request
       end
+
+      expose :squash
     end
 
     class MergeRequest < MergeRequestBasic

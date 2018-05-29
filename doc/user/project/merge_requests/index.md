@@ -29,6 +29,7 @@ With GitLab merge requests, you can:
 - Enable [semi-linear history merge requests](#semi-linear-history-merge-requests) as another security layer to guarantee the pipeline is passing in the target branch
 - [Create new merge requests by email](#create-new-merge-requests-by-email)
 - Allow maintainers of the target project to push directly to the fork by [allowing edits from maintainers](maintainer_access.md)
+- [Squash and merge](squash_and_merge.md) for a cleaner commit history
 
 With **[GitLab Enterprise Edition][ee]**, you can also:
 

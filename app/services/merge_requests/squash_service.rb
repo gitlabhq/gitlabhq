@@ -1,5 +1,3 @@
-require 'securerandom'
-
 module MergeRequests
   class SquashService < MergeRequests::WorkingCopyBaseService
     def execute(merge_request)
@@ -10,12 +8,8 @@ module MergeRequests
     end
 
     def squash
-      if merge_request.commits_count <= 1
+      if merge_request.commits_count < 2
         return success(squash_sha: merge_request.diff_head_sha)
-      end
-
-      unless project.feature_available?(:merge_request_squash)
-        return error('License does not allow squashing')
       end
 
       if merge_request.squash_in_progress?

@@ -48,18 +48,6 @@ module EE
       delegate :expose_dast_data?, to: :head_pipeline, allow_nil: true
     end
 
-    def squash_in_progress?
-      # The source project can be deleted
-      return false unless source_project
-
-      source_project.repository.squash_in_progress?(id)
-    end
-
-    def squash
-      super && project.feature_available?(:merge_request_squash)
-    end
-    alias_method :squash?, :squash
-
     def supports_weight?
       false
     end
