@@ -694,8 +694,7 @@ GEM
       ffi
     rbnacl-libsodium (1.0.11)
       rbnacl (>= 3.0.1)
-    rdoc (4.2.2)
-      json (~> 1.4)
+    rdoc (6.0.4)
     re2 (1.1.1)
     recaptcha (3.0.0)
       json
@@ -1124,7 +1123,7 @@ DEPENDENCIES
   rblineprof (~> 0.3.6)
   rbnacl (~> 4.0)
   rbnacl-libsodium
-  rdoc (~> 4.2)
+  rdoc (~> 6.0)
   re2 (~> 1.1.1)
   recaptcha (~> 3.0)
   redcarpet (~> 3.4)
