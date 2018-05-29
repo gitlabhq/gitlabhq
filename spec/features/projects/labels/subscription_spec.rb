@@ -67,10 +67,8 @@ feature 'Labels subscription' do
   def click_link_on_dropdown(text)
     find('.dropdown-group-label').click
 
-    screenshot_and_open_image
-
     page.within('.dropdown-group-label') do
-      find('a.js-subscribe-button', text: text).click
+      find('.js-subscribe-button', text: text).click
     end
   end
 end
