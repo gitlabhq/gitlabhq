@@ -131,6 +131,10 @@ table {
 }
 
 .card {
+  .card-title {
+    margin-bottom: 0;
+  }
+
   &.card-without-border {
     @extend .border-0;
   }
