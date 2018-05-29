@@ -12,7 +12,7 @@
             = link_to admin_projects_path do
               %h3.text-center
                 Projects:
-                = approximate_count_with_delimiters(Project)
+                = approximate_count_with_delimiters(@counts, Project)
             %hr
             = link_to('New project', new_project_path, class: "btn btn-new")
       .col-sm-4
@@ -21,7 +21,7 @@
             = link_to admin_users_path do
               %h3.text-center
                 Users:
-                = approximate_count_with_delimiters(User)
+                = approximate_count_with_delimiters(@counts, User)
             = render_if_exists 'users_statistics'
             %hr
             = link_to 'New user', new_admin_user_path, class: "btn btn-new"
@@ -31,7 +31,7 @@
             = link_to admin_groups_path do
               %h3.text-center
                 Groups:
-                = approximate_count_with_delimiters(Group)
+                = approximate_count_with_delimiters(@counts, Group)
             %hr
             = link_to 'New group', new_admin_group_path, class: "btn btn-new"
     .row
@@ -42,31 +42,31 @@
             %p
               Forks
               %span.light.float-right
-                = approximate_count_with_delimiters(ForkedProjectLink)
+                = approximate_count_with_delimiters(@counts, ForkedProjectLink)
             %p
               Issues
               %span.light.float-right
-                = approximate_count_with_delimiters(Issue)
+                = approximate_count_with_delimiters(@counts, Issue)
             %p
               Merge Requests
               %span.light.float-right
-                = approximate_count_with_delimiters(MergeRequest)
+                = approximate_count_with_delimiters(@counts, MergeRequest)
             %p
               Notes
               %span.light.float-right
-                = approximate_count_with_delimiters(Note)
+                = approximate_count_with_delimiters(@counts, Note)
             %p
               Snippets
               %span.light.float-right
-                = approximate_count_with_delimiters(Snippet)
+                = approximate_count_with_delimiters(@counts, Snippet)
             %p
               SSH Keys
               %span.light.float-right
-                = approximate_count_with_delimiters(Key)
+                = approximate_count_with_delimiters(@counts, Key)
             %p
               Milestones
               %span.light.float-right
-                = approximate_count_with_delimiters(Milestone)
+                = approximate_count_with_delimiters(@counts, Milestone)
             %p
               Active Users
               %span.light.float-right
