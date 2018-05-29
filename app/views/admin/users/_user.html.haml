@@ -5,11 +5,11 @@
     .user-name.row-title.str-truncated-100
       = link_to user.name, [:admin, user]
     - if user.blocked?
-      %span.label.label-danger blocked
+      %span.badge.badge-danger blocked
     - if user.admin?
-      %span.label.label-success Admin
+      %span.badge.badge-success Admin
     - if user.external?
-      %span.label.label-default External
+      %span.badge.badge-secondary External
     - if user == current_user
       %span It's you!
     .row-second-line.str-truncated-100
@@ -21,7 +21,7 @@
         %a.dropdown-new.btn.btn-default#project-settings-button{ href: '#', data: { toggle: 'dropdown' } }
           = icon('cog')
           = icon('caret-down')
-        %ul.dropdown-menu.dropdown-menu-align-right
+        %ul.dropdown-menu.dropdown-menu-right
           %li.dropdown-header
             Settings
             %li
@@ -38,7 +38,7 @@
             %li.divider
             - if user.can_be_removed?
               %li
-                %button.delete-user-button.btn.text-danger{ data: { toggle: 'modal',
+                %button.delete-user-button.btn.btn-danger{ data: { toggle: 'modal',
                   target: '#delete-user-modal',
                   delete_user_url: admin_user_path(user),
                   block_user_url: block_admin_user_path(user),
@@ -47,7 +47,7 @@
                   = s_('AdminUsers|Delete user')
 
             %li
-              %button.delete-user-button.btn.text-danger{ data: { toggle: 'modal',
+              %button.delete-user-button.btn.btn-danger{ data: { toggle: 'modal',
                 target: '#delete-user-modal',
                 delete_user_url: admin_user_path(user, hard_delete: true),
                 block_user_url: block_admin_user_path(user),

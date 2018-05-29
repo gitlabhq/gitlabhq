@@ -8,6 +8,7 @@ describe "User creates wiki page" do
     sign_in(user)
 
     visit(project_wikis_path(project))
+    click_link "Create your first page"
   end
 
   context "when wiki is empty" do

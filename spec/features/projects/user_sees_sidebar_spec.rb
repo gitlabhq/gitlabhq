@@ -44,6 +44,18 @@ describe 'Projects > User sees sidebar' do
         expect(page).not_to have_content 'Repository'
         expect(page).not_to have_content 'CI / CD'
         expect(page).not_to have_content 'Merge Requests'
+        expect(page).not_to have_content 'Operations'
+      end
+    end
+
+    it 'shows build tab if builds are public' do
+      project.public_builds = true
+      project.save
+
+      visit project_path(project)
+
+      within('.nav-sidebar') do
+        expect(page).to have_content 'CI / CD'
       end
     end
 

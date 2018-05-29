@@ -33,7 +33,7 @@ describe('BadgeList component', () => {
   });
 
   it('renders a header with the badge count', () => {
-    const header = vm.$el.querySelector('.panel-heading');
+    const header = vm.$el.querySelector('.card-header');
     expect(header).toHaveText(new RegExp(`Your badges\\s+${numberOfDummyBadges}`));
   });
 

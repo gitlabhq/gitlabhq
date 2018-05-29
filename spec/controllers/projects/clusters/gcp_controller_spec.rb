@@ -77,8 +77,6 @@ describe Projects::Clusters::GcpController do
         end
 
         it 'has new object' do
-          expect(controller).to receive(:authorize_google_project_billing)
-
           go
 
           expect(assigns(:cluster)).to be_an_instance_of(Clusters::Cluster)
@@ -137,33 +135,15 @@ describe Projects::Clusters::GcpController do
       context 'when access token is valid' do
         before do
           stub_google_api_validate_token
-          allow_any_instance_of(described_class).to receive(:authorize_google_project_billing)
         end
 
-        context 'when google project billing is enabled' do
-          before do
-            redis_double = double.as_null_object
-            allow(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis_double)
-            allow(redis_double).to receive(:get).with(CheckGcpProjectBillingWorker.redis_shared_state_key_for('token')).and_return('true')
-          end
-
-          it 'creates a new cluster' do
-            expect(ClusterProvisionWorker).to receive(:perform_async)
-            expect { go }.to change { Clusters::Cluster.count }
-              .and change { Clusters::Providers::Gcp.count }
-            expect(response).to redirect_to(project_cluster_path(project, project.clusters.first))
-            expect(project.clusters.first).to be_gcp
-            expect(project.clusters.first).to be_kubernetes
-          end
-        end
-
-        context 'when google project billing is not enabled' do
-          it 'renders the cluster form with an error' do
-            go
-
-            expect(response).to set_flash.now[:alert]
-            expect(response).to render_template('new')
-          end
+        it 'creates a new cluster' do
+          expect(ClusterProvisionWorker).to receive(:perform_async)
+          expect { go }.to change { Clusters::Cluster.count }
+            .and change { Clusters::Providers::Gcp.count }
+          expect(response).to redirect_to(project_cluster_path(project, project.clusters.first))
+          expect(project.clusters.first).to be_gcp
+          expect(project.clusters.first).to be_kubernetes
         end
       end
 

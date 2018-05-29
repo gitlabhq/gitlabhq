@@ -4,14 +4,14 @@
 %h3.page-title
   Group: #{@group.full_name}
 
-  = link_to admin_group_edit_path(@group), class: "btn pull-right" do
+  = link_to admin_group_edit_path(@group), class: "btn float-right" do
     %i.fa.fa-pencil-square-o
     Edit
 %hr
 .row
   .col-md-6
-    .panel.panel-default
-      .panel-heading
+    .card
+      .card-header
         Group info:
       %ul.well-list
         %li
@@ -58,46 +58,46 @@
             = group_lfs_status(@group)
             = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
 
-    .panel.panel-default
-      .panel-heading
-        %h3.panel-title
+    .card
+      .card-header
+        %h3.card-title
           Projects
-          %span.badge
+          %span.badge.badge-pill
             #{@group.projects.count}
       %ul.well-list
         - @projects.each do |project|
           %li
             %strong
               = link_to project.full_name, [:admin, project.namespace.becomes(Namespace), project]
-              %span.badge
+              %span.badge.badge-pill
                 = storage_counter(project.statistics.storage_size)
-            %span.pull-right.light
+            %span.float-right.light
               %span.monospace= project.full_path + '.git'
-      .panel-footer
+      .card-footer
         = paginate @projects, param_name: 'projects_page', theme: 'gitlab'
 
     - if @group.shared_projects.any?
-      .panel.panel-default
-        .panel-heading
+      .card
+        .card-header
           Projects shared with #{@group.name}
-          %span.badge
+          %span.badge.badge-pill
             #{@group.shared_projects.count}
         %ul.well-list
           - @group.shared_projects.sort_by(&:name).each do |project|
             %li
               %strong
                 = link_to project.full_name, [:admin, project.namespace.becomes(Namespace), project]
-                %span.badge
+                %span.badge.badge-pill
                   = storage_counter(project.statistics.storage_size)
-              %span.pull-right.light
+              %span.float-right.light
                 %span.monospace= project.full_path + '.git'
 
   .col-md-6
     - if can?(current_user, :admin_group_member, @group)
-      .panel.panel-default
-        .panel-heading
+      .card
+        .card-header
           Add user(s) to the group:
-        .panel-body.form-holder
+        .card-body.form-holder
           %p.light
             Read more about project permissions
             %strong= link_to "here", help_page_path("user/permissions"), class: "vlink"
@@ -111,14 +111,14 @@
             = button_tag 'Add users to group', class: "btn btn-create"
       = render 'shared/members/requests', membership_source: @group, requesters: @requesters, force_mobile_view: true
 
-    .panel.panel-default
-      .panel-heading
+    .card
+      .card-header
         %strong= @group.name
         group members
-        %span.badge= @group.members.size
-        .pull-right
-          = link_to icon('pencil-square-o', text: 'Manage access'), polymorphic_url([@group, :members]), class: "btn btn-xs"
+        %span.badge.badge-pill= @group.members.size
+        .float-right
+          = link_to icon('pencil-square-o', text: 'Manage access'), polymorphic_url([@group, :members]), class: "btn btn-sm"
       %ul.well-list.group-users-list.content-list.members-list
         = render partial: 'shared/members/member', collection: @members, as: :member, locals: { show_controls: false }
-      .panel-footer
+      .card-footer
         = paginate @members, param_name: 'members_page', theme: 'gitlab'

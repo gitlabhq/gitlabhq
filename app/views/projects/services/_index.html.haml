@@ -8,13 +8,13 @@
       %colgroup
         %col
         %col
-        %col.hidden-xs
+        %col.d-none.d-sm-block
         %col{ width: "120" }
       %thead
         %tr
           %th
           %th Service
-          %th.hidden-xs Description
+          %th.d-none.d-sm-block Description
           %th Last edit
       - @services.sort_by(&:title).each do |service|
         %tr
@@ -23,7 +23,7 @@
           %td
             = link_to edit_project_service_path(@project, service.to_param) do
               %strong= service.title
-          %td.hidden-xs
+          %td.d-none.d-sm-block
             = service.description
           %td.light
             - if service.updated_at.present?

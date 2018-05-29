@@ -6,9 +6,9 @@
   = s_("Pipeline|Run Pipeline")
 %hr
 
-= form_for @pipeline, as: :pipeline, url: project_pipelines_path(@project), html: { id: "new-pipeline-form", class: "form-horizontal js-new-pipeline-form js-requires-input" } do |f|
+= form_for @pipeline, as: :pipeline, url: project_pipelines_path(@project), html: { id: "new-pipeline-form", class: "js-new-pipeline-form js-requires-input" } do |f|
   = form_errors(@pipeline)
-  .form-group
+  .form-group.row
     .col-sm-12
       = f.label :ref, s_('Pipeline|Create for')
       = hidden_field_tag 'pipeline[ref]', params[:ref] || @project.default_branch
@@ -16,7 +16,7 @@
                      options: { toggle_class: 'js-branch-select wide git-revision-dropdown-toggle',
                                 filter: true, dropdown_class: "dropdown-menu-selectable git-revision-dropdown", placeholder: s_("Pipeline|Search branches"),
                                 data: { selected: params[:ref] || @project.default_branch, field_name: 'pipeline[ref]' } })
-      .help-block
+      .form-text.text-muted
         = s_("Pipeline|Existing branch name or tag")
 
     .col-sm-12.prepend-top-10.js-ci-variable-list-section
@@ -24,7 +24,7 @@
         = s_('Pipeline|Variables')
       %ul.ci-variable-list
         = render 'ci/variables/variable_row', form_field: 'pipeline', only_key_value: true
-      .help-block
+      .form-text.text-muted
         = (s_("Pipeline|Specify variable values to be used in this run. The values specified in %{settings_link} will be used by default.") % {settings_link: settings_link}).html_safe
 
   .form-actions

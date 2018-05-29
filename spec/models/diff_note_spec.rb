@@ -84,7 +84,47 @@ describe DiffNote do
     end
   end
 
-  describe "#diff_file" do
+  describe '#create_diff_file callback' do
+    let(:noteable) { create(:merge_request) }
+    let(:project) { noteable.project }
+
+    context 'merge request' do
+      let!(:diff_note) { create(:diff_note_on_merge_request, project: project, noteable: noteable) }
+
+      it 'creates a diff note file' do
+        expect(diff_note.reload.note_diff_file).to be_present
+      end
+
+      it 'does not create diff note file if it is a reply' do
+        expect { create(:diff_note_on_merge_request, noteable: noteable, in_reply_to: diff_note) }
+          .not_to change(NoteDiffFile, :count)
+      end
+    end
+
+    context 'commit' do
+      let!(:diff_note) { create(:diff_note_on_commit, project: project) }
+
+      it 'creates a diff note file' do
+        expect(diff_note.reload.note_diff_file).to be_present
+      end
+
+      it 'does not create diff note file if it is a reply' do
+        expect { create(:diff_note_on_commit, in_reply_to: diff_note) }
+          .not_to change(NoteDiffFile, :count)
+      end
+    end
+  end
+
+  describe '#diff_file', :clean_gitlab_redis_shared_state do
+    context 'when note_diff_file association exists' do
+      it 'returns persisted diff file data' do
+        diff_file = subject.diff_file
+
+        expect(diff_file.diff.to_hash.with_indifferent_access)
+          .to include(subject.note_diff_file.to_hash)
+      end
+    end
+
     context 'when the discussion was created in the diff' do
       it 'returns correct diff file' do
         diff_file = subject.diff_file
@@ -113,6 +153,26 @@ describe DiffNote do
         expect(diff_file.old_path).to eq(position.old_path)
         expect(diff_file.new_path).to eq(position.new_path)
         expect(diff_file.diff_refs).to eq(position.diff_refs)
+      end
+    end
+
+    context 'note diff file creation enqueuing' do
+      it 'enqueues CreateNoteDiffFileWorker if it is the first note of a discussion' do
+        subject.note_diff_file.destroy!
+
+        expect(CreateNoteDiffFileWorker).to receive(:perform_async).with(subject.id)
+
+        subject.reload.diff_file
+      end
+
+      it 'does not enqueues CreateNoteDiffFileWorker if not first note of a discussion' do
+        mr = create(:merge_request)
+        diff_note = create(:diff_note_on_merge_request, project: mr.project, noteable: mr)
+        reply_diff_note = create(:diff_note_on_merge_request, in_reply_to: diff_note)
+
+        expect(CreateNoteDiffFileWorker).not_to receive(:perform_async).with(reply_diff_note.id)
+
+        reply_diff_note.reload.diff_file
       end
     end
   end

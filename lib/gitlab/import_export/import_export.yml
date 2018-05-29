@@ -98,8 +98,6 @@ excluded_attributes:
     - :import_jid
     - :created_at
     - :updated_at
-    - :import_jid
-    - :import_jid
     - :id
     - :star_count
     - :last_activity_at

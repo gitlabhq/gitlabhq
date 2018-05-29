@@ -123,6 +123,7 @@ module API
       end
       put '/:id' do
         job = authenticate_job!
+        forbidden!('Job is not running') unless job.running?
 
         job.trace.set(params[:trace]) if params[:trace]
 
@@ -131,9 +132,9 @@ module API
 
         case params[:state].to_s
         when 'success'
-          job.success
+          job.success!
         when 'failed'
-          job.drop(params[:failure_reason] || :unknown_failure)
+          job.drop!(params[:failure_reason] || :unknown_failure)
         end
       end
 

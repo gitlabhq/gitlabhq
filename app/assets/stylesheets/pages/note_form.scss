@@ -51,7 +51,7 @@
 }
 
 .note-image-attach {
-  @extend .col-md-4;
+  @extend .col-lg-4;
   margin-left: 45px;
   float: none;
 }
@@ -93,7 +93,7 @@
   -webkit-flex-flow: row wrap;
   width: 100%;
 
-  .pull-right {
+  .float-right {
     // Flexbox quirk to make sure right-aligned items stay right-aligned.
     margin-left: auto;
   }
@@ -185,12 +185,12 @@
 }
 
 .notes.notes-form > li.timeline-entry {
-  @include notes-media('max', $screen-sm-max) {
+  @include notes-media('max', map-get($grid-breakpoints, md) - 1) {
     padding: 0;
   }
 
   .timeline-content {
-    @include notes-media('max', $screen-sm-max) {
+    @include notes-media('max', map-get($grid-breakpoints, md) - 1) {
       margin: 0;
     }
   }
@@ -326,7 +326,7 @@
     outline: 0;
   }
 
-  @media (min-width: $screen-md-min) {
+  @include media-breakpoint-up(md) {
     float: left;
     margin-right: $gl-padding;
 
@@ -350,13 +350,13 @@
   line-height: 16px;
   margin-top: 2px;
 
-  @media (min-width: $screen-md-min) {
+  @include media-breakpoint-up(md) {
     float: left;
   }
 }
 
 .note-form-actions {
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     .btn {
       float: none;
       width: 100%;
@@ -375,7 +375,7 @@
   left: 127px;
   top: 2px;
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     position: relative;
     top: 0;
     left: 0;
@@ -410,7 +410,7 @@
     width: 298px;
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     display: flex;
     width: 100%;
     margin-bottom: 10px;
@@ -432,7 +432,7 @@
 .uploading-container {
   float: right;
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     float: left;
     margin-top: 5px;
   }
@@ -444,7 +444,7 @@
 }
 
 .uploading-error-message {
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     &::after {
       content: "\a";
       white-space: pre;

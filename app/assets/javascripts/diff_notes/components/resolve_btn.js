@@ -60,7 +60,7 @@ const ResolveBtn = Vue.extend({
       this.$nextTick(() => {
         $(this.$refs.button)
           .tooltip('hide')
-          .tooltip('fixTitle');
+          .tooltip('_fixTitle');
       });
     },
     resolve() {

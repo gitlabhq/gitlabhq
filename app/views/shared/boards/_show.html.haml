@@ -13,7 +13,7 @@
   %script#js-board-modal-filter{ type: "text/x-template" }= render "shared/issuable/search_bar", type: :boards_modal
 
 #board-app.boards-app{ "v-cloak" => true, data: board_data, ":class" => "{ 'is-compact': detailIssueVisible }" }
-  .hidden-xs.hidden-sm
+  .d-none.d-sm-none.d-md-block
     = render 'shared/issuable/search_bar', type: :boards
 
   .boards-list
