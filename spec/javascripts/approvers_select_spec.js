@@ -34,4 +34,29 @@ describe('ApproversSelect', () => {
       expect($loadWrapper.addClass).toHaveBeenCalledWith('hidden');
     });
   });
+
+  describe('formatResult', () => {
+    it('escapes name', () => {
+      const output = ApproversSelect.formatResult({
+        name: '<script>alert("testing")</script>',
+        username: 'testing',
+        avatar_url: gl.TEST_HOST,
+        full_name: '<script>alert("testing")</script>',
+        full_path: 'testing',
+      });
+
+      expect(output).not.toContain('<script>alert("testing")</script>');
+    });
+
+    it('escapes full name', () => {
+      const output = ApproversSelect.formatResult({
+        username: 'testing',
+        avatar_url: gl.TEST_HOST,
+        full_name: '<script>alert("testing")</script>',
+        full_path: 'testing',
+      });
+
+      expect(output).not.toContain('<script>alert("testing")</script>');
+    });
+  });
 });

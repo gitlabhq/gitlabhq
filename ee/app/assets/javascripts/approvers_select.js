@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import _ from 'underscore';
 import Api from '~/api';
 import { __ } from '~/locale';
 import Flash from '~/flash';
@@ -29,10 +30,9 @@ export default class ApproversSelect {
 
   static getApprovers(fieldName, approverList) {
     const input = $(`[name="${fieldName}"]`);
-    const existingApprovers = $(approverList).map((i, el) =>
-      parseInt($(el).data('id'), 10),
-    );
-    const selectedApprovers = input.val()
+    const existingApprovers = $(approverList).map((i, el) => parseInt($(el).data('id'), 10));
+    const selectedApprovers = input
+      .val()
       .split(',')
       .filter(val => val !== '');
     return [...existingApprovers, ...selectedApprovers];
@@ -76,40 +76,41 @@ export default class ApproversSelect {
   }
 
   initSelect2() {
-    this.$approverSelect.select2({
-      placeholder: 'Search for users or groups',
-      multiple: true,
-      minimumInputLength: 0,
-      query: (query) => {
-        const fetchGroups = this.fetchGroups(query.term);
-        const fetchUsers = this.fetchUsers(query.term);
-        return Promise.all([fetchGroups, fetchUsers]).then(([groups, users]) => {
-          const data = {
-            results: groups.concat(users),
-          };
-          return query.callback(data);
-        });
-      },
-      formatResult: ApproversSelect.formatResult,
-      formatSelection: ApproversSelect.formatSelection,
-      dropdownCss() {
-        const $input = $('.js-select-user-and-group .select2-input');
-        const offset = $input.offset();
-        const inputRightPosition = offset.left + $input.outerWidth();
-        const $dropdown = $('.select2-drop-active');
+    this.$approverSelect
+      .select2({
+        placeholder: 'Search for users or groups',
+        multiple: true,
+        minimumInputLength: 0,
+        query: query => {
+          const fetchGroups = this.fetchGroups(query.term);
+          const fetchUsers = this.fetchUsers(query.term);
+          return Promise.all([fetchGroups, fetchUsers]).then(([groups, users]) => {
+            const data = {
+              results: groups.concat(users),
+            };
+            return query.callback(data);
+          });
+        },
+        formatResult: ApproversSelect.formatResult,
+        formatSelection: ApproversSelect.formatSelection,
+        dropdownCss() {
+          const $input = $('.js-select-user-and-group .select2-input');
+          const offset = $input.offset();
+          const inputRightPosition = offset.left + $input.outerWidth();
+          const $dropdown = $('.select2-drop-active');
 
-        let left = offset.left;
-        if ($dropdown.outerWidth() > $input.outerWidth()) {
-          left = `${inputRightPosition - $dropdown.width()}px`;
-        }
-        return {
-          left,
-          right: 'auto',
-          width: 'auto',
-        };
-      },
-    })
-    .on('change', this.handleSelectChange);
+          let left = offset.left;
+          if ($dropdown.outerWidth() > $input.outerWidth()) {
+            left = `${inputRightPosition - $dropdown.width()}px`;
+          }
+          return {
+            left,
+            right: 'auto',
+            width: 'auto',
+          };
+        },
+      })
+      .on('change', this.handleSelectChange);
   }
 
   static formatSelection(group) {
@@ -131,8 +132,8 @@ export default class ApproversSelect {
             <img class="avatar s40" src="${avatar}">
           </div>
           <div class="user-info">
-            <div class="user-name">${name}</div>
-            <div class="user-username">@${username}</div>
+            <div class="user-name">${_.escape(name)}</div>
+            <div class="user-username">@${_.escape(username)}</div>
           </div>
         </div>
       `;
@@ -140,8 +141,8 @@ export default class ApproversSelect {
 
     return `
       <div class="group-result">
-        <div class="group-name">${fullName}</div>
-        <div class="group-path">${fullPath}</div>
+        <div class="group-name">${_.escape(fullName)}</div>
+        <div class="group-path">${_.escape(fullPath)}</div>
       </div>
     `;
   }
@@ -163,17 +164,20 @@ export default class ApproversSelect {
     const $form = $('.js-add-approvers').closest('form');
     $loadWrapper.removeClass('hidden');
 
-    axios.post($form.attr('action'), `_method=PATCH&${[encodeURIComponent(fieldName)]}=${newValue}`, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-      },
-    }).then(({ data }) => {
-      ApproversSelect.updateApproverList(data);
-      ApproversSelect.saveApproversComplete($input, $approverSelect, $loadWrapper);
-    }).catch(() => {
-      Flash(__('An error occurred while adding approver'));
-      ApproversSelect.saveApproversComplete($input, $approverSelect, $loadWrapper);
-    });
+    axios
+      .post($form.attr('action'), `_method=PATCH&${[encodeURIComponent(fieldName)]}=${newValue}`, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        },
+      })
+      .then(({ data }) => {
+        ApproversSelect.updateApproverList(data);
+        ApproversSelect.saveApproversComplete($input, $approverSelect, $loadWrapper);
+      })
+      .catch(() => {
+        Flash(__('An error occurred while adding approver'));
+        ApproversSelect.saveApproversComplete($input, $approverSelect, $loadWrapper);
+      });
   }
 
   static saveApproversComplete($input, $approverSelect, $loadWrapper) {
@@ -188,20 +192,27 @@ export default class ApproversSelect {
     const $loadWrapper = $('.load-wrapper');
     $loadWrapper.removeClass('hidden');
 
-    axios.post(target.getAttribute('href'), '_method=DELETE', {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-      },
-    }).then(({ data }) => {
-      ApproversSelect.updateApproverList(data);
-      $loadWrapper.addClass('hidden');
-    }).catch(() => {
-      Flash(__('An error occurred while removing approver'));
-      $loadWrapper.addClass('hidden');
-    });
+    axios
+      .post(target.getAttribute('href'), '_method=DELETE', {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        },
+      })
+      .then(({ data }) => {
+        ApproversSelect.updateApproverList(data);
+        $loadWrapper.addClass('hidden');
+      })
+      .catch(() => {
+        Flash(__('An error occurred while removing approver'));
+        $loadWrapper.addClass('hidden');
+      });
   }
 
   static updateApproverList(html) {
-    $('.js-current-approvers').html($(html).find('.js-current-approvers').html());
+    $('.js-current-approvers').html(
+      $(html)
+        .find('.js-current-approvers')
+        .html(),
+    );
   }
 }
