@@ -267,8 +267,8 @@
 }
 
 .label-list-item {
-  .content-list &:before,
-  .content-list &:after {
+  .content-list &::before,
+  .content-list &::after {
     content: none;
     display: block;
   }
