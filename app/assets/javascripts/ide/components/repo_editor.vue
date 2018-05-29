@@ -197,7 +197,7 @@ export default {
   >
     <div class="ide-mode-tabs clearfix" >
       <ul
-        class="nav-links pull-left"
+        class="nav-links float-left"
         v-if="!shouldHideEditor && isEditModeActive"
       >
         <li :class="editTabCSS">

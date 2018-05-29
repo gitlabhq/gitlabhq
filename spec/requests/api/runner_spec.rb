@@ -830,6 +830,21 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         end
       end
 
+      context 'when job has already been finished' do
+        before do
+          job.trace.set('Job failed')
+          job.drop!(:script_failure)
+        end
+
+        it 'does not update job status and job trace' do
+          update_job(state: 'success', trace: 'BUILD TRACE UPDATED')
+
+          expect(response).to have_gitlab_http_status(403)
+          expect(job.trace.raw).to eq 'Job failed'
+          expect(job).to be_failed
+        end
+      end
+
       def update_job(token = job.token, **params)
         new_params = params.merge(token: token)
         put api("/jobs/#{job.id}"), new_params

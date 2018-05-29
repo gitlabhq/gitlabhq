@@ -46,12 +46,16 @@
         type: String,
         required: true,
       },
+      cancelingPipeline: {
+        type: String,
+        required: false,
+        default: null,
+      },
     },
     pipelinesTable: PIPELINES_TABLE,
     data() {
       return {
         isRetrying: false,
-        isCancelling: false,
       };
     },
     computed: {
@@ -227,12 +231,14 @@
       isChildView() {
         return this.viewType === 'child';
       },
+
+      isCancelling() {
+        return this.cancelingPipeline === this.pipeline.id;
+      },
     },
 
     methods: {
       handleCancelClick() {
-        this.isCancelling = true;
-
         eventHub.$emit('openConfirmationModal', {
           pipelineId: this.pipeline.id,
           endpoint: this.pipeline.cancel_path,
@@ -325,7 +331,7 @@
 
         <pipelines-artifacts-component
           v-if="pipeline.details.artifacts.length"
-          class="hidden-xs hidden-sm"
+          class="d-none d-sm-none d-md-block"
           :artifacts="pipeline.details.artifacts"
         />
 

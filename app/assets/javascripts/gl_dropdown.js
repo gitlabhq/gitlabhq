@@ -374,7 +374,7 @@ GitLabDropdown = (function() {
           $relatedTarget = $(e.relatedTarget);
           $dropdownMenu = $relatedTarget.closest('.dropdown-menu');
           if ($dropdownMenu.length === 0) {
-            return _this.dropdown.removeClass('open');
+            return _this.dropdown.removeClass('show');
           }
         }
       };
@@ -801,7 +801,7 @@ GitLabDropdown = (function() {
     if (this.options.filterable) {
       const initialScrollTop = $(window).scrollTop();
 
-      if (this.dropdown.is('.open')) {
+      if (this.dropdown.is('.show') && !this.filterInput.is(':focus')) {
         this.filterInput.focus();
       }
 

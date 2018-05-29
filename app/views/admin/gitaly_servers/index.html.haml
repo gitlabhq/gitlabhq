@@ -6,7 +6,7 @@
   - if @gitaly_servers.any?
     .table-holder
       %table.table.responsive-table
-        %thead.hidden-sm.hidden-xs
+        %thead.d-none.d-sm-none.d-md-block
           %tr
             %th= _("Storage")
             %th= n_("Gitaly|Address")

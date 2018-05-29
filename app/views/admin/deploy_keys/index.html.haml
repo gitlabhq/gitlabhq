@@ -2,7 +2,7 @@
 
 %h3.page-title.deploy-keys-title
   Public deploy keys (#{@deploy_keys.count})
-  .pull-right
+  .float-right
     = link_to 'New deploy key', new_admin_deploy_key_path, class: 'btn btn-new btn-sm btn-inverted'
 
 - if @deploy_keys.any?
@@ -29,6 +29,6 @@
               %span.cgray
                 added #{time_ago_with_tooltip(deploy_key.created_at)}
             %td
-              .pull-right
+              .float-right
                 = link_to 'Edit', edit_admin_deploy_key_path(deploy_key), class: 'btn btn-sm'
                 = link_to 'Remove', admin_deploy_key_path(deploy_key), data: { confirm: 'Are you sure?'}, method: :delete, class: 'btn btn-sm btn-remove delete-key'

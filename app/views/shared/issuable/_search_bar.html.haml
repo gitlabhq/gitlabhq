@@ -107,7 +107,7 @@
               .dropdown.prepend-left-10#js-add-list
                 %button.btn.btn-create.btn-inverted.js-new-board-list{ type: "button", data: board_list_data }
                   Add list
-                .dropdown-menu.dropdown-menu-paging.dropdown-menu-align-right.dropdown-menu-issues-board-new.dropdown-menu-selectable
+                .dropdown-menu.dropdown-menu-paging.dropdown-menu-right.dropdown-menu-issues-board-new.dropdown-menu-selectable
                   = render partial: "shared/issuable/label_page_default", locals: { show_footer: true, show_create: true, show_boards_content: true, title: "Add list" }
                   - if can?(current_user, :admin_label, board.parent)
                     = render partial: "shared/issuable/label_page_create"

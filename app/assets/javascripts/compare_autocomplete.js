@@ -54,7 +54,7 @@ export default function initCompareAutocomplete(limitTo = null, clickHandler = (
             .attr('href', '#')
             .addClass(ref === selected ? 'is-active' : '')
             .text(ref)
-            .attr('data-ref', escape(ref));
+            .attr('data-ref', ref);
           return $('<li />').append(link);
         }
       },
@@ -78,7 +78,7 @@ export default function initCompareAutocomplete(limitTo = null, clickHandler = (
     $dropdownContainer.on('click', '.dropdown-content a', e => {
       $dropdown.prop('title', e.target.text.replace(/_+?/g, '-'));
       if ($dropdown.hasClass('has-tooltip')) {
-        $dropdown.tooltip('fixTitle');
+        $dropdown.tooltip('_fixTitle');
       }
     });
   });

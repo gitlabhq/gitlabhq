@@ -539,7 +539,7 @@ POST /projects/:id/merge_requests
 | `description`              | string  | no       | Description of MR                                                               |
 | `target_project_id`        | integer | no       | The target project (numeric id)                                                 |
 | `labels`                   | string  | no       | Labels for MR as a comma-separated list                                         |
-| `milestone_id`             | integer | no       | The ID of a milestone                                                           |
+| `milestone_id`             | integer | no       | The global ID of a milestone                                                           |
 | `remove_source_branch`     | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
 | `allow_maintainer_to_push` | boolean | no       | Whether or not a maintainer of the target project can push to the source branch  |
 
@@ -622,7 +622,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 | `target_branch`            | string  | no       | The target branch                                                               |
 | `title`                    | string  | no       | Title of MR                                                                     |
 | `assignee_id`              | integer | no       | The ID of the user to assign the merge request to. Set to `0` or provide an empty value to unassign all assignees.  |
-| `milestone_id`             | integer | no       | The ID of a milestone to assign the merge request to. Set to `0` or provide an empty value to unassign a milestone.|
+| `milestone_id`             | integer | no       | The global ID of a milestone to assign the merge request to. Set to `0` or provide an empty value to unassign a milestone.|
 | `labels`                   | string  | no       | Comma-separated label names for a merge request. Set to an empty string to unassign all labels.                    |
 | `description`              | string  | no       | Description of MR                                                               |
 | `state_event`              | string  | no       | New state (close/reopen)                                                        |

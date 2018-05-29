@@ -23,7 +23,7 @@ feature 'Triggers', :js do
       click_button 'Add trigger'
 
       # See if input has error due to empty value
-      expect(page.find('form.gl-show-field-errors .gl-field-error')['style']).to eq 'display: block;'
+      expect(page.find('form.gl-show-field-errors .gl-field-error')).to be_visible
     end
 
     scenario 'adds new trigger with description' do

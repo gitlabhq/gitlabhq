@@ -1,6 +1,9 @@
 import { n__, s__, sprintf } from '~/locale';
 import { DESCRIPTION_TYPE } from '../constants';
 
+/**
+ * Changes the description from a note, returns 'changed the description n number of times'
+ */
 export const changeDescriptionNote = (note, descriptionChangedTimes, timeDifferenceMinutes) => {
   const descriptionNote = Object.assign({}, note);
 
@@ -19,6 +22,11 @@ export const changeDescriptionNote = (note, descriptionChangedTimes, timeDiffere
   return descriptionNote;
 };
 
+/**
+ * Checks the time difference between two notes from their 'created_at' dates
+ * returns an integer
+ */
+
 export const getTimeDifferenceMinutes = (noteBeggining, noteEnd) => {
   const descriptionNoteBegin = new Date(noteBeggining.created_at);
   const descriptionNoteEnd = new Date(noteEnd.created_at);
@@ -36,6 +44,10 @@ export const getTimeDifferenceMinutes = (noteBeggining, noteEnd) => {
 export const isDescriptionSystemNote = note => note.system && note.note === DESCRIPTION_TYPE;
 
 /**
+ * Collapses the system notes of a description type, e.g. Changed the description, n minutes ago
+ * the notes will collapse as long as they happen no more than 10 minutes away from each away
+ * in between the notes can be anything, another type of system note
+ * (such as 'changed the weight') or a comment.
  *
  * @param {Array} notes
  * @returns {Array}

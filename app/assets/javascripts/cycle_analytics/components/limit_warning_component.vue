@@ -16,7 +16,7 @@
 <template>
   <span
     v-if="count === 50"
-    class="events-info pull-right"
+    class="events-info float-right"
   >
     <i
       class="fa fa-warning"

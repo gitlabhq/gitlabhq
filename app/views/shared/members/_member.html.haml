@@ -14,10 +14,10 @@
         %span.cgray= user.to_reference
 
         - if user == current_user
-          %span.label.label-success.prepend-left-5 It's you
+          %span.badge.badge-success.prepend-left-5 It's you
 
         - if user.blocked?
-          %label.label.label-danger
+          %label.badge.badge-danger
             %strong Blocked
 
         - if user.two_factor_enabled?
@@ -57,11 +57,11 @@
         - if member.can_resend_invite?
           = link_to icon('paper-plane'), polymorphic_path([:resend_invite, member]),
                     method: :post,
-                    class: 'btn btn-default prepend-left-10 hidden-xs',
+                    class: 'btn btn-default prepend-left-10 d-none d-sm-block',
                     title: 'Resend invite'
 
         - if user != current_user && member.can_update?
-          = form_for member, remote: true, html: { class: 'form-horizontal js-edit-member-form' } do |f|
+          = form_for member, remote: true, html: { class: 'js-edit-member-form form-horizontal' } do |f|
             = f.hidden_field :access_level
             .member-form-control.dropdown.append-right-5
               %button.dropdown-menu-toggle.js-member-permissions-dropdown{ type: "button",
@@ -69,7 +69,7 @@
                 %span.dropdown-toggle-text
                   = member.human_access
                 = icon("chevron-down")
-              .dropdown-menu.dropdown-select.dropdown-menu-align-right.dropdown-menu-selectable
+              .dropdown-menu.dropdown-select.dropdown-menu-right.dropdown-menu-selectable
                 = dropdown_title("Change permissions")
                 .dropdown-content
                   %ul
@@ -93,10 +93,10 @@
                     method: :post,
                     class: 'btn btn-success prepend-left-10',
                     title: 'Grant access' do
-            %span{ class: ('visible-xs-block' unless force_mobile_view) }
+            %span{ class: ('d-block d-sm-none' unless force_mobile_view) }
               Grant access
             - unless force_mobile_view
-              = icon('check inverse', class: 'hidden-xs')
+              = icon('check inverse', class: 'd-none d-sm-block')
 
         - if member.can_remove?
           - if current_user == user
@@ -110,9 +110,9 @@
                       data: { confirm: remove_member_message(member) },
                       class: 'btn btn-remove prepend-left-10',
                       title: remove_member_title(member) do
-              %span{ class: ('visible-xs-block' unless force_mobile_view) }
+              %span{ class: ('d-block d-sm-none' unless force_mobile_view) }
                 Delete
               - unless force_mobile_view
-                = icon('trash', class: 'hidden-xs')
+                = icon('trash', class: 'd-none d-sm-block')
       - else
         %span.member-access-text= member.human_access
