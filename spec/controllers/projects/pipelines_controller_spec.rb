@@ -17,26 +17,65 @@ describe Projects::PipelinesController do
 
   describe 'GET index.json' do
     before do
-      %w(pending running success failed).each_with_index do |status, index|
+      %w(pending running success failed canceled).each_with_index do |status, index|
         create_pipeline(status, project.commit("HEAD~#{index}"))
       end
     end
 
-    it 'returns JSON with serialized pipelines', :request_store do
-      queries = ActiveRecord::QueryRecorder.new do
-        get_pipelines_index_json
+    context 'when using persisted stages', :request_store do
+      before do
+        stub_feature_flags(ci_pipeline_persisted_stages: true)
       end
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(response).to match_response_schema('pipeline')
+      it 'returns serialized pipelines', :request_store do
+        queries = ActiveRecord::QueryRecorder.new do
+          get_pipelines_index_json
+        end
 
-      expect(json_response).to include('pipelines')
-      expect(json_response['pipelines'].count).to eq 4
-      expect(json_response['count']['all']).to eq '4'
-      expect(json_response['count']['running']).to eq '1'
-      expect(json_response['count']['pending']).to eq '1'
-      expect(json_response['count']['finished']).to eq '2'
-      expect(queries.count).to be < 30
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to match_response_schema('pipeline')
+
+        expect(json_response).to include('pipelines')
+        expect(json_response['pipelines'].count).to eq 5
+        expect(json_response['count']['all']).to eq '5'
+        expect(json_response['count']['running']).to eq '1'
+        expect(json_response['count']['pending']).to eq '1'
+        expect(json_response['count']['finished']).to eq '3'
+
+        json_response.dig('pipelines', 0, 'details', 'stages').tap do |stages|
+          expect(stages.count).to eq 3
+        end
+
+        expect(queries.count).to be
+      end
+    end
+
+    context 'when using legacy stages', :request_store  do
+      before do
+        stub_feature_flags(ci_pipeline_persisted_stages: false)
+      end
+
+      it 'returns JSON with serialized pipelines', :request_store do
+        queries = ActiveRecord::QueryRecorder.new do
+          get_pipelines_index_json
+        end
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to match_response_schema('pipeline')
+
+        expect(json_response).to include('pipelines')
+        expect(json_response['pipelines'].count).to eq 5
+        expect(json_response['count']['all']).to eq '5'
+        expect(json_response['count']['running']).to eq '1'
+        expect(json_response['count']['pending']).to eq '1'
+        expect(json_response['count']['finished']).to eq '3'
+
+        json_response.dig('pipelines', 0, 'details', 'stages').tap do |stages|
+          expect(stages.count).to eq 3
+        end
+
+        expect(queries.count).to be_within(3).of(30)
+      end
     end
 
     it 'does not include coverage data for the pipelines' do
