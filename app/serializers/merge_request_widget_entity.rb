@@ -213,6 +213,12 @@ class MergeRequestWidgetEntity < IssuableEntity
     preview_markdown_path(merge_request.project, quick_actions_target_type: 'MergeRequest', quick_actions_target_id: merge_request.id)
   end
 
+  expose :merge_commit_path do |merge_request|
+    if merge_request.merge_commit_sha
+      project_commit_path(merge_request.project, merge_request.merge_commit_sha)
+    end
+  end
+
   private
 
   delegate :current_user, to: :request

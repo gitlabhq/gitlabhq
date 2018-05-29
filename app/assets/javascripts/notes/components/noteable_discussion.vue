@@ -368,7 +368,7 @@ Please check your network connection and try again.`;
                             v-tooltip
                             class="new-issue-for-discussion btn
                               btn-default discussion-create-issue-btn"
-                            title="Resolve this discussion in a new issue"
+                            :title="s__('MergeRequests|Resolve this discussion in a new issue')"
                             data-container="body"
                           >
                             <span v-html="resolveDiscussionsSvg"></span>
