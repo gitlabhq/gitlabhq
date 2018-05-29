@@ -261,7 +261,7 @@ Please check your network connection and try again.`;
 </script>
 
 <template>
-  <li class="note-discussion timeline-entry">
+  <li class="note note-discussion timeline-entry">
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
         <user-avatar-link
