@@ -313,9 +313,82 @@ mitigated by reducing the mirroring delay by using a Push event webhook to
 trigger an immediate pull to GitLab. Push mirroring from GitLab is rate limited
 to once per minute when only push mirroring protected branches.
 
-It may be possible to implement a locking mechanism using the server-side
-`pre-receive` hook to prevent the race condition. Read about [configuring
-custom Git hooks][hooks] on the GitLab server.
+### Preventing conflicts using a `pre-receive` hook
+
+> **Warning:** The solution proposed will negatively impact the performance of
+> Git push operations because they will be proxied to the upstream Git
+> repository.
+
+A server-side `pre-receive` hook can be used to prevent the race condition
+described above by only accepting the push after first pushing the commit to
+the upstream Git repository. In this configuration one Git repository acts as
+the authoritative upstream, and the other as downstream. The `pre-recieve` hook
+will be installed on the downstream repository.
+
+Read about [configuring custom Git hooks][hooks] on the GitLab server.
+
+A sample `pre-recieve` hook is provided below.
+
+```bash
+#!/usr/bin/env bash
+
+# --- Assume only one push mirror target
+# Push mirroring remotes are named `remote_mirror_<id>`, this finds the first
+# remote and uses that.
+TARGET_REPO=$(git remote | grep -m 1 remote_mirror)
+
+proxy_push()
+{
+  # --- Arguments
+  OLDREV=$(git rev-parse $1)
+  NEWREV=$(git rev-parse $2)
+  REFNAME="$3"
+
+  # --- TODO: only mirror protected branches
+
+  case "$refname" in
+    refs/heads/*)
+      branch=$(expr "$refname" : "refs/heads/\(.*\)")
+      sandboxbranch=$(expr "$branch" : "\(sandbox/.*\)")
+
+      if [ "$sandboxbranch" != "$branch" ]; then
+        error="$(git push --quiet $TARGET_REPO $NEWREV:$REFNAME 2>&1)"
+        fail=$?
+
+        if [ "$fail" != "0" ]; then
+          echo >&2 ""
+          echo >&2 " Error: updates were rejected by upstream server"
+          echo >&2 "   This is usually caused by another repository pushing changes"
+          echo >&2 "   to the same ref. You may want to first integrate remote changes"
+          echo >&2 ""
+          return
+        fi
+      fi
+      ;;
+    refs/tags/*)
+      tag=$(expr "$refname" : "refs/tags/\(.*\)")
+      # --- TODO: handle tags
+      ;;
+  esac
+}
+
+# Allow dual mode: run from the command line just like the update hook, or
+# if no arguments are given then run as a hook script
+if [ -n "$1" -a -n "$2" -a -n "$3" ]; then
+  # Output to the terminal in command line mode - if someone wanted to
+  # resend an email; they could redirect the output to sendmail
+  # themselves
+  PAGER= proxy_push $2 $3 $1
+else
+  # Push is proxied upstream one ref at a time. Because of this it is possible
+  # for some refs to succeed, and others to fail. This will result in a failed
+  # push.
+  while read oldrev newrev refname
+  do
+    proxy_push $oldrev $newrev $refname
+  done
+fi
+```
 
 ### Mirroring with Perforce via GitFusion
 
