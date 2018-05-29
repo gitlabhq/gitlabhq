@@ -182,7 +182,7 @@ Team labels specify what team is responsible for this issue.
 Assigning a team label makes sure issues get the attention of the appropriate
 people.
 
-The current team labels are ~Build, ~"CI/CD", ~Discussion, ~Documentation, ~Quality,
+The current team labels are ~Distribution, ~"CI/CD", ~Discussion, ~Documentation, ~Quality,
 ~Geo, ~Gitaly, ~Monitoring, ~Platform, ~Release, ~"Security Products" and ~"UX".
 
 The descriptions on the [labels page][labels-page] explain what falls under the
