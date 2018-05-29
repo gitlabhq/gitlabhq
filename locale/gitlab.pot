@@ -8,13 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
-"POT-Creation-Date: 2018-05-23 10:28-0500\n"
-"PO-Revision-Date: 2018-05-23 10:28-0500\n"
-=======
-"POT-Creation-Date: 2018-05-23 07:40-0500\n"
-"PO-Revision-Date: 2018-05-23 07:40-0500\n"
->>>>>>> upstream/master
+"POT-Creation-Date: 2018-05-29 11:32+0200\n"
+"PO-Revision-Date: 2018-05-29 11:32+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -342,6 +337,9 @@ msgid "AdminUsers|To confirm, type %{projectName}"
 msgstr ""
 
 msgid "AdminUsers|To confirm, type %{username}"
+msgstr ""
+
+msgid "Advanced"
 msgstr ""
 
 msgid "Advanced settings"
@@ -2149,6 +2147,9 @@ msgstr ""
 msgid "Enable group Runners"
 msgstr ""
 
+msgid "Enable or disable certain group features and choose access levels."
+msgstr ""
+
 msgid "Enable or disable version check and usage ping."
 msgstr ""
 
@@ -2255,6 +2256,15 @@ msgid "Error fetching refs"
 msgstr ""
 
 msgid "Error fetching usage ping data."
+msgstr ""
+
+msgid "Error loading branch data. Please try again."
+msgstr ""
+
+msgid "Error loading last commit."
+msgstr ""
+
+msgid "Error loading project data. Please try again."
 msgstr ""
 
 msgid "Error occurred when toggling the notification subscription"
@@ -3608,10 +3618,16 @@ msgstr ""
 msgid "Pending"
 msgstr ""
 
+msgid "Perform advanced options such as changing path, transferring, or removing the group."
+msgstr ""
+
 msgid "Performance optimization"
 msgstr ""
 
 msgid "Permalink"
+msgstr ""
+
+msgid "Permissions"
 msgstr ""
 
 msgid "Personal Access Token"
@@ -4369,9 +4385,6 @@ msgstr ""
 msgid "Seconds to wait for a storage access attempt"
 msgstr ""
 
-msgid "Variables"
-msgstr ""
-
 msgid "Security report"
 msgstr ""
 
@@ -4534,6 +4547,9 @@ msgid "Something went wrong when toggling the button"
 msgstr ""
 
 msgid "Something went wrong while fetching group member contributions"
+msgstr ""
+
+msgid "Something went wrong while fetching the latest pipeline status."
 msgstr ""
 
 msgid "Something went wrong while fetching the projects."
@@ -5322,6 +5338,9 @@ msgstr ""
 msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
+msgid "Unable to sign you in to the group with SAML due to \"%{reason}\""
+msgstr ""
+
 msgid "Unknown"
 msgstr ""
 
@@ -5356,6 +5375,9 @@ msgid "Unverified"
 msgstr ""
 
 msgid "Up to date"
+msgstr ""
+
+msgid "Update your group name, description, avatar, and other general settings."
 msgstr ""
 
 msgid "Upgrade your plan to activate Advanced Global Search."
@@ -5407,6 +5429,9 @@ msgid "Used by members to sign in to your group in GitLab"
 msgstr ""
 
 msgid "User and IP Rate Limits"
+msgstr ""
+
+msgid "Variables"
 msgstr ""
 
 msgid "Variables are applied to environments via the runner. They can be protected by only exposing them to protected branches or tags. You can use variables for passwords, secret keys, or whatever you want."
