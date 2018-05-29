@@ -8,11 +8,16 @@ import actions, {
   fetchLatestPipeline,
   stopPipelinePolling,
   clearEtagPoll,
+  requestJobs,
+  receiveJobsError,
+  receiveJobsSuccess,
+  fetchJobs,
+  toggleStageCollapsed,
 } from '~/ide/stores/modules/pipelines/actions';
 import state from '~/ide/stores/modules/pipelines/state';
 import * as types from '~/ide/stores/modules/pipelines/mutation_types';
 import testAction from '../../../../helpers/vuex_action_helper';
-import { pipelines } from '../../../mock_data';
+import { pipelines, jobs } from '../../../mock_data';
 
 describe('IDE pipelines actions', () => {
   let mockedState;
@@ -174,6 +179,106 @@ describe('IDE pipelines actions', () => {
           .then(done)
           .catch(done.fail);
       });
+    });
+  });
+
+  describe('requestJobs', () => {
+    it('commits request', done => {
+      testAction(requestJobs, 1, mockedState, [{ type: types.REQUEST_JOBS, payload: 1 }], [], done);
+    });
+  });
+
+  describe('receiveJobsError', () => {
+    it('commits error', done => {
+      testAction(
+        receiveJobsError,
+        1,
+        mockedState,
+        [{ type: types.RECEIVE_JOBS_ERROR, payload: 1 }],
+        [],
+        done,
+      );
+    });
+
+    it('creates flash message', () => {
+      const flashSpy = spyOnDependency(actions, 'flash');
+
+      receiveJobsError({ commit() {} }, 1);
+
+      expect(flashSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('receiveJobsSuccess', () => {
+    it('commits data', done => {
+      testAction(
+        receiveJobsSuccess,
+        { id: 1, data: jobs },
+        mockedState,
+        [{ type: types.RECEIVE_JOBS_SUCCESS, payload: { id: 1, data: jobs } }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('fetchJobs', () => {
+    const stage = {
+      id: 1,
+      dropdownPath: `${gl.TEST_HOST}/jobs`,
+    };
+
+    describe('success', () => {
+      beforeEach(() => {
+        mock.onGet(stage.dropdownPath).replyOnce(200, jobs);
+      });
+
+      it('dispatches request', done => {
+        testAction(
+          fetchJobs,
+          stage,
+          mockedState,
+          [],
+          [
+            { type: 'requestJobs', payload: stage.id },
+            { type: 'receiveJobsSuccess', payload: { id: stage.id, data: jobs } },
+          ],
+          done,
+        );
+      });
+    });
+
+    describe('error', () => {
+      beforeEach(() => {
+        mock.onGet(stage.dropdownPath).replyOnce(500);
+      });
+
+      it('dispatches error', done => {
+        testAction(
+          fetchJobs,
+          stage,
+          mockedState,
+          [],
+          [
+            { type: 'requestJobs', payload: stage.id },
+            { type: 'receiveJobsError', payload: stage.id },
+          ],
+          done,
+        );
+      });
+    });
+  });
+
+  describe('toggleStageCollapsed', () => {
+    it('commits collapse', done => {
+      testAction(
+        toggleStageCollapsed,
+        1,
+        mockedState,
+        [{ type: types.TOGGLE_STAGE_COLLAPSE, payload: 1 }],
+        [],
+        done,
+      );
     });
   });
 });

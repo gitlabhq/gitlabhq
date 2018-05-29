@@ -47,7 +47,7 @@ export default {
   [types.RECEIVE_JOBS_ERROR](state, id) {
     state.stages = state.stages.map(stage =>
       Object.assign(stage, {
-        isLoading: id === stage.id ? true : stage.isLoading,
+        isLoading: id === stage.id ? false : stage.isLoading,
       }),
     );
   },
