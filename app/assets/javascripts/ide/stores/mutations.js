@@ -154,6 +154,9 @@ export default {
       rightPane: state.rightPane === view ? null : view,
     });
   },
+  [types.SET_LINKS](state, links) {
+    Object.assign(state, { links });
+  },
   ...projectMutations,
   ...mergeRequestMutation,
   ...fileMutations,

@@ -173,6 +173,8 @@ export const setRightPane = ({ commit }, view) => {
   commit(types.SET_RIGHT_PANE, view);
 };
 
+export const setLinks = ({ commit }, links) => commit(types.SET_LINKS, links);
+
 export * from './actions/tree';
 export * from './actions/file';
 export * from './actions/project';

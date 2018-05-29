@@ -20,7 +20,7 @@ export default {
     EmptyState,
   },
   computed: {
-    ...mapState(['pipelinesEmptyStateSvgPath']),
+    ...mapState(['pipelinesEmptyStateSvgPath', 'links']),
     ...mapGetters(['currentProject']),
     ...mapGetters('pipelines', ['jobsCount', 'failedJobsCount', 'failedStages', 'pipelineFailed']),
     ...mapState('pipelines', ['isLoadingPipeline', 'latestPipeline', 'stages', 'isLoadingJobs']),
@@ -79,7 +79,7 @@ export default {
       </header>
       <empty-state
         v-if="latestPipeline === false"
-        help-page-path="a"
+        :help-page-path="links.ciHelpPagePath"
         :empty-state-svg-path="pipelinesEmptyStateSvgPath"
         :can-set-ci="true"
       />
