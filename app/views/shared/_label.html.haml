@@ -43,7 +43,8 @@
                           toggle: 'modal' } }
                   = _('Promote to group label')
             %li
-              = link_to _('Delete'), destroy_label_path(label), title: 'Delete', method: :delete, data: { confirm: _('Remove this label? Are you sure?') }, class: 'text-danger'
+              %span{ data: { toggle: 'modal', target: "#modal-delete-label-#{label.id}" } }
+                = button_tag 'Delete', type: 'button', class: 'text-danger remove-row'
     - if current_user
       %li.inline.label-subscription
         - if can_subscribe_to_label_in_different_levels?(label)
