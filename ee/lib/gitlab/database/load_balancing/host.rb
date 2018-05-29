@@ -3,7 +3,7 @@ module Gitlab
     module LoadBalancing
       # A single database host used for load balancing.
       class Host
-        attr_reader :pool, :last_checked_at, :intervals, :load_balancer
+        attr_reader :pool, :last_checked_at, :intervals, :load_balancer, :host
 
         delegate :connection, :release_connection, to: :pool
 
@@ -32,6 +32,22 @@ module Gitlab
 
           interval = LoadBalancing.replica_check_interval
           @intervals = (interval..(interval * 2)).step(0.5).to_a
+        end
+
+        # Disconnects the pool, once all connections are no longer in use.
+        #
+        # timeout - The time after which the pool should be forcefully
+        #           disconnected.
+        def disconnect!(timeout = 120)
+          start_time = Metrics::System.monotonic_time
+
+          while (Metrics::System.monotonic_time - start_time) <= timeout
+            break if pool.connections.none?(&:in_use?)
+
+            sleep(2)
+          end
+
+          pool.disconnect!
         end
 
         def offline!

@@ -23,6 +23,23 @@ describe Gitlab::Database::LoadBalancing::HostList do
     end
   end
 
+  describe '#host_names' do
+    it 'returns the host names of all hosts' do
+      expect(host_list.host_names).to eq(%w[localhost localhost])
+    end
+  end
+
+  describe '#hosts=' do
+    it 'updates the list of hosts to use' do
+      host_list.hosts = [
+        Gitlab::Database::LoadBalancing::Host.new('foo', load_balancer)
+      ]
+
+      expect(host_list.length).to eq(1)
+      expect(host_list.hosts[0].host).to eq('foo')
+    end
+  end
+
   describe '#next' do
     it 'returns a host' do
       expect(host_list.next)
@@ -47,6 +64,10 @@ describe Gitlab::Database::LoadBalancing::HostList do
       end
 
       expect(host_list.next).to be_nil
+    end
+
+    it 'returns nil if no hosts are available' do
+      expect(described_class.new.next).to be_nil
     end
   end
 end
