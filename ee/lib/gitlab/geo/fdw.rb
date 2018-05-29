@@ -75,7 +75,7 @@ module Gitlab
         Gitlab::Geo.cache_value(:geo_fdw_schema_tables_match) do
           schema = gitlab_schema
 
-          schema.present? && schema == fdw_schema
+          schema.present? && (schema.to_set == fdw_schema.to_set)
         end
       end
 

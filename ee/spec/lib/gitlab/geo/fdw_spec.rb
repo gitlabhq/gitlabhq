@@ -172,6 +172,19 @@ describe Gitlab::Geo::Fdw, :geo do
         # rake geo:db:test:refresh_foreign_tables
         expect(described_class.foreign_schema_tables_match?).to be_truthy
       end
+
+      it 'returns true if order is different' do
+        one_schema = [
+          { "table_name" => "events", "column_name" => "target_type", "data_type" => "character varying" },
+          { "table_name" => "ci_job_artifacts", "column_name" => "id", "data_type" => "integer" }
+        ]
+        second_schema = one_schema.reverse
+
+        allow(described_class).to receive(:gitlab_schema).and_return(one_schema)
+        allow(described_class).to receive(:fdw_schema).and_return(second_schema)
+
+        expect(described_class.foreign_schema_tables_match?).to be_truthy
+      end
     end
   end
 end
