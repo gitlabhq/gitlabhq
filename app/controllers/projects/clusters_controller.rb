@@ -1,5 +1,6 @@
 class Projects::ClustersController < Projects::ApplicationController
   before_action :cluster, except: [:index, :new]
+  before_action :ensure_kubernetes_cluster_template, only: [:index]
   before_action :authorize_read_cluster!
   before_action :authorize_create_cluster!, only: [:new]
   before_action :authorize_update_cluster!, only: [:update]
@@ -69,6 +70,10 @@ class Projects::ClustersController < Projects::ApplicationController
   def cluster
     @cluster ||= project.clusters.find(params[:id])
                                  .present(current_user: current_user)
+  end
+
+  def ensure_kubernetes_cluster_template
+    project.ensure_kubernetes_cluster_template
   end
 
   def create_params

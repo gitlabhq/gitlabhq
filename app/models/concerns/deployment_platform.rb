@@ -2,17 +2,27 @@ module DeploymentPlatform
   # EE would override this and utilize environment argument
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def deployment_platform(environment: nil)
+    ensure_kubernetes_cluster_template
+
     @deployment_platform ||= {}
 
     @deployment_platform[environment] ||= find_deployment_platform(environment)
   end
 
+  # We create KubernetesService object to indicate that it was imported from active template
+  # Saved KubernetesService object ensures that corresponding Cluster is created
+  # KubernetesService itself is shallow holder of parameters only
+  def ensure_kubernetes_cluster_template
+    return if kubernetes_service
+    return unless kubernetes_service_template
+
+    Service.build_from_template(id, kubernetes_service_template).save!
+  end
+
   private
 
   def find_deployment_platform(environment)
-    find_cluster_platform_kubernetes(environment: environment) ||
-      find_kubernetes_service_integration ||
-      build_cluster_and_deployment_platform
+    find_cluster_platform_kubernetes(environment: environment)
   end
 
   # EE would override this and utilize environment argument
@@ -21,37 +31,7 @@ module DeploymentPlatform
       .last&.platform_kubernetes
   end
 
-  def find_kubernetes_service_integration
-    services.deployment.reorder(nil).find_by(active: true)
-  end
-
-  def build_cluster_and_deployment_platform
-    return unless kubernetes_service_template
-
-    cluster = ::Clusters::Cluster.create(cluster_attributes_from_service_template)
-    cluster.platform_kubernetes if cluster.persisted?
-  end
-
   def kubernetes_service_template
     @kubernetes_service_template ||= KubernetesService.active.find_by_template
-  end
-
-  def cluster_attributes_from_service_template
-    {
-      name: 'kubernetes-template',
-      projects: [self],
-      provider_type: :user,
-      platform_type: :kubernetes,
-      platform_kubernetes_attributes: platform_kubernetes_attributes_from_service_template
-    }
-  end
-
-  def platform_kubernetes_attributes_from_service_template
-    {
-      api_url: kubernetes_service_template.api_url,
-      ca_pem: kubernetes_service_template.ca_pem,
-      token: kubernetes_service_template.token,
-      namespace: kubernetes_service_template.namespace
-    }
   end
 end
