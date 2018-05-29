@@ -246,23 +246,14 @@ As the name suggests, it is possible to create environments on the fly by just
 declaring their names dynamically in `.gitlab-ci.yml`. Dynamic environments is
 the basis of [Review apps](review_apps/index.md).
 
->**Note:**
-The `name` and `url` parameters can use most of the defined CI variables,
-including predefined, secure variables and `.gitlab-ci.yml`
-[`variables`](yaml/README.md#variables). You however cannot use variables
-defined under `script` or on the Runner's side. There are other variables that
-are unsupported in environment name context:
-- `CI_PIPELINE_ID`
-- `CI_JOB_ID`
-- `CI_JOB_TOKEN`
-- `CI_BUILD_ID`
-- `CI_BUILD_TOKEN`
-- `CI_REGISTRY_USER`
-- `CI_REGISTRY_PASSWORD`
-- `CI_REPOSITORY_URL`
-- `CI_ENVIRONMENT_URL`
-- `CI_DEPLOY_USER`
-- `CI_DEPLOY_PASSWORD`
+NOTE: **Note:**
+The `name` and `url` parameters can use most of the CI/CD variables,
+including [predefined](variables/README.md#predefined-variables-environment-variables),
+[secret](variables/README.md#secret-variables) and
+[`.gitlab-ci.yml` variables](yaml/README.md#variables). You however cannot use variables
+defined under `script` or on the Runner's side. There are also other variables that
+are unsupported in the context of `environment:name`. You can read more about
+[where variables can be used](variables/where_variables_can_be_used.md).
 
 GitLab Runner exposes various [environment variables][variables] when a job runs,
 and as such, you can use them as environment names. Let's add another job in
