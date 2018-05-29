@@ -4,6 +4,7 @@ import GroupLabelSubscription from './group_label_subscription';
 import ProjectLabelSubscription from './project_label_subscription';
 
 export default () => {
+  debugger
   if ($('.prioritized-labels').length) {
     new LabelManager(); // eslint-disable-line no-new
   }

@@ -211,6 +211,13 @@ module LabelsHelper
     end
   end
 
+  def labels_list_class(can_admin_label, sortable = false)
+    list_classes = "manage-labels-list"
+    list_classes += " js-prioritized-labels" if can_admin_label && sortable
+
+    list_classes
+  end
+
   # Required for Banzai::Filter::LabelReferenceFilter
   module_function :render_colored_label, :text_color_for_bg, :escape_once
 end
