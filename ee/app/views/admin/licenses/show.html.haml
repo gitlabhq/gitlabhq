@@ -13,7 +13,7 @@
     .card
       .card-header
         Licensed to
-      %ul.well-list
+      %ul.content-list
         - @license.licensee.each do |label, value|
           %li
             %span.light #{label}:
@@ -22,7 +22,7 @@
     .card.js-license-info-panel
       .card-header
         Details
-      %ul.well-list
+      %ul.content-list
         %li
           %span.light Plan:
           %strong= @license.plan.capitalize

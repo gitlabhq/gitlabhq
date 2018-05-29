@@ -65,7 +65,7 @@
     - if Gitlab::Auth::LDAP::Config.group_sync_enabled? && @group.ldap_synced?
       .card
         .card-header Active synchronizations
-        %ul.well-list
+        %ul.content-list
           - @group.ldap_group_links.select(&:active?).each do |ldap_group_link|
             %li
               %strong= ldap_group_link.cn ? "Group: #{ldap_group_link.cn}" : "Filter: #{truncate(ldap_group_link.filter, length: 40)}"

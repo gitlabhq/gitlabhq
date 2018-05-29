@@ -33,7 +33,7 @@
               - unless ids.include?(user.id)
                 - ids << user.id
           = ids.count
-      %ul.well-list.approver-list
+      %ul.content-list.approver-list
         .load-wrapper.hidden
           = icon('spinner spin', class: 'approver-list-loader')
         - project.approvers.each do |approver|
