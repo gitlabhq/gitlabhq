@@ -28,7 +28,7 @@
     = link_to user_snippets_path(snippet.author) do
       = snippet.author_name
     - if link_project && snippet.project_id?
-      %span.d-none.d-sm-block
+      %span.d-none.d-sm-inline-block
         in
         = link_to project_path(snippet.project) do
           = snippet.project.full_name
