@@ -53,6 +53,6 @@ export default class GroupLabelSubscription {
     const title = `Unsubscribe at ${type} level`;
     const $unsubscribeButton = $('.js-unsubscribe-button', $button.closest('.label-actions-list'));
 
-    $unsubscribeButton.tooltip('hide').attr('title', title).tooltip('fixTitle');
+    $unsubscribeButton.tooltip('hide').attr('title', title).tooltip('_fixTitle');
   }
 }
