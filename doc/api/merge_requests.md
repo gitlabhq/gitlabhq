@@ -107,6 +107,7 @@ Parameters:
     "changes_count": "1",
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
+    "squash": false,
     "web_url": "http://example.com/example/example/merge_requests/1",
     "time_stats": {
       "time_estimate": 0,
@@ -226,6 +227,7 @@ Parameters:
     "changes_count": "1",
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
+    "squash": false,
     "web_url": "http://example.com/example/example/merge_requests/1",
     "discussion_locked": false,
     "time_stats": {
@@ -305,6 +307,7 @@ Parameters:
   "changes_count": "1",
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
+  "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
   "discussion_locked": false,
   "time_stats": {
@@ -541,7 +544,8 @@ POST /projects/:id/merge_requests
 | `labels`                   | string  | no       | Labels for MR as a comma-separated list                                         |
 | `milestone_id`             | integer | no       | The global ID of a milestone                                                           |
 | `remove_source_branch`     | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
-| `allow_maintainer_to_push` | boolean | no       | Whether or not a maintainer of the target project can push to the source branch  |
+| `allow_maintainer_to_push` | boolean | no       | Whether or not a maintainer of the target project can push to the source branch |
+| `squash`                   | boolean | no       | Squash commits into a single commit when merging                                |
 
 ```json
 {
@@ -595,6 +599,7 @@ POST /projects/:id/merge_requests
   "changes_count": "1",
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
+  "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
   "discussion_locked": false,
   "allow_maintainer_to_push": false,
@@ -627,6 +632,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 | `description`              | string  | no       | Description of MR                                                               |
 | `state_event`              | string  | no       | New state (close/reopen)                                                        |
 | `remove_source_branch`     | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
+| `squash`                   | boolean | no       | Squash commits into a single commit when merging |
 | `discussion_locked`        | boolean | no       | Flag indicating if the merge request's discussion is locked. If the discussion is locked only project members can add, edit or resolve comments. |
 | `allow_maintainer_to_push` | boolean | no       | Whether or not a maintainer of the target project can push to the source branch |
 
@@ -683,6 +689,7 @@ Must include at least one non-required attribute from above.
   "changes_count": "1",
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
+  "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
   "discussion_locked": false,
   "allow_maintainer_to_push": false,
@@ -790,6 +797,7 @@ Parameters:
   "changes_count": "1",
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
+  "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
   "discussion_locked": false,
   "time_stats": {
@@ -868,6 +876,7 @@ Parameters:
   "changes_count": "1",
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
+  "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
   "discussion_locked": false,
   "time_stats": {
@@ -1200,6 +1209,7 @@ Example response:
     "changes_count": "1",
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
+    "squash": false,
     "web_url": "http://example.com/example/example/merge_requests/1"
   },
   "target_url": "https://gitlab.example.com/gitlab-org/gitlab-ci/merge_requests/7",

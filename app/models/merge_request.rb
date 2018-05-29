@@ -1140,4 +1140,11 @@ class MergeRequest < ActiveRecord::Base
     maintainer_push_possible? &&
       Ability.allowed?(user, :push_code, source_project)
   end
+
+  def squash_in_progress?
+    # The source project can be deleted
+    return false unless source_project
+
+    source_project.repository.squash_in_progress?(id)
+  end
 end
