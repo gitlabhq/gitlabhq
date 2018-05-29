@@ -70,7 +70,7 @@ pre {
     padding: 0;
   }
 
-  &.well-pre {
+  &.card.card-body-pre {
     border: 1px solid $well-pre-bg;
     background: $gray-light;
     border-radius: 0;
@@ -218,7 +218,7 @@ li.note {
 }
 
 .git_error_tips {
-  @extend .col-md-6;
+  @extend .col-lg-6;
   text-align: left;
   margin-top: 40px;
 
@@ -308,7 +308,7 @@ img.emoji {
 .btn-sign-in {
   text-shadow: none;
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     margin-top: 8px;
   }
 }
@@ -327,7 +327,7 @@ img.emoji {
   }
 }
 
-.well {
+.card.card-body {
   margin-bottom: $gl-padding;
 
   hr {
@@ -336,7 +336,7 @@ img.emoji {
 }
 
 .search_box {
-  @extend .well;
+  @extend .card.card-body;
   text-align: center;
 }
 

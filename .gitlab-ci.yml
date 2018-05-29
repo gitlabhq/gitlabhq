@@ -126,6 +126,23 @@ stages:
   <<: *dedicated-no-docs-pull-cache-job
   <<: *except-docs-and-qa
 
+.single-script-job: &single-script-job
+  image: ruby:2.4-alpine
+  before_script: []
+  stage: build
+  cache: {}
+  dependencies: []
+  variables: &single-script-job-variables
+    GIT_STRATEGY: none
+  before_script:
+    # We need to download the script rather than clone the repo since the
+    # package-and-qa job will not be able to run when the branch gets
+    # deleted (when merging the MR).
+    - export SCRIPT_NAME="${SCRIPT_NAME:-$CI_JOB_NAME}"
+    - apk add --update openssl
+    - wget $CI_PROJECT_URL/raw/$CI_COMMIT_SHA/scripts/$SCRIPT_NAME
+    - chmod 755 $SCRIPT_NAME
+
 .rake-exec: &rake-exec
   <<: *dedicated-no-docs-no-db-pull-cache-job
   script:
@@ -207,19 +224,10 @@ stages:
 .review-docs: &review-docs
   <<: *dedicated-runner
   <<: *except-qa
-  image: ruby:2.4-alpine
-  before_script:
-    - gem install gitlab --no-doc
-    # We need to download the script rather than clone the repo since the
-    # review-docs-cleanup job will not be able to run when the branch gets
-    # deleted (when merging the MR).
-    - apk add --update openssl
-    - wget https://gitlab.com/gitlab-org/gitlab-ce/raw/master/scripts/trigger-build-docs
-    - chmod 755 trigger-build-docs
-  cache: {}
-  dependencies: []
+  <<: *single-script-job
   variables:
-    GIT_STRATEGY: none
+    <<: *single-script-job-variables
+    SCRIPT_NAME: trigger-build-docs
   when: manual
   only:
     - branches
@@ -253,23 +261,14 @@ stages:
 # Trigger a package build in omnibus-gitlab repository
 #
 package-and-qa:
-  image: ruby:2.4-alpine
-  before_script: []
-  stage: build
-  cache: {}
-  when: manual
+  <<: *single-script-job
   variables:
-    GIT_STRATEGY: none
+    <<: *single-script-job-variables
+    SCRIPT_NAME: trigger-build-omnibus
   retry: 0
-  before_script:
-    # We need to download the script rather than clone the repo since the
-    # package-and-qa job will not be able to run when the branch gets
-    # deleted (when merging the MR).
-    - apk add --update openssl
-    - wget https://gitlab.com/$CI_PROJECT_PATH/raw/$CI_COMMIT_SHA/scripts/trigger-build-omnibus
-    - chmod 755 trigger-build-omnibus
   script:
-    - ./trigger-build-omnibus
+    - ./$SCRIPT_NAME
+  when: manual
   only:
     - //@gitlab-org/gitlab-ce
     - //@gitlab-org/gitlab-ee
@@ -286,7 +285,8 @@ review-docs-deploy:
     url: http://$DOCS_GITLAB_REPO_SUFFIX-$CI_COMMIT_REF_SLUG.$DOCS_REVIEW_APPS_DOMAIN/$DOCS_GITLAB_REPO_SUFFIX
     on_stop: review-docs-cleanup
   script:
-    - ./trigger-build-docs deploy
+    - gem install gitlab --no-ri --no-rdoc
+    - ./$SCRIPT_NAME deploy
 
 # Cleanup remote environment of gitlab-docs
 review-docs-cleanup:
@@ -296,7 +296,28 @@ review-docs-cleanup:
     name: review-docs/$CI_COMMIT_REF_NAME
     action: stop
   script:
-    - ./trigger-build-docs cleanup
+    - gem install gitlab --no-ri --no-rdoc
+    - ./SCRIPT_NAME cleanup
+
+##
+# Trigger a docker image build in CNG (Cloud Native GitLab) repository
+#
+cloud-native-image:
+  image: ruby:2.4-alpine
+  before_script: []
+  stage: build
+  allow_failure: true
+  variables:
+    GIT_DEPTH: "1"
+  cache: {}
+  before_script:
+    - gem install gitlab --no-rdoc --no-ri
+    - chmod 755 ./scripts/trigger-build-cloud-native
+  script:
+    - ./scripts/trigger-build-cloud-native
+  only:
+    - tags@gitlab-org/gitlab-ce
+    - tags@gitlab-org/gitlab-ee
 
 # Retrieve knapsack and rspec_flaky reports
 retrieve-tests-metadata:
@@ -325,7 +346,7 @@ update-tests-metadata:
       - rspec_flaky/
     policy: push
   script:
-    - retry gem install fog-aws mime-types activesupport
+    - retry gem install fog-aws mime-types activesupport --no-ri --no-rdoc
     - scripts/merge-reports ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec-pg_node_*.json
     - scripts/merge-reports ${FLAKY_RSPEC_SUITE_REPORT_PATH} rspec_flaky/all_*_*.json
     - FLAKY_RSPEC_GENERATE_REPORT=1 scripts/prune-old-flaky-specs ${FLAKY_RSPEC_SUITE_REPORT_PATH}
@@ -836,3 +857,15 @@ gitlab_git_test:
   cache: {}
   script:
     - spec/support/prepare-gitlab-git-test-for-commit --check-for-changes
+
+no_ee_check:
+  <<: *dedicated-runner
+  <<: *except-docs-and-qa
+  variables:
+    SETUP_DB: "false"
+  before_script: []
+  cache: {}
+  script:
+    - scripts/no-ee-check
+  only:
+    - //@gitlab-org/gitlab-ce

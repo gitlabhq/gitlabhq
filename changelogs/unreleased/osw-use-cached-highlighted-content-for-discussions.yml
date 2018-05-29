@@ -1,5 +1,0 @@
----
-title: Use persisted diff data instead fetching Git on discussions
-merge_request:
-author:
-type: performance

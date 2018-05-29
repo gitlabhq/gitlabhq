@@ -181,7 +181,7 @@ export default class UserTabs {
 
   toggleLoading(status) {
     return this.$parentEl.find('.loading-status .loading')
-      .toggle(status);
+      .toggleClass('hidden', status);
   }
 
   setCurrentAction(source) {
@@ -195,6 +195,6 @@ export default class UserTabs {
   }
 
   getCurrentAction() {
-    return this.$parentEl.find('.nav-links .active a').data('action');
+    return this.$parentEl.find('.nav-links a.active').data('action');
   }
 }

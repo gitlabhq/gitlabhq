@@ -3,6 +3,12 @@ module MergeRequests
     def execute(oldrev, newrev, ref)
       return true unless Gitlab::Git.branch_ref?(ref)
 
+      do_execute(oldrev, newrev, ref)
+    end
+
+    private
+
+    def do_execute(oldrev, newrev, ref)
       @oldrev, @newrev = oldrev, newrev
       @branch_name = Gitlab::Git.ref_name(ref)
 
@@ -27,8 +33,6 @@ module MergeRequests
 
       true
     end
-
-    private
 
     def close_upon_missing_source_branch_ref
       # MergeRequest#reload_diff ignores not opened MRs. This means it won't

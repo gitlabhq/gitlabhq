@@ -249,10 +249,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     subject(:metadata) { repository.archive_metadata(ref, storage_path, format, append_sha: append_sha) }
 
-    it 'sets RepoPath to the repository path' do
-      expect(metadata['RepoPath']).to eq(repository.path)
-    end
-
     it 'sets CommitId to the commit SHA' do
       expect(metadata['CommitId']).to eq(SeedRepo::LastCommit::ID)
     end
@@ -598,6 +594,10 @@ describe Gitlab::Git::Repository, seed_helper: true do
         refs.each do |ref|
           expect(repo.rugged.references[ref]).to be_nil
         end
+      end
+
+      it 'does not fail when deleting an empty list of refs' do
+        expect { repo.delete_refs(*[]) }.not_to raise_error
       end
 
       it 'raises an error if it failed' do
@@ -2247,66 +2247,42 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#checksum' do
-    shared_examples 'calculating checksum' do
-      it 'calculates the checksum for non-empty repo' do
-        expect(repository.checksum).to eq '54f21be4c32c02f6788d72207fa03ad3bce725e4'
-      end
-
-      it 'returns 0000000000000000000000000000000000000000 for an empty repo' do
-        FileUtils.rm_rf(File.join(storage_path, 'empty-repo.git'))
-
-        system(git_env, *%W(#{Gitlab.config.git.bin_path} init --bare empty-repo.git),
-               chdir: storage_path,
-               out:   '/dev/null',
-               err:   '/dev/null')
-
-        empty_repo = described_class.new('default', 'empty-repo.git', '')
-
-        expect(empty_repo.checksum).to eq '0000000000000000000000000000000000000000'
-      end
-
-      it 'raises Gitlab::Git::Repository::InvalidRepository error for non-valid git repo' do
-        FileUtils.rm_rf(File.join(storage_path, 'non-valid.git'))
-
-        system(git_env, *%W(#{Gitlab.config.git.bin_path} clone --bare #{TEST_REPO_PATH} non-valid.git),
-               chdir: SEED_STORAGE_PATH,
-               out: '/dev/null',
-               err: '/dev/null')
-
-        File.truncate(File.join(storage_path, 'non-valid.git/HEAD'), 0)
-
-        non_valid = described_class.new('default', 'non-valid.git', '')
-
-        expect { non_valid.checksum }.to raise_error(Gitlab::Git::Repository::InvalidRepository)
-      end
-
-      it 'raises Gitlab::Git::Repository::NoRepository error when there is no repo' do
-        broken_repo = described_class.new('default', 'a/path.git', '')
-
-        expect { broken_repo.checksum }.to raise_error(Gitlab::Git::Repository::NoRepository)
-      end
+    it 'calculates the checksum for non-empty repo' do
+      expect(repository.checksum).to eq '54f21be4c32c02f6788d72207fa03ad3bce725e4'
     end
 
-    context 'when calculate_checksum Gitaly feature is enabled' do
-      it_behaves_like 'calculating checksum'
+    it 'returns 0000000000000000000000000000000000000000 for an empty repo' do
+      FileUtils.rm_rf(File.join(storage_path, 'empty-repo.git'))
+
+      system(git_env, *%W(#{Gitlab.config.git.bin_path} init --bare empty-repo.git),
+             chdir: storage_path,
+             out:   '/dev/null',
+             err:   '/dev/null')
+
+      empty_repo = described_class.new('default', 'empty-repo.git', '')
+
+      expect(empty_repo.checksum).to eq '0000000000000000000000000000000000000000'
     end
 
-    context 'when calculate_checksum Gitaly feature is disabled', :disable_gitaly do
-      it_behaves_like 'calculating checksum'
+    it 'raises Gitlab::Git::Repository::InvalidRepository error for non-valid git repo' do
+      FileUtils.rm_rf(File.join(storage_path, 'non-valid.git'))
 
-      describe 'when storage is broken', :broken_storage  do
-        it 'raises a storage exception when storage is not available' do
-          broken_repo = described_class.new('broken', 'a/path.git', '')
+      system(git_env, *%W(#{Gitlab.config.git.bin_path} clone --bare #{TEST_REPO_PATH} non-valid.git),
+             chdir: SEED_STORAGE_PATH,
+             out: '/dev/null',
+             err: '/dev/null')
 
-          expect { broken_repo.rugged }.to raise_error(Gitlab::Git::Storage::Inaccessible)
-        end
-      end
+      File.truncate(File.join(storage_path, 'non-valid.git/HEAD'), 0)
 
-      it "raises a Gitlab::Git::Repository::Failure error if the `popen` call to git returns a non-zero exit code" do
-        allow(repository).to receive(:popen).and_return(['output', nil])
+      non_valid = described_class.new('default', 'non-valid.git', '')
 
-        expect { repository.checksum }.to raise_error Gitlab::Git::Repository::ChecksumError
-      end
+      expect { non_valid.checksum }.to raise_error(Gitlab::Git::Repository::InvalidRepository)
+    end
+
+    it 'raises Gitlab::Git::Repository::NoRepository error when there is no repo' do
+      broken_repo = described_class.new('default', 'a/path.git', '')
+
+      expect { broken_repo.checksum }.to raise_error(Gitlab::Git::Repository::NoRepository)
     end
   end
 

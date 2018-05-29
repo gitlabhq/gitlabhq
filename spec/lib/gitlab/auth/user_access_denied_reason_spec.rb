@@ -22,7 +22,8 @@ describe Gitlab::Auth::UserAccessDeniedReason do
         enforce_terms
       end
 
-      it { is_expected.to match /You must accept the Terms of Service/ }
+      it { is_expected.to match /must accept the Terms of Service/ }
+      it { is_expected.to include(user.username) }
     end
 
     context 'when the user is internal' do

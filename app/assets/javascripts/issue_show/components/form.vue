@@ -84,7 +84,7 @@
       <div
         :class="{
           'col-sm-8 col-lg-9': hasIssuableTemplates,
-          'col-xs-12': !hasIssuableTemplates,
+          'col-12': !hasIssuableTemplates,
         }"
       >
         <title-field

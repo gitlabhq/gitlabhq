@@ -68,8 +68,10 @@ feature 'Protected Branches', :js do
 
         within form do
           find(".js-allowed-to-merge").click
+          wait_for_requests
           click_link 'No one'
           find(".js-allowed-to-push").click
+          wait_for_requests
           click_link 'Developers + Masters'
         end
 

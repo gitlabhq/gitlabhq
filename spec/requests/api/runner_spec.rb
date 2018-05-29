@@ -830,6 +830,21 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         end
       end
 
+      context 'when job has already been finished' do
+        before do
+          job.trace.set('Job failed')
+          job.drop!(:script_failure)
+        end
+
+        it 'does not update job status and job trace' do
+          update_job(state: 'success', trace: 'BUILD TRACE UPDATED')
+
+          expect(response).to have_gitlab_http_status(403)
+          expect(job.trace.raw).to eq 'Job failed'
+          expect(job).to be_failed
+        end
+      end
+
       def update_job(token = job.token, **params)
         new_params = params.merge(token: token)
         put api("/jobs/#{job.id}"), new_params
@@ -916,6 +931,22 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           it 'has valid trace' do
             expect(response.status).to eq(202)
             expect(job.reload.trace.raw).to eq 'BUILD TRACE appended appended'
+          end
+
+          context 'when job is cancelled' do
+            before do
+              job.cancel
+            end
+
+            context 'when trace is patched' do
+              before do
+                patch_the_trace
+              end
+
+              it 'returns Forbidden ' do
+                expect(response.status).to eq(403)
+              end
+            end
           end
 
           context 'when redis data are flushed' do
@@ -1194,7 +1225,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
                 before do
                   fog_connection.directories.get('artifacts').files.create(
-                    key: 'tmp/upload/12312300',
+                    key: 'tmp/uploads/12312300',
                     body: 'content'
                   )
 

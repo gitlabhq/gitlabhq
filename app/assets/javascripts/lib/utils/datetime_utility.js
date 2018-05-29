@@ -2,10 +2,7 @@ import $ from 'jquery';
 import timeago from 'timeago.js';
 import dateFormat from 'vendor/date.format';
 import { pluralize } from './text_utility';
-import {
-  languageCode,
-  s__,
-} from '../../locale';
+import { languageCode, s__ } from '../../locale';
 
 window.timeago = timeago;
 window.dateFormat = dateFormat;
@@ -17,11 +14,37 @@ window.dateFormat = dateFormat;
  *
  * @param {Boolean} abbreviated
  */
-const getMonthNames = (abbreviated) => {
+const getMonthNames = abbreviated => {
   if (abbreviated) {
-    return [s__('Jan'), s__('Feb'), s__('Mar'), s__('Apr'), s__('May'), s__('Jun'), s__('Jul'), s__('Aug'), s__('Sep'), s__('Oct'), s__('Nov'), s__('Dec')];
+    return [
+      s__('Jan'),
+      s__('Feb'),
+      s__('Mar'),
+      s__('Apr'),
+      s__('May'),
+      s__('Jun'),
+      s__('Jul'),
+      s__('Aug'),
+      s__('Sep'),
+      s__('Oct'),
+      s__('Nov'),
+      s__('Dec'),
+    ];
   }
-  return [s__('January'), s__('February'), s__('March'), s__('April'), s__('May'), s__('June'), s__('July'), s__('August'), s__('September'), s__('October'), s__('November'), s__('December')];
+  return [
+    s__('January'),
+    s__('February'),
+    s__('March'),
+    s__('April'),
+    s__('May'),
+    s__('June'),
+    s__('July'),
+    s__('August'),
+    s__('September'),
+    s__('October'),
+    s__('November'),
+    s__('December'),
+  ];
 };
 
 /**
@@ -29,7 +52,8 @@ const getMonthNames = (abbreviated) => {
  * @param {date} date
  * @returns {String}
  */
-export const getDayName = date => ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][date.getDay()];
+export const getDayName = date =>
+  ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][date.getDay()];
 
 /**
  * @example
@@ -55,7 +79,7 @@ export function getTimeago() {
   if (!timeagoInstance) {
     const localeRemaining = function getLocaleRemaining(number, index) {
       return [
-        [s__('Timeago|less than a minute ago'), s__('Timeago|in a while')],
+        [s__('Timeago|less than a minute ago'), s__('Timeago|right now')],
         [s__('Timeago|less than a minute ago'), s__('Timeago|%s seconds remaining')],
         [s__('Timeago|about a minute ago'), s__('Timeago|1 minute remaining')],
         [s__('Timeago|%s minutes ago'), s__('Timeago|%s minutes remaining')],
@@ -73,7 +97,7 @@ export function getTimeago() {
     };
     const locale = function getLocale(number, index) {
       return [
-        [s__('Timeago|less than a minute ago'), s__('Timeago|in a while')],
+        [s__('Timeago|less than a minute ago'), s__('Timeago|right now')],
         [s__('Timeago|less than a minute ago'), s__('Timeago|in %s seconds')],
         [s__('Timeago|about a minute ago'), s__('Timeago|in 1 minute')],
         [s__('Timeago|%s minutes ago'), s__('Timeago|in %s minutes')],
@@ -102,7 +126,7 @@ export function getTimeago() {
  * For the given element, renders a timeago instance.
  * @param {jQuery} $els
  */
-export const renderTimeago = ($els) => {
+export const renderTimeago = $els => {
   const timeagoEls = $els || document.querySelectorAll('.js-timeago-render');
 
   // timeago.js sets timeouts internally for each timeago value to be updated in real time
@@ -119,7 +143,7 @@ export const localTimeAgo = ($timeagoEls, setTimeago = true) => {
     if (setTimeago) {
       // Recreate with custom template
       $(el).tooltip({
-        template: '<div class="tooltip local-timeago" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+        template: '<div class="tooltip local-timeago" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>',
       });
     }
 
@@ -141,7 +165,9 @@ export const timeFor = (time, expiredLabel) => {
   if (new Date(time) < new Date()) {
     return expiredLabel || s__('Timeago|Past due');
   }
-  return getTimeago().format(time, `${timeagoLanguageCode}-remaining`).trim();
+  return getTimeago()
+    .format(time, `${timeagoLanguageCode}-remaining`)
+    .trim();
 };
 
 export const getDayDifference = (a, b) => {
@@ -161,7 +187,7 @@ export const getDayDifference = (a, b) => {
 export function timeIntervalInWords(intervalInSeconds) {
   const secondsInteger = parseInt(intervalInSeconds, 10);
   const minutes = Math.floor(secondsInteger / 60);
-  const seconds = secondsInteger - (minutes * 60);
+  const seconds = secondsInteger - minutes * 60;
   let text = '';
 
   if (minutes >= 1) {
@@ -178,8 +204,34 @@ export function dateInWords(date, abbreviated = false, hideYear = false) {
   const month = date.getMonth();
   const year = date.getFullYear();
 
-  const monthNames = [s__('January'), s__('February'), s__('March'), s__('April'), s__('May'), s__('June'), s__('July'), s__('August'), s__('September'), s__('October'), s__('November'), s__('December')];
-  const monthNamesAbbr = [s__('Jan'), s__('Feb'), s__('Mar'), s__('Apr'), s__('May'), s__('Jun'), s__('Jul'), s__('Aug'), s__('Sep'), s__('Oct'), s__('Nov'), s__('Dec')];
+  const monthNames = [
+    s__('January'),
+    s__('February'),
+    s__('March'),
+    s__('April'),
+    s__('May'),
+    s__('June'),
+    s__('July'),
+    s__('August'),
+    s__('September'),
+    s__('October'),
+    s__('November'),
+    s__('December'),
+  ];
+  const monthNamesAbbr = [
+    s__('Jan'),
+    s__('Feb'),
+    s__('Mar'),
+    s__('Apr'),
+    s__('May'),
+    s__('Jun'),
+    s__('Jul'),
+    s__('Aug'),
+    s__('Sep'),
+    s__('Oct'),
+    s__('Nov'),
+    s__('Dec'),
+  ];
 
   const monthName = abbreviated ? monthNamesAbbr[month] : monthNames[month];
 
@@ -210,7 +262,7 @@ export const monthInWords = (date, abbreviated = false) => {
  *
  * @param {Date} date
  */
-export const totalDaysInMonth = (date) => {
+export const totalDaysInMonth = date => {
   if (!date) {
     return 0;
   }
@@ -223,12 +275,20 @@ export const totalDaysInMonth = (date) => {
  *
  * @param {Date} date
  */
-export const getSundays = (date) => {
+export const getSundays = date => {
   if (!date) {
     return [];
   }
 
-  const daysToSunday = ['Saturday', 'Friday', 'Thursday', 'Wednesday', 'Tuesday', 'Monday', 'Sunday'];
+  const daysToSunday = [
+    'Saturday',
+    'Friday',
+    'Thursday',
+    'Wednesday',
+    'Tuesday',
+    'Monday',
+    'Sunday',
+  ];
 
   const month = date.getMonth();
   const year = date.getFullYear();

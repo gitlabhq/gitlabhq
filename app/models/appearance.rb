@@ -1,6 +1,6 @@
 class Appearance < ActiveRecord::Base
+  include CacheableAttributes
   include CacheMarkdownField
-  include AfterCommitQueue
   include ObjectStorage::BackgroundMove
   include WithUploads
 
@@ -15,16 +15,9 @@ class Appearance < ActiveRecord::Base
   mount_uploader :logo,         AttachmentUploader
   mount_uploader :header_logo,  AttachmentUploader
 
-  CACHE_KEY = "current_appearance:#{Gitlab::VERSION}".freeze
-
-  after_commit :flush_redis_cache
-
-  def self.current
-    Rails.cache.fetch(CACHE_KEY) { first }
-  end
-
-  def flush_redis_cache
-    Rails.cache.delete(CACHE_KEY)
+  # Overrides CacheableAttributes.current_without_cache
+  def self.current_without_cache
+    first
   end
 
   def single_appearance_row

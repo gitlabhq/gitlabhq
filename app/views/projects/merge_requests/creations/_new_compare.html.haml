@@ -1,14 +1,14 @@
 %h3.page-title
   New Merge Request
 
-= form_for [@project.namespace.becomes(Namespace), @project, @merge_request], url: project_new_merge_request_path(@project), method: :get, html: { class: "merge-request-form form-inline js-requires-input" } do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @merge_request], url: project_new_merge_request_path(@project), method: :get, html: { class: "merge-request-form js-requires-input" } do |f|
   .hide.alert.alert-danger.mr-compare-errors
   .js-merge-request-new-compare.row{ 'data-source-branch-url': project_new_merge_request_branch_from_path(@source_project), 'data-target-branch-url': project_new_merge_request_branch_to_path(@source_project) }
     .col-lg-6
-      .panel.panel-default.panel-new-merge-request
-        .panel-heading
+      .card.card-new-merge-request
+        .card-header
           Source branch
-        .panel-body.clearfix
+        .card-body.clearfix
           .merge-request-select.dropdown
             = f.hidden_field :source_project_id
             = dropdown_toggle @merge_request.source_project_path, { toggle: "dropdown", 'field-name': "#{f.object_name}[source_project_id]", disabled: @merge_request.persisted? }, { toggle_class: "js-compare-dropdown js-source-project" }
@@ -32,10 +32,10 @@
           %ul.list-unstyled.mr_source_commit
 
     .col-lg-6
-      .panel.panel-default.panel-new-merge-request
-        .panel-heading
+      .card.card-new-merge-request
+        .card-header
           Target branch
-        .panel-body.clearfix
+        .card-body.clearfix
           - projects = target_projects(@project)
           .merge-request-select.dropdown
             = f.hidden_field :target_project_id
@@ -55,7 +55,7 @@
               = dropdown_filter(_("Search branches"))
               = dropdown_content
               = dropdown_loading
-        .panel-footer
+        .card-footer
           .text-center= icon('spinner spin', class: "js-target-loading")
           %ul.list-unstyled.mr_target_commit
 

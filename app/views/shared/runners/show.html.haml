@@ -2,7 +2,7 @@
 
 %h3.page-title
   Runner ##{@runner.id}
-  .pull-right
+  .float-right
     - if @runner.shared?
       %span.runner-state.runner-state-shared
         Shared
@@ -36,7 +36,7 @@
       %td Tags
       %td
         - @runner.tag_list.sort.each do |tag|
-          %span.label.label-primary
+          %span.badge.badge-primary
             = tag
     %tr
       %td Name
@@ -66,6 +66,6 @@
       %td Last contact
       %td
         - if @runner.contacted_at
-          #{time_ago_in_words(@runner.contacted_at)} ago
+          = time_ago_with_tooltip @runner.contacted_at
         - else
           Never

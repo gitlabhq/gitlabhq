@@ -403,10 +403,10 @@ module Gitlab
         prefix = archive_prefix(ref, commit.id, append_sha: append_sha)
 
         {
-          'RepoPath' => path,
           'ArchivePrefix' => prefix,
           'ArchivePath' => archive_file_path(storage_path, commit.id, prefix, format),
-          'CommitId' => commit.id
+          'CommitId' => commit.id,
+          'GitalyRepository' => gitaly_repository.to_h
         }
       end
 
@@ -1048,7 +1048,7 @@ module Gitlab
         return @info_attributes if @info_attributes
 
         content =
-          gitaly_migrate(:get_info_attributes) do |is_enabled|
+          gitaly_migrate(:get_info_attributes, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
             if is_enabled
               gitaly_repository_client.info_attributes
             else
@@ -1334,7 +1334,7 @@ module Gitlab
       end
 
       def squash_in_progress?(squash_id)
-        gitaly_migrate(:squash_in_progress) do |is_enabled|
+        gitaly_migrate(:squash_in_progress, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_repository_client.squash_in_progress?(squash_id)
           else
@@ -1473,10 +1473,19 @@ module Gitlab
       def search_files_by_content(query, ref)
         return [] if empty? || query.blank?
 
-        offset = 2
-        args = %W(grep -i -I -n -z --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
+        safe_query = Regexp.escape(query)
+        ref ||= root_ref
 
-        run_git(args).first.scrub.split(/^--\n/)
+        gitaly_migrate(:search_files_by_content) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.search_files_by_content(ref, safe_query)
+          else
+            offset = 2
+            args = %W(grep -i -I -n -z --before-context #{offset} --after-context #{offset} -E -e #{safe_query} #{ref})
+
+            run_git(args).first.scrub.split(/^--\n/)
+          end
+        end
       end
 
       def can_be_merged?(source_sha, target_branch)
@@ -1491,12 +1500,19 @@ module Gitlab
 
       def search_files_by_name(query, ref)
         safe_query = Regexp.escape(query.sub(%r{^/*}, ""))
+        ref ||= root_ref
 
         return [] if empty? || safe_query.blank?
 
-        args = %W(ls-tree -r --name-status --full-tree #{ref || root_ref} -- #{safe_query})
+        gitaly_migrate(:search_files_by_name) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.search_files_by_name(ref, safe_query)
+          else
+            args = %W(ls-tree -r --name-status --full-tree #{ref} -- #{safe_query})
 
-        run_git(args).first.lines.map(&:strip)
+            run_git(args).first.lines.map(&:strip)
+          end
+        end
       end
 
       def find_commits_by_message(query, ref, path, limit, offset)
@@ -1572,14 +1588,12 @@ module Gitlab
       end
 
       def checksum
-        gitaly_migrate(:calculate_checksum,
-                       status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.calculate_checksum
-          else
-            calculate_checksum_by_shelling_out
-          end
-        end
+        # The exists? RPC is much cheaper, so we perform this request first
+        raise NoRepository, "Repository does not exists" unless exists?
+
+        gitaly_repository_client.calculate_checksum
+      rescue GRPC::NotFound
+        raise NoRepository # Guard against data races.
       end
 
       private
@@ -1948,7 +1962,12 @@ module Gitlab
           end
 
           target_commit = Gitlab::Git::Commit.find(self, ref.target)
-          Gitlab::Git::Tag.new(self, ref.name, ref.target, target_commit, message)
+          Gitlab::Git::Tag.new(self, {
+            name: ref.name,
+            target: ref.target,
+            target_commit: target_commit,
+            message: message
+          })
         end.sort_by(&:name)
       end
 
@@ -2348,7 +2367,7 @@ module Gitlab
       end
 
       def gitaly_delete_refs(*ref_names)
-        gitaly_ref_client.delete_refs(refs: ref_names)
+        gitaly_ref_client.delete_refs(refs: ref_names) if ref_names.any?
       end
 
       def rugged_remove_remote(remote_name)
@@ -2476,36 +2495,6 @@ module Gitlab
 
       def sha_from_ref(ref)
         rev_parse_target(ref).oid
-      end
-
-      def calculate_checksum_by_shelling_out
-        raise NoRepository unless exists?
-
-        args = %W(--git-dir=#{path} show-ref --heads --tags)
-        output, status = run_git(args)
-
-        if status.nil? || !status.zero?
-          # Non-valid git repositories return 128 as the status code and an error output
-          raise InvalidRepository if status == 128 && output.to_s.downcase =~ /not a git repository/
-          # Empty repositories returns with a non-zero status and an empty output.
-          raise ChecksumError, output unless output.blank?
-
-          return EMPTY_REPOSITORY_CHECKSUM
-        end
-
-        refs = output.split("\n")
-
-        result = refs.inject(nil) do |checksum, ref|
-          value = Digest::SHA1.hexdigest(ref).hex
-
-          if checksum.nil?
-            value
-          else
-            checksum ^ value
-          end
-        end
-
-        result.to_s(16)
       end
 
       def build_git_cmd(*args)
