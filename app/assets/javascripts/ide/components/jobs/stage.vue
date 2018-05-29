@@ -54,7 +54,7 @@ export default {
 
 <template>
   <div
-    class="card prepend-top-default"
+    class="ide-stage card prepend-top-default"
   >
     <div
       class="card-header"
@@ -86,7 +86,7 @@ export default {
       </div>
       <icon
         :name="collapseIcon"
-        css-classes="pull-right"
+        css-classes="ide-stage-collapse-icon"
       />
     </div>
     <div
@@ -106,28 +106,3 @@ export default {
     </div>
   </div>
 </template>
-
-<style scoped>
-.card-header {
-  display: flex;
-  cursor: pointer;
-}
-.card-header .ci-status-icon {
-  display: flex;
-  align-items: center;
-}
-
-.card-header .pull-right {
-  margin: auto 0 auto auto;
-}
-
-.card-body {
-  padding: 0;
-}
-
-.ide-stage-title {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-</style>

@@ -140,31 +140,3 @@ export default {
     </template>
   </div>
 </template>
-
-<style scoped>
-.ide-pipeline {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.ide-pipeline-list {
-  flex: 1;
-  overflow: auto;
-}
-
-.ide-pipeline-header {
-  min-height: 50px;
-  padding-left: 16px;
-  padding-right: 16px;
-}
-
-.ide-pipeline-header .ci-status-icon {
-  display: flex;
-}
-
-.ide-pipeline .empty-state {
-  margin-top: auto;
-  margin-bottom: auto;
-}
-</style>

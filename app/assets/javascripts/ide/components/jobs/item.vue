@@ -44,22 +44,3 @@ export default {
     </span>
   </div>
 </template>
-
-<style scoped>
-.ide-job-item {
-  display: flex;
-  padding: 16px;
-}
-
-.ide-job-item:not(:last-child) {
-  border-bottom: 1px solid #e5e5e5;
-}
-
-.ide-job-item .ci-status-icon {
-  display: flex;
-  justify-content: center;
-  height: 20px;
-  margin-top: -2px;
-  overflow: hidden;
-}
-</style>
