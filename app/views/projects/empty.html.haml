@@ -22,7 +22,7 @@
 
       %hr
       %p
-        - link_to_auto_devops_settings = link_to(s_('AutoDevOps|enable Auto DevOps (Beta)'), project_settings_ci_cd_path(@project, anchor: 'autodevops-settings'))
+        - link_to_auto_devops_settings = link_to(s_('AutoDevOps|enable Auto DevOps'), project_settings_ci_cd_path(@project, anchor: 'autodevops-settings'))
         - link_to_add_kubernetes_cluster = link_to(s_('AutoDevOps|add a Kubernetes cluster'), new_project_cluster_path(@project))
         = s_('AutoDevOps|You can automatically build and test your application if you %{link_to_auto_devops_settings} for this project. You can automatically deploy it as well, if you %{link_to_add_kubernetes_cluster}.').html_safe % { link_to_auto_devops_settings: link_to_auto_devops_settings, link_to_add_kubernetes_cluster: link_to_add_kubernetes_cluster }
 
@@ -44,14 +44,14 @@
       .git-empty
         %fieldset
           %h5 Git global setup
-          %pre.light-well
+          %pre.card.bg-light
             :preserve
               git config --global user.name "#{h git_user_name}"
               git config --global user.email "#{h git_user_email}"
 
         %fieldset
           %h5 Create a new repository
-          %pre.light-well
+          %pre.card.bg-light
             :preserve
               git clone #{ content_tag(:span, default_url_to_repo, class: 'clone')}
               cd #{h @project.path}
@@ -64,7 +64,7 @@
 
         %fieldset
           %h5 Existing folder
-          %pre.light-well
+          %pre.card.bg-light
             :preserve
               cd existing_folder
               git init
@@ -77,7 +77,7 @@
 
         %fieldset
           %h5 Existing Git repository
-          %pre.light-well
+          %pre.card.bg-light
             :preserve
               cd existing_repo
               git remote rename origin old-origin
@@ -89,4 +89,4 @@
 
           - if can? current_user, :remove_project, @project
             .prepend-top-20
-              = link_to 'Remove project', [@project.namespace.becomes(Namespace), @project], data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn btn-inverted btn-remove pull-right"
+              = link_to 'Remove project', [@project.namespace.becomes(Namespace), @project], data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn btn-inverted btn-remove float-right"

@@ -129,8 +129,8 @@
   .lead
     List inside panel
   .example
-    .panel.panel-default
-      .panel-heading Your list
+    .card
+      .card-header Your list
       %ul.well-list
         %li
           One item
@@ -174,7 +174,7 @@
 
   .example
     .top-area
-      %ul.nav-links
+      %ul.nav-links.nav.nav-tabs
         %li.active
           %a Open
         %li
@@ -205,7 +205,7 @@
   %h2#buttons Buttons
 
   .example
-    %button.btn.btn-default{ :type => "button" } Default
+    %button.btn.btn-default{ :type => "button" } Secondary
     %button.btn.btn-primary{ :type => "button" } Primary
     %button.btn.btn-success{ :type => "button" } Success
     %button.btn.btn-info{ :type => "button" } Info
@@ -217,7 +217,7 @@
 
   .example
     .clearfix
-      .dropdown.inline.pull-left
+      .dropdown.inline.float-left
         %button.dropdown-menu-toggle{ type: 'button', data: { toggle: 'dropdown' } }
           Dropdown
           = icon('chevron-down')
@@ -225,11 +225,11 @@
           %li
             %a{ href: "#" }
               Dropdown option
-      .dropdown.inline.pull-right
+      .dropdown.inline.float-right
         %button.dropdown-menu-toggle{ type: 'button', data: { toggle: 'dropdown' } }
           Dropdown
           = icon('chevron-down')
-        %ul.dropdown-menu.dropdown-menu-align-right
+        %ul.dropdown-menu.dropdown-menu-right
           %li
             %a{ href: "#" }
               Dropdown option
@@ -415,26 +415,26 @@
 
   .row
     .col-md-6
-      .panel.panel-success
-        .panel-heading Success
-        .panel-body
+      .card.bg-success
+        .card-header Success
+        .card-body
           = lorem
-      .panel.panel-primary
-        .panel-heading Primary
-        .panel-body
+      .card.bg-primary
+        .card-header Primary
+        .card-body
           = lorem
-      .panel.panel-info
-        .panel-heading Info
-        .panel-body
+      .card.bg-info
+        .card-header Info
+        .card-body
           = lorem
     .col-md-6
-      .panel.panel-warning
-        .panel-heading Warning
-        .panel-body
+      .card.bg-warning
+        .card-header Warning
+        .card-body
           = lorem
-      .panel.panel-danger
-        .panel-heading Danger
-        .panel-body
+      .card.bg-danger
+        .card-header Danger
+        .card-body
           = lorem
 
   %h2#alerts Alerts
@@ -460,23 +460,23 @@
     %code form.horizontal-form
 
   .example
-    %form.form-horizontal
-      .form-group
-        %label.col-sm-2.control-label{ :for => "inputEmail3" } Email
+    %form
+      .form-group.row
+        %label.col-sm-2.col-form-label{ :for => "inputEmail3" } Email
         .col-sm-10
           %input#inputEmail3.form-control{ :placeholder => "Email", :type => "email" }/
-      .form-group
-        %label.col-sm-2.control-label{ :for => "inputPassword3" } Password
+      .form-group.row
+        %label.col-sm-2.col-form-label{ :for => "inputPassword3" } Password
         .col-sm-10
           %input#inputPassword3.form-control{ :placeholder => "Password", :type => "password" }/
-      .form-group
-        .col-sm-offset-2.col-sm-10
-          .checkbox
+      .form-group.row
+        .offset-sm-2.col-sm-10
+          .form-check
             %label
               %input{ :type => "checkbox" }/
               Remember me
-      .form-group
-        .col-sm-offset-2.col-sm-10
+      .form-group.row
+        .offset-sm-2.col-sm-10
           %button.btn.btn-default{ :type => "submit" } Sign in
 
   .lead
@@ -491,7 +491,7 @@
       .form-group
         %label{ :for => "exampleInputPassword1" } Password
         %input#exampleInputPassword1.form-control{ :placeholder => "Password", :type => "password" }/
-      .checkbox
+      .form-check
         %label
           %input{ :type => "checkbox" }/
           Remember me

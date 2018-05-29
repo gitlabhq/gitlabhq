@@ -40,7 +40,7 @@
 }
 
 .snippet-actions {
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     float: right;
   }
 }

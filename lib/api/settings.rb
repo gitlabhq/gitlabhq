@@ -5,7 +5,7 @@ module API
     helpers do
       def current_settings
         @current_setting ||=
-          (ApplicationSetting.current || ApplicationSetting.create_from_defaults)
+          (ApplicationSetting.current_without_cache || ApplicationSetting.create_from_defaults)
       end
     end
 
@@ -24,7 +24,7 @@ module API
       optional :default_project_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default project visibility'
       optional :default_snippet_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default snippet visibility'
       optional :default_group_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default group visibility'
-      optional :restricted_visibility_levels, type: Array[String], desc: 'Selected levels cannot be used by non-admin users for projects or snippets. If the public level is restricted, user profiles are only visible to logged in users.'
+      optional :restricted_visibility_levels, type: Array[String], desc: 'Selected levels cannot be used by non-admin users for groups, projects or snippets. If the public level is restricted, user profiles are only visible to logged in users.'
       optional :import_sources, type: Array[String], values: %w[github bitbucket gitlab google_code fogbugz git gitlab_project],
                                 desc: 'Enabled sources for code import during project creation. OmniAuth must be configured for GitHub, Bitbucket, and GitLab.com'
       optional :disabled_oauth_sign_in_sources, type: Array[String], desc: 'Disable certain OAuth sign-in sources'

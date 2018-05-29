@@ -11,7 +11,7 @@ module ObjectStorage
   ObjectStorageUnavailable = Class.new(StandardError)
 
   DIRECT_UPLOAD_TIMEOUT = 4.hours
-  TMP_UPLOAD_PATH = 'tmp/upload'.freeze
+  TMP_UPLOAD_PATH = 'tmp/uploads'.freeze
 
   module Store
     LOCAL = 1
@@ -103,6 +103,7 @@ module ObjectStorage
     end
 
     included do
+      include AfterCommitQueue
       after_save on: [:create, :update] do
         background_upload(changed_mounts)
       end

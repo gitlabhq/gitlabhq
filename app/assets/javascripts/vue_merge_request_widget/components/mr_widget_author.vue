@@ -2,7 +2,7 @@
   import tooltip from '../../vue_shared/directives/tooltip';
 
   export default {
-    name: 'MRWidgetAuthor',
+    name: 'MrWidgetAuthor',
     directives: {
       tooltip,
     },

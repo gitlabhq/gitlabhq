@@ -1224,6 +1224,32 @@ describe NotificationService, :mailer do
       end
     end
 
+    describe '#merge_request_unmergeable' do
+      it "sends email to merge request author" do
+        notification.merge_request_unmergeable(merge_request)
+
+        should_email(merge_request.author)
+        expect(email_recipients.size).to eq(1)
+      end
+
+      describe 'when merge_when_pipeline_succeeds is true' do
+        before do
+          merge_request.update_attributes(
+            merge_when_pipeline_succeeds: true,
+            merge_user: create(:user)
+          )
+        end
+
+        it "sends email to merge request author and merge_user" do
+          notification.merge_request_unmergeable(merge_request)
+
+          should_email(merge_request.author)
+          should_email(merge_request.merge_user)
+          expect(email_recipients.size).to eq(2)
+        end
+      end
+    end
+
     describe '#closed_merge_request' do
       before do
         update_custom_notification(:close_merge_request, @u_guest_custom, resource: project)

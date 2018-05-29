@@ -18,6 +18,10 @@ module NotificationRecipientService
     Builder::NewNote.new(*a).notification_recipients
   end
 
+  def self.build_merge_request_unmergeable_recipients(*a)
+    Builder::MergeRequestUnmergeable.new(*a).notification_recipients
+  end
+
   module Builder
     class Base
       def initialize(*)
@@ -328,6 +332,27 @@ module NotificationRecipientService
 
       def acting_user
         note.author
+      end
+    end
+
+    class MergeRequestUnmergeable < Base
+      attr_reader :target
+      def initialize(merge_request)
+        @target = merge_request
+      end
+
+      def build!
+        target.merge_participants.each do |user|
+          add_recipients(user, :participating, nil)
+        end
+      end
+
+      def custom_action
+        :unmergeable_merge_request
+      end
+
+      def acting_user
+        nil
       end
     end
   end

@@ -109,7 +109,7 @@ class User < ActiveRecord::Base
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
   has_many :users_star_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :starred_projects, through: :users_star_projects, source: :project
-  has_many :project_authorizations
+  has_many :project_authorizations, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_many :authorized_projects, through: :project_authorizations, source: :project
 
   has_many :user_interacted_projects
@@ -165,8 +165,7 @@ class User < ActiveRecord::Base
   validate :signup_domain_valid?, on: :create, if: ->(user) { !user.created_by_id }
 
   before_validation :sanitize_attrs
-  before_validation :set_notification_email, if: :email_changed?
-  before_save :set_notification_email, if: :email_changed? # in case validation is skipped
+  before_validation :set_notification_email, if: :new_record?
   before_validation :set_public_email, if: :public_email_changed?
   before_save :set_public_email, if: :public_email_changed? # in case validation is skipped
   before_save :ensure_incoming_email_token
@@ -179,8 +178,21 @@ class User < ActiveRecord::Base
   after_update :username_changed_hook, if: :username_changed?
   after_destroy :post_destroy_hook
   after_destroy :remove_key_cache
-  after_commit :update_emails_with_primary_email, on: :update, if: -> { previous_changes.key?('email') }
-  after_commit :update_invalid_gpg_signatures, on: :update, if: -> { previous_changes.key?('email') }
+  after_commit(on: :update) do
+    if previous_changes.key?('email')
+      # Grab previous_email here since previous_changes changes after
+      # #update_emails_with_primary_email and #update_notification_email are called
+      previous_email = previous_changes[:email][0]
+
+      update_emails_with_primary_email(previous_email)
+      update_invalid_gpg_signatures
+
+      if previous_email == notification_email
+        self.notification_email = email
+        save
+      end
+    end
+  end
 
   after_initialize :set_projects_limit
 
@@ -546,8 +558,7 @@ class User < ActiveRecord::Base
   # hash and `_was` variables getting munged.
   # By using an `after_commit` instead of `after_update`, we avoid the recursive callback
   # scenario, though it then requires us to use the `previous_changes` hash
-  def update_emails_with_primary_email
-    previous_email = previous_changes[:email][0]  # grab this before the DestroyService is called
+  def update_emails_with_primary_email(previous_email)
     primary_email_record = emails.find_by(email: email)
     Emails::DestroyService.new(self, user: self).execute(primary_email_record) if primary_email_record
 
@@ -772,13 +783,13 @@ class User < ActiveRecord::Base
   end
 
   def set_notification_email
-    if notification_email.blank? || !all_emails.include?(notification_email)
+    if notification_email.blank? || all_emails.exclude?(notification_email)
       self.notification_email = email
     end
   end
 
   def set_public_email
-    if public_email.blank? || !all_emails.include?(public_email)
+    if public_email.blank? || all_emails.exclude?(public_email)
       self.public_email = ''
     end
   end

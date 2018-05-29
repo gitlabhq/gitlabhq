@@ -215,8 +215,8 @@ are set in the build environment. These variables are only defined for
 [deployment jobs](../environments.md). Please consult the documentation of
 the project services that you are using to learn which variables they define.
 
-An example project service that defines deployment variables is
-[Kubernetes Service](../../user/project/integrations/kubernetes.md#deployment-variables).
+An example project service that defines deployment variables is the
+[Kubernetes integration](../../user/project/clusters/index.md#deployment-variables).
 
 ## Debug tracing
 
@@ -553,6 +553,7 @@ We do not support variables containing tokens because of security reasons.
 
 You can find a full list of unsupported variables below:
 
+- `CI_PIPELINE_ID`
 - `CI_JOB_ID`
 - `CI_JOB_TOKEN`
 - `CI_BUILD_ID`

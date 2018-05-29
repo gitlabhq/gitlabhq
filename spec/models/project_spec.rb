@@ -469,6 +469,34 @@ describe Project do
     end
   end
 
+  describe "#readme_url" do
+    let(:project) { create(:project, :repository, path: "somewhere") }
+
+    context 'with a non-existing repository' do
+      it 'returns nil' do
+        allow(project.repository).to receive(:tree).with(:head).and_return(nil)
+
+        expect(project.readme_url).to be_nil
+      end
+    end
+
+    context 'with an existing repository' do
+      context 'when no README exists' do
+        it 'returns nil' do
+          allow_any_instance_of(Tree).to receive(:readme).and_return(nil)
+
+          expect(project.readme_url).to be_nil
+        end
+      end
+
+      context 'when a README exists' do
+        it 'returns the README' do
+          expect(project.readme_url).to eql("#{Gitlab.config.gitlab.url}/#{project.namespace.full_path}/somewhere/blob/master/README.md")
+        end
+      end
+    end
+  end
+
   describe "#new_issuable_address" do
     let(:project) { create(:project, path: "somewhere") }
     let(:user) { create(:user) }

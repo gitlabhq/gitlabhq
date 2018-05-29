@@ -3,13 +3,13 @@
     Labels
     - if can_admin_issue?
       = icon("spinner spin", class: "block-loading")
-      = link_to "Edit", "#", class: "js-sidebar-dropdown-toggle edit-link pull-right"
+      = link_to "Edit", "#", class: "js-sidebar-dropdown-toggle edit-link float-right"
   .value.issuable-show-labels.dont-hide
     %span.no-value{ "v-if" => "issue.labels && issue.labels.length === 0" }
       None
     %a{ href: "#",
       "v-for" => "label in issue.labels" }
-      %span.label.color-label.has-tooltip{ ":style" => "{ backgroundColor: label.color, color: label.textColor }" }
+      %span.badge.color-label.has-tooltip{ ":style" => "{ backgroundColor: label.color, color: label.textColor }" }
         {{ label.title }}
   - if can_admin_issue?
     .selectbox

@@ -16,8 +16,12 @@ module Gitlab
           @message ||= process_message
         end
 
-        def process_message
-          message = ReplyParser.new(mail).execute.strip
+        def message_including_reply
+          @message_with_reply ||= process_message(trim_reply: false)
+        end
+
+        def process_message(**kwargs)
+          message = ReplyParser.new(mail, **kwargs).execute.strip
           add_attachments(message)
         end
 

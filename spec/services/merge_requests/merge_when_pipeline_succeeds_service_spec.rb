@@ -112,32 +112,6 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
         service.trigger(unrelated_pipeline)
       end
     end
-
-    context 'when the merge request is not mergeable' do
-      let(:mr_conflict) do
-        create(:merge_request, merge_when_pipeline_succeeds: true, merge_user: user,
-                               source_branch: 'master', target_branch: 'feature-conflict',
-                               source_project: project, target_project: project)
-      end
-
-      let(:conflict_pipeline) do
-        create(:ci_pipeline, project: project, ref: mr_conflict.source_branch,
-                             sha: mr_conflict.diff_head_sha, status: 'success',
-                             head_pipeline_of: mr_conflict)
-      end
-
-      it 'does not merge the merge request' do
-        expect(MergeWorker).not_to receive(:perform_async)
-
-        service.trigger(conflict_pipeline)
-      end
-
-      it 'creates todos for unmergeability' do
-        expect_any_instance_of(TodoService).to receive(:merge_request_became_unmergeable).with(mr_conflict)
-
-        service.trigger(conflict_pipeline)
-      end
-    end
   end
 
   describe "#cancel" do

@@ -1,9 +1,9 @@
 - if @project.pages_deployed?
   - if can?(current_user, :remove_pages, @project)
-    .panel.panel-default.panel.panel-danger
-      .panel-heading Remove pages
+    .card.bg-danger
+      .card-header Remove pages
       .errors-holder
-      .panel-body
+      .card-body
         %p
           Removing the pages will prevent from exposing them to outside world.
         .form-actions

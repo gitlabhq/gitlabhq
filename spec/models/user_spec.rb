@@ -393,24 +393,6 @@ describe User do
   end
 
   describe 'after commit hook' do
-    describe '.update_invalid_gpg_signatures' do
-      let(:user) do
-        create(:user, email: 'tula.torphy@abshire.ca').tap do |user|
-          user.skip_reconfirmation!
-        end
-      end
-
-      it 'does nothing when the name is updated' do
-        expect(user).not_to receive(:update_invalid_gpg_signatures)
-        user.update_attributes!(name: 'Bette')
-      end
-
-      it 'synchronizes the gpg keys when the email is updated' do
-        expect(user).to receive(:update_invalid_gpg_signatures).at_most(:twice)
-        user.update_attributes!(email: 'shawnee.ritchie@denesik.com')
-      end
-    end
-
     describe '#update_emails_with_primary_email' do
       before do
         @user = create(:user, email: 'primary@example.com').tap do |user|
@@ -448,6 +430,76 @@ describe User do
 
         expect(@user.emails.count).to eq 1
         expect(@user.emails.first.confirmed_at).not_to eq nil
+      end
+    end
+
+    describe '#update_notification_email' do
+      # Regression: https://gitlab.com/gitlab-org/gitlab-ce/issues/22846
+      context 'when changing :email' do
+        let(:user) { create(:user) }
+        let(:new_email) { 'new-email@example.com' }
+
+        it 'sets :unconfirmed_email' do
+          expect do
+            user.tap { |u| u.update!(email: new_email) }.reload
+          end.to change(user, :unconfirmed_email).to(new_email)
+        end
+
+        it 'does not change :notification_email' do
+          expect do
+            user.tap { |u| u.update!(email: new_email) }.reload
+          end.not_to change(user, :notification_email)
+        end
+
+        it 'updates :notification_email to the new email once confirmed' do
+          user.update!(email: new_email)
+
+          expect do
+            user.tap(&:confirm).reload
+          end.to change(user, :notification_email).to eq(new_email)
+        end
+
+        context 'and :notification_email is set to a secondary email' do
+          let!(:email_attrs) { attributes_for(:email, :confirmed, user: user) }
+          let(:secondary) { create(:email, :confirmed, email: 'secondary@example.com', user: user) }
+
+          before do
+            user.emails.create(email_attrs)
+            user.tap { |u| u.update!(notification_email: email_attrs[:email]) }.reload
+          end
+
+          it 'does not change :notification_email to :email' do
+            expect do
+              user.tap { |u| u.update!(email: new_email) }.reload
+            end.not_to change(user, :notification_email)
+          end
+
+          it 'does not change :notification_email to :email once confirmed' do
+            user.update!(email: new_email)
+
+            expect do
+              user.tap(&:confirm).reload
+            end.not_to change(user, :notification_email)
+          end
+        end
+      end
+    end
+
+    describe '#update_invalid_gpg_signatures' do
+      let(:user) do
+        create(:user, email: 'tula.torphy@abshire.ca').tap do |user|
+          user.skip_reconfirmation!
+        end
+      end
+
+      it 'does nothing when the name is updated' do
+        expect(user).not_to receive(:update_invalid_gpg_signatures)
+        user.update_attributes!(name: 'Bette')
+      end
+
+      it 'synchronizes the gpg keys when the email is updated' do
+        expect(user).to receive(:update_invalid_gpg_signatures).at_most(:twice)
+        user.update_attributes!(email: 'shawnee.ritchie@denesik.com')
       end
     end
   end

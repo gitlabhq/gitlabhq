@@ -1,5 +1,0 @@
----
-title: Fix finding wiki pages when they have invalidly-encoded content
-merge_request: 18856
-author:
-type: fixed

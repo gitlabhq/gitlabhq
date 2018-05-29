@@ -1,6 +1,0 @@
----
-title: Ensure web hook 'blocked URL' errors are stored in web hook logs and properly
-  surfaced to the user
-merge_request:
-author:
-type: fixed

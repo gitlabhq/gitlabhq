@@ -48,11 +48,10 @@ export default {
       return `${this.job.runner.description} (#${this.job.runner.id})`;
     },
     retryButtonClass() {
-      let className = 'js-retry-button pull-right btn btn-retry visible-md-block visible-lg-block';
+      let className =
+        'js-retry-button float-right btn btn-retry d-none d-md-block d-lg-block d-xl-block';
       className +=
-        this.job.status && this.job.recoverable
-          ? ' btn-primary'
-          : ' btn-inverted-secondary';
+        this.job.status && this.job.recoverable ? ' btn-primary' : ' btn-inverted-secondary';
       return className;
     },
     hasTimeout() {
@@ -104,8 +103,7 @@ export default {
       <button
         type="button"
         :aria-label="__('Toggle Sidebar')"
-        class="btn btn-blank gutter-toggle pull-right
-          visible-xs-block visible-sm-block js-sidebar-build-toggle"
+        class="btn btn-blank gutter-toggle float-right d-block d-md-none js-sidebar-build-toggle"
       >
         <i
           aria-hidden="true"
