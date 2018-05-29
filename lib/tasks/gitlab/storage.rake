@@ -25,7 +25,7 @@ namespace :gitlab do
     desc 'Gitlab | Storage | Summary of existing projects using Legacy Storage'
     task legacy_projects: :environment do
       helper = Gitlab::HashedStorage::RakeHelper
-      helper.relation_summary('projects', Project.without_storage_feature(:repository))
+      helper.relation_summary('projects using Legacy Storage', Project.without_storage_feature(:repository))
     end
 
     desc 'Gitlab | Storage | List existing projects using Legacy Storage'
