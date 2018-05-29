@@ -38,16 +38,18 @@ export default {
     }
   },
   [types.REQUEST_JOBS](state, id) {
-    state.stages = state.stages.map(stage => ({
-      ...stage,
-      isLoading: id === stage.id ? true : stage.isLoading,
-    }));
+    state.stages = state.stages.map(stage =>
+      Object.assign(stage, {
+        isLoading: id === stage.id ? true : stage.isLoading,
+      }),
+    );
   },
   [types.RECEIVE_JOBS_ERROR](state, id) {
-    state.stages = state.stages.map(stage => ({
-      ...stage,
-      isLoading: id === stage.id ? true : stage.isLoading,
-    }));
+    state.stages = state.stages.map(stage =>
+      Object.assign(stage, {
+        isLoading: id === stage.id ? true : stage.isLoading,
+      }),
+    );
   },
   [types.RECEIVE_JOBS_SUCCESS](state, { id, data }) {
     const normalizeData = job => ({
@@ -57,16 +59,18 @@ export default {
       path: job.build_path,
     });
 
-    state.stages = state.stages.map(stage => ({
-      ...stage,
-      isLoading: id === stage.id ? false : stage.isLoading,
-      jobs: id === stage.id ? data.latest_statuses.map(normalizeData) : stage.jobs,
-    }));
+    state.stages = state.stages.map(stage =>
+      Object.assign(stage, {
+        isLoading: id === stage.id ? false : stage.isLoading,
+        jobs: id === stage.id ? data.latest_statuses.map(normalizeData) : stage.jobs,
+      }),
+    );
   },
   [types.TOGGLE_STAGE_COLLAPSE](state, id) {
-    state.stages = state.stages.map(stage => ({
-      ...stage,
-      isCollapsed: stage.id === id ? !stage.isCollapsed : stage.isCollapsed,
-    }));
+    state.stages = state.stages.map(stage =>
+      Object.assign(stage, {
+        isCollapsed: stage.id === id ? !stage.isCollapsed : stage.isCollapsed,
+      }),
+    );
   },
 };

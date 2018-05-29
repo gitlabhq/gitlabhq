@@ -4,9 +4,9 @@ export const pipelineFailed = state =>
   state.latestPipeline && state.latestPipeline.details.status.text === 'failed';
 
 export const failedStages = state =>
-  state.stages.filter(stage => stage.status.text === 'failed').map(stage => ({
+  state.stages.filter(stage => stage.status.text.toLowerCase() === 'failed').map(stage => ({
     ...stage,
-    jobs: stage.jobs.filter(job => job.status.text === 'failed'),
+    jobs: stage.jobs.filter(job => job.status.text.toLowerCase() === 'failed'),
   }));
 
 export const failedJobsCount = state =>

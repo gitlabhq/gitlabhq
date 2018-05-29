@@ -24,4 +24,5 @@ export default () => ({
   unusedSeal: true,
   fileFindVisible: false,
   rightPane: null,
+  links: {},
 });
