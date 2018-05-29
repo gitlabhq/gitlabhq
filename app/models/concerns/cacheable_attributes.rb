@@ -25,7 +25,11 @@ module CacheableAttributes
     end
 
     def cached
-      retrieve_from_cache
+      if RequestStore.active?
+        RequestStore[:"#{name}_cached_attributes"] ||= retrieve_from_cache
+      else
+        retrieve_from_cache
+      end
     end
 
     def retrieve_from_cache

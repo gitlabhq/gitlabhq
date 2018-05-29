@@ -177,6 +177,15 @@ describe CacheableAttributes do
         end
       end
     end
+
+    it 'uses RequestStore in addition to Rails.cache', :request_store do
+      # Warm up the cache
+      create(:application_setting).cache!
+
+      expect(Rails.cache).to receive(:read).with(ApplicationSetting.cache_key).once.and_call_original
+
+      2.times { ApplicationSetting.current }
+    end
   end
 
   describe '.cached', :use_clean_rails_memory_store_caching do
