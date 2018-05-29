@@ -1,17 +1,17 @@
 import Vue from 'vue';
 
-import dropdownHiddenInputComponent from '~/vue_shared/components/sidebar/labels_select/dropdown_hidden_input.vue';
+import dropdownHiddenInputComponent from '~/vue_shared/components/dropdown/dropdown_hidden_input.vue';
 
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 import { mockLabels } from './mock_data';
 
-const createComponent = (name = 'label_id[]', label = mockLabels[0]) => {
+const createComponent = (name = 'label_id[]', value = mockLabels[0].id) => {
   const Component = Vue.extend(dropdownHiddenInputComponent);
 
   return mountComponent(Component, {
     name,
-    label,
+    value,
   });
 };
 
@@ -31,7 +31,7 @@ describe('DropdownHiddenInputComponent', () => {
       expect(vm.$el.nodeName).toBe('INPUT');
       expect(vm.$el.getAttribute('type')).toBe('hidden');
       expect(vm.$el.getAttribute('name')).toBe(vm.name);
-      expect(vm.$el.getAttribute('value')).toBe(`${vm.label.id}`);
+      expect(vm.$el.getAttribute('value')).toBe(`${vm.value}`);
     });
   });
 });

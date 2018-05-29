@@ -5,8 +5,8 @@ export default {
       type: String,
       required: true,
     },
-    label: {
-      type: Object,
+    value: {
+      type: [Number, String],
       required: true,
     },
   },
@@ -17,6 +17,6 @@ export default {
   <input
     type="hidden"
     :name="name"
-    :value="label.id"
+    :value="value"
   />
 </template>

@@ -162,7 +162,7 @@ gem 'acts-as-taggable-on', '~> 5.0'
 # Background jobs
 gem 'sidekiq', '~> 5.1'
 gem 'sidekiq-cron', '~> 0.6.0'
-gem 'redis-namespace', '~> 1.5.2'
+gem 'redis-namespace', '~> 1.6.0'
 gem 'sidekiq-limit_fetch', '~> 3.4', require: false
 
 # Cron Parser
@@ -412,7 +412,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.99.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.100.0', require: 'gitaly'
 gem 'grpc', '~> 1.11.0'
 
 # Locked until https://github.com/google/protobuf/issues/4210 is closed

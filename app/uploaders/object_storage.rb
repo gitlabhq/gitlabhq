@@ -11,7 +11,7 @@ module ObjectStorage
   ObjectStorageUnavailable = Class.new(StandardError)
 
   DIRECT_UPLOAD_TIMEOUT = 4.hours
-  TMP_UPLOAD_PATH = 'tmp/upload'.freeze
+  TMP_UPLOAD_PATH = 'tmp/uploads'.freeze
 
   module Store
     LOCAL = 1
