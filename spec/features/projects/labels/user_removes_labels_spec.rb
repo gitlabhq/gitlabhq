@@ -40,6 +40,7 @@ describe "User removes labels" do
       loop do
         li = page.first(".label-list-item")
         break unless li
+
         li.find('.js-label-options-dropdown').click
         li.click_button("Delete")
         click_link("Delete label")
