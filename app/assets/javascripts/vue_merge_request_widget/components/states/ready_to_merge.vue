@@ -43,7 +43,9 @@ export default {
     status() {
       const { pipeline, isPipelineActive, isPipelineFailed, hasCI, ciStatus } = this.mr;
 
-      if (hasCI && !ciStatus) {
+      if (!hasCI) {
+        return 'success';
+      } else if (hasCI && !ciStatus) {
         return 'failed';
       } else if (!pipeline) {
         return 'success';
@@ -77,14 +79,14 @@ export default {
     mergeButtonText() {
       if (this.isMergingImmediately) {
         return 'Merge in progress';
-      } else if (this.shouldShowMergeWhenPipelineSucceedsText) {
+      } else if (this.hasCI && this.shouldShowMergeWhenPipelineSucceedsText) {
         return 'Merge when pipeline succeeds';
       }
 
       return 'Merge';
     },
     shouldShowMergeOptionsDropdown() {
-      return this.mr.isPipelineActive && !this.mr.onlyAllowMergeIfPipelineSucceeds;
+      return this.mr.hasCI && this.mr.isPipelineActive && !this.mr.onlyAllowMergeIfPipelineSucceeds;
     },
     isMergeButtonDisabled() {
       const { commitMessage } = this;
