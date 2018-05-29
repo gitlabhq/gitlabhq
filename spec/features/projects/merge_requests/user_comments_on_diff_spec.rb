@@ -112,7 +112,7 @@ describe 'User comments on a diff', :js do
   end
 
   context 'when editing comments' do
-    xit 'edits a comment' do
+    it 'edits a comment' do
       click_diff_line(find("[id='#{sample_commit.line_code}']"))
 
       page.within('.js-discussion-note-form') do
