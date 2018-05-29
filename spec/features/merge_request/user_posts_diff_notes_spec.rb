@@ -185,7 +185,7 @@ describe 'Merge request > User posts diff notes', :js do
     end
 
     describe 'posting a note' do
-      it 'adds as discussion' do
+      xit 'adds as discussion' do
         expect(page).to have_css('.js-temp-notes-holder', count: 2)
 
         should_allow_commenting(find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_22_22"]'), asset_form_reset: false)
