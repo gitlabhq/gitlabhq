@@ -49,6 +49,9 @@ module API
       optional :signin_enabled, type: Boolean, desc: 'Flag indicating if password authentication is enabled for the web interface' # support legacy names, can be removed in v5
       mutually_exclusive :password_authentication_enabled_for_web, :password_authentication_enabled, :signin_enabled
       optional :password_authentication_enabled_for_git, type: Boolean, desc: 'Flag indicating if password authentication is enabled for Git over HTTP(S)'
+      optional :performance_bar_allowed_group_path, type: String, desc: 'Path of the group that is allowed to toggle the performance bar.'
+      optional :performance_bar_allowed_group_id, type: String, desc: 'Depreated: Use :performance_bar_allowed_group_path instead. Path of the group that is allowed to toggle the performance bar.' # support legacy names, can be removed in v6
+      optional :performance_bar_enabled, type: String, desc: 'Deprecated: Pass `performance_bar_allowed_group_path: nil` instead. Allow enabling the performance.' # support legacy names, can be removed in v6
       optional :require_two_factor_authentication, type: Boolean, desc: 'Require all users to setup Two-factor authentication'
       given require_two_factor_authentication: ->(val) { val } do
         requires :two_factor_grace_period, type: Integer, desc: 'Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication'
@@ -151,18 +154,37 @@ module API
       optional :repository_storages, type: Array[String], desc: 'A list of names of enabled storage paths, taken from `gitlab.yml`. New projects will be created in one of these stores, chosen at random.'
       optional :repository_size_limit, type: Integer, desc: 'Size limit per repository (MB)'
 
-      all_attributes = ApplicationSettingsHelper.visible_attributes
+      optional_attributes = ::ApplicationSettingsHelper.visible_attributes << :performance_bar_allowed_group_id
 
-      ## EE-only
-      all_attributes += EE::ApplicationSettingsHelper.possible_licensed_attributes
+      ## EE-only START
+      optional_attributes += EE::ApplicationSettingsHelper.possible_licensed_attributes
+      ## EE-only END
 
-      optional(*all_attributes)
-      at_least_one_of(*all_attributes)
+      optional(*optional_attributes)
+      at_least_one_of(*optional_attributes)
     end
     put "application/settings" do
       attrs = declared_params(include_missing: false)
 
-      ## EE-only: Remove unlicensed attributes
+      # support legacy names, can be removed in v6
+      if attrs.has_key?(:performance_bar_allowed_group_id)
+        attrs[:performance_bar_allowed_group_path] = attrs.delete(:performance_bar_allowed_group_id)
+      end
+
+      # support legacy names, can be removed in v6
+      if attrs.has_key?(:performance_bar_enabled)
+        performance_bar_enabled = attrs.delete(:performance_bar_allowed_group_id)
+        attrs[:performance_bar_allowed_group_path] = nil unless performance_bar_enabled
+      end
+
+      # support legacy names, can be removed in v5
+      if attrs.has_key?(:signin_enabled)
+        attrs[:password_authentication_enabled_for_web] = attrs.delete(:signin_enabled)
+      elsif attrs.has_key?(:password_authentication_enabled)
+        attrs[:password_authentication_enabled_for_web] = attrs.delete(:password_authentication_enabled)
+      end
+
+      ## EE-only START: Remove unlicensed attributes
       unless ::License.feature_available?(:repository_mirrors)
         attrs = attrs.except(*::EE::ApplicationSettingsHelper.repository_mirror_attributes)
       end
@@ -174,13 +196,7 @@ module API
       unless ::License.feature_available?(:email_additional_text)
         attrs = attrs.except(:email_additional_text)
       end
-
-      # support legacy names, can be removed in v5
-      if attrs.has_key?(:signin_enabled)
-        attrs[:password_authentication_enabled_for_web] = attrs.delete(:signin_enabled)
-      elsif attrs.has_key?(:password_authentication_enabled)
-        attrs[:password_authentication_enabled_for_web] = attrs.delete(:password_authentication_enabled)
-      end
+      ## EE-only END: Remove unlicensed attributes
 
       if ApplicationSettings::UpdateService.new(current_settings, current_user, attrs).execute
         present current_settings, with: Entities::ApplicationSetting
