@@ -1,0 +1,5 @@
+---
+title: Allow raw `tls_options` to be passed in LDAP configuration
+merge_request: 20678
+author:
+type: changed
