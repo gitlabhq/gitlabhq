@@ -65,15 +65,28 @@ describe('IDE pipelines actions', () => {
   });
 
   describe('receiveLatestPipelineSuccess', () => {
-    it('commits pipeline', done => {
-      testAction(
-        receiveLatestPipelineSuccess,
+    const rootGetters = {
+      lastCommit: { id: '123' },
+    };
+    let commit;
+
+    beforeEach(() => {
+      commit = jasmine.createSpy('commit');
+    });
+
+    it('commits pipeline', () => {
+      receiveLatestPipelineSuccess({ rootGetters, commit }, { pipelines });
+
+      expect(commit.calls.argsFor(0)).toEqual([
+        types.RECEIVE_LASTEST_PIPELINE_SUCCESS,
         pipelines[0],
-        mockedState,
-        [{ type: types.RECEIVE_LASTEST_PIPELINE_SUCCESS, payload: pipelines[0] }],
-        [],
-        done,
-      );
+      ]);
+    });
+
+    it('commits false when there are no pipelines', () => {
+      receiveLatestPipelineSuccess({ rootGetters, commit }, { pipelines: [] });
+
+      expect(commit.calls.argsFor(0)).toEqual([types.RECEIVE_LASTEST_PIPELINE_SUCCESS, false]);
     });
   });
 

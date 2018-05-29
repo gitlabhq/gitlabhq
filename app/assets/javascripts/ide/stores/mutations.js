@@ -114,12 +114,13 @@ export default {
   },
   [types.SET_EMPTY_STATE_SVGS](
     state,
-    { emptyStateSvgPath, noChangesStateSvgPath, committedStateSvgPath },
+    { emptyStateSvgPath, noChangesStateSvgPath, committedStateSvgPath, pipelinesEmptyStateSvgPath },
   ) {
     Object.assign(state, {
       emptyStateSvgPath,
       noChangesStateSvgPath,
       committedStateSvgPath,
+      pipelinesEmptyStateSvgPath,
     });
   },
   [types.TOGGLE_FILE_FINDER](state, fileFindVisible) {

@@ -47,13 +47,14 @@ describe('IDE pipelines mutations', () => {
         path: 'test',
         commit: { id: '123' },
         details: { status: jasmine.any(Object) },
+        yamlError: undefined,
       });
     });
 
     it('does not set latest pipeline if pipeline is null', () => {
       mutations[types.RECEIVE_LASTEST_PIPELINE_SUCCESS](mockedState, null);
 
-      expect(mockedState.latestPipeline).toEqual(null);
+      expect(mockedState.latestPipeline).toEqual(false);
     });
 
     it('sets stages', () => {

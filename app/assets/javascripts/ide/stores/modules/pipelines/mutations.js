@@ -19,6 +19,7 @@ export default {
         details: {
           status: pipeline.details.status,
         },
+        yamlError: pipeline.yaml_errors,
       };
       state.stages = pipeline.details.stages.map((stage, i) => {
         const foundStage = state.stages.find(s => s.id === i);
@@ -32,6 +33,8 @@ export default {
           jobs: foundStage ? foundStage.jobs : [],
         };
       });
+    } else {
+      state.latestPipeline = false;
     }
   },
   [types.REQUEST_JOBS](state, id) {

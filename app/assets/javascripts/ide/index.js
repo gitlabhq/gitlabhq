@@ -21,6 +21,7 @@ export function initIde(el) {
         emptyStateSvgPath: el.dataset.emptyStateSvgPath,
         noChangesStateSvgPath: el.dataset.noChangesStateSvgPath,
         committedStateSvgPath: el.dataset.committedStateSvgPath,
+        pipelinesEmptyStateSvgPath: el.dataset.pipelinesEmptyStateSvgPath,
       });
     },
     render(createElement) {

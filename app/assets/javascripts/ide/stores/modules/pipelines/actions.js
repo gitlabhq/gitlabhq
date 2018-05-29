@@ -19,12 +19,14 @@ export const receiveLatestPipelineError = ({ commit, dispatch }) => {
   dispatch('stopPipelinePolling');
 };
 export const receiveLatestPipelineSuccess = ({ rootGetters, commit }, { pipelines }) => {
+  let lastCommitPipeline = false;
+
   if (pipelines && pipelines.length) {
     const lastCommitHash = rootGetters.lastCommit && rootGetters.lastCommit.id;
-    const lastCommitPipeline = pipelines.find(pipeline => pipeline.commit.id === lastCommitHash);
-
-    commit(types.RECEIVE_LASTEST_PIPELINE_SUCCESS, lastCommitPipeline);
+    lastCommitPipeline = pipelines.find(pipeline => pipeline.commit.id === lastCommitHash);
   }
+
+  commit(types.RECEIVE_LASTEST_PIPELINE_SUCCESS, lastCommitPipeline);
 };
 
 export const fetchLatestPipeline = ({ dispatch, rootGetters }) => {

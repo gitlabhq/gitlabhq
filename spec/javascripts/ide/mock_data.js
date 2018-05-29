@@ -20,12 +20,14 @@ export const pipelines = [
     ref: 'master',
     sha: '123',
     status: 'failed',
+    commit: { id: '123' },
   },
   {
     id: 2,
     ref: 'master',
     sha: '213',
     status: 'success',
+    commit: { id: '213' },
   },
 ];
 
