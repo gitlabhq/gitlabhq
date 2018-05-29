@@ -408,6 +408,17 @@ Perforce will reject any pushes that rewrite history. It is recommended that
 only the fewest number of branches are mirrored due to the performance
 limitations of GitFusion.
 
+When configuring mirroring with Perforce via GitFusion, the following GitFusion
+settings are recommended:
+
+- `change-pusher` should be disabled, otherwise every commit will be rewritten
+as being committed by the mirroring account, rather than being mapped to
+existing Perforce users or the `unknown_git` user.
+- `unknown_git` user will be used as the commit author if the GitLab user does
+not exist in Perforce.
+
+Read about [GitFusion settings on Perforce.com][gitfusion-settings].
+
 [ee-51]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/51
 [ee-2551]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2551
 [ee-3117]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3117
@@ -422,3 +433,4 @@ limitations of GitFusion.
 [webhook]: ../user/project/integrations/webhooks.md#push-events
 [pull-api]: ../api/projects.md#start-the-pull-mirroring-process-for-a-project
 [perforce]: ../user/project/import/perforce.md
+[gitfusion-settings]: https://www.perforce.com/perforce/doc.current/manuals/git-fusion/Content/Git-Fusion/section_zdp_zz1_3l.html
