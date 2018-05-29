@@ -5374,7 +5374,7 @@ msgstr ""
 msgid "To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. Only epics in the past 3 months and the next 3 months are shown."
 msgstr ""
 
-msgid "To widen your search, change or remove filters. If something is missing, create an epic."
+msgid "To widen your search, change or remove filters."
 msgstr ""
 
 msgid "Todo"
