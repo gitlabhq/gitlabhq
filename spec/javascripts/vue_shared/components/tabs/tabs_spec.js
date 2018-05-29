@@ -43,15 +43,15 @@ describe('Tabs component', () => {
     });
 
     it('renders active class', () => {
-      expect(vm.$el.querySelector('li').classList).toContain('active');
+      expect(vm.$el.querySelector('a').classList).toContain('active');
     });
 
     it('updates active class on click', done => {
       vm.$el.querySelectorAll('a')[1].click();
 
       setTimeout(() => {
-        expect(vm.$el.querySelector('li').classList).not.toContain('active');
-        expect(vm.$el.querySelectorAll('li')[1].classList).toContain('active');
+        expect(vm.$el.querySelector('a').classList).not.toContain('active');
+        expect(vm.$el.querySelectorAll('a')[1].classList).toContain('active');
 
         done();
       });

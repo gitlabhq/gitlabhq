@@ -38,7 +38,7 @@ describe('IDE pipelines list', () => {
 
     mock
       .onGet('/abc/def/commit/123/pipelines')
-      .reply(200, { pipelines: [...pipelines] }, { 'poll-interval': '-1' });
+      .replyOnce(200, { pipelines: [...pipelines] }, { 'poll-interval': '-1' });
 
     vm = createComponentWithStore(Component, store).$mount();
 
@@ -48,6 +48,8 @@ describe('IDE pipelines list', () => {
   afterEach(() => {
     vm.$destroy();
     mock.restore();
+    vm.$store.dispatch('stopPipelinePolling');
+    vm.$store.dispatch('clearEtagPoll');
   });
 
   it('renders pipeline data', () => {
