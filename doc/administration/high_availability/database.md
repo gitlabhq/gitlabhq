@@ -216,7 +216,6 @@ On each Consul node perform the following:
 1. Edit `/etc/gitlab/gitlab.rb` replacing values noted in the `# START user configuration` section:
 
     ```ruby
-<<<<<<< HEAD
     # Disable all components except Consul
     roles ['consul_role']
 
@@ -271,11 +270,6 @@ On each database node perform the following:
 
     ```ruby
     # Disable all components except PostgreSQL and Repmgr and Consul
-=======
-    external_url 'https://gitlab.example.com'
-
-    # Disable all components except PostgreSQL
->>>>>>> upstream/master
     roles ['postgres_role']
 
     # PostgreSQL configuration
@@ -545,8 +539,8 @@ gitlab-rake gitlab:db:configure
 
 > **Note**: If you encounter a `rake aborted!` error stating that PGBouncer is failing to connect to
 PostgreSQL it may be that your PGBouncer node's IP address is missing from
-PostgreSQL's `trust_auth_cidr_addresses` in `gitlab.rb` on your database nodes. See 
-[PGBouncer error `ERROR:  pgbouncer cannot connect to server`](#pgbouncer-error-error-pgbouncer-cannot-connect-to-server) 
+PostgreSQL's `trust_auth_cidr_addresses` in `gitlab.rb` on your database nodes. See
+[PGBouncer error `ERROR:  pgbouncer cannot connect to server`](#pgbouncer-error-error-pgbouncer-cannot-connect-to-server)
 in the Troubleshooting section before proceeding.
 
 #### Ensure GitLab is running
@@ -980,25 +974,25 @@ On the consul server nodes, it is important to restart the consul service in a c
 
 #### PGBouncer error `ERROR:  pgbouncer cannot connect to server`
 
-You may get this error when running `gitlab-rake gitlab:db:configure` or you 
-may see the error in the PGBouncer log file. 
+You may get this error when running `gitlab-rake gitlab:db:configure` or you
+may see the error in the PGBouncer log file.
 
 ```
 PG::ConnectionBad: ERROR:  pgbouncer cannot connect to server
 ```
 
 The problem may be that your PGBouncer node's IP address is not included in the
-`trust_auth_cidr_addresses` setting in `/etc/gitlab/gitlab.rb` on the database nodes. 
+`trust_auth_cidr_addresses` setting in `/etc/gitlab/gitlab.rb` on the database nodes.
 
 You can confirm that this is the issue by checking the PostgreSQL log on the master
-database node. If you see the following error then `trust_auth_cidr_addresses` 
+database node. If you see the following error then `trust_auth_cidr_addresses`
 is the problem.
 
 ```
 2018-03-29_13:59:12.11776 FATAL:  no pg_hba.conf entry for host "123.123.123.123", user "pgbouncer", database "gitlabhq_production", SSL off
 ```
 
-To fix the problem, add the IP address to `/etc/gitlab/gitlab.rb`. 
+To fix the problem, add the IP address to `/etc/gitlab/gitlab.rb`.
 
 ```
 postgresql['trust_auth_cidr_addresses'] = %w(123.123.123.123/32 <other_cidrs>)
