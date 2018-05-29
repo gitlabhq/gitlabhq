@@ -36,7 +36,7 @@ feature 'Labels subscription' do
       within "#group_label_#{feature.id}" do
         expect(page).not_to have_button 'Unsubscribe'
 
-        click_link_on_dropdown('Group level')
+        click_link_on_dropdown('Subscribe at group level')
 
         expect(page).not_to have_selector('.dropdown-group-label')
         expect(page).to have_button 'Unsubscribe'
@@ -45,7 +45,7 @@ feature 'Labels subscription' do
 
         expect(page).to have_selector('.dropdown-group-label')
 
-        click_link_on_dropdown('Project level')
+        click_link_on_dropdown('Subscribe at project level')
 
         expect(page).not_to have_selector('.dropdown-group-label')
         expect(page).to have_button 'Unsubscribe'
@@ -66,6 +66,8 @@ feature 'Labels subscription' do
 
   def click_link_on_dropdown(text)
     find('.dropdown-group-label').click
+
+    screenshot_and_open_image
 
     page.within('.dropdown-group-label') do
       find('a.js-subscribe-button', text: text).click
