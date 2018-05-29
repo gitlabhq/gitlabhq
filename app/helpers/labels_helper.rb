@@ -211,14 +211,12 @@ module LabelsHelper
     end
   end
 
-  def label_status_tooltip(status)
-    return '' unless status
+  def label_status_tooltip(label, status)
+    type = label.is_a?(ProjectLabel) ? 'project' : 'group'
+    level = status.unsubscribed? ? type : status.sub('-level', '')
+    action = status.unsubscribed? ? 'Subscribe' : 'Unsubscribe'
 
-    if status.unsubscribed?
-      "Subscribe at #{label.is_a?(ProjectLabel) ? 'project' : 'group'} level"
-    else
-      "Unsubscribe at #{status.sub('-', ' ')}"
-    end
+    "#{action} at #{level} level"
   end
 
   # Required for Banzai::Filter::LabelReferenceFilter
