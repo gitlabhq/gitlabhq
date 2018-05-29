@@ -1,0 +1,5 @@
+---
+title: Fixed bug that allowed importing arbitrary project attributes
+merge_request:
+author:
+type: security
