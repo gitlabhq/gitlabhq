@@ -146,6 +146,24 @@ describe Projects::BranchesController do
 
           it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
         end
+
+        it 'redirects to autodeploy setup page' do
+          result = { status: :success, branch: double(name: branch) }
+
+          create(:cluster, :provided_by_gcp, projects: [project])
+
+          expect_any_instance_of(CreateBranchService).to receive(:execute).and_return(result)
+          expect(SystemNoteService).to receive(:new_issue_branch).and_return(true)
+
+          post :create,
+            namespace_id: project.namespace.to_param,
+            project_id: project.to_param,
+            branch_name: branch,
+            issue_iid: issue.iid
+
+          expect(response.location).to include(project_new_blob_path(project, branch))
+          expect(response).to have_gitlab_http_status(302)
+        end
       end
 
       context 'when create branch service fails' do
