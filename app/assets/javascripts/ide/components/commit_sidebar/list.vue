@@ -120,7 +120,7 @@ export default {
     </ul>
     <p
       v-else
-      class="multi-file-commit-list help-block"
+      class="multi-file-commit-list form-text text-muted"
     >
       {{ __('No changes') }}
     </p>
