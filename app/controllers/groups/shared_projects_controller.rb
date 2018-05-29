@@ -21,7 +21,7 @@ module Groups
 
     def finder_params
       @finder_params ||= begin
-                           # Make the `search` param consitent for the frontend,
+                           # Make the `search` param consistent for the frontend,
                            # which will be using `filter`.
                            params[:search] ||= params[:filter] if params[:filter]
                            params.permit(:sort, :search)

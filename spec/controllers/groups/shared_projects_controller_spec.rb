@@ -13,9 +13,9 @@ describe Groups::SharedProjectsController do
     ).execute(group)
   end
 
-  let(:group) { create(:group) }
-  let(:user) { create(:user) }
-  let!(:shared_project) do
+  set(:group) { create(:group) }
+  set(:user) { create(:user) }
+  set(:shared_project) do
     shared_project = create(:project, namespace: user.namespace)
     share_project(shared_project)
 
@@ -37,7 +37,7 @@ describe Groups::SharedProjectsController do
       expect(json_project_ids).to contain_exactly(shared_project.id)
     end
 
-    it 'allows fitlering shared projects' do
+    it 'allows filtering shared projects' do
       project = create(:project, :archived, namespace: user.namespace, name: "Searching for")
       share_project(project)
 
