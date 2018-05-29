@@ -73,7 +73,8 @@ module Gitlab
             encryption: options['encryption'],
             filter: omniauth_user_filter,
             name_proc: name_proc,
-            disable_verify_certificates: !options['verify_certificates']
+            disable_verify_certificates: !options['verify_certificates'],
+            tls_options: tls_options
           )
 
           if has_auth?
@@ -82,9 +83,6 @@ module Gitlab
               password: options['password']
             )
           end
-
-          opts[:ca_file] = options['ca_file'] if options['ca_file'].present?
-          opts[:ssl_version] = options['ssl_version'] if options['ssl_version'].present?
 
           opts
         end
@@ -199,19 +197,22 @@ module Gitlab
 
           {
             method: method,
-            tls_options: tls_options(method)
+            tls_options: tls_options
           }
         end
 
         def translate_method(method_from_config)
+          return nil unless method_from_config
+
           NET_LDAP_ENCRYPTION_METHOD[method_from_config.to_sym]
         end
 
-        def tls_options(method)
-          return { verify_mode: OpenSSL::SSL::VERIFY_NONE } unless method
+         def tls_options
+          method = translate_method(options['encryption'])
+          return nil unless method
 
-          opts = if options['verify_certificates']
-                   OpenSSL::SSL::SSLContext::DEFAULT_PARAMS
+          opts = if options['verify_certificates'] && method != 'plain'
+                   OpenSSL::SSL::SSLContext::DEFAULT_PARAMS.dup
                  else
                    # It is important to explicitly set verify_mode for two reasons:
                    # 1. The behavior of OpenSSL is undefined when verify_mode is not set.
@@ -220,8 +221,10 @@ module Gitlab
                    { verify_mode: OpenSSL::SSL::VERIFY_NONE }
                  end
 
-          opts[:ca_file] = options['ca_file'] if options['ca_file'].present?
-          opts[:ssl_version] = options['ssl_version'] if options['ssl_version'].present?
+          if options['tls_options']
+            tls_options = options['tls_options'].delete_if { |_, value| value.nil? || value.blank? }
+            opts.merge!(tls_options.symbolize_keys)
+          end
 
           opts
         end

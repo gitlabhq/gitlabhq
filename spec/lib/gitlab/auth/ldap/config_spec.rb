@@ -130,7 +130,9 @@ describe Gitlab::Auth::LDAP::Config do
             'host'                => 'ldap.example.com',
             'port'                => 686,
             'encryption'          => 'simple_tls',
-            'ca_file'             => '/etc/ca.pem'
+            'tls_options'         => {
+              'ca_file'           => '/etc/ca.pem'
+            }
           }
         )
 
@@ -145,7 +147,9 @@ describe Gitlab::Auth::LDAP::Config do
             'host'                => 'ldap.example.com',
             'port'                => 686,
             'encryption'          => 'simple_tls',
-            'ca_file'             => ' '
+            'tls_options'         => {
+              'ca_file'           => ' '
+            }
           }
         )
 
@@ -160,7 +164,9 @@ describe Gitlab::Auth::LDAP::Config do
             'host'                => 'ldap.example.com',
             'port'                => 686,
             'encryption'          => 'simple_tls',
-            'ssl_version'         => 'TLSv1_2'
+            'tls_options'         => {
+              'ssl_version'       => 'TLSv1_2'
+            }
           }
         )
 
@@ -175,7 +181,9 @@ describe Gitlab::Auth::LDAP::Config do
             'host'                => 'ldap.example.com',
             'port'                => 686,
             'encryption'          => 'simple_tls',
-            'ssl_version'         => ' '
+            'tls_options'         => {
+              'ssl_version'       => ' '
+            }
           }
         )
 
@@ -261,11 +269,13 @@ describe Gitlab::Auth::LDAP::Config do
             'port'                => 686,
             'encryption'          => 'simple_tls',
             'verify_certificates' => true,
-            'ca_file'             => '/etc/ca.pem'
+            'tls_options'         => {
+              'ca_file'           => '/etc/ca.pem'
+            }
           }
         )
 
-        expect(config.omniauth_options).to include({ ca_file: '/etc/ca.pem' })
+        expect(config.omniauth_options[:tls_options]).to include({ ca_file: '/etc/ca.pem' })
       end
     end
 
@@ -277,11 +287,13 @@ describe Gitlab::Auth::LDAP::Config do
             'port'                => 686,
             'encryption'          => 'simple_tls',
             'verify_certificates' => true,
-            'ca_file'             => ' '
+            'tls_options'         => {
+              'ca_file'           => ' '
+            }
           }
         )
 
-        expect(config.omniauth_options).not_to have_key(:ca_file)
+        expect(config.omniauth_options[:tls_options]).not_to have_key(:ca_file)
       end
     end
 
@@ -293,11 +305,13 @@ describe Gitlab::Auth::LDAP::Config do
             'port'                => 686,
             'encryption'          => 'simple_tls',
             'verify_certificates' => true,
-            'ssl_version'         => 'TLSv1_2'
+            'tls_options'         => {
+              'ssl_version'       => 'TLSv1_2'
+            }
           }
         )
 
-        expect(config.omniauth_options).to include({ ssl_version: 'TLSv1_2' })
+        expect(config.omniauth_options[:tls_options]).to include({ ssl_version: 'TLSv1_2' })
       end
     end
 
@@ -309,11 +323,14 @@ describe Gitlab::Auth::LDAP::Config do
             'port'                => 686,
             'encryption'          => 'simple_tls',
             'verify_certificates' => true,
-            'ssl_version'         => ' '
+            'tls_options'         => {
+              'ssl_version'       => ' '
+            }
           }
         )
 
-        expect(config.omniauth_options).not_to have_key(:ssl_version)
+        # OpenSSL default params includes `ssl_version` so we just check that it's not blank
+        expect(config.omniauth_options[:tls_options]).not_to include({ ssl_version: ' ' })
       end
     end
   end
