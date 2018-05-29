@@ -29,7 +29,7 @@
           Your Public Email will be displayed on your public profile.
         %li
           All email addresses will be used to identify your commits.
-    %ul.well-list
+    %ul.content-list
       %li
         = render partial: 'shared/email_with_badge', locals: { email: @primary_email, verified: current_user.confirmed? }
         %span.float-right
