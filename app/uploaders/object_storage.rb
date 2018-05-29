@@ -163,6 +163,7 @@ module ObjectStorage
       end
 
       def workhorse_local_upload_path
+        return if self.object_store_enabled? && self.direct_upload_enabled?
         File.join(self.root, TMP_UPLOAD_PATH)
       end
 
