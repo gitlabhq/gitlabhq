@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Auto Deploy
 
 > [Introduced][mr-8135] in GitLab 8.15.
@@ -127,3 +128,6 @@ If you have installed GitLab using a different method:
 [kube-deploy]: https://gitlab.com/gitlab-examples/kubernetes-deploy "Kubernetes deploy example project"
 [container-registry]: https://docs.gitlab.com/ce/user/project/container_registry.html
 [postgresql]: https://www.postgresql.org/
+=======
+This document was moved to [another location](../../topics/autodevops/index.md#auto-deploy).
+>>>>>>> upstream/master

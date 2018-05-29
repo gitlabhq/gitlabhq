@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 last_updated: 2017-12-28
 ---
@@ -131,3 +132,6 @@ the deployment variables above, ensuring any pods you create are labelled with
 `app=$CI_ENVIRONMENT_SLUG`. GitLab will do the rest!
 
 [ee]: https://about.gitlab.com/products/
+=======
+This document was moved to [another location](../clusters/index.md).
+>>>>>>> upstream/master
