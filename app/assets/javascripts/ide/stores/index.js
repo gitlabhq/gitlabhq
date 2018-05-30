@@ -9,13 +9,16 @@ import pipelines from './modules/pipelines';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
-  state: state(),
-  actions,
-  mutations,
-  getters,
-  modules: {
-    commit: commitModule,
-    pipelines,
-  },
-});
+export const createStore = () =>
+  new Vuex.Store({
+    state: state(),
+    actions,
+    mutations,
+    getters,
+    modules: {
+      commit: commitModule,
+      pipelines,
+    },
+  });
+
+export default createStore();
