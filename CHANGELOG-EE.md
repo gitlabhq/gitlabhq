@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 ## 10.8.3 (2018-05-30)
 
+- No changes.
 ### Fixed (1 change)
 
 - Geo - Calculate the wiki checksum even when wiki is disabled. !5772
