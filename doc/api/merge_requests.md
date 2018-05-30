@@ -476,6 +476,7 @@ Parameters:
   "changes_count": "1",
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
+  "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
   "discussion_locked": false,
   "time_stats": {
