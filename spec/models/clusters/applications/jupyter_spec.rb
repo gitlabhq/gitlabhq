@@ -14,14 +14,14 @@ describe Clusters::Applications::Jupyter do
       let(:cluster) { create(:cluster, :provided_by_gcp) }
       let(:jupyter) { create(:clusters_applications_jupyter, cluster: cluster) }
 
-      it { expect(jupyter.status_name).to be(:not_installable) }
+      it { expect(jupyter).to be_not_installable }
     end
 
     context 'when ingress is installed and external_ip is assigned' do
       let(:ingress) { create(:clusters_applications_ingress, :installed, external_ip: '127.0.0.1') }
       let(:jupyter) { create(:clusters_applications_jupyter, cluster: ingress.cluster) }
 
-      it { expect(jupyter.status_name).to be(:installable) }
+      it { expect(jupyter).to be_installable }
     end
   end
 
