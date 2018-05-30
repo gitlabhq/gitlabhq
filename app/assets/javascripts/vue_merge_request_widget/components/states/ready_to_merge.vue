@@ -79,7 +79,7 @@ export default {
     mergeButtonText() {
       if (this.isMergingImmediately) {
         return 'Merge in progress';
-      } else if (this.hasCI && this.shouldShowMergeWhenPipelineSucceedsText) {
+      } else if (this.mr.hasCI && this.shouldShowMergeWhenPipelineSucceedsText) {
         return 'Merge when pipeline succeeds';
       }
 
