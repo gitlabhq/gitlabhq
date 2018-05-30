@@ -1,5 +1,6 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
+import _ from 'underscore';
 import { sprintf, __ } from '../../../locale';
 import LoadingIcon from '../../../vue_shared/components/loading_icon.vue';
 import Icon from '../../../vue_shared/components/icon.vue';
@@ -28,11 +29,14 @@ export default {
       return sprintf(
         __('You can also test your .gitlab-ci.yml in the %{linkStart}Lint%{linkEnd}'),
         {
-          linkStart: `<a href="${this.currentProject.web_url}/-/ci/lint">`,
+          linkStart: `<a href="${_.escape(this.currentProject.web_url)}/-/ci/lint">`,
           linkEnd: '</a>',
         },
         false,
       );
+    },
+    showLoadingIcon() {
+      return this.isLoadingPipeline && this.latestPipeline === null;
     },
   },
   created() {
@@ -47,7 +51,7 @@ export default {
 <template>
   <div class="ide-pipeline">
     <loading-icon
-      v-if="isLoadingPipeline && latestPipeline === null"
+      v-if="showLoadingIcon"
       class="prepend-top-default"
       size="2"
     />
@@ -62,7 +66,7 @@ export default {
         />
         <span class="prepend-left-8">
           <strong>
-            Pipeline
+            {{ __('Pipeline') }}
           </strong>
           <a
             :href="latestPipeline.path"
@@ -88,7 +92,7 @@ export default {
         class="bs-callout bs-callout-danger"
       >
         <p class="append-bottom-0">
-          Found errors in your .gitlab-ci.yml:
+          {{ __('Found errors in your .gitlab-ci.yml:') }}
         </p>
         <p class="append-bottom-0">
           {{ latestPipeline.yamlError }}
@@ -106,7 +110,7 @@ export default {
           :active="!pipelineFailed"
         >
           <template slot="title">
-            Jobs
+            {{ __('Jobs') }}
             <span
               v-if="jobsCount"
               class="badge badge-pill"
@@ -123,7 +127,7 @@ export default {
           :active="pipelineFailed"
         >
           <template slot="title">
-            Failed Jobs
+            {{ __('Failed Jobs') }}
             <span
               v-if="failedJobsCount"
               class="badge badge-pill"

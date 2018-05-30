@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import * as types from './mutation_types';
+import { normalizeJob } from './utils';
 
 export default {
   [types.REQUEST_LATEST_PIPELINE](state) {
@@ -38,39 +39,20 @@ export default {
     }
   },
   [types.REQUEST_JOBS](state, id) {
-    state.stages = state.stages.map(stage =>
-      Object.assign(stage, {
-        isLoading: id === stage.id ? true : stage.isLoading,
-      }),
-    );
+    const stage = state.stages.find(s => s.id === id);
+    stage.isLoading = true;
   },
   [types.RECEIVE_JOBS_ERROR](state, id) {
-    state.stages = state.stages.map(stage =>
-      Object.assign(stage, {
-        isLoading: id === stage.id ? false : stage.isLoading,
-      }),
-    );
+    const stage = state.stages.find(s => s.id === id);
+    stage.isLoading = false;
   },
   [types.RECEIVE_JOBS_SUCCESS](state, { id, data }) {
-    const normalizeData = job => ({
-      id: job.id,
-      name: job.name,
-      status: job.status,
-      path: job.build_path,
-    });
-
-    state.stages = state.stages.map(stage =>
-      Object.assign(stage, {
-        isLoading: id === stage.id ? false : stage.isLoading,
-        jobs: id === stage.id ? data.latest_statuses.map(normalizeData) : stage.jobs,
-      }),
-    );
+    const stage = state.stages.find(s => s.id === id);
+    stage.isLoading = false;
+    stage.jobs = data.latest_statuses.map(normalizeJob);
   },
   [types.TOGGLE_STAGE_COLLAPSE](state, id) {
-    state.stages = state.stages.map(stage =>
-      Object.assign(stage, {
-        isCollapsed: stage.id === id ? !stage.isCollapsed : stage.isCollapsed,
-      }),
-    );
+    const stage = state.stages.find(s => s.id === id);
+    stage.isCollapsed = !stage.isCollapsed;
   },
 };

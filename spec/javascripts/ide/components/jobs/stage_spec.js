@@ -16,14 +16,18 @@ describe('IDE pipeline stage', () => {
     const store = createStore();
     mock = new MockAdapter(axios);
 
-    store.state.pipelines.stages = stages.map((mappedState, i) => ({
-      ...mappedState,
-      id: i,
-      dropdownPath: mappedState.dropdown_path,
-      jobs: [],
-      isLoading: false,
-      isCollapsed: false,
-    }));
+    Vue.set(
+      store.state.pipelines,
+      'stages',
+      stages.map((mappedState, i) => ({
+        ...mappedState,
+        id: i,
+        dropdownPath: mappedState.dropdown_path,
+        jobs: [],
+        isLoading: false,
+        isCollapsed: false,
+      })),
+    );
 
     stage = store.state.pipelines.stages[0];
 
@@ -35,7 +39,7 @@ describe('IDE pipeline stage', () => {
       stage,
     }).$mount();
 
-    setTimeout(done);
+    setTimeout(done, 500);
   });
 
   afterEach(() => {
