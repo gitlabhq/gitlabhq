@@ -550,7 +550,6 @@ POST /projects/:id/merge_requests
 | `remove_source_branch`     | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
 | `allow_maintainer_to_push` | boolean | no       | Whether or not a maintainer of the target project can push to the source branch |
 | `squash`                   | boolean | no       | Squash commits into a single commit when merging                                |
-<<<<<<< HEAD
 
 If `approvals_before_merge` is not provided, it inherits the value from the
 target project. If it is provided, then the following conditions must hold in
@@ -560,8 +559,6 @@ order for it to take effect:
    value of zero disables approvals for that project.)
 2. The provided value of `approvals_before_merge` must be greater than the
    target project's `approvals_before_merge`.
-=======
->>>>>>> upstream/master
 
 ```json
 {
