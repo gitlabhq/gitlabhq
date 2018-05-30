@@ -32,10 +32,6 @@ export default class Job extends LogOutputBehaviours {
     this.$buildTraceOutput = $('.js-build-output');
     this.$topBar = $('.js-top-bar');
 
-    // Scroll controllers
-    this.$scrollTopBtn = $('.js-scroll-up');
-    this.$scrollBottomBtn = $('.js-scroll-down');
-
     clearTimeout(this.timeout);
 
     this.initSidebar();

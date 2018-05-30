@@ -2,6 +2,9 @@ import $ from 'jquery';
 
 export const canScroll = () => $(document).height() > $(window).height();
 
+/**
+ * Checks if the entire page is scrolled down all the way to the bottom
+ */
 export const isScrolledToBottom = () => {
   const $document = $(document);
 
