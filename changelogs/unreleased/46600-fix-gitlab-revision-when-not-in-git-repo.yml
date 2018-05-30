@@ -1,6 +1,0 @@
----
-title: Replace Gitlab::REVISION with Gitlab.revision and handle installations without
-  a .git directory
-merge_request: 19125
-author:
-type: fixed
