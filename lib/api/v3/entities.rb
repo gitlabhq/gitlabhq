@@ -139,7 +139,7 @@ module API
         expose :should_remove_source_branch?, as: :should_remove_source_branch
         expose :force_remove_source_branch?, as: :force_remove_source_branch
 
-        expose :squash, if: ->(mr, _) { mr.project.feature_available?(:merge_request_squash) }
+        expose :squash
 
         expose :web_url do |merge_request, options|
           Gitlab::UrlBuilder.build(merge_request)

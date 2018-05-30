@@ -18,6 +18,10 @@ module QA
           element :no_fast_forward_message, 'Fast-forward merge is not possible'
         end
 
+        view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_squash_before_merge.vue' do
+          element :squash_checkbox
+        end
+
         def rebase!
           click_element :mr_rebase_button
 
@@ -42,6 +46,14 @@ module QA
           wait(reload: false) do
             has_text?('The changes were merged into')
           end
+        end
+
+        def mark_to_squash
+          wait(reload: true) do
+            has_css?(element_selector_css(:squash_checkbox))
+          end
+
+          click_element :squash_checkbox
         end
       end
     end

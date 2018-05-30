@@ -3,29 +3,10 @@ module EE
     module MergeRequests
       extend ActiveSupport::Concern
 
-      class_methods do
-        def update_params_at_least_one_of
-          super.push(*%i[
-            squash
-          ])
-        end
-      end
-
       prepended do
         helpers do
-          params :merge_params_ee do
-            optional :squash, type: Grape::API::Boolean, desc: 'When true, the commits will be squashed into a single commit on merge'
-          end
-
           params :optional_params_ee do
             optional :approvals_before_merge, type: Integer, desc: 'Number of approvals required before this can be merged'
-            use :merge_params_ee
-          end
-
-          def update_merge_request_ee(merge_request)
-            if params[:squash] && merge_request.project.feature_available?(:merge_request_squash)
-              merge_request.update(squash: params[:squash])
-            end
           end
         end
 

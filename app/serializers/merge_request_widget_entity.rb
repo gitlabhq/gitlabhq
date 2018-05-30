@@ -12,6 +12,7 @@ class MergeRequestWidgetEntity < IssuableEntity
   expose :merge_when_pipeline_succeeds
   expose :source_branch
   expose :source_project_id
+  expose :squash
   expose :target_branch
   expose :target_project_id
   expose :allow_maintainer_to_push
@@ -23,7 +24,6 @@ class MergeRequestWidgetEntity < IssuableEntity
 
   # EE-specific
   expose :approvals_before_merge
-  expose :squash
 
   expose :rebase_commit_sha
   expose :rebase_in_progress?, as: :rebase_in_progress

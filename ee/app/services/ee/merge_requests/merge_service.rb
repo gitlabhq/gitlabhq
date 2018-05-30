@@ -10,19 +10,6 @@ module EE
         super
       end
 
-      def source
-        return merge_request.diff_head_sha unless merge_request.squash
-
-        squash_result = ::MergeRequests::SquashService.new(project, current_user, params).execute(merge_request)
-
-        case squash_result[:status]
-        when :success
-          squash_result[:squash_sha]
-        when :error
-          raise ::MergeRequests::MergeService::MergeError, squash_result[:message]
-        end
-      end
-
       def hooks_validation_pass?(merge_request)
         # handle_merge_error needs this. We should move that to a separate
         # object instead of relying on the order of method calls.
