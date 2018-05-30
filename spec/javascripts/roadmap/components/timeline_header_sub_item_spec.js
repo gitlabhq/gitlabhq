@@ -40,8 +40,8 @@ describe('TimelineHeaderSubItemComponent', () => {
 
       it('returns empty string when timeframe year and month are less than current year and month', () => {
         vm = createComponent({
-          currentDate: new Date(2017, 10, 1),   // Nov 1, 2017
-          timeframeItem: new Date(2018, 0, 1),  // Jan 1, 2018
+          currentDate: new Date(2017, 10, 1), // Nov 1, 2017
+          timeframeItem: new Date(2018, 0, 1), // Jan 1, 2018
         });
         expect(vm.headerSubItemClass).toBe('');
       });
@@ -55,8 +55,8 @@ describe('TimelineHeaderSubItemComponent', () => {
 
       it('returns false when current month and year is different from timeframe month and year', () => {
         vm = createComponent({
-          currentDate: new Date(2017, 10, 1),   // Nov 1, 2017
-          timeframeItem: new Date(2018, 0, 1),  // Jan 1, 2018
+          currentDate: new Date(2017, 10, 1), // Nov 1, 2017
+          timeframeItem: new Date(2018, 0, 1), // Jan 1, 2018
         });
         expect(vm.hasToday).toBe(false);
       });
