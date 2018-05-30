@@ -67,7 +67,7 @@ module API
               if geo_node.current?
                 GeoNodeStatus.fast_current_node_status
               else
-                ::Geo::NodeStatusFetchService.new.call(geo_node)
+                geo_node.find_or_build_status
               end
             end
           end

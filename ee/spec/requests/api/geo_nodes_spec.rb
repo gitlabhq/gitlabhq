@@ -93,7 +93,6 @@ describe API::GeoNodes, :geo, :prometheus, api: true do
       stub_current_geo_node(secondary)
 
       expect(GeoNode).to receive(:find).and_return(secondary)
-      expect(GeoNodeStatus).to receive(:current_node_status).and_call_original
 
       get api("/geo_nodes/#{secondary.id}/status", admin)
 

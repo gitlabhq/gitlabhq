@@ -20,19 +20,11 @@ describe GeoNodeStatus, :geo do
 
   describe '#fast_current_node_status' do
     it 'reads the cache and spawns the worker' do
-      expect(described_class).to receive(:spawn_worker).once
-
       rails_cache = double
       expect(rails_cache).to receive(:read).with(described_class.cache_key)
       expect(Rails).to receive(:cache).and_return(rails_cache)
 
       described_class.fast_current_node_status
-    end
-
-    it 'returns status for primary with no cache' do
-      stub_current_geo_node(primary)
-
-      expect(described_class.fast_current_node_status).to eq described_class.current_node_status
     end
   end
 
@@ -57,7 +49,7 @@ describe GeoNodeStatus, :geo do
 
     context 'when health is present' do
       it 'returns true' do
-        subject.status_message = 'Healthy'
+        subject.status_message = GeoNodeStatus::HEALTHY_STATUS
 
         expect(subject.healthy?).to be true
       end
@@ -68,6 +60,36 @@ describe GeoNodeStatus, :geo do
         expect(subject.healthy?).to be false
       end
     end
+
+    context 'takes outdated? into consideration' do
+      it 'return false' do
+        subject.status_message = GeoNodeStatus::HEALTHY_STATUS
+        subject.updated_at = 10.minutes.ago
+
+        expect(subject.healthy?).to be false
+      end
+
+      it 'return false' do
+        subject.status_message = 'something went wrong'
+        subject.updated_at = 1.minute.ago
+
+        expect(subject.healthy?).to be false
+      end
+    end
+  end
+
+  describe '#outdated?' do
+    it 'return true' do
+      subject.updated_at = 10.minutes.ago
+
+      expect(subject.outdated?).to be true
+    end
+
+    it 'return false' do
+      subject.updated_at = 1.minute.ago
+
+      expect(subject.outdated?).to be false
+    end
   end
 
   describe '#status_message' do
@@ -75,6 +97,24 @@ describe GeoNodeStatus, :geo do
       expect(HealthCheck::Utils).to receive(:process_checks).with(['geo']).once
 
       subject
+    end
+  end
+
+  describe '#health' do
+    context 'takes outdated? into consideration' do
+      it 'returns expiration error' do
+        subject.status_message = GeoNodeStatus::HEALTHY_STATUS
+        subject.updated_at = 10.minutes.ago
+
+        expect(subject.health).to eq "Status has not been updated in the past #{described_class::EXPIRATION_IN_MINUTES} minutes"
+      end
+
+      it 'returns original message' do
+        subject.status_message = 'something went wrong'
+        subject.updated_at = 1.minute.ago
+
+        expect(subject.health).to eq 'something went wrong'
+      end
     end
   end
 
