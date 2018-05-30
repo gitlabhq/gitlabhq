@@ -99,6 +99,7 @@ export default {
       v-tooltip
       data-container="body"
       data-placement="left"
+      data-boundary="viewport"
       :title="tooltipLabel"
     >
       <icon
@@ -112,7 +113,7 @@ export default {
       {{ sprintf(__('Lock %{issuableDisplayName}'), { issuableDisplayName: issuableDisplayName }) }}
       <button
         v-if="isEditable"
-        class="pull-right lock-edit"
+        class="float-right lock-edit"
         type="button"
         @click.prevent="toggleForm"
       >

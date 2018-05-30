@@ -96,6 +96,7 @@ export default {
       :class="cssClassJobName"
       data-container="body"
       data-html="true"
+      data-boundary="viewport"
       class="js-pipeline-graph-job-link"
     >
 

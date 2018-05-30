@@ -46,7 +46,7 @@
   };
 </script>
 <template>
-  <div class="table-section section-15 hidden-xs hidden-sm pipeline-tags">
+  <div class="table-section section-15 d-none d-sm-none d-md-block pipeline-tags">
     <a
       :href="pipeline.path"
       class="js-pipeline-url-link">
@@ -69,35 +69,35 @@
       <span
         v-if="pipeline.flags.latest"
         v-tooltip
-        class="js-pipeline-url-latest label label-success"
+        class="js-pipeline-url-latest badge badge-success"
         title="Latest pipeline for this branch">
         latest
       </span>
       <span
         v-if="pipeline.flags.yaml_errors"
         v-tooltip
-        class="js-pipeline-url-yaml label label-danger"
+        class="js-pipeline-url-yaml badge badge-danger"
         :title="pipeline.yaml_errors">
         yaml invalid
       </span>
       <span
         v-if="pipeline.flags.failure_reason"
         v-tooltip
-        class="js-pipeline-url-failure label label-danger"
+        class="js-pipeline-url-failure badge badge-danger"
         :title="pipeline.failure_reason">
         error
       </span>
       <a
         v-if="pipeline.flags.auto_devops"
         tabindex="0"
-        class="js-pipeline-url-autodevops label label-info autodevops-badge"
+        class="js-pipeline-url-autodevops badge badge-info autodevops-badge"
         v-popover="popoverOptions"
         role="button">
         Auto DevOps
       </a>
       <span
         v-if="pipeline.flags.stuck"
-        class="js-pipeline-url-stuck label label-warning">
+        class="js-pipeline-url-stuck badge badge-warning">
         stuck
       </span>
     </div>

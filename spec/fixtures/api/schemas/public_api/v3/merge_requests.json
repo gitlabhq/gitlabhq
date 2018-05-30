@@ -73,7 +73,8 @@
       "should_remove_source_branch": { "type": ["boolean", "null"] },
       "force_remove_source_branch": { "type": ["boolean", "null"] },
       "web_url": { "type": "uri" },
-      "subscribed": { "type": ["boolean"] }
+      "subscribed": { "type": ["boolean"] },
+      "squash": { "type": "boolean" }
     },
     "required": [
       "id", "iid", "project_id", "title", "description",
@@ -83,7 +84,7 @@
       "labels", "work_in_progress", "milestone", "merge_when_build_succeeds",
       "merge_status", "sha", "merge_commit_sha", "user_notes_count",
       "should_remove_source_branch", "force_remove_source_branch",
-      "web_url", "subscribed"
+      "web_url", "subscribed", "squash"
     ],
     "additionalProperties": false
   }

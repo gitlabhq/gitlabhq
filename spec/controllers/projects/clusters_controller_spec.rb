@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe Projects::ClustersController do
   include AccessMatchersForController
-  include GoogleApi::CloudPlatformHelpers
 
   set(:project) { create(:project) }
 
@@ -333,7 +332,7 @@ describe Projects::ClustersController do
 
       context 'when cluster is provided by GCP' do
         context 'when cluster is created' do
-          let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+          let!(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, projects: [project]) }
 
           it "destroys and redirects back to clusters list" do
             expect { go }
@@ -347,7 +346,7 @@ describe Projects::ClustersController do
         end
 
         context 'when cluster is being created' do
-          let!(:cluster) { create(:cluster, :providing_by_gcp, projects: [project]) }
+          let!(:cluster) { create(:cluster, :providing_by_gcp, :production_environment, projects: [project]) }
 
           it "destroys and redirects back to clusters list" do
             expect { go }
@@ -361,7 +360,7 @@ describe Projects::ClustersController do
       end
 
       context 'when cluster is provided by user' do
-        let!(:cluster) { create(:cluster, :provided_by_user, projects: [project]) }
+        let!(:cluster) { create(:cluster, :provided_by_user, :production_environment, projects: [project]) }
 
         it "destroys and redirects back to clusters list" do
           expect { go }
@@ -376,7 +375,7 @@ describe Projects::ClustersController do
     end
 
     describe 'security' do
-      set(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+      set(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, projects: [project]) }
 
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }

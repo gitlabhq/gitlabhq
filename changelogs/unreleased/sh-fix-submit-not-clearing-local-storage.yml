@@ -1,0 +1,5 @@
+---
+title: Fix local storage not being cleared after creating a new issue
+merge_request:
+author:
+type: fixed

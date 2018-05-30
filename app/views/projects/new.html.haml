@@ -28,19 +28,19 @@
         %template.push-new-project-tip-template= render partial: "new_project_push_tip"
 
     .col-lg-9.js-toggle-container
-      %ul.nav-links.gitlab-tabs{ role: 'tablist' }
+      %ul.nav.nav-tabs.nav-links.gitlab-tabs{ role: 'tablist' }
         %li{ class: active_when(active_tab == 'blank'), role: 'presentation' }
           %a{ href: '#blank-project-pane', id: 'blank-project-tab', data: { toggle: 'tab' }, role: 'tab' }
-            %span.hidden-xs Blank project
-            %span.visible-xs Blank
+            %span.d-none.d-sm-block Blank project
+            %span.d-block.d-sm-none Blank
         %li{ class: active_when(active_tab == 'template'), role: 'presentation' }
           %a{ href: '#create-from-template-pane', id: 'create-from-template-tab', data: { toggle: 'tab' }, role: 'tab' }
-            %span.hidden-xs Create from template
-            %span.visible-xs Template
+            %span.d-none.d-sm-block Create from template
+            %span.d-block.d-sm-none Template
         %li{ class: active_when(active_tab == 'import'), role: 'presentation' }
           %a{ href: '#import-project-pane', id: 'import-project-tab', data: { toggle: 'tab' }, role: 'tab' }
-            %span.hidden-xs Import project
-            %span.visible-xs Import
+            %span.d-none.d-sm-block Import project
+            %span.d-block.d-sm-none Import
 
       .tab-content.gitlab-tab-content
         .tab-pane{ id: 'blank-project-pane', class: active_when(active_tab == 'blank'), role: 'tabpanel' }
@@ -63,7 +63,7 @@
                 %h4 No import options available
                 %p Contact an administrator to enable options for importing your project.
 
-.save-project-loader.hide
+.save-project-loader.d-none
   .center
     %h2
       %i.fa.fa-spinner.fa-spin

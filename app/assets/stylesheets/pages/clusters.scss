@@ -63,7 +63,7 @@
     text-decoration: none;
   }
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     > div {
       display: flex;
       align-items: center;

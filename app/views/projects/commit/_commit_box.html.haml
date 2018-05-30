@@ -7,7 +7,7 @@
       #{ s_('CommitBoxTitle|Commit') }
       %span.commit-sha= @commit.short_id
     = clipboard_button(text: @commit.id, title: _("Copy commit SHA to clipboard"))
-    %span.hidden-xs authored
+    %span.d-none.d-sm-inline authored
     #{time_ago_with_tooltip(@commit.authored_date)}
     %span= s_('ByAuthor|by')
     = author_avatar(@commit, size: 24)
@@ -21,17 +21,17 @@
 
   .header-action-buttons
     - if defined?(@notes_count) && @notes_count > 0
-      %span.btn.disabled.btn-grouped.hidden-xs.append-right-10
+      %span.btn.disabled.btn-grouped.d-none.d-sm-block.append-right-10
         = icon('comment')
         = @notes_count
-    = link_to project_tree_path(@project, @commit), class: "btn btn-default append-right-10 hidden-xs hidden-sm" do
+    = link_to project_tree_path(@project, @commit), class: "btn btn-default append-right-10 d-none d-sm-none d-md-inline" do
       #{ _('Browse files') }
     .dropdown.inline
       %a.btn.btn-default.dropdown-toggle{ data: { toggle: "dropdown" } }
         %span= _('Options')
         = icon('caret-down')
-      %ul.dropdown-menu.dropdown-menu-align-right
-        %li.visible-xs-block.visible-sm-block
+      %ul.dropdown-menu.dropdown-menu-right
+        %li.d-block.d-sm-none.d-md-none
           = link_to project_tree_path(@project, @commit) do
             #{ _('Browse Files') }
         - if can_collaborate && !@commit.has_been_reverted?(current_user)

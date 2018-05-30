@@ -37,6 +37,7 @@
   }
 
   .header-content {
+    width: 100%;
     display: -webkit-flex;
     display: flex;
     justify-content: space-between;
@@ -91,7 +92,7 @@
         border-radius: $border-radius-default;
 
         .tanuki-logo {
-          @media (min-width: $screen-sm-min) {
+          @include media-breakpoint-up(sm) {
             margin-right: 8px;
           }
         }
@@ -110,7 +111,7 @@
     }
 
     &.menu-expanded {
-      @media (max-width: $screen-xs-max) {
+      @include media-breakpoint-down(xs) {
         .title-container {
           display: none;
         }
@@ -133,13 +134,13 @@
     border-top: 0;
     padding: 0;
 
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       flex: 1 1 auto;
     }
 
     .nav {
-      > li:not(.hidden-xs) a {
-        @media (max-width: $screen-xs-max) {
+      > li:not(.d-none) a {
+        @include media-breakpoint-down(xs) {
           margin-left: 0;
           min-width: 100%;
         }
@@ -156,7 +157,7 @@
       }
     }
 
-    .navbar-toggle {
+    .navbar-toggler {
       right: -10px;
       border-radius: 0;
       min-width: 45px;
@@ -181,14 +182,14 @@
     }
 
     .navbar-nav {
-      @media (max-width: $screen-xs-max) {
+      @include media-breakpoint-down(xs) {
         display: -webkit-flex;
         display: flex;
         padding-right: 10px;
       }
 
       li {
-        .badge {
+        .badge.badge-pill {
           box-shadow: none;
           font-weight: $gl-font-weight-bold;
         }
@@ -197,7 +198,7 @@
 
     .nav > li {
       &.header-user {
-        @media (max-width: $screen-xs-max) {
+        @include media-breakpoint-down(xs) {
           padding-left: 10px;
         }
       }
@@ -208,7 +209,7 @@
         padding: 6px 8px;
         height: 32px;
 
-        @media (max-width: $screen-xs-max) {
+        @include media-breakpoint-down(xs) {
           padding: 0;
         }
 
@@ -324,8 +325,8 @@
   fill: currentColor;
 }
 
-.header-user .dropdown-menu-nav,
-.header-new .dropdown-menu-nav {
+.header-user .dropdown-menu,
+.header-new .dropdown-menu {
   margin-top: $dropdown-vertical-offset;
 }
 
@@ -378,7 +379,7 @@
   margin-bottom: 0;
   line-height: 16px;
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     flex-wrap: wrap;
   }
 
@@ -410,7 +411,7 @@
 .breadcrumb-item-text {
   text-decoration: inherit;
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     @include str-truncated(128px);
   }
 }
@@ -452,7 +453,7 @@
 
 .navbar-nav {
   li {
-    .badge {
+    .badge.badge-pill {
       position: inherit;
       font-weight: $gl-font-weight-normal;
       margin-left: -6px;
@@ -478,7 +479,7 @@
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@include media-breakpoint-down(xs) {
   .navbar-gitlab .container-fluid {
     font-size: 18px;
 
@@ -493,7 +494,7 @@
       margin-left: -8px;
       margin-right: -10px;
 
-      .nav > li:not(.hidden-xs) {
+      .nav > li:not(.d-none) {
         display: table-cell !important;
         width: 25%;
 
@@ -514,7 +515,7 @@
 }
 
 .header-user {
-  .dropdown-menu-nav {
+  .dropdown-menu {
     width: auto;
     min-width: 160px;
     margin-top: 4px;

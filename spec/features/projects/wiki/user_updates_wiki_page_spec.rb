@@ -11,6 +11,7 @@ describe 'User updates wiki page' do
     context 'when wiki is empty' do
       before do
         visit(project_wikis_path(project))
+        click_link "Create your first page"
       end
 
       context 'in a user namespace' do

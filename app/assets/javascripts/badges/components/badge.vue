@@ -89,7 +89,7 @@ export default {
       v-show="hasError"
       class="btn-group"
     >
-      <div class="btn btn-default btn-xs disabled">
+      <div class="btn btn-default btn-sm disabled">
         <icon
           class="prepend-left-8 append-right-8"
           name="doc_image"
@@ -98,7 +98,7 @@ export default {
         />
       </div>
       <div
-        class="btn btn-default btn-xs disabled"
+        class="btn btn-default btn-sm disabled"
       >
         <span class="prepend-left-8 append-right-8">{{ s__('Badges|No badge image') }}</span>
       </div>
@@ -106,7 +106,7 @@ export default {
 
     <button
       v-show="hasError"
-      class="btn btn-transparent btn-xs text-primary"
+      class="btn btn-transparent btn-sm text-primary"
       type="button"
       v-tooltip
       :title="s__('Badges|Reload badge image')"

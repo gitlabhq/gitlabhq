@@ -19,6 +19,7 @@ feature 'Projects > Wiki > User previews markdown changes', :js do
 
     visit project_path(project)
     find('.shortcuts-wiki').click
+    click_link "Create your first page"
   end
 
   context "while creating a new wiki page" do

@@ -142,6 +142,11 @@ $border-gray-normal-dashed: darken($gray-normal, $darken-border-dashed-factor);
 $border-gray-dark: darken($white-normal, $darken-border-factor);
 
 /*
+ * Override Bootstrap 4 variables
+ */
+$secondary: $gray-light;
+
+/*
  * UI elements
  */
 $border-color: #e5e5e5;
@@ -306,6 +311,11 @@ $gl-warning: $orange-500;
 $gl-danger: $red-500;
 $gl-btn-active-background: rgba(0, 0, 0, 0.16);
 $gl-btn-active-gradient: inset 0 2px 3px $gl-btn-active-background;
+// Bootstrap override states
+$success: $gl-success;
+$info: $gl-info;
+$warning: $gl-warning;
+$danger: $gl-danger;
 
 /*
  * Commit Diff Colors

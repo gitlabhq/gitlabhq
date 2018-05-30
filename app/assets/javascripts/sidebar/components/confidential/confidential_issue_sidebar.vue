@@ -75,6 +75,7 @@ export default {
       v-tooltip
       data-container="body"
       data-placement="left"
+      data-boundary="viewport"
       :title="tooltipLabel"
     >
       <icon
@@ -86,7 +87,7 @@ export default {
       {{ __('Confidentiality') }}
       <a
         v-if="isEditable"
-        class="pull-right confidential-edit"
+        class="float-right confidential-edit"
         href="#"
         @click.prevent="toggleForm"
       >
