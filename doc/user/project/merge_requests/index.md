@@ -33,10 +33,8 @@ With GitLab merge requests, you can:
 
 With **[GitLab Enterprise Edition][ee]**, you can also:
 
-<<<<<<< HEAD
 - View the deployment process across projects with [Multi-Project Pipeline Graphs](../../../ci/multi_project_pipeline_graphs.md#multi-project-pipeline-graphs) **[PREMIUM]**
 - Request [approvals](merge_request_approvals.md) from your managers **[STARTER]**
-- [Squash and merge](squash_and_merge.md) for a cleaner commit history **[STARTER]**
 - Analyze the impact of your changes with [Code Quality reports](code_quality_diff.md) **[STARTER]**
 - Manage the licenses of your dependencies with [License Management](#license-management) **[ULTIMATE]**
 - Analyze your source code for vulnerabilities with [Static Application Security Testing](sast.md) **[ULTIMATE]**
@@ -44,11 +42,6 @@ With **[GitLab Enterprise Edition][ee]**, you can also:
 - Analyze your dependencies for vulnerabilities with [Dependency Scanning](dependency_scanning.md) **[ULTIMATE]**
 - Analyze your Docker images for vulnerabilities with [Container Scanning](container_scanning.md) **[ULTIMATE]**
 - Determine the performance impact of changes with [Browser Performance Testing](#browser-performance-testing) **[PREMIUM]**
-=======
-- View the deployment process across projects with [Multi-Project Pipeline Graphs](https://docs.gitlab.com/ee/ci/multi_project_pipeline_graphs.html#multi-project-pipeline-graphs) **[PREMIUM]**
-- Request [approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your managers **[STARTER]**
-- Analyze the impact of your changes with [Code Quality reports](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html) **[STARTER]**
->>>>>>> upstream/master
 
 ## Use cases
 
@@ -69,13 +62,8 @@ B. Consider you're a web developer writing a webpage for your company's website:
 1. You gather feedback from your reviewers
 1. Your changes are previewed with [Review Apps](../../../ci/review_apps/index.md)
 1. You request your web designers for their implementation
-<<<<<<< HEAD
 1. You request the [approval](merge_request_approvals.md) from your manager **[STARTER]**
-1. Once approved, your merge request is [squashed and merged](squash_and_merge.md), and [deployed to staging with GitLab Pages](https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/) (Squash and Merge is available in GitLab Starter)
-=======
-1. You request the [approval](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your manager **[STARTER]**
 1. Once approved, your merge request is [squashed and merged](squash_and_merge.md), and [deployed to staging with GitLab Pages](https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/)
->>>>>>> upstream/master
 1. Your production team [cherry picks](#cherry-pick-changes) the merge commit into production
 
 ## Merge requests per project
