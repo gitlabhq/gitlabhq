@@ -123,7 +123,6 @@ module API
       end
       params do
         use :merge_requests_params
-        optional :iids, type: Array[Integer], desc: 'The IID array of merge requests'
       end
       get ":id/merge_requests" do
         group = find_group!(params[:id])

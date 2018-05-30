@@ -1,5 +1,5 @@
 shared_examples 'merge requests list' do
-  context "when unauthenticated" do
+  context 'when unauthenticated' do
     it 'returns merge requests for public projects' do
       get api(endpoint_path)
 
@@ -8,22 +8,22 @@ shared_examples 'merge requests list' do
     end
   end
 
-  context "when authenticated" do
+  context 'when authenticated' do
     it 'avoids N+1 queries' do
       control = ActiveRecord::QueryRecorder.new do
         get api(endpoint_path, user)
       end
 
-      create(:merge_request, state: 'closed', milestone: milestone1, author: user, assignee: user, source_project: project, target_project: project, title: "Test", created_at: base_time)
+      create(:merge_request, state: 'closed', milestone: milestone1, author: user, assignee: user, source_project: project, target_project: project, title: 'Test', created_at: base_time)
 
-      create(:merge_request, milestone: milestone1, author: user, assignee: user, source_project: project, target_project: project, title: "Test", created_at: base_time)
+      create(:merge_request, milestone: milestone1, author: user, assignee: user, source_project: project, target_project: project, title: 'Test', created_at: base_time)
 
       expect do
         get api(endpoint_path, user)
       end.not_to exceed_query_limit(control)
     end
 
-    it "returns an array of all merge_requests" do
+    it 'returns an array of all merge_requests' do
       get api(endpoint_path, user)
 
       expect(response).to have_gitlab_http_status(200)
@@ -44,7 +44,7 @@ shared_examples 'merge requests list' do
       expect(json_response.first['merge_commit_sha']).to eq(merge_request_merged.merge_commit_sha)
     end
 
-    it "returns an array of all merge_requests using simple mode" do
+    it 'returns an array of all merge_requests using simple mode' do
       path = endpoint_path + '?view=simple'
 
       get api(path, user)
@@ -62,7 +62,7 @@ shared_examples 'merge requests list' do
       expect(json_response.first).to have_key('web_url')
     end
 
-    it "returns an array of all merge_requests" do
+    it 'returns an array of all merge_requests' do
       path = endpoint_path + '?state'
 
       get api(path, user)
@@ -74,7 +74,7 @@ shared_examples 'merge requests list' do
       expect(json_response.last['title']).to eq(merge_request.title)
     end
 
-    it "returns an array of open merge_requests" do
+    it 'returns an array of open merge_requests' do
       path = endpoint_path + '?state=opened'
 
       get api(path, user)
@@ -86,7 +86,7 @@ shared_examples 'merge requests list' do
       expect(json_response.last['title']).to eq(merge_request.title)
     end
 
-    it "returns an array of closed merge_requests" do
+    it 'returns an array of closed merge_requests' do
       path = endpoint_path + '?state=closed'
 
       get api(path, user)
@@ -98,7 +98,7 @@ shared_examples 'merge requests list' do
       expect(json_response.first['title']).to eq(merge_request_closed.title)
     end
 
-    it "returns an array of merged merge_requests" do
+    it 'returns an array of merged merge_requests' do
       path = endpoint_path + '?state=merged'
 
       get api(path, user)
@@ -171,7 +171,7 @@ shared_examples 'merge requests list' do
     end
 
     it 'returns an empty array if no merge request matches labels' do
-      path = endpoint_path + "?labels=foo,bar"
+      path = endpoint_path + '?labels=foo,bar'
 
       get api(path, user)
 
@@ -183,10 +183,10 @@ shared_examples 'merge requests list' do
     it 'returns an array of labeled merge requests that are merged for a milestone' do
       bug_label = create(:label, title: 'bug', color: '#FFAABB', project: project)
 
-      mr1 = create(:merge_request, state: "merged", source_project: project, target_project: project, milestone: milestone)
-      mr2 = create(:merge_request, state: "merged", source_project: project, target_project: project, milestone: milestone1)
-      mr3 = create(:merge_request, state: "closed", source_project: project, target_project: project, milestone: milestone1)
-      _mr = create(:merge_request, state: "merged", source_project: project, target_project: project, milestone: milestone1)
+      mr1 = create(:merge_request, state: 'merged', source_project: project, target_project: project, milestone: milestone)
+      mr2 = create(:merge_request, state: 'merged', source_project: project, target_project: project, milestone: milestone1)
+      mr3 = create(:merge_request, state: 'closed', source_project: project, target_project: project, milestone: milestone1)
+      _mr = create(:merge_request, state: 'merged', source_project: project, target_project: project, milestone: milestone1)
 
       create(:label_link, label: bug_label, target: mr1)
       create(:label_link, label: bug_label, target: mr2)
@@ -202,14 +202,14 @@ shared_examples 'merge requests list' do
       expect(json_response.first['id']).to eq(mr2.id)
     end
 
-    context "with ordering" do
+    context 'with ordering' do
       before do
         @mr_later = mr_with_later_created_and_updated_at_time
         @mr_earlier = mr_with_earlier_created_and_updated_at_time
       end
 
-      it "returns an array of merge_requests in ascending order" do
-        path = endpoint_path + "?sort=asc"
+      it 'returns an array of merge_requests in ascending order' do
+        path = endpoint_path + '?sort=asc'
 
         get api(path, user)
 
@@ -221,8 +221,8 @@ shared_examples 'merge requests list' do
         expect(response_dates).to eq(response_dates.sort)
       end
 
-      it "returns an array of merge_requests in descending order" do
-        path = endpoint_path + "?sort=desc"
+      it 'returns an array of merge_requests in descending order' do
+        path = endpoint_path + '?sort=desc'
 
         get api(path, user)
 
@@ -234,8 +234,8 @@ shared_examples 'merge requests list' do
         expect(response_dates).to eq(response_dates.sort.reverse)
       end
 
-      it "returns an array of merge_requests ordered by updated_at" do
-        path = endpoint_path + "?order_by=updated_at"
+      it 'returns an array of merge_requests ordered by updated_at' do
+        path = endpoint_path + '?order_by=updated_at'
 
         get api(path, user)
 
@@ -247,8 +247,8 @@ shared_examples 'merge requests list' do
         expect(response_dates).to eq(response_dates.sort.reverse)
       end
 
-      it "returns an array of merge_requests ordered by created_at" do
-        path = endpoint_path + "?order_by=created_at&sort=asc"
+      it 'returns an array of merge_requests ordered by created_at' do
+        path = endpoint_path + '?order_by=created_at&sort=asc'
 
         get api(path, user)
 
