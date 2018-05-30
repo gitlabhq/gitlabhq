@@ -1,5 +1,16 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.8.3 (2018-05-30)
+
+### Fixed (1 change)
+
+- Geo - Calculate the wiki checksum even when wiki is disabled. !5772
+
+### Performance (1 change)
+
+- Make Geo::PruneEventLogWorker delete rows more gently. !5835
+
+
 ## 10.8.2 (2018-05-28)
 
 ### Security (3 changes)
