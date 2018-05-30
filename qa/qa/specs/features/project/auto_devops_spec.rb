@@ -48,11 +48,10 @@ module QA
       @cluster&.remove!
     end
 
-    scenario 'users creates a new project and runs auto devops' do
+    scenario 'user creates a new project and runs auto devops' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 
-      # Create the K8s cluster
       project = Factory::Resource::Project.fabricate! do |p|
         p.name = 'project-with-autodevops'
         p.description = 'Project with Auto Devops'

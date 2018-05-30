@@ -23,9 +23,9 @@ module QA
           get-credentials #{cluster_name}
         CMD
 
-        @api_url = `kubectl config view -o json --minify |jq .clusters[].cluster.server | tr -d '"'`.chomp
-        @ca_certificate = Base64.decode64(`kubectl get secrets -o json | jq '.items[] | .data | ."ca.crt"' | tr -d '"'`)
-        @token = Base64.decode64(`kubectl get secrets -o json | jq '.items[] | .data | .token' | tr -d '"'`)
+        @api_url = `kubectl config view --minify -o jsonpath='{.clusters[].cluster.server}'`
+        @ca_certificate = Base64.decode64(`kubectl get secrets -o jsonpath="{.items[0].data['ca\\.crt']}"`)
+        @token = Base64.decode64(`kubectl get secrets -o jsonpath='{.items[0].data.token}'`)
         self
       end
 
