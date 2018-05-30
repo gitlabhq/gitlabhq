@@ -103,6 +103,7 @@ describe('ReadyToMerge', () => {
       it('defaults to success', () => {
         vm.mr.pipeline = true;
         vm.mr.hasCI = true;
+        vm.mr.ciStatus = true;
         expect(vm.status).toEqual('success');
       });
 
@@ -113,6 +114,7 @@ describe('ReadyToMerge', () => {
 
       it('returns default when MR has no pipeline', () => {
         vm.mr.hasCI = true;
+        vm.mr.ciStatus = true;
         expect(vm.status).toEqual('success');
       });
 
