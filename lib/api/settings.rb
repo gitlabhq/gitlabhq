@@ -138,6 +138,7 @@ module API
                  desc: "Restrictions on the complexity of uploaded #{type.upcase} keys. A value of #{ApplicationSetting::FORBIDDEN_KEY_VALUE} disables all #{type.upcase} keys."
       end
 
+<<<<<<< HEAD
       optional :help_text, type: String, desc: 'GitLab server administrator information'
       optional :elasticsearch_indexing, type: Boolean, desc: 'Enable Elasticsearch indexing'
       given elasticsearch_indexing: ->(val) { val } do
@@ -160,6 +161,10 @@ module API
       optional_attributes += EE::ApplicationSettingsHelper.possible_licensed_attributes
       ## EE-only END
 
+=======
+      optional_attributes = ::ApplicationSettingsHelper.visible_attributes << :performance_bar_allowed_group_id
+
+>>>>>>> upstream/master
       optional(*optional_attributes)
       at_least_one_of(*optional_attributes)
     end

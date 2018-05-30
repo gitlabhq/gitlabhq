@@ -74,7 +74,10 @@
       "force_remove_source_branch": { "type": ["boolean", "null"] },
       "web_url": { "type": "uri" },
       "subscribed": { "type": ["boolean"] },
+<<<<<<< HEAD
       "approvals_before_merge": { "type": ["integer", "null"] },
+=======
+>>>>>>> upstream/master
       "squash": { "type": "boolean" }
     },
     "required": [
@@ -85,7 +88,11 @@
       "labels", "work_in_progress", "milestone", "merge_when_build_succeeds",
       "merge_status", "sha", "merge_commit_sha", "user_notes_count",
       "should_remove_source_branch", "force_remove_source_branch",
+<<<<<<< HEAD
       "web_url", "subscribed", "approvals_before_merge", "squash"
+=======
+      "web_url", "subscribed", "squash"
+>>>>>>> upstream/master
     ],
     "additionalProperties": false
   }

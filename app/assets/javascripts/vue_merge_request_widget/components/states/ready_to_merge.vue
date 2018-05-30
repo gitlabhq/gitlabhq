@@ -113,6 +113,12 @@ export default {
   beforeDestroy() {
     eventHub.$off('MRWidgetUpdateSquash', this.handleUpdateSquash);
   },
+  created() {
+    eventHub.$on('MRWidgetUpdateSquash', this.handleUpdateSquash);
+  },
+  beforeDestroy() {
+    eventHub.$off('MRWidgetUpdateSquash', this.handleUpdateSquash);
+  },
   methods: {
     shouldShowMergeControls() {
       return this.mr.isMergeAllowed || this.shouldShowMergeWhenPipelineSucceedsText;

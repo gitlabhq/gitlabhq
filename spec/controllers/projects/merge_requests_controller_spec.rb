@@ -275,6 +275,7 @@ describe Projects::MergeRequestsController do
         namespace_id: project.namespace,
         project_id: project,
         id: merge_request.iid,
+        squash: false,
         format: 'json'
       }
     end

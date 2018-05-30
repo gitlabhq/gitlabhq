@@ -394,6 +394,8 @@ describe ObjectStorage do
         is_expected.to have_key(:RemoteObject)
 
         expect(subject[:RemoteObject]).to have_key(:ID)
+        expect(subject[:RemoteObject]).to include(Timeout: a_kind_of(Integer))
+        expect(subject[:RemoteObject][:Timeout]).to be(ObjectStorage::DIRECT_UPLOAD_TIMEOUT)
         expect(subject[:RemoteObject]).to have_key(:GetURL)
         expect(subject[:RemoteObject]).to have_key(:DeleteURL)
         expect(subject[:RemoteObject]).to have_key(:StoreURL)

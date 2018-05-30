@@ -31,6 +31,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     resource :variables, only: [:show, :update]
 
     resources :children, only: [:index]
+    resources :shared_projects, only: [:index]
 
     resources :labels, except: [:show] do
       post :toggle_subscription, on: :member
