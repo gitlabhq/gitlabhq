@@ -3,27 +3,6 @@ $:.unshift(lib) unless $:.include?(lib)
 
 module QA
   ##
-  # GitLab QA runtime classes, mostly singletons.
-  #
-  module Runtime
-    autoload :Release, 'qa/runtime/release'
-    autoload :User, 'qa/runtime/user'
-    autoload :Namespace, 'qa/runtime/namespace'
-    autoload :Scenario, 'qa/runtime/scenario'
-    autoload :Browser, 'qa/runtime/browser'
-    autoload :Env, File.expand_path('qa/runtime/env', __dir__)
-    autoload :Address, 'qa/runtime/address'
-    autoload :API, 'qa/runtime/api'
-
-    module Key
-      autoload :Base, 'qa/runtime/key/base'
-      autoload :RSA, 'qa/runtime/key/rsa'
-      autoload :ECDSA, 'qa/runtime/key/ecdsa'
-      autoload :ED25519, 'qa/runtime/key/ed25519'
-    end
-  end
-
-  ##
   # GitLab QA fabrication mechanisms
   #
   module Factory
@@ -50,14 +29,131 @@ module QA
   end
 
   ##
+  # Classes describing operations on Git repositories.
+  #
+  module Git
+    autoload :Location, 'qa/git/location'
+    autoload :Repository, 'qa/git/repository'
+  end
+
+  ##
+  # Classes describing structure of GitLab, pages, menus etc.
+  #
+  # Needed to execute click-driven-only black-box tests.
+  #
+  module Page
+    module Admin
+      module Settings
+        autoload :Main, 'qa/page/admin/settings/main'
+        autoload :RepositoryStorage, 'qa/page/admin/settings/repository_storage'
+      end
+    end
+
+    ##
+    # Classes describing components that are used by several pages.
+    #
+    module Component
+      autoload :Dropzone, 'qa/page/component/dropzone'
+    end
+
+    module Dashboard
+      autoload :Groups, 'qa/page/dashboard/groups'
+      autoload :Projects, 'qa/page/dashboard/projects'
+    end
+
+    module Group
+      autoload :New, 'qa/page/group/new'
+      autoload :Show, 'qa/page/group/show'
+    end
+
+    module Main
+      autoload :Login, 'qa/page/main/login'
+      autoload :OAuth, 'qa/page/main/oauth'
+    end
+
+    module Mattermost
+      autoload :Login, 'qa/page/mattermost/login'
+      autoload :Main, 'qa/page/mattermost/main'
+    end
+
+    module Menu
+      autoload :Admin, 'qa/page/menu/admin'
+      autoload :Main, 'qa/page/menu/main'
+      autoload :Profile, 'qa/page/menu/profile'
+      autoload :Side, 'qa/page/menu/side'
+    end
+
+    module MergeRequest
+      autoload :New, 'qa/page/merge_request/new'
+      autoload :Show, 'qa/page/merge_request/show'
+    end
+
+    module Profile
+      autoload :PersonalAccessTokens, 'qa/page/profile/personal_access_tokens'
+    end
+
+    module Project
+      autoload :Activity, 'qa/page/project/activity'
+      autoload :New, 'qa/page/project/new'
+      autoload :Show, 'qa/page/project/show'
+
+      module Issue
+        autoload :Index, 'qa/page/project/issue/index'
+        autoload :New, 'qa/page/project/issue/new'
+        autoload :Show, 'qa/page/project/issue/show'
+      end
+
+      module Job
+        autoload :Show, 'qa/page/project/job/show'
+      end
+
+      module Pipeline
+        autoload :Index, 'qa/page/project/pipeline/index'
+        autoload :Show, 'qa/page/project/pipeline/show'
+      end
+
+      module Settings
+        autoload :Advanced, 'qa/page/project/settings/advanced'
+        autoload :CICD, 'qa/page/project/settings/ci_cd'
+        autoload :Common, 'qa/page/project/settings/common'
+        autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
+        autoload :Main, 'qa/page/project/settings/main'
+        autoload :MergeRequest, 'qa/page/project/settings/merge_request'
+        autoload :ProtectedBranches, 'qa/page/project/settings/protected_branches'
+        autoload :Repository, 'qa/page/project/settings/repository'
+        autoload :Runners, 'qa/page/project/settings/runners'
+        autoload :SecretVariables, 'qa/page/project/settings/secret_variables'
+      end
+    end
+
+    module Settings
+      autoload :Common, 'qa/page/settings/common'
+    end
+  end
+
+  ##
+  # GitLab QA runtime classes, mostly singletons.
+  #
+  module Runtime
+    autoload :API, 'qa/runtime/api'
+    autoload :Env, 'qa/runtime/env'
+    autoload :Namespace, 'qa/runtime/namespace'
+    autoload :Release, 'qa/runtime/release'
+    autoload :Scenario, 'qa/runtime/scenario'
+    autoload :User, 'qa/runtime/user'
+
+    module Key
+      autoload :Base, 'qa/runtime/key/base'
+      autoload :ECDSA, 'qa/runtime/key/ecdsa'
+      autoload :ED25519, 'qa/runtime/key/ed25519'
+      autoload :RSA, 'qa/runtime/key/rsa'
+    end
+  end
+
+  ##
   # GitLab QA Scenarios
   #
   module Scenario
-    ##
-    # Support files
-    #
-    autoload :Taggable, 'qa/scenario/taggable'
-
     ##
     # Test scenario entrypoints.
     #
@@ -76,123 +172,12 @@ module QA
   end
 
   ##
-  # Classes describing structure of GitLab, pages, menus etc.
-  #
-  # Needed to execute click-driven-only black-box tests.
-  #
-  module Page
-    module Main
-      autoload :Login, 'qa/page/main/login'
-      autoload :OAuth, 'qa/page/main/oauth'
-    end
-
-    module Settings
-      autoload :Common, 'qa/page/settings/common'
-    end
-
-    module Menu
-      autoload :Main, 'qa/page/menu/main'
-      autoload :Side, 'qa/page/menu/side'
-      autoload :Admin, 'qa/page/menu/admin'
-      autoload :Profile, 'qa/page/menu/profile'
-    end
-
-    module Dashboard
-      autoload :Projects, 'qa/page/dashboard/projects'
-      autoload :Groups, 'qa/page/dashboard/groups'
-    end
-
-    module Group
-      autoload :New, 'qa/page/group/new'
-      autoload :Show, 'qa/page/group/show'
-    end
-
-    module Project
-      autoload :New, 'qa/page/project/new'
-      autoload :Show, 'qa/page/project/show'
-      autoload :Activity, 'qa/page/project/activity'
-
-      module Pipeline
-        autoload :Index, 'qa/page/project/pipeline/index'
-        autoload :Show, 'qa/page/project/pipeline/show'
-      end
-
-      module Job
-        autoload :Show, 'qa/page/project/job/show'
-      end
-
-      module Settings
-        autoload :Common, 'qa/page/project/settings/common'
-        autoload :Advanced, 'qa/page/project/settings/advanced'
-        autoload :Main, 'qa/page/project/settings/main'
-        autoload :Repository, 'qa/page/project/settings/repository'
-        autoload :CICD, 'qa/page/project/settings/ci_cd'
-        autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
-        autoload :ProtectedBranches, 'qa/page/project/settings/protected_branches'
-        autoload :SecretVariables, 'qa/page/project/settings/secret_variables'
-        autoload :Runners, 'qa/page/project/settings/runners'
-        autoload :MergeRequest, 'qa/page/project/settings/merge_request'
-      end
-
-      module Issue
-        autoload :New, 'qa/page/project/issue/new'
-        autoload :Show, 'qa/page/project/issue/show'
-        autoload :Index, 'qa/page/project/issue/index'
-      end
-    end
-
-    module Profile
-      autoload :PersonalAccessTokens, 'qa/page/profile/personal_access_tokens'
-    end
-
-    module MergeRequest
-      autoload :New, 'qa/page/merge_request/new'
-      autoload :Show, 'qa/page/merge_request/show'
-    end
-
-    module Admin
-      module Settings
-        autoload :RepositoryStorage, 'qa/page/admin/settings/repository_storage'
-        autoload :Main, 'qa/page/admin/settings/main'
-      end
-    end
-
-    module Mattermost
-      autoload :Main, 'qa/page/mattermost/main'
-      autoload :Login, 'qa/page/mattermost/login'
-    end
-
-    ##
-    # Classes describing components that are used by several pages.
-    #
-    module Component
-      autoload :Dropzone, 'qa/page/component/dropzone'
-    end
-  end
-
-  ##
-  # Classes describing operations on Git repositories.
-  #
-  module Git
-    autoload :Repository, 'qa/git/repository'
-    autoload :Location, 'qa/git/location'
-  end
-
-  ##
   # Classes describing services being part of GitLab and how we can interact
   # with these services, like through the shell.
   #
   module Service
     autoload :Omnibus, 'qa/service/omnibus'
     autoload :Runner, 'qa/service/runner'
-  end
-
-  ##
-  # Classes that make it possible to execute features tests.
-  #
-  module Specs
-    autoload :Config, 'qa/specs/config'
-    autoload :Runner, 'qa/specs/runner'
   end
 end
 

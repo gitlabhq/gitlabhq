@@ -3,12 +3,9 @@ source 'https://rubygems.org'
 if ENV['GITLAB_QA_SOURCE']
   gem 'gitlab-qa', ENV.fetch('GITLAB_QA_PROTOCOL', 'path') => ENV['GITLAB_QA_SOURCE']
 else
-  gem 'gitlab-qa', '~> 1.0'
+  gem 'gitlab-qa', '~> 0.5'
 end
 gem 'pry-byebug', '~> 3.5.1', platform: :mri
-gem 'capybara', '~> 2.16.1'
-gem 'capybara-screenshot', '~> 1.0.18'
 gem 'rake', '~> 12.3.0'
 gem 'rspec', '~> 3.7'
-gem 'selenium-webdriver', '~> 3.8.0'
 gem 'airborne', '~> 0.2.13'

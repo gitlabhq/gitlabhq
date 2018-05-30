@@ -32,15 +32,11 @@ using `package-and-qa` manual action, to test if everything works fine.
 
 You can use GitLab QA to exercise tests on any live instance! For example, the
 following call would login to a local [GDK] instance and run all specs in
-`qa/specs/features`:
+`scenarios`:
 
 ```
 bin/qa Test::Instance http://localhost:3000
 ```
-
-### Writing tests
-
-1. [Using page objects](qa/page/README.md)
 
 ### Running specific tests
 
@@ -48,14 +44,14 @@ You can also supply specific tests to run as another parameter. For example, to
 run the repository-related specs, you can execute:
 
 ```
-bin/qa Test::Instance http://localhost qa/specs/features/repository/
+bin/qa Test::Instance http://localhost:3000 -- scenarios/repository/
 ```
 
 Since the arguments would be passed to `rspec`, you could use all `rspec`
 options there. For example, passing `--backtrace` and also line number:
 
 ```
-bin/qa Test::Instance http://localhost qa/specs/features/login/standard_spec.rb:3 --backtrace
+bin/qa Test::Instance http://localhost:3000 -- scenarios/login/standard_spec.rb:3 --backtrace
 ```
 
 ### Running Geo integrations test against live servers
@@ -99,6 +95,25 @@ GITLAB_USER_TYPE=ldap GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password \
 ```
 
 All [supported environment variables are here](https://gitlab.com/gitlab-org/gitlab-qa#supported-environment-variables).
+
+### Writing tests
+
+1. [Using page objects](qa/page/README.md)
+1. Using a local `gitlab-qa`:
+
+  ```
+  # Install the gems using the `Gemfile.dev` file
+  $ env BUNDLE_GEMFILE=Gemfile.dev GITLAB_QA_SOURCE=~/Code/GitLab/gitlab-qa GITLAB_QA_PROTOCOL=path \
+    bundle install
+
+  # Run the spec suite
+  $ env BUNDLE_GEMFILE=Gemfile.dev GITLAB_QA_SOURCE=~/Code/GitLab/gitlab-qa GITLAB_QA_PROTOCOL=path \
+    bundle exec rspec
+
+  # Run a specific scenario
+  $ env BUNDLE_GEMFILE=Gemfile.dev GITLAB_QA_SOURCE=~/Code/GitLab/gitlab-qa GITLAB_QA_PROTOCOL=path \
+    bin/qa Test::Instance http://localhost:3000 -- scenarios/api/users_spec.rb
+  ```
 
 ### Building a Docker image to test
 

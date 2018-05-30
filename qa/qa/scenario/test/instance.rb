@@ -7,19 +7,19 @@ module QA
       #
       class Instance
         include Gitlab::QA::Framework::Scenario::Template
-        extend Taggable
+        include Gitlab::QA::Framework::Scenario::Taggable
 
         tags :core
 
         def perform(address, *rspec_options)
-          Runtime::Scenario.define(:gitlab_address, address)
+          Gitlab::QA::Framework::Runtime::Scenario.define(:gitlab_address, address)
 
           ##
           # Perform before hooks, which are different for CE and EE
           #
           Runtime::Release.perform_before_hooks
 
-          Specs::Runner.perform do |specs|
+          Gitlab::QA::Framework::Scenario::Runner.perform do |specs|
             specs.tty = true
             specs.tags = self.class.focus
             specs.options =

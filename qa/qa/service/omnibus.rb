@@ -15,7 +15,7 @@ module QA
             "docker exec #{@name} bash -c '#{input} | gitlab-ctl #{command}'"
           end
 
-        Gitlab::QA::Framework::Docker::Shellout.new(cmd).execute!
+        Gitlab::QA::Framework::Utils::Shellout.new(cmd).execute!
       end
     end
   end

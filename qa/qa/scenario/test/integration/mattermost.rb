@@ -10,7 +10,7 @@ module QA
           tags :core, :mattermost
 
           def perform(address, mattermost, *rspec_options)
-            Runtime::Scenario.define(:mattermost_address, mattermost)
+            Gitlab::QA::Framework::Runtime::Scenario.define(:mattermost_address, mattermost)
 
             super(address, *rspec_options)
           end

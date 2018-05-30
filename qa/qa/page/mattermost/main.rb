@@ -10,7 +10,7 @@ module QA
         view 'app/views/projects/mattermosts/new.html.haml'
 
         def initialize
-          visit(Runtime::Scenario.mattermost_address)
+          visit(Gitlab::QA::Framework::Runtime::Scenario.mattermost_address)
         end
       end
     end

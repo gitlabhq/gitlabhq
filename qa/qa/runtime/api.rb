@@ -27,7 +27,7 @@ module QA
         private
 
         def create_personal_access_token
-          Runtime::Browser.visit(@address, Page::Main::Login) do
+          Gitlab::QA::Framework::Runtime::Browser.visit(@address, Page::Main::Login) do
             Page::Main::Login.act { sign_in_using_credentials }
             Factory::Resource::PersonalAccessToken.fabricate!.access_token
           end
@@ -40,7 +40,7 @@ module QA
         def initialize(api_client, path, personal_access_token: nil)
           personal_access_token ||= api_client.personal_access_token
           request_path = request_path(path, personal_access_token: personal_access_token)
-          @session_address = Runtime::Address.new(api_client.address, request_path)
+          @session_address = Gitlab::QA::Framework::Runtime::Address.new(api_client.address, request_path)
         end
 
         def url

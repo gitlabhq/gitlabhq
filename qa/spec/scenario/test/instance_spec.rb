@@ -8,12 +8,12 @@ describe QA::Scenario::Test::Instance do
   context '#perform' do
     let(:arguments) { spy('Runtime::Scenario') }
     let(:release) { spy('Runtime::Release') }
-    let(:runner) { spy('Specs::Runner') }
+    let(:runner) { spy('Scenario::Runner') }
 
     before do
       stub_const('QA::Runtime::Release', release)
-      stub_const('QA::Runtime::Scenario', arguments)
-      stub_const('QA::Specs::Runner', runner)
+      stub_const('Gitlab::QA::Framework::Runtime::Scenario', arguments)
+      stub_const('Gitlab::QA::Framework::Scenario::Runner', runner)
 
       allow(runner).to receive(:perform).and_yield(runner)
     end

@@ -10,12 +10,12 @@ module QA
       def initialize(name)
         @image = 'gitlab/gitlab-runner:alpine'
         @name = name || "qa-runner-#{SecureRandom.hex(4)}"
-        @network = Runtime::Scenario.attributes[:network] || 'test'
+        @network = Gitlab::QA::Framework::Runtime::Scenario.attributes[:network] || 'test'
         @tags = %w[qa test]
       end
 
       def network
-        Gitlab::QA::Framework::Docker::Shellout.new("docker network inspect #{@network}").execute!
+        Gitlab::QA::Framework::Utils::Shellout.new("docker network inspect #{@network}").execute!
       rescue CommandError
         'bridge'
       else
@@ -23,7 +23,7 @@ module QA
       end
 
       def pull
-        Gitlab::QA::Framework::Docker::Shellout.new("docker pull #{@image}").execute!
+        Gitlab::QA::Framework::Utils::Shellout.new("docker pull #{@image}").execute!
       end
 
       def register!
@@ -41,7 +41,7 @@ module QA
       end
 
       def remove!
-        Gitlab::QA::Framework::Docker::Shellout.new("docker rm -f #{@name}").execute!
+        Gitlab::QA::Framework::Utils::Shellout.new("docker rm -f #{@name}").execute!
       end
     end
   end
