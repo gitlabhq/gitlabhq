@@ -592,7 +592,7 @@ describe 'Issues' do
       end
 
       it 'clears local storage after creating a new issue', :js do
-        2.times.each do
+        2.times do
           visit new_project_issue_path(project)
           wait_for_requests
 
