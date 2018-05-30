@@ -1,6 +1,4 @@
 <script>
-  /* global BoardService */
-
   import MilestoneSelect from '~/milestone_select';
   import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 

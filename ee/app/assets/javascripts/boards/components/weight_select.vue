@@ -1,6 +1,5 @@
 <script>
   /* eslint-disable vue/require-default-prop */
-  /* global BoardService */
 
   import WeightSelect from 'ee/weight_select';
   import loadingIcon from '~/vue_shared/components/loading_icon.vue';

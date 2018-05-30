@@ -1,5 +1,3 @@
-/* global Flash */
-
 import $ from 'jquery';
 import { s__ } from '~/locale';
 import '~/flash';
