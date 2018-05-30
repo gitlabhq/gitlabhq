@@ -26,7 +26,7 @@
     .card.prepend-top-10
       .card-header
         Approvers
-      %ul.well-list.approver-list
+      %ul.content-list.approver-list
         - if issuable.all_approvers_including_groups.empty?
           %li.no-approvers There are no approvers
         - else
