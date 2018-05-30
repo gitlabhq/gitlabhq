@@ -9,8 +9,10 @@ export const changeDescriptionNote = (note, descriptionChangedTimes, timeDiffere
 
   descriptionNote.note_html = sprintf(
     s__(`MergeRequest|
-  <p dir="auto">changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}</p>`),
+  %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}`),
     {
+      paragraphStart: '<p dir="auto">',
+      paragraphEnd: '</p>',
       descriptionChangedTimes,
       timeDifferenceMinutes: n__('within %d minute ', 'within %d minutes ', timeDifferenceMinutes),
     },
@@ -31,7 +33,8 @@ export const getTimeDifferenceMinutes = (noteBeggining, noteEnd) => {
   const descriptionNoteBegin = new Date(noteBeggining.created_at);
   const descriptionNoteEnd = new Date(noteEnd.created_at);
   let timeDifferenceMinutes = (descriptionNoteEnd - descriptionNoteBegin) / 1000 / 60;
-  timeDifferenceMinutes = timeDifferenceMinutes < 1 ? 1 : timeDifferenceMinutes;
+  timeDifferenceMinutes = Math.ceil(timeDifferenceMinutes);
+
   return timeDifferenceMinutes;
 };
 
@@ -76,7 +79,7 @@ export const collapseSystemNotes = notes => {
           // reset counter
           descriptionChangedTimes = 1;
           // update the previous system note
-          lastDescriptionSystemNote = currentNote;
+          lastDescriptionSystemNote = note;
           lastDescriptionSystemNoteIndex = acc.length;
         } else {
           // increase counter
@@ -93,7 +96,7 @@ export const collapseSystemNotes = notes => {
           );
 
           // update the previous system note
-          lastDescriptionSystemNote = currentNote;
+          lastDescriptionSystemNote = note;
           lastDescriptionSystemNoteIndex = acc.length;
         }
       }
