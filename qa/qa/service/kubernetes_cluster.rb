@@ -11,9 +11,6 @@ module QA
         @cluster_name ||= "qa-cluster-#{SecureRandom.hex(4)}-#{Time.now.utc.strftime("%Y%m%d%H%M%S")}"
       end
 
-      def initialize
-      end
-
       def create!
         shell <<~CMD.tr("\n", ' ')
           gcloud container clusters

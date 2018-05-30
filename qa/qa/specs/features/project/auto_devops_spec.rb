@@ -1,48 +1,6 @@
 module QA
   feature 'Auto Devops', :kubernetes do
     let(:executor) { "qa-runner-#{Time.now.to_i}" }
-    let(:config_ru) do
-      <<~EOF
-        run lambda { |env| [200, {'Content-Type'=>'text/plain'}, StringIO.new("Hello World!\n")] }
-      EOF
-    end
-    let(:gemfile) do
-      <<~EOF
-        source 'https://rubygems.org'
-        gem 'rack'
-        gem 'rake'
-      EOF
-    end
-    let(:gemfile_lock) do
-      <<~EOF
-        GEM
-          remote: https://rubygems.org/
-          specs:
-            rack (2.0.4)
-            rake (12.3.0)
-
-        PLATFORMS
-          ruby
-
-        DEPENDENCIES
-          rack
-          rake
-
-        BUNDLED WITH
-           1.16.1
-      EOF
-    end
-    let(:rakefile) do
-      <<~EOF
-        require 'rake/testtask'
-
-        task default: %w[test]
-
-        task :test do
-          puts "ok"
-        end
-      EOF
-    end
 
     after do
       @cluster&.remove!
@@ -70,10 +28,10 @@ module QA
         repository.configure_identity('GitLab QA', 'root@gitlab.com')
 
         repository.checkout_new_branch('master')
-        repository.add_file('config.ru', config_ru)
-        repository.add_file('Gemfile', gemfile)
-        repository.add_file('Gemfile.lock', gemfile_lock)
-        repository.add_file('Rakefile', rakefile)
+        repository.add_file('config.ru', File.read(File.join(__dir__, "../../../fixtures/auto_devops_rack/config.ru")))
+        repository.add_file('Gemfile', File.read(File.join(__dir__, "../../../fixtures/auto_devops_rack/Gemfile")))
+        repository.add_file('Gemfile.lock', File.read(File.join(__dir__, "../../../fixtures/auto_devops_rack/Gemfile.lock")))
+        repository.add_file('Rakefile', File.read(File.join(__dir__, "../../../fixtures/auto_devops_rack/Rakefile")))
         repository.commit('Create auto devops repo')
         repository.push_changes("master:master")
       end
@@ -82,10 +40,7 @@ module QA
       @cluster = Service::KubernetesCluster.new.create!
       kubernetes_cluster = Factory::Resource::KubernetesCluster.fabricate! do |c|
         c.project = project
-        c.cluster_name = @cluster.cluster_name
-        c.api_url = @cluster.api_url
-        c.ca_certificate = @cluster.ca_certificate
-        c.token = @cluster.token
+        c.cluster = @cluster
         c.install_helm_tiller = true
         c.install_ingress = true
         c.install_prometheus = true
