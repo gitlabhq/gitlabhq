@@ -117,7 +117,6 @@ module API
       optional :version_check_enabled, type: Boolean, desc: 'Let GitLab inform you when an update is available.'
       optional :email_author_in_body, type: Boolean, desc: 'Some email servers do not support overriding the email sender name. Enable this option to include the name of the author of the issue, merge request or comment in the email body instead.'
       optional :html_emails_enabled, type: Boolean, desc: 'By default GitLab sends emails in HTML and plain text formats so mail clients can choose what format to use. Disable this option if you only want to send emails in plain text format.'
-      optional :email_additional_text, type: String, desc: 'Additional text added to the bottom of every email for legal/auditing/compliance reasons'
       optional :housekeeping_enabled, type: Boolean, desc: 'Enable automatic repository housekeeping (git repack, git gc)'
       given housekeeping_enabled: ->(val) { val } do
         requires :housekeeping_bitmaps_enabled, type: Boolean, desc: "Creating pack file bitmaps makes housekeeping take a little longer but bitmaps should accelerate 'git clone' performance."
@@ -138,7 +137,8 @@ module API
                  desc: "Restrictions on the complexity of uploaded #{type.upcase} keys. A value of #{ApplicationSetting::FORBIDDEN_KEY_VALUE} disables all #{type.upcase} keys."
       end
 
-<<<<<<< HEAD
+      ## EE-only START
+      optional :email_additional_text, type: String, desc: 'Additional text added to the bottom of every email for legal/auditing/compliance reasons'
       optional :help_text, type: String, desc: 'GitLab server administrator information'
       optional :elasticsearch_indexing, type: Boolean, desc: 'Enable Elasticsearch indexing'
       given elasticsearch_indexing: ->(val) { val } do
@@ -154,6 +154,7 @@ module API
       optional :usage_ping_enabled, type: Boolean, desc: 'Every week GitLab will report license usage back to GitLab, Inc.'
       optional :repository_storages, type: Array[String], desc: 'A list of names of enabled storage paths, taken from `gitlab.yml`. New projects will be created in one of these stores, chosen at random.'
       optional :repository_size_limit, type: Integer, desc: 'Size limit per repository (MB)'
+      ## EE-only END
 
       optional_attributes = ::ApplicationSettingsHelper.visible_attributes << :performance_bar_allowed_group_id
 
@@ -161,10 +162,6 @@ module API
       optional_attributes += EE::ApplicationSettingsHelper.possible_licensed_attributes
       ## EE-only END
 
-=======
-      optional_attributes = ::ApplicationSettingsHelper.visible_attributes << :performance_bar_allowed_group_id
-
->>>>>>> upstream/master
       optional(*optional_attributes)
       at_least_one_of(*optional_attributes)
     end
