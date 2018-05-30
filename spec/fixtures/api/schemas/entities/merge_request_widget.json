@@ -114,7 +114,6 @@
     "rebase_in_progress": { "type": "boolean" },
     "can_push_to_source_branch": { "type": "boolean" },
     "rebase_path": { "type": ["string", "null"] },
-<<<<<<< HEAD
     "squash": { "type": "boolean" },
 
     // EE-specific
@@ -130,9 +129,6 @@
       "base_path": { "type": "string" }
     },
     "vulnerability_feedback_path": { "type": "string" }
-=======
-    "squash": { "type": "boolean" }
->>>>>>> upstream/master
   },
   "additionalProperties": false
 }
