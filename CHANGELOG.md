@@ -4,6 +4,7 @@ entry.
 
 ## 10.8.3 (2018-05-30)
 
+- No changes.
 ### Fixed (4 changes)
 
 - Replace Gitlab::REVISION with Gitlab.revision and handle installations without a .git directory. !19125
