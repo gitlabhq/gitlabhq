@@ -11,13 +11,12 @@ export const receiveMergeRequestsError = ({ commit }) => {
 export const receiveMergeRequestsSuccess = ({ commit }, data) =>
   commit(types.RECEIVE_MERGE_REQUESTS_SUCCESS, data);
 
-export const fetchMergeRequests = ({ dispatch, state }) => {
+export const fetchMergeRequests = ({ dispatch, state: { scope, state } }, search = '') => {
   dispatch('requestMergeRequests');
+  dispatch('resetMergeRequests');
 
-  Api.mergeRequests({ scope: state.scope, state: 'opened' })
-    .then(({ data }) => {
-      dispatch('receiveMergeRequestsSuccess', data);
-    })
+  Api.mergeRequests({ scope, state, search })
+    .then(({ data }) => dispatch('receiveMergeRequestsSuccess', data))
     .catch(() => dispatch('receiveMergeRequestsError'));
 };
 

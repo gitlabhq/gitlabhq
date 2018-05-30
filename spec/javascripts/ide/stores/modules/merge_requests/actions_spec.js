@@ -12,7 +12,7 @@ import actions, {
 import { mergeRequests } from '../../../mock_data';
 import testAction from '../../../../helpers/vuex_action_helper';
 
-describe('IDe merge requests actions', () => {
+describe('IDE merge requests actions', () => {
   let mockedState;
   let mock;
 
@@ -95,6 +95,21 @@ describe('IDe merge requests actions', () => {
           params: {
             scope: 'assigned-to-me',
             state: 'opened',
+            search: '',
+          },
+        });
+      });
+
+      it('calls API with search', () => {
+        const apiSpy = spyOn(axios, 'get').and.callThrough();
+
+        fetchMergeRequests({ dispatch() {}, state: mockedState }, 'testing search');
+
+        expect(apiSpy).toHaveBeenCalledWith(jasmine.anything(), {
+          params: {
+            scope: 'assigned-to-me',
+            state: 'opened',
+            search: 'testing search',
           },
         });
       });
@@ -105,7 +120,11 @@ describe('IDe merge requests actions', () => {
           null,
           mockedState,
           [],
-          [{ type: 'requestMergeRequests' }, { type: 'receiveMergeRequestsSuccess' }],
+          [
+            { type: 'requestMergeRequests' },
+            { type: 'resetMergeRequests' },
+            { type: 'receiveMergeRequestsSuccess' },
+          ],
           done,
         );
       });
@@ -118,6 +137,7 @@ describe('IDe merge requests actions', () => {
           [],
           [
             { type: 'requestMergeRequests' },
+            { type: 'resetMergeRequests' },
             { type: 'receiveMergeRequestsSuccess', payload: mergeRequests },
           ],
           done,
@@ -136,7 +156,11 @@ describe('IDe merge requests actions', () => {
           null,
           mockedState,
           [],
-          [{ type: 'requestMergeRequests' }, { type: 'receiveMergeRequestsError' }],
+          [
+            { type: 'requestMergeRequests' },
+            { type: 'resetMergeRequests' },
+            { type: 'receiveMergeRequestsError' },
+          ],
           done,
         );
       });
