@@ -4,7 +4,7 @@
   .card
     .card-header
       Domains (#{@domains.count})
-    %ul.well-list.pages-domain-list{ class: ("has-verification-status" if verification_enabled) }
+    %ul.content-list.pages-domain-list{ class: ("has-verification-status" if verification_enabled) }
       - @domains.each do |domain|
         %li.pages-domain-list-item.unstyled
           - if verification_enabled
