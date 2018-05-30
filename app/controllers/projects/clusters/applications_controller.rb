@@ -7,7 +7,7 @@ class Projects::Clusters::ApplicationsController < Projects::ApplicationControll
   def create
     application = @application_class.find_or_initialize_by(cluster: @cluster)
 
-    if has_attribute?(:hostname)
+    if application.has_attribute?(:hostname)
       application.hostname = params[:hostname]
     end
 
