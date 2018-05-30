@@ -328,7 +328,6 @@ describe('diff_file_header', () => {
       expect(button.dataset.clipboardText).toBe(props.diffFile.filePath);
     });
 
-
     describe('file mode', () => {
       it('it displays old and new file mode if it changed', () => {
         props.diffFile.modeChanged = true;

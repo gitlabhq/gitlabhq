@@ -245,7 +245,7 @@ export default {
         class="btn btn-file-option"
         v-tooltip
       >
-       <icon name="external-link" />
+        <icon name="external-link" />
       </a>
     </div>
   </div>
