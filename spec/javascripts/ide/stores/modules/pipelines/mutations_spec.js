@@ -162,15 +162,13 @@ describe('IDE pipelines mutations', () => {
     });
 
     it('toggles collapsed state', () => {
-      const stage = mockedState.stages[0];
+      mutations[types.TOGGLE_STAGE_COLLAPSE](mockedState, mockedState.stages[0].id);
 
-      mutations[types.TOGGLE_STAGE_COLLAPSE](mockedState, stage.id);
+      expect(mockedState.stages[0].isCollapsed).toBe(true);
 
-      expect(stage.isCollapsed).toBe(true);
+      mutations[types.TOGGLE_STAGE_COLLAPSE](mockedState, mockedState.stages[0].id);
 
-      mutations[types.TOGGLE_STAGE_COLLAPSE](mockedState, stage.id);
-
-      expect(stage.isCollapsed).toBe(false);
+      expect(mockedState.stages[0].isCollapsed).toBe(false);
     });
   });
 });
