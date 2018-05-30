@@ -773,6 +773,7 @@ describe Ci::Runner do
     end
 
     it 'can be destroyed' do
+      subject
       expect { subject.destroy }.to change { described_class.count }.by(-1)
     end
   end
