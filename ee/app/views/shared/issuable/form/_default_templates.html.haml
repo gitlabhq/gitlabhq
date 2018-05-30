@@ -1,0 +1,4 @@
+- if @project.feature_available?(:issuable_default_templates)
+  = render_ce 'shared/issuable/form/default_templates'
+- elsif show_promotions?
+  = render 'shared/promotions/promote_issue_templates'
