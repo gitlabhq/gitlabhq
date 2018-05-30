@@ -10,8 +10,16 @@ export default {
   },
   [types.RECEIVE_MERGE_REQUESTS_SUCCESS](state, data) {
     state.mergeRequests = data.map(mergeRequest => ({
-      id: mergeRequest.iid,
+      id: mergeRequest.id,
+      iid: mergeRequest.iid,
       title: mergeRequest.title,
+      projectId: mergeRequest.project_id,
+      projectPathWithNamespace: mergeRequest.web_url
+        .replace(`${gon.gitlab_url}/`, '')
+        .replace(`/merge_requests/${mergeRequest.iid}`, ''),
     }));
+  },
+  [types.RESET_MERGE_REQUESTS](state) {
+    state.mergeRequests = [];
   },
 };

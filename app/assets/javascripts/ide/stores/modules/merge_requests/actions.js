@@ -14,11 +14,13 @@ export const receiveMergeRequestsSuccess = ({ commit }, data) =>
 export const fetchMergeRequests = ({ dispatch, state }) => {
   dispatch('requestMergeRequests');
 
-  Api.mergeRequests({ scope: state.scope, view: 'simple' })
+  Api.mergeRequests({ scope: state.scope, state: 'opened' })
     .then(({ data }) => {
       dispatch('receiveMergeRequestsSuccess', data);
     })
     .catch(() => dispatch('receiveMergeRequestsError'));
 };
+
+export const resetMergeRequests = ({ commit }) => commit(types.RESET_MERGE_REQUESTS);
 
 export default () => {};

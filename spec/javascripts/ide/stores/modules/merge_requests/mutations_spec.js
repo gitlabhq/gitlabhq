@@ -28,14 +28,28 @@ describe('IDE merge requests mutations', () => {
 
   describe(types.RECEIVE_MERGE_REQUESTS_SUCCESS, () => {
     it('sets merge requests', () => {
+      gon.gitlab_url = gl.TEST_HOST;
       mutations[types.RECEIVE_MERGE_REQUESTS_SUCCESS](mockedState, mergeRequests);
 
       expect(mockedState.mergeRequests).toEqual([
         {
           id: 1,
+          iid: 1,
           title: 'Test merge request',
+          projectId: 1,
+          projectPathWithNamespace: 'namespace/project-path',
         },
       ]);
+    });
+  });
+
+  describe(types.RESET_MERGE_REQUESTS, () => {
+    it('clears merge request array', () => {
+      mockedState.mergeRequests = ['test'];
+
+      mutations[types.RESET_MERGE_REQUESTS](mockedState);
+
+      expect(mockedState.mergeRequests).toEqual([]);
     });
   });
 });

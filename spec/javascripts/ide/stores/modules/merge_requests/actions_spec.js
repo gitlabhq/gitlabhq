@@ -7,6 +7,7 @@ import actions, {
   receiveMergeRequestsError,
   receiveMergeRequestsSuccess,
   fetchMergeRequests,
+  resetMergeRequests,
 } from '~/ide/stores/modules/merge_requests/actions';
 import { mergeRequests } from '../../../mock_data';
 import testAction from '../../../../helpers/vuex_action_helper';
@@ -93,7 +94,7 @@ describe('IDe merge requests actions', () => {
         expect(apiSpy).toHaveBeenCalledWith(jasmine.anything(), {
           params: {
             scope: 'assigned-to-me',
-            view: 'simple',
+            state: 'opened',
           },
         });
       });
@@ -139,6 +140,19 @@ describe('IDe merge requests actions', () => {
           done,
         );
       });
+    });
+  });
+
+  describe('resetMergeRequests', () => {
+    it('commits reset', done => {
+      testAction(
+        resetMergeRequests,
+        null,
+        mockedState,
+        [{ type: types.RESET_MERGE_REQUESTS }],
+        [],
+        done,
+      );
     });
   });
 });
