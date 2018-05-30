@@ -1006,7 +1006,6 @@ class Repository
                                        remote_branch: merge_request.target_branch)
   end
 
-<<<<<<< HEAD
   def blob_data_at(sha, path)
     blob = blob_at(sha, path)
     return unless blob
@@ -1015,8 +1014,6 @@ class Repository
     blob.data
   end
 
-=======
->>>>>>> upstream/master
   def squash(user, merge_request)
     raw.squash(user, merge_request.id, branch: merge_request.target_branch,
                                        start_sha: merge_request.diff_start_sha,
