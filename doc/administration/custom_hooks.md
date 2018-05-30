@@ -80,7 +80,7 @@ STDERR takes precedence over STDOUT.
 
 ![Custom message from custom Git hook](img/custom_hooks_error_msg.png)
 
-[CI]: ../ci/readme.md
+[CI]: ../ci/README.md
 [hooks]: https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks#Server-Side-Hooks
 [webhooks]: ../user/project/integrations/webhooks.md
 [5073]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5073
