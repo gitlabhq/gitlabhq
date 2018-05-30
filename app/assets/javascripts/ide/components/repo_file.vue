@@ -169,7 +169,7 @@ export default {
             :show-tooltip="true"
             :show-staged-icon="true"
             :force-modified-icon="true"
-            class="pull-right"
+            class="float-right"
           />
         </span>
         <new-dropdown
