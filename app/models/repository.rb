@@ -957,6 +957,14 @@ class Repository
                                        remote_branch: merge_request.target_branch)
   end
 
+  def blob_data_at(sha, path)
+    blob = blob_at(sha, path)
+    return unless blob
+
+    blob.load_all_data!
+    blob.data
+  end
+
   def squash(user, merge_request)
     raw.squash(user, merge_request.id, branch: merge_request.target_branch,
                                        start_sha: merge_request.diff_start_sha,
@@ -977,14 +985,6 @@ class Repository
              end
 
     ::Commit.new(commit, @project) if commit
-  end
-
-  def blob_data_at(sha, path)
-    blob = blob_at(sha, path)
-    return unless blob
-
-    blob.load_all_data!
-    blob.data
   end
 
   def cache
