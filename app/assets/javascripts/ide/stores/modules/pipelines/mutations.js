@@ -39,20 +39,28 @@ export default {
     }
   },
   [types.REQUEST_JOBS](state, id) {
-    const stage = state.stages.find(s => s.id === id);
-    stage.isLoading = true;
+    state.stages = state.stages.map(stage => ({
+      ...stage,
+      isLoading: stage.id === id ? true : stage.isLoading,
+    }));
   },
   [types.RECEIVE_JOBS_ERROR](state, id) {
-    const stage = state.stages.find(s => s.id === id);
-    stage.isLoading = false;
+    state.stages = state.stages.map(stage => ({
+      ...stage,
+      isLoading: stage.id === id ? false : stage.isLoading,
+    }));
   },
   [types.RECEIVE_JOBS_SUCCESS](state, { id, data }) {
-    const stage = state.stages.find(s => s.id === id);
-    stage.isLoading = false;
-    stage.jobs = data.latest_statuses.map(normalizeJob);
+    state.stages = state.stages.map(stage => ({
+      ...stage,
+      isLoading: stage.id === id ? false : stage.isLoading,
+      jobs: data.latest_statuses.map(normalizeJob),
+    }));
   },
   [types.TOGGLE_STAGE_COLLAPSE](state, id) {
-    const stage = state.stages.find(s => s.id === id);
-    stage.isCollapsed = !stage.isCollapsed;
+    state.stages = state.stages.map(stage => ({
+      ...stage,
+      isCollapsed: stage.id === id ? !stage.isCollapsed : stage.isCollapsed,
+    }));
   },
 };

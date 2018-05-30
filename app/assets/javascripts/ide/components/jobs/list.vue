@@ -1,4 +1,5 @@
 <script>
+import { mapActions } from 'vuex';
 import LoadingIcon from '../../../vue_shared/components/loading_icon.vue';
 import Stage from './stage.vue';
 
@@ -17,6 +18,9 @@ export default {
       required: true,
     },
   },
+  methods: {
+    ...mapActions('pipelines', ['fetchJobs', 'toggleStageCollapsed']),
+  },
 };
 </script>
 
@@ -32,6 +36,8 @@ export default {
         v-for="stage in stages"
         :key="stage.id"
         :stage="stage"
+        @fetch="fetchJobs"
+        @toggleCollapsed="toggleStageCollapsed"
       />
     </template>
   </div>

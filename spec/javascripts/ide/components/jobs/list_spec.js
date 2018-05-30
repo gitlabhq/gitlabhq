@@ -21,7 +21,12 @@ describe('IDE stages list', () => {
         isCollapsed: false,
       })),
       loading: false,
-    }).$mount();
+    });
+
+    spyOn(vm, 'fetchJobs');
+    spyOn(vm, 'toggleStageCollapsed');
+
+    vm.$mount();
   });
 
   afterEach(() => {
@@ -41,5 +46,22 @@ describe('IDE stages list', () => {
 
       done();
     });
+  });
+
+  it('calls toggleStageCollapsed when clicking stage header', done => {
+    vm.$el.querySelector('.card-header').click();
+
+    vm.$nextTick(() => {
+      expect(vm.toggleStageCollapsed).toHaveBeenCalledWith(0);
+
+      done();
+    });
+  });
+
+  it('calls fetchJobs when stage is mounted', () => {
+    expect(vm.fetchJobs.calls.count()).toBe(stages.length);
+
+    expect(vm.fetchJobs.calls.argsFor(0)).toEqual([vm.stages[0]]);
+    expect(vm.fetchJobs.calls.argsFor(1)).toEqual([vm.stages[1]]);
   });
 });

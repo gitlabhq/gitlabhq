@@ -1,51 +1,37 @@
 import Vue from 'vue';
-import MockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
-import { createStore } from '~/ide/stores';
 import Stage from '~/ide/components/jobs/stage.vue';
-import { createComponentWithStore } from '../../../helpers/vue_mount_component_helper';
 import { stages, jobs } from '../../mock_data';
 
 describe('IDE pipeline stage', () => {
   const Component = Vue.extend(Stage);
   let vm;
-  let mock;
   let stage;
 
-  beforeEach(done => {
-    const store = createStore();
-    mock = new MockAdapter(axios);
+  beforeEach(() => {
+    stage = {
+      ...stages[0],
+      id: 0,
+      dropdownPath: stages[0].dropdown_path,
+      jobs: [...jobs],
+      isLoading: false,
+      isCollapsed: false,
+    };
 
-    Vue.set(
-      store.state.pipelines,
-      'stages',
-      stages.map((mappedState, i) => ({
-        ...mappedState,
-        id: i,
-        dropdownPath: mappedState.dropdown_path,
-        jobs: [],
-        isLoading: false,
-        isCollapsed: false,
-      })),
-    );
-
-    stage = store.state.pipelines.stages[0];
-
-    mock.onGet(stage.dropdownPath).reply(200, {
-      latest_statuses: jobs,
+    vm = new Component({
+      propsData: { stage },
     });
 
-    vm = createComponentWithStore(Component, store, {
-      stage,
-    }).$mount();
+    spyOn(vm, '$emit');
 
-    setTimeout(done, 500);
+    vm.$mount();
   });
 
   afterEach(() => {
     vm.$destroy();
+  });
 
-    mock.restore();
+  it('emits fetch event when mounted', () => {
+    expect(vm.$emit).toHaveBeenCalledWith('fetch', vm.stage);
   });
 
   it('renders stages details', () => {
@@ -57,8 +43,18 @@ describe('IDE pipeline stage', () => {
   });
 
   describe('collapsed', () => {
-    it('toggles collapse status when clicking header', done => {
+    it('emits event when clicking header', done => {
       vm.$el.querySelector('.card-header').click();
+
+      vm.$nextTick(() => {
+        expect(vm.$emit).toHaveBeenCalledWith('toggleCollapsed', vm.stage.id);
+
+        done();
+      });
+    });
+
+    it('toggles collapse status when collapsed', done => {
+      vm.stage.isCollapsed = true;
 
       vm.$nextTick(() => {
         expect(vm.$el.querySelector('.card-body').style.display).toBe('none');
@@ -68,7 +64,7 @@ describe('IDE pipeline stage', () => {
     });
 
     it('sets border bottom class when collapsed', done => {
-      vm.$el.querySelector('.card-header').click();
+      vm.stage.isCollapsed = true;
 
       vm.$nextTick(() => {
         expect(vm.$el.querySelector('.card-header').classList).toContain('border-bottom-0');

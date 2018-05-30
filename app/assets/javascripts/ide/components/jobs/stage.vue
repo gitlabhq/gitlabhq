@@ -1,5 +1,4 @@
 <script>
-import { mapActions } from 'vuex';
 import tooltip from '../../../vue_shared/directives/tooltip';
 import Icon from '../../../vue_shared/components/icon.vue';
 import CiIcon from '../../../vue_shared/components/ci_icon.vue';
@@ -38,16 +37,17 @@ export default {
       return this.stage.jobs.length;
     },
   },
-  created() {
-    this.fetchJobs(this.stage);
-  },
   mounted() {
     const { stageTitle } = this.$refs;
 
     this.showTooltip = stageTitle.scrollWidth > stageTitle.offsetWidth;
+
+    this.$emit('fetch', this.stage);
   },
   methods: {
-    ...mapActions('pipelines', ['fetchJobs', 'toggleStageCollapsed']),
+    toggleCollapsed() {
+      this.$emit('toggleCollapsed', this.stage.id);
+    },
   },
 };
 </script>
@@ -61,7 +61,7 @@ export default {
       :class="{
         'border-bottom-0': stage.isCollapsed
       }"
-      @click="toggleStageCollapsed(stage.id)"
+      @click="toggleCollapsed"
     >
       <ci-icon
         :status="stage.status"
