@@ -54,7 +54,7 @@ export default function initCompareAutocomplete(limitTo = null, clickHandler = (
             .attr('href', '#')
             .addClass(ref === selected ? 'is-active' : '')
             .text(ref)
-            .attr('data-ref', escape(ref));
+            .attr('data-ref', ref);
           return $('<li />').append(link);
         }
       },
