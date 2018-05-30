@@ -29,6 +29,18 @@ describe API::MergeRequests do
     project.add_reporter(user)
   end
 
+  describe 'route shadowing' do
+    include GrapePathHelpers::NamedRouteMatcher
+
+    it 'does not occur' do
+      path = api_v4_projects_merge_requests_path(id: 1)
+      expect(path).to eq('/api/v4/projects/1/merge_requests')
+
+      path = api_v4_projects_merge_requests_path(id: 1, merge_request_iid: 3)
+      expect(path).to eq('/api/v4/projects/1/merge_requests/3')
+    end
+  end
+
   describe 'GET /merge_requests' do
     context 'when unauthenticated' do
       it 'returns an array of all merge requests' do
