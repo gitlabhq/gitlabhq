@@ -67,7 +67,7 @@ export default {
 
         <span
           v-if="shouldRenderBadge(tab.count)"
-          class="badge"
+          class="badge badge-pill"
         >
           {{ tab.count }}
         </span>

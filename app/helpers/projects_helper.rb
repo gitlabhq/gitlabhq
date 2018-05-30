@@ -259,6 +259,10 @@ module ProjectsHelper
       nav_tabs << :pipelines
     end
 
+    if can?(current_user, :read_environment, project) || can?(current_user, :read_cluster, project)
+      nav_tabs << :operations
+    end
+
     if project.external_issue_tracker
       nav_tabs << :external_issue_tracker
     end

@@ -8,11 +8,11 @@
 %li.label-list-item{ id: label_css_id, data: { id: label.id } }
   = render "shared/label_row", label: label
 
-  .visible-xs.visible-sm-inline-block.dropdown
+  .d-inline-block.d-sm-none.dropdown
     %button.btn.btn-default.label-options-toggle{ type: 'button', data: { toggle: "dropdown" } }
       Options
       = icon('caret-down')
-    .dropdown-menu.dropdown-menu-align-right
+    .dropdown-menu.dropdown-menu-right
       %ul
         - if show_label_merge_requests_link
           %li
@@ -46,7 +46,7 @@
               data: {confirm: 'Remove this label? Are you sure?'},
               class: 'text-danger'
 
-  .pull-right.hidden-xs.hidden-sm
+  .float-right.d-none.d-sm-none.d-md-block
     - if can?(current_user, :admin_label, label)
       - if label.is_a?(ProjectLabel) && label.project.group && can?(current_user, :admin_label, label.project.group)
         %button.js-promote-project-label-button.btn.btn-transparent.btn-action.has-tooltip{ title: _('Promote to Group Label'),

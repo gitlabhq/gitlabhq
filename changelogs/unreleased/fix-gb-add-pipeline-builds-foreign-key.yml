@@ -1,5 +1,0 @@
----
-title: Add database foreign key constraint between pipelines and build
-merge_request: 18822
-author:
-type: fixed

@@ -7,7 +7,7 @@
       color: $gl-text-color-secondary;
     }
 
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       display: flex;
 
       .tree-ref-container {
@@ -41,15 +41,10 @@
           position: relative;
         }
       }
-
-      .add-to-tree-dropdown {
-        position: absolute;
-        left: 18px;
-      }
     }
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     .repo-breadcrumb {
       margin-top: 10px;
       position: relative;
@@ -121,7 +116,7 @@
           margin-left: 5px;
         }
 
-        @media (min-width: $screen-md-min) and (max-width: $screen-md-max) {
+        @include media-breakpoint-only(md) {
           @include str-truncated(450px);
         }
 

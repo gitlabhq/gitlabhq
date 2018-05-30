@@ -5,9 +5,10 @@ class Projects::Clusters::ApplicationsController < Projects::ApplicationControll
   before_action :authorize_create_cluster!, only: [:create]
 
   def create
-    Clusters::Applications::ScheduleInstallationService.new(project, current_user,
-                                                            application_class: @application_class,
-                                                            cluster: @cluster).execute
+    application = @application_class.find_or_create_by!(cluster: @cluster)
+
+    Clusters::Applications::ScheduleInstallationService.new(project, current_user).execute(application)
+
     head :no_content
   rescue StandardError
     head :bad_request

@@ -1,5 +1,0 @@
----
-title: Detect repository license on Gitaly by default
-merge_request:
-author:
-type: performance

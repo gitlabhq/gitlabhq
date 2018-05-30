@@ -9,11 +9,30 @@ module Gitlab
     Settings
   end
 
+  def self.migrations_hash
+    @_migrations_hash ||= Digest::MD5.hexdigest(ActiveRecord::Migrator.get_all_versions.to_s)
+  end
+
+  def self.revision
+    @_revision ||= begin
+      if File.exist?(root.join("REVISION"))
+        File.read(root.join("REVISION")).strip.freeze
+      else
+        result = Gitlab::Popen.popen_with_detail(%W[#{config.git.bin_path} log --pretty=format:%h -n 1])
+
+        if result.status.success?
+          result.stdout.chomp.freeze
+        else
+          "Unknown".freeze
+        end
+      end
+    end
+  end
+
   COM_URL = 'https://gitlab.com'.freeze
   APP_DIRS_PATTERN = %r{^/?(app|config|ee|lib|spec|\(\w*\))}
   SUBDOMAIN_REGEX = %r{\Ahttps://[a-z0-9]+\.gitlab\.com\z}
   VERSION = File.read(root.join("VERSION")).strip.freeze
-  REVISION = Gitlab::Popen.popen(%W(#{config.git.bin_path} log --pretty=format:%h -n 1)).first.chomp.freeze
 
   def self.com?
     # Check `gl_subdomain?` as well to keep parity with gitlab.com

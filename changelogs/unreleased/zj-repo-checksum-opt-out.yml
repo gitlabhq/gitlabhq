@@ -1,5 +1,0 @@
----
-title: Compute Gitlab::Git::Repository#checksum on Gitaly by default
-merge_request:
-author:
-type: performance

@@ -53,6 +53,9 @@ stub_licensed_features(variable_environment_scope: true)
 
 EE-specific comments should not be backported to CE.
 
+**Note:** This is only meant as a workaround, we should follow up and
+resolve this soon.
+
 ### Detection of EE-only files
 
 For each commit (except on `master`), the `ee-files-location-check` CI job tries
@@ -105,11 +108,14 @@ is applied not only to models. Here's a list of other examples:
 - `ee/app/services/foo/create_service.rb`
 - `ee/app/validators/foo_attr_validator.rb`
 - `ee/app/workers/foo_worker.rb`
+- `ee/app/views/foo.html.haml`
+- `ee/app/views/foo/_bar.html.haml`
 
 This works because for every path that are present in CE's eager-load/auto-load
 paths, we add the same `ee/`-prepended path in [`config/application.rb`].
+This also applies to views.
 
-[`config/application.rb`]: https://gitlab.com/gitlab-org/gitlab-ee/blob/d278b76d6600a0e27d8019a0be27971ba23ab640/config/application.rb#L41-51
+[`config/application.rb`]: https://gitlab.com/gitlab-org/gitlab-ee/blob/925d3d4ebc7a2c72964ce97623ae41b8af12538d/config/application.rb#L42-52
 
 ### EE features based on CE features
 
@@ -359,8 +365,62 @@ Blocks of code that are EE-specific should be moved to partials. This
 avoids conflicts with big chunks of HAML code that that are not fun to
 resolve when you add the indentation to the equation.
 
-EE-specific views should be placed in `ee/app/views/ee/`, using extra
+EE-specific views should be placed in `ee/app/views/`, using extra
 sub-directories if appropriate.
+
+#### Using `render_if_exists`
+
+Instead of using regular `render`, we should use `render_if_exists`, which
+will not render anything if it cannot find the specific partial. We use this
+so that we could put `render_if_exists` in CE, keeping code the same between
+CE and EE.
+
+The advantages of this:
+
+- Minimal code difference between CE and EE.
+- Very clear hints about where we're extending EE views while reading CE codes.
+
+The disadvantage of this:
+
+- Slightly more work while developing EE features, because now we need to
+  port `render_if_exists` to CE.
+- If we have typos in the partial name, it would be silently ignored.
+
+#### Using `render_ce`
+
+For `render` and `render_if_exists`, they search for the EE partial first,
+and then CE partial. They would only render a particular partial, not all
+partials with the same name. We could take the advantage of this, so that
+the same partial path (e.g. `shared/issuable/form/default_templates`) could
+be referring to the CE partial in CE (i.e.
+`app/views/shared/issuable/form/_default_templates.html.haml`), while EE
+partial in EE (i.e.
+`ee/app/views/shared/issuable/form/_default_templates.html.haml`). This way,
+we could show different things between CE and EE.
+
+However sometimes we would also want to reuse the CE partial in EE partial
+because we might just want to add something to the existing CE partial. We
+could workaround this by adding another partial with a different name, but it
+would be tedious to do so.
+
+In this case, we could as well just use `render_ce` which would ignore any EE
+partials. One example would be
+`ee/app/views/shared/issuable/form/_default_templates.html.haml`:
+
+``` haml
+- if @project.feature_available?(:issuable_default_templates)
+  = render_ce 'shared/issuable/form/default_templates'
+- elsif show_promotions?
+  = render 'shared/promotions/promote_issue_templates'
+```
+
+In the above example, we can't use
+`render 'shared/issuable/form/default_templates'` because it would find the
+same EE partial, causing infinite recursion. Instead, we could use `render_ce`
+so it ignores any partials in `ee/` and then it would render the CE partial
+(i.e. `app/views/shared/issuable/form/_default_templates.html.haml`)
+for the same path (i.e. `shared/issuable/form/default_templates`). This way
+we could easily wrap around the CE partial.
 
 ### Code in `lib/`
 

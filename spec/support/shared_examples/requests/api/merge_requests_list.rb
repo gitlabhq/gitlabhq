@@ -260,5 +260,21 @@ shared_examples 'merge requests list' do
         expect(response_dates).to eq(response_dates.sort)
       end
     end
+
+    context 'source_branch param' do
+      it 'returns merge requests with the given source branch' do
+        get api(endpoint_path, user), source_branch: merge_request_closed.source_branch, state: 'all'
+
+        expect_response_contain_exactly(merge_request_closed, merge_request_merged)
+      end
+    end
+
+    context 'target_branch param' do
+      it 'returns merge requests with the given target branch' do
+        get api(endpoint_path, user), target_branch: merge_request_closed.target_branch, state: 'all'
+
+        expect_response_contain_exactly(merge_request_closed, merge_request_merged)
+      end
+    end
   end
 end

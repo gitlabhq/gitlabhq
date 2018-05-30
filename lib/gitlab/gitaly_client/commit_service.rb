@@ -334,6 +334,22 @@ module Gitlab
         signatures
       end
 
+      def get_commit_messages(commit_ids)
+        request = Gitaly::GetCommitMessagesRequest.new(repository: @gitaly_repo, commit_ids: commit_ids)
+        response = GitalyClient.call(@repository.storage, :commit_service, :get_commit_messages, request)
+
+        messages = Hash.new { |h, k| h[k] = ''.b }
+        current_commit_id = nil
+
+        response.each do |rpc_message|
+          current_commit_id = rpc_message.commit_id if rpc_message.commit_id.present?
+
+          messages[current_commit_id] << rpc_message.message
+        end
+
+        messages
+      end
+
       private
 
       def call_commit_diff(request_params, options = {})

@@ -23,7 +23,7 @@
 }
 
 .commit-hash-full {
-  @media (max-width: $screen-sm-max) {
+  @include media-breakpoint-down(sm) {
     width: 80px;
     white-space: nowrap;
     overflow: hidden;
@@ -183,7 +183,7 @@
 }
 
 .commit-actions {
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     .fa-spinner {
       font-size: 12px;
     }
@@ -327,8 +327,12 @@
   }
 
   &.invalid {
-    @include status-color($gray-dark, $gray, $gray-darkest);
+    @include status-color($gray-dark, color("gray"), $gray-darkest);
     border-color: $gray-darkest;
+
+    &:not(span):hover {
+      color: color("gray");
+    }
   }
 }
 

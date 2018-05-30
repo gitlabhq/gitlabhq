@@ -9,19 +9,19 @@
     float: right;
     margin-right: 0;
 
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       float: none;
     }
   }
 }
 
 .filters-section {
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     display: inline-block;
   }
 }
 
-@media (min-width: $screen-sm-min) {
+@include media-breakpoint-up(sm) {
   .filter-item:not(:last-child) {
     margin-right: 6px;
   }
@@ -37,7 +37,7 @@
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@include media-breakpoint-down(xs) {
   .filter-item {
     display: block;
     margin: 0 0 10px;
@@ -53,7 +53,7 @@
   display: -webkit-flex;
   display: flex;
 
-  @media (max-width: $screen-xs-min) {
+  @include media-breakpoint-down(xs) {
     -webkit-flex-direction: column;
     flex-direction: column;
   }
@@ -193,7 +193,7 @@
   border: 1px solid $border-color;
   background-color: $white-light;
 
-  @media (max-width: $screen-xs-min) {
+  @include media-breakpoint-down(xs) {
     -webkit-flex: 1 1 auto;
     flex: 1 1 auto;
     margin-bottom: 10px;
@@ -264,7 +264,7 @@
   max-width: 280px;
   overflow: auto;
 
-  @media (max-width: $screen-xs-min) {
+  @include media-breakpoint-down(xs) {
     width: auto;
     left: 0;
     right: 0;
@@ -315,7 +315,7 @@
 .filtered-search-history-dropdown {
   width: 40%;
 
-  @media (max-width: $screen-xs-min) {
+  @include media-breakpoint-down(xs) {
     left: 0;
     right: 0;
     max-width: none;
@@ -353,7 +353,7 @@
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@include media-breakpoint-down(xs) {
   .issues-details-filters {
     padding: 0 0 10px;
     background-color: $white-light;
@@ -361,7 +361,7 @@
   }
 }
 
-@media (max-width: $screen-xs) {
+@include media-breakpoint-down(sm) {
   .filter-dropdown-container {
     .dropdown-toggle,
     .dropdown,

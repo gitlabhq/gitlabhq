@@ -15,7 +15,7 @@ export default class NotificationsForm {
 
   toggleCheckbox(e) {
     const $checkbox = $(e.currentTarget);
-    const $parent = $checkbox.closest('.checkbox');
+    const $parent = $checkbox.closest('.form-check');
 
     this.saveEvent($checkbox, $parent);
   }

@@ -141,8 +141,10 @@ feature 'Group' do
     end
 
     it 'saves new settings' do
-      fill_in 'group_name', with: new_name
-      click_button 'Save group'
+      page.within('.gs-general') do
+        fill_in 'group_name', with: new_name
+        click_button 'Save group'
+      end
 
       expect(page).to have_content 'successfully updated'
       expect(find('#group_name').value).to eq(new_name)

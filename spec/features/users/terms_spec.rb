@@ -62,7 +62,8 @@ describe 'Users > Terms' do
       expect(current_path).to eq(project_issues_path(project))
     end
 
-    it 'redirects back to the page the user was trying to save' do
+    # Disabled until https://gitlab.com/gitlab-org/gitlab-ce/issues/37162 is solved properly
+    xit 'redirects back to the page the user was trying to save' do
       visit new_project_issue_path(project)
 
       fill_in :issue_title, with: 'Hello world, a new issue'
@@ -79,6 +80,24 @@ describe 'Users > Terms' do
       expect(current_path).to eq(new_project_issue_path(project))
       expect(find_field('issue_title').value).to eq('Hello world, a new issue')
       expect(find_field('issue_description').value).to eq("We don't want to lose what the user typed")
+    end
+  end
+
+  context 'when the terms are enforced' do
+    before do
+      enforce_terms
+    end
+
+    context 'signing out', :js do
+      it 'allows the user to sign out without a response' do
+        visit terms_path
+
+        find('.header-user-dropdown-toggle').click
+        click_link('Sign out')
+
+        expect(page).to have_content('Sign in')
+        expect(page).to have_content('Register')
+      end
     end
   end
 end

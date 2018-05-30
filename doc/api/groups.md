@@ -487,6 +487,9 @@ Parameters:
 
 - `id` (required) - The ID or path of a user group
 
+This will queue a background job to delete all projects in the group. The
+response will be a 202 Accepted if the user has authorization.
+
 ## Search for group
 
 Get all groups that match your string in their name or path.

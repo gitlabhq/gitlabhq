@@ -28,7 +28,7 @@ GET /merge_requests?milestone=release
 GET /merge_requests?labels=bug,reproduced
 GET /merge_requests?author_id=5
 GET /merge_requests?my_reaction_emoji=star
-GET /merge_requests?scope=assigned-to-me
+GET /merge_requests?scope=assigned_to_me
 ```
 
 Parameters:
@@ -45,8 +45,8 @@ Parameters:
 | `created_before`    | datetime | no       | Return merge requests created on or before the given time                                                              |
 | `updated_after`     | datetime | no       | Return merge requests updated on or after the given time                                                               |
 | `updated_before`    | datetime | no       | Return merge requests updated on or before the given time                                                              |
-| `scope`             | string   | no       | Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`. Defaults to `created-by-me`     |
-| `author_id`         | integer  | no       | Returns merge requests created by the given user `id`. Combine with `scope=all` or `scope=assigned-to-me`              |
+| `scope`             | string   | no       | Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`. Defaults to `created_by_me`<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead. |
+| `author_id`         | integer  | no       | Returns merge requests created by the given user `id`. Combine with `scope=all` or `scope=assigned_to_me`              |
 | `assignee_id`       | integer  | no       | Returns merge requests assigned to the given user `id`                                                                 |
 | `my_reaction_emoji` | string   | no       | Return merge requests reacted by the authenticated user by the given `emoji` _([Introduced][ce-14016] in GitLab 10.0)_ |
 | `source_branch`     | string   | no       | Return merge requests with the given source branch                                                                     |
@@ -107,6 +107,7 @@ Parameters:
     "changes_count": "1",
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
+    "squash": false,
     "web_url": "http://example.com/example/example/merge_requests/1",
     "time_stats": {
       "time_estimate": 0,
@@ -164,7 +165,7 @@ Parameters:
 | `created_before`    | datetime       | no       | Return merge requests created on or before the given time                                                                      |
 | `updated_after`     | datetime       | no       | Return merge requests updated on or after the given time                                                                       |
 | `updated_before`    | datetime       | no       | Return merge requests updated on or before the given time                                                                      |
-| `scope`             | string         | no       | Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all` _([Introduced][ce-13060] in GitLab 9.5)_ |
+| `scope`             | string         | no       | Return merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced][ce-13060] in GitLab 9.5. [Changed to snake_case][ce-18935] in GitLab 11.0)_ |
 | `author_id`         | integer        | no       | Returns merge requests created by the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                 |
 | `assignee_id`       | integer        | no       | Returns merge requests assigned to the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                |
 | `my_reaction_emoji` | string         | no       | Return merge requests reacted by the authenticated user by the given `emoji` _([Introduced][ce-14016] in GitLab 10.0)_         |
@@ -226,6 +227,7 @@ Parameters:
     "changes_count": "1",
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
+    "squash": false,
     "web_url": "http://example.com/example/example/merge_requests/1",
     "discussion_locked": false,
     "time_stats": {
@@ -413,6 +415,7 @@ Parameters:
   "changes_count": "1",
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
+  "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
   "discussion_locked": false,
   "time_stats": {
@@ -647,9 +650,10 @@ POST /projects/:id/merge_requests
 | `description`              | string  | no       | Description of MR                                                               |
 | `target_project_id`        | integer | no       | The target project (numeric id)                                                 |
 | `labels`                   | string  | no       | Labels for MR as a comma-separated list                                         |
-| `milestone_id`             | integer | no       | The ID of a milestone                                                           |
+| `milestone_id`             | integer | no       | The global ID of a milestone                                                           |
 | `remove_source_branch`     | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
-| `allow_maintainer_to_push` | boolean | no       | Whether or not a maintainer of the target project can push to the source branch  |
+| `allow_maintainer_to_push` | boolean | no       | Whether or not a maintainer of the target project can push to the source branch |
+| `squash`                   | boolean | no       | Squash commits into a single commit when merging                                |
 
 ```json
 {
@@ -703,6 +707,7 @@ POST /projects/:id/merge_requests
   "changes_count": "1",
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
+  "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
   "discussion_locked": false,
   "allow_maintainer_to_push": false,
@@ -730,11 +735,12 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 | `target_branch`            | string  | no       | The target branch                                                               |
 | `title`                    | string  | no       | Title of MR                                                                     |
 | `assignee_id`              | integer | no       | The ID of the user to assign the merge request to. Set to `0` or provide an empty value to unassign all assignees.  |
-| `milestone_id`             | integer | no       | The ID of a milestone to assign the merge request to. Set to `0` or provide an empty value to unassign a milestone.|
+| `milestone_id`             | integer | no       | The global ID of a milestone to assign the merge request to. Set to `0` or provide an empty value to unassign a milestone.|
 | `labels`                   | string  | no       | Comma-separated label names for a merge request. Set to an empty string to unassign all labels.                    |
 | `description`              | string  | no       | Description of MR                                                               |
 | `state_event`              | string  | no       | New state (close/reopen)                                                        |
 | `remove_source_branch`     | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
+| `squash`                   | boolean | no       | Squash commits into a single commit when merging |
 | `discussion_locked`        | boolean | no       | Flag indicating if the merge request's discussion is locked. If the discussion is locked only project members can add, edit or resolve comments. |
 | `allow_maintainer_to_push` | boolean | no       | Whether or not a maintainer of the target project can push to the source branch |
 
@@ -791,6 +797,7 @@ Must include at least one non-required attribute from above.
   "changes_count": "1",
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
+  "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
   "discussion_locked": false,
   "allow_maintainer_to_push": false,
@@ -898,6 +905,7 @@ Parameters:
   "changes_count": "1",
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
+  "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
   "discussion_locked": false,
   "time_stats": {
@@ -976,6 +984,7 @@ Parameters:
   "changes_count": "1",
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
+  "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
   "discussion_locked": false,
   "time_stats": {
@@ -1308,6 +1317,7 @@ Example response:
     "changes_count": "1",
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
+    "squash": false,
     "web_url": "http://example.com/example/example/merge_requests/1"
   },
   "target_url": "https://gitlab.example.com/gitlab-org/gitlab-ci/merge_requests/7",
@@ -1568,3 +1578,4 @@ Example response:
 [ce-13060]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13060
 [ce-14016]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14016
 [ce-15454]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15454
+[ce-18935]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18935

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import mrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options';
+import mrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import notify from '~/lib/utils/notify';
 import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';

@@ -114,19 +114,15 @@ describe PipelineSerializer do
         Gitlab::GitalyClient.reset_counts
       end
 
-      shared_examples 'no N+1 queries' do
+      context 'with the same ref' do
+        let(:ref) { 'feature' }
+
         it 'verifies number of queries', :request_store do
           recorded = ActiveRecord::QueryRecorder.new { subject }
 
           expect(recorded.count).to be_within(1).of(44)
           expect(recorded.cached_count).to eq(0)
         end
-      end
-
-      context 'with the same ref' do
-        let(:ref) { 'feature' }
-
-        it_behaves_like 'no N+1 queries'
       end
 
       context 'with different refs' do
@@ -136,7 +132,16 @@ describe PipelineSerializer do
           "feature-#{@sequence}"
         end
 
-        it_behaves_like 'no N+1 queries'
+        it 'verifies number of queries', :request_store do
+          recorded = ActiveRecord::QueryRecorder.new { subject }
+
+          # For each ref there is a permission check if maintainer can update
+          # pipeline. With the same ref this check is cached but if refs are
+          # different then there is an extra query per ref
+          # https://gitlab.com/gitlab-org/gitlab-ce/issues/46368
+          expect(recorded.count).to be_within(1).of(51)
+          expect(recorded.cached_count).to eq(0)
+        end
       end
 
       def create_pipeline(status)
