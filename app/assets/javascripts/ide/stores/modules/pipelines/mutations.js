@@ -54,7 +54,7 @@ export default {
     state.stages = state.stages.map(stage => ({
       ...stage,
       isLoading: stage.id === id ? false : stage.isLoading,
-      jobs: data.latest_statuses.map(normalizeJob),
+      jobs: stage.id === id ? data.latest_statuses.map(normalizeJob) : stage.jobs,
     }));
   },
   [types.TOGGLE_STAGE_COLLAPSE](state, id) {
