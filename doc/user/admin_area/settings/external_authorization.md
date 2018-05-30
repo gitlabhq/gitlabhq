@@ -80,7 +80,7 @@ through LDAP.
 
 When the external authorization service responds with a status code 200, the
 user is granted access. When the external service responds with a status code
-401, the user is denied access. In any case, the request is cached for 6 hours.
+401 or 403, the user is denied access. In any case, the request is cached for 6 hours.
 
 When denying access, a `reason` can be optionally specified in the JSON body:
 
@@ -90,7 +90,7 @@ When denying access, a `reason` can be optionally specified in the JSON body:
 }
 ```
 
-Any other status code than 401 or 200 will also deny access to the user, but the
+Any other status code than 200, 401 or 403 will also deny access to the user, but the
 response will not be cached.
 
 If the service times out (after 500ms), a message "External Policy Server did
