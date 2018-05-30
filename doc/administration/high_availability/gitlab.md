@@ -47,7 +47,8 @@ for each GitLab application server in your environment.
    URL. Depending your the NFS configuration, you may need to change some GitLab
    data locations. See [NFS documentation](nfs.md) for `/etc/gitlab/gitlab.rb`
    configuration values for various scenarios. The example below assumes you've
-   added NFS mounts in the default data locations.
+   added NFS mounts in the default data locations. Additionally the UID and GIDs
+   given are just examples and you should configure with your preferred values.
 
     ```ruby
     external_url 'https://gitlab.example.com'
@@ -69,6 +70,14 @@ for each GitLab application server in your environment.
     gitlab_rails['redis_port'] = '6379'
     gitlab_rails['redis_host'] = '10.1.0.6' # IP/hostname of Redis server
     gitlab_rails['redis_password'] = 'Redis Password'
+    
+    # Ensure UIDs and GIDs match between servers for permissions via NFS
+    user['uid'] = 9000
+    user['gid'] = 9000
+    web_server['uid'] = 9001
+    web_server['gid'] = 9001
+    registry['uid'] = 9002
+    registry['gid'] = 9002
     ```
 
     > **Note:** To maintain uniformity of links across HA clusters, the `external_url`

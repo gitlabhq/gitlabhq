@@ -131,6 +131,10 @@ table {
 }
 
 .card {
+  .card-title {
+    margin-bottom: 0;
+  }
+
   &.card-without-border {
     @extend .border-0;
   }
@@ -146,4 +150,8 @@ table {
 
 .nav-tabs .nav-link {
   border: 0;
+}
+
+pre code {
+  white-space: pre-wrap;
 }

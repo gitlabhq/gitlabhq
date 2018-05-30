@@ -24,6 +24,7 @@ class Project < ActiveRecord::Base
   include ChronicDurationAttribute
   include FastDestroyAll::Helpers
   include WithUploads
+  include BatchDestroyDependentAssociations
 
   # EE specific modules
   prepend EE::Project

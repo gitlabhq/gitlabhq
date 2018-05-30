@@ -12,7 +12,7 @@ module Bitbucket
       end
 
       def author
-        raw.fetch('reporter', {}).fetch('username', nil)
+        raw.dig('reporter', 'username')
       end
 
       def description
