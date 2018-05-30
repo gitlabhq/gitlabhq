@@ -454,7 +454,7 @@ retrieve-tests-metadata:
     - //@gitlab-org/gitlab-ee
   except:
     - master
-    - /^[\d-]+-stable(-ee)?$/
+    - /[\d-]+-stable(-ee)?/
     - /\bce\-to\-ee\b/
     - /(^docs[\/-].*|.*-docs$)/
 
