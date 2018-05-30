@@ -22,7 +22,7 @@ describe('Collapse utils', () => {
   });
 
   it('returns false when a system note is not a description type', () => {
-    expect(isDescriptionSystemNote(Object.assign(mockSystemNote, { note: 'foo' }))).toEqual(false);
+    expect(isDescriptionSystemNote(Object.assign({}, mockSystemNote, { note: 'foo' }))).toEqual(false);
   });
 
   it('changes the description to contain the number of changed times', () => {

@@ -63,11 +63,11 @@ export const collapseSystemNotes = notes => {
     if (isDescriptionSystemNote(note)) {
       // is it the first one?
       if (!lastDescriptionSystemNote) {
-        lastDescriptionSystemNote = currentNote;
+        lastDescriptionSystemNote = note;
         lastDescriptionSystemNoteIndex = acc.length;
       } else if (lastDescriptionSystemNote) {
         const timeDifferenceMinutes = getTimeDifferenceMinutes(
-          lastDescriptionSystemNote.notes[0],
+          lastDescriptionSystemNote,
           note,
         );
 
