@@ -397,6 +397,20 @@ describe Ci::Pipeline, :mailer do
           expect(seeds.size).to eq 1
           expect(seeds.dig(0, 0, :name)).to eq 'unit'
         end
+
+        context "when pipeline iid is used for 'only' keyword" do
+          let(:config) do
+            { rspec: { script: 'rspec', only: { variables: ['$CI_PIPELINE_IID == 2'] } },
+              prod: { script: 'cap prod', only: { variables: ['$CI_PIPELINE_IID == 1'] } } }
+          end
+
+          it 'returns stage seeds only when variables expression is truthy' do
+            seeds = pipeline.stage_seeds
+
+            expect(seeds.size).to eq 1
+            expect(seeds.dig(0, 0, :name)).to eq 'prod'
+          end
+        end
       end
     end
 

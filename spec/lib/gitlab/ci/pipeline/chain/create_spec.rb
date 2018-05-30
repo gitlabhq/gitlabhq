@@ -37,23 +37,21 @@ describe Gitlab::Ci::Pipeline::Chain::Create do
   end
 
   context 'when pipeline has validation errors' do
-    context 'when ref is nil' do
-      let(:pipeline) do
-        build(:ci_pipeline, project: project, ref: nil)
-      end
+    let(:pipeline) do
+      build(:ci_pipeline, project: project, ref: nil)
+    end
 
-      before do
-        step.perform!
-      end
+    before do
+      step.perform!
+    end
 
-      it 'breaks the chain' do
-        expect(step.break?).to be true
-      end
+    it 'breaks the chain' do
+      expect(step.break?).to be true
+    end
 
-      it 'appends validation error' do
-        expect(pipeline.errors.to_a)
-          .to include /Failed to persist the pipeline/
-      end
+    it 'appends validation error' do
+      expect(pipeline.errors.to_a)
+        .to include /Failed to persist the pipeline/
     end
   end
 end

@@ -42,6 +42,10 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
     it 'correctly assigns user' do
       expect(pipeline.builds).to all(have_attributes(user: user))
     end
+
+    it 'has pipeline iid' do
+      expect(pipeline.iid).to be > 0
+    end
   end
 
   context 'when pipeline is empty' do
@@ -68,6 +72,10 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
       expect(pipeline.errors.to_a)
         .to include 'No stages / jobs for this pipeline.'
     end
+
+    it 'wastes pipeline iid' do
+      expect(InternalId.ci_pipelines.where(project_id: project.id).last.last_value).to be > 0
+  end
   end
 
   context 'when pipeline has validation errors' do
@@ -87,6 +95,10 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
       expect(pipeline.errors.to_a)
         .to include 'Failed to build the pipeline!'
     end
+
+    it 'wastes pipeline iid' do
+      expect(InternalId.ci_pipelines.where(project_id: project.id).last.last_value).to be > 0
+  end
   end
 
   context 'when there is a seed blocks present' do
@@ -111,6 +123,12 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
         expect(pipeline.variables.first.key).to eq 'VAR'
         expect(pipeline.variables.first.value).to eq '123'
       end
+
+      it 'has pipeline iid' do
+        step.perform!
+
+        expect(pipeline.iid).to be > 0
+      end
     end
 
     context 'when seeds block tries to persist some resources' do
@@ -121,6 +139,12 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
       it 'raises exception' do
         expect { step.perform! }.to raise_error(ActiveRecord::RecordNotSaved)
       end
+
+      it 'does not waste pipeline iid' do
+        step.perform rescue nil
+
+        expect(InternalId.ci_pipelines.where(project_id: project.id).exists?).to be_falsy
+    end
     end
   end
 
