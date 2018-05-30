@@ -22,7 +22,7 @@
     - if label.description.present?
       .description-text
         = markdown_field(label, :description)
-    .hidden-xs.hidden-sm
+    .d-none.d-sm-none.d-md-block
       - if show_label_issues_link
         = link_to_label(label, subject: subject) { 'Issues' }
       - if show_label_merge_requests_link

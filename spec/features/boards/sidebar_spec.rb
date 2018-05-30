@@ -15,7 +15,7 @@ describe 'Issue Boards', :js do
   let!(:issue2)      { create(:labeled_issue, project: project, labels: [development, stretch], relative_position: 1) }
   let(:board)        { create(:board, project: project) }
   let!(:list)        { create(:list, board: board, label: development, position: 0) }
-  let(:card) { find('.board:nth-child(2)').first('.card') }
+  let(:card) { find('.board:nth-child(2)').first('.board-card') }
 
   around do |example|
     Timecop.freeze { example.run }
@@ -75,7 +75,7 @@ describe 'Issue Boards', :js do
     wait_for_requests
 
     page.within(find('.board:nth-child(2)')) do
-      expect(page).to have_selector('.card', count: 1)
+      expect(page).to have_selector('.board-card', count: 1)
     end
   end
 
@@ -86,11 +86,11 @@ describe 'Issue Boards', :js do
     visit project_board_path(project, board)
     wait_for_requests
 
-    click_card(find('.board:nth-child(1)').first('.card'))
+    click_card(find('.board:nth-child(1)').first('.board-card'))
 
     expect(find('.issue-boards-sidebar')).not_to have_button 'Remove from board'
 
-    click_card(find('.board:nth-child(3)').first('.card'))
+    click_card(find('.board:nth-child(3)').first('.board-card'))
 
     expect(find('.issue-boards-sidebar')).not_to have_button 'Remove from board'
   end
@@ -117,7 +117,7 @@ describe 'Issue Boards', :js do
     end
 
     it 'removes the assignee' do
-      card_two = find('.board:nth-child(2)').find('.card:nth-child(2)')
+      card_two = find('.board:nth-child(2)').find('.board-card:nth-child(2)')
       click_card(card_two)
 
       page.within('.assignee') do
@@ -171,7 +171,7 @@ describe 'Issue Boards', :js do
       end
 
       page.within(find('.board:nth-child(2)')) do
-        find('.card:nth-child(2)').click
+        find('.board-card:nth-child(2)').click
       end
 
       page.within('.assignee') do
@@ -246,7 +246,7 @@ describe 'Issue Boards', :js do
         wait_for_requests
 
         page.within('.value') do
-          expect(page).to have_selector('.label', count: 2)
+          expect(page).to have_selector('.badge', count: 2)
           expect(page).to have_content(development.title)
           expect(page).to have_content(stretch.title)
         end
@@ -268,12 +268,12 @@ describe 'Issue Boards', :js do
         find('.dropdown-menu-close-icon').click
 
         page.within('.value') do
-          expect(page).to have_selector('.label', count: 3)
+          expect(page).to have_selector('.badge', count: 3)
           expect(page).to have_content(bug.title)
         end
       end
 
-      expect(card).to have_selector('.label', count: 3)
+      expect(card).to have_selector('.badge', count: 3)
       expect(card).to have_content(bug.title)
     end
 
@@ -293,13 +293,13 @@ describe 'Issue Boards', :js do
         find('.dropdown-menu-close-icon').click
 
         page.within('.value') do
-          expect(page).to have_selector('.label', count: 4)
+          expect(page).to have_selector('.badge', count: 4)
           expect(page).to have_content(bug.title)
           expect(page).to have_content(regression.title)
         end
       end
 
-      expect(card).to have_selector('.label', count: 4)
+      expect(card).to have_selector('.badge', count: 4)
       expect(card).to have_content(bug.title)
       expect(card).to have_content(regression.title)
     end
@@ -321,12 +321,12 @@ describe 'Issue Boards', :js do
         find('.dropdown-menu-close-icon').click
 
         page.within('.value') do
-          expect(page).to have_selector('.label', count: 1)
+          expect(page).to have_selector('.badge', count: 1)
           expect(page).not_to have_content(stretch.title)
         end
       end
 
-      expect(card).to have_selector('.label', count: 1)
+      expect(card).to have_selector('.badge', count: 1)
       expect(card).not_to have_content(stretch.title)
     end
 

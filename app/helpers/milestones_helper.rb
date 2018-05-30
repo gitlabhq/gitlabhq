@@ -89,7 +89,7 @@ module MilestonesHelper
 
   def milestone_progress_bar(milestone)
     options = {
-      class: 'progress-bar progress-bar-success',
+      class: 'progress-bar bg-success',
       style: "width: #{milestone.percent_complete(current_user)}%;"
     }
 
@@ -112,8 +112,6 @@ module MilestonesHelper
   def milestone_tooltip_title(milestone)
     if milestone
       "#{milestone.title}<br />#{milestone_tooltip_due_date(milestone)}"
-    else
-      _('Milestone')
     end
   end
 
@@ -173,6 +171,8 @@ module MilestonesHelper
   def milestone_tooltip_due_date(milestone)
     if milestone.due_date
       "#{milestone.due_date.to_s(:medium)} (#{remaining_days_in_words(milestone)})"
+    else
+      _('Milestone')
     end
   end
 

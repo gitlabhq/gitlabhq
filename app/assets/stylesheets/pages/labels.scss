@@ -62,13 +62,13 @@
     display: inline-block;
     margin-bottom: 10px;
 
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       width: 200px;
       margin-left: $gl-padding * 2;
       margin-bottom: 0;
     }
 
-    .label {
+    .badge {
       overflow: hidden;
       text-overflow: ellipsis;
       max-width: 100%;
@@ -80,7 +80,7 @@
     margin-bottom: 10px;
     margin-left: 50px;
 
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       display: inline-block;
       width: 100px;
       margin-left: 10px;
@@ -101,7 +101,7 @@
       color: $blue-600;
     }
 
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       display: inline-block;
       max-width: 50%;
       margin-left: 10px;
@@ -110,7 +110,7 @@
     }
   }
 
-  .label {
+  .badge {
     padding: 4px $grid-size;
     font-size: $label-font-size;
     position: relative;
@@ -122,6 +122,7 @@
   padding: 0 $grid-size;
   line-height: 16px;
   border-radius: $label-border-radius;
+  color: $white-light;
 }
 
 .dropdown-labels-error {
@@ -132,7 +133,7 @@
 }
 
 .manage-labels-list {
-  @media(min-width: $screen-md-min) {
+  @media(min-width: map-get($grid-breakpoints, md)) {
     &.content-list li {
       padding: $gl-padding 0;
     }
@@ -171,12 +172,12 @@
   }
 
   .dropdown {
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       float: right;
     }
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     .dropdown-menu {
       min-width: 100%;
     }
@@ -283,7 +284,7 @@
 }
 
 .label-subscribe-button {
-  @media(min-width: $screen-md-min) {
+  @media(min-width: map-get($grid-breakpoints, md)) {
     min-width: 105px;
     margin-left: $gl-padding;
   }

@@ -20,7 +20,7 @@
             %input.btn.btn-success.dropdown-primary.js-new-group-child{ type: "button", value: new_project_label, data: { action: "new-project" } }
             %button.btn.btn-success.dropdown-toggle.js-dropdown-toggle{ type: "button", data: { "dropdown-trigger" => "#new-project-or-subgroup-dropdown" } }
               = icon("caret-down", class: "dropdown-btn-icon")
-            %ul#new-project-or-subgroup-dropdown.dropdown-menu.dropdown-menu-align-right{ data: { dropdown: true } }
+            %ul#new-project-or-subgroup-dropdown.dropdown-menu.dropdown-menu-right{ data: { dropdown: true } }
               %li.droplab-item-selected{ role: "button", data: { value: "new-project", text: new_project_label } }
                 .menu-item
                   .icon-container

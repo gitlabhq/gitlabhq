@@ -126,10 +126,10 @@ Next, a pipeline needs to be triggered. Since the test project doesn't have a
 manually visit `https://gitlab.com/<username>/minimal-ruby-app/pipelines/new`,
 where `<username>` is your username.
 
-This will create a new pipeline with several jobs: `build`, `test`, `codequality`,
+This will create a new pipeline with several jobs: `build`, `test`, `code_quality`,
 and `production`. The `build` job will create a Docker image with your new
 change and push it to the Container Registry. The `test` job will test your
-changes, whereas the `codequality` job will run static analysis on your changes.
+changes, whereas the `code_quality` job will run static analysis on your changes.
 Finally, the `production` job will deploy your changes to a production application.
 
 Once the deploy job succeeds you should be able to see your application by

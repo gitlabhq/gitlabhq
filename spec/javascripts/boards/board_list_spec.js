@@ -83,13 +83,13 @@ describe('Board list component', () => {
 
   it('renders issues', () => {
     expect(
-      component.$el.querySelectorAll('.card').length,
+      component.$el.querySelectorAll('.board-card').length,
     ).toBe(1);
   });
 
   it('sets data attribute with issue id', () => {
     expect(
-      component.$el.querySelector('.card').getAttribute('data-issue-id'),
+      component.$el.querySelector('.board-card').getAttribute('data-issue-id'),
     ).toBe('1');
   });
 

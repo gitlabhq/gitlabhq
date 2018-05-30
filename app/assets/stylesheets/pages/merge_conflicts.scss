@@ -291,7 +291,7 @@ $colors: (
     }
 
     .resolve-info {
-      @media (max-width: $screen-md-max) {
+      @media(max-width: map-get($grid-breakpoints, lg)-1) {
         margin-bottom: $gl-padding;
       }
     }

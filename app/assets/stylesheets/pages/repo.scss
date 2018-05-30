@@ -22,7 +22,6 @@
   height: calc(100vh - #{$header-height});
   margin-top: 0;
   border-top: 1px solid $white-dark;
-  border-bottom: 1px solid $white-dark;
   padding-bottom: $ide-statusbar-height;
 
   &.is-collapsed {
@@ -380,7 +379,7 @@
 
 .ide-status-bar {
   border-top: 1px solid $white-dark;
-  padding: $gl-bar-padding $gl-padding;
+  padding: 2px $gl-padding-8 0;
   background: $white-light;
   display: flex;
   justify-content: space-between;
@@ -391,12 +390,19 @@
   left: 0;
   width: 100%;
 
+  font-size: 12px;
+  line-height: 22px;
+
+  * {
+    font-size: inherit;
+  }
+
   > div + div {
     padding-left: $gl-padding;
   }
 
   svg {
-    vertical-align: middle;
+    vertical-align: sub;
   }
 }
 
@@ -540,7 +546,7 @@
     margin-right: 0;
   }
 
-  &.help-block {
+  &.form-text.text-muted {
     margin-left: 0;
     right: 0;
   }
@@ -848,7 +854,7 @@
     }
   }
 
-  .help-block {
+  .form-text.text-muted {
     margin-top: 0;
     line-height: 0;
   }
@@ -946,7 +952,7 @@
     height: 30px;
   }
 
-  .help-block {
+  .form-text.text-muted {
     margin-top: 2px;
     color: $blue-500;
     cursor: pointer;
