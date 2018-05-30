@@ -603,8 +603,8 @@ describe Gitlab::Git::Commit, seed_helper: true do
     let(:commit) { described_class.find(repository, 'master') }
     subject { commit.ref_names(repository) }
 
-    it 'has 1 element' do
-      expect(subject.size).to eq(1)
+    it 'has 2 element' do
+      expect(subject.size).to eq(2)
     end
     it { is_expected.to include("master") }
     it { is_expected.not_to include("feature") }
