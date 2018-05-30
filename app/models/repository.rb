@@ -957,6 +957,14 @@ class Repository
                                        remote_branch: merge_request.target_branch)
   end
 
+  def squash(user, merge_request)
+    raw.squash(user, merge_request.id, branch: merge_request.target_branch,
+                                       start_sha: merge_request.diff_start_sha,
+                                       end_sha: merge_request.diff_head_sha,
+                                       author: merge_request.author,
+                                       message: merge_request.title)
+  end
+
   private
 
   # TODO Generice finder, later split this on finders by Ref or Oid

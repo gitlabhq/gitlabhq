@@ -133,7 +133,7 @@ gem 'gitlab-markup', '~> 1.6.2'
 gem 'redcarpet', '~> 3.4'
 gem 'commonmarker', '~> 0.17'
 gem 'RedCloth', '~> 4.3.2'
-gem 'rdoc', '~> 4.2'
+gem 'rdoc', '~> 6.0'
 gem 'org-ruby', '~> 0.9.12'
 gem 'creole', '~> 0.5.0'
 gem 'wikicloth', '0.8.1'
@@ -320,7 +320,7 @@ group :development, :test do
   gem 'pry-byebug', '~> 3.4.1', platform: :mri
   gem 'pry-rails', '~> 0.3.4'
 
-  gem 'awesome_print', '~> 1.2.0', require: false
+  gem 'awesome_print', '~> 1.8.0', require: false
   gem 'fuubar', '~> 2.2.0'
 
   gem 'database_cleaner', '~> 1.5.0'

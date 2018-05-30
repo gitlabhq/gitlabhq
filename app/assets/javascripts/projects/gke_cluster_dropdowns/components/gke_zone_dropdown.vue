@@ -106,7 +106,7 @@ export default {
       </div>
     </div>
     <span
-      class="help-block"
+      class="form-text text-muted"
       :class="{ 'gl-field-error': hasErrors }"
       v-if="hasErrors"
     >
