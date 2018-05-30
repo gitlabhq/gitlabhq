@@ -43,11 +43,8 @@ future GitLab releases.**
 | Variable                        | GitLab | Runner | Description |
 |-------------------------------- |--------|--------|-------------|
 | **ARTIFACT_DOWNLOAD_ATTEMPTS**  | 8.15   | 1.9    | Number of attempts to download artifacts running a job |
-<<<<<<< HEAD
 | **CHAT_INPUT**                  | 10.6  | all    | Additional arguments passed in the [ChatOps](../chatops/README.md) command **[ULTIMATE]** |
 | **CHAT_CHANNEL**                | 10.6  | all    | Source chat channel which triggered the [ChatOps](../chatops/README.md) command **[ULTIMATE]** |
-=======
->>>>>>> upstream/master
 | **CI**                          | all    | 0.4    | Mark that job is executed in CI environment |
 | **CI_COMMIT_REF_NAME**          | 9.0    | all    | The branch or tag name for which project is built |
 | **CI_COMMIT_REF_SLUG**          | 9.0    | all    | `$CI_COMMIT_REF_NAME` lowercased, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. No leading / trailing `-`. Use in URLs, host names and domain names. |
@@ -570,7 +567,6 @@ Below you can find supported syntax reference:
     Pattern matching is case-sensitive by default. Use `i` flag modifier, like
     `/pattern/i` to make a pattern case-insensitive.
 
-<<<<<<< HEAD
 ### Secret variables with an environment scope
 
 We do support secret variables defined with an environment scope. Given that
@@ -591,8 +587,6 @@ my-job:
 ```
 
 [ee-2112]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2112
-=======
->>>>>>> upstream/master
 [ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784 "Simple protection of CI secret variables"
 [premium]: https://about.gitlab.com/products/ "Available only in GitLab Premium"
 [envs]: ../environments.md
@@ -604,8 +598,5 @@ my-job:
 [triggers]: ../triggers/README.md#pass-job-variables-to-a-trigger
 [subgroups]: ../../user/group/subgroups/index.md
 [builds-policies]: ../yaml/README.md#only-and-except-complex
-<<<<<<< HEAD
 [trigger-job-token]: ../triggers/README.md#ci-job-token
-=======
->>>>>>> upstream/master
 [gitlab-deploy-token]: ../../user/project/deploy_tokens/index.md#gitlab-deploy-token
