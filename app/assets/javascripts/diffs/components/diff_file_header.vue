@@ -236,11 +236,17 @@ export default {
       >
       </a>
 
-      <button
-        v-if="diffFile.environment"
+      <a
+        v-if="diffFile.externalUrl"
+        :href="diffFile.externalUrl"
+        :title="`View on ${diffFile.formattedExternalUrl}`"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn btn-file-option"
+        v-tooltip
       >
-        {{ s__('MergeRequests|View on environment') }}
-      </button>
+       <icon name="external-link" />
+      </a>
     </div>
   </div>
 </template>

@@ -74,14 +74,13 @@ class DiffFileEntity < Grape::Entity
     end
   end
 
-  # TODO Simon/Fatih/Winnie - Are we using this? - if not please remove
   expose :formatted_external_url, if: -> (_, options) { options[:environment] } do |diff_file|
     options[:environment].formatted_external_url
   end
 
   # TODO imon/Fatih/Winnie - Are we using this? - if not please remove
   expose :external_url, if: -> (_, options) { options[:environment] } do |diff_file|
-    options[:environment].external_url_for(diff_file.content_sha, diff_file.new_path)
+    options[:environment].external_url_for(diff_file.new_path, diff_file.content_sha)
   end
 
   expose :old_path_html do |diff_file|
