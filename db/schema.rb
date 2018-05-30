@@ -635,7 +635,7 @@ ActiveRecord::Schema.define(version: 20180521171529) do
     t.string "external_ip"
   end
 
-  create_table "clusters_applications_jupyters", force: :cascade do |t|
+  create_table "clusters_applications_jupyter", force: :cascade do |t|
     t.integer "cluster_id", null: false
     t.integer "oauth_application_id"
     t.integer "status", null: false

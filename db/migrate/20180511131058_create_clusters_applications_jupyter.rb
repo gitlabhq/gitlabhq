@@ -7,7 +7,7 @@ class CreateClustersApplicationsJupyter < ActiveRecord::Migration
   DOWNTIME = false
 
   def change
-    create_table :clusters_applications_jupyters do |t|
+    create_table :clusters_applications_jupyter do |t|
       t.references :cluster, null: false, unique: true, foreign_key: { on_delete: :cascade }
       t.references :oauth_application
 
