@@ -334,7 +334,7 @@ Please check your network connection and try again.`;
                         <button
                           @click="showReplyForm"
                           type="button"
-                          class="js-vue-discussion-reply btn btn-text-field"
+                          class="js-vue-discussion-reply btn btn-text-field mr-2"
                           title="Add a reply">Reply...</button>
                       </div>
                       <div
@@ -344,7 +344,7 @@ Please check your network connection and try again.`;
                         <button
                           @click="resolveHandler()"
                           type="button"
-                          class="btn btn-default"
+                          class="btn btn-default mr-2"
                         >
                           <i
                             v-if="isResolving"
