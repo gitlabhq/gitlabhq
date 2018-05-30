@@ -78,7 +78,7 @@
           %span= milestone.issues_visible_to_user(current_user).count
         .title.hide-collapsed
           Issues
-          %span.badg.badge-pille= milestone.issues_visible_to_user(current_user).count
+          %span.badge.badge-pill= milestone.issues_visible_to_user(current_user).count
           - if show_new_issue_link?(project)
             = link_to new_project_issue_path(project, issue: { milestone_id: milestone.id }), class: "float-right", title: "New Issue" do
               New issue
@@ -98,6 +98,8 @@
         .title.hide-collapsed
           = _('Time tracking')
           = icon('spinner spin')
+
+    = render_if_exists 'shared/milestones/weight', milestone: milestone
 
     .block.merge-requests
       .sidebar-collapsed-icon.has-tooltip{ title: milestone_merge_requests_tooltip_text(milestone), data: { container: 'body', html: 'true', placement: 'left', boundary: 'viewport' } }

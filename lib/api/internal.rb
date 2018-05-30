@@ -59,7 +59,11 @@ module API
           status: true,
           gl_repository: gl_repository,
           gl_username: user&.username,
-          repository_path: repository_path,
+
+          # This repository_path is a bogus value but gitlab-shell still requires
+          # its presence. https://gitlab.com/gitlab-org/gitlab-shell/issues/135
+          repository_path: '/',
+
           gitaly: gitaly_payload(params[:action])
         }
       end

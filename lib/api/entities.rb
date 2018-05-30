@@ -933,8 +933,16 @@ module API
     end
 
     class ApplicationSetting < Grape::Entity
-      expose :id
-      expose(*::ApplicationSettingsHelper.visible_attributes)
+      def self.exposed_attributes
+        attributes = ::ApplicationSettingsHelper.visible_attributes
+        attributes.delete(:performance_bar_allowed_group_path)
+        attributes.delete(:performance_bar_enabled)
+
+        attributes
+      end
+
+      expose :id, :performance_bar_allowed_group_id
+      expose(*exposed_attributes)
       expose(:restricted_visibility_levels) do |setting, _options|
         setting.restricted_visibility_levels.map { |level| Gitlab::VisibilityLevel.string_level(level) }
       end
@@ -1020,6 +1028,7 @@ module API
     class Job < JobBasic
       expose :artifacts_file, using: JobArtifactFile, if: -> (job, opts) { job.artifacts? }
       expose :runner, with: Runner
+      expose :artifacts_expire_at
     end
 
     class JobBasicWithProject < JobBasic

@@ -73,26 +73,37 @@ module Backup
     end
 
     def prepare_directories
-      # TODO: Need to find a way to do this for gitaly
-      # Gitaly discussion issue: https://gitlab.com/gitlab-org/gitaly/issues/1194
-
       Gitlab.config.repositories.storages.each do |name, repository_storage|
-        path = repository_storage.legacy_disk_path
-        next unless File.exist?(path)
+        delete_all_repositories(name, repository_storage)
+      end
+    end
 
-        # Move all files in the existing repos directory except . and .. to
-        # repositories.old.<timestamp> directory
-        bk_repos_path = File.join(Gitlab.config.backup.path, "tmp", "#{name}-repositories.old." + Time.now.to_i.to_s)
-        FileUtils.mkdir_p(bk_repos_path, mode: 0700)
-        files = Dir.glob(File.join(path, "*"), File::FNM_DOTMATCH) - [File.join(path, "."), File.join(path, "..")]
-
-        begin
-          FileUtils.mv(files, bk_repos_path)
-        rescue Errno::EACCES
-          access_denied_error(path)
-        rescue Errno::EBUSY
-          resource_busy_error(path)
+    def delete_all_repositories(name, repository_storage)
+      gitaly_migrate(:delete_all_repositories) do |is_enabled|
+        if is_enabled
+          Gitlab::GitalyClient::StorageService.new(name).delete_all_repositories
+        else
+          local_delete_all_repositories(name, repository_storage)
         end
+      end
+    end
+
+    def local_delete_all_repositories(name, repository_storage)
+      path = repository_storage.legacy_disk_path
+      return unless File.exist?(path)
+
+      # Move all files in the existing repos directory except . and .. to
+      # repositories.old.<timestamp> directory
+      bk_repos_path = File.join(Gitlab.config.backup.path, "tmp", "#{name}-repositories.old." + Time.now.to_i.to_s)
+      FileUtils.mkdir_p(bk_repos_path, mode: 0700)
+      files = Dir.glob(File.join(path, "*"), File::FNM_DOTMATCH) - [File.join(path, "."), File.join(path, "..")]
+
+      begin
+        FileUtils.mv(files, bk_repos_path)
+      rescue Errno::EACCES
+        access_denied_error(path)
+      rescue Errno::EBUSY
+        resource_busy_error(path)
       end
     end
 
@@ -113,6 +124,7 @@ module Backup
     def restore
       prepare_directories
       gitlab_shell = Gitlab::Shell.new
+
       Project.find_each(batch_size: 1000) do |project|
         progress.print " * #{project.full_path} ... "
         path_to_project_bundle = path_to_bundle(project)
@@ -121,7 +133,6 @@ module Backup
         restore_repo_success = nil
         if File.exist?(path_to_project_bundle)
           begin
-            gitlab_shell.remove_repository(project.repository_storage, project.disk_path) if project.repository_exists?
             project.repository.create_from_bundle path_to_project_bundle
             restore_repo_success = true
           rescue => e
@@ -146,7 +157,6 @@ module Backup
         if File.exist?(path_to_wiki_bundle)
           progress.print " * #{wiki.full_path} ... "
           begin
-            gitlab_shell.remove_repository(wiki.repository_storage, wiki.disk_path) if wiki.repository_exists?
             wiki.repository.create_from_bundle(path_to_wiki_bundle)
             progress.puts "[DONE]".color(:green)
           rescue => e
@@ -223,6 +233,12 @@ module Backup
 
     def display_repo_path(project)
       project.hashed_storage?(:repository) ? "#{project.full_path} (#{project.disk_path})" : project.full_path
+    end
+
+    def gitaly_migrate(method, status: Gitlab::GitalyClient::MigrationStatus::OPT_IN, &block)
+      Gitlab::GitalyClient.migrate(method, status: status, &block)
+    rescue GRPC::NotFound, GRPC::BadStatus => e
+      raise Error, e
     end
   end
 end

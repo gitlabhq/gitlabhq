@@ -1,0 +1,5 @@
+---
+title: Fix remote mirror database inconsistencies when upgrading from EE to CE
+merge_request: 19196
+author:
+type: fixed

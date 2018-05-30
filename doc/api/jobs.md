@@ -38,6 +38,7 @@ Example of response
       "size": 1000
     },
     "finished_at": "2015-12-24T17:54:27.895Z",
+    "artifacts_expire_at": "2016-01-23T17:54:27.895Z"
     "id": 7,
     "name": "teaspoon",
     "pipeline": {
@@ -81,6 +82,7 @@ Example of response
     "created_at": "2015-12-24T15:51:21.727Z",
     "artifacts_file": null,
     "finished_at": "2015-12-24T17:54:24.921Z",
+    "artifacts_expire_at": "2016-01-23T17:54:24.921Z",
     "id": 6,
     "name": "rspec:other",
     "pipeline": {
@@ -152,6 +154,7 @@ Example of response
       "size": 1000
     },
     "finished_at": "2015-12-24T17:54:27.895Z",
+    "artifacts_expire_at": "2016-01-23T17:54:27.895Z"
     "id": 7,
     "name": "teaspoon",
     "pipeline": {
@@ -195,6 +198,7 @@ Example of response
     "created_at": "2015-12-24T15:51:21.727Z",
     "artifacts_file": null,
     "finished_at": "2015-12-24T17:54:24.921Z",
+    "artifacts_expire_at": "2016-01-23T17:54:24.921Z"
     "id": 6,
     "name": "rspec:other",
     "pipeline": {
@@ -261,6 +265,7 @@ Example of response
   "created_at": "2015-12-24T15:51:21.880Z",
   "artifacts_file": null,
   "finished_at": "2015-12-24T17:54:31.198Z",
+  "artifacts_expire_at": "2016-01-23T17:54:31.198Z",
   "id": 8,
   "name": "rubocop",
   "pipeline": {
