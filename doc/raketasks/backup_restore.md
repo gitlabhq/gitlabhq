@@ -31,8 +31,8 @@ sudo apt-get install -y rsync
 
 >**Note:**
 In GitLab 9.2 the timestamp format was changed from `EPOCH_YYYY_MM_DD` to
-`EPOCH_YYYY_MM_DD_GitLab version`, for example `1493107454_2017_04_25`
-would become `1493107454_2017_04_25_9.1.0`.
+`EPOCH_YYYY_MM_DD_GitLab_version`, for example `1493107454_2018_04_25`
+would become `1493107454_2018_04_25_10.6.4-ce`.
 
 The backup archive will be saved in `backup_path`, which is specified in the
 `config/gitlab.yml` file.
@@ -41,8 +41,8 @@ identifies the time at which each backup was created, plus the GitLab version.
 The timestamp is needed if you need to restore GitLab and multiple backups are
 available.
 
-For example, if the backup name is `1493107454_2017_04_25_9.1.0_gitlab_backup.tar`,
-then the timestamp is `1493107454_2017_04_25_9.1.0`.
+For example, if the backup name is `1493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar`,
+then the timestamp is `1493107454_2018_04_25_10.6.4-ce`.
 
 ### Creating a backup of the GitLab system
 
@@ -62,6 +62,13 @@ If you are running GitLab within a Docker container, you can run the backup from
 
 ```
 docker exec -t <container name> gitlab-rake gitlab:backup:create
+```
+
+If you are using the gitlab-omnibus helm chart on a Kubernetes cluster, you can
+run the backup task on the gitlab application pod using kubectl
+
+```
+kubectl exec -it <gitlab-gitlab pod> gitlab-rake gitlab:backup:create
 ```
 
 Example output:
@@ -567,7 +574,7 @@ First make sure your backup tar file is in the backup directory described in the
 `/var/opt/gitlab/backups`.
 
 ```shell
-sudo cp 1493107454_2017_04_25_9.1.0_gitlab_backup.tar /var/opt/gitlab/backups/
+sudo cp 11493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar /var/opt/gitlab/backups/
 ```
 
 Stop the processes that are connected to the database.  Leave the rest of GitLab
@@ -585,7 +592,7 @@ restore:
 
 ```shell
 # This command will overwrite the contents of your GitLab database!
-sudo gitlab-rake gitlab:backup:restore BACKUP=1493107454_2017_04_25_9.1.0
+sudo gitlab-rake gitlab:backup:restore BACKUP=1493107454_2018_04_25_10.6.4-ce
 ```
 
 Next, restore `/etc/gitlab/gitlab-secrets.json` if necessary as mentioned above.
@@ -600,6 +607,34 @@ sudo gitlab-rake gitlab:check SANITIZE=true
 If there is a GitLab version mismatch between your backup tar file and the installed
 version of GitLab, the restore command will abort with an error. Install the
 [correct GitLab version](https://packages.gitlab.com/gitlab/) and try again.
+
+### Restore for Docker image and gitlab-omnibus helm chart
+
+For GitLab installations using docker image or the gitlab-omnibus helm chart on
+a Kubernetes cluster, restore task expects the restore directories to be empty.
+However, with docker and Kubernetes volume mounts, some system level directories
+may be created at the volume roots, like `lost+found` directory found in Linux
+operating systems. These directories are usually owned by `root`, which can
+cause access permission errors since the restore rake task runs as `git` user.
+So, to restore a GitLab installation, users have to confirm the restore target
+directories are empty.
+
+For both these installation types, the backup tarball has to be available in the
+backup location (default location is `/var/opt/gitlab/backups`).
+
+For docker installations, the restore task can be run from host using the
+command
+
+```
+docker exec -it <name of container> gitlab-rake gitlab:backup:restore
+```
+
+Similarly, for gitlab-omnibus helm chart, the restore task can be run on the
+gitlab application pod using kubectl
+
+```
+kubectl exec -it <gitlab-gitlab pod> gitlab-rake gitlab:backup:restore
+```
 
 ## Alternative backup strategies
 

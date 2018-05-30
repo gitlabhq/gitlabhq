@@ -114,6 +114,7 @@
     v-tooltip
     data-container="body"
     data-placement="left"
+    data-boundary="viewport"
     :title="tooltipText"
   >
     <icon name="timer" />

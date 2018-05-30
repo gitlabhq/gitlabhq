@@ -58,6 +58,9 @@ module Banzai
 
       def call
         doc.search(".//text()").each do |node|
+          # Do not perform linking inside <code> blocks
+          next unless node.ancestors('code').empty?
+
           # A Gollum ToC tag is `[[_TOC_]]`, but due to MarkdownFilter running
           # before this one, it will be converted into `[[<em>TOC</em>]]`, so it
           # needs special-case handling

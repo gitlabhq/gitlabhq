@@ -321,7 +321,7 @@ Please check your network connection and try again.`;
       <li class="timeline-entry">
         <div class="timeline-entry-inner">
           <div class="flash-container error-alert timeline-content"></div>
-          <div class="timeline-icon hidden-xs hidden-sm">
+          <div class="timeline-icon d-none d-sm-none d-md-block">
             <user-avatar-link
               v-if="author"
               :link-href="author.path"
@@ -369,7 +369,7 @@ js-gfm-input js-autosize markdown-area js-vue-textarea"
               </markdown-field>
               <div class="note-form-actions">
                 <div
-                  class="pull-left btn-group
+                  class="float-left btn-group
 append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown">
                   <button
                     @click.prevent="handleSave()"
@@ -383,6 +383,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                     name="button"
                     type="button"
                     class="btn comment-btn note-type-toggle js-note-new-discussion dropdown-toggle"
+                    data-display="static"
                     data-toggle="dropdown"
                     aria-label="Open comment type dropdown">
                     <i

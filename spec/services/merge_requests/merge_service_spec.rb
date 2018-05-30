@@ -249,24 +249,58 @@ describe MergeRequests::MergeService do
         expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
       end
 
-      context "when fast-forward merge is not allowed" do
+      context 'when squashing' do
         before do
-          allow_any_instance_of(Repository).to receive(:ancestor?).and_return(nil)
+          merge_request.update!(source_branch: 'master', target_branch: 'feature')
         end
 
-        %w(semi-linear ff).each do |merge_method|
-          it "logs and saves error if merge is #{merge_method} only" do
-            merge_method = 'rebase_merge' if merge_method == 'semi-linear'
-            merge_request.project.update(merge_method: merge_method)
-            error_message = 'Only fast-forward merge is allowed for your project. Please update your source branch'
-            allow(service).to receive(:execute_hooks)
+        it 'logs and saves error if there is an error when squashing' do
+          error_message = 'Failed to squash. Should be done manually'
 
-            service.execute(merge_request)
+          allow_any_instance_of(MergeRequests::SquashService).to receive(:squash).and_return(nil)
+          merge_request.update(squash: true)
 
-            expect(merge_request).to be_open
-            expect(merge_request.merge_commit_sha).to be_nil
-            expect(merge_request.merge_error).to include(error_message)
-            expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
+          service.execute(merge_request)
+
+          expect(merge_request).to be_open
+          expect(merge_request.merge_commit_sha).to be_nil
+          expect(merge_request.merge_error).to include(error_message)
+          expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
+        end
+
+        it 'logs and saves error if there is a squash in progress' do
+          error_message = 'another squash is already in progress'
+
+          allow_any_instance_of(MergeRequest).to receive(:squash_in_progress?).and_return(true)
+          merge_request.update(squash: true)
+
+          service.execute(merge_request)
+
+          expect(merge_request).to be_open
+          expect(merge_request.merge_commit_sha).to be_nil
+          expect(merge_request.merge_error).to include(error_message)
+          expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
+        end
+
+        context "when fast-forward merge is not allowed" do
+          before do
+            allow_any_instance_of(Repository).to receive(:ancestor?).and_return(nil)
+          end
+
+          %w(semi-linear ff).each do |merge_method|
+            it "logs and saves error if merge is #{merge_method} only" do
+              merge_method = 'rebase_merge' if merge_method == 'semi-linear'
+              merge_request.project.update(merge_method: merge_method)
+              error_message = 'Only fast-forward merge is allowed for your project. Please update your source branch'
+              allow(service).to receive(:execute_hooks)
+
+              service.execute(merge_request)
+
+              expect(merge_request).to be_open
+              expect(merge_request.merge_commit_sha).to be_nil
+              expect(merge_request.merge_error).to include(error_message)
+              expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
+            end
           end
         end
       end

@@ -5,6 +5,8 @@ describe Backup::Manager do
 
   let(:progress) { StringIO.new }
 
+  subject { described_class.new(progress) }
+
   before do
     allow(progress).to receive(:puts)
     allow(progress).to receive(:print)

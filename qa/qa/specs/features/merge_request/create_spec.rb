@@ -11,7 +11,7 @@ module QA
 
       expect(page).to have_content('This is a merge request')
       expect(page).to have_content('Great feature')
-      expect(page).to have_content('Opened less than a minute ago')
+      expect(page).to have_content(/Opened [\w\s]+ a minute ago/)
     end
   end
 end

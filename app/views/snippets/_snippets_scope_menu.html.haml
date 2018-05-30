@@ -1,11 +1,11 @@
 - subject = local_assigns.fetch(:subject, current_user)
 - include_private = local_assigns.fetch(:include_private, false)
 
-.nav-links.snippet-scope-menu.mobile-separator
+.nav-links.snippet-scope-menu.mobile-separator.nav.nav-tabs
   %li{ class: active_when(params[:scope].nil?) }
     = link_to subject_snippets_path(subject) do
       All
-      %span.badge
+      %span.badge.badge-pill
         - if include_private
           = subject.snippets.count
         - else
@@ -15,17 +15,17 @@
     %li{ class: active_when(params[:scope] == "are_private") }
       = link_to subject_snippets_path(subject, scope: 'are_private') do
         Private
-        %span.badge
+        %span.badge.badge-pill
           = subject.snippets.are_private.count
 
   %li{ class: active_when(params[:scope] == "are_internal") }
     = link_to subject_snippets_path(subject, scope: 'are_internal') do
       Internal
-      %span.badge
+      %span.badge.badge-pill
         = subject.snippets.are_internal.count
 
   %li{ class: active_when(params[:scope] == "are_public") }
     = link_to subject_snippets_path(subject, scope: 'are_public') do
       Public
-      %span.badge
+      %span.badge.badge-pill
         = subject.snippets.are_public.count

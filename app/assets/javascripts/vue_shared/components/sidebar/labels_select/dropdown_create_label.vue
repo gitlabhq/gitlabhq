@@ -77,13 +77,13 @@ export default {
       <div class="clearfix">
         <button
           type="button"
-          class="btn btn-primary pull-left js-new-label-btn disabled"
+          class="btn btn-primary float-left js-new-label-btn disabled"
         >
           {{ __('Create') }}
         </button>
         <button
           type="button"
-          class="btn btn-default pull-right js-cancel-label-btn"
+          class="btn btn-default float-right js-cancel-label-btn"
         >
           {{ __('Cancel') }}
         </button>

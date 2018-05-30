@@ -24,7 +24,7 @@ export function setupFeatureHighlightPopover(id, debounceTimeout = 300) {
       template: `
         <div class="popover feature-highlight-popover" role="tooltip">
           <div class="arrow"></div>
-          <div class="popover-content"></div>
+          <div class="popover-body"></div>
         </div>
       `,
     })

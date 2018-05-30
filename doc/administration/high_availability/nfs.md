@@ -1,7 +1,7 @@
 # NFS
 
 You can view information and options set for each of the mounted NFS file
-systems by running `sudo nfsstat -m`.
+systems by running `nfsstat -m` and `cat /etc/fstab`.
 
 ## NFS Server features
 
@@ -25,7 +25,9 @@ options:
   errors when the Omnibus package tries to alter permissions. Note that GitLab
   and other bundled components do **not** run as `root` but as non-privileged
   users. The recommendation for `no_root_squash` is to allow the Omnibus package
-  to set ownership and permissions on files, as needed.
+  to set ownership and permissions on files, as needed. In some cases where the
+  `no_root_squash` option is not available, the `root` flag can achieve the same
+  result.
 - `sync` - Force synchronous behavior. Default is asynchronous and under certain
   circumstances it could lead to data loss if a failure occurs before data has
   synced.

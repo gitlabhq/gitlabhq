@@ -14,6 +14,8 @@ class Projects::WikisController < Projects::ApplicationController
   def show
     @page = @project_wiki.find_page(params[:id], params[:version_id])
 
+    view_param = @project_wiki.empty? ? params[:view] : 'create'
+
     if @page
       render 'show'
     elsif file = @project_wiki.find_file(params[:id], params[:version_id])
@@ -26,12 +28,12 @@ class Projects::WikisController < Projects::ApplicationController
         disposition: 'inline',
         filename: file.name
       )
-    else
-      return render('empty') unless can?(current_user, :create_wiki, @project)
-
+    elsif can?(current_user, :create_wiki, @project) && view_param == 'create'
       @page = build_page(title: params[:id])
 
       render 'edit'
+    else
+      render 'empty'
     end
   end
 

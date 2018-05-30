@@ -1,7 +1,5 @@
 # Auto DevOps
 
-DANGER: Auto DevOps is currently in **Beta** and _not recommended for production use_.
-
 > [Introduced][ce-37115] in GitLab 10.0.
 
 Auto DevOps automatically detects, builds, tests, deploys, and monitors your
@@ -222,8 +220,8 @@ tests, it's up to you to add them.
 
 ### Auto Code Quality
 
-Auto Code Quality uses the open source
-[`codeclimate` image](https://hub.docker.com/r/codeclimate/codeclimate/) to run
+Auto Code Quality uses the
+[Code Quality image](https://gitlab.com/gitlab-org/security-products/codequality) to run
 static analysis and other code checks on the current code. The report is
 created, and is uploaded as an artifact which you can later download and check
 out.
@@ -496,6 +494,16 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | `POSTGRES_DB`                | The PostgreSQL database name; defaults to the value of [`$CI_ENVIRONMENT_SLUG`](../../ci/variables/README.md#predefined-variables-environment-variables). Set it to use a custom database name.                               |
 | `BUILDPACK_URL`              | The buildpack's full URL. It can point to either Git repositories or a tarball URL. For Git repositories, it is possible to point to a specific `ref`, for example `https://github.com/heroku/heroku-buildpack-ruby.git#v142` |
 | `STAGING_ENABLED`            | From GitLab 10.8, this variable can be used to define a [deploy policy for staging and production environments](#deploy-policy-for-staging-and-production-environments). |
+| `CANARY_ENABLED`             | From GitLab 11.0, this variable can be used to define a [deploy policy for canary environments](#deploy-policy-for-canary-environments). |
+| `INCREMENTAL_ROLLOUT_ENABLED`| From GitLab 10.8, this variable can be used to enable an [incremental rollout](#incremental-rollout-to-production) of your application for the production environment. |
+| `TEST_DISABLED`              | From GitLab 11.0, this variable can be used to disable the `test` job. If the variable is present, the job will not be created. |
+| `CODEQUALITY_DISABLED`       | From GitLab 11.0, this variable can be used to disable the `codequality` job. If the variable is present, the job will not be created. |
+| `SAST_DISABLED`              | From GitLab 11.0, this variable can be used to disable the `sast` job. If the variable is present, the job will not be created. |
+| `DEPENDENCY_SCANNING_DISABLED` | From GitLab 11.0, this variable can be used to disable the `dependency_scanning` job. If the variable is present, the job will not be created. |
+| `CONTAINER_SCANNING_DISABLED` | From GitLab 11.0, this variable can be used to disable the `sast:container` job. If the variable is present, the job will not be created. |
+| `REVIEW_DISABLED`            | From GitLab 11.0, this variable can be used to disable the `review` and the manual `review:stop` job. If the variable is present, these jobs will not be created. |
+| `DAST_DISABLED`              | From GitLab 11.0, this variable can be used to disable the `dast` job. If the variable is present, the job will not be created. |
+| `PERFORMANCE_DISABLED`       | From GitLab 11.0, this variable can be used to disable the `performance` job. If the variable is present, the job will not be created. |
 
 TIP: **Tip:**
 Set up the replica variables using a
@@ -577,6 +585,72 @@ If `STAGING_ENABLED` is defined in your project (e.g., set `STAGING_ENABLED` to
 `1` as a secret variable), then the application will be automatically deployed
 to a `staging` environment, and a  `production_manual` job will be created for
 you when you're ready to manually deploy to production.
+
+#### Deploy policy for canary environments **[PREMIUM]**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ci-yml/merge_requests/171)
+in GitLab 11.0.
+
+A [canary environment](https://docs.gitlab.com/ee/user/project/canary_deployments.html) can be used
+before any changes are deployed to production.
+
+If `CANARY_ENABLED` is defined in your project (e.g., set `CANARY_ENABLED` to
+`1` as a secret variable) then two manual jobs will be created:
+
+- `canary` which will deploy the application to the canary environment
+- `production_manual` which is to be used by you when you're ready to manually
+  deploy to production.
+
+#### Incremental rollout to production **[PREMIUM]**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5415) in GitLab 10.8.
+
+When you have a new version of your app to deploy in production, you may want
+to use an incremental rollout to replace just a few pods with the latest code.
+This will allow you to first check how the app is behaving, and later manually
+increasing the rollout up to 100%.
+
+If `INCREMENTAL_ROLLOUT_ENABLED` is defined in your project (e.g., set
+`INCREMENTAL_ROLLOUT_ENABLED` to `1` as a secret variable), then instead of the
+standard `production` job, 4 different
+[manual jobs](../../ci/pipelines.md#manual-actions-from-the-pipeline-graph)
+will be created:
+
+1. `rollout 10%`
+1. `rollout 25%`
+1. `rollout 50%`
+1. `rollout 100%`
+
+The percentage is based on the `REPLICAS` variable and defines the number of
+pods you want to have for your deployment. If you say `10`, and then you run
+the `10%` rollout job, there will be `1` new pod + `9` old ones.
+
+To start a job, click on the play icon next to the job's name. You are not
+required to go from `10%` to `100%`, you can jump to whatever job you want.
+You can also scale down by running a lower percentage job, just before hitting
+`100%`. Once you get to `100%`, you cannot scale down, and you'd have to roll
+back by redeploying the old version using the
+[rollback button](../../ci/environments.md#rolling-back-changes) in the
+environment page.
+
+Below, you can see how the pipeline will look if the rollout or staging
+variables are defined.
+
+- **Without `INCREMENTAL_ROLLOUT_ENABLED` and without `STAGING_ENABLED`**
+
+    ![Staging and rollout disabled](img/rollout_staging_disabled.png)
+
+- **Without `INCREMENTAL_ROLLOUT_ENABLED` and with `STAGING_ENABLED`**
+
+    ![Staging enabled](img/staging_enabled.png)
+
+- **With `INCREMENTAL_ROLLOUT_ENABLED` and without `STAGING_ENABLED`**
+
+    ![Rollout enabled](img/rollout_enabled.png)
+
+- **With `INCREMENTAL_ROLLOUT_ENABLED` and with `STAGING_ENABLED`**
+
+    ![Rollout and staging enabled](img/rollout_staging_enabled.png)
 
 ## Currently supported languages
 

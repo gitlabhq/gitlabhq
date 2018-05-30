@@ -301,6 +301,16 @@ module Gitlab
 
         GitalyClient.call(@storage, :repository_service, :get_raw_changes, request)
       end
+
+      def search_files_by_name(ref, query)
+        request = Gitaly::SearchFilesByNameRequest.new(repository: @gitaly_repo, ref: ref, query: query)
+        GitalyClient.call(@storage, :repository_service, :search_files_by_name, request).flat_map(&:files)
+      end
+
+      def search_files_by_content(ref, query)
+        request = Gitaly::SearchFilesByContentRequest.new(repository: @gitaly_repo, ref: ref, query: query)
+        GitalyClient.call(@storage, :repository_service, :search_files_by_content, request).flat_map(&:matches)
+      end
     end
   end
 end

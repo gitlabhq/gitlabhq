@@ -52,7 +52,10 @@ export default {
   methods: {
     ...mapActions(['toggleFileFinder']),
     mousetrapStopCallback(e, el, combo) {
-      if (combo === 't' && el.classList.contains('dropdown-input-field')) {
+      if (
+        (combo === 't' && el.classList.contains('dropdown-input-field')) ||
+        el.classList.contains('inputarea')
+      ) {
         return true;
       } else if (combo === 'command+p' || combo === 'ctrl+p') {
         return false;
@@ -99,12 +102,12 @@ export default {
             class="ide-empty-state"
           >
             <div class="row js-empty-state">
-              <div class="col-xs-12">
+              <div class="col-12">
                 <div class="svg-content svg-250">
                   <img :src="emptyStateSvgPath" />
                 </div>
               </div>
-              <div class="col-xs-12">
+              <div class="col-12">
                 <div class="text-content text-center">
                   <h4>
                     Welcome to the GitLab IDE
@@ -120,8 +123,6 @@ export default {
         </template>
       </div>
     </div>
-    <ide-status-bar
-      :file="activeFile"
-    />
+    <ide-status-bar :file="activeFile"/>
   </article>
 </template>

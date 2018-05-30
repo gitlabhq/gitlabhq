@@ -76,6 +76,13 @@ module Gitlab
         line_code(line) if line
       end
 
+      # Returns the raw diff content up to the given line index
+      def diff_hunk(diff_line)
+        # Adding 2 because of the @@ diff header and Enum#take should consider
+        # an extra line, because we're passing an index.
+        raw_diff.each_line.take(diff_line.index + 2).join
+      end
+
       def old_sha
         diff_refs&.base_sha
       end

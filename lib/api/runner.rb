@@ -123,6 +123,7 @@ module API
       end
       put '/:id' do
         job = authenticate_job!
+        forbidden!('Job is not running') unless job.running?
 
         job.trace.set(params[:trace]) if params[:trace]
 
@@ -131,9 +132,9 @@ module API
 
         case params[:state].to_s
         when 'success'
-          job.success
+          job.success!
         when 'failed'
-          job.drop(params[:failure_reason] || :unknown_failure)
+          job.drop!(params[:failure_reason] || :unknown_failure)
         end
       end
 
@@ -149,6 +150,7 @@ module API
       end
       patch '/:id/trace' do
         job = authenticate_job!
+        forbidden!('Job is not running') unless job.running?
 
         error!('400 Missing header Content-Range', 400) unless request.headers.key?('Content-Range')
         content_range = request.headers['Content-Range']

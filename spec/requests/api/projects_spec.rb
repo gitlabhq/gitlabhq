@@ -18,7 +18,7 @@ describe API::Projects do
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
   let(:admin) { create(:admin) }
-  let(:project) { create(:project, namespace: user.namespace) }
+  let(:project) { create(:project, :repository, namespace: user.namespace) }
   let(:project2) { create(:project, namespace: user.namespace) }
   let(:snippet) { create(:project_snippet, :public, author: user, project: project, title: 'example') }
   let(:project_member) { create(:project_member, :developer, user: user3, project: project) }
@@ -220,7 +220,7 @@ describe API::Projects do
         it 'returns a simplified version of all the projects' do
           expected_keys = %w(
             id description default_branch tag_list
-            ssh_url_to_repo http_url_to_repo web_url
+            ssh_url_to_repo http_url_to_repo web_url readme_url
             name name_with_namespace
             path path_with_namespace
             star_count forks_count
@@ -854,6 +854,7 @@ describe API::Projects do
         expect(json_response['only_allow_merge_if_pipeline_succeeds']).to eq(project.only_allow_merge_if_pipeline_succeeds)
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
         expect(json_response['merge_method']).to eq(project.merge_method.to_s)
+        expect(json_response['readme_url']).to eq(project.readme_url)
       end
 
       it 'returns a project by path name' do

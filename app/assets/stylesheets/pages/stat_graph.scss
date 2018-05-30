@@ -14,7 +14,10 @@
 }
 
 #contributors-master {
-  @include make-md-column(12);
+  @include media-breakpoint-up(md) {
+    @include make-col-ready();
+    @include make-col(12);
+  }
 
   svg {
     width: 100%;
@@ -33,10 +36,14 @@
   }
 
   .person {
-    @include make-md-column(6);
+    @include media-breakpoint-up(md) {
+      @include make-col-ready();
+      @include make-col(6);
+    }
+
     margin-top: 10px;
 
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       width: 100%;
     }
 

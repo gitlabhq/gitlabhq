@@ -8,11 +8,20 @@ describe Gitlab::Auth::LDAP::Access do
 
   describe '.allowed?' do
     it 'updates the users `last_credential_check_at' do
+      allow(access).to receive(:update_user)
       expect(access).to receive(:allowed?) { true }
       expect(described_class).to receive(:open).and_yield(access)
 
       expect { described_class.allowed?(user) }
         .to change { user.last_credential_check_at }
+    end
+  end
+
+  describe '#find_ldap_user' do
+    it 'finds a user by dn first' do
+      expect(Gitlab::Auth::LDAP::Person).to receive(:find_by_dn).and_return(:ldap_user)
+
+      access.find_ldap_user
     end
   end
 
@@ -22,6 +31,7 @@ describe Gitlab::Auth::LDAP::Access do
     context 'when the user cannot be found' do
       before do
         allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_dn).and_return(nil)
+        allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_email).and_return(nil)
       end
 
       it { is_expected.to be_falsey }
@@ -54,7 +64,7 @@ describe Gitlab::Auth::LDAP::Access do
         end
       end
 
-      context 'and has no disabled flag in active diretory' do
+      context 'and has no disabled flag in active directory' do
         before do
           allow(Gitlab::Auth::LDAP::Person).to receive(:disabled_via_active_directory?).and_return(false)
         end
@@ -100,6 +110,7 @@ describe Gitlab::Auth::LDAP::Access do
         context 'when user cannot be found' do
           before do
             allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_dn).and_return(nil)
+            allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_email).and_return(nil)
           end
 
           it { is_expected.to be_falsey }

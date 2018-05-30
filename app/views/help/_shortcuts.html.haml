@@ -121,7 +121,7 @@
                 %tr
                   %td.shortcut
                     .key g
-                    .key e
+                    .key v
                   %td
                     Go to the project's activity feed
                 %tr
@@ -175,6 +175,18 @@
                 %tr
                   %td.shortcut
                     .key g
+                    .key e
+                  %td
+                    Go to environments
+                %tr
+                  %td.shortcut
+                    .key g
+                    .key k
+                  %td
+                    Go to kubernetes
+                %tr
+                  %td.shortcut
+                    .key g
                     .key s
                   %td
                     Go to snippets
@@ -219,6 +231,17 @@
                   %td.shortcut
                     .key y
                   %td Go to file permalink
+              %tbody
+                %tr
+                  %th
+                  %th Web IDE
+                %tr
+                  %td.shortcut
+                    - if browser.platform.mac?
+                      .key &#8984; p
+                    - else
+                      .key ctrl p
+                  %td Go to file
           .col-lg-4
             %table.shortcut-mappings
               %tbody.hidden-shortcut.network{ style: 'display:none' }

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180508135515) do
+ActiveRecord::Schema.define(version: 20180529093006) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -503,6 +503,7 @@ ActiveRecord::Schema.define(version: 20180508135515) do
   add_index "ci_runners", ["contacted_at"], name: "index_ci_runners_on_contacted_at", using: :btree
   add_index "ci_runners", ["is_shared"], name: "index_ci_runners_on_is_shared", using: :btree
   add_index "ci_runners", ["locked"], name: "index_ci_runners_on_locked", using: :btree
+  add_index "ci_runners", ["runner_type"], name: "index_ci_runners_on_runner_type", using: :btree
   add_index "ci_runners", ["token"], name: "index_ci_runners_on_token", using: :btree
 
   create_table "ci_stages", force: :cascade do |t|
@@ -1216,6 +1217,7 @@ ActiveRecord::Schema.define(version: 20180508135515) do
     t.integer "latest_merge_request_diff_id"
     t.string "rebase_commit_sha"
     t.boolean "allow_maintainer_to_push"
+    t.boolean "squash", default: false, null: false
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -1231,6 +1233,7 @@ ActiveRecord::Schema.define(version: 20180508135515) do
   add_index "merge_requests", ["source_project_id", "source_branch"], name: "index_merge_requests_on_source_project_id_and_source_branch", using: :btree
   add_index "merge_requests", ["target_branch"], name: "index_merge_requests_on_target_branch", using: :btree
   add_index "merge_requests", ["target_project_id", "iid"], name: "index_merge_requests_on_target_project_id_and_iid", unique: true, using: :btree
+  add_index "merge_requests", ["target_project_id", "iid"], name: "index_merge_requests_on_target_project_id_and_iid_opened", where: "((state)::text = 'opened'::text)", using: :btree
   add_index "merge_requests", ["target_project_id", "merge_commit_sha", "id"], name: "index_merge_requests_on_tp_id_and_merge_commit_sha_and_id", using: :btree
   add_index "merge_requests", ["title"], name: "index_merge_requests_on_title", using: :btree
   add_index "merge_requests", ["title"], name: "index_merge_requests_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
@@ -1300,6 +1303,20 @@ ActiveRecord::Schema.define(version: 20180508135515) do
   add_index "namespaces", ["require_two_factor_authentication"], name: "index_namespaces_on_require_two_factor_authentication", using: :btree
   add_index "namespaces", ["runners_token"], name: "index_namespaces_on_runners_token", unique: true, using: :btree
   add_index "namespaces", ["type"], name: "index_namespaces_on_type", using: :btree
+
+  create_table "note_diff_files", force: :cascade do |t|
+    t.integer "diff_note_id", null: false
+    t.text "diff", null: false
+    t.boolean "new_file", null: false
+    t.boolean "renamed_file", null: false
+    t.boolean "deleted_file", null: false
+    t.string "a_mode", null: false
+    t.string "b_mode", null: false
+    t.text "new_path", null: false
+    t.text "old_path", null: false
+  end
+
+  add_index "note_diff_files", ["diff_note_id"], name: "index_note_diff_files_on_diff_note_id", unique: true, using: :btree
 
   create_table "notes", force: :cascade do |t|
     t.text "note"
@@ -1448,9 +1465,9 @@ ActiveRecord::Schema.define(version: 20180508135515) do
   add_index "personal_access_tokens", ["user_id"], name: "index_personal_access_tokens_on_user_id", using: :btree
 
   create_table "project_authorizations", id: false, force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "project_id"
-    t.integer "access_level"
+    t.integer "user_id", null: false
+    t.integer "project_id", null: false
+    t.integer "access_level", null: false
   end
 
   add_index "project_authorizations", ["project_id"], name: "index_project_authorizations_on_project_id", using: :btree
@@ -1493,7 +1510,7 @@ ActiveRecord::Schema.define(version: 20180508135515) do
   add_index "project_deploy_tokens", ["project_id", "deploy_token_id"], name: "index_project_deploy_tokens_on_project_id_and_deploy_token_id", unique: true, using: :btree
 
   create_table "project_features", force: :cascade do |t|
-    t.integer "project_id"
+    t.integer "project_id", null: false
     t.integer "merge_requests_access_level"
     t.integer "issues_access_level"
     t.integer "wiki_access_level"
@@ -1504,7 +1521,7 @@ ActiveRecord::Schema.define(version: 20180508135515) do
     t.integer "repository_access_level", default: 20, null: false
   end
 
-  add_index "project_features", ["project_id"], name: "index_project_features_on_project_id", using: :btree
+  add_index "project_features", ["project_id"], name: "index_project_features_on_project_id", unique: true, using: :btree
 
   create_table "project_group_links", force: :cascade do |t|
     t.integer "project_id", null: false
@@ -2242,6 +2259,7 @@ ActiveRecord::Schema.define(version: 20180508135515) do
   add_foreign_key "merge_requests_closing_issues", "merge_requests", on_delete: :cascade
   add_foreign_key "milestones", "namespaces", column: "group_id", name: "fk_95650a40d4", on_delete: :cascade
   add_foreign_key "milestones", "projects", name: "fk_9bd0a0c791", on_delete: :cascade
+  add_foreign_key "note_diff_files", "notes", column: "diff_note_id", on_delete: :cascade
   add_foreign_key "notes", "projects", name: "fk_99e097b079", on_delete: :cascade
   add_foreign_key "oauth_openid_requests", "oauth_access_grants", column: "access_grant_id", name: "fk_oauth_openid_requests_oauth_access_grants_access_grant_id"
   add_foreign_key "pages_domains", "projects", name: "fk_ea2f6dfc6f", on_delete: :cascade

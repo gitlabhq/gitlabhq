@@ -28,7 +28,7 @@ module Gitlab
 
       IMPORTED_OBJECT_MAX_RETRIES = 5.freeze
 
-      EXISTING_OBJECT_CHECK = %i[milestone milestones label labels project_label project_labels group_label group_labels].freeze
+      EXISTING_OBJECT_CHECK = %i[milestone milestones label labels project_label project_labels group_label group_labels project_feature].freeze
 
       TOKEN_RESET_MODELS = %w[Ci::Trigger Ci::Build ProjectHook].freeze
 
@@ -36,13 +36,21 @@ module Gitlab
         new(*args).create
       end
 
-      def initialize(relation_sym:, relation_hash:, members_mapper:, user:, project:)
+      def initialize(relation_sym:, relation_hash:, members_mapper:, user:, project:, excluded_keys: [])
         @relation_name = OVERRIDES[relation_sym] || relation_sym
         @relation_hash = relation_hash.except('noteable_id')
         @members_mapper = members_mapper
         @user = user
         @project = project
         @imported_object_retries = 0
+
+        # Remove excluded keys from relation_hash
+        # We don't do this in the parsed_relation_hash because of the 'transformed attributes'
+        # For example, MergeRequestDiffFiles exports its diff attribute as utf8_diff. Then,
+        # in the create method that attribute is renamed to diff. And because diff is an excluded key,
+        # if we clean the excluded keys in the parsed_relation_hash, it will be removed
+        # from the object attributes and the export will fail.
+        @relation_hash.except!(*excluded_keys)
       end
 
       # Creates an object from an actual model with name "relation_sym" with params from

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-09 09:24+0200\n"
-"PO-Revision-Date: 2018-05-09 09:24+0200\n"
+"POT-Creation-Date: 2018-05-23 07:40-0500\n"
+"PO-Revision-Date: 2018-05-23 07:40-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -53,6 +53,16 @@ msgid_plural "%d metrics"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d staged change"
+msgid_plural "%d staged changes"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d unstaged change"
+msgid_plural "%d unstaged changes"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%s additional commit has been omitted to prevent performance issues."
 msgid_plural "%s additional commits have been omitted to prevent performance issues."
 msgstr[0] ""
@@ -70,6 +80,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "%{loadingIcon} Started"
+msgstr ""
+
+msgid "%{lock_path} is locked by GitLab User %{lock_user_id}"
+msgstr ""
+
+msgid "%{nip_domain} can be used as an alternative to a custom domain."
 msgstr ""
 
 msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
@@ -96,6 +112,9 @@ msgid "%{text} is available"
 msgstr ""
 
 msgid "%{title} changes"
+msgstr ""
+
+msgid "%{unstaged} unstaged and %{staged} staged changes"
 msgstr ""
 
 msgid "(checkout the %{link} for information on how to install it)."
@@ -204,6 +223,9 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
+msgid "Active Sessions"
+msgstr ""
+
 msgid "Activity"
 msgstr ""
 
@@ -310,6 +332,9 @@ msgid "An error occurred previewing the blob"
 msgstr ""
 
 msgid "An error occurred when toggling the notification subscription"
+msgstr ""
+
+msgid "An error occurred while dismissing the alert. Refresh the page and try again."
 msgstr ""
 
 msgid "An error occurred while dismissing the feature highlight. Refresh the page and try dismissing again."
@@ -737,6 +762,9 @@ msgstr ""
 msgid "CI/CD settings"
 msgstr ""
 
+msgid "CICD|A domain is required to use Auto Review Apps and Auto Deploy Stages."
+msgstr ""
+
 msgid "CICD|An explicit %{ci_file} needs to be specified before you can begin using Continuous Integration and Delivery."
 msgstr ""
 
@@ -765,9 +793,6 @@ msgid "CICD|Learn more about Auto DevOps"
 msgstr ""
 
 msgid "CICD|The Auto DevOps pipeline configuration will be used when there is no %{ci_file} in the project."
-msgstr ""
-
-msgid "CICD|You need to specify a domain if you want to use Auto Review Apps and Auto Deploy stages."
 msgstr ""
 
 msgid "Can run untagged jobs"
@@ -1019,6 +1044,9 @@ msgstr ""
 msgid "ClusterIntegration|Environment scope"
 msgstr ""
 
+msgid "ClusterIntegration|Every new Google Cloud Platform (GCP) account receives $300 in credit upon %{sign_up_link}. In partnership with Google, GitLab is able to offer an additional $200 for new GCP accounts to get started with GitLab's Google Kubernetes Engine Integration."
+msgstr ""
+
 msgid "ClusterIntegration|GitLab Integration"
 msgstr ""
 
@@ -1142,6 +1170,9 @@ msgstr ""
 msgid "ClusterIntegration|Read our %{link_to_help_page} on Kubernetes cluster integration."
 msgstr ""
 
+msgid "ClusterIntegration|Redeem up to $500 in free credit for Google Cloud Platform"
+msgstr ""
+
 msgid "ClusterIntegration|Remove Kubernetes cluster integration"
 msgstr ""
 
@@ -1230,6 +1261,9 @@ msgid "ClusterIntegration|meets the requirements"
 msgstr ""
 
 msgid "ClusterIntegration|properly configured"
+msgstr ""
+
+msgid "ClusterIntegration|sign up"
 msgstr ""
 
 msgid "Collapse"
@@ -1356,6 +1390,9 @@ msgstr ""
 msgid "Configure limits for web and API requests."
 msgstr ""
 
+msgid "Configure push mirrors."
+msgstr ""
+
 msgid "Configure storage path and circuit breaker settings."
 msgstr ""
 
@@ -1413,7 +1450,7 @@ msgstr ""
 msgid "ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images."
 msgstr ""
 
-msgid "ContainerRegistry|You can also %{deploy_token} for read-only access to the registry images."
+msgid "ContainerRegistry|You can also use a %{deploy_token} for read-only access to the registry images."
 msgstr ""
 
 msgid "Continuous Integration and Deployment"
@@ -1521,6 +1558,9 @@ msgstr ""
 msgid "CreateTokenToCloneLink|create a personal access token"
 msgstr ""
 
+msgid "Created"
+msgstr ""
+
 msgid "Cron Timezone"
 msgstr ""
 
@@ -1590,6 +1630,54 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Deploy Keys"
+msgstr ""
+
+msgid "DeployKeys|+%{count} others"
+msgstr ""
+
+msgid "DeployKeys|Current project"
+msgstr ""
+
+msgid "DeployKeys|Deploy key"
+msgstr ""
+
+msgid "DeployKeys|Enabled deploy keys"
+msgstr ""
+
+msgid "DeployKeys|Error enabling deploy key"
+msgstr ""
+
+msgid "DeployKeys|Error getting deploy keys"
+msgstr ""
+
+msgid "DeployKeys|Error removing deploy key"
+msgstr ""
+
+msgid "DeployKeys|Expand %{count} other projects"
+msgstr ""
+
+msgid "DeployKeys|Loading deploy keys"
+msgstr ""
+
+msgid "DeployKeys|No deploy keys found. Create one with the form above."
+msgstr ""
+
+msgid "DeployKeys|Privately accessible deploy keys"
+msgstr ""
+
+msgid "DeployKeys|Project usage"
+msgstr ""
+
+msgid "DeployKeys|Publicly accessible deploy keys"
+msgstr ""
+
+msgid "DeployKeys|Read access only"
+msgstr ""
+
+msgid "DeployKeys|Write access allowed"
+msgstr ""
+
+msgid "DeployKeys|You are going to remove this deploy key. Are you sure?"
 msgstr ""
 
 msgid "DeployTokens|Active Deploy Tokens (%{active_tokens})"
@@ -1748,9 +1836,6 @@ msgstr ""
 msgid "Edit files in the editor and commit changes here"
 msgstr ""
 
-msgid "Editing"
-msgstr ""
-
 msgid "Email"
 msgstr ""
 
@@ -1788,6 +1873,12 @@ msgid "Enable reCAPTCHA or Akismet and set IP limits."
 msgstr ""
 
 msgid "Enable the Performance Bar for a given group."
+msgstr ""
+
+msgid "Ends at (UTC)"
+msgstr ""
+
+msgid "Environments"
 msgstr ""
 
 msgid "Environments|An error occurred while fetching the environments."
@@ -2002,6 +2093,9 @@ msgstr ""
 msgid "GPG Keys"
 msgstr ""
 
+msgid "General"
+msgstr ""
+
 msgid "Generate a default set of labels"
 msgstr ""
 
@@ -2048,6 +2142,9 @@ msgid "Google authentication is not %{link_to_documentation}. Ask your GitLab ad
 msgstr ""
 
 msgid "Got it!"
+msgstr ""
+
+msgid "Graph"
 msgstr ""
 
 msgid "Group CI/CD settings"
@@ -2163,6 +2260,18 @@ msgstr ""
 msgid "Housekeeping successfully started"
 msgstr ""
 
+msgid "IDE|Commit"
+msgstr ""
+
+msgid "IDE|Edit"
+msgstr ""
+
+msgid "IDE|Go back"
+msgstr ""
+
+msgid "IDE|Review"
+msgstr ""
+
 msgid "If you already have files you can push them using the %{link_to_cli} below."
 msgstr ""
 
@@ -2194,6 +2303,9 @@ msgid "Install a Runner compatible with GitLab CI"
 msgstr ""
 
 msgid "Instance does not support multiple Kubernetes clusters"
+msgstr ""
+
+msgid "Integrations"
 msgstr ""
 
 msgid "Interested parties can even contribute by pushing commits if they want to."
@@ -2333,6 +2445,9 @@ msgstr ""
 msgid "LastPushEvent|at"
 msgstr ""
 
+msgid "Latest changes"
+msgstr ""
+
 msgid "Learn more"
 msgstr ""
 
@@ -2357,6 +2472,9 @@ msgstr ""
 msgid "Leave project"
 msgstr ""
 
+msgid "List"
+msgstr ""
+
 msgid "List your GitHub repositories"
 msgstr ""
 
@@ -2370,6 +2488,9 @@ msgid "Lock"
 msgstr ""
 
 msgid "Lock %{issuableDisplayName}"
+msgstr ""
+
+msgid "Lock not found"
 msgstr ""
 
 msgid "Lock to current projects"
@@ -2457,6 +2578,9 @@ msgid "Metrics - Prometheus"
 msgstr ""
 
 msgid "Milestone"
+msgstr ""
+
+msgid "Milestones"
 msgstr ""
 
 msgid "Milestones|Delete milestone"
@@ -2716,6 +2840,9 @@ msgstr ""
 msgid "Opens in a new window"
 msgstr ""
 
+msgid "Operations"
+msgstr ""
+
 msgid "Options"
 msgstr ""
 
@@ -2875,25 +3002,22 @@ msgstr ""
 msgid "Pipelines|This project is not currently set up to run pipelines."
 msgstr ""
 
-msgid "Pipeline|Existing branch name, tag"
+msgid "Pipeline|Create for"
 msgstr ""
 
-msgid "Pipeline|Retry pipeline"
+msgid "Pipeline|Create pipeline"
 msgstr ""
 
-msgid "Pipeline|Retry pipeline #%{pipelineId}?"
+msgid "Pipeline|Existing branch name or tag"
 msgstr ""
 
 msgid "Pipeline|Run Pipeline"
 msgstr ""
 
-msgid "Pipeline|Run on"
-msgstr ""
-
-msgid "Pipeline|Run pipeline"
-msgstr ""
-
 msgid "Pipeline|Search branches"
+msgstr ""
+
+msgid "Pipeline|Specify variable values to be used in this run. The values specified in %{settings_link} will be used by default."
 msgstr ""
 
 msgid "Pipeline|Stop pipeline"
@@ -2902,7 +3026,7 @@ msgstr ""
 msgid "Pipeline|Stop pipeline #%{pipelineId}?"
 msgstr ""
 
-msgid "Pipeline|You’re about to retry pipeline %{pipelineId}."
+msgid "Pipeline|Variables"
 msgstr ""
 
 msgid "Pipeline|You’re about to stop pipeline %{pipelineId}."
@@ -3019,6 +3143,9 @@ msgstr ""
 msgid "Progress"
 msgstr ""
 
+msgid "Project"
+msgstr ""
+
 msgid "Project '%{project_name}' is in the process of being deleted."
 msgstr ""
 
@@ -3068,9 +3195,6 @@ msgid "ProjectLastActivity|Never"
 msgstr ""
 
 msgid "ProjectLifecycle|Stage"
-msgstr ""
-
-msgid "ProjectNetworkGraph|Graph"
 msgstr ""
 
 msgid "Projects"
@@ -3223,6 +3347,9 @@ msgstr ""
 msgid "Register and see your runners for this group."
 msgstr ""
 
+msgid "Registry"
+msgstr ""
+
 msgid "Related Commits"
 msgstr ""
 
@@ -3265,6 +3392,9 @@ msgstr ""
 msgid "Repository maintenance"
 msgstr ""
 
+msgid "Repository mirror settings"
+msgstr ""
+
 msgid "Repository storage"
 msgstr ""
 
@@ -3281,6 +3411,9 @@ msgid "Reset health check access token"
 msgstr ""
 
 msgid "Reset runners registration token"
+msgstr ""
+
+msgid "Resolve conflicts on source branch"
 msgstr ""
 
 msgid "Resolve discussion"
@@ -3360,6 +3493,9 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
+msgid "Search branches"
+msgstr ""
+
 msgid "Search branches and tags"
 msgstr ""
 
@@ -3381,7 +3517,7 @@ msgstr ""
 msgid "Seconds to wait for a storage access attempt"
 msgstr ""
 
-msgid "Secret variables"
+msgid "Variables"
 msgstr ""
 
 msgid "Select Archive Format"
@@ -3400,6 +3536,9 @@ msgid "Select assignee"
 msgstr ""
 
 msgid "Select branch/tag"
+msgstr ""
+
+msgid "Select source branch"
 msgstr ""
 
 msgid "Select target branch"
@@ -3653,6 +3792,9 @@ msgstr ""
 msgid "Started"
 msgstr ""
 
+msgid "Starts at (UTC)"
+msgstr ""
+
 msgid "Status"
 msgstr ""
 
@@ -3856,6 +3998,12 @@ msgstr ""
 msgid "There are problems accessing Git storage: "
 msgstr ""
 
+msgid "There was an error loading jobs"
+msgstr ""
+
+msgid "There was an error loading latest pipeline"
+msgstr ""
+
 msgid "There was an error loading users activity calendar."
 msgstr ""
 
@@ -3932,6 +4080,9 @@ msgid "This means you can not push code until you create an empty repository or 
 msgstr ""
 
 msgid "This merge request is locked."
+msgstr ""
+
+msgid "This option is disabled while you still have unstaged changes"
 msgstr ""
 
 msgid "This page is unavailable because you are not allowed to read information across multiple projects."
@@ -4096,10 +4247,10 @@ msgstr ""
 msgid "Timeago|in 1 year"
 msgstr ""
 
-msgid "Timeago|in a while"
+msgid "Timeago|less than a minute ago"
 msgstr ""
 
-msgid "Timeago|less than a minute ago"
+msgid "Timeago|right now"
 msgstr ""
 
 msgid "Time|hr"
@@ -4140,6 +4291,9 @@ msgid "Todo"
 msgstr ""
 
 msgid "Toggle Sidebar"
+msgstr ""
+
+msgid "Toggle discussion"
 msgstr ""
 
 msgid "Toggle sidebar"
@@ -4250,9 +4404,6 @@ msgstr ""
 msgid "Verified"
 msgstr ""
 
-msgid "View and edit lines"
-msgstr ""
-
 msgid "View file @ "
 msgstr ""
 
@@ -4334,7 +4485,31 @@ msgstr ""
 msgid "WikiEdit|There is already a page with the same title in that path."
 msgstr ""
 
-msgid "WikiEmptyPageError|You are not allowed to create wiki pages"
+msgid "WikiEmptyIssueMessage|Suggest wiki improvement"
+msgstr ""
+
+msgid "WikiEmptyIssueMessage|You must be a project member in order to add wiki pages. If you have suggestions for how to improve the wiki for this project, consider opening an issue in the %{issues_link}."
+msgstr ""
+
+msgid "WikiEmptyIssueMessage|issue tracker"
+msgstr ""
+
+msgid "WikiEmpty|A wiki is where you can store all the details about your project. This can include why you've created it, it's principles, how to use it, and so on."
+msgstr ""
+
+msgid "WikiEmpty|Create your first page"
+msgstr ""
+
+msgid "WikiEmpty|Suggest wiki improvement"
+msgstr ""
+
+msgid "WikiEmpty|The wiki lets you write documentation for your project"
+msgstr ""
+
+msgid "WikiEmpty|This project has no wiki pages"
+msgstr ""
+
+msgid "WikiEmpty|You must be a project member in order to add wiki pages."
 msgstr ""
 
 msgid "WikiHistoricalPage|This is an old version of this page."
@@ -4370,6 +4545,12 @@ msgstr ""
 msgid "WikiPageConfirmDelete|Are you sure you want to delete this page?"
 msgstr ""
 
+msgid "WikiPageConfirmDelete|Delete page"
+msgstr ""
+
+msgid "WikiPageConfirmDelete|Delete page %{pageTitle}?"
+msgstr ""
+
 msgid "WikiPageConflictMessage|Someone edited the page the same time you did. Please check out %{page_link} and make sure your changes will not unintentionally remove theirs."
 msgstr ""
 
@@ -4395,9 +4576,6 @@ msgid "Wiki|Create page"
 msgstr ""
 
 msgid "Wiki|Edit Page"
-msgstr ""
-
-msgid "Wiki|Empty page"
 msgstr ""
 
 msgid "Wiki|More Pages"
@@ -4460,10 +4638,19 @@ msgstr ""
 msgid "You can only edit files when you are on a branch"
 msgstr ""
 
+msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
+msgstr ""
+
 msgid "You cannot write to this read-only GitLab instance."
 msgstr ""
 
+msgid "You have no permissions"
+msgstr ""
+
 msgid "You have reached your project limit"
+msgstr ""
+
+msgid "You must have master access to force delete a lock"
 msgstr ""
 
 msgid "You must sign in to star a project"
