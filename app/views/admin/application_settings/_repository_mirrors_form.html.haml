@@ -1,10 +1,10 @@
-= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+= form_for @application_setting, url: admin_application_settings_path do |f|
   = form_errors(@application_setting)
 
   %fieldset
-    .form-group
-      = f.label :mirror_available, 'Enable mirror configuration', class: 'control-label col-sm-2'
-      .col-sm-10
+    .form-group.row
+      = f.label :mirror_available, 'Enable mirror configuration', class: 'control-label col-sm-4'
+      .col-sm-8
         .form-check
           = f.label :mirror_available do
             = f.check_box :mirror_available

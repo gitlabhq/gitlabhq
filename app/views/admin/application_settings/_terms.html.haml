@@ -1,8 +1,8 @@
-= form_for @application_setting, url: admin_application_settings_path, html: { class: 'form-horizontal fieldset-form' } do |f|
+= form_for @application_setting, url: admin_application_settings_path do |f|
   = form_errors(@application_setting)
 
   %fieldset
-    .form-group
+    .form-group.row
       .col-sm-12
         .form-check
           = f.label :enforce_terms do
@@ -10,7 +10,7 @@
             = _("Require all users to accept Terms of Service when they access GitLab.")
           .form-text.text-muted
             = _("When enabled, users cannot use GitLab until the terms have been accepted.")
-    .form-group
+    .form-group.row
       .col-sm-12
         = f.label :terms do
           = _("Terms of Service Agreement")
