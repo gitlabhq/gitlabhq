@@ -39,7 +39,7 @@ describe 'help/index' do
 
   def stub_version(version, revision)
     stub_const('Gitlab::VERSION', version)
-    stub_const('Gitlab::REVISION', revision)
+    allow(Gitlab).to receive(:revision).and_return(revision)
   end
 
   def stub_helpers

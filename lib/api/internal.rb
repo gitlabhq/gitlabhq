@@ -113,7 +113,7 @@ module API
         {
           api_version: API.version,
           gitlab_version: Gitlab::VERSION,
-          gitlab_rev: Gitlab::REVISION,
+          gitlab_rev: Gitlab.revision,
           redis: redis_ping
         }
       end
