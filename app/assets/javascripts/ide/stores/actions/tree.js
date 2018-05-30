@@ -5,7 +5,7 @@ import * as types from '../mutation_types';
 import { findEntry } from '../utils';
 import FilesDecoratorWorker from '../workers/files_decorator_worker';
 
-export const toggleTreeOpen = ({ commit, dispatch }, path) => {
+export const toggleTreeOpen = ({ commit }, path) => {
   commit(types.TOGGLE_TREE_OPEN, path);
 };
 
@@ -23,7 +23,7 @@ export const handleTreeEntryAction = ({ commit, dispatch }, row) => {
   }
 };
 
-export const getLastCommitData = ({ state, commit, dispatch, getters }, tree = state) => {
+export const getLastCommitData = ({ state, commit, dispatch }, tree = state) => {
   if (!tree || tree.lastCommitPath === null || !tree.lastCommitPath) return;
 
   service
@@ -49,7 +49,7 @@ export const getLastCommitData = ({ state, commit, dispatch, getters }, tree = s
     .catch(() => flash('Error fetching log data.', 'alert', document, null, false, true));
 };
 
-export const getFiles = ({ state, commit, dispatch }, { projectId, branchId } = {}) =>
+export const getFiles = ({ state, commit }, { projectId, branchId } = {}) =>
   new Promise((resolve, reject) => {
     if (!state.trees[`${projectId}/${branchId}`]) {
       const selectedProject = state.projects[projectId];
