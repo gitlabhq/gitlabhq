@@ -26,7 +26,7 @@ class Rack::Attack
   throttle('throttle_unauthenticated', Gitlab::Throttle.unauthenticated_options) do |req|
     Gitlab::Throttle.settings.throttle_unauthenticated_enabled &&
       req.unauthenticated? &&
-      !req.api_internal_request? &&
+      !req.should_be_skipped? &&
       req.ip
   end
 
@@ -43,6 +43,8 @@ class Rack::Attack
   end
 
   class Request
+    prepend ::EE::Gitlab::Rack::Attack::Request
+
     def unauthenticated?
       !authenticated_user_id
     end
@@ -57,6 +59,10 @@ class Rack::Attack
 
     def api_internal_request?
       path =~ %r{^/api/v\d+/internal/}
+    end
+
+    def should_be_skipped?
+      api_internal_request?
     end
 
     def web_request?
