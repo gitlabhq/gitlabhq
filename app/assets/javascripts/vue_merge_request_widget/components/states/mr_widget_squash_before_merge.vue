@@ -1,15 +1,63 @@
-/*
-The squash-before-merge button is EE only, but it's located right in the middle
-of the readyToMerge state component template.
-
-If we didn't declare this component in CE, we'd need to maintain a separate copy
-of the readyToMergeState template in EE, which is pretty big and likely to change.
-
-Instead, in CE, we declare the component, but it's hidden and is configured to do nothing.
-In EE, the configuration extends this object to add a functioning squash-before-merge
-button.
-*/
-
 <script>
-  export default {};
+import Icon from '~/vue_shared/components/icon.vue';
+import eventHub from '~/vue_merge_request_widget/event_hub';
+import tooltip from '~/vue_shared/directives/tooltip';
+
+export default {
+  components: {
+    Icon,
+  },
+  directives: {
+    tooltip,
+  },
+  props: {
+    mr: {
+      type: Object,
+      required: true,
+    },
+    isMergeButtonDisabled: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      squashBeforeMerge: this.mr.squash,
+    };
+  },
+  methods: {
+    updateSquashModel() {
+      eventHub.$emit('MRWidgetUpdateSquash', this.squashBeforeMerge);
+    },
+  },
+};
 </script>
+
+<template>
+  <div class="accept-control inline">
+    <label class="merge-param-checkbox">
+      <input
+        type="checkbox"
+        name="squash"
+        class="qa-squash-checkbox"
+        :disabled="isMergeButtonDisabled"
+        v-model="squashBeforeMerge"
+        @change="updateSquashModel"
+      />
+      {{ __('Squash commits') }}
+    </label>
+    <a
+      :href="mr.squashBeforeMergeHelpPath"
+      data-title="About this feature"
+      data-placement="bottom"
+      target="_blank"
+      rel="noopener noreferrer nofollow"
+      data-container="body"
+      v-tooltip
+    >
+      <icon
+        name="question-o"
+      />
+    </a>
+  </div>
+</template>

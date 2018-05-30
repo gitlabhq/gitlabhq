@@ -144,7 +144,7 @@ export default {
             :file="file"
           />
         </span>
-        <span class="pull-right ide-file-icon-holder">
+        <span class="float-right ide-file-icon-holder">
           <mr-file-icon
             v-if="file.mrChange"
           />
@@ -169,7 +169,7 @@ export default {
             :show-tooltip="true"
             :show-staged-icon="true"
             :force-modified-icon="true"
-            class="pull-right"
+            class="float-right"
           />
         </span>
         <new-dropdown
@@ -177,7 +177,7 @@ export default {
           :project-id="file.projectId"
           :branch="file.branchId"
           :path="file.path"
-          class="pull-right prepend-left-8"
+          class="float-right prepend-left-8"
         />
       </div>
     </div>

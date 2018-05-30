@@ -618,7 +618,7 @@ describe ObjectStorage do
 
           let!(:fog_file) do
             fog_connection.directories.get('uploads').files.create(
-              key: 'tmp/upload/test/123123',
+              key: 'tmp/uploads/test/123123',
               body: 'content'
             )
           end

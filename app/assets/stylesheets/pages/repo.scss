@@ -546,7 +546,7 @@
     margin-right: 0;
   }
 
-  &.help-block {
+  &.form-text.text-muted {
     margin-left: 0;
     right: 0;
   }
@@ -854,7 +854,7 @@
     }
   }
 
-  .help-block {
+  .form-text.text-muted {
     margin-top: 0;
     line-height: 0;
   }
@@ -952,7 +952,7 @@
     height: 30px;
   }
 
-  .help-block {
+  .form-text.text-muted {
     margin-top: 2px;
     color: $blue-500;
     cursor: pointer;
@@ -1086,10 +1086,6 @@
   display: flex;
   align-items: center;
   font-size: 12px;
-}
-
-.ide-new-modal-label {
-  line-height: 34px;
 }
 
 .multi-file-commit-panel-success-message {

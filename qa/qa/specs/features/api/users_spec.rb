@@ -17,17 +17,16 @@ module QA
         get request.url, { params: { username: Runtime::User.name } }
 
         expect_status(200)
-        expect(json_body).to be_an Array
-        expect(json_body.size).to eq(1)
-        expect(json_body.first[:username]).to eq Runtime::User.name
+        expect(json_body).to contain_exactly(
+          a_hash_including(username: Runtime::User.name)
+        )
       end
 
       scenario 'submit request with an invalid user name' do
         get request.url, { params: { username: SecureRandom.hex(10) } }
 
         expect_status(200)
-        expect(json_body).to be_an Array
-        expect(json_body.size).to eq(0)
+        expect(json_body).to eq([])
       end
     end
 

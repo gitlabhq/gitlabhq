@@ -253,7 +253,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def merge_params_attributes
-    [:should_remove_source_branch, :commit_message]
+    [:should_remove_source_branch, :commit_message, :squash]
   end
 
   def merge_when_pipeline_succeeds_active?
@@ -282,7 +282,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     return :sha_mismatch if params[:sha] != @merge_request.diff_head_sha
 
-    @merge_request.update(merge_error: nil)
+    @merge_request.update(merge_error: nil, squash: merge_params.fetch(:squash, false))
 
     if params[:merge_when_pipeline_succeeds].present?
       return :failed unless @merge_request.actual_head_pipeline

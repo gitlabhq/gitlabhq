@@ -11,7 +11,7 @@
   padding: 5px 11px;
   margin-top: 4px;
   /* Small devices (tablets, 768px and up) */
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     padding: 0 $gl-btn-padding;
     margin-top: 5px;
   }

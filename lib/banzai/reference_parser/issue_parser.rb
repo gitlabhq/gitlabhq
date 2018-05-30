@@ -69,7 +69,8 @@ module Banzai
                 { group: [:owners, :group_members] },
                 :invited_groups,
                 :project_members,
-                :project_feature
+                :project_feature,
+                :route
               ]
             }
           ),

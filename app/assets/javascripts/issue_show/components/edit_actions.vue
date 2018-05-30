@@ -51,7 +51,7 @@
 <template>
   <div class="prepend-top-default append-bottom-default clearfix">
     <button
-      class="btn btn-save pull-left"
+      class="btn btn-save float-left"
       :class="{ disabled: formState.updateLoading || !isSubmitEnabled }"
       type="submit"
       :disabled="formState.updateLoading || !isSubmitEnabled"
@@ -64,14 +64,14 @@
       </i>
     </button>
     <button
-      class="btn btn-default pull-right"
+      class="btn btn-default float-right"
       type="button"
       @click="closeForm">
       Cancel
     </button>
     <button
       v-if="shouldShowDeleteButton"
-      class="btn btn-danger pull-right append-right-default"
+      class="btn btn-danger float-right append-right-default"
       :class="{ disabled: deleteLoading }"
       type="button"
       :disabled="deleteLoading"

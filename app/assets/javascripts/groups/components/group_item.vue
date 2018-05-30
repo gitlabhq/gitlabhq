@@ -99,7 +99,7 @@ export default {
         />
       </div>
       <div
-        class="avatar-container prepend-top-8 prepend-left-5 s24 hidden-xs"
+        class="avatar-container prepend-top-8 prepend-left-5 s24 d-none d-sm-block"
         :class="{ 'content-loading': group.isChildrenLoading }"
       >
         <a
