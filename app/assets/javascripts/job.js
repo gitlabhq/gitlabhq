@@ -22,8 +22,6 @@ export default class Job {
     this.$window = $(window);
     this.logBytes = 0;
     this.updateDropdown = this.updateDropdown.bind(this);
-    this.redirectToJob =
-      this.options.redirectToJob !== undefined ? this.options.redirectToJob : true;
 
     this.$buildTrace = $('#build-trace');
     this.$buildRefreshAnimation = $('.js-build-refresh');
@@ -46,23 +44,31 @@ export default class Job {
       .off('click', '.js-sidebar-build-toggle')
       .on('click', '.js-sidebar-build-toggle', this.sidebarOnClick.bind(this));
 
-    this.$document.off('click', '.stage-item').on('click', '.stage-item', this.updateDropdown);
+    this.$document
+      .off('click', '.stage-item')
+      .on('click', '.stage-item', this.updateDropdown);
 
     // add event listeners to the scroll buttons
-    this.$scrollTopBtn.off('click').on('click', this.scrollToTop.bind(this));
+    this.$scrollTopBtn
+      .off('click')
+      .on('click', this.scrollToTop.bind(this));
 
-    this.$scrollBottomBtn.off('click').on('click', this.scrollToBottom.bind(this));
+    this.$scrollBottomBtn
+      .off('click')
+      .on('click', this.scrollToBottom.bind(this));
 
     this.scrollThrottled = _.throttle(this.toggleScroll.bind(this), 100);
 
-    this.$window.off('scroll').on('scroll', () => {
-      if (!this.isScrolledToBottom()) {
-        this.toggleScrollAnimation(false);
-      } else if (this.isScrolledToBottom() && !this.isLogComplete) {
-        this.toggleScrollAnimation(true);
-      }
-      this.scrollThrottled();
-    });
+    this.$window
+      .off('scroll')
+      .on('scroll', () => {
+        if (!this.isScrolledToBottom()) {
+          this.toggleScrollAnimation(false);
+        } else if (this.isScrolledToBottom() && !this.isLogComplete) {
+          this.toggleScrollAnimation(true);
+        }
+        this.scrollThrottled();
+      });
 
     this.$window
       .off('resize.build')
@@ -71,10 +77,6 @@ export default class Job {
     this.initAffixTopArea();
 
     this.getBuildTrace();
-  }
-
-  destroy() {
-    clearTimeout(this.timeout);
   }
 
   initAffixTopArea() {
@@ -100,8 +102,9 @@ export default class Job {
 
     const windowHeight = $(window).height();
     if (this.canScroll()) {
-      if (currentPosition > 0 && scrollHeight - currentPosition !== windowHeight) {
-        // User is in the middle of the log
+      if (currentPosition > 0 &&
+        (scrollHeight - currentPosition !== windowHeight)) {
+      // User is in the middle of the log
 
         this.toggleDisableButton(this.$scrollTopBtn, false);
         this.toggleDisableButton(this.$scrollBottomBtn, false);
@@ -166,11 +169,10 @@ export default class Job {
   }
 
   getBuildTrace() {
-    return axios
-      .get(`${this.pagePath}/trace.json`, {
-        params: { state: this.state },
-      })
-      .then(res => {
+    return axios.get(`${this.pagePath}/trace.json`, {
+      params: { state: this.state },
+    })
+      .then((res) => {
         const log = res.data;
 
         if (!this.fetchingStatusFavicon) {
@@ -220,7 +222,7 @@ export default class Job {
           this.toggleScrollAnimation(false);
         }
 
-        if (log.status !== this.buildStatus && this.redirectToJob) {
+        if (log.status !== this.buildStatus) {
           visitUrl(this.pagePath);
         }
       })
