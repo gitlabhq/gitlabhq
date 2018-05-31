@@ -26,11 +26,3 @@ if Gitlab.config.omniauth.enabled
     OmniAuth.config.on_failure = ::Gitlab::Auth::GroupSaml::FailureHandler.new(OmniAuth.config.on_failure)
   end
 end
-
-module OmniAuth
-  module Strategies
-    autoload :Bitbucket, Rails.root.join('lib', 'omni_auth', 'strategies', 'bitbucket')
-    autoload :GroupSaml, Rails.root.join('ee', 'lib', 'omni_auth', 'strategies', 'group_saml')
-    autoload :Jwt, Rails.root.join('lib', 'omni_auth', 'strategies', 'jwt')
-  end
-end

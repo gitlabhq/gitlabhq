@@ -5,7 +5,10 @@
 # gem manually on the CI
 require 'rubygems'
 
-require_relative '../lib/rspec_flaky/report'
+singleton_class.__send__(:alias_method, :require_dependency, :require)
+$LOAD_PATH.unshift(File.expand_path('../lib', __dir__))
+
+require 'rspec_flaky/report'
 
 report_file = ARGV.shift
 unless report_file
