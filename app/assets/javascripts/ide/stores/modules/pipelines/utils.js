@@ -4,4 +4,5 @@ export const normalizeJob = job => ({
   name: job.name,
   status: job.status,
   path: job.build_path,
+  started: job.started,
 });

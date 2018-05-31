@@ -1202,7 +1202,7 @@
 }
 
 .ide-pipeline-header {
-  min-height: 50px;
+  min-height: 55px;
   padding-left: $gl-padding;
   padding-right: $gl-padding;
 
@@ -1222,8 +1222,6 @@
   .ci-status-icon {
     display: flex;
     justify-content: center;
-    height: 20px;
-    margin-top: -2px;
     overflow: hidden;
   }
 }

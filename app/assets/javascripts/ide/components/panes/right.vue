@@ -4,6 +4,7 @@ import tooltip from '../../../vue_shared/directives/tooltip';
 import Icon from '../../../vue_shared/components/icon.vue';
 import { rightSidebarViews } from '../../constants';
 import PipelinesList from '../pipelines/list.vue';
+import JobsDetail from '../jobs/detail.vue';
 
 export default {
   directives: {
@@ -12,6 +13,7 @@ export default {
   components: {
     Icon,
     PipelinesList,
+    JobsDetail,
   },
   computed: {
     ...mapState(['rightPane']),

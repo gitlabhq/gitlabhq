@@ -63,4 +63,7 @@ export default {
       isCollapsed: stage.id === id ? !stage.isCollapsed : stage.isCollapsed,
     }));
   },
+  [types.SET_DETAIL_JOB](state, job) {
+    state.detailJob = job;
+  },
 };

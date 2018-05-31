@@ -42,5 +42,17 @@ export default {
         />
       </a>
     </span>
+    <button
+      class="btn btn-default btn-sm"
+      @click="() => { $store.state.pipelines.detailJob = job; $store.dispatch('setRightPane', 'jobs-detail') }"
+    >
+      {{ __('View log') }}
+    </button>
   </div>
 </template>
+
+<style scoped>
+.btn {
+  margin-left: auto;
+}
+</style>

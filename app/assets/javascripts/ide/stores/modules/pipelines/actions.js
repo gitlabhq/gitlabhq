@@ -77,4 +77,6 @@ export const fetchJobs = ({ dispatch }, stage) => {
 export const toggleStageCollapsed = ({ commit }, stageId) =>
   commit(types.TOGGLE_STAGE_COLLAPSE, stageId);
 
+export const setDetailJob = ({ commit }, job) => commit(types.SET_DETAIL_JOB, job);
+
 export default () => {};
