@@ -31,7 +31,7 @@ feature 'Global elastic search' do
       click_button "Go"
 
       select_filter("Issues")
-      expect(page).to have_selector('.gl-pagination .page', count: 2)
+      expect(page).to have_selector('.gl-pagination .js-pagination-page', count: 2)
     end
   end
 

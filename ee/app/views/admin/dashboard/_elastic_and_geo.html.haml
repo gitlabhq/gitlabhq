@@ -1,0 +1,10 @@
+- elastic = "Elasticsearch"
+%p{ "aria-label" => "#{elastic}: status " + (Gitlab::CurrentSettings.elasticsearch_search? ? "on" : "off") }
+  = elastic
+  %span.light.float-right
+    = boolean_to_icon Gitlab::CurrentSettings.elasticsearch_search?
+- geo = link_to 'Geo', admin_geo_nodes_path
+%p{ "aria-label" => "#{geo}: status " + (Gitlab::Geo.enabled? ? "on" : "off") }
+  = geo
+  %span.light.float-right
+    = boolean_to_icon Gitlab::Geo.enabled?

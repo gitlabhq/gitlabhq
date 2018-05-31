@@ -2,6 +2,8 @@ module API
   class MergeRequestApprovals < ::Grape::API
     before { authenticate_non_get! }
 
+    ARRAY_COERCION_LAMBDA = ->(val) { val.empty? ? [] : Array.wrap(val) }
+
     helpers do
       def handle_merge_request_errors!(errors)
         if errors.has_key? :project_access
@@ -69,8 +71,8 @@ module API
           success Entities::MergeRequestApprovals
         end
         params do
-          requires :approver_ids, type: Array[String], allow_blank: true, desc: 'Array of User IDs to set as approvers.'
-          requires :approver_group_ids, type: Array[String], allow_blank: true, desc: 'Array of Group IDs to set as approvers.'
+          requires :approver_ids, type: Array[String], coerce_with: ARRAY_COERCION_LAMBDA, desc: 'Array of User IDs to set as approvers.'
+          requires :approver_group_ids, type: Array[String], coerce_with: ARRAY_COERCION_LAMBDA, desc: 'Array of Group IDs to set as approvers.'
         end
         put 'approvers' do
           merge_request = find_merge_request_with_access(params[:merge_request_iid], :update_approvers)

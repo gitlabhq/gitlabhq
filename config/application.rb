@@ -44,11 +44,11 @@ module Gitlab
       ee_path = config.root.join('ee', Pathname.new(path).relative_path_from(config.root))
       memo << ee_path.to_s if ee_path.exist?
     end
-    config.eager_load_paths.concat(ee_paths)
+    config.eager_load_paths.unshift(*ee_paths)
 
-    config.paths['lib/tasks'] << "#{config.root}/ee/lib/tasks"
-    config.paths['app/views'] << "#{config.root}/ee/app/views"
-    config.helpers_paths << "#{config.root}/ee/app/helpers"
+    config.paths['lib/tasks'].unshift "#{config.root}/ee/lib/tasks"
+    config.paths['app/views'].unshift "#{config.root}/ee/app/views"
+    config.helpers_paths.unshift "#{config.root}/ee/app/helpers"
     ## EE-specific paths config END
 
     # Rake tasks ignore the eager loading settings, so we need to set the

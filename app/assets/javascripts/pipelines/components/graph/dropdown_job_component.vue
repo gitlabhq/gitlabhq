@@ -42,11 +42,6 @@ export default {
       type: Object,
       required: true,
     },
-    requestFinishedFor: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
 
   computed: {
@@ -76,11 +71,15 @@ export default {
         e.stopPropagation();
       });
     },
+
+    pipelineActionRequestComplete() {
+      this.$emit('pipelineActionRequestComplete');
+    },
   },
 };
 </script>
 <template>
-  <div class="ci-job-dropdown-container">
+  <div class="ci-job-dropdown-container dropdown">
     <button
       v-tooltip
       type="button"
@@ -110,7 +109,7 @@ export default {
             <job-component
               :job="item"
               css-class-job-name="mini-pipeline-graph-dropdown-item"
-              :request-finished-for="requestFinishedFor"
+              @pipelineActionRequestComplete="pipelineActionRequestComplete"
             />
           </li>
         </ul>

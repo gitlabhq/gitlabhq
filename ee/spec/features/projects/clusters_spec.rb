@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'EE Clusters' do
+feature 'EE Clusters', :js do
   include GoogleApi::CloudPlatformHelpers
 
   let(:project) { create(:project) }
@@ -106,9 +106,18 @@ feature 'EE Clusters' do
           before do
             click_link 'Add Kubernetes cluster'
             click_link 'Create on Google Kubernetes Engine'
-            fill_in 'cluster_provider_gcp_attributes_gcp_project_id', with: 'gcp-project-123'
+
+            sleep 2 # wait for ajax
+            execute_script('document.querySelector(".js-gcp-project-id-dropdown input").setAttribute("type", "text")')
+            execute_script('document.querySelector(".js-gcp-zone-dropdown input").setAttribute("type", "text")')
+            execute_script('document.querySelector(".js-gcp-machine-type-dropdown input").setAttribute("type", "text")')
+            execute_script('document.querySelector(".js-gke-cluster-creation-submit").removeAttribute("disabled")')
+
             fill_in 'cluster_name', with: 'staging-cluster'
             fill_in 'cluster_environment_scope', with: 'staging/*'
+            fill_in 'cluster[provider_gcp_attributes][gcp_project_id]', with: 'gcp-project-123'
+            fill_in 'cluster[provider_gcp_attributes][zone]', with: 'us-central1-a'
+            fill_in 'cluster[provider_gcp_attributes][machine_type]', with: 'n1-standard-2'
             click_button 'Create Kubernetes cluster'
           end
 
@@ -136,9 +145,18 @@ feature 'EE Clusters' do
           before do
             click_link 'Add Kubernetes cluster'
             click_link 'Create on Google Kubernetes Engine'
-            fill_in 'cluster_provider_gcp_attributes_gcp_project_id', with: 'gcp-project-123'
+
+            sleep 2 # wait for ajax
+            execute_script('document.querySelector(".js-gcp-project-id-dropdown input").setAttribute("type", "text")')
+            execute_script('document.querySelector(".js-gcp-zone-dropdown input").setAttribute("type", "text")')
+            execute_script('document.querySelector(".js-gcp-machine-type-dropdown input").setAttribute("type", "text")')
+            execute_script('document.querySelector(".js-gke-cluster-creation-submit").removeAttribute("disabled")')
+
             fill_in 'cluster_name', with: 'staging-cluster'
             fill_in 'cluster_environment_scope', with: '*'
+            fill_in 'cluster[provider_gcp_attributes][gcp_project_id]', with: 'gcp-project-123'
+            fill_in 'cluster[provider_gcp_attributes][zone]', with: 'us-central1-a'
+            fill_in 'cluster[provider_gcp_attributes][machine_type]', with: 'n1-standard-2'
             click_button 'Create Kubernetes cluster'
           end
 

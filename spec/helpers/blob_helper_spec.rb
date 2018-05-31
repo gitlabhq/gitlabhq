@@ -258,13 +258,19 @@ describe BlobHelper do
     it 'returns full IDE path' do
       Rails.application.routes.default_url_options[:script_name] = nil
 
-      expect(helper.ide_edit_path(project, "master", "")).to eq("/-/ide/project/#{project.namespace.path}/#{project.path}/edit/master/")
+      expect(helper.ide_edit_path(project, "master", "")).to eq("/-/ide/project/#{project.namespace.path}/#{project.path}/edit/master")
+    end
+
+    it 'returns full IDE path with second -' do
+      Rails.application.routes.default_url_options[:script_name] = nil
+
+      expect(helper.ide_edit_path(project, "testing/slashes", "readme.md")).to eq("/-/ide/project/#{project.namespace.path}/#{project.path}/edit/testing/slashes/-/readme.md")
     end
 
     it 'returns IDE path without relative_url_root' do
       Rails.application.routes.default_url_options[:script_name] = "/gitlab"
 
-      expect(helper.ide_edit_path(project, "master", "")).to eq("/gitlab/-/ide/project/#{project.namespace.path}/#{project.path}/edit/master/")
+      expect(helper.ide_edit_path(project, "master", "")).to eq("/gitlab/-/ide/project/#{project.namespace.path}/#{project.path}/edit/master")
     end
   end
 end

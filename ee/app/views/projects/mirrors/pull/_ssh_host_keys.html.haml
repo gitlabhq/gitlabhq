@@ -13,7 +13,7 @@
       - import_data.ssh_known_hosts_fingerprints.each do |fp|
         %code= fp.fingerprint
     - if verified_by || verified_at
-      .help-block.js-fingerprint-verification
+      .form-text.text-muted.js-fingerprint-verification
         %i.fa.fa-check.fingerprint-verified
         Verified by
         - if verified_by

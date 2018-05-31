@@ -11,7 +11,7 @@
 %div{ class: "#{container_class} js-service-desk-issues service-desk-issues", data: { support_bot: support_bot_attrs } }
   .top-area
     = render 'shared/issuable/nav', type: :issues
-    .nav-controls.visible-xs
+    .nav-controls.d-block.d-sm-none
       = render "projects/issues/nav_btns", show_export_button: false, show_rss_button: false
   = render 'shared/issuable/search_bar', type: :issues
 

@@ -370,17 +370,6 @@ feature 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
-    context 'job project is over shared runners limit' do
-      let(:group) { create(:group, :with_used_build_minutes_limit) }
-      let(:project) { create(:project, :repository, namespace: group, shared_runners_enabled: true) }
-
-      it 'displays a warning message' do
-        visit project_job_path(project, job)
-
-        expect(page).to have_content('You have used all your shared Runners pipeline minutes.')
-      end
-    end
-
     context 'Playable manual action' do
       let(:job) { create(:ci_build, :playable, pipeline: pipeline) }
 

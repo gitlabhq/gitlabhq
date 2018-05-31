@@ -3,6 +3,8 @@ module API
     before { authenticate! }
     before { authorize! :update_approvers, user_project }
 
+    ARRAY_COERCION_LAMBDA = ->(val) { val.empty? ? [] : Array.wrap(val) }
+
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
@@ -44,8 +46,8 @@ module API
         success ::API::Entities::ApprovalSettings
       end
       params do
-        requires :approver_ids, type: Array[String], allow_blank: true, desc: 'Array of User IDs to set as approvers.'
-        requires :approver_group_ids, type: Array[String], allow_blank: true, desc: 'Array of Group IDs to set as approvers.'
+        requires :approver_ids, type: Array[String], coerce_with: ARRAY_COERCION_LAMBDA, desc: 'Array of User IDs to set as approvers.'
+        requires :approver_group_ids, type: Array[String], coerce_with: ARRAY_COERCION_LAMBDA, desc: 'Array of Group IDs to set as approvers.'
       end
       put ':id/approvers' do
         result = ::Projects::UpdateService.new(user_project, current_user, declared(params, include_parent_namespaces: false).merge(remove_old_approvers: true)).execute

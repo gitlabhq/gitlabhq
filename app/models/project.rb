@@ -23,6 +23,8 @@ class Project < ActiveRecord::Base
   include ::Gitlab::Utils::StrongMemoize
   include ChronicDurationAttribute
   include FastDestroyAll::Helpers
+  include WithUploads
+  include BatchDestroyDependentAssociations
 
   # EE specific modules
   prepend EE::Project
@@ -307,8 +309,6 @@ class Project < ActiveRecord::Base
     presence: true,
     inclusion: { in: ->(_object) { Gitlab.config.repositories.storages.keys } }
   validates :variables, variable_duplicates: { scope: :environment_scope }
-
-  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   # Scopes
   scope :pending_delete, -> { where(pending_delete: true) }
@@ -912,6 +912,13 @@ class Project < ActiveRecord::Base
     Gitlab::Routing.url_helpers.project_url(self)
   end
 
+  def readme_url
+    readme = repository.readme
+    if readme
+      Gitlab::Routing.url_helpers.project_blob_url(self, File.join(default_branch, readme.path))
+    end
+  end
+
   def new_issuable_address(author, address_type)
     return unless Gitlab::IncomingEmail.supports_issue_creation? && author
 
@@ -1015,7 +1022,7 @@ class Project < ActiveRecord::Base
 
     available_services_names = Service.available_services_names - exceptions
 
-    available_services_names.map do |service_name|
+    available_services = available_services_names.map do |service_name|
       service = find_service(services, service_name)
 
       if service
@@ -1032,6 +1039,14 @@ class Project < ActiveRecord::Base
         end
       end
     end
+
+    available_services.reject do |service|
+      disabled_services.include?(service.to_param)
+    end
+  end
+
+  def disabled_services
+    []
   end
 
   def find_or_initialize_service(name)
@@ -1435,8 +1450,8 @@ class Project < ActiveRecord::Base
     self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
   end
 
-  def open_issues_count
-    Projects::OpenIssuesCountService.new(self).count
+  def open_issues_count(current_user = nil)
+    Projects::OpenIssuesCountService.new(self, current_user).count
   end
 
   def open_merge_requests_count

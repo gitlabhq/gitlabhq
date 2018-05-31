@@ -42,7 +42,7 @@
         return this.isNodeHTTP || this.nodeDetailsFailed;
       },
       nodeStatusIconClass() {
-        const iconClasses = 'prepend-left-10 pull-left node-status-icon';
+        const iconClasses = 'prepend-left-10 float-left node-status-icon';
         if (this.nodeDetailsFailed) {
           return `${iconClasses} status-icon-failure`;
         }
@@ -65,15 +65,15 @@
 </script>
 
 <template>
-  <div class="panel-heading">
+  <div class="card-header">
     <div class="row">
       <div class="col-md-8 clearfix">
-        <strong class="node-url inline pull-left">
+        <strong class="node-url inline float-left">
           {{ node.url }}
         </strong>
         <loading-icon
           v-if="nodeDetailsLoading || node.nodeActionActive"
-          class="node-details-loading prepend-left-10 pull-left inline"
+          class="node-details-loading prepend-left-10 float-left inline"
         />
         <icon
           v-tooltip
@@ -85,7 +85,7 @@
           :css-classes="nodeStatusIconClass"
           :title="nodeStatusIconTooltip"
         />
-        <span class="inline pull-left prepend-left-10">
+        <span class="inline float-left prepend-left-10">
           <span
             class="prepend-left-5 node-badge current-node"
             v-if="node.current"

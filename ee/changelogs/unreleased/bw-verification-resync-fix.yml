@@ -1,5 +1,0 @@
----
-title: During repository verification, ignore repositories/wikis that need to be resynced
-merge_request: 5568
-author:
-type: fixed

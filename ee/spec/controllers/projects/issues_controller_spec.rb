@@ -1,4 +1,4 @@
-require('spec_helper')
+require 'spec_helper'
 
 describe Projects::IssuesController do
   include Rails.application.routes.url_helpers
@@ -245,6 +245,70 @@ describe Projects::IssuesController do
         get_service_desk
 
         expect(response).to have_gitlab_http_status(404)
+      end
+    end
+  end
+
+  describe 'GET #discussions' do
+    let(:issue)   { create(:issue, project: project) }
+    let!(:discussion) { create(:discussion_note_on_issue, noteable: issue, project: issue.project) }
+
+    context 'with a related system note' do
+      let(:confidential_issue) { create(:issue, :confidential, project: project) }
+      let!(:system_note) { SystemNoteService.relate_issue(issue, confidential_issue, user) }
+
+      shared_examples 'user can see confidential issue' do |access_level|
+        context "when a user is a #{access_level}" do
+          before do
+            project.add_user(user, access_level)
+          end
+
+          it 'displays related notes' do
+            get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
+
+            discussions = json_response
+            notes = discussions.flat_map {|d| d['notes']}
+
+            expect(discussions.count).to equal(2)
+            expect(notes).to include(a_hash_including('id' => system_note.id))
+          end
+        end
+      end
+
+      shared_examples 'user cannot see confidential issue' do |access_level|
+        context "when a user is a #{access_level}" do
+          before do
+            project.add_user(user, access_level)
+          end
+
+          it 'redacts note related to a confidential issue' do
+            get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
+
+            discussions = json_response
+            notes = discussions.flat_map {|d| d['notes']}
+
+            expect(discussions.count).to equal(1)
+            expect(notes).not_to include(a_hash_including('id' => system_note.id))
+          end
+        end
+      end
+
+      context 'when authenticated' do
+        before do
+          sign_in(user)
+        end
+
+        %i(reporter developer master).each do |access|
+          it_behaves_like 'user can see confidential issue', access
+        end
+
+        it_behaves_like 'user cannot see confidential issue', :guest
+      end
+
+      context 'when unauthenticated' do
+        let(:project) { create(:project, :public) }
+
+        it_behaves_like 'user cannot see confidential issue', Gitlab::Access::NO_ACCESS
       end
     end
   end

@@ -123,4 +123,17 @@ describe('AccessDropdown', () => {
       });
     });
   });
+
+  describe('userRowHtml', () => {
+    it('escapes users name', () => {
+      const user = {
+        avatar_url: '',
+        name: '<img src=x onerror=alert(document.domain)>',
+        username: 'test',
+      };
+      const template = dropdown.userRowHtml(user);
+
+      expect(template).not.toContain(user.name);
+    });
+  });
 });

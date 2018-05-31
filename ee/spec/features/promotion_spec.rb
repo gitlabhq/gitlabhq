@@ -161,34 +161,6 @@ describe 'Promotions', :js do
     end
   end
 
-  describe 'for squash commits', :js do
-    before do
-      allow(License).to receive(:current).and_return(nil)
-      stub_application_setting(check_namespace_plan: false)
-
-      project.add_master(user)
-      sign_in(user)
-    end
-
-    it 'should appear in new MR page' do
-      visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'feature' })
-
-      expect(find('#promote_squash_commits')).to have_content 'Improve Merge Requests with Squash Commit and GitLab Enterprise Edition.'
-    end
-
-    it 'does not show when cookie is set' do
-      visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'feature' })
-
-      within('#promote_squash_commits') do
-        find('.close').click
-      end
-
-      visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'feature' })
-
-      expect(page).not_to have_selector('#promote_squash_commits')
-    end
-  end
-
   describe 'for burndown charts', :js do
     before do
       stub_application_setting(check_namespace_plan: true)

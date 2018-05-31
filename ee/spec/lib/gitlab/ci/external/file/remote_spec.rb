@@ -50,6 +50,14 @@ describe Gitlab::Ci::External::File::Remote do
         expect(remote_file.valid?).to be_falsy
       end
     end
+
+    context 'with an internal url' do
+      let(:location) { 'http://localhost:8080' }
+
+      it 'should be falsy' do
+        expect(remote_file.valid?).to be_falsy
+      end
+    end
   end
 
   describe "#content" do
@@ -79,6 +87,14 @@ describe Gitlab::Ci::External::File::Remote do
       before do
         WebMock.stub_request(:get, location).to_raise(SocketError.new('Some HTTP error'))
       end
+
+      it 'should be nil' do
+        expect(remote_file.content).to be_nil
+      end
+    end
+
+    context 'with an internal url' do
+      let(:location) { 'http://localhost:8080' }
 
       it 'should be nil' do
         expect(remote_file.content).to be_nil

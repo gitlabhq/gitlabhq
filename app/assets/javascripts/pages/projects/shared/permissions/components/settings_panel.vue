@@ -211,7 +211,7 @@
             </i>
           </div>
         </div>
-        <span class="help-block">{{ visibilityLevelDescription }}</span>
+        <span class="form-text text-muted">{{ visibilityLevelDescription }}</span>
         <label
           v-if="visibilityLevel !== visibilityOptions.PRIVATE"
           class="request-access"

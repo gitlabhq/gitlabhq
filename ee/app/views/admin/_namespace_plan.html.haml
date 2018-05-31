@@ -1,5 +1,5 @@
 .form-group
-  = f.label :plan, class: 'control-label'
+  = f.label :plan, class: 'col-form-label'
   .col-sm-10
     = f.select :plan_id, Plan.pluck(:title, :id),
       { include_blank: 'No plan' },

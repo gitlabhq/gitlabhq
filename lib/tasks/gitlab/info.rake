@@ -58,7 +58,7 @@ namespace :gitlab do
       puts ""
       puts "GitLab information".color(:yellow)
       puts "Version:\t#{Gitlab::VERSION}"
-      puts "Revision:\t#{Gitlab::REVISION}"
+      puts "Revision:\t#{Gitlab.revision}"
       puts "Directory:\t#{Rails.root}"
       puts "DB Adapter:\t#{database_adapter}"
       puts "DB Version:\t#{database_version}"

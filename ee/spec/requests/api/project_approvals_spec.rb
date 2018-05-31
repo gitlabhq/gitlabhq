@@ -107,6 +107,20 @@ describe API::ProjectApprovals do
         expect(json_response['approver_groups']).to be_empty
       end
 
+      context 'when sending form-encoded data' do
+        it 'removes all approvers if no params are given' do
+          project.approvers.create(user: approver)
+
+          expect do
+            put api(url, current_user), approver_ids: '', approver_group_ids: ''
+          end.to change { project.approvers.count }.from(1).to(0)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response['approvers']).to be_empty
+          expect(json_response['approver_groups']).to be_empty
+        end
+      end
+
       it 'sets approvers and approver groups' do
         project.approvers.create(user: approver)
 

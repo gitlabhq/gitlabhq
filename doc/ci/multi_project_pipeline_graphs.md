@@ -15,7 +15,7 @@ of your [jobs](pipelines.md#jobs) on a chart called [pipeline graph](pipelines.m
 
 ![Multi-project pipeline graph](img/multi_project_pipeline_graph.png)
 
-In the Merge Request Widget, multi-project pipeline mini-graps are displayed,
+In the Merge Request Widget, multi-project pipeline mini-graphs are displayed,
 and when hovering or clicking (mobile) they will expand and be shown next to each other.
 
 ![Multi-project mini graph](img/multi_pipeline_mini_graph.gif)

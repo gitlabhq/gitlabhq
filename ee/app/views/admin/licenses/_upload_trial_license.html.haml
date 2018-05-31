@@ -13,7 +13,7 @@
           %p.confirmation-desc.lead
             Your trial license was issued and activated. Install it
             to enjoy GitLab Ultimate for 30 days.
-          = form_for License.new, url: admin_license_path, html: { multipart: true, class: 'form-horizontal fieldset-form' } do |f|
+          = form_for License.new, url: admin_license_path, html: { multipart: true, class: 'fieldset-form' } do |f|
             = f.hidden_field :data, value: license_key
             %a#hide-license.hide-license{ href: '#hide-license' }
               Show license key
@@ -21,7 +21,7 @@
             %a#show-license.show-license{ href: '#show-license' }
               Hide license key
               = icon('chevron-up')
-            .well.trial-license-preview.prepend-top-15
+            .card.trial-license-preview.prepend-top-15
               = license_key
             .modal-footer.form-actions
               %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } } Cancel

@@ -43,13 +43,13 @@
     margin: 0;
     white-space: normal;
 
-    @media (max-width: $screen-sm-max) {
+    @include media-breakpoint-down(sm) {
       justify-content: flex-end;
     }
   }
 
   .ci-table {
-    .label {
+    .badge {
       margin-bottom: 3px;
     }
 
@@ -93,13 +93,9 @@
         }
       }
 
-      .btn-group {
-        &.open {
-          .btn-default {
-            background-color: $white-normal;
-            border-color: $border-white-normal;
-          }
-        }
+      .btn-group.open .btn-default {
+        background-color: $white-normal;
+        border-color: $border-white-normal;
       }
 
       .btn .text-center {
@@ -113,7 +109,7 @@
   }
 }
 
-@media (max-width: $screen-md-max) {
+@include media-breakpoint-down(md) {
   .content-list {
     &.builds-content-list {
       width: 100%;
@@ -181,14 +177,14 @@
       color: $gl-link-color;
     }
 
-    .label {
+    .badge {
       margin-right: 4px;
     }
 
     .label-container {
       font-size: 0;
 
-      .label {
+      .badge {
         margin-top: 5px;
       }
     }
@@ -257,7 +253,7 @@
 
 .stage-cell {
   &.table-section {
-    @media (min-width: $screen-md-min) {
+    @include media-breakpoint-up(md) {
       min-width: 160px; /* Hack alert: Without this the mini graph pipeline won't work properly*/
       margin-right: -4px;
     }
@@ -302,14 +298,6 @@
         right: -7px;
         top: 10px;
         border-bottom: 2px solid $border-color;
-      }
-    }
-
-    &.has-downstream {
-      &::after {
-        content: '';
-        width: 0;
-        border: 0;
       }
     }
   }
@@ -414,22 +402,16 @@
     &:last-child:not(.has-downstream) {
       .build {
         // Remove right connecting horizontal line from first build in last stage
-        &:first-child {
-          &::after {
-            border: 0;
-          }
+        &:first-child::after {
+          border: 0;
         }
         // Remove right curved connectors from all builds in last stage
-        &:not(:first-child) {
-          &::after {
-            border: 0;
-          }
+        &:not(:first-child)::after {
+          border: 0;
         }
         // Remove opposite curve
-        .curve {
-          &::before {
-            display: none;
-          }
+        .curve::before {
+          display: none;
         }
       }
     }
@@ -438,16 +420,12 @@
     &:first-child:not(.has-upstream) {
       .build {
         // Remove left curved connectors from all builds in first stage
-        &:not(:first-child) {
-          &::before {
-            border: 0;
-          }
+        &:not(:first-child)::before {
+          border: 0;
         }
         // Remove opposite curve
-        .curve {
-          &::after {
-            display: none;
-          }
+        .curve::after {
+          display: none;
         }
       }
     }
@@ -525,12 +503,6 @@
 
     .build-content {
       @include build-content();
-      display: inline-block;
-      padding: 8px 10px 9px;
-      width: 100%;
-      border: 1px solid $border-color;
-      border-radius: 30px;
-      background-color: $white-light;
     }
 
     a.build-content:hover,
@@ -668,9 +640,7 @@
   }
 }
 
-// Dropdown button in mini pipeline graph
-button.mini-pipeline-graph-dropdown-toggle,
-a.linked-pipeline-mini-item {
+@mixin mini-pipeline-item() {
   border-radius: 100px;
   background-color: $white-light;
   border-width: 1px;
@@ -682,30 +652,6 @@ a.linked-pipeline-mini-item {
   transition: all 0.2s linear;
   position: relative;
   vertical-align: middle;
-
-  > .fa.fa-caret-down {
-    position: absolute;
-    left: 20px;
-    top: 5px;
-    display: inline-block;
-    visibility: hidden;
-    opacity: 0;
-    color: inherit;
-    font-size: 12px;
-    transition: visibility 0.1s, opacity 0.1s linear;
-  }
-
-  &:active,
-  &:focus,
-  &:hover {
-    outline: none;
-    width: 35px;
-
-    .fa.fa-caret-down {
-      visibility: visible;
-      opacity: 1;
-    }
-  }
 
   // Dropdown button animation in mini pipeline graph
   &.ci-status-icon-success {
@@ -735,6 +681,35 @@ a.linked-pipeline-mini-item {
   &.ci-status-icon-created,
   &.ci-status-icon-skipped {
     @include mini-pipeline-graph-color(rgba($gray-darkest, 0.1), $gray-darkest, $gray-darkest);
+  }
+}
+
+// Dropdown button in mini pipeline graph
+button.mini-pipeline-graph-dropdown-toggle {
+  @include mini-pipeline-item();
+
+  > .fa.fa-caret-down {
+    position: absolute;
+    left: 20px;
+    top: 5px;
+    display: inline-block;
+    visibility: hidden;
+    opacity: 0;
+    color: inherit;
+    font-size: 12px;
+    transition: visibility 0.1s, opacity 0.1s linear;
+  }
+
+  &:active,
+  &:focus,
+  &:hover {
+    outline: none;
+    width: 35px;
+
+    .fa.fa-caret-down {
+      visibility: visible;
+      opacity: 1;
+    }
   }
 }
 
@@ -791,7 +766,7 @@ a.linked-pipeline-mini-item {
     }
   }
 
-   // SVGs in the commit widget and mr widget
+  // SVGs in the commit widget and mr widget
   a.ci-action-icon-container.ci-action-icon-wrapper svg {
     top: 2px;
   }
@@ -847,7 +822,7 @@ a.linked-pipeline-mini-item {
           display: block;
         }
 
-        @media (max-width: $screen-xs-max) {
+        @include media-breakpoint-down(xs) {
           max-width: 60%;
         }
       }
@@ -934,7 +909,7 @@ a.linked-pipeline-mini-item {
     transform: translate(-50%, 0);
     border-width: 0 5px 6px;
 
-    @media (max-width: $screen-sm-max) {
+    @include media-breakpoint-down(sm) {
       left: 100%;
       margin-left: -12px;
     }
@@ -956,7 +931,7 @@ a.linked-pipeline-mini-item {
   &.dropdown-menu {
     transform: translate(-80%, 0);
 
-    @media (min-width: $screen-md-min) {
+    @media(min-width: map-get($grid-breakpoints, md)) {
       transform: translate(-50%, 0);
       right: auto;
       left: 50%;
@@ -985,208 +960,6 @@ a.linked-pipeline-mini-item {
       min-height: 450px;
     }
   }
-}
-
-.linked-pipeline-mini-list {
-  display: inline-block;
-
-  &.is-downstream {
-    margin-left: -4px;
-    margin-right: 4px;
-  }
-
-  .arrow-icon {
-    display: inline-block;
-    vertical-align: middle;
-    margin: -2px 2px 0 0;
-
-    svg {
-      fill: $border-color;
-    }
-  }
-
-  &:hover {
-    .linked-pipeline-mini-item {
-      margin-left: 0;
-    }
-  }
-
-  .linked-pipeline-mini-item {
-    position: relative;
-    display: inline-block;
-    vertical-align: middle;
-    height: 22px;
-    width: 22px;
-    transition: margin .2s linear;
-    margin: 2px 7px 3px -14px;
-
-    svg {
-      height: 22px;
-      width: 22px;
-      position: absolute;
-      top: -1px;
-      left: -1px;
-      z-index: 2;
-      overflow: visible;
-    }
-    // override dropdown-toggle width expansion
-    &:hover {
-      width: 22px;
-    }
-
-    &:first-of-type:last-of-type {
-      margin-right: 1px;
-    }
-
-    &:nth-of-type(1) {
-      margin-left: 0;
-      z-index: 100;
-    }
-
-    &:nth-of-type(2):not(.linked-pipelines-counter) {
-      z-index: 99;
-    }
-
-    &:nth-of-type(3) {
-      z-index: 98;
-    }
-
-    &:nth-of-type(4) {
-      z-index: 97;
-    }
-  }
-
-  .linked-pipelines-counter {
-    position: relative;
-    font-size: 12px;
-    vertical-align: middle;
-    line-height: 20px;
-    height: 22px;
-    width: 22px;
-    padding-left: 1px;
-    margin-left: -15px;
-    border-radius: 2em;
-    background: $gray-darkest;
-    color: $white-light;
-    z-index: 96;
-    text-decoration: none;
-
-    &:hover {
-      width: 22px;
-      background: darken($gray-darkest, 10%);
-    }
-  }
-}
-
-/**
- * Cross-project pipelines (applied conditionally to pipeline graph)
- */
-
-.has-linked-pipelines.stage-column-list {
-  display: inline-block;
-}
-
-.linked-pipelines-column.stage-column {
-  position: relative;
-
-  > ul {
-    padding: 0;
-  }
-
-  &.graph-position-left {
-    margin-right: 36px;
-
-    .cross-project-triangle {
-      right: -42px;
-    }
-  }
-
-  &.graph-position-right {
-    margin-left: 60px;
-
-    .cross-project-triangle {
-      left: -64px;
-    }
-  }
-
-  .linked-pipeline.build {
-    height: 40px;
-
-    // apply custom dimensions to connector before and after for triangle arrow
-    &.flat-connector-before {
-      @include flat-connector-before($linked-project-column-margin);
-    }
-
-    &::after {
-      right: -$linked-project-column-margin;
-      width: $linked-project-column-margin;
-    }
-
-    .linked-pipeline-content {
-      @include build-content(0);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  }
-}
-
-.stage-column.has-upstream {
-  margin-left: 60px;
-
-  .left-connector {
-    @include flat-connector-before(60px)
-  }
-
-  &.has-only-one-job {
-    margin-left: 30px;
-    margin-right: 0;
-
-    .left-connector {
-      @include flat-connector-before;
-    }
-  }
-}
-
-.stage-column.has-downstream {
-  margin-right: $linked-project-column-margin;
-
-  &.has-only-one-job:not(:first-child) {
-    margin-right: 36px;
-
-    .left-connector {
-      @include flat-connector-before;
-    }
-  }
-
-  .build {
-    &:first-child {
-      &::after {
-        right: -$linked-project-column-margin;
-        width: $linked-project-column-margin;
-      }
-    }
-  }
-}
-
-.cross-project-triangle {
-  position: absolute;
-  top: 48px;
-  width: 0;
-  height: 0;
-  border-bottom: 7px solid transparent;
-  border-top: 7px solid transparent;
-  border-left: 7px solid $gray-darkest;
-  font-size: 0;
-  line-height: 0;
-  z-index: 10;
-}
-
-.project-name-pipeline-id-separator {
-  display: inline-block;
-  margin: 4px 2px 0;
-  font-size: 10px;
-  vertical-align: top;
 }
 
 .ci-header-container {

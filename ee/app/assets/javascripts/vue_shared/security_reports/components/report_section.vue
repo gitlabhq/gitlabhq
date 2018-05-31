@@ -158,7 +158,7 @@ export default {
 
         <button
           type="button"
-          class="js-collapse-btn btn bt-default pull-right btn-sm"
+          class="js-collapse-btn btn bt-default float-right btn-sm"
           v-if="hasIssues"
           @click="toggleCollapsed"
         >

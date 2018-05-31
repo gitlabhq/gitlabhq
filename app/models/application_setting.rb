@@ -1,4 +1,5 @@
 class ApplicationSetting < ActiveRecord::Base
+  include CacheableAttributes
   include CacheMarkdownField
   include TokenAuthenticatable
   prepend EE::ApplicationSetting
@@ -6,7 +7,6 @@ class ApplicationSetting < ActiveRecord::Base
   add_authentication_token_field :runners_registration_token
   add_authentication_token_field :health_check_access_token
 
-  CACHE_KEY = 'application_setting.last'.freeze
   DOMAIN_LIST_SEPARATOR = %r{\s*[,;]\s*     # comma or semicolon, optionally surrounded by whitespace
                             |               # or
                             \s              # any whitespace character
@@ -230,41 +230,8 @@ class ApplicationSetting < ActiveRecord::Base
 
   after_commit do
     reset_memoized_terms
-    Rails.cache.write(CACHE_KEY, self)
   end
-
-  def self.current
-    ensure_cache_setup
-
-    Rails.cache.fetch(CACHE_KEY) do
-      ApplicationSetting.last.tap do |settings|
-        # do not cache nils
-        raise 'missing settings' unless settings
-      end
-    end
-  rescue
-    # Fall back to an uncached value if there are any problems (e.g. redis down)
-    ApplicationSetting.last
-  end
-
-  def self.expire
-    Rails.cache.delete(CACHE_KEY)
-  rescue
-    # Gracefully handle when Redis is not available. For example,
-    # omnibus may fail here during gitlab:assets:compile.
-  end
-
-  def self.cached
-    value = Rails.cache.read(CACHE_KEY)
-    ensure_cache_setup if value.present?
-    value
-  end
-
-  def self.ensure_cache_setup
-    # This is a workaround for a Rails bug that causes attribute methods not
-    # to be loaded when read from cache: https://github.com/rails/rails/issues/27348
-    ApplicationSetting.define_attribute_methods
-  end
+  after_commit :expire_performance_bar_allowed_user_ids_cache, if: -> { previous_changes.key?('performance_bar_allowed_group_id') }
 
   def self.defaults
     {
@@ -394,17 +361,6 @@ class ApplicationSetting < ActiveRecord::Base
     Array(read_attribute(:repository_storages))
   end
 
-  # DEPRECATED
-  # repository_storage is still required in the API. Remove in 9.0
-  # Still used in API v3
-  def repository_storage
-    repository_storages.first
-  end
-
-  def repository_storage=(value)
-    self.repository_storages = [value]
-  end
-
   def default_project_visibility=(level)
     super(Gitlab::VisibilityLevel.level_value(level))
   end
@@ -421,31 +377,6 @@ class ApplicationSetting < ActiveRecord::Base
     super(levels.map { |level| Gitlab::VisibilityLevel.level_value(level) })
   end
 
-  def performance_bar_allowed_group_id=(group_full_path)
-    group_full_path = nil if group_full_path.blank?
-
-    if group_full_path.nil?
-      if group_full_path != performance_bar_allowed_group_id
-        super(group_full_path)
-        Gitlab::PerformanceBar.expire_allowed_user_ids_cache
-      end
-
-      return
-    end
-
-    group = Group.find_by_full_path(group_full_path)
-
-    if group
-      if group.id != performance_bar_allowed_group_id
-        super(group.id)
-        Gitlab::PerformanceBar.expire_allowed_user_ids_cache
-      end
-    else
-      super(nil)
-      Gitlab::PerformanceBar.expire_allowed_user_ids_cache
-    end
-  end
-
   def performance_bar_allowed_group
     Group.find_by_id(performance_bar_allowed_group_id)
   end
@@ -453,15 +384,6 @@ class ApplicationSetting < ActiveRecord::Base
   # Return true if the Performance Bar is enabled for a given group
   def performance_bar_enabled
     performance_bar_allowed_group_id.present?
-  end
-
-  # - If `enable` is true, we early return since the actual attribute that holds
-  #   the enabling/disabling is `performance_bar_allowed_group_id`
-  # - If `enable` is false, we set `performance_bar_allowed_group_id` to `nil`
-  def performance_bar_enabled=(enable)
-    return if Gitlab::Utils.to_boolean(enable)
-
-    self.performance_bar_allowed_group_id = nil
   end
 
   # Choose one of the available repository storage options. Currently all have
@@ -540,5 +462,9 @@ class ApplicationSetting < ActiveRecord::Base
     return unless enforce_terms?
 
     errors.add(:terms, "You need to set terms to be enforced") unless terms.present?
+  end
+
+  def expire_performance_bar_allowed_user_ids_cache
+    Gitlab::PerformanceBar.expire_allowed_user_ids_cache
   end
 end

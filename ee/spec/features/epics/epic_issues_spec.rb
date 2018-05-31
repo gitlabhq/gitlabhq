@@ -40,7 +40,7 @@ describe 'Epic Issues', :js do
     end
 
     it 'user cannot add new issues to the epic' do
-      expect(page).not_to have_selector('.related-issues-block h3.panel-title button')
+      expect(page).not_to have_selector('.related-issues-block h3.card-title button')
     end
 
     it 'user cannot reorder issues in epic' do
@@ -53,7 +53,7 @@ describe 'Epic Issues', :js do
     let(:issue_invalid) { create(:issue) }
 
     def add_issues(references)
-      find('.related-issues-block h3.panel-title button').click
+      find('.related-issues-block h3.card-title button').click
       find('.js-add-issuable-form-input').set(references)
       # When adding long references, for some reason the input gets stuck
       # waiting for more text. Send a keystroke before clicking the button to

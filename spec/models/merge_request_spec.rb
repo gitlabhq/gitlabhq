@@ -14,6 +14,65 @@ describe MergeRequest do
     it { is_expected.to have_many(:merge_request_diffs) }
   end
 
+  describe '#squash_in_progress?' do
+    shared_examples 'checking whether a squash is in progress' do
+      let(:repo_path) { subject.source_project.repository.path }
+      let(:squash_path) { File.join(repo_path, "gitlab-worktree", "squash-#{subject.id}") }
+
+      before do
+        system(*%W(#{Gitlab.config.git.bin_path} -C #{repo_path} worktree add --detach #{squash_path} master))
+      end
+
+      it 'returns true when there is a current squash directory' do
+        expect(subject.squash_in_progress?).to be_truthy
+      end
+
+      it 'returns false when there is no squash directory' do
+        FileUtils.rm_rf(squash_path)
+
+        expect(subject.squash_in_progress?).to be_falsey
+      end
+
+      it 'returns false when the squash directory has expired' do
+        time = 20.minutes.ago.to_time
+        File.utime(time, time, squash_path)
+
+        expect(subject.squash_in_progress?).to be_falsey
+      end
+
+      it 'returns false when the source project has been removed' do
+        allow(subject).to receive(:source_project).and_return(nil)
+
+        expect(subject.squash_in_progress?).to be_falsey
+      end
+    end
+
+    context 'when Gitaly squash_in_progress is enabled' do
+      it_behaves_like 'checking whether a squash is in progress'
+    end
+
+    context 'when Gitaly squash_in_progress is disabled', :disable_gitaly do
+      it_behaves_like 'checking whether a squash is in progress'
+    end
+  end
+
+  describe '#squash?' do
+    let(:merge_request) { build(:merge_request, squash: squash) }
+    subject { merge_request.squash? }
+
+    context 'disabled in database' do
+      let(:squash) { false }
+
+      it { is_expected.to be_falsy }
+    end
+
+    context 'enabled in database' do
+      let(:squash) { true }
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
   describe 'modules' do
     subject { described_class }
 
@@ -1461,38 +1520,50 @@ describe MergeRequest do
   describe '#check_if_can_be_merged' do
     let(:project) { create(:project, only_allow_merge_if_pipeline_succeeds: true) }
 
-    subject { create(:merge_request, source_project: project, merge_status: :unchecked) }
+    shared_examples 'checking if can be merged' do
+      context 'when it is not broken and has no conflicts' do
+        before do
+          allow(subject).to receive(:broken?) { false }
+          allow(project.repository).to receive(:can_be_merged?).and_return(true)
+        end
 
-    context 'when it is not broken and has no conflicts' do
-      before do
-        allow(subject).to receive(:broken?) { false }
-        allow(project.repository).to receive(:can_be_merged?).and_return(true)
+        it 'is marked as mergeable' do
+          expect { subject.check_if_can_be_merged }.to change { subject.merge_status }.to('can_be_merged')
+        end
       end
 
-      it 'is marked as mergeable' do
-        expect { subject.check_if_can_be_merged }.to change { subject.merge_status }.to('can_be_merged')
+      context 'when broken' do
+        before do
+          allow(subject).to receive(:broken?) { true }
+        end
+
+        it 'becomes unmergeable' do
+          expect { subject.check_if_can_be_merged }.to change { subject.merge_status }.to('cannot_be_merged')
+        end
+      end
+
+      context 'when it has conflicts' do
+        before do
+          allow(subject).to receive(:broken?) { false }
+          allow(project.repository).to receive(:can_be_merged?).and_return(false)
+        end
+
+        it 'becomes unmergeable' do
+          expect { subject.check_if_can_be_merged }.to change { subject.merge_status }.to('cannot_be_merged')
+        end
       end
     end
 
-    context 'when broken' do
-      before do
-        allow(subject).to receive(:broken?) { true }
-      end
+    context 'when merge_status is unchecked' do
+      subject { create(:merge_request, source_project: project, merge_status: :unchecked) }
 
-      it 'becomes unmergeable' do
-        expect { subject.check_if_can_be_merged }.to change { subject.merge_status }.to('cannot_be_merged')
-      end
+      it_behaves_like 'checking if can be merged'
     end
 
-    context 'when it has conflicts' do
-      before do
-        allow(subject).to receive(:broken?) { false }
-        allow(project.repository).to receive(:can_be_merged?).and_return(false)
-      end
+    context 'when merge_status is unchecked' do
+      subject { create(:merge_request, source_project: project, merge_status: :cannot_be_merged_recheck) }
 
-      it 'becomes unmergeable' do
-        expect { subject.check_if_can_be_merged }.to change { subject.merge_status }.to('cannot_be_merged')
-      end
+      it_behaves_like 'checking if can be merged'
     end
   end
 
@@ -2566,6 +2637,53 @@ describe MergeRequest do
         expect(subject.merge_jid).to be_nil
       end
     end
+
+    describe 'transition to cannot_be_merged' do
+      let(:notification_service) { double(:notification_service) }
+      let(:todo_service) { double(:todo_service) }
+
+      subject { create(:merge_request, merge_status: :unchecked) }
+
+      before do
+        allow(NotificationService).to receive(:new).and_return(notification_service)
+        allow(TodoService).to receive(:new).and_return(todo_service)
+      end
+
+      it 'notifies, but does not notify again if rechecking still results in cannot_be_merged' do
+        expect(notification_service).to receive(:merge_request_unmergeable).with(subject).once
+        expect(todo_service).to receive(:merge_request_became_unmergeable).with(subject).once
+
+        subject.mark_as_unmergeable
+        subject.mark_as_unchecked
+        subject.mark_as_unmergeable
+      end
+
+      it 'notifies whenever merge request is newly unmergeable' do
+        expect(notification_service).to receive(:merge_request_unmergeable).with(subject).twice
+        expect(todo_service).to receive(:merge_request_became_unmergeable).with(subject).twice
+
+        subject.mark_as_unmergeable
+        subject.mark_as_unchecked
+        subject.mark_as_mergeable
+        subject.mark_as_unchecked
+        subject.mark_as_unmergeable
+      end
+    end
+
+    describe 'check_state?' do
+      it 'indicates whether MR is still checking for mergeability' do
+        state_machine = described_class.state_machines[:merge_status]
+        check_states = [:unchecked, :cannot_be_merged_recheck]
+
+        check_states.each do |merge_status|
+          expect(state_machine.check_state?(merge_status)).to be true
+        end
+
+        (state_machine.states.map(&:name) - check_states).each do |merge_status|
+          expect(state_machine.check_state?(merge_status)).to be false
+        end
+      end
+    end
   end
 
   describe '#should_be_rebased?' do
@@ -2695,6 +2813,41 @@ describe MergeRequest do
       source_project.add_developer(user)
 
       expect(merge_request.can_allow_maintainer_to_push?(user)).to be_truthy
+    end
+  end
+
+  describe '#merge_participants' do
+    it 'contains author' do
+      expect(subject.merge_participants).to eq([subject.author])
+    end
+
+    describe 'when merge_when_pipeline_succeeds? is true' do
+      describe 'when merge user is author' do
+        let(:user) { create(:user) }
+        subject do
+          create(:merge_request,
+                 merge_when_pipeline_succeeds: true,
+                 merge_user: user,
+                 author: user)
+        end
+
+        it 'contains author only' do
+          expect(subject.merge_participants).to eq([subject.author])
+        end
+      end
+
+      describe 'when merge user and author are different users' do
+        let(:merge_user) { create(:user) }
+        subject do
+          create(:merge_request,
+                 merge_when_pipeline_succeeds: true,
+                 merge_user: merge_user)
+        end
+
+        it 'contains author and merge user' do
+          expect(subject.merge_participants).to eq([subject.author, merge_user])
+        end
+      end
     end
   end
 end

@@ -184,7 +184,7 @@ describe Projects::ProjectMembersController do
           project.add_master(user)
         end
 
-        it 'does not remove himself from the project' do
+        it 'cannot remove themselves from the project' do
           delete :leave, namespace_id: project.namespace,
                          project_id: project
 

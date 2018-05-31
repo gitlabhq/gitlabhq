@@ -64,6 +64,19 @@
       margin-left: 0;
     }
   }
+
+  .promotion-burndown-charts-content {
+    justify-content: end;
+  
+    .svg-container {
+      margin-left: 4px;
+      margin-right: 24px;
+    }
+
+    .user-callout-copy {
+      margin: 0;
+    }
+  }
 }
 
 .promotion-modal {

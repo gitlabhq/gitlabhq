@@ -14,85 +14,6 @@ describe MergeRequest do
     it { is_expected.to have_many(:approved_by_users) }
   end
 
-  describe '#squash_in_progress?' do
-    shared_examples 'checking whether a squash is in progress' do
-      let(:repo_path) { subject.source_project.repository.path }
-      let(:squash_path) { File.join(repo_path, "gitlab-worktree", "squash-#{subject.id}") }
-
-      before do
-        system(*%W(#{Gitlab.config.git.bin_path} -C #{repo_path} worktree add --detach #{squash_path} master))
-      end
-
-      it 'returns true when there is a current squash directory' do
-        expect(subject.squash_in_progress?).to be_truthy
-      end
-
-      it 'returns false when there is no squash directory' do
-        FileUtils.rm_rf(squash_path)
-
-        expect(subject.squash_in_progress?).to be_falsey
-      end
-
-      it 'returns false when the squash directory has expired' do
-        time = 20.minutes.ago.to_time
-        File.utime(time, time, squash_path)
-
-        expect(subject.squash_in_progress?).to be_falsey
-      end
-
-      it 'returns false when the source project has been removed' do
-        allow(subject).to receive(:source_project).and_return(nil)
-
-        expect(subject.squash_in_progress?).to be_falsey
-      end
-    end
-
-    context 'when Gitaly squash_in_progress is enabled' do
-      it_behaves_like 'checking whether a squash is in progress'
-    end
-
-    context 'when Gitaly squash_in_progress is disabled', :disable_gitaly do
-      it_behaves_like 'checking whether a squash is in progress'
-    end
-  end
-
-  describe '#squash?' do
-    let(:merge_request) { build(:merge_request, squash: squash) }
-    subject { merge_request.squash? }
-
-    context 'unlicensed' do
-      before do
-        stub_licensed_features(merge_request_squash: false)
-      end
-
-      context 'disabled in database' do
-        let(:squash) { false }
-
-        it { is_expected.to be_falsy }
-      end
-
-      context 'enabled in database' do
-        let(:squash) { true }
-
-        it { is_expected.to be_falsy }
-      end
-    end
-
-    context 'licensed' do
-      context 'disabled in database' do
-        let(:squash) { false }
-
-        it { is_expected.to be_falsy }
-      end
-
-      context 'licensed' do
-        let(:squash) { true }
-
-        it { is_expected.to be_truthy }
-      end
-    end
-  end
-
   describe '#approvals_before_merge' do
     where(:license_value, :db_value, :expected) do
       true  | 5   | 5
@@ -164,7 +85,7 @@ describe MergeRequest do
     end
   end
 
-  %w(sast dast sast_container).each do |type|
+  %w(sast dast sast_container container_scanning).each do |type|
     it { is_expected.to delegate_method(:"expose_#{type}_data?").to(:head_pipeline) }
     it { is_expected.to delegate_method(:"has_#{type}_data?").to(:base_pipeline).with_prefix(:base) }
     it { is_expected.to delegate_method(:"#{type}_artifact").to(:head_pipeline).with_prefix(:head) }
@@ -185,6 +106,23 @@ describe MergeRequest do
 
     context 'without codeclimate data' do
       it { expect(subject.expose_codeclimate_data?).to be_falsey }
+    end
+  end
+
+  describe '#expose_code_quality_data?' do
+    context 'with code_quality data' do
+      let(:pipeline) { double(expose_code_quality_data?: true) }
+
+      before do
+        allow(subject).to receive(:head_pipeline).and_return(pipeline)
+        allow(subject).to receive(:base_pipeline).and_return(pipeline)
+      end
+
+      it { expect(subject.expose_code_quality_data?).to be_truthy }
+    end
+
+    context 'without code_quality data' do
+      it { expect(subject.expose_code_quality_data?).to be_falsey }
     end
   end
 

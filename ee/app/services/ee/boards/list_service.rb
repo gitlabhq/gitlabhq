@@ -8,7 +8,11 @@ module EE
         if parent.multiple_issue_boards_available?
           super
         else
-          super.limit(1)
+          # When multiple issue boards is not available
+          # user is only allowed to view the default shown board
+
+          # We could use just one query but MYSQL does not support nested queries using LIMIT.
+          boards.where(id: super.first).reorder(nil)
         end
       end
 

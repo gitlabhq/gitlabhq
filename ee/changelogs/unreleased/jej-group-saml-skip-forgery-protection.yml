@@ -1,5 +1,0 @@
----
-title: Group SAML skips forgery protection in production
-merge_request: 5621
-author:
-type: fixed

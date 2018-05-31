@@ -1,0 +1,29 @@
+### Description:
+
+<%= vulnerability.description %>
+
+<% if vulnerability.severity.present? %>
+* Severity: <%= vulnerability.severity %>
+<% end %>
+<% if vulnerability.confidence.present? %>
+* Confidence: <%= vulnerability.confidence %>
+<% end %>
+
+<% if vulnerability.solution.present? %>
+### Solution:
+
+<%= vulnerability.solution %>
+<% end %>
+
+<% if vulnerability.identifiers.present? %>
+### Identifiers:
+
+<% vulnerability.identifiers.each do |identifier| %>
+<% if identifier[:link].present? %>
+* [<%= identifier[:value] %>](<%= identifier[:link] %>)
+<% else %>
+* <%= identifier[:value] %>
+<% end %>
+<% end %>
+
+<% end %>

@@ -52,14 +52,12 @@ module Gitlab
       private
 
       def address_regex
-        return /^incoming\+(.+)@(incoming\.)?gitlab\.com$/ if Gitlab.com?
-
         wildcard_address = config.address
         return nil unless wildcard_address
 
         regex = Regexp.escape(wildcard_address)
         regex = regex.sub(Regexp.escape(WILDCARD_PLACEHOLDER), '(.+)')
-        Regexp.new(regex).freeze
+        Regexp.new(/\A#{regex}\z/).freeze
       end
     end
   end

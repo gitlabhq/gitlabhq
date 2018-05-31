@@ -69,6 +69,14 @@ star, smile, etc.). Some good tips about code reviews can be found in our
 
 [Code Review Guidelines]: https://docs.gitlab.com/ce/development/code_review.html
 
+## Feature proposals from the 22nd to the 1st
+
+To allow the Product and Engineering teams time to discuss issues that will be placed into an upcoming milestone, 
+Product Managers must have their proposal for that milestone ready by the 22nd of each month.
+
+This proposal will be shared with Engineering for discussion, feedback, and planning. 
+The plan for the upcoming milestone must be finalized by the 1st of the month, one week before kickoff on the 8th.
+
 ## Feature freeze on the 7th for the release on the 22nd
 
 After 7th at 23:59 (Pacific Time Zone) of each month, RC1 of the upcoming release (to be shipped on the 22nd) is created and deployed to GitLab.com and the stable branch for this release is frozen, which means master is no longer merged into it.

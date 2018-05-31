@@ -19,19 +19,8 @@ module MergeRequests
         merge_request.merge_params['force_remove_source_branch'] = params.delete(:force_remove_source_branch)
       end
 
-      old_approvers = merge_request.overall_approvers.to_a
-
       handle_wip_event(merge_request)
       update(merge_request)
-
-      new_approvers = merge_request.overall_approvers.to_a - old_approvers
-
-      if new_approvers.any?
-        todo_service.add_merge_request_approvers(merge_request, new_approvers)
-        notification_service.add_merge_request_approvers(merge_request, new_approvers, current_user)
-      end
-
-      merge_request
     end
 
     # rubocop:disable Metrics/AbcSize
@@ -53,8 +42,6 @@ module MergeRequests
         create_branch_change_note(merge_request, 'target',
                                   merge_request.previous_changes['target_branch'].first,
                                   merge_request.target_branch)
-
-        reset_approvals(merge_request)
       end
 
       if merge_request.previous_changes.include?('assignee_id')
@@ -117,14 +104,6 @@ module MergeRequests
     end
 
     private
-
-    def reset_approvals(merge_request)
-      target_project = merge_request.target_project
-
-      if target_project.approvals_before_merge.nonzero? && target_project.reset_approvals_on_push
-        merge_request.approvals.delete_all
-      end
-    end
 
     def create_branch_change_note(issuable, branch_type, old_branch, new_branch)
       SystemNoteService.change_branch(

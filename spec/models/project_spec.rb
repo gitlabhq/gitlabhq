@@ -78,7 +78,7 @@ describe Project do
     it { is_expected.to have_many(:notification_settings).dependent(:delete_all) }
     it { is_expected.to have_many(:forks).through(:forked_project_links) }
     it { is_expected.to have_many(:approver_groups).dependent(:destroy) }
-    it { is_expected.to have_many(:uploads).dependent(:destroy) }
+    it { is_expected.to have_many(:uploads) }
     it { is_expected.to have_many(:pipeline_schedules) }
     it { is_expected.to have_many(:members_and_requesters) }
     it { is_expected.to have_many(:clusters) }
@@ -509,6 +509,34 @@ describe Project do
 
     it 'returns valid kerberos url for this repo' do
       expect(project.kerberos_url_to_repo).to eq("#{Gitlab.config.build_gitlab_kerberos_url}/#{project.namespace.path}/somewhere.git")
+    end
+  end
+
+  describe "#readme_url" do
+    let(:project) { create(:project, :repository, path: "somewhere") }
+
+    context 'with a non-existing repository' do
+      it 'returns nil' do
+        allow(project.repository).to receive(:tree).with(:head).and_return(nil)
+
+        expect(project.readme_url).to be_nil
+      end
+    end
+
+    context 'with an existing repository' do
+      context 'when no README exists' do
+        it 'returns nil' do
+          allow_any_instance_of(Tree).to receive(:readme).and_return(nil)
+
+          expect(project.readme_url).to be_nil
+        end
+      end
+
+      context 'when a README exists' do
+        it 'returns the README' do
+          expect(project.readme_url).to eql("#{Gitlab.config.gitlab.url}/#{project.namespace.full_path}/somewhere/blob/master/README.md")
+        end
+      end
     end
   end
 
@@ -4123,6 +4151,14 @@ describe Project do
       let!(:deploy_token) { create(:deploy_token, projects: [project_2]) }
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  context 'with uploads' do
+    it_behaves_like 'model with mounted uploader', true do
+      let(:model_object) { create(:project, :with_avatar) }
+      let(:upload_attribute) { :avatar }
+      let(:uploader_class) { AttachmentUploader }
     end
   end
 end

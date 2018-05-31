@@ -21,6 +21,10 @@ if Gitlab.config.omniauth.enabled
   provider_names = Gitlab.config.omniauth.providers.map(&:name)
   require 'omniauth-kerberos' if provider_names.include?('kerberos')
   require_dependency 'omni_auth/strategies/kerberos_spnego' if provider_names.include?('kerberos_spnego')
+
+  if provider_names.include?('group_saml')
+    OmniAuth.config.on_failure = ::Gitlab::Auth::GroupSaml::FailureHandler.new(OmniAuth.config.on_failure)
+  end
 end
 
 module OmniAuth

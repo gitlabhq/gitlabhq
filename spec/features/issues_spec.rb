@@ -627,6 +627,20 @@ describe 'Issues' do
         end
       end
 
+      it 'clears local storage after creating a new issue', :js do
+        2.times do
+          visit new_project_issue_path(project)
+          wait_for_requests
+
+          expect(page).to have_field('Title', with: '')
+
+          fill_in 'issue_title', with: 'bug 345'
+          fill_in 'issue_description', with: 'bug description'
+
+          click_button 'Submit issue'
+        end
+      end
+
       context 'dropzone upload file', :js do
         before do
           visit new_project_issue_path(project)

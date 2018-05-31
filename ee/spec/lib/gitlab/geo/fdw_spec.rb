@@ -36,6 +36,18 @@ describe Gitlab::Geo::Fdw, :geo do
     end
   end
 
+  describe '.gitlab_tables' do
+    it 'excludes pg_ tables' do
+      tables = described_class.gitlab_tables
+
+      ActiveRecord::Base.connection.create_table(:pg_gitlab_test)
+
+      expect(described_class.gitlab_tables).to eq(tables)
+
+      ActiveRecord::Base.connection.drop_table(:pg_gitlab_test)
+    end
+  end
+
   describe 'fdw_capable?' do
     context 'with mocked FDW environment' do
       it 'returns true when PostgreSQL FDW is enabled' do
@@ -69,6 +81,20 @@ describe Gitlab::Geo::Fdw, :geo do
     context 'with functional FDW environment' do
       it 'returns true' do
         expect(described_class.fdw_capable?).to be_truthy
+      end
+
+      context 'with a pg_ table' do
+        before do
+          ActiveRecord::Base.connection.create_table(:pg_gitlab_test)
+        end
+
+        after do
+          ActiveRecord::Base.connection.drop_table(:pg_gitlab_test)
+        end
+
+        it 'returns true' do
+          expect(described_class.fdw_capable?).to be_truthy
+        end
       end
     end
   end
@@ -144,6 +170,19 @@ describe Gitlab::Geo::Fdw, :geo do
         # When testing it locally, you may need to refresh FDW with:
         #
         # rake geo:db:test:refresh_foreign_tables
+        expect(described_class.foreign_schema_tables_match?).to be_truthy
+      end
+
+      it 'returns true if order is different' do
+        one_schema = [
+          { "table_name" => "events", "column_name" => "target_type", "data_type" => "character varying" },
+          { "table_name" => "ci_job_artifacts", "column_name" => "id", "data_type" => "integer" }
+        ]
+        second_schema = one_schema.reverse
+
+        allow(described_class).to receive(:gitlab_schema).and_return(one_schema)
+        allow(described_class).to receive(:fdw_schema).and_return(second_schema)
+
         expect(described_class.foreign_schema_tables_match?).to be_truthy
       end
     end

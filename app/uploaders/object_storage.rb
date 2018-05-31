@@ -11,7 +11,8 @@ module ObjectStorage
   ObjectStorageUnavailable = Class.new(StandardError)
 
   DIRECT_UPLOAD_TIMEOUT = 4.hours
-  TMP_UPLOAD_PATH = 'tmp/upload'.freeze
+  DIRECT_UPLOAD_EXPIRE_OFFSET = 15.minutes
+  TMP_UPLOAD_PATH = 'tmp/uploads'.freeze
 
   module Store
     LOCAL = 1
@@ -103,6 +104,7 @@ module ObjectStorage
     end
 
     included do
+      include AfterCommitQueue
       after_save on: [:create, :update] do
         background_upload(changed_mounts)
       end
@@ -173,11 +175,12 @@ module ObjectStorage
         id = [CarrierWave.generate_cache_id, SecureRandom.hex].join('-')
         upload_path = File.join(TMP_UPLOAD_PATH, id)
         connection = ::Fog::Storage.new(self.object_store_credentials)
-        expire_at = Time.now + DIRECT_UPLOAD_TIMEOUT
+        expire_at = Time.now + DIRECT_UPLOAD_TIMEOUT + DIRECT_UPLOAD_EXPIRE_OFFSET
         options = { 'Content-Type' => 'application/octet-stream' }
 
         {
           ID: id,
+          Timeout: DIRECT_UPLOAD_TIMEOUT,
           GetURL: connection.get_object_url(remote_store_path, upload_path, expire_at),
           DeleteURL: connection.delete_object_url(remote_store_path, upload_path, expire_at),
           StoreURL: connection.put_object_url(remote_store_path, upload_path, expire_at, options)

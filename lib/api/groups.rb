@@ -201,10 +201,12 @@ module API
         group = find_group!(params[:id])
         authorize! :admin_group, group
 
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/46285')
         destroy_conditionally!(group) do |group|
-          ::Groups::DestroyService.new(group, current_user).execute
+          ::Groups::DestroyService.new(group, current_user).async_execute
         end
-        status 204
+
+        accepted!
       end
 
       desc 'Get a list of projects in this group.' do

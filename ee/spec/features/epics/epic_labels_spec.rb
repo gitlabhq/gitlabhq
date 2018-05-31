@@ -49,7 +49,7 @@ describe 'Assign labels to an epic', :js do
 
     it 'opens labels dropdown' do
       page.within('aside.right-sidebar') do
-        expect(page).to have_css('.js-selectbox .dropdown.open')
+        expect(page).to have_css('.js-selectbox .dropdown.show')
       end
     end
 

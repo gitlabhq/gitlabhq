@@ -64,13 +64,6 @@ module EE
           end
         end
       end
-
-      def merge_params_attributes
-        attrs = super
-        attrs << :squash if project.feature_available?(:merge_request_squash)
-
-        attrs
-      end
     end
   end
 end

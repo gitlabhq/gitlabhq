@@ -111,14 +111,14 @@
 
     <button
       type="button"
-      class="btn btn-red center-block js-popup-button"
+      class="btn btn-red mx-auto js-popup-button"
       @click="togglePopup"
     >
       Add GitLab to Slack
     </button>
 
     <div
-      class="popup gitlab-slack-popup center-block prepend-top-20 text-center js-popup"
+      class="popup gitlab-slack-popup mx-auto prepend-top-20 text-center js-popup"
       v-if="popupOpen"
     >
       <div
@@ -143,7 +143,7 @@ js-project-select form-control prepend-top-10 append-bottom-10"
 
         <button
           type="button"
-          class="btn btn-red pull-right js-add-button"
+          class="btn btn-red float-right js-add-button"
           @click="addToSlack"
         >
           Add to Slack
@@ -183,9 +183,9 @@ js-project-select form-control prepend-top-10 append-bottom-10"
     >
       <h3 class="center">How it works</h3>
 
-      <div class="well gitlab-slack-well center-block">
+      <div class="well gitlab-slack-well mx-auto">
         <code
-          class="code center-block append-bottom-10"
+          class="code mx-auto append-bottom-10"
         >/gitlab &lt;project-alias&gt; issue show &lt;id&gt;</code>
         <span>
           <div

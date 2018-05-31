@@ -5,7 +5,7 @@
 %div{ class: container_class }
   %h3.page-title= page_title
   .bs-callout.clearfix
-    .pull-left
+    .float-left
       %p
     #{ s_('HealthCheck|Access token is') }
     %code#health-check-token= Gitlab::CurrentSettings.health_check_access_token
@@ -27,8 +27,8 @@
         %li
           %code= health_check_url(token: Gitlab::CurrentSettings.health_check_access_token, checks: :geo)
   %hr
-  .panel.panel-default
-    .panel-heading
+  .card
+    .card-header
       Current Status:
       - if no_errors
         = icon('circle', class: 'cgreen')
@@ -36,7 +36,7 @@
       - else
         = icon('warning', class: 'cred')
         #{ s_('HealthCheck|Unhealthy') }
-    .panel-body
+    .card-body
       - if no_errors
         #{ s_('HealthCheck|No Health Problems Detected') }
       - else

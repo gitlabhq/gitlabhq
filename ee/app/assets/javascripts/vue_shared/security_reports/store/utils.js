@@ -79,7 +79,7 @@ export const parseDependencyScanningIssues = (issues = [], feedbacks = [], path 
       ...issue,
       category: 'dependency_scanning',
       // TODO: replace with issue.project_fingerprint
-      project_fingerprint: sha1(issue.cve),
+      project_fingerprint: sha1(issue.cve || issue.message),
       name: issue.message,
       path: issue.file,
       urlPath: issue.line ? `${path}/${issue.file}#L${issue.line}` : `${path}/${issue.file}`,

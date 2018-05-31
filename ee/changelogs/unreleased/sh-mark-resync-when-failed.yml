@@ -1,5 +1,0 @@
----
-title: 'Geo: When a repository or Wiki sync has failed, mark resync flag as true'
-merge_request:
-author:
-type: fixed

@@ -29,7 +29,7 @@
 
 <template>
   <div>
-    <div class="checkbox">
+    <div class="form-check">
       <label for="service-desk-enabled-checkbox">
         <input
           ref="enabled-checkbox"
@@ -45,14 +45,14 @@
     </div>
     <div
       v-if="isEnabled"
-      class="panel-slim panel-default"
+      class="panel-slim "
     >
-      <div class="panel-heading">
-        <h3 class="panel-title">
+      <div class="card-header">
+        <h3 class="card-title">
           Forward external support email address to:
         </h3>
       </div>
-      <div class="panel-body">
+      <div class="card-body">
         <template v-if="incomingEmail">
           <span
             ref="service-desk-incoming-email"

@@ -5,13 +5,22 @@ require_relative 'ee_specific_check/ee_specific_check'
 include EESpecificCheck # rubocop:disable Style/MixinUsage
 git_version
 
-base = find_compare_base
+ce_fetch_head = fetch_remote_ce_branch
+ee_fetch_base = run_git_command("merge-base canonical-ee/master HEAD")
+ce_merge_base = run_git_command("merge-base canonical-ce/master canonical-ee/master")
+
+ce_updated_base =
+  if ce_fetch_head.start_with?('canonical-ce')
+    ce_merge_base
+  else
+    ce_fetch_head
+  end
 
 new_files_in_this_branch_not_at_the_ee_top_level =
-  run_git_command("diff #{base.ee_fetch_base}...HEAD --name-status --diff-filter=A -- ./ ':!ee' | cut -f2").lines.map(&:strip)
+  run_git_command("diff #{ee_fetch_base}...HEAD --name-status --diff-filter=A -- ./ ':!ee' | cut -f2").lines.map(&:strip)
 
 ee_specific_files_in_ce_master_not_at_the_ee_top_level =
-  run_git_command("diff #{base.ce_updated_base}..HEAD --name-status --diff-filter=A -- ./ ':!ee' | cut -f2").lines.map(&:strip)
+  run_git_command("diff #{ce_updated_base}..HEAD --name-status --diff-filter=A -- ./ ':!ee' | cut -f2").lines.map(&:strip)
 
 new_ee_specific_files_not_at_the_ee_top_level =
   new_files_in_this_branch_not_at_the_ee_top_level & ee_specific_files_in_ce_master_not_at_the_ee_top_level

@@ -9,9 +9,9 @@
     %button.btn.btn-default.btn-ldap-override.js-ldap-permissions{ type: 'button',
       'aria-label' => 'Edit permissions',
       data: { name: user.name, el_id: dom_id(member) } }
-      %span.visible-xs-block.visible-sm-block
+      %span.d-block.d-md-none
         Edit permissions
-      = icon('pencil', class: 'hidden-xs hidden-sm')
+      = icon('pencil', class: 'd-none d-sm-none d-md-block')
   - else
     %li.alert.alert-member-ldap{ style: 'display: none;' }
       %p

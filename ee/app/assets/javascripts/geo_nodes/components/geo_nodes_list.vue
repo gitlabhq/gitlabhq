@@ -23,7 +23,7 @@ export default {
 </script>
 
 <template>
-  <div class="panel panel-default">
+  <div class="card">
     <geo-node-item
       v-for="(node, index) in nodes"
       :key="index"

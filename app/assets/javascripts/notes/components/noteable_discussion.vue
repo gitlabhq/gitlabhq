@@ -100,7 +100,7 @@ export default {
         : 'div';
     },
     wrapperClass() {
-      return this.isDiffDiscussion ? '' : 'panel panel-default';
+      return this.isDiffDiscussion ? '' : 'card';
     },
   },
   mounted() {
@@ -263,7 +263,7 @@ Please check your network connection and try again.`;
                   class="discussion-reply-holder">
                   <template v-if="!isReplying && canReply">
                     <div
-                      class="btn-group-justified discussion-with-resolve-btn"
+                      class="btn-group d-flex discussion-with-resolve-btn"
                       role="group">
                       <div
                         class="btn-group"

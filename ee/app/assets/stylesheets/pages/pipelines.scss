@@ -1,0 +1,206 @@
+.linked-pipeline-mini-list {
+  display: inline-block;
+
+  &.is-downstream {
+    margin-left: -4px;
+    margin-right: 4px;
+  }
+
+  .arrow-icon {
+    display: inline-block;
+    vertical-align: middle;
+    margin: -2px 2px 0 0;
+
+    svg {
+      fill: $border-color;
+    }
+  }
+
+  &:hover {
+    .linked-pipeline-mini-item {
+      margin-left: 0;
+    }
+  }
+
+  .linked-pipeline-mini-item {
+    @include mini-pipeline-item();
+    display: inline-block;
+    transition: margin 0.2s linear;
+    margin: 2px 7px 3px -14px;
+
+    svg {
+      height: $ci-action-icon-size;
+      width: $ci-action-icon-size;
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      z-index: 2;
+      overflow: visible;
+    }
+
+    &:first-of-type:last-of-type {
+      margin-right: 1px;
+    }
+
+    &:nth-of-type(1) {
+      margin-left: 0;
+      z-index: 100;
+    }
+
+    &:nth-of-type(2):not(.linked-pipelines-counter) {
+      z-index: 99;
+    }
+
+    &:nth-of-type(3) {
+      z-index: 98;
+    }
+
+    &:nth-of-type(4) {
+      z-index: 97;
+    }
+  }
+
+  .linked-pipelines-counter {
+    position: relative;
+    font-size: 12px;
+    vertical-align: middle;
+    line-height: 20px;
+    height: 22px;
+    width: 22px;
+    padding-left: 1px;
+    margin-left: -15px;
+    border-radius: 2em;
+    background: $gray-darkest;
+    color: $white-light;
+    z-index: 96;
+    text-decoration: none;
+
+    &:hover {
+      width: 22px;
+      background: darken($gray-darkest, 10%);
+    }
+  }
+}
+
+/**
+ * Cross-project pipelines (applied conditionally to pipeline graph)
+ */
+
+.stage-cell {
+  .stage-container {
+    &.has-downstream {
+      &::after {
+        content: '';
+        width: 0;
+        border: 0;
+      }
+    }
+  }
+}
+
+.has-linked-pipelines.stage-column-list {
+  display: inline-block;
+}
+
+.linked-pipelines-column.stage-column {
+  position: relative;
+
+  > ul {
+    padding: 0;
+  }
+
+  &.graph-position-left {
+    margin-right: 36px;
+
+    .cross-project-triangle {
+      right: -42px;
+    }
+  }
+
+  &.graph-position-right {
+    margin-left: 60px;
+
+    .cross-project-triangle {
+      left: -64px;
+    }
+  }
+
+  .linked-pipeline.build {
+    height: 40px;
+
+    // apply custom dimensions to connector before and after for triangle arrow
+    &.flat-connector-before {
+      @include flat-connector-before($linked-project-column-margin);
+    }
+
+    &::after {
+      right: -$linked-project-column-margin;
+      width: $linked-project-column-margin;
+    }
+
+    .linked-pipeline-content {
+      @include build-content(0);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+.stage-column.has-upstream {
+  margin-left: 60px;
+
+  .left-connector {
+    @include flat-connector-before(60px);
+  }
+
+  &.has-only-one-job {
+    margin-left: 30px;
+    margin-right: 0;
+
+    .left-connector {
+      @include flat-connector-before;
+    }
+  }
+}
+
+.stage-column.has-downstream {
+  margin-right: $linked-project-column-margin;
+
+  &.has-only-one-job:not(:first-child) {
+    margin-right: 36px;
+
+    .left-connector {
+      @include flat-connector-before;
+    }
+  }
+
+  .build {
+    &:first-child {
+      &::after {
+        right: -$linked-project-column-margin;
+        width: $linked-project-column-margin;
+      }
+    }
+  }
+}
+
+.cross-project-triangle {
+  position: absolute;
+  top: 48px;
+  width: 0;
+  height: 0;
+  border-bottom: 7px solid transparent;
+  border-top: 7px solid transparent;
+  border-left: 7px solid $gray-darkest;
+  font-size: 0;
+  line-height: 0;
+  z-index: 10;
+}
+
+.project-name-pipeline-id-separator {
+  display: inline-block;
+  margin: 4px 2px 0;
+  font-size: 10px;
+  vertical-align: top;
+}

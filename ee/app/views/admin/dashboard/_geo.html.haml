@@ -1,0 +1,9 @@
+- return unless Gitlab::Geo.enabled?
+
+%p
+  = link_to 'Geo', admin_geo_nodes_path
+  %span.float-right
+    - if Gitlab::Geo.current_node
+      = Gitlab::Geo.current_node.primary ? 'Primary node' : 'Secondary node'
+    - else
+      Undefined

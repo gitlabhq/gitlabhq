@@ -6,11 +6,13 @@ import MergeRequest from '../../../merge_request';
 import Flash from '../../../flash';
 import statusIcon from '../mr_widget_status_icon.vue';
 import eventHub from '../../event_hub';
+import SquashBeforeMerge from './mr_widget_squash_before_merge.vue';
 
 export default {
   name: 'ReadyToMerge',
   components: {
     statusIcon,
+    'squash-before-merge': SquashBeforeMerge,
   },
   props: {
     mr: { type: Object, required: true },
@@ -105,6 +107,12 @@ export default {
       return this.mr.approvalsRequired ? !this.mr.isApproved : false;
     },
   },
+  created() {
+    eventHub.$on('MRWidgetUpdateSquash', this.handleUpdateSquash);
+  },
+  beforeDestroy() {
+    eventHub.$off('MRWidgetUpdateSquash', this.handleUpdateSquash);
+  },
   methods: {
     shouldShowMergeControls() {
       return this.mr.isMergeAllowed || this.shouldShowMergeWhenPipelineSucceedsText;
@@ -132,12 +140,8 @@ export default {
         commit_message: this.commitMessage,
         merge_when_pipeline_succeeds: this.setToMergeWhenPipelineSucceeds,
         should_remove_source_branch: this.removeSourceBranch === true,
+        squash: this.mr.squash,
       };
-
-      // Only truthy in EE extension of this component
-      if (this.setAdditionalParams) {
-        this.setAdditionalParams(options);
-      }
 
       this.isMakingRequest = true;
       this.service.merge(options)
@@ -157,6 +161,9 @@ export default {
           this.isMakingRequest = false;
           new Flash('Something went wrong. Please try again.'); // eslint-disable-line
         });
+    },
+    handleUpdateSquash(val) {
+      this.mr.squash = val;
     },
     initiateMergePolling() {
       simplePoll((continuePolling, stopPolling) => {
@@ -316,7 +323,7 @@ export default {
               v-else
               @click="toggleCommitMessageEditor"
               :disabled="isMergeButtonDisabled"
-              class="js-modify-commit-message-button btn btn-default btn-xs"
+              class="js-modify-commit-message-button btn btn-default btn-sm"
               type="button">
               Modify commit message
             </button>
@@ -333,7 +340,7 @@ export default {
         class="prepend-top-default commit-message-editor">
         <div class="form-group clearfix">
           <label
-            class="control-label"
+            class="col-form-label"
             for="commit-message">
             Commit message
           </label>

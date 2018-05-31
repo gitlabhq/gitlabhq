@@ -62,7 +62,8 @@ describe 'Users > Terms' do
       expect(current_path).to eq(project_issues_path(project))
     end
 
-    it 'redirects back to the page the user was trying to save' do
+    # Disabled until https://gitlab.com/gitlab-org/gitlab-ce/issues/37162 is solved properly
+    xit 'redirects back to the page the user was trying to save' do
       visit new_project_issue_path(project)
 
       fill_in :issue_title, with: 'Hello world, a new issue'

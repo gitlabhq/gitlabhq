@@ -131,7 +131,7 @@ export default {
             aria-hidden="true">
           </i>
         </button>
-        <ul class="dropdown-menu dropdown-menu-align-right">
+        <ul class="dropdown-menu dropdown-menu-right">
           <li>
             <a
               class="js-download-email-patches"

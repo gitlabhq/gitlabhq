@@ -111,7 +111,15 @@ describe Gitlab::Ci::Config::Entry::Policy do
     context 'when specifying invalid variables expressions token' do
       let(:config) { { variables: ['$MY_VAR == 123'] } }
 
-      it 'reports an error about invalid statement' do
+      it 'reports an error about invalid expression' do
+        expect(entry.errors).to include /invalid expression syntax/
+      end
+    end
+
+    context 'when using invalid variables expressions regexp' do
+      let(:config) { { variables: ['$MY_VAR =~ /some ( thing/'] } }
+
+      it 'reports an error about invalid expression' do
         expect(entry.errors).to include /invalid expression syntax/
       end
     end

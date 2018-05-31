@@ -1,5 +1,132 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.8.3 (2018-05-30)
+
+- No changes.
+- No changes.
+### Fixed (1 change)
+
+- Geo - Calculate the wiki checksum even when wiki is disabled. !5772
+
+### Performance (1 change)
+
+- Make Geo::PruneEventLogWorker delete rows more gently. !5835
+
+
+## 10.8.2 (2018-05-28)
+
+### Security (3 changes)
+
+- Fixed XSS in protected branches & tags access dropdown.
+- Escape name in merge request approvers dropdown.
+- Fixes include directive to not allow SSRF requests.
+
+
+## 10.8.1 (2018-05-23)
+
+### Fixed (4 changes)
+
+- Geo: Fix repo, wiki, and upload replication when renaming a namespace that has subgroups. !5704
+- Shows the correct data in the verification information section for the primary node in Geo admin screen. !5722
+- [Geo] Don't remove project registry records.
+- Geo: Exclude tables that start with pg_ from FDW check.
+
+
+## 10.8.0 (2018-05-22)
+
+### Removed (1 change)
+
+- Use of ENV['USE_SYSTEM_GIT_FOR_FETCH'] is no longer supported.
+
+### Fixed (22 changes)
+
+- Add missing fields to the API documentation for the status of Geo Nodes. !3865
+- Large pushes were failing when max file size push rule was active. !4989
+- Fix GITLAB_FEATURES CI/CD env var for public projects. !5242
+- Reveal labels dropdown when labels icon is clicked on collapsed Epic sidebar. !5298
+- Geo: Propagate broadcast messages to secondaries. !5303
+- Geo: Exclude expired job artifacts from syncing and counts. !5380
+- Exclude GroupSAML from sign in buttons. !5449
+- Per-Group SAML (for GitLab.com) strips LRM chars from ADFS certificate fingerprints. !5466
+- Refactor the Geo LogCursor Logger to make class more descriptive. !5483
+- Geo - Returns a dummy checksum when there is no valid repository on disk. !5486
+- ShaAttribute no longer stops startup if database is missing. !5502
+- Fix network error message styling on Geo admin dashboard. !5530
+- Fixes invalid link in html version of mirror was hard failed email. !5546
+- During repository verification, ignore repositories/wikis that need to be resynced. !5568
+- Group SAML skips forgery protection in production. !5621
+- Does not log failed sign-in attempts when in a GitLab read-only instance. !5643
+- [Geo] Fix rake geo:status when event_log is not found.
+- Geo: Use a pre-built node status in admin area.
+- [Geo] Mentioned in custom hooks doc that they won't be replicated to secondary.
+- Fix: Geo: BaseSyncService should prune the @geo-temporary directory before fetching.
+- Stop presenting burndown charts promotion for grouped by title milestones.
+- Geo: When a repository or Wiki sync has failed, mark resync flag as true.
+
+### Changed (13 changes, 1 of them is from the community)
+
+- Shorten protected branch / tag access level dropdown text. !5091
+- Improve tooltips on collapsible right sidebars. !5212
+- Allow easier customization of included CI configurations. !5288 (King Chung Huang)
+- Unprotect and update disabled in UI when prevented by branch unprotect rules. !5296
+- Issues export CSV includes 'Weight' and 'Locked'. !5300
+- Update item titles and add help text in Geo nodes admin dashboard. !5306
+- Geo - Improve metrics for the checksum/verification feature. !5367
+- Adds push mirrors to GitLab Community Edition. !5484
+- Adds SSO page for GitLab.com per group SAML beta. !5508
+- Adds authentication flow for GitLab.com per group SAML beta. !5575
+- Add Geo information to console message. !5588
+- Ability to edit, disable or remove Geo Nodes is now always available.
+- Show pod name for each instance on deploy boards.
+
+### Performance (4 changes)
+
+- Port Group member contribution analytics table to Vue. !5269
+- Improve performance of repository size limit check. !5476
+- Improves database performance of mirrors, forks and imports. !5522
+- Prevent Geo from unnecessarily syncing expired CI job artifacts.
+
+### Added (11 changes)
+
+- Geo: schedule a git repack after initial clone. !4266
+- Present Burndown charts for group milestones. !5354
+- Filtered search bar support for Roadmap view. !5417
+- Allow user to dismiss a vulnerability or create an issue out of it. !5452
+- Geo: enable housekeeping functionality when syncing repositories. !5461
+- Enable username autocomplete inside Epics. !5475
+- Present MRs on Jira development panel integration. !5534
+- Run repository verification on Geo secondary. !5550
+- Email notifications for epics.
+- Add Epic count to usage pings.
+- Add system note for weight change.
+
+### Other (6 changes, 6 of them are from the community)
+
+- Replace the `admin/license.feature` spinach test with an rspec analog. !5477 (@blackst0ne)
+- Replace the `admin/push_rules.feature` spinach test with an rspec analog. !5512 (@blackst0ne)
+- Replace the `admin/emails.feature` spinach test with an rspec analog. !5513 (@blackst0ne)
+- Replace the `group_hooks.feature` spinach test with an rspec analog. !5515 (@blackst0ne)
+- Replace the `groups_management.feature` spinach test with an rspec analog. !5516 (@blackst0ne)
+- Remove `features/group_active_tab.feature`. !5554 (@blackst0ne)
+
+
+## 10.7.5 (2018-05-28)
+
+### Security (3 changes)
+
+- Fixed XSS in protected branches & tags access dropdown.
+- Escape name in merge request approvers dropdown.
+- Fixes include directive to not allow SSRF requests.
+
+
+## 10.7.4 (2018-05-21)
+
+### Fixed (2 changes)
+
+- Does not log failed sign-in attempts when in a GitLab read-only instance. !5643
+- Fix: Geo: BaseSyncService should prune the @geo-temporary directory before fetching.
+
+
 ## 10.7.3 (2018-05-02)
 
 ### Fixed (3 changes)
@@ -99,6 +226,15 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Replace the `project/issues/weight.feature` spinach test with an rspec analog. !5194 (blackst0ne)
 - [Geo] Log JID for sync related jobs.
 - Breaks utils function to parse codeclimate and sast into separate functions.
+
+
+## 10.6.6 (2018-05-28)
+
+### Security (3 changes)
+
+- Fixed XSS in protected branches & tags access dropdown.
+- Escape name in merge request approvers dropdown.
+- Fixes include directive to not allow SSRF requests.
 
 
 ## 10.6.5 (2018-04-24)

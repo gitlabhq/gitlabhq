@@ -3,7 +3,7 @@
 = render 'shared/push_rules/reject_unsigned_commits_setting', form: f, push_rule: f.object
 
 .form-group
-  = f.check_box :deny_delete_tag, class: "pull-left"
+  = f.check_box :deny_delete_tag, class: "float-left"
   .prepend-left-20
     = f.label :deny_delete_tag, class: "label-light append-bottom-0" do
       Do not allow users to remove git tags with
@@ -12,7 +12,7 @@
       Tags can still be deleted through the web UI.
 
 .form-group
-  = f.check_box :member_check, class: "pull-left"
+  = f.check_box :member_check, class: "float-left"
   .prepend-left-20
     = f.label :member_check, "Check whether author is a GitLab user", class: "label-light append-bottom-0"
     %p.light.append-bottom-0
@@ -20,7 +20,7 @@
 
 
 .form-group
-  = f.check_box :prevent_secrets, class: "pull-left"
+  = f.check_box :prevent_secrets, class: "float-left"
   .prepend-left-20
     = f.label :prevent_secrets, "Prevent committing secrets to Git", class: "label-light append-bottom-0"
     %p.light.append-bottom-0
@@ -30,7 +30,7 @@
 .form-group
   = f.label :commit_message_regex, "Commit message", class: 'label-light'
   = f.text_field :commit_message_regex, class: "form-control", placeholder: 'Example: Fixes \d+\..*'
-  .help-block
+  .form-text.text-muted
     All commit messages must match this
     = link_to 'Ruby regular expression', 'http://www.ruby-doc.org/core-2.1.1/Regexp.html'
     to be pushed.
@@ -40,7 +40,7 @@
 .form-group
   = f.label :branch_name_regex, "Branch name", class: 'label-light'
   = f.text_field :branch_name_regex, class: "form-control", placeholder: 'Example: (feature|hotfix)\/*'
-  .help-block
+  .form-text.text-muted
     All branch names must match this
     = link_to 'Ruby regular expression', 'http://www.ruby-doc.org/core-2.1.1/Regexp.html'
     to be pushed.
@@ -49,7 +49,7 @@
 .form-group
   = f.label :author_email_regex, "Commit author's email", class: 'label-light'
   = f.text_field :author_email_regex, class: "form-control", placeholder: 'Example: @my-company.com$'
-  .help-block
+  .form-text.text-muted
     All commit author's email must match this
     = link_to 'Ruby regular expression', 'http://www.ruby-doc.org/core-2.1.1/Regexp.html'
     to be pushed.
@@ -58,7 +58,7 @@
 .form-group
   = f.label :file_name_regex, "Prohibited file names", class: 'label-light'
   = f.text_field :file_name_regex, class: "form-control", placeholder: 'Example: (jar|exe)$'
-  .help-block
+  .form-text.text-muted
     All commited filenames must not match this
     = link_to 'Ruby regular expression', 'http://www.ruby-doc.org/core-2.1.1/Regexp.html'
     to be pushed.
@@ -67,7 +67,7 @@
 .form-group
   = f.label :max_file_size, "Maximum file size (MB)", class: 'label-light'
   = f.number_field :max_file_size, class: "form-control", min: 0
-  .help-block
+  .form-text.text-muted
     Pushes that contain added or updated files that exceed this file size are rejected.
     Set to 0 to allow files of any size.
 

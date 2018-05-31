@@ -1,4 +1,6 @@
 class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
+  prepend EE::MergeRequestPresenter
+
   include ActionView::Helpers::UrlHelper
   include GitlabRoutingHelper
   include MarkupHelper
@@ -17,6 +19,17 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     else
       ci_service = source_project.try(:ci_service)
       ci_service&.commit_status(diff_head_sha, source_branch)
+    end
+  end
+
+  def unmergeable_reasons
+    strong_memoize(:unmergeable_reasons) do
+      reasons = []
+      reasons << "no commits" if merge_request.has_no_commits?
+      reasons << "source branch is missing" unless merge_request.source_branch_exists?
+      reasons << "target branch is missing" unless merge_request.target_branch_exists?
+      reasons << "has merge conflicts" unless merge_request.project.repository.can_be_merged?(merge_request.diff_head_sha, merge_request.target_branch)
+      reasons
     end
   end
 
@@ -99,12 +112,6 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   def source_branch_path
     if source_branch_exists?
       project_branch_path(source_project, source_branch)
-    end
-  end
-
-  def approvals_path
-    if requires_approve?
-      approvals_project_merge_request_path(project, merge_request)
     end
   end
 

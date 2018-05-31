@@ -10,6 +10,30 @@ module EE
         { primary_node: link_to('primary node', ::Gitlab::Geo.primary_node.url) }).html_safe
     end
 
+    def render_ce(partial, locals = {})
+      render template: find_ce_partial(partial), locals: locals
+    end
+
+    def find_ce_partial(partial)
+      ce_lookup_context.find(partial, [], true)
+    end
+
+    def ce_lookup_context
+      @ce_lookup_context ||= begin
+        context = lookup_context.dup
+
+        # This could duplicate the paths we're going to modify
+        context.view_paths = lookup_context.view_paths.paths
+
+        # Discard lookup path ee/ for the new paths
+        context.view_paths.paths.delete_if do |resolver|
+          resolver.to_path.start_with?("#{Rails.root}/ee")
+        end
+
+        context
+      end
+    end
+
     def page_class
       class_names = super
       class_names += system_message_class

@@ -201,7 +201,10 @@ Read how to [replicate the Container Registry][docker-registry].
 > **IMPORTANT**: This list of limitations tracks only the latest version. If you are in an older version,
 extra limitations may be in place.
 
-- You cannot push code to secondary nodes, see [gitlab-org/gitlab-ee#3912] for details.
+- Pushing code to a secondary redirects the request to the primary instead of handling it directly [gitlab-ee#1381](https://gitlab.com/gitlab-org/gitlab-ee/issues/1381):
+    * Only push via HTTP is currently supported
+    * Pushing via SSH is currently not supported: [gitlab-ee#5387](https://gitlab.com/gitlab-org/gitlab-ee/issues/5387)
+    * Git LFS is currently not supported: [gitlab-ee#6195](https://gitlab.com/gitlab-org/gitlab-ee/issues/6195)
 - The primary node has to be online for OAuth login to happen (existing sessions and Git are not affected)
 - The installation takes multiple manual steps that together can take about an hour depending on circumstances; we are
   working on improving this experience, see [gitlab-org/omnibus-gitlab#2978] for details.

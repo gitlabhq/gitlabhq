@@ -115,4 +115,74 @@ describe Groups::OmniauthCallbacksController do
       end
     end
   end
+
+  describe "#failure" do
+    include RoutesHelpers
+
+    def fake_error_callback_route
+      fake_routes do
+        post '/groups/:group_id/-/saml/callback', to: 'groups/omniauth_callbacks#failure'
+      end
+    end
+
+    def stub_certificate_error
+      strategy = OmniAuth::Strategies::GroupSaml.new(nil)
+      exception = OneLogin::RubySaml::ValidationError.new("Fingerprint mismatch")
+      stub_omniauth_failure(strategy, :invalid_ticket, exception)
+    end
+
+    before do
+      fake_error_callback_route
+      stub_certificate_error
+      set_devise_mapping(context: @request)
+    end
+
+    context "not signed in" do
+      it "doesn't disclose group existence" do
+        expect do
+          post :failure, group_id: group
+        end.to raise_error(ActionController::RoutingError)
+      end
+
+      context "group doesn't exist" do
+        it "doesn't disclose group non-existence" do
+          expect do
+            post :failure, group_id: 'not-a-group'
+          end.to raise_error(ActionController::RoutingError)
+        end
+      end
+    end
+
+    context "with access" do
+      before do
+        sign_in(user)
+      end
+
+      it "has descriptive error flash" do
+        post :failure, group_id: group
+
+        expect(flash[:alert]).to start_with("Unable to sign you in to the group with SAML due to")
+        expect(flash[:alert]).to include("Fingerprint mismatch")
+      end
+
+      it "redirects back go the SSO page" do
+        post :failure, group_id: group
+
+        expect(response).to redirect_to(sso_group_saml_providers_path)
+      end
+    end
+
+    context "with access to SAML settings for the group" do
+      before do
+        group.add_owner(user)
+        sign_in(user)
+      end
+
+      it "redirects to the settings page" do
+        post :failure, group_id: group
+
+        expect(response).to redirect_to(group_saml_providers_path)
+      end
+    end
+  end
 end

@@ -188,7 +188,7 @@ module Ci
     end
 
     def playable?
-      action? && (manual? || complete?)
+      action? && (manual? || retryable?)
     end
 
     def action?
@@ -603,6 +603,7 @@ module Ci
         break variables unless persisted?
 
         variables
+          .concat(pipeline.persisted_variables)
           .append(key: 'CI_JOB_ID', value: id.to_s)
           .append(key: 'CI_JOB_TOKEN', value: token, public: false)
           .append(key: 'CI_BUILD_ID', value: id.to_s)
@@ -621,7 +622,7 @@ module Ci
         variables.append(key: 'GITLAB_FEATURES', value: project.licensed_features.join(','))
         variables.append(key: 'CI_SERVER_NAME', value: 'GitLab')
         variables.append(key: 'CI_SERVER_VERSION', value: Gitlab::VERSION)
-        variables.append(key: 'CI_SERVER_REVISION', value: Gitlab::REVISION)
+        variables.append(key: 'CI_SERVER_REVISION', value: Gitlab.revision)
         variables.append(key: 'CI_JOB_NAME', value: name)
         variables.append(key: 'CI_JOB_STAGE', value: stage)
         variables.append(key: 'CI_COMMIT_SHA', value: sha)
@@ -665,7 +666,7 @@ module Ci
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         break variables unless gitlab_deploy_token
 
-        variables.append(key: 'CI_DEPLOY_USER', value: gitlab_deploy_token.name)
+        variables.append(key: 'CI_DEPLOY_USER', value: gitlab_deploy_token.username)
         variables.append(key: 'CI_DEPLOY_PASSWORD', value: gitlab_deploy_token.token, public: false)
       end
     end

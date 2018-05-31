@@ -3,14 +3,12 @@ import { mapActions, mapState } from 'vuex';
 import { s__, sprintf, n__ } from '~/locale';
 import createFlash from '~/flash';
 import { SAST } from './store/constants';
-import store from './store';
 import ReportSection from './components/report_section.vue';
 import IssueModal from './components/modal.vue';
 import mixin from './mixins/security_report_mixin';
 import reportsMixin from './mixins/reports_mixin';
 
 export default {
-  store,
   components: {
     ReportSection,
     IssueModal,

@@ -10,9 +10,9 @@
     %h3
       Burndown chart
       .btn-group.js-burndown-data-selector
-        %button.btn.btn-xs.active{ data: { show: 'count' } }
+        %button.btn.btn-sm.active{ data: { show: 'count' } }
           Issues
-        %button.btn.btn-xs{ data: { show: 'weight' } }
+        %button.btn.btn-sm{ data: { show: 'weight' } }
           Issue weight
   .burndown-chart{ data: { start_date: burndown.start_date.strftime("%Y-%m-%d"), due_date: burndown.due_date.strftime("%Y-%m-%d"), chart_data: burndown.to_json } }
 
@@ -20,9 +20,9 @@
   .burndown-hint.content-block.container-fluid
     = icon("times", class: "dismiss-icon")
     .row
-      .col-sm-4.col-xs-12.svg-container
+      .col-sm-4.col-12.svg-container
         = custom_icon('icon_burndown_chart_splash')
-      .col-sm-8.col-xs-12.inner-content
+      .col-sm-8.col-12.inner-content
         %h4
           Burndown chart
         %p

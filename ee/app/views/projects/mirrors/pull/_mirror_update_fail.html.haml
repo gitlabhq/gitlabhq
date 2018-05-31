@@ -1,8 +1,8 @@
 - if @project.mirror_last_update_failed?
-  .panel.panel-danger
-    .panel-heading
+  .card.bg-danger
+    .card-header
       = render partial: 'shared/mirror_status', locals: { raw_message: true }
-    .panel-body
+    .card-body
       %pre
         :preserve
           #{h(@project.import_error.try(:strip))}

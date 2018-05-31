@@ -153,7 +153,7 @@ export default {
       <button
         ref="addButton"
         type="submit"
-        class="js-add-issuable-form-add-button btn btn-new pull-left"
+        class="js-add-issuable-form-add-button btn btn-new float-left"
         :disabled="isSubmitButtonDisabled">
         Add
         <loading-icon
@@ -163,7 +163,7 @@ export default {
       </button>
       <button
         type="button"
-        class="btn btn-default pull-right"
+        class="btn btn-default float-right"
         @click="onFormCancel">
         Cancel
       </button>

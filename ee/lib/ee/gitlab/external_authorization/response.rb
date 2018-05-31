@@ -9,7 +9,7 @@ module EE
         end
 
         def valid?
-          @excon_response && [200, 401].include?(@excon_response.status)
+          @excon_response && [200, 401, 403].include?(@excon_response.status)
         end
 
         def successful?

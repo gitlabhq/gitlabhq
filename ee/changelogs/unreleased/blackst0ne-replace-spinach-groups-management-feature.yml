@@ -1,5 +1,0 @@
----
-title: Replace the `groups_management.feature` spinach test with an rspec analog
-merge_request: 5516
-author: '@blackst0ne'
-type: other

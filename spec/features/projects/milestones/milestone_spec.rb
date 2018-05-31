@@ -64,10 +64,6 @@ feature 'Project milestone' do
     end
   end
 
-  def milestone_path
-    project_milestone_path(project, milestone)
-  end
-
   context 'when project has an issue' do
     before do
       create(:issue, project: project, milestone: milestone)

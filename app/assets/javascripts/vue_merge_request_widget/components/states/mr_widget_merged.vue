@@ -118,7 +118,7 @@
         <a
           v-if="mr.canRevertInCurrentMR"
           v-tooltip
-          class="btn btn-close btn-xs"
+          class="btn btn-close btn-sm"
           href="#modal-revert-commit"
           data-toggle="modal"
           data-container="body"
@@ -129,7 +129,7 @@
         <a
           v-else-if="mr.revertInForkPath"
           v-tooltip
-          class="btn btn-close btn-xs"
+          class="btn btn-close btn-sm"
           data-method="post"
           :href="mr.revertInForkPath"
           :title="revertTitle"
@@ -139,7 +139,7 @@
         <a
           v-if="mr.canCherryPickInCurrentMR"
           v-tooltip
-          class="btn btn-default btn-xs"
+          class="btn btn-default btn-sm"
           href="#modal-cherry-pick-commit"
           data-toggle="modal"
           data-container="body"
@@ -150,7 +150,7 @@
         <a
           v-else-if="mr.cherryPickInForkPath"
           v-tooltip
-          class="btn btn-default btn-xs"
+          class="btn btn-default btn-sm"
           data-method="post"
           :href="mr.cherryPickInForkPath"
           :title="cherryPickTitle"
@@ -189,7 +189,7 @@
             @click="removeSourceBranch"
             :disabled="isMakingRequest"
             type="button"
-            class="btn btn-xs btn-default js-remove-branch-button"
+            class="btn btn-sm btn-default js-remove-branch-button"
           >
             {{ s__("mrWidget|Remove Source Branch") }}
           </button>

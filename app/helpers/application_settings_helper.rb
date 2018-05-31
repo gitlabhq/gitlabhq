@@ -205,7 +205,7 @@ module ApplicationSettingsHelper
       :pages_domain_verification_enabled,
       :password_authentication_enabled_for_web,
       :password_authentication_enabled_for_git,
-      :performance_bar_allowed_group_id,
+      :performance_bar_allowed_group_path,
       :performance_bar_enabled,
       :plantuml_enabled,
       :plantuml_url,

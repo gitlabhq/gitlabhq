@@ -110,6 +110,7 @@ export default {
   },
 };
 </script>
+
 <template>
   <div class="approvals-body space-children">
     <span

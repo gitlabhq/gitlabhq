@@ -1,5 +1,5 @@
 .top-area
-  %ul.nav-links
+  %ul.nav-links.nav.nav-tabs
     = nav_link(page: dashboard_snippets_path, html_options: {class: 'home'}) do
       = link_to dashboard_snippets_path, title: 'Your snippets', data: {placement: 'right'} do
         Your snippets
@@ -8,5 +8,5 @@
         Explore snippets
 
   - if current_user
-    .nav-controls.hidden-xs
+    .nav-controls.d-none.d-sm-block
       = link_to "New snippet", new_snippet_path, class: "btn btn-new", title: "New snippet"

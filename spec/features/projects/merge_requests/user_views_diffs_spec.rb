@@ -26,6 +26,10 @@ describe 'User views diffs', :js do
     expect(page).to have_css('#inline-diff-btn', count: 1)
   end
 
+  it 'hides loading spinner after load' do
+    expect(page).not_to have_selector('.mr-loading-status .loading', visible: true)
+  end
+
   context 'when in the inline view' do
     include_examples 'unfold diffs'
   end

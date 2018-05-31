@@ -57,8 +57,8 @@ an eligible approver.
 Let's say that `m` is the number of required approvals, and `Ω` is the set of
 explicit approvers. Depending on their number, there are different cases:
 
-- If `m <= Ω`, then only those explicit approvers can approve the merge request.
-- If `m > Ω` , then all the explicit approvers _and_ the members of the given
+- If `m <= count(Ω)`, then only those explicit approvers can approve the merge request.
+- If `m > count(Ω)` , then all the explicit approvers _and_ the members of the given
   project with Developer role or higher are eligible approvers of the merge
   request.
 

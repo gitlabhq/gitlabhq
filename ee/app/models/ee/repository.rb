@@ -25,13 +25,5 @@ module EE
       expire_branch_cache if exists?
       expire_content_cache
     end
-
-    def squash(user, merge_request)
-      raw.squash(user, merge_request.id, branch: merge_request.target_branch,
-                                         start_sha: merge_request.diff_start_sha,
-                                         end_sha: merge_request.diff_head_sha,
-                                         author: merge_request.author,
-                                         message: merge_request.title)
-    end
   end
 end

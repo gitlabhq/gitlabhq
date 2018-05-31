@@ -379,7 +379,7 @@ describe Gitlab::Checks::ChangeAccess do
 
           expect { subject.exec }
             .to raise_error(Gitlab::GitAccess::UnauthorizedError,
-                            "Comitter email '%{commiter_email}' is not verified.")
+                            "Committer email 'secondary_email@user.com' is not verified.")
         end
 
         it 'raises an error when using an unknown email' do

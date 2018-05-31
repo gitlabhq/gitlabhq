@@ -28,7 +28,7 @@ gem 'mysql2', '~> 0.4.10', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
 gem 'rugged', '~> 0.27'
-gem 'grape-route-helpers', '~> 2.1.0'
+gem 'grape-path-helpers', '~> 1.0'
 
 gem 'faraday', '~> 0.12'
 
@@ -50,7 +50,7 @@ gem 'omniauth-saml', '~> 1.10'
 gem 'omniauth-shibboleth', '~> 1.2.0'
 gem 'omniauth-twitter', '~> 1.4'
 gem 'omniauth_crowd', '~> 2.2.0'
-gem 'omniauth-authentiq', '~> 0.3.1'
+gem 'omniauth-authentiq', '~> 0.3.3'
 gem 'rack-oauth2', '~> 1.2.1'
 gem 'jwt', '~> 1.5.6'
 
@@ -143,7 +143,7 @@ gem 'gitlab-markup', '~> 1.6.2'
 gem 'redcarpet', '~> 3.4'
 gem 'commonmarker', '~> 0.17'
 gem 'RedCloth', '~> 4.3.2'
-gem 'rdoc', '~> 4.2'
+gem 'rdoc', '~> 6.0'
 gem 'org-ruby', '~> 0.9.12'
 gem 'creole', '~> 0.5.0'
 gem 'wikicloth', '0.8.1'
@@ -172,7 +172,7 @@ gem 'acts-as-taggable-on', '~> 5.0'
 # Background jobs
 gem 'sidekiq', '~> 5.1'
 gem 'sidekiq-cron', '~> 0.6.0'
-gem 'redis-namespace', '~> 1.5.2'
+gem 'redis-namespace', '~> 1.6.0'
 gem 'sidekiq-limit_fetch', '~> 3.4', require: false
 
 # Cron Parser
@@ -183,6 +183,9 @@ gem 'httparty', '~> 0.13.3'
 
 # Colored output to console
 gem 'rainbow', '~> 2.2'
+
+# Progress bar
+gem 'ruby-progressbar'
 
 # GitLab settings
 gem 'settingslogic', '~> 2.0.9'
@@ -226,7 +229,7 @@ gem 'asana', '~> 0.6.0'
 gem 'ruby-fogbugz', '~> 0.2.1'
 
 # Kubernetes integration
-gem 'kubeclient', '~> 3.0'
+gem 'kubeclient', '~> 3.1.0'
 
 # Sanitize user input
 gem 'sanitize', '~> 2.0'
@@ -264,7 +267,6 @@ gem 'sass-rails', '~> 5.0.6'
 gem 'uglifier', '~> 2.7.2'
 
 gem 'addressable', '~> 2.5.2'
-gem 'bootstrap-sass', '~> 3.3.0'
 gem 'font-awesome-rails', '~> 4.7'
 gem 'gemojione', '~> 3.3'
 gem 'gon', '~> 6.2'
@@ -306,7 +308,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~> 0.9.2'
+  gem 'prometheus-client-mmap', '~> 0.9.3'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -330,7 +332,7 @@ group :development, :test do
   gem 'pry-byebug', '~> 3.4.1', platform: :mri
   gem 'pry-rails', '~> 0.3.4'
 
-  gem 'awesome_print', '~> 1.2.0', require: false
+  gem 'awesome_print', require: false
   gem 'fuubar', '~> 2.2.0'
 
   gem 'database_cleaner', '~> 1.5.0'
@@ -425,7 +427,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.99.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.100.0', require: 'gitaly'
 gem 'grpc', '~> 1.11.0'
 
 # Locked until https://github.com/google/protobuf/issues/4210 is closed

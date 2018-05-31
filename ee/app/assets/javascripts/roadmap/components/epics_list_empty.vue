@@ -68,14 +68,14 @@
 
 <template>
   <div class="row empty-state">
-    <div class="col-xs-12">
+    <div class="col-12">
       <div class="svg-content">
         <img
           :src="emptyStateIllustrationPath"
         />
       </div>
     </div>
-    <div class="col-xs-12">
+    <div class="col-12">
       <div class="text-content">
         <h4>{{ message }}</h4>
         <p v-html="subMessage"></p>

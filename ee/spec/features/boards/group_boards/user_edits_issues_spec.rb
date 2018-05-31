@@ -22,7 +22,7 @@ describe 'label issues', :js do
   end
 
   it 'adds a new group label from sidebar' do
-    card = find('.board:nth-child(2)').first('.card')
+    card = find('.board:nth-child(2)').first('.board-card')
     click_card(card)
 
     page.within '.right-sidebar .labels' do

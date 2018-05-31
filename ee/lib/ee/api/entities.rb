@@ -62,7 +62,6 @@ module EE
 
         prepended do
           expose :approvals_before_merge
-          expose :squash, if: ->(mr, _) { mr.project.feature_available?(:merge_request_squash) }
         end
       end
 

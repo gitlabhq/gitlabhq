@@ -39,7 +39,7 @@ FactoryBot.define do
       cursor_last_event_timestamp { Time.now.to_i }
       last_successful_status_check_timestamp { Time.now.beginning_of_day }
       version { Gitlab::VERSION }
-      revision { Gitlab::REVISION }
+      revision { Gitlab.revision }
     end
 
     trait :unhealthy do

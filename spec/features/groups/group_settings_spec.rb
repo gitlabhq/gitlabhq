@@ -108,7 +108,7 @@ feature 'Edit group settings' do
 
       attach_file(:group_avatar, Rails.root.join('spec', 'fixtures', 'banana_sample.gif'))
 
-      expect { click_button 'Save group' }.to change { group.reload.avatar? }.to(true)
+      expect { save_group }.to change { group.reload.avatar? }.to(true)
     end
 
     it 'uploads new group avatar' do
@@ -122,10 +122,19 @@ feature 'Edit group settings' do
       expect(page).not_to have_link('Remove avatar')
     end
   end
-end
 
-def update_path(new_group_path)
-  visit edit_group_path(group)
-  fill_in 'group_path', with: new_group_path
-  click_button 'Save group'
+  def update_path(new_group_path)
+    visit edit_group_path(group)
+
+    page.within('.gs-advanced') do
+      fill_in 'group_path', with: new_group_path
+      click_button 'Change group path'
+    end
+  end
+
+  def save_group
+    page.within('.gs-general') do
+      click_button 'Save group'
+    end
+  end
 end

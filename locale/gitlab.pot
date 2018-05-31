@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-16 14:41+0200\n"
-"PO-Revision-Date: 2018-05-16 14:41+0200\n"
+"POT-Creation-Date: 2018-05-29 11:32+0200\n"
+"PO-Revision-Date: 2018-05-29 11:32+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -339,6 +339,9 @@ msgstr ""
 msgid "AdminUsers|To confirm, type %{username}"
 msgstr ""
 
+msgid "Advanced"
+msgstr ""
+
 msgid "Advanced settings"
 msgstr ""
 
@@ -567,7 +570,7 @@ msgstr ""
 msgid "Auto Review Apps and Auto Deploy need a domain name to work correctly."
 msgstr ""
 
-msgid "AutoDevOps|Auto DevOps (Beta)"
+msgid "AutoDevOps|Auto DevOps"
 msgstr ""
 
 msgid "AutoDevOps|Auto DevOps documentation"
@@ -588,7 +591,7 @@ msgstr ""
 msgid "AutoDevOps|add a Kubernetes cluster"
 msgstr ""
 
-msgid "AutoDevOps|enable Auto DevOps (Beta)"
+msgid "AutoDevOps|enable Auto DevOps"
 msgstr ""
 
 msgid "Available"
@@ -926,7 +929,7 @@ msgstr ""
 msgid "CICD|An explicit %{ci_file} needs to be specified before you can begin using Continuous Integration and Delivery."
 msgstr ""
 
-msgid "CICD|Auto DevOps (Beta)"
+msgid "CICD|Auto DevOps"
 msgstr ""
 
 msgid "CICD|Auto DevOps will automatically build, test, and deploy your application based on a predefined Continuous Integration and Delivery configuration."
@@ -1668,7 +1671,7 @@ msgstr ""
 msgid "ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images."
 msgstr ""
 
-msgid "ContainerRegistry|You can also %{deploy_token} for read-only access to the registry images."
+msgid "ContainerRegistry|You can also use a %{deploy_token} for read-only access to the registry images."
 msgstr ""
 
 msgid "Continuous Integration and Deployment"
@@ -2144,6 +2147,9 @@ msgstr ""
 msgid "Enable group Runners"
 msgstr ""
 
+msgid "Enable or disable certain group features and choose access levels."
+msgstr ""
+
 msgid "Enable or disable version check and usage ping."
 msgstr ""
 
@@ -2154,6 +2160,9 @@ msgid "Enable the Performance Bar for a given group."
 msgstr ""
 
 msgid "Enabled"
+msgstr ""
+
+msgid "Ends at (UTC)"
 msgstr ""
 
 msgid "Environments"
@@ -2247,6 +2256,15 @@ msgid "Error fetching refs"
 msgstr ""
 
 msgid "Error fetching usage ping data."
+msgstr ""
+
+msgid "Error loading branch data. Please try again."
+msgstr ""
+
+msgid "Error loading last commit."
+msgstr ""
+
+msgid "Error loading project data. Please try again."
 msgstr ""
 
 msgid "Error occurred when toggling the notification subscription"
@@ -3600,10 +3618,16 @@ msgstr ""
 msgid "Pending"
 msgstr ""
 
+msgid "Perform advanced options such as changing path, transferring, or removing the group."
+msgstr ""
+
 msgid "Performance optimization"
 msgstr ""
 
 msgid "Permalink"
+msgstr ""
+
+msgid "Permissions"
 msgstr ""
 
 msgid "Personal Access Token"
@@ -4227,6 +4251,9 @@ msgstr ""
 msgid "Reset runners registration token"
 msgstr ""
 
+msgid "Resolve conflicts on source branch"
+msgstr ""
+
 msgid "Resolve discussion"
 msgstr ""
 
@@ -4356,9 +4383,6 @@ msgid "Seconds before reseting failure information"
 msgstr ""
 
 msgid "Seconds to wait for a storage access attempt"
-msgstr ""
-
-msgid "Secret variables"
 msgstr ""
 
 msgid "Security report"
@@ -4523,6 +4547,9 @@ msgid "Something went wrong when toggling the button"
 msgstr ""
 
 msgid "Something went wrong while fetching group member contributions"
+msgstr ""
+
+msgid "Something went wrong while fetching the latest pipeline status."
 msgstr ""
 
 msgid "Something went wrong while fetching the projects."
@@ -4691,6 +4718,9 @@ msgid "Start the Runner!"
 msgstr ""
 
 msgid "Started"
+msgstr ""
+
+msgid "Starts at (UTC)"
 msgstr ""
 
 msgid "State your message to activate"
@@ -4927,6 +4957,12 @@ msgid "There are no merge requests to show"
 msgstr ""
 
 msgid "There are problems accessing Git storage: "
+msgstr ""
+
+msgid "There was an error loading jobs"
+msgstr ""
+
+msgid "There was an error loading latest pipeline"
 msgstr ""
 
 msgid "There was an error loading users activity calendar."
@@ -5187,10 +5223,10 @@ msgstr ""
 msgid "Timeago|in 1 year"
 msgstr ""
 
-msgid "Timeago|in a while"
+msgid "Timeago|less than a minute ago"
 msgstr ""
 
-msgid "Timeago|less than a minute ago"
+msgid "Timeago|right now"
 msgstr ""
 
 msgid "Time|hr"
@@ -5257,6 +5293,9 @@ msgstr ""
 msgid "Toggle Sidebar"
 msgstr ""
 
+msgid "Toggle discussion"
+msgstr ""
+
 msgid "Toggle sidebar"
 msgstr ""
 
@@ -5299,6 +5338,9 @@ msgstr ""
 msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
+msgid "Unable to sign you in to the group with SAML due to \"%{reason}\""
+msgstr ""
+
 msgid "Unknown"
 msgstr ""
 
@@ -5333,6 +5375,9 @@ msgid "Unverified"
 msgstr ""
 
 msgid "Up to date"
+msgstr ""
+
+msgid "Update your group name, description, avatar, and other general settings."
 msgstr ""
 
 msgid "Upgrade your plan to activate Advanced Global Search."
@@ -5384,6 +5429,9 @@ msgid "Used by members to sign in to your group in GitLab"
 msgstr ""
 
 msgid "User and IP Rate Limits"
+msgstr ""
+
+msgid "Variables"
 msgstr ""
 
 msgid "Variables are applied to environments via the runner. They can be protected by only exposing them to protected branches or tags. You can use variables for passwords, secret keys, or whatever you want."
@@ -5503,7 +5551,31 @@ msgstr ""
 msgid "WikiEdit|There is already a page with the same title in that path."
 msgstr ""
 
-msgid "WikiEmptyPageError|You are not allowed to create wiki pages"
+msgid "WikiEmptyIssueMessage|Suggest wiki improvement"
+msgstr ""
+
+msgid "WikiEmptyIssueMessage|You must be a project member in order to add wiki pages. If you have suggestions for how to improve the wiki for this project, consider opening an issue in the %{issues_link}."
+msgstr ""
+
+msgid "WikiEmptyIssueMessage|issue tracker"
+msgstr ""
+
+msgid "WikiEmpty|A wiki is where you can store all the details about your project. This can include why you've created it, it's principles, how to use it, and so on."
+msgstr ""
+
+msgid "WikiEmpty|Create your first page"
+msgstr ""
+
+msgid "WikiEmpty|Suggest wiki improvement"
+msgstr ""
+
+msgid "WikiEmpty|The wiki lets you write documentation for your project"
+msgstr ""
+
+msgid "WikiEmpty|This project has no wiki pages"
+msgstr ""
+
+msgid "WikiEmpty|You must be a project member in order to add wiki pages."
 msgstr ""
 
 msgid "WikiHistoricalPage|This is an old version of this page."
@@ -5572,9 +5644,6 @@ msgstr ""
 msgid "Wiki|Edit Page"
 msgstr ""
 
-msgid "Wiki|Empty page"
-msgstr ""
-
 msgid "Wiki|More Pages"
 msgstr ""
 
@@ -5639,6 +5708,9 @@ msgid "You can only add files when you are on a branch"
 msgstr ""
 
 msgid "You can only edit files when you are on a branch"
+msgstr ""
+
+msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
 msgstr ""
 
 msgid "You cannot write to a read-only secondary GitLab Geo instance. Please use %{link_to_primary_node} instead."
@@ -5994,9 +6066,6 @@ msgid "mrWidget|Allows edits from maintainers"
 msgstr ""
 
 msgid "mrWidget|An error occured while removing your approval."
-msgstr ""
-
-msgid "mrWidget|An error occured while retrieving approval data for this merge request."
 msgstr ""
 
 msgid "mrWidget|An error occured while submitting your approval."

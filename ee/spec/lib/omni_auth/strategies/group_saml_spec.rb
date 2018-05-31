@@ -60,7 +60,7 @@ describe OmniAuth::Strategies::GroupSaml, type: :strategy do
       end
     end
 
-    it 'returns 404 when if group is not found' do
+    it 'returns 404 when the group is not found' do
       expect do
         post "/groups/not-a-group/-/saml/callback", SAMLResponse: saml_response
       end.to raise_error(ActionController::RoutingError)
@@ -92,7 +92,7 @@ describe OmniAuth::Strategies::GroupSaml, type: :strategy do
       end.to raise_error(ActionController::RoutingError)
     end
 
-    it 'returns 404 when if group is not found' do
+    it 'returns 404 when the group is not found' do
       expect do
         post '/users/auth/group_saml', group_path: 'not-a-group'
       end.to raise_error(ActionController::RoutingError)
@@ -102,6 +102,36 @@ describe OmniAuth::Strategies::GroupSaml, type: :strategy do
       expect do
         post '/users/auth/group_saml'
       end.to raise_error(ActionController::RoutingError)
+    end
+  end
+
+  describe 'POST /users/auth/group_saml/metadata' do
+    it 'returns 404 when the group is not found' do
+      post '/users/auth/group_saml/metadata', group_path: 'not-a-group'
+
+      expect(last_response).to be_not_found
+    end
+
+    it 'returns 404 to avoid disclosing group existence' do
+      post '/users/auth/group_saml/metadata', group_path: 'my-group'
+
+      expect(last_response).to be_not_found
+    end
+  end
+
+  describe 'POST /users/auth/group_saml/slo' do
+    it 'returns 404 to avoid disclosing group existence' do
+      post '/users/auth/group_saml/slo', group_path: 'my-group'
+
+      expect(last_response).to be_not_found
+    end
+  end
+
+  describe 'POST /users/auth/group_saml/spslo' do
+    it 'returns 404 to avoid disclosing group existence' do
+      post '/users/auth/group_saml/spslo', group_path: 'my-group'
+
+      expect(last_response).to be_not_found
     end
   end
 end

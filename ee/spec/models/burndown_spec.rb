@@ -1,13 +1,13 @@
 require 'spec_helper'
 
 describe Burndown do
+  set(:user) { create(:user) }
+
   let(:start_date) { "2017-03-01" }
-  let(:due_date) { "2017-03-05" }
-  let(:user) { create(:user) }
+  let(:due_date) { "2017-03-03" }
 
   shared_examples 'burndown for milestone' do
     before do
-      scope.add_master(user)
       build_sample(milestone, issue_params)
     end
 
@@ -21,11 +21,9 @@ describe Burndown do
 
     it "generates an array with date, issue count and weight" do
       expect(subject).to eq([
-        ["2017-03-01", 33, 66],
-        ["2017-03-02", 35, 70],
-        ["2017-03-03", 28, 56],
-        ["2017-03-04", 32, 64],
-        ["2017-03-05", 21, 42]
+        ["2017-03-01", 3, 6],
+        ["2017-03-02", 4, 8],
+        ["2017-03-03", 2, 4]
       ].to_json)
     end
 
@@ -60,11 +58,9 @@ describe Burndown do
 
       it "considers closed_at as milestone start date" do
         expect(subject).to eq([
-          ["2017-03-01", 27, 54],
-          ["2017-03-02", 27, 54],
-          ["2017-03-03", 27, 54],
-          ["2017-03-04", 27, 54],
-          ["2017-03-05", 27, 54]
+          ["2017-03-01", 3, 6],
+          ["2017-03-02", 3, 6],
+          ["2017-03-03", 3, 6]
         ].to_json)
       end
 
@@ -94,12 +90,10 @@ describe Burndown do
       let(:project) { milestone.project }
       let(:issue_params) do
         {
-          title: FFaker::Lorem.sentence(6),
-          description: FFaker::Lorem.sentence,
-          state: 'opened',
           milestone: milestone,
           weight: 2,
-          project_id: project.id
+          project_id: project.id,
+          author: user
         }
       end
       let(:scope) { project }
@@ -119,12 +113,10 @@ describe Burndown do
         let(:milestone) { nested_group_milestone }
         let(:issue_params) do
           {
-            title: FFaker::Lorem.sentence(6),
-            description: FFaker::Lorem.sentence,
-            state: 'opened',
             milestone: milestone,
             weight: 2,
-            project_id: nested_group_project.id
+            project_id: nested_group_project.id,
+            author: user
           }
         end
         let(:scope) { group }
@@ -136,12 +128,10 @@ describe Burndown do
         let(:milestone) { group_milestone }
         let(:issue_params) do
           {
-            title: FFaker::Lorem.sentence(6),
-            description: FFaker::Lorem.sentence,
-            state: 'opened',
             milestone: milestone,
             weight: 2,
-            project_id: group_project.id
+            project_id: group_project.id,
+            author: user
           }
         end
         let(:scope) { group }
@@ -155,7 +145,7 @@ describe Burndown do
       day = date.day
       next if day.even?
 
-      count = day * 4
+      count = day
       Timecop.travel(date) do
         # Create issues
         issues = create_list(:issue, count, issue_params)

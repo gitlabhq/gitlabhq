@@ -1,5 +1,0 @@
----
-title: Does not log failed sign-in attempts when in a GitLab read-only instance
-merge_request: 5643
-author:
-type: fixed
