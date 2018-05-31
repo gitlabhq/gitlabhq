@@ -148,7 +148,7 @@ describe 'User comments on a diff', :js do
       end
 
       page.within('.notes-tab .badge') do
-         expect(page).to have_content('1')
+        expect(page).to have_content('1')
       end
 
       page.within('.diff-file:nth-of-type(5) .note') do
