@@ -238,7 +238,7 @@
  *
  * Note: This will become redundant once selectors lvl4 is supported
  */
-@mixin not($notList...) {
+@mixin not-list($notList...) {
   //if only a single value given
   @if (length($notList) == 1) {
     //it is probably a list variable so set ignore list to the variable

@@ -1,7 +1,7 @@
 .gl-pagination {
   @include media-breakpoint-down(xs) {
     .page-item {
-      @include not(
+      @include not-list(
         '.active',
         '.js-first-button',
         '.js-last-button',
