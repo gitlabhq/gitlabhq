@@ -148,8 +148,14 @@ table {
   }
 }
 
-.nav-tabs .nav-link {
-  border: 0;
+.nav-tabs {
+  .nav-link {
+    border: 0;
+  }
+
+  .nav-item {
+    margin-bottom: 0;
+  }
 }
 
 pre code {
