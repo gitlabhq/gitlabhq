@@ -5,8 +5,8 @@
       = f.label :enabled, _("Enabled"), class: 'col-form-label col-sm-2'
       .col-sm-10
         .form-check
-          = f.label :enabled do
-            = f.check_box :enabled
+          = f.check_box :enabled, class: 'form-check-input'
+          = f.label :enabled, class: 'form-check-label' do
             = _("Enable SAML authentication for this group")
     .form-group.row
       = f.label :sso_url, class: 'col-form-label col-sm-2' do

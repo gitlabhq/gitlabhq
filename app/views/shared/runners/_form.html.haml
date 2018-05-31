@@ -4,26 +4,26 @@
     = label :active, "Active", class: 'col-form-label col-sm-2'
     .col-sm-10
       .form-check
-        = f.check_box :active
+        = f.check_box :active, { class: 'form-check-input' }
         %span.light Paused Runners don't accept new jobs
   .form-group.row
     = label :protected, "Protected", class: 'col-form-label col-sm-2'
     .col-sm-10
       .form-check
-        = f.check_box :access_level, {}, 'ref_protected', 'not_protected'
+        = f.check_box :access_level, { class: 'form-check-input' }, 'ref_protected', 'not_protected'
         %span.light This runner will only run on pipelines triggered on protected branches
   .form-group.row
     = label :run_untagged, 'Run untagged jobs', class: 'col-form-label col-sm-2'
     .col-sm-10
       .form-check
-        = f.check_box :run_untagged
+        = f.check_box :run_untagged, { class: 'form-check-input' }
         %span.light Indicates whether this runner can pick jobs without tags
   - unless runner.group_type?
     .form-group.row
       = label :locked, _('Lock to current projects'), class: 'col-form-label col-sm-2'
       .col-sm-10
         .form-check
-          = f.check_box :locked
+          = f.check_box :locked, { class: 'form-check-input' }
           %span.light= _('When a runner is locked, it cannot be assigned to other projects')
   .form-group.row
     = label_tag :token, class: 'col-form-label col-sm-2' do

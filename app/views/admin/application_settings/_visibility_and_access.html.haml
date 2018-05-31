@@ -50,8 +50,8 @@
         = f.label :allow_group_owners_to_manage_ldap, 'LDAP settings', class: 'col-form-label col-sm-2'
         .col-sm-10
           .form-check
-            = f.label :allow_group_owners_to_manage_ldap do
-              = f.check_box :allow_group_owners_to_manage_ldap
+            = f.check_box :allow_group_owners_to_manage_ldap, class: 'form-check-input'
+            = f.label :allow_group_owners_to_manage_ldap, class: 'form-check-label' do
               Allow group owners to manage LDAP-related settings
           %span.form-text.text-muted
             If checked, group owners can manage LDAP group links and LDAP member overrides
@@ -60,8 +60,8 @@
     .form-group.row
       .offset-sm-2.col-sm-10
         .form-check
-          = f.label :project_export_enabled do
-            = f.check_box :project_export_enabled
+          = f.check_box :project_export_enabled, class: 'form-check-input'
+          = f.label :project_export_enabled, class: 'form-check-label' do
             Project export enabled
 
     .form-group.row

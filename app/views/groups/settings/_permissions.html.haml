@@ -13,8 +13,8 @@
         = s_('GroupSettings|Share with group lock')
       .col-sm-10
         .form-check
-          = f.label :share_with_group_lock do
-            = f.check_box :share_with_group_lock, disabled: !can_change_share_with_group_lock?(@group)
+          = f.check_box :share_with_group_lock, disabled: !can_change_share_with_group_lock?(@group), class: 'form-check-input'
+          = f.label :share_with_group_lock, class: 'form-check-label' do
             %strong
               - group_link = link_to @group.name, group_path(@group)
               = s_('GroupSettings|Prevent sharing a project within %{group} with other groups').html_safe % { group: group_link }
