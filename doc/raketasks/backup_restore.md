@@ -492,8 +492,8 @@ directory (repositories, uploads).
 To restore a backup, you will also need to restore `/etc/gitlab/gitlab-secrets.json`
 (for Omnibus packages) or `/home/git/gitlab/.secret` (for installations
 from source). This file contains the database encryption key,
-[CI secret variables](../ci/variables/README.md#secret-variables), and
-secret variables used for [two-factor authentication](../user/profile/account/two_factor_authentication.md).
+[CI/CD variables](../ci/variables/README.md#variables), and
+variables used for [two-factor authentication](../user/profile/account/two_factor_authentication.md).
 If you fail to restore this encryption key file along with the application data
 backup, users with two-factor authentication enabled and GitLab Runners will
 lose access to your GitLab server.

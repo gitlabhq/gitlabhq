@@ -233,7 +233,7 @@ When adding more than one Kubernetes clusters to your project, you need to
 differentiate them with an environment scope. The environment scope associates
 clusters and [environments](../../../ci/environments.md) in an 1:1 relationship
 similar to how the
-[environment-specific variables](../../../ci/variables/README.md#limiting-environment-scopes-of-secret-variables)
+[environment-specific variables](../../../ci/variables/README.md#limiting-environment-scopes-of-variables)
 work.
 
 The default environment scope is `*`, which means all jobs, regardless of their
