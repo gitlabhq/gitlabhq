@@ -53,6 +53,14 @@ module Gitlab
         @user = user
         @project = project
         @imported_object_retries = 0
+
+        # Remove excluded keys from relation_hash
+        # We don't do this in the parsed_relation_hash because of the 'transformed attributes'
+        # For example, MergeRequestDiffFiles exports its diff attribute as utf8_diff. Then,
+        # in the create method that attribute is renamed to diff. And because diff is an excluded key,
+        # if we clean the excluded keys in the parsed_relation_hash, it will be removed
+        # from the object attributes and the export will fail.
+        @relation_hash.except!(*excluded_keys)
       end
 
       # Creates an object from an actual model with name "relation_sym" with params from

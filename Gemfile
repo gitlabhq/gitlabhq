@@ -143,7 +143,7 @@ gem 'gitlab-markup', '~> 1.6.2'
 gem 'redcarpet', '~> 3.4'
 gem 'commonmarker', '~> 0.17'
 gem 'RedCloth', '~> 4.3.2'
-gem 'rdoc', '~> 4.2'
+gem 'rdoc', '~> 6.0'
 gem 'org-ruby', '~> 0.9.12'
 gem 'creole', '~> 0.5.0'
 gem 'wikicloth', '0.8.1'
@@ -153,6 +153,9 @@ gem 'rouge', '~> 3.1'
 gem 'truncato', '~> 0.7.9'
 gem 'bootstrap_form', '~> 2.7.0'
 gem 'nokogiri', '~> 1.8.2'
+
+# Calendar rendering
+gem 'icalendar'
 
 # Diffs
 gem 'diffy', '~> 3.1.0'
@@ -229,7 +232,7 @@ gem 'asana', '~> 0.6.0'
 gem 'ruby-fogbugz', '~> 0.2.1'
 
 # Kubernetes integration
-gem 'kubeclient', '~> 3.0'
+gem 'kubeclient', '~> 3.1.0'
 
 # Sanitize user input
 gem 'sanitize', '~> 2.0'
@@ -332,7 +335,7 @@ group :development, :test do
   gem 'pry-byebug', '~> 3.4.1', platform: :mri
   gem 'pry-rails', '~> 0.3.4'
 
-  gem 'awesome_print', '~> 1.2.0', require: false
+  gem 'awesome_print', require: false
   gem 'fuubar', '~> 2.2.0'
 
   gem 'database_cleaner', '~> 1.5.0'

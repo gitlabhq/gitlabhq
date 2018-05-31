@@ -389,6 +389,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       ## EE-specific
       resources :vulnerability_feedback, only: [:index, :create, :destroy], constraints: { id: /\d+/ }
 
+      get :issues, to: 'issues#calendar', constraints: lambda { |req| req.format == :ics }
       resources :issues, concerns: :awardable, constraints: { id: /\d+/ } do
         member do
           post :toggle_subscription

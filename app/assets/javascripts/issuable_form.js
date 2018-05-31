@@ -32,7 +32,7 @@ export default class IssuableForm {
     }
 
     this.initAutosave();
-    this.form.on('submit:success', this.handleSubmit);
+    this.form.on('submit', this.handleSubmit);
     this.form.on('click', '.btn-cancel', this.resetAutosave);
     this.initWip();
 

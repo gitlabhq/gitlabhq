@@ -13,9 +13,9 @@
   = f.hidden_field(:team_id, value: selected_id, required: true) if @teams.one?
   .form-text.text-muted
     - if @teams.one?
-      This is the only available team.
+      This is the only available team that you are a member of.
     - else
-      The list shows all available teams.
+      The list shows all available teams that you are a member of.
     To create a team,
     = link_to "#{Gitlab.config.mattermost.host}/create_team" do
       use Mattermost's interface

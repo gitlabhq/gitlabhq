@@ -1,0 +1,5 @@
+---
+title: Treat external authorization service response status 403 as failure
+merge_request:
+author:
+type: fixed

@@ -5,9 +5,9 @@ describe EE::Gitlab::ExternalAuthorization::Response do
   subject(:response) { described_class.new(excon_response) }
 
   describe '#valid?' do
-    it 'is valid for 200 & 401 responses' do
-      [200, 401].each do |status|
-        expect(excon_response).to receive(:status).and_return(status)
+    it 'is valid for 200, 401, and 403 responses' do
+      [200, 401, 403].each do |status|
+        allow(excon_response).to receive(:status).and_return(status)
 
         expect(response).to be_valid
       end
@@ -39,6 +39,14 @@ describe EE::Gitlab::ExternalAuthorization::Response do
       allow(excon_response).to receive(:status).and_return(200)
 
       expect(response).to be_successful
+    end
+
+    it 'is `false` if the status is 401 or 403' do
+      [401, 403].each do |status|
+        allow(excon_response).to receive(:status).and_return(status)
+
+        expect(response).not_to be_successful
+      end
     end
   end
 end

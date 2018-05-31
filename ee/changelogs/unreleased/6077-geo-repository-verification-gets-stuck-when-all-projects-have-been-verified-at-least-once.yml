@@ -1,5 +1,0 @@
----
-title: Geo - Calculate the wiki checksum even when wiki is disabled
-merge_request: 5772
-author:
-type: fixed

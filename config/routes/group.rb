@@ -5,9 +5,10 @@ end
 constraints(::Constraints::GroupUrlConstrainer.new) do
   scope(path: 'groups/*id',
         controller: :groups,
-        constraints: { id: Gitlab::PathRegex.full_namespace_route_regex, format: /(html|json|atom)/ }) do
+        constraints: { id: Gitlab::PathRegex.full_namespace_route_regex, format: /(html|json|atom|ics)/ }) do
     scope(path: '-') do
       get :edit, as: :edit_group
+      get :issues, as: :issues_group_calendar, action: :issues_calendar, constraints: lambda { |req| req.format == :ics }
       get :issues, as: :issues_group
       get :merge_requests, as: :merge_requests_group
       get :projects, as: :projects_group
@@ -31,6 +32,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     resource :variables, only: [:show, :update]
 
     resources :children, only: [:index]
+    resources :shared_projects, only: [:index]
 
     resources :labels, except: [:show] do
       post :toggle_subscription, on: :member

@@ -81,7 +81,7 @@ improvements made to this communication layer.
 
 There is a specific **internal** endpoint in our api code (Grape),
 that receives all requests from this System Hooks:
-`/api/{v3,v4}/geo/receive_events`.
+`/api/v4/geo/receive_events`.
 
 We switch and filter from each event by the `event_name` field.
 

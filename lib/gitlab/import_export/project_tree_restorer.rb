@@ -88,16 +88,18 @@ module Gitlab
       end
 
       def project_params
-        @project_params ||= json_params.merge(override_params)
+        @project_params ||= begin
+          attrs = json_params.merge(override_params)
+
+          # Cleaning all imported and overridden params
+          Gitlab::ImportExport::AttributeCleaner.clean(relation_hash: attrs,
+                                                       relation_class: Project,
+                                                       excluded_keys: excluded_keys_for_relation(:project))
+        end
       end
 
       def override_params
-        return {} unless params = @project.import_data&.data&.fetch('override_params', nil)
-
-        @override_params ||= params.select do |key, _value|
-          Project.column_names.include?(key.to_s) &&
-            !reader.project_tree[:except].include?(key.to_sym)
-        end
+        @override_params ||= @project.import_data&.data&.fetch('override_params', nil) || {}
       end
 
       def json_params
@@ -171,7 +173,8 @@ module Gitlab
                                                        relation_hash: parsed_relation_hash(relation_hash, relation.to_sym),
                                                        members_mapper: members_mapper,
                                                        user: @user,
-                                                       project: @restored_project)
+                                                       project: @restored_project,
+                                                       excluded_keys: excluded_keys_for_relation(relation))
         end.compact
 
         relation_hash_list.is_a?(Array) ? relation_array : relation_array.first
@@ -191,6 +194,10 @@ module Gitlab
 
       def reader
         @reader ||= Gitlab::ImportExport::Reader.new(shared: @shared)
+      end
+
+      def excluded_keys_for_relation(relation)
+        @reader.attributes_finder.find_excluded_keys(relation)
       end
     end
   end

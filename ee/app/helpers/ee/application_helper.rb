@@ -10,8 +10,8 @@ module EE
         { primary_node: link_to('primary node', ::Gitlab::Geo.primary_node.url) }).html_safe
     end
 
-    def render_ce(partial)
-      render template: find_ce_partial(partial)
+    def render_ce(partial, locals = {})
+      render template: find_ce_partial(partial), locals: locals
     end
 
     def find_ce_partial(partial)

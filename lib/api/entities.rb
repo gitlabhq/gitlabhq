@@ -860,8 +860,8 @@ module API
     class ProjectWithAccess < Project
       expose :permissions do
         expose :project_access, using: Entities::ProjectAccess do |project, options|
-          if options.key?(:project_members)
-            (options[:project_members] || []).find { |member| member.source_id == project.id }
+          if options[:project_members]
+            options[:project_members].find { |member| member.source_id == project.id }
           else
             project.project_member(options[:current_user])
           end
@@ -869,8 +869,8 @@ module API
 
         expose :group_access, using: Entities::GroupAccess do |project, options|
           if project.group
-            if options.key?(:group_members)
-              (options[:group_members] || []).find { |member| member.source_id == project.namespace_id }
+            if options[:group_members]
+              options[:group_members].find { |member| member.source_id == project.namespace_id }
             else
               project.group.group_member(options[:current_user])
             end
@@ -881,13 +881,24 @@ module API
       def self.preload_relation(projects_relation, options = {})
         relation = super(projects_relation, options)
 
-        unless options.key?(:group_members)
-          relation = relation.preload(group: [group_members: [:source, user: [notification_settings: :source]]])
+        # MySQL doesn't support LIMIT inside an IN subquery
+        if Gitlab::Database.mysql?
+          project_ids = relation.pluck('projects.id')
+          namespace_ids = relation.pluck(:namespace_id)
+        else
+          project_ids = relation.select('projects.id')
+          namespace_ids = relation.select(:namespace_id)
         end
 
-        unless options.key?(:project_members)
-          relation = relation.preload(project_members: [:source, user: [notification_settings: :source]])
-        end
+        options[:project_members] = options[:current_user]
+          .project_members
+          .where(source_id: project_ids)
+          .preload(:source, user: [notification_settings: :source])
+
+        options[:group_members] = options[:current_user]
+          .group_members
+          .where(source_id: namespace_ids)
+          .preload(:source, user: [notification_settings: :source])
 
         relation
       end
