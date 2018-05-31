@@ -29,6 +29,18 @@ describe API::MergeRequests do
     project.add_reporter(user)
   end
 
+  describe 'route shadowing' do
+    include GrapePathHelpers::NamedRouteMatcher
+
+    it 'does not occur' do
+      path = api_v4_projects_merge_requests_path(id: 1)
+      expect(path).to eq('/api/v4/projects/1/merge_requests')
+
+      path = api_v4_projects_merge_requests_path(id: 1, merge_request_iid: 3)
+      expect(path).to eq('/api/v4/projects/1/merge_requests/3')
+    end
+  end
+
   describe 'GET /merge_requests' do
     context 'when unauthenticated' do
       it 'returns an array of all merge requests' do
@@ -263,6 +275,7 @@ describe API::MergeRequests do
         expect(json_response.first['sha']).to eq(merge_request_merged.diff_head_sha)
         expect(json_response.first['merge_commit_sha']).not_to be_nil
         expect(json_response.first['merge_commit_sha']).to eq(merge_request_merged.merge_commit_sha)
+        expect(json_response.first['squash']).to eq(merge_request_merged.squash)
       end
 
       it "returns an array of all merge_requests using simple mode" do
@@ -671,12 +684,14 @@ describe API::MergeRequests do
              target_branch: 'master',
              author: user,
              labels: 'label, label2',
-             milestone_id: milestone.id
+             milestone_id: milestone.id,
+             squash: true
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq('Test merge_request')
         expect(json_response['labels']).to eq(%w(label label2))
         expect(json_response['milestone']['id']).to eq(milestone.id)
+        expect(json_response['squash']).to be_truthy
         expect(json_response['force_remove_source_branch']).to be_falsy
       end
 
@@ -965,6 +980,14 @@ describe API::MergeRequests do
       expect(response).to have_gitlab_http_status(200)
     end
 
+    it "updates the MR's squash attribute" do
+      expect do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), squash: true
+      end.to change { merge_request.reload.squash }
+
+      expect(response).to have_gitlab_http_status(200)
+    end
+
     it "enables merge when pipeline succeeds if the pipeline is active" do
       allow_any_instance_of(MergeRequest).to receive(:head_pipeline).and_return(pipeline)
       allow(pipeline).to receive(:active?).and_return(true)
@@ -1027,6 +1050,13 @@ describe API::MergeRequests do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), milestone_id: milestone.id
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['milestone']['id']).to eq(milestone.id)
+    end
+
+    it "updates squash and returns merge_request" do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), squash: true
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response['squash']).to be_truthy
     end
 
     it "returns merge_request with renamed target_branch" do

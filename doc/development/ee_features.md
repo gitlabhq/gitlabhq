@@ -368,33 +368,59 @@ resolve when you add the indentation to the equation.
 EE-specific views should be placed in `ee/app/views/`, using extra
 sub-directories if appropriate.
 
+#### Using `render_if_exists`
+
 Instead of using regular `render`, we should use `render_if_exists`, which
 will not render anything if it cannot find the specific partial. We use this
 so that we could put `render_if_exists` in CE, keeping code the same between
 CE and EE.
 
-Also, it should search for the EE partial first, and then CE partial, and
-then if nothing found, render nothing.
-
-This has two uses:
-
-- CE renders nothing, and EE renders its EE partial.
-- CE renders its CE partial, and EE renders its EE partial, while the view
-  file stays the same.
-
 The advantages of this:
 
 - Minimal code difference between CE and EE.
 - Very clear hints about where we're extending EE views while reading CE codes.
-- Whenever we want to show something different in CE, we could just add CE
-  partials. Same applies the other way around. If we just use
-  `render_if_exists`, it would be very easy to change the content in EE.
 
 The disadvantage of this:
 
 - Slightly more work while developing EE features, because now we need to
   port `render_if_exists` to CE.
 - If we have typos in the partial name, it would be silently ignored.
+
+#### Using `render_ce`
+
+For `render` and `render_if_exists`, they search for the EE partial first,
+and then CE partial. They would only render a particular partial, not all
+partials with the same name. We could take the advantage of this, so that
+the same partial path (e.g. `shared/issuable/form/default_templates`) could
+be referring to the CE partial in CE (i.e.
+`app/views/shared/issuable/form/_default_templates.html.haml`), while EE
+partial in EE (i.e.
+`ee/app/views/shared/issuable/form/_default_templates.html.haml`). This way,
+we could show different things between CE and EE.
+
+However sometimes we would also want to reuse the CE partial in EE partial
+because we might just want to add something to the existing CE partial. We
+could workaround this by adding another partial with a different name, but it
+would be tedious to do so.
+
+In this case, we could as well just use `render_ce` which would ignore any EE
+partials. One example would be
+`ee/app/views/shared/issuable/form/_default_templates.html.haml`:
+
+``` haml
+- if @project.feature_available?(:issuable_default_templates)
+  = render_ce 'shared/issuable/form/default_templates'
+- elsif show_promotions?
+  = render 'shared/promotions/promote_issue_templates'
+```
+
+In the above example, we can't use
+`render 'shared/issuable/form/default_templates'` because it would find the
+same EE partial, causing infinite recursion. Instead, we could use `render_ce`
+so it ignores any partials in `ee/` and then it would render the CE partial
+(i.e. `app/views/shared/issuable/form/_default_templates.html.haml`)
+for the same path (i.e. `shared/issuable/form/default_templates`). This way
+we could easily wrap around the CE partial.
 
 ### Code in `lib/`
 

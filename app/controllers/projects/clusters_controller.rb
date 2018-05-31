@@ -9,6 +9,7 @@ class Projects::ClustersController < Projects::ApplicationController
   before_action :authorize_update_cluster!, only: [:update]
   before_action :authorize_admin_cluster!, only: [:destroy]
   before_action :update_applications_status, only: [:status]
+  helper_method :token_in_session
 
   STATUS_POLLING_INTERVAL = 10_000
 
@@ -190,8 +191,7 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def token_in_session
-    @token_in_session ||=
-      session[GoogleApi::CloudPlatform::Client.session_key_for_token]
+    session[GoogleApi::CloudPlatform::Client.session_key_for_token]
   end
 
   def expires_at_in_session

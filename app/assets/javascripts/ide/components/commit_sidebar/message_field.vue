@@ -80,7 +80,7 @@ export default {
             {{ __('Commit Message') }}
             <span
               v-popover="$options.popoverOptions"
-              class="help-block prepend-left-10"
+              class="form-text text-muted prepend-left-10"
             >
               <icon
                 name="question"

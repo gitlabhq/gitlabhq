@@ -31,6 +31,10 @@ export const setMachineType = ({ commit }, selectedMachineType) => {
   commit(types.SET_MACHINE_TYPE, selectedMachineType);
 };
 
+export const setIsValidatingProjectBilling = ({ commit }, isValidatingProjectBilling) => {
+  commit(types.SET_IS_VALIDATING_PROJECT_BILLING, isValidatingProjectBilling);
+};
+
 export const fetchProjects = ({ commit }) =>
   gapiResourceListRequest({
     resource: gapi.client.cloudresourcemanager.projects,
@@ -40,20 +44,25 @@ export const fetchProjects = ({ commit }) =>
     payloadKey: 'projects',
   });
 
-export const validateProjectBilling = ({ commit, state }) =>
+export const validateProjectBilling = ({ dispatch, commit, state }) =>
   new Promise((resolve, reject) => {
     const request = gapi.client.cloudbilling.projects.getBillingInfo({
       name: `projects/${state.selectedProject.projectId}`,
     });
+
+    commit(types.SET_ZONE, '');
+    commit(types.SET_MACHINE_TYPE, '');
 
     return request.then(
       resp => {
         const { billingEnabled } = resp.result;
 
         commit(types.SET_PROJECT_BILLING_STATUS, !!billingEnabled);
+        dispatch('setIsValidatingProjectBilling', false);
         resolve();
       },
       resp => {
+        dispatch('setIsValidatingProjectBilling', false);
         reject(resp);
       },
     );

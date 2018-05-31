@@ -8,14 +8,24 @@ export default {
   name: 'GkeMachineTypeDropdown',
   mixins: [gkeDropdownMixin],
   computed: {
-    ...mapState(['projectHasBillingEnabled', 'selectedZone', 'selectedMachineType']),
+    ...mapState([
+      'isValidatingProjectBilling',
+      'projectHasBillingEnabled',
+      'selectedZone',
+      'selectedMachineType',
+    ]),
     ...mapState({ items: 'machineTypes' }),
     ...mapGetters(['hasZone', 'hasMachineType']),
     allDropdownsSelected() {
       return this.projectHasBillingEnabled && this.hasZone && this.hasMachineType;
     },
     isDisabled() {
-      return !this.projectHasBillingEnabled || !this.selectedZone;
+      return (
+        this.isLoading ||
+        this.isValidatingProjectBilling ||
+        !this.projectHasBillingEnabled ||
+        !this.hasZone
+      );
     },
     toggleText() {
       if (this.isLoading) {
@@ -45,11 +55,15 @@ export default {
   },
   watch: {
     selectedZone() {
-      this.isLoading = true;
+      this.hasErrors = false;
 
-      this.fetchMachineTypes()
-        .then(this.fetchSuccessHandler)
-        .catch(this.fetchFailureHandler);
+      if (this.hasZone) {
+        this.isLoading = true;
+
+        this.fetchMachineTypes()
+          .then(this.fetchSuccessHandler)
+          .catch(this.fetchFailureHandler);
+      }
     },
     selectedMachineType() {
       this.enableSubmit();
@@ -118,7 +132,7 @@ export default {
       </div>
     </div>
     <span
-      class="help-block"
+      class="form-text text-muted"
       :class="{ 'gl-field-error': hasErrors }"
       v-if="hasErrors"
     >

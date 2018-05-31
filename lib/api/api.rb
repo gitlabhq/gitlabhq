@@ -15,7 +15,8 @@ module API
                   include: [
                     GrapeLogging::Loggers::FilterParameters.new,
                     GrapeLogging::Loggers::ClientEnv.new,
-                    Gitlab::GrapeLogging::Loggers::UserLogger.new
+                    Gitlab::GrapeLogging::Loggers::UserLogger.new,
+                    Gitlab::GrapeLogging::Loggers::QueueDurationLogger.new
                   ]
 
     allow_access_with_scope :api

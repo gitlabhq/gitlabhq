@@ -32,6 +32,10 @@ module Gitlab
         @methods[key].nil? ? {} : { methods: @methods[key] }
       end
 
+      def find_excluded_keys(klass_name)
+        @excluded_attributes[klass_name.to_sym]&.map(&:to_s) || []
+      end
+
       private
 
       def find_attributes_only(value)

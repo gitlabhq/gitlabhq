@@ -8,10 +8,7 @@ describe('Confidential Issue Sidebar Block', () => {
   beforeEach(() => {
     const Component = Vue.extend(confidentialIssueSidebar);
     const service = {
-      update: () => new Promise((resolve, reject) => {
-        resolve(true);
-        reject('failed!');
-      }),
+      update: () => Promise.resolve(true),
     };
 
     vm1 = new Component({

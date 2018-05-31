@@ -1,5 +1,4 @@
 /* eslint-disable comma-dangle */
-/* global BoardService */
 /* global List */
 /* global ListIssue */
 
