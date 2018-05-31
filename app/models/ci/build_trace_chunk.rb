@@ -52,7 +52,7 @@ module Ci
       end
 
       # Find stale live traces and return their build ids
-      def find_stale(finished_before: 1.hour.ago)
+      def find_stale_in_batches(finished_before: 1.hour.ago)
         include(EachBatch)
           .select(:build_id)
           .group(:build_id)
