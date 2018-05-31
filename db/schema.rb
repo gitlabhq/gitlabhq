@@ -206,6 +206,7 @@ ActiveRecord::Schema.define(version: 20180612175636) do
     t.string "encrypted_external_auth_client_key_pass_iv"
     t.string "email_additional_text"
     t.boolean "enforce_terms", default: false
+    t.boolean "elt_database_dump_enabled"
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -1631,6 +1632,7 @@ ActiveRecord::Schema.define(version: 20180612175636) do
     t.text "title_html"
     t.text "description_html"
     t.integer "time_estimate"
+    t.boolean "squash", default: false, null: false
     t.integer "cached_markdown_version"
     t.datetime "last_edited_at"
     t.integer "last_edited_by_id"
@@ -2020,9 +2022,9 @@ ActiveRecord::Schema.define(version: 20180612175636) do
     t.datetime "next_execution_timestamp"
     t.string "status"
     t.string "jid"
+    t.text "last_error"
     t.datetime_with_timezone "last_update_at"
     t.datetime_with_timezone "last_successful_update_at"
-    t.text "last_error"
   end
 
   add_index "project_mirror_data", ["jid"], name: "index_project_mirror_data_on_jid", using: :btree
@@ -2277,6 +2279,7 @@ ActiveRecord::Schema.define(version: 20180612175636) do
   end
 
   add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path", unique: true, using: :btree
+  add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path_text_pattern_ops", using: :btree, opclasses: {"path"=>"varchar_pattern_ops"}
   add_index "redirect_routes", ["source_type", "source_id"], name: "index_redirect_routes_on_source_type_and_source_id", using: :btree
 
   create_table "releases", force: :cascade do |t|

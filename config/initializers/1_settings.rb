@@ -162,6 +162,7 @@ Settings.gitlab['import_sources'] ||= Gitlab::ImportSources.values
 Settings.gitlab['trusted_proxies'] ||= []
 Settings.gitlab['no_todos_messages'] ||= YAML.load_file(Rails.root.join('config', 'no_todos_messages.yml'))
 Settings.gitlab['usage_ping_enabled'] = true if Settings.gitlab['usage_ping_enabled'].nil?
+Settings.gitlab['elt_database_dump_enabled'] = true if Settings.gitlab['elt_database_dump_enabled'].nil?
 
 #
 # Elasticseacrh
@@ -369,6 +370,10 @@ Settings.cron_jobs['stuck_import_jobs_worker']['job_class'] = 'StuckImportJobsWo
 Settings.cron_jobs['gitlab_usage_ping_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= Settings.__send__(:cron_for_usage_ping)
 Settings.cron_jobs['gitlab_usage_ping_worker']['job_class'] = 'GitlabUsagePingWorker'
+
+Settings.cron_jobs['gitlab_elt_database_dump'] ||= Settingslogic.new({})
+Settings.cron_jobs['gitlab_elt_database_dump']['cron'] ||= '0 23 * * *';
+Settings.cron_jobs['gitlab_elt_database_dump']['job_class'] ||= 'GitlabELTDataDumpWorker';
 
 Settings.cron_jobs['schedule_update_user_activity_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['schedule_update_user_activity_worker']['cron'] ||= '30 0 * * *'

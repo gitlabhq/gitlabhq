@@ -26,8 +26,6 @@ describe Gitlab::Pseudonymity do
       project_table_file = pseudo.tables_to_csv[0]
       # Ignore the `.` and `..` in the directory.
 
-      entry = Dir.entries(base_dir)[2]
-
       expect(project_table_file.include? "projects_").to be true
       expect(project_table_file.include? ".csv").to be true
       columns = []

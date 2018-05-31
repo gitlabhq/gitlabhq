@@ -100,9 +100,18 @@ module EE
           slack_app_enabled: false,
           slack_app_id: nil,
           slack_app_secret: nil,
-          slack_app_verification_token: nil
+          slack_app_verification_token: nil,
+          elt_database_dump_enabled: Settings.gitlab['elt_database_dump_enabled'],
         )
       end
+    end
+
+    def elt_database_dump_can_be_configured?
+      Settings.gitlab.elt_database_dump_enabled
+    end
+
+    def elt_database_dump_enabled
+      elt_database_dump_can_be_configured? && super
     end
 
     def should_check_namespace_plan?

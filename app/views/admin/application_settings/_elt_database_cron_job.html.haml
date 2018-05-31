@@ -1,0 +1,19 @@
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group.row
+      .offset-sm-2.col-sm-10
+        - can_be_configured = @application_setting.elt_database_dump_can_be_configured?
+        .form-check
+          = f.label :elt_database_dump_enabled do
+            = f.check_box :elt_database_dump_enabled, disabled: !can_be_configured
+            Enable ELT Database Cron Job
+          .form-text.text-muted
+            - if can_be_configured
+              GitLab will run a cron job which will send pseudoanonymized data to be processed and analyzed.
+            - else
+              The ELT database cron job is disabled. When enabled the cron job will send pseudoanonymized data to be processed and analyzed.
+
+  = f.submit 'Save changes', class: "btn btn-success"
+
