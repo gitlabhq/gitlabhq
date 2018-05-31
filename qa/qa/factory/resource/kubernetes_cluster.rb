@@ -9,9 +9,9 @@ module QA
           :install_helm_tiller, :install_ingress, :install_prometheus, :install_runner
 
         product :ingress_ip do
-          Page::Project::Operations::Kubernetes::Show.perform do |page|
-            page.ingress_ip
-          end
+         # Page::Project::Operations::Kubernetes::Show.perform do |page|
+         #   page.ingress_ip
+         # end
         end
 
         def fabricate!

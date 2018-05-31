@@ -1,0 +1,3 @@
+job1:
+  script:
+    - echo hello run k8s runner

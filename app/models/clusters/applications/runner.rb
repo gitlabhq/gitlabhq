@@ -15,7 +15,7 @@ module Clusters
       default_value_for :version, VERSION
 
       def chart
-        "#{name}/gitlab-runner"
+        "https://gitlab.com/charts/gitlab-runner/-/archive/namespace-helper-functions/gitlab-runner-master.tar.gz"
       end
 
       def repository
