@@ -23,6 +23,7 @@ module API
     prefix :api
 
     version 'v3', using: :path do
+<<<<<<< HEAD
       ## EE-specific API V3 endpoints START
       # Although the following endpoints are kept behind V3 namespace, they're not
       # deprecated neither should be removed when V3 get removed.
@@ -30,6 +31,8 @@ module API
       mount ::API::V3::Github
       ## EE-specific API V3 endpoints END
 
+=======
+>>>>>>> upstream/master
       route :any, '*path' do
         error!('API V3 is no longer supported. Use API V4 instead.', 410)
       end
