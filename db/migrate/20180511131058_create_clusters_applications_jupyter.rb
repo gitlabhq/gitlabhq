@@ -9,15 +9,15 @@ class CreateClustersApplicationsJupyter < ActiveRecord::Migration
   def change
     create_table :clusters_applications_jupyter do |t|
       t.references :cluster, null: false, unique: true, foreign_key: { on_delete: :cascade }
-      t.references :oauth_application
+      t.references :oauth_application, foreign_key: { on_delete: :nullify }
 
       t.integer :status, null: false
       t.string :version, null: false
       t.string :hostname
 
-      t.text :status_reason
-
       t.timestamps_with_timezone null: false
+
+      t.text :status_reason
     end
   end
 end
