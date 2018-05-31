@@ -10,8 +10,8 @@
     .form-group.row
       .offset-sm-2.col-sm-10
         .form-check
-          = f.label :help_page_hide_commercial_content do
-            = f.check_box :help_page_hide_commercial_content
+          = f.check_box :help_page_hide_commercial_content, class: 'form-check-input'
+          = f.label :help_page_hide_commercial_content, class: 'form-check-label' do
             Hide marketing-related entries from help
     .form-group.row
       = f.label :help_page_support_url, 'Support page URL', class: 'col-form-label col-sm-2'

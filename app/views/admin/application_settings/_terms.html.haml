@@ -5,8 +5,8 @@
     .form-group
       .col-sm-12
         .form-check
-          = f.label :enforce_terms do
-            = f.check_box :enforce_terms
+          = f.check_box :enforce_terms, class: 'form-check-input'
+          = f.label :enforce_terms, class: 'form-check-label' do
             = _("Require all users to accept Terms of Service when they access GitLab.")
           .form-text.text-muted
             = _("When enabled, users cannot use GitLab until the terms have been accepted.")
