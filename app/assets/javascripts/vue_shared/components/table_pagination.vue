@@ -146,8 +146,12 @@
           active: item.active,
           disabled: item.disabled
         }"
+        class="page-item"
       >
-        <a @click.prevent="changePage(item.title, item.disabled)">
+        <a
+          @click.prevent="changePage(item.title, item.disabled)"
+          class="page-link"
+        >
           {{ item.title }}
         </a>
       </li>
