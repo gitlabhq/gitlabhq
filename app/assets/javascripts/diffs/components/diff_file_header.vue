@@ -200,7 +200,7 @@ export default {
 
     <div
       v-if="!diffFile.submodule && addMergeRequestButtons"
-      class="file-actions hidden-xs"
+      class="file-actions d-none d-md-block"
     >
       <template
         v-if="diffFile.blob && diffFile.blob.readableText"

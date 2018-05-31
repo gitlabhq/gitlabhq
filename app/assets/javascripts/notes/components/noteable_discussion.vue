@@ -329,7 +329,7 @@ Please check your network connection and try again.`;
                       class="btn-group d-flex discussion-with-resolve-btn"
                       role="group">
                       <div
-                        class="btn-group"
+                        class="btn-group w-100"
                         role="group">
                         <button
                           @click="showReplyForm"
