@@ -2657,13 +2657,13 @@ ActiveRecord::Schema.define(version: 20180529093006) do
     t.boolean "notified_of_own_activity"
     t.boolean "support_bot"
     t.string "preferred_language"
-    t.string "rss_token"
     t.boolean "email_opted_in"
     t.string "email_opted_in_ip"
     t.integer "email_opted_in_source_id"
     t.datetime "email_opted_in_at"
     t.integer "theme_id", limit: 2
     t.integer "accepted_term_id"
+    t.string "feed_token"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -2671,12 +2671,12 @@ ActiveRecord::Schema.define(version: 20180529093006) do
   add_index "users", ["created_at"], name: "index_users_on_created_at", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["email"], name: "index_users_on_email_trigram", using: :gin, opclasses: {"email"=>"gin_trgm_ops"}
+  add_index "users", ["feed_token"], name: "index_users_on_feed_token", using: :btree
   add_index "users", ["ghost"], name: "index_users_on_ghost", using: :btree
   add_index "users", ["incoming_email_token"], name: "index_users_on_incoming_email_token", using: :btree
   add_index "users", ["name"], name: "index_users_on_name", using: :btree
   add_index "users", ["name"], name: "index_users_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
-  add_index "users", ["rss_token"], name: "index_users_on_rss_token", using: :btree
   add_index "users", ["state"], name: "index_users_on_state", using: :btree
   add_index "users", ["support_bot"], name: "index_users_on_support_bot", using: :btree
   add_index "users", ["username"], name: "index_users_on_username", using: :btree

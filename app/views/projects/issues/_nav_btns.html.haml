@@ -2,8 +2,10 @@
 - show_export_button = local_assigns.fetch(:show_export_button, true)
 
 - if show_rss_button
-  = link_to safe_params.merge(rss_url_options), class: 'btn btn-default append-right-10 has-tooltip', title: 'Subscribe' do
+  = link_to safe_params.merge(rss_url_options), class: 'btn btn-default append-right-10 has-tooltip', title: 'Subscribe to RSS feed' do
     = icon('rss')
+  = link_to safe_params.merge(calendar_url_options), class: 'btn btn-default append-right-10 has-tooltip', title: 'Subscribe to calendar' do
+    = custom_icon('icon_calendar')
 
 - if show_export_button
   = render 'projects/issues/export_issues/button'
