@@ -5,7 +5,7 @@ module QA
         class MergeRequest < QA::Page::Base
           include Common
 
-          view 'app/views/projects/_merge_request_fast_forward_settings.html.haml' do
+          view 'app/views/projects/_merge_request_merge_method_settings.html.haml' do
             element :radio_button_merge_ff
           end
 

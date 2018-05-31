@@ -33,14 +33,14 @@
               %span.light (optional)
             = f.text_area :description, class: "form-control", rows: 3, maxlength: 250
 
-          = render 'projects/ee/classification_policy_settings',  f: f
+          = render_if_exists 'projects/classification_policy_settings', f: f
 
           - unless @project.empty_repo?
             .form-group
               = f.label :default_branch, "Default Branch", class: 'label-light'
               = f.select(:default_branch, @project.repository.branch_names, {}, {class: 'select2 select-wide'})
 
-        = render 'shared/repository_size_limit_setting', form: f, type: :project
+        = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :project
 
         .form-group
           = f.label :tag_list, "Tags", class: 'label-light'
@@ -80,7 +80,7 @@
         .js-project-permissions-form
         = f.submit 'Save changes', class: "btn btn-save"
 
-  = render 'projects/ee/issues_settings'
+  = render_if_exists 'projects/issues_settings'
 
   %section.settings.merge-requests-feature.no-animate{ class: [('expanded' if expanded), ('hidden' if @project.project_feature.send(:merge_requests_access_level) == 0)] }
     .settings-header
@@ -91,13 +91,13 @@
       %p
         Customize your merge request restrictions.
     .settings-content
-      = render 'shared/promotions/promote_mr_features'
+      = render_if_exists 'shared/promotions/promote_mr_features'
 
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "merge-request-settings-form" }, authenticity_token: true do |f|
-        = render 'projects/ee/merge_request_settings', form: f
+        = render 'projects/merge_request_settings', form: f
         = f.submit 'Save changes', class: "btn btn-save qa-save-merge-request-changes"
 
-  = render 'projects/ee/service_desk_settings'
+  = render_if_exists 'projects/service_desk_settings'
 
   = render 'export', project: @project
 
