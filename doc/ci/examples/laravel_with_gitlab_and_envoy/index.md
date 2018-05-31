@@ -116,11 +116,11 @@ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 cat ~/.ssh/id_rsa
 ```
 
-Now, let's add it to your GitLab project as a [secret variable](../../variables/README.md#secret-variables).
-Secret variables are user-defined variables and are stored out of `.gitlab-ci.yml`, for security purposes.
+Now, let's add it to your GitLab project as a [variable](../../variables/README.md#variables).
+Variables are user-defined variables and are stored out of `.gitlab-ci.yml`, for security purposes.
 They can be added per project by navigating to the project's **Settings** > **CI/CD**.
 
-![secret variables page](img/secret_variables_page.png)
+![variables page](img/secret_variables_page.png)
 
 To the field **KEY**, add the name `SSH_PRIVATE_KEY`, and to the **VALUE** field, paste the private key you've copied earlier.
 We'll use this variable in the `.gitlab-ci.yml` later, to easily connect to our remote server as the deployer user without entering its password.

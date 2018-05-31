@@ -349,7 +349,7 @@ In this case:
 ### Fake tokens
 
 There may be times where a token is needed to demonstrate an API call using
-cURL or a secret variable used in CI. It is strongly advised not to use real
+cURL or a variable used in CI. It is strongly advised not to use real
 tokens in documentation even if the probability of a token being exploited is
 low.
 
