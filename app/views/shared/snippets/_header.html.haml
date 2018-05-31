@@ -33,9 +33,9 @@
     .embed-snippet
       .input-group
         .input-group-prepend
-          %button.btn.embed-toggle{ 'data-toggle': 'dropdown', type: 'button' }
+          %button.btn.btn-svg.embed-toggle.input-group-text{ 'data-toggle': 'dropdown', type: 'button' }
             %span.js-embed-action= _("Embed")
-            = sprite_icon('angle-down', size: 12)
+            = sprite_icon('angle-down', size: 12, css_class: 'caret-down')
           %ul.dropdown-menu.dropdown-menu-selectable.embed-toggle-list
             %li
               %button.js-embed-btn.btn.btn-transparent.is-active{ type: 'button' }
@@ -45,6 +45,5 @@
                 %strong.embed-toggle-list-item= _("Share")
         %input.js-snippet-url-area.snippet-embed-input.form-control{ type: "text", autocomplete: 'off', value: snippet_embed }
         .input-group-append
-          %button.js-clipboard-btn.snippet-clipboard-btn.btn.btn-default.has-tooltip{ title: "Copy to clipboard", 'data-clipboard-target': '.js-snippet-url-area' }
-            = sprite_icon('duplicate', size: 16)
+          = clipboard_button(title: s_('Copy to clipboard'), class: 'js-clipboard-btn snippet-clipboard-btn btn btn-default', target: '.js-snippet-url-area')
     .clearfix
