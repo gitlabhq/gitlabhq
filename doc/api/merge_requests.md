@@ -250,7 +250,6 @@ The pagination parameters `page` and `per_page` can be used to restrict the list
 GET /groups/:id/merge_requests
 GET /groups/:id/merge_requests?state=opened
 GET /groups/:id/merge_requests?state=all
-GET /groups/:id/merge_requests?iids[]=42&iids[]=43
 GET /groups/:id/merge_requests?milestone=release
 GET /groups/:id/merge_requests?labels=bug,reproduced
 GET /groups/:id/merge_requests?my_reaction_emoji=star
@@ -263,7 +262,6 @@ Parameters:
 | Attribute           | Type           | Required | Description                                                                                                                    |
 | ------------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | `id`                | integer        | yes      | The ID of a group                                                                                                           |
-| `iids[]`            | Array[integer] | no       | Return the merge request having the given `iid`                                                                                      |
 | `state`             | string         | no       | Return all merge requests or just those that are `opened`, `closed`, or `merged`                                               |
 | `order_by`          | string         | no       | Return merge requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                        |
 | `sort`              | string         | no       | Return merge requests sorted in `asc` or `desc` order. Default is `desc`                                                             |
