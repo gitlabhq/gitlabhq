@@ -87,7 +87,8 @@ table {
   display: none;
 }
 
-.dropdown-toggle::after {
+.dropdown-toggle::after,
+.dropright .dropdown-menu-toggle::after {
   // Remove bootstrap's dropdown caret
   display: none;
 }
