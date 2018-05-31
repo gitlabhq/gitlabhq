@@ -20,11 +20,10 @@ end
 if Gitlab.config.omniauth.enabled
   provider_names = Gitlab.config.omniauth.providers.map(&:name)
   require 'omniauth-kerberos' if provider_names.include?('kerberos')
-end
 
-module OmniAuth
-  module Strategies
-    autoload :Bitbucket, Rails.root.join('lib', 'omni_auth', 'strategies', 'bitbucket')
-    autoload :Jwt, Rails.root.join('lib', 'omni_auth', 'strategies', 'jwt')
+  Gitlab::Auth.omniauth_providers.each do |provider|
+    if provider_names.include?(provider)
+      require_dependency "omni_auth/strategies/#{provider}"
+    end
   end
 end
