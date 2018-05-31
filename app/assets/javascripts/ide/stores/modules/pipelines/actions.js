@@ -8,7 +8,9 @@ import * as types from './mutation_types';
 
 let eTagPoll;
 
-export const clearEtagPoll = () => (eTagPoll = null);
+export const clearEtagPoll = () => {
+  eTagPoll = null;
+};
 export const stopPipelinePolling = () => eTagPoll && eTagPoll.stop();
 export const restartPipelinePolling = () => eTagPoll && eTagPoll.restart();
 

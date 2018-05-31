@@ -12,20 +12,13 @@ import { isInViewport, scrollToElement } from '../../lib/utils/common_utils';
 
 let eTagPoll;
 
-export const setNotesData = ({ commit }, data) =>
-  commit(types.SET_NOTES_DATA, data);
-export const setNoteableData = ({ commit }, data) =>
-  commit(types.SET_NOTEABLE_DATA, data);
-export const setUserData = ({ commit }, data) =>
-  commit(types.SET_USER_DATA, data);
-export const setLastFetchedAt = ({ commit }, data) =>
-  commit(types.SET_LAST_FETCHED_AT, data);
-export const setInitialNotes = ({ commit }, data) =>
-  commit(types.SET_INITIAL_NOTES, data);
-export const setTargetNoteHash = ({ commit }, data) =>
-  commit(types.SET_TARGET_NOTE_HASH, data);
-export const toggleDiscussion = ({ commit }, data) =>
-  commit(types.TOGGLE_DISCUSSION, data);
+export const setNotesData = ({ commit }, data) => commit(types.SET_NOTES_DATA, data);
+export const setNoteableData = ({ commit }, data) => commit(types.SET_NOTEABLE_DATA, data);
+export const setUserData = ({ commit }, data) => commit(types.SET_USER_DATA, data);
+export const setLastFetchedAt = ({ commit }, data) => commit(types.SET_LAST_FETCHED_AT, data);
+export const setInitialNotes = ({ commit }, data) => commit(types.SET_INITIAL_NOTES, data);
+export const setTargetNoteHash = ({ commit }, data) => commit(types.SET_TARGET_NOTE_HASH, data);
+export const toggleDiscussion = ({ commit }, data) => commit(types.TOGGLE_DISCUSSION, data);
 
 export const fetchNotes = ({ commit }, path) =>
   service
@@ -69,20 +62,14 @@ export const createNewNote = ({ commit }, { endpoint, data }) =>
       return res;
     });
 
-export const removePlaceholderNotes = ({ commit }) =>
-  commit(types.REMOVE_PLACEHOLDER_NOTES);
+export const removePlaceholderNotes = ({ commit }) => commit(types.REMOVE_PLACEHOLDER_NOTES);
 
-export const toggleResolveNote = (
-  { commit },
-  { endpoint, isResolved, discussion },
-) =>
+export const toggleResolveNote = ({ commit }, { endpoint, isResolved, discussion }) =>
   service
     .toggleResolveNote(endpoint, isResolved)
     .then(res => res.json())
     .then(res => {
-      const mutationType = discussion
-        ? types.UPDATE_DISCUSSION
-        : types.UPDATE_NOTE;
+      const mutationType = discussion ? types.UPDATE_DISCUSSION : types.UPDATE_NOTE;
 
       commit(mutationType, res);
     });
@@ -114,7 +101,7 @@ export const reopenIssue = ({ commit, dispatch, state }) => {
 export const toggleStateButtonLoading = ({ commit }, value) =>
   commit(types.TOGGLE_STATE_BUTTON_LOADING, value);
 
-export const emitStateChangedEvent = ({ commit, getters }, data) => {
+export const emitStateChangedEvent = ({ getters }, data) => {
   const event = new CustomEvent('issuable_vue_app:change', {
     detail: {
       data,
@@ -179,10 +166,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
 
         loadAwardsHandler()
           .then(awardsHandler => {
-            awardsHandler.addAwardToEmojiBar(
-              votesBlock,
-              commandsChanges.emoji_award,
-            );
+            awardsHandler.addAwardToEmojiBar(votesBlock, commandsChanges.emoji_award);
             awardsHandler.scrollToAwards();
           })
           .catch(() => {
@@ -194,10 +178,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
           });
       }
 
-      if (
-        commandsChanges.spend_time != null ||
-        commandsChanges.time_estimate != null
-      ) {
+      if (commandsChanges.spend_time != null || commandsChanges.time_estimate != null) {
         sidebarTimeTrackingEventHub.$emit('timeTrackingUpdated', res);
       }
     }
@@ -218,14 +199,8 @@ const pollSuccessCallBack = (resp, commit, state, getters) => {
     resp.notes.forEach(note => {
       if (notesById[note.id]) {
         commit(types.UPDATE_NOTE, note);
-      } else if (
-        note.type === constants.DISCUSSION_NOTE ||
-        note.type === constants.DIFF_NOTE
-      ) {
-        const discussion = utils.findNoteObjectById(
-          state.notes,
-          note.discussion_id,
-        );
+      } else if (note.type === constants.DISCUSSION_NOTE || note.type === constants.DIFF_NOTE) {
+        const discussion = utils.findNoteObjectById(state.notes, note.discussion_id);
 
         if (discussion) {
           commit(types.ADD_NEW_REPLY_TO_DISCUSSION, note);
@@ -249,11 +224,8 @@ export const poll = ({ commit, state, getters }) => {
     method: 'poll',
     data: state,
     successCallback: resp =>
-      resp
-        .json()
-        .then(data => pollSuccessCallBack(data, commit, state, getters)),
-    errorCallback: () =>
-      Flash('Something went wrong while fetching latest comments.'),
+      resp.json().then(data => pollSuccessCallBack(data, commit, state, getters)),
+    errorCallback: () => Flash('Something went wrong while fetching latest comments.'),
   });
 
   if (!Visibility.hidden()) {
@@ -292,14 +264,11 @@ export const fetchData = ({ commit, state, getters }) => {
     .catch(() => Flash('Something went wrong while fetching latest comments.'));
 };
 
-export const toggleAward = (
-  { commit, state, getters, dispatch },
-  { awardName, noteId },
-) => {
+export const toggleAward = ({ commit, getters }, { awardName, noteId }) => {
   commit(types.TOGGLE_AWARD, { awardName, note: getters.notesById[noteId] });
 };
 
-export const toggleAwardRequest = ({ commit, getters, dispatch }, data) => {
+export const toggleAwardRequest = ({ dispatch }, data) => {
   const { endpoint, awardName } = data;
 
   return service

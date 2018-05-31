@@ -10,7 +10,7 @@ import _ from 'underscore';
 
   @see https://ruby-doc.org/core-2.3.3/Kernel.html#method-i-sprintf
   @see https://gitlab.com/gitlab-org/gitlab-ce/issues/37992
-**/
+*/
 export default (input, parameters, escapeParameters = true) => {
   let output = input;
 

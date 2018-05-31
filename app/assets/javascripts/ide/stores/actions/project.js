@@ -3,10 +3,7 @@ import { __ } from '~/locale';
 import service from '../../services';
 import * as types from '../mutation_types';
 
-export const getProjectData = (
-  { commit, state, dispatch },
-  { namespace, projectId, force = false } = {},
-) =>
+export const getProjectData = ({ commit, state }, { namespace, projectId, force = false } = {}) =>
   new Promise((resolve, reject) => {
     if (!state.projects[`${namespace}/${projectId}`] || force) {
       commit(types.TOGGLE_LOADING, { entry: state });
@@ -36,10 +33,7 @@ export const getProjectData = (
     }
   });
 
-export const getBranchData = (
-  { commit, state, dispatch },
-  { projectId, branchId, force = false } = {},
-) =>
+export const getBranchData = ({ commit, state }, { projectId, branchId, force = false } = {}) =>
   new Promise((resolve, reject) => {
     if (
       typeof state.projects[`${projectId}`] === 'undefined' ||
@@ -74,7 +68,7 @@ export const getBranchData = (
     }
   });
 
-export const refreshLastCommitData = ({ commit, state, dispatch }, { projectId, branchId } = {}) =>
+export const refreshLastCommitData = ({ commit }, { projectId, branchId } = {}) =>
   service
     .getBranchData(projectId, branchId)
     .then(({ data }) => {
