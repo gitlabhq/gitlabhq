@@ -1374,7 +1374,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe '#branch_count' do
     it 'returns the number of branches' do
-      expect(repository.branch_count).to eq(10)
+      expect(repository.branch_count).to eq(11)
     end
 
     context 'with local and remote branches' do
@@ -2248,7 +2248,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe '#checksum' do
     it 'calculates the checksum for non-empty repo' do
-      expect(repository.checksum).to eq '54f21be4c32c02f6788d72207fa03ad3bce725e4'
+      expect(repository.checksum).to eq '4be7d24ce7e8d845502d599b72d567d23e6a40c0'
     end
 
     it 'returns 0000000000000000000000000000000000000000 for an empty repo' do
