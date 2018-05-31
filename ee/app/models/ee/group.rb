@@ -7,10 +7,24 @@ module EE
     extend ActiveSupport::Concern
     extend ::Gitlab::Utils::Override
 
-    included do
+    prepended do
       has_many :epics
 
       has_one :saml_provider
+
+      has_many :ldap_group_links, foreign_key: 'group_id', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+      has_many :hooks, dependent: :destroy, class_name: 'GroupHook' # rubocop:disable Cop/ActiveRecordDependent
+
+      # We cannot simply set `has_many :audit_events, as: :entity, dependent: :destroy`
+      # here since Group inherits from Namespace, the entity_type would be set to `Namespace`.
+      has_many :audit_events, -> { where(entity_type: ::Group) }, foreign_key: 'entity_id'
+
+      validates :repository_size_limit,
+                numericality: { only_integer: true, greater_than_or_equal_to: 0, allow_nil: true }
+
+      scope :where_group_links_with_provider, ->(provider) do
+        joins(:ldap_group_links).where(ldap_group_links: { provider: provider })
+      end
 
       state_machine :ldap_sync_status, namespace: :ldap_sync, initial: :ready do
         state :ready
@@ -54,6 +68,24 @@ module EE
       end
     end
 
+    def human_ldap_access
+      ::Gitlab::Access.options_with_owner.key(ldap_access)
+    end
+
+    # NOTE: Backwards compatibility with old ldap situation
+    def ldap_cn
+      ldap_group_links.first.try(:cn)
+    end
+
+    def ldap_access
+      ldap_group_links.first.try(:group_access)
+    end
+
+    override :ldap_synced?
+    def ldap_synced?
+      (::Gitlab.config.ldap.enabled && ldap_group_links.any?(&:active?)) || super
+    end
+
     def mark_ldap_sync_as_failed(error_message)
       return false unless ldap_sync_started?
 
@@ -68,6 +100,16 @@ module EE
     override :multiple_issue_boards_available?
     def multiple_issue_boards_available?
       feature_available?(:multiple_group_issue_boards)
+    end
+
+    def actual_size_limit
+      return ::Gitlab::CurrentSettings.repository_size_limit if repository_size_limit.nil?
+
+      repository_size_limit
+    end
+
+    def first_non_empty_project
+      projects.detect { |project| !project.empty_repo? }
     end
   end
 end

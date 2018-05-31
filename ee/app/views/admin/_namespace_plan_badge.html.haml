@@ -1,4 +1,5 @@
-- namespace = local_assigns[:namespace]
-- if Gitlab::CurrentSettings.should_check_namespace_plan? && namespace && namespace.plan.present?
-  %span.plan-badge.has-tooltip{ data: { plan: namespace.plan.name }, title: "#{namespace.plan.title} Plan" }
-    = custom_icon('icon_premium')
+- namespace = local_assigns.fetch(:namespace)
+- return unless Gitlab::CurrentSettings.should_check_namespace_plan? && namespace.plan.present
+
+%span.plan-badge.has-tooltip{ data: { plan: namespace.plan.name }, title: "#{namespace.plan.title} Plan" }
+  = custom_icon('icon_premium')

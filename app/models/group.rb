@@ -1,9 +1,8 @@
 require 'carrierwave/orm/activerecord'
 
-# Contains methods common to both GitLab CE and EE.
-# All EE methods should be in `EE::Group` only.
 class Group < Namespace
-  include EE::Group
+  prepend EE::Group
+
   include Gitlab::ConfigHelper
   include AfterCommitQueue
   include AccessRequestable
@@ -34,14 +33,7 @@ class Group < Namespace
   has_many :variables, class_name: 'Ci::GroupVariable'
   has_many :custom_attributes, class_name: 'GroupCustomAttribute'
 
-  has_many :ldap_group_links, foreign_key: 'group_id', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :hooks, dependent: :destroy, class_name: 'GroupHook' # rubocop:disable Cop/ActiveRecordDependent
-
   has_many :boards
-
-  # We cannot simply set `has_many :audit_events, as: :entity, dependent: :destroy`
-  # here since Group inherits from Namespace, the entity_type would be set to `Namespace`.
-  has_many :audit_events, -> { where(entity_type: Group) }, foreign_key: 'entity_id'
   has_many :badges, class_name: 'GroupBadge'
 
   accepts_nested_attributes_for :variables, allow_destroy: true
@@ -53,19 +45,12 @@ class Group < Namespace
 
   validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
-  validates :repository_size_limit,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0, allow_nil: true }
-
   add_authentication_token_field :runners_token
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
   after_save :update_two_factor_requirement
   after_update :path_changed_hook, if: :path_changed?
-
-  scope :where_group_links_with_provider, ->(provider) do
-    joins(:ldap_group_links).where(ldap_group_links: { provider: provider })
-  end
 
   class << self
     def supports_nested_groups?
@@ -213,21 +198,8 @@ class Group < Namespace
     owners.include?(user) && owners.size == 1
   end
 
-  def human_ldap_access
-    Gitlab::Access.options_with_owner.key ldap_access
-  end
-
-  # NOTE: Backwards compatibility with old ldap situation
-  def ldap_cn
-    ldap_group_links.first.try(:cn)
-  end
-
-  def ldap_access
-    ldap_group_links.first.try(:group_access)
-  end
-
   def ldap_synced?
-    Gitlab.config.ldap.enabled && ldap_group_links.any?(&:active?)
+    false
   end
 
   def post_create_hook
@@ -242,18 +214,8 @@ class Group < Namespace
     system_hook_service.execute_hooks_for(self, :destroy)
   end
 
-  def actual_size_limit
-    return Gitlab::CurrentSettings.repository_size_limit if repository_size_limit.nil?
-
-    repository_size_limit
-  end
-
   def system_hook_service
     SystemHooksService.new
-  end
-
-  def first_non_empty_project
-    projects.detect { |project| !project.empty_repo? }
   end
 
   def refresh_members_authorized_projects(blocking: true)

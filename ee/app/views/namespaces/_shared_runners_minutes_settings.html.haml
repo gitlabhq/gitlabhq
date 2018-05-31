@@ -1,0 +1,10 @@
+- group = local_assigns.fetch(:group)
+- form = local_assigns.fetch(:form)
+
+- return unless group.shared_runner_minutes_supported?
+
+= render 'namespaces/shared_runners_minutes_setting', form: form
+- unless group.new_record?
+  .form-group.row
+    .offset-sm-2.col-sm-10
+      = render 'namespaces/shared_runners_minutes_setting_reset', link_reset_minutes: admin_group_reset_runners_minutes_path(group)
