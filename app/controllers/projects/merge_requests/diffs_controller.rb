@@ -76,7 +76,8 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
       start_version: @start_version,
       start_sha: @start_sha,
       commit: @commit,
-      latest_diff: @merge_request_diff&.latest?
+      latest_diff: @merge_request_diff&.latest?,
+      context: self
     }
   end
 

@@ -135,6 +135,20 @@ class DiffFileEntity < Grape::Entity
 
   # Used for parallel diffs
   expose :parallel_diff_lines, if: -> (diff_file, _) { diff_file.text? }
+  image_point = Gitlab::Diff::ImagePoint.new(nil, nil, nil, nil)
+
+  expose :image_diff_html, if: -> (diff_file, _) { !diff_file.text? } do |diff_file|
+    discussion = options[:discussion]
+    partial = diff_file.new_file? || diff_file.deleted_file? ? 'single_image_diff' : 'replaced_image_diff'
+    options[:context].render_to_string(
+      partial: "projects/diffs/#{partial}",
+      locals: { diff_file: diff_file,
+                position: diff_file.position(image_point, position_type: :image).to_json,
+                click_to_comment: true },
+      layout: false,
+      formats: [:html]
+    )
+  end
 
   def current_user
     request.current_user
