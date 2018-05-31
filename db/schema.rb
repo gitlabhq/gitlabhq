@@ -641,9 +641,9 @@ ActiveRecord::Schema.define(version: 20180529093006) do
     t.integer "status", null: false
     t.string "version", null: false
     t.string "hostname"
-    t.text "status_reason"
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
+    t.text "status_reason"
   end
 
   create_table "clusters_applications_prometheus", force: :cascade do |t|
