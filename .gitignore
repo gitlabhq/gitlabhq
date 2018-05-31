@@ -65,6 +65,7 @@ eslint-report.html
 /tags
 /tmp/*
 /vendor/bundle/*
+/vendor/gitaly-ruby
 /builds*
 /shared/*
 /.gitlab_workhorse_secret
