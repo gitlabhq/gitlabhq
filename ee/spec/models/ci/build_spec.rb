@@ -46,7 +46,7 @@ describe Ci::Build do
 
     context 'for shared runner' do
       before do
-        job.runner = create(:ci_runner, :shared)
+        job.runner = create(:ci_runner, :instance)
       end
 
       it do
@@ -59,7 +59,7 @@ describe Ci::Build do
 
     context 'with specific runner' do
       before do
-        job.runner = create(:ci_runner, :specific)
+        job.runner = create(:ci_runner, :project)
       end
 
       it { is_expected.to be_falsey }

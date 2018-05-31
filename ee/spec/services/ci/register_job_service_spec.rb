@@ -4,7 +4,7 @@ describe Ci::RegisterJobService do
   let!(:project) { create :project, shared_runners_enabled: false }
   let!(:pipeline) { create :ci_empty_pipeline, project: project }
   let!(:pending_build) { create :ci_build, pipeline: pipeline }
-  let(:shared_runner) { create(:ci_runner, :shared) }
+  let(:shared_runner) { create(:ci_runner, :instance) }
 
   describe '#execute' do
     context 'for project with shared runners when global minutes limit is set' do
