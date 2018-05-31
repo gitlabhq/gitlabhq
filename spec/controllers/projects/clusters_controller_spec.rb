@@ -176,10 +176,7 @@ describe Projects::ClustersController do
         cluster: {
           name: 'new-cluster',
           provider_gcp_attributes: {
-            gcp_project_id: '111',
-            zone: 'us-central1-a',
-            num_nodes: 3,
-            machine_type: 'n1-standard-1'
+            gcp_project_id: '111'
           }
         }
       }
@@ -221,15 +218,15 @@ describe Projects::ClustersController do
       end
     end
 
-    describe 'security', :focus => true do
+    describe 'security' do
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:master).of(project) }
-      # it { expect { go }.to be_denied_for(:developer).of(project) }
-      # it { expect { go }.to be_denied_for(:reporter).of(project) }
-      # it { expect { go }.to be_denied_for(:guest).of(project) }
-      # it { expect { go }.to be_denied_for(:user) }
-      # it { expect { go }.to be_denied_for(:external) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
     end
 
     def go
