@@ -326,8 +326,8 @@ describe Projects::MergeRequestsController do
         expect(json_response).to eq('status' => 'success')
       end
 
-      it 'starts the merge immediately' do
-        expect(MergeWorker).to receive(:perform_async).with(merge_request.id, anything, anything)
+      it 'starts the merge immediately with permitted params' do
+        expect(MergeWorker).to receive(:perform_async).with(merge_request.id, anything, { 'squash' => false })
 
         merge_with_sha
       end

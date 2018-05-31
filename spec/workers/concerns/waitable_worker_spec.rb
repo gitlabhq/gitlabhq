@@ -7,9 +7,7 @@ describe WaitableWorker do
         'Gitlab::Foo::Bar::DummyWorker'
       end
 
-      class << self
-        cattr_accessor(:counter) { 0 }
-      end
+      cattr_accessor(:counter) { 0 }
 
       include ApplicationWorker
       prepend WaitableWorker
