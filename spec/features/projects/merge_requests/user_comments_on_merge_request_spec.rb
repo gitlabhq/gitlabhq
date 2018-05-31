@@ -28,12 +28,10 @@ describe 'User comments on a merge request', :js do
     end
   end
 
-  # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-  xit 'loads new comment' do
+  it 'loads new comment' do
     # Add new comment in background in order to check
     # if it's going to be loaded automatically for current user.
     create(:diff_note_on_merge_request, project: project, noteable: merge_request, author: user, note: 'Line is wrong')
-
     # Trigger a refresh of notes.
     execute_script("$(document).trigger('visibilitychange');")
     wait_for_requests
