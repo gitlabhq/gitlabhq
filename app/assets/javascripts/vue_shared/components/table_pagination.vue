@@ -54,7 +54,7 @@
         return this.pageInfo.nextPage;
       },
       getItems() {
-        const total = this.pageInfo.totalPages;
+        const total = this.pageInfo.totalPages + 100;
         const page = this.pageInfo.page;
         const items = [];
 
@@ -130,9 +130,9 @@
 <template>
   <div
     v-if="showPagination"
-    class="gl-pagination"
+    class="gl-pagination prepend-top-default"
   >
-    <ul class="pagination clearfix">
+    <ul class="pagination justify-content-center">
       <li
         v-for="(item, index) in getItems"
         :key="index"
@@ -144,7 +144,7 @@
           'js-first-button': item.first,
           separator: item.separator,
           active: item.active,
-          disabled: item.disabled
+          disabled: item.disabled || item.separator
         }"
         class="page-item"
       >
