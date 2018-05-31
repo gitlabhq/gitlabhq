@@ -247,4 +247,14 @@ describe API::V3::Github do
       end
     end
   end
+
+  def v3_api(path, user = nil, personal_access_token: nil, oauth_access_token: nil)
+    api(
+      path,
+      user,
+      version: 'v3',
+      personal_access_token: personal_access_token,
+      oauth_access_token: oauth_access_token
+    )
+  end
 end

@@ -36,7 +36,7 @@ describe QA::Runtime::API::Request do
     end
 
     it 'uses a different api version' do
-      expect(request.request_path('/users', version: 'v3')).to eq '/api/v3/users'
+      expect(request.request_path('/users', version: 'other_version')).to eq '/api/other_version/users'
     end
   end
 end

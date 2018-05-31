@@ -173,7 +173,6 @@ Lint/UriEscapeUnescape:
     - 'spec/requests/api/files_spec.rb'
     - 'spec/requests/api/internal_spec.rb'
     - 'spec/requests/api/issues_spec.rb'
-    - 'spec/requests/api/v3/issues_spec.rb'
 
 # Offense count: 1
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
@@ -333,8 +332,6 @@ RSpec/ScatteredSetup:
     - 'spec/lib/gitlab/bitbucket_import/importer_spec.rb'
     - 'spec/lib/gitlab/git/env_spec.rb'
     - 'spec/requests/api/jobs_spec.rb'
-    - 'spec/requests/api/v3/builds_spec.rb'
-    - 'spec/requests/api/v3/projects_spec.rb'
     - 'spec/services/projects/create_service_spec.rb'
 
 # Offense count: 1
@@ -618,7 +615,6 @@ Style/OrAssignment:
   Exclude:
     - 'app/models/concerns/token_authenticatable.rb'
     - 'lib/api/commit_statuses.rb'
-    - 'lib/api/v3/members.rb'
     - 'lib/gitlab/project_transfer.rb'
 
 # Offense count: 50
@@ -781,7 +777,6 @@ Style/TernaryParentheses:
     - 'app/finders/projects_finder.rb'
     - 'app/helpers/namespaces_helper.rb'
     - 'features/support/capybara.rb'
-    - 'lib/api/v3/projects.rb'
     - 'lib/gitlab/ci/build/artifacts/metadata/entry.rb'
     - 'spec/requests/api/pipeline_schedules_spec.rb'
     - 'spec/support/capybara.rb'
