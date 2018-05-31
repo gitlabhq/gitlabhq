@@ -13,9 +13,9 @@ describe "Dashboard Feed"  do
       end
     end
 
-    context "projects atom feed via RSS token" do
+    context "projects atom feed via feed token" do
       it "renders projects atom feed" do
-        visit dashboard_projects_path(:atom, rss_token: user.rss_token)
+        visit dashboard_projects_path(:atom, feed_token: user.feed_token)
         expect(body).to have_selector('feed title')
       end
     end
@@ -29,7 +29,7 @@ describe "Dashboard Feed"  do
         project.add_master(user)
         issue_event(issue, user)
         note_event(note, user)
-        visit dashboard_projects_path(:atom, rss_token: user.rss_token)
+        visit dashboard_projects_path(:atom, feed_token: user.feed_token)
       end
 
       it "has issue opened event" do

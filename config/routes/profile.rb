@@ -7,7 +7,7 @@ resource :profile, only: [:show, :update] do
     get :applications, to: 'oauth/applications#index'
 
     put :reset_incoming_email_token
-    put :reset_rss_token
+    put :reset_feed_token
     put :update_username
   end
 

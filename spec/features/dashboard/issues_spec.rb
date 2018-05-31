@@ -56,8 +56,8 @@ RSpec.describe 'Dashboard Issues' do
       expect(page).to have_current_path(issues_dashboard_url(assignee_id: current_user.id, state: 'closed'), url: true)
     end
 
-    it_behaves_like "it has an RSS button with current_user's RSS token"
-    it_behaves_like "an autodiscoverable RSS feed with current_user's RSS token"
+    it_behaves_like "it has an RSS button with current_user's feed token"
+    it_behaves_like "an autodiscoverable RSS feed with current_user's feed token"
   end
 
   describe 'new issue dropdown' do

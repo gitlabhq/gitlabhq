@@ -10,7 +10,7 @@ feature 'Dashboard Projects' do
     sign_in(user)
   end
 
-  it_behaves_like "an autodiscoverable RSS feed with current_user's RSS token" do
+  it_behaves_like "an autodiscoverable RSS feed with current_user's feed token" do
     before do
       visit dashboard_projects_path
     end
