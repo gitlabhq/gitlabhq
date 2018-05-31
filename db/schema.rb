@@ -518,7 +518,7 @@ ActiveRecord::Schema.define(version: 20180530135500) do
   end
 
   add_index "ci_stages", ["pipeline_id", "name"], name: "index_ci_stages_on_pipeline_id_and_name", unique: true, using: :btree
-  add_index "ci_stages", ["pipeline_id", "position"], name: "index_ci_stages_on_pipeline_id_and_position", unique: true, using: :btree
+  add_index "ci_stages", ["pipeline_id", "position"], name: "index_ci_stages_on_pipeline_id_and_position", using: :btree
   add_index "ci_stages", ["pipeline_id"], name: "index_ci_stages_on_pipeline_id", using: :btree
   add_index "ci_stages", ["project_id"], name: "index_ci_stages_on_project_id", using: :btree
 

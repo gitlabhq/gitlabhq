@@ -6,7 +6,7 @@ class AddIndexToStagesPosition < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    add_concurrent_index :ci_stages, [:pipeline_id, :position], unique: true
+    add_concurrent_index :ci_stages, [:pipeline_id, :position]
   end
 
   def down
