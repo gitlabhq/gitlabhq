@@ -240,7 +240,7 @@
  */
 @mixin not($notList...) {
   //if only a single value given
-  @if (length($notList) == 1){
+  @if (length($notList) == 1) {
     //it is probably a list variable so set ignore list to the variable
     $notList: nth($notList, 1);
   }
