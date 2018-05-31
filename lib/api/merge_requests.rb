@@ -10,12 +10,6 @@ module API
     helpers do
       params :optional_params_ee do
       end
-
-      params :merge_params_ee do
-      end
-
-      def update_merge_request_ee(merge_request)
-      end
     end
 
     def self.update_params_at_least_one_of
@@ -29,6 +23,7 @@ module API
         target_branch
         title
         discussion_locked
+        squash
       ]
     end
 
@@ -146,6 +141,7 @@ module API
           optional :labels, type: String, desc: 'Comma-separated list of label names'
           optional :remove_source_branch, type: Boolean, desc: 'Remove source branch when merging'
           optional :allow_maintainer_to_push, type: Boolean, desc: 'Whether a maintainer of the target project can push to the source project'
+          optional :squash, type: Grape::API::Boolean, desc: 'When true, the commits will be squashed into a single commit on merge'
 
           use :optional_params_ee
         end
@@ -308,8 +304,7 @@ module API
         optional :merge_when_pipeline_succeeds, type: Boolean,
                                                 desc: 'When true, this merge request will be merged when the pipeline succeeds'
         optional :sha, type: String, desc: 'When present, must have the HEAD SHA of the source branch'
-
-        use :merge_params_ee
+        optional :squash, type: Grape::API::Boolean, desc: 'When true, the commits will be squashed into a single commit on merge'
       end
       put ':id/merge_requests/:merge_request_iid/merge' do
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42317')
@@ -327,7 +322,7 @@ module API
 
         check_sha_param!(params, merge_request)
 
-        update_merge_request_ee(merge_request)
+        merge_request.update(squash: params[:squash]) if params[:squash]
 
         merge_params = {
           commit_message: params[:merge_commit_message],

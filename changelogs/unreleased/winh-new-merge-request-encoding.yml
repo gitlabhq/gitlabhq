@@ -1,5 +1,0 @@
----
-title: Fix encoding of branch names on compare and new merge request page
-merge_request: 19143
-author:
-type: fixed

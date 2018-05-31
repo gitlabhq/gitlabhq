@@ -7,10 +7,7 @@ import Poll from '../../../lib/utils/poll';
 
 let eTagPoll;
 
-export const getProjectData = (
-  { commit, state, dispatch },
-  { namespace, projectId, force = false } = {},
-) =>
+export const getProjectData = ({ commit, state }, { namespace, projectId, force = false } = {}) =>
   new Promise((resolve, reject) => {
     if (!state.projects[`${namespace}/${projectId}`] || force) {
       commit(types.TOGGLE_LOADING, { entry: state });
@@ -40,10 +37,7 @@ export const getProjectData = (
     }
   });
 
-export const getBranchData = (
-  { commit, state, dispatch },
-  { projectId, branchId, force = false } = {},
-) =>
+export const getBranchData = ({ commit, state }, { projectId, branchId, force = false } = {}) =>
   new Promise((resolve, reject) => {
     if (
       typeof state.projects[`${projectId}`] === 'undefined' ||
@@ -78,7 +72,7 @@ export const getBranchData = (
     }
   });
 
-export const refreshLastCommitData = ({ commit, state, dispatch }, { projectId, branchId } = {}) =>
+export const refreshLastCommitData = ({ commit }, { projectId, branchId } = {}) =>
   service
     .getBranchData(projectId, branchId)
     .then(({ data }) => {
@@ -92,7 +86,7 @@ export const refreshLastCommitData = ({ commit, state, dispatch }, { projectId, 
       flash(__('Error loading last commit.'), 'alert', document, null, false, true);
     });
 
-export const pollSuccessCallBack = ({ commit, state, dispatch }, { data }) => {
+export const pollSuccessCallBack = ({ commit, state }, { data }) => {
   if (data.pipelines && data.pipelines.length) {
     const lastCommitHash =
       state.projects[state.currentProjectId].branches[state.currentBranchId].commit.id;

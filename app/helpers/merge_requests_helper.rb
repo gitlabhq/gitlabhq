@@ -97,8 +97,9 @@ module MergeRequestsHelper
     {
       merge_when_pipeline_succeeds: true,
       should_remove_source_branch: true,
-      sha: merge_request.diff_head_sha
-    }.merge(merge_params_ee(merge_request))
+      sha: merge_request.diff_head_sha,
+      squash: merge_request.squash
+    }
   end
 
   def tab_link_for(merge_request, tab, options = {}, &block)
@@ -148,9 +149,5 @@ module MergeRequestsHelper
     else
       current_user.fork_of(project)
     end
-  end
-
-  def merge_params_ee(merge_request)
-    {}
   end
 end

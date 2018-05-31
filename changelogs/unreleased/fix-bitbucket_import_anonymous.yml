@@ -1,0 +1,5 @@
+---
+title: Import bitbucket issues that are reported by an anonymous user
+merge_request: 18199
+author: bartl
+type: fixed

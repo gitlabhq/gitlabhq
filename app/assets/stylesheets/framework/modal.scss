@@ -74,12 +74,6 @@ body.modal-open {
   }
 }
 
-@include media-breakpoint-up(lg) {
-  .modal-full {
-    width: 98%;
-  }
-}
-
 .modal {
   background-color: $black-transparent;
   z-index: 2100;

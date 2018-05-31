@@ -1,4 +1,3 @@
-/* global monaco */
 import Disposable from './disposable';
 import eventHub from '../../eventhub';
 
