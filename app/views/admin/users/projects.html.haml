@@ -4,7 +4,7 @@
 - if @user.groups.any?
   .card
     .card-header Group projects
-    %ul.card-body-list
+    %ul.hover-list
       - @user.group_members.includes(:source).each do |group_member|
         - group = group_member.group
         %li.group_member
@@ -28,7 +28,7 @@
   .col-md-6
     .card
       .card-header Joined projects (#{@joined_projects.count})
-      %ul.card-body-list
+      %ul.hover-list
         - @joined_projects.sort_by(&:full_name).each do |project|
           - member = project.team.find_member(@user.id)
           %li.project_member

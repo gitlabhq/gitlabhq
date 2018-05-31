@@ -24,7 +24,6 @@ gitlab-rake gitlab:storage:migrate_to_hashed
 
 ```bash
 rake gitlab:storage:migrate_to_hashed
-
 ```
 
 You can monitor the progress in the _Admin > Monitoring > Background jobs_ screen.
@@ -52,7 +51,6 @@ gitlab-rake gitlab:storage:legacy_projects
 
 ```bash
 rake gitlab:storage:legacy_projects
-
 ```
 
 ------
@@ -86,7 +84,6 @@ gitlab-rake gitlab:storage:hashed_projects
 
 ```bash
 rake gitlab:storage:hashed_projects
-
 ```
 
 ------
@@ -120,7 +117,6 @@ gitlab-rake gitlab:storage:legacy_attachments
 
 ```bash
 rake gitlab:storage:legacy_attachments
-
 ```
 
 ------
@@ -137,7 +133,6 @@ gitlab-rake gitlab:storage:list_legacy_attachments
 
 ```bash
 rake gitlab:storage:list_legacy_attachments
-
 ```
 
 ## List attachments on Hashed storage
@@ -154,7 +149,6 @@ gitlab-rake gitlab:storage:hashed_attachments
 
 ```bash
 rake gitlab:storage:hashed_attachments
-
 ```
 
 ------
@@ -171,7 +165,6 @@ gitlab-rake gitlab:storage:list_hashed_attachments
 
 ```bash
 rake gitlab:storage:list_hashed_attachments
-
 ```
 
 [storage-types]: ../repository_storage_types.md

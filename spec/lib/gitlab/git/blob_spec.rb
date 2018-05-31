@@ -22,6 +22,12 @@ describe Gitlab::Git::Blob, seed_helper: true do
       it { expect(blob).to eq(nil) }
     end
 
+    context 'utf-8 branch' do
+      let(:blob) { Gitlab::Git::Blob.find(repository, 'Ääh-test-utf-8', "files/ruby/popen.rb")}
+
+      it { expect(blob.id).to eq(SeedRepo::RubyBlob::ID) }
+    end
+
     context 'blank path' do
       let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, '') }
 

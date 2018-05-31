@@ -15,7 +15,7 @@
     %h5.prepend-top-default
       Webhooks (#{@hooks.count})
     - if @hooks.any?
-      %ul.well-list
+      %ul.content-list
         - @hooks.each do |hook|
           = render 'project_hook', hook: hook
     - else

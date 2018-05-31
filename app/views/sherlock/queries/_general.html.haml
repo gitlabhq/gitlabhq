@@ -3,7 +3,7 @@
     .card-header
       %strong
         = t('sherlock.general')
-    %ul.well-list
+    %ul.content-list
       %li
         %span.light
           #{t('sherlock.time')}:
@@ -32,7 +32,7 @@
           = @query.formatted_query
       %strong
         = t('sherlock.query')
-    %ul.well-list
+    %ul.content-list
       %li
         .code.js-syntax-highlight.sherlock-code
           :preserve
@@ -47,7 +47,7 @@
           = @query.explain
       %strong
         = t('sherlock.query_plan')
-    %ul.well-list
+    %ul.content-list
       %li
         .code.js-syntax-highlight.sherlock-code
           %pre

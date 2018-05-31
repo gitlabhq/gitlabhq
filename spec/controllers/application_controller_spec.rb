@@ -146,35 +146,43 @@ describe ApplicationController do
     end
   end
 
-  describe '#authenticate_user_from_rss_token' do
-    describe "authenticating a user from an RSS token" do
+  describe '#authenticate_sessionless_user!' do
+    describe 'authenticating a user from a feed token' do
       controller(described_class) do
         def index
           render text: 'authenticated'
         end
       end
 
-      context "when the 'rss_token' param is populated with the RSS token" do
+      context "when the 'feed_token' param is populated with the feed token" do
         context 'when the request format is atom' do
           it "logs the user in" do
-            get :index, rss_token: user.rss_token, format: :atom
+            get :index, feed_token: user.feed_token, format: :atom
             expect(response).to have_gitlab_http_status 200
             expect(response.body).to eq 'authenticated'
           end
         end
 
-        context 'when the request format is not atom' do
+        context 'when the request format is ics' do
+          it "logs the user in" do
+            get :index, feed_token: user.feed_token, format: :ics
+            expect(response).to have_gitlab_http_status 200
+            expect(response.body).to eq 'authenticated'
+          end
+        end
+
+        context 'when the request format is neither atom nor ics' do
           it "doesn't log the user in" do
-            get :index, rss_token: user.rss_token
+            get :index, feed_token: user.feed_token
             expect(response.status).not_to have_gitlab_http_status 200
             expect(response.body).not_to eq 'authenticated'
           end
         end
       end
 
-      context "when the 'rss_token' param is populated with an invalid RSS token" do
+      context "when the 'feed_token' param is populated with an invalid feed token" do
         it "doesn't log the user" do
-          get :index, rss_token: "token"
+          get :index, feed_token: 'token', format: :atom
           expect(response.status).not_to eq 200
           expect(response.body).not_to eq 'authenticated'
         end
@@ -454,7 +462,7 @@ describe ApplicationController do
         end
 
         it 'renders a 403 when the sessionless user did not accept the terms' do
-          get :index, rss_token: user.rss_token, format: :atom
+          get :index, feed_token: user.feed_token, format: :atom
 
           expect(response).to have_gitlab_http_status(403)
         end
@@ -462,7 +470,7 @@ describe ApplicationController do
         it 'renders a 200 when the sessionless user accepted the terms' do
           accept_terms(user)
 
-          get :index, rss_token: user.rss_token, format: :atom
+          get :index, feed_token: user.feed_token, format: :atom
 
           expect(response).to have_gitlab_http_status(200)
         end

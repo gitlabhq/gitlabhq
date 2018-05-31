@@ -107,7 +107,7 @@ you will not get a shibboleth session!
   RewriteEngine on
 
   #Don't escape encoded characters in api requests
-  RewriteCond %{REQUEST_URI} ^/api/v3/.*
+  RewriteCond %{REQUEST_URI} ^/api/v4/.*
   RewriteCond %{REQUEST_URI} !/Shibboleth.sso
   RewriteCond %{REQUEST_URI} !/shibboleth-sp
   RewriteRule .* http://127.0.0.1:8181%{REQUEST_URI} [P,QSA,NE]

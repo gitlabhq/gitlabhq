@@ -8,7 +8,7 @@
     .card
       .card-header
         = @user.name
-      %ul.well-list
+      %ul.content-list
         %li
           = image_tag avatar_icon_for_user(@user, 60), class: "avatar s60"
         %li
@@ -21,7 +21,7 @@
     .card
       .card-header
         Account:
-      %ul.well-list
+      %ul.content-list
         %li
           %span.light Name:
           %strong= @user.name

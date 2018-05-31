@@ -17,10 +17,23 @@ module IssuesAction
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
+  def issues_calendar
+    @issues = issuables_collection
+                  .non_archived
+                  .with_due_date
+                  .limit(100)
+
+    respond_to do |format|
+      format.ics { response.headers['Content-Disposition'] = 'inline' }
+    end
+  end
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
   private
 
   def finder_type
     (super if defined?(super)) ||
-      (IssuesFinder if action_name == 'issues')
+      (IssuesFinder if %w(issues issues_calendar).include?(action_name))
   end
 end

@@ -87,7 +87,8 @@ table {
   display: none;
 }
 
-.dropdown-toggle::after {
+.dropdown-toggle::after,
+.dropright .dropdown-menu-toggle::after {
   // Remove bootstrap's dropdown caret
   display: none;
 }
@@ -131,6 +132,10 @@ table {
 }
 
 .card {
+  .card-title {
+    margin-bottom: 0;
+  }
+
   &.card-without-border {
     @extend .border-0;
   }
@@ -144,6 +149,16 @@ table {
   }
 }
 
-.nav-tabs .nav-link {
-  border: 0;
+.nav-tabs {
+  .nav-link {
+    border: 0;
+  }
+
+  .nav-item {
+    margin-bottom: 0;
+  }
+}
+
+pre code {
+  white-space: pre-wrap;
 }

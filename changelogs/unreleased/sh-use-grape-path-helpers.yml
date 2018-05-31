@@ -1,0 +1,5 @@
+---
+title: Replace grape-route-helpers with our own grape-path-helpers
+merge_request:
+author:
+type: performance
