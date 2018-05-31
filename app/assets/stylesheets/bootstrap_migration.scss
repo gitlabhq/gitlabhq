@@ -36,6 +36,11 @@ html [type="button"],
   cursor: pointer;
 }
 
+b,
+strong {
+  font-weight: bold;
+}
+
 a {
   color: $gl-link-color;
 }
