@@ -11,8 +11,12 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :whitelist_query_limiting_ee, only: [:update]
   before_action :whitelist_query_limiting, only: [:create, :create_merge_request, :move, :bulk_update]
   before_action :check_issues_available!
+<<<<<<< HEAD
   before_action :issue, except: [:index, :calendar, :new, :create, :bulk_update, :export_csv]
 
+=======
+  before_action :issue, except: [:index, :calendar, :new, :create, :bulk_update]
+>>>>>>> upstream/master
   before_action :set_issuables_index, only: [:index, :calendar]
 
   # Allow write(create) issue

@@ -386,9 +386,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
+<<<<<<< HEAD
       ## EE-specific
       resources :vulnerability_feedback, only: [:index, :create, :destroy], constraints: { id: /\d+/ }
 
+=======
+>>>>>>> upstream/master
       get :issues, to: 'issues#calendar', constraints: lambda { |req| req.format == :ics }
       resources :issues, concerns: :awardable, constraints: { id: /\d+/ } do
         member do

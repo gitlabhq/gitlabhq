@@ -130,6 +130,7 @@ module Gitlab
     config.assets.precompile << "snippets.css"
     config.assets.precompile << "locale/**/app.js"
     config.assets.precompile << "emoji_sprites.css"
+    config.assets.precompile << "errors.css"
 
     # Import gitlab-svgs directly from vendored directory
     config.assets.paths << "#{config.root}/node_modules/@gitlab-org/gitlab-svgs/dist"

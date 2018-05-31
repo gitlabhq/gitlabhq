@@ -42,13 +42,12 @@
     }
   }
 
-  .form-horizontal {
-    margin-top: 20px;
+  .form-group {
+    margin-bottom: 0;
 
-    @include media-breakpoint-up(sm) {
-      display: -webkit-flex;
-      display: flex;
-      margin-top: 3px;
+    @include media-breakpoint-down(sm) {
+      display: block;
+      margin-left: 5px;
     }
   }
 
@@ -68,10 +67,15 @@
 }
 
 .member-form-control {
-  @include media-breakpoint-down(xs) {
-    padding-bottom: 5px;
+  @include media-breakpoint-down(sm) {
+    width: $dropdown-member-form-control-width;
     margin-left: 0;
+    padding-bottom: 5px;
+  }
+
+  @include media-breakpoint-down(xs) {
     margin-right: 0;
+    width: auto;
   }
 }
 
@@ -257,10 +261,6 @@
     align-self: flex-start;
   }
 
-  .form-horizontal ~ .btn {
-    margin-right: 0;
-  }
-
   @include media-breakpoint-down(xs) {
     display: block;
 
@@ -268,6 +268,12 @@
       margin-left: 0;
       margin-right: 0;
       display: block;
+    }
+
+    .controls > .btn:last-child {
+      margin-left: 5px;
+      margin-right: 5px;
+      width: auto;
     }
 
     .form-control {
@@ -281,10 +287,6 @@
 
     .member-controls {
       margin-top: 5px;
-    }
-
-    .form-horizontal {
-      margin-top: 10px;
     }
   }
 }
@@ -307,10 +309,6 @@
 
     .dropdown-menu {
       margin-top: 0;
-    }
-
-    .form-horizontal {
-      display: block;
     }
 
     .member-form-control {

@@ -379,7 +379,7 @@ describe 'Pipeline', :js do
         end
 
         it 'fails to access the page' do
-          expect(page).to have_content('Access Denied')
+          expect(page).to have_title('Access Denied')
         end
       end
     end

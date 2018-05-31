@@ -2657,10 +2657,13 @@ ActiveRecord::Schema.define(version: 20180529093006) do
     t.boolean "notified_of_own_activity"
     t.boolean "support_bot"
     t.string "preferred_language"
+<<<<<<< HEAD
     t.boolean "email_opted_in"
     t.string "email_opted_in_ip"
     t.integer "email_opted_in_source_id"
     t.datetime "email_opted_in_at"
+=======
+>>>>>>> upstream/master
     t.integer "theme_id", limit: 2
     t.integer "accepted_term_id"
     t.string "feed_token"

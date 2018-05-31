@@ -8,8 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2018-05-30 10:16-0400\n"
 "PO-Revision-Date: 2018-05-30 10:16-0400\n"
+=======
+"POT-Creation-Date: 2018-05-29 09:43-0500\n"
+"PO-Revision-Date: 2018-05-29 09:43-0500\n"
+>>>>>>> upstream/master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -199,6 +204,21 @@ msgid "1st contribution!"
 msgstr ""
 
 msgid "2FA enabled"
+msgstr ""
+
+msgid "403|Please contact your GitLab administrator to get the permission."
+msgstr ""
+
+msgid "403|You don't have the permission to access this page."
+msgstr ""
+
+msgid "404|Make sure the address is correct and the page hasn't moved."
+msgstr ""
+
+msgid "404|Page Not Found"
+msgstr ""
+
+msgid "404|Please contact your GitLab administrator if you think this is a mistake."
 msgstr ""
 
 msgid "<strong>Removes</strong> source branch"
@@ -1187,6 +1207,12 @@ msgstr ""
 msgid "ClusterIntegration|Advanced options on this Kubernetes cluster's integration"
 msgstr ""
 
+msgid "ClusterIntegration|An error occured while trying to fetch project zones: %{error}"
+msgstr ""
+
+msgid "ClusterIntegration|An error occured while trying to fetch your projects: %{error}"
+msgstr ""
+
 msgid "ClusterIntegration|Applications"
 msgstr ""
 
@@ -1245,6 +1271,15 @@ msgid "ClusterIntegration|Environment scope"
 msgstr ""
 
 msgid "ClusterIntegration|Every new Google Cloud Platform (GCP) account receives $300 in credit upon %{sign_up_link}. In partnership with Google, GitLab is able to offer an additional $200 for new GCP accounts to get started with GitLab's Google Kubernetes Engine Integration."
+msgstr ""
+
+msgid "ClusterIntegration|Fetching machine types"
+msgstr ""
+
+msgid "ClusterIntegration|Fetching projects"
+msgstr ""
+
+msgid "ClusterIntegration|Fetching zones"
 msgstr ""
 
 msgid "ClusterIntegration|GitLab Integration"
@@ -1352,7 +1387,20 @@ msgstr ""
 msgid "ClusterIntegration|More information"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "ClusterIntegration|Multiple Kubernetes clusters are available in GitLab Enterprise Edition Premium and Ultimate"
+=======
+msgid "ClusterIntegration|No machine types matched your search"
+msgstr ""
+
+msgid "ClusterIntegration|No projects found"
+msgstr ""
+
+msgid "ClusterIntegration|No projects matched your search"
+msgstr ""
+
+msgid "ClusterIntegration|No zones matched your search"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "ClusterIntegration|Note:"
@@ -1365,9 +1413,6 @@ msgid "ClusterIntegration|Please enter access information for your Kubernetes cl
 msgstr ""
 
 msgid "ClusterIntegration|Please make sure that your Google account meets the following requirements:"
-msgstr ""
-
-msgid "ClusterIntegration|Project ID"
 msgstr ""
 
 msgid "ClusterIntegration|Project namespace"
@@ -1400,19 +1445,40 @@ msgstr ""
 msgid "ClusterIntegration|Save changes"
 msgstr ""
 
+msgid "ClusterIntegration|Search machine types"
+msgstr ""
+
+msgid "ClusterIntegration|Search projects"
+msgstr ""
+
+msgid "ClusterIntegration|Search zones"
+msgstr ""
+
 msgid "ClusterIntegration|Security"
 msgstr ""
 
 msgid "ClusterIntegration|See and edit the details for your Kubernetes cluster"
 msgstr ""
 
-msgid "ClusterIntegration|See machine types"
-msgstr ""
-
-msgid "ClusterIntegration|See your projects"
-msgstr ""
-
 msgid "ClusterIntegration|See zones"
+msgstr ""
+
+msgid "ClusterIntegration|Select machine type"
+msgstr ""
+
+msgid "ClusterIntegration|Select project"
+msgstr ""
+
+msgid "ClusterIntegration|Select project and zone to choose machine type"
+msgstr ""
+
+msgid "ClusterIntegration|Select project to choose zone"
+msgstr ""
+
+msgid "ClusterIntegration|Select zone"
+msgstr ""
+
+msgid "ClusterIntegration|Select zone to choose machine type"
 msgstr ""
 
 msgid "ClusterIntegration|Service token"
@@ -1443,6 +1509,9 @@ msgid "ClusterIntegration|Toggle Kubernetes cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Token"
+msgstr ""
+
+msgid "ClusterIntegration|Validating project billing status"
 msgstr ""
 
 msgid "ClusterIntegration|With a Kubernetes cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way."
@@ -2473,7 +2542,14 @@ msgstr ""
 msgid "GeoNodes|Full"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "GeoNodes|GitLab version"
+=======
+msgid "Go Back"
+msgstr ""
+
+msgid "Go back"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "GeoNodes|GitLab version does not match the primary node version"
@@ -3331,6 +3407,18 @@ msgstr ""
 msgid "Name new label"
 msgstr ""
 
+msgid "Nav|Help"
+msgstr ""
+
+msgid "Nav|Home"
+msgstr ""
+
+msgid "Nav|Sign In / Register"
+msgstr ""
+
+msgid "Nav|Sign out and sign in with a different account"
+msgstr ""
+
 msgid "New Issue"
 msgid_plural "New Issues"
 msgstr[0] ""
@@ -3796,9 +3884,6 @@ msgid "PlantUML"
 msgstr ""
 
 msgid "Play"
-msgstr ""
-
-msgid "Please <a href=%{link_to_billing} target=\"_blank\" rel=\"noopener noreferrer\">enable billing for one of your projects to be able to create a Kubernetes cluster</a>, then try again."
 msgstr ""
 
 msgid "Please accept the Terms of Service before continuing."
@@ -4370,6 +4455,9 @@ msgstr ""
 msgid "Search files"
 msgstr ""
 
+msgid "Search for projects, issues, etc."
+msgstr ""
+
 msgid "Search milestones"
 msgstr ""
 
@@ -4385,7 +4473,11 @@ msgstr ""
 msgid "Seconds to wait for a storage access attempt"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Security report"
+=======
+msgid "Select"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Select Archive Format"
@@ -4404,6 +4496,15 @@ msgid "Select assignee"
 msgstr ""
 
 msgid "Select branch/tag"
+msgstr ""
+
+msgid "Select project"
+msgstr ""
+
+msgid "Select project and zone to choose machine type"
+msgstr ""
+
+msgid "Select project to choose zone"
 msgstr ""
 
 msgid "Select source branch"
@@ -4546,9 +4647,12 @@ msgstr ""
 msgid "Something went wrong when toggling the button"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Something went wrong while fetching group member contributions"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Something went wrong while fetching the latest pipeline status."
 msgstr ""
 
@@ -5380,6 +5484,7 @@ msgstr ""
 msgid "Update your group name, description, avatar, and other general settings."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Upgrade your plan to activate Advanced Global Search."
 msgstr ""
 
@@ -5395,6 +5500,8 @@ msgstr ""
 msgid "Upgrade your plan to improve Issue boards."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Upload New File"
 msgstr ""
 
@@ -5492,9 +5599,6 @@ msgid "VisibilityLevel|Unknown"
 msgstr ""
 
 msgid "Want to see the data? Please ask an administrator for access."
-msgstr ""
-
-msgid "We could not verify that one of your projects on GCP has billing enabled. Please try again."
 msgstr ""
 
 msgid "We don't have enough data to show this stage."
