@@ -1,6 +1,10 @@
 module Gitlab
   module Ci
     class Trace
+      include ExclusiveLeaseGuard
+
+      LEASE_TIMEOUT = 1.hour
+
       ArchiveError = Class.new(StandardError)
 
       attr_reader :job
@@ -108,20 +112,22 @@ module Gitlab
         raise ArchiveError, 'Already archived' if trace_artifact
         raise ArchiveError, 'Job is not finished yet' unless job.complete?
 
-        if job.trace_chunks.any?
-          Gitlab::Ci::Trace::ChunkedIO.new(job) do |stream|
-            archive_stream!(stream)
-            stream.destroy!
-          end
-        elsif current_path
-          File.open(current_path) do |stream|
-            archive_stream!(stream)
-            FileUtils.rm(current_path)
-          end
-        elsif old_trace
-          StringIO.new(old_trace, 'rb').tap do |stream|
-            archive_stream!(stream)
-            job.erase_old_trace!
+        try_obtain_lease do
+          if job.trace_chunks.any?
+            Gitlab::Ci::Trace::ChunkedIO.new(job) do |stream|
+              archive_stream!(stream)
+              stream.destroy!
+            end
+          elsif current_path
+            File.open(current_path) do |stream|
+              archive_stream!(stream)
+              FileUtils.rm(current_path)
+            end
+          elsif old_trace
+            StringIO.new(old_trace, 'rb').tap do |stream|
+              archive_stream!(stream)
+              job.erase_old_trace!
+            end
           end
         end
       end
@@ -205,6 +211,16 @@ module Gitlab
 
       def trace_artifact
         job.job_artifacts_trace
+      end
+
+      # For ExclusiveLeaseGuard concerns
+      def lease_key
+        @lease_key ||= self.class.name.underscore + ":archive:#{job.id}"
+      end
+
+      # For ExclusiveLeaseGuard concern
+      def lease_timeout
+        LEASE_TIMEOUT
       end
     end
   end
