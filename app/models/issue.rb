@@ -62,6 +62,7 @@ class Issue < ActiveRecord::Base
   scope :public_only, -> { where(confidential: false) }
 
   after_save :expire_etag_cache
+  after_save :ensure_metrics, unless: :imported?
 
   attr_spammable :title, spam_title: true
   attr_spammable :description, spam_description: true
