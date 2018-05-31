@@ -1,5 +1,5 @@
 <script>
-import Sortable from 'vendor/Sortable';
+import Sortable from 'sortablejs';
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import sortableConfig from 'ee/sortable/sortable_config';
