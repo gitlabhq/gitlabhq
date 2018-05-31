@@ -12,7 +12,7 @@ feature 'Projects > Show > RSS' do
       visit path
     end
 
-    it_behaves_like "an autodiscoverable RSS feed with current_user's RSS token"
+    it_behaves_like "an autodiscoverable RSS feed with current_user's feed token"
   end
 
   context 'when signed out' do
@@ -20,6 +20,6 @@ feature 'Projects > Show > RSS' do
       visit path
     end
 
-    it_behaves_like "an autodiscoverable RSS feed without an RSS token"
+    it_behaves_like "an autodiscoverable RSS feed without a feed token"
   end
 end

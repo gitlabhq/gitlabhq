@@ -15,7 +15,7 @@ feature 'Project Activity RSS' do
       visit path
     end
 
-    it_behaves_like "it has an RSS button with current_user's RSS token"
+    it_behaves_like "it has an RSS button with current_user's feed token"
   end
 
   context 'when signed out' do
@@ -23,6 +23,6 @@ feature 'Project Activity RSS' do
       visit path
     end
 
-    it_behaves_like "it has an RSS button without an RSS token"
+    it_behaves_like "it has an RSS button without a feed token"
   end
 end
