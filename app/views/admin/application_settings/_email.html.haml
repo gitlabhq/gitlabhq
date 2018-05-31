@@ -5,8 +5,8 @@
     .form-group.row
       .offset-sm-2.col-sm-10
         .form-check
-          = f.label :email_author_in_body do
-            = f.check_box :email_author_in_body
+          = f.check_box :email_author_in_body, class: 'form-check-input'
+          = f.label :email_author_in_body, class: 'form-check-label' do
             Include author name in notification email body
           .form-text.text-muted
             Some email servers do not support overriding the email sender name.
@@ -15,8 +15,8 @@
     .form-group.row
       .offset-sm-2.col-sm-10
         .form-check
-          = f.label :html_emails_enabled do
-            = f.check_box :html_emails_enabled
+          = f.check_box :html_emails_enabled, class: 'form-check-input'
+          = f.label :html_emails_enabled, class: 'form-check-label' do
             Enable HTML emails
           .form-text.text-muted
             By default GitLab sends emails in HTML and plain text formats so mail

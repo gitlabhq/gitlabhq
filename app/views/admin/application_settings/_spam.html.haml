@@ -5,8 +5,8 @@
     .form-group.row
       .offset-sm-2.col-sm-10
         .form-check
-          = f.label :recaptcha_enabled do
-            = f.check_box :recaptcha_enabled
+          = f.check_box :recaptcha_enabled, class: 'form-check-input'
+          = f.label :recaptcha_enabled, class: 'form-check-label' do
             Enable reCAPTCHA
           %span.form-text.text-muted#recaptcha_help_block Helps prevent bots from creating accounts
 
@@ -26,8 +26,8 @@
     .form-group.row
       .offset-sm-2.col-sm-10
         .form-check
-          = f.label :akismet_enabled do
-            = f.check_box :akismet_enabled
+          = f.check_box :akismet_enabled, class: 'form-check-input'
+          = f.label :akismet_enabled, class: 'form-check-label' do
             Enable Akismet
           %span.form-text.text-muted#akismet_help_block Helps prevent bots from creating issues
 
@@ -42,8 +42,8 @@
     .form-group.row
       .offset-sm-2.col-sm-10
         .form-check
-          = f.label :unique_ips_limit_enabled do
-            = f.check_box :unique_ips_limit_enabled
+          = f.check_box :unique_ips_limit_enabled, class: 'form-check-input'
+          = f.label :unique_ips_limit_enabled, class: 'form-check-label' do
             Limit sign in from multiple ips
           %span.form-text.text-muted#unique_ip_help_block
             Helps prevent malicious users hide their activity
