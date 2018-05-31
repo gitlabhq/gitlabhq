@@ -302,17 +302,32 @@ describe API::Pipelines do
         end
 
         context 'variables given' do
-          let(:variables_attributes) { [{ 'key' => 'UPLOAD_TO_S3', 'value' => 'true' }] }
+          let(:variables) { [{ 'key' => 'UPLOAD_TO_S3', 'value' => 'true' }] }
 
           it 'creates and returns a new pipeline using the given variables' do
             expect do
-              post api("/projects/#{project.id}/pipeline", user), ref: project.default_branch, variables_attributes: variables_attributes
+              post api("/projects/#{project.id}/pipeline", user), ref: project.default_branch, variables: variables
             end.to change { project.pipelines.count }.by(1)
 
             expect(response).to have_gitlab_http_status(201)
             expect(json_response).to be_a Hash
             expect(json_response['sha']).to eq project.commit.id
-            expect(json_response['variables']).to eq variables_attributes
+            expect(json_response['variables']).to eq variables
+          end
+        end
+
+        context 'when excluding a ref' do
+          before do
+            config = YAML.dump(test: { script: 'test', except: [project.default_branch] })
+            stub_ci_pipeline_yaml_file(config)
+          end
+
+          it "doesn't not create a job for the exluded ref" do
+            expect do
+              post api("/projects/#{project.id}/pipeline", user), ref: project.default_branch
+            end.not_to change { project.pipelines.count }
+
+            expect(response).to have_gitlab_http_status(400)
           end
         end
 
