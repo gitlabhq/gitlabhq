@@ -29,7 +29,6 @@
 
     .form-group
       = provider_gcp_field.label :zone, s_('ClusterIntegration|Zone')
-      = link_to(s_('ClusterIntegration|See zones'), 'https://cloud.google.com/compute/docs/regions-zones/regions-zones', target: '_blank', rel: 'noopener noreferrer')
       .js-gcp-zone-dropdown-entry-point
         = provider_gcp_field.hidden_field :zone
         .dropdown
