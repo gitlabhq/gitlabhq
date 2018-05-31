@@ -71,11 +71,11 @@ export default {
     this.setUserData(this.userData);
   },
   mounted() {
-    this.fetchNotes(true);
+    this.fetchNotes();
 
     this.notesCountBadge = $('.issuable-details').find('.notes-tab .badge');
     $(document).on('visibilitychange', () => {
-      this.fetchNotes(false).then(() => {
+      this.fetchNotes().then(() => {
         this.notesCountBadge.text(this.notes.length);
       });
     });
@@ -120,12 +120,10 @@ export default {
     getComponentData(note) {
       return note.individual_note ? note.notes[0] : note;
     },
-    fetchNotes(init = true) {
+    fetchNotes() {
       return this.actionFetchNotes(this.getNotesDataByProp('discussionsPath'))
         .then(() => {
-          if (init) {
-            this.initPolling()
-          }
+          this.initPolling()
         })
         .then(() => {
           this.isLoading = false;
