@@ -50,6 +50,21 @@ module Ci
       def finalize_fast_destroy(keys)
         redis_delete_data(keys)
       end
+
+      # Find stale live traces and return their build ids
+      def find_stale(finished_before: 1.hour.ago)
+        include(EachBatch)
+          .select(:build_id)
+          .group(:build_id)
+          .joins(:build)
+          .merge(Ci::Build.finished)
+          .where('ci_builds.finished_at < ?', finished_before)
+          .each_batch(column: :build_id) do |chunks|
+            build_ids = chunks.map { |chunk| [chunk.build_id] }
+
+            yield build_ids
+          end
+      end
     end
 
     ##
