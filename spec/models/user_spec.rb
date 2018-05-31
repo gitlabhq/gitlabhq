@@ -644,13 +644,13 @@ describe User do
     end
   end
 
-  describe 'rss token' do
-    it 'ensures an rss token on read' do
-      user = create(:user, rss_token: nil)
-      rss_token = user.rss_token
+  describe 'feed token' do
+    it 'ensures a feed token on read' do
+      user = create(:user, feed_token: nil)
+      feed_token = user.feed_token
 
-      expect(rss_token).not_to be_blank
-      expect(user.reload.rss_token).to eq rss_token
+      expect(feed_token).not_to be_blank
+      expect(user.reload.feed_token).to eq feed_token
     end
   end
 

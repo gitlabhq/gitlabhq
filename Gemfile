@@ -144,6 +144,9 @@ gem 'truncato', '~> 0.7.9'
 gem 'bootstrap_form', '~> 2.7.0'
 gem 'nokogiri', '~> 1.8.2'
 
+# Calendar rendering
+gem 'icalendar'
+
 # Diffs
 gem 'diffy', '~> 3.1.0'
 
