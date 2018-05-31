@@ -9,8 +9,8 @@
     .form-group.row
       .offset-sm-2.col-sm-10
         .form-check
-          = f.label :sidekiq_throttling_enabled do
-            = f.check_box :sidekiq_throttling_enabled
+          = f.check_box :sidekiq_throttling_enabled, class: 'form-check-input'
+          = f.label :sidekiq_throttling_enabled, class: 'form-check-label' do
             Enable Sidekiq Job Throttling
           .form-text.text-muted
             Limit the amount of resources slow running jobs are assigned.
