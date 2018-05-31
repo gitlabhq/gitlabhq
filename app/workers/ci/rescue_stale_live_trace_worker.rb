@@ -7,8 +7,8 @@ module Ci
       # Reschedule to archive live traces
       #
       # The targets are jobs with the following conditions
-      # - It had been finished 1 hour ago, but it has not had an acthived trace yet
-      #   This case happens when sidekiq-jobs of archiving traces are lost in order to restart sidekiq instace which hit RSS limit
+      # - Jobs had been finished 1 hour ago, but they don't have an archived trace yet
+      #   This could happen when their sidekiq-jobs are lost by SIGKILL
       Ci::BuildTraceChunk.find_stale(finished_before: 1.hour.ago) do |build_ids|
         Ci::Build.where(id: build_ids).find_each do |build|
           begin

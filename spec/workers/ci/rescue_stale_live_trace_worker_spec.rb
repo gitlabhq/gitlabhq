@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe RescueStaleLiveTraceWorker do
+describe Ci::RescueStaleLiveTraceWorker do
   subject { described_class.new.perform }
 
   before do
