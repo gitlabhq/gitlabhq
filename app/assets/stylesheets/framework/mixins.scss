@@ -231,3 +231,27 @@
   word-break: break-word;
   max-width: 100%;
 }
+
+/*
+ * Mixin for chaining multiple :not selectors
+ * Modified from: https://stackoverflow.com/a/30250161/856054
+ *
+ * Note: This will become redundant once selectors lvl4 is supported
+ */
+@mixin not($notList...) {
+  //if only a single value given
+  @if (length($notList) == 1){
+    //it is probably a list variable so set ignore list to the variable
+    $notList: nth($notList, 1);
+  }
+  //set up an empty $notOutput variable
+  $notOutput: '';
+  @each $not in $notList {
+    //generate a :not([ignored_item]) segment for each item in the ignore list and put them back to back
+    $notOutput: $notOutput + ':not(#{$not})';
+  }
+  //output the full :not() rule including all ignored items
+  &#{$notOutput} {
+    @content;
+  }
+}

@@ -1,7 +1,16 @@
 .gl-pagination {
   @include media-breakpoint-down(xs) {
-    .page-item:not(.active):not(.js-last-button):not(.js-next-button):not(.separator):not(.js-first-button):not(.js-previous-button) {
-      display: none;
+    .page-item {
+      @include not(
+        '.active',
+        '.js-first-button',
+        '.js-last-button',
+        '.js-next-button',
+        '.js-previous-button',
+        '.separator'
+      ) {
+        display: none;
+      }
     }
   }
 }
