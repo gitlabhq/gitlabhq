@@ -3,14 +3,14 @@ require 'spec_helper'
 describe Gitlab::Geo::OauthSession do
   subject { described_class.new }
   let(:oauth_app) { FactoryBot.create(:doorkeeper_application) }
-  let(:oauth_return_to) { 'http://localhost:3000/oauth/geo/callback' }
+  let(:oauth_return_to) { 'http://secondary/oauth/geo/callback' }
   let(:dummy_state) { 'salt:hmac:return_to' }
   let(:valid_state) { described_class.new(return_to: oauth_return_to).generate_oauth_state }
   let(:access_token) { FactoryBot.create(:doorkeeper_access_token).token }
 
   before do
     allow(subject).to receive(:oauth_app) { oauth_app }
-    allow(subject).to receive(:primary_node_url) { 'http://localhost:3001/' }
+    allow(subject).to receive(:primary_node_url) { 'http://primary/' }
   end
 
   describe '#oauth_state_valid?' do
@@ -107,31 +107,36 @@ describe Gitlab::Geo::OauthSession do
 
     it 'returns a valid url' do
       expect(subject.authorize_url).to be_a String
-      expect(subject.authorize_url).to include('http://localhost:3001/')
+      expect(subject.authorize_url).to include('http://primary/')
     end
   end
 
   describe '#authenticate_with_gitlab' do
-    let(:response) { double }
-
-    before do
-      allow_any_instance_of(OAuth2::AccessToken).to receive(:get) { response }
-    end
+    let(:api_url) { 'http://primary/api/v4/user' }
+    let(:user_json) { ActiveSupport::JSON.encode({ id: 555, email: 'user@example.com' }.as_json) }
 
     context 'on success' do
-      it 'returns hashed user data' do
-        allow(response).to receive(:status) { 200 }
-        allow(response).to receive(:parsed) { attributes_for(:user) }
+      before do
+        stub_request(:get, api_url).to_return(
+          body: user_json,
+          headers: { 'Content-Type' => 'application/json' }
+        )
+      end
 
-        subject.authenticate_with_gitlab(access_token)
+      it 'returns hashed user data' do
+        parsed_json = JSON.parse(user_json)
+
+        expect(subject.authenticate_with_gitlab(access_token)).to eq(parsed_json)
       end
     end
 
     context 'on invalid token' do
-      it 'raises exception' do
-        allow(response).to receive(:status) { 401 }
+      before do
+        stub_request(:get, api_url).to_return(status: [401, "Unauthorized"])
+      end
 
-        expect { subject.authenticate_with_gitlab(access_token) }.to raise_error
+      it 'raises exception' do
+        expect { subject.authenticate_with_gitlab(access_token) }.to raise_error(OAuth2::Error)
       end
     end
   end
