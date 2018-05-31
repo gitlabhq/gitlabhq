@@ -32,10 +32,9 @@ export const changeDescriptionNote = (note, descriptionChangedTimes, timeDiffere
 export const getTimeDifferenceMinutes = (noteBeggining, noteEnd) => {
   const descriptionNoteBegin = new Date(noteBeggining.created_at);
   const descriptionNoteEnd = new Date(noteEnd.created_at);
-  let timeDifferenceMinutes = (descriptionNoteEnd - descriptionNoteBegin) / 1000 / 60;
-  timeDifferenceMinutes = Math.ceil(timeDifferenceMinutes);
+  const timeDifferenceMinutes = (descriptionNoteEnd - descriptionNoteBegin) / 1000 / 60;
 
-  return timeDifferenceMinutes;
+  return Math.ceil(timeDifferenceMinutes);
 };
 
 /**
@@ -95,8 +94,7 @@ export const collapseSystemNotes = notes => {
             changeDescriptionNote(note, descriptionChangedTimes, timeDifferenceMinutes),
           );
 
-          // update the previous system note
-          lastDescriptionSystemNote = note;
+          // update the previous system note index
           lastDescriptionSystemNoteIndex = acc.length;
         }
       }
