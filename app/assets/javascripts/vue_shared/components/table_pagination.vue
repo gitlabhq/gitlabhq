@@ -54,7 +54,7 @@
         return this.pageInfo.nextPage;
       },
       getItems() {
-        const total = this.pageInfo.totalPages + 100;
+        const total = this.pageInfo.totalPages;
         const page = this.pageInfo.page;
         const items = [];
 
