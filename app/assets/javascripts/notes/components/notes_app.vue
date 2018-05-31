@@ -75,7 +75,7 @@ export default {
 
     this.notesCountBadge = $('.issuable-details').find('.notes-tab .badge');
     $(document).on('visibilitychange', () => {
-      this.fetchNotes().then(() => {
+      return this.fetchNotes().then(() => {
         this.notesCountBadge.text(this.notes.length);
       });
     });
@@ -123,7 +123,7 @@ export default {
     fetchNotes() {
       return this.actionFetchNotes(this.getNotesDataByProp('discussionsPath'))
         .then(() => {
-          this.initPolling()
+          this.initPolling();
         })
         .then(() => {
           this.isLoading = false;
