@@ -37,6 +37,15 @@ module Gitlab
         new(*args).create
       end
 
+      def self.relation_class(relation_name)
+        # There are scenarios where the model is pluralized (e.g.
+        # MergeRequest::Metrics), and we don't want to force it to singular
+        # with #classify.
+        relation_name.to_s.classify.constantize
+      rescue NameError
+        relation_name.to_s.constantize
+      end
+
       def initialize(relation_sym:, relation_hash:, members_mapper:, user:, project:, excluded_keys: [])
         @relation_name = OVERRIDES[relation_sym] || relation_sym
         @relation_hash = relation_hash.except('noteable_id')
@@ -196,7 +205,7 @@ module Gitlab
       end
 
       def relation_class
-        @relation_class ||= @relation_name.to_s.classify.constantize
+        @relation_class ||= self.class.relation_class(@relation_name)
       end
 
       def imported_object
