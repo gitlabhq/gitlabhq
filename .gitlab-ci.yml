@@ -825,7 +825,6 @@ gitlab:assets:compile:
     WEBPACK_REPORT: "true"
     NO_COMPRESSION: "true"
   script:
-    - ls -al config/*.yml
     - date
     - yarn install --frozen-lockfile --production --cache-folder .yarn-cache
     - date
