@@ -1,8 +1,8 @@
 import $ from 'jquery';
-import stickyMonitor from './lib/utils/sticky';
+import StickyFill from 'stickyfilljs';
 
-export default (stickyTop) => {
-  stickyMonitor(document.querySelector('.js-diff-files-changed'), stickyTop);
+export default () => {
+  StickyFill.add(document.querySelector('.js-diff-files-changed'));
 
   $('.js-diff-stats-dropdown').glDropdown({
     filterable: true,
