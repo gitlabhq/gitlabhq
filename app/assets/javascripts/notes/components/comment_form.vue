@@ -227,9 +227,7 @@ Please check your network connection and try again.`;
             this.toggleStateButtonLoading(false);
             Flash(
               sprintf(
-                __(
-                  'Something went wrong while closing the %{issuable}. Please try again later',
-                ),
+                __('Something went wrong while closing the %{issuable}. Please try again later'),
                 { issuable: this.noteableDisplayName },
               ),
             );
@@ -242,9 +240,7 @@ Please check your network connection and try again.`;
             this.toggleStateButtonLoading(false);
             Flash(
               sprintf(
-                __(
-                  'Something went wrong while reopening the %{issuable}. Please try again later',
-                ),
+                __('Something went wrong while reopening the %{issuable}. Please try again later'),
                 { issuable: this.noteableDisplayName },
               ),
             );

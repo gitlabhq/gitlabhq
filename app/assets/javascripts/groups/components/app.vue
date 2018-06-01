@@ -169,11 +169,7 @@ export default {
       this.targetGroup = group;
       this.targetParentGroup = parentGroup;
       this.showModal = true;
-      this.groupLeaveConfirmationMessage = s__(
-        `GroupsTree|Are you sure you want to leave the "${
-          group.fullName
-        }" group?`,
-      );
+      this.groupLeaveConfirmationMessage = s__(`GroupsTree|Are you sure you want to leave the "${ group.fullName }" group?`);
     },
     hideLeaveGroupModal() {
       this.showModal = false;

@@ -18,9 +18,7 @@ export default {
   computed: {
     ...mapState(['badgeInModal', 'isEditing']),
     deleteModalText() {
-      return s__(
-        'Badges|You are going to delete this badge. Deleted badges <strong>cannot</strong> be restored.',
-      );
+      return s__('Badges|You are going to delete this badge. Deleted badges <strong>cannot</strong> be restored.');
     },
   },
   methods: {

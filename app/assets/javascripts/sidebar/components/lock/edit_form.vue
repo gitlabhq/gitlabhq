@@ -22,17 +22,13 @@ export default {
   computed: {
     lockWarning() {
       return sprintf(
-        __(
-          'Lock this %{issuableDisplayName}? Only <strong>project members</strong> will be able to comment.',
-        ),
+        __('Lock this %{issuableDisplayName}? Only <strong>project members</strong> will be able to comment.'),
         { issuableDisplayName: this.issuableDisplayName },
       );
     },
     unlockWarning() {
       return sprintf(
-        __(
-          'Unlock this %{issuableDisplayName}? <strong>Everyone</strong> will be able to comment.',
-        ),
+        __('Unlock this %{issuableDisplayName}? <strong>Everyone</strong> will be able to comment.'),
         { issuableDisplayName: this.issuableDisplayName },
       );
     },

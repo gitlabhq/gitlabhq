@@ -18,14 +18,10 @@ export default {
   },
   computed: {
     confidentialityOnWarning() {
-      return s__(
-        'confidentiality|You are going to turn on the confidentiality. This means that only team members with <strong>at least Reporter access</strong> are able to see and leave comments on the issue.',
-      );
+      return s__('confidentiality|You are going to turn on the confidentiality. This means that only team members with <strong>at least Reporter access</strong> are able to see and leave comments on the issue.');
     },
     confidentialityOffWarning() {
-      return s__(
-        'confidentiality|You are going to turn off the confidentiality. This means <strong>everyone</strong> will be able to see and leave a comment on this issue.',
-      );
+      return s__('confidentiality|You are going to turn off the confidentiality. This means <strong>everyone</strong> will be able to see and leave a comment on this issue.');
     },
   },
 };

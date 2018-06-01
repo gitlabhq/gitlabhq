@@ -27,9 +27,7 @@ export default {
     ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled']),
     overviewText() {
       return sprintf(
-        __(
-          '<strong>%{changedFilesLength} unstaged</strong> and <strong>%{stagedFilesLength} staged</strong> changes',
-        ),
+        __('<strong>%{changedFilesLength} unstaged</strong> and <strong>%{stagedFilesLength} staged</strong> changes'),
         {
           stagedFilesLength: this.stagedFiles.length,
           changedFilesLength: this.changedFiles.length,

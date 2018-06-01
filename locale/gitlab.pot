@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-29 09:43-0500\n"
-"PO-Revision-Date: 2018-05-29 09:43-0500\n"
+"POT-Creation-Date: 2018-06-01 02:56-0500\n"
+"PO-Revision-Date: 2018-06-01 02:56-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -191,6 +191,9 @@ msgid "404|Page Not Found"
 msgstr ""
 
 msgid "404|Please contact your GitLab administrator if you think this is a mistake."
+msgstr ""
+
+msgid "<strong>%{changedFilesLength} unstaged</strong> and <strong>%{stagedFilesLength} staged</strong> changes"
 msgstr ""
 
 msgid "<strong>Removes</strong> source branch"
@@ -610,13 +613,13 @@ msgstr ""
 msgid "Badges|This project has no badges"
 msgstr ""
 
+msgid "Badges|You are going to delete this badge. Deleted badges <strong>cannot</strong> be restored."
+msgstr ""
+
 msgid "Badges|Your badges"
 msgstr ""
 
 msgid "Begin with the selected commit"
-msgstr ""
-
-msgid "Blame"
 msgstr ""
 
 msgid "Branch (%{branch_count})"
@@ -993,6 +996,9 @@ msgstr ""
 msgid "ClusterIntegration|%{appList} was successfully installed on your Kubernetes cluster"
 msgstr ""
 
+msgid "ClusterIntegration|%{boldNotice} This will add some extra resources like a load balancer, which may incur additional costs depending on the hosting provider your Kubernetes cluster is installed on. If you are using Google Kubernetes Engine, you can %{pricingLink}."
+msgstr ""
+
 msgid "ClusterIntegration|API URL"
 msgstr ""
 
@@ -1005,10 +1011,19 @@ msgstr ""
 msgid "ClusterIntegration|Advanced options on this Kubernetes cluster's integration"
 msgstr ""
 
+msgid "ClusterIntegration|After installing Ingress, you will need to point your wildcard DNS at the generated external IP address in order to view your app after it is deployed. %{ingressHelpLink}"
+msgstr ""
+
 msgid "ClusterIntegration|An error occured while trying to fetch project zones: %{error}"
 msgstr ""
 
 msgid "ClusterIntegration|An error occured while trying to fetch your projects: %{error}"
+msgstr ""
+
+msgid "ClusterIntegration|An error occured while trying to fetch zone machine types: %{error}"
+msgstr ""
+
+msgid "ClusterIntegration|An error occurred when trying to contact the Google Cloud API. Please try again later."
 msgstr ""
 
 msgid "ClusterIntegration|Applications"
@@ -1105,6 +1120,9 @@ msgid "ClusterIntegration|Ingress IP Address"
 msgstr ""
 
 msgid "ClusterIntegration|Install"
+msgstr ""
+
+msgid "ClusterIntegration|Install applications on your Kubernetes cluster. Read more about %{helpLink}"
 msgstr ""
 
 msgid "ClusterIntegration|Installed"
@@ -1209,6 +1227,9 @@ msgstr ""
 msgid "ClusterIntegration|Prometheus"
 msgstr ""
 
+msgid "ClusterIntegration|Prometheus is an open-source monitoring system with %{gitlabIntegrationLink} to monitor deployed applications."
+msgstr ""
+
 msgid "ClusterIntegration|Read our %{link_to_help_page} on Kubernetes cluster integration."
 msgstr ""
 
@@ -1297,6 +1318,9 @@ msgid "ClusterIntegration|Token"
 msgstr ""
 
 msgid "ClusterIntegration|Validating project billing status"
+msgstr ""
+
+msgid "ClusterIntegration|We could not verify that one of your projects on GCP has billing enabled. Please try again."
 msgstr ""
 
 msgid "ClusterIntegration|With a Kubernetes cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way."
@@ -1556,6 +1580,9 @@ msgid "Copy commit SHA to clipboard"
 msgstr ""
 
 msgid "Copy reference to clipboard"
+msgstr ""
+
+msgid "Copy to clipboard"
 msgstr ""
 
 msgid "Create"
@@ -2276,6 +2303,9 @@ msgstr ""
 msgid "GroupsEmptyState|You can manage your group member’s permissions and access to each project in the group."
 msgstr ""
 
+msgid "GroupsTree|Are you sure you want to leave the \"${ group.fullName }\" group?"
+msgstr ""
+
 msgid "GroupsTree|Create a project in this group."
 msgstr ""
 
@@ -2348,6 +2378,9 @@ msgid "IDE|Edit"
 msgstr ""
 
 msgid "IDE|Go back"
+msgstr ""
+
+msgid "IDE|Open in file view"
 msgstr ""
 
 msgid "IDE|Review"
@@ -2572,6 +2605,9 @@ msgid "Lock %{issuableDisplayName}"
 msgstr ""
 
 msgid "Lock not found"
+msgstr ""
+
+msgid "Lock this %{issuableDisplayName}? Only <strong>project members</strong> will be able to comment."
 msgstr ""
 
 msgid "Lock to current projects"
@@ -2982,9 +3018,6 @@ msgid "Perform advanced options such as changing path, transferring, or removing
 msgstr ""
 
 msgid "Performance optimization"
-msgstr ""
-
-msgid "Permalink"
 msgstr ""
 
 msgid "Permissions"
@@ -3416,9 +3449,6 @@ msgstr ""
 msgid "Quick actions can be used in the issues description and comment boxes."
 msgstr ""
 
-msgid "Raw"
-msgstr ""
-
 msgid "Read more"
 msgstr ""
 
@@ -3741,7 +3771,13 @@ msgstr ""
 msgid "Something went wrong on our end."
 msgstr ""
 
+msgid "Something went wrong trying to change the confidentiality of this issue"
+msgstr ""
+
 msgid "Something went wrong when toggling the button"
+msgstr ""
+
+msgid "Something went wrong while closing the %{issuable}. Please try again later"
 msgstr ""
 
 msgid "Something went wrong while fetching the latest pipeline status."
@@ -3751,6 +3787,12 @@ msgid "Something went wrong while fetching the projects."
 msgstr ""
 
 msgid "Something went wrong while fetching the registry list."
+msgstr ""
+
+msgid "Something went wrong while reopening the %{issuable}. Please try again later"
+msgstr ""
+
+msgid "Something went wrong while resolving this discussion. Please try again."
 msgstr ""
 
 msgid "Something went wrong. Please try again."
@@ -3868,6 +3910,9 @@ msgid "Specific Runners"
 msgstr ""
 
 msgid "Specify the following URL during the Runner setup:"
+msgstr ""
+
+msgid "Squash commits"
 msgstr ""
 
 msgid "Stage all"
@@ -4208,6 +4253,9 @@ msgstr ""
 msgid "This project does not belong to a group and can therefore not make use of group Runners."
 msgstr ""
 
+msgid "This project does not have billing enabled. To create a cluster, <a href=%{linkToBilling} target=\"_blank\" rel=\"noopener noreferrer\">enable billing <i class=\"fa fa-external-link\" aria-hidden=\"true\"></i></a> and try again."
+msgstr ""
+
 msgid "This repository"
 msgstr ""
 
@@ -4438,6 +4486,9 @@ msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
 msgid "Unlock"
+msgstr ""
+
+msgid "Unlock this %{issuableDisplayName}? <strong>Everyone</strong> will be able to comment."
 msgstr ""
 
 msgid "Unlocked"
@@ -4849,6 +4900,12 @@ msgid "branch name"
 msgstr ""
 
 msgid "command line instructions"
+msgstr ""
+
+msgid "confidentiality|You are going to turn off the confidentiality. This means <strong>everyone</strong> will be able to see and leave a comment on this issue."
+msgstr ""
+
+msgid "confidentiality|You are going to turn on the confidentiality. This means that only team members with <strong>at least Reporter access</strong> are able to see and leave comments on the issue."
 msgstr ""
 
 msgid "connecting"

@@ -41,10 +41,7 @@ export default {
     generalApplicationDescription() {
       return sprintf(
         _.escape(
-          s__(
-            `ClusterIntegration|Install applications on your Kubernetes cluster.
-            Read more about %{helpLink}`,
-          ),
+          s__(`ClusterIntegration|Install applications on your Kubernetes cluster. Read more about %{helpLink}`),
         ),
         {
           helpLink: `<a href="${this.helpPath}">
@@ -66,12 +63,7 @@ export default {
     ingressDescription() {
       const extraCostParagraph = sprintf(
         _.escape(
-          s__(
-            `ClusterIntegration|%{boldNotice} This will add some extra resources
-            like a load balancer, which may incur additional costs depending on
-            the hosting provider your Kubernetes cluster is installed on. If you are using
-            Google Kubernetes Engine, you can %{pricingLink}.`,
-          ),
+          s__(`ClusterIntegration|%{boldNotice} This will add some extra resources like a load balancer, which may incur additional costs depending on the hosting provider your Kubernetes cluster is installed on. If you are using Google Kubernetes Engine, you can %{pricingLink}.`),
         ),
         {
           boldNotice: `<strong>${_.escape(s__('ClusterIntegration|Note:'))}</strong>`,
@@ -83,10 +75,7 @@ export default {
 
       const externalIpParagraph = sprintf(
         _.escape(
-          s__(
-            `ClusterIntegration|After installing Ingress, you will need to point your wildcard DNS
-            at the generated external IP address in order to view your app after it is deployed. %{ingressHelpLink}`,
-          ),
+          s__(`ClusterIntegration|After installing Ingress, you will need to point your wildcard DNS at the generated external IP address in order to view your app after it is deployed. %{ingressHelpLink}`),
         ),
         {
           ingressHelpLink: `<a href="${this.ingressHelpPath}">
@@ -108,10 +97,7 @@ export default {
     prometheusDescription() {
       return sprintf(
         _.escape(
-          s__(
-            `ClusterIntegration|Prometheus is an open-source monitoring system
-            with %{gitlabIntegrationLink} to monitor deployed applications.`,
-          ),
+          s__(`ClusterIntegration|Prometheus is an open-source monitoring system with %{gitlabIntegrationLink} to monitor deployed applications.`),
         ),
         {
           gitlabIntegrationLink: `<a href="https://docs.gitlab.com/ce/user/project/integrations/prometheus.html"

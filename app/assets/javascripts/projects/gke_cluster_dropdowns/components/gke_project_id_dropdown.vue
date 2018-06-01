@@ -75,15 +75,11 @@ export default {
     errorMessage() {
       if (!this.projectHasBillingEnabled) {
         if (this.gapiError) {
-          return s__(
-            'ClusterIntegration|We could not verify that one of your projects on GCP has billing enabled. Please try again.',
-          );
+          return s__('ClusterIntegration|We could not verify that one of your projects on GCP has billing enabled. Please try again.');
         }
 
         return sprintf(
-          s__(
-            'This project does not have billing enabled. To create a cluster, <a href=%{linkToBilling} target="_blank" rel="noopener noreferrer">enable billing <i class="fa fa-external-link" aria-hidden="true"></i></a> and try again.',
-          ),
+          s__('This project does not have billing enabled. To create a cluster, <a href=%{linkToBilling} target="_blank" rel="noopener noreferrer">enable billing <i class="fa fa-external-link" aria-hidden="true"></i></a> and try again.'),
           {
             linkToBilling:
               'https://console.cloud.google.com/freetrial?utm_campaign=2018_cpanel&utm_source=gitlab&utm_medium=referral',
