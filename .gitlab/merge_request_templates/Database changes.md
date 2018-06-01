@@ -1,7 +1,7 @@
 Add a description of your merge request here. Merge requests without an adequate
 description will not be reviewed until one is added.
 
-## Database Checklist
+## Database checklist
 
 When adding migrations:
 
@@ -31,7 +31,7 @@ When removing columns, tables, indexes or other structures:
 - [ ] Removed these in a post-deployment migration
 - [ ] Made sure the application no longer uses (or ignores) these structures
 
-## General Checklist
+## General checklist
 
 - [ ] [Changelog entry](https://docs.gitlab.com/ee/development/changelog.html) added, if necessary
 - [ ] [Documentation created/updated](https://docs.gitlab.com/ee/development/doc_styleguide.html)
