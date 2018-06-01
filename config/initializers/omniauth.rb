@@ -19,11 +19,5 @@ end
 
 if Gitlab.config.omniauth.enabled
   provider_names = Gitlab.config.omniauth.providers.map(&:name)
-  require 'omniauth-kerberos' if provider_names.include?('kerberos')
-
-  Gitlab::Auth.omniauth_providers.each do |provider|
-    if provider_names.include?(provider)
-      require_dependency "omni_auth/strategies/#{provider}"
-    end
-  end
+  Gitlab::Auth.omniauth_setup_providers(provider_names)
 end
