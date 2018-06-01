@@ -5,25 +5,25 @@
   .fade-right= icon('angle-right')
   %ul.nav-links.scrolling-tabs.js-milestone-tabs.nav.nav-tabs
     - if issues_accessible
-      %li.active
-        = link_to '#tab-issues', 'data-toggle' => 'tab', 'data-show' => '.tab-issues-buttons' do
+      %li.nav-item
+        = link_to '#tab-issues', class: 'nav-link active', 'data-toggle' => 'tab', 'data-show' => '.tab-issues-buttons' do
           Issues
           %span.badge.badge-pill= milestone.issues_visible_to_user(current_user).size
-      %li
-        = link_to '#tab-merge-requests', 'data-toggle' => 'tab', 'data-endpoint': milestone_merge_request_tab_path(milestone) do
+      %li.nav-item
+        = link_to '#tab-merge-requests', class: 'nav-link', 'data-toggle' => 'tab', 'data-endpoint': milestone_merge_request_tab_path(milestone) do
           Merge Requests
           %span.badge.badge-pill= milestone.merge_requests.size
     - else
-      %li.active
-        = link_to '#tab-merge-requests', 'data-toggle' => 'tab', 'data-endpoint': milestone_merge_request_tab_path(milestone) do
+      %li.nav-item
+        = link_to '#tab-merge-requests', class: 'nav-link active', 'data-toggle' => 'tab', 'data-endpoint': milestone_merge_request_tab_path(milestone) do
           Merge Requests
           %span.badge.badge-pill= milestone.merge_requests.size
-    %li
-      = link_to '#tab-participants', 'data-toggle' => 'tab', 'data-endpoint': milestone_participants_tab_path(milestone) do
+    %li.nav-item
+      = link_to '#tab-participants', class: 'nav-link', 'data-toggle' => 'tab', 'data-endpoint': milestone_participants_tab_path(milestone) do
         Participants
         %span.badge.badge-pill= milestone.participants.count
-    %li
-      = link_to '#tab-labels', 'data-toggle' => 'tab', 'data-endpoint': milestone_labels_tab_path(milestone) do
+    %li.nav-item
+      = link_to '#tab-labels', class: 'nav-link', 'data-toggle' => 'tab', 'data-endpoint': milestone_labels_tab_path(milestone) do
         Labels
         %span.badge.badge-pill= milestone.labels.count
 

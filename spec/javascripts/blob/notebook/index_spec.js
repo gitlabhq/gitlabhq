@@ -84,9 +84,14 @@ describe('iPython notebook renderer', () => {
   describe('error in JSON response', () => {
     let mock;
 
-    beforeEach((done) => {
+    beforeEach(done => {
       mock = new MockAdapter(axios);
-      mock.onGet('/test').reply(() => Promise.reject({ status: 200, data: '{ "cells": [{"cell_type": "markdown"} }' }));
+      mock
+        .onGet('/test')
+        .reply(() =>
+          // eslint-disable-next-line prefer-promise-reject-errors
+          Promise.reject({ status: 200, data: '{ "cells": [{"cell_type": "markdown"} }' }),
+        );
 
       renderNotebook();
 

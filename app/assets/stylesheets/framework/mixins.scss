@@ -19,13 +19,22 @@
   width: auto;
   display: inline-block;
   overflow-x: auto;
-  border-left: 0;
-  border-right: 0;
-  border-bottom: 0;
+  border: 0;
+  border-color: $md-area-border;
 
   @supports(width: fit-content) {
     display: block;
     width: fit-content;
+  }
+
+  tr {
+    th {
+      border-bottom: solid 2px $md-area-border;
+    }
+
+    td {
+      border-color: $md-area-border;
+    }
   }
 }
 

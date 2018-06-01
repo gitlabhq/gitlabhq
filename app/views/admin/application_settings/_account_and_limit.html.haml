@@ -5,8 +5,8 @@
     .form-group.row
       .offset-sm-2.col-sm-10
         .form-check
-          = f.label :gravatar_enabled do
-            = f.check_box :gravatar_enabled
+          = f.check_box :gravatar_enabled, class: 'form-check-input'
+          = f.label :gravatar_enabled, class: 'form-check-label' do
             Gravatar enabled
     .form-group.row
       = f.label :default_projects_limit, class: 'col-form-label col-sm-2'
@@ -25,15 +25,15 @@
       = f.label :user_oauth_applications, 'User OAuth applications', class: 'col-form-label col-sm-2'
       .col-sm-10
         .form-check
-          = f.label :user_oauth_applications do
-            = f.check_box :user_oauth_applications
+          = f.check_box :user_oauth_applications, class: 'form-check-input'
+          = f.label :user_oauth_applications, class: 'form-check-label' do
             Allow users to register any application to use GitLab as an OAuth provider
     .form-group.row
       = f.label :user_default_external, 'New users set to external', class: 'col-form-label col-sm-2'
       .col-sm-10
         .form-check
-          = f.label :user_default_external do
-            = f.check_box :user_default_external
+          = f.check_box :user_default_external, class: 'form-check-input'
+          = f.label :user_default_external, class: 'form-check-label' do
             Newly registered users will by default be external
 
   = f.submit 'Save changes', class: 'btn btn-success'

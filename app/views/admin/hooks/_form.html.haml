@@ -47,6 +47,6 @@
 .form-group
   = form.label :enable_ssl_verification, 'SSL verification', class: 'label-light checkbox'
   .form-check
-    = form.label :enable_ssl_verification do
-      = form.check_box :enable_ssl_verification
+    = form.check_box :enable_ssl_verification, class: 'form-check-input'
+    = form.label :enable_ssl_verification, class: 'form-check-label' do
       %strong Enable SSL verification

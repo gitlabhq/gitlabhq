@@ -353,6 +353,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
+      get :issues, to: 'issues#calendar', constraints: lambda { |req| req.format == :ics }
       resources :issues, concerns: :awardable, constraints: { id: /\d+/ } do
         member do
           post :toggle_subscription

@@ -1,7 +1,6 @@
 /* global List */
 /* global ListAssignee */
 /* global ListLabel */
-/* global BoardService */
 
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
