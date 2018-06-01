@@ -276,6 +276,11 @@ production: &base
     ldap_sync_worker:
       cron: "30 1 * * *"
 
+    # Periodically refresh LDAP groups membership.
+    # NOTE: This will only take effect if LDAP is enabled
+    ldap_group_sync_worker:
+      cron: "0 * * * *"
+
     # GitLab Geo metrics update worker
     # NOTE: This will only take effect if Geo is enabled
     geo_metrics_update_worker:
