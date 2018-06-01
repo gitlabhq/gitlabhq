@@ -48,9 +48,13 @@ module API
 
         authorize! :create_pipeline, user_project
 
+        pipeline_params = declared_params(include_missing: false)
+          .merge(variables_attributes: params[:variables])
+          .except(:variables)
+
         new_pipeline = Ci::CreatePipelineService.new(user_project,
                                                      current_user,
-                                                     declared_params(include_missing: false).merge(variables_attributes: params[:variables]))
+                                                     pipeline_params)
                            .execute(:api, ignore_skip_ci: true, save_on_errors: false)
 
         if new_pipeline.persisted?

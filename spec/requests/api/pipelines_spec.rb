@@ -316,18 +316,35 @@ describe API::Pipelines do
           end
         end
 
-        context 'when excluding a ref' do
+        describe 'using variables conditions' do
+          let(:variables) { [{ 'key' => 'STAGING', 'value' => 'true' }] }
+
           before do
-            config = YAML.dump(test: { script: 'test', except: [project.default_branch] })
+            config = YAML.dump(test: { script: 'test', only: { variables: ['$STAGING'] } })
             stub_ci_pipeline_yaml_file(config)
           end
 
-          it "doesn't not create a job for the exluded ref" do
+          it 'creates and returns a new pipeline using the given variables' do
             expect do
-              post api("/projects/#{project.id}/pipeline", user), ref: project.default_branch
-            end.not_to change { project.pipelines.count }
+              post api("/projects/#{project.id}/pipeline", user), ref: project.default_branch, variables: variables
+            end.to change { project.pipelines.count }.by(1)
 
-            expect(response).to have_gitlab_http_status(400)
+            expect(response).to have_gitlab_http_status(201)
+            expect(json_response).to be_a Hash
+            expect(json_response['sha']).to eq project.commit.id
+            expect(json_response['variables']).to eq variables
+          end
+
+          context 'condition unmatch' do
+            let(:variables) { [{ 'key' => 'STAGING', 'value' => 'false' }] }
+
+            it "doesn't create a job" do
+              expect do
+                post api("/projects/#{project.id}/pipeline", user), ref: project.default_branch
+              end.not_to change { project.pipelines.count }
+
+              expect(response).to have_gitlab_http_status(400)
+            end
           end
         end
 
