@@ -11,16 +11,16 @@
     In the next steps, you'll be able to map users and select the projects
     you want to import.
   .form-group.row
-    = label_tag :uri, 'FogBugz URL', class: 'col-form-label col-sm-8'
-    .col-sm-4
+    = label_tag :uri, 'FogBugz URL', class: 'col-form-label col-md-2'
+    .col-md-4
       = text_field_tag :uri, nil, placeholder: 'https://mycompany.fogbugz.com', class: 'form-control'
   .form-group.row
-    = label_tag :email, 'FogBugz Email', class: 'col-form-label col-sm-8'
-    .col-sm-4
+    = label_tag :email, 'FogBugz Email', class: 'col-form-label col-md-2'
+    .col-md-4
       = text_field_tag :email, nil, class: 'form-control'
   .form-group.row
-    = label_tag :password, 'FogBugz Password', class: 'col-form-label col-sm-8'
-    .col-sm-4
+    = label_tag :password, 'FogBugz Password', class: 'col-form-label col-md-2'
+    .col-md-4
       = password_field_tag :password, nil, class: 'form-control'
   .form-actions
     = submit_tag 'Continue to the next step', class: 'btn btn-create'

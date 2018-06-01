@@ -25,7 +25,10 @@ const Api = {
   commitPipelinesPath: '/:project_id/commit/:sha/pipelines',
   branchSinglePath: '/api/:version/projects/:id/repository/branches/:branch',
   createBranchPath: '/api/:version/projects/:id/repository/branches',
+<<<<<<< HEAD
   geoNodesPath: '/api/:version/geo_nodes',
+=======
+>>>>>>> upstream/master
 
   group(groupId, callback) {
     const url = Api.buildUrl(Api.groupPath).replace(':id', groupId);
@@ -238,6 +241,7 @@ const Api = {
     });
   },
 
+<<<<<<< HEAD
   approverUsers(search, options, callback = $.noop) {
     const url = Api.buildUrl('/autocomplete/users.json');
     return axios
@@ -274,6 +278,8 @@ const Api = {
       });
   },
 
+=======
+>>>>>>> upstream/master
   buildUrl(url) {
     let urlRoot = '';
     if (gon.relative_url_root != null) {

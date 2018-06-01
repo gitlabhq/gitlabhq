@@ -1,4 +1,5 @@
 import {
+  APPLICATION_INSTALLED,
   APPLICATION_INSTALLABLE,
   APPLICATION_INSTALLING,
   APPLICATION_ERROR,
@@ -28,6 +29,39 @@ const CLUSTERS_MOCK_DATA = {
           name: 'prometheus',
           status: APPLICATION_ERROR,
           status_reason: 'Cannot connect',
+        }, {
+          name: 'jupyter',
+          status: APPLICATION_INSTALLING,
+          status_reason: 'Cannot connect',
+        }],
+      },
+    },
+    '/gitlab-org/gitlab-shell/clusters/2/status.json': {
+      data: {
+        status: 'errored',
+        status_reason: 'Failed to request to CloudPlatform.',
+        applications: [{
+          name: 'helm',
+          status: APPLICATION_INSTALLED,
+          status_reason: null,
+        }, {
+          name: 'ingress',
+          status: APPLICATION_INSTALLED,
+          status_reason: 'Cannot connect',
+          external_ip: '1.1.1.1',
+        }, {
+          name: 'runner',
+          status: APPLICATION_INSTALLING,
+          status_reason: null,
+        },
+        {
+          name: 'prometheus',
+          status: APPLICATION_ERROR,
+          status_reason: 'Cannot connect',
+        }, {
+          name: 'jupyter',
+          status: APPLICATION_INSTALLABLE,
+          status_reason: 'Cannot connect',
         }],
       },
     },
@@ -37,6 +71,7 @@ const CLUSTERS_MOCK_DATA = {
     '/gitlab-org/gitlab-shell/clusters/1/applications/ingress': { },
     '/gitlab-org/gitlab-shell/clusters/1/applications/runner': { },
     '/gitlab-org/gitlab-shell/clusters/1/applications/prometheus': { },
+    '/gitlab-org/gitlab-shell/clusters/1/applications/jupyter': { },
   },
 };
 
