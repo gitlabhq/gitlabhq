@@ -39,6 +39,7 @@ Set the title to: `[Security] Description of the original issue`
 - [ ] Add the nickname of the external user who found the issue (and/or HackerOne profile) to the Thanks row in the [details section](#details)
 
 ### Summary
+
 #### Links
 
 | Description | Link |
