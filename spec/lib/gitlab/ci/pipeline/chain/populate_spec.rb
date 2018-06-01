@@ -188,7 +188,7 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
             expect(pipeline.stages.size).to eq 1
             expect(pipeline.stages.first.builds.size).to eq 1
             expect(pipeline.stages.first.builds.first.name).to eq 'rspec'
-          end 
+          end
         end
       end
     end
