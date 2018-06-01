@@ -17,6 +17,12 @@ export default {
   },
   computed: {
     ...mapState(['rightPane']),
+    pipelinesActive() {
+      return (
+        this.rightPane === rightSidebarViews.pipelines ||
+        this.rightPane === rightSidebarViews.jobsDetail
+      );
+    },
   },
   methods: {
     ...mapActions(['setRightPane']),
@@ -50,7 +56,7 @@ export default {
             :title="__('Pipelines')"
             class="ide-sidebar-link is-right"
             :class="{
-              active: rightPane === $options.rightSidebarViews.pipelines
+              active: pipelinesActive
             }"
             type="button"
             @click="clickTab($event, $options.rightSidebarViews.pipelines)"
