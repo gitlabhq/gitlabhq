@@ -52,7 +52,7 @@ export default {
     </div>
 
     <div class="report-block-list-issue-description">
-      <div class="report-block-list-issue-description-text append-right-5">
+      <div class="report-block-list-issue-description-text">
         {{ summary }}
       </div>
 
