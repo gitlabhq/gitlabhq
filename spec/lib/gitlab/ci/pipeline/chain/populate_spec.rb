@@ -75,7 +75,7 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
 
     it 'wastes pipeline iid' do
       expect(InternalId.ci_pipelines.where(project_id: project.id).last.last_value).to be > 0
-  end
+    end
   end
 
   context 'when pipeline has validation errors' do
@@ -98,7 +98,7 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
 
     it 'wastes pipeline iid' do
       expect(InternalId.ci_pipelines.where(project_id: project.id).last.last_value).to be > 0
-  end
+    end
   end
 
   context 'when there is a seed blocks present' do
@@ -144,7 +144,7 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
         step.perform rescue nil
 
         expect(InternalId.ci_pipelines.where(project_id: project.id).exists?).to be_falsy
-    end
+      end
     end
   end
 
