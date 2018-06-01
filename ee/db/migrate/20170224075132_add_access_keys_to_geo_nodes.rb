@@ -10,7 +10,7 @@ class AddAccessKeysToGeoNodes < ActiveRecord::Migration
     extend AttrEncrypted
     attr_accessor :data
     attr_encrypted :data,
-                   key: Gitlab::Application.secrets.db_key_base,
+                   key: Settings.attr_encrypted_db_key_base,
                    algorithm: 'aes-256-gcm',
                    mode: :per_attribute_iv,
                    encode: true
