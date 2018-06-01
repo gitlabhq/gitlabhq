@@ -8,8 +8,8 @@
   .modal-dialog{ role: "document" }
     .modal-content
       .modal-header
-        %button.close{ type: "button", data: { dismiss: "modal" }, aria: { label: "close" } }
-          %span{ aria: { hidden: "true" } }= icon("times")
+        %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
+          %span{ "aria-hidden": true } &times;
         %h4.modal-title
           Create new #{name} by email
       .modal-body

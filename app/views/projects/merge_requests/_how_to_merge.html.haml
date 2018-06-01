@@ -3,7 +3,8 @@
     .modal-content
       .modal-header
         %h3 Check out, review, and merge locally
-        %a.close{ href: "#", "data-dismiss" => "modal" } ×
+        %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
+          %span{ "aria-hidden": true } &times;
       .modal-body
         %p
           %strong Step 1.
