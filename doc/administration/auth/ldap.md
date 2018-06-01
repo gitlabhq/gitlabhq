@@ -7,7 +7,7 @@
 GitLab integrates with LDAP to support user authentication.
 This integration works with most LDAP-compliant directory
 servers, including Microsoft Active Directory, Apple Open Directory, Open LDAP,
-and 389 Server. GitLab Enterprise Edition includes enhanced integration,
+and 389 Server. GitLab Enterprise Editions include enhanced integration,
 including group membership syncing as well as multiple LDAP servers support.
 
 ## GitLab EE
@@ -338,7 +338,7 @@ group, you can use the following syntax:
 Find more information about this "LDAP_MATCHING_RULE_IN_CHAIN" filter at
 https://msdn.microsoft.com/en-us/library/aa746475(v=vs.85).aspx. Support for
 nested members in the user filter should not be confused with
-[group sync nested groups support (EE only)](https://docs.gitlab.com/ee/administration/auth/ldap-ee.html#supported-ldap-group-types-attributes).
+[group sync nested groups support (EE only)](ldap-ee.md#supported-ldap-group-types-attributes).
 
 Please note that GitLab does not support the custom filter syntax used by
 omniauth-ldap.
