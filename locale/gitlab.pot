@@ -8,13 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
-"POT-Creation-Date: 2018-05-30 10:16-0400\n"
-"PO-Revision-Date: 2018-05-30 10:16-0400\n"
-=======
-"POT-Creation-Date: 2018-05-29 09:43-0500\n"
-"PO-Revision-Date: 2018-05-29 09:43-0500\n"
->>>>>>> upstream/master
+"POT-Creation-Date: 2018-06-01 01:47-0500\n"
+"PO-Revision-Date: 2018-06-01 01:47-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -761,9 +756,6 @@ msgstr ""
 msgid "BillingPlans|per user"
 msgstr ""
 
-msgid "Blame"
-msgstr ""
-
 msgid "Branch (%{branch_count})"
 msgid_plural "Branches (%{branch_count})"
 msgstr[0] ""
@@ -1387,9 +1379,9 @@ msgstr ""
 msgid "ClusterIntegration|More information"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "ClusterIntegration|Multiple Kubernetes clusters are available in GitLab Enterprise Edition Premium and Ultimate"
-=======
+msgstr ""
+
 msgid "ClusterIntegration|No machine types matched your search"
 msgstr ""
 
@@ -1400,7 +1392,6 @@ msgid "ClusterIntegration|No projects matched your search"
 msgstr ""
 
 msgid "ClusterIntegration|No zones matched your search"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "ClusterIntegration|Note:"
@@ -1792,6 +1783,9 @@ msgid "Copy commit SHA to clipboard"
 msgstr ""
 
 msgid "Copy reference to clipboard"
+msgstr ""
+
+msgid "Copy to clipboard"
 msgstr ""
 
 msgid "Create"
@@ -2542,14 +2536,7 @@ msgstr ""
 msgid "GeoNodes|Full"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "GeoNodes|GitLab version"
-=======
-msgid "Go Back"
-msgstr ""
-
-msgid "Go back"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "GeoNodes|GitLab version does not match the primary node version"
@@ -2741,6 +2728,9 @@ msgstr ""
 msgid "Gitaly Servers"
 msgstr ""
 
+msgid "Go Back"
+msgstr ""
+
 msgid "Go back"
 msgstr ""
 
@@ -2909,6 +2899,9 @@ msgid "IDE|Edit"
 msgstr ""
 
 msgid "IDE|Go back"
+msgstr ""
+
+msgid "IDE|Open in file view"
 msgstr ""
 
 msgid "IDE|Review"
@@ -3712,9 +3705,6 @@ msgstr ""
 msgid "Performance optimization"
 msgstr ""
 
-msgid "Permalink"
-msgstr ""
-
 msgid "Permissions"
 msgstr ""
 
@@ -4231,9 +4221,6 @@ msgstr ""
 msgid "Quick actions can be used in the issues description and comment boxes."
 msgstr ""
 
-msgid "Raw"
-msgstr ""
-
 msgid "Read more"
 msgstr ""
 
@@ -4473,11 +4460,10 @@ msgstr ""
 msgid "Seconds to wait for a storage access attempt"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Security report"
-=======
+msgstr ""
+
 msgid "Select"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Select Archive Format"
@@ -4647,12 +4633,9 @@ msgstr ""
 msgid "Something went wrong when toggling the button"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Something went wrong while fetching group member contributions"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Something went wrong while fetching the latest pipeline status."
 msgstr ""
 
@@ -4789,6 +4772,9 @@ msgid "Specific Runners"
 msgstr ""
 
 msgid "Specify the following URL during the Runner setup:"
+msgstr ""
+
+msgid "Squash commits"
 msgstr ""
 
 msgid "Stage all"
@@ -5484,7 +5470,6 @@ msgstr ""
 msgid "Update your group name, description, avatar, and other general settings."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Upgrade your plan to activate Advanced Global Search."
 msgstr ""
 
@@ -5500,8 +5485,6 @@ msgstr ""
 msgid "Upgrade your plan to improve Issue boards."
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Upload New File"
 msgstr ""
 
