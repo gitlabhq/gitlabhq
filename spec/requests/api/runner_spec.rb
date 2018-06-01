@@ -270,11 +270,14 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
              pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0, commands: "ls\ndate")
     end
 
+<<<<<<< HEAD
     before do
       stub_artifacts_object_storage
       job
     end
 
+=======
+>>>>>>> upstream/master
     describe 'POST /api/v4/jobs/request' do
       let!(:last_update) {}
       let!(:new_update) { }

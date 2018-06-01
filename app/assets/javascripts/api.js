@@ -11,6 +11,7 @@ const Api = {
   projectPath: '/api/:version/projects/:id',
   projectLabelsPath: '/:namespace_path/:project_path/labels',
   mergeRequestPath: '/api/:version/projects/:id/merge_requests/:mrid',
+  mergeRequestsPath: '/api/:version/merge_requests',
   mergeRequestChangesPath: '/api/:version/projects/:id/merge_requests/:mrid/changes',
   mergeRequestVersionsPath: '/api/:version/projects/:id/merge_requests/:mrid/versions',
   groupLabelsPath: '/groups/:namespace_path/-/labels',
@@ -107,6 +108,12 @@ const Api = {
       .replace(':mrid', mergeRequestId);
 
     return axios.get(url);
+  },
+
+  mergeRequests(params = {}) {
+    const url = Api.buildUrl(Api.mergeRequestsPath);
+
+    return axios.get(url, { params });
   },
 
   mergeRequestChanges(projectPath, mergeRequestId) {

@@ -337,11 +337,17 @@ describe Issues::UpdateService, :mailer do
 
       context 'when the labels change' do
         before do
-          update_issue(label_ids: [label.id])
+          Timecop.freeze(1.minute.from_now) do
+            update_issue(label_ids: [label.id])
+          end
         end
 
         it 'marks todos as done' do
           expect(todo.reload.done?).to eq true
+        end
+
+        it 'updates updated_at' do
+          expect(issue.reload.updated_at).to be > Time.now
         end
       end
     end
