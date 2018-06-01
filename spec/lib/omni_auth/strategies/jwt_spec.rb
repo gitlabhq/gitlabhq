@@ -43,7 +43,7 @@ describe OmniAuth::Strategies::Jwt do
       end
 
       it 'raises error' do
-        expect { strategy.decoded }.to raise_error(OmniAuth::Strategies::JWT::ClaimInvalid)
+        expect { strategy.decoded }.to raise_error(OmniAuth::Strategies::Jwt::ClaimInvalid)
       end
     end
 
@@ -61,7 +61,7 @@ describe OmniAuth::Strategies::Jwt do
       end
 
       it 'raises error' do
-        expect { strategy.decoded }.to raise_error(OmniAuth::Strategies::JWT::ClaimInvalid)
+        expect { strategy.decoded }.to raise_error(OmniAuth::Strategies::Jwt::ClaimInvalid)
       end
     end
 
@@ -80,7 +80,7 @@ describe OmniAuth::Strategies::Jwt do
       end
 
       it 'raises error' do
-        expect { strategy.decoded }.to raise_error(OmniAuth::Strategies::JWT::ClaimInvalid)
+        expect { strategy.decoded }.to raise_error(OmniAuth::Strategies::Jwt::ClaimInvalid)
       end
     end
   end
