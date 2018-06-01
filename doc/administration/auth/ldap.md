@@ -14,7 +14,7 @@ including group membership syncing as well as multiple LDAP servers support.
 
 The information on this page is relevant for both GitLab CE and EE. For more
 details about EE-specific LDAP features, see the
-[LDAP Enterprise Edition documentation](https://docs.gitlab.com/ee/administration/auth/ldap-ee.html).
+[LDAP Enterprise Edition documentation](ldap-ee.md).
 
 ## Security
 
@@ -39,7 +39,7 @@ immediately block all access.
 
 NOTE: **Note**:
 GitLab Enterprise Edition Starter supports a
-[configurable sync time](https://docs.gitlab.com/ee/administration/auth/ldap-ee.html#adjusting-ldap-user-and-group-sync-schedules),
+[configurable sync time](ldap-ee.md#adjusting-ldap-user-and-group-sync-schedules),
 with a default of one hour.
 
 ## Git password authentication
@@ -338,7 +338,7 @@ group, you can use the following syntax:
 Find more information about this "LDAP_MATCHING_RULE_IN_CHAIN" filter at
 https://msdn.microsoft.com/en-us/library/aa746475(v=vs.85).aspx. Support for
 nested members in the user filter should not be confused with
-[group sync nested groups support (EE only)](https://docs.gitlab.com/ee/administration/auth/ldap-ee.html#supported-ldap-group-types-attributes).
+[group sync nested groups support (EE only)](ldap-ee.md#supported-ldap-group-types-attributes).
 
 Please note that GitLab does not support the custom filter syntax used by
 omniauth-ldap.
