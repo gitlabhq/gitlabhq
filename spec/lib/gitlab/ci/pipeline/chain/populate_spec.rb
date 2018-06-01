@@ -156,22 +156,41 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
     end
   end
 
-  context 'when using only/except build policies' do
-    let(:config) do
-      { rspec: { script: 'rspec', stage: 'test', only: ['master'] },
-        prod: { script: 'cap prod', stage: 'deploy', only: ['tags'] } }
-    end
+  context 'when variables policy is specified' do
+    context 'when using only/except build policies' do
+      let(:config) do
+        { rspec: { script: 'rspec', stage: 'test', only: ['master'] },
+          prod: { script: 'cap prod', stage: 'deploy', only: ['tags'] } }
+      end
 
-    let(:pipeline) do
-      build(:ci_pipeline, ref: 'master', config: config)
-    end
+      let(:pipeline) do
+        build(:ci_pipeline, ref: 'master', config: config)
+      end
 
-    it 'populates pipeline according to used policies' do
-      step.perform!
+      it 'populates pipeline according to used policies' do
+        step.perform!
 
-      expect(pipeline.stages.size).to eq 1
-      expect(pipeline.stages.first.builds.size).to eq 1
-      expect(pipeline.stages.first.builds.first.name).to eq 'rspec'
+        expect(pipeline.stages.size).to eq 1
+        expect(pipeline.stages.first.builds.size).to eq 1
+        expect(pipeline.stages.first.builds.first.name).to eq 'rspec'
+      end
+
+      context 'when variables expression is specified' do
+        let(:config) do
+          { rspec: { script: 'rspec', only: { variables: ["$CI_PIPELINE_IID == '1'"] } },
+            prod: { script: 'cap prod', only: { variables: ["$CI_PIPELINE_IID == '1000'"] } } }
+        end
+
+        context 'when pipeline iid is the subject' do
+          it 'populates pipeline according to used policies' do
+            step.perform!
+
+            expect(pipeline.stages.size).to eq 1
+            expect(pipeline.stages.first.builds.size).to eq 1
+            expect(pipeline.stages.first.builds.first.name).to eq 'rspec'
+          end 
+        end
+      end
     end
   end
 end
