@@ -3,6 +3,14 @@
     forbidden_labels:
       - technical debt
       - Accepting Merge Requests
+      - backstage
+      - security
+      - customer
+      - customer+
+      - test
+      - development guidelines
+      - schema redesign
+      - direction
 
 resource_rules:
   issues:
