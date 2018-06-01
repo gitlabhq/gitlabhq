@@ -13,6 +13,7 @@ import CommitSection from './repo_commit_section.vue';
 import CommitForm from './commit_sidebar/form.vue';
 import IdeReview from './ide_review.vue';
 import SuccessMessage from './commit_sidebar/success_message.vue';
+import MergeRequestDropdown from './merge_requests/dropdown.vue';
 import { activityBarViews } from '../constants';
 
 export default {
@@ -32,6 +33,7 @@ export default {
     CommitForm,
     IdeReview,
     SuccessMessage,
+    MergeRequestDropdown,
   },
   data() {
     return {
@@ -46,6 +48,7 @@ export default {
       'changedFiles',
       'stagedFiles',
       'lastCommitMsg',
+      'currentMergeRequestId',
     ]),
     ...mapGetters(['currentProject', 'someUncommitedChanges']),
     showSuccessMessage() {
@@ -88,9 +91,12 @@ export default {
         </div>
       </template>
       <template v-else>
-        <div class="context-header ide-context-header">
+        <div class="context-header ide-context-header dropdown">
           <a
-            :href="currentProject.web_url"
+            href="#"
+            role="button"
+            @click.prevent
+            data-toggle="dropdown"
           >
             <div
               v-if="currentProject.avatar_url"
@@ -114,19 +120,35 @@ export default {
               <div class="sidebar-context-title">
                 {{ currentProject.name }}
               </div>
-              <div
-                class="sidebar-context-title ide-sidebar-branch-title"
-                ref="branchId"
-                v-tooltip
-                :title="branchTooltipTitle"
-              >
-                <icon
-                  name="branch"
-                  css-classes="append-right-5"
-                />{{ currentBranchId }}
+              <div class="d-flex">
+                <div
+                  class="sidebar-context-title ide-sidebar-branch-title"
+                  ref="branchId"
+                  v-tooltip
+                  :title="branchTooltipTitle"
+                >
+                  <icon
+                    name="branch"
+                    css-classes="append-right-5"
+                  />{{ currentBranchId }}
+                </div>
+                <div
+                  v-if="currentMergeRequestId"
+                  class="sidebar-context-title ide-sidebar-branch-title prepend-left-8"
+                >
+                  <icon
+                    name="git-merge"
+                    css-classes="append-right-5"
+                  />!{{ currentMergeRequestId }}
+                </div>
               </div>
             </div>
+            <icon
+              class="ml-auto"
+              name="chevron-down"
+            />
           </a>
+          <merge-request-dropdown />
         </div>
         <div class="multi-file-commit-panel-inner-scroll">
           <component

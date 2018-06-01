@@ -23,4 +23,7 @@ export default {
   [types.RESET_MERGE_REQUESTS](state) {
     state.mergeRequests = [];
   },
+  [types.SET_SCOPE](state, scope) {
+    state.scope = scope;
+  },
 };

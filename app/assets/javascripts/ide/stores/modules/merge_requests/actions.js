@@ -22,4 +22,6 @@ export const fetchMergeRequests = ({ dispatch, state: { scope, state } }, search
 
 export const resetMergeRequests = ({ commit }) => commit(types.RESET_MERGE_REQUESTS);
 
+export const setScope = ({ commit }, scope) => commit(types.SET_SCOPE, scope);
+
 export default () => {};
