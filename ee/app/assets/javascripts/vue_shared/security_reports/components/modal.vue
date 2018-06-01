@@ -76,7 +76,7 @@ export default {
                   />
                 </div>
                 <div class="report-block-list-issue-description prepend-top-5 append-bottom-5">
-                  <div class="report-block-list-issue-description-text append-right-5">
+                  <div class="report-block-list-issue-description-text">
                     {{ instance.method }}
                   </div>
                   <div class="report-block-list-issue-description-link">
