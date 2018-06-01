@@ -60,7 +60,7 @@ module Ci
           .merge(Ci::Build.finished)
           .where('ci_builds.finished_at < ?', finished_before)
           .each_batch(column: :build_id) do |chunks|
-            build_ids = chunks.map { |chunk| [chunk.build_id] }
+            build_ids = chunks.map { |chunk| chunk.build_id }
 
             yield build_ids
           end

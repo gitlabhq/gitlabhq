@@ -227,6 +227,31 @@ shared_examples_for 'common trace features' do
       end
     end
   end
+
+  describe '#archive!' do
+    subject { trace.archive! }
+
+    context 'when build status is success' do
+      let!(:build) { create(:ci_build, :success, :trace_live) }
+
+      it 'archives a trace' do
+        subject
+
+        expect(build.job_artifacts_trace).to be_exist
+      end
+
+      context 'when anothe process had already been archiving', :clean_gitlab_redis_shared_state do
+        before do
+          Gitlab::ExclusiveLease.new("trace:archive:#{trace.job.id}", timeout: 1.hour).try_obtain
+        end
+
+        it 'prevents multiple archiving' do
+          build.reload
+          expect(build.job_artifacts_trace).to be_nil
+        end
+      end
+    end
+  end
 end
 
 shared_examples_for 'trace with disabled live trace feature' do

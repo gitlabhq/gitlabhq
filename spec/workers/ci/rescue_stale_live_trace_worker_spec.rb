@@ -7,19 +7,20 @@ describe Ci::RescueStaleLiveTraceWorker do
     stub_feature_flags(ci_enable_live_trace: true)
   end
 
-  shared_examples_for 'schedules to archive traces' do
+  shared_examples_for 'archives trace' do
     it do
-      expect(ArchiveTraceWorker).to receive(:bulk_perform_async).with([[build.id]])
-
       subject
+
+      expect(build.job_artifacts_trace).to be_exist
     end
   end
 
-  shared_examples_for 'does not schedule to archive traces' do
+  shared_examples_for 'does not archive trace' do
     it do
-      expect(ArchiveTraceWorker).not_to receive(:bulk_perform_async)
-
       subject
+
+      build.reload
+      expect(build.job_artifacts_trace).to be_nil
     end
   end
 
@@ -30,7 +31,18 @@ describe Ci::RescueStaleLiveTraceWorker do
       build.update(finished_at: 2.hours.ago)
     end
 
-    it_behaves_like 'schedules to archive traces'
+    it_behaves_like 'archives trace'
+
+    context 'when build has both archived trace and live trace' do
+      let!(:build2) { create(:ci_build, :success, :trace_live, finished_at: 2.days.ago) }
+  
+      it 'archives only available targets' do
+        subject
+
+        build.reload
+        expect(build.job_artifacts_trace).to be_exist
+      end
+    end
   end
 
   context 'when a job was failed 2 hours ago' do
@@ -40,7 +52,7 @@ describe Ci::RescueStaleLiveTraceWorker do
       build.update(finished_at: 2.hours.ago)
     end
 
-    it_behaves_like 'schedules to archive traces'
+    it_behaves_like 'archives trace'
   end
 
   context 'when a job was cancelled 2 hours ago' do
@@ -50,7 +62,7 @@ describe Ci::RescueStaleLiveTraceWorker do
       build.update(finished_at: 2.hours.ago)
     end
 
-    it_behaves_like 'schedules to archive traces'
+    it_behaves_like 'archives trace'
   end
 
   context 'when a job has been finished 10 minutes ago' do
@@ -60,12 +72,12 @@ describe Ci::RescueStaleLiveTraceWorker do
       build.update(finished_at: 10.minutes.ago)
     end
 
-    it_behaves_like 'does not schedule to archive traces'
+    it_behaves_like 'does not archive trace'
   end
 
   context 'when a job is running' do
     let!(:build) { create(:ci_build, :running, :trace_live) }
 
-    it_behaves_like 'does not schedule to archive traces'
+    it_behaves_like 'does not archive trace'
   end
 end
