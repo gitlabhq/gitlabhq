@@ -94,6 +94,7 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
     end
 
     it { expect(instance.result).to be_nil }
+    it { expect(reactive_cache_alive?(instance)).to be_falsy }
   end
 
   describe '#exclusively_update_reactive_cache!' do

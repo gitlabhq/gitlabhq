@@ -77,6 +77,7 @@ module ReactiveCaching
 
     def clear_reactive_cache!(*args)
       Rails.cache.delete(full_reactive_cache_key(*args))
+      Rails.cache.delete(alive_reactive_cache_key(*args))
     end
 
     def exclusively_update_reactive_cache!(*args)

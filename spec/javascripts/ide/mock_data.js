@@ -147,3 +147,13 @@ export const fullPipelinesResponse = {
     ],
   },
 };
+
+export const mergeRequests = [
+  {
+    id: 1,
+    iid: 1,
+    title: 'Test merge request',
+    project_id: 1,
+    web_url: `${gl.TEST_HOST}/namespace/project-path/merge_requests/1`,
+  },
+];

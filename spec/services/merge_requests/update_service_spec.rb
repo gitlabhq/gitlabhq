@@ -355,11 +355,17 @@ describe MergeRequests::UpdateService, :mailer do
 
       context 'when the labels change' do
         before do
-          update_merge_request({ label_ids: [label.id] })
+          Timecop.freeze(1.minute.from_now) do
+            update_merge_request({ label_ids: [label.id] })
+          end
         end
 
         it 'marks pending todos as done' do
           expect(pending_todo.reload).to be_done
+        end
+
+        it 'updates updated_at' do
+          expect(merge_request.reload.updated_at).to be > Time.now
         end
       end
 

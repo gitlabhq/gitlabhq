@@ -1355,19 +1355,25 @@ describe API::Issues do
       expect(json_response['labels']).to eq([label.title])
     end
 
-    it 'removes all labels' do
-      put api("/projects/#{project.id}/issues/#{issue.iid}", user), labels: ''
+    it 'removes all labels and touches the record' do
+      Timecop.travel(1.minute.from_now) do
+        put api("/projects/#{project.id}/issues/#{issue.iid}", user), labels: ''
+      end
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['labels']).to eq([])
+      expect(json_response['updated_at']).to be > Time.now
     end
 
-    it 'updates labels' do
-      put api("/projects/#{project.id}/issues/#{issue.iid}", user),
+    it 'updates labels and touches the record' do
+      Timecop.travel(1.minute.from_now) do
+        put api("/projects/#{project.id}/issues/#{issue.iid}", user),
           labels: 'foo,bar'
+      end
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['labels']).to include 'foo'
       expect(json_response['labels']).to include 'bar'
+      expect(json_response['updated_at']).to be > Time.now
     end
 
     it 'allows special label names' do
