@@ -191,7 +191,7 @@ module Gitlab
       metadata['call_site'] = feature.to_s if feature
       metadata['gitaly-servers'] = address_metadata(remote_storage) if remote_storage
 
-      metadata.merge!(server_feature_flags(feature))
+      metadata.merge!(server_feature_flags)
 
       result = { metadata: metadata }
 
@@ -211,18 +211,12 @@ module Gitlab
       result
     end
 
-    SERVER_FEATURE_FLAGS = {
-      find_commit: ["gogit-findcommit"]
-    }.freeze
+    SERVER_FEATURE_FLAGS = %w[gogit_findcommit].freeze
 
-    # Other than data on the disk, Gitaly is stateless. Rails will thus set
-    # feature flags in the request metadata.
-    def self.server_feature_flags(feature)
-      return {} unless SERVER_FEATURE_FLAGS.key?(feature)
-
-      SERVER_FEATURE_FLAGS[feature]
-        .map { |f| ["gitaly-feature-#{f}", feature_enabled?(f).to_s] }
-        .to_h
+    def self.server_feature_flags
+      SERVER_FEATURE_FLAGS.map do |f|
+        ["gitaly-feature-#{f.tr('_', '-')}", feature_enabled?(f).to_s]
+      end.to_h
     end
 
     def self.token(storage)

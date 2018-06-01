@@ -60,9 +60,7 @@ module Gitlab
           # Some weird thing?
           return nil unless commit_id.is_a?(String)
 
-          # The Go-Git backend Gitaly might use, tries to be nice when resolving
-          # to the commit, and `master:ref` will resolve to the commit that master
-          # resolves to. To keep behaviour the same, we return nil
+          # This saves us an RPC round trip.
           return nil if commit_id.include?(':')
 
           commit = repo.gitaly_migrate(:find_commit) do |is_enabled|
