@@ -7,22 +7,14 @@
 GitLab integrates with LDAP to support user authentication.
 This integration works with most LDAP-compliant directory
 servers, including Microsoft Active Directory, Apple Open Directory, Open LDAP,
-<<<<<<< HEAD
-and 389 Server. GitLab Enterprise Edition includes enhanced integration,
-=======
 and 389 Server. GitLab Enterprise Editions include enhanced integration,
->>>>>>> upstream/master
 including group membership syncing as well as multiple LDAP servers support.
 
 ## GitLab EE
 
 The information on this page is relevant for both GitLab CE and EE. For more
 details about EE-specific LDAP features, see the
-<<<<<<< HEAD
-[LDAP Enterprise Edition documentation](ldap-ee.md).
-=======
 [LDAP Enterprise Edition documentation](https://docs.gitlab.com/ee/administration/auth/ldap-ee.html).
->>>>>>> upstream/master
 
 ## Security
 
@@ -47,11 +39,7 @@ immediately block all access.
 
 NOTE: **Note**:
 GitLab Enterprise Edition Starter supports a
-<<<<<<< HEAD
-[configurable sync time](ldap-ee.md#adjusting-ldap-user-and-group-sync-schedules),
-=======
 [configurable sync time](https://docs.gitlab.com/ee/administration/auth/ldap-ee.html#adjusting-ldap-user-and-group-sync-schedules),
->>>>>>> upstream/master
 with a default of one hour.
 
 ## Git password authentication
