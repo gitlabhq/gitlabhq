@@ -215,7 +215,7 @@ module Gitlab
 
       # For ExclusiveLeaseGuard concerns
       def lease_key
-        @lease_key ||= self.class.name.underscore + ":archive:#{job.id}"
+        @lease_key ||= "trace:archive:#{job.id}"
       end
 
       # For ExclusiveLeaseGuard concern

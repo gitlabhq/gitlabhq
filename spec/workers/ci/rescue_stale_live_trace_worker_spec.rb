@@ -35,7 +35,7 @@ describe Ci::RescueStaleLiveTraceWorker do
 
     context 'when build has both archived trace and live trace' do
       let!(:build2) { create(:ci_build, :success, :trace_live, finished_at: 2.days.ago) }
-  
+
       it 'archives only available targets' do
         subject
 
