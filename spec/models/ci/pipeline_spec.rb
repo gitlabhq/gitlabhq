@@ -1598,7 +1598,7 @@ describe Ci::Pipeline, :mailer do
 
     context 'when pipeline is not stuck' do
       before do
-        create(:ci_runner, :shared, :online)
+        create(:ci_runner, :instance, :online)
       end
 
       it 'is not stuck' do

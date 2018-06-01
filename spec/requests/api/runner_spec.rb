@@ -111,11 +111,13 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         end
 
         context 'when tags are not provided' do
-          it 'returns 404 error' do
+          it 'returns 400 error' do
             post api('/runners'), token: registration_token,
                                   run_untagged: false
 
-            expect(response).to have_gitlab_http_status 404
+            expect(response).to have_gitlab_http_status 400
+            expect(json_response['message']).to include(
+              'tags_list' => ['can not be empty when runner is not allowed to pick untagged jobs'])
           end
         end
       end
@@ -262,7 +264,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
   describe '/api/v4/jobs' do
     let(:project) { create(:project, shared_runners_enabled: false) }
     let(:pipeline) { create(:ci_pipeline_without_jobs, project: project, ref: 'master') }
-    let(:runner) { create(:ci_runner) }
+    let(:runner) { create(:ci_runner, :project, projects: [project]) }
     let(:job) do
       create(:ci_build, :artifacts, :extended_options,
              pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0, commands: "ls\ndate")
@@ -271,7 +273,6 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
     before do
       stub_artifacts_object_storage
       job
-      project.runners << runner
     end
 
     describe 'POST /api/v4/jobs/request' do
@@ -381,7 +382,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         end
 
         context 'when shared runner requests job for project without shared_runners_enabled' do
-          let(:runner) { create(:ci_runner, :shared) }
+          let(:runner) { create(:ci_runner, :instance) }
 
           it_behaves_like 'no jobs available'
         end
@@ -726,7 +727,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               end
 
               context 'when runner specifies lower timeout' do
-                let(:runner) { create(:ci_runner, maximum_timeout: 1000) }
+                let(:runner) { create(:ci_runner, :project, maximum_timeout: 1000, projects: [project]) }
 
                 it 'contains info about timeout overridden by runner' do
                   request_job
@@ -737,7 +738,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               end
 
               context 'when runner specifies bigger timeout' do
-                let(:runner) { create(:ci_runner, maximum_timeout: 2000) }
+                let(:runner) { create(:ci_runner, :project, maximum_timeout: 2000, projects: [project]) }
 
                 it 'contains info about timeout not overridden by runner' do
                   request_job

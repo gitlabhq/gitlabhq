@@ -14,7 +14,7 @@ describe UpdateBuildMinutesService do
     subject { described_class.new(project, nil).execute(build) }
 
     context 'with shared runner' do
-      let(:runner) { create(:ci_runner, :shared) }
+      let(:runner) { create(:ci_runner, :instance) }
 
       it "creates a statistics and sets duration" do
         subject
@@ -79,7 +79,7 @@ describe UpdateBuildMinutesService do
     end
 
     context 'for specific runner' do
-      let(:runner) { create(:ci_runner) }
+      let(:runner) { create(:ci_runner, :project) }
 
       it "does not create statistics" do
         subject

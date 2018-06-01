@@ -1306,8 +1306,8 @@ describe Project do
   describe '#any_runners?' do
     context 'shared runners' do
       let(:project) { create(:project, shared_runners_enabled: shared_runners_enabled) }
-      let(:specific_runner) { create(:ci_runner) }
-      let(:shared_runner) { create(:ci_runner, :shared) }
+      let(:specific_runner) { create(:ci_runner, :project, projects: [project]) }
+      let(:shared_runner) { create(:ci_runner, :instance) }
 
       context 'for shared runners disabled' do
         let(:shared_runners_enabled) { false }
@@ -1317,7 +1317,7 @@ describe Project do
         end
 
         it 'has a specific runner' do
-          project.runners << specific_runner
+          specific_runner
 
           expect(project.any_runners?).to be_truthy
         end
@@ -1329,13 +1329,13 @@ describe Project do
         end
 
         it 'checks the presence of specific runner' do
-          project.runners << specific_runner
+          specific_runner
 
           expect(project.any_runners? { |runner| runner == specific_runner }).to be_truthy
         end
 
         it 'returns false if match cannot be found' do
-          project.runners << specific_runner
+          specific_runner
 
           expect(project.any_runners? { false }).to be_falsey
         end
@@ -1367,7 +1367,7 @@ describe Project do
     context 'group runners' do
       let(:project) { create(:project, group_runners_enabled: group_runners_enabled) }
       let(:group) { create(:group, projects: [project]) }
-      let(:group_runner) { create(:ci_runner, groups: [group]) }
+      let(:group_runner) { create(:ci_runner, :group, groups: [group]) }
 
       context 'for group runners disabled' do
         let(:group_runners_enabled) { false }
@@ -1408,7 +1408,7 @@ describe Project do
   end
 
   describe '#shared_runners' do
-    let!(:runner) { create(:ci_runner, :shared) }
+    let!(:runner) { create(:ci_runner, :instance) }
 
     subject { project.shared_runners }
 
