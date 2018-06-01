@@ -5,16 +5,16 @@
     .form-group.row
       .offset-sm-2.col-sm-10
         .form-check
-          = f.label :password_authentication_enabled_for_web do
-            = f.check_box :password_authentication_enabled_for_web
+          = f.check_box :password_authentication_enabled_for_web, class: 'form-check-input'
+          = f.label :password_authentication_enabled_for_web, class: 'form-check-label' do
             Password authentication enabled for web interface
             .form-text.text-muted
               When disabled, an external authentication provider must be used.
     .form-group.row
       .offset-sm-2.col-sm-10
         .form-check
-          = f.label :password_authentication_enabled_for_git do
-            = f.check_box :password_authentication_enabled_for_git
+          = f.check_box :password_authentication_enabled_for_git, class: 'form-check-input'
+          = f.label :password_authentication_enabled_for_git, class: 'form-check-label' do
             Password authentication enabled for Git over HTTP(S)
             .form-text.text-muted
               When disabled, a Personal Access Token
@@ -33,8 +33,8 @@
       = f.label :two_factor_authentication, 'Two-factor authentication', class: 'col-form-label col-sm-2'
       .col-sm-10
         .form-check
-          = f.label :require_two_factor_authentication do
-            = f.check_box :require_two_factor_authentication
+          = f.check_box :require_two_factor_authentication, class: 'form-check-input'
+          = f.label :require_two_factor_authentication, class: 'form-check-label' do
             Require all users to setup Two-factor authentication
     .form-group.row
       = f.label :two_factor_authentication, 'Two-factor grace period (hours)', class: 'col-form-label col-sm-2'

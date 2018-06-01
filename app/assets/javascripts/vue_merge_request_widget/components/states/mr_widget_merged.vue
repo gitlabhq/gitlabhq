@@ -168,8 +168,8 @@
           <a
             :href="mr.mergeCommitPath"
             class="commit-sha js-mr-merged-commit-sha"
+            v-text="mr.shortMergeCommitSha"
           >
-            {{ mr.shortMergeCommitSha }}
           </a>
           <clipboard-button
             :title="__('Copy commit SHA to clipboard')"

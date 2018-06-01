@@ -7,8 +7,8 @@
       .form-group.row
         .offset-sm-2.col-sm-10
           .form-check
-            = f.label :repository_checks_enabled do
-              = f.check_box :repository_checks_enabled
+            = f.check_box :repository_checks_enabled, class: 'form-check-input'
+            = f.label :repository_checks_enabled, class: 'form-check-label' do
               Enable Repository Checks
             .form-text.text-muted
               GitLab will periodically run
@@ -25,8 +25,8 @@
       .form-group.row
         .offset-sm-2.col-sm-10
           .form-check
-            = f.label :housekeeping_enabled do
-              = f.check_box :housekeeping_enabled
+            = f.check_box :housekeeping_enabled, class: 'form-check-input'
+            = f.label :housekeeping_enabled, class: 'form-check-label' do
               Enable automatic repository housekeeping (git repack, git gc)
             .form-text.text-muted
               If you keep automatic housekeeping disabled for a long time Git
@@ -34,8 +34,8 @@
               repositories will use more disk space. We recommend to always leave
               this enabled.
           .form-check
-            = f.label :housekeeping_bitmaps_enabled do
-              = f.check_box :housekeeping_bitmaps_enabled
+            = f.check_box :housekeeping_bitmaps_enabled, class: 'form-check-input'
+            = f.label :housekeeping_bitmaps_enabled, class: 'form-check-label' do
               Enable Git pack file bitmap creation
             .form-text.text-muted
               Creating pack file bitmaps makes housekeeping take a little longer but

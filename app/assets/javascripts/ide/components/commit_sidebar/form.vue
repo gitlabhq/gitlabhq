@@ -126,7 +126,6 @@ export default {
       </div>
       <form
         v-if="!isCompact"
-        class="form-horizontal"
         @submit.prevent.stop="commitChanges"
         ref="formEl"
       >

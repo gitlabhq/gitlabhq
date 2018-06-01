@@ -1,34 +1,51 @@
 # Snippets
 
-Snippets are little bits of code or text.
+With GitLab Snippets you can store and share bits of code and text with other users.
 
 ![GitLab Snippet](img/gitlab_snippet.png)
 
-There are 2 types of snippets - project snippets and personal snippets.
-
-## Comments
-
-With GitLab Snippets you engage in a conversation about that piece of code,
-facilitating the collaboration among users.
-
-> **Note:**
-Comments on snippets was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/12910) in [GitLab Community Edition 9.2](https://about.gitlab.com/2017/05/22/gitlab-9-2-released/#comments-for-personal-snippets).
-
-## Project snippets
-
-Project snippets are always related to a specific project - see [Project's features](project/index.md#project-39-s-features) for more information.
+There are 2 types of snippets, personal snippets and project snippets.
 
 ## Personal snippets
 
-Personal snippets are not related to any project and can be created completely independently. There are 3 visibility levels that can be set (public, internal, private - see [Public Access](../public_access/public_access.md) for more information).
+Personal snippets are not related to any project and can be created completely
+independently. There are 3 visibility levels that can be set, public, internal
+and private. See [Public access](../public_access/public_access.md) for more information.
+
+## Project snippets
+
+Project snippets are always related to a specific project.
+See [Project's features](project/index.md#project-39-s-features) for more information.
+
+## Discover snippets
+
+There are two main ways of how you can discover snippets in GitLab.
+
+For exploring all snippets that are visible to you, you can go to the Snippets
+dashboard of your GitLab instance via the top navigation. For GitLab.com you can
+find it [here](https://gitlab.com/dashboard/snippets). This navigates you to an
+overview that shows snippets you created and allows you to explore all snippets.
+
+If you want to discover snippets that belong to a specific project, you can navigate
+to the Snippets page via the left side navigation on the project page.
+
+## Snippet comments
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/12910) in GitLab 9.2.
+
+With GitLab Snippets you engage in a conversation about that piece of code,
+facilitating the collaboration among users.
 
 ## Downloading snippets
 
 You can download the raw content of a snippet.
 
-By default snippets will be downloaded with Linux-style line endings (`LF`). If you want to preserve the original line endings you need to add a parameter `line_ending=raw` (eg. `https://gitlab.com/snippets/SNIPPET_ID/raw?line_ending=raw`). In case a snippet was created using the GitLab web interface the original line ending is Windows-like (`CRLF`).
+By default snippets will be downloaded with Linux-style line endings (`LF`). If
+you want to preserve the original line endings you need to add a parameter `line_ending=raw`
+(e.g., `https://gitlab.com/snippets/SNIPPET_ID/raw?line_ending=raw`). In case a
+snippet was created using the GitLab web interface the original line ending is Windows-like (`CRLF`).
 
-## Embedded Snippets
+## Embedded snippets
 
 > Introduced in GitLab 10.8.
 

@@ -25,8 +25,6 @@ const Api = {
   commitPipelinesPath: '/:project_id/commit/:sha/pipelines',
   branchSinglePath: '/api/:version/projects/:id/repository/branches/:branch',
   createBranchPath: '/api/:version/projects/:id/repository/branches',
-  pipelinesPath: '/api/:version/projects/:id/pipelines',
-  pipelineJobsPath: '/api/:version/projects/:id/pipelines/:pipeline_id/jobs',
 
   group(groupId, callback) {
     const url = Api.buildUrl(Api.groupPath).replace(':id', groupId);
@@ -243,20 +241,6 @@ const Api = {
         options,
       ),
     });
-  },
-
-  pipelines(projectPath, params = {}) {
-    const url = Api.buildUrl(this.pipelinesPath).replace(':id', encodeURIComponent(projectPath));
-
-    return axios.get(url, { params });
-  },
-
-  pipelineJobs(projectPath, pipelineId, params = {}) {
-    const url = Api.buildUrl(this.pipelineJobsPath)
-      .replace(':id', encodeURIComponent(projectPath))
-      .replace(':pipeline_id', pipelineId);
-
-    return axios.get(url, { params });
   },
 
   buildUrl(url) {

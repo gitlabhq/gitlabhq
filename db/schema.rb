@@ -635,6 +635,17 @@ ActiveRecord::Schema.define(version: 20180529093006) do
     t.string "external_ip"
   end
 
+  create_table "clusters_applications_jupyter", force: :cascade do |t|
+    t.integer "cluster_id", null: false
+    t.integer "oauth_application_id"
+    t.integer "status", null: false
+    t.string "version", null: false
+    t.string "hostname"
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.text "status_reason"
+  end
+
   create_table "clusters_applications_prometheus", force: :cascade do |t|
     t.integer "cluster_id", null: false
     t.integer "status", null: false
@@ -2082,9 +2093,9 @@ ActiveRecord::Schema.define(version: 20180529093006) do
     t.date "last_activity_on"
     t.boolean "notified_of_own_activity"
     t.string "preferred_language"
-    t.string "rss_token"
     t.integer "theme_id", limit: 2
     t.integer "accepted_term_id"
+    t.string "feed_token"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -2092,12 +2103,12 @@ ActiveRecord::Schema.define(version: 20180529093006) do
   add_index "users", ["created_at"], name: "index_users_on_created_at", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["email"], name: "index_users_on_email_trigram", using: :gin, opclasses: {"email"=>"gin_trgm_ops"}
+  add_index "users", ["feed_token"], name: "index_users_on_feed_token", using: :btree
   add_index "users", ["ghost"], name: "index_users_on_ghost", using: :btree
   add_index "users", ["incoming_email_token"], name: "index_users_on_incoming_email_token", using: :btree
   add_index "users", ["name"], name: "index_users_on_name", using: :btree
   add_index "users", ["name"], name: "index_users_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
-  add_index "users", ["rss_token"], name: "index_users_on_rss_token", using: :btree
   add_index "users", ["state"], name: "index_users_on_state", using: :btree
   add_index "users", ["username"], name: "index_users_on_username", using: :btree
   add_index "users", ["username"], name: "index_users_on_username_trigram", using: :gin, opclasses: {"username"=>"gin_trgm_ops"}
@@ -2196,6 +2207,8 @@ ActiveRecord::Schema.define(version: 20180529093006) do
   add_foreign_key "clusters", "users", on_delete: :nullify
   add_foreign_key "clusters_applications_helm", "clusters", on_delete: :cascade
   add_foreign_key "clusters_applications_ingress", "clusters", name: "fk_753a7b41c1", on_delete: :cascade
+  add_foreign_key "clusters_applications_jupyter", "clusters", on_delete: :cascade
+  add_foreign_key "clusters_applications_jupyter", "oauth_applications", on_delete: :nullify
   add_foreign_key "clusters_applications_prometheus", "clusters", name: "fk_557e773639", on_delete: :cascade
   add_foreign_key "clusters_applications_runners", "ci_runners", column: "runner_id", name: "fk_02de2ded36", on_delete: :nullify
   add_foreign_key "clusters_applications_runners", "clusters", on_delete: :cascade

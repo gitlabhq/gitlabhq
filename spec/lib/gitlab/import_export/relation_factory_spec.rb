@@ -119,6 +119,25 @@ describe Gitlab::ImportExport::RelationFactory do
     end
   end
 
+  context 'overrided model with pluralized name' do
+    let(:relation_sym) { :metrics }
+
+    let(:relation_hash) do
+      {
+        'id' => 99,
+        'merge_request_id' => 99,
+        'merged_at' => Time.now,
+        'merged_by_id' => 99,
+        'latest_closed_at' => nil,
+        'latest_closed_by_id' => nil
+      }
+    end
+
+    it 'does not raise errors' do
+      expect { created_object }.not_to raise_error
+    end
+  end
+
   context 'Project references' do
     let(:relation_sym) { :project_foo_model }
     let(:relation_hash) do

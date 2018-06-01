@@ -10,14 +10,17 @@ import mergeRequests from './modules/merge_requests';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
-  state: state(),
-  actions,
-  mutations,
-  getters,
-  modules: {
-    commit: commitModule,
-    pipelines,
-    mergeRequests,
-  },
-});
+export const createStore = () =>
+  new Vuex.Store({
+    state: state(),
+    actions,
+    mutations,
+    getters,
+    modules: {
+      commit: commitModule,
+      pipelines,
+      mergeRequests,
+    },
+  });
+
+export default createStore();

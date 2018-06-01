@@ -23,4 +23,6 @@ export default () => ({
   currentActivityView: activityBarViews.edit,
   unusedSeal: true,
   fileFindVisible: false,
+  rightPane: null,
+  links: {},
 });

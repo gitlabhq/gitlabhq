@@ -8,10 +8,7 @@
   .top-area
     = render 'shared/issuable/nav', type: :issues
     .nav-controls
-      = link_to safe_params.merge(rss_url_options), class: 'btn' do
-        = icon('rss')
-        %span.icon-label
-          Subscribe
+      = render 'shared/issuable/feed_buttons'
       = render 'shared/new_project_item_select', path: 'issues/new', label: "New issue", type: :issues
 
   = render 'shared/issuable/search_bar', type: :issues
