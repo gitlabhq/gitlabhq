@@ -30,8 +30,6 @@ module TimeTrackable
 
     return if @time_spent == 0
 
-    touch if touchable?
-
     if @time_spent == :reset
       reset_spent_time
     else
@@ -58,10 +56,6 @@ module TimeTrackable
   end
 
   private
-
-  def touchable?
-    valid? && persisted?
-  end
 
   def reset_spent_time
     timelogs.new(time_spent: total_time_spent * -1, user: @time_spent_user) # rubocop:disable Gitlab/ModuleWithInstanceVariables
