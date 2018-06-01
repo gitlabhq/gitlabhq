@@ -38,6 +38,7 @@ export default {
   data() {
     return {
       showTooltip: false,
+      showMergeRequestsDropdown: false,
     };
   },
   computed: {
@@ -67,6 +68,23 @@ export default {
         this.showTooltip = this.$refs.branchId.scrollWidth > this.$refs.branchId.offsetWidth;
       });
     },
+    showMergeRequestsDropdown() {
+      if (this.showMergeRequestsDropdown) {
+        document.addEventListener('click', this.hideMergeRequestDropdown);
+      } else {
+        document.removeEventListener('click', this.hideMergeRequestDropdown);
+      }
+    },
+  },
+  methods: {
+    hideMergeRequestDropdown(e) {
+      if (this.$refs.mergeRequestDropdown.contains(e.target)) return;
+
+      this.showMergeRequestsDropdown = false;
+    },
+    toggleMergeRequestDropdown() {
+      this.showMergeRequestsDropdown = !this.showMergeRequestsDropdown;
+    },
   },
 };
 </script>
@@ -91,12 +109,17 @@ export default {
         </div>
       </template>
       <template v-else>
-        <div class="context-header ide-context-header dropdown">
+        <div
+          class="context-header ide-context-header dropdown"
+          :class="{
+            show: showMergeRequestsDropdown
+          }"
+          ref="mergeRequestDropdown"
+        >
           <a
             href="#"
             role="button"
-            @click.prevent
-            data-toggle="dropdown"
+            @click.prevent="toggleMergeRequestDropdown"
           >
             <div
               v-if="currentProject.avatar_url"
@@ -148,7 +171,10 @@ export default {
               name="chevron-down"
             />
           </a>
-          <merge-request-dropdown />
+          <merge-request-dropdown
+            v-if="showMergeRequestsDropdown"
+            @hide="toggleMergeRequestDropdown"
+          />
         </div>
         <div class="multi-file-commit-panel-inner-scroll">
           <component

@@ -29,8 +29,6 @@ export default {
       this.tabs[index].localActive = true;
 
       this.currentIndex = index;
-
-      this.$emit('changed', this.currentIndex);
     },
   },
   render(h) {

@@ -1,9 +1,8 @@
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import Tabs from '../../../vue_shared/components/tabs/tabs';
 import Tab from '../../../vue_shared/components/tabs/tab.vue';
 import List from './list.vue';
-import { scopes } from '../../stores/modules/merge_requests/constants';
 
 export default {
   components: {
@@ -11,28 +10,16 @@ export default {
     Tab,
     List,
   },
-  data() {
-    return {
-      activeTabIndex: 0,
-    };
-  },
   computed: {
-    ...mapState('mergeRequests', ['isLoading', 'mergeRequests']),
+    ...mapGetters('mergeRequests', ['assignedData', 'createdData']),
     ...mapState(['currentMergeRequestId']),
-    tabScope() {
-      return this.activeTabIndex === 0 ? scopes.createdByMe : scopes.assignedToMe;
+    createdMergeRequestLength() {
+      return this.createdData.mergeRequests.length;
     },
   },
-  mounted() {
-    this.fetchMergeRequests();
-  },
   methods: {
-    ...mapActions('mergeRequests', ['fetchMergeRequests', 'setScope']),
-    updateActiveTab(index) {
-      this.activeTabIndex = index;
-
-      this.setScope(this.tabScope);
-      this.fetchMergeRequests();
+    hideDropdown() {
+      this.$emit('hide');
     },
   },
 };
@@ -40,31 +27,33 @@ export default {
 
 <template>
   <div class="dropdown-menu ide-merge-requests-dropdown">
-    <tabs
-      stop-propagation
-      @changed="updateActiveTab"
-    >
-      <tab
-        :title="__('Created by me')"
-        active
-      >
+    <tabs stop-propagation>
+      <tab active>
+        <template slot="title">
+          {{ __('Created by me') }}
+          <span class="badge badge-pill">
+            {{ createdMergeRequestLength }}
+          </span>
+        </template>
         <list
-          v-if="activeTabIndex === 0"
-          :is-loading="isLoading"
-          :items="mergeRequests"
+          type="created"
           :current-id="currentMergeRequestId"
           :empty-text="__('You have not created any merge requests')"
-          @search="fetchMergeRequests"
+          @hide="hideDropdown"
         />
       </tab>
-      <tab :title="__('Assigned to me')">
+      <tab>
+        <template slot="title">
+          {{ __('Assigned to me') }}
+          <span class="badge badge-pill">
+            {{ assignedData.mergeRequests.length }}
+          </span>
+        </template>
         <list
-          v-if="activeTabIndex === 1"
-          :is-loading="isLoading"
-          :items="mergeRequests"
+          type="assigned"
           :current-id="currentMergeRequestId"
           :empty-text="__('You do not have any assigned merge requests')"
-          @search="fetchMergeRequests"
+          @hide="hideDropdown"
         />
       </tab>
     </tabs>

@@ -26,6 +26,9 @@ export default {
   created() {
     this.isTab = true;
   },
+  updated() {
+    this.$parent.$forceUpdate();
+  },
 };
 </script>
 

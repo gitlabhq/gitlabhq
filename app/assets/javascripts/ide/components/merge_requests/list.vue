@@ -1,4 +1,5 @@
 <script>
+import { mapActions, mapGetters } from 'vuex';
 import _ from 'underscore';
 import LoadingIcon from '../../../vue_shared/components/loading_icon.vue';
 import Item from './item.vue';
@@ -9,12 +10,8 @@ export default {
     Item,
   },
   props: {
-    isLoading: {
-      type: Boolean,
-      required: true,
-    },
-    items: {
-      type: Array,
+    type: {
+      type: String,
       required: true,
     },
     currentId: {
@@ -32,24 +29,41 @@ export default {
     };
   },
   computed: {
+    ...mapGetters('mergeRequests', ['getData']),
+    data() {
+      return this.getData(this.type);
+    },
+    isLoading() {
+      return this.data.isLoading;
+    },
+    mergeRequests() {
+      return this.data.mergeRequests;
+    },
     hasMergeRequests() {
-      return this.items.length !== 0;
+      return this.mergeRequests.length !== 0;
     },
     hasNoSearchResults() {
       return this.search !== '' && !this.hasMergeRequests;
     },
   },
-  watch: {
-    isLoading() {
-      this.focusSearch();
-    },
+  mounted() {
+    this.loadMergeRequests();
   },
   methods: {
+    ...mapActions('mergeRequests', ['fetchMergeRequests']),
+    ...mapActions(['closeAllFiles']),
+    loadMergeRequests() {
+      this.fetchMergeRequests({ type: this.type, search: this.search });
+    },
     viewMergeRequest(item) {
-      this.$router.push(`/project/${item.projectPathWithNamespace}/merge_requests/${item.iid}`);
+      return this.closeAllFiles()
+        .then(() => {
+          this.$emit('hide');
+          this.$router.push(`/project/${item.projectPathWithNamespace}/merge_requests/${item.iid}`);
+        });
     },
     searchMergeRequests: _.debounce(function debounceSearch() {
-      this.$emit('search', this.search);
+      this.loadMergeRequests();
     }, 250),
     focusSearch() {
       if (!this.isLoading) {
@@ -88,7 +102,7 @@ export default {
         <ul class="mb-3">
           <template v-if="hasMergeRequests">
             <li
-              v-for="item in items"
+              v-for="item in mergeRequests"
               :key="item.id"
             >
               <item
@@ -103,7 +117,7 @@ export default {
             class="ide-merge-requests-empty d-flex align-items-center justify-content-center"
           >
             <template v-if="hasNoSearchResults">
-              No merge requests found
+              {{ __('No merge requests found') }}
             </template>
             <template v-else>
               {{ emptyText }}
