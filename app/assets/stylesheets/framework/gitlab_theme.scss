@@ -192,6 +192,10 @@
     &.active {
       color: $color-700;
       box-shadow: inset 3px 0 $color-700;
+
+      &.is-right {
+        box-shadow: inset -3px 0 $color-700;
+      }
     }
   }
 }
