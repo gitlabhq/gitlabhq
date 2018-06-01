@@ -35,8 +35,8 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
     end
   end
 
-  describe '.find_stale_in_batches' do
-    subject { described_class.find_stale_in_batches }
+  describe '.find_builds_from_stale_live_trace' do
+    subject { described_class.find_builds_from_stale_live_trace }
 
     context 'when build status is finished' do
       context 'when build finished 2 days ago' do
@@ -44,7 +44,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
           let!(:build) { create(:ci_build, :success, :trace_artifact, finished_at: 2.days.ago) }
 
           it 'does not yield build id' do
-            expect { |b| described_class.find_stale_in_batches(&b) }.not_to yield_control
+            expect { |b| described_class.find_builds_from_stale_live_trace(&b) }.not_to yield_control
           end
         end
 
@@ -52,7 +52,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
           let!(:build) { create(:ci_build, :success, :trace_live, finished_at: 2.days.ago) }
 
           it 'yields build id' do
-            expect { |b| described_class.find_stale_in_batches(&b) }.to yield_with_args([build.id])
+            expect { |b| described_class.find_builds_from_stale_live_trace(&b) }.to yield_with_args([build.id])
           end
         end
       end
@@ -61,7 +61,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
         let!(:build) { create(:ci_build, :success, :trace_live, finished_at: 10.minutes.ago) }
 
         it 'does not yield build id' do
-          expect { |b| described_class.find_stale_in_batches(&b) }.not_to yield_control
+          expect { |b| described_class.find_builds_from_stale_live_trace(&b) }.not_to yield_control
         end
       end
     end
@@ -70,7 +70,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       let!(:build) { create(:ci_build, :running, :trace_live) }
 
       it 'does not yield build id' do
-        expect { |b| described_class.find_stale_in_batches(&b) }.not_to yield_control
+        expect { |b| described_class.find_builds_from_stale_live_trace(&b) }.not_to yield_control
       end
     end
   end

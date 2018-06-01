@@ -52,13 +52,13 @@ module Ci
       end
 
       # Find stale live traces and return their build ids
-      def find_stale_in_batches(finished_before: 1.hour.ago)
+      def find_builds_from_stale_live_trace
         include(EachBatch)
           .select(:build_id)
           .group(:build_id)
           .joins(:build)
           .merge(Ci::Build.finished)
-          .where('ci_builds.finished_at < ?', finished_before)
+          .where('ci_builds.finished_at < ?', 1.hour.ago)
           .each_batch(column: :build_id) do |chunks|
             build_ids = chunks.map { |chunk| chunk.build_id }
 

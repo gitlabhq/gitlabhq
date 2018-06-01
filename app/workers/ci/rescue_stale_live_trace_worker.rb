@@ -4,12 +4,10 @@ module Ci
     include CronjobQueue
 
     def perform
-      # Reschedule to archive live traces
-      #
-      # The targets are jobs with the following conditions
-      # - Jobs had been finished 1 hour ago, but they don't have an archived trace yet
-      #   This could happen when their sidekiq-jobs are lost by SIGKILL
-      Ci::BuildTraceChunk.find_stale_in_batches(finished_before: 1.hour.ago) do |build_ids|
+      # Archive live traces which still resides in redis or database
+      # This could happen when sidekiq-jobs for archivements are lost by SIGKILL
+      # Issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/36791
+      Ci::BuildTraceChunk.find_builds_from_stale_live_trace do |build_ids|
         Ci::Build.where(id: build_ids).find_each do |build|
           begin
             build.trace.archive!
