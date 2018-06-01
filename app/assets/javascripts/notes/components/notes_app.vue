@@ -74,11 +74,9 @@ export default {
     this.fetchNotes();
 
     this.notesCountBadge = $('.issuable-details').find('.notes-tab .badge');
-    $(document).on('visibilitychange', () => {
-      return this.fetchNotes().then(() => {
-        this.notesCountBadge.text(this.notes.length);
-      });
-    });
+    $(document).on('visibilitychange', () => this.fetchNotes().then(() => {
+      this.notesCountBadge.text(this.notes.length);
+    }));
 
     const parentElement = this.$el.parentElement;
 
