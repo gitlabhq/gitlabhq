@@ -147,11 +147,7 @@ describe ApplicationController do
   end
 
   describe '#authenticate_sessionless_user!' do
-<<<<<<< HEAD
-    describe "authenticating a user from a feed token" do
-=======
     describe 'authenticating a user from a feed token' do
->>>>>>> upstream/master
       controller(described_class) do
         def index
           render text: 'authenticated'
