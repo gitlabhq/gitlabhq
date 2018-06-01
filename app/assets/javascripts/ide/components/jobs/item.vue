@@ -1,11 +1,9 @@
 <script>
-import Icon from '../../../vue_shared/components/icon.vue';
-import CiIcon from '../../../vue_shared/components/ci_icon.vue';
+import JobDescription from './detail/description.vue';
 
 export default {
   components: {
-    Icon,
-    CiIcon,
+    JobDescription,
   },
   props: {
     job: {
@@ -28,25 +26,9 @@ export default {
 
 <template>
   <div class="ide-job-item">
-    <ci-icon
-      :status="job.status"
-      :borderless="true"
-      :size="24"
+    <job-description
+      :job="job"
     />
-    <span class="prepend-left-8">
-      {{ job.name }}
-      <a
-        :href="job.path"
-        target="_blank"
-        class="ide-external-link"
-      >
-        {{ jobId }}
-        <icon
-          name="external-link"
-          :size="12"
-        />
-      </a>
-    </span>
     <button
       class="btn btn-default btn-sm ml-auto"
       @click="clickViewLog"

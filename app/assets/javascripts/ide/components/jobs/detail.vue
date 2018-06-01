@@ -1,9 +1,10 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import _ from 'underscore';
-import CiIcon from '../../../vue_shared/components/ci_icon.vue';
 import tooltip from '../../../vue_shared/directives/tooltip';
 import Icon from '../../../vue_shared/components/icon.vue';
+import ScrollButton from './detail/scroll_button.vue';
+import JobDescription from './detail/description.vue';
 
 const scrollPositions = {
   top: 0,
@@ -15,8 +16,9 @@ export default {
     tooltip,
   },
   components: {
-    CiIcon,
     Icon,
+    ScrollButton,
+    JobDescription,
   },
   data() {
     return {
@@ -46,7 +48,7 @@ export default {
     scrollUp() {
       this.$refs.buildTrace.scrollTo(0, 0);
     },
-    scrollBuildLog: _.throttle(function scrollDebounce() {
+    scrollBuildLog: _.throttle(function buildLogScrollDebounce() {
       const scrollTop = this.$refs.buildTrace.scrollTop;
       const offsetHeight = this.$refs.buildTrace.offsetHeight;
       const scrollHeight = this.$refs.buildTrace.scrollHeight;
@@ -80,28 +82,9 @@ export default {
       </button>
     </header>
     <div class="top-bar d-flex">
-      <div class="ide-job-details d-flex align-items-center">
-        <ci-icon
-          class="append-right-4 d-flex"
-          :status="detailJob.status"
-          :borderless="true"
-          :size="24"
-        />
-        <span>
-          {{ detailJob.name }}
-          <a
-            :href="detailJob.path"
-            target="_blank"
-            class="ide-external-link"
-          >
-            {{ jobId }}
-            <icon
-              name="external-link"
-              :size="12"
-            />
-          </a>
-        </span>
-      </div>
+      <job-description
+        :job="detailJob"
+      />
       <div class="controllers ml-auto">
         <a
           v-tooltip
@@ -117,38 +100,16 @@ export default {
             class="fa fa-file-text-o"
           ></i>
         </a>
-        <div
-          v-tooltip
-          class="controllers-buttons"
-          data-container="body"
-          data-placement="top"
-          :title="__('Scroll to top')"
-        >
-          <button
-            class="btn-scroll btn-transparent btn-blank"
-            type="button"
-            :disabled="isScrolledToTop"
-            @click="scrollUp"
-          >
-            <icon name="scroll_up" />
-          </button>
-        </div>
-        <div
-          v-tooltip
-          class="controllers-buttons"
-          data-container="body"
-          data-placement="top"
-          :title="__('Scroll to bottom')"
-        >
-          <button
-            class="btn-scroll btn-transparent btn-blank"
-            type="button"
-            :disabled="isScrolledToBottom"
-            @click="scrollDown"
-          >
-            <icon name="scroll_down" />
-          </button>
-        </div>
+        <scroll-button
+          direction="up"
+          :disabled="isScrolledToTop"
+          @click="scrollUp"
+        />
+        <scroll-button
+          direction="down"
+          :disabled="isScrolledToBottom"
+          @click="scrollDown"
+        />
       </div>
     </div>
     <pre

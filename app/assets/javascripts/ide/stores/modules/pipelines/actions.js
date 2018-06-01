@@ -86,7 +86,10 @@ export const setDetailJob = ({ commit, dispatch }, job) => {
 };
 
 export const requestJobTrace = ({ commit }) => commit(types.REQUEST_JOB_TRACE);
-export const receiveJobTraceError = ({ commit }) => commit(types.RECEIVE_JOB_TRACE_ERROR);
+export const receiveJobTraceError = ({ commit }) => {
+  flash(__('Error fetching job trace'));
+  commit(types.RECEIVE_JOB_TRACE_ERROR);
+};
 export const receiveJobTraceSuccess = ({ commit }, data) =>
   commit(types.RECEIVE_JOB_TRACE_SUCCESS, data);
 
