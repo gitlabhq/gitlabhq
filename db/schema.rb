@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180529093006) do
+ActiveRecord::Schema.define(version: 20180601213245) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1490,6 +1490,7 @@ ActiveRecord::Schema.define(version: 20180529093006) do
     t.datetime_with_timezone "updated_at", null: false
     t.boolean "enabled"
     t.string "domain"
+    t.integer "deploy_strategy", default: 0, null: false
   end
 
   add_index "project_auto_devops", ["project_id"], name: "index_project_auto_devops_on_project_id", unique: true, using: :btree

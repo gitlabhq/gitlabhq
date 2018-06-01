@@ -5,6 +5,8 @@ describe ProjectAutoDevops do
 
   it { is_expected.to belong_to(:project) }
 
+  it { is_expected.to define_enum_for(:deploy_strategy) }
+
   it { is_expected.to respond_to(:created_at) }
   it { is_expected.to respond_to(:updated_at) }
 
