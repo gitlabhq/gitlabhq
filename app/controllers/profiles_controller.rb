@@ -39,11 +39,7 @@ class ProfilesController < Profiles::ApplicationController
       user.reset_feed_token!
     end
 
-<<<<<<< HEAD
-    flash[:notice] = "Feed token was successfully reset"
-=======
     flash[:notice] = 'Feed token was successfully reset'
->>>>>>> upstream/master
 
     redirect_to profile_personal_access_tokens_path
   end
