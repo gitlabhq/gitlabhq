@@ -157,6 +157,16 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
   end
 
   context 'when variables policy is specified' do
+    shared_examples_for 'populates pipeline according to used policies' do
+      it 'populates pipeline according to used policies' do
+        step.perform!
+
+        expect(pipeline.stages.size).to eq 1
+        expect(pipeline.stages.first.builds.size).to eq 1
+        expect(pipeline.stages.first.builds.first.name).to eq 'rspec'
+      end
+    end
+
     context 'when using only/except build policies' do
       let(:config) do
         { rspec: { script: 'rspec', stage: 'test', only: ['master'] },
@@ -167,28 +177,16 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
         build(:ci_pipeline, ref: 'master', config: config)
       end
 
-      it 'populates pipeline according to used policies' do
-        step.perform!
-
-        expect(pipeline.stages.size).to eq 1
-        expect(pipeline.stages.first.builds.size).to eq 1
-        expect(pipeline.stages.first.builds.first.name).to eq 'rspec'
-      end
+      it_behaves_like 'populates pipeline according to used policies'
 
       context 'when variables expression is specified' do
-        let(:config) do
-          { rspec: { script: 'rspec', only: { variables: ["$CI_PIPELINE_IID == '1'"] } },
-            prod: { script: 'cap prod', only: { variables: ["$CI_PIPELINE_IID == '1000'"] } } }
-        end
-
         context 'when pipeline iid is the subject' do
-          it 'populates pipeline according to used policies' do
-            step.perform!
-
-            expect(pipeline.stages.size).to eq 1
-            expect(pipeline.stages.first.builds.size).to eq 1
-            expect(pipeline.stages.first.builds.first.name).to eq 'rspec'
+          let(:config) do
+            { rspec: { script: 'rspec', only: { variables: ["$CI_PIPELINE_IID == '1'"] } },
+              prod: { script: 'cap prod', only: { variables: ["$CI_PIPELINE_IID == '1000'"] } } }
           end
+
+          it_behaves_like 'populates pipeline according to used policies'
         end
       end
     end

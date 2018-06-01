@@ -15,7 +15,7 @@ shared_examples_for 'AtomicInternalId' do |validate_presence: true|
         instance.valid?
       end
 
-      context 'when presence validattion is required' do
+      context 'when presence validation is required' do
         before do
           skip unless validate_presence
         end
@@ -25,7 +25,7 @@ shared_examples_for 'AtomicInternalId' do |validate_presence: true|
         end
       end
 
-      context 'when presence validattion is not required' do
+      context 'when presence validation is not required' do
         before do
           skip if validate_presence
         end
