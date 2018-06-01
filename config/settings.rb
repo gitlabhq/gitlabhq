@@ -110,6 +110,10 @@ class Settings < Settingslogic
       File.expand_path(path, Rails.root)
     end
 
+    def attr_encrypted_db_key_base
+      Gitlab::Application.secrets.db_key_base[0..31]
+    end
+
     private
 
     def base_url(config)

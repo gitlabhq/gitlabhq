@@ -77,12 +77,12 @@ module Gitlab
         cipher = OpenSSL::Cipher::AES.new(128, :CBC)
         cipher.__send__(operation) # rubocop:disable GitlabSecurity/PublicSend
         cipher.iv = salt
-        cipher.key = Gitlab::Application.secrets.db_key_base
+        cipher.key = Settings.attr_encrypted_db_key_base[0..15]
         cipher
       end
 
       def oauth_salt
-        @salt ||= SecureRandom.hex(16)
+        @salt ||= SecureRandom.hex(8)
       end
 
       def oauth_client

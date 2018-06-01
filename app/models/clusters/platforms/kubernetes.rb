@@ -13,12 +13,12 @@ module Clusters
 
       attr_encrypted :password,
         mode: :per_attribute_iv,
-        key: Gitlab::Application.secrets.db_key_base,
+        key: Settings.attr_encrypted_db_key_base,
         algorithm: 'aes-256-cbc'
 
       attr_encrypted :token,
         mode: :per_attribute_iv,
-        key: Gitlab::Application.secrets.db_key_base,
+        key: Settings.attr_encrypted_db_key_base,
         algorithm: 'aes-256-cbc'
 
       before_validation :enforce_namespace_to_lower_case

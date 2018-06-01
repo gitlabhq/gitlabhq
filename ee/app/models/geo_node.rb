@@ -42,7 +42,7 @@ class GeoNode < ActiveRecord::Base
   scope :with_url_prefix, ->(prefix) { where('url LIKE ?', "#{prefix}%") }
 
   attr_encrypted :secret_access_key,
-                 key: Gitlab::Application.secrets.db_key_base,
+                 key: Settings.attr_encrypted_db_key_base,
                  algorithm: 'aes-256-gcm',
                  mode: :per_attribute_iv,
                  encode: true
