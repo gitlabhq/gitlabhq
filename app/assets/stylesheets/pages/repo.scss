@@ -1274,3 +1274,17 @@
 .ide-job-header {
   min-height: 60px;
 }
+
+.ide-merge-requests-dropdown {
+  .nav-links li {
+    width: 50%;
+  }
+  
+  .nav-links li a {
+    text-align: center;
+  }
+  
+  .nav-links li a:not(.active) {
+    background-color: #fafafa;
+  }
+}

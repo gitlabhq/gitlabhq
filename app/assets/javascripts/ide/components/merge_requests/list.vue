@@ -21,11 +21,23 @@ export default {
       type: String,
       required: true,
     },
+    emptyText: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
       search: '',
     };
+  },
+  computed: {
+    hasMergeRequests() {
+      return this.items.length !== 0;
+    },
+    hasNoSearchResults() {
+      return this.search !== '' && !this.hasMergeRequests;
+    },
   },
   watch: {
     isLoading() {
@@ -72,20 +84,44 @@ export default {
           class="fa fa-search dropdown-input-search"
         ></i>
       </div>
-      <div class="dropdown-content">
+      <div class="dropdown-content ide-merge-requests-dropdown-content">
         <ul class="mb-3">
+          <template v-if="hasMergeRequests">
+            <li
+              v-for="item in items"
+              :key="item.id"
+            >
+              <item
+                :item="item"
+                :current-id="currentId"
+                @click="viewMergeRequest"
+              />
+            </li>
+          </template>
           <li
-            v-for="item in items"
-            :key="item.id"
+            v-else
+            class="ide-merge-requests-empty d-flex align-items-center justify-content-center"
           >
-            <item
-              :item="item"
-              :current-id="currentId"
-              @click="viewMergeRequest"
-            />
+            <template v-if="hasNoSearchResults">
+              No merge requests found
+            </template>
+            <template v-else>
+              {{ emptyText }}
+            </template>
           </li>
         </ul>
       </div>
     </template>
   </div>
 </template>
+
+<style scoped>
+.ide-merge-requests-empty {
+  height: 230px;
+}
+
+.ide-merge-requests-dropdown-content {
+  min-height: 230px;
+  max-height: 470px;
+}
+</style>

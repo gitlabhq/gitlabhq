@@ -39,7 +39,7 @@ export default {
 </script>
 
 <template>
-  <div class="dropdown-menu">
+  <div class="dropdown-menu ide-merge-requests-dropdown">
     <tabs
       stop-propagation
       @changed="updateActiveTab"
@@ -53,6 +53,7 @@ export default {
           :is-loading="isLoading"
           :items="mergeRequests"
           :current-id="currentMergeRequestId"
+          :empty-text="__('You have not created any merge requests')"
           @search="fetchMergeRequests"
         />
       </tab>
@@ -62,6 +63,7 @@ export default {
           :is-loading="isLoading"
           :items="mergeRequests"
           :current-id="currentMergeRequestId"
+          :empty-text="__('You do not have any assigned merge requests')"
           @search="fetchMergeRequests"
         />
       </tab>
@@ -71,7 +73,7 @@ export default {
 
 <style scoped>
 .dropdown-menu {
-  width: 400px;
+  width: 350px;
   padding: 0;
   max-height: initial !important;
 }
