@@ -7,7 +7,7 @@ describe Projects::MergeRequestsController do
   let(:user)    { project.owner }
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
   let(:merge_request_with_conflicts) do
-    create(:merge_request, source_branch: 'conflict-resolvable', target_branch: 'conflict-start', source_project: project) do |mr|
+    create(:merge_request, source_branch: 'conflict-resolvable', target_branch: 'conflict-start', source_project: project, merge_status: :unchecked) do |mr|
       mr.mark_as_unmergeable
     end
   end
@@ -316,8 +316,8 @@ describe Projects::MergeRequestsController do
     end
 
     context 'when the sha parameter matches the source SHA' do
-      def merge_with_sha
-        post :merge, base_params.merge(sha: merge_request.diff_head_sha)
+      def merge_with_sha(params = {})
+        post :merge, base_params.merge(sha: merge_request.diff_head_sha).merge(params)
       end
 
       it 'returns :success' do
@@ -326,10 +326,28 @@ describe Projects::MergeRequestsController do
         expect(json_response).to eq('status' => 'success')
       end
 
-      it 'starts the merge immediately' do
-        expect(MergeWorker).to receive(:perform_async).with(merge_request.id, anything, anything)
+      it 'starts the merge immediately with permitted params' do
+        expect(MergeWorker).to receive(:perform_async).with(merge_request.id, anything, { 'squash' => false })
 
         merge_with_sha
+      end
+
+      context 'when squash is passed as 1' do
+        it 'updates the squash attribute on the MR to true' do
+          merge_request.update(squash: false)
+          merge_with_sha(squash: '1')
+
+          expect(merge_request.reload.squash).to be_truthy
+        end
+      end
+
+      context 'when squash is passed as 0' do
+        it 'updates the squash attribute on the MR to false' do
+          merge_request.update(squash: true)
+          merge_with_sha(squash: '0')
+
+          expect(merge_request.reload.squash).to be_falsey
+        end
       end
 
       context 'when the pipeline succeeds is passed' do

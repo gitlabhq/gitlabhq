@@ -257,7 +257,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def merge_params_attributes
-    [:should_remove_source_branch, :commit_message]
+    [:should_remove_source_branch, :commit_message, :squash]
   end
 
   def merge_when_pipeline_succeeds_active?
@@ -306,14 +306,14 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       elsif @merge_request.actual_head_pipeline.success?
         # This can be triggered when a user clicks the auto merge button while
         # the tests finish at about the same time
-        @merge_request.merge_async(current_user.id, params)
+        @merge_request.merge_async(current_user.id, merge_params)
 
         :success
       else
         :failed
       end
     else
-      @merge_request.merge_async(current_user.id, params)
+      @merge_request.merge_async(current_user.id, merge_params)
 
       :success
     end

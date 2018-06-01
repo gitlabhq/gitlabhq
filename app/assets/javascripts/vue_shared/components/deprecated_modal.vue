@@ -87,7 +87,7 @@
     <div
       :id="id"
       class="modal"
-      :class="id ? '' : 'show'"
+      :class="id ? '' : 'd-block'"
       role="dialog"
       tabindex="-1"
     >
@@ -99,12 +99,12 @@
         <div class="modal-content">
           <div class="modal-header">
             <slot name="header">
-              <h4 class="modal-title pull-left">
+              <h4 class="modal-title float-left">
                 {{ title }}
               </h4>
               <button
                 type="button"
-                class="close pull-right"
+                class="close float-right"
                 @click="emitCancel($event)"
                 data-dismiss="modal"
                 aria-label="Close"
@@ -166,7 +166,7 @@
     </div>
     <div
       v-if="!id"
-      class="modal-backdrop fade in"
+      class="modal-backdrop fade show"
     >
     </div>
   </div>

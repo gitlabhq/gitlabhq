@@ -6,7 +6,7 @@ image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.7-golang-1.9-git
     - gitlab-org
 
 .default-cache: &default-cache
-  key: "ruby-2.3.7-with-yarn"
+  key: "ruby-2.3.7-debian-stretch-with-yarn"
   paths:
     - vendor/ruby
     - .yarn-cache/
@@ -413,6 +413,8 @@ cloud-native-image:
   before_script: []
   stage: build
   allow_failure: true
+  variables:
+    GIT_DEPTH: "1"
   cache: {}
   before_script:
     - gem install gitlab --no-rdoc --no-ri
@@ -452,7 +454,7 @@ retrieve-tests-metadata:
     - //@gitlab-org/gitlab-ee
   except:
     - master
-    - /^[\d-]+-stable(-ee)?$/
+    - /[\d-]+-stable(-ee)?/
     - /\bce\-to\-ee\b/
     - /(^docs[\/-].*|.*-docs$)/
 
@@ -699,7 +701,7 @@ static-analysis:
   script:
     - scripts/static-analysis
   cache:
-    key: "ruby-2.3.7-with-yarn-and-rubocop"
+    key: "ruby-2.3.7-debian-stretch-with-yarn-and-rubocop"
     paths:
       - vendor/ruby
       - .yarn-cache/
@@ -740,7 +742,7 @@ ee_compat_check:
   except:
     - master
     - tags
-    - /^[\d-]+-stable(-ee)?/
+    - /[\d-]+-stable(-ee)?/
     - /^security-/
     - branches@gitlab-org/gitlab-ee
     - branches@gitlab/gitlab-ee

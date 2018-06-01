@@ -494,13 +494,13 @@ export const dast = {
             uri: 'http://192.168.32.236:3001/explore?sort=latest_activity_desc',
             method: 'GET',
             evidence:
-              "<form class='navbar-form' action='/search' accept-charset='UTF-8' method='get'>",
+              "<form class='form-inline' action='/search' accept-charset='UTF-8' method='get'>",
           },
           {
             uri: 'http://192.168.32.236:3001/help/user/group/subgroups/index.md',
             method: 'GET',
             evidence:
-              "<form class='navbar-form' action='/search' accept-charset='UTF-8' method='get'>",
+              "<form class='form-inline' action='/search' accept-charset='UTF-8' method='get'>",
           },
         ],
       },
@@ -541,13 +541,13 @@ export const dastBase = {
             uri: 'http://192.168.32.236:3001/explore?sort=latest_activity_desc',
             method: 'GET',
             evidence:
-              "<form class='navbar-form' action='/search' accept-charset='UTF-8' method='get'>",
+              "<form class='form-inline' action='/search' accept-charset='UTF-8' method='get'>",
           },
           {
             uri: 'http://192.168.32.236:3001/help/user/group/subgroups/index.md',
             method: 'GET',
             evidence:
-              "<form class='navbar-form' action='/search' accept-charset='UTF-8' method='get'>",
+              "<form class='form-inline' action='/search' accept-charset='UTF-8' method='get'>",
           },
         ],
       },
@@ -574,12 +574,12 @@ export const parsedDast = [
       {
         uri: 'http://192.168.32.236:3001/explore?sort=latest_activity_desc',
         method: 'GET',
-        evidence: "<form class='navbar-form' action='/search' accept-charset='UTF-8' method='get'>",
+        evidence: "<form class='form-inline' action='/search' accept-charset='UTF-8' method='get'>",
       },
       {
         uri: 'http://192.168.32.236:3001/help/user/group/subgroups/index.md',
         method: 'GET',
-        evidence: "<form class='navbar-form' action='/search' accept-charset='UTF-8' method='get'>",
+        evidence: "<form class='form-inline' action='/search' accept-charset='UTF-8' method='get'>",
       },
     ],
     solution: ' Update to latest ',

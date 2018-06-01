@@ -25,7 +25,6 @@ module EE
             :approver_group_ids,
             :approver_ids
           )
-          attrs << :squash if project.feature_available?(:merge_request_squash)
 
           attrs
         end

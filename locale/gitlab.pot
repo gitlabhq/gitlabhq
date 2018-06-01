@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-23 08:29+0200\n"
-"PO-Revision-Date: 2018-05-23 08:29+0200\n"
+"POT-Creation-Date: 2018-06-01 01:47-0500\n"
+"PO-Revision-Date: 2018-06-01 01:47-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -201,6 +201,21 @@ msgstr ""
 msgid "2FA enabled"
 msgstr ""
 
+msgid "403|Please contact your GitLab administrator to get the permission."
+msgstr ""
+
+msgid "403|You don't have the permission to access this page."
+msgstr ""
+
+msgid "404|Make sure the address is correct and the page hasn't moved."
+msgstr ""
+
+msgid "404|Page Not Found"
+msgstr ""
+
+msgid "404|Please contact your GitLab administrator if you think this is a mistake."
+msgstr ""
+
 msgid "<strong>Removes</strong> source branch"
 msgstr ""
 
@@ -337,6 +352,9 @@ msgid "AdminUsers|To confirm, type %{projectName}"
 msgstr ""
 
 msgid "AdminUsers|To confirm, type %{username}"
+msgstr ""
+
+msgid "Advanced"
 msgstr ""
 
 msgid "Advanced settings"
@@ -567,7 +585,7 @@ msgstr ""
 msgid "Auto Review Apps and Auto Deploy need a domain name to work correctly."
 msgstr ""
 
-msgid "AutoDevOps|Auto DevOps (Beta)"
+msgid "AutoDevOps|Auto DevOps"
 msgstr ""
 
 msgid "AutoDevOps|Auto DevOps documentation"
@@ -588,7 +606,7 @@ msgstr ""
 msgid "AutoDevOps|add a Kubernetes cluster"
 msgstr ""
 
-msgid "AutoDevOps|enable Auto DevOps (Beta)"
+msgid "AutoDevOps|enable Auto DevOps"
 msgstr ""
 
 msgid "Available"
@@ -736,9 +754,6 @@ msgid "BillingPlans|paid annually at %{price_per_year}"
 msgstr ""
 
 msgid "BillingPlans|per user"
-msgstr ""
-
-msgid "Blame"
 msgstr ""
 
 msgid "Branch (%{branch_count})"
@@ -926,7 +941,7 @@ msgstr ""
 msgid "CICD|An explicit %{ci_file} needs to be specified before you can begin using Continuous Integration and Delivery."
 msgstr ""
 
-msgid "CICD|Auto DevOps (Beta)"
+msgid "CICD|Auto DevOps"
 msgstr ""
 
 msgid "CICD|Auto DevOps will automatically build, test, and deploy your application based on a predefined Continuous Integration and Delivery configuration."
@@ -1184,6 +1199,12 @@ msgstr ""
 msgid "ClusterIntegration|Advanced options on this Kubernetes cluster's integration"
 msgstr ""
 
+msgid "ClusterIntegration|An error occured while trying to fetch project zones: %{error}"
+msgstr ""
+
+msgid "ClusterIntegration|An error occured while trying to fetch your projects: %{error}"
+msgstr ""
+
 msgid "ClusterIntegration|Applications"
 msgstr ""
 
@@ -1242,6 +1263,15 @@ msgid "ClusterIntegration|Environment scope"
 msgstr ""
 
 msgid "ClusterIntegration|Every new Google Cloud Platform (GCP) account receives $300 in credit upon %{sign_up_link}. In partnership with Google, GitLab is able to offer an additional $200 for new GCP accounts to get started with GitLab's Google Kubernetes Engine Integration."
+msgstr ""
+
+msgid "ClusterIntegration|Fetching machine types"
+msgstr ""
+
+msgid "ClusterIntegration|Fetching projects"
+msgstr ""
+
+msgid "ClusterIntegration|Fetching zones"
 msgstr ""
 
 msgid "ClusterIntegration|GitLab Integration"
@@ -1352,6 +1382,18 @@ msgstr ""
 msgid "ClusterIntegration|Multiple Kubernetes clusters are available in GitLab Enterprise Edition Premium and Ultimate"
 msgstr ""
 
+msgid "ClusterIntegration|No machine types matched your search"
+msgstr ""
+
+msgid "ClusterIntegration|No projects found"
+msgstr ""
+
+msgid "ClusterIntegration|No projects matched your search"
+msgstr ""
+
+msgid "ClusterIntegration|No zones matched your search"
+msgstr ""
+
 msgid "ClusterIntegration|Note:"
 msgstr ""
 
@@ -1362,9 +1404,6 @@ msgid "ClusterIntegration|Please enter access information for your Kubernetes cl
 msgstr ""
 
 msgid "ClusterIntegration|Please make sure that your Google account meets the following requirements:"
-msgstr ""
-
-msgid "ClusterIntegration|Project ID"
 msgstr ""
 
 msgid "ClusterIntegration|Project namespace"
@@ -1397,19 +1436,40 @@ msgstr ""
 msgid "ClusterIntegration|Save changes"
 msgstr ""
 
+msgid "ClusterIntegration|Search machine types"
+msgstr ""
+
+msgid "ClusterIntegration|Search projects"
+msgstr ""
+
+msgid "ClusterIntegration|Search zones"
+msgstr ""
+
 msgid "ClusterIntegration|Security"
 msgstr ""
 
 msgid "ClusterIntegration|See and edit the details for your Kubernetes cluster"
 msgstr ""
 
-msgid "ClusterIntegration|See machine types"
-msgstr ""
-
-msgid "ClusterIntegration|See your projects"
-msgstr ""
-
 msgid "ClusterIntegration|See zones"
+msgstr ""
+
+msgid "ClusterIntegration|Select machine type"
+msgstr ""
+
+msgid "ClusterIntegration|Select project"
+msgstr ""
+
+msgid "ClusterIntegration|Select project and zone to choose machine type"
+msgstr ""
+
+msgid "ClusterIntegration|Select project to choose zone"
+msgstr ""
+
+msgid "ClusterIntegration|Select zone"
+msgstr ""
+
+msgid "ClusterIntegration|Select zone to choose machine type"
 msgstr ""
 
 msgid "ClusterIntegration|Service token"
@@ -1440,6 +1500,9 @@ msgid "ClusterIntegration|Toggle Kubernetes cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Token"
+msgstr ""
+
+msgid "ClusterIntegration|Validating project billing status"
 msgstr ""
 
 msgid "ClusterIntegration|With a Kubernetes cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way."
@@ -1720,6 +1783,9 @@ msgid "Copy commit SHA to clipboard"
 msgstr ""
 
 msgid "Copy reference to clipboard"
+msgstr ""
+
+msgid "Copy to clipboard"
 msgstr ""
 
 msgid "Create"
@@ -2144,6 +2210,9 @@ msgstr ""
 msgid "Enable group Runners"
 msgstr ""
 
+msgid "Enable or disable certain group features and choose access levels."
+msgstr ""
+
 msgid "Enable or disable version check and usage ping."
 msgstr ""
 
@@ -2250,6 +2319,15 @@ msgid "Error fetching refs"
 msgstr ""
 
 msgid "Error fetching usage ping data."
+msgstr ""
+
+msgid "Error loading branch data. Please try again."
+msgstr ""
+
+msgid "Error loading last commit."
+msgstr ""
+
+msgid "Error loading project data. Please try again."
 msgstr ""
 
 msgid "Error occurred when toggling the notification subscription"
@@ -2650,6 +2728,9 @@ msgstr ""
 msgid "Gitaly Servers"
 msgstr ""
 
+msgid "Go Back"
+msgstr ""
+
 msgid "Go back"
 msgstr ""
 
@@ -2818,6 +2899,9 @@ msgid "IDE|Edit"
 msgstr ""
 
 msgid "IDE|Go back"
+msgstr ""
+
+msgid "IDE|Open in file view"
 msgstr ""
 
 msgid "IDE|Review"
@@ -3316,6 +3400,18 @@ msgstr ""
 msgid "Name new label"
 msgstr ""
 
+msgid "Nav|Help"
+msgstr ""
+
+msgid "Nav|Home"
+msgstr ""
+
+msgid "Nav|Sign In / Register"
+msgstr ""
+
+msgid "Nav|Sign out and sign in with a different account"
+msgstr ""
+
 msgid "New Issue"
 msgid_plural "New Issues"
 msgstr[0] ""
@@ -3603,10 +3699,13 @@ msgstr ""
 msgid "Pending"
 msgstr ""
 
+msgid "Perform advanced options such as changing path, transferring, or removing the group."
+msgstr ""
+
 msgid "Performance optimization"
 msgstr ""
 
-msgid "Permalink"
+msgid "Permissions"
 msgstr ""
 
 msgid "Personal Access Token"
@@ -3775,9 +3874,6 @@ msgid "PlantUML"
 msgstr ""
 
 msgid "Play"
-msgstr ""
-
-msgid "Please <a href=%{link_to_billing} target=\"_blank\" rel=\"noopener noreferrer\">enable billing for one of your projects to be able to create a Kubernetes cluster</a>, then try again."
 msgstr ""
 
 msgid "Please accept the Terms of Service before continuing."
@@ -4125,9 +4221,6 @@ msgstr ""
 msgid "Quick actions can be used in the issues description and comment boxes."
 msgstr ""
 
-msgid "Raw"
-msgstr ""
-
 msgid "Read more"
 msgstr ""
 
@@ -4349,6 +4442,9 @@ msgstr ""
 msgid "Search files"
 msgstr ""
 
+msgid "Search for projects, issues, etc."
+msgstr ""
+
 msgid "Search milestones"
 msgstr ""
 
@@ -4364,10 +4460,10 @@ msgstr ""
 msgid "Seconds to wait for a storage access attempt"
 msgstr ""
 
-msgid "Secret variables"
+msgid "Security report"
 msgstr ""
 
-msgid "Security report"
+msgid "Select"
 msgstr ""
 
 msgid "Select Archive Format"
@@ -4386,6 +4482,15 @@ msgid "Select assignee"
 msgstr ""
 
 msgid "Select branch/tag"
+msgstr ""
+
+msgid "Select project"
+msgstr ""
+
+msgid "Select project and zone to choose machine type"
+msgstr ""
+
+msgid "Select project to choose zone"
 msgstr ""
 
 msgid "Select source branch"
@@ -4531,6 +4636,9 @@ msgstr ""
 msgid "Something went wrong while fetching group member contributions"
 msgstr ""
 
+msgid "Something went wrong while fetching the latest pipeline status."
+msgstr ""
+
 msgid "Something went wrong while fetching the projects."
 msgstr ""
 
@@ -4664,6 +4772,9 @@ msgid "Specific Runners"
 msgstr ""
 
 msgid "Specify the following URL during the Runner setup:"
+msgstr ""
+
+msgid "Squash commits"
 msgstr ""
 
 msgid "Stage all"
@@ -4936,6 +5047,12 @@ msgid "There are no merge requests to show"
 msgstr ""
 
 msgid "There are problems accessing Git storage: "
+msgstr ""
+
+msgid "There was an error loading jobs"
+msgstr ""
+
+msgid "There was an error loading latest pipeline"
 msgstr ""
 
 msgid "There was an error loading users activity calendar."
@@ -5311,6 +5428,9 @@ msgstr ""
 msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
+msgid "Unable to sign you in to the group with SAML due to \"%{reason}\""
+msgstr ""
+
 msgid "Unknown"
 msgstr ""
 
@@ -5345,6 +5465,9 @@ msgid "Unverified"
 msgstr ""
 
 msgid "Up to date"
+msgstr ""
+
+msgid "Update your group name, description, avatar, and other general settings."
 msgstr ""
 
 msgid "Upgrade your plan to activate Advanced Global Search."
@@ -5396,6 +5519,9 @@ msgid "Used by members to sign in to your group in GitLab"
 msgstr ""
 
 msgid "User and IP Rate Limits"
+msgstr ""
+
+msgid "Variables"
 msgstr ""
 
 msgid "Variables are applied to environments via the runner. They can be protected by only exposing them to protected branches or tags. You can use variables for passwords, secret keys, or whatever you want."
@@ -5458,9 +5584,6 @@ msgstr ""
 msgid "Want to see the data? Please ask an administrator for access."
 msgstr ""
 
-msgid "We could not verify that one of your projects on GCP has billing enabled. Please try again."
-msgstr ""
-
 msgid "We don't have enough data to show this stage."
 msgstr ""
 
@@ -5515,7 +5638,31 @@ msgstr ""
 msgid "WikiEdit|There is already a page with the same title in that path."
 msgstr ""
 
-msgid "WikiEmptyPageError|You are not allowed to create wiki pages"
+msgid "WikiEmptyIssueMessage|Suggest wiki improvement"
+msgstr ""
+
+msgid "WikiEmptyIssueMessage|You must be a project member in order to add wiki pages. If you have suggestions for how to improve the wiki for this project, consider opening an issue in the %{issues_link}."
+msgstr ""
+
+msgid "WikiEmptyIssueMessage|issue tracker"
+msgstr ""
+
+msgid "WikiEmpty|A wiki is where you can store all the details about your project. This can include why you've created it, it's principles, how to use it, and so on."
+msgstr ""
+
+msgid "WikiEmpty|Create your first page"
+msgstr ""
+
+msgid "WikiEmpty|Suggest wiki improvement"
+msgstr ""
+
+msgid "WikiEmpty|The wiki lets you write documentation for your project"
+msgstr ""
+
+msgid "WikiEmpty|This project has no wiki pages"
+msgstr ""
+
+msgid "WikiEmpty|You must be a project member in order to add wiki pages."
 msgstr ""
 
 msgid "WikiHistoricalPage|This is an old version of this page."
@@ -5582,9 +5729,6 @@ msgid "Wiki|Create page"
 msgstr ""
 
 msgid "Wiki|Edit Page"
-msgstr ""
-
-msgid "Wiki|Empty page"
 msgstr ""
 
 msgid "Wiki|More Pages"
@@ -5832,6 +5976,9 @@ msgstr ""
 msgid "ciReport|Dismiss vulnerability"
 msgstr ""
 
+msgid "ciReport|Dismissed by"
+msgstr ""
+
 msgid "ciReport|Dynamic Application Security Testing (DAST) detects known vulnerabilities in your web application."
 msgstr ""
 
@@ -5923,6 +6070,9 @@ msgid "ciReport|Unapproved vulnerabilities (red) can be marked as approved."
 msgstr ""
 
 msgid "ciReport|no vulnerabilities"
+msgstr ""
+
+msgid "ciReport|on pipeline"
 msgstr ""
 
 msgid "command line instructions"

@@ -22,6 +22,12 @@ For example, if you define `API_TOKEN=secure` as a secret variable and
 `API_TOKEN=yaml` in your `.gitlab-ci.yml`, the `API_TOKEN` will take the value
 `secure` as the secret variables are higher in the chain.
 
+## Unsupported variables
+
+There are cases where some variables cannot be used in the context of a
+`.gitlab-ci.yml` definition (for example under `script`). Read more
+about which variables are [not supported](where_variables_can_be_used.md).
+
 ## Predefined variables (Environment variables)
 
 Some of the predefined environment variables are available only if a minimum
@@ -36,6 +42,9 @@ future GitLab releases.**
 
 | Variable                        | GitLab | Runner | Description |
 |-------------------------------- |--------|--------|-------------|
+| **ARTIFACT_DOWNLOAD_ATTEMPTS**  | 8.15   | 1.9    | Number of attempts to download artifacts running a job |
+| **CHAT_INPUT**                  | 10.6  | all    | Additional arguments passed in the [ChatOps](../chatops/README.md) command **[ULTIMATE]** |
+| **CHAT_CHANNEL**                | 10.6  | all    | Source chat channel which triggered the [ChatOps](../chatops/README.md) command **[ULTIMATE]** |
 | **CI**                          | all    | 0.4    | Mark that job is executed in CI environment |
 | **CI_COMMIT_REF_NAME**          | 9.0    | all    | The branch or tag name for which project is built |
 | **CI_COMMIT_REF_SLUG**          | 9.0    | all    | `$CI_COMMIT_REF_NAME` lowercased, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. No leading / trailing `-`. Use in URLs, host names and domain names. |
@@ -46,6 +55,8 @@ future GitLab releases.**
 | **CI_COMMIT_DESCRIPTION**       | 10.8   | all    | The description of the commit: the message without first line, if the title is shorter than 100 characters; full message in other case. |
 | **CI_CONFIG_PATH**              | 9.4    | 0.5    | The path to CI config file. Defaults to `.gitlab-ci.yml` |
 | **CI_DEBUG_TRACE**              | all    | 1.7    | Whether [debug tracing](#debug-tracing) is enabled |
+| **CI_DEPLOY_USER**              | 10.8   | all    | Authentication username of the [GitLab Deploy Token][gitlab-deploy-token], only present if the Project has one related.|
+| **CI_DEPLOY_PASSWORD**          | 10.8   | all    | Authentication password of the [GitLab Deploy Token][gitlab-deploy-token], only present if the Project has one related.|
 | **CI_DISPOSABLE_ENVIRONMENT**   | all    | 10.1   | Marks that the job is executed in a disposable environment (something that is created only for this job and disposed of/destroyed after the execution - all executors except `shell` and `ssh`). If the environment is disposable, it is set to true, otherwise it is not defined at all. |
 | **CI_ENVIRONMENT_NAME**         | 8.15   | all    | The name of the environment for this job |
 | **CI_ENVIRONMENT_SLUG**         | 8.15   | all    | A simplified version of the environment name, suitable for inclusion in DNS, URLs, Kubernetes labels, etc. |
@@ -82,19 +93,14 @@ future GitLab releases.**
 | **CI_SERVER_REVISION**          | all    | all    | GitLab revision that is used to schedule jobs |
 | **CI_SERVER_VERSION**           | all    | all    | GitLab version that is used to schedule jobs |
 | **CI_SHARED_ENVIRONMENT**       | all    | 10.1   | Marks that the job is executed in a shared environment (something that is persisted across CI invocations like `shell` or `ssh` executor). If the environment is shared, it is set to true, otherwise it is not defined at all. |
-| **ARTIFACT_DOWNLOAD_ATTEMPTS**  | 8.15   | 1.9    | Number of attempts to download artifacts running a job |
 | **GET_SOURCES_ATTEMPTS**        | 8.15   | 1.9    | Number of attempts to fetch sources running a job |
 | **GITLAB_CI**                   | all    | all    | Mark that job is executed in GitLab CI environment |
-| **GITLAB_USER_ID**              | 8.12   | all    | The id of the user who started the job |
 | **GITLAB_USER_EMAIL**           | 8.12   | all    | The email of the user who started the job |
+| **GITLAB_USER_ID**              | 8.12   | all    | The id of the user who started the job |
 | **GITLAB_USER_LOGIN**           | 10.0   | all    | The login username of the user who started the job |
 | **GITLAB_USER_NAME**            | 10.0   | all    | The real name of the user who started the job |
 | **GITLAB_FEATURES**             | 10.6   | all    | The comma separated list of licensed features available for your instance and plan |
 | **RESTORE_CACHE_ATTEMPTS**      | 8.15   | 1.9    | Number of attempts to restore the cache running a job |
-| **CHAT_INPUT**                  | 10.6  | all    | Additional arguments passed in the [ChatOps](../chatops/README.md) command. |
-| **CHAT_CHANNEL**                | 10.6  | all    | Source chat channel which triggered the [ChatOps](../chatops/README.md) command. |
-| **CI_DEPLOY_USER**              | 10.8   | all    | Authentication username of the [GitLab Deploy Token][gitlab-deploy-token], only present if the Project has one related.|
-| **CI_DEPLOY_PASSWORD**          | 10.8   | all    | Authentication password of the [GitLab Deploy Token][gitlab-deploy-token], only present if the Project has one related.|
 
 ## 9.0 Renaming
 
@@ -236,8 +242,8 @@ are set in the build environment. These variables are only defined for
 [deployment jobs](../environments.md). Please consult the documentation of
 the project services that you are using to learn which variables they define.
 
-An example project service that defines deployment variables is
-[Kubernetes Service](../../user/project/integrations/kubernetes.md#deployment-variables).
+An example project service that defines deployment variables is the
+[Kubernetes integration](../../user/project/clusters/index.md#deployment-variables).
 
 ## Debug tracing
 
@@ -561,40 +567,12 @@ Below you can find supported syntax reference:
     Pattern matching is case-sensitive by default. Use `i` flag modifier, like
     `/pattern/i` to make a pattern case-insensitive.
 
-### Unsupported predefined variables
-
-Because GitLab evaluates variables before creating jobs, we do not support a
-few variables that depend on persistence layer, like `$CI_JOB_ID`.
-
-Environments (like `production` or `staging`) are also being created based on
-what jobs pipeline consists of, thus some environment-specific variables are
-not supported as well.
-
-We do not support variables containing tokens because of security reasons.
-
-You can find a full list of unsupported variables below:
-
-- `CI_PIPELINE_ID`
-- `CI_JOB_ID`
-- `CI_JOB_TOKEN`
-- `CI_BUILD_ID`
-- `CI_BUILD_TOKEN`
-- `CI_REGISTRY_USER`
-- `CI_REGISTRY_PASSWORD`
-- `CI_REPOSITORY_URL`
-- `CI_ENVIRONMENT_URL`
-- `CI_DEPLOY_USER`
-- `CI_DEPLOY_PASSWORD`
-
-These variables are also not supported in a context of a
-[dynamic environment name][dynamic-environments].
-
 ### Secret variables with an environment scope
 
 We do support secret variables defined with an environment scope. Given that
 there is a secret variable `$STAGING_SECRET` defined in a scope of
 `review/staging/*`, following job that is using dynamic environments feature,
-is going to be created, based on the matching variable expression.
+is going to be created, based on the matching variable expression:
 
 ```yaml
 my-job:
@@ -620,6 +598,5 @@ my-job:
 [triggers]: ../triggers/README.md#pass-job-variables-to-a-trigger
 [subgroups]: ../../user/group/subgroups/index.md
 [builds-policies]: ../yaml/README.md#only-and-except-complex
-[dynamic-environments]: ../environments.md#dynamic-environments
 [trigger-job-token]: ../triggers/README.md#ci-job-token
 [gitlab-deploy-token]: ../../user/project/deploy_tokens/index.md#gitlab-deploy-token

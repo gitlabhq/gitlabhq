@@ -62,7 +62,7 @@ export default class GlFieldError {
     this.inputDomElement = this.inputElement.get(0);
     this.form = formErrors;
     this.errorMessage = this.inputElement.attr('title') || 'This field is required.';
-    this.fieldErrorElement = $(`<p class='${errorMessageClass} hide'>${this.errorMessage}</p>`);
+    this.fieldErrorElement = $(`<p class='${errorMessageClass} hidden'>${this.errorMessage}</p>`);
 
     this.state = {
       valid: false,
@@ -146,8 +146,8 @@ export default class GlFieldError {
 
   renderInvalid() {
     this.inputElement.addClass(inputErrorClass);
-    this.scopedSiblings.hide();
-    return this.fieldErrorElement.show();
+    this.scopedSiblings.addClass('hidden');
+    return this.fieldErrorElement.removeClass('hidden');
   }
 
   renderClear() {
@@ -157,7 +157,7 @@ export default class GlFieldError {
       this.accessCurrentValue(trimmedInput);
     }
     this.inputElement.removeClass(inputErrorClass);
-    this.scopedSiblings.hide();
-    this.fieldErrorElement.hide();
+    this.scopedSiblings.addClass('hidden');
+    this.fieldErrorElement.addClass('hidden');
   }
 }

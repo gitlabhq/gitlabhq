@@ -1,5 +1,5 @@
 <script>
-import Sortable from 'vendor/Sortable';
+import Sortable from 'sortablejs';
 import boardNewIssue from './board_new_issue.vue';
 import boardCard from './board_card.vue';
 import eventHub from '../eventhub';

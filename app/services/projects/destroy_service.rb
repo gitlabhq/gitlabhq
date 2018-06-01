@@ -138,7 +138,13 @@ module Projects
 
         trash_repositories!
 
-        project.team.truncate
+        # Rails attempts to load all related records into memory before
+        # destroying: https://github.com/rails/rails/issues/22510
+        # This ensures we delete records in batches.
+        #
+        # Exclude container repositories because its before_destroy would be
+        # called multiple times, and it doesn't destroy any database records.
+        project.destroy_dependent_associations_in_batches(exclude: [:container_repositories])
         project.destroy!
       end
     end

@@ -128,13 +128,13 @@
             = sprite_icon('slight-frown')
           %span.nav-item-name
             Abuse Reports
-          %span.badge.count= number_with_delimiter(AbuseReport.count(:all))
+          %span.badge.badge-pill.count= number_with_delimiter(AbuseReport.count(:all))
         %ul.sidebar-sub-level-items.is-fly-out-only
           = nav_link(controller: :abuse_reports, html_options: { class: "fly-out-top-item" } ) do
             = link_to admin_abuse_reports_path do
               %strong.fly-out-top-item-name
                 #{ _('Abuse Reports') }
-              %span.badge.count.merge_counter.js-merge-counter.fly-out-badge= number_with_delimiter(AbuseReport.count(:all))
+              %span.badge.badge-pill.count.merge_counter.js-merge-counter.fly-out-badge= number_with_delimiter(AbuseReport.count(:all))
 
       = nav_link(controller: :licenses) do
         = link_to admin_license_path do

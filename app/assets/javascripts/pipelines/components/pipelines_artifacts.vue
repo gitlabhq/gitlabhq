@@ -37,7 +37,7 @@
       >
       </i>
     </button>
-    <ul class="dropdown-menu dropdown-menu-align-right">
+    <ul class="dropdown-menu dropdown-menu-right">
       <li
         v-for="(artifact, i) in artifacts"
         :key="i">

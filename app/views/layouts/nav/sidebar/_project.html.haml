@@ -93,8 +93,8 @@
             %span.nav-item-name
               = _('Issues')
             - if @project.issues_enabled?
-              %span.badge.count.issue_counter
-                = number_with_delimiter(@project.open_issues_count)
+              %span.badge.badge-pill.count.issue_counter
+                = number_with_delimiter(@project.open_issues_count(current_user))
 
           %ul.sidebar-sub-level-items
             = nav_link(controller: :issues, action: :index, html_options: { class: "fly-out-top-item" } ) do
@@ -102,8 +102,8 @@
                 %strong.fly-out-top-item-name
                   = _('Issues')
                 - if @project.issues_enabled?
-                  %span.badge.count.issue_counter.fly-out-badge
-                    = number_with_delimiter(@project.open_issues_count)
+                  %span.badge.badge-pill.count.issue_counter.fly-out-badge
+                    = number_with_delimiter(@project.open_issues_count(current_user))
             %li.divider.fly-out-top-item
             = nav_link(controller: :issues, action: :index) do
               = link_to project_issues_path(@project), title: 'Issues' do
@@ -149,14 +149,14 @@
               = sprite_icon('git-merge')
             %span.nav-item-name
               = _('Merge Requests')
-            %span.badge.count.merge_counter.js-merge-counter
+            %span.badge.badge-pill.count.merge_counter.js-merge-counter
               = number_with_delimiter(@project.open_merge_requests_count)
           %ul.sidebar-sub-level-items.is-fly-out-only
             = nav_link(controller: :merge_requests, html_options: { class: "fly-out-top-item" } ) do
               = link_to project_merge_requests_path(@project) do
                 %strong.fly-out-top-item-name
                   = _('Merge Requests')
-                %span.badge.count.merge_counter.js-merge-counter.fly-out-badge
+                %span.badge.badge-pill.count.merge_counter.js-merge-counter.fly-out-badge
                   = number_with_delimiter(@project.open_merge_requests_count)
 
       - if project_nav_tab? :pipelines
@@ -243,7 +243,7 @@
                         = link_to 'Auto DevOps', help_page_path('topics/autodevops/index.md')
                         %span= _('uses Kubernetes clusters to deploy your code!')
                       %hr
-                      %button.btn.btn-create.btn-xs.dismiss-feature-highlight{ type: 'button' }
+                      %button.btn.btn-create.btn-sm.dismiss-feature-highlight{ type: 'button' }
                         %span= _("Got it!")
                         = sprite_icon('thumb-up')
 

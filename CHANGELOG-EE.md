@@ -1,5 +1,37 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.8.3 (2018-05-30)
+
+- No changes.
+- No changes.
+### Fixed (1 change)
+
+- Geo - Calculate the wiki checksum even when wiki is disabled. !5772
+
+### Performance (1 change)
+
+- Make Geo::PruneEventLogWorker delete rows more gently. !5835
+
+
+## 10.8.2 (2018-05-28)
+
+### Security (3 changes)
+
+- Fixed XSS in protected branches & tags access dropdown.
+- Escape name in merge request approvers dropdown.
+- Fixes include directive to not allow SSRF requests.
+
+
+## 10.8.1 (2018-05-23)
+
+### Fixed (4 changes)
+
+- Geo: Fix repo, wiki, and upload replication when renaming a namespace that has subgroups. !5704
+- Shows the correct data in the verification information section for the primary node in Geo admin screen. !5722
+- [Geo] Don't remove project registry records.
+- Geo: Exclude tables that start with pg_ from FDW check.
+
+
 ## 10.8.0 (2018-05-22)
 
 ### Removed (1 change)
@@ -76,6 +108,15 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Replace the `group_hooks.feature` spinach test with an rspec analog. !5515 (@blackst0ne)
 - Replace the `groups_management.feature` spinach test with an rspec analog. !5516 (@blackst0ne)
 - Remove `features/group_active_tab.feature`. !5554 (@blackst0ne)
+
+
+## 10.7.5 (2018-05-28)
+
+### Security (3 changes)
+
+- Fixed XSS in protected branches & tags access dropdown.
+- Escape name in merge request approvers dropdown.
+- Fixes include directive to not allow SSRF requests.
 
 
 ## 10.7.4 (2018-05-21)
@@ -185,6 +226,15 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Replace the `project/issues/weight.feature` spinach test with an rspec analog. !5194 (blackst0ne)
 - [Geo] Log JID for sync related jobs.
 - Breaks utils function to parse codeclimate and sast into separate functions.
+
+
+## 10.6.6 (2018-05-28)
+
+### Security (3 changes)
+
+- Fixed XSS in protected branches & tags access dropdown.
+- Escape name in merge request approvers dropdown.
+- Fixes include directive to not allow SSRF requests.
 
 
 ## 10.6.5 (2018-04-24)

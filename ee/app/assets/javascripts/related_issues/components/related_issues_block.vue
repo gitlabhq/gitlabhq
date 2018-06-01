@@ -1,5 +1,5 @@
 <script>
-import Sortable from 'vendor/Sortable';
+import Sortable from 'sortablejs';
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import sortableConfig from 'ee/sortable/sortable_config';
@@ -138,13 +138,13 @@ export default {
 <template>
   <div class="related-issues-block">
     <div
-      class="panel-slim panel-default"
+      class="card-slim"
     >
       <div
-        class="panel-heading"
-        :class="{ 'panel-empty-heading': !hasBody }"
+        class="card-header"
+        :class="{ 'panel-empty-heading border-bottom-0': !hasBody }"
       >
-        <h3 class="panel-title">
+        <h3 class="card-title mb-0">
           {{ title }}
           <a
             v-if="hasHelpPath"
@@ -186,7 +186,7 @@ issue-count-badge-add-button btn btn-sm btn-default"
       </div>
       <div
         v-if="isFormVisible"
-        class="js-add-related-issues-form-area panel-body"
+        class="js-add-related-issues-form-area card-body"
         :class="{
           'related-issues-add-related-issues-form-with-break': hasRelatedIssues
         }"
@@ -199,7 +199,7 @@ issue-count-badge-add-button btn btn-sm btn-default"
         />
       </div>
       <div
-        class="related-issues-token-body panel-body"
+        class="related-issues-token-body card-body"
         :class="{
           'collapsed': !shouldShowTokenBody,
           'sortable-container': canReorder

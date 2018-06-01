@@ -22,7 +22,6 @@
   height: calc(100vh - #{$header-height});
   margin-top: 0;
   border-top: 1px solid $white-dark;
-  border-bottom: 1px solid $white-dark;
   padding-bottom: $ide-statusbar-height;
 
   &.is-collapsed {
@@ -380,7 +379,7 @@
 
 .ide-status-bar {
   border-top: 1px solid $white-dark;
-  padding: $gl-bar-padding $gl-padding;
+  padding: 2px $gl-padding-8 0;
   background: $white-light;
   display: flex;
   justify-content: space-between;
@@ -391,12 +390,19 @@
   left: 0;
   width: 100%;
 
+  font-size: 12px;
+  line-height: 22px;
+
+  * {
+    font-size: inherit;
+  }
+
   > div + div {
     padding-left: $gl-padding;
   }
 
   svg {
-    vertical-align: middle;
+    vertical-align: sub;
   }
 }
 
@@ -540,7 +546,7 @@
     margin-right: 0;
   }
 
-  &.help-block {
+  &.form-text.text-muted {
     margin-left: 0;
     right: 0;
   }
@@ -848,7 +854,7 @@
     }
   }
 
-  .help-block {
+  .form-text.text-muted {
     margin-top: 0;
     line-height: 0;
   }
@@ -903,6 +909,16 @@
       width: 1px;
       background: $white-light;
     }
+
+    &.is-right {
+      padding-right: $gl-padding;
+      padding-left: $gl-padding + 1px;
+
+      &::after {
+        right: auto;
+        left: -1px;
+      }
+    }
   }
 }
 
@@ -946,7 +962,7 @@
     height: 30px;
   }
 
-  .help-block {
+  .form-text.text-muted {
     margin-top: 2px;
     color: $blue-500;
     cursor: pointer;
@@ -1082,10 +1098,6 @@
   font-size: 12px;
 }
 
-.ide-new-modal-label {
-  line-height: 34px;
-}
-
 .multi-file-commit-panel-success-message {
   position: absolute;
   top: 61px;
@@ -1118,4 +1130,113 @@
   .sidebar-context-title {
     white-space: nowrap;
   }
+}
+
+.ide-external-link {
+  svg {
+    display: none;
+  }
+
+  &:hover,
+  &:focus {
+    svg {
+      display: inline-block;
+    }
+  }
+}
+
+.ide-right-sidebar {
+  width: auto;
+  min-width: 60px;
+
+  .ide-activity-bar {
+    border-left: 1px solid $white-dark;
+  }
+
+  .multi-file-commit-panel-inner {
+    width: 350px;
+    padding: $grid-size $gl-padding;
+    background-color: $white-light;
+    border-left: 1px solid $white-dark;
+  }
+}
+
+.ide-pipeline {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .empty-state {
+    margin-top: auto;
+    margin-bottom: auto;
+
+    p {
+      margin: $grid-size 0;
+      text-align: center;
+      line-height: 24px;
+    }
+
+    .btn,
+    h4 {
+      margin: 0;
+    }
+  }
+}
+
+.ide-pipeline-list {
+  flex: 1;
+  overflow: auto;
+}
+
+.ide-pipeline-header {
+  min-height: 50px;
+  padding-left: $gl-padding;
+  padding-right: $gl-padding;
+
+  .ci-status-icon {
+    display: flex;
+  }
+}
+
+.ide-job-item {
+  display: flex;
+  padding: 16px;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid $border-color;
+  }
+
+  .ci-status-icon {
+    display: flex;
+    justify-content: center;
+    height: 20px;
+    margin-top: -2px;
+    overflow: hidden;
+  }
+}
+
+.ide-stage {
+  .card-header {
+    display: flex;
+    cursor: pointer;
+
+    .ci-status-icon {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .card-body {
+    padding: 0;
+  }
+}
+
+.ide-stage-collapse-icon {
+  margin: auto 0 auto auto;
+}
+
+.ide-stage-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

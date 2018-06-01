@@ -1,5 +1,0 @@
----
-title: 'Geo: Exclude tables that start with pg_ from FDW check'
-merge_request:
-author:
-type: fixed

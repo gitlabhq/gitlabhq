@@ -23,7 +23,7 @@
   color: $white-light;
   text-align: center;
 
-  @media (max-width: $screen-md-min) {
+  @include media-breakpoint-down(md) {
     padding: 10px 35px;
   }
 

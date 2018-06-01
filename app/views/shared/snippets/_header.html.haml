@@ -7,7 +7,7 @@
     %span.creator
       Authored
       = time_ago_with_tooltip(@snippet.created_at, placement: 'bottom', html_class: 'snippet_updated_ago')
-      by #{link_to_member(@project, @snippet.author, size: 24, author_class: "author item-title", avatar_class: "hidden-xs")}
+      by #{link_to_member(@project, @snippet.author, size: 24, author_class: "author item-title", avatar_class: "d-none d-sm-inline")}
 
   .detail-page-header-actions
     - if @snippet.project_id?
@@ -32,10 +32,10 @@
   - if public_snippet?
     .embed-snippet
       .input-group
-        .input-group-btn
-          %button.btn.embed-toggle{ 'data-toggle': 'dropdown', type: 'button' }
+        .input-group-prepend
+          %button.btn.btn-svg.embed-toggle.input-group-text{ 'data-toggle': 'dropdown', type: 'button' }
             %span.js-embed-action= _("Embed")
-            = sprite_icon('angle-down', size: 12)
+            = sprite_icon('angle-down', size: 12, css_class: 'caret-down')
           %ul.dropdown-menu.dropdown-menu-selectable.embed-toggle-list
             %li
               %button.js-embed-btn.btn.btn-transparent.is-active{ type: 'button' }
@@ -44,7 +44,6 @@
               %button.js-share-btn.btn.btn-transparent{ type: 'button' }
                 %strong.embed-toggle-list-item= _("Share")
         %input.js-snippet-url-area.snippet-embed-input.form-control{ type: "text", autocomplete: 'off', value: snippet_embed }
-        .input-group-btn
-          %button.js-clipboard-btn.snippet-clipboard-btn.btn.btn-default.has-tooltip{ title: "Copy to clipboard", 'data-clipboard-target': '.js-snippet-url-area' }
-            = sprite_icon('duplicate', size: 16)
+        .input-group-append
+          = clipboard_button(title: s_('Copy to clipboard'), class: 'js-clipboard-btn snippet-clipboard-btn btn btn-default', target: '.js-snippet-url-area')
     .clearfix

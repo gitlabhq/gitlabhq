@@ -100,8 +100,6 @@ module Issuable
 
     strip_attributes :title
 
-    after_save :ensure_metrics, unless: :imported?
-
     # We want to use optimistic lock for cases when only title or description are involved
     # http://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html
     def locking_enabled?

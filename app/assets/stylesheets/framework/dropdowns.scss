@@ -24,15 +24,15 @@
   display: none;
 }
 
-.open {
+.show.dropdown {
   .dropdown-menu,
-  .dropdown-menu-nav {
+  .dropdown-menu {
     @include set-visible;
     min-height: $dropdown-min-height;
     max-height: $dropdown-max-height;
     overflow-y: auto;
 
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       width: 100%;
     }
   }
@@ -62,6 +62,10 @@
   border: 1px solid $border-color;
   border-radius: $border-radius-base;
   white-space: nowrap;
+
+  &:disabled.read-only {
+    color: $gl-text-color !important;
+  }
 
   &.no-outline {
     outline: 0;
@@ -184,7 +188,7 @@
 
     text-decoration: none;
 
-    .badge {
+    .badge.badge-pill {
       background-color: darken($dropdown-link-hover-bg, 5%);
     }
   }
@@ -210,11 +214,10 @@
 
 .dropdown-menu,
 .dropdown-menu-nav {
-  @include set-invisible;
+  display: none;
   position: absolute;
   width: auto;
   top: 100%;
-  left: 0;
   z-index: 300;
   min-width: 240px;
   max-width: 500px;
@@ -328,7 +331,7 @@
     color: $gl-text-color-secondary;
   }
 
-  .badge + span:not(.badge) {
+  .badge.badge-pill + span:not(.badge.badge-pill) {
     // Expects up to 3 digits on the badge
     margin-right: 40px;
   }
@@ -385,20 +388,20 @@
 }
 
 .droplab-dropdown .dropdown-menu,
-.droplab-dropdown .dropdown-menu-nav {
+.droplab-dropdown .dropdown-menu {
   display: none;
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
 }
 
-.comment-type-dropdown.open .dropdown-menu {
+.comment-type-dropdown.show .dropdown-menu {
   display: block;
 }
 
 .filtered-search-box-input-container {
   .dropdown-menu,
-  .dropdown-menu-nav {
+  .dropdown-menu {
     max-width: 280px;
   }
 }
@@ -473,14 +476,9 @@
 .dropdown-select {
   width: $dropdown-width;
 
-  @media (max-width: $screen-sm-min) {
+  @include media-breakpoint-down(sm) {
     width: 100%;
   }
-}
-
-.dropdown-menu-align-right {
-  left: auto;
-  right: 0;
 }
 
 .dropdown-menu-selectable {
@@ -783,7 +781,7 @@
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@include media-breakpoint-down(xs) {
   .navbar-gitlab {
     li.header-projects,
     li.header-more,
@@ -795,7 +793,7 @@
 
   header.navbar-gitlab .dropdown {
     .dropdown-menu,
-    .dropdown-menu-nav {
+    .dropdown-menu {
       width: 100%;
       min-width: 100%;
     }
@@ -838,7 +836,7 @@ header.header-content .dropdown-menu.projects-dropdown-menu {
     width: 70%;
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     flex-direction: column;
     width: 100%;
     height: auto;
@@ -894,7 +892,7 @@ header.header-content .dropdown-menu.projects-dropdown-menu {
     height: 284px;
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     .projects-list-frequent-container {
       width: auto;
       height: auto;
@@ -935,7 +933,7 @@ header.header-content .dropdown-menu.projects-dropdown-menu {
     color: $gl-text-color-secondary;
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     .project-item-metadata-container {
       float: none;
     }

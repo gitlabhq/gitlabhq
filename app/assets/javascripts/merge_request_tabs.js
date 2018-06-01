@@ -362,7 +362,7 @@ export default class MergeRequestTabs {
   //
   // status - Boolean, true to show, false to hide
   toggleLoading(status) {
-    $('.mr-loading-status .loading').toggle(status);
+    $('.mr-loading-status .loading').toggleClass('hidden', !status);
   }
 
   diffViewType() {
@@ -427,7 +427,7 @@ export default class MergeRequestTabs {
       If the browser does not support position sticky, it returns the position as static.
       If the browser does support sticky, then we allow the browser to handle it, if not
       then we default back to Bootstraps affix
-    **/
+    */
     if ($tabs.css('position') !== 'static') return;
 
     const $diffTabs = $('#diff-notes-app');

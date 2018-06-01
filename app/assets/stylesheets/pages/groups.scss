@@ -2,7 +2,7 @@
   @include str-truncated(90%);
 }
 
-.dashboard .side .panel .panel-heading .input-group {
+.dashboard .side .card .card-header .input-group {
 
   .form-control {
     height: 42px;
@@ -45,7 +45,7 @@
     flex: 1;
   }
 
-  .dropdown-menu-align-right {
+  .dropdown-menu-right {
     margin-top: 0;
   }
 
@@ -107,7 +107,7 @@
     }
   }
 
-  @media (max-width: $screen-sm-max) {
+  @include media-breakpoint-down(sm) {
     &,
     .dropdown,
     .dropdown .dropdown-toggle,
@@ -154,14 +154,14 @@
   padding: 50px 100px;
   overflow: hidden;
 
-  @media (max-width: $screen-sm-max) {
+  @include media-breakpoint-down(sm) {
     padding: 50px 0;
   }
 
   svg {
     float: right;
 
-    @media (max-width: $screen-sm-max) {
+    @include media-breakpoint-down(sm) {
       float: none;
       display: block;
       width: 250px;
@@ -176,7 +176,7 @@
     width: 460px;
     margin-top: 120px;
 
-    @media (max-width: $screen-sm-max) {
+    @include media-breakpoint-down(sm) {
       float: none;
       margin-top: 60px;
       width: auto;
@@ -185,7 +185,7 @@
   }
 }
 
-.panel {
+.card {
   .shared_runners_limit_under_quota {
     color: $gl-success;
   }
@@ -254,7 +254,7 @@ table.pipeline-project-metrics tr td {
       max-width: 480px;
       padding: 0 $gl-padding;
 
-      @media (max-width: $screen-sm-min) {
+      @include media-breakpoint-down(sm) {
         margin: 0 auto;
       }
     }

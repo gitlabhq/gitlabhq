@@ -1,4 +1,4 @@
-= form_for [:admin, @group], html: { class: "form-horizontal" } do |f|
+= form_for [:admin, @group] do |f|
   = form_errors(@group)
   = render 'shared/group_form', f: f
 
@@ -7,15 +7,15 @@
   - if Gitlab::CurrentSettings.should_check_namespace_plan?
     = render 'admin/namespace_plan', f: f
 
-  .form-group.group-description-holder
-    = f.label :avatar, "Group avatar", class: 'control-label'
+  .form-group.row.group-description-holder
+    = f.label :avatar, "Group avatar", class: 'col-form-label col-sm-2'
     .col-sm-10
       = render 'shared/choose_group_avatar_button', f: f
 
   = render 'shared/visibility_level', f: f, visibility_level: visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group
 
-  .form-group
-    .col-sm-offset-2.col-sm-10
+  .form-group.row
+    .offset-sm-2.col-sm-10
       = render 'shared/allow_request_access', form: f
 
   = render 'groups/group_admin_settings', f: f
@@ -23,13 +23,13 @@
   - if @group.shared_runner_minutes_supported?
     = render 'namespaces/shared_runners_minutes_setting', f: f
     - unless @group.new_record?
-      .form-group
-        .col-sm-offset-2.col-sm-10
+      .form-group.row
+        .offset-sm-2.col-sm-10
           = render 'namespaces/shared_runners_minutes_setting_reset', link_reset_minutes: admin_group_reset_runners_minutes_path(@group)
 
   - if @group.new_record?
-    .form-group
-      .col-sm-offset-2.col-sm-10
+    .form-group.row
+      .offset-sm-2.col-sm-10
         .alert.alert-info
           = render 'shared/group_tips'
     .form-actions

@@ -10,12 +10,6 @@ module API
     helpers do
       params :optional_params_ee do
       end
-
-      params :merge_params_ee do
-      end
-
-      def update_merge_request_ee(merge_request)
-      end
     end
 
     def self.update_params_at_least_one_of
@@ -29,6 +23,7 @@ module API
         target_branch
         title
         discussion_locked
+        squash
       ]
     end
 
@@ -64,6 +59,18 @@ module API
         if params[:sha] && merge_request.diff_head_sha != params[:sha]
           render_api_error!("SHA does not match HEAD of source branch: #{merge_request.diff_head_sha}", 409)
         end
+      end
+
+      def serializer_options_for(merge_requests)
+        options = { with: Entities::MergeRequestBasic, current_user: current_user }
+
+        if params[:view] == 'simple'
+          options[:with] = Entities::MergeRequestSimple
+        else
+          options[:issuable_metadata] = issuable_meta_data(merge_requests, 'MergeRequest')
+        end
+
+        options
       end
 
       params :merge_requests_params do
@@ -105,16 +112,26 @@ module API
         authenticate! unless params[:scope] == 'all'
         merge_requests = find_merge_requests
 
-        options = { with: Entities::MergeRequestBasic,
-                    current_user: current_user }
+        present merge_requests, serializer_options_for(merge_requests)
+      end
+    end
 
-        if params[:view] == 'simple'
-          options[:with] = Entities::MergeRequestSimple
-        else
-          options[:issuable_metadata] = issuable_meta_data(merge_requests, 'MergeRequest')
-        end
+    params do
+      requires :id, type: String, desc: 'The ID of a group'
+    end
+    resource :groups, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+      desc 'Get a list of group merge requests' do
+        success Entities::MergeRequestBasic
+      end
+      params do
+        use :merge_requests_params
+      end
+      get ":id/merge_requests" do
+        group = find_group!(params[:id])
 
-        present merge_requests, options
+        merge_requests = find_merge_requests(group_id: group.id, include_subgroups: true)
+
+        present merge_requests, serializer_options_for(merge_requests)
       end
     end
 
@@ -148,6 +165,7 @@ module API
           optional :labels, type: String, desc: 'Comma-separated list of label names'
           optional :remove_source_branch, type: Boolean, desc: 'Remove source branch when merging'
           optional :allow_maintainer_to_push, type: Boolean, desc: 'Whether a maintainer of the target project can push to the source project'
+          optional :squash, type: Grape::API::Boolean, desc: 'When true, the commits will be squashed into a single commit on merge'
 
           use :optional_params_ee
         end
@@ -165,15 +183,8 @@ module API
 
         merge_requests = find_merge_requests(project_id: user_project.id)
 
-        options = { with: Entities::MergeRequestBasic,
-                    current_user: current_user,
-                    project: user_project }
-
-        if params[:view] == 'simple'
-          options[:with] = Entities::MergeRequestSimple
-        else
-          options[:issuable_metadata] = issuable_meta_data(merge_requests, 'MergeRequest')
-        end
+        options = serializer_options_for(merge_requests)
+        options[:project] = user_project
 
         present merge_requests, options
       end
@@ -310,8 +321,7 @@ module API
         optional :merge_when_pipeline_succeeds, type: Boolean,
                                                 desc: 'When true, this merge request will be merged when the pipeline succeeds'
         optional :sha, type: String, desc: 'When present, must have the HEAD SHA of the source branch'
-
-        use :merge_params_ee
+        optional :squash, type: Grape::API::Boolean, desc: 'When true, the commits will be squashed into a single commit on merge'
       end
       put ':id/merge_requests/:merge_request_iid/merge' do
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42317')
@@ -329,7 +339,7 @@ module API
 
         check_sha_param!(params, merge_request)
 
-        update_merge_request_ee(merge_request)
+        merge_request.update(squash: params[:squash]) if params[:squash]
 
         merge_params = {
           commit_message: params[:merge_commit_message],

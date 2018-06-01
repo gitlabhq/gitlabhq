@@ -1,4 +1,3 @@
-/* global BoardService */
 import Vue from 'vue';
 import '~/boards/stores/boards_store';
 import BoardBlankState from '~/boards/components/board_blank_state.vue';

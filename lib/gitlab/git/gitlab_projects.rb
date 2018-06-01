@@ -53,7 +53,7 @@ module Gitlab
       # Import project via git clone --bare
       # URL must be publicly cloneable
       def import_project(source, timeout)
-        Gitlab::GitalyClient.migrate(:import_repository) do |is_enabled|
+        Gitlab::GitalyClient.migrate(:import_repository, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_import_repository(source)
           else

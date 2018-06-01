@@ -89,8 +89,13 @@
   align-content: flex-start;
 }
 
-.is-dismissed .report-block-list-issue-description {
+.is-dismissed .report-block-list-issue-description,
+.is-dismissed .vulnerability-name-button {
   text-decoration: line-through;
+}
+
+.report-block-list-issue-description-text::after {
+  content: "\00a0";
 }
 
 .report-block-list-issue-description {

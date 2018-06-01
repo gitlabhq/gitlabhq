@@ -1,7 +1,7 @@
 .alert.alert-warning
   %h4
     Too many changes to show.
-    .pull-right
+    .float-right
       - if current_controller?(:commit)
         = link_to "Plain diff", project_commit_path(@project, @commit, format: :diff), class: "btn btn-sm"
         = link_to "Email patch", project_commit_path(@project, @commit, format: :patch), class: "btn btn-sm"

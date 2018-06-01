@@ -37,6 +37,7 @@ notes:
 - todos
 - events
 - system_note_metadata
+- note_diff_file
 label_links:
 - target
 - label
@@ -353,3 +354,8 @@ lfs_file_locks:
 - user
 project_badges:
 - project
+metrics:
+- merge_request
+- latest_closed_by
+- merged_by
+- pipeline

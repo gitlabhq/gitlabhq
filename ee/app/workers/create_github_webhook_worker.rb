@@ -1,6 +1,6 @@
 class CreateGithubWebhookWorker
   include ApplicationWorker
-  include GrapeRouteHelpers::NamedRouteMatcher
+  include GrapePathHelpers::NamedRouteMatcher
 
   attr_reader :project
 

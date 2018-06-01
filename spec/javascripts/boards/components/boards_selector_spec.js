@@ -1,5 +1,3 @@
-/* global BoardService */
-
 import Vue from 'vue';
 import BoardService from '~/boards/services/board_service';
 import 'ee/boards/components/boards_selector';

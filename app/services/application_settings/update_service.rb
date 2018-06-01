@@ -7,6 +7,10 @@ module ApplicationSettings
 
       update_terms(@params.delete(:terms))
 
+      if params.key?(:performance_bar_allowed_group_path)
+        params[:performance_bar_allowed_group_id] = performance_bar_allowed_group_id
+      end
+
       @application_setting.update(@params)
     end
 
@@ -21,6 +25,14 @@ module ApplicationSettings
 
       ApplicationSetting::Term.create(terms: terms)
       @application_setting.reset_memoized_terms
+    end
+
+    def performance_bar_allowed_group_id
+      performance_bar_enabled = !params.key?(:performance_bar_enabled) || params.delete(:performance_bar_enabled)
+      group_full_path = params.delete(:performance_bar_allowed_group_path)
+      return nil unless Gitlab::Utils.to_boolean(performance_bar_enabled)
+
+      Group.find_by_full_path(group_full_path)&.id if group_full_path.present?
     end
   end
 end

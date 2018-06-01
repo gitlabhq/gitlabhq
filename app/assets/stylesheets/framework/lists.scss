@@ -2,7 +2,7 @@
  * Well styled list
  *
  */
-.well-list {
+.hover-list {
   position: relative;
   margin: 0;
   padding: 0;
@@ -72,7 +72,7 @@
       }
     }
 
-    .well-title {
+    .card.card-body-title {
       font-size: $list-font-size;
       line-height: 18px;
     }
@@ -156,7 +156,7 @@ ul.content-list {
         margin-bottom: 4px;
 
         &.btn-ldap-override {
-          @media (min-width: $screen-sm-min) {
+          @include media-breakpoint-up(sm) {
             margin-bottom: 0;
           }
         }
@@ -165,7 +165,7 @@ ul.content-list {
         &:last-child {
           margin-right: 0;
 
-          @media(max-width: $screen-xs-max) {
+          @include media-breakpoint-down(xs) {
             margin: 0 auto;
           }
         }
@@ -179,7 +179,7 @@ ul.content-list {
     .member-controls {
       float: none;
 
-      @media (min-width: $screen-sm-min) {
+      @include media-breakpoint-up(sm) {
         float: right;
       }
     }
@@ -234,7 +234,7 @@ ul.content-list {
     }
   }
 
-  .label-default {
+  .badge-secondary {
     color: $gl-text-color-secondary;
   }
 
@@ -243,7 +243,7 @@ ul.content-list {
   }
 }
 
-.panel > .content-list > li {
+.card > .content-list > li {
   padding: $gl-padding-top $gl-padding;
 }
 

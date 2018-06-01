@@ -110,7 +110,7 @@
         v-if="isLoading"
         :inline="true"
       />
-      <div class="pull-right">
+      <div class="float-right">
         <button
           v-if="editable && !editing"
           type="button"
@@ -149,7 +149,7 @@
             -
             <button
               type="button"
-              class="btn-blank btn-link btn-secondary-hover-link"
+              class="btn-blank btn-link btn-default-hover-link"
               @click="newDateSelected(null)"
             >
               remove

@@ -24,7 +24,6 @@
 - gcp_cluster:cluster_provision
 - gcp_cluster:cluster_wait_for_app_installation
 - gcp_cluster:wait_for_cluster_creation
-- gcp_cluster:check_gcp_project_billing
 - gcp_cluster:cluster_wait_for_ingress_ip_address
 
 - github_import_advance_stage
@@ -115,6 +114,7 @@
 - upload_checksum
 - web_hook
 - repository_update_remote_mirror
+- create_note_diff_file
 
 # EE-specific queues
 
@@ -158,6 +158,7 @@
 - geo:geo_repository_verification_primary_shard
 - geo:geo_repository_verification_primary_single
 - geo:geo_repository_verification_secondary_single
+- geo:geo_truncate_event_log
 
 - object_storage_upload
 - object_storage:object_storage_background_move

@@ -6,12 +6,12 @@ import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer
 import { activityBarViews, viewerTypes } from '../constants';
 import monacoLoader from '../monaco_loader';
 import Editor from '../lib/editor';
-import IdeFileButtons from './ide_file_buttons.vue';
+import ExternalLink from './external_link.vue';
 
 export default {
   components: {
     ContentViewer,
-    IdeFileButtons,
+    ExternalLink,
   },
   props: {
     file: {
@@ -43,9 +43,13 @@ export default {
     },
   },
   watch: {
-    file(oldVal, newVal) {
+    file(newVal, oldVal) {
+      if (oldVal.pending) {
+        this.removePendingTab(oldVal);
+      }
+
       // Compare key to allow for files opened in review mode to be cached differently
-      if (newVal.key !== this.file.key) {
+      if (oldVal.key !== this.file.key) {
         this.initMonaco();
 
         if (this.currentActivityView !== activityBarViews.edit) {
@@ -99,6 +103,7 @@ export default {
       'setFileViewMode',
       'setFileEOL',
       'updateViewer',
+      'removePendingTab',
     ]),
     initMonaco() {
       if (this.shouldHideEditor) return;
@@ -192,7 +197,7 @@ export default {
   >
     <div class="ide-mode-tabs clearfix" >
       <ul
-        class="nav-links pull-left"
+        class="nav-links float-left"
         v-if="!shouldHideEditor && isEditModeActive"
       >
         <li :class="editTabCSS">
@@ -219,7 +224,7 @@ export default {
           </a>
         </li>
       </ul>
-      <ide-file-buttons
+      <external-link
         :file="file"
       />
     </div>

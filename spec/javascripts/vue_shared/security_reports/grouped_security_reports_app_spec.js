@@ -32,9 +32,9 @@ describe('Grouped security reports app', () => {
   });
 
   afterEach(() => {
+    vm.$store.replaceState(state());
     vm.$destroy();
     mock.restore();
-    vm.$store.replaceState(state());
   });
 
   describe('with error', () => {
@@ -126,7 +126,7 @@ describe('Grouped security reports app', () => {
       });
     });
 
-    it('renders loading summary text + spinner', () => {
+    it('renders loading summary text + spinner', (done) => {
       expect(vm.$el.querySelector('.fa-spinner')).not.toBeNull();
       expect(vm.$el.querySelector('.js-code-text').textContent.trim()).toEqual(
         'Security scanning is loading',
@@ -137,6 +137,10 @@ describe('Grouped security reports app', () => {
       expect(vm.$el.textContent).toContain('Dependency scanning is loading');
       expect(vm.$el.textContent).toContain('Container scanning is loading');
       expect(vm.$el.textContent).toContain('DAST is loading');
+
+      setTimeout(() => {
+        done();
+      }, 0);
     });
   });
 
@@ -175,19 +179,30 @@ describe('Grouped security reports app', () => {
 
     it('renders reports', done => {
       setTimeout(() => {
+        // It's not loading
         expect(vm.$el.querySelector('.fa-spinner')).toBeNull();
+
+        // Renders the summary text
         expect(vm.$el.querySelector('.js-code-text').textContent.trim()).toEqual(
-          'Security scanning detected 12 new vulnerabilities and 4 fixed vulnerabilities',
+          'Security scanning detected 6 new vulnerabilities and 2 fixed vulnerabilities',
         );
+
+        // Renders the expand button
         expect(vm.$el.querySelector('.js-collapse-btn').textContent.trim()).toEqual('Expand');
 
+        // Renders Sast result
         expect(removeBreakLine(vm.$el.textContent)).toContain(
           'SAST detected 2 new vulnerabilities and 1 fixed vulnerability',
         );
+
+        // Renders DSS result
         expect(removeBreakLine(vm.$el.textContent)).toContain(
           'Dependency scanning detected 2 new vulnerabilities and 1 fixed vulnerability',
         );
+        // Renders container scanning result
         expect(vm.$el.textContent).toContain('Container scanning detected 1 new vulnerability');
+
+        // Renders DAST result
         expect(vm.$el.textContent).toContain('DAST detected 1 new vulnerability');
         done();
       }, 0);

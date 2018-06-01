@@ -143,6 +143,11 @@ $border-gray-normal-dashed: darken($gray-normal, $darken-border-dashed-factor);
 $border-gray-dark: darken($white-normal, $darken-border-factor);
 
 /*
+ * Override Bootstrap 4 variables
+ */
+$secondary: $gray-light;
+
+/*
  * UI elements
  */
 $border-color: #e5e5e5;
@@ -231,7 +236,7 @@ $row-hover: $blue-50;
 $row-hover-border: $blue-200;
 $progress-color: #c0392b;
 $header-height: 40px;
-$ide-statusbar-height: 27px;
+$ide-statusbar-height: 25px;
 $fixed-layout-width: 1280px;
 $limited-layout-width: 990px;
 $limited-layout-width-sm: 790px;
@@ -314,6 +319,11 @@ $gl-warning: $orange-500;
 $gl-danger: $red-500;
 $gl-btn-active-background: rgba(0, 0, 0, 0.16);
 $gl-btn-active-gradient: inset 0 2px 3px $gl-btn-active-background;
+// Bootstrap override states
+$success: $gl-success;
+$info: $gl-info;
+$warning: $gl-warning;
+$danger: $gl-danger;
 
 /*
  * Commit Diff Colors
@@ -372,6 +382,7 @@ $dropdown-chevron-size: 10px;
 $dropdown-toggle-active-border-color: darken($border-color, 14%);
 $dropdown-item-hover-bg: $gray-darker;
 $dropdown-fade-mask-height: 32px;
+$dropdown-member-form-control-width: 163px;
 
 /*
 * Filtered Search
@@ -563,6 +574,8 @@ $input-danger-border: $red-400;
 $input-group-addon-bg: #f7f8fa;
 $gl-field-focus-shadow: rgba(0, 0, 0, 0.075);
 $gl-field-focus-shadow-error: rgba($red-500, 0.6);
+$input-short-width: 200px;
+$input-short-md-width: 280px;
 
 /*
 * Help

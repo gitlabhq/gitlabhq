@@ -2,9 +2,9 @@
   - disallowed = disallowed_visibility_level?(form_model, level)
   - restricted = restricted_visibility_levels.include?(level)
   - disabled = disallowed || restricted
-  .radio{ class: [('disabled' if disabled), ('restricted' if restricted)] }
-    = form.label "#{model_method}_#{level}" do
-      = form.radio_button model_method, level, checked: (selected_level == level), disabled: disabled
+  .form-check{ class: [('disabled' if disabled), ('restricted' if restricted)] }
+    = form.radio_button model_method, level, checked: (selected_level == level), disabled: disabled, class: 'form-check-input'
+    = form.label "#{model_method}_#{level}", class: 'form-check-label' do
       = visibility_level_icon(level)
       .option-title
         = visibility_level_label(level)

@@ -43,21 +43,21 @@ describe 'Scoped issue boards', :js do
 
           expect(page).to have_css('.js-visual-token')
           expect(find('.tokens-container')).to have_content(:all, milestone.title)
-          expect(page).to have_selector('.card', count: 1)
+          expect(page).to have_selector('.board-card', count: 1)
         end
 
         it 'creates board filtering by No Milestone' do
           create_board_milestone('No Milestone')
 
           expect(find('.tokens-container')).to have_content("")
-          expect(page).to have_selector('.card', count: 2)
+          expect(page).to have_selector('.board-card', count: 2)
         end
 
         it 'creates board filtering by Any Milestone' do
           create_board_milestone('Any Milestone')
 
           expect(find('.tokens-container')).to have_content("")
-          expect(page).to have_selector('.card', count: 3)
+          expect(page).to have_selector('.board-card', count: 3)
         end
 
         it 'displays dot highlight and tooltip' do
@@ -79,7 +79,7 @@ describe 'Scoped issue boards', :js do
 
           expect(page).to have_css('.js-visual-token')
           expect(find('.tokens-container')).to have_content(:all, label_1.title)
-          expect(page).to have_selector('.card', count: 2)
+          expect(page).to have_selector('.board-card', count: 2)
         end
 
         it 'creates board filtering by multiple labels' do
@@ -88,7 +88,7 @@ describe 'Scoped issue boards', :js do
           expect(page).to have_css('.js-visual-token')
           expect(find('.tokens-container')).to have_content(:all, label_1.title)
           expect(find('.tokens-container')).to have_content(:all, label_2.title)
-          expect(page).to have_selector('.card', count: 1)
+          expect(page).to have_selector('.board-card', count: 1)
         end
 
         it 'only shows group labels in list on group boards' do
@@ -127,7 +127,7 @@ describe 'Scoped issue boards', :js do
 
           expect(page).to have_css('.js-visual-token')
           expect(find('.tokens-container')).to have_content(:all, user.name)
-          expect(page).to have_selector('.card', count: 1)
+          expect(page).to have_selector('.board-card', count: 1)
 
           # Does not display assignee in search hint
           filtered_search.click
@@ -142,7 +142,7 @@ describe 'Scoped issue boards', :js do
           create_board_assignee('Any assignee')
 
           expect(page).not_to have_css('.js-visual-token')
-          expect(page).to have_selector('.card', count: 3)
+          expect(page).to have_selector('.board-card', count: 3)
         end
 
         it 'displays dot highlight and tooltip' do
@@ -158,8 +158,8 @@ describe 'Scoped issue boards', :js do
         it 'creates board filtering by weight' do
           create_board_weight(1)
 
-          expect(page).to have_selector('.card', count: 1)
-          expect(find('.card-title').text).to have_content(issue_weight_1.title)
+          expect(page).to have_selector('.board-card', count: 1)
+          expect(find('.board-card-title').text).to have_content(issue_weight_1.title)
 
           # Does not display assignee in search hint
           filtered_search.click
@@ -173,7 +173,7 @@ describe 'Scoped issue boards', :js do
         it 'creates board filtering by "Any weight"' do
           create_board_weight('Any Weight')
 
-          expect(page).to have_selector('.card', count: 4)
+          expect(page).to have_selector('.board-card', count: 4)
         end
 
         it 'displays dot highlight and tooltip' do
@@ -215,7 +215,7 @@ describe 'Scoped issue boards', :js do
           update_board_milestone(milestone.title)
 
           expect(find('.tokens-container')).to have_content(:all, milestone.title)
-          expect(page).to have_selector('.card', count: 1)
+          expect(page).to have_selector('.board-card', count: 1)
         end
 
         it 'sets board to any milestone' do
@@ -223,11 +223,11 @@ describe 'Scoped issue boards', :js do
 
           expect(find('.tokens-container')).not_to have_content(milestone.title)
 
-          find('.card', match: :first)
+          find('.board-card', match: :first)
 
           expect(page).to have_selector('.board', count: 3)
-          expect(all('.board').first).to have_selector('.card', count: 2)
-          expect(all('.board').last).to have_selector('.card', count: 1)
+          expect(all('.board').first).to have_selector('.board-card', count: 2)
+          expect(all('.board').last).to have_selector('.board-card', count: 1)
         end
 
         it 'sets board to upcoming milestone' do
@@ -237,7 +237,7 @@ describe 'Scoped issue boards', :js do
 
           find('.board', match: :first)
 
-          expect(all('.board')[1]).to have_selector('.card', count: 0)
+          expect(all('.board')[1]).to have_selector('.board-card', count: 0)
         end
 
         it 'does not display milestone in search hint' do
@@ -267,7 +267,7 @@ describe 'Scoped issue boards', :js do
           expect(page).to have_css('.js-visual-token')
           expect(find('.tokens-container')).to have_content(:all, label_title)
 
-          expect(page).to have_selector('.card', count: 2)
+          expect(page).to have_selector('.board-card', count: 2)
         end
 
         it 'adds multiple labels to board' do
@@ -283,7 +283,7 @@ describe 'Scoped issue boards', :js do
           expect(find('.tokens-container')).to have_content(:all, label_title)
           expect(find('.tokens-container')).to have_content(:all, label_2_title)
 
-          expect(page).to have_selector('.card', count: 1)
+          expect(page).to have_selector('.board-card', count: 1)
         end
 
         it 'can filter by additional labels' do
@@ -296,7 +296,7 @@ describe 'Scoped issue boards', :js do
 
           input_filtered_search("label:~#{label_2_title}")
 
-          expect(page).to have_selector('.card', count: 0)
+          expect(page).to have_selector('.board-card', count: 0)
         end
 
         context 'group board' do
@@ -324,14 +324,14 @@ describe 'Scoped issue boards', :js do
           expect(page).to have_css('.js-visual-token')
           expect(find('.tokens-container')).to have_content(:all, user.name)
 
-          expect(page).to have_selector('.card', count: 1)
+          expect(page).to have_selector('.board-card', count: 1)
         end
 
         it 'sets board to Any assignee' do
           update_board_assignee('Any assignee')
 
           expect(page).not_to have_css('.js-visual-token')
-          expect(page).to have_selector('.card', count: 3)
+          expect(page).to have_selector('.board-card', count: 3)
         end
 
         it 'does not display assignee in search hint' do
@@ -351,14 +351,14 @@ describe 'Scoped issue boards', :js do
         it 'sets board weight' do
           update_board_weight(1)
 
-          expect(page).to have_selector('.card', count: 1)
-          expect(find('.card-title').text).to have_content(issue_weight_1.title)
+          expect(page).to have_selector('.board-card', count: 1)
+          expect(find('.board-card-title').text).to have_content(issue_weight_1.title)
         end
 
         it 'sets board to Any weight' do
           update_board_weight('Any Weight')
 
-          expect(page).to have_selector('.card', count: 4)
+          expect(page).to have_selector('.board-card', count: 4)
         end
 
         it 'does not display weight in search hint' do
@@ -382,7 +382,7 @@ describe 'Scoped issue boards', :js do
         visit project_boards_path(project)
         wait_for_requests
 
-        find(".card[data-issue-id='#{issue.id}']").click
+        find(".board-card[data-issue-id='#{issue.id}']").click
 
         click_button 'Remove from board'
         wait_for_requests

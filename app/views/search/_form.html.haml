@@ -14,6 +14,6 @@
       = render 'filter'
     = button_tag "Search", class: "btn btn-success btn-search"
   - if Gitlab::CurrentSettings.elasticsearch_search?
-    .help-block
+    .form-text.text-muted
       = link_to 'Advanced search functionality', help_page_path('user/search/advanced_search_syntax.md'), target: '_blank'
       is enabled.

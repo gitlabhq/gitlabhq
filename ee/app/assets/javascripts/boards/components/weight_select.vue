@@ -1,6 +1,5 @@
 <script>
   /* eslint-disable vue/require-default-prop */
-  /* global BoardService */
 
   import WeightSelect from 'ee/weight_select';
   import loadingIcon from '~/vue_shared/components/loading_icon.vue';
@@ -80,7 +79,7 @@
       <button
         v-if="canEdit"
         type="button"
-        class="edit-link btn btn-blank pull-right"
+        class="edit-link btn btn-blank float-right"
       >
         Edit
       </button>

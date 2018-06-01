@@ -1,5 +1,0 @@
----
-title: 'Geo: Fix repo, wiki, and upload replication when renaming a namespace that has subgroups'
-merge_request: 5704
-author:
-type: fixed

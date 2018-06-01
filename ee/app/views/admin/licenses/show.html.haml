@@ -4,25 +4,25 @@
   - if current_license.trial?
     = render "upload_buy_license"
   - else
-    = link_to 'Upload New License', new_admin_license_path, class: "btn btn-new pull-right"
+    = link_to 'Upload New License', new_admin_license_path, class: "btn btn-new float-right"
 
 %hr
 
 .row
   .col-md-6
-    .panel.panel-default
-      .panel-heading
+    .card
+      .card-header
         Licensed to
-      %ul.well-list
+      %ul.content-list
         - @license.licensee.each do |label, value|
           %li
             %span.light #{label}:
             %strong= value
 
-    .panel.panel-default.js-license-info-panel
-      .panel-heading
+    .card.js-license-info-panel
+      .card-header
         Details
-      %ul.well-list
+      %ul.content-list
         %li
           %span.light Plan:
           %strong= @license.plan.capitalize
@@ -48,24 +48,24 @@
             %strong Never
 
           - if @license.expired?
-            %span.label.label-danger.pull-right
+            %span.badge.badge-danger.float-right
               %strong Expired
 
   .col-md-6
-    .panel.panel-info
-      .panel-heading
+    .card.bg-info
+      .card-header
         Download license
-      .panel-body
+      .card-body
         %p Your license will be included in your GitLab backup and will survive upgrades, so in normal usage you should never need to re-upload your <code>.gitlab-license</code> file.
         %p Still, we recommend keeping a backup saved somewhere. Otherwise, if you ever need it and have lost it, you will need to request GitLab Inc. to send it to you again.
         %br
         = link_to 'Download license', download_admin_license_path, class: "btn btn-info"
 
 
-    .panel.panel-danger
-      .panel-heading
+    .card.bg-danger
+      .card-header
         Remove license
-      .panel-body
+      .card-body
         %p If you remove this license, GitLab will fall back on the previous license, if any.
         %p If there is no previous license or if the previous license has expired, some GitLab functionality will be blocked until a new, valid license is uploaded.
         %br
@@ -76,9 +76,9 @@
 - if @previous_licenses.any?
   %h4 License History
 
-  .panel.panel-default#license_history
+  .card#license_history
     %table.table
-      %thead.panel-heading
+      %thead.card-header
         %tr
           - @license.licensee.keys.each do |label|
             %th= label

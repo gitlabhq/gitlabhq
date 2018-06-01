@@ -31,9 +31,9 @@ export const setLastCommitMessage = ({ rootState, commit }, data) => {
   const currentProject = rootState.projects[rootState.currentProjectId];
   const commitStats = data.stats
     ? sprintf(__('with %{additions} additions, %{deletions} deletions.'), {
-        additions: data.stats.additions, // eslint-disable-line indent
-        deletions: data.stats.deletions, // eslint-disable-line indent
-      }) // eslint-disable-line indent
+        additions: data.stats.additions, // eslint-disable-line indent-legacy
+        deletions: data.stats.deletions, // eslint-disable-line indent-legacy
+      }) // eslint-disable-line indent-legacy
     : '';
   const commitMsg = sprintf(
     __('Your changes have been committed. Commit %{commitId} %{commitStats}'),
@@ -74,10 +74,7 @@ export const checkCommitStatus = ({ rootState }) =>
       ),
     );
 
-export const updateFilesAfterCommit = (
-  { commit, dispatch, state, rootState, rootGetters },
-  { data },
-) => {
+export const updateFilesAfterCommit = ({ commit, dispatch, rootState }, { data }) => {
   const selectedProject = rootState.projects[rootState.currentProjectId];
   const lastCommit = {
     commit_path: `${selectedProject.web_url}/commit/${data.id}`,
@@ -204,17 +201,23 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
             dispatch('updateViewer', 'editor', { root: true });
 
             router.push(
-              `/project/${rootState.currentProjectId}/blob/${getters.branchName}/${
+              `/project/${rootState.currentProjectId}/blob/${getters.branchName}/-/${
                 rootGetters.activeFile.path
               }`,
             );
           }
         })
         .then(() => dispatch('updateCommitAction', consts.COMMIT_TO_CURRENT_BRANCH))
-        .then(() => dispatch('refreshLastCommitData', {
-          projectId: rootState.currentProjectId,
-          branchId: rootState.currentBranchId,
-        }, { root: true }));
+        .then(() =>
+          dispatch(
+            'refreshLastCommitData',
+            {
+              projectId: rootState.currentProjectId,
+              branchId: rootState.currentBranchId,
+            },
+            { root: true },
+          ),
+        );
     })
     .catch(err => {
       let errMsg = __('Error committing changes. Please try again.');

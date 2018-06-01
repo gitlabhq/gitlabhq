@@ -315,49 +315,6 @@ describe Projects::MergeRequestsController do
     end
   end
 
-  describe 'POST merge' do
-    let(:base_params) do
-      {
-        namespace_id: project.namespace,
-        project_id: project,
-        id: merge_request.iid,
-        squash: false,
-        format: 'json'
-      }
-    end
-
-    context 'when the sha parameter matches the source SHA' do
-      def merge_with_sha(params = {})
-        post :merge, base_params.merge(sha: merge_request.diff_head_sha).merge(params)
-      end
-
-      context 'when squash is passed as 1' do
-        it 'updates the squash attribute on the MR to true' do
-          merge_request.update(squash: false)
-          merge_with_sha(squash: '1')
-
-          expect(merge_request.reload.squash).to be_truthy
-        end
-
-        it 'merges even when squash is unavailable' do
-          stub_licensed_features(merge_request_squash: false)
-          merge_with_sha(squash: '1')
-
-          expect(merge_request.reload.squash).to be_falsey
-        end
-      end
-
-      context 'when squash is passed as 0' do
-        it 'updates the squash attribute on the MR to false' do
-          merge_request.update(squash: true)
-          merge_with_sha(squash: '0')
-
-          expect(merge_request.reload.squash).to be_falsey
-        end
-      end
-    end
-  end
-
   describe 'POST #rebase' do
     def post_rebase
       post :rebase, namespace_id: project.namespace, project_id: project, id: merge_request

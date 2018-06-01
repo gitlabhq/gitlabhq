@@ -259,6 +259,9 @@ module ProjectsHelper
 
     if project.builds_enabled? && can?(current_user, :read_pipeline, project)
       nav_tabs << :pipelines
+    end
+
+    if can?(current_user, :read_environment, project) || can?(current_user, :read_cluster, project)
       nav_tabs << :operations
     end
 

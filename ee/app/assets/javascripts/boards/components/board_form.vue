@@ -1,6 +1,5 @@
 <script>
 /* global ListLabel */
-/* global BoardService */
 
 import Flash from '~/flash';
 import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';

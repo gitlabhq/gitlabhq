@@ -43,7 +43,7 @@ describe 'Profile > Pipeline Quota' do
       it 'shows the correct quota status' do
         page.within('.pipeline-quota') do
           expect(page).to have_content(usage_text)
-          expect(page).to have_selector(".progress-bar-#{usage_class}")
+          expect(page).to have_selector(".bg-#{usage_class}")
         end
       end
 

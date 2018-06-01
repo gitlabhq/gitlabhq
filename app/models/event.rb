@@ -40,6 +40,7 @@ class Event < ActiveRecord::Base
   ).freeze
 
   RESET_PROJECT_ACTIVITY_INTERVAL = 1.hour
+  REPOSITORY_UPDATED_AT_INTERVAL = 5.minutes
 
   delegate :name, :email, :public_email, :username, to: :author, prefix: true, allow_nil: true
   delegate :title, to: :issue, prefix: true, allow_nil: true
@@ -397,6 +398,7 @@ class Event < ActiveRecord::Base
 
   def set_last_repository_updated_at
     Project.unscoped.where(id: project_id)
+      .where("last_repository_updated_at < ? OR last_repository_updated_at IS NULL", REPOSITORY_UPDATED_AT_INTERVAL.ago)
       .update_all(last_repository_updated_at: created_at)
   end
 

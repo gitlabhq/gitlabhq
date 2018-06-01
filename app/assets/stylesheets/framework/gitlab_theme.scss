@@ -21,7 +21,7 @@
     }
 
     .container-fluid {
-      .navbar-toggle {
+      .navbar-toggler {
         border-left: 1px solid lighten($color-700, 10%);
       }
     }
@@ -63,7 +63,7 @@
 
           &:hover,
           &:focus {
-            @media (min-width: $screen-sm-min) {
+            @include media-breakpoint-up(sm) {
               background-color: rgba($color-200, 0.2);
             }
 
@@ -165,15 +165,18 @@
     }
   }
 
-  .sidebar-top-level-items > li.active .badge {
+  .sidebar-top-level-items > li.active .badge.badge-pill {
     color: $color-800;
   }
 
-  .nav-links li.active a {
-    border-bottom-color: $color-500;
+  .nav-links li {
+    &.active a,
+    a.active {
+      border-bottom: 2px solid $color-500;
 
-    .badge {
-      font-weight: $gl-font-weight-bold;
+      .badge.badge-pill {
+        font-weight: $gl-font-weight-bold;
+      }
     }
   }
 
@@ -189,6 +192,10 @@
     &.active {
       color: $color-700;
       box-shadow: inset 3px 0 $color-700;
+
+      &.is-right {
+        box-shadow: inset -3px 0 $color-700;
+      }
     }
   }
 }
@@ -277,8 +284,8 @@ body {
       }
 
       .container-fluid {
-        .navbar-toggle,
-        .navbar-toggle:hover {
+        .navbar-toggler,
+        .navbar-toggler:hover {
           color: $theme-gray-700;
           border-left: 1px solid $theme-gray-200;
         }
@@ -328,7 +335,7 @@ body {
       }
     }
 
-    .sidebar-top-level-items > li.active .badge {
+    .sidebar-top-level-items > li.active .badge.badge-pill {
       color: $theme-gray-900;
     }
   }

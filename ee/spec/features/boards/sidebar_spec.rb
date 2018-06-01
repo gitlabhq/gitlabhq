@@ -14,8 +14,8 @@ describe 'Issue Boards', :js do
   let!(:issue2)      { create(:labeled_issue, project: project, labels: [development, stretch], relative_position: 1) }
   let(:board)        { create(:board, project: project) }
   let!(:list)        { create(:list, board: board, label: development, position: 0) }
-  let(:card1) { find('.board:nth-child(2)').find('.card:nth-child(2)') }
-  let(:card2) { find('.board:nth-child(2)').find('.card:nth-child(1)') }
+  let(:card1) { find('.board:nth-child(2)').find('.board-card:nth-child(2)') }
+  let(:card2) { find('.board:nth-child(2)').find('.board-card:nth-child(1)') }
 
   around do |example|
     Timecop.freeze { example.run }
@@ -75,7 +75,7 @@ describe 'Issue Boards', :js do
     end
 
     it 'removes the assignee' do
-      card_two = find('.board:nth-child(2)').find('.card:nth-child(2)')
+      card_two = find('.board:nth-child(2)').find('.board-card:nth-child(2)')
       click_card(card_two)
 
       page.within('.assignee') do
@@ -131,7 +131,7 @@ describe 'Issue Boards', :js do
       end
 
       page.within(find('.board:nth-child(2)')) do
-        find('.card:nth-child(2)').click
+        find('.board-card:nth-child(2)').click
       end
 
       page.within('.assignee') do

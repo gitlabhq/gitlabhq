@@ -28,6 +28,7 @@ project_tree:
   - project_members:
     - :user
   - merge_requests:
+    - :metrics
     - notes:
       - :author
       - events:
@@ -100,8 +101,6 @@ excluded_attributes:
     - :import_jid
     - :created_at
     - :updated_at
-    - :import_jid
-    - :import_jid
     - :id
     - :star_count
     - :last_activity_at

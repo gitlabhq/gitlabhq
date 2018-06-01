@@ -1,14 +1,16 @@
 <script>
-import { mapGetters } from 'vuex';
+import { mapActions, mapState, mapGetters } from 'vuex';
 import icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import timeAgoMixin from '~/vue_shared/mixins/timeago';
+import CiIcon from '../../vue_shared/components/ci_icon.vue';
 import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
 
 export default {
   components: {
     icon,
     userAvatarImage,
+    CiIcon,
   },
   directives: {
     tooltip,
@@ -27,7 +29,16 @@ export default {
     };
   },
   computed: {
+    ...mapState(['currentBranchId', 'currentProjectId']),
     ...mapGetters(['currentProject', 'lastCommit']),
+    ...mapState('pipelines', ['latestPipeline']),
+  },
+  watch: {
+    lastCommit() {
+      if (!this.isPollingInitialized) {
+        this.initPipelinePolling();
+      }
+    },
   },
   mounted() {
     this.startTimer();
@@ -36,12 +47,20 @@ export default {
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
+    if (this.isPollingInitialized) {
+      this.stopPipelinePolling();
+    }
   },
   methods: {
+    ...mapActions('pipelines', ['fetchLatestPipeline', 'stopPipelinePolling']),
     startTimer() {
       this.intervalId = setInterval(() => {
         this.commitAgeUpdate();
       }, 1000);
+    },
+    initPipelinePolling() {
+      this.fetchLatestPipeline();
+      this.isPollingInitialized = true;
     },
     commitAgeUpdate() {
       if (this.lastCommit) {
@@ -61,6 +80,23 @@ export default {
       class="ide-status-branch"
       v-if="lastCommit && lastCommitFormatedAge"
     >
+      <span
+        class="ide-status-pipeline"
+        v-if="latestPipeline && latestPipeline.details"
+      >
+        <ci-icon
+          :status="latestPipeline.details.status"
+          v-tooltip
+          :title="latestPipeline.details.status.text"
+        />
+        Pipeline
+        <a
+          class="monospace"
+          :href="latestPipeline.details.status.details_path">#{{ latestPipeline.id }}</a>
+        {{ latestPipeline.details.status.text }}
+        for
+      </span>
+
       <icon
         name="commit"
       />

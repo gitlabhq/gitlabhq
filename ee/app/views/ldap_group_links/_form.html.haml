@@ -1,54 +1,54 @@
 %section.ldap-group-links
-  = form_for [group, LdapGroupLink.new], html: { class: 'form-horizontal' } do |f|
+  = form_for [group, LdapGroupLink.new] do |f|
     .form-holder
       .form-group.row
-        = f.label :cn, class: 'control-label col-sm-2' do
+        = f.label :cn, class: 'col-form-label col-sm-2' do
           LDAP Server
         .col-sm-10
           = f.select :provider, ldap_server_select_options, {}, class: 'form-control'
 
       - if ::License.feature_available?(:ldap_group_sync_filter)
         .form-group.row
-          = f.label :cn, class: 'control-label col-sm-2' do
+          = f.label :cn, class: 'col-form-label col-sm-2' do
             Sync method
           .col-sm-10
-            .radio
-              = label_tag :sync_method_group do
-                = radio_button_tag :sync_method, :group, true
+            .form-check
+              = radio_button_tag :sync_method, :group, true, class: 'form-check-input'
+              = label_tag :sync_method_group, class: 'form-check-label' do
                 LDAP Group cn
-            .radio
-              = label_tag :sync_method_filter do
-                = radio_button_tag :sync_method, :filter
+            .form-check
+              = radio_button_tag :sync_method, :filter, class: 'form-check-input'
+              = label_tag :sync_method_filter, class: 'form-check-label' do
                 LDAP user filter
 
       .form-group.row.cn-link
-        = f.label :cn, class: 'control-label col-sm-2' do
+        = f.label :cn, class: 'col-form-label col-sm-2' do
           LDAP Group cn
         .col-sm-10
           = f.hidden_field :cn, placeholder: 'Ex. QA group', class: 'xxlarge ajax-ldap-groups-select input-mn-300'
-          .help-block
+          .form-text.text-muted
             Synchronize #{group.name}'s members with this LDAP group.
             %br
             If you select an LDAP group you do not belong to you will lose ownership of #{group.name}.
 
       - if ::License.feature_available?(:ldap_group_sync_filter)
         .form-group.row.filter-link
-          = f.label :filter, class: 'control-label col-sm-2' do
+          = f.label :filter, class: 'col-form-label col-sm-2' do
             LDAP User filter
           .col-sm-10
             = f.text_field :filter, placeholder: 'Ex. (&(objectCategory=person)(objectClass=developer))', class: 'form-control xxlarge input-mn-300'
-            .help-block
+            .form-text.text-muted
               - ldap_link = link_to 'LDAP Search Filter Syntax', 'https://msdn.microsoft.com/en-us/library/aa746475(v=vs.85).aspx'
               This query must use valid #{ldap_link}. Synchronize #{group.name}'s members with this LDAP user filter.
               %br
               If you do not belong to this LDAP user filter you will lose ownership of #{group.name}.
 
       .form-group.row
-        = f.label :group_access, class: 'control-label col-sm-2' do
+        = f.label :group_access, class: 'col-form-label col-sm-2' do
           LDAP Access
         .col-sm-10
           = f.select :group_access, options_for_select(GroupMember.access_level_roles), {}, class: 'form-control'
-          .help-block
+          .form-text.text-muted
             Default, minimum permission level for LDAP group members of #{group.name}.
             %br
             You can manage permission levels for individual group members in the Members tab.

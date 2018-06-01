@@ -6,7 +6,7 @@
   %button.btn{ 'data-toggle' => 'dropdown', class: button_class }
     Test
     = icon('caret-down')
-  %ul.dropdown-menu.dropdown-menu-align-right{ role: 'menu' }
+  %ul.dropdown-menu.dropdown-menu-right{ role: 'menu' }
     - triggers.each_value do |event|
       %li
         = link_to_test_hook(hook, event)

@@ -2,6 +2,44 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.8.3 (2018-05-30)
+
+### Fixed (4 changes)
+
+- Replace Gitlab::REVISION with Gitlab.revision and handle installations without a .git directory. !19125
+- Fix encoding of branch names on compare and new merge request page. !19143
+- Fix remote mirror database inconsistencies when upgrading from EE to CE. !19196
+- Fix local storage not being cleared after creating a new issue.
+
+### Performance (1 change)
+
+- Memoize Gitlab::Database.version.
+
+
+## 10.8.2 (2018-05-28)
+
+### Security (3 changes)
+
+- Prevent user passwords from being changed without providing the previous password.
+- Fix API to remove deploy key from project instead of deleting it entirely.
+- Fixed bug that allowed importing arbitrary project attributes.
+
+
+## 10.8.1 (2018-05-23)
+
+### Fixed (9 changes)
+
+- Allow CommitStatus class to use presentable methods. !18979
+- Fix corrupted environment pages with unathorized proxy url. !18989
+- Fixes deploy token variables on Ci::Build. !19047
+- Fix project mirror database inconsistencies when upgrading from EE to CE. !19109
+- Render 404 when prometheus adapter is disabled in Prometheus metrics controller. !19110
+- Fix error when deleting an empty list of refs.
+- Fixed U2F login when used with LDAP.
+- Bump prometheus-client-mmap to 0.9.3 to fix nil exception error.
+- Fix system hook not firing for blocked users when LDAP sign-in is used.
+
+
 ## 10.8.0 (2018-05-22)
 
 ### Security (3 changes, 1 of them is from the community)
@@ -176,6 +214,15 @@ entry.
 - Bump lograge to 0.10.0 and remove monkey patch.
 - Improves wording in new pipeline page.
 - Gitaly handles repository forks by default.
+
+
+## 10.7.5 (2018-05-28)
+
+### Security (3 changes)
+
+- Prevent user passwords from being changed without providing the previous password.
+- Fix API to remove deploy key from project instead of deleting it entirely.
+- Fixed bug that allowed importing arbitrary project attributes.
 
 
 ## 10.7.4 (2018-05-21)
@@ -440,6 +487,16 @@ entry.
 - Add query counts to profiler output.
 - Move Sidekiq exporter logs to log/sidekiq_exporter.log.
 - Upgrade Gitaly to upgrade its charlock_holmes.
+
+
+## 10.6.6 (2018-05-28)
+
+### Security (4 changes)
+
+- Do not allow non-members to create MRs via forked projects when MRs are private.
+- Prevent user passwords from being changed without providing the previous password.
+- Fix API to remove deploy key from project instead of deleting it entirely.
+- Fixed bug that allowed importing arbitrary project attributes.
 
 
 ## 10.6.5 (2018-04-24)

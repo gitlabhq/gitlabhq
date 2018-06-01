@@ -3,11 +3,11 @@ require 'spec_helper'
 describe Geo::RepositoryVerification::Primary::SingleWorker, :postgresql, :clean_gitlab_redis_cache do
   include ::EE::GeoHelpers
 
-  set(:project) { create(:project, :repository, :wiki_repo) }
-  set(:project_empty_repo) { create(:project) }
+  set(:project) { create(:project) }
 
   let!(:primary) { create(:geo_node, :primary) }
-  let(:repository) { double }
+  let(:repository) { double(checksum: 'f123') }
+  let(:wiki) { double(checksum: 'e321') }
 
   before do
     stub_current_geo_node(primary)
@@ -19,17 +19,25 @@ describe Geo::RepositoryVerification::Primary::SingleWorker, :postgresql, :clean
     end
 
     it 'does not calculate the checksum when not running on a primary' do
+      stub_project_repository(project, repository)
+      stub_wiki_repository(project.wiki, wiki)
+
       allow(Gitlab::Geo).to receive(:primary?) { false }
 
-      expect(project_empty_repo.repository).not_to receive(:checksum)
+      expect(repository).not_to receive(:checksum)
+      expect(wiki).not_to receive(:checksum)
 
-      subject.perform(project_empty_repo.id)
+      subject.perform(project.id)
     end
 
     it 'does not calculate the checksum when project is pending deletion' do
+      stub_project_repository(project, repository)
+      stub_wiki_repository(project.wiki, wiki)
+
       project.update!(pending_delete: true)
 
-      expect(project.repository).not_to receive(:checksum)
+      expect(repository).not_to receive(:checksum)
+      expect(wiki).not_to receive(:checksum)
 
       subject.perform(project.id)
     end
@@ -39,93 +47,112 @@ describe Geo::RepositoryVerification::Primary::SingleWorker, :postgresql, :clean
     end
 
     it 'calculates the checksum for unverified projects' do
+      stub_project_repository(project, repository)
+      stub_wiki_repository(project.wiki, wiki)
+
       subject.perform(project.id)
 
       expect(project.repository_state).to have_attributes(
-        repository_verification_checksum: instance_of(String),
+        repository_verification_checksum: 'f123',
         last_repository_verification_failure: nil,
-        wiki_verification_checksum: instance_of(String),
+        wiki_verification_checksum: 'e321',
         last_wiki_verification_failure: nil
       )
     end
 
     it 'calculates the checksum for outdated projects' do
+      stub_project_repository(project, repository)
+      stub_wiki_repository(project.wiki, wiki)
+
       repository_state =
         create(:repository_state,
           project: project,
           repository_verification_checksum: nil,
           wiki_verification_checksum: nil)
-
-      subject.perform(project.id)
-
-      repository_state.reload
-
-      expect(repository_state.repository_verification_checksum).not_to be_nil
-      expect(repository_state.wiki_verification_checksum).not_to be_nil
-    end
-
-    it 'calculates the checksum for outdated repositories' do
-      repository_state =
-        create(:repository_state,
-          project: project,
-          repository_verification_checksum: nil,
-          wiki_verification_checksum: 'e123')
-
-      subject.perform(project.id)
-
-      repository_state.reload
-
-      expect(repository_state.repository_verification_checksum).not_to be_nil
-      expect(repository_state.wiki_verification_checksum).to eq 'e123'
-    end
-
-    it 'calculates the checksum for outdated wikis' do
-      repository_state =
-        create(:repository_state,
-          project: project,
-          repository_verification_checksum: 'f123',
-          wiki_verification_checksum: nil)
-
-      subject.perform(project.id)
-
-      repository_state.reload
-
-      expect(repository_state.repository_verification_checksum).to eq 'f123'
-      expect(repository_state.wiki_verification_checksum).not_to be_nil
-    end
-
-    it 'does not recalculate the checksum for projects up to date' do
-      repository_state =
-        create(:repository_state,
-          project: project,
-          repository_verification_checksum: 'f123',
-          wiki_verification_checksum: 'e123')
 
       subject.perform(project.id)
 
       expect(repository_state.reload).to have_attributes(
         repository_verification_checksum: 'f123',
-        wiki_verification_checksum: 'e123'
+        last_repository_verification_failure: nil,
+        wiki_verification_checksum: 'e321',
+        last_wiki_verification_failure: nil
       )
     end
 
-    it 'does not calculate the wiki checksum when wiki is not enabled for project' do
+    it 'calculates the checksum for outdated repositories' do
+      stub_project_repository(project, repository)
+
+      repository_state =
+        create(:repository_state,
+          project: project,
+          repository_verification_checksum: nil,
+          wiki_verification_checksum: 'e079a831cab27bcda7d81cd9b48296d0c3dd92ef')
+
+      subject.perform(project.id)
+
+      expect(repository_state.reload).to have_attributes(
+        repository_verification_checksum: 'f123',
+        last_repository_verification_failure: nil,
+        wiki_verification_checksum: 'e079a831cab27bcda7d81cd9b48296d0c3dd92ef',
+        last_wiki_verification_failure: nil
+      )
+    end
+
+    it 'calculates the checksum for outdated wikis' do
+      stub_wiki_repository(project.wiki, wiki)
+
+      repository_state =
+        create(:repository_state,
+          project: project,
+          repository_verification_checksum: 'f079a831cab27bcda7d81cd9b48296d0c3dd92ee',
+          wiki_verification_checksum: nil)
+
+      subject.perform(project.id)
+
+      expect(repository_state.reload).to have_attributes(
+        repository_verification_checksum: 'f079a831cab27bcda7d81cd9b48296d0c3dd92ee',
+        last_repository_verification_failure: nil,
+        wiki_verification_checksum: 'e321',
+        last_wiki_verification_failure: nil
+      )
+    end
+
+    it 'does not recalculate the checksum for projects up to date' do
+      stub_project_repository(project, repository)
+      stub_wiki_repository(project.wiki, wiki)
+
+      create(:repository_state,
+        project: project,
+        repository_verification_checksum: 'f079a831cab27bcda7d81cd9b48296d0c3dd92ee',
+        wiki_verification_checksum: 'e079a831cab27bcda7d81cd9b48296d0c3dd92ef')
+
+      expect(repository).not_to receive(:checksum)
+      expect(wiki).not_to receive(:checksum)
+
+      subject.perform(project.id)
+    end
+
+    it 'calculates the wiki checksum even when wiki is not enabled for project' do
+      stub_project_repository(project, repository)
+      stub_wiki_repository(project.wiki, wiki)
+
       project.update!(wiki_enabled: false)
 
       subject.perform(project.id)
 
       expect(project.repository_state).to have_attributes(
-        repository_verification_checksum: instance_of(String),
+        repository_verification_checksum: 'f123',
         last_repository_verification_failure: nil,
-        wiki_verification_checksum: nil,
+        wiki_verification_checksum: 'e321',
         last_wiki_verification_failure: nil
       )
     end
 
     it 'does not mark the calculating as failed when there is no repo' do
-      subject.perform(project_empty_repo.id)
+      subject.perform(project.id)
 
-      expect(project_empty_repo.repository_state).to have_attributes(
+      expect(project.repository_state).to have_attributes(
         repository_verification_checksum: '0000000000000000000000000000000000000000',
         last_repository_verification_failure: nil,
         wiki_verification_checksum: '0000000000000000000000000000000000000000',
@@ -147,29 +174,37 @@ describe Geo::RepositoryVerification::Primary::SingleWorker, :postgresql, :clean
     end
 
     it 'keeps track of failures when calculating the repository checksum' do
-      allow(Repository).to receive(:new).with(
-        project.full_path,
-        project,
-        disk_path: project.disk_path
-      ).and_return(repository)
+      stub_project_repository(project, repository)
+      stub_wiki_repository(project.wiki, wiki)
 
-      allow(Repository).to receive(:new).with(
-        project.wiki.full_path,
-        project,
-        disk_path: project.wiki.disk_path,
-        is_wiki: true
-      ).and_return(repository)
-
-      allow(repository).to receive(:checksum).twice.and_raise('Something went wrong')
+      allow(repository).to receive(:checksum).and_raise('Something went wrong with repository')
+      allow(wiki).to receive(:checksum).twice.and_raise('Something went wrong with wiki')
 
       subject.perform(project.id)
 
       expect(project.repository_state).to have_attributes(
         repository_verification_checksum: nil,
-        last_repository_verification_failure: 'Something went wrong',
+        last_repository_verification_failure: 'Something went wrong with repository',
         wiki_verification_checksum: nil,
-        last_wiki_verification_failure: 'Something went wrong'
+        last_wiki_verification_failure: 'Something went wrong with wiki'
       )
     end
+  end
+
+  def stub_project_repository(project, repository)
+    allow(Repository).to receive(:new).with(
+      project.full_path,
+      project,
+      disk_path: project.disk_path
+    ).and_return(repository)
+  end
+
+  def stub_wiki_repository(wiki, repository)
+    allow(Repository).to receive(:new).with(
+      project.wiki.full_path,
+      project,
+      disk_path: project.wiki.disk_path,
+      is_wiki: true
+    ).and_return(repository)
   end
 end

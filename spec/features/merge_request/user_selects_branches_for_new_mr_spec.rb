@@ -4,6 +4,12 @@ describe 'Merge request > User selects branches for new MR', :js do
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
 
+  def select_source_branch(branch_name)
+    find('.js-source-branch', match: :first).click
+    find('.js-source-branch-dropdown .dropdown-input-field').native.send_keys branch_name
+    find('.js-source-branch-dropdown .dropdown-content a', text: branch_name, match: :first).click
+  end
+
   before do
     project.add_master(user)
     sign_in(user)
@@ -43,8 +49,7 @@ describe 'Merge request > User selects branches for new MR', :js do
   it 'generates a diff for an orphaned branch' do
     visit project_new_merge_request_path(project)
 
-    find('.js-source-branch', match: :first).click
-    find('.js-source-branch-dropdown .dropdown-content a', text: 'orphaned-branch', match: :first).click
+    select_source_branch('orphaned-branch')
 
     click_button "Compare branches"
     click_link "Changes"
@@ -196,6 +201,33 @@ describe 'Merge request > User selects branches for new MR', :js do
 
         expect(page).to have_content "##{pipeline.id}"
       end
+    end
+  end
+
+  context 'with special characters in branch names' do
+    it 'escapes quotes in branch names' do
+      special_branch_name = '"with-quotes"'
+      CreateBranchService.new(project, user)
+        .execute(special_branch_name, 'add-pdf-file')
+
+      visit project_new_merge_request_path(project)
+      select_source_branch(special_branch_name)
+
+      source_branch_input = find('[name="merge_request[source_branch]"]', visible: false)
+      expect(source_branch_input.value).to eq special_branch_name
+    end
+
+    it 'does not escape unicode in branch names' do
+      special_branch_name = 'ʕ•ᴥ•ʔ'
+      CreateBranchService.new(project, user)
+        .execute(special_branch_name, 'add-pdf-file')
+
+      visit project_new_merge_request_path(project)
+      select_source_branch(special_branch_name)
+
+      click_button "Compare branches"
+
+      expect(page).to have_button("Submit merge request")
     end
   end
 end

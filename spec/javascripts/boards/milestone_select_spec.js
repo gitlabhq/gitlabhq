@@ -1,5 +1,3 @@
-/* global BoardService */
-
 import Vue from 'vue';
 import MockAdapater from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';

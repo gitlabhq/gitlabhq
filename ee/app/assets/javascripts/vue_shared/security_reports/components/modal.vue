@@ -20,6 +20,11 @@ export default {
         ? s__('ciReport|Revert dismissal')
         : s__('ciReport|Dismiss vulnerability');
     },
+    hasDismissedBy() {
+      return this.modal.vulnerability.dismissalFeedback &&
+        this.modal.vulnerability.dismissalFeedback.pipeline &&
+        this.modal.vulnerability.dismissalFeedback.author;
+    },
   },
   methods: {
     ...mapActions(['dismissIssue', 'revertDismissIssue', 'createNewIssue']),
@@ -71,7 +76,7 @@ export default {
                   />
                 </div>
                 <div class="report-block-list-issue-description prepend-top-5 append-bottom-5">
-                  <div class="report-block-list-issue-description-text append-right-5">
+                  <div class="report-block-list-issue-description-text">
                     {{ instance.method }}
                   </div>
                   <div class="report-block-list-issue-description-link">
@@ -112,6 +117,20 @@ export default {
 
       <div class="row prepend-top-20 append-bottom-10">
         <div class="col-sm-10 col-sm-offset-2 text-secondary">
+          <template v-if="hasDismissedBy">
+            {{ s__('ciReport|Dismissed by') }}
+            <a
+              :href="modal.vulnerability.dismissalFeedback.author.web_url"
+              class="pipeline-id"
+            >
+              @{{ modal.vulnerability.dismissalFeedback.author.username }}
+            </a>
+            {{ s__('ciReport|on pipeline') }}
+            <a
+              :href="modal.vulnerability.dismissalFeedback.pipeline.path"
+              class="pipeline-id"
+            >#{{ modal.vulnerability.dismissalFeedback.pipeline.id }}</a>.
+          </template>
           <a
             class="js-link-vulnerabilityFeedbackHelpPath"
             :href="vulnerabilityFeedbackHelpPath"

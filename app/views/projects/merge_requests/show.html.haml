@@ -20,13 +20,12 @@
       window.gl = window.gl || {};
       window.gl.mrWidgetData = #{serialize_issuable(@merge_request, serializer: 'widget')}
 
+      window.gl.mrWidgetData.squash_before_merge_help_path = '#{help_page_path("user/project/merge_requests/squash_and_merge")}';
+
       // Append static, server-generated data not included in merge request entity (EE-Only)
       // Object.assign would be useful here, but it blows up Phantom.js in tests
       window.gl.mrWidgetData.is_geo_secondary_node = '#{Gitlab::Geo.secondary?}' === 'true';
       window.gl.mrWidgetData.geo_secondary_help_path = '#{help_page_path("/gitlab-geo/configuration.md")}';
-      window.gl.mrWidgetData.enable_squash_before_merge = '#{@merge_request.project.feature_available?(:merge_request_squash)}' === 'true';
-      window.gl.mrWidgetData.squash_before_merge_help_path = '#{help_page_path("user/project/merge_requests/squash_and_merge")}';
-
       window.gl.mrWidgetData.sast_help_path = '#{help_page_path("user/project/merge_requests/sast")}';
       window.gl.mrWidgetData.sast_container_help_path = '#{help_page_path("user/project/merge_requests/container_scanning")}';
       window.gl.mrWidgetData.dast_help_path = '#{help_page_path("user/project/merge_requests/dast")}';
@@ -43,26 +42,26 @@
         .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
           .fade-left= icon('angle-left')
           .fade-right= icon('angle-right')
-          .nav-links.scrolling-tabs
-            %ul.merge-request-tabs
+          .nav-links.scrolling-tabs.nav.nav-tabs
+            %ul.merge-request-tabs.nav-tabs.nav
               %li.notes-tab
                 = tab_link_for @merge_request, :show, force_link: @commit.present? do
                   Discussion
-                  %span.badge= @merge_request.related_notes.user.count
+                  %span.badge.badge-pill= @merge_request.related_notes.user.count
               - if @merge_request.source_project
                 %li.commits-tab
                   = tab_link_for @merge_request, :commits do
                     Commits
-                    %span.badge= @commits_count
+                    %span.badge.badge-pill= @commits_count
               - if @pipelines.any?
                 %li.pipelines-tab
                   = tab_link_for @merge_request, :pipelines do
                     Pipelines
-                    %span.badge.js-pipelines-mr-count= @pipelines.size
+                    %span.badge.badge-pill.js-pipelines-mr-count= @pipelines.size
               %li.diffs-tab
                 = tab_link_for @merge_request, :diffs do
                   Changes
-                  %span.badge= @merge_request.diff_size
+                  %span.badge.badge-pill= @merge_request.diff_size
 
         - if has_vue_discussions_cookie?
           #js-vue-discussion-counter

@@ -58,7 +58,7 @@
 </script>
 
 <template>
-  <div class="panel-body">
+  <div class="card-body">
     <node-details-section-main
       :node="node"
       :node-details="nodeDetails"

@@ -62,6 +62,7 @@ class MergeRequest < ActiveRecord::Base
   after_create :ensure_merge_request_diff, unless: :importing?
   after_update :clear_memoized_shas
   after_update :reload_diff_if_branch_changed
+  after_save :ensure_metrics
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
@@ -108,23 +109,34 @@ class MergeRequest < ActiveRecord::Base
 
   state_machine :merge_status, initial: :unchecked do
     event :mark_as_unchecked do
-      transition [:can_be_merged, :cannot_be_merged] => :unchecked
+      transition [:can_be_merged, :unchecked] => :unchecked
+      transition [:cannot_be_merged, :cannot_be_merged_recheck] => :cannot_be_merged_recheck
     end
 
     event :mark_as_mergeable do
-      transition [:unchecked, :cannot_be_merged] => :can_be_merged
+      transition [:unchecked, :cannot_be_merged_recheck] => :can_be_merged
     end
 
     event :mark_as_unmergeable do
-      transition [:unchecked, :can_be_merged] => :cannot_be_merged
+      transition [:unchecked, :cannot_be_merged_recheck] => :cannot_be_merged
     end
 
     state :unchecked
+    state :cannot_be_merged_recheck
     state :can_be_merged
     state :cannot_be_merged
 
     around_transition do |merge_request, transition, block|
       Gitlab::Timeless.timeless(merge_request, &block)
+    end
+
+    after_transition unchecked: :cannot_be_merged do |merge_request, transition|
+      NotificationService.new.merge_request_unmergeable(merge_request)
+      TodoService.new.merge_request_became_unmergeable(merge_request)
+    end
+
+    def check_state?(merge_status)
+      [:unchecked, :cannot_be_merged_recheck].include?(merge_status.to_sym)
     end
   end
 
@@ -335,6 +347,16 @@ class MergeRequest < ActiveRecord::Base
   def merge_async(user_id, params)
     jid = MergeWorker.perform_async(id, user_id, params.to_h)
     update_column(:merge_jid, jid)
+  end
+
+  def merge_participants
+    participants = [author]
+
+    if merge_when_pipeline_succeeds? && !participants.include?(merge_user)
+      participants << merge_user
+    end
+
+    participants
   end
 
   def first_commit
@@ -628,7 +650,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def check_if_can_be_merged
-    return unless unchecked? && Gitlab::Database.read_write?
+    return unless self.class.state_machines[:merge_status].check_state?(merge_status) && Gitlab::Database.read_write?
 
     can_be_merged =
       !broken? && project.repository.can_be_merged?(diff_head_sha, target_branch)
@@ -1151,5 +1173,12 @@ class MergeRequest < ActiveRecord::Base
   def can_allow_maintainer_to_push?(user)
     maintainer_push_possible? &&
       Ability.allowed?(user, :push_code, source_project)
+  end
+
+  def squash_in_progress?
+    # The source project can be deleted
+    return false unless source_project
+
+    source_project.repository.squash_in_progress?(id)
   end
 end

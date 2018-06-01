@@ -29,7 +29,7 @@
   justify-content: center;
   margin-top: 8px;
 
-  .panel {
+  .card {
     display: flex;
     flex-direction: column;
     margin: 8px;
@@ -44,17 +44,17 @@
       margin-right: 0;
     }
 
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       width: 290px;
     }
 
-    .panel-heading,
-    .panel-body {
+    .card-heading,
+    .card-body {
       border-left: 1px solid $list-border;
       border-right: 1px solid $list-border;
     }
 
-    .panel-heading {
+    .card-heading {
       background-color: $blue-500;
       color: $white-light;
       border: 0;
@@ -63,7 +63,7 @@
       text-align: center;
     }
 
-    .panel-body {
+    .card-body {
       flex-grow: 1;
       border-radius: 0 0 4px 4px;
       border-bottom: 1px solid $list-border;
@@ -138,11 +138,11 @@
     }
 
     &.current {
-      .panel-heading {
+      .card-heading {
         background-color: $blue-600;
       }
 
-      .panel-body {
+      .card-body {
         border-color: $blue-600;
         border-width: 2px;
 

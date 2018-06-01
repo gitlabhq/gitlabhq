@@ -9,7 +9,7 @@ module EE
 
         ERROR_MESSAGES = {
           push_rule_branch_name: "Branch name does not follow the pattern '%{branch_name_regex}'",
-          push_rule_committer_not_verified: "Comitter email '%{commiter_email}' is not verified.",
+          push_rule_committer_not_verified: "Committer email '%{committer_email}' is not verified.",
           push_rule_committer_not_allowed: "You cannot push commits for '%{committer_email}'. You can only push commits that were committed with one of your own verified emails."
         }.freeze
 

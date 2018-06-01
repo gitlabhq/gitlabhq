@@ -1,11 +1,9 @@
 import flash from '~/flash';
+import { __ } from '~/locale';
 import service from '../../services';
 import * as types from '../mutation_types';
 
-export const getProjectData = (
-  { commit, state, dispatch },
-  { namespace, projectId, force = false } = {},
-) =>
+export const getProjectData = ({ commit, state }, { namespace, projectId, force = false } = {}) =>
   new Promise((resolve, reject) => {
     if (!state.projects[`${namespace}/${projectId}`] || force) {
       commit(types.TOGGLE_LOADING, { entry: state });
@@ -21,7 +19,7 @@ export const getProjectData = (
         })
         .catch(() => {
           flash(
-            'Error loading project data. Please try again.',
+            __('Error loading project data. Please try again.'),
             'alert',
             document,
             null,
@@ -35,10 +33,7 @@ export const getProjectData = (
     }
   });
 
-export const getBranchData = (
-  { commit, state, dispatch },
-  { projectId, branchId, force = false } = {},
-) =>
+export const getBranchData = ({ commit, state }, { projectId, branchId, force = false } = {}) =>
   new Promise((resolve, reject) => {
     if (
       typeof state.projects[`${projectId}`] === 'undefined' ||
@@ -59,7 +54,7 @@ export const getBranchData = (
         })
         .catch(() => {
           flash(
-            'Error loading branch data. Please try again.',
+            __('Error loading branch data. Please try again.'),
             'alert',
             document,
             null,
@@ -73,25 +68,16 @@ export const getBranchData = (
     }
   });
 
-export const refreshLastCommitData = (
-  { commit, state, dispatch },
-  { projectId, branchId } = {},
-) => service
-  .getBranchData(projectId, branchId)
-  .then(({ data }) => {
-    commit(types.SET_BRANCH_COMMIT, {
-      projectId,
-      branchId,
-      commit: data.commit,
+export const refreshLastCommitData = ({ commit }, { projectId, branchId } = {}) =>
+  service
+    .getBranchData(projectId, branchId)
+    .then(({ data }) => {
+      commit(types.SET_BRANCH_COMMIT, {
+        projectId,
+        branchId,
+        commit: data.commit,
+      });
+    })
+    .catch(() => {
+      flash(__('Error loading last commit.'), 'alert', document, null, false, true);
     });
-  })
-  .catch(() => {
-    flash(
-      'Error loading last commit.',
-      'alert',
-      document,
-      null,
-      false,
-      true,
-    );
-  });
