@@ -4,16 +4,20 @@
   %fieldset
     .form-group.row
       .offset-sm-2.col-sm-10
-        - can_be_configured = @application_setting.elt_database_dump_can_be_configured?
+        - is_enabled = @application_setting.elt_database_dump_enabled?
+        - is_available = @application_setting.elt_database_dump_available?
         .form-check
           = f.label :elt_database_dump_enabled do
-            = f.check_box :elt_database_dump_enabled, disabled: !can_be_configured
-            Enable ELT Database Cron Job
+            = f.check_box :elt_database_dump_enabled, disabled: !is_available
+            Enable Meltano Database Cron Job
           .form-text.text-muted
-            - if can_be_configured
-              GitLab will run a cron job which will send pseudoanonymized data to be processed and analyzed.
+            - if is_enabled
+              = meltano_elt_description_text
             - else
-              The ELT database cron job is disabled. When enabled the cron job will send pseudoanonymized data to be processed and analyzed.
+              - if is_available
+                = meltano_elt_disabled_description_text
+              - else
+                = meltano_elt_unavailable_description_text
 
   = f.submit 'Save changes', class: "btn btn-success"
 

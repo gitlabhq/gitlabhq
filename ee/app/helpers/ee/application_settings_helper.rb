@@ -35,6 +35,22 @@ module EE
         "and the value is encrypted at rest.")
     end
 
+    def meltano_elt_database_dump_enabled?
+      return License.feature_available? :meltano_elt_database_dump
+    end
+
+    def meltano_elt_description_text
+      _("GitLab will run the Meltano ELT cron job which will send pseudoanonymized data to be processed and analyzed.")
+    end
+
+    def meltano_elt_disabled_description_text
+      _("The Meltano ELT database cron job is disabled. When enabled the cron job will send pseudoanonymized data to be processed and analyzed.")
+    end
+
+    def meltano_elt_unavailable_description_text
+      _("The Meltano ELT database cron job is disabled. Once enabled, the cron job will send pseudoanonymized data to be processed and analyzed.")
+    end
+
     override :visible_attributes
     def visible_attributes
       super + [

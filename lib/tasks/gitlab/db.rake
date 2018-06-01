@@ -46,6 +46,10 @@ namespace :gitlab do
 
     desc 'Configures the database by running migrate, or by loading the schema and seeding if needed'
     task configure: :environment do
+      unless License.feature_available? :meltano_elt_database_dump
+        raise "The Meltano ELT extract is not available with this license."  
+      end
+
       if ActiveRecord::Base.connection.tables.any?
         Rake::Task['db:migrate'].invoke
       else

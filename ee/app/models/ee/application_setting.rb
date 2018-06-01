@@ -106,11 +106,15 @@ module EE
       end
     end
 
-    def elt_database_dump_can_be_configured?
-      Settings.gitlab.elt_database_dump_enabled
+    def elt_database_dump_available?
+      License.feature_available? :meltano_elt_database_dump
     end
 
-    def elt_database_dump_enabled
+    def elt_database_dump_can_be_configured?
+      Settings.gitlab.elt_database_dump_enabled && License.feature_available?(:meltano_elt_database_dump)
+    end
+
+    def elt_database_dump_enabled?
       elt_database_dump_can_be_configured? && super
     end
 

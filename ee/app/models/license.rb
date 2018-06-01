@@ -30,7 +30,8 @@ class License < ActiveRecord::Base
     related_issues
     repository_mirrors
     repository_size_limit
-    scoped_issue_board
+    scoped_issue_board,
+    meltano_elt_database_dump
   ].freeze
 
   EEP_FEATURES = EES_FEATURES + %i[
