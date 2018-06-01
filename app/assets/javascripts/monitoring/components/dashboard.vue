@@ -176,6 +176,7 @@ export default {
         :small-graph="forceSmallGraph"
       >
         <!-- EE content -->
+        {{ null }}
       </graph>
     </graph-group>
   </div>
