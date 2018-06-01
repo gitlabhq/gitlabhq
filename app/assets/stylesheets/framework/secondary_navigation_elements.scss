@@ -31,14 +31,15 @@
           color: $black;
         }
       }
+    }
 
-      &.active {
+    &.active a,
+    a.active {
+      color: $black;
+      font-weight: $gl-font-weight-bold;
+
+      .badge.badge-pill {
         color: $black;
-        font-weight: $gl-font-weight-bold;
-
-        .badge.badge-pill {
-          color: $black;
-        }
       }
     }
   }

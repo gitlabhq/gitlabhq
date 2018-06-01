@@ -147,7 +147,7 @@ describe ApplicationController do
   end
 
   describe '#authenticate_sessionless_user!' do
-    describe "authenticating a user from a feed token" do
+    describe 'authenticating a user from a feed token' do
       controller(described_class) do
         def index
           render text: 'authenticated'
@@ -182,7 +182,7 @@ describe ApplicationController do
 
       context "when the 'feed_token' param is populated with an invalid feed token" do
         it "doesn't log the user" do
-          get :index, feed_token: "token", format: :atom
+          get :index, feed_token: 'token', format: :atom
           expect(response.status).not_to eq 200
           expect(response.body).not_to eq 'authenticated'
         end

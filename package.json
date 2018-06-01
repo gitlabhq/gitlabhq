@@ -1,6 +1,7 @@
 {
   "private": true,
   "scripts": {
+    "clean": "rm -rf public/assets tmp/cache/*-loader",
     "dev-server": "nodemon -w 'config/webpack.config.js' --exec 'webpack-dev-server --config config/webpack.config.js'",
     "eslint": "eslint --max-warnings 0 --ext .js,.vue .",
     "eslint-fix": "eslint --max-warnings 0 --ext .js,.vue --fix .",
