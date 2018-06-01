@@ -69,6 +69,19 @@ describe ProjectAutoDevops do
       end
     end
 
+    context 'when deploy_strategy is continuous' do
+      let(:domain) { 'example.com' }
+
+      before do
+        auto_devops.deploy_strategy = 'continuous'
+      end
+
+      it do
+        expect(auto_devops.predefined_variables.map { |var| var[:key] })
+          .to include("STAGING_ENABLED", "INCREMENTAL_ROLLOUT_ENABLED")
+      end
+    end
+
     def domain_variable
       { key: 'AUTO_DEVOPS_DOMAIN', value: 'example.com', public: true }
     end

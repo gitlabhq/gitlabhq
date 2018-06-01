@@ -3,5 +3,6 @@ FactoryBot.define do
     project
     enabled true
     domain "example.com"
+    deploy_strategy :continuous
   end
 end
