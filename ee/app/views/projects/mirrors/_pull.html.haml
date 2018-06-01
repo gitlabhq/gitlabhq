@@ -1,6 +1,6 @@
 - expanded = Rails.env.test?
 - import_data = @project.import_data || @project.build_import_data
-- protocols = AddressableUrlValidator::DEFAULT_OPTIONS[:protocols].join('|')
+- protocols = Gitlab::UrlSanitizer::ALLOWED_SCHEMES.join('|')
 
 %section.settings.project-mirror-settings.no-animate{ class: ('expanded' if expanded) }
   .settings-header

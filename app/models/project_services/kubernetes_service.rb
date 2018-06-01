@@ -26,7 +26,7 @@ class KubernetesService < DeploymentService
   prop_accessor :ca_pem
 
   with_options presence: true, if: :activated? do
-    validates :api_url, url: true
+    validates :api_url, public_url: true
     validates :token
   end
 

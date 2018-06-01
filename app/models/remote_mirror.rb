@@ -19,7 +19,6 @@ class RemoteMirror < ActiveRecord::Base
   belongs_to :project, inverse_of: :remote_mirrors
 
   validates :url, presence: true, url: { protocols: %w(ssh git http https), allow_blank: true }
-  validates :url, addressable_url: true, if: :url_changed?
 
   before_save :set_new_remote_name, if: :mirror_url_changed?
 
