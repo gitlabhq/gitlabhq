@@ -4,6 +4,7 @@ import { __ } from '../../../../locale';
 import flash from '../../../../flash';
 import Poll from '../../../../lib/utils/poll';
 import service from '../../../services';
+import { rightSidebarViews } from '../../../constants';
 import * as types from './mutation_types';
 
 let eTagPoll;
@@ -77,6 +78,25 @@ export const fetchJobs = ({ dispatch }, stage) => {
 export const toggleStageCollapsed = ({ commit }, stageId) =>
   commit(types.TOGGLE_STAGE_COLLAPSE, stageId);
 
-export const setDetailJob = ({ commit }, job) => commit(types.SET_DETAIL_JOB, job);
+export const setDetailJob = ({ commit, dispatch }, job) => {
+  commit(types.SET_DETAIL_JOB, job);
+  dispatch('setRightPane', job ? rightSidebarViews.jobsDetail : rightSidebarViews.pipelines, {
+    root: true,
+  });
+};
+
+export const requestJobTrace = ({ commit }) => commit(types.REQUEST_JOB_TRACE);
+export const receiveJobTraceError = ({ commit }) => commit(types.RECEIVE_JOB_TRACE_ERROR);
+export const receiveJobTraceSuccess = ({ commit }, data) =>
+  commit(types.RECEIVE_JOB_TRACE_SUCCESS, data);
+
+export const fetchJobTrace = ({ dispatch, state }) => {
+  dispatch('requestJobTrace');
+
+  return axios
+    .get(`${state.detailJob.path}/trace`, { params: { format: 'json' } })
+    .then(({ data }) => dispatch('receiveJobTraceSuccess', data))
+    .catch(() => dispatch('requestJobTraceError'));
+};
 
 export default () => {};

@@ -18,6 +18,11 @@ export default {
       return `#${this.job.id}`;
     },
   },
+  methods: {
+    clickViewLog() {
+      this.$emit('clickViewLog', this.job);
+    },
+  },
 };
 </script>
 
@@ -43,16 +48,10 @@ export default {
       </a>
     </span>
     <button
-      class="btn btn-default btn-sm"
-      @click="() => { $store.state.pipelines.detailJob = job; $store.dispatch('setRightPane', 'jobs-detail') }"
+      class="btn btn-default btn-sm ml-auto"
+      @click="clickViewLog"
     >
       {{ __('View log') }}
     </button>
   </div>
 </template>
-
-<style scoped>
-.btn {
-  margin-left: auto;
-}
-</style>

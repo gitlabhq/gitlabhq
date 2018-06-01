@@ -1,14 +1,13 @@
 <script>
-import { mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import _ from 'underscore';
-import axios from '../../../lib/utils/axios_utils';
 import CiIcon from '../../../vue_shared/components/ci_icon.vue';
 import tooltip from '../../../vue_shared/directives/tooltip';
 import Icon from '../../../vue_shared/components/icon.vue';
 
 const scrollPositions = {
-  top: 'top',
-  bottom: 'bottom',
+  top: 0,
+  bottom: 1,
 };
 
 export default {
@@ -22,14 +21,10 @@ export default {
   data() {
     return {
       scrollPos: scrollPositions.top,
-      loading: true,
     };
   },
   computed: {
     ...mapState('pipelines', ['detailJob']),
-    rawUrl() {
-      return `${this.detailJob.path}/raw`;
-    },
     isScrolledToBottom() {
       return this.scrollPos === scrollPositions.bottom;
     },
@@ -43,10 +38,8 @@ export default {
   mounted() {
     this.getTrace();
   },
-  beforeDestroy() {
-    clearTimeout(this.timeout);
-  },
   methods: {
+    ...mapActions('pipelines', ['fetchJobTrace', 'setDetailJob']),
     scrollDown() {
       this.$refs.buildTrace.scrollTo(0, this.$refs.buildTrace.scrollHeight);
     },
@@ -66,37 +59,19 @@ export default {
         this.scrollPos = '';
       }
     }),
-    getTrace(state = null) {
-      return axios
-        .get(`${this.detailJob.path}/trace`, {
-          params: {
-            state,
-          },
-        })
-        .then(({ data }) => {
-          this.loading = !data.complete;
-          this.detailJob.output = data.append ? `${this.detailJob.output}${data.html}` : data.html;
-
-          if (!data.complete) {
-            this.timeout = setTimeout(() => this.getTrace(data.state), 4000);
-          }
-        })
-        .then(() => this.$nextTick())
-        .then(() => this.scrollDown());
+    getTrace() {
+      return this.fetchJobTrace().then(() => this.scrollDown());
     },
   },
-  scrollPositions,
 };
 </script>
 
 <template>
-  <div class="ide-pipeline build-page">
-    <header
-      class="ide-tree-header ide-pipeline-header"
-    >
+  <div class="ide-pipeline build-page d-flex flex-column flex-fill">
+    <header class="ide-tree-header ide-pipeline-header">
       <button
-        class="btn btn-default btn-sm"
-        @click="() => { $store.state.pipelines.detailJob = null; $store.dispatch('setRightPane', 'pipelines-list') }"
+        class="btn btn-default btn-sm d-flex"
+        @click="setDetailJob(null)"
       >
         <icon
           name="chevron-left"
@@ -104,37 +79,37 @@ export default {
         {{ __('View jobs') }}
       </button>
     </header>
-    <div
-      class="top-bar"
-    >
-      <div class="ide-job-details float-left">
+    <div class="top-bar d-flex">
+      <div class="ide-job-details d-flex align-items-center">
         <ci-icon
-          class="append-right-4"
+          class="append-right-4 d-flex"
           :status="detailJob.status"
           :borderless="true"
           :size="24"
         />
-        {{ detailJob.name }}
-        <a
-          :href="detailJob.path"
-          target="_blank"
-          class="ide-external-link prepend-left-4"
-        >
-          {{ jobId }}
-          <icon
-            name="external-link"
-            :size="12"
-          />
-        </a>
+        <span>
+          {{ detailJob.name }}
+          <a
+            :href="detailJob.path"
+            target="_blank"
+            class="ide-external-link"
+          >
+            {{ jobId }}
+            <icon
+              name="external-link"
+              :size="12"
+            />
+          </a>
+        </span>
       </div>
-      <div class="controllers float-right">
+      <div class="controllers ml-auto">
         <a
           v-tooltip
           :title="__('Show complete raw')"
           data-placement="top"
           data-container="body"
           class="controllers-buttons"
-          :href="rawUrl"
+          :href="detailJob.rawPath"
           target="_blank"
         >
           <i
@@ -155,9 +130,7 @@ export default {
             :disabled="isScrolledToTop"
             @click="scrollUp"
           >
-            <icon
-              name="scroll_up"
-            />
+            <icon name="scroll_up" />
           </button>
         </div>
         <div
@@ -173,51 +146,26 @@ export default {
             :disabled="isScrolledToBottom"
             @click="scrollDown"
           >
-            <icon
-              name="scroll_down"
-            />
+            <icon name="scroll_down" />
           </button>
         </div>
       </div>
     </div>
     <pre
-      class="build-trace"
+      class="build-trace mb-0"
       ref="buildTrace"
       @scroll="scrollBuildLog"
     >
       <code
         class="bash"
         v-html="detailJob.output"
-      ></code>
+      >
+      </code>
       <div
-        v-show="loading"
+        v-show="detailJob.isLoading"
         class="build-loader-animation"
       >
       </div>
     </pre>
   </div>
 </template>
-
-<style scoped>
-.build-trace-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.ide-tree-header .btn {
-  display: flex;
-}
-
-.ide-job-details {
-  display: flex;
-}
-
-.ide-job-details .ci-status-icon {
-  height: 0;
-}
-
-.build-trace {
-  margin-bottom: 0;
-}
-</style>
