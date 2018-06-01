@@ -99,7 +99,7 @@ export const fetchJobTrace = ({ dispatch, state }) => {
   return axios
     .get(`${state.detailJob.path}/trace`, { params: { format: 'json' } })
     .then(({ data }) => dispatch('receiveJobTraceSuccess', data))
-    .catch(() => dispatch('requestJobTraceError'));
+    .catch(() => dispatch('receiveJobTraceError'));
 };
 
 export default () => {};
