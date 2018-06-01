@@ -33,6 +33,11 @@ module Gitlab
     MAXIMUM_GITALY_CALLS = 35
     CLIENT_NAME = (Sidekiq.server? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
 
+    # We have a mechanism to let GitLab automatically opt in to all Gitaly
+    # features. We want to be able to exclude some features from automatic
+    # opt-in. That is what EXPLICIT_OPT_IN_REQUIRED is for.
+    EXPLICIT_OPT_IN_REQUIRED = [Gitlab::GitalyClient::StorageSettings::DISK_ACCESS_DENIED_FLAG].freeze
+
     MUTEX = Mutex.new
 
     class << self
@@ -234,7 +239,7 @@ module Gitlab
       when MigrationStatus::OPT_OUT
         true
       when MigrationStatus::OPT_IN
-        opt_into_all_features?
+        opt_into_all_features? && !EXPLICIT_OPT_IN_REQUIRED.include?(feature_name)
       else
         false
       end
