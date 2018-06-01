@@ -56,6 +56,7 @@ export default {
     <gl-modal
       :id="`modal-peek-${metric}-details`"
       :header-title-text="header"
+      modal-size="modal-lg"
       class="performance-bar-modal"
     >
       <table

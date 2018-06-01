@@ -10,6 +10,11 @@ export default {
       required: false,
       default: null,
     },
+    modalSize: {
+      type: String,
+      required: false,
+      default: '',
+    },
     headerTitleText: {
       type: String,
       required: false,
@@ -48,6 +53,7 @@ export default {
   >
     <div
       class="modal-dialog"
+      :class="modalSize"
       role="document"
     >
       <div class="modal-content">
