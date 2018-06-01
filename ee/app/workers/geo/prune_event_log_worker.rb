@@ -6,18 +6,17 @@ module Geo
     include ::Gitlab::Geo::LogHelpers
 
     LEASE_TIMEOUT = 60.minutes
-
-    def lease_timeout
-      LEASE_TIMEOUT
-    end
+    TRUNCATE_DELAY = 10.minutes
 
     def perform
-      return unless Gitlab::Geo.primary?
+      return if Gitlab::Database.read_only?
 
       try_obtain_lease do
         if Gitlab::Geo.secondary_nodes.empty?
-          log_info('No secondary nodes, truncate the Geo Event Log table')
-          ActiveRecord::Base.connection.truncate(Geo::EventLog.table_name)
+          log_info('No secondary nodes configured, scheduling truncation of the Geo Event Log')
+
+          ::Geo::TruncateEventLogWorker.perform_in(TRUNCATE_DELAY)
+
           break
         end
 
@@ -34,6 +33,10 @@ module Geo
         Geo::EventLog.where('id <= ?', cursor_last_event_ids.min)
                      .each_batch { |batch| batch.delete_all }
       end
+    end
+
+    def lease_timeout
+      LEASE_TIMEOUT
     end
   end
 end
