@@ -176,7 +176,7 @@ describe Projects::ClustersController do
         cluster: {
           name: 'new-cluster',
           provider_gcp_attributes: {
-            gcp_project_id: '111'
+            gcp_project_id: 'gcp-project-12345'
           }
         }
       }
@@ -219,6 +219,22 @@ describe Projects::ClustersController do
     end
 
     describe 'security' do
+      before do
+        allow_any_instance_of(described_class)
+        .to receive(:token_in_session).and_return('token')
+        allow_any_instance_of(described_class)
+        .to receive(:expires_at_in_session).and_return(1.hour.since.to_i.to_s)
+        allow_any_instance_of(GoogleApi::CloudPlatform::Client)
+          .to receive(:projects_zones_clusters_create) do
+          OpenStruct.new(
+            self_link: 'projects/gcp-project-12345/zones/us-central1-a/operations/ope-123',
+            status: 'RUNNING'
+          )
+        end
+
+        allow(WaitForClusterCreationWorker).to receive(:perform_in).and_return(nil)
+      end
+
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:master).of(project) }
