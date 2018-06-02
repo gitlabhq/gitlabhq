@@ -58,9 +58,9 @@ module Auth
       case type
       when 'registry'
         process_registry_access(type, name, actions)
-      when 'repository'
+      when 'repository', 'repository(plugin)'
         path = ContainerRegistry::Path.new(name)
-        process_repository_access(type, path, actions)
+        process_repository_access('repository', path, actions)
       end
     end
 
