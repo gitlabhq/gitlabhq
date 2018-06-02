@@ -1,4 +1,5 @@
 module IssuableCollections
+  prepend EE::IssuableCollections
   extend ActiveSupport::Concern
   include SortingHelper
   include Gitlab::IssuableMetadata
@@ -140,8 +141,6 @@ module IssuableCollections
     when 'milestone_due_desc' then sort_value_milestone
     when 'downvotes_asc'      then sort_value_popularity
     when 'downvotes_desc'     then sort_value_popularity
-    when 'weight_asc'         then sort_value_weight
-    when 'weight_desc'        then sort_value_weight
     else value
     end
   end
