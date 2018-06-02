@@ -109,30 +109,34 @@ module Gitlab
       end
 
       def archive!
-        raise ArchiveError, 'Already archived' if trace_artifact
-        raise ArchiveError, 'Job is not finished yet' unless job.complete?
-
         try_obtain_lease do
-          if job.trace_chunks.any?
-            Gitlab::Ci::Trace::ChunkedIO.new(job) do |stream|
-              archive_stream!(stream)
-              stream.destroy!
-            end
-          elsif current_path
-            File.open(current_path) do |stream|
-              archive_stream!(stream)
-              FileUtils.rm(current_path)
-            end
-          elsif old_trace
-            StringIO.new(old_trace, 'rb').tap do |stream|
-              archive_stream!(stream)
-              job.erase_old_trace!
-            end
-          end
+          unsafe_archive!
         end
       end
 
       private
+
+      def unsafe_archive!
+        raise ArchiveError, 'Already archived' if trace_artifact
+        raise ArchiveError, 'Job is not finished yet' unless job.complete?
+
+        if job.trace_chunks.any?
+          Gitlab::Ci::Trace::ChunkedIO.new(job) do |stream|
+            archive_stream!(stream)
+            stream.destroy!
+          end
+        elsif current_path
+          File.open(current_path) do |stream|
+            archive_stream!(stream)
+            FileUtils.rm(current_path)
+          end
+        elsif old_trace
+          StringIO.new(old_trace, 'rb').tap do |stream|
+            archive_stream!(stream)
+            job.erase_old_trace!
+          end
+        end
+      end
 
       def archive_stream!(stream)
         clone_file!(stream, JobArtifactUploader.workhorse_upload_path) do |clone_path|
@@ -213,7 +217,7 @@ module Gitlab
         job.job_artifacts_trace
       end
 
-      # For ExclusiveLeaseGuard concerns
+      # For ExclusiveLeaseGuard concern
       def lease_key
         @lease_key ||= "trace:archive:#{job.id}"
       end

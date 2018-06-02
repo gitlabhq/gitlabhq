@@ -35,46 +35,6 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
     end
   end
 
-  describe '.find_builds_from_stale_live_traces' do
-    subject { described_class.find_builds_from_stale_live_traces }
-
-    context 'when build status is finished' do
-      context 'when build finished 2 days ago' do
-        context 'when build has an archived trace' do
-          let!(:build) { create(:ci_build, :success, :trace_artifact, finished_at: 2.days.ago) }
-
-          it 'does not yield build id' do
-            expect { |b| described_class.find_builds_from_stale_live_traces(&b) }.not_to yield_control
-          end
-        end
-
-        context 'when build has a live trace' do
-          let!(:build) { create(:ci_build, :success, :trace_live, finished_at: 2.days.ago) }
-
-          it 'yields build id' do
-            expect { |b| described_class.find_builds_from_stale_live_traces(&b) }.to yield_with_args([build.id])
-          end
-        end
-      end
-
-      context 'when build finished 10 minutes ago' do
-        let!(:build) { create(:ci_build, :success, :trace_live, finished_at: 10.minutes.ago) }
-
-        it 'does not yield build id' do
-          expect { |b| described_class.find_builds_from_stale_live_traces(&b) }.not_to yield_control
-        end
-      end
-    end
-
-    context 'when build status is running' do
-      let!(:build) { create(:ci_build, :running, :trace_live) }
-
-      it 'does not yield build id' do
-        expect { |b| described_class.find_builds_from_stale_live_traces(&b) }.not_to yield_control
-      end
-    end
-  end
-
   describe '#data' do
     subject { build_trace_chunk.data }
 

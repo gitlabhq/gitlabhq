@@ -66,6 +66,7 @@ module Ci
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
     scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + [:manual]) }
     scope :ref_protected, -> { where(protected: true) }
+    scope :with_live_trace, -> { where('EXISTS (?)', Ci::BuildTraceChunk.where('ci_builds.id = ci_build_trace_chunks.build_id').select(1)) }
 
     scope :matches_tag_ids, -> (tag_ids) do
       matcher = ::ActsAsTaggableOn::Tagging
@@ -581,21 +582,6 @@ module Ci
 
     def serializable_hash(options = {})
       super(options).merge(when: read_attribute(:when))
-    end
-
-    # Find stale live traces and return their build ids
-    def self.find_builds_from_stale_live_traces
-      binding.pry
-
-      Ci::BuildTraceChunk
-        .include(EachBatch).select(:build_id).group(:build_id).joins(:build)
-        .merge(Ci::Build.finished).where('ci_builds.finished_at < ?', 1.hour.ago)
-        .each_batch(column: :build_id) do |chunks|
-          build_ids = chunks.map { |chunk| chunk.build_id }
-
-          binding.pry
-          yield where(id: build_ids)
-        end
     end
 
     private
