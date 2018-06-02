@@ -33,9 +33,6 @@ export default {
     isScrolledToTop() {
       return this.scrollPos === scrollPositions.top;
     },
-    jobId() {
-      return `#${this.detailJob.id}`;
-    },
   },
   mounted() {
     this.getTrace();
@@ -43,15 +40,15 @@ export default {
   methods: {
     ...mapActions('pipelines', ['fetchJobTrace', 'setDetailJob']),
     scrollDown() {
-      this.$refs.buildTrace.scrollTo(0, this.$refs.buildTrace.scrollHeight);
+      if (this.$refs.buildTrace)
+        this.$refs.buildTrace.scrollTo(0, this.$refs.buildTrace.scrollHeight);
     },
     scrollUp() {
-      this.$refs.buildTrace.scrollTo(0, 0);
+      if (this.$refs.buildTrace) this.$refs.buildTrace.scrollTo(0, 0);
     },
     scrollBuildLog: _.throttle(function buildLogScrollDebounce() {
-      const scrollTop = this.$refs.buildTrace.scrollTop;
-      const offsetHeight = this.$refs.buildTrace.offsetHeight;
-      const scrollHeight = this.$refs.buildTrace.scrollHeight;
+      const { scrollTop } = this.$refs.buildTrace;
+      const { offsetHeight, scrollHeight } = this.$refs.buildTrace;
 
       if (scrollTop + offsetHeight === scrollHeight) {
         this.scrollPos = scrollPositions.bottom;
