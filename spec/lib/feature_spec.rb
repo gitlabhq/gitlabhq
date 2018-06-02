@@ -64,4 +64,28 @@ describe Feature do
       expect(described_class.all).to eq(features.to_a)
     end
   end
+
+  describe '.flipper' do
+    shared_examples 'a memoized Flipper instance' do
+      it 'memoizes the Flipper instance' do
+        expect(Flipper).to receive(:new).once.and_call_original
+
+        2.times do
+          described_class.flipper
+        end
+      end
+    end
+
+    context 'when request store is inactive' do
+      before do
+        described_class.instance_variable_set(:@flipper, nil)
+      end
+
+      it_behaves_like 'a memoized Flipper instance'
+    end
+
+    context 'when request store is inactive', :request_store do
+      it_behaves_like 'a memoized Flipper instance'
+    end
+  end
 end
