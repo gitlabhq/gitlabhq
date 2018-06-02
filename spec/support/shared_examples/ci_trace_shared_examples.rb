@@ -234,20 +234,29 @@ shared_examples_for 'common trace features' do
     context 'when build status is success' do
       let!(:build) { create(:ci_build, :success, :trace_live) }
 
-      it 'archives a trace' do
-        subject
-
-        expect(build.job_artifacts_trace).to be_exist
+      it 'does not have an archived trace yet' do
+        expect(build.job_artifacts_trace).to be_nil
       end
 
-      context 'when anothe process had already been archiving', :clean_gitlab_redis_shared_state do
-        before do
-          Gitlab::ExclusiveLease.new("trace:archive:#{trace.job.id}", timeout: 1.hour).try_obtain
+      context 'when archives' do
+        it 'has an archived trace' do
+          subject
+
+          build.reload
+          expect(build.job_artifacts_trace).to be_exist
         end
 
-        it 'prevents multiple archiving' do
-          build.reload
-          expect(build.job_artifacts_trace).to be_nil
+        context 'when anothe process had already been archiving', :clean_gitlab_redis_shared_state do
+          before do
+            Gitlab::ExclusiveLease.new("trace:archive:#{trace.job.id}", timeout: 1.hour).try_obtain
+          end
+
+          it 'prevents to archive concurently' do
+            subject
+
+            build.reload
+            expect(build.job_artifacts_trace).to be_nil
+          end
         end
       end
     end
