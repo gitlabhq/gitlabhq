@@ -2,11 +2,12 @@
   .modal-dialog.modal-lg
     .modal-content
       .modal-header
-        %a.close{ href: "#", "data-dismiss" => "modal" } ×
-        %h4
+        %h4.modal-title
           Keyboard Shortcuts
           %small
             = link_to '(Show all)', '#', class: 'js-more-help-button'
+        %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
+          %span{ "aria-hidden": true } &times;
       .modal-body
         .row
           .col-lg-4

@@ -4,7 +4,7 @@
 = form_for @user, url: profile_preferences_path, remote: true, method: :put, html: { class: 'row prepend-top-default js-preferences-form' } do |f|
   .col-lg-4.application-theme
     %h4.prepend-top-0
-      GitLab navigation theme
+      s_('Preferences|Navigation theme')
     %p Customize the appearance of the application header and navigation sidebar.
   .col-lg-8.application-theme
     - Gitlab::Themes.each do |theme|

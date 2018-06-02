@@ -1,5 +1,5 @@
 export default () => ({
-  isLoadingPipeline: false,
+  isLoadingPipeline: true,
   isLoadingJobs: false,
   latestPipeline: null,
   stages: [],

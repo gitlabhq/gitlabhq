@@ -35,7 +35,7 @@ describe 'Issue Boards', :js do
     end
 
     it 'moves un-ordered issue to top of list' do
-      drag(from_index: 3, to_index: 0)
+      drag(from_index: 3, to_index: 0, duration: 1180)
 
       wait_for_requests
 
@@ -156,12 +156,13 @@ describe 'Issue Boards', :js do
     end
   end
 
-  def drag(selector: '.board-list', list_from_index: 1, from_index: 0, to_index: 0, list_to_index: 1)
+  def drag(selector: '.board-list', list_from_index: 1, from_index: 0, to_index: 0, list_to_index: 1, duration: 1000)
     drag_to(selector: selector,
             scrollable: '#board-app',
             list_from_index: list_from_index,
             from_index: from_index,
             to_index: to_index,
-            list_to_index: list_to_index)
+            list_to_index: list_to_index,
+            duration: duration)
   end
 end
