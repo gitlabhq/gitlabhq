@@ -31,7 +31,8 @@
           }
         },
         "status_reason": { "type": ["string", "null"] },
-        "external_ip": { "type": ["string", "null"] }
+        "external_ip": { "type": ["string", "null"] },
+        "hostname": { "type": ["string", "null"] }
       },
       "required" : [ "name", "status" ]
     }

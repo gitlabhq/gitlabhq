@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { mapActions } from 'vuex';
 import Translate from '~/vue_shared/translate';
 import ide from './components/ide.vue';
 import store from './stores';
@@ -17,11 +18,18 @@ export function initIde(el) {
       ide,
     },
     created() {
-      this.$store.dispatch('setEmptyStateSvgs', {
+      this.setEmptyStateSvgs({
         emptyStateSvgPath: el.dataset.emptyStateSvgPath,
         noChangesStateSvgPath: el.dataset.noChangesStateSvgPath,
         committedStateSvgPath: el.dataset.committedStateSvgPath,
+        pipelinesEmptyStateSvgPath: el.dataset.pipelinesEmptyStateSvgPath,
       });
+      this.setLinks({
+        ciHelpPagePath: el.dataset.ciHelpPagePath,
+      });
+    },
+    methods: {
+      ...mapActions(['setEmptyStateSvgs', 'setLinks']),
     },
     render(createElement) {
       return createElement('ide');

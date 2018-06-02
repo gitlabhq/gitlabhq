@@ -1,0 +1,5 @@
+---
+title: Fixed HTTP_PROXY environment not honored when reading remote traces.
+merge_request: 19282
+author: NLR
+type: fixed

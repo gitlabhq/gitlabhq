@@ -79,12 +79,13 @@ export default {
 };
 </script>
 <template>
-  <div class="ci-job-dropdown-container dropdown">
+  <div class="ci-job-dropdown-container dropdown dropright">
     <button
       v-tooltip
       type="button"
       data-toggle="dropdown"
       data-container="body"
+      data-boundary="viewport"
       class="dropdown-menu-toggle build-content"
       :title="tooltipText"
     >

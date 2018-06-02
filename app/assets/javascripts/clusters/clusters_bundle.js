@@ -31,6 +31,7 @@ export default class Clusters {
       installHelmPath,
       installIngressPath,
       installRunnerPath,
+      installJupyterPath,
       installPrometheusPath,
       managePrometheusPath,
       clusterStatus,
@@ -51,6 +52,7 @@ export default class Clusters {
       installIngressEndpoint: installIngressPath,
       installRunnerEndpoint: installRunnerPath,
       installPrometheusEndpoint: installPrometheusPath,
+      installJupyterEndpoint: installJupyterPath,
     });
 
     this.installApplication = this.installApplication.bind(this);
@@ -209,11 +211,12 @@ export default class Clusters {
     }
   }
 
-  installApplication(appId) {
+  installApplication(data) {
+    const appId = data.id;
     this.store.updateAppProperty(appId, 'requestStatus', REQUEST_LOADING);
     this.store.updateAppProperty(appId, 'requestReason', null);
 
-    this.service.installApplication(appId)
+    this.service.installApplication(appId, data.params)
       .then(() => {
         this.store.updateAppProperty(appId, 'requestStatus', REQUEST_SUCCESS);
       })

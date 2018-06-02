@@ -1,7 +1,7 @@
 /* eslint-disable comma-dangle, space-before-function-paren, one-var */
 
 import $ from 'jquery';
-import Sortable from 'vendor/Sortable';
+import Sortable from 'sortablejs';
 import Vue from 'vue';
 import AccessorUtilities from '../../lib/utils/accessor';
 import boardList from './board_list.vue';

@@ -2,10 +2,10 @@
   .modal-dialog
     .modal-content
       .modal-header
-        %button.close{ type: "button",  "aria-label": "close", data: { dismiss: "modal" } }
-          %span{ "aria-hidden": "true" } ×
         %h4#custom-notifications-title.modal-title
           #{ _('Custom notification events') }
+        %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
+          %span{ "aria-hidden": true } &times;
 
       .modal-body
         .container-fluid

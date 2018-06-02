@@ -2,8 +2,9 @@
   .modal-dialog.modal-lg
     .modal-content
       .modal-header
-        %a.close{ href: "#", "data-dismiss" => "modal" } ×
         %h3.page-title= _('Create New Directory')
+        %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
+          %span{ "aria-hidden": true } &times;
       .modal-body
         = form_tag project_create_dir_path(@project, @id), method: :post, remote: false, class: 'js-create-dir-form js-quick-submit js-requires-input' do
           .form-group.row

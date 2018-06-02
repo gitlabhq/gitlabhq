@@ -114,7 +114,9 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it 'raises a no repository exception when there is no repo' do
       broken_repo = described_class.new('default', 'a/path.git', '')
 
-      expect { broken_repo.rugged }.to raise_error(Gitlab::Git::Repository::NoRepository)
+      expect do
+        Gitlab::GitalyClient::StorageSettings.allow_disk_access { broken_repo.rugged }
+      end.to raise_error(Gitlab::Git::Repository::NoRepository)
     end
 
     describe 'alternates keyword argument' do
@@ -124,9 +126,9 @@ describe Gitlab::Git::Repository, seed_helper: true do
         end
 
         it "is passed an empty array" do
-          expect(Rugged::Repository).to receive(:new).with(repository.path, alternates: [])
+          expect(Rugged::Repository).to receive(:new).with(repository_path, alternates: [])
 
-          repository.rugged
+          repository_rugged
         end
       end
 
@@ -142,10 +144,10 @@ describe Gitlab::Git::Repository, seed_helper: true do
         end
 
         it "is passed the relative object dir envvars after being converted to absolute ones" do
-          alternates = %w[foo bar baz].map { |d| File.join(repository.path, './objects', d) }
-          expect(Rugged::Repository).to receive(:new).with(repository.path, alternates: alternates)
+          alternates = %w[foo bar baz].map { |d| File.join(repository_path, './objects', d) }
+          expect(Rugged::Repository).to receive(:new).with(repository_path, alternates: alternates)
 
-          repository.rugged
+          repository_rugged
         end
       end
     end
@@ -156,16 +158,22 @@ describe Gitlab::Git::Repository, seed_helper: true do
     let(:feature) { 'feature' }
     let(:feature2) { 'feature2' }
 
+    around do |example|
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        example.run
+      end
+    end
+
     it "returns 'master' when master exists" do
       expect(repository).to receive(:branch_names).at_least(:once).and_return([feature, master])
       expect(repository.discover_default_branch).to eq('master')
     end
 
     it "returns non-master when master exists but default branch is set to something else" do
-      File.write(File.join(repository.path, 'HEAD'), 'ref: refs/heads/feature')
+      File.write(File.join(repository_path, 'HEAD'), 'ref: refs/heads/feature')
       expect(repository).to receive(:branch_names).at_least(:once).and_return([feature, master])
       expect(repository.discover_default_branch).to eq('feature')
-      File.write(File.join(repository.path, 'HEAD'), 'ref: refs/heads/master')
+      File.write(File.join(repository_path, 'HEAD'), 'ref: refs/heads/master')
     end
 
     it "returns a non-master branch when only one exists" do
@@ -364,6 +372,12 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   context '#submodules' do
+    around do |example|
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        example.run
+      end
+    end
+
     let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
 
     context 'where repo has submodules' do
@@ -474,8 +488,8 @@ describe Gitlab::Git::Repository, seed_helper: true do
           # Sanity check
           expect(repository.has_local_branches?).to eq(true)
 
-          FileUtils.rm_rf(File.join(repository.path, 'packed-refs'))
-          heads_dir = File.join(repository.path, 'refs/heads')
+          FileUtils.rm_rf(File.join(repository_path, 'packed-refs'))
+          heads_dir = File.join(repository_path, 'refs/heads')
           FileUtils.rm_rf(heads_dir)
           FileUtils.mkdir_p(heads_dir)
 
@@ -516,10 +530,10 @@ describe Gitlab::Git::Repository, seed_helper: true do
         branch_name = "to-be-deleted-soon"
 
         repository.create_branch(branch_name)
-        expect(repository.rugged.branches[branch_name]).not_to be_nil
+        expect(repository_rugged.branches[branch_name]).not_to be_nil
 
         repository.delete_branch(branch_name)
-        expect(repository.rugged.branches[branch_name]).to be_nil
+        expect(repository_rugged.branches[branch_name]).to be_nil
       end
 
       context "when branch does not exist" do
@@ -577,6 +591,12 @@ describe Gitlab::Git::Repository, seed_helper: true do
     shared_examples 'deleting refs' do
       let(:repo) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
 
+      def repo_rugged
+        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          repo.rugged
+        end
+      end
+
       after do
         ensure_seeds
       end
@@ -584,7 +604,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it 'deletes the ref' do
         repo.delete_refs('refs/heads/feature')
 
-        expect(repo.rugged.references['refs/heads/feature']).to be_nil
+        expect(repo_rugged.references['refs/heads/feature']).to be_nil
       end
 
       it 'deletes all refs' do
@@ -592,7 +612,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
         repo.delete_refs(*refs)
 
         refs.each do |ref|
-          expect(repo.rugged.references[ref]).to be_nil
+          expect(repo_rugged.references[ref]).to be_nil
         end
       end
 
@@ -615,7 +635,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#branch_names_contains_sha' do
-    let(:head_id) { repository.rugged.head.target.oid }
+    let(:head_id) { repository_rugged.head.target.oid }
     let(:new_branch) { head_id }
     let(:utf8_branch) { 'branch-é' }
 
@@ -699,7 +719,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it 'fetches a repository as a mirror remote' do
         subject
 
-        expect(refs(new_repository.path)).to eq(refs(repository.path))
+        expect(refs(new_repository_path)).to eq(refs(repository_path))
       end
 
       context 'with keep-around refs' do
@@ -708,15 +728,15 @@ describe Gitlab::Git::Repository, seed_helper: true do
         let(:tmp_ref) { "refs/tmp/#{SecureRandom.hex}" }
 
         before do
-          repository.rugged.references.create(keep_around_ref, sha, force: true)
-          repository.rugged.references.create(tmp_ref, sha, force: true)
+          repository_rugged.references.create(keep_around_ref, sha, force: true)
+          repository_rugged.references.create(tmp_ref, sha, force: true)
         end
 
         it 'includes the temporary and keep-around refs' do
           subject
 
-          expect(refs(new_repository.path)).to include(keep_around_ref)
-          expect(refs(new_repository.path)).to include(tmp_ref)
+          expect(refs(new_repository_path)).to include(keep_around_ref)
+          expect(refs(new_repository_path)).to include(tmp_ref)
         end
       end
     end
@@ -727,6 +747,12 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     context 'with gitaly enabled', :skip_gitaly_mock do
       it_behaves_like 'repository mirror fecthing'
+    end
+
+    def new_repository_path
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        new_repository.path
+      end
     end
   end
 
@@ -739,10 +765,17 @@ describe Gitlab::Git::Repository, seed_helper: true do
       Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
     end
 
+    around do |example|
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        example.run
+      end
+    end
+
     subject { repository.remote_tags(remote_name) }
 
     before do
-      repository.add_remote(remote_name, remote_repository.path)
+      remote_repository_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access { remote_repository.path }
+      repository.add_remote(remote_name, remote_repository_path)
       remote_repository.add_tag(tag_name, user: user, target: target_commit_id)
     end
 
@@ -975,8 +1008,10 @@ describe Gitlab::Git::Repository, seed_helper: true do
         let(:options) { { ref: 'master', path: ['PROCESS.md', 'README.md'] } }
 
         def commit_files(commit)
-          commit.rugged_diff_from_parent.deltas.flat_map do |delta|
-            [delta.old_file[:path], delta.new_file[:path]].uniq.compact
+          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            commit.rugged_diff_from_parent.deltas.flat_map do |delta|
+              [delta.old_file[:path], delta.new_file[:path]].uniq.compact
+            end
           end
         end
 
@@ -1019,6 +1054,12 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe "#rugged_commits_between" do
+    around do |example|
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        example.run
+      end
+    end
+
     context 'two SHAs' do
       let(:first_sha) { 'b0e52af38d7ea43cf41d8a6f2471351ac036d6c9' }
       let(:second_sha) { '0e50ec4d3c7ce42ab74dda1d422cb2cbffe1e326' }
@@ -1363,7 +1404,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
         allow(ref).to receive(:target) { raise Rugged::ReferenceError }
         branches = double()
         allow(branches).to receive(:each) { [ref].each }
-        allow(repository.rugged).to receive(:branches) { branches }
+        allow(repository_rugged).to receive(:branches) { branches }
 
         expect(subject).to be_empty
       end
@@ -1661,6 +1702,12 @@ describe Gitlab::Git::Repository, seed_helper: true do
   describe '#batch_existence' do
     let(:refs) { ['deadbeef', SeedRepo::RubyBlob::ID, '909e6157199'] }
 
+    around do |example|
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        example.run
+      end
+    end
+
     it 'returns existing refs back' do
       result = repository.batch_existence(refs)
 
@@ -1840,7 +1887,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       context 'when the branch exists' do
         context 'when the commit does not exist locally' do
           let(:source_branch) { 'new-branch-for-fetch-source-branch' }
-          let(:source_rugged) { source_repository.rugged }
+          let(:source_rugged) { Gitlab::GitalyClient::StorageSettings.allow_disk_access { source_repository.rugged } }
           let(:new_oid) { new_commit_edit_old_file(source_rugged).oid }
 
           before do
@@ -1898,7 +1945,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it "removes the branch from the repo" do
         repository.rm_branch(branch_name, user: user)
 
-        expect(repository.rugged.branches[branch_name]).to be_nil
+        expect(repository_rugged.branches[branch_name]).to be_nil
       end
     end
 
@@ -1930,7 +1977,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe '#write_config' do
     before do
-      repository.rugged.config["gitlab.fullpath"] = repository.path
+      repository_rugged.config["gitlab.fullpath"] = repository_path
     end
 
     shared_examples 'writing repo config' do
@@ -1938,7 +1985,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
         it 'writes it to disk' do
           repository.write_config(full_path: "not-the/real-path.git")
 
-          config = File.read(File.join(repository.path, "config"))
+          config = File.read(File.join(repository_path, "config"))
 
           expect(config).to include("[gitlab]")
           expect(config).to include("fullpath = not-the/real-path.git")
@@ -1949,10 +1996,10 @@ describe Gitlab::Git::Repository, seed_helper: true do
         it 'does not write it to disk' do
           repository.write_config(full_path: "")
 
-          config = File.read(File.join(repository.path, "config"))
+          config = File.read(File.join(repository_path, "config"))
 
           expect(config).to include("[gitlab]")
-          expect(config).to include("fullpath = #{repository.path}")
+          expect(config).to include("fullpath = #{repository_path}")
         end
       end
     end
@@ -2173,7 +2220,11 @@ describe Gitlab::Git::Repository, seed_helper: true do
   describe '#gitlab_projects' do
     subject { repository.gitlab_projects }
 
-    it { expect(subject.shard_path).to eq(storage_path) }
+    it do
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        expect(subject.shard_path).to eq(storage_path)
+      end
+    end
     it { expect(subject.repository_relative_path).to eq(repository.relative_path) }
   end
 
@@ -2189,7 +2240,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
         repository.bundle_to_disk(save_path)
 
         success = system(
-          *%W(#{Gitlab.config.git.bin_path} -C #{repository.path} bundle verify #{save_path}),
+          *%W(#{Gitlab.config.git.bin_path} -C #{repository_path} bundle verify #{save_path}),
           [:out, :err] => '/dev/null'
         )
         expect(success).to be true
@@ -2231,7 +2282,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
       it 'creates a symlink to the global hooks dir' do
         imported_repo.create_from_bundle(bundle_path)
-        hooks_path = File.join(imported_repo.path, 'hooks')
+        hooks_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access { File.join(imported_repo.path, 'hooks') }
 
         expect(File.readlink(hooks_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
       end
@@ -2360,7 +2411,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     describe '#clean_stale_repository_files' do
-      let(:worktree_path) { File.join(repository.path, 'worktrees', 'delete-me') }
+      let(:worktree_path) { File.join(repository_path, 'worktrees', 'delete-me') }
 
       it 'cleans up the files' do
         repository.with_worktree(worktree_path, 'master', env: ENV) do
@@ -2507,7 +2558,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   def create_remote_branch(repository, remote_name, branch_name, source_branch_name)
     source_branch = repository.branches.find { |branch| branch.name == source_branch_name }
-    rugged = repository.rugged
+    rugged = repository_rugged
     rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", source_branch.dereferenced_target.sha)
   end
 
@@ -2584,6 +2635,18 @@ describe Gitlab::Git::Repository, seed_helper: true do
   def refs(dir)
     IO.popen(%W[git -C #{dir} for-each-ref], &:read).split("\n").map do |line|
       line.split("\t").last
+    end
+  end
+
+  def repository_rugged
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      repository.rugged
+    end
+  end
+
+  def repository_path
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      repository.path
     end
   end
 end

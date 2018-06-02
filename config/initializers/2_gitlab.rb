@@ -1,1 +1,1 @@
-require_relative '../../lib/gitlab'
+require_dependency 'gitlab'
