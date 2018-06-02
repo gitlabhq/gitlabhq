@@ -140,10 +140,10 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
         expect { step.perform! }.to raise_error(ActiveRecord::RecordNotSaved)
       end
 
-      it 'does not waste pipeline iid' do
-        step.perform rescue nil
+      it 'wastes pipeline iid' do
+        expect { step.perform! }.to raise_error
 
-        expect(InternalId.ci_pipelines.where(project_id: project.id).exists?).to be_falsy
+        expect(InternalId.ci_pipelines.where(project_id: project.id).exists?).to be_truthy
       end
     end
   end
