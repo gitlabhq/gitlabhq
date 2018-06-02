@@ -36,6 +36,11 @@ html [type="button"],
   cursor: pointer;
 }
 
+b,
+strong {
+  font-weight: bold;
+}
+
 a {
   color: $gl-link-color;
 }
@@ -46,6 +51,12 @@ a {
   @include media-breakpoint-up(md) {
     text-align: right;
   }
+}
+
+code {
+  padding: 2px 4px;
+  background-color: $red-100;
+  border-radius: 3px;
 }
 
 table {
@@ -87,7 +98,8 @@ table {
   display: none;
 }
 
-.dropdown-toggle::after {
+.dropdown-toggle::after,
+.dropright .dropdown-menu-toggle::after {
   // Remove bootstrap's dropdown caret
   display: none;
 }
@@ -148,8 +160,14 @@ table {
   }
 }
 
-.nav-tabs .nav-link {
-  border: 0;
+.nav-tabs {
+  .nav-link {
+    border: 0;
+  }
+
+  .nav-item {
+    margin-bottom: 0;
+  }
 }
 
 pre code {

@@ -3,7 +3,7 @@ class BambooService < CiService
 
   prop_accessor :bamboo_url, :build_key, :username, :password
 
-  validates :bamboo_url, presence: true, url: true, if: :activated?
+  validates :bamboo_url, presence: true, public_url: true, if: :activated?
   validates :build_key, presence: true, if: :activated?
   validates :username,
     presence: true,

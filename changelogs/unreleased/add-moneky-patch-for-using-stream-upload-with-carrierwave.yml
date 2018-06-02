@@ -1,0 +1,5 @@
+---
+title: Fix CarrierWave reads local files into memoery when migrates to ObjectStorage
+merge_request: 19102
+author:
+type: performance

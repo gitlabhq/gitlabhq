@@ -30,11 +30,12 @@ unless Rails.env.production?
         lint:static_verification
       ].each do |task|
         pid = Process.fork do
-          rd, wr = IO.pipe
+          rd_out, wr_out = IO.pipe
+          rd_err, wr_err = IO.pipe
           stdout = $stdout.dup
           stderr = $stderr.dup
-          $stdout.reopen(wr)
-          $stderr.reopen(wr)
+          $stdout.reopen(wr_out)
+          $stderr.reopen(wr_err)
 
           begin
             begin
@@ -48,14 +49,13 @@ unless Rails.env.production?
           ensure
             $stdout.reopen(stdout)
             $stderr.reopen(stderr)
-            wr.close
+            wr_out.close
+            wr_err.close
 
-            if msg
-              warn "\n#{msg}\n\n"
-              IO.copy_stream(rd, $stderr)
-            else
-              IO.copy_stream(rd, $stdout)
-            end
+            warn "\n#{msg}\n\n" if msg
+
+            IO.copy_stream(rd_out, $stdout)
+            IO.copy_stream(rd_err, $stderr)
           end
         end
 

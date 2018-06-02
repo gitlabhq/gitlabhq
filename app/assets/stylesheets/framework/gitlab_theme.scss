@@ -169,11 +169,14 @@
     color: $color-800;
   }
 
-  .nav-links li a.active {
-    border-bottom: 2px solid $color-500;
+  .nav-links li {
+    &.active a,
+    a.active {
+      border-bottom: 2px solid $color-500;
 
-    .badge.badge-pill {
-      font-weight: $gl-font-weight-bold;
+      .badge.badge-pill {
+        font-weight: $gl-font-weight-bold;
+      }
     }
   }
 
@@ -189,6 +192,10 @@
     &.active {
       color: $color-700;
       box-shadow: inset 3px 0 $color-700;
+
+      &.is-right {
+        box-shadow: inset -3px 0 $color-700;
+      }
     }
   }
 }

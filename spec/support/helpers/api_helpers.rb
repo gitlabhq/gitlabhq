@@ -36,15 +36,4 @@ module ApiHelpers
 
     full_path
   end
-
-  # Temporary helper method for simplifying V3 exclusive API specs
-  def v3_api(path, user = nil, personal_access_token: nil, oauth_access_token: nil)
-    api(
-      path,
-      user,
-      version: 'v3',
-      personal_access_token: personal_access_token,
-      oauth_access_token: oauth_access_token
-    )
-  end
 end

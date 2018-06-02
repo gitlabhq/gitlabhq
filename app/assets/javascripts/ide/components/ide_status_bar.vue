@@ -31,6 +31,7 @@ export default {
   computed: {
     ...mapState(['currentBranchId', 'currentProjectId']),
     ...mapGetters(['currentProject', 'lastCommit']),
+    ...mapState('pipelines', ['latestPipeline']),
   },
   watch: {
     lastCommit() {
@@ -51,14 +52,14 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['pipelinePoll', 'stopPipelinePolling']),
+    ...mapActions('pipelines', ['fetchLatestPipeline', 'stopPipelinePolling']),
     startTimer() {
       this.intervalId = setInterval(() => {
         this.commitAgeUpdate();
       }, 1000);
     },
     initPipelinePolling() {
-      this.pipelinePoll();
+      this.fetchLatestPipeline();
       this.isPollingInitialized = true;
     },
     commitAgeUpdate() {
@@ -81,18 +82,18 @@ export default {
     >
       <span
         class="ide-status-pipeline"
-        v-if="lastCommit.pipeline && lastCommit.pipeline.details"
+        v-if="latestPipeline && latestPipeline.details"
       >
         <ci-icon
-          :status="lastCommit.pipeline.details.status"
+          :status="latestPipeline.details.status"
           v-tooltip
-          :title="lastCommit.pipeline.details.status.text"
+          :title="latestPipeline.details.status.text"
         />
         Pipeline
         <a
           class="monospace"
-          :href="lastCommit.pipeline.details.status.details_path">#{{ lastCommit.pipeline.id }}</a>
-        {{ lastCommit.pipeline.details.status.text }}
+          :href="latestPipeline.details.status.details_path">#{{ latestPipeline.id }}</a>
+        {{ latestPipeline.details.status.text }}
         for
       </span>
 

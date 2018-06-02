@@ -11,7 +11,7 @@ module Clusters
 
       attr_encrypted :access_token,
         mode: :per_attribute_iv,
-        key: Gitlab::Application.secrets.db_key_base,
+        key: Settings.attr_encrypted_db_key_base,
         algorithm: 'aes-256-cbc'
 
       validates :gcp_project_id,

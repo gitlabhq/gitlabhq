@@ -18,9 +18,10 @@ module Gitlab
                     label: :project_label,
                     custom_attributes: 'ProjectCustomAttribute',
                     project_badges: 'Badge',
+                    metrics: 'MergeRequest::Metrics',
                     ci_cd_settings: 'ProjectCiCdSetting' }.freeze
 
-      USER_REFERENCES = %w[author_id assignee_id updated_by_id user_id created_by_id last_edited_by_id merge_user_id resolved_by_id closed_by_id].freeze
+      USER_REFERENCES = %w[author_id assignee_id updated_by_id merged_by_id latest_closed_by_id user_id created_by_id last_edited_by_id merge_user_id resolved_by_id closed_by_id].freeze
 
       PROJECT_REFERENCES = %w[project_id source_project_id target_project_id].freeze
 
@@ -34,6 +35,15 @@ module Gitlab
 
       def self.create(*args)
         new(*args).create
+      end
+
+      def self.relation_class(relation_name)
+        # There are scenarios where the model is pluralized (e.g.
+        # MergeRequest::Metrics), and we don't want to force it to singular
+        # with #classify.
+        relation_name.to_s.classify.constantize
+      rescue NameError
+        relation_name.to_s.constantize
       end
 
       def initialize(relation_sym:, relation_hash:, members_mapper:, user:, project:, excluded_keys: [])
@@ -195,7 +205,7 @@ module Gitlab
       end
 
       def relation_class
-        @relation_class ||= @relation_name.to_s.classify.constantize
+        @relation_class ||= self.class.relation_class(@relation_name)
       end
 
       def imported_object

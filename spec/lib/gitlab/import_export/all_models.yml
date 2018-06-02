@@ -310,3 +310,8 @@ lfs_file_locks:
 - user
 project_badges:
 - project
+metrics:
+- merge_request
+- latest_closed_by
+- merged_by
+- pipeline

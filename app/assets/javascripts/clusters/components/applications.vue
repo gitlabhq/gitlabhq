@@ -121,6 +121,12 @@ export default {
         false,
       );
     },
+    jupyterInstalled() {
+      return this.applications.jupyter.status === APPLICATION_INSTALLED;
+    },
+    jupyterHostname() {
+      return this.applications.jupyter.hostname;
+    },
   },
 };
 </script>
@@ -278,11 +284,67 @@ export default {
               applications to production.`) }}
           </div>
         </application-row>
+        <application-row
+          id="jupyter"
+          :title="applications.jupyter.title"
+          title-link="https://jupyterhub.readthedocs.io/en/stable/"
+          :status="applications.jupyter.status"
+          :status-reason="applications.jupyter.statusReason"
+          :request-status="applications.jupyter.requestStatus"
+          :request-reason="applications.jupyter.requestReason"
+          :install-application-request-params="{ hostname: applications.jupyter.hostname }"
+        >
+          <div slot="description">
+            <p>
+              {{ s__(`ClusterIntegration|JupyterHub, a multi-user Hub, spawns,
+                manages, and proxies multiple instances of the single-user
+                Jupyter notebook server. JupyterHub can be used to serve
+                notebooks to a class of students, a corporate data science group,
+                or a scientific research group.`) }}
+            </p>
+
+            <template v-if="ingressExternalIp">
+              <div class="form-group">
+                <label for="jupyter-hostname">
+                  {{ s__('ClusterIntegration|Jupyter Hostname') }}
+                </label>
+
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="form-control js-hostname"
+                    v-model="applications.jupyter.hostname"
+                    :readonly="jupyterInstalled"
+                  />
+                  <span
+                    class="input-group-btn"
+                  >
+                    <clipboard-button
+                      :text="jupyterHostname"
+                      :title="s__('ClusterIntegration|Copy Jupyter Hostname to clipboard')"
+                      class="js-clipboard-btn"
+                    />
+                  </span>
+                </div>
+              </div>
+              <p v-if="ingressInstalled">
+                {{ s__(`ClusterIntegration|Replace this with your own hostname if you want.
+                If you do so, point hostname to Ingress IP Address from above.`) }}
+                <a
+                  :href="ingressDnsHelpPath"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {{ __('More information') }}
+                </a>
+              </p>
+            </template>
+          </div>
+        </application-row>
         <!--
           NOTE: Don't forget to update `clusters.scss`
           min-height for this block and uncomment `application_spec` tests
         -->
-        <!-- Add GitLab Runner row, all other plumbing is complete -->
       </div>
     </div>
   </section>
