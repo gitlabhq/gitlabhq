@@ -93,7 +93,7 @@ class Settings < Settingslogic
       #
       # The default mode for the attr_encrypted gem is to use a 256-bit key.
       # We truncate the 128-byte string to 32 bytes.
-      Gitlab::Application.secrets.db_key_base[0..31]
+      Gitlab::Application.secrets.db_key_base
     end
 
     private
