@@ -36,6 +36,12 @@ html [type="button"],
   cursor: pointer;
 }
 
+input[type="file"] {
+  // Bootstrap 4 file input height is taller by default
+  // which makes them look ugly
+  line-height: 1;
+}
+
 b,
 strong {
   font-weight: bold;

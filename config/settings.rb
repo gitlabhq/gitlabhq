@@ -110,7 +110,14 @@ class Settings < Settingslogic
       File.expand_path(path, Rails.root)
     end
 
+    # Returns a 256-bit key for attr_encrypted
     def attr_encrypted_db_key_base
+      # Ruby 2.4+ requires passing in the exact required length for OpenSSL keys
+      # (https://github.com/ruby/ruby/commit/ce635262f53b760284d56bb1027baebaaec175d1).
+      # Previous versions quietly truncated the input.
+      #
+      # The default mode for the attr_encrypted gem is to use a 256-bit key.
+      # We truncate the 128-byte string to 32 bytes.
       Gitlab::Application.secrets.db_key_base[0..31]
     end
 
