@@ -660,7 +660,7 @@ describe Notify do
         is_expected.to have_html_escaped_body_text project.full_name
         is_expected.to have_body_text project.web_url
         is_expected.to have_body_text project_member.invite_email
-        is_expected.to have_html_escaped_body_text invited_user.name
+        is_expected.to have_body_text invited_user.name
       end
     end
 
@@ -932,7 +932,7 @@ describe Notify do
         end
 
         it 'contains the message from the note' do
-          is_expected.to have_html_escaped_body_text note.note
+          is_expected.to have_body_text note.note
         end
 
         it 'contains an introduction' do
@@ -991,7 +991,7 @@ describe Notify do
         expect(to_emails).to eq([recipient.notification_email])
 
         is_expected.to have_subject "Request to join the #{group.name} group"
-        is_expected.to have_html_escaped_body_text group.name
+        is_expected.to have_body_text group.name
         is_expected.to have_body_text group_group_members_url(group)
         is_expected.to have_body_text group_member.human_access
       end
@@ -1010,7 +1010,7 @@ describe Notify do
 
       it 'contains all the useful information' do
         is_expected.to have_subject "Access to the #{group.name} group was denied"
-        is_expected.to have_html_escaped_body_text group.name
+        is_expected.to have_body_text group.name
         is_expected.to have_body_text group.web_url
       end
     end
@@ -1026,7 +1026,7 @@ describe Notify do
 
       it 'contains all the useful information' do
         is_expected.to have_subject "Access to the #{group.name} group was granted"
-        is_expected.to have_html_escaped_body_text group.name
+        is_expected.to have_body_text group.name
         is_expected.to have_body_text group.web_url
         is_expected.to have_body_text group_member.human_access
       end
@@ -1056,7 +1056,7 @@ describe Notify do
 
       it 'contains all the useful information' do
         is_expected.to have_subject "Invitation to join the #{group.name} group"
-        is_expected.to have_html_escaped_body_text group.name
+        is_expected.to have_body_text group.name
         is_expected.to have_body_text group.web_url
         is_expected.to have_body_text group_member.human_access
         is_expected.to have_body_text group_member.invite_token
@@ -1080,10 +1080,10 @@ describe Notify do
 
       it 'contains all the useful information' do
         is_expected.to have_subject 'Invitation accepted'
-        is_expected.to have_html_escaped_body_text group.name
+        is_expected.to have_body_text group.name
         is_expected.to have_body_text group.web_url
         is_expected.to have_body_text group_member.invite_email
-        is_expected.to have_html_escaped_body_text invited_user.name
+        is_expected.to have_body_text invited_user.name
       end
     end
 
@@ -1103,7 +1103,7 @@ describe Notify do
 
       it 'contains all the useful information' do
         is_expected.to have_subject 'Invitation declined'
-        is_expected.to have_html_escaped_body_text group.name
+        is_expected.to have_body_text group.name
         is_expected.to have_body_text group.web_url
         is_expected.to have_body_text group_member.invite_email
       end
