@@ -28,7 +28,7 @@ feature 'Admin uses repository checks' do
     visit_admin_project_page(project)
 
     page.within('.alert') do
-      expect(page.text).to match(/Last repository check \(.* ago\) failed/)
+      expect(page.text).to match(/Last repository check \(just now\) failed/)
     end
   end
 
