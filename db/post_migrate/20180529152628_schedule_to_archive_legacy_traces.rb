@@ -1,4 +1,4 @@
-class ArchiveLegacyTraces < ActiveRecord::Migration
+class ScheduleToArchiveLegacyTraces < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
@@ -21,7 +21,7 @@ class ArchiveLegacyTraces < ActiveRecord::Migration
 
   def up
     queue_background_migration_jobs_by_range_at_intervals(
-      ::ArchiveLegacyTraces::Build.finished.without_archived_trace,
+      ::ScheduleToArchiveLegacyTraces::Build.finished.without_archived_trace,
       BACKGROUND_MIGRATION_CLASS,
       5.minutes,
       batch_size: BATCH_SIZE)
