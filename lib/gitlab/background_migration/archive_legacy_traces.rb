@@ -6,10 +6,10 @@ module Gitlab
   module BackgroundMigration
     class ArchiveLegacyTraces
       def perform(start_id, stop_id)
-        # This background migrations directly refer ::Ci::Build model which is defined in application code.
+        # This background migration directly refers to ::Ci::Build model which is defined in application code.
         # In general, migration code should be isolated as much as possible in order to be idempotent.
-        # However, `archive!` logic is too complicated to be replicated. So we chose a way to refer ::Ci::Build directly
-        # and we don't change the `archive!` logic until 11.1
+        # However, `archive!` method is too complicated to be replicated by coping its subsequent code.
+        # So we chose a way to use ::Ci::Build directly and we don't change the `archive!` method until 11.1
         ::Ci::Build.finished.without_archived_trace
           .where(id: start_id..stop_id).find_each do |build|
             begin
