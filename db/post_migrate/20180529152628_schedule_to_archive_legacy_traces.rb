@@ -12,6 +12,8 @@ class ScheduleToArchiveLegacyTraces < ActiveRecord::Migration
     self.table_name = 'ci_builds'
     self.inheritance_column = :_type_disabled # Disable STI
 
+    scope :type_build, -> { where(type: 'Ci::Build') }
+
     scope :finished, -> { where(status: [:success, :failed, :canceled]) }
 
     scope :without_archived_trace, -> do
@@ -21,7 +23,7 @@ class ScheduleToArchiveLegacyTraces < ActiveRecord::Migration
 
   def up
     queue_background_migration_jobs_by_range_at_intervals(
-      ::ScheduleToArchiveLegacyTraces::Build.finished.without_archived_trace,
+      ::ScheduleToArchiveLegacyTraces::Build.type_build.finished.without_archived_trace,
       BACKGROUND_MIGRATION_CLASS,
       5.minutes,
       batch_size: BATCH_SIZE)
