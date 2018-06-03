@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180529093006) do
+ActiveRecord::Schema.define(version: 20180531031410) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -2678,6 +2678,7 @@ ActiveRecord::Schema.define(version: 20180529093006) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["rss_token"], name: "index_users_on_rss_token", using: :btree
   add_index "users", ["state"], name: "index_users_on_state", using: :btree
+  add_index "users", ["state"], name: "index_users_on_state_and_internal_attrs", where: "((ghost <> true) AND (support_bot <> true))", using: :btree
   add_index "users", ["support_bot"], name: "index_users_on_support_bot", using: :btree
   add_index "users", ["username"], name: "index_users_on_username", using: :btree
   add_index "users", ["username"], name: "index_users_on_username_trigram", using: :gin, opclasses: {"username"=>"gin_trgm_ops"}
