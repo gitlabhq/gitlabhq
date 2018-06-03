@@ -17,6 +17,7 @@ describe Issue do
     it_behaves_like 'AtomicInternalId' do
       let(:internal_id_attribute) { :iid }
       let(:instance) { build(:issue) }
+      let(:scope) { :project }
       let(:scope_attrs) { { project: instance.project } }
       let(:usage) { :issues }
     end

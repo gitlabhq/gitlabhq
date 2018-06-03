@@ -5,6 +5,7 @@ class Issue < ActiveRecord::Base
   prepend EE::RelativePositioning
 
   include AtomicInternalId
+  include IidRoutes
   include Issuable
   include Noteable
   include Referable

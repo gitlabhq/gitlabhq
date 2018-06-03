@@ -245,6 +245,7 @@ Ci::Pipeline:
 - config_source
 - failure_reason
 - protected
+- iid
 Ci::Stage:
 - id
 - name
