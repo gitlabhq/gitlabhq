@@ -2,7 +2,7 @@ class ArchiveLegacyTraces < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
-  BATCH_SIZE = 10_000
+  BATCH_SIZE = 5000
   BACKGROUND_MIGRATION_CLASS = 'ArchiveLegacyTraces'
 
   disable_ddl_transaction!
@@ -14,25 +14,14 @@ class ArchiveLegacyTraces < ActiveRecord::Migration
 
     scope :finished, -> { where(status: [:success, :failed, :canceled]) }
 
-    scope :without_new_traces, ->() do
-      where('NOT EXISTS (?)',
-        ::ArchiveLegacyTraces::JobArtifact.select(1).trace.where('ci_builds.id = ci_job_artifacts.job_id'))
+    scope :without_archived_trace, -> do
+      where('NOT EXISTS (SELECT 1 FROM ci_job_artifacts WHERE ci_builds.id = ci_job_artifacts.job_id AND ci_job_artifacts.file_type = 3)')
     end
-  end
-
-  class JobArtifact < ActiveRecord::Base
-    self.table_name = 'ci_job_artifacts'
-
-    enum file_type: {
-      archive: 1,
-      metadata: 2,
-      trace: 3
-    }
   end
 
   def up
     queue_background_migration_jobs_by_range_at_intervals(
-      ::ArchiveLegacyTraces::Build.finished.without_new_traces,
+      ::ArchiveLegacyTraces::Build.finished.without_archived_trace,
       BACKGROUND_MIGRATION_CLASS,
       5.minutes,
       batch_size: BATCH_SIZE)

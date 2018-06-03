@@ -8,9 +8,7 @@ namespace :gitlab do
       logger = Logger.new(STDOUT)
       logger.info('Archiving legacy traces')
 
-      Ci::Build.finished
-        .where('NOT EXISTS (?)',
-          Ci::JobArtifact.select(1).trace.where('ci_builds.id = ci_job_artifacts.job_id'))
+      Ci::Build.finished.without_archived_trace
         .order(id: :asc)
         .find_in_batches(batch_size: 1000) do |jobs|
         job_ids = jobs.map { |job| [job.id] }
