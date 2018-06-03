@@ -1,0 +1,5 @@
+---
+title: Eliminate N+1 queries with authors and push_data_payload in Events API
+merge_request:
+author:
+type: performance
