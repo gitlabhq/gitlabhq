@@ -16,7 +16,7 @@ module API
         args[:scope] = args[:scope].underscore if args[:scope]
 
         issues = IssuesFinder.new(current_user, args).execute
-          .preload(:assignees, :labels, :notes, :timelogs, :project)
+          .preload(:assignees, :labels, :notes, :timelogs, :project, :author)
 
         issues.reorder(args[:order_by] => args[:sort])
       end
