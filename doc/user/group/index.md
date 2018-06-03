@@ -160,12 +160,12 @@ There are two different ways to add a new project to a group:
 Group owners or administrators can set an option that will give users with the
 Developer role the ability to create projects under groups.
 
-By default, `Developers` and `Masters` are allowed to create projects under a
+By default, `Developers` and `Maintainers` are allowed to create projects under a
 group, but this can be changed either within the group settings for a group, or
 be set globally by a GitLab administrator in the Admin area
 (**Settings > Visibility and Access Controls**).
 
-The setting can set to "None", "Masters", or "Developers + Masters".
+The setting can set to "None", "Maintainers", or "Developers + Maintainers".
 
 ## Transfer projects into groups
 

@@ -71,7 +71,7 @@ they are set to "Maintainers" by default.
 > This feature was [introduced][ce-5081] in [GitLab Starter][ee] 8.11.
 
 With GitLab Enterprise Edition you can restrict access to protected branches
-by choosing a role (Masters, Developers) as well as certain users. From the
+by choosing a role (Maintainers, Developers) as well as certain users. From the
 dropdown menu select the role and/or the users you want to have merge or push
 access.
 
