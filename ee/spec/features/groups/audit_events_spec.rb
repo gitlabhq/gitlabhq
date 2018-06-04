@@ -53,7 +53,7 @@ feature 'Groups > Audit Events', :js do
       click_link 'Audit Events'
 
       page.within('table#audits') do
-        expect(page).to have_content 'Change access level from developer to master'
+        expect(page).to have_content 'Change access level from developer to maintainer'
         expect(page).to have_content(user.name)
         expect(page).to have_content('Pete')
       end
