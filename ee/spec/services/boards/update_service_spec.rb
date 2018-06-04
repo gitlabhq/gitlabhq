@@ -79,8 +79,6 @@ describe Boards::UpdateService, services: true do
     end
 
     context 'group board milestone' do
-      let(:group) { create(:group) }
-      let(:group_board) { create(:board, group: group, name: 'Backend Group') }
       let!(:milestone) { create(:milestone) }
 
       before do
@@ -90,18 +88,18 @@ describe Boards::UpdateService, services: true do
       it 'is not updated if it is not within group milestones' do
         service = described_class.new(group, double, milestone_id: milestone.id)
 
-        service.execute(group_board)
+        service.execute(board)
 
-        expect(group_board.reload.milestone).to be_nil
+        expect(board.reload.milestone).to be_nil
       end
 
       it 'is updated if it is within group milestones' do
         milestone.update!(project: nil, group: group)
         service = described_class.new(group, double, milestone_id: milestone.id)
 
-        service.execute(group_board)
+        service.execute(board)
 
-        expect(group_board.reload.milestone).to eq(milestone)
+        expect(board.reload.milestone).to eq(milestone)
       end
     end
 
@@ -139,6 +137,82 @@ describe Boards::UpdateService, services: true do
         service.execute(board)
 
         expect(board.reload.milestone).to eq(milestone)
+      end
+    end
+
+    context '#set_labels' do
+      def expect_label_assigned(user, board, input_labels, expected_labels)
+        service = described_class.new(board.parent, user, labels: input_labels.join(','))
+        service.execute(board)
+
+        expect(board.reload.labels.map(&:title)).to contain_exactly(*expected_labels)
+      end
+
+      let(:user) { create(:user) }
+      let(:role) { :guest }
+
+      context 'group board labels' do
+        let!(:board) { create(:board, group: group, name: 'Backend') }
+        let!(:group_label) { create(:group_label, title: 'group_label', group: group) }
+
+        before do
+          group.add_user(user, role)
+          stub_licensed_features(scoped_issue_board: true)
+        end
+
+        it 'updates using only existing label' do
+          expect_label_assigned(user, board, %w{group_label new_label}, %w{group_label})
+        end
+
+        context 'user with admin_label ability' do
+          let(:role) { :reporter }
+
+          it 'finds and creates labels' do
+            expect_label_assigned(user, board, %w{group_label new_label}, %w{group_label new_label})
+          end
+        end
+
+        context 'nested group' do
+          let!(:child_group) { create(:group, parent: group)}
+          let(:project) { create(:project, group: child_group) }
+
+          it "allows using ancestor group's label" do
+            expect_label_assigned(user, board, %w{group_label}, %w{group_label})
+          end
+        end
+      end
+
+      context 'project board labels' do
+        let(:project) { create(:project, group: group) }
+        let!(:board) { create(:board, project: project, name: 'Backend') }
+        let!(:group_label) { create(:group_label, title: 'group_label', group: group) }
+        let!(:label) { create(:label, title: 'project_label', project: project) }
+
+        before do
+          project.add_user(user, role)
+          stub_licensed_features(scoped_issue_board: true)
+        end
+
+        context 'user with admin_label ability' do
+          let(:role) { :reporter }
+
+          it 'finds and creates labels' do
+            expect_label_assigned(user, board, %w{group_label project_label new_label}, %w{group_label project_label new_label})
+          end
+        end
+
+        it 'updates using only existing label' do
+          expect_label_assigned(user, board, %w{group_label project_label new_label}, %w{group_label project_label})
+        end
+
+        context 'nested group' do
+          let!(:child_group) { create(:group, parent: group)}
+          let(:project) { create(:project, group: child_group) }
+
+          it "allows using ancestor group's label" do
+            expect_label_assigned(user, board, %w{group_label project_label new_label}, %w{group_label project_label})
+          end
+        end
       end
     end
   end

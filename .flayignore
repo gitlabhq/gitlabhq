@@ -26,6 +26,8 @@ ee/db/**/*
 ee/app/serializers/ee/merge_request_widget_entity.rb
 ee/lib/api/epics.rb
 ee/lib/api/geo_nodes.rb
+ee/lib/ee/api/group_boards.rb
+ee/lib/ee/api/boards.rb
 ee/lib/ee/gitlab/ldap/sync/admin_users.rb
 ee/app/workers/geo/file_download_dispatch_worker/job_artifact_job_finder.rb
 ee/app/workers/geo/file_download_dispatch_worker/lfs_object_job_finder.rb

@@ -10,6 +10,7 @@ module Boards
 
       set_assignee
       set_milestone
+      set_labels
 
       board.update(params)
     end

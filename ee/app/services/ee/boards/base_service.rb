@@ -27,6 +27,23 @@ module EE
 
         params[:milestone_id] = milestone&.id
       end
+
+      def set_labels
+        labels = params.delete(:labels)
+
+        return unless labels
+
+        params[:label_ids] = labels.split(",").map do |label_name|
+          label = Labels::FindOrCreateService.new(
+            current_user,
+            parent,
+            title: label_name.strip,
+            include_ancestor_groups: true
+          ).execute
+
+          label.try(:id)
+        end.compact
+      end
     end
   end
 end

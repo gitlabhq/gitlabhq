@@ -17,7 +17,25 @@ shared_examples_for 'multiple and scoped issue boards' do |route_definition|
       end
     end
 
-    describe "DELETE #{route_definition}" do
+    describe "PUT #{route_definition}/:board_id" do
+      let(:url) { "#{root_url}/#{board.id}" }
+
+      it 'updates a board' do
+        put api(url, user), name: 'new name', weight: 4, labels: 'foo, bar'
+
+        expect(response).to have_gitlab_http_status(200)
+
+        expect(response).to match_response_schema('public_api/v4/board', dir: "ee")
+
+        board.reload
+
+        expect(board.name).to eq('new name')
+        expect(board.weight).to eq(4)
+        expect(board.labels.map(&:title)).to contain_exactly('foo', 'bar')
+      end
+    end
+
+    describe "DELETE #{route_definition}/:board_id" do
       let(:url) { "#{root_url}/#{board.id}" }
 
       it 'deletes a board' do

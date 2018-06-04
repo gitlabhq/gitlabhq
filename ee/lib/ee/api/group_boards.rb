@@ -34,6 +34,19 @@ module EE
             create_board
           end
 
+          desc 'Update a group board' do
+            detail 'This feature was introduced in 11.0'
+            success ::API::Entities::Board
+          end
+          params do
+            use :update_params
+          end
+          put '/:board_id' do
+            authorize!(:admin_board, board_parent)
+
+            update_board
+          end
+
           desc 'Delete a group board' do
             detail 'This feature was introduced in 10.4'
             success ::API::Entities::Board
