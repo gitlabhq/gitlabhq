@@ -144,6 +144,7 @@ module Ci
       after_transition any => [:success] do |build|
         build.run_after_commit do
           BuildSuccessWorker.perform_async(id)
+          PagesWorker.perform_async(:deploy, id) if build.pages_generator?
         end
       end
 
@@ -181,6 +182,11 @@ module Ci
 
     def other_actions
       pipeline.manual_actions.where.not(name: name)
+    end
+
+    def pages_generator?
+      Gitlab.config.pages.enabled &&
+        self.name == 'pages'
     end
 
     def playable?
@@ -402,7 +408,6 @@ module Ci
       build_data = Gitlab::DataBuilder::Build.build(self)
       project.execute_hooks(build_data.dup, :job_hooks)
       project.execute_services(build_data.dup, :job_hooks)
-      PagesService.new(build_data).execute
     end
 
     def browsable_artifacts?
