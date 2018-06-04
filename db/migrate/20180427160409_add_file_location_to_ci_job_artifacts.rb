@@ -1,4 +1,4 @@
-class AddLegacyPathToCiJobArtifacts < ActiveRecord::Migration
+class AddFileLocationToCiJobArtifacts < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
