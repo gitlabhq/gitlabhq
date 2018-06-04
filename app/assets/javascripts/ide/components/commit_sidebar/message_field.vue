@@ -54,7 +54,7 @@ export default {
     placement: 'top',
     content: sprintf(
       __(`
-        The character highligher helps you keep the subject line to %{titleLength} characters
+        The character highlighter helps you keep the subject line to %{titleLength} characters
         and wrap the body at %{bodyLength} so they are readable in git.
       `),
       { titleLength: MAX_TITLE_LENGTH, bodyLength: MAX_BODY_LENGTH },
