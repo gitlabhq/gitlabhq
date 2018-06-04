@@ -68,6 +68,7 @@ module Ci
     def update_status
       retry_optimistic_lock(self) do
         case statuses.latest.status
+        when 'created' then nil
         when 'pending' then enqueue
         when 'running' then run
         when 'success' then succeed
@@ -75,6 +76,9 @@ module Ci
         when 'canceled' then cancel
         when 'manual' then block
         when 'skipped', nil then skip
+        else
+          raise HasStatus::UnknownStatusError,
+                "Unknown status `#{statuses.latest.status}`"
         end
       end
     end
