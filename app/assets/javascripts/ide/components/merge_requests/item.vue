@@ -14,10 +14,17 @@ export default {
       type: String,
       required: true,
     },
+    currentProjectId: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
     isActive() {
-      return this.item.iid === parseInt(this.currentId, 10);
+      return (
+        this.item.iid === parseInt(this.currentId, 10) &&
+        this.currentProjectId === this.item.projectPathWithNamespace
+      );
     },
     pathWithID() {
       return `${this.item.projectPathWithNamespace}!${this.item.iid}`;
@@ -35,7 +42,7 @@ export default {
   <button
     type="button"
     class="d-flex align-items-center"
-    @click="clickItem"
+    @click.prevent.stop="clickItem"
   >
     <span
       class="d-flex append-right-default"

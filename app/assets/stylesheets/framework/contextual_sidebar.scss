@@ -33,12 +33,12 @@
     align-items: center;
     padding: 10px 16px 10px 10px;
     color: $gl-text-color;
-  }
 
-  &:hover,
-  a:hover {
-    background-color: $link-hover-background;
-    color: $gl-text-color;
+    &:hover,
+    a:hover {
+      background-color: $link-hover-background;
+      color: $gl-text-color;
+    }
   }
 
   .avatar-container {

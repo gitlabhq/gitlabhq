@@ -65,6 +65,8 @@ export default {
   watch: {
     currentBranchId() {
       this.$nextTick(() => {
+        if (!this.$refs.branchId) return;
+
         this.showTooltip = this.$refs.branchId.scrollWidth > this.$refs.branchId.offsetWidth;
       });
     },
@@ -145,6 +147,7 @@ export default {
               </div>
               <div class="d-flex">
                 <div
+                  v-if="currentBranchId"
                   class="sidebar-context-title ide-sidebar-branch-title"
                   ref="branchId"
                   v-tooltip
@@ -157,7 +160,10 @@ export default {
                 </div>
                 <div
                   v-if="currentMergeRequestId"
-                  class="sidebar-context-title ide-sidebar-branch-title prepend-left-8"
+                  class="sidebar-context-title ide-sidebar-branch-title"
+                  :class="{
+                    'prepend-left-8': currentBranchId
+                  }"
                 >
                   <icon
                     name="git-merge"

@@ -1143,6 +1143,10 @@
   .sidebar-context-title {
     white-space: nowrap;
   }
+
+  .ide-sidebar-branch-title {
+    min-width: 50px;
+  }
 }
 
 .ide-external-link {

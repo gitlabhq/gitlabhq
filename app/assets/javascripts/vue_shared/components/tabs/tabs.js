@@ -23,6 +23,7 @@ export default {
     setTab(e, index) {
       if (this.stopPropagation) {
         e.stopPropagation();
+        e.preventDefault();
       }
 
       this.tabs[this.currentIndex].localActive = false;

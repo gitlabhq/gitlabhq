@@ -1,8 +1,10 @@
 import { __ } from '../../../../locale';
 import Api from '../../../../api';
 import flash from '../../../../flash';
+import router from '../../../ide_router';
 import { scopes } from './constants';
 import * as types from './mutation_types';
+import * as rootTypes from '../../mutation_types';
 
 export const requestMergeRequests = ({ commit }, type) =>
   commit(types.REQUEST_MERGE_REQUESTS, type);
@@ -24,5 +26,18 @@ export const fetchMergeRequests = ({ dispatch, state: { state } }, { type, searc
 };
 
 export const resetMergeRequests = ({ commit }, type) => commit(types.RESET_MERGE_REQUESTS, type);
+
+export const openMergeRequest = ({ commit, dispatch }, { projectPath, id }) => {
+  commit(rootTypes.CLEAR_PROJECTS, null, { root: true });
+  commit(rootTypes.SET_CURRENT_MERGE_REQUEST, `${id}`, { root: true });
+  commit(rootTypes.RESET_OPEN_FILES, null, { root: true });
+  dispatch('pipelines/stopPipelinePolling', null, { root: true });
+  dispatch('pipelines/clearEtagPoll', null, { root: true });
+  dispatch('pipelines/resetLatestPipeline', null, { root: true });
+
+  return dispatch('setCurrentBranchId', '', { root: true }).then(() =>
+    router.push(`/project/${projectPath}/merge_requests/${id}`),
+  );
+};
 
 export default () => {};

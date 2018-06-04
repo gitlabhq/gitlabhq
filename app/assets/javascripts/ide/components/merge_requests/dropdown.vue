@@ -12,7 +12,6 @@ export default {
   },
   computed: {
     ...mapGetters('mergeRequests', ['assignedData', 'createdData']),
-    ...mapState(['currentMergeRequestId']),
     createdMergeRequestLength() {
       return this.createdData.mergeRequests.length;
     },
@@ -37,7 +36,6 @@ export default {
         </template>
         <list
           type="created"
-          :current-id="currentMergeRequestId"
           :empty-text="__('You have not created any merge requests')"
           @hide="hideDropdown"
         />
@@ -51,7 +49,6 @@ export default {
         </template>
         <list
           type="assigned"
-          :current-id="currentMergeRequestId"
           :empty-text="__('You do not have any assigned merge requests')"
           @hide="hideDropdown"
         />

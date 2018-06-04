@@ -1,5 +1,5 @@
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import _ from 'underscore';
 import LoadingIcon from '../../../vue_shared/components/loading_icon.vue';
 import Item from './item.vue';
@@ -11,10 +11,6 @@ export default {
   },
   props: {
     type: {
-      type: String,
-      required: true,
-    },
-    currentId: {
       type: String,
       required: true,
     },
@@ -30,6 +26,7 @@ export default {
   },
   computed: {
     ...mapGetters('mergeRequests', ['getData']),
+    ...mapState(['currentMergeRequestId', 'currentProjectId']),
     data() {
       return this.getData(this.type);
     },
@@ -46,21 +43,26 @@ export default {
       return this.search !== '' && !this.hasMergeRequests;
     },
   },
+  watch: {
+    isLoading: {
+      handler: 'focusSearch',
+    },
+  },
   mounted() {
     this.loadMergeRequests();
   },
   methods: {
-    ...mapActions('mergeRequests', ['fetchMergeRequests']),
+    ...mapActions('mergeRequests', ['fetchMergeRequests', 'openMergeRequest']),
     ...mapActions(['closeAllFiles']),
     loadMergeRequests() {
       this.fetchMergeRequests({ type: this.type, search: this.search });
     },
     viewMergeRequest(item) {
-      return this.closeAllFiles()
-        .then(() => {
-          this.$emit('hide');
-          this.$router.push(`/project/${item.projectPathWithNamespace}/merge_requests/${item.iid}`);
-        });
+      this.$emit('hide');
+      this.openMergeRequest({
+        projectPath: item.projectPathWithNamespace,
+        id: item.iid,
+      });
     },
     searchMergeRequests: _.debounce(function debounceSearch() {
       this.loadMergeRequests();
@@ -107,7 +109,8 @@ export default {
             >
               <item
                 :item="item"
-                :current-id="currentId"
+                :current-id="currentMergeRequestId"
+                :current-project-id="currentProjectId"
                 @click="viewMergeRequest"
               />
             </li>
