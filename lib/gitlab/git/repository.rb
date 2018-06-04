@@ -1397,13 +1397,13 @@ module Gitlab
       def write_config(full_path:)
         return unless full_path.present?
 
+        # This guard avoids Gitaly log/error spam
+        unless exists?
+          raise NoRepository, 'repository does not exist'
+        end
+
         gitaly_migrate(:write_config) do |is_enabled|
           if is_enabled
-            # This guard avoids Gitaly log/error spam
-            unless exists?
-              raise NoRepository, 'repository does not exist'
-            end
-
             gitaly_repository_client.write_config(full_path: full_path)
           else
             rugged_write_config(full_path: full_path)
