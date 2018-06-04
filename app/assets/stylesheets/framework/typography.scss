@@ -319,6 +319,10 @@ h6 {
 }
 
 /** CODE **/
+kbd {
+  display: inline-block;
+}
+
 pre {
   font-family: $monospace_font;
   display: block;
