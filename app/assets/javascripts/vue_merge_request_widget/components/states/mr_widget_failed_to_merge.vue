@@ -88,7 +88,7 @@ export default {
             class="has-error-message"
             v-if="mergeError"
           >
-            {{ mergeError }}
+            {{ mergeError }}.
           </span>
           <span v-else>
             {{ s__("mrWidget|Merge failed.") }}
