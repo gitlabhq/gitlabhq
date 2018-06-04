@@ -35,9 +35,20 @@ export default {
         this.dismissIssue();
       }
     },
-
+    isLastValue(index, values) {
+      return index < values.length - 1;
+    },
+    hasValue(field) {
+      return field.value && field.value.length > 0;
+    },
     hasInstances(field, key) {
-      return key === 'instances' && field.value && field.value.length > 0;
+      return key === 'instances' && this.hasValue(field);
+    },
+    hasIdentifiers(field, key) {
+      return key === 'identifiers' && this.hasValue(field);
+    },
+    hasLinks(field, key) {
+      return key === 'links' && this.hasValue(field);
     },
   },
 };
@@ -51,7 +62,7 @@ export default {
     <slot>
       <div
         v-for="(field, key, index) in modal.data"
-        v-if="field.value || hasInstances(field, key)"
+        v-if="field.value"
         class="row prepend-top-10 append-bottom-10"
         :key="index"
       >
@@ -99,6 +110,42 @@ export default {
               </li>
             </ul>
           </div>
+          <template v-else-if="hasIdentifiers(field, key)">
+            <span
+              v-for="(identifier, i) in field.value"
+              :key="i"
+            >
+              <a
+                :class="`js-link-${key}`"
+                v-if="identifier.url"
+                target="_blank"
+                :href="identifier.url"
+                rel="noopener noreferrer"
+              >
+                {{ identifier.name }}
+              </a>
+              <span v-else>
+                {{ identifier.name }}
+              </span>
+              <span v-if="isLastValue(i, field.value)">,&nbsp;</span>
+            </span>
+          </template>
+          <template v-else-if="hasLinks(field, key)">
+            <span
+              v-for="(link, i) in field.value"
+              :key="i"
+            >
+              <a
+                :class="`js-link-${key}`"
+                target="_blank"
+                :href="link.url"
+                rel="noopener noreferrer"
+              >
+                {{ link.value || link.url }}
+              </a>
+              <span v-if="isLastValue(i, field.value)">,&nbsp;</span>
+            </span>
+          </template>
           <template v-else>
             <a
               :class="`js-link-${key}`"

@@ -11,6 +11,7 @@ import {
   statusIcon,
 } from 'ee/vue_shared/security_reports/store/utils';
 import {
+  oldSastIssues,
   sastIssues,
   sastFeedbacks,
   dependencyScanningIssues,
@@ -52,10 +53,17 @@ describe('security reports utils', () => {
   });
 
   describe('parseSastIssues', () => {
-    it('should parse the received issues', () => {
+    it('should parse the received issues with old JSON format', () => {
+      const parsed = parseSastIssues(oldSastIssues, [], 'path')[0];
+      expect(parsed.title).toEqual(sastIssues[0].message);
+      expect(parsed.path).toEqual(sastIssues[0].location.file);
+      expect(parsed.project_fingerprint).toEqual(sha1(sastIssues[0].cve));
+    });
+
+    it('should parse the received issues with new JSON format', () => {
       const parsed = parseSastIssues(sastIssues, [], 'path')[0];
-      expect(parsed.name).toEqual(sastIssues[0].message);
-      expect(parsed.path).toEqual(sastIssues[0].file);
+      expect(parsed.title).toEqual(sastIssues[0].message);
+      expect(parsed.path).toEqual(sastIssues[0].location.file);
       expect(parsed.project_fingerprint).toEqual(sha1(sastIssues[0].cve));
     });
 
@@ -75,7 +83,7 @@ describe('security reports utils', () => {
   describe('parseDependencyScanningIssues', () => {
     it('should parse the received issues', () => {
       const parsed = parseDependencyScanningIssues(dependencyScanningIssues, [], 'path')[0];
-      expect(parsed.name).toEqual(dependencyScanningIssues[0].message);
+      expect(parsed.title).toEqual(dependencyScanningIssues[0].message);
       expect(parsed.path).toEqual(dependencyScanningIssues[0].file);
       expect(parsed.project_fingerprint).toEqual(sha1(dependencyScanningIssues[0].cve));
     });
@@ -107,14 +115,14 @@ describe('security reports utils', () => {
       const parsed = parseSastContainer(dockerReport.vulnerabilities)[0];
       const issue = dockerReport.vulnerabilities[0];
 
-      expect(parsed.name).toEqual(dockerReport.vulnerabilities[0].vulnerability);
-      expect(parsed.priority).toEqual(dockerReport.vulnerabilities[0].severity);
-      expect(parsed.path).toEqual(dockerReport.vulnerabilities[0].namespace);
-      expect(parsed.nameLink).toEqual(
-        `https://cve.mitre.org/cgi-bin/cvename.cgi?name=${
-          dockerReport.vulnerabilities[0].vulnerability
-        }`,
-      );
+      expect(parsed.title).toEqual(issue.vulnerability);
+      expect(parsed.path).toEqual(issue.namespace);
+      expect(parsed.identifiers).toEqual([{
+        type: 'CVE',
+        name: issue.vulnerability,
+        value: issue.vulnerability,
+        url: `https://cve.mitre.org/cgi-bin/cvename.cgi?name=${issue.vulnerability}`,
+      }]);
       expect(parsed.project_fingerprint).toEqual(
         sha1(`${issue.namespace}:${issue.vulnerability}:${issue.featurename}:${issue.featureversion}`));
     });
