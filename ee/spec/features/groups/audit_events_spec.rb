@@ -45,7 +45,7 @@ feature 'Groups > Audit Events', :js do
 
       page.within "#group_member_#{group_member.id}" do
         click_button 'Developer'
-        click_link 'Master'
+        click_link 'Maintainer'
       end
 
       find(:link, text: 'Settings').click
