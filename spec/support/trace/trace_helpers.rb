@@ -3,6 +3,10 @@ module TraceHelpers
     File.open(legacy_trace_path(build), 'wb') { |stream| stream.write(content) }
   end
 
+  def create_legacy_trace_in_db(build, content)
+    build.update_column(:trace, content)
+  end
+
   def legacy_trace_path(build)
     legacy_trace_dir = File.join(Settings.gitlab_ci.builds_path,
       build.created_at.utc.strftime("%Y_%m"),
