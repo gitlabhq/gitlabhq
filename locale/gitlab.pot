@@ -696,7 +696,7 @@ msgstr ""
 msgid "Branches|Once you confirm and press %{delete_protected_branch}, it cannot be undone or recovered."
 msgstr ""
 
-msgid "Branches|Only a project master or owner can delete a protected branch"
+msgid "Branches|Only a project maintainer or owner can delete a protected branch"
 msgstr ""
 
 msgid "Branches|Overview"
