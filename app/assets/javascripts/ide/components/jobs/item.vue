@@ -27,13 +27,16 @@ export default {
 <template>
   <div class="ide-job-item">
     <job-description
+      class="append-right-default"
       :job="job"
     />
-    <button
-      class="btn btn-default btn-sm ml-auto"
-      @click="clickViewLog"
-    >
-      {{ __('View log') }}
-    </button>
+    <div class="ml-auto align-self-center">
+      <button
+        class="btn btn-default btn-sm"
+        @click="clickViewLog"
+      >
+        {{ __('View log') }}
+      </button>
+    </div>
   </div>
 </template>

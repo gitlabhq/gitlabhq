@@ -67,7 +67,7 @@ export default {
 
 <template>
   <div class="ide-pipeline build-page d-flex flex-column flex-fill">
-    <header class="ide-tree-header ide-pipeline-header">
+    <header class="ide-job-header d-flex align-items-center">
       <button
         class="btn btn-default btn-sm d-flex"
         @click="setDetailJob(null)"
@@ -78,7 +78,7 @@ export default {
         {{ __('View jobs') }}
       </button>
     </header>
-    <div class="top-bar d-flex">
+    <div class="top-bar d-flex border-left-0">
       <job-description
         :job="detailJob"
       />
@@ -110,7 +110,7 @@ export default {
       </div>
     </div>
     <pre
-      class="build-trace mb-0"
+      class="build-trace mb-0 h-100"
       ref="buildTrace"
       @scroll="scrollBuildLog"
     >
