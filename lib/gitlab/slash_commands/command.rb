@@ -1,11 +1,8 @@
 module Gitlab
   module SlashCommands
     class Command < BaseCommand
-<<<<<<< HEAD
       prepend EE::Gitlab::SlashCommands::Command
 
-=======
->>>>>>> upstream/master
       def self.commands
         [
           Gitlab::SlashCommands::IssueShow,
