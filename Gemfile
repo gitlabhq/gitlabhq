@@ -384,7 +384,7 @@ group :test do
   gem 'test-prof', '~> 0.2.5'
 end
 
-gem 'octokit', '~> 4.8'
+gem 'octokit', '~> 4.9'
 
 gem 'mail_room', '~> 0.9.1'
 
