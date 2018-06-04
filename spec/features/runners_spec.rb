@@ -28,12 +28,8 @@ feature 'Runners' do
       project.add_master(user)
     end
 
-    context 'when a specific runner is activated on the project' do
-      given(:specific_runner) { create(:ci_runner, :specific) }
-
-      background do
-        project.runners << specific_runner
-      end
+    context 'when a project_type runner is activated on the project' do
+      given!(:specific_runner) { create(:ci_runner, :project, projects: [project]) }
 
       scenario 'user sees the specific runner' do
         visit project_runners_path(project)
@@ -114,7 +110,7 @@ feature 'Runners' do
       end
 
       context 'when a shared runner is activated on the project' do
-        given!(:shared_runner) { create(:ci_runner, :shared) }
+        given!(:shared_runner) { create(:ci_runner, :instance) }
 
         scenario 'user sees CI/CD setting page' do
           visit project_runners_path(project)
@@ -126,11 +122,10 @@ feature 'Runners' do
 
     context 'when a specific runner exists in another project' do
       given(:another_project) { create(:project) }
-      given(:specific_runner) { create(:ci_runner, :specific) }
+      given!(:specific_runner) { create(:ci_runner, :project, projects: [another_project]) }
 
       background do
         another_project.add_master(user)
-        another_project.runners << specific_runner
       end
 
       scenario 'user enables and disables a specific runner' do
@@ -220,8 +215,8 @@ feature 'Runners' do
       end
 
       context 'project with a group but no group runner' do
-        given(:group) { create :group }
-        given(:project) { create :project, group: group }
+        given(:group) { create(:group) }
+        given(:project) { create(:project, group: group) }
 
         scenario 'group runners are not available' do
           visit project_runners_path(project)
@@ -234,9 +229,9 @@ feature 'Runners' do
       end
 
       context 'project with a group and a group runner' do
-        given(:group) { create :group }
-        given(:project) { create :project, group: group }
-        given!(:ci_runner) { create :ci_runner, groups: [group], description: 'group-runner' }
+        given(:group) { create(:group) }
+        given(:project) { create(:project, group: group) }
+        given!(:ci_runner) { create(:ci_runner, :group, groups: [group], description: 'group-runner') }
 
         scenario 'group runners are available' do
           visit project_runners_path(project)
@@ -263,7 +258,7 @@ feature 'Runners' do
   end
 
   context 'group runners in group settings' do
-    given(:group) { create :group }
+    given(:group) { create(:group) }
     background do
       group.add_master(user)
     end
@@ -277,7 +272,7 @@ feature 'Runners' do
     end
 
     context 'group with a runner' do
-      let!(:runner) { create :ci_runner, groups: [group], description: 'group-runner' }
+      let!(:runner) { create(:ci_runner, :group, groups: [group], description: 'group-runner') }
 
       scenario 'the runner is visible' do
         visit group_settings_ci_cd_path(group)

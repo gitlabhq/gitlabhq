@@ -4,6 +4,8 @@ module Gitlab
     # where production code (app, config, db, lib) touches Git repositories
     # directly.
     class StorageSettings
+      extend Gitlab::TemporarilyAllow
+
       DirectPathAccessError = Class.new(StandardError)
       InvalidConfigurationError = Class.new(StandardError)
 
@@ -17,7 +19,21 @@ module Gitlab
       # This class will give easily recognizable NoMethodErrors
       Deprecated = Class.new
 
-      attr_reader :legacy_disk_path
+      MUTEX = Mutex.new
+
+      DISK_ACCESS_DENIED_FLAG = :deny_disk_access
+      ALLOW_KEY = :allow_disk_access
+
+      # If your code needs this method then your code needs to be fixed.
+      def self.allow_disk_access
+        temporarily_allow(ALLOW_KEY) { yield }
+      end
+
+      def self.disk_access_denied?
+        !temporarily_allowed?(ALLOW_KEY) && GitalyClient.feature_enabled?(DISK_ACCESS_DENIED_FLAG)
+      rescue
+        false # Err on the side of caution, don't break gitlab for people
+      end
 
       def initialize(storage)
         raise InvalidConfigurationError, "expected a Hash, got a #{storage.class.name}" unless storage.is_a?(Hash)
@@ -32,6 +48,14 @@ module Gitlab
 
       def gitaly_address
         @hash.fetch(:gitaly_address)
+      end
+
+      def legacy_disk_path
+        if self.class.disk_access_denied?
+          raise DirectPathAccessError, "git disk access denied via the gitaly_#{DISK_ACCESS_DENIED_FLAG} feature"
+        end
+
+        @legacy_disk_path
       end
 
       private

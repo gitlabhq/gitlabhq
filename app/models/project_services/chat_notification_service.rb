@@ -8,7 +8,7 @@ class ChatNotificationService < Service
   prop_accessor :webhook, :username, :channel
   boolean_accessor :notify_only_broken_pipelines, :notify_only_default_branch
 
-  validates :webhook, presence: true, url: true, if: :activated?
+  validates :webhook, presence: true, public_url: true, if: :activated?
 
   def initialize_properties
     # Custom serialized properties initialization

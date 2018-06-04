@@ -1,7 +1,7 @@
 class ExternalWikiService < Service
   prop_accessor :external_wiki_url
 
-  validates :external_wiki_url, presence: true, url: true, if: :activated?
+  validates :external_wiki_url, presence: true, public_url: true, if: :activated?
 
   def title
     'External Wiki'
