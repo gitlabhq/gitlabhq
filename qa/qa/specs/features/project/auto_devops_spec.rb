@@ -51,7 +51,6 @@ module QA
         expect(pipeline).to have_build('build', status: :success, wait: 600)
         expect(pipeline).to have_build('test', status: :success, wait: 600)
         expect(pipeline).to have_build('production', status: :success, wait: 600)
-        expect(pipeline).to have_build('performance', status: :success, wait: 800)
       end
     end
   end
