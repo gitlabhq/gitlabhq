@@ -82,6 +82,9 @@ module Gitlab
         def can_replay?(event_log)
           return true if event_log.project_id.nil?
 
+          # Always replay events for deleted projects
+          return true unless Project.exists?(event_log.project_id)
+
           Gitlab::Geo.current_node&.projects_include?(event_log.project_id)
         end
 
