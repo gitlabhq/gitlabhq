@@ -4764,7 +4764,7 @@ msgstr ""
 msgid "You have reached your project limit"
 msgstr ""
 
-msgid "You must have master access to force delete a lock"
+msgid "You must have maintainer access to force delete a lock"
 msgstr ""
 
 msgid "You must sign in to star a project"
