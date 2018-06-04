@@ -13,7 +13,7 @@ export default {
     modalSize: {
       type: String,
       required: false,
-      default: '',
+      default: 'md',
     },
     headerTitleText: {
       type: String,
@@ -53,7 +53,7 @@ export default {
   >
     <div
       class="modal-dialog"
-      :class="modalSize"
+      :class="`modal-${modalSize}`"
       role="document"
     >
       <div class="modal-content">
