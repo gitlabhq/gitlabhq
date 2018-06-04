@@ -4,6 +4,8 @@
 
   import { VALUE_TYPE } from '../../constants';
 
+  import DetailsSectionMixin from '../../mixins/details_section_mixin';
+
   import GeoNodeDetailItem from '../geo_node_detail_item.vue';
   import SectionRevealButton from './section_reveal_button.vue';
 
@@ -13,6 +15,9 @@
       SectionRevealButton,
       GeoNodeDetailItem,
     },
+    mixins: [
+      DetailsSectionMixin,
+    ],
     props: {
       nodeDetails: {
         type: Object,
@@ -98,14 +103,12 @@
       class="col-md-6 prepend-left-15 prepend-top-10 section-items-container"
     >
       <geo-node-detail-item
-        v-for="(nodeDetailItem, index) in nodeDetailItems"
-        :key="index"
-        :css-class="nodeDetailItem.cssClass"
-        :item-title="nodeDetailItem.itemTitle"
-        :item-value="nodeDetailItem.itemValue"
-        :item-value-type="nodeDetailItem.itemValueType"
-        :success-label="nodeDetailItem.successLabel"
-        :neutral-label="nodeDetailItem.neutraLabel"
+        :item-title="s__('GeoNodes|Storage config')"
+        :item-value="storageShardsStatus"
+        :item-value-type="$options.valueType.PLAIN"
+        :item-value-stale="statusInfoStale"
+        :item-value-stale-tooltip="statusInfoStaleMessage"
+        :css-class="storageShardsCssClass"
       />
     </div>
   </div>
