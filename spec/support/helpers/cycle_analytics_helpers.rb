@@ -4,12 +4,12 @@ module CycleAnalyticsHelpers
     create_commit("Commit for ##{issue.iid}", issue.project, user, branch_name)
   end
 
-  def create_commit(message, project, user, branch_name, count: 1)
+  def create_commit(message, project, user, branch_name, count: 1, commit_time: nil, skip_push_handler: false)
     repository = project.repository
-    oldrev = repository.commit(branch_name).sha
+    oldrev = repository.commit(branch_name)&.sha || Gitlab::Git::BLANK_SHA
 
     if Timecop.frozen? && Gitlab::GitalyClient.feature_enabled?(:operation_user_commit_files)
-      mock_gitaly_multi_action_dates(repository.raw)
+      mock_gitaly_multi_action_dates(repository.raw, commit_time)
     end
 
     commit_shas = Array.new(count) do |index|
@@ -18,6 +18,8 @@ module CycleAnalyticsHelpers
 
       commit_sha
     end
+
+    return if skip_push_handler
 
     GitPushService.new(project,
                        user,
@@ -44,13 +46,11 @@ module CycleAnalyticsHelpers
       project.repository.add_branch(user, source_branch, 'master')
     end
 
-    sha = project.repository.create_file(
-      user,
-      generate(:branch),
-      'content',
-      message: commit_message,
-      branch_name: source_branch)
-    project.repository.commit(sha)
+    # Cycle analytic specs often test with frozen times, which causes metrics to be
+    # pinned to the current time. For example, in the plan stage, we assume that an issue
+    # milestone has been created before any code has been written. We add a second
+    # to ensure that the plan time is positive.
+    create_commit(commit_message, project, user, source_branch, commit_time: Time.now + 1.second, skip_push_handler: true)
 
     opts = {
       title: 'Awesome merge_request',
@@ -116,9 +116,9 @@ module CycleAnalyticsHelpers
       protected: false)
   end
 
-  def mock_gitaly_multi_action_dates(raw_repository)
+  def mock_gitaly_multi_action_dates(raw_repository, commit_time)
     allow(raw_repository).to receive(:multi_action).and_wrap_original do |m, *args|
-      new_date = Time.now
+      new_date = commit_time || Time.now
       branch_update = m.call(*args)
 
       if branch_update.newrev

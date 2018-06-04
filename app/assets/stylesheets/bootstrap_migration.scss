@@ -36,6 +36,17 @@ html [type="button"],
   cursor: pointer;
 }
 
+input[type="file"] {
+  // Bootstrap 4 file input height is taller by default
+  // which makes them look ugly
+  line-height: 1;
+}
+
+b,
+strong {
+  font-weight: bold;
+}
+
 a {
   color: $gl-link-color;
 }
@@ -46,6 +57,12 @@ a {
   @include media-breakpoint-up(md) {
     text-align: right;
   }
+}
+
+code {
+  padding: 2px 4px;
+  background-color: $red-100;
+  border-radius: 3px;
 }
 
 table {

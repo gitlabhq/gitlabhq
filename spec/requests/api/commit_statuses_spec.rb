@@ -304,7 +304,7 @@ describe API::CommitStatuses do
         it 'responds with bad request status and validation errors' do
           expect(response).to have_gitlab_http_status(400)
           expect(json_response['message']['target_url'])
-            .to include 'must be a valid URL'
+            .to include 'is blocked: Only allowed protocols are http, https'
         end
       end
     end
