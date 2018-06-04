@@ -10,6 +10,7 @@ class MergeRequestWidgetEntity < IssuableEntity
   expose :merge_when_pipeline_succeeds
   expose :source_branch
   expose :source_project_id
+  expose :squash
   expose :target_branch
   expose :target_project_id
   expose :allow_maintainer_to_push

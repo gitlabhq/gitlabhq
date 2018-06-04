@@ -1,7 +1,7 @@
 import mutations from '~/ide/stores/modules/pipelines/mutations';
 import state from '~/ide/stores/modules/pipelines/state';
 import * as types from '~/ide/stores/modules/pipelines/mutation_types';
-import { pipelines, jobs } from '../../../mock_data';
+import { fullPipelinesResponse, stages, jobs } from '../../../mock_data';
 
 describe('IDE pipelines mutations', () => {
   let mockedState;
@@ -28,93 +28,147 @@ describe('IDE pipelines mutations', () => {
 
   describe(types.RECEIVE_LASTEST_PIPELINE_SUCCESS, () => {
     it('sets loading to false on success', () => {
-      mutations[types.RECEIVE_LASTEST_PIPELINE_SUCCESS](mockedState, pipelines[0]);
+      mutations[types.RECEIVE_LASTEST_PIPELINE_SUCCESS](
+        mockedState,
+        fullPipelinesResponse.data.pipelines[0],
+      );
 
       expect(mockedState.isLoadingPipeline).toBe(false);
     });
 
     it('sets latestPipeline', () => {
-      mutations[types.RECEIVE_LASTEST_PIPELINE_SUCCESS](mockedState, pipelines[0]);
+      mutations[types.RECEIVE_LASTEST_PIPELINE_SUCCESS](
+        mockedState,
+        fullPipelinesResponse.data.pipelines[0],
+      );
 
       expect(mockedState.latestPipeline).toEqual({
-        id: pipelines[0].id,
-        status: pipelines[0].status,
+        id: '51',
+        path: 'test',
+        commit: { id: '123' },
+        details: { status: jasmine.any(Object) },
+        yamlError: undefined,
       });
     });
 
     it('does not set latest pipeline if pipeline is null', () => {
       mutations[types.RECEIVE_LASTEST_PIPELINE_SUCCESS](mockedState, null);
 
-      expect(mockedState.latestPipeline).toEqual(null);
-    });
-  });
-
-  describe(types.REQUEST_JOBS, () => {
-    it('sets jobs loading to true', () => {
-      mutations[types.REQUEST_JOBS](mockedState);
-
-      expect(mockedState.isLoadingJobs).toBe(true);
-    });
-  });
-
-  describe(types.RECEIVE_JOBS_ERROR, () => {
-    it('sets jobs loading to false', () => {
-      mutations[types.RECEIVE_JOBS_ERROR](mockedState);
-
-      expect(mockedState.isLoadingJobs).toBe(false);
-    });
-  });
-
-  describe(types.RECEIVE_JOBS_SUCCESS, () => {
-    it('sets jobs loading to false on success', () => {
-      mutations[types.RECEIVE_JOBS_SUCCESS](mockedState, jobs);
-
-      expect(mockedState.isLoadingJobs).toBe(false);
+      expect(mockedState.latestPipeline).toEqual(false);
     });
 
     it('sets stages', () => {
-      mutations[types.RECEIVE_JOBS_SUCCESS](mockedState, jobs);
+      mutations[types.RECEIVE_LASTEST_PIPELINE_SUCCESS](
+        mockedState,
+        fullPipelinesResponse.data.pipelines[0],
+      );
 
       expect(mockedState.stages.length).toBe(2);
       expect(mockedState.stages).toEqual([
         {
-          title: 'test',
-          jobs: jasmine.anything(),
+          id: 0,
+          dropdownPath: stages[0].dropdown_path,
+          name: stages[0].name,
+          status: stages[0].status,
+          isCollapsed: false,
+          isLoading: false,
+          jobs: [],
         },
         {
-          title: 'build',
-          jobs: jasmine.anything(),
+          id: 1,
+          dropdownPath: stages[1].dropdown_path,
+          name: stages[1].name,
+          status: stages[1].status,
+          isCollapsed: false,
+          isLoading: false,
+          jobs: [],
         },
       ]);
     });
+  });
 
-    it('sets jobs in stages', () => {
-      mutations[types.RECEIVE_JOBS_SUCCESS](mockedState, jobs);
+  describe(types.REQUEST_JOBS, () => {
+    beforeEach(() => {
+      mockedState.stages = stages.map((stage, i) => ({
+        ...stage,
+        id: i,
+      }));
+    });
 
-      expect(mockedState.stages[0].jobs.length).toBe(3);
-      expect(mockedState.stages[1].jobs.length).toBe(1);
-      expect(mockedState.stages).toEqual([
-        {
-          title: jasmine.anything(),
-          jobs: jobs.filter(job => job.stage === 'test').map(job => ({
-            id: job.id,
-            name: job.name,
-            status: job.status,
-            stage: job.stage,
-            duration: job.duration,
-          })),
-        },
-        {
-          title: jasmine.anything(),
-          jobs: jobs.filter(job => job.stage === 'build').map(job => ({
-            id: job.id,
-            name: job.name,
-            status: job.status,
-            stage: job.stage,
-            duration: job.duration,
-          })),
-        },
-      ]);
+    it('sets isLoading on stage', () => {
+      mutations[types.REQUEST_JOBS](mockedState, mockedState.stages[0].id);
+
+      expect(mockedState.stages[0].isLoading).toBe(true);
+    });
+  });
+
+  describe(types.RECEIVE_JOBS_ERROR, () => {
+    beforeEach(() => {
+      mockedState.stages = stages.map((stage, i) => ({
+        ...stage,
+        id: i,
+      }));
+    });
+
+    it('sets isLoading on stage after error', () => {
+      mutations[types.RECEIVE_JOBS_ERROR](mockedState, mockedState.stages[0].id);
+
+      expect(mockedState.stages[0].isLoading).toBe(false);
+    });
+  });
+
+  describe(types.RECEIVE_JOBS_SUCCESS, () => {
+    let data;
+
+    beforeEach(() => {
+      mockedState.stages = stages.map((stage, i) => ({
+        ...stage,
+        id: i,
+      }));
+
+      data = {
+        latest_statuses: [...jobs],
+      };
+    });
+
+    it('updates loading', () => {
+      mutations[types.RECEIVE_JOBS_SUCCESS](mockedState, { id: mockedState.stages[0].id, data });
+
+      expect(mockedState.stages[0].isLoading).toBe(false);
+    });
+
+    it('sets jobs on stage', () => {
+      mutations[types.RECEIVE_JOBS_SUCCESS](mockedState, { id: mockedState.stages[0].id, data });
+
+      expect(mockedState.stages[0].jobs.length).toBe(jobs.length);
+      expect(mockedState.stages[0].jobs).toEqual(
+        jobs.map(job => ({
+          id: job.id,
+          name: job.name,
+          status: job.status,
+          path: job.build_path,
+        })),
+      );
+    });
+  });
+
+  describe(types.TOGGLE_STAGE_COLLAPSE, () => {
+    beforeEach(() => {
+      mockedState.stages = stages.map((stage, i) => ({
+        ...stage,
+        id: i,
+        isCollapsed: false,
+      }));
+    });
+
+    it('toggles collapsed state', () => {
+      mutations[types.TOGGLE_STAGE_COLLAPSE](mockedState, mockedState.stages[0].id);
+
+      expect(mockedState.stages[0].isCollapsed).toBe(true);
+
+      mutations[types.TOGGLE_STAGE_COLLAPSE](mockedState, mockedState.stages[0].id);
+
+      expect(mockedState.stages[0].isCollapsed).toBe(false);
     });
   });
 });

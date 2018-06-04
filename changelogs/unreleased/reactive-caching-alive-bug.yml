@@ -1,0 +1,6 @@
+---
+title: Updates ReactiveCaching clear_reactive_caching method to clear both data and
+  alive caching
+merge_request: 19311
+author:
+type: fixed

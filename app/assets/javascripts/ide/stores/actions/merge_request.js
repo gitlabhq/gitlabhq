@@ -3,7 +3,7 @@ import service from '../../services';
 import * as types from '../mutation_types';
 
 export const getMergeRequestData = (
-  { commit, state, dispatch },
+  { commit, state },
   { projectId, mergeRequestId, force = false } = {},
 ) =>
   new Promise((resolve, reject) => {
@@ -32,7 +32,7 @@ export const getMergeRequestData = (
   });
 
 export const getMergeRequestChanges = (
-  { commit, state, dispatch },
+  { commit, state },
   { projectId, mergeRequestId, force = false } = {},
 ) =>
   new Promise((resolve, reject) => {
@@ -58,7 +58,7 @@ export const getMergeRequestChanges = (
   });
 
 export const getMergeRequestVersions = (
-  { commit, state, dispatch },
+  { commit, state },
   { projectId, mergeRequestId, force = false } = {},
 ) =>
   new Promise((resolve, reject) => {

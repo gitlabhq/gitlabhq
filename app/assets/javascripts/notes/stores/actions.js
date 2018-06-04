@@ -109,7 +109,7 @@ export const reopenIssue = ({ commit, dispatch, state }) => {
 export const toggleStateButtonLoading = ({ commit }, value) =>
   commit(types.TOGGLE_STATE_BUTTON_LOADING, value);
 
-export const emitStateChangedEvent = ({ commit, getters }, data) => {
+export const emitStateChangedEvent = ({ getters }, data) => {
   const event = new CustomEvent('issuable_vue_app:change', {
     detail: {
       data,
@@ -275,11 +275,11 @@ export const fetchData = ({ commit, state, getters }) => {
     .catch(() => Flash('Something went wrong while fetching latest comments.'));
 };
 
-export const toggleAward = ({ commit, state, getters, dispatch }, { awardName, noteId }) => {
+export const toggleAward = ({ commit, getters }, { awardName, noteId }) => {
   commit(types.TOGGLE_AWARD, { awardName, note: getters.notesById[noteId] });
 };
 
-export const toggleAwardRequest = ({ commit, getters, dispatch }, data) => {
+export const toggleAwardRequest = ({ dispatch }, data) => {
   const { endpoint, awardName } = data;
 
   return service

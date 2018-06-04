@@ -15,8 +15,9 @@
   .modal-dialog
     .modal-content
       .modal-header
-        %a.close{ href: "#", "data-dismiss" => "modal" } ×
         %h3.page-title= title
+        %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
+          %span{ "aria-hidden": true } &times;
       .modal-body
         - if description
           %p.append-bottom-20= description

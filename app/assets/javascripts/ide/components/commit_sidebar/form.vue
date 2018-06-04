@@ -126,7 +126,6 @@ export default {
       </div>
       <form
         v-if="!isCompact"
-        class="form-horizontal"
         @submit.prevent.stop="commitChanges"
         ref="formEl"
       >
@@ -144,14 +143,14 @@ export default {
           <loading-button
             :loading="submitCommitLoading"
             :disabled="commitButtonDisabled"
-            container-class="btn btn-success btn-sm pull-left"
+            container-class="btn btn-success btn-sm float-left"
             :label="__('Commit')"
             @click="commitChanges"
           />
           <button
             v-if="!discardDraftButtonDisabled"
             type="button"
-            class="btn btn-default btn-sm pull-right"
+            class="btn btn-default btn-sm float-right"
             @click="discardDraft"
           >
             {{ __('Discard draft') }}
@@ -159,7 +158,7 @@ export default {
           <button
             v-else
             type="button"
-            class="btn btn-default btn-sm pull-right"
+            class="btn btn-default btn-sm float-right"
             @click="toggleIsSmall"
           >
             {{ __('Collapse') }}

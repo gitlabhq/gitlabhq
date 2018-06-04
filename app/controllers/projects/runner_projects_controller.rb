@@ -9,9 +9,8 @@ class Projects::RunnerProjectsController < Projects::ApplicationController
     return head(403) unless can?(current_user, :assign_runner, @runner)
 
     path = project_runners_path(project)
-    runner_project = @runner.assign_to(project, current_user)
 
-    if runner_project.persisted?
+    if @runner.assign_to(project, current_user)
       redirect_to path
     else
       redirect_to path, alert: 'Failed adding runner to project'

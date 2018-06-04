@@ -46,8 +46,8 @@
     .form-group.row
       .offset-sm-2.col-sm-10
         .form-check
-          = f.label :project_export_enabled do
-            = f.check_box :project_export_enabled
+          = f.check_box :project_export_enabled, class: 'form-check-input'
+          = f.label :project_export_enabled, class: 'form-check-label' do
             Project export enabled
 
     .form-group.row

@@ -1,5 +1,6 @@
 class MergeRequest < ActiveRecord::Base
   include AtomicInternalId
+  include IidRoutes
   include Issuable
   include Noteable
   include Referable
@@ -58,6 +59,7 @@ class MergeRequest < ActiveRecord::Base
   after_create :ensure_merge_request_diff, unless: :importing?
   after_update :clear_memoized_shas
   after_update :reload_diff_if_branch_changed
+  after_save :ensure_metrics
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
@@ -1143,5 +1145,12 @@ class MergeRequest < ActiveRecord::Base
   def can_allow_maintainer_to_push?(user)
     maintainer_push_possible? &&
       Ability.allowed?(user, :push_code, source_project)
+  end
+
+  def squash_in_progress?
+    # The source project can be deleted
+    return false unless source_project
+
+    source_project.repository.squash_in_progress?(id)
   end
 end

@@ -38,10 +38,12 @@ def validate_storages_config
 end
 
 def validate_storages_paths
-  Gitlab.config.repositories.storages.each do |name, repository_storage|
-    parent_name, _parent_path = find_parent_path(name, repository_storage.legacy_disk_path)
-    if parent_name
-      storage_validation_error("#{name} is a nested path of #{parent_name}. Nested paths are not supported for repository storages")
+  Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+    Gitlab.config.repositories.storages.each do |name, repository_storage|
+      parent_name, _parent_path = find_parent_path(name, repository_storage.legacy_disk_path)
+      if parent_name
+        storage_validation_error("#{name} is a nested path of #{parent_name}. Nested paths are not supported for repository storages")
+      end
     end
   end
 end

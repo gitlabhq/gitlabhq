@@ -5,14 +5,10 @@ module Ci
     set(:group) { create(:group) }
     set(:project) { create(:project, group: group, shared_runners_enabled: false, group_runners_enabled: false) }
     set(:pipeline) { create(:ci_pipeline, project: project) }
-    let!(:shared_runner) { create(:ci_runner, is_shared: true) }
-    let!(:specific_runner) { create(:ci_runner, is_shared: false) }
-    let!(:group_runner) { create(:ci_runner, groups: [group], runner_type: :group_type) }
+    let!(:shared_runner) { create(:ci_runner, :instance) }
+    let!(:specific_runner) { create(:ci_runner, :project, projects: [project]) }
+    let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
     let!(:pending_job) { create(:ci_build, pipeline: pipeline) }
-
-    before do
-      specific_runner.assign_to(project)
-    end
 
     describe '#execute' do
       context 'runner follow tag list' do
@@ -181,24 +177,24 @@ module Ci
         end
 
         context 'for multiple builds' do
-          let!(:project2) { create :project, group_runners_enabled: true, group: group }
-          let!(:pipeline2) { create :ci_pipeline, project: project2 }
-          let!(:project3) { create :project, group_runners_enabled: true, group: group }
-          let!(:pipeline3) { create :ci_pipeline, project: project3 }
+          let!(:project2) { create(:project, group_runners_enabled: true, group: group) }
+          let!(:pipeline2) { create(:ci_pipeline, project: project2) }
+          let!(:project3) { create(:project, group_runners_enabled: true, group: group) }
+          let!(:pipeline3) { create(:ci_pipeline, project: project3) }
 
           let!(:build1_project1) { pending_job }
-          let!(:build2_project1) { create :ci_build, pipeline: pipeline }
-          let!(:build3_project1) { create :ci_build, pipeline: pipeline }
-          let!(:build1_project2) { create :ci_build, pipeline: pipeline2 }
-          let!(:build2_project2) { create :ci_build, pipeline: pipeline2 }
-          let!(:build1_project3) { create :ci_build, pipeline: pipeline3 }
+          let!(:build2_project1) { create(:ci_build, pipeline: pipeline) }
+          let!(:build3_project1) { create(:ci_build, pipeline: pipeline) }
+          let!(:build1_project2) { create(:ci_build, pipeline: pipeline2) }
+          let!(:build2_project2) { create(:ci_build, pipeline: pipeline2) }
+          let!(:build1_project3) { create(:ci_build, pipeline: pipeline3) }
 
           # these shouldn't influence the scheduling
-          let!(:unrelated_group) { create :group }
-          let!(:unrelated_project) { create :project, group_runners_enabled: true, group: unrelated_group }
-          let!(:unrelated_pipeline) { create :ci_pipeline, project: unrelated_project }
-          let!(:build1_unrelated_project) { create :ci_build, pipeline: unrelated_pipeline }
-          let!(:unrelated_group_runner) { create :ci_runner, groups: [unrelated_group] }
+          let!(:unrelated_group) { create(:group) }
+          let!(:unrelated_project) { create(:project, group_runners_enabled: true, group: unrelated_group) }
+          let!(:unrelated_pipeline) { create(:ci_pipeline, project: unrelated_project) }
+          let!(:build1_unrelated_project) { create(:ci_build, pipeline: unrelated_pipeline) }
+          let!(:unrelated_group_runner) { create(:ci_runner, :group, groups: [unrelated_group]) }
 
           it 'does not consider builds from other group runners' do
             expect(described_class.new(group_runner).send(:builds_for_group_runner).count).to eq 6
@@ -292,7 +288,7 @@ module Ci
       end
 
       context 'when access_level of runner is not_protected' do
-        let!(:specific_runner) { create(:ci_runner, :specific) }
+        let!(:specific_runner) { create(:ci_runner, :project, projects: [project]) }
 
         context 'when a job is protected' do
           let!(:pending_job) { create(:ci_build, :protected, pipeline: pipeline) }
@@ -324,7 +320,7 @@ module Ci
       end
 
       context 'when access_level of runner is ref_protected' do
-        let!(:specific_runner) { create(:ci_runner, :ref_protected, :specific) }
+        let!(:specific_runner) { create(:ci_runner, :project, :ref_protected, projects: [project]) }
 
         context 'when a job is protected' do
           let!(:pending_job) { create(:ci_build, :protected, pipeline: pipeline) }
