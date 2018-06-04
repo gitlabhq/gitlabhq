@@ -1,6 +1,7 @@
 <script>
   import { s__ } from '~/locale';
   import popover from '~/vue_shared/directives/popover';
+  import tooltip from '~/vue_shared/directives/tooltip';
   import Icon from '~/vue_shared/components/icon.vue';
   import StackedProgressBar from '~/vue_shared/components/stacked_progress_bar.vue';
 
@@ -18,6 +19,7 @@
     },
     directives: {
       popover,
+      tooltip,
     },
     props: {
       itemTitle: {
@@ -32,6 +34,16 @@
       itemValue: {
         type: [Object, String, Number],
         required: true,
+      },
+      itemValueStale: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+      itemValueStaleTooltip: {
+        type: String,
+        required: false,
+        default: '',
       },
       successLabel: {
         type: String,
@@ -132,14 +144,24 @@
     <div
       v-if="isValueTypeGraph"
       class="node-detail-value"
+      :class="{ 'd-flex': itemValueStale }"
     >
       <stacked-progress-bar
+        :css-class="itemValueStale ? 'flex-fill' : ''"
         :success-label="successLabel"
         :failure-label="failureLabel"
         :neutral-label="neutralLabel"
         :success-count="itemValue.successCount"
         :failure-count="itemValue.failureCount"
         :total-count="itemValue.totalCount"
+      />
+      <icon
+        v-tooltip
+        v-show="itemValueStale"
+        name="time-out"
+        css-classes="prepend-left-10 detail-value-stale-icon"
+        data-container="body"
+        :title="itemValueStaleTooltip"
       />
     </div>
     <template v-if="isValueTypeCustom">
