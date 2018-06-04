@@ -130,7 +130,7 @@ describe Ci::Build do
     context 'when build does not have live trace' do
       let!(:build) { create(:ci_build, :success, :trace_artifact) }
 
-      it 'selects the build' do
+      it 'does not select the build' do
         is_expected.to be_empty
       end
     end

@@ -246,12 +246,14 @@ shared_examples_for 'common trace features' do
           expect(build.job_artifacts_trace).to be_exist
         end
 
-        context 'when anothe process had already been archiving', :clean_gitlab_redis_shared_state do
+        context 'when another process has already been archiving', :clean_gitlab_redis_shared_state do
           before do
             Gitlab::ExclusiveLease.new("trace:archive:#{trace.job.id}", timeout: 1.hour).try_obtain
           end
 
-          it 'prevents to archive concurently' do
+          it 'blocks concurrent archiving' do
+            expect(Rails.logger).to receive(:error).with('Cannot obtain an exclusive lease. There must be another instance already in execution.')
+
             subject
 
             build.reload
