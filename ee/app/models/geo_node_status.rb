@@ -332,14 +332,7 @@ class GeoNodeStatus < ActiveRecord::Base
   end
 
   def shards_match?(first, second)
-    # Developers may want to run Geo locally using different paths
-    return names_match?(first, second) if Rails.env.development?
-
-    sort_by_name(first) == sort_by_name(second)
-  end
-
-  def sort_by_name(shards)
-    shards.sort_by { |shard| shard['name'] }
+    names_match?(first, second)
   end
 
   def names_match?(first, second)

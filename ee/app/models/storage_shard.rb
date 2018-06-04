@@ -4,26 +4,25 @@
 class StorageShard
   include ActiveModel::Model
 
-  attr_accessor :name, :path
+  attr_accessor :name
 
   validates :name, presence: true
-  validates :path, presence: true
 
   # Generates an array of StorageShard objects from the currrent storage
   # configuration using the gitlab.yml array of key/value pairs:
   #
-  # {"default"=>{"path"=>"/home/git/repositories", ...}
+  # {"default"=>{"gitaly_address"=>"/home/gitaly/gitaly.socket", ...}
   #
   # The key is the shard name, and the values are the parameters for that shard.
   def self.all
     Settings.repositories.storages.map do |name, params|
-      config = params.symbolize_keys.merge(name: name, path: params.legacy_disk_path)
+      config = params.symbolize_keys.merge(name: name)
       config.slice!(*allowed_params)
       StorageShard.new(config)
     end
   end
 
   def self.allowed_params
-    %i(name path).freeze
+    %i(name).freeze
   end
 end
