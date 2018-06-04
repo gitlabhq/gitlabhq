@@ -35,16 +35,4 @@ describe Gitlab::Git::LfsChanges do
       end
     end
   end
-
-  describe '#all_pointers', :skip_gitaly_mock do
-    it 'uses rev-list to find all objects' do
-      rev_list = double
-      allow(Gitlab::Git::RevList).to receive(:new).and_return(rev_list)
-      allow(rev_list).to receive(:all_objects).and_yield([blob_object_id])
-
-      expect(Gitlab::Git::Blob).to receive(:batch_lfs_pointers).with(project.repository, [blob_object_id])
-
-      subject.all_pointers
-    end
-  end
 end
