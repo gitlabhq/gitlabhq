@@ -17,10 +17,10 @@ describe SearchController do
     end
 
     describe 'GET #show' do
-      it 'renders a 404 when no project is given' do
+      it 'renders a 403 when no project is given' do
         get :show, scope: 'notes', search: note.note
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(403)
       end
 
       it 'renders a 200 when a project was set' do
@@ -31,10 +31,10 @@ describe SearchController do
     end
 
     describe 'GET #autocomplete' do
-      it 'renders a 404 when no project is given' do
+      it 'renders a 403 when no project is given' do
         get :autocomplete, term: 'hello'
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(403)
       end
 
       it 'renders a 200 when a project was set' do

@@ -14,7 +14,7 @@ shared_examples 'disabled when using an external authorization service' do
 
     subject
 
-    expect(response).to have_gitlab_http_status(404)
+    expect(response).to have_gitlab_http_status(403)
   end
 end
 
@@ -35,6 +35,6 @@ shared_examples 'unauthorized when external service denies access' do
 
     subject
 
-    expect(response).to have_gitlab_http_status(404)
+    expect(response).to have_gitlab_http_status(403)
   end
 end
