@@ -41,7 +41,7 @@ export default {
 <template>
   <button
     type="button"
-    class="d-flex align-items-center"
+    class="btn-link d-flex align-items-center"
     @click.prevent.stop="clickItem"
   >
     <span
