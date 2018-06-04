@@ -70,13 +70,13 @@ module EE
 
       attr_encrypted :external_auth_client_key,
                      mode: :per_attribute_iv,
-                     key: Settings.attr_encrypted_db_key_base,
+                     key: Settings.attr_encrypted_db_key_base_truncated,
                      algorithm: 'aes-256-gcm',
                      encode: true
 
       attr_encrypted :external_auth_client_key_pass,
                      mode: :per_attribute_iv,
-                     key: Settings.attr_encrypted_db_key_base,
+                     key: Settings.attr_encrypted_db_key_base_truncated,
                      algorithm: 'aes-256-gcm',
                      encode: true
     end
