@@ -439,7 +439,7 @@ msgstr ""
 msgid "Artifacts"
 msgstr ""
 
-msgid "Ask your group master to setup a group Runner."
+msgid "Ask your group maintainer to setup a group Runner."
 msgstr ""
 
 msgid "Assign custom color like #FF0000"
@@ -2237,7 +2237,7 @@ msgstr ""
 msgid "Group Runners"
 msgstr ""
 
-msgid "Group masters can register group runners in the %{link}"
+msgid "Group maintainers can register group runners in the %{link}"
 msgstr ""
 
 msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
