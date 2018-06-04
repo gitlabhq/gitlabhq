@@ -4,6 +4,7 @@ module Gitlab
   module Git
     class RevList
       include Gitlab::Git::Popen
+      MAX_SHA_SIZE = 40
 
       attr_reader :oldrev, :newrev, :repository
 
@@ -37,8 +38,8 @@ module Gitlab
         get_objects(opts, &lazy_block)
       end
 
-      def all_objects(require_path: nil, &lazy_block)
-        get_objects(including: :all, require_path: require_path, &lazy_block)
+      def all_objects(only_files: [], require_path: nil, &lazy_block)
+        get_objects(including: :all, only_files: only_files, require_path: require_path, &lazy_block)
       end
 
       # This methods returns an array of missed references
@@ -54,8 +55,8 @@ module Gitlab
         repository.rev_list(args).split("\n")
       end
 
-      def get_objects(including: [], excluding: [], require_path: nil)
-        opts = { including: including, excluding: excluding, objects: true }
+      def get_objects(including: [], excluding: [], only_files: [], require_path: nil)
+        opts = { including: including, excluding: excluding, only_files: only_files, objects: true }
 
         repository.rev_list(opts) do |lazy_output|
           objects = objects_from_output(lazy_output, require_path: require_path)
@@ -65,13 +66,14 @@ module Gitlab
       end
 
       def objects_from_output(object_output, require_path: nil)
-        object_output.map do |output_line|
-          sha, path = output_line.split(' ', 2)
+        object_output.each_with_object([]) do |output_line, sha_list|
+          sha = output_line[0, MAX_SHA_SIZE]
+          path = output_line[(MAX_SHA_SIZE + 1)..-1]
 
-          next if require_path && path.to_s.empty?
+          next if require_path && path.blank?
 
-          sha
-        end.reject(&:nil?)
+          sha_list << sha
+        end
       end
     end
   end
