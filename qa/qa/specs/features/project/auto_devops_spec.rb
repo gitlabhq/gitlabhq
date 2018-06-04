@@ -16,25 +16,15 @@ module QA
       end
 
       # Create Auto Devops compatible repo
-      project.visit!
-      Git::Repository.perform do |repository|
-        repository.uri = Page::Project::Show.act do
-          choose_repository_clone_http
-          repository_location.uri
-        end
-
-        repository.use_default_credentials
-        repository.clone
-        repository.configure_identity('GitLab QA', 'root@gitlab.com')
-
-        repository.checkout_new_branch('master')
-        repository.add_file('config.ru', File.read(File.join(__dir__, "../../../fixtures/auto_devops_rack/config.ru")))
-        repository.add_file('Gemfile', File.read(File.join(__dir__, "../../../fixtures/auto_devops_rack/Gemfile")))
-        repository.add_file('Gemfile.lock', File.read(File.join(__dir__, "../../../fixtures/auto_devops_rack/Gemfile.lock")))
-        repository.add_file('Rakefile', File.read(File.join(__dir__, "../../../fixtures/auto_devops_rack/Rakefile")))
-        repository.commit('Create auto devops repo')
-        repository.push_changes("master:master")
+      Factory::Repository::Push.fabricate! do |push|
+        push.project = project
+        push.directory = Pathname
+          .new(__dir__)
+          .join('../../../fixtures/auto_devops_rack')
+        push.commit_message = 'Create Auto DevOps compatible rack application'
       end
+
+      Page::Project::Show.act { wait_for_push }
 
       # Create and connect K8s cluster
       @cluster = Service::KubernetesCluster.new.create!
