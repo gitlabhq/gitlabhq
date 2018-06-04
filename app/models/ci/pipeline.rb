@@ -7,6 +7,7 @@ module Ci
     include Presentable
     include Gitlab::OptimisticLocking
     include Gitlab::Utils::StrongMemoize
+    include AtomicInternalId
 
     belongs_to :project, inverse_of: :pipelines
     belongs_to :user
@@ -553,6 +554,7 @@ module Ci
 
     def predefined_variables
       Gitlab::Ci::Variables::Collection.new
+        .append(key: 'CI_PIPELINE_IID', value: iid.to_s)
         .append(key: 'CI_CONFIG_PATH', value: ci_yaml_file_path)
         .append(key: 'CI_PIPELINE_SOURCE', value: source.to_s)
         .append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message)
