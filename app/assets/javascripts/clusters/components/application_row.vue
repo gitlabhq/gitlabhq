@@ -187,7 +187,7 @@
       role="row"
     >
       <div
-        class="alert alert-danger alert-block append-bottom-0"
+        class="alert alert-danger alert-block append-bottom-0 clusters-error-alert"
         role="gridcell"
       >
         <div>
