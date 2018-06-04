@@ -382,7 +382,7 @@ you will need the Kubernetes project integration enabled.
 ### Web terminals
 
 NOTE: **Note:**
-Introduced in GitLab 8.15. You must be the project owner or have `master` permissions
+Introduced in GitLab 8.15. You must be the project owner or have `maintainer` permissions
 to use terminals. Support is limited to the first container in the
 first pod of your environment.
 

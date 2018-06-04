@@ -200,7 +200,7 @@ GitLab CI/CD permissions rely on the role the user has in GitLab. There are four
 permission levels in total:
 
 - admin
-- master
+- maintainer
 - developer
 - guest/reporter
 
