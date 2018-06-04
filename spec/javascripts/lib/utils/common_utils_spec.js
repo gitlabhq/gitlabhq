@@ -65,6 +65,67 @@ describe('common_utils', () => {
     });
   });
 
+  describe('setUrlParam', () => {
+    it('should append param when url has no other params', () => {
+      const url = commonUtils.setUrlParam('/feature/home', 'newParam', 'yes');
+      expect(url).toBe('/feature/home?newParam=yes');
+    });
+
+    it('should append param when url has other params', () => {
+      const url = commonUtils.setUrlParam('/feature/home?showAll=true', 'newParam', 'yes');
+      expect(url).toBe('/feature/home?showAll=true&newParam=yes');
+    });
+
+    it('should replace param when url contains the param', () => {
+      const url = commonUtils.setUrlParam('/feature/home?showAll=true&limit=5', 'limit', '100');
+      expect(url).toBe('/feature/home?showAll=true&limit=100');
+    });
+
+    it('should update param and preserve fragment', () => {
+      const url = commonUtils.setUrlParam('/home?q=no&limit=5&showAll=true#H1', 'limit', '100');
+      expect(url).toBe('/home?q=no&limit=100&showAll=true#H1');
+    });
+  });
+
+  describe('removeUrlParam', () => {
+    it('should remove param when url has no other params', () => {
+      const url = commonUtils.removeUrlParam('/feature/home?size=5', 'size');
+      expect(url).toBe('/feature/home');
+    });
+
+    it('should remove param when url has other params', () => {
+      const url = commonUtils.removeUrlParam('/feature/home?q=1&size=5&f=html', 'size');
+      expect(url).toBe('/feature/home?q=1&f=html');
+    });
+
+    it('should remove param and preserve fragment', () => {
+      const url = commonUtils.removeUrlParam('/feature/home?size=5#H2', 'size');
+      expect(url).toBe('/feature/home#H2');
+    });
+
+    it('should not modify url if param does not exist', () => {
+      const url = commonUtils.removeUrlParam('/feature/home?q=1&size=5&f=html', 'locale');
+      expect(url).toBe('/feature/home?q=1&size=5&f=html');
+    });
+  });
+
+  describe('setUrlFragment', () => {
+    it('should set fragment when url has no fragment', () => {
+      const url = commonUtils.setUrlFragment('/home/feature', 'usage');
+      expect(url).toBe('/home/feature#usage');
+    });
+
+    it('should set fragment when url has existing fragment', () => {
+      const url = commonUtils.setUrlFragment('/home/feature#overview', 'usage');
+      expect(url).toBe('/home/feature#usage');
+    });
+
+    it('should set fragment when given fragment includes #', () => {
+      const url = commonUtils.setUrlFragment('/home/feature#overview', '#install');
+      expect(url).toBe('/home/feature#install');
+    });
+  });
+
   describe('handleLocationHash', () => {
     beforeEach(() => {
       spyOn(window.document, 'getElementById').and.callThrough();

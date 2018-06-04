@@ -1,33 +1,5 @@
 - page_title "Sign in"
 
-- content_for :page_specific_javascripts do
-  -# haml-lint:disable InlineJavaScript
-  :javascript
-    document.addEventListener('DOMContentLoaded', function() {
-      // Determine if the current URL location contains a fragment identifier (aka hash or anchor ref).
-      // This should be present if the user was redirected to sign in after attempting to access a
-      // protected URL that included a fragment identifier.
-      var fragment = window.location.hash;
-      if (fragment && fragment !== '') {
-        // Append the fragment to all signin/signup form actions so it is preserved when
-        // the user is eventually redirected back to the originally requested URL.
-        $('div#signin-container form').attr('action', function (index, action) {
-          return action + fragment;
-        });
-
-        // Append a redirect_fragment query param to all oauth provider links. The redirect_fragment
-        // query param will be passed to the omniauth callback upon successful authentication
-        $('div#signin-container a.oauth-login').attr('href', function (index, href) {
-          const tokens = href.split('?');
-          let url = tokens[0] + '?redirect_fragment=' + encodeURIComponent(fragment.substr(1));
-          if (tokens.length > 1) {
-            url += '&' + tokens[1];
-          }
-          return url;
-        });
-      }
-    });
-
 #signin-container
   - if form_based_providers.any?
     = render 'devise/shared/tabs_ldap'

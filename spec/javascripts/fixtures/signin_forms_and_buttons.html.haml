@@ -1,0 +1,21 @@
+#signin-container
+  .tab-content
+    .active.login-box.tab-pane
+      .login-body
+        %form#new_ldap_user{ action: '/users/auth/ldapmain/callback', method: 'post' }
+
+    .login-box.tab-pane
+      .login-body
+        %form#new_user.new_user{ action: '/users/sign_in', method: 'post' }
+
+    #register-pane.login-box.tab-pane
+      .login-body
+        %form#new_new_user.new_new_user{ action: '/users', method: 'post' }
+
+  .omniauth-container
+    %span.light
+      %a#oauth-login-auth0.oauth-login.btn{ href: '/users/auth/auth0' } Auth0
+    %span.light
+      %a#oauth-login-facebook.oauth-login.btn{ href:'/users/auth/facebook?remember_me=1' } Facebook
+    %span.light
+      %a#oauth-login-saml.oauth-login.btn{ href:'/users/auth/saml' } SAML

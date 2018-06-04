@@ -180,6 +180,87 @@ export const urlParamsToObject = (path = '') =>
     return data;
   }, {});
 
+/**
+ * Apply the query param and value to the given url by returning a new url string that includes
+ * the param/value pair. If the given url already includes the query param, the query param value
+ * will be updated in the new url string. Otherwise, the query param and value will by added in
+ * the new url string.
+ *
+ * @param url {string} - url to which the query param will be applied
+ * @param param {string} - name of the query param to set
+ * @param value {string|number} - value to give the query param
+ * @returns {string} A copy of the original url with the new or updated query param
+ */
+export const setUrlParam = (url, param, value) => {
+  const [rootAndQuery, fragment] = url.split('#');
+  const [root, query] = rootAndQuery.split('?');
+  const encodedParam = encodeURIComponent(param);
+  const encodedPair = `${encodedParam}=${encodeURIComponent(value)}`;
+
+  let paramExists = false;
+  const paramArray =
+    (query ? query.split('&') : [])
+    .map(paramPair => {
+      const [foundParam] = paramPair.split('=');
+      if (foundParam === encodedParam) {
+        paramExists = true;
+        return encodedPair;
+      }
+      return paramPair;
+    });
+
+  if (paramExists === false) {
+    paramArray.push(encodedPair);
+  }
+
+  const writableFragment = fragment ? `#${fragment}` : '';
+  return `${root}?${paramArray.join('&')}${writableFragment}`;
+};
+
+/**
+ * Remove the query param from the given url by returning a new url string that no longer includes
+ * the param/value pair.
+ *
+ * @param url {string} - url from which the query param will be removed
+ * @param param {string} - the name of the query param to remove
+ * @returns {string} A copy of the original url but without the query param
+ */
+export const removeUrlParam = (url, param) => {
+  const [rootAndQuery, fragment] = url.split('#');
+  const [root, query] = rootAndQuery.split('?');
+
+  if (query === undefined) {
+    return url;
+  }
+
+  const encodedParam = encodeURIComponent(param);
+  const updatedQuery = query
+    .split('&')
+    .filter(paramPair => {
+      const [foundParam] = paramPair.split('=');
+      return foundParam !== encodedParam;
+    })
+    .join('&');
+
+  const writableQuery = updatedQuery.length > 0 ? `?${updatedQuery}` : '';
+  const writableFragment = fragment ? `#${fragment}` : '';
+  return `${root}${writableQuery}${writableFragment}`;
+};
+
+/**
+ * Apply the fragment to the given url by returning a new url string that includes
+ * the fragment. If the given url already contains a fragment, the original fragment
+ * will be removed.
+ *
+ * @param url {string} - url to which the fragment will be applied
+ * @param fragment {string} - fragment to append
+ */
+export const setUrlFragment = (url, fragment) => {
+  const [rootUrl] = url.split('#');
+  const encodedFragment = encodeURIComponent(fragment.replace(/^#/, ''));
+  return `${rootUrl}#${encodedFragment}`;
+};
+
 export const isMetaKey = e => e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
 
 // Identify following special clicks
