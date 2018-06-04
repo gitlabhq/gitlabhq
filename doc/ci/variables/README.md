@@ -74,6 +74,7 @@ future GitLab releases.**
 | **CI_RUNNER_REVISION**          | all    | 10.6   | GitLab Runner revision that is executing the current job |
 | **CI_RUNNER_EXECUTABLE_ARCH**   | all    | 10.6   | The OS/architecture of the GitLab Runner executable (note that this is not necessarily the same as the environment of the executor) |
 | **CI_PIPELINE_ID**              | 8.10   | 0.5    | The unique id of the current pipeline that GitLab CI uses internally |
+| **CI_PIPELINE_IID**             | 11.0   | all    | The unique id of the current pipeline scoped to project |
 | **CI_PIPELINE_TRIGGERED**       | all    | all    | The flag to indicate that job was [triggered] |
 | **CI_PIPELINE_SOURCE**          | 10.0   | all    | Indicates how the pipeline was triggered. Possible options are: `push`, `web`, `trigger`, `schedule`, `api`, and `pipeline`. For pipelines created before GitLab 9.5, this will show as `unknown` |
 | **CI_PROJECT_DIR**              | all    | all    | The full path where the repository is cloned and where the job is run |
@@ -373,6 +374,8 @@ Running on runner-8a2f473d-project-1796893-concurrent-0 via runner-8a2f473d-mach
 ++ CI_PROJECT_URL=https://example.com/gitlab-examples/ci-debug-trace
 ++ export CI_PIPELINE_ID=52666
 ++ CI_PIPELINE_ID=52666
+++ export CI_PIPELINE_IID=123
+++ CI_PIPELINE_IID=123
 ++ export CI_RUNNER_ID=1337
 ++ CI_RUNNER_ID=1337
 ++ export CI_RUNNER_DESCRIPTION=shared-runners-manager-1.example.com
@@ -460,6 +463,7 @@ export CI_JOB_MANUAL="true"
 export CI_JOB_TRIGGERED="true"
 export CI_JOB_TOKEN="abcde-1234ABCD5678ef"
 export CI_PIPELINE_ID="1000"
+export CI_PIPELINE_IID="10"
 export CI_PROJECT_ID="34"
 export CI_PROJECT_DIR="/builds/gitlab-org/gitlab-ce"
 export CI_PROJECT_NAME="gitlab-ce"
