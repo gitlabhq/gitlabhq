@@ -172,7 +172,7 @@ GEM
       unf (>= 0.0.5, < 1.0.0)
     doorkeeper (4.3.2)
       railties (>= 4.2)
-    doorkeeper-openid_connect (1.3.0)
+    doorkeeper-openid_connect (1.4.0)
       doorkeeper (~> 4.3)
       json-jwt (~> 1.6)
     dropzonejs-rails (0.7.2)
