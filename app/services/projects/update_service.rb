@@ -17,6 +17,8 @@ module Projects
 
       ensure_wiki_exists if enabling_wiki?
 
+      yield if block_given?
+
       if project.update_attributes(params.except(:default_branch))
         if project.previous_changes.include?('path')
           project.rename_repo
