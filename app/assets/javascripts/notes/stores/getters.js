@@ -101,5 +101,15 @@ export const resolvedDiscussionCount = (state, getters) => {
   return Object.keys(resolvedMap).length;
 };
 
+export const discussionTabCounter = state => {
+  let all = [];
+
+  state.notes.forEach(note => {
+    all = all.concat(note.notes.filter(n => !n.system && !n.placeholder));
+  });
+
+  return all.length;
+};
+
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

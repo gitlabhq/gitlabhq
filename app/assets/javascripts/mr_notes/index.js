@@ -1,5 +1,6 @@
+import $ from 'jquery';
 import Vue from 'vue';
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapState, mapGetters } from 'vuex';
 import initDiffsApp from '../diffs';
 import notesApp from '../notes/components/notes_app.vue';
 import discussionCounter from '../notes/components/discussion_counter.vue';
@@ -34,19 +35,33 @@ export default function initMrNotes() {
       };
     },
     computed: {
+      ...mapGetters(['discussionTabCounter']),
       ...mapState({
         activeTab: state => state.page.activeTab,
       }),
     },
+    watch: {
+      discussionTabCounter() {
+        this.updateDiscussionTabCounter();
+      },
+    },
     mounted() {
+      this.notesCountBadge = $('.issuable-details').find('.notes-tab .badge');
       this.setActiveTab(window.mrTabs.getCurrentAction());
 
       window.mrTabs.eventHub.$on('MergeRequestTabChange', tab => {
         this.setActiveTab(tab);
       });
+      $(document).on('visibilitychange', this.updateDiscussionTabCounter);
+    },
+    beforeDestroy() {
+      $(document).off('visibilitychange', this.updateDiscussionTabCounter);
     },
     methods: {
       ...mapActions(['setActiveTab']),
+      updateDiscussionTabCounter() {
+        this.notesCountBadge.text(this.discussionTabCounter);
+      },
     },
     render(createElement) {
       return createElement('notes-app', {
