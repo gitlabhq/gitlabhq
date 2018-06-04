@@ -78,6 +78,21 @@ namespace :gitlab do
     task pseudonymity_dump: :environment do
       table = Pseudonymity::Table.new
       table.tables_to_csv
+
+      upload = Pseudonymity::UploadService.new(table.output_dir, progress)
+      upload.upload
+      upload.cleanup
+    end
+
+    def progress
+      if ENV['CRON']
+        # We need an object we can say 'puts' and 'print' to; let's use a
+        # StringIO.
+        require 'stringio'
+        StringIO.new
+      else
+        $stdout
+      end
     end
   end
 end

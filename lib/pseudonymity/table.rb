@@ -27,27 +27,26 @@ module Pseudonymity
 
   class Table
     attr_accessor :config
+    attr_accessor :output_dir
 
     def initialize
-      @config = {}
-      @csv_output = ""
-      parse_config
+      @config = parse_config
+      @output_dir = ""
       @schema = {}
       @output_files = []
     end
 
     def tables_to_csv
       tables = config["tables"]
-      @csv_output = config["output"]["csv"]
 
-      unless File.directory?(@csv_output)
-        raise "No such directory #{@csv_output}"
-      end
+      @output_dir = File.join("/tmp/", SecureRandom.hex)
+      Dir.mkdir(@output_dir) unless File.directory?(@output_dir)
 
       new_tables = tables.map do |k, v|
         @schema[k] = {}
         table_to_csv(k, v["whitelist"], v["pseudo"])
       end
+
       schema_to_yml
       file_list_to_json
       new_tables
@@ -57,7 +56,7 @@ module Pseudonymity
       file_timestamp = filename || "#{prefix}_#{Time.now.to_i}"
       file_timestamp = "#{file_timestamp}.#{ext}"
       @output_files << file_timestamp
-      File.join(@csv_output, file_timestamp)
+      File.join(@output_dir, file_timestamp)
     end
 
     def schema_to_yml
@@ -103,10 +102,11 @@ module Pseudonymity
     end
 
     def parse_config
-      @config = YAML.load_file(Rails.root.join('./ee/lib/assets/pseudonymity_dump.yml'))
+      YAML.load_file(Rails.root.join(Gitlab.config.pseudonymizer.manifest))
     end
 
     def write_to_csv_file(title, contents)
+      Rails.logger.info "Writing #{title} ..."
       file_path = get_and_log_file_name("csv", title)
       column_names = contents.first.keys
       contents = CSV.generate do |csv|
