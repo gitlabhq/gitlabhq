@@ -80,55 +80,56 @@ export default {
 
 <template>
   <div>
-    <loading-icon
-      class="mt-3 mb-3"
-      v-if="isLoading"
-      size="2"
-    />
-    <template v-else>
-      <div class="dropdown-input mt-3 pb-3 mb-3 border-bottom">
-        <input
-          type="search"
-          class="dropdown-input-field"
-          placeholder="Search merge requests"
-          v-model="search"
-          @input="searchMergeRequests"
-          ref="searchInput"
-        />
-        <i
-          aria-hidden="true"
-          class="fa fa-search dropdown-input-search"
-        ></i>
-      </div>
-      <div class="dropdown-content ide-merge-requests-dropdown-content">
-        <ul class="mb-3">
-          <template v-if="hasMergeRequests">
-            <li
-              v-for="item in mergeRequests"
-              :key="item.id"
-            >
-              <item
-                :item="item"
-                :current-id="currentMergeRequestId"
-                :current-project-id="currentProjectId"
-                @click="viewMergeRequest"
-              />
-            </li>
-          </template>
+    <div class="dropdown-input mt-3 pb-3 mb-0 border-bottom">
+      <input
+        type="search"
+        class="dropdown-input-field"
+        placeholder="Search merge requests"
+        v-model="search"
+        @input="searchMergeRequests"
+        ref="searchInput"
+      />
+      <i
+        aria-hidden="true"
+        class="fa fa-search dropdown-input-search"
+      ></i>
+    </div>
+    <div class="dropdown-content ide-merge-requests-dropdown-content d-flex">
+      <loading-icon
+        class="mt-3 mb-3 align-self-center ml-auto mr-auto"
+        v-if="isLoading"
+        size="2"
+      />
+      <ul
+        v-else
+        class="mb-3 w-100"
+      >
+        <template v-if="hasMergeRequests">
           <li
-            v-else
-            class="ide-merge-requests-empty d-flex align-items-center justify-content-center"
+            v-for="item in mergeRequests"
+            :key="item.id"
           >
-            <template v-if="hasNoSearchResults">
-              {{ __('No merge requests found') }}
-            </template>
-            <template v-else>
-              {{ emptyText }}
-            </template>
+            <item
+              :item="item"
+              :current-id="currentMergeRequestId"
+              :current-project-id="currentProjectId"
+              @click="viewMergeRequest"
+            />
           </li>
-        </ul>
-      </div>
-    </template>
+        </template>
+        <li
+          v-else
+          class="ide-merge-requests-empty d-flex align-items-center justify-content-center"
+        >
+          <template v-if="hasNoSearchResults">
+            {{ __('No merge requests found') }}
+          </template>
+          <template v-else>
+            {{ emptyText }}
+          </template>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 

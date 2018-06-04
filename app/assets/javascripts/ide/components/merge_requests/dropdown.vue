@@ -1,5 +1,5 @@
 <script>
-import { mapGetters, mapState } from 'vuex';
+import { mapGetters } from 'vuex';
 import Tabs from '../../../vue_shared/components/tabs/tabs';
 import Tab from '../../../vue_shared/components/tabs/tab.vue';
 import List from './list.vue';
