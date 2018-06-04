@@ -20,7 +20,6 @@ describe Deployment do
     it_behaves_like 'AtomicInternalId' do
       let(:internal_id_attribute) { :iid }
       let(:instance) { build(:deployment) }
-      let(:scope) { :project }
       let(:scope_attrs) { { project: instance.project } }
       let(:usage) { :deployments }
     end

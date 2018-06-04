@@ -9,7 +9,6 @@ class Milestone < ActiveRecord::Base
 
   include CacheMarkdownField
   include AtomicInternalId
-  include IidRoutes
   include Sortable
   include Referable
   include StripAttribute
