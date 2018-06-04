@@ -235,6 +235,28 @@ module Gitlab
         )
       end
 
+      def restore_custom_hooks(custom_hooks_path)
+        request = Gitaly::RestoreCustomHooksRequest.new(repository: @gitaly_repo)
+        enum = Enumerator.new do |y|
+          File.open(custom_hooks_path, 'rb') do |f|
+            while data = f.read(MAX_MSG_SIZE)
+              request.data = data
+
+              y.yield request
+              request = Gitaly::RestoreCustomHooksRequest.new
+            end
+          end
+        end
+
+        GitalyClient.call(
+          @storage,
+          :repository_service,
+          :restore_custom_hooks,
+          enum,
+          timeout: GitalyClient.default_timeout
+        )
+      end
+
       def create_from_snapshot(http_url, http_auth)
         request = Gitaly::CreateRepositoryFromSnapshotRequest.new(
           repository: @gitaly_repo,
