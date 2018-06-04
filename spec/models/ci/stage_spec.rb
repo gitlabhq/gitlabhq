@@ -110,6 +110,19 @@ describe Ci::Stage, :models do
         expect(stage.reload).to be_failed
       end
     end
+
+    context 'when statuses status was not recognized' do
+      before do
+        allow(stage)
+          .to receive_message_chain(:statuses, :latest, :status)
+          .and_return(:unknown)
+      end
+
+      it 'raises an exception' do
+        expect { stage.update_status }
+          .to raise_error(HasStatus::UnknownStatusError)
+      end
+    end
   end
 
   describe '#detailed_status' do

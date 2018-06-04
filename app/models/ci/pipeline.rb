@@ -530,7 +530,8 @@ module Ci
 
     def update_status
       retry_optimistic_lock(self) do
-        case latest_builds_status
+        case latest_builds_status.to_s
+        when 'created' then nil
         when 'pending' then enqueue
         when 'running' then run
         when 'success' then succeed
@@ -538,6 +539,9 @@ module Ci
         when 'canceled' then cancel
         when 'skipped' then skip
         when 'manual' then block
+        else
+          raise HasStatus::UnknownStatusError,
+                "Unknown status `#{latest_builds_status}`"
         end
       end
     end
