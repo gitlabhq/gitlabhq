@@ -5,7 +5,7 @@
       .errors-holder
       .card-body
         %p
-          Removing the pages will prevent from exposing them to outside world.
+          Removing pages will prevent them from being exposed to the outside world.
         .form-actions
           = link_to 'Remove pages', project_pages_path(@project), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove"
   - else
