@@ -27,6 +27,9 @@ export default {
   },
 
   computed: {
+    mergeError() {
+      return this.mr.mergeError ? this.mr.mergeError.replace(/<br\s*\/?>/gi, ' ').trim() : '';
+    },
     timerText() {
       return n__(
         'Refreshing in a second to show the updated status...',
@@ -83,9 +86,9 @@ export default {
         <span class="bold">
           <span
             class="has-error-message"
-            v-if="mr.mergeError"
+            v-if="mergeError"
           >
-            {{ mr.mergeError.replace(/<br\s*\/?>\s/ig, ""); }}
+            {{ mergeError }}
           </span>
           <span v-else>
             {{ s__("mrWidget|Merge failed.") }}
