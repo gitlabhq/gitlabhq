@@ -84,7 +84,7 @@
         css-class="btn-default btn-transparent btn-clipboard"
       />
 
-      <div class="controls hidden-xs pull-right">
+      <div class="controls d-none d-sm-block float-right">
         <button
           v-if="repo.canDelete"
           type="button"

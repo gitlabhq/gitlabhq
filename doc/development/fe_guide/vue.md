@@ -8,7 +8,7 @@ All new features built with Vue.js must follow a [Flux architecture][flux].
 The main goal we are trying to achieve is to have only one data flow and only one data entry.
 In order to achieve this goal, you can either use [vuex](#vuex) or use the [store pattern][state-management], explained below:
 
-Each Vue bundle needs a Store - where we keep all the data -,a Service - that we use to communicate with the server - and a main Vue component.
+Each Vue bundle needs a Store - where we keep all the data -, a Service - that we use to communicate with the server - and a main Vue component.
 
 Think of the Main Vue Component as the entry point of your application. This is the only smart
 component that should exist in each Vue feature.
@@ -17,7 +17,7 @@ This component is responsible for:
 1. Calling the Store to store the data received
 1. Mounting all the other components
 
-  ![Vue Architecture](img/vue_arch.png)
+![Vue Architecture](img/vue_arch.png)
 
 You can also read about this architecture in vue docs about [state management][state-management]
 and about [one way data flow][one-way-data-flow].
@@ -51,14 +51,14 @@ of the new feature should be.
 The Store and the Service should be imported and initialized in this file and
 provided as a prop to the main component.
 
-Don't forget to follow [these steps.][page_specific_javascript]
+Don't forget to follow [these steps][page_specific_javascript].
 
 ### Bootstrapping Gotchas
-#### Providing data from Haml to JavaScript
+#### Providing data from HAML to JavaScript
 While mounting a Vue application may be a need to provide data from Rails to JavaScript.
 To do that, provide the data through `data` attributes in the HTML element and query them while mounting the application.
 
-_Note:_ You should only do this while initing the application, because the mounted element will be replaced with Vue-generated DOM.
+_Note:_ You should only do this while initializing the application, because the mounted element will be replaced with Vue-generated DOM.
 
 The advantage of providing data from the DOM to the Vue instance through `props` in the `render` function
 instead of querying the DOM inside the main vue component is that makes tests easier by avoiding the need to
@@ -68,6 +68,7 @@ create a fixture or an HTML element in the unit test. See the following example:
 // haml
 .js-vue-app{ data: { endpoint: 'foo' }}
 
+// index.js
 document.addEventListener('DOMContentLoaded', () => new Vue({
   el: '.js-vue-app',
   data() {
@@ -87,13 +88,11 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
 ```
 
 #### Accessing the `gl` object
-When we need to query the `gl` object for data that won't change during the application's lyfecyle, we should do it in the same place where we query the DOM.
+When we need to query the `gl` object for data that won't change during the application's life cyle, we should do it in the same place where we query the DOM.
 By following this practice, we can avoid the need to mock the `gl` object, which will make tests easier.
 It should be done while initializing our Vue instance, and the data should be provided as `props` to the main component:
 
-##### example:
 ```javascript
-
 document.addEventListener('DOMContentLoaded', () => new Vue({
   el: '.js-vue-app',
   render(createElement) {
@@ -121,25 +120,6 @@ in one table would not be a good use of this pattern.
 
 You can read more about components in Vue.js site, [Component System][component-system]
 
-#### Components Gotchas
-1. Using SVGs icons in components: To use an SVG icon in a template use the `icon.vue`
-1. Using SVGs illustrations in components: To use an SVG illustrations in a template provide the path as a prop and display it through a standard img tag.
-    ```javascript
-      <script>
-      export default {
-        props: {
-          svgIllustrationPath: {
-            type: String,
-            required: true,
-          },
-        },
-      };
-      <script>
-      <template>
-        <img :src="svgIllustrationPath" />
-      </template>
-    ```
-
 ### A folder for the Store
 
 #### Vuex
@@ -163,13 +143,13 @@ Refer to [axios](axios.md) for more details.
 
 Axios instance should only be imported in the service file.
 
-  ```javascript
-  import axios from 'javascripts/lib/utils/axios_utils';
-  ```
+```javascript
+import axios from '~/lib/utils/axios_utils';
+```
 
 ### End Result
 
-The following example shows an  application:
+The following example shows an application:
 
 ```javascript
 // store.js
@@ -177,8 +157,8 @@ export default class Store {
 
   /**
    * This is where we will iniatialize the state of our data.
-   * Usually in a small SPA you don't need any options when starting the store. In the case you do
-   * need guarantee it's an Object and it's documented.
+   * Usually in a small SPA you don't need any options when starting the store.
+   * In that case you do need guarantee it's an Object and it's documented.
    *
    * @param  {Object} options
    */
@@ -186,7 +166,7 @@ export default class Store {
     this.options = options;
 
     // Create a state object to handle all our data in the same place
-    this.todos = []:
+    this.todos = [];
   }
 
   setTodos(todos = []) {
@@ -207,7 +187,7 @@ export default class Store {
 }
 
 // service.js
-import axios from 'javascripts/lib/utils/axios_utils'
+import axios from '~/lib/utils/axios_utils'
 
 export default class Service {
   constructor(options) {
@@ -233,8 +213,8 @@ export default {
       type: Object,
       required: true,
     },
-  }
-}
+  },
+};
 </script>
 <template>
   <div>
@@ -275,7 +255,7 @@ export default {
   },
 
   created() {
-    this.service = new Service('todos');
+    this.service = new Service('/todos');
 
     this.getTodos();
   },
@@ -284,9 +264,9 @@ export default {
     getTodos() {
       this.isLoading = true;
 
-      this.service.getTodos()
-        .then(response => response.json())
-        .then((response) => {
+      this.service
+        .getTodos()
+        .then(response => {
           this.store.setTodos(response);
           this.isLoading = false;
         })
@@ -296,18 +276,21 @@ export default {
         });
     },
 
-    addTodo(todo) {
-      this.service.addTodo(todo)
-      then(response => response.json())
-      .then((response) => {
-        this.store.addTodo(response);
-      })
-      .catch(() => {
-        // Show an error
-      });
-    }
-  }
-}
+    addTodo(event) {
+      this.service
+        .addTodo({
+          title: 'New entry',
+          text: `You clicked on ${event.target.tagName}`,
+        })
+        .then(response => {
+          this.store.addTodo(response);
+        })
+        .catch(() => {
+          // Show an error
+        });
+    },
+  },
+};
 </script>
 <template>
   <div class="container">
@@ -333,7 +316,7 @@ export default {
   <div>
 </template>
 
-// bundle.js
+// index.js
 import todoComponent from 'todos_main_component.vue';
 
 new Vue({
@@ -365,76 +348,79 @@ Each Vue component has a unique output. This output is always present in the ren
 Although we can test each method of a Vue component individually, our goal must be to test the output
 of the render/template function, which represents the state at all times.
 
-Make use of Vue Resource Interceptors to mock data returned by the service.
+Make use of the [axios mock adapter](axios.md#mock-axios-response-on-tests) to mock data returned.
 
 Here's how we would test the Todo App above:
 
 ```javascript
-import component from 'todos_main_component';
+import Vue from 'vue';
+import axios from '~/lib/utils/axios_utils';
+import MockAdapter from 'axios-mock-adapter';
 
 describe('Todos App', () => {
-  it('should render the loading state while the request is being made', () => {
+  let vm;
+  let mock;
+
+  beforeEach(() => {
+    // Create a mock adapter for stubbing axios API requests
+    mock = new MockAdapter(axios);
+
     const Component = Vue.extend(component);
 
-    const vm = new Component().$mount();
+    // Mount the Component
+    vm = new Component().$mount();
+  });
 
+  afterEach(() => {
+    // Reset the mock adapter
+    mock.restore();
+    // Destroy the mounted component
+    vm.$destroy();
+  });
+
+  it('should render the loading state while the request is being made', () => {
     expect(vm.$el.querySelector('i.fa-spin')).toBeDefined();
   });
 
-  describe('with data', () => {
-    // Mock the service to return data
-    const interceptor = (request, next) => {
-      next(request.respondWith(JSON.stringify([{
+  it('should render todos returned by the endpoint', done => {
+    // Mock the get request on the API endpoint to return data
+    mock.onGet('/todos').replyOnce(200, [
+      {
         title: 'This is a todo',
-        body: 'This is the text'
-      }]), {
-        status: 200,
-      }));
-    };
+        text: 'This is the text',
+      },
+    ]);
 
-    let vm;
-
-    beforeEach(() => {
-      Vue.http.interceptors.push(interceptor);
-
-      const Component = Vue.extend(component);
-
-      vm = new Component().$mount();
-    });
-
-    afterEach(() => {
-      Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
-    });
-
-
-    it('should render todos', (done) => {
-      setTimeout(() => {
-        expect(vm.$el.querySelectorAll('.js-todo-list div').length).toBe(1);
-        done();
-      }, 0);
+    Vue.nextTick(() => {
+      const items = vm.$el.querySelectorAll('.js-todo-list div')
+      expect(items.length).toBe(1);
+      expect(items[0].textContent).toContain('This is the text');
+      done();
     });
   });
 
-  describe('add todo', () => {
-    let vm;
-    beforeEach(() => {
-      const Component = Vue.extend(component);
-      vm = new Component().$mount();
-    });
-    it('should add a todos', (done) => {
-      setTimeout(() => {
-        vm.$el.querySelector('.js-add-todo').click();
+  it('should add a todos on button click', (done) => {
 
-        // Add a new interceptor to mock the add Todo request
-        Vue.nextTick(() => {
-          expect(vm.$el.querySelectorAll('.js-todo-list div').length).toBe(2);
-        });
-      }, 0);
+    // Mock the put request and check that the sent data object is correct
+    mock.onPut('/todos').replyOnce((req) => {
+      expect(req.data).toContain('text');
+      expect(req.data).toContain('title');
+
+      return [201, {}];
+    });
+
+    vm.$el.querySelector('.js-add-todo').click();
+
+    // Add a new interceptor to mock the add Todo request
+    Vue.nextTick(() => {
+      expect(vm.$el.querySelectorAll('.js-todo-list div').length).toBe(2);
+      done();
     });
   });
 });
 ```
-#### `mountComponent` helper
+
+### `mountComponent` helper
 There is a helper in `spec/javascripts/helpers/vue_mount_component_helper.js` that allows you to mount a component with the given props:
 
 ```javascript
@@ -447,12 +433,9 @@ const data = {prop: 'foo'};
 const vm = mountComponent(Component, data);
 ```
 
-#### Test the component's output
+### Test the component's output
 The main return value of a Vue component is the rendered output. In order to test the component we
 need to test the rendered output. [Vue][vue-test] guide's to unit test show us exactly that:
-
-### Stubbing API responses
-Refer to [mock axios](axios.md#mock-axios-response-on-tests)
 
 
 [vue-docs]: http://vuejs.org/guide/index.html
@@ -466,4 +449,3 @@ Refer to [mock axios](axios.md#mock-axios-response-on-tests)
 [issue-boards-service]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/boards/services/board_service.js.es6
 [flux]: https://facebook.github.io/flux
 [axios]: https://github.com/axios/axios
-[axios-interceptors]: https://github.com/axios/axios#interceptors

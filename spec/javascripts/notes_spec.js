@@ -911,7 +911,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         expect($tempNote.find('.timeline-content').hasClass('discussion')).toBeFalsy();
         expect(
           $tempNoteHeader
-            .find('.hidden-xs')
+            .find('.d-none.d-sm-block')
             .text()
             .trim(),
         ).toEqual(currentUserFullname);
@@ -955,7 +955,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         const $tempNoteHeader = $tempNote.find('.note-header');
         expect(
           $tempNoteHeader
-            .find('.hidden-xs')
+            .find('.d-none.d-sm-block')
             .text()
             .trim(),
         ).toEqual('Foo &lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;');

@@ -19,3 +19,9 @@
   @extend .broadcast-message;
   margin-bottom: 20px;
 }
+
+.toggle-colors {
+  input {
+    min-height: 34px;
+  }
+}

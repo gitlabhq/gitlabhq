@@ -1,4 +1,5 @@
 <script>
+import $ from 'jquery';
 import { mapGetters, mapActions } from 'vuex';
 import { getLocationHash } from '../../lib/utils/url_utility';
 import Flash from '../../flash';
@@ -72,6 +73,11 @@ export default {
   mounted() {
     this.fetchNotes();
 
+    this.notesCountBadge = $('.issuable-details').find('.notes-tab .badge');
+    $(document).on('visibilitychange', () => this.fetchNotes().then(() => {
+      this.notesCountBadge.text(this.notes.length);
+    }));
+
     const parentElement = this.$el.parentElement;
 
     if (parentElement && parentElement.classList.contains('js-vue-notes-event')) {
@@ -114,7 +120,9 @@ export default {
     },
     fetchNotes() {
       return this.actionFetchNotes(this.getNotesDataByProp('discussionsPath'))
-        .then(() => this.initPolling())
+        .then(() => {
+          this.initPolling();
+        })
         .then(() => {
           this.isLoading = false;
         })

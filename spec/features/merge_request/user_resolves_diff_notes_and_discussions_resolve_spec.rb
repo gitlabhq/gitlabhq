@@ -217,16 +217,18 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         expect(page).to have_selector('.discussion-next-btn', visible: false)
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'updates updated text after resolving note' do
+      it 'updates updated text after resolving note' do
         page.within '.diff-content .note' do
-          find('.line-resolve-btn').click
-        end
+          resolve_button = find('.line-resolve-btn')
 
-        expect(page).to have_content("Resolved by #{user.name}")
+          resolve_button.click
+          wait_for_requests
+
+          expect(resolve_button['data-original-title']).to eq("Resolved by #{user.name}")
+        end
       end
 
-      xit 'hides jump to next discussion button' do
+      it 'hides jump to next discussion button' do
         page.within '.discussion-reply-holder' do
           expect(page).not_to have_selector('.discussion-next-btn')
         end
@@ -255,13 +257,17 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         end
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'resolves discussion' do
-        page.all('.note .line-resolve-btn').each do |button|
+      it 'resolves discussion' do
+        resolve_buttons = page.all('.note .line-resolve-btn', count: 2)
+        resolve_buttons.each do |button|
           button.click
         end
 
-        expect(page).to have_content('Resolved by')
+        wait_for_requests
+
+        resolve_buttons.each do |button|
+          expect(button['data-original-title']).to eq("Resolved by #{user.name}")
+        end
 
         page.within '.line-resolve-all-container' do
           expect(page).to have_content('1/1 discussion resolved')
@@ -289,9 +295,8 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         end
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'allows user to mark all notes as resolved' do
-        page.all('.line-resolve-btn').each do |btn|
+      it 'allows user to mark all notes as resolved' do
+        page.all('.note .line-resolve-btn', count: 2).each do |btn|
           btn.click
         end
 
@@ -301,9 +306,8 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         end
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'allows user user to mark all discussions as resolved' do
-        page.all('.discussion-reply-holder').each do |reply_holder|
+      it 'allows user user to mark all discussions as resolved' do
+        page.all('.discussion-reply-holder', count: 2).each do |reply_holder|
           page.within reply_holder do
             click_button 'Resolve discussion'
           end
@@ -315,9 +319,8 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         end
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'allows user to quickly scroll to next unresolved discussion' do
-        page.within first('.discussion-reply-holder') do
+      it 'allows user to quickly scroll to next unresolved discussion' do
+        page.within('.discussion-reply-holder', match: :first) do
           click_button 'Resolve discussion'
         end
 
@@ -328,22 +331,23 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         expect(page.evaluate_script("window.pageYOffset")).to be > 0
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'updates updated text after resolving note' do
-        page.within first('.diff-content .note') do
-          find('.line-resolve-btn').click
-        end
+      it 'updates updated text after resolving note' do
+        page.within('.diff-content .note', match: :first) do
+          resolve_button = find('.line-resolve-btn')
 
-        expect(page).to have_content("Resolved by #{user.name}")
+          resolve_button.click
+          wait_for_requests
+
+          expect(resolve_button['data-original-title']).to eq("Resolved by #{user.name}")
+        end
       end
 
       it 'shows jump to next discussion button' do
-        expect(page.all('.discussion-reply-holder')).to all(have_selector('.discussion-next-btn'))
+        expect(page.all('.discussion-reply-holder', count: 2)).to all(have_selector('.discussion-next-btn'))
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'displays next discussion even if hidden' do
-        page.all('.note-discussion').each do |discussion|
+      it 'displays next discussion even if hidden' do
+        page.all('.note-discussion', count: 2).each do |discussion|
           page.within discussion do
             click_button 'Toggle discussion'
           end
@@ -455,8 +459,7 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         visit_merge_request
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'does not allow user to mark note as resolved' do
+      it 'does not allow user to mark note as resolved' do
         page.within '.diff-content .note' do
           expect(page).not_to have_selector('.line-resolve-btn')
         end

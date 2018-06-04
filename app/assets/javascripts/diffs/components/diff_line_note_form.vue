@@ -73,8 +73,8 @@ export default {
 
 <template>
   <div
-    class="content discussion-form js-discussion-note-form
-    discussion-form-container discussion-notes">
+    class="content discussion-form discussion-form-container discussion-notes"
+  >
     <note-form
       :is-editing="true"
       save-button-title="Comment"

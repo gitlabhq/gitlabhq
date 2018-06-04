@@ -12,6 +12,8 @@ import { isInViewport, scrollToElement } from '../../lib/utils/common_utils';
 
 let eTagPoll;
 
+export const expandDiscussion = ({ commit }, data) => commit(types.EXPAND_DISCUSSION, data);
+
 export const setNotesData = ({ commit }, data) => commit(types.SET_NOTES_DATA, data);
 
 export const setNoteableData = ({ commit }, data) => commit(types.SET_NOTEABLE_DATA, data);

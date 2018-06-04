@@ -99,12 +99,13 @@ describe 'Merge request > User sees avatars on diff notes', :js do
         end
       end
 
-      it 'toggles comments when clicking avatar' do
+      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+      xit 'toggles comments when clicking avatar' do
         page.within find_line(position.line_code(project.repository)) do
           find('.diff-notes-collapse').send_keys(:return)
         end
 
-        expect(page).not_to have_selector('.notes_holder')
+        expect(page).to have_selector('.notes_holder', visible: false)
 
         page.within find_line(position.line_code(project.repository)) do
           first('img.js-diff-comment-avatar').click

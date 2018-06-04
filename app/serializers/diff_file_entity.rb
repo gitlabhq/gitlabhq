@@ -1,12 +1,12 @@
 class DiffFileEntity < Grape::Entity
   include RequestAwareEntity
   include ActionView::Helpers::TagHelper
-  include Gitlab::Routing
   include BlobHelper
   include CommitsHelper
   include DiffHelper
-  include IconsHelper
   include SubmoduleHelper
+  include BlobHelper
+  include IconsHelper
   include TreeHelper
   include ChecksCollaboration
   include Gitlab::Utils::StrongMemoize
@@ -23,6 +23,7 @@ class DiffFileEntity < Grape::Entity
 
   expose :blob, using: BlobEntity
 
+  # TODO move this into BlobEntity?
   expose :can_modify_blob do |diff_file|
     merge_request = options[:merge_request]
 
@@ -41,6 +42,7 @@ class DiffFileEntity < Grape::Entity
   expose :too_large?, as: :too_large
   expose :collapsed?, as: :collapsed
   expose :new_file?, as: :new_file
+
   expose :deleted_file?, as: :deleted_file
   expose :renamed_file?, as: :renamed_file
   expose :old_path
@@ -76,8 +78,9 @@ class DiffFileEntity < Grape::Entity
     options[:environment].formatted_external_url
   end
 
+  # TODO imon/Fatih/Winnie - Are we using this? - if not please remove
   expose :external_url, if: -> (_, options) { options[:environment] } do |diff_file|
-    options[:environment].external_url_for(diff_file.content_sha, diff_file.new_path)
+    options[:environment].external_url_for(diff_file.new_path, diff_file.content_sha)
   end
 
   expose :old_path_html do |diff_file|

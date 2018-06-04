@@ -83,15 +83,13 @@ describe 'Merge request > User posts diff notes', :js do
 
       # The first `.js-unfold` unfolds upwards, therefore the first
       # `.line_holder` will be an unfolded line.
-      let(:line_holder) { first('.line_holder[id="a5cc2925ca8258af241be7e5b0381edf30266302_1_1"]') }
+      let(:line_holder) { first('#a5cc2925ca8258af241be7e5b0381edf30266302 .line_holder') }
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'does not allow commenting on the left side' do
+      it 'does not allow commenting on the left side' do
         should_not_allow_commenting(line_holder, 'left')
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-      xit 'does not allow commenting on the right side' do
+      it 'does not allow commenting on the right side' do
         should_not_allow_commenting(line_holder, 'right')
       end
     end
@@ -187,7 +185,7 @@ describe 'Merge request > User posts diff notes', :js do
     end
 
     describe 'posting a note' do
-      it 'adds as discussion' do
+      xit 'adds as discussion' do
         expect(page).to have_css('.js-temp-notes-holder', count: 2)
 
         should_allow_commenting(find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_22_22"]'), asset_form_reset: false)
@@ -207,21 +205,21 @@ describe 'Merge request > User posts diff notes', :js do
     context 'with a new line' do
       # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
       xit 'allows commenting' do
-        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
+        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]').find(:xpath, '..'))
       end
     end
 
     context 'with an old line' do
       # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
       xit 'allows commenting' do
-        should_allow_commenting(find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_22_22"]'))
+        should_allow_commenting(find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_22_22"]').find(:xpath, '..'))
       end
     end
 
     context 'with an unchanged line' do
       # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
       xit 'allows commenting' do
-        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]'))
+        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]').find(:xpath, '..'))
       end
     end
 

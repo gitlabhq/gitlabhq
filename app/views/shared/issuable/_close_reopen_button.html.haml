@@ -4,11 +4,11 @@
 
 - if can_update && is_current_user
   = link_to "Close #{display_issuable_type}", close_issuable_path(issuable), method: button_method,
-            class: "hidden-xs hidden-sm btn btn-grouped btn-close js-btn-issue-action #{issuable_button_visibility(issuable, true)}", title: "Close #{display_issuable_type}"
+            class: "d-none d-sm-none d-md-block btn btn-grouped btn-close js-btn-issue-action #{issuable_button_visibility(issuable, true)}", title: "Close #{display_issuable_type}"
   = link_to "Reopen #{display_issuable_type}", reopen_issuable_path(issuable), method: button_method,
-            class: "hidden-xs hidden-sm btn btn-grouped btn-reopen js-btn-issue-action #{issuable_button_visibility(issuable, false)}", title: "Reopen #{display_issuable_type}"
+            class: "d-none d-sm-none d-md-block btn btn-grouped btn-reopen js-btn-issue-action #{issuable_button_visibility(issuable, false)}", title: "Reopen #{display_issuable_type}"
 - elsif can_update && !is_current_user
   = render 'shared/issuable/close_reopen_report_toggle', issuable: issuable
 - else
   = link_to 'Report abuse', new_abuse_report_path(user_id: issuable.author.id, ref_url: issuable_url(issuable)),
-            class: 'hidden-xs hidden-sm btn btn-grouped btn-close-color', title: 'Report abuse'
+            class: 'd-none d-sm-none d-md-block btn btn-grouped btn-close-color', title: 'Report abuse'

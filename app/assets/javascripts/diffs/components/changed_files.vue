@@ -100,17 +100,17 @@ export default {
   >
     <div class="files-changed-inner">
       <div
-        class="inline-parallel-buttons hidden-xs hidden-sm"
+        class="inline-parallel-buttons d-none d-md-block"
       >
         <a
           v-if="areAllFilesCollapsed"
-          class="hidden-xs btn btn-default"
+          class="btn btn-default"
           @click="expandAllFiles"
         >
           {{ __('Expand all') }}
         </a>
         <a
-          class="hidden-xs btn btn-default"
+          class="btn btn-default"
           :href="toggleWhitespacePath"
         >
           {{ toggleWhitespaceText }}

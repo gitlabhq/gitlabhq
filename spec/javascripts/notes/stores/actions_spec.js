@@ -115,6 +115,19 @@ describe('Actions Notes Store', () => {
     });
   });
 
+  describe('expandDiscussion', () => {
+    it('should expand discussion', done => {
+      testAction(
+        actions.expandDiscussion,
+        { discussionId: discussionMock.id },
+        { notes: [discussionMock] },
+        [{ type: 'EXPAND_DISCUSSION', payload: { discussionId: discussionMock.id } }],
+        [],
+        done,
+      );
+    });
+  });
+
   describe('async methods', () => {
     const interceptor = (request, next) => {
       next(

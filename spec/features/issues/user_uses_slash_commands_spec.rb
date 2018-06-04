@@ -3,10 +3,9 @@ require 'rails_helper'
 feature 'Issues > User uses quick actions', :js do
   include Spec::Support::Helpers::Features::NotesHelpers
 
-  # TODO https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-  #it_behaves_like 'issuable record that supports quick actions in its description and notes', :issue do
-  #  let(:issuable) { create(:issue, project: project) }
-  #end
+  it_behaves_like 'issuable record that supports quick actions in its description and notes', :issue do
+    let(:issuable) { create(:issue, project: project) }
+  end
 
   describe 'issue-only commands' do
     let(:user) { create(:user) }

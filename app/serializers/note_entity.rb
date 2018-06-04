@@ -25,7 +25,10 @@ class NoteEntity < API::Entities::Note
   end
 
   expose :resolved?, as: :resolved
-  expose :resolvable?, as: :resolvable
+  expose :resolvable do |note|
+    note.resolvable? && can?(current_user, :resolve_note, note)
+  end
+
   expose :resolved_by, using: NoteUserEntity
 
   expose :system_note_icon_name, if: -> (note, _) { note.system? } do |note|
@@ -64,4 +67,10 @@ class NoteEntity < API::Entities::Note
   end
 
   expose :attachment, using: NoteAttachmentEntity, if: -> (note, _) { note.attachment? }
+
+  private
+
+  def current_user
+    request.current_user
+  end
 end

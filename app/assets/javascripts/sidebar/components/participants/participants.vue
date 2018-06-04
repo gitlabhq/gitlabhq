@@ -84,6 +84,7 @@
       v-tooltip
       data-container="body"
       data-placement="left"
+      data-boundary="viewport"
       :title="participantLabel"
       @click="onClickCollapsedIcon"
     >

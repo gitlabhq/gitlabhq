@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-17 19:47+0200\n"
-"PO-Revision-Date: 2018-05-17 19:47+0200\n"
+"POT-Creation-Date: 2018-05-23 07:40-0500\n"
+"PO-Revision-Date: 2018-05-23 07:40-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -3567,7 +3567,7 @@ msgstr ""
 msgid "Seconds to wait for a storage access attempt"
 msgstr ""
 
-msgid "Secret variables"
+msgid "Variables"
 msgstr ""
 
 msgid "Select Archive Format"
@@ -4069,6 +4069,12 @@ msgstr ""
 msgid "There are problems accessing Git storage: "
 msgstr ""
 
+msgid "There was an error loading jobs"
+msgstr ""
+
+msgid "There was an error loading latest pipeline"
+msgstr ""
+
 msgid "There was an error loading users activity calendar."
 msgstr ""
 
@@ -4318,10 +4324,10 @@ msgstr ""
 msgid "Timeago|in 1 year"
 msgstr ""
 
-msgid "Timeago|in a while"
+msgid "Timeago|less than a minute ago"
 msgstr ""
 
-msgid "Timeago|less than a minute ago"
+msgid "Timeago|right now"
 msgstr ""
 
 msgid "Time|hr"
@@ -4559,7 +4565,31 @@ msgstr ""
 msgid "WikiEdit|There is already a page with the same title in that path."
 msgstr ""
 
-msgid "WikiEmptyPageError|You are not allowed to create wiki pages"
+msgid "WikiEmptyIssueMessage|Suggest wiki improvement"
+msgstr ""
+
+msgid "WikiEmptyIssueMessage|You must be a project member in order to add wiki pages. If you have suggestions for how to improve the wiki for this project, consider opening an issue in the %{issues_link}."
+msgstr ""
+
+msgid "WikiEmptyIssueMessage|issue tracker"
+msgstr ""
+
+msgid "WikiEmpty|A wiki is where you can store all the details about your project. This can include why you've created it, it's principles, how to use it, and so on."
+msgstr ""
+
+msgid "WikiEmpty|Create your first page"
+msgstr ""
+
+msgid "WikiEmpty|Suggest wiki improvement"
+msgstr ""
+
+msgid "WikiEmpty|The wiki lets you write documentation for your project"
+msgstr ""
+
+msgid "WikiEmpty|This project has no wiki pages"
+msgstr ""
+
+msgid "WikiEmpty|You must be a project member in order to add wiki pages."
 msgstr ""
 
 msgid "WikiHistoricalPage|This is an old version of this page."
@@ -4626,9 +4656,6 @@ msgid "Wiki|Create page"
 msgstr ""
 
 msgid "Wiki|Edit Page"
-msgstr ""
-
-msgid "Wiki|Empty page"
 msgstr ""
 
 msgid "Wiki|More Pages"

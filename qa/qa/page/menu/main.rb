@@ -10,7 +10,7 @@ module QA
         view 'app/views/layouts/header/_default.html.haml' do
           element :navbar
           element :user_avatar
-          element :user_menu, '.dropdown-menu-nav'
+          element :user_menu, '.dropdown-menu'
         end
 
         view 'app/views/layouts/nav/_dashboard.html.haml' do
@@ -70,7 +70,7 @@ module QA
           within_top_menu do
             click_element :user_avatar
 
-            page.within('.dropdown-menu-nav') do
+            page.within('.dropdown-menu') do
               yield
             end
           end

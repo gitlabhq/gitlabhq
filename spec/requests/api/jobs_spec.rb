@@ -13,7 +13,10 @@ describe API::Jobs do
                                ref: project.default_branch)
   end
 
-  let!(:job) { create(:ci_build, :success, pipeline: pipeline) }
+  let!(:job) do
+    create(:ci_build, :success, pipeline: pipeline,
+                                artifacts_expire_at: 1.day.since)
+  end
 
   let(:user) { create(:user) }
   let(:api_user) { user }
@@ -43,6 +46,7 @@ describe API::Jobs do
       it 'returns correct values' do
         expect(json_response).not_to be_empty
         expect(json_response.first['commit']['id']).to eq project.commit.id
+        expect(Time.parse(json_response.first['artifacts_expire_at'])).to be_like_time(job.artifacts_expire_at)
       end
 
       it 'returns pipeline data' do
@@ -128,6 +132,7 @@ describe API::Jobs do
       it 'returns correct values' do
         expect(json_response).not_to be_empty
         expect(json_response.first['commit']['id']).to eq project.commit.id
+        expect(Time.parse(json_response.first['artifacts_expire_at'])).to be_like_time(job.artifacts_expire_at)
       end
 
       it 'returns pipeline data' do
@@ -201,6 +206,7 @@ describe API::Jobs do
         expect(Time.parse(json_response['created_at'])).to be_like_time(job.created_at)
         expect(Time.parse(json_response['started_at'])).to be_like_time(job.started_at)
         expect(Time.parse(json_response['finished_at'])).to be_like_time(job.finished_at)
+        expect(Time.parse(json_response['artifacts_expire_at'])).to be_like_time(job.artifacts_expire_at)
         expect(json_response['duration']).to eq(job.duration)
       end
 

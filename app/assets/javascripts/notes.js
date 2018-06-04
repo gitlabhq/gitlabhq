@@ -1107,8 +1107,8 @@ export default class Notes {
       const isForced = forceShow === true || forceShow === false;
       const showNow = forceShow === true || (!isCurrentlyShown && !isForced);
 
-      targetRow.toggle(showNow);
-      notesContent.toggle(showNow);
+      targetRow.toggleClass('hide', !showNow);
+      notesContent.toggleClass('hide', !showNow);
     }
 
     if (addForm) {
@@ -1539,8 +1539,12 @@ export default class Notes {
                <div class="note-header">
                   <div class="note-header-info">
                      <a href="/${_.escape(currentUsername)}">
-                       <span class="hidden-xs">${_.escape(currentUsername)}</span>
-                       <span class="note-headline-light">${_.escape(currentUsername)}</span>
+                       <span class="d-none d-sm-block">${_.escape(
+                         currentUsername,
+                       )}</span>
+                       <span class="note-headline-light">${_.escape(
+                         currentUsername,
+                       )}</span>
                      </a>
                   </div>
                </div>
@@ -1554,8 +1558,10 @@ export default class Notes {
       </li>`,
     );
 
-    $tempNote.find('.hidden-xs').text(_.escape(currentUserFullname));
-    $tempNote.find('.note-headline-light').text(`@${_.escape(currentUsername)}`);
+    $tempNote.find('.d-none.d-sm-block').text(_.escape(currentUserFullname));
+    $tempNote
+      .find('.note-headline-light')
+      .text(`@${_.escape(currentUsername)}`);
 
     return $tempNote;
   }

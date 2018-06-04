@@ -114,7 +114,7 @@
     font-size: 0.95em;
   }
 
-  blockquote {
+  .blockquote {
     color: $gl-grayish-blue;
     font-size: inherit;
     padding: 8px 24px;
@@ -122,12 +122,12 @@
     border-left: 3px solid $white-dark;
   }
 
-  blockquote:dir(rtl) {
+  .blockquote:dir(rtl) {
     border-left: 0;
     border-right: 3px solid $white-dark;
   }
 
-  blockquote p {
+  .blockquote p {
     color: $gl-grayish-blue !important;
     font-size: inherit;
     line-height: 1.5;
@@ -321,6 +321,16 @@ h6 {
 /** CODE **/
 pre {
   font-family: $monospace_font;
+  display: block;
+  padding: $gl-padding-8;
+  margin: 0 0 $gl-padding-8;
+  font-size: 13px;
+  word-break: break-all;
+  word-wrap: break-word;
+  color: $gl-text-color;
+  background-color: $gray-light;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-small;
 }
 
 code {
@@ -391,7 +401,7 @@ h4 {
 }
 
 .text-right-lg {
-  @media (min-width: $screen-lg-min) {
+  @include media-breakpoint-up(lg) {
     text-align: right;
   }
 }

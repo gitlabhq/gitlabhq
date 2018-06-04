@@ -373,5 +373,36 @@ describe('diff_file_header', () => {
         expect(lfsLabel()).toBe(null);
       });
     });
+
+    describe('addMergeRequestButtons', () => {
+      beforeEach(() => {
+        props.addMergeRequestButtons = true;
+        props.diffFile.editPath = '';
+      });
+
+      describe('view on environment button', () => {
+        const url = 'some.external.url/';
+        const title = 'url.title';
+
+        it('displays link to external url', () => {
+          props.diffFile.externalUrl = url;
+          props.diffFile.formattedExternalUrl = title;
+
+          vm = mountComponent(Component, props);
+
+          expect(vm.$el.querySelector(`a[href="${url}"]`)).not.toBe(null);
+          expect(vm.$el.querySelector(`a[data-original-title="View on ${title}"]`)).not.toBe(null);
+        });
+
+        it('hides link if no external url', () => {
+          props.diffFile.externalUrl = '';
+          props.diffFile.formattedExternalUrl = title;
+
+          vm = mountComponent(Component, props);
+
+          expect(vm.$el.querySelector(`a[data-original-title="View on ${title}"]`)).toBe(null);
+        });
+      });
+    });
   });
 });

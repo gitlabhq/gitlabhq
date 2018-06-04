@@ -101,6 +101,10 @@ export default {
         imageDiffHtml: this.note.image_diff_html,
         active: this.note.active,
         discussionPath: this.note.discussion_path,
+        resolved: this.note.resolved,
+        resolvedBy: this.note.resolved_by,
+        resolvedByPush: this.note.resolved_by_push,
+        resolvedAt: this.note.resolved_at,
       };
     },
     author() {
@@ -130,8 +134,11 @@ export default {
 
       return null;
     },
-    hasUnresolvedDiscussion() {
-      return this.unresolvedDiscussions.length > 0;
+    resolvedText() {
+      return this.discussion.resolvedByPush ? 'Automatically resolved' : 'Resolved';
+    },
+    hasMultipleUnresolvedDiscussions() {
+      return this.unresolvedDiscussions.length > 1;
     },
     shouldRenderDiffs() {
       const { diffDiscussion, diffFile } = this.discussion;
@@ -142,7 +149,7 @@ export default {
       return this.shouldRenderDiffs ? diffWithNote : 'div';
     },
     wrapperClass() {
-      return this.isDiffDiscussion ? '' : 'panel panel-default discussion-wrapper';
+      return this.isDiffDiscussion ? '' : 'card discussion-wrapper';
     },
   },
   mounted() {
@@ -164,7 +171,13 @@ export default {
     this.nextDiscussionsSvg = nextDiscussionsSvg;
   },
   methods: {
-    ...mapActions(['saveNote', 'toggleDiscussion', 'removePlaceholderNotes', 'toggleResolveNote']),
+    ...mapActions([
+      'saveNote',
+      'toggleDiscussion',
+      'removePlaceholderNotes',
+      'toggleResolveNote',
+      'expandDiscussion',
+    ]),
     componentName(note) {
       if (note.isPlaceholderNote) {
         if (note.placeholderType === SYSTEM_NOTE) {
@@ -226,7 +239,7 @@ Please check your network connection and try again.`;
           });
         });
     },
-    jumpToDiscussion() {
+    jumpToNextDiscussion() {
       const discussionIds = this.allDiscussions.map(d => d.id);
       const unresolvedIds = this.unresolvedDiscussions.map(d => d.id);
       const currentIndex = discussionIds.indexOf(this.note.id);
@@ -238,6 +251,7 @@ Please check your network connection and try again.`;
         const el = document.querySelector(`[data-discussion-id="${nextId}"]`);
 
         if (el) {
+          this.expandDiscussion({ discussionId: nextId });
           scrollToElement(el);
         }
       }
@@ -247,7 +261,7 @@ Please check your network connection and try again.`;
 </script>
 
 <template>
-  <li class="note-discussion timeline-entry">
+  <li class="note note-discussion timeline-entry">
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
         <user-avatar-link
@@ -276,7 +290,14 @@ Please check your network connection and try again.`;
               :action-text-html="actionTextHtml"
             />
             <note-edited-text
-              v-if="lastUpdatedAt"
+              v-if="discussion.resolved"
+              :edited-at="discussion.resolvedAt"
+              :edited-by="discussion.resolvedBy"
+              :action-text="resolvedText"
+              class-name="discussion-headline-light js-discussion-headline"
+            />
+            <note-edited-text
+              v-else-if="lastUpdatedAt"
               :edited-at="lastUpdatedAt"
               :edited-by="lastUpdatedBy"
               action-text="Last updated"
@@ -305,15 +326,15 @@ Please check your network connection and try again.`;
                   class="discussion-reply-holder">
                   <template v-if="!isReplying && canReply">
                     <div
-                      class="btn-group-justified discussion-with-resolve-btn"
+                      class="btn-group d-flex discussion-with-resolve-btn"
                       role="group">
                       <div
-                        class="btn-group"
+                        class="btn-group w-100"
                         role="group">
                         <button
                           @click="showReplyForm"
                           type="button"
-                          class="js-vue-discussion-reply btn btn-text-field"
+                          class="js-vue-discussion-reply btn btn-text-field mr-2"
                           title="Add a reply">Reply...</button>
                       </div>
                       <div
@@ -323,7 +344,7 @@ Please check your network connection and try again.`;
                         <button
                           @click="resolveHandler()"
                           type="button"
-                          class="btn btn-default"
+                          class="btn btn-default mr-2"
                         >
                           <i
                             v-if="isResolving"
@@ -347,18 +368,18 @@ Please check your network connection and try again.`;
                             v-tooltip
                             class="new-issue-for-discussion btn
                               btn-default discussion-create-issue-btn"
-                            title="Resolve this discussion in a new issue"
+                            :title="s__('MergeRequests|Resolve this discussion in a new issue')"
                             data-container="body"
                           >
                             <span v-html="resolveDiscussionsSvg"></span>
                           </a>
                         </div>
                         <div
-                          v-if="hasUnresolvedDiscussion"
+                          v-if="hasMultipleUnresolvedDiscussions"
                           class="btn-group"
                           role="group">
                           <button
-                            @click="jumpToDiscussion"
+                            @click="jumpToNextDiscussion"
                             v-tooltip
                             class="btn btn-default discussion-next-btn"
                             title="Jump to next unresolved discussion"

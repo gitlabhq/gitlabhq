@@ -24,8 +24,7 @@ describe "Jira", :js do
       build_note
     end
 
-    # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-    xit "creates a link to the referenced issue on the preview" do
+    it "creates a link to the referenced issue on the preview" do
       find(".js-md-preview-button").click
 
       wait_for_requests
@@ -35,8 +34,7 @@ describe "Jira", :js do
       end
     end
 
-    # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-    xit "creates a link to the referenced issue after submit" do
+    it "creates a link to the referenced issue after submit" do
       click_button("Comment")
 
       wait_for_requests
@@ -46,8 +44,7 @@ describe "Jira", :js do
       end
     end
 
-    # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-    xit "creates a note on the referenced issues" do
+    it "creates a note on the referenced issues" do
       click_button("Comment")
 
       wait_for_requests
@@ -166,7 +163,7 @@ describe "Jira", :js do
     HEREDOC
 
     page.within("#diff-notes-app") do
-      fill_in("note_note", with: markdown)
+      fill_in("note-body", with: markdown)
     end
   end
 

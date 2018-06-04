@@ -2,7 +2,6 @@
 
 [![Build status](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/build.svg)](https://gitlab.com/gitlab-org/gitlab-ce/commits/master)
 [![Overall test coverage](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg)](https://gitlab.com/gitlab-org/gitlab-ce/pipelines)
-[![Dependency Status](https://gemnasium.com/gitlabhq/gitlabhq.svg)](https://gemnasium.com/gitlabhq/gitlabhq)
 [![Code Climate](https://codeclimate.com/github/gitlabhq/gitlabhq.svg)](https://codeclimate.com/github/gitlabhq/gitlabhq)
 [![Core Infrastructure Initiative Best Practices](https://bestpractices.coreinfrastructure.org/projects/42/badge)](https://bestpractices.coreinfrastructure.org/projects/42)
 [![Gitter](https://badges.gitter.im/gitlabhq/gitlabhq.svg)](https://gitter.im/gitlabhq/gitlabhq?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)

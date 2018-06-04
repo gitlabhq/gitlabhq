@@ -21,6 +21,18 @@ describe Projects::GroupLinksController do
       end
     end
 
+    context 'when project is not allowed to be shared with a group' do
+      before do
+        group.update_attributes(share_with_group_lock: false)
+      end
+
+      include_context 'link project to group'
+
+      it 'responds with status 404' do
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
     context 'when user has access to group he want to link project to' do
       before do
         group.add_developer(user)

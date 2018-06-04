@@ -20,8 +20,7 @@ describe 'User comments on a diff', :js do
   context 'when viewing comments' do
     context 'when toggling inline comments' do
       context 'in a single file' do
-        # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-        xit 'hides a comment' do
+        it 'hides a comment' do
           click_diff_line(find("[id='#{sample_compare.changes[1][:line_code]}']"))
 
           page.within('.js-discussion-note-form') do
@@ -40,8 +39,7 @@ describe 'User comments on a diff', :js do
       end
 
       context 'in multiple files' do
-        # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-        xit 'toggles comments' do
+        it 'toggles comments' do
           click_diff_line(find("[id='#{sample_compare.changes[0][:line_code]}']"))
 
           page.within('.js-discussion-note-form') do
@@ -110,15 +108,10 @@ describe 'User comments on a diff', :js do
   end
 
   context 'when adding comments' do
-    # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-    # include_examples 'comment on merge request file'
-
-    it 'prevents RSpec/EmptyExampleGroup' do
-    end
+    include_examples 'comment on merge request file'
   end
 
   context 'when editing comments' do
-    # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
     xit 'edits a comment' do
       click_diff_line(find("[id='#{sample_commit.line_code}']"))
 
@@ -145,7 +138,7 @@ describe 'User comments on a diff', :js do
   end
 
   context 'when deleting comments' do
-    # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+    #  TODO:  https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
     xit 'deletes a comment' do
       click_diff_line(find("[id='#{sample_commit.line_code}']"))
 
