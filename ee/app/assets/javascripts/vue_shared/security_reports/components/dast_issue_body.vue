@@ -1,7 +1,7 @@
 <script>
 /**
  * Renders DAST body text
- * [priority]: [name]
+ * [severity] ([confidence]): [name]
  */
 
 import ModalOpenName from './modal_open_name.vue';
@@ -27,7 +27,7 @@ export default {
 <template>
   <div class="report-block-list-issue-description prepend-top-5 append-bottom-5">
     <div class="report-block-list-issue-description-text">
-      <template v-if="issue.priority">{{ issue.priority }}:</template>
+      {{ issue.severity }} ({{ issue.confidence }}):
 
       <modal-open-name
         :issue="issue"

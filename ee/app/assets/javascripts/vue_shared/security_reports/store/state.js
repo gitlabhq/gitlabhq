@@ -77,21 +77,30 @@ export default () => ({
         text: s__('ciReport|Description'),
         isLink: false,
       },
+      identifiers: {
+        value: [],
+        text: s__('ciReport|Identifiers'),
+        isLink: false,
+      },
       file: {
         value: null,
         url: null,
         text: s__('ciReport|File'),
         isLink: true,
       },
+      className: {
+        value: null,
+        text: s__('ciReport|Class'),
+        isLink: false,
+      },
+      methodName: {
+        value: null,
+        text: s__('ciReport|Method'),
+        isLink: false,
+      },
       namespace: {
         value: null,
         text: s__('ciReport|Namespace'),
-        isLink: false,
-      },
-      identifier: {
-        value: null,
-        url: null,
-        text: s__('ciReport|Identifier'),
         isLink: false,
       },
       severity: {
@@ -99,20 +108,20 @@ export default () => ({
         text: s__('ciReport|Severity'),
         isLink: false,
       },
+      confidence: {
+        value: null,
+        text: s__('ciReport|Confidence'),
+        isLink: false,
+      },
       solution: {
         value: null,
         text: s__('ciReport|Solution'),
         isLink: false,
       },
-      confidenceLevel: {
-        value: null,
-        text: s__('ciReport|Confidence Level'),
+      links: {
+        value: [],
+        text: s__('ciReport|Links'),
         isLink: false,
-      },
-      source: {
-        value: null,
-        text: s__('ciReport|Source'),
-        isLink: true,
       },
       instances: {
         value: [],

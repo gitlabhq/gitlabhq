@@ -27,7 +27,7 @@ describe('Security Reports modal', () => {
         cve: 'CVE-2014-9999',
         file: 'Gemfile.lock',
         solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
-        name: 'Arbitrary file existence disclosure in Action Pack',
+        title: 'Arbitrary file existence disclosure in Action Pack',
         path: 'Gemfile.lock',
         urlPath: 'path/Gemfile.lock',
         isDismissed: true,
@@ -83,7 +83,7 @@ describe('Security Reports modal', () => {
         cve: 'CVE-2014-9999',
         file: 'Gemfile.lock',
         solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
-        name: 'Arbitrary file existence disclosure in Action Pack',
+        title: 'Arbitrary file existence disclosure in Action Pack',
         path: 'Gemfile.lock',
         urlPath: 'path/Gemfile.lock',
       });
@@ -112,12 +112,10 @@ describe('Security Reports modal', () => {
   describe('with instances', () => {
     beforeEach(() => {
       store.dispatch('setModalData', {
-        name: 'Absence of Anti-CSRF Tokens',
+        title: 'Absence of Anti-CSRF Tokens',
         riskcode: '1',
         riskdesc: 'Low (Medium)',
-        priority: 'Low (Medium)',
         desc: '<p>No Anti-CSRF tokens were found in a HTML submission form.</p>',
-        parsedDescription: ' No Anti-CSRF tokens were found in a HTML submission form. ',
         pluginid: '123',
         instances: [
           {
@@ -159,13 +157,17 @@ describe('Security Reports modal', () => {
       store.dispatch('setModalData', {
         tool: 'bundler_audit',
         message: 'Arbitrary file existence disclosure in Action Pack',
-        url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
         cve: 'CVE-2014-9999',
-        file: 'Gemfile.lock',
         solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
-        name: 'Arbitrary file existence disclosure in Action Pack',
+        title: 'Arbitrary file existence disclosure in Action Pack',
         path: 'Gemfile.lock',
         urlPath: 'path/Gemfile.lock',
+        location: {
+          file: 'Gemfile.lock',
+        },
+        links: [{
+          url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
+        }],
       });
 
       vm = mountComponentWithStore(Component, {
