@@ -374,6 +374,8 @@ Running on runner-8a2f473d-project-1796893-concurrent-0 via runner-8a2f473d-mach
 ++ CI_PROJECT_URL=https://example.com/gitlab-examples/ci-debug-trace
 ++ export CI_PIPELINE_ID=52666
 ++ CI_PIPELINE_ID=52666
+++ export CI_PIPELINE_IID=123
+++ CI_PIPELINE_IID=123
 ++ export CI_RUNNER_ID=1337
 ++ CI_RUNNER_ID=1337
 ++ export CI_RUNNER_DESCRIPTION=shared-runners-manager-1.example.com
@@ -461,6 +463,7 @@ export CI_JOB_MANUAL="true"
 export CI_JOB_TRIGGERED="true"
 export CI_JOB_TOKEN="abcde-1234ABCD5678ef"
 export CI_PIPELINE_ID="1000"
+export CI_PIPELINE_IID="10"
 export CI_PROJECT_ID="34"
 export CI_PROJECT_DIR="/builds/gitlab-org/gitlab-ce"
 export CI_PROJECT_NAME="gitlab-ce"

@@ -143,7 +143,7 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
       it 'wastes pipeline iid' do
         expect { step.perform! }.to raise_error
 
-        expect(InternalId.ci_pipelines.where(project_id: project.id).exists?).to be_truthy
+        expect(InternalId.ci_pipelines.where(project_id: project.id).last.last_value).to be > 0
       end
     end
   end
@@ -157,7 +157,7 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
   end
 
   context 'when variables policy is specified' do
-    shared_examples_for 'populates pipeline according to used policies' do
+    shared_examples_for 'a correct pipeline' do
       it 'populates pipeline according to used policies' do
         step.perform!
 
@@ -177,7 +177,7 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
         build(:ci_pipeline, ref: 'master', project: project, config: config)
       end
 
-      it_behaves_like 'populates pipeline according to used policies'
+      it_behaves_like 'a correct pipeline'
 
       context 'when variables expression is specified' do
         context 'when pipeline iid is the subject' do
@@ -186,7 +186,7 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
               prod: { script: 'cap prod', only: { variables: ["$CI_PIPELINE_IID == '1000'"] } } }
           end
 
-          it_behaves_like 'populates pipeline according to used policies'
+          it_behaves_like 'a correct pipeline'
         end
       end
     end
