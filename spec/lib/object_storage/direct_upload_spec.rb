@@ -161,28 +161,4 @@ describe ObjectStorage::DirectUpload do
       end
     end
   end
-
-  describe '#get_url' do
-    # this method can only be tested with integration tests
-  end
-
-  describe '#delete_url' do
-    # this method can only be tested with integration tests
-  end
-
-  describe '#store_url' do
-    # this method can only be tested with integration tests
-  end
-
-  describe '#multipart_part_upload_url' do
-    # this method can only be tested with integration tests
-  end
-
-  describe '#multipart_complete_url' do
-    # this method can only be tested with integration tests
-  end
-
-  describe '#multipart_abort_url' do
-    # this method can only be tested with integration tests
-  end
 end

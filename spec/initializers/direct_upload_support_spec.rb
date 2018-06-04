@@ -6,7 +6,7 @@ describe 'Direct upload support' do
   end
 
   where(:config_name) do
-    ['lfs', 'artifacts', 'uploads']
+    %w(lfs artifacts uploads)
   end
 
   with_them do
@@ -23,8 +23,9 @@ describe 'Direct upload support' do
     end
 
     before do
-      allow(Gitlab.config).to receive_messages(to_settings(
-        config_name => { object_store: object_store }))
+      allow(Gitlab.config).to receive_messages(to_settings(config_name => {
+        object_store: object_store
+      }))
     end
 
     context 'when object storage is enabled' do

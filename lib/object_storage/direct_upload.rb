@@ -2,7 +2,7 @@ module ObjectStorage
   #
   # The DirectUpload c;ass generates a set of presigned URLs
   # that can be used to upload data to object storage from untrusted component: Workhorse, Runner?
-  # 
+  #
   # For Google it assumes that the platform supports variable Content-Length.
   #
   # For AWS it initiates Multipart Upload and presignes a set of part uploads.
