@@ -1,0 +1,5 @@
+---
+title: Fix N+1 with source_projects in merge requests API
+merge_request:
+author:
+type: performance
