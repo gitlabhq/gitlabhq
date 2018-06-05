@@ -96,6 +96,7 @@ module IssuableCollections
     elsif @group
       @filter_params[:group_id] = @group.id
       @filter_params[:include_subgroups] = true
+      @filter_params[:use_cte_for_search] = true
     end
 
     @filter_params.permit(finder_type.valid_params)

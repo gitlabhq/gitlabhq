@@ -1,0 +1,5 @@
+---
+title: Improve performance of group issues filtering on GitLab.com
+merge_request: 19429
+author:
+type: performance
