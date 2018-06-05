@@ -66,13 +66,13 @@ export default {
         class="row prepend-top-10 append-bottom-10"
         :key="index"
       >
-        <label class="col-sm-2 text-right">
+        <label class="col-sm-2 text-right font-weight-bold">
           {{ field.text }}:
         </label>
         <div class="col-sm-10 text-secondary">
           <div
             v-if="hasInstances(field, key)"
-            class="well"
+            class="info-well"
           >
             <ul class="report-block-list">
               <li
@@ -163,7 +163,7 @@ export default {
       </div>
 
       <div class="row prepend-top-20 append-bottom-10">
-        <div class="col-sm-10 col-sm-offset-2 text-secondary">
+        <div class="col-sm-10 offset-sm-2 text-secondary">
           <template v-if="hasDismissedBy">
             {{ s__('ciReport|Dismissed by') }}
             <a
