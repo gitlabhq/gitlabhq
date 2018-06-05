@@ -1,4 +1,5 @@
 <script>
+import $ from 'jquery';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
@@ -20,6 +21,13 @@ export default {
   },
   methods: {
     ...mapActions(['updateActivityBarView']),
+    changedActivityView(e, view) {
+      e.currentTarget.blur();
+
+      this.updateActivityBarView(view);
+
+      $(e.currentTarget).tooltip('hide');
+    },
   },
   activityBarViews,
 };
@@ -54,7 +62,7 @@ export default {
           :class="{
             active: currentActivityView === $options.activityBarViews.edit
           }"
-          @click.prevent="updateActivityBarView($options.activityBarViews.edit)"
+          @click.prevent="changedActivityView($event, $options.activityBarViews.edit)"
           :title="s__('IDE|Edit')"
           :aria-label="s__('IDE|Edit')"
         >
@@ -73,7 +81,7 @@ export default {
           :class="{
             active: currentActivityView === $options.activityBarViews.review
           }"
-          @click.prevent="updateActivityBarView($options.activityBarViews.review)"
+          @click.prevent="changedActivityView($event, $options.activityBarViews.review)"
           :title="s__('IDE|Review')"
           :aria-label="s__('IDE|Review')"
         >
@@ -92,7 +100,7 @@ export default {
           :class="{
             active: currentActivityView === $options.activityBarViews.commit
           }"
-          @click.prevent="updateActivityBarView($options.activityBarViews.commit)"
+          @click.prevent="changedActivityView($event, $options.activityBarViews.commit)"
           :title="s__('IDE|Commit')"
           :aria-label="s__('IDE|Commit')"
         >
