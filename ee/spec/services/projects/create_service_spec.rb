@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Projects::CreateService, '#execute' do
+  include ExternalAuthorizationServiceHelpers
+
   let(:user) { create :user }
   let(:opts) do
     {
@@ -258,6 +260,42 @@ describe Projects::CreateService, '#execute' do
            }
          }
       end
+    end
+  end
+
+  context 'with external authorization enabled' do
+    before do
+      enable_external_authorization_service_check
+    end
+
+    it 'does not save the project with an error if the service denies access' do
+      expect(EE::Gitlab::ExternalAuthorization)
+        .to receive(:access_allowed?).with(user, 'new-label', any_args) { false }
+
+      project = create_project(user, opts.merge({ external_authorization_classification_label: 'new-label' }))
+
+      expect(project.errors[:external_authorization_classification_label]).to be_present
+      expect(project).not_to be_persisted
+    end
+
+    it 'saves the project when the user has access to the label' do
+      expect(EE::Gitlab::ExternalAuthorization)
+        .to receive(:access_allowed?).with(user, 'new-label', any_args) { true }
+
+      project = create_project(user, opts.merge({ external_authorization_classification_label: 'new-label' }))
+
+      expect(project).to be_persisted
+      expect(project.external_authorization_classification_label).to eq('new-label')
+    end
+
+    it 'does not save the project when the user has no access to the default label and no label is provided' do
+      expect(EE::Gitlab::ExternalAuthorization)
+        .to receive(:access_allowed?).with(user, 'default_label', any_args) { false }
+
+      project = create_project(user, opts)
+
+      expect(project.errors[:external_authorization_classification_label]).to be_present
+      expect(project).not_to be_persisted
     end
   end
 
