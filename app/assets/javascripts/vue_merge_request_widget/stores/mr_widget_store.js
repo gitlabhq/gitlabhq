@@ -89,7 +89,7 @@ export default class MergeRequestStore {
 
     // CI related
     this.ciEnvironmentsStatusPath = data.ci_environments_status_path;
-    this.hasCI = data.has_ci && this.buildsEnabled;
+    this.hasCI = data.has_ci;
     this.ciStatus = data.ci_status;
     this.isPipelineFailed = this.ciStatus === 'failed' || this.ciStatus === 'canceled';
     this.isPipelinePassing = this.ciStatus === 'success' || this.ciStatus === 'success_with_warnings';
