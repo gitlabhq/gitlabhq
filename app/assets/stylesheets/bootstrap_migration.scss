@@ -69,6 +69,11 @@ code {
     background-color: inherit;
     padding: unset;
   }
+
+  .build-trace & {
+    background-color: inherit;
+    padding: inherit;
+  }
 }
 
 .code {
