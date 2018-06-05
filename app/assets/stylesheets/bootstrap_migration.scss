@@ -64,6 +64,10 @@ a {
   }
 }
 
+kbd {
+  display: inline-block;
+}
+
 code {
   padding: 2px 4px;
   color: $red-600;
