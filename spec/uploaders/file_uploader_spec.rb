@@ -89,7 +89,7 @@ describe FileUploader do
 
   describe "#migrate!" do
     before do
-      uploader.store!(fixture_file_upload(Rails.root.join('spec/fixtures/dk.png')))
+      uploader.store!(fixture_file_upload('spec/fixtures/dk.png'))
       stub_uploads_object_storage
     end
 

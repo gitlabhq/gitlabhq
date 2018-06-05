@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Import::GitlabProjectsController do
   set(:namespace) { create(:namespace) }
   set(:user) { namespace.owner }
-  let(:file) { fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain') }
+  let(:file) { fixture_file_upload('spec/fixtures/doc_sample.txt', 'text/plain') }
 
   before do
     sign_in(user)

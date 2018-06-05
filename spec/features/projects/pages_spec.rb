@@ -314,8 +314,8 @@ feature 'Pages' do
             project: project,
             pipeline: pipeline,
             ref: 'HEAD',
-            legacy_artifacts_file: fixture_file_upload(Rails.root.join('spec/fixtures/pages.zip')),
-            legacy_artifacts_metadata: fixture_file_upload(Rails.root.join('spec/fixtures/pages.zip.meta'))
+            legacy_artifacts_file: fixture_file_upload(File.join('spec/fixtures/pages.zip')),
+            legacy_artifacts_metadata: fixture_file_upload(File.join('spec/fixtures/pages.zip.meta'))
           )
         end
 

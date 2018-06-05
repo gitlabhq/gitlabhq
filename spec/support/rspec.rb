@@ -9,4 +9,6 @@ RSpec.configure do |config|
   config.include StubConfiguration
   config.include StubObjectStorage
   config.include StubENV
+
+  config.fixture_path = Rails.root if defined?(Rails)
 end

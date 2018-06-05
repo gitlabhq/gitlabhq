@@ -76,12 +76,12 @@ describe Ci::JobArtifact do
 
   context 'updating the artifact file' do
     it 'updates the artifact size' do
-      artifact.update!(file: fixture_file_upload(File.join(Rails.root, 'spec/fixtures/dk.png')))
+      artifact.update!(file: fixture_file_upload('spec/fixtures/dk.png'))
       expect(artifact.size).to eq(1062)
     end
 
     it 'updates the project statistics' do
-      expect { artifact.update!(file: fixture_file_upload(File.join(Rails.root, 'spec/fixtures/dk.png'))) }
+      expect { artifact.update!(file: fixture_file_upload('spec/fixtures/dk.png')) }
         .to change { artifact.project.statistics.reload.build_artifacts_size }
         .by(1062 - 106365)
     end

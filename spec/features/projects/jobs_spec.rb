@@ -11,7 +11,7 @@ feature 'Jobs', :clean_gitlab_redis_shared_state do
   let(:job2) { create(:ci_build) }
 
   let(:artifacts_file) do
-    fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif')
+    fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif')
   end
 
   before do

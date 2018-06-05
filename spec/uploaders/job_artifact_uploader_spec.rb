@@ -81,7 +81,7 @@ describe JobArtifactUploader do
 
   describe "#migrate!" do
     before do
-      uploader.store!(fixture_file_upload(Rails.root.join('spec/fixtures/trace/sample_trace')))
+      uploader.store!(fixture_file_upload(File.join('spec/fixtures/trace/sample_trace')))
       stub_artifacts_object_storage
     end
 

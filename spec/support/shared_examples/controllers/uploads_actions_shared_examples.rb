@@ -1,7 +1,7 @@
 shared_examples 'handle uploads' do
   let(:user)  { create(:user) }
-  let(:jpg)   { fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg') }
-  let(:txt)   { fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain') }
+  let(:jpg)   { fixture_file_upload('spec/fixtures/rails_sample.jpg', 'image/jpg') }
+  let(:txt)   { fixture_file_upload('spec/fixtures/doc_sample.txt', 'text/plain') }
   let(:secret) { FileUploader.generate_secret }
   let(:uploader_class) { FileUploader }
 

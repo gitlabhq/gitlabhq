@@ -518,7 +518,7 @@ describe API::Projects do
     end
 
     it 'uploads avatar for project a project' do
-      project = attributes_for(:project, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif'))
+      project = attributes_for(:project, avatar: fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif'))
 
       post api('/projects', user), project
 
@@ -777,7 +777,7 @@ describe API::Projects do
     end
 
     it "uploads the file and returns its info" do
-      post api("/projects/#{project.id}/uploads", user), file: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")
+      post api("/projects/#{project.id}/uploads", user), file: fixture_file_upload("spec/fixtures/dk.png", "image/png")
 
       expect(response).to have_gitlab_http_status(201)
       expect(json_response['alt']).to eq("dk")

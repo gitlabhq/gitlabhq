@@ -4,7 +4,7 @@ describe Import::GoogleCodeController do
   include ImportSpecHelper
 
   let(:user) { create(:user) }
-  let(:dump_file) { fixture_file_upload(Rails.root + 'spec/fixtures/GoogleCodeProjectHosting.json', 'application/json') }
+  let(:dump_file) { fixture_file_upload('spec/fixtures/GoogleCodeProjectHosting.json', 'application/json') }
 
   before do
     sign_in(user)

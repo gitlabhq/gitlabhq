@@ -571,7 +571,7 @@ describe ObjectStorage do
     context 'when local file is used' do
       context 'when valid file is used' do
         let(:uploaded_file) do
-          fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg')
+          fixture_file_upload('spec/fixtures/rails_sample.jpg', 'image/jpg')
         end
 
         it "properly caches the file" do
