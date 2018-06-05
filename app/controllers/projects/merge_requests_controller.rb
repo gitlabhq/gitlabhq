@@ -29,11 +29,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def show
     validates_merge_request
-    close_merge_request_without_source_project
     check_if_can_be_merged
 
     # Return if the response has already been rendered
     return if response_body
+    close_merge_request_if_no_source_project
 
     respond_to do |format|
       format.html do
@@ -261,7 +261,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       @merge_request.head_pipeline && @merge_request.head_pipeline.active?
   end
 
-  def close_merge_request_without_source_project
+  def close_merge_request_if_no_source_project
     if !@merge_request.source_project && @merge_request.open?
       @merge_request.close
     end
