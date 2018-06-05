@@ -32,12 +32,10 @@ legend {
 button,
 html [type="button"],
 [type="reset"],
-[type="submit"] {
+[type="submit"],
+[role="button"] {
   // Override bootstrap reboot
   -webkit-appearance: inherit;
-}
-
-[role="button"] {
   cursor: pointer;
 }
 
