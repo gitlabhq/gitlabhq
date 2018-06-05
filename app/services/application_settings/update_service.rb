@@ -1,10 +1,7 @@
 module ApplicationSettings
   class UpdateService < ApplicationSettings::BaseService
-<<<<<<< HEAD
     prepend EE::ApplicationSettings::UpdateService
 
-=======
->>>>>>> upstream/master
     attr_reader :params, :application_setting
 
     def execute
