@@ -20,6 +20,7 @@ module QA
           gcloud container clusters
           create #{cluster_name}
           --enable-legacy-authorization
+          --zone us-central1-a
           && gcloud container clusters
           get-credentials #{cluster_name}
         CMD
