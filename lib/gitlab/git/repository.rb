@@ -2544,11 +2544,11 @@ module Gitlab
       end
 
       def git_rev_list_grep(pattern_string)
-        result = []
+        result = {}
 
         Open3.pipeline_r(git_rev_list_all_objects_cmd, "grep -E '#{pattern_string}'") do |last_stdout, wait_threads|
           last_stdout.each_line do |line|
-            result << line[0, MAX_SHA_SIZE]
+            result[line[0, MAX_SHA_SIZE]] = line[(MAX_SHA_SIZE + 1)..-1].strip
           end
         end
 
@@ -2560,11 +2560,11 @@ module Gitlab
 
         return [] if lfs_patterns.empty?
 
-        Gitlab::Git::Blob.batch_lfs_pointers(self, git_rev_list_grep(lfs_patterns.join('|')))
+        Gitlab::Git::Blob.batch_lfs_pointers(self, git_rev_list_grep(lfs_patterns.join('|')).keys)
       end
 
       def git_lfs_track_patterns
-        git_rev_list_grep("\s(.*/)*.gitattributes$").map do |object_id|
+        git_rev_list_grep("\s(.*/)*.gitattributes$").map do |object_id, path|
           blob = Gitlab::Git::Blob.raw(self, object_id)
 
           next unless blob
@@ -2574,6 +2574,14 @@ module Gitlab
                           .patterns
                           .select { |_, v| v['filter'] == 'lfs' }
                           .keys
+                          .map! do |pattern|
+                            pattern = pattern[1..-1].gsub('.', '\\.').gsub('*', '.*')
+                            dir = File.dirname(path)
+
+                            pattern = dir + '/(.*/)*' + pattern unless dir == '.'
+
+                            pattern
+                          end
         end.flatten.compact
       end
     end
