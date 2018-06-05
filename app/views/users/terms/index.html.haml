@@ -1,8 +1,8 @@
 - redirect_params = { redirect: @redirect } if @redirect
 
-.panel-content.rendered-terms
+.card-body.rendered-terms
   = markdown_field(@term, :terms)
-.row-content-block.footer-block.clearfix
+.card-footer.footer-block.clearfix
   - if can?(current_user, :accept_terms, @term)
     .float-right
       = button_to accept_term_path(@term, redirect_params), class: 'btn btn-success prepend-left-8' do

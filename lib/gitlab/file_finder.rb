@@ -32,23 +32,35 @@ module Gitlab
     end
 
     def find_by_filename(query, except: [])
-      filenames = repository.search_files_by_name(query, ref).first(BATCH_SIZE)
-      filenames.delete_if { |filename| except.include?(filename) } unless except.empty?
+      filenames = search_filenames(query, except)
 
-      blob_refs = filenames.map { |filename| [ref, filename] }
-      blobs = Gitlab::Git::Blob.batch(repository, blob_refs, blob_size_limit: 1024)
-
-      blobs.map do |blob|
+      blobs(filenames).map do |blob|
         Gitlab::SearchResults::FoundBlob.new(
           id: blob.id,
           filename: blob.path,
-          basename: File.basename(blob.path),
+          basename: File.basename(blob.path, File.extname(blob.path)),
           ref: ref,
           startline: 1,
           data: blob.data,
           project: project
         )
       end
+    end
+
+    def search_filenames(query, except)
+      filenames = repository.search_files_by_name(query, ref).first(BATCH_SIZE)
+
+      filenames.delete_if { |filename| except.include?(filename) } unless except.empty?
+
+      filenames
+    end
+
+    def blob_refs(filenames)
+      filenames.map { |filename| [ref, filename] }
+    end
+
+    def blobs(filenames)
+      Gitlab::Git::Blob.batch(repository, blob_refs(filenames), blob_size_limit: 1024)
     end
   end
 end
