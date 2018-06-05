@@ -23,6 +23,7 @@ describe Epic do
     it_behaves_like 'AtomicInternalId' do
       let(:internal_id_attribute) { :iid }
       let(:instance) { build(:epic) }
+      let(:scope) { :group }
       let(:scope_attrs) { { namespace: instance.group } }
       let(:usage) { :epics }
     end
