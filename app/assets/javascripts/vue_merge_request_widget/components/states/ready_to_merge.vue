@@ -41,11 +41,11 @@ export default {
       return this.useCommitMessageWithDescription ? withoutDesc : withDesc;
     },
     status() {
-      const { pipeline, isPipelineActive, isPipelineFailed, hasCI, ciStatus } = this.mr;
+      const { pipeline, isPipelineActive, isPipelineFailed, buildsEnabled, ciStatus } = this.mr;
 
-      if (!hasCI) {
+      if (!buildsEnabled) {
         return 'success';
-      } else if (hasCI && !ciStatus) {
+      } else if (buildsEnabled && !ciStatus) {
         return 'failed';
       } else if (!pipeline) {
         return 'success';
@@ -86,7 +86,7 @@ export default {
       return 'Merge';
     },
     shouldShowMergeOptionsDropdown() {
-      return this.mr.hasCI && this.mr.isPipelineActive && !this.mr.onlyAllowMergeIfPipelineSucceeds;
+      return this.mr.buildsEnabled && this.mr.isPipelineActive && !this.mr.onlyAllowMergeIfPipelineSucceeds;
     },
     isMergeButtonDisabled() {
       const { commitMessage } = this;
