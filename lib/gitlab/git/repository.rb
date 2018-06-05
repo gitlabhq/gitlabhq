@@ -109,7 +109,7 @@ module Gitlab
       end
 
       def ==(other)
-        path == other.path
+        [storage, relative_path] == [other.storage, other.relative_path]
       end
 
       def path

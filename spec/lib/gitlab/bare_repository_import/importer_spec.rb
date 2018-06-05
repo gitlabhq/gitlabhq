@@ -20,6 +20,13 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
     Rainbow.enabled = @rainbow
   end
 
+  around do |example|
+    # TODO migrate BareRepositoryImport https://gitlab.com/gitlab-org/gitaly/issues/953
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      example.run
+    end
+  end
+
   shared_examples 'importing a repository' do
     describe '.execute' do
       it 'creates a project for a repository in storage' do
