@@ -24,6 +24,11 @@ html {
   font-size: 14px;
 }
 
+legend {
+  border-bottom: 1px solid $border-color;
+  margin-bottom: 20px;
+}
+
 button,
 html [type="button"],
 [type="reset"],
