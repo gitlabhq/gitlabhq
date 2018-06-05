@@ -7,6 +7,17 @@
 # * creating a review app for each topic branch,
 # * and continuous deployment to production
 #
+# Test jobs may be disabled by setting environment variables:
+# * test: TEST_DISABLED
+# * code_quality: CODE_QUALITY_DISABLED
+# * performance: PERFORMANCE_DISABLED
+# * sast: SAST_DISABLED
+# * dependency_scanning: DEPENDENCY_SCANNING_DISABLED
+# * container_scanning: CONTAINER_SCANNING_DISABLED
+# * dast: DAST_DISABLED
+# * review: REVIEW_DISABLED
+# * stop_review: REVIEW_DISABLED
+#
 # In order to deploy, you must have a Kubernetes cluster configured either
 # via a project integration, or via group/project variables.
 # AUTO_DEVOPS_DOMAIN must also be set as a variable at the group or project
@@ -15,7 +26,7 @@
 # Continuous deployment to production is enabled by default.
 # If you want to deploy to staging first, or enable incremental rollouts,
 # set STAGING_ENABLED or INCREMENTAL_ROLLOUT_ENABLED environment variables.
-# If you want to use canary deployments, uncomment the canary job.
+# If you want to use canary deployments, set CANARY_ENABLED environment variable.
 #
 # If Auto DevOps fails to detect the proper buildpack, or if you want to
 # specify a custom buildpack, set a project variable `BUILDPACK_URL` to the
@@ -76,8 +87,12 @@ test:
     - /bin/herokuish buildpack test
   only:
     - branches
+  except:
+    variables:
+      - $TEST_DISABLED
 
 code_quality:
+  stage: test
   image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
@@ -89,6 +104,9 @@ code_quality:
     - code_quality
   artifacts:
     paths: [gl-code-quality-report.json]
+  except:
+    variables:
+      - $CODE_QUALITY_DISABLED
 
 performance:
   stage: performance
@@ -109,8 +127,12 @@ performance:
     refs:
       - branches
     kubernetes: active
+  except:
+    variables:
+      - $PERFORMANCE_DISABLED
 
 sast:
+  stage: test
   image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
@@ -122,8 +144,12 @@ sast:
     - sast
   artifacts:
     paths: [gl-sast-report.json]
+  except:
+    variables:
+      - $SAST_DISABLED
 
 dependency_scanning:
+  stage: test
   image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
@@ -135,8 +161,12 @@ dependency_scanning:
     - dependency_scanning
   artifacts:
     paths: [gl-dependency-scanning-report.json]
+  except:
+    variables:
+      - $DEPENDENCY_SCANNING_DISABLED
 
 container_scanning:
+  stage: test
   image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
@@ -148,6 +178,9 @@ container_scanning:
     - container_scanning
   artifacts:
     paths: [gl-container-scanning-report.json]
+  except:
+    variables:
+      - $CONTAINER_SCANNING_DISABLED
 
 dast:
   stage: dast
@@ -164,7 +197,10 @@ dast:
       - branches
     kubernetes: active
   except:
-    - master
+    refs:
+      - master
+    variables:
+      - $DAST_DISABLED
 
 review:
   stage: review
@@ -188,7 +224,10 @@ review:
       - branches
     kubernetes: active
   except:
-    - master
+    refs:
+      - master
+    variables:
+      - $REVIEW_DISABLED
 
 stop_review:
   stage: cleanup
@@ -207,7 +246,10 @@ stop_review:
       - branches
     kubernetes: active
   except:
-    - master
+    refs:
+      - master
+    variables:
+      - $REVIEW_DISABLED
 
 # Keys that start with a dot (.) will not be processed by GitLab CI.
 # Staging and canary jobs are disabled by default, to enable them
@@ -240,10 +282,11 @@ staging:
     variables:
       - $STAGING_ENABLED
 
-# Canaries are disabled by default, but if you want them,
-# and know what the downsides are, enable this job by removing the dot (.).
+# Canaries are also disabled by default, but if you want them,
+# and know what the downsides are, you can enable this by setting
+# CANARY_ENABLED.
 
-.canary:
+canary:
   stage: canary
   script:
     - check_kube_domain
@@ -261,6 +304,8 @@ staging:
     refs:
       - master
     kubernetes: active
+    variables:
+      - $CANARY_ENABLED
 
 .production: &production_template
   stage: production
@@ -290,6 +335,7 @@ production:
   except:
     variables:
       - $STAGING_ENABLED
+      - $CANARY_ENABLED
       - $INCREMENTAL_ROLLOUT_ENABLED
 
 production_manual:
@@ -615,7 +661,7 @@ rollout 100%:
   function check_kube_domain() {
     if [ -z ${AUTO_DEVOPS_DOMAIN+x} ]; then
       echo "In order to deploy or use Review Apps, AUTO_DEVOPS_DOMAIN variable must be set"
-      echo "You can do it in Auto DevOps project settings or defining a secret variable at group or project level"
+      echo "You can do it in Auto DevOps project settings or defining a variable at group or project level"
       echo "You can also manually add it in .gitlab-ci.yml"
       false
     else
@@ -624,7 +670,6 @@ rollout 100%:
   }
 
   function build() {
-
     if [[ -n "$CI_REGISTRY_USER" ]]; then
       echo "Logging to GitLab Container Registry with CI credentials..."
       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
@@ -636,7 +681,7 @@ rollout 100%:
       docker build -t "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" .
     else
       echo "Building Heroku-based application using gliderlabs/herokuish docker image..."
-      docker run -i --name="$CI_CONTAINER_NAME" -v "$(pwd):/tmp/app:ro" gliderlabs/herokuish /bin/herokuish buildpack build
+      docker run -i -e BUILDPACK_URL --name="$CI_CONTAINER_NAME" -v "$(pwd):/tmp/app:ro" gliderlabs/herokuish /bin/herokuish buildpack build
       docker commit "$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
       docker rm "$CI_CONTAINER_NAME" >/dev/null
       echo ""
