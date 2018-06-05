@@ -178,7 +178,9 @@
     }
 
     .with-performance-bar.with-system-header.with-system-footer & {
-      @include ide-height-with((system-header: true, system-footer: true, performance: true, flash: true));
+      @include ide-height-with(
+        (system-header: true, system-footer: true, performance: true, flash: true)
+      );
     }
   }
 }
