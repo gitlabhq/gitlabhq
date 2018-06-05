@@ -238,6 +238,14 @@ module ProjectsHelper
     "git push --set-upstream #{repository_url}/$(git rev-parse --show-toplevel | xargs basename).git $(git rev-parse --abbrev-ref HEAD)"
   end
 
+  def show_xcode_link?(project = @project)
+    browser.platform.mac? && project.repository.xcode_project?
+  end
+
+  def xcode_uri_to_repo(project = @project)
+    "xcode://clone?repo=#{CGI.escape(default_url_to_repo(project))}"
+  end
+
   private
 
   def get_project_nav_tabs(project, current_user)
