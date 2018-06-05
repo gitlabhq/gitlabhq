@@ -515,6 +515,7 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | `INCREMENTAL_ROLLOUT_ENABLED`| From GitLab 10.8, this variable can be used to enable an [incremental rollout](#incremental-rollout-to-production) of your application for the production environment. |
 | `TEST_DISABLED`              | From GitLab 11.0, this variable can be used to disable the `test` job. If the variable is present, the job will not be created. |
 | `CODE_QUALITY_DISABLED`      | From GitLab 11.0, this variable can be used to disable the `code_quality` job. If the variable is present, the job will not be created. |
+| `LICENSE_MANAGEMENT_DISABLED` | From GitLab 11.0, this variable can be used to disable the `license_management` job. If the variable is present, the job will not be created. |
 | `SAST_DISABLED`              | From GitLab 11.0, this variable can be used to disable the `sast` job. If the variable is present, the job will not be created. |
 | `DEPENDENCY_SCANNING_DISABLED` | From GitLab 11.0, this variable can be used to disable the `dependency_scanning` job. If the variable is present, the job will not be created. |
 | `CONTAINER_SCANNING_DISABLED` | From GitLab 11.0, this variable can be used to disable the `container_scanning` job. If the variable is present, the job will not be created. |
