@@ -78,7 +78,7 @@ module Gitlab
             else
               blob_ids.lazy
                       .select { |sha| possible_lfs_blob?(repository, sha) }
-                      .map! { |sha| rugged_raw(repository, sha, limit: LFS_POINTER_MAX_SIZE) }
+                      .map { |sha| rugged_raw(repository, sha, limit: LFS_POINTER_MAX_SIZE) }
                       .select(&:lfs_pointer?)
                       .force
             end
