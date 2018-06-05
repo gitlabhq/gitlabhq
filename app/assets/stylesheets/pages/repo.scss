@@ -183,7 +183,7 @@
 
   svg {
     position: relative;
-    top: -1px;
+    top: -2px;
   }
 
   .ide-file-changed-icon {
@@ -458,6 +458,10 @@
     width: auto;
     margin-right: 0;
 
+    a {
+      height: 60px;
+    }
+
     a:hover,
     a:focus {
       text-decoration: none;
@@ -718,9 +722,17 @@
 }
 
 .ide-new-btn {
+  .btn {
+    padding-top: 3px;
+    padding-bottom: 3px;
+  }
+
+  .dropdown {
+    display: flex;
+  }
+
   .dropdown-toggle svg {
-    margin-top: -2px;
-    margin-bottom: 2px;
+    top: 0;
   }
 
   .dropdown-menu {
@@ -877,6 +889,7 @@
   border-top: 1px solid transparent;
   border-bottom: 1px solid transparent;
   outline: 0;
+  cursor: pointer;
 
   svg {
     margin: 0 auto;

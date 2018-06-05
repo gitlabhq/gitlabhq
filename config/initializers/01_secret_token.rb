@@ -1,3 +1,6 @@
+# This file needs to be loaded BEFORE any initializers that attempt to
+# prepend modules that require access to secrets (e.g. EE's 0_as_concern.rb).
+#
 # Be sure to restart your server when you modify this file.
 
 require 'securerandom'

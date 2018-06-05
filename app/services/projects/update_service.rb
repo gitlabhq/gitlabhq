@@ -17,6 +17,8 @@ module Projects
 
       ensure_wiki_exists if enabling_wiki?
 
+      yield if block_given?
+
       if project.update_attributes(params.except(:default_branch))
         if project.previous_changes.include?('path')
           project.rename_repo
@@ -53,8 +55,8 @@ module Projects
     def changing_default_branch?
       new_branch = params[:default_branch]
 
-      project.repository.exists? &&
-        new_branch && new_branch != project.default_branch
+      new_branch && project.repository.exists? &&
+        new_branch != project.default_branch
     end
 
     def enabling_wiki?

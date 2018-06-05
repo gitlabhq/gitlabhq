@@ -14,9 +14,9 @@
 
         %div{ class: "#{container_class} limit-container-width" }
           .content{ id: "content-body" }
-            .panel.panel-default
-              .panel-heading
-                .title
+            .card
+              .card-header
+                .card-title
                   = brand_header_logo
                   - logo_text = brand_header_logo_type
                   - if logo_text.present?

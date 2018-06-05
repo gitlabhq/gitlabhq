@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-shared_examples_for 'AtomicInternalId' do
+shared_examples_for 'AtomicInternalId' do |validate_presence: true|
   describe '.has_internal_id' do
     describe 'Module inclusion' do
       subject { described_class }
@@ -9,14 +9,31 @@ shared_examples_for 'AtomicInternalId' do
     end
 
     describe 'Validation' do
-      subject { instance }
-
       before do
-        allow(InternalId).to receive(:generate_next).and_return(nil)
+        allow_any_instance_of(described_class).to receive(:"ensure_#{scope}_#{internal_id_attribute}!")
+
+        instance.valid?
       end
 
-      it { is_expected.to validate_presence_of(internal_id_attribute) }
-      it { is_expected.to validate_numericality_of(internal_id_attribute) }
+      context 'when presence validation is required' do
+        before do
+          skip unless validate_presence
+        end
+
+        it 'validates presence' do
+          expect(instance.errors[internal_id_attribute]).to include("can't be blank")
+        end
+      end
+
+      context 'when presence validation is not required' do
+        before do
+          skip if validate_presence
+        end
+
+        it 'does not validate presence' do
+          expect(instance.errors[internal_id_attribute]).to be_empty
+        end
+      end
     end
 
     describe 'Creating an instance' do
