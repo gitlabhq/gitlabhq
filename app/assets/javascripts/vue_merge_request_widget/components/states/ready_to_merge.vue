@@ -86,7 +86,9 @@ export default {
       return 'Merge';
     },
     shouldShowMergeOptionsDropdown() {
-      return this.mr.buildsEnabled && this.mr.isPipelineActive && !this.mr.onlyAllowMergeIfPipelineSucceeds;
+      return this.mr.buildsEnabled &&
+        this.mr.isPipelineActive &&
+        !this.mr.onlyAllowMergeIfPipelineSucceeds;
     },
     isMergeButtonDisabled() {
       const { commitMessage } = this;
