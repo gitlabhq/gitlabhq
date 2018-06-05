@@ -23,7 +23,10 @@ export default {
 <template>
   <div
     class="flex"
-    :class="{ 'issue-info-container': !canReorder }"
+    :class="{
+      'issue-info-container': !canReorder,
+      'card-body': canReorder,
+    }"
   >
     <div class="block-truncated append-right-10">
       <a

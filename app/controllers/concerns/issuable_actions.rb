@@ -1,10 +1,24 @@
 module IssuableActions
+  prepend EE::IssuableActions
   extend ActiveSupport::Concern
 
   included do
     before_action :labels, only: [:show, :new, :edit]
     before_action :authorize_destroy_issuable!, only: :destroy
     before_action :authorize_admin_issuable!, only: :bulk_update
+  end
+
+  def permitted_keys
+    [
+      :issuable_ids,
+      :assignee_id,
+      :milestone_id,
+      :state_event,
+      :subscription_event,
+      label_ids: [],
+      add_label_ids: [],
+      remove_label_ids: []
+    ]
   end
 
   def show
@@ -140,25 +154,15 @@ module IssuableActions
   end
 
   def bulk_update_params
-    permitted_keys = [
-      :issuable_ids,
-      :assignee_id,
-      :milestone_id,
-      :state_event,
-      :subscription_event,
-      :weight,
-      label_ids: [],
-      add_label_ids: [],
-      remove_label_ids: []
-    ]
+    permitted_keys_array = permitted_keys.dup
 
     if resource_name == 'issue'
-      permitted_keys << { assignee_ids: [] }
+      permitted_keys_array << { assignee_ids: [] }
     else
-      permitted_keys.unshift(:assignee_id)
+      permitted_keys_array.unshift(:assignee_id)
     end
 
-    params.require(:update).permit(permitted_keys)
+    params.require(:update).permit(permitted_keys_array)
   end
 
   def resource_name

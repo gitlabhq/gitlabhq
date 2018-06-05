@@ -299,7 +299,11 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :m
       let(:commits) { merge_request_diff.commits.map(&:to_hash) }
       let(:first_commit) { project.repository.commit(merge_request_diff.head_commit_sha) }
       let(:expected_commits) { commits }
-      let(:diffs) { first_commit.rugged_diff_from_parent.patches }
+      let(:diffs) do
+        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          first_commit.rugged_diff_from_parent.patches
+        end
+      end
       let(:expected_diffs) { [] }
 
       include_examples 'updated MR diff'
@@ -309,7 +313,11 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :m
       let(:commits) { merge_request_diff.commits.map(&:to_hash) }
       let(:first_commit) { project.repository.commit(merge_request_diff.head_commit_sha) }
       let(:expected_commits) { commits }
-      let(:diffs) { first_commit.rugged_diff_from_parent.deltas }
+      let(:diffs) do
+        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          first_commit.rugged_diff_from_parent.deltas
+        end
+      end
       let(:expected_diffs) { [] }
 
       include_examples 'updated MR diff'

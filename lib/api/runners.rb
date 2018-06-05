@@ -133,12 +133,10 @@ module API
         runner = get_runner(params[:runner_id])
         authenticate_enable_runner!(runner)
 
-        runner_project = runner.assign_to(user_project)
-
-        if runner_project.persisted?
+        if runner.assign_to(user_project)
           present runner, with: Entities::Runner
         else
-          conflict!("Runner was already enabled for this project")
+          render_validation_error!(runner)
         end
       end
 

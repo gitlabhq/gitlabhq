@@ -6,6 +6,7 @@ import * as getters from './getters';
 import mutations from './mutations';
 import commitModule from './modules/commit';
 import pipelines from './modules/pipelines';
+import mergeRequests from './modules/merge_requests';
 
 Vue.use(Vuex);
 
@@ -18,6 +19,7 @@ export const createStore = () =>
     modules: {
       commit: commitModule,
       pipelines,
+      mergeRequests,
     },
   });
 

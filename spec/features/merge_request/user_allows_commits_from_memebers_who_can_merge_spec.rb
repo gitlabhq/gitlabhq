@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'create a merge request that allows maintainers to push', :js do
+describe 'create a merge request, allowing commits from members who can merge to the target branch', :js do
   include ProjectForksHelper
   let(:user) { create(:user) }
   let(:target_project) { create(:project, :public, :repository) }
@@ -21,16 +21,16 @@ describe 'create a merge request that allows maintainers to push', :js do
     sign_in(user)
   end
 
-  it 'allows setting maintainer push possible' do
+  it 'allows setting possible' do
     visit_new_merge_request
 
-    check 'Allow edits from maintainers'
+    check 'Allow commits from members who can merge to the target branch'
 
     click_button 'Submit merge request'
 
     wait_for_requests
 
-    expect(page).to have_content('Allows edits from maintainers')
+    expect(page).to have_content('Allows commits from members who can merge to the target branch')
   end
 
   it 'shows a message when one of the projects is private' do
@@ -57,12 +57,12 @@ describe 'create a merge request that allows maintainers to push', :js do
 
       visit_new_merge_request
 
-      expect(page).not_to have_content('Allows edits from maintainers')
+      expect(page).not_to have_content('Allows commits from members who can merge to the target branch')
     end
   end
 
-  context 'when a maintainer tries to edit the option' do
-    let(:maintainer) { create(:user) }
+  context 'when a member who can merge tries to edit the option' do
+    let(:member) { create(:user) }
     let(:merge_request) do
       create(:merge_request,
              source_project: source_project,
@@ -71,15 +71,15 @@ describe 'create a merge request that allows maintainers to push', :js do
     end
 
     before do
-      target_project.add_master(maintainer)
+      target_project.add_master(member)
 
-      sign_in(maintainer)
+      sign_in(member)
     end
 
-    it 'it hides the option from maintainers' do
+    it 'it hides the option from members' do
       visit edit_project_merge_request_path(target_project, merge_request)
 
-      expect(page).not_to have_content('Allows edits from maintainers')
+      expect(page).not_to have_content('Allows commits from members who can merge to the target branch')
     end
   end
 end

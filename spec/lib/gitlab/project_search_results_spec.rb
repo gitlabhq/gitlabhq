@@ -22,47 +22,57 @@ describe Gitlab::ProjectSearchResults do
     it { expect(results.query).to eq('hello world') }
   end
 
-  describe 'blob search' do
-    let(:project) { create(:project, :public, :repository) }
+  shared_examples 'general blob search' do |entity_type, blob_kind|
+    let(:query) { 'files' }
+    subject(:results) { described_class.new(user, project, query).objects(blob_type) }
 
-    subject(:results) { described_class.new(user, project, 'files').objects('blobs') }
-
-    context 'when repository is disabled' do
-      let(:project) { create(:project, :public, :repository, :repository_disabled) }
-
-      it 'hides blobs from members' do
+    context "when #{entity_type} is disabled" do
+      let(:project) { disabled_project }
+      it "hides #{blob_kind} from members" do
         project.add_reporter(user)
 
         is_expected.to be_empty
       end
 
-      it 'hides blobs from non-members' do
+      it "hides #{blob_kind} from non-members" do
         is_expected.to be_empty
       end
     end
 
-    context 'when repository is internal' do
-      let(:project) { create(:project, :public, :repository, :repository_private) }
+    context "when #{entity_type} is internal" do
+      let(:project) { private_project }
 
-      it 'finds blobs for members' do
+      it "finds #{blob_kind} for members" do
         project.add_reporter(user)
 
         is_expected.not_to be_empty
       end
 
-      it 'hides blobs from non-members' do
+      it "hides #{blob_kind} from non-members" do
         is_expected.to be_empty
       end
     end
 
     it 'finds by name' do
-      expect(results.map(&:first)).to include('files/images/wm.svg')
+      expect(results.map(&:first)).to include(expected_file_by_name)
     end
 
     it 'finds by content' do
-      blob = results.select { |result| result.first == 'CHANGELOG' }.flatten.last
+      blob = results.select { |result| result.first == expected_file_by_content }.flatten.last
 
-      expect(blob.filename).to eq("CHANGELOG")
+      expect(blob.filename).to eq(expected_file_by_content)
+    end
+  end
+
+  describe 'blob search' do
+    let(:project) { create(:project, :public, :repository) }
+
+    it_behaves_like 'general blob search', 'repository', 'blobs' do
+      let(:blob_type) { 'blobs' }
+      let(:disabled_project) { create(:project, :public, :repository, :repository_disabled) }
+      let(:private_project) { create(:project, :public, :repository, :repository_private) }
+      let(:expected_file_by_name) { 'files/images/wm.svg' }
+      let(:expected_file_by_content) { 'CHANGELOG' }
     end
 
     describe 'parsing results' do
@@ -189,40 +199,18 @@ describe Gitlab::ProjectSearchResults do
   describe 'wiki search' do
     let(:project) { create(:project, :public, :wiki_repo) }
     let(:wiki) { build(:project_wiki, project: project) }
-    let!(:wiki_page) { wiki.create_page('Title', 'Content') }
 
-    subject(:results) { described_class.new(user, project, 'Content').objects('wiki_blobs') }
-
-    context 'when wiki is disabled' do
-      let(:project) { create(:project, :public, :wiki_repo, :wiki_disabled) }
-
-      it 'hides wiki blobs from members' do
-        project.add_reporter(user)
-
-        is_expected.to be_empty
-      end
-
-      it 'hides wiki blobs from non-members' do
-        is_expected.to be_empty
-      end
+    before do
+      wiki.create_page('Files/Title', 'Content')
+      wiki.create_page('CHANGELOG', 'Files example')
     end
 
-    context 'when wiki is internal' do
-      let(:project) { create(:project, :public, :wiki_repo, :wiki_private) }
-
-      it 'finds wiki blobs for guest' do
-        project.add_guest(user)
-
-        is_expected.not_to be_empty
-      end
-
-      it 'hides wiki blobs from non-members' do
-        is_expected.to be_empty
-      end
-    end
-
-    it 'finds by content' do
-      expect(results).to include("master:Title.md\x001\x00Content\n")
+    it_behaves_like 'general blob search', 'wiki', 'wiki blobs' do
+      let(:blob_type) { 'wiki_blobs' }
+      let(:disabled_project) { create(:project, :public, :wiki_repo, :wiki_disabled) }
+      let(:private_project) { create(:project, :public, :wiki_repo, :wiki_private) }
+      let(:expected_file_by_name) { 'Files/Title.md' }
+      let(:expected_file_by_content) { 'CHANGELOG.md' }
     end
   end
 

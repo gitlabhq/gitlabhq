@@ -95,7 +95,7 @@ describe('Report issues', () => {
     it('should not render location', () => {
       vm = mountComponent(ReportIssues, {
         issues: [{
-          name: 'foo',
+          title: 'foo',
         }],
         type: 'SAST',
         status: 'failed',
@@ -106,7 +106,7 @@ describe('Report issues', () => {
     });
   });
 
-  describe('for docker issues', () => {
+  describe('for container scanning issues', () => {
     beforeEach(() => {
       vm = mountComponent(ReportIssues, {
         issues: dockerReportParsed.unapproved,
@@ -115,16 +115,16 @@ describe('Report issues', () => {
       });
     });
 
-    it('renders priority', () => {
+    it('renders severity', () => {
       expect(
         vm.$el.querySelector('.report-block-list li').textContent.trim(),
-      ).toContain(dockerReportParsed.unapproved[0].priority);
+      ).toContain(dockerReportParsed.unapproved[0].severity);
     });
 
     it('renders CVE name', () => {
       expect(
         vm.$el.querySelector('.report-block-list button').textContent.trim(),
-      ).toEqual(dockerReportParsed.unapproved[0].name);
+      ).toEqual(dockerReportParsed.unapproved[0].title);
     });
 
     it('renders namespace', () => {
@@ -148,9 +148,9 @@ describe('Report issues', () => {
       });
     });
 
-    it('renders priority and name', () => {
-      expect(vm.$el.textContent).toContain(parsedDast[0].name);
-      expect(vm.$el.textContent).toContain(parsedDast[0].priority);
+    it('renders severity (confidence) and title', () => {
+      expect(vm.$el.textContent).toContain(parsedDast[0].title);
+      expect(vm.$el.textContent).toContain(`${parsedDast[0].severity} (${parsedDast[0].confidence})`);
     });
   });
 });

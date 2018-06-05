@@ -1907,13 +1907,10 @@ describe User do
 
   describe '#ci_owned_runners' do
     let(:user) { create(:user) }
-    let(:runner_1) { create(:ci_runner) }
-    let(:runner_2) { create(:ci_runner) }
+    let!(:project) { create(:project) }
+    let(:runner) { create(:ci_runner, :project, projects: [project]) }
 
     context 'without any projects nor groups' do
-      let!(:project) { create(:project, runners: [runner_1]) }
-      let!(:group) { create(:group) }
-
       it 'does not load' do
         expect(user.ci_owned_runners).to be_empty
       end
@@ -1921,38 +1918,40 @@ describe User do
 
     context 'with personal projects runners' do
       let(:namespace) { create(:namespace, owner: user) }
-      let!(:project) { create(:project, namespace: namespace, runners: [runner_1]) }
+      let!(:project) { create(:project, namespace: namespace) }
 
       it 'loads' do
-        expect(user.ci_owned_runners).to contain_exactly(runner_1)
+        expect(user.ci_owned_runners).to contain_exactly(runner)
       end
     end
 
     context 'with personal group runner' do
-      let!(:project) { create(:project, runners: [runner_1]) }
+      let!(:project) { create(:project) }
+      let(:group_runner) { create(:ci_runner, :group, groups: [group]) }
       let!(:group) do
-        create(:group, runners: [runner_2]).tap do |group|
+        create(:group).tap do |group|
           group.add_owner(user)
         end
       end
 
       it 'loads' do
-        expect(user.ci_owned_runners).to contain_exactly(runner_2)
+        expect(user.ci_owned_runners).to contain_exactly(group_runner)
       end
     end
 
     context 'with personal project and group runner' do
       let(:namespace) { create(:namespace, owner: user) }
-      let!(:project) { create(:project, namespace: namespace, runners: [runner_1]) }
+      let!(:project) { create(:project, namespace: namespace) }
+      let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
 
       let!(:group) do
-        create(:group, runners: [runner_2]).tap do |group|
+        create(:group).tap do |group|
           group.add_owner(user)
         end
       end
 
       it 'loads' do
-        expect(user.ci_owned_runners).to contain_exactly(runner_1, runner_2)
+        expect(user.ci_owned_runners).to contain_exactly(runner, group_runner)
       end
     end
 
@@ -1963,7 +1962,7 @@ describe User do
         end
 
         it 'loads' do
-          expect(user.ci_owned_runners).to contain_exactly(runner_1)
+          expect(user.ci_owned_runners).to contain_exactly(runner)
         end
       end
 
@@ -1980,7 +1979,7 @@ describe User do
 
     context 'with groups projects runners' do
       let(:group) { create(:group) }
-      let!(:project) { create(:project, group: group, runners: [runner_1]) }
+      let!(:project) { create(:project, group: group) }
 
       def add_user(access)
         group.add_user(user, access)
@@ -1990,11 +1989,8 @@ describe User do
     end
 
     context 'with groups runners' do
-      let!(:group) do
-        create(:group, runners: [runner_1]).tap do |group|
-          group.add_owner(user)
-        end
-      end
+      let!(:runner) { create(:ci_runner, :group, groups: [group]) }
+      let!(:group) { create(:group) }
 
       def add_user(access)
         group.add_user(user, access)
@@ -2004,7 +2000,7 @@ describe User do
     end
 
     context 'with other projects runners' do
-      let!(:project) { create(:project, runners: [runner_1]) }
+      let!(:project) { create(:project) }
 
       def add_user(access)
         project.add_role(user, access)
@@ -2017,7 +2013,7 @@ describe User do
       let(:group) { create(:group) }
       let(:another_user) { create(:user) }
       let(:subgroup) { create(:group, parent: group) }
-      let!(:project) { create(:project, group: subgroup, runners: [runner_1]) }
+      let!(:project) { create(:project, group: subgroup) }
 
       def add_user(access)
         group.add_user(user, access)

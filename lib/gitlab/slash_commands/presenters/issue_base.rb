@@ -2,6 +2,8 @@ module Gitlab
   module SlashCommands
     module Presenters
       module IssueBase
+        prepend EE::Gitlab::SlashCommands::Presenters::IssueBase
+
         def color(issuable)
           issuable.open? ? '#38ae67' : '#d22852'
         end
@@ -33,11 +35,6 @@ module Gitlab
             {
               title: "Labels",
               value: resource.labels.any? ? resource.label_names.join(', ') : "_None_",
-              short: true
-            },
-            {
-              title: "Weight",
-              value: resource.weight? ? resource.weight : "_None_",
               short: true
             }
           ]

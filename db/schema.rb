@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180530135500) do
+ActiveRecord::Schema.define(version: 20180531031410) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -547,10 +547,12 @@ ActiveRecord::Schema.define(version: 20180530135500) do
     t.integer "config_source"
     t.boolean "protected"
     t.integer "failure_reason"
+    t.integer "iid"
   end
 
   add_index "ci_pipelines", ["auto_canceled_by_id"], name: "index_ci_pipelines_on_auto_canceled_by_id", using: :btree
   add_index "ci_pipelines", ["pipeline_schedule_id"], name: "index_ci_pipelines_on_pipeline_schedule_id", using: :btree
+  add_index "ci_pipelines", ["project_id", "iid"], name: "index_ci_pipelines_on_project_id_and_iid", unique: true, where: "(iid IS NOT NULL)", using: :btree
   add_index "ci_pipelines", ["project_id", "ref", "status", "id"], name: "index_ci_pipelines_on_project_id_and_ref_and_status_and_id", using: :btree
   add_index "ci_pipelines", ["project_id", "sha"], name: "index_ci_pipelines_on_project_id_and_sha", using: :btree
   add_index "ci_pipelines", ["project_id"], name: "index_ci_pipelines_on_project_id", using: :btree
@@ -744,6 +746,17 @@ ActiveRecord::Schema.define(version: 20180530135500) do
     t.string "cluster_ip"
     t.text "status_reason"
     t.string "external_ip"
+  end
+
+  create_table "clusters_applications_jupyter", force: :cascade do |t|
+    t.integer "cluster_id", null: false
+    t.integer "oauth_application_id"
+    t.integer "status", null: false
+    t.string "version", null: false
+    t.string "hostname"
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.text "status_reason"
   end
 
   create_table "clusters_applications_prometheus", force: :cascade do |t|
@@ -1625,7 +1638,7 @@ ActiveRecord::Schema.define(version: 20180530135500) do
     t.string "merge_jid"
     t.boolean "discussion_locked"
     t.integer "latest_merge_request_diff_id"
-    t.boolean "allow_maintainer_to_push"
+    t.boolean "allow_collaboration"
     t.boolean "squash", default: false, null: false
   end
 
@@ -2679,6 +2692,7 @@ ActiveRecord::Schema.define(version: 20180530135500) do
   add_index "users", ["name"], name: "index_users_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["state"], name: "index_users_on_state", using: :btree
+  add_index "users", ["state"], name: "index_users_on_state_and_internal_attrs", where: "((ghost <> true) AND (support_bot <> true))", using: :btree
   add_index "users", ["support_bot"], name: "index_users_on_support_bot", using: :btree
   add_index "users", ["username"], name: "index_users_on_username", using: :btree
   add_index "users", ["username"], name: "index_users_on_username_trigram", using: :gin, opclasses: {"username"=>"gin_trgm_ops"}
@@ -2808,6 +2822,8 @@ ActiveRecord::Schema.define(version: 20180530135500) do
   add_foreign_key "clusters", "users", on_delete: :nullify
   add_foreign_key "clusters_applications_helm", "clusters", on_delete: :cascade
   add_foreign_key "clusters_applications_ingress", "clusters", name: "fk_753a7b41c1", on_delete: :cascade
+  add_foreign_key "clusters_applications_jupyter", "clusters", on_delete: :cascade
+  add_foreign_key "clusters_applications_jupyter", "oauth_applications", on_delete: :nullify
   add_foreign_key "clusters_applications_prometheus", "clusters", name: "fk_557e773639", on_delete: :cascade
   add_foreign_key "clusters_applications_runners", "ci_runners", column: "runner_id", name: "fk_02de2ded36", on_delete: :nullify
   add_foreign_key "clusters_applications_runners", "clusters", on_delete: :cascade

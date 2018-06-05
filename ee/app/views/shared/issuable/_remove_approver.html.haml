@@ -1,0 +1,6 @@
+%li.unsaved-approvers.hide.approver.approver-template{ id: "user_{user_id}" }
+  = link_to "{approver_name}", "#"
+  .float-right
+    = link_to "#", data: { confirm: "Are you sure you want to remove approver {approver_name}"}, class: "btn-sm btn btn-remove", title: 'Remove approver' do
+      = icon("sign-out")
+      Remove

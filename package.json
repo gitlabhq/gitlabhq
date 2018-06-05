@@ -100,7 +100,7 @@
     "webpack-bundle-analyzer": "^2.11.1",
     "webpack-cli": "^2.1.2",
     "webpack-stats-plugin": "^0.2.1",
-    "worker-loader": "^1.1.1"
+    "worker-loader": "^2.0.0"
   },
   "devDependencies": {
     "axios-mock-adapter": "^1.15.0",

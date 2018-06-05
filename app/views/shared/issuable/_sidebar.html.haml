@@ -18,7 +18,9 @@
           = render "shared/issuable/sidebar_todo", todo: todo, issuable: issuable, is_collapsed: true
       .block.assignee
         = render "shared/issuable/sidebar_assignees", issuable: issuable, can_edit_issuable: can_edit_issuable, signed_in: current_user.present?
-      = render_sidebar_epic(issuable)
+
+      = render_if_exists 'shared/issuable/sidebar_item_epic', issuable: issuable
+
       .block.milestone
         .sidebar-collapsed-icon.has-tooltip{ title: milestone_tooltip_title(issuable.milestone), data: { container: 'body', html: 'true', placement: 'left', boundary: 'viewport' } }
           = icon('clock-o', 'aria-hidden': 'true')
@@ -116,10 +118,7 @@
                 - if can? current_user, :admin_label, @project and @project
                   = render partial: "shared/issuable/label_page_create"
 
-      - if issuable.supports_weight?
-        .js-sidebar-weight-entry-point
-
-      = render 'shared/promotions/promote_issue_weights'
+      = render_if_exists 'shared/issuable/sidebar_weight', issuable: issuable
 
       - if issuable.has_attribute?(:confidential)
         -# haml-lint:disable InlineJavaScript

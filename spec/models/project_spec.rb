@@ -1306,8 +1306,8 @@ describe Project do
   describe '#any_runners?' do
     context 'shared runners' do
       let(:project) { create(:project, shared_runners_enabled: shared_runners_enabled) }
-      let(:specific_runner) { create(:ci_runner) }
-      let(:shared_runner) { create(:ci_runner, :shared) }
+      let(:specific_runner) { create(:ci_runner, :project, projects: [project]) }
+      let(:shared_runner) { create(:ci_runner, :instance) }
 
       context 'for shared runners disabled' do
         let(:shared_runners_enabled) { false }
@@ -1317,7 +1317,7 @@ describe Project do
         end
 
         it 'has a specific runner' do
-          project.runners << specific_runner
+          specific_runner
 
           expect(project.any_runners?).to be_truthy
         end
@@ -1329,13 +1329,13 @@ describe Project do
         end
 
         it 'checks the presence of specific runner' do
-          project.runners << specific_runner
+          specific_runner
 
           expect(project.any_runners? { |runner| runner == specific_runner }).to be_truthy
         end
 
         it 'returns false if match cannot be found' do
-          project.runners << specific_runner
+          specific_runner
 
           expect(project.any_runners? { false }).to be_falsey
         end
@@ -1367,7 +1367,7 @@ describe Project do
     context 'group runners' do
       let(:project) { create(:project, group_runners_enabled: group_runners_enabled) }
       let(:group) { create(:group, projects: [project]) }
-      let(:group_runner) { create(:ci_runner, groups: [group]) }
+      let(:group_runner) { create(:ci_runner, :group, groups: [group]) }
 
       context 'for group runners disabled' do
         let(:group_runners_enabled) { false }
@@ -1408,7 +1408,7 @@ describe Project do
   end
 
   describe '#shared_runners' do
-    let!(:runner) { create(:ci_runner, :shared) }
+    let!(:runner) { create(:ci_runner, :instance) }
 
     subject { project.shared_runners }
 
@@ -3969,7 +3969,7 @@ describe Project do
         target_branch: 'target-branch',
         source_project: project,
         source_branch: 'awesome-feature-1',
-        allow_maintainer_to_push: true
+        allow_collaboration: true
       )
     end
 
@@ -4006,9 +4006,9 @@ describe Project do
       end
     end
 
-    describe '#branch_allows_maintainer_push?' do
+    describe '#branch_allows_collaboration_push?' do
       it 'allows access if the user can merge the merge request' do
-        expect(project.branch_allows_maintainer_push?(user, 'awesome-feature-1'))
+        expect(project.branch_allows_collaboration?(user, 'awesome-feature-1'))
           .to be_truthy
       end
 
@@ -4016,7 +4016,7 @@ describe Project do
         guest = create(:user)
         target_project.add_guest(guest)
 
-        expect(project.branch_allows_maintainer_push?(guest, 'awesome-feature-1'))
+        expect(project.branch_allows_collaboration?(guest, 'awesome-feature-1'))
           .to be_falsy
       end
 
@@ -4026,31 +4026,31 @@ describe Project do
                target_branch: 'target-branch',
                source_project: project,
                source_branch: 'rejected-feature-1',
-               allow_maintainer_to_push: true)
+               allow_collaboration: true)
 
-        expect(project.branch_allows_maintainer_push?(user, 'rejected-feature-1'))
+        expect(project.branch_allows_collaboration?(user, 'rejected-feature-1'))
           .to be_falsy
       end
 
       it 'does not allow access if the user cannot merge the merge request' do
         create(:protected_branch, :masters_can_push, project: target_project, name: 'target-branch')
 
-        expect(project.branch_allows_maintainer_push?(user, 'awesome-feature-1'))
+        expect(project.branch_allows_collaboration?(user, 'awesome-feature-1'))
           .to be_falsy
       end
 
       it 'caches the result' do
-        control = ActiveRecord::QueryRecorder.new { project.branch_allows_maintainer_push?(user, 'awesome-feature-1') }
+        control = ActiveRecord::QueryRecorder.new { project.branch_allows_collaboration?(user, 'awesome-feature-1') }
 
-        expect { 3.times { project.branch_allows_maintainer_push?(user, 'awesome-feature-1') } }
+        expect { 3.times { project.branch_allows_collaboration?(user, 'awesome-feature-1') } }
           .not_to exceed_query_limit(control)
       end
 
       context 'when the requeststore is active', :request_store do
         it 'only queries per project across instances' do
-          control = ActiveRecord::QueryRecorder.new { project.branch_allows_maintainer_push?(user, 'awesome-feature-1') }
+          control = ActiveRecord::QueryRecorder.new { project.branch_allows_collaboration?(user, 'awesome-feature-1') }
 
-          expect { 2.times { described_class.find(project.id).branch_allows_maintainer_push?(user, 'awesome-feature-1') } }
+          expect { 2.times { described_class.find(project.id).branch_allows_collaboration?(user, 'awesome-feature-1') } }
             .not_to exceed_query_limit(control).with_threshold(2)
         end
       end

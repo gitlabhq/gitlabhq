@@ -35,6 +35,19 @@ describe Gitlab::Geo::LogCursor::Events::RepositoryDeletedEvent, :postgresql, :c
       it 'removes the tracking entry' do
         expect { subject.process }.to change(Geo::ProjectRegistry, :count).by(-1)
       end
+
+      context 'when selective sync is enabled' do
+        let(:secondary) { create(:geo_node, selective_sync_type: 'namespaces', namespaces: [project.namespace]) }
+
+        it 'replays delete events when project does not exist on primary' do
+          project.delete
+
+          expect(::GeoRepositoryDestroyWorker).to receive(:perform_async)
+          .with(project.id, deleted_project_name, deleted_path, project.repository_storage)
+
+          subject.process
+        end
+      end
     end
   end
 end

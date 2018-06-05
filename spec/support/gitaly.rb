@@ -7,7 +7,10 @@ RSpec.configure do |config|
       next if example.metadata[:skip_gitaly_mock]
 
       # Use 'and_wrap_original' to make sure the arguments are valid
-      allow(Gitlab::GitalyClient).to receive(:feature_enabled?).and_wrap_original { |m, *args| m.call(*args) || true }
+      allow(Gitlab::GitalyClient).to receive(:feature_enabled?).and_wrap_original do |m, *args|
+        m.call(*args)
+        !Gitlab::GitalyClient::EXPLICIT_OPT_IN_REQUIRED.include?(args.first)
+      end
     end
   end
 end

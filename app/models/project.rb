@@ -244,7 +244,7 @@ class Project < ActiveRecord::Base
   has_many :builds, class_name: 'Ci::Build', inverse_of: :project, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :build_trace_section_names, class_name: 'Ci::BuildTraceSectionName'
   has_many :build_trace_chunks, class_name: 'Ci::BuildTraceChunk', through: :builds, source: :trace_chunks
-  has_many :runner_projects, class_name: 'Ci::RunnerProject'
+  has_many :runner_projects, class_name: 'Ci::RunnerProject', inverse_of: :project
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
   has_many :variables, class_name: 'Ci::Variable'
   has_many :triggers, class_name: 'Ci::Trigger'
@@ -297,8 +297,9 @@ class Project < ActiveRecord::Base
 
   validates :namespace, presence: true
   validates :name, uniqueness: { scope: :namespace_id }
-  validates :import_url, addressable_url: true, if: :external_import?
-  validates :import_url, importable_url: true, if: [:external_import?, :import_url_changed?]
+  validates :import_url, url: { protocols: %w(http https ssh git),
+                                allow_localhost: false,
+                                ports: VALID_IMPORT_PORTS }, if: [:external_import?, :import_url_changed?]
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
   validate :check_repository_path_availability, on: :update, if: ->(project) { project.renamed? }
@@ -1994,18 +1995,18 @@ class Project < ActiveRecord::Base
                                 .limit(1)
                                 .select(1)
     source_of_merge_requests.opened
-      .where(allow_maintainer_to_push: true)
+      .where(allow_collaboration: true)
       .where('EXISTS (?)', developer_access_exists)
   end
 
-  def branch_allows_maintainer_push?(user, branch_name)
+  def branch_allows_collaboration?(user, branch_name)
     return false unless user
 
     cache_key = "user:#{user.id}:#{branch_name}:branch_allows_push"
 
-    memoized_results = strong_memoize(:branch_allows_maintainer_push) do
+    memoized_results = strong_memoize(:branch_allows_collaboration) do
       Hash.new do |result, cache_key|
-        result[cache_key] = fetch_branch_allows_maintainer_push?(user, branch_name)
+        result[cache_key] = fetch_branch_allows_collaboration?(user, branch_name)
       end
     end
 
@@ -2147,18 +2148,18 @@ class Project < ActiveRecord::Base
     raise ex
   end
 
-  def fetch_branch_allows_maintainer_push?(user, branch_name)
+  def fetch_branch_allows_collaboration?(user, branch_name)
     check_access = -> do
       next false if empty_repo?
 
       merge_request = source_of_merge_requests.opened
-                        .where(allow_maintainer_to_push: true)
+                        .where(allow_collaboration: true)
                         .find_by(source_branch: branch_name)
       merge_request&.can_be_merged_by?(user)
     end
 
     if RequestStore.active?
-      RequestStore.fetch("project-#{id}:branch-#{branch_name}:user-#{user.id}:branch_allows_maintainer_push") do
+      RequestStore.fetch("project-#{id}:branch-#{branch_name}:user-#{user.id}:branch_allows_collaboration") do
         check_access.call
       end
     else

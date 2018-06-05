@@ -1189,15 +1189,17 @@ module Gitlab
       end
 
       def compare_source_branch(target_branch_name, source_repository, source_branch_name, straight:)
-        with_repo_branch_commit(source_repository, source_branch_name) do |commit|
-          break unless commit
+        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          with_repo_branch_commit(source_repository, source_branch_name) do |commit|
+            break unless commit
 
-          Gitlab::Git::Compare.new(
-            self,
-            target_branch_name,
-            commit.sha,
-            straight: straight
-          )
+            Gitlab::Git::Compare.new(
+              self,
+              target_branch_name,
+              commit.sha,
+              straight: straight
+            )
+          end
         end
       end
 
@@ -1459,7 +1461,7 @@ module Gitlab
           gitaly_repository_client.cleanup if is_enabled && exists?
         end
       rescue Gitlab::Git::CommandError => e # Don't fail if we can't cleanup
-        Rails.logger.error("Unable to clean repository on storage #{storage} with path #{path}: #{e.message}")
+        Rails.logger.error("Unable to clean repository on storage #{storage} with relative path #{relative_path}: #{e.message}")
         Gitlab::Metrics.counter(
           :failed_repository_cleanup_total,
           'Number of failed repository cleanup events'

@@ -4,6 +4,7 @@ module EE
 
     prepended do
       include AtomicInternalId
+      include IidRoutes
       include ::Issuable
       include Noteable
       include Referable

@@ -592,8 +592,8 @@ describe Project do
 
   describe '#any_runners_limit' do
     let(:project) { create(:project, shared_runners_enabled: shared_runners_enabled) }
-    let(:specific_runner) { create(:ci_runner) }
-    let(:shared_runner) { create(:ci_runner, :shared) }
+    let(:specific_runner) { create(:ci_runner, :project) }
+    let(:shared_runner) { create(:ci_runner, :instance) }
 
     context 'for shared runners enabled' do
       let(:shared_runners_enabled) { true }

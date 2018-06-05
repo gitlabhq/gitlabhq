@@ -49,14 +49,4 @@ describe Gitlab::SlashCommands::Presenters::IssueShow do
       expect(attachment[:text]).to start_with("**Open**")
     end
   end
-
-  context 'issue with issue weight' do
-    let(:issue) { create(:issue, project: project, weight: 3) }
-    let(:weight_attachment) { subject[:attachments].first[:fields].find { |a| a[:title] == "Weight" } }
-
-    it 'shows the weight' do
-      expect(weight_attachment).not_to be_nil
-      expect(weight_attachment[:value]).to be(3)
-    end
-  end
 end

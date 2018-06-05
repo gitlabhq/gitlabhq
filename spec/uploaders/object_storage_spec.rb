@@ -369,13 +369,6 @@ describe ObjectStorage do
   describe '.workhorse_authorize' do
     subject { uploader_class.workhorse_authorize }
 
-    before do
-      # ensure that we use regular Fog libraries
-      # other tests might call `Fog.mock!` and
-      # it will make tests to fail
-      Fog.unmock!
-    end
-
     shared_examples 'uses local storage' do
       it "returns temporary path" do
         is_expected.to have_key(:TempPath)
@@ -667,6 +660,28 @@ describe ObjectStorage do
               expect(uploader.object_store).to eq(described_class::Store::REMOTE)
             end
           end
+        end
+      end
+    end
+  end
+
+  describe '#retrieve_from_store!' do
+    [:group, :project, :user].each do |model|
+      context "for #{model}s" do
+        let(:models) { create_list(model, 3, :with_avatar).map(&:reload) }
+        let(:avatars) { models.map(&:avatar) }
+
+        it 'batches fetching uploads from the database' do
+          # Ensure that these are all created and fully loaded before we start
+          # running queries for avatars
+          models
+
+          expect { avatars }.not_to exceed_query_limit(1)
+        end
+
+        it 'fetches a unique upload for each model' do
+          expect(avatars.map(&:url).uniq).to eq(avatars.map(&:url))
+          expect(avatars.map(&:upload).uniq).to eq(avatars.map(&:upload))
         end
       end
     end
