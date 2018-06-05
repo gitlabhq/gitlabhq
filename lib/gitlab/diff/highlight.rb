@@ -24,7 +24,6 @@ module Gitlab
           # ignore highlighting for "match" lines
           next diff_line if diff_line.meta?
 
-          binding.pry
           rich_line = highlight_line(diff_line) || diff_line.text
 
           if line_inline_diffs = inline_diffs[i]
