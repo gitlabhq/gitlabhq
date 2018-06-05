@@ -45,10 +45,10 @@ describe 'Issues Feed'  do
       end
     end
 
-    context 'when authenticated via RSS token' do
+    context 'when authenticated via feed token' do
       it 'renders atom feed' do
         visit project_issues_path(project, :atom,
-                                            rss_token: user.rss_token)
+                                            feed_token: user.feed_token)
 
         expect(response_headers['Content-Type'])
           .to have_content('application/atom+xml')
@@ -61,24 +61,23 @@ describe 'Issues Feed'  do
     end
 
     it "renders atom feed with url parameters for project issues" do
-      visit project_issues_path(project,
-                                          :atom, rss_token: user.rss_token, state: 'opened', assignee_id: user.id)
+      visit project_issues_path(project, :atom, feed_token: user.feed_token, state: 'opened', assignee_id: user.id)
 
       link = find('link[type="application/atom+xml"]')
       params = CGI.parse(URI.parse(link[:href]).query)
 
-      expect(params).to include('rss_token' => [user.rss_token])
+      expect(params).to include('feed_token' => [user.feed_token])
       expect(params).to include('state' => ['opened'])
       expect(params).to include('assignee_id' => [user.id.to_s])
     end
 
     it "renders atom feed with url parameters for group issues" do
-      visit issues_group_path(group, :atom, rss_token: user.rss_token, state: 'opened', assignee_id: user.id)
+      visit issues_group_path(group, :atom, feed_token: user.feed_token, state: 'opened', assignee_id: user.id)
 
       link = find('link[type="application/atom+xml"]')
       params = CGI.parse(URI.parse(link[:href]).query)
 
-      expect(params).to include('rss_token' => [user.rss_token])
+      expect(params).to include('feed_token' => [user.feed_token])
       expect(params).to include('state' => ['opened'])
       expect(params).to include('assignee_id' => [user.id.to_s])
     end

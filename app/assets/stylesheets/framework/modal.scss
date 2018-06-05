@@ -1,6 +1,5 @@
 .modal-header {
   background-color: $modal-body-bg;
-  padding: #{3 * $grid-size} #{2 * $grid-size};
 
   .page-title,
   .modal-title {
@@ -71,12 +70,6 @@ body.modal-open {
 
   .modal-content {
     box-shadow: none;
-  }
-}
-
-@include media-breakpoint-up(lg) {
-  .modal-full {
-    width: 98%;
   }
 }
 

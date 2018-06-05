@@ -77,11 +77,10 @@
   .modal-dialog
     .modal-content
       .modal-header
-        %button.close{ type: 'button', 'data-dismiss': 'modal' }
-          %span
-            &times;
         %h4.modal-title
           Position and size your new avatar
+        %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
+          %span{ "aria-hidden": true } &times;
       .modal-body
         .profile-crop-image-container
           %img.modal-profile-crop-image{ alt: 'Avatar cropper' }

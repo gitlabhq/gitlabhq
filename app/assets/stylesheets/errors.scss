@@ -1,0 +1,120 @@
+/*
+ * This is a minimal stylesheet, meant to be used for error pages.
+ */
+@import 'framework/variables';
+@import '../../../node_modules/bootstrap/scss/functions';
+@import '../../../node_modules/bootstrap/scss/variables';
+@import '../../../node_modules/bootstrap/scss/mixins';
+@import '../../../node_modules/bootstrap/scss/reboot';
+@import '../../../node_modules/bootstrap/scss/buttons';
+@import '../../../node_modules/bootstrap/scss/forms';
+
+$body-color: #666;
+$header-color: #456;
+
+body {
+  color: $body-color;
+  text-align: center;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: auto;
+  font-size: 14px;
+}
+
+h1 {
+  font-size: 56px;
+  line-height: 100px;
+  font-weight: 400;
+  color: $header-color;
+}
+
+h2 {
+  font-size: 24px;
+  color: $body-color;
+  line-height: 1.5em;
+}
+
+h3 {
+  color: $header-color;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 28px;
+}
+
+img {
+  max-width: 80vw;
+  display: block;
+  margin: 40px auto;
+}
+
+a {
+  text-decoration: none;
+  color: $blue-600;
+}
+
+.page-container {
+  margin: auto 20px;
+}
+
+.container {
+  margin: auto;
+  max-width: 600px;
+  border-bottom: 1px solid $border-color;
+  padding-bottom: 1em;
+}
+
+.action-container {
+  padding: 0.5em 0;
+}
+
+.form-inline-flex {
+  display: flex;
+  flex-wrap: wrap;
+
+  button {
+    display: block;
+    width: 100%;
+  }
+
+  .field {
+    display: block;
+    width: 100%;
+    margin-bottom: 1em;
+  }
+
+  @include media-breakpoint-up(sm) {
+    flex-wrap: nowrap;
+
+    button {
+      width: auto;
+    }
+
+    .field {
+      margin-bottom: 0;
+      margin-right: 0.5em;
+    }
+  }
+}
+
+.error-nav {
+  padding: 0;
+  text-align: center;
+
+  li {
+    display: block;
+    padding-bottom: 1em;
+  }
+
+  @include media-breakpoint-up(sm) {
+
+    li {
+      display: inline-block;
+      padding-bottom: 0;
+
+      &:not(:first-child)::before {
+        content: '\00B7';
+        display: inline-block;
+        padding: 0 1em;
+      }
+    }
+  }
+}

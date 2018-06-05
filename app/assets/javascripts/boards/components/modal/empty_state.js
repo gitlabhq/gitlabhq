@@ -41,10 +41,10 @@ gl.issueBoards.ModalEmptyState = Vue.extend({
   template: `
     <section class="empty-state">
       <div class="row">
-        <div class="col-xs-12 col-sm-6 order-sm-last">
+        <div class="col-12 col-md-6 order-md-last">
           <aside class="svg-content"><img :src="emptyStateSvg"/></aside>
         </div>
-        <div class="col-xs-12 col-sm-6 order-sm-first">
+        <div class="col-12 col-md-6 order-md-first">
           <div class="text-content">
             <h4>{{ contents.title }}</h4>
             <p v-html="contents.content"></p>

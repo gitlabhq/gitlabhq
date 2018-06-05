@@ -101,13 +101,19 @@ export default class IntegrationSettingsForm {
     return axios.put(this.testEndPoint, formData)
       .then(({ data }) => {
         if (data.error) {
-          flash(`${data.message} ${data.service_response}`, 'alert', document, {
-            title: 'Save anyway',
-            clickHandler: (e) => {
-              e.preventDefault();
-              this.$form.submit();
-            },
-          });
+          let flashActions;
+
+          if (data.test_failed) {
+            flashActions = {
+              title: 'Save anyway',
+              clickHandler: (e) => {
+                e.preventDefault();
+                this.$form.submit();
+              },
+            };
+          }
+
+          flash(`${data.message} ${data.service_response}`, 'alert', document, flashActions);
         } else {
           this.$form.submit();
         }

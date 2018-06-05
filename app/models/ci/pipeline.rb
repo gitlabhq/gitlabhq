@@ -7,11 +7,16 @@ module Ci
     include Presentable
     include Gitlab::OptimisticLocking
     include Gitlab::Utils::StrongMemoize
+    include AtomicInternalId
 
     belongs_to :project, inverse_of: :pipelines
     belongs_to :user
     belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
     belongs_to :pipeline_schedule, class_name: 'Ci::PipelineSchedule'
+
+    has_internal_id :iid, scope: :project, presence: false, init: ->(s) do
+      s&.project&.pipelines&.maximum(:iid) || s&.project&.pipelines&.count
+    end
 
     has_many :stages, -> { order(position: :asc) }, inverse_of: :pipeline
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
@@ -549,6 +554,7 @@ module Ci
 
     def predefined_variables
       Gitlab::Ci::Variables::Collection.new
+        .append(key: 'CI_PIPELINE_IID', value: iid.to_s)
         .append(key: 'CI_CONFIG_PATH', value: ci_yaml_file_path)
         .append(key: 'CI_PIPELINE_SOURCE', value: source.to_s)
         .append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message)

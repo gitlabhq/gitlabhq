@@ -468,13 +468,13 @@ describe 'Filter issues', :js do
       it "for #{type}" do
         visit path
 
-        link = find_link('Subscribe')
+        link = find_link('Subscribe to RSS feed')
         params = CGI.parse(URI.parse(link[:href]).query)
         auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
         auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)
 
         expected = {
-          'rss_token' => [user.rss_token],
+          'feed_token' => [user.feed_token],
           'milestone_title' => [milestone.title],
           'assignee_id' => [user.id.to_s]
         }

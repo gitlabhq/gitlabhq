@@ -54,7 +54,7 @@ describe Projects::MirrorsController do
         do_put(project, remote_mirrors_attributes: remote_mirror_attributes)
 
         expect(response).to redirect_to(project_settings_repository_path(project))
-        expect(flash[:alert]).to match(/must be a valid URL/)
+        expect(flash[:alert]).to match(/Only allowed protocols are/)
       end
 
       it 'should not create a RemoteMirror object' do

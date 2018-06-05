@@ -6,6 +6,7 @@ import RepoTabs from './repo_tabs.vue';
 import IdeStatusBar from './ide_status_bar.vue';
 import RepoEditor from './repo_editor.vue';
 import FindFile from './file_finder/index.vue';
+import RightPane from './panes/right.vue';
 
 const originalStopCallback = Mousetrap.stopCallback;
 
@@ -16,6 +17,7 @@ export default {
     IdeStatusBar,
     RepoEditor,
     FindFile,
+    RightPane,
   },
   computed: {
     ...mapState([
@@ -25,6 +27,7 @@ export default {
       'currentMergeRequestId',
       'fileFindVisible',
       'emptyStateSvgPath',
+      'currentProjectId',
     ]),
     ...mapGetters(['activeFile', 'hasChanges']),
   },
@@ -122,6 +125,9 @@ export default {
           </div>
         </template>
       </div>
+      <right-pane
+        v-if="currentProjectId"
+      />
     </div>
     <ide-status-bar :file="activeFile"/>
   </article>

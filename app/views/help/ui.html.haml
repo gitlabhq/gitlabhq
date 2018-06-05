@@ -116,9 +116,9 @@
 
   .lead
     List with hover effect
-    %code .well-list
+    %code .hover-list
   .example
-    %ul.well-list
+    %ul.hover-list
       %li
         One item
       %li
@@ -131,7 +131,7 @@
   .example
     .card
       .card-header Your list
-      %ul.well-list
+      %ul.content-list
         %li
           One item
         %li
@@ -472,8 +472,8 @@
       .form-group.row
         .offset-sm-2.col-sm-10
           .form-check
-            %label
-              %input{ :type => "checkbox" }/
+            %input.form-check-input{ :type => "checkbox" }/
+            %label.form-check-label
               Remember me
       .form-group.row
         .offset-sm-2.col-sm-10
@@ -492,8 +492,8 @@
         %label{ :for => "exampleInputPassword1" } Password
         %input#exampleInputPassword1.form-control{ :placeholder => "Password", :type => "password" }/
       .form-check
-        %label
-          %input{ :type => "checkbox" }/
+        %input.form-check-input{ :type => "checkbox" }/
+        %label.form-check-label
           Remember me
       %button.btn.btn-default{ :type => "submit" } Sign in
 

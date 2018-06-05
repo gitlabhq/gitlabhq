@@ -2,11 +2,12 @@
   .modal-dialog
     .modal-content
       .modal-header
-        %button.close{ data: { dismiss: 'modal' } } ×
         %h3.page-title
           - title_branch_name = capture do
             %span.js-branch-name.ref-name>[branch name]
           = s_("Branches|Delete protected branch '%{branch_name}'?").html_safe % { branch_name: title_branch_name }
+        %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
+          %span{ "aria-hidden": true } &times;
 
       .modal-body
         %p

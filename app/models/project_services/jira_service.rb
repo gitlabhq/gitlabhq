@@ -3,8 +3,8 @@ class JiraService < IssueTrackerService
   include ApplicationHelper
   include ActionView::Helpers::AssetUrlHelper
 
-  validates :url, url: true, presence: true, if: :activated?
-  validates :api_url, url: true, allow_blank: true
+  validates :url, public_url: true, presence: true, if: :activated?
+  validates :api_url, public_url: true, allow_blank: true
   validates :username, presence: true, if: :activated?
   validates :password, presence: true, if: :activated?
 

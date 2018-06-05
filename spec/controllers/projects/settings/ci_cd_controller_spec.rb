@@ -19,12 +19,12 @@ describe Projects::Settings::CiCdController do
     end
 
     context 'with group runners' do
-      let(:group_runner) { create(:ci_runner, runner_type: :group_type) }
       let(:parent_group) { create(:group) }
-      let(:group) { create(:group, runners: [group_runner], parent: parent_group) }
+      let(:group) { create(:group, parent: parent_group) }
+      let(:group_runner) { create(:ci_runner, :group, groups: [group]) }
       let(:other_project) { create(:project, group: group) }
-      let!(:project_runner) { create(:ci_runner, projects: [other_project], runner_type: :project_type) }
-      let!(:shared_runner) { create(:ci_runner, :shared) }
+      let!(:project_runner) { create(:ci_runner, :project, projects: [other_project]) }
+      let!(:shared_runner) { create(:ci_runner, :instance) }
 
       it 'sets assignable project runners only' do
         group.add_master(user)

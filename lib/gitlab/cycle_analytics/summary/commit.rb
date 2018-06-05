@@ -7,7 +7,9 @@ module Gitlab
         end
 
         def value
-          @value ||= count_commits
+          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            @value ||= count_commits
+          end
         end
 
         private

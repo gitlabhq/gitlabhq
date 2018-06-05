@@ -59,7 +59,7 @@ export default {
       ref="form"
       :action="deleteWikiUrl"
       method="post"
-      class="form-horizontal js-requires-input"
+      class="js-requires-input"
     >
       <input
         ref="method"
