@@ -55,6 +55,9 @@ class DiscussionEntity < Grape::Entity
     )
   end
 
+  expose :for_commit?, as: :for_commit
+  expose :commit_id
+
   private
 
   def current_user

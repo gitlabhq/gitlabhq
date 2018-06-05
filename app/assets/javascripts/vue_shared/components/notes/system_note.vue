@@ -88,8 +88,9 @@ export default {
             :author="note.author"
             :created-at="note.created_at"
             :note-id="note.id"
-            :action-text-html="actionTextHtml"
-          />
+          >
+            <span v-html="actionTextHtml"></span>
+          </note-header>
         </div>
         <div class="note-body">
           <div

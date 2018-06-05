@@ -4,6 +4,8 @@ import { mapActions, mapGetters } from 'vuex';
 import resolveDiscussionsSvg from 'icons/_icon_mr_issue.svg';
 import nextDiscussionsSvg from 'icons/_next_discussion.svg';
 import { convertObjectPropsToCamelCase, scrollToElement } from '~/lib/utils/common_utils';
+import { truncateSha } from '~/lib/utils/text_utility';
+import systemNote from '~/vue_shared/components/notes/system_note.vue';
 import Flash from '../../flash';
 import { SYSTEM_NOTE } from '../constants';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -32,6 +34,7 @@ export default {
     noteForm,
     placeholderNote,
     placeholderSystemNote,
+    systemNote,
   },
   directives: {
     tooltip,
@@ -73,25 +76,6 @@ export default {
       'allDiscussions',
       'unresolvedDiscussions',
     ]),
-    actionTextHtml() {
-      let text = 'started a discussion';
-
-      if (!this.transformedDiscussion.diffDiscussion) {
-        return text;
-      }
-
-      text += ' on';
-      let urlText;
-      if (this.transformedDiscussion.active) {
-        urlText = 'the diff';
-      } else {
-        urlText = 'an old version of the diff';
-      }
-
-      text += ` <a href="${this.transformedDiscussion.discussionPath}">${urlText}</a>`;
-
-      return text;
-    },
     transformedDiscussion() {
       return {
         ...this.discussion.notes[0],
@@ -186,12 +170,17 @@ export default {
       'toggleResolveNote',
       'expandDiscussion',
     ]),
+    truncateSha,
     componentName(note) {
       if (note.isPlaceholderNote) {
         if (note.placeholderType === SYSTEM_NOTE) {
           return placeholderSystemNote;
         }
         return placeholderNote;
+      }
+
+      if (this.discussion.for_commit) {
+        return systemNote;
       }
 
       return noteableNote;
@@ -295,8 +284,28 @@ Please check your network connection and try again.`;
               :include-toggle="true"
               :expanded="discussion.expanded"
               @toggleHandler="toggleDiscussionHandler"
-              :action-text-html="actionTextHtml"
-            />
+            >
+              <template v-if="transformedDiscussion.diffDiscussion">
+                started a discussion on
+                <a :href="transformedDiscussion.discussionPath">
+                  <template v-if="transformedDiscussion.active">
+                    the diff
+                  </template>
+                  <template v-else>
+                    an old version of the diff
+                  </template>
+                </a>
+              </template>
+              <template v-else-if="discussion.for_commit">
+                started a discussion on commit
+                <a :href="discussion.discussion_path">
+                  {{ truncateSha(discussion.commit_id) }}
+                </a>
+              </template>
+              <template v-else>
+                started a discussion
+              </template>
+            </note-header>
             <note-edited-text
               v-if="transformedDiscussion.resolved"
               :edited-at="transformedDiscussion.resolvedAt"
@@ -331,7 +340,8 @@ Please check your network connection and try again.`;
                 </ul>
                 <div
                   :class="{ 'is-replying': isReplying }"
-                  class="discussion-reply-holder">
+                  class="discussion-reply-holder"
+                >
                   <template v-if="!isReplying && canReply">
                     <div
                       class="btn-group d-flex discussion-with-resolve-btn"
