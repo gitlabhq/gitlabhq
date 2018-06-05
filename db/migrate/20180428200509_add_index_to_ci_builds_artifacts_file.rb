@@ -15,6 +15,8 @@ class AddIndexToCiBuildsArtifactsFile < ActiveRecord::Migration
   end
 
   def down
+    return unless Gitlab::Database.postgresql?
+
     remove_concurrent_index :ci_builds, :artifacts_file
   end
 end
