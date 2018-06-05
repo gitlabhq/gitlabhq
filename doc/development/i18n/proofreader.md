@@ -16,7 +16,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Dutch
 - Esperanto
 - French
-  - Rémy Coutable - [GitLab](https://gitlab.com/rymai), [Crowdin](https://crowdin.com/profile/rymai)
+  - Davy Defaud - [GitLab](https://gitlab.com/DevDef), [Crowdin](https://crowdin.com/profile/DevDef)
 - German
 - Indonesian
   - Ahmad Naufal Mukhtar - [GitLab](https://gitlab.com/anaufalm), [Crowdin](https://crowdin.com/profile/anaufalm)
