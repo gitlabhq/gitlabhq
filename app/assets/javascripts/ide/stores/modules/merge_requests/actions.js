@@ -34,10 +34,9 @@ export const openMergeRequest = ({ commit, dispatch }, { projectPath, id }) => {
   dispatch('pipelines/stopPipelinePolling', null, { root: true });
   dispatch('pipelines/clearEtagPoll', null, { root: true });
   dispatch('pipelines/resetLatestPipeline', null, { root: true });
+  dispatch('setCurrentBranchId', '', { root: true });
 
-  return dispatch('setCurrentBranchId', '', { root: true }).then(() =>
-    router.push(`/project/${projectPath}/merge_requests/${id}`),
-  );
+  router.push(`/project/${projectPath}/merge_requests/${id}`);
 };
 
 export default () => {};
