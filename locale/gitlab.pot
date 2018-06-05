@@ -369,7 +369,7 @@ msgstr ""
 msgid "All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings."
 msgstr ""
 
-msgid "Allow edits from maintainers."
+msgid "Allow commits from members who can merge to the target branch."
 msgstr ""
 
 msgid "Allow rendering of PlantUML diagrams in Asciidoc documents."
@@ -6167,7 +6167,7 @@ msgstr ""
 msgid "mrWidget|Add approval"
 msgstr ""
 
-msgid "mrWidget|Allows edits from maintainers"
+msgid "mrWidget|Allows commits from members who can merge to the target branch"
 msgstr ""
 
 msgid "mrWidget|An error occured while removing your approval."
