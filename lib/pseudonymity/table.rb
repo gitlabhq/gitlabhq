@@ -27,11 +27,11 @@ module Pseudonymity
 
   class Table
     attr_accessor :config
-    attr_accessor :output_dir
 
-    def initialize
-      @config = parse_config
-      @output_dir = ""
+    def initialize(options)
+      @config = options.config
+      @output_dir = options.output_dir
+
       @schema = {}
       @output_files = []
     end
@@ -39,8 +39,7 @@ module Pseudonymity
     def tables_to_csv
       tables = config["tables"]
 
-      @output_dir = File.join("/tmp/", SecureRandom.hex)
-      Dir.mkdir(@output_dir) unless File.directory?(@output_dir)
+      FileUtils.mkdir_p(@output_dir) unless File.directory?(@output_dir)
 
       new_tables = tables.map do |k, v|
         @schema[k] = {}
@@ -99,10 +98,6 @@ module Pseudonymity
       end
       # hard coded because all mapping keys in GL are id
       @schema[table]["gl_mapping_key"] = "id"
-    end
-
-    def parse_config
-      YAML.load_file(Rails.root.join(Gitlab.config.pseudonymizer.manifest))
     end
 
     def write_to_csv_file(title, contents)

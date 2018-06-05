@@ -76,10 +76,15 @@ namespace :gitlab do
 
     desc 'Output pseudonymity dump of selected tables'
     task pseudonymity_dump: :environment do
-      table = Pseudonymity::Table.new
+      options = Pseudonymity::Options.new(
+        config: YAML.load_file(Rails.root.join(Gitlab.config.pseudonymizer.manifest)),
+        start_at: Time.now.utc
+      )
+
+      table = Pseudonymity::Table.new(options)
       table.tables_to_csv
 
-      upload = Pseudonymity::UploadService.new(table.output_dir, progress)
+      upload = Pseudonymity::UploadService.new(options, progress)
       upload.upload
       upload.cleanup
     end

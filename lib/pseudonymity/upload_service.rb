@@ -2,13 +2,14 @@ module Pseudonymity
   class UploadService
     RemoteStorageUnavailableError = Class.new(StandardError)
 
-    def initialize(output_dir, progress)
-      @progress = progress
-      @output_dir = output_dir
+    def initialize(options, progress = nil)
+      @progress = progress || $stdout
+      @output_dir = options.output_dir
+      @upload_dir = options.upload_dir
     end
 
     def upload
-      progress.print "Uploading backup archive to remote storage #{remote_directory} ... "
+      progress.puts "Uploading output files to remote storage #{remote_directory} ... "
 
       file_list.each do |file|
         upload_file(file, remote_directory)
@@ -16,11 +17,14 @@ module Pseudonymity
     end
 
     def upload_file(file, directory)
-      progress.print "\tUploading #{file} ... "
-      if directory.files.create(key: File.basename(file), body: File.open(file), public: false)
+      progress.print "\t#{file} ... "
+
+      if directory.files.create(key: File.join(@upload_dir, File.basename(file)),
+                                body: File.open(file),
+                                public: false)
         progress.puts "done".color(:green)
       else
-        puts "uploading CSV to #{remote_directory} failed".color(:red)
+        progress.puts "uploading CSV to #{remote_directory} failed".color(:red)
       end
     end
 
@@ -67,7 +71,7 @@ module Pseudonymity
     end
 
     def file_list
-      Dir[File.join(@output_dir, "*.{csv,yml}")]
+      Dir[File.join(@output_dir, "*")]
     end
   end
 end

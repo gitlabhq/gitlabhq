@@ -197,8 +197,8 @@ ActiveRecord::Schema.define(version: 20180612175636) do
     t.string "external_authorization_service_url"
     t.string "external_authorization_service_default_label"
     t.boolean "pages_domain_verification_enabled", default: true, null: false
-    t.float "external_authorization_service_timeout", default: 0.5, null: false
     t.boolean "allow_local_requests_from_hooks_and_services", default: false, null: false
+    t.float "external_authorization_service_timeout", default: 0.5
     t.text "external_auth_client_cert"
     t.text "encrypted_external_auth_client_key"
     t.string "encrypted_external_auth_client_key_iv"
@@ -206,6 +206,7 @@ ActiveRecord::Schema.define(version: 20180612175636) do
     t.string "encrypted_external_auth_client_key_pass_iv"
     t.string "email_additional_text"
     t.boolean "enforce_terms", default: false
+    t.boolean "elt_database_dump_enabled"
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -1631,6 +1632,7 @@ ActiveRecord::Schema.define(version: 20180612175636) do
     t.text "title_html"
     t.text "description_html"
     t.integer "time_estimate"
+    t.boolean "squash", default: false, null: false
     t.integer "cached_markdown_version"
     t.datetime "last_edited_at"
     t.integer "last_edited_by_id"
@@ -2020,9 +2022,9 @@ ActiveRecord::Schema.define(version: 20180612175636) do
     t.datetime "next_execution_timestamp"
     t.string "status"
     t.string "jid"
+    t.text "last_error"
     t.datetime_with_timezone "last_update_at"
     t.datetime_with_timezone "last_successful_update_at"
-    t.text "last_error"
   end
 
   add_index "project_mirror_data", ["jid"], name: "index_project_mirror_data_on_jid", using: :btree
