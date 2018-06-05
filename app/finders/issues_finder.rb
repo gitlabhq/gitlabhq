@@ -157,8 +157,4 @@ class IssuesFinder < IssuableFinder
         []
       end
   end
-
-  def item_project_ids(items)
-    items&.reorder(nil)&.select(:project_id)
-  end
 end
