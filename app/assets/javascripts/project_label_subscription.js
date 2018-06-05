@@ -63,6 +63,6 @@ export default class ProjectLabelSubscription {
     const type = /group/.test(originalTitle) ? 'group' : 'project';
     const newTitle = tooltipTitles[type][newStatus];
 
-    $button.tooltip('hide').attr('title', newTitle).tooltip('_fixTitle');
+    $button.attr('title', newTitle).tooltip('_fixTitle');
   }
 }
