@@ -1,0 +1,5 @@
+---
+title: Improve the retrieval of lfs pointers in a repository
+merge_request: 19366
+author:
+type: performance
