@@ -1,5 +1,5 @@
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20180427161409_migrate_legacy_artifacts_to_job_artifacts.rb')
+require Rails.root.join('db', 'post_migrate', '20180430161409_migrate_legacy_artifacts_to_job_artifacts.rb')
 
 describe MigrateLegacyArtifactsToJobArtifacts, :migration, :sidekiq do
   let(:migration_class) { Gitlab::BackgroundMigration::MigrateLegacyArtifacts }
