@@ -14,6 +14,7 @@ const createComponent = (customConfig = {}) => {
     isMergeAllowed: true,
     onlyAllowMergeIfPipelineSucceeds: false,
     hasCI: false,
+    buildsEnabled: true,
     ciStatus: null,
     sha: '12345678',
     commitMessage,
@@ -35,7 +36,7 @@ const createComponent = (customConfig = {}) => {
   });
 };
 
-describe('ReadyToMerge', () => {
+fdescribe('ReadyToMerge', () => {
   let vm;
 
   beforeEach(() => {
@@ -102,7 +103,6 @@ describe('ReadyToMerge', () => {
     describe('status', () => {
       it('defaults to success', () => {
         vm.mr.pipeline = true;
-        vm.mr.buildsEnabled = true;
         vm.mr.ciStatus = true;
         expect(vm.status).toEqual('success');
       });
@@ -113,7 +113,6 @@ describe('ReadyToMerge', () => {
       });
 
       it('returns default when MR has no pipeline', () => {
-        vm.mr.buildsEnabled = true;
         vm.mr.ciStatus = true;
         expect(vm.status).toEqual('success');
       });
@@ -121,14 +120,12 @@ describe('ReadyToMerge', () => {
       it('returns pending when pipeline is active', () => {
         vm.mr.pipeline = {};
         vm.mr.isPipelineActive = true;
-        vm.mr.buildsEnabled = true;
         vm.mr.ciStatus = 'pending';
         expect(vm.status).toEqual('pending');
       });
 
       it('returns failed when pipeline is failed', () => {
         vm.mr.pipeline = {};
-        vm.mr.buildsEnabled = true;
         vm.mr.isPipelineFailed = true;
         expect(vm.status).toEqual('failed');
       });
@@ -140,18 +137,19 @@ describe('ReadyToMerge', () => {
       const inActionClass = `${defaultClass} btn-info`;
 
       it('defaults to success class', () => {
+        vm.mr.ciStatus = true;
         expect(vm.mergeButtonClass).toEqual(defaultClass);
       });
 
       it('returns success class for success status', () => {
         vm.mr.pipeline = true;
+        vm.mr.ciStatus = true;
         expect(vm.mergeButtonClass).toEqual(defaultClass);
       });
 
       it('returns info class for pending status', () => {
         vm.mr.pipeline = {};
         vm.mr.isPipelineActive = true;
-        vm.mr.buildsEnabled = true;
         vm.mr.ciStatus = 'pending';
         expect(vm.mergeButtonClass).toEqual(inActionClass);
       });
@@ -164,17 +162,20 @@ describe('ReadyToMerge', () => {
 
     describe('status icon', () => {
       it('defaults to tick icon', () => {
+        vm.mr.ciStatus = true;
         expect(vm.iconClass).toEqual('success');
       });
 
       it('shows tick for success status', () => {
         vm.mr.pipeline = true;
+        vm.mr.ciStatus = true;
         expect(vm.iconClass).toEqual('success');
       });
 
       it('shows tick for pending status', () => {
         vm.mr.pipeline = {};
         vm.mr.isPipelineActive = true;
+        vm.mr.ciStatus = true;
         expect(vm.iconClass).toEqual('success');
       });
 
@@ -202,7 +203,6 @@ describe('ReadyToMerge', () => {
       it('should return Merge when pipeline succeeds', () => {
         vm.isMergingImmediately = false;
         vm.mr.isPipelineActive = true;
-        vm.mr.buildsEnabled = true;
         expect(vm.mergeButtonText).toEqual('Merge when pipeline succeeds');
       });
     });
@@ -214,7 +214,6 @@ describe('ReadyToMerge', () => {
 
       it('should return true when pipeline active', () => {
         vm.mr.isPipelineActive = true;
-        vm.mr.buildsEnabled = true;
         expect(vm.shouldShowMergeOptionsDropdown).toBeTruthy();
       });
 
