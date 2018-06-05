@@ -26,7 +26,7 @@ describe GroupsController do
       it 'does not allow other formats' do
         get :show, id: group.to_param, format: :atom
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
