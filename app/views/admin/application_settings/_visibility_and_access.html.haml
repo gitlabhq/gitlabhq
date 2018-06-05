@@ -24,7 +24,7 @@
       .col-sm-10
         - checkbox_name = 'application_setting[restricted_visibility_levels][]'
         = hidden_field_tag(checkbox_name)
-        - restricted_level_checkboxes('restricted-visibility-help', checkbox_name).each do |level|
+        - restricted_level_checkboxes('restricted-visibility-help', checkbox_name, class: 'form-check-input').each do |level|
           .form-check
             = level
         %span.form-text.text-muted#restricted-visibility-help
@@ -34,7 +34,7 @@
       = f.label :import_sources, class: 'col-form-label col-sm-2'
       .col-sm-10
         = hidden_field_tag 'application_setting[import_sources][]'
-        - import_sources_checkboxes('import-sources-help').each do |source|
+        - import_sources_checkboxes('import-sources-help', class: 'form-check-input').each do |source|
           .form-check= source
         %span.form-text.text-muted#import-sources-help
           Enabled sources for code import during project creation. OmniAuth must be configured for GitHub

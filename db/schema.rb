@@ -11,7 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20180531031410) do
+=======
+ActiveRecord::Schema.define(version: 20180531220618) do
+>>>>>>> upstream/master
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -120,7 +124,7 @@ ActiveRecord::Schema.define(version: 20180531031410) do
     t.text "shared_runners_text_html"
     t.text "after_sign_up_text_html"
     t.integer "rsa_key_restriction", default: 0, null: false
-    t.integer "dsa_key_restriction", default: 0, null: false
+    t.integer "dsa_key_restriction", default: -1, null: false
     t.integer "ecdsa_key_restriction", default: 0, null: false
     t.integer "ed25519_key_restriction", default: 0, null: false
     t.boolean "housekeeping_enabled", default: true, null: false
@@ -630,6 +634,7 @@ ActiveRecord::Schema.define(version: 20180531031410) do
   end
 
   add_index "ci_stages", ["pipeline_id", "name"], name: "index_ci_stages_on_pipeline_id_and_name", unique: true, using: :btree
+  add_index "ci_stages", ["pipeline_id", "position"], name: "index_ci_stages_on_pipeline_id_and_position", using: :btree
   add_index "ci_stages", ["pipeline_id"], name: "index_ci_stages_on_pipeline_id", using: :btree
   add_index "ci_stages", ["project_id"], name: "index_ci_stages_on_project_id", using: :btree
 
@@ -1637,6 +1642,10 @@ ActiveRecord::Schema.define(version: 20180531031410) do
     t.string "merge_jid"
     t.boolean "discussion_locked"
     t.integer "latest_merge_request_diff_id"
+<<<<<<< HEAD
+=======
+    t.string "rebase_commit_sha"
+>>>>>>> upstream/master
     t.boolean "allow_collaboration"
     t.boolean "squash", default: false, null: false
   end

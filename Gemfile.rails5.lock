@@ -201,9 +201,10 @@ GEM
       faraday
       multi_json
     email_reply_trimmer (0.1.10)
-    email_spec (1.6.0)
+    email_spec (2.2.0)
+      htmlentities (~> 4.3.3)
       launchy (~> 2.1)
-      mail (~> 2.2)
+      mail (~> 2.7)
     encryptor (3.0.0)
     equalizer (0.0.11)
     erubis (2.7.0)
@@ -1013,7 +1014,10 @@ DEPENDENCIES
   asset_sync (~> 2.4)
   attr_encrypted (~> 3.1.0)
   awesome_print
+<<<<<<< HEAD
   aws-sdk
+=======
+>>>>>>> upstream/master
   babosa (~> 1.0.2)
   base32 (~> 0.3.0)
   batch-loader (~> 1.2.1)
@@ -1050,7 +1054,7 @@ DEPENDENCIES
   elasticsearch-model (~> 0.1.9)
   elasticsearch-rails (~> 0.1.9)
   email_reply_trimmer (~> 0.1)
-  email_spec (~> 1.6.0)
+  email_spec (~> 2.2.0)
   factory_bot_rails (~> 4.8.2)
   faraday (~> 0.12)
   faraday_middleware-aws-signers-v4

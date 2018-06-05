@@ -2526,4 +2526,76 @@ describe Ci::Build do
       end
     end
   end
+
+  describe 'pages deployments' do
+    set(:build) { create(:ci_build, project: project, user: user) }
+
+    context 'when job is "pages"' do
+      before do
+        build.name = 'pages'
+      end
+
+      context 'when pages are enabled' do
+        before do
+          allow(Gitlab.config.pages).to receive_messages(enabled: true)
+        end
+
+        it 'is marked as pages generator' do
+          expect(build).to be_pages_generator
+        end
+
+        context 'job succeeds' do
+          it "calls pages worker" do
+            expect(PagesWorker).to receive(:perform_async).with(:deploy, build.id)
+
+            build.success!
+          end
+        end
+
+        context 'job fails' do
+          it "does not call pages worker" do
+            expect(PagesWorker).not_to receive(:perform_async)
+
+            build.drop!
+          end
+        end
+      end
+
+      context 'when pages are disabled' do
+        before do
+          allow(Gitlab.config.pages).to receive_messages(enabled: false)
+        end
+
+        it 'is not marked as pages generator' do
+          expect(build).not_to be_pages_generator
+        end
+
+        context 'job succeeds' do
+          it "does not call pages worker" do
+            expect(PagesWorker).not_to receive(:perform_async)
+
+            build.success!
+          end
+        end
+      end
+    end
+
+    context 'when job is not "pages"' do
+      before do
+        build.name = 'other-job'
+      end
+
+      it 'is not marked as pages generator' do
+        expect(build).not_to be_pages_generator
+      end
+
+      context 'job succeeds' do
+        it "does not call pages worker" do
+          expect(PagesWorker).not_to receive(:perform_async)
+
+          build.success
+        end
+      end
+    end
+  end
 end

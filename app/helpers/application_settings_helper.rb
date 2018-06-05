@@ -37,7 +37,7 @@ module ApplicationSettingsHelper
 
   # Return a group of checkboxes that use Bootstrap's button plugin for a
   # toggle button effect.
-  def restricted_level_checkboxes(help_block_id, checkbox_name)
+  def restricted_level_checkboxes(help_block_id, checkbox_name, options = {})
     Gitlab::VisibilityLevel.values.map do |level|
       checked = restricted_visibility_levels(true).include?(level)
       css_class = checked ? 'active' : ''
@@ -47,6 +47,7 @@ module ApplicationSettingsHelper
         check_box_tag(checkbox_name, level, checked,
                       autocomplete: 'off',
                       'aria-describedby' => help_block_id,
+                      'class' => options[:class],
                       id: tag_name) + visibility_level_icon(level) + visibility_level_label(level)
       end
     end
@@ -54,7 +55,7 @@ module ApplicationSettingsHelper
 
   # Return a group of checkboxes that use Bootstrap's button plugin for a
   # toggle button effect.
-  def import_sources_checkboxes(help_block_id)
+  def import_sources_checkboxes(help_block_id, options = {})
     Gitlab::ImportSources.options.map do |name, source|
       checked = Gitlab::CurrentSettings.import_sources.include?(source)
       css_class = checked ? 'active' : ''
@@ -64,6 +65,7 @@ module ApplicationSettingsHelper
         check_box_tag(checkbox_name, source, checked,
                       autocomplete: 'off',
                       'aria-describedby' => help_block_id,
+                      'class' => options[:class],
                       id: name.tr(' ', '_')) + name
       end
     end

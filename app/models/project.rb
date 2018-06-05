@@ -235,6 +235,7 @@ class Project < ActiveRecord::Base
 
   has_many :commit_statuses
   has_many :pipelines, class_name: 'Ci::Pipeline', inverse_of: :project
+  has_many :stages, class_name: 'Ci::Stage', inverse_of: :project
 
   # Ci::Build objects store data on the file system such as artifact files and
   # build traces. Currently there's no efficient way of removing this data in
@@ -1443,8 +1444,14 @@ class Project < ActiveRecord::Base
     Ci::Runner.from("(#{union.to_sql}) ci_runners")
   end
 
+  def active_runners
+    strong_memoize(:active_runners) do
+      all_runners.active
+    end
+  end
+
   def any_runners?(&block)
-    all_runners.active.any?(&block)
+    active_runners.any?(&block)
   end
 
   def valid_runners_token?(token)
@@ -1665,12 +1672,6 @@ class Project < ActiveRecord::Base
     Gitlab::SidekiqStatus.unset(import_jid)
 
     import_state.update_column(:jid, nil)
-  end
-
-  def running_or_pending_build_count(force: false)
-    Rails.cache.fetch(['projects', id, 'running_or_pending_build_count'], force: force) do
-      builds.running_or_pending.count(:all)
-    end
   end
 
   # Lazy loading of the `pipeline_status` attribute
