@@ -8,8 +8,8 @@ module DiffViewer
     end
 
     def prepare!
-      # diff_file.old_blob&.load_all_data!
-      # diff_file.new_blob&.load_all_data!
+      diff_file.old_blob&.load_all_data!
+      diff_file.new_blob&.load_all_data!
     end
 
     def render_error
