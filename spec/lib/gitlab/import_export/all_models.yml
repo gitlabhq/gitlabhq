@@ -257,6 +257,7 @@ project:
 - import_data
 - commit_statuses
 - pipelines
+- stages
 - builds
 - runner_projects
 - runners
