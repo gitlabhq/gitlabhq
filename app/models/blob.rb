@@ -112,6 +112,12 @@ class Blob < SimpleDelegator
     end
   end
 
+  def total_lines
+    lines_size = lines.size
+    lines_size -= 1 if lines_size > 0 && lines.last.blank?
+    lines_size
+  end
+
   def load_all_data!
     # Endpoint needed: gitlab-org/gitaly#756
     Gitlab::GitalyClient.allow_n_plus_1_calls do

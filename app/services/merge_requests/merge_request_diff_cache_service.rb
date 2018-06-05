@@ -10,7 +10,9 @@ module MergeRequests
       MergeRequestDiff.where(merge_request: merge_request).each do |merge_request_diff|
         next if merge_request_diff == new_diff
 
+        # Change to #clear_highlighting_cache!
         merge_request_diff.diffs.clear_cache!
+        merge_request_diff.diffs.clear_blob_details_cache!
       end
     end
   end

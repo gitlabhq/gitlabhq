@@ -18,6 +18,7 @@ module Gitlab
         end
 
         def lines
+          binding.pry
           return @lines if defined?(@lines)
 
           begin

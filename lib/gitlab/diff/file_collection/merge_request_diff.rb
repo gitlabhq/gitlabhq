@@ -33,6 +33,13 @@ module Gitlab
           Rails.cache.delete(cache_key)
         end
 
+        def clear_blob_details_cache!
+          diff_files.each do |file|
+            file.old_blob&.clear_cache
+            file.new_blob&.clear_cache
+          end
+        end
+
         def cache_key
           [@merge_request_diff, 'highlighted-diff-files', diff_options]
         end

@@ -25,10 +25,6 @@ module Gitlab
         @repository = repository
         @diff_refs = diff_refs
         @fallback_diff_refs = fallback_diff_refs
-
-        # Ensure items are collected in the the batch
-        new_blob_lazy
-        old_blob_lazy
       end
 
       def position(position_marker, position_type: :text)
@@ -108,11 +104,15 @@ module Gitlab
       end
 
       def new_blob
-        new_blob_lazy&.itself
+        return unless new_content_sha
+
+        BlobsService.new(repository.project, new_content_sha, file_path)
       end
 
       def old_blob
-        old_blob_lazy&.itself
+        return unless old_content_sha
+
+        BlobsService.new(repository.project, old_content_sha, file_path)
       end
 
       def content_sha
@@ -258,18 +258,6 @@ module Gitlab
 
       def blobs_changed?
         old_blob && new_blob && old_blob.id != new_blob.id
-      end
-
-      def new_blob_lazy
-        return unless new_content_sha
-
-        Blob.lazy(repository.project, new_content_sha, file_path)
-      end
-
-      def old_blob_lazy
-        return unless old_content_sha
-
-        Blob.lazy(repository.project, old_content_sha, old_path)
       end
 
       def simple_viewer_class
