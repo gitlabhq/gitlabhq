@@ -451,10 +451,12 @@ ActiveRecord::Schema.define(version: 20180531220618) do
     t.integer "config_source"
     t.boolean "protected"
     t.integer "failure_reason"
+    t.integer "iid"
   end
 
   add_index "ci_pipelines", ["auto_canceled_by_id"], name: "index_ci_pipelines_on_auto_canceled_by_id", using: :btree
   add_index "ci_pipelines", ["pipeline_schedule_id"], name: "index_ci_pipelines_on_pipeline_schedule_id", using: :btree
+  add_index "ci_pipelines", ["project_id", "iid"], name: "index_ci_pipelines_on_project_id_and_iid", unique: true, where: "(iid IS NOT NULL)", using: :btree
   add_index "ci_pipelines", ["project_id", "ref", "status", "id"], name: "index_ci_pipelines_on_project_id_and_ref_and_status_and_id", using: :btree
   add_index "ci_pipelines", ["project_id", "sha"], name: "index_ci_pipelines_on_project_id_and_sha", using: :btree
   add_index "ci_pipelines", ["project_id"], name: "index_ci_pipelines_on_project_id", using: :btree
@@ -1227,7 +1229,7 @@ ActiveRecord::Schema.define(version: 20180531220618) do
     t.boolean "discussion_locked"
     t.integer "latest_merge_request_diff_id"
     t.string "rebase_commit_sha"
-    t.boolean "allow_maintainer_to_push"
+    t.boolean "allow_collaboration"
     t.boolean "squash", default: false, null: false
   end
 

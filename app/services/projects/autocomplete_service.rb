@@ -11,7 +11,7 @@ module Projects
         order: { due_date: :asc, title: :asc }
       }
 
-      finder_params[:group_ids] = [@project.group.id] if @project.group
+      finder_params[:group_ids] = @project.group.self_and_ancestors.select(:id) if @project.group
 
       MilestonesFinder.new(finder_params).execute.select([:iid, :title])
     end

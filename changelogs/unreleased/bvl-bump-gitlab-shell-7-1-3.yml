@@ -1,0 +1,5 @@
+---
+title: Include username in output when testing SSH to GitLab
+merge_request: 19358
+author:
+type: other
