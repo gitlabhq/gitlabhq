@@ -20,15 +20,15 @@
             Choose between <code>clone</code> or <code>fetch</code> to get the recent application code
             = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'git-strategy'), target: '_blank'
           .form-check
-            = f.label :build_allow_git_fetch_false do
-              = f.radio_button :build_allow_git_fetch, 'false'
+            = f.radio_button :build_allow_git_fetch, 'false', { class: 'form-check-input' }
+            = f.label :build_allow_git_fetch_false, class: 'form-check-label' do
               %strong git clone
               %br
               %span.descr
                 Slower but makes sure the project workspace is pristine as it clones the repository from scratch for every job
           .form-check
-            = f.label :build_allow_git_fetch_true do
-              = f.radio_button :build_allow_git_fetch, 'true'
+            = f.radio_button :build_allow_git_fetch, 'true', { class: 'form-check-input' }
+            = f.label :build_allow_git_fetch_true, class: 'form-check-label' do
               %strong git fetch
               %br
               %span.descr
@@ -53,8 +53,8 @@
         %hr
         .form-group
           .form-check
-            = f.label :public_builds do
-              = f.check_box :public_builds
+            = f.check_box :public_builds, { class: 'form-check-input' }
+            = f.label :public_builds, class: 'form-check-label' do
               %strong Public pipelines
             .form-text.text-muted
               Allow public access to pipelines and job details, including output logs and artifacts
@@ -75,8 +75,8 @@
         %hr
         .form-group
           .form-check
-            = f.label :auto_cancel_pending_pipelines do
-              = f.check_box :auto_cancel_pending_pipelines, {}, 'enabled', 'disabled'
+            = f.check_box :auto_cancel_pending_pipelines, { class: 'form-check-input' }, 'enabled', 'disabled'
+            = f.label :auto_cancel_pending_pipelines, class: 'form-check-label' do
               %strong Auto-cancel redundant, pending pipelines
             .form-text.text-muted
               New pipelines will cancel older, pending pipelines on the same branch

@@ -23,11 +23,13 @@
   .form-group.row
     .offset-sm-2.col-sm-10
       .form-check
-        = form.label :confidential do
-          = form.check_box :confidential
+        = form.check_box :confidential, class: 'form-check-input'
+        = form.label :confidential, class: 'form-check-label' do
           This issue is confidential and should only be visible to team members with at least Reporter access.
 
 = render 'shared/issuable/form/metadata', issuable: issuable, form: form
+
+= render_if_exists 'shared/issuable/approvals', issuable: issuable, form: form
 
 = render 'shared/issuable/form/branch_chooser', issuable: issuable, form: form
 
@@ -77,5 +79,6 @@
       %strong= link_to('contribution guidelines', guide_url)
       for this project.
 
+= render_if_exists 'shared/issuable/remove_approver'
 
 = form.hidden_field :lock_version

@@ -1,4 +1,4 @@
-require('spec_helper')
+require 'spec_helper'
 
 describe Projects::IssuesController do
   let(:project) { create(:project) }

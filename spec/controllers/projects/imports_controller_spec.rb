@@ -2,16 +2,15 @@ require 'spec_helper'
 
 describe Projects::ImportsController do
   let(:user) { create(:user) }
+  let(:project) { create(:project) }
+
+  before do
+    sign_in(user)
+    project.add_master(user)
+  end
 
   describe 'GET #show' do
     context 'when repository does not exists' do
-      let(:project) { create(:project) }
-
-      before do
-        sign_in(user)
-        project.add_master(user)
-      end
-
       it 'renders template' do
         get :show, namespace_id: project.namespace.to_param, project_id: project
 
@@ -27,11 +26,6 @@ describe Projects::ImportsController do
 
     context 'when repository exists' do
       let(:project) { create(:project_empty_repo, import_url: 'https://github.com/vim/vim.git') }
-
-      before do
-        sign_in(user)
-        project.add_master(user)
-      end
 
       context 'when import is in progress' do
         before do

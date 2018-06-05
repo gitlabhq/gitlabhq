@@ -16,17 +16,21 @@ feature 'Group issues page' do
       let(:access_level) { ProjectFeature::ENABLED }
 
       context 'when signed in' do
-        let(:user) { user_in_group }
+        let(:user) do
+          user_in_group.ensure_feed_token
+          user_in_group.save!
+          user_in_group
+        end
 
-        it_behaves_like "it has an RSS button with current_user's RSS token"
-        it_behaves_like "an autodiscoverable RSS feed with current_user's RSS token"
+        it_behaves_like "it has an RSS button with current_user's feed token"
+        it_behaves_like "an autodiscoverable RSS feed with current_user's feed token"
       end
 
       context 'when signed out' do
         let(:user) { nil }
 
-        it_behaves_like "it has an RSS button without an RSS token"
-        it_behaves_like "an autodiscoverable RSS feed without an RSS token"
+        it_behaves_like "it has an RSS button without a feed token"
+        it_behaves_like "an autodiscoverable RSS feed without a feed token"
       end
     end
 

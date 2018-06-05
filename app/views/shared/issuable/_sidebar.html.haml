@@ -18,6 +18,9 @@
           = render "shared/issuable/sidebar_todo", todo: todo, issuable: issuable, is_collapsed: true
       .block.assignee
         = render "shared/issuable/sidebar_assignees", issuable: issuable, can_edit_issuable: can_edit_issuable, signed_in: current_user.present?
+
+      = render_if_exists 'shared/issuable/sidebar_item_epic', issuable: issuable
+
       .block.milestone
         .sidebar-collapsed-icon.has-tooltip{ title: milestone_tooltip_title(issuable.milestone), data: { container: 'body', html: 'true', placement: 'left', boundary: 'viewport' } }
           = icon('clock-o', 'aria-hidden': 'true')
@@ -33,7 +36,7 @@
             = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right'
         .value.hide-collapsed
           - if issuable.milestone
-            = link_to issuable.milestone.title, milestone_path(issuable.milestone), class: "bold has-tooltip", title: milestone_tooltip_due_date(issuable.milestone), data: { container: "body", html: 'true' }
+            = link_to issuable.milestone.title, milestone_path(issuable.milestone), class: "bold has-tooltip", title: milestone_tooltip_due_date(issuable.milestone), data: { container: "body", html: 'true', boundary: 'viewport' }
           - else
             %span.no-value
               = _('None')
@@ -115,6 +118,8 @@
                 - if can? current_user, :admin_label, @project and @project
                   = render partial: "shared/issuable/label_page_create"
 
+      = render_if_exists 'shared/issuable/sidebar_weight', issuable: issuable
+
       - if issuable.has_attribute?(:confidential)
         -# haml-lint:disable InlineJavaScript
         %script#js-confidential-issue-data{ type: "application/json" }= { is_confidential: @issue.confidential, is_editable: can_edit_issuable }.to_json.html_safe
@@ -139,7 +144,7 @@
             = _('Reference:')
             %cite{ title: project_ref }
               = project_ref
-          = clipboard_button(text: project_ref, title: _('Copy reference to clipboard'), placement: "left")
+          = clipboard_button(text: project_ref, title: _('Copy reference to clipboard'), placement: "left", boundary: 'viewport')
       - if current_user && issuable.can_move?(current_user)
         .block.js-sidebar-move-issue-block
           .sidebar-collapsed-icon{ data: { toggle: 'tooltip', placement: 'left', container: 'body', boundary: 'viewport' }, title: _('Move issue') }

@@ -138,8 +138,8 @@ module Gitlab
 
     def ee_branch_presence_check!
       ee_remotes.keys.each do |remote|
-        [ee_branch_prefix, ee_branch_suffix].each do |branch|
-          _, status = step("Fetching #{remote}/#{ee_branch_prefix}", %W[git fetch #{remote} #{branch}])
+        [ce_branch, ee_branch_prefix, ee_branch_suffix].each do |branch|
+          _, status = step("Fetching #{remote}/#{branch}", %W[git fetch #{remote} #{branch}])
 
           if status.zero?
             @ee_remote_with_branch = remote

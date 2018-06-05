@@ -1,0 +1,5 @@
+---
+title: Throttle updates to Project#last_repository_updated_at.
+merge_request: 19183
+author:
+type: performance

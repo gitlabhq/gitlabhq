@@ -1,10 +1,11 @@
 module ActiveRecord
   class QueryRecorder
-    attr_reader :log, :cached
+    attr_reader :log, :skip_cached, :cached
 
-    def initialize(&block)
+    def initialize(skip_cached: true, &block)
       @log = []
       @cached = []
+      @skip_cached = skip_cached
       ActiveSupport::Notifications.subscribed(method(:callback), 'sql.active_record', &block)
     end
 
@@ -16,7 +17,7 @@ module ActiveRecord
     def callback(name, start, finish, message_id, values)
       show_backtrace(values) if ENV['QUERY_RECORDER_DEBUG']
 
-      if values[:name]&.include?("CACHE")
+      if values[:name]&.include?("CACHE") && skip_cached
         @cached << values[:sql]
       elsif !values[:name]&.include?("SCHEMA")
         @log << values[:sql]

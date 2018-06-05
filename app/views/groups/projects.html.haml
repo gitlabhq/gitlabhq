@@ -8,7 +8,7 @@
       .controls
         = link_to new_project_path(namespace_id: @group.id), class: "btn btn-sm btn-success" do
           New project
-  %ul.well-list
+  %ul.content-list
     - @projects.each do |project|
       %li
         .list-item-name

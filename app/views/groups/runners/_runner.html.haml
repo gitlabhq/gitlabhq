@@ -8,13 +8,13 @@
       = link_to edit_group_runner_path(@group, runner) do
         = icon('edit')
 
-    .pull-right
+    .float-right
       - if runner.active?
         = link_to _('Pause'), pause_group_runner_path(@group, runner), method: :post, class: 'btn btn-sm btn-danger', data: { confirm: _("Are you sure?") }
       - else
         = link_to _('Resume'), resume_group_runner_path(@group, runner), method: :post, class: 'btn btn-success btn-sm'
       = link_to _('Remove Runner'), group_runner_path(@group, runner), data: { confirm: _("Are you sure?") }, method: :delete, class: 'btn btn-danger btn-sm'
-  .pull-right
+  .float-right
     %small.light
       \##{runner.id}
   - if runner.description.present?

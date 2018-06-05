@@ -20,3 +20,7 @@ export const viewerTypes = {
   edit: 'editor',
   diff: 'diff',
 };
+
+export const rightSidebarViews = {
+  pipelines: 'pipelines-list',
+};

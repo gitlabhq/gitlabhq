@@ -212,7 +212,7 @@ shared_examples 'a note email' do
   end
 
   it 'contains the message from the note' do
-    is_expected.to have_html_escaped_body_text note.note
+    is_expected.to have_body_text note.note
   end
 
   it 'does not contain note author' do
@@ -225,7 +225,7 @@ shared_examples 'a note email' do
     end
 
     it 'contains a link to note author' do
-      is_expected.to have_html_escaped_body_text note.author_name
+      is_expected.to have_body_text note.author_name
     end
   end
 end

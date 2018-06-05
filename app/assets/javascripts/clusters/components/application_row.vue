@@ -52,6 +52,11 @@
         type: String,
         required: false,
       },
+      installApplicationRequestParams: {
+        type: Object,
+        required: false,
+        default: () => ({}),
+      },
     },
     computed: {
       rowJsClass() {
@@ -109,7 +114,10 @@
     },
     methods: {
       installClicked() {
-        eventHub.$emit('installApplication', this.id);
+        eventHub.$emit('installApplication', {
+          id: this.id,
+          params: this.installApplicationRequestParams,
+        });
       },
     },
   };
@@ -179,7 +187,7 @@
       role="row"
     >
       <div
-        class="alert alert-danger alert-block append-bottom-0"
+        class="alert alert-danger alert-block append-bottom-0 clusters-error-alert"
         role="gridcell"
       >
         <div>

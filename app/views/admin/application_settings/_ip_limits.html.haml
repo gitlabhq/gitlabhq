@@ -5,8 +5,8 @@
     .form-group.row
       .offset-sm-2.col-sm-10
         .form-check
-          = f.label :throttle_unauthenticated_enabled do
-            = f.check_box :throttle_unauthenticated_enabled
+          = f.check_box :throttle_unauthenticated_enabled, class: 'form-check-input'
+          = f.label :throttle_unauthenticated_enabled, class: 'form-check-label' do
             Enable unauthenticated request rate limit
           %span.form-text.text-muted
             Helps reduce request volume (e.g. from crawlers or abusive bots)
@@ -21,8 +21,8 @@
     .form-group.row
       .offset-sm-2.col-sm-10
         .form-check
-          = f.label :throttle_authenticated_api_enabled do
-            = f.check_box :throttle_authenticated_api_enabled
+          = f.check_box :throttle_authenticated_api_enabled, class: 'form-check-input'
+          = f.label :throttle_authenticated_api_enabled, class: 'form-check-label' do
             Enable authenticated API request rate limit
           %span.form-text.text-muted
             Helps reduce request volume (e.g. from crawlers or abusive bots)
@@ -37,8 +37,8 @@
     .form-group.row
       .offset-sm-2.col-sm-10
         .form-check
-          = f.label :throttle_authenticated_web_enabled do
-            = f.check_box :throttle_authenticated_web_enabled
+          = f.check_box :throttle_authenticated_web_enabled, class: 'form-check-input'
+          = f.label :throttle_authenticated_web_enabled, class: 'form-check-label' do
             Enable authenticated web request rate limit
           %span.form-text.text-muted
             Helps reduce request volume (e.g. from crawlers or abusive bots)

@@ -22,15 +22,22 @@ module Gitlab
         end
 
         def execute
-          if (mr_id = create_merge_request)
-            issuable_finder.cache_database_id(mr_id)
+          mr, already_exists = create_merge_request
+
+          if mr
+            insert_git_data(mr, already_exists)
+            issuable_finder.cache_database_id(mr.id)
           end
         end
 
         # Creates the merge request and returns its ID.
         #
         # This method will return `nil` if the merge request could not be
-        # created.
+        # created, otherwise it will return an Array containing the following
+        # values:
+        #
+        # 1. A MergeRequest instance.
+        # 2. A boolean indicating if the MR already exists.
         def create_merge_request
           author_id, author_found = user_finder.author_id_for(pull_request)
 
@@ -69,21 +76,42 @@ module Gitlab
             merge_request_id = GithubImport
               .insert_and_return_id(attributes, project.merge_requests)
 
-            merge_request = project.merge_requests.find(merge_request_id)
-
-            # These fields are set so we can create the correct merge request
-            # diffs.
-            merge_request.source_branch_sha = pull_request.source_branch_sha
-            merge_request.target_branch_sha = pull_request.target_branch_sha
-
-            merge_request.keep_around_commit
-            merge_request.merge_request_diffs.create
-
-            merge_request.id
+            [project.merge_requests.find(merge_request_id), false]
           end
         rescue ActiveRecord::InvalidForeignKey
           # It's possible the project has been deleted since scheduling this
           # job. In this case we'll just skip creating the merge request.
+          []
+        rescue ActiveRecord::RecordNotUnique
+          # It's possible we previously created the MR, but failed when updating
+          # the Git data. In this case we'll just continue working on the
+          # existing row.
+          [project.merge_requests.find_by(iid: pull_request.iid), true]
+        end
+
+        def insert_git_data(merge_request, already_exists = false)
+          # These fields are set so we can create the correct merge request
+          # diffs.
+          merge_request.source_branch_sha = pull_request.source_branch_sha
+          merge_request.target_branch_sha = pull_request.target_branch_sha
+
+          merge_request.keep_around_commit
+
+          # MR diffs normally use an "after_save" hook to pull data from Git.
+          # All of this happens in the transaction started by calling
+          # create/save/etc. This in turn can lead to these transactions being
+          # held open for much longer than necessary. To work around this we
+          # first save the diff, then populate it.
+          diff =
+            if already_exists
+              merge_request.merge_request_diffs.take
+            else
+              merge_request.merge_request_diffs.build
+            end
+
+          diff.importing = true
+          diff.save
+          diff.save_git_content
         end
       end
     end

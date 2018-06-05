@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Groups::RunnersController do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
-  let(:runner) { create(:ci_runner) }
+  let(:runner) { create(:ci_runner, :group, groups: [group]) }
 
   let(:params) do
     {
@@ -15,7 +15,6 @@ describe Groups::RunnersController do
   before do
     sign_in(user)
     group.add_master(user)
-    group.runners << runner
   end
 
   describe '#update' do

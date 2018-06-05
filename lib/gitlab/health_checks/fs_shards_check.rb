@@ -77,7 +77,9 @@ module Gitlab
         end
 
         def storage_path(storage_name)
-          storages_paths[storage_name]&.legacy_disk_path
+          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            storages_paths[storage_name]&.legacy_disk_path
+          end
         end
 
         # All below test methods use shell commands to perform actions on storage volumes.

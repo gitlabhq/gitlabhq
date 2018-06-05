@@ -99,7 +99,7 @@ Please update your Git repository remotes as soon as possible.`),
           :disabled="isRequestPending"
         />
       </div>
-      <p class="help-block">
+      <p class="form-text text-muted">
         {{ path }}
       </p>
     </div>

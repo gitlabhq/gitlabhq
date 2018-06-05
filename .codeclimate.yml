@@ -8,8 +8,6 @@ engines:
       languages:
       - ruby
       - javascript
-    exclude_paths:
-      - "lib/api/v3/*"
 ratings:
   paths:
   - Gemfile.lock
