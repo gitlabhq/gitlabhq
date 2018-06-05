@@ -40,7 +40,7 @@ module API
         merge_requests = MergeRequestsFinder.new(current_user, args).execute
                            .reorder(args[:order_by] => args[:sort])
         merge_requests = paginate(merge_requests)
-                           .preload(:target_project)
+                           .preload(:source_project, :target_project)
 
         return merge_requests if args[:view] == 'simple'
 
