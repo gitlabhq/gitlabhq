@@ -59,7 +59,6 @@ export default class MergeRequestStore {
     this.removeWIPPath = data.remove_wip_path;
     this.sourceBranchRemoved = !data.source_branch_exists;
     this.shouldRemoveSourceBranch = data.remove_source_branch || false;
-    this.buildsEnabled = data.builds_enabled;
     this.onlyAllowMergeIfPipelineSucceeds = data.only_allow_merge_if_pipeline_succeeds || false;
     this.mergeWhenPipelineSucceeds = data.merge_when_pipeline_succeeds || false;
     this.mergePath = data.merge_path;
@@ -96,6 +95,7 @@ export default class MergeRequestStore {
     this.ciEnvironmentsStatusPath = data.ci_environments_status_path;
     this.hasCI = data.has_ci;
     this.ciStatus = data.ci_status;
+    this.buildsEnabled = data.builds_enabled;
     this.isPipelineFailed = this.ciStatus === 'failed' || this.ciStatus === 'canceled';
     this.isPipelinePassing = this.ciStatus === 'success' || this.ciStatus === 'success_with_warnings';
     this.isPipelineSkipped = this.ciStatus === 'skipped';

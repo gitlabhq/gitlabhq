@@ -47,7 +47,7 @@ export default {
 
       if (!buildsEnabled) {
         return 'success';
-      } else if (buildsEnabled && !ciStatus) {
+      } else if (!ciStatus) {
         return 'failed';
       } else if (!pipeline) {
         return 'success';
