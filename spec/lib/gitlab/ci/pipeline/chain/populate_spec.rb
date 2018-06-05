@@ -161,15 +161,10 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
       it 'populates pipeline according to used policies' do
         step.perform!
 
-<<<<<<< HEAD
-    let(:pipeline) do
-      build(:ci_pipeline, ref: 'master', project: project, config: config)
-=======
         expect(pipeline.stages.size).to eq 1
         expect(pipeline.stages.first.builds.size).to eq 1
         expect(pipeline.stages.first.builds.first.name).to eq 'rspec'
       end
->>>>>>> upstream/master
     end
 
     context 'when using only/except build policies' do
@@ -179,7 +174,7 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
       end
 
       let(:pipeline) do
-        build(:ci_pipeline, ref: 'master', config: config)
+        build(:ci_pipeline, ref: 'master', project: project, config: config)
       end
 
       it_behaves_like 'a correct pipeline'
