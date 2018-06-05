@@ -9,7 +9,6 @@ Vue.use(Translate);
 
 export function initIde(el) {
   if (!el) return null;
-  window.store = store;
 
   return new Vue({
     el,

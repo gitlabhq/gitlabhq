@@ -132,14 +132,3 @@ export default {
     </div>
   </div>
 </template>
-
-<style scoped>
-.ide-merge-requests-empty {
-  height: 230px;
-}
-
-.ide-merge-requests-dropdown-content {
-  min-height: 230px;
-  max-height: 470px;
-}
-</style>

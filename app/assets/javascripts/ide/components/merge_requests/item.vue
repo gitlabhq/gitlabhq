@@ -44,10 +44,7 @@ export default {
     class="btn-link d-flex align-items-center"
     @click.prevent.stop="clickItem"
   >
-    <span
-      class="d-flex append-right-default"
-      style="min-width: 18px"
-    >
+    <span class="d-flex append-right-default ide-merge-request-current-icon">
       <icon
         v-if="isActive"
         name="mobile-issue-close"

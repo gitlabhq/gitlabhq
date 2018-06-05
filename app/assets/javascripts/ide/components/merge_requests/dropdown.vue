@@ -25,7 +25,7 @@ export default {
 </script>
 
 <template>
-  <div class="dropdown-menu ide-merge-requests-dropdown">
+  <div class="dropdown-menu ide-merge-requests-dropdown p-0">
     <tabs stop-propagation>
       <tab active>
         <template slot="title">
@@ -56,11 +56,3 @@ export default {
     </tabs>
   </div>
 </template>
-
-<style scoped>
-.dropdown-menu {
-  width: 350px;
-  padding: 0;
-  max-height: initial !important;
-}
-</style>

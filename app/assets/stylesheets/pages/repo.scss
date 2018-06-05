@@ -1135,6 +1135,11 @@
   .avatar {
     flex: 0 0 40px;
   }
+
+  .ide-merge-requests-dropdown.dropdown-menu {
+    width: 350px;
+    max-height: initial;
+  }
 }
 
 .ide-sidebar-project-title {
@@ -1293,4 +1298,17 @@
       }
     }
   }
+}
+
+.ide-merge-request-current-icon {
+  min-width: 18px;
+}
+
+.ide-merge-requests-empty {
+  height: 230px;
+}
+
+.ide-merge-requests-dropdown-content {
+  min-height: 230px;
+  max-height: 470px;
 }
