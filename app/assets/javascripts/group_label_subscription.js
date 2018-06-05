@@ -53,7 +53,7 @@ export default class GroupLabelSubscription {
 
   static setNewTooltip($button) {
     if (!$button.hasClass('js-subscribe-button')) return;
-    
+
     const type = $button.hasClass('js-group-level') ? 'group' : 'project';
     const newTitle = tooltipTitles[type];
 
