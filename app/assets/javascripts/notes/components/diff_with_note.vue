@@ -28,6 +28,9 @@ export default {
     ...mapState({
       noteableData: state => state.notes.noteableData,
     }),
+    hasTruncatedDiffLines() {
+      return this.discussion.truncatedDiffLines && this.discussion.truncatedDiffLines.length !== 0;
+    },
     isDiscussionsExpanded() {
       return true; // TODO: @fatihacet - Fix this.
     },
@@ -56,7 +59,7 @@ export default {
       const canCreateNote = false;
       const renderCommentBadge = true;
       imageDiffHelper.initImageDiff(this.$refs.fileHolder, canCreateNote, renderCommentBadge);
-    } else if (this.discussion.truncatedDiffLines.length === 0) {
+    } else if (!this.hasTruncatedDiffLines) {
       this.fetchDiff();
     } else {
       this.highlight();
@@ -120,7 +123,7 @@ export default {
           </td>
         </tr>
         <tr
-          v-if="discussion.truncatedDiffLines.length === 0"
+          v-if="!hasTruncatedDiffLines"
           class="line_holder line-holder-placeholder"
         >
           <td class="old_line diff-line-num"></td>

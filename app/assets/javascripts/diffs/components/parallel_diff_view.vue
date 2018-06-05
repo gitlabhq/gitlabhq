@@ -183,7 +183,7 @@ export default {
                 class="content"
               >
                 <diff-discussions
-                  :notes="discussionsByLineCode[line.left.lineCode]"
+                  :discussions="discussionsByLineCode[line.left.lineCode]"
                 />
               </div>
               <diff-line-note-form
@@ -203,7 +203,7 @@ export default {
                 class="content"
               >
                 <diff-discussions
-                  :notes="discussionsByLineCode[line.right.lineCode]"
+                  :discussions="discussionsByLineCode[line.right.lineCode]"
                 />
               </div>
               <diff-line-note-form

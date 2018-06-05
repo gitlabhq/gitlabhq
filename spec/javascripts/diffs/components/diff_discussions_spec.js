@@ -10,7 +10,7 @@ describe('DiffDiscussions', () => {
 
   beforeEach(() => {
     component = createComponentWithStore(Vue.extend(DiffDiscussions), store, {
-      notes: getDiscussionsMockData(),
+      discussions: getDiscussionsMockData(),
     }).$mount();
   });
 

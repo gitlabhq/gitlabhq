@@ -81,7 +81,7 @@ describe('DiffGutterAvatars', () => {
         expect(component.discussions[0].expanded).toEqual(true);
 
         component.$store.dispatch('setInitialNotes', getDiscussionsMockData());
-        component.discussions = component.$store.state.notes.notes;
+        component.discussions = component.$store.state.notes.discussions;
         component.toggleDiscussions();
 
         expect(component.discussions[0].expanded).toEqual(false);

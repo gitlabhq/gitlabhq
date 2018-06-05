@@ -38,7 +38,7 @@ export default {
     ...mapGetters(['noteableType', 'getNotesDataByProp']),
   },
   methods: {
-    ...mapActions(['cancelCommentForm', 'saveNote', 'fetchNotes']),
+    ...mapActions(['cancelCommentForm', 'saveNote', 'fetchDiscussions']),
     handleCancelCommentForm() {
       this.cancelCommentForm({
         lineCode: this.line.lineCode,
@@ -59,7 +59,7 @@ export default {
         .then(() => {
           const endpoint = this.getNotesDataByProp('discussionsPath');
 
-          this.fetchNotes(endpoint)
+          this.fetchDiscussions(endpoint)
             .then(() => {
               this.handleCancelCommentForm();
             })

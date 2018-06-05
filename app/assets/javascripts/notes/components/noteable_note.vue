@@ -12,6 +12,7 @@ import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
 
 export default {
+  name: 'NoteableNote',
   components: {
     userAvatarLink,
     noteHeader,
@@ -136,7 +137,7 @@ export default {
       // we need to do this to prevent noteForm inconsistent content warning
       // this is something we intentionally do so we need to recover the content
       this.note.note = noteText;
-      this.$refs.noteBody.$refs.noteForm.note.note = noteText;
+      this.$refs.noteBody.note.note = noteText;
     },
   },
 };

@@ -28,7 +28,7 @@ describe('DiscussionCounter component', () => {
     describe('jumpToFirstUnresolvedDiscussion', () => {
       it('expands unresolved discussion', () => {
         spyOn(vm, 'expandDiscussion').and.stub();
-        const notes = [
+        const discussions = [
           {
             ...discussionMock,
             id: discussionMock.id,
@@ -43,7 +43,7 @@ describe('DiscussionCounter component', () => {
         const firstDiscussionId = discussionMock.id + 1;
         store.replaceState({
           ...store.state,
-          notes,
+          discussions,
         });
         setFixtures(`
           <div data-discussion-id="${firstDiscussionId}"></div>
