@@ -135,6 +135,16 @@ module TestEnv
       install_dir: Gitlab.config.gitlab_shell.path,
       version: Gitlab::Shell.version_required,
       task: 'gitlab:shell:install')
+
+    create_fake_git_hooks
+  end
+
+  def create_fake_git_hooks
+    # gitlab-shell hooks don't work in our test environment because they try to make internal API calls
+    hooks_dir = File.join(Gitlab.config.gitlab_shell.path, 'hooks')
+    %w[pre-receive post-receive update].each do |hook|
+      File.open(File.join(hooks_dir, hook), 'w', 0755) { |f| f.puts '#!/bin/sh' }
+    end
   end
 
   def setup_gitaly

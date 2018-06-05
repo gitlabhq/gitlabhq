@@ -23,10 +23,11 @@ class RepositoryForkWorker
 
       source_repository_storage_path, source_disk_path = *args
 
-      source_repository_storage_name = Gitlab.config.repositories.storages.find do |_, info|
-        info.legacy_disk_path == source_repository_storage_path
-      end&.first || raise("no shard found for path '#{source_repository_storage_path}'")
-
+      source_repository_storage_name = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        Gitlab.config.repositories.storages.find do |_, info|
+          info.legacy_disk_path == source_repository_storage_path
+        end&.first || raise("no shard found for path '#{source_repository_storage_path}'")
+      end
       fork_repository(target_project, source_repository_storage_name, source_disk_path)
     end
   end

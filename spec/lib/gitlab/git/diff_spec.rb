@@ -27,8 +27,10 @@ EOT
       too_large: false
     }
 
-    @rugged_diff = repository.rugged.diff("5937ac0a7beb003549fc5fd26fc247adbce4a52e^", "5937ac0a7beb003549fc5fd26fc247adbce4a52e", paths:
-                                          [".gitmodules"]).patches.first
+    @rugged_diff = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      repository.rugged.diff("5937ac0a7beb003549fc5fd26fc247adbce4a52e^", "5937ac0a7beb003549fc5fd26fc247adbce4a52e", paths:
+                                              [".gitmodules"]).patches.first
+    end
   end
 
   describe '.new' do
