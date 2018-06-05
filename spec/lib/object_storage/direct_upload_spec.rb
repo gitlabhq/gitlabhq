@@ -17,6 +17,10 @@ describe ObjectStorage::DirectUpload do
 
   let(:direct_upload) { described_class.new(credentials, bucket_name, object_name, has_length: has_length, maximum_size: maximum_size) }
 
+  before do
+    Fog.unmock!
+  end
+
   describe '#has_length' do
     context 'is known' do
       let(:has_length) { true }
