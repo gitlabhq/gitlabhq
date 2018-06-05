@@ -163,7 +163,7 @@ export default {
       </div>
 
       <div class="row prepend-top-20 append-bottom-10">
-        <div class="col-sm-10 col-sm-offset-2 text-secondary">
+        <div class="col-sm-10 offset-sm-2 text-secondary">
           <template v-if="hasDismissedBy">
             {{ s__('ciReport|Dismissed by') }}
             <a
