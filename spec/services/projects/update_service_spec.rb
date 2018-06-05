@@ -275,6 +275,10 @@ describe Projects::UpdateService do
       it { is_expected.to eq(false) }
     end
 
+    context 'when auto devops is nil' do
+      it { is_expected.to eq(false) }
+    end
+
     context 'when auto devops is explicitly enabled' do
       before do
         project.create_auto_devops!(enabled: true)

@@ -2002,6 +2002,18 @@ describe Gitlab::Git::Repository, seed_helper: true do
           expect(config).to include("fullpath = #{repository_path}")
         end
       end
+
+      context 'repository does not exist' do
+        it 'raises NoRepository and does not call Gitaly WriteConfig' do
+          repository = Gitlab::Git::Repository.new('default', 'does/not/exist.git', '')
+
+          expect(repository.gitaly_repository_client).not_to receive(:write_config)
+
+          expect do
+            repository.write_config(full_path: 'foo/bar.git')
+          end.to raise_error(Gitlab::Git::Repository::NoRepository)
+        end
+      end
     end
 
     context "when gitaly_write_config is enabled" do
