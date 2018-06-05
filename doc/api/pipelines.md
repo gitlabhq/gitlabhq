@@ -133,8 +133,7 @@ Example of response
   "finished_at": null,
   "committed_at": null,
   "duration": null,
-  "coverage": null,
-  "variables": []
+  "coverage": null
 }
 ```
 

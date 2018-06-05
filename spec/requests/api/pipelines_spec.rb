@@ -285,6 +285,15 @@ describe API::Pipelines do
   end
 
   describe 'POST /projects/:id/pipeline ' do
+    def expect_variables(variables, expected_variables)
+      variables.each_with_index do |variable, index|
+        expected_variable = expected_variables[index]
+
+        expect(variable.key).to eq(expected_variable['key'])
+        expect(variable.value).to eq(expected_variable['value'])
+      end
+    end
+
     context 'authorized user' do
       context 'with gitlab-ci.yml' do
         before do
@@ -308,11 +317,12 @@ describe API::Pipelines do
             expect do
               post api("/projects/#{project.id}/pipeline", user), ref: project.default_branch, variables: variables
             end.to change { project.pipelines.count }.by(1)
+            expect_variables(project.pipelines.last.variables, variables)
 
             expect(response).to have_gitlab_http_status(201)
             expect(json_response).to be_a Hash
             expect(json_response['sha']).to eq project.commit.id
-            expect(json_response['variables']).to eq variables
+            expect(json_response).not_to have_key('variables')
           end
         end
 
@@ -328,11 +338,12 @@ describe API::Pipelines do
             expect do
               post api("/projects/#{project.id}/pipeline", user), ref: project.default_branch, variables: variables
             end.to change { project.pipelines.count }.by(1)
+            expect_variables(project.pipelines.last.variables, variables)
 
             expect(response).to have_gitlab_http_status(201)
             expect(json_response).to be_a Hash
             expect(json_response['sha']).to eq project.commit.id
-            expect(json_response['variables']).to eq variables
+            expect(json_response).not_to have_key('variables')
           end
 
           context 'condition unmatch' do
