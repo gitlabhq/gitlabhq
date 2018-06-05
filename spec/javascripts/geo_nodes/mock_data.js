@@ -153,8 +153,8 @@ export const mockNodeDetails = {
   storageShardsMatch: false,
   repositoryVerificationEnabled: true,
   replicationSlots: {
-    totalCount: null,
-    successCount: null,
+    totalCount: 1,
+    successCount: 1,
     failureCount: 0,
   },
   repositories: {

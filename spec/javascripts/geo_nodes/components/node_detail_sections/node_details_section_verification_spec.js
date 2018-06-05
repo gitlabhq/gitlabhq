@@ -37,24 +37,6 @@ describe('NodeDetailsSectionVerification', () => {
     });
   });
 
-  describe('computed', () => {
-    describe('hasItemsToShow', () => {
-      it('returns `true` when `nodeTypePrimary` prop is true', (done) => {
-        vm.nodeTypePrimary = true;
-        Vue.nextTick()
-          .then(() => {
-            expect(vm.hasItemsToShow).toBe(true);
-          })
-          .then(done)
-          .catch(done.fail);
-      });
-
-      it('returns value of `nodeDetails.repositoryVerificationEnabled` when `nodeTypePrimary` prop is false', () => {
-        expect(vm.hasItemsToShow).toBe(mockNodeDetails.repositoryVerificationEnabled);
-      });
-    });
-  });
-
   describe('methods', () => {
     describe('getPrimaryNodeDetailItems', () => {
       const primaryItems = [
@@ -65,10 +47,6 @@ describe('NodeDetailsSectionVerification', () => {
         {
           title: 'Wiki checksum progress',
           valueProp: 'wikisChecksummed',
-        },
-        {
-          title: 'Replication slots',
-          valueProp: 'replicationSlots',
         },
       ];
 
