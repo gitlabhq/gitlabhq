@@ -369,13 +369,6 @@ describe ObjectStorage do
   describe '.workhorse_authorize' do
     subject { uploader_class.workhorse_authorize }
 
-    before do
-      # ensure that we use regular Fog libraries
-      # other tests might call `Fog.mock!` and
-      # it will make tests to fail
-      Fog.unmock!
-    end
-
     shared_examples 'uses local storage' do
       it "returns temporary path" do
         is_expected.to have_key(:TempPath)
