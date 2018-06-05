@@ -2443,6 +2443,32 @@ describe Repository do
     end
   end
 
+  describe '#archive_metadata' do
+    let(:ref) { 'master' }
+    let(:storage_path) { '/tmp' }
+
+    let(:prefix) { [project.path, ref].join('-') }
+    let(:filename) { prefix + '.tar.gz' }
+
+    subject(:result) { repository.archive_metadata(ref, storage_path, append_sha: false) }
+
+    context 'with hashed storage disabled' do
+      let(:project) { create(:project, :repository, :legacy_storage) }
+
+      it 'uses the project path to generate the filename' do
+        expect(result['ArchivePrefix']).to eq(prefix)
+        expect(File.basename(result['ArchivePath'])).to eq(filename)
+      end
+    end
+
+    context 'with hashed storage enabled' do
+      it 'uses the project path to generate the filename' do
+        expect(result['ArchivePrefix']).to eq(prefix)
+        expect(File.basename(result['ArchivePath'])).to eq(filename)
+      end
+    end
+  end
+
   describe 'commit cache' do
     set(:project) { create(:project, :repository) }
 
