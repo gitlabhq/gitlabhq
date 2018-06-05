@@ -3,6 +3,11 @@ import { __ } from '../../../../locale';
 import Icon from '../../../../vue_shared/components/icon.vue';
 import tooltip from '../../../../vue_shared/directives/tooltip';
 
+const directions = {
+  up: 'up',
+  down: 'down',
+};
+
 export default {
   directives: {
     tooltip,
@@ -15,7 +20,7 @@ export default {
       type: String,
       required: true,
       validator(value) {
-        return ['up', 'down'].includes(value);
+        return Object.keys(directions).includes(value);
       },
     },
     disabled: {
@@ -25,7 +30,7 @@ export default {
   },
   computed: {
     tooltipTitle() {
-      return this.direction === 'up' ? __('Scroll to top') : __('Scroll to bottom');
+      return this.direction === directions.up ? __('Scroll to top') : __('Scroll to bottom');
     },
     iconName() {
       return `scroll_${this.direction}`;

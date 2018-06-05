@@ -32,6 +32,7 @@ export default {
     />
     <div class="ml-auto align-self-center">
       <button
+        type="button"
         class="btn btn-default btn-sm"
         @click="clickViewLog"
       >

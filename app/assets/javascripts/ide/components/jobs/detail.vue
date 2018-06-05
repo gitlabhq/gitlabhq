@@ -40,11 +40,14 @@ export default {
   methods: {
     ...mapActions('pipelines', ['fetchJobTrace', 'setDetailJob']),
     scrollDown() {
-      if (this.$refs.buildTrace)
+      if (this.$refs.buildTrace) {
         this.$refs.buildTrace.scrollTo(0, this.$refs.buildTrace.scrollHeight);
+      }
     },
     scrollUp() {
-      if (this.$refs.buildTrace) this.$refs.buildTrace.scrollTo(0, 0);
+      if (this.$refs.buildTrace) {
+        this.$refs.buildTrace.scrollTo(0, 0);
+      }
     },
     scrollBuildLog: _.throttle(function buildLogScrollDebounce() {
       const { scrollTop } = this.$refs.buildTrace;
