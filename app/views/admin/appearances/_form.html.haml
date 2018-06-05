@@ -18,6 +18,25 @@
       .hint
         Maximum file size is 1MB. Pages are optimized for a 28px tall header logo
 
+  %fieldset.app_logo
+    %legend
+      Favicon:
+  .form-group.row
+    = f.label :favicon, 'Favicon', class: 'col-sm-2 col-form-label'
+    .col-sm-10
+      - if @appearance.favicon?
+        = image_tag @appearance.favicon.favicon_main.url, class: 'appearance-light-logo-preview'
+        - if @appearance.persisted?
+          %br
+          = link_to 'Remove favicon', favicon_admin_appearances_path, data: { confirm: "Favicon will be removed. Are you sure?"}, method: :delete, class: "btn btn-inverted btn-remove btn-sm remove-logo"
+        %hr
+      = f.hidden_field :favicon_cache
+      = f.file_field :favicon, class: ''
+      .hint
+        Maximum file size is 1MB. Allowed image formats are #{favicon_extension_whitelist}.
+        %br
+        The resulting favicons will be cropped to be square and scaled down to a size of 32x32 px.
+
   %fieldset.sign-in
     %legend
       Sign in/Sign up pages:
@@ -54,25 +73,6 @@
       = f.text_area :new_project_guidelines, class: "form-control", rows: 10
       .hint
         Guidelines parsed with #{link_to "GitLab Flavored Markdown", help_page_path('user/markdown'), target: '_blank'}.
-
-  %fieldset.app_logo
-    %legend
-      Favicon:
-  .form-group
-    = f.label :favicon, 'Favicon', class: 'control-label'
-    .col-sm-10
-      - if @appearance.favicon?
-        = image_tag @appearance.favicon.favicon_main.url, class: 'appearance-light-logo-preview'
-        - if @appearance.persisted?
-          %br
-          = link_to 'Remove favicon', favicon_admin_appearances_path, data: { confirm: "Favicon will be removed. Are you sure?"}, method: :delete, class: "btn btn-inverted btn-remove btn-sm remove-logo"
-        %hr
-      = f.hidden_field :favicon_cache
-      = f.file_field :favicon, class: ''
-      .hint
-        Maximum file size is 1MB. Allowed image formats are #{favicon_extension_whitelist}.
-        %br
-        The resulting favicons will be cropped to be square and scaled down to a size of 32x32 px.
 
   .form-actions
     = f.submit 'Save', class: 'btn btn-save append-right-10'
