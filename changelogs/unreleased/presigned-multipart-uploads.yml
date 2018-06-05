@@ -1,0 +1,5 @@
+---
+title: Support direct_upload with S3 Multipart uploads
+merge_request:
+author:
+type: added
