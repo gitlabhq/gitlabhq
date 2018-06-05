@@ -2569,20 +2569,26 @@ module Gitlab
 
           next unless blob
 
-          # Selecting lfs patterns from the lfs attributes
-          AttributesParser.new(blob.data)
-                          .patterns
-                          .select { |_, v| v['filter'] == 'lfs' }
-                          .keys
-                          .map! do |pattern|
-                            pattern = pattern[1..-1].gsub('.', '\\.').gsub('*', '.*')
-                            dir = File.dirname(path)
-
-                            pattern = dir + '/(.*/)*' + pattern unless dir == '.'
-
-                            pattern
-                          end
+          git_lfs_track_pattern(blob.data, path)
         end.flatten.compact
+      end
+
+      # Selecting lfs patterns from the lfs attributes
+      def git_lfs_track_pattern(data, path)
+        AttributesParser.new(data)
+                        .patterns
+                        .select { |_, v| v['filter'] == 'lfs' }
+                        .keys
+                        .map! { |pattern| convert_lfs_pattern_to_regex(pattern, path) }
+      end
+
+      def convert_lfs_pattern_to_regex(pattern, path)
+        pattern = pattern[1..-1].gsub('.', '\\.').gsub('*', '.*')
+        dir = File.dirname(path)
+
+        pattern = dir + '/(.*/)*' + pattern unless dir == '.'
+
+        pattern
       end
     end
   end
