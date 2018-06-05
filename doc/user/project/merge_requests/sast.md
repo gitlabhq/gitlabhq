@@ -34,6 +34,7 @@ The following languages and frameworks are supported.
 | Scala (sbt)           | [find-sec-bugs](https://find-sec-bugs.github.io/)                                      |
 | Go (experimental)     | [Go AST Scanner](https://github.com/GoASTScanner/gas)                                  |
 | PHP                   | [phpcs-security-audit](https://github.com/FloeDesignTechnologies/phpcs-security-audit) |
+| .NET                  | [Security Code Scan](https://security-code-scan.github.io)                             |
 
 ## How it works
 
