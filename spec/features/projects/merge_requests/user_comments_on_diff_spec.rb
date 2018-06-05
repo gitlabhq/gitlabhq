@@ -112,7 +112,7 @@ describe 'User comments on a diff', :js do
   end
 
   context 'when editing comments' do
-    xit 'edits a comment' do
+    it 'edits a comment' do
       click_diff_line(find("[id='#{sample_commit.line_code}']"))
 
       page.within('.js-discussion-note-form') do
@@ -120,7 +120,7 @@ describe 'User comments on a diff', :js do
         click_button('Comment')
       end
 
-      page.within('.diff-file:nth-of-type(5) .note') do
+      page.within('.diff-file:nth-of-type(5) .discussion .note') do
         find('.js-note-edit').click
 
         page.within('.current-note-edit-form') do
@@ -131,15 +131,14 @@ describe 'User comments on a diff', :js do
         expect(page).not_to have_button('Save comment', disabled: true)
       end
 
-      page.within('.diff-file:nth-of-type(5) .note') do
+      page.within('.diff-file:nth-of-type(5) .discussion .note') do
         expect(page).to have_content('Typo, please fix').and have_no_content('Line is wrong')
       end
     end
   end
 
   context 'when deleting comments' do
-    #  TODO:  https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-    xit 'deletes a comment' do
+    it 'deletes a comment' do
       click_diff_line(find("[id='#{sample_commit.line_code}']"))
 
       page.within('.js-discussion-note-form') do
@@ -151,7 +150,7 @@ describe 'User comments on a diff', :js do
         expect(page).to have_content('1')
       end
 
-      page.within('.diff-file:nth-of-type(5) .note') do
+      page.within('.diff-file:nth-of-type(5) .discussion .note') do
         find('.more-actions').click
         find('.more-actions .dropdown-menu li', match: :first)
 
