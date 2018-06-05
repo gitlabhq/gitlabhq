@@ -93,10 +93,13 @@ export default {
   },
   mounted() {
     if (this.canReorder) {
-      this.sortable = Sortable.create(this.$refs.list, Object.assign({}, sortableConfig, {
-        onStart: this.addDraggingCursor,
-        onEnd: this.reordered,
-      }));
+      this.sortable = Sortable.create(
+        this.$refs.list,
+        Object.assign({}, sortableConfig, {
+          onStart: this.addDraggingCursor,
+          onEnd: this.reordered,
+        }),
+      );
     }
   },
   methods: {
@@ -225,7 +228,7 @@ issue-count-badge-add-button btn btn-sm btn-default"
             :class="{
               'user-can-drag': canReorder,
               'sortable-row': canReorder,
-              card: canReorder
+              'card-slim': canReorder
             }"
             :data-key="issue.id"
             :data-epic-issue-id="issue.epic_issue_id"

@@ -354,7 +354,7 @@ group :development, :test do
 
   gem 'capybara', '~> 2.15'
   gem 'capybara-screenshot', '~> 1.0.0'
-  gem 'selenium-webdriver', '~> 3.5'
+  gem 'selenium-webdriver', '~> 3.12'
 
   gem 'spring', '~> 2.0.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
@@ -396,7 +396,7 @@ group :test do
   gem 'test-prof', '~> 0.2.5'
 end
 
-gem 'octokit', '~> 4.8'
+gem 'octokit', '~> 4.9'
 
 gem 'mail_room', '~> 0.9.1'
 

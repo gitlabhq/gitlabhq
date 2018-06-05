@@ -1,23 +1,5 @@
-- project = @project || find_project_for_blob(blob)
-
-- if blob.is_a?(Array)
-  - file_name, blob = blob
-- else
-  - blob = parse_search_result(blob)
-  - file_name = blob.filename
-
+- project = find_project_for_result_blob(blob)
+- file_name, blob = parse_search_result(blob)
 - blob_link = project_blob_path(project, tree_join(blob.ref, file_name))
-.blob-result
-  .file-holder
-    .js-file-title.file-title
-      = link_to blob_link do
-        = icon('fa-file')
-        %strong
-          - if @project
-            = file_name
-          - else
-            #{project.full_name}:
-            %i= file_name
-    - if blob.data
-      .file-content.code.term
-        = render 'shared/file_highlight', blob: blob, first_line_number: blob.startline, blob_link: blob_link
+
+= render partial: 'search/results/blob_data', locals: { blob: blob, project: project, file_name: file_name, blob_link: blob_link }

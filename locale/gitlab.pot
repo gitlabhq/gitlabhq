@@ -5922,6 +5922,9 @@ msgstr ""
 msgid "ciReport|%{linkStartTag}Learn more about SAST image %{linkEndTag}"
 msgstr ""
 
+msgid "ciReport|%{namespace} is affected by %{vulnerability}."
+msgstr ""
+
 msgid "ciReport|%{reportName} is loading"
 msgstr ""
 
@@ -5937,10 +5940,13 @@ msgstr ""
 msgid "ciReport|%{type} detected no vulnerabilities"
 msgstr ""
 
+msgid "ciReport|Class"
+msgstr ""
+
 msgid "ciReport|Code quality"
 msgstr ""
 
-msgid "ciReport|Confidence Level"
+msgid "ciReport|Confidence"
 msgstr ""
 
 msgid "ciReport|Container scanning detects known vulnerabilities in your docker images."
@@ -5991,7 +5997,7 @@ msgstr ""
 msgid "ciReport|Fixed:"
 msgstr ""
 
-msgid "ciReport|Identifier"
+msgid "ciReport|Identifiers"
 msgstr ""
 
 msgid "ciReport|Instances"
@@ -6000,7 +6006,13 @@ msgstr ""
 msgid "ciReport|Learn more about whitelisting"
 msgstr ""
 
+msgid "ciReport|Links"
+msgstr ""
+
 msgid "ciReport|Loading %{reportName} report"
+msgstr ""
+
+msgid "ciReport|Method"
 msgstr ""
 
 msgid "ciReport|Namespace"
@@ -6045,9 +6057,6 @@ msgstr ""
 msgid "ciReport|Solution"
 msgstr ""
 
-msgid "ciReport|Source"
-msgstr ""
-
 msgid "ciReport|Static Application Security Testing (SAST) detects known vulnerabilities in your source code."
 msgstr ""
 
@@ -6067,6 +6076,9 @@ msgid "ciReport|There was an error reverting the dismissal. Please try again."
 msgstr ""
 
 msgid "ciReport|Unapproved vulnerabilities (red) can be marked as approved."
+msgstr ""
+
+msgid "ciReport|Upgrade %{name} from %{version} to %{fixed}."
 msgstr ""
 
 msgid "ciReport|no vulnerabilities"

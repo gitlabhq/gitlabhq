@@ -154,10 +154,6 @@ class ProjectWiki
     [title, title_array.join("/")]
   end
 
-  def search_files(query)
-    repository.search_files_by_content(query, default_branch)
-  end
-
   def repository
     @repository ||= Repository.new(full_path, @project, disk_path: disk_path, is_wiki: true)
   end

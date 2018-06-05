@@ -28,7 +28,7 @@ The following languages and frameworks are supported.
 | Language / framework  | Scan tool                                                                              |
 |-----------------------|----------------------------------------------------------------------------------------|
 | C/C++                 | [Flawfinder](https://www.dwheeler.com/flawfinder/)                                     |
-| Python                | [bandit](https://github.com/openstack/bandit)                                          |
+| Python                | [bandit](https://github.com/PyCQA/bandit)                                          |
 | Ruby on Rails         | [brakeman](https://brakemanscanner.org)                                                |
 | Java (Maven & Gradle) | [find-sec-bugs](https://find-sec-bugs.github.io/)                                      |
 | Go (experimental)     | [Go AST Scanner](https://github.com/GoASTScanner/gas)                                  |

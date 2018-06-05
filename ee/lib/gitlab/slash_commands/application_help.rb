@@ -16,7 +16,7 @@ module Gitlab
       end
 
       def commands
-        Gitlab::SlashCommands::Command::COMMANDS
+        Gitlab::SlashCommands::Command.commands
       end
     end
   end

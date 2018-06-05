@@ -29,7 +29,7 @@ export const baseIssues = [
 
 export const sastParsedIssues = [
   {
-    name: 'Arbitrary file existence disclosure in Action Pack',
+    title: 'Arbitrary file existence disclosure in Action Pack',
     path: 'Gemfile.lock',
     line: 12,
     priority: 'High',
@@ -40,50 +40,116 @@ export const sastParsedIssues = [
 export const sastIssues = [
   {
     tool: 'bundler_audit',
+    category: 'sast',
+    message: 'Arbitrary file existence disclosure in Action Pack',
+    cve: 'CVE-2014-7829',
+    solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
+    location: {
+      file: 'Gemfile.lock',
+    },
+    links: [{
+      url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
+    }],
+    identifiers: [{
+      type: 'CVE',
+      name: 'CVE-2014-7829',
+      value: 'CVE-2014-7829',
+      link: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-7829',
+    }],
+  },
+  {
+    tool: 'bundler_audit',
+    category: 'sast',
+    message: 'Possible Information Leak Vulnerability in Action View',
+    cve: 'CVE-2016-0752',
+    solution:
+      'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
+    location: {
+      file: 'Gemfile.lock',
+    },
+    links: [{
+      url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
+    }],
+    identifiers: [{
+      type: 'CVE',
+      name: 'CVE-2016-0752',
+      value: 'CVE-2016-0752',
+      link: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-0752',
+    }],
+  },
+  {
+    tool: 'bundler_audit',
+    category: 'sast',
+    message: 'Possible Object Leak and Denial of Service attack in Action Pack',
+    cve: 'CVE-2016-0751',
+    solution:
+      'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
+    location: {
+      file: 'Gemfile.lock',
+    },
+    links: [{
+      url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/9oLY_FCzvoc',
+    }],
+    identifiers: [{
+      type: 'CVE',
+      name: 'CVE-2016-0751',
+      value: 'CVE-2016-0751',
+      link: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-0751',
+    }],
+  },
+];
+
+export const oldSastIssues = [
+  {
+    tool: 'bundler_audit',
     message: 'Arbitrary file existence disclosure in Action Pack',
     url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
     cve: 'CVE-2014-7829',
     file: 'Gemfile.lock',
     solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
   },
-  {
-    tool: 'bundler_audit',
-    message: 'Possible Information Leak Vulnerability in Action View',
-    url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
-    cve: 'CVE-2016-0752',
-    file: 'Gemfile.lock',
-    solution:
-      'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
-  },
-  {
-    tool: 'bundler_audit',
-    message: 'Possible Object Leak and Denial of Service attack in Action Pack',
-    url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/9oLY_FCzvoc',
-    cve: 'CVE-2016-0751',
-    file: 'Gemfile.lock',
-    solution:
-      'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
-  },
 ];
 
 export const sastIssuesBase = [
   {
     tool: 'bundler_audit',
+    category: 'sast',
     message: 'Test Information Leak Vulnerability in Action View',
-    url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
     cve: 'CVE-2016-9999',
-    file: 'Gemfile.lock',
     solution:
       'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
+    location: {
+      file: 'Gemfile.lock',
+    },
+    links: [{
+      url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
+    }],
+    identifiers: [{
+      type: 'CVE',
+      name: 'CVE-2016-9999',
+      value: 'CVE-2016-9999',
+      link: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-9999',
+    }],
   },
   {
     tool: 'bundler_audit',
+    category: 'sast',
     message: 'Possible Information Leak Vulnerability in Action View',
-    url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
     cve: 'CVE-2016-0752',
-    file: 'Gemfile.lock',
     solution:
       'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
+    location: {
+      file: 'Gemfile.lock',
+    },
+    links: [{
+      url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
+    }],
+    identifiers: [{
+      type: 'CVE',
+      name: 'CVE-2016-0752',
+      value: 'CVE-2016-0752',
+      link: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-0752',
+    }],
   },
 ];
 
@@ -91,43 +157,73 @@ export const parsedSastIssuesStore = [
   {
     tool: 'bundler_audit',
     message: 'Arbitrary file existence disclosure in Action Pack',
-    url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
     cve: 'CVE-2014-7829',
-    file: 'Gemfile.lock',
     solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
-    name: 'Arbitrary file existence disclosure in Action Pack',
+    title: 'Arbitrary file existence disclosure in Action Pack',
     path: 'Gemfile.lock',
     urlPath: 'path/Gemfile.lock',
     category: 'sast',
     project_fingerprint: 'f55331d66fd4f3bfb4237d48e9c9fa8704bd33c6',
+    location: {
+      file: 'Gemfile.lock',
+    },
+    links: [{
+      url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
+    }],
+    identifiers: [{
+      type: 'CVE',
+      name: 'CVE-2014-7829',
+      value: 'CVE-2014-7829',
+      link: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-7829',
+    }],
   },
   {
     tool: 'bundler_audit',
     message: 'Possible Information Leak Vulnerability in Action View',
-    url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
     cve: 'CVE-2016-0752',
-    file: 'Gemfile.lock',
     solution:
       'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
-    name: 'Possible Information Leak Vulnerability in Action View',
+    title: 'Possible Information Leak Vulnerability in Action View',
     path: 'Gemfile.lock',
     urlPath: 'path/Gemfile.lock',
     category: 'sast',
     project_fingerprint: 'a6b61a2eba59071178d5899b26dd699fb880de1e',
+    location: {
+      file: 'Gemfile.lock',
+    },
+    links: [{
+      url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
+    }],
+    identifiers: [{
+      type: 'CVE',
+      name: 'CVE-2016-0752',
+      value: 'CVE-2016-0752',
+      link: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-0752',
+    }],
   },
   {
     tool: 'bundler_audit',
     message: 'Possible Object Leak and Denial of Service attack in Action Pack',
-    url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/9oLY_FCzvoc',
     cve: 'CVE-2016-0751',
-    file: 'Gemfile.lock',
     solution:
       'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
-    name: 'Possible Object Leak and Denial of Service attack in Action Pack',
+    title: 'Possible Object Leak and Denial of Service attack in Action Pack',
     path: 'Gemfile.lock',
     urlPath: 'path/Gemfile.lock',
     category: 'sast',
     project_fingerprint: '830f85e5fb011408bab365eb809cd97a45b0aa17',
+    location: {
+      file: 'Gemfile.lock',
+    },
+    links: [{
+      url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/9oLY_FCzvoc',
+    }],
+    identifiers: [{
+      type: 'CVE',
+      name: 'CVE-2016-0751',
+      value: 'CVE-2016-0751',
+      link: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-0751',
+    }],
   },
 ];
 
@@ -135,46 +231,76 @@ export const parsedSastIssuesHead = [
   {
     tool: 'bundler_audit',
     message: 'Arbitrary file existence disclosure in Action Pack',
-    url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
     cve: 'CVE-2014-7829',
-    file: 'Gemfile.lock',
     solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
-    name: 'Arbitrary file existence disclosure in Action Pack',
+    title: 'Arbitrary file existence disclosure in Action Pack',
     path: 'Gemfile.lock',
     urlPath: 'path/Gemfile.lock',
     category: 'sast',
     project_fingerprint: 'f55331d66fd4f3bfb4237d48e9c9fa8704bd33c6',
+    location: {
+      file: 'Gemfile.lock',
+    },
+    links: [{
+      url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
+    }],
+    identifiers: [{
+      type: 'CVE',
+      name: 'CVE-2014-7829',
+      value: 'CVE-2014-7829',
+      link: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-7829',
+    }],
   },
   {
     tool: 'bundler_audit',
     message: 'Possible Object Leak and Denial of Service attack in Action Pack',
-    url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/9oLY_FCzvoc',
     cve: 'CVE-2016-0751',
-    file: 'Gemfile.lock',
     solution:
       'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
-    name: 'Possible Object Leak and Denial of Service attack in Action Pack',
+    title: 'Possible Object Leak and Denial of Service attack in Action Pack',
     path: 'Gemfile.lock',
     urlPath: 'path/Gemfile.lock',
     category: 'sast',
     project_fingerprint: '830f85e5fb011408bab365eb809cd97a45b0aa17',
+    location: {
+      file: 'Gemfile.lock',
+    },
+    links: [{
+      url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/9oLY_FCzvoc',
+    }],
+    identifiers: [{
+      type: 'CVE',
+      name: 'CVE-2016-0751',
+      value: 'CVE-2016-0751',
+      link: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-0751',
+    }],
   },
 ];
 
 export const parsedSastBaseStore = [
   {
-    name: 'Test Information Leak Vulnerability in Action View',
+    title: 'Test Information Leak Vulnerability in Action View',
     tool: 'bundler_audit',
     message: 'Test Information Leak Vulnerability in Action View',
-    url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
     cve: 'CVE-2016-9999',
-    file: 'Gemfile.lock',
     solution:
       'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
     path: 'Gemfile.lock',
     urlPath: 'path/Gemfile.lock',
     category: 'sast',
     project_fingerprint: '3f5608c99f0c7442ba59bc6c0c1864d0000f8e1a',
+    location: {
+      file: 'Gemfile.lock',
+    },
+    links: [{
+      url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
+    }],
+    identifiers: [{
+      type: 'CVE',
+      name: 'CVE-2016-9999',
+      value: 'CVE-2016-9999',
+      link: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-9999',
+    }],
   },
 ];
 
@@ -236,11 +362,18 @@ export const parsedDependencyScanningIssuesStore = [
     cve: 'CVE-2014-7829',
     file: 'Gemfile.lock',
     solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
-    name: 'Arbitrary file existence disclosure in Action Pack',
+    title: 'Arbitrary file existence disclosure in Action Pack',
     path: 'Gemfile.lock',
     urlPath: 'path/Gemfile.lock',
     category: 'dependency_scanning',
     project_fingerprint: 'f55331d66fd4f3bfb4237d48e9c9fa8704bd33c6',
+    location: {
+      file: 'Gemfile.lock',
+      start_line: undefined,
+    },
+    links: [{
+      url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
+    }],
   },
   {
     tool: 'bundler_audit',
@@ -250,11 +383,18 @@ export const parsedDependencyScanningIssuesStore = [
     file: 'Gemfile.lock',
     solution:
       'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
-    name: 'Possible Information Leak Vulnerability in Action View',
+    title: 'Possible Information Leak Vulnerability in Action View',
     path: 'Gemfile.lock',
     urlPath: 'path/Gemfile.lock',
     category: 'dependency_scanning',
     project_fingerprint: 'a6b61a2eba59071178d5899b26dd699fb880de1e',
+    location: {
+      file: 'Gemfile.lock',
+      start_line: undefined,
+    },
+    links: [{
+      url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
+    }],
   },
   {
     tool: 'bundler_audit',
@@ -264,11 +404,18 @@ export const parsedDependencyScanningIssuesStore = [
     file: 'Gemfile.lock',
     solution:
       'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
-    name: 'Possible Object Leak and Denial of Service attack in Action Pack',
+    title: 'Possible Object Leak and Denial of Service attack in Action Pack',
     path: 'Gemfile.lock',
     urlPath: 'path/Gemfile.lock',
     category: 'dependency_scanning',
     project_fingerprint: '830f85e5fb011408bab365eb809cd97a45b0aa17',
+    location: {
+      file: 'Gemfile.lock',
+      start_line: undefined,
+    },
+    links: [{
+      url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/9oLY_FCzvoc',
+    }],
   },
 ];
 
@@ -280,11 +427,18 @@ export const parsedDependencyScanningIssuesHead = [
     cve: 'CVE-2014-7829',
     file: 'Gemfile.lock',
     solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
-    name: 'Arbitrary file existence disclosure in Action Pack',
+    title: 'Arbitrary file existence disclosure in Action Pack',
     path: 'Gemfile.lock',
     urlPath: 'path/Gemfile.lock',
     category: 'dependency_scanning',
     project_fingerprint: 'f55331d66fd4f3bfb4237d48e9c9fa8704bd33c6',
+    location: {
+      file: 'Gemfile.lock',
+      start_line: undefined,
+    },
+    links: [{
+      url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
+    }],
   },
   {
     tool: 'bundler_audit',
@@ -294,17 +448,24 @@ export const parsedDependencyScanningIssuesHead = [
     file: 'Gemfile.lock',
     solution:
       'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
-    name: 'Possible Object Leak and Denial of Service attack in Action Pack',
+    title: 'Possible Object Leak and Denial of Service attack in Action Pack',
     path: 'Gemfile.lock',
     urlPath: 'path/Gemfile.lock',
     category: 'dependency_scanning',
     project_fingerprint: '830f85e5fb011408bab365eb809cd97a45b0aa17',
+    location: {
+      file: 'Gemfile.lock',
+      start_line: undefined,
+    },
+    links: [{
+      url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/9oLY_FCzvoc',
+    }],
   },
 ];
 
 export const parsedDependencyScanningBaseStore = [
   {
-    name: 'Test Information Leak Vulnerability in Action View',
+    title: 'Test Information Leak Vulnerability in Action View',
     tool: 'bundler_audit',
     message: 'Test Information Leak Vulnerability in Action View',
     url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
@@ -316,12 +477,19 @@ export const parsedDependencyScanningBaseStore = [
     urlPath: 'path/Gemfile.lock',
     category: 'dependency_scanning',
     project_fingerprint: '3f5608c99f0c7442ba59bc6c0c1864d0000f8e1a',
+    location: {
+      file: 'Gemfile.lock',
+      start_line: undefined,
+    },
+    links: [{
+      url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
+    }],
   },
 ];
 
 export const allIssuesParsed = [
   {
-    name: 'Possible Information Leak Vulnerability in Action View',
+    title: 'Possible Information Leak Vulnerability in Action View',
     tool: 'bundler_audit',
     message: 'Possible Information Leak Vulnerability in Action View',
     url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
@@ -381,12 +549,17 @@ export const dockerNewIssues = [
     vulnerability: 'CVE-2017-16232',
     namespace: 'debian:8',
     severity: 'Negligible',
-    name: 'CVE-2017-16232',
-    priority: 'Negligible',
+    title: 'CVE-2017-16232',
     path: 'debian:8',
-    nameLink: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-16232',
+    identifiers: [{
+      type: 'CVE',
+      name: 'CVE-2017-16232',
+      value: 'CVE-2017-16232',
+      url: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-16232',
+    }],
     category: 'container_scanning',
     project_fingerprint: '4e010f6d292364a42c6bb05dbd2cc788c2e5e408',
+    description: 'debian:8 is affected by CVE-2017-16232.',
   },
 ];
 
@@ -395,23 +568,33 @@ export const dockerOnlyHeadParsed = [
     vulnerability: 'CVE-2017-12944',
     namespace: 'debian:8',
     severity: 'Medium',
-    name: 'CVE-2017-12944',
-    priority: 'Medium',
+    title: 'CVE-2017-12944',
     path: 'debian:8',
-    nameLink: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-12944',
+    identifiers: [{
+      type: 'CVE',
+      name: 'CVE-2017-12944',
+      value: 'CVE-2017-12944',
+      url: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-12944',
+    }],
     category: 'container_scanning',
     project_fingerprint: '0693a82ef93c5e9d98c23a35ddcd8ed2cbd047d9',
+    description: 'debian:8 is affected by CVE-2017-12944.',
   },
   {
     vulnerability: 'CVE-2017-16232',
     namespace: 'debian:8',
     severity: 'Negligible',
-    name: 'CVE-2017-16232',
-    priority: 'Negligible',
+    title: 'CVE-2017-16232',
     path: 'debian:8',
-    nameLink: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-16232',
+    identifiers: [{
+      type: 'CVE',
+      name: 'CVE-2017-16232',
+      value: 'CVE-2017-16232',
+      url: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-16232',
+    }],
     category: 'container_scanning',
     project_fingerprint: '4e010f6d292364a42c6bb05dbd2cc788c2e5e408',
+    description: 'debian:8 is affected by CVE-2017-16232.',
   },
 ];
 
@@ -421,19 +604,27 @@ export const dockerReportParsed = {
       vulnerability: 'CVE-2017-12944',
       namespace: 'debian:8',
       severity: 'Medium',
-      name: 'CVE-2017-12944',
-      priority: 'Medium',
+      title: 'CVE-2017-12944',
       path: 'debian:8',
-      nameLink: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-12944',
+      identifiers: [{
+        type: 'CVE',
+        name: 'CVE-2017-12944',
+        value: 'CVE-2017-12944',
+        url: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-12944',
+      }],
     },
     {
       vulnerability: 'CVE-2017-16232',
       namespace: 'debian:8',
       severity: 'Negligible',
-      name: 'CVE-2017-16232',
-      priority: 'Negligible',
+      title: 'CVE-2017-16232',
       path: 'debian:8',
-      nameLink: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-16232',
+      identifiers: [{
+        type: 'CVE',
+        name: 'CVE-2017-16232',
+        value: 'CVE-2017-16232',
+        url: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-16232',
+      }],
     },
   ],
   approved: [
@@ -441,10 +632,14 @@ export const dockerReportParsed = {
       vulnerability: 'CVE-2014-8130',
       namespace: 'debian:8',
       severity: 'Negligible',
-      name: 'CVE-2014-8130',
-      priority: 'Negligible',
+      title: 'CVE-2014-8130',
       path: 'debian:8',
-      nameLink: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-8130',
+      identifiers: [{
+        type: 'CVE',
+        name: 'CVE-2017-8130',
+        value: 'CVE-2017-8130',
+        url: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-8130',
+      }],
     },
   ],
   vulnerabilities: [
@@ -452,28 +647,40 @@ export const dockerReportParsed = {
       vulnerability: 'CVE-2017-12944',
       namespace: 'debian:8',
       severity: 'Medium',
-      name: 'CVE-2017-12944',
-      priority: 'Medium',
+      title: 'CVE-2017-12944',
       path: 'debian:8',
-      nameLink: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-12944',
+      identifiers: [{
+        type: 'CVE',
+        name: 'CVE-2017-12944',
+        value: 'CVE-2017-12944',
+        url: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-v',
+      }],
     },
     {
       vulnerability: 'CVE-2017-16232',
       namespace: 'debian:8',
       severity: 'Negligible',
-      name: 'CVE-2017-16232',
-      priority: 'Negligible',
+      title: 'CVE-2017-16232',
       path: 'debian:8',
-      nameLink: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-16232',
+      identifiers: [{
+        type: 'CVE',
+        name: 'CVE-2017-16232',
+        value: 'CVE-2017-16232',
+        url: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-16232',
+      }],
     },
     {
       vulnerability: 'CVE-2014-8130',
       namespace: 'debian:8',
       severity: 'Negligible',
-      name: 'CVE-2014-8130',
-      priority: 'Negligible',
+      title: 'CVE-2014-8130',
       path: 'debian:8',
-      nameLink: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-8130',
+      identifiers: [{
+        type: 'CVE',
+        name: 'CVE-2017-8130',
+        value: 'CVE-2017-8130',
+        url: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-8130',
+      }],
     },
   ],
 };
@@ -485,7 +692,7 @@ export const dast = {
         name: 'Absence of Anti-CSRF Tokens',
         riskcode: '1',
         riskdesc: 'Low (Medium)',
-        cweid: '03',
+        cweid: '3',
         desc: '<p>No Anti-CSRF tokens were found in a HTML submission form.</p>',
         pluginid: '123',
         solution: '<p>Update to latest</p>',
@@ -508,7 +715,7 @@ export const dast = {
         alert: 'X-Content-Type-Options Header Missing',
         name: 'X-Content-Type-Options Header Missing',
         riskdesc: 'Low (Medium)',
-        cweid: '04',
+        cweid: '4',
         desc:
           '<p>The Anti-MIME-Sniffing header X-Content-Type-Options was not set to "nosniff".</p>',
         pluginid: '3456',
@@ -560,16 +767,20 @@ export const parsedDast = [
     category: 'dast',
     project_fingerprint: '40bd001563085fc35165329ea1ff5c5ecbdbbeef',
     name: 'Absence of Anti-CSRF Tokens',
+    title: 'Absence of Anti-CSRF Tokens',
     riskcode: '1',
     riskdesc: 'Low (Medium)',
-    priority: 'Low (Medium)',
-    identifier: 'CWE-03',
     severity: 'Low',
     confidence: 'Medium',
-    cweid: '03',
+    cweid: '3',
     desc: '<p>No Anti-CSRF tokens were found in a HTML submission form.</p>',
-    parsedDescription: ' No Anti-CSRF tokens were found in a HTML submission form. ',
     pluginid: '123',
+    identifiers: [{
+      type: 'CWE',
+      name: 'CWE-3',
+      value: '3',
+      url: 'https://cwe.mitre.org/data/definitions/3.html',
+    }],
     instances: [
       {
         uri: 'http://192.168.32.236:3001/explore?sort=latest_activity_desc',
@@ -590,16 +801,19 @@ export const parsedDast = [
     project_fingerprint: 'ae8fe380dd9aa5a7a956d9085fe7cf6b87d0d028',
     alert: 'X-Content-Type-Options Header Missing',
     name: 'X-Content-Type-Options Header Missing',
+    title: 'X-Content-Type-Options Header Missing',
     riskdesc: 'Low (Medium)',
-    priority: 'Low (Medium)',
-    identifier: 'CWE-04',
+    identifiers: [{
+      type: 'CWE',
+      name: 'CWE-4',
+      value: '4',
+      url: 'https://cwe.mitre.org/data/definitions/4.html',
+    }],
     severity: 'Low',
     confidence: 'Medium',
-    cweid: '04',
+    cweid: '4',
     desc: '<p>The Anti-MIME-Sniffing header X-Content-Type-Options was not set to "nosniff".</p>',
     pluginid: '3456',
-    parsedDescription:
-      ' The Anti-MIME-Sniffing header X-Content-Type-Options was not set to "nosniff". ',
     instances: [
       {
         uri: 'http://192.168.32.236:3001/assets/webpack/main.bundle.js',
@@ -618,16 +832,19 @@ export const parsedDastNewIssues = [
     project_fingerprint: 'ae8fe380dd9aa5a7a956d9085fe7cf6b87d0d028',
     alert: 'X-Content-Type-Options Header Missing',
     name: 'X-Content-Type-Options Header Missing',
+    title: 'X-Content-Type-Options Header Missing',
     riskdesc: 'Low (Medium)',
-    priority: 'Low (Medium)',
-    identifier: 'CWE-04',
+    identifiers: [{
+      type: 'CWE',
+      name: 'CWE-4',
+      value: '4',
+      url: 'https://cwe.mitre.org/data/definitions/4.html',
+    }],
     severity: 'Low',
     confidence: 'Medium',
-    cweid: '04',
+    cweid: '4',
     desc: '<p>The Anti-MIME-Sniffing header X-Content-Type-Options was not set to "nosniff".</p>',
     pluginid: '3456',
-    parsedDescription:
-      ' The Anti-MIME-Sniffing header X-Content-Type-Options was not set to "nosniff". ',
     instances: [
       {
         uri: 'http://192.168.32.236:3001/assets/webpack/main.bundle.js',

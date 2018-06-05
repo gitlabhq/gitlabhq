@@ -155,6 +155,19 @@ module EE
       actual_plan&.pipeline_size_limit.to_i
     end
 
+    def memoized_plans=(plans)
+      @plans = plans # rubocop: disable Gitlab/ModuleWithInstanceVariables
+    end
+
+    def plans
+      @plans ||=
+        if parent_id
+          Plan.where(id: self_and_ancestors.with_plan.reorder(nil).select(:plan_id))
+        else
+          Array(plan)
+        end
+    end
+
     private
 
     def validate_plan_name
@@ -179,15 +192,6 @@ module EE
       else
         globally_available
       end
-    end
-
-    def plans
-      @plans ||=
-        if parent_id
-          Plan.where(id: self_and_ancestors.with_plan.reorder(nil).select(:plan_id))
-        else
-          Array(plan)
-        end
     end
   end
 end
