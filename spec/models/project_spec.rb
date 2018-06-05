@@ -1693,6 +1693,31 @@ describe Project do
     end
   end
 
+  describe '#human_import_status_name' do
+    context 'when import_state exists' do
+      it 'returns the humanized status name' do
+        project = create(:project)
+        create(:import_state, :started, project: project)
+
+        expect(project.human_import_status_name).to eq("started")
+      end
+    end
+
+    context 'when import_state was not created yet' do
+      let(:project) { create(:project, :import_started) }
+
+      it 'ensures import_state is created and returns humanized status name' do
+        expect do
+          project.human_import_status_name
+        end.to change { ProjectImportState.count }.from(0).to(1)
+      end
+
+      it 'returns humanized status name' do
+        expect(project.human_import_status_name).to eq("started")
+      end
+    end
+  end
+
   describe 'Project import job' do
     let(:project) { create(:project, import_url: generate(:url)) }
 

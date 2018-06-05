@@ -1,0 +1,5 @@
+---
+title: Showing project import_status in a humanized form no longer gives an error
+merge_request: 19470
+author:
+type: fixed
