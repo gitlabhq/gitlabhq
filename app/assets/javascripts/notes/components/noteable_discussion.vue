@@ -3,6 +3,7 @@ import _ from 'underscore';
 import { mapActions, mapGetters } from 'vuex';
 import resolveDiscussionsSvg from 'icons/_icon_mr_issue.svg';
 import nextDiscussionsSvg from 'icons/_next_discussion.svg';
+import { convertObjectPropsToCamelCase, scrollToElement } from '~/lib/utils/common_utils';
 import Flash from '../../flash';
 import { SYSTEM_NOTE } from '../constants';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -18,9 +19,9 @@ import autosave from '../mixins/autosave';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
 import tooltip from '../../vue_shared/directives/tooltip';
-import { scrollToElement } from '../../lib/utils/common_utils';
 
 export default {
+  name: 'NoteableDiscussion',
   components: {
     noteableNote,
     diffWithNote,
@@ -37,7 +38,7 @@ export default {
   },
   mixins: [autosave, noteable, resolvable],
   props: {
-    note: {
+    discussion: {
       type: Object,
       required: true,
     },
@@ -75,40 +76,40 @@ export default {
     actionTextHtml() {
       let text = 'started a discussion';
 
-      if (!this.discussion.diffDiscussion) {
+      if (!this.transformedDiscussion.diffDiscussion) {
         return text;
       }
 
       text += ' on';
       let urlText;
-      if (this.discussion.active) {
+      if (this.transformedDiscussion.active) {
         urlText = 'the diff';
       } else {
         urlText = 'an old version of the diff';
       }
 
-      text += ` <a href="${this.discussion.discussionPath}">${urlText}</a>`;
+      text += ` <a href="${this.transformedDiscussion.discussionPath}">${urlText}</a>`;
 
       return text;
     },
-    discussion() {
+    transformedDiscussion() {
       return {
-        ...this.note.notes[0],
-        truncatedDiffLines: this.note.truncated_diff_lines || [],
-        truncatedDiffLinesPath: this.note.truncated_diff_lines_path,
-        diffFile: this.note.diff_file,
-        diffDiscussion: this.note.diff_discussion,
-        imageDiffHtml: this.note.image_diff_html,
-        active: this.note.active,
-        discussionPath: this.note.discussion_path,
-        resolved: this.note.resolved,
-        resolvedBy: this.note.resolved_by,
-        resolvedByPush: this.note.resolved_by_push,
-        resolvedAt: this.note.resolved_at,
+        ...this.discussion.notes[0],
+        truncatedDiffLines: this.discussion.truncated_diff_lines || [],
+        truncatedDiffLinesPath: this.discussion.truncated_diff_lines_path,
+        diffFile: this.discussion.diff_file,
+        diffDiscussion: this.discussion.diff_discussion,
+        imageDiffHtml: this.discussion.image_diff_html,
+        active: this.discussion.active,
+        discussionPath: this.discussion.discussion_path,
+        resolved: this.discussion.resolved,
+        resolvedBy: this.discussion.resolved_by,
+        resolvedByPush: this.discussion.resolved_by_push,
+        resolvedAt: this.discussion.resolved_at,
       };
     },
     author() {
-      return this.discussion.author;
+      return this.transformedDiscussion.author;
     },
     canReply() {
       return this.getNoteableData.current_user.can_create_note;
@@ -117,7 +118,7 @@ export default {
       return this.getNoteableData.create_note_path;
     },
     lastUpdatedBy() {
-      const { notes } = this.note;
+      const { notes } = this.discussion;
 
       if (notes.length > 1) {
         return notes[notes.length - 1].author;
@@ -126,7 +127,7 @@ export default {
       return null;
     },
     lastUpdatedAt() {
-      const { notes } = this.note;
+      const { notes } = this.discussion;
 
       if (notes.length > 1) {
         return notes[notes.length - 1].created_at;
@@ -135,18 +136,25 @@ export default {
       return null;
     },
     resolvedText() {
-      return this.discussion.resolvedByPush ? 'Automatically resolved' : 'Resolved';
+      return this.transformedDiscussion.resolvedByPush ? 'Automatically resolved' : 'Resolved';
     },
     hasMultipleUnresolvedDiscussions() {
       return this.unresolvedDiscussions.length > 1;
     },
     shouldRenderDiffs() {
-      const { diffDiscussion, diffFile } = this.discussion;
+      const { diffDiscussion, diffFile } = this.transformedDiscussion;
 
       return diffDiscussion && diffFile && this.renderDiffFile;
     },
     wrapperComponent() {
       return this.shouldRenderDiffs ? diffWithNote : 'div';
+    },
+    wrapperComponentProps() {
+      if (this.shouldRenderDiffs) {
+        return { discussion: convertObjectPropsToCamelCase(this.discussion) };
+      }
+
+      return {};
     },
     wrapperClass() {
       return this.isDiffDiscussion ? '' : 'card discussion-wrapper';
@@ -154,13 +162,13 @@ export default {
   },
   mounted() {
     if (this.isReplying) {
-      this.initAutoSave(this.discussion.noteable_type);
+      this.initAutoSave(this.transformedDiscussion);
     }
   },
   updated() {
     if (this.isReplying) {
       if (!this.autosave) {
-        this.initAutoSave(this.discussion.noteable_type);
+        this.initAutoSave(this.transformedDiscussion);
       } else {
         this.setAutoSave();
       }
@@ -189,10 +197,10 @@ export default {
       return noteableNote;
     },
     componentData(note) {
-      return note.isPlaceholderNote ? this.note.notes[0] : note;
+      return note.isPlaceholderNote ? this.discussion.notes[0] : note;
     },
     toggleDiscussionHandler() {
-      this.toggleDiscussion({ discussionId: this.note.id });
+      this.toggleDiscussion({ discussionId: this.discussion.id });
     },
     showReplyForm() {
       this.isReplying = true;
@@ -213,9 +221,9 @@ export default {
         endpoint: this.newNotePath,
         flashContainer: this.$el,
         data: {
-          in_reply_to_discussion_id: this.note.reply_id,
+          in_reply_to_discussion_id: this.discussion.reply_id,
           target_type: this.getNoteableData.targetType,
-          target_id: this.discussion.noteable_id,
+          target_id: this.transformedDiscussion.noteable_id,
           // head_commit_sha:
           note: { note: noteText },
         },
@@ -242,7 +250,7 @@ Please check your network connection and try again.`;
     jumpToNextDiscussion() {
       const discussionIds = this.allDiscussions.map(d => d.id);
       const unresolvedIds = this.unresolvedDiscussions.map(d => d.id);
-      const currentIndex = discussionIds.indexOf(this.note.id);
+      const currentIndex = discussionIds.indexOf(this.discussion.id);
       const remainingAfterCurrent = discussionIds.slice(currentIndex + 1);
       const nextIndex = _.findIndex(remainingAfterCurrent, id => unresolvedIds.indexOf(id) > -1);
 
@@ -274,7 +282,7 @@ Please check your network connection and try again.`;
       <div class="timeline-content">
         <div
           class="discussion js-discussion-container"
-          :data-discussion-id="discussion.discussion_id"
+          :data-discussion-id="transformedDiscussion.discussion_id"
         >
           <div
             v-if="renderHeader"
@@ -282,17 +290,17 @@ Please check your network connection and try again.`;
           >
             <note-header
               :author="author"
-              :created-at="discussion.created_at"
-              :note-id="discussion.id"
+              :created-at="transformedDiscussion.created_at"
+              :note-id="transformedDiscussion.id"
               :include-toggle="true"
-              :expanded="note.expanded"
+              :expanded="discussion.expanded"
               @toggleHandler="toggleDiscussionHandler"
               :action-text-html="actionTextHtml"
             />
             <note-edited-text
-              v-if="discussion.resolved"
-              :edited-at="discussion.resolvedAt"
-              :edited-by="discussion.resolvedBy"
+              v-if="transformedDiscussion.resolved"
+              :edited-at="transformedDiscussion.resolvedAt"
+              :edited-by="transformedDiscussion.resolvedBy"
               :action-text="resolvedText"
               class-name="discussion-headline-light js-discussion-headline"
             />
@@ -305,17 +313,17 @@ Please check your network connection and try again.`;
             />
           </div>
           <div
-            v-if="note.expanded || alwaysExpanded"
+            v-if="discussion.expanded || alwaysExpanded"
             class="discussion-body">
             <component
               :is="wrapperComponent"
-              :discussion="shouldRenderDiffs ? discussion : undefined"
+              v-bind="wrapperComponentProps"
               :class="wrapperClass"
             >
               <div class="discussion-notes">
                 <ul class="notes">
                   <component
-                    v-for="note in note.notes"
+                    v-for="note in discussion.notes"
                     :is="componentName(note)"
                     :note="componentData(note)"
                     :key="note.id"
@@ -338,7 +346,7 @@ Please check your network connection and try again.`;
                           title="Add a reply">Reply...</button>
                       </div>
                       <div
-                        v-if="note.resolvable"
+                        v-if="discussion.resolvable"
                         class="btn-group"
                         role="group">
                         <button
@@ -355,7 +363,7 @@ Please check your network connection and try again.`;
                         </button>
                       </div>
                       <div
-                        v-if="note.resolvable"
+                        v-if="discussion.resolvable"
                         class="btn-group discussion-actions"
                         role="group"
                       >
@@ -364,7 +372,7 @@ Please check your network connection and try again.`;
                           class="btn-group"
                           role="group">
                           <a
-                            :href="note.resolve_with_issue_path"
+                            :href="discussion.resolve_with_issue_path"
                             v-tooltip
                             class="new-issue-for-discussion btn
                               btn-default discussion-create-issue-btn"
@@ -394,7 +402,7 @@ Please check your network connection and try again.`;
                   <note-form
                     v-if="isReplying"
                     save-button-title="Comment"
-                    :note="note"
+                    :discussion="discussion"
                     :is-editing="false"
                     @handleFormUpdate="saveReply"
                     @cancelForm="cancelReplyForm"

@@ -4,11 +4,11 @@ import { capitalizeFirstCharacter } from '../../lib/utils/text_utility';
 
 export default {
   methods: {
-    initAutoSave(noteableType) {
+    initAutoSave(noteable) {
       this.autosave = new Autosave($(this.$refs.noteForm.$refs.textarea), [
         'Note',
-        capitalizeFirstCharacter(noteableType),
-        this.note.id,
+        capitalizeFirstCharacter(noteable.noteable_type),
+        noteable.id,
       ]);
     },
     resetAutoSave() {

@@ -49,11 +49,11 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['notes', 'getNotesDataByProp', 'discussionCount']),
+    ...mapGetters(['discussions', 'getNotesDataByProp', 'discussionCount']),
     noteableType() {
       return this.noteableData.noteableType;
     },
-    allNotes() {
+    allDiscussions() {
       if (this.isLoading) {
         const totalNotes = parseInt(this.notesData.totalNotes, 10) || 0;
 
@@ -61,7 +61,7 @@ export default {
           isSkeletonNote: true,
         });
       }
-      return this.notes;
+      return this.discussions;
     },
   },
   created() {
@@ -82,7 +82,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      actionFetchNotes: 'fetchNotes',
+      fetchDiscussions: 'fetchDiscussions',
       poll: 'poll',
       actionToggleAward: 'toggleAward',
       scrollToNoteIfNeeded: 'scrollToNoteIfNeeded',
@@ -93,26 +93,26 @@ export default {
       setTargetNoteHash: 'setTargetNoteHash',
       toggleDiscussion: 'toggleDiscussion',
     }),
-    getComponentName(note) {
-      if (note.isSkeletonNote) {
+    getComponentName(discussion) {
+      if (discussion.isSkeletonNote) {
         return skeletonLoadingContainer;
       }
-      if (note.isPlaceholderNote) {
-        if (note.placeholderType === constants.SYSTEM_NOTE) {
+      if (discussion.isPlaceholderNote) {
+        if (discussion.placeholderType === constants.SYSTEM_NOTE) {
           return placeholderSystemNote;
         }
         return placeholderNote;
-      } else if (note.individual_note) {
-        return note.notes[0].system ? systemNote : noteableNote;
+      } else if (discussion.individual_note) {
+        return discussion.notes[0].system ? systemNote : noteableNote;
       }
 
       return noteableDiscussion;
     },
-    getComponentData(note) {
-      return note.individual_note ? note.notes[0] : note;
+    getComponentData(discussion) {
+      return discussion.individual_note ? { note: discussion.notes[0] } : { discussion };
     },
     fetchNotes() {
-      return this.actionFetchNotes(this.getNotesDataByProp('discussionsPath'))
+      return this.fetchDiscussions(this.getNotesDataByProp('discussionsPath'))
         .then(() => {
           this.initPolling();
         })
@@ -141,7 +141,7 @@ export default {
       const noteId = hash && hash.replace(/^note_/, '');
 
       if (noteId) {
-        this.notes.forEach(discussion => {
+        this.discussions.forEach(discussion => {
           if (discussion.notes) {
             discussion.notes.forEach(note => {
               if (`${note.id}` === `${noteId}`) {
@@ -166,10 +166,10 @@ export default {
       class="notes main-notes-list timeline">
 
       <component
-        v-for="note in allNotes"
-        :is="getComponentName(note)"
-        :note="getComponentData(note)"
-        :key="note.id"
+        v-for="discussion in allDiscussions"
+        :is="getComponentName(discussion)"
+        v-bind="getComponentData(discussion)"
+        :key="discussion.id"
       />
     </ul>
 

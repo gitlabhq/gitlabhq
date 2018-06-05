@@ -2,22 +2,19 @@ import Flash from '~/flash';
 import { __ } from '~/locale';
 
 export default {
-  props: {
-    note: {
-      type: Object,
-      required: true,
-    },
-  },
   computed: {
     discussionResolved() {
-      const { notes, resolved } = this.note;
+      if (this.discussion) {
+        const { notes, resolved } = this.discussion;
+        if (notes) {
+          // Decide resolved state using store. Only valid for discussions.
+          return notes.every(note => note.resolved && !note.system);
+        }
 
-      if (notes) {
-        // Decide resolved state using store. Only valid for discussions.
-        return notes.every(note => note.resolved && !note.system);
+        return resolved;
       }
 
-      return resolved;
+      return this.note.resolved;
     },
     resolveButtonTitle() {
       if (this.updatedNoteBody) {
@@ -35,10 +32,12 @@ export default {
       this.isResolving = true;
       const isResolved = this.discussionResolved || resolvedState;
       const discussion = this.resolveAsThread;
-      let endpoint = `${this.note.path}/resolve`;
 
+      let endpoint;
       if (discussion) {
-        endpoint = this.note.resolve_path;
+        endpoint = this.discussion.resolve_path;
+      } else {
+        endpoint = `${this.note.path}/resolve`;
       }
 
       this.toggleResolveNote({ endpoint, isResolved, discussion })

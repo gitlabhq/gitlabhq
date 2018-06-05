@@ -22,18 +22,19 @@ export const setUserData = ({ commit }, data) => commit(types.SET_USER_DATA, dat
 
 export const setLastFetchedAt = ({ commit }, data) => commit(types.SET_LAST_FETCHED_AT, data);
 
-export const setInitialNotes = ({ commit }, data) => commit(types.SET_INITIAL_NOTES, data);
+export const setInitialNotes = ({ commit }, discussions) =>
+  commit(types.SET_INITIAL_DISCUSSIONS, discussions);
 
 export const setTargetNoteHash = ({ commit }, data) => commit(types.SET_TARGET_NOTE_HASH, data);
 
 export const toggleDiscussion = ({ commit }, data) => commit(types.TOGGLE_DISCUSSION, data);
 
-export const fetchNotes = ({ commit }, path) =>
+export const fetchDiscussions = ({ commit }, path) =>
   service
-    .fetchNotes(path)
+    .fetchDiscussions(path)
     .then(res => res.json())
-    .then(res => {
-      commit(types.SET_INITIAL_NOTES, res);
+    .then(discussions => {
+      commit(types.SET_INITIAL_DISCUSSIONS, discussions);
     });
 
 export const deleteNote = ({ commit }, note) =>
@@ -209,12 +210,12 @@ const pollSuccessCallBack = (resp, commit, state, getters, dispatch) => {
       if (notesById[note.id]) {
         commit(types.UPDATE_NOTE, note);
       } else if (note.type === constants.DISCUSSION_NOTE || note.type === constants.DIFF_NOTE) {
-        const discussion = utils.findNoteObjectById(state.notes, note.discussion_id);
+        const discussion = utils.findNoteObjectById(state.discussions, note.discussion_id);
 
         if (discussion) {
           commit(types.ADD_NEW_REPLY_TO_DISCUSSION, note);
         } else if (note.type === constants.DIFF_NOTE) {
-          dispatch('fetchNotes', state.notesData.discussionsPath);
+          dispatch('fetchDiscussions', state.notesData.discussionsPath);
         } else {
           commit(types.ADD_NEW_NOTE, note);
         }

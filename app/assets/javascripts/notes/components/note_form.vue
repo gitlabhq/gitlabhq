@@ -29,7 +29,7 @@ export default {
       required: false,
       default: 'Save comment',
     },
-    note: {
+    discussion: {
       type: Object,
       required: false,
       default: () => ({}),
@@ -108,7 +108,7 @@ export default {
     },
     editMyLastNote() {
       if (this.updatedNoteBody === '') {
-        const lastNoteInDiscussion = this.getDiscussionLastNote(this.note);
+        const lastNoteInDiscussion = this.getDiscussionLastNote(this.discussion);
 
         if (lastNoteInDiscussion) {
           eventHub.$emit('enterEditMode', {
@@ -184,7 +184,7 @@ js-autosize markdown-area js-vue-issue-note-form js-vue-textarea"
           {{ saveButtonTitle }}
         </button>
         <button
-          v-if="note.resolvable"
+          v-if="discussion.resolvable"
           @click.prevent="handleUpdate(true)"
           class="btn btn-nr btn-default append-right-10 js-comment-resolve-button"
         >

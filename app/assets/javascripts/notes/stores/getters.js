@@ -1,7 +1,7 @@
 import _ from 'underscore';
 import * as constants from '../constants';
 
-export const notes = state => state.notes;
+export const discussions = state => state.discussions;
 
 export const targetNoteHash = state => state.targetNoteHash;
 
@@ -20,13 +20,13 @@ export const getUserData = state => state.userData || {};
 export const getUserDataByProp = state => prop => state.userData && state.userData[prop];
 
 export const notesById = state =>
-  state.notes.reduce((acc, note) => {
+  state.discussions.reduce((acc, note) => {
     note.notes.every(n => Object.assign(acc, { [n.id]: n }));
     return acc;
   }, {});
 
 export const discussionsByLineCode = state =>
-  state.notes.reduce((acc, note) => {
+  state.discussions.reduce((acc, note) => {
     if (note.diff_discussion && note.line_code) {
       // For context about line notes: there might be multiple notes with the same line code
       const items = acc[note.line_code] || [];
@@ -53,7 +53,7 @@ const isLastNote = (note, state) =>
   !note.system && state.userData && note.author && note.author.id === state.userData.id;
 
 export const getCurrentUserLastNote = state =>
-  _.flatten(reverseNotes(state.notes).map(note => reverseNotes(note.notes))).find(el =>
+  _.flatten(reverseNotes(state.discussions).map(note => reverseNotes(note.notes))).find(el =>
     isLastNote(el, state),
   );
 
@@ -61,15 +61,15 @@ export const getDiscussionLastNote = state => discussion =>
   reverseNotes(discussion.notes).find(el => isLastNote(el, state));
 
 export const discussionCount = state => {
-  const discussions = state.notes.filter(n => !n.individual_note);
+  const filteredDiscussions = state.discussions.filter(n => !n.individual_note);
 
-  return discussions.length;
+  return filteredDiscussions.length;
 };
 
 export const unresolvedDiscussions = (state, getters) => {
   const resolvedMap = getters.resolvedDiscussionsById;
 
-  return state.notes.filter(n => !n.individual_note && !resolvedMap[n.id]);
+  return state.discussions.filter(n => !n.individual_note && !resolvedMap[n.id]);
 };
 
 export const allDiscussions = (state, getters) => {
@@ -82,7 +82,7 @@ export const allDiscussions = (state, getters) => {
 export const resolvedDiscussionsById = state => {
   const map = {};
 
-  state.notes.forEach(n => {
+  state.discussions.forEach(n => {
     if (n.notes) {
       const resolved = n.notes.every(note => note.resolved && !note.system);
 
@@ -104,8 +104,8 @@ export const resolvedDiscussionCount = (state, getters) => {
 export const discussionTabCounter = state => {
   let all = [];
 
-  state.notes.forEach(note => {
-    all = all.concat(note.notes.filter(n => !n.system && !n.placeholder));
+  state.discussions.forEach(discussion => {
+    all = all.concat(discussion.notes.filter(note => !note.system && !note.placeholder));
   });
 
   return all.length;

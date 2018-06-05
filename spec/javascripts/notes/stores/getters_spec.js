@@ -5,7 +5,7 @@ describe('Getters Notes Store', () => {
   let state;
   beforeEach(() => {
     state = {
-      notes: [individualNote],
+      discussions: [individualNote],
       targetNoteHash: 'hash',
       lastFetchedAt: 'timestamp',
 
@@ -14,9 +14,9 @@ describe('Getters Notes Store', () => {
       noteableData: noteableDataMock,
     };
   });
-  describe('notes', () => {
-    it('should return all notes in the store', () => {
-      expect(getters.notes(state)).toEqual([individualNote]);
+  describe('discussions', () => {
+    it('should return all discussions in the store', () => {
+      expect(getters.discussions(state)).toEqual([individualNote]);
     });
   });
 

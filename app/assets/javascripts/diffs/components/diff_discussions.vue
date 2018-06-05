@@ -6,7 +6,7 @@ export default {
     noteableDiscussion,
   },
   props: {
-    notes: {
+    discussions: {
       type: Array,
       required: true,
     },
@@ -16,19 +16,19 @@ export default {
 
 <template>
   <div
-    v-if="notes.length"
+    v-if="discussions.length"
   >
     <div
-      v-for="notesArr in notes"
-      :key="notesArr.id"
+      v-for="discussion in discussions"
+      :key="discussion.id"
       class="discussion-notes diff-discussions"
     >
       <ul
         class="notes"
-        :data-discussion-id="notesArr.id"
+        :data-discussion-id="discussion.id"
       >
         <noteable-discussion
-          :note="notesArr"
+          :discussion="discussion"
           :render-header="false"
           :render-diff-file="false"
           :always-expanded="true"

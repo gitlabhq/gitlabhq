@@ -1,15 +1,15 @@
 import Vue from 'vue';
 import createStore from '~/notes/stores';
-import issueDiscussion from '~/notes/components/noteable_discussion.vue';
+import noteableDiscussion from '~/notes/components/noteable_discussion.vue';
 import '~/behaviors/markdown/render_gfm';
 import { noteableDataMock, discussionMock, notesDataMock } from '../mock_data';
 
-describe('issue_discussion component', () => {
+describe('noteable_discussion component', () => {
   let store;
   let vm;
 
   beforeEach(() => {
-    const Component = Vue.extend(issueDiscussion);
+    const Component = Vue.extend(noteableDiscussion);
 
     store = createStore();
     store.dispatch('setNoteableData', noteableDataMock);
@@ -18,7 +18,7 @@ describe('issue_discussion component', () => {
     vm = new Component({
       store,
       propsData: {
-        note: discussionMock,
+        discussion: discussionMock,
       },
     }).$mount();
   });
@@ -100,7 +100,7 @@ describe('issue_discussion component', () => {
     describe('jumpToNextDiscussion', () => {
       it('expands next unresolved discussion', () => {
         spyOn(vm, 'expandDiscussion').and.stub();
-        const notes = [
+        const discussions = [
           discussionMock,
           {
             ...discussionMock,
@@ -116,7 +116,7 @@ describe('issue_discussion component', () => {
         const nextDiscussionId = discussionMock.id + 2;
         store.replaceState({
           ...store.state,
-          notes,
+          discussions,
         });
         setFixtures(`
           <div data-discussion-id="${nextDiscussionId}"></div>

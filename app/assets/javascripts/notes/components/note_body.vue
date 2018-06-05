@@ -40,7 +40,7 @@ export default {
     this.initTaskList();
 
     if (this.isEditing) {
-      this.initAutoSave(this.note.noteable_type);
+      this.initAutoSave(this.note);
     }
   },
   updated() {
@@ -49,7 +49,7 @@ export default {
 
     if (this.isEditing) {
       if (!this.autosave) {
-        this.initAutoSave(this.note.noteable_type);
+        this.initAutoSave(this.note);
       } else {
         this.setAutoSave();
       }

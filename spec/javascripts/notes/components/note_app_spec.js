@@ -81,8 +81,8 @@ describe('note_app', () => {
       expect(vm.$store.state.userData).toEqual(mockData.userDataMock);
     });
 
-    it('should fetch notes', () => {
-      expect(vm.$store.state.notes).toEqual([]);
+    it('should fetch discussions', () => {
+      expect(vm.$store.state.discussions).toEqual([]);
     });
   });
 

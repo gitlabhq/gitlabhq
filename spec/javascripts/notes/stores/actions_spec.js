@@ -82,7 +82,7 @@ describe('Actions Notes Store', () => {
         actions.setInitialNotes,
         [individualNote],
         { notes: [] },
-        [{ type: 'SET_INITIAL_NOTES', payload: [individualNote] }],
+        [{ type: 'SET_INITIAL_DISCUSSIONS', payload: [individualNote] }],
         [],
         done,
       );
