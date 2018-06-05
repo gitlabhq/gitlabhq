@@ -16,7 +16,7 @@ RSpec::Matchers.define :be_scheduled_migration do |*expected|
   match do |migration|
     BackgroundMigrationWorker.jobs.any? do |job|
       args = job['args'].size == 1 ? [BackgroundMigrationWorker.jobs[0]['args'][0], []] : job['args']
-      args == [migration, expected]
+      args == [migration.to_s, expected]
     end
   end
 
