@@ -1158,21 +1158,21 @@ class MergeRequest < ActiveRecord::Base
     project.merge_requests.merged.where(author_id: author_id).empty?
   end
 
-  def allow_maintainer_to_push
-    maintainer_push_possible? && super
+  def allow_collaboration
+    collaborative_push_possible? && super
   end
 
-  alias_method :allow_maintainer_to_push?, :allow_maintainer_to_push
+  alias_method :allow_collaboration?, :allow_collaboration
 
-  def maintainer_push_possible?
+  def collaborative_push_possible?
     source_project.present? && for_fork? &&
       target_project.visibility_level > Gitlab::VisibilityLevel::PRIVATE &&
       source_project.visibility_level > Gitlab::VisibilityLevel::PRIVATE &&
       !ProtectedBranch.protected?(source_project, source_branch)
   end
 
-  def can_allow_maintainer_to_push?(user)
-    maintainer_push_possible? &&
+  def can_allow_collaboration?(user)
+    collaborative_push_possible? &&
       Ability.allowed?(user, :push_code, source_project)
   end
 

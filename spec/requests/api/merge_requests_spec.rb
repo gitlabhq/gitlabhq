@@ -386,12 +386,13 @@ describe API::MergeRequests do
                source_project: forked_project,
                target_project: project,
                source_branch: 'fixes',
-               allow_maintainer_to_push: true)
+               allow_collaboration: true)
       end
 
-      it 'includes the `allow_maintainer_to_push` field' do
+      it 'includes the `allow_collaboration` field' do
         get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user)
 
+        expect(json_response['allow_collaboration']).to be_truthy
         expect(json_response['allow_maintainer_to_push']).to be_truthy
       end
     end
@@ -654,11 +655,12 @@ describe API::MergeRequests do
         expect(response).to have_gitlab_http_status(400)
       end
 
-      it 'allows setting `allow_maintainer_to_push`' do
+      it 'allows setting `allow_collaboration`' do
         post api("/projects/#{forked_project.id}/merge_requests", user2),
-          title: 'Test merge_request', source_branch: "feature_conflict", target_branch: "master",
-          author: user2, target_project_id: project.id, allow_maintainer_to_push: true
+             title: 'Test merge_request', source_branch: "feature_conflict", target_branch: "master",
+             author: user2, target_project_id: project.id, allow_collaboration: true
         expect(response).to have_gitlab_http_status(201)
+        expect(json_response['allow_collaboration']).to be_truthy
         expect(json_response['allow_maintainer_to_push']).to be_truthy
       end
 

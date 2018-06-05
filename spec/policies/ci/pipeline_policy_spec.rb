@@ -69,7 +69,7 @@ describe Ci::PipelinePolicy, :models do
 
       it 'enables update_pipeline if user is maintainer' do
         allow_any_instance_of(Project).to receive(:empty_repo?).and_return(false)
-        allow_any_instance_of(Project).to receive(:branch_allows_maintainer_push?).and_return(true)
+        allow_any_instance_of(Project).to receive(:branch_allows_collaboration?).and_return(true)
 
         expect(policy).to be_allowed :update_pipeline
       end

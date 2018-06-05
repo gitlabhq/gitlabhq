@@ -1637,7 +1637,7 @@ ActiveRecord::Schema.define(version: 20180529093006) do
     t.string "merge_jid"
     t.boolean "discussion_locked"
     t.integer "latest_merge_request_diff_id"
-    t.boolean "allow_maintainer_to_push"
+    t.boolean "allow_collaboration"
     t.boolean "squash", default: false, null: false
   end
 
