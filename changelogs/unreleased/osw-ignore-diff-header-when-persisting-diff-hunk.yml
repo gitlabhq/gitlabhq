@@ -1,0 +1,5 @@
+---
+title: Adjust insufficient diff hunks being persisted on NoteDiffFile
+merge_request:
+author:
+type: fixed

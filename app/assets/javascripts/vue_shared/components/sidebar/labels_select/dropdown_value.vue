@@ -35,7 +35,12 @@ export default {
 </script>
 
 <template>
-  <div class="hide-collapsed value issuable-show-labels js-value">
+  <div
+    class="hide-collapsed value issuable-show-labels js-value"
+    :class="{
+      'has-labels':!isEmpty,
+    }"
+  >
     <span
       v-if="isEmpty"
       class="text-secondary"
@@ -50,7 +55,7 @@ export default {
     >
       <span
         v-tooltip
-        class="label color-label"
+        class="badge color-label"
         data-placement="bottom"
         data-container="body"
         :style="labelStyle(label)"
