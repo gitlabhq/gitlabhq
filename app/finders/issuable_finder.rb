@@ -159,10 +159,7 @@ class IssuableFinder
         finder_options = { include_subgroups: params[:include_subgroups], only_owned: true }
         GroupProjectsFinder.new(group: group, current_user: current_user, options: finder_options).execute
       else
-        opts = { current_user: current_user }
-        opts[:project_ids_relation] = item_project_ids(items) if items
-
-        ProjectsFinder.new(opts).execute
+        ProjectsFinder.new(current_user: current_user).execute
       end
 
     @projects = projects.with_feature_available_for_user(klass, current_user).reorder(nil)
