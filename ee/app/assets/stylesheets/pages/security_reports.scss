@@ -127,8 +127,4 @@
     width: $modal-lg;
     max-width: $modal-lg;
   }
-  // TODO remove this when gl_modal support not rendering the footer
-  .modal-footer {
-    display: block;
-  }
 }
