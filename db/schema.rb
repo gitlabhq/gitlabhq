@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180529152628) do
+ActiveRecord::Schema.define(version: 20180531220618) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -110,7 +110,7 @@ ActiveRecord::Schema.define(version: 20180529152628) do
     t.text "shared_runners_text_html"
     t.text "after_sign_up_text_html"
     t.integer "rsa_key_restriction", default: 0, null: false
-    t.integer "dsa_key_restriction", default: 0, null: false
+    t.integer "dsa_key_restriction", default: -1, null: false
     t.integer "ecdsa_key_restriction", default: 0, null: false
     t.integer "ed25519_key_restriction", default: 0, null: false
     t.boolean "housekeeping_enabled", default: true, null: false
