@@ -7,6 +7,10 @@
     .float-right
       = button_to accept_term_path(@term, redirect_params), class: 'btn btn-success prepend-left-8' do
         = _('Accept terms')
+  - else
+    .pull-right
+      = link_to root_path, class: 'btn btn-success prepend-left-8' do
+        = _('Continue')
   - if can?(current_user, :decline_terms, @term)
     .float-right
       = button_to decline_term_path(@term, redirect_params), class: 'btn btn-default prepend-left-8' do
