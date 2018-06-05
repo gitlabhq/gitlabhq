@@ -12,9 +12,5 @@ describe 'Discussion Comments Issue', :js do
     visit project_issue_path(project, issue)
   end
 
-  # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-  # it_behaves_like 'discussion comments', 'issue'
-
-  it 'prevents RSpec/EmptyExampleGroup' do
-  end
+  it_behaves_like 'discussion comments', 'issue'
 end
