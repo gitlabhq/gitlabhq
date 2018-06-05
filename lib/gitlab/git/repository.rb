@@ -2543,52 +2543,69 @@ module Gitlab
         build_git_cmd('rev-list', '--objects', '--all')
       end
 
-      def git_rev_list_grep(pattern_string)
-        result = {}
+      def git_rev_list_file_grep(file, pattern_string)
+        result = []
+        args = %W(grep -E #{pattern_string} #{file.path})
 
-        Open3.pipeline_r(git_rev_list_all_objects_cmd, "grep -E '#{pattern_string}'") do |last_stdout, wait_threads|
-          last_stdout.each_line do |line|
-            result[line[0, MAX_SHA_SIZE]] = line[(MAX_SHA_SIZE + 1)..-1].strip
+        lazy_block = lambda do |stdout|
+          stdout.each do |line|
+            result << line[0, MAX_SHA_SIZE]
           end
+        end
+
+        circuit_breaker.perform do
+          popen(args, path, {}, lazy_block: lazy_block)
         end
 
         result
       end
 
       def git_all_lfs_pointers
-        lfs_patterns = git_lfs_track_patterns.uniq
+        file = store_temporal_rev_list
+        lfs_patterns = git_lfs_track_patterns(file).uniq
 
         return [] if lfs_patterns.empty?
 
-        Gitlab::Git::Blob.batch_lfs_pointers(self, git_rev_list_grep(lfs_patterns.join('|')).keys)
+        Gitlab::Git::Blob.batch_lfs_pointers(self, git_rev_list_file_grep(file, lfs_patterns.join('|')))
+      ensure
+        file.close
+        file.unlink
       end
 
-      def git_lfs_track_patterns
-        git_rev_list_grep("\s(.*/)*.gitattributes$").map do |object_id, path|
+      def store_temporal_rev_list
+        file = Tempfile.new
+
+        Open3.pipeline_r(git_rev_list_all_objects_cmd, "grep -E '\s.+'") do |last_stdout, wait_threads|
+          IO.copy_stream(last_stdout, file)
+        end
+
+        file
+      end
+
+      def git_lfs_track_patterns(file)
+        git_rev_list_file_grep(file, "\s(.*/)*\\.gitattributes$").map do |object_id, path|
           blob = Gitlab::Git::Blob.raw(self, object_id)
 
           next unless blob
 
-          git_lfs_track_pattern(blob.data, path)
+          git_lfs_track_pattern(blob.data)
         end.flatten.compact
       end
 
       # Selecting lfs patterns from the lfs attributes
-      def git_lfs_track_pattern(data, path)
+      def git_lfs_track_pattern(data)
         AttributesParser.new(data)
                         .patterns
                         .select { |_, v| v['filter'] == 'lfs' }
                         .keys
-                        .map! { |pattern| convert_lfs_pattern_to_regex(pattern, path) }
+                        .map! { |pattern| convert_lfs_pattern_to_regex(pattern) }
       end
 
-      def convert_lfs_pattern_to_regex(pattern, path)
-        pattern = pattern[1..-1].gsub('.', '\\.').gsub('*', '.*')
-        dir = File.dirname(path)
-
-        pattern = dir + '/(.*/)*' + pattern unless dir == '.'
-
-        pattern
+      def convert_lfs_pattern_to_regex(pattern)
+        pattern[1..-1]
+          .gsub('.', '\\.')
+          .gsub('*', '.*')
+          .gsub('.*.*/', '(.*/)*')
       end
     end
   end

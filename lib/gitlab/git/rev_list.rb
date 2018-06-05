@@ -4,7 +4,6 @@ module Gitlab
   module Git
     class RevList
       include Gitlab::Git::Popen
-      MAX_SHA_SIZE = 40
 
       attr_reader :oldrev, :newrev, :repository
 
@@ -66,14 +65,13 @@ module Gitlab
       end
 
       def objects_from_output(object_output, require_path: nil)
-        object_output.each_with_object([]) do |output_line, sha_list|
-          sha = output_line[0, MAX_SHA_SIZE]
-          path = output_line[(MAX_SHA_SIZE + 1)..-1]
+        object_output.map do |output_line|
+          sha, path = output_line.split(' ', 2)
 
-          next if require_path && path.blank?
+          next if require_path && path.to_s.empty?
 
-          sha_list << sha
-        end
+          sha
+        end.reject(&:nil?)
       end
     end
   end
