@@ -1,6 +1,6 @@
 - if current_user.admin?
-  .form-group
-    = f.label :shared_runners_minutes_limit, class: 'col-form-label' do
+  .form-group.row
+    = f.label :shared_runners_minutes_limit, class: 'col-form-label col-sm-2' do
       Pipeline Minutes Quota
     .col-sm-10
       = f.number_field :shared_runners_minutes_limit, class: 'form-control', min: 0
