@@ -2545,7 +2545,7 @@ describe Ci::Build do
         before do
           allow(Gitlab.config.pages).to receive_messages(enabled: false)
         end
-  
+
         it 'is not marked as pages generator' do
           expect(build).not_to be_pages_generator
         end
