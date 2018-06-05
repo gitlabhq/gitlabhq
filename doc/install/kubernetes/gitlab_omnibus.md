@@ -144,7 +144,7 @@ helm install --name gitlab -f values.yaml gitlab/gitlab-omnibus
 or passing them on the command line:
 
 ```bash
-helm install --name gitlab --set baseDomain=gitlab.io,baseIP=1.1.1.1,gitlab=ee,gitlabEELicense=$LICENSE,legoEmail=email@gitlab.com gitlab/gitlab-omnibus
+helm install --name gitlab --set baseDomain=gitlab.io,baseIP=192.0.2.1,gitlab=ee,gitlabEELicense=$LICENSE,legoEmail=email@gitlab.com gitlab/gitlab-omnibus
 ```
 
 ## Updating GitLab using the Helm Chart

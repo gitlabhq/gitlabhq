@@ -6,6 +6,7 @@ describe Milestone do
       it_behaves_like 'AtomicInternalId' do
         let(:internal_id_attribute) { :iid }
         let(:instance) { build(:milestone, project: build(:project), group: nil) }
+        let(:scope) { :project }
         let(:scope_attrs) { { project: instance.project } }
         let(:usage) { :milestones }
       end
@@ -15,6 +16,7 @@ describe Milestone do
       it_behaves_like 'AtomicInternalId' do
         let(:internal_id_attribute) { :iid }
         let(:instance) { build(:milestone, project: nil, group: build(:group)) }
+        let(:scope) { :group }
         let(:scope_attrs) { { namespace: instance.group } }
         let(:usage) { :milestones }
       end

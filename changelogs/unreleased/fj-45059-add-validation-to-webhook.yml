@@ -1,0 +1,5 @@
+---
+title: Refactoring UrlValidators to include url blocking
+merge_request: 18686
+author:
+type: changed

@@ -2,13 +2,13 @@
 import $ from 'jquery';
 import { __ } from '~/locale';
 import LabelsSelect from '~/labels_select';
+import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidden_input.vue';
 import LoadingIcon from '../../loading_icon.vue';
 
 import DropdownTitle from './dropdown_title.vue';
 import DropdownValue from './dropdown_value.vue';
 import DropdownValueCollapsed from './dropdown_value_collapsed.vue';
 import DropdownButton from './dropdown_button.vue';
-import DropdownHiddenInput from './dropdown_hidden_input.vue';
 import DropdownHeader from './dropdown_header.vue';
 import DropdownSearchInput from './dropdown_search_input.vue';
 import DropdownFooter from './dropdown_footer.vue';
@@ -140,7 +140,7 @@ export default {
         v-for="label in context.labels"
         :key="label.id"
         :name="hiddenInputName"
-        :label="label"
+        :value="label.id"
       />
       <div
         class="dropdown"

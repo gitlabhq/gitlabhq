@@ -92,7 +92,7 @@ describe Backup::Repository do
       end
 
       def list_repositories
-        Dir[SEED_STORAGE_PATH + '/*.git']
+        Dir[File.join(SEED_STORAGE_PATH, '*.git')]
       end
     end
 

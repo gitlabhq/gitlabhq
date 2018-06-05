@@ -13,9 +13,9 @@ describe "User Feed"  do
       end
     end
 
-    context 'user atom feed via RSS token' do
+    context 'user atom feed via feed token' do
       it "renders user atom feed" do
-        visit user_path(user, :atom, rss_token: user.rss_token)
+        visit user_path(user, :atom, feed_token: user.feed_token)
         expect(body).to have_selector('feed title')
       end
     end
@@ -51,7 +51,7 @@ describe "User Feed"  do
         issue_event(issue, user)
         note_event(note, user)
         merge_request_event(merge_request, user)
-        visit user_path(user, :atom, rss_token: user.rss_token)
+        visit user_path(user, :atom, feed_token: user.feed_token)
       end
 
       it 'has issue opened event' do

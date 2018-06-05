@@ -355,7 +355,10 @@ describe ObjectStorage do
   end
 
   describe '.workhorse_authorize' do
-    subject { uploader_class.workhorse_authorize }
+    let(:has_length) { true }
+    let(:maximum_size) { nil }
+
+    subject { uploader_class.workhorse_authorize(has_length: has_length, maximum_size: maximum_size) }
 
     before do
       # ensure that we use regular Fog libraries
@@ -371,10 +374,6 @@ describe ObjectStorage do
         expect(subject[:TempPath]).to start_with(uploader_class.root)
         expect(subject[:TempPath]).to include(described_class::TMP_UPLOAD_PATH)
       end
-
-      it "does not return remote store" do
-        is_expected.not_to have_key('RemoteObject')
-      end
     end
 
     shared_examples 'uses remote storage' do
@@ -382,6 +381,8 @@ describe ObjectStorage do
         is_expected.to have_key(:RemoteObject)
 
         expect(subject[:RemoteObject]).to have_key(:ID)
+        expect(subject[:RemoteObject]).to include(Timeout: a_kind_of(Integer))
+        expect(subject[:RemoteObject][:Timeout]).to be(ObjectStorage::DirectUpload::TIMEOUT)
         expect(subject[:RemoteObject]).to have_key(:GetURL)
         expect(subject[:RemoteObject]).to have_key(:DeleteURL)
         expect(subject[:RemoteObject]).to have_key(:StoreURL)
@@ -389,9 +390,31 @@ describe ObjectStorage do
         expect(subject[:RemoteObject][:DeleteURL]).to include(described_class::TMP_UPLOAD_PATH)
         expect(subject[:RemoteObject][:StoreURL]).to include(described_class::TMP_UPLOAD_PATH)
       end
+    end
 
-      it "does not return local store" do
-        is_expected.not_to have_key('TempPath')
+    shared_examples 'uses remote storage with multipart uploads' do
+      it_behaves_like 'uses remote storage' do
+        it "returns multipart upload" do
+          is_expected.to have_key(:RemoteObject)
+
+          expect(subject[:RemoteObject]).to have_key(:MultipartUpload)
+          expect(subject[:RemoteObject][:MultipartUpload]).to have_key(:PartSize)
+          expect(subject[:RemoteObject][:MultipartUpload]).to have_key(:PartURLs)
+          expect(subject[:RemoteObject][:MultipartUpload]).to have_key(:CompleteURL)
+          expect(subject[:RemoteObject][:MultipartUpload]).to have_key(:AbortURL)
+          expect(subject[:RemoteObject][:MultipartUpload][:PartURLs]).to all(include(described_class::TMP_UPLOAD_PATH))
+          expect(subject[:RemoteObject][:MultipartUpload][:CompleteURL]).to include(described_class::TMP_UPLOAD_PATH)
+          expect(subject[:RemoteObject][:MultipartUpload][:AbortURL]).to include(described_class::TMP_UPLOAD_PATH)
+        end
+      end
+    end
+
+    shared_examples 'uses remote storage without multipart uploads' do
+      it_behaves_like 'uses remote storage' do
+        it "does not return multipart upload" do
+          is_expected.to have_key(:RemoteObject)
+          expect(subject[:RemoteObject]).not_to have_key(:MultipartUpload)
+        end
       end
     end
 
@@ -414,6 +437,8 @@ describe ObjectStorage do
         end
 
         context 'uses AWS' do
+          let(:storage_url) { "https://uploads.s3-eu-central-1.amazonaws.com/" }
+
           before do
             expect(uploader_class).to receive(:object_store_credentials) do
               { provider: "AWS",
@@ -423,18 +448,40 @@ describe ObjectStorage do
             end
           end
 
-          it_behaves_like 'uses remote storage' do
-            let(:storage_url) { "https://uploads.s3-eu-central-1.amazonaws.com/" }
+          context 'for known length' do
+            it_behaves_like 'uses remote storage without multipart uploads' do
+              it 'returns links for S3' do
+                expect(subject[:RemoteObject][:GetURL]).to start_with(storage_url)
+                expect(subject[:RemoteObject][:DeleteURL]).to start_with(storage_url)
+                expect(subject[:RemoteObject][:StoreURL]).to start_with(storage_url)
+              end
+            end
+          end
 
-            it 'returns links for S3' do
-              expect(subject[:RemoteObject][:GetURL]).to start_with(storage_url)
-              expect(subject[:RemoteObject][:DeleteURL]).to start_with(storage_url)
-              expect(subject[:RemoteObject][:StoreURL]).to start_with(storage_url)
+          context 'for unknown length' do
+            let(:has_length) { false }
+            let(:maximum_size) { 1.gigabyte }
+
+            before do
+              stub_object_storage_multipart_init(storage_url)
+            end
+
+            it_behaves_like 'uses remote storage with multipart uploads' do
+              it 'returns links for S3' do
+                expect(subject[:RemoteObject][:GetURL]).to start_with(storage_url)
+                expect(subject[:RemoteObject][:DeleteURL]).to start_with(storage_url)
+                expect(subject[:RemoteObject][:StoreURL]).to start_with(storage_url)
+                expect(subject[:RemoteObject][:MultipartUpload][:PartURLs]).to all(start_with(storage_url))
+                expect(subject[:RemoteObject][:MultipartUpload][:CompleteURL]).to start_with(storage_url)
+                expect(subject[:RemoteObject][:MultipartUpload][:AbortURL]).to start_with(storage_url)
+              end
             end
           end
         end
 
         context 'uses Google' do
+          let(:storage_url) { "https://storage.googleapis.com/uploads/" }
+
           before do
             expect(uploader_class).to receive(:object_store_credentials) do
               { provider: "Google",
@@ -443,36 +490,71 @@ describe ObjectStorage do
             end
           end
 
-          it_behaves_like 'uses remote storage' do
-            let(:storage_url) { "https://storage.googleapis.com/uploads/" }
+          context 'for known length' do
+            it_behaves_like 'uses remote storage without multipart uploads' do
+              it 'returns links for Google Cloud' do
+                expect(subject[:RemoteObject][:GetURL]).to start_with(storage_url)
+                expect(subject[:RemoteObject][:DeleteURL]).to start_with(storage_url)
+                expect(subject[:RemoteObject][:StoreURL]).to start_with(storage_url)
+              end
+            end
+          end
 
-            it 'returns links for Google Cloud' do
-              expect(subject[:RemoteObject][:GetURL]).to start_with(storage_url)
-              expect(subject[:RemoteObject][:DeleteURL]).to start_with(storage_url)
-              expect(subject[:RemoteObject][:StoreURL]).to start_with(storage_url)
+          context 'for unknown length' do
+            let(:has_length) { false }
+            let(:maximum_size) { 1.gigabyte }
+
+            it_behaves_like 'uses remote storage without multipart uploads' do
+              it 'returns links for Google Cloud' do
+                expect(subject[:RemoteObject][:GetURL]).to start_with(storage_url)
+                expect(subject[:RemoteObject][:DeleteURL]).to start_with(storage_url)
+                expect(subject[:RemoteObject][:StoreURL]).to start_with(storage_url)
+              end
             end
           end
         end
 
         context 'uses GDK/minio' do
+          let(:storage_url) { "http://minio:9000/uploads/" }
+
           before do
             expect(uploader_class).to receive(:object_store_credentials) do
               { provider: "AWS",
                 aws_access_key_id: "AWS_ACCESS_KEY_ID",
                 aws_secret_access_key: "AWS_SECRET_ACCESS_KEY",
-                endpoint: 'http://127.0.0.1:9000',
+                endpoint: 'http://minio:9000',
                 path_style: true,
                 region: "gdk" }
             end
           end
 
-          it_behaves_like 'uses remote storage' do
-            let(:storage_url) { "http://127.0.0.1:9000/uploads/" }
+          context 'for known length' do
+            it_behaves_like 'uses remote storage without multipart uploads' do
+              it 'returns links for S3' do
+                expect(subject[:RemoteObject][:GetURL]).to start_with(storage_url)
+                expect(subject[:RemoteObject][:DeleteURL]).to start_with(storage_url)
+                expect(subject[:RemoteObject][:StoreURL]).to start_with(storage_url)
+              end
+            end
+          end
 
-            it 'returns links for S3' do
-              expect(subject[:RemoteObject][:GetURL]).to start_with(storage_url)
-              expect(subject[:RemoteObject][:DeleteURL]).to start_with(storage_url)
-              expect(subject[:RemoteObject][:StoreURL]).to start_with(storage_url)
+          context 'for unknown length' do
+            let(:has_length) { false }
+            let(:maximum_size) { 1.gigabyte }
+
+            before do
+              stub_object_storage_multipart_init(storage_url)
+            end
+
+            it_behaves_like 'uses remote storage with multipart uploads' do
+              it 'returns links for S3' do
+                expect(subject[:RemoteObject][:GetURL]).to start_with(storage_url)
+                expect(subject[:RemoteObject][:DeleteURL]).to start_with(storage_url)
+                expect(subject[:RemoteObject][:StoreURL]).to start_with(storage_url)
+                expect(subject[:RemoteObject][:MultipartUpload][:PartURLs]).to all(start_with(storage_url))
+                expect(subject[:RemoteObject][:MultipartUpload][:CompleteURL]).to start_with(storage_url)
+                expect(subject[:RemoteObject][:MultipartUpload][:AbortURL]).to start_with(storage_url)
+              end
             end
           end
         end
@@ -618,7 +700,7 @@ describe ObjectStorage do
 
           let!(:fog_file) do
             fog_connection.directories.get('uploads').files.create(
-              key: 'tmp/upload/test/123123',
+              key: 'tmp/uploads/test/123123',
               body: 'content'
             )
           end

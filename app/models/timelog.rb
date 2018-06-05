@@ -2,8 +2,8 @@ class Timelog < ActiveRecord::Base
   validates :time_spent, :user, presence: true
   validate :issuable_id_is_present
 
-  belongs_to :issue
-  belongs_to :merge_request
+  belongs_to :issue, touch: true
+  belongs_to :merge_request, touch: true
   belongs_to :user
 
   def issuable

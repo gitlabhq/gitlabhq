@@ -5,14 +5,14 @@
     .form-group.row
       .offset-sm-2.col-sm-10
         .form-check
-          = f.label :signup_enabled do
-            = f.check_box :signup_enabled
+          = f.check_box :signup_enabled, class: 'form-check-input'
+          = f.label :signup_enabled, class: 'form-check-label' do
             Sign-up enabled
     .form-group.row
       .offset-sm-2.col-sm-10
         .form-check
-          = f.label :send_user_confirmation_email do
-            = f.check_box :send_user_confirmation_email
+          = f.check_box :send_user_confirmation_email, class: 'form-check-input'
+          = f.label :send_user_confirmation_email, class: 'form-check-label' do
             Send confirmation email on sign-up
     .form-group.row
       = f.label :domain_whitelist, 'Whitelisted domains for sign-ups', class: 'col-form-label col-sm-2'
@@ -23,19 +23,19 @@
       = f.label :domain_blacklist_enabled, 'Domain Blacklist', class: 'col-form-label col-sm-2'
       .col-sm-10
         .form-check
-          = f.label :domain_blacklist_enabled do
-            = f.check_box :domain_blacklist_enabled
+          = f.check_box :domain_blacklist_enabled, class: 'form-check-input'
+          = f.label :domain_blacklist_enabled, class: 'form-check-label' do
             Enable domain blacklist for sign ups
     .form-group.row
       .offset-sm-2.col-sm-10
         .form-check
-          = label_tag :blacklist_type_file do
-            = radio_button_tag :blacklist_type, :file
+          = radio_button_tag :blacklist_type, :file, class: 'form-check-input'
+          = label_tag :blacklist_type_file, class: 'form-check-label' do
             .option-title
               Upload blacklist file
         .form-check
-          = label_tag :blacklist_type_raw do
-            = radio_button_tag :blacklist_type, :raw, @application_setting.domain_blacklist.present? || @application_setting.domain_blacklist.blank?
+          = radio_button_tag :blacklist_type, :raw, @application_setting.domain_blacklist.present? || @application_setting.domain_blacklist.blank?, class: 'form-check-input'
+          = label_tag :blacklist_type_raw, class: 'form-check-label' do
             .option-title
               Enter blacklist manually
     .form-group.row.blacklist-file

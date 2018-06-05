@@ -1021,6 +1021,7 @@ describe 'Git LFS API and storage' do
                     expect(json_response['RemoteObject']).to have_key('GetURL')
                     expect(json_response['RemoteObject']).to have_key('StoreURL')
                     expect(json_response['RemoteObject']).to have_key('DeleteURL')
+                    expect(json_response['RemoteObject']).not_to have_key('MultipartUpload')
                     expect(json_response['LfsOid']).to eq(sample_oid)
                     expect(json_response['LfsSize']).to eq(sample_size)
                   end
@@ -1089,7 +1090,7 @@ describe 'Git LFS API and storage' do
                 context 'with valid remote_id' do
                   before do
                     fog_connection.directories.get('lfs-objects').files.create(
-                      key: 'tmp/upload/12312300',
+                      key: 'tmp/uploads/12312300',
                       body: 'content'
                     )
                   end

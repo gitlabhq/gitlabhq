@@ -1,5 +1,5 @@
 module RssHelper
   def rss_url_options
-    { format: :atom, rss_token: current_user.try(:rss_token) }
+    { format: :atom, feed_token: current_user.try(:feed_token) }
   end
 end

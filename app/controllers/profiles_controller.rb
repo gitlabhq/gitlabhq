@@ -34,12 +34,12 @@ class ProfilesController < Profiles::ApplicationController
     redirect_to profile_personal_access_tokens_path
   end
 
-  def reset_rss_token
+  def reset_feed_token
     Users::UpdateService.new(current_user, user: @user).execute! do |user|
-      user.reset_rss_token!
+      user.reset_feed_token!
     end
 
-    flash[:notice] = "RSS token was successfully reset"
+    flash[:notice] = 'Feed token was successfully reset'
 
     redirect_to profile_personal_access_tokens_path
   end
@@ -93,8 +93,6 @@ class ProfilesController < Profiles::ApplicationController
       :linkedin,
       :location,
       :name,
-      :password,
-      :password_confirmation,
       :public_email,
       :skype,
       :twitter,

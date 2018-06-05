@@ -36,6 +36,17 @@ html [type="button"],
   cursor: pointer;
 }
 
+input[type="file"] {
+  // Bootstrap 4 file input height is taller by default
+  // which makes them look ugly
+  line-height: 1;
+}
+
+b,
+strong {
+  font-weight: bold;
+}
+
 a {
   color: $gl-link-color;
 }
@@ -46,6 +57,27 @@ a {
   @include media-breakpoint-up(md) {
     text-align: right;
   }
+}
+
+code {
+  padding: 2px 4px;
+  color: $red-600;
+  background-color: $red-100;
+  border-radius: 3px;
+
+  .code & {
+    background-color: inherit;
+    padding: unset;
+  }
+
+  .build-trace & {
+    background-color: inherit;
+    padding: inherit;
+  }
+}
+
+.code {
+  padding: 9.5px;
 }
 
 table {
@@ -87,7 +119,8 @@ table {
   display: none;
 }
 
-.dropdown-toggle::after {
+.dropdown-toggle::after,
+.dropright .dropdown-menu-toggle::after {
   // Remove bootstrap's dropdown caret
   display: none;
 }
@@ -131,6 +164,10 @@ table {
 }
 
 .card {
+  .card-title {
+    margin-bottom: 0;
+  }
+
   &.card-without-border {
     @extend .border-0;
   }
@@ -144,6 +181,16 @@ table {
   }
 }
 
-.nav-tabs .nav-link {
-  border: 0;
+.nav-tabs {
+  .nav-link {
+    border: 0;
+  }
+
+  .nav-item {
+    margin-bottom: 0;
+  }
+}
+
+pre code {
+  white-space: pre-wrap;
 }

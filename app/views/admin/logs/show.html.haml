@@ -4,8 +4,8 @@
 %div{ class: container_class }
   %ul.nav-links.log-tabs.nav.nav-tabs
     - @loggers.each do |klass|
-      %li{ class: active_when(klass == @loggers.first) }>
-        = link_to klass.file_name, "##{klass.file_name_noext}", data: { toggle: 'tab' }
+      %li.nav-item
+        = link_to klass.file_name, "##{klass.file_name_noext}", data: { toggle: 'tab' }, class: "#{active_when(klass == @loggers.first)} nav-link"
   .row-content-block
     To prevent performance issues admin logs output the last 2000 lines
   .tab-content

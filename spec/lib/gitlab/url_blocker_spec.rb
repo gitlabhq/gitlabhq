@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::UrlBlocker do
   describe '#blocked_url?' do
-    let(:valid_ports) { Project::VALID_IMPORT_PORTS }
+    let(:ports) { Project::VALID_IMPORT_PORTS }
 
     it 'allows imports from configured web host and port' do
       import_url = "http://#{Gitlab.config.gitlab.host}:#{Gitlab.config.gitlab.port}/t.git"
@@ -19,7 +19,13 @@ describe Gitlab::UrlBlocker do
     end
 
     it 'returns true for bad port' do
-      expect(described_class.blocked_url?('https://gitlab.com:25/foo/foo.git', valid_ports: valid_ports)).to be true
+      expect(described_class.blocked_url?('https://gitlab.com:25/foo/foo.git', ports: ports)).to be true
+    end
+
+    it 'returns true for bad protocol' do
+      expect(described_class.blocked_url?('https://gitlab.com/foo/foo.git', protocols: ['https'])).to be false
+      expect(described_class.blocked_url?('https://gitlab.com/foo/foo.git')).to be false
+      expect(described_class.blocked_url?('https://gitlab.com/foo/foo.git', protocols: ['http'])).to be true
     end
 
     it 'returns true for alternative version of 127.0.0.1 (0177.1)' do

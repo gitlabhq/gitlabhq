@@ -25,7 +25,7 @@ module Gitlab
             body = @formatter.author_line(issue["author"]["name"])
             body += issue["description"]
 
-            comments = client.issue_comments(project_identifier, issue["id"])
+            comments = client.issue_comments(project_identifier, issue["iid"])
 
             if comments.any?
               body += @formatter.comments_header
