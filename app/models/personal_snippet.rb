@@ -1,10 +1,7 @@
 class PersonalSnippet < Snippet
-<<<<<<< HEAD
   # Elastic search configuration (it does not support STI)
   document_type 'snippet'
   index_name [Rails.application.class.parent_name.downcase, Rails.env].join('-')
   include Elastic::SnippetsSearch
-=======
->>>>>>> upstream/master
   include WithUploads
 end
