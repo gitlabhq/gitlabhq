@@ -88,7 +88,7 @@ export default {
       <div class="controllers ml-auto">
         <a
           v-tooltip
-          :title="__('Show complete raw')"
+          :title="__('Show complete raw log')"
           data-placement="top"
           data-container="body"
           class="controllers-buttons"
