@@ -29,11 +29,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def show
     validates_merge_request
-    check_if_can_be_merged
 
     # Return if the response has already been rendered
     return if response_body
     close_merge_request_if_no_source_project
+    mark_merge_request_mergeable
 
     respond_to do |format|
       format.html do
@@ -269,7 +269,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   private
 
-  def check_if_can_be_merged
+  def mark_merge_request_mergeable
     @merge_request.check_if_can_be_merged
   end
 
