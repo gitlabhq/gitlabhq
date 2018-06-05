@@ -8,8 +8,7 @@
 - if can_admin_label
   - content_for(:header_content) do
     .nav-controls
-      = link_to new_group_label_path(@group), class: "btn btn-new" do
-        = _('New label')
+      = link_to _('New label'), new_group_label_path(@group), class: "btn btn-new"
 
 - if @labels.exists?
   #promote-label-modal
@@ -32,4 +31,4 @@
 
 %template#js-badge-item-template
   %li.label-link-item.js-priority-badge.inline.prepend-left-10
-    .label-badge.label-badge-blue Prioritized label
+    .label-badge.label-badge-blue= _('Prioritized label')

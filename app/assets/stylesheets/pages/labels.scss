@@ -77,7 +77,7 @@
     margin-bottom: 5px;
     display: flex;
     justify-content: space-between;
-    padding: 11px 10px 11px $gl-padding;
+    padding: 8px 8px 8px $gl-padding;
     border-radius: $border-radius-default;
 
     &.sortable-ghost {
@@ -270,7 +270,6 @@
   .content-list &::before,
   .content-list &::after {
     content: none;
-    display: block;
   }
 
   .label-name {
@@ -282,12 +281,6 @@
       text-overflow: ellipsis;
       max-width: 100%;
     }
-  }
-
-  .label-type {
-    display: block;
-    margin-bottom: 10px;
-    margin-left: 50px;
   }
 
   .label-description {
@@ -302,7 +295,7 @@
     padding: 4px $grid-size;
     font-size: $label-font-size;
     position: relative;
-    top: ($grid-size / 2);
+    top: $gl-padding-4;
   }
 
   .label-action {

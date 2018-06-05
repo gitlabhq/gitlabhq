@@ -6,7 +6,7 @@
 .label-name
   = link_to_label(label, subject: @project, tooltip: false)
 .label-description
-  .append-right-15.prepend-left-15
+  .append-right-default.prepend-left-default
     - if label.description.present?
       .description-text.append-bottom-10
         = markdown_field(label, :description)

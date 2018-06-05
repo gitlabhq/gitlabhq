@@ -3,6 +3,17 @@ import { __ } from './locale';
 import axios from './lib/utils/axios_utils';
 import flash from './flash';
 
+const tooltipTitles = {
+  group: {
+    subscribed: __('Unsubscribe at group level'),
+    unsubscribed: __('Subscribe at group level'),
+  },
+  project: {
+    subscribed: __('Unsubscribe at project level'),
+    unsubscribed: __('Subscribe at project level'),
+  },
+};
+
 export default class ProjectLabelSubscription {
   constructor(container) {
     this.$container = $(container);
@@ -48,11 +59,10 @@ export default class ProjectLabelSubscription {
     }).catch(() => flash(__('There was an error subscribing to this label.')));
   }
 
-  static setNewTitle($button, originalTitle, newStatus, newAction) {
-    const newStatusVerb = newStatus.slice(0, -1);
-    const actionRegexp = new RegExp(newStatusVerb, 'i');
-    const newTitle = originalTitle.replace(actionRegexp, newAction);
+  static setNewTitle($button, originalTitle, newStatus) {
+    const type = /group/.test(originalTitle) ? 'group' : 'project';
+    const newTitle = tooltipTitles[type][newStatus];
 
-    $button.tooltip('hide').attr('data-original-title', newTitle).tooltip('_fixTitle');
+    $button.tooltip('hide').attr('title', newTitle).tooltip('_fixTitle');
   }
 }
