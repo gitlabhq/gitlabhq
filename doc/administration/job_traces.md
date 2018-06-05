@@ -1,6 +1,6 @@
 # Job traces (logs)
 
-By default, all job traces (logs) are saved to `/var/opt/gitlab/gitlab-ci/builds`
+By default, all job traces (logs) are saved to `/var/opt/gitlab/shared/asrtifacts`
 and `/home/git/gitlab/builds` for Omnibus packages and installations from source
 respectively. The job logs are organized by year and month (for example, `2017_03`),
 and then by project ID.
