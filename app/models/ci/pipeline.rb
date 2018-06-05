@@ -16,9 +16,7 @@ module Ci
     belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
     belongs_to :pipeline_schedule, class_name: 'Ci::PipelineSchedule'
 
-<<<<<<< HEAD
     has_one :source_pipeline, class_name: Ci::Sources::Pipeline
-
     has_many :sourced_pipelines, class_name: Ci::Sources::Pipeline, foreign_key: :source_pipeline_id
 
     has_one :triggered_by_pipeline, through: :source_pipeline, source: :source_pipeline
@@ -26,11 +24,10 @@ module Ci
 
     has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: 'auto_canceled_by_id'
     has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: 'auto_canceled_by_id'
-=======
+
     has_internal_id :iid, scope: :project, presence: false, init: ->(s) do
       s&.project&.pipelines&.maximum(:iid) || s&.project&.pipelines&.count
     end
->>>>>>> upstream/master
 
     has_many :stages
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
