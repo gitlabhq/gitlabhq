@@ -269,9 +269,28 @@ What does this mean? This strongly suggests that the S3 user does not have the r
 The solution: check the [IAM permissions again](https://docs.docker.com/registry/storage-drivers/s3/).
 Once the right permissions were set, the error will go away.
 
+#### Enable the registry debug server
+
+The optional debug server can be enabled by setting the registry debug address
+in your `gitlab.rb` configuration.
+
+```
+registry['debug_addr'] = "localhost:5001"
+```
+
+After adding the setting, [reconfigure] GitLab to apply the change.
+
+Use curl to request debug output from the debug server:
+
+```bash
+curl localhost:5001/debug/health
+curl localhost:5001/debug/vars
+```
+
 [ce-4040]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4040
 [ce-11845]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11845
 [ce-17894]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17894
 [docker-docs]: https://docs.docker.com/engine/userguide/intro/
 [pat]: ../profile/personal_access_tokens.md
 [pdt]: ../project/deploy_tokens/index.md
+[reconfigure]: ../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
