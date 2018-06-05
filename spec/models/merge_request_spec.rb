@@ -84,6 +84,7 @@ describe MergeRequest do
     it_behaves_like 'AtomicInternalId' do
       let(:internal_id_attribute) { :iid }
       let(:instance) { build(:merge_request) }
+      let(:scope) { :target_project }
       let(:scope_attrs) { { project: instance.target_project } }
       let(:usage) { :merge_requests }
     end
