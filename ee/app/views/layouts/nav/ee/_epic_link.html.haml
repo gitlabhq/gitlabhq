@@ -9,12 +9,12 @@
       = sprite_icon('epic')
     %span.nav-item-name
       Epics
-    %span.badge.count= number_with_delimiter(epics.count)
+    %span.badge.badge-pill.count= number_with_delimiter(epics.count)
   %ul.sidebar-sub-level-items
     = nav_link(path: epics_items, html_options: { class: "fly-out-top-item" } ) do
       = link_to group_epics_path(group) do
         %strong.fly-out-top-item-name= _('Epics')
-        %span.badge.count.epic_counter.fly-out-badge= number_with_delimiter(epics.count)
+        %span.badge.badge-pill.count.epic_counter.fly-out-badge= number_with_delimiter(epics.count)
     %li.divider.fly-out-top-item
     = nav_link(path: 'epics#index', html_options: { class: 'home' }) do
       = link_to group_epics_path(group), title: 'List' do
