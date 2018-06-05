@@ -299,7 +299,13 @@ class License < ActiveRecord::Base
   end
 
   def current_active_users_count
-    @current_active_users_count ||= User.active.count
+    @current_active_users_count ||= begin
+      if exclude_guests_from_active_count?
+        User.active.excluding_guests.count
+      else
+        User.active.count
+      end
+    end
   end
 
   def validate_with_trueup?
@@ -314,6 +320,10 @@ class License < ActiveRecord::Base
 
   def active?
     !expired?
+  end
+
+  def exclude_guests_from_active_count?
+    plan == License::ULTIMATE_PLAN
   end
 
   def remaining_days

@@ -7,6 +7,27 @@ describe EE::User do
     it { is_expected.to have_many(:vulnerability_feedback) }
   end
 
+  describe "scopes" do
+    describe '.excluding_guests' do
+      let!(:user_without_membership) { create(:user).id }
+      let!(:project_guest_user)      { create(:project_member, :guest).user_id }
+      let!(:project_reporter_user)   { create(:project_member, :reporter).user_id }
+      let!(:group_guest_user)        { create(:group_member, :guest).user_id }
+      let!(:group_reporter_user)     { create(:group_member, :reporter).user_id }
+
+      it 'exclude users with a Guest role in a Project/Group' do
+        user_ids = User.excluding_guests.pluck(:id)
+
+        expect(user_ids).to include(project_reporter_user)
+        expect(user_ids).to include(group_reporter_user)
+
+        expect(user_ids).not_to include(user_without_membership)
+        expect(user_ids).not_to include(project_guest_user)
+        expect(user_ids).not_to include(group_guest_user)
+      end
+    end
+  end
+
   describe '#access_level=' do
     let(:user) { build(:user) }
 

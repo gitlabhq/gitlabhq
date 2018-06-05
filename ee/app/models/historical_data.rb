@@ -10,7 +10,7 @@ class HistoricalData < ActiveRecord::Base
     def track!
       create!(
         date:               Date.today,
-        active_user_count:  User.active.count
+        active_user_count:  License.load_license&.current_active_users_count
       )
     end
 
