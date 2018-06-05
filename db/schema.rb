@@ -1229,7 +1229,7 @@ ActiveRecord::Schema.define(version: 20180529152628) do
     t.boolean "discussion_locked"
     t.integer "latest_merge_request_diff_id"
     t.string "rebase_commit_sha"
-    t.boolean "allow_maintainer_to_push"
+    t.boolean "allow_collaboration"
     t.boolean "squash", default: false, null: false
   end
 

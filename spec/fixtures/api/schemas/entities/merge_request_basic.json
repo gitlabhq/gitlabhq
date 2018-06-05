@@ -13,6 +13,7 @@
     "assignee_id": { "type": ["integer", "null"] },
     "subscribed": { "type": ["boolean", "null"] },
     "participants": { "type": "array" },
+    "allow_collaboration": { "type": "boolean"},
     "allow_maintainer_to_push": { "type": "boolean"}
   },
   "additionalProperties": false
