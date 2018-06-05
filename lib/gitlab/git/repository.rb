@@ -2556,15 +2556,14 @@ module Gitlab
       end
 
       def git_all_lfs_pointers
-        rev_list = Gitlab::Git::RevList.new(self, newrev: 'HEAD')
-        lfs_patterns = git_lfs_track_patterns(rev_list).uniq
+        lfs_patterns = git_lfs_track_patterns.uniq
 
         return [] if lfs_patterns.empty?
 
         Gitlab::Git::Blob.batch_lfs_pointers(self, git_rev_list_grep(lfs_patterns.join('|')))
       end
 
-      def git_lfs_track_patterns(rev_list)
+      def git_lfs_track_patterns
         git_rev_list_grep("\s(.*/)*.gitattributes$").map do |object_id|
           blob = Gitlab::Git::Blob.raw(self, object_id)
 
