@@ -1600,13 +1600,13 @@ module Gitlab
       end
 
       def all_lfs_pointers
-        # gitaly_migrate(:blob_get_all_lfs_pointers) do |is_enabled|
-        #   if is_enabled
-        #     gitaly_blob_client.get_all_lfs_pointers('HEAD')
-        #   else
+        gitaly_migrate(:blob_get_all_lfs_pointers) do |is_enabled|
+          if is_enabled
+            gitaly_blob_client.get_all_lfs_pointers('HEAD')
+          else
             git_all_lfs_pointers
-        #   end
-        # end
+          end
+        end
       end
 
       private
@@ -2561,7 +2561,7 @@ module Gitlab
       end
 
       def git_all_lfs_pointers
-        file = store_temporal_rev_list
+        file = store_temporary_rev_list
         lfs_patterns = git_lfs_track_patterns(file).uniq
 
         return [] if lfs_patterns.empty?
@@ -2572,7 +2572,7 @@ module Gitlab
         file.unlink
       end
 
-      def store_temporal_rev_list
+      def store_temporary_rev_list
         file = Tempfile.new
 
         Open3.pipeline_r(git_rev_list_all_objects_cmd, "grep -E '\s.+'") do |last_stdout, wait_threads|
@@ -2583,13 +2583,13 @@ module Gitlab
       end
 
       def git_lfs_track_patterns(file)
-        git_rev_list_file_grep(file, "\s(.*/)*\\.gitattributes$").map do |object_id, path|
+        git_rev_list_file_grep(file, "\s(.*/)*\\.gitattributes$").flat_map do |object_id, path|
           blob = Gitlab::Git::Blob.raw(self, object_id)
 
           next unless blob
 
           git_lfs_track_pattern(blob.data)
-        end.flatten.compact
+        end.compact
       end
 
       # Selecting lfs patterns from the lfs attributes
