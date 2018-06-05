@@ -1,0 +1,6 @@
+---
+title: Remove confusing statement in the message shown for Epics list empty state
+  when filters are applied
+merge_request: 5630
+author:
+type: other
