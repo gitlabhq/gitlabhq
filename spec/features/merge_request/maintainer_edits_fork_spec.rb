@@ -28,13 +28,11 @@ describe 'a maintainer edits files on a source-branch of an MR from a fork', :js
     wait_for_requests
   end
 
-  # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-  xit 'mentions commits will go to the source branch' do
+  it 'mentions commits will go to the source branch' do
     expect(page).to have_content('Your changes can be committed to fix because a merge request is open.')
   end
 
-  # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-  xit 'allows committing to the source branch' do
+  it 'allows committing to the source branch' do
     find('.ace_text-input', visible: false).send_keys('Updated the readme')
 
     click_button 'Commit changes'
