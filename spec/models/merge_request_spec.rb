@@ -16,7 +16,11 @@ describe MergeRequest do
 
   describe '#squash_in_progress?' do
     shared_examples 'checking whether a squash is in progress' do
-      let(:repo_path) { subject.source_project.repository.path }
+      let(:repo_path) do
+        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          subject.source_project.repository.path
+        end
+      end
       let(:squash_path) { File.join(repo_path, "gitlab-worktree", "squash-#{subject.id}") }
 
       before do
@@ -2197,7 +2201,11 @@ describe MergeRequest do
 
   describe '#rebase_in_progress?' do
     shared_examples 'checking whether a rebase is in progress' do
-      let(:repo_path) { subject.source_project.repository.path }
+      let(:repo_path) do
+        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          subject.source_project.repository.path
+        end
+      end
       let(:rebase_path) { File.join(repo_path, "gitlab-worktree", "rebase-#{subject.id}") }
 
       before do

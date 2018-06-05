@@ -22,12 +22,8 @@ module Gitlab
         "project.wiki.bundle"
       end
 
-      def path_to_repo
-        @wiki.repository.path_to_repo
-      end
-
       def wiki_repository_exists?
-        File.exist?(@wiki.repository.path_to_repo) && !@wiki.repository.empty?
+        @wiki.repository.exists? && !@wiki.repository.empty?
       end
     end
   end
