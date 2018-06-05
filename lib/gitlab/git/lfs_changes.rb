@@ -1,8 +1,6 @@
 module Gitlab
   module Git
     class LfsChanges
-      LFS_ATTRIBUTES_FILE = '.gitattributes'.freeze
-
       def initialize(repository, newrev)
         @repository = repository
         @newrev = newrev

@@ -38,8 +38,8 @@ module Gitlab
         get_objects(opts, &lazy_block)
       end
 
-      def all_objects(only_files: [], require_path: nil, &lazy_block)
-        get_objects(including: :all, only_files: only_files, require_path: require_path, &lazy_block)
+      def all_objects(require_path: nil, &lazy_block)
+        get_objects(including: :all, require_path: require_path, &lazy_block)
       end
 
       # This methods returns an array of missed references
@@ -55,8 +55,8 @@ module Gitlab
         repository.rev_list(args).split("\n")
       end
 
-      def get_objects(including: [], excluding: [], only_files: [], require_path: nil)
-        opts = { including: including, excluding: excluding, only_files: only_files, objects: true }
+      def get_objects(including: [], excluding: [], require_path: nil)
+        opts = { including: including, excluding: excluding, objects: true }
 
         repository.rev_list(opts) do |lazy_output|
           objects = objects_from_output(lazy_output, require_path: require_path)

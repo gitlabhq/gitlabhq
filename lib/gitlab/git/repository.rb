@@ -28,7 +28,7 @@ module Gitlab
       GITALY_INTERNAL_URL = 'ssh://gitaly/internal.git'.freeze
       GITLAB_PROJECTS_TIMEOUT = Gitlab.config.gitlab_shell.git_timeout
       EMPTY_REPOSITORY_CHECKSUM = '0000000000000000000000000000000000000000'.freeze
-      LFS_ATTRIBUTES_FILE = '.gitattributes'.freeze
+      MAX_SHA_SIZE = 40
 
       NoRepository = Class.new(StandardError)
       InvalidRepository = Class.new(StandardError)
@@ -1543,7 +1543,7 @@ module Gitlab
         end
       end
 
-      def rev_list(including: [], excluding: [], only_files: [], objects: false, &block)
+      def rev_list(including: [], excluding: [], objects: false, &block)
         args = ['rev-list']
 
         args.push(*rev_list_param(including))
@@ -1555,11 +1555,6 @@ module Gitlab
         end
 
         args.push('--objects') if objects
-
-        if only_files.any?
-          args.push('--')
-          args.push(*only_files)
-        end
 
         run_git!(args, lazy_block: block)
       end
@@ -1605,13 +1600,13 @@ module Gitlab
       end
 
       def all_lfs_pointers
-        gitaly_migrate(:blob_get_all_lfs_pointers) do |is_enabled|
-          if is_enabled
-            gitaly_blob_client.get_all_lfs_pointers('HEAD')
-          else
+        # gitaly_migrate(:blob_get_all_lfs_pointers) do |is_enabled|
+        #   if is_enabled
+        #     gitaly_blob_client.get_all_lfs_pointers('HEAD')
+        #   else
             git_all_lfs_pointers
-          end
-        end
+        #   end
+        # end
       end
 
       private
@@ -2544,30 +2539,43 @@ module Gitlab
         File.expand_path('../support/format-git-cat-file-input', __FILE__)
       end
 
+      def git_rev_list_all_objects_cmd
+        build_git_cmd('rev-list', '--objects', '--all')
+      end
+
+      def git_rev_list_grep(pattern_string)
+        result = []
+
+        Open3.pipeline_r(git_rev_list_all_objects_cmd, "grep -E '#{pattern_string}'") do |last_stdout, wait_threads|
+          last_stdout.each_line do |line|
+            result << line[0, MAX_SHA_SIZE]
+          end
+        end
+
+        result
+      end
+
       def git_all_lfs_pointers
         rev_list = Gitlab::Git::RevList.new(self, newrev: 'HEAD')
         lfs_patterns = git_lfs_track_patterns(rev_list).uniq
 
-        rev_list.all_objects(only_files: lfs_patterns, require_path: true) do |object_ids|
-          Gitlab::Git::Blob.batch_lfs_pointers(self, object_ids)
-        end
+        return [] if lfs_patterns.empty?
+
+        Gitlab::Git::Blob.batch_lfs_pointers(self, git_rev_list_grep(lfs_patterns.join('|')))
       end
 
       def git_lfs_track_patterns(rev_list)
-        rev_list.all_objects(only_files: [LFS_ATTRIBUTES_FILE], require_path: true) do |object_ids|
-          object_ids.map! do |object_id|
-            blob = Gitlab::Git::Blob.raw(self, object_id)
+        git_rev_list_grep("\s(.*/)*.gitattributes$").map do |object_id|
+          blob = Gitlab::Git::Blob.raw(self, object_id)
 
-            # Selecting lfs patterns from the lfs attributes
-            # AttributesParser adds a '/' at the beginning of every pattern
-            # and we have to remove it to make it work with git rev-list
-            AttributesParser.new(blob.data)
-                            .patterns
-                            .select { |_, v| v['filter'] == 'lfs' }
-                            .keys
-                            .map! { |pattern| pattern[1..-1] }
-          end.flatten!
-        end
+          next unless blob
+
+          # Selecting lfs patterns from the lfs attributes
+          AttributesParser.new(blob.data)
+                          .patterns
+                          .select { |_, v| v['filter'] == 'lfs' }
+                          .keys
+        end.flatten.compact
       end
     end
   end
