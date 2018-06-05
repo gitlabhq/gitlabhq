@@ -179,7 +179,7 @@ export default {
         return placeholderNote;
       }
 
-      if (this.discussion.for_commit || note.system) {
+      if (note.system) {
         return systemNote;
       }
 
