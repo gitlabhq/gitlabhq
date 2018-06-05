@@ -9,7 +9,7 @@ describe EE::Ci::Runner do
         .and_return(true)
 
       expect(Gitlab::Database::LoadBalancing::Sticking).to receive(:stick)
-        .with(:runner, runner.token)
+        .with(:runner, runner.id)
 
       expect(Gitlab::Workhorse).to receive(:set_key_and_notify)
 
