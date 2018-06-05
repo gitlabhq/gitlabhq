@@ -36,7 +36,7 @@ const createComponent = (customConfig = {}) => {
   });
 };
 
-fdescribe('ReadyToMerge', () => {
+describe('ReadyToMerge', () => {
   let vm;
 
   beforeEach(() => {
