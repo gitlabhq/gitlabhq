@@ -477,4 +477,28 @@ describe ApplicationController do
       end
     end
   end
+
+  describe '#access_denied' do
+    controller(described_class) do
+      def index
+        access_denied!(params[:message])
+      end
+    end
+
+    before do
+      sign_in user
+    end
+
+    it 'renders a 404 without a message' do
+      get :index
+
+      expect(response).to have_gitlab_http_status(404)
+    end
+
+    it 'renders a 403 when a message is passed to access denied' do
+      get :index, message: 'None shall pass'
+
+      expect(response).to have_gitlab_http_status(403)
+    end
+  end
 end
