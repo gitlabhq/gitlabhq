@@ -1,7 +1,7 @@
 - form = local_assigns.fetch(:form)
 
 .form-group
-  .form-check.builds-feature{ class: ("hidden" if @project && @project.project_feature.send(:builds_access_level) == 0) }
+  .form-check.builds-feature
     = form.check_box :only_allow_merge_if_pipeline_succeeds, class: 'form-check-input'
     = form.label :only_allow_merge_if_pipeline_succeeds, class: 'form-check-label' do
       %strong Only allow merge requests to be merged if the pipeline succeeds
