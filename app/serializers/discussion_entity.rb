@@ -36,11 +36,11 @@ class DiscussionEntity < Grape::Entity
 
   expose :diff_discussion?, as: :diff_discussion
 
-  expose :truncated_diff_lines_path, if: -> (d, _) { !d.expanded? } do |discussion|
+  expose :truncated_diff_lines_path, if: -> (d, _) { !d.expanded? && !d.resolved_now? } do |discussion|
     project_merge_request_discussion_path(discussion.project, discussion.noteable, discussion)
   end
 
-  expose :truncated_diff_lines, if: -> (d, _) { (defined? d.diff_file) && d.diff_file.text? && d.expanded? }
+  expose :truncated_diff_lines, if: -> (d, _) { (defined? d.diff_file) && d.diff_file.text? && (d.expanded? || d.resolved_now?) }
 
   expose :image_diff_html, if: -> (d, _) { (defined? d.diff_file) && !d.diff_file.text? } do |discussion|
     diff_file = discussion.diff_file

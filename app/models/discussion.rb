@@ -5,6 +5,7 @@ class Discussion
   include ResolvableDiscussion
 
   attr_reader :notes, :context_noteable
+  attr_accessor :resolved_now
 
   delegate  :created_at,
             :project,
@@ -101,6 +102,7 @@ class Discussion
   end
 
   alias_method :to_param, :id
+  alias_method :resolved_now?, :resolved_now
 
   def diff_discussion?
     false

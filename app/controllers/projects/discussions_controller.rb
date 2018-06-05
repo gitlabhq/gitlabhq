@@ -29,11 +29,7 @@ class Projects::DiscussionsController < Projects::ApplicationController
 
   def render_discussion
     if serialize_notes?
-      # TODO - It is not needed to serialize notes when resolving
-      # or unresolving discussions. We should remove this behavior
-      # passing a parameter to DiscussionEntity to return an empty array
-      # for notes.
-      # Check issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/42853
+      discussion.resolved_now = true
       prepare_notes_for_rendering(discussion.notes, merge_request)
       render_json_with_discussions_serializer
     else
