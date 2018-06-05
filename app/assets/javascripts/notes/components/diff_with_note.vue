@@ -110,8 +110,8 @@ export default {
           :key="line.lineCode"
           class="line_holder"
         >
-          <td class="diff-line-num old_line">{{line.old_line}}</td>
-          <td class="diff-line-num new_line">{{line.new_line}}</td>
+          <td class="diff-line-num old_line">{{ line.old_line }}</td>
+          <td class="diff-line-num new_line">{{ line.new_line }}</td>
           <td
             :class="line.type"
             class="line_content"
