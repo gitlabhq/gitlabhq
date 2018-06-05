@@ -1,5 +1,7 @@
 module ApplicationSettings
   class UpdateService < ApplicationSettings::BaseService
+    attr_reader :params, :application_setting
+
     def execute
       update_terms(@params.delete(:terms))
 

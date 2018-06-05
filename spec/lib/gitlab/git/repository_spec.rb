@@ -159,6 +159,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     let(:feature2) { 'feature2' }
 
     around do |example|
+      # discover_default_branch will be moved to gitaly-ruby
       Gitlab::GitalyClient::StorageSettings.allow_disk_access do
         example.run
       end
@@ -373,6 +374,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   context '#submodules' do
     around do |example|
+      # TODO #submodules will be removed, has been migrated to gitaly
       Gitlab::GitalyClient::StorageSettings.allow_disk_access do
         example.run
       end
@@ -1055,6 +1057,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe "#rugged_commits_between" do
     around do |example|
+      # TODO #rugged_commits_between will be removed, has been migrated to gitaly
       Gitlab::GitalyClient::StorageSettings.allow_disk_access do
         example.run
       end
@@ -1703,6 +1706,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     let(:refs) { ['deadbeef', SeedRepo::RubyBlob::ID, '909e6157199'] }
 
     around do |example|
+      # TODO #batch_existence isn't used anywhere, can we remove it?
       Gitlab::GitalyClient::StorageSettings.allow_disk_access do
         example.run
       end

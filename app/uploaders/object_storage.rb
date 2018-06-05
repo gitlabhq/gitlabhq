@@ -33,7 +33,7 @@ module ObjectStorage
 
         unless current_upload_satisfies?(paths, model)
           # the upload we already have isn't right, find the correct one
-          self.upload = uploads.find_by(model: model, path: paths)
+          self.upload = model&.retrieve_upload(identifier, paths)
         end
 
         super
@@ -46,7 +46,7 @@ module ObjectStorage
       end
 
       def upload=(upload)
-        return unless upload
+        return if upload.nil?
 
         self.object_store = upload.store
         super

@@ -64,7 +64,7 @@ describe Projects::TransferService do
     it 'updates project full path in .git/config' do
       transfer_project(project, user, group)
 
-      expect(project.repository.rugged.config['gitlab.fullpath']).to eq "#{group.full_path}/#{project.path}"
+      expect(rugged_config['gitlab.fullpath']).to eq "#{group.full_path}/#{project.path}"
     end
   end
 
@@ -84,7 +84,9 @@ describe Projects::TransferService do
     end
 
     def project_path(project)
-      project.repository.path_to_repo
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        project.repository.path_to_repo
+      end
     end
 
     def current_path
@@ -101,7 +103,7 @@ describe Projects::TransferService do
     it 'rolls back project full path in .git/config' do
       attempt_project_transfer
 
-      expect(project.repository.rugged.config['gitlab.fullpath']).to eq project.full_path
+      expect(rugged_config['gitlab.fullpath']).to eq project.full_path
     end
 
     it "doesn't send move notifications" do
@@ -262,6 +264,12 @@ describe Projects::TransferService do
         .and_call_original
 
       transfer_project(project, owner, group)
+    end
+  end
+
+  def rugged_config
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      project.repository.rugged.config
     end
   end
 end

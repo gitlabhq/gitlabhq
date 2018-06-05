@@ -24,6 +24,11 @@ html {
   font-size: 14px;
 }
 
+legend {
+  border-bottom: 1px solid $border-color;
+  margin-bottom: 20px;
+}
+
 button,
 html [type="button"],
 [type="reset"],
@@ -183,7 +188,9 @@ table {
 
 .nav-tabs {
   .nav-link {
-    border: 0;
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
   }
 
   .nav-item {
