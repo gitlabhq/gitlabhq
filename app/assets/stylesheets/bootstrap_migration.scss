@@ -39,6 +39,41 @@ html [type="button"],
   cursor: pointer;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: $gl-text-color;
+  font-weight: 600;
+}
+
+h1,
+.h1,
+h2,
+.h2,
+h3,
+.h3 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+h4,
+.h4,
+h5,
+.h5,
+h6,
+.h6 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+h5,
+.h5 {
+  font-size: $gl-font-size;
+}
+
 input[type="file"] {
   // Bootstrap 4 file input height is taller by default
   // which makes them look ugly
