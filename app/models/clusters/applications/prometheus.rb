@@ -21,6 +21,10 @@ module Clusters
         end
       end
 
+      def ready?
+        status_name == :installed
+      end
+
       def chart
         'stable/prometheus'
       end
