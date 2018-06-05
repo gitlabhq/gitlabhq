@@ -45,7 +45,7 @@ module Gitlab
           connection = ::Geo::BaseRegistry.connection
           schema_migrations_table_name = ActiveRecord::Base.schema_migrations_table_name
 
-          if connection.table_exists?(schema_migrations_table_name)
+          if connection.data_source_exists?(schema_migrations_table_name)
             connection.execute("SELECT MAX(version) AS version FROM #{schema_migrations_table_name}")
                       .first
                       .fetch('version')
