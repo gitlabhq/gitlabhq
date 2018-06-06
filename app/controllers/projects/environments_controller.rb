@@ -9,6 +9,8 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :verify_api_request!, only: :terminal_websocket_authorize
   before_action :expire_etag_cache, only: [:index]
 
+  prepend ::EE::Projects::EnvironmentsController
+
   def index
     @environments = project.environments
       .with_state(params[:scope] || :available)

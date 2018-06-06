@@ -1,0 +1,18 @@
+.js-kubernetes-logs{ data: { logs_path: logs_project_environment_path(@project, @environment, format: :json) } }
+  .build-page
+    .build-trace-container.prepend-top-default
+      .top-bar.js-top-bar
+        .truncated-info.hidden-xs.pull-left.js-pod-name
+
+        .controllers.pull-right
+          .has-tooltip.controllers-buttons{ title: _('Scroll to top'), data: { placement: 'top', container: 'body'} }
+            %button.js-scroll-up.btn-scroll.btn-transparent.btn-blank{ type: 'button', disabled: true }
+              = custom_icon('scroll_up')
+          .has-tooltip.controllers-buttons{ title: _('Scroll to bottom'), data: { placement: 'top', container: 'body'} }
+            %button.js-scroll-down.btn-scroll.btn-transparent.btn-blank{ type: 'button', disabled: true }
+              = custom_icon('scroll_down')
+          .has-tooltip.controllers-buttons{ title: _('Refresh'), data: { placement: 'top', container: 'body'} }
+            %button.js-refresh-log.btn-default.btn-refresh{ type: 'button', disabled: true }
+              = sprite_icon('retry')
+
+      = render 'shared/builds/build_output'

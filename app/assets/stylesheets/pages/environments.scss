@@ -232,6 +232,13 @@
   &-running {
     background-color: $green-100;
     border-color: $green-400;
+
+    // EE-specific start
+    &:hover {
+      background-color: $green-300;
+      border-color: $green-500;
+    }
+    // EE-specific end
   }
 
   &-succeeded {

@@ -71,6 +71,7 @@ class License < ActiveRecord::Base
     epics
     ide
     chatops
+    pod_logs
   ].freeze
 
   # List all features available for early adopters,
