@@ -13,7 +13,3 @@
     = link_to s_('ClusterIntegration|Create on Google Kubernetes Engine'), gcp_new_namespace_project_clusters_path(@project.namespace, @project), class: 'btn append-bottom-20'
     %p= s_('ClusterIntegration|Enter the details for an existing Kubernetes cluster')
     = link_to s_('ClusterIntegration|Add an existing Kubernetes cluster'), user_new_namespace_project_clusters_path(@project.namespace, @project), class: 'btn append-bottom-20'
-
-    %p
-      - docs_link = link_to s_('If you are setting up multiple clusters and are using Auto DevOps,|read this first'), help_page_path('topics/autodevops/index.md', anchor: 'using-multiple-kubernetes-clusters'), target: '_blank'
-      = s_('ClusterIntegration|If you are setting up multiple clusters and are using Auto DevOps, %{docs_link}.').html_safe % { docs_link: docs_link }
