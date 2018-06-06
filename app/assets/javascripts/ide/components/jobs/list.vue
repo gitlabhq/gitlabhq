@@ -19,7 +19,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('pipelines', ['fetchJobs', 'toggleStageCollapsed']),
+    ...mapActions('pipelines', ['fetchJobs', 'toggleStageCollapsed', 'setDetailJob']),
   },
 };
 </script>
@@ -38,6 +38,7 @@ export default {
         :stage="stage"
         @fetch="fetchJobs"
         @toggleCollapsed="toggleStageCollapsed"
+        @clickViewLog="setDetailJob"
       />
     </template>
   </div>
