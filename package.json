@@ -94,9 +94,9 @@
     "vue-template-compiler": "^2.5.16",
     "vue-virtual-scroll-list": "^1.2.5",
     "vuex": "^3.0.1",
-    "webpack": "^4.7.0",
+    "webpack": "^4.11.1",
     "webpack-bundle-analyzer": "^2.11.1",
-    "webpack-cli": "^2.1.2",
+    "webpack-cli": "^3.0.2",
     "webpack-stats-plugin": "^0.2.1",
     "worker-loader": "^2.0.0"
   },
