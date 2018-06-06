@@ -46,6 +46,10 @@ class Feature
       get(key).enabled?(thing)
     end
 
+    def disabled?(key, thing = nil)
+      !enabled?(key, thing)
+    end
+
     def enable(key, thing = true)
       get(key).enable(thing)
     end
