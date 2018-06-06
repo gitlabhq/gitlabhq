@@ -15,6 +15,10 @@ module Gitlab
         LfsObject.with_files_stored_locally
       end
 
+      def local?(lfs_object)
+        lfs_object.local_store?
+      end
+
       def expected_checksum(lfs_object)
         lfs_object.oid
       end

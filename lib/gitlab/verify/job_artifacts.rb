@@ -15,6 +15,10 @@ module Gitlab
         ::Ci::JobArtifact.all
       end
 
+      def local?(artifact)
+        artifact.local_store?
+      end
+
       def expected_checksum(artifact)
         artifact.file_sha256
       end

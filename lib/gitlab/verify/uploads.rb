@@ -12,7 +12,11 @@ module Gitlab
       private
 
       def relation
-        Upload.with_files_stored_locally
+        Upload.all
+      end
+
+      def local?(upload)
+        upload.local?
       end
 
       def expected_checksum(upload)

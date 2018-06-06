@@ -34,19 +34,37 @@ module Gitlab
       end
 
       def verify(object)
-        expected = expected_checksum(object)
-        actual = actual_checksum(object)
-
-        raise 'Checksum missing' unless expected.present?
-        raise 'Checksum mismatch' unless expected == actual
+        if local?(object)
+          verify_local(object)
+        else
+          verify_remote(object)
+        end
 
         nil
       rescue => err
         [object, err]
       end
 
+      def verify_local(object)
+        expected = expected_checksum(object)
+        actual = actual_checksum(object)
+
+        raise 'Checksum missing' unless expected.present?
+        raise 'Checksum mismatch' unless expected == actual
+      end
+
+      # We don't calculate checksum for remote objects, so just check existence
+      def verify_remote(object)
+        raise 'Remote object does not exist' unless object.build_uploader.exists?
+      end
+
       # This should return an ActiveRecord::Relation suitable for calling #in_batches on
       def relation
+        raise NotImplementedError.new
+      end
+
+      # Should return true if the object is stored locally
+      def local?(_object)
         raise NotImplementedError.new
       end
 

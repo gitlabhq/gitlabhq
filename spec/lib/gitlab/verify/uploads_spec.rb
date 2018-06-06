@@ -44,16 +44,20 @@ describe Gitlab::Verify::Uploads do
     context 'with remote files' do
       before do
         stub_uploads_object_storage(AvatarUploader)
+        upload.update!(store: ObjectStorage::Store::REMOTE)
       end
 
-      it 'skips uploads in object storage' do
-        local_failure = create(:upload)
-        create(:upload, :object_storage)
+      it 'passes uploads in object storage that exist' do
+        expect_any_instance_of(AvatarUploader).to receive(:exists?).and_return(true)
 
-        failures = {}
-        described_class.new(batch_size: 10).run_batches { |_, failed| failures.merge!(failed) }
+        expect(failures).to eq({})
+      end
 
-        expect(failures.keys).to contain_exactly(local_failure)
+      it 'fails uploads in object storage that do not exist' do
+        expect_any_instance_of(AvatarUploader).to receive(:exists?).and_return(false)
+
+        expect(failures.keys).to contain_exactly(upload)
+        expect(failure.to_s).to include('Remote object does not exist')
       end
     end
   end
