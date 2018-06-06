@@ -39,4 +39,3 @@ class Projects::Clusters::UserController < Projects::ApplicationController
       )
   end
 end
-
