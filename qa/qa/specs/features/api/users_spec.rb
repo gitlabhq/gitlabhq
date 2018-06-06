@@ -31,7 +31,7 @@ module QA
     end
 
     scenario 'submit request with an invalid token' do
-      request = Runtime::API::Request.new(@api_client, '/users', personal_access_token: 'invalid')
+      request = Runtime::API::Request.new(@api_client, '/users', private_token: 'invalid')
 
       get request.url
 

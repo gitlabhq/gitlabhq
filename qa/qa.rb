@@ -12,7 +12,11 @@ module QA
     autoload :Browser, 'qa/runtime/browser'
     autoload :Env, 'qa/runtime/env'
     autoload :Address, 'qa/runtime/address'
-    autoload :API, 'qa/runtime/api'
+
+    module API
+      autoload :Client, 'qa/runtime/api/client'
+      autoload :Request, 'qa/runtime/api/request'
+    end
 
     module Key
       autoload :Base, 'qa/runtime/key/base'
