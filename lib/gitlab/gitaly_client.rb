@@ -253,6 +253,10 @@ module Gitlab
       else
         false
       end
+    rescue => ex
+      # During application startup feature lookups in SQL can fail
+      Rails.logger.warn "exception while checking Gitaly feature status for #{feature_name}: #{ex}"
+      false
     end
 
     # opt_into_all_features? returns true when the current environment
