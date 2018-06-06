@@ -32,7 +32,7 @@ describe SearchController do
     it 'still blocks searches without a project_id' do
       get :show, search: 'hello'
 
-      expect(response).to have_gitlab_http_status(404)
+      expect(response).to have_gitlab_http_status(403)
     end
 
     it 'allows searches with a project_id' do

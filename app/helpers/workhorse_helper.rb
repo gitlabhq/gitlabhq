@@ -6,7 +6,7 @@ module WorkhorseHelper
     headers.store(*Gitlab::Workhorse.send_git_blob(repository, blob))
     headers['Content-Disposition'] = 'inline'
     headers['Content-Type'] = safe_content_type(blob)
-    head :ok # 'render nothing: true' messes up the Content-Type
+    render plain: ""
   end
 
   # Send a Git diff through Workhorse

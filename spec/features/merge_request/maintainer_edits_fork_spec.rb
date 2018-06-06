@@ -14,7 +14,7 @@ describe 'a maintainer edits files on a source-branch of an MR from a fork', :js
            source_branch: 'fix',
            target_branch: 'master',
            author: author,
-           allow_maintainer_to_push: true)
+           allow_collaboration: true)
   end
 
   before do

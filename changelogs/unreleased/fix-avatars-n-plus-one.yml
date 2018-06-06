@@ -1,0 +1,5 @@
+---
+title: Fix an N+1 when loading user avatars
+merge_request:
+author:
+type: performance
