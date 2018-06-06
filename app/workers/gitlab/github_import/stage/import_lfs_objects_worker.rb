@@ -3,22 +3,27 @@
 module Gitlab
   module GithubImport
     module Stage
-      class ImportNotesWorker
+      class ImportLfsObjectsWorker
         include ApplicationWorker
         include GithubImport::Queue
         include StageMethods
 
-        # client - An instance of Gitlab::GithubImport::Client.
+        def perform(project_id)
+          return unless (project = find_project(project_id))
+
+          import(project)
+        end
+
         # project - An instance of Project.
-        def import(client, project)
-          waiter = Importer::NotesImporter
-            .new(project, client)
+        def import(project)
+          waiter = Importer::LfsObjectsImporter
+            .new(project, nil)
             .execute
 
           AdvanceStageWorker.perform_async(
             project.id,
             { waiter.key => waiter.jobs_remaining },
-            :lfs_objects
+            :finish
           )
         end
       end
