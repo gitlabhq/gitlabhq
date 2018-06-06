@@ -1,6 +1,7 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import _ from 'underscore';
+import { __ } from '../../../locale';
 import tooltip from '../../../vue_shared/directives/tooltip';
 import Icon from '../../../vue_shared/components/icon.vue';
 import ScrollButton from './detail/scroll_button.vue';
@@ -32,6 +33,9 @@ export default {
     },
     isScrolledToTop() {
       return this.scrollPos === scrollPositions.top;
+    },
+    jobOutput() {
+      return this.detailJob.output || __('No messages were logged');
     },
   },
   mounted() {
@@ -119,7 +123,7 @@ export default {
     >
       <code
         class="bash"
-        v-html="detailJob.output"
+        v-html="jobOutput"
       >
       </code>
       <div

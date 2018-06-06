@@ -47,6 +47,16 @@ describe('IDE jobs detail view', () => {
     expect(vm.$el.querySelector('.bash').textContent).toContain('testing');
   });
 
+  it('renders empty message output', done => {
+    vm.$store.state.pipelines.detailJob.output = '';
+
+    vm.$nextTick(() => {
+      expect(vm.$el.querySelector('.bash').textContent).toContain('No messages were logged');
+
+      done();
+    });
+  });
+
   it('renders loading icon', () => {
     expect(vm.$el.querySelector('.build-loader-animation')).not.toBe(null);
     expect(vm.$el.querySelector('.build-loader-animation').style.display).toBe('');

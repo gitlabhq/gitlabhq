@@ -1207,7 +1207,7 @@
     margin-left: -$gl-padding;
   }
 
-  .top-bar {
+  &.build-page .top-bar {
     top: 0;
     font-size: 12px;
     border-top-right-radius: $border-radius-default;
