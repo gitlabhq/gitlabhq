@@ -143,6 +143,24 @@ docker login registry.example.com -u <your_username> -p <your_access_token>
    for errors (e.g. `/var/log/gitlab/gitlab-rails/production.log`). You may be able to find clues
    there.
 
+#### Enable the registry debug server
+
+The optional debug server can be enabled by setting the registry debug address
+in your `gitlab.rb` configuration.
+
+```
+registry['debug_addr'] = "localhost:5001"
+```
+
+After adding the setting, [reconfigure] GitLab to apply the change.
+
+Use curl to request debug output from the debug server:
+
+```bash
+curl localhost:5001/debug/health
+curl localhost:5001/debug/vars
+```
+
 ### Advanced Troubleshooting
 
 >**NOTE:** The following section is only recommended for experts.
@@ -268,24 +286,6 @@ What does this mean? This strongly suggests that the S3 user does not have the r
 [permissions to perform a HEAD request](http://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectHEAD.html).
 The solution: check the [IAM permissions again](https://docs.docker.com/registry/storage-drivers/s3/).
 Once the right permissions were set, the error will go away.
-
-#### Enable the registry debug server
-
-The optional debug server can be enabled by setting the registry debug address
-in your `gitlab.rb` configuration.
-
-```
-registry['debug_addr'] = "localhost:5001"
-```
-
-After adding the setting, [reconfigure] GitLab to apply the change.
-
-Use curl to request debug output from the debug server:
-
-```bash
-curl localhost:5001/debug/health
-curl localhost:5001/debug/vars
-```
 
 [ce-4040]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4040
 [ce-11845]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11845
