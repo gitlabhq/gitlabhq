@@ -65,10 +65,10 @@ class FileUploader < GitlabUploader
     SecureRandom.hex
   end
 
-  def upload_paths(filename)
+  def upload_paths(identifier)
     [
-      File.join(secret, filename),
-      File.join(base_dir(Store::REMOTE), secret, filename)
+      File.join(secret, identifier),
+      File.join(base_dir(Store::REMOTE), secret, identifier)
     ]
   end
 

@@ -29,7 +29,7 @@ module ObjectStorage
       end
 
       def retrieve_from_store!(identifier)
-        paths = store_dirs.map { |store, path| File.join(path, identifier) }
+        paths = upload_paths(identifier)
 
         unless current_upload_satisfies?(paths, model)
           # the upload we already have isn't right, find the correct one
@@ -261,7 +261,7 @@ module ObjectStorage
     end
 
     def delete_migrated_file(migrated_file)
-      migrated_file.delete if exists?
+      migrated_file.delete
     end
 
     def exists?
@@ -277,6 +277,13 @@ module ObjectStorage
         Store::LOCAL => File.join(base_dir, dynamic_segment),
         Store::REMOTE => File.join(dynamic_segment)
       }
+    end
+
+    # Returns all the possible paths for an upload.
+    # the `upload.path` is a lookup parameter, and it may change
+    # depending on the `store` param.
+    def upload_paths(identifier)
+      store_dirs.map { |store, path| File.join(path, identifier) }
     end
 
     def cache!(new_file = sanitized_file)
