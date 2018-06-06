@@ -51,7 +51,7 @@
               %li.diffs-tab
                 = tab_link_for @merge_request, :diffs do
                   Changes
-                  %span.badge= @merge_request.diff_size
+                  %span.badge.badge-pill= @merge_request.diff_size
         #js-vue-discussion-counter
 
     .tab-content#diff-notes-app
