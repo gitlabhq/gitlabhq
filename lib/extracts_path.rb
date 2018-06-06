@@ -138,8 +138,7 @@ module ExtractsPath
   end
 
   def lfs_blob_ids
-    blob_ids = tree.blobs.map(&:id)
-    @lfs_blob_ids = Gitlab::Git::Blob.batch_lfs_pointers(@project.repository, blob_ids).map(&:id) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    @lfs_blob_ids = Gitlab::Git::Blob.lfs_pointers_from_tree(@project.repository, tree).map(&:id) # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 
   private

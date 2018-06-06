@@ -5,24 +5,17 @@ describe Gitlab::Checks::LfsIntegrity do
 
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
-  let(:newrev) do
-    operations = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      BareRepoOperations.new(repository.path)
-    end
+  let(:oldrev) { Gitlab::Git::EMPTY_TREE_ID }
+  let(:newrev) { TestEnv::BRANCH_SHA['lfs'] }
 
-    # Create a commit not pointed at by any ref to emulate being in the
-    # pre-receive hook so that `--not --all` returns some objects
-    operations.commit_tree('8856a329dd38ca86dfb9ce5aa58a16d88cc119bd', "New LFS objects")
-  end
-
-  subject { described_class.new(project, newrev) }
+  subject { described_class.new(project, oldrev, newrev) }
 
   describe '#objects_missing?' do
     let(:blob_object) { repository.blob_at_branch('lfs', 'files/lfs/lfs_object.iso') }
 
     context 'with LFS not enabled' do
       it 'skips integrity check' do
-        expect_any_instance_of(Gitlab::Git::LfsChanges).not_to receive(:new_pointers)
+        expect(Gitlab::Git::Blob).not_to receive(:lfs_pointers_between)
 
         subject.objects_missing?
       end
@@ -37,7 +30,7 @@ describe Gitlab::Checks::LfsIntegrity do
         let(:newrev) { nil }
 
         it 'skips integrity check' do
-          expect_any_instance_of(Gitlab::Git::LfsChanges).not_to receive(:new_pointers)
+          expect(Gitlab::Git::Blob).not_to receive(:lfs_pointers_between)
 
           expect(subject.objects_missing?).to be_falsey
         end

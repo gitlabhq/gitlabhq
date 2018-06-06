@@ -1,17 +1,16 @@
 module Gitlab
   module Checks
     class LfsIntegrity
-      REV_LIST_OBJECT_LIMIT = 2_000
-
-      def initialize(project, newrev)
+      def initialize(project, oldrev, newrev)
         @project = project
+        @oldrev = oldrev
         @newrev = newrev
       end
 
       def objects_missing?
         return false unless @newrev && @project.lfs_enabled?
 
-        new_lfs_pointers = Gitlab::Git::LfsChanges.new(@project.repository, @newrev).new_pointers(object_limit: REV_LIST_OBJECT_LIMIT)
+        new_lfs_pointers = Gitlab::Git::Blob.lfs_pointers_between(@project.repository, @oldrev, @newrev)
 
         return false unless new_lfs_pointers.present?
 

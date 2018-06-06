@@ -85,6 +85,31 @@ module Gitlab
           end
         end
 
+        # Find LFS blobs old_rev and new_rev
+        # old_rev and new_rev are commit ID's
+        # Returns array of Gitlab::Git::Blob
+        # Does not guarantee blob data will be set
+        def lfs_pointers_between(repository, old_rev, new_rev)
+          revs_with_paths = repository.raw_changes_between(old_rev, new_rev)
+            .reject { |c| c.deleted? }
+            .select { |c| size_could_be_lfs?(c.blob_size) }
+            .map!   { |c| [new_rev, c.new_path] }
+
+          return [] if revs_with_paths.blank?
+
+          batch(repository, revs_with_paths, blob_size_limit: LFS_POINTER_MAX_SIZE)
+            .select(&:lfs_pointer?)
+        end
+
+        def lfs_pointers_from_tree(repository, tree)
+          revs_with_paths = tree.blobs.map! { |blob| [tree.sha, blob.path] }
+
+          return [] if revs_with_paths.blank?
+
+          batch(repository, revs_with_paths, blob_size_limit: LFS_POINTER_MAX_SIZE)
+            .select { |blob| size_could_be_lfs?(blob.size) && blob.lfs_pointer? }
+        end
+
         def binary?(data)
           EncodingHelper.detect_libgit2_binary?(data)
         end

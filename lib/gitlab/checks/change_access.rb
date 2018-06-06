@@ -169,7 +169,7 @@ module Gitlab
       end
 
       def lfs_objects_exist_check
-        lfs_check = Checks::LfsIntegrity.new(project, newrev)
+        lfs_check = Checks::LfsIntegrity.new(project, oldrev, newrev)
 
         if lfs_check.objects_missing?
           raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:lfs_objects_missing]

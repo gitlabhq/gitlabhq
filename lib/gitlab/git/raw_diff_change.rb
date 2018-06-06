@@ -17,6 +17,10 @@ module Gitlab
         end
       end
 
+      def deleted?
+        operation == :deleted
+      end
+
       private
 
       # Input data has the following format:

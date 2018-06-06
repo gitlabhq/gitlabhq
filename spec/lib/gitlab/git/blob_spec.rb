@@ -277,6 +277,67 @@ describe Gitlab::Git::Blob, seed_helper: true do
     end
   end
 
+  describe '.lfs_pointers_between' do
+    let(:repository) { create(:project, :repository).repository }
+    let(:old_rev) { Gitlab::Git::EMPTY_TREE_ID }
+    let(:lfs_rev) { TestEnv::BRANCH_SHA['lfs'] }
+    let(:non_lfs_rev) { TestEnv::BRANCH_SHA['feature'] }
+
+    context 'with LFS objects' do
+      it 'returns a list of Gitlab::Git::Blob' do
+        blobs = described_class.lfs_pointers_between(repository, old_rev, lfs_rev)
+
+        expect(blobs.count).to eq(1)
+        expect(blobs).to all( be_a(Gitlab::Git::Blob) )
+        expect(blobs).to be_an(Array)
+      end
+
+      context 'when changes consist of a single LFS pointer' do
+        let(:parent_commit) { '5f923865dde3436854e9ceb9cdb7815618d4e849' }
+        let(:commit_with_lfs_pointer) { '048721d90c449b244b7b4c53a9186b04330174ec' }
+
+        it 'returns the single LFS pointer found' do
+          blobs = described_class.lfs_pointers_between(repository, parent_commit, commit_with_lfs_pointer)
+
+          expect(blobs.count).to eq(1)
+          expect(blobs).to all( be_a(Gitlab::Git::Blob) )
+        end
+      end
+    end
+
+    context 'without LFS objects' do
+      it 'returns an empty Array' do
+        blobs = described_class.lfs_pointers_between(repository, old_rev, non_lfs_rev)
+
+        expect(blobs).to eq([])
+      end
+    end
+  end
+
+  describe '.lfs_pointers_from_tree' do
+    let(:repository) { create(:project, :repository).repository }
+    let(:tree_with_lfs_objects) { repository.tree('lfs', 'files/lfs') }
+    let(:tree_without_lfs_objects) { repository.tree('feature', '/') }
+
+    context 'with a tree with LFS objects' do
+      it 'returns a list of Gitlab::Git::Blob' do
+        blobs = described_class.lfs_pointers_from_tree(repository, tree_with_lfs_objects)
+
+        expect(blobs.count).to eq(1)
+        expect(blobs).to all( be_a(Gitlab::Git::Blob) )
+        expect(blobs).to be_an(Array)
+      end
+    end
+
+    context 'with a tree without LFS objects' do
+      it 'returns an empty Array' do
+        blobs = described_class.lfs_pointers_from_tree(repository, tree_without_lfs_objects)
+
+        expect(blobs).to eq([])
+      end
+    end
+  end
+
   describe '.batch_lfs_pointers' do
     let(:tree_object) { repository.rugged.rev_parse('master^{tree}') }
 
