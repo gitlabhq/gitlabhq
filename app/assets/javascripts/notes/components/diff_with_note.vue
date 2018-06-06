@@ -2,7 +2,6 @@
 import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
 import { mapState } from 'vuex';
-import syntaxHighlight from '~/syntax_highlight';
 import imageDiffHelper from '~/image_diff/helpers/index';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
@@ -53,6 +52,9 @@ export default {
     currentUser() {
       return this.noteableData.current_user;
     },
+    userColorScheme() {
+      return window.gon.user_color_scheme;
+    },
   },
   mounted() {
     if (this.isImageDiff) {
@@ -61,8 +63,6 @@ export default {
       imageDiffHelper.initImageDiff(this.$refs.fileHolder, canCreateNote, renderCommentBadge);
     } else if (!this.hasTruncatedDiffLines) {
       this.fetchDiff();
-    } else {
-      this.highlight();
     }
   },
   methods: {
@@ -80,12 +80,6 @@ export default {
         .catch(() => {
           this.error = true;
         });
-    },
-    highlight() {
-      const fileHolder = $(this.$refs.fileHolder);
-      this.$nextTick(() => {
-        syntaxHighlight(fileHolder);
-      });
     },
   },
 };
@@ -105,7 +99,8 @@ export default {
     />
     <div
       v-if="diffFile.text"
-      class="diff-content code js-syntax-highlight"
+      :class="userColorScheme"
+      class="diff-content code"
     >
       <table>
         <tr
