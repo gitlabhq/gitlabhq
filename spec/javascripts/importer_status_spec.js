@@ -45,7 +45,7 @@ describe('Importer Status', () => {
         currentTarget: document.querySelector('.js-add-to-import'),
       })
       .then(() => {
-        expect(document.querySelector('tr').classList.contains('active')).toEqual(true);
+        expect(document.querySelector('tr').classList.contains('table-active')).toEqual(true);
         done();
       })
       .catch(done.fail);
