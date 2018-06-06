@@ -21,6 +21,9 @@ export default {
     createdMergeRequestLength() {
       return this.createdData.mergeRequests.length;
     },
+    assignedMergeRequestLength() {
+      return this.assignedData.mergeRequests.length;
+    },
   },
 };
 </script>
@@ -47,7 +50,7 @@ export default {
         <template slot="title">
           {{ __('Assigned to me') }}
           <span class="badge badge-pill">
-            {{ assignedData.mergeRequests.length }}
+            {{ assignedMergeRequestLength }}
           </span>
         </template>
         <list

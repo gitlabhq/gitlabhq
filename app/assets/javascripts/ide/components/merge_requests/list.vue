@@ -53,7 +53,6 @@ export default {
   },
   methods: {
     ...mapActions('mergeRequests', ['fetchMergeRequests', 'openMergeRequest']),
-    ...mapActions(['closeAllFiles']),
     loadMergeRequests() {
       this.fetchMergeRequests({ type: this.type, search: this.search });
     },
