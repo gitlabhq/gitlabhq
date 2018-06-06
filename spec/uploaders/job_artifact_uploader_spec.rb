@@ -86,7 +86,9 @@ describe JobArtifactUploader do
     context 'when a job artifact is stored in legacy_path' do
       let(:job_artifact) { create(:ci_job_artifact, :legacy_archive) }
 
-      it { expect(model.file.path).to include(File.join(model.created_at.utc.strftime('%Y_%m'), model.project_id.to_s, model.job_id.to_s)) }
+      it 'store_path returns hashed path' do
+        expect(model.file.store_path).to include(File.join(model.created_at.utc.strftime('%Y_%m'), model.project_id.to_s, model.job_id.to_s))
+      end
 
       it 'can open the file' do
         expect(::File.read(model.file.path)).to eq(uploaded_content)
@@ -98,7 +100,9 @@ describe JobArtifactUploader do
       let(:disk_hash) { Digest::SHA2.hexdigest(model.project_id.to_s) }
       let(:creation_date) { model.created_at.utc.strftime('%Y_%m_%d') }
 
-      it { expect(model.file.path).to include(File.join(disk_hash[0..1], disk_hash[2..3], disk_hash, creation_date, model.job_id.to_s, model.id.to_s)) }
+      it 'store_path returns legacy path' do
+        expect(model.file.store_path).to include(File.join(disk_hash[0..1], disk_hash[2..3], disk_hash, creation_date, model.job_id.to_s, model.id.to_s))
+      end
 
       it 'can open the file' do
         expect(::File.read(model.file.path)).to eq(uploaded_content)
