@@ -19,7 +19,11 @@ module Gitlab
           #
           diff_files = super
 
-          diff_files.each { |diff_file| cache_highlight!(diff_file) }
+          diff_files.each do |diff_file|
+            cache_highlight!(diff_file)
+            cache_blobs!(diff_file)
+          end
+
           store_highlight_cache
 
           diff_files
@@ -35,8 +39,8 @@ module Gitlab
 
         def clear_blob_details_cache!
           diff_files.each do |file|
-            file.old_blob&.clear_cache
-            file.new_blob&.clear_cache
+            file.new_blob_service.clear_cache
+            file.old_blob_service.clear_cache
           end
         end
 
@@ -45,6 +49,11 @@ module Gitlab
         end
 
         private
+
+        def cache_blobs!(diff_file)
+          diff_file.new_blob_service.write_cache_if_empty
+          diff_file.old_blob_service.write_cache_if_empty
+        end
 
         def highlight_diff_file_from_cache!(diff_file, cache_diff_lines)
           diff_file.highlighted_diff_lines = cache_diff_lines.map do |line|
@@ -66,7 +75,11 @@ module Gitlab
           if highlight_cache[item_key]
             highlight_diff_file_from_cache!(diff_file, highlight_cache[item_key])
           else
-            highlight_cache[item_key] = diff_file.highlighted_diff_lines.map(&:to_hash) if cacheable?(diff_file)
+            if cacheable?(diff_file)
+              highlight_cache[item_key] = diff_file.highlighted_diff_lines.map(&:to_hash)
+            else
+              binding.pry
+            end
           end
         end
 

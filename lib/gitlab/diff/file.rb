@@ -103,22 +103,24 @@ module Gitlab
         @old_content_sha = refs&.base_sha
       end
 
-      def new_blob
-        return unless new_content_sha
-
+      def new_blob_service
         BlobsService.new(repository.project,
                          new_content_sha,
-                         file_path,
-                         highlighted: highlighted?)
+                         file_path)
+      end
+
+      def old_blob_service
+        BlobsService.new(repository.project,
+                         old_content_sha,
+                         file_path)
+      end
+
+      def new_blob
+        new_blob_service.blob(highlighted: highlighted?)
       end
 
       def old_blob
-        return unless old_content_sha
-
-        BlobsService.new(repository.project,
-                         old_content_sha,
-                         file_path,
-                         highlighted: highlighted?)
+        old_blob_service.blob(highlighted: highlighted?)
       end
 
       def content_sha

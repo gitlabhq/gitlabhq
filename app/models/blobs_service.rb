@@ -2,70 +2,33 @@
 # It acts as a thin layer which caches lightweight information
 # based on the blob content (which is not cached).
 class BlobsService
-  def initialize(project, content_sha, path, highlighted:)
+  def initialize(project, content_sha, path)
     @project = project
     @content_sha = content_sha
     @path = path
-    @highlighted = highlighted
   end
 
-  def id
-    blob.id
-  end
+  def write_cache_if_empty
+    return unless content_sha
+    return if cache_exists?
 
-  def raw_size
-    blob.raw_size
-  end
+    blob_cache = { id: uncached_blob.id,
+                   raw_size: uncached_blob.raw_size,
+                   size: uncached_blob.size,
+                   readable_text: uncached_blob.readable_text?,
+                   name: uncached_blob.name,
+                   binary: uncached_blob.binary?,
+                   path: uncached_blob.path,
+                   external_storage_error: uncached_blob.external_storage_error?,
+                   stored_externally: uncached_blob.stored_externally?,
+                   total_lines: uncached_blob.total_lines }
 
-  def size
-    blob.size
-  end
-
-  def readable_text?
-    blob.readable_text?
-  end
-
-  def name
-    blob.name
-  end
-
-  def total_lines
-    blob.total_lines
-  end
-
-  def binary?
-    blob.binary?
-  end
-
-  def path
-    blob.path
-  end
-
-  def external_storage_error?
-    blob.external_storage_error?
-  end
-
-  def stored_externally?
-    blob.stored_externally?
-  end
-
-  def raw_binary?
-    blob.raw_binary?
-  end
-
-  def load_all_data!
-    blob.load_all_data!
-  end
-
-  def data
-    blob.data
+    cache.write(cache_key, blob_cache, expires_in: 1.week)
   end
 
   def clear_cache
     cache.delete(cache_key)
   end
-
-  private
 
   # We need blobs data (content) in order to highlight diffs (see
   # Gitlab::Diff:Highlight), and we don't cache this (Blob#data) on Redis,
@@ -73,15 +36,21 @@ class BlobsService
   #
   # Therefore, in this scenario (no highlight yet) we use the uncached blob
   # version.
-  def blob
-    if @highlighted && cache_exists?
+  def blob(highlighted:)
+    return unless content_sha
+    return uncached_blob unless highlighted
+
+    if cache_exists?
       # TODO: This can be a CachedBlob
       Hashie::Mash.new(read_cache)
     else
-      write_cache
       uncached_blob
     end
   end
+
+  private
+
+  attr_reader :content_sha
 
   def uncached_blob
     @uncached_blob ||= Blob.lazy(@project, @content_sha, @path)&.itself
@@ -97,21 +66,6 @@ class BlobsService
 
   def cache_exists?
     cache.exist?(cache_key)
-  end
-
-  def write_cache
-    blob_cache = { id: uncached_blob.id,
-                   raw_size: uncached_blob.raw_size,
-                   size: uncached_blob.size,
-                   readable_text: uncached_blob.readable_text?,
-                   name: uncached_blob.name,
-                   binary: uncached_blob.binary?,
-                   path: uncached_blob.path,
-                   external_storage_error: uncached_blob.external_storage_error?,
-                   stored_externally: uncached_blob.stored_externally?,
-                   total_lines: uncached_blob.total_lines }
-
-    cache.write(cache_key, blob_cache, expires_in: 1.week)
   end
 
   def cache_key
