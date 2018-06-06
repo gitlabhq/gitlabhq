@@ -18,19 +18,19 @@
                 = s_('CICD|The Auto DevOps pipeline configuration will be used when there is no %{ci_file} in the project.').html_safe % { ci_file: ci_file_formatted }
 
             .form-check
-              = form.radio_button :enabled, 'false', class: 'form-check-input'
-              = form.label :enabled_false, class: 'form-check-label' do
-                %strong= s_('CICD|Disable Auto DevOps')
-                %br
-                = s_('CICD|An explicit %{ci_file} needs to be specified before you can begin using Continuous Integration and Delivery.').html_safe % { ci_file: ci_file_formatted }
-
-            .form-check
               = form.radio_button :enabled, '', class: 'form-check-input'
               = form.label :enabled_, class: 'form-check-label' do
                 %strong= s_('CICD|Instance default (%{state})') % { state: "#{Gitlab::CurrentSettings.auto_devops_enabled? ? _('enabled') : _('disabled')}" }
                 %br
                 = s_('CICD|Follow the instance default to either have Auto DevOps enabled or disabled when there is no project specific %{ci_file}.').html_safe % { ci_file: ci_file_formatted }
 
+            .form-check
+              = form.radio_button :enabled, 'false', class: 'form-check-input'
+              = form.label :enabled_false, class: 'form-check-label' do
+                %strong= s_('CICD|Disable Auto DevOps')
+                %br
+                = s_('CICD|An explicit %{ci_file} needs to be specified before you can begin using Continuous Integration and Delivery.').html_safe % { ci_file: ci_file_formatted }
+    
             = form.label :domain, class:"prepend-top-10" do
               = _('Domain')
             = form.text_field :domain, class: 'form-control', placeholder: 'domain.com'
