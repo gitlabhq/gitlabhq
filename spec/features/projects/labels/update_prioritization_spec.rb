@@ -102,16 +102,16 @@ feature 'Prioritize labels' do
       drag_to(selector: '.label-list-item', from_index: 1, to_index: 2)
 
       page.within('.prioritized-labels') do
-        expect(first('li')).to have_content('feature')
-        expect(page.all('li').last).to have_content('bug')
+        expect(first('.label-list-item')).to have_content('feature')
+        expect(page.all('.label-list-item').last).to have_content('bug')
       end
 
       refresh
       wait_for_requests
 
       page.within('.prioritized-labels') do
-        expect(first('li')).to have_content('feature')
-        expect(page.all('li').last).to have_content('bug')
+        expect(first('.label-list-item')).to have_content('feature')
+        expect(page.all('.label-list-item').last).to have_content('bug')
       end
     end
 
