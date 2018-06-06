@@ -1,6 +1,6 @@
 # Repository mirroring
 
-Repository Mirroring is a way to mirror repositories from external sources.
+Repository mirroring is a way to mirror repositories from external sources.
 It can be used to mirror all branches, tags, and commits that you have
 in your repository.
 
@@ -34,7 +34,7 @@ A few things/limitations to consider:
 - The Git LFS objects will not be synced. You'll need to push/pull them
   manually.
 
-## Use-cases
+## Use cases
 
 - You migrated to GitLab but still need to keep your project in another source.
   In that case, you can simply set it up to mirror to GitLab (pull) and all the
@@ -294,11 +294,12 @@ by using the **Update now** button which is exposed in various places:
 
 ## Bidirectional mirroring
 
-> **Warning:** There is no bidirectional support without conflicts. If you
-> configure a repository to pull and push to a second remote, there is no
-> guarantee that it will update correctly on both remotes. If you configure
-> a repository for bidirectional mirroring, you should consider when conflicts
-> occur who and how they will be resolved.
+CAUTION: **Warning:**
+There is no bidirectional support without conflicts. If you
+configure a repository to pull and push to a second remote, there is no
+guarantee that it will update correctly on both remotes. If you configure
+a repository for bidirectional mirroring, you should consider when conflicts
+occur who and how they will be resolved.
 
 Rewriting any mirrored commit on either remote will cause conflicts and
 mirroring to fail. This can be prevented by [only pulling protected branches](
@@ -318,10 +319,11 @@ custom Git hooks][hooks] on the GitLab server.
 
 ### Mirroring with Perforce via GitFusion
 
-> **Warning:** Bidirectional mirroring should not be used as a permanent
-> configuration. There is no bidirectional mirroring without conflicts.
-> Refer to [Migrating from Perforce Helix][perforce] for alternative migration
-> approaches.
+CAUTION: **Warning:**
+Bidirectional mirroring should not be used as a permanent
+configuration. There is no bidirectional mirroring without conflicts.
+Refer to [Migrating from Perforce Helix][perforce] for alternative migration
+approaches.
 
 GitFusion provides a Git interface to Perforce which can be used by GitLab to
 bidirectionally mirror projects with GitLab. This may be useful in some
@@ -339,10 +341,11 @@ limitations of GitFusion.
 [ee-3326]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3326
 [ee-3350]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3350
 [ee-3453]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3453
+[ee-4559]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/4559
 [ce-18715]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18715
 [perms]: ../user/permissions.md
-[hooks]: ../administration/custom_hooks.html
+[hooks]: ../administration/custom_hooks.md
 [deploy-key]: ../ssh/README.md#deploy-keys
-[webhook]: ../user/project/integrations/webhooks.html#push-events
-[pull-api]: ../api/projects.html#start-the-pull-mirroring-process-for-a-project
-[perforce]: ../user/project/import/perforce.html
+[webhook]: ../user/project/integrations/webhooks.md#push-events
+[pull-api]: ../api/projects.md#start-the-pull-mirroring-process-for-a-project
+[perforce]: ../user/project/import/perforce.md

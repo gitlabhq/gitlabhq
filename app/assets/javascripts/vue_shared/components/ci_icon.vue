@@ -23,6 +23,8 @@ import Icon from '../../vue_shared/components/icon.vue';
  * - Jobs show view sidebar
  * - Linked pipelines
  */
+const validSizes = [8, 12, 16, 18, 24, 32, 48, 72];
+
 export default {
   components: {
     Icon,
@@ -32,17 +34,36 @@ export default {
       type: Object,
       required: true,
     },
+    size: {
+      type: Number,
+      required: false,
+      default: 16,
+      validator(value) {
+        return validSizes.includes(value);
+      },
+    },
+    borderless: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     cssClass() {
       const status = this.status.group;
       return `ci-status-icon ci-status-icon-${status} js-ci-status-icon-${status}`;
     },
+    icon() {
+      return this.borderless ? `${this.status.icon}_borderless` : this.status.icon;
+    },
   },
 };
 </script>
 <template>
   <span :class="cssClass">
-    <icon :name="status.icon" />
+    <icon
+      :name="icon"
+      :size="size"
+    />
   </span>
 </template>

@@ -7,8 +7,8 @@
 .form-group.row
   .offset-sm-2.col-sm-10
     .form-check
-      = form.label :primary do
-        = form.check_box :primary
+      = form.check_box :primary, class: 'form-check-input'
+      = form.label :primary, class: 'form-check-label' do
         %strong This is a primary node
 
 .js-hide-if-geo-primary{ class: ('hidden' unless geo_node.secondary?) }

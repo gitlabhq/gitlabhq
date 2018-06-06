@@ -1,33 +1,33 @@
 %fieldset
   %legend Access
-  .form-group
-    = f.label :projects_limit, class: 'col-form-label'
+  .form-group.row
+    = f.label :projects_limit, class: 'col-form-label col-sm-2'
     .col-sm-10= f.number_field :projects_limit, min: 0, max: Gitlab::Database::MAX_INT_VALUE, class: 'form-control'
 
-  .form-group
-    = f.label :can_create_group, class: 'col-form-label'
+  .form-group.row
+    = f.label :can_create_group, class: 'col-form-label col-sm-2'
     .col-sm-10= f.check_box :can_create_group
 
-  .form-group
-    = f.label :access_level, class: 'col-form-label'
+  .form-group.row
+    = f.label :access_level, class: 'col-form-label col-sm-2'
     .col-sm-10
       - editing_current_user = (current_user == @user)
 
       = f.radio_button :access_level, :regular, disabled: editing_current_user
-      = label_tag :regular do
+      = label_tag :regular, class: 'font-weight-bold' do
         Regular
       %p.light
         Regular users have access to their groups and projects
 
       - if license_allows_auditor_user?
         = f.radio_button :access_level, :auditor, disabled: editing_current_user
-        = label_tag :auditor do
+        = label_tag :auditor, class: 'font-weight-bold' do
           Auditor
         %p.light
           Auditors have read-only access to all groups, projects and users
 
       = f.radio_button :access_level, :admin, disabled: editing_current_user
-      = label_tag :admin do
+      = label_tag :admin, class: 'font-weight-bold' do
         Admin
       %p.light
         Administrators have access to all groups, projects and users and can manage all features in this installation
@@ -35,8 +35,8 @@
         %p.light
           You cannot remove your own admin rights.
 
-  .form-group
-    = f.label :external, class: 'col-form-label'
+  .form-group.row
+    = f.label :external, class: 'col-form-label col-sm-2'
     .col-sm-10
       = f.check_box :external do
         External

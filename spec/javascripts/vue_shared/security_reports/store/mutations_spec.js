@@ -316,21 +316,50 @@ describe('security reports mutations', () => {
       const issue = {
         tool: 'bundler_audit',
         message: 'Arbitrary file existence disclosure in Action Pack',
-        url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
         cve: 'CVE-2014-7829',
-        file: 'Gemfile.lock',
         solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
-        name: 'Arbitrary file existence disclosure in Action Pack',
+        title: 'Arbitrary file existence disclosure in Action Pack',
         path: 'Gemfile.lock',
         urlPath: 'path/Gemfile.lock',
+        namespace: 'debian:8',
+        location: {
+          file: 'Gemfile.lock',
+          class: 'User',
+          method: 'do_something',
+        },
+        links: [{
+          url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
+        }],
+        identifiers: [{
+          type: 'CVE',
+          name: 'CVE-2014-9999',
+          value: 'CVE-2014-9999',
+          url: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-9999',
+        }],
+        instances: [{
+          param: 'X-Content-Type-Options',
+          method: 'GET',
+          uri: 'http://example.com/some-path',
+
+        }],
         isDismissed: true,
       };
 
       mutations[types.SET_ISSUE_MODAL_DATA](stateCopy, issue);
 
-      expect(stateCopy.modal.title).toEqual(issue.name);
-      expect(stateCopy.modal.data.file.value).toEqual(issue.file);
+      expect(stateCopy.modal.title).toEqual(issue.title);
+      expect(stateCopy.modal.data.description.value).toEqual(issue.description);
+      expect(stateCopy.modal.data.file.value).toEqual(issue.location.file);
+      expect(stateCopy.modal.data.file.url).toEqual(issue.urlPath);
+      expect(stateCopy.modal.data.className.value).toEqual(issue.location.class);
+      expect(stateCopy.modal.data.methodName.value).toEqual(issue.location.method);
+      expect(stateCopy.modal.data.namespace.value).toEqual(issue.namespace);
+      expect(stateCopy.modal.data.identifiers.value).toEqual(issue.identifiers);
+      expect(stateCopy.modal.data.severity.value).toEqual(issue.severity);
+      expect(stateCopy.modal.data.confidence.value).toEqual(issue.confidence);
       expect(stateCopy.modal.data.solution.value).toEqual(issue.solution);
+      expect(stateCopy.modal.data.links.value).toEqual(issue.links);
+      expect(stateCopy.modal.data.instances.value).toEqual(issue.instances);
       expect(stateCopy.modal.vulnerability).toEqual(issue);
     });
   });

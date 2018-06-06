@@ -40,8 +40,8 @@ module MergeRequests
     def filter_params(merge_request)
       super
 
-      unless merge_request.can_allow_maintainer_to_push?(current_user)
-        params.delete(:allow_maintainer_to_push)
+      unless merge_request.can_allow_collaboration?(current_user)
+        params.delete(:allow_collaboration)
       end
     end
 

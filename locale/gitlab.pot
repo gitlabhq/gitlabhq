@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-29 11:32+0200\n"
-"PO-Revision-Date: 2018-05-29 11:32+0200\n"
+"POT-Creation-Date: 2018-06-01 01:47-0500\n"
+"PO-Revision-Date: 2018-06-01 01:47-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -201,6 +201,21 @@ msgstr ""
 msgid "2FA enabled"
 msgstr ""
 
+msgid "403|Please contact your GitLab administrator to get the permission."
+msgstr ""
+
+msgid "403|You don't have the permission to access this page."
+msgstr ""
+
+msgid "404|Make sure the address is correct and the page hasn't moved."
+msgstr ""
+
+msgid "404|Page Not Found"
+msgstr ""
+
+msgid "404|Please contact your GitLab administrator if you think this is a mistake."
+msgstr ""
+
 msgid "<strong>Removes</strong> source branch"
 msgstr ""
 
@@ -354,7 +369,7 @@ msgstr ""
 msgid "All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings."
 msgstr ""
 
-msgid "Allow edits from maintainers."
+msgid "Allow commits from members who can merge to the target branch."
 msgstr ""
 
 msgid "Allow rendering of PlantUML diagrams in Asciidoc documents."
@@ -739,9 +754,6 @@ msgid "BillingPlans|paid annually at %{price_per_year}"
 msgstr ""
 
 msgid "BillingPlans|per user"
-msgstr ""
-
-msgid "Blame"
 msgstr ""
 
 msgid "Branch (%{branch_count})"
@@ -1187,6 +1199,12 @@ msgstr ""
 msgid "ClusterIntegration|Advanced options on this Kubernetes cluster's integration"
 msgstr ""
 
+msgid "ClusterIntegration|An error occured while trying to fetch project zones: %{error}"
+msgstr ""
+
+msgid "ClusterIntegration|An error occured while trying to fetch your projects: %{error}"
+msgstr ""
+
 msgid "ClusterIntegration|Applications"
 msgstr ""
 
@@ -1245,6 +1263,15 @@ msgid "ClusterIntegration|Environment scope"
 msgstr ""
 
 msgid "ClusterIntegration|Every new Google Cloud Platform (GCP) account receives $300 in credit upon %{sign_up_link}. In partnership with Google, GitLab is able to offer an additional $200 for new GCP accounts to get started with GitLab's Google Kubernetes Engine Integration."
+msgstr ""
+
+msgid "ClusterIntegration|Fetching machine types"
+msgstr ""
+
+msgid "ClusterIntegration|Fetching projects"
+msgstr ""
+
+msgid "ClusterIntegration|Fetching zones"
 msgstr ""
 
 msgid "ClusterIntegration|GitLab Integration"
@@ -1355,6 +1382,18 @@ msgstr ""
 msgid "ClusterIntegration|Multiple Kubernetes clusters are available in GitLab Enterprise Edition Premium and Ultimate"
 msgstr ""
 
+msgid "ClusterIntegration|No machine types matched your search"
+msgstr ""
+
+msgid "ClusterIntegration|No projects found"
+msgstr ""
+
+msgid "ClusterIntegration|No projects matched your search"
+msgstr ""
+
+msgid "ClusterIntegration|No zones matched your search"
+msgstr ""
+
 msgid "ClusterIntegration|Note:"
 msgstr ""
 
@@ -1365,9 +1404,6 @@ msgid "ClusterIntegration|Please enter access information for your Kubernetes cl
 msgstr ""
 
 msgid "ClusterIntegration|Please make sure that your Google account meets the following requirements:"
-msgstr ""
-
-msgid "ClusterIntegration|Project ID"
 msgstr ""
 
 msgid "ClusterIntegration|Project namespace"
@@ -1400,19 +1436,40 @@ msgstr ""
 msgid "ClusterIntegration|Save changes"
 msgstr ""
 
+msgid "ClusterIntegration|Search machine types"
+msgstr ""
+
+msgid "ClusterIntegration|Search projects"
+msgstr ""
+
+msgid "ClusterIntegration|Search zones"
+msgstr ""
+
 msgid "ClusterIntegration|Security"
 msgstr ""
 
 msgid "ClusterIntegration|See and edit the details for your Kubernetes cluster"
 msgstr ""
 
-msgid "ClusterIntegration|See machine types"
-msgstr ""
-
-msgid "ClusterIntegration|See your projects"
-msgstr ""
-
 msgid "ClusterIntegration|See zones"
+msgstr ""
+
+msgid "ClusterIntegration|Select machine type"
+msgstr ""
+
+msgid "ClusterIntegration|Select project"
+msgstr ""
+
+msgid "ClusterIntegration|Select project and zone to choose machine type"
+msgstr ""
+
+msgid "ClusterIntegration|Select project to choose zone"
+msgstr ""
+
+msgid "ClusterIntegration|Select zone"
+msgstr ""
+
+msgid "ClusterIntegration|Select zone to choose machine type"
 msgstr ""
 
 msgid "ClusterIntegration|Service token"
@@ -1443,6 +1500,9 @@ msgid "ClusterIntegration|Toggle Kubernetes cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Token"
+msgstr ""
+
+msgid "ClusterIntegration|Validating project billing status"
 msgstr ""
 
 msgid "ClusterIntegration|With a Kubernetes cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way."
@@ -1723,6 +1783,9 @@ msgid "Copy commit SHA to clipboard"
 msgstr ""
 
 msgid "Copy reference to clipboard"
+msgstr ""
+
+msgid "Copy to clipboard"
 msgstr ""
 
 msgid "Create"
@@ -2665,6 +2728,9 @@ msgstr ""
 msgid "Gitaly Servers"
 msgstr ""
 
+msgid "Go Back"
+msgstr ""
+
 msgid "Go back"
 msgstr ""
 
@@ -2833,6 +2899,9 @@ msgid "IDE|Edit"
 msgstr ""
 
 msgid "IDE|Go back"
+msgstr ""
+
+msgid "IDE|Open in file view"
 msgstr ""
 
 msgid "IDE|Review"
@@ -3331,6 +3400,18 @@ msgstr ""
 msgid "Name new label"
 msgstr ""
 
+msgid "Nav|Help"
+msgstr ""
+
+msgid "Nav|Home"
+msgstr ""
+
+msgid "Nav|Sign In / Register"
+msgstr ""
+
+msgid "Nav|Sign out and sign in with a different account"
+msgstr ""
+
 msgid "New Issue"
 msgid_plural "New Issues"
 msgstr[0] ""
@@ -3624,9 +3705,6 @@ msgstr ""
 msgid "Performance optimization"
 msgstr ""
 
-msgid "Permalink"
-msgstr ""
-
 msgid "Permissions"
 msgstr ""
 
@@ -3796,9 +3874,6 @@ msgid "PlantUML"
 msgstr ""
 
 msgid "Play"
-msgstr ""
-
-msgid "Please <a href=%{link_to_billing} target=\"_blank\" rel=\"noopener noreferrer\">enable billing for one of your projects to be able to create a Kubernetes cluster</a>, then try again."
 msgstr ""
 
 msgid "Please accept the Terms of Service before continuing."
@@ -4146,9 +4221,6 @@ msgstr ""
 msgid "Quick actions can be used in the issues description and comment boxes."
 msgstr ""
 
-msgid "Raw"
-msgstr ""
-
 msgid "Read more"
 msgstr ""
 
@@ -4370,6 +4442,9 @@ msgstr ""
 msgid "Search files"
 msgstr ""
 
+msgid "Search for projects, issues, etc."
+msgstr ""
+
 msgid "Search milestones"
 msgstr ""
 
@@ -4388,6 +4463,9 @@ msgstr ""
 msgid "Security report"
 msgstr ""
 
+msgid "Select"
+msgstr ""
+
 msgid "Select Archive Format"
 msgstr ""
 
@@ -4404,6 +4482,15 @@ msgid "Select assignee"
 msgstr ""
 
 msgid "Select branch/tag"
+msgstr ""
+
+msgid "Select project"
+msgstr ""
+
+msgid "Select project and zone to choose machine type"
+msgstr ""
+
+msgid "Select project to choose zone"
 msgstr ""
 
 msgid "Select source branch"
@@ -4685,6 +4772,9 @@ msgid "Specific Runners"
 msgstr ""
 
 msgid "Specify the following URL during the Runner setup:"
+msgstr ""
+
+msgid "Squash commits"
 msgstr ""
 
 msgid "Stage all"
@@ -5284,7 +5374,7 @@ msgstr ""
 msgid "To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. Only epics in the past 3 months and the next 3 months are shown."
 msgstr ""
 
-msgid "To widen your search, change or remove filters. If something is missing, create an epic."
+msgid "To widen your search, change or remove filters."
 msgstr ""
 
 msgid "Todo"
@@ -5492,9 +5582,6 @@ msgid "VisibilityLevel|Unknown"
 msgstr ""
 
 msgid "Want to see the data? Please ask an administrator for access."
-msgstr ""
-
-msgid "We could not verify that one of your projects on GCP has billing enabled. Please try again."
 msgstr ""
 
 msgid "We don't have enough data to show this stage."
@@ -5835,6 +5922,9 @@ msgstr ""
 msgid "ciReport|%{linkStartTag}Learn more about SAST image %{linkEndTag}"
 msgstr ""
 
+msgid "ciReport|%{namespace} is affected by %{vulnerability}."
+msgstr ""
+
 msgid "ciReport|%{reportName} is loading"
 msgstr ""
 
@@ -5850,10 +5940,13 @@ msgstr ""
 msgid "ciReport|%{type} detected no vulnerabilities"
 msgstr ""
 
+msgid "ciReport|Class"
+msgstr ""
+
 msgid "ciReport|Code quality"
 msgstr ""
 
-msgid "ciReport|Confidence Level"
+msgid "ciReport|Confidence"
 msgstr ""
 
 msgid "ciReport|Container scanning detects known vulnerabilities in your docker images."
@@ -5889,6 +5982,9 @@ msgstr ""
 msgid "ciReport|Dismiss vulnerability"
 msgstr ""
 
+msgid "ciReport|Dismissed by"
+msgstr ""
+
 msgid "ciReport|Dynamic Application Security Testing (DAST) detects known vulnerabilities in your web application."
 msgstr ""
 
@@ -5901,7 +5997,7 @@ msgstr ""
 msgid "ciReport|Fixed:"
 msgstr ""
 
-msgid "ciReport|Identifier"
+msgid "ciReport|Identifiers"
 msgstr ""
 
 msgid "ciReport|Instances"
@@ -5910,7 +6006,13 @@ msgstr ""
 msgid "ciReport|Learn more about whitelisting"
 msgstr ""
 
+msgid "ciReport|Links"
+msgstr ""
+
 msgid "ciReport|Loading %{reportName} report"
+msgstr ""
+
+msgid "ciReport|Method"
 msgstr ""
 
 msgid "ciReport|Namespace"
@@ -5955,9 +6057,6 @@ msgstr ""
 msgid "ciReport|Solution"
 msgstr ""
 
-msgid "ciReport|Source"
-msgstr ""
-
 msgid "ciReport|Static Application Security Testing (SAST) detects known vulnerabilities in your source code."
 msgstr ""
 
@@ -5979,7 +6078,13 @@ msgstr ""
 msgid "ciReport|Unapproved vulnerabilities (red) can be marked as approved."
 msgstr ""
 
+msgid "ciReport|Upgrade %{name} from %{version} to %{fixed}."
+msgstr ""
+
 msgid "ciReport|no vulnerabilities"
+msgstr ""
+
+msgid "ciReport|on pipeline"
 msgstr ""
 
 msgid "command line instructions"
@@ -6062,7 +6167,7 @@ msgstr ""
 msgid "mrWidget|Add approval"
 msgstr ""
 
-msgid "mrWidget|Allows edits from maintainers"
+msgid "mrWidget|Allows commits from members who can merge to the target branch"
 msgstr ""
 
 msgid "mrWidget|An error occured while removing your approval."

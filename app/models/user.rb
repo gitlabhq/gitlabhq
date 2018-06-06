@@ -28,7 +28,7 @@ class User < ActiveRecord::Base
   ignore_column :authentication_token
 
   add_authentication_token_field :incoming_email_token
-  add_authentication_token_field :rss_token
+  add_authentication_token_field :feed_token
 
   default_value_for :admin, false
   default_value_for(:external) { Gitlab::CurrentSettings.user_default_external }
@@ -1189,11 +1189,11 @@ class User < ActiveRecord::Base
     save
   end
 
-  # each existing user needs to have an `rss_token`.
+  # each existing user needs to have an `feed_token`.
   # we do this on read since migrating all existing users is not a feasible
   # solution.
-  def rss_token
-    ensure_rss_token!
+  def feed_token
+    ensure_feed_token!
   end
 
   def sync_attribute?(attribute)

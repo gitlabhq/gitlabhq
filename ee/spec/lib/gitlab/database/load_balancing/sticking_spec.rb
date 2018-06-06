@@ -42,6 +42,46 @@ describe Gitlab::Database::LoadBalancing::Sticking, :redis do
     end
   end
 
+  describe '.all_caught_up?' do
+    let(:lb) { double(:lb) }
+
+    before do
+      allow(described_class).to receive(:load_balancer).and_return(lb)
+    end
+
+    it 'returns true if no write location could be found' do
+      allow(described_class).to receive(:last_write_location_for)
+        .with(:user, 42)
+        .and_return(nil)
+
+      expect(lb).not_to receive(:all_caught_up?)
+
+      expect(described_class.all_caught_up?(:user, 42)).to eq(true)
+    end
+
+    it 'returns true, and unsticks if all secondaries have caught up' do
+      allow(described_class).to receive(:last_write_location_for)
+        .with(:user, 42)
+        .and_return('foo')
+
+      allow(lb).to receive(:all_caught_up?).with('foo').and_return(true)
+
+      expect(described_class).to receive(:unstick).with(:user, 42)
+
+      expect(described_class.all_caught_up?(:user, 42)).to eq(true)
+    end
+
+    it 'return false if the secondaries have not yet caught up' do
+      allow(described_class).to receive(:last_write_location_for)
+        .with(:user, 42)
+        .and_return('foo')
+
+      allow(lb).to receive(:all_caught_up?).with('foo').and_return(false)
+
+      expect(described_class.all_caught_up?(:user, 42)).to eq(false)
+    end
+  end
+
   describe '.unstick_or_continue_sticking' do
     let(:lb) { double(:lb) }
 

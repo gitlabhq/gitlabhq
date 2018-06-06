@@ -20,8 +20,10 @@ export default {
     return {
       isLoadingCodequality: false,
       isLoadingPerformance: false,
+      isLoadingLicenseReport: false,
       loadingCodequalityFailed: false,
       loadingPerformanceFailed: false,
+      loadingLicenseReportFailed: false,
     };
   },
   computed: {
@@ -31,6 +33,10 @@ export default {
     shouldRenderCodeQuality() {
       const { codeclimate } = this.mr;
       return codeclimate && codeclimate.head_path && codeclimate.base_path;
+    },
+    shouldRenderLicenseReport() {
+      const { licenseManagement } = this.mr;
+      return licenseManagement && licenseManagement.head_path && licenseManagement.base_path;
     },
     hasCodequalityIssues() {
       return (
@@ -48,6 +54,10 @@ export default {
           (this.mr.performanceMetrics.improved && this.mr.performanceMetrics.improved.length > 0) ||
           (this.mr.performanceMetrics.neutral && this.mr.performanceMetrics.neutral.length > 0))
       );
+    },
+    hasLicenseReportIssues() {
+      const { licenseReport } = this.mr;
+      return licenseReport && licenseReport.length > 0;
     },
     shouldRenderPerformance() {
       const { performance } = this.mr;
@@ -111,12 +121,28 @@ export default {
       return text.join('');
     },
 
+    licenseReportText() {
+      const { licenseReport } = this.mr;
+
+      if (licenseReport.length > 0) {
+        return sprintf(s__('ciReport|License management detected %{licenseInfo}'), {
+          licenseInfo: n__('%d new license', '%d new licenses', licenseReport.length),
+        });
+      }
+
+      return s__('ciReport|License management detected no new licenses');
+    },
+
     codequalityStatus() {
       return this.checkReportStatus(this.isLoadingCodequality, this.loadingCodequalityFailed);
     },
 
     performanceStatus() {
       return this.checkReportStatus(this.isLoadingPerformance, this.loadingPerformanceFailed);
+    },
+
+    licenseReportStatus() {
+      return this.checkReportStatus(this.isLoadingLicenseReport, this.loadingLicenseReportFailed);
     },
   },
   created() {
@@ -126,6 +152,10 @@ export default {
 
     if (this.shouldRenderPerformance) {
       this.fetchPerformance();
+    }
+
+    if (this.shouldRenderLicenseReport) {
+      this.fetchLicenseReport();
     }
   },
   methods: {
@@ -163,6 +193,22 @@ export default {
         .catch(() => {
           this.isLoadingPerformance = false;
           this.loadingPerformanceFailed = true;
+        });
+    },
+
+    fetchLicenseReport() {
+      const { head_path, base_path } = this.mr.licenseManagement;
+
+      this.isLoadingLicenseReport = true;
+
+      Promise.all([this.service.fetchReport(head_path), this.service.fetchReport(base_path)])
+        .then(values => {
+          this.mr.parseLicenseReportMetrics(values[0], values[1]);
+          this.isLoadingLicenseReport = false;
+        })
+        .catch(() => {
+          this.isLoadingLicenseReport = false;
+          this.loadingLicenseReportFailed = true;
         });
     },
 
@@ -243,6 +289,17 @@ export default {
       :vulnerability-feedback-help-path="mr.vulnerabilityFeedbackHelpPath"
       :pipeline-id="mr.securityReportsPipelineId"
     />
+    <report-section
+      class="js-license-report-widget mr-widget-border-top"
+      v-if="shouldRenderLicenseReport"
+      type="license"
+      :status="licenseReportStatus"
+      :loading-text="translateText('license management').loading"
+      :error-text="translateText('license management').error"
+      :success-text="licenseReportText"
+      :unresolved-issues="mr.licenseReport"
+      :has-issues="hasLicenseReportIssues"
+    />
     <div class="mr-widget-section">
       <component
         :is="componentName"
@@ -251,10 +308,10 @@ export default {
       />
 
       <section
-        v-if="mr.maintainerEditAllowed"
+        v-if="mr.allowCollaboration"
         class="mr-info-list mr-links"
       >
-        {{ s__("mrWidget|Allows edits from maintainers") }}
+        {{ s__("mrWidget|Allows commits from members who can merge to the target branch") }}
       </section>
 
       <mr-widget-related-links

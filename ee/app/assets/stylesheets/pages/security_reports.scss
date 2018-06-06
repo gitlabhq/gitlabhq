@@ -56,6 +56,19 @@
   list-style: none;
   padding: 0 1px;
   margin: 0;
+
+  .license-item {
+    line-height: $gl-padding-24;
+
+    .license-dependencies {
+      color: $gl-text-color-tertiary;
+    }
+
+    .btn-show-all-packages {
+      line-height: $gl-btn-line-height;
+      margin-bottom: 2px;
+    }
+  }
 }
 
 .report-block-list-icon {
@@ -89,8 +102,13 @@
   align-content: flex-start;
 }
 
-.is-dismissed .report-block-list-issue-description {
+.is-dismissed .report-block-list-issue-description,
+.is-dismissed .vulnerability-name-button {
   text-decoration: line-through;
+}
+
+.report-block-list-issue-description-text::after {
+  content: "\00a0";
 }
 
 .report-block-list-issue-description {
@@ -120,9 +138,6 @@
 .modal-security-report-dast {
   .modal-dialog {
     width: $modal-lg;
-  }
-  // TODO remove this when gl_modal support not rendering the footer
-  .modal-footer {
-    display: block;
+    max-width: $modal-lg;
   }
 }

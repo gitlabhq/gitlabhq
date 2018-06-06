@@ -148,7 +148,7 @@ module Gitlab
 
         def get_chunk
           unless in_range?
-            response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
+            response = Net::HTTP.start(uri.hostname, uri.port, proxy_from_env: true, use_ssl: uri.scheme == 'https') do |http|
               http.request(request)
             end
 

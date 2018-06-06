@@ -6,7 +6,14 @@ import MRWidgetService from 'ee/vue_merge_request_widget/services/mr_widget_serv
 import MRWidgetStore from 'ee/vue_merge_request_widget/stores/mr_widget_store';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import state from 'ee/vue_shared/security_reports/store/state';
-import mockData, { baseIssues, headIssues, basePerformance, headPerformance } from './mock_data';
+import mockData, {
+  baseIssues,
+  headIssues,
+  basePerformance,
+  headPerformance,
+  licenseBaseIssues,
+  licenseHeadIssues,
+} from './mock_data';
 
 import {
   sastIssues,
@@ -648,6 +655,106 @@ describe('ee merge request widget options', () => {
           expect(vm.$el.querySelector('.js-dast-widget').textContent.trim()).toContain(
             'DAST resulted in error while loading results',
           );
+          done();
+        }, 0);
+      });
+    });
+  });
+
+  describe('license management report', () => {
+    beforeEach(() => {
+      gl.mrWidgetData = {
+        ...mockData,
+        license_management: {
+          head_path: 'head.json',
+          base_path: 'base.json',
+        },
+      };
+
+      Component.mr = new MRWidgetStore(gl.mrWidgetData);
+      Component.service = new MRWidgetService({});
+    });
+
+    describe('when it is loading', () => {
+      it('should render loading indicator', () => {
+        mock.onGet('head.json').reply(200, licenseHeadIssues);
+        mock.onGet('base.json').reply(200, licenseBaseIssues);
+        vm = mountComponent(Component);
+        expect(
+          removeBreakLine(vm.$el.querySelector('.js-license-report-widget').textContent),
+        ).toContain('Loading license management report');
+      });
+    });
+
+    describe('with successful request', () => {
+      beforeEach(() => {
+        mock.onGet('head.json').reply(200, licenseHeadIssues);
+        mock.onGet('base.json').reply(200, licenseBaseIssues);
+        vm = mountComponent(Component);
+      });
+
+      it('should render report overview', done => {
+        setTimeout(() => {
+          expect(
+            removeBreakLine(
+              vm.$el.querySelector('.js-license-report-widget .js-code-text').textContent,
+            ),
+          ).toEqual('License management detected 1 new license');
+          done();
+        }, 0);
+      });
+
+      it('should render report issues list in section body', done => {
+        setTimeout(() => {
+          const sectionBodyEl = vm.$el.querySelector(
+            '.js-license-report-widget .js-report-section-container',
+          );
+          expect(sectionBodyEl).not.toBeNull();
+          expect(sectionBodyEl.querySelectorAll('li.report-block-list-issue').length).toBe(
+            licenseHeadIssues.licenses.length - 1,
+          );
+          done();
+        }, 0);
+      });
+    });
+
+    describe('with empty successful request', () => {
+      beforeEach(() => {
+        mock.onGet('head.json').reply(200, licenseBaseIssues);
+        mock.onGet('base.json').reply(200, licenseBaseIssues);
+        vm = mountComponent(Component);
+      });
+
+      afterEach(() => {
+        mock.restore();
+      });
+
+      it('should render report overview', done => {
+        setTimeout(() => {
+          expect(
+            removeBreakLine(
+              vm.$el.querySelector('.js-license-report-widget .js-code-text').textContent,
+            ),
+          ).toEqual('License management detected no new licenses');
+          done();
+        }, 0);
+      });
+    });
+
+    describe('with failed request', () => {
+      beforeEach(() => {
+        mock.onGet('head.json').reply(500, {});
+        mock.onGet('base.json').reply(500, {});
+        vm = mountComponent(Component);
+      });
+
+      it('should render error indicator', done => {
+        setTimeout(() => {
+          expect(
+            removeBreakLine(
+              vm.$el.querySelector('.js-license-report-widget .js-code-text').textContent,
+            ),
+          ).toContain('Failed to load license management report');
           done();
         }, 0);
       });

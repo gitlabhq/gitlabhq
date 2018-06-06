@@ -5,8 +5,8 @@
     .form-group.row
       .offset-sm-2.col-sm-10
         .form-check
-          = f.label :sentry_enabled do
-            = f.check_box :sentry_enabled
+          = f.check_box :sentry_enabled, class: 'form-check-input'
+          = f.label :sentry_enabled, class: 'form-check-label' do
             Enable Sentry
           .form-text.text-muted
             %p This setting requires a restart to take effect.
@@ -21,8 +21,8 @@
     .form-group.row
       .offset-sm-2.col-sm-10
         .form-check
-          = f.label :clientside_sentry_enabled do
-            = f.check_box :clientside_sentry_enabled
+          = f.check_box :clientside_sentry_enabled, class: 'form-check-input'
+          = f.label :clientside_sentry_enabled, class: 'form-check-label' do
             Enable Clientside Sentry
           .form-text.text-muted
             Sentry can also be used for reporting and logging clientside exceptions.

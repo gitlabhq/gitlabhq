@@ -50,4 +50,30 @@ describe HistoricalData do
       expect(described_class.max_historical_user_count).to eq(300)
     end
   end
+
+  describe '.max_historical_user_count with different plans' do
+    using RSpec::Parameterized::TableSyntax
+
+    before do
+      create(:group_member, :guest)
+      create(:group_member, :reporter)
+      create(:license, plan: plan)
+
+      described_class.track!
+    end
+
+    where(:gl_plan, :expected_count) do
+      ::License::STARTER_PLAN  | 2
+      ::License::PREMIUM_PLAN  | 2
+      ::License::ULTIMATE_PLAN | 1
+    end
+
+    with_them do
+      let(:plan) { gl_plan }
+
+      it 'does not count guest users' do
+        expect(described_class.max_historical_user_count).to eq(expected_count)
+      end
+    end
+  end
 end

@@ -12,8 +12,8 @@ describe RemoteMirror do
     context 'with an invalid URL' do
       it 'should not be valid' do
         remote_mirror = build(:remote_mirror, url: 'ftp://invalid.invalid')
+
         expect(remote_mirror).not_to be_valid
-        expect(remote_mirror.errors[:url].size).to eq(2)
       end
     end
   end

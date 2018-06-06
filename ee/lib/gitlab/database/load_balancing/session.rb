@@ -30,6 +30,14 @@ module Gitlab
           @use_primary = true
         end
 
+        def use_primary(&blk)
+          used_primary = @use_primary
+          @use_primary = true
+          return yield
+        ensure
+          @use_primary = used_primary || @performed_write
+        end
+
         def write!
           @performed_write = true
           use_primary!

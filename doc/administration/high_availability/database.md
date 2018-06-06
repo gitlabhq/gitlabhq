@@ -425,6 +425,18 @@ Role      | Name         | Upstream     | Connection String
 If the 'Role' column for any node says "FAILED", check the
 [Troubleshooting section](#troubleshooting) before proceeding.
 
+Also, check that the check master command works successfully on each node:
+
+```
+su - gitlab-consul
+gitlab-ctl repmgr-check-master
+```
+
+This command relies on exit codes to tell Consul whether a particular node is a master
+or secondary. The most important thing here is that this command does not produce errors.
+If there are errors it's most likely due to incorrect `gitlab-consul` database user permissions.
+Check the [Troubleshooting section](#troubleshooting) before proceeding.
+
 ### Configuring the Pgbouncer node
 
 1. Make sure you collect [`CONSUL_SERVER_NODES`](#consul_information), [`CONSUL_PASSWORD_HASH`](#consul_information), and [`PGBOUNCER_PASSWORD_HASH`](#pgbouncer_information) before executing the next step.
@@ -971,6 +983,21 @@ To restart either service, run `gitlab-ctl restart SERVICE`
 For PostgreSQL, it is usually safe to restart the master node by default. Automatic failover defaults to a 1 minute timeout. Provided the database returns before then, nothing else needs to be done. To be safe, you can stop `repmgrd` on the standby nodes first with `gitlab-ctl stop repmgrd`, then start afterwards with `gitlab-ctl start repmgrd`.
 
 On the consul server nodes, it is important to restart the consul service in a controlled fashion. Read our [consul documentation](consul.md#restarting-the-server-cluster) for instructions on how to restart the service.
+
+#### `gitlab-ctl repmgr-check-master` command produces errors
+
+If this command displays errors about database permissions it is likely that something failed during
+install, resulting in the `gitlab-consul` database user getting incorrect permissions. Follow these
+steps to fix the problem:
+
+1. On the master database node, connect to the database prompt - `gitlab-psql -d template1`
+1. Delete the `gitlab-consul` user - `DROP USER "gitlab-consul";`
+1. Exit the database prompt - `\q`
+1. [Reconfigure GitLab] and the user will be re-added with the proper permissions.
+1. Change to the `gitlab-consul` user - `su - gitlab-consul`
+1. Try the check command again - `gitlab-ctl repmgr-check-master`.
+
+Now there should not be errors. If errors still occur then there is another problem. 
 
 #### PGBouncer error `ERROR:  pgbouncer cannot connect to server`
 

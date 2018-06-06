@@ -13,12 +13,12 @@
             Sync method
           .col-sm-10
             .form-check
-              = label_tag :sync_method_group do
-                = radio_button_tag :sync_method, :group, true
+              = radio_button_tag :sync_method, :group, true, class: 'form-check-input'
+              = label_tag :sync_method_group, class: 'form-check-label' do
                 LDAP Group cn
             .form-check
-              = label_tag :sync_method_filter do
-                = radio_button_tag :sync_method, :filter
+              = radio_button_tag :sync_method, :filter, class: 'form-check-input'
+              = label_tag :sync_method_filter, class: 'form-check-label' do
                 LDAP user filter
 
       .form-group.row.cn-link

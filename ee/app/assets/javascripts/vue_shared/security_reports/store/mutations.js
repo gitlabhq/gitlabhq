@@ -248,28 +248,30 @@ export default {
   },
 
   [types.SET_ISSUE_MODAL_DATA](state, issue) {
-    state.modal.title = issue.name;
+    state.modal.title = issue.title;
     state.modal.data.description.value = issue.description;
-    state.modal.data.file.value = issue.file;
+    state.modal.data.file.value = issue.location && issue.location.file;
     state.modal.data.file.url = issue.urlPath;
+    state.modal.data.className.value = issue.location && issue.location.class;
+    state.modal.data.methodName.value = issue.location && issue.location.method;
     state.modal.data.namespace.value = issue.namespace;
+    if (issue.identifiers && issue.identifiers.length > 0) {
+      state.modal.data.identifiers.value = issue.identifiers;
+    } else {
+      // Force a null value for identifiers to avoid showing an empty array
+      state.modal.data.identifiers.value = null;
+    }
     state.modal.data.severity.value = issue.severity;
+    state.modal.data.confidence.value = issue.confidence;
     state.modal.data.solution.value = issue.solution;
-    state.modal.data.confidenceLevel.value = issue.confidence;
-    state.modal.data.source.value = issue.source;
+    if (issue.links && issue.links.length > 0) {
+      state.modal.data.links.value = issue.links;
+    } else {
+      // Force a null value for links to avoid showing an empty array
+      state.modal.data.links.value = null;
+    }
     state.modal.data.instances.value = issue.instances;
     state.modal.vulnerability = issue;
-
-    // Link to CVE-ID for Container Scanning
-    if (issue.nameLink) {
-      state.modal.data.identifier.value = issue.name;
-      state.modal.data.identifier.isLink = true;
-      state.modal.data.identifier.url = issue.nameLink;
-    } else {
-      state.modal.data.identifier.value = issue.identifier;
-      state.modal.data.identifier.isLink = false;
-      state.modal.data.identifier.url = null;
-    }
 
     // clear previous state
     state.modal.error = null;

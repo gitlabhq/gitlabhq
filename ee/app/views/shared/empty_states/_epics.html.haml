@@ -13,7 +13,7 @@
           = _('Epics let you manage your portfolio of projects more efficiently and with less effort')
       %p
         - if has_filters_applied
-          = _('To widen your search, change or remove filters. If something is missing, create an epic.')
+          = _('To widen your search, change or remove filters.')
         - else
           = _('Track groups of issues that share a theme, across projects and milestones')
       - if can?(current_user, :create_epic, @group)

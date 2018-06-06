@@ -5,8 +5,8 @@
     .form-group.row
       .offset-sm-2.col-sm-10
         .form-check
-          = f.label :version_check_enabled do
-            = f.check_box :version_check_enabled
+          = f.check_box :version_check_enabled, class: 'form-check-input'
+          = f.label :version_check_enabled, class: 'form-check-label' do
             Enable version check
           .form-text.text-muted
             GitLab will inform you if a new version is available.
@@ -16,8 +16,8 @@
       .offset-sm-2.col-sm-10
         - can_be_configured = @application_setting.usage_ping_can_be_configured?
         .form-check
-          = f.label :usage_ping_enabled do
-            = f.check_box :usage_ping_enabled, disabled: !can_be_configured
+          = f.check_box :usage_ping_enabled, disabled: !can_be_configured, class: 'form-check-input'
+          = f.label :usage_ping_enabled, class: 'form-check-label' do
             Enable usage ping
           .form-text.text-muted
             - if can_be_configured

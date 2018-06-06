@@ -29,7 +29,7 @@ module Projects
     def add_repository_to_project
       if project.external_import? && !unknown_url?
         begin
-          Gitlab::UrlBlocker.validate!(project.import_url, valid_ports: Project::VALID_IMPORT_PORTS)
+          Gitlab::UrlBlocker.validate!(project.import_url, ports: Project::VALID_IMPORT_PORTS)
         rescue Gitlab::UrlBlocker::BlockedUrlError => e
           raise Error, "Blocked import URL: #{e.message}"
         end

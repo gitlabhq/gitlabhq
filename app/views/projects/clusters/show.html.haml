@@ -11,6 +11,7 @@
   install_ingress_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :ingress),
   install_prometheus_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :prometheus),
   install_runner_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :runner),
+  install_jupyter_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :jupyter),
   toggle_status: @cluster.enabled? ? 'true': 'false',
   cluster_status: @cluster.status_name,
   cluster_status_reason: @cluster.status_reason,

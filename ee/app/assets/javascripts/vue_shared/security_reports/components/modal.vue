@@ -20,6 +20,11 @@ export default {
         ? s__('ciReport|Revert dismissal')
         : s__('ciReport|Dismiss vulnerability');
     },
+    hasDismissedBy() {
+      return this.modal.vulnerability.dismissalFeedback &&
+        this.modal.vulnerability.dismissalFeedback.pipeline &&
+        this.modal.vulnerability.dismissalFeedback.author;
+    },
   },
   methods: {
     ...mapActions(['dismissIssue', 'revertDismissIssue', 'createNewIssue']),
@@ -30,9 +35,20 @@ export default {
         this.dismissIssue();
       }
     },
-
+    isLastValue(index, values) {
+      return index < values.length - 1;
+    },
+    hasValue(field) {
+      return field.value && field.value.length > 0;
+    },
     hasInstances(field, key) {
-      return key === 'instances' && field.value && field.value.length > 0;
+      return key === 'instances' && this.hasValue(field);
+    },
+    hasIdentifiers(field, key) {
+      return key === 'identifiers' && this.hasValue(field);
+    },
+    hasLinks(field, key) {
+      return key === 'links' && this.hasValue(field);
     },
   },
 };
@@ -46,17 +62,17 @@ export default {
     <slot>
       <div
         v-for="(field, key, index) in modal.data"
-        v-if="field.value || hasInstances(field, key)"
+        v-if="field.value"
         class="row prepend-top-10 append-bottom-10"
         :key="index"
       >
-        <label class="col-sm-2 text-right">
+        <label class="col-sm-2 text-right font-weight-bold">
           {{ field.text }}:
         </label>
         <div class="col-sm-10 text-secondary">
           <div
             v-if="hasInstances(field, key)"
-            class="well"
+            class="info-well"
           >
             <ul class="report-block-list">
               <li
@@ -71,7 +87,7 @@ export default {
                   />
                 </div>
                 <div class="report-block-list-issue-description prepend-top-5 append-bottom-5">
-                  <div class="report-block-list-issue-description-text append-right-5">
+                  <div class="report-block-list-issue-description-text">
                     {{ instance.method }}
                   </div>
                   <div class="report-block-list-issue-description-link">
@@ -94,6 +110,42 @@ export default {
               </li>
             </ul>
           </div>
+          <template v-else-if="hasIdentifiers(field, key)">
+            <span
+              v-for="(identifier, i) in field.value"
+              :key="i"
+            >
+              <a
+                :class="`js-link-${key}`"
+                v-if="identifier.url"
+                target="_blank"
+                :href="identifier.url"
+                rel="noopener noreferrer"
+              >
+                {{ identifier.name }}
+              </a>
+              <span v-else>
+                {{ identifier.name }}
+              </span>
+              <span v-if="isLastValue(i, field.value)">,&nbsp;</span>
+            </span>
+          </template>
+          <template v-else-if="hasLinks(field, key)">
+            <span
+              v-for="(link, i) in field.value"
+              :key="i"
+            >
+              <a
+                :class="`js-link-${key}`"
+                target="_blank"
+                :href="link.url"
+                rel="noopener noreferrer"
+              >
+                {{ link.value || link.url }}
+              </a>
+              <span v-if="isLastValue(i, field.value)">,&nbsp;</span>
+            </span>
+          </template>
           <template v-else>
             <a
               :class="`js-link-${key}`"
@@ -111,7 +163,21 @@ export default {
       </div>
 
       <div class="row prepend-top-20 append-bottom-10">
-        <div class="col-sm-10 col-sm-offset-2 text-secondary">
+        <div class="col-sm-10 offset-sm-2 text-secondary">
+          <template v-if="hasDismissedBy">
+            {{ s__('ciReport|Dismissed by') }}
+            <a
+              :href="modal.vulnerability.dismissalFeedback.author.web_url"
+              class="pipeline-id"
+            >
+              @{{ modal.vulnerability.dismissalFeedback.author.username }}
+            </a>
+            {{ s__('ciReport|on pipeline') }}
+            <a
+              :href="modal.vulnerability.dismissalFeedback.pipeline.path"
+              class="pipeline-id"
+            >#{{ modal.vulnerability.dismissalFeedback.pipeline.id }}</a>.
+          </template>
           <a
             class="js-link-vulnerabilityFeedbackHelpPath"
             :href="vulnerabilityFeedbackHelpPath"

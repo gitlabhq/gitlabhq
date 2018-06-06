@@ -1,7 +1,7 @@
 <script>
 /**
  * Renders SAST body text
- * [priority]: [name] in [link] : [line]
+ * [severity] ([confidence]): [name] in [link] : [line]
  */
 import ReportLink from './report_link.vue';
 import ModalOpenName from './modal_open_name.vue';
@@ -24,8 +24,11 @@ export default {
 </script>
 <template>
   <div class="report-block-list-issue-description prepend-top-5 append-bottom-5">
-    <div class="report-block-list-issue-description-text append-right-5">
-      <template v-if="issue.priority">{{ issue.priority }}:</template>
+    <div class="report-block-list-issue-description-text">
+      <template v-if="issue.severity && issue.confidence">
+        {{ issue.severity }} ({{ issue.confidence }}):
+      </template>
+      <template v-else-if="issue.priority">{{ issue.priority }}:</template>
 
       <modal-open-name :issue="issue" />
     </div>

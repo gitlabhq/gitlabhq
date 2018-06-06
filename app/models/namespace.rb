@@ -22,7 +22,7 @@ class Namespace < ActiveRecord::Base
   has_many :projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :project_statistics
 
-  has_many :runner_namespaces, class_name: 'Ci::RunnerNamespace'
+  has_many :runner_namespaces, inverse_of: :namespace, class_name: 'Ci::RunnerNamespace'
   has_many :runners, through: :runner_namespaces, source: :runner, class_name: 'Ci::Runner'
 
   # This should _not_ be `inverse_of: :namespace`, because that would also set

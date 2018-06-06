@@ -48,7 +48,7 @@ class X509CertificateCredentialsValidator < ActiveModel::Validator
 
   def read_private_key(record)
     OpenSSL::PKey.read(pkey(record).to_s, pass(record).to_s)
-  rescue ArgumentError
+  rescue OpenSSL::PKey::PKeyError, ArgumentError
     # When the primary key could not be read, an ArgumentError is raised.
     # This hapens when the passed key is not valid or the passphrase is incorrect
     nil

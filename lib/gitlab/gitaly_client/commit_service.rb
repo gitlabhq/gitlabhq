@@ -78,7 +78,7 @@ module Gitlab
       def tree_entry(ref, path, limit = nil)
         request = Gitaly::TreeEntryRequest.new(
           repository: @gitaly_repo,
-          revision: ref,
+          revision: encode_binary(ref),
           path: encode_binary(path),
           limit: limit.to_i
         )

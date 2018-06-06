@@ -143,8 +143,13 @@ module Gitlab
                 .order(arel_table[column_sym])
             ).as('row_id')
 
-          count = arel_table.from(arel_table.alias)
-                    .project('COUNT(*)')
+          arel_from = if Gitlab.rails5?
+                        arel_table.from.from(arel_table.alias)
+                      else
+                        arel_table.from(arel_table.alias)
+                      end
+
+          count = arel_from.project('COUNT(*)')
                     .where(arel_table[partition_column].eq(arel_table.alias[partition_column]))
                     .as('ct')
 

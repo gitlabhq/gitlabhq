@@ -173,7 +173,7 @@ MergeRequest:
 - last_edited_by_id
 - head_pipeline_id
 - discussion_locked
-- allow_maintainer_to_push
+- allow_collaboration
 MergeRequestDiff:
 - id
 - state
@@ -208,6 +208,19 @@ MergeRequestDiffFile:
 - b_mode
 - too_large
 - binary
+MergeRequest::Metrics:
+- id
+- created_at
+- updated_at
+- merge_request_id
+- pipeline_id
+- latest_closed_by_id
+- latest_closed_at
+- merged_by_id
+- merged_at
+- latest_build_started_at
+- latest_build_finished_at
+- first_deployed_to_production_at
 Ci::Pipeline:
 - id
 - project_id
@@ -232,6 +245,7 @@ Ci::Pipeline:
 - config_source
 - failure_reason
 - protected
+- iid
 Ci::Stage:
 - id
 - name

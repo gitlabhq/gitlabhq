@@ -1,6 +1,5 @@
 <script>
   import { s__ } from '~/locale';
-  import { numberToHumanSize } from '~/lib/utils/number_utils';
 
   import { VALUE_TYPE, HELP_INFO_URL } from '../../constants';
 
@@ -30,12 +29,6 @@
       };
     },
     computed: {
-      hasItemsToShow() {
-        if (!this.nodeTypePrimary) {
-          return this.nodeDetails.repositoryVerificationEnabled;
-        }
-        return true;
-      },
       nodeDetailItems() {
         return this.nodeTypePrimary ?
           this.getPrimaryNodeDetailItems() :
@@ -44,64 +37,37 @@
     },
     methods: {
       getPrimaryNodeDetailItems() {
-        const primaryNodeDetailItems = [];
-
-        if (this.nodeDetails.repositoryVerificationEnabled) {
-          primaryNodeDetailItems.push(
-            {
-              itemTitle: s__('GeoNodes|Repository checksum progress'),
-              itemValue: this.nodeDetails.repositoriesChecksummed,
-              itemValueType: VALUE_TYPE.GRAPH,
-              successLabel: s__('GeoNodes|Checksummed'),
-              neutraLabel: s__('GeoNodes|Not checksummed'),
-              failureLabel: s__('GeoNodes|Failed'),
-              helpInfo: {
-                title: s__('GeoNodes|Repositories checksummed for verification with their counterparts on Secondary nodes'),
-                url: HELP_INFO_URL,
-                urlText: s__('GeoNodes|Learn more about Repository checksum progress'),
-              },
-            },
-            {
-              itemTitle: s__('GeoNodes|Wiki checksum progress'),
-              itemValue: this.nodeDetails.wikisChecksummed,
-              itemValueType: VALUE_TYPE.GRAPH,
-              successLabel: s__('GeoNodes|Checksummed'),
-              neutraLabel: s__('GeoNodes|Not checksummed'),
-              failureLabel: s__('GeoNodes|Failed'),
-              helpInfo: {
-                title: s__('GeoNodes|Wikis checksummed for verification with their counterparts on Secondary nodes'),
-                url: HELP_INFO_URL,
-                urlText: s__('GeoNodes|Learn more about Wiki checksum progress'),
-              },
-            },
-          );
-        }
-
-        primaryNodeDetailItems.push(
+        return [
           {
-            itemTitle: s__('GeoNodes|Replication slots'),
-            itemValue: this.nodeDetails.replicationSlots,
+            itemTitle: s__('GeoNodes|Repository checksum progress'),
+            itemValue: this.nodeDetails.repositoriesChecksummed,
             itemValueType: VALUE_TYPE.GRAPH,
-            successLabel: s__('GeoNodes|Used slots'),
-            neutraLabel: s__('GeoNodes|Unused slots'),
-          },
-        );
-
-        if (this.nodeDetails.replicationSlots.totalCount) {
-          primaryNodeDetailItems.push(
-            {
-              itemTitle: s__('GeoNodes|Replication slot WAL'),
-              itemValue: numberToHumanSize(this.nodeDetails.replicationSlotWAL),
-              itemValueType: VALUE_TYPE.PLAIN,
-              cssClass: 'node-detail-value-bold',
+            successLabel: s__('GeoNodes|Checksummed'),
+            neutraLabel: s__('GeoNodes|Not checksummed'),
+            failureLabel: s__('GeoNodes|Failed'),
+            helpInfo: {
+              title: s__('GeoNodes|Repositories checksummed for verification with their counterparts on Secondary nodes'),
+              url: HELP_INFO_URL,
+              urlText: s__('GeoNodes|Learn more about Repository checksum progress'),
             },
-          );
-        }
-
-        return primaryNodeDetailItems;
+          },
+          {
+            itemTitle: s__('GeoNodes|Wiki checksum progress'),
+            itemValue: this.nodeDetails.wikisChecksummed,
+            itemValueType: VALUE_TYPE.GRAPH,
+            successLabel: s__('GeoNodes|Checksummed'),
+            neutraLabel: s__('GeoNodes|Not checksummed'),
+            failureLabel: s__('GeoNodes|Failed'),
+            helpInfo: {
+              title: s__('GeoNodes|Wikis checksummed for verification with their counterparts on Secondary nodes'),
+              url: HELP_INFO_URL,
+              urlText: s__('GeoNodes|Learn more about Wiki checksum progress'),
+            },
+          },
+        ];
       },
       getSecondaryNodeDetailItems() {
-        const secondaryNodeDetailItems = [
+        return [
           {
             itemTitle: s__('GeoNodes|Repository verification progress'),
             itemValue: this.nodeDetails.verifiedRepositories,
@@ -129,8 +95,6 @@
             },
           },
         ];
-
-        return secondaryNodeDetailItems;
       },
       handleSectionToggle(toggleState) {
         this.showSectionItems = toggleState;
@@ -140,10 +104,7 @@
 </script>
 
 <template>
-  <div
-    v-if="hasItemsToShow"
-    class="row-fluid clearfix node-detail-section verification-section"
-  >
+  <div class="row-fluid clearfix node-detail-section verification-section">
     <div class="col-md-12">
       <section-reveal-button
         :button-title="__('Verification information')"

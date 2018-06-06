@@ -175,7 +175,7 @@ describe Projects::MirrorsController do
         do_put(project, { import_url: 'ftp://invalid.invalid' }, format: :json)
 
         expect(response).to have_gitlab_http_status(422)
-        expect(json_response['import_url'].first).to match /valid URL/
+        expect(json_response['import_url'].first).to match /is blocked/
       end
 
       it "preserves the import_data object when the ID isn't in the request" do
@@ -236,7 +236,7 @@ describe Projects::MirrorsController do
         do_put(project, username_only_import_url: "ftp://invalid.invalid'")
 
         expect(response).to redirect_to(project_settings_repository_path(project))
-        expect(flash[:alert]).to match(/must be a valid URL/)
+        expect(flash[:alert]).to match(/is blocked/)
       end
     end
   end

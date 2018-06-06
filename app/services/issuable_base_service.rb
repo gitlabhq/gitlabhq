@@ -185,7 +185,10 @@ class IssuableBaseService < BaseService
     old_associations = associations_before_update(issuable)
 
     label_ids = process_label_ids(params, existing_label_ids: issuable.label_ids)
-    params[:label_ids] = label_ids if labels_changing?(issuable.label_ids, label_ids)
+    if labels_changing?(issuable.label_ids, label_ids)
+      params[:label_ids] = label_ids
+      issuable.touch
+    end
 
     if issuable.changed? || params.present?
       issuable.assign_attributes(params.merge(updated_by: current_user))

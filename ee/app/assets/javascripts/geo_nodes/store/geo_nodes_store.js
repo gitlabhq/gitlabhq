@@ -70,8 +70,9 @@ export default class GeoNodesStore {
       primaryRevision: rawNodeDetails.primaryRevision,
       replicationSlotWAL: rawNodeDetails.replication_slots_max_retained_wal_bytes,
       missingOAuthApplication: rawNodeDetails.missing_oauth_application || false,
-      storageShardsMatch: rawNodeDetails.storage_shards_match,
       syncStatusUnavailable: rawNodeDetails.sync_status_unavailable || false,
+      storageShardsMatch: rawNodeDetails.storage_shards_match,
+      repositoryVerificationEnabled: rawNodeDetails.repository_verification_enabled,
       replicationSlots: {
         totalCount: rawNodeDetails.replication_slots_count || 0,
         successCount: rawNodeDetails.replication_slots_used_count || 0,
@@ -87,7 +88,6 @@ export default class GeoNodesStore {
         successCount: rawNodeDetails.wikis_synced_count || 0,
         failureCount: rawNodeDetails.wikis_failed_count || 0,
       },
-      repositoryVerificationEnabled: rawNodeDetails.repository_verification_enabled,
       repositoriesChecksummed: {
         totalCount: rawNodeDetails.repositories_count || 0,
         successCount: rawNodeDetails.repositories_checksummed_count || 0,

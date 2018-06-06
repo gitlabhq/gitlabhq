@@ -44,6 +44,11 @@ export default {
       isFullReportVisible: false,
     };
   },
+  computed: {
+    unresolvedIssuesStatus() {
+      return this.type === 'license' ? 'neutral' : 'failed';
+    },
+  },
   methods: {
     openFullReport() {
       this.isFullReportVisible = true;
@@ -59,7 +64,7 @@ export default {
       class="js-mr-code-new-issues"
       v-if="unresolvedIssues.length"
       :type="type"
-      status="failed"
+      :status="unresolvedIssuesStatus"
       :issues="unresolvedIssues"
     />
 

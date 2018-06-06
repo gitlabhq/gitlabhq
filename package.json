@@ -1,6 +1,7 @@
 {
   "private": true,
   "scripts": {
+    "clean": "rm -rf public/assets tmp/cache/*-loader",
     "dev-server": "nodemon -w 'config/webpack.config.js' --exec 'webpack-dev-server --config config/webpack.config.js'",
     "eslint": "eslint --max-warnings 0 --ext .js,.vue .",
     "eslint-fix": "eslint --max-warnings 0 --ext .js,.vue --fix .",
@@ -76,6 +77,7 @@
     "sanitize-html": "^1.16.1",
     "select2": "3.5.2-browserify",
     "sha1": "^1.1.1",
+    "sortablejs": "^1.7.0",
     "sql.js": "^0.4.0",
     "stickyfilljs": "^2.0.5",
     "style-loader": "^0.21.0",
@@ -98,7 +100,7 @@
     "webpack-bundle-analyzer": "^2.11.1",
     "webpack-cli": "^2.1.2",
     "webpack-stats-plugin": "^0.2.1",
-    "worker-loader": "^1.1.1"
+    "worker-loader": "^2.0.0"
   },
   "devDependencies": {
     "axios-mock-adapter": "^1.15.0",

@@ -7,8 +7,8 @@
 - ineligible_approver = issuable.author || current_user
 - can_update_approvers = can?(current_user, :update_approvers, issuable)
 
-.form-group
-  = form.label :approver_ids, class: 'col-form-label' do
+.form-group.row
+  = form.label :approver_ids, class: 'col-form-label col-sm-2' do
     Approvers
   .col-sm-10
     - if can_update_approvers
@@ -61,7 +61,7 @@
                       Remove
 
     .col-sm-12
-      .form-group
+      .form-group.row
         = form.label :approvals_before_merge, class: 'label-light' do
           Approvals required
         = form.number_field :approvals_before_merge, class: 'form-control', value: issuable.approvals_required, readonly: !can_update_approvers

@@ -28,6 +28,7 @@ project_tree:
   - project_members:
     - :user
   - merge_requests:
+    - :metrics
     - notes:
       - :author
       - events:

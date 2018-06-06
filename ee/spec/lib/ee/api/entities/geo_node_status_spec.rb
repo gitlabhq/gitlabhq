@@ -124,7 +124,6 @@ describe EE::API::Entities::GeoNodeStatus, :postgresql do
 
       expect(subject[:storage_shards].count).to eq(shards.count)
       expect(subject[:storage_shards].first[:name]).to eq(shards.first.name)
-      expect(subject[:storage_shards].first[:path]).to eq(shards.first.path)
     end
   end
 
