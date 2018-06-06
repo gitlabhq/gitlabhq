@@ -15,5 +15,5 @@
     = link_to s_('ClusterIntegration|Add an existing Kubernetes cluster'), user_new_namespace_project_clusters_path(@project.namespace, @project), class: 'btn append-bottom-20'
 
     %p
-      - docs_link = link_to s_('If you are setting up multiple clusters and are using Auto DevOps,|read this first'), 'https://docs.gitlab.com/ee/topics/autodevops/index.html#using-multiple-kubernetes-clusters', target: '_blank'
+      - docs_link = link_to s_('If you are setting up multiple clusters and are using Auto DevOps,|read this first'), help_page_path('topics/autodevops/index.md', anchor: 'using-multiple-kubernetes-clusters'), target: '_blank'
       = s_('ClusterIntegration|If you are setting up multiple clusters and are using Auto DevOps, %{docs_link}.').html_safe % { docs_link: docs_link }
