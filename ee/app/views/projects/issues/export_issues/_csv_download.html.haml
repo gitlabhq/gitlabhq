@@ -3,17 +3,17 @@
     .modal-dialog
       .modal-content
         .modal-header
-          %a.close{ href: '#', 'data-dismiss' => 'modal' } ×
-          .export-svg-container.float-right
-            = render 'projects/issues/export_issues/export_issues_list.svg'
           %h3
             Export issues
-        .modal-header
-          = icon('check', { class: 'export-checkmark' })
-          %strong
-            #{pluralize(issuables_count_for_state(:issues, params[:state]), 'issue')} selected
+          .export-svg-container
+            = render 'projects/issues/export_issues/export_issues_list.svg'
+          %a.close{ href: '#', 'data-dismiss' => 'modal' } ×
         .modal-body
-          %div
+          .export-modal-subheader
+            = icon('check', { class: 'export-checkmark' })
+            %strong.prepend-left-10
+              #{pluralize(issuables_count_for_state(:issues, params[:state]), 'issue')} selected
+          .export-modal-text
             The CSV export will be created in the background. Once finished, it will be sent to
             %strong= @current_user.notification_email
             in an attachment.
