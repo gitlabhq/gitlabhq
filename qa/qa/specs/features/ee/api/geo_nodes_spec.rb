@@ -212,7 +212,7 @@ module QA
     end
 
     def fetch_nodes(node_type)
-      @api_client = Runtime::API::Client.new(node_type, @personal_access_token)
+      @api_client = Runtime::API::Client.new(node_type, personal_access_token: @personal_access_token)
 
       get api_endpoint('/geo_nodes')
 
