@@ -2,10 +2,11 @@
 # It acts as a thin layer which caches lightweight information
 # based on the blob content (which is not cached).
 class BlobsService
-  def initialize(project, content_sha, path)
+  def initialize(project, content_sha, path, highlighted:)
     @project = project
     @content_sha = content_sha
     @path = path
+    @highlighted = highlighted
   end
 
   def id
@@ -66,13 +67,19 @@ class BlobsService
 
   private
 
+  # We need blobs data (content) in order to highlight diffs (see
+  # Gitlab::Diff:Highlight), and we don't cache this (Blob#data) on Redis,
+  # mainly because it's a quite heavy information to cache for every blob.
+  #
+  # Therefore, in this scenario (no highlight yet) we use the uncached blob
+  # version.
   def blob
-    if cache_exists?
+    if @highlighted && cache_exists?
       # TODO: This can be a CachedBlob
       Hashie::Mash.new(read_cache)
     else
       write_cache
-      blob
+      uncached_blob
     end
   end
 

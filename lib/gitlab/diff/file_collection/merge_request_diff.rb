@@ -19,7 +19,7 @@ module Gitlab
           #
           diff_files = super
 
-          diff_files.each { |diff_file| cache_highlight!(diff_file) if cacheable?(diff_file) }
+          diff_files.each { |diff_file| cache_highlight!(diff_file) }
           store_highlight_cache
 
           diff_files
@@ -66,7 +66,7 @@ module Gitlab
           if highlight_cache[item_key]
             highlight_diff_file_from_cache!(diff_file, highlight_cache[item_key])
           else
-            highlight_cache[item_key] = diff_file.highlighted_diff_lines.map(&:to_hash)
+            highlight_cache[item_key] = diff_file.highlighted_diff_lines.map(&:to_hash) if cacheable?(diff_file)
           end
         end
 

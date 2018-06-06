@@ -106,13 +106,19 @@ module Gitlab
       def new_blob
         return unless new_content_sha
 
-        BlobsService.new(repository.project, new_content_sha, file_path)
+        BlobsService.new(repository.project,
+                         new_content_sha,
+                         file_path,
+                         highlighted: highlighted?)
       end
 
       def old_blob
         return unless old_content_sha
 
-        BlobsService.new(repository.project, old_content_sha, file_path)
+        BlobsService.new(repository.project,
+                         old_content_sha,
+                         file_path,
+                         highlighted: highlighted?)
       end
 
       def content_sha
@@ -125,7 +131,6 @@ module Gitlab
 
       attr_writer :highlighted_diff_lines
 
-      # Array of Gitlab::Diff::Line objects
       def diff_lines
         @diff_lines ||= Gitlab::Diff::Parser.new.parse(raw_diff.each_line).to_a
       end
@@ -237,6 +242,10 @@ module Gitlab
       end
 
       private
+
+      def highlighted?
+        @highlighted_diff_lines.present?
+      end
 
       # We can't use Object#try because Blob doesn't inherit from Object, but
       # from BasicObject (via SimpleDelegator).
