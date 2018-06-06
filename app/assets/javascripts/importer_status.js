@@ -58,7 +58,7 @@ class ImporterStatus {
       job.find('.import-target').html(`<a href="${data.full_path}">${data.full_path}</a>`);
       $('table.import-jobs tbody').prepend(job);
 
-      job.addClass('active');
+      job.addClass('table-active');
       const connectingVerb = this.ciCdOnly ? __('connecting') : __('importing');
       job.find('.import-actions').html(sprintf(
         _.escape(__('%{loadingIcon} Started')), {
@@ -81,7 +81,7 @@ class ImporterStatus {
 
           switch (job.import_status) {
             case 'finished':
-              jobItem.removeClass('active').addClass('success');
+              jobItem.removeClass('table-active').addClass('table-success');
               statusField.html(`<span><i class="fa fa-check"></i> ${__('Done')}</span>`);
               break;
             case 'scheduled':
