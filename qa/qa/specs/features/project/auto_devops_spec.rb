@@ -1,7 +1,5 @@
 module QA
   feature 'Auto Devops', :kubernetes do
-    let(:executor) { "qa-runner-#{Time.now.to_i}" }
-
     after do
       @cluster&.remove!
     end
@@ -28,13 +26,13 @@ module QA
 
       # Create and connect K8s cluster
       @cluster = Service::KubernetesCluster.new.create!
-      kubernetes_cluster = Factory::Resource::KubernetesCluster.fabricate! do |c|
-        c.project = project
-        c.cluster = @cluster
-        c.install_helm_tiller = true
-        c.install_ingress = true
-        c.install_prometheus = true
-        c.install_runner = true
+      kubernetes_cluster = Factory::Resource::KubernetesCluster.fabricate! do |cluster|
+        cluster.project = project
+        cluster.cluster = @cluster
+        cluster.install_helm_tiller = true
+        cluster.install_ingress = true
+        cluster.install_prometheus = true
+        cluster.install_runner = true
       end
 
       project.visit!
