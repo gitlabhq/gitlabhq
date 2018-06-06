@@ -18,7 +18,6 @@ module QA
           @commit_message = "This is a test commit"
           @branch_name = 'master'
           @new_branch = true
-          @pushing_directory = false
         end
 
         def remote_branch
@@ -29,7 +28,6 @@ module QA
           raise "Must set directory as a Pathname" unless dir.is_a?(Pathname)
 
           @directory = dir
-          @pushing_directory = true
         end
 
         def fabricate!
@@ -51,7 +49,7 @@ module QA
               repository.checkout(branch_name)
             end
 
-            if @pushing_directory
+            if @directory
               @directory.each_child do |f|
                 repository.add_file(f.basename, f.read) if f.file?
               end
