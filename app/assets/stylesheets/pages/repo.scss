@@ -1137,7 +1137,7 @@
   }
 
   .ide-merge-requests-dropdown.dropdown-menu {
-    width: 350px;
+    width: 385px;
     max-height: initial;
   }
 }
@@ -1298,6 +1298,16 @@
       }
     }
   }
+
+  .dropdown-input {
+    padding-left: $gl-padding;
+    padding-right: $gl-padding;
+  }
+
+  .btn-link {
+    padding-top: $gl-padding;
+    padding-bottom: $gl-padding;
+  }
 }
 
 .ide-merge-request-current-icon {
@@ -1311,4 +1321,10 @@
 .ide-merge-requests-dropdown-content {
   min-height: 230px;
   max-height: 470px;
+}
+
+.ide-merge-request-project-path {
+  font-size: 12px;
+  line-height: 16px;
+  color: $gl-text-color-secondary;
 }

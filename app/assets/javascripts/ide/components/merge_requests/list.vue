@@ -58,7 +58,6 @@ export default {
       this.fetchMergeRequests({ type: this.type, search: this.search });
     },
     viewMergeRequest(item) {
-      this.$emit('hide');
       this.openMergeRequest({
         projectPath: item.projectPathWithNamespace,
         id: item.iid,

@@ -55,7 +55,7 @@ export default {
       <strong>
         {{ item.title }}
       </strong>
-      <span class="d-block mt-1">
+      <span class="ide-merge-request-project-path d-block mt-1">
         {{ pathWithID }}
       </span>
     </span>

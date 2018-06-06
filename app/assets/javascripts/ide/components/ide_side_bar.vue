@@ -1,4 +1,5 @@
 <script>
+import $ from 'jquery';
 import { mapState, mapGetters } from 'vuex';
 import ProjectAvatarImage from '~/vue_shared/components/project_avatar/image.vue';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -70,19 +71,31 @@ export default {
         this.showTooltip = this.$refs.branchId.scrollWidth > this.$refs.branchId.offsetWidth;
       });
     },
-    showMergeRequestsDropdown() {
-      if (this.showMergeRequestsDropdown) {
-        document.addEventListener('click', this.hideMergeRequestDropdown);
-      } else {
-        document.removeEventListener('click', this.hideMergeRequestDropdown);
+    loading() {
+      if (!this.loading) {
+        this.$nextTick(() => {
+          this.addDropdownListeners();
+        });
       }
     },
   },
+  mounted() {
+    this.addDropdownListeners();
+  },
+  beforeDestroy() {
+    $(this.$refs.mergeRequestDropdown)
+      .off('show.bs.dropdown')
+      .off('hide.bs.dropdown');
+  },
   methods: {
-    hideMergeRequestDropdown(e) {
-      if (this.$refs.mergeRequestDropdown.contains(e.target)) return;
-
-      this.showMergeRequestsDropdown = false;
+    addDropdownListeners() {
+      $(this.$refs.mergeRequestDropdown)
+        .on('show.bs.dropdown', () => {
+          this.toggleMergeRequestDropdown();
+        })
+        .on('hide.bs.dropdown', () => {
+          this.toggleMergeRequestDropdown();
+        });
     },
     toggleMergeRequestDropdown() {
       this.showMergeRequestsDropdown = !this.showMergeRequestsDropdown;
@@ -113,15 +126,12 @@ export default {
       <template v-else>
         <div
           class="context-header ide-context-header dropdown"
-          :class="{
-            show: showMergeRequestsDropdown
-          }"
           ref="mergeRequestDropdown"
         >
           <a
             href="#"
             role="button"
-            @click.prevent="toggleMergeRequestDropdown"
+            data-toggle="dropdown"
           >
             <div
               v-if="currentProject.avatar_url"
@@ -178,7 +188,7 @@ export default {
             />
           </a>
           <merge-request-dropdown
-            v-if="showMergeRequestsDropdown"
+            :show="showMergeRequestsDropdown"
             @hide="toggleMergeRequestDropdown"
           />
         </div>

@@ -10,15 +10,16 @@ export default {
     Tab,
     List,
   },
+  props: {
+    show: {
+      type: Boolean,
+      required: true,
+    },
+  },
   computed: {
     ...mapGetters('mergeRequests', ['assignedData', 'createdData']),
     createdMergeRequestLength() {
       return this.createdData.mergeRequests.length;
-    },
-  },
-  methods: {
-    hideDropdown() {
-      this.$emit('hide');
     },
   },
 };
@@ -26,7 +27,10 @@ export default {
 
 <template>
   <div class="dropdown-menu ide-merge-requests-dropdown p-0">
-    <tabs stop-propagation>
+    <tabs
+      v-if="show"
+      stop-propagation
+    >
       <tab active>
         <template slot="title">
           {{ __('Created by me') }}
@@ -37,7 +41,6 @@ export default {
         <list
           type="created"
           :empty-text="__('You have not created any merge requests')"
-          @hide="hideDropdown"
         />
       </tab>
       <tab>
@@ -50,7 +53,6 @@ export default {
         <list
           type="assigned"
           :empty-text="__('You do not have any assigned merge requests')"
-          @hide="hideDropdown"
         />
       </tab>
     </tabs>
