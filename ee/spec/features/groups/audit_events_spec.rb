@@ -45,7 +45,7 @@ feature 'Groups > Audit Events', :js do
 
       page.within "#group_member_#{group_member.id}" do
         click_button 'Developer'
-        click_link 'Master'
+        click_link 'Maintainer'
       end
 
       find(:link, text: 'Settings').click
@@ -53,7 +53,7 @@ feature 'Groups > Audit Events', :js do
       click_link 'Audit Events'
 
       page.within('table#audits') do
-        expect(page).to have_content 'Change access level from developer to master'
+        expect(page).to have_content 'Change access level from developer to maintainer'
         expect(page).to have_content(user.name)
         expect(page).to have_content('Pete')
       end

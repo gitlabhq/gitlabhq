@@ -41,13 +41,13 @@ module API
         requires :name, type: String, desc: 'The name of the protected branch'
         optional :push_access_level, type: Integer,
                                      values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS,
-                                     desc: 'Access levels allowed to push (defaults: `40`, master access level)'
+                                     desc: 'Access levels allowed to push (defaults: `40`, maintainer access level)'
         optional :merge_access_level, type: Integer,
                                       values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS,
-                                      desc: 'Access levels allowed to merge (defaults: `40`, master access level)'
+                                      desc: 'Access levels allowed to merge (defaults: `40`, maintainer access level)'
         optional :unprotect_access_level, type: Integer,
                                           values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS,
-                                          desc: 'Access levels allowed to unprotect (defaults: `40`, master access level)'
+                                          desc: 'Access levels allowed to unprotect (defaults: `40`, maintainer access level)'
         optional :allowed_to_push, type: Array, desc: 'An array of users/groups allowed to push' do
           optional :access_level, type: Integer, values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS
           optional :user_id, type: Integer

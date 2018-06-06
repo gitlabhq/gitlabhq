@@ -10,8 +10,8 @@ created protected branches.
 By default, a protected branch does four simple things:
 
 - it prevents its creation, if not already created, from everybody except users
-  with Master permission
-- it prevents pushes from everybody except users with Master permission
+  with Maintainer permission
+- it prevents pushes from everybody except users with Maintainer permission
 - it prevents **anyone** from force pushing to the branch
 - it prevents **anyone** from deleting the branch
 
@@ -22,7 +22,7 @@ See the [Changelog](#changelog) section for changes over time.
 
 ## Configuring protected branches
 
-To protect a branch, you need to have at least Master permission level. Note
+To protect a branch, you need to have at least Maintainer permission level. Note
 that the `master` branch is protected by default.
 
 1. Navigate to your project's **Settings ➔ Repository**
@@ -43,19 +43,19 @@ that the `master` branch is protected by default.
 Since GitLab 8.11, we added another layer of branch protection which provides
 more granular management of protected branches. The "Developers can push"
 option was replaced by an "Allowed to push" setting which can be set to
-allow/prohibit Masters and/or Developers to push to a protected branch.
+allow/prohibit Maintainers and/or Developers to push to a protected branch.
 
 Using the "Allowed to push" and "Allowed to merge" settings, you can control
 the actions that different roles can perform with the protected branch.
 For example, you could set "Allowed to push" to "No one", and "Allowed to merge"
-to "Developers + Masters", to require _everyone_ to submit a merge request for
+to "Developers + Maintainers", to require _everyone_ to submit a merge request for
 changes going into the protected branch. This is compatible with workflows like
 the [GitLab workflow](../../workflow/gitlab_flow.md).
 
 However, there are workflows where that is not needed, and only protecting from
 force pushes and branch removal is useful. For those workflows, you can allow
 everyone with write access to push to a protected branch by setting
-"Allowed to push" to "Developers + Masters".
+"Allowed to push" to "Developers + Maintainers".
 
 You can set the "Allowed to push" and "Allowed to merge" options while creating
 a protected branch or afterwards by selecting the option you want from the
@@ -64,14 +64,14 @@ dropdown list in the "Already protected" area.
 ![Developers can push](img/protected_branches_devs_can_push.png)
 
 If you don't choose any of those options while creating a protected branch,
-they are set to "Masters" by default.
+they are set to "Maintainers" by default.
 
 ## Restricting push and merge access to certain users **[STARTER]**
 
 > This feature was [introduced][ce-5081] in [GitLab Starter][ee] 8.11.
 
 With GitLab Enterprise Edition you can restrict access to protected branches
-by choosing a role (Masters, Developers) as well as certain users. From the
+by choosing a role (Maintainers, Developers) as well as certain users. From the
 dropdown menu select the role and/or the users you want to have merge or push
 access.
 
@@ -114,7 +114,7 @@ all matching branches:
 From time to time, it may be required to delete or clean up branches that are
 protected.
 
-User with [Master permissions][perm] and up can manually delete protected
+User with [Maintainer permissions][perm] and up can manually delete protected
 branches via GitLab's web interface:
 
 1. Visit **Repository > Branches**
