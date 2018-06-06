@@ -180,12 +180,12 @@ describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redis_cach
 
       allow(importer.user_finder)
         .to receive(:user_id_for)
-        .ordered.with(issue.assignees[0])
+        .with(issue.assignees[0])
         .and_return(4)
 
       allow(importer.user_finder)
         .to receive(:user_id_for)
-        .ordered.with(issue.assignees[1])
+        .with(issue.assignees[1])
         .and_return(5)
 
       expect(Gitlab::Database)

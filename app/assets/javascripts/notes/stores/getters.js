@@ -1,7 +1,8 @@
 import _ from 'underscore';
 import * as constants from '../constants';
+import { collapseSystemNotes } from './collapse_utils';
 
-export const discussions = state => state.discussions;
+export const discussions = state => collapseSystemNotes(state.discussions);
 
 export const targetNoteHash = state => state.targetNoteHash;
 

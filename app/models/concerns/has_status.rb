@@ -11,6 +11,8 @@ module HasStatus
   STATUSES_ENUM = { created: 0, pending: 1, running: 2, success: 3,
                     failed: 4, canceled: 5, skipped: 6, manual: 7 }.freeze
 
+  UnknownStatusError = Class.new(StandardError)
+
   class_methods do
     def status_sql
       scope_relevant = respond_to?(:exclude_ignored) ? exclude_ignored : all

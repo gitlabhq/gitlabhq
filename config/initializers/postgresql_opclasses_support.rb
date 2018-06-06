@@ -107,8 +107,15 @@ module ActiveRecord
 
           result.map do |row|
             index_name = row[0]
-            unique = row[1] == 't'
+            unique = if Gitlab.rails5?
+                       row[1]
+                     else
+                       row[1] == 't'
+                     end
             indkey = row[2].split(" ")
+            if Gitlab.rails5?
+              indkey = indkey.map(&:to_i)
+            end
             inddef = row[3]
             oid = row[4]
 

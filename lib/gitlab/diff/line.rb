@@ -57,6 +57,10 @@ module Gitlab
         %w[match new-nonewline old-nonewline].include?(type)
       end
 
+      def match?
+        type == :match
+      end
+
       def discussable?
         !meta?
       end

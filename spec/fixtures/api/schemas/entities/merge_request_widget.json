@@ -31,7 +31,7 @@
     "source_project_id": { "type": "integer" },
     "target_branch": { "type": "string" },
     "target_project_id": { "type": "integer" },
-    "allow_maintainer_to_push": { "type": "boolean"},
+    "allow_collaboration": { "type": "boolean"},
     "metrics": {
       "oneOf": [
         { "type": "null" },
