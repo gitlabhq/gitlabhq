@@ -18,7 +18,7 @@
       .other-labels
         %h5 Labels
         %ul.content-list.manage-labels-list.js-other-labels
-          = render partial: 'shared/label', subject: @group, collection: @labels, as: :label, locals: { use_label_priority: true }
+          = render partial: 'shared/label', subject: @group, collection: @labels, as: :label, locals: { use_label_priority: false }
           = paginate @labels, theme: 'gitlab'
 - else
   = render 'shared/empty_states/labels'
