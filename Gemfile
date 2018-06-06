@@ -390,7 +390,7 @@ end
 
 group :test do
   gem 'shoulda-matchers', '~> 3.1.2', require: false
-  gem 'email_spec', '~> 1.6.0'
+  gem 'email_spec', '~> 2.2.0'
   gem 'json-schema', '~> 2.8.0'
   gem 'webmock', '~> 2.3.2'
   gem 'rails-controller-testing' if rails5? # Rails5 only gem.

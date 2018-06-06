@@ -40,7 +40,7 @@ module Projects
     end
 
     def run_auto_devops_pipeline?
-      return false if project.repository.gitlab_ci_yml || !project.auto_devops.previous_changes.include?('enabled')
+      return false if project.repository.gitlab_ci_yml || !project.auto_devops&.previous_changes&.include?('enabled')
 
       project.auto_devops.enabled? || (project.auto_devops.enabled.nil? && Gitlab::CurrentSettings.auto_devops_enabled?)
     end

@@ -1049,6 +1049,7 @@ describe 'Git LFS API and storage' do
                     expect(json_response['RemoteObject']).to have_key('GetURL')
                     expect(json_response['RemoteObject']).to have_key('StoreURL')
                     expect(json_response['RemoteObject']).to have_key('DeleteURL')
+                    expect(json_response['RemoteObject']).not_to have_key('MultipartUpload')
                     expect(json_response['LfsOid']).to eq(sample_oid)
                     expect(json_response['LfsSize']).to eq(sample_size)
                   end

@@ -272,13 +272,17 @@ module Ci
     end
 
     ##
-    # TODO consider switching to persisted stages only in pipelines table
-    # (not necessairly in the show pipeline page because of #23257.
-    # Hide this behind two feature flags - enabled / disabled and only
-    # gitlab-ce / everywhere.
+    # TODO We do not completely switch to persisted stages because of
+    # race conditions with setting statuses gitlab-ce#23257.
     #
-    def stages
-      super
+    def ordered_stages
+      return legacy_stages unless complete?
+
+      if Feature.enabled?('ci_pipeline_persisted_stages')
+        stages
+      else
+        legacy_stages
+      end
     end
 
     def legacy_stages

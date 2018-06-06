@@ -489,6 +489,15 @@
     .sidebar-collapsed-user {
       padding-bottom: 0;
       margin-bottom: 10px;
+
+      .author_link {
+        padding-left: 0;
+
+        .avatar {
+          position: static;
+          margin: 0;
+        }
+      }
     }
 
     .issuable-header-btn {
