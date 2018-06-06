@@ -44,8 +44,7 @@ module ClustersHelper
   end
 
   def expires_at_in_session
-    @expires_at_in_session ||=
-      session[GoogleApi::CloudPlatform::Client.session_key_for_expires_at]
+    session[GoogleApi::CloudPlatform::Client.session_key_for_expires_at]
   end
 
   def valid_gcp_token
