@@ -181,6 +181,25 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
       .can_push_to_branch?(source_branch)
   end
 
+  def mergeable_discussions_state
+    # This avoids calling MergeRequest#mergeable_discussions_state without
+    # considering the state of the MR first. If a MR isn't mergeable, we can
+    # safely short-circuit it.
+    if merge_request.mergeable_state?(skip_ci_check: true, skip_discussions_check: true)
+      merge_request.mergeable_discussions_state?
+    else
+      false
+    end
+  end
+
+  def web_url
+    Gitlab::UrlBuilder.build(merge_request)
+  end
+
+  def subscribed?
+    merge_request.subscribed?(current_user, merge_request.target_project)
+  end
+
   private
 
   def cached_can_be_reverted?
