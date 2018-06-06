@@ -10,7 +10,7 @@
             %p.auto-devops-warning-message.settings-message.text-center
               = message.html_safe
           = f.fields_for :auto_devops_attributes, @auto_devops do |form|
-            .card
+            .card.auto-devops-card
               .card-body
                 .form-check
                   = form.radio_button :enabled, 'true', class: 'form-check-input', data: { hide_extra_settings: false }
@@ -19,7 +19,7 @@
                   .form-text.text-muted
                     = s_('CICD|The Auto DevOps pipeline configuration will be used when there is no %{ci_file} in the project.').html_safe % { ci_file: ci_file_formatted }
 
-            .card
+            .card.auto-devops-card
               .card-body
                 .form-check
                   = form.radio_button :enabled, '', class: 'form-check-input', data: { hide_extra_settings: false }
@@ -28,7 +28,7 @@
                   .form-text.text-muted
                     = s_('CICD|Follow the instance default to either have Auto DevOps enabled or disabled when there is no project specific %{ci_file}.').html_safe % { ci_file: ci_file_formatted }
 
-            .card.js-extra-settings{ class: form.object&.enabled == false ? 'hidden' : nil }
+            .card.auto-devops-card.js-extra-settings{ class: form.object&.enabled == false ? 'hidden' : nil }
               .card-body.bg-light
                 = form.label :domain do
                   %strong= _('Domain')
@@ -54,7 +54,7 @@
                     %strong= s_('CICD|Automatic deployment to staging, manual deployment to production')
                     = link_to icon('question-circle'), help_page_path('ci/environments.md', anchor: 'manually-deploying-to-environments'), target: '_blank'
 
-            .card
+            .card.auto-devops-card
               .card-body
                 .form-check
                   = form.radio_button :enabled, 'false', class: 'form-check-input', data: { hide_extra_settings: true }
