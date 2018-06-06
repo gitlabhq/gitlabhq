@@ -69,11 +69,11 @@ describe ProjectAutoDevops do
       end
     end
 
-    context 'when deploy_strategy is continuous' do
+    context 'when deploy_strategy is manual' do
       let(:domain) { 'example.com' }
 
       before do
-        auto_devops.deploy_strategy = 'continuous'
+        auto_devops.deploy_strategy = 'manual'
       end
 
       it do
