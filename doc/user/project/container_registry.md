@@ -148,7 +148,7 @@ docker login registry.example.com -u <your_username> -p <your_access_token>
 The optional debug server can be enabled by setting the registry debug address
 in your `gitlab.rb` configuration.
 
-```
+```ruby
 registry['debug_addr'] = "localhost:5001"
 ```
 
