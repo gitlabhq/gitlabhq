@@ -1232,6 +1232,7 @@ ActiveRecord::Schema.define(version: 20180603190921) do
     t.integer "latest_merge_request_diff_id"
     t.string "rebase_commit_sha"
     t.boolean "allow_collaboration"
+    t.boolean "squash", default: false, null: false
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
