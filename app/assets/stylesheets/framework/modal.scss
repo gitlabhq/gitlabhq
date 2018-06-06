@@ -91,20 +91,3 @@ body.modal-open {
     margin: 0;
   }
 }
-
-.export-modal-header {
-  justify-content: flex-start;
-
-  .export-svg-container {
-    flex-grow: 1;
-
-    > svg {
-      float: right;
-    }
-  }
-}
-
-.export-modal-subheader {
-  justify-content: flex-start;
-  align-items: center;
-}
