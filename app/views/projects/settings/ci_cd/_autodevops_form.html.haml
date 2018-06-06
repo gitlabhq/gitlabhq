@@ -13,7 +13,7 @@
             .card
               .card-body
                 .form-check
-                  = form.radio_button :enabled, 'true', class: 'form-check-input'
+                  = form.radio_button :enabled, 'true', class: 'form-check-input', data: { hide_extra_settings: false }
                   = form.label :enabled_true, class: 'form-check-label' do
                     %strong= s_('CICD|Enable Auto DevOps')
                   .form-text.text-muted
@@ -22,13 +22,13 @@
             .card
               .card-body
                 .form-check
-                  = form.radio_button :enabled, '', class: 'form-check-input'
+                  = form.radio_button :enabled, '', class: 'form-check-input', data: { hide_extra_settings: false }
                   = form.label :enabled_, class: 'form-check-label' do
                     %strong= s_('CICD|Instance default (%{state})') % { state: "#{Gitlab::CurrentSettings.auto_devops_enabled? ? _('enabled') : _('disabled')}" }
                   .form-text.text-muted
                     = s_('CICD|Follow the instance default to either have Auto DevOps enabled or disabled when there is no project specific %{ci_file}.').html_safe % { ci_file: ci_file_formatted }
 
-            .card
+            .card.js-extra-settings{ class: form.object.enabled == false ? 'hidden' : nil }
               .card-body.bg-light
                 = form.label :domain do
                   %strong= _('Domain')
@@ -42,7 +42,7 @@
             .card
               .card-body
                 .form-check
-                  = form.radio_button :enabled, 'false', class: 'form-check-input'
+                  = form.radio_button :enabled, 'false', class: 'form-check-input', data: { hide_extra_settings: true }
                   = form.label :enabled_false, class: 'form-check-label' do
                     %strong= s_('CICD|Disable Auto DevOps')
                   .form-text.text-muted
