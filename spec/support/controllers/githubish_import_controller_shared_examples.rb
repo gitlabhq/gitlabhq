@@ -120,21 +120,6 @@ shared_examples 'a GitHub-ish import controller: POST create' do
 
   it 'returns 422 response with the base error when the project could not be imported' do
     project = build(:project)
-    error_message = 'This is an error'
-    project.errors.add(:base, error_message)
-
-    allow(Gitlab::LegacyGithubImport::ProjectCreator)
-      .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, access_params, type: provider)
-        .and_return(double(execute: project))
-
-    post :create, format: :json
-
-    expect(response).to have_gitlab_http_status(422)
-    expect(json_response['errors']).to eq(error_message)
-  end
-
-  it 'returns 422 response with a combined error when the project could not be imported' do
-    project = build(:project)
     project.errors.add(:name, 'is invalid')
     project.errors.add(:path, 'is old')
 
