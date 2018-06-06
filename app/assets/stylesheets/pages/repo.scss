@@ -458,13 +458,9 @@
     width: auto;
     margin-right: 0;
 
-    a {
+    > a,
+    > button {
       height: 60px;
-    }
-
-    a:hover,
-    a:focus {
-      text-decoration: none;
     }
   }
 
@@ -1302,6 +1298,10 @@
   .dropdown-input {
     padding-left: $gl-padding;
     padding-right: $gl-padding;
+
+    .fa {
+      right: 26px;
+    }
   }
 
   .btn-link {

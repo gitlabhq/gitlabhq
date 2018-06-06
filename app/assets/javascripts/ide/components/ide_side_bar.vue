@@ -127,9 +127,8 @@ export default {
           class="context-header ide-context-header dropdown"
           ref="mergeRequestDropdown"
         >
-          <a
-            href="#"
-            role="button"
+          <button
+            type="button"
             data-toggle="dropdown"
           >
             <div
@@ -185,7 +184,7 @@ export default {
               class="ml-auto"
               name="chevron-down"
             />
-          </a>
+          </button>
           <merge-request-dropdown
             :show="showMergeRequestsDropdown"
           />

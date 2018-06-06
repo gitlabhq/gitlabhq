@@ -82,7 +82,7 @@ export default {
       <input
         type="search"
         class="dropdown-input-field"
-        placeholder="Search merge requests"
+        :placeholder="__('Search merge requests')"
         v-model="search"
         @input="searchMergeRequests"
         ref="searchInput"

@@ -18,6 +18,9 @@ export default {
     showMergeRequestText() {
       return this.currentMergeRequestId && this.viewer === viewerTypes.mr;
     },
+    mergeRequestId() {
+      return `!${this.currentMergeRequest.iid}`;
+    },
   },
   mounted() {
     this.$nextTick(() => {
@@ -57,7 +60,8 @@ export default {
           (<a
             v-if="currentMergeRequest"
             :href="currentMergeRequest.web_url"
-          >!{{ currentMergeRequest.iid }}</a>)
+            v-text="mergeRequestId"
+          ></a>)
         </template>
       </div>
     </template>
