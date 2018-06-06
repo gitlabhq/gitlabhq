@@ -237,17 +237,17 @@
   .settings-content
     = render 'usage'
 
-- if meltano_elt_database_dump_enabled?
+- if License.feature_available?(:pseudonymizer)
   %section.settings.as-usage.no-animate#js-elt-database-dump-settings{ class: ('expanded' if expanded) }
     .settings-header
       %h4
-        = _('Meltano ELT Database Cron Job')
+        = _('Pseudonymizer Cron Job')
       %button.btn.btn-default.js-settings-toggle{ type: 'button' }
         = expanded ? _('Collapse') : _('Expand')
       %p
-        = _('Enable or disable Meltano ELT Database Cron Job.')
+        = _('Enable or disable the Pseudonymizer Cron Job.')
     .settings-content
-      = render 'elt_database_cron_job'
+      = render 'pseudonymizer'
 
 %section.settings.as-email.no-animate#js-email-settings{ class: ('expanded' if expanded) }
   .settings-header

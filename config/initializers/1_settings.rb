@@ -162,7 +162,6 @@ Settings.gitlab['import_sources'] ||= Gitlab::ImportSources.values
 Settings.gitlab['trusted_proxies'] ||= []
 Settings.gitlab['no_todos_messages'] ||= YAML.load_file(Rails.root.join('config', 'no_todos_messages.yml'))
 Settings.gitlab['usage_ping_enabled'] = true if Settings.gitlab['usage_ping_enabled'].nil?
-Settings.gitlab['elt_database_dump_enabled'] = false if Settings.gitlab['elt_database_dump_enabled'].nil?
 
 #
 # Elasticseacrh
@@ -479,6 +478,7 @@ Settings.backup['upload']['storage_class'] ||= nil
 # Pseudonymizer
 #
 Settings['pseudonymizer'] ||= Settingslogic.new({})
+Settings.pseudonymizer['enabled'] = false if Settings.pseudonymizer['enabled'].nil?
 Settings.pseudonymizer['manifest'] = Settings.pseudonymizer['manifest'] || "lib/pseudonymity/manifest.yml"
 Settings.pseudonymizer['upload'] ||= Settingslogic.new({ 'remote_directory' => nil, 'connection' => nil })
 # Settings.pseudonymizer['upload']['multipart_chunk_size'] ||= 104857600

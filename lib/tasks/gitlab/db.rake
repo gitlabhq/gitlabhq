@@ -46,10 +46,6 @@ namespace :gitlab do
 
     desc 'Configures the database by running migrate, or by loading the schema and seeding if needed'
     task configure: :environment do
-      unless License.feature_available? :meltano_elt_database_dump
-        raise "The Meltano ELT extract is not available with this license."  
-      end
-
       if ActiveRecord::Base.connection.tables.any?
         Rake::Task['db:migrate'].invoke
       else
@@ -75,7 +71,13 @@ namespace :gitlab do
     end
 
     desc 'Output pseudonymity dump of selected tables'
-    task pseudonymity_dump: :environment do
+    task pseudonymizer: :environment do
+      unless License.feature_available? :pseudonymizer
+        raise "The pseudonymizer is not available with this license."
+      end
+
+      abort "Pseudonymizer disabled." unless Gitlab::CurrentSettings.pseudonymizer_enabled?
+
       options = Pseudonymity::Options.new(
         config: YAML.load_file(Rails.root.join(Gitlab.config.pseudonymizer.manifest)),
         start_at: Time.now.utc

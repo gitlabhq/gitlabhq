@@ -206,7 +206,7 @@ ActiveRecord::Schema.define(version: 20180612175636) do
     t.string "encrypted_external_auth_client_key_pass_iv"
     t.string "email_additional_text"
     t.boolean "enforce_terms", default: false
-    t.boolean "elt_database_dump_enabled"
+    t.boolean "pseudonymizer_enabled"
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -2279,6 +2279,7 @@ ActiveRecord::Schema.define(version: 20180612175636) do
   end
 
   add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path", unique: true, using: :btree
+  add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path_text_pattern_ops", using: :btree, opclasses: {"path"=>"varchar_pattern_ops"}
   add_index "redirect_routes", ["source_type", "source_id"], name: "index_redirect_routes_on_source_type_and_source_id", using: :btree
 
   create_table "releases", force: :cascade do |t|

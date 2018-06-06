@@ -1,9 +1,9 @@
-class GitlabEltDataDumpWorker
+class PseudonymizerWorker
   include ApplicationWorker
   include CronjobQueue
 
   def perform
-    return unless Gitlab::CurrentSettings.elt_database_dump_enabled
+    return unless Gitlab::CurrentSettings.pseudonymizer_enabled?
 
     options = Pseudonymity::Options.new(
       config: YAML.load_file(Rails.root.join(Gitlab.config.pseudonymizer.manifest)),

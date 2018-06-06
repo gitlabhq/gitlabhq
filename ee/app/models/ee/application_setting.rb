@@ -101,21 +101,21 @@ module EE
           slack_app_id: nil,
           slack_app_secret: nil,
           slack_app_verification_token: nil,
-          elt_database_dump_enabled: Settings.gitlab['elt_database_dump_enabled'],
+          pseudonymizer_enabled: Settings.pseudonymizer['enabled'],
         )
       end
     end
 
-    def elt_database_dump_available?
-      License.feature_available? :meltano_elt_database_dump
+    def pseudonymizer_available?
+      License.feature_available?(:pseudonymizer)
     end
 
-    def elt_database_dump_can_be_configured?
-      Settings.gitlab.elt_database_dump_enabled && License.feature_available?(:meltano_elt_database_dump)
+    def pseudonymizer_can_be_configured?
+      Settings.pseudonymizer.enabled && pseudonymizer_available?
     end
 
-    def elt_database_dump_enabled?
-      elt_database_dump_can_be_configured? && super
+    def pseudonymizer_enabled?
+      pseudonymizer_can_be_configured? && super
     end
 
     def should_check_namespace_plan?

@@ -26,6 +26,6 @@ class AddEltDumpEnabledToApplicationSettings < ActiveRecord::Migration
   # disable_ddl_transaction!
 
   def change
-    add_column :application_settings, :elt_database_dump_enabled, :boolean
+    add_column :application_settings, :pseudonymizer_enabled, :boolean
   end
 end
