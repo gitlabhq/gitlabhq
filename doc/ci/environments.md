@@ -593,7 +593,7 @@ version of the app, all without leaving GitLab.
 
 >**Note:**
 Web terminals were added in GitLab 8.15 and are only available to project
-masters and owners.
+maintainers and owners.
 
 If you deploy to your environments with the help of a deployment service (e.g.,
 the [Kubernetes integration][kube]), GitLab can open

@@ -35,7 +35,7 @@ module QA
       end
 
       expect(protected_branch.name).to have_content(branch_name)
-      expect(protected_branch.push_allowance).to have_content('Developers + Masters')
+      expect(protected_branch.push_allowance).to have_content('Developers + Maintainers')
     end
 
     scenario 'users without authorization cannot push to protected branch' do
