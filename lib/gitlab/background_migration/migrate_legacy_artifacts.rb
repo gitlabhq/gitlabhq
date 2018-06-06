@@ -6,10 +6,12 @@ module Gitlab
   module BackgroundMigration
     class MigrateLegacyArtifacts
       class Build < ActiveRecord::Base
+        include EachBatch
+
         self.table_name = 'ci_builds'
         self.inheritance_column = :_type_disabled
 
-        scope :legacy_artifacts, -> { where("artifacts_file <> ''") }
+        scope :with_legacy_artifacts, -> { where("artifacts_file <> ''") }
 
         scope :without_new_artifacts, -> do
           where('NOT EXISTS (?)', MigrateLegacyArtifacts::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').archive)
@@ -38,17 +40,17 @@ module Gitlab
       end
 
       def perform(start_id, stop_id)
+        rows = []
+
+        # Build rows
+        MigrateLegacyArtifacts::Build
+          .with_legacy_artifacts.without_new_artifacts
+          .where("id BETWEEN (?) AND (?)", start_id.to_i, stop_id.to_i).find_each do |build|
+          rows << build_archive_row(build)
+          rows << build_metadata_row(build) if build.artifacts_metadata
+        end
+
         ActiveRecord::Base.transaction do
-          rows = []
-
-          # Build rows
-          MigrateLegacyArtifacts::Build
-            .legacy_artifacts.without_new_artifacts
-            .where(id: (start_id..stop_id)).find_each do |build|
-            rows << build_archive_row(build)
-            rows << build_metadata_row(build) if build.artifacts_metadata
-          end
-
           # Bulk insert
           Gitlab::Database
             .bulk_insert(MigrateLegacyArtifacts::JobArtifact.table_name, rows)
@@ -62,7 +64,7 @@ module Gitlab
           # This is still used to process the expiration logic of job artifacts.
           # We also store the same value to `ci_job_artifacts.expire_at`, however it's not used at the moment.
           MigrateLegacyArtifacts::Build
-            .legacy_artifacts
+            .with_legacy_artifacts
             .where(id: (start_id..stop_id))
             .update_all(artifacts_file: nil,
                         artifacts_file_store: nil,
