@@ -29,10 +29,10 @@ module Backup
           raise Backup::Error, 'Backup failed'
         end
 
-        run_pipeline!([%W(tar --exclude=lost+found -C #{@backup_files_dir} -cf - .), %w(gzip -c -1)], out: [backup_tarball, 'w', 0600])
+        run_pipeline!([%W(#{tar} --exclude=lost+found -C #{@backup_files_dir} -cf - .), %w(gzip -c -1)], out: [backup_tarball, 'w', 0600])
         FileUtils.rm_rf(@backup_files_dir)
       else
-        run_pipeline!([%W(tar --exclude=lost+found -C #{app_files_dir} -cf - .), %w(gzip -c -1)], out: [backup_tarball, 'w', 0600])
+        run_pipeline!([%W(#{tar} --exclude=lost+found -C #{app_files_dir} -cf - .), %w(gzip -c -1)], out: [backup_tarball, 'w', 0600])
       end
     end
 
@@ -43,7 +43,12 @@ module Backup
     end
 
     def tar
-      system(*%w[gtar --version], out: '/dev/null') ? 'gtar' : 'tar'
+      if system(*%w[gtar --version], out: '/dev/null')
+        # It looks like we can get GNU tar by running 'gtar'
+        'gtar'
+      else
+        'tar'
+      end
     end
 
     def backup_existing_files_dir
