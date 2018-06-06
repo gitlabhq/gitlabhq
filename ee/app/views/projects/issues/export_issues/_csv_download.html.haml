@@ -2,15 +2,15 @@
   .issues-export-modal.modal
     .modal-dialog
       .modal-content
-        .modal-header
-          %a.close{ href: '#', 'data-dismiss' => 'modal' } ×
-          .export-svg-container.float-right
-            = render 'projects/issues/export_issues/export_issues_list.svg'
+        .modal-header.export-modal-header
           %h3
             Export issues
-        .modal-header
+          .export-svg-container
+            = render 'projects/issues/export_issues/export_issues_list.svg'
+          %a.close{ href: '#', 'data-dismiss' => 'modal' } ×
+        .modal-header.export-modal-subheader
           = icon('check', { class: 'export-checkmark' })
-          %strong
+          %strong.prepend-left-10
             #{pluralize(issuables_count_for_state(:issues, params[:state]), 'issue')} selected
         .modal-body
           %div
