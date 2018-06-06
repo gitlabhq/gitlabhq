@@ -188,7 +188,6 @@ export default {
           </a>
           <merge-request-dropdown
             :show="showMergeRequestsDropdown"
-            @hide="toggleMergeRequestDropdown"
           />
         </div>
         <div class="multi-file-commit-panel-inner-scroll">
