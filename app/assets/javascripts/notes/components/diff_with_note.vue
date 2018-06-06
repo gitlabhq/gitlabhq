@@ -1,6 +1,4 @@
 <script>
-import $ from 'jquery';
-import axios from '~/lib/utils/axios_utils';
 import { mapState, mapActions } from 'vuex';
 import imageDiffHelper from '~/image_diff/helpers/index';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
