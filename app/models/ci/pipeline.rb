@@ -20,7 +20,6 @@ module Ci
       s&.project&.pipelines&.maximum(:iid) || s&.project&.pipelines&.count
     end
 
-<<<<<<< HEAD
     has_one :source_pipeline, class_name: Ci::Sources::Pipeline
     has_many :sourced_pipelines, class_name: Ci::Sources::Pipeline, foreign_key: :source_pipeline_id
 
@@ -34,10 +33,7 @@ module Ci
       s&.project&.pipelines&.maximum(:iid) || s&.project&.pipelines&.count
     end
 
-    has_many :stages
-=======
     has_many :stages, -> { order(position: :asc) }, inverse_of: :pipeline
->>>>>>> upstream/master
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :builds, foreign_key: :commit_id, inverse_of: :pipeline
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id # rubocop:disable Cop/ActiveRecordDependent
