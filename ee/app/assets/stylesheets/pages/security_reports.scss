@@ -56,6 +56,19 @@
   list-style: none;
   padding: 0 1px;
   margin: 0;
+
+  .license-item {
+    line-height: $gl-padding-24;
+
+    .license-dependencies {
+      color: $gl-text-color-tertiary;
+    }
+
+    .btn-show-all-packages {
+      line-height: $gl-btn-line-height;
+      margin-bottom: 2px;
+    }
+  }
 }
 
 .report-block-list-icon {

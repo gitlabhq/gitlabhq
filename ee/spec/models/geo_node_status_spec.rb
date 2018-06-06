@@ -867,17 +867,5 @@ describe GeoNodeStatus, :geo do
 
       expect(result.storage_shards_match?).to be true
     end
-
-    context 'in development mode' do
-      before do
-        allow(Rails.env).to receive(:development?).and_return(true)
-      end
-
-      it 'returns true if keys are same but paths are different' do
-        data['storage_shards'].first['path'] = '/tmp/different-path'
-
-        expect(result.storage_shards_match?).to be_truthy
-      end
-    end
   end
 end

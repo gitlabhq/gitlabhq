@@ -1,3 +1,3 @@
 class StorageShardEntity < Grape::Entity
-  expose :name, :path
+  expose :name
 end
