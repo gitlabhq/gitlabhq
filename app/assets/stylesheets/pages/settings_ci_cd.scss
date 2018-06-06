@@ -16,3 +16,18 @@
 .registry-placeholder {
   min-height: 60px;
 }
+
+.auto-devops-settings {
+  .card,
+  .card-body {
+    border-radius: $card-border-radius;
+  }
+
+  .card {
+    margin-bottom: $gl-vert-padding;
+  }
+
+  .card-body {
+    padding: $gl-padding $gl-padding-24;
+  }
+}
