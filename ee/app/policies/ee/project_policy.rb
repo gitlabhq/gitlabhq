@@ -44,6 +44,11 @@ module EE
         !PushRule.global&.commit_committer_check
       end
 
+      with_scope :subject
+      condition(:pod_logs_enabled) do
+        @subject.feature_available?(:pod_logs, @user)
+      end
+
       rule { admin }.enable :change_repository_storage
 
       rule { support_bot }.enable :guest_access
@@ -89,6 +94,8 @@ module EE
         enable :admin_path_locks
         enable :update_approvers
       end
+
+      rule { pod_logs_enabled & can?(:master_access) }.enable :read_pod_logs
 
       rule { auditor }.policy do
         enable :public_user_access

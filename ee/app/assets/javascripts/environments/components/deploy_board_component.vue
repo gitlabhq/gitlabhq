@@ -32,6 +32,11 @@
         type: Boolean,
         required: true,
       },
+      logsPath: {
+        type: String,
+        required: false,
+        default: '',
+      },
     },
     computed: {
       canRenderDeployBoard() {
@@ -74,6 +79,8 @@
             <instance-component
               :status="instance.status"
               :tooltip-text="instance.tooltip"
+              :pod-name="instance.pod_name"
+              :logs-path="logsPath"
               :stable="instance.stable"
               :key="i"
             />
