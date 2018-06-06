@@ -184,10 +184,10 @@ configuration. Then customize everything from buildpacks to CI/CD.
 
 - [Auto DevOps](topics/autodevops/index.md)
 - [Deployment of Helm, Ingress, and Prometheus on Kubernetes](user/project/clusters/index.md#installing-applications)
-- [Protected secret variables](ci/variables/README.md#protected-secret-variables)
+- [Protected variables](ci/variables/README.md#protected-variables)
 - [Easy creation of Kubernetes clusters on GKE](user/project/clusters/index.md#adding-and-creating-a-new-gke-cluster-via-gitlab)
 - [Multiple Kubernetes Clusters](user/project/clusters/index.md#multiple-kubernetes-clusters) **[PREMIUM]**
-- [Environment-specific secret variables](ci/variables/README.md#limiting-environment-scopes-of-secret-variables) **[PREMIUM]**
+- [Environment-specific variables](ci/variables/README.md#limiting-environment-scopes-of-variables) **[PREMIUM]**
 
 ### Monitor
 

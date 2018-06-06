@@ -263,7 +263,7 @@ on that specific branch:
 - trigger **manual actions** on existing pipelines
 - **retry/cancel** existing jobs (using Web UI or Pipelines API)
 
-**Secret variables** marked as **protected** are accessible only to jobs that
+**Variables** marked as **protected** are accessible only to jobs that
 run on protected branches, avoiding untrusted users to get unintended access to
 sensitive information like deployment credentials and tokens.
 

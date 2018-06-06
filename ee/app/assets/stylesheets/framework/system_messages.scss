@@ -51,6 +51,10 @@
     top: $system-header-height + $header-height;
   }
 
+  .content-wrapper {
+    margin-top: $system-header-height + $header-height;
+  }
+
   .ide.nav-only {
     // body element on WebIDE page
     padding-top: $header-height + $system-header-height;
@@ -67,6 +71,8 @@
   // right sidebar eg: mr page
   .nav-sidebar, 
   .right-sidebar, 
+  // web IDE status bar
+  .ide-status-bar,
   // navless pages' footer eg: login page
   // navless pages' footer border eg: login page
   &.devise-layout-html body .footer-container, 
@@ -176,7 +182,9 @@
     }
 
     .with-performance-bar.with-system-header.with-system-footer & {
-      @include ide-height-with((system-header: true, system-footer: true, performance: true, flash: true));
+      @include ide-height-with(
+        (system-header: true, system-footer: true, performance: true, flash: true)
+      );
     }
   }
 }

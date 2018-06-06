@@ -452,7 +452,7 @@ repo or by specifying a project variable:
   file in it, Auto DevOps will detect the chart and use it instead of the [default
   one](https://gitlab.com/charts/charts.gitlab.io/tree/master/charts/auto-deploy-app).
   This can be a great way to control exactly how your application is deployed.
-- **Project variable** - Create a [project variable](../../ci/variables/README.md#secret-variables)
+- **Project variable** - Create a [variable](../../ci/variables/README.md#variables)
   `AUTO_DEVOPS_CHART` with the URL of a custom chart to use.
 
 ### Customizing `.gitlab-ci.yml`
@@ -524,7 +524,7 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 
 TIP: **Tip:**
 Set up the replica variables using a
-[project variable](../../ci/variables/README.md#secret-variables)
+[project variable](../../ci/variables/README.md#variables)
 and scale your application by just redeploying it!
 
 CAUTION: **Caution:**
@@ -599,7 +599,7 @@ staging environment and deploy to production manually. For this scenario, the
 `STAGING_ENABLED` environment variable was introduced.
 
 If `STAGING_ENABLED` is defined in your project (e.g., set `STAGING_ENABLED` to
-`1` as a secret variable), then the application will be automatically deployed
+`1` as a variable), then the application will be automatically deployed
 to a `staging` environment, and a  `production_manual` job will be created for
 you when you're ready to manually deploy to production.
 
@@ -612,7 +612,7 @@ A [canary environment](https://docs.gitlab.com/ee/user/project/canary_deployment
 before any changes are deployed to production.
 
 If `CANARY_ENABLED` is defined in your project (e.g., set `CANARY_ENABLED` to
-`1` as a secret variable) then two manual jobs will be created:
+`1` as a variable) then two manual jobs will be created:
 
 - `canary` which will deploy the application to the canary environment
 - `production_manual` which is to be used by you when you're ready to manually
@@ -628,7 +628,7 @@ This will allow you to first check how the app is behaving, and later manually
 increasing the rollout up to 100%.
 
 If `INCREMENTAL_ROLLOUT_ENABLED` is defined in your project (e.g., set
-`INCREMENTAL_ROLLOUT_ENABLED` to `1` as a secret variable), then instead of the
+`INCREMENTAL_ROLLOUT_ENABLED` to `1` as a variable), then instead of the
 standard `production` job, 4 different
 [manual jobs](../../ci/pipelines.md#manual-actions-from-the-pipeline-graph)
 will be created:

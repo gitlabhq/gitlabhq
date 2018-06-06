@@ -1,0 +1,5 @@
+---
+title: Fix Web IDE status bar if System Footer message is present
+merge_request:
+author:
+type: fixed

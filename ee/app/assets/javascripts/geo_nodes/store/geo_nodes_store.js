@@ -68,6 +68,7 @@ export default class GeoNodesStore {
       revision: rawNodeDetails.revision,
       primaryVersion: rawNodeDetails.primaryVersion,
       primaryRevision: rawNodeDetails.primaryRevision,
+      statusCheckTimestamp: rawNodeDetails.last_successful_status_check_timestamp * 1000,
       replicationSlotWAL: rawNodeDetails.replication_slots_max_retained_wal_bytes,
       missingOAuthApplication: rawNodeDetails.missing_oauth_application || false,
       syncStatusUnavailable: rawNodeDetails.sync_status_unavailable || false,
