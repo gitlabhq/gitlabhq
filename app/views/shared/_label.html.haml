@@ -11,7 +11,7 @@
 
 %li.label-list-item{ id: label_css_id, data: { id: label.id } }
   = render "shared/label_row", label: label, subject: subject, force_priority: force_priority
-  .d-inline-block.d-sm-none.dropdown
+  %ul.label-actions-list
     - if @project
       %li.inline
         .label-badge.label-badge-gray= label.model_name.human.capitalize
