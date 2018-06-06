@@ -28,7 +28,7 @@ module Gitlab
       end
 
       def remote_object_exists?(upload)
-        upload.build_uploader.exists?
+        upload.build_uploader.file.exists?
       end
     end
   end

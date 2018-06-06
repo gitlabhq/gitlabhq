@@ -42,19 +42,22 @@ describe Gitlab::Verify::Uploads do
     end
 
     context 'with remote files' do
+      let(:file) { double(:file) }
+
       before do
         stub_uploads_object_storage(AvatarUploader)
         upload.update!(store: ObjectStorage::Store::REMOTE)
+        expect(CarrierWave::Storage::Fog::File).to receive(:new).and_return(file)
       end
 
       it 'passes uploads in object storage that exist' do
-        expect_any_instance_of(AvatarUploader).to receive(:exists?).and_return(true)
+        expect(file).to receive(:exists?).and_return(true)
 
         expect(failures).to eq({})
       end
 
       it 'fails uploads in object storage that do not exist' do
-        expect_any_instance_of(AvatarUploader).to receive(:exists?).and_return(false)
+        expect(file).to receive(:exists?).and_return(false)
 
         expect(failures.keys).to contain_exactly(upload)
         expect(failure.to_s).to include('Remote object does not exist')

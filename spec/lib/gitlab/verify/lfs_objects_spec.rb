@@ -33,19 +33,22 @@ describe Gitlab::Verify::LfsObjects do
     end
 
     context 'with remote files' do
+      let(:file) { double(:file) }
+
       before do
         stub_lfs_object_storage
         lfs_object.update!(file_store: ObjectStorage::Store::REMOTE)
+        expect(CarrierWave::Storage::Fog::File).to receive(:new).and_return(file)
       end
 
       it 'passes LFS objects in object storage that exist' do
-        expect_any_instance_of(LfsObjectUploader).to receive(:exists?).and_return(true)
+        expect(file).to receive(:exists?).and_return(true)
 
         expect(failures).to eq({})
       end
 
       it 'fails LFS objects in object storage that do not exist' do
-        expect_any_instance_of(LfsObjectUploader).to receive(:exists?).and_return(false)
+        expect(file).to receive(:exists?).and_return(false)
 
         expect(failures.keys).to contain_exactly(lfs_object)
         expect(failure.to_s).to include('Remote object does not exist')

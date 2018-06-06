@@ -78,7 +78,7 @@ module Gitlab
         raise NotImplementedError.new
       end
 
-      # Should return true if the remote object exists
+      # Be sure to perform a hard check of the remote object (don't just check DB value)
       def remote_object_exists?(object)
         raise NotImplementedError.new
       end

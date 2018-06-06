@@ -28,7 +28,7 @@ module Gitlab
       end
 
       def remote_object_exists?(lfs_object)
-        lfs_object.file && lfs_object.file.exists?
+        lfs_object.file.file.exists?
       end
     end
   end

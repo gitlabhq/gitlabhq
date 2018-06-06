@@ -33,19 +33,22 @@ describe Gitlab::Verify::JobArtifacts do
     end
 
     context 'with remote files' do
+      let(:file) { double(:file) }
+
       before do
         stub_artifacts_object_storage
         artifact.update!(file_store: ObjectStorage::Store::REMOTE)
+        expect(CarrierWave::Storage::Fog::File).to receive(:new).and_return(file)
       end
 
       it 'passes artifacts in object storage that exist' do
-        expect_any_instance_of(JobArtifactUploader).to receive(:exists?).and_return(true)
+        expect(file).to receive(:exists?).and_return(true)
 
         expect(failures).to eq({})
       end
 
       it 'fails artifacts in object storage that do not exist' do
-        expect_any_instance_of(JobArtifactUploader).to receive(:exists?).and_return(false)
+        expect(file).to receive(:exists?).and_return(false)
 
         expect(failures.keys).to contain_exactly(artifact)
         expect(failure.to_s).to include('Remote object does not exist')

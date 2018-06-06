@@ -28,7 +28,7 @@ module Gitlab
       end
 
       def remote_object_exists?(artifact)
-        artifact.file && artifact.file.exists?
+        artifact.file.file.exists?
       end
     end
   end
