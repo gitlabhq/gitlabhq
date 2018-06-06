@@ -44,7 +44,7 @@ module Backup
       end
 
       report_success(success)
-      abort 'Backup failed' unless success
+      raise Backup::Error, 'Backup failed' unless success
     end
 
     def restore
@@ -72,7 +72,7 @@ module Backup
       end
 
       report_success(success)
-      abort 'Restore failed' unless success
+      abort Backup::Error, 'Restore failed' unless success
     end
 
     protected

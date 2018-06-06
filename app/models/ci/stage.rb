@@ -68,16 +68,44 @@ module Ci
     def update_status
       retry_optimistic_lock(self) do
         case statuses.latest.status
+        when 'created' then nil
         when 'pending' then enqueue
         when 'running' then run
         when 'success' then succeed
         when 'failed' then drop
         when 'canceled' then cancel
         when 'manual' then block
-        when 'skipped' then skip
-        else skip
+        when 'skipped', nil then skip
+        else
+          raise HasStatus::UnknownStatusError,
+                "Unknown status `#{statuses.latest.status}`"
         end
       end
+    end
+
+    def groups
+      @groups ||= Ci::Group.fabricate(self)
+    end
+
+    def has_warnings?
+      number_of_warnings.positive?
+    end
+
+    def number_of_warnings
+      BatchLoader.for(id).batch(default_value: 0) do |stage_ids, loader|
+        ::Ci::Build.where(stage_id: stage_ids)
+          .latest
+          .failed_but_allowed
+          .group(:stage_id)
+          .count
+          .each { |id, amount| loader.call(id, amount) }
+      end
+    end
+
+    def detailed_status(current_user)
+      Gitlab::Ci::Status::Stage::Factory
+        .new(self, current_user)
+        .fabricate!
     end
   end
 end

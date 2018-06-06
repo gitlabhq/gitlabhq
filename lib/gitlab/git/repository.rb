@@ -109,7 +109,7 @@ module Gitlab
       end
 
       def ==(other)
-        path == other.path
+        [storage, relative_path] == [other.storage, other.relative_path]
       end
 
       def path
@@ -1396,6 +1396,11 @@ module Gitlab
 
       def write_config(full_path:)
         return unless full_path.present?
+
+        # This guard avoids Gitaly log/error spam
+        unless exists?
+          raise NoRepository, 'repository does not exist'
+        end
 
         gitaly_migrate(:write_config) do |is_enabled|
           if is_enabled

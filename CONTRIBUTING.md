@@ -182,7 +182,7 @@ Assigning a team label makes sure issues get the attention of the appropriate
 people.
 
 The current team labels are ~Distribution, ~"CI/CD", ~Discussion, ~Documentation, ~Quality,
-~Geo, ~Gitaly, ~Monitoring, ~Platform, ~Release, ~"Security Products" and ~"UX".
+~Geo, ~Gitaly, ~Monitoring, ~Platform, ~Release, ~"Security Products", ~"Configuration", and ~"UX".
 
 The descriptions on the [labels page][labels-page] explain what falls under the
 responsibility of each team.
@@ -349,7 +349,7 @@ on those issues. Please select someone with relevant experience from the
 [GitLab team][team]. If there is nobody mentioned with that expertise look in
 the commit history for the affected files to find someone.
 
-[described in our handbook]: https://about.gitlab.com/handbook/engineering/issues/issue-triage-policies/
+[described in our handbook]: https://about.gitlab.com/handbook/engineering/issue-triage/
 [issue bash events]: https://gitlab.com/gitlab-org/gitlab-ce/issues/17815
 
 ### Feature proposals

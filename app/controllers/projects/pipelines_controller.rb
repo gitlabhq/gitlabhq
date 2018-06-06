@@ -23,8 +23,6 @@ class Projects::PipelinesController < Projects::ApplicationController
     @finished_count = limited_pipelines_count(project, 'finished')
     @pipelines_count = limited_pipelines_count(project)
 
-    Gitlab::Ci::Pipeline::Preloader.preload(@pipelines)
-
     respond_to do |format|
       format.html
       format.json do
@@ -34,7 +32,7 @@ class Projects::PipelinesController < Projects::ApplicationController
           pipelines: PipelineSerializer
             .new(project: @project, current_user: @current_user)
             .with_pagination(request, response)
-            .represent(@pipelines, disable_coverage: true),
+            .represent(@pipelines, disable_coverage: true, preload: true),
           count: {
             all: @pipelines_count,
             running: @running_count,
