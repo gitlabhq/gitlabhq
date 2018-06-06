@@ -31,5 +31,25 @@ describe Gitlab::Verify::JobArtifacts do
       expect(failures.keys).to contain_exactly(artifact)
       expect(failure.to_s).to include('Checksum mismatch')
     end
+
+    context 'with remote files' do
+      before do
+        stub_artifacts_object_storage
+        artifact.update!(file_store: ObjectStorage::Store::REMOTE)
+      end
+
+      it 'passes artifacts in object storage that exist' do
+        expect_any_instance_of(JobArtifactUploader).to receive(:exists?).and_return(true)
+
+        expect(failures).to eq({})
+      end
+
+      it 'fails artifacts in object storage that do not exist' do
+        expect_any_instance_of(JobArtifactUploader).to receive(:exists?).and_return(false)
+
+        expect(failures.keys).to contain_exactly(artifact)
+        expect(failure.to_s).to include('Remote object does not exist')
+      end
+    end
   end
 end

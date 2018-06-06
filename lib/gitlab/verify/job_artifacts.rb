@@ -26,6 +26,10 @@ module Gitlab
       def actual_checksum(artifact)
         Digest::SHA256.file(artifact.file.path).hexdigest
       end
+
+      def remote_object_exists?(artifact)
+        artifact.file && artifact.file.exists?
+      end
     end
   end
 end
