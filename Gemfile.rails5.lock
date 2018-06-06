@@ -1014,10 +1014,7 @@ DEPENDENCIES
   asset_sync (~> 2.4)
   attr_encrypted (~> 3.1.0)
   awesome_print
-<<<<<<< HEAD
   aws-sdk
-=======
->>>>>>> upstream/master
   babosa (~> 1.0.2)
   base32 (~> 0.3.0)
   batch-loader (~> 1.2.1)
