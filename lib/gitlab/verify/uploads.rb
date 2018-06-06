@@ -26,6 +26,10 @@ module Gitlab
       def actual_checksum(upload)
         Upload.hexdigest(upload.absolute_path)
       end
+
+      def remote_object_exists?(upload)
+        upload.build_uploader.exists?
+      end
     end
   end
 end

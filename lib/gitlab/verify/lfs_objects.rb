@@ -12,7 +12,7 @@ module Gitlab
       private
 
       def relation
-        LfsObject.with_files_stored_locally
+        LfsObject.all
       end
 
       def local?(lfs_object)
@@ -25,6 +25,10 @@ module Gitlab
 
       def actual_checksum(lfs_object)
         LfsObject.calculate_oid(lfs_object.file.path)
+      end
+
+      def remote_object_exists?(lfs_object)
+        lfs_object.file && lfs_object.file.exists?
       end
     end
   end

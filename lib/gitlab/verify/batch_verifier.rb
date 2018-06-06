@@ -55,7 +55,7 @@ module Gitlab
 
       # We don't calculate checksum for remote objects, so just check existence
       def verify_remote(object)
-        raise 'Remote object does not exist' unless object.build_uploader.exists?
+        raise 'Remote object does not exist' unless remote_object_exists?(object)
       end
 
       # This should return an ActiveRecord::Relation suitable for calling #in_batches on
@@ -75,6 +75,11 @@ module Gitlab
 
       # The freshly-recalculated checksum of the object
       def actual_checksum(_object)
+        raise NotImplementedError.new
+      end
+
+      # Should return true if the remote object exists
+      def remote_object_exists?(object)
         raise NotImplementedError.new
       end
     end

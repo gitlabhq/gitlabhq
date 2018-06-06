@@ -35,16 +35,20 @@ describe Gitlab::Verify::LfsObjects do
     context 'with remote files' do
       before do
         stub_lfs_object_storage
+        lfs_object.update!(file_store: ObjectStorage::Store::REMOTE)
       end
 
-      it 'skips LFS objects in object storage' do
-        local_failure = create(:lfs_object)
-        create(:lfs_object, :object_storage)
+      it 'passes LFS objects in object storage that exist' do
+        expect_any_instance_of(LfsObjectUploader).to receive(:exists?).and_return(true)
 
-        failures = {}
-        described_class.new(batch_size: 10).run_batches { |_, failed| failures.merge!(failed) }
+        expect(failures).to eq({})
+      end
 
-        expect(failures.keys).to contain_exactly(local_failure)
+      it 'fails LFS objects in object storage that do not exist' do
+        expect_any_instance_of(LfsObjectUploader).to receive(:exists?).and_return(false)
+
+        expect(failures.keys).to contain_exactly(lfs_object)
+        expect(failure.to_s).to include('Remote object does not exist')
       end
     end
   end
