@@ -1,7 +1,7 @@
 <script>
 import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import imageDiffHelper from '~/image_diff/helpers/index';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
@@ -66,16 +66,13 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['fetchDiscussionDiffLines']),
     rowTag(html) {
       return html.outerHTML ? 'tr' : 'template';
     },
     fetchDiff() {
       this.error = false;
-      axios
-        .get(this.discussion.truncatedDiffLinesPath)
-        .then(({ data }) => {
-          this.$set(this.discussion, 'truncatedDiffLines', data.truncated_diff_lines);
-        })
+      this.fetchDiscussionDiffLines(this.discussion)
         .then(this.highlight)
         .catch(() => {
           this.error = true;

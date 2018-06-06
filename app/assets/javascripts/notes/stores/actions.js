@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import axios from '~/lib/utils/axios_utils';
 import Visibility from 'visibilityjs';
 import Flash from '../../flash';
 import Poll from '../../lib/utils/poll';
@@ -296,6 +297,14 @@ export const scrollToNoteIfNeeded = (context, el) => {
     scrollToElement(el);
   }
 };
+
+export const fetchDiscussionDiffLines = ({ commit }, discussion) =>
+  axios.get(discussion.truncatedDiffLinesPath).then(({ data }) => {
+    commit(types.SET_DISCUSSION_DIFF_LINES, {
+      discussionId: discussion.id,
+      diffLines: data.truncated_diff_lines,
+    });
+  });
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};
