@@ -81,15 +81,27 @@ describe Gitlab::BackgroundMigration::MigrateLegacyArtifacts, :migration, schema
         end
 
         context 'when new artifacts has already existed' do
-          before do
-            job_artifacts.create!(id: 1, project_id: project_id, job_id: job_id, file_type: 1, size: 123, file: 'archive.zip')
-            job_artifacts.create!(id: 2, project_id: project_id, job_id: job_id, file_type: 2, size: 123, file: 'metadata.tar.gz')
+          context 'when only archive existed' do
+            before do
+              job_artifacts.create!(id: 1, project_id: project_id, job_id: job_id, file_type: 1, size: 123, file: 'archive.zip')
+            end
+
+            it 'migrates metadata too' do
+              described_class.new.perform(*range)
+
+              expect(job_artifacts.where(job_id: job_id, file_type: 2).pluck('file')).to eq(['metadata.gz'])
+            end
           end
 
-          it 'does not migrate' do
-            described_class.new.perform(*range)
+          context 'when both archive and metadata existed' do
+            before do
+              job_artifacts.create!(id: 1, project_id: project_id, job_id: job_id, file_type: 1, size: 123, file: 'archive.zip')
+              job_artifacts.create!(id: 2, project_id: project_id, job_id: job_id, file_type: 2, size: 123, file: 'metadata.gz')
+            end
 
-            expect(job_artifacts.pluck('id')).to eq([1, 2])
+            it 'does not migrate' do
+              expect { described_class.new.perform(*range) }.not_to change { job_artifacts.count }
+            end
           end
         end
       end

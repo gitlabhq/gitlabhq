@@ -11,7 +11,7 @@ module Gitlab
         self.table_name = 'ci_builds'
         self.inheritance_column = :_type_disabled
 
-        scope :with_legacy_artifacts, -> { where("artifacts_file <> '' AND artifacts_metadata <> ''") }
+        scope :with_legacy_artifacts, -> { where("artifacts_file <> ''") }
 
         scope :without_new_artifacts, -> do
           where('NOT EXISTS (SELECT 1 FROM ci_job_artifacts WHERE (ci_builds.id = ci_job_artifacts.job_id) AND ci_job_artifacts.file_type = 1)')
