@@ -5,7 +5,11 @@ import ShortcutsNavigation from '../../shortcuts_navigation';
 
 document.addEventListener('DOMContentLoaded', () => {
   const page = document.body.dataset.page;
-  const newClusterViews = ['projects:clusters:new', 'projects:clusters:create'];
+  const newClusterViews = [
+    'projects:clusters:new',
+    'projects:clusters:gcp:create',
+    'projects:clusters:user:create',
+  ];
 
   if (newClusterViews.indexOf(page) > -1) {
     gcpSignupOffer();

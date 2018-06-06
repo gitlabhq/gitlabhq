@@ -204,7 +204,14 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :clusters, except: [:edit] do
+      resources :clusters, except: [:edit, :create] do
+        collection do
+          scope :providers do
+            post '/user', to: 'clusters/user#create'
+            post '/gcp', to: 'clusters/gcp#create'
+          end
+        end
+
         member do
           get :status, format: :json
 
