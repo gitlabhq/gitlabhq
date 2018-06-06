@@ -370,11 +370,8 @@ describe ObjectStorage do
     let(:has_length) { true }
     let(:maximum_size) { nil }
 
-<<<<<<< HEAD
-=======
     subject { uploader_class.workhorse_authorize(has_length: has_length, maximum_size: maximum_size) }
 
->>>>>>> upstream/master
     shared_examples 'uses local storage' do
       it "returns temporary path" do
         is_expected.to have_key(:TempPath)
