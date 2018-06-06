@@ -215,7 +215,7 @@ Learn how to contribute to GitLab:
 
 - [Development](development/README.md): All styleguides and explanations how to contribute.
 - [Legal](legal/README.md): Contributor license agreements.
-- [Writing documentation](development/writing_documentation.md): Contributing to GitLab Docs.
+- [Writing documentation](development/documentation/index.md): Contributing to GitLab Docs.
 
 ## GitLab subscriptions
 
