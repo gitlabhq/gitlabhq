@@ -349,7 +349,7 @@ on those issues. Please select someone with relevant experience from the
 [GitLab team][team]. If there is nobody mentioned with that expertise look in
 the commit history for the affected files to find someone.
 
-[described in our handbook]: https://about.gitlab.com/handbook/engineering/issues/issue-triage-policies/
+[described in our handbook]: https://about.gitlab.com/handbook/engineering/issue-triage/
 [issue bash events]: https://gitlab.com/gitlab-org/gitlab-ce/issues/17815
 
 ### Feature proposals

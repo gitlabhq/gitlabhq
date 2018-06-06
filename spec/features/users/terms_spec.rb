@@ -39,6 +39,22 @@ describe 'Users > Terms' do
     end
   end
 
+  context 'when the user has already accepted the terms' do
+    before do
+      accept_terms(user)
+    end
+
+    it 'allows the user to continue to the app' do
+      visit terms_path
+
+      expect(page).to have_content "You have already accepted the Terms of Service as #{user.to_reference}"
+
+      click_link 'Continue'
+
+      expect(current_path).to eq(root_path)
+    end
+  end
+
   context 'terms were enforced while session is active', :js do
     let(:project) { create(:project) }
 
