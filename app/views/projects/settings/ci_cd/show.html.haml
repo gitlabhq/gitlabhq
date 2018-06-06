@@ -16,12 +16,12 @@
   .settings-content
     = render 'form'
 
-%section.settings#autodevops-settings.no-animate{ class: ('expanded' if expanded) }
+%section.settings#autodevops-settings.no-animate{ class: ('expanded' if true) }
   .settings-header
     %h4
       = s_('CICD|Auto DevOps')
     %button.btn.btn-default.js-settings-toggle{ type: 'button' }
-      = expanded ? _('Collapse') : _('Expand')
+      = true ? _('Collapse') : _('Expand')
     %p
       = s_('CICD|Auto DevOps will automatically build, test, and deploy your application based on a predefined Continuous Integration and Delivery configuration.')
       = link_to s_('CICD|Learn more about Auto DevOps'), help_page_path('topics/autodevops/index.md')

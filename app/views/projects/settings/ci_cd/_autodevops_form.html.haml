@@ -47,10 +47,12 @@
                   = form.radio_button :deploy_strategy, 'continuous', class: 'form-check-input'
                   = form.label :deploy_strategy_continuous, class: 'form-check-label' do
                     %strong= s_('CICD|Continuous deployment to production')
+                    = link_to icon('question-circle'), help_page_path('topics/autodevops/index.md', anchor: 'auto-deploy'), target: '_blank'
                 .form-check
                   = form.radio_button :deploy_strategy, 'manual', class: 'form-check-input'
                   = form.label :deploy_strategy_manual, class: 'form-check-label' do
                     %strong= s_('CICD|Automatic deployment to staging, manual deployment to production')
+                    = link_to icon('question-circle'), help_page_path('ci/environments.md', anchor: 'manually-deploying-to-environments'), target: '_blank'
 
             .card
               .card-body
