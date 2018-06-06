@@ -306,14 +306,17 @@ To better understand the priority by which UX tackles issues, see the [UX sectio
 Once an issue has been worked on and is ready for development, a UXer applies the ~"UX ready" label to that issue.
 
 The UX team has a special type label called ~"design artifact". This label indicates that the final output 
-for an issue is a UX solution/design. The solution will be developed by frontend and/or backend in a subsequent milestone. 
+for an issue is a UX solution/design. The solution will be developed by frontend and/or backend in a subsequent milestone.
 Any issue labeled ~"design artifact" should not also be labeled ~"frontend" or ~"backend" since no development is 
 needed until the solution has been decided.
 
 ~"design artifact" issues are like any other issue and should contain a milestone label, ~"Deliverable" or ~"Stretch", when scheduled in the current milestone.
 
-Once the ~"design artifact" issue has been completed, the UXer removes the ~"design artifact" label and applies the ~"UX ready" label. The Product Manager can use the 
-existing issue or decide to create a whole new issue for the purpose of development. 
+To prevent the misunderstanding that a feature will be be delivered in the assigned milestone, when only UX design is
+planned, the Product Manager should create an issue specifically for the ~"design artifact" with a title that makes
+this clear (e.g. `Design exploration for XYZ`).
+
+Once the ~"design artifact" issue has been completed, the UXer removes the ~"design artifact" label and applies the ~"UX ready" label.
 
 ## Issue tracker
 
