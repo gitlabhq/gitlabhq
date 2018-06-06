@@ -88,8 +88,8 @@ description: 'Learn how to contribute to GitLab.'
 
 ## Documentation guides
 
-- [Writing documentation](writing_documentation.md)
-- [Documentation styleguide](doc_styleguide.md)
+- [Writing documentation](documentation/index.md)
+- [Documentation styleguide](documentation/styleguide.md)
 - [Markdown](../user/markdown.md)
 
 ## Internationalization (i18n) guides
