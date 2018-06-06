@@ -1,0 +1,5 @@
+---
+title: Add StorageCleanupWorker to remove stale files
+merge_request:
+author:
+type: performance
