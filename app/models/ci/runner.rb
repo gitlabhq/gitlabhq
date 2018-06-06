@@ -30,6 +30,7 @@ module Ci
     scope :active, -> { where(active: true) }
     scope :paused, -> { where(active: false) }
     scope :online, -> { where('contacted_at > ?', contact_time_deadline) }
+    scope :offline, -> { where.not(id: online) }
     scope :ordered, -> { order(id: :desc) }
 
     # BACKWARD COMPATIBILITY: There are needed to maintain compatibility with `AVAILABLE_SCOPES` used by `lib/api/runners.rb`
