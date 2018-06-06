@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20180531031410) do
-=======
 ActiveRecord::Schema.define(version: 20180531220618) do
->>>>>>> upstream/master
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1642,10 +1638,6 @@ ActiveRecord::Schema.define(version: 20180531220618) do
     t.string "merge_jid"
     t.boolean "discussion_locked"
     t.integer "latest_merge_request_diff_id"
-<<<<<<< HEAD
-=======
-    t.string "rebase_commit_sha"
->>>>>>> upstream/master
     t.boolean "allow_collaboration"
     t.boolean "squash", default: false, null: false
   end

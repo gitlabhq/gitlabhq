@@ -6164,7 +6164,6 @@ msgstr ""
 msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage is %{emphasisStart} unchanged %{emphasisEnd} at %{memoryFrom}MB"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "mrWidget|Add approval"
 msgstr ""
 
@@ -6184,9 +6183,6 @@ msgid "mrWidget|Approved"
 msgstr ""
 
 msgid "mrWidget|Approved by"
-=======
-msgid "mrWidget|Allows commits from members who can merge to the target branch"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "mrWidget|Cancel automatic merge"
