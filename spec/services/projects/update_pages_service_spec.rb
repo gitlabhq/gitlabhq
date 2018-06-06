@@ -10,7 +10,7 @@ describe Projects::UpdatePagesService do
   let(:file) { fixture_file_upload("spec/fixtures/pages.#{extension}") }
   let(:empty_file) { fixture_file_upload("spec/fixtures/pages_empty.#{extension}") }
   let(:metadata) do
-    filename = Rails.root + "spec/fixtures/pages.#{extension}.meta"
+    filename = "spec/fixtures/pages.#{extension}.meta"
     fixture_file_upload(filename) if File.exist?(filename)
   end
 

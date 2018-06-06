@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::ProjectImport do
   let(:export_path) { "#{Dir.tmpdir}/project_export_spec" }
   let(:user) { create(:user) }
-  let(:file) { File.join(Rails.root, 'spec', 'features', 'projects', 'import_export', 'test_project_export.tar.gz') }
+  let(:file) { File.join('spec', 'features', 'projects', 'import_export', 'test_project_export.tar.gz') }
   let(:namespace) { create(:group) }
   before do
     allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)

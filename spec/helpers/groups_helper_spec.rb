@@ -4,9 +4,9 @@ describe GroupsHelper do
   include ApplicationHelper
 
   describe 'group_icon' do
-    avatar_file_path = File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif')
-
     it 'returns an url for the avatar' do
+      avatar_file_path = File.join('spec', 'fixtures', 'banana_sample.gif')
+
       group = create(:group)
       group.avatar = fixture_file_upload(avatar_file_path)
       group.save!
@@ -17,9 +17,9 @@ describe GroupsHelper do
   end
 
   describe 'group_icon_url' do
-    avatar_file_path = File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif')
-
     it 'returns an url for the avatar' do
+      avatar_file_path = File.join('spec', 'fixtures', 'banana_sample.gif')
+
       group = create(:group)
       group.avatar = fixture_file_upload(avatar_file_path)
       group.save!
