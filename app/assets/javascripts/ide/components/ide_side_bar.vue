@@ -72,11 +72,9 @@ export default {
       });
     },
     loading() {
-      if (!this.loading) {
-        this.$nextTick(() => {
-          this.addDropdownListeners();
-        });
-      }
+      this.$nextTick(() => {
+        this.addDropdownListeners();
+      });
     },
   },
   mounted() {
@@ -89,11 +87,12 @@ export default {
   },
   methods: {
     addDropdownListeners() {
+      if (!this.$refs.mergeRequestDropdown) return;
+
       $(this.$refs.mergeRequestDropdown)
         .on('show.bs.dropdown', () => {
           this.toggleMergeRequestDropdown();
-        })
-        .on('hide.bs.dropdown', () => {
+        }).on('hide.bs.dropdown', () => {
           this.toggleMergeRequestDropdown();
         });
     },

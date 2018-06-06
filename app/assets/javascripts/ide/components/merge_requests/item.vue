@@ -42,7 +42,7 @@ export default {
   <button
     type="button"
     class="btn-link d-flex align-items-center"
-    @click.prevent.stop="clickItem"
+    @click="clickItem"
   >
     <span class="d-flex append-right-default ide-merge-request-current-icon">
       <icon
