@@ -321,7 +321,7 @@ describe Notify do
         it_behaves_like "an unsubscribeable thread"
 
         it 'contains the description' do
-          is_expected.to have_html_escaped_body_text merge_request.description
+          is_expected.to have_body_text(merge_request.description)
         end
       end
 
@@ -1376,8 +1376,8 @@ describe Notify do
 
     it 'has the correct subject and body' do
       is_expected.to have_subject("#{project.name} | Repository mirroring paused")
-      is_expected.to have_html_escaped_body_text(project.full_path)
-      is_expected.to have_html_escaped_body_text(project_settings_repository_url(project))
+      is_expected.to have_body_text(project.full_path)
+      is_expected.to have_body_text(project_settings_repository_url(project))
     end
   end
 
@@ -1394,7 +1394,7 @@ describe Notify do
 
     it 'has the correct subject and body' do
       is_expected.to have_subject("#{project.name} | Mirror user changed")
-      is_expected.to have_html_escaped_body_text(project.full_path)
+      is_expected.to have_body_text(project.full_path)
     end
   end
 
