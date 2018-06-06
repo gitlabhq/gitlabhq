@@ -28,11 +28,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const autoDevOpsExtraSettings = document.querySelector('.js-extra-settings');
 
   autoDevOpsSettings.addEventListener('click', event => {
-    const targetData = event.target && event.target.dataset;
-    if (targetData.hideExtraSettings === 'true') {
-      autoDevOpsExtraSettings.classList.add('hidden');
-    } else if (targetData.hideExtraSettings === 'false') {
-      autoDevOpsExtraSettings.classList.remove('hidden');
+    const target = event.target;
+    if (target.classList.contains('js-toggle-extra-settings')) {
+      autoDevOpsExtraSettings.classList.toggle(
+        'hidden',
+        !!(target.dataset && target.dataset.hideExtraSettings),
+      );
     }
   });
 });
