@@ -4,7 +4,7 @@ comments: false
 
 # Technical articles list (deprecated)
 
-[Technical articles](../development/writing_documentation.md#technical-articles) are
+[Technical articles](../development/documentation/index.md#technical-articles) are
 topic-related documentation, written with an user-friendly approach and language, aiming
 to provide the community with guidance on specific processes to achieve certain objectives.
 
