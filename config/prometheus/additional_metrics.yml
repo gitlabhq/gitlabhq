@@ -29,14 +29,14 @@
       label: Pod average
       unit: ms
   - title: "HTTP Error Rate"
-    y_label: "HTTP 500 Errors / Sec"
+    y_label: "HTTP Errors"
     required_metrics:
       - nginx_upstream_responses_total
     weight: 1
     queries:
-    - query_range: 'sum(rate(nginx_upstream_responses_total{status_code="5xx", upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[2m]))'
-      label: HTTP Errors
-      unit: "errors / sec"
+    - query_range: 'sum(rate(nginx_upstream_responses_total{status_code="5xx", upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[2m])) / sum(rate(nginx_upstream_responses_total{upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[2m])) * 100'
+      label: 5xx Errors
+      unit: "%"
 - group: Response metrics (HA Proxy)
   priority: 10
   metrics:
