@@ -2556,6 +2556,24 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#convert_lfs_pattern_to_regex' do
+    it 'converts recursive pattern' do
+      expect(repository.send(:convert_lfs_pattern_to_regex, '/directory/**/*.txt')).to eq 'directory/(.*/)*.*\\.txt'
+    end
+
+    it 'converts all files matcher into all character matcher' do
+      expect(repository.send(:convert_lfs_pattern_to_regex, '/*.txt')).to eq '.*\\.txt'
+    end
+  end
+
+  describe '#git_lfs_track_pattern' do
+    it 'returns the pattern of lfs filters' do
+      gitattributes = "*.txt filter=lfs diff=lfs merge=lfs -text\n*.png filter=other diff=other merge=other -text\n*.jpg filter=lfs diff=lfs merge=lfs -text\n"
+
+      expect(repository.send(:git_lfs_track_pattern, gitattributes)).to eq ['.*\\.jpg', '.*\\.txt']
+    end
+  end
+
   def create_remote_branch(repository, remote_name, branch_name, source_branch_name)
     source_branch = repository.branches.find { |branch| branch.name == source_branch_name }
     rugged = repository_rugged
