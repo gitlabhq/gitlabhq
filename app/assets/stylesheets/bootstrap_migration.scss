@@ -177,6 +177,9 @@ table {
 }
 
 .nav-tabs {
+  // Override bootstrap's default border
+  border-bottom: 0;
+
   .nav-link {
     border: 0;
   }
