@@ -89,6 +89,8 @@ class GitPushService < BaseService
 
         types = Gitlab::FileDetector.types_in_paths(paths.to_a)
       end
+
+      DetectRepositoryLanguagesWorker.perform_async(@project.id, current_user.id)
     else
       types = []
     end

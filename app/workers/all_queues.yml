@@ -125,6 +125,7 @@
 - repository_update_remote_mirror
 - create_note_diff_file
 - delete_diff_files
+- detect_repository_languages
 
 # EE-specific queues
 

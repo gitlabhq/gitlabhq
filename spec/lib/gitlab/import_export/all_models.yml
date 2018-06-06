@@ -337,6 +337,7 @@ project:
 - vulnerability_feedback
 - prometheus_alerts
 - software_license_policies
+- repository_languages
 award_emoji:
 - awardable
 - user

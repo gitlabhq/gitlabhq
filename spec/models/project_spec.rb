@@ -70,6 +70,7 @@ describe Project do
     it { is_expected.to have_many(:pages_domains) }
     it { is_expected.to have_many(:labels).class_name('ProjectLabel') }
     it { is_expected.to have_many(:users_star_projects) }
+    it { is_expected.to have_many(:repository_languages) }
     it { is_expected.to have_many(:environments) }
     it { is_expected.to have_many(:deployments) }
     it { is_expected.to have_many(:todos) }
