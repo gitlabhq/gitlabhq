@@ -104,7 +104,7 @@ describe GitGarbageCollectWorker do
       it_should_behave_like 'flushing ref caches', true
     end
 
-    context "with Gitaly turned off", :skip_gitaly_mock do
+    context "with Gitaly turned off", :disable_gitaly do
       it_should_behave_like 'flushing ref caches', false
     end
 
