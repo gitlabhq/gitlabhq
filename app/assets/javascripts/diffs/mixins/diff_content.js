@@ -2,6 +2,7 @@ import { mapState, mapGetters, mapActions } from 'vuex';
 import diffDiscussions from '../components/diff_discussions.vue';
 import diffLineGutterContent from '../components/diff_line_gutter_content.vue';
 import diffLineNoteForm from '../components/diff_line_note_form.vue';
+import { trimFirstCharOfLineContent } from '../store/utils';
 import { CONTEXT_LINE_TYPE, CONTEXT_LINE_CLASS_NAME } from '../constants';
 
 export default {
@@ -74,19 +75,7 @@ export default {
       };
     },
     trimFirstChar(line) {
-      if (!line.richText) {
-        return line;
-      }
-
-      const firstChar = line.richText.charAt(0);
-
-      if (firstChar === ' ' || firstChar === '+' || firstChar === '-') {
-        Object.assign(line, {
-          richText: line.richText.substring(1),
-        });
-      }
-
-      return line;
+      return trimFirstCharOfLineContent(line);
     },
     handleShowCommentForm(params) {
       this.showCommentForm({ lineCode: params.lineCode });

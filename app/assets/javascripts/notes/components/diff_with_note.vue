@@ -4,6 +4,7 @@ import imageDiffHelper from '~/image_diff/helpers/index';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
 import SkeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
+import { trimFirstCharOfLineContent } from '~/diffs/store/utils';
 
 export default {
   components: {
@@ -53,6 +54,11 @@ export default {
     userColorScheme() {
       return window.gon.user_color_scheme;
     },
+    normalizedDiffLines() {
+      const lines = this.discussion.truncatedDiffLines || [];
+
+      return lines.map(line => trimFirstCharOfLineContent(convertObjectPropsToCamelCase(line)));
+    },
   },
   mounted() {
     if (this.isImageDiff) {
@@ -99,16 +105,16 @@ export default {
     >
       <table>
         <tr
-          v-for="line in discussion.truncatedDiffLines"
+          v-for="line in normalizedDiffLines"
           :key="line.lineCode"
           class="line_holder"
         >
-          <td class="diff-line-num old_line">{{ line.old_line }}</td>
-          <td class="diff-line-num new_line">{{ line.new_line }}</td>
+          <td class="diff-line-num old_line">{{ line.oldLine }}</td>
+          <td class="diff-line-num new_line">{{ line.newLine }}</td>
           <td
             :class="line.type"
             class="line_content"
-            v-html="line.rich_text"
+            v-html="line.richText"
           >
           </td>
         </tr>

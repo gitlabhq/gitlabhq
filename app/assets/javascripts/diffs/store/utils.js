@@ -154,3 +154,19 @@ export function addContextLines(options) {
     parallelLines.splice(parallelIndex, 0, ...normalizedParallelLines);
   }
 }
+
+export function trimFirstCharOfLineContent(line) {
+  if (!line.richText) {
+    return line;
+  }
+
+  const firstChar = line.richText.charAt(0);
+
+  if (firstChar === ' ' || firstChar === '+' || firstChar === '-') {
+    Object.assign(line, {
+      richText: line.richText.substring(1),
+    });
+  }
+
+  return line;
+}
