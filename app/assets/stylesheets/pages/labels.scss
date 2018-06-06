@@ -77,7 +77,7 @@
     margin-bottom: 5px;
     display: flex;
     justify-content: space-between;
-    padding: 8px 8px 8px $gl-padding;
+    padding: $gl-padding;
     border-radius: $border-radius-default;
 
     &.sortable-ghost {
