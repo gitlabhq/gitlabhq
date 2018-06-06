@@ -80,6 +80,16 @@ describe Projects::MergeRequestsController do
                                                                 ))
         end
       end
+
+      context "that is invalid" do
+        let(:merge_request) { create(:invalid_merge_request, target_project: project, source_project: project) }
+
+        it "renders merge request page" do
+          go(format: :html)
+
+          expect(response).to be_success
+        end
+      end
     end
 
     describe 'as json' do
@@ -104,6 +114,16 @@ describe Projects::MergeRequestsController do
           go(serializer: nil, format: :json)
 
           expect(response).to match_response_schema('entities/merge_request_widget')
+        end
+      end
+
+      context "that is invalid" do
+        let(:merge_request) { create(:invalid_merge_request, target_project: project, source_project: project) }
+
+        it "renders merge request page" do
+          go(format: :json)
+
+          expect(response).to be_success
         end
       end
     end
