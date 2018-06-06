@@ -48,6 +48,9 @@ module Projects
 
       yield(@project) if block_given?
 
+      # If the block added errors, don't try to save the project
+      return @project if @project.errors.any?
+
       @project.creator = current_user
 
       if forked_from_project_id

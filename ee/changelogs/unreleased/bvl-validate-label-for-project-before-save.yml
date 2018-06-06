@@ -1,0 +1,5 @@
+---
+title: Validate classification label on create & update
+merge_request: 5976
+author:
+type: fixed
