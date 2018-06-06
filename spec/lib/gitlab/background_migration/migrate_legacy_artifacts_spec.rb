@@ -83,12 +83,13 @@ describe Gitlab::BackgroundMigration::MigrateLegacyArtifacts, :migration, schema
         context 'when new artifacts has already existed' do
           before do
             job_artifacts.create!(id: 1, project_id: project_id, job_id: job_id, file_type: 1, size: 123, file: 'archive.zip')
+            job_artifacts.create!(id: 2, project_id: project_id, job_id: job_id, file_type: 2, size: 123, file: 'metadata.tar.gz')
           end
 
           it 'does not migrate' do
             described_class.new.perform(*range)
 
-            expect(job_artifacts.pluck('id')).to eq([1])
+            expect(job_artifacts.pluck('id')).to eq([1, 2])
           end
         end
       end

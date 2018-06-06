@@ -11,10 +11,10 @@ module Gitlab
         self.table_name = 'ci_builds'
         self.inheritance_column = :_type_disabled
 
-        scope :with_legacy_artifacts, -> { where("artifacts_file <> ''") }
+        scope :with_legacy_artifacts, -> { where("artifacts_file <> '' AND artifacts_metadata <> ''") }
 
         scope :without_new_artifacts, -> do
-          where('NOT EXISTS (?)', MigrateLegacyArtifacts::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').archive)
+          where('NOT EXISTS (SELECT 1 FROM ci_job_artifacts WHERE (ci_builds.id = ci_job_artifacts.job_id) AND ci_job_artifacts.file_type = 1)')
         end
       end
 
@@ -40,71 +40,71 @@ module Gitlab
       end
 
       def perform(start_id, stop_id)
-        rows = []
-
-        # Build rows
-        MigrateLegacyArtifacts::Build
-          .with_legacy_artifacts.without_new_artifacts
-          .where("id BETWEEN (?) AND (?)", start_id.to_i, stop_id.to_i).find_each do |build|
-          rows << build_archive_row(build)
-          rows << build_metadata_row(build) if build.artifacts_metadata
-        end
-
         ActiveRecord::Base.transaction do
-          # Bulk insert
-          Gitlab::Database
-            .bulk_insert(MigrateLegacyArtifacts::JobArtifact.table_name, rows)
+          ActiveRecord::Base.connection.execute <<-EOF.strip_heredoc
+            INSERT INTO ci_job_artifacts (
+                   project_id,
+                   job_id,
+                   expire_at,
+                   file_location,
+                   created_at,
+                   updated_at,
+                   file,
+                   size,
+                   file_store,
+                   file_type)
+            SELECT project_id,
+                   id,
+                   artifacts_expire_at,
+                   #{MigrateLegacyArtifacts::JobArtifact.file_locations['legacy_path']},
+                   created_at,
+                   created_at,
+                   artifacts_file,
+                   artifacts_size,
+                   COALESCE(artifacts_file_store, #{JobArtifact::LOCAL_STORE}),
+                   #{MigrateLegacyArtifacts::JobArtifact.file_types['archive']}
+              FROM ci_builds
+             WHERE id BETWEEN #{start_id.to_i} AND #{stop_id.to_i}
+                    AND artifacts_file <> '' AND artifacts_metadata <> ''
+                    AND NOT EXISTS (SELECT 1 FROM ci_job_artifacts WHERE (ci_builds.id = ci_job_artifacts.job_id) AND ci_job_artifacts.file_type = 1)
+          EOF
 
-          # Clean columns of ci_builds
-          #
-          # Included
-          # "artifacts_file", "artifacts_metadata", "artifacts_size", "artifacts_file_store", "artifacts_metadata_store"
-          # Excluded
-          # - "artifacts_expire_at"
-          # This is still used to process the expiration logic of job artifacts.
-          # We also store the same value to `ci_job_artifacts.expire_at`, however it's not used at the moment.
-          MigrateLegacyArtifacts::Build
-            .with_legacy_artifacts
-            .where(id: (start_id..stop_id))
-            .update_all(artifacts_file: nil,
-                        artifacts_file_store: nil,
-                        artifacts_size: nil,
-                        artifacts_metadata: nil,
-                        artifacts_metadata_store: nil)
+          ActiveRecord::Base.connection.execute <<-EOF.strip_heredoc
+            INSERT INTO ci_job_artifacts (
+                   project_id,
+                   job_id,
+                   expire_at,
+                   file_location,
+                   created_at,
+                   updated_at,
+                   file,
+                   size,
+                   file_store,
+                   file_type)
+            SELECT project_id,
+                   id,
+                   artifacts_expire_at,
+                   #{MigrateLegacyArtifacts::JobArtifact.file_locations['legacy_path']},
+                   created_at,
+                   created_at,
+                   artifacts_metadata,
+                   NULL,
+                   COALESCE(artifacts_metadata_store, #{JobArtifact::LOCAL_STORE}),
+                   #{MigrateLegacyArtifacts::JobArtifact.file_types['metadata']}
+              FROM ci_builds
+             WHERE id BETWEEN #{start_id.to_i} AND #{stop_id.to_i}
+                    AND artifacts_file <> '' AND artifacts_metadata <> ''
+                    AND NOT EXISTS (SELECT 1 FROM ci_job_artifacts WHERE (ci_builds.id = ci_job_artifacts.job_id) AND ci_job_artifacts.file_type = 2)
+          EOF
+
+          ActiveRecord::Base.connection.execute <<-EOF.strip_heredoc
+            UPDATE ci_builds SET
+                    artifacts_file = NULL, artifacts_size = NULL, artifacts_file_store = NULL,
+                    artifacts_metadata = NULL, artifacts_metadata_store = NULL
+             WHERE id BETWEEN #{start_id.to_i} AND #{stop_id.to_i}
+                    AND (artifacts_file <> '' OR artifacts_metadata <> '')
+          EOF
         end
-      end
-
-      private
-
-      def build_archive_row(build)
-        build_base_row(build).merge({
-          size: build.artifacts_size,
-          file: build.artifacts_file,
-          file_store: build.artifacts_file_store || JobArtifact::LOCAL_STORE,
-          file_type: MigrateLegacyArtifacts::JobArtifact.file_types['archive'],
-          file_sha256: nil # `file_sha256` of legacy artifacts had not been persisted
-        })
-      end
-
-      def build_metadata_row(build)
-        build_base_row(build).merge({
-          size: nil, # `size` of legacy metadatas had not been persisted
-          file: build.artifacts_metadata,
-          file_store: build.artifacts_metadata_store || JobArtifact::LOCAL_STORE,
-          file_type: MigrateLegacyArtifacts::JobArtifact.file_types['metadata'],
-          file_sha256: nil # `file_sha256` of legacy artifacts had not been persisted
-        })
-      end
-
-      def build_base_row(build)
-        {
-          project_id: build.project_id,
-          job_id: build.id,
-          expire_at: build.artifacts_expire_at,
-          file_location: MigrateLegacyArtifacts::JobArtifact.file_locations['legacy_path'],
-          created_at: build.created_at,
-          updated_at: build.created_at
-        }
       end
     end
   end
