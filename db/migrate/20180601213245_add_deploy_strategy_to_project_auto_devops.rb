@@ -7,9 +7,13 @@ class AddDeployStrategyToProjectAutoDevops < ActiveRecord::Migration
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
 
-  def change
-    change_table :project_auto_devops do |t|
-      t.integer :deploy_strategy, null: false, default: 0
-    end
+  disable_ddl_transaction!
+
+  def up
+    add_column_with_default :project_auto_devops, :deploy_strategy, :integer, default: 0, allow_null: false
+  end
+
+  def down
+    remove_column :project_auto_devops, :deploy_strategy
   end
 end
