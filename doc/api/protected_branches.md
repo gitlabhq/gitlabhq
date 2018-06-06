@@ -9,7 +9,10 @@ The access levels are defined in the `ProtectedRefAccess::ALLOWED_ACCESS_LEVELS`
 0  => No access
 30 => Developer access
 40 => Maintainer access
+<<<<<<< HEAD
 60 => Admin access
+=======
+>>>>>>> upstream/master
 ```
 
 ## List protected branches
@@ -37,17 +40,25 @@ Example response:
     "push_access_levels": [
       {
         "access_level": 40,
+<<<<<<< HEAD
         "user_id": null,
         "group_id": null,
+=======
+>>>>>>> upstream/master
         "access_level_description": "Maintainers"
       }
     ],
     "merge_access_levels": [
       {
+<<<<<<< HEAD
         "access_level": null,
         "user_id": null,
         "group_id": 1234,
         "access_level_description": "Example Merge Group"
+=======
+        "access_level": 40,
+        "access_level_description": "Maintainers"
+>>>>>>> upstream/master
       }
     ]
   },
@@ -80,17 +91,25 @@ Example response:
   "push_access_levels": [
     {
       "access_level": 40,
+<<<<<<< HEAD
       "user_id": null,
       "group_id": null,
+=======
+>>>>>>> upstream/master
       "access_level_description": "Maintainers"
     }
   ],
   "merge_access_levels": [
     {
+<<<<<<< HEAD
       "access_level": null,
       "user_id": null,
       "group_id": 1234,
       "access_level_description": "Example Merge Group"
+=======
+      "access_level": 40,
+      "access_level_description": "Maintainers"
+>>>>>>> upstream/master
     }
   ]
 }
@@ -115,11 +134,14 @@ curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitl
 | `name` | string | yes | The name of the branch or wildcard |
 | `push_access_level` | string | no | Access levels allowed to push (defaults: `40`, maintainer access level) |
 | `merge_access_level` | string | no | Access levels allowed to merge (defaults: `40`, maintainer access level) |
+<<<<<<< HEAD
 | `unprotect_access_level` | string | no | Access levels allowed to unprotect (defaults: `40`, maintainer access level) |
 | `allowed_to_push` | array | no | Array of access levels allowed to push, with each described by a hash |
 | `allowed_to_merge` | array | no | Array of access levels allowed to merge, with each described by a hash |
 | `allowed_to_unprotect` | array | no | Array of access levels allowed to unprotect, with each described by a hash |
 
+=======
+>>>>>>> upstream/master
 
 Example response:
 
@@ -129,14 +151,18 @@ Example response:
   "push_access_levels": [
     {
       "access_level": 30,
+<<<<<<< HEAD
       "user_id": null,
       "group_id": null,
+=======
+>>>>>>> upstream/master
       "access_level_description": "Developers + Maintainers"
     }
   ],
   "merge_access_levels": [
     {
       "access_level": 30,
+<<<<<<< HEAD
       "user_id": null,
       "group_id": null,
       "access_level_description": "Developers + Maintainers"
@@ -187,6 +213,9 @@ Example response:
       "user_id":null,
       "group_id":null,
       "access_level_description":"Maintainers"
+=======
+      "access_level_description": "Developers + Maintainers"
+>>>>>>> upstream/master
     }
   ]
 }

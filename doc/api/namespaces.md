@@ -55,7 +55,11 @@ Example response:
 ]
 ```
 
+<<<<<<< HEAD
 **Note**: `members_count_with_descendants` and `plan` are presented only for group maintainers/owners.
+=======
+**Note**: `members_count_with_descendants` are presented only for group maintainers/owners.
+>>>>>>> upstream/master
 
 ## Search for namespace
 

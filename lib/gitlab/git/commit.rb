@@ -60,6 +60,9 @@ module Gitlab
           # Some weird thing?
           return nil unless commit_id.is_a?(String)
 
+          # This saves us an RPC round trip.
+          return nil if commit_id.include?(':')
+
           commit = repo.gitaly_migrate(:find_commit) do |is_enabled|
             if is_enabled
               repo.gitaly_commit_client.find_commit(commit_id)

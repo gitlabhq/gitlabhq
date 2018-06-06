@@ -45,6 +45,7 @@ module API
         optional :merge_access_level, type: Integer,
                                       values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS,
                                       desc: 'Access levels allowed to merge (defaults: `40`, maintainer access level)'
+<<<<<<< HEAD
         optional :unprotect_access_level, type: Integer,
                                           values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS,
                                           desc: 'Access levels allowed to unprotect (defaults: `40`, maintainer access level)'
@@ -63,6 +64,8 @@ module API
           optional :user_id, type: Integer
           optional :group_id, type: Integer
         end
+=======
+>>>>>>> upstream/master
       end
       post ':id/protected_branches' do
         protected_branch = user_project.protected_branches.find_by(name: params[:name])

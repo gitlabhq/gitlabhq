@@ -410,11 +410,11 @@ module ProjectsHelper
   def project_status_css_class(status)
     case status
     when "started"
-      "active"
+      "table-active"
     when "failed"
-      "danger"
+      "table-danger"
     when "finished"
-      "success"
+      "table-success"
     end
   end
 

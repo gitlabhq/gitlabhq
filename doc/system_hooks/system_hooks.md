@@ -138,7 +138,11 @@ Please refer to `group_rename` and `user_rename` for that case.
                   "created_at": "2012-07-21T07:30:56Z",
                   "updated_at": "2012-07-21T07:38:22Z",
                   "event_name": "user_add_to_team",
+<<<<<<< HEAD
                 "access_level": "Maintainer",
+=======
+              "project_access": "Maintainer",
+>>>>>>> upstream/master
                   "project_id": 74,
                 "project_name": "StoreCloud",
                 "project_path": "storecloud",
