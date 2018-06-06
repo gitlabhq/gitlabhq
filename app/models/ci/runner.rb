@@ -220,10 +220,8 @@ module Ci
 
       cache_attributes(values)
 
-      if persist_cached_data?
-        self.assign_attributes(values)
-        self.save if self.changed?
-      end
+      # We save data without validation, it will always change due to `contacted_at`
+      self.update_columns(values) if persist_cached_data?
     end
 
     def pick_build!(build)

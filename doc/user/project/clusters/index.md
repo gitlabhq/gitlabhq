@@ -19,7 +19,7 @@ or provide the credentials to an [existing Kubernetes cluster](#adding-an-existi
 ## Adding and creating a new GKE cluster via GitLab
 
 NOTE: **Note:**
-You need Master [permissions] and above to access the Kubernetes page.
+You need Maintainer [permissions] and above to access the Kubernetes page.
 
 Before proceeding, make sure the following requirements are met:
 
@@ -30,7 +30,7 @@ Before proceeding, make sure the following requirements are met:
   clusters on GKE. That would mean that a [billing
   account](https://cloud.google.com/billing/docs/how-to/manage-billing-account)
   must be set up and that you have to have permissions to access it.
-- You must have Master [permissions] in order to be able to access the
+- You must have Maintainer [permissions] in order to be able to access the
   **Kubernetes** page.
 - You must have [Cloud Billing API](https://cloud.google.com/billing/) enabled
 - You must have [Resource Manager
@@ -66,7 +66,7 @@ enable the Cluster integration.
 ## Adding an existing Kubernetes cluster
 
 NOTE: **Note:**
-You need Master [permissions] and above to access the Kubernetes page.
+You need Maintainer [permissions] and above to access the Kubernetes page.
 
 To add an existing Kubernetes cluster to your project:
 
@@ -201,6 +201,11 @@ Otherwise, you can list the IP addresses of all load balancers:
 kubectl get svc --all-namespaces -o jsonpath='{range.items[?(@.status.loadBalancer.ingress)]}{.status.loadBalancer.ingress[*].ip} '
 ```
 
+> **Note**: Some Kubernetes clusters return a hostname instead, like [Amazon EKS](https://aws.amazon.com/eks/). For these platforms, run:
+> ```bash
+> kubectl get service ingress-nginx-ingress-controller -n gitlab-managed-apps -o jsonpath="{.status.loadBalancer.ingress[0].hostname}"`.
+> ```
+
 The output is the external IP address of your cluster. This information can then
 be used to set up DNS entries and forwarding rules that allow external access to
 your deployed applications.
@@ -233,7 +238,7 @@ When adding more than one Kubernetes clusters to your project, you need to
 differentiate them with an environment scope. The environment scope associates
 clusters and [environments](../../../ci/environments.md) in an 1:1 relationship
 similar to how the
-[environment-specific variables](../../../ci/variables/README.md#limiting-environment-scopes-of-secret-variables)
+[environment-specific variables](../../../ci/variables/README.md#limiting-environment-scopes-of-variables)
 work.
 
 The default environment scope is `*`, which means all jobs, regardless of their
@@ -333,7 +338,7 @@ To disable the Kubernetes cluster integration, follow the same procedure.
 ## Removing the Kubernetes cluster integration
 
 NOTE: **Note:**
-You need Master [permissions] and above to remove a Kubernetes cluster integration.
+You need Maintainer [permissions] and above to remove a Kubernetes cluster integration.
 
 NOTE: **Note:**
 When you remove a cluster, you only remove its relation to GitLab, not the
@@ -386,7 +391,7 @@ you will need the Kubernetes project integration enabled.
 ### Web terminals
 
 NOTE: **Note:**
-Introduced in GitLab 8.15. You must be the project owner or have `master` permissions
+Introduced in GitLab 8.15. You must be the project owner or have `maintainer` permissions
 to use terminals. Support is limited to the first container in the
 first pod of your environment.
 

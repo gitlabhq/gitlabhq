@@ -11,7 +11,7 @@
       - else
         %p
           Members can be added by project
-          %i Masters
+          %i Maintainers
           or
           %i Owners
 
@@ -19,10 +19,10 @@
       - if can_admin_project_members && project_can_be_shared?
         - if !membership_locked? && @project.allowed_to_share_with_group?
           %ul.nav-links.nav.nav-tabs.gitlab-tabs{ role: 'tablist' }
-            %li.active{ role: 'presentation' }
-              %a{ href: '#add-member-pane', id: 'add-member-tab', data: { toggle: 'tab' }, role: 'tab' } Add member
-            %li{ role: 'presentation', class: ('active' if membership_locked?) }
-              %a{ href: '#share-with-group-pane', id: 'share-with-group-tab', data: { toggle: 'tab' }, role: 'tab' } Share with group
+            %li.nav-tab{ role: 'presentation' }
+              %a.nav-link.active{ href: '#add-member-pane', id: 'add-member-tab', data: { toggle: 'tab' }, role: 'tab' } Add member
+            %li.nav-tab{ role: 'presentation', class: ('active' if membership_locked?) }
+              %a.nav-link{ href: '#share-with-group-pane', id: 'share-with-group-tab', data: { toggle: 'tab' }, role: 'tab' } Share with group
 
           .tab-content.gitlab-tab-content
             .tab-pane.active{ id: 'add-member-pane', role: 'tabpanel' }

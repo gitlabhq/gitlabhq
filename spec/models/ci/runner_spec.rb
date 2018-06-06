@@ -549,7 +549,7 @@ describe Ci::Runner do
   end
 
   describe '#update_cached_info' do
-    let(:runner) { create(:ci_runner) }
+    let(:runner) { create(:ci_runner, :project) }
 
     subject { runner.update_cached_info(architecture: '18-bit') }
 
@@ -570,17 +570,22 @@ describe Ci::Runner do
         runner.contacted_at = 2.hours.ago
       end
 
-      it 'updates database' do
-        expect_redis_update
+      context 'with invalid runner' do
+        before do
+          runner.projects = []
+        end
 
-        expect { subject }.to change { runner.reload.read_attribute(:contacted_at) }
-          .and change { runner.reload.read_attribute(:architecture) }
+        it 'still updates redis cache and database' do
+          expect(runner).to be_invalid
+
+          expect_redis_update
+          does_db_update
+        end
       end
 
-      it 'updates cache' do
+      it 'updates redis cache and database' do
         expect_redis_update
-
-        subject
+        does_db_update
       end
     end
 
@@ -589,6 +594,11 @@ describe Ci::Runner do
         redis_key = runner.send(:cache_attribute_key)
         expect(redis).to receive(:set).with(redis_key, anything, any_args)
       end
+    end
+
+    def does_db_update
+      expect { subject }.to change { runner.reload.read_attribute(:contacted_at) }
+        .and change { runner.reload.read_attribute(:architecture) }
     end
   end
 

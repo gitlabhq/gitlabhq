@@ -111,7 +111,7 @@ personal access tokens, authorized applications, etc.
 - [Authentication](../topics/authentication/index.md): Read through the authentication
 methods available in GitLab.
 - [Permissions](permissions.md): Learn the different set of permissions levels for each
-user type (guest, reporter, developer, master, owner).
+user type (guest, reporter, developer, maintainer, owner).
 - [Feature highlight](feature_highlight.md): Learn more about the little blue dots
 around the app that explain certain features
 

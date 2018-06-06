@@ -35,6 +35,12 @@
     @include media-breakpoint-down(xs) {
       width: 100%;
     }
+
+    &.projects-dropdown-menu {
+      padding: 0;
+      overflow-y: initial;
+      max-height: initial;
+    }
   }
 
   .dropdown-toggle,

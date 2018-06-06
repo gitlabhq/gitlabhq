@@ -176,6 +176,7 @@ the stable branch are:
 
 * Fixes for [regressions](#regressions)
 * Fixes for security issues
+* Fixes or improvements to automated QA scenarios
 * New or updated translations (as long as they do not touch application code)
 
 During the feature freeze all merge requests that are meant to go into the

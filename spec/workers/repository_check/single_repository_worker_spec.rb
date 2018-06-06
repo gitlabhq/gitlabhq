@@ -88,7 +88,9 @@ describe RepositoryCheck::SingleRepositoryWorker do
   end
 
   def break_wiki(project)
-    break_repo(wiki_path(project))
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      break_repo(wiki_path(project))
+    end
   end
 
   def wiki_path(project)
@@ -96,7 +98,9 @@ describe RepositoryCheck::SingleRepositoryWorker do
   end
 
   def break_project(project)
-    break_repo(project.repository.path_to_repo)
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      break_repo(project.repository.path_to_repo)
+    end
   end
 
   def break_repo(repo)

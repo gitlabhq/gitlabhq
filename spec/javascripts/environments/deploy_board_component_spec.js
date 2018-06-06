@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import DeployBoard from 'ee/environments/components/deploy_board_component.vue';
-import { deployBoardMockData } from './mock_data';
+import { deployBoardMockData, environment } from './mock_data';
 
 describe('Deploy Board', () => {
   let DeployBoardComponent;
@@ -18,6 +18,7 @@ describe('Deploy Board', () => {
           deployBoardData: deployBoardMockData,
           isLoading: false,
           isEmpty: false,
+          logsPath: environment.log_path,
         },
       }).$mount();
     });
@@ -29,7 +30,7 @@ describe('Deploy Board', () => {
     });
 
     it('should render all instances', () => {
-      const instances = component.$el.querySelectorAll('.deploy-board-instances-container div');
+      const instances = component.$el.querySelectorAll('.deploy-board-instances-container a');
 
       expect(instances.length).toEqual(deployBoardMockData.instances.length);
 
@@ -55,6 +56,7 @@ describe('Deploy Board', () => {
           deployBoardData: {},
           isLoading: false,
           isEmpty: true,
+          logsPath: environment.log_path,
         },
       }).$mount();
     });
@@ -74,6 +76,7 @@ describe('Deploy Board', () => {
           deployBoardData: {},
           isLoading: true,
           isEmpty: false,
+          logsPath: environment.log_path,
         },
       }).$mount();
     });

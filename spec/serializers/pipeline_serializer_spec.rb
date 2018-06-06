@@ -8,6 +8,10 @@ describe PipelineSerializer do
     described_class.new(current_user: user)
   end
 
+  before do
+    stub_feature_flags(ci_pipeline_persisted_stages: true)
+  end
+
   subject { serializer.represent(resource) }
 
   describe '#represent' do
@@ -99,7 +103,8 @@ describe PipelineSerializer do
       end
     end
 
-    context 'number of queries' do
+    describe 'number of queries when preloaded' do
+      subject { serializer.represent(resource, preload: true) }
       let(:resource) { Ci::Pipeline.all }
 
       before do
@@ -107,7 +112,7 @@ describe PipelineSerializer do
         # gitaly calls in this block
         # Issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/37772
         Gitlab::GitalyClient.allow_n_plus_1_calls do
-          Ci::Pipeline::AVAILABLE_STATUSES.each do |status|
+          Ci::Pipeline::COMPLETED_STATUSES.each do |status|
             create_pipeline(status)
           end
         end
@@ -120,7 +125,7 @@ describe PipelineSerializer do
         it 'verifies number of queries', :request_store do
           recorded = ActiveRecord::QueryRecorder.new { subject }
 
-          expect(recorded.count).to be_within(1).of(48)
+          expect(recorded.count).to be_within(2).of(32)
           expect(recorded.cached_count).to eq(0)
         end
       end
@@ -139,7 +144,7 @@ describe PipelineSerializer do
           # pipeline. With the same ref this check is cached but if refs are
           # different then there is an extra query per ref
           # https://gitlab.com/gitlab-org/gitlab-ce/issues/46368
-          expect(recorded.count).to be_within(1).of(56)
+          expect(recorded.count).to be_within(2).of(35)
           expect(recorded.cached_count).to eq(0)
         end
       end

@@ -43,6 +43,17 @@
         required: false,
         default: true,
       },
+
+      podName: {
+        type: String,
+        required: false,
+        default: '',
+      },
+
+      logsPath: {
+        type: String,
+        required: true,
+      },
     },
 
     computed: {
@@ -55,16 +66,21 @@
 
         return cssClassName;
       },
+
+      computedLogPath() {
+        return `${this.logsPath}?pod_name=${this.podName}`;
+      },
     },
   };
 </script>
 <template>
-  <div
+  <a
     v-tooltip
     class="deploy-board-instance"
     :class="cssClass"
     :data-title="tooltipText"
     data-placement="top"
+    :href="computedLogPath"
   >
-  </div>
+  </a>
 </template>

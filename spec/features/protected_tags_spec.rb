@@ -8,7 +8,7 @@ feature 'Protected Tags', :js do
     sign_in(user)
   end
 
-  def set_allowed_to(operation, option = 'Masters', form: '.new-protected-tag')
+  def set_allowed_to(operation, option = 'Maintainers', form: '.new-protected-tag')
     within form do
       find(".js-allowed-to-#{operation}").click
       wait_for_requests

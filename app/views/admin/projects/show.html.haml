@@ -118,8 +118,8 @@
       .card-body
         = form_for @project, url: transfer_admin_project_path(@project), method: :put do |f|
           .form-group.row
-            = f.label :new_namespace_id, "Namespace", class: 'col-form-label col-sm-2'
-            .col-sm-10
+            = f.label :new_namespace_id, "Namespace", class: 'col-form-label col-sm-3'
+            .col-sm-9
               .dropdown
                 = dropdown_toggle('Search for Namespace', { toggle: 'dropdown', field_name: 'new_namespace_id' }, { toggle_class: 'js-namespace-select large' })
                 .dropdown-menu.dropdown-select
@@ -129,7 +129,7 @@
                   = dropdown_loading
 
           .form-group.row
-            .offset-sm-2.col-sm-10
+            .offset-sm-3.col-sm-9
               = f.submit 'Transfer', class: 'btn btn-primary'
 
     .card.repository-check

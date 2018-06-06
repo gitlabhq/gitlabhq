@@ -1106,6 +1106,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                   expect(json_response['RemoteObject']).to have_key('GetURL')
                   expect(json_response['RemoteObject']).to have_key('StoreURL')
                   expect(json_response['RemoteObject']).to have_key('DeleteURL')
+                  expect(json_response['RemoteObject']).to have_key('MultipartUpload')
                 end
               end
 
