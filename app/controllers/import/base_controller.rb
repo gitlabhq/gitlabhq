@@ -25,4 +25,13 @@ class Import::BaseController < ApplicationController
 
     current_user.namespace
   end
+
+  def project_save_error(project)
+    # Projects::CreateService will set base message if unable to save
+    if project.errors[:base].present?
+      project.errors[:base].last
+    else
+      project.errors.full_messages.join(', ')
+    end
+  end
 end
