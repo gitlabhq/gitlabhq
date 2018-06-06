@@ -1,5 +1,5 @@
 module Ci
-  class RescueStaleLiveTraceWorker
+  class ArchiveTracesCronWorker
     include ApplicationWorker
     include CronjobQueue
 
