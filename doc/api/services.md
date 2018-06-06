@@ -1,6 +1,6 @@
 # Services API
 
->**Note:** This API requires an access token with Master or Owner permissions
+>**Note:** This API requires an access token with Maintainer or Owner permissions
 
 ## Asana
 

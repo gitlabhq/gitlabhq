@@ -76,10 +76,13 @@ class Groups::MilestonesController < Groups::ApplicationController
 
   def milestones
     milestones = MilestonesFinder.new(search_params).execute
-    legacy_milestones = GroupMilestone.build_collection(group, group_projects, params)
 
     @sort = params[:sort] || 'due_date_asc'
     MilestoneArray.sort(milestones + legacy_milestones, @sort)
+  end
+
+  def legacy_milestones
+    GroupMilestone.build_collection(group, group_projects, params)
   end
 
   def milestone

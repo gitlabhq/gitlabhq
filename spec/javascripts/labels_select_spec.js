@@ -40,5 +40,9 @@ describe('LabelsSelect', () => {
     it('generated label item template has correct label styles', () => {
       expect($labelEl.find('span.label').attr('style')).toBe(`background-color: ${label.color}; color: ${label.text_color};`);
     });
+
+    it('generated label item has a badge class', () => {
+      expect($labelEl.find('span').hasClass('badge')).toEqual(true);
+    });
   });
 });

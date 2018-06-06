@@ -18,9 +18,7 @@ const createComponent = propsData => {
   }).$mount();
 };
 
-const convertedMetrics = convertDatesMultipleSeries(
-  singleRowMetricsMultipleSeries,
-);
+const convertedMetrics = convertDatesMultipleSeries(singleRowMetricsMultipleSeries);
 
 describe('Graph', () => {
   beforeEach(() => {
@@ -36,7 +34,7 @@ describe('Graph', () => {
       projectPath,
     });
 
-    expect(component.$el.querySelector('.text-center').innerText.trim()).toBe(
+    expect(component.$el.querySelector('.prometheus-graph-title').innerText.trim()).toBe(
       component.graphData.title,
     );
   });
@@ -52,9 +50,7 @@ describe('Graph', () => {
       });
 
       const transformedHeight = `${component.graphHeight - 100}`;
-      expect(component.axisTransform.indexOf(transformedHeight)).not.toEqual(
-        -1,
-      );
+      expect(component.axisTransform.indexOf(transformedHeight)).not.toEqual(-1);
     });
 
     it('outerViewBox gets a width and height property based on the DOM size of the element', () => {

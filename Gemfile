@@ -93,6 +93,10 @@ gem 'grape', '~> 1.0'
 gem 'grape-entity', '~> 0.7.1'
 gem 'rack-cors', '~> 1.0.0', require: 'rack/cors'
 
+# GraphQL API
+gem 'graphql', '~> 1.8.0'
+gem 'graphiql-rails', '~> 1.4.10'
+
 # Disable strong_params so that Mash does not respond to :permitted?
 gem 'hashie-forbidden_attributes'
 
@@ -342,7 +346,7 @@ group :development, :test do
 
   gem 'capybara', '~> 2.15'
   gem 'capybara-screenshot', '~> 1.0.0'
-  gem 'selenium-webdriver', '~> 3.5'
+  gem 'selenium-webdriver', '~> 3.12'
 
   gem 'spring', '~> 2.0.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
@@ -374,7 +378,7 @@ end
 
 group :test do
   gem 'shoulda-matchers', '~> 3.1.2', require: false
-  gem 'email_spec', '~> 1.6.0'
+  gem 'email_spec', '~> 2.2.0'
   gem 'json-schema', '~> 2.8.0'
   gem 'webmock', '~> 2.3.2'
   gem 'rails-controller-testing' if rails5? # Rails5 only gem.
@@ -384,7 +388,7 @@ group :test do
   gem 'test-prof', '~> 0.2.5'
 end
 
-gem 'octokit', '~> 4.8'
+gem 'octokit', '~> 4.9'
 
 gem 'mail_room', '~> 0.9.1'
 

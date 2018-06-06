@@ -238,6 +238,14 @@ module ProjectsHelper
     "git push --set-upstream #{repository_url}/$(git rev-parse --show-toplevel | xargs basename).git $(git rev-parse --abbrev-ref HEAD)"
   end
 
+  def show_xcode_link?(project = @project)
+    browser.platform.mac? && project.repository.xcode_project?
+  end
+
+  def xcode_uri_to_repo(project = @project)
+    "xcode://clone?repo=#{CGI.escape(default_url_to_repo(project))}"
+  end
+
   private
 
   def get_project_nav_tabs(project, current_user)
@@ -381,11 +389,11 @@ module ProjectsHelper
   def project_status_css_class(status)
     case status
     when "started"
-      "active"
+      "table-active"
     when "failed"
-      "danger"
+      "table-danger"
     when "finished"
-      "success"
+      "table-success"
     end
   end
 
@@ -404,7 +412,10 @@ module ProjectsHelper
     exports_path = File.join(Settings.shared['path'], 'tmp/project_exports')
     filtered_message = message.strip.gsub(exports_path, "[REPO EXPORT PATH]")
 
-    disk_path = Gitlab.config.repositories.storages[project.repository_storage].legacy_disk_path
+    disk_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      Gitlab.config.repositories.storages[project.repository_storage].legacy_disk_path
+    end
+
     filtered_message.gsub(disk_path.chomp('/'), "[REPOS PATH]")
   end
 

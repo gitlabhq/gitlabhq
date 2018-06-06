@@ -114,26 +114,27 @@
     font-size: 0.95em;
   }
 
+  blockquote,
   .blockquote {
     color: $gl-grayish-blue;
     font-size: inherit;
     padding: 8px 24px;
     margin: 16px 0;
     border-left: 3px solid $white-dark;
-  }
 
-  .blockquote:dir(rtl) {
-    border-left: 0;
-    border-right: 3px solid $white-dark;
-  }
+    &:dir(rtl) {
+      border-left: 0;
+      border-right: 3px solid $white-dark;
+    }
 
-  .blockquote p {
-    color: $gl-grayish-blue !important;
-    font-size: inherit;
-    line-height: 1.5;
+    p {
+      color: $gl-grayish-blue !important;
+      font-size: inherit;
+      line-height: 1.5;
 
-    &:last-child {
-      margin: 0;
+      &:last-child {
+        margin: 0;
+      }
     }
   }
 

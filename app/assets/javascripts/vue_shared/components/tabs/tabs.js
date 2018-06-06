@@ -1,4 +1,11 @@
 export default {
+  props: {
+    stopPropagation: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
   data() {
     return {
       currentIndex: 0,
@@ -13,7 +20,12 @@ export default {
       this.tabs = this.$children.filter(child => child.isTab);
       this.currentIndex = this.tabs.findIndex(tab => tab.localActive);
     },
-    setTab(index) {
+    setTab(e, index) {
+      if (this.stopPropagation) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+
       this.tabs[this.currentIndex].localActive = false;
       this.tabs[index].localActive = true;
 
@@ -36,7 +48,7 @@ export default {
                 href: '#',
               },
               on: {
-                click: () => this.setTab(i),
+                click: e => this.setTab(e, i),
               },
             },
             tab.$slots.title || tab.title,

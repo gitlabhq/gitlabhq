@@ -25,7 +25,7 @@ with any type of [executor](https://docs.gitlab.com/runner/executors/)
 ## How it works
 
 1. Create a new SSH key pair locally with [ssh-keygen](http://linux.die.net/man/1/ssh-keygen)
-1. Add the private key as a [secret variable](../variables/README.md) to
+1. Add the private key as a [variable](../variables/README.md) to
    your project
 1. Run the [ssh-agent](http://linux.die.net/man/1/ssh-agent) during job to load
    the private key.
@@ -49,7 +49,7 @@ to access it. This is where an SSH key pair comes in handy.
    **Do not** add a passphrase to the SSH key, or the `before_script` will\
    prompt for it.
 
-1. Create a new [secret variable](../variables/README.md#secret-variables).
+1. Create a new [variable](../variables/README.md#variables).
    As **Key** enter the name `SSH_PRIVATE_KEY` and in the **Value** field paste
    the content of your _private_ key that you created earlier.
 
@@ -157,7 +157,7 @@ ssh-keyscan example.com
 ssh-keyscan 1.2.3.4
 ```
 
-Create a new [secret variable](../variables/README.md#secret-variables) with
+Create a new [variable](../variables/README.md#variables) with
 `SSH_KNOWN_HOSTS` as "Key", and as a "Value" add the output of `ssh-keyscan`.
 
 NOTE: **Note:**
@@ -165,7 +165,7 @@ If you need to connect to multiple servers, all the server host keys
 need to be collected in the **Value** of the variable, one key per line.
 
 TIP: **Tip:**
-By using a secret variable instead of `ssh-keyscan` directly inside
+By using a variable instead of `ssh-keyscan` directly inside
 `.gitlab-ci.yml`, it has the benefit that you don't have to change `.gitlab-ci.yml`
 if the host domain name changes for some reason. Also, the values are predefined
 by you, meaning that if the host keys suddenly change, the CI/CD job will fail,

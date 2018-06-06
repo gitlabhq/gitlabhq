@@ -5,9 +5,9 @@ describe ProjectsHelper do
 
   describe "#project_status_css_class" do
     it "returns appropriate class" do
-      expect(project_status_css_class("started")).to eq("active")
-      expect(project_status_css_class("failed")).to eq("danger")
-      expect(project_status_css_class("finished")).to eq("success")
+      expect(project_status_css_class("started")).to eq("table-active")
+      expect(project_status_css_class("failed")).to eq("table-danger")
+      expect(project_status_css_class("finished")).to eq("table-success")
     end
   end
 
@@ -433,6 +433,48 @@ describe ProjectsHelper do
 
     it 'parses quotes in name' do
       expect(helper.send(:git_user_name)).to eq('John \"A\" Doe53')
+    end
+  end
+
+  describe 'show_xcode_link' do
+    let!(:project) { create(:project) }
+    let(:mac_ua) { 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36' }
+    let(:ios_ua) { 'Mozilla/5.0 (iPad; CPU OS 5_1_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9B206 Safari/7534.48.3' }
+
+    context 'when the repository is xcode compatible' do
+      before do
+        allow(project.repository).to receive(:xcode_project?).and_return(true)
+      end
+
+      it 'returns false if the visitor is not using macos' do
+        allow(helper).to receive(:browser).and_return(Browser.new(ios_ua))
+
+        expect(helper.show_xcode_link?(project)).to eq(false)
+      end
+
+      it 'returns true if the visitor is using macos' do
+        allow(helper).to receive(:browser).and_return(Browser.new(mac_ua))
+
+        expect(helper.show_xcode_link?(project)).to eq(true)
+      end
+    end
+
+    context 'when the repository is not xcode compatible' do
+      before do
+        allow(project.repository).to receive(:xcode_project?).and_return(false)
+      end
+
+      it 'returns false if the visitor is not using macos' do
+        allow(helper).to receive(:browser).and_return(Browser.new(ios_ua))
+
+        expect(helper.show_xcode_link?(project)).to eq(false)
+      end
+
+      it 'returns false if the visitor is using macos' do
+        allow(helper).to receive(:browser).and_return(Browser.new(mac_ua))
+
+        expect(helper.show_xcode_link?(project)).to eq(false)
+      end
     end
   end
 end

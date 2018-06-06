@@ -21,6 +21,7 @@ module Gitlab
       STAGES = {
         issues_and_diff_notes: Stage::ImportIssuesAndDiffNotesWorker,
         notes: Stage::ImportNotesWorker,
+        lfs_objects: Stage::ImportLfsObjectsWorker,
         finish: Stage::FinishImportWorker
       }.freeze
 

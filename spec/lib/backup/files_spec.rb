@@ -46,7 +46,9 @@ describe Backup::Files do
       end
 
       it 'calls tar command with unlink' do
-        expect(subject).to receive(:run_pipeline!).with([%w(gzip -cd), %w(tar --unlink-first --recursive-unlink -C /var/gitlab-registry -xf -)], any_args)
+        expect(subject).to receive(:tar).and_return('blabla-tar')
+
+        expect(subject).to receive(:run_pipeline!).with([%w(gzip -cd), %w(blabla-tar --unlink-first --recursive-unlink -C /var/gitlab-registry -xf -)], any_args)
         subject.restore
       end
     end

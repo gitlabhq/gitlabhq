@@ -35,9 +35,7 @@ export default {
   },
   watch: {
     lastCommit() {
-      if (!this.isPollingInitialized) {
-        this.initPipelinePolling();
-      }
+      this.initPipelinePolling();
     },
   },
   mounted() {
@@ -47,9 +45,8 @@ export default {
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
-    if (this.isPollingInitialized) {
-      this.stopPipelinePolling();
-    }
+
+    this.stopPipelinePolling();
   },
   methods: {
     ...mapActions('pipelines', ['fetchLatestPipeline', 'stopPipelinePolling']),
@@ -59,8 +56,9 @@ export default {
       }, 1000);
     },
     initPipelinePolling() {
-      this.fetchLatestPipeline();
-      this.isPollingInitialized = true;
+      if (this.lastCommit) {
+        this.fetchLatestPipeline();
+      }
     },
     commitAgeUpdate() {
       if (this.lastCommit) {
