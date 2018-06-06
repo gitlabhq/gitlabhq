@@ -1,0 +1,5 @@
+---
+title: Geo - Fix index for outdated projects on the project_repository_states table
+merge_request: 5986
+author:
+type: performance
