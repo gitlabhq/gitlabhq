@@ -109,7 +109,7 @@ The action is irreversible.
   it will not trigger a job.
 - If your project is public, passing the token in plain text is probably not the
   wisest idea, so you might want to use a
-  [secret variable](../variables/README.md#secret-variables) for that purpose.
+  [variable](../variables/README.md#variables) for that purpose.
 
 To trigger a job you need to send a `POST` request to GitLab's API endpoint:
 

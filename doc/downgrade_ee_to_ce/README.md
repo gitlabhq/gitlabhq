@@ -57,7 +57,7 @@ $ sudo gitlab-rails runner "Service.where(type: ['JenkinsService', 'JenkinsDepre
 $ bundle exec rails runner "Service.where(type: ['JenkinsService', 'JenkinsDeprecatedService', 'GithubService']).delete_all" production
 ```
 
-### Secret variables environment scopes
+### Variables environment scopes
 
 If you're using this feature and there are variables sharing the same
 key, but they have different scopes in a project, then you might want to
