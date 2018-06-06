@@ -1,9 +1,11 @@
 module API
   module Helpers
-    class APIRouteBuilder
+    class FullRouteBuilder
       include ::API::Helpers::RelatedResourcesHelpers
 
-      def self.expose_url(api_route_name, params)
+      def self.full_url(api_route_name, params)
+        return unless builder.respond_to? api_route_name
+
         builder.expose_url(builder.send(api_route_name, params))
       end
 
