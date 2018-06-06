@@ -24,15 +24,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // hide extra auto devops settings based on data-attributes
-  const autoDevOpsSettings = document.querySelectorAll('input[data-hide-extra-settings]');
+  const autoDevOpsSettings = document.querySelector('.js-auto-devops-settings');
   const autoDevOpsExtraSettings = document.querySelector('.js-extra-settings');
 
-  autoDevOpsSettings.forEach(input => {
-    input.addEventListener('click', () =>
-      autoDevOpsExtraSettings.classList.toggle(
-        'hidden',
-        input.dataset.hideExtraSettings === 'true',
-      ),
-    );
+  autoDevOpsSettings.addEventListener('click', event => {
+    const targetData = event.target && event.target.dataset;
+    if (targetData.hideExtraSettings === 'true') {
+      autoDevOpsExtraSettings.classList.add('hidden');
+    } else if (targetData.hideExtraSettings === 'false') {
+      autoDevOpsExtraSettings.classList.remove('hidden');
+    }
   });
 });

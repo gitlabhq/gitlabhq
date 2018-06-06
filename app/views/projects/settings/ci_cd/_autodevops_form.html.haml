@@ -2,7 +2,7 @@
   .col-lg-12
     = form_for @project, url: project_settings_ci_cd_path(@project) do |f|
       = form_errors(@project)
-      %fieldset.builds-feature.auto-devops-settings
+      %fieldset.builds-feature.js-auto-devops-settings
         .form-group
           - message = auto_devops_warning_message(@project)
           - ci_file_formatted = '<code>.gitlab-ci.yml</code>'.html_safe
