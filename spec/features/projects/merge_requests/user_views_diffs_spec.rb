@@ -16,7 +16,7 @@ describe 'User views diffs', :js do
     it 'unfolds diffs' do
       first('.js-unfold').click
 
-      expect(first('.text-file')).to have_content('.bundle')
+      expect(find('.file-holder[id="a5cc2925ca8258af241be7e5b0381edf30266302"] .text-file')).to have_content('.bundle')
     end
   end
 
