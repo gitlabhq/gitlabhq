@@ -261,3 +261,7 @@ pre code {
     color: $white-light;
   }
 }
+
+input[type=color].form-control {
+  height: $input-height;
+}
