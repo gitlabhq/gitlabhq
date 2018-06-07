@@ -21,6 +21,7 @@ module Gitlab
           uuid: Gitlab::CurrentSettings.uuid,
           hostname: Gitlab.config.gitlab.host,
           version: Gitlab::VERSION,
+          installation_type: Gitlab::INSTALLATION_TYPE,
           active_user_count: User.active.count,
           recorded_at: Time.now,
           mattermost_enabled: Gitlab.config.mattermost.enabled,
