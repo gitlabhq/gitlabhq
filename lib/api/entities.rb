@@ -722,6 +722,12 @@ module API
       expose :notes, using: Entities::Note
     end
 
+    class Avatar < Grape::Entity
+      expose :avatar_url do |avatarable, options|
+        avatarable.avatar_url(only_path: false, size: options[:size])
+      end
+    end
+
     class AwardEmoji < Grape::Entity
       expose :id
       expose :name

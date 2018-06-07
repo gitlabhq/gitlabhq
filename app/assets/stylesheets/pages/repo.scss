@@ -1146,8 +1146,13 @@
 }
 
 .ide-external-link {
+  position: relative;
+
   svg {
     display: none;
+    position: absolute;
+    top: 2px;
+    right: -$gl-padding;
   }
 
   &:hover,
@@ -1178,6 +1183,8 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  margin-top: -$grid-size;
+  margin-bottom: -$grid-size;
 
   .empty-state {
     margin-top: auto;
@@ -1194,6 +1201,17 @@
       margin: 0;
     }
   }
+
+  .build-trace,
+  .top-bar {
+    margin-left: -$gl-padding;
+  }
+
+  &.build-page .top-bar {
+    top: 0;
+    font-size: 12px;
+    border-top-right-radius: $border-radius-default;
+  }
 }
 
 .ide-pipeline-list {
@@ -1202,7 +1220,7 @@
 }
 
 .ide-pipeline-header {
-  min-height: 50px;
+  min-height: 55px;
   padding-left: $gl-padding;
   padding-right: $gl-padding;
 
@@ -1222,8 +1240,7 @@
   .ci-status-icon {
     display: flex;
     justify-content: center;
-    height: 20px;
-    margin-top: -2px;
+    min-width: 24px;
     overflow: hidden;
   }
 }
@@ -1252,4 +1269,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.ide-job-header {
+  min-height: 60px;
 }

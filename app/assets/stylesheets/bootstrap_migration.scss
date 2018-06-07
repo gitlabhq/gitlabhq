@@ -150,6 +150,16 @@ table {
   color: $gl-text-color-secondary !important;
 }
 
+.bg-success,
+.bg-primary,
+.bg-info,
+.bg-danger,
+.bg-warning {
+  .card-header {
+    color: $white-light;
+  }
+}
+
 // Polyfill deprecated selectors
 
 .hidden {

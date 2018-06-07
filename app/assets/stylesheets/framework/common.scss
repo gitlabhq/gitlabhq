@@ -456,6 +456,10 @@ img.emoji {
 
 .break-word {
   word-wrap: break-word;
+
+  &.all-words {
+    word-break: break-word;
+  }
 }
 
 /** COMMON CLASSES **/
