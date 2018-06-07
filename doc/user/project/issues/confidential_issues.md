@@ -71,10 +71,10 @@ least [Reporter access][permissions]. However, a guest user can also create
 confidential issues, but can only view the ones that they created themselves.
 
 Confidential issues are also hidden in search results for unprivileged users.
-For example, here's what a user with Master and Guest access sees in the
+For example, here's what a user with Maintainer and Guest access sees in the
 project's search results respectively.
 
-| Master access | Guest access |
+| Maintainer access | Guest access |
 | :-----------: | :----------: |
 | ![Confidential issues search master](img/confidential_issues_search_master.png) | ![Confidential issues search guest](img/confidential_issues_search_guest.png) |
 

@@ -4,18 +4,12 @@
 = form_for @user, url: profile_preferences_path, remote: true, method: :put, html: { class: 'row prepend-top-default js-preferences-form' } do |f|
   .col-lg-4.application-theme
     %h4.prepend-top-0
-      s_('Preferences|Navigation theme')
+      = s_('Preferences|Navigation theme')
     %p Customize the appearance of the application header and navigation sidebar.
   .col-lg-8.application-theme
     - Gitlab::Themes.each do |theme|
       = label_tag do
-        .preview{ class: theme.name.downcase }
-          .preview-row
-            .quadrant.one
-            .quadrant.two
-          .preview-row
-            .quadrant.three
-            .quadrant.four
+        .preview{ class: theme.css_class }
         = f.radio_button :theme_id, theme.id, checked: Gitlab::Themes.for_user(@user).id == theme.id
         = theme.name
 

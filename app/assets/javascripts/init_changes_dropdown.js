@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import stickyMonitor from './lib/utils/sticky';
+import { stickyMonitor } from './lib/utils/sticky';
 
 export default (stickyTop) => {
   stickyMonitor(document.querySelector('.js-diff-files-changed'), stickyTop);

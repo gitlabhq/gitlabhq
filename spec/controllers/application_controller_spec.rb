@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'spec_helper'
 
 describe ApplicationController do
@@ -475,6 +476,87 @@ describe ApplicationController do
           expect(response).to have_gitlab_http_status(200)
         end
       end
+    end
+  end
+
+  describe '#append_info_to_payload' do
+    controller(described_class) do
+      attr_reader :last_payload
+
+      def index
+        render text: 'authenticated'
+      end
+
+      def append_info_to_payload(payload)
+        super
+
+        @last_payload = payload
+      end
+    end
+
+    it 'does not log errors with a 200 response' do
+      get :index
+
+      expect(controller.last_payload.has_key?(:response)).to be_falsey
+    end
+
+    context '422 errors' do
+      it 'logs a response with a string' do
+        response = spy(ActionDispatch::Response, status: 422, body: 'Hello world', content_type: 'application/json')
+        allow(controller).to receive(:response).and_return(response)
+        get :index
+
+        expect(controller.last_payload[:response]).to eq('Hello world')
+      end
+
+      it 'logs a response with an array' do
+        body = ['I want', 'my hat back']
+        response = spy(ActionDispatch::Response, status: 422, body: body, content_type: 'application/json')
+        allow(controller).to receive(:response).and_return(response)
+        get :index
+
+        expect(controller.last_payload[:response]).to eq(body)
+      end
+
+      it 'does not log a string with an empty body' do
+        response = spy(ActionDispatch::Response, status: 422, body: nil, content_type: 'application/json')
+        allow(controller).to receive(:response).and_return(response)
+        get :index
+
+        expect(controller.last_payload.has_key?(:response)).to be_falsey
+      end
+
+      it 'does not log an HTML body' do
+        response = spy(ActionDispatch::Response, status: 422, body: 'This is a test', content_type: 'application/html')
+        allow(controller).to receive(:response).and_return(response)
+        get :index
+
+        expect(controller.last_payload.has_key?(:response)).to be_falsey
+      end
+    end
+  end
+
+  describe '#access_denied' do
+    controller(described_class) do
+      def index
+        access_denied!(params[:message])
+      end
+    end
+
+    before do
+      sign_in user
+    end
+
+    it 'renders a 404 without a message' do
+      get :index
+
+      expect(response).to have_gitlab_http_status(404)
+    end
+
+    it 'renders a 403 when a message is passed to access denied' do
+      get :index, message: 'None shall pass'
+
+      expect(response).to have_gitlab_http_status(403)
     end
   end
 end

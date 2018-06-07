@@ -458,13 +458,9 @@
     width: auto;
     margin-right: 0;
 
-    a {
+    > a,
+    > button {
       height: 60px;
-    }
-
-    a:hover,
-    a:focus {
-      text-decoration: none;
     }
   }
 
@@ -1135,6 +1131,11 @@
   .avatar {
     flex: 0 0 40px;
   }
+
+  .ide-merge-requests-dropdown.dropdown-menu {
+    width: 385px;
+    max-height: initial;
+  }
 }
 
 .ide-sidebar-project-title {
@@ -1143,11 +1144,20 @@
   .sidebar-context-title {
     white-space: nowrap;
   }
+
+  .ide-sidebar-branch-title {
+    min-width: 50px;
+  }
 }
 
 .ide-external-link {
+  position: relative;
+
   svg {
     display: none;
+    position: absolute;
+    top: 2px;
+    right: -$gl-padding;
   }
 
   &:hover,
@@ -1178,6 +1188,8 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  margin-top: -$grid-size;
+  margin-bottom: -$grid-size;
 
   .empty-state {
     margin-top: auto;
@@ -1194,6 +1206,17 @@
       margin: 0;
     }
   }
+
+  .build-trace,
+  .top-bar {
+    margin-left: -$gl-padding;
+  }
+
+  &.build-page .top-bar {
+    top: 0;
+    font-size: 12px;
+    border-top-right-radius: $border-radius-default;
+  }
 }
 
 .ide-pipeline-list {
@@ -1202,7 +1225,7 @@
 }
 
 .ide-pipeline-header {
-  min-height: 50px;
+  min-height: 55px;
   padding-left: $gl-padding;
   padding-right: $gl-padding;
 
@@ -1222,8 +1245,7 @@
   .ci-status-icon {
     display: flex;
     justify-content: center;
-    height: 20px;
-    margin-top: -2px;
+    min-width: 24px;
     overflow: hidden;
   }
 }
@@ -1252,4 +1274,57 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.ide-job-header {
+  min-height: 60px;
+}
+
+.ide-merge-requests-dropdown {
+  .nav-links li {
+    width: 50%;
+    padding-left: 0;
+    padding-right: 0;
+
+    a {
+      text-align: center;
+
+      &:not(.active) {
+        background-color: $gray-light;
+      }
+    }
+  }
+
+  .dropdown-input {
+    padding-left: $gl-padding;
+    padding-right: $gl-padding;
+
+    .fa {
+      right: 26px;
+    }
+  }
+
+  .btn-link {
+    padding-top: $gl-padding;
+    padding-bottom: $gl-padding;
+  }
+}
+
+.ide-merge-request-current-icon {
+  min-width: 18px;
+}
+
+.ide-merge-requests-empty {
+  height: 230px;
+}
+
+.ide-merge-requests-dropdown-content {
+  min-height: 230px;
+  max-height: 470px;
+}
+
+.ide-merge-request-project-path {
+  font-size: 12px;
+  line-height: 16px;
+  color: $gl-text-color-secondary;
 }

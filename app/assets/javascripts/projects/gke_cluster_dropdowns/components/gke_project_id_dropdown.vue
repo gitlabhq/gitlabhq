@@ -147,7 +147,6 @@ export default {
   <div>
     <div
       class="js-gcp-project-id-dropdown dropdown"
-      :class="{ 'gl-show-field-errors': hasErrors }"
     >
       <dropdown-hidden-input
         :name="fieldName"
@@ -155,7 +154,7 @@ export default {
       />
       <dropdown-button
         :class="{
-          'gl-field-error-outline': hasErrors,
+          'border-danger': hasErrors,
           'read-only': hasOneProject
         }"
         :is-disabled="isDisabled"
@@ -193,8 +192,11 @@ export default {
       </div>
     </div>
     <span
-      class="form-text text-muted"
-      :class="{ 'gl-field-error': hasErrors }"
+      class="form-text"
+      :class="{
+        'text-danger': hasErrors,
+        'text-muted': !hasErrors
+      }"
       v-html="helpText"
     ></span>
   </div>

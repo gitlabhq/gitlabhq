@@ -32,13 +32,46 @@ legend {
 button,
 html [type="button"],
 [type="reset"],
-[type="submit"] {
+[type="submit"],
+[role="button"] {
   // Override bootstrap reboot
   -webkit-appearance: inherit;
+  cursor: pointer;
 }
 
-[role="button"] {
-  cursor: pointer;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: $gl-text-color;
+  font-weight: 600;
+}
+
+h1,
+.h1,
+h2,
+.h2,
+h3,
+.h3 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+h4,
+.h4,
+h5,
+.h5,
+h6,
+.h6 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+h5,
+.h5 {
+  font-size: $gl-font-size;
 }
 
 input[type="file"] {
@@ -62,6 +95,10 @@ a {
   @include media-breakpoint-up(md) {
     text-align: right;
   }
+}
+
+kbd {
+  display: inline-block;
 }
 
 code {
@@ -111,6 +148,16 @@ table {
   // Override Bootstrap's light secondary color
   // We have to use !important because bootstrap has that set as well
   color: $gl-text-color-secondary !important;
+}
+
+.bg-success,
+.bg-primary,
+.bg-info,
+.bg-danger,
+.bg-warning {
+  .card-header {
+    color: $white-light;
+  }
 }
 
 // Polyfill deprecated selectors
@@ -187,6 +234,9 @@ table {
 }
 
 .nav-tabs {
+  // Override bootstrap's default border
+  border-bottom: 0;
+
   .nav-link {
     border-top: 0;
     border-left: 0;
@@ -200,4 +250,14 @@ table {
 
 pre code {
   white-space: pre-wrap;
+}
+
+.alert-danger {
+  background-color: $red-500;
+  border-color: $red-500;
+  color: $white-light;
+
+  h4 {
+    color: $white-light;
+  }
 }

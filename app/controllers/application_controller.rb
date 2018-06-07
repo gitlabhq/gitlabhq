@@ -91,6 +91,10 @@ class ApplicationController < ActionController::Base
       payload[:user_id] = logged_user.try(:id)
       payload[:username] = logged_user.try(:username)
     end
+
+    if response.status == 422 && response.body.present? && response.content_type == 'application/json'.freeze
+      payload[:response] = response.body
+    end
   end
 
   # Controllers such as GitHttpController may use alternative methods
@@ -130,12 +134,17 @@ class ApplicationController < ActionController::Base
   end
 
   def access_denied!(message = nil)
+    # If we display a custom access denied message to the user, we don't want to
+    # hide existence of the resource, rather tell them they cannot access it using
+    # the provided message
+    status = message.present? ? :forbidden : :not_found
+
     respond_to do |format|
-      format.any { head :not_found }
+      format.any { head status }
       format.html do
         render "errors/access_denied",
                layout: "errors",
-               status: 404,
+               status: status,
                locals: { message: message }
       end
     end

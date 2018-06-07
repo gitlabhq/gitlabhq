@@ -123,7 +123,11 @@ module CycleAnalyticsHelpers
 
       if branch_update.newrev
         _, opts = args
-        commit = raw_repository.commit(branch_update.newrev).rugged_commit
+
+        commit = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          raw_repository.commit(branch_update.newrev).rugged_commit
+        end
+
         branch_update.newrev = commit.amend(
           update_ref: "#{Gitlab::Git::BRANCH_REF_PREFIX}#{opts[:branch_name]}",
           author: commit.author.merge(time: new_date),

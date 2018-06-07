@@ -17,6 +17,11 @@ module Projects
 
       ensure_wiki_exists if enabling_wiki?
 
+      yield if block_given?
+
+      # If the block added errors, don't try to save the project
+      return validation_failed! if project.errors.any?
+
       if project.update_attributes(params.except(:default_branch))
         if project.previous_changes.include?('path')
           project.rename_repo
@@ -28,20 +33,24 @@ module Projects
 
         success
       else
-        model_errors = project.errors.full_messages.to_sentence
-        error_message = model_errors.presence || 'Project could not be updated!'
-
-        error(error_message)
+        validation_failed!
       end
     end
 
     def run_auto_devops_pipeline?
-      return false if project.repository.gitlab_ci_yml || !project.auto_devops.previous_changes.include?('enabled')
+      return false if project.repository.gitlab_ci_yml || !project.auto_devops&.previous_changes&.include?('enabled')
 
       project.auto_devops.enabled? || (project.auto_devops.enabled.nil? && Gitlab::CurrentSettings.auto_devops_enabled?)
     end
 
     private
+
+    def validation_failed!
+      model_errors = project.errors.full_messages.to_sentence
+      error_message = model_errors.presence || 'Project could not be updated!'
+
+      error(error_message)
+    end
 
     def renaming_project_with_container_registry_tags?
       new_path = params[:path]
@@ -53,8 +62,8 @@ module Projects
     def changing_default_branch?
       new_branch = params[:default_branch]
 
-      project.repository.exists? &&
-        new_branch && new_branch != project.default_branch
+      new_branch && project.repository.exists? &&
+        new_branch != project.default_branch
     end
 
     def enabling_wiki?
