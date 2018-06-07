@@ -234,6 +234,15 @@ in **Admin Area > Settings > Continuous Integration and Deployment**. Doing that
 all the projects that haven't explicitly set an option will have Auto DevOps
 enabled by default.
 
+### Deployment Strategy
+
+You can change the deployment strategy used by Auto DevOps from within the UI.
+
+The available options are:
+
+* Continuous deployment to production
+* Automatic deployment to staging, manual deployment to production
+
 ## Stages of Auto DevOps
 
 The following sections describe the stages of Auto DevOps. Read them carefully
