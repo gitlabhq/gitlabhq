@@ -1,0 +1,20 @@
+.dropdown.prepend-left-10#js-add-list
+  %button.btn.btn-create.btn-inverted.d-flex.js-new-board-list{ type: "button", data: board_list_data }
+    %span Add list
+    = sprite_icon('chevron-down', size: 16, css_class: 'prepend-left-5 btn-new-board-list-chevron')
+  .dropdown-menu.dropdown-menu-paging.dropdown-menu-right.dropdown-menu-issues-board-new.dropdown-menu-selectable.dropdown-menu-tabs
+    %ul.nav.nav-tabs.dropdown-tabs-list.js-new-board-list-tabs{ role: 'tablist' }
+      %li.nav-item.dropdown-tab-item.js-tab-button-labels
+        %a.active{ href: '#', role: 'tab', data: { is_link: 'true', toggle: 'tab', action: 'tab-labels', target: '#tab-labels' } }
+          Label list
+      %li.nav-item.dropdown-tab-item.js-tab-button-labels
+        %a{ href: '#', role: 'tab', data: { is_link: 'true', toggle: 'tab', action: 'tab-assignees', target: '#tab-assignees' } }
+          Assignee list
+    .tab-content
+      #tab-labels.tab-pane.tab-pane-labels.active.js-tab-container-labels{ role: 'tabpanel' }
+        = render partial: "shared/issuable/label_page_default", locals: { show_title: false, show_footer: true, show_create: true, show_boards_content: true, content_title: _('Label lists show all issues with the selected label.') }
+        - if can?(current_user, :admin_label, board.parent)
+          = render partial: "shared/issuable/label_page_create", locals: { show_close: false }
+      #tab-assignees.tab-pane.tab-pane-assignees.js-tab-container-assignees{ role: 'tabpanel' }
+        = render partial: "shared/issuable/assignee_page_default"
+    = dropdown_loading

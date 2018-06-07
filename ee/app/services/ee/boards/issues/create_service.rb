@@ -6,13 +6,14 @@ module EE
 
         override :issue_params
         def issue_params
+          assignee_ids = Array(list.user_id || board.assignee&.id)
           {
             label_ids: [list.label_id, *board.label_ids],
             weight: board.weight,
             milestone_id: board.milestone_id,
             # This can be removed when boards have multiple assignee support.
             # See https://gitlab.com/gitlab-org/gitlab-ee/issues/3786
-            assignee_ids: Array(board.assignee&.id)
+            assignee_ids: assignee_ids
           }
         end
       end

@@ -49,11 +49,12 @@ export default {
       this.error = false;
 
       const labels = this.list.label ? [this.list.label] : [];
+      const assignees = this.list.assignee ? [this.list.assignee] : [];
       const issue = new ListIssue({
         title: this.title,
         labels,
         subscribed: true,
-        assignees: [],
+        assignees,
         project_id: this.selectedProject.id,
       });
 

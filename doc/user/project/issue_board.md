@@ -40,6 +40,9 @@ organized from a broader perspective with one Issue Board per project,
 but also allow your team members to organize their own workflow by creating
 multiple Issue Boards within the same project.
 
+[GitLab Premium] adds even more powerful ways to work with Issue Boards by
+allowing you to have assignee lists as well as label lists.
+
 ## Use cases
 
 You can see below a few different use cases for GitLab's Issue Boards.
@@ -111,6 +114,10 @@ Cards finished by the UX team will automatically appear in the **Frontend** colu
 [Codepen decided to adopt Issue Boards](https://about.gitlab.com/2017/01/27/codepen-welcome-to-gitlab/#project-management-everything-in-one-place)
 to improve their workflow with multiple boards.
 
+#### Quick assignments
+
+Create lists for each of your team members and quickly drag-and-drop issues onto each team member.
+
 ## Issue Board terminology
 
 Below is a table of the definitions used for GitLab's Issue Board.
@@ -118,7 +125,8 @@ Below is a table of the definitions used for GitLab's Issue Board.
 | What we call it  | What it means |
 | --------------  | ------------- |
 | **Issue Board** | It represents a different view for your issues. It can have multiple lists with each list consisting of issues represented by cards. |
-| **List**        | Each label that exists in the issue tracker can have its own dedicated list. Every list is named after the label it is based on and is represented by a column which contains all the issues associated with that label. You can think of a list like the results you get when you filter the issues by a label in your issue tracker. |
+| **List**        | Each label that exists in the issue tracker can have its own dedicated list. Every list is named after the label it is based on and is represented by a column which contains all the issues associated with that label. You can think of a list like the results you get when you filter the issues by a label in your issue tracker. Each user in the project or group
+can also have their own dedicated list. |
 | **Card**        | Every card represents an issue and it is shown under the list for which it has a label. The information you can see on a card consists of the issue number, the issue title, the assignee and the labels associated with it. You can drag cards around from one list to another. You can re-order cards within a list. |
 
 There are two types of lists, the ones you create based on your labels, and
@@ -166,7 +174,7 @@ right corner of the Issue Board.
 
 ![Issue Board welcome message](img/issue_board_add_list.png)
 
-Simply choose the label to create the list from. The new list will be inserted
+Simply choose the label or user to create the list from. The new list will be inserted
 at the end of the lists, before **Done**. Moving and reordering lists is as
 easy as dragging them around.
 

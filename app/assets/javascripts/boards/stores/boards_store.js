@@ -121,8 +121,15 @@ gl.issueBoards.BoardsStore = {
     const listLabels = issueLists.map(listIssue => listIssue.label);
 
     if (!issueTo) {
-      // Add to new lists issues if it doesn't already exist
-      listTo.addIssue(issue, listFrom, newIndex);
+      // Check if target list assignee is already present in this issue
+      if ((listTo.type === 'assignee' && listFrom.type === 'assignee') &&
+          issue.findAssignee(listTo.assignee)) {
+        const targetIssue = listTo.findIssue(issue.id);
+        targetIssue.removeAssignee(listFrom.assignee);
+      } else {
+        // Add to new lists issues if it doesn't already exist
+        listTo.addIssue(issue, listFrom, newIndex);
+      }
     } else {
       listTo.updateIssueLabel(issue, listFrom);
       issueTo.removeLabel(listFrom.label);
@@ -133,7 +140,11 @@ gl.issueBoards.BoardsStore = {
         list.removeIssue(issue);
       });
       issue.removeLabels(listLabels);
-    } else {
+    } else if (listTo.type === 'backlog' && listFrom.type === 'assignee') {
+      issue.removeAssignee(listFrom.assignee);
+      listFrom.removeIssue(issue);
+    } else if ((listTo.type !== 'label' && listFrom.type === 'assignee') ||
+               (listTo.type !== 'assignee' && listFrom.type === 'label')) {
       listFrom.removeIssue(issue);
     }
   },
@@ -144,11 +155,12 @@ gl.issueBoards.BoardsStore = {
     list.moveIssue(issue, oldIndex, newIndex, beforeId, afterId);
   },
   findList (key, val, type = 'label') {
-    return this.state.lists.filter((list) => {
-      const byType = type ? list['type'] === type : true;
+    const filteredList = this.state.lists.filter((list) => {
+      const byType = type ? (list.type === type) || (list.type === 'assignee') : true;
 
       return list[key] === val && byType;
-    })[0];
+    });
+    return filteredList[0];
   },
   updateFiltersUrl (replaceState = false) {
     if (replaceState) {

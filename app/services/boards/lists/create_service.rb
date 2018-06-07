@@ -1,15 +1,29 @@
 module Boards
   module Lists
     class CreateService < Boards::BaseService
+      prepend EE::Boards::Lists::CreateService
+
+      include Gitlab::Utils::StrongMemoize
+
       def execute(board)
         List.transaction do
-          label    = available_labels_for(board).find(params[:label_id])
+          target = target(board)
           position = next_position(board)
-          create_list(board, label, position)
+          create_list(board, type, target, position)
         end
       end
 
       private
+
+      def type
+        :label
+      end
+
+      def target(board)
+        strong_memoize(:target) do
+          available_labels_for(board).find(params[:label_id])
+        end
+      end
 
       def available_labels_for(board)
         options = { include_ancestor_groups: true }
@@ -28,8 +42,8 @@ module Boards
         max_position.nil? ? 0 : max_position.succ
       end
 
-      def create_list(board, label, position)
-        board.lists.create(label: label, list_type: :label, position: position)
+      def create_list(board, type, target, position)
+        board.lists.create(type => target, list_type: type, position: position)
       end
     end
   end

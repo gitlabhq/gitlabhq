@@ -87,10 +87,46 @@ export default {
   mounted() {
     const options = gl.issueBoards.getBoardSortableDefaultOptions({
       scroll: true,
-      group: 'issues',
       disabled: this.disabled,
       filter: '.board-list-count, .is-disabled',
       dataIdAttr: 'data-issue-id',
+      group: {
+        name: 'issues',
+        /**
+         * Dynamically determine between which containers
+         * items can be moved or copied as
+         * Assignee lists (EE feature) require this behavior
+         */
+        pull: (to, from, dragEl, e) => {
+          // As per Sortable's docs, `to` should provide
+          // reference to exact sortable container on which
+          // we're trying to drag element, but either it is
+          // a library's bug or our markup structure is too complex
+          // that `to` never points to correct container
+          // See https://github.com/RubaXa/Sortable/issues/1037
+          //
+          // So we use `e.target` which is always accurate about
+          // which element we're currently dragging our card upon
+          // So from there, we can get reference to actual container
+          // and thus the container type to enable Copy or Move
+          if (e.target) {
+            const containerEl = e.target.closest('.js-board-list') || e.target.querySelector('.js-board-list');
+            const toBoardType = containerEl.dataset.boardType;
+
+            if (toBoardType) {
+              const fromBoardType = this.list.type;
+
+              if ((fromBoardType === 'assignee' && toBoardType === 'label') ||
+                  (fromBoardType === 'label' && toBoardType === 'assignee')) {
+                return 'clone';
+              }
+            }
+          }
+
+          return true;
+        },
+        revertClone: true,
+      },
       onStart: (e) => {
         const card = this.$refs.issue[e.oldIndex];
 
@@ -180,10 +216,11 @@ export default {
       :list="list"
       v-if="list.type !== 'closed' && showIssueForm"/>
     <ul
-      class="board-list"
+      class="board-list js-board-list"
       v-show="!loading"
       ref="list"
       :data-board="list.id"
+      :data-board-type="list.type"
       :class="{ 'is-smaller': showIssueForm }">
       <board-card
         v-for="(issue, index) in issues"

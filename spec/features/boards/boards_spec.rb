@@ -152,7 +152,7 @@ describe 'Issue Boards', :js do
       click_button 'Add list'
       wait_for_requests
 
-      find('.dropdown-menu-close').click
+      find('.js-new-board-list').click
 
       page.within(find('.board:nth-child(2)')) do
         accept_confirm { find('.board-delete').click }
