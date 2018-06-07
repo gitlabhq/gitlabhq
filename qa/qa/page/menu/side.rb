@@ -61,6 +61,12 @@ module QA
           end
         end
 
+        def click_wiki
+          within_sidebar do
+            click_link('Wiki')
+          end
+        end
+
         private
 
         def hover_settings
