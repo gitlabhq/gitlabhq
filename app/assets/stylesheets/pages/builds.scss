@@ -12,26 +12,22 @@
 @keyframes blinking-dots {
   0% {
     background-color: rgba($white-light, 1);
-    box-shadow: 12px 0 0 0 rgba($white-light, 0.2),
-      24px 0 0 0 rgba($white-light, 0.2);
+    box-shadow: 12px 0 0 0 rgba($white-light, 0.2), 24px 0 0 0 rgba($white-light, 0.2);
   }
 
   25% {
     background-color: rgba($white-light, 0.4);
-    box-shadow: 12px 0 0 0 rgba($white-light, 2),
-      24px 0 0 0 rgba($white-light, 0.2);
+    box-shadow: 12px 0 0 0 rgba($white-light, 2), 24px 0 0 0 rgba($white-light, 0.2);
   }
 
   75% {
     background-color: rgba($white-light, 0.4);
-    box-shadow: 12px 0 0 0 rgba($white-light, 0.2),
-      24px 0 0 0 rgba($white-light, 1);
+    box-shadow: 12px 0 0 0 rgba($white-light, 0.2), 24px 0 0 0 rgba($white-light, 1);
   }
 
   100% {
     background-color: rgba($white-light, 1);
-    box-shadow: 12px 0 0 0 rgba($white-light, 0.2),
-      24px 0 0 0 rgba($white-light, 0.2);
+    box-shadow: 12px 0 0 0 rgba($white-light, 0.2), 24px 0 0 0 rgba($white-light, 0.2);
   }
 }
 
@@ -70,6 +66,10 @@
 
     .bash {
       display: block;
+    }
+
+    &.build-trace-rounded {
+      border-radius: $border-radius-base;
     }
   }
 
