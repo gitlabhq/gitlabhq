@@ -9,6 +9,7 @@ module ObjectStorage
   RemoteStoreError = Class.new(StandardError)
   UnknownStoreError = Class.new(StandardError)
   ObjectStorageUnavailable = Class.new(StandardError)
+  ExclusiveLeaseTaken = Class.new(StandardError)
 
   TMP_UPLOAD_PATH = 'tmp/uploads'.freeze
 
@@ -378,7 +379,7 @@ module ObjectStorage
     def with_exclusive_lease
       lease_key = exclusive_lease_key
       uuid = Gitlab::ExclusiveLease.new(lease_key, timeout: 1.hour.to_i).try_obtain
-      raise "Exclusive lease #{lease_key} already taken." unless uuid
+      raise ExclusiveLeaseTaken, "Exclusive lease #{lease_key} already taken." unless uuid
 
       yield uuid
     ensure
