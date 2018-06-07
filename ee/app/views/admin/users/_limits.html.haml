@@ -2,7 +2,7 @@
   = namespace_form.hidden_field :id
   %fieldset
     %legend Limits
-    = render 'namespaces/shared_runners_minutes_setting', f: namespace_form
+    = render 'namespaces/shared_runners_minutes_setting', form: namespace_form
     .form-group.append-bottom-0
       .offset-sm-2.col-sm-10
         = render 'namespaces/shared_runners_minutes_setting_reset', link_reset_minutes: reset_runners_minutes_admin_user_path(@user), css_class: 'append-bottom-0'

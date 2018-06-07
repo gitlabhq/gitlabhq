@@ -1,0 +1,11 @@
+- group = local_assigns.fetch(:group)
+- return unless Gitlab::Auth::LDAP::Config.group_sync_enabled? && group.ldap_synced?
+
+.card
+  .card-header Active synchronizations
+  %ul.content-list
+    - group.ldap_group_links.select(&:active?).each do |ldap_group_link|
+      %li
+        %strong= ldap_group_link.cn ? "Group: #{ldap_group_link.cn}" : "Filter: #{truncate(ldap_group_link.filter, length: 40)}"
+        as
+        %strong= ldap_group_link.human_access

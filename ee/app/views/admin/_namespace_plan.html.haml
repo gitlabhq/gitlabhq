@@ -1,3 +1,5 @@
+- return unless Gitlab::CurrentSettings.should_check_namespace_plan?
+
 .form-group
   = f.label :plan, class: 'col-form-label'
   .col-sm-10

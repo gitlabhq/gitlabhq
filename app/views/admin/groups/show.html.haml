@@ -40,7 +40,7 @@
           %strong
             = @group.created_at.to_s(:medium)
 
-        = render 'admin/namespace_plan_info', namespace: @group
+        = render_if_exists 'admin/namespace_plan_info', namespace: @group
 
         %li
           %span.light Storage:
@@ -60,17 +60,9 @@
             = group_lfs_status(@group)
             = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
 
-        = render partial: "namespaces/shared_runner_status", locals: { namespace: @group }
+        = render_if_exists 'namespaces/shared_runner_status', namespace: @group
 
-    - if Gitlab::Auth::LDAP::Config.group_sync_enabled? && @group.ldap_synced?
-      .card
-        .card-header Active synchronizations
-        %ul.content-list
-          - @group.ldap_group_links.select(&:active?).each do |ldap_group_link|
-            %li
-              %strong= ldap_group_link.cn ? "Group: #{ldap_group_link.cn}" : "Filter: #{truncate(ldap_group_link.filter, length: 40)}"
-              as
-              %strong= ldap_group_link.human_access
+    = render_if_exists 'ldap_group_links/ldap_group_links_show', group: @group
 
     .card
       .card-header

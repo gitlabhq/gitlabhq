@@ -1,12 +1,13 @@
-- namespace = local_assigns[:namespace]
-- if Gitlab::CurrentSettings.should_check_namespace_plan? && namespace
-  %li
-    %span.light Plan:
-    - if namespace.plan.present?
-      %strong.plan-badge.inline{ data: { plan: namespace.plan.name } }
-        = custom_icon('icon_premium')
-        = namespace.plan.title
-    - else
-      %strong.plan-badge.inline
-        = custom_icon('icon_premium')
-        No Plan
+- namespace = local_assigns.fetch(:namespace)
+- return unless Gitlab::CurrentSettings.should_check_namespace_plan? && namespace
+
+%li
+  %span.light Plan:
+  - if namespace.plan.present?
+    %strong.plan-badge.inline{ data: { plan: namespace.plan.name } }
+      = custom_icon('icon_premium')
+      = namespace.plan.title
+  - else
+    %strong.plan-badge.inline
+      = custom_icon('icon_premium')
+      No Plan
