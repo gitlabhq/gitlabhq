@@ -211,6 +211,14 @@ module LabelsHelper
     end
   end
 
+  def label_status_tooltip(label, status)
+    type = label.is_a?(ProjectLabel) ? 'project' : 'group'
+    level = status.unsubscribed? ? type : status.sub('-level', '')
+    action = status.unsubscribed? ? 'Subscribe' : 'Unsubscribe'
+
+    "#{action} at #{level} level"
+  end
+
   # Required for Banzai::Filter::LabelReferenceFilter
   module_function :render_colored_label, :text_color_for_bg, :escape_once
 end
