@@ -63,7 +63,7 @@ Auto DevOps provides great defaults for all the stages; you can, however,
 
 For an overview on the creation of Auto DevOps, read the blog post [From 2/3 of the Self-Hosted Git Market, to the Next-Generation CI System, to Auto DevOps](https://about.gitlab.com/2017/06/29/whats-next-for-gitlab-ci/).
 
-## Prerequisites
+## Requirements
 
 TIP: **Tip:**
 For self-hosted installations, the easiest way to make use of Auto DevOps is to
@@ -113,25 +113,26 @@ NOTE: **Note:**
 If you do not have Kubernetes or Prometheus installed, then Auto Review Apps,
 Auto Deploy, and Auto Monitoring will be silently skipped.
 
-### Auto DevOps base domain
+## Auto DevOps base domain
 
 The Auto DevOps base domain is required if you want to make use of [Auto
-Review Apps](#auto-review-apps) and [Auto Deploy](#auto-deploy). It is defined
-either under the project's CI/CD settings while
-[enabling Auto DevOps](#enabling-auto-devops) or in instance-wide settings in
-the CI/CD section.
-It can also be set at the project or group level as a variable, `AUTO_DEVOPS_DOMAIN`.
+Review Apps](#auto-review-apps) and [Auto Deploy](#auto-deploy). It can be defined
+in three places:
 
-A wildcard DNS A record matching the base domain is required, for example,
+- either under the project's CI/CD settings while [enabling Auto DevOps](#enabling-auto-devops)
+- or in instance-wide settings in the **admin area > Settings** under the "Continuous Integration and Delivery" section
+- or at the project or group level as a variable: `AUTO_DEVOPS_DOMAIN` (required if you want to use [multiple clusters](#using-multiple-kubernetes-clusters))
+
+A wildcard DNS A record matching the base domain(s) is required, for example,
 given a base domain of `example.com`, you'd need a DNS entry like:
 
 ```
 *.example.com   3600     A     1.2.3.4
 ```
 
-where `example.com` is the domain name under which the deployed apps will be served,
+In this case, `example.com` is the domain name under which the deployed apps will be served,
 and `1.2.3.4` is the IP address of your load balancer; generally NGINX
-([see prerequisites](#prerequisites)). How to set up the DNS record is beyond
+([see requirements](#requirements)). How to set up the DNS record is beyond
 the scope of this document; you should check with your DNS provider.
 
 Alternatively you can use free public services like [xip.io](http://xip.io) or
@@ -147,6 +148,56 @@ If GitLab is installed using the [GitLab Omnibus Helm Chart], there are two
 options: provide a static IP, or have one assigned. For more information see the
 relevant docs on the [network prerequisites](../../install/kubernetes/gitlab_omnibus.md#networking-prerequisites).
 
+## Using multiple Kubernetes clusters **[PREMIUM]**
+
+When using Auto DevOps, you may want to deploy different environments to
+different Kubernetes clusters. This is possible due to the 1:1 connection that
+[exists between them](../../user/project/clusters/index.md#multiple-kubernetes-clusters).
+
+In the [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Auto-DevOps.gitlab-ci.yml)
+(used behind the scenes by Auto DevOps), there are currently 3 defined environment names that you need to know:
+
+- `review/` (every environment starting with `review/`)
+- `staging`
+- `production`
+
+Those environments are tied to jobs that use [Auto Deploy](#auto-deploy), so
+except for the environment scope, they would also need to have a different
+domain they would be deployed to. This is why you need to define a separate
+`AUTO_DEVOPS_DOMAIN` variable for all the above
+[based on the environment](../../ci/variables/README.md#limiting-environment-scopes-of-variables).
+
+The following table is an example of how the three different clusters would
+be configured.
+
+| Cluster name | Cluster environment scope | `AUTO_DEVOPS_DOMAIN` variable value | Variable environment scope | Notes |
+| ------------ | -------------- | ----------------------------- | ------------- | ------ |
+| review       |  `review/*`    | `review.example.com`  | `review/*`      | The review cluster which will run all [Review Apps](../../ci/review_apps/index.md). `*` is a wildcard, which means it will be used by every environment name starting with `review/`. |
+| staging      |  `staging`     | `staging.example.com` | `staging`       | (Optional) The staging cluster which will run the deployments of the staging environments. You need to [enable it first](#deploy-policy-for-staging-and-production-environments). |
+| production   |  `production`  | `example.com`         | `production`    | The production cluster which will run the deployments of the production environment. You can use [incremental rollouts](#incremental-rollout-to-production). |
+
+To add a different cluster for each environment:
+
+1. Navigate to your project's **Operations > Kubernetes** and create the Kubernetes clusters
+   with their respective environment scope as described from the table above.
+
+    ![Auto DevOps multiple clusters](img/autodevops_multiple_clusters.png)
+
+1. After the clusters are created, navigate to each one and install Helm Tiller
+   and Ingress.
+1. Make sure you have [configured your DNS](#auto-devops-base-domain) with the
+   specified Auto DevOps domains.
+1. Navigate to your project's **Settings > CI/CD > Variables** and add
+   the `AUTO_DEVOPS_DOMAIN` variables with their respective environment
+   scope.
+
+    ![Auto DevOps domain variables](img/autodevops_domain_variables.png)
+
+Now that all is configured, you can test your setup by creating a merge request
+and verifying that your app is deployed as a review app in the Kubernetes
+cluster with the `review/*` environment scope. Similarly, you can check the
+other environments.
+
 ## Quick start
 
 If you are using GitLab.com, see our [quick start guide](quick_start_guide.md)
@@ -155,13 +206,13 @@ Google Cloud.
 
 ## Enabling Auto DevOps
 
-If you haven't done already, read the [prerequisites](#prerequisites) to make
+If you haven't done already, read the [requirements](#requirements) to make
 full use of Auto DevOps. If this is your fist time, we recommend you follow the
-[quick start guide](#quick-start).
+[quick start guide](quick_start_guide.md).
 
 To enable Auto DevOps to your project:
 
-1. Check that your project doesn't have a `.gitlab-ci.yml`, and remove it otherwise
+1. Check that your project doesn't have a `.gitlab-ci.yml`, or remove it otherwise
 1. Go to your project's **Settings > CI/CD > General pipelines settings** and
    find the Auto DevOps section
 1. Select "Enable Auto DevOps"
@@ -287,7 +338,7 @@ In GitLab Ultimate, any security warnings are also
 
 NOTE: **Note:**
 This is an optional step, since many projects do not have a Kubernetes cluster
-available. If the [prerequisites](#prerequisites) are not met, the job will
+available. If the [requirements](#requirements) are not met, the job will
 silently be skipped.
 
 CAUTION: **Caution:**
@@ -341,7 +392,7 @@ and target branches are [shown in the merge request widget](../../user/project/m
 
 NOTE: **Note:**
 This is an optional step, since many projects do not have a Kubernetes cluster
-available. If the [prerequisites](#prerequisites) are not met, the job will
+available. If the [requirements](#requirements) are not met, the job will
 silently be skipped.
 
 CAUTION: **Caution:**
@@ -378,7 +429,7 @@ executed somewhere else, it cannot be accessed again.
 ### Auto Monitoring
 
 NOTE: **Note:**
-Check the [prerequisites](#prerequisites) for Auto Monitoring to make this stage
+Check the [requirements](#requirements) for Auto Monitoring to make this stage
 work.
 
 Once your application is deployed, Auto Monitoring makes it possible to monitor
