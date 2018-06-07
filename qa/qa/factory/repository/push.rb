@@ -31,8 +31,6 @@ module QA
         end
 
         def fabricate!
-          project.visit!
-
           Git::Repository.perform do |repository|
             repository.uri = Page::Project::Show.act do
               choose_repository_clone_http

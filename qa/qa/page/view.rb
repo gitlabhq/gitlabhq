@@ -1,3 +1,5 @@
+require 'pathname'
+
 module QA
   module Page
     class View

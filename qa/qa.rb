@@ -42,6 +42,7 @@ module QA
       autoload :Runner, 'qa/factory/resource/runner'
       autoload :PersonalAccessToken, 'qa/factory/resource/personal_access_token'
       autoload :KubernetesCluster, 'qa/factory/resource/kubernetes_cluster'
+      autoload :Wiki, 'qa/factory/resource/wiki'
     end
 
     module Repository
@@ -160,6 +161,13 @@ module QA
           autoload :AddExisting, 'qa/page/project/operations/kubernetes/add_existing'
           autoload :Show, 'qa/page/project/operations/kubernetes/show'
         end
+      end
+
+      module Wiki
+        autoload :MainLinks, 'qa/page/project/wiki/main_links'
+        autoload :Pages, 'qa/page/project/wiki/pages'
+        autoload :Empty, 'qa/page/project/wiki/empty'
+        autoload :Form, 'qa/page/project/wiki/form'
       end
     end
 
