@@ -6,7 +6,7 @@ describe Gitlab::Themes, lib: true do
       css = described_class.body_classes
 
       expect(css).to include('ui-indigo')
-      expect(css).to include('ui-dark ')
+      expect(css).to include('ui-dark')
       expect(css).to include('ui-blue')
     end
   end
@@ -14,7 +14,7 @@ describe Gitlab::Themes, lib: true do
   describe '.by_id' do
     it 'returns a Theme by its ID' do
       expect(described_class.by_id(1).name).to eq 'Indigo'
-      expect(described_class.by_id(10).name).to eq 'Light'
+      expect(described_class.by_id(3).name).to eq 'Light'
     end
   end
 
