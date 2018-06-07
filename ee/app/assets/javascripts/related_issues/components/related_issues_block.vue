@@ -147,7 +147,7 @@ export default {
         class="card-header"
         :class="{ 'panel-empty-heading border-bottom-0': !hasBody }"
       >
-        <h3 class="card-title mb-0">
+        <h3 class="card-title mt-0 mb-0">
           {{ title }}
           <a
             v-if="hasHelpPath"

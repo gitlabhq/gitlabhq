@@ -107,6 +107,7 @@ export default {
             :deploy-board-data="model.deployBoardData"
             :is-loading="model.isLoadingDeployBoard"
             :is-empty="model.isEmptyDeployBoard"
+            :logs-path="model.logs_path"
           />
         </div>
       </div>

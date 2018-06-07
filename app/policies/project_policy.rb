@@ -46,7 +46,7 @@ class ProjectPolicy < BasePolicy
   desc "User has developer access"
   condition(:developer) { team_access_level >= Gitlab::Access::DEVELOPER }
 
-  desc "User has master access"
+  desc "User has maintainer access"
   condition(:master) { team_access_level >= Gitlab::Access::MASTER }
 
   desc "Project is public"

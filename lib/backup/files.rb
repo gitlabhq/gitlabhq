@@ -26,7 +26,7 @@ module Backup
 
         unless status.zero?
           puts output
-          abort 'Backup failed'
+          raise Backup::Error, 'Backup failed'
         end
 
         run_pipeline!([%W(tar --exclude=lost+found -C #{@backup_files_dir} -cf - .), %w(gzip -c -1)], out: [backup_tarball, 'w', 0600])
@@ -39,7 +39,11 @@ module Backup
     def restore
       backup_existing_files_dir
 
-      run_pipeline!([%w(gzip -cd), %W(tar --unlink-first --recursive-unlink -C #{app_files_dir} -xf -)], in: backup_tarball)
+      run_pipeline!([%w(gzip -cd), %W(#{tar} --unlink-first --recursive-unlink -C #{app_files_dir} -xf -)], in: backup_tarball)
+    end
+
+    def tar
+      system(*%w[gtar --version], out: '/dev/null') ? 'gtar' : 'tar'
     end
 
     def backup_existing_files_dir
@@ -61,7 +65,7 @@ module Backup
 
     def run_pipeline!(cmd_list, options = {})
       status_list = Open3.pipeline(*cmd_list, options)
-      abort 'Backup failed' unless status_list.compact.all?(&:success?)
+      raise Backup::Error, 'Backup failed' unless status_list.compact.all?(&:success?)
     end
   end
 end

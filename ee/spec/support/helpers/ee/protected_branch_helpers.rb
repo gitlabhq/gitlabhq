@@ -1,6 +1,6 @@
 module EE
   module ProtectedBranchHelpers
-    def set_allowed_to(operation, option = 'Masters', form: '.js-new-protected-branch')
+    def set_allowed_to(operation, option = 'Maintainers', form: '.js-new-protected-branch')
       within form do
         find(".js-allowed-to-#{operation}").click
         wait_for_requests

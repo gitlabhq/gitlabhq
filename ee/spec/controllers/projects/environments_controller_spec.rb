@@ -74,6 +74,50 @@ describe Projects::EnvironmentsController do
     end
   end
 
+  describe 'GET logs' do
+    let(:logs) { "Log 1\nLog 2\nLog 3" }
+    let(:pod_name) { 'foo' }
+
+    before do
+      stub_licensed_features(pod_logs: true)
+
+      create(:cluster, :provided_by_gcp,
+             environment_scope: '*', projects: [project])
+
+      allow_any_instance_of(EE::KubernetesService).to receive(:read_pod_logs).with(pod_name).and_return(logs)
+    end
+
+    context 'when unlicensed' do
+      before do
+        stub_licensed_features(pod_logs: false)
+      end
+
+      it 'renders forbidden' do
+        get :logs, environment_params(pod_name: pod_name)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when using HTML format' do
+      it 'renders logs template' do
+        get :logs, environment_params(pod_name: pod_name)
+
+        expect(response).to be_ok
+        expect(response).to render_template 'logs'
+      end
+    end
+
+    context 'when using JSON format' do
+      it 'returns the logs for a specific pod' do
+        get :logs, environment_params(pod_name: pod_name, format: :json)
+
+        expect(response).to be_ok
+        expect(json_response["logs"]).to match_array(["Log 1", "Log 2", "Log 3"])
+      end
+    end
+  end
+
   def environment_params(opts = {})
     opts.reverse_merge(namespace_id: project.namespace,
                        project_id: project,

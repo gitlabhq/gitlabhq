@@ -29,7 +29,7 @@ module Ci
     has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: 'auto_canceled_by_id'
     has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: 'auto_canceled_by_id'
 
-    has_many :stages
+    has_many :stages, -> { order(position: :asc) }, inverse_of: :pipeline
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :builds, foreign_key: :commit_id, inverse_of: :pipeline
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id # rubocop:disable Cop/ActiveRecordDependent
@@ -267,6 +267,20 @@ module Ci
       stage unless stage.statuses_count.zero?
     end
 
+    ##
+    # TODO We do not completely switch to persisted stages because of
+    # race conditions with setting statuses gitlab-ce#23257.
+    #
+    def ordered_stages
+      return legacy_stages unless complete?
+
+      if Feature.enabled?('ci_pipeline_persisted_stages')
+        stages
+      else
+        legacy_stages
+      end
+    end
+
     def legacy_stages
       # TODO, this needs refactoring, see gitlab-ce#26481.
 
@@ -429,7 +443,7 @@ module Ci
 
     def number_of_warnings
       BatchLoader.for(id).batch(default_value: 0) do |pipeline_ids, loader|
-        Build.where(commit_id: pipeline_ids)
+        ::Ci::Build.where(commit_id: pipeline_ids)
           .latest
           .failed_but_allowed
           .group(:commit_id)
@@ -525,7 +539,8 @@ module Ci
 
     def update_status
       retry_optimistic_lock(self) do
-        case latest_builds_status
+        case latest_builds_status.to_s
+        when 'created' then nil
         when 'pending' then enqueue
         when 'running' then run
         when 'success' then succeed
@@ -533,6 +548,9 @@ module Ci
         when 'canceled' then cancel
         when 'skipped' then skip
         when 'manual' then block
+        else
+          raise HasStatus::UnknownStatusError,
+                "Unknown status `#{latest_builds_status}`"
         end
       end
     end

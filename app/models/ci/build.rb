@@ -59,6 +59,11 @@ module Ci
       where('(artifacts_file IS NOT NULL AND artifacts_file <> ?) OR EXISTS (?)',
         '', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').archive)
     end
+
+    scope :without_archived_trace, ->() do
+      where('NOT EXISTS (?)', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').trace)
+    end
+
     scope :with_artifacts_stored_locally, -> { with_artifacts_archive.where(artifacts_file_store: [nil, LegacyArtifactUploader::Store::LOCAL]) }
     scope :with_artifacts_not_expired, ->() { with_artifacts_archive.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
     scope :with_expired_artifacts, ->() { with_artifacts_archive.where('artifacts_expire_at < ?', Time.now) }
@@ -148,6 +153,7 @@ module Ci
       after_transition any => [:success] do |build|
         build.run_after_commit do
           BuildSuccessWorker.perform_async(id)
+          PagesWorker.perform_async(:deploy, id) if build.pages_generator?
         end
       end
 
@@ -185,6 +191,11 @@ module Ci
 
     def other_actions
       pipeline.manual_actions.where.not(name: name)
+    end
+
+    def pages_generator?
+      Gitlab.config.pages.enabled &&
+        self.name == 'pages'
     end
 
     def playable?
@@ -406,8 +417,6 @@ module Ci
       build_data = Gitlab::DataBuilder::Build.build(self)
       project.execute_hooks(build_data.dup, :job_hooks)
       project.execute_services(build_data.dup, :job_hooks)
-      PagesService.new(build_data).execute
-      project.running_or_pending_build_count(force: true)
     end
 
     def browsable_artifacts?

@@ -277,6 +277,16 @@ class Repository
     end
   end
 
+  def archive_metadata(ref, storage_path, format = "tar.gz", append_sha:)
+    raw_repository.archive_metadata(
+      ref,
+      storage_path,
+      project.path,
+      format,
+      append_sha: append_sha
+    )
+  end
+
   def expire_tags_cache
     expire_method_caches(%i(tag_names tag_count))
     @tags = nil

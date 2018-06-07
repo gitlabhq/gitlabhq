@@ -1,4 +1,5 @@
 class Projects::MilestonesController < Projects::ApplicationController
+  include Gitlab::Utils::StrongMemoize
   include MilestoneActions
 
   before_action :check_issuables_available!
@@ -103,7 +104,7 @@ class Projects::MilestonesController < Projects::ApplicationController
   protected
 
   def milestones
-    @milestones ||= begin
+    strong_memoize(:milestones) do
       MilestonesFinder.new(search_params).execute
     end
   end
@@ -121,10 +122,10 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   def search_params
-    if @project.group && can?(current_user, :read_group, @project.group)
-      group = @project.group
+    if request.format.json? && @project.group && can?(current_user, :read_group, @project.group)
+      groups = @project.group.self_and_ancestors
     end
 
-    params.permit(:state).merge(project_ids: @project.id, group_ids: group&.id)
+    params.permit(:state).merge(project_ids: @project.id, group_ids: groups&.select(:id))
   end
 end

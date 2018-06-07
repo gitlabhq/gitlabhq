@@ -42,7 +42,7 @@ to secure them.
 
 Your files live in a project [repository](../repository/index.md) on GitLab.
 [GitLab CI](../../../ci/README.md) picks up those files and makes them available at, typically,
-`http://<username>.gitlab.io/<projectname>`. Please read through the docs on 
+`https://<username>.gitlab.io/<projectname>`. Please read through the docs on 
 [GitLab Pages domains](getting_started_part_one.md#gitlab-pages-domain) for more info.
 
 ## Explore GitLab Pages

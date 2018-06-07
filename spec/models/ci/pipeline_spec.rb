@@ -546,6 +546,87 @@ describe Ci::Pipeline, :mailer do
         end
       end
     end
+
+    describe '#stages' do
+      before do
+        create(:ci_stage_entity, project: project,
+                                 pipeline: pipeline,
+                                 name: 'build')
+      end
+
+      it 'returns persisted stages' do
+        expect(pipeline.stages).not_to be_empty
+        expect(pipeline.stages).to all(be_persisted)
+      end
+    end
+
+    describe '#ordered_stages' do
+      before do
+        create(:ci_stage_entity, project: project,
+                                 pipeline: pipeline,
+                                 position: 4,
+                                 name: 'deploy')
+
+        create(:ci_build, project: project,
+                          pipeline: pipeline,
+                          stage: 'test',
+                          stage_idx: 3,
+                          name: 'test')
+
+        create(:ci_build, project: project,
+                          pipeline: pipeline,
+                          stage: 'build',
+                          stage_idx: 2,
+                          name: 'build')
+
+        create(:ci_stage_entity, project: project,
+                                 pipeline: pipeline,
+                                 position: 1,
+                                 name: 'sanity')
+
+        create(:ci_stage_entity, project: project,
+                                 pipeline: pipeline,
+                                 position: 5,
+                                 name: 'cleanup')
+      end
+
+      subject { pipeline.ordered_stages }
+
+      context 'when using legacy stages' do
+        before do
+          stub_feature_flags(ci_pipeline_persisted_stages: false)
+        end
+
+        it 'returns legacy stages in valid order' do
+          expect(subject.map(&:name)).to eq %w[build test]
+        end
+      end
+
+      context 'when using persisted stages' do
+        before do
+          stub_feature_flags(ci_pipeline_persisted_stages: true)
+        end
+
+        context 'when pipelines is not complete' do
+          it 'still returns legacy stages' do
+            expect(subject).to all(be_a Ci::LegacyStage)
+            expect(subject.map(&:name)).to eq %w[build test]
+          end
+        end
+
+        context 'when pipeline is complete' do
+          before do
+            pipeline.succeed!
+          end
+
+          it 'returns stages in valid order' do
+            expect(subject).to all(be_a Ci::Stage)
+            expect(subject.map(&:name))
+              .to eq %w[sanity build test deploy cleanup]
+          end
+        end
+      end
+    end
   end
 
   describe 'state machine' do
@@ -1186,6 +1267,43 @@ describe Ci::Pipeline, :mailer do
       it 'finds the implied config' do
         expect(pipeline.ci_yaml_file).to eq(implied_yml)
         expect(pipeline.yaml_errors).to be_nil
+      end
+    end
+  end
+
+  describe '#update_status' do
+    context 'when pipeline is empty' do
+      it 'updates does not change pipeline status' do
+        expect(pipeline.statuses.latest.status).to be_nil
+
+        expect { pipeline.update_status }
+          .to change { pipeline.reload.status }.to 'skipped'
+      end
+    end
+
+    context 'when updating status to pending' do
+      before do
+        allow(pipeline)
+          .to receive_message_chain(:statuses, :latest, :status)
+          .and_return(:running)
+      end
+
+      it 'updates pipeline status to running' do
+        expect { pipeline.update_status }
+          .to change { pipeline.reload.status }.to 'running'
+      end
+    end
+
+    context 'when statuses status was not recognized' do
+      before do
+        allow(pipeline)
+          .to receive(:latest_builds_status)
+          .and_return(:unknown)
+      end
+
+      it 'raises an exception' do
+        expect { pipeline.update_status }
+          .to raise_error(HasStatus::UnknownStatusError)
       end
     end
   end

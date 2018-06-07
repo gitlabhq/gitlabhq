@@ -159,6 +159,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     let(:feature2) { 'feature2' }
 
     around do |example|
+      # discover_default_branch will be moved to gitaly-ruby
       Gitlab::GitalyClient::StorageSettings.allow_disk_access do
         example.run
       end
@@ -255,7 +256,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     let(:expected_path) { File.join(storage_path, cache_key, expected_filename) }
     let(:expected_prefix) { "gitlab-git-test-#{ref}-#{SeedRepo::LastCommit::ID}" }
 
-    subject(:metadata) { repository.archive_metadata(ref, storage_path, format, append_sha: append_sha) }
+    subject(:metadata) { repository.archive_metadata(ref, storage_path, 'gitlab-git-test', format, append_sha: append_sha) }
 
     it 'sets CommitId to the commit SHA' do
       expect(metadata['CommitId']).to eq(SeedRepo::LastCommit::ID)
@@ -373,6 +374,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   context '#submodules' do
     around do |example|
+      # TODO #submodules will be removed, has been migrated to gitaly
       Gitlab::GitalyClient::StorageSettings.allow_disk_access do
         example.run
       end
@@ -1055,6 +1057,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe "#rugged_commits_between" do
     around do |example|
+      # TODO #rugged_commits_between will be removed, has been migrated to gitaly
       Gitlab::GitalyClient::StorageSettings.allow_disk_access do
         example.run
       end
@@ -1703,6 +1706,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     let(:refs) { ['deadbeef', SeedRepo::RubyBlob::ID, '909e6157199'] }
 
     around do |example|
+      # TODO #batch_existence isn't used anywhere, can we remove it?
       Gitlab::GitalyClient::StorageSettings.allow_disk_access do
         example.run
       end
@@ -2000,6 +2004,18 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
           expect(config).to include("[gitlab]")
           expect(config).to include("fullpath = #{repository_path}")
+        end
+      end
+
+      context 'repository does not exist' do
+        it 'raises NoRepository and does not call Gitaly WriteConfig' do
+          repository = Gitlab::Git::Repository.new('default', 'does/not/exist.git', '')
+
+          expect(repository.gitaly_repository_client).not_to receive(:write_config)
+
+          expect do
+            repository.write_config(full_path: 'foo/bar.git')
+          end.to raise_error(Gitlab::Git::Repository::NoRepository)
         end
       end
     end

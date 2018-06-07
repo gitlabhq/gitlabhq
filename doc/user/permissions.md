@@ -27,7 +27,7 @@ See our [product handbook on permissions](https://about.gitlab.com/handbook/prod
 
 The following table depicts the various user permission levels in a project.
 
-| Action                                | Guest   | Reporter   | Developer   | Master   | Owner  |
+| Action                                | Guest   | Reporter   | Developer   |Maintainer| Owner  |
 |---------------------------------------|---------|------------|-------------|----------|--------|
 | Create new issue                      | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
 | Create confidential issue             | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
@@ -113,7 +113,7 @@ review, we've created protected branches. Read through the documentation on
 [protected branches](project/protected_branches.md)
 to learn more.
 
-Additionally, you can allow or forbid users with Master and/or
+Additionally, you can allow or forbid users with Maintainer and/or
 Developer permissions to push to a protected branch. Read through the documentation on
 [Allowed to Merge and Allowed to Push settings](project/protected_branches.md#using-the-allowed-to-merge-and-allowed-to-push-settings)
 to learn more.
@@ -149,7 +149,7 @@ Any user can remove themselves from a group, unless they are the last Owner of
 the group. The following table depicts the various user permission levels in a
 group.
 
-| Action                  | Guest | Reporter | Developer | Master | Owner |
+| Action                  | Guest | Reporter | Developer | Maintainer | Owner |
 |-------------------------|-------|----------|-----------|--------|-------|
 | Browse group            | ✓     | ✓        | ✓         | ✓      | ✓     |
 | Edit group              |       |          |           |        | ✓     |
@@ -223,7 +223,7 @@ GitLab CI/CD permissions rely on the role the user has in GitLab. There are four
 permission levels in total:
 
 - admin
-- master
+- maintainer
 - developer
 - guest/reporter
 
@@ -231,7 +231,7 @@ The admin user can perform any action on GitLab CI/CD in scope of the GitLab
 instance and project. In addition, all admins can use the admin interface under
 `/admin/runners`.
 
-| Action                                | Guest, Reporter | Developer   | Master   | Admin  |
+| Action                                | Guest, Reporter | Developer   |Maintainer| Admin  |
 |---------------------------------------|-----------------|-------------|----------|--------|
 | See commits and jobs                  | ✓               | ✓           | ✓        | ✓      |
 | Retry or cancel job                   |                 | ✓           | ✓        | ✓      |
@@ -253,7 +253,7 @@ Read all about the [new model and its implications][new-mod].
 This table shows granted privileges for jobs triggered by specific types of
 users:
 
-| Action                                      | Guest, Reporter | Developer   | Master   | Admin  |
+| Action                                      | Guest, Reporter | Developer   |Maintainer| Admin  |
 |---------------------------------------------|-----------------|-------------|----------|--------|
 | Run CI job                                  |                 | ✓           | ✓        | ✓      |
 | Clone source and LFS from current project   |                 | ✓           | ✓        | ✓      |
@@ -296,7 +296,7 @@ with the permissions described on the documentation on [auditor users permission
 [^1]: On public and internal projects, all users are able to perform this action
 [^2]: Guest users can only view the confidential issues they created themselves
 [^3]: If **Public pipelines** is enabled in **Project Settings > CI/CD**
-[^4]: Not allowed for Guest, Reporter, Developer, Master, or Owner
+[^4]: Not allowed for Guest, Reporter, Developer, Maintainer, or Owner
 [^5]: Only if the job was triggered by the user
 [^6]: Only if user is not external one
 [^7]: Only if user is a member of the project

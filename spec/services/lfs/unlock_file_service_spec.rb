@@ -80,12 +80,12 @@ describe Lfs::UnlockFileService do
             result = subject.execute
 
             expect(result[:status]).to eq(:error)
-            expect(result[:message]).to match(/You must have master access/)
+            expect(result[:message]).to match(/You must have maintainer access/)
             expect(result[:http_status]).to eq(403)
           end
         end
 
-        context 'by a master user' do
+        context 'by a maintainer user' do
           let(:current_user) { master }
           let(:params) do
             { id: lock.id,
