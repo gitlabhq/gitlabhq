@@ -733,9 +733,9 @@ production: &base
   pseudonymizer:
     enabled: false
     # Tables manifest that specifies the fields to extract and pseudonymize.
-    manifest: config/pseudonymizer.yml
-    # remote_directory: 'gitlab-elt'
+    manifest: lib/pseudonymizer/manifest.yml
     upload:
+      # remote_directory: 'gitlab-elt'
       # Fog storage connection settings, see http://fog.io/storage/ .
       connection:
       #   provider: AWS
@@ -896,16 +896,16 @@ test:
     path: tmp/tests/backups
   pseudonymizer:
     enabled: false
-    manifest: config/pseudonymizer.test.yml
+    manifest: lib/pseudonymizer/manifest.yml
     upload:
       # The remote 'directory' to store the CSV files. For S3, this would be the bucket name.
       remote_directory: gitlab-elt.test
       # Fog storage connection settings, see http://fog.io/storage/
       connection:
-        provider: AWS
+        provider: AWS # Only AWS supported at the moment
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
         region: us-east-1
-        aws_access_key_id: minio
-        aws_secret_access_key: gdk-minio
   gitlab_shell:
     path: tmp/tests/gitlab-shell/
     hooks_path: tmp/tests/gitlab-shell/hooks/

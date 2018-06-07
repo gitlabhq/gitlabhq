@@ -101,7 +101,7 @@ module EE
           slack_app_id: nil,
           slack_app_secret: nil,
           slack_app_verification_token: nil,
-          pseudonymizer_enabled: Settings.pseudonymizer['enabled'],
+          pseudonymizer_enabled: Settings.pseudonymizer['enabled']
         )
       end
     end

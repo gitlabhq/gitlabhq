@@ -1,4 +1,4 @@
-module Pseudonymity
+module Pseudonymizer
   class Options
     attr_reader :config
     attr_reader :start_at
@@ -14,6 +14,10 @@ module Pseudonymity
 
     def upload_dir
       File.join(self.start_at.iso8601)
+    end
+
+    def object_store_credentials
+      config.upload.connection.to_hash.deep_symbolize_keys
     end
   end
 end

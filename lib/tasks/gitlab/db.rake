@@ -78,17 +78,17 @@ namespace :gitlab do
 
       abort "Pseudonymizer disabled." unless Gitlab::CurrentSettings.pseudonymizer_enabled?
 
-      options = Pseudonymity::Options.new(
+      options = Pseudonymizer::Options.new(
         config: YAML.load_file(Rails.root.join(Gitlab.config.pseudonymizer.manifest)),
         start_at: Time.now.utc
       )
 
-      table = Pseudonymity::Table.new(options)
-      table.tables_to_csv
+      dumper = Pseudonymizer::Dumper.new(options)
+      dumper.tables_to_csv
 
-      upload = Pseudonymity::UploadService.new(options, progress)
-      upload.upload
-      upload.cleanup
+      uploader = Pseudonymizer::Uploader.new(options, progress)
+      uploader.upload
+      uploader.cleanup
     end
 
     def progress

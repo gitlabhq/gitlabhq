@@ -1,9 +1,10 @@
 require 'spec_helper'
 
-describe Gitlab::Pseudonymity do
+describe Pseudonymizer::Dumper do
   let!(:project) { create(:project) }
   let(:base_dir) { Dir.mktmpdir }
-  subject(:pseudo) { Pseudonymity::Table.new }
+  let(:options) { Pseudonymizer::Options.new() }
+  subject(:pseudo) { described_class.new(options) }
 
   after do
     FileUtils.rm_rf(base_dir)

@@ -1,11 +1,13 @@
-module Pseudonymity
-  class UploadService
+module Pseudonymizer
+  class Uploader
     RemoteStorageUnavailableError = Class.new(StandardError)
 
     def initialize(options, progress = nil)
       @progress = progress || $stdout
+      @config = options.config
       @output_dir = options.output_dir
       @upload_dir = options.upload_dir
+      @connection_params = options.object_store_credentials
     end
 
     def upload
@@ -13,18 +15,6 @@ module Pseudonymity
 
       file_list.each do |file|
         upload_file(file, remote_directory)
-      end
-    end
-
-    def upload_file(file, directory)
-      progress.print "\t#{file} ... "
-
-      if directory.files.create(key: File.join(@upload_dir, File.basename(file)),
-                                body: File.open(file),
-                                public: false)
-        progress.puts "done".color(:green)
-      else
-        progress.puts "uploading CSV to #{remote_directory} failed".color(:red)
       end
     end
 
@@ -41,24 +31,33 @@ module Pseudonymity
 
     private
 
-    def config
-      Gitlab.config.pseudonymizer
+    attr_reader :progress
+
+    def upload_file(file, directory)
+      progress.print "\t#{file} ... "
+
+      if directory.files.create(key: File.join(@upload_dir, File.basename(file)),
+                                body: File.open(file),
+                                public: false)
+        progress.puts "done".color(:green)
+      else
+        progress.puts "uploading CSV to #{remote_directory} failed".color(:red)
+      end
     end
 
     def remote_directory
-      connection_settings = config.upload.connection
-      if connection_settings.blank?
+      if @connection_params.blank?
         progress.puts "Cannot upload files, make sure the `pseudonimizer.upload.connection` is set properly".color(:red)
-        raise RemoteStorageUnavailableError.new(connection_settings)
+        raise RemoteStorageUnavailableError.new(@config)
       end
 
-      connect_to_remote_directory(connection_settings)
+      connect_to_remote_directory
     end
 
-    def connect_to_remote_directory(connection_settings)
+    def connect_to_remote_directory
       # our settings use string keys, but Fog expects symbols
-      connection = ::Fog::Storage.new(connection_settings.symbolize_keys)
-      remote_dir = config.upload.remote_directory
+      connection = ::Fog::Storage.new(@connection_params)
+      remote_dir = @config.upload.remote_directory
 
       # We only attempt to create the directory for local backups. For AWS
       # and other cloud providers, we cannot guarantee the user will have

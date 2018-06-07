@@ -3,7 +3,7 @@ require 'digest'
 require 'csv'
 require 'yaml'
 
-module Pseudonymity
+module Pseudonymizer
   class Anon
     def initialize(fields)
       @anon_fields = fields
@@ -25,7 +25,7 @@ module Pseudonymity
     end
   end
 
-  class Table
+  class Dumper
     attr_accessor :config
 
     def initialize(options)
