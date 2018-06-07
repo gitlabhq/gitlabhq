@@ -1,0 +1,5 @@
+---
+title: 'Geo: Automatically clean up stale lock files on Geo secondary'
+merge_request: 6034
+author:
+type: fixed
