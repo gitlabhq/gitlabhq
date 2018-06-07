@@ -210,7 +210,7 @@ by name. The order of severity is:
 
 ### Multi-project pipelines graphs **[PREMIUM]**
 
-With [multi-project pipeline graphs](multi_project_pipeline_graphs.md),
+With [multi-project pipelines](multi_project_pipelines.md),
 you can visualize cross-project pipelines.
 
 ## How the pipeline duration is calculated
