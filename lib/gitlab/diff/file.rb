@@ -104,23 +104,19 @@ module Gitlab
       end
 
       def new_blob_service
-        BlobsService.new(repository.project,
-                         new_content_sha,
-                         file_path)
+        BlobsService.new(repository.project, new_content_sha, file_path)
       end
 
       def old_blob_service
-        BlobsService.new(repository.project,
-                         old_content_sha,
-                         file_path)
+        BlobsService.new(repository.project, old_content_sha, file_path)
       end
 
       def new_blob
-        new_blob_service.blob(highlighted: highlighted?)
+        new_blob_service.fetch(highlighted: highlighted?)
       end
 
       def old_blob
-        old_blob_service.blob(highlighted: highlighted?)
+        old_blob_service.fetch(highlighted: highlighted?)
       end
 
       def content_sha

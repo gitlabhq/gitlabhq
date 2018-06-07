@@ -1,34 +1,14 @@
-# This is a wrapper for Blob model.
+# This is a thin caching wrapper class for Blob model.
 # It acts as a thin layer which caches lightweight information
 # based on the blob content (which is not cached).
 class BlobsService
+  CACHED_METHODS = %i(id raw_size size readable_text? name raw_binary? binary? path
+                      external_storage_error? stored_externally? total_lines).freeze
+
   def initialize(project, content_sha, path)
     @project = project
     @content_sha = content_sha
     @path = path
-  end
-
-  def write_cache_if_empty
-    return unless content_sha
-    return if cache_exists?
-    return unless uncached_blob
-
-    blob_cache = { id: uncached_blob.id,
-                   raw_size: uncached_blob.raw_size,
-                   size: uncached_blob.size,
-                   readable_text: uncached_blob.readable_text?,
-                   name: uncached_blob.name,
-                   binary: uncached_blob.binary?,
-                   path: uncached_blob.path,
-                   external_storage_error: uncached_blob.external_storage_error?,
-                   stored_externally: uncached_blob.stored_externally?,
-                   total_lines: uncached_blob.total_lines }
-
-    cache.write(cache_key, blob_cache, expires_in: 1.week)
-  end
-
-  def clear_cache
-    cache.delete(cache_key)
   end
 
   # We need blobs data (content) in order to highlight diffs (see
@@ -37,21 +17,39 @@ class BlobsService
   #
   # Therefore, in this scenario (no highlight yet) we use the uncached blob
   # version.
-  def blob(highlighted:)
+  def fetch(highlighted:)
     return unless content_sha
     return uncached_blob unless highlighted
 
-    if cache_exists?
-      # TODO: This can be a CachedBlob
-      Hashie::Mash.new(read_cache)
-    else
-      uncached_blob
-    end
+    cache_exists? ? cached_blob : uncached_blob
+  end
+
+
+  def write_cache_if_empty
+    return unless content_sha
+    return if cache_exists?
+    return unless uncached_blob
+
+    cache.write(cache_key, cacheable_blob_hash, expires_in: 1.week)
+  end
+
+  def clear_cache
+    cache.delete(cache_key)
   end
 
   private
 
   attr_reader :content_sha
+
+  def cacheable_blob_hash
+    CACHED_METHODS.each_with_object({}) do |_method, hash|
+      hash[_method] = uncached_blob.public_send(_method)
+    end
+  end
+
+  def cached_blob
+    CachedBlob.new(read_cache)
+  end
 
   def uncached_blob
     @uncached_blob ||= Blob.lazy(@project, @content_sha, @path)&.itself
