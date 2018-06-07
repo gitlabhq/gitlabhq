@@ -26,7 +26,7 @@ describe Boards::ListsController do
 
       parsed_response = JSON.parse(response.body)
 
-      expect(response).to match_response_schema('lists')
+      expect(response).to match_response_schema('lists', dir: 'ee')
       expect(parsed_response.length).to eq 3
     end
 
@@ -62,7 +62,7 @@ describe Boards::ListsController do
       it 'returns the created list' do
         create_board_list user: user, board: board, label_id: label.id
 
-        expect(response).to match_response_schema('list')
+        expect(response).to match_response_schema('list', dir: 'ee')
       end
     end
 

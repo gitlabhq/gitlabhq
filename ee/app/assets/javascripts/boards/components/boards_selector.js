@@ -1,6 +1,8 @@
 import Vue from 'vue';
+import $ from 'jquery';
 import { throttle } from 'underscore';
 import BoardForm from './board_form.vue';
+import AssigneesList from './assignees_list';
 
 (() => {
   window.gl = window.gl || {};
@@ -34,6 +36,7 @@ import BoardForm from './board_form.vue';
         open: false,
         loading: true,
         hasScrollFade: false,
+        hasAssigneesListMounted: false,
         scrollFadeInitialized: false,
         boards: [],
         state: Store.state,
@@ -91,9 +94,10 @@ import BoardForm from './board_form.vue';
         }
 
         if (this.open && !this.boards.length) {
-          gl.boardService.allBoards()
+          gl.boardService
+            .allBoards()
             .then(res => res.data)
-            .then((json) => {
+            .then(json => {
               this.loading = false;
               this.boards = json;
             })
@@ -123,9 +127,32 @@ import BoardForm from './board_form.vue';
 
         this.hasScrollFade = this.isScrolledUp();
       },
+      handleDropdownHide(e) {
+        const $currTarget = $(e.currentTarget);
+        if ($currTarget.data('preventClose')) {
+          e.preventDefault();
+        }
+        $currTarget.removeData('preventClose');
+      },
+      handleDropdownTabClick(e) {
+        const $addListEl = $('#js-add-list');
+        $addListEl.data('preventClose', true);
+        if (e.target.dataset.action === 'tab-assignees' &&
+            !this.hasAssigneesListMounted) {
+          this.assigneeList = new AssigneesList({
+            propsData: {
+              listAssigneesPath: $addListEl.find('.js-new-board-list').data('listAssigneesPath'),
+            },
+          }).$mount('.js-assignees-list');
+          this.hasAssigneesListMounted = true;
+        }
+      },
     },
     created() {
       this.state.currentBoard = this.currentBoard;
+      Store.state.assignees = [];
+      $('#js-add-list').on('hide.bs.dropdown', this.handleDropdownHide);
+      $('.js-new-board-list-tabs').on('click', this.handleDropdownTabClick);
     },
   });
 })();

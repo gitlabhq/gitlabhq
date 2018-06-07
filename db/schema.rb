@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180605213516) do
+ActiveRecord::Schema.define(version: 20180607154645) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1509,10 +1509,12 @@ ActiveRecord::Schema.define(version: 20180605213516) do
     t.integer "position"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "user_id"
   end
 
   add_index "lists", ["board_id", "label_id"], name: "index_lists_on_board_id_and_label_id", unique: true, using: :btree
   add_index "lists", ["label_id"], name: "index_lists_on_label_id", using: :btree
+  add_index "lists", ["user_id"], name: "index_lists_on_user_id", using: :btree
 
   create_table "members", force: :cascade do |t|
     t.integer "access_level", null: false
@@ -2897,6 +2899,7 @@ ActiveRecord::Schema.define(version: 20180605213516) do
   add_foreign_key "lfs_file_locks", "users", on_delete: :cascade
   add_foreign_key "lists", "boards", name: "fk_0d3f677137", on_delete: :cascade
   add_foreign_key "lists", "labels", name: "fk_7a5553d60f", on_delete: :cascade
+  add_foreign_key "lists", "users", name: "fk_d6cf4279f7", on_delete: :cascade
   add_foreign_key "members", "users", name: "fk_2e88fb7ce9", on_delete: :cascade
   add_foreign_key "merge_request_diff_commits", "merge_request_diffs", on_delete: :cascade
   add_foreign_key "merge_request_diff_files", "merge_request_diffs", on_delete: :cascade

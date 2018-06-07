@@ -60,11 +60,13 @@ export default class BoardService {
     return axios.post(this.listsEndpointGenerate, {});
   }
 
-  createList(labelId) {
+  createList(entityId, entityType) {
+    const list = {
+      [entityType]: entityId,
+    };
+
     return axios.post(this.listsEndpoint, {
-      list: {
-        label_id: labelId,
-      },
+      list,
     });
   }
 

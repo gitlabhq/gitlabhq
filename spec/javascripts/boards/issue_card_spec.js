@@ -6,9 +6,9 @@ import Vue from 'vue';
 import _ from 'underscore';
 
 import '~/vue_shared/models/label';
+import '~/vue_shared/models/assignee';
 import '~/boards/models/issue';
 import '~/boards/models/list';
-import '~/boards/models/assignee';
 import '~/boards/stores/boards_store';
 import '~/boards/components/issue_card_inner';
 import { listObj } from './mock_data';

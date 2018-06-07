@@ -1,9 +1,17 @@
 module EE
   module BoardsHelper
+    extend ::Gitlab::Utils::Override
+
     def parent
       @group || @project
     end
 
+    override :board_list_data
+    def board_list_data
+      super.merge(list_assignees_path: board_users_path(board, :json))
+    end
+
+    override :board_data
     def board_data
       show_feature_promotion = (@project && show_promotions? &&
                                 (!@project.feature_available?(:multiple_project_issue_boards) ||
@@ -37,6 +45,7 @@ module EE
       )
     end
 
+    override :boards_link_text
     def boards_link_text
       if parent.multiple_issue_boards_available?
         s_("IssueBoards|Boards")
