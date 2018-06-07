@@ -3,22 +3,22 @@
 %fieldset.system_header_footer
   %legend
     = _('System header and footer:')
-  .form-group
-    = form.label :header_message, _('Header message'), class: 'col-form-label'
+  .form-group.row
+    = form.label :header_message, _('Header message'), class: 'col-sm-2 col-form-label'
     .col-sm-10
       = form.text_area :header_message, placeholder: _('State your message to activate'), class: "form-control js-autosize"
-  .form-group
-    = form.label :footer_message, _('Footer message'), class: 'col-form-label'
+  .form-group.row
+    = form.label :footer_message, _('Footer message'), class: 'col-sm-2 col-form-label'
     .col-sm-10
       = form.text_area :footer_message, placeholder: _('State your message to activate'), class: "form-control js-autosize"
-  .form-group.js-toggle-colors-container
+  .form-group.row.js-toggle-colors-container
     .col-sm-10.offset-sm-2
       = link_to _('Customize colors'), '#', class: 'js-toggle-colors-link'
-  .form-group.js-toggle-colors-container.hide
-    = form.label :message_background_color, _('Background Color'), class: 'col-form-label'
+  .form-group.row.js-toggle-colors-container.hide
+    = form.label :message_background_color, _('Background Color'), class: 'col-sm-2 col-form-label'
     .col-sm-10
       = form.color_field :message_background_color, class: "form-control"
-  .form-group.js-toggle-colors-container.hide
-    = form.label :message_font_color, _('Font Color'), class: 'col-form-label'
+  .form-group.row.js-toggle-colors-container.hide
+    = form.label :message_font_color, _('Font Color'), class: 'col-sm-2 col-form-label'
     .col-sm-10
       = form.color_field :message_font_color, class: "form-control"
