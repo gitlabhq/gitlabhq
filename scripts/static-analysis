@@ -26,6 +26,7 @@ def emit_errors(static_analysis)
 end
 
 tasks = [
+  %w[ruby -rbundler/setup scripts/ee_specific_check/ee_specific_check.rb],
   %w[bin/rake lint:all],
   %w[bundle exec license_finder],
   %w[yarn run eslint],
