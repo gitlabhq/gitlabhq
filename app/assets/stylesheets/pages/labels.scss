@@ -196,10 +196,6 @@
 .prioritized-labels {
   margin-bottom: 30px;
 
-  h5 {
-    font-size: $gl-font-size;
-  }
-
   .add-priority {
     display: none;
     color: $gray-light;
@@ -214,10 +210,6 @@
 }
 
 .other-labels {
-  h5 {
-    font-size: $gl-font-size;
-  }
-
   .remove-priority {
     display: none;
   }

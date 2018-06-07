@@ -692,6 +692,12 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def human_import_status_name
+    ensure_import_state
+
+    import_state.human_status_name
+  end
+
   def import_schedule
     ensure_import_state(force: true)
 

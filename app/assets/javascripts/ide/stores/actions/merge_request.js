@@ -17,9 +17,7 @@ export const getMergeRequestData = (
             mergeRequestId,
             mergeRequest: data,
           });
-          if (!state.currentMergeRequestId) {
-            commit(types.SET_CURRENT_MERGE_REQUEST, mergeRequestId);
-          }
+          commit(types.SET_CURRENT_MERGE_REQUEST, mergeRequestId);
           resolve(data);
         })
         .catch(() => {
