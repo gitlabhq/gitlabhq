@@ -405,7 +405,11 @@ describe Gitlab::Shell do
     describe '#create_repository' do
       shared_examples '#create_repository' do
         let(:repository_storage) { 'default' }
-        let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage].legacy_disk_path }
+        let(:repository_storage_path) do
+          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            Gitlab.config.repositories.storages[repository_storage].legacy_disk_path
+          end
+        end
         let(:repo_name) { 'project/path' }
         let(:created_path) { File.join(repository_storage_path, repo_name + '.git') }
 

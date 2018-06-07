@@ -170,7 +170,7 @@ MergeRequest:
 - last_edited_by_id
 - head_pipeline_id
 - discussion_locked
-- allow_maintainer_to_push
+- allow_collaboration
 MergeRequestDiff:
 - id
 - state
@@ -242,6 +242,7 @@ Ci::Pipeline:
 - config_source
 - failure_reason
 - protected
+- iid
 Ci::Stage:
 - id
 - name

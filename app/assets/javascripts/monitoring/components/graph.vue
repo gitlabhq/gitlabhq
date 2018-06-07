@@ -232,9 +232,14 @@ export default {
     @mouseover="showFlagContent = true"
     @mouseleave="showFlagContent = false"
   >
-    <h5 class="text-center graph-title">
-      {{ graphData.title }}
-    </h5>
+    <div class="prometheus-graph-header">
+      <h5 class="prometheus-graph-title">
+        {{ graphData.title }}
+      </h5>
+      <div class="prometheus-graph-widgets">
+        <slot></slot>
+      </div>
+    </div>
     <div
       class="prometheus-svg-container"
       :style="paddingBottomRootSvg"

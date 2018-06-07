@@ -176,3 +176,20 @@ git push -u origin update-project-templates
 ```
 
 Now create a merge request and merge that to master.
+
+## Generate route lists
+
+To see the full list of API routes, you can run:
+
+```shell
+bundle exec rake grape:path_helpers
+```
+
+For the Rails controllers, run:
+
+```shell
+bundle exec rake routes
+```
+
+Since these take some time to create, it's often helpful to save the output to
+a file for quick reference.

@@ -13,9 +13,15 @@ import actions, {
   receiveJobsSuccess,
   fetchJobs,
   toggleStageCollapsed,
+  setDetailJob,
+  requestJobTrace,
+  receiveJobTraceError,
+  receiveJobTraceSuccess,
+  fetchJobTrace,
 } from '~/ide/stores/modules/pipelines/actions';
 import state from '~/ide/stores/modules/pipelines/state';
 import * as types from '~/ide/stores/modules/pipelines/mutation_types';
+import { rightSidebarViews } from '~/ide/constants';
 import testAction from '../../../../helpers/vuex_action_helper';
 import { pipelines, jobs } from '../../../mock_data';
 
@@ -279,6 +285,135 @@ describe('IDE pipelines actions', () => {
         [],
         done,
       );
+    });
+  });
+
+  describe('setDetailJob', () => {
+    it('commits job', done => {
+      testAction(
+        setDetailJob,
+        'job',
+        mockedState,
+        [{ type: types.SET_DETAIL_JOB, payload: 'job' }],
+        [{ type: 'setRightPane' }],
+        done,
+      );
+    });
+
+    it('dispatches setRightPane as pipeline when job is null', done => {
+      testAction(
+        setDetailJob,
+        null,
+        mockedState,
+        [{ type: types.SET_DETAIL_JOB }],
+        [{ type: 'setRightPane', payload: rightSidebarViews.pipelines }],
+        done,
+      );
+    });
+
+    it('dispatches setRightPane as job', done => {
+      testAction(
+        setDetailJob,
+        'job',
+        mockedState,
+        [{ type: types.SET_DETAIL_JOB }],
+        [{ type: 'setRightPane', payload: rightSidebarViews.jobsDetail }],
+        done,
+      );
+    });
+  });
+
+  describe('requestJobTrace', () => {
+    it('commits request', done => {
+      testAction(requestJobTrace, null, mockedState, [{ type: types.REQUEST_JOB_TRACE }], [], done);
+    });
+  });
+
+  describe('receiveJobTraceError', () => {
+    it('commits error', done => {
+      testAction(
+        receiveJobTraceError,
+        null,
+        mockedState,
+        [{ type: types.RECEIVE_JOB_TRACE_ERROR }],
+        [],
+        done,
+      );
+    });
+
+    it('creates flash message', () => {
+      const flashSpy = spyOnDependency(actions, 'flash');
+
+      receiveJobTraceError({ commit() {} });
+
+      expect(flashSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('receiveJobTraceSuccess', () => {
+    it('commits data', done => {
+      testAction(
+        receiveJobTraceSuccess,
+        'data',
+        mockedState,
+        [{ type: types.RECEIVE_JOB_TRACE_SUCCESS, payload: 'data' }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('fetchJobTrace', () => {
+    beforeEach(() => {
+      mockedState.detailJob = {
+        path: `${gl.TEST_HOST}/project/builds`,
+      };
+    });
+
+    describe('success', () => {
+      beforeEach(() => {
+        spyOn(axios, 'get').and.callThrough();
+        mock.onGet(`${gl.TEST_HOST}/project/builds/trace`).replyOnce(200, { html: 'html' });
+      });
+
+      it('dispatches request', done => {
+        testAction(
+          fetchJobTrace,
+          null,
+          mockedState,
+          [],
+          [
+            { type: 'requestJobTrace' },
+            { type: 'receiveJobTraceSuccess', payload: { html: 'html' } },
+          ],
+          done,
+        );
+      });
+
+      it('sends get request to correct URL', () => {
+        fetchJobTrace({ state: mockedState, dispatch() {} });
+
+        expect(axios.get).toHaveBeenCalledWith(`${gl.TEST_HOST}/project/builds/trace`, {
+          params: { format: 'json' },
+        });
+      });
+    });
+
+    describe('error', () => {
+      beforeEach(() => {
+        mock.onGet(`${gl.TEST_HOST}/project/builds/trace`).replyOnce(500);
+      });
+
+      it('dispatches error', done => {
+        testAction(
+          fetchJobTrace,
+          null,
+          mockedState,
+          [],
+          [{ type: 'requestJobTrace' }, { type: 'receiveJobTraceError' }],
+          done,
+        );
+      });
     });
   });
 });

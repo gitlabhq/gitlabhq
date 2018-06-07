@@ -23,4 +23,5 @@ export const viewerTypes = {
 
 export const rightSidebarViews = {
   pipelines: 'pipelines-list',
+  jobsDetail: 'jobs-detail',
 };

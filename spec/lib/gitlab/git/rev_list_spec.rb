@@ -9,9 +9,11 @@ describe Gitlab::Git::RevList do
   end
 
   def stub_popen_rev_list(*additional_args, with_lazy_block: true, output:)
+    repo_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access { repository.path }
+
     params = [
       args_for_popen(additional_args),
-      repository.path,
+      repo_path,
       {},
       hash_including(lazy_block: with_lazy_block ? anything : nil)
     ]
@@ -86,7 +88,7 @@ describe Gitlab::Git::RevList do
 
   context '#all_objects' do
     it 'fetches list of all pushed objects using rev-list' do
-      stub_popen_rev_list('--all', '--objects', output: "sha1\nsha2")
+      stub_popen_rev_list('--all', '--objects', '--filter=blob:limit=200', output: "sha1\nsha2")
 
       expect { |b| rev_list.all_objects(&b) }.to yield_with_args(%w[sha1 sha2])
     end

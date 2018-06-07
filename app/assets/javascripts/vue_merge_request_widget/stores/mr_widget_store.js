@@ -83,7 +83,7 @@ export default class MergeRequestStore {
     this.canBeMerged = data.can_be_merged || false;
     this.isMergeAllowed = data.mergeable || false;
     this.mergeOngoing = data.merge_ongoing;
-    this.maintainerEditAllowed = data.allow_maintainer_to_push;
+    this.allowCollaboration = data.allow_collaboration;
 
     // Cherry-pick and Revert actions related
     this.canCherryPickInCurrentMR = currentUser.can_cherry_pick_on_current_merge_request || false;

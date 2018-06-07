@@ -16,7 +16,11 @@ describe MergeRequest do
 
   describe '#squash_in_progress?' do
     shared_examples 'checking whether a squash is in progress' do
-      let(:repo_path) { subject.source_project.repository.path }
+      let(:repo_path) do
+        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          subject.source_project.repository.path
+        end
+      end
       let(:squash_path) { File.join(repo_path, "gitlab-worktree", "squash-#{subject.id}") }
 
       before do
@@ -84,6 +88,7 @@ describe MergeRequest do
     it_behaves_like 'AtomicInternalId' do
       let(:internal_id_attribute) { :iid }
       let(:instance) { build(:merge_request) }
+      let(:scope) { :target_project }
       let(:scope_attrs) { { project: instance.target_project } }
       let(:usage) { :merge_requests }
     end
@@ -2196,7 +2201,11 @@ describe MergeRequest do
 
   describe '#rebase_in_progress?' do
     shared_examples 'checking whether a rebase is in progress' do
-      let(:repo_path) { subject.source_project.repository.path }
+      let(:repo_path) do
+        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          subject.source_project.repository.path
+        end
+      end
       let(:rebase_path) { File.join(repo_path, "gitlab-worktree", "rebase-#{subject.id}") }
 
       before do
@@ -2236,25 +2245,25 @@ describe MergeRequest do
     end
   end
 
-  describe '#allow_maintainer_to_push' do
+  describe '#allow_collaboration' do
     let(:merge_request) do
-      build(:merge_request, source_branch: 'fixes', allow_maintainer_to_push: true)
+      build(:merge_request, source_branch: 'fixes', allow_collaboration: true)
     end
 
     it 'is false when pushing by a maintainer is not possible' do
-      expect(merge_request).to receive(:maintainer_push_possible?) { false }
+      expect(merge_request).to receive(:collaborative_push_possible?) { false }
 
-      expect(merge_request.allow_maintainer_to_push).to be_falsy
+      expect(merge_request.allow_collaboration).to be_falsy
     end
 
     it 'is true when pushing by a maintainer is possible' do
-      expect(merge_request).to receive(:maintainer_push_possible?) { true }
+      expect(merge_request).to receive(:collaborative_push_possible?) { true }
 
-      expect(merge_request.allow_maintainer_to_push).to be_truthy
+      expect(merge_request.allow_collaboration).to be_truthy
     end
   end
 
-  describe '#maintainer_push_possible?' do
+  describe '#collaborative_push_possible?' do
     let(:merge_request) do
       build(:merge_request, source_branch: 'fixes')
     end
@@ -2266,14 +2275,14 @@ describe MergeRequest do
     it 'does not allow maintainer to push if the source project is the same as the target' do
       merge_request.target_project = merge_request.source_project = create(:project, :public)
 
-      expect(merge_request.maintainer_push_possible?).to be_falsy
+      expect(merge_request.collaborative_push_possible?).to be_falsy
     end
 
     it 'allows maintainer to push when both source and target are public' do
       merge_request.target_project = build(:project, :public)
       merge_request.source_project = build(:project, :public)
 
-      expect(merge_request.maintainer_push_possible?).to be_truthy
+      expect(merge_request.collaborative_push_possible?).to be_truthy
     end
 
     it 'is not available for protected branches' do
@@ -2284,11 +2293,11 @@ describe MergeRequest do
                                    .with(merge_request.source_project, 'fixes')
                                    .and_return(true)
 
-      expect(merge_request.maintainer_push_possible?).to be_falsy
+      expect(merge_request.collaborative_push_possible?).to be_falsy
     end
   end
 
-  describe '#can_allow_maintainer_to_push?' do
+  describe '#can_allow_collaboration?' do
     let(:target_project) { create(:project, :public) }
     let(:source_project) { fork_project(target_project) }
     let(:merge_request) do
@@ -2300,17 +2309,17 @@ describe MergeRequest do
     let(:user) { create(:user) }
 
     before do
-      allow(merge_request).to receive(:maintainer_push_possible?) { true }
+      allow(merge_request).to receive(:collaborative_push_possible?) { true }
     end
 
     it 'is false if the user does not have push access to the source project' do
-      expect(merge_request.can_allow_maintainer_to_push?(user)).to be_falsy
+      expect(merge_request.can_allow_collaboration?(user)).to be_falsy
     end
 
     it 'is true when the user has push access to the source project' do
       source_project.add_developer(user)
 
-      expect(merge_request.can_allow_maintainer_to_push?(user)).to be_truthy
+      expect(merge_request.can_allow_collaboration?(user)).to be_truthy
     end
   end
 

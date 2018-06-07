@@ -42,6 +42,9 @@ export default {
     jobStarted() {
       return !this.job.started === false;
     },
+    headerTime() {
+      return this.jobStarted ? this.job.started : this.job.created_at;
+    },
   },
   watch: {
     job() {
@@ -73,7 +76,7 @@ export default {
         :status="status"
         item-name="Job"
         :item-id="job.id"
-        :time="job.created_at"
+        :time="headerTime"
         :user="job.user"
         :actions="actions"
         :has-sidebar-button="true"

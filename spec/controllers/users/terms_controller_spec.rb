@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Users::TermsController do
+  include TermsHelper
   let(:user) { create(:user) }
   let(:term) { create(:term) }
 
@@ -15,10 +16,25 @@ describe Users::TermsController do
       expect(response).to have_gitlab_http_status(:redirect)
     end
 
-    it 'shows terms when they exist' do
-      term
+    context 'when terms exist' do
+      before do
+        stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
+        term
+      end
 
-      expect(response).to have_gitlab_http_status(:success)
+      it 'shows terms when they exist' do
+        get :index
+
+        expect(response).to have_gitlab_http_status(:success)
+      end
+
+      it 'shows a message when the user already accepted the terms' do
+        accept_terms(user)
+
+        get :index
+
+        expect(controller).to set_flash.now[:notice].to(/already accepted/)
+      end
     end
   end
 

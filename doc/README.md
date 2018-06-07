@@ -162,7 +162,7 @@ configuration. Then customize everything from buildpacks to CI/CD.
 
 - [Auto DevOps](topics/autodevops/index.md)
 - [Deployment of Helm, Ingress, and Prometheus on Kubernetes](user/project/clusters/index.md#installing-applications)
-- [Protected secret variables](ci/variables/README.md#protected-secret-variables)
+- [Protected variables](ci/variables/README.md#protected-variables)
 - [Easy creation of Kubernetes clusters on GKE](user/project/clusters/index.md#adding-and-creating-a-new-gke-cluster-via-gitlab)
 
 ### Monitor
@@ -191,7 +191,7 @@ instant how code changes impact your production environment.
 - [User account](user/profile/index.md): Manage your account
   - [Authentication](topics/authentication/index.md): Account security with two-factor authentication, setup your ssh keys and deploy keys for secure access to your projects.
   - [Profile settings](user/profile/index.md#profile-settings): Manage your profile settings, two factor authentication and more.
-- [User permissions](user/permissions.md): Learn what each role in a project (external/guest/reporter/developer/master/owner) can do.
+- [User permissions](user/permissions.md): Learn what each role in a project (external/guest/reporter/developer/maintainer/owner) can do.
 
 ### Git and GitLab
 
@@ -215,7 +215,7 @@ Learn how to contribute to GitLab:
 
 - [Development](development/README.md): All styleguides and explanations how to contribute.
 - [Legal](legal/README.md): Contributor license agreements.
-- [Writing documentation](development/writing_documentation.md): Contributing to GitLab Docs.
+- [Writing documentation](development/documentation/index.md): Contributing to GitLab Docs.
 
 ## GitLab subscriptions
 

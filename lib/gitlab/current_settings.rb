@@ -24,7 +24,22 @@ module Gitlab
       private
 
       def ensure_application_settings!
+        cached_application_settings || uncached_application_settings
+      end
+
+      def cached_application_settings
         return in_memory_application_settings if ENV['IN_MEMORY_APPLICATION_SETTINGS'] == 'true'
+
+        begin
+          ::ApplicationSetting.cached
+        rescue
+          # In case Redis isn't running
+          # or the Redis UNIX socket file is not available
+          # or the DB is not running (we use migrations in the cache key)
+        end
+      end
+
+      def uncached_application_settings
         return fake_application_settings unless connect_to_db?
 
         current_settings = ::ApplicationSetting.current

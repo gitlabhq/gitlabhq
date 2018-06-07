@@ -37,7 +37,12 @@ class AddTrigramIndexesForSearching < ActiveRecord::Migration
     res = execute("SELECT true AS enabled FROM pg_available_extensions WHERE name = 'pg_trgm' AND installed_version IS NOT NULL;")
     row = res.first
 
-    row && row['enabled'] == 't' ? true : false
+    check = if Gitlab.rails5?
+              true
+            else
+              't'
+            end
+    row && row['enabled'] == check ? true : false
   end
 
   def create_trigrams_extension

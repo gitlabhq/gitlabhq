@@ -835,8 +835,7 @@ describe API::Internal do
   end
 
   def push(key, project, protocol = 'ssh', env: nil)
-    post(
-      api("/internal/allowed"),
+    params = {
       changes: 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master',
       key_id: key.id,
       project: project.full_path,
@@ -845,7 +844,19 @@ describe API::Internal do
       secret_token: secret_token,
       protocol: protocol,
       env: env
-    )
+    }
+
+    if Gitlab.rails5?
+      post(
+        api("/internal/allowed"),
+        params: params
+      )
+    else
+      post(
+        api("/internal/allowed"),
+        params
+      )
+    end
   end
 
   def archive(key, project)

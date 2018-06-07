@@ -48,6 +48,9 @@ export default {
     toggleCollapsed() {
       this.$emit('toggleCollapsed', this.stage.id);
     },
+    clickViewLog(job) {
+      this.$emit('clickViewLog', job);
+    },
   },
 };
 </script>
@@ -101,6 +104,7 @@ export default {
           v-for="job in stage.jobs"
           :key="job.id"
           :job="job"
+          @clickViewLog="clickViewLog"
         />
       </template>
     </div>

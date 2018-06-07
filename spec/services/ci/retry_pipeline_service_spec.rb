@@ -280,12 +280,12 @@ describe Ci::RetryPipelineService, '#execute' do
         source_project: forked_project,
         target_project: project,
         source_branch: 'fixes',
-        allow_maintainer_to_push: true)
+        allow_collaboration: true)
       create_build('rspec 1', :failed, 1)
     end
 
     it 'allows to retry failed pipeline' do
-      allow_any_instance_of(Project).to receive(:fetch_branch_allows_maintainer_push?).and_return(true)
+      allow_any_instance_of(Project).to receive(:fetch_branch_allows_collaboration?).and_return(true)
       allow_any_instance_of(Project).to receive(:empty_repo?).and_return(false)
 
       service.execute(pipeline)

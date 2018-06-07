@@ -1,0 +1,5 @@
+---
+title: Remove N+1 query for author in issues API
+merge_request:
+author:
+type: performance

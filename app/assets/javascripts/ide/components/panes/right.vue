@@ -4,6 +4,7 @@ import tooltip from '../../../vue_shared/directives/tooltip';
 import Icon from '../../../vue_shared/components/icon.vue';
 import { rightSidebarViews } from '../../constants';
 import PipelinesList from '../pipelines/list.vue';
+import JobsDetail from '../jobs/detail.vue';
 
 export default {
   directives: {
@@ -12,9 +13,16 @@ export default {
   components: {
     Icon,
     PipelinesList,
+    JobsDetail,
   },
   computed: {
     ...mapState(['rightPane']),
+    pipelinesActive() {
+      return (
+        this.rightPane === rightSidebarViews.pipelines ||
+        this.rightPane === rightSidebarViews.jobsDetail
+      );
+    },
   },
   methods: {
     ...mapActions(['setRightPane']),
@@ -48,7 +56,7 @@ export default {
             :title="__('Pipelines')"
             class="ide-sidebar-link is-right"
             :class="{
-              active: rightPane === $options.rightSidebarViews.pipelines
+              active: pipelinesActive
             }"
             type="button"
             @click="clickTab($event, $options.rightSidebarViews.pipelines)"

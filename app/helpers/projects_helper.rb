@@ -412,7 +412,10 @@ module ProjectsHelper
     exports_path = File.join(Settings.shared['path'], 'tmp/project_exports')
     filtered_message = message.strip.gsub(exports_path, "[REPO EXPORT PATH]")
 
-    disk_path = Gitlab.config.repositories.storages[project.repository_storage].legacy_disk_path
+    disk_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      Gitlab.config.repositories.storages[project.repository_storage].legacy_disk_path
+    end
+
     filtered_message.gsub(disk_path.chomp('/'), "[REPOS PATH]")
   end
 

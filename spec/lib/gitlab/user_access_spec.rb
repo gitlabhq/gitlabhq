@@ -142,7 +142,7 @@ describe Gitlab::UserAccess do
           target_project: canonical_project,
           source_project: project,
           source_branch: 'awesome-feature',
-          allow_maintainer_to_push: true
+          allow_collaboration: true
         )
       end
 

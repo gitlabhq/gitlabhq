@@ -13,8 +13,7 @@ export const getProjectData = ({ commit, state }, { namespace, projectId, force 
         .then(data => {
           commit(types.TOGGLE_LOADING, { entry: state });
           commit(types.SET_PROJECT, { projectPath: `${namespace}/${projectId}`, project: data });
-          if (!state.currentProjectId)
-            commit(types.SET_CURRENT_PROJECT, `${namespace}/${projectId}`);
+          commit(types.SET_CURRENT_PROJECT, `${namespace}/${projectId}`);
           resolve(data);
         })
         .catch(() => {

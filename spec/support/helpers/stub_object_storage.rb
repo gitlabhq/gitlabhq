@@ -45,4 +45,16 @@ module StubObjectStorage
                                  remote_directory: 'uploads',
                                  **params)
   end
+
+  def stub_object_storage_multipart_init(endpoint, upload_id = "upload_id")
+    stub_request(:post, %r{\A#{endpoint}tmp/uploads/[a-z0-9-]*\?uploads\z})
+      .to_return status: 200, body: <<-EOS.strip_heredoc
+        <?xml version="1.0" encoding="UTF-8"?>
+        <InitiateMultipartUploadResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+          <Bucket>example-bucket</Bucket>
+          <Key>example-object</Key>
+          <UploadId>#{upload_id}</UploadId>
+        </InitiateMultipartUploadResult>
+      EOS
+  end
 end

@@ -157,6 +157,12 @@ export default {
   [types.SET_LINKS](state, links) {
     Object.assign(state, { links });
   },
+  [types.CLEAR_PROJECTS](state) {
+    Object.assign(state, { projects: {}, trees: {} });
+  },
+  [types.RESET_OPEN_FILES](state) {
+    Object.assign(state, { openFiles: [] });
+  },
   ...projectMutations,
   ...mergeRequestMutation,
   ...fileMutations,

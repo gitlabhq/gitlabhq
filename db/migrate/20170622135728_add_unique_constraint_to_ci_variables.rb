@@ -2,12 +2,13 @@ class AddUniqueConstraintToCiVariables < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
+  INDEX_NAME = 'index_ci_variables_on_project_id_and_key_and_environment_scope'
 
   disable_ddl_transaction!
 
   def up
     unless this_index_exists?
-      add_concurrent_index(:ci_variables, columns, name: index_name, unique: true)
+      add_concurrent_index(:ci_variables, columns, name: INDEX_NAME, unique: true)
     end
   end
 
@@ -18,21 +19,17 @@ class AddUniqueConstraintToCiVariables < ActiveRecord::Migration
         add_concurrent_index(:ci_variables, :project_id)
       end
 
-      remove_concurrent_index(:ci_variables, columns, name: index_name)
+      remove_concurrent_index(:ci_variables, columns, name: INDEX_NAME)
     end
   end
 
   private
 
   def this_index_exists?
-    index_exists?(:ci_variables, columns, name: index_name)
+    index_exists?(:ci_variables, columns, name: INDEX_NAME)
   end
 
   def columns
     @columns ||= [:project_id, :key, :environment_scope]
-  end
-
-  def index_name
-    'index_ci_variables_on_project_id_and_key_and_environment_scope'
   end
 end

@@ -27,7 +27,7 @@ module Backup
           progress.puts "done".color(:green)
         else
           puts "creating archive #{tar_file} failed".color(:red)
-          abort 'Backup failed'
+          raise Backup::Error, 'Backup failed'
         end
 
         upload
@@ -52,7 +52,7 @@ module Backup
         progress.puts "done".color(:green)
       else
         puts "uploading backup to #{remote_directory} failed".color(:red)
-        abort 'Backup failed'
+        raise Backup::Error, 'Backup failed'
       end
     end
 
@@ -66,7 +66,7 @@ module Backup
           progress.puts "done".color(:green)
         else
           puts "deleting tmp directory '#{dir}' failed".color(:red)
-          abort 'Backup failed'
+          raise Backup::Error, 'Backup failed'
         end
       end
     end

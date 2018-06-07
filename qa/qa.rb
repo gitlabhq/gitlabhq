@@ -41,6 +41,7 @@ module QA
       autoload :SecretVariable, 'qa/factory/resource/secret_variable'
       autoload :Runner, 'qa/factory/resource/runner'
       autoload :PersonalAccessToken, 'qa/factory/resource/personal_access_token'
+      autoload :KubernetesCluster, 'qa/factory/resource/kubernetes_cluster'
     end
 
     module Repository
@@ -72,6 +73,7 @@ module QA
 
       module Integration
         autoload :LDAP, 'qa/scenario/test/integration/ldap'
+        autoload :Kubernetes, 'qa/scenario/test/integration/kubernetes'
         autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
       end
 
@@ -150,6 +152,15 @@ module QA
         autoload :Show, 'qa/page/project/issue/show'
         autoload :Index, 'qa/page/project/issue/index'
       end
+
+      module Operations
+        module Kubernetes
+          autoload :Index, 'qa/page/project/operations/kubernetes/index'
+          autoload :Add, 'qa/page/project/operations/kubernetes/add'
+          autoload :AddExisting, 'qa/page/project/operations/kubernetes/add_existing'
+          autoload :Show, 'qa/page/project/operations/kubernetes/show'
+        end
+      end
     end
 
     module Profile
@@ -195,6 +206,7 @@ module QA
   #
   module Service
     autoload :Shellout, 'qa/service/shellout'
+    autoload :KubernetesCluster, 'qa/service/kubernetes_cluster'
     autoload :Omnibus, 'qa/service/omnibus'
     autoload :Runner, 'qa/service/runner'
   end

@@ -17,7 +17,10 @@ module Backup
 
       Project.find_each(batch_size: 1000) do |project|
         progress.print " * #{display_repo_path(project)} ... "
-        path_to_project_repo = path_to_repo(project)
+
+        path_to_project_repo = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          path_to_repo(project)
+        end
         path_to_project_bundle = path_to_bundle(project)
 
         # Create namespace dir or hashed path if missing
@@ -51,7 +54,9 @@ module Backup
         end
 
         wiki = ProjectWiki.new(project)
-        path_to_wiki_repo = path_to_repo(wiki)
+        path_to_wiki_repo = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          path_to_repo(wiki)
+        end
         path_to_wiki_bundle = path_to_bundle(wiki)
 
         if File.exist?(path_to_wiki_repo)
@@ -111,7 +116,9 @@ module Backup
       # TODO: Need to find a way to do this for gitaly
       # Gitaly migration issue: https://gitlab.com/gitlab-org/gitaly/issues/1195
       in_path(path_to_tars(project)) do |dir|
-        path_to_project_repo = path_to_repo(project)
+        path_to_project_repo = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          path_to_repo(project)
+        end
         cmd = %W(tar -xf #{path_to_tars(project, dir)} -C #{path_to_project_repo} #{dir})
 
         output, status = Gitlab::Popen.popen(cmd)

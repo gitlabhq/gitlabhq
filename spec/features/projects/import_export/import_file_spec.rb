@@ -87,11 +87,13 @@ feature 'Import/Export - project import integration test', :js do
 
   def wiki_exists?(project)
     wiki = ProjectWiki.new(project)
-    File.exist?(wiki.repository.path_to_repo) && !wiki.repository.empty?
+    wiki.repository.exists? && !wiki.repository.empty?
   end
 
   def project_hook_exists?(project)
-    Gitlab::Git::Hook.new('post-receive', project.repository.raw_repository).exists?
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      Gitlab::Git::Hook.new('post-receive', project.repository.raw_repository).exists?
+    end
   end
 
   def click_import_project_tab

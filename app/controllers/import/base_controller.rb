@@ -25,4 +25,8 @@ class Import::BaseController < ApplicationController
 
     current_user.namespace
   end
+
+  def project_save_error(project)
+    project.errors.full_messages.join(', ')
+  end
 end

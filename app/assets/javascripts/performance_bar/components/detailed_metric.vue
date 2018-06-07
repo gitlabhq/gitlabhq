@@ -56,6 +56,7 @@ export default {
     <gl-modal
       :id="`modal-peek-${metric}-details`"
       :header-title-text="header"
+      modal-size="lg"
       class="performance-bar-modal"
     >
       <table
@@ -70,7 +71,7 @@ export default {
             <td
               v-for="key in keys"
               :key="key"
-              class="break-word"
+              class="break-word all-words"
             >
               {{ item[key] }}
             </td>

@@ -24,10 +24,10 @@ module QA::Page
         end
       end
 
-      def has_build?(name, status: :success)
+      def has_build?(name, status: :success, wait:)
         within('.pipeline-graph') do
           within('.ci-job-component', text: name) do
-            has_selector?(".ci-status-icon-#{status}")
+            has_selector?(".ci-status-icon-#{status}", wait: wait)
           end
         end
       end

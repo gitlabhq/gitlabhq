@@ -182,7 +182,7 @@ Assigning a team label makes sure issues get the attention of the appropriate
 people.
 
 The current team labels are ~Distribution, ~"CI/CD", ~Discussion, ~Documentation, ~Quality,
-~Geo, ~Gitaly, ~Monitoring, ~Platform, ~Release, ~"Security Products" and ~"UX".
+~Geo, ~Gitaly, ~Monitoring, ~Platform, ~Release, ~"Security Products", ~"Configuration", and ~"UX".
 
 The descriptions on the [labels page][labels-page] explain what falls under the
 responsibility of each team.
@@ -349,7 +349,7 @@ on those issues. Please select someone with relevant experience from the
 [GitLab team][team]. If there is nobody mentioned with that expertise look in
 the commit history for the affected files to find someone.
 
-[described in our handbook]: https://about.gitlab.com/handbook/engineering/issues/issue-triage-policies/
+[described in our handbook]: https://about.gitlab.com/handbook/engineering/issue-triage/
 [issue bash events]: https://gitlab.com/gitlab-org/gitlab-ce/issues/17815
 
 ### Feature proposals
@@ -512,7 +512,7 @@ request is as follows:
 1. Write [tests](https://docs.gitlab.com/ee/development/rake_tasks.html#run-tests) and code
 1. [Generate a changelog entry with `bin/changelog`][changelog]
 1. If you are writing documentation, make sure to follow the
-   [documentation styleguide][doc-styleguide]
+   [documentation guidelines][doc-guidelines]
 1. If you have multiple commits please combine them into a few logically
   organized commits by [squashing them][git-squash]
 1. Push the commit(s) to your fork
@@ -727,7 +727,7 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [rss-source]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#source-code-layout
 [rss-naming]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#naming
 [changelog]: doc/development/changelog.md "Generate a changelog entry"
-[doc-styleguide]: doc/development/doc_styleguide.md "Documentation styleguide"
+[doc-guidelines]: doc/development/documentation/index.md "Documentation guidelines"
 [js-styleguide]: doc/development/fe_guide/style_guide_js.md "JavaScript styleguide"
 [scss-styleguide]: doc/development/fe_guide/style_guide_scss.md "SCSS styleguide"
 [newlines-styleguide]: doc/development/newlines_styleguide.md "Newlines styleguide"
