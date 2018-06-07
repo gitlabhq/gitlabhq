@@ -1,6 +1,5 @@
-/* global monaco */
-import monacoLoader from '~/ide/monaco_loader';
-import editor from '~/ide/lib/editor';
+import * as monaco from 'monaco-editor';
+import Editor from '~/ide/lib/editor';
 import ModelManager from '~/ide/lib/common/model_manager';
 import DecorationsController from '~/ide/lib/decorations/controller';
 import DirtyDiffController, { getDiffChangeType, getDecorator } from '~/ide/lib/diff/controller';
@@ -14,20 +13,16 @@ describe('Multi-file editor library dirty diff controller', () => {
   let decorationsController;
   let model;
 
-  beforeEach(done => {
-    monacoLoader(['vs/editor/editor.main'], () => {
-      editorInstance = editor.create(monaco);
-      editorInstance.createInstance(document.createElement('div'));
+  beforeEach(() => {
+    editorInstance = Editor.create();
+    editorInstance.createInstance(document.createElement('div'));
 
-      modelManager = new ModelManager(monaco);
-      decorationsController = new DecorationsController(editorInstance);
+    modelManager = new ModelManager(monaco);
+    decorationsController = new DecorationsController(editorInstance);
 
-      model = modelManager.addModel(file('path'));
+    model = modelManager.addModel(file('path'));
 
-      controller = new DirtyDiffController(modelManager, decorationsController);
-
-      done();
-    });
+    controller = new DirtyDiffController(modelManager, decorationsController);
   });
 
   afterEach(() => {

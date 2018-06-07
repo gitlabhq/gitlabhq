@@ -1,6 +1,4 @@
-/* global monaco */
-import monacoLoader from '~/ide/monaco_loader';
-import editor from '~/ide/lib/editor';
+import Editor from '~/ide/lib/editor';
 import { file } from '../helpers';
 
 describe('Multi-file editor library', () => {
@@ -8,18 +6,14 @@ describe('Multi-file editor library', () => {
   let el;
   let holder;
 
-  beforeEach(done => {
+  beforeEach(() => {
     el = document.createElement('div');
     holder = document.createElement('div');
     el.appendChild(holder);
 
     document.body.appendChild(el);
 
-    monacoLoader(['vs/editor/editor.main'], () => {
-      instance = editor.create(monaco);
-
-      done();
-    });
+    instance = Editor.create();
   });
 
   afterEach(() => {
@@ -29,11 +23,11 @@ describe('Multi-file editor library', () => {
   });
 
   it('creates instance of editor', () => {
-    expect(editor.editorInstance).not.toBeNull();
+    expect(Editor.editorInstance).not.toBeNull();
   });
 
   it('creates instance returns cached instance', () => {
-    expect(editor.create(monaco)).toEqual(instance);
+    expect(Editor.create()).toEqual(instance);
   });
 
   describe('createInstance', () => {

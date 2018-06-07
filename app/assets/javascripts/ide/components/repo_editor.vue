@@ -1,6 +1,5 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
-import * as monaco from 'monaco-editor';
 import flash from '~/flash';
 import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer.vue';
 import { activityBarViews, viewerTypes } from '../constants';
@@ -83,12 +82,10 @@ export default {
     this.editor.dispose();
   },
   mounted() {
-    if (this.editor && monaco) {
-      this.initMonaco();
-    } else {
-      this.editor = Editor.create(monaco);
-      this.initMonaco();
+    if (!this.editor) {
+      this.editor = Editor.create();
     }
+    this.initMonaco();
   },
   methods: {
     ...mapActions([

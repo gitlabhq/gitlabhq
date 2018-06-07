@@ -1,4 +1,5 @@
 import _ from 'underscore';
+import * as monaco from 'monaco-editor';
 import store from '../stores';
 import DecorationsController from './decorations/controller';
 import DirtyDiffController from './diff/controller';
@@ -17,15 +18,14 @@ export const clearDomElement = el => {
 };
 
 export default class Editor {
-  static create(monaco) {
-    if (this.editorInstance) return this.editorInstance;
-
-    this.editorInstance = new Editor(monaco);
-
+  static create() {
+    if (!this.editorInstance) {
+      this.editorInstance = new Editor();
+    }
     return this.editorInstance;
   }
 
-  constructor(monaco) {
+  constructor() {
     this.monaco = monaco;
     this.currentModel = null;
     this.instance = null;
