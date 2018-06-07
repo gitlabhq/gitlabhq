@@ -62,7 +62,7 @@ export const getDiscussionLastNote = state => discussion =>
   reverseNotes(discussion.notes).find(el => isLastNote(el, state));
 
 export const discussionCount = state => {
-  const filteredDiscussions = state.discussions.filter(n => !n.individual_note);
+  const filteredDiscussions = state.discussions.filter(n => !n.individual_note && n.resolvable);
 
   return filteredDiscussions.length;
 };
