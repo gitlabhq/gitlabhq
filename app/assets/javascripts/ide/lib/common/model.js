@@ -13,12 +13,12 @@ export default class Model {
       (this.originalModel = this.monaco.editor.createModel(
         head ? head.content : this.file.raw,
         undefined,
-        new this.monaco.Uri(null, null, `original/${this.path}`),
+        new this.monaco.Uri(false, false, `original/${this.path}`),
       )),
       (this.model = this.monaco.editor.createModel(
         this.content,
         undefined,
-        new this.monaco.Uri(null, null, this.path),
+        new this.monaco.Uri(false, false, this.path),
       )),
     );
     if (this.file.mrChange) {
@@ -26,7 +26,7 @@ export default class Model {
         (this.baseModel = this.monaco.editor.createModel(
           this.file.baseRaw,
           undefined,
-          new this.monaco.Uri(null, null, `target/${this.path}`),
+          new this.monaco.Uri(false, false, `target/${this.path}`),
         )),
       );
     }
