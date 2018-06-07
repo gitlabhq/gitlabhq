@@ -270,6 +270,17 @@ export const totalDaysInMonth = date => {
 };
 
 /**
+ * Returns number of days in a quarter from provided
+ * months array.
+ *
+ * @param {Array} quarter
+ */
+export const totalDaysInQuarter = quarter => quarter.reduce(
+  (acc, month) => acc + totalDaysInMonth(month),
+  0,
+);
+
+/**
  * Returns list of Dates referring to Sundays of the month
  * based on provided date
  *
@@ -309,48 +320,56 @@ export const getSundays = date => {
 };
 
 /**
- * Returns list of Dates representing a timeframe of Months from month of provided date (inclusive)
- * up to provided length
+ * Returns list of Dates representing a timeframe of months from startDate and length
  *
- * For eg;
- *    If current month is January 2018 and `length` provided is `6`
- *    Then this method will return list of Date objects as follows;
- *
- *    [ October 2017, November 2017, December 2017, January 2018, February 2018, March 2018 ]
- *
- *    If current month is March 2018 and `length` provided is `3`
- *    Then this method will return list of Date objects as follows;
- *
- *    [ February 2018, March 2018, April 2018 ]
- *
+ * @param {Date} startDate
  * @param {Number} length
- * @param {Date} date
  */
-export const getTimeframeWindow = (length, date) => {
-  if (!length) {
+export const getTimeframeWindowFrom = (startDate, length) => {
+  if (!(startDate instanceof Date) || !length) {
     return [];
   }
 
-  const currentDate = date instanceof Date ? date : new Date();
-  const currentMonthIndex = Math.floor(length / 2);
-  const timeframe = [];
-
-  // Move date object backward to the first month of timeframe
-  currentDate.setDate(1);
-  currentDate.setMonth(currentDate.getMonth() - currentMonthIndex);
-
-  // Iterate and update date for the size of length
+  // Iterate and set date for the size of length
   // and push date reference to timeframe list
-  for (let i = 0; i < length; i += 1) {
-    timeframe.push(new Date(currentDate.getTime()));
-    currentDate.setMonth(currentDate.getMonth() + 1);
-  }
+  const timeframe = new Array(length)
+                      .fill()
+                      .map(
+                        (val, i) => new Date(
+                          startDate.getFullYear(),
+                          startDate.getMonth() + i,
+                          1,
+                        ),
+                      );
 
   // Change date of last timeframe item to last date of the month
   timeframe[length - 1].setDate(totalDaysInMonth(timeframe[length - 1]));
 
   return timeframe;
 };
+
+/**
+ * Returns count of day within current quarter from provided date
+ * and array of months for the quarter
+ *
+ * Eg;
+ *   If date is 15 Feb 2018
+ *   and quarter is [Jan, Feb, Mar]
+ *
+ *   Then 15th Feb is 46th day of the quarter
+ *   Where 31 (days in Jan) + 15 (date of Feb).
+ *
+ * @param {Date} date
+ * @param {Array} quarter
+ */
+export const dayInQuarter = (date, quarter) => quarter.reduce((acc, month) => {
+  if (date.getMonth() > month.getMonth()) {
+    return acc + totalDaysInMonth(month);
+  } else if (date.getMonth() === month.getMonth()) {
+    return acc + date.getDate();
+  }
+  return acc + 0;
+}, 0);
 
 window.gl = window.gl || {};
 window.gl.utils = {
