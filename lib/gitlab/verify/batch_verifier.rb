@@ -7,6 +7,8 @@ module Gitlab
         @batch_size = batch_size
         @start = start
         @finish = finish
+
+        fix_google_api_logger
       end
 
       # Yields a Range of IDs and a Hash of failed verifications (object => error)
@@ -56,6 +58,14 @@ module Gitlab
       # We don't calculate checksum for remote objects, so just check existence
       def verify_remote(object)
         raise 'Remote object does not exist' unless remote_object_exists?(object)
+      end
+
+      # It's already set to Logger::INFO, but acts as if it is set to
+      # Logger::DEBUG, and this fixes it...
+      def fix_google_api_logger
+        if Object.const_defined?('Google::Apis')
+          Google::Apis.logger.level = Logger::INFO
+        end
       end
 
       # This should return an ActiveRecord::Relation suitable for calling #in_batches on
