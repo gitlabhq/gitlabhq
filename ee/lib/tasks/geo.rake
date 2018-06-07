@@ -266,7 +266,8 @@ namespace :geo do
       if cursor_last_event_id
         print cursor_last_event_id
         last_cursor_event_date = Geo::EventLog.find_by(id: cursor_last_event_id)&.created_at
-        puts " (#{time_ago_in_words(last_cursor_event_date)} ago)" if last_cursor_event_date
+        print " (#{time_ago_in_words(last_cursor_event_date)} ago)" if last_cursor_event_date
+        puts
       else
         puts 'N/A'
       end
