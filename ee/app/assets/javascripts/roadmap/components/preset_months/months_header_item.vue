@@ -1,11 +1,11 @@
 <script>
   import { monthInWords } from '~/lib/utils/datetime_utility';
 
-  import timelineHeaderSubItem from './timeline_header_sub_item.vue';
+  import MonthsHeaderSubItem from './months_header_sub_item.vue';
 
   export default {
     components: {
-      timelineHeaderSubItem,
+      MonthsHeaderSubItem,
     },
     props: {
       timeframeIndex: {
@@ -27,6 +27,8 @@
     },
     data() {
       const currentDate = new Date();
+      currentDate.setHours(0, 0, 0, 0);
+
       return {
         currentDate,
         currentYear: currentDate.getFullYear(),
@@ -93,7 +95,7 @@
     >
       {{ timelineHeaderLabel }}
     </div>
-    <timeline-header-sub-item
+    <months-header-sub-item
       :timeframe-item="timeframeItem"
       :current-date="currentDate"
     />

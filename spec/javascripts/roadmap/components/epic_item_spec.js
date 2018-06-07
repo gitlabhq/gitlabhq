@@ -2,12 +2,15 @@ import Vue from 'vue';
 
 import epicItemComponent from 'ee/roadmap/components/epic_item.vue';
 
+import { PRESET_TYPES } from 'ee/roadmap/constants';
+
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { mockTimeframe, mockEpic, mockGroupId, mockShellWidth, mockItemWidth } from '../mock_data';
+import { mockTimeframeMonths, mockEpic, mockGroupId, mockShellWidth, mockItemWidth } from '../mock_data';
 
 const createComponent = ({
+  presetType = PRESET_TYPES.MONTHS,
   epic = mockEpic,
-  timeframe = mockTimeframe,
+  timeframe = mockTimeframeMonths,
   currentGroupId = mockGroupId,
   shellWidth = mockShellWidth,
   itemWidth = mockItemWidth,
@@ -15,6 +18,7 @@ const createComponent = ({
   const Component = Vue.extend(epicItemComponent);
 
   return mountComponent(Component, {
+    presetType,
     epic,
     timeframe,
     currentGroupId,

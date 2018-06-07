@@ -1,15 +1,15 @@
 import Vue from 'vue';
 
-import timelineHeaderSubItemComponent from 'ee/roadmap/components/timeline_header_sub_item.vue';
+import MonthsHeaderSubItemComponent from 'ee/roadmap/components/preset_months/months_header_sub_item.vue';
 
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { mockTimeframe } from '../mock_data';
+import { mockTimeframeMonths } from '../../mock_data';
 
 const createComponent = ({
-  currentDate = mockTimeframe[0],
-  timeframeItem = mockTimeframe[0],
+  currentDate = mockTimeframeMonths[0],
+  timeframeItem = mockTimeframeMonths[0],
 }) => {
-  const Component = Vue.extend(timelineHeaderSubItemComponent);
+  const Component = Vue.extend(MonthsHeaderSubItemComponent);
 
   return mountComponent(Component, {
     currentDate,
@@ -17,7 +17,7 @@ const createComponent = ({
   });
 };
 
-describe('TimelineHeaderSubItemComponent', () => {
+describe('MonthsHeaderSubItemComponent', () => {
   let vm;
 
   afterEach(() => {
@@ -29,6 +29,9 @@ describe('TimelineHeaderSubItemComponent', () => {
       it('returns array of dates containing Sundays from timeframeItem', () => {
         vm = createComponent({});
         expect(Array.isArray(vm.headerSubItems)).toBe(true);
+        vm.headerSubItems.forEach(subItem => {
+          expect(subItem instanceof Date).toBe(true);
+        });
       });
     });
 
@@ -65,20 +68,12 @@ describe('TimelineHeaderSubItemComponent', () => {
 
   describe('methods', () => {
     describe('getSubItemValueClass', () => {
-      it('returns empty string when provided subItem is greater than current date', () => {
+      it('returns string containing `label-dark` when provided subItem is greater than current date', () => {
         vm = createComponent({
           currentDate: new Date(2018, 0, 1), // Jan 1, 2018
         });
         const subItem = new Date(2018, 0, 15); // Jan 15, 2018
-        expect(vm.getSubItemValueClass(subItem)).toBe('');
-      });
-
-      it('returns string containing `value-light` when provided subItem is less than current date', () => {
-        vm = createComponent({
-          currentDate: new Date(2018, 0, 15), // Jan 15, 2018
-        });
-        const subItem = new Date(2018, 0, 1); // Jan 1, 2018
-        expect(vm.getSubItemValueClass(subItem)).toBe('value-light');
+        expect(vm.getSubItemValueClass(subItem)).toBe('label-dark');
       });
     });
   });

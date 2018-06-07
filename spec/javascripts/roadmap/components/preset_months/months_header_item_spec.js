@@ -1,20 +1,20 @@
 import Vue from 'vue';
 
-import timelineHeaderItemComponent from 'ee/roadmap/components/timeline_header_item.vue';
+import MonthsHeaderItemComponent from 'ee/roadmap/components/preset_months/months_header_item.vue';
 
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { mockTimeframe, mockShellWidth, mockItemWidth } from '../mock_data';
+import { mockTimeframeMonths, mockShellWidth, mockItemWidth } from '../../mock_data';
 
 const mockTimeframeIndex = 0;
 
 const createComponent = ({
   timeframeIndex = mockTimeframeIndex,
-  timeframeItem = mockTimeframe[mockTimeframeIndex],
-  timeframe = mockTimeframe,
+  timeframeItem = mockTimeframeMonths[mockTimeframeIndex],
+  timeframe = mockTimeframeMonths,
   shellWidth = mockShellWidth,
   itemWidth = mockItemWidth,
 }) => {
-  const Component = Vue.extend(timelineHeaderItemComponent);
+  const Component = Vue.extend(MonthsHeaderItemComponent);
 
   return mountComponent(Component, {
     timeframeIndex,
@@ -25,7 +25,7 @@ const createComponent = ({
   });
 };
 
-describe('TimelineHeaderItemComponent', () => {
+describe('MonthsHeaderItemComponent', () => {
   let vm;
 
   afterEach(() => {
@@ -53,15 +53,15 @@ describe('TimelineHeaderItemComponent', () => {
     describe('timelineHeaderLabel', () => {
       it('returns string containing Year and Month for current timeline header item', () => {
         vm = createComponent({});
-        expect(vm.timelineHeaderLabel).toBe('2017 Nov');
+        expect(vm.timelineHeaderLabel).toBe('2017 Dec');
       });
 
       it('returns string containing only Month for current timeline header item when previous header contained Year', () => {
         vm = createComponent({
           timeframeIndex: mockTimeframeIndex + 1,
-          timeframeItem: mockTimeframe[mockTimeframeIndex + 1],
+          timeframeItem: mockTimeframeMonths[mockTimeframeIndex + 1],
         });
-        expect(vm.timelineHeaderLabel).toBe('Dec');
+        expect(vm.timelineHeaderLabel).toBe('2018 Jan');
       });
     });
 
@@ -81,8 +81,8 @@ describe('TimelineHeaderItemComponent', () => {
       it('returns string containing `label-dark` when current year and month is less than timeframeItem year and month', () => {
         const timeframeIndex = 2;
         const timeframeItem = new Date(
-          mockTimeframe[timeframeIndex].getFullYear(),
-          mockTimeframe[timeframeIndex].getMonth() + 2,
+          mockTimeframeMonths[timeframeIndex].getFullYear(),
+          mockTimeframeMonths[timeframeIndex].getMonth() + 2,
           1,
         );
         vm = createComponent({
@@ -90,8 +90,8 @@ describe('TimelineHeaderItemComponent', () => {
           timeframeItem,
         });
 
-        vm.currentYear = mockTimeframe[timeframeIndex].getFullYear();
-        vm.currentMonth = mockTimeframe[timeframeIndex].getMonth() + 1;
+        vm.currentYear = mockTimeframeMonths[timeframeIndex].getFullYear();
+        vm.currentMonth = mockTimeframeMonths[timeframeIndex].getMonth() + 1;
         expect(vm.timelineHeaderClass).toBe('label-dark');
       });
     });
@@ -109,7 +109,7 @@ describe('TimelineHeaderItemComponent', () => {
     it('renders item label element class `item-label` and value as `timelineHeaderLabel`', () => {
       const itemLabelEl = vm.$el.querySelector('.item-label');
       expect(itemLabelEl).not.toBeNull();
-      expect(itemLabelEl.innerText.trim()).toBe('2017 Nov');
+      expect(itemLabelEl.innerText.trim()).toBe('2017 Dec');
     });
   });
 });

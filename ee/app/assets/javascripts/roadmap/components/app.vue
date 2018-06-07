@@ -22,6 +22,10 @@
         type: Object,
         required: true,
       },
+      presetType: {
+        type: String,
+        required: true,
+      },
       hasFiltersApplied: {
         type: Boolean,
         required: true,
@@ -129,12 +133,14 @@
     />
     <roadmap-shell
       v-if="showRoadmap"
+      :preset-type="presetType"
       :epics="epics"
       :timeframe="timeframe"
       :current-group-id="currentGroupId"
     />
     <epics-list-empty
       v-if="isEpicsListEmpty"
+      :preset-type="presetType"
       :timeframe-start="timeframeStart"
       :timeframe-end="timeframeEnd"
       :has-filters-applied="hasFiltersApplied"

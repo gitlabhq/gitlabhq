@@ -2,15 +2,29 @@ import Vue from 'vue';
 
 import epicsListEmptyComponent from 'ee/roadmap/components/epics_list_empty.vue';
 
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { mockTimeframe, mockSvgPath, mockNewEpicEndpoint } from '../mock_data';
+import { PRESET_TYPES } from 'ee/roadmap/constants';
 
-const createComponent = (hasFiltersApplied = false) => {
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import {
+  mockTimeframeQuarters,
+  mockTimeframeMonths,
+  mockTimeframeWeeks,
+  mockSvgPath,
+  mockNewEpicEndpoint,
+} from '../mock_data';
+
+const createComponent = ({
+  hasFiltersApplied = false,
+  presetType = PRESET_TYPES.MONTHS,
+  timeframeStart = mockTimeframeMonths[0],
+  timeframeEnd = mockTimeframeMonths[mockTimeframeMonths.length - 1],
+}) => {
   const Component = Vue.extend(epicsListEmptyComponent);
 
   return mountComponent(Component, {
-    timeframeStart: mockTimeframe[0],
-    timeframeEnd: mockTimeframe[mockTimeframe.length - 1],
+    presetType,
+    timeframeStart,
+    timeframeEnd,
     emptyStateIllustrationPath: mockSvgPath,
     newEpicEndpoint: mockNewEpicEndpoint,
     hasFiltersApplied,
@@ -21,7 +35,7 @@ describe('EpicsListEmptyComponent', () => {
   let vm;
 
   beforeEach(() => {
-    vm = createComponent();
+    vm = createComponent({});
   });
 
   afterEach(() => {
@@ -46,25 +60,93 @@ describe('EpicsListEmptyComponent', () => {
     });
 
     describe('subMessage', () => {
-      it('returns default empty state sub-message', () => {
-        expect(vm.subMessage).toBe('To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. Only epics in the past 3 months and the next 3 months are shown &ndash; from Nov 1, 2017 to Apr 30, 2018.');
+      describe('with presetType `QUARTERS`', () => {
+        beforeEach(() => {
+          vm.presetType = PRESET_TYPES.QUARTERS;
+          vm.timeframeStart = mockTimeframeQuarters[0];
+          vm.timeframeEnd = mockTimeframeQuarters[mockTimeframeQuarters.length - 1];
+        });
+
+        it('returns default empty state sub-message when `hasFiltersApplied` props is false', done => {
+          Vue.nextTick()
+            .then(() => {
+              expect(vm.subMessage).toBe('To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. In the quarters view, only epics in the past quarter, current quarter, and next 4 quarters are shown &ndash; from Oct 1, 2017 to Mar 31, 2019.');
+            })
+            .then(done)
+            .catch(done.fail);
+        });
+
+        it('returns empty state sub-message when `hasFiltersApplied` prop is true', done => {
+          vm.hasFiltersApplied = true;
+          Vue.nextTick()
+            .then(() => {
+              expect(vm.subMessage).toBe('To widen your search, change or remove filters. In the quarters view, only epics in the past quarter, current quarter, and next 4 quarters are shown &ndash; from Oct 1, 2017 to Mar 31, 2019.');
+            })
+            .then(done)
+            .catch(done.fail);
+        });
       });
 
-      it('returns empty state sub-message when `hasFiltersApplied` prop is true', done => {
-        vm.hasFiltersApplied = true;
-        Vue.nextTick()
-          .then(() => {
-            expect(vm.subMessage).toBe('To widen your search, change or remove filters. Only epics in the past 3 months and the next 3 months are shown &ndash; from Nov 1, 2017 to Apr 30, 2018.');
-          })
-          .then(done)
-          .catch(done.fail);
+      describe('with presetType `MONTHS`', () => {
+        beforeEach(() => {
+          vm.presetType = PRESET_TYPES.MONTHS;
+        });
+
+        it('returns default empty state sub-message when `hasFiltersApplied` props is false', done => {
+          Vue.nextTick()
+            .then(() => {
+              expect(vm.subMessage).toBe('To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. In the months view, only epics in the past month, current month, and next 5 months are shown &ndash; from Dec 1, 2017 to Jun 30, 2018.');
+            })
+            .then(done)
+            .catch(done.fail);
+        });
+
+        it('returns empty state sub-message when `hasFiltersApplied` prop is true', done => {
+          vm.hasFiltersApplied = true;
+          Vue.nextTick()
+            .then(() => {
+              expect(vm.subMessage).toBe('To widen your search, change or remove filters. In the months view, only epics in the past month, current month, and next 5 months are shown &ndash; from Dec 1, 2017 to Jun 30, 2018.');
+            })
+            .then(done)
+            .catch(done.fail);
+        });
+      });
+
+      describe('with presetType `WEEKS`', () => {
+        beforeEach(() => {
+          const timeframeEnd = mockTimeframeWeeks[mockTimeframeWeeks.length - 1];
+          timeframeEnd.setDate(timeframeEnd.getDate() + 6);
+
+          vm.presetType = PRESET_TYPES.WEEKS;
+          vm.timeframeStart = mockTimeframeWeeks[0];
+          vm.timeframeEnd = timeframeEnd;
+        });
+
+        it('returns default empty state sub-message when `hasFiltersApplied` props is false', done => {
+          Vue.nextTick()
+            .then(() => {
+              expect(vm.subMessage).toBe('To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. In the weeks view, only epics in the past week, current week, and next 4 weeks are shown &ndash; from Dec 24, 2017 to Feb 9, 2018.');
+            })
+            .then(done)
+            .catch(done.fail);
+        });
+
+        it('returns empty state sub-message when `hasFiltersApplied` prop is true', done => {
+          vm.hasFiltersApplied = true;
+          Vue.nextTick()
+            .then(() => {
+              expect(vm.subMessage).toBe('To widen your search, change or remove filters. In the weeks view, only epics in the past week, current week, and next 4 weeks are shown &ndash; from Dec 24, 2017 to Feb 15, 2018.');
+            })
+            .then(done)
+            .catch(done.fail);
+        });
       });
     });
 
     describe('timeframeRange', () => {
       it('returns correct timeframe startDate and endDate in words', () => {
-        expect(vm.timeframeRange.startDate).toBe('Nov 1, 2017');
-        expect(vm.timeframeRange.endDate).toBe('Apr 30, 2018');
+        expect(vm.timeframeRange.startDate).toBe('Dec 1, 2017');
+        expect(vm.timeframeRange.endDate).toBe('Jun 30, 2018');
       });
     });
   });

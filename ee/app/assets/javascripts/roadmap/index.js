@@ -3,9 +3,11 @@ import Vue from 'vue';
 import Translate from '~/vue_shared/translate';
 
 import { convertPermissionToBoolean } from '~/lib/utils/common_utils';
-import { getTimeframeWindow } from '~/lib/utils/datetime_utility';
+import { visitUrl, mergeUrlParams } from '~/lib/utils/url_utility';
 
-import { TIMEFRAME_LENGTH } from './constants';
+import { PRESET_TYPES } from './constants';
+
+import { getTimeframeForPreset, getEpicsPathForPreset } from './utils/roadmap_utils';
 
 import RoadmapStore from './store/roadmap_store';
 import RoadmapService from './service/roadmap_service';
@@ -16,9 +18,20 @@ Vue.use(Translate);
 
 export default () => {
   const el = document.getElementById('js-roadmap');
+  const presetButtonsContainer = document.querySelector('.js-btn-roadmap-presets');
 
   if (!el) {
     return false;
+  }
+
+  // This event handler is to be removed in 11.1 once
+  // we allow user to save selected preset in db
+  if (presetButtonsContainer) {
+    presetButtonsContainer.addEventListener('click', e => {
+      const presetType = e.target.querySelector('input[name="presetType"]').value;
+
+      visitUrl(mergeUrlParams({ layout: presetType }, location.href));
+    });
   }
 
   return new Vue({
@@ -27,30 +40,29 @@ export default () => {
       roadmapApp,
     },
     data() {
+      const supportedPresetTypes = Object.keys(PRESET_TYPES);
       const dataset = this.$options.el.dataset;
       const hasFiltersApplied = convertPermissionToBoolean(dataset.hasFiltersApplied);
+      const presetType =
+        supportedPresetTypes.indexOf(dataset.presetType) > -1
+          ? dataset.presetType
+          : PRESET_TYPES.MONTHS;
       const filterQueryString = window.location.search.substring(1);
+      const timeframe = getTimeframeForPreset(presetType);
+      const epicsPath = getEpicsPathForPreset({
+        basePath: dataset.epicsPath,
+        filterQueryString,
+        presetType,
+        timeframe,
+      });
 
-      // Construct Epic API path to include
-      // `start_date` & `end_date` query params to get list of
-      // epics only for current timeframe.
-      const timeframe = getTimeframeWindow(TIMEFRAME_LENGTH);
-      const start = timeframe[0];
-      const end = timeframe[TIMEFRAME_LENGTH - 1];
-      const startDate = `${start.getFullYear()}-${start.getMonth() + 1}-${start.getDate()}`;
-      const endDate = `${end.getFullYear()}-${end.getMonth() + 1}-${end.getDate()}`;
-      let epicsPath = `${dataset.epicsPath}?start_date=${startDate}&end_date=${endDate}`;
-
-      if (filterQueryString) {
-        epicsPath += `&${filterQueryString}`;
-      }
-
-      const store = new RoadmapStore(parseInt(dataset.groupId, 0), timeframe);
+      const store = new RoadmapStore(parseInt(dataset.groupId, 0), timeframe, presetType);
       const service = new RoadmapService(epicsPath);
 
       return {
         store,
         service,
+        presetType,
         hasFiltersApplied,
         newEpicEndpoint: dataset.newEpicEndpoint,
         emptyStateIllustrationPath: dataset.emptyStateIllustration,
@@ -61,6 +73,7 @@ export default () => {
         props: {
           store: this.store,
           service: this.service,
+          presetType: this.presetType,
           hasFiltersApplied: this.hasFiltersApplied,
           newEpicEndpoint: this.newEpicEndpoint,
           emptyStateIllustrationPath: this.emptyStateIllustrationPath,

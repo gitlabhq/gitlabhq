@@ -2,18 +2,22 @@ import Vue from 'vue';
 
 import roadmapTimelineSectionComponent from 'ee/roadmap/components/roadmap_timeline_section.vue';
 
+import { PRESET_TYPES } from 'ee/roadmap/constants';
+
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { mockEpic, mockTimeframe, mockShellWidth, mockScrollBarSize } from '../mock_data';
+import { mockEpic, mockTimeframeMonths, mockShellWidth, mockScrollBarSize } from '../mock_data';
 
 const createComponent = ({
+  presetType = PRESET_TYPES.MONTHS,
   epics = [mockEpic],
-  timeframe = mockTimeframe,
+  timeframe = mockTimeframeMonths,
   shellWidth = mockShellWidth,
   listScrollable = false,
 }) => {
   const Component = Vue.extend(roadmapTimelineSectionComponent);
 
   return mountComponent(Component, {
+    presetType,
     epics,
     timeframe,
     shellWidth,
@@ -47,7 +51,7 @@ describe('SectionMixin', () => {
 
     describe('sectionItemWidth', () => {
       it('returns calculated item width based on sectionShellWidth and timeframe size', () => {
-        expect(vm.sectionItemWidth).toBe(280);
+        expect(vm.sectionItemWidth).toBe(240);
       });
     });
 

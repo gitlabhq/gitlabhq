@@ -1,9 +1,12 @@
 <script>
   import { getSundays } from '~/lib/utils/datetime_utility';
 
-  import timelineTodayIndicator from './timeline_today_indicator.vue';
+  import { PRESET_TYPES } from '../../constants';
+
+  import timelineTodayIndicator from '../timeline_today_indicator.vue';
 
   export default {
+    presetType: PRESET_TYPES.MONTHS,
     components: {
       timelineTodayIndicator,
     },
@@ -40,10 +43,16 @@
     },
     methods: {
       getSubItemValueClass(subItem) {
-        // Show light color text for dates which are
-        // older than today
-        if (subItem < this.currentDate) {
-          return 'value-light';
+        const daysToClosestWeek = this.currentDate.getDate() - subItem.getDate();
+        // Show dark color text only for upcoming dates
+        // and current week date
+        if (daysToClosestWeek <= 6 &&
+            this.currentDate.getDate() >= subItem.getDate() &&
+            this.currentDate.getFullYear() === subItem.getFullYear() &&
+            this.currentDate.getMonth() === subItem.getMonth()) {
+          return 'label-dark label-bold';
+        } else if (subItem >= this.currentDate) {
+          return 'label-dark';
         }
         return '';
       },
@@ -66,8 +75,9 @@
     </span>
     <timeline-today-indicator
       v-if="hasToday"
-      :timeframe-item="timeframeItem"
+      :preset-type="$options.presetType"
       :current-date="currentDate"
+      :timeframe-item="timeframeItem"
     />
   </div>
 </template>

@@ -3,17 +3,20 @@ import Vue from 'vue';
 import roadmapShellComponent from 'ee/roadmap/components/roadmap_shell.vue';
 import eventHub from 'ee/roadmap/event_hub';
 
+import { PRESET_TYPES } from 'ee/roadmap/constants';
+
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { mockEpic, mockTimeframe, mockGroupId, mockScrollBarSize } from '../mock_data';
+import { mockEpic, mockTimeframeMonths, mockGroupId, mockScrollBarSize } from '../mock_data';
 
 const createComponent = ({
   epics = [mockEpic],
-  timeframe = mockTimeframe,
+  timeframe = mockTimeframeMonths,
   currentGroupId = mockGroupId,
 }, el) => {
   const Component = Vue.extend(roadmapShellComponent);
 
   return mountComponent(Component, {
+    presetType: PRESET_TYPES.MONTHS,
     epics,
     timeframe,
     currentGroupId,
@@ -82,16 +85,10 @@ describe('RoadmapShellComponent', () => {
         spyOn(eventHub, '$emit');
       });
 
-      it('emits `epicsListScrolled` event via eventHub when `noScroll` prop is false', () => {
+      it('emits `epicsListScrolled` event via eventHub', () => {
         vm.noScroll = false;
         vm.handleScroll();
         expect(eventHub.$emit).toHaveBeenCalledWith('epicsListScrolled', jasmine.any(Object));
-      });
-
-      it('does not emit any event via eventHub when `noScroll` prop is true', () => {
-        vm.noScroll = true;
-        vm.handleScroll();
-        expect(eventHub.$emit).not.toHaveBeenCalled();
       });
     });
   });
