@@ -10,45 +10,48 @@ module Ci
     WriteError = Class.new(StandardError)
 
     CHUNK_SIZE = 128.kilobytes
-    CHUNK_REDIS_TTL = 1.week
     WRITE_LOCK_RETRY = 10
     WRITE_LOCK_SLEEP = 0.01.seconds
     WRITE_LOCK_TTL = 1.minute
 
     enum data_store: {
       redis: 1,
-      db: 2
+      database: 2,
+      fog: 3
     }
 
     class << self
-      def redis_data_key(build_id, chunk_index)
-        "gitlab:ci:trace:#{build_id}:chunks:#{chunk_index}"
+      def all_stores
+        @all_stores ||= self.data_stores.keys
       end
 
-      def redis_data_keys
-        redis.pluck(:build_id, :chunk_index).map do |data|
-          redis_data_key(data.first, data.second)
-        end
+      def persist_store
+        # get first available store from the back of the list
+        all_stores.reverse.find { |store| get_store_class(store).available? }
       end
 
-      def redis_delete_data(keys)
-        return if keys.empty?
-
-        Gitlab::Redis::SharedState.with do |redis|
-          redis.del(keys)
-        end
+      def get_store_class(store)
+        @stores ||= {}
+        @stores[store] ||= "Ci::BuildTraceChunks::#{store.capitalize}".constantize.new
       end
 
       ##
       # FastDestroyAll concerns
       def begin_fast_destroy
-        redis_data_keys
+        all_stores.each_with_object({}) do |result, store|
+          relation = public_send(store)
+          keys = get_store_class(store).keys(relation)
+
+          result[store] = keys if keys.present?
+        end
       end
 
       ##
       # FastDestroyAll concerns
       def finalize_fast_destroy(keys)
-        redis_delete_data(keys)
+        keys.each do |store, value|
+          get_store_class(store).delete_keys(value)
+        end
       end
     end
 
@@ -69,7 +72,7 @@ module Ci
       raise ArgumentError, 'Offset is out of range' if offset > size || offset < 0
       raise ArgumentError, 'Chunk size overflow' if CHUNK_SIZE < (offset + new_data.bytesize)
 
-      set_data(data.byteslice(0, offset) + new_data)
+      set_data!(data.byteslice(0, offset) + new_data)
     end
 
     def size
@@ -87,73 +90,59 @@ module Ci
     def range
       (start_offset...end_offset)
     end
+    
+    def persisted?
+      !redis?
+    end
 
-    def use_database!
+    def persist!
       in_lock do
-        break if db?
-        break unless size > 0
-
-        self.update!(raw_data: data, data_store: :db)
-        self.class.redis_delete_data([redis_data_key])
+        unsafe_move_to!(self.class.persist_store)
       end
     end
 
     private
 
-    def get_data
-      if redis?
-        redis_data
-      elsif db?
-        raw_data
-      else
-        raise 'Unsupported data store'
-      end&.force_encoding(Encoding::BINARY) # Redis/Database return UTF-8 string as default
+    def unsafe_move_to!(new_store)
+      return if data_store == new_store.to_s
+      return unless size > 0
+
+      old_store_class = self.class.get_store_class(data_store)
+
+      self.get_data.tap do |the_data|
+        self.raw_data = nil
+        self.data_store = new_store
+        self.set_data!(the_data)
+      end
+
+      old_store_class.delete_data(self)
     end
 
-    def set_data(value)
+    def get_data
+      self.class.get_store_class(data_store).data(self)&.force_encoding(Encoding::BINARY) # Redis/Database return UTF-8 string as default
+    end
+
+    def set_data!(value)
       raise ArgumentError, 'too much data' if value.bytesize > CHUNK_SIZE
 
       in_lock do
-        if redis?
-          redis_set_data(value)
-        elsif db?
-          self.raw_data = value
-        else
-          raise 'Unsupported data store'
-        end
-
+        self.class.get_store_class(data_store).set_data(self, value)
         @data = value
 
         save! if changed?
       end
 
-      schedule_to_db if full?
+      schedule_to_persist if full?
     end
 
-    def schedule_to_db
-      return if db?
+    def schedule_to_persist
+      return if persisted?
 
       Ci::BuildTraceChunkFlushWorker.perform_async(id)
     end
 
     def full?
       size == CHUNK_SIZE
-    end
-
-    def redis_data
-      Gitlab::Redis::SharedState.with do |redis|
-        redis.get(redis_data_key)
-      end
-    end
-
-    def redis_set_data(data)
-      Gitlab::Redis::SharedState.with do |redis|
-        redis.set(redis_data_key, data, ex: CHUNK_REDIS_TTL)
-      end
-    end
-
-    def redis_data_key
-      self.class.redis_data_key(build_id, chunk_index)
     end
 
     def in_lock

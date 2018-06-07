@@ -294,8 +294,8 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
     end
   end
 
-  describe '#use_database!' do
-    subject { build_trace_chunk.use_database! }
+  describe '#persist!' do
+    subject { build_trace_chunk.persist! }
 
     context 'when data_store is redis' do
       let(:data_store) { :redis }
