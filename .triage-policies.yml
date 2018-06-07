@@ -199,6 +199,32 @@ resource_rules:
             Please could you revisit the issue and provide an update if it is still relevant.
 
             Thanks for your help
+      - name: Warn about scheduled issues with no team label
+        conditions:
+          forbidden_labels:
+            - CI/CD
+            - Configuration
+            - Discussion
+            - Distribution
+            - Documentation
+            - Geo
+            - Gitaly
+            - Monitoring
+            - Platform
+            - Quality
+            - Release
+            - Security Products
+            - UX
+          milestone:
+            - Started
+          state: opened
+        actions:
+          labels:
+            - awaiting feedback
+            - auto updated
+          mention:
+            - markglenfletcher
+            - gl-product
   merge_requests:
     rules:
       - name: Encourage old Community Merge Requests to completion
