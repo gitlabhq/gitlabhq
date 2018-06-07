@@ -241,9 +241,9 @@ You can change the deployment strategy used by Auto DevOps from within the UI.
 The available options are:
 
 * Continuous deployment to production
-  * This enables  Auto Deploy - https://docs.gitlab.com/ee/topics/autodevops/#auto-deploy
+  * This enables [Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/#auto-deploy)
 * Automatic deployment to staging, manual deployment to production
-  * The user is responsible for deploying to staging and production - https://docs.gitlab.com/ce/ci/environments.html#manually-deploying-to-environments
+  * The user is responsible for [deploying to staging and production](https://docs.gitlab.com/ce/ci/environments.html#manually-deploying-to-environments)
 
 ## Stages of Auto DevOps
 
