@@ -40,15 +40,12 @@ ActiveRecord::Schema.define(version: 20180605213516) do
     t.text "new_project_guidelines"
     t.text "new_project_guidelines_html"
     t.string "favicon"
-<<<<<<< HEAD
     t.text "header_message"
     t.text "header_message_html"
     t.text "footer_message"
     t.text "footer_message_html"
     t.text "message_background_color"
     t.text "message_font_color"
-=======
->>>>>>> upstream/master
   end
 
   create_table "application_setting_terms", force: :cascade do |t|
