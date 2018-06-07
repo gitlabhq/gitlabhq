@@ -2,13 +2,14 @@
 - @no_container = true
 - @content_wrapper_class = "group-epics-roadmap-wrapper"
 - @content_class = "group-epics-roadmap"
+- preset_layout = params[:layout].present? ? params[:layout] : "MONTHS"
 - breadcrumb_title _("Epics Roadmap")
 
 - has_filters_applied = params[:label_name].present? || params[:author_username].present? || params[:search].present?
 
 - if @epics_count != 0
-  = render 'shared/epic/search_bar', type: :epics, hide_sort_dropdown: true
+  = render 'shared/epic/search_bar', type: :epics, hide_sort_dropdown: true, show_roadmap_presets: true
 
-  #js-roadmap{ data: { epics_path: group_epics_path(@group, format: :json), group_id: @group.id, empty_state_illustration: image_path('illustrations/epics/roadmap.svg'), has_filters_applied: "#{has_filters_applied}", new_epic_endpoint: group_epics_path(@group) } }
+  #js-roadmap{ data: { epics_path: group_epics_path(@group, format: :json), group_id: @group.id, empty_state_illustration: image_path('illustrations/epics/roadmap.svg'), has_filters_applied: "#{has_filters_applied}", new_epic_endpoint: group_epics_path(@group), preset_type: preset_layout } }
 - else
   = render 'shared/empty_states/roadmap'
