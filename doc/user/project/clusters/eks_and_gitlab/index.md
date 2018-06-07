@@ -1,13 +1,12 @@
 ---
-redirect_from: 'https://docs.gitlab.com/ee/user/project/clusters/eks_and_gitlab/index.html'
+author: Joshua Lambert
+author_gitlab: joshlambert
+level: intermediate
+article_type: tutorial
+date: 2018-06-05
 ---
 
 # Connecting and deploying to an Amazon EKS cluster
-
-> **[Article Type](../../../../development/writing_documentation.md#types-of-technical-articles):** tutorial ||
-> **Level:** intermediate ||
-> **Author:** [Joshua Lambert](https://gitlab.com/joshlambert) ||
-> **Publication date:** 2018-06-05
 
 ## Introduction
 
