@@ -398,6 +398,10 @@ containers. To use this integration, you should deploy to Kubernetes using
 the deployment variables above, ensuring any pods you create are labelled with
 `app=$CI_ENVIRONMENT_SLUG`. GitLab will do the rest!
 
+## Read more
+
+- [Connecting and deploying to an Amazon EKS cluster](eks_and_gitlab/index.md)
+
 [permissions]: ../../permissions.md
 [ee]: https://about.gitlab.com/products/
 [Auto DevOps]: ../../../topics/autodevops/index.md
