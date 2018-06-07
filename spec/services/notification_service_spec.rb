@@ -1100,7 +1100,7 @@ describe NotificationService, :mailer do
           project_approvers.each { |approver| should_email(approver) }
         end
 
-        it 'does not email the approvers when approving is disabled' do
+        it 'does not email the approvers when approval is not necessary' do
           merge_request.target_project.update_attributes(approvals_before_merge: 0)
           notification.new_merge_request(merge_request, @u_disabled)
 
