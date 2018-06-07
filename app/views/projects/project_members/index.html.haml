@@ -34,8 +34,6 @@
         - elsif @project.allowed_to_share_with_group?
           .share-with-group= render 'projects/project_members/new_shared_group', tab_title: 'Share with group'
 
-
-
         = render 'shared/members/requests', membership_source: @project, requesters: @requesters
         .clearfix
           %h5.member.existing-title

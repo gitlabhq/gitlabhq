@@ -327,9 +327,6 @@
   box-shadow: 0 1px 2px $issue-boards-card-shadow;
   list-style: none;
 
-  // as a fallback, hide overflow content so that dragging and dropping still works
-  overflow: hidden;
-
   &:not(:last-child) {
     margin-bottom: 5px;
   }

@@ -393,6 +393,10 @@ GEM
       rake
     grape_logging (1.7.0)
       grape
+    graphiql-rails (1.4.10)
+      railties
+      sprockets-rails
+    graphql (1.8.2)
     grpc (1.11.0)
       google-protobuf (~> 3.1)
       googleapis-common-protos-types (~> 1.0.0)
@@ -1091,6 +1095,8 @@ DEPENDENCIES
   grape-entity (~> 0.7.1)
   grape-path-helpers (~> 1.0)
   grape_logging (~> 1.7)
+  graphiql-rails (~> 1.4.10)
+  graphql (~> 1.8.0)
   grpc (~> 1.11.0)
   gssapi
   haml_lint (~> 0.26.0)

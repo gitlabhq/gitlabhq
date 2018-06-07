@@ -89,14 +89,13 @@ export default {
   <div>
     <div
       class="js-gcp-machine-type-dropdown dropdown"
-      :class="{ 'gl-show-field-errors': hasErrors }"
     >
       <dropdown-hidden-input
         :name="fieldName"
         :value="selectedMachineType"
       />
       <dropdown-button
-        :class="{ 'gl-field-error-outline': hasErrors }"
+        :class="{ 'border-danger': hasErrors }"
         :is-disabled="isDisabled"
         :is-loading="isLoading"
         :toggle-text="toggleText"
@@ -132,8 +131,11 @@ export default {
       </div>
     </div>
     <span
-      class="form-text text-muted"
-      :class="{ 'gl-field-error': hasErrors }"
+      class="form-text"
+      :class="{
+        'text-danger': hasErrors,
+        'text-muted': !hasErrors
+      }"
       v-if="hasErrors"
     >
       {{ errorMessage }}

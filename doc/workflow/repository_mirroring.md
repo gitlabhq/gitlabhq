@@ -228,7 +228,7 @@ backoff period.
 If the mirror fails (eg: branch diverged from upstream), the project's backoff
 period will be penalized each time it fails up to a maximum amount of time.
 
-## Pushing to a remote repository **[STARTER]**
+## Pushing to a remote repository
 
 >[Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/249) in
 GitLab Enterprise Edition 8.7. [Moved to GitLab Community Edition][ce-18715] in 10.8.
