@@ -821,6 +821,18 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
           expect(job.reload.trace.raw).to eq 'BUILD TRACE'
         end
+
+        context 'when running state is sent' do
+          it 'updates update_at value' do
+            expect { update_job_after_time }.to change { job.reload.updated_at }
+          end
+        end
+
+        context 'when other state is sent' do
+          it "doesn't update update_at value" do
+            expect { update_job_after_time(20.minutes, state: 'success') }.not_to change { job.reload.updated_at }
+          end
+        end
       end
 
       context 'when job has been erased' do
@@ -843,6 +855,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           update_job(state: 'success', trace: 'BUILD TRACE UPDATED')
 
           expect(response).to have_gitlab_http_status(403)
+          expect(response.header['Job-Status']).to eq 'failed'
           expect(job.trace.raw).to eq 'Job failed'
           expect(job).to be_failed
         end
@@ -851,6 +864,12 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
       def update_job(token = job.token, **params)
         new_params = params.merge(token: token)
         put api("/jobs/#{job.id}"), new_params
+      end
+
+      def update_job_after_time(update_interval = 20.minutes, state = 'running')
+        Timecop.travel(job.updated_at + update_interval) do
+          update_job(job.token, state: state)
+        end
       end
     end
 
@@ -982,6 +1001,17 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                 expect(job.reload.trace.raw).to eq 'BUILD TRACE appended appended hello'
               end
             end
+          end
+        end
+
+        context 'when the job is canceled' do
+          before do
+            job.cancel
+            patch_the_trace
+          end
+
+          it 'receives status in header' do
+            expect(response.header['Job-Status']).to eq 'canceled'
           end
         end
       end

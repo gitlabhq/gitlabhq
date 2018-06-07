@@ -1297,7 +1297,7 @@ msgstr ""
 msgid "ClusterIntegration|GitLab Runner"
 msgstr ""
 
-msgid "ClusterIntegration|Google Cloud Platform project ID"
+msgid "ClusterIntegration|Google Cloud Platform project"
 msgstr ""
 
 msgid "ClusterIntegration|Google Kubernetes Engine"

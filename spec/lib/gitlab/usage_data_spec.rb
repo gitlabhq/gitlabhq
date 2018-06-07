@@ -190,7 +190,10 @@ describe Gitlab::UsageData do
       expect(subject[:license_md5]).to eq(Digest::MD5.hexdigest(license.data))
       expect(subject[:license_id]).to eq(license.license_id)
       expect(subject[:version]).to eq(Gitlab::VERSION)
+<<<<<<< HEAD
       expect(subject[:licensee]).to eq(license.licensee)
+=======
+>>>>>>> upstream/master
       expect(subject[:installation_type]).to eq(Gitlab::INSTALLATION_TYPE)
       expect(subject[:active_user_count]).to eq(User.active.count)
       expect(subject[:licensee]).to eq(license.licensee)

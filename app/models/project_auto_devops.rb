@@ -6,6 +6,8 @@ class ProjectAutoDevops < ActiveRecord::Base
 
   validates :domain, allow_blank: true, hostname: { allow_numeric_hostname: true }
 
+  after_save :create_gitlab_deploy_token, if: :needs_to_create_deploy_token?
+
   def instance_domain
     Gitlab::CurrentSettings.auto_devops_domain
   end
@@ -21,5 +23,24 @@ class ProjectAutoDevops < ActiveRecord::Base
                          value: domain.presence || instance_domain)
       end
     end
+  end
+
+  private
+
+  def create_gitlab_deploy_token
+    project.deploy_tokens.create!(
+      name: DeployToken::GITLAB_DEPLOY_TOKEN_NAME,
+      read_registry: true
+    )
+  end
+
+  def needs_to_create_deploy_token?
+    auto_devops_enabled? &&
+      !project.public? &&
+      !project.deploy_tokens.find_by(name: DeployToken::GITLAB_DEPLOY_TOKEN_NAME).present?
+  end
+
+  def auto_devops_enabled?
+    Gitlab::CurrentSettings.auto_devops_enabled? || enabled?
   end
 end

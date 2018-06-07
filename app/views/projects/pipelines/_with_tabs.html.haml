@@ -84,6 +84,7 @@
                 %pre.build-trace.build-trace-rounded
                   %code.bash.js-build-output
                     = build_summary(build)
+<<<<<<< HEAD
   - if expose_sast_data || expose_dependency_data
     #js-tab-security.build-security.tab-pane
       #js-security-report-app{ data: { endpoint: expose_sast_data ? sast_artifact_url(@pipeline) : nil,
@@ -94,3 +95,6 @@
       vulnerability_feedback_help_path: help_page_path("user/project/merge_requests/index", anchor: "interacting-with-security-reports-ultimate"),
       sast_help_path: help_page_path('user/project/merge_requests/sast'),
       dependency_scanning_help_path: help_page_path('user/project/merge_requests/dependency_scanning')} }
+=======
+
+>>>>>>> upstream/master
