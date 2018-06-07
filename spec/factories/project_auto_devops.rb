@@ -8,5 +8,9 @@ FactoryBot.define do
     trait :manual do
       deploy_strategy :manual
     end
+
+    trait :disabled do
+      enabled false
+    end
   end
 end

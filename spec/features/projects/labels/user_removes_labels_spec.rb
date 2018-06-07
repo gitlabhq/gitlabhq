@@ -17,8 +17,9 @@ describe "User removes labels" do
     end
 
     it "removes label" do
-      page.within(".labels") do
+      page.within(".other-labels") do
         page.first(".label-list-item") do
+          first('.js-label-options-dropdown').click
           first(".remove-row").click
           first(:link, "Delete label").click
         end
@@ -36,17 +37,16 @@ describe "User removes labels" do
     end
 
     it "removes all labels" do
-      page.within(".labels") do
-        loop do
-          li = page.first(".label-list-item")
-          break unless li
+      loop do
+        li = page.first(".label-list-item")
+        break unless li
 
-          li.click_link("Delete")
-          click_link("Delete label")
-        end
-
-        expect(page).to have_content("Generate a default set of labels").and have_content("New label")
+        li.find('.js-label-options-dropdown').click
+        li.click_button("Delete")
+        click_link("Delete label")
       end
+
+      expect(page).to have_content("Generate a default set of labels").and have_content("New label")
     end
   end
 end

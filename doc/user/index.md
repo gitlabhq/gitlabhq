@@ -23,7 +23,7 @@ documentation.
 GitLab is a fully integrated software development platform that enables you
 and your team to work cohesively, faster, transparently, and effectively,
 since the discussion of a new idea until taking that idea to production all
-all the way through, from within the same platform.
+the way through, from within the same platform.
 
 Please check this page for an overview on [GitLab's features](https://about.gitlab.com/features/).
 

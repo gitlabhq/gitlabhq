@@ -247,9 +247,31 @@ describe API::Commits do
           ]
         }
       end
+      let!(:valid_utf8_c_params) do
+        {
+          branch: 'master',
+          commit_message: message,
+          actions: [
+            {
+              action: 'create',
+              file_path: 'foo/bar/baz.txt',
+              content: 'puts 🦊'
+            }
+          ]
+        }
+      end
 
       it 'a new file in project repo' do
         post api(url, user), valid_c_params
+
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response['title']).to eq(message)
+        expect(json_response['committer_name']).to eq(user.name)
+        expect(json_response['committer_email']).to eq(user.email)
+      end
+
+      it 'a new file with utf8 chars in project repo' do
+        post api(url, user), valid_utf8_c_params
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq(message)

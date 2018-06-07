@@ -40,6 +40,8 @@
           %strong
             = @group.created_at.to_s(:medium)
 
+        = render_if_exists 'admin/namespace_plan_info', namespace: @group
+
         %li
           %span.light Storage:
           %strong= storage_counter(@group.storage_size)
@@ -57,6 +59,10 @@
           %strong
             = group_lfs_status(@group)
             = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
+
+        = render_if_exists 'namespaces/shared_runner_status', namespace: @group
+
+    = render_if_exists 'ldap_group_links/ldap_group_links_show', group: @group
 
     .card
       .card-header
@@ -104,7 +110,7 @@
 
           = form_tag admin_group_members_update_path(@group), id: "new_project_member", class: "bulk_import", method: :put  do
             %div
-              = users_select_tag(:user_ids, multiple: true, email_user: true, scope: :all)
+              = users_select_tag(:user_ids, multiple: true, email_user: true, skip_ldap: @group.ldap_synced?, scope: :all)
             .prepend-top-10
               = select_tag :access_level, options_for_select(GroupMember.access_level_roles), class: "project-access-select select2"
             %hr

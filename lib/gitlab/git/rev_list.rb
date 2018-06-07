@@ -27,9 +27,10 @@ module Gitlab
       #
       # When given a block it will yield objects as a lazy enumerator so
       # the caller can limit work done instead of processing megabytes of data
-      def new_objects(require_path: nil, not_in: nil, &lazy_block)
+      def new_objects(options: [], require_path: nil, not_in: nil, &lazy_block)
         opts = {
           including: newrev,
+          options: options,
           excluding: not_in.nil? ? :all : not_in,
           require_path: require_path
         }
@@ -37,9 +38,9 @@ module Gitlab
         get_objects(opts, &lazy_block)
       end
 
-      def all_objects(require_path: nil, &lazy_block)
+      def all_objects(options: [], require_path: nil, &lazy_block)
         get_objects(including: :all,
-                    options: ["--filter=blob:limit=#{Gitlab::Git::Blob::LFS_POINTER_MAX_SIZE}"],
+                    options: options,
                     require_path: require_path,
                     &lazy_block)
       end

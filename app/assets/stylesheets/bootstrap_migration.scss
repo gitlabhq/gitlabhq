@@ -251,3 +251,13 @@ table {
 pre code {
   white-space: pre-wrap;
 }
+
+.alert-danger {
+  background-color: $red-500;
+  border-color: $red-500;
+  color: $white-light;
+
+  h4 {
+    color: $white-light;
+  }
+}

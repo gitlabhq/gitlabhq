@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 20180603190921) do
     t.integer "cached_markdown_version"
     t.text "new_project_guidelines"
     t.text "new_project_guidelines_html"
+    t.string "favicon"
   end
 
   create_table "application_setting_terms", force: :cascade do |t|

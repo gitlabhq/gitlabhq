@@ -9,13 +9,7 @@
   .col-lg-8.application-theme
     - Gitlab::Themes.each do |theme|
       = label_tag do
-        .preview{ class: theme.name.downcase }
-          .preview-row
-            .quadrant.one
-            .quadrant.two
-          .preview-row
-            .quadrant.three
-            .quadrant.four
+        .preview{ class: theme.css_class }
         = f.radio_button :theme_id, theme.id, checked: Gitlab::Themes.for_user(@user).id == theme.id
         = theme.name
 

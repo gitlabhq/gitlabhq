@@ -960,7 +960,7 @@ describe Project do
 
     it 'is false if avatar is html page' do
       project.update_attribute(:avatar, 'uploads/avatar.html')
-      expect(project.avatar_type).to eq(['file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff'])
+      expect(project.avatar_type).to eq(['file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff, ico'])
     end
   end
 
@@ -1690,6 +1690,31 @@ describe Project do
       project.update!(ci_config_path: "f\0oo/\0/.gitlab_ci.yml")
 
       expect(project.ci_config_path).to eq('foo//.gitlab_ci.yml')
+    end
+  end
+
+  describe '#human_import_status_name' do
+    context 'when import_state exists' do
+      it 'returns the humanized status name' do
+        project = create(:project)
+        create(:import_state, :started, project: project)
+
+        expect(project.human_import_status_name).to eq("started")
+      end
+    end
+
+    context 'when import_state was not created yet' do
+      let(:project) { create(:project, :import_started) }
+
+      it 'ensures import_state is created and returns humanized status name' do
+        expect do
+          project.human_import_status_name
+        end.to change { ProjectImportState.count }.from(0).to(1)
+      end
+
+      it 'returns humanized status name' do
+        expect(project.human_import_status_name).to eq("started")
+      end
     end
   end
 
