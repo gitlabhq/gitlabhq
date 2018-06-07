@@ -117,8 +117,25 @@ module EESpecificCheck
       head_commit_sha
     else
       say <<~MESSAGE
-        💥 Git status not clean! This shouldn't happen. Please create an issue
-        💥 and ping @godfat to investigate.
+        💥 Git status not clean! This shouldn't happen, but there are two
+        💥 known issues that one can be worked around, and the other can't.
+        💥
+        💥 First please try to update your CE brnach with CE master, and
+        💥 retry this job. You could find more information in this issue:
+        💥
+        💥 https://gitlab.com/gitlab-org/gitlab-ee/issues/5960#note_72669536
+        💥
+        💥 But it's possible that it doesn't work out. In this case, please
+        💥 just disregard this job. You could find other information at:
+        💥
+        💥 https://gitlab.com/gitlab-org/gitlab-ee/issues/6038
+        💥
+        💥 There's a work-in-progress fix at:
+        💥
+        💥 https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/5719
+        💥
+        💥 If you would like to help, or have any questions, please
+        💥 contact @godfat
 
         ⚠️ Git status:
 
