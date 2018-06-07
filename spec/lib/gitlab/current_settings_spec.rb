@@ -55,7 +55,10 @@ describe Gitlab::CurrentSettings do
         end
 
         it 'returns an in-memory ApplicationSetting object' do
-          expect(described_class.current_application_settings).to be_a(Gitlab::FakeApplicationSettings)
+          settings = described_class.current_application_settings
+
+          expect(settings).to be_a(ApplicationSetting)
+          expect(settings).not_to be_persisted
         end
 
         it 'does not issue any query' do
@@ -107,9 +110,15 @@ describe Gitlab::CurrentSettings do
           it 'returns an in-memory ApplicationSetting object' do
             settings = described_class.current_application_settings
 
-            expect(settings).to be_a(Gitlab::FakeApplicationSettings)
-            expect(settings.sign_in_enabled?).to eq(settings.sign_in_enabled)
-            expect(settings.sign_up_enabled?).to eq(settings.sign_up_enabled)
+            expect(settings).to be_a(ApplicationSetting)
+            expect(settings).not_to be_persisted
+            expect(settings.signup_enabled?).to eq(settings.signup_enabled)
+          end
+
+          it 'returns an ApplicationSetting object that responds to ApplicationSetting methods' do
+            settings = described_class.current_application_settings
+
+            expect(settings.key_restriction_for('dsa')).to eq(0)
           end
 
           it 'uses the existing database settings and falls back to defaults' do
@@ -119,14 +128,12 @@ describe Gitlab::CurrentSettings do
             settings = described_class.current_application_settings
             app_defaults = ApplicationSetting.last
 
-            expect(settings).to be_a(Gitlab::FakeApplicationSettings)
+            expect(settings).to be_a(ApplicationSetting)
+            expect(settings).not_to be_persisted
             expect(settings.home_page_url).to eq(db_settings.home_page_url)
             expect(settings.signup_enabled?).to be_falsey
             expect(settings.signup_enabled).to be_falsey
-
-            # Check that unspecified values use the defaults
-            settings.reject! { |key, _| [:home_page_url, :signup_enabled].include? key }
-            settings.each { |key, _| expect(settings[key]).to eq(app_defaults[key]) }
+            expect(settings.two_factor_grace_period).to eq(48)
           end
         end
 
@@ -142,7 +149,10 @@ describe Gitlab::CurrentSettings do
           it 'returns an in-memory ApplicationSetting object' do
             expect(ApplicationSetting).to receive(:create_from_defaults).and_raise(ActiveRecord::StatementInvalid)
 
-            expect(described_class.current_application_settings).to be_a(Gitlab::FakeApplicationSettings)
+            settings = described_class.current_application_settings
+
+            expect(settings).to be_a(ApplicationSetting)
+            expect(settings).not_to be_persisted
           end
         end
 
@@ -150,7 +160,10 @@ describe Gitlab::CurrentSettings do
           it 'returns an in-memory ApplicationSetting object' do
             expect(ApplicationSetting).to receive(:create_from_defaults).and_raise(ActiveRecord::UnknownAttributeError)
 
-            expect(described_class.current_application_settings).to be_a(Gitlab::FakeApplicationSettings)
+            settings = described_class.current_application_settings
+
+            expect(settings).to be_a(ApplicationSetting)
+            expect(settings).not_to be_persisted
           end
         end
       end

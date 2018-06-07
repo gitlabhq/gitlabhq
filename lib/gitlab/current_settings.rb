@@ -9,8 +9,8 @@ module Gitlab
         end
       end
 
-      def fake_application_settings(attributes = {})
-        Gitlab::FakeApplicationSettings.new(::ApplicationSetting.defaults.merge(attributes || {}))
+      def transient_application_settings(attributes = {})
+        ::ApplicationSetting.build_from_defaults(attributes || {})
       end
 
       def method_missing(name, *args, &block)
@@ -40,7 +40,7 @@ module Gitlab
       end
 
       def uncached_application_settings
-        return fake_application_settings unless connect_to_db?
+        return transient_application_settings unless connect_to_db?
 
         current_settings = ::ApplicationSetting.current
         # If there are pending migrations, it's possible there are columns that
@@ -48,28 +48,28 @@ module Gitlab
         # and other callers from failing, use any loaded settings and return
         # defaults for missing columns.
         if ActiveRecord::Migrator.needs_migration?
-          return fake_application_settings(current_settings&.attributes)
+          return transient_application_settings(current_settings&.attributes)
         end
 
         return current_settings if current_settings.present?
 
-        with_fallback_to_fake_application_settings do
+        with_fallback_to_transient_application_settings do
           ::ApplicationSetting.create_from_defaults || in_memory_application_settings
         end
       end
 
       def in_memory_application_settings
-        with_fallback_to_fake_application_settings do
-          @in_memory_application_settings ||= ::ApplicationSetting.build_from_defaults # rubocop:disable Gitlab/ModuleWithInstanceVariables
+        with_fallback_to_transient_application_settings do
+          @in_memory_application_settings ||= transient_application_settings # rubocop:disable Gitlab/ModuleWithInstanceVariables
         end
       end
 
-      def with_fallback_to_fake_application_settings(&block)
+      def with_fallback_to_transient_application_settings(&block)
         yield
       rescue
         # In case the application_settings table is not created yet, or if a new
         # ApplicationSetting column is not yet migrated we fallback to a simple OpenStruct
-        fake_application_settings
+        transient_application_settings
       end
 
       def connect_to_db?

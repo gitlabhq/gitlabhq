@@ -373,7 +373,7 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def restricted_visibility_levels=(levels)
-    super(levels.map { |level| Gitlab::VisibilityLevel.level_value(level) })
+    super(Array(levels).compact.map { |level| Gitlab::VisibilityLevel.level_value(level) })
   end
 
   def performance_bar_allowed_group
