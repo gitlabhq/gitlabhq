@@ -99,6 +99,76 @@ the following. This will balance the load between `host1.example.com` and
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 
+## Service Discovery
+
+> [Introduced][ee-5883] in [GitLab Premium][eep] 11.0.
+
+Service discovery allows GitLab to automatically retrieve a list of secondary
+databases to use, instead of having to manually specify these in the
+`database.yml` configuration file. Service discovery works by periodically
+checking a DNS A record, using the IPs returned by this record as the addresses
+for the secondaries. For service discovery to work, all you need is a DNS server
+and an A record containing the IP addresses of your secondaries.
+
+To use service discovery you need to change your `database.yml` configuration
+file so it looks like the following:
+
+```yaml
+production:
+  username: gitlab
+  database: gitlab
+  encoding: unicode
+  load_balancing:
+    discover:
+      nameserver: localhost
+      record: secondary.postgresql.service.consul
+      port: 8600
+      interval: 60
+      disconnect_timeout: 120
+```
+
+Here the `discover:` section specifies the configuration details to use for
+service discovery.
+
+### Configuration
+
+The following options can be set:
+
+| Option               | Description                                                                                       | Default   |
+|----------------------|---------------------------------------------------------------------------------------------------|-----------|
+| `nameserver`         | The nameserver to use for looking up the DNS record.                                              | localhost |
+| `record`             | The A record to look up. This option is required for service discovery to work.                   |           |
+| `port`               | The port of the nameserver.                                                                       | 8600      |
+| `interval`           | The minimum time in seconds between checking the DNS record.                                      | 60        |
+| `disconnect_timeout` | The time in seconds after which an old connection is closed, after the list of hosts was updated. | 120       |
+
+The `interval` value specifies the _minimum_ time between checks. If the A
+record has a TTL greater than this value, then service discovery will honor said
+TTL. For example, if the TTL of the A record is 90 seconds, then service
+discovery will wait at least 90 seconds before checking the A record again.
+
+When the list of hosts is updated, it might take a while for the old connections
+to be terminated. The `disconnect_timeout` setting can be used to enforce an
+upper limit on the time it will take to terminate all old database connections.
+
+### Forking
+
+If you use an application server that forks, such as Unicorn, you _have to_
+update your Unicorn configuration to start service discovery _after_ a fork.
+Failure to do so will lead to service discovery only running in the parent
+process. If you are using Unicorn, then you can add the following to your
+Unicorn configuration file:
+
+```ruby
+after_fork do |server, worker|
+  defined?(Gitlab::Database::LoadBalancing) &&
+    Gitlab::Database::LoadBalancing.start_service_discovery
+end
+```
+
+This will ensure that service discovery is started in both the parent and all
+child processes.
+
 ## Balancing queries
 
 Read-only `SELECT` queries will be balanced among all the secondary hosts.
@@ -198,3 +268,4 @@ production:
 [wikipedia]: https://en.wikipedia.org/wiki/Load_balancing_(computing)
 [db-req]: ../install/requirements.md#database
 [ee-3526]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3526
+[ee-5883]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/5883

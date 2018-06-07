@@ -20,6 +20,39 @@ describe Gitlab::Database::LoadBalancing::Host, :postgresql do
     end
   end
 
+  describe '#disconnect!' do
+    it 'disconnects the pool' do
+      connection = double(:connection, in_use?: false)
+      pool = double(:pool, connections: [connection])
+
+      allow(host)
+        .to receive(:pool)
+        .and_return(pool)
+
+      expect(host)
+        .not_to receive(:sleep)
+
+      expect(host.pool)
+        .to receive(:disconnect!)
+
+      host.disconnect!
+    end
+
+    it 'disconnects the pool when waiting for connections takes too long' do
+      connection = double(:connection, in_use?: true)
+      pool = double(:pool, connections: [connection])
+
+      allow(host)
+        .to receive(:pool)
+        .and_return(pool)
+
+      expect(host.pool)
+        .to receive(:disconnect!)
+
+      host.disconnect!(1)
+    end
+  end
+
   describe '#release_connection' do
     it 'releases the current connection from the pool' do
       expect(host.pool).to receive(:release_connection)
@@ -308,6 +341,12 @@ describe Gitlab::Database::LoadBalancing::Host, :postgresql do
         .and_raise(RuntimeError, 'kittens')
 
       expect(host.query_and_release('SELECT 10 AS number')).to eq({})
+    end
+  end
+
+  describe '#host' do
+    it 'returns the hostname' do
+      expect(host.host).to eq('localhost')
     end
   end
 end

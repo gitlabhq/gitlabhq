@@ -8,5 +8,9 @@ if ActiveRecord::Base.connected? && ActiveRecord::Base.connection.table_exists?(
     end
 
     Gitlab::Database::LoadBalancing.configure_proxy
+
+    # Service discovery must be started after configuring the proxy, as service
+    # discovery depends on this.
+    Gitlab::Database::LoadBalancing.start_service_discovery
   end
 end

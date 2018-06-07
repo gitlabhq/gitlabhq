@@ -125,6 +125,9 @@ after_fork do |server, worker|
   defined?(::Prometheus::Client.reinitialize_on_pid_change) &&
     Prometheus::Client.reinitialize_on_pid_change
 
+  defined?(Gitlab::Database::LoadBalancing) &&
+    Gitlab::Database::LoadBalancing.start_service_discovery
+
   # if preload_app is true, then you may also want to check and
   # restart any other shared sockets/descriptors such as Memcached,
   # and Redis.  TokyoCabinet file handles are safe to reuse
