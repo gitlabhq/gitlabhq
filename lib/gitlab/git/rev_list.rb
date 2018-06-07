@@ -37,9 +37,9 @@ module Gitlab
         get_objects(opts, &lazy_block)
       end
 
-      def all_objects(require_path: nil, &lazy_block)
+      def all_objects(options: [], require_path: nil, &lazy_block)
         get_objects(including: :all,
-                    options: ["--filter=blob:limit=#{Gitlab::Git::Blob::LFS_POINTER_MAX_SIZE}"],
+                    options: options,
                     require_path: require_path,
                     &lazy_block)
       end
