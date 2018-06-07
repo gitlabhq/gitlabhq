@@ -1,14 +1,20 @@
 import Vue from 'vue';
 
 import epicItemTimelineComponent from 'ee/roadmap/components/epic_item_timeline.vue';
-import { TIMELINE_CELL_MIN_WIDTH, TIMELINE_END_OFFSET_FULL, TIMELINE_END_OFFSET_HALF } from 'ee/roadmap/constants';
+import {
+  TIMELINE_END_OFFSET_FULL,
+  TIMELINE_END_OFFSET_HALF,
+  TIMELINE_CELL_MIN_WIDTH,
+  PRESET_TYPES,
+} from 'ee/roadmap/constants';
 
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { mockTimeframe, mockEpic, mockShellWidth, mockItemWidth } from '../mock_data';
+import { mockTimeframeMonths, mockEpic, mockShellWidth, mockItemWidth } from '../mock_data';
 
 const createComponent = ({
-  timeframe = mockTimeframe,
-  timeframeItem = mockTimeframe[0],
+  presetType = PRESET_TYPES.MONTHS,
+  timeframe = mockTimeframeMonths,
+  timeframeItem = mockTimeframeMonths[0],
   epic = mockEpic,
   shellWidth = mockShellWidth,
   itemWidth = mockItemWidth,
@@ -16,6 +22,7 @@ const createComponent = ({
   const Component = Vue.extend(epicItemTimelineComponent);
 
   return mountComponent(Component, {
+    presetType,
     timeframe,
     timeframeItem,
     epic,
@@ -52,7 +59,7 @@ describe('EpicItemTimelineComponent', () => {
     describe('getCellWidth', () => {
       it('returns proportionate width based on timeframe length and shellWidth', () => {
         vm = createComponent({});
-        expect(vm.getCellWidth()).toBe(280);
+        expect(vm.getCellWidth()).toBe(240);
       });
 
       it('returns minimum fixed width when proportionate width available lower than minimum fixed width defined', () => {
@@ -60,71 +67,6 @@ describe('EpicItemTimelineComponent', () => {
           shellWidth: 1000,
         });
         expect(vm.getCellWidth()).toBe(TIMELINE_CELL_MIN_WIDTH);
-      });
-    });
-
-    describe('hasStartDate', () => {
-      it('returns true when Epic.startDate falls within timeframeItem', () => {
-        vm = createComponent({
-          epic: Object.assign({}, mockEpic, { startDate: mockTimeframe[1] }),
-          timeframeItem: mockTimeframe[1],
-        });
-        expect(vm.showTimelineBar).toBe(true);
-      });
-
-      it('returns false when Epic.startDate does not fall within timeframeItem', () => {
-        vm = createComponent({
-          epic: Object.assign({}, mockEpic, { startDate: mockTimeframe[0] }),
-          timeframeItem: mockTimeframe[1],
-        });
-        expect(vm.showTimelineBar).toBe(false);
-      });
-    });
-
-    describe('getTimelineBarStartOffset', () => {
-      it('returns empty string when Epic startDate is out of range', () => {
-        vm = createComponent({
-          epic: Object.assign({}, mockEpic, { startDateOutOfRange: true }),
-        });
-        expect(vm.getTimelineBarStartOffset()).toBe('');
-      });
-
-      it('returns empty string when Epic startDate is undefined and endDate is out of range', () => {
-        vm = createComponent({
-          epic: Object.assign({}, mockEpic, {
-            startDateUndefined: true,
-            endDateOutOfRange: true,
-          }),
-        });
-        expect(vm.getTimelineBarStartOffset()).toBe('');
-      });
-
-      it('return `left: 0;` when Epic startDate is first day of the month', () => {
-        vm = createComponent({
-          epic: Object.assign({}, mockEpic, {
-            startDate: new Date(2018, 0, 1),
-          }),
-        });
-        expect(vm.getTimelineBarStartOffset()).toBe('left: 0;');
-      });
-
-      it('returns `right: 8px;` when Epic startDate is in last timeframe month and endDate is out of range', () => {
-        vm = createComponent({
-          epic: Object.assign({}, mockEpic, {
-            startDate: mockTimeframe[mockTimeframe.length - 1],
-            endDateOutOfRange: true,
-          }),
-        });
-        expect(vm.getTimelineBarStartOffset()).toBe('right: 8px;');
-      });
-
-      it('returns proportional `left` value based on Epic startDate and days in the month', () => {
-        vm = createComponent({
-          epic: Object.assign({}, mockEpic, {
-            startDate: new Date(2018, 0, 15),
-          }),
-        });
-        expect(vm.getTimelineBarStartOffset()).toBe('left: 50%;');
       });
     });
 
@@ -164,62 +106,21 @@ describe('EpicItemTimelineComponent', () => {
       });
     });
 
-    describe('isTimeframeUnderEndDate', () => {
-      beforeEach(() => {
-        vm = createComponent({});
-      });
-
-      it('returns true if provided timeframeItem is under epicEndDate', () => {
-        const timeframeItem = new Date(2018, 0, 10); // Jan 10, 2018
-        const epicEndDate = new Date(2018, 0, 26); // Jan 26, 2018
-        expect(vm.isTimeframeUnderEndDate(timeframeItem, epicEndDate)).toBe(true);
-      });
-
-      it('returns false if provided timeframeItem is NOT under epicEndDate', () => {
-        const timeframeItem = new Date(2018, 0, 10); // Jan 10, 2018
-        const epicEndDate = new Date(2018, 1, 26); // Feb 26, 2018
-        expect(vm.isTimeframeUnderEndDate(timeframeItem, epicEndDate)).toBe(false);
-      });
-    });
-
-    describe('getBarWidthForMonth', () => {
-      it('returns calculated bar width based on provided cellWidth, daysInMonth and date', () => {
-        vm = createComponent({});
-        expect(vm.getBarWidthForMonth(300, 30, 1)).toBe(10); // 10% size
-        expect(vm.getBarWidthForMonth(300, 30, 15)).toBe(150); // 50% size
-        expect(vm.getBarWidthForMonth(300, 30, 30)).toBe(300); // Full size
-      });
-    });
-
-    describe('getTimelineBarWidth', () => {
-      it('returns calculated width value based on Epic.startDate and Epic.endDate', () => {
-        vm = createComponent({
-          shellWidth: 2000,
-          timeframeItem: mockTimeframe[0],
-          epic: Object.assign({}, mockEpic, {
-            startDate: new Date(2017, 11, 15), // Dec 15, 2017
-            endDate: new Date(2018, 1, 15), // Feb 15, 2017
-          }),
-        });
-        expect(vm.getTimelineBarWidth()).toBe(850);
-      });
-    });
-
     describe('renderTimelineBar', () => {
       it('sets `timelineBarStyles` & `timelineBarReady` when timeframeItem has Epic.startDate', () => {
         vm = createComponent({
-          epic: Object.assign({}, mockEpic, { startDate: mockTimeframe[1] }),
-          timeframeItem: mockTimeframe[1],
+          epic: Object.assign({}, mockEpic, { startDate: mockTimeframeMonths[1] }),
+          timeframeItem: mockTimeframeMonths[1],
         });
         vm.renderTimelineBar();
-        expect(vm.timelineBarStyles).toBe('width: 1400px; left: 0;');
+        expect(vm.timelineBarStyles).toBe('width: 1216px; left: 0;');
         expect(vm.timelineBarReady).toBe(true);
       });
 
       it('does not set `timelineBarStyles` & `timelineBarReady` when timeframeItem does NOT have Epic.startDate', () => {
         vm = createComponent({
-          epic: Object.assign({}, mockEpic, { startDate: mockTimeframe[0] }),
-          timeframeItem: mockTimeframe[1],
+          epic: Object.assign({}, mockEpic, { startDate: mockTimeframeMonths[0] }),
+          timeframeItem: mockTimeframeMonths[1],
         });
         vm.renderTimelineBar();
         expect(vm.timelineBarStyles).toBe('');
@@ -241,16 +142,16 @@ describe('EpicItemTimelineComponent', () => {
 
     it('renders timeline bar element with class `timeline-bar` and class `timeline-bar-wrapper` as container element', () => {
       vm = createComponent({
-        epic: Object.assign({}, mockEpic, { startDate: mockTimeframe[1] }),
-        timeframeItem: mockTimeframe[1],
+        epic: Object.assign({}, mockEpic, { startDate: mockTimeframeMonths[1] }),
+        timeframeItem: mockTimeframeMonths[1],
       });
       expect(vm.$el.querySelector('.timeline-bar-wrapper .timeline-bar')).not.toBeNull();
     });
 
-    it('renders timeline bar with calculated `width` and `left` properties applied via style attribute', (done) => {
+    it('renders timeline bar with calculated `width` and `left` properties applied via style attribute', done => {
       vm = createComponent({
         epic: Object.assign({}, mockEpic, {
-          startDate: mockTimeframe[0],
+          startDate: mockTimeframeMonths[0],
           endDate: new Date(2018, 1, 15),
         }),
       });
@@ -258,16 +159,16 @@ describe('EpicItemTimelineComponent', () => {
 
       vm.renderTimelineBar();
       vm.$nextTick(() => {
-        expect(timelineBarEl.getAttribute('style')).toBe('width: 990px; left: 0px;');
+        expect(timelineBarEl.getAttribute('style')).toBe('width: 608.571px; left: 0px;');
         done();
       });
     });
 
-    it('renders timeline bar with `start-date-undefined` class when Epic startDate is undefined', (done) => {
+    it('renders timeline bar with `start-date-undefined` class when Epic startDate is undefined', done => {
       vm = createComponent({
         epic: Object.assign({}, mockEpic, {
           startDateUndefined: true,
-          startDate: mockTimeframe[0],
+          startDate: mockTimeframeMonths[0],
         }),
       });
       const timelineBarEl = vm.$el.querySelector('.timeline-bar-wrapper .timeline-bar');
@@ -279,11 +180,11 @@ describe('EpicItemTimelineComponent', () => {
       });
     });
 
-    it('renders timeline bar with `start-date-outside` class when Epic startDate is out of range of timeframe', (done) => {
+    it('renders timeline bar with `start-date-outside` class when Epic startDate is out of range of timeframe', done => {
       vm = createComponent({
         epic: Object.assign({}, mockEpic, {
           startDateOutOfRange: true,
-          startDate: mockTimeframe[0],
+          startDate: mockTimeframeMonths[0],
           originalStartDate: new Date(2017, 0, 1),
         }),
       });
@@ -296,12 +197,12 @@ describe('EpicItemTimelineComponent', () => {
       });
     });
 
-    it('renders timeline bar with `end-date-undefined` class when Epic endDate is undefined', (done) => {
+    it('renders timeline bar with `end-date-undefined` class when Epic endDate is undefined', done => {
       vm = createComponent({
         epic: Object.assign({}, mockEpic, {
-          startDate: mockTimeframe[0],
+          startDate: mockTimeframeMonths[0],
           endDateUndefined: true,
-          endDate: mockTimeframe[mockTimeframe.length - 1],
+          endDate: mockTimeframeMonths[mockTimeframeMonths.length - 1],
         }),
       });
       const timelineBarEl = vm.$el.querySelector('.timeline-bar-wrapper .timeline-bar');
@@ -313,12 +214,12 @@ describe('EpicItemTimelineComponent', () => {
       });
     });
 
-    it('renders timeline bar with `end-date-outside` class when Epic endDate is out of range of timeframe', (done) => {
+    it('renders timeline bar with `end-date-outside` class when Epic endDate is out of range of timeframe', done => {
       vm = createComponent({
         epic: Object.assign({}, mockEpic, {
-          startDate: mockTimeframe[0],
+          startDate: mockTimeframeMonths[0],
           endDateOutOfRange: true,
-          endDate: mockTimeframe[mockTimeframe.length - 1],
+          endDate: mockTimeframeMonths[mockTimeframeMonths.length - 1],
           originalEndDate: new Date(2018, 11, 1),
         }),
       });

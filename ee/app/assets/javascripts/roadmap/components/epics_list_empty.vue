@@ -1,69 +1,99 @@
 <script>
-  import { s__, sprintf } from '~/locale';
-  import { dateInWords } from '~/lib/utils/datetime_utility';
+import { s__, sprintf } from '~/locale';
+import { dateInWords } from '~/lib/utils/datetime_utility';
 
-  import NewEpic from '../../epics/new_epic/components/new_epic.vue';
+import { PRESET_TYPES, PRESET_DEFAULTS } from '../constants';
 
-  export default {
-    components: {
-      NewEpic,
+import NewEpic from '../../epics/new_epic/components/new_epic.vue';
+
+export default {
+  components: {
+    NewEpic,
+  },
+  props: {
+    presetType: {
+      type: String,
+      required: true,
     },
-    props: {
-      timeframeStart: {
-        type: Date,
-        required: true,
-      },
-      timeframeEnd: {
-        type: Date,
-        required: true,
-      },
-      hasFiltersApplied: {
-        type: Boolean,
-        required: true,
-      },
-      newEpicEndpoint: {
-        type: String,
-        required: true,
-      },
-      emptyStateIllustrationPath: {
-        type: String,
-        required: true,
-      },
+    timeframeStart: {
+      type: [Date, Object],
+      required: true,
     },
-    computed: {
-      timeframeRange() {
-        const startDate = dateInWords(
+    timeframeEnd: {
+      type: [Date, Object],
+      required: true,
+    },
+    hasFiltersApplied: {
+      type: Boolean,
+      required: true,
+    },
+    newEpicEndpoint: {
+      type: String,
+      required: true,
+    },
+    emptyStateIllustrationPath: {
+      type: String,
+      required: true,
+    },
+  },
+  computed: {
+    timeframeRange() {
+      let startDate;
+      let endDate;
+
+      if (this.presetType === PRESET_TYPES.QUARTERS) {
+        const quarterStart = this.timeframeStart.range[0];
+        const quarterEnd = this.timeframeEnd.range[2];
+        startDate = dateInWords(
+          quarterStart,
+          true,
+          quarterStart.getFullYear() === quarterEnd.getFullYear(),
+        );
+        endDate = dateInWords(quarterEnd, true);
+      } else if (this.presetType === PRESET_TYPES.MONTHS) {
+        startDate = dateInWords(
           this.timeframeStart,
           true,
           this.timeframeStart.getFullYear() === this.timeframeEnd.getFullYear(),
         );
-        const endDate = dateInWords(this.timeframeEnd, true);
+        endDate = dateInWords(this.timeframeEnd, true);
+      } else if (this.presetType === PRESET_TYPES.WEEKS) {
+        const end = new Date(this.timeframeEnd.getTime());
+        end.setDate(end.getDate() + 6);
 
-        return {
-          startDate,
-          endDate,
-        };
-      },
-      message() {
-        if (this.hasFiltersApplied) {
-          return s__('GroupRoadmap|Sorry, no epics matched your search');
-        }
-        return s__('GroupRoadmap|The roadmap shows the progress of your epics along a timeline');
-      },
-      subMessage() {
-        if (this.hasFiltersApplied) {
-          return sprintf(s__('GroupRoadmap|To widen your search, change or remove filters. Only epics in the past 3 months and the next 3 months are shown &ndash; from %{startDate} to %{endDate}.'), {
-            startDate: this.timeframeRange.startDate,
-            endDate: this.timeframeRange.endDate,
-          });
-        }
-        return sprintf(s__('GroupRoadmap|To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. Only epics in the past 3 months and the next 3 months are shown &ndash; from %{startDate} to %{endDate}.'), {
+        startDate = dateInWords(
+          this.timeframeStart,
+          true,
+          this.timeframeStart.getFullYear() === end.getFullYear(),
+        );
+        endDate = dateInWords(end, true);
+      }
+
+      return {
+        startDate,
+        endDate,
+      };
+    },
+    message() {
+      if (this.hasFiltersApplied) {
+        return s__('GroupRoadmap|Sorry, no epics matched your search');
+      }
+      return s__('GroupRoadmap|The roadmap shows the progress of your epics along a timeline');
+    },
+    subMessage() {
+      if (this.hasFiltersApplied) {
+        return sprintf(PRESET_DEFAULTS[this.presetType].emptyStateWithFilters, {
           startDate: this.timeframeRange.startDate,
           endDate: this.timeframeRange.endDate,
         });
-      },
+      }
+      return sprintf(PRESET_DEFAULTS[this.presetType].emptyStateDefault, {
+        startDate: this.timeframeRange.startDate,
+        endDate: this.timeframeRange.endDate,
+      });
     },
-  };
+  },
+};
 </script>
 
 <template>
