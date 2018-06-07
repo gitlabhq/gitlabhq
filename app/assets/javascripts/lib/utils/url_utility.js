@@ -87,7 +87,7 @@ export function redirectTo(url) {
 export function webIDEUrl(route = undefined) {
   let returnUrl = `${gon.relative_url_root}/-/ide/`;
   if (route) {
-    returnUrl += `project${route}`;
+    returnUrl += `project${route.replace(new RegExp(`^${gon.relative_url_root}`), '')}`;
   }
   return returnUrl;
 }
