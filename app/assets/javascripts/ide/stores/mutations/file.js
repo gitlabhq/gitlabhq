@@ -47,6 +47,7 @@ export default {
       baseRaw: null,
       html: data.html,
       size: data.size,
+      lastCommit: data.last_commit,
     });
   },
   [types.SET_FILE_RAW_DATA](state, { file, raw }) {

@@ -200,6 +200,7 @@ class Projects::BlobController < Projects::ApplicationController
     path_segments = @path.split('/')
     path_segments.pop
     tree_path = path_segments.join('/')
+    last_commit = @repository.last_commit_for_path(@commit.id, @blob.path)
 
     json = {
       id: @blob.id,
@@ -217,6 +218,7 @@ class Projects::BlobController < Projects::ApplicationController
       blame_path: project_blame_path(project, @id),
       commits_path: project_commits_path(project, @id),
       tree_path: project_tree_path(project, File.join(@ref, tree_path)),
+      last_commit: last_commit,
       permalink: project_blob_path(project, File.join(@commit.id, @path))
     }
 
