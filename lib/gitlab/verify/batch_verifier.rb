@@ -13,9 +13,9 @@ module Gitlab
 
       # Yields a Range of IDs and a Hash of failed verifications (object => error)
       def run_batches(&blk)
-        relation.in_batches(of: batch_size, start: start, finish: finish) do |relation| # rubocop: disable Cop/InBatches
-          range = relation.first.id..relation.last.id
-          failures = run_batch(relation)
+        all_relation.in_batches(of: batch_size, start: start, finish: finish) do |all_relation| # rubocop: disable Cop/InBatches
+          range = all_relation.first.id..all_relation.last.id
+          failures = run_batch(all_relation)
 
           yield(range, failures)
         end
@@ -31,8 +31,8 @@ module Gitlab
 
       private
 
-      def run_batch(relation)
-        relation.map { |upload| verify(upload) }.compact.to_h
+      def run_batch(all_relation)
+        all_relation.map { |upload| verify(upload) }.compact.to_h
       end
 
       def verify(object)
@@ -69,7 +69,7 @@ module Gitlab
       end
 
       # This should return an ActiveRecord::Relation suitable for calling #in_batches on
-      def relation
+      def all_relation
         raise NotImplementedError.new
       end
 

@@ -11,7 +11,7 @@ module Gitlab
 
       private
 
-      def relation
+      def all_relation
         ::Ci::JobArtifact.all
       end
 
