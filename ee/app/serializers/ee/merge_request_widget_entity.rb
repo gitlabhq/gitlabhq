@@ -3,6 +3,8 @@ module EE
     extend ActiveSupport::Concern
 
     prepended do
+      expose :approvals_required, as: :approvals_before_merge
+
       expose :blob_path do
         expose :head_path, if: -> (mr, _) { mr.head_pipeline_sha } do |merge_request|
           project_blob_path(merge_request.project, merge_request.head_pipeline_sha)

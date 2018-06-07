@@ -483,7 +483,7 @@ describe MergeRequestPresenter do
 
       it 'returns path' do
         is_expected
-          .to eq("/#{resource.project.full_path}/merge_requests/#{resource.iid}/approvals")
+            .to eq("/#{resource.project.full_path}/merge_requests/#{resource.iid}/approvals")
       end
     end
 
