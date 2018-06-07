@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-MIGRATION_QUERIES = 7
+MIGRATION_QUERIES = 5
 
 describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
   shared_context 'sanity_check! fails' do
@@ -14,7 +14,6 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
   let(:to_store) { ObjectStorage::Store::REMOTE }
 
   def perform(uploads)
-    binding.pry
     described_class.new.perform(uploads.ids, model_class.to_s, mounted_as, to_store)
   rescue ObjectStorage::MigrateUploadsWorker::Report::MigrationFailures
     # swallow

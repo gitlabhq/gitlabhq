@@ -22,7 +22,7 @@ module RecordsUploads
 
       Upload.transaction do
         uploads.where(path: upload_path).delete_all
-        upload.destroy! if upload
+        upload.delete if upload
 
         self.upload = build_upload.tap(&:save!)
       end
