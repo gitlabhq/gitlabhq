@@ -1,5 +1,15 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.8.4 (2018-06-06)
+
+### Fixed (4 changes)
+
+- Render a 403 when showing an access denied message. !5964
+- Validate classification label on create & update. !5976
+- Fix breadcrumbs being covered by System Header message.
+- Treat external authorization service response status 403 as failure.
+
+
 ## 10.8.3 (2018-05-30)
 
 - No changes.
