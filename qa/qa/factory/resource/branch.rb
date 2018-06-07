@@ -64,13 +64,13 @@ module QA
               page.select_branch(branch_name)
 
               if allow_to_push
-                page.allow_devs_and_masters_to_push
+                page.allow_devs_and_maintainers_to_push
               else
                 page.allow_no_one_to_push
               end
 
               if allow_to_merge
-                page.allow_devs_and_masters_to_merge
+                page.allow_devs_and_maintainers_to_merge
               else
                 page.allow_no_one_to_merge
               end
