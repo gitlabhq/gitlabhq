@@ -4,5 +4,9 @@ FactoryBot.define do
     enabled true
     domain "example.com"
     deploy_strategy :continuous
+
+    trait :manual do
+      deploy_strategy :manual
+    end
   end
 end
