@@ -279,7 +279,6 @@ describe API::Commits do
         expect(json_response['committer_email']).to eq(user.email)
       end
 
-<<<<<<< HEAD
       it 'does not call the metrics using access token authentication' do
         stub_licensed_features(ide: true)
 
@@ -288,8 +287,6 @@ describe API::Commits do
         expect_any_instance_of(::Gitlab::Metrics::MultiFileEditor).not_to receive(:record)
       end
 
-=======
->>>>>>> upstream/master
       it 'returns a 400 bad request if file exists' do
         post api(url, user), invalid_c_params
 
