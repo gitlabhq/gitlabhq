@@ -224,28 +224,23 @@ describe Geo::RepositorySyncService do
           allow(repository).to receive(:fetch_as_mirror)
             .with(url_to_repo, remote_name: 'geo', forced: true)
             .and_raise(Gitlab::Shell::Error.new('shell error'))
+        end
+
+        it 'sets correct values for registry record' do
+          subject.execute
+
+          expect(registry).to have_attributes(last_repository_synced_at: be_present,
+                                              last_repository_successful_sync_at: nil,
+                                              repository_retry_count: 1,
+                                              repository_retry_at: be_present,
+                                              last_repository_sync_failure: 'Error syncing repository: shell error'
+                                             )
+        end
+
+        it 'calls repository cleanup' do
+          expect(repository).to receive(:clean_stale_repository_files)
 
           subject.execute
-        end
-
-        it 'sets last_repository_synced_at' do
-          expect(registry.last_repository_synced_at).not_to be_nil
-        end
-
-        it 'resets last_repository_successful_sync_at' do
-          expect(registry.last_repository_successful_sync_at).to be_nil
-        end
-
-        it 'resets repository_retry_count' do
-          expect(registry.repository_retry_count).to eq(1)
-        end
-
-        it 'resets repository_retry_at' do
-          expect(registry.repository_retry_at).to be_present
-        end
-
-        it 'sets last_repository_sync_failure' do
-          expect(registry.last_repository_sync_failure).to eq('Error syncing repository: shell error')
         end
       end
     end
