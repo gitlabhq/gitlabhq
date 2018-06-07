@@ -213,47 +213,20 @@ module Gitlab
       end
 
       def create_from_bundle(bundle_path)
-        request = Gitaly::CreateRepositoryFromBundleRequest.new(repository: @gitaly_repo)
-        enum = Enumerator.new do |y|
-          File.open(bundle_path, 'rb') do |f|
-            while data = f.read(MAX_MSG_SIZE)
-              request.data = data
-
-              y.yield request
-
-              request = Gitaly::CreateRepositoryFromBundleRequest.new
-            end
-          end
-        end
-
-        GitalyClient.call(
-          @storage,
-          :repository_service,
+        gitaly_repo_stream_request(
+          bundle_path,
           :create_repository_from_bundle,
-          enum,
-          timeout: GitalyClient.default_timeout
+          Gitaly::CreateRepositoryFromBundleRequest,
+          GitalyClient.default_timeout
         )
       end
 
       def restore_custom_hooks(custom_hooks_path)
-        request = Gitaly::RestoreCustomHooksRequest.new(repository: @gitaly_repo)
-        enum = Enumerator.new do |y|
-          File.open(custom_hooks_path, 'rb') do |f|
-            while data = f.read(MAX_MSG_SIZE)
-              request.data = data
-
-              y.yield request
-              request = Gitaly::RestoreCustomHooksRequest.new
-            end
-          end
-        end
-
-        GitalyClient.call(
-          @storage,
-          :repository_service,
+        gitaly_repo_stream_request(
+          custom_hooks_path,
           :restore_custom_hooks,
-          enum,
-          timeout: GitalyClient.default_timeout
+          Gitaly::RestoreCustomHooksRequest,
+          GitalyClient.default_timeout
         )
       end
 
@@ -332,6 +305,30 @@ module Gitlab
       def search_files_by_content(ref, query)
         request = Gitaly::SearchFilesByContentRequest.new(repository: @gitaly_repo, ref: ref, query: query)
         GitalyClient.call(@storage, :repository_service, :search_files_by_content, request).flat_map(&:matches)
+      end
+
+      private
+
+      def gitaly_repo_stream_request(file_path, rpc_name, request_class, timeout)
+        request = request_class.new(repository: @gitaly_repo)
+        enum = Enumerator.new do |y|
+          File.open(file_path, 'rb') do |f|
+            while data = f.read(MAX_MSG_SIZE)
+              request.data = data
+
+              y.yield request
+              request = request_class.new
+            end
+          end
+        end
+
+        GitalyClient.call(
+          @storage,
+          :repository_service,
+          rpc_name,
+          enum,
+          timeout: timeout
+        )
       end
     end
   end
