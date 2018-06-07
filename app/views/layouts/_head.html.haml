@@ -25,7 +25,7 @@
   %title= page_title(site_name)
   %meta{ name: "description", content: page_description }
 
-  = favicon_link_tag favicon, id: 'favicon'
+  = favicon_link_tag favicon, id: 'favicon', data: { original_href: favicon }, type: 'image/png'
 
   = stylesheet_link_tag "application", media: "all"
   = stylesheet_link_tag "print",       media: "print"

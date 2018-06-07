@@ -265,7 +265,7 @@ class JiraService < IssueTrackerService
         title: title,
         status: status,
         icon: {
-          title: 'GitLab', url16x16: asset_url('favicon.ico', host: gitlab_config.url)
+          title: 'GitLab', url16x16: asset_url(Gitlab::Favicon.main, host: gitlab_config.url)
         }
       }
     }

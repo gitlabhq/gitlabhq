@@ -7,16 +7,7 @@ class StatusEntity < Grape::Entity
   expose :details_path
 
   expose :favicon do |status|
-    dir =
-      if Gitlab::Utils.to_boolean(ENV['CANARY'])
-        File.join('ci_favicons', 'canary')
-      elsif Rails.env.development?
-        File.join('ci_favicons', 'dev')
-      else
-        'ci_favicons'
-      end
-
-    ActionController::Base.helpers.image_path(File.join(dir, "#{status.favicon}.ico"))
+    Gitlab::Favicon.status_overlay(status.favicon)
   end
 
   expose :action, if: -> (status, _) { status.has_action? } do

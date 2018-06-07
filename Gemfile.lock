@@ -499,6 +499,7 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
     mimemagic (0.3.0)
+    mini_magick (4.8.0)
     mini_mime (1.0.0)
     mini_portile2 (2.3.0)
     minitest (5.7.0)
@@ -1082,6 +1083,7 @@ DEPENDENCIES
   loofah (~> 2.2)
   mail_room (~> 0.9.1)
   method_source (~> 0.8)
+  mini_magick
   minitest (~> 5.7.0)
   mousetrap-rails (~> 1.4.6)
   mysql2 (~> 0.4.10)
