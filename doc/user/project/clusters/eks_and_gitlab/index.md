@@ -38,7 +38,7 @@ Give the project a name, and then select `Create project`.
 
 ## Connecting the EKS cluster
 
-From the left side bar, hover over `CI/CD` and select `Kubernetes`, then click on `Add Kubernetes cluster`, and finally `Add an existing Kubernetes cluster`.
+From the left side bar, hover over `Operations` and select `Kubernetes`, then click on `Add Kubernetes cluster`, and finally `Add an existing Kubernetes cluster`.
 
 A few details from the EKS cluster will be required to connect it to GitLab.
 
