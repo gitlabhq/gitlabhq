@@ -2,8 +2,8 @@ class ProjectAutoDevops < ActiveRecord::Base
   belongs_to :project
 
   enum deploy_strategy: {
-    manual: 0,
-    continuous: 1
+    continuous: 0,
+    manual: 1
   }
 
   scope :enabled, -> { where(enabled: true) }
