@@ -9,7 +9,7 @@ module API
         success Entities::Runner
       end
       params do
-        optional :scope, type: String, values: %w[active paused online offline],
+        optional :scope, type: String, values: Ci::Runner::AVAILABLE_STATUSES,
                          desc: 'The scope of specific runners to show'
         use :pagination
       end
@@ -22,7 +22,7 @@ module API
         success Entities::Runner
       end
       params do
-        optional :scope, type: String, values: %w[active paused online offline specific shared],
+        optional :scope, type: String, values: Ci::Runner::AVAILABLE_SCOPES,
                          desc: 'The scope of specific runners to show'
         use :pagination
       end
@@ -114,7 +114,7 @@ module API
         success Entities::Runner
       end
       params do
-        optional :scope, type: String, values: %w[active paused online offline specific shared],
+        optional :scope, type: String, values: Ci::Runner::AVAILABLE_SCOPES,
                          desc: 'The scope of specific runners to show'
         use :pagination
       end

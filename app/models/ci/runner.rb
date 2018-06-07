@@ -11,7 +11,9 @@ module Ci
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
     ONLINE_CONTACT_TIMEOUT = 1.hour
     UPDATE_DB_RUNNER_INFO_EVERY = 40.minutes
-    AVAILABLE_SCOPES = %w[specific shared active paused online].freeze
+    AVAILABLE_TYPES = %w[specific shared].freeze
+    AVAILABLE_STATUSES = %w[active paused online offline].freeze
+    AVAILABLE_SCOPES = (AVAILABLE_TYPES + AVAILABLE_STATUSES).freeze
     FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level maximum_timeout_human_readable].freeze
 
     ignore_column :is_shared
