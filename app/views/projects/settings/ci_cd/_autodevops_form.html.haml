@@ -39,5 +39,8 @@
               - if cluster_ingress_ip = cluster_ingress_ip(@project)
                 = s_('%{nip_domain} can be used as an alternative to a custom domain.').html_safe % { nip_domain: "<code>#{cluster_ingress_ip}.nip.io</code>".html_safe }
               = link_to icon('question-circle'), help_page_path('topics/autodevops/index.md', anchor: 'auto-devops-base-domain'), target: '_blank'
+            .form-text.text-muted
+              = s_('CICD|Do not set up a domain here if you are setting up multiple Kubernetes clusters with Auto DevOps.')
+              = link_to icon('question-circle'), help_page_path('topics/autodevops/index.md', anchor: 'using-multiple-kubernetes-clusters'), target: '_blank'
 
           = f.submit 'Save changes', class: "btn btn-success prepend-top-15"

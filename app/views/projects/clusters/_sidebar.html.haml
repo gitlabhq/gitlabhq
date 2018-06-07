@@ -5,3 +5,6 @@
 %p
   - link = link_to(_('Kubernetes'), help_page_path('user/project/clusters/index'), target: '_blank', rel: 'noopener noreferrer')
   = s_('ClusterIntegration|Learn more about %{link_to_documentation}').html_safe % { link_to_documentation: link }
+%p
+  - docs_link = link_to s_('If you are setting up multiple clusters and are using Auto DevOps,|read this first'), help_page_path('topics/autodevops/index.md', anchor: 'using-multiple-kubernetes-clusters'), target: '_blank'
+  = s_('ClusterIntegration|If you are setting up multiple clusters and are using Auto DevOps, %{docs_link}.').html_safe % { docs_link: docs_link }
