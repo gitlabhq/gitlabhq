@@ -32,7 +32,7 @@ module Gitlab
         # need to be added to the application settings. To prevent Rake tasks
         # and other callers from failing, use any loaded settings and return
         # defaults for missing columns.
-        if ActiveRecord::Migrator.needs_migration?
+        if ENV['FAKE_APPLICATION_SETTINGS_IF_NEED_MIGRATION'] == 'true' && ActiveRecord::Migrator.needs_migration?
           return fake_application_settings(current_settings&.attributes)
         end
 
