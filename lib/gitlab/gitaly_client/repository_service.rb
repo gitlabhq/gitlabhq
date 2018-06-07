@@ -213,12 +213,32 @@ module Gitlab
       end
 
       def create_from_bundle(bundle_path)
-        gitaly_repo_stream_request(
-          bundle_path,
+        request = Gitaly::CreateRepositoryFromBundleRequest.new(repository: @gitaly_repo)
+        enum = Enumerator.new do |y|
+          File.open(bundle_path, 'rb') do |f|
+            while data = f.read(MAX_MSG_SIZE)
+              request.data = data
+
+              y.yield request
+              request = Gitaly::CreateRepositoryFromBundleRequest.new
+            end
+          end
+        end
+
+        GitalyClient.call(
+          @storage,
+          :repository_service,
           :create_repository_from_bundle,
-          Gitaly::CreateRepositoryFromBundleRequest,
-          Gitaly.default_timeout
+          enum,
+          timeout: Gitaly.default_timeout
         )
+
+        # gitaly_repo_stream_request(
+        #   bundle_path,
+        #   :create_repository_from_bundle,
+        #   Gitaly::CreateRepositoryFromBundleRequest,
+        #   Gitaly.default_timeout
+        # )
       end
 
       def restore_custom_hooks(custom_hooks_path)
