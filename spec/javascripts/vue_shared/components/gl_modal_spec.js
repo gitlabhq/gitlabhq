@@ -190,4 +190,37 @@ describe('GlModal', () => {
       });
     });
   });
+
+  describe('handling sizes', () => {
+    it('should render modal-sm', () => {
+      vm = mountComponent(modalComponent, {
+        modalSize: 'sm',
+      });
+
+      expect(vm.$el.querySelector('.modal-dialog').classList.contains('modal-sm')).toEqual(true);
+    });
+
+    it('should render modal-lg', () => {
+      vm = mountComponent(modalComponent, {
+        modalSize: 'lg',
+      });
+
+      expect(vm.$el.querySelector('.modal-dialog').classList.contains('modal-lg')).toEqual(true);
+    });
+
+    it('should not add modal size classes when md size is passed', () => {
+      vm = mountComponent(modalComponent, {
+        modalSize: 'md',
+      });
+
+      expect(vm.$el.querySelector('.modal-dialog').classList.contains('modal-md')).toEqual(false);
+    });
+
+    it('should not add modal size classes by default', () => {
+      vm = mountComponent(modalComponent, {});
+
+      expect(vm.$el.querySelector('.modal-dialog').classList.contains('modal-sm')).toEqual(false);
+      expect(vm.$el.querySelector('.modal-dialog').classList.contains('modal-lg')).toEqual(false);
+    });
+  });
 });
