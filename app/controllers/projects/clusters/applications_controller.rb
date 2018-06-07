@@ -20,7 +20,8 @@ class Projects::Clusters::ApplicationsController < Projects::ApplicationControll
     Clusters::Applications::ScheduleInstallationService.new(project, current_user).execute(application)
 
     head :no_content
-  rescue StandardError
+  rescue StandardError => e
+    Rails.logger.error("Request to install a cluster application failed: #{e.message}")
     head :bad_request
   end
 
