@@ -14,7 +14,8 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
       disk_path: 'foo',
       repository: repository,
       create_wiki: true,
-      import_state: import_state
+      import_state: import_state,
+      lfs_enabled?: true
     )
   end
 

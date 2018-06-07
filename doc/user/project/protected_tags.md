@@ -8,12 +8,12 @@ This feature evolved out of [Protected Branches](protected_branches.md)
 
 ## Overview
 
-Protected tags will prevent anyone from updating or deleting the tag, as and will prevent creation of matching tags based on the permissions you have selected. By default, anyone without Master permission will be prevented from creating tags.
+Protected tags will prevent anyone from updating or deleting the tag, as and will prevent creation of matching tags based on the permissions you have selected. By default, anyone without Maintainer permission will be prevented from creating tags.
 
 
 ## Configuring protected tags
 
-To protect a tag, you need to have at least Master permission level.
+To protect a tag, you need to have at least Maintainer permission level.
 
 1. Navigate to the project's Settings -> Repository page
 

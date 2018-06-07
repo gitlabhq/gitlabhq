@@ -85,7 +85,7 @@ request is merged.
 
 This option is also visible in an existing merge request next to the merge
 request button and can be selected/deselected before merging. It's only visible
-to users with [Master permissions](../../permissions.md) in the source project.
+to users with [Maintainer permissions](../../permissions.md) in the source project.
 
 If the user viewing the merge request does not have the correct permissions to
 remove the source branch and the source branch is set for removal, the merge

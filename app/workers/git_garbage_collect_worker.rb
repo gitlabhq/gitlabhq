@@ -29,7 +29,7 @@ class GitGarbageCollectWorker
     task = task.to_sym
     cmd = command(task)
 
-    gitaly_migrate(GITALY_MIGRATED_TASKS[task]) do |is_enabled|
+    gitaly_migrate(GITALY_MIGRATED_TASKS[task], status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
       if is_enabled
         gitaly_call(task, project.repository.raw_repository)
       else
@@ -114,8 +114,8 @@ class GitGarbageCollectWorker
     %W[git -c repack.writeBitmaps=#{config_value}]
   end
 
-  def gitaly_migrate(method, &block)
-    Gitlab::GitalyClient.migrate(method, &block)
+  def gitaly_migrate(method, status: Gitlab::GitalyClient::MigrationStatus::OPT_IN, &block)
+    Gitlab::GitalyClient.migrate(method, status: status, &block)
   rescue GRPC::NotFound => e
     Gitlab::GitLogger.error("#{method} failed:\nRepository not found")
     raise Gitlab::Git::Repository::NoRepository.new(e)

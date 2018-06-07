@@ -406,7 +406,7 @@ and further delves into the principles of GitLab CI/CD than discussed in this ar
 
 We need to be able to deploy to AWS with our AWS account credentials, but we certainly
 don't want to put secrets into source code. Luckily GitLab provides a solution for this
-with [Secret Variables](../../../ci/variables/README.md). This can get complicated
+with [Variables](../../../ci/variables/README.md). This can get complicated
 due to [IAM](https://aws.amazon.com/iam/) management. As a best practice, you shouldn't
 use root security credentials. Proper IAM credential management is beyond the scope of this
 article, but AWS will remind you that using root credentials is unadvised and against their
@@ -428,7 +428,7 @@ fully understand [IAM Best Practices in AWS](http://docs.aws.amazon.com/IAM/late
 To deploy our build artifacts, we need to install the [AWS CLI](https://aws.amazon.com/cli/) on
 the Shared Runner. The Shared Runner also needs to be able to authenticate with your AWS
 account to deploy the artifacts. By convention, AWS CLI will look for `AWS_ACCESS_KEY_ID`
-and `AWS_SECRET_ACCESS_KEY`. GitLab's CI gives us a way to pass the secret variables we
+and `AWS_SECRET_ACCESS_KEY`. GitLab's CI gives us a way to pass the variables we
 set up in the prior section using the `variables` portion of the `deploy` job. At the end,
 we add directives to ensure deployment `only` happens on pushes to `master`. This way, every
 single branch still runs through CI, and only merging (or committing directly) to master will

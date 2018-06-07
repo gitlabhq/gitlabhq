@@ -12,26 +12,29 @@ describe('IDE merge requests mutations', () => {
 
   describe(types.REQUEST_MERGE_REQUESTS, () => {
     it('sets loading to true', () => {
-      mutations[types.REQUEST_MERGE_REQUESTS](mockedState);
+      mutations[types.REQUEST_MERGE_REQUESTS](mockedState, 'created');
 
-      expect(mockedState.isLoading).toBe(true);
+      expect(mockedState.created.isLoading).toBe(true);
     });
   });
 
   describe(types.RECEIVE_MERGE_REQUESTS_ERROR, () => {
     it('sets loading to false', () => {
-      mutations[types.RECEIVE_MERGE_REQUESTS_ERROR](mockedState);
+      mutations[types.RECEIVE_MERGE_REQUESTS_ERROR](mockedState, 'created');
 
-      expect(mockedState.isLoading).toBe(false);
+      expect(mockedState.created.isLoading).toBe(false);
     });
   });
 
   describe(types.RECEIVE_MERGE_REQUESTS_SUCCESS, () => {
     it('sets merge requests', () => {
       gon.gitlab_url = gl.TEST_HOST;
-      mutations[types.RECEIVE_MERGE_REQUESTS_SUCCESS](mockedState, mergeRequests);
+      mutations[types.RECEIVE_MERGE_REQUESTS_SUCCESS](mockedState, {
+        type: 'created',
+        data: mergeRequests,
+      });
 
-      expect(mockedState.mergeRequests).toEqual([
+      expect(mockedState.created.mergeRequests).toEqual([
         {
           id: 1,
           iid: 1,
@@ -47,9 +50,9 @@ describe('IDE merge requests mutations', () => {
     it('clears merge request array', () => {
       mockedState.mergeRequests = ['test'];
 
-      mutations[types.RESET_MERGE_REQUESTS](mockedState);
+      mutations[types.RESET_MERGE_REQUESTS](mockedState, 'created');
 
-      expect(mockedState.mergeRequests).toEqual([]);
+      expect(mockedState.created.mergeRequests).toEqual([]);
     });
   });
 });
