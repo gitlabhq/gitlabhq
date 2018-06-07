@@ -39,7 +39,7 @@ Before proceeding, make sure the following requirements are met:
 If all of the above requirements are met, you can proceed to create and add a
 new Kubernetes cluster that will be hosted on GKE to your project:
 
-1. Navigate to your project's **CI/CD > Kubernetes** page.
+1. Navigate to your project's **Operations > Kubernetes** page.
 1. Click on **Add Kubernetes cluster**.
 1. Click on **Create with GKE**.
 1. Connect your Google account if you haven't done already by clicking the
@@ -70,7 +70,7 @@ You need Maintainer [permissions] and above to access the Kubernetes page.
 
 To add an existing Kubernetes cluster to your project:
 
-1. Navigate to your project's **CI/CD > Kubernetes** page.
+1. Navigate to your project's **Operations > Kubernetes** page.
 1. Click on **Add Kubernetes cluster**.
 1. Click on **Add an existing Kubernetes cluster** and fill in the details:
     - **Kubernetes cluster name** (required) - The name you wish to give the cluster.

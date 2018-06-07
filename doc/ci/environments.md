@@ -114,7 +114,7 @@ Let's now see how that information is exposed within GitLab.
 
 ## Viewing the current status of an environment
 
-The environment list under your project's **Pipelines ➔ Environments**, is
+The environment list under your project's **Operations > Environments**, is
 where you can find information of the last deployment status of an environment.
 
 Here's how the Environments page looks so far.
@@ -167,7 +167,7 @@ that works.
 You can't control everything, so sometimes things go wrong. When that unfortunate
 time comes GitLab has you covered. Simply by clicking the **Rollback** button
 that can be found in the deployments page
-(**Pipelines ➔ Environments ➔ `environment name`**) you can relaunch the
+(**Operations > Environments > `environment name`**) you can relaunch the
 job with the commit associated with it.
 
 >**Note:**
