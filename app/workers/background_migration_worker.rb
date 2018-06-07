@@ -16,7 +16,7 @@ class BackgroundMigrationWorker
   # class_name - The class name of the background migration to run.
   # arguments - The arguments to pass to the migration class.
   def perform(class_name, arguments = [])
-    should_perform, ttl = perform_and_ttl(class_name)
+    should_perform, ttl = perform_and_ttl(class_name)aaaaaaaaaa
 
     if should_perform
       Gitlab::BackgroundMigration.perform(class_name, arguments)
