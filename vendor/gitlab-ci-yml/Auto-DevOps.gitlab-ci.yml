@@ -10,6 +10,7 @@
 # Test jobs may be disabled by setting environment variables:
 # * test: TEST_DISABLED
 # * code_quality: CODE_QUALITY_DISABLED
+# * license_management: LICENSE_MANAGEMENT_DISABLED
 # * performance: PERFORMANCE_DISABLED
 # * sast: SAST_DISABLED
 # * dependency_scanning: DEPENDENCY_SCANNING_DISABLED
@@ -107,6 +108,22 @@ code_quality:
   except:
     variables:
       - $CODE_QUALITY_DISABLED
+
+license_management:
+  image: docker:stable
+  variables:
+    DOCKER_DRIVER: overlay2
+  allow_failure: true
+  services:
+    - docker:stable-dind
+  script:
+    - setup_docker
+    - license_management
+  artifacts:
+    paths: [gl-license-management-report.json]
+  except:
+    variables:
+      - $LICENSE_MANAGEMENT_DISABLED
 
 performance:
   stage: performance
@@ -460,6 +477,18 @@ rollout 100%:
                --volume "$PWD":/code \
                --volume /var/run/docker.sock:/var/run/docker.sock \
                "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
+  }
+
+  function license_management() {
+    if echo $GITLAB_FEATURES |grep license_management > /dev/null ; then
+      # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable"
+      LICENSE_MANAGEMENT_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+
+      docker run --volume "$PWD:/code" \
+                 "registry.gitlab.com/gitlab-org/security-products/license-management:$LICENSE_MANAGEMENT_VERSION" analyze /code
+    else
+      echo "License management is not available in your subscription"
+    fi
   }
 
   function sast() {
