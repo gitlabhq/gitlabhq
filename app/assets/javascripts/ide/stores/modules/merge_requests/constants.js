@@ -1,6 +1,6 @@
 export const scopes = {
-  assignedToMe: 'assigned-to-me',
-  createdByMe: 'created-by-me',
+  assigned: 'assigned-to-me',
+  created: 'created-by-me',
 };
 
 export const states = {

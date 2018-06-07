@@ -11,7 +11,7 @@ You can leave a comment in the following places:
 - commit diffs
 
 The comment area supports [Markdown] and [quick actions]. One can edit their
-own comment at any time, and anyone with [Master access level][permissions] or
+own comment at any time, and anyone with [Maintainer access level][permissions] or
 higher can also edit a comment made by someone else.
 
 You could also reply to the notification email in order to reply to a comment,
@@ -253,7 +253,7 @@ to newer issues or merge requests.
 - The people participating in the discussion are trolling, abusive, or otherwise
 being unproductive.
 
-In these cases, a user with Master permissions or higher in the project can lock (and unlock)
+In these cases, a user with Maintainer permissions or higher in the project can lock (and unlock)
 an issue or a merge request, using the "Lock" section in the sidebar:
 
 | Unlock | Lock |

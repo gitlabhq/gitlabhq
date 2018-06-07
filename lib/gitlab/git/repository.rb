@@ -395,12 +395,12 @@ module Gitlab
         nil
       end
 
-      def archive_metadata(ref, storage_path, format = "tar.gz", append_sha:)
+      def archive_metadata(ref, storage_path, project_path, format = "tar.gz", append_sha:)
         ref ||= root_ref
         commit = Gitlab::Git::Commit.find(self, ref)
         return {} if commit.nil?
 
-        prefix = archive_prefix(ref, commit.id, append_sha: append_sha)
+        prefix = archive_prefix(ref, commit.id, project_path, append_sha: append_sha)
 
         {
           'ArchivePrefix' => prefix,
@@ -412,16 +412,12 @@ module Gitlab
 
       # This is both the filename of the archive (missing the extension) and the
       # name of the top-level member of the archive under which all files go
-      #
-      # FIXME: The generated prefix is incorrect for projects with hashed
-      # storage enabled
-      def archive_prefix(ref, sha, append_sha:)
+      def archive_prefix(ref, sha, project_path, append_sha:)
         append_sha = (ref != sha) if append_sha.nil?
 
-        project_name = self.name.chomp('.git')
         formatted_ref = ref.tr('/', '-')
 
-        prefix_segments = [project_name, formatted_ref]
+        prefix_segments = [project_path, formatted_ref]
         prefix_segments << sha if append_sha
 
         prefix_segments.join('-')
@@ -1547,7 +1543,7 @@ module Gitlab
         end
       end
 
-      def rev_list(including: [], excluding: [], objects: false, &block)
+      def rev_list(including: [], excluding: [], options: [], objects: false, &block)
         args = ['rev-list']
 
         args.push(*rev_list_param(including))
@@ -1559,6 +1555,10 @@ module Gitlab
         end
 
         args.push('--objects') if objects
+
+        if options.any?
+          args.push(*options)
+        end
 
         run_git!(args, lazy_block: block)
       end

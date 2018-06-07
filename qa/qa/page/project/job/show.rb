@@ -4,7 +4,7 @@ module QA::Page
       COMPLETED_STATUSES = %w[passed failed canceled blocked skipped manual].freeze # excludes created, pending, running
       PASSED_STATUS = 'passed'.freeze
 
-      view 'app/views/projects/jobs/show.html.haml' do
+      view 'app/views/shared/builds/_build_output.html.haml' do
         element :build_output, '.js-build-output'
       end
 
