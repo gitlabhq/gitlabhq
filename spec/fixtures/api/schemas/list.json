@@ -37,5 +37,5 @@
     "title": { "type": "string" },
     "position": { "type": ["integer", "null"] }
   },
-  "additionalProperties": false
+  "additionalProperties": true
 }
