@@ -65,7 +65,6 @@ dropdown list in the "Already protected" area.
 
 If you don't choose any of those options while creating a protected branch,
 they are set to "Maintainers" by default.
-<<<<<<< HEAD
 
 ## Restricting push and merge access to certain users **[STARTER]**
 
@@ -81,8 +80,6 @@ access.
 Click **Protect** and the branch will appear in the "Protected branch" list.
 
 ![Roles and users list](img/protected_branches_select_roles_and_users_list.png)
-=======
->>>>>>> upstream/master
 
 ## Wildcard protected branches
 

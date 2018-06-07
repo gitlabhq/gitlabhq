@@ -516,7 +516,6 @@ msgstr ""
 msgid "Artifacts"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Ascending"
 msgstr ""
 
@@ -524,9 +523,6 @@ msgid "Ask your group maintainer to setup a group Runner."
 msgstr ""
 
 msgid "Assertion consumer service URL"
-=======
-msgid "Ask your group maintainer to setup a group Runner."
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Assign custom color like #FF0000"
@@ -2570,11 +2566,7 @@ msgstr ""
 msgid "GeoNodes|Loading nodes"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "GeoNodes|Local LFS objects"
-=======
-msgid "Group maintainers can register group runners in the %{link}"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "GeoNodes|Local attachments"

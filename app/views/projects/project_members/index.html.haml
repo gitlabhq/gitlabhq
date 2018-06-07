@@ -3,7 +3,6 @@
 
 .row.prepend-top-default
   .col-lg-12
-<<<<<<< HEAD
     - if project_can_be_shared?
       %h4
         Project members
@@ -16,21 +15,6 @@
           or
           %i Owners
 
-=======
-    %h4
-      Project members
-    - if can?(current_user, :admin_project_member, @project)
-      %p
-        You can add a new member to
-        %strong= @project.name
-        or share it with another group.
-    - else
-      %p
-        Members can be added by project
-        %i Maintainers
-        or
-        %i Owners
->>>>>>> upstream/master
     .light
       - if can_admin_project_members && project_can_be_shared?
         - if !membership_locked? && @project.allowed_to_share_with_group?
