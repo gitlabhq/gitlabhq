@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(version: 20180605213516) do
     t.integer "cached_markdown_version"
     t.text "new_project_guidelines"
     t.text "new_project_guidelines_html"
+    t.string "favicon"
     t.text "header_message"
     t.text "header_message_html"
     t.text "footer_message"

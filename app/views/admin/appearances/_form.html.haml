@@ -11,12 +11,31 @@
         = image_tag @appearance.header_logo_url, class: 'appearance-light-logo-preview'
         - if @appearance.persisted?
           %br
-          = link_to 'Remove header logo', header_logos_admin_appearances_path, data: { confirm: "Header logo will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-logo"
+          = link_to 'Remove header logo', header_logos_admin_appearances_path, data: { confirm: "Header logo will be removed. Are you sure?"}, method: :delete, class: "btn btn-inverted btn-remove btn-sm remove-logo"
         %hr
       = f.hidden_field :header_logo_cache
       = f.file_field :header_logo, class: ""
       .hint
         Maximum file size is 1MB. Pages are optimized for a 28px tall header logo
+
+  %fieldset.app_logo
+    %legend
+      Favicon:
+  .form-group.row
+    = f.label :favicon, 'Favicon', class: 'col-sm-2 col-form-label'
+    .col-sm-10
+      - if @appearance.favicon?
+        = image_tag @appearance.favicon.favicon_main.url, class: 'appearance-light-logo-preview'
+        - if @appearance.persisted?
+          %br
+          = link_to 'Remove favicon', favicon_admin_appearances_path, data: { confirm: "Favicon will be removed. Are you sure?"}, method: :delete, class: "btn btn-inverted btn-remove btn-sm remove-logo"
+        %hr
+      = f.hidden_field :favicon_cache
+      = f.file_field :favicon, class: ''
+      .hint
+        Maximum file size is 1MB. Allowed image formats are #{favicon_extension_whitelist}.
+        %br
+        The resulting favicons will be cropped to be square and scaled down to a size of 32x32 px.
 
   = render partial: 'admin/appearances/system_header_footer_form', locals: { form: f }
 
@@ -40,7 +59,7 @@
         = image_tag @appearance.logo_url, class: 'appearance-logo-preview'
         - if @appearance.persisted?
           %br
-          = link_to 'Remove logo', logo_admin_appearances_path, data: { confirm: "Logo will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-logo"
+          = link_to 'Remove logo', logo_admin_appearances_path, data: { confirm: "Logo will be removed. Are you sure?"}, method: :delete, class: "btn btn-inverted btn-remove btn-sm remove-logo"
         %hr
       = f.hidden_field :logo_cache
       = f.file_field :logo, class: ""

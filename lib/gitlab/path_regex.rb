@@ -30,7 +30,7 @@ module Gitlab
       dashboard
       deploy.html
       explore
-      favicon.ico
+      favicon.png
       files
       groups
       health_check

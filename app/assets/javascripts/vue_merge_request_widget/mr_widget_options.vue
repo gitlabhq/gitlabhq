@@ -36,7 +36,7 @@ import {
   notify,
   SourceBranchRemovalStatus,
 } from './dependencies';
-import { setFavicon } from '../lib/utils/common_utils';
+import { setFaviconOverlay } from '../lib/utils/common_utils';
 
 export default {
   el: '#js-vue-mr-widget',
@@ -160,8 +160,9 @@ export default {
     },
     setFaviconHelper() {
       if (this.mr.ciStatusFaviconPath) {
-        setFavicon(this.mr.ciStatusFaviconPath);
+        return setFaviconOverlay(this.mr.ciStatusFaviconPath);
       }
+      return Promise.resolve();
     },
     fetchDeployments() {
       return this.service.fetchDeployments()

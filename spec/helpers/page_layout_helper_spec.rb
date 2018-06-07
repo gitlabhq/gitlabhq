@@ -40,28 +40,6 @@ describe PageLayoutHelper do
     end
   end
 
-  describe 'favicon' do
-    it 'defaults to favicon.ico' do
-      allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('production'))
-      expect(helper.favicon).to eq 'favicon.ico'
-    end
-
-    it 'has blue favicon for development' do
-      allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('development'))
-      expect(helper.favicon).to eq 'favicon-green.ico'
-    end
-
-    it 'has yellow favicon for canary' do
-      stub_env('CANARY', 'true')
-      expect(helper.favicon).to eq 'favicon-yellow.ico'
-    end
-
-    it 'has yellow favicon for canary' do
-      stub_env('CANARY', 'true')
-      expect(helper.favicon).to eq 'favicon-yellow.ico'
-    end
-  end
-
   describe 'page_image' do
     it 'defaults to the GitLab logo' do
       expect(helper.page_image).to match_asset_path 'assets/gitlab_logo.png'

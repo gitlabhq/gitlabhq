@@ -16,6 +16,7 @@ class Appearance < ActiveRecord::Base
 
   mount_uploader :logo,         AttachmentUploader
   mount_uploader :header_logo,  AttachmentUploader
+  mount_uploader :favicon,      FaviconUploader
 
   # Overrides CacheableAttributes.current_without_cache
   def self.current_without_cache
