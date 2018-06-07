@@ -54,11 +54,11 @@ describe Gitlab::BackgroundMigration::MigrateLegacyArtifacts, :migration, schema
         expect(job_artifacts.count).to be_zero
       end
 
-      context 'when the record exists inside of the range of a background migration' do
-        let(:range) { [1, 1] }
+      context 'when the record exists inside of the id_list of a background migration' do
+        let(:id_list) { [1] }
 
         it 'migrates' do
-          described_class.new.perform(*range)
+          described_class.new.perform(id_list)
 
           expect(job_artifacts.order(:id).pluck('project_id, job_id, file_type, file_store, size, expire_at, file, file_sha256, file_location'))
             .to eq([[project_id, job_id, file_type_archive,  file_store, artifacts_archive_attributes[:artifacts_size], artifacts_expire_at, 'archive.zip', nil, file_location_legacy_path],
@@ -74,7 +74,7 @@ describe Gitlab::BackgroundMigration::MigrateLegacyArtifacts, :migration, schema
           it 'fills file_store by 1 (ObjectStorage::Store::LOCAL)' do
             expect(jobs.pluck('artifacts_file_store, artifacts_metadata_store')).to eq([[nil, nil]])
 
-            described_class.new.perform(*range)
+            described_class.new.perform(id_list)
 
             expect(job_artifacts.pluck('file_store')).to eq([1, 1])
           end
@@ -87,7 +87,7 @@ describe Gitlab::BackgroundMigration::MigrateLegacyArtifacts, :migration, schema
             end
 
             it 'migrates metadata too' do
-              described_class.new.perform(*range)
+              described_class.new.perform(id_list)
 
               expect(job_artifacts.where(job_id: job_id, file_type: 2).pluck('file')).to eq(['metadata.gz'])
             end
@@ -100,17 +100,17 @@ describe Gitlab::BackgroundMigration::MigrateLegacyArtifacts, :migration, schema
             end
 
             it 'does not migrate' do
-              expect { described_class.new.perform(*range) }.not_to change { job_artifacts.count }
+              expect { described_class.new.perform(id_list) }.not_to change { job_artifacts.count }
             end
           end
         end
       end
 
-      context 'when the record exists outside of the range of a background migration' do
-        let(:range) { [2, 2] }
+      context 'when the record exists outside of the id_list of a background migration' do
+        let(:id_list) { [2] }
 
         it 'does not migrate' do
-          described_class.new.perform(*range)
+          described_class.new.perform(id_list)
 
           expect(job_artifacts.count).to be_zero
         end
@@ -127,11 +127,11 @@ describe Gitlab::BackgroundMigration::MigrateLegacyArtifacts, :migration, schema
         expect(jobs.pluck('artifacts_metadata, artifacts_metadata_store')).to eq([[nil, nil]])
       end
 
-      context 'when the record exists inside of the range of a background migration' do
-        let(:range) { [1, 1] }
+      context 'when the record exists inside of the id_list of a background migration' do
+        let(:id_list) { [1] }
 
         it 'does not migrate' do
-          described_class.new.perform(*range)
+          described_class.new.perform(id_list)
 
           expect(job_artifacts.count).to be_zero
         end

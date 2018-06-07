@@ -902,6 +902,50 @@ into similar problems in the future (e.g. when new tables are created).
         end
       end
 
+      # Queues background migration jobs for an entire table, batched by ID list.
+      # Each job is scheduled with a `delay_interval` in between.
+      # If you use a small interval, then some jobs may run at the same time.
+      #
+      # model_class - The table or relation being iterated over
+      # job_class_name - The background migration job class as a string
+      # delay_interval - The duration between each job's scheduled time (must respond to `to_f`)
+      # batch_size - The maximum number of rows per job
+      #
+      # Example:
+      #
+      #     class Route < ActiveRecord::Base
+      #       include EachBatch
+      #       self.table_name = 'routes'
+      #     end
+      #
+      #     queue_background_migration_jobs_by_range_at_intervals(Route, 'ProcessRoutes', 1.minute)
+      #
+      # Where the model_class includes EachBatch, and the background migration exists:
+      #
+      #     class Gitlab::BackgroundMigration::ProcessRoutes
+      #       def perform(id_list)
+      #         # do something
+      #       end
+      #     end
+      def queue_background_migration_jobs_by_list_at_intervals(model_class, job_class_name, delay_interval, batch_size: BACKGROUND_MIGRATION_BATCH_SIZE)
+        raise "#{model_class} does not have an ID to use for batch ranges" unless model_class.column_names.include?('id')
+
+        # To not overload the worker too much we enforce a minimum interval both
+        # when scheduling and performing jobs.
+        if delay_interval < BackgroundMigrationWorker::MIN_INTERVAL
+          delay_interval = BackgroundMigrationWorker::MIN_INTERVAL
+        end
+
+        model_class.each_batch(of: batch_size) do |relation, index|
+          id_list = relation.pluck('id')
+
+          # `BackgroundMigrationWorker.bulk_perform_in` schedules all jobs for
+          # the same time, which is not helpful in most cases where we wish to
+          # spread the work over time.
+          BackgroundMigrationWorker.perform_in(delay_interval * index, job_class_name, id_list)
+        end
+      end
+
       # Fetches indexes on a column by name for postgres.
       #
       # This will include indexes using an expression on the column, for example:

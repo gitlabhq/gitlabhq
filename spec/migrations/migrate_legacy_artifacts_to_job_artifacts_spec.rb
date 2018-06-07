@@ -32,7 +32,7 @@ describe MigrateLegacyArtifactsToJobArtifacts, :migration, :sidekiq do
         Timecop.freeze do
           migrate!
 
-          expect(migration_name).to be_scheduled_delayed_migration(5.minutes, 1, 6)
+          expect(migration_name).to be_scheduled_delayed_migration(5.minutes, 1, 3, 5, 6)
           expect(BackgroundMigrationWorker.jobs.size).to eq 1
         end
       end

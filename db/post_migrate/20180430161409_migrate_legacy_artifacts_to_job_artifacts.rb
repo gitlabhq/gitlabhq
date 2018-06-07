@@ -35,10 +35,10 @@ class MigrateLegacyArtifactsToJobArtifacts < ActiveRecord::Migration
 
     MigrateLegacyArtifactsToJobArtifacts::Build
       .with_legacy_artifacts.without_new_artifacts.tap do |relation|
-      queue_background_migration_jobs_by_range_at_intervals(relation,
-                                                            MIGRATION,
-                                                            5.minutes,
-                                                            batch_size: BATCH_SIZE)
+        queue_background_migration_jobs_by_list_at_intervals(relation,
+                                                             MIGRATION,
+                                                             5.minutes,
+                                                             batch_size: BATCH_SIZE)
     end
 
     remove_concurrent_index_by_name(:ci_builds, TMP_INDEX)

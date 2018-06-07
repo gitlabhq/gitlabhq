@@ -10,17 +10,17 @@ module Gitlab
       METADATA_FILE_TYPE = 2 # equal to Ci::JobArtifact.file_types['metadata']
       LEGACY_PATH_FILE_LOCATION = 1 # equal to Ci::JobArtifact.file_location['legacy_path']
 
-      def perform(start_id, stop_id)
+      def perform(id_list)
         ActiveRecord::Base.transaction do
-          insert_archives(start_id, stop_id)
-          insert_metadatas(start_id, stop_id)
-          delete_legacy_artifacts(start_id, stop_id)
+          insert_archives(id_list)
+          insert_metadatas(id_list)
+          delete_legacy_artifacts(id_list)
         end
       end
 
       private
 
-      def insert_archives(start_id, stop_id)
+      def insert_archives(id_list)
         ActiveRecord::Base.connection.execute <<-EOF.strip_heredoc
           INSERT INTO ci_job_artifacts (
                 project_id,
@@ -44,7 +44,7 @@ module Gitlab
                 COALESCE(artifacts_file_store, #{FILE_LOCAL_STORE}),
                 #{ARCHIVE_FILE_TYPE}
             FROM ci_builds
-          WHERE id BETWEEN #{start_id.to_i} AND #{stop_id.to_i}
+          WHERE id IN (#{id_list.join(',')})
                   AND artifacts_file <> ''
                   AND NOT EXISTS (
                     SELECT 1 FROM ci_job_artifacts
@@ -53,7 +53,7 @@ module Gitlab
         EOF
       end
 
-      def insert_metadatas(start_id, stop_id)
+      def insert_metadatas(id_list)
         ActiveRecord::Base.connection.execute <<-EOF.strip_heredoc
           INSERT INTO ci_job_artifacts (
                 project_id,
@@ -77,7 +77,7 @@ module Gitlab
                 COALESCE(artifacts_metadata_store, #{FILE_LOCAL_STORE}),
                 #{METADATA_FILE_TYPE}
             FROM ci_builds
-          WHERE id BETWEEN #{start_id.to_i} AND #{stop_id.to_i}
+          WHERE id IN (#{id_list.join(',')})
                   AND artifacts_file <> '' AND artifacts_metadata <> ''
                   AND NOT EXISTS (
                     SELECT 1 FROM ci_job_artifacts
@@ -86,7 +86,7 @@ module Gitlab
         EOF
       end
 
-      def delete_legacy_artifacts(start_id, stop_id)
+      def delete_legacy_artifacts(id_list)
         ActiveRecord::Base.connection.execute <<-EOF.strip_heredoc
           UPDATE ci_builds
              SET artifacts_file = NULL,
@@ -94,7 +94,7 @@ module Gitlab
                  artifacts_size = NULL,
                  artifacts_metadata = NULL,
                  artifacts_metadata_store = NULL
-           WHERE id BETWEEN #{start_id.to_i} AND #{stop_id.to_i}
+           WHERE id IN (#{id_list.join(',')})
                   AND (artifacts_file <> '' OR artifacts_metadata <> '')
         EOF
       end
