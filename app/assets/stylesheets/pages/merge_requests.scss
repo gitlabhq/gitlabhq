@@ -28,10 +28,6 @@
     border-top: solid 1px $border-color;
   }
 
-  .mr-widget-border-top {
-    border-top: 1px solid $border-color;
-  }
-
   .mr-widget-footer {
     padding: 0;
   }
@@ -706,64 +702,6 @@
     .merge-request-tabs-container {
       max-width: $limited-layout-width - ($gl-padding * 2);
     }
-  }
-}
-
-#merge-request-widget-app .loading {
-  padding-top: 5px;
-  border-top: 1px solid $well-inner-border;
-}
-
-.approvals-footer {
-  display: flex;
-
-  .approvers-prefix {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-
-  .approvers-list {
-    display: flex;
-    align-items: center;
-
-    .link-to-member-avatar:not(:first-child) {
-      img {
-        margin-left: 0;
-      }
-    }
-  }
-
-  .unapprove-btn {
-    border: 0;
-    background: transparent;
-    cursor: pointer;
-
-    &:hover {
-      color: $gl-text-color-secondary;
-      text-decoration: none;
-    }
-
-    &:focus {
-      outline: none;
-    }
-  }
-
-  .approver-avatar {
-    position: relative;
-  }
-}
-
-.link-to-member-avatar {
-  .disabled {
-    pointer-events: none;
-    cursor: default;
-  }
-
-  .avatar {
-    margin-bottom: 0;
-    margin-left: 7px;
-    display: block;
   }
 }
 

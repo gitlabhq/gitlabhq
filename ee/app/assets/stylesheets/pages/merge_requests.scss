@@ -1,0 +1,68 @@
+.mr-widget-border-top {
+  border-top: 1px solid $border-color;
+}
+
+.link-to-member-avatar {
+  .disabled {
+    pointer-events: none;
+    cursor: default;
+  }
+
+  .avatar {
+    margin-bottom: 0;
+    margin-left: 7px;
+    display: block;
+  }
+}
+
+.mr-widget-approvals-container {
+  .zero-approvals .ci-status-icon-success svg {
+    fill: $gray-darkest;
+  }
+}
+
+.approvals-body {
+  .approve-btn {
+   vertical-align: baseline;
+  }
+}
+
+.approvals-footer {
+  display: flex;
+
+  .approvers-prefix {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .approvers-list {
+    display: flex;
+    align-items: center;
+
+    .link-to-member-avatar:not(:first-child) {
+      img {
+        margin-left: 0;
+      }
+    }
+  }
+
+  .unapprove-btn {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+
+    &:hover {
+      color: $gl-text-color-secondary;
+      text-decoration: none;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .approver-avatar {
+    position: relative;
+  }
+}

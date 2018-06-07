@@ -35,6 +35,13 @@ export default {
       }
       return 'success';
     },
+    approvalsOptional() {
+      return (
+        !this.fetchingApprovals &&
+        this.mr.approvals.approvals_required === 0 &&
+        this.mr.approvals.approved_by.length === 0
+      );
+    },
   },
   created() {
     const flashErrorMessage = s__(
@@ -54,17 +61,11 @@ export default {
 <template>
   <div
     v-if="mr.approvalsRequired"
-    class="mr-widget-approvals-container mr-widget-body mr-widget-section media"
+    class="mr-widget-approvals-container mr-widget-section media"
   >
-    <div
-      v-if="fetchingApprovals"
-      class="mr-widget-icon"
-    >
-      <i class="fa fa-spinner fa-spin"></i>
-    </div>
     <status-icon
-      v-else
-      :status="status"
+      :class="approvalsOptional ? 'zero-approvals' : ''"
+      :status="fetchingApprovals ? 'loading' : status"
     />
     <div
       v-show="fetchingApprovals"
@@ -85,6 +86,7 @@ export default {
         :user-has-approved="mr.approvals.user_has_approved"
         :approved-by="mr.approvals.approved_by"
         :approvals-left="mr.approvals.approvals_left"
+        :approvals-optional="approvalsOptional"
         :suggested-approvers="mr.approvals.suggested_approvers"
       />
       <approvals-footer

@@ -1,0 +1,14 @@
+= render :file => "/app/views/projects/merge_requests/show"
+
+-# haml-lint:disable InlineJavaScript
+:javascript
+  // Append static, server-generated data not included in merge request entity (EE-Only)
+  // Object.assign would be useful here, but it blows up Phantom.js in tests
+  window.gl.mrWidgetData.is_geo_secondary_node = '#{Gitlab::Geo.secondary?}' === 'true';
+  window.gl.mrWidgetData.geo_secondary_help_path = '#{help_page_path("/gitlab-geo/configuration.md")}';
+  window.gl.mrWidgetData.sast_help_path = '#{help_page_path("user/project/merge_requests/sast")}';
+  window.gl.mrWidgetData.sast_container_help_path = '#{help_page_path("user/project/merge_requests/container_scanning")}';
+  window.gl.mrWidgetData.dast_help_path = '#{help_page_path("user/project/merge_requests/dast")}';
+  window.gl.mrWidgetData.dependency_scanning_help_path = '#{help_page_path("user/project/merge_requests/dependency_scanning")}';
+  window.gl.mrWidgetData.vulnerability_feedback_help_path = '#{help_page_path("user/project/merge_requests/index", anchor: "interacting-with-security-reports-ultimate")}';
+  window.gl.mrWidgetData.approvals_help_path = '#{help_page_path("user/project/merge_requests/merge_request_approvals")}';

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-01 01:47-0500\n"
-"PO-Revision-Date: 2018-06-01 01:47-0500\n"
+"POT-Creation-Date: 2018-06-07 18:08+0200\n"
+"PO-Revision-Date: 2018-06-07 18:08+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -63,6 +63,11 @@ msgstr[1] ""
 
 msgid "%d metric"
 msgid_plural "%d metrics"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d new license"
+msgid_plural "%d new licenses"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -237,6 +242,9 @@ msgstr ""
 msgid "About auto deploy"
 msgstr ""
 
+msgid "About this feature"
+msgstr ""
+
 msgid "Abuse Reports"
 msgstr ""
 
@@ -250,6 +258,9 @@ msgid "Accepted MR"
 msgstr ""
 
 msgid "Access Tokens"
+msgstr ""
+
+msgid "Access to '%{classification_label}' not allowed"
 msgstr ""
 
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
@@ -1148,6 +1159,9 @@ msgstr ""
 msgid "CircuitBreakerApiLink|circuitbreaker api"
 msgstr ""
 
+msgid "ClassificationLabelUnavailable|is unavailable: %{reason}"
+msgstr ""
+
 msgid "Clear search input"
 msgstr ""
 
@@ -1235,6 +1249,9 @@ msgstr ""
 msgid "ClusterIntegration|Copy Ingress IP Address to clipboard"
 msgstr ""
 
+msgid "ClusterIntegration|Copy Jupyter Hostname to clipboard"
+msgstr ""
+
 msgid "ClusterIntegration|Copy Kubernetes cluster name"
 msgstr ""
 
@@ -1317,6 +1334,12 @@ msgid "ClusterIntegration|Integrate Kubernetes cluster automation"
 msgstr ""
 
 msgid "ClusterIntegration|Integration status"
+msgstr ""
+
+msgid "ClusterIntegration|Jupyter Hostname"
+msgstr ""
+
+msgid "ClusterIntegration|JupyterHub"
 msgstr ""
 
 msgid "ClusterIntegration|Kubernetes cluster"
@@ -1732,6 +1755,9 @@ msgid "ContainerRegistry|With the Docker Container Registry integrated into GitL
 msgstr ""
 
 msgid "ContainerRegistry|You can also use a %{deploy_token} for read-only access to the registry images."
+msgstr ""
+
+msgid "Continue"
 msgstr ""
 
 msgid "Continuous Integration and Deployment"
@@ -2258,7 +2284,13 @@ msgstr ""
 msgid "Environments|No deployments yet"
 msgstr ""
 
+msgid "Environments|No pod name has been specified"
+msgstr ""
+
 msgid "Environments|Open"
+msgstr ""
+
+msgid "Environments|Pod logs from %{podName}"
 msgstr ""
 
 msgid "Environments|Re-deploy"
@@ -2325,6 +2357,9 @@ msgid "Error loading branch data. Please try again."
 msgstr ""
 
 msgid "Error loading last commit."
+msgstr ""
+
+msgid "Error loading merge requests."
 msgstr ""
 
 msgid "Error loading project data. Please try again."
@@ -2485,6 +2520,9 @@ msgstr ""
 msgid "Format"
 msgstr ""
 
+msgid "Found errors in your .gitlab-ci.yml:"
+msgstr ""
+
 msgid "From %{provider_title}"
 msgstr ""
 
@@ -2519,6 +2557,9 @@ msgid "GeoNodeSyncStatus|Node is slow, overloaded, or it just recovered after an
 msgstr ""
 
 msgid "GeoNodes|Checksummed"
+msgstr ""
+
+msgid "GeoNodes|Data is out of date from %{timeago}"
 msgstr ""
 
 msgid "GeoNodes|Data replication lag"
@@ -3250,6 +3291,9 @@ msgstr ""
 msgid "Merge request"
 msgstr ""
 
+msgid "Merge request approvals"
+msgstr ""
+
 msgid "Merge requests"
 msgstr ""
 
@@ -3636,6 +3680,9 @@ msgstr ""
 msgid "Open"
 msgstr ""
 
+msgid "Open in Xcode"
+msgstr ""
+
 msgid "Opened"
 msgstr ""
 
@@ -3894,6 +3941,9 @@ msgstr ""
 msgid "Preferences"
 msgstr ""
 
+msgid "Preferences|Navigation theme"
+msgstr ""
+
 msgid "Primary"
 msgstr ""
 
@@ -4023,10 +4073,10 @@ msgstr ""
 msgid "ProjectCreationLevel|Default project creation protection"
 msgstr ""
 
-msgid "ProjectCreationLevel|Developers + Masters"
+msgid "ProjectCreationLevel|Developers + Maintainers"
 msgstr ""
 
-msgid "ProjectCreationLevel|Masters"
+msgid "ProjectCreationLevel|Maintainers"
 msgstr ""
 
 msgid "ProjectCreationLevel|No one"
@@ -4239,6 +4289,9 @@ msgstr ""
 msgid "Reference:"
 msgstr ""
 
+msgid "Refresh"
+msgstr ""
+
 msgid "Register / Sign In"
 msgstr ""
 
@@ -4428,6 +4481,12 @@ msgid "Scheduling Pipelines"
 msgstr ""
 
 msgid "Scoped issue boards"
+msgstr ""
+
+msgid "Scroll to bottom"
+msgstr ""
+
+msgid "Scroll to top"
 msgstr ""
 
 msgid "Search"
@@ -4634,9 +4693,6 @@ msgid "Something went wrong when toggling the button"
 msgstr ""
 
 msgid "Something went wrong while fetching group member contributions"
-msgstr ""
-
-msgid "Something went wrong while fetching the latest pipeline status."
 msgstr ""
 
 msgid "Something went wrong while fetching the projects."
@@ -5785,6 +5841,9 @@ msgstr ""
 msgid "You can also star a label to make it a priority label."
 msgstr ""
 
+msgid "You can also test your .gitlab-ci.yml in the %{linkStart}Lint%{linkEnd}"
+msgstr ""
+
 msgid "You can easily install a Runner on a Kubernetes cluster. %{link_to_help_page}"
 msgstr ""
 
@@ -5925,6 +5984,15 @@ msgstr ""
 msgid "ciReport|%{namespace} is affected by %{vulnerability}."
 msgstr ""
 
+msgid "ciReport|%{packagesString} and "
+msgstr ""
+
+msgid "ciReport|%{packagesString} and %{lastPackage}"
+msgstr ""
+
+msgid "ciReport|%{remainingPackagesCount} more"
+msgstr ""
+
 msgid "ciReport|%{reportName} is loading"
 msgstr ""
 
@@ -6004,6 +6072,12 @@ msgid "ciReport|Instances"
 msgstr ""
 
 msgid "ciReport|Learn more about whitelisting"
+msgstr ""
+
+msgid "ciReport|License management detected %{licenseInfo}"
+msgstr ""
+
+msgid "ciReport|License management detected no new licenses"
 msgstr ""
 
 msgid "ciReport|Links"
@@ -6248,6 +6322,12 @@ msgstr ""
 msgid "mrWidget|Merged by"
 msgstr ""
 
+msgid "mrWidget|No Approval required"
+msgstr ""
+
+msgid "mrWidget|No Approval required; you can still approve"
+msgstr ""
+
 msgid "mrWidget|Plain diff"
 msgstr ""
 
@@ -6390,3 +6470,8 @@ msgstr ""
 
 msgid "with %{additions} additions, %{deletions} deletions."
 msgstr ""
+
+msgid "within %d minute "
+msgid_plural "within %d minutes "
+msgstr[0] ""
+msgstr[1] ""
