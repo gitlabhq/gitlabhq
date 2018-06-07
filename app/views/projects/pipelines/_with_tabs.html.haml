@@ -52,15 +52,38 @@
         = render partial: "projects/stage/stage", collection: pipeline.legacy_stages, as: :stage
 
   - if @pipeline.failed_builds.present?
-    #js-tab-failures.build-failures.tab-pane
-      - @pipeline.failed_builds.each_with_index do |build, index|
-        .build-state
-          %span.ci-status-icon-failed= custom_icon('icon_status_failed')
-          %span.stage
-            = build.stage.titleize
-          %span.build-name
-            = link_to build.name, pipeline_job_url(pipeline, build)
-        %pre.build-log= build_summary(build, skip: index >= 10)
+    #js-tab-failures.build-failures.tab-pane.build-page
+      %table.table.responsive-table.ci-table.responsive-table-sm-rounded
+        %thead
+          %th.table-th-transparent
+          %th.table-th-transparent= _("Name")
+          %th.table-th-transparent= _("Stage")
+          %th.table-th-transparent= _("Failure")
+
+        %tbody
+          - @pipeline.failed_builds.each_with_index do |build, index|
+            - job = build.present(current_user: current_user)
+            %tr.build-state.responsive-table-border-start
+              %td.responsive-table-cell.ci-status-icon-failed{ data: { column: "Status"} }
+                .d-none.d-md-block.build-icon
+                  = custom_icon("icon_status_#{build.status}")
+                .d-md-none.build-badge
+                  = render "ci/status/badge", link: false, status: job.detailed_status(current_user)
+              %td.responsive-table-cell.build-name{ data: { column: _("Name")} }
+                = link_to build.name, pipeline_job_url(pipeline, build)
+              %td.responsive-table-cell.build-stage{ data: { column: _("Stage")} }
+                = build.stage.titleize
+              %td.responsive-table-cell.build-failure{ data: { column: _("Failure")} }
+                = build.present.callout_failure_message
+              %td.responsive-table-cell.build-actions
+                = link_to retry_project_job_path(build.project, build, return_to: request.original_url), method: :post, title: _('Retry'), class: 'btn btn-build' do
+                  = icon('repeat')
+            %tr.build-trace-row.responsive-table-border-end
+              %td
+              %td.responsive-table-cell.build-trace-container{ colspan: 4 }
+                %pre.build-trace.build-trace-rounded
+                  %code.bash.js-build-output
+                    = build_summary(build)
   - if expose_sast_data || expose_dependency_data
     #js-tab-security.build-security.tab-pane
       #js-security-report-app{ data: { endpoint: expose_sast_data ? sast_artifact_url(@pipeline) : nil,

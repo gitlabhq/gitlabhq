@@ -39,6 +39,11 @@ table {
         &.wide {
           width: 55%;
         }
+
+        &.table-th-transparent {
+          background: none;
+          color: $gl-text-color-secondary;
+        }
       }
 
       td {
@@ -46,9 +51,86 @@ table {
       }
     }
   }
+
+  &.responsive-table {
+    @include media-breakpoint-down(sm) {
+      thead {
+        display: none;
+      }
+
+      td {
+        display: block;
+        color: $gl-text-color-secondary;
+      }
+
+      tbody td.responsive-table-cell {
+        padding: $gl-padding 0;
+        width: 100%;
+        display: flex;
+        text-align: right;
+        align-items: center;
+        justify-content: space-between;
+
+        &[data-column]::before {
+          content: attr(data-column);
+          display: block;
+          text-align: left;
+          padding-right: $gl-padding;
+          color: $gl-text-color-secondary;
+        }
+
+        &:not([data-column]) {
+          flex-direction: row-reverse;
+        }
+      }
+
+      tr.responsive-table-border-start,
+      tr.responsive-table-border-end {
+        display: block;
+        border: solid $gl-text-color-quaternary;
+        padding-left: 0;
+        padding-right: 0;
+
+        > td {
+          border-color: $gl-text-color-quaternary;
+
+          &,
+          &:last-child {
+            padding-left: $gl-padding;
+            padding-right: $gl-padding;
+          }
+        }
+      }
+
+      tr.responsive-table-border-start {
+        border-width: 1px 1px 0;
+        border-radius: $border-radius-default $border-radius-default 0 0;
+        padding-top: 0;
+        padding-bottom: 0;
+
+        > td:first-child {
+          border-top: 0; // always have the <table> top border
+        }
+
+        > td:last-child {
+          border-bottom: 1px solid $gl-text-color-quaternary;
+        }
+      }
+
+      tr.responsive-table-border-end {
+        border-width: 0 1px 1px;
+        border-radius: 0 0 $border-radius-default $border-radius-default;
+        margin-bottom: 2 * $gl-padding;
+
+        > :last-child {
+          border-bottom: 0;
+        }
+      }
+    }
+  }
 }
 
-.responsive-table {
+.responsive-table:not(table) {
   @include media-breakpoint-down(sm) {
     th {
       width: 100%;

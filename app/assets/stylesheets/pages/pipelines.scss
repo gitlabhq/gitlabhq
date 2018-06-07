@@ -321,16 +321,15 @@
 }
 
 .build-failures {
+  th {
+    border-top: 0;
+  }
+
   .build-state {
     padding: 20px 2px;
 
     .build-name {
-      float: right;
       font-weight: $gl-font-weight-normal;
-    }
-
-    .ci-status-icon-failed svg {
-      vertical-align: middle;
     }
 
     .stage {
@@ -343,6 +342,81 @@
   .build-log {
     border: 0;
     line-height: initial;
+  }
+
+  .build-trace-row td {
+    border-top: 0;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    padding-top: 0;
+  }
+
+  .build-trace {
+    width: 100%;
+    text-align: left;
+    margin-top: $gl-padding;
+  }
+
+  .build-name {
+    width: 196px;
+
+    a {
+      font-weight: $gl-font-weight-bold;
+      color: $gl-text-color;
+      text-decoration: none;
+
+      &:focus,
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .build-actions {
+    width: 70px;
+    text-align: right;
+  }
+
+  .build-stage {
+    width: 140px;
+  }
+
+  .ci-status-icon-failed {
+    padding: 10px 0 10px 12px;
+    width: 12px + 24px; // padding-left + svg width
+  }
+
+  .build-icon svg {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+  }
+
+  .build-state,
+  .build-trace-row {
+    > td:last-child {
+      padding-right: 0;
+    }
+  }
+
+  @include media-breakpoint-down(sm) {
+    td:empty {
+      display: none;
+    }
+
+    .ci-table {
+      margin-top: 2 * $gl-padding;
+    }
+
+    .build-trace-container {
+      padding-top: $gl-padding;
+      padding-bottom: $gl-padding;
+    }
+
+    .build-trace {
+      margin-bottom: 0;
+      margin-top: 0;
+    }
   }
 }
 
@@ -931,7 +1005,7 @@ button.mini-pipeline-graph-dropdown-toggle {
   &.dropdown-menu {
     transform: translate(-80%, 0);
 
-    @media(min-width: map-get($grid-breakpoints, md)) {
+    @media (min-width: map-get($grid-breakpoints, md)) {
       transform: translate(-50%, 0);
       right: auto;
       left: 50%;
