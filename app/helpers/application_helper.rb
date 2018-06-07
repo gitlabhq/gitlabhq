@@ -3,8 +3,16 @@ require 'uri'
 
 module ApplicationHelper
   # See https://docs.gitlab.com/ee/development/ee_features.html#code-in-app-views
-  def render_if_exists(partial, locals = {})
-    render(partial, locals) if lookup_context.exists?(partial, [], true)
+  # We allow partial to be nil so that collection views can be passed in
+  # `render partial: 'some/view', collection: @some_collection`
+  def render_if_exists(partial = nil, **options)
+    return unless lookup_context.exists?(partial || options[:partial], [], true)
+
+    if partial.nil?
+      render(**options)
+    else
+      render(partial, options)
+    end
   end
 
   # Check if a particular controller is the current one

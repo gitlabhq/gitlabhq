@@ -179,6 +179,93 @@ module SearchHelper
     sanitize(html, tags: %w(a p ol ul li pre code))
   end
 
+  def project_category_names
+    %i[blobs issues merge_requests milestones notes wiki_blobs commits].freeze
+  end
+
+  def snippet_categories
+    {
+      snippet_blobs: {
+        title: 'Snippet Contents',
+        count: -> { @search_results.snippet_blobs_count },
+        link: search_filter_path(scope: 'snippet_blobs', snippets: true, group_id: nil, project_id: nil)
+      },
+      snippet_titles: {
+        title: 'Titles and Filenames',
+        count: -> { @search_results.snippet_titles_count },
+        link: search_filter_path(scope: 'snippet_titles', snippets: true, group_id: nil, project_id: nil)
+      }
+    }
+  end
+
+  def categories
+    {
+      projects: {
+        title: 'Projects',
+        count: -> { limited_count(@search_results.limited_projects_count) },
+        link: search_filter_path(scope: 'projects')
+      },
+      issues: {
+        title: 'Issues',
+        count: -> { limited_count(@search_results.limited_issues_count) },
+        link: search_filter_path(scope: 'issues')
+      },
+      merge_requests: {
+        title: 'Merge requests',
+        count: -> { limited_count(@search_results.limited_merge_requests_count) },
+        link: search_filter_path(scope: 'merge_requests')
+      },
+      milestones: {
+        title: 'Milestones',
+        count: -> { limited_count(@search_results.limited_milestones_count) },
+        link: search_filter_path(scope: 'milestones')
+      },
+      notes: {
+        title: 'Comments',
+        count: -> { limited_count(@search_results.limited_notes_count) },
+        link: search_filter_path(scope: 'notes')
+      },
+      blobs: {
+        title: 'Code',
+        count: -> { limited_count(@search_results.blobs_count) },
+        link: search_filter_path(scope: 'blobs')
+      },
+      commits: {
+        title: 'Commits',
+        count: -> { limited_count(@search_results.commits_count) },
+        link: search_filter_path(scope: 'commits')
+      },
+      wiki_blobs: {
+        title: 'Wiki',
+        count: -> { limited_count(@search_results.wiki_blobs_count) },
+        link: search_filter_path(scope: 'wiki_blobs')
+      }
+    }
+  end
+
+  def skipped_global_categories
+    %i[blobs commits wiki_blobs].freeze
+  end
+
+  def category_tabs
+    if @project
+      # Doing it this way to keep the order of the keys
+      cats = project_category_names.each_with_object({}) { |cat_name, hash| hash[cat_name] = categories[cat_name] }
+
+      cats.select do |key, _v|
+        key = :wiki if key == :wiki_blobs
+        project_search_tabs?(key)
+      end
+    elsif @show_snippets
+      snippet_categories
+    else
+      categories.tap do |hash|
+        hash.delete(:notes)
+        hash.except!(*skipped_global_categories)
+      end
+    end
+  end
+
   def limited_count(count, limit = 1000)
     count > limit ? "#{limit}+" : count
   end
