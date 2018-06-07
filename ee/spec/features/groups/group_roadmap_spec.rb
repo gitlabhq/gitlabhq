@@ -34,6 +34,14 @@ describe 'group epic roadmap', :js do
     end
 
     describe 'roadmap page' do
+      it 'renders roadmap preset buttons correctly' do
+        page.within('.js-btn-roadmap-presets') do
+          expect(page).to have_css('.btn-roadmap-preset input[value="QUARTERS"]')
+          expect(page).to have_css('.btn-roadmap-preset input[value="MONTHS"]')
+          expect(page).to have_css('.btn-roadmap-preset input[value="WEEKS"]')
+        end
+      end
+
       it 'renders the filtered search bar correctly' do
         page.within('.content-wrapper .content') do
           expect(page).to have_css('.epics-filters')
