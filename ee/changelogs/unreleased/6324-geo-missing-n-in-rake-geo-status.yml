@@ -1,0 +1,5 @@
+---
+title: 'Geo: Formatting fix for geo:status rake task'
+merge_request: 6020
+author:
+type: fixed
