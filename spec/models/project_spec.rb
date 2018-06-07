@@ -3671,7 +3671,10 @@ describe Project do
 
   describe '#execute_hooks' do
     let(:data) { { ref: 'refs/heads/master', data: 'data' } }
-    it 'executes the projects hooks with the specified scope' do
+    it 'executes active projects hooks with the specified scope' do
+      expect_any_instance_of(ActiveHookFilter).to receive(:matches?)
+        .with(:tag_push_hooks, data)
+        .and_return(true)
       hook = create(:project_hook, merge_requests_events: false, tag_push_events: true)
       project = create(:project, hooks: [hook])
 
@@ -3682,6 +3685,18 @@ describe Project do
 
     it 'does not execute project hooks that dont match the specified scope' do
       hook = create(:project_hook, merge_requests_events: true, tag_push_events: false)
+      project = create(:project, hooks: [hook])
+
+      expect_any_instance_of(ProjectHook).not_to receive(:async_execute).once
+
+      project.execute_hooks(data, :tag_push_hooks)
+    end
+
+    it 'does not execute project hooks which are not active' do
+      expect_any_instance_of(ActiveHookFilter).to receive(:matches?)
+        .with(:tag_push_hooks, data)
+        .and_return(false)
+      hook = create(:project_hook, tag_push_events: true)
       project = create(:project, hooks: [hook])
 
       expect_any_instance_of(ProjectHook).not_to receive(:async_execute).once

@@ -66,6 +66,7 @@ class Projects::HooksController < Projects::ApplicationController
       :enable_ssl_verification,
       :token,
       :url,
+      :push_events_branch_filter,
       *ProjectHook.triggers.values
     )
   end

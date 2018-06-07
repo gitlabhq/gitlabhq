@@ -1334,6 +1334,7 @@ GET /projects/:id/hooks/:hook_id
   "url": "http://example.com/hook",
   "project_id": 3,
   "push_events": true,
+  "push_events_branch_filter": "",
   "issues_events": true,
   "confidential_issues_events": true,
   "merge_requests_events": true,
@@ -1360,6 +1361,7 @@ POST /projects/:id/hooks
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `url` | string | yes | The hook URL |
 | `push_events` | boolean | no | Trigger hook on push events |
+| `push_events_branch_filter` | string | no | Trigger hook on push events for matching branches only |
 | `issues_events` | boolean | no | Trigger hook on issues events |
 | `confidential_issues_events` | boolean | no | Trigger hook on confidential issues events |
 | `merge_requests_events` | boolean | no | Trigger hook on merge requests events |
@@ -1385,6 +1387,7 @@ PUT /projects/:id/hooks/:hook_id
 | `hook_id` | integer | yes | The ID of the project hook |
 | `url` | string | yes | The hook URL |
 | `push_events` | boolean | no | Trigger hook on push events |
+| `push_events_branch_filter` | string | no | Trigger hook on push events for matching branches only |
 | `issues_events` | boolean | no | Trigger hook on issues events |
 | `confidential_issues_events` | boolean | no | Trigger hook on confidential issues events |
 | `merge_requests_events` | boolean | no | Trigger hook on merge requests events |
