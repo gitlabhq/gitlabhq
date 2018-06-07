@@ -426,6 +426,15 @@ no longer be valid as soon as the deployment job finishes. This means that
 Kubernetes can run the application, but in case it should be restarted or
 executed somewhere else, it cannot be accessed again.
 
+> [Introduced][ce-19507] in GitLab 11.0.
+
+For internal and private projects a [GitLab Deploy Token](../../user/project/deploy_tokens/index.md###gitlab-deploy-token) 
+will be automatically created, when Auto DevOps is enabled and the Auto DevOps settings are saved. This Deploy Token
+can be used for permanent access to the registry.
+
+Note: **Note**
+When the GitLab Deploy Token has been manually revoked, it won't be automatically created.
+
 ### Auto Monitoring
 
 NOTE: **Note:**
@@ -809,3 +818,4 @@ curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https:/
 [Auto DevOps template]: https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Auto-DevOps.gitlab-ci.yml
 [GitLab Omnibus Helm Chart]: ../../install/kubernetes/gitlab_omnibus.md
 [ee]: https://about.gitlab.com/products/
+[ce-19507]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19507
