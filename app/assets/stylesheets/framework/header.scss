@@ -139,6 +139,8 @@
     }
 
     .nav {
+      flex-wrap: nowrap;
+
       > li:not(.d-none) a {
         @include media-breakpoint-down(xs) {
           margin-left: 0;
@@ -158,11 +160,12 @@
     }
 
     .navbar-toggler {
+      position: relative;
       right: -10px;
       border-radius: 0;
       min-width: 45px;
       padding: 0;
-      margin-right: -7px;
+      margin: $gl-padding-8 -7px $gl-padding-8 0;
       font-size: 14px;
       text-align: center;
       color: currentColor;
@@ -186,6 +189,7 @@
         display: -webkit-flex;
         display: flex;
         padding-right: 10px;
+        flex-direction: row;
       }
 
       li {
@@ -289,6 +293,10 @@
     &.line-separator {
       margin: 8px;
     }
+  }
+
+  .dropdown-menu {
+    position: absolute;
   }
 }
 
