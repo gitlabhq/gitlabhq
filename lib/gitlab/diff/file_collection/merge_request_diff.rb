@@ -75,11 +75,7 @@ module Gitlab
           if highlight_cache[item_key]
             highlight_diff_file_from_cache!(diff_file, highlight_cache[item_key])
           else
-            if cacheable?(diff_file)
-              highlight_cache[item_key] = diff_file.highlighted_diff_lines.map(&:to_hash)
-            else
-              binding.pry
-            end
+            highlight_cache[item_key] = diff_file.highlighted_diff_lines.map(&:to_hash) if cacheable?(diff_file)
           end
         end
 

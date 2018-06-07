@@ -11,6 +11,7 @@ class BlobsService
   def write_cache_if_empty
     return unless content_sha
     return if cache_exists?
+    return unless uncached_blob
 
     blob_cache = { id: uncached_blob.id,
                    raw_size: uncached_blob.raw_size,
