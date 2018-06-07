@@ -42,6 +42,6 @@ class Projects::Clusters::ApplicationsController < Projects::ApplicationControll
       owner: current_user
     }
 
-    Applications::CreateService.new(current_user, oauth_application_params).execute
+    Applications::CreateService.new(current_user, oauth_application_params).execute(request)
   end
 end
