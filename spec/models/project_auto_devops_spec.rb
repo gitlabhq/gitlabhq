@@ -5,6 +5,8 @@ describe ProjectAutoDevops do
 
   it { is_expected.to belong_to(:project) }
 
+  it { is_expected.to define_enum_for(:deploy_strategy) }
+
   it { is_expected.to respond_to(:created_at) }
   it { is_expected.to respond_to(:updated_at) }
 
@@ -64,6 +66,32 @@ describe ProjectAutoDevops do
         end
 
         it { expect(auto_devops.predefined_variables).not_to include(domain_variable) }
+      end
+    end
+
+    context 'when deploy_strategy is manual' do
+      let(:domain) { 'example.com' }
+
+      before do
+        auto_devops.deploy_strategy = 'manual'
+      end
+
+      it do
+        expect(auto_devops.predefined_variables.map { |var| var[:key] })
+          .to include("STAGING_ENABLED", "INCREMENTAL_ROLLOUT_ENABLED")
+      end
+    end
+
+    context 'when deploy_strategy is continuous' do
+      let(:domain) { 'example.com' }
+
+      before do
+        auto_devops.deploy_strategy = 'continuous'
+      end
+
+      it do
+        expect(auto_devops.predefined_variables.map { |var| var[:key] })
+          .not_to include("STAGING_ENABLED", "INCREMENTAL_ROLLOUT_ENABLED")
       end
     end
 

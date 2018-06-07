@@ -1,6 +1,11 @@
 class ProjectAutoDevops < ActiveRecord::Base
   belongs_to :project
 
+  enum deploy_strategy: {
+    continuous: 0,
+    manual: 1
+  }
+
   scope :enabled, -> { where(enabled: true) }
   scope :disabled, -> { where(enabled: false) }
 
@@ -19,6 +24,11 @@ class ProjectAutoDevops < ActiveRecord::Base
       if has_domain?
         variables.append(key: 'AUTO_DEVOPS_DOMAIN',
                          value: domain.presence || instance_domain)
+      end
+
+      if manual?
+        variables.append(key: 'STAGING_ENABLED', value: 1)
+        variables.append(key: 'INCREMENTAL_ROLLOUT_ENABLED', value: 1)
       end
     end
   end
