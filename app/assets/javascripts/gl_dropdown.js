@@ -602,7 +602,11 @@ GitLabDropdown = (function() {
     var selector;
     selector = '.dropdown-content';
     if (this.dropdown.find(".dropdown-toggle-page").length) {
-      selector = ".dropdown-page-one .dropdown-content";
+      if (this.options.containerSelector) {
+        selector = this.options.containerSelector;
+      } else {
+        selector = '.dropdown-page-one .dropdown-content';
+      }
     }
 
     return $(selector, this.dropdown).empty();
