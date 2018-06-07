@@ -32,8 +32,10 @@ module Gitlab
 
         begin
           ::ApplicationSetting.cached
-        rescue ::Redis::BaseError, ::Errno::ENOENT, ::Errno::EADDRNOTAVAIL
-          # In case Redis isn't running or the Redis UNIX socket file is not available
+        rescue
+          # In case Redis isn't running
+          # or the Redis UNIX socket file is not available
+          # or the DB is not running (we use migrations in the cache key)
         end
       end
 
