@@ -64,7 +64,7 @@ class NotificationRecipient
     return false unless @target
     return false unless @target.respond_to?(:subscriptions)
 
-    subscription = @target.subscriptions.find_by_user_id(@user.id)
+    subscription = @target.subscriptions.find { |subscription| subscription.user_id == @user.id }
     subscription && !subscription.subscribed
   end
 
