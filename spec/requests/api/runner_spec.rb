@@ -849,6 +849,68 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
       end
     end
 
+    describe 'POST /api/v4/jobs/:id/keep-alive' do
+      let(:job) { create(:ci_build, :running, :trace_live, runner_id: runner.id, pipeline: pipeline) }
+      let(:headers) { { API::Helpers::Runner::JOB_TOKEN_HEADER => job.token, 'Content-Type' => 'text/plain' } }
+      let(:update_interval) { 30.seconds }
+
+      it 'returns correct response' do
+        keep_alive_job
+
+        expect(response.status).to eq 200
+        expect(response.header).to have_key 'Job-Status'
+      end
+
+      it 'updates updated_at value' do
+        expect { keep_alive_job }.to change { job.updated_at }
+      end
+
+      context 'when project for the build has been deleted' do
+        let(:job) do
+          create(:ci_build, :running, :trace_live, runner_id: runner.id, pipeline: pipeline) do |job|
+            job.project.update(pending_delete: true)
+          end
+        end
+
+        it 'responds with forbidden' do
+          keep_alive_job
+
+          expect(response.status).to eq(403)
+        end
+      end
+
+      context 'when job has been canceled' do
+        before do
+          job.cancel
+        end
+
+        it 'returns job-status=canceled header' do
+          keep_alive_job
+
+          expect(response.status).to eq 200
+          expect(response.header['Job-Status']).to eq('canceled')
+        end
+      end
+
+      context 'when job has been errased' do
+        let(:job) { create(:ci_build, runner_id: runner.id, erased_at: Time.now) }
+
+        it 'rresponds with forbidden' do
+          keep_alive_job
+
+          expect(response.status).to eq 403
+        end
+      end
+
+      def keep_alive_job(token = job.token, **params)
+        new_params = params.merge(token: token)
+        Timecop.travel(job.updated_at + update_interval) do
+          post api("/jobs/#{job.id}/keep-alive"), new_params
+          job.reload
+        end
+      end
+    end
+
     describe 'PATCH /api/v4/jobs/:id/trace' do
       let(:job) { create(:ci_build, :running, :trace_live, runner_id: runner.id, pipeline: pipeline) }
       let(:headers) { { API::Helpers::Runner::JOB_TOKEN_HEADER => job.token, 'Content-Type' => 'text/plain' } }

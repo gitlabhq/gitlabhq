@@ -140,6 +140,22 @@ module API
         end
       end
 
+      desc 'Marks job as live' do
+        http_codes [[200, 'Request accepted']]
+      end
+      params do
+        requires :id, type: Integer, desc: %q(Job's ID)
+        optional :token, type: String, desc: %q(Job's authentication token)
+      end
+      post '/:id/keep-alive' do
+        job = authenticate_job!
+
+        job.touch if job.running? && job.needs_touch?
+
+        status 200
+        header 'Job-Status', job.status
+      end
+
       desc 'Appends a patch to the job trace' do
         http_codes [[202, 'Trace was patched'],
                     [400, 'Missing Content-Range header'],
