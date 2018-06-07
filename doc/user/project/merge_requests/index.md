@@ -33,7 +33,7 @@ With GitLab merge requests, you can:
 
 With **[GitLab Enterprise Edition][ee]**, you can also:
 
-- View the deployment process across projects with [Multi-Project Pipeline Graphs](../../../ci/multi_project_pipeline_graphs.md#multi-project-pipeline-graphs) **[PREMIUM]**
+- View the deployment process across projects with [Multi-Project Pipelines](../../../ci/multi_project_pipelines.md#multi-project-pipeline-graphs) **[PREMIUM]**
 - Request [approvals](merge_request_approvals.md) from your managers **[STARTER]**
 - Analyze the impact of your changes with [Code Quality reports](code_quality_diff.md) **[STARTER]**
 - Manage the licenses of your dependencies with [License Management](#license-management) **[ULTIMATE]**
