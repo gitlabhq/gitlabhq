@@ -75,6 +75,7 @@ export const jobs = [
     },
     stage: 'test',
     duration: 1,
+    started: new Date(),
   },
   {
     id: 2,
@@ -86,6 +87,7 @@ export const jobs = [
     },
     stage: 'test',
     duration: 1,
+    started: new Date(),
   },
   {
     id: 3,
@@ -97,6 +99,7 @@ export const jobs = [
     },
     stage: 'test',
     duration: 1,
+    started: new Date(),
   },
   {
     id: 4,
@@ -108,6 +111,7 @@ export const jobs = [
     },
     stage: 'build',
     duration: 1,
+    started: new Date(),
   },
 ];
 
@@ -147,3 +151,13 @@ export const fullPipelinesResponse = {
     ],
   },
 };
+
+export const mergeRequests = [
+  {
+    id: 1,
+    iid: 1,
+    title: 'Test merge request',
+    project_id: 1,
+    web_url: `${gl.TEST_HOST}/namespace/project-path/merge_requests/1`,
+  },
+];

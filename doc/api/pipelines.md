@@ -102,6 +102,7 @@ POST /projects/:id/pipeline
 |------------|---------|----------|---------------------|
 | `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `ref`       | string | yes      | Reference to commit |
+| `variables` | array | no | An array containing the variables available in the pipeline, matching the structure [{ 'key' => 'UPLOAD_TO_S3', 'value' => 'true' }] |
 
 ```
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/pipeline?ref=master"

@@ -443,6 +443,10 @@ class Note < ActiveRecord::Base
     super.merge(noteable: noteable)
   end
 
+  def retrieve_upload(_identifier, paths)
+    Upload.find_by(model: self, path: paths)
+  end
+
   private
 
   def keep_around_commit

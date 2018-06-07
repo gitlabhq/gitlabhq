@@ -170,7 +170,7 @@ module EESpecificCheck
     ls_remote_output = run_git_command("ls-remote #{ce_repo_url} \"*#{minimal_ce_branch_name}*\"")
 
     if ls_remote_output.include?(minimal_ce_branch_name)
-      branch_to_fetch = ls_remote_output.scan(%r{(?<=refs/heads/).+}).sort_by(&:size).first
+      branch_to_fetch = ls_remote_output.scan(%r{(?<=refs/heads/|tags/).+}).sort_by(&:size).first
 
       say "💪 We found the branch '#{branch_to_fetch}' in the #{ce_repo_url} repository. We will fetch it."
 

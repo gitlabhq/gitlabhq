@@ -11,7 +11,7 @@ describe('sast issue body', () => {
     cve: 'CVE-2016-9999',
     file: 'Gemfile.lock',
     message: 'Test Information Leak Vulnerability in Action View',
-    name: 'Test Information Leak Vulnerability in Action View',
+    title: 'Test Information Leak Vulnerability in Action View',
     path: 'Gemfile.lock',
     solution:
       'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
@@ -19,27 +19,57 @@ describe('sast issue body', () => {
     url:
       'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
     urlPath: '/Gemfile.lock',
-    priority: 'Low',
+    severity: 'Medium',
+    confidence: 'Low',
   };
 
   afterEach(() => {
     vm.$destroy();
   });
 
-  describe('with priority', () => {
-    it('renders priority key', () => {
+  describe('with severity and confidence (new json format)', () => {
+    it('renders severity and confidence', () => {
       vm = mountComponent(Component, {
         issue: sastIssue,
       });
 
-      expect(vm.$el.textContent.trim()).toContain(sastIssue.priority);
+      expect(vm.$el.textContent.trim()).toContain(`${sastIssue.severity} (${sastIssue.confidence})`);
+    });
+  });
+
+  describe('without severity', () => {
+    it('does not render severity nor confidence', () => {
+      const issueCopy = Object.assign({}, sastIssue);
+      delete issueCopy.severity;
+
+      vm = mountComponent(Component, {
+        issue: issueCopy,
+      });
+
+      expect(vm.$el.textContent.trim()).not.toContain(sastIssue.severity);
+      expect(vm.$el.textContent.trim()).not.toContain(sastIssue.confidence);
+    });
+  });
+
+  describe('with priority (old json format)', () => {
+    it('renders priority key', () => {
+      const issueCopy = Object.assign({}, sastIssue);
+      delete issueCopy.severity;
+      delete issueCopy.confidence;
+      issueCopy.priority = 'Low';
+      vm = mountComponent(Component, {
+        issue: issueCopy,
+      });
+
+      expect(vm.$el.textContent.trim()).toContain(issueCopy.priority);
     });
   });
 
   describe('without priority', () => {
-    it('does not rendere priority key', () => {
+    it('does not render priority key', () => {
       const issueCopy = Object.assign({}, sastIssue);
-      delete issueCopy.priority;
+      delete issueCopy.severity;
+      delete issueCopy.confidence;
 
       vm = mountComponent(Component, {
         issue: issueCopy,
@@ -51,20 +81,20 @@ describe('sast issue body', () => {
     });
   });
 
-  describe('name', () => {
-    it('renders name', () => {
+  describe('title', () => {
+    it('renders title', () => {
       vm = mountComponent(Component, {
         issue: sastIssue,
       });
 
       expect(vm.$el.textContent.trim()).toContain(
-        sastIssue.name,
+        sastIssue.title,
       );
     });
   });
 
   describe('path', () => {
-    it('renders name', () => {
+    it('renders path', () => {
       vm = mountComponent(Component, {
         issue: sastIssue,
       });

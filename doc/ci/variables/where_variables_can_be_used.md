@@ -17,7 +17,7 @@ There are basically two places where you can use any defined variables:
 
 | Definition                           | Can be expanded?  | Expansion place | Description  |
 |--------------------------------------|-------------------|-----------------|--------------|
-| `environment:url`                    | yes               | GitLab           | The variable expansion is made by GitLab's [internal variable expansion mechanism](#gitlab-internal-variable-expansion-mechanism).<ul><li>**Supported:** all variables defined for a job (secret variables, variables from `.gitlab-ci.yml`, variables from triggers, variables from pipeline schedules)</li><li>**Not suported:** variables defined in Runner's `config.toml` and variables created in job's `script`</li></ul> |
+| `environment:url`                    | yes               | GitLab           | The variable expansion is made by GitLab's [internal variable expansion mechanism](#gitlab-internal-variable-expansion-mechanism).<ul><li>**Supported:** all variables defined for a job (project/group variables, variables from `.gitlab-ci.yml`, variables from triggers, variables from pipeline schedules)</li><li>**Not suported:** variables defined in Runner's `config.toml` and variables created in job's `script`</li></ul> |
 | `environment:name`                   | yes               | GitLab           | Similar to `environment:url`, but the variables expansion **doesn't support**: <ul><li>variables that are based on the environment's name (`CI_ENVIRONMENT_NAME`, `CI_ENVIRONMENT_SLUG`)</li><li>any other variables related to environment (currently only `CI_ENVIRONMENT_URL`)</li><li>[persisted variables](#persisted-variables)</li></ul> |
 | `variables` | yes               | Runner          | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism) |
 | `image`          | yes               | Runner          | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism) |
@@ -55,7 +55,7 @@ since the expansion is done in GitLab before any Runner will get the job.
 
 ### GitLab Runner internal variable expansion mechanism
 
-- **Supported:** secret variables, `.gitlab-ci.yml` variables, `config.toml` variables, and
+- **Supported:** project/group variables, `.gitlab-ci.yml` variables, `config.toml` variables, and
   variables from triggers and pipeline schedules
 - **Not supported:** variables defined inside of scripts (e.g., `export MY_VARIABLE="test"`)
 
@@ -76,7 +76,7 @@ are using a different variables syntax.
 **Supported:**
 
 - The `script` may use all available variables that are default for the shell (e.g., `$PATH` which
-  should be present in all bash/sh shells) and all variables defined by GitLab CI/CD (secret variables,
+  should be present in all bash/sh shells) and all variables defined by GitLab CI/CD (project/group variables,
   `.gitlab-ci.yml` variables, `config.toml` variables, and variables from triggers and pipeline schedules).
 - The `script` may also use all variables defined in the lines before. So, for example, if you define
   a variable `export MY_VARIABLE="test"`:
@@ -112,10 +112,10 @@ They are:
   - by the definitions [described in the table](#gitlab-ci-yml-file) where the "Expansion place" is "GitLab"
   - in the `only` and `except` [variables expressions](README.md#variables-expressions)
 
-## Secret variables with an environment scope
+## Variables with an environment scope
 
-Secret variables defined with an environment scope are supported. Given that
-there is a secret variable `$STAGING_SECRET` defined in a scope of
+Variables defined with an environment scope are supported. Given that
+there is a variable `$STAGING_SECRET` defined in a scope of
 `review/staging/*`, the following job that is using dynamic environments
 is going to be created, based on the matching variable expression:
 

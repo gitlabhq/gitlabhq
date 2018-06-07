@@ -96,10 +96,10 @@ describe Boards::IssuesController do
         enable_external_authorization_service_check
       end
 
-      it 'returns a 404 for group boards' do
+      it 'returns a 403 for group boards' do
         get :index, board_id: board
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(403)
       end
 
       it 'is successful for project boards' do

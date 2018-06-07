@@ -7,7 +7,7 @@ class RemoteMirror < ActiveRecord::Base
   UNPROTECTED_BACKOFF_DELAY = 5.minutes
 
   attr_encrypted :credentials,
-                 key: Gitlab::Application.secrets.db_key_base,
+                 key: Settings.attr_encrypted_db_key_base,
                  marshal: true,
                  encode: true,
                  mode: :per_attribute_iv_and_salt,

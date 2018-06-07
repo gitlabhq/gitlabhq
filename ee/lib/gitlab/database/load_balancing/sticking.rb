@@ -25,18 +25,21 @@ module Gitlab
           stick(namespace, id) if Session.current.performed_write?
         end
 
+        # Checks if we were able to caught-up with all the work
+        def self.all_caught_up?(namespace, id)
+          location = last_write_location_for(namespace, id)
+
+          return true unless location
+
+          load_balancer.all_caught_up?(location).tap do |caught_up|
+            unstick(namespace, id) if caught_up
+          end
+        end
+
         # Sticks to the primary if necessary, otherwise unsticks an object (if
         # it was previously stuck to the primary).
         def self.unstick_or_continue_sticking(namespace, id)
-          location = last_write_location_for(namespace, id)
-
-          return unless location
-
-          if load_balancer.all_caught_up?(location)
-            unstick(namespace, id)
-          else
-            Session.current.use_primary!
-          end
+          Session.current.use_primary! unless all_caught_up?(namespace, id)
         end
 
         # Starts sticking to the primary for the given namespace and id, using

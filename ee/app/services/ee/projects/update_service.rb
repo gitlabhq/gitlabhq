@@ -2,7 +2,7 @@ module EE
   module Projects
     module UpdateService
       extend ::Gitlab::Utils::Override
-
+      include ValidatesClassificationLabel
       include CleanupApprovers
 
       override :execute
@@ -16,7 +16,17 @@ module EE
         should_remove_old_approvers = params.delete(:remove_old_approvers)
         wiki_was_enabled = project.wiki_enabled?
 
-        result = super
+        limit = params.delete(:repository_size_limit)
+        result = super do
+          # Repository size limit comes as MB from the view
+          project.repository_size_limit = ::Gitlab::Utils.try_megabytes_to_bytes(limit) if limit
+
+          if changing_storage_size?
+            project.change_repository_storage(params.delete(:repository_storage))
+          end
+
+          validate_classification_label(project, :external_authorization_classification_label)
+        end
 
         if result[:status] == :success
           cleanup_approvers(project) if should_remove_old_approvers

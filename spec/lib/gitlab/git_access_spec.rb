@@ -552,7 +552,7 @@ describe Gitlab::GitAccess do
       it 'returns not found' do
         project.add_guest(user)
         repo = project.repository
-        FileUtils.rm_rf(repo.path)
+        Gitlab::GitalyClient::StorageSettings.allow_disk_access { FileUtils.rm_rf(repo.path) }
 
         # Sanity check for rm_rf
         expect(repo.exists?).to eq(false)
@@ -751,20 +751,22 @@ describe Gitlab::GitAccess do
 
     def merge_into_protected_branch
       @protected_branch_merge_commit ||= begin
-        stub_git_hooks
-        project.repository.add_branch(user, unprotected_branch, 'feature')
-        target_branch = project.repository.lookup('feature')
-        source_branch = project.repository.create_file(
-          user,
-          'filename',
-          'This is the file content',
-          message: 'This is a good commit message',
-          branch_name: unprotected_branch)
-        rugged = project.repository.rugged
-        author = { email: "email@example.com", time: Time.now, name: "Example Git User" }
+        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          stub_git_hooks
+          project.repository.add_branch(user, unprotected_branch, 'feature')
+          target_branch = project.repository.lookup('feature')
+          source_branch = project.repository.create_file(
+            user,
+            'filename',
+            'This is the file content',
+            message: 'This is a good commit message',
+            branch_name: unprotected_branch)
+          rugged = project.repository.rugged
+          author = { email: "email@example.com", time: Time.now, name: "Example Git User" }
 
-        merge_index = rugged.merge_commits(target_branch, source_branch)
-        Rugged::Commit.create(rugged, author: author, committer: author, message: "commit message", parents: [target_branch, source_branch], tree: merge_index.write_tree(rugged))
+          merge_index = rugged.merge_commits(target_branch, source_branch)
+          Rugged::Commit.create(rugged, author: author, committer: author, message: "commit message", parents: [target_branch, source_branch], tree: merge_index.write_tree(rugged))
+        end
       end
     end
 

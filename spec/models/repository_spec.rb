@@ -136,7 +136,10 @@ describe Repository do
         before do
           options = { message: 'test tag message\n',
                       tagger: { name: 'John Smith', email: 'john@gmail.com' } }
-          repository.rugged.tags.create(annotated_tag_name, 'a48e4fc218069f68ef2e769dd8dfea3991362175', options)
+
+          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            repository.rugged.tags.create(annotated_tag_name, 'a48e4fc218069f68ef2e769dd8dfea3991362175', options)
+          end
 
           double_first = double(committed_date: Time.now - 1.second)
           double_last = double(committed_date: Time.now)
@@ -1048,6 +1051,13 @@ describe Repository do
     let(:target_project) { project }
     let(:target_repository) { target_project.repository }
 
+    around do |example|
+      # TODO Gitlab::Git::OperationService will be moved to gitaly-ruby and disappear from this repo
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        example.run
+      end
+    end
+
     context 'when pre hooks were successful' do
       before do
         service = Gitlab::Git::HooksService.new
@@ -1309,6 +1319,13 @@ describe Repository do
   end
 
   describe '#update_autocrlf_option' do
+    around do |example|
+      # TODO Gitlab::Git::OperationService will be moved to gitaly-ruby and disappear from this repo
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        example.run
+      end
+    end
+
     describe 'when autocrlf is not already set to :input' do
       before do
         repository.raw_repository.autocrlf = true
@@ -1802,7 +1819,9 @@ describe Repository do
       expect(repository.branch_count).to be_an(Integer)
 
       # NOTE: Until rugged goes away, make sure rugged and gitaly are in sync
-      rugged_count = repository.raw_repository.rugged.branches.count
+      rugged_count = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        repository.raw_repository.rugged.branches.count
+      end
 
       expect(repository.branch_count).to eq(rugged_count)
     end
@@ -1813,7 +1832,9 @@ describe Repository do
       expect(repository.tag_count).to be_an(Integer)
 
       # NOTE: Until rugged goes away, make sure rugged and gitaly are in sync
-      rugged_count = repository.raw_repository.rugged.tags.count
+      rugged_count = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        repository.raw_repository.rugged.tags.count
+      end
 
       expect(repository.tag_count).to eq(rugged_count)
     end
@@ -2073,7 +2094,10 @@ describe Repository do
     it "attempting to call keep_around on truncated ref does not fail" do
       repository.keep_around(sample_commit.id)
       ref = repository.send(:keep_around_ref_name, sample_commit.id)
-      path = File.join(repository.path, ref)
+
+      path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        File.join(repository.path, ref)
+      end
       # Corrupt the reference
       File.truncate(path, 0)
 
@@ -2088,6 +2112,13 @@ describe Repository do
   end
 
   describe '#update_ref' do
+    around do |example|
+      # TODO Gitlab::Git::OperationService will be moved to gitaly-ruby and disappear from this repo
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        example.run
+      end
+    end
+
     it 'can create a ref' do
       Gitlab::Git::OperationService.new(nil, repository.raw_repository).send(:update_ref, 'refs/heads/foobar', 'refs/heads/master', Gitlab::Git::BLANK_SHA)
 
@@ -2415,7 +2446,9 @@ describe Repository do
   end
 
   def create_remote_branch(remote_name, branch_name, target)
-    rugged = repository.rugged
+    rugged = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      repository.rugged
+    end
     rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)
   end
 
@@ -2450,6 +2483,32 @@ describe Repository do
 
     context 'with Gitaly disabled', :skip_gitaly_mock do
       it_behaves_like('#ancestor?')
+    end
+  end
+
+  describe '#archive_metadata' do
+    let(:ref) { 'master' }
+    let(:storage_path) { '/tmp' }
+
+    let(:prefix) { [project.path, ref].join('-') }
+    let(:filename) { prefix + '.tar.gz' }
+
+    subject(:result) { repository.archive_metadata(ref, storage_path, append_sha: false) }
+
+    context 'with hashed storage disabled' do
+      let(:project) { create(:project, :repository, :legacy_storage) }
+
+      it 'uses the project path to generate the filename' do
+        expect(result['ArchivePrefix']).to eq(prefix)
+        expect(File.basename(result['ArchivePath'])).to eq(filename)
+      end
+    end
+
+    context 'with hashed storage enabled' do
+      it 'uses the project path to generate the filename' do
+        expect(result['ArchivePrefix']).to eq(prefix)
+        expect(File.basename(result['ArchivePath'])).to eq(filename)
+      end
     end
   end
 

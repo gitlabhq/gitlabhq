@@ -2,11 +2,11 @@
   .modal-dialog
     .modal-content
       .modal-header
-        %h4.modal-title.float-left
+        %h4.modal-title
           = s_('DeployTokens|Revoke')
           %b #{token.name}?
-        %button.close{ 'aria-label' => _('Close'), 'data-dismiss' => 'modal', type: 'button' }
-          %span{ 'aria-hidden' => 'true' } &times;
+        %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
+          %span{ "aria-hidden": true } &times;
       .modal-body
         %p
           = s_('DeployTokens|You are about to revoke')

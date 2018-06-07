@@ -235,6 +235,7 @@ class Project < ActiveRecord::Base
 
   has_many :commit_statuses
   has_many :pipelines, class_name: 'Ci::Pipeline', inverse_of: :project
+  has_many :stages, class_name: 'Ci::Stage', inverse_of: :project
 
   # Ci::Build objects store data on the file system such as artifact files and
   # build traces. Currently there's no efficient way of removing this data in
@@ -1443,8 +1444,14 @@ class Project < ActiveRecord::Base
     Ci::Runner.from("(#{union.to_sql}) ci_runners")
   end
 
+  def active_runners
+    strong_memoize(:active_runners) do
+      all_runners.active
+    end
+  end
+
   def any_runners?(&block)
-    all_runners.active.any?(&block)
+    active_runners.any?(&block)
   end
 
   def valid_runners_token?(token)
@@ -1665,12 +1672,6 @@ class Project < ActiveRecord::Base
     Gitlab::SidekiqStatus.unset(import_jid)
 
     import_state.update_column(:jid, nil)
-  end
-
-  def running_or_pending_build_count(force: false)
-    Rails.cache.fetch(['projects', id, 'running_or_pending_build_count'], force: force) do
-      builds.running_or_pending.count(:all)
-    end
   end
 
   # Lazy loading of the `pipeline_status` attribute
@@ -1988,18 +1989,18 @@ class Project < ActiveRecord::Base
                                 .limit(1)
                                 .select(1)
     source_of_merge_requests.opened
-      .where(allow_maintainer_to_push: true)
+      .where(allow_collaboration: true)
       .where('EXISTS (?)', developer_access_exists)
   end
 
-  def branch_allows_maintainer_push?(user, branch_name)
+  def branch_allows_collaboration?(user, branch_name)
     return false unless user
 
     cache_key = "user:#{user.id}:#{branch_name}:branch_allows_push"
 
-    memoized_results = strong_memoize(:branch_allows_maintainer_push) do
+    memoized_results = strong_memoize(:branch_allows_collaboration) do
       Hash.new do |result, cache_key|
-        result[cache_key] = fetch_branch_allows_maintainer_push?(user, branch_name)
+        result[cache_key] = fetch_branch_allows_collaboration?(user, branch_name)
       end
     end
 
@@ -2141,18 +2142,18 @@ class Project < ActiveRecord::Base
     raise ex
   end
 
-  def fetch_branch_allows_maintainer_push?(user, branch_name)
+  def fetch_branch_allows_collaboration?(user, branch_name)
     check_access = -> do
       next false if empty_repo?
 
       merge_request = source_of_merge_requests.opened
-                        .where(allow_maintainer_to_push: true)
+                        .where(allow_collaboration: true)
                         .find_by(source_branch: branch_name)
       merge_request&.can_be_merged_by?(user)
     end
 
     if RequestStore.active?
-      RequestStore.fetch("project-#{id}:branch-#{branch_name}:user-#{user.id}:branch_allows_maintainer_push") do
+      RequestStore.fetch("project-#{id}:branch-#{branch_name}:user-#{user.id}:branch_allows_collaboration") do
         check_access.call
       end
     else

@@ -12,6 +12,7 @@ describe Issuable do
     it { is_expected.to belong_to(:author) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
+    it { is_expected.to have_many(:labels) }
 
     context 'Notes' do
       let!(:note) { create(:note, noteable: issue, project: issue.project) }
@@ -274,8 +275,8 @@ describe Issuable do
 
     it 'skips coercion for not Integer values' do
       expect { issue.time_estimate = nil }.to change { issue.time_estimate }.to(nil)
-      expect { issue.time_estimate = 'invalid time' }.not_to raise_error(StandardError)
-      expect { issue.time_estimate = 22.33 }.not_to raise_error(StandardError)
+      expect { issue.time_estimate = 'invalid time' }.not_to raise_error
+      expect { issue.time_estimate = 22.33 }.not_to raise_error
     end
   end
 

@@ -34,7 +34,9 @@ describe Backup::Repository do
     let(:timestamp) { Time.utc(2017, 3, 22) }
     let(:temp_dirs) do
       Gitlab.config.repositories.storages.map do |name, storage|
-        File.join(storage.legacy_disk_path, '..', 'repositories.old.' + timestamp.to_i.to_s)
+        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          File.join(storage.legacy_disk_path, '..', 'repositories.old.' + timestamp.to_i.to_s)
+        end
       end
     end
 
@@ -92,7 +94,7 @@ describe Backup::Repository do
       end
 
       def list_repositories
-        Dir[SEED_STORAGE_PATH + '/*.git']
+        Dir[File.join(SEED_STORAGE_PATH, '*.git')]
       end
     end
 

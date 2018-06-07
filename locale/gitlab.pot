@@ -369,7 +369,7 @@ msgstr ""
 msgid "All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings."
 msgstr ""
 
-msgid "Allow edits from maintainers."
+msgid "Allow commits from members who can merge to the target branch."
 msgstr ""
 
 msgid "Allow rendering of PlantUML diagrams in Asciidoc documents."
@@ -519,7 +519,7 @@ msgstr ""
 msgid "Ascending"
 msgstr ""
 
-msgid "Ask your group master to setup a group Runner."
+msgid "Ask your group maintainer to setup a group Runner."
 msgstr ""
 
 msgid "Assertion consumer service URL"
@@ -833,7 +833,7 @@ msgstr ""
 msgid "Branches|Once you confirm and press %{delete_protected_branch}, it cannot be undone or recovered."
 msgstr ""
 
-msgid "Branches|Only a project master or owner can delete a protected branch"
+msgid "Branches|Only a project maintainer or owner can delete a protected branch"
 msgstr ""
 
 msgid "Branches|Overview"
@@ -2758,7 +2758,7 @@ msgstr ""
 msgid "Group Runners"
 msgstr ""
 
-msgid "Group masters can register group runners in the %{link}"
+msgid "Group maintainers can register group runners in the %{link}"
 msgstr ""
 
 msgid "GroupRoadmap|From %{dateWord}"
@@ -5374,7 +5374,7 @@ msgstr ""
 msgid "To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. Only epics in the past 3 months and the next 3 months are shown."
 msgstr ""
 
-msgid "To widen your search, change or remove filters. If something is missing, create an epic."
+msgid "To widen your search, change or remove filters."
 msgstr ""
 
 msgid "Todo"
@@ -5815,7 +5815,7 @@ msgstr ""
 msgid "You have reached your project limit"
 msgstr ""
 
-msgid "You must have master access to force delete a lock"
+msgid "You must have maintainer access to force delete a lock"
 msgstr ""
 
 msgid "You must sign in to star a project"
@@ -5922,6 +5922,9 @@ msgstr ""
 msgid "ciReport|%{linkStartTag}Learn more about SAST image %{linkEndTag}"
 msgstr ""
 
+msgid "ciReport|%{namespace} is affected by %{vulnerability}."
+msgstr ""
+
 msgid "ciReport|%{reportName} is loading"
 msgstr ""
 
@@ -5937,10 +5940,13 @@ msgstr ""
 msgid "ciReport|%{type} detected no vulnerabilities"
 msgstr ""
 
+msgid "ciReport|Class"
+msgstr ""
+
 msgid "ciReport|Code quality"
 msgstr ""
 
-msgid "ciReport|Confidence Level"
+msgid "ciReport|Confidence"
 msgstr ""
 
 msgid "ciReport|Container scanning detects known vulnerabilities in your docker images."
@@ -5991,7 +5997,7 @@ msgstr ""
 msgid "ciReport|Fixed:"
 msgstr ""
 
-msgid "ciReport|Identifier"
+msgid "ciReport|Identifiers"
 msgstr ""
 
 msgid "ciReport|Instances"
@@ -6000,7 +6006,13 @@ msgstr ""
 msgid "ciReport|Learn more about whitelisting"
 msgstr ""
 
+msgid "ciReport|Links"
+msgstr ""
+
 msgid "ciReport|Loading %{reportName} report"
+msgstr ""
+
+msgid "ciReport|Method"
 msgstr ""
 
 msgid "ciReport|Namespace"
@@ -6045,9 +6057,6 @@ msgstr ""
 msgid "ciReport|Solution"
 msgstr ""
 
-msgid "ciReport|Source"
-msgstr ""
-
 msgid "ciReport|Static Application Security Testing (SAST) detects known vulnerabilities in your source code."
 msgstr ""
 
@@ -6067,6 +6076,9 @@ msgid "ciReport|There was an error reverting the dismissal. Please try again."
 msgstr ""
 
 msgid "ciReport|Unapproved vulnerabilities (red) can be marked as approved."
+msgstr ""
+
+msgid "ciReport|Upgrade %{name} from %{version} to %{fixed}."
 msgstr ""
 
 msgid "ciReport|no vulnerabilities"
@@ -6155,7 +6167,7 @@ msgstr ""
 msgid "mrWidget|Add approval"
 msgstr ""
 
-msgid "mrWidget|Allows edits from maintainers"
+msgid "mrWidget|Allows commits from members who can merge to the target branch"
 msgstr ""
 
 msgid "mrWidget|An error occured while removing your approval."

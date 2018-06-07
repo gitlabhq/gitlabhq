@@ -8,10 +8,10 @@
   .modal-dialog{ role: "document" }
     .modal-content
       .modal-header
-        %button.close{ type: "button", data: { dismiss: "modal" }, aria: { label: "close" } }
-          %span{ aria: { hidden: "true" } }= icon("times")
         %h4.modal-title
           Create new #{name} by email
+        %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
+          %span{ "aria-hidden": true } &times;
       .modal-body
         %p
           You can create a new #{name} inside this project by sending an email to the following email address:

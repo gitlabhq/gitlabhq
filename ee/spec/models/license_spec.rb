@@ -23,6 +23,46 @@ describe License do
       end
     end
 
+    describe '#check_users_limit' do
+      using RSpec::Parameterized::TableSyntax
+
+      before do
+        create(:group_member, :guest)
+        create(:group_member, :reporter)
+        create(:license, plan: plan)
+      end
+
+      let(:users_count) { nil }
+      let(:new_license) do
+        gl_license = build(:gitlab_license, restrictions: { plan: plan, active_user_count: users_count, previous_user_count: 1 })
+        build(:license, data: gl_license.export)
+      end
+
+      where(:gl_plan, :valid) do
+        ::License::STARTER_PLAN  | false
+        ::License::PREMIUM_PLAN  | false
+        ::License::ULTIMATE_PLAN | true
+      end
+
+      with_them do
+        let(:plan) { gl_plan }
+
+        context 'when license has restricted users' do
+          let(:users_count) { 1 }
+
+          it { expect(new_license.valid?).to eq(valid) }
+        end
+
+        context 'when license has unlimited users' do
+          let(:users_count) { nil }
+
+          it 'is always valid' do
+            expect(new_license.valid?).to eq(true)
+          end
+        end
+      end
+    end
+
     describe "Historical active user count" do
       let(:active_user_count) { User.active.count + 10 }
       let(:date)              { described_class.current.starts_at }

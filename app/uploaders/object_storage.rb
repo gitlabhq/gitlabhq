@@ -10,8 +10,6 @@ module ObjectStorage
   UnknownStoreError = Class.new(StandardError)
   ObjectStorageUnavailable = Class.new(StandardError)
 
-  DIRECT_UPLOAD_TIMEOUT = 4.hours
-  DIRECT_UPLOAD_EXPIRE_OFFSET = 15.minutes
   TMP_UPLOAD_PATH = 'tmp/uploads'.freeze
 
   module Store
@@ -35,7 +33,7 @@ module ObjectStorage
 
         unless current_upload_satisfies?(paths, model)
           # the upload we already have isn't right, find the correct one
-          self.upload = uploads.find_by(model: model, path: paths)
+          self.upload = model&.retrieve_upload(identifier, paths)
         end
 
         super
@@ -48,7 +46,7 @@ module ObjectStorage
       end
 
       def upload=(upload)
-        return unless upload
+        return if upload.nil?
 
         self.object_store = upload.store
         super
@@ -157,9 +155,9 @@ module ObjectStorage
         model_class.uploader_options.dig(mount_point, :mount_on) || mount_point
       end
 
-      def workhorse_authorize
+      def workhorse_authorize(has_length:, maximum_size: nil)
         {
-          RemoteObject: workhorse_remote_upload_options,
+          RemoteObject: workhorse_remote_upload_options(has_length: has_length, maximum_size: maximum_size),
           TempPath: workhorse_local_upload_path
         }.compact
       end
@@ -168,23 +166,16 @@ module ObjectStorage
         File.join(self.root, TMP_UPLOAD_PATH)
       end
 
-      def workhorse_remote_upload_options
+      def workhorse_remote_upload_options(has_length:, maximum_size: nil)
         return unless self.object_store_enabled?
         return unless self.direct_upload_enabled?
 
         id = [CarrierWave.generate_cache_id, SecureRandom.hex].join('-')
         upload_path = File.join(TMP_UPLOAD_PATH, id)
-        connection = ::Fog::Storage.new(self.object_store_credentials)
-        expire_at = Time.now + DIRECT_UPLOAD_TIMEOUT + DIRECT_UPLOAD_EXPIRE_OFFSET
-        options = { 'Content-Type' => 'application/octet-stream' }
+        direct_upload = ObjectStorage::DirectUpload.new(self.object_store_credentials, remote_store_path, upload_path,
+          has_length: has_length, maximum_size: maximum_size)
 
-        {
-          ID: id,
-          Timeout: DIRECT_UPLOAD_TIMEOUT,
-          GetURL: connection.get_object_url(remote_store_path, upload_path, expire_at),
-          DeleteURL: connection.delete_object_url(remote_store_path, upload_path, expire_at),
-          StoreURL: connection.put_object_url(remote_store_path, upload_path, expire_at, options)
-        }
+        direct_upload.to_hash.merge(ID: id)
       end
     end
 

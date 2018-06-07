@@ -8,15 +8,13 @@ describe('dast issue body', () => {
   const Component = Vue.extend(component);
   const dastIssue = {
     alert: 'X-Content-Type-Options Header Missing',
-    confidence: '2',
+    severity: 'Low',
+    confidence: 'Medium',
     count: '17',
     cweid: '16',
     desc:
       '<p>The Anti-MIME-Sniffing header X-Content-Type-Options was not set to "nosniff". </p>',
-    name: 'X-Content-Type-Options Header Missing',
-    parsedDescription:
-      ' The Anti-MIME-Sniffing header X-Content-Type-Options was not set to "nosniff". ',
-    priority: 'Low (Medium)',
+    title: 'X-Content-Type-Options Header Missing',
     reference:
       '<p>http://msdn.microsoft.com/en-us/library/ie/gg622941%28v=vs.85%29.aspx</p><p>https://www.owasp.org/index.php/List_of_useful_HTTP_headers</p>',
     riskcode: '1',
@@ -27,34 +25,19 @@ describe('dast issue body', () => {
     vm.$destroy();
   });
 
-  describe('with priority', () => {
-    it('renders priority key', () => {
+  describe('severity and confidence ', () => {
+    it('renders severity and confidence', () => {
       vm = mountComponent(Component, {
         issue: dastIssue,
         issueIndex: 1,
         modalTargetId: '#modal-mrwidget-issue',
       });
 
-      expect(vm.$el.textContent.trim()).toContain(dastIssue.priority);
+      expect(vm.$el.textContent.trim()).toContain(`${dastIssue.severity} (${dastIssue.confidence})`);
     });
   });
 
-  describe('without priority', () => {
-    it('does not rendere priority key', () => {
-      const issueCopy = Object.assign({}, dastIssue);
-      delete issueCopy.priority;
-
-      vm = mountComponent(Component, {
-        issue: issueCopy,
-        issueIndex: 1,
-        modalTargetId: '#modal-mrwidget-issue',
-      });
-
-      expect(vm.$el.textContent.trim()).not.toContain(dastIssue.priority);
-    });
-  });
-
-  describe('issue name', () => {
+  describe('issue title', () => {
     beforeEach(() => {
       vm = mountComponent(Component, {
         issue: dastIssue,
@@ -63,8 +46,8 @@ describe('dast issue body', () => {
       });
     });
 
-    it('renders button with issue name', () => {
-      expect(vm.$el.textContent.trim()).toContain(dastIssue.name);
+    it('renders button with issue title', () => {
+      expect(vm.$el.textContent.trim()).toContain(dastIssue.title);
     });
   });
 });

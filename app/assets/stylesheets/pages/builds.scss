@@ -75,6 +75,7 @@
 
   .top-bar {
     height: 35px;
+    min-height: 35px;
     background: $gray-light;
     border: 1px solid $border-color;
     color: $gl-text-color;
@@ -125,6 +126,7 @@
       align-items: center;
 
       svg {
+        width: 15px;
         height: 15px;
         display: block;
         fill: $gl-text-color;
@@ -159,7 +161,12 @@
         }
       }
 
-      .btn-scroll:disabled {
+      .btn-refresh {
+        border-radius: 4px;
+      }
+
+      .btn-scroll:disabled,
+      .btn-refresh:disabled {
         opacity: 0.35;
         cursor: not-allowed;
       }
@@ -446,4 +453,15 @@
   top: 50%;
   right: 0;
   margin-top: -17px;
+}
+
+@include media-breakpoint-down(sm) {
+  .top-bar {
+    .truncated-info {
+      white-space: nowrap;
+      overflow: hidden;
+      max-width: 220px;
+      text-overflow: ellipsis;
+    }
+  }
 }

@@ -74,7 +74,7 @@ feature 'Protected Branches', :js do
           click_link 'No one'
           find(".js-allowed-to-push").click
           wait_for_requests
-          click_link 'Developers + Masters'
+          click_link 'Developers + Maintainers'
         end
 
         visit project_protected_branches_path(project)
@@ -84,7 +84,7 @@ feature 'Protected Branches', :js do
             expect(page.find(".dropdown-toggle-text")).to have_content("No one")
           end
           page.within(".js-allowed-to-push") do
-            expect(page.find(".dropdown-toggle-text")).to have_content("Developers + Masters")
+            expect(page.find(".dropdown-toggle-text")).to have_content("Developers + Maintainers")
           end
         end
       end

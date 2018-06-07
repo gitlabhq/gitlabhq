@@ -1,0 +1,5 @@
+---
+title: Fix sticking of runner to primary if new job is scheduled
+merge_request:
+author:
+type: fixed

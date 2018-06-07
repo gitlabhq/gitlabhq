@@ -92,6 +92,7 @@ _The artifacts are stored by default in
 - Since version 9.5, artifacts are [browsable], when object storage is enabled. 
   9.4 lacks this feature.
 > Since version 10.6, available in [GitLab CE](https://about.gitlab.com/products/)
+> Since version 11.0, we support direct_upload to S3.
 
 If you don't want to use the local disk where GitLab is installed to store the
 artifacts, you can use an object storage like AWS S3 instead.
@@ -106,7 +107,7 @@ For source installations the following settings are nested under `artifacts:` an
 |---------|-------------|---------|
 | `enabled` | Enable/disable object storage | `false` |
 | `remote_directory` | The bucket name where Artifacts will be stored| |
-| `direct_upload` | Set to true to enable direct upload of Artifacts without the need of local shared storage. Option may be removed once we decide to support only single storage for all files. Currently only `Google` provider is supported | `false` |
+| `direct_upload` | Set to true to enable direct upload of Artifacts without the need of local shared storage. Option may be removed once we decide to support only single storage for all files. | `false` |
 | `background_upload` | Set to false to disable automatic upload. Option may be removed once upload is direct to S3 | `true` |
 | `proxy_download` | Set to true to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data | `false` |
 | `connection` | Various connection options described below | |

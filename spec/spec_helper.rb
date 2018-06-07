@@ -152,6 +152,10 @@ RSpec.configure do |config|
     RequestStore.clear!
   end
 
+  config.after(:example) do
+    Fog.unmock! if Fog.mock?
+  end
+
   config.before(:example, :mailer) do
     reset_delivered_emails!
   end

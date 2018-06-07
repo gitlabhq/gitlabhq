@@ -266,10 +266,10 @@ export default {
       />
 
       <section
-        v-if="mr.maintainerEditAllowed"
+        v-if="mr.allowCollaboration"
         class="mr-info-list mr-links"
       >
-        {{ s__("mrWidget|Allows edits from maintainers") }}
+        {{ s__("mrWidget|Allows commits from members who can merge to the target branch") }}
       </section>
 
       <mr-widget-related-links

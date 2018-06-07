@@ -28,7 +28,7 @@ With GitLab merge requests, you can:
 - Enable [fast-forward merge requests](#fast-forward-merge-requests)
 - Enable [semi-linear history merge requests](#semi-linear-history-merge-requests) as another security layer to guarantee the pipeline is passing in the target branch
 - [Create new merge requests by email](#create-new-merge-requests-by-email)
-- Allow maintainers of the target project to push directly to the fork by [allowing edits from maintainers](maintainer_access.md)
+- [Allow collaboration](allow_collaboration.md) so members of the target project can push directly to the fork
 - [Squash and merge](squash_and_merge.md) for a cleaner commit history
 
 With **[GitLab Enterprise Edition][ee]**, you can also:
@@ -50,6 +50,7 @@ A. Consider you are a software developer working in a team:
 1. You checkout a new branch, and submit your changes through a merge request
 1. You gather feedback from your team
 1. You work on the implementation optimizing code with [Code Quality reports](code_quality_diff.md) **[STARTER]**
+1. You avoid using dependencies whose license is not compatible with your project with [License Management reports](license_management.md) **[ULTIMATE]**
 1. You build and test your changes with GitLab CI/CD
 1. You request the [approval](#merge-request-approvals) from your manager
 1. Your manager pushes a commit with his final review, [approves the merge request](#merge-request-approvals), and set it to [merge when pipeline succeeds](#merge-when-pipeline-succeeds)
@@ -91,7 +92,7 @@ request is merged.
 
 This option is also visible in an existing merge request next to the merge
 request button and can be selected/deselected before merging. It's only visible
-to users with [Master permissions](../../permissions.md) in the source project.
+to users with [Maintainer permissions](../../permissions.md) in the source project.
 
 If the user viewing the merge request does not have the correct permissions to
 remove the source branch and the source branch is set for removal, the merge
@@ -247,6 +248,17 @@ If your application offers a web interface and you are using [GitLab CI/CD][ci],
 GitLab runs the [Sitespeed.io container][sitespeed-container] and displays the difference in overall performance scores between the source and target branches.
 
 [Read more about Browser Performance Testing.](browser_performance_testing.md)
+
+## License Management **[ULTIMATE]**
+
+> Introduced in [GitLab Ultimate][products] 11.0.
+
+If you are using [GitLab CI/CD][ci], you can search your dependencies for their 
+licenses using License Management.
+Going a step further, GitLab can show the licenses report right in the
+merge request widget area.
+
+[Read more about License Management reports.](license_management.md)
 
 ## Security reports **[ULTIMATE]**
 

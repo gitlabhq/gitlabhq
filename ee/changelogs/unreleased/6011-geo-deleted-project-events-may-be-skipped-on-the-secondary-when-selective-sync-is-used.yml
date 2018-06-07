@@ -1,0 +1,6 @@
+---
+title: "[Geo] Fix: Deleted project events may be skipped on the secondary when selective
+  sync is used"
+merge_request:
+author:
+type: fixed

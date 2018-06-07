@@ -45,6 +45,10 @@ There's also a collection of repositories with [example projects](https://gitlab
 
 [Analyze code quality with the Code Climate CLI](code_climate.md).
 
+## Dependencies license management **[ULTIMATE]**
+
+[Find and manage the licenses of your dependencies](license_management.md).
+
 ## Static Application Security Testing (SAST) **[ULTIMATE]**
 
 [Scan your code for vulnerabilities](sast.md)

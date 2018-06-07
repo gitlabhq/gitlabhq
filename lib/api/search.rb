@@ -42,9 +42,7 @@ module API
         end
 
         case params[:scope]
-        when 'wiki_blobs'
-          paginate(results).map { |blob| Gitlab::ProjectSearchResults.parse_search_result(blob, user_project) }
-        when 'blobs'
+        when 'blobs', 'wiki_blobs'
           paginate(results).map { |blob| blob[1] }
         else
           paginate(results)

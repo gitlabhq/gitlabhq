@@ -33,16 +33,16 @@ module SearchHelper
     "Showing #{from} - #{to} of #{count} #{scope.humanize(capitalize: false)} for \"#{term}\""
   end
 
-  def parse_search_result(result)
-    if result.is_a?(String)
-      Gitlab::ProjectSearchResults.parse_search_result(result)
-    else
-      Gitlab::Elastic::SearchResults.parse_search_result(result)
-    end
+  def find_project_for_result_blob(result)
+    @project
   end
 
-  def find_project_for_blob(blob)
-    Project.find(blob['_parent'])
+  def parse_search_result(result)
+    result
+  end
+
+  def search_blob_title(project, filename)
+    filename
   end
 
   private

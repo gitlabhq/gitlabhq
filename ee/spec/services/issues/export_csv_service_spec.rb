@@ -33,6 +33,10 @@ describe Issues::ExportCsvService do
     let(:feature_label) { create(:label, project: project, title: 'Feature') }
 
     before do
+      # Creating a timelog touches the updated_at timestamp of issue,
+      # so create these first.
+      issue.timelogs.create(time_spent: 360, user: user)
+      issue.timelogs.create(time_spent: 200, user: user)
       issue.update!(milestone: milestone,
                     assignees: [user],
                     description: 'Issue with details',
@@ -45,8 +49,6 @@ describe Issues::ExportCsvService do
                     discussion_locked: true,
                     labels: [feature_label, idea_label],
                     time_estimate: 72000)
-      issue.timelogs.create(time_spent: 360, user: user)
-      issue.timelogs.create(time_spent: 200, user: user)
     end
 
     specify 'iid' do

@@ -1,8 +1,12 @@
-# GitHub Project Integration
+# GitHub project integration **[PREMIUM]**
 
-GitLab provides integration for updating pipeline statuses on GitHub. This is especially useful if using GitLab for CI/CD only.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/3836) in GitLab Premium 10.6.
 
-This project integration is separate from the [instance wide GitHub integration][gh-integration] and is automatically configured on [GitHub import][gh-import].
+GitLab provides an integration for updating the pipeline statuses on GitHub.
+This is especially useful if using GitLab for CI/CD only.
+
+This project integration is separate from the [instance wide GitHub integration](../import/github.md#mirroring-and-pipeline-status-sharing)
+and is automatically configured on [GitHub import](../../../integration/github.md).
 
 ![Pipeline status update on GitHub](img/github_status_check_pipeline_update.png)
 
@@ -10,13 +14,13 @@ This project integration is separate from the [instance wide GitHub integration]
 
 ### Complete these steps on GitHub
 
-This integration requires a [GitHub API token](https://github.com/settings/tokens) with `repo:status` access granted:
+This integration requires a [GitHub API token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)
+with `repo:status` access granted:
 
 1. Go to your "Personal access tokens" page at https://github.com/settings/tokens
 1. Click "Generate New Token"
 1. Ensure that `repo:status` is checked and click "Generate token"
 1. Copy the generated token to use on GitLab
-
 
 ### Complete these steps on GitLab
 
@@ -25,10 +29,7 @@ This integration requires a [GitHub API token](https://github.com/settings/token
 1. Click "GitHub".
 1. Select the "Active" checkbox.
 1. Paste the token you've generated on GitHub
-1. Enter the path to your project on GitHub, such as "https://github.com/your-name/YourProject/"
+1. Enter the path to your project on GitHub, such as `https://github.com/username/repository`
 1. Save or optionally click "Test Settings".
 
 ![Configure GitHub Project Integration](img/github_configuration.png)
-
-[gh-import]: ../import/github.md#mirroring
-[gh-integration]: ../../../integration/github.md

@@ -23,7 +23,6 @@
     }
 
     .btn-group {
-
       > a {
         color: $gl-text-color-secondary;
       }
@@ -232,6 +231,13 @@
   &-running {
     background-color: $green-100;
     border-color: $green-400;
+
+    // EE-specific start
+    &:hover {
+      background-color: $green-300;
+      border-color: $green-500;
+    }
+    // EE-specific end
   }
 
   &-succeeded {
@@ -400,6 +406,7 @@
 .prometheus-graph {
   flex: 1 0 auto;
   min-width: 450px;
+  max-width: 100%;
   padding: $gl-padding / 2;
 
   h5 {
@@ -408,6 +415,17 @@
 
   @include media-breakpoint-down(sm) {
     min-width: 100%;
+  }
+}
+
+.prometheus-graph-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $gl-padding-8;
+
+  h5 {
+    margin: 0;
   }
 }
 

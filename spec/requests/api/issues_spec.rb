@@ -634,15 +634,17 @@ describe API::Issues do
     end
 
     it 'avoids N+1 queries' do
-      control_count = ActiveRecord::QueryRecorder.new do
+      get api("/projects/#{project.id}/issues", user)
+
+      control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         get api("/projects/#{project.id}/issues", user)
       end.count
 
-      create(:issue, author: user, project: project)
+      create_list(:issue, 3, project: project)
 
       expect do
         get api("/projects/#{project.id}/issues", user)
-      end.not_to exceed_query_limit(control_count)
+      end.not_to exceed_all_query_limit(control_count)
     end
 
     it 'returns 404 when project does not exist' do
@@ -1355,19 +1357,25 @@ describe API::Issues do
       expect(json_response['labels']).to eq([label.title])
     end
 
-    it 'removes all labels' do
-      put api("/projects/#{project.id}/issues/#{issue.iid}", user), labels: ''
+    it 'removes all labels and touches the record' do
+      Timecop.travel(1.minute.from_now) do
+        put api("/projects/#{project.id}/issues/#{issue.iid}", user), labels: ''
+      end
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['labels']).to eq([])
+      expect(json_response['updated_at']).to be > Time.now
     end
 
-    it 'updates labels' do
-      put api("/projects/#{project.id}/issues/#{issue.iid}", user),
+    it 'updates labels and touches the record' do
+      Timecop.travel(1.minute.from_now) do
+        put api("/projects/#{project.id}/issues/#{issue.iid}", user),
           labels: 'foo,bar'
+      end
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['labels']).to include 'foo'
       expect(json_response['labels']).to include 'bar'
+      expect(json_response['updated_at']).to be > Time.now
     end
 
     it 'allows special label names' do

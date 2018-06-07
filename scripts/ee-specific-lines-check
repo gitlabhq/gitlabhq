@@ -18,9 +18,9 @@ offenses = updated_numstat.select do |file, updated_delta|
     updated_delta > current_delta &&
     WHITELIST.all? { |pattern| !Dir.glob(pattern).include?(file) }
 
-  # Don't complain if we're just adding one more line, which could be
-  # `prepend EE::Module` that we want.
-  more_lines && !(current_delta == 0 && updated_delta == 1)
+  # Don't complain if we're just adding 1 or 2 more lines, which could be
+  # `prepend EE::Module` and a blank line that we want.
+  more_lines && !(current_delta == 0 && updated_delta <= 2)
 end
 
 if offenses.empty?

@@ -39,7 +39,9 @@ module Gitlab
       end
 
       def git_all_pointers
-        rev_list.all_objects(require_path: true) do |object_ids|
+        params = { options: ["--filter=blob:limit=#{Gitlab::Git::Blob::LFS_POINTER_MAX_SIZE}"], require_path: true }
+
+        rev_list.all_objects(params) do |object_ids|
           Gitlab::Git::Blob.batch_lfs_pointers(@repository, object_ids)
         end
       end

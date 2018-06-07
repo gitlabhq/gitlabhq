@@ -10,7 +10,8 @@ module Clusters
       Applications::Helm.application_name => Applications::Helm,
       Applications::Ingress.application_name => Applications::Ingress,
       Applications::Prometheus.application_name => Applications::Prometheus,
-      Applications::Runner.application_name => Applications::Runner
+      Applications::Runner.application_name => Applications::Runner,
+      Applications::Jupyter.application_name => Applications::Jupyter
     }.freeze
     DEFAULT_ENVIRONMENT = '*'.freeze
 
@@ -28,6 +29,7 @@ module Clusters
     has_one :application_ingress, class_name: 'Clusters::Applications::Ingress'
     has_one :application_prometheus, class_name: 'Clusters::Applications::Prometheus'
     has_one :application_runner, class_name: 'Clusters::Applications::Runner'
+    has_one :application_jupyter, class_name: 'Clusters::Applications::Jupyter'
 
     accepts_nested_attributes_for :provider_gcp, update_only: true
     accepts_nested_attributes_for :platform_kubernetes, update_only: true
@@ -41,6 +43,7 @@ module Clusters
 
     delegate :active?, to: :platform_kubernetes, prefix: true, allow_nil: true
     delegate :installed?, to: :application_helm, prefix: true, allow_nil: true
+    delegate :installed?, to: :application_ingress, prefix: true, allow_nil: true
 
     enum platform_type: {
       kubernetes: 1
@@ -76,7 +79,8 @@ module Clusters
         application_helm || build_application_helm,
         application_ingress || build_application_ingress,
         application_prometheus || build_application_prometheus,
-        application_runner || build_application_runner
+        application_runner || build_application_runner,
+        application_jupyter || build_application_jupyter
       ]
     end
 

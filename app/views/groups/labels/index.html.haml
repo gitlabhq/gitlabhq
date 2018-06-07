@@ -1,21 +1,28 @@
 - page_title 'Labels'
-
+- can_admin_label = can?(current_user, :admin_label, @group)
 - issuables = ['issues', 'merge requests'] + (@group&.feature_available?(:epics) ? ['epics'] : [])
 
-.top-area.adjust
-  .nav-text
-    = _("Labels can be applied to %{features}. Group labels are available for any project within the group.") % { features: issuables.to_sentence }
+- if can_admin_label
+  - content_for(:header_content) do
+    .nav-controls
+      = link_to _('New label'), new_group_label_path(@group), class: "btn btn-new"
 
-  .nav-controls
-    - if can?(current_user, :admin_label, @group)
-      = link_to "New label", new_group_label_path(@group), class: "btn btn-new"
+- if @labels.exists?
+  #promote-label-modal
+  %div{ class: container_class }
+    .top-area.adjust
+      .nav-text
+        = _('Labels can be applied to %{features}. Group labels are available for any project within the group.') % { features: issuables.to_sentence }
 
-.labels
-  .other-labels
-    - if @labels.present?
-      %ul.content-list.manage-labels-list.js-other-labels
-        = render partial: 'shared/label', subject: @group, collection: @labels, as: :label
-        = paginate @labels, theme: 'gitlab'
-    - else
-      .nothing-here-block
-        = _("No labels created yet.")
+    .labels-container.prepend-top-5
+      .other-labels
+        %h5 Labels
+        %ul.content-list.manage-labels-list.js-other-labels
+          = render partial: 'shared/label', subject: @group, collection: @labels, as: :label, locals: { use_label_priority: false }
+          = paginate @labels, theme: 'gitlab'
+- else
+  = render 'shared/empty_states/labels'
+
+%template#js-badge-item-template
+  %li.label-link-item.js-priority-badge.inline.prepend-left-10
+    .label-badge.label-badge-blue= _('Prioritized label')

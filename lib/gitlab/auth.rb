@@ -242,7 +242,7 @@ module Gitlab
         return unless login == 'gitlab-ci-token'
         return unless password
 
-        build = ::Ci::Build.running.find_by_token(password)
+        build = find_build_by_token(password)
         return unless build
         return unless build.project.builds_enabled?
 
@@ -302,6 +302,12 @@ module Gitlab
         return [] unless Gitlab.config.registry.enabled
 
         REGISTRY_SCOPES
+      end
+
+      private
+
+      def find_build_by_token(token)
+        ::Ci::Build.running.find_by_token(token)
       end
     end
   end

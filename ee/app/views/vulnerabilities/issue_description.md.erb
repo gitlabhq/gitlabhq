@@ -19,11 +19,22 @@
 ### Identifiers:
 
 <% vulnerability.identifiers.each do |identifier| %>
-<% if identifier[:link].present? %>
-* [<%= identifier[:value] %>](<%= identifier[:link] %>)
+<% if identifier[:url].present? %>
+* [<%= identifier[:name] %>](<%= identifier[:url] %>)
 <% else %>
-* <%= identifier[:value] %>
+* <%= identifier[:name] %>
+<% end %>
 <% end %>
 <% end %>
 
+<% if vulnerability.links.present? %>
+### Links:
+
+<% vulnerability.links.each do |link| %>
+<% if link[:name].present? %>
+* [<%= link[:name] %>](<%= link[:url] %>)
+<% else %>
+* <%= link[:url] %>
+<% end %>
+<% end %>
 <% end %>

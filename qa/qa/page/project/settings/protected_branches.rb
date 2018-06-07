@@ -43,7 +43,7 @@ module QA
           end
 
           def allow_devs_and_masters_to_push
-            click_allow(:push, 'Developers + Masters')
+            click_allow(:push, 'Developers + Maintainers')
           end
 
           def allow_no_one_to_merge
@@ -51,7 +51,7 @@ module QA
           end
 
           def allow_devs_and_masters_to_merge
-            click_allow(:merge, 'Developers + Masters')
+            click_allow(:merge, 'Developers + Maintainers')
           end
 
           def protect_branch
