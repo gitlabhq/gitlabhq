@@ -7,12 +7,14 @@ import appComponent from 'ee/roadmap/components/app.vue';
 import RoadmapStore from 'ee/roadmap/store/roadmap_store';
 import RoadmapService from 'ee/roadmap/service/roadmap_service';
 
+import { PRESET_TYPES } from 'ee/roadmap/constants';
+
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { mockTimeframe, mockGroupId, epicsPath, mockNewEpicEndpoint, rawEpics, mockSvgPath } from '../mock_data';
+import { mockTimeframeMonths, mockGroupId, epicsPath, mockNewEpicEndpoint, rawEpics, mockSvgPath } from '../mock_data';
 
 const createComponent = () => {
   const Component = Vue.extend(appComponent);
-  const timeframe = mockTimeframe;
+  const timeframe = mockTimeframeMonths;
 
   const store = new RoadmapStore(mockGroupId, timeframe);
   const service = new RoadmapService(epicsPath);
@@ -20,6 +22,7 @@ const createComponent = () => {
   return mountComponent(Component, {
     store,
     service,
+    presetType: PRESET_TYPES.MONTHS,
     hasFiltersApplied: true,
     newEpicEndpoint: mockNewEpicEndpoint,
     emptyStateIllustrationPath: mockSvgPath,

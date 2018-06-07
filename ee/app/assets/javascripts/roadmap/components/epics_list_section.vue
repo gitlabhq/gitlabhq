@@ -13,6 +13,10 @@
       SectionMixin,
     ],
     props: {
+      presetType: {
+        type: String,
+        required: true,
+      },
       epics: {
         type: Array,
         required: true,
@@ -148,6 +152,7 @@
     <epic-item
       v-for="(epic, index) in epics"
       :key="index"
+      :preset-type="presetType"
       :epic="epic"
       :timeframe="timeframe"
       :current-group-id="currentGroupId"

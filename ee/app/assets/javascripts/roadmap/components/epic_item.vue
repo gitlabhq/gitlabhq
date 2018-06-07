@@ -8,6 +8,10 @@
       epicItemTimeline,
     },
     props: {
+      presetType: {
+        type: String,
+        required: true,
+      },
       epic: {
         type: Object,
         required: true,
@@ -41,6 +45,7 @@
     <epic-item-timeline
       v-for="(timeframeItem, index) in timeframe"
       :key="index"
+      :preset-type="presetType"
       :timeframe="timeframe"
       :timeframe-item="timeframeItem"
       :epic="epic"

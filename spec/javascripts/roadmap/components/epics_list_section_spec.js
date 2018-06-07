@@ -3,23 +3,26 @@ import Vue from 'vue';
 import epicsListSectionComponent from 'ee/roadmap/components/epics_list_section.vue';
 import RoadmapStore from 'ee/roadmap/store/roadmap_store';
 import eventHub from 'ee/roadmap/event_hub';
+import { PRESET_TYPES } from 'ee/roadmap/constants';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { rawEpics, mockTimeframe, mockGroupId, mockShellWidth } from '../mock_data';
+import { rawEpics, mockTimeframeMonths, mockGroupId, mockShellWidth } from '../mock_data';
 
-const store = new RoadmapStore(mockGroupId, mockTimeframe);
+const store = new RoadmapStore(mockGroupId, mockTimeframeMonths, PRESET_TYPES.MONTHS);
 store.setEpics(rawEpics);
 const mockEpics = store.getEpics();
 
 const createComponent = ({
   epics = mockEpics,
-  timeframe = mockTimeframe,
+  timeframe = mockTimeframeMonths,
   currentGroupId = mockGroupId,
   shellWidth = mockShellWidth,
   listScrollable = false,
+  presetType = PRESET_TYPES.MONTHS,
 }) => {
   const Component = Vue.extend(epicsListSectionComponent);
 
   return mountComponent(Component, {
+    presetType,
     epics,
     timeframe,
     currentGroupId,
@@ -59,7 +62,7 @@ describe('EpicsListSectionComponent', () => {
 
     describe('emptyRowCellStyles', () => {
       it('returns computed style object based on sectionItemWidth prop value', () => {
-        expect(vm.emptyRowCellStyles.width).toBe('280px');
+        expect(vm.emptyRowCellStyles.width).toBe('240px');
       });
     });
 
