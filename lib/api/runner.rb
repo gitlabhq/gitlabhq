@@ -125,7 +125,7 @@ module API
       end
       put '/:id' do
         job = authenticate_job!
-        forbidden!('Job is not running') unless job.running?
+        job_forbidden!(job, 'Job is not running') unless job.running?
 
         job.trace.set(params[:trace]) if params[:trace]
 
@@ -133,27 +133,13 @@ module API
                                   project: job.project.full_path)
 
         case params[:state].to_s
+        when 'running'
+          job.touch if job.needs_touch?
         when 'success'
           job.success!
         when 'failed'
           job.drop!(params[:failure_reason] || :unknown_failure)
         end
-      end
-
-      desc 'Marks job as live' do
-        http_codes [[200, 'Request accepted']]
-      end
-      params do
-        requires :id, type: Integer, desc: %q(Job's ID)
-        optional :token, type: String, desc: %q(Job's authentication token)
-      end
-      post '/:id/keep-alive' do
-        job = authenticate_job!
-
-        job.touch if job.running? && job.needs_touch?
-
-        status 200
-        header 'Job-Status', job.status
       end
 
       desc 'Appends a patch to the job trace' do
@@ -168,7 +154,7 @@ module API
       end
       patch '/:id/trace' do
         job = authenticate_job!
-        forbidden!('Job is not running') unless job.running?
+        job_forbidden!(job, 'Job is not running') unless job.running?
 
         error!('400 Missing header Content-Range', 400) unless request.headers.key?('Content-Range')
         content_range = request.headers['Content-Range']
