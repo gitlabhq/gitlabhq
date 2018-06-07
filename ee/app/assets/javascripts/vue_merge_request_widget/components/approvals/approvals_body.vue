@@ -1,13 +1,19 @@
 <script>
 import { n__, s__, sprintf } from '~/locale';
 import Flash from '~/flash';
+import Icon from '~/vue_shared/components/icon.vue';
 import MrWidgetAuthor from '~/vue_merge_request_widget/components/mr_widget_author.vue';
+import tooltip from '~/vue_shared/directives/tooltip';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 
 export default {
   name: 'ApprovalsBody',
   components: {
     MrWidgetAuthor,
+    Icon,
+  },
+  directives: {
+    tooltip,
   },
   props: {
     mr: {
@@ -22,6 +28,11 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    approvalsOptional: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     approvalsLeft: {
       type: Number,
@@ -51,6 +62,14 @@ export default {
   },
   computed: {
     approvalsRequiredStringified() {
+      if (this.approvalsOptional) {
+        if (this.userCanApprove) {
+          return s__('mrWidget|No Approval required; you can still approve');
+        }
+
+        return s__('mrWidget|No Approval required');
+      }
+
       if (this.approvalsLeft === 0) {
         return s__('mrWidget|Approved');
       }
@@ -85,11 +104,14 @@ export default {
         'btn-inverted': this.showApproveButton && this.approvalsLeft <= 0,
       };
     },
+    showApprovalDocLink() {
+      return this.approvalsOptional && this.showApproveButton;
+    },
     showApproveButton() {
       return this.userCanApprove && !this.userHasApproved && this.mr.isOpen;
     },
     showSuggestedApprovers() {
-      return this.suggestedApprovers && this.suggestedApprovers.length;
+      return this.approvalsLeft > 0 && this.suggestedApprovers && this.suggestedApprovers.length;
     },
   },
   methods: {
@@ -131,8 +153,25 @@ export default {
         {{ approveButtonText }}
       </button>
     </span>
-    <span class="approvals-required-text bold">
+    <span
+      class="approvals-required-text"
+      :class="approvalsOptional ? 'text-muted' : 'bold'"
+    >
       {{ approvalsRequiredStringified }}
+      <a
+        v-if="showApprovalDocLink"
+        :href="mr.approvalsHelpPath"
+        :data-title="__('About this feature')"
+        data-placement="bottom"
+        target="_blank"
+        rel="noopener noreferrer nofollow"
+        data-container="body"
+        v-tooltip
+      >
+        <icon
+          name="question-o"
+        />
+      </a>
       <span v-if="showSuggestedApprovers">
         <mr-widget-author
           v-for="approver in suggestedApprovers"

@@ -1,30 +1,29 @@
 - return unless project.feature_available?(:merge_request_approvers)
 - can_override_approvers = project.can_override_approvers?
 
-.form-group.reset-approvals-on-push
-  .form-check
-    = label_tag :require_approvals do
-      = check_box_tag :require_approvals, nil, project.approvals_before_merge.nonzero?, class: 'js-require-approvals-toggle'
-      %strong Merge request approvals
-      = link_to icon('question-circle'), help_page_path("user/project/merge_requests/merge_request_approvals"), target: '_blank'
+.form-group
+  %strong= _('Merge request approvals')
+  = link_to icon('question-circle'), help_page_path("user/project/merge_requests/merge_request_approvals"), target: '_blank'
 
-.nested-settings{ class: project.approvals_before_merge.nonzero? ? '' : 'hidden' }
+.nested-settings
   .form-group
     = form.label :approver_ids, class: 'label-light' do
       Approvers
     = hidden_field_tag "project[approver_ids]"
     = hidden_field_tag "project[approver_group_ids]"
     .input-group.input-btn-group
-      = hidden_field_tag :approver_user_and_group_ids, '', { class: 'js-select-user-and-group input-large', tabindex: 1, 'data-name': 'project' }
+      = hidden_field_tag :approver_user_and_group_ids, '', { class: 'js-select-user-and-group input-large', tabindex: 1, 'data-name': 'project', :style => "max-width: unset;" }
       %button.btn.btn-success.js-add-approvers{ type: 'button', title: 'Add approvers(s)' }
         Add
     .form-text.text-muted
       Add users or groups who are allowed to approve every merge request
 
     .card.prepend-top-10.js-current-approvers
+      .load-wrapper.hidden
+        = icon('spinner spin', class: 'approver-list-loader')
       .card-header
         Approvers
-        %span.badge
+        %span.badge.badge-pill
           - ids = []
           - project.approvers.each do |user|
             - ids << user.user_id
@@ -34,8 +33,6 @@
                 - ids << user.id
           = ids.count
       %ul.content-list.approver-list
-        .load-wrapper.hidden
-          = icon('spinner spin', class: 'approver-list-loader')
         - project.approvers.each do |approver|
           %li.approver.settings-flex-row.js-approver{ data: { id: approver.user_id } }
             = link_to approver.user.name, approver.user
@@ -44,11 +41,11 @@
                 = icon("trash")
         - project.approver_groups.each do |approver_group|
           %li.approver-group.settings-flex-row.js-approver-group{ data: { id: approver_group.group.id } }
-            .span
+            %span
               %span.light
                 Group:
               = link_to approver_group.group.name, approver_group.group
-              %span.badge
+              %span.badge.badge-pill
                 = approver_group.group.members.count
             .float-right
               %button{ href: project_approver_group_path(project, approver_group), data: { confirm: "Are you sure you want to remove group #{approver_group.group.name}" }, class: "btn btn-remove js-approver-remove", title: 'Remove group' }

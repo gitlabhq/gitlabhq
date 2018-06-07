@@ -18,6 +18,7 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     this.dependencyScanningHelp = data.dependency_scanning_help_path;
     this.vulnerabilityFeedbackPath = data.vulnerability_feedback_path;
     this.vulnerabilityFeedbackHelpPath = data.vulnerability_feedback_help_path;
+    this.approvalsHelpPath = data.approvals_help_path;
     this.securityReportsPipelineId = data.pipeline_id;
 
     this.initCodeclimate(data);
@@ -41,8 +42,7 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     this.isApproved = this.isApproved || false;
     this.approvals = this.approvals || null;
     this.approvalsPath = data.approvals_path || this.approvalsPath;
-    this.approvalsRequired =
-      data.approvalsRequired || (Boolean(this.approvalsPath) && data.approvals_before_merge > 0);
+    this.approvalsRequired = data.approvalsRequired || Boolean(this.approvalsPath);
   }
 
   setApprovals(data) {
