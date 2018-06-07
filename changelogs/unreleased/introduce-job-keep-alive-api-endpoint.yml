@@ -1,0 +1,5 @@
+---
+title: Introduce new keep-alive API entrypoint for CI job
+merge_request: 19543
+author:
+type: added
