@@ -115,6 +115,10 @@ export default () => {
     const dependencyScanningHelpPath = datasetOptions.dependencyScanningHelpPath;
     const vulnerabilityFeedbackPath = datasetOptions.vulnerabilityFeedbackPath;
     const vulnerabilityFeedbackHelpPath = datasetOptions.vulnerabilityFeedbackHelpPath;
+    const dastEndpoint = datasetOptions.dastEndpoint;
+    const sastContainerEndpoint = datasetOptions.sastContainerEndpoint;
+    const dastHelpPath = datasetOptions.dastHelpPath;
+    const sastContainerHelpPath = datasetOptions.sastContainerHelpPath;
     const pipelineId = parseInt(datasetOptions.pipelineId, 10);
 
     const store = createStore();
@@ -164,6 +168,10 @@ export default () => {
             vulnerabilityFeedbackPath,
             vulnerabilityFeedbackHelpPath,
             pipelineId,
+            dastHeadPath: dastEndpoint,
+            sastContainerHeadPath: sastContainerEndpoint,
+            dastHelpPath,
+            sastContainerHelpPath,
           },
           on: {
             updateBadgeCount: this.updateBadge,
