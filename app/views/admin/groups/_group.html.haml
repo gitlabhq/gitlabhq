@@ -1,3 +1,4 @@
+- group = local_assigns.fetch(:group)
 - css_class = 'no-description' if group.description.blank?
 
 %li.group-row{ class: css_class }
@@ -7,6 +8,8 @@
   .stats
     %span.badge.badge-pill
       = storage_counter(group.storage_size)
+
+    = render_if_exists 'admin/namespace_plan_badge', namespace: group
 
     %span
       = icon('bookmark')

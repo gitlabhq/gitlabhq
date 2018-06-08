@@ -7,8 +7,8 @@
         - link_gke = link_to(s_('ClusterIntegration|Google Kubernetes Engine'), @cluster.gke_cluster_url, target: '_blank', rel: 'noopener noreferrer')
         = s_('ClusterIntegration|Manage your Kubernetes cluster by visiting %{link_gke}').html_safe % { link_gke: link_gke }
 
-  .card.form-group
-    %label.text-danger
+  .sub-section.form-group
+    %h4.text-danger
       = s_('ClusterIntegration|Remove Kubernetes cluster integration')
     %p
       = s_("ClusterIntegration|Remove this Kubernetes cluster's configuration from this project. This will not delete your actual Kubernetes cluster.")

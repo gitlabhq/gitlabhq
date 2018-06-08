@@ -3,26 +3,26 @@
  */
 
 @mixin gitlab-theme(
-  $color-100,
-  $color-200,
-  $color-500,
-  $color-700,
-  $color-800,
-  $color-900,
+  $location-badge-color,
+  $search-and-nav-links,
+  $active-tab-border,
+  $border-and-box-shadow,
+  $sidebar-text,
+  $nav-svg-color,
   $color-alternate
 ) {
   // Header
 
   .navbar-gitlab {
-    background-color: $color-900;
+    background-color: $nav-svg-color;
 
     .navbar-collapse {
-      color: $color-200;
+      color: $search-and-nav-links;
     }
 
     .container-fluid {
       .navbar-toggler {
-        border-left: 1px solid lighten($color-700, 10%);
+        border-left: 1px solid lighten($border-and-box-shadow, 10%);
       }
     }
 
@@ -31,40 +31,40 @@
       > li {
         > a:hover,
         > a:focus {
-          background-color: rgba($color-200, 0.2);
+          background-color: rgba($search-and-nav-links, 0.2);
         }
 
         &.active > a,
         &.dropdown.show > a {
-          color: $color-900;
+          color: $nav-svg-color;
           background-color: $color-alternate;
         }
 
         &.line-separator {
-          border-left: 1px solid rgba($color-200, 0.2);
+          border-left: 1px solid rgba($search-and-nav-links, 0.2);
         }
       }
     }
 
     .navbar-sub-nav {
-      color: $color-200;
+      color: $search-and-nav-links;
     }
 
     .nav {
       > li {
-        color: $color-200;
+        color: $search-and-nav-links;
 
         > a {
           &.header-user-dropdown-toggle {
             .header-user-avatar {
-              border-color: $color-200;
+              border-color: $search-and-nav-links;
             }
           }
 
           &:hover,
           &:focus {
             @include media-breakpoint-up(sm) {
-              background-color: rgba($color-200, 0.2);
+              background-color: rgba($search-and-nav-links, 0.2);
             }
 
             svg {
@@ -75,12 +75,12 @@
 
         &.active > a,
         &.dropdown.show > a {
-          color: $color-900;
+          color: $nav-svg-color;
           background-color: $color-alternate;
 
           &:hover {
             svg {
-              fill: $color-900;
+              fill: $nav-svg-color;
             }
           }
         }
@@ -88,7 +88,7 @@
         .impersonated-user,
         .impersonated-user:hover {
           svg {
-            fill: $color-900;
+            fill: $nav-svg-color;
           }
         }
       }
@@ -99,34 +99,34 @@
     > a {
       &:hover,
       &:focus {
-        background-color: rgba($color-200, 0.2);
+        background-color: rgba($search-and-nav-links, 0.2);
       }
     }
   }
 
   .search {
     form {
-      background-color: rgba($color-200, 0.2);
+      background-color: rgba($search-and-nav-links, 0.2);
 
       &:hover {
-        background-color: rgba($color-200, 0.3);
+        background-color: rgba($search-and-nav-links, 0.3);
       }
     }
 
     .location-badge {
-      color: $color-100;
-      background-color: rgba($color-200, 0.1);
-      border-right: 1px solid $color-800;
+      color: $location-badge-color;
+      background-color: rgba($search-and-nav-links, 0.1);
+      border-right: 1px solid $sidebar-text;
     }
 
     .search-input::placeholder {
-      color: rgba($color-200, 0.8);
+      color: rgba($search-and-nav-links, 0.8);
     }
 
     .search-input-wrap {
       .search-icon,
       .clear-icon {
-        fill: rgba($color-200, 0.8);
+        fill: rgba($search-and-nav-links, 0.8);
       }
     }
 
@@ -141,38 +141,34 @@
 
       .search-input-wrap {
         .search-icon {
-          fill: rgba($color-200, 0.8);
+          fill: rgba($search-and-nav-links, 0.8);
         }
       }
     }
   }
 
-  .btn-sign-in {
-    background-color: $color-100;
-    color: $color-900;
-  }
 
   // Sidebar
   .nav-sidebar li.active {
-    box-shadow: inset 4px 0 0 $color-700;
+    box-shadow: inset 4px 0 0 $border-and-box-shadow;
 
     > a {
-      color: $color-800;
+      color: $sidebar-text;
     }
 
     svg {
-      fill: $color-800;
+      fill: $sidebar-text;
     }
   }
 
   .sidebar-top-level-items > li.active .badge.badge-pill {
-    color: $color-800;
+    color: $sidebar-text;
   }
 
   .nav-links li {
     &.active a,
     a.active {
-      border-bottom: 2px solid $color-500;
+      border-bottom: 2px solid $active-tab-border;
 
       .badge.badge-pill {
         font-weight: $gl-font-weight-bold;
@@ -181,27 +177,27 @@
   }
 
   .branch-header-title {
-    color: $color-700;
+    color: $border-and-box-shadow;
   }
 
   .ide-file-list .file.file-active {
-    color: $color-700;
+    color: $border-and-box-shadow;
   }
 
   .ide-sidebar-link {
     &.active {
-      color: $color-700;
-      box-shadow: inset 3px 0 $color-700;
+      color: $border-and-box-shadow;
+      box-shadow: inset 3px 0 $border-and-box-shadow;
 
       &.is-right {
-        box-shadow: inset -3px 0 $color-700;
+        box-shadow: inset -3px 0 $border-and-box-shadow;
       }
     }
   }
 }
 
 body {
-  &.ui_indigo {
+  &.ui-indigo {
     @include gitlab-theme(
       $indigo-100,
       $indigo-200,
@@ -213,19 +209,19 @@ body {
     );
   }
 
-  &.ui_dark {
+  &.ui-light-indigo {
     @include gitlab-theme(
-      $theme-gray-100,
-      $theme-gray-200,
-      $theme-gray-500,
-      $theme-gray-700,
-      $theme-gray-800,
-      $theme-gray-900,
+      $indigo-100,
+      $indigo-200,
+      $indigo-500,
+      $indigo-500,
+      $indigo-700,
+      $indigo-700,
       $white-light
     );
   }
 
-  &.ui_blue {
+  &.ui-blue {
     @include gitlab-theme(
       $theme-blue-100,
       $theme-blue-200,
@@ -237,7 +233,19 @@ body {
     );
   }
 
-  &.ui_green {
+  &.ui-light-blue {
+    @include gitlab-theme(
+      $theme-light-blue-100,
+      $theme-light-blue-200,
+      $theme-light-blue-500,
+      $theme-light-blue-500,
+      $theme-light-blue-700,
+      $theme-light-blue-700,
+      $white-light
+    );
+  }
+
+  &.ui-green {
     @include gitlab-theme(
       $theme-green-100,
       $theme-green-200,
@@ -249,7 +257,55 @@ body {
     );
   }
 
-  &.ui_light {
+  &.ui-light-green {
+    @include gitlab-theme(
+      $theme-green-100,
+      $theme-green-200,
+      $theme-green-500,
+      $theme-green-500,
+      $theme-light-green-700,
+      $theme-light-green-700,
+      $white-light
+    );
+  }
+
+  &.ui-red {
+    @include gitlab-theme(
+      $theme-red-100,
+      $theme-red-200,
+      $theme-red-500,
+      $theme-red-700,
+      $theme-red-800,
+      $theme-red-900,
+      $white-light
+    );
+  }
+
+  &.ui-light-red {
+    @include gitlab-theme(
+      $theme-light-red-100,
+      $theme-light-red-200,
+      $theme-light-red-500,
+      $theme-light-red-500,
+      $theme-light-red-700,
+      $theme-light-red-700,
+      $white-light
+    );
+  }
+
+  &.ui-dark {
+    @include gitlab-theme(
+      $theme-gray-100,
+      $theme-gray-200,
+      $theme-gray-500,
+      $theme-gray-700,
+      $theme-gray-800,
+      $theme-gray-900,
+      $white-light
+    );
+  }
+
+  &.ui-light {
     @include gitlab-theme(
       $theme-gray-900,
       $theme-gray-700,

@@ -91,6 +91,10 @@ class ApplicationController < ActionController::Base
       payload[:user_id] = logged_user.try(:id)
       payload[:username] = logged_user.try(:username)
     end
+
+    if response.status == 422 && response.body.present? && response.content_type == 'application/json'.freeze
+      payload[:response] = response.body
+    end
   end
 
   # Controllers such as GitHttpController may use alternative methods

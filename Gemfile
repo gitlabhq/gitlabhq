@@ -108,6 +108,7 @@ gem 'hamlit', '~> 2.6.1'
 
 # Files attachments
 gem 'carrierwave', '~> 1.2'
+gem 'mini_magick'
 
 # Drag and Drop UI
 gem 'dropzonejs-rails', '~> 0.7.1'
@@ -408,13 +409,12 @@ gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
 # SSH host key support
-gem 'net-ssh', '~> 4.2.0'
+gem 'net-ssh', '~> 5.0'
 gem 'sshkey', '~> 1.9.0'
 
 # Required for ED25519 SSH host key support
 group :ed25519 do
-  gem 'rbnacl-libsodium'
-  gem 'rbnacl', '~> 4.0'
+  gem 'ed25519', '~> 1.2'
   gem 'bcrypt_pbkdf', '~> 1.0'
 end
 
