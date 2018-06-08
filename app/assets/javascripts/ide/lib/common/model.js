@@ -1,33 +1,32 @@
-import * as monaco from 'monaco-editor';
+import { editor as monacoEditor, Uri as monacoUri } from 'monaco-editor';
 import Disposable from './disposable';
 import eventHub from '../../eventhub';
 
 export default class Model {
   constructor(file, head = null) {
-    this.monaco = monaco;
     this.disposable = new Disposable();
     this.file = file;
     this.head = head;
     this.content = file.content !== '' ? file.content : file.raw;
 
     this.disposable.add(
-      (this.originalModel = this.monaco.editor.createModel(
+      (this.originalModel = monacoEditor.createModel(
         head ? head.content : this.file.raw,
         undefined,
-        new this.monaco.Uri(false, false, `original/${this.path}`),
+        new monacoUri(false, false, `original/${this.path}`),
       )),
-      (this.model = this.monaco.editor.createModel(
+      (this.model = monacoEditor.createModel(
         this.content,
         undefined,
-        new this.monaco.Uri(false, false, this.path),
+        new monacoUri(false, false, this.path),
       )),
     );
     if (this.file.mrChange) {
       this.disposable.add(
-        (this.baseModel = this.monaco.editor.createModel(
+        (this.baseModel = monacoEditor.createModel(
           this.file.baseRaw,
           undefined,
-          new this.monaco.Uri(false, false, `target/${this.path}`),
+          new monacoUri(false, false, `target/${this.path}`),
         )),
       );
     }
