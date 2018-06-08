@@ -1,4 +1,4 @@
-import { setUrlFragment, setUrlParam } from '../../../lib/utils/common_utils';
+import { mergeUrlParams, setUrlFragment } from '~/lib/utils/url_utility';
 
 /**
  * Ensure the given URL fragment is preserved by appending it to sign-in/sign-up form actions and
@@ -22,7 +22,7 @@ export default function preserveUrlFragment(fragment) {
     // query param will be available in the omniauth callback upon successful authentication
     const anchors = document.querySelectorAll('#signin-container a.oauth-login');
     Array.prototype.forEach.call(anchors, (anchor) => {
-      const newHref = setUrlParam(anchor.getAttribute('href'), 'redirect_fragment', normalFragment);
+      const newHref = mergeUrlParams({ redirect_fragment: normalFragment }, anchor.getAttribute('href'));
       anchor.setAttribute('href', newHref);
     });
   }
