@@ -135,6 +135,7 @@ module Projects
           raise_error('Failed to remove some tags in project container registry. Please try again or contact administrator.')
         end
 
+        log_destroy_event
         trash_repositories!
 
         # Rails attempts to load all related records into memory before
@@ -146,6 +147,10 @@ module Projects
         project.destroy_dependent_associations_in_batches(exclude: [:container_repositories])
         project.destroy!
       end
+    end
+
+    def log_destroy_event
+      log_info("Attempting to destroy #{project.full_path} (#{project.id})")
     end
 
     ##
