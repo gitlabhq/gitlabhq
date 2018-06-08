@@ -6,7 +6,11 @@ class AddIndexToCiBuildsArtifactsFile < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    add_concurrent_index :ci_builds, :artifacts_file
+    if Gitlab::Database.postgresql?
+      add_concurrent_index :ci_builds, :artifacts_file
+    elsif Gitlab::Database.mysql?
+      add_concurrent_index :ci_builds, :artifacts_file, length: 20
+    end
   end
 
   def down
