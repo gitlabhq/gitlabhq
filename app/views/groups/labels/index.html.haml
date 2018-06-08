@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 - page_title 'Labels'
 - can_admin_label = can?(current_user, :admin_label, @group)
 - issuables = ['issues', 'merge requests'] + (@group&.feature_available?(:epics) ? ['epics'] : [])
@@ -8,20 +7,6 @@
     .nav-controls
       = link_to _('New label'), new_group_label_path(@group), class: "btn btn-new"
 
-=======
-- @no_container = true
-- page_title "Labels"
-- can_admin_label = can?(current_user, :admin_label, @group)
-- hide_class = ''
-- hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1')
-- issuables = ['issues', 'merge requests']
-
-- if can_admin_label
-  - content_for(:header_content) do
-    .nav-controls
-      = link_to _('New label'), new_group_label_path(@group), class: "btn btn-new"
-
->>>>>>> upstream/master
 - if @labels.exists?
   #promote-label-modal
   %div{ class: container_class }
@@ -31,12 +16,7 @@
 
     .labels-container.prepend-top-5
       .other-labels
-<<<<<<< HEAD
         %h5 Labels
-=======
-        - if can_admin_label
-          %h5{ class: ('hide' if hide) } Labels
->>>>>>> upstream/master
         %ul.content-list.manage-labels-list.js-other-labels
           = render partial: 'shared/label', subject: @group, collection: @labels, as: :label, locals: { use_label_priority: false }
           = paginate @labels, theme: 'gitlab'
