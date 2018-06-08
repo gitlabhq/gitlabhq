@@ -1,5 +1,5 @@
 import _ from 'underscore';
-import * as monaco from 'monaco-editor';
+import { editor as monacoEditor, KeyCode, KeyMod } from 'monaco-editor';
 import store from '../stores';
 import DecorationsController from './decorations/controller';
 import DirtyDiffController from './diff/controller';
@@ -8,6 +8,11 @@ import ModelManager from './common/model_manager';
 import editorOptions, { defaultEditorOptions } from './editor_options';
 import gitlabTheme from './themes/gl_theme';
 import keymap from './keymap.json';
+
+function setupMonacoTheme() {
+  monacoEditor.defineTheme(gitlabTheme.themeName, gitlabTheme.monacoTheme);
+  monacoEditor.setTheme('gitlab');
+}
 
 export const clearDomElement = el => {
   if (!el || !el.firstChild) return;
@@ -26,7 +31,6 @@ export default class Editor {
   }
 
   constructor() {
-    this.monaco = monaco;
     this.currentModel = null;
     this.instance = null;
     this.dirtyDiffController = null;
@@ -34,7 +38,7 @@ export default class Editor {
     this.modelManager = new ModelManager();
     this.decorationsController = new DecorationsController(this);
 
-    this.setupMonacoTheme();
+    setupMonacoTheme();
 
     this.debouncedUpdate = _.debounce(() => {
       this.updateDimensions();
@@ -46,7 +50,7 @@ export default class Editor {
       clearDomElement(domElement);
 
       this.disposable.add(
-        (this.instance = this.monaco.editor.create(domElement, {
+        (this.instance = monacoEditor.create(domElement, {
           ...defaultEditorOptions,
         })),
         (this.dirtyDiffController = new DirtyDiffController(
@@ -66,7 +70,7 @@ export default class Editor {
       clearDomElement(domElement);
 
       this.disposable.add(
-        (this.instance = this.monaco.editor.createDiffEditor(domElement, {
+        (this.instance = monacoEditor.createDiffEditor(domElement, {
           ...defaultEditorOptions,
           quickSuggestions: false,
           occurrencesHighlight: false,
@@ -122,15 +126,9 @@ export default class Editor {
       modified: model.getModel(),
     });
 
-    this.monaco.editor.createDiffNavigator(this.instance, {
+    monacoEditor.createDiffNavigator(this.instance, {
       alwaysRevealFirst: true,
     });
-  }
-
-  setupMonacoTheme() {
-    this.monaco.editor.defineTheme(gitlabTheme.themeName, gitlabTheme.monacoTheme);
-
-    this.monaco.editor.setTheme('gitlab');
   }
 
   clearEditor() {
@@ -200,7 +198,7 @@ export default class Editor {
     const getKeyCode = key => {
       const monacoKeyMod = key.indexOf('KEY_') === 0;
 
-      return monacoKeyMod ? this.monaco.KeyCode[key] : this.monaco.KeyMod[key];
+      return monacoKeyMod ? KeyCode[key] : KeyMod[key];
     };
 
     keymap.forEach(command => {

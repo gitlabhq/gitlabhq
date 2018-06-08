@@ -1,3 +1,4 @@
+import { editor as monacoEditor } from 'monaco-editor';
 import Editor from '~/ide/lib/editor';
 import { file } from '../helpers';
 
@@ -32,11 +33,11 @@ describe('Multi-file editor library', () => {
 
   describe('createInstance', () => {
     it('creates editor instance', () => {
-      spyOn(instance.monaco.editor, 'create').and.callThrough();
+      spyOn(monacoEditor, 'create').and.callThrough();
 
       instance.createInstance(holder);
 
-      expect(instance.monaco.editor.create).toHaveBeenCalled();
+      expect(monacoEditor.create).toHaveBeenCalled();
     });
 
     it('creates dirty diff controller', () => {
@@ -54,11 +55,11 @@ describe('Multi-file editor library', () => {
 
   describe('createDiffInstance', () => {
     it('creates editor instance', () => {
-      spyOn(instance.monaco.editor, 'createDiffEditor').and.callThrough();
+      spyOn(monacoEditor, 'createDiffEditor').and.callThrough();
 
       instance.createDiffInstance(holder);
 
-      expect(instance.monaco.editor.createDiffEditor).toHaveBeenCalledWith(holder, {
+      expect(monacoEditor.createDiffEditor).toHaveBeenCalledWith(holder, {
         model: null,
         contextmenu: true,
         minimap: {
