@@ -69,9 +69,10 @@ export default () => {
 
   gl.diffNotesCompileComponents();
 
-  if (!hasVueMRDiscussionsCookie()) {
+  const resolveCountAppEl = document.querySelector('#resolve-count-app');
+  if (!hasVueMRDiscussionsCookie() && resolveCountAppEl) {
     new Vue({
-      el: '#resolve-count-app',
+      el: resolveCountAppEl,
       components: {
         'resolve-count': ResolveCount
       },
