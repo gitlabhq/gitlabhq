@@ -2,11 +2,7 @@ class Admin::RunnersController < Admin::ApplicationController
   before_action :runner, except: :index
 
   def index
-    sort = params[:sort] == 'contacted_asc' ? { contacted_at: :asc } : { id: :desc }
-    @runners = Ci::Runner.order(sort)
-    @runners = @runners.search(params[:search]) if params[:search].present?
-    @runners = @runners.public_send(params[:status]) if params[:status].present? && Ci::Runner::AVAILABLE_STATUSES.include?(params[:status])
-    @runners = @runners.page(params[:page]).per(30)
+    @runners = Admin::RunnersFinder.new(params: params).execute
     @active_runners_cnt = Ci::Runner.online.count
   end
 
