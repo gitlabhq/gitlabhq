@@ -34,7 +34,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#newline
 GFM honors the markdown specification in how [paragraphs and line breaks are handled](https://daringfireball.net/projects/markdown/syntax#p).
 
 A paragraph is simply one or more consecutive lines of text, separated by one or more blank lines.
-Line-breaks, or softreturns, are rendered if you end a line with two or more spaces:
+Line-breaks, or soft returns, are rendered if you end a line with two or more spaces:
 
 [//]: # (Do *NOT* remove the two ending whitespaces in the following line.)
 [//]: # (They are needed for the Markdown text to render correctly.)
@@ -197,7 +197,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#inline-
 
 With inline diffs tags you can display {+ additions +} or [- deletions -].
 
-The wrapping tags can be either curly braces or square brackets [+ additions +] or {- deletions -}.
+The wrapping tags can be either curly braces or square brackets: [+ additions +] or {- deletions -}.
 
 Examples:
 
@@ -228,7 +228,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#emoji
 
 	You can use it to point out a :bug: or warn about :speak_no_evil: patches. And if someone improves your really :snail: code, send them some :birthday:. People will :heart: you for that.
 
-	If you are new to this, don't be :fearful:. You can easily join the emoji :family:. All you need to do is to look up on the supported codes.
+	If you are new to this, don't be :fearful:. You can easily join the emoji :family:. All you need to do is to look up one of the supported codes.
 
 	Consult the [Emoji Cheat Sheet](https://www.emojicopy.com) for a list of all supported emoji codes. :thumbsup:
 
@@ -238,7 +238,7 @@ Sometimes you want to :monkey: around a bit and add some :star2: to your :speech
 
 You can use it to point out a :bug: or warn about :speak_no_evil: patches. And if someone improves your really :snail: code, send them some :birthday:. People will :heart: you for that.
 
-If you are new to this, don't be :fearful:. You can easily join the emoji :family:. All you need to do is to look up on the supported codes.
+If you are new to this, don't be :fearful:. You can easily join the emoji :family:. All you need to do is to look up one of the supported codes.
 
 Consult the [Emoji Cheat Sheet](https://www.emojicopy.com) for a list of all supported emoji codes. :thumbsup:
 
@@ -404,7 +404,7 @@ Examples:
     `HSL(540,70%,50%)`
     `HSLA(540,70%,50%,0.7)`
 
-Becomes:
+Become:
 
 `#F00`  
 `#F00A`  
@@ -481,14 +481,14 @@ Alt-H2
 
 All Markdown-rendered headers automatically get IDs, except in comments.
 
-On hover a link to those IDs becomes visible to make it easier to copy the link to the header to give it to someone else.
+On hover, a link to those IDs becomes visible to make it easier to copy the link to the header to give it to someone else.
 
 The IDs are generated from the content of the header according to the following rules:
 
-1. All text is converted to lowercase
-1. All non-word text (e.g., punctuation, HTML) is removed
-1. All spaces are converted to hyphens
-1. Two or more hyphens in a row are converted to one
+1. All text is converted to lowercase.
+1. All non-word text (e.g., punctuation, HTML) is removed.
+1. All spaces are converted to hyphens.
+1. Two or more hyphens in a row are converted to one.
 1. If a header with the same ID has already been generated, a unique
    incrementing number is appended, starting at 1.
 
@@ -514,6 +514,8 @@ Note that the Emoji processing happens before the header IDs are generated, so t
 
 ### Emphasis
 
+Examples:
+
 ```no-highlight
 Emphasis, aka italics, with *asterisks* or _underscores_.
 
@@ -524,6 +526,8 @@ Combined emphasis with **asterisks and _underscores_**.
 Strikethrough uses two tildes. ~~Scratch this.~~
 ```
 
+Become:
+
 Emphasis, aka italics, with *asterisks* or _underscores_.
 
 Strong emphasis, aka bold, with **asterisks** or __underscores__.
@@ -533,6 +537,8 @@ Combined emphasis with **asterisks and _underscores_**.
 Strikethrough uses two tildes. ~~Scratch this.~~
 
 ### Lists
+
+Examples:
 
 ```no-highlight
 1. First ordered list item
@@ -546,6 +552,8 @@ Strikethrough uses two tildes. ~~Scratch this.~~
 - Or minuses
 + Or pluses
 ```
+
+Become:
 
 1. First ordered list item
 2. Another item
@@ -561,12 +569,16 @@ Strikethrough uses two tildes. ~~Scratch this.~~
 If a list item contains multiple paragraphs,
 each subsequent paragraph should be indented with four spaces.
 
+Example:
+
 ```no-highlight
 1.  First ordered list item
 
     Second paragraph of first item.
 2.  Another item
 ```
+
+Becomes:
 
 1.  First ordered list item
 
@@ -576,12 +588,16 @@ each subsequent paragraph should be indented with four spaces.
 If the second paragraph isn't indented with four spaces,
 the second list item will be incorrectly labeled as `1`.
 
+Example:
+
 ```no-highlight
 1. First ordered list item
 
    Second paragraph of first item.
 2. Another item
 ```
+
+Becomes:
 
 1. First ordered list item
 
@@ -620,6 +636,8 @@ will point the link to `wikis/style` when the link is inside of a wiki markdown 
 
 ### Images
 
+Examples:
+
     Here's our logo (hover to see the title text):
 
     Inline-style:
@@ -629,6 +647,8 @@ will point the link to `wikis/style` when the link is inside of a wiki markdown 
     ![alt text1][logo]
 
     [logo]: img/markdown_logo.png
+
+Become:
 
 Here's our logo:
 
@@ -644,6 +664,8 @@ Reference-style:
 
 ### Blockquotes
 
+Examples:
+
 ```no-highlight
 > Blockquotes are very handy in email to emulate reply text.
 > This line is part of the same quote.
@@ -652,6 +674,8 @@ Quote break.
 
 > This is a very long line that will still be quoted properly when it wraps. Oh boy let's keep writing to make sure this is long enough to actually wrap for everyone. Oh, you can *put* **Markdown** into a blockquote.
 ```
+
+Become:
 
 > Blockquotes are very handy in email to emulate reply text.
 > This line is part of the same quote.
@@ -666,6 +690,8 @@ You can also use raw HTML in your Markdown, and it'll mostly work pretty well.
 
 See the documentation for HTML::Pipeline's [SanitizationFilter](http://www.rubydoc.info/gems/html-pipeline/1.11.0/HTML/Pipeline/SanitizationFilter#WHITELIST-constant) class for the list of allowed HTML tags and attributes.  In addition to the default `SanitizationFilter` whitelist, GitLab allows `span`, `abbr`, `details` and `summary` elements.
 
+Examples:
+
 ```no-highlight
 <dl>
   <dt>Definition list</dt>
@@ -675,6 +701,8 @@ See the documentation for HTML::Pipeline's [SanitizationFilter](http://www.rubyd
   <dd>Does *not* work **very** well. Use HTML <em>tags</em>.</dd>
 </dl>
 ```
+
+Become:
 
 <dl>
   <dt>Definition list</dt>
@@ -710,6 +738,8 @@ These details will remain hidden until expanded.
 
 ### Horizontal Rule
 
+Examples:
+
 ```
 Three or more...
 
@@ -725,6 +755,8 @@ ___
 
 Underscores
 ```
+
+Become:
 
 Three or more...
 
@@ -746,6 +778,8 @@ My basic recommendation for learning how line breaks work is to experiment and d
 
 Here are some things to try out:
 
+Examples:
+
 ```
 Here's a line for us to start with.
 
@@ -759,6 +793,8 @@ This line is *on its own line*, because the previous line ends with two spaces. 
 
 spaces.
 ```
+
+Become:
 
 Here's a line for us to start with.
 
@@ -776,6 +812,8 @@ spaces.
 
 Tables aren't part of the core Markdown spec, but they are part of GFM and Markdown Here supports them.
 
+Example:
+
 ```
 | header 1 | header 2 |
 | -------- | -------- |
@@ -783,7 +821,7 @@ Tables aren't part of the core Markdown spec, but they are part of GFM and Markd
 | cell 3   | cell 4   |
 ```
 
-Code above produces next output:
+Becomes:
 
 | header 1 | header 2 |
 | -------- | -------- |
@@ -794,7 +832,9 @@ Code above produces next output:
 
 The row of dashes between the table header and body must have at least three dashes in each column.
 
-By including colons in the header row, you can align the text within that column:
+By including colons in the header row, you can align the text within that column.
+
+Example:
 
 ```
 | Left Aligned | Centered | Right Aligned | Left Aligned | Centered | Right Aligned |
@@ -802,6 +842,8 @@ By including colons in the header row, you can align the text within that column
 | Cell 1       | Cell 2   | Cell 3        | Cell 4       | Cell 5   | Cell 6        |
 | Cell 7       | Cell 8   | Cell 9        | Cell 10      | Cell 11  | Cell 12       |
 ```
+
+Becomes:
 
 | Left Aligned | Centered | Right Aligned | Left Aligned | Centered | Right Aligned |
 | :----------- | :------: | ------------: | :----------- | :------: | ------------: |
@@ -810,10 +852,14 @@ By including colons in the header row, you can align the text within that column
 
 ### Footnotes
 
+Example:
+
 ```
 You can add footnotes to your text as follows.[^2]
 [^2]: This is my awesome footnote.
 ```
+
+Becomes:
 
 You can add footnotes to your text as follows.[^2]
 
