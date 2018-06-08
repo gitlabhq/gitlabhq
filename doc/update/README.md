@@ -5,15 +5,15 @@ update guides.
 
 There are currently 3 official ways to install GitLab:
 
-- Omnibus packages
-- Source installation
-- Docker installation
+- [Omnibus packages](#omnibus-packages)
+- [Source installation](#installation-from-source)
+- [Docker installation](#installation-using-docker)
 
 Based on your installation, choose a section below that fits your needs.
 
 ## Omnibus Packages
 
-- The [Omnibus update guide](http://docs.gitlab.com/omnibus/update/README.html)
+- The [Omnibus update guide][omni-update]
   contains the steps needed to update an Omnibus GitLab package.
 
 ## Installation from source
@@ -30,7 +30,7 @@ Based on your installation, choose a section below that fits your needs.
 
 GitLab provides official Docker images for both Community and Enterprise
 editions. They are based on the Omnibus package and instructions on how to
-update them are in [a separate document][omnidocker].
+update them are in [a separate document][omni-docker].
 
 ## Upgrading without downtime
 
@@ -96,6 +96,10 @@ migrations this could potentially lead to hours of downtime, depending on the
 size of your database. To work around this you will have to use PostgreSQL and
 meet the other online upgrade requirements mentioned above.
 
+### Steps
+
+Steps to [upgrade without downtime][omni-zero-downtime].
+
 ## Upgrading between editions
 
 GitLab comes in two flavors: [Community Edition][ce] which is MIT licensed,
@@ -136,10 +140,12 @@ possible.
 - [Upgrading PostgreSQL Using Slony](upgrading_postgresql_using_slony.md), for
   upgrading a PostgreSQL database with minimal downtime.
 
-[omnidocker]: http://docs.gitlab.com/omnibus/docker/README.html
 [source-ee]: https://gitlab.com/gitlab-org/gitlab-ee/tree/master/doc/update
 [source-ce]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update
 [ee-ce]: ../downgrade_ee_to_ce/README.md
 [ce]: https://about.gitlab.com/features/#community
 [ee]: https://about.gitlab.com/features/#enterprise
-[omni-ce-ee]: http://docs.gitlab.com/omnibus/update/README.html#from-community-edition-to-enterprise-edition
+[omni-ce-ee]: https://docs.gitlab.com/omnibus/update/README.html#updating-community-edition-to-enterprise-edition
+[omni-docker]: https://docs.gitlab.com/omnibus/docker/README.html
+[omni-update]: https://docs.gitlab.com/omnibus/update/README.html
+[omni-zero-downtime]: https://docs.gitlab.com/omnibus/update/README.html#zero-downtime-updates

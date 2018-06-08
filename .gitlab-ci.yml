@@ -715,6 +715,8 @@ docs lint:
   <<: *except-qa
   image: "registry.gitlab.com/gitlab-org/gitlab-build-images:nanoc-bootstrap-ruby-2.4-alpine"
   stage: test
+  variables:
+    SETUP_DB: "false"
   cache: {}
   dependencies: []
   before_script: []
