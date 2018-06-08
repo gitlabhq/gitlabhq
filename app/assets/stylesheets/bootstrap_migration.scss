@@ -233,6 +233,13 @@ table {
   }
 }
 
+.card-header {
+  h3.card-title,
+  h4.card-title {
+    margin-top: 0;
+  }
+}
+
 .nav-tabs {
   // Override bootstrap's default border
   border-bottom: 0;
