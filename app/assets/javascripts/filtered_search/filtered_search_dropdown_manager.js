@@ -7,6 +7,7 @@ import DropdownHint from './dropdown_hint';
 import DropdownEmoji from './dropdown_emoji';
 import DropdownNonUser from './dropdown_non_user';
 import DropdownUser from './dropdown_user';
+import DropdownWeight from './dropdown_weight';
 import FilteredSearchVisualTokens from './filtered_search_visual_tokens';
 
 export default class FilteredSearchDropdownManager {
@@ -92,12 +93,12 @@ export default class FilteredSearchDropdownManager {
       },
       weight: {
         reference: null,
-        gl: DropdownNonUser,
+        gl: DropdownWeight,
         element: this.container.querySelector('#js-dropdown-weight'),
       },
     };
 
-    supportedTokens.forEach((type) => {
+    supportedTokens.forEach(type => {
       if (availableMappings[type]) {
         allowedMappings[type] = availableMappings[type];
       }
@@ -152,13 +153,16 @@ export default class FilteredSearchDropdownManager {
 
   updateDropdownOffset(key) {
     // Always align dropdown with the input field
-    let offset = this.filteredSearchInput.getBoundingClientRect().left - this.container.querySelector('.scroll-container').getBoundingClientRect().left;
+    let offset =
+      this.filteredSearchInput.getBoundingClientRect().left -
+      this.container.querySelector('.scroll-container').getBoundingClientRect().left;
 
     const maxInputWidth = 240;
     const currentDropdownWidth = this.mapping[key].element.clientWidth || maxInputWidth;
 
     // Make sure offset never exceeds the input container
-    const offsetMaxWidth = this.container.querySelector('.scroll-container').clientWidth - currentDropdownWidth;
+    const offsetMaxWidth =
+      this.container.querySelector('.scroll-container').clientWidth - currentDropdownWidth;
     if (offsetMaxWidth < offset) {
       offset = offsetMaxWidth;
     }
@@ -184,8 +188,7 @@ export default class FilteredSearchDropdownManager {
       const glArguments = Object.assign({}, defaultArguments, extraArguments);
 
       // Passing glArguments to `new glClass(<arguments>)`
-      mappingKey.reference =
-        new (Function.prototype.bind.apply(glClass, [null, glArguments]))();
+      mappingKey.reference = new (Function.prototype.bind.apply(glClass, [null, glArguments]))();
     }
 
     if (firstLoad) {
@@ -212,8 +215,8 @@ export default class FilteredSearchDropdownManager {
     }
 
     const match = this.filteredSearchTokenKeys.searchByKey(dropdownName.toLowerCase());
-    const shouldOpenFilterDropdown = match && this.currentDropdown !== match.key
-      && this.mapping[match.key];
+    const shouldOpenFilterDropdown =
+      match && this.currentDropdown !== match.key && this.mapping[match.key];
     const shouldOpenHintDropdown = !match && this.currentDropdown !== 'hint';
 
     if (shouldOpenFilterDropdown || shouldOpenHintDropdown) {
@@ -224,8 +227,10 @@ export default class FilteredSearchDropdownManager {
 
   setDropdown() {
     const query = DropdownUtils.getSearchQuery(true);
-    const { lastToken, searchToken } =
-      this.tokenizer.processTokens(query, this.filteredSearchTokenKeys.getKeys());
+    const { lastToken, searchToken } = this.tokenizer.processTokens(
+      query,
+      this.filteredSearchTokenKeys.getKeys(),
+    );
 
     if (this.currentDropdown) {
       this.updateCurrentDropdownOffset();

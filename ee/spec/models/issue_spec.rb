@@ -4,6 +4,29 @@ describe Issue do
   using RSpec::Parameterized::TableSyntax
   include ExternalAuthorizationServiceHelpers
 
+  describe 'validations' do
+    subject { build(:issue) }
+
+    describe 'weight' do
+      it 'is not valid when negative number' do
+        subject.weight = -1
+
+        expect(subject).not_to be_valid
+        expect(subject.errors[:weight]).not_to be_empty
+      end
+
+      it 'is valid when non-negative' do
+        subject.weight = 0
+
+        expect(subject).to be_valid
+
+        subject.weight = 1
+
+        expect(subject).to be_valid
+      end
+    end
+  end
+
   describe '#allows_multiple_assignees?' do
     it 'does not allow multiple assignees without license' do
       stub_licensed_features(multiple_issue_assignees: false)

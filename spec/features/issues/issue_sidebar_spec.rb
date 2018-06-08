@@ -225,35 +225,6 @@ feature 'Issue Sidebar' do
     end
   end
 
-  context 'updating weight', :js do
-    before do
-      project.add_master(user)
-      visit_issue(project, issue)
-    end
-
-    it 'updates weight in sidebar to 1' do
-      page.within '.weight' do
-        click_link 'Edit'
-        click_link '1'
-
-        page.within '.value' do
-          expect(page).to have_content '1'
-        end
-      end
-    end
-
-    it 'updates weight in sidebar to no weight' do
-      page.within '.weight' do
-        click_link 'Edit'
-        click_link 'No Weight'
-
-        page.within '.value' do
-          expect(page).to have_content 'None'
-        end
-      end
-    end
-  end
-
   def visit_issue(project, issue)
     visit project_issue_path(project, issue)
   end
