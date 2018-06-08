@@ -4,8 +4,8 @@ const glob = require('glob');
 const webpack = require('webpack');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const StatsWriterPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const ROOT_PATH = path.resolve(__dirname, '..');
@@ -181,15 +181,7 @@ module.exports = {
           name: '[name].[hash:8].[ext]',
         },
       },
-      {
-        test: /monaco-editor\/\w+\/vs\/loader\.js$/,
-        use: [
-          { loader: 'exports-loader', options: 'l.global' },
-          { loader: 'imports-loader', options: 'l=>{},this=>l,AMDLoader=>this,module=>undefined' },
-        ],
-      },
     ],
-    noParse: [/monaco-editor\/\w+\/vs\//],
   },
 
   optimization: {
@@ -239,6 +231,9 @@ module.exports = {
     // enable vue-loader to use existing loader rules for other module types
     new VueLoaderPlugin(),
 
+    // automatically configure monaco editor web workers
+    new MonacoWebpackPlugin(),
+
     // prevent pikaday from including moment.js
     new webpack.IgnorePlugin(/moment/, /pikaday/),
 
@@ -247,29 +242,6 @@ module.exports = {
       $: 'jquery',
       jQuery: 'jquery',
     }),
-
-    // copy pre-compiled vendor libraries verbatim
-    new CopyWebpackPlugin([
-      {
-        from: path.join(
-          ROOT_PATH,
-          `node_modules/monaco-editor/${IS_PRODUCTION ? 'min' : 'dev'}/vs`
-        ),
-        to: 'monaco-editor/vs',
-        transform: function(content, path) {
-          if (/\.js$/.test(path) && !/worker/i.test(path) && !/typescript/i.test(path)) {
-            return (
-              '(function(){\n' +
-              'var define = this.define, require = this.require;\n' +
-              'window.define = define; window.require = require;\n' +
-              content +
-              '\n}.call(window.__monaco_context__ || (window.__monaco_context__ = {})));'
-            );
-          }
-          return content;
-        },
-      },
-    ]),
 
     // compression can require a lot of compute time and is disabled in CI
     IS_PRODUCTION && !NO_COMPRESSION && new CompressionPlugin(),

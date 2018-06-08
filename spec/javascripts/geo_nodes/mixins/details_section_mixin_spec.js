@@ -50,7 +50,7 @@ describe('DetailsSectionMixin', () => {
         const statusCheckTimestamp = new Date(Date.now() - STATUS_DELAY_THRESHOLD_MS).getTime();
         vm = createComponent(Object.assign({}, mockNodeDetails, { statusCheckTimestamp }));
 
-        expect(vm.statusInfoStaleMessage).toBe('Data is out of date from about a minute ago');
+        expect(vm.statusInfoStaleMessage).toBe('Data is out of date from 1 minute ago');
       });
     });
   });

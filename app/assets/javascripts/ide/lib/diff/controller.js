@@ -1,4 +1,4 @@
-/* global monaco */
+import { Range } from 'monaco-editor';
 import { throttle } from 'underscore';
 import DirtyDiffWorker from './diff_worker';
 import Disposable from '../common/disposable';
@@ -16,7 +16,7 @@ export const getDiffChangeType = change => {
 };
 
 export const getDecorator = change => ({
-  range: new monaco.Range(change.lineNumber, 1, change.endLineNumber, 1),
+  range: new Range(change.lineNumber, 1, change.endLineNumber, 1),
   options: {
     isWholeLine: true,
     linesDecorationsClassName: `dirty-diff dirty-diff-${getDiffChangeType(change)}`,

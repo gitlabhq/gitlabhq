@@ -3,7 +3,6 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import store from '~/ide/stores';
 import repoEditor from '~/ide/components/repo_editor.vue';
-import monacoLoader from '~/ide/monaco_loader';
 import Editor from '~/ide/lib/editor';
 import { activityBarViews } from '~/ide/constants';
 import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
@@ -25,13 +24,10 @@ describe('RepoEditor', () => {
     f.tempFile = true;
     vm.$store.state.openFiles.push(f);
     Vue.set(vm.$store.state.entries, f.path, f);
-    vm.monaco = true;
 
     vm.$mount();
 
-    monacoLoader(['vs/editor/editor.main'], () => {
-      setTimeout(done, 0);
-    });
+    Vue.nextTick(() => setTimeout(done));
   });
 
   afterEach(() => {

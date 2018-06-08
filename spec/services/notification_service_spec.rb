@@ -59,6 +59,20 @@ describe NotificationService, :mailer do
 
       should_email(participant)
     end
+
+    context 'for subgroups', :nested_groups do
+      before do
+        build_group(project)
+      end
+
+      it 'emails the participant' do
+        create(:note_on_issue, noteable: issuable, project_id: project.id, note: 'anything', author: @pg_participant)
+
+        notification_trigger
+
+        should_email_nested_group_user(@pg_participant)
+      end
+    end
   end
 
   shared_examples 'participating by assignee notification' do
@@ -239,34 +253,56 @@ describe NotificationService, :mailer do
       end
 
       describe 'new note on issue in project that belongs to a group' do
-        let(:group) { create(:group) }
-
         before do
           note.project.namespace_id = group.id
-          note.project.group.add_user(@u_watcher, GroupMember::MASTER)
-          note.project.group.add_user(@u_custom_global, GroupMember::MASTER)
+          group.add_user(@u_watcher, GroupMember::MASTER)
+          group.add_user(@u_custom_global, GroupMember::MASTER)
           note.project.save
 
           @u_watcher.notification_settings_for(note.project).participating!
-          @u_watcher.notification_settings_for(note.project.group).global!
+          @u_watcher.notification_settings_for(group).global!
           update_custom_notification(:new_note, @u_custom_global)
           reset_delivered_emails!
         end
 
-        it do
-          notification.new_note(note)
+        shared_examples 'new note notifications' do
+          it do
+            notification.new_note(note)
 
-          should_email(note.noteable.author)
-          should_email(note.noteable.assignees.first)
-          should_email(@u_mentioned)
-          should_email(@u_custom_global)
-          should_not_email(@u_guest_custom)
-          should_not_email(@u_guest_watcher)
-          should_not_email(@u_watcher)
-          should_not_email(note.author)
-          should_not_email(@u_participating)
-          should_not_email(@u_disabled)
-          should_not_email(@u_lazy_participant)
+            should_email(note.noteable.author)
+            should_email(note.noteable.assignees.first)
+            should_email(@u_mentioned)
+            should_email(@u_custom_global)
+            should_not_email(@u_guest_custom)
+            should_not_email(@u_guest_watcher)
+            should_not_email(@u_watcher)
+            should_not_email(note.author)
+            should_not_email(@u_participating)
+            should_not_email(@u_disabled)
+            should_not_email(@u_lazy_participant)
+          end
+        end
+
+        let(:group) { create(:group) }
+
+        it_behaves_like 'new note notifications'
+
+        context 'which is a subgroup', :nested_groups do
+          let!(:parent) { create(:group) }
+          let!(:group) { create(:group, parent: parent) }
+
+          it_behaves_like 'new note notifications'
+
+          it 'overrides child objects with global level' do
+            user = create(:user)
+            parent.add_developer(user)
+            user.notification_settings_for(parent).watch!
+            reset_delivered_emails!
+
+            notification.new_note(note)
+
+            should_email(user)
+          end
         end
       end
     end
@@ -301,6 +337,31 @@ describe NotificationService, :mailer do
         should_email(member)
         should_email(admin)
       end
+
+      context 'on project that belongs to subgroup', :nested_groups do
+        let(:group_reporter) { create(:user) }
+        let(:group_guest) { create(:user) }
+        let(:parent_group) { create(:group) }
+        let(:child_group) { create(:group, parent: parent_group) }
+        let(:project) { create(:project, namespace: child_group) }
+
+        context 'when user is group guest member' do
+          before do
+            parent_group.add_reporter(group_reporter)
+            parent_group.add_guest(group_guest)
+            group_guest.notification_settings_for(parent_group).watch!
+            group_reporter.notification_settings_for(parent_group).watch!
+            reset_delivered_emails!
+          end
+
+          it 'does not email guest user' do
+            notification.new_note(note)
+
+            should_email(group_reporter)
+            should_not_email(group_guest)
+          end
+        end
+      end
     end
 
     context 'issue note mention' do
@@ -311,6 +372,7 @@ describe NotificationService, :mailer do
 
       before do
         build_team(note.project)
+        build_group(note.project)
         note.project.add_master(note.author)
         add_users_with_subscription(note.project, issue)
         reset_delivered_emails!
@@ -336,10 +398,20 @@ describe NotificationService, :mailer do
           should_email(@u_guest_watcher)
           should_email(note.noteable.author)
           should_email(note.noteable.assignees.first)
-          should_not_email(note.author)
+          should_email_nested_group_user(@pg_watcher)
           should_email(@u_mentioned)
-          should_not_email(@u_disabled)
           should_email(@u_not_mentioned)
+          should_not_email(note.author)
+          should_not_email(@u_disabled)
+          should_not_email_nested_group_user(@pg_disabled)
+        end
+
+        it 'notifies parent group members with mention level', :nested_groups do
+          note = create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: "@#{@pg_mention.username}")
+
+          notification.new_note(note)
+
+          should_email_nested_group_user(@pg_mention)
         end
 
         it 'filters out "mentioned in" notes' do
@@ -352,17 +424,18 @@ describe NotificationService, :mailer do
     end
 
     context 'project snippet note' do
-      let(:project) { create(:project, :public) }
+      let!(:project) { create(:project, :public) }
       let(:snippet) { create(:project_snippet, project: project, author: create(:user)) }
-      let(:note) { create(:note_on_project_snippet, noteable: snippet, project_id: snippet.project.id, note: '@all mentioned') }
+      let(:note) { create(:note_on_project_snippet, noteable: snippet, project_id: project.id, note: '@all mentioned') }
 
       before do
-        build_team(note.project)
+        build_team(project)
+        build_group(project)
 
         # make sure these users can read the project snippet!
         project.add_guest(@u_guest_watcher)
         project.add_guest(@u_guest_custom)
-
+        add_member_for_parent_group(@pg_watcher, project)
         note.project.add_master(note.author)
         reset_delivered_emails!
       end
@@ -370,7 +443,6 @@ describe NotificationService, :mailer do
       describe '#new_note' do
         it 'notifies the team members' do
           notification.new_note(note)
-
           # Notify all team members
           note.project.team.members.each do |member|
             # User with disabled notification should not be notified
@@ -449,6 +521,7 @@ describe NotificationService, :mailer do
 
       before do
         build_team(note.project)
+        build_group(project)
         reset_delivered_emails!
         allow(note.noteable).to receive(:author).and_return(@u_committer)
         update_custom_notification(:new_note, @u_guest_custom, resource: project)
@@ -463,11 +536,13 @@ describe NotificationService, :mailer do
           should_email(@u_guest_custom)
           should_email(@u_committer)
           should_email(@u_watcher)
+          should_email_nested_group_user(@pg_watcher)
           should_not_email(@u_mentioned)
           should_not_email(note.author)
           should_not_email(@u_participating)
           should_not_email(@u_disabled)
           should_not_email(@u_lazy_participant)
+          should_not_email_nested_group_user(@pg_disabled)
         end
 
         it do
@@ -478,10 +553,12 @@ describe NotificationService, :mailer do
           should_email(@u_committer)
           should_email(@u_watcher)
           should_email(@u_mentioned)
+          should_email_nested_group_user(@pg_watcher)
           should_not_email(note.author)
           should_not_email(@u_participating)
           should_not_email(@u_disabled)
           should_not_email(@u_lazy_participant)
+          should_not_email_nested_group_user(@pg_disabled)
         end
 
         it do
@@ -548,10 +625,13 @@ describe NotificationService, :mailer do
         should_email(@g_global_watcher)
         should_email(@g_watcher)
         should_email(@unsubscribed_mentioned)
+        should_email_nested_group_user(@pg_watcher)
         should_not_email(@u_mentioned)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
         should_not_email(@u_lazy_participant)
+        should_not_email_nested_group_user(@pg_disabled)
+        should_not_email_nested_group_user(@pg_mention)
       end
 
       it do
@@ -1964,17 +2044,67 @@ describe NotificationService, :mailer do
   # Users in the project's group but not part of project's team
   # with different notification settings
   def build_group(project)
-    group = create(:group, :public)
-    project.group = group
+    group = create_nested_group
+    project.update(namespace_id: group.id)
 
     # Group member: global=disabled, group=watch
-    @g_watcher = create_user_with_notification(:watch, 'group_watcher', project.group)
+    @g_watcher ||= create_user_with_notification(:watch, 'group_watcher', project.group)
     @g_watcher.notification_settings_for(nil).disabled!
 
     # Group member: global=watch, group=global
-    @g_global_watcher = create_global_setting_for(create(:user), :watch)
+    @g_global_watcher ||= create_global_setting_for(create(:user), :watch)
     group.add_users([@g_watcher, @g_global_watcher], :master)
+
     group
+  end
+
+  # Creates a nested group only if supported
+  # to avoid errors on MySQL
+  def create_nested_group
+    if Group.supports_nested_groups?
+      parent_group = create(:group, :public)
+      child_group = create(:group, :public, parent: parent_group)
+
+      # Parent group member: global=disabled, parent_group=watch, child_group=global
+      @pg_watcher ||= create_user_with_notification(:watch, 'parent_group_watcher', parent_group)
+      @pg_watcher.notification_settings_for(nil).disabled!
+
+      # Parent group member: global=global, parent_group=disabled, child_group=global
+      @pg_disabled ||= create_user_with_notification(:disabled, 'parent_group_disabled', parent_group)
+      @pg_disabled.notification_settings_for(nil).global!
+
+      # Parent group member: global=global, parent_group=mention, child_group=global
+      @pg_mention ||= create_user_with_notification(:mention, 'parent_group_mention', parent_group)
+      @pg_mention.notification_settings_for(nil).global!
+
+      # Parent group member: global=global, parent_group=participating, child_group=global
+      @pg_participant ||= create_user_with_notification(:participating, 'parent_group_participant', parent_group)
+      @pg_mention.notification_settings_for(nil).global!
+
+      child_group
+    else
+      create(:group, :public)
+    end
+  end
+
+  def add_member_for_parent_group(user, project)
+    return unless Group.supports_nested_groups?
+
+    project.reload
+
+    project.group.parent.add_master(user)
+  end
+
+  def should_email_nested_group_user(user, times: 1, recipients: email_recipients)
+    return unless Group.supports_nested_groups?
+
+    should_email(user, times: 1, recipients: email_recipients)
+  end
+
+  def should_not_email_nested_group_user(user, recipients: email_recipients)
+    return unless Group.supports_nested_groups?
+
+    should_not_email(user, recipients: email_recipients)
   end
 
   def add_users_with_subscription(project, issuable)
