@@ -28,7 +28,7 @@ export default {
       container: 'body',
       placement: 'top',
       template:
-        '<div class="popover" role="tooltip"><div class="arrow"></div><p class="popover-title"></p><div class="popover-content"></div></div>',
+        '<div class="popover" role="tooltip"><div class="arrow"></div><p class="popover-header"></p><div class="popover-body"></div></div>',
       ...this.options,
     })
     .on('mouseenter', mouseenter)
