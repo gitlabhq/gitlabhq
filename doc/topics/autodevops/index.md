@@ -237,6 +237,8 @@ enabled by default.
 ### Deployment Strategy
 
 You can change the deployment strategy used by Auto DevOps from within the UI.
+This sets or unsets the `STAGING_ENABLED` and `INCREMENTAL_ROLLOUT_ENABLED`
+variables.
 
 The available options are:
 
