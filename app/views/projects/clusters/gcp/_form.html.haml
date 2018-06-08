@@ -15,7 +15,7 @@
 
   = field.fields_for :provider_gcp, @cluster.provider_gcp do |provider_gcp_field|
     .form-group
-      = provider_gcp_field.label :gcp_project_id, s_('ClusterIntegration|Google Cloud Platform project ID')
+      = provider_gcp_field.label :gcp_project_id, s_('ClusterIntegration|Google Cloud Platform project')
       .js-gcp-project-id-dropdown-entry-point{ data: { docsUrl: 'https://console.cloud.google.com/home/dashboard' } }
         = provider_gcp_field.hidden_field :gcp_project_id
         .dropdown

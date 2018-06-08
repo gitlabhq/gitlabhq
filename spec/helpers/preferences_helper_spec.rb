@@ -31,7 +31,7 @@ describe PreferencesHelper do
   describe '#user_application_theme' do
     context 'with a user' do
       it "returns user's theme's css_class" do
-        stub_user(theme_id: 10)
+        stub_user(theme_id: 3)
 
         expect(helper.user_application_theme).to eq 'ui-light'
       end
