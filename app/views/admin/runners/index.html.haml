@@ -42,14 +42,18 @@
            locals: { registration_token: Gitlab::CurrentSettings.runners_registration_token }
 
   .append-bottom-20.clearfix
-    .float-left
-      = form_tag admin_runners_path, id: 'runners-search', class: 'form-inline', method: :get do
-        .form-group
-          = search_field_tag :search, params[:search], class: 'form-control input-short', placeholder: 'Runner description or token', spellcheck: false
-        = submit_tag 'Search', class: 'btn'
+    = form_tag admin_runners_path, id: 'runners-search', method: :get do
+      .float-left
+        .form-inline
+          .form-group
+            = search_field_tag :search, params[:search], class: 'form-control input-short', placeholder: 'Runner description or token', spellcheck: false
+          = submit_tag 'Search', class: 'btn'
 
-    .float-right.light
-      Runners currently online: #{@active_runners_cnt}
+      .float-left.prepend-left-10
+        = render 'statuses'
+
+      .float-right.light
+        Runners currently online: #{@active_runners_cnt}
 
   %br
 
