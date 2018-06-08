@@ -26,19 +26,25 @@
   margin-right: 2px;
   width: $contextual-sidebar-width;
 
-  a {
+  > a,
+  > button {
     transition: padding $sidebar-transition-duration;
     font-weight: $gl-font-weight-bold;
     display: flex;
+    width: 100%;
     align-items: center;
     padding: 10px 16px 10px 10px;
     color: $gl-text-color;
-  }
+    background-color: transparent;
+    border: 0;
+    text-align: left;
 
-  &:hover,
-  a:hover {
-    background-color: $link-hover-background;
-    color: $gl-text-color;
+    &:hover,
+    &:focus {
+      background-color: $link-hover-background;
+      color: $gl-text-color;
+      outline: 0;
+    }
   }
 
   .avatar-container {

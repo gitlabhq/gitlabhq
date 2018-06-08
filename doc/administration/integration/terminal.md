@@ -2,7 +2,7 @@
 
 >
 [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7690)
-in GitLab 8.15. Only project masters and owners can access web terminals.
+in GitLab 8.15. Only project maintainers and owners can access web terminals.
 
 With the introduction of the [Kubernetes integration](../../user/project/clusters/index.md),
 GitLab gained the ability to store and use credentials for a Kubernetes cluster.

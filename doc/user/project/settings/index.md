@@ -1,7 +1,7 @@
 # Project settings
 
 NOTE: **Note:**
-Only project Masters and Admin users have the [permissions] to access a project
+Only project Maintainers and Admin users have the [permissions] to access a project
 settings.
 
 You can adjust your [project](../index.md) settings by navigating
@@ -74,7 +74,7 @@ To archive a project:
 #### Renaming a repository
 
 NOTE: **Note:**
-Only project Masters and Admin users have the [permissions] to rename a
+Only project Maintainers and Admin users have the [permissions] to rename a
 repository. Not to be confused with a project's name where it can also be
 changed from the [general project settings](#general-project-settings).
 
@@ -98,7 +98,7 @@ Only project Owners and Admin users have the [permissions] to transfer a project
 
 You can transfer an existing project into a [group](../../group/index.md) if:
 
-1. you have at least **Master** [permissions] to that group
+1. you have at least **Maintainer** [permissions] to that group
 1. you are an **Owner** of the project.
 
 Similarly, if you are an owner of a group, you can transfer any of its projects

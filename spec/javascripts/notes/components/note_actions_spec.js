@@ -22,7 +22,7 @@ describe('issue_note_actions component', () => {
 
     beforeEach(() => {
       props = {
-        accessLevel: 'Master',
+        accessLevel: 'Maintainer',
         authorId: 26,
         canDelete: true,
         canEdit: true,
@@ -71,7 +71,7 @@ describe('issue_note_actions component', () => {
     beforeEach(() => {
       store.dispatch('setUserData', {});
       props = {
-        accessLevel: 'Master',
+        accessLevel: 'Maintainer',
         authorId: 26,
         canDelete: false,
         canEdit: false,

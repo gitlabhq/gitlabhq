@@ -132,8 +132,10 @@ describe StuckCiJobsWorker do
     end
 
     it 'cancels exclusive lease after worker perform' do
-      expect(Gitlab::ExclusiveLease).to receive(:cancel).with(described_class::EXCLUSIVE_LEASE_KEY, exclusive_lease_uuid)
       worker.perform
+
+      expect(Gitlab::ExclusiveLease.new(described_class::EXCLUSIVE_LEASE_KEY, timeout: 1.hour))
+        .not_to be_exists
     end
   end
 end

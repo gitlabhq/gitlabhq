@@ -1543,7 +1543,7 @@ module Gitlab
         end
       end
 
-      def rev_list(including: [], excluding: [], objects: false, &block)
+      def rev_list(including: [], excluding: [], options: [], objects: false, &block)
         args = ['rev-list']
 
         args.push(*rev_list_param(including))
@@ -1555,6 +1555,10 @@ module Gitlab
         end
 
         args.push('--objects') if objects
+
+        if options.any?
+          args.push(*options)
+        end
 
         run_git!(args, lazy_block: block)
       end

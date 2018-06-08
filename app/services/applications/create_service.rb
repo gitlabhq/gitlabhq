@@ -5,7 +5,7 @@ module Applications
       @params = params.except(:ip_address)
     end
 
-    def execute(request = nil)
+    def execute(request)
       Doorkeeper::Application.create(@params)
     end
   end

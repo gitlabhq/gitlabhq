@@ -27,9 +27,10 @@ module Gitlab
       #
       # When given a block it will yield objects as a lazy enumerator so
       # the caller can limit work done instead of processing megabytes of data
-      def new_objects(require_path: nil, not_in: nil, &lazy_block)
+      def new_objects(options: [], require_path: nil, not_in: nil, &lazy_block)
         opts = {
           including: newrev,
+          options: options,
           excluding: not_in.nil? ? :all : not_in,
           require_path: require_path
         }
@@ -37,8 +38,11 @@ module Gitlab
         get_objects(opts, &lazy_block)
       end
 
-      def all_objects(require_path: nil, &lazy_block)
-        get_objects(including: :all, require_path: require_path, &lazy_block)
+      def all_objects(options: [], require_path: nil, &lazy_block)
+        get_objects(including: :all,
+                    options: options,
+                    require_path: require_path,
+                    &lazy_block)
       end
 
       # This methods returns an array of missed references
@@ -54,8 +58,8 @@ module Gitlab
         repository.rev_list(args).split("\n")
       end
 
-      def get_objects(including: [], excluding: [], require_path: nil)
-        opts = { including: including, excluding: excluding, objects: true }
+      def get_objects(including: [], excluding: [], options: [], require_path: nil)
+        opts = { including: including, excluding: excluding, options: options, objects: true }
 
         repository.rev_list(opts) do |lazy_output|
           objects = objects_from_output(lazy_output, require_path: require_path)

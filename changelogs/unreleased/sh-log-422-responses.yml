@@ -1,0 +1,6 @@
+---
+title: Log response body to production_json.log when a controller responds with a
+  422 status
+merge_request:
+author:
+type: other

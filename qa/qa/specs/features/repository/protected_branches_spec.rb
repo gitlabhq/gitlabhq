@@ -35,7 +35,7 @@ module QA
       end
 
       expect(protected_branch.name).to have_content(branch_name)
-      expect(protected_branch.push_allowance).to have_content('Developers + Masters')
+      expect(protected_branch.push_allowance).to have_content('Developers + Maintainers')
     end
 
     scenario 'users without authorization cannot push to protected branch' do
@@ -60,9 +60,9 @@ module QA
           push_changes('protected-branch')
         end
 
-        expect(repository.push_error)
+        expect(repository.push_output)
           .to match(/remote\: GitLab\: You are not allowed to push code to protected branches on this project/)
-        expect(repository.push_error)
+        expect(repository.push_output)
           .to match(/\[remote rejected\] #{branch_name} -> #{branch_name} \(pre-receive hook declined\)/)
       end
     end

@@ -7,7 +7,7 @@ module QA
     class Repository
       include Scenario::Actable
 
-      attr_reader :push_error
+      attr_reader :push_output
 
       def self.perform(*args)
         Dir.mktmpdir do |dir|
@@ -35,7 +35,7 @@ module QA
       end
 
       def clone(opts = '')
-        `git clone #{opts} #{@uri.to_s} ./ #{suppress_output}`
+        run_and_redact_credentials("git clone #{opts} #{@uri} ./")
       end
 
       def checkout(branch_name)
@@ -71,8 +71,7 @@ module QA
       end
 
       def push_changes(branch = 'master')
-        # capture3 returns stdout, stderr and status.
-        _, @push_error, _ = Open3.capture3("git push #{@uri} #{branch} #{suppress_output}")
+        @push_output, _ = run_and_redact_credentials("git push #{@uri} #{branch}")
       end
 
       def commits
@@ -81,12 +80,10 @@ module QA
 
       private
 
-      def suppress_output
-        # If we're running as the default user, it's probably a temporary
-        # instance and output can be useful for debugging
-        return if @username == Runtime::User.default_name
-
-        "&> #{File::NULL}"
+      # Since the remote URL contains the credentials, and git occasionally
+      # outputs the URL. Note that stderr is redirected to stdout.
+      def run_and_redact_credentials(command)
+        Open3.capture2("#{command} 2>&1 | sed -E 's#://[^@]+@#://****@#g'")
       end
     end
   end

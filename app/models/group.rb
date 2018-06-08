@@ -11,6 +11,7 @@ class Group < Namespace
   include GroupDescendant
   include TokenAuthenticatable
   include WithUploads
+  include Gitlab::Utils::StrongMemoize
 
   has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   alias_method :members, :group_members
@@ -26,7 +27,11 @@ class Group < Namespace
   has_many :milestones
   has_many :project_group_links, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :shared_projects, through: :project_group_links, source: :project
+
+  # Overridden on another method
+  # Left here just to be dependent: :destroy
   has_many :notification_settings, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
+
   has_many :labels, class_name: 'GroupLabel'
   has_many :variables, class_name: 'Ci::GroupVariable'
   has_many :custom_attributes, class_name: 'GroupCustomAttribute'
@@ -88,6 +93,15 @@ class Group < Namespace
     end
   end
 
+  # Overrides notification_settings has_many association
+  # This allows to apply notification settings from parent groups
+  # to child groups and projects.
+  def notification_settings
+    source_type = self.class.base_class.name
+
+    NotificationSetting.where(source_type: source_type, source_id: self_and_ancestors_ids)
+  end
+
   def to_reference(_from = nil, full: nil)
     "#{self.class.reference_prefix}#{full_path}"
   end
@@ -141,13 +155,14 @@ class Group < Namespace
     )
   end
 
-  def add_user(user, access_level, current_user: nil, expires_at: nil)
+  def add_user(user, access_level, current_user: nil, expires_at: nil, ldap: false)
     GroupMember.add_user(
       self,
       user,
       access_level,
       current_user: current_user,
-      expires_at: expires_at
+      expires_at: expires_at,
+      ldap: ldap
     )
   end
 
@@ -195,6 +210,10 @@ class Group < Namespace
     owners.include?(user) && owners.size == 1
   end
 
+  def ldap_synced?
+    false
+  end
+
   def post_create_hook
     Gitlab::AppLogger.info("Group \"#{name}\" was created")
 
@@ -218,6 +237,12 @@ class Group < Namespace
 
   def user_ids_for_project_authorizations
     members_with_parents.pluck(:user_id)
+  end
+
+  def self_and_ancestors_ids
+    strong_memoize(:self_and_ancestors_ids) do
+      self_and_ancestors.pluck(:id)
+    end
   end
 
   def members_with_parents
