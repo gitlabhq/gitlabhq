@@ -72,6 +72,8 @@ Rails.application.routes.draw do
       end
 
       resources :issues, module: :boards, only: [:index, :update]
+
+      resources :users, module: :boards, only: [:index]
     end
 
     # UserCallouts

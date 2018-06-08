@@ -4,3 +4,108 @@
     top: 3px;
   }
 }
+
+.dropdown.show .dropdown-menu.dropdown-menu-tabs {
+  max-height: 400px;
+  overflow-y: hidden;
+}
+
+.dropdown .dropdown-menu.dropdown-menu-tabs {
+  padding-top: 0;
+  width: 240px;
+
+  .dropdown-tabs-list {
+    display: flex;
+    box-shadow: 0 0 0 1px $border-color;
+
+    .dropdown-tab-item {
+      flex: 1;
+      border-left: 1px solid $border-color;
+
+      &:first-of-type {
+        border-left: 0;
+      }
+
+      a {
+        width: 100%;
+        padding: $gl-padding $gl-padding-top;
+        text-align: center;
+        border-bottom: 2px solid transparent;
+        background-color: $gray-light;
+
+        &:focus,
+        &.active {
+          background-color: $white-light;
+        }
+
+        &.active {
+          font-weight: bold;
+          border-bottom-color: $indigo-500;
+        }
+      }
+    }
+  }
+
+  .tab-content {
+    .issue-board-dropdown-content {
+      margin: 0;
+      padding: $gl-padding;
+      border-bottom: 0;
+      color: $gl-text-color-secondary;
+    }
+
+    .tab-pane-labels {
+      .dropdown-page-one .dropdown-content {
+        height: 140px;
+      }
+
+      .dropdown-page-two {
+        margin-top: 10px;
+
+        .dropdown-content {
+          max-height: initial;
+          height: 205px;
+        }
+      }
+    }
+
+    .tab-pane-assignees {
+      .dropdown-content {
+        height: 225px;
+        max-height: 252px;
+      }
+
+      .dropdown-user {
+        display: flex;
+        padding: $gl-padding-8 $gl-padding-24;
+      }
+
+      .dropdown-user-details div {
+        max-width: 130px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+
+      .dropdown-loading {
+        display: block;
+      }
+    }
+  }
+}
+
+.board-type-assignee {
+  .board-title-text,
+  .board-title-sub-text {
+    @include str-truncated(110px);
+  }
+
+  .board-title-text {
+    margin-right: 0;
+  }
+
+  .board-title-sub-text {
+    margin-right: auto;
+    color: $gl-text-color-secondary;
+    font-weight: normal;
+  }
+}

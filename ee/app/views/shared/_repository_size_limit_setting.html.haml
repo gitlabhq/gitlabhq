@@ -4,7 +4,7 @@
 - type = local_assigns.fetch(:type)
 - label_class = (type == :project) ? 'label-light' : 'col-form-label'
 
-.form-group
+.form-group.row
   = form.label :repository_size_limit, class: label_class do
     Repository size limit (MB)
   - if type == :project

@@ -184,20 +184,21 @@ RSpec.describe Geo::WikiSyncService do
           allow(repository).to receive(:fetch_as_mirror)
             .with(url_to_repo, remote_name: 'geo', forced: true)
             .and_raise(Gitlab::Shell::Error.new('shell error'))
+        end
+
+        it 'sets correct values for registry record' do
+          subject.execute
+
+          expect(registry).to have_attributes(last_wiki_synced_at: be_present,
+                                              last_wiki_successful_sync_at: nil,
+                                              last_wiki_sync_failure: 'Error syncing wiki repository: shell error'
+                                             )
+        end
+
+        it 'calls repository cleanup' do
+          expect(repository).to receive(:clean_stale_repository_files)
 
           subject.execute
-        end
-
-        it 'sets last_wiki_synced_at' do
-          expect(registry.last_wiki_synced_at).not_to be_nil
-        end
-
-        it 'resets last_wiki_successful_sync_at' do
-          expect(registry.last_wiki_successful_sync_at).to be_nil
-        end
-
-        it 'sets last_wiki_sync_failure' do
-          expect(registry.last_wiki_sync_failure).to eq('Error syncing wiki repository: shell error')
         end
       end
 

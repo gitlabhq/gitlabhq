@@ -1,0 +1,51 @@
+{
+  "type": "object",
+  "allOf": [
+    {
+      "$ref": "../../../../../spec/fixtures/api/schemas/list.json"
+    },
+    {
+      "required": ["user"],
+      "properties": {
+        "user": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "required": [
+            "id",
+            "name",
+            "username",
+            "state",
+            "avatar_url",
+            "web_url",
+            "path"
+          ],
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "name": {
+              "type": "string"
+            },
+            "username": {
+              "type": "string"
+            },
+            "state": {
+              "type": "string"
+            },
+            "avatar_url": {
+              "type": "string"
+            },
+            "web_url": {
+              "type": "string"
+            },
+            "path": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

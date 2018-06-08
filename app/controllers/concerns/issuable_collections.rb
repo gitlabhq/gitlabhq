@@ -96,12 +96,7 @@ module IssuableCollections
     elsif @group
       @filter_params[:group_id] = @group.id
       @filter_params[:include_subgroups] = true
-    else
-      # TODO: this filter ignore issues/mr created in public or
-      # internal repos where you are not a member. Enable this filter
-      # or improve current implementation to filter only issues you
-      # created or assigned or mentioned
-      # @filter_params[:authorized_only] = true
+      @filter_params[:use_cte_for_search] = true
     end
 
     @filter_params.permit(finder_type.valid_params)

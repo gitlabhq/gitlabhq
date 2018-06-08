@@ -186,7 +186,7 @@ describe 'Issue Boards', :js do
 
       page.within '.weight' do
         click_link 'Edit'
-        click_link '1'
+        find('.block.weight input').send_keys 1, :enter
 
         page.within '.value' do
           expect(page).to have_content '1'
@@ -212,8 +212,7 @@ describe 'Issue Boards', :js do
       wait_for_requests
 
       page.within '.weight' do
-        click_link 'Edit'
-        click_link 'No Weight'
+        click_link 'remove weight'
 
         page.within '.value' do
           expect(page).to have_content 'None'

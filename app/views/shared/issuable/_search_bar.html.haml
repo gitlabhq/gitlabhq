@@ -107,17 +107,16 @@
             - if type == :issues || type == :boards || type == :boards_modal
               #js-dropdown-weight.filtered-search-input-dropdown-menu.dropdown-menu
                 %ul{ 'data-dropdown' => true }
-                  %li.filter-dropdown-item{ 'data-value' => 'none' }
+                  %li.filter-dropdown-item{ 'data-value' => 'None' }
                     %button.btn.btn-link
-                      No Weight
-                  %li.filter-dropdown-item{ 'data-value' => 'any' }
+                      None
+                  %li.filter-dropdown-item{ 'data-value' => 'Any' }
                     %button.btn.btn-link
-                      Any Weight
+                      Any
                   %li.divider.droplab-item-ignore
-                %ul.filter-dropdown{ 'data-dropdown' => true }
-                  - Issue.weight_filter_options.each do |weight|
-                    %li.filter-dropdown-item{ 'data-value' => "#{weight}" }
-                      %button.btn.btn-link= weight
+                %ul.filter-dropdown{ data: { dropdown: true, dynamic: true } }
+                  %li.filter-dropdown-item{ data: { value: '{{id}}' } }
+                    %button.btn.btn-link {{title}}
 
           %button.clear-search.hidden{ type: 'button' }
             = icon('times')
@@ -127,14 +126,7 @@
 
             .js-board-config{ data: { can_admin_list: user_can_admin_list, has_scope: board.scoped? } }
             - if user_can_admin_list
-              .dropdown.prepend-left-10#js-add-list
-                %button.btn.btn-create.btn-inverted.js-new-board-list{ type: "button", data: board_list_data }
-                  Add list
-                .dropdown-menu.dropdown-menu-paging.dropdown-menu-right.dropdown-menu-issues-board-new.dropdown-menu-selectable
-                  = render partial: "shared/issuable/label_page_default", locals: { show_footer: true, show_create: true, show_boards_content: true, title: "Add list" }
-                  - if can?(current_user, :admin_label, board.parent)
-                    = render partial: "shared/issuable/label_page_create"
-                  = dropdown_loading
+              = render_if_exists 'shared/issuable/board_create_list_dropdown', board: board
               - if @project
                 #js-add-issues-btn.prepend-left-10{ data: { can_admin_list: can?(current_user, :admin_list, @project) } }
             #js-toggle-focus-btn.prepend-left-10

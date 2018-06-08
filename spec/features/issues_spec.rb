@@ -546,7 +546,7 @@ describe 'Issues' do
           expect(page).to have_content "None"
           click_link 'Edit'
 
-          find('.dropdown-content a', text: '1').click
+          find('.block.weight input').send_keys 1, :enter
 
           page.within('.value') do
             expect(page).to have_content "1"

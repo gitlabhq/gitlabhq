@@ -39,13 +39,15 @@ dast:
   variables:
     website: "https://example.com"
     login_url: "https://example.com/sign-in"
+    username: "john.doe@example.com"
+    password: "john-doe-password"
   allow_failure: true
   script:
     - mkdir /zap/wrk/
     - /zap/zap-baseline.py -J gl-dast-report.json -t $website
         --auth-url $login_url
-        --auth-username "john.doe@example.com"
-        --auth-password "john-doe-password" || true
+        --auth-username $username
+        --auth-password $password || true
     - cp /zap/wrk/gl-dast-report.json .
   artifacts:
     paths: [gl-dast-report.json]

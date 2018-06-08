@@ -1,12 +1,14 @@
 /* eslint-disable space-before-function-paren, no-underscore-dangle, class-methods-use-this, consistent-return, no-shadow, no-param-reassign, max-len, no-unused-vars */
 /* global ListIssue */
-/* global ListLabel */
+
+import ListLabel from '~/vue_shared/models/label';
+import ListAssignee from '~/vue_shared/models/assignee';
 import queryData from '../utils/query_data';
 
 const PER_PAGE = 20;
 
 class List {
-  constructor (obj, defaultAvatar) {
+  constructor(obj, defaultAvatar) {
     this.id = obj.id;
     this._uid = this.guid();
     this.position = obj.position;
@@ -24,6 +26,9 @@ class List {
 
     if (obj.label) {
       this.label = new ListLabel(obj.label);
+    } else if (obj.user) {
+      this.assignee = new ListAssignee(obj.user);
+      this.title = this.assignee.name;
     }
 
     if (this.type !== 'blank' && this.type !== 'promotion' && this.id) {
@@ -34,14 +39,26 @@ class List {
   }
 
   guid() {
-    const s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+    const s4 = () =>
+      Math.floor((1 + Math.random()) * 0x10000)
+        .toString(16)
+        .substring(1);
     return `${s4()}${s4()}-${s4()}-${s4()}-${s4()}-${s4()}${s4()}${s4()}`;
   }
 
-  save () {
-    return gl.boardService.createList(this.label.id)
+  save() {
+    const entity = this.label || this.assignee;
+    let entityType = '';
+    if (this.label) {
+      entityType = 'label_id';
+    } else {
+      entityType = 'assignee_id';
+    }
+
+    return gl.boardService
+      .createList(entity.id, entityType)
       .then(res => res.data)
-      .then((data) => {
+      .then(data => {
         this.id = data.id;
         this.type = data.list_type;
         this.position = data.position;
@@ -50,25 +67,23 @@ class List {
       });
   }
 
-  destroy () {
+  destroy() {
     const index = gl.issueBoards.BoardsStore.state.lists.indexOf(this);
     gl.issueBoards.BoardsStore.state.lists.splice(index, 1);
     gl.issueBoards.BoardsStore.updateNewListDropdown(this.id);
 
-    gl.boardService.destroyList(this.id)
-      .catch(() => {
-        // TODO: handle request error
-      });
+    gl.boardService.destroyList(this.id).catch(() => {
+      // TODO: handle request error
+    });
   }
 
-  update () {
-    gl.boardService.updateList(this.id, this.position)
-      .catch(() => {
-        // TODO: handle request error
-      });
+  update() {
+    gl.boardService.updateList(this.id, this.position).catch(() => {
+      // TODO: handle request error
+    });
   }
 
-  nextPage () {
+  nextPage() {
     if (this.issuesSize > this.issues.length) {
       if (this.issues.length / PER_PAGE >= 1) {
         this.page += 1;
@@ -78,7 +93,7 @@ class List {
     }
   }
 
-  getIssues (emptyIssues = true) {
+  getIssues(emptyIssues = true) {
     const data = queryData(gl.issueBoards.BoardsStore.filter.path, { page: this.page });
 
     if (this.label && data.label_name) {
@@ -89,9 +104,10 @@ class List {
       this.loading = true;
     }
 
-    return gl.boardService.getIssuesForList(this.id, data)
+    return gl.boardService
+      .getIssuesForList(this.id, data)
       .then(res => res.data)
-      .then((data) => {
+      .then(data => {
         this.loading = false;
         this.issuesSize = data.size;
 
@@ -103,18 +119,21 @@ class List {
       });
   }
 
-  newIssue (issue) {
+  newIssue(issue) {
     this.addIssue(issue, null, 0);
     this.issuesSize += 1;
 
-    return gl.boardService.newIssue(this.id, issue)
+    return gl.boardService
+      .newIssue(this.id, issue)
       .then(res => res.data)
-      .then((data) => {
+      .then(data => {
         issue.id = data.id;
         issue.iid = data.iid;
         issue.milestone = data.milestone;
         issue.project = data.project;
-        issue.assignees = data.assignees;
+        issue.assignees = Array.isArray(data.assignees)
+          ? data.assignees.map(assignee => new ListAssignee(assignee))
+          : data.assignees;
         issue.labels = data.labels;
         issue.path = data.real_path;
         issue.referencePath = data.reference_path;
@@ -126,13 +145,13 @@ class List {
       });
   }
 
-  createIssues (data) {
-    data.forEach((issueObj) => {
+  createIssues(data) {
+    data.forEach(issueObj => {
       this.addIssue(new ListIssue(issueObj, this.defaultAvatar));
     });
   }
 
-  addIssue (issue, listFrom, newIndex) {
+  addIssue(issue, listFrom, newIndex) {
     let moveBeforeId = null;
     let moveAfterId = null;
 
@@ -155,6 +174,13 @@ class List {
         issue.addLabel(this.label);
       }
 
+      if (this.assignee) {
+        if (listFrom && listFrom.type === 'assignee') {
+          issue.removeAssignee(listFrom.assignee);
+        }
+        issue.addAssignee(this.assignee);
+      }
+
       if (listFrom) {
         this.issuesSize += 1;
 
@@ -163,29 +189,29 @@ class List {
     }
   }
 
-  moveIssue (issue, oldIndex, newIndex, moveBeforeId, moveAfterId) {
+  moveIssue(issue, oldIndex, newIndex, moveBeforeId, moveAfterId) {
     this.issues.splice(oldIndex, 1);
     this.issues.splice(newIndex, 0, issue);
 
-    gl.boardService.moveIssue(issue.id, null, null, moveBeforeId, moveAfterId)
-      .catch(() => {
-        // TODO: handle request error
-      });
+    gl.boardService.moveIssue(issue.id, null, null, moveBeforeId, moveAfterId).catch(() => {
+      // TODO: handle request error
+    });
   }
 
   updateIssueLabel(issue, listFrom, moveBeforeId, moveAfterId) {
-    gl.boardService.moveIssue(issue.id, listFrom.id, this.id, moveBeforeId, moveAfterId)
+    gl.boardService
+      .moveIssue(issue.id, listFrom.id, this.id, moveBeforeId, moveAfterId)
       .catch(() => {
         // TODO: handle request error
       });
   }
 
-  findIssue (id) {
+  findIssue(id) {
     return this.issues.find(issue => issue.id === id);
   }
 
-  removeIssue (removeIssue) {
-    this.issues = this.issues.filter((issue) => {
+  removeIssue(removeIssue) {
+    this.issues = this.issues.filter(issue => {
       const matchesRemove = removeIssue.id === issue.id;
 
       if (matchesRemove) {

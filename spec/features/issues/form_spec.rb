@@ -144,9 +144,10 @@ describe 'New/edit issue', :js do
       page.within '.dropdown-menu-labels' do
         click_link label.title
         click_link label2.title
-
-        find('.dropdown-menu-close').click
       end
+
+      find('.js-issuable-form-dropdown.js-label-select').click
+
       page.within '.js-label-select' do
         expect(page).to have_content label.title
       end

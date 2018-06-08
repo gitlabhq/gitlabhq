@@ -68,8 +68,4 @@ class MergeRequestsFinder < IssuableFinder
 
     items.where(target_branch: target_branch)
   end
-
-  def item_project_ids(items)
-    items&.reorder(nil)&.select(:target_project_id)
-  end
 end

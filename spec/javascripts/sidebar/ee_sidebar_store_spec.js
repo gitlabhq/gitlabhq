@@ -6,8 +6,8 @@ describe('EE Sidebar store', () => {
   beforeEach(() => {
     store = new SidebarStore({
       weight: null,
-      weightOptions: ['No Weight', 0, 1, 3],
-      weightNoneValue: 'No Weight',
+      weightOptions: ['None', 0, 1, 3],
+      weightNoneValue: 'None',
     });
   });
 

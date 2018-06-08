@@ -7,9 +7,9 @@ import axios from '~/lib/utils/axios_utils';
 import Cookies from 'js-cookie';
 
 import '~/vue_shared/models/label';
+import '~/vue_shared/models/assignee';
 import '~/boards/models/issue';
 import '~/boards/models/list';
-import '~/boards/models/assignee';
 import '~/boards/services/board_service';
 import '~/boards/stores/boards_store';
 import { listObj, listObjDuplicate, boardsMockInterceptor, mockBoardService } from './mock_data';
