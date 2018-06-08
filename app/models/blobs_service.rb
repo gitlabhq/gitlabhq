@@ -5,17 +5,19 @@ class BlobsService
   CACHED_METHODS = %i(id raw_size size readable_text? name raw_binary? binary? path
                       external_storage_error? stored_externally? total_lines).freeze
 
-  def initialize(project, content_sha, path)
+  def initialize(project, content_sha, path, hidden_content:, highlighted:)
     @project = project
     @content_sha = content_sha
     @path = path
+    @hidden_content = hidden_content
+    @highlighted = highlighted
   end
 
   def lazy_load_uncached_blob
     return unless content_sha
-    return if cache_exists?
+    return if hidden_content && cache_exists?
 
-    uncached_blob
+    lazy_uncached_blob
   end
 
   # We need blobs data (content) in order to highlight diffs (see
@@ -24,11 +26,12 @@ class BlobsService
   #
   # Therefore, in this scenario (no highlight yet) we use the uncached blob
   # version.
-  def fetch(highlighted:)
+  def fetch
     return unless content_sha
+    return cached_blob if hidden_content && cache_exists?
     return uncached_blob unless highlighted
 
-    cache_exists? ? cached_blob : uncached_blob&.itself
+    cache_exists? ? cached_blob : uncached_blob
   end
 
 
@@ -46,7 +49,7 @@ class BlobsService
 
   private
 
-  attr_reader :content_sha, :project, :path
+  attr_reader :content_sha, :project, :path, :hidden_content, :highlighted
 
   def cacheable_blob_hash
     CACHED_METHODS.each_with_object({}) do |_method, hash|
@@ -54,12 +57,16 @@ class BlobsService
     end
   end
 
-  def cached_blob
-    CachedBlob.new(read_cache)
+  def uncached_blob
+    lazy_uncached_blob&.itself
   end
 
-  def uncached_blob
+  def lazy_uncached_blob
     Blob.lazy(project, content_sha, path)
+  end
+
+  def cached_blob
+    CachedBlob.new(read_cache)
   end
 
   def cache

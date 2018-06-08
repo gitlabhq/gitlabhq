@@ -107,19 +107,23 @@ module Gitlab
       end
 
       def new_blob_service
-        BlobsService.new(repository.project, new_content_sha, file_path)
+        BlobsService.new(repository.project, new_content_sha, file_path,
+                         hidden_content: hidden_content?,
+                         highlighted: highlighted?)
       end
 
       def old_blob_service
-        BlobsService.new(repository.project, old_content_sha, file_path)
+        BlobsService.new(repository.project, old_content_sha, file_path,
+                         hidden_content: hidden_content?,
+                         highlighted: highlighted?)
       end
 
       def new_blob
-        new_blob_service.fetch(highlighted: highlighted?)
+        new_blob_service.fetch
       end
 
       def old_blob
-        old_blob_service.fetch(highlighted: highlighted?)
+        old_blob_service.fetch
       end
 
       def content_sha
@@ -243,6 +247,10 @@ module Gitlab
       end
 
       private
+
+      def hidden_content?
+        collapsed? || too_large? || raw_diff.empty?
+      end
 
       def highlighted?
         @highlighted_diff_lines.present?
