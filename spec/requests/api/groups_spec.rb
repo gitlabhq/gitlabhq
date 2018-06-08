@@ -138,10 +138,12 @@ describe API::Groups do
 
     context "when using sorting" do
       let(:group3) { create(:group, name: "a#{group1.name}", path: "z#{group1.path}") }
+      let(:group4) { create(:group, name: "z#{group1.name}", path: "y#{group1.path}") }
       let(:response_groups) { json_response.map { |group| group['name'] } }
 
       before do
         group3.add_owner(user1)
+        group4.add_owner(user1)
       end
 
       it "sorts by name ascending by default" do
@@ -150,7 +152,7 @@ describe API::Groups do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(response_groups).to eq([group3.name, group1.name])
+        expect(response_groups).to eq([group3.name, group1.name, group4.name])
       end
 
       it "sorts in descending order when passed" do
@@ -159,16 +161,25 @@ describe API::Groups do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(response_groups).to eq([group1.name, group3.name])
+        expect(response_groups).to eq([group4.name, group1.name, group3.name])
       end
 
-      it "sorts by the order_by param" do
+      it "sorts by path in order_by param" do
         get api("/groups", user1), order_by: "path"
 
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(response_groups).to eq([group1.name, group3.name])
+        expect(response_groups).to eq([group1.name, group4.name, group3.name])
+      end
+
+      it "sorts by id in the order_by param" do
+        get api("/groups", user1), order_by: "id"
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(response_groups).to eq([group1.name, group3.name, group4.name])
       end
     end
 
