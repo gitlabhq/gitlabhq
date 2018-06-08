@@ -129,7 +129,7 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
     describe "limits N+1 queries" do
       let!(:projects) { create_list(:project, 10, :with_avatar) }
 
-      it do
+      it "to N*#{MIGRATION_QUERIES}" do
         query_count = ActiveRecord::QueryRecorder.new { perform(uploads) }
 
         more_projects = create_list(:project, 100, :with_avatar)
@@ -158,7 +158,7 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
     describe "limits N+1 queries" do
       let!(:projects) { create_list(:project, 10) }
 
-      it do
+      it "to N*#{MIGRATION_QUERIES}" do
         query_count = ActiveRecord::QueryRecorder.new { perform(uploads) }
 
         more_projects = create_list(:project, 100)
