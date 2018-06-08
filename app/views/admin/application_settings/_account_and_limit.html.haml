@@ -17,7 +17,7 @@
       .col-sm-10
         = f.number_field :max_attachment_size, class: 'form-control'
 
-      = render 'repository_size_limit_setting', form: f
+    = render 'repository_size_limit_setting', form: f
 
     .form-group.row
       = f.label :session_expire_delay, 'Session duration (minutes)', class: 'col-form-label col-sm-2'
@@ -44,8 +44,8 @@
         = f.label :check_namespace_plan, 'Check feature availability on namespace plan', class: 'col-form-label col-sm-2'
         .col-sm-10
           .form-check
-            = f.label :check_namespace_plan do
-              = f.check_box :check_namespace_plan
+            = f.check_box :check_namespace_plan, class: 'form-check-input'
+            = f.label :check_namespace_plan, class: 'form-check-label' do
               Enabling this will only make licensed EE features available to projects if the project namespace's plan
               includes the feature or if the project is public.
 

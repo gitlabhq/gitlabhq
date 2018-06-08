@@ -29,7 +29,7 @@
     .form-group.row
       .offset-sm-2.col-sm-10
         .form-check
-          = radio_button_tag :blacklist_type, :file, class: 'form-check-input'
+          = radio_button_tag :blacklist_type, :file, false, class: "form-check-input"
           = label_tag :blacklist_type_file, class: 'form-check-label' do
             .option-title
               Upload blacklist file
