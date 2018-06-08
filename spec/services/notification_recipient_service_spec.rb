@@ -19,8 +19,8 @@ describe NotificationRecipientService do
       end
     end
 
-    it 'avoids N+1 queries' do
-      create_watcher
+    it 'avoids N+1 queries', :request_store do
+      Gitlab::GitalyClient.allow_n_plus_1_calls { create_watcher }
 
       service.build_new_note_recipients(note)
 
@@ -28,7 +28,7 @@ describe NotificationRecipientService do
         service.build_new_note_recipients(note)
       end
 
-      create_watcher
+      Gitlab::GitalyClient.allow_n_plus_1_calls { create_watcher }
 
       expect { service.build_new_note_recipients(note) }.not_to exceed_query_limit(control_count)
     end
