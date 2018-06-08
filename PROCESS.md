@@ -217,7 +217,7 @@ When in doubt, we err on the side of _not_ cherry-picking.
 For example, it is likely that an exception will be made for a trivial 1-5 line performance improvement
 (e.g. adding a database index or adding `includes` to a query), but not for a new feature, no matter how relatively small or thoroughly tested.
 
-All MRs which have had exceptions granted must be merged by the 15th.
+All MRs which have had RC exceptions granted must be merged by the 15th.
 
 ### Regressions
 
