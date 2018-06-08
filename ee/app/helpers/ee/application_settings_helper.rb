@@ -68,7 +68,7 @@ module EE
         :slack_app_secret,
         :slack_app_verification_token,
         :allow_group_owners_to_manage_ldap,
-        :elt_database_dump_enabled
+        :pseudonymizer_enabled
       ]
     end
 

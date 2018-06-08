@@ -3,8 +3,15 @@ require 'spec_helper'
 describe Pseudonymizer::Dumper do
   let!(:project) { create(:project) }
   let(:base_dir) { Dir.mktmpdir }
-  let(:options) { Pseudonymizer::Options.new() }
+  let(:options) do
+    Pseudonymizer::Options.new(config: Gitlab.config.pseudonymizer,
+                               start_at: Time.now.utc)
+  end
   subject(:pseudo) { described_class.new(options) }
+
+  before do
+    allow(options).to receive(:output_dir).and_return(base_dir)
+  end
 
   after do
     FileUtils.rm_rf(base_dir)
@@ -13,7 +20,6 @@ describe Pseudonymizer::Dumper do
   # create temp directory in before block
   describe 'Pseudo tables' do
     it 'outputs project tables to csv' do
-      pseudo.config["output"]["csv"] = base_dir
       pseudo.config["tables"] = {
         "projects" => {
           "whitelist" => %w(id name path description),
@@ -21,7 +27,7 @@ describe Pseudonymizer::Dumper do
         }
       }
 
-      expect(pseudo.config["output"]["csv"]).to eq(base_dir)
+      expect(pseudo.output_dir).to eq(base_dir)
 
       # grab the first table it outputs. There would only be 1.
       project_table_file = pseudo.tables_to_csv[0]

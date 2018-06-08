@@ -26,7 +26,7 @@ module Pseudonymizer
   end
 
   class Dumper
-    attr_accessor :config
+    attr_accessor :config, :output_dir
 
     def initialize(options)
       @config = options.config
@@ -39,7 +39,7 @@ module Pseudonymizer
     def tables_to_csv
       tables = config["tables"]
 
-      FileUtils.mkdir_p(@output_dir) unless File.directory?(@output_dir)
+      FileUtils.mkdir_p(output_dir) unless File.directory?(output_dir)
 
       new_tables = tables.map do |k, v|
         @schema[k] = {}
@@ -55,7 +55,7 @@ module Pseudonymizer
       file_timestamp = filename || "#{prefix}_#{Time.now.to_i}"
       file_timestamp = "#{file_timestamp}.#{ext}"
       @output_files << file_timestamp
-      File.join(@output_dir, file_timestamp)
+      File.join(output_dir, file_timestamp)
     end
 
     def schema_to_yml

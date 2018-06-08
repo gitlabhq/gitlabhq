@@ -144,6 +144,7 @@
 - cronjob:ldap_all_groups_sync
 - cronjob:ldap_sync
 - cronjob:update_all_mirrors
+- cronjob:pseudonymizer
 
 - geo:geo_scheduler_scheduler
 - geo:geo_scheduler_primary_scheduler
