@@ -23,7 +23,7 @@ module QA
       validate_content('My First Wiki Content')
 
       Page::Project::Wiki::MainLinks.act { edit_page }
-      Page::Project::Wiki::Edit.perform do |page|
+      Page::Project::Wiki::Form.perform do |page|
         page.add_content("My Second Wiki Content")
         page.save_changes
       end

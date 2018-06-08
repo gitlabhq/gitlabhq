@@ -15,7 +15,7 @@ module QA
           super
           Page::Menu::Side.act { click_wiki }
           Page::Project::Wiki::Empty.act { create_wiki }
-          Page::Project::Wiki::New.perform do |page|
+          Page::Project::Wiki::Form.perform do |page|
             page.add_title(@title)
             page.add_content(@content)
             page.add_message(@message)

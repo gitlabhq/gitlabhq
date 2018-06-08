@@ -164,11 +164,10 @@ module QA
       end
 
       module Wiki
-        autoload :New, 'qa/page/project/wiki/new'
         autoload :MainLinks, 'qa/page/project/wiki/main_links'
-        autoload :Edit, 'qa/page/project/wiki/edit'
         autoload :Pages, 'qa/page/project/wiki/pages'
         autoload :Empty, 'qa/page/project/wiki/empty'
+        autoload :Form, 'qa/page/project/wiki/form'
       end
     end
 
