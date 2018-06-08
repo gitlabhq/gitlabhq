@@ -4,7 +4,7 @@ require 'csv'
 require 'yaml'
 
 module Pseudonymizer
-  PAGE_SIZE = 10000
+  PAGE_SIZE = 1000
 
   class Anon
     def initialize(fields)
@@ -14,11 +14,11 @@ module Pseudonymizer
     def anonymize(results)
       columns = results.columns # Assume they all have the same table
       to_filter = @anon_fields & columns
+      secret = Rails.application.secrets[:secret_key_base]
 
       Enumerator.new do |yielder|
         results.each do |result|
           to_filter.each do |field|
-            secret = Rails.application.secrets[:secret_key_base]
             result[field] = OpenSSL::HMAC.hexdigest('SHA256', secret, result[field]) unless result[field].nil?
           end
           yielder << result
@@ -43,15 +43,12 @@ module Pseudonymizer
 
       FileUtils.mkdir_p(output_dir) unless File.directory?(output_dir)
 
-      new_tables = tables.map do |k, v|
-        @schema[k] = {}
-        table_to_schema(k)
-        write_to_csv_file(k, table_page_results(k, v['whitelist'], v['pseudo']))
-      end
-
       schema_to_yml
       file_list_to_json
-      new_tables
+
+      tables.each do |k, v|
+        table_to_csv(k, v['whitelist'], v['pseudo'])
+      end
     end
 
     def get_and_log_file_name(ext, prefix = nil, filename = nil)
@@ -71,6 +68,15 @@ module Pseudonymizer
       File.open(file_path, 'w') { |file| file.write(@output_files.to_json) }
     end
 
+    def table_to_csv(table, whitelist_columns, pseudonymity_columns)
+      @schema[table] = {}
+      table_to_schema(table)
+      write_to_csv_file(table, table_page_results(table, whitelist_columns, pseudonymity_columns))
+    rescue => e
+      binding.pry
+      Rails.logger.error(e.message)
+    end
+
     # yield every results, pagined, anonymized
     def table_page_results(table, whitelist_columns, pseudonymity_columns)
       anonymizer = Anon.new(pseudonymity_columns)
@@ -79,14 +85,19 @@ module Pseudonymizer
       Enumerator.new do |yielder|
         loop do
           offset = page * PAGE_SIZE
-          sql = "SELECT #{whitelist_columns.join(",")} FROM #{table} LIMIT #{PAGE_SIZE} OFFSET #{offset};"
+          has_more = false
+
+          sql = "SELECT #{whitelist_columns.join(",")} FROM #{table} LIMIT #{PAGE_SIZE} OFFSET #{offset}"
 
           # a page of results
           results = ActiveRecord::Base.connection.exec_query(sql)
-          break if results.empty?
+          raise StopIteration if results.empty?
 
-          binding.pry
-          anonymizer.anonymize(results).each { |result| yielder << result }
+          anonymizer.anonymize(results).lazy.each do |result|
+            has_more = true
+            yielder << result
+          end
+
           page += 1
         end
       end
@@ -121,15 +132,17 @@ module Pseudonymizer
     def write_to_csv_file(title, contents)
       Rails.logger.info "Writing #{title} ..."
       file_path = get_and_log_file_name("csv", title)
-      binding.pry
-      column_names = contents.first.keys
-      CSV.open(file_path, 'w') do |csv|
-        csv << column_names
 
-        contents.each do |x|
-          csv << x.values
+      CSV.open(file_path, 'w') do |csv|
+        contents.each_with_index do |row, i|
+          csv << row.keys if i == 0 # header
+          csv << row.values
+          csv.flush if i % PAGE_SIZE
         end
       end
+
+      GC.start
+
       file_path
     end
 
