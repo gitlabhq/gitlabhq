@@ -12,11 +12,17 @@ module EE
         # and clean up where we can.
         if project&.destroyed?
           mirror_cleanup(project)
-          log_geo_event(project)
-          log_audit_event(project)
         end
 
         succeeded
+      end
+
+      override :log_destroy_event
+      def log_destroy_event
+        super
+
+        log_geo_event(project)
+        log_audit_event(project)
       end
 
       def mirror_cleanup(project)
