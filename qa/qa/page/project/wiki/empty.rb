@@ -10,7 +10,6 @@ module QA
           def create_wiki
             click_link 'Create your first page'
           end
-
         end
       end
     end

@@ -4,6 +4,9 @@ module QA
       module Wiki
         class MainLinks < Page::Base
           view 'app/views/projects/wikis/_main_links.html.haml' do
+            element :create_page_link, 'New page'
+            element :page_history_link, 'Page history'
+            element :edit_page_link, 'Edit'
           end
 
           def create_new_page
@@ -17,7 +20,6 @@ module QA
           def edit_page
             click_on 'Edit'
           end
-
         end
       end
     end
