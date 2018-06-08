@@ -8,8 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2018-06-07 18:08+0200\n"
 "PO-Revision-Date: 2018-06-07 18:08+0200\n"
+=======
+"POT-Creation-Date: 2018-06-07 19:35+0200\n"
+"PO-Revision-Date: 2018-06-07 19:35+0200\n"
+>>>>>>> upstream/master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -437,7 +442,7 @@ msgstr ""
 msgid "An error occurred while getting projects"
 msgstr ""
 
-msgid "An error occurred while importing project"
+msgid "An error occurred while importing project: ${details}"
 msgstr ""
 
 msgid "An error occurred while initializing path locks"
@@ -555,6 +560,9 @@ msgid "Assigned Merge Requests"
 msgstr ""
 
 msgid "Assigned to :name"
+msgstr ""
+
+msgid "Assigned to me"
 msgstr ""
 
 msgid "Assignee"
@@ -713,6 +721,7 @@ msgstr ""
 msgid "Begin with the selected commit"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Billing"
 msgstr ""
 
@@ -767,6 +776,8 @@ msgstr ""
 msgid "BillingPlans|per user"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Branch (%{branch_count})"
 msgid_plural "Branches (%{branch_count})"
 msgstr[0] ""
@@ -1889,7 +1900,11 @@ msgstr ""
 msgid "Created"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Creating epic"
+=======
+msgid "Created by me"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Cron Timezone"
@@ -2092,7 +2107,11 @@ msgstr ""
 msgid "DeployTokens|Your new project deploy token has been created."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Descending"
+=======
+msgid "Deprioritize label"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Description"
@@ -2339,6 +2358,9 @@ msgid "Error creating epic"
 msgstr ""
 
 msgid "Error fetching contributors data."
+msgstr ""
+
+msgid "Error fetching job trace"
 msgstr ""
 
 msgid "Error fetching labels."
@@ -3103,6 +3125,9 @@ msgstr ""
 msgid "Label"
 msgstr ""
 
+msgid "Label actions dropdown"
+msgstr ""
+
 msgid "LabelSelect|%{firstLabelName} +%{remainingLabelCount} more"
 msgstr ""
 
@@ -3119,6 +3144,9 @@ msgid "Labels can be applied to %{features}. Group labels are available for any 
 msgstr ""
 
 msgid "Labels can be applied to issues and merge requests to categorize them."
+msgstr ""
+
+msgid "Labels can be applied to issues and merge requests."
 msgstr ""
 
 msgid "Labels|<span>Promote label</span> %{labelTitle} <span>to Group Label?</span>"
@@ -3539,7 +3567,10 @@ msgstr ""
 msgid "No files found."
 msgstr ""
 
-msgid "No labels created yet."
+msgid "No merge requests found"
+msgstr ""
+
+msgid "No messages were logged"
 msgstr ""
 
 msgid "No repository"
@@ -3677,6 +3708,7 @@ msgstr ""
 msgid "Only project members can comment."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Open"
 msgstr ""
 
@@ -3692,6 +3724,11 @@ msgstr ""
 msgid "Opened issues"
 msgstr ""
 
+=======
+msgid "Open in Xcode"
+msgstr ""
+
+>>>>>>> upstream/master
 msgid "OpenedNDaysAgo|Opened"
 msgstr ""
 
@@ -3704,7 +3741,11 @@ msgstr ""
 msgid "Options"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Other information"
+=======
+msgid "Other Labels"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Otherwise it is recommended you start with one of the options below."
@@ -3944,7 +3985,20 @@ msgstr ""
 msgid "Preferences|Navigation theme"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Primary"
+=======
+msgid "Prioritize"
+msgstr ""
+
+msgid "Prioritize label"
+msgstr ""
+
+msgid "Prioritized Labels"
+msgstr ""
+
+msgid "Prioritized label"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Private - Project access must be granted explicitly to each user."
@@ -4223,10 +4277,10 @@ msgstr ""
 msgid "Promote these project milestones into a group milestone."
 msgstr ""
 
-msgid "Promote to Group Label"
+msgid "Promote to Group Milestone"
 msgstr ""
 
-msgid "Promote to Group Milestone"
+msgid "Promote to group label"
 msgstr ""
 
 msgid "Promotions|Don't show me this again"
@@ -4265,12 +4319,15 @@ msgstr ""
 msgid "PushRule|Committer restriction"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Pushed"
 msgstr ""
 
 msgid "Quick actions can be used in the issues description and comment boxes."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Read more"
 msgstr ""
 
@@ -4332,6 +4389,9 @@ msgid "Remove Runner"
 msgstr ""
 
 msgid "Remove avatar"
+msgstr ""
+
+msgid "Remove priority"
 msgstr ""
 
 msgid "Remove project"
@@ -4480,9 +4540,12 @@ msgstr ""
 msgid "Scheduling Pipelines"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Scoped issue boards"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Scroll to bottom"
 msgstr ""
 
@@ -4502,6 +4565,9 @@ msgid "Search files"
 msgstr ""
 
 msgid "Search for projects, issues, etc."
+msgstr ""
+
+msgid "Search merge requests"
 msgstr ""
 
 msgid "Search milestones"
@@ -4636,6 +4702,9 @@ msgstr ""
 msgid "Show command"
 msgstr ""
 
+msgid "Show complete raw log"
+msgstr ""
+
 msgid "Show parent pages"
 msgstr ""
 
@@ -4692,9 +4761,12 @@ msgstr ""
 msgid "Something went wrong when toggling the button"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Something went wrong while fetching group member contributions"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Something went wrong while fetching the projects."
 msgstr ""
 
@@ -4845,6 +4917,9 @@ msgstr ""
 msgid "Staged %{type}"
 msgstr ""
 
+msgid "Star a label to make it a priority label. Order the prioritized labels to change their relative priority, by dragging."
+msgstr ""
+
 msgid "StarProject|Star"
 msgstr ""
 
@@ -4885,6 +4960,15 @@ msgid "Storage"
 msgstr ""
 
 msgid "Subgroups"
+msgstr ""
+
+msgid "Subscribe"
+msgstr ""
+
+msgid "Subscribe at group level"
+msgstr ""
+
+msgid "Subscribe at project level"
 msgstr ""
 
 msgid "Switch branch/tag"
@@ -5517,6 +5601,15 @@ msgstr ""
 msgid "Unstar"
 msgstr ""
 
+msgid "Unsubscribe"
+msgstr ""
+
+msgid "Unsubscribe at group level"
+msgstr ""
+
+msgid "Unsubscribe at project level"
+msgstr ""
+
 msgid "Unverified"
 msgstr ""
 
@@ -5607,10 +5700,17 @@ msgstr ""
 msgid "View group labels"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "View issue"
+=======
+msgid "View jobs"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "View labels"
+msgstr ""
+
+msgid "View log"
 msgstr ""
 
 msgid "View open merge request"
@@ -5865,10 +5965,17 @@ msgstr ""
 msgid "You cannot write to this read-only GitLab instance."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "You do not have the correct permissions to override the settings from the LDAP group sync."
+=======
+msgid "You do not have any assigned merge requests"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "You have no permissions"
+msgstr ""
+
+msgid "You have not created any merge requests"
 msgstr ""
 
 msgid "You have reached your project limit"

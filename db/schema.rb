@@ -11,7 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20180607154645) do
+=======
+ActiveRecord::Schema.define(version: 20180608201435) do
+>>>>>>> upstream/master
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1641,8 +1645,13 @@ ActiveRecord::Schema.define(version: 20180607154645) do
     t.string "merge_jid"
     t.boolean "discussion_locked"
     t.integer "latest_merge_request_diff_id"
+<<<<<<< HEAD
     t.boolean "allow_collaboration"
+=======
+    t.string "rebase_commit_sha"
+>>>>>>> upstream/master
     t.boolean "squash", default: false, null: false
+    t.boolean "allow_maintainer_to_push"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
