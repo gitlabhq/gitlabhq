@@ -22,4 +22,18 @@ document.addEventListener('DOMContentLoaded', () => {
     errorBox: variableListEl.querySelector('.js-ci-variable-error-box'),
     saveEndpoint: variableListEl.dataset.saveEndpoint,
   });
+
+  // hide extra auto devops settings based on data-attributes
+  const autoDevOpsSettings = document.querySelector('.js-auto-devops-settings');
+  const autoDevOpsExtraSettings = document.querySelector('.js-extra-settings');
+
+  autoDevOpsSettings.addEventListener('click', event => {
+    const target = event.target;
+    if (target.classList.contains('js-toggle-extra-settings')) {
+      autoDevOpsExtraSettings.classList.toggle(
+        'hidden',
+        !!(target.dataset && target.dataset.hideExtraSettings),
+      );
+    }
+  });
 });

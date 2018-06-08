@@ -67,6 +67,10 @@ Sidekiq::Testing.inline! do
         skip_disk_validation: true
       }
 
+      if i % 2 == 0
+        params[:storage_version] = Project::LATEST_STORAGE_VERSION
+      end
+
       project = Projects::CreateService.new(User.first, params).execute
       # Seed-Fu runs this entire fixture in a transaction, so the `after_commit`
       # hook won't run until after the fixture is loaded. That is too late

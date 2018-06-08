@@ -3,5 +3,5 @@
     Groups with access to
     %strong= @project.name
     %span.badge.badge-pill= group_links.size
-  %ul.content-list
+  %ul.content-list.members-list
     = render partial: 'shared/members/group', collection: group_links, as: :group_link

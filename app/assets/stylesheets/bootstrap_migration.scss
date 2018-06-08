@@ -107,7 +107,7 @@ code {
   background-color: $red-100;
   border-radius: 3px;
 
-  .code & {
+  .code > & {
     background-color: inherit;
     padding: unset;
   }
@@ -233,6 +233,13 @@ table {
   }
 }
 
+.card-header {
+  h3.card-title,
+  h4.card-title {
+    margin-top: 0;
+  }
+}
+
 .nav-tabs {
   // Override bootstrap's default border
   border-bottom: 0;
@@ -260,4 +267,8 @@ pre code {
   h4 {
     color: $white-light;
   }
+}
+
+input[type=color].form-control {
+  height: $input-height;
 }

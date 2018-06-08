@@ -12,7 +12,7 @@ describe 'projects/settings/ci_cd/_autodevops_form' do
       it 'shows warning message' do
         render
 
-        expect(rendered).to have_css('.settings-message')
+        expect(rendered).to have_css('.auto-devops-warning-message')
         expect(rendered).to have_text('Auto Review Apps and Auto Deploy need a domain name and a')
         expect(rendered).to have_link('Kubernetes cluster')
       end
@@ -26,7 +26,7 @@ describe 'projects/settings/ci_cd/_autodevops_form' do
       it 'shows warning message' do
         render
 
-        expect(rendered).to have_css('.settings-message')
+        expect(rendered).to have_css('.auto-devops-warning-message')
         expect(rendered).to have_text('Auto Review Apps and Auto Deploy need a')
         expect(rendered).to have_link('Kubernetes cluster')
       end
@@ -42,7 +42,7 @@ describe 'projects/settings/ci_cd/_autodevops_form' do
       it 'shows warning message' do
         render
 
-        expect(rendered).to have_css('.settings-message')
+        expect(rendered).to have_css('.auto-devops-warning-message')
         expect(rendered).to have_text('Auto Review Apps and Auto Deploy need a domain name to work correctly.')
       end
     end
@@ -55,7 +55,7 @@ describe 'projects/settings/ci_cd/_autodevops_form' do
       it 'does not show warning message' do
         render
 
-        expect(rendered).not_to have_css('.settings-message')
+        expect(rendered).not_to have_css('.auto-devops-warning-message')
       end
     end
   end

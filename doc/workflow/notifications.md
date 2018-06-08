@@ -34,9 +34,14 @@ anything that is set at Global Settings.
 
 ![notification settings](img/notification_group_settings.png)
 
-Group Settings are taking precedence over Global Settings but are on a level below Project Settings.
+Group Settings are taking precedence over Global Settings but are on a level below Project or Subgroup Settings:
+
+```
+Group < Subgroup < Project
+```
+
 This means that you can set a different level of notifications per group while still being able
-to have a finer level setting per project.
+to have a finer level setting per project or subgroup.
 Organization like this is suitable for users that belong to different groups but don't have the
 same need for being notified for every group they are member of.
 These settings can be configured on group page under the name of the group. It will be the dropdown with the bell icon. They can also be configured on the user profile notifications dropdown.
