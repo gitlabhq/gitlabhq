@@ -160,6 +160,11 @@ table {
   }
 }
 
+.alert-warning,
+.alert-warning .alert-link {
+  color: $white-light;
+}
+
 // Polyfill deprecated selectors
 
 .hidden {
