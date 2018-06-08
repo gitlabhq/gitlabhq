@@ -48,7 +48,7 @@ export default {
 
       // Compare key to allow for files opened in review mode to be cached differently
       if (oldVal.key !== this.file.key) {
-        this.initMonaco();
+        this.initEditor();
 
         if (this.currentActivityView !== activityBarViews.edit) {
           this.setFileViewMode({
@@ -85,7 +85,7 @@ export default {
     if (!this.editor) {
       this.editor = Editor.create();
     }
-    this.initMonaco();
+    this.initEditor();
   },
   methods: {
     ...mapActions([
@@ -98,7 +98,7 @@ export default {
       'updateViewer',
       'removePendingTab',
     ]),
-    initMonaco() {
+    initEditor() {
       if (this.shouldHideEditor) return;
 
       this.editor.clearEditor();
@@ -111,7 +111,7 @@ export default {
           this.createEditorInstance();
         })
         .catch(err => {
-          flash('Error setting up monaco. Please try again.', 'alert', document, null, false, true);
+          flash('Error setting up editor. Please try again.', 'alert', document, null, false, true);
           throw err;
         });
     },
