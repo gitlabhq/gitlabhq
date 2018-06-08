@@ -15,7 +15,7 @@ module Gitlab
       def run_batches(&blk)
         all_relation.in_batches(of: batch_size, start: start, finish: finish) do |all_relation| # rubocop: disable Cop/InBatches
           range = all_relation.first.id..all_relation.last.id
-          failures = run_batch(all_relation)
+          failures = run_batch_for(all_relation)
 
           yield(range, failures)
         end
@@ -31,16 +31,12 @@ module Gitlab
 
       private
 
-      def run_batch(all_relation)
+      def run_batch_for(all_relation)
         all_relation.map { |upload| verify(upload) }.compact.to_h
       end
 
       def verify(object)
-        if local?(object)
-          verify_local(object)
-        else
-          verify_remote(object)
-        end
+        local?(object) ? verify_local(object) : verify_remote(object)
 
         nil
       rescue => err
