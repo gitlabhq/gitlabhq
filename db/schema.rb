@@ -2262,6 +2262,7 @@ ActiveRecord::Schema.define(version: 20180612175636) do
     t.boolean "reject_unsigned_commits"
     t.boolean "commit_committer_check"
     t.boolean "regexp_uses_re2", default: true
+    t.string "commit_message_negative_regex"
   end
 
   add_index "push_rules", ["is_sample"], name: "index_push_rules_on_is_sample", where: "is_sample", using: :btree

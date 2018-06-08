@@ -82,6 +82,16 @@ describe PushRule do
     end
   end
 
+  describe '#commit_message_blocked?' do
+    subject(:push_rule) { create(:push_rule, commit_message_negative_regex: 'commit')}
+
+    it 'uses multiline regex' do
+      commit_message = "Some git commit feature\n\nSigned-off-by: Someone"
+
+      expect(subject.commit_message_blocked?(commit_message)).to be true
+    end
+  end
+
   describe '#commit_validation?' do
     let(:settings_with_global_default) { %i(reject_unsigned_commits) }
 
@@ -118,6 +128,7 @@ describe PushRule do
 
   methods_and_regexes = {
     commit_message_allowed?: :commit_message_regex,
+    commit_message_blocked?: :commit_message_negative_regex,
     branch_name_allowed?: :branch_name_regex,
     author_email_allowed?: :author_email_regex,
     filename_blacklisted?: :file_name_regex

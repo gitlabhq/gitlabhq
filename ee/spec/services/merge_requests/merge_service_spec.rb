@@ -44,9 +44,22 @@ describe MergeRequests::MergeService do
       expect(service.hooks_validation_pass?(merge_request)).to be_truthy
     end
 
-    context 'commit message validation' do
+    context 'commit message validation for required characters' do
       before do
         allow(project).to receive(:push_rule) { build(:push_rule, commit_message_regex: 'unmatched pattern .*') }
+      end
+
+      it_behaves_like 'hook validations are skipped when push rules unlicensed'
+
+      it 'returns false and saves error when invalid' do
+        expect(service.hooks_validation_pass?(merge_request)).to be_falsey
+        expect(merge_request.merge_error).not_to be_empty
+      end
+    end
+
+    context 'commit message validation for forbidden characters' do
+      before do
+        allow(project).to receive(:push_rule) { build(:push_rule, commit_message_negative_regex: '.*') }
       end
 
       it_behaves_like 'hook validations are skipped when push rules unlicensed'

@@ -125,7 +125,7 @@ module EE
       ########################
       class ProjectPushRule < Grape::Entity
         expose :id, :project_id, :created_at
-        expose :commit_message_regex, :branch_name_regex, :deny_delete_tag
+        expose :commit_message_regex, :commit_message_negative_regex, :branch_name_regex, :deny_delete_tag
         expose :member_check, :prevent_secrets, :author_email_regex
         expose :file_name_regex, :max_file_size
       end

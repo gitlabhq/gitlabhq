@@ -119,6 +119,10 @@ module EE
             return "Commit message does not follow the pattern '#{push_rule.commit_message_regex}'"
           end
 
+          if push_rule.commit_message_blocked?(commit.safe_message)
+            return "Commit message contains the forbidden pattern '#{push_rule.commit_message_negative_regex}'"
+          end
+
           unless push_rule.author_email_allowed?(commit.committer_email)
             return "Committer's email '#{commit.committer_email}' does not follow the pattern '#{push_rule.author_email_regex}'"
           end
