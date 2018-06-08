@@ -9,8 +9,20 @@ module Gitlab
         ENV.fetch('LIMIT', 500).to_i
       end
 
+      def self.range_from
+        ENV['ID_FROM']
+      end
+
+      def self.range_to
+        ENV['ID_TO']
+      end
+
+      def self.range_single_item?
+        !range_from.nil? && range_from == range_to
+      end
+
       def self.project_id_batches(&block)
-        Project.with_unmigrated_storage.in_batches(of: batch_size, start: ENV['ID_FROM'], finish: ENV['ID_TO']) do |relation| # rubocop: disable Cop/InBatches
+        Project.with_unmigrated_storage.in_batches(of: batch_size, start: range_from, finish: range_to) do |relation| # rubocop: disable Cop/InBatches
           ids = relation.pluck(:id)
 
           yield ids.min, ids.max

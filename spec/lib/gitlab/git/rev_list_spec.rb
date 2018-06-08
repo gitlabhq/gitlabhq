@@ -88,7 +88,7 @@ describe Gitlab::Git::RevList do
 
   context '#all_objects' do
     it 'fetches list of all pushed objects using rev-list' do
-      stub_popen_rev_list('--all', '--objects', '--filter=blob:limit=200', output: "sha1\nsha2")
+      stub_popen_rev_list('--all', '--objects', output: "sha1\nsha2")
 
       expect { |b| rev_list.all_objects(&b) }.to yield_with_args(%w[sha1 sha2])
     end

@@ -56,6 +56,7 @@ gl.issueBoards.newListDropdownInit = () => {
       filterable: true,
       selectable: true,
       multiSelect: true,
+      containerSelector: '.js-tab-container-labels .dropdown-page-one .dropdown-content',
       clicked (options) {
         const { e } = options;
         const label = options.selectedObj;

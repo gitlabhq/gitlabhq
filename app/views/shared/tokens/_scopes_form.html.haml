@@ -5,6 +5,6 @@
 - scopes.each do |scope|
   %fieldset
     = check_box_tag "#{prefix}[scopes][]", scope, token.scopes.include?(scope), id: "#{prefix}_scopes_#{scope}"
-    = label_tag ("#{prefix}_scopes_#{scope}"), scope
+    = label_tag ("#{prefix}_scopes_#{scope}"), scope, class: "label-light"
     %span= t(scope, scope: [:doorkeeper, :scopes])
     .scope-description= t scope, scope: [:doorkeeper, :scope_desc]

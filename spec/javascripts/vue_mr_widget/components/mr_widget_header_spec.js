@@ -12,6 +12,7 @@ describe('MRWidgetHeader', () => {
 
   afterEach(() => {
     vm.$destroy();
+    gon.relative_url_root = '';
   });
 
   describe('computed', () => {
@@ -145,7 +146,16 @@ describe('MRWidgetHeader', () => {
         const button = vm.$el.querySelector('.js-web-ide');
 
         expect(button.textContent.trim()).toEqual('Web IDE');
-        expect(button.getAttribute('href')).toEqual('undefined/-/ide/projectabc');
+        expect(button.getAttribute('href')).toEqual('/-/ide/projectabc');
+      });
+
+      it('renders web ide button with relative URL', () => {
+        gon.relative_url_root = '/gitlab';
+
+        const button = vm.$el.querySelector('.js-web-ide');
+
+        expect(button.textContent.trim()).toEqual('Web IDE');
+        expect(button.getAttribute('href')).toEqual('/-/ide/projectabc');
       });
 
       it('renders download dropdown with links', () => {

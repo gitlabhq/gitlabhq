@@ -137,6 +137,10 @@ class Label < ActiveRecord::Base
     priority.try(:priority)
   end
 
+  def priority?
+    priorities.present?
+  end
+
   def template?
     template
   end
