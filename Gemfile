@@ -133,7 +133,7 @@ gem 'seed-fu', '~> 2.3.7'
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 2.7.1'
 gem 'deckar01-task_list', '2.0.0'
-gem 'gitlab-markup', '~> 1.6.2'
+gem 'gitlab-markup', '~> 1.6.4'
 gem 'redcarpet', '~> 3.4'
 gem 'commonmarker', '~> 0.17'
 gem 'RedCloth', '~> 4.3.2'
