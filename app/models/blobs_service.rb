@@ -11,6 +11,13 @@ class BlobsService
     @path = path
   end
 
+  def lazy_load_uncached_blob
+    return unless content_sha
+    return if cache_exists?
+
+    uncached_blob
+  end
+
   # We need blobs data (content) in order to highlight diffs (see
   # Gitlab::Diff:Highlight), and we don't cache this (Blob#data) on Redis,
   # mainly because it's a quite heavy information to cache for every blob.
@@ -21,7 +28,7 @@ class BlobsService
     return unless content_sha
     return uncached_blob unless highlighted
 
-    cache_exists? ? cached_blob : uncached_blob
+    cache_exists? ? cached_blob : uncached_blob&.itself
   end
 
 
@@ -39,7 +46,7 @@ class BlobsService
 
   private
 
-  attr_reader :content_sha
+  attr_reader :content_sha, :project, :path
 
   def cacheable_blob_hash
     CACHED_METHODS.each_with_object({}) do |_method, hash|
@@ -52,7 +59,7 @@ class BlobsService
   end
 
   def uncached_blob
-    @uncached_blob ||= Blob.lazy(@project, @content_sha, @path)&.itself
+    Blob.lazy(project, content_sha, path)
   end
 
   def cache
@@ -68,6 +75,6 @@ class BlobsService
   end
 
   def cache_key
-    [@project.id, @content_sha, @path]
+    [project.id, content_sha, path]
   end
 end

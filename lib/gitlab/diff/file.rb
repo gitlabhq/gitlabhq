@@ -25,6 +25,9 @@ module Gitlab
         @repository = repository
         @diff_refs = diff_refs
         @fallback_diff_refs = fallback_diff_refs
+
+        old_blob_service.lazy_load_uncached_blob
+        new_blob_service.lazy_load_uncached_blob
       end
 
       def position(position_marker, position_type: :text)
