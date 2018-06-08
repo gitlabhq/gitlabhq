@@ -4,6 +4,8 @@ require 'csv'
 require 'yaml'
 
 module Pseudonymizer
+  PAGE_SIZE = 10000
+
   class Anon
     def initialize(fields)
       @anon_fields = fields
@@ -43,7 +45,8 @@ module Pseudonymizer
 
       new_tables = tables.map do |k, v|
         @schema[k] = {}
-        table_to_csv(k, v["whitelist"], v["pseudo"])
+        table_to_schema(k)
+        write_to_csv_file(k, table_page_results(k, v['whitelist'], v['pseudo']))
       end
 
       schema_to_yml
@@ -68,14 +71,33 @@ module Pseudonymizer
       File.open(file_path, 'w') { |file| file.write(@output_files.to_json) }
     end
 
-    def table_to_csv(table, whitelist_columns, pseudonymity_columns)
-      sql = "SELECT #{whitelist_columns.join(",")} FROM #{table};"
-      results = ActiveRecord::Base.connection.exec_query(sql)
+    # yield every results, pagined, anonymized
+    def table_page_results(table, whitelist_columns, pseudonymity_columns)
+      anonymizer = Anon.new(pseudonymity_columns)
+      page = 0
 
+      Enumerator.new do |yielder|
+        loop do
+          offset = page * PAGE_SIZE
+          sql = "SELECT #{whitelist_columns.join(",")} FROM #{table} LIMIT #{PAGE_SIZE} OFFSET #{offset};"
+
+          # a page of results
+          results = ActiveRecord::Base.connection.exec_query(sql)
+          break if results.empty?
+
+          binding.pry
+          anonymizer.anonymize(results).each { |result| yielder << result }
+          page += 1
+        end
+      end
+    end
+
+    def table_to_schema(table)
       type_results = ActiveRecord::Base.connection.columns(table)
       type_results = type_results.select do |c|
         @config["tables"][table]["whitelist"].include?(c.name)
       end
+
       type_results = type_results.map do |c|
         data_type = c.sql_type
 
@@ -86,10 +108,6 @@ module Pseudonymizer
         { name: c.name, data_type: data_type }
       end
       set_schema_column_types(table, type_results)
-      return if results.empty?
-
-      anon = Anon.new(pseudonymity_columns)
-      write_to_csv_file(table, anon.anonymize(results))
     end
 
     def set_schema_column_types(table, type_results)
@@ -103,14 +121,15 @@ module Pseudonymizer
     def write_to_csv_file(title, contents)
       Rails.logger.info "Writing #{title} ..."
       file_path = get_and_log_file_name("csv", title)
+      binding.pry
       column_names = contents.first.keys
-      contents = CSV.generate do |csv|
+      CSV.open(file_path, 'w') do |csv|
         csv << column_names
+
         contents.each do |x|
           csv << x.values
         end
       end
-      File.open(file_path, 'w') { |file| file.write(contents) }
       file_path
     end
 
