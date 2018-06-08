@@ -20,9 +20,11 @@ module QA
           gcloud container clusters
           create #{cluster_name}
           --enable-legacy-authorization
-          --zone us-central1-a
+          --zone #{gcloud_zone}
           && gcloud container clusters
-          get-credentials #{cluster_name}
+          get-credentials
+          --zone #{gcloud_zone}
+          #{cluster_name}
         CMD
 
         @api_url = `kubectl config view --minify -o jsonpath='{.clusters[].cluster.server}'`
@@ -32,7 +34,12 @@ module QA
       end
 
       def remove!
-        shell("gcloud container clusters delete #{cluster_name} --quiet --async")
+        shell <<~CMD.tr("\n", ' ')
+          gcloud container clusters delete
+          --zone #{gcloud_zone}
+	  #{cluster_name}
+	  --quiet --async
+	CMD
       end
 
       private
@@ -60,6 +67,10 @@ module QA
         shell("gcloud auth activate-service-account #{gcloud_account_email} --key-file #{gcloud_account_key.path}")
       ensure
         gcloud_account_key && gcloud_account_key.unlink
+      end
+
+      def gcloud_zone
+        ENV.fetch('GCLOUD_ZONE')
       end
     end
   end
