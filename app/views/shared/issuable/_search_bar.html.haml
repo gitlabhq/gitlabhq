@@ -122,10 +122,14 @@
             = icon('times')
         .filter-dropdown-container
           - if type == :boards
+<<<<<<< HEAD
             - user_can_admin_list = can?(current_user, :admin_list, board.parent)
 
             .js-board-config{ data: { can_admin_list: user_can_admin_list, has_scope: board.scoped? } }
             - if user_can_admin_list
+=======
+            - if can?(current_user, :admin_list, board.parent)
+>>>>>>> upstream/master
               = render_if_exists 'shared/issuable/board_create_list_dropdown', board: board
               - if @project
                 #js-add-issues-btn.prepend-left-10{ data: { can_admin_list: can?(current_user, :admin_list, @project) } }

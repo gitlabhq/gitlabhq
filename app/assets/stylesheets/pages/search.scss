@@ -18,7 +18,8 @@
 .file-finder-input:hover,
 .issuable-search-form:hover,
 .search-text-input:hover,
-.form-control:hover {
+.form-control:hover,
+:not[readonly] {
   border-color: lighten($dropdown-input-focus-border, 20%);
   box-shadow: 0 0 4px lighten($search-input-focus-shadow-color, 20%);
 }

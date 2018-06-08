@@ -60,9 +60,9 @@ module QA
           push_changes('protected-branch')
         end
 
-        expect(repository.push_error)
+        expect(repository.push_output)
           .to match(/remote\: GitLab\: You are not allowed to push code to protected branches on this project/)
-        expect(repository.push_error)
+        expect(repository.push_output)
           .to match(/\[remote rejected\] #{branch_name} -> #{branch_name} \(pre-receive hook declined\)/)
       end
     end

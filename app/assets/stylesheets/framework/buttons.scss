@@ -497,6 +497,10 @@ fieldset[disabled] .btn,
   }
 }
 
+[readonly] {
+  cursor: default;
+}
+
 .btn-no-padding {
   padding: 0;
 }

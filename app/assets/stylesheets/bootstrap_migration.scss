@@ -107,7 +107,7 @@ code {
   background-color: $red-100;
   border-radius: 3px;
 
-  .code & {
+  .code > & {
     background-color: inherit;
     padding: unset;
   }
@@ -230,6 +230,13 @@ table {
 
   &.bg-light {
     @extend .border-0;
+  }
+}
+
+.card-header {
+  h3.card-title,
+  h4.card-title {
+    margin-top: 0;
   }
 }
 
