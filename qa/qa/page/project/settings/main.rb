@@ -6,7 +6,7 @@ module QA
           include Common
 
           view 'app/views/projects/edit.html.haml' do
-            element :advanced_settings_section, 'Advanced settings'
+            element :advanced_settings_section, 'Advanced'
           end
 
           def expand_advanced_settings(&block)
