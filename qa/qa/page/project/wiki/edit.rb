@@ -10,7 +10,6 @@ module QA
             # element :wiki_message_textbox, 'form.text_field :message'
           end
 
-
           def add_title(title)
             fill_in 'wiki_title', with: title
           end
