@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe RegistrationsController do
+  include TermsHelper
+
   describe '#create' do
     let(:user_params) { { user: { name: 'new_user', username: 'new_username', email: 'new@user.com', password: 'Any_password' } } }
 
@@ -65,6 +67,25 @@ describe RegistrationsController do
         post(:create, user_params)
 
         expect(flash[:notice]).to include 'Welcome! You have signed up successfully.'
+      end
+    end
+
+    context 'when terms are enforced' do
+      before do
+        enforce_terms
+      end
+
+      it 'redirects back with a notice when the checkbox was not checked' do
+        post :create, user_params
+
+        expect(flash[:alert]).to match /you must accept our terms/i
+      end
+
+      it 'creates the user with agreement when terms are accepted' do
+        post :create, user_params.merge(terms_opt_in: '1')
+
+        expect(subject.current_user).to be_present
+        expect(subject.current_user.terms_accepted?).to be(true)
       end
     end
   end

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-29 09:43-0500\n"
-"PO-Revision-Date: 2018-05-29 09:43-0500\n"
+"POT-Creation-Date: 2018-06-08 18:19+0200\n"
+"PO-Revision-Date: 2018-06-08 18:19+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -232,7 +232,7 @@ msgstr ""
 msgid "Account"
 msgstr ""
 
-msgid "Account and limit settings"
+msgid "Account and limit"
 msgstr ""
 
 msgid "Active"
@@ -780,9 +780,6 @@ msgstr ""
 msgid "CI/CD settings"
 msgstr ""
 
-msgid "CICD|A domain is required to use Auto Review Apps and Auto Deploy Stages."
-msgstr ""
-
 msgid "CICD|An explicit %{ci_file} needs to be specified before you can begin using Continuous Integration and Delivery."
 msgstr ""
 
@@ -790,6 +787,18 @@ msgid "CICD|Auto DevOps"
 msgstr ""
 
 msgid "CICD|Auto DevOps will automatically build, test, and deploy your application based on a predefined Continuous Integration and Delivery configuration."
+msgstr ""
+
+msgid "CICD|Automatic deployment to staging, manual deployment to production"
+msgstr ""
+
+msgid "CICD|Continuous deployment to production"
+msgstr ""
+
+msgid "CICD|Deployment strategy"
+msgstr ""
+
+msgid "CICD|Deployment strategy needs a domain name to work correctly."
 msgstr ""
 
 msgid "CICD|Disable Auto DevOps"
@@ -811,6 +820,9 @@ msgid "CICD|Learn more about Auto DevOps"
 msgstr ""
 
 msgid "CICD|The Auto DevOps pipeline configuration will be used when there is no %{ci_file} in the project."
+msgstr ""
+
+msgid "CICD|You need to specify a domain if you want to use Auto Review Apps and Auto Deploy stages."
 msgstr ""
 
 msgid "Can run untagged jobs"
@@ -2106,6 +2118,9 @@ msgstr ""
 msgid "Failed to update issues, please try again."
 msgstr ""
 
+msgid "Failure"
+msgstr ""
+
 msgid "Feb"
 msgstr ""
 
@@ -2344,6 +2359,12 @@ msgstr ""
 msgid "Housekeeping successfully started"
 msgstr ""
 
+msgid "I accept the %{terms_link}"
+msgstr ""
+
+msgid "I accept the|Terms of Service and Privacy Policy"
+msgstr ""
+
 msgid "IDE|Commit"
 msgstr ""
 
@@ -2377,7 +2398,7 @@ msgstr ""
 msgid "Import repository"
 msgstr ""
 
-msgid "Include a Terms of Service agreement that all users must accept."
+msgid "Include a Terms of Service agreement and Privacy Policy that all users must accept."
 msgstr ""
 
 msgid "Install Runner on Kubernetes"
@@ -3491,7 +3512,7 @@ msgstr ""
 msgid "Repository maintenance"
 msgstr ""
 
-msgid "Repository mirror settings"
+msgid "Repository mirror"
 msgstr ""
 
 msgid "Repository storage"
@@ -3500,7 +3521,7 @@ msgstr ""
 msgid "Request Access"
 msgstr ""
 
-msgid "Require all users to accept Terms of Service when they access GitLab."
+msgid "Require all users to accept Terms of Service and Privacy Policy when they access GitLab."
 msgstr ""
 
 msgid "Reset git storage health information"
@@ -3557,9 +3578,6 @@ msgid "Runners API"
 msgstr ""
 
 msgid "Runners can be placed on separate users, servers, and even on your local machine."
-msgstr ""
-
-msgid "Runners settings"
 msgstr ""
 
 msgid "Running"
@@ -3873,6 +3891,15 @@ msgstr ""
 msgid "Specify the following URL during the Runner setup:"
 msgstr ""
 
+<<<<<<< HEAD
+=======
+msgid "Squash commits"
+msgstr ""
+
+msgid "Stage"
+msgstr ""
+
+>>>>>>> 27045ce58e6... Merge branch 'bvl-terms-on-registration' into 'master'
 msgid "Stage all"
 msgstr ""
 
@@ -4019,10 +4046,10 @@ msgstr ""
 msgid "Team"
 msgstr ""
 
-msgid "Terms of Service"
+msgid "Terms of Service Agreement and Privacy Policy"
 msgstr ""
 
-msgid "Terms of Service Agreement"
+msgid "Terms of Service and Privacy Policy"
 msgstr ""
 
 msgid "The Issue Tracker is the place to add things that need to be improved or solved in a project"
@@ -4250,6 +4277,9 @@ msgstr ""
 msgid "Timeago|%s days remaining"
 msgstr ""
 
+msgid "Timeago|%s hours ago"
+msgstr ""
+
 msgid "Timeago|%s hours remaining"
 msgstr ""
 
@@ -4263,6 +4293,9 @@ msgid "Timeago|%s months ago"
 msgstr ""
 
 msgid "Timeago|%s months remaining"
+msgstr ""
+
+msgid "Timeago|%s seconds ago"
 msgstr ""
 
 msgid "Timeago|%s seconds remaining"
@@ -4280,46 +4313,43 @@ msgstr ""
 msgid "Timeago|%s years remaining"
 msgstr ""
 
+msgid "Timeago|1 day ago"
+msgstr ""
+
 msgid "Timeago|1 day remaining"
+msgstr ""
+
+msgid "Timeago|1 hour ago"
 msgstr ""
 
 msgid "Timeago|1 hour remaining"
 msgstr ""
 
+msgid "Timeago|1 minute ago"
+msgstr ""
+
 msgid "Timeago|1 minute remaining"
+msgstr ""
+
+msgid "Timeago|1 month ago"
 msgstr ""
 
 msgid "Timeago|1 month remaining"
 msgstr ""
 
+msgid "Timeago|1 week ago"
+msgstr ""
+
 msgid "Timeago|1 week remaining"
+msgstr ""
+
+msgid "Timeago|1 year ago"
 msgstr ""
 
 msgid "Timeago|1 year remaining"
 msgstr ""
 
 msgid "Timeago|Past due"
-msgstr ""
-
-msgid "Timeago|a day ago"
-msgstr ""
-
-msgid "Timeago|a month ago"
-msgstr ""
-
-msgid "Timeago|a week ago"
-msgstr ""
-
-msgid "Timeago|a year ago"
-msgstr ""
-
-msgid "Timeago|about %s hours ago"
-msgstr ""
-
-msgid "Timeago|about a minute ago"
-msgstr ""
-
-msgid "Timeago|about an hour ago"
 msgstr ""
 
 msgid "Timeago|in %s days"
@@ -4361,7 +4391,7 @@ msgstr ""
 msgid "Timeago|in 1 year"
 msgstr ""
 
-msgid "Timeago|less than a minute ago"
+msgid "Timeago|just now"
 msgstr ""
 
 msgid "Timeago|right now"
@@ -4765,6 +4795,9 @@ msgid "You have no permissions"
 msgstr ""
 
 msgid "You have reached your project limit"
+msgstr ""
+
+msgid "You must accept our Terms of Service and privacy policy in order to register an account"
 msgstr ""
 
 msgid "You must have maintainer access to force delete a lock"
