@@ -93,7 +93,7 @@ module QA
 
         Page::Project::Job::Show.perform do |job|
           job.wait(reload: false) do
-            job.completed? && !job.has_css?('.js-build-refresh')
+            job.completed? && !job.trace_loading?
           end
 
           expect(job.passed?).to be_truthy, "Job status did not become \"passed\"."
