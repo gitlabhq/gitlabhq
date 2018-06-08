@@ -215,6 +215,15 @@
         }
       }
     }
+
+    &.weight {
+      .gl-field-error {
+        margin-top: $gl-padding-8;
+        margin-left: -6px;
+        display: flex;
+        align-items: center;
+      }
+    }
   }
 
   .block-first {
