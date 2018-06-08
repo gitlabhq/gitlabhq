@@ -1,4 +1,4 @@
-import * as monaco from 'monaco-editor';
+import { Range } from 'monaco-editor';
 import Editor from '~/ide/lib/editor';
 import ModelManager from '~/ide/lib/common/model_manager';
 import DecorationsController from '~/ide/lib/decorations/controller';
@@ -17,7 +17,7 @@ describe('Multi-file editor library dirty diff controller', () => {
     editorInstance = Editor.create();
     editorInstance.createInstance(document.createElement('div'));
 
-    modelManager = new ModelManager(monaco);
+    modelManager = new ModelManager();
     decorationsController = new DecorationsController(editorInstance);
 
     model = modelManager.addModel(file('path'));
@@ -165,7 +165,7 @@ describe('Multi-file editor library dirty diff controller', () => {
         [],
         [
           {
-            range: new monaco.Range(1, 1, 1, 1),
+            range: new Range(1, 1, 1, 1),
             options: {
               isWholeLine: true,
               linesDecorationsClassName: 'dirty-diff dirty-diff-modified',

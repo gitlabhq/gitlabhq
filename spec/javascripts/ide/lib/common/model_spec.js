@@ -1,4 +1,3 @@
-import * as monaco from 'monaco-editor';
 import eventHub from '~/ide/eventhub';
 import Model from '~/ide/lib/common/model';
 import { file } from '../../helpers';
@@ -12,7 +11,7 @@ describe('Multi-file editor library model', () => {
     const f = file('path');
     f.mrChange = { diff: 'ABC' };
     f.baseRaw = 'test';
-    model = new Model(monaco, f);
+    model = new Model(f);
   });
 
   afterEach(() => {
@@ -33,7 +32,7 @@ describe('Multi-file editor library model', () => {
     const f = file('path');
     model.dispose();
 
-    model = new Model(monaco, f, {
+    model = new Model(f, {
       ...f,
       content: '123 testing',
     });

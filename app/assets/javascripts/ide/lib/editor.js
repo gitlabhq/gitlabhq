@@ -31,7 +31,7 @@ export default class Editor {
     this.instance = null;
     this.dirtyDiffController = null;
     this.disposable = new Disposable();
-    this.modelManager = new ModelManager(this.monaco);
+    this.modelManager = new ModelManager();
     this.decorationsController = new DecorationsController(this);
 
     this.setupMonacoTheme();

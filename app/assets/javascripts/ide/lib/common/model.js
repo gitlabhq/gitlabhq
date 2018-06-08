@@ -1,8 +1,9 @@
+import * as monaco from 'monaco-editor';
 import Disposable from './disposable';
 import eventHub from '../../eventhub';
 
 export default class Model {
-  constructor(monaco, file, head = null) {
+  constructor(file, head = null) {
     this.monaco = monaco;
     this.disposable = new Disposable();
     this.file = file;

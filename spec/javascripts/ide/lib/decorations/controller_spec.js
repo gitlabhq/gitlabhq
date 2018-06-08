@@ -1,4 +1,3 @@
-import * as monaco from 'monaco-editor';
 import Editor from '~/ide/lib/editor';
 import DecorationsController from '~/ide/lib/decorations/controller';
 import Model from '~/ide/lib/common/model';
@@ -14,7 +13,7 @@ describe('Multi-file editor library decorations controller', () => {
     editorInstance.createInstance(document.createElement('div'));
 
     controller = new DecorationsController(editorInstance);
-    model = new Model(monaco, file('path'));
+    model = new Model(file('path'));
   });
 
   afterEach(() => {

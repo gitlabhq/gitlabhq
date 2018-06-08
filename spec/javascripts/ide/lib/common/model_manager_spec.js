@@ -1,4 +1,3 @@
-import * as monaco from 'monaco-editor';
 import eventHub from '~/ide/eventhub';
 import ModelManager from '~/ide/lib/common/model_manager';
 import { file } from '../../helpers';
@@ -7,7 +6,7 @@ describe('Multi-file editor library model manager', () => {
   let instance;
 
   beforeEach(() => {
-    instance = new ModelManager(monaco);
+    instance = new ModelManager();
   });
 
   afterEach(() => {
