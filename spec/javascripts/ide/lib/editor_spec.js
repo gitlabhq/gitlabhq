@@ -1,6 +1,5 @@
-/* global monaco */
-import monacoLoader from '~/ide/monaco_loader';
-import editor from '~/ide/lib/editor';
+import { editor as monacoEditor } from 'monaco-editor';
+import Editor from '~/ide/lib/editor';
 import { file } from '../helpers';
 
 describe('Multi-file editor library', () => {
@@ -8,18 +7,14 @@ describe('Multi-file editor library', () => {
   let el;
   let holder;
 
-  beforeEach(done => {
+  beforeEach(() => {
     el = document.createElement('div');
     holder = document.createElement('div');
     el.appendChild(holder);
 
     document.body.appendChild(el);
 
-    monacoLoader(['vs/editor/editor.main'], () => {
-      instance = editor.create(monaco);
-
-      done();
-    });
+    instance = Editor.create();
   });
 
   afterEach(() => {
@@ -29,20 +24,20 @@ describe('Multi-file editor library', () => {
   });
 
   it('creates instance of editor', () => {
-    expect(editor.editorInstance).not.toBeNull();
+    expect(Editor.editorInstance).not.toBeNull();
   });
 
   it('creates instance returns cached instance', () => {
-    expect(editor.create(monaco)).toEqual(instance);
+    expect(Editor.create()).toEqual(instance);
   });
 
   describe('createInstance', () => {
     it('creates editor instance', () => {
-      spyOn(instance.monaco.editor, 'create').and.callThrough();
+      spyOn(monacoEditor, 'create').and.callThrough();
 
       instance.createInstance(holder);
 
-      expect(instance.monaco.editor.create).toHaveBeenCalled();
+      expect(monacoEditor.create).toHaveBeenCalled();
     });
 
     it('creates dirty diff controller', () => {
@@ -60,11 +55,11 @@ describe('Multi-file editor library', () => {
 
   describe('createDiffInstance', () => {
     it('creates editor instance', () => {
-      spyOn(instance.monaco.editor, 'createDiffEditor').and.callThrough();
+      spyOn(monacoEditor, 'createDiffEditor').and.callThrough();
 
       instance.createDiffInstance(holder);
 
-      expect(instance.monaco.editor.createDiffEditor).toHaveBeenCalledWith(holder, {
+      expect(monacoEditor.createDiffEditor).toHaveBeenCalledWith(holder, {
         model: null,
         contextmenu: true,
         minimap: {

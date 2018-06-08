@@ -1,6 +1,4 @@
-/* global monaco */
-import monacoLoader from '~/ide/monaco_loader';
-import editor from '~/ide/lib/editor';
+import Editor from '~/ide/lib/editor';
 import DecorationsController from '~/ide/lib/decorations/controller';
 import Model from '~/ide/lib/common/model';
 import { file } from '../../helpers';
@@ -10,16 +8,12 @@ describe('Multi-file editor library decorations controller', () => {
   let controller;
   let model;
 
-  beforeEach(done => {
-    monacoLoader(['vs/editor/editor.main'], () => {
-      editorInstance = editor.create(monaco);
-      editorInstance.createInstance(document.createElement('div'));
+  beforeEach(() => {
+    editorInstance = Editor.create();
+    editorInstance.createInstance(document.createElement('div'));
 
-      controller = new DecorationsController(editorInstance);
-      model = new Model(monaco, file('path'));
-
-      done();
-    });
+    controller = new DecorationsController(editorInstance);
+    model = new Model(file('path'));
   });
 
   afterEach(() => {
