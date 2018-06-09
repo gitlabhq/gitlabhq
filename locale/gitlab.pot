@@ -1925,6 +1925,9 @@ msgstr ""
 msgid "Creating epic"
 msgstr ""
 
+msgid "Created by me"
+msgstr ""
+
 msgid "Cron Timezone"
 msgstr ""
 
@@ -2129,6 +2132,9 @@ msgid "Deprioritize label"
 msgstr ""
 
 msgid "Descending"
+msgstr ""
+
+msgid "Deprioritize label"
 msgstr ""
 
 msgid "Description"
@@ -3786,6 +3792,9 @@ msgid "Other Labels"
 msgstr ""
 
 msgid "Other information"
+msgstr ""
+
+msgid "Other Labels"
 msgstr ""
 
 msgid "Otherwise it is recommended you start with one of the options below."
@@ -6010,6 +6019,9 @@ msgid "You do not have any assigned merge requests"
 msgstr ""
 
 msgid "You do not have the correct permissions to override the settings from the LDAP group sync."
+msgstr ""
+
+msgid "You do not have any assigned merge requests"
 msgstr ""
 
 msgid "You have no permissions"
