@@ -4,7 +4,7 @@ require 'csv'
 require 'yaml'
 
 module Pseudonymizer
-  PAGE_SIZE = 1000
+  PAGE_SIZE = 10000
 
   class Anon
     def initialize(fields)
@@ -73,8 +73,7 @@ module Pseudonymizer
       table_to_schema(table)
       write_to_csv_file(table, table_page_results(table, whitelist_columns, pseudonymity_columns))
     rescue => e
-      binding.pry
-      Rails.logger.error(e.message)
+      Rails.logger.error("Failed to export #{table}: #{e}")
     end
 
     # yield every results, pagined, anonymized
@@ -91,16 +90,16 @@ module Pseudonymizer
 
           # a page of results
           results = ActiveRecord::Base.connection.exec_query(sql)
-          raise StopIteration if results.empty?
-
-          anonymizer.anonymize(results).lazy.each do |result|
+          anonymizer.anonymize(results).each do |result|
             has_more = true
             yielder << result
           end
 
+          raise StopIteration unless has_more
+
           page += 1
         end
-      end
+      end.lazy
     end
 
     def table_to_schema(table)
@@ -140,8 +139,6 @@ module Pseudonymizer
           csv.flush if i % PAGE_SIZE
         end
       end
-
-      GC.start
 
       file_path
     end

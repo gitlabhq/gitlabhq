@@ -9,15 +9,11 @@ module Pseudonymizer
     end
 
     def output_dir
-      File.join('/tmp', 'gitlab-pseudonymizer', self.start_at.iso8601)
+      File.join('/tmp', 'gitlab-pseudonymizer', start_at.iso8601)
     end
 
     def upload_dir
-      File.join(self.start_at.iso8601)
-    end
-
-    def object_store_credentials
-      config.upload.connection.to_hash.deep_symbolize_keys
+      File.join(start_at.iso8601)
     end
   end
 end

@@ -93,9 +93,7 @@ namespace :gitlab do
 
     def progress
       if ENV['CRON']
-        # We need an object we can say 'puts' and 'print' to; let's use a
-        # StringIO.
-        require 'stringio'
+        # Do not output progress for Cron
         StringIO.new
       else
         $stdout

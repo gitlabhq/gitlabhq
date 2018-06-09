@@ -2,12 +2,21 @@ module Pseudonymizer
   class Uploader
     RemoteStorageUnavailableError = Class.new(StandardError)
 
+    def self.object_store_credentials
+      Gitlab.config.pseudonymizer.upload.connection.to_hash.deep_symbolize_keys
+    end
+
+    def self.remote_directory
+      Gitlab.config.pseudonymizer.upload.remote_directory
+    end
+
     def initialize(options, progress = nil)
       @progress = progress || $stdout
       @config = options.config
       @output_dir = options.output_dir
       @upload_dir = options.upload_dir
-      @connection_params = options.object_store_credentials
+      @remote_dir = self.class.remote_directory
+      @connection_params = self.class.object_store_credentials
     end
 
     def upload
@@ -57,15 +66,14 @@ module Pseudonymizer
     def connect_to_remote_directory
       # our settings use string keys, but Fog expects symbols
       connection = ::Fog::Storage.new(@connection_params)
-      remote_dir = @config.upload.remote_directory
 
       # We only attempt to create the directory for local backups. For AWS
       # and other cloud providers, we cannot guarantee the user will have
       # permission to create the bucket.
       if connection.service == ::Fog::Storage::Local
-        connection.directories.create(key: remote_dir)
+        connection.directories.create(key: @remote_dir)
       else
-        connection.directories.get(remote_dir)
+        connection.directories.get(@remote_dir)
       end
     end
 
