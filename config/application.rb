@@ -5,6 +5,12 @@ require 'rails/all'
 Bundler.require(:default, Rails.env)
 
 module Gitlab
+  # This method is used for smooth upgrading from the current Rails 4.x to Rails 5.0.
+  # https://gitlab.com/gitlab-org/gitlab-ce/issues/14286
+  def self.rails5?
+    ENV["RAILS5"].in?(%w[1 true])
+  end
+
   class Application < Rails::Application
     require_dependency Rails.root.join('lib/gitlab/redis/wrapper')
     require_dependency Rails.root.join('lib/gitlab/redis/cache')
@@ -13,6 +19,11 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/request_context')
     require_dependency Rails.root.join('lib/gitlab/current_settings')
     require_dependency Rails.root.join('lib/gitlab/middleware/read_only')
+
+    # This needs to be loaded before DB connection is made
+    # to make sure that all connections have NO_ZERO_DATE
+    # setting disabled
+    require_dependency Rails.root.join('lib/mysql_zero_date')
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -210,11 +221,5 @@ module Gitlab
       Gitlab::Routing.add_helpers(project_url_helpers)
       Gitlab::Routing.add_helpers(MilestonesRoutingHelper)
     end
-  end
-
-  # This method is used for smooth upgrading from the current Rails 4.x to Rails 5.0.
-  # https://gitlab.com/gitlab-org/gitlab-ce/issues/14286
-  def self.rails5?
-    ENV["RAILS5"].in?(%w[1 true])
   end
 end
