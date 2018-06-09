@@ -232,7 +232,9 @@ module.exports = {
     new VueLoaderPlugin(),
 
     // automatically configure monaco editor web workers
-    new MonacoWebpackPlugin(),
+    new MonacoWebpackPlugin({
+      features: [],
+    }),
 
     // prevent pikaday from including moment.js
     new webpack.IgnorePlugin(/moment/, /pikaday/),
