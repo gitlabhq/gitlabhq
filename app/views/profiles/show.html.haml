@@ -59,10 +59,10 @@
       = f.select :preferred_language, Gitlab::I18n::AVAILABLE_LANGUAGES.map { |value, label| [label, value] },
         { help: 'This feature is experimental and translations are not complete yet.' },
         control_class: 'select2'
-      = f.text_field :skype
-      = f.text_field :linkedin
-      = f.text_field :twitter
-      = f.text_field :website_url, label: 'Website'
+      = f.text_field :skype, placeholder: _('Username')
+      = f.text_field :linkedin, placeholder: _('Username or URL')
+      = f.text_field :twitter, placeholder: _('Username or URL')
+      = f.text_field :website_url, label: 'Website', placeholder: _('URL')
       - if @user.read_only_attribute?(:location)
         = f.text_field :location, readonly: true, help: "Your location was automatically set based on your #{ attribute_provider_label(:location) } account."
       - else
