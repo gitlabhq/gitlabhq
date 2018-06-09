@@ -8,13 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
-"POT-Creation-Date: 2018-06-07 18:08+0200\n"
-"PO-Revision-Date: 2018-06-07 18:08+0200\n"
-=======
 "POT-Creation-Date: 2018-06-07 19:35+0200\n"
 "PO-Revision-Date: 2018-06-07 19:35+0200\n"
->>>>>>> upstream/master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -721,7 +716,6 @@ msgstr ""
 msgid "Begin with the selected commit"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Billing"
 msgstr ""
 
@@ -776,8 +770,6 @@ msgstr ""
 msgid "BillingPlans|per user"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Branch (%{branch_count})"
 msgid_plural "Branches (%{branch_count})"
 msgstr[0] ""
@@ -1900,11 +1892,10 @@ msgstr ""
 msgid "Created"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Creating epic"
-=======
+msgstr ""
+
 msgid "Created by me"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Cron Timezone"
@@ -2107,11 +2098,10 @@ msgstr ""
 msgid "DeployTokens|Your new project deploy token has been created."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Descending"
-=======
+msgstr ""
+
 msgid "Deprioritize label"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Description"
@@ -3708,7 +3698,6 @@ msgstr ""
 msgid "Only project members can comment."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Open"
 msgstr ""
 
@@ -3724,11 +3713,6 @@ msgstr ""
 msgid "Opened issues"
 msgstr ""
 
-=======
-msgid "Open in Xcode"
-msgstr ""
-
->>>>>>> upstream/master
 msgid "OpenedNDaysAgo|Opened"
 msgstr ""
 
@@ -3741,11 +3725,10 @@ msgstr ""
 msgid "Options"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Other information"
-=======
+msgstr ""
+
 msgid "Other Labels"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Otherwise it is recommended you start with one of the options below."
@@ -3985,9 +3968,9 @@ msgstr ""
 msgid "Preferences|Navigation theme"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Primary"
-=======
+msgstr ""
+
 msgid "Prioritize"
 msgstr ""
 
@@ -3998,7 +3981,6 @@ msgid "Prioritized Labels"
 msgstr ""
 
 msgid "Prioritized label"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Private - Project access must be granted explicitly to each user."
@@ -4319,15 +4301,12 @@ msgstr ""
 msgid "PushRule|Committer restriction"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Pushed"
 msgstr ""
 
 msgid "Quick actions can be used in the issues description and comment boxes."
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Read more"
 msgstr ""
 
@@ -4540,12 +4519,9 @@ msgstr ""
 msgid "Scheduling Pipelines"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Scoped issue boards"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Scroll to bottom"
 msgstr ""
 
@@ -4761,12 +4737,9 @@ msgstr ""
 msgid "Something went wrong when toggling the button"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Something went wrong while fetching group member contributions"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Something went wrong while fetching the projects."
 msgstr ""
 
@@ -5700,11 +5673,10 @@ msgstr ""
 msgid "View group labels"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "View issue"
-=======
+msgstr ""
+
 msgid "View jobs"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "View labels"
@@ -5965,11 +5937,10 @@ msgstr ""
 msgid "You cannot write to this read-only GitLab instance."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "You do not have the correct permissions to override the settings from the LDAP group sync."
-=======
+msgstr ""
+
 msgid "You do not have any assigned merge requests"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "You have no permissions"
