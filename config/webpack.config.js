@@ -300,7 +300,7 @@ module.exports = {
     inline: DEV_SERVER_LIVERELOAD,
   },
 
-  devtool: IS_PRODUCTION ? 'source-map' : 'cheap-module-eval-source-map',
+  devtool: IS_PRODUCTION ? 'nosources-source-map' : 'cheap-module-eval-source-map',
 
   // sqljs requires fs
   node: { fs: 'empty' },
