@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-08 18:19+0200\n"
-"PO-Revision-Date: 2018-06-08 18:19+0200\n"
+"POT-Creation-Date: 2018-06-09 11:38+0200\n"
+"PO-Revision-Date: 2018-06-09 11:38+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -4542,6 +4542,9 @@ msgstr ""
 msgid "Try again"
 msgstr ""
 
+msgid "URL"
+msgstr ""
+
 msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
@@ -4618,6 +4621,12 @@ msgid "Use your global notification setting"
 msgstr ""
 
 msgid "User and IP Rate Limits"
+msgstr ""
+
+msgid "Username"
+msgstr ""
+
+msgid "Username or URL"
 msgstr ""
 
 msgid "Variables"
