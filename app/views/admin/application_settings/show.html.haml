@@ -50,11 +50,11 @@
 %section.settings.as-terms.no-animate#js-terms-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
-      = _('Terms of Service')
+      = _('Terms of Service and Privacy Policy')
     %button.btn.btn-default.js-settings-toggle{ type: 'button' }
       = expanded ? _('Collapse') : _('Expand')
     %p
-      = _('Include a Terms of Service agreement that all users must accept.')
+      = _('Include a Terms of Service agreement and Privacy Policy that all users must accept.')
   .settings-content
     = render 'terms'
 
