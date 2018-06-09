@@ -2,7 +2,6 @@
 
 import jQuery from 'jquery';
 import Cookies from 'js-cookie';
-import svg4everybody from 'svg4everybody';
 
 // bootstrap webpack, common libs, polyfills, and behaviors
 import './webpack';
@@ -40,8 +39,6 @@ if (process.env.NODE_ENV !== 'production' && gon && gon.test_env) {
   $.fx.off = true;
   import(/* webpackMode: "eager" */ './test_utils/');
 }
-
-svg4everybody();
 
 document.addEventListener('beforeunload', () => {
   // Unbind scroll events

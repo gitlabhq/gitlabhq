@@ -14,10 +14,10 @@ import 'core-js/es6/map';
 import 'core-js/es6/weak-map';
 
 // Browser polyfills
-import 'classlist-polyfill';
 import 'formdata-polyfill';
 import './polyfills/custom_event';
 import './polyfills/element';
 import './polyfills/event';
 import './polyfills/nodelist';
 import './polyfills/request_idle_callback';
+import './polyfills/svg';
