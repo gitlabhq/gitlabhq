@@ -24,6 +24,13 @@
       %span.badge.badge-pill
         = subject.snippets.are_internal.count
 
+  - if include_secret
+    %li{ class: active_when(params[:scope] == "are_secret") }
+      = link_to subject_snippets_path(subject, scope: 'are_secret') do
+        Secret
+        %span.badge.badge-pill
+          = subject.snippets.are_secret.count
+
   %li{ class: active_when(params[:scope] == "are_public") }
     = link_to subject_snippets_path(subject, scope: 'are_public') do
       Public

@@ -124,6 +124,8 @@ class SnippetsFinder < UnionFinder
       Snippet::PRIVATE
     when 'are_internal'
       Snippet::INTERNAL
+    when 'are_secret'
+      Snippet::SECRET
     when 'are_public'
       Snippet::PUBLIC
     else

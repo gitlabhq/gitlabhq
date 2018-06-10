@@ -26,6 +26,10 @@
       %textarea.hidden.js-task-list-field
         = @snippet.description
 
+  .shareable_link
+    = shareable_snippets_link(@snippet)
+    = clipboard_button(title: s_('Copy to clipboard'), class: 'js-clipboard-btn snippet-clipboard-btn', target: '#shareable_link_url')
+
   - if @snippet.updated_at != @snippet.created_at
     = edited_time_ago_with_tooltip(@snippet, placement: 'bottom', html_class: 'snippet-edited-ago', exclude_author: true)
 

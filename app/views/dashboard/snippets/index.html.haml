@@ -3,7 +3,7 @@
 - header_title  "Snippets", dashboard_snippets_path
 
 = render 'dashboard/snippets_head'
-= render partial: 'snippets/snippets_scope_menu', locals: { include_private: true }
+= render partial: 'snippets/snippets_scope_menu', locals: { include_private: true, include_secret: true }
 
 .d-block.d-sm-none
   &nbsp;

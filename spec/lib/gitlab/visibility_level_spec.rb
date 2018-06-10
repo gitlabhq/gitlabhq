@@ -85,4 +85,29 @@ describe Gitlab::VisibilityLevel do
         .to eq(described_class::PRIVATE)
     end
   end
+
+  describe '.values_for' do
+    context 'PersonalSnippet' do
+      it 'returns PRIVATE, INTERNAL, PUBLIC and SECRET' do
+        expect(described_class.values_for(PersonalSnippet.new))
+          .to eq([
+            Gitlab::VisibilityLevel::PRIVATE,
+            Gitlab::VisibilityLevel::INTERNAL,
+            Gitlab::VisibilityLevel::PUBLIC,
+            Gitlab::VisibilityLevel::SECRET
+          ])
+      end
+    end
+
+    context 'any other model' do
+      it 'returns PRIVATE, INTERNAL and PUBLIC' do
+        expect(described_class.values_for(Project.new))
+          .to eq([
+            Gitlab::VisibilityLevel::PRIVATE,
+            Gitlab::VisibilityLevel::INTERNAL,
+            Gitlab::VisibilityLevel::PUBLIC
+          ])
+      end
+    end
+  end
 end

@@ -20,10 +20,9 @@ module Gitlab
     PRIVATE  = 0 unless const_defined?(:PRIVATE)
     INTERNAL = 10 unless const_defined?(:INTERNAL)
     PUBLIC   = 20 unless const_defined?(:PUBLIC)
+    SECRET   = 30 unless const_defined?(:SECRET)
 
     class << self
-      delegate :values, to: :options
-
       def levels_for_user(user = nil)
         return [PUBLIC] unless user
 
@@ -36,8 +35,13 @@ module Gitlab
         end
       end
 
-      def string_values
-        string_options.keys
+      def values_for(model)
+        case model
+        when PersonalSnippet
+          all_values
+        else
+          values
+        end
       end
 
       def options
@@ -48,11 +52,33 @@ module Gitlab
         }
       end
 
+      def values
+        options.values
+      end
+
+      def all_options
+        {
+          N_('VisibilityLevel|Private')  => PRIVATE,
+          N_('VisibilityLevel|Internal') => INTERNAL,
+          N_('VisibilityLevel|Public')   => PUBLIC,
+          N_('VisibilityLevel|Secret')   => SECRET
+        }
+      end
+
+      def all_values
+        all_options.values
+      end
+
+      def string_values
+        string_options.keys
+      end
+
       def string_options
         {
           'private'  => PRIVATE,
           'internal' => INTERNAL,
-          'public'   => PUBLIC
+          'public'   => PUBLIC,
+          'secret'   => SECRET
         }
       end
 
@@ -123,6 +149,10 @@ module Gitlab
 
     def public?
       visibility_level_value == PUBLIC
+    end
+
+    def secret?
+      visibility_level_value == SECRET
     end
 
     def visibility_level_value

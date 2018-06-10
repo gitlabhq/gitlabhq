@@ -212,4 +212,23 @@ describe Snippet do
       expect(blob.data).to eq(snippet.content)
     end
   end
+
+  describe '#ensure_secret_word_added_if_needed' do
+    let(:snippet) { create(:snippet) }
+
+    context 'visibility_level is SECRET' do
+      it 'assigns a random hex value' do
+        snippet.visibility_level = Gitlab::VisibilityLevel::SECRET
+        snippet.save
+        expect(snippet.secret_word).not_to be_nil
+      end
+    end
+
+    context 'visibility_level is NOT SECRET' do
+      it 'assigns a random hex value' do
+        snippet.save
+        expect(snippet.secret_word).to be_nil
+      end
+    end
+  end
 end

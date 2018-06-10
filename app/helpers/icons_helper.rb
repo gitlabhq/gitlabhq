@@ -82,6 +82,8 @@ module IconsHelper
         'lock'
       when Gitlab::VisibilityLevel::INTERNAL
         'shield'
+      when Gitlab::VisibilityLevel::SECRET
+        'user-secret'
       else # Gitlab::VisibilityLevel::PUBLIC
         'globe'
       end

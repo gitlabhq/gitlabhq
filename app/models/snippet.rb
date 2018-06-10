@@ -35,18 +35,21 @@ class Snippet < ActiveRecord::Base
 
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
 
+  before_save :ensure_secret_word_added_if_needed
+
   validates :author, presence: true
   validates :title, presence: true, length: { maximum: 255 }
   validates :file_name,
     length: { maximum: 255 }
 
   validates :content, presence: true
-  validates :visibility_level, inclusion: { in: Gitlab::VisibilityLevel.values }
+  validates :visibility_level, inclusion: { in: Gitlab::VisibilityLevel.all_values }
 
   # Scopes
   scope :are_internal,  -> { where(visibility_level: Snippet::INTERNAL) }
   scope :are_private, -> { where(visibility_level: Snippet::PRIVATE) }
   scope :are_public, -> { where(visibility_level: Snippet::PUBLIC) }
+  scope :are_secret, -> { where(visibility_level: Snippet::SECRET) }
   scope :public_and_internal, -> { where(visibility_level: [Snippet::PUBLIC, Snippet::INTERNAL]) }
   scope :fresh,   -> { order("created_at DESC") }
 
@@ -172,5 +175,13 @@ class Snippet < ActiveRecord::Base
     def parent_class
       ::Project
     end
+  end
+
+  private
+
+  def ensure_secret_word_added_if_needed
+    return if secret? && self.secret_word
+
+    self.secret_word = secret? ? SecureRandom.hex : nil
   end
 end

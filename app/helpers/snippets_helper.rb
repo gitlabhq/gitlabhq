@@ -1,10 +1,27 @@
 module SnippetsHelper
-  def reliable_snippet_path(snippet, opts = nil)
+  def reliable_snippet_path(snippet, opts = {})
+    opts[:secret] = snippet.secret_word if snippet.secret?
+
     if snippet.project_id?
       project_snippet_path(snippet.project, snippet, opts)
     else
       snippet_path(snippet, opts)
     end
+  end
+
+  def reliable_snippet_url(snippet, opts = {})
+    opts[:secret] = snippet.secret_word if snippet.secret?
+
+    if snippet.project_id?
+      project_snippet_url(snippet.project, snippet, opts)
+    else
+      snippet_url(snippet, opts)
+    end
+  end
+
+  def shareable_snippets_link(snippet)
+    url = reliable_snippet_url(snippet)
+    link_to(url, url, id: 'shareable_link_url', title: 'Open')
   end
 
   def download_snippet_path(snippet)

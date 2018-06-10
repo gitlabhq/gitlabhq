@@ -25,5 +25,8 @@ FactoryBot.define do
   end
 
   factory :personal_snippet, parent: :snippet, class: :PersonalSnippet do
+    trait :secret do
+      visibility_level Snippet::SECRET
+    end
   end
 end

@@ -52,6 +52,11 @@ describe VisibilityLevelHelper do
             .to eq "The snippet is visible only to project members."
     end
 
+    it 'describes visibility for secret snippets' do
+      expect(snippet_visibility_level_description(Gitlab::VisibilityLevel::SECRET, personal_snippet))
+            .to eq "The snippet can be accessed without any authentication, but is not searchable."
+    end
+
     it 'defaults to personal snippet' do
       expect(snippet_visibility_level_description(Gitlab::VisibilityLevel::PRIVATE))
             .to eq "The snippet is visible only to me."
@@ -134,6 +139,32 @@ describe VisibilityLevelHelper do
         expect(disallowed_visibility_level?(subgroup, Gitlab::VisibilityLevel::PUBLIC)).to be_truthy
         expect(strip_tags disallowed_visibility_level_description(Gitlab::VisibilityLevel::PUBLIC, subgroup))
           .to include "the visibility of #{group.name} is internal"
+      end
+    end
+  end
+
+  describe '.visibility_level_label' do
+    context 'PRIVATE' do
+      it 'returns Private' do
+        expect(visibility_level_label(Gitlab::VisibilityLevel::PRIVATE)).to eq('Private')
+      end
+    end
+
+    context 'INTERNAL' do
+      it 'returns Internal' do
+        expect(visibility_level_label(Gitlab::VisibilityLevel::INTERNAL)).to eq('Internal')
+      end
+    end
+
+    context 'PUBLIC' do
+      it 'returns Public' do
+        expect(visibility_level_label(Gitlab::VisibilityLevel::PUBLIC)).to eq('Public')
+      end
+    end
+
+    context 'SECRET' do
+      it 'returns Secret' do
+        expect(visibility_level_label(Gitlab::VisibilityLevel::SECRET)).to eq('Secret')
       end
     end
   end

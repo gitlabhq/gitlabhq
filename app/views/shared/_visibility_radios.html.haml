@@ -1,4 +1,4 @@
-- Gitlab::VisibilityLevel.values.each do |level|
+- Gitlab::VisibilityLevel.values_for(form_model).each do |level|
   - disallowed = disallowed_visibility_level?(form_model, level)
   - restricted = restricted_visibility_levels.include?(level)
   - disabled = disallowed || restricted

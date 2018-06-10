@@ -3,6 +3,7 @@ class SnippetsController < ApplicationController
   include ToggleAwardEmoji
   include SpammableActions
   include SnippetsActions
+  include SnippetsUrl
   include RendersBlob
   include PreviewMarkdown
 
@@ -12,6 +13,9 @@ class SnippetsController < ApplicationController
 
   # Allow read snippet
   before_action :authorize_read_snippet!, only: [:show, :raw]
+
+  # Ensure we're displaying the correct url, specifically for secret snippets
+  before_action :ensure_complete_url, only: [:show, :raw]
 
   # Allow modify snippet
   before_action :authorize_update_snippet!, only: [:edit, :update]
@@ -108,11 +112,7 @@ class SnippetsController < ApplicationController
   def authorize_read_snippet!
     return if can?(current_user, :read_personal_snippet, @snippet)
 
-    if current_user
-      render_404
-    else
-      authenticate_user!
-    end
+    authorize_secret_snippet!
   end
 
   def authorize_update_snippet!
