@@ -50,7 +50,7 @@ class GithubImport
     end
 
     if import_success
-      @project.import_finish
+      @project.after_import
       puts "Import finished. Timings: #{timings}".color(:green)
     else
       puts "Import was not successful. Errors were as follows:"

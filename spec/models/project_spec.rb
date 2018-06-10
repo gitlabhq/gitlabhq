@@ -3391,10 +3391,11 @@ describe Project do
   end
 
   describe '#after_import' do
-    let(:project) { build(:project) }
+    let(:project) { create(:project) }
 
     it 'runs the correct hooks' do
       expect(project.repository).to receive(:after_import)
+      expect(project.wiki.repository).to receive(:after_import)
       expect(project).to receive(:import_finish)
       expect(project).to receive(:update_project_counter_caches)
       expect(project).to receive(:remove_import_jid)
