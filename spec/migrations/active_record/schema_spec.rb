@@ -5,7 +5,11 @@ require 'spec_helper'
 
 describe ActiveRecord::Schema do
   let(:latest_migration_timestamp) do
-    migrations = Dir[Rails.root.join('db', 'migrate', '*'), Rails.root.join('db', 'post_migrate', '*')]
+    migrations_paths = %w[db ee/db]
+      .product(%w[migrate post_migrate])
+      .map { |path| Rails.root.join(*path, '*') }
+
+    migrations = Dir[*migrations_paths]
     migrations.map { |migration| File.basename(migration).split('_').first.to_i }.max
   end
 

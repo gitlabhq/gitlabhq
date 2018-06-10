@@ -7,7 +7,7 @@
   %section.settings.general-settings.no-animate{ class: ('expanded' if expanded) }
     .settings-header
       %h4
-        General project settings
+        General project
       %button.btn.js-settings-toggle{ type: 'button' }
         = expanded ? 'Collapse' : 'Expand'
       %p
@@ -85,7 +85,7 @@
   %section.settings.merge-requests-feature.no-animate{ class: [('expanded' if expanded), ('hidden' if @project.project_feature.send(:merge_requests_access_level) == 0)] }
     .settings-header
       %h4
-        Merge request settings
+        Merge request
       %button.btn.js-settings-toggle{ type: 'button' }
         = expanded ? 'Collapse' : 'Expand'
       %p
@@ -104,7 +104,7 @@
   %section.settings.advanced-settings.no-animate{ class: ('expanded' if expanded) }
     .settings-header
       %h4
-        Advanced settings
+        Advanced
       %button.btn.js-settings-toggle{ type: 'button' }
         = expanded ? 'Collapse' : 'Expand'
       %p
