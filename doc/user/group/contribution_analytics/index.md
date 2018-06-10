@@ -17,7 +17,7 @@ under the URL `/groups/<groupname>/analytics`.
 
 - Analyze your team's contributions along a period of time and offer a bonus
   for the top contributors
-- Identify opportunities for improvement with group members who may require additional support 
+- Identify opportunities for improvement with group members who may benefit from additional support 
 
 ## Using Contribution Analytics
 
