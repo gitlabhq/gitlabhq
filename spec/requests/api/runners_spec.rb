@@ -55,6 +55,21 @@ describe API::Runners do
         get api('/runners?scope=unknown', user)
         expect(response).to have_gitlab_http_status(400)
       end
+
+      it 'filters runners by type' do
+        get api('/runners?type=project_type', user)
+
+        expect(json_response).to match_array [
+          a_hash_including('description' => 'Project runner'),
+          a_hash_including('description' => 'Two projects runner')
+        ]
+      end
+
+      it 'does not filter by invalid type' do
+        get api('/runners?type=bogus', user)
+
+        expect(response).to have_gitlab_http_status(400)
+      end
     end
 
     context 'unauthorized user' do
@@ -113,6 +128,21 @@ describe API::Runners do
 
       it 'avoids filtering if scope is invalid' do
         get api('/runners/all?scope=unknown', admin)
+        expect(response).to have_gitlab_http_status(400)
+      end
+
+      it 'filters runners by type' do
+        get api('/runners/all?type=project_type', admin)
+
+        expect(json_response).to match_array [
+          a_hash_including('description' => 'Project runner'),
+          a_hash_including('description' => 'Two projects runner')
+        ]
+      end
+
+      it 'does not filter by invalid type' do
+        get api('/runners/all?type=bogus', admin)
+
         expect(response).to have_gitlab_http_status(400)
       end
     end
@@ -601,6 +631,21 @@ describe API::Runners do
 
       it 'avoids filtering if scope is invalid' do
         get api("/projects/#{project.id}/runners?scope=unknown", user)
+        expect(response).to have_gitlab_http_status(400)
+      end
+
+      it 'filters runners by type' do
+        get api("/projects/#{project.id}/runners?type=project_type", user)
+
+        expect(json_response).to match_array [
+          a_hash_including('description' => 'Project runner'),
+          a_hash_including('description' => 'Two projects runner')
+        ]
+      end
+
+      it 'does not filter by invalid type' do
+        get api("/projects/#{project.id}/runners?type=bogus", user)
+
         expect(response).to have_gitlab_http_status(400)
       end
     end
