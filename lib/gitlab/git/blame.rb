@@ -22,7 +22,7 @@ module Gitlab
       private
 
       def load_blame
-        raw_output = @repo.gitaly_migrate(:blame) do |is_enabled|
+        raw_output = @repo.gitaly_migrate(:blame, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             load_blame_by_gitaly
           else

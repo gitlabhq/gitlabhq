@@ -38,7 +38,7 @@ feature 'Master deletes tag' do
     context 'when Gitaly operation_user_delete_tag feature is enabled' do
       before do
         allow_any_instance_of(Gitlab::GitalyClient::OperationService).to receive(:rm_tag)
-          .and_raise(Gitlab::Git::HooksService::PreReceiveError, 'Do not delete tags')
+          .and_raise(Gitlab::Git::PreReceiveError, 'Do not delete tags')
       end
 
       scenario 'shows the error message' do
@@ -51,7 +51,7 @@ feature 'Master deletes tag' do
     context 'when Gitaly operation_user_delete_tag feature is disabled', :skip_gitaly_mock do
       before do
         allow_any_instance_of(Gitlab::Git::HooksService).to receive(:execute)
-          .and_raise(Gitlab::Git::HooksService::PreReceiveError, 'Do not delete tags')
+          .and_raise(Gitlab::Git::PreReceiveError, 'Do not delete tags')
       end
 
       scenario 'shows the error message' do
