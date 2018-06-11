@@ -21,6 +21,7 @@
                 - Gitlab::ProjectTemplate.all.each do |template|
                   = custom_icon(template.logo)
               .selected-template
-          %button.btn.btn-default.change-template{ type: "button" } Change template
+          .input-group-append
+            %button.btn.btn-default.change-template{ type: "button" } Change template
 
     = render 'new_project_fields', f: f, project_name_id: "template-project-name"
