@@ -557,10 +557,6 @@ Software that is hosted centrally and accessed on-demand (i.e. whenever you want
 
 This term is often used by people when they mean "Version Control."
 
-#### SCLAU
-
-Abbreviation for SQO Count [Large And Up](https://about.gitlab.com/handbook/sales/#market-segmentation). This is the number of opportunities in large and strategic organizations passed from marketing to sales.
-
 ### Scrum 
 
 An Agile [framework](https://www.scrum.org/Resources/What-is-Scrum) designed to typically help complete complex software projects. It's made up of several parts: product requirements backlog, sprint planning, sprint (development), sprint review, and retrospec (analyzing the sprint). The goal is to end up with potentially shippable products.

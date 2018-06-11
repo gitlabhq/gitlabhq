@@ -23,8 +23,8 @@ describe 'Merge request < User sees mini pipeline graph', :js do
   end
 
   context 'as json' do
-    let(:artifacts_file1) { fixture_file_upload(Rails.root.join('spec/fixtures/banana_sample.gif'), 'image/gif') }
-    let(:artifacts_file2) { fixture_file_upload(Rails.root.join('spec/fixtures/dk.png'), 'image/png') }
+    let(:artifacts_file1) { fixture_file_upload(File.join('spec/fixtures/banana_sample.gif'), 'image/gif') }
+    let(:artifacts_file2) { fixture_file_upload(File.join('spec/fixtures/dk.png'), 'image/png') }
 
     before do
       create(:ci_build, :success, :trace_artifact, pipeline: pipeline, legacy_artifacts_file: artifacts_file1)
