@@ -50,13 +50,56 @@ describe UrlValidator do
     end
   end
 
-  context 'when ports is set' do
-    let(:validator) { described_class.new(attributes: [:link_url], ports: [443]) }
+  context 'when ports is' do
+    let(:validator) { described_class.new(attributes: [:link_url], ports: ports) }
 
-    it 'blocks urls with a different port' do
-      subject
+    context 'empty' do
+      let(:ports) { [] }
 
-      expect(badge.errors.empty?).to be false
+      it 'does not block any port' do
+        subject
+
+        expect(badge.errors.empty?).to be true
+      end
+    end
+
+    context 'set' do
+      let(:ports) { [443] }
+
+      it 'blocks urls with a different port' do
+        subject
+
+        expect(badge.errors.empty?).to be false
+      end
+    end
+  end
+
+  context 'when enforce_user is' do
+    let(:url) { 'http://$user@example.com'}
+    let(:validator) { described_class.new(attributes: [:link_url], enforce_user: enforce_user) }
+
+    context 'true' do
+      let(:enforce_user) { true }
+
+      it 'checks user format' do
+        badge.link_url = url
+
+        subject
+
+        expect(badge.errors.empty?).to be false
+      end
+    end
+
+    context 'false (default)' do
+      let(:enforce_user) { false }
+
+      it 'does not check user format' do
+        badge.link_url = url
+
+        subject
+
+        expect(badge.errors.empty?).to be true
+      end
     end
   end
 end
