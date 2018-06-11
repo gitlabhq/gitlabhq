@@ -112,7 +112,7 @@ describe API::Runners do
       end
 
       it 'avoids filtering if scope is invalid' do
-        get api('/runners?scope=unknown', admin)
+        get api('/runners/all?scope=unknown', admin)
         expect(response).to have_gitlab_http_status(400)
       end
     end
@@ -586,6 +586,22 @@ describe API::Runners do
         expect(json_response).to be_an Array
         expect(json_response[0]).to have_key('ip_address')
         expect(shared).to be_truthy
+      end
+
+      it 'filters runners by scope' do
+        get api("/projects/#{project.id}/runners?scope=specific", user)
+
+        shared = json_response.any? { |r| r['is_shared'] }
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response[0]).to have_key('ip_address')
+        expect(shared).to be_falsey
+      end
+
+      it 'avoids filtering if scope is invalid' do
+        get api("/projects/#{project.id}/runners?scope=unknown", user)
+        expect(response).to have_gitlab_http_status(400)
       end
     end
 
