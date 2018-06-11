@@ -52,6 +52,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    canResolve: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     resolvable: {
       type: Boolean,
       required: false,
@@ -129,7 +134,7 @@ export default {
       {{ accessLevel }}
     </span>
     <div
-      v-if="resolvable"
+      v-if="canResolve"
       class="note-actions-item">
       <button
         v-tooltip
