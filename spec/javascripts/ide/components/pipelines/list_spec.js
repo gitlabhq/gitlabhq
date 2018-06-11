@@ -45,12 +45,15 @@ describe('IDE pipelines list', () => {
     setTimeout(done);
   });
 
-  afterEach(() => {
-    vm.$store.dispatch('pipelines/stopPipelinePolling');
-    vm.$store.dispatch('pipelines/clearEtagPoll');
-
+  afterEach(done => {
     vm.$destroy();
     mock.restore();
+
+    vm.$store
+      .dispatch('pipelines/stopPipelinePolling')
+      .then(() => vm.$store.dispatch('pipelines/clearEtagPoll'))
+      .then(done)
+      .catch(done.fail);
   });
 
   it('renders pipeline data', () => {
