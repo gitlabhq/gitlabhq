@@ -29,7 +29,7 @@ module QA
 
         def create_personal_access_token
           Runtime::Browser.visit(@address, Page::Main::Login) do
-            Page::Main::Login.act { sign_in_using_credentials }
+            Page::Main::Login.act { sign_in_using_credentials } unless Page::Menu::Main.act { has_personal_area? }
             Factory::Resource::PersonalAccessToken.fabricate!.access_token
           end
         end

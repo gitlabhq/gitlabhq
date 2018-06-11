@@ -109,7 +109,12 @@ module QA
           # RSpec examples will take care of screenshots on their own
           #
           unless block.binding.receiver.is_a?(RSpec::Core::ExampleGroup)
-            screenshot_and_save_page
+            screenshots = screenshot_and_save_page
+            puts("  " + CapybaraScreenshot::Helpers.yellow("Image screenshot: file://#{screenshots[:image]}")) if screenshots[:image]
+            puts("  " + CapybaraScreenshot::Helpers.yellow("HTML screenshot: file://#{screenshots[:html]}")) if screenshots[:html]
+
+            # De-activate automatic screenshots since we already took it
+            Capybara::Screenshot.autosave_on_failure = false
           end
 
           raise
