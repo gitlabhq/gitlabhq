@@ -28,6 +28,12 @@ export default {
       <template v-if="issue.severity && issue.confidence">
         {{ issue.severity }} ({{ issue.confidence }}):
       </template>
+      <template v-else-if="issue.severity">
+        {{ issue.severity }}:
+      </template>
+      <template v-else-if="issue.confidence">
+        ({{ issue.confidence }}):
+      </template>
       <template v-else-if="issue.priority">{{ issue.priority }}:</template>
 
       <modal-open-name :issue="issue" />
