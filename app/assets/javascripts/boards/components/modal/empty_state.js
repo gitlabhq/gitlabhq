@@ -4,9 +4,6 @@ import modalMixin from '../../mixins/modal_mixins';
 
 gl.issueBoards.ModalEmptyState = Vue.extend({
   mixins: [modalMixin],
-  data() {
-    return ModalStore.store;
-  },
   props: {
     newIssuePath: {
       type: String,
@@ -16,6 +13,9 @@ gl.issueBoards.ModalEmptyState = Vue.extend({
       type: String,
       required: true,
     },
+  },
+  data() {
+    return ModalStore.store;
   },
   computed: {
     contents() {

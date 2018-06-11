@@ -81,8 +81,8 @@
       </button>
     </div>
     <div
-      class="value"
       :class="milestoneTitleClass"
+      class="value"
     >
       {{ milestoneTitle }}
     </div>
@@ -99,14 +99,14 @@
         <button
           ref="dropdownButton"
           :data-selected="selected"
-          class="dropdown-menu-toggle wide"
           :data-milestones="milestonePath"
           :data-show-no="true"
           :data-show-any="true"
           :data-show-started="true"
           :data-show-upcoming="true"
-          data-toggle="dropdown"
           :data-use-id="true"
+          class="dropdown-menu-toggle wide"
+          data-toggle="dropdown"
           type="button"
         >
           Milestone

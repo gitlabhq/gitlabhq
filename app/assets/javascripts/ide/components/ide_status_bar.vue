@@ -75,22 +75,22 @@ export default {
 <template>
   <footer class="ide-status-bar">
     <div
-      class="ide-status-branch"
       v-if="lastCommit && lastCommitFormatedAge"
+      class="ide-status-branch"
     >
       <span
-        class="ide-status-pipeline"
         v-if="latestPipeline && latestPipeline.details"
+        class="ide-status-pipeline"
       >
         <ci-icon
-          :status="latestPipeline.details.status"
           v-tooltip
+          :status="latestPipeline.details.status"
           :title="latestPipeline.details.status.text"
         />
         Pipeline
         <a
-          class="monospace"
-          :href="latestPipeline.details.status.details_path">#{{ latestPipeline.id }}</a>
+          :href="latestPipeline.details.status.details_path"
+          class="monospace">#{{ latestPipeline.id }}</a>
         {{ latestPipeline.details.status.text }}
         for
       </span>
@@ -100,18 +100,18 @@ export default {
       />
       <a
         v-tooltip
-        class="commit-sha"
         :title="lastCommit.message"
         :href="getCommitPath(lastCommit.short_id)"
+        class="commit-sha"
       >{{ lastCommit.short_id }}</a>
       by
       {{ lastCommit.author_name }}
       <time
         v-tooltip
-        data-placement="top"
-        data-container="body"
         :datetime="lastCommit.committed_date"
         :title="tooltipTitle(lastCommit.committed_date)"
+        data-placement="top"
+        data-container="body"
       >
         {{ lastCommitFormatedAge }}
       </time>
@@ -129,8 +129,8 @@ export default {
       {{ file.eol }}
     </div>
     <div
-      class="ide-status-file"
-      v-if="file && !file.binary">
+      v-if="file && !file.binary"
+      class="ide-status-file">
       {{ file.editorRow }}:{{ file.editorColumn }}
     </div>
     <div

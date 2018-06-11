@@ -140,7 +140,6 @@ export default {
   <div>
     <report-section
       v-if="sastHeadPath"
-      class="js-sast-widget split-report-section"
       :type="$options.sast"
       :status="checkReportStatus(sast.isLoading, sast.hasError)"
       :loading-text="translateText('SAST').loading"
@@ -149,11 +148,11 @@ export default {
       :unresolved-issues="sast.newIssues"
       :has-issues="sast.newIssues.length > 0"
       :popover-options="sastPopover"
+      class="js-sast-widget split-report-section"
     />
 
     <report-section
       v-if="dependencyScanningHeadPath"
-      class="js-dss-widget split-report-section"
       :type="$options.sast"
       :status="checkReportStatus(dependencyScanning.isLoading, dependencyScanning.hasError)"
       :loading-text="translateText('Dependency scanning').loading"
@@ -162,6 +161,7 @@ export default {
       :unresolved-issues="dependencyScanning.newIssues"
       :has-issues="dependencyScanning.newIssues.length > 0"
       :popover-options="dependencyScanningPopover"
+      class="js-dss-widget split-report-section"
     />
 
     <issue-modal />

@@ -40,8 +40,8 @@ export default {
   >
     <component
       v-tooltip
-      :is="computedLinkElementType"
       ref="link"
+      :is="computedLinkElementType"
       :class="{
         'issue-token-link': isCondensed,
         'issue-main-info': !isCondensed,
@@ -51,31 +51,31 @@ export default {
       data-placement="top"
     >
       <component
-        :is="innerComponentType"
         v-if="hasTitle"
         ref="title"
-        class="js-issue-token-title"
+        :is="innerComponentType"
         :class="{
           'issue-token-title issue-token-end': isCondensed,
           'issue-title block-truncated': !isCondensed,
           'issue-token-title-standalone': !canRemove
         }"
+        class="js-issue-token-title"
       >
         <span class="issue-token-title-text">
           {{ title }}
         </span>
       </component>
       <component
-        :is="innerComponentType"
         ref="reference"
+        :is="innerComponentType"
         :class="{
           'issue-token-reference': isCondensed,
           'issuable-info': !isCondensed,
         }"
       >
         <icon
-          v-if="hasState"
           v-tooltip
+          v-if="hasState"
           :css-classes="iconClass"
           :name="iconName"
           :size="12"
@@ -86,11 +86,9 @@ export default {
       </component>
     </component>
     <button
-      v-if="canRemove"
       v-tooltip
+      v-if="canRemove"
       ref="removeButton"
-      type="button"
-      class="js-issue-token-remove-button"
       :class="{
         'issue-token-remove-button': isCondensed,
         'btn btn-default': !isCondensed
@@ -98,6 +96,8 @@ export default {
       :title="removeButtonLabel"
       :aria-label="removeButtonLabel"
       :disabled="removeDisabled"
+      type="button"
+      class="js-issue-token-remove-button"
       @click="onRemoveRequest"
     >
       <i

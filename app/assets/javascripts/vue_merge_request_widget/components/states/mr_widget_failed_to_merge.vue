@@ -76,14 +76,14 @@ export default {
     </template>
     <template v-else>
       <status-icon
-        status="warning"
         :show-disabled-button="true"
+        status="warning"
       />
       <div class="media-body space-children">
         <span class="bold">
           <span
-            class="has-error-message"
             v-if="mr.mergeError"
+            class="has-error-message"
           >
             {{ mr.mergeError }}.
           </span>
@@ -97,9 +97,9 @@ export default {
           </span>
         </span>
         <button
-          @click="refresh"
           class="btn btn-default btn-sm js-refresh-button"
           type="button"
+          @click="refresh"
         >
           {{ s__("mrWidget|Refresh now") }}
         </button>

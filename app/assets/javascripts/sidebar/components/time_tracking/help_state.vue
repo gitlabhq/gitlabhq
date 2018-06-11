@@ -45,8 +45,8 @@ export default {
       <p v-html="spendText">
       </p>
       <a
-        class="btn btn-default learn-more-button"
         :href="href"
+        class="btn btn-default learn-more-button"
       >
         {{ __('Learn more') }}
       </a>

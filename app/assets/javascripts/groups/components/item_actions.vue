@@ -54,13 +54,13 @@ export default {
     <a
       v-tooltip
       v-if="group.canLeave"
-      @click.prevent="onLeaveGroup"
       :href="group.leavePath"
       :title="leaveBtnTitle"
       :aria-label="leaveBtnTitle"
       data-container="body"
       data-placement="bottom"
-      class="leave-group btn no-expand">
+      class="leave-group btn no-expand"
+      @click.prevent="onLeaveGroup">
       <icon name="leave"/>
     </a>
   </div>

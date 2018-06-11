@@ -69,9 +69,9 @@ export default {
     class="prepend-left-4 append-bottom-0 report-block-info license-item"
   >
     <a
+      :href="issue.url"
       target="_blank"
       rel="noopener noreferrer nofollow"
-      :href="issue.url"
     >{{ issue.name }}</a>
     <span
       class="license-dependencies"

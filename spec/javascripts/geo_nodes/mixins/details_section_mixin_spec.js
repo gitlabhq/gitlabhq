@@ -8,11 +8,11 @@ import { mockNodeDetails } from '../mock_data';
 
 const createComponent = (nodeDetails = mockNodeDetails) => {
   const Component = Vue.extend({
-    template: '<div></div>',
     mixins: [DetailsSectionMixin],
     data() {
       return { nodeDetails };
     },
+    template: '<div></div>',
   });
 
   return mountComponent(Component);

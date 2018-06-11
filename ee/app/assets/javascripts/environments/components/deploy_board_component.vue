@@ -89,24 +89,24 @@
       </section>
 
       <section
-        class="deploy-board-actions"
         v-if="deployBoardData.rollback_url || deployBoardData.abort_url"
+        class="deploy-board-actions"
       >
         <a
+          v-if="deployBoardData.rollback_url"
+          :href="deployBoardData.rollback_url"
           class="btn"
           data-method="post"
-          rel="nofollow"
-          v-if="deployBoardData.rollback_url"
-          :href="deployBoardData.rollback_url">
+          rel="nofollow">
           Rollback
         </a>
 
         <a
+          v-if="deployBoardData.abort_url"
+          :href="deployBoardData.abort_url"
           class="btn btn-red btn-inverted"
           data-method="post"
-          rel="nofollow"
-          v-if="deployBoardData.abort_url"
-          :href="deployBoardData.abort_url">
+          rel="nofollow">
           Abort
         </a>
       </section>

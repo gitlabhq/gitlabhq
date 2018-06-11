@@ -141,9 +141,9 @@ export default {
     >
       <button
         :disabled="approving"
-        @click="approveMergeRequest"
-        class="btn btn-primary btn-sm approve-btn"
         :class="approveButtonClass"
+        class="btn btn-primary btn-sm approve-btn"
+        @click="approveMergeRequest"
       >
         <i
           v-if="approving"
@@ -154,11 +154,12 @@ export default {
       </button>
     </span>
     <span
-      class="approvals-required-text"
       :class="approvalsOptional ? 'text-muted' : 'bold'"
+      class="approvals-required-text"
     >
       {{ approvalsRequiredStringified }}
       <a
+        v-tooltip
         v-if="showApprovalDocLink"
         :href="mr.approvalsHelpPath"
         :data-title="__('About this feature')"
@@ -166,7 +167,6 @@ export default {
         target="_blank"
         rel="noopener noreferrer nofollow"
         data-container="body"
-        v-tooltip
       >
         <icon
           name="question-o"

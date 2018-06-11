@@ -72,8 +72,8 @@ export default {
     <deprecated-modal
       id="ide-create-branch-modal"
       :primary-button-label="__('Create new branch')"
-      kind="success"
       :title="__('Branch has changed')"
+      kind="success"
       @submit="forceCreateNewBranch"
     >
       <template slot="body">
@@ -85,22 +85,22 @@ export default {
       v-if="showStageUnstageArea"
     >
       <commit-files-list
-        class="is-first"
-        icon-name="unstaged"
         :title="__('Unstaged')"
         :file-list="changedFiles"
-        action="stageAllChanges"
         :action-btn-text="__('Stage all')"
+        class="is-first"
+        icon-name="unstaged"
+        action="stageAllChanges"
         item-action-component="stage-button"
       />
       <commit-files-list
-        icon-name="staged"
         :title="__('Staged')"
         :file-list="stagedFiles"
-        action="unstageAllChanges"
         :action-btn-text="__('Unstage all')"
-        item-action-component="unstage-button"
         :staged-list="true"
+        icon-name="staged"
+        action="unstageAllChanges"
+        item-action-component="unstage-button"
       />
     </template>
     <empty-state

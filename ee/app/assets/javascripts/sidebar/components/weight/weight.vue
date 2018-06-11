@@ -140,21 +140,21 @@ export default {
 
 <template>
   <div
-    class="block weight"
     :class="{ 'collapse-after-update': collapsedAfterUpdate }"
+    class="block weight"
   >
     <div
-      class="sidebar-collapsed-icon js-weight-collapsed-block"
       v-tooltip
+      :title="tooltipTitle"
+      class="sidebar-collapsed-icon js-weight-collapsed-block"
       data-container="body"
       data-placement="left"
       data-boundary="viewport"
-      :title="tooltipTitle"
       @click="onCollapsedClick"
     >
       <icon
-        name="scale"
         :size="16"
+        name="scale"
       />
       <loading-icon
         v-if="fetching"
@@ -162,8 +162,8 @@ export default {
       />
       <span
         v-else
-        v-html="collapsedWeightLabel"
         class="js-weight-collapsed-weight-label"
+        v-html="collapsedWeightLabel"
       ></span>
     </div>
     <div class="title hide-collapsed">
@@ -183,24 +183,24 @@ export default {
       </a>
     </div>
     <div
-      class="hide-collapsed"
       v-if="shouldShowEditField"
+      class="hide-collapsed"
     >
       <input
-        class="form-control"
-        type="text"
         ref="editableField"
         :value="weight"
+        class="form-control"
+        type="text"
         @blur="onSubmit"
         @keydown.enter="onSubmit"
       />
       <span
-        class="gl-field-error"
         v-if="!hasValidInput"
+        class="gl-field-error"
       >
         <icon
-          name="merge-request-close-m"
           :size="24"
+          name="merge-request-close-m"
         />
         {{ s__('Sidebar|Only numeral characters allowed') }}
       </span>

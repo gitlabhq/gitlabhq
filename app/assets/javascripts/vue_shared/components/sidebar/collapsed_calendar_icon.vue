@@ -38,14 +38,14 @@
 
 <template>
   <div
-    :class="containerClass"
-    @click="click"
     v-tooltip
+    :class="containerClass"
+    :title="tooltipText"
     data-container="body"
     data-placement="left"
     data-html="true"
     data-boundary="viewport"
-    :title="tooltipText"
+    @click="click"
   >
     <i
       v-if="showIcon"

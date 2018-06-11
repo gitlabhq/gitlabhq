@@ -284,8 +284,8 @@ export default {
       />
     </div>
     <div
-      class="mr-widget-footer"
       v-if="shouldRenderMergeHelp"
+      class="mr-widget-footer"
     >
       <mr-widget-merge-help />
     </div>

@@ -52,6 +52,9 @@ const JumpToDiscussion = Vue.extend({
       return lastId;
     }
   },
+  created() {
+    this.discussion = this.discussions[this.discussionId];
+  },
   methods: {
     jumpToNextUnresolvedDiscussion: function () {
       let discussionsSelector;
@@ -201,9 +204,6 @@ const JumpToDiscussion = Vue.extend({
         offset: -150
       });
     }
-  },
-  created() {
-    this.discussion = this.discussions[this.discussionId];
   },
 });
 

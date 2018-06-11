@@ -78,23 +78,23 @@
         <icon
           v-tooltip
           v-if="showNodeStatusIcon"
-          data-container="body"
-          data-placement="bottom"
           :name="nodeStatusIconName"
           :size="18"
           :css-classes="nodeStatusIconClass"
           :title="nodeStatusIconTooltip"
+          data-container="body"
+          data-placement="bottom"
         />
         <span class="inline float-left prepend-left-10">
           <span
-            class="prepend-left-5 node-badge current-node"
             v-if="node.current"
+            class="prepend-left-5 node-badge current-node"
           >
             {{ s__('Current node') }}
           </span>
           <span
-            class="prepend-left-5 node-badge primary-node"
             v-if="node.primary"
+            class="prepend-left-5 node-badge primary-node"
           >
             {{ s__('Primary') }}
           </span>

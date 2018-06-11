@@ -92,10 +92,10 @@ export default {
           :key="index"
           :avatar-size="20"
           :avatar-url="approver.user.avatar_url"
-          extra-link-class="approver-avatar js-approver-list-member"
           :display-name="approver.user.name"
           :profile-url="approver.user.web_url"
           :show-tooltip="true"
+          extra-link-class="approver-avatar js-approver-list-member"
         />
         <link-to-member-avatar
           v-for="n in approvalsLeft"
@@ -107,10 +107,10 @@ export default {
       </div>
       <button
         v-if="showUnapproveButton"
-        type="button"
         :disabled="unapproving"
-        @click="unapproveMergeRequest"
+        type="button"
         class="btn btn-sm unapprove-btn-wrap"
+        @click="unapproveMergeRequest"
       >
         <i
           v-if="unapproving"

@@ -73,8 +73,8 @@ export default {
 <template>
   <span>
     <svg
-      :class="[iconSizeClass, cssClasses]"
       v-if="!loading && !folder"
+      :class="[iconSizeClass, cssClasses]"
     >
       <use v-bind="{ 'xlink:href':spriteHref }" />
     </svg>

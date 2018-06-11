@@ -78,8 +78,8 @@ export default {
 <template>
   <div>
     <div
-      class="well-segment flex js-sast-summary"
       v-if="hasSast"
+      class="well-segment flex js-sast-summary"
     >
       <loading-icon
         v-if="isLoadingSast"
@@ -113,8 +113,8 @@ export default {
       </span>
     </div>
     <div
-      class="well-segment flex js-dss-summary"
       v-if="hasDependencyScanning"
+      class="well-segment flex js-dss-summary"
     >
       <loading-icon
         v-if="dependencyScanning.isLoading"

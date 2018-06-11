@@ -21,11 +21,11 @@ export default {
 
 <template>
   <span
-    class="board-card-weight card-number prepend-left-5"
     v-tooltip
+    :title="__('Weight')"
+    class="board-card-weight card-number prepend-left-5"
     data-container="body"
     data-placement="bottom"
-    :title="__('Weight')"
   >
     <icon name="scale" />
     {{ weight }}

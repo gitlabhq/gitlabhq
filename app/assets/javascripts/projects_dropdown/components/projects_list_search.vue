@@ -48,8 +48,8 @@ export default {
         {{ listEmptyMessage }}
       </li>
       <projects-list-item
-        v-else
         v-for="(project, index) in projects"
+        v-else
         :key="index"
         :project-id="project.id"
         :project-name="project.name"

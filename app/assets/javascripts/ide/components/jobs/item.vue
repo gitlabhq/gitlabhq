@@ -27,8 +27,8 @@ export default {
 <template>
   <div class="ide-job-item">
     <job-description
-      class="append-right-default"
       :job="job"
+      class="append-right-default"
     />
     <div class="ml-auto align-self-center">
       <button

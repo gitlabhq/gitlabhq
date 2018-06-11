@@ -67,10 +67,10 @@ export default {
   <div class="group-member-contributions-container">
     <h3>{{ __('Contributions per group member') }}</h3>
     <loading-icon
-      class="loading-animation prepend-top-20 append-bottom-20"
-      size="2"
       v-if="isLoading"
       :label="__('Loading contribution stats for group members')"
+      class="loading-animation prepend-top-20 append-bottom-20"
+      size="2"
     />
     <table
       v-else

@@ -35,10 +35,10 @@ export default {
 <template>
   <span>
     <button
-      type="button"
       v-show="isCollapsed"
-      class="text-expander btn-blank"
       :aria-label="ariaLabel"
+      type="button"
+      class="text-expander btn-blank"
       @click="onClick">
       ...
     </button>
