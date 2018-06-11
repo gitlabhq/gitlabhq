@@ -17,8 +17,11 @@ module StubObjectStorage
 
     Fog.mock!
 
+    binding.pry
+
     ::Fog::Storage.new(uploader.object_store_credentials).tap do |connection|
       begin
+        binding.pry
         connection.directories.create(key: remote_directory)
       rescue Excon::Error::Conflict
       end
