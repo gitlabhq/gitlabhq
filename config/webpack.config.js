@@ -1,4 +1,3 @@
-const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
 const webpack = require('webpack');
@@ -232,9 +231,7 @@ module.exports = {
     new VueLoaderPlugin(),
 
     // automatically configure monaco editor web workers
-    new MonacoWebpackPlugin({
-      features: [],
-    }),
+    new MonacoWebpackPlugin(),
 
     // prevent pikaday from including moment.js
     new webpack.IgnorePlugin(/moment/, /pikaday/),
@@ -302,7 +299,7 @@ module.exports = {
     inline: DEV_SERVER_LIVERELOAD,
   },
 
-  devtool: IS_PRODUCTION ? 'nosources-source-map' : 'cheap-module-eval-source-map',
+  devtool: IS_PRODUCTION ? 'source-map' : 'cheap-module-eval-source-map',
 
   // sqljs requires fs
   node: { fs: 'empty' },
