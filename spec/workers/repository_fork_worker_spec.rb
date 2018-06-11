@@ -55,10 +55,15 @@ describe RepositoryForkWorker do
       it 'flushes various caches' do
         expect_fork_repository.and_return(true)
 
-        expect_any_instance_of(Repository).to receive(:expire_emptiness_caches)
+        # Works around https://github.com/rspec/rspec-mocks/issues/910
+        expect(Project).to receive(:find).with(fork_project.id).and_return(fork_project)
+        expect(fork_project.repository).to receive(:expire_emptiness_caches)
           .and_call_original
-
-        expect_any_instance_of(Repository).to receive(:expire_exists_cache)
+        expect(fork_project.repository).to receive(:expire_exists_cache)
+          .and_call_original
+        expect(fork_project.wiki.repository).to receive(:expire_emptiness_caches)
+          .and_call_original
+        expect(fork_project.wiki.repository).to receive(:expire_exists_cache)
           .and_call_original
 
         perform!
