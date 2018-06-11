@@ -5,8 +5,8 @@ module QA
     module Repository
       class Push < Factory::Base
         attr_accessor :file_name, :file_content, :commit_message,
-                      :branch_name, :new_branch, :output, :repository_uri,
-                      :user
+                      :branch_name, :new_branch, :output, :repository_http_uri,
+                      :repository_ssh_uri, :ssh_key, :user
 
         attr_writer :remote_branch
 
@@ -16,7 +16,8 @@ module QA
           @commit_message = "This is a test commit"
           @branch_name = 'master'
           @new_branch = true
-          @repository_uri = ""
+          @repository_http_uri = ""
+          @ssh_key = nil
         end
 
         def remote_branch
@@ -31,9 +32,14 @@ module QA
 
         def fabricate!
           Git::Repository.perform do |repository|
-            repository.uri = repository_uri
+            if ssh_key
+              repository.uri = repository_ssh_uri
+              repository.use_ssh_key(ssh_key)
+            else
+              repository.uri = repository_http_uri
+              repository.use_default_credentials
+            end
 
-            repository.use_default_credentials
             username = 'GitLab QA'
             email = 'root@gitlab.com'
 
@@ -63,6 +69,8 @@ module QA
 
             repository.commit(commit_message)
             @output = repository.push_changes("#{branch_name}:#{remote_branch}")
+
+            repository.delete_ssh_key
           end
         end
       end
