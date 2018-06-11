@@ -1,0 +1,5 @@
+---
+title: Move some Gitaly RPC's to opt-out
+merge_request: 19591
+author:
+type: other
