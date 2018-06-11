@@ -394,7 +394,11 @@ compile-assets:
     - date
     - yarn install --frozen-lockfile --cache-folder .yarn-cache
     - date
+    - free -m
     - bundle exec rake gitlab:assets:compile
+  variables:
+    # we override the max_old_space_size to prevent OOM errors
+    NODE_OPTIONS: --max_old_space_size=3584
   artifacts:
     expire_in: 7d
     paths:
@@ -658,10 +662,13 @@ gitlab:assets:compile:
     SKIP_STORAGE_VALIDATION: "true"
     WEBPACK_REPORT: "true"
     NO_COMPRESSION: "true"
+    # we override the max_old_space_size to prevent OOM errors
+    NODE_OPTIONS: --max_old_space_size=3584
   script:
     - date
     - yarn install --frozen-lockfile --production --cache-folder .yarn-cache
     - date
+    - free -m
     - bundle exec rake gitlab:assets:compile
   artifacts:
     name: webpack-report

@@ -41,7 +41,12 @@ module ActiveRecord
     # Abstract representation of an index definition on a table. Instances of
     # this type are typically created and returned by methods in database
     # adapters. e.g. ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter#indexes
-    class IndexDefinition < Struct.new(:table, :name, :unique, :columns, :lengths, :orders, :where, :type, :using, :opclasses) #:nodoc:
+    attrs = [:table, :name, :unique, :columns, :lengths, :orders, :where, :type, :using, :opclasses]
+
+    # In Rails 5 the second last attribute is newly `:comment`
+    attrs.insert(-2, :comment) if Gitlab.rails5?
+
+    class IndexDefinition < Struct.new(*attrs) #:nodoc:
     end
   end
 end

@@ -94,8 +94,7 @@ describe Projects::MergeRequests::DiffsController do
                                                         commit_id: nil)
           end
 
-          # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-          xit 'only renders the diffs for the path given' do
+          it 'only renders the diffs for the path given' do
             expect(controller).to receive(:render_diff_for_path).and_wrap_original do |meth, diffs|
               expect(diffs.diff_files.map(&:new_path)).to contain_exactly(existing_path)
               meth.call(diffs)

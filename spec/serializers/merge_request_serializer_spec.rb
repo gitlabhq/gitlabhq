@@ -12,8 +12,7 @@ describe MergeRequestSerializer do
   context 'widget merge request serialization' do
     let(:serializer) { 'widget' }
 
-    # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-    xit 'matches issue json schema' do
+    it 'matches issue json schema' do
       expect(json_entity).to match_schema('entities/merge_request_widget')
     end
   end
@@ -37,8 +36,7 @@ describe MergeRequestSerializer do
   context 'no serializer' do
     let(:serializer) { nil }
 
-    # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-    xit 'falls back to the widget entity' do
+    it 'falls back to the widget entity' do
       expect(json_entity).to match_schema('entities/merge_request_widget')
     end
   end
