@@ -6,6 +6,7 @@ module QA
           element :settings_item
           element :settings_link, 'link_to edit_project_path'
           element :repository_link, "title: _('Repository')"
+          element :link_pipelines
           element :pipelines_settings_link, "title: _('CI / CD')"
           element :operations_kubernetes_link, "title: _('Kubernetes')"
           element :issues_link, /link_to.*shortcuts-issues/
@@ -49,7 +50,7 @@ module QA
 
         def click_ci_cd_pipelines
           within_sidebar do
-            click_link('CI / CD')
+            click_element :link_pipelines
           end
         end
 
