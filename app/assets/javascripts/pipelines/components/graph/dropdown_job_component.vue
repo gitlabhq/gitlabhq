@@ -82,12 +82,12 @@ export default {
   <div class="ci-job-dropdown-container dropdown dropright">
     <button
       v-tooltip
+      :title="tooltipText"
       type="button"
       data-toggle="dropdown"
       data-container="body"
       data-boundary="viewport"
       class="dropdown-menu-toggle build-content"
-      :title="tooltipText"
     >
 
       <job-name-component

@@ -22,10 +22,10 @@
 
 <template>
   <div
-    class="animation-container"
     :class="{
       'animation-container-small': small,
     }"
+    class="animation-container"
   >
     <div
       v-for="(css, index) in lineClasses"

@@ -173,38 +173,38 @@ export default {
     >
       <div class="dropdown-input">
         <input
+          ref="searchInput"
+          :placeholder="__('Search files')"
+          v-model="searchText"
           type="search"
           class="dropdown-input-field"
-          :placeholder="__('Search files')"
           autocomplete="off"
-          v-model="searchText"
-          ref="searchInput"
           @keydown="onKeydown($event)"
           @keyup="onKeyup($event)"
         />
         <i
-          aria-hidden="true"
-          class="fa fa-search dropdown-input-search"
           :class="{
             hidden: showClearInputButton
           }"
+          aria-hidden="true"
+          class="fa fa-search dropdown-input-search"
         ></i>
         <i
-          role="button"
           :aria-label="__('Clear search input')"
-          class="fa fa-times dropdown-input-clear"
           :class="{
             show: showClearInputButton
           }"
+          role="button"
+          class="fa fa-times dropdown-input-clear"
           @click="clearSearchInput"
         ></i>
       </div>
       <div>
         <virtual-list
+          ref="virtualScrollList"
           :size="listHeight"
           :remain="listShowCount"
           wtag="ul"
-          ref="virtualScrollList"
         >
           <template v-if="filteredBlobsLength">
             <li
@@ -212,11 +212,11 @@ export default {
               :key="file.key"
             >
               <item
-                class="disable-hover"
                 :file="file"
                 :search-text="searchText"
                 :focused="index === focusedIndex"
                 :index="index"
+                class="disable-hover"
                 @click="openFile"
                 @mouseover="onMouseOver"
                 @mousemove="onMouseMove"

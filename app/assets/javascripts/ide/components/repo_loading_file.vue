@@ -33,8 +33,8 @@
 
       <td class="d-none d-sm-block">
         <skeleton-loading-container
-          class="animation-container-right"
           :small="true"
+          class="animation-container-right"
         />
       </td>
     </template>

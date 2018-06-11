@@ -71,14 +71,14 @@ export default {
 
 <template>
   <li
-    @click.stop="onClickRowGroup"
     :id="groupDomId"
     :class="rowClass"
     class="group-row"
+    @click.stop="onClickRowGroup"
   >
     <div
-      class="group-row-contents"
-      :class="{ 'project-row-contents': !isGroup }">
+      :class="{ 'project-row-contents': !isGroup }"
+      class="group-row-contents">
       <item-actions
         v-if="isGroup"
         :group="group"
@@ -99,8 +99,8 @@ export default {
         />
       </div>
       <div
-        class="avatar-container prepend-top-8 prepend-left-5 s24 d-none d-sm-block"
         :class="{ 'content-loading': group.isChildrenLoading }"
+        class="avatar-container prepend-top-8 prepend-left-5 s24 d-none d-sm-block"
       >
         <a
           :href="group.relativePath"
@@ -108,14 +108,14 @@ export default {
         >
           <img
             v-if="hasAvatar"
-            class="avatar s24"
             :src="group.avatarUrl"
+            class="avatar s24"
           />
           <identicon
             v-else
-            size-class="s24"
             :entity-id="group.id"
             :entity-name="group.name"
+            size-class="s24"
           />
         </a>
       </div>

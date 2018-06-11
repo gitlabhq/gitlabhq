@@ -120,17 +120,17 @@ export default {
 <template>
   <div>
     <div
-      class="file"
       :class="fileClass"
-      @click="clickFile"
+      class="file"
       role="button"
+      @click="clickFile"
     >
       <div
         class="file-name"
       >
         <span
-          class="ide-file-name str-truncated"
           :style="levelIndentation"
+          class="ide-file-name str-truncated"
         >
           <file-icon
             :file-name="file.name"
@@ -156,10 +156,10 @@ export default {
             <icon
               v-tooltip
               :title="folderChangesTooltip"
+              :size="12"
               data-container="body"
               data-placement="right"
               name="file-modified"
-              :size="12"
               css-classes="prepend-left-5 multi-file-modified"
             />
           </span>

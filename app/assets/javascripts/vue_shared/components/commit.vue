@@ -124,11 +124,11 @@ export default {
       </div>
 
       <a
-        class="ref-name"
-        :href="commitRef.ref_url"
         v-tooltip
-        data-container="body"
+        :href="commitRef.ref_url"
         :title="commitRef.name"
+        class="ref-name"
+        data-container="body"
       >
         {{ commitRef.name }}
       </a>
@@ -139,8 +139,8 @@ export default {
     />
 
     <a
-      class="commit-sha"
       :href="commitUrl"
+      class="commit-sha"
     >
       {{ shortSha }}
     </a>
@@ -152,15 +152,15 @@ export default {
       >
         <user-avatar-link
           v-if="hasAuthor"
-          class="avatar-image-container"
           :link-href="author.path"
           :img-src="author.avatar_url"
           :img-alt="userImageAltDescription"
           :tooltip-text="author.username"
+          class="avatar-image-container"
         />
         <a
-          class="commit-row-message"
           :href="commitUrl"
+          class="commit-row-message"
         >
           {{ title }}
         </a>

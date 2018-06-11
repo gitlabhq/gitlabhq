@@ -14,10 +14,10 @@ export default {
 
 <template>
   <icon
-    name="git-merge"
     v-tooltip
     :title="__('Part of merge request changes')"
-    css-classes="append-right-8"
     :size="12"
+    name="git-merge"
+    css-classes="append-right-8"
   />
 </template>

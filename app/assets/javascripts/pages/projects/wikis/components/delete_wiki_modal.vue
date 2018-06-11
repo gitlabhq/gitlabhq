@@ -50,8 +50,8 @@ export default {
   <gl-modal
     id="delete-wiki-modal"
     :header-title-text="title"
-    footer-primary-button-variant="danger"
     :footer-primary-button-text="s__('WikiPageConfirmDelete|Delete page')"
+    footer-primary-button-variant="danger"
     @submit="onSubmit"
   >
     {{ message }}
@@ -68,9 +68,9 @@ export default {
         value="delete"
       />
       <input
+        :value="csrfToken"
         type="hidden"
         name="authenticity_token"
-        :value="csrfToken"
       />
     </form>
   </gl-modal>

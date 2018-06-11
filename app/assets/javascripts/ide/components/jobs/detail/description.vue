@@ -24,10 +24,10 @@ export default {
 <template>
   <div class="d-flex align-items-center">
     <ci-icon
-      class="d-flex"
       :status="job.status"
       :borderless="true"
       :size="24"
+      class="d-flex"
     />
     <span class="prepend-left-8">
       {{ job.name }}
@@ -38,8 +38,8 @@ export default {
       >
         {{ jobId }}
         <icon
-          name="external-link"
           :size="12"
+          name="external-link"
         />
       </a>
     </span>
