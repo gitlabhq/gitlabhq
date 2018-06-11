@@ -344,11 +344,17 @@ usage is enabled in the project's settings.
 
 ```
 GET /projects/:id/runners
+GET /projects/:id/runners?scope=active
+GET /projects/:id/runners?type=project_type
+GET /projects/:id/runners?status=active
 ```
 
-| Attribute | Type    | Required | Description         |
-|-----------|---------|----------|---------------------|
+| Attribute | Type           | Required | Description         |
+|-----------|----------------|----------|---------------------|
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `scope`   | string         | no       | The scope of specific runners to show, one of: `active`, `paused`, `online`, `offline`; showing all runners if none provided |
+| `type`    | string         | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
+| `status`  | string         | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
 
 ```
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/9/runners"
