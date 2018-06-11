@@ -126,7 +126,7 @@ export default {
       :class="flagOrientation"
     >
       <div class="arrow"></div>
-      <div class="popover-title">
+      <div class="popover-header">
         <h5 v-if="deploymentFlagData">
           Deployed
         </h5>
@@ -135,7 +135,7 @@ export default {
       </div>
       <div
         v-if="deploymentFlagData"
-        class="popover-content deploy-meta-content"
+        class="popover-body deploy-meta-content"
       >
         <div>
           <icon
@@ -158,7 +158,7 @@ export default {
           </a>
         </div>
       </div>
-      <div class="popover-content">
+      <div class="popover-body">
         <table class="prometheus-table">
           <tr
             v-for="(series, index) in timeSeries"
