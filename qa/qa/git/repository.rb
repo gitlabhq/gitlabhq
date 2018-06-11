@@ -7,6 +7,10 @@ module QA
     class Repository
       include Scenario::Actable
 
+      def initialize
+        @ssh_cmd = ""
+      end
+
       def self.perform(*args)
         Dir.mktmpdir do |dir|
           Dir.chdir(dir) { super }
@@ -33,7 +37,7 @@ module QA
       end
 
       def clone(opts = '')
-        run_and_redact_credentials("git clone #{opts} #{@uri} ./")
+        run_and_redact_credentials(build_git_command("git clone #{opts} #{@uri} ./"))
       end
 
       def checkout(branch_name)
@@ -53,6 +57,10 @@ module QA
         `git config user.email #{email}`
       end
 
+      def configure_ssh_command(command)
+        @ssh_cmd = "GIT_SSH_COMMAND='#{command}'"
+      end
+
       def commit_file(name, contents, message)
         add_file(name, contents)
         commit(message)
@@ -69,13 +77,35 @@ module QA
       end
 
       def push_changes(branch = 'master')
-        output, _ = run_and_redact_credentials("git push #{@uri} #{branch}")
+        output, _ = run_and_redact_credentials(build_git_command("git push #{@uri} #{branch}"))
 
         output
       end
 
       def commits
         `git log --oneline`.split("\n")
+      end
+
+      def use_ssh_key(key)
+        @private_key_file = Tempfile.new("id_#{SecureRandom.hex(8)}")
+        File.binwrite(@private_key_file, key.private_key)
+        File.chmod(0700, @private_key_file)
+
+        @known_hosts_file = Tempfile.new("known_hosts_#{SecureRandom.hex(8)}")
+        run_and_redact_credentials("ssh-keyscan -p #{@uri.port} #{@uri.host} >> #{@known_hosts_file.path}")
+
+        configure_ssh_command("ssh -i #{@private_key_file.path} -o UserKnownHostsFile=#{@known_hosts_file.path}")
+      end
+
+      def delete_ssh_key
+        return unless @private_key_file
+
+        @private_key_file.close(true)
+        @known_hosts_file.close(true)
+      end
+
+      def build_git_command(command_str)
+        [@ssh_cmd, command_str].compact.join(' ')
       end
 
       private
