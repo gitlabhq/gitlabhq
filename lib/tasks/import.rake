@@ -9,7 +9,10 @@ class GithubImport
   def initialize(token, gitlab_username, project_path, extras)
     @options = { token: token }
     @project_path = project_path
-    @current_user = User.find_by_username(gitlab_username)
+    @current_user = User.find_by(username: gitlab_username)
+
+    raise "GitLab user #{gitlab_username} not found. Please specify a valid username." unless @current_user
+
     @github_repo = extras.empty? ? nil : extras.first
   end
 
