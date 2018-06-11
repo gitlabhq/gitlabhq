@@ -25,30 +25,34 @@ describe API::Runners do
 
   describe 'GET /runners' do
     context 'authorized user' do
+      it 'returns response status and headers' do
+        get api('/runners', user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+      end
+
       it 'returns user available runners' do
         get api('/runners', user)
 
-        shared = json_response.any? { |r| r['is_shared'] }
-        descriptions = json_response.map { |runner| runner['description'] }
-        expect(response).to have_gitlab_http_status(200)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response[0]).to have_key('ip_address')
-        expect(descriptions).to contain_exactly(
-          'Project runner', 'Two projects runner', 'Group runner'
-        )
-        expect(shared).to be_falsey
+        expect(json_response).to match_array [
+          a_hash_including('description' => 'Project runner'),
+          a_hash_including('description' => 'Two projects runner'),
+          a_hash_including('description' => 'Group runner')
+        ]
       end
 
       it 'filters runners by scope' do
-        get api('/runners?scope=active', user)
+        create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project])
 
-        shared = json_response.any? { |r| r['is_shared'] }
+        get api('/runners?scope=paused', user)
+
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response[0]).to have_key('ip_address')
-        expect(shared).to be_falsey
+
+        expect(json_response).to match_array [
+          a_hash_including('description' => 'Inactive project runner')
+        ]
       end
 
       it 'avoids filtering if scope is invalid' do
@@ -84,15 +88,66 @@ describe API::Runners do
   describe 'GET /runners/all' do
     context 'authorized user' do
       context 'with admin privileges' do
+        it 'returns response status and headers' do
+          get api('/runners/all', admin)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+        end
+
         it 'returns all runners' do
           get api('/runners/all', admin)
 
-          shared = json_response.any? { |r| r['is_shared'] }
+          expect(json_response).to match_array [
+            a_hash_including('description' => 'Project runner'),
+            a_hash_including('description' => 'Two projects runner'),
+            a_hash_including('description' => 'Group runner'),
+            a_hash_including('description' => 'Shared runner')
+          ]
+        end
+
+        it 'filters runners by scope' do
+          get api('/runners/all?scope=shared', admin)
+
+          shared = json_response.all? { |r| r['is_shared'] }
           expect(response).to have_gitlab_http_status(200)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response[0]).to have_key('ip_address')
           expect(shared).to be_truthy
+        end
+
+        it 'filters runners by scope' do
+          get api('/runners/all?scope=specific', admin)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+
+          expect(json_response).to match_array [
+            a_hash_including('description' => 'Project runner'),
+            a_hash_including('description' => 'Two projects runner'),
+            a_hash_including('description' => 'Group runner')
+          ]
+        end
+
+        it 'avoids filtering if scope is invalid' do
+          get api('/runners/all?scope=unknown', admin)
+          expect(response).to have_gitlab_http_status(400)
+        end
+
+        it 'filters runners by type' do
+          get api('/runners/all?type=project_type', admin)
+
+          expect(json_response).to match_array [
+            a_hash_including('description' => 'Project runner'),
+            a_hash_including('description' => 'Two projects runner')
+          ]
+        end
+
+        it 'does not filter by invalid type' do
+          get api('/runners/all?type=bogus', admin)
+
+          expect(response).to have_gitlab_http_status(400)
         end
       end
 
@@ -102,48 +157,6 @@ describe API::Runners do
 
           expect(response).to have_gitlab_http_status(403)
         end
-      end
-
-      it 'filters runners by scope' do
-        get api('/runners/all?scope=shared', admin)
-
-        shared = json_response.all? { |r| r['is_shared'] }
-        expect(response).to have_gitlab_http_status(200)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response[0]).to have_key('ip_address')
-        expect(shared).to be_truthy
-      end
-
-      it 'filters runners by scope' do
-        get api('/runners/all?scope=specific', admin)
-
-        shared = json_response.any? { |r| r['is_shared'] }
-        expect(response).to have_gitlab_http_status(200)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response[0]).to have_key('ip_address')
-        expect(shared).to be_falsey
-      end
-
-      it 'avoids filtering if scope is invalid' do
-        get api('/runners/all?scope=unknown', admin)
-        expect(response).to have_gitlab_http_status(400)
-      end
-
-      it 'filters runners by type' do
-        get api('/runners/all?type=project_type', admin)
-
-        expect(json_response).to match_array [
-          a_hash_including('description' => 'Project runner'),
-          a_hash_including('description' => 'Two projects runner')
-        ]
-      end
-
-      it 'does not filter by invalid type' do
-        get api('/runners/all?type=bogus', admin)
-
-        expect(response).to have_gitlab_http_status(400)
       end
     end
 
@@ -607,26 +620,33 @@ describe API::Runners do
 
   describe 'GET /projects/:id/runners' do
     context 'authorized user with maintainer privileges' do
-      it "returns project's runners" do
-        get api("/projects/#{project.id}/runners", user)
+      it 'returns response status and headers' do
+        get api('/runners/all', admin)
 
-        shared = json_response.any? { |r| r['is_shared'] }
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response[0]).to have_key('ip_address')
-        expect(shared).to be_truthy
+      end
+
+      it 'returns all runners' do
+        get api("/projects/#{project.id}/runners", user)
+
+        expect(json_response).to match_array [
+          a_hash_including('description' => 'Project runner'),
+          a_hash_including('description' => 'Two projects runner'),
+          a_hash_including('description' => 'Shared runner')
+        ]
       end
 
       it 'filters runners by scope' do
         get api("/projects/#{project.id}/runners?scope=specific", user)
 
-        shared = json_response.any? { |r| r['is_shared'] }
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response[0]).to have_key('ip_address')
-        expect(shared).to be_falsey
+
+        expect(json_response).to match_array [
+          a_hash_including('description' => 'Project runner'),
+          a_hash_including('description' => 'Two projects runner')
+        ]
       end
 
       it 'avoids filtering if scope is invalid' do
