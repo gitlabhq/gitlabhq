@@ -1734,7 +1734,7 @@ describe Project do
         .and_return(true)
 
       # Works around https://github.com/rspec/rspec-mocks/issues/910
-      expect(described_class).to receive(:find).with(project.id).twice.and_return(project)
+      allow(described_class).to receive(:find).with(project.id).and_return(project)
       expect(project.repository).to receive(:after_import)
         .and_call_original
       expect(project.wiki.repository).to receive(:after_import)
