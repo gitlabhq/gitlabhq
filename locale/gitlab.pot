@@ -2249,6 +2249,9 @@ msgstr ""
 msgid "Gitaly"
 msgstr ""
 
+msgid "Gitaly|Address"
+msgstr ""
+
 msgid "Gitaly Servers"
 msgstr ""
 
