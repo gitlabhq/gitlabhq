@@ -38,7 +38,7 @@ export default {
       const isMatchLine = type === MATCH_LINE_TYPE;
       const isContextLine = !isMatchLine && type !== EMPTY_CELL_TYPE && type !== CONTEXT_LINE_TYPE;
       const isMetaLine = type === OLD_NO_NEW_LINE_TYPE || type === NEW_NO_NEW_LINE_TYPE;
-      const isSameLine = this.hoveredLineCode === lineCode;
+      const isSameLine = this.hoveredLineCode && this.hoveredLineCode === lineCode;
       const isSameSection = position === this.hoveredSection;
 
       return {

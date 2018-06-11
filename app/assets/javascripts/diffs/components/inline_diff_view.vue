@@ -16,7 +16,7 @@ export default {
       this.hoveredLineCode = isOver ? lineCode : null;
     },
     getLineClass(line) {
-      const isSameLine = this.hoveredLineCode === line.lineCode;
+      const isSameLine = this.hoveredLineCode && this.hoveredLineCode === line.lineCode;
       const isMatchLine = line.type === MATCH_LINE_TYPE;
       const isContextLine = line.type === CONTEXT_LINE_TYPE;
       const isMetaLine = line.type === OLD_NO_NEW_LINE_TYPE || line.type === NEW_NO_NEW_LINE_TYPE;
