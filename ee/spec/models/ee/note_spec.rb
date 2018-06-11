@@ -6,14 +6,14 @@ describe EE::Note do
     using RSpec::Parameterized::TableSyntax
 
     where(:system, :action, :result) do
-      false | nil      | 'this, has, some, commas'
-      true  | nil      | 'this, has, some, commas'
-      true  | 'relate' | 'this, has, some, commas'
-      true  | 'weight' | 'this has some commas'
+      false | nil      | 'this, had, some, commas, originally'
+      true  | nil      | 'this, had, some, commas, originally'
+      true  | 'relate' | 'this, had, some, commas, originally'
+      true  | 'weight' | 'this had some commas originally'
     end
 
     with_them do
-      let(:note) { create(:note, system: system, note: 'this, has, some, commas') }
+      let(:note) { create(:note, system: system, note: 'this, had, some, commas, originally') }
 
       before do
         create(:system_note_metadata, action: action, note: note) if action
