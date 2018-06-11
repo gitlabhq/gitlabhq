@@ -191,6 +191,8 @@ module Gitlab
       metadata['call_site'] = feature.to_s if feature
       metadata['gitaly-servers'] = address_metadata(remote_storage) if remote_storage
 
+      metadata.merge!(server_feature_flags)
+
       result = { metadata: metadata }
 
       # nil timeout indicates that we should use the default
@@ -207,6 +209,14 @@ module Gitlab
       result[:deadline] = deadline
 
       result
+    end
+
+    SERVER_FEATURE_FLAGS = %w[gogit_findcommit].freeze
+
+    def self.server_feature_flags
+      SERVER_FEATURE_FLAGS.map do |f|
+        ["gitaly-feature-#{f.tr('_', '-')}", feature_enabled?(f).to_s]
+      end.to_h
     end
 
     def self.token(storage)
@@ -243,6 +253,10 @@ module Gitlab
       else
         false
       end
+    rescue => ex
+      # During application startup feature lookups in SQL can fail
+      Rails.logger.warn "exception while checking Gitaly feature status for #{feature_name}: #{ex}"
+      false
     end
 
     # opt_into_all_features? returns true when the current environment

@@ -29,4 +29,16 @@ describe GroupMembersFinder, '#execute' do
 
     expect(result.to_a).to match_array([member1, member3, member4])
   end
+
+  it 'returns members for descendant groups if requested', :nested_groups do
+    member1 = group.add_master(user2)
+    member2 = group.add_master(user1)
+    nested_group.add_master(user2)
+    member3 = nested_group.add_master(user3)
+    member4 = nested_group.add_master(user4)
+
+    result = described_class.new(group).execute(include_descendants: true)
+
+    expect(result.to_a).to match_array([member1, member2, member3, member4])
+  end
 end

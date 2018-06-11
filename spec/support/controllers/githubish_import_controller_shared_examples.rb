@@ -118,14 +118,19 @@ shared_examples 'a GitHub-ish import controller: POST create' do
     expect(response).to have_gitlab_http_status(200)
   end
 
-  it 'returns 422 response when the project could not be imported' do
+  it 'returns 422 response with the base error when the project could not be imported' do
+    project = build(:project)
+    project.errors.add(:name, 'is invalid')
+    project.errors.add(:path, 'is old')
+
     allow(Gitlab::LegacyGithubImport::ProjectCreator)
       .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, access_params, type: provider)
-        .and_return(double(execute: build(:project)))
+        .and_return(double(execute: project))
 
     post :create, format: :json
 
     expect(response).to have_gitlab_http_status(422)
+    expect(json_response['errors']).to eq('Name is invalid, Path is old')
   end
 
   context "when the repository owner is the provider user" do

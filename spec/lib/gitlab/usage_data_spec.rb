@@ -32,6 +32,7 @@ describe Gitlab::UsageData do
         mattermost_enabled
         edition
         version
+        installation_type
         uuid
         hostname
         signup
@@ -156,6 +157,7 @@ describe Gitlab::UsageData do
     it "gathers license data" do
       expect(subject[:uuid]).to eq(Gitlab::CurrentSettings.uuid)
       expect(subject[:version]).to eq(Gitlab::VERSION)
+      expect(subject[:installation_type]).to eq(Gitlab::INSTALLATION_TYPE)
       expect(subject[:active_user_count]).to eq(User.active.count)
       expect(subject[:recorded_at]).to be_a(Time)
     end

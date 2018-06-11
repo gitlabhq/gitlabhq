@@ -42,6 +42,10 @@
     background: none;
   }
 
+  &:focus {
+    outline: none;
+  }
+
   .toggle-icon {
     position: relative;
     display: block;

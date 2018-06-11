@@ -79,37 +79,37 @@ export function getTimeago() {
   if (!timeagoInstance) {
     const localeRemaining = function getLocaleRemaining(number, index) {
       return [
-        [s__('Timeago|less than a minute ago'), s__('Timeago|right now')],
-        [s__('Timeago|less than a minute ago'), s__('Timeago|%s seconds remaining')],
-        [s__('Timeago|about a minute ago'), s__('Timeago|1 minute remaining')],
+        [s__('Timeago|just now'), s__('Timeago|right now')],
+        [s__('Timeago|%s seconds ago'), s__('Timeago|%s seconds remaining')],
+        [s__('Timeago|1 minute ago'), s__('Timeago|1 minute remaining')],
         [s__('Timeago|%s minutes ago'), s__('Timeago|%s minutes remaining')],
-        [s__('Timeago|about an hour ago'), s__('Timeago|1 hour remaining')],
-        [s__('Timeago|about %s hours ago'), s__('Timeago|%s hours remaining')],
-        [s__('Timeago|a day ago'), s__('Timeago|1 day remaining')],
+        [s__('Timeago|1 hour ago'), s__('Timeago|1 hour remaining')],
+        [s__('Timeago|%s hours ago'), s__('Timeago|%s hours remaining')],
+        [s__('Timeago|1 day ago'), s__('Timeago|1 day remaining')],
         [s__('Timeago|%s days ago'), s__('Timeago|%s days remaining')],
-        [s__('Timeago|a week ago'), s__('Timeago|1 week remaining')],
+        [s__('Timeago|1 week ago'), s__('Timeago|1 week remaining')],
         [s__('Timeago|%s weeks ago'), s__('Timeago|%s weeks remaining')],
-        [s__('Timeago|a month ago'), s__('Timeago|1 month remaining')],
+        [s__('Timeago|1 month ago'), s__('Timeago|1 month remaining')],
         [s__('Timeago|%s months ago'), s__('Timeago|%s months remaining')],
-        [s__('Timeago|a year ago'), s__('Timeago|1 year remaining')],
+        [s__('Timeago|1 year ago'), s__('Timeago|1 year remaining')],
         [s__('Timeago|%s years ago'), s__('Timeago|%s years remaining')],
       ][index];
     };
     const locale = function getLocale(number, index) {
       return [
-        [s__('Timeago|less than a minute ago'), s__('Timeago|right now')],
-        [s__('Timeago|less than a minute ago'), s__('Timeago|in %s seconds')],
-        [s__('Timeago|about a minute ago'), s__('Timeago|in 1 minute')],
+        [s__('Timeago|just now'), s__('Timeago|right now')],
+        [s__('Timeago|%s seconds ago'), s__('Timeago|in %s seconds')],
+        [s__('Timeago|1 minute ago'), s__('Timeago|in 1 minute')],
         [s__('Timeago|%s minutes ago'), s__('Timeago|in %s minutes')],
-        [s__('Timeago|about an hour ago'), s__('Timeago|in 1 hour')],
-        [s__('Timeago|about %s hours ago'), s__('Timeago|in %s hours')],
-        [s__('Timeago|a day ago'), s__('Timeago|in 1 day')],
+        [s__('Timeago|1 hour ago'), s__('Timeago|in 1 hour')],
+        [s__('Timeago|%s hours ago'), s__('Timeago|in %s hours')],
+        [s__('Timeago|1 day ago'), s__('Timeago|in 1 day')],
         [s__('Timeago|%s days ago'), s__('Timeago|in %s days')],
-        [s__('Timeago|a week ago'), s__('Timeago|in 1 week')],
+        [s__('Timeago|1 week ago'), s__('Timeago|in 1 week')],
         [s__('Timeago|%s weeks ago'), s__('Timeago|in %s weeks')],
-        [s__('Timeago|a month ago'), s__('Timeago|in 1 month')],
+        [s__('Timeago|1 month ago'), s__('Timeago|in 1 month')],
         [s__('Timeago|%s months ago'), s__('Timeago|in %s months')],
-        [s__('Timeago|a year ago'), s__('Timeago|in 1 year')],
+        [s__('Timeago|1 year ago'), s__('Timeago|in 1 year')],
         [s__('Timeago|%s years ago'), s__('Timeago|in %s years')],
       ][index];
     };
@@ -270,6 +270,17 @@ export const totalDaysInMonth = date => {
 };
 
 /**
+ * Returns number of days in a quarter from provided
+ * months array.
+ *
+ * @param {Array} quarter
+ */
+export const totalDaysInQuarter = quarter => quarter.reduce(
+  (acc, month) => acc + totalDaysInMonth(month),
+  0,
+);
+
+/**
  * Returns list of Dates referring to Sundays of the month
  * based on provided date
  *
@@ -309,48 +320,56 @@ export const getSundays = date => {
 };
 
 /**
- * Returns list of Dates representing a timeframe of Months from month of provided date (inclusive)
- * up to provided length
+ * Returns list of Dates representing a timeframe of months from startDate and length
  *
- * For eg;
- *    If current month is January 2018 and `length` provided is `6`
- *    Then this method will return list of Date objects as follows;
- *
- *    [ October 2017, November 2017, December 2017, January 2018, February 2018, March 2018 ]
- *
- *    If current month is March 2018 and `length` provided is `3`
- *    Then this method will return list of Date objects as follows;
- *
- *    [ February 2018, March 2018, April 2018 ]
- *
+ * @param {Date} startDate
  * @param {Number} length
- * @param {Date} date
  */
-export const getTimeframeWindow = (length, date) => {
-  if (!length) {
+export const getTimeframeWindowFrom = (startDate, length) => {
+  if (!(startDate instanceof Date) || !length) {
     return [];
   }
 
-  const currentDate = date instanceof Date ? date : new Date();
-  const currentMonthIndex = Math.floor(length / 2);
-  const timeframe = [];
-
-  // Move date object backward to the first month of timeframe
-  currentDate.setDate(1);
-  currentDate.setMonth(currentDate.getMonth() - currentMonthIndex);
-
-  // Iterate and update date for the size of length
+  // Iterate and set date for the size of length
   // and push date reference to timeframe list
-  for (let i = 0; i < length; i += 1) {
-    timeframe.push(new Date(currentDate.getTime()));
-    currentDate.setMonth(currentDate.getMonth() + 1);
-  }
+  const timeframe = new Array(length)
+                      .fill()
+                      .map(
+                        (val, i) => new Date(
+                          startDate.getFullYear(),
+                          startDate.getMonth() + i,
+                          1,
+                        ),
+                      );
 
   // Change date of last timeframe item to last date of the month
   timeframe[length - 1].setDate(totalDaysInMonth(timeframe[length - 1]));
 
   return timeframe;
 };
+
+/**
+ * Returns count of day within current quarter from provided date
+ * and array of months for the quarter
+ *
+ * Eg;
+ *   If date is 15 Feb 2018
+ *   and quarter is [Jan, Feb, Mar]
+ *
+ *   Then 15th Feb is 46th day of the quarter
+ *   Where 31 (days in Jan) + 15 (date of Feb).
+ *
+ * @param {Date} date
+ * @param {Array} quarter
+ */
+export const dayInQuarter = (date, quarter) => quarter.reduce((acc, month) => {
+  if (date.getMonth() > month.getMonth()) {
+    return acc + totalDaysInMonth(month);
+  } else if (date.getMonth() === month.getMonth()) {
+    return acc + date.getDate();
+  }
+  return acc + 0;
+}, 0);
 
 window.gl = window.gl || {};
 window.gl.utils = {

@@ -1,6 +1,6 @@
 # Extra methods for uploader
 module UploaderHelper
-  IMAGE_EXT = %w[png jpg jpeg gif bmp tiff].freeze
+  IMAGE_EXT = %w[png jpg jpeg gif bmp tiff ico].freeze
   # We recommend using the .mp4 format over .mov. Videos in .mov format can
   # still be used but you really need to make sure they are served with the
   # proper MIME type video/mp4 and not video/quicktime or your videos won't play

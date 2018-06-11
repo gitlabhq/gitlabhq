@@ -8,7 +8,9 @@ import actions, {
   receiveMergeRequestsSuccess,
   fetchMergeRequests,
   resetMergeRequests,
+  openMergeRequest,
 } from '~/ide/stores/modules/merge_requests/actions';
+import router from '~/ide/ide_router';
 import { mergeRequests } from '../../../mock_data';
 import testAction from '../../../../helpers/vuex_action_helper';
 
@@ -29,9 +31,9 @@ describe('IDE merge requests actions', () => {
     it('should should commit request', done => {
       testAction(
         requestMergeRequests,
-        null,
+        'created',
         mockedState,
-        [{ type: types.REQUEST_MERGE_REQUESTS }],
+        [{ type: types.REQUEST_MERGE_REQUESTS, payload: 'created' }],
         [],
         done,
       );
@@ -48,16 +50,16 @@ describe('IDE merge requests actions', () => {
     it('should should commit error', done => {
       testAction(
         receiveMergeRequestsError,
-        null,
+        'created',
         mockedState,
-        [{ type: types.RECEIVE_MERGE_REQUESTS_ERROR }],
+        [{ type: types.RECEIVE_MERGE_REQUESTS_ERROR, payload: 'created' }],
         [],
         done,
       );
     });
 
     it('creates flash message', () => {
-      receiveMergeRequestsError({ commit() {} });
+      receiveMergeRequestsError({ commit() {} }, 'created');
 
       expect(flashSpy).toHaveBeenCalled();
     });
@@ -67,9 +69,14 @@ describe('IDE merge requests actions', () => {
     it('should commit received data', done => {
       testAction(
         receiveMergeRequestsSuccess,
-        'data',
+        { type: 'created', data: 'data' },
         mockedState,
-        [{ type: types.RECEIVE_MERGE_REQUESTS_SUCCESS, payload: 'data' }],
+        [
+          {
+            type: types.RECEIVE_MERGE_REQUESTS_SUCCESS,
+            payload: { type: 'created', data: 'data' },
+          },
+        ],
         [],
         done,
       );
@@ -86,14 +93,14 @@ describe('IDE merge requests actions', () => {
         mock.onGet(/\/api\/v4\/merge_requests(.*)$/).replyOnce(200, mergeRequests);
       });
 
-      it('calls API with params from state', () => {
+      it('calls API with params', () => {
         const apiSpy = spyOn(axios, 'get').and.callThrough();
 
-        fetchMergeRequests({ dispatch() {}, state: mockedState });
+        fetchMergeRequests({ dispatch() {}, state: mockedState }, { type: 'created' });
 
         expect(apiSpy).toHaveBeenCalledWith(jasmine.anything(), {
           params: {
-            scope: 'assigned-to-me',
+            scope: 'created-by-me',
             state: 'opened',
             search: '',
           },
@@ -103,11 +110,14 @@ describe('IDE merge requests actions', () => {
       it('calls API with search', () => {
         const apiSpy = spyOn(axios, 'get').and.callThrough();
 
-        fetchMergeRequests({ dispatch() {}, state: mockedState }, 'testing search');
+        fetchMergeRequests(
+          { dispatch() {}, state: mockedState },
+          { type: 'created', search: 'testing search' },
+        );
 
         expect(apiSpy).toHaveBeenCalledWith(jasmine.anything(), {
           params: {
-            scope: 'assigned-to-me',
+            scope: 'created-by-me',
             state: 'opened',
             search: 'testing search',
           },
@@ -117,7 +127,7 @@ describe('IDE merge requests actions', () => {
       it('dispatches request', done => {
         testAction(
           fetchMergeRequests,
-          null,
+          { type: 'created' },
           mockedState,
           [],
           [
@@ -132,13 +142,16 @@ describe('IDE merge requests actions', () => {
       it('dispatches success with received data', done => {
         testAction(
           fetchMergeRequests,
-          null,
+          { type: 'created' },
           mockedState,
           [],
           [
             { type: 'requestMergeRequests' },
             { type: 'resetMergeRequests' },
-            { type: 'receiveMergeRequestsSuccess', payload: mergeRequests },
+            {
+              type: 'receiveMergeRequestsSuccess',
+              payload: { type: 'created', data: mergeRequests },
+            },
           ],
           done,
         );
@@ -153,7 +166,7 @@ describe('IDE merge requests actions', () => {
       it('dispatches error', done => {
         testAction(
           fetchMergeRequests,
-          null,
+          { type: 'created' },
           mockedState,
           [],
           [
@@ -171,12 +184,47 @@ describe('IDE merge requests actions', () => {
     it('commits reset', done => {
       testAction(
         resetMergeRequests,
-        null,
+        'created',
         mockedState,
-        [{ type: types.RESET_MERGE_REQUESTS }],
+        [{ type: types.RESET_MERGE_REQUESTS, payload: 'created' }],
         [],
         done,
       );
+    });
+  });
+
+  describe('openMergeRequest', () => {
+    beforeEach(() => {
+      spyOn(router, 'push');
+    });
+
+    it('commits reset mutations and actions', done => {
+      testAction(
+        openMergeRequest,
+        { projectPath: 'gitlab-org/gitlab-ce', id: '1' },
+        mockedState,
+        [
+          { type: 'CLEAR_PROJECTS' },
+          { type: 'SET_CURRENT_MERGE_REQUEST', payload: '1' },
+          { type: 'RESET_OPEN_FILES' },
+        ],
+        [
+          { type: 'pipelines/stopPipelinePolling' },
+          { type: 'pipelines/clearEtagPoll' },
+          { type: 'pipelines/resetLatestPipeline' },
+          { type: 'setCurrentBranchId', payload: '' },
+        ],
+        done,
+      );
+    });
+
+    it('pushes new route', () => {
+      openMergeRequest(
+        { commit() {}, dispatch() {} },
+        { projectPath: 'gitlab-org/gitlab-ce', id: '1' },
+      );
+
+      expect(router.push).toHaveBeenCalledWith('/project/gitlab-org/gitlab-ce/merge_requests/1');
     });
   });
 });

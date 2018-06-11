@@ -3,7 +3,7 @@ module Boards
     class MoveService < Boards::BaseService
       def execute(issue)
         return false unless can?(current_user, :update_issue, issue)
-        return false if issue_params.empty?
+        return false if issue_params(issue).empty?
 
         update(issue)
       end
@@ -28,10 +28,10 @@ module Boards
       end
 
       def update(issue)
-        ::Issues::UpdateService.new(issue.project, current_user, issue_params).execute(issue)
+        ::Issues::UpdateService.new(issue.project, current_user, issue_params(issue)).execute(issue)
       end
 
-      def issue_params
+      def issue_params(issue)
         attrs = {}
 
         if move_between_lists?

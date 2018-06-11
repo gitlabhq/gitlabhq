@@ -19,7 +19,8 @@ module Gitlab
         Importer::PullRequestsImporter,
         Importer::IssuesImporter,
         Importer::DiffNotesImporter,
-        Importer::NotesImporter
+        Importer::NotesImporter,
+        Importer::LfsObjectsImporter
       ].freeze
 
       # project - The project to import the data into.

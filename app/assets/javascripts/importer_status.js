@@ -67,7 +67,15 @@ class ImporterStatus {
         false,
       ));
     })
-    .catch(() => flash(__('An error occurred while importing project')));
+    .catch((error) => {
+      let details = error;
+
+      if (error.response && error.response.data && error.response.data.errors) {
+        details = error.response.data.errors;
+      }
+
+      flash(__(`An error occurred while importing project: ${details}`));
+    });
   }
 
   autoUpdate() {

@@ -184,7 +184,7 @@ feature 'Runners' do
 
     given(:group) { create :group }
 
-    context 'as project and group master' do
+    context 'as project and group maintainer' do
       background do
         group.add_master(user)
       end
@@ -197,13 +197,13 @@ feature 'Runners' do
 
           expect(page).to have_content 'This group does not provide any group Runners yet'
 
-          expect(page).to have_content 'Group masters can register group runners in the Group CI/CD settings'
-          expect(page).not_to have_content 'Ask your group master to setup a group Runner'
+          expect(page).to have_content 'Group maintainers can register group runners in the Group CI/CD settings'
+          expect(page).not_to have_content 'Ask your group maintainer to setup a group Runner'
         end
       end
     end
 
-    context 'as project master' do
+    context 'as project maintainer' do
       context 'project without a group' do
         given(:project) { create :project }
 
@@ -223,8 +223,8 @@ feature 'Runners' do
 
           expect(page).to have_content 'This group does not provide any group Runners yet.'
 
-          expect(page).not_to have_content 'Group masters can register group runners in the Group CI/CD settings'
-          expect(page).to have_content 'Ask your group master to setup a group Runner.'
+          expect(page).not_to have_content 'Group maintainers can register group runners in the Group CI/CD settings'
+          expect(page).to have_content 'Ask your group maintainer to setup a group Runner.'
         end
       end
 

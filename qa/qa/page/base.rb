@@ -13,7 +13,7 @@ module QA
         visit current_url
       end
 
-      def wait(max: 60, time: 1, reload: true)
+      def wait(max: 60, time: 0.1, reload: true)
         start = Time.now
 
         while Time.now - start < max

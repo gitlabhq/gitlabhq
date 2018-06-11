@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe JiraService do
   include Gitlab::Routing
+  include AssetsHelpers
 
   describe '#options' do
     let(:service) do
@@ -164,6 +165,8 @@ describe JiraService do
     it "creates Remote Link reference in JIRA for comment" do
       @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
 
+      favicon_path = "http://localhost/assets/#{find_asset('favicon.png').digest_path}"
+
       # Creates comment
       expect(WebMock).to have_requested(:post, @comment_url)
       # Creates Remote Link in JIRA issue fields
@@ -173,7 +176,7 @@ describe JiraService do
           object: {
             url: "#{Gitlab.config.gitlab.url}/#{project.full_path}/commit/#{merge_request.diff_head_sha}",
             title: "GitLab: Solved by commit #{merge_request.diff_head_sha}.",
-            icon: { title: "GitLab", url16x16: "http://localhost/favicon.ico" },
+            icon: { title: "GitLab", url16x16: favicon_path },
             status: { resolved: true }
           }
         )
@@ -462,6 +465,20 @@ describe JiraService do
         expect(@service.properties['url']).to eq('http://jira.sample/projects/project_a')
         expect(@service.properties['api_url']).to eq('http://jira.sample/api')
       end
+    end
+  end
+
+  describe 'favicon urls', :request_store do
+    it 'includes the standard favicon' do
+      props = described_class.new.send(:build_remote_link_props, url: 'http://example.com', title: 'title')
+      expect(props[:object][:icon][:url16x16]).to match %r{^http://localhost/assets/favicon(?:-\h+).png$}
+    end
+
+    it 'includes returns the custom favicon' do
+      create :appearance, favicon: fixture_file_upload(Rails.root.join('spec/fixtures/dk.png'))
+
+      props = described_class.new.send(:build_remote_link_props, url: 'http://example.com', title: 'title')
+      expect(props[:object][:icon][:url16x16]).to match %r{^http://localhost/uploads/-/system/appearance/favicon/\d+/favicon_main_dk.png$}
     end
   end
 end

@@ -533,7 +533,7 @@ module Gitlab
       def count_commits(options)
         count_commits_options = process_count_commits_options(options)
 
-        gitaly_migrate(:count_commits) do |is_enabled|
+        gitaly_migrate(:count_commits, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             count_commits_by_gitaly(count_commits_options)
           else
@@ -738,7 +738,7 @@ module Gitlab
       #
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/330
       def commit_count(ref)
-        gitaly_migrate(:commit_count) do |is_enabled|
+        gitaly_migrate(:commit_count, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_commit_client.commit_count(ref)
           else
@@ -1543,7 +1543,7 @@ module Gitlab
         end
       end
 
-      def rev_list(including: [], excluding: [], objects: false, &block)
+      def rev_list(including: [], excluding: [], options: [], objects: false, &block)
         args = ['rev-list']
 
         args.push(*rev_list_param(including))
@@ -1555,6 +1555,10 @@ module Gitlab
         end
 
         args.push('--objects') if objects
+
+        if options.any?
+          args.push(*options)
+        end
 
         run_git!(args, lazy_block: block)
       end

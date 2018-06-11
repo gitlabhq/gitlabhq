@@ -2,7 +2,7 @@ module UploadsActions
   include Gitlab::Utils::StrongMemoize
   include SendFileUpload
 
-  UPLOAD_MOUNTS = %w(avatar attachment file logo header_logo).freeze
+  UPLOAD_MOUNTS = %w(avatar attachment file logo header_logo favicon).freeze
 
   def create
     link_to_file = UploadService.new(model, params[:file], uploader_class).execute
@@ -30,6 +30,11 @@ module UploadsActions
     expires_in 0.seconds, must_revalidate: true, private: true
 
     disposition = uploader.image_or_video? ? 'inline' : 'attachment'
+
+    uploaders = [uploader, *uploader.versions.values]
+    uploader = uploaders.find { |version| version.filename == params[:filename] }
+
+    return render_404 unless uploader
 
     send_upload(uploader, attachment: uploader.filename, disposition: disposition)
   end

@@ -11,17 +11,20 @@ export default {
   },
   computed: {
     ...mapGetters(['currentMergeRequest']),
-    ...mapState(['viewer']),
+    ...mapState(['viewer', 'currentMergeRequestId']),
     showLatestChangesText() {
-      return !this.currentMergeRequest || this.viewer === viewerTypes.diff;
+      return !this.currentMergeRequestId || this.viewer === viewerTypes.diff;
     },
     showMergeRequestText() {
-      return this.currentMergeRequest && this.viewer === viewerTypes.mr;
+      return this.currentMergeRequestId && this.viewer === viewerTypes.mr;
+    },
+    mergeRequestId() {
+      return `!${this.currentMergeRequest.iid}`;
     },
   },
   mounted() {
     this.$nextTick(() => {
-      this.updateViewer(this.currentMergeRequest ? viewerTypes.mr : viewerTypes.diff);
+      this.updateViewer(this.currentMergeRequestId ? viewerTypes.mr : viewerTypes.diff);
     });
   },
   methods: {
@@ -54,7 +57,11 @@ export default {
         </template>
         <template v-else-if="showMergeRequestText">
           {{ __('Merge request') }}
-          (<a :href="currentMergeRequest.web_url">!{{ currentMergeRequest.iid }}</a>)
+          (<a
+            v-if="currentMergeRequest"
+            :href="currentMergeRequest.web_url"
+            v-text="mergeRequestId"
+          ></a>)
         </template>
       </div>
     </template>

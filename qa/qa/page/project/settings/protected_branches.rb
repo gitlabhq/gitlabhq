@@ -40,16 +40,16 @@ module QA
             click_allow(:push, 'No one')
           end
 
-          def allow_devs_and_masters_to_push
-            click_allow(:push, 'Developers + Masters')
+          def allow_devs_and_maintainers_to_push
+            click_allow(:push, 'Developers + Maintainers')
           end
 
           def allow_no_one_to_merge
             click_allow(:merge, 'No one')
           end
 
-          def allow_devs_and_masters_to_merge
-            click_allow(:merge, 'Developers + Masters')
+          def allow_devs_and_maintainers_to_merge
+            click_allow(:merge, 'Developers + Maintainers')
           end
 
           def protect_branch
@@ -75,10 +75,6 @@ module QA
 
             within_element(:"allowed_to_#{action}_dropdown") do
               click_on text
-
-              wait(reload: false) do
-                has_css?('.is-active')
-              end
             end
           end
         end

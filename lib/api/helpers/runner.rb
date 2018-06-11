@@ -59,6 +59,11 @@ module API
       def max_artifacts_size
         Gitlab::CurrentSettings.max_artifacts_size.megabytes.to_i
       end
+
+      def job_forbidden!(job, reason)
+        header 'Job-Status', job.status
+        forbidden!(reason)
+      end
     end
   end
 end

@@ -19,7 +19,7 @@ or provide the credentials to an [existing Kubernetes cluster](#adding-an-existi
 ## Adding and creating a new GKE cluster via GitLab
 
 NOTE: **Note:**
-You need Master [permissions] and above to access the Kubernetes page.
+You need Maintainer [permissions] and above to access the Kubernetes page.
 
 Before proceeding, make sure the following requirements are met:
 
@@ -30,7 +30,7 @@ Before proceeding, make sure the following requirements are met:
   clusters on GKE. That would mean that a [billing
   account](https://cloud.google.com/billing/docs/how-to/manage-billing-account)
   must be set up and that you have to have permissions to access it.
-- You must have Master [permissions] in order to be able to access the
+- You must have Maintainer [permissions] in order to be able to access the
   **Kubernetes** page.
 - You must have [Cloud Billing API](https://cloud.google.com/billing/) enabled
 - You must have [Resource Manager
@@ -39,7 +39,7 @@ Before proceeding, make sure the following requirements are met:
 If all of the above requirements are met, you can proceed to create and add a
 new Kubernetes cluster that will be hosted on GKE to your project:
 
-1. Navigate to your project's **CI/CD > Kubernetes** page.
+1. Navigate to your project's **Operations > Kubernetes** page.
 1. Click on **Add Kubernetes cluster**.
 1. Click on **Create with GKE**.
 1. Connect your Google account if you haven't done already by clicking the
@@ -66,11 +66,11 @@ enable the Cluster integration.
 ## Adding an existing Kubernetes cluster
 
 NOTE: **Note:**
-You need Master [permissions] and above to access the Kubernetes page.
+You need Maintainer [permissions] and above to access the Kubernetes page.
 
 To add an existing Kubernetes cluster to your project:
 
-1. Navigate to your project's **CI/CD > Kubernetes** page.
+1. Navigate to your project's **Operations > Kubernetes** page.
 1. Click on **Add Kubernetes cluster**.
 1. Click on **Add an existing Kubernetes cluster** and fill in the details:
     - **Kubernetes cluster name** (required) - The name you wish to give the cluster.
@@ -201,6 +201,11 @@ Otherwise, you can list the IP addresses of all load balancers:
 kubectl get svc --all-namespaces -o jsonpath='{range.items[?(@.status.loadBalancer.ingress)]}{.status.loadBalancer.ingress[*].ip} '
 ```
 
+> **Note**: Some Kubernetes clusters return a hostname instead, like [Amazon EKS](https://aws.amazon.com/eks/). For these platforms, run:
+> ```bash
+> kubectl get service ingress-nginx-ingress-controller -n gitlab-managed-apps -o jsonpath="{.status.loadBalancer.ingress[0].hostname}"`.
+> ```
+
 The output is the external IP address of your cluster. This information can then
 be used to set up DNS entries and forwarding rules that allow external access to
 your deployed applications.
@@ -325,7 +330,7 @@ To disable the Kubernetes cluster integration, follow the same procedure.
 ## Removing the Kubernetes cluster integration
 
 NOTE: **Note:**
-You need Master [permissions] and above to remove a Kubernetes cluster integration.
+You need Maintainer [permissions] and above to remove a Kubernetes cluster integration.
 
 NOTE: **Note:**
 When you remove a cluster, you only remove its relation to GitLab, not the
@@ -382,7 +387,7 @@ you will need the Kubernetes project integration enabled.
 ### Web terminals
 
 NOTE: **Note:**
-Introduced in GitLab 8.15. You must be the project owner or have `master` permissions
+Introduced in GitLab 8.15. You must be the project owner or have `maintainer` permissions
 to use terminals. Support is limited to the first container in the
 first pod of your environment.
 
@@ -392,6 +397,10 @@ Docker and Kubernetes, so you get a new shell session within your existing
 containers. To use this integration, you should deploy to Kubernetes using
 the deployment variables above, ensuring any pods you create are labelled with
 `app=$CI_ENVIRONMENT_SLUG`. GitLab will do the rest!
+
+## Read more
+
+- [Connecting and deploying to an Amazon EKS cluster](eks_and_gitlab/index.md)
 
 [permissions]: ../../permissions.md
 [ee]: https://about.gitlab.com/products/

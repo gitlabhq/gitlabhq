@@ -20,7 +20,7 @@ module Gitlab
         end
 
         result[:newrev]
-      rescue Gitlab::Git::HooksService::PreReceiveError => e
+      rescue Gitlab::Git::PreReceiveError => e
         message = "Custom Hook failed: #{e.message}"
         raise Gitlab::Git::Wiki::OperationError, message
       end

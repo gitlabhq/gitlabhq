@@ -127,12 +127,16 @@
   color: $gl-danger;
 }
 
-.service-settings .form-control-label {
-  padding-top: 0;
+.service-settings {
+  input[type="radio"],
+  input[type="checkbox"] {
+    margin-top: 10px;
+  }
 }
 
 .integration-settings-form {
-  .card.card-body {
+  .card.card-body,
+  .info-well {
     padding: $gl-padding / 2;
     box-shadow: none;
   }
