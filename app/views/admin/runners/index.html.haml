@@ -82,12 +82,21 @@
                       {{hint}}
                     %span.js-filter-tag.dropdown-light-content
                       {{tag}}
+
             #js-dropdown-admin-runner-status.filtered-search-input-dropdown-menu.dropdown-menu
               %ul{ data: { dropdown: true } }
                 - Ci::Runner::AVAILABLE_STATUSES.each do |status|
                   %li.filter-dropdown-item{ data: { value: status } }
                     = button_tag class: %w[btn btn-link] do
                       = status.titleize
+
+            #js-dropdown-admin-runner-type.filtered-search-input-dropdown-menu.dropdown-menu
+              %ul{ data: { dropdown: true } }
+                - Ci::Runner::AVAILABLE_TYPES.each do |runner_type|
+                  %li.filter-dropdown-item{ data: { value: runner_type } }
+                    = button_tag class: %w[btn btn-link] do
+                      = runner_type.titleize
+
           = button_tag class: %w[clear-search hidden] do
             = icon('times')
         .filter-dropdown-container
