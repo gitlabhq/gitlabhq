@@ -21,7 +21,7 @@ module EE
     # Returns the created Note object
 
     def change_weight_note(noteable, project, author)
-      body = noteable.weight ? "changed weight to **#{noteable.weight}**," : 'removed the weight'
+      body = noteable.weight ? "changed weight to **#{noteable.weight}**" : 'removed the weight'
       create_note(NoteSummary.new(noteable, project, author, body, action: 'weight'))
     end
 
