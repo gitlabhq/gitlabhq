@@ -68,6 +68,30 @@ describe Group do
       end
     end
 
+    describe '#notification_settings', :nested_groups do
+      let(:user) { create(:user) }
+      let(:group) { create(:group) }
+      let(:sub_group) { create(:group, parent_id: group.id) }
+
+      before do
+        group.add_developer(user)
+        sub_group.add_developer(user)
+      end
+
+      it 'also gets notification settings from parent groups' do
+        expect(sub_group.notification_settings.size).to eq(2)
+        expect(sub_group.notification_settings).to include(group.notification_settings.first)
+      end
+
+      context 'when sub group is deleted' do
+        it 'does not delete parent notification settings' do
+          expect do
+            sub_group.destroy
+          end.to change { NotificationSetting.count }.by(-1)
+        end
+      end
+    end
+
     describe '#visibility_level_allowed_by_parent' do
       let(:parent) { create(:group, :internal) }
       let(:sub_group) { build(:group, parent_id: parent.id) }

@@ -1,23 +1,17 @@
-/* global monaco */
 import eventHub from '~/ide/eventhub';
-import monacoLoader from '~/ide/monaco_loader';
 import Model from '~/ide/lib/common/model';
 import { file } from '../../helpers';
 
 describe('Multi-file editor library model', () => {
   let model;
 
-  beforeEach(done => {
+  beforeEach(() => {
     spyOn(eventHub, '$on').and.callThrough();
 
-    monacoLoader(['vs/editor/editor.main'], () => {
-      const f = file('path');
-      f.mrChange = { diff: 'ABC' };
-      f.baseRaw = 'test';
-      model = new Model(monaco, f);
-
-      done();
-    });
+    const f = file('path');
+    f.mrChange = { diff: 'ABC' };
+    f.baseRaw = 'test';
+    model = new Model(f);
   });
 
   afterEach(() => {
@@ -38,7 +32,7 @@ describe('Multi-file editor library model', () => {
     const f = file('path');
     model.dispose();
 
-    model = new Model(monaco, f, {
+    model = new Model(f, {
       ...f,
       content: '123 testing',
     });

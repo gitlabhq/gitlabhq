@@ -1137,8 +1137,11 @@ class MergeRequest < ActiveRecord::Base
     project.merge_requests.merged.where(author_id: author_id).empty?
   end
 
+  # TODO: remove once production database rename completes
+  alias_attribute :allow_collaboration, :allow_maintainer_to_push
+
   def allow_collaboration
-    collaborative_push_possible? && super
+    collaborative_push_possible? && allow_maintainer_to_push
   end
 
   alias_method :allow_collaboration?, :allow_collaboration

@@ -175,11 +175,6 @@ $border-gray-normal-dashed: darken($gray-normal, $darken-border-dashed-factor);
 $border-gray-dark: darken($white-normal, $darken-border-factor);
 
 /*
- * Override Bootstrap 4 variables
- */
-$secondary: $gray-light;
-
-/*
  * UI elements
  */
 $border-color: #e5e5e5;
@@ -846,3 +841,14 @@ Prometheus
 $prometheus-table-row-highlight-color: $theme-gray-100;
 
 $priority-label-empty-state-width: 114px;
+
+/*
+ * Override Bootstrap 4 variables
+ */
+
+$secondary: $gray-light;
+$input-disabled-bg: $gray-light;
+$input-border-color: $theme-gray-200;
+$input-color: $gl-text-color;
+$font-family-sans-serif: $regular_font;
+$font-family-monospace: $monospace_font;

@@ -534,3 +534,9 @@
     :why: https://github.com/squaremo/bitsyntax-js/blob/master/LICENSE-MIT
     :versions: []
     :when: 2018-02-20 22:20:25.958123000 Z
+- - :approve
+  - "@webassemblyjs/ieee754"
+  - :who: Mike Greiling
+    :why: https://github.com/xtuc/webassemblyjs/blob/master/LICENSE
+    :versions: []
+    :when: 2018-06-08 05:30:56.764116000 Z

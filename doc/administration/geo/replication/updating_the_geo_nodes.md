@@ -20,7 +20,7 @@ Before 10.8, broadcast messages would not propagate without flushing the cache o
 This has been fixed in 10.8, but requires one last cache flush on each secondary node:
 
 ```bash
-gitlab-rake cache:clear
+sudo gitlab-rake cache:clear
 ```
 
 ## Upgrading to GitLab 10.6
@@ -59,8 +59,8 @@ authentication method.
 1. **[primary]** Reconfigure and restart
 
     ```bash
-    gitlab-ctl reconfigure
-    gitlab-ctl restart
+    sudo gitlab-ctl reconfigure
+    sudo gitlab-ctl restart
     ```
 
 1. **[secondary]** Login to all secondary nodes and edit `/etc/gitlab/gitlab.rb`:
@@ -89,8 +89,8 @@ authentication method.
 1. **[secondary]** Reconfigure and restart
 
     ```bash
-    gitlab-ctl reconfigure
-    gitlab-ctl restart
+    sudo gitlab-ctl reconfigure
+    sudo gitlab-ctl restart
     ```
 
 ## Upgrading to GitLab 10.5
@@ -206,7 +206,7 @@ following to clean this up.
 
 On the SECONDARY Geo nodes, run as root:
 
-```sh
+```bash
 mv /var/opt/gitlab/gitlab-rails/working /var/opt/gitlab/gitlab-rails/working.old
 mkdir /var/opt/gitlab/gitlab-rails/working
 chmod 700 /var/opt/gitlab/gitlab-rails/working
@@ -218,7 +218,7 @@ You may delete `/var/opt/gitlab/gitlab-rails/working.old` any time.
 Once this is done, we advise restarting GitLab on the secondary nodes for the
 new working directory to be used:
 
-```
+```bash
 sudo gitlab-ctl restart
 ```
 
@@ -267,7 +267,7 @@ is prepended with the relevant node for better clarity:
 1. **[secondary]** Make a backup of the `recovery.conf` file on **all**
    secondary nodes to preserve PostgreSQL's credentials:
 
-    ```
+    ```bash
     sudo cp /var/opt/gitlab/postgresql/data/recovery.conf /var/opt/gitlab/
     ```
 
@@ -279,7 +279,7 @@ is prepended with the relevant node for better clarity:
    stop all services except `postgresql` as we will use it to re-initialize the
    secondary node's database:
 
-    ```
+    ```bash
     sudo gitlab-ctl stop
     sudo gitlab-ctl start postgresql
     ```
@@ -288,19 +288,19 @@ is prepended with the relevant node for better clarity:
 
     1. **[secondary]**  Stop all services:
 
-        ```
+        ```bash
         sudo gitlab-ctl stop
         ```
 
     1. **[secondary]** Prevent running database migrations:
 
-        ```
+        ```bash
         sudo touch /etc/gitlab/skip-auto-migrations
         ```
 
     1. **[secondary]** Move the old database to another directory:
 
-        ```
+        ```bash
         sudo mv /var/opt/gitlab/postgresql{,.bak}
         ```
 
@@ -309,26 +309,26 @@ is prepended with the relevant node for better clarity:
 
     1. **[secondary]** Make sure all services are up:
 
-        ```
+        ```bash
         sudo gitlab-ctl start
         ```
 
     1. **[secondary]** Reconfigure GitLab:
 
-        ```
+        ```bash
         sudo gitlab-ctl reconfigure
         ```
 
     1. **[secondary]** Run the PostgreSQL upgrade command:
 
-          ```
-          sudo gitlab-ctl pg-upgrade
-          ```
+        ```bash
+        sudo gitlab-ctl pg-upgrade
+        ```
 
     1. **[secondary]** See the stored credentials for the database that you will
        need to re-initialize the replication:
 
-        ```
+        ```bash
         sudo grep -s primary_conninfo /var/opt/gitlab/recovery.conf
         ```
 
@@ -338,19 +338,19 @@ is prepended with the relevant node for better clarity:
     1. **[secondary]** Run the recovery script using the credentials from the
        previous step:
 
-        ```
+        ```bash
         sudo bash /tmp/replica.sh
         ```
 
     1. **[secondary]** Reconfigure GitLab:
 
-        ```
+        ```bash
         sudo gitlab-ctl reconfigure
         ```
 
     1. **[secondary]** Start all services:
 
-        ```
+        ```bash
         sudo gitlab-ctl start
         ```
 
@@ -359,7 +359,7 @@ is prepended with the relevant node for better clarity:
 1. **[primary]** After all secondaries are updated, start all services in
    primary:
 
-    ```
+    ```bash
     sudo gitlab-ctl start
     ```
 
@@ -370,7 +370,7 @@ everything is working correctly:
 
 1. Run the Geo raketask on all nodes, everything should be green:
 
-    ```
+    ```bash
     sudo gitlab-rake gitlab:geo:check
     ```
 
@@ -386,7 +386,7 @@ and it is required since 10.0.
 
 1. Run database migrations on tracking database
 
-    ```
+    ```bash
     sudo gitlab-rake geo:db:migrate
     ```
 

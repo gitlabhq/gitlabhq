@@ -1060,7 +1060,10 @@ class User < ActiveRecord::Base
 
   def notification_settings_for(source)
     if notification_settings.loaded?
-      notification_settings.find { |notification| notification.source == source }
+      notification_settings.find do |notification|
+        notification.source_type == source.class.base_class.name &&
+          notification.source_id == source.id
+      end
     else
       notification_settings.find_or_initialize_by(source: source)
     end

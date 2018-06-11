@@ -29,7 +29,9 @@ The following aspects of a project are imported:
   * Regular issue and pull request comments
 
 References to pull requests and issues are preserved (GitLab.com & 8.7+), and
-each imported repository defaults to `private` but [can be made public](../settings/index.md#sharing-and-permissions), as needed.
+each imported repository maintains visibility level unless that [visibility
+level is restricted](../../../public_access/public_access.md#restricting-the-use-of-public-or-internal-projects),
+in which case it defaults to the default project visibility.
 
 ## How it works
 
