@@ -378,6 +378,10 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  def non_latest_diffs
+    merge_request_diffs.where.not(id: merge_request_diff.id)
+  end
+
   def diff_size
     # Calling `merge_request_diff.diffs.real_size` will also perform
     # highlighting, which we don't need here.
@@ -619,18 +623,7 @@ class MergeRequest < ActiveRecord::Base
   def reload_diff(current_user = nil)
     return unless open?
 
-    old_diff_refs = self.diff_refs
-    new_diff = create_merge_request_diff
-
-    MergeRequests::MergeRequestDiffCacheService.new.execute(self, new_diff)
-
-    new_diff_refs = self.diff_refs
-
-    update_diff_discussion_positions(
-      old_diff_refs: old_diff_refs,
-      new_diff_refs: new_diff_refs,
-      current_user: current_user
-    )
+    MergeRequests::ReloadDiffsService.new(self, current_user).execute
   end
 
   def check_if_can_be_merged
