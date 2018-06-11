@@ -33,21 +33,31 @@ describe('sast issue body', () => {
         issue: sastIssue,
       });
 
-      expect(vm.$el.textContent.trim()).toContain(`${sastIssue.severity} (${sastIssue.confidence})`);
+      expect(vm.$el.textContent.trim()).toContain(`${sastIssue.severity} (${sastIssue.confidence}):`);
     });
   });
 
-  describe('without severity', () => {
-    it('does not render severity nor confidence', () => {
+  describe('with severity and without confidence (new json format)', () => {
+    it('renders severity only', () => {
       const issueCopy = Object.assign({}, sastIssue);
-      delete issueCopy.severity;
-
+      delete issueCopy.confidence;
       vm = mountComponent(Component, {
         issue: issueCopy,
       });
 
-      expect(vm.$el.textContent.trim()).not.toContain(sastIssue.severity);
-      expect(vm.$el.textContent.trim()).not.toContain(sastIssue.confidence);
+      expect(vm.$el.textContent.trim()).toContain(`${issueCopy.severity}:`);
+    });
+  });
+
+  describe('with confidence and without severity (new json format)', () => {
+    it('renders confidence only', () => {
+      const issueCopy = Object.assign({}, sastIssue);
+      delete issueCopy.severity;
+      vm = mountComponent(Component, {
+        issue: issueCopy,
+      });
+
+      expect(vm.$el.textContent.trim()).toContain(`(${issueCopy.confidence}):`);
     });
   });
 
