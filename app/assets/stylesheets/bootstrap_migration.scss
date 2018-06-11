@@ -266,9 +266,17 @@ pre code {
 .alert-danger {
   background-color: $red-500;
   border-color: $red-500;
+}
+
+.alert-warning,
+.alert-danger,
+.flash-notice {
+  border-radius: 0;
   color: $white-light;
 
-  h4 {
+  h4,
+  a,
+  .alert-link {
     color: $white-light;
   }
 }
