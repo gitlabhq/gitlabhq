@@ -267,6 +267,7 @@ pre code {
 .alert-warning,
 .alert-danger,
 .flash-notice {
+  border-radius: 0;
   color: $white-light;
 
   h4,
