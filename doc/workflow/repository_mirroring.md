@@ -333,8 +333,7 @@ A sample `pre-recieve` hook is provided below.
 #!/usr/bin/env bash
 
 # --- Assume only one push mirror target
-# Push mirroring remotes are named `remote_mirror_<id>`, this finds the first
-# remote and uses that.
+# Push mirroring remotes are named `remote_mirror_<id>`, this finds the first remote and uses that.
 TARGET_REPO=$(git remote | grep -m 1 remote_mirror)
 
 proxy_push()
@@ -344,14 +343,14 @@ proxy_push()
   NEWREV=$(git rev-parse $2)
   REFNAME="$3"
 
-  # --- TODO: only mirror protected branches
+  # --- Pattern of branches to proxy pushes
+  whitelisted=$(expr "$branch" : "\(master\)")
 
   case "$refname" in
     refs/heads/*)
       branch=$(expr "$refname" : "refs/heads/\(.*\)")
-      sandboxbranch=$(expr "$branch" : "\(sandbox/.*\)")
 
-      if [ "$sandboxbranch" != "$branch" ]; then
+      if [ "$whitelisted" = "$branch" ]; then
         error="$(git push --quiet $TARGET_REPO $NEWREV:$REFNAME 2>&1)"
         fail=$?
 
@@ -364,10 +363,6 @@ proxy_push()
           return
         fi
       fi
-      ;;
-    refs/tags/*)
-      tag=$(expr "$refname" : "refs/tags/\(.*\)")
-      # --- TODO: handle tags
       ;;
   esac
 }
