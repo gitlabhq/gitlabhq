@@ -58,20 +58,6 @@ describe Gitlab::UrlBlocker do
       end
     end
 
-    it 'returns true for a non-alphanumeric username' do
-      stub_resolv
-
-      aggregate_failures do
-        expect(described_class).to be_blocked_url('ssh://-oProxyCommand=whoami@example.com/a')
-
-        # The leading character here is a Unicode "soft hyphen"
-        expect(described_class).to be_blocked_url('ssh://­oProxyCommand=whoami@example.com/a')
-
-        # Unicode alphanumerics are allowed
-        expect(described_class).not_to be_blocked_url('ssh://ğitlab@example.com/a')
-      end
-    end
-
     it 'returns true for invalid URL' do
       expect(described_class.blocked_url?('http://:8080')).to be true
     end
@@ -118,6 +104,38 @@ describe Gitlab::UrlBlocker do
 
       def unstub_domain_resolv
         allow(Addrinfo).to receive(:getaddrinfo).and_call_original
+      end
+    end
+
+    context 'when enforce_user is' do
+      before do
+        stub_resolv
+      end
+
+      context 'false (default)' do
+        it 'does not block urls with a non-alphanumeric username' do
+          expect(described_class).not_to be_blocked_url('ssh://-oProxyCommand=whoami@example.com/a')
+
+          # The leading character here is a Unicode "soft hyphen"
+          expect(described_class).not_to be_blocked_url('ssh://­oProxyCommand=whoami@example.com/a')
+
+          # Unicode alphanumerics are allowed
+          expect(described_class).not_to be_blocked_url('ssh://ğitlab@example.com/a')
+        end
+      end
+
+      context 'true' do
+        it 'blocks urls with a non-alphanumeric username' do
+          aggregate_failures do
+            expect(described_class).to be_blocked_url('ssh://-oProxyCommand=whoami@example.com/a', enforce_user: true)
+
+            # The leading character here is a Unicode "soft hyphen"
+            expect(described_class).to be_blocked_url('ssh://­oProxyCommand=whoami@example.com/a', enforce_user: true)
+
+            # Unicode alphanumerics are allowed
+            expect(described_class).not_to be_blocked_url('ssh://ğitlab@example.com/a', enforce_user: true)
+          end
+        end
       end
     end
   end

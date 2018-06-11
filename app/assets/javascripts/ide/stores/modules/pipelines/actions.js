@@ -12,8 +12,12 @@ let eTagPoll;
 export const clearEtagPoll = () => {
   eTagPoll = null;
 };
-export const stopPipelinePolling = () => eTagPoll && eTagPoll.stop();
-export const restartPipelinePolling = () => eTagPoll && eTagPoll.restart();
+export const stopPipelinePolling = () => {
+  if (eTagPoll) eTagPoll.stop();
+};
+export const restartPipelinePolling = () => {
+  if (eTagPoll) eTagPoll.restart();
+};
 
 export const requestLatestPipeline = ({ commit }) => commit(types.REQUEST_LATEST_PIPELINE);
 export const receiveLatestPipelineError = ({ commit, dispatch }) => {
@@ -51,9 +55,9 @@ export const fetchLatestPipeline = ({ dispatch, rootGetters }) => {
 
   Visibility.change(() => {
     if (!Visibility.hidden()) {
-      eTagPoll.restart();
+      dispatch('restartPipelinePolling');
     } else {
-      eTagPoll.stop();
+      dispatch('stopPipelinePolling');
     }
   });
 };
