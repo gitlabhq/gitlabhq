@@ -112,18 +112,31 @@ module Backup
       end
     end
 
-    def restore_custom_hooks(project)
-      # TODO: Need to find a way to do this for gitaly
-      # Gitaly migration issue: https://gitlab.com/gitlab-org/gitaly/issues/1195
-      in_path(path_to_tars(project)) do |dir|
-        path_to_project_repo = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          path_to_repo(project)
-        end
-        cmd = %W(tar -xf #{path_to_tars(project, dir)} -C #{path_to_project_repo} #{dir})
+    def local_restore_custom_hooks(project, dir)
+      path_to_project_repo = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        path_to_repo(project)
+      end
+      cmd = %W(tar -xf #{path_to_tars(project, dir)} -C #{path_to_project_repo} #{dir})
+      output, status = Gitlab::Popen.popen(cmd)
+      unless status.zero?
+        progress_warn(project, cmd.join(' '), output)
+      end
+    end
 
-        output, status = Gitlab::Popen.popen(cmd)
-        unless status.zero?
-          progress_warn(project, cmd.join(' '), output)
+    def gitaly_restore_custom_hooks(project, dir)
+      custom_hooks_path = path_to_tars(project, dir)
+      Gitlab::GitalyClient::RepositoryService.new(project.repository)
+        .restore_custom_hooks(custom_hooks_path)
+    end
+
+    def restore_custom_hooks(project)
+      in_path(path_to_tars(project)) do |dir|
+        gitaly_migrate(:restore_custom_hooks) do |is_enabled|
+          if is_enabled
+            local_restore_custom_hooks(project, dir)
+          else
+            gitaly_restore_custom_hooks(project, dir)
+          end
         end
       end
     end

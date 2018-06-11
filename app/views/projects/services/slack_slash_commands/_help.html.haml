@@ -1,99 +1,100 @@
 - pretty_name = defined?(@project) ? @project.full_name : 'namespace / path'
 - run_actions_text = "Perform common operations on GitLab project: #{pretty_name}"
 
-.card
-  %p
-    This service allows users to perform common operations on this
-    project by entering slash commands in Slack.
-    = link_to help_page_path('user/project/integrations/slack_slash_commands.md'), target: '_blank' do
-      View documentation
-      = icon('external-link')
-  %p.inline
-    See list of available commands in Slack after setting up this service,
-    by entering
-  %kbd.inline /&lt;command&gt; help
-  - unless @service.template?
-    %p To setup this service:
-    %ul.list-unstyled.indent-list
-      %li
-        1.
-        = link_to 'https://my.slack.com/services/new/slash-commands', target: '_blank', rel: 'noreferrer noopener nofollow' do
-          Add a slash command
-          = icon('external-link')
-        in your Slack team with these options:
+.info-well
+  .well-segment
+    %p
+      This service allows users to perform common operations on this
+      project by entering slash commands in Slack.
+      = link_to help_page_path('user/project/integrations/slack_slash_commands.md'), target: '_blank' do
+        View documentation
+        = icon('external-link')
+    %p.inline
+      See list of available commands in Slack after setting up this service,
+      by entering
+    %kbd.inline /&lt;command&gt; help
+    - unless @service.template?
+      %p To setup this service:
+      %ul.list-unstyled.indent-list
+        %li
+          1.
+          = link_to 'https://my.slack.com/services/new/slash-commands', target: '_blank', rel: 'noreferrer noopener nofollow' do
+            Add a slash command
+            = icon('external-link')
+          in your Slack team with these options:
 
-    %hr
+      %hr
 
-    .help-form
-      .form-group
-        = label_tag nil, 'Command', class: 'col-sm-2 col-12 col-form-label'
-        .col-sm-10.col-12.text-block
-          %p Fill in the word that works best for your team.
-          %p
-            Suggestions:
-            %code= 'gitlab'
-            %code= @project.path # Path contains no spaces, but dashes
-            %code= @project.full_path
+      .help-form
+        .form-group
+          = label_tag nil, 'Command', class: 'col-sm-2 col-12 col-form-label'
+          .col-sm-10.col-12.text-block
+            %p Fill in the word that works best for your team.
+            %p
+              Suggestions:
+              %code= 'gitlab'
+              %code= @project.path # Path contains no spaces, but dashes
+              %code= @project.full_path
 
-      .form-group
-        = label_tag :url, 'URL', class: 'col-sm-2 col-12 col-form-label'
-        .col-sm-10.col-12.input-group
-          = text_field_tag :url, service_trigger_url(subject), class: 'form-control form-control-sm', readonly: 'readonly'
-          .input-group-append
-            = clipboard_button(target: '#url', class: 'input-group-text')
+        .form-group
+          = label_tag :url, 'URL', class: 'col-sm-2 col-12 col-form-label'
+          .col-sm-10.col-12.input-group
+            = text_field_tag :url, service_trigger_url(subject), class: 'form-control form-control-sm', readonly: 'readonly'
+            .input-group-append
+              = clipboard_button(target: '#url', class: 'input-group-text')
 
-      .form-group
-        = label_tag nil, 'Method', class: 'col-sm-2 col-12 col-form-label'
-        .col-sm-10.col-12.text-block POST
+        .form-group
+          = label_tag nil, 'Method', class: 'col-sm-2 col-12 col-form-label'
+          .col-sm-10.col-12.text-block POST
 
-      .form-group
-        = label_tag :customize_name, 'Customize name', class: 'col-sm-2 col-12 col-form-label'
-        .col-sm-10.col-12.input-group
-          = text_field_tag :customize_name, 'GitLab', class: 'form-control form-control-sm', readonly: 'readonly'
-          .input-group-append
-            = clipboard_button(target: '#customize_name', class: 'input-group-text')
+        .form-group
+          = label_tag :customize_name, 'Customize name', class: 'col-sm-2 col-12 col-form-label'
+          .col-sm-10.col-12.input-group
+            = text_field_tag :customize_name, 'GitLab', class: 'form-control form-control-sm', readonly: 'readonly'
+            .input-group-append
+              = clipboard_button(target: '#customize_name', class: 'input-group-text')
 
-      .form-group
-        = label_tag nil, 'Customize icon', class: 'col-sm-2 col-12 col-form-label'
-        .col-sm-10.col-12.text-block
-          = image_tag(asset_url('slash-command-logo.png'), width: 36, height: 36)
-          = link_to('Download image', asset_url('gitlab_logo.png'), class: 'btn btn-sm', target: '_blank', rel: 'noopener noreferrer')
+        .form-group
+          = label_tag nil, 'Customize icon', class: 'col-sm-2 col-12 col-form-label'
+          .col-sm-10.col-12.text-block
+            = image_tag(asset_url('slash-command-logo.png'), width: 36, height: 36)
+            = link_to('Download image', asset_url('gitlab_logo.png'), class: 'btn btn-sm', target: '_blank', rel: 'noopener noreferrer')
 
-      .form-group
-        = label_tag nil, 'Autocomplete', class: 'col-sm-2 col-12 col-form-label'
-        .col-sm-10.col-12.text-block Show this command in the autocomplete list
+        .form-group
+          = label_tag nil, 'Autocomplete', class: 'col-sm-2 col-12 col-form-label'
+          .col-sm-10.col-12.text-block Show this command in the autocomplete list
 
-      .form-group
-        = label_tag :autocomplete_description, 'Autocomplete description', class: 'col-sm-2 col-12 col-form-label'
-        .col-sm-10.col-12.input-group
-          = text_field_tag :autocomplete_description, run_actions_text, class: 'form-control form-control-sm', readonly: 'readonly'
-          .input-group-append
-            = clipboard_button(target: '#autocomplete_description', class: 'input-group-text')
+        .form-group
+          = label_tag :autocomplete_description, 'Autocomplete description', class: 'col-sm-2 col-12 col-form-label'
+          .col-sm-10.col-12.input-group
+            = text_field_tag :autocomplete_description, run_actions_text, class: 'form-control form-control-sm', readonly: 'readonly'
+            .input-group-append
+              = clipboard_button(target: '#autocomplete_description', class: 'input-group-text')
 
-      .form-group
-        = label_tag :autocomplete_usage_hint, 'Autocomplete usage hint', class: 'col-sm-2 col-12 col-form-label'
-        .col-sm-10.col-12.input-group
-          = text_field_tag :autocomplete_usage_hint, '[help]', class: 'form-control form-control-sm', readonly: 'readonly'
-          .input-group-append
-            = clipboard_button(target: '#autocomplete_usage_hint', class: 'input-group-text')
+        .form-group
+          = label_tag :autocomplete_usage_hint, 'Autocomplete usage hint', class: 'col-sm-2 col-12 col-form-label'
+          .col-sm-10.col-12.input-group
+            = text_field_tag :autocomplete_usage_hint, '[help]', class: 'form-control form-control-sm', readonly: 'readonly'
+            .input-group-append
+              = clipboard_button(target: '#autocomplete_usage_hint', class: 'input-group-text')
 
-      .form-group
-        = label_tag :descriptive_label, 'Descriptive label', class: 'col-sm-2 col-12 col-form-label'
-        .col-sm-10.col-12.input-group
-          = text_field_tag :descriptive_label, 'Perform common operations on GitLab project', class: 'form-control form-control-sm', readonly: 'readonly'
-          .input-group-append
-            = clipboard_button(target: '#descriptive_label', class: 'input-group-text')
+        .form-group
+          = label_tag :descriptive_label, 'Descriptive label', class: 'col-sm-2 col-12 col-form-label'
+          .col-sm-10.col-12.input-group
+            = text_field_tag :descriptive_label, 'Perform common operations on GitLab project', class: 'form-control form-control-sm', readonly: 'readonly'
+            .input-group-append
+              = clipboard_button(target: '#descriptive_label', class: 'input-group-text')
 
-    %hr
+      %hr
 
-    %ul.list-unstyled.indent-list
-      %li
-        2. Paste the
-        %strong Token
-        into the field below
-      %li
-        3. Select the
-        %strong Active
-        checkbox, press
-        %strong Save changes
-        and start using GitLab inside Slack!
+      %ul.list-unstyled.indent-list
+        %li
+          2. Paste the
+          %strong Token
+          into the field below
+        %li
+          3. Select the
+          %strong Active
+          checkbox, press
+          %strong Save changes
+          and start using GitLab inside Slack!

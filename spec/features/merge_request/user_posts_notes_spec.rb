@@ -139,7 +139,7 @@ describe 'Merge request > User posts notes', :js do
         page.within("#note_#{note.id}") do
           is_expected.to have_css('.note_edited_ago')
           expect(find('.note_edited_ago').text)
-            .to match(/less than a minute ago/)
+            .to match(/just now/)
         end
       end
     end
