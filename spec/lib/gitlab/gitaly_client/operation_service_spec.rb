@@ -48,7 +48,7 @@ describe Gitlab::GitalyClient::OperationService do
           .and_return(response)
 
         expect { subject }.to raise_error(
-          Gitlab::Git::HooksService::PreReceiveError, "something failed")
+          Gitlab::Git::PreReceiveError, "something failed")
       end
     end
   end
@@ -85,7 +85,7 @@ describe Gitlab::GitalyClient::OperationService do
           .and_return(response)
 
         expect { subject }.to raise_error(
-          Gitlab::Git::HooksService::PreReceiveError, "something failed")
+          Gitlab::Git::PreReceiveError, "something failed")
       end
     end
   end
