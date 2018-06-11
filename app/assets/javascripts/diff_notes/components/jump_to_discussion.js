@@ -10,7 +10,10 @@ import '../mixins/discussion';
 const JumpToDiscussion = Vue.extend({
   mixins: [DiscussionMixins],
   props: {
-    discussionId: String
+    discussionId: {
+      type: String,
+      required: true,
+    },
   },
   data: function () {
     return {

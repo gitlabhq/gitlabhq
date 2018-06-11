@@ -6,9 +6,18 @@ import Vue from 'vue';
 
 const ResolveDiscussionBtn = Vue.extend({
   props: {
-    discussionId: String,
-    mergeRequestId: Number,
-    canResolve: Boolean,
+    discussionId: {
+      type: String,
+      required: true,
+    },
+    mergeRequestId: {
+      type: Number,
+      required: true,
+    },
+    canResolve: {
+      type: Boolean,
+      required: true,
+    },
   },
   data: function() {
     return {

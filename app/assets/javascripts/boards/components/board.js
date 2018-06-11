@@ -22,10 +22,22 @@ gl.issueBoards.Board = Vue.extend({
     boardPromotionState,
   },
   props: {
-    list: Object,
-    disabled: Boolean,
-    issueLinkBase: String,
-    rootPath: String,
+    list: {
+      type: Object,
+      default: () => ({}),
+    },
+    disabled: {
+      type: Boolean,
+      required: true,
+    },
+    issueLinkBase: {
+      type: String,
+      required: true,
+    },
+    rootPath: {
+      type: String,
+      required: true,
+    },
     boardId: {
       type: String,
       required: true,

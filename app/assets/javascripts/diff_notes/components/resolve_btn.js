@@ -8,14 +8,38 @@ import Flash from '../../flash';
 
 const ResolveBtn = Vue.extend({
   props: {
-    noteId: Number,
-    discussionId: String,
-    resolved: Boolean,
-    canResolve: Boolean,
-    resolvedBy: String,
-    authorName: String,
-    authorAvatar: String,
-    noteTruncated: String,
+    noteId: {
+      type: Number,
+      required: true,
+    },
+    discussionId: {
+      type: String,
+      required: true,
+    },
+    resolved: {
+      type: Boolean,
+      required: true,
+    },
+    canResolve: {
+      type: Boolean,
+      required: true,
+    },
+    resolvedBy: {
+      type: String,
+      required: true,
+    },
+    authorName: {
+      type: String,
+      required: true,
+    },
+    authorAvatar: {
+      type: String,
+      required: true,
+    },
+    noteTruncated: {
+      type: String,
+      required: true,
+    },
   },
   data: function () {
     return {

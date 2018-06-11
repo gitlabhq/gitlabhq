@@ -40,6 +40,7 @@ gl.issueBoards.IssueCardInner = Vue.extend({
     groupId: {
       type: Number,
       required: false,
+      default: null,
     },
   },
   data() {

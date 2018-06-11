@@ -10,7 +10,12 @@ const DiffNoteAvatars = Vue.extend({
   components: {
     userAvatarImage,
   },
-  props: ['discussionId'],
+  props: {
+    discussionId: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       isVisible: false,

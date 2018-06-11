@@ -30,7 +30,10 @@ gl.issueBoards.BoardSidebar = Vue.extend({
     weight,
   },
   props: {
-    currentUser: Object
+    currentUser: {
+      type: Object,
+      default: () => ({}),
+    },
   },
   data() {
     return {

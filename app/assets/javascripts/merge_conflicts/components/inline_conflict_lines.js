@@ -8,7 +8,10 @@ import Vue from 'vue';
   global.mergeConflicts.inlineConflictLines = Vue.extend({
     mixins: [global.mergeConflicts.utils, global.mergeConflicts.actions],
     props: {
-      file: Object
+      file: {
+        type: Object,
+        required: true,
+      },
     },
   });
 })(window.gl || (window.gl = {}));

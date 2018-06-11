@@ -8,7 +8,10 @@ import Vue from 'vue';
   global.mergeConflicts.parallelConflictLines = Vue.extend({
     mixins: [global.mergeConflicts.utils, global.mergeConflicts.actions],
     props: {
-      file: Object
+      file: {
+        type: Object,
+        required: true,
+      },
     },
     template: `
       <table>
