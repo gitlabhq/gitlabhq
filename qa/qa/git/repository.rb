@@ -7,8 +7,6 @@ module QA
     class Repository
       include Scenario::Actable
 
-      attr_reader :push_output
-
       def self.perform(*args)
         Dir.mktmpdir do |dir|
           Dir.chdir(dir) { super }
@@ -71,7 +69,9 @@ module QA
       end
 
       def push_changes(branch = 'master')
-        @push_output, _ = run_and_redact_credentials("git push #{@uri} #{branch}")
+        output, _ = run_and_redact_credentials("git push #{@uri} #{branch}")
+
+        output
       end
 
       def commits
