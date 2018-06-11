@@ -286,6 +286,7 @@ describe Project do
       expect(project2.errors[:import_url].first).to include('Username needs to start with an alphanumeric character')
     end
 
+<<<<<<< HEAD
     it 'creates import state when mirror gets enabled' do
       project2 = create(:project)
 
@@ -294,6 +295,8 @@ describe Project do
       end.to change { ProjectImportState.where(project: project2).count }.from(0).to(1)
     end
 
+=======
+>>>>>>> upstream/master
     describe 'project pending deletion' do
       let!(:project_pending_deletion) do
         create(:project,

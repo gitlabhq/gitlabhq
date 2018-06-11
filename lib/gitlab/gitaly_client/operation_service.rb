@@ -20,7 +20,7 @@ module Gitlab
         response = GitalyClient.call(@repository.storage, :operation_service, :user_delete_tag, request)
 
         if pre_receive_error = response.pre_receive_error.presence
-          raise Gitlab::Git::HooksService::PreReceiveError, pre_receive_error
+          raise Gitlab::Git::PreReceiveError, pre_receive_error
         end
       end
 
@@ -35,7 +35,7 @@ module Gitlab
 
         response = GitalyClient.call(@repository.storage, :operation_service, :user_create_tag, request)
         if pre_receive_error = response.pre_receive_error.presence
-          raise Gitlab::Git::HooksService::PreReceiveError, pre_receive_error
+          raise Gitlab::Git::PreReceiveError, pre_receive_error
         elsif response.exists
           raise Gitlab::Git::Repository::TagExistsError
         end
@@ -56,7 +56,7 @@ module Gitlab
           :user_create_branch, request)
 
         if response.pre_receive_error.present?
-          raise Gitlab::Git::HooksService::PreReceiveError.new(response.pre_receive_error)
+          raise Gitlab::Git::PreReceiveError.new(response.pre_receive_error)
         end
 
         branch = response.branch
@@ -76,7 +76,7 @@ module Gitlab
         response = GitalyClient.call(@repository.storage, :operation_service, :user_delete_branch, request)
 
         if pre_receive_error = response.pre_receive_error.presence
-          raise Gitlab::Git::HooksService::PreReceiveError, pre_receive_error
+          raise Gitlab::Git::PreReceiveError, pre_receive_error
         end
       end
 
@@ -106,7 +106,7 @@ module Gitlab
         second_response = response_enum.next
 
         if second_response.pre_receive_error.present?
-          raise Gitlab::Git::HooksService::PreReceiveError, second_response.pre_receive_error
+          raise Gitlab::Git::PreReceiveError, second_response.pre_receive_error
         end
 
         branch_update = second_response.branch_update
@@ -175,7 +175,7 @@ module Gitlab
         )
 
         if response.pre_receive_error.presence
-          raise Gitlab::Git::HooksService::PreReceiveError, response.pre_receive_error
+          raise Gitlab::Git::PreReceiveError, response.pre_receive_error
         elsif response.git_error.presence
           raise Gitlab::Git::Repository::GitError, response.git_error
         else
@@ -242,7 +242,7 @@ module Gitlab
           :user_commit_files, req_enum, remote_storage: start_repository.storage)
 
         if (pre_receive_error = response.pre_receive_error.presence)
-          raise Gitlab::Git::HooksService::PreReceiveError, pre_receive_error
+          raise Gitlab::Git::PreReceiveError, pre_receive_error
         end
 
         if (index_error = response.index_error.presence)
@@ -280,7 +280,7 @@ module Gitlab
 
       def handle_cherry_pick_or_revert_response(response)
         if response.pre_receive_error.presence
-          raise Gitlab::Git::HooksService::PreReceiveError, response.pre_receive_error
+          raise Gitlab::Git::PreReceiveError, response.pre_receive_error
         elsif response.commit_error.presence
           raise Gitlab::Git::CommitError, response.commit_error
         elsif response.create_tree_error.presence

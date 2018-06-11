@@ -562,7 +562,7 @@ describe UploadsController do
     end
 
     context 'original filename or a version filename must match' do
-      let!(:appearance) { create :appearance, favicon: fixture_file_upload(Rails.root.join('spec/fixtures/dk.png'), 'image/png') }
+      let!(:appearance) { create :appearance, favicon: fixture_file_upload('spec/fixtures/dk.png', 'image/png') }
 
       context 'has a valid filename on the original file' do
         it 'successfully returns the file' do
