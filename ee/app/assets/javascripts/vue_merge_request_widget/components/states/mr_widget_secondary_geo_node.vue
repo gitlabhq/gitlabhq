@@ -1,9 +1,13 @@
 <script>
+import tooltip from '~/vue_shared/directives/tooltip';
 import statusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon.vue';
 
 export default {
   components: {
     statusIcon,
+  },
+  directives: {
+    tooltip,
   },
   props: {
     mr: {
@@ -25,9 +29,9 @@ export default {
       </span>
       <a
         :href="mr.geoSecondaryHelpPath"
-        data-title="About this feature"
-        data-toggle="tooltip"
+        :title="__('About this feature')"
         data-placement="bottom"
+        v-tooltip
         target="_blank"
         rel="noopener noreferrer nofollow"
         data-container="body"
