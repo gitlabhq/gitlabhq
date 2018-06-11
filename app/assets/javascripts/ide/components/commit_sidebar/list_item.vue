@@ -30,6 +30,10 @@ export default {
       required: false,
       default: false,
     },
+    activeFileKey: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
     iconName() {
@@ -38,6 +42,12 @@ export default {
     },
     iconClass() {
       return `multi-file-${this.file.tempFile ? 'addition' : 'modified'} append-right-8`;
+    },
+    fullKey() {
+      return `${this.keyPrefix.toLowerCase()}-${this.file.key}`;
+    },
+    isActive() {
+      return this.activeFileKey === this.fullKey;
     },
   },
   methods: {
@@ -70,7 +80,12 @@ export default {
 </script>
 
 <template>
-  <div class="multi-file-commit-list-item">
+  <div
+    class="multi-file-commit-list-item"
+    :class="{
+      'is-active': isActive
+    }"
+  >
     <button
       type="button"
       class="multi-file-commit-list-path"

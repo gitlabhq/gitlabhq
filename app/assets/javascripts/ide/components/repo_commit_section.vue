@@ -27,7 +27,7 @@ export default {
       'unusedSeal',
     ]),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
-    ...mapGetters(['lastOpenedFile', 'hasChanges', 'someUncommitedChanges']),
+    ...mapGetters(['lastOpenedFile', 'hasChanges', 'someUncommitedChanges', 'activeFile']),
     ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled']),
     showStageUnstageArea() {
       return !!(this.someUncommitedChanges || this.lastCommitMsg || !this.unusedSeal);
@@ -44,6 +44,7 @@ export default {
     if (this.lastOpenedFile) {
       this.openPendingTab({
         file: this.lastOpenedFile,
+        keyPrefix: this.lastOpenedFile.changed ? 'unstaged' : 'staged',
       })
         .then(changeViewer => {
           if (changeViewer) {
@@ -92,6 +93,7 @@ export default {
         action="stageAllChanges"
         :action-btn-text="__('Stage all')"
         item-action-component="stage-button"
+        :active-file-key="activeFile.key"
       />
       <commit-files-list
         icon-name="staged"
@@ -101,6 +103,7 @@ export default {
         :action-btn-text="__('Unstage all')"
         item-action-component="unstage-button"
         :staged-list="true"
+        :active-file-key="activeFile.key"
       />
     </template>
     <empty-state

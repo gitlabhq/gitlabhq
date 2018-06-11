@@ -43,6 +43,10 @@ export default {
       required: false,
       default: false,
     },
+    activeFileKey: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -115,6 +119,7 @@ export default {
           :action-component="itemActionComponent"
           :key-prefix="title"
           :staged-list="stagedList"
+          :active-file-key="activeFileKey"
         />
       </li>
     </ul>

@@ -612,6 +612,10 @@
   }
 }
 
+.multi-file-commit-list-item.is-active {
+  background-color: $white-normal;
+}
+
 .multi-file-commit-list-path {
   padding: 0;
   background: none;
