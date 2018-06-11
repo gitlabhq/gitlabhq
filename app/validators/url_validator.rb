@@ -18,6 +18,13 @@
 # This validator can also block urls pointing to localhost or the local network to
 # protect against Server-side Request Forgery (SSRF), or check for the right port.
 #
+# The available options are:
+# - protocols: Allowed protocols. Default: http and https
+# - allow_localhost: Allow urls pointing to localhost. Default: true
+# - allow_local_network: Allow urls pointing to private network addresses. Default: true
+# - ports: Allowed ports. Default: all.
+# - enforce_user: Validate user format. Default: false
+#
 # Example:
 #   class User < ActiveRecord::Base
 #     validates :personal_url, url: { allow_localhost: false, allow_local_network: false}
@@ -35,7 +42,7 @@ class UrlValidator < ActiveModel::EachValidator
     if value.present?
       value.strip!
     else
-      record.errors.add(attribute, "must be a valid URL")
+      record.errors.add(attribute, 'must be a valid URL')
     end
 
     Gitlab::UrlBlocker.validate!(value, blocker_args)
@@ -51,7 +58,8 @@ class UrlValidator < ActiveModel::EachValidator
       protocols: DEFAULT_PROTOCOLS,
       ports: [],
       allow_localhost: true,
-      allow_local_network: true
+      allow_local_network: true,
+      enforce_user: false
     }
   end
 
@@ -64,7 +72,7 @@ class UrlValidator < ActiveModel::EachValidator
   end
 
   def blocker_args
-    current_options.slice(:allow_localhost, :allow_local_network, :protocols, :ports).tap do |args|
+    current_options.slice(*default_options.keys).tap do |args|
       if allow_setting_local_requests?
         args[:allow_localhost] = args[:allow_local_network] = true
       end
