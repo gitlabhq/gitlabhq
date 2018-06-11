@@ -161,7 +161,7 @@ export default {
       <a
         v-if="showApprovalDocLink"
         :href="mr.approvalsHelpPath"
-        :data-title="__('About this feature')"
+        :title="__('About this feature')"
         data-placement="bottom"
         target="_blank"
         rel="noopener noreferrer nofollow"
