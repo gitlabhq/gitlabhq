@@ -70,6 +70,24 @@ GitLab's architecture.
 1. Don't take more than one week between starting work on a feature and
 sharing a Merge Request with a reviewer or a maintainer.
 
+### Keep refactorings and deliverables separate
+
+In general, new features and bug fixes should not happen in the same merge request as refactorings.
+This ensures we are not blocking a deliverable because the path of refactoring needs to be adjusted or has external dependencies.
+If a refactoring makes sense in the context of a deliverable, make sure to start it before you work on the deliverable itself.
+That way you can better decide early in the cycle if the refactoring is likely to be completed on time.
+
+#### Requirements for using a new class, component, or paradigm in a deliverable
+
+- There is at least one example in the code base already (by refactoring an existing feature).
+- The new way of doing things is at least mentioned in the frontend guide.
+- The change was announced in a frontend call.
+
+#### Exceptions from this rule
+
+- The refactoring is immediately necessary to proceed with the deliverable.
+- The refactoring is necessary to have the deliverable ready before feature freeze.
+
 ### Vue features
 1. Follow the steps in [Vue.js Best Practices](vue.md)
 1. Follow the style guide.
