@@ -1,12 +1,12 @@
 import Vue from 'vue';
-import authorTimeComponent from '~/vue_merge_request_widget/components/mr_widget_author_time.vue';
+import MrWidgetAuthorTime from '~/vue_merge_request_widget/components/mr_widget_author_time.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
-describe('MRWidgetAuthorTime', () => {
+describe('MrWidgetAuthorTime', () => {
   let vm;
 
   beforeEach(() => {
-    const Component = Vue.extend(authorTimeComponent);
+    const Component = Vue.extend(MrWidgetAuthorTime);
 
     vm = mountComponent(Component, {
       actionText: 'Merged by',

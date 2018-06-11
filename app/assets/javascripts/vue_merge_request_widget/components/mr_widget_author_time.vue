@@ -3,7 +3,7 @@
   import MrWidgetAuthor from './mr_widget_author.vue';
 
   export default {
-    name: 'MRWidgetAuthorTime',
+    name: 'MrWidgetAuthorTime',
     components: {
       MrWidgetAuthor,
     },
