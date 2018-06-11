@@ -20,10 +20,10 @@ module QA
           gcloud container clusters
           create #{cluster_name}
           --enable-legacy-authorization
-          --zone #{gcloud_zone}
+          --zone #{Runtime::Env.gcloud_zone}
           && gcloud container clusters
           get-credentials
-          --zone #{gcloud_zone}
+          --zone #{Runtime::Env.gcloud_zone}
           #{cluster_name}
         CMD
 
@@ -36,7 +36,7 @@ module QA
       def remove!
         shell <<~CMD.tr("\n", ' ')
           gcloud container clusters delete
-          --zone #{gcloud_zone}
+          --zone #{Runtime::Env.gcloud_zone}
 	  #{cluster_name}
 	  --quiet --async
 	CMD
@@ -61,16 +61,12 @@ module QA
       def attempt_login_with_env_vars
         puts "No gcloud account. Attempting to login from env vars GCLOUD_ACCOUNT_EMAIL and GCLOUD_ACCOUNT_KEY."
         gcloud_account_key = Tempfile.new('gcloud-account-key')
-        gcloud_account_key.write(ENV.fetch("GCLOUD_ACCOUNT_KEY"))
+        gcloud_account_key.write(Runtime::Env.gcloud_account_key)
         gcloud_account_key.close
-        gcloud_account_email = ENV.fetch("GCLOUD_ACCOUNT_EMAIL")
+        gcloud_account_email = Runtime::Env.gcloud_account_email
         shell("gcloud auth activate-service-account #{gcloud_account_email} --key-file #{gcloud_account_key.path}")
       ensure
         gcloud_account_key && gcloud_account_key.unlink
-      end
-
-      def gcloud_zone
-        ENV.fetch('GCLOUD_ZONE')
       end
     end
   end
