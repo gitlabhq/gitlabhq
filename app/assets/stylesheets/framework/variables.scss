@@ -435,6 +435,22 @@ $badge-bg: rgba(0, 0, 0, 0.07);
 $badge-color: $gl-text-color-secondary;
 
 /*
+* Pagination
+*/
+$pagination-padding-y: 6px;
+$pagination-padding-x: 16px;
+$pagination-line-height: 20px;
+$pagination-border-color: $border-color;
+$pagination-active-bg: $blue-600;
+$pagination-active-border-color: $blue-600;
+$pagination-hover-bg: $blue-50;
+$pagination-hover-border-color: $border-color;
+$pagination-hover-color: $gl-text-color;
+$pagination-disabled-color: #cdcdcd;
+$pagination-disabled-bg: $gray-light;
+$pagination-disabled-border-color: $border-color;
+
+/*
  *  Status icons
  */
 $status-icon-size: 22px;
