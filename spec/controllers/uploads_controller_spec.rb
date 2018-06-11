@@ -6,13 +6,13 @@ shared_examples 'content not cached without revalidation' do
 end
 
 describe UploadsController do
-  let!(:user) { create(:user, avatar: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")) }
+  let!(:user) { create(:user, avatar: fixture_file_upload("spec/fixtures/dk.png", "image/png")) }
 
   describe 'POST create' do
     let(:model)   { 'personal_snippet' }
     let(:snippet) { create(:personal_snippet, :public) }
-    let(:jpg)     { fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg') }
-    let(:txt)     { fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain') }
+    let(:jpg)     { fixture_file_upload('spec/fixtures/rails_sample.jpg', 'image/jpg') }
+    let(:txt)     { fixture_file_upload('spec/fixtures/doc_sample.txt', 'text/plain') }
 
     context 'when a user does not have permissions to upload a file' do
       it "returns 401 when the user is not logged in" do
@@ -205,7 +205,7 @@ describe UploadsController do
     end
 
     context "when viewing a project avatar" do
-      let!(:project) { create(:project, avatar: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")) }
+      let!(:project) { create(:project, avatar: fixture_file_upload("spec/fixtures/dk.png", "image/png")) }
 
       context "when the project is public" do
         before do
@@ -314,7 +314,7 @@ describe UploadsController do
     end
 
     context "when viewing a group avatar" do
-      let!(:group)   { create(:group, avatar: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")) }
+      let!(:group)   { create(:group, avatar: fixture_file_upload("spec/fixtures/dk.png", "image/png")) }
 
       context "when the group is public" do
         context "when not signed in" do
@@ -521,7 +521,7 @@ describe UploadsController do
 
     context 'Appearance' do
       context 'when viewing a custom header logo' do
-        let!(:appearance) { create :appearance, header_logo: fixture_file_upload(Rails.root.join('spec/fixtures/dk.png'), 'image/png') }
+        let!(:appearance) { create :appearance, header_logo: fixture_file_upload('spec/fixtures/dk.png', 'image/png') }
 
         context 'when not signed in' do
           it 'responds with status 200' do
@@ -541,7 +541,7 @@ describe UploadsController do
       end
 
       context 'when viewing a custom logo' do
-        let!(:appearance) { create :appearance, logo: fixture_file_upload(Rails.root.join('spec/fixtures/dk.png'), 'image/png') }
+        let!(:appearance) { create :appearance, logo: fixture_file_upload('spec/fixtures/dk.png', 'image/png') }
 
         context 'when not signed in' do
           it 'responds with status 200' do
