@@ -13,12 +13,15 @@ module API
                          desc: 'The scope of specific runners to show'
         optional :type, type: String, values: Ci::Runner::AVAILABLE_TYPES,
                         desc: 'The type of the runners to show'
+        optional :status, type: String, values: Ci::Runner::AVAILABLE_STATUSES,
+                          desc: 'The status of the runners to show'
         use :pagination
       end
       get do
         runners = current_user.ci_owned_runners
         runners = filter_runners(runners, params[:scope], allowed_scopes: Ci::Runner::AVAILABLE_STATUSES)
         runners = filter_runners(runners, params[:type], allowed_scopes: Ci::Runner::AVAILABLE_TYPES)
+        runners = filter_runners(runners, params[:status], allowed_scopes: Ci::Runner::AVAILABLE_STATUSES)
 
         present paginate(runners), with: Entities::Runner
       end
@@ -31,6 +34,8 @@ module API
                          desc: 'The scope of specific runners to show'
         optional :type, type: String, values: Ci::Runner::AVAILABLE_TYPES,
                         desc: 'The type of the runners to show'
+        optional :status, type: String, values: Ci::Runner::AVAILABLE_STATUSES,
+                          desc: 'The status of the runners to show'
         use :pagination
       end
       get 'all' do
@@ -39,6 +44,7 @@ module API
         runners = Ci::Runner.all
         runners = filter_runners(runners, params[:scope])
         runners = filter_runners(runners, params[:type], allowed_scopes: Ci::Runner::AVAILABLE_TYPES)
+        runners = filter_runners(runners, params[:status], allowed_scopes: Ci::Runner::AVAILABLE_STATUSES)
 
         present paginate(runners), with: Entities::Runner
       end
@@ -129,12 +135,15 @@ module API
                          desc: 'The scope of specific runners to show'
         optional :type, type: String, values: Ci::Runner::AVAILABLE_TYPES,
                         desc: 'The type of the runners to show'
+        optional :status, type: String, values: Ci::Runner::AVAILABLE_STATUSES,
+                          desc: 'The status of the runners to show'
         use :pagination
       end
       get ':id/runners' do
         runners = Ci::Runner.owned_or_instance_wide(user_project.id)
         runners = filter_runners(runners, params[:scope])
         runners = filter_runners(runners, params[:type], allowed_scopes: Ci::Runner::AVAILABLE_TYPES)
+        runners = filter_runners(runners, params[:status], allowed_scopes: Ci::Runner::AVAILABLE_STATUSES)
 
         present paginate(runners), with: Entities::Runner
       end

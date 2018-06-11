@@ -12,12 +12,14 @@ Get a list of specific runners available to the user.
 GET /runners
 GET /runners?scope=active
 GET /runners?type=project_type
+GET /runners?status=active
 ```
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
 | `scope`   | string  | no       | The scope of specific runners to show, one of: `active`, `paused`, `online`, `offline`; showing all runners if none provided |
 | `type`    | string  | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
+| `status`  | string  | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
 
 ```
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/runners"
@@ -59,12 +61,14 @@ is restricted to users with `admin` privileges.
 GET /runners/all
 GET /runners/all?scope=online
 GET /runners/all?type=project_type
+GET /runners/all?status=active
 ```
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
 | `scope`   | string  | no       | The scope of runners to show, one of: `specific`, `shared`, `active`, `paused`, `online`, `offline`; showing all runners if none provided |
 | `type`    | string  | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
+| `status`  | string  | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
 
 ```
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/runners/all"

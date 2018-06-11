@@ -74,6 +74,22 @@ describe API::Runners do
 
         expect(response).to have_gitlab_http_status(400)
       end
+
+      it 'filters runners by status' do
+        create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project])
+
+        get api('/runners?status=paused', user)
+
+        expect(json_response).to match_array [
+          a_hash_including('description' => 'Inactive project runner')
+        ]
+      end
+
+      it 'does not filter by invalid status' do
+        get api('/runners?status=bogus', user)
+
+        expect(response).to have_gitlab_http_status(400)
+      end
     end
 
     context 'unauthorized user' do
@@ -146,6 +162,22 @@ describe API::Runners do
 
         it 'does not filter by invalid type' do
           get api('/runners/all?type=bogus', admin)
+
+          expect(response).to have_gitlab_http_status(400)
+        end
+
+        it 'filters runners by status' do
+          create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project])
+
+          get api('/runners/all?status=paused', admin)
+
+          expect(json_response).to match_array [
+            a_hash_including('description' => 'Inactive project runner')
+          ]
+        end
+
+        it 'does not filter by invalid status' do
+          get api('/runners/all?status=bogus', admin)
 
           expect(response).to have_gitlab_http_status(400)
         end
@@ -665,6 +697,22 @@ describe API::Runners do
 
       it 'does not filter by invalid type' do
         get api("/projects/#{project.id}/runners?type=bogus", user)
+
+        expect(response).to have_gitlab_http_status(400)
+      end
+
+      it 'filters runners by status' do
+        create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project])
+
+        get api("/projects/#{project.id}/runners?status=paused", user)
+
+        expect(json_response).to match_array [
+          a_hash_including('description' => 'Inactive project runner')
+        ]
+      end
+
+      it 'does not filter by invalid status' do
+        get api("/projects/#{project.id}/runners?status=bogus", user)
 
         expect(response).to have_gitlab_http_status(400)
       end
