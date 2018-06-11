@@ -107,11 +107,10 @@ describe Projects::DiscussionsController do
           post :resolve, request_params
         end
 
-        # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-        xit "returns the name of the resolving user" do
+        it "returns the name of the resolving user" do
           post :resolve, request_params
 
-          expect(JSON.parse(response.body)["resolved_by"]).to eq(user.name)
+          expect(JSON.parse(response.body)["resolved_by"]['name']).to eq(user.name)
         end
 
         it "returns status 200" do
