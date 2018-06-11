@@ -1726,7 +1726,11 @@ describe Project do
         .with(project.repository_storage, project.disk_path, project.import_url)
         .and_return(true)
 
-      expect_any_instance_of(Repository).to receive(:after_import)
+      # Works around https://github.com/rspec/rspec-mocks/issues/910
+      expect(Project).to receive(:find).with(project.id).twice.and_return(project)
+      expect(project.repository).to receive(:after_import)
+        .and_call_original
+      expect(project.wiki.repository).to receive(:after_import)
         .and_call_original
     end
 
