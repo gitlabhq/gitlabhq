@@ -67,7 +67,7 @@ module API
               if geo_node.current?
                 GeoNodeStatus.fast_current_node_status
               else
-                geo_node.find_or_build_status
+                geo_node.status
               end
             end
           end

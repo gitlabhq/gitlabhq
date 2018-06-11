@@ -20,6 +20,8 @@ describe GeoNodeStatus, :geo do
 
   describe '#fast_current_node_status' do
     it 'reads the cache and spawns the worker' do
+      expect(described_class).to receive(:spawn_worker).once
+
       rails_cache = double
       expect(rails_cache).to receive(:read).with(described_class.cache_key)
       expect(Rails).to receive(:cache).and_return(rails_cache)

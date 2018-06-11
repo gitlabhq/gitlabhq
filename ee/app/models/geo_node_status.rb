@@ -91,8 +91,18 @@ class GeoNodeStatus < ActiveRecord::Base
   end
 
   def self.fast_current_node_status
-    attrs = Rails.cache.read(cache_key) || {}
-    new(attrs)
+    attrs = Rails.cache.read(cache_key)
+
+    if attrs
+      new(attrs)
+    else
+      spawn_worker
+      nil
+    end
+  end
+
+  def self.spawn_worker
+    ::Geo::MetricsUpdateWorker.perform_async
   end
 
   def self.cache_key
