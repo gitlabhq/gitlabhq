@@ -57,6 +57,7 @@ module QA
       autoload :Wiki, 'qa/factory/resource/wiki'
       autoload :File, 'qa/factory/resource/file'
       autoload :Fork, 'qa/factory/resource/fork'
+      autoload :SSHKey, 'qa/factory/resource/ssh_key'
     end
 
     module Repository
@@ -217,6 +218,7 @@ module QA
 
     module Profile
       autoload :PersonalAccessTokens, 'qa/page/profile/personal_access_tokens'
+      autoload :SSHKeys, 'qa/page/profile/ssh_keys'
     end
 
     module Issuable

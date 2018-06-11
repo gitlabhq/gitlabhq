@@ -25,4 +25,4 @@
   .col-md-12
     .float-right
       - unless @key.is_a? LDAPKey
-        = link_to 'Remove', path_to_key(@key, is_admin), data: {confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove delete-key"
+        = link_to 'Remove', path_to_key(@key, is_admin), data: {confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove delete-key qa-delete-key-button"
