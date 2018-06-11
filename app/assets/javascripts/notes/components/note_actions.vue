@@ -55,6 +55,7 @@ export default {
     canResolve: {
       type: Boolean,
       required: false,
+      default: false,
     },
     resolvable: {
       type: Boolean,
