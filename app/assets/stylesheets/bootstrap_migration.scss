@@ -268,3 +268,11 @@ pre code {
 input[type=color].form-control {
   height: $input-height;
 }
+
+.toggle-sidebar-button {
+  .collapse-text,
+  .icon-angle-double-left,
+  .icon-angle-double-right {
+    color: $gl-text-color-secondary;
+  }
+}
