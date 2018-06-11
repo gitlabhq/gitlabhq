@@ -526,7 +526,7 @@ describe API::Users do
     end
 
     it 'updates user with avatar' do
-      put api("/users/#{user.id}", admin), { avatar: fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
+      put api("/users/#{user.id}", admin), { avatar: fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif') }
 
       user.reload
 

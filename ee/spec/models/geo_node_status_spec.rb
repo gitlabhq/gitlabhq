@@ -82,7 +82,7 @@ describe GeoNodeStatus, :geo do
   # can't see changes inside a transaction of a different connection.
   describe '#attachments_synced_count', :delete do
     it 'only counts successful syncs' do
-      create_list(:user, 3, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png'))
+      create_list(:user, 3, avatar: fixture_file_upload('spec/fixtures/dk.png', 'image/png'))
       uploads = Upload.all.pluck(:id)
 
       create(:geo_file_registry, :avatar, file_id: uploads[0])
@@ -93,7 +93,7 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'does not count synced files that were replaced' do
-      user = create(:user, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png'))
+      user = create(:user, avatar: fixture_file_upload('spec/fixtures/dk.png', 'image/png'))
 
       expect(subject.attachments_count).to eq(1)
       expect(subject.attachments_synced_count).to eq(0)
@@ -106,7 +106,7 @@ describe GeoNodeStatus, :geo do
       expect(subject.attachments_count).to eq(1)
       expect(subject.attachments_synced_count).to eq(1)
 
-      user.update(avatar: fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg'))
+      user.update(avatar: fixture_file_upload('spec/fixtures/rails_sample.jpg', 'image/jpg'))
 
       subject = described_class.current_node_status
 
@@ -127,7 +127,7 @@ describe GeoNodeStatus, :geo do
   # can't see changes inside a transaction of a different connection.
   describe '#attachments_synced_missing_on_primary_count', :delete do
     it 'only counts successful syncs' do
-      create_list(:user, 3, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png'))
+      create_list(:user, 3, avatar: fixture_file_upload('spec/fixtures/dk.png', 'image/png'))
       uploads = Upload.all.pluck(:id)
 
       create(:geo_file_registry, :avatar, file_id: uploads[0], missing_on_primary: true)
@@ -154,7 +154,7 @@ describe GeoNodeStatus, :geo do
   end
 
   describe '#attachments_synced_in_percentage', :delete do
-    let(:avatar) { fixture_file_upload(Rails.root.join('spec/fixtures/dk.png')) }
+    let(:avatar) { fixture_file_upload('spec/fixtures/dk.png') }
     let(:upload_1) { create(:upload, model: group, path: avatar) }
     let(:upload_2) { create(:upload, model: project_1, path: avatar) }
 

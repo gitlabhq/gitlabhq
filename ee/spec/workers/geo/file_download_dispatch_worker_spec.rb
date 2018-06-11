@@ -321,7 +321,7 @@ describe Geo::FileDownloadDispatchWorker, :geo do
       result_object = double(:result, success: true, bytes_downloaded: 100, primary_missing_file: false)
       allow_any_instance_of(::Gitlab::Geo::Transfer).to receive(:download_from_primary).and_return(result_object)
 
-      avatar = fixture_file_upload(Rails.root.join('spec/fixtures/dk.png'))
+      avatar = fixture_file_upload('spec/fixtures/dk.png')
       create_list(:lfs_object, 2, :with_file)
       create_list(:user, 2, avatar: avatar)
       create_list(:note, 2, :with_attachment)
@@ -375,7 +375,7 @@ describe Geo::FileDownloadDispatchWorker, :geo do
       end
 
       it 'does not perform Geo::FileDownloadWorker for upload objects that do not belong to selected namespaces to replicate' do
-        avatar = fixture_file_upload(Rails.root.join('spec/fixtures/dk.png'))
+        avatar = fixture_file_upload('spec/fixtures/dk.png')
         avatar_in_synced_group = create(:upload, model: synced_group, path: avatar)
         create(:upload, model: create(:group), path: avatar)
         avatar_in_project_in_synced_group = create(:upload, model: project_in_synced_group, path: avatar)

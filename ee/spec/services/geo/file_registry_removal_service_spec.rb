@@ -138,7 +138,7 @@ describe Geo::FileRegistryRemovalService do
 
     context 'with namespace_file' do
       set(:group) { create(:group) }
-      let(:file) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png') }
+      let(:file) { fixture_file_upload('spec/fixtures/dk.png', 'image/png') }
       let!(:upload) do
         NamespaceFileUploader.new(group).store!(file)
         Upload.find_by(model: group, uploader: NamespaceFileUploader)
@@ -161,7 +161,7 @@ describe Geo::FileRegistryRemovalService do
 
     context 'with personal_file' do
       let(:snippet) { create(:personal_snippet) }
-      let(:file) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png') }
+      let(:file) { fixture_file_upload('spec/fixtures/dk.png', 'image/png') }
       let!(:upload) do
         PersonalFileUploader.new(snippet).store!(file)
         Upload.find_by(model: snippet, uploader: PersonalFileUploader)

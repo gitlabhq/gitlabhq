@@ -88,8 +88,7 @@ describe 'Project Jobs Permissions' do
   describe 'artifacts page' do
     context 'when recent job has artifacts available' do
       before do
-        artifacts = Rails.root.join('spec/fixtures/ci_build_artifacts.zip')
-        archive = fixture_file_upload(artifacts, 'application/zip')
+        archive = fixture_file_upload('spec/fixtures/ci_build_artifacts.zip')
 
         job.update_attributes(legacy_artifacts_file: archive)
       end
