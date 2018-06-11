@@ -160,11 +160,6 @@ table {
   }
 }
 
-.alert-warning,
-.alert-warning .alert-link {
-  color: $white-light;
-}
-
 // Polyfill deprecated selectors
 
 .hidden {
@@ -267,9 +262,16 @@ pre code {
 .alert-danger {
   background-color: $red-500;
   border-color: $red-500;
+}
+
+.alert-warning,
+.alert-danger,
+.flash-notice {
   color: $white-light;
 
-  h4 {
+  h4,
+  a,
+  .alert-link {
     color: $white-light;
   }
 }
