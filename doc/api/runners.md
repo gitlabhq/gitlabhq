@@ -17,7 +17,7 @@ GET /runners?status=active
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
-| `scope`   | string  | no       | The scope of specific runners to show, one of: `active`, `paused`, `online`, `offline`; showing all runners if none provided |
+| `scope`   | string  | no       | Deprecated: Use `type` or `status` instead. The scope of specific runners to show, one of: `active`, `paused`, `online`, `offline`; showing all runners if none provided |
 | `type`    | string  | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
 | `status`  | string  | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
 
@@ -66,7 +66,7 @@ GET /runners/all?status=active
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
-| `scope`   | string  | no       | The scope of runners to show, one of: `specific`, `shared`, `active`, `paused`, `online`, `offline`; showing all runners if none provided |
+| `scope`   | string  | no       | Deprecated: Use `type` or `status` instead. The scope of runners to show, one of: `specific`, `shared`, `active`, `paused`, `online`, `offline`; showing all runners if none provided |
 | `type`    | string  | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
 | `status`  | string  | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
 
@@ -352,7 +352,7 @@ GET /projects/:id/runners?status=active
 | Attribute | Type           | Required | Description         |
 |-----------|----------------|----------|---------------------|
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `scope`   | string         | no       | The scope of specific runners to show, one of: `active`, `paused`, `online`, `offline`; showing all runners if none provided |
+| `scope`   | string         | no       | Deprecated: Use `type` or `status` instead. The scope of specific runners to show, one of: `active`, `paused`, `online`, `offline`; showing all runners if none provided |
 | `type`    | string         | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
 | `status`  | string         | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
 
