@@ -209,6 +209,10 @@ table {
       border-bottom: 1px solid $well-inner-border;
     }
   }
+
+  .badge.badge-gray {
+    background-color: $well-expand-item;
+  }
 }
 
 .card {
