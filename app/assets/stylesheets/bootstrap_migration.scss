@@ -89,6 +89,10 @@ a {
   color: $gl-link-color;
 }
 
+hr {
+  overflow: hidden;
+}
+
 .form-group.row .col-form-label {
   // Bootstrap 4 aligns labels to the left
   // for horizontal forms
