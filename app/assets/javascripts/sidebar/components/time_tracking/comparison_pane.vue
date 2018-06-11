@@ -1,8 +1,12 @@
 <script>
 import { parseSeconds, stringifyTime } from '../../../lib/utils/pretty_time';
+import tooltip from '../../../vue_shared/directives/tooltip';
 
 export default {
   name: 'TimeTrackingComparisonPane',
+  directives: {
+    tooltip,
+  },
   props: {
     timeSpent: {
       type: Number,
@@ -50,9 +54,8 @@ export default {
 <template>
   <div class="time-tracking-comparison-pane">
     <div
-      :aria-valuenow="timeRemainingTooltip"
+      v-tooltip
       :title="timeRemainingTooltip"
-      :data-original-title="timeRemainingTooltip"
       :class="timeRemainingStatusClass"
       class="compare-meter"
       data-toggle="tooltip"
@@ -62,7 +65,6 @@ export default {
       <div
         :aria-valuenow="timeRemainingPercent"
         class="meter-container"
-        role="timeSpentPercent"
       >
         <div
           :style="{ width: timeRemainingPercent }"
