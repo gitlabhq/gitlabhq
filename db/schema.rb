@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20180608201435) do>>>>>>> Add index to ci_builds.artifacts_file
-=======
 ActiveRecord::Schema.define(version: 20180608201435) do
->>>>>>> Regenerate schema before running specs
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
