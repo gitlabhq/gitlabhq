@@ -57,6 +57,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     resources :uploads, only: [:create] do
       collection do
         get ":secret/:filename", action: :show, as: :show, constraints: { filename: %r{[^/]+} }
+        post :authorize
       end
     end
 
