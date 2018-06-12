@@ -56,6 +56,8 @@ describe('RepoCommitSection', () => {
       vm.$store.state.entries[f.path] = f;
     });
 
+    spyOn(vm, 'openPendingTab').and.callThrough();
+
     return vm.$mount();
   }
 
@@ -176,6 +178,13 @@ describe('RepoCommitSection', () => {
     it('opens last opened file', () => {
       expect(store.state.openFiles.length).toBe(1);
       expect(store.state.openFiles[0].pending).toBe(true);
+    });
+
+    it('calls openPendingTab', () => {
+      expect(vm.openPendingTab).toHaveBeenCalledWith({
+        file: vm.lastOpenedFile,
+        keyPrefix: 'unstaged',
+      });
     });
   });
 });

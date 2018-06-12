@@ -90,4 +90,20 @@ describe('Multi-file editor commit sidebar list item', () => {
       });
     });
   });
+
+  describe('is active', () => {
+    it('does not add active class when dont keys match', () => {
+      expect(vm.$el.classList).not.toContain('is-active');
+    });
+
+    it('adds active class when keys match', done => {
+      vm.keyPrefix = 'staged';
+
+      vm.$nextTick(() => {
+        expect(vm.$el.classList).toContain('is-active');
+
+        done();
+      });
+    });
+  });
 });
