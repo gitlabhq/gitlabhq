@@ -34,16 +34,24 @@ describe DropRepositoryStorageEventsForGeoEvents, :migration do
         schema_migrate_down!
       end
 
-      it 'should fill in repository_storage_path' do
+      it 'creates repository_storage_path column' do
         columns = table(table_name).columns.map(&:name)
 
         expect(columns).to include("repository_storage_path")
+      end
 
+      it 'fills in all repository_storage_path cells' do
         null_columns = described_class
-        .execute("SELECT COUNT(*) FROM #{table_name} WHERE repository_storage_path IS NULL;")
-        .first['count']
+          .execute("SELECT COUNT(*) FROM #{table_name} WHERE repository_storage_path IS NULL;")
+          .first['count']
 
         expect(null_columns.to_i).to eq(0)
+      end
+
+      it 'fills in repository_storage_path with the legacy_disk_path' do
+        described_class.execute("SELECT repository_storage_name, repository_storage_path FROM #{table_name};").each do |row|
+          expect(row['repository_storage_path']).to eq(legacy_disk_path(row['repository_storage_name']))
+        end
       end
     end
 
@@ -86,5 +94,9 @@ describe DropRepositoryStorageEventsForGeoEvents, :migration do
 
       it_behaves_like 'recreates the repository_storage_path column'
     end
+  end
+
+  def legacy_disk_path(name)
+    Gitlab.config.repositories.storages[name].legacy_disk_path
   end
 end

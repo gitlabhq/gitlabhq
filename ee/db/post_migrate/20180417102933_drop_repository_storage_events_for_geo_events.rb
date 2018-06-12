@@ -4,8 +4,9 @@
 class DropRepositoryStorageEventsForGeoEvents < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
+  disable_ddl_transaction!
+
   DOWNTIME = false
-  BATCH_SIZE = 5_000
   TABLES = %i(geo_hashed_storage_migrated_events geo_repository_created_events
               geo_repository_deleted_events geo_repository_renamed_events)
 
@@ -26,52 +27,17 @@ class DropRepositoryStorageEventsForGeoEvents < ActiveRecord::Migration
   private
 
   def update_repository_storage_path(table)
-    min_id = 0
-
-    loop do
-      newest = newest_entry(table)
-      break unless newest
-      break if newest['repository_storage_path'].present?
-
-      new_batch = batch(table, min_id)
-      update_batch(table, new_batch)
-
-      min_id = new_batch.last.to_i
+    update_column_in_batches(table, :repository_storage_path, update_statement) do |t, q|
+      q.where(t[:repository_storage_path].eq(nil))
     end
   end
 
-  def newest_entry(table)
-    execute(
+  def update_statement
+    Arel.sql(
       <<~SQL
-      SELECT id, repository_storage_path
-      FROM #{table}
-      ORDER BY id DESC
-      LIMIT 1;
-      SQL
-    ).first
-  end
-
-  def batch(table, min_id)
-    execute(
-      <<~SQL
-        SELECT id
-        FROM #{table}
-        WHERE id > #{min_id}
-        ORDER BY id ASC
-        LIMIT #{BATCH_SIZE};
-      SQL
-    ).map { |row| row['id'] }
-  end
-
-  def update_batch(table, ids)
-    execute(
-      <<~SQL
-      UPDATE #{table}
-      SET repository_storage_path =
         CASE repository_storage_name
           #{case_statements}
         END
-      WHERE id IN (#{ids.join(',')})
       SQL
     )
   end
