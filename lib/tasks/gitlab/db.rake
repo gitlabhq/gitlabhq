@@ -72,32 +72,19 @@ namespace :gitlab do
 
     desc 'Output pseudonymity dump of selected tables'
     task pseudonymizer: :environment do
-      unless License.feature_available? :pseudonymizer
-        raise "The pseudonymizer is not available with this license."
-      end
-
-      abort "Pseudonymizer disabled." unless Gitlab::CurrentSettings.pseudonymizer_enabled?
+      abort "The pseudonymizer is not available with this license." unless License.feature_available?(:pseudonymizer)
+      abort "The pseudonymizer is disabled." unless Gitlab::CurrentSettings.pseudonymizer_enabled?
 
       options = Pseudonymizer::Options.new(
-        config: YAML.load_file(Rails.root.join(Gitlab.config.pseudonymizer.manifest)),
-        start_at: Time.now.utc
+        config: YAML.load_file(Rails.root.join(Gitlab.config.pseudonymizer.manifest))
       )
 
       dumper = Pseudonymizer::Dumper.new(options)
       dumper.tables_to_csv
 
-      uploader = Pseudonymizer::Uploader.new(options, progress)
+      uploader = Pseudonymizer::Uploader.new(options)
       uploader.upload
       uploader.cleanup
-    end
-
-    def progress
-      if ENV['CRON']
-        # Do not output progress for Cron
-        StringIO.new
-      else
-        $stdout
-      end
     end
   end
 end

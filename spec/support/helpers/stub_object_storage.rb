@@ -63,8 +63,8 @@ module StubObjectStorage
       EOS
   end
 
-  def stub_object_storage_pseudonymizer(options:)
+  def stub_object_storage_pseudonymizer
     stub_object_storage(connection_params: Pseudonymizer::Uploader.object_store_credentials,
-                        remote_directory: options.config.upload.remote_directory)
+                        remote_directory: Gitlab.config.pseudonymizer.upload.remote_directory)
   end
 end

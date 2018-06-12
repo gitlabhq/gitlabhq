@@ -14,10 +14,7 @@
             - if is_enabled
               = pseudonymizer_description_text
             - else
-              - if is_available
-                = pseudonymizer_disabled_description_text
-              - else
-                = pseudonymizer_unavailable_description_text
+              = pseudonymizer_disabled_description_text
 
   = f.submit 'Save changes', class: "btn btn-success"
 

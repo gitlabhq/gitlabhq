@@ -13,7 +13,7 @@ class PseudonymizerWorker
     dumper = Pseudonymizer::Dumper.new(options)
     dumper.tables_to_csv
 
-    uploader = Pseudonymizer::Uploader.new(options)
+    uploader = Pseudonymizer::Uploader.new(options, progress_output: File.open(File::NULL, "w"))
     uploader.upload
     uploader.cleanup
   end

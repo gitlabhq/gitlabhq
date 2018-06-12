@@ -3,10 +3,11 @@ require 'spec_helper'
 describe Pseudonymizer::Uploader do
   let(:base_dir) { Dir.mktmpdir }
   let(:options) do
-    Pseudonymizer::Options.new(config: Gitlab.config.pseudonymizer,
-                               start_at: Time.now.utc)
+    Pseudonymizer::Options.new(
+      config: YAML.load_file(Rails.root.join(Gitlab.config.pseudonymizer.manifest))
+    )
   end
-  let(:remote_directory) { subject.send(:remote_directory) }
+  let(:remote_directory) { described_class.remote_directory }
   subject { described_class.new(options) }
 
   def mock_file(file_name)
@@ -15,7 +16,7 @@ describe Pseudonymizer::Uploader do
 
   before do
     allow(options).to receive(:output_dir).and_return(base_dir)
-    stub_object_storage_pseudonymizer(options: options)
+    stub_object_storage_pseudonymizer
 
     10.times {|i| mock_file("file_#{i}.test")}
     mock_file("schema.yml")

@@ -1,7 +1,10 @@
 module Pseudonymizer
   class Uploader
+    include Gitlab::Utils::StrongMemoize
+
     RemoteStorageUnavailableError = Class.new(StandardError)
 
+    # Our settings use string keys, but Fog expects symbols
     def self.object_store_credentials
       Gitlab.config.pseudonymizer.upload.connection.to_hash.deep_symbolize_keys
     end
@@ -10,8 +13,8 @@ module Pseudonymizer
       Gitlab.config.pseudonymizer.upload.remote_directory
     end
 
-    def initialize(options, progress = nil)
-      @progress = progress || $stdout
+    def initialize(options, progress_output: nil)
+      @progress_output = progress_output || $stdout
       @config = options.config
       @output_dir = options.output_dir
       @upload_dir = options.upload_dir
@@ -20,7 +23,7 @@ module Pseudonymizer
     end
 
     def upload
-      progress.puts "Uploading output files to remote storage #{remote_directory} ... "
+      progress_output.puts "Uploading output files to remote storage #{remote_directory}:"
 
       file_list.each do |file|
         upload_file(file, remote_directory)
@@ -28,43 +31,37 @@ module Pseudonymizer
     end
 
     def cleanup
-      progress.print "Deleting tmp directory #{@output_dir} ... "
       return unless File.exist?(@output_dir)
 
-      if FileUtils.rm_rf(@output_dir)
-        progress.puts "done".color(:green)
-      else
-        progress.puts "failed".color(:red)
-      end
+      progress_output.print "Deleting tmp directory #{@output_dir} ... "
+      progress_output.puts FileUtils.rm_rf(@output_dir) ? "done".color(:green) : "failed".color(:red)
     end
 
     private
 
-    attr_reader :progress
+    attr_reader :progress_output
 
     def upload_file(file, directory)
-      progress.print "\t#{file} ... "
+      progress_output.print "\t#{file} ... "
 
       if directory.files.create(key: File.join(@upload_dir, File.basename(file)),
                                 body: File.open(file),
                                 public: false)
-        progress.puts "done".color(:green)
+        progress_output.puts "done".color(:green)
       else
-        progress.puts "uploading CSV to #{remote_directory} failed".color(:red)
+        progress_output.puts "failed".color(:red)
       end
     end
 
     def remote_directory
-      if @connection_params.blank?
-        progress.puts "Cannot upload files, make sure the `pseudonimizer.upload.connection` is set properly".color(:red)
-        raise RemoteStorageUnavailableError.new(@config)
-      end
-
-      connect_to_remote_directory
+      strong_memoize(:remote_directory) { connect_to_remote_directory }
     end
 
     def connect_to_remote_directory
-      # our settings use string keys, but Fog expects symbols
+      if @connection_params.blank?
+        abort "Cannot upload files, make sure the `pseudonimizer.upload.connection` is set properly".color(:red)
+      end
+
       connection = ::Fog::Storage.new(@connection_params)
 
       # We only attempt to create the directory for local backups. For AWS

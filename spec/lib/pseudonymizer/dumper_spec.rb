@@ -4,8 +4,9 @@ describe Pseudonymizer::Dumper do
   let!(:project) { create(:project) }
   let(:base_dir) { Dir.mktmpdir }
   let(:options) do
-    Pseudonymizer::Options.new(config: Gitlab.config.pseudonymizer,
-                               start_at: Time.now.utc)
+    Pseudonymizer::Options.new(
+      config: YAML.load_file(Rails.root.join(Gitlab.config.pseudonymizer.manifest))
+    )
   end
   subject(:pseudo) { described_class.new(options) }
 
@@ -17,7 +18,6 @@ describe Pseudonymizer::Dumper do
     FileUtils.rm_rf(base_dir)
   end
 
-  # create temp directory in before block
   describe 'Pseudo tables' do
     it 'outputs project tables to csv' do
       pseudo.config["tables"] = {
@@ -31,7 +31,6 @@ describe Pseudonymizer::Dumper do
 
       # grab the first table it outputs. There would only be 1.
       project_table_file = pseudo.tables_to_csv[0]
-      # Ignore the `.` and `..` in the directory.
 
       expect(project_table_file.include? "projects_").to be true
       expect(project_table_file.include? ".csv").to be true
@@ -40,9 +39,7 @@ describe Pseudonymizer::Dumper do
       File.foreach(project_table_file).with_index do |line, line_num|
         if line_num == 0
           columns = line.split(",")
-        end
-
-        if line_num == 1
+        elsif line_num == 1
           project_data = line.split(",")
           break
         end

@@ -479,7 +479,7 @@ Settings.backup['upload']['storage_class'] ||= nil
 #
 Settings['pseudonymizer'] ||= Settingslogic.new({})
 Settings.pseudonymizer['enabled'] = false if Settings.pseudonymizer['enabled'].nil?
-Settings.pseudonymizer['manifest'] = Settings.pseudonymizer['manifest'] || "lib/pseudonymity/manifest.yml"
+Settings.pseudonymizer['manifest'] = Settings.pseudonymizer['manifest'] || "lib/pseudonymizer/manifest.yml"
 Settings.pseudonymizer['upload'] ||= Settingslogic.new({ 'remote_directory' => nil, 'connection' => nil })
 # Settings.pseudonymizer['upload']['multipart_chunk_size'] ||= 104857600
 

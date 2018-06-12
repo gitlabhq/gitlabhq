@@ -238,7 +238,7 @@
     = render 'usage'
 
 - if Gitlab::CurrentSettings.pseudonymizer_can_be_configured?
-  %section.settings.as-usage.no-animate#js-elt-database-dump-settings{ class: ('expanded' if expanded) }
+  %section.settings.as-pseudonymizer.no-animate#js-pseudonymizer-settings{ class: ('expanded' if expanded) }
     .settings-header
       %h4
         = _('Pseudonymizer Cron Job')

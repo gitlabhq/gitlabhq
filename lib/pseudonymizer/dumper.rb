@@ -36,8 +36,9 @@ module Pseudonymizer
     def initialize(options)
       @config = options.config
       @output_dir = options.output_dir
+      @start_at = options.start_at
 
-      @schema = {}
+      @schema = Hash.new { |h, k| h[k] = {} }
       @output_files = []
     end
 
@@ -49,13 +50,15 @@ module Pseudonymizer
       schema_to_yml
       file_list_to_json
 
-      tables.each do |k, v|
+      tables.map do |k, v|
         table_to_csv(k, v['whitelist'], v['pseudo'])
       end
     end
 
+    private
+
     def get_and_log_file_name(ext, prefix = nil, filename = nil)
-      file_timestamp = filename || "#{prefix}_#{Time.now.to_i}"
+      file_timestamp = filename || "#{prefix}_#{@start_at.to_i}"
       file_timestamp = "#{file_timestamp}.#{ext}"
       @output_files << file_timestamp
       File.join(output_dir, file_timestamp)
@@ -72,7 +75,6 @@ module Pseudonymizer
     end
 
     def table_to_csv(table, whitelist_columns, pseudonymity_columns)
-      @schema[table] = {}
       table_to_schema(table)
       write_to_csv_file(table, table_page_results(table, whitelist_columns, pseudonymity_columns))
     rescue => e
@@ -131,10 +133,10 @@ module Pseudonymizer
       @schema[table]["gl_mapping_key"] = "id"
     end
 
-    def write_to_csv_file(title, contents)
-      Rails.logger.info "Writing #{title} ..."
-      file_path = get_and_log_file_name("csv", title)
+    def write_to_csv_file(table, contents)
+      file_path = get_and_log_file_name("csv", table)
 
+      Rails.logger.info "#{self.class.name} writing #{table} to #{file_path}."
       CSV.open(file_path, 'w') do |csv|
         contents.with_index do |row, i|
           csv << row.keys if i == 0 # header
@@ -145,7 +147,5 @@ module Pseudonymizer
 
       file_path
     end
-
-    private :write_to_csv_file
   end
 end

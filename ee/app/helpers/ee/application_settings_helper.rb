@@ -43,10 +43,6 @@ module EE
       _("The pseudonymizer database cron job is disabled. When enabled the cron job will send pseudoanonymized data to be processed and analyzed.")
     end
 
-    def pseudonymizer_unavailable_description_text
-      _("The pseudonymizer cron job is disabled. Once enabled, the cron job will send pseudoanonymized data to be processed and analyzed.")
-    end
-
     override :visible_attributes
     def visible_attributes
       super + [

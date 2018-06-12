@@ -3,13 +3,13 @@ module Pseudonymizer
     attr_reader :config
     attr_reader :start_at
 
-    def initialize(config: {}, start_at: Time.now.utc)
+    def initialize(config: {})
       @config = config
-      @start_at = start_at
+      @start_at = Time.now.utc
     end
 
     def output_dir
-      File.join('/tmp', 'gitlab-pseudonymizer', start_at.iso8601)
+      File.join(Dir.tmpdir, 'gitlab-pseudonymizer', start_at.iso8601)
     end
 
     def upload_dir
