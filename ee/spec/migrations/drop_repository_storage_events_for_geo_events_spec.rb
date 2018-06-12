@@ -42,14 +42,14 @@ describe DropRepositoryStorageEventsForGeoEvents, :migration do
 
       it 'fills in all repository_storage_path cells' do
         null_columns = described_class
-          .execute("SELECT COUNT(*) FROM #{table_name} WHERE repository_storage_path IS NULL;")
+          .exec_query("SELECT COUNT(*) as count FROM #{table_name} WHERE repository_storage_path IS NULL;")
           .first['count']
 
         expect(null_columns.to_i).to eq(0)
       end
 
       it 'fills in repository_storage_path with the legacy_disk_path' do
-        described_class.execute("SELECT repository_storage_name, repository_storage_path FROM #{table_name};").each do |row|
+        described_class.exec_query("SELECT repository_storage_name, repository_storage_path FROM #{table_name};").each do |row|
           expect(row['repository_storage_path']).to eq(legacy_disk_path(row['repository_storage_name']))
         end
       end
