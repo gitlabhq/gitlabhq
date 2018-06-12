@@ -1,5 +1,6 @@
 <script>
 import { mapActions } from 'vuex';
+import tooltip from '~/vue_shared/directives/tooltip';
 import Icon from '~/vue_shared/components/icon.vue';
 import StageButton from './stage_button.vue';
 import UnstageButton from './unstage_button.vue';
@@ -10,6 +11,9 @@ export default {
     Icon,
     StageButton,
     UnstageButton,
+  },
+  directives: {
+    tooltip,
   },
   props: {
     file: {
@@ -88,6 +92,8 @@ export default {
     class="multi-file-commit-list-item"
   >
     <button
+      v-tooltip
+      :title="file.path"
       type="button"
       class="multi-file-commit-list-path"
       @dblclick="fileAction"
@@ -98,10 +104,11 @@ export default {
           :name="iconName"
           :size="16"
           :css-classes="iconClass"
-        />{{ file.path }}
+        />{{ file.name }}
       </span>
     </button>
     <component
+      class="d-flex ml-auto"
       :is="actionComponent"
       :path="file.path"
     />

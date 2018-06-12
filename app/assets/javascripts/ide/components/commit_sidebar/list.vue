@@ -34,6 +34,10 @@ export default {
       type: String,
       required: true,
     },
+    actionBtnIcon: {
+      type: String,
+      required: true,
+    },
     itemActionComponent: {
       type: String,
       required: true,
@@ -53,11 +57,6 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      showActionButton: false,
-    };
-  },
   computed: {
     titleText() {
       return sprintf(__('%{title} changes'), {
@@ -70,9 +69,6 @@ export default {
     actionBtnClicked() {
       this[this.action]();
     },
-    setShowActionButton(show) {
-      this.showActionButton = show;
-    },
   },
 };
 </script>
@@ -83,8 +79,6 @@ export default {
   >
     <header
       class="multi-file-commit-panel-header"
-      @mouseenter="setShowActionButton(true)"
-      @mouseleave="setShowActionButton(false)"
     >
       <div
         class="multi-file-commit-panel-header-title"
@@ -95,20 +89,34 @@ export default {
           :size="18"
         />
         {{ titleText }}
-        <span
-          v-show="!showActionButton"
-          class="ide-commit-file-count"
-        >
-          {{ fileList.length }}
-        </span>
-        <button
-          v-show="showActionButton"
-          type="button"
-          class="btn btn-blank btn-link ide-staged-action-btn"
-          @click="actionBtnClicked"
-        >
-          {{ actionBtnText }}
-        </button>
+        <div class="d-flex ml-auto">
+          <button
+            v-show="fileList.length"
+            v-tooltip
+            type="button"
+            class="ide-staged-action-btn p-0 order-1 align-items-center rounded-right border-left-0"
+            :class="{
+              'd-flex': fileList.length
+            }"
+            :title="actionBtnText"
+            data-placement="bottom"
+            @click="actionBtnClicked"
+          >
+            <icon
+              class="ml-auto mr-auto"
+              :name="actionBtnIcon"
+              :size="12"
+            />
+          </button>
+          <span
+            class="ide-commit-file-count order-0 rounded-left text-center"
+            :class="{
+              'rounded-right': !fileList.length
+            }"
+          >
+            {{ fileList.length }}
+          </span>
+        </div>
       </div>
     </header>
     <ul

@@ -25,7 +25,7 @@ export default {
 <template>
   <div
     v-once
-    class="multi-file-discard-btn"
+    class="multi-file-discard-btn dropdown"
   >
     <button
       v-tooltip
@@ -43,17 +43,27 @@ export default {
     </button>
     <button
       v-tooltip
-      :aria-label="__('Discard changes')"
-      :title="__('Discard changes')"
       type="button"
       class="btn btn-blank"
       data-container="body"
-      @click.stop="discardFileChanges(path)"
+      data-toggle="dropdown"
     >
       <icon
         :size="12"
-        name="remove"
+        name="more"
       />
     </button>
+    <div class="dropdown-menu">
+      <ul>
+        <li>
+          <button
+            type="button"
+            @click.stop="discardFileChanges(path)"
+          >
+            {{ __('Discard changes') }}
+          </button>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>

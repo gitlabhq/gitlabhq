@@ -557,16 +557,7 @@
   }
 
   .multi-file-discard-btn {
-    display: none;
     margin-top: -2px;
-    margin-left: auto;
-    color: $gl-link-color;
-  }
-
-  &:hover {
-    .multi-file-discard-btn {
-      display: flex;
-    }
   }
 }
 
@@ -840,18 +831,14 @@
 }
 
 .ide-staged-action-btn {
-  margin-left: auto;
-  line-height: 22px;
+  width: 22px;
+  border: 1px solid $white-dark;
 }
 
 .ide-commit-file-count {
   min-width: 22px;
-  margin-left: auto;
   background-color: $gray-light;
-  border-radius: $border-radius-default;
   border: 1px solid $white-dark;
-  line-height: 20px;
-  text-align: center;
 }
 
 .ide-commit-radios {
