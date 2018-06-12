@@ -70,7 +70,7 @@ describe API::Geo do
     end
 
     describe 'GET /geo/transfers/avatar/1' do
-      let(:user) { create(:user, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png')) }
+      let(:user) { create(:user, avatar: fixture_file_upload('spec/fixtures/dk.png', 'image/png')) }
       let(:upload) { Upload.find_by(model: user, uploader: 'AvatarUploader') }
       let(:transfer) { Gitlab::Geo::FileTransfer.new(:avatar, upload) }
       let(:req_header) { Gitlab::Geo::TransferRequest.new(transfer.request_data).headers }
@@ -116,7 +116,7 @@ describe API::Geo do
 
       before do
         allow_any_instance_of(Gitlab::Geo::TransferRequest).to receive(:requesting_node).and_return(secondary_node)
-        FileUploader.new(project).store!(fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png'))
+        FileUploader.new(project).store!(fixture_file_upload('spec/fixtures/dk.png', 'image/png'))
       end
 
       it 'responds with 401 with invalid auth header' do

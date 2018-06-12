@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Groups::ParticipantsService do
-  let(:group) { create(:group, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png')) }
+  let(:group) { create(:group, avatar: fixture_file_upload('spec/fixtures/dk.png')) }
   let(:user) { create(:user) }
   let(:epic) { create(:epic, group: group, author: user) }
 

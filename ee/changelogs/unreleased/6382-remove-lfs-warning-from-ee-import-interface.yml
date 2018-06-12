@@ -1,0 +1,5 @@
+---
+title: Remove LFS object warning from import UI
+merge_request: 6083
+author:
+type: fixed

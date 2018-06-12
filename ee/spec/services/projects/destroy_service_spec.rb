@@ -36,11 +36,13 @@ describe Projects::DestroyService do
     it 'logs an event to the Geo event log' do
       # Run Sidekiq immediately to check that renamed repository will be removed
       Sidekiq::Testing.inline! do
+        expect(subject).to receive(:log_destroy_event).and_call_original
         expect { subject.execute }.to change(Geo::RepositoryDeletedEvent, :count).by(1)
       end
     end
 
     it 'does not log event to the Geo log if project deletion fails' do
+      expect(subject).to receive(:log_destroy_event).and_call_original
       expect_any_instance_of(Project)
         .to receive(:destroy!).and_raise(StandardError.new('Other error message'))
 
@@ -80,6 +82,7 @@ describe Projects::DestroyService do
     end
 
     it 'logs an audit event' do
+      expect(subject).to receive(:log_destroy_event).and_call_original
       expect { subject.execute }.to change(AuditEvent, :count)
     end
   end

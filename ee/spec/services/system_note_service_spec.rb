@@ -47,7 +47,7 @@ describe SystemNoteService do
       end
 
       it 'sets the note text' do
-        expect(subject.note).to eq "changed weight to **4**,"
+        expect(subject.note).to eq "changed weight to **4**"
       end
     end
 

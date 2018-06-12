@@ -10,7 +10,7 @@ RSpec.describe FaviconUploader do
   end
 
   def upload_fixture(filename)
-    fixture_file_upload(Rails.root.join('spec', 'fixtures', filename))
+    fixture_file_upload("spec/fixtures/#{filename}")
   end
 
   context 'versions' do

@@ -5,7 +5,7 @@ describe Geo::FileUploadService do
 
   describe '#execute' do
     context 'user avatar' do
-      let(:user) { create(:user, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png')) }
+      let(:user) { create(:user, avatar: fixture_file_upload('spec/fixtures/dk.png', 'image/png')) }
       let(:upload) { Upload.find_by(model: user, uploader: 'AvatarUploader') }
       let(:params) { { id: upload.id, type: 'avatar' } }
       let(:file_transfer) { Gitlab::Geo::FileTransfer.new(:avatar, upload) }
@@ -29,7 +29,7 @@ describe Geo::FileUploadService do
     end
 
     context 'group avatar' do
-      let(:group) { create(:group, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png')) }
+      let(:group) { create(:group, avatar: fixture_file_upload('spec/fixtures/dk.png', 'image/png')) }
       let(:upload) { Upload.find_by(model: group, uploader: 'AvatarUploader') }
       let(:params) { { id: upload.id, type: 'avatar' } }
       let(:file_transfer) { Gitlab::Geo::FileTransfer.new(:avatar, upload) }
@@ -53,7 +53,7 @@ describe Geo::FileUploadService do
     end
 
     context 'project avatar' do
-      let(:project) { create(:project, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png')) }
+      let(:project) { create(:project, avatar: fixture_file_upload('spec/fixtures/dk.png', 'image/png')) }
       let(:upload) { Upload.find_by(model: project, uploader: 'AvatarUploader') }
       let(:params) { { id: upload.id, type: 'avatar' } }
       let(:file_transfer) { Gitlab::Geo::FileTransfer.new(:avatar, upload) }
@@ -107,7 +107,7 @@ describe Geo::FileUploadService do
       let(:file_transfer) { Gitlab::Geo::FileTransfer.new(:file, upload) }
       let(:transfer_request) { Gitlab::Geo::TransferRequest.new(file_transfer.request_data) }
       let(:req_header) { transfer_request.headers['Authorization'] }
-      let(:file) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png') }
+      let(:file) { fixture_file_upload('spec/fixtures/dk.png', 'image/png') }
 
       before do
         FileUploader.new(project).store!(file)
@@ -136,7 +136,7 @@ describe Geo::FileUploadService do
       let(:file_transfer) { Gitlab::Geo::FileTransfer.new(:file, upload) }
       let(:transfer_request) { Gitlab::Geo::TransferRequest.new(file_transfer.request_data) }
       let(:req_header) { transfer_request.headers['Authorization'] }
-      let(:file) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png') }
+      let(:file) { fixture_file_upload('spec/fixtures/dk.png', 'image/png') }
 
       before do
         NamespaceFileUploader.new(group).store!(file)

@@ -12,12 +12,18 @@ export default {
     LoadingIcon,
   },
   computed: {
-    ...mapState(['sast', 'dependencyScanning']),
+    ...mapState(['sast', 'dependencyScanning', 'dast', 'sastContainer']),
     sastLink() {
       return this.link(this.sast.newIssues.length);
     },
     dependencyScanningLink() {
       return this.link(this.dependencyScanning.newIssues.length);
+    },
+    dastLink() {
+      return this.link(this.dast.newIssues.length);
+    },
+    sastContainerLink() {
+      return this.link(this.sastContainer.newIssues.length);
     },
     sastIcon() {
       return this.statusIcon(this.hasSastError, this.sast.newIssues.length);
@@ -28,11 +34,23 @@ export default {
         this.dependencyScanning.newIssues.length,
       );
     },
+    dastIcon() {
+      return this.statusIcon(this.hasDastError, this.dast.newIssues.length);
+    },
+    sastContainerIcon() {
+      return this.statusIcon(this.hasSastContainerError, this.sastContainer.newIssues.length);
+    },
     hasSast() {
       return this.sast.paths.head !== null;
     },
     hasDependencyScanning() {
       return this.dependencyScanning.paths.head !== null;
+    },
+    hasDast() {
+      return this.dast.paths.head !== null;
+    },
+    hasSastContainer() {
+      return this.sastContainer.paths.head !== null;
     },
     isLoadingSast() {
       return this.sast.isLoading;
@@ -40,11 +58,23 @@ export default {
     isLoadingDependencyScanning() {
       return this.dependencyScanning.isLoading;
     },
+    isLoadingDast() {
+      return this.dast.isLoading;
+    },
+    isLoadingSastContainer() {
+      return this.sastContainer.isLoading;
+    },
     hasSastError() {
       return this.sast.hasError;
     },
     hasDependencyScanningError() {
       return this.dependencyScanning.hasError;
+    },
+    hasDastError() {
+      return this.dast.hasError;
+    },
+    hasSastContainerError() {
+      return this.sastContainer.hasError;
     },
   },
   methods: {
@@ -117,7 +147,7 @@ export default {
       v-if="hasDependencyScanning"
     >
       <loading-icon
-        v-if="dependencyScanning.isLoading"
+        v-if="isLoadingDependencyScanning"
       />
       <ci-icon
         v-else
@@ -142,6 +172,74 @@ export default {
             @click="openTab"
           >
             {{ dependencyScanningLink }}
+          </button>
+        </template>
+      </span>
+    </div>
+    <div
+      class="well-segment flex js-sast-container-summary"
+      v-if="hasSastContainer"
+    >
+      <loading-icon
+        v-if="isLoadingSastContainer"
+      />
+      <ci-icon
+        v-else
+        :status="sastContainerIcon"
+        class="flex flex-align-self-center"
+      />
+
+      <span
+        class="prepend-left-10 flex flex-align-self-center"
+      >
+        <template v-if="hasSastContainerError">
+          {{ s__('ciReport|Container scanning resulted in error while loading results') }}
+        </template>
+        <template v-else-if="isLoadingSastContainer">
+          {{ s__('ciReport|Container scanning is loading') }}
+        </template>
+        <template v-else>
+          {{ s__('ciReport|Container scanning detected') }}
+          <button
+            type="button"
+            class="btn-link btn-blank prepend-left-5"
+            @click="openTab"
+          >
+            {{ sastContainerLink }}
+          </button>
+        </template>
+      </span>
+    </div>
+    <div
+      class="well-segment flex js-dast-summary"
+      v-if="hasDast"
+    >
+      <loading-icon
+        v-if="isLoadingDast"
+      />
+      <ci-icon
+        v-else
+        :status="dastIcon"
+        class="flex flex-align-self-center"
+      />
+
+      <span
+        class="prepend-left-10 flex flex-align-self-center"
+      >
+        <template v-if="hasDastError">
+          {{ s__('ciReport|DAST resulted in error while loading results') }}
+        </template>
+        <template v-else-if="isLoadingDast">
+          {{ s__('ciReport|DAST is loading') }}
+        </template>
+        <template v-else>
+          {{ s__('ciReport|DAST detected') }}
+          <button
+            type="button"
+            class="btn-link btn-blank prepend-left-5"
+            @click="openTab"
+          >
+            {{ dastLink }}
           </button>
         </template>
       </span>

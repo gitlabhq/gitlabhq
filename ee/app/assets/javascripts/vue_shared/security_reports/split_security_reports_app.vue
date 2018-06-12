@@ -2,7 +2,7 @@
 import { mapActions, mapState } from 'vuex';
 import { s__, sprintf, n__ } from '~/locale';
 import createFlash from '~/flash';
-import { SAST } from './store/constants';
+import { SAST, DAST, SAST_CONTAINER } from './store/constants';
 import ReportSection from './components/report_section.vue';
 import IssueModal from './components/modal.vue';
 import mixin from './mixins/security_report_mixin';
@@ -24,6 +24,16 @@ export default {
       required: false,
       default: null,
     },
+    dastHeadPath: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    sastContainerHeadPath: {
+      type: String,
+      required: false,
+      default: null,
+    },
     dependencyScanningHeadPath: {
       type: String,
       required: false,
@@ -33,6 +43,16 @@ export default {
       type: String,
       required: false,
       default: null,
+    },
+    sastContainerHelpPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    dastHelpPath: {
+      type: String,
+      required: false,
+      default: '',
     },
     dependencyScanningHelpPath: {
       type: String,
@@ -56,8 +76,10 @@ export default {
     },
   },
   sast: SAST,
+  dast: DAST,
+  sastContainer: SAST_CONTAINER,
   computed: {
-    ...mapState(['sast', 'dependencyScanning']),
+    ...mapState(['sast', 'dependencyScanning', 'sastContainer', 'dast']),
 
     sastText() {
       return this.summaryTextBuilder('SAST', this.sast.newIssues.length);
@@ -68,6 +90,14 @@ export default {
         'Dependency scanning',
         this.dependencyScanning.newIssues.length,
       );
+    },
+
+    sastContainerText() {
+      return this.summaryTextBuilder('Container scanning', this.sastContainer.newIssues.length);
+    },
+
+    dastText() {
+      return this.summaryTextBuilder('DAST', this.dast.newIssues.length);
     },
   },
   created() {
@@ -98,6 +128,30 @@ export default {
           createFlash(s__('ciReport|There was an error loading dependency scanning report')),
         );
     }
+
+    if (this.sastContainerHeadPath) {
+      this.setSastContainerHeadPath(this.sastContainerHeadPath);
+
+      this.fetchSastContainerReports()
+      .then(() => {
+        this.$emit('updateBadgeCount', this.sastContainer.newIssues.length);
+      })
+      .catch(() =>
+        createFlash(s__('ciReport|There was an error loading container scanning report')),
+      );
+    }
+
+    if (this.dastHeadPath) {
+      this.setDastHeadPath(this.dastHeadPath);
+
+      this.fetchDastReports()
+      .then(() => {
+        this.$emit('updateBadgeCount', this.dast.newIssues.length);
+      })
+      .catch(() =>
+        createFlash(s__('ciReport|There was an error loading DAST report')),
+      );
+    }
   },
 
   methods: {
@@ -105,8 +159,12 @@ export default {
       'setHeadBlobPath',
       'setSastHeadPath',
       'setDependencyScanningHeadPath',
+      'setSastContainerHeadPath',
+      'setDastHeadPath',
       'fetchSastReports',
       'fetchDependencyScanningReports',
+      'fetchSastContainerReports',
+      'fetchDastReports',
       'setVulnerabilityFeedbackPath',
       'setVulnerabilityFeedbackHelpPath',
       'setPipelineId',
@@ -162,6 +220,32 @@ export default {
       :unresolved-issues="dependencyScanning.newIssues"
       :has-issues="dependencyScanning.newIssues.length > 0"
       :popover-options="dependencyScanningPopover"
+    />
+
+    <report-section
+      v-if="sastContainerHeadPath"
+      class="js-dependency-scanning-widget split-report-section"
+      :type="$options.sastContainer"
+      :status="checkReportStatus(sastContainer.isLoading, sastContainer.hasError)"
+      :loading-text="translateText('Container scanning').loading"
+      :error-text="translateText('Container scanning').error"
+      :success-text="sastContainerText"
+      :unresolved-issues="sastContainer.newIssues"
+      :has-issues="sastContainer.newIssues.length > 0"
+      :popover-options="sastContainerPopover"
+    />
+
+    <report-section
+      v-if="dastHeadPath"
+      class="js-dast-widget split-report-section"
+      :type="$options.dast"
+      :status="checkReportStatus(dast.isLoading, dast.hasError)"
+      :loading-text="translateText('DAST').loading"
+      :error-text="translateText('DAST').error"
+      :success-text="dastText"
+      :unresolved-issues="dast.newIssues"
+      :has-issues="dast.newIssues.length > 0"
+      :popover-options="dastPopover"
     />
 
     <issue-modal />
