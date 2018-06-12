@@ -457,10 +457,13 @@
   @include media-breakpoint-down(xs) {
     margin-top: $gl-padding-4;
   }
+<<<<<<< HEAD
 }
 
 .with-performance-bar header.navbar-gitlab {
   top: $performance-bar-height;
+=======
+>>>>>>> upstream/master
 }
 
 .navbar-nav {
