@@ -79,7 +79,9 @@ describe Gitlab::Diff::File do
     let(:diffs) { commit.diffs }
 
     before do
-      info_dir_path = File.join(project.repository.path_to_repo, 'info')
+      info_dir_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        File.join(project.repository.path_to_repo, 'info')
+      end
 
       FileUtils.mkdir(info_dir_path) unless File.exist?(info_dir_path)
       File.write(File.join(info_dir_path, 'attributes'), "*.md -diff\n")
