@@ -49,8 +49,6 @@ sed -i 's/localhost/redis/g' config/redis.queues.yml
 cp config/redis.shared_state.yml.example config/redis.shared_state.yml
 sed -i 's/localhost/redis/g' config/redis.shared_state.yml
 
-bundle exec rake db:migrate
-
 if [ "$SETUP_DB" != "false" ]; then
     setup_db
 elif getent hosts postgres || getent hosts mysql; then
