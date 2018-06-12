@@ -3,10 +3,9 @@
 - form = local_assigns.fetch(:form)
 - push_rule = local_assigns.fetch(:push_rule)
 
-.form-group
-  = form.check_box :commit_committer_check, class: "float-left", disabled: !can_change_push_rule?(form.object, :commit_committer_check)
-  .prepend-left-20
-    = form.label :commit_committer_check, class: "label-light append-bottom-0" do
-      = s_("PushRule|Committer restriction")
-    %p.light.append-bottom-0
-      = commit_committer_check_description(push_rule)
+.form-check
+  = form.check_box :commit_committer_check, class: "form-check-input", disabled: !can_change_push_rule?(form.object, :commit_committer_check)
+  = form.label :commit_committer_check, class: "label-light form-check-label" do
+    = s_("PushRule|Committer restriction")
+  %p.text-muted
+    = commit_committer_check_description(push_rule)
