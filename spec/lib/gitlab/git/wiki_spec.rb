@@ -25,6 +25,22 @@ describe Gitlab::Git::Wiki do
     end
   end
 
+  describe '#delete_page', :skip_gitaly_mock do
+    after do
+      destroy_page('page1')
+    end
+
+    it 'only removes the page with the same path' do
+      create_page('page1', 'content')
+      create_page('*', 'content')
+
+      subject.delete_page('*', commit_details('whatever'))
+
+      expect(subject.pages.count).to eq 1
+      expect(subject.pages.first.title).to eq 'page1'
+    end
+  end
+
   def create_page(name, content)
     subject.write_page(name, :markdown, content, commit_details(name))
   end
