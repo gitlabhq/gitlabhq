@@ -94,6 +94,7 @@ hr {
 }
 
 .form-group.row .col-form-label {
+  padding-top: 0;
   // Bootstrap 4 aligns labels to the left
   // for horizontal forms
   @include media-breakpoint-up(md) {
