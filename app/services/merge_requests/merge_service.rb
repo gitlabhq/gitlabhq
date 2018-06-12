@@ -79,7 +79,7 @@ module MergeRequests
       message = params[:commit_message] || merge_request.merge_commit_message
 
       repository.merge(current_user, source, merge_request, message)
-    rescue Gitlab::Git::HooksService::PreReceiveError => e
+    rescue Gitlab::Git::PreReceiveError => e
       handle_merge_error(log_message: e.message)
       raise MergeError, 'Something went wrong during merge pre-receive hook'
     rescue => e

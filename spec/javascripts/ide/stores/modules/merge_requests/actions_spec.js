@@ -199,28 +199,39 @@ describe('IDE merge requests actions', () => {
     });
 
     it('commits reset mutations and actions', done => {
-      testAction(
-        openMergeRequest,
-        { projectPath: 'gitlab-org/gitlab-ce', id: '1' },
-        mockedState,
-        [
-          { type: 'CLEAR_PROJECTS' },
-          { type: 'SET_CURRENT_MERGE_REQUEST', payload: '1' },
-          { type: 'RESET_OPEN_FILES' },
-        ],
-        [
-          { type: 'pipelines/stopPipelinePolling' },
-          { type: 'pipelines/clearEtagPoll' },
-          { type: 'pipelines/resetLatestPipeline' },
-          { type: 'setCurrentBranchId', payload: '' },
-        ],
-        done,
-      );
+      const commit = jasmine.createSpy();
+      const dispatch = jasmine.createSpy().and.returnValue(Promise.resolve());
+      openMergeRequest({ commit, dispatch }, { projectPath: 'gitlab-org/gitlab-ce', id: '1' });
+
+      setTimeout(() => {
+        expect(commit.calls.argsFor(0)).toEqual(['CLEAR_PROJECTS', null, { root: true }]);
+        expect(commit.calls.argsFor(1)).toEqual(['SET_CURRENT_MERGE_REQUEST', '1', { root: true }]);
+        expect(commit.calls.argsFor(2)).toEqual(['RESET_OPEN_FILES', null, { root: true }]);
+
+        expect(dispatch.calls.argsFor(0)).toEqual([
+          'pipelines/resetLatestPipeline',
+          null,
+          { root: true },
+        ]);
+        expect(dispatch.calls.argsFor(1)).toEqual(['setCurrentBranchId', '', { root: true }]);
+        expect(dispatch.calls.argsFor(2)).toEqual([
+          'pipelines/stopPipelinePolling',
+          null,
+          { root: true },
+        ]);
+        expect(dispatch.calls.argsFor(3)).toEqual([
+          'pipelines/clearEtagPoll',
+          null,
+          { root: true },
+        ]);
+
+        done();
+      });
     });
 
     it('pushes new route', () => {
       openMergeRequest(
-        { commit() {}, dispatch() {} },
+        { commit() {}, dispatch: () => Promise.resolve() },
         { projectPath: 'gitlab-org/gitlab-ce', id: '1' },
       );
 

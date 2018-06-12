@@ -125,7 +125,7 @@ module API
       end
       put '/:id' do
         job = authenticate_job!
-        forbidden!('Job is not running') unless job.running?
+        job_forbidden!(job, 'Job is not running') unless job.running?
 
         job.trace.set(params[:trace]) if params[:trace]
 
@@ -133,6 +133,8 @@ module API
                                   project: job.project.full_path)
 
         case params[:state].to_s
+        when 'running'
+          job.touch if job.needs_touch?
         when 'success'
           job.success!
         when 'failed'
@@ -152,7 +154,7 @@ module API
       end
       patch '/:id/trace' do
         job = authenticate_job!
-        forbidden!('Job is not running') unless job.running?
+        job_forbidden!(job, 'Job is not running') unless job.running?
 
         error!('400 Missing header Content-Range', 400) unless request.headers.key?('Content-Range')
         content_range = request.headers['Content-Range']

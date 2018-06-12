@@ -1,4 +1,4 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.4.4-golang-1.9-git-2.17-chrome-65.0-node-8.x-yarn-1.2-postgresql-9.6"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.4.4-golang-1.9-git-2.17-chrome-67.0-node-8.x-yarn-1.2-postgresql-9.6-graphicsmagick-1.3.29"
 
 .dedicated-runner: &dedicated-runner
   retry: 1
@@ -394,7 +394,11 @@ compile-assets:
     - date
     - yarn install --frozen-lockfile --cache-folder .yarn-cache
     - date
+    - free -m
     - bundle exec rake gitlab:assets:compile
+  variables:
+    # we override the max_old_space_size to prevent OOM errors
+    NODE_OPTIONS: --max_old_space_size=3584
   artifacts:
     expire_in: 7d
     paths:
@@ -658,10 +662,13 @@ gitlab:assets:compile:
     SKIP_STORAGE_VALIDATION: "true"
     WEBPACK_REPORT: "true"
     NO_COMPRESSION: "true"
+    # we override the max_old_space_size to prevent OOM errors
+    NODE_OPTIONS: --max_old_space_size=3584
   script:
     - date
     - yarn install --frozen-lockfile --production --cache-folder .yarn-cache
     - date
+    - free -m
     - bundle exec rake gitlab:assets:compile
   artifacts:
     name: webpack-report

@@ -384,6 +384,49 @@ export const backOff = (fn, timeout = 60000) => {
   });
 };
 
+export const createOverlayIcon = (iconPath, overlayPath) => {
+  const faviconImage = document.createElement('img');
+
+  return new Promise((resolve) => {
+    faviconImage.onload = () => {
+      const size = 32;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+
+      const context = canvas.getContext('2d');
+      context.clearRect(0, 0, size, size);
+      context.drawImage(
+        faviconImage, 0, 0, faviconImage.width, faviconImage.height, 0, 0, size, size,
+      );
+
+      const overlayImage = document.createElement('img');
+      overlayImage.onload = () => {
+        context.drawImage(
+          overlayImage, 0, 0, overlayImage.width, overlayImage.height, 0, 0, size, size,
+        );
+
+        const faviconWithOverlayUrl = canvas.toDataURL();
+
+        resolve(faviconWithOverlayUrl);
+      };
+      overlayImage.src = overlayPath;
+    };
+    faviconImage.src = iconPath;
+  });
+};
+
+export const setFaviconOverlay = (overlayPath) => {
+  const faviconEl = document.getElementById('favicon');
+
+  if (!faviconEl) { return null; }
+
+  const iconPath = faviconEl.getAttribute('data-original-href');
+
+  return createOverlayIcon(iconPath, overlayPath).then(faviconWithOverlayUrl => faviconEl.setAttribute('href', faviconWithOverlayUrl));
+};
+
 export const setFavicon = (faviconPath) => {
   const faviconEl = document.getElementById('favicon');
   if (faviconEl && faviconPath) {
@@ -393,8 +436,9 @@ export const setFavicon = (faviconPath) => {
 
 export const resetFavicon = () => {
   const faviconEl = document.getElementById('favicon');
-  const originalFavicon = faviconEl ? faviconEl.getAttribute('href') : null;
+
   if (faviconEl) {
+    const originalFavicon = faviconEl.getAttribute('data-original-href');
     faviconEl.setAttribute('href', originalFavicon);
   }
 };
@@ -403,10 +447,9 @@ export const setCiStatusFavicon = pageUrl =>
   axios.get(pageUrl)
     .then(({ data }) => {
       if (data && data.favicon) {
-        setFavicon(data.favicon);
-      } else {
-        resetFavicon();
+        return setFaviconOverlay(data.favicon);
       }
+      return resetFavicon();
     })
     .catch(resetFavicon);
 

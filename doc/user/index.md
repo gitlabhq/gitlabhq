@@ -23,7 +23,7 @@ documentation.
 GitLab is a fully integrated software development platform that enables you
 and your team to work cohesively, faster, transparently, and effectively,
 since the discussion of a new idea until taking that idea to production all
-all the way through, from within the same platform.
+the way through, from within the same platform.
 
 Please check this page for an overview on [GitLab's features](https://about.gitlab.com/features/).
 
@@ -161,13 +161,13 @@ such as Trello, JIRA, etc.
 
 ## Webhooks
 
-Configure [webhooks](project/integrations/webhooks.html) to listen for
+Configure [webhooks](project/integrations/webhooks.md) to listen for
 specific events like pushes, issues or merge requests. GitLab will send a
 POST request with data to the webhook URL.
 
 ## API
 
-Automate GitLab via [API](../api/README.html).
+Automate GitLab via [API](../api/README.md).
 
 ## Git and GitLab
 

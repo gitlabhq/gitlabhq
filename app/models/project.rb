@@ -292,6 +292,7 @@ class Project < ActiveRecord::Base
   validates :name, uniqueness: { scope: :namespace_id }
   validates :import_url, url: { protocols: %w(http https ssh git),
                                 allow_localhost: false,
+                                enforce_user: true,
                                 ports: VALID_IMPORT_PORTS }, if: [:external_import?, :import_url_changed?]
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
@@ -673,6 +674,12 @@ class Project < ActiveRecord::Base
 
       self[:import_status] = 'none'
     end
+  end
+
+  def human_import_status_name
+    ensure_import_state
+
+    import_state.human_status_name
   end
 
   def import_schedule
@@ -1609,6 +1616,7 @@ class Project < ActiveRecord::Base
 
   def after_import
     repository.after_import
+    wiki.repository.after_import
     import_finish
     remove_import_jid
     update_project_counter_caches

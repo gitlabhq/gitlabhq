@@ -8,7 +8,7 @@ describe Projects::ForkService do
       before do
         @from_user = create(:user)
         @from_namespace = @from_user.namespace
-        avatar = fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")
+        avatar = fixture_file_upload("spec/fixtures/dk.png", "image/png")
         @from_project = create(:project,
                                :repository,
                                creator_id: @from_user.id,
