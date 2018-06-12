@@ -40,6 +40,25 @@ module EE
                                       path: Ci::Build::DEPENDENCY_SCANNING_FILE)
     end
 
+    # sast_container_artifact_url is deprecated and replaced with container_scanning_artifact_url (#5778)
+    def sast_container_artifact_url(pipeline)
+      raw_project_build_artifacts_url(pipeline.project,
+                                      pipeline.sast_container_artifact,
+                                      path: Ci::Build::SAST_CONTAINER_FILE)
+    end
+
+    def container_scanning_artifact_url(pipeline)
+      raw_project_build_artifacts_url(pipeline.project,
+                                      pipeline.container_scanning_artifact,
+                                      path: Ci::Build::CONTAINER_SCANNING_FILE)
+    end
+
+    def dast_artifact_url(pipeline)
+      raw_project_build_artifacts_url(pipeline.project,
+                                      pipeline.dast_artifact,
+                                      path: Ci::Build::DAST_FILE)
+    end
+
     def license_management_artifact_url(pipeline)
       raw_project_build_artifacts_url(pipeline.project,
                                       pipeline.license_management_artifact,
