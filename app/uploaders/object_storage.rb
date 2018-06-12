@@ -22,10 +22,10 @@ module ObjectStorage
     module RecordsUploads
       extend ActiveSupport::Concern
 
-      def prepended(base)
+      prepended do |base|
         raise "#{base} must include ObjectStorage::Concern to use extensions." unless base < Concern
 
-        base.include(RecordsUploads::Concern)
+        base.include(::RecordsUploads::Concern)
       end
 
       def retrieve_from_store!(identifier)

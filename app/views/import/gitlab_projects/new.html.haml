@@ -37,6 +37,6 @@
       .form-group
         = file_field_tag :file, class: ''
   .row
-    .form-actions
+    .form-actions.col-sm-12
       = submit_tag 'Import project', class: 'btn btn-create'
       = link_to 'Cancel', new_project_path, class: 'btn btn-cancel'

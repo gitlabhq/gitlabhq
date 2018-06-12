@@ -8,4 +8,5 @@ export default {
   OK: 200,
   MULTIPLE_CHOICES: 300,
   BAD_REQUEST: 400,
+  NOT_FOUND: 404,
 };
