@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::ImportExport::UploadsSaver do
   describe 'bundle a project Git repo' do
     let(:export_path) { "#{Dir.tmpdir}/uploads_saver_spec" }
-    let(:file) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
+    let(:file) { fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif') }
     let(:shared) { project.import_export_shared }
 
     before do

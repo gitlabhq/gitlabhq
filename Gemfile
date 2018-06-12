@@ -134,7 +134,7 @@ gem 'seed-fu', '~> 2.3.7'
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 2.7.1'
 gem 'deckar01-task_list', '2.0.0'
-gem 'gitlab-markup', '~> 1.6.2'
+gem 'gitlab-markup', '~> 1.6.4'
 gem 'redcarpet', '~> 3.4'
 gem 'commonmarker', '~> 0.17'
 gem 'RedCloth', '~> 4.3.2'
@@ -333,7 +333,7 @@ group :development, :test do
 
   gem 'database_cleaner', '~> 1.5.0'
   gem 'factory_bot_rails', '~> 4.8.2'
-  gem 'rspec-rails', '~> 3.6.0'
+  gem 'rspec-rails', '~> 3.7.0'
   gem 'rspec-retry', '~> 0.4.5'
   gem 'rspec_profiling', '~> 0.0.5'
   gem 'rspec-set', '~> 0.1.3'

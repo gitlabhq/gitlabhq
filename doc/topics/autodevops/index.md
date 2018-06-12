@@ -213,11 +213,11 @@ full use of Auto DevOps. If this is your fist time, we recommend you follow the
 To enable Auto DevOps to your project:
 
 1. Check that your project doesn't have a `.gitlab-ci.yml`, or remove it otherwise
-1. Go to your project's **Settings > CI/CD > General pipelines settings** and
-   find the Auto DevOps section
+1. Go to your project's **Settings > CI/CD > Auto DevOps**
 1. Select "Enable Auto DevOps"
 1. Optionally, but recommended, add in the [base domain](#auto-devops-base-domain)
-   that will be used by Kubernetes to deploy your application
+   that will be used by Kubernetes to [deploy your application](#auto-deploy)
+   and choose the [deployment strategy](#deployment-strategy)
 1. Hit **Save changes** for the changes to take effect
 
 Once saved, an Auto DevOps pipeline will be triggered on the default branch.
@@ -233,6 +233,24 @@ If you are a GitLab Administrator, you can enable Auto DevOps instance wide
 in **Admin Area > Settings > Continuous Integration and Deployment**. Doing that,
 all the projects that haven't explicitly set an option will have Auto DevOps
 enabled by default.
+
+### Deployment strategy
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/38542) in GitLab 11.0.
+
+You can change the deployment strategy used by Auto DevOps by going to your
+project's **Settings > CI/CD > Auto DevOps**.
+
+The available options are:
+
+- **Continuous deployment to production** - enables [Auto Deploy](#auto-deploy)
+  by setting the [`STAGING_ENABLED`](#deploy-policy-for-staging-and-production-environments) and
+  [`INCREMENTAL_ROLLOUT_ENABLED`](#incremental-rollout-to-production) variables
+  to false.
+- **Automatic deployment to staging, manual deployment to production** - sets the
+  [`STAGING_ENABLED`](#deploy-policy-for-staging-and-production-environments) and
+  [`INCREMENTAL_ROLLOUT_ENABLED`](#incremental-rollout-to-production) variables
+  to true, and the user is responsible for manually deploying to staging and production.
 
 ## Stages of Auto DevOps
 
@@ -652,6 +670,9 @@ service:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ci-yml/merge_requests/160)
 in GitLab 10.8.
 
+TIP: **Tip:**
+You can also set this inside your [project's settings](#deployment-strategy).
+
 The normal behavior of Auto DevOps is to use Continuous Deployment, pushing
 automatically to the `production` environment every time a new pipeline is run
 on the default branch. However, there are cases where you might want to use a
@@ -681,6 +702,9 @@ If `CANARY_ENABLED` is defined in your project (e.g., set `CANARY_ENABLED` to
 #### Incremental rollout to production **[PREMIUM]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5415) in GitLab 10.8.
+
+TIP: **Tip:**
+You can also set this inside your [project's settings](#deployment-strategy).
 
 When you have a new version of your app to deploy in production, you may want
 to use an incremental rollout to replace just a few pods with the latest code.
