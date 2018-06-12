@@ -228,7 +228,7 @@ helm upgrade gitlab --set gitlab=ee,gitlabEEImage=gitlab/gitlab-ee:9.5.5-ee.0 gi
 To uninstall the GitLab Chart, run the following:
 
 ```bash
-helm delete gitlab
+helm delete --purge gitlab
 ```
 
 ## Troubleshooting
