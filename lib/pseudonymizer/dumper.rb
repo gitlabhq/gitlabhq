@@ -14,12 +14,15 @@ module Pseudonymizer
     def anonymize(results)
       columns = results.columns # Assume they all have the same table
       to_filter = @anon_fields & columns
-      secret = Rails.application.secrets[:secret_key_base]
+      key = Rails.application.secrets[:secret_key_base]
+      digest = OpenSSL::Digest.new('sha256')
 
       Enumerator.new do |yielder|
         results.each do |result|
           to_filter.each do |field|
-            result[field] = OpenSSL::HMAC.hexdigest('SHA256', secret, result[field]) unless result[field].nil?
+            next if result[field].nil?
+
+            result[field] = OpenSSL::HMAC.hexdigest(digest, key, result[field])
           end
           yielder << result
         end
@@ -133,7 +136,7 @@ module Pseudonymizer
       file_path = get_and_log_file_name("csv", title)
 
       CSV.open(file_path, 'w') do |csv|
-        contents.each_with_index do |row, i|
+        contents.with_index do |row, i|
           csv << row.keys if i == 0 # header
           csv << row.values
           csv.flush if i % PAGE_SIZE
