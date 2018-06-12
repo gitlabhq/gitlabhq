@@ -62,6 +62,15 @@ module ObjectStorage
                                                 upload.id)
       end
 
+      def exclusive_lease_key
+        # For FileUploaders, model may have many uploaders. In that case
+        # we want to use exclusive key per upload, not per model to allow
+        # parallel migration
+        key_object = upload ? upload : model
+
+        "object_storage_migrate:#{key_object.class}:#{key_object.id}"
+      end
+
       private
 
       def current_upload_satisfies?(paths, model)
@@ -299,12 +308,7 @@ module ObjectStorage
     end
 
     def exclusive_lease_key
-      # For FileUploaders, model may have many uploaders. In that case
-      # we want to use exclusive key per upload, not per model to allow
-      # parallel migration
-      key_object = self.is_a?(RecordsUploads::Concern) && upload ? upload : model
-
-      "object_storage_migrate:#{key_object.class}:#{key_object.id}"
+      "object_storage_migrate:#{model.class}:#{model.id}"
     end
 
     private
