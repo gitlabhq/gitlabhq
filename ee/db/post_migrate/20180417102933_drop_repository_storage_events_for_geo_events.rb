@@ -43,11 +43,8 @@ class DropRepositoryStorageEventsForGeoEvents < ActiveRecord::Migration
   end
 
   def case_statements
-    statement = ""
-    Gitlab.config.repositories.storages.each do |shard, data|
-      statement << "WHEN '#{shard}' THEN '#{data.legacy_disk_path}'\n"
-    end
-
-    statement
+    @case_statements ||= Gitlab.config.repositories.storages.map do |shard, data|
+      "WHEN '#{shard}' THEN '#{data.legacy_disk_path}'"
+    end.join("\n")
   end
 end
