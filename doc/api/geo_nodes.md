@@ -321,6 +321,8 @@ Example response:
 }
 ```
 
+Please note that the `health_status` parameter can only be in an "Healthy" or "Unhealthy" state, while the `health` parameter can be empty, "Healthy", or contain the actual error message.
+
 ## Retrieve project sync failures that occurred on the current node
 
 
