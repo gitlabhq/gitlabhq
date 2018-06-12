@@ -56,15 +56,17 @@ describe('RepoCommitSection', () => {
       vm.$store.state.entries[f.path] = f;
     });
 
-    spyOn(vm, 'openPendingTab').and.callThrough();
-
-    return vm.$mount();
+    return vm;
   }
 
   beforeEach(done => {
     spyOn(router, 'push');
 
     vm = createComponent();
+
+    spyOn(vm, 'openPendingTab').and.callThrough();
+
+    vm.$mount();
 
     spyOn(service, 'getTreeData').and.returnValue(
       Promise.resolve({
