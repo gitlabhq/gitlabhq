@@ -262,11 +262,9 @@ check the [Troubleshooting section](#troubleshooting) before proceeding.
 
 ### Configuring the Database nodes
 
-On each database node perform the following:
-
 1. Make sure you collect [`CONSUL_SERVER_NODES`](#consul_information), [`PGBOUNCER_PASSWORD_HASH`](#pgbouncer_information), [`POSTGRESQL_PASSWORD_HASH`](#postgresql_information), [`Number of db nodes`](#postgresql_information), and [`Network Address`](#network_address) before executing the next step.
 
-1. Edit `/etc/gitlab/gitlab.rb` replacing values noted in the `# START user configuration` section:
+1. On the master database node, edit `/etc/gitlab/gitlab.rb` replacing values noted in the `# START user configuration` section:
 
     ```ruby
     # Disable all components except PostgreSQL and Repmgr and Consul
@@ -310,6 +308,15 @@ On each database node perform the following:
     ```
 
     > `postgres_role` was introduced with GitLab 10.3
+
+1. On secondary nodes, add all the configuration specified above for primary node
+   to `/etc/gitlab/gitlab.rb`. In addition, append the following configuration
+   to inform gitlab-ctl that they are standby nodes initially and it need not
+   attempt to register them as primary node
+   ```
+   # HA setting to specify if a node should attempt to be master on initialization
+   repmgr['master_on_initialization'] = false
+   ```
 
 1. [Reconfigure GitLab] for the changes to take effect.
 
@@ -606,7 +613,9 @@ consul['configuration'] = {
 
 ##### Example recommended setup for PostgreSQL servers
 
-On each server edit `/etc/gitlab/gitlab.rb`:
+###### Primary node
+
+On primary node edit `/etc/gitlab/gitlab.rb`:
 
 ```ruby
 # Disable all components except PostgreSQL and Repmgr and Consul
@@ -634,6 +643,19 @@ repmgr['trust_auth_cidr_addresses'] = %w(10.6.0.0/16)
 consul['configuration'] = {
   retry_join: %w(10.6.0.11 10.6.0.12 10.6.0.13)
 }
+```
+
+[Reconfigure Omnibus GitLab][reconfigure Gitlab] for the changes to take effect.
+
+###### Secondary nodes
+
+On secondary nodes, edit `/etc/gitlab/gitlab.rb` and add all the configuration
+added to primary node, noted above. In addition, append the following
+configuration
+
+```
+# HA setting to specify if a node should attempt to be master on initialization
+repmgr['master_on_initialization'] = false
 ```
 
 [Reconfigure Omnibus GitLab][reconfigure Gitlab] for the changes to take effect.
@@ -746,7 +768,8 @@ Please note that after the initial configuration, if a failover occurs, the Post
 
 ##### Example minimal configuration for database servers
 
-On each server edit `/etc/gitlab/gitlab.rb`:
+##### Primary node
+On primary database node edit `/etc/gitlab/gitlab.rb`:
 
 ```ruby
 # Disable all components except PostgreSQL, Repmgr, and Consul
@@ -778,6 +801,16 @@ consul['configuration'] = {
 ```
 
 [Reconfigure Omnibus GitLab][reconfigure Gitlab] for the changes to take effect.
+
+###### Secondary nodes
+
+On secondary nodes, edit `/etc/gitlab/gitlab.rb` and add all the information added
+to primary node, noted above. In addition, append the following configuration
+
+```
+# HA setting to specify if a node should attempt to be master on initialization
+repmgr['master_on_initialization'] = false
+```
 
 ##### Example minimal configuration for application server
 
