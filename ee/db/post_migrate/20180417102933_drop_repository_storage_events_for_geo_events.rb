@@ -14,29 +14,29 @@ class DropRepositoryStorageEventsForGeoEvents < ActiveRecord::Migration
   end
 
   def down
-    TABLES.each { |t| add_column(t, :repository_storage_path, :text) }
+    TABLES.each do |t|
+      add_column(t, :repository_storage_path, :text)
 
-    add_shard_path
+      update_repository_storage_path(t)
+
+      change_column_null(t, :repository_storage_path, true)
+    end
   end
 
   private
 
-  def add_shard_path
-    TABLES.each do |t|
-      min_id = 0
+  def update_repository_storage_path(table)
+    min_id = 0
 
-      loop do
-        newest = newest_entry(t)
-        break unless newest
-        break if newest['repository_storage_path'].present?
+    loop do
+      newest = newest_entry(table)
+      break unless newest
+      break if newest['repository_storage_path'].present?
 
-        new_batch = batch(t, min_id)
-        update_batch(t, new_batch)
+      new_batch = batch(table, min_id)
+      update_batch(table, new_batch)
 
-        min_id = new_batch.last.to_i
-      end
-
-      change_column_null(t, :repository_storage_path, true)
+      min_id = new_batch.last.to_i
     end
   end
 
