@@ -1,5 +1,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
+import createFlash from '~/flash';
+import { s__ } from '~/locale';
 import noteForm from '../../notes/components/note_form.vue';
 import { getNoteFormData } from '../store/utils';
 
@@ -63,9 +65,13 @@ export default {
             .then(() => {
               this.handleCancelCommentForm();
             })
-            .catch(() => {});
+            .catch(() => {
+              createFlash(s__('MergeRequests|Updating discussions failed'));
+            });
         })
-        .catch(() => {});
+        .catch(() => {
+          createFlash(s__('MergeRequests|Saving the comment failed'));
+        });
     },
   },
 };
