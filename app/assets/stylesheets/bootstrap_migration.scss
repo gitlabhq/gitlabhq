@@ -89,6 +89,10 @@ a {
   color: $gl-link-color;
 }
 
+hr {
+  overflow: hidden;
+}
+
 .form-group.row .col-form-label {
   // Bootstrap 4 aligns labels to the left
   // for horizontal forms
@@ -116,10 +120,6 @@ code {
     background-color: inherit;
     padding: inherit;
   }
-}
-
-.code {
-  padding: 9.5px;
 }
 
 table {
@@ -213,6 +213,10 @@ table {
       border-bottom: 1px solid $well-inner-border;
     }
   }
+
+  .badge.badge-gray {
+    background-color: $well-expand-item;
+  }
 }
 
 .card {
@@ -262,13 +266,29 @@ pre code {
 .alert-danger {
   background-color: $red-500;
   border-color: $red-500;
+}
+
+.alert-warning,
+.alert-danger,
+.flash-notice {
+  border-radius: 0;
   color: $white-light;
 
-  h4 {
+  h4,
+  a,
+  .alert-link {
     color: $white-light;
   }
 }
 
 input[type=color].form-control {
   height: $input-height;
+}
+
+.toggle-sidebar-button {
+  .collapse-text,
+  .icon-angle-double-left,
+  .icon-angle-double-right {
+    color: $gl-text-color-secondary;
+  }
 }
