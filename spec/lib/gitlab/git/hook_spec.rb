@@ -8,6 +8,13 @@ describe Gitlab::Git::Hook do
     allow_any_instance_of(described_class).to receive(:trigger).and_call_original
   end
 
+  around do |example|
+    # TODO move hook tests to gitaly-ruby. Hook will disappear from gitlab-ce
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      example.run
+    end
+  end
+
   describe "#trigger" do
     set(:project) { create(:project, :repository) }
     let(:repository) { project.repository.raw_repository }
