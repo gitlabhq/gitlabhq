@@ -339,12 +339,8 @@ GEM
       diff-lcs (~> 1.1)
       mime-types (>= 1.16)
       posix-spawn (~> 0.3)
-<<<<<<< HEAD
     gitlab-license (1.0.0)
-    gitlab-markup (1.6.3)
-=======
     gitlab-markup (1.6.4)
->>>>>>> upstream/master
     gitlab-styles (2.3.2)
       rubocop (~> 0.51)
       rubocop-gitlab-security (~> 0.1.0)
@@ -1092,12 +1088,8 @@ DEPENDENCIES
   gitlab-flowdock-git-hook (~> 1.0.1)
   gitlab-gollum-lib (~> 4.2)
   gitlab-gollum-rugged_adapter (~> 0.4.4)
-<<<<<<< HEAD
   gitlab-license (~> 1.0)
-  gitlab-markup (~> 1.6.2)
-=======
   gitlab-markup (~> 1.6.4)
->>>>>>> upstream/master
   gitlab-styles (~> 2.3)
   gitlab_omniauth-ldap (~> 2.0.4)
   gon (~> 6.2)
