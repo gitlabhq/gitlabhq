@@ -1,21 +1,22 @@
 module Projects
   class HashedStorageMigrationService < BaseService
-    attr_reader :logger
+    attr_reader :options
 
-    def initialize(project, logger = nil)
+    def initialize(project, options = {})
       @project = project
-      @logger = logger || Rails.logger
+      @options = options
+      @options[:logger] ||= Rails.logger
     end
 
     def execute
       # Migrate repository from Legacy to Hashed Storage
       unless project.hashed_storage?(:repository)
-        return unless HashedStorage::MigrateRepositoryService.new(project, logger).execute
+        return unless HashedStorage::MigrateRepositoryService.new(project, options).execute
       end
 
       # Migrate attachments from Legacy to Hashed Storage
       unless project.hashed_storage?(:attachments)
-        HashedStorage::MigrateAttachmentsService.new(project, logger).execute
+        HashedStorage::MigrateAttachmentsService.new(project, options).execute
       end
     end
   end

@@ -1559,7 +1559,7 @@ class Project < ActiveRecord::Base
     if has_container_registry_tags?
       Rails.logger.error "Project #{full_path_was} cannot be renamed because container registry tags are present!"
 
-      # we currently doesn't support renaming repository if it contains images in container registry
+      # we currently don't support renaming repository if it contains images in container registry
       raise StandardError.new('Project cannot be renamed, because images are present in its container registry')
     end
 
@@ -1939,6 +1939,16 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # To call this method we have to make sure that there are no references
+  # (repo_reference_count = 0 AND wiki_reference_count = 0)
+  def migrate_to_hashed_storage_synchronously!
+    options = { old_path: full_path_was }
+
+    update!(repository_read_only: true)
+
+    ProjectMigrateHashedStorageWorker.new.perform(id, options)
+  end
+
   def storage_version=(value)
     super
 
@@ -2021,6 +2031,10 @@ class Project < ActiveRecord::Base
 
   def auto_cancel_pending_pipelines?
     auto_cancel_pending_pipelines == 'enabled'
+  end
+
+  def repository_in_use?
+    repo_reference_count > 0 || wiki_reference_count > 0
   end
 
   private

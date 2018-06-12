@@ -22,9 +22,19 @@ module Projects
       # If the block added errors, don't try to save the project
       return validation_failed! if project.errors.any?
 
-      if project.update_attributes(params.except(:default_branch))
+      if params[:path] && (params[:path] != project.path)
+        if project.repository_in_use?
+          return error("Repository currently in use and can not be moved. Try later")
+        end
+      end
+
+      if project.update(params.except(:default_branch))
         if project.previous_changes.include?('path')
-          project.rename_repo
+          if Gitlab::CurrentSettings.hashed_storage_enabled && (project.storage_version != Project::LATEST_STORAGE_VERSION)
+            project.migrate_to_hashed_storage_synchronously!
+          else
+            project.rename_repo
+          end
         else
           system_hook_service.execute_hooks_for(project, :update)
         end

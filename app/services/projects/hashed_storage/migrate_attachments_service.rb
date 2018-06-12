@@ -3,15 +3,16 @@ module Projects
     AttachmentMigrationError = Class.new(StandardError)
 
     class MigrateAttachmentsService < BaseService
-      attr_reader :logger, :old_path, :new_path
+      attr_reader :logger, :old_path, :new_path, :options
 
-      def initialize(project, logger = nil)
+      def initialize(project, options)
         @project = project
-        @logger = logger || Rails.logger
+        @logger = options.delete(:logger) || Rails.logger
+        @options = options
       end
 
       def execute
-        @old_path = project.full_path
+        @old_path = options[:old_path] || project.full_path
         @new_path = project.disk_path
 
         origin = FileUploader.absolute_base_dir(project)
