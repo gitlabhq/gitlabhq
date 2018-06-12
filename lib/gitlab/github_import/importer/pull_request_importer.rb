@@ -104,7 +104,8 @@ module Gitlab
           # first save the diff, then populate it.
           diff =
             if already_exists
-              merge_request.merge_request_diffs.take
+              merge_request.merge_request_diffs.take ||
+                merge_request.merge_request_diffs.build
             else
               merge_request.merge_request_diffs.build
             end
