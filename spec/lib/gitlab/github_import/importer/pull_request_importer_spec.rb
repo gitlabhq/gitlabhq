@@ -276,5 +276,17 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
 
       expect(diff.merge_request_diff_commits.exists?).to eq(true)
     end
+
+    context 'when the merge request exists' do
+      it 'creates the merge request diffs if they do not yet exist' do
+        mr, _ = importer.create_merge_request
+
+        mr.merge_request_diffs.delete_all
+
+        importer.insert_git_data(mr, true)
+
+        expect(mr.merge_request_diffs.exists?).to eq(true)
+      end
+    end
   end
 end
