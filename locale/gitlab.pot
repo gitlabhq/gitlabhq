@@ -465,6 +465,9 @@ msgstr ""
 msgid "An error occurred. Please try again."
 msgstr ""
 
+msgid "Any"
+msgstr ""
+
 msgid "Appearance"
 msgstr ""
 
@@ -685,6 +688,9 @@ msgid "Begin with the selected commit"
 msgstr ""
 
 msgid "Below are examples of regex for existing tools:"
+msgstr ""
+
+msgid "Below you will find all the groups that are public."
 msgstr ""
 
 msgid "Boards"
@@ -1976,6 +1982,12 @@ msgstr ""
 msgid "Discard draft"
 msgstr ""
 
+msgid "Discover projects, groups and snippets. Share your projects with others"
+msgstr ""
+
+msgid "Dismiss"
+msgstr ""
+
 msgid "Dismiss Cycle Analytics introduction box"
 msgstr ""
 
@@ -2246,6 +2258,12 @@ msgstr ""
 msgid "Expand sidebar"
 msgstr ""
 
+msgid "Explore GitLab"
+msgstr ""
+
+msgid "Explore Groups"
+msgstr ""
+
 msgid "Explore groups"
 msgstr ""
 
@@ -2459,6 +2477,9 @@ msgid "GroupSettings|cannot be disabled when the parent group \"Share with group
 msgstr ""
 
 msgid "GroupSettings|remove the share with group lock from %{ancestor_group_name}"
+msgstr ""
+
+msgid "Groups"
 msgstr ""
 
 msgid "Groups can also be nested by creating %{subgroup_docs_link_start}subgroups%{subgroup_docs_link_end}."
@@ -3023,6 +3044,9 @@ msgstr ""
 msgid "More information is available|here"
 msgstr ""
 
+msgid "Most stars"
+msgstr ""
+
 msgid "Move"
 msgstr ""
 
@@ -3149,6 +3173,9 @@ msgid "No merge requests found"
 msgstr ""
 
 msgid "No messages were logged"
+msgstr ""
+
+msgid "No public groups"
 msgstr ""
 
 msgid "No repository"
@@ -4931,6 +4958,9 @@ msgstr ""
 msgid "Track time with quick actions"
 msgstr ""
 
+msgid "Trending"
+msgstr ""
+
 msgid "Trigger this manual action"
 msgstr ""
 
@@ -5069,6 +5099,9 @@ msgid "View replaced file @ "
 msgstr ""
 
 msgid "Visibility and access controls"
+msgstr ""
+
+msgid "Visibility:"
 msgstr ""
 
 msgid "VisibilityLevel|Internal"
@@ -5273,6 +5306,9 @@ msgid "You can also star a label to make it a priority label."
 msgstr ""
 
 msgid "You can also test your .gitlab-ci.yml in the %{linkStart}Lint%{linkEnd}"
+msgstr ""
+
+msgid "You can easily contribute to them by requesting to join these groups."
 msgstr ""
 
 msgid "You can easily install a Runner on a Kubernetes cluster. %{link_to_help_page}"
