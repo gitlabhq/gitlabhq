@@ -24,7 +24,7 @@ setup_db_user_only() {
 setup_db() {
     setup_db_user_only
 
-    bundle exec rake db:drop db:create db:schema:load db:migrate
+    bundle exec rake db:drop db:create db:migrate
 
     if [ "$GITLAB_DATABASE" = "mysql" ]; then
         bundle exec rake add_limits_mysql
