@@ -32,6 +32,9 @@ export default {
     showStageUnstageArea() {
       return !!(this.someUncommitedChanges || this.lastCommitMsg || !this.unusedSeal);
     },
+    activeFileKey() {
+      return this.activeFile ? this.activeFile.key : null;
+    },
   },
   watch: {
     hasChanges() {
@@ -93,7 +96,7 @@ export default {
         action="stageAllChanges"
         :action-btn-text="__('Stage all')"
         item-action-component="stage-button"
-        :active-file-key="activeFile.key"
+        :active-file-key="activeFileKey"
       />
       <commit-files-list
         icon-name="staged"
@@ -103,7 +106,7 @@ export default {
         :action-btn-text="__('Unstage all')"
         item-action-component="unstage-button"
         :staged-list="true"
-        :active-file-key="activeFile.key"
+        :active-file-key="activeFileKey"
       />
     </template>
     <empty-state
