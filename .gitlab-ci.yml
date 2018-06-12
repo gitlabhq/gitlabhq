@@ -38,8 +38,6 @@ before_script:
   - date
   - source scripts/utils.sh
   - date
-  - bundle exec rake db:migrate
-  - date
   - source scripts/prepare_build.sh
   - date
 
