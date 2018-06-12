@@ -98,6 +98,7 @@ describe('RepoCommitSection', () => {
       store.state.noChangesStateSvgPath = 'nochangessvg';
       store.state.committedStateSvgPath = 'svg';
 
+      vm.$destroy();
       vm = createComponentWithStore(Component, store).$mount();
 
       expect(vm.$el.querySelector('.js-empty-state').textContent.trim()).toContain('No changes');
