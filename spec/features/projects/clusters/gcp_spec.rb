@@ -20,10 +20,6 @@ feature 'Gcp Cluster', :js do
         .to receive(:token_in_session).and_return('token')
       allow_any_instance_of(Projects::ClustersController)
         .to receive(:expires_at_in_session).and_return(1.hour.since.to_i.to_s)
-      allow_any_instance_of(Projects::Clusters::GcpController)
-        .to receive(:token_in_session).and_return('token')
-      allow_any_instance_of(Projects::Clusters::GcpController)
-        .to receive(:expires_at_in_session).and_return(1.hour.since.to_i.to_s)
     end
 
     context 'when user does not have a cluster and visits cluster index page' do
