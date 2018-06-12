@@ -1,9 +1,16 @@
 # Job traces (logs)
 
-By default, all job traces (logs) are saved to `/var/opt/gitlab/shared/asrtifacts`
-and `/home/git/gitlab/builds` for Omnibus packages and installations from source
-respectively. The job logs are organized by year and month (for example, `2017_03`),
-and then by project ID.
+Job traces are sent by gitlab-runner while it's processing a job. You can see traces in job pages, pipelines, email notifications, etc.
+Basically, there are two states in job traces. One is "Live trace", and another one is "Archived trace";
+
+|state|condition|step|data flow|stored path|
+|---|---|---|---|---|
+|Live trace|when a job is running|1: patching| gitlab-runner => gitlab-unicorn => file storage|`#{ROOT_PATH}/builds/#{YYYY_mm}/#{project_id}/#{job_id}.log`|
+|Live trace|when a job is finished|2: overwtiring| gitlab-runner => gitlab-unicorn => file storage |`#{ROOT_PATH}/builds/#{YYYY_mm}/#{project_id}/#{job_id}.log`|
+|Archived trace|After a job is finished|3: archiving| sidekiq moves live trace to artifacts folder |`#{ROOT_PATH}/shared/artifacts/#{disk_hash}/#{YYYY_mm_dd}/#{job_id}/#{job_artifact_id}/trace.log`|
+
+The `ROOT_PATH` varies per your enviroment. For example, if you used omnibus packages, it would be `/var/opt/gitlab/gitlab-ci`,
+whereas if you used source instlation, it would be `/home/git/gitlab`.
 
 There isn't a way to automatically expire old job logs, but it's safe to remove
 them if they're taking up too much space. If you remove the logs manually, the
@@ -41,24 +48,46 @@ To change the location where the job logs will be stored, follow the steps below
 [reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
 [restart gitlab]: restart_gitlab.md#installations-from-source "How to restart GitLab"
 
+## Upload traces to object storage
+
+Archived trace is one of [job artifacts](job_artifacts.md).
+If you set up [object storage settings](https://docs.gitlab.com/ce/administration/job_artifacts.html#object-storage-settings),
+job traces are automatically migrated to object storage as well as other job artifacts.
+
+Here is the data flow;
+
+|state|condition|step|data flow|stored path|
+|---|---|---|---|---|
+|Live trace|when a job is running|1: patching| gitlab-runner => gitlab-unicorn => file storage|`#{ROOT_PATH}/builds/#{YYYY_mm}/#{project_id}/#{job_id}.log`|
+|Live trace|when a job is finished|2: overwtiring| gitlab-runner => gitlab-unicorn => file storage |`#{ROOT_PATH}/builds/#{YYYY_mm}/#{project_id}/#{job_id}.log`|
+|Archived trace|After a job is finished|3: archiving| sidekiq moves live trace to artifacts folder |`#{ROOT_PATH}/shared/artifacts/#{disk_hash}/#{YYYY_mm_dd}/#{job_id}/#{job_artifact_id}/trace.log`|
+|Archived trace|After a trace is archived|4: uploading| sidekiq moves archived trace to object storage |`#{bucket_name}/#{disk_hash}/#{YYYY_mm_dd}/#{job_id}/#{job_artifact_id}/trace.log`|
+
 ## New live trace architecture
 
-> [Introduced][ce-18169] in GitLab 10.4.
+> [Introduced][ce-18169] in GitLab 10.4.  
+> [Announced as General availability][ce-46097] in GitLab 11.0.
 
 > **Notes**:
-- This feature is still Beta, which could impact GitLab.com/on-premises instances, and in the worst case scenario, traces will be lost.
-- This feature is still being discussed in [an issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/46097) for the performance improvements.
+- Performance improvements are scheduled in [11.1](https://gitlab.com/gitlab-org/gitlab-ce/issues/47125).
 - This feature is off by default. Please check below how to enable/disable this featrue.
 
-**What is "live trace"?**
+**For cloud-native compatible application**
 
-Job trace that is sent by runner while jobs are running. You can see live trace in job pages UI.
-The live traces are archived once job finishes.
+By combining the process with object storage settings, we can completely bypass file storage. This is useful option in cloud-native GitLab installtion.
 
-**What is new architecture?**
+Here is the data flow;
 
-So far, when GitLab Runner sends a job trace to GitLab-Rails, traces have been saved to file storage as text files.
-This was a problem for [Cloud Native-compatible GitLab application](https://gitlab.com/gitlab-com/migration/issues/23) where GitLab had to rely on File Storage.
+|state|condition|step|data flow|stored path|
+|---|---|---|---|---|
+|Live trace|when a job is running|1: patching| gitlab-runner => gitlab-unicorn => redis and database|- (Stored in Redis and Database, instead)|
+|Live trace|when a job is finished|2: overwtiring| gitlab-runner => gitlab-unicorn => redis and database |- (Stored in Redis and Database, instead)|
+|Archived trace|After a job is finished|3: archiving| sidekiq moves live trace to artifacts folder |`#{ROOT_PATH}/shared/artifacts/#{disk_hash}/#{YYYY_mm_dd}/#{job_id}/#{job_artifact_id}/trace.log`|
+|Archived trace|After a trace is archived|4: uploading| sidekiq moves archived trace to object storage |`#{bucket_name}/#{disk_hash}/#{YYYY_mm_dd}/#{job_id}/#{job_artifact_id}/trace.log`|
+
+(Step 3 is scheduled to be improved in https://gitlab.com/gitlab-org/gitlab-ce/issues/44663)
+
+**The detailed mechanizm**
 
 This new live trace architecture stores chunks of traces in Redis and database instead of file storage.
 Redis is used as first-class storage, and it stores up-to 128kB. Once the full chunk is sent it will be flushed to database. Afterwhile, the data in Redis and database will be archived to ObjectStorage.
@@ -135,3 +164,4 @@ We're currently evaluating this feature on dev.gitalb.org or staging.gitlab.com 
 - TBD
 
 [ce-18169]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18169
+[ce-46097]: https://gitlab.com/gitlab-org/gitlab-ce/issues/46097
