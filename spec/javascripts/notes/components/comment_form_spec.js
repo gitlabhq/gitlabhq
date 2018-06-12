@@ -84,7 +84,7 @@ describe('issue_comment_form component', () => {
       it('should render textarea with placeholder', () => {
         expect(
           vm.$el.querySelector('.js-main-target-form textarea').getAttribute('placeholder'),
-        ).toEqual('Write a comment or drag your files here...');
+        ).toEqual('Write a comment or drag your files here…');
       });
 
       it('should make textarea disabled while requesting', (done) => {
