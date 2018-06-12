@@ -5,6 +5,6 @@ New Merge Request <%= @merge_request.to_reference %>
 <%= merge_path_description(@merge_request, 'to') %>
 Author:    <%= @merge_request.author_name %>
 Assignee:  <%= @merge_request.assignee_name %>
+<%= render_if_exists 'notify/merge_request_approvers', merge_request: @merge_request %>
 
 <%= @merge_request.description %>
-
