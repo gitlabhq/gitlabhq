@@ -13,9 +13,9 @@ module Gitlab
 
       # Yields a Range of IDs and a Hash of failed verifications (object => error)
       def run_batches(&blk)
-        all_relation.in_batches(of: batch_size, start: start, finish: finish) do |all_relation| # rubocop: disable Cop/InBatches
-          range = all_relation.first.id..all_relation.last.id
-          failures = run_batch_for(all_relation)
+        all_relation.in_batches(of: batch_size, start: start, finish: finish) do |batch| # rubocop: disable Cop/InBatches
+          range = batch.first.id..batch.last.id
+          failures = run_batch_for(batch)
 
           yield(range, failures)
         end
@@ -31,8 +31,8 @@ module Gitlab
 
       private
 
-      def run_batch_for(all_relation)
-        all_relation.map { |upload| verify(upload) }.compact.to_h
+      def run_batch_for(batch)
+        batch.map { |upload| verify(upload) }.compact.to_h
       end
 
       def verify(object)
