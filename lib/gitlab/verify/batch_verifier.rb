@@ -37,23 +37,33 @@ module Gitlab
 
       def verify(object)
         local?(object) ? verify_local(object) : verify_remote(object)
-
-        nil
       rescue => err
-        [object, err]
+        failure(object, err.inspect)
       end
 
       def verify_local(object)
         expected = expected_checksum(object)
         actual = actual_checksum(object)
 
-        raise 'Checksum missing' unless expected.present?
-        raise 'Checksum mismatch' unless expected == actual
+        return failure(object, 'Checksum missing') unless expected.present?
+        return failure(object, 'Checksum mismatch') unless expected == actual
+
+        success
       end
 
       # We don't calculate checksum for remote objects, so just check existence
       def verify_remote(object)
-        raise 'Remote object does not exist' unless remote_object_exists?(object)
+        return failure(object, 'Remote object does not exist') unless remote_object_exists?(object)
+
+        success
+      end
+
+      def success
+        nil
+      end
+
+      def failure(object, message)
+        [object, message]
       end
 
       # It's already set to Logger::INFO, but acts as if it is set to

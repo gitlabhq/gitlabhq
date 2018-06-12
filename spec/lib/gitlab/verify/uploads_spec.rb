@@ -23,22 +23,22 @@ describe Gitlab::Verify::Uploads do
       FileUtils.rm_f(upload.absolute_path)
 
       expect(failures.keys).to contain_exactly(upload)
-      expect(failure).to be_a(Errno::ENOENT)
-      expect(failure.to_s).to include(upload.absolute_path)
+      expect(failure).to include('No such file or directory')
+      expect(failure).to include(upload.absolute_path)
     end
 
     it 'fails uploads with a mismatched checksum' do
       upload.update!(checksum: 'something incorrect')
 
       expect(failures.keys).to contain_exactly(upload)
-      expect(failure.to_s).to include('Checksum mismatch')
+      expect(failure).to include('Checksum mismatch')
     end
 
     it 'fails uploads with a missing precalculated checksum' do
       upload.update!(checksum: '')
 
       expect(failures.keys).to contain_exactly(upload)
-      expect(failure.to_s).to include('Checksum missing')
+      expect(failure).to include('Checksum missing')
     end
 
     context 'with remote files' do
@@ -60,7 +60,7 @@ describe Gitlab::Verify::Uploads do
         expect(file).to receive(:exists?).and_return(false)
 
         expect(failures.keys).to contain_exactly(upload)
-        expect(failure.to_s).to include('Remote object does not exist')
+        expect(failure).to include('Remote object does not exist')
       end
     end
   end

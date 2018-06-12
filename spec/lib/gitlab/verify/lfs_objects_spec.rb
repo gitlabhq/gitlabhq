@@ -21,15 +21,15 @@ describe Gitlab::Verify::LfsObjects do
       FileUtils.rm_f(lfs_object.file.path)
 
       expect(failures.keys).to contain_exactly(lfs_object)
-      expect(failure).to be_a(Errno::ENOENT)
-      expect(failure.to_s).to include(lfs_object.file.path)
+      expect(failure).to include('No such file or directory')
+      expect(failure).to include(lfs_object.file.path)
     end
 
     it 'fails LFS objects with a mismatched oid' do
       File.truncate(lfs_object.file.path, 0)
 
       expect(failures.keys).to contain_exactly(lfs_object)
-      expect(failure.to_s).to include('Checksum mismatch')
+      expect(failure).to include('Checksum mismatch')
     end
 
     context 'with remote files' do
@@ -51,7 +51,7 @@ describe Gitlab::Verify::LfsObjects do
         expect(file).to receive(:exists?).and_return(false)
 
         expect(failures.keys).to contain_exactly(lfs_object)
-        expect(failure.to_s).to include('Remote object does not exist')
+        expect(failure).to include('Remote object does not exist')
       end
     end
   end
