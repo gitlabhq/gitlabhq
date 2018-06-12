@@ -69,7 +69,9 @@ describe Gitlab::Git::Branch, seed_helper: true do
       Gitlab::Git.committer_hash(email: user.email, name: user.name)
     end
     let(:params) do
-      parents = [repository.rugged.head.target]
+      parents = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        [repository.rugged.head.target]
+      end
       tree = parents.first.tree
 
       {

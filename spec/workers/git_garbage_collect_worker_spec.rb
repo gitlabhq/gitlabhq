@@ -218,7 +218,9 @@ describe GitGarbageCollectWorker do
 
   # Create a new commit on a random new branch
   def create_objects(project)
-    rugged = project.repository.rugged
+    rugged = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      project.repository.rugged
+    end
     old_commit = rugged.branches.first.target
     new_commit_sha = Rugged::Commit.create(
       rugged,
@@ -237,7 +239,9 @@ describe GitGarbageCollectWorker do
   end
 
   def packs(project)
-    Dir["#{project.repository.path_to_repo}/objects/pack/*.pack"]
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      Dir["#{project.repository.path_to_repo}/objects/pack/*.pack"]
+    end
   end
 
   def packed_refs(project)

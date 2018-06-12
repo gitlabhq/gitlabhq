@@ -126,19 +126,6 @@ RSpec.configure do |config|
   end
 
   config.before(:example) do
-    # Skip pre-receive hook check so we can use the web editor and merge.
-    allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
-
-    allow_any_instance_of(Gitlab::Git::GitlabProjects).to receive(:fork_repository).and_wrap_original do |m, *args|
-      m.call(*args)
-
-      shard_name, repository_relative_path = args
-      # We can't leave the hooks in place after a fork, as those would fail in tests
-      # The "internal" API is not available
-      Gitlab::Shell.new.rm_directory(shard_name,
-                                     File.join(repository_relative_path, 'hooks'))
-    end
-
     # Enable all features by default for testing
     allow(Feature).to receive(:enabled?) { true }
   end
