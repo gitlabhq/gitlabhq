@@ -634,6 +634,12 @@ ActiveRecord::Schema.define(version: 20180702120647) do
     t.integer "status", null: false
     t.string "version", null: false
     t.text "status_reason"
+    t.text "ca_key"
+    t.text "ca_cert"
+    t.text "client_key"
+    t.text "client_cert"
+    t.text "server_key"
+    t.text "server_cert"
   end
 
   create_table "clusters_applications_ingress", force: :cascade do |t|
