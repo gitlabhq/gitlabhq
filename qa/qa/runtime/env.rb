@@ -46,6 +46,18 @@ module QA
       def sandbox_name
         ENV['GITLAB_SANDBOX_NAME']
       end
+
+      def gcloud_account_key
+        ENV.fetch("GCLOUD_ACCOUNT_KEY")
+      end
+
+      def gcloud_account_email
+        ENV.fetch("GCLOUD_ACCOUNT_EMAIL")
+      end
+
+      def gcloud_zone
+        ENV.fetch('GCLOUD_ZONE')
+      end
     end
   end
 end
