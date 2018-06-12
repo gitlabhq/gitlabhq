@@ -42,8 +42,6 @@ module Gitlab
           klass.new(project, client, parallel: false).execute
         end
 
-        project.repository.after_import
-
         true
       end
     end

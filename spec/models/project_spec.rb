@@ -1884,7 +1884,11 @@ describe Project do
         .with(project.repository_storage, project.disk_path, project.import_url)
         .and_return(true)
 
-      expect_any_instance_of(Repository).to receive(:after_import)
+      # Works around https://github.com/rspec/rspec-mocks/issues/910
+      allow(described_class).to receive(:find).with(project.id).and_return(project)
+      expect(project.repository).to receive(:after_import)
+        .and_call_original
+      expect(project.wiki.repository).to receive(:after_import)
         .and_call_original
     end
 
@@ -3761,10 +3765,11 @@ describe Project do
   end
 
   describe '#after_import' do
-    let(:project) { build(:project) }
+    let(:project) { create(:project) }
 
     it 'runs the correct hooks' do
       expect(project.repository).to receive(:after_import)
+      expect(project.wiki.repository).to receive(:after_import)
       expect(project).to receive(:import_finish)
       expect(project).to receive(:update_project_counter_caches)
       expect(project).to receive(:remove_import_jid)
