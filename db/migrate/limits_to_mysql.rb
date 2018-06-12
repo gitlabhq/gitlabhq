@@ -18,7 +18,5 @@ class LimitsToMysql < ActiveRecord::Migration
 
     change_column :snippets, :content, :text, limit: 2147483647
     change_column :notes, :st_diff, :text, limit: 2147483647
-
-    add_index :ci_builds, :artifacts_file, length: 20
   end
 end
