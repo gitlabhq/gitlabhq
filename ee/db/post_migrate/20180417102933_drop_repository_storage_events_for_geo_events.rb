@@ -11,7 +11,9 @@ class DropRepositoryStorageEventsForGeoEvents < ActiveRecord::Migration
               geo_repository_deleted_events geo_repository_renamed_events)
 
   def up
-    TABLES.each { |t| remove_column(t, :repository_storage_path) }
+    transaction do
+      TABLES.each { |t| remove_column(t, :repository_storage_path) }
+    end
   end
 
   def down
