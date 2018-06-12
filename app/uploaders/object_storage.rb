@@ -16,7 +16,8 @@ module ObjectStorage
     end
 
     def message
-      "Exclusive lease #{@lease_key} already taken."
+      *lease_key_group, _ = *@lease_key.split(":")
+      "Exclusive lease for #{lease_key_group.join(':')} is already taken."
     end
   end
 

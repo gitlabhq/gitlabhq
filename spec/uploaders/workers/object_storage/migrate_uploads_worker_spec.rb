@@ -1,7 +1,5 @@
 require 'spec_helper'
 
-MIGRATION_QUERIES = 5
-
 describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
   shared_context 'sanity_check! fails' do
     before do
@@ -127,13 +125,12 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
     it_behaves_like "uploads migration worker"
 
     describe "limits N+1 queries" do
-      let!(:projects) { create_list(:project, 10, :with_avatar) }
-
-      it "to N*#{MIGRATION_QUERIES}" do
+      it "to N*5" do
         query_count = ActiveRecord::QueryRecorder.new { perform(uploads) }
 
-        more_projects = create_list(:project, 100, :with_avatar)
-        expected_queries_per_migration = MIGRATION_QUERIES * more_projects.count
+        more_projects = create_list(:project, 3, :with_avatar)
+
+        expected_queries_per_migration = 5 * more_projects.count
         expect { perform(Upload.all) }.not_to exceed_query_limit(query_count).with_threshold(expected_queries_per_migration)
       end
     end
@@ -144,30 +141,27 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
     let(:secret) { SecureRandom.hex }
     let(:mounted_as) { nil }
 
+    def upload_file(project)
+      uploader = FileUploader.new(project)
+      uploader.store!(fixture_file_upload('spec/fixtures/doc_sample.txt'))
+    end
+
     before do
       stub_uploads_object_storage(FileUploader)
 
-      projects.map do |project|
-        uploader = FileUploader.new(project)
-        uploader.store!(fixture_file_upload('spec/fixtures/doc_sample.txt'))
-      end
+      projects.map(&method(:upload_file))
     end
 
     it_behaves_like "uploads migration worker"
 
     describe "limits N+1 queries" do
-      let!(:projects) { create_list(:project, 10) }
-
-      it "to N*#{MIGRATION_QUERIES}" do
+      it "to N*5" do
         query_count = ActiveRecord::QueryRecorder.new { perform(uploads) }
 
-        more_projects = create_list(:project, 100)
-        more_projects.map do |project|
-          uploader = FileUploader.new(project)
-          uploader.store!(fixture_file_upload('spec/fixtures/doc_sample.txt'))
-        end
-        expected_queries_per_migration = MIGRATION_QUERIES * more_projects.count
+        more_projects = create_list(:project, 3)
+        more_projects.map(&method(:upload_file))
 
+        expected_queries_per_migration = 5 * more_projects.count
         expect { perform(Upload.all) }.not_to exceed_query_limit(query_count).with_threshold(expected_queries_per_migration)
       end
     end
