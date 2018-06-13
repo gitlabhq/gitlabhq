@@ -31,11 +31,14 @@ describe "User comments on issue", :js do
     end
 
     it "adds comment with code block" do
-      comment = "```\nCommand [1]: /usr/local/bin/git , see [text](doc/text)\n```"
+      code_block_content = "Command [1]: /usr/local/bin/git , see [text](doc/text)"
+      comment = "```\n#{code_block_content}\n```"
 
       add_note(comment)
 
-      expect(page).to have_content(comment)
+      wait_for_requests
+
+      expect(page.find('pre code').text).to eq code_block_content
     end
   end
 
