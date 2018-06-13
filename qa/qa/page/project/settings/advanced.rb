@@ -4,9 +4,9 @@ module QA
       module Settings
         class Advanced < Page::Base
           view 'app/views/projects/edit.html.haml' do
-            element :project_path_field, 'f.text_field :path'
-            element :project_name_field, 'f.text_field :name'
-            element :rename_project_button, "f.submit 'Rename project'"
+            element :project_path_field, 'text_field :path'
+            element :project_name_field, 'text_field :name'
+            element :rename_project_button, "submit 'Rename project'"
           end
 
           def rename_to(path)
