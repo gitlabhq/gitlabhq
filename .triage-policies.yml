@@ -233,3 +233,21 @@ resource_rules:
             * You would like us to close down the Merge Request
 
             Thanks for your help
+      - name: Remind team members to set relevant labels on their MRs
+        conditions:
+          author:
+            source: group
+            condition: member_of
+            source_id: 9970 # the `gitlab-org` group
+          labels:
+            - No Label
+          state: opened
+        actions:
+          labels:
+            - auto updated
+          comment: |
+            Hi,
+
+            Please [add labels to your merge request](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#workflow-labels), this helps triage community merge requests.
+
+            Thanks for your help! :black_heart:
