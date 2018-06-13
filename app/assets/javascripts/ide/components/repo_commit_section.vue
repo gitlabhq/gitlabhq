@@ -94,11 +94,11 @@ export default {
         :key-prefix="$options.stageKeys.unstaged"
         :file-list="changedFiles"
         :action-btn-text="__('Stage all')"
+        :active-file-key="activeFileKey"
         class="is-first"
         icon-name="unstaged"
         action="stageAllChanges"
         item-action-component="stage-button"
-        :active-file-key="activeFileKey"
       />
       <commit-files-list
         :title="__('Staged')"
@@ -106,10 +106,10 @@ export default {
         :file-list="stagedFiles"
         :action-btn-text="__('Unstage all')"
         :staged-list="true"
+        :active-file-key="activeFileKey"
         icon-name="staged"
         action="unstageAllChanges"
         item-action-component="unstage-button"
-        :active-file-key="activeFileKey"
       />
     </template>
     <empty-state

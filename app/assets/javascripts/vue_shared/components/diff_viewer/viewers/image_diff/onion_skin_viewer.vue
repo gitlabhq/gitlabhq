@@ -104,18 +104,18 @@ export default {
 <template>
   <div class="onion-skin view">
     <div
-      class="onion-skin-frame"
       :style="{
         'width': onionMaxPixelWidth,
         'height': onionMaxPixelHeight,
         'user-select': dragging === true ? 'none' : '',
-    }">
+      }"
+      class="onion-skin-frame">
       <div
-        class="frame deleted"
         :style="{
           'width': onionMaxPixelWidth,
           'height': onionMaxPixelHeight,
-      }">
+        }"
+        class="frame deleted">
         <image-viewer
           key="onionOldImg"
           :render-info="false"
@@ -125,13 +125,13 @@ export default {
         />
       </div>
       <div
-        class="added frame"
         ref="addedFrame"
         :style="{
           'opacity': onionOpacity,
           'width': onionMaxPixelWidth,
           'height': onionMaxPixelHeight,
-      }">
+        }"
+        class="added frame">
         <image-viewer
           key="onionNewImg"
           :render-info="false"
@@ -143,14 +143,14 @@ export default {
       <div class="controls">
         <div class="transparent"></div>
         <div
-          class="drag-track"
           ref="dragTrack"
+          class="drag-track"
           @mousedown="startDrag"
           @mouseup="stopDrag">
           <div
-            class="dragger"
             ref="dragger"
-            :style="{ 'left': onionDraggerPixelPos }">
+            :style="{ 'left': onionDraggerPixelPos }"
+            class="dragger">
           </div>
         </div>
         <div class="opaque"></div>

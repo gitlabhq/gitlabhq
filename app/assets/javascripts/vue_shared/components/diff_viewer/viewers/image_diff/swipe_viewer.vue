@@ -111,12 +111,12 @@ export default {
 <template>
   <div class="swipe view">
     <div
-      class="swipe-frame"
       ref="swipeFrame"
       :style="{
         'width': swipeMaxPixelWidth,
         'height': swipeMaxPixelHeight,
-    }">
+      }"
+      class="swipe-frame">
       <div class="frame deleted">
         <image-viewer
           key="swipeOldImg"
@@ -128,12 +128,12 @@ export default {
         />
       </div>
       <div
-        class="swipe-wrap"
         ref="swipeWrap"
         :style="{
           'width': swipeWrapPixelWidth,
           'height': swipeMaxPixelHeight,
-      }">
+        }"
+        class="swipe-wrap">
         <div class="frame added">
           <image-viewer
             key="swipeNewImg"
@@ -145,11 +145,11 @@ export default {
         </div>
       </div>
       <span
-        class="swipe-bar"
         ref="swipeBar"
+        :style="{ 'left': swipeBarPixelPos }"
+        class="swipe-bar"
         @mousedown="startDrag"
-        @mouseup="stopDrag"
-        :style="{ 'left': swipeBarPixelPos }">
+        @mouseup="stopDrag">
         <span class="top-handle"></span>
         <span class="bottom-handle"></span>
       </span>
