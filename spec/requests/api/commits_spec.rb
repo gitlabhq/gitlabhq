@@ -18,14 +18,14 @@ describe API::Commits do
   describe 'GET /projects/:id/repository/commits' do
     let(:route) { "/projects/#{project_id}/repository/commits" }
 
-    shared_examples_for 'project commits' do
+    shared_examples_for 'project commits' do |schema: 'public_api/v4/commits'|
       it "returns project commits" do
         commit = project.repository.commit
 
         get api(route, current_user)
 
         expect(response).to have_gitlab_http_status(200)
-        expect(response).to match_response_schema('public_api/v4/commits')
+        expect(response).to match_response_schema(schema)
         expect(json_response.first['id']).to eq(commit.id)
         expect(json_response.first['committer_name']).to eq(commit.committer_name)
         expect(json_response.first['committer_email']).to eq(commit.committer_email)
@@ -158,6 +158,23 @@ describe API::Commits do
           expect(response).to include_pagination_headers
           expect(response.headers['X-Total']).to eq(commit_count.to_s)
           expect(response.headers['X-Page']).to eql('1')
+        end
+      end
+
+      context 'with_stats optional parameter' do
+        let(:project) { create(:project, :public, :repository) }
+
+        it_behaves_like 'project commits', schema: 'public_api/v4/commits_with_stats' do
+          let(:route) { "/projects/#{project_id}/repository/commits?with_stats=true" }
+
+          it 'include commits details' do
+            commit = project.repository.commit
+            get api(route, current_user)
+
+            expect(json_response.first['stats']['additions']).to eq(commit.stats.additions)
+            expect(json_response.first['stats']['deletions']).to eq(commit.stats.deletions)
+            expect(json_response.first['stats']['total']).to eq(commit.stats.total)
+          end
         end
       end
 
