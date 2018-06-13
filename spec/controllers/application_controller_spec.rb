@@ -502,7 +502,7 @@ describe ApplicationController do
 
     context '422 errors' do
       it 'logs a response with a string' do
-        response = spy(ActionDispatch::Response, status: 422, body: 'Hello world', content_type: 'application/json')
+        response = spy(ActionDispatch::Response, status: 422, body: 'Hello world', content_type: 'application/json', cookies: {})
         allow(controller).to receive(:response).and_return(response)
         get :index
 
@@ -511,7 +511,7 @@ describe ApplicationController do
 
       it 'logs a response with an array' do
         body = ['I want', 'my hat back']
-        response = spy(ActionDispatch::Response, status: 422, body: body, content_type: 'application/json')
+        response = spy(ActionDispatch::Response, status: 422, body: body, content_type: 'application/json', cookies: {})
         allow(controller).to receive(:response).and_return(response)
         get :index
 
@@ -519,7 +519,7 @@ describe ApplicationController do
       end
 
       it 'does not log a string with an empty body' do
-        response = spy(ActionDispatch::Response, status: 422, body: nil, content_type: 'application/json')
+        response = spy(ActionDispatch::Response, status: 422, body: nil, content_type: 'application/json', cookies: {})
         allow(controller).to receive(:response).and_return(response)
         get :index
 
@@ -527,7 +527,7 @@ describe ApplicationController do
       end
 
       it 'does not log an HTML body' do
-        response = spy(ActionDispatch::Response, status: 422, body: 'This is a test', content_type: 'application/html')
+        response = spy(ActionDispatch::Response, status: 422, body: 'This is a test', content_type: 'application/html', cookies: {})
         allow(controller).to receive(:response).and_return(response)
         get :index
 
