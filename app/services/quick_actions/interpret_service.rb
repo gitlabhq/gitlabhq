@@ -561,6 +561,17 @@ module QuickActions
       end
     end
 
+    desc 'Make issue confidential.'
+    explanation do
+      'Makes this issue confidential'
+    end
+    condition do
+      issuable.is_a?(Issue) && current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
+    end
+    command :confidential do
+      @updates[:confidential] = true
+    end
+
     def extract_users(params)
       return [] if params.nil?
 
