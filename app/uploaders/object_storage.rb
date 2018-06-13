@@ -66,7 +66,7 @@ module ObjectStorage
         # For FileUploaders, model may have many uploaders. In that case
         # we want to use exclusive key per upload, not per model to allow
         # parallel migration
-        key_object = upload ? upload : model
+        key_object = upload || model
 
         "object_storage_migrate:#{key_object.class}:#{key_object.id}"
       end
