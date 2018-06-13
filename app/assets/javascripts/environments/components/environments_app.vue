@@ -93,8 +93,8 @@
     <div class="top-area">
       <tabs
         :tabs="tabs"
-        @onChangeTab="onChangeTab"
         scope="environments"
+        @onChangeTab="onChangeTab"
       />
 
       <div
@@ -119,8 +119,8 @@
       @onChangePage="onChangePage"
     >
       <empty-state
-        slot="emptyState"
         v-if="!isLoading && state.environments.length === 0"
+        slot="emptyState"
         :new-path="newEnvironmentPath"
         :help-path="helpPagePath"
         :can-create-environment="canCreateEnvironment"

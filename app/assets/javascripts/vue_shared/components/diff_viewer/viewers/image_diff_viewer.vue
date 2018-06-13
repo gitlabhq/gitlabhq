@@ -49,8 +49,8 @@ export default {
 <template>
   <div class="diff-file-container">
     <div
-      class="diff-viewer"
-      v-if="diffMode === $options.diffModes.replaced">
+      v-if="diffMode === $options.diffModes.replaced"
+      class="diff-viewer">
       <div class="image js-replaced-image">
         <two-up-viewer
           v-if="mode === $options.imageViewMode.twoup"

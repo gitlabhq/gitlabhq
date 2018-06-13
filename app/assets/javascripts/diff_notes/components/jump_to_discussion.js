@@ -10,7 +10,10 @@ import '../mixins/discussion';
 const JumpToDiscussion = Vue.extend({
   mixins: [DiscussionMixins],
   props: {
-    discussionId: String
+    discussionId: {
+      type: String,
+      required: true,
+    },
   },
   data: function () {
     return {
@@ -51,6 +54,9 @@ const JumpToDiscussion = Vue.extend({
       }
       return lastId;
     }
+  },
+  created() {
+    this.discussion = this.discussions[this.discussionId];
   },
   methods: {
     jumpToNextUnresolvedDiscussion: function () {
@@ -201,9 +207,6 @@ const JumpToDiscussion = Vue.extend({
         offset: -150
       });
     }
-  },
-  created() {
-    this.discussion = this.discussions[this.discussionId];
   },
 });
 

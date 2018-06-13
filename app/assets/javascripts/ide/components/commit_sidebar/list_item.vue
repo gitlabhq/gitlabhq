@@ -82,10 +82,10 @@ export default {
 
 <template>
   <div
-    class="multi-file-commit-list-item"
     :class="{
       'is-active': isActive
     }"
+    class="multi-file-commit-list-item"
   >
     <button
       type="button"

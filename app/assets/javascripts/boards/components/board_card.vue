@@ -77,7 +77,6 @@ export default {
 
 <template>
   <li
-    class="board-card"
     :class="{
       'user-can-drag': !disabled && issue.id,
       'is-disabled': disabled || !issue.id,
@@ -85,6 +84,7 @@ export default {
     }"
     :index="index"
     :data-issue-id="issue.id"
+    class="board-card"
     @mousedown="mouseDown"
     @mousemove="mouseMove"
     @mouseup="showIssue($event)">

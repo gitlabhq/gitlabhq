@@ -44,10 +44,10 @@ export default {
   >
     <resizable-panel
       v-if="rightPane"
-      class="multi-file-commit-panel-inner"
       :collapsible="false"
       :initial-width="350"
       :min-size="350"
+      class="multi-file-commit-panel-inner"
       side="right"
     >
       <component :is="rightPane" />
@@ -57,13 +57,13 @@ export default {
         <li>
           <button
             v-tooltip
-            data-container="body"
-            data-placement="left"
             :title="__('Pipelines')"
-            class="ide-sidebar-link is-right"
             :class="{
               active: pipelinesActive
             }"
+            data-container="body"
+            data-placement="left"
+            class="ide-sidebar-link is-right"
             type="button"
             @click="clickTab($event, $options.rightSidebarViews.pipelines)"
           >

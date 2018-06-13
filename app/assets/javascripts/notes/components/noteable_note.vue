@@ -151,10 +151,10 @@ export default {
 
 <template>
   <li
-    class="note timeline-entry"
     :id="noteAnchorId"
     :class="classNameBindings"
-    :data-award-url="note.toggle_award_path">
+    :data-award-url="note.toggle_award_path"
+    class="note timeline-entry">
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
         <user-avatar-link
@@ -191,12 +191,12 @@ export default {
           />
         </div>
         <note-body
+          ref="noteBody"
           :note="note"
           :can-edit="note.current_user.can_edit"
           :is-editing="isEditing"
           @handleFormUpdate="formUpdateHandler"
           @cancelFormEdition="formCancelHandler"
-          ref="noteBody"
         />
       </div>
     </div>

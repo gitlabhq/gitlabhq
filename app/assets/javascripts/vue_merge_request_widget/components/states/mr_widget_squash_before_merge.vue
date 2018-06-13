@@ -37,23 +37,23 @@ export default {
   <div class="accept-control inline">
     <label class="merge-param-checkbox">
       <input
+        :disabled="isMergeButtonDisabled"
+        v-model="squashBeforeMerge"
         type="checkbox"
         name="squash"
         class="qa-squash-checkbox"
-        :disabled="isMergeButtonDisabled"
-        v-model="squashBeforeMerge"
         @change="updateSquashModel"
       />
       {{ __('Squash commits') }}
     </label>
     <a
+      v-tooltip
       :href="mr.squashBeforeMergeHelpPath"
       data-title="About this feature"
       data-placement="bottom"
       target="_blank"
       rel="noopener noreferrer nofollow"
       data-container="body"
-      v-tooltip
     >
       <icon
         name="question-o"

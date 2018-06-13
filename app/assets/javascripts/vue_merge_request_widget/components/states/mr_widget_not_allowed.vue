@@ -12,8 +12,8 @@
 <template>
   <div class="mr-widget-body media">
     <status-icon
-      status="success"
       :show-disabled-button="true"
+      status="success"
     />
     <div class="media-body space-children">
       <span class="bold">

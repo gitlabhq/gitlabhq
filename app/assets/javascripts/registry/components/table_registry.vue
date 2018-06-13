@@ -118,13 +118,13 @@
 
           <td class="content">
             <button
+              v-tooltip
               v-if="item.canDelete"
-              type="button"
-              class="js-delete-registry btn btn-danger d-none d-sm-block float-right"
               :title="s__('ContainerRegistry|Remove tag')"
               :aria-label="s__('ContainerRegistry|Remove tag')"
+              type="button"
+              class="js-delete-registry btn btn-danger d-none d-sm-block float-right"
               data-container="body"
-              v-tooltip
               @click="handleDeleteRegistry(item)"
             >
               <i

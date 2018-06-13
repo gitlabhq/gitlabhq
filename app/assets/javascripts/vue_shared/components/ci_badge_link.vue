@@ -50,9 +50,9 @@ export default {
 </script>
 <template>
   <a
+    v-tooltip
     :href="status.details_path"
     :class="cssClass"
-    v-tooltip
     :title="!showText ? status.text : ''"
   >
     <ci-icon :status="status" />

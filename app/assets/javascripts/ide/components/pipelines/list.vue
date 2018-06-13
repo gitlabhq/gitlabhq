@@ -75,8 +75,8 @@ export default {
           >
             #{{ latestPipeline.id }}
             <icon
-              name="external-link"
               :size="12"
+              name="external-link"
             />
           </a>
         </span>
