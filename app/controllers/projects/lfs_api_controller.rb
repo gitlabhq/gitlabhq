@@ -98,7 +98,7 @@ class Projects::LfsApiController < Projects::GitHttpClientController
   end
 
   def lfs_check_batch_operation!
-    if upload_request? && Gitlab::Database.read_only?
+    if batch_operation_disallowed?
       render(
         json: {
           message: lfs_read_only_message
@@ -107,6 +107,11 @@ class Projects::LfsApiController < Projects::GitHttpClientController
         status: 403
       )
     end
+  end
+
+  # Overridden in EE
+  def batch_operation_disallowed?
+    upload_request? && Gitlab::Database.read_only?
   end
 
   # Overridden in EE
