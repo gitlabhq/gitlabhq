@@ -61,9 +61,9 @@ export default {
       v-if="includeToggle"
       class="discussion-actions">
       <button
-        @click="handleToggle"
         class="note-action-button discussion-toggle-button js-vue-toggle-button"
-        type="button">
+        type="button"
+        @click="handleToggle">
         <i
           :class="toggleChevronClass"
           class="fa"
@@ -91,8 +91,8 @@ export default {
         </span>
         <a
           :href="noteTimestampLink"
-          @click="updateTargetNoteHash"
-          class="note-timestamp system-note-separator">
+          class="note-timestamp system-note-separator"
+          @click="updateTargetNoteHash">
           <time-ago-tooltip
             :time="createdAt"
             tooltip-placement="bottom"

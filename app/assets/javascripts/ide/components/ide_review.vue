@@ -36,8 +36,8 @@ export default {
 <template>
   <ide-tree-list
     :viewer-type="viewer"
-    header-class="ide-review-header"
     :disable-action-dropdown="true"
+    header-class="ide-review-header"
   >
     <template
       slot="header"

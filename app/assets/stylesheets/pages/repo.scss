@@ -335,7 +335,6 @@
 
       img {
         max-width: 90%;
-        max-height: 90%;
       }
 
       .isZoomable {
@@ -553,6 +552,10 @@
 }
 
 .multi-file-commit-list-item {
+  &.is-active {
+    background-color: $white-normal;
+  }
+
   .multi-file-discard-btn {
     display: none;
     margin-top: -2px;
@@ -1129,7 +1132,7 @@
 
 .ide-context-header {
   .avatar {
-    flex: 0 0 40px;
+    flex: 0 0 38px;
   }
 
   .ide-merge-requests-dropdown.dropdown-menu {

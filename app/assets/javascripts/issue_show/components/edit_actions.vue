@@ -51,16 +51,16 @@
 <template>
   <div class="prepend-top-default append-bottom-default clearfix">
     <button
-      class="btn btn-save float-left"
       :class="{ disabled: formState.updateLoading || !isSubmitEnabled }"
-      type="submit"
       :disabled="formState.updateLoading || !isSubmitEnabled"
+      class="btn btn-save float-left"
+      type="submit"
       @click.prevent="updateIssuable">
       Save changes
       <i
+        v-if="formState.updateLoading"
         class="fa fa-spinner fa-spin"
-        aria-hidden="true"
-        v-if="formState.updateLoading">
+        aria-hidden="true">
       </i>
     </button>
     <button
@@ -71,16 +71,16 @@
     </button>
     <button
       v-if="shouldShowDeleteButton"
-      class="btn btn-danger float-right append-right-default"
       :class="{ disabled: deleteLoading }"
-      type="button"
       :disabled="deleteLoading"
+      class="btn btn-danger float-right append-right-default"
+      type="button"
       @click="deleteIssuable">
       Delete
       <i
+        v-if="deleteLoading"
         class="fa fa-spinner fa-spin"
-        aria-hidden="true"
-        v-if="deleteLoading">
+        aria-hidden="true">
       </i>
     </button>
   </div>

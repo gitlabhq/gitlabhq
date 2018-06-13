@@ -8,7 +8,7 @@ describe MicrosoftTeams::Notifier do
   let(:options) do
     {
       title: 'JohnDoe4/project2',
-      pretext: '[[JohnDoe4/project2](http://localhost/namespace2/gitlabhq)] Issue [#1 Awesome issue](http://localhost/namespace2/gitlabhq/issues/1) opened by user6',
+      summary: '[[JohnDoe4/project2](http://localhost/namespace2/gitlabhq)] Issue [#1 Awesome issue](http://localhost/namespace2/gitlabhq/issues/1) opened by user6',
       activity: {
         title: 'Issue opened by user6',
         subtitle: 'in [JohnDoe4/project2](http://localhost/namespace2/gitlabhq)',

@@ -25,9 +25,9 @@
     </span>
     <i
       v-tooltip
-      class="fa fa-question-circle"
       :title="tooltipTitle"
       :aria-label="tooltipTitle"
+      class="fa fa-question-circle"
     >
     </i>
   </p>

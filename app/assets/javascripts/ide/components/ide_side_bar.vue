@@ -115,17 +115,17 @@ export default {
     <div class="multi-file-commit-panel-inner">
       <template v-if="loading">
         <div
-          class="multi-file-loading-container"
           v-for="n in 3"
           :key="n"
+          class="multi-file-loading-container"
         >
           <skeleton-loading-container />
         </div>
       </template>
       <template v-else>
         <div
-          class="context-header ide-context-header dropdown"
           ref="mergeRequestDropdown"
+          class="context-header ide-context-header dropdown"
         >
           <button
             type="button"
@@ -136,18 +136,18 @@ export default {
               class="avatar-container s40 project-avatar"
             >
               <project-avatar-image
-                class="avatar-container project-avatar"
                 :link-href="currentProject.path"
                 :img-src="currentProject.avatar_url"
                 :img-alt="currentProject.name"
                 :img-size="40"
+                class="avatar-container project-avatar"
               />
             </div>
             <identicon
               v-else
-              size-class="s40"
               :entity-id="currentProject.id"
               :entity-name="currentProject.name"
+              size-class="s40"
             />
             <div class="ide-sidebar-project-title">
               <div class="sidebar-context-title">
@@ -155,11 +155,11 @@ export default {
               </div>
               <div class="d-flex">
                 <div
-                  v-if="currentBranchId"
-                  class="sidebar-context-title ide-sidebar-branch-title"
-                  ref="branchId"
                   v-tooltip
+                  v-if="currentBranchId"
+                  ref="branchId"
                   :title="branchTooltipTitle"
+                  class="sidebar-context-title ide-sidebar-branch-title"
                 >
                   <icon
                     name="branch"
@@ -168,10 +168,10 @@ export default {
                 </div>
                 <div
                   v-if="currentMergeRequestId"
-                  class="sidebar-context-title ide-sidebar-branch-title"
                   :class="{
                     'prepend-left-8': currentBranchId
                   }"
+                  class="sidebar-context-title ide-sidebar-branch-title"
                 >
                   <icon
                     name="git-merge"

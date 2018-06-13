@@ -7,26 +7,44 @@ import Flash from '../../flash';
 
 const ResolveBtn = Vue.extend({
   props: {
-    noteId: Number,
-    discussionId: String,
-    resolved: Boolean,
-    canResolve: Boolean,
-    resolvedBy: String,
-    authorName: String,
-    authorAvatar: String,
-    noteTruncated: String,
+    noteId: {
+      type: Number,
+      required: true,
+    },
+    discussionId: {
+      type: String,
+      required: true,
+    },
+    resolved: {
+      type: Boolean,
+      required: true,
+    },
+    canResolve: {
+      type: Boolean,
+      required: true,
+    },
+    resolvedBy: {
+      type: String,
+      required: true,
+    },
+    authorName: {
+      type: String,
+      required: true,
+    },
+    authorAvatar: {
+      type: String,
+      required: true,
+    },
+    noteTruncated: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
       discussions: CommentsStore.state,
       loading: false,
     };
-  },
-  watch: {
-    discussions: {
-      handler: 'updateTooltip',
-      deep: true,
-    },
   },
   computed: {
     discussion() {
@@ -55,6 +73,32 @@ const ResolveBtn = Vue.extend({
       return this.note.resolved_by;
     },
   },
+  watch: {
+    discussions: {
+      handler: 'updateTooltip',
+      deep: true,
+    },
+  },
+  mounted() {
+    $(this.$refs.button).tooltip({
+      container: 'body',
+    });
+  },
+  beforeDestroy() {
+    CommentsStore.delete(this.discussionId, this.noteId);
+  },
+  created() {
+    CommentsStore.create({
+      discussionId: this.discussionId,
+      noteId: this.noteId,
+      canResolve: this.canResolve,
+      resolved: this.resolved,
+      resolvedBy: this.resolvedBy,
+      authorName: this.authorName,
+      authorAvatar: this.authorAvatar,
+      noteTruncated: this.noteTruncated,
+    });
+  },
   methods: {
     updateTooltip() {
       this.$nextTick(() => {
@@ -82,43 +126,15 @@ const ResolveBtn = Vue.extend({
 
           const resolvedBy = data ? data.resolved_by : null;
 
-          CommentsStore.update(
-            this.discussionId,
-            this.noteId,
-            !this.isResolved,
-            resolvedBy,
-          );
+          CommentsStore.update(this.discussionId, this.noteId, !this.isResolved, resolvedBy);
           this.discussion.updateHeadline(data);
           gl.mrWidget.checkStatus();
           this.updateTooltip();
         })
         .catch(
-          () =>
-            new Flash(
-              'An error occurred when trying to resolve a comment. Please try again.',
-            ),
+          () => new Flash('An error occurred when trying to resolve a comment. Please try again.'),
         );
     },
-  },
-  mounted() {
-    $(this.$refs.button).tooltip({
-      container: 'body',
-    });
-  },
-  beforeDestroy() {
-    CommentsStore.delete(this.discussionId, this.noteId);
-  },
-  created() {
-    CommentsStore.create({
-      discussionId: this.discussionId,
-      noteId: this.noteId,
-      canResolve: this.canResolve,
-      resolved: this.resolved,
-      resolvedBy: this.resolvedBy,
-      authorName: this.authorName,
-      authorAvatar: this.authorAvatar,
-      noteTruncated: this.noteTruncated,
-    });
   },
 });
 

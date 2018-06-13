@@ -140,7 +140,9 @@ module Gitlab
     end
 
     def repository_storage_paths_args
-      Gitlab.config.repositories.storages.values.map { |rs| rs.legacy_disk_path }
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        Gitlab.config.repositories.storages.values.map { |rs| rs.legacy_disk_path }
+      end
     end
 
     def user_home

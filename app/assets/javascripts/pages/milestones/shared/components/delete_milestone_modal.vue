@@ -96,8 +96,8 @@ Once deleted, it cannot be undone or recovered.`),
     id="delete-milestone-modal"
     :title="title"
     :text="text"
-    kind="danger"
     :primary-button-label="s__('Milestones|Delete milestone')"
+    kind="danger"
     @submit="onSubmit">
 
     <template

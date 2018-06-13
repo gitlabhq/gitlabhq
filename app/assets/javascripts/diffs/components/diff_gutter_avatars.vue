@@ -70,35 +70,35 @@ export default {
   <div class="diff-comment-avatar-holders">
     <button
       v-if="discussionsExpanded"
-      @click="toggleDiscussions"
       type="button"
       aria-label="Show comments"
       class="diff-notes-collapse js-diff-comment-avatar js-diff-comment-button"
+      @click="toggleDiscussions"
     >
       <icon
-        name="collapse"
         :size="12"
+        name="collapse"
       />
     </button>
     <template v-else>
       <user-avatar-image
         v-for="note in notesInGutter"
         :key="note.id"
-        @click.native="toggleDiscussions"
-        class="diff-comment-avatar js-diff-comment-avatar"
         :img-src="note.author.avatar_url"
         :tooltip-text="getTooltipText(note)"
         :size="19"
+        class="diff-comment-avatar js-diff-comment-avatar"
+        @click.native="toggleDiscussions"
       />
       <span
-        v-if="moreText"
         v-tooltip
+        v-if="moreText"
         :title="moreText"
-        @click="toggleDiscussions"
         class="diff-comments-more-count has-tooltip js-diff-comment-avatar js-diff-comment-plus"
         data-container="body"
         data-placement="top"
         role="button"
+        @click="toggleDiscussions"
       >+{{ moreCount }}</span>
     </template>
   </div>

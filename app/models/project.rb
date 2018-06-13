@@ -1616,6 +1616,7 @@ class Project < ActiveRecord::Base
 
   def after_import
     repository.after_import
+    wiki.repository.after_import
     import_finish
     remove_import_jid
     update_project_counter_caches
@@ -2139,10 +2140,14 @@ class Project < ActiveRecord::Base
     check_access = -> do
       next false if empty_repo?
 
-      merge_request = source_of_merge_requests.opened
-                        .where(allow_collaboration: true)
-                        .find_by(source_branch: branch_name)
-      merge_request&.can_be_merged_by?(user)
+      merge_requests = source_of_merge_requests.opened
+                         .where(allow_collaboration: true)
+
+      if branch_name
+        merge_requests.find_by(source_branch: branch_name)&.can_be_merged_by?(user)
+      else
+        merge_requests.any? { |merge_request| merge_request.can_be_merged_by?(user) }
+      end
     end
 
     if RequestStore.active?

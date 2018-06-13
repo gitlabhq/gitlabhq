@@ -6,7 +6,7 @@ scope(controller: :wikis) do
     post '/', to: 'wikis#create'
   end
 
-  scope(path: 'wikis/*id', as: :wiki, format: false) do
+  scope(path: 'wikis/*id', as: :wiki, format: false, defaults: { format: :html }) do
     get :edit
     get :history
     post :preview_markdown

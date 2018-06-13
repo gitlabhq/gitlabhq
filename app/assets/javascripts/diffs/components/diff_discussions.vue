@@ -24,8 +24,8 @@ export default {
       class="discussion-notes diff-discussions"
     >
       <ul
-        class="notes"
         :data-discussion-id="discussion.id"
+        class="notes"
       >
         <noteable-discussion
           :discussion="discussion"

@@ -16,6 +16,7 @@ GET /projects/:id/repository/commits
 | `until` | string | no | Only commits before or on this date will be returned in ISO 8601 format YYYY-MM-DDTHH:MM:SSZ |
 | `path` | string | no | The file path |
 | `all` | boolean | no | Retrieve every commit from the repository |
+| `with_stats` | boolean | no | Stats about each commit will be added to the response |
 
 
 ```bash

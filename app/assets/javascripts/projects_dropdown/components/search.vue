@@ -49,11 +49,11 @@
     class="search-input-container d-none d-sm-block"
   >
     <input
-      type="search"
-      class="form-control"
       ref="search"
       v-model="searchQuery"
       :placeholder="s__('ProjectsDropdown|Search your projects')"
+      type="search"
+      class="form-control"
     />
     <i
       v-if="!searchQuery"

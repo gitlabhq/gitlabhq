@@ -85,7 +85,6 @@ export default {
 <template>
   <img
     v-tooltip
-    class="avatar"
     :class="{
       lazy: lazy,
       [avatarSizeClass]: true,
@@ -99,5 +98,7 @@ export default {
     :data-container="tooltipContainer"
     :data-placement="tooltipPlacement"
     :title="tooltipText"
+    class="avatar"
+    data-boundary="window"
   />
 </template>

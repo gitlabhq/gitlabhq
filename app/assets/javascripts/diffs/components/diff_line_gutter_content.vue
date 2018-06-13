@@ -169,23 +169,23 @@ export default {
   <div>
     <span
       v-if="isMatchLine"
-      @click="handleLoadMoreLines"
       class="context-cell"
       role="button"
+      @click="handleLoadMoreLines"
     >...</span>
     <template
       v-else
     >
       <button
         v-show="shouldShowCommentButton"
-        @click="handleCommentButton"
         type="button"
         class="add-diff-note js-add-diff-note-button"
         title="Add a comment to this line"
+        @click="handleCommentButton"
       >
         <icon
-          name="comment"
           :size="12"
+          name="comment"
         />
       </button>
       <a

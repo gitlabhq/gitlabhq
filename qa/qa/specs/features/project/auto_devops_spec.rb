@@ -1,3 +1,5 @@
+require 'pathname'
+
 module QA
   feature 'Auto Devops', :kubernetes do
     after do

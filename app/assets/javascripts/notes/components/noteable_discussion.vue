@@ -270,8 +270,8 @@ Please check your network connection and try again.`;
       </div>
       <div class="timeline-content">
         <div
-          class="discussion js-discussion-container"
           :data-discussion-id="transformedDiscussion.discussion_id"
+          class="discussion js-discussion-container"
         >
           <div
             v-if="renderHeader"
@@ -350,19 +350,19 @@ Please check your network connection and try again.`;
                         class="btn-group w-100"
                         role="group">
                         <button
-                          @click="showReplyForm"
                           type="button"
                           class="js-vue-discussion-reply btn btn-text-field mr-2"
-                          title="Add a reply">Reply...</button>
+                          title="Add a reply"
+                          @click="showReplyForm">Reply...</button>
                       </div>
                       <div
                         v-if="discussion.resolvable"
                         class="btn-group"
                         role="group">
                         <button
-                          @click="resolveHandler()"
                           type="button"
                           class="btn btn-default mr-2"
+                          @click="resolveHandler()"
                         >
                           <i
                             v-if="isResolving"
@@ -382,11 +382,11 @@ Please check your network connection and try again.`;
                           class="btn-group"
                           role="group">
                           <a
-                            :href="discussion.resolve_with_issue_path"
                             v-tooltip
+                            :href="discussion.resolve_with_issue_path"
+                            :title="s__('MergeRequests|Resolve this discussion in a new issue')"
                             class="new-issue-for-discussion btn
                               btn-default discussion-create-issue-btn"
-                            :title="s__('MergeRequests|Resolve this discussion in a new issue')"
                             data-container="body"
                           >
                             <span v-html="resolveDiscussionsSvg"></span>
@@ -397,11 +397,11 @@ Please check your network connection and try again.`;
                           class="btn-group"
                           role="group">
                           <button
-                            @click="jumpToNextDiscussion"
                             v-tooltip
                             class="btn btn-default discussion-next-btn"
                             title="Jump to next unresolved discussion"
                             data-container="body"
+                            @click="jumpToNextDiscussion"
                           >
                             <span v-html="nextDiscussionsSvg"></span>
                           </button>
@@ -411,12 +411,12 @@ Please check your network connection and try again.`;
                   </template>
                   <note-form
                     v-if="isReplying"
-                    save-button-title="Comment"
+                    ref="noteForm"
                     :discussion="discussion"
                     :is-editing="false"
+                    save-button-title="Comment"
                     @handleFormUpdate="saveReply"
-                    @cancelForm="cancelReplyForm"
-                    ref="noteForm" />
+                    @cancelForm="cancelReplyForm" />
                   <note-signed-out-widget v-if="!canReply" />
                 </div>
               </div>

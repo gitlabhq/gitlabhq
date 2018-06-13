@@ -8,7 +8,10 @@ window.gl.issueBoards = window.gl.issueBoards || {};
 
 gl.issueBoards.BoardDelete = Vue.extend({
   props: {
-    list: Object
+    list: {
+      type: Object,
+      default: () => ({}),
+    },
   },
   methods: {
     deleteBoard () {

@@ -120,7 +120,7 @@ module Gitlab
 
       # Default branch in the repository
       def root_ref
-        @root_ref ||= gitaly_migrate(:root_ref) do |is_enabled|
+        @root_ref ||= gitaly_migrate(:root_ref, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_client.default_branch_name
           else
@@ -152,7 +152,7 @@ module Gitlab
       # Returns an Array of branch names
       # sorted by name ASC
       def branch_names
-        gitaly_migrate(:branch_names) do |is_enabled|
+        gitaly_migrate(:branch_names, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_client.branch_names
           else
@@ -163,7 +163,7 @@ module Gitlab
 
       # Returns an Array of Branches
       def branches
-        gitaly_migrate(:branches) do |is_enabled|
+        gitaly_migrate(:branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_client.branches
           else
@@ -200,7 +200,7 @@ module Gitlab
       end
 
       def local_branches(sort_by: nil)
-        gitaly_migrate(:local_branches) do |is_enabled|
+        gitaly_migrate(:local_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_client.local_branches(sort_by: sort_by)
           else
@@ -270,7 +270,7 @@ module Gitlab
 
       # Returns an Array of tag names
       def tag_names
-        gitaly_migrate(:tag_names) do |is_enabled|
+        gitaly_migrate(:tag_names, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_client.tag_names
           else
@@ -283,7 +283,7 @@ module Gitlab
       #
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/390
       def tags
-        gitaly_migrate(:tags) do |is_enabled|
+        gitaly_migrate(:tags, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             tags_from_gitaly
           else
@@ -310,7 +310,7 @@ module Gitlab
       #
       # name - The name of the tag as a String.
       def tag_exists?(name)
-        gitaly_migrate(:ref_exists_tags) do |is_enabled|
+        gitaly_migrate(:ref_exists_tags, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_exists?("refs/tags/#{name}")
           else
@@ -323,7 +323,7 @@ module Gitlab
       #
       # name - The name of the branch as a String.
       def branch_exists?(name)
-        gitaly_migrate(:ref_exists_branches) do |is_enabled|
+        gitaly_migrate(:ref_exists_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_exists?("refs/heads/#{name}")
           else
@@ -1181,18 +1181,18 @@ module Gitlab
       end
 
       def compare_source_branch(target_branch_name, source_repository, source_branch_name, straight:)
-        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          with_repo_branch_commit(source_repository, source_branch_name) do |commit|
-            break unless commit
+        tmp_ref = "refs/tmp/#{SecureRandom.hex}"
 
-            Gitlab::Git::Compare.new(
-              self,
-              target_branch_name,
-              commit.sha,
-              straight: straight
-            )
-          end
-        end
+        return unless fetch_source_branch!(source_repository, source_branch_name, tmp_ref)
+
+        Gitlab::Git::Compare.new(
+          self,
+          target_branch_name,
+          tmp_ref,
+          straight: straight
+        )
+      ensure
+        delete_refs(tmp_ref)
       end
 
       def write_ref(ref_path, ref, old_ref: nil, shell: true)

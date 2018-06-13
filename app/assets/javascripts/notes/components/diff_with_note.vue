@@ -89,8 +89,8 @@ export default {
 <template>
   <div
     ref="fileHolder"
-    class="diff-file file-holder"
     :class="diffFileClass"
+    class="diff-file file-holder"
   >
     <diff-file-header
       :diff-file="diffFile"
@@ -130,8 +130,8 @@ export default {
           >
             Unable to load the diff
             <button
-              @click="fetchDiff"
               class="btn-link btn-link-retry btn-no-padding js-toggle-lazy-diff-retry-button"
+              @click="fetchDiff"
             >
               Try again
             </button>

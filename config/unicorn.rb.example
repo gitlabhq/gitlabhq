@@ -81,6 +81,17 @@ GC.respond_to?(:copy_on_write_friendly=) and
 # fast LAN.
 check_client_connection false
 
+before_exec do |server|
+  # The following is necessary to ensure stale Prometheus metrics don't
+  # accumulate over time. It needs to be done in this hook as opposed to
+  # inside an init script to ensure metrics files aren't deleted after new
+  # unicorn workers start after a SIGUSR2 is received.
+  if ENV['prometheus_multiproc_dir']
+    old_metrics = Dir[File.join(ENV['prometheus_multiproc_dir'], '*.db')]
+    FileUtils.rm_rf(old_metrics)
+  end
+end
+
 before_fork do |server, worker|
   # the following is highly recommended for Rails + "preload_app true"
   # as there's no need for the master process to hold a connection

@@ -117,8 +117,8 @@ export default {
     </section>
 
     <section
-      class="header-action-buttons"
       v-if="actions.length"
+      class="header-action-buttons"
     >
       <template
         v-for="(action, i) in actions"
@@ -135,21 +135,21 @@ export default {
         <a
           v-else-if="action.type === 'ujs-link'"
           :href="action.path"
-          data-method="post"
-          rel="nofollow"
           :class="action.cssClass"
           :key="i"
+          data-method="post"
+          rel="nofollow"
         >
           {{ action.label }}
         </a>
 
         <button
           v-else-if="action.type === 'button'"
-          @click="onClickAction(action)"
           :disabled="action.isLoading"
           :class="action.cssClass"
-          type="button"
           :key="i"
+          type="button"
+          @click="onClickAction(action)"
         >
           {{ action.label }}
           <i
@@ -162,11 +162,11 @@ export default {
       </template>
       <button
         v-if="hasSidebarButton"
+        id="toggleSidebar"
         type="button"
         class="btn btn-default d-block d-sm-none d-md-none
 sidebar-toggle-btn js-sidebar-build-toggle js-sidebar-build-toggle-header"
         aria-label="Toggle Sidebar"
-        id="toggleSidebar"
       >
         <i
           class="fa fa-angle-double-left"

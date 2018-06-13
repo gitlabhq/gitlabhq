@@ -307,8 +307,8 @@ Please check your network connection and try again.`;
   <div>
     <note-signed-out-widget v-if="!isLoggedIn" />
     <discussion-locked-widget
-      :issuable-type="issuableTypeTitle"
       v-else-if="!canCreateNote"
+      :issuable-type="issuableTypeTitle"
     />
     <ul
       v-else-if="canCreateNote"
@@ -340,23 +340,23 @@ Please check your network connection and try again.`;
               />
 
               <markdown-field
+                ref="markdownField"
                 :markdown-preview-path="markdownPreviewPath"
                 :markdown-docs-path="markdownDocsPath"
                 :quick-actions-docs-path="quickActionsDocsPath"
-                :add-spacing-classes="false"
-                ref="markdownField">
+                :add-spacing-classes="false">
                 <textarea
                   id="note-body"
+                  ref="textarea"
+                  slot="textarea"
+                  v-model="note"
+                  :disabled="isSubmitting"
                   name="note[note]"
                   class="note-textarea js-vue-comment-form js-note-text
 js-gfm-input js-autosize markdown-area js-vue-textarea"
                   data-supports-quick-actions="true"
                   aria-label="Description"
-                  v-model="note"
-                  ref="textarea"
-                  slot="textarea"
-                  :disabled="isSubmitting"
-                  placeholder="Write a comment or drag your files here..."
+                  placeholder="Write a comment or drag your files here…"
                   @keydown.up="editCurrentUserLastNote()"
                   @keydown.meta.enter="handleSave()"
                   @keydown.ctrl.enter="handleSave()">
@@ -367,10 +367,10 @@ js-gfm-input js-autosize markdown-area js-vue-textarea"
                   class="float-left btn-group
 append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown">
                   <button
-                    @click.prevent="handleSave()"
                     :disabled="isSubmitButtonDisabled"
                     class="btn btn-create comment-btn js-comment-button js-comment-submit-button"
-                    type="submit">
+                    type="submit"
+                    @click.prevent="handleSave()">
                     {{ __(commentButtonTitle) }}
                   </button>
                   <button
@@ -429,20 +429,20 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                 <loading-button
                   v-if="canUpdateIssue"
                   :loading="isToggleStateButtonLoading"
-                  @click="handleSave(true)"
                   :container-class="[
                     actionButtonClassNames,
                     'btn btn-comment btn-comment-and-close js-action-button'
                   ]"
                   :disabled="isToggleStateButtonLoading || isSubmitting"
                   :label="issueActionButtonTitle"
+                  @click="handleSave(true)"
                 />
 
                 <button
-                  type="button"
                   v-if="note.length"
-                  @click="discard"
-                  class="btn btn-cancel js-note-discard">
+                  type="button"
+                  class="btn btn-cancel js-note-discard"
+                  @click="discard">
                   Discard draft
                 </button>
               </div>

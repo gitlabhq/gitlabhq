@@ -82,7 +82,7 @@
 
   = render_if_exists 'projects/issues_settings'
 
-  %section.settings.merge-requests-feature.no-animate{ class: [('expanded' if expanded), ('hidden' if @project.project_feature.send(:merge_requests_access_level) == 0)] }
+  %section.qa-merge-request-settings.settings.merge-requests-feature.no-animate{ class: [('expanded' if expanded), ('hidden' if @project.project_feature.send(:merge_requests_access_level) == 0)] }
     .settings-header
       %h4
         Merge request
@@ -101,7 +101,7 @@
 
   = render 'export', project: @project
 
-  %section.settings.advanced-settings.no-animate{ class: ('expanded' if expanded) }
+  %section.qa-advanced-settings.settings.advanced-settings.no-animate{ class: ('expanded' if expanded) }
     .settings-header
       %h4
         Advanced

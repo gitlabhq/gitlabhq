@@ -28,21 +28,21 @@ export default {
 
 <template>
   <button
+    v-tooltip
+    :title="tooltipLabel"
     type="button"
     class="btn btn-blank gutter-toggle btn-sidebar-action"
-    @click="toggle"
-    v-tooltip
     data-container="body"
     data-placement="left"
-    :title="tooltipLabel"
+    @click="toggle"
   >
     <i
-      aria-label="toggle collapse"
-      class="fa"
       :class="{
         'fa-angle-double-right': !collapsed,
         'fa-angle-double-left': collapsed
       }"
+      aria-label="toggle collapse"
+      class="fa"
     >
     </i>
   </button>

@@ -124,42 +124,42 @@ export default {
 
 <template>
   <div
+    ref="header"
     class="js-file-title file-title file-title-flex-parent"
     @click="handleToggle($event, true)"
-    ref="header"
   >
     <div class="file-header-content">
       <icon
         v-if="collapsible"
         :name="collapseIcon"
-        @click.stop="handleToggle"
         :size="16"
         aria-hidden="true"
         class="diff-toggle-caret"
+        @click.stop="handleToggle"
       />
       <a
         ref="titleWrapper"
         :href="titleLink"
       >
         <i
-          class="fa fa-fw"
           :class="`fa-${icon}`"
+          class="fa fa-fw"
           aria-hidden="true"
         ></i>
         <span v-if="diffFile.renamedFile">
           <strong
-            class="file-title-name"
             v-tooltip
             :title="diffFile.oldPath"
+            class="file-title-name"
             data-container="body"
           >
             {{ diffFile.oldPath }}
           </strong>
           →
           <strong
-            class="file-title-name"
             v-tooltip
             :title="diffFile.newPath"
+            class="file-title-name"
             data-container="body"
           >
             {{ diffFile.newPath }}
@@ -167,10 +167,10 @@ export default {
         </span>
 
         <strong
-          v-else
-          class="file-title-name"
           v-tooltip
+          v-else
           :title="filePath"
+          class="file-title-name"
           data-container="body"
         >
           {{ filePath }}
@@ -207,8 +207,8 @@ export default {
       >
         <button
           :class="{ active: isDiscussionsExpanded }"
-          class="btn js-toggle-diff-comments"
           :title="s__('MergeRequests|Toggle comments for this file')"
+          class="btn js-toggle-diff-comments"
           type="button"
         >
           <icon name="comment" />
@@ -224,26 +224,26 @@ export default {
 
       <a
         v-if="diffFile.replacedViewPath"
-        class="btn view-file js-view-file"
         :href="diffFile.replacedViewPath"
+        class="btn view-file js-view-file"
         v-html="viewReplacedFileButtonText"
       >
       </a>
       <a
-        class="btn view-file js-view-file"
         :href="diffFile.viewPath"
+        class="btn view-file js-view-file"
         v-html="viewFileButtonText"
       >
       </a>
 
       <a
+        v-tooltip
         v-if="diffFile.externalUrl"
         :href="diffFile.externalUrl"
         :title="`View on ${diffFile.formattedExternalUrl}`"
         target="_blank"
         rel="noopener noreferrer"
         class="btn btn-file-option"
-        v-tooltip
       >
         <icon name="external-link" />
       </a>

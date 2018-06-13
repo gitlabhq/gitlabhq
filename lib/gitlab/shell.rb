@@ -106,10 +106,17 @@ module Gitlab
         raise Error.new("don't use disk paths with import_repository: #{url.inspect}")
       end
 
-      # The timeout ensures the subprocess won't hang forever
-      cmd = gitlab_projects(storage, "#{name}.git")
-      success = cmd.import_project(url, git_timeout)
+      relative_path = "#{name}.git"
+      cmd = gitaly_migrate(:import_repository, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
+        if is_enabled
+          GitalyGitlabProjects.new(storage, relative_path)
+        else
+          # The timeout ensures the subprocess won't hang forever
+          gitlab_projects(storage, relative_path)
+        end
+      end
 
+      success = cmd.import_project(url, git_timeout)
       raise Error, cmd.output unless success
 
       success
@@ -165,8 +172,16 @@ module Gitlab
     #
     # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/817
     def fork_repository(forked_from_storage, forked_from_disk_path, forked_to_storage, forked_to_disk_path)
-      gitlab_projects(forked_from_storage, "#{forked_from_disk_path}.git")
-        .fork_repository(forked_to_storage, "#{forked_to_disk_path}.git")
+      forked_from_relative_path = "#{forked_from_disk_path}.git"
+      fork_args = [forked_to_storage, "#{forked_to_disk_path}.git"]
+
+      gitaly_migrate(:fork_repository, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
+        if is_enabled
+          GitalyGitlabProjects.new(forked_from_storage, forked_from_relative_path).fork_repository(*fork_args)
+        else
+          gitlab_projects(forked_from_storage, forked_from_relative_path).fork_repository(*fork_args)
+        end
+      end
     end
 
     # Removes a repository from file system, using rm_diretory which is an alias
@@ -451,6 +466,40 @@ module Gitlab
       # Old Popen code returns [Error, output] to the caller, so we
       # need to do the same here...
       raise Error, e
+    end
+
+    class GitalyGitlabProjects
+      attr_reader :shard_name, :repository_relative_path, :output
+
+      def initialize(shard_name, repository_relative_path)
+        @shard_name = shard_name
+        @repository_relative_path = repository_relative_path
+        @output = ''
+      end
+
+      def import_project(source, _timeout)
+        raw_repository = Gitlab::Git::Repository.new(shard_name, repository_relative_path, nil)
+
+        Gitlab::GitalyClient::RepositoryService.new(raw_repository).import_repository(source)
+        true
+      rescue GRPC::BadStatus => e
+        @output = e.message
+        false
+      end
+
+      def fork_repository(new_shard_name, new_repository_relative_path)
+        target_repository = Gitlab::Git::Repository.new(new_shard_name, new_repository_relative_path, nil)
+        raw_repository = Gitlab::Git::Repository.new(shard_name, repository_relative_path, nil)
+
+        Gitlab::GitalyClient::RepositoryService.new(target_repository).fork_repository(raw_repository)
+      rescue GRPC::BadStatus => e
+        logger.error "fork-repository failed: #{e.message}"
+        false
+      end
+
+      def logger
+        Rails.logger
+      end
     end
   end
 end

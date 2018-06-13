@@ -64,6 +64,7 @@ future GitLab releases.**
 | **CI_JOB_NAME**                 | 9.0    | 0.5    | The name of the job as defined in `.gitlab-ci.yml` |
 | **CI_JOB_STAGE**                | 9.0    | 0.5    | The name of the stage as defined in `.gitlab-ci.yml` |
 | **CI_JOB_TOKEN**                | 9.0    | 1.2    | Token used for authenticating with the GitLab Container Registry |
+| **CI_JOB_URL**                  | 11.0   | 0.5    | Job details URL |
 | **CI_REPOSITORY_URL**           | 9.0    | all    | The URL to clone the Git repository |
 | **CI_RUNNER_DESCRIPTION**       | 8.10   | 0.5    | The description of the runner as saved in GitLab |
 | **CI_RUNNER_ID**                | 8.10   | 0.5    | The unique id of runner being used |
@@ -81,6 +82,7 @@ future GitLab releases.**
 | **CI_PROJECT_NAMESPACE**        | 8.10   | 0.5    | The project namespace (username or groupname) that is currently being built |
 | **CI_PROJECT_PATH**             | 8.10   | 0.5    | The namespace with project name |
 | **CI_PROJECT_PATH_SLUG**        | 9.3    | all    | `$CI_PROJECT_PATH` lowercased and with everything except `0-9` and `a-z` replaced with `-`. Use in URLs and domain names. |
+| **CI_PIPELINE_URL**             | 11.0   | 0.5    | Pipeline details URL |
 | **CI_PROJECT_URL**              | 8.10   | 0.5    | The HTTP address to access project |
 | **CI_PROJECT_VISIBILITY**       | 10.3   | all    | The project visibility (internal, private, public) |
 | **CI_REGISTRY**                 | 8.10   | 0.5    | If the Container Registry is enabled it returns the address of GitLab's Container Registry |
