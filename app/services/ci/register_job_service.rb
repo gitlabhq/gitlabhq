@@ -43,10 +43,7 @@ module Ci
           # with StateMachines::InvalidTransition or StaleObjectError when doing run! or save method.
           begin
             build.runner_id = runner.id
-
-            if params.dig(:session, :url).present?
-              build.build_runner_session(params[:session])
-            end
+            build.runner_session_attributes = params[:session] if params[:session].present?
 
             build.run!
             register_success(build)

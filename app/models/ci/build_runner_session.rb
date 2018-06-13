@@ -6,9 +6,20 @@ module Ci
 
     self.table_name = 'ci_builds_runner_session'
 
-    belongs_to :build, class_name: 'Ci::Build'
+    belongs_to :build, class_name: 'Ci::Build', inverse_of: :runner_session
 
     validates :build, presence: true
-    validates :url, url: { protocols: %w(ws) }
+    validates :url, url: { protocols: %w(https) }
+
+    def terminal_specification
+      return {} unless url.present?
+
+      {
+        subprotocols: ['terminal.gitlab.com'].freeze,
+        url: "#{url}/exec".sub("https://", "wss://"),
+        headers: { Authorization: authorization.presence }.compact,
+        ca_pem: certificate.presence
+      }
+    end
   end
 end

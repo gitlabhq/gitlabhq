@@ -155,7 +155,7 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def authorize_use_build_terminal!
-    return access_denied! unless can?(current_user, :use_build_terminal, build)
+    return access_denied! unless can?(current_user, :create_build_terminal, build)
   end
 
   def verify_api_request!

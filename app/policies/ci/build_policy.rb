@@ -34,6 +34,6 @@ module Ci
       enable :update_commit_status
     end
 
-    rule { can?(:update_build) & terminal }.enable :use_build_terminal
+    rule { can?(:update_build) & terminal }.enable :create_build_terminal
   end
 end

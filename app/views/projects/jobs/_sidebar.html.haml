@@ -1,11 +1,8 @@
 %aside.right-sidebar.right-sidebar-expanded.build-sidebar.js-build-sidebar.js-right-sidebar{ data: { "offset-top" => "101", "spy" => "affix" } }
   .sidebar-container
     .blocks-container
-      .block
-        %strong.inline.prepend-top-8
-          = @build.name
-
-        - if can?(current_user, :use_build_terminal, @build)
+      - if can?(current_user, :create_build_terminal, @build)
+        .block
           = link_to terminal_project_job_path(@project, @build), class: 'terminal-button pull-right btn visible-md-block visible-lg-block', title: 'Terminal' do
             Terminal
 

@@ -20,6 +20,7 @@ describe Ci::Build do
   it { is_expected.to have_many(:deployments) }
   it { is_expected.to have_many(:sourced_pipelines) }
   it { is_expected.to have_many(:trace_sections)}
+  it { is_expected.to have_one(:runner_session)}
   it { is_expected.to validate_presence_of(:ref) }
   it { is_expected.to respond_to(:has_trace?) }
   it { is_expected.to respond_to(:trace) }
@@ -47,7 +48,7 @@ describe Ci::Build do
     context 'when transitioning to any state from running' do
       it 'removes runner_session' do
         %w(success drop cancel).each do |event|
-          build = FactoryBot.create(:ci_build, :running, :with_runner_session_url, pipeline: pipeline)
+          build = FactoryBot.create(:ci_build, :running, :with_runner_session, pipeline: pipeline)
 
           build.fire_events!(event)
 
@@ -2671,30 +2672,6 @@ describe Ci::Build do
             is_expected.to be_falsey
           end
         end
-      end
-    end
-  end
-
-  describe '#terminal_specification' do
-    subject { build.terminal_specification }
-
-    it 'returns empty hash if no runner_session_url' do
-      expect(subject).to be_empty
-    end
-
-    context 'when runner_session_url is present' do
-      set(:build) { create(:ci_build, :with_runner_session_url, project: project, user: user) }
-
-      it 'returns ca_pem nil if empty runner_session_certificate' do
-        build.runner_session.certificate = ''
-
-        expect(subject[:ca_pem]).to be_nil
-      end
-
-      it 'adds Authorization header if runner_session_authorization is present' do
-        build.runner_session.authorization = 'whatever'
-
-        expect(subject[:headers]).to include('Authorization' => 'whatever')
       end
     end
   end

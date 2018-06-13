@@ -571,7 +571,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
 
     context 'when job exists' do
       context 'and it has a terminal' do
-        let!(:job) { create(:ci_build, :running, :with_runner_session_url, pipeline: pipeline) }
+        let!(:job) { create(:ci_build, :running, :with_runner_session, pipeline: pipeline) }
 
         it 'has a job' do
           get_terminal(id: job.id)
@@ -611,7 +611,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
   end
 
   describe 'GET #terminal_websocket_authorize' do
-    let!(:job) { create(:ci_build, :running, :with_runner_session_url, pipeline: pipeline) }
+    let!(:job) { create(:ci_build, :running, :with_runner_session, pipeline: pipeline) }
 
     before do
       project.add_developer(user)
