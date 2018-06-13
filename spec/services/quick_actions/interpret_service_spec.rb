@@ -323,6 +323,14 @@ describe QuickActions::InterpretService do
       end
     end
 
+    shared_examples 'confidential command' do
+      it 'marks issue as confidential if content contains /confidential' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(confidential: true)
+      end
+    end
+
     shared_examples 'shrug command' do
       it 'appends ¯\_(ツ)_/¯ to the comment' do
         new_content, _ = service.execute(content, issuable)
@@ -774,6 +782,11 @@ describe QuickActions::InterpretService do
       let(:issuable) { issue }
     end
 
+    it_behaves_like 'confidential command' do
+      let(:content) { '/confidential' }
+      let(:issuable) { issue }
+    end
+
     context '/copy_metadata command' do
       let(:todo_label) { create(:label, project: project, title: 'To Do') }
       let(:inreview_label) { create(:label, project: project, title: 'In Review') }
@@ -915,6 +928,11 @@ describe QuickActions::InterpretService do
 
       it_behaves_like 'empty command' do
         let(:content) { '/remove_due_date' }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'empty command' do
+        let(:content) { '/confidential' }
         let(:issuable) { issue }
       end
 
