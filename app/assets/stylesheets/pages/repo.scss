@@ -552,6 +552,10 @@
 }
 
 .multi-file-commit-list-item {
+  &.is-active {
+    background-color: $white-normal;
+  }
+
   .multi-file-discard-btn {
     display: none;
     margin-top: -2px;
