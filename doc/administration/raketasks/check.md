@@ -78,9 +78,10 @@ Example output:
 
 ## Uploaded Files Integrity
 
-Various types of file can be uploaded to a GitLab installation by users.
-Checksums are generated and stored in the database upon upload, and integrity
-checks using those checksums can be run. These checks also detect missing files.
+Various types of files can be uploaded to a GitLab installation by users.
+These integrity checks can detect missing files. Additionally, for locally
+stored files, checksums are generated and stored in the database upon upload,
+and these checks will verify them against current files.
 
 Currently, integrity checks are supported for the following types of file:
 
