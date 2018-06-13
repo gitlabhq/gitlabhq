@@ -39,7 +39,7 @@ describe('IDE stage file button', () => {
   });
 
   it('calls store with discard button', () => {
-    vm.$el.querySelectorAll('.btn')[1].click();
+    vm.$el.querySelector('.dropdown-menu button').click();
 
     expect(vm.discardFileChanges).toHaveBeenCalledWith(f.path);
   });

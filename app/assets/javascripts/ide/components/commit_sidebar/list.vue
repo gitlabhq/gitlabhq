@@ -94,7 +94,7 @@ export default {
             v-show="fileList.length"
             v-tooltip
             type="button"
-            class="ide-staged-action-btn p-0 order-1 align-items-center rounded-right border-left-0"
+            class="btn btn-default ide-staged-action-btn p-0 order-1 align-items-center"
             :class="{
               'd-flex': fileList.length
             }"

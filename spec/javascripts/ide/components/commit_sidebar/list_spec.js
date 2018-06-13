@@ -16,6 +16,7 @@ describe('Multi-file editor commit sidebar list', () => {
       iconName: 'staged',
       action: 'stageAllChanges',
       actionBtnText: 'stage all',
+      actionBtnIcon: 'history',
       itemActionComponent: 'stage-button',
       activeFileKey: 'staged-testing',
       keyPrefix: 'staged',

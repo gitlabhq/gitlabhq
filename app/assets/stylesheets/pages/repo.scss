@@ -540,24 +540,9 @@
   margin-right: -$grid-size;
   min-height: 60px;
 
-  .multi-file-commit-list-item {
-    margin-left: 0;
-    margin-right: 0;
-  }
-
   &.form-text.text-muted {
     margin-left: 0;
     right: 0;
-  }
-}
-
-.multi-file-commit-list-item {
-  &.is-active {
-    background-color: $white-normal;
-  }
-
-  .multi-file-discard-btn {
-    margin-top: -2px;
   }
 }
 
@@ -590,7 +575,7 @@
   }
 }
 
-.multi-file-commit-list-item,
+.multi-file-commit-list-path,
 .ide-file-list .file {
   display: flex;
   align-items: center;
@@ -607,11 +592,9 @@
 }
 
 .multi-file-commit-list-path {
-  padding: 0;
-  background: none;
-  border: 0;
-  text-align: left;
-  width: 100%;
+  &.is-active {
+    background-color: $white-normal;
+  }
 
   &:hover,
   &:focus {
@@ -635,6 +618,12 @@
   &:active {
     text-decoration: none;
   }
+}
+
+.multi-file-discard-btn {
+  top: 0;
+  right: 8px;
+  bottom: 0;
 }
 
 .multi-file-commit-form {
@@ -832,7 +821,13 @@
 
 .ide-staged-action-btn {
   width: 22px;
-  border: 1px solid $white-dark;
+  margin-left: -1px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+
+  > svg {
+    top: 0;
+  }
 }
 
 .ide-commit-file-count {

@@ -54,6 +54,9 @@ export default {
     isActive() {
       return this.activeFileKey === this.fullKey;
     },
+    tooltipTitle() {
+      return this.file.path === this.file.name ? '' : this.file.path;
+    },
   },
   methods: {
     ...mapActions([
@@ -85,17 +88,15 @@ export default {
 </script>
 
 <template>
-  <div
-    :class="{
-      'is-active': isActive
-    }"
-    class="multi-file-commit-list-item"
-  >
+  <div class="multi-file-commit-list-item position-relative">
     <button
       v-tooltip
-      :title="file.path"
+      :title="tooltipTitle"
+      :class="{
+        'is-active': isActive
+      }"
       type="button"
-      class="multi-file-commit-list-path"
+      class="multi-file-commit-list-path w-100 border-0 ml-0 mr-0"
       @dblclick="fileAction"
       @click="openFileInEditor"
     >
@@ -108,9 +109,9 @@ export default {
       </span>
     </button>
     <component
-      class="d-flex ml-auto"
       :is="actionComponent"
       :path="file.path"
+      class="d-flex position-absolute"
     />
   </div>
 </template>
