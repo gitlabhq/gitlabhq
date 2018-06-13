@@ -609,7 +609,7 @@
 }
 
 .multi-file-commit-list-file-path {
-  @include str-truncated(100%);
+  @include str-truncated(calc(100% - 30px));
 
   &:hover {
     text-decoration: underline;
