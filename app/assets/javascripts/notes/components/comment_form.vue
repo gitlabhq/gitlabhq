@@ -307,13 +307,8 @@ Please check your network connection and try again.`;
   <div>
     <note-signed-out-widget v-if="!isLoggedIn" />
     <discussion-locked-widget
-<<<<<<< HEAD
-      :issuable-type="issuableTypeTitle"
       v-else-if="!canCreateNote"
-=======
-      v-else-if="isLocked(getNoteableData) && !canCreateNote"
-      issuable-type="issue"
->>>>>>> master
+      :issuable-type="issuableTypeTitle"
     />
     <ul
       v-else-if="canCreateNote"
