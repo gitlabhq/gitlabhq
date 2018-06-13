@@ -1156,58 +1156,63 @@ describe API::Users do
   describe "GET /user" do
     let(:personal_access_token) { create(:personal_access_token, user: user).token }
 
-    context 'with regular user' do
-      context 'with personal access token' do
-        it 'returns 403 without private token when sudo is defined' do
-          get api("/user?private_token=#{personal_access_token}&sudo=123")
+    shared_examples 'get user info' do |version|
+      context 'with regular user' do
+        context 'with personal access token' do
+          it 'returns 403 without private token when sudo is defined' do
+            get api("/user?private_token=#{personal_access_token}&sudo=123", version: version)
 
-          expect(response).to have_gitlab_http_status(403)
-        end
-      end
-
-      it 'returns current user without private token when sudo not defined' do
-        get api("/user", user)
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(response).to match_response_schema('public_api/v4/user/public')
-        expect(json_response['id']).to eq(user.id)
-      end
-
-      context "scopes" do
-        let(:path) { "/user" }
-        let(:api_call) { method(:api) }
-
-        include_examples 'allows the "read_user" scope'
-      end
-    end
-
-    context 'with admin' do
-      let(:admin_personal_access_token) { create(:personal_access_token, user: admin).token }
-
-      context 'with personal access token' do
-        it 'returns 403 without private token when sudo defined' do
-          get api("/user?private_token=#{admin_personal_access_token}&sudo=#{user.id}")
-
-          expect(response).to have_gitlab_http_status(403)
+            expect(response).to have_gitlab_http_status(403)
+          end
         end
 
-        it 'returns initial current user without private token but with is_admin when sudo not defined' do
-          get api("/user?private_token=#{admin_personal_access_token}")
+        it 'returns current user without private token when sudo not defined' do
+          get api("/user", user, version: version)
 
           expect(response).to have_gitlab_http_status(200)
-          expect(response).to match_response_schema('public_api/v4/user/admin')
-          expect(json_response['id']).to eq(admin.id)
+          expect(response).to match_response_schema('public_api/v4/user/public')
+          expect(json_response['id']).to eq(user.id)
+        end
+
+        context "scopes" do
+          let(:path) { "/user" }
+          let(:api_call) { method(:api) }
+
+          include_examples 'allows the "read_user" scope', version
+        end
+      end
+
+      context 'with admin' do
+        let(:admin_personal_access_token) { create(:personal_access_token, user: admin).token }
+
+        context 'with personal access token' do
+          it 'returns 403 without private token when sudo defined' do
+            get api("/user?private_token=#{admin_personal_access_token}&sudo=#{user.id}", version: version)
+
+            expect(response).to have_gitlab_http_status(403)
+          end
+
+          it 'returns initial current user without private token but with is_admin when sudo not defined' do
+            get api("/user?private_token=#{admin_personal_access_token}", version: version)
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(response).to match_response_schema('public_api/v4/user/admin')
+            expect(json_response['id']).to eq(admin.id)
+          end
+        end
+      end
+
+      context 'with unauthenticated user' do
+        it "returns 401 error if user is unauthenticated" do
+          get api("/user", version: version)
+
+          expect(response).to have_gitlab_http_status(401)
         end
       end
     end
 
-    context 'with unauthenticated user' do
-      it "returns 401 error if user is unauthenticated" do
-        get api("/user")
-
-        expect(response).to have_gitlab_http_status(401)
-      end
-    end
+    it_behaves_like 'get user info', 'v3'
+    it_behaves_like 'get user info', 'v4'
   end
 
   describe "GET /user/keys" do
