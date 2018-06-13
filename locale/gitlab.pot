@@ -4734,7 +4734,7 @@ msgstr ""
 msgid "WikiEmptyIssueMessage|issue tracker"
 msgstr ""
 
-msgid "WikiEmpty|A wiki is where you can store all the details about your project. This can include why you've created it, it's principles, how to use it, and so on."
+msgid "WikiEmpty|A wiki is where you can store all the details about your project. This can include why you've created it, its principles, how to use it, and so on."
 msgstr ""
 
 msgid "WikiEmpty|Create your first page"
