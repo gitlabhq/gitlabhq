@@ -173,7 +173,7 @@ export default {
           class="note-textarea js-gfm-input
 js-autosize markdown-area js-vue-issue-note-form js-vue-textarea"
           aria-label="Description"
-          placeholder="Write a comment or drag your files here..."
+          placeholder="Write a comment or drag your files here…"
           @keydown.meta.enter="handleUpdate()"
           @keydown.ctrl.enter="handleUpdate()"
           @keydown.up="editMyLastNote()"
