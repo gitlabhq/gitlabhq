@@ -294,6 +294,8 @@ input[type=color].form-control {
   }
 }
 
-.btn {
-  margin-bottom: 0;
+.project-templates-buttons {
+  .btn {
+    vertical-align: unset;
+  }
 }
