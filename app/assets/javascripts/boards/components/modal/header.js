@@ -5,6 +5,10 @@ import ModalStore from '../../stores/modal_store';
 import modalMixin from '../../mixins/modal_mixins';
 
 gl.issueBoards.ModalHeader = Vue.extend({
+  components: {
+    'modal-tabs': gl.issueBoards.ModalTabs,
+    modalFilters,
+  },
   mixins: [modalMixin],
   props: {
     projectId: {
@@ -41,10 +45,6 @@ gl.issueBoards.ModalHeader = Vue.extend({
 
       ModalStore.toggleAll();
     },
-  },
-  components: {
-    'modal-tabs': gl.issueBoards.ModalTabs,
-    modalFilters,
   },
   template: `
     <div>

@@ -34,9 +34,9 @@ export default {
       </li>
       <li>
         <a
+          :href="labelsWebUrl"
           data-is-link="true"
           class="dropdown-external-link"
-          :href="labelsWebUrl"
         >
           {{ manageLabelsTitle }}
         </a>

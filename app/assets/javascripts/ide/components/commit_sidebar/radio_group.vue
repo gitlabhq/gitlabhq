@@ -58,12 +58,12 @@ export default {
       }"
     >
       <input
-        type="radio"
-        name="commit-action"
         :value="value"
-        @change="updateCommitAction($event.target.value)"
         :checked="commitAction === value"
         :disabled="disabled"
+        type="radio"
+        name="commit-action"
+        @change="updateCommitAction($event.target.value)"
       />
       <span class="prepend-left-10">
         <span
@@ -80,9 +80,9 @@ export default {
       class="ide-commit-new-branch"
     >
       <input
+        :placeholder="newBranchName"
         type="text"
         class="form-control monospace"
-        :placeholder="newBranchName"
         @input="updateBranchName($event.target.value)"
       />
     </div>

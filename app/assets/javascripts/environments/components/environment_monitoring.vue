@@ -28,16 +28,16 @@
 <template>
   <a
     v-tooltip
-    class="btn monitoring-url d-none d-sm-none d-md-block"
-    data-container="body"
-    rel="noopener noreferrer nofollow"
     :href="monitoringUrl"
     :title="title"
     :aria-label="title"
+    class="btn monitoring-url d-none d-sm-none d-md-block"
+    data-container="body"
+    rel="noopener noreferrer nofollow"
   >
     <icon
-      name="chart"
       :size="12"
+      name="chart"
     />
   </a>
 </template>

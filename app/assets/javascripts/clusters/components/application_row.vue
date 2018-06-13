@@ -125,8 +125,8 @@
 
 <template>
   <div
-    class="gl-responsive-table-row gl-responsive-table-row-col-span"
     :class="rowJsClass"
+    class="gl-responsive-table-row gl-responsive-table-row-col-span"
   >
     <div
       class="gl-responsive-table-row-layout"
@@ -155,8 +155,8 @@
         <slot name="description"></slot>
       </div>
       <div
-        class="table-section table-button-footer section-align-top"
         :class="{ 'section-20': showManageButton, 'section-15': !showManageButton }"
+        class="table-section table-button-footer section-align-top"
         role="gridcell"
       >
         <div
@@ -164,18 +164,18 @@
           class="btn-group table-action-buttons"
         >
           <a
-            class="btn"
             :href="manageLink"
+            class="btn"
           >
             {{ manageButtonLabel }}
           </a>
         </div>
         <div class="btn-group table-action-buttons">
           <loading-button
-            class="js-cluster-application-install-button"
             :loading="installButtonLoading"
             :disabled="installButtonDisabled"
             :label="installButtonLabel"
+            class="js-cluster-application-install-button"
             @click="installClicked"
           />
         </div>

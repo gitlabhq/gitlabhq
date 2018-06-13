@@ -39,10 +39,10 @@
 </script>
 <template>
   <button
+    :disabled="isLoading"
     type="button"
     class="btn d-none d-sm-none d-md-block"
     @click="onClick"
-    :disabled="isLoading"
   >
 
     <span v-if="isLastDeployment">

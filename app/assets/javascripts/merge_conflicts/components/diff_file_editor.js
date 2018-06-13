@@ -11,9 +11,18 @@ import { __ } from '~/locale';
 
   global.mergeConflicts.diffFileEditor = Vue.extend({
     props: {
-      file: Object,
-      onCancelDiscardConfirmation: Function,
-      onAcceptDiscardConfirmation: Function
+      file: {
+        type: Object,
+        required: true,
+      },
+      onCancelDiscardConfirmation: {
+        type: Function,
+        required: true,
+      },
+      onAcceptDiscardConfirmation: {
+        type: Function,
+        required: true,
+      },
     },
     data() {
       return {

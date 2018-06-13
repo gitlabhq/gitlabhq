@@ -6,7 +6,10 @@ import Vue from 'vue';
 
 const CommentAndResolveBtn = Vue.extend({
   props: {
-    discussionId: String,
+    discussionId: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {

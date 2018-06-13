@@ -205,22 +205,22 @@ export default {
 <template>
   <div class="board-list-component">
     <div
+      v-if="loading"
       class="board-list-loading text-center"
-      aria-label="Loading issues"
-      v-if="loading">
+      aria-label="Loading issues">
       <loading-icon />
     </div>
     <board-new-issue
+      v-if="list.type !== 'closed' && showIssueForm"
       :group-id="groupId"
-      :list="list"
-      v-if="list.type !== 'closed' && showIssueForm"/>
+      :list="list"/>
     <ul
-      class="board-list js-board-list"
       v-show="!loading"
       ref="list"
       :data-board="list.id"
       :data-board-type="list.type"
-      :class="{ 'is-smaller': showIssueForm }">
+      :class="{ 'is-smaller': showIssueForm }"
+      class="board-list js-board-list">
       <board-card
         v-for="(issue, index) in issues"
         ref="issue"
@@ -233,8 +233,8 @@ export default {
         :disabled="disabled"
         :key="issue.id" />
       <li
-        class="board-list-count text-center"
         v-if="showCount"
+        class="board-list-count text-center"
         data-issue-id="-1">
         <loading-icon
           v-show="list.loadingMore"

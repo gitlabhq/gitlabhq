@@ -8,8 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2018-06-13 20:09+0200\n"
 "PO-Revision-Date: 2018-06-13 20:09+0200\n"
+=======
+"POT-Creation-Date: 2018-06-12 18:57+1000\n"
+"PO-Revision-Date: 2018-06-12 18:57+1000\n"
+>>>>>>> master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -268,6 +273,9 @@ msgid "Add Readme"
 msgstr ""
 
 msgid "Add new directory"
+msgstr ""
+
+msgid "Add reaction"
 msgstr ""
 
 msgid "Add todo"

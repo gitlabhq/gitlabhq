@@ -32,7 +32,10 @@ export default {
   <div class="file-container">
     <div class="file-content">
       <p class="prepend-top-10 file-info">
-        {{ fileName }} ({{ fileSizeReadable }})
+        {{ fileName }}
+        <template v-if="fileSize > 0">
+          ({{ fileSizeReadable }})
+        </template>
       </p>
       <a
         :href="path"
@@ -41,9 +44,9 @@ export default {
         download
         target="_blank">
         <icon
+          :size="16"
           name="download"
           css-classes="float-left append-right-8"
-          :size="16"
         />
         {{ __('Download') }}
       </a>

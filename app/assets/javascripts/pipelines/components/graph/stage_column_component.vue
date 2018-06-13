@@ -52,8 +52,8 @@ export default {
 </script>
 <template>
   <li
-    class="stage-column"
-    :class="stageConnectorClass">
+    :class="stageConnectorClass"
+    class="stage-column">
     <div class="stage-name">
       {{ title }}
     </div>
@@ -62,9 +62,9 @@ export default {
         <li
           v-for="(job, index) in jobs"
           :key="job.id"
-          class="build"
           :class="buildConnnectorClass(index)"
           :id="jobId(job)"
+          class="build"
         >
 
           <div class="curve"></div>

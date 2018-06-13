@@ -29,16 +29,16 @@ export default {
   >
     <button
       v-tooltip
-      type="button"
-      class="btn btn-blank"
       :aria-label="__('Unstage changes')"
       :title="__('Unstage changes')"
+      type="button"
+      class="btn btn-blank"
       data-container="body"
       @click="unstageChange(path)"
     >
       <icon
-        name="history"
         :size="12"
+        name="history"
       />
     </button>
   </div>

@@ -117,17 +117,17 @@
 
 <template>
   <div
-    class="md-area js-vue-markdown-field"
+    ref="gl-form"
     :class="{ 'prepend-top-default append-bottom-default': addSpacingClasses }"
-    ref="gl-form">
+    class="md-area js-vue-markdown-field">
     <markdown-header
       :preview-markdown="previewMarkdown"
       @preview-markdown="showPreviewTab"
       @write-markdown="showWriteTab"
     />
     <div
-      class="md-write-holder"
       v-show="!previewMarkdown"
+      class="md-write-holder"
     >
       <div class="zen-backdrop">
         <slot name="textarea"></slot>
@@ -137,8 +137,8 @@
           aria-label="Enter zen mode"
         >
           <icon
-            name="screen-normal"
             :size="32"
+            name="screen-normal"
           />
         </a>
         <markdown-toolbar
@@ -149,8 +149,12 @@
       </div>
     </div>
     <div
+<<<<<<< HEAD
       class="md md-preview-holder md-preview js-vue-md-preview"
+=======
+>>>>>>> master
       v-show="previewMarkdown"
+      class="md md-preview-holder md-preview"
     >
       <div
         ref="markdown-preview"
@@ -164,8 +168,8 @@
     <template v-if="previewMarkdown && !markdownPreviewLoading">
       <div
         v-if="referencedCommands"
-        v-html="referencedCommands"
         class="referenced-commands"
+        v-html="referencedCommands"
       >
       </div>
       <div

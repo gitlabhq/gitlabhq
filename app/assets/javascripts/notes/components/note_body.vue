@@ -80,20 +80,25 @@ export default {
 
 <template>
   <div
-    :class="{ 'js-task-list-container': canEdit }"
     ref="note-body"
+    :class="{ 'js-task-list-container': canEdit }"
     class="note-body">
     <div
-      v-html="note.note_html"
-      class="note-text md"></div>
+      class="note-text md"
+      v-html="note.note_html"></div>
     <note-form
       v-if="isEditing"
       ref="noteForm"
+<<<<<<< HEAD
       @handleFormUpdate="handleFormUpdate"
       @cancelForm="formCancelHandler"
+=======
+>>>>>>> master
       :is-editing="isEditing"
       :note-body="noteBody"
       :note-id="note.id"
+      @handleFormUpdate="handleFormUpdate"
+      @cancelFormEdition="formCancelHandler"
     />
     <textarea
       v-if="canEdit"
