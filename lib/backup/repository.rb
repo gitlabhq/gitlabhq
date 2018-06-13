@@ -16,64 +16,33 @@ module Backup
       prepare
 
       Project.find_each(batch_size: 1000) do |project|
+        # Create namespace dir or hashed path if missing
         progress.print " * #{display_repo_path(project)} ... "
 
-        path_to_project_repo = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          path_to_repo(project)
-        end
-        path_to_project_bundle = path_to_bundle(project)
-
-        # Create namespace dir or hashed path if missing
         if project.hashed_storage?(:repository)
           FileUtils.mkdir_p(File.dirname(File.join(backup_repos_path, project.disk_path)))
         else
           FileUtils.mkdir_p(File.join(backup_repos_path, project.namespace.full_path)) if project.namespace
         end
 
-        if empty_repo?(project)
-          progress.puts "[SKIPPED]".color(:cyan)
+        if !empty_repo?(project)
+          backup_project(project)
         else
-          in_path(path_to_project_repo) do |dir|
-            FileUtils.mkdir_p(path_to_tars(project))
-            cmd = %W(tar -cf #{path_to_tars(project, dir)} -C #{path_to_project_repo} #{dir})
-            output, status = Gitlab::Popen.popen(cmd)
-
-            unless status.zero?
-              progress_warn(project, cmd.join(' '), output)
-            end
-          end
-
-          cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path_to_project_repo} bundle create #{path_to_project_bundle} --all)
-          output, status = Gitlab::Popen.popen(cmd)
-
-          if status.zero?
-            progress.puts "[DONE]".color(:green)
-          else
-            progress_warn(project, cmd.join(' '), output)
-          end
+          progress.puts "[SKIPPED]".color(:cyan)
         end
 
         wiki = ProjectWiki.new(project)
         path_to_wiki_repo = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
           path_to_repo(wiki)
         end
-        path_to_wiki_bundle = path_to_bundle(wiki)
 
-        if File.exist?(path_to_wiki_repo)
-          progress.print " * #{display_repo_path(wiki)} ... "
-
-          if empty_repo?(wiki)
-            progress.puts " [SKIPPED]".color(:cyan)
-          else
-            cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path_to_wiki_repo} bundle create #{path_to_wiki_bundle} --all)
-            output, status = Gitlab::Popen.popen(cmd)
-            if status.zero?
-              progress.puts " [DONE]".color(:green)
-            else
-              progress_warn(wiki, cmd.join(' '), output)
-            end
-          end
+        if File.exist?(path_to_wiki_repo) && !empty_repo?(wiki)
+          backup_project(wiki)
+        else
+          progress.puts "[SKIPPED] Wiki".color(:cyan)
         end
+
+        progress.puts "[DONE]".color(:green)
       end
     end
 
@@ -81,6 +50,40 @@ module Backup
       Gitlab.config.repositories.storages.each do |name, repository_storage|
         delete_all_repositories(name, repository_storage)
       end
+    end
+
+    def backup_project(project)
+      gitaly_migrate(:repository_backup) do |is_enabled|
+        if is_enabled
+          backup_project_gitaly(project)
+        else
+          backup_project_local(project)
+        end
+      end
+    rescue => e
+      progress_warn(project, e, 'Failed to backup repo')
+    end
+
+    def backup_project_gitaly(project)
+      path_to_project_bundle = path_to_bundle(project)
+      Gitlab::GitalyClient::RepositoryService.new(project.repository)
+        .create_bundle(path_to_project_bundle)
+
+      backup_custom_hooks(project)
+    end
+
+    def backup_project_local(project)
+      path_to_project_repo = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        path_to_repo(project)
+      end
+
+      path_to_project_bundle = path_to_bundle(project)
+
+      backup_custom_hooks(project)
+
+      cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path_to_project_repo} bundle create #{path_to_project_bundle} --all)
+      output, status = Gitlab::Popen.popen(cmd)
+      progress_warn(project, cmd.join(' '), output) unless status.zero?
     end
 
     def delete_all_repositories(name, repository_storage)
@@ -129,13 +132,47 @@ module Backup
         .restore_custom_hooks(custom_hooks_path)
     end
 
+    def local_backup_custom_hooks(project)
+      in_path(path_to_tars(project)) do |dir|
+        path_to_project_repo = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          path_to_repo(project)
+        end
+        break unless File.exist?(File.join(path_to_project_repo, dir))
+
+        FileUtils.mkdir_p(path_to_tars(project))
+        cmd = %W(tar -cf #{path_to_tars(project, dir)} -c #{path_to_project_repo} #{dir})
+        output, status = Gitlab::Popen.popen(cmd)
+
+        unless status.zero?
+          progress_warn(project, cmd.join(' '), output)
+        end
+      end
+    end
+
+    def gitaly_backup_custom_hooks(project)
+      FileUtils.mkdir_p(path_to_tars(project))
+      custom_hooks_path = path_to_tars(project, 'custom_hooks')
+      Gitlab::GitalyClient::RepositoryService.new(project.repository)
+        .backup_custom_hooks(custom_hooks_path)
+    end
+
+    def backup_custom_hooks(project)
+      gitaly_migrate(:backup_custom_hooks) do |is_enabled|
+        if is_enabled
+          gitaly_backup_custom_hooks(project)
+        else
+          local_backup_custom_hooks(project)
+        end
+      end
+    end
+
     def restore_custom_hooks(project)
       in_path(path_to_tars(project)) do |dir|
         gitaly_migrate(:restore_custom_hooks) do |is_enabled|
           if is_enabled
-            local_restore_custom_hooks(project, dir)
-          else
             gitaly_restore_custom_hooks(project, dir)
+          else
+            local_restore_custom_hooks(project, dir)
           end
         end
       end
