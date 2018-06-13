@@ -1,21 +1,18 @@
 .form-group
-  = f.label :mirror_max_delay, class: 'control-label col-sm-2' do
+  = f.label :mirror_max_delay, class: 'label-light' do
     Maximum delay (Minutes)
-  .col-sm-10
-    = f.number_field :mirror_max_delay, class: 'form-control', min: 0
-    %span.form-text.text-muted#mirror_max_delay_help_block
-    Maximum time between updates that a mirror can have when scheduled to synchronize.
+  = f.number_field :mirror_max_delay, class: 'form-control', min: 0
+  %span.form-text.text-muted#mirror_max_delay_help_block
+  Maximum time between updates that a mirror can have when scheduled to synchronize.
 .form-group
-  = f.label :mirror_max_capacity, class: 'control-label col-sm-2' do
+  = f.label :mirror_max_capacity, class: 'label-light' do
     Maximum capacity
-  .col-sm-10
-    = f.number_field :mirror_max_capacity, class: 'form-control', min: 0
-    %span.form-text.text-muted#mirror_max_capacity_help_block
-    Maximum number of mirrors that can be synchronizing at the same time.
+  = f.number_field :mirror_max_capacity, class: 'form-control', min: 0
+  %span.form-text.text-muted#mirror_max_capacity_help_block
+  Maximum number of mirrors that can be synchronizing at the same time.
 .form-group
-  = f.label :mirror_capacity_threshold, class: 'control-label col-sm-2' do
+  = f.label :mirror_capacity_threshold, class: 'label-light' do
     Capacity threshold
-  .col-sm-10
-    = f.number_field :mirror_capacity_threshold, class: 'form-control', min: 0
-    %span.form-text.text-muted#mirror_capacity_threshold
-    Minimum capacity to be available before we schedule more mirrors preemptively.
+  = f.number_field :mirror_capacity_threshold, class: 'form-control', min: 0
+  %span.form-text.text-muted#mirror_capacity_threshold
+  Minimum capacity to be available before we schedule more mirrors preemptively.
