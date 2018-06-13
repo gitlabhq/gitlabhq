@@ -1,0 +1,6 @@
+---
+title: Adds API endpoint /api/v4/(project/group)/:id/members/all to list also inherited
+  members
+merge_request: 19748
+author: Jacopo Beschi @jacopo-beschi
+type: added

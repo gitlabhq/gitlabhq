@@ -10,6 +10,10 @@ module API
       def authorize_admin_source!(source_type, source)
         authorize! :"admin_#{source_type}", source
       end
+
+      def members_finder(source_type, source, current_user)
+        source_type == 'project' ? MembersFinder.new(source, current_user) : GroupMembersFinder.new(source)
+      end
     end
   end
 end

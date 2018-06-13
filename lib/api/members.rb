@@ -28,6 +28,23 @@ module API
           present members, with: Entities::Member
         end
 
+        desc 'Gets a list of group or project members viewable by the authenticated user, including those who gained membership through ancestor group.' do
+          success Entities::Member
+        end
+        params do
+          optional :query, type: String, desc: 'A query string to search for members'
+          use :pagination
+        end
+        get ":id/members/all" do
+          source = find_source(source_type, params[:id])
+
+          members = members_finder(source_type, source, current_user).execute.non_invite
+          members = members.joins(:user).merge(User.search(params[:query])) if params[:query].present?
+          members = paginate(members)
+
+          present members, with: Entities::Member
+        end
+
         desc 'Gets a member of a group or project.' do
           success Entities::Member
         end

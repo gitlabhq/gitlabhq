@@ -54,6 +54,56 @@ Example response:
 ]
 ```
 
+## List all members of a group or project including inherited members
+
+Gets a list of group or project members viewable by the authenticated user, including inherited members through ancestor groups.
+
+```
+GET /groups/:id/members/all
+GET /projects/:id/members/all
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `query`   | string | no     | A query string to search for members |
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/:id/members/all
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/:id/members/all
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 1,
+    "username": "raymond_smith",
+    "name": "Raymond Smith",
+    "state": "active",
+    "created_at": "2012-10-22T14:13:35Z",
+    "access_level": 30
+  },
+  {
+    "id": 2,
+    "username": "john_doe",
+    "name": "John Doe",
+    "state": "active",
+    "created_at": "2012-10-22T14:13:35Z",
+    "access_level": 30
+  },
+  {
+    "id": 3,
+    "username": "foo_bar",
+    "name": "Foo bar",
+    "state": "active",
+    "created_at": "2012-11-22T14:13:35Z",
+    "access_level": 30
+  }
+]
+```
+
 ## Get a member of a group or project
 
 Gets a member of a group or project.
