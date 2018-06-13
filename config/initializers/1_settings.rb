@@ -370,9 +370,9 @@ Settings.cron_jobs['gitlab_usage_ping_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= Settings.__send__(:cron_for_usage_ping)
 Settings.cron_jobs['gitlab_usage_ping_worker']['job_class'] = 'GitlabUsagePingWorker'
 
-Settings.cron_jobs['pseudonymizer'] ||= Settingslogic.new({})
-Settings.cron_jobs['pseudonymizer']['cron'] ||= '0 23 * * *'
-Settings.cron_jobs['pseudonymizer']['job_class'] ||= 'PseudonymizerWorker'
+Settings.cron_jobs['pseudonymizer_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['pseudonymizer_worker']['cron'] ||= '0 23 * * *'
+Settings.cron_jobs['pseudonymizer_worker']['job_class'] ||= 'PseudonymizerWorker'
 
 Settings.cron_jobs['schedule_update_user_activity_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['schedule_update_user_activity_worker']['cron'] ||= '30 0 * * *'

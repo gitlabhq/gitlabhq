@@ -311,6 +311,7 @@ production: &base
     geo_migrated_local_files_clean_up_worker:
       cron: "15 */6 * * *"
 
+    # Export pseudonymized data in CSV format for analysis
     pseudonymizer_worker:
       cron: "0 * * * *"
 

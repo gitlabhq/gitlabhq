@@ -7,7 +7,7 @@ describe Pseudonymizer::Uploader do
       config: YAML.load_file(Rails.root.join(Gitlab.config.pseudonymizer.manifest))
     )
   end
-  let(:remote_directory) { described_class.remote_directory }
+  let(:remote_directory) { subject.send(:remote_directory) }
   subject { described_class.new(options) }
 
   def mock_file(file_name)
@@ -27,7 +27,7 @@ describe Pseudonymizer::Uploader do
     it "upload all file in the directory" do
       subject.upload
 
-      expect(remote_directory.files.count).to eq(12)
+      expect(remote_directory.files.all.count).to eq(12)
     end
   end
 
