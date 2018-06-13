@@ -31,7 +31,9 @@ module Ci
     has_one :job_artifacts_trace, -> { where(file_type: Ci::JobArtifact.file_types[:trace]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
 
     has_one :metadata, class_name: 'Ci::BuildMetadata'
+    has_one :runner_session, class_name: 'Ci::BuildRunnerSession'
     delegate :timeout, to: :metadata, prefix: true, allow_nil: true
+    delegate :url, :certificate, :authorization, to: :runner_session, prefix: true, allow_nil: true
     delegate :gitlab_deploy_token, to: :project
 
     ##
@@ -177,6 +179,10 @@ module Ci
 
       after_transition pending: :running do |build|
         build.ensure_metadata.update_timeout_state
+      end
+
+      after_transition running: any do |build|
+        build.runner_session&.destroy
       end
     end
 
@@ -586,6 +592,29 @@ module Ci
 
     def serializable_hash(options = {})
       super(options).merge(when: read_attribute(:when))
+    end
+
+    def has_terminal?
+      running? && runner_session_url.present?
+    end
+
+    def terminal_specification
+      return {} unless runner_session_url.present?
+
+      headers = {}
+
+      if runner_session_authorization.present?
+        headers['Authorization'] = runner_session_authorization
+      end
+
+      # TODO: change url to "#{metadata_runner_session_url}/exec" once the runner
+      # has all the terminal server changes
+      {
+        subprotocols: ['terminal.gitlab.com'].freeze,
+        url: "#{runner_session_url}?build=#{id}",
+        headers: headers,
+        ca_pem: runner_session_certificate.presence
+      }
     end
 
     private

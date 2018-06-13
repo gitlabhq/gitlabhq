@@ -43,6 +43,20 @@ describe Ci::Build do
     end
   end
 
+  describe 'status' do
+    context 'when transitioning to any state from running' do
+      it 'removes runner_session' do
+        %w(success drop cancel).each do |event|
+          build = FactoryBot.create(:ci_build, :running, :with_runner_session_url, pipeline: pipeline)
+
+          build.fire_events!(event)
+
+          expect(build.reload.runner_session).to be_nil
+        end
+      end
+    end
+  end
+
   describe '.manual_actions' do
     let!(:manual_but_created) { create(:ci_build, :manual, status: :created, pipeline: pipeline) }
     let!(:manual_but_succeeded) { create(:ci_build, :manual, status: :success, pipeline: pipeline) }
@@ -2622,6 +2636,65 @@ describe Ci::Build do
 
           build.success
         end
+      end
+    end
+  end
+
+  describe '#has_terminal?' do
+    let(:states) { described_class.state_machines[:status].states.keys - [:running] }
+
+    subject { build.has_terminal? }
+
+    it 'returns true if the build is running and it has a runner_session_url' do
+      build.build_runner_session(url: 'whatever')
+      build.status = :running
+
+      expect(subject).to be_truthy
+    end
+
+    context 'returns false' do
+      it 'when runner_session_url is empty' do
+        build.status = :running
+
+        expect(subject).to be_falsey
+      end
+
+      context 'unless the build is running' do
+        before do
+          build.build_runner_session(url: 'whatever')
+        end
+
+        it do
+          states.each do |state|
+            build.status = state
+
+            is_expected.to be_falsey
+          end
+        end
+      end
+    end
+  end
+
+  describe '#terminal_specification' do
+    subject { build.terminal_specification }
+
+    it 'returns empty hash if no runner_session_url' do
+      expect(subject).to be_empty
+    end
+
+    context 'when runner_session_url is present' do
+      set(:build) { create(:ci_build, :with_runner_session_url, project: project, user: user) }
+
+      it 'returns ca_pem nil if empty runner_session_certificate' do
+        build.runner_session.certificate = ''
+
+        expect(subject[:ca_pem]).to be_nil
+      end
+
+      it 'adds Authorization header if runner_session_authorization is present' do
+        build.runner_session.authorization = 'whatever'
+
+        expect(subject[:headers]).to include('Authorization' => 'whatever')
       end
     end
   end

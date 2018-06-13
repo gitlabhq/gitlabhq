@@ -15,7 +15,7 @@ module Ci
       @runner = runner
     end
 
-    def execute
+    def execute(runner_session_params = {})
       builds =
         if runner.shared?
           builds_for_shared_runner
@@ -43,6 +43,11 @@ module Ci
           # with StateMachines::InvalidTransition or StaleObjectError when doing run! or save method.
           begin
             build.runner_id = runner.id
+
+            if runner_session_params[:url].present?
+              build.build_runner_session.assign_attributes(runner_session_params)
+            end
+
             build.run!
             register_success(build)
 
