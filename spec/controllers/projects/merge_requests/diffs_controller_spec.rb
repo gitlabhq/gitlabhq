@@ -94,14 +94,12 @@ describe Projects::MergeRequests::DiffsController do
                                                         commit_id: nil)
           end
 
-          # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
-          xit 'only renders the diffs for the path given' do
-            expect(controller).to receive(:render_diff_for_path).and_wrap_original do |meth, diffs|
-              expect(diffs.diff_files.map(&:new_path)).to contain_exactly(existing_path)
-              meth.call(diffs)
-            end
-
+          it 'only renders the diffs for the path given' do
             diff_for_path(old_path: existing_path, new_path: existing_path)
+
+            paths = JSON.parse(response.body)["diff_files"].map { |file| file['new_path'] }
+
+            expect(paths).to include(existing_path)
           end
         end
 

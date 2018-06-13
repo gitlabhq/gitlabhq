@@ -21,7 +21,7 @@ class Projects::DiscussionsController < Projects::ApplicationController
 
   def show
     render json: {
-      truncated_diff_lines: (discussion.truncated_diff_lines if defined?(discussion.truncated_diff_lines))
+      truncated_diff_lines: discussion.try(:truncated_diff_lines)
     }
   end
 
@@ -29,7 +29,6 @@ class Projects::DiscussionsController < Projects::ApplicationController
 
   def render_discussion
     if serialize_notes?
-      discussion.resolved_now = true
       prepare_notes_for_rendering(discussion.notes, merge_request)
       render_json_with_discussions_serializer
     else
@@ -40,7 +39,7 @@ class Projects::DiscussionsController < Projects::ApplicationController
   def render_json_with_discussions_serializer
     render json:
       DiscussionSerializer.new(project: project, noteable: discussion.noteable, current_user: current_user, note_entity:  ProjectNoteEntity)
-      .represent(discussion, context: self)
+      .represent(discussion, context: self, render_truncated_diff_lines: true)
   end
 
   # Legacy method used to render discussions notes when not using Vue on views.

@@ -1,6 +1,5 @@
 class DiffFileEntity < Grape::Entity
   include RequestAwareEntity
-  include ActionView::Helpers::TagHelper
   include BlobHelper
   include CommitsHelper
   include DiffHelper
@@ -23,11 +22,10 @@ class DiffFileEntity < Grape::Entity
 
   expose :blob, using: BlobEntity
 
-  # TODO move this into BlobEntity?
   expose :can_modify_blob do |diff_file|
     merge_request = options[:merge_request]
 
-    if merge_request && merge_request.source_project && current_user
+    if merge_request&.source_project && current_user
       can_modify_blob?(diff_file.blob, merge_request.source_project, merge_request.source_branch)
     else
       false
@@ -78,7 +76,7 @@ class DiffFileEntity < Grape::Entity
     options[:environment].formatted_external_url
   end
 
-  # TODO imon/Fatih/Winnie - Are we using this? - if not please remove
+  # TODO Simon/Fatih/Winnie - Are we using this? - if not please remove
   expose :external_url, if: -> (_, options) { options[:environment] } do |diff_file|
     options[:environment].external_url_for(diff_file.new_path, diff_file.content_sha)
   end

@@ -120,13 +120,12 @@ class MergeRequestWidgetEntity < IssuableEntity
       presenter(merge_request).can_cherry_pick_on_current_merge_request?
     end
 
-    expose :can_create_note do |issue|
-      # TODO correct issue to merge_request where applicable
-      can?(request.current_user, :create_note, issue)
+    expose :can_create_note do |merge_request|
+      can?(request.current_user, :create_note, merge_request)
     end
 
-    expose :can_update do |issue|
-      can?(request.current_user, :update_issue, issue)
+    expose :can_update do |merge_request|
+      can?(request.current_user, :update_merge_request, merge_request)
     end
   end
 
