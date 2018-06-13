@@ -89,16 +89,11 @@ export default {
     <note-form
       v-if="isEditing"
       ref="noteForm"
-<<<<<<< HEAD
-      @handleFormUpdate="handleFormUpdate"
-      @cancelForm="formCancelHandler"
-=======
->>>>>>> master
       :is-editing="isEditing"
       :note-body="noteBody"
       :note-id="note.id"
       @handleFormUpdate="handleFormUpdate"
-      @cancelFormEdition="formCancelHandler"
+      @cancelForm="formCancelHandler"
     />
     <textarea
       v-if="canEdit"
