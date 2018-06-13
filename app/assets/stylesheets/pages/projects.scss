@@ -354,12 +354,6 @@
   min-width: 200px;
 }
 
-.deploy-keys {
-  .scrolling-tabs-container {
-    position: relative;
-  }
-}
-
 .deploy-key {
   // Ensure that the fingerprint does not overflow on small screens
   .fingerprint {

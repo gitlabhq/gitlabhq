@@ -230,6 +230,8 @@
 }
 
 .scrolling-tabs-container {
+  position: relative;
+
   .merge-request-tabs-container & {
     overflow: hidden;
   }

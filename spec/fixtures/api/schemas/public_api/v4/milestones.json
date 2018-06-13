@@ -13,7 +13,8 @@
       "created_at": { "type": "date" },
       "updated_at": { "type": "date" },
       "start_date": { "type": "date" },
-      "due_date": { "type": "date" }
+      "due_date": { "type": "date" },
+      "web_url": { "type": "string" }
     },
     "required": [
       "id", "iid", "title", "description", "state",
