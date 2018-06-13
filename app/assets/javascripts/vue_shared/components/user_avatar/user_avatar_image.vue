@@ -99,5 +99,9 @@ export default {
     :data-placement="tooltipPlacement"
     :title="tooltipText"
     class="avatar"
+<<<<<<< HEAD
+=======
+    data-boundary="window"
+>>>>>>> upstream/master
   />
 </template>

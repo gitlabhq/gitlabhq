@@ -6,7 +6,7 @@ import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 import CommitFilesList from './commit_sidebar/list.vue';
 import EmptyState from './commit_sidebar/empty_state.vue';
 import * as consts from '../stores/modules/commit/constants';
-import { activityBarViews } from '../constants';
+import { activityBarViews, stageKeys } from '../constants';
 
 export default {
   components: {
@@ -27,10 +27,13 @@ export default {
       'unusedSeal',
     ]),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
-    ...mapGetters(['lastOpenedFile', 'hasChanges', 'someUncommitedChanges']),
+    ...mapGetters(['lastOpenedFile', 'hasChanges', 'someUncommitedChanges', 'activeFile']),
     ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled']),
     showStageUnstageArea() {
       return !!(this.someUncommitedChanges || this.lastCommitMsg || !this.unusedSeal);
+    },
+    activeFileKey() {
+      return this.activeFile ? this.activeFile.key : null;
     },
   },
   watch: {
@@ -44,6 +47,7 @@ export default {
     if (this.lastOpenedFile) {
       this.openPendingTab({
         file: this.lastOpenedFile,
+        keyPrefix: this.lastOpenedFile.changed ? stageKeys.unstaged : stageKeys.staged,
       })
         .then(changeViewer => {
           if (changeViewer) {
@@ -62,6 +66,7 @@ export default {
       return this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH).then(() => this.commitChanges());
     },
   },
+  stageKeys,
 };
 </script>
 
@@ -86,8 +91,13 @@ export default {
     >
       <commit-files-list
         :title="__('Unstaged')"
+        :key-prefix="$options.stageKeys.unstaged"
         :file-list="changedFiles"
         :action-btn-text="__('Stage all')"
+<<<<<<< HEAD
+=======
+        :active-file-key="activeFileKey"
+>>>>>>> upstream/master
         class="is-first"
         icon-name="unstaged"
         action="stageAllChanges"
@@ -95,9 +105,14 @@ export default {
       />
       <commit-files-list
         :title="__('Staged')"
+        :key-prefix="$options.stageKeys.staged"
         :file-list="stagedFiles"
         :action-btn-text="__('Unstage all')"
         :staged-list="true"
+<<<<<<< HEAD
+=======
+        :active-file-key="activeFileKey"
+>>>>>>> upstream/master
         icon-name="staged"
         action="unstageAllChanges"
         item-action-component="unstage-button"

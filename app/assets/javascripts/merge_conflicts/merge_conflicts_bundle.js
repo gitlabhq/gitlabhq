@@ -5,7 +5,7 @@ import Vue from 'vue';
 import Flash from '../flash';
 import initIssuableSidebar from '../init_issuable_sidebar';
 import './merge_conflict_store';
-import './merge_conflict_service';
+import MergeConflictsService from './merge_conflict_service';
 import './mixins/line_conflict_utils';
 import './mixins/line_conflict_actions';
 import './components/diff_file_editor';
@@ -17,7 +17,7 @@ export default function initMergeConflicts() {
   const INTERACTIVE_RESOLVE_MODE = 'interactive';
   const conflictsEl = document.querySelector('#conflicts');
   const mergeConflictsStore = gl.mergeConflicts.mergeConflictsStore;
-  const mergeConflictsService = new gl.mergeConflicts.mergeConflictsService({
+  const mergeConflictsService = new MergeConflictsService({
     conflictsPath: conflictsEl.dataset.conflictsPath,
     resolveConflictsPath: conflictsEl.dataset.resolveConflictsPath
   });

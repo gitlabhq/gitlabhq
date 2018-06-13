@@ -58,6 +58,12 @@ export default {
       :title="timeRemainingTooltip"
       :class="timeRemainingStatusClass"
       class="compare-meter"
+<<<<<<< HEAD
+=======
+      data-toggle="tooltip"
+      data-placement="top"
+      role="timeRemainingDisplay"
+>>>>>>> upstream/master
     >
       <div
         :aria-valuenow="timeRemainingPercent"
