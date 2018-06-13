@@ -91,28 +91,28 @@ export default {
         {{ titleText }}
         <div class="d-flex ml-auto">
           <button
-            v-show="fileList.length"
             v-tooltip
-            type="button"
-            class="btn btn-default ide-staged-action-btn p-0 order-1 align-items-center"
+            v-show="fileList.length"
             :class="{
               'd-flex': fileList.length
             }"
             :title="actionBtnText"
+            type="button"
+            class="btn btn-default ide-staged-action-btn p-0 order-1 align-items-center"
             data-placement="bottom"
             @click="actionBtnClicked"
           >
             <icon
-              class="ml-auto mr-auto"
               :name="actionBtnIcon"
               :size="12"
+              class="ml-auto mr-auto"
             />
           </button>
           <span
-            class="ide-commit-file-count order-0 rounded-left text-center"
             :class="{
               'rounded-right': !fileList.length
             }"
+            class="ide-commit-file-count order-0 rounded-left text-center"
           >
             {{ fileList.length }}
           </span>
