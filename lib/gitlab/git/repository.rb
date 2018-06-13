@@ -1185,18 +1185,18 @@ module Gitlab
       end
 
       def compare_source_branch(target_branch_name, source_repository, source_branch_name, straight:)
-        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          with_repo_branch_commit(source_repository, source_branch_name) do |commit|
-            break unless commit
+        tmp_ref = "refs/tmp/#{SecureRandom.hex}"
 
-            Gitlab::Git::Compare.new(
-              self,
-              target_branch_name,
-              commit.sha,
-              straight: straight
-            )
-          end
-        end
+        return unless fetch_source_branch!(source_repository, source_branch_name, tmp_ref)
+
+        Gitlab::Git::Compare.new(
+          self,
+          target_branch_name,
+          tmp_ref,
+          straight: straight
+        )
+      ensure
+        delete_refs(tmp_ref)
       end
 
       def write_ref(ref_path, ref, old_ref: nil, shell: true)

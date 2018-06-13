@@ -308,6 +308,10 @@ module API
       expose :additions, :deletions, :total
     end
 
+    class CommitWithStats < Commit
+      expose :stats, using: Entities::CommitStats
+    end
+
     class CommitDetail < Commit
       expose :stats, using: Entities::CommitStats, if: :stats
       expose :status
