@@ -53,9 +53,15 @@ describe('issue_note_form component', () => {
 
   describe('form', () => {
     it('should render text area with placeholder', () => {
+<<<<<<< HEAD
       expect(vm.$el.querySelector('textarea').getAttribute('placeholder')).toEqual(
         'Write a comment or drag your files here...',
       );
+=======
+      expect(
+        vm.$el.querySelector('textarea').getAttribute('placeholder'),
+      ).toEqual('Write a comment or drag your files here…');
+>>>>>>> master
     });
 
     it('should link to markdown docs', () => {

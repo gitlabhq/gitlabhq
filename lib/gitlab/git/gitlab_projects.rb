@@ -53,24 +53,11 @@ module Gitlab
       # Import project via git clone --bare
       # URL must be publicly cloneable
       def import_project(source, timeout)
-        Gitlab::GitalyClient.migrate(:import_repository, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_import_repository(source)
-          else
-            git_import_repository(source, timeout)
-          end
-        end
+        git_import_repository(source, timeout)
       end
 
       def fork_repository(new_shard_name, new_repository_relative_path)
-        Gitlab::GitalyClient.migrate(:fork_repository,
-                                     status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_fork_repository(new_shard_name, new_repository_relative_path)
-          else
-            git_fork_repository(new_shard_name, new_repository_relative_path)
-          end
-        end
+        git_fork_repository(new_shard_name, new_repository_relative_path)
       end
 
       def fetch_remote(name, timeout, force:, tags:, ssh_key: nil, known_hosts: nil, prune: true)
@@ -241,16 +228,6 @@ module Gitlab
         true
       end
 
-      def gitaly_import_repository(source)
-        raw_repository = Gitlab::Git::Repository.new(shard_name, repository_relative_path, nil)
-
-        Gitlab::GitalyClient::RepositoryService.new(raw_repository).import_repository(source)
-        true
-      rescue GRPC::BadStatus => e
-        @output << e.message
-        false
-      end
-
       def git_fork_repository(new_shard_name, new_repository_relative_path)
         from_path = repository_absolute_path
         new_shard_path = Gitlab.config.repositories.storages.fetch(new_shard_name).legacy_disk_path
@@ -269,16 +246,6 @@ module Gitlab
         cmd = %W(#{Gitlab.config.git.bin_path} clone --bare --no-local -- #{from_path} #{to_path})
 
         run(cmd, nil) && Gitlab::Git::Repository.create_hooks(to_path, global_hooks_path)
-      end
-
-      def gitaly_fork_repository(new_shard_name, new_repository_relative_path)
-        target_repository = Gitlab::Git::Repository.new(new_shard_name, new_repository_relative_path, nil)
-        raw_repository = Gitlab::Git::Repository.new(shard_name, repository_relative_path, nil)
-
-        Gitlab::GitalyClient::RepositoryService.new(target_repository).fork_repository(raw_repository)
-      rescue GRPC::BadStatus => e
-        logger.error "fork-repository failed: #{e.message}"
-        false
       end
     end
   end

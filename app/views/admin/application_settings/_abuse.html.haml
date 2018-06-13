@@ -2,11 +2,10 @@
   = form_errors(@application_setting)
 
   %fieldset
-    .form-group.row
-      = f.label :admin_notification_email, 'Abuse reports notification email', class: 'col-form-label col-sm-2'
-      .col-sm-10
-        = f.text_field :admin_notification_email, class: 'form-control'
-        .form-text.text-muted
-          Abuse reports will be sent to this address if it is set. Abuse reports are always available in the admin area.
+    .form-group
+      = f.label :admin_notification_email, 'Abuse reports notification email', class: 'label-light'
+      = f.text_field :admin_notification_email, class: 'form-control'
+      .form-text.text-muted
+        Abuse reports will be sent to this address if it is set. Abuse reports are always available in the admin area.
 
   = f.submit 'Save changes', class: "btn btn-success"

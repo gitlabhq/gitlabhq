@@ -118,7 +118,7 @@ describe('note_app', () => {
       expect(vm.$el.querySelector('.js-main-target-form').tagName).toEqual('FORM');
       expect(
         vm.$el.querySelector('.js-main-target-form textarea').getAttribute('placeholder'),
-      ).toEqual('Write a comment or drag your files here...');
+      ).toEqual('Write a comment or drag your files here…');
     });
 
     it('should render form comment button as disabled', () => {
@@ -141,7 +141,7 @@ describe('note_app', () => {
       expect(vm.$el.querySelector('.js-main-target-form').tagName).toEqual('FORM');
       expect(
         vm.$el.querySelector('.js-main-target-form textarea').getAttribute('placeholder'),
-      ).toEqual('Write a comment or drag your files here...');
+      ).toEqual('Write a comment or drag your files here…');
     });
   });
 

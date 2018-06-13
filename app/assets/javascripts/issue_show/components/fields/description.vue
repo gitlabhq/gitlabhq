@@ -58,7 +58,7 @@
         v-model="formState.description"
         ref="textarea"
         slot="textarea"
-        placeholder="Write a comment or drag your files here..."
+        placeholder="Write a comment or drag your files here…"
         @keydown.meta.enter="updateIssuable"
         @keydown.ctrl.enter="updateIssuable">
       </textarea>

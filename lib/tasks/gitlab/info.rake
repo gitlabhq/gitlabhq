@@ -67,8 +67,10 @@ namespace :gitlab do
       puts "GitLab Shell".color(:yellow)
       puts "Version:\t#{gitlab_shell_version || "unknown".color(:red)}"
       puts "Repository storage paths:"
-      Gitlab.config.repositories.storages.each do |name, repository_storage|
-        puts "- #{name}: \t#{repository_storage.legacy_disk_path}"
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        Gitlab.config.repositories.storages.each do |name, repository_storage|
+          puts "- #{name}: \t#{repository_storage.legacy_disk_path}"
+        end
       end
       puts "Hooks:\t\t#{Gitlab.config.gitlab_shell.hooks_path}"
       puts "Git:\t\t#{Gitlab.config.git.bin_path}"

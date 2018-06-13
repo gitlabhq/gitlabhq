@@ -356,7 +356,7 @@ js-gfm-input js-autosize markdown-area js-vue-textarea"
                   ref="textarea"
                   slot="textarea"
                   :disabled="isSubmitting"
-                  placeholder="Write a comment or drag your files here..."
+                  placeholder="Write a comment or drag your files here…"
                   @keydown.up="editCurrentUserLastNote()"
                   @keydown.meta.enter="handleSave()"
                   @keydown.ctrl.enter="handleSave()">

@@ -194,7 +194,7 @@ describe Ci::Pipeline, :mailer do
       it 'does contains persisted variables' do
         keys = subject.map { |variable| variable[:key] }
 
-        expect(keys).to eq %w[CI_PIPELINE_ID]
+        expect(keys).to eq %w[CI_PIPELINE_ID CI_PIPELINE_URL]
       end
     end
   end
