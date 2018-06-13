@@ -143,8 +143,8 @@ export default {
     </div>
     <div class="flash-container timeline-content"></div>
     <form
-      class="edit-note common-note-form js-quick-submit gfm-form"
       :data-line-code="lineCode"
+      class="edit-note common-note-form js-quick-submit gfm-form"
     >
 
       <issue-warning
@@ -178,37 +178,22 @@ js-autosize markdown-area js-vue-issue-note-form js-vue-textarea"
       <div class="note-form-actions clearfix">
         <button
           :disabled="isDisabled"
-<<<<<<< HEAD
-          class="js-vue-issue-save btn btn-save js-comment-button ">
-          {{ saveButtonTitle }}
-        </button>
-        <button
-          v-if="discussion.resolvable"
-          @click.prevent="handleUpdate(true)"
-=======
           type="button"
-          class="js-vue-issue-save btn btn-save"
+          class="js-vue-issue-save btn btn-save js-comment-button "
           @click="handleUpdate()">
           {{ saveButtonTitle }}
         </button>
         <button
-          v-if="note.resolvable"
->>>>>>> master
+          v-if="discussion.resolvable"
           class="btn btn-nr btn-default append-right-10 js-comment-resolve-button"
           @click.prevent="handleUpdate(true)"
         >
           {{ resolveButtonTitle }}
         </button>
         <button
-<<<<<<< HEAD
-          @click="cancelHandler()"
           class="btn btn-cancel note-edit-cancel js-close-discussion-note-form"
-          type="button">
-=======
-          class="btn btn-cancel note-edit-cancel"
           type="button"
           @click="cancelHandler()">
->>>>>>> master
           Cancel
         </button>
       </div>
