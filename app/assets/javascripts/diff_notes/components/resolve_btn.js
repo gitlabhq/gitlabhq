@@ -7,38 +7,14 @@ import Flash from '../../flash';
 
 const ResolveBtn = Vue.extend({
   props: {
-    noteId: {
-      type: Number,
-      required: true,
-    },
-    discussionId: {
-      type: String,
-      required: true,
-    },
-    resolved: {
-      type: Boolean,
-      required: true,
-    },
-    canResolve: {
-      type: Boolean,
-      required: true,
-    },
-    resolvedBy: {
-      type: String,
-      required: true,
-    },
-    authorName: {
-      type: String,
-      required: true,
-    },
-    authorAvatar: {
-      type: String,
-      required: true,
-    },
-    noteTruncated: {
-      type: String,
-      required: true,
-    },
+    noteId: Number,
+    discussionId: String,
+    resolved: Boolean,
+    canResolve: Boolean,
+    resolvedBy: String,
+    authorName: String,
+    authorAvatar: String,
+    noteTruncated: String,
   },
   data() {
     return {
@@ -46,15 +22,6 @@ const ResolveBtn = Vue.extend({
       loading: false,
     };
   },
-<<<<<<< HEAD
-  watch: {
-    discussions: {
-      handler: 'updateTooltip',
-      deep: true,
-    },
-  },
-=======
->>>>>>> master
   computed: {
     discussion() {
       return this.discussions[this.discussionId];
@@ -83,20 +50,20 @@ const ResolveBtn = Vue.extend({
     },
   },
   watch: {
-    'discussions': {
+    discussions: {
       handler: 'updateTooltip',
-      deep: true
-    }
+      deep: true,
+    },
   },
-  mounted: function () {
+  mounted() {
     $(this.$refs.button).tooltip({
-      container: 'body'
+      container: 'body',
     });
   },
-  beforeDestroy: function () {
+  beforeDestroy() {
     CommentsStore.delete(this.discussionId, this.noteId);
   },
-  created: function () {
+  created() {
     CommentsStore.create({
       discussionId: this.discussionId,
       noteId: this.noteId,
@@ -153,29 +120,6 @@ const ResolveBtn = Vue.extend({
         );
     },
   },
-<<<<<<< HEAD
-  mounted() {
-    $(this.$refs.button).tooltip({
-      container: 'body',
-    });
-  },
-  beforeDestroy() {
-    CommentsStore.delete(this.discussionId, this.noteId);
-  },
-  created() {
-    CommentsStore.create({
-      discussionId: this.discussionId,
-      noteId: this.noteId,
-      canResolve: this.canResolve,
-      resolved: this.resolved,
-      resolvedBy: this.resolvedBy,
-      authorName: this.authorName,
-      authorAvatar: this.authorAvatar,
-      noteTruncated: this.noteTruncated,
-    });
-  },
-=======
->>>>>>> master
 });
 
 Vue.component('resolve-btn', ResolveBtn);
