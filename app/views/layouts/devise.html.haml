@@ -17,12 +17,11 @@
               - if current_appearance&.description?
                 = brand_text
               - else
-                %h3 Open source software to collaborate on code
+                %h3
+                  = _('Open source software to collaborate on code')
 
                 %p
-                  Manage Git repositories with fine-grained access controls that keep your code secure.
-                  Perform code reviews and enhance collaboration with merge requests.
-                  Each project can also have an issue tracker and a wiki.
+                  = _('Manage Git repositories with fine-grained access controls that keep your code secure. Perform code reviews and enhance collaboration with merge requests. Each project can also have an issue tracker and a wiki.')
 
               - if Gitlab::CurrentSettings.sign_in_text.present?
                 = markdown_field(Gitlab::CurrentSettings.current_application_settings, :sign_in_text)
@@ -32,6 +31,6 @@
       %hr.footer-fixed
       .container.footer-container
         .footer-links
-          = link_to "Explore", explore_root_path
-          = link_to "Help", help_path
-          = link_to "About GitLab", "https://about.gitlab.com/"
+          = link_to _("Explore"), explore_root_path
+          = link_to _("Help"), help_path
+          = link_to _("About GitLab"), "https://about.gitlab.com/"

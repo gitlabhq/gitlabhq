@@ -1,10 +1,10 @@
 - humanized_resource_name = spammable.class.model_name.human.downcase
 
 %h3.page-title
-  Anti-spam verification
+  = _('Anti-spam verification')
 %hr
 
 %p
-  #{"We detected potential spam in the #{humanized_resource_name}. Please solve the reCAPTCHA to proceed."}
+  = _("We detected potential spam in the %{humanized_resource_name}. Please solve the reCAPTCHA to proceed.") % { humanized_resource_name: humanized_resource_name }
 
 = render 'shared/recaptcha_form', spammable: spammable

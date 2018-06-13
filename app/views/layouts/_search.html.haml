@@ -1,7 +1,7 @@
 - if controller.controller_path =~ /^groups/ && @group.persisted?
-  - label = 'This group'
+  - label = _('This group')
 - if controller.controller_path =~ /^projects/ && @project.persisted?
-  - label = 'This project'
+  - label = _('This project')
 - if @group && @group.persisted? && @group.path
   - group_data_attrs = { group_path: j(@group.path), name: @group.name, issues_path: issues_group_path(j(@group.path)), mr_path: merge_requests_group_path(j(@group.path)) }
 - if @project && @project.persisted?
@@ -13,21 +13,21 @@
         .location-badge= label
       .search-input-wrap
         .dropdown{ data: { url: search_autocomplete_path } }
-          = search_field_tag 'search', nil, placeholder: 'Search',
+          = search_field_tag 'search', nil, placeholder: _('Search'),
                                             class: 'search-input dropdown-menu-toggle no-outline js-search-dashboard-options',
                                             spellcheck: false,
                                             tabindex: '1',
                                             autocomplete: 'off',
                                             data: { issues_path: issues_dashboard_path,
                                               mr_path: merge_requests_dashboard_path },
-                                            aria: { label: 'Search' }
+                                            aria: { label: _('Search') }
           %button.hidden.js-dropdown-search-toggle{ type: 'button', data: { toggle: 'dropdown' } }
           .dropdown-menu.dropdown-select
             = dropdown_content do
               %ul
                 %li.dropdown-menu-empty-item
                   %a
-                    Loading...
+                    = _('Loading...')
             = dropdown_loading
           = sprite_icon('search', size: 16, css_class: 'search-icon')
           = sprite_icon('close', size: 16, css_class: 'clear-icon js-clear-input')
