@@ -39,7 +39,7 @@ export const dataStructure = () => ({
   editorColumn: 1,
   fileLanguage: '',
   eol: '',
-  viewMode: 'edit',
+  viewMode: 'editor',
   previewMode: null,
   size: 0,
   parentPath: null,
