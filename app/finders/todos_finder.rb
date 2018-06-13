@@ -15,6 +15,7 @@
 class TodosFinder
   prepend FinderWithCrossProjectAccess
   include FinderMethods
+  include Gitlab::Utils::StrongMemoize
 
   requires_cross_project_access unless: -> { project? }
 
@@ -34,9 +35,11 @@ class TodosFinder
     items = by_author(items)
     items = by_state(items)
     items = by_type(items)
+    items = by_group(items)
     # Filtering by project HAS TO be the last because we use
     # the project IDs yielded by the todos query thus far
     items = by_project(items)
+    items = visible_to_user(items)
 
     sort(items)
   end
@@ -82,6 +85,10 @@ class TodosFinder
     params[:project_id].present?
   end
 
+  def group?
+    params[:group_id].present?
+  end
+
   def project
     return @project if defined?(@project)
 
@@ -100,6 +107,12 @@ class TodosFinder
     @project
   end
 
+  def group
+    strong_memoize(:group) do
+      Group.find(params[:group_id])
+    end
+  end
+
   def project_ids(items)
     ids = items.except(:order).select(:project_id)
     if Gitlab::Database.mysql?
@@ -111,7 +124,7 @@ class TodosFinder
   end
 
   def type?
-    type.present? && %w(Issue MergeRequest).include?(type)
+    type.present? && %w(Issue MergeRequest Epic).include?(type)
   end
 
   def type
@@ -148,12 +161,32 @@ class TodosFinder
 
   def by_project(items)
     if project?
-      items.where(project: project)
-    else
-      projects = Project.public_or_visible_to_user(current_user)
-
-      items.joins(:project).merge(projects)
+      items = items.where(project: project)
     end
+
+    items
+  end
+
+  def by_group(items)
+    if group?
+      items = items.where(group: group)
+    end
+
+    items
+  end
+
+  def visible_to_user(items)
+    projects = Project.public_or_visible_to_user(current_user)
+    groups = Group.public_or_visible_to_user(current_user)
+
+    items
+      .joins('LEFT JOIN namespaces ON namespaces.id = todos.group_id')
+      .joins('LEFT JOIN projects ON projects.id = todos.project_id')
+      .where(
+        'project_id IN (?) OR group_id IN  (?)',
+        projects.map(&:id),
+        groups.map(&:id)
+      )
   end
 
   def by_state(items)

@@ -43,7 +43,7 @@ module TodosHelper
       project_commit_path(todo.project,
                                     todo.target, anchor: anchor)
     else
-      path = [todo.project.namespace.becomes(Namespace), todo.project, todo.target]
+      path = [todo.parent, todo.target]
 
       path.unshift(:pipelines) if todo.build_failed?
 
