@@ -40,9 +40,6 @@ organized from a broader perspective with one Issue Board per project,
 but also allow your team members to organize their own workflow by creating
 multiple Issue Boards within the same project.
 
-[GitLab Premium] adds even more powerful ways to work with Issue Boards by
-allowing you to have assignee lists as well as label lists.
-
 ## Use cases
 
 You can see below a few different use cases for GitLab's Issue Boards.
@@ -344,6 +341,29 @@ navigation level. A group-level issue board allows you to view all issues from a
 (currently, it does not see issues from projects in subgroups). Similarly, you can only filter by group labels for these
 boards. When updating milestones and labels for an issue through the sidebar update mechanism, again only
 group-level objects are available.
+
+## Assignee Lists **[PREMIUM]**
+
+> Introduced in GitLab 11.0 Premium
+
+An assignee list shows all issues for the given assignee. You add an assignee list using the same button as adding
+a label list. There's an additional tab to select assignee list, where you specify a user to be the assignee. You remove an assignee
+list the same way as a label list, by clicking the Trash icon.
+
+You can have a board with both label lists and assignee lists.
+
+![Assignee lists](img/assignee_lists.png)
+
+## Dragging Issues Between Lists
+
+When dragging issues between lists, different behavior occurs depending on the source list and the target list.
+
+| | To Backlog | To Closed | To label `B` list | To assignee `Bob` list |
+| --- | --- | --- | --- | ---  |
+| From Backlog | - | Issue closed | `B` added | `Bob` assigned |
+| From Closed | Issue reopened | - | Issue reopened<br/>`B` added | Issue reopened<br/>`Bob` assigned |
+| From label `A` list | `A` removed | Issue closed | `A` removed<br/>`B` added | `Bob` assigned |
+| From assignee `Alice` list | `Alice` unassigned | Issue closed | `B` added | `Alice` unassigned<br/>`Bob` assigned |
 
 ## Features per tier
 
