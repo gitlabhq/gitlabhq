@@ -17,6 +17,14 @@ const tokenKeys = [
     icon: 'cube',
     tag: 'type',
   },
+  {
+    key: 'tag',
+    type: 'array',
+    param: 'name[]',
+    symbol: '~',
+    icon: 'tag',
+    tag: '~tag',
+  },
 ];
 
 const AdminRunnersFilteredSearchTokenKeys = new FilteredSearchTokenKeys(tokenKeys);

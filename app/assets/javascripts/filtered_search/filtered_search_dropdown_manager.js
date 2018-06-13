@@ -111,6 +111,15 @@ export default class FilteredSearchDropdownManager {
         gl: NullDropdown,
         element: this.container.querySelector('#js-dropdown-admin-runner-type'),
       },
+      tag: {
+        reference: null,
+        gl: DropdownNonUser,
+        extraArguments: {
+          endpoint: this.getRunnerTagsEndpoint(),
+          symbol: '~',
+        },
+        element: this.container.querySelector('#js-dropdown-runner-tag'),
+      },
     };
 
     supportedTokens.forEach(type => {
@@ -144,6 +153,10 @@ export default class FilteredSearchDropdownManager {
     }
 
     return endpoint;
+  }
+
+  getRunnerTagsEndpoint() {
+    return `${this.baseEndpoint}/admin/runners/tag_list.json`;
   }
 
   static addWordToInput(tokenName, tokenValue = '', clicked = false, options = {}) {
