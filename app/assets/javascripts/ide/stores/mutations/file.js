@@ -44,7 +44,7 @@ export default {
       rawPath: data.raw_path,
       binary: data.binary,
       renderError: data.render_error,
-      raw: null,
+      raw: (state.entries[file.path] && state.entries[file.path].raw) || null,
       baseRaw: null,
       html: data.html,
       size: data.size,

@@ -31,4 +31,5 @@ export default () => ({
     path: '',
     entry: {},
   },
+  clientsidePreviewEnabled: false,
 });
