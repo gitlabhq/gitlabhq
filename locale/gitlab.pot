@@ -3552,16 +3552,37 @@ msgstr ""
 msgid "ID"
 msgstr ""
 
+msgid "IDE|Allow live previews of JavaScript projects in the Web IDE using CodeSandbox client side evaluation."
+msgstr ""
+
+msgid "IDE|Back"
+msgstr ""
+
+msgid "IDE|Client side evaluation"
+msgstr ""
+
 msgid "IDE|Commit"
 msgstr ""
 
 msgid "IDE|Edit"
 msgstr ""
 
+msgid "IDE|Get started with Live Preview"
+msgstr ""
+
 msgid "IDE|Go back"
 msgstr ""
 
+msgid "IDE|Live Preview"
+msgstr ""
+
 msgid "IDE|Open in file view"
+msgstr ""
+
+msgid "IDE|Preview your web application using Web IDE client-side evaluation."
+msgstr ""
+
+msgid "IDE|Refresh preview"
 msgstr ""
 
 msgid "IDE|Review"
@@ -3973,6 +3994,9 @@ msgstr ""
 msgid "List your GitHub repositories"
 msgstr ""
 
+msgid "Live preview"
+msgstr ""
+
 msgid "Loading contribution stats for group members"
 msgstr ""
 
@@ -4016,6 +4040,9 @@ msgid "Make sure you're logged into the account that owns the projects you'd lik
 msgstr ""
 
 msgid "Manage Git repositories with fine-grained access controls that keep your code secure. Perform code reviews and enhance collaboration with merge requests. Each project can also have an issue tracker and a wiki."
+msgstr ""
+
+msgid "Manage Web IDE features"
 msgstr ""
 
 msgid "Manage access"

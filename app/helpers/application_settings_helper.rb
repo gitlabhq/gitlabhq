@@ -256,7 +256,8 @@ module ApplicationSettingsHelper
       :instance_statistics_visibility_private,
       :user_default_external,
       :user_oauth_applications,
-      :version_check_enabled
+      :version_check_enabled,
+      :web_ide_clientside_preview_enabled
     ]
   end
 end

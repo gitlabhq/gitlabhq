@@ -546,3 +546,27 @@
     :why: Our own library
     :versions: []
     :when: 2018-07-17 21:02:54.529227000 Z
+- - :approve
+  - lz-string
+  - :who: Phil Hughes
+    :why: https://github.com/pieroxy/lz-string/blob/master/LICENSE.txt
+    :versions: []
+    :when: 2018-08-03 08:22:44.973457000 Z
+- - :approve
+  - smooshpack
+  - :who: Phil Hughes
+    :why: https://github.com/CompuIves/codesandbox-client/blob/master/packages/sandpack/LICENSE.md
+    :versions: []
+    :when: 2018-08-03 08:24:29.578991000 Z
+- - :approve
+  - codesandbox-import-util-types
+  - :who: Phil Hughes
+    :why: https://github.com/codesandbox-app/codesandbox-importers/blob/master/packages/types/LICENSE
+    :versions: []
+    :when: 2018-08-03 12:22:47.574421000 Z
+- - :approve
+  - codesandbox-import-utils
+  - :who: Phil Hughes
+    :why: https://github.com/codesandbox-app/codesandbox-importers/blob/master/packages/import-utils/LICENSE
+    :versions: []
+    :when: 2018-08-03 12:23:24.083046000 Z

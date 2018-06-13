@@ -1217,6 +1217,10 @@
     background-color: $white-light;
     border-left: 1px solid $white-dark;
   }
+
+  .ide-right-sidebar-clientside {
+    padding: 0;
+  }
 }
 
 .ide-pipeline {
@@ -1399,4 +1403,41 @@
 .ide-new-btn .dropdown.show .ide-entry-dropdown-toggle {
   color: $white-normal;
   background-color: $blue-500;
+}
+
+.ide-preview-header {
+  padding: 0 $grid-size;
+  border-bottom: 1px solid $white-dark;
+  background-color: $gray-light;
+  min-height: 44px;
+}
+
+.ide-navigator-btn {
+  height: 24px;
+  min-width: 24px;
+  max-width: 24px;
+  padding: 0;
+  margin: 0 ($grid-size / 2);
+  color: $gl-gray-light;
+
+  &:first-child {
+    margin-left: 0;
+  }
+}
+
+.ide-navigator-location {
+  padding-top: ($grid-size / 2);
+  padding-bottom: ($grid-size / 2);
+
+  &:focus {
+    outline: 0;
+    box-shadow: none;
+    border-color: $theme-gray-200;
+  }
+}
+
+.ide-preview-loading-icon {
+  right: $grid-size;
+  top: 50%;
+  transform: translateY(-50%);
 }

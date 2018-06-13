@@ -69,4 +69,17 @@ describe('IDE right pane', () => {
       });
     });
   });
+
+  describe('live preview', () => {
+    it('renders live preview button', done => {
+      Vue.set(vm.$store.state.entries, 'package.json', { name: 'package.json' });
+      vm.$store.state.clientsidePreviewEnabled = true;
+
+      vm.$nextTick(() => {
+        expect(vm.$el.querySelector('button[aria-label="Live preview"]')).not.toBeNull();
+
+        done();
+      });
+    });
+  });
 });

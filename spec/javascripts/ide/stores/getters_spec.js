@@ -179,4 +179,14 @@ describe('IDE store getters', () => {
       });
     });
   });
+
+  describe('packageJson', () => {
+    it('returns package.json entry', () => {
+      localState.entries['package.json'] = { name: 'package.json' };
+
+      expect(getters.packageJson(localState)).toEqual({
+        name: 'package.json',
+      });
+    });
+  });
 });
