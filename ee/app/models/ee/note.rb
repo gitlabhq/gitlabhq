@@ -34,11 +34,6 @@ module EE
       !for_epic? && super
     end
 
-    override :can_create_todo?
-    def can_create_todo?
-      !for_epic? && super
-    end
-
     override :etag_key
     def etag_key
       if for_epic?
