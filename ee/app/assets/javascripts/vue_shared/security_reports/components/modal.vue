@@ -63,8 +63,8 @@ export default {
       <div
         v-for="(field, key, index) in modal.data"
         v-if="field.value"
-        class="row prepend-top-10 append-bottom-10"
         :key="index"
+        class="row prepend-top-10 append-bottom-10"
       >
         <label class="col-sm-2 text-right font-weight-bold">
           {{ field.text }}:
@@ -82,8 +82,8 @@ export default {
               >
                 <div class="report-block-list-icon append-right-5 failed">
                   <icon
-                    name="status_failed_borderless"
                     :size="32"
+                    name="status_failed_borderless"
                   />
                 </div>
                 <div class="report-block-list-issue-description prepend-top-5 append-bottom-5">
@@ -116,10 +116,10 @@ export default {
               :key="i"
             >
               <a
-                :class="`js-link-${key}`"
                 v-if="identifier.url"
-                target="_blank"
+                :class="`js-link-${key}`"
                 :href="identifier.url"
+                target="_blank"
                 rel="noopener noreferrer"
               >
                 {{ identifier.name }}
@@ -137,8 +137,8 @@ export default {
             >
               <a
                 :class="`js-link-${key}`"
-                target="_blank"
                 :href="link.url"
+                target="_blank"
                 rel="noopener noreferrer"
               >
                 {{ link.value || link.url }}
@@ -148,10 +148,10 @@ export default {
           </template>
           <template v-else>
             <a
-              :class="`js-link-${key}`"
               v-if="field.isLink"
-              target="_blank"
+              :class="`js-link-${key}`"
               :href="field.url"
+              target="_blank"
             >
               {{ field.value }}
             </a>
@@ -179,8 +179,8 @@ export default {
             >#{{ modal.vulnerability.dismissalFeedback.pipeline.id }}</a>.
           </template>
           <a
-            class="js-link-vulnerabilityFeedbackHelpPath"
             :href="vulnerabilityFeedbackHelpPath"
+            class="js-link-vulnerabilityFeedbackHelpPath"
           >
             Learn more about interacting with security reports (Alpha).
           </a>
@@ -204,11 +204,11 @@ export default {
       </button>
 
       <loading-button
-        container-class="js-dismiss-btn btn btn-close"
         :loading="modal.isDismissingIssue"
         :disabled="modal.isDismissingIssue"
-        @click="handleDismissClick"
         :label="revertTitle"
+        container-class="js-dismiss-btn btn btn-close"
+        @click="handleDismissClick"
       />
 
       <a
@@ -221,11 +221,11 @@ export default {
       </a>
       <loading-button
         v-else
-        container-class="btn btn-success btn-inverted"
         :loading="modal.isCreatingNewIssue"
         :disabled="modal.isCreatingNewIssue"
-        @click="createNewIssue"
         :label="__('Create issue')"
+        container-class="btn btn-success btn-inverted"
+        @click="createNewIssue"
       />
     </div>
   </modal>

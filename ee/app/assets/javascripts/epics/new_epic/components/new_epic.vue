@@ -69,21 +69,21 @@
       {{ s__('New epic') }}
     </button>
     <div
-      class="dropdown-menu"
       :class="{ 'dropdown-menu-right' : alignRight }"
+      class="dropdown-menu"
     >
       <input
         ref="title"
-        type="text"
-        class="form-control"
         :placeholder="s__('Title')"
         v-model="title"
+        type="text"
+        class="form-control"
       />
       <loading-button
-        container-class="btn btn-save btn-inverted"
         :disabled="isCreatingDisabled"
         :loading="creating"
         :label="buttonLabel"
+        container-class="btn btn-save btn-inverted"
         @click.stop="createEpic"
       />
     </div>

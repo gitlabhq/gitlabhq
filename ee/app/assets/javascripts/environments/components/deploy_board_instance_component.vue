@@ -76,11 +76,11 @@
 <template>
   <a
     v-tooltip
-    class="deploy-board-instance"
     :class="cssClass"
     :data-title="tooltipText"
-    data-placement="top"
     :href="computedLogPath"
+    class="deploy-board-instance"
+    data-placement="top"
   >
   </a>
 </template>

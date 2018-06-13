@@ -74,14 +74,14 @@
 
 <template>
   <div
-    class="roadmap-timeline-section clearfix"
     :class="scrolledHeaderClass"
     :style="sectionContainerStyles"
+    class="roadmap-timeline-section clearfix"
   >
     <span class="timeline-header-blank"></span>
     <component
-      :is="headerItemComponentForPreset"
       v-for="(timeframeItem, index) in timeframe"
+      :is="headerItemComponentForPreset"
       :key="index"
       :timeframe-index="index"
       :timeframe-item="timeframeItem"

@@ -3,6 +3,9 @@ import bp from '../../../breakpoints';
 import ModalStore from '../../stores/modal_store';
 
 gl.issueBoards.ModalList = Vue.extend({
+  components: {
+    'issue-card-inner': gl.issueBoards.IssueCardInner,
+  },
   props: {
     issueLinkBase: {
       type: String,
@@ -19,13 +22,6 @@ gl.issueBoards.ModalList = Vue.extend({
   },
   data() {
     return ModalStore.store;
-  },
-  watch: {
-    activeTab() {
-      if (this.activeTab === 'all') {
-        ModalStore.purgeUnselectedIssues();
-      }
-    },
   },
   computed: {
     loopIssues() {
@@ -49,6 +45,25 @@ gl.issueBoards.ModalList = Vue.extend({
 
       return groups;
     },
+  },
+  watch: {
+    activeTab() {
+      if (this.activeTab === 'all') {
+        ModalStore.purgeUnselectedIssues();
+      }
+    },
+  },
+  mounted() {
+    this.scrollHandlerWrapper = this.scrollHandler.bind(this);
+    this.setColumnCountWrapper = this.setColumnCount.bind(this);
+    this.setColumnCount();
+
+    this.$refs.list.addEventListener('scroll', this.scrollHandlerWrapper);
+    window.addEventListener('resize', this.setColumnCountWrapper);
+  },
+  beforeDestroy() {
+    this.$refs.list.removeEventListener('scroll', this.scrollHandlerWrapper);
+    window.removeEventListener('resize', this.setColumnCountWrapper);
   },
   methods: {
     scrollHandler() {
@@ -95,21 +110,6 @@ gl.issueBoards.ModalList = Vue.extend({
         this.columns = 1;
       }
     },
-  },
-  mounted() {
-    this.scrollHandlerWrapper = this.scrollHandler.bind(this);
-    this.setColumnCountWrapper = this.setColumnCount.bind(this);
-    this.setColumnCount();
-
-    this.$refs.list.addEventListener('scroll', this.scrollHandlerWrapper);
-    window.addEventListener('resize', this.setColumnCountWrapper);
-  },
-  beforeDestroy() {
-    this.$refs.list.removeEventListener('scroll', this.scrollHandlerWrapper);
-    window.removeEventListener('resize', this.setColumnCountWrapper);
-  },
-  components: {
-    'issue-card-inner': gl.issueBoards.IssueCardInner,
   },
   template: `
     <section

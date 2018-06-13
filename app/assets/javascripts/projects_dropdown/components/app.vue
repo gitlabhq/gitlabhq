@@ -132,14 +132,14 @@ export default {
   <div>
     <search/>
     <loading-icon
-      class="loading-animation prepend-top-20"
-      size="2"
       v-if="isLoadingProjects"
       :label="s__('ProjectsDropdown|Loading projects')"
+      class="loading-animation prepend-top-20"
+      size="2"
     />
     <div
-      class="section-header"
       v-if="isFrequentsListVisible"
+      class="section-header"
     >
       {{ s__('ProjectsDropdown|Frequently visited') }}
     </div>

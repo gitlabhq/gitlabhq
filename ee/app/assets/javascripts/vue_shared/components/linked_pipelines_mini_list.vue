@@ -81,31 +81,31 @@
 <template>
   <span
     v-if="linkedPipelines"
-    class="linked-pipeline-mini-list"
     :class="{
       'is-upstream' : isUpstream,
       'is-downstream': isDownstream
     }"
+    class="linked-pipeline-mini-list"
   >
 
     <span
-      class="arrow-icon"
       v-if="isDownstream"
-      v-html="arrowSvg"
+      class="arrow-icon"
       aria-hidden="true"
+      v-html="arrowSvg"
     >
     </span>
 
     <a
-      v-for="pipeline in linkedPipelinesTrimmed"
       v-tooltip
-      class="linked-pipeline-mini-item"
+      v-for="pipeline in linkedPipelinesTrimmed"
       :key="pipeline.id"
       :href="pipeline.path"
       :title="pipelineTooltipText(pipeline)"
+      :class="triggerButtonClass(pipeline.details.status.group)"
+      class="linked-pipeline-mini-item"
       data-placement="top"
       data-container="body"
-      :class="triggerButtonClass(pipeline.details.status.group)"
     >
       <icon
         :name="getStatusIcon(pipeline.details.status.icon)"
@@ -113,11 +113,11 @@
     </a>
 
     <a
-      v-if="shouldRenderCounter"
       v-tooltip
-      class="linked-pipelines-counter linked-pipeline-mini-item"
+      v-if="shouldRenderCounter"
       :title="counterTooltipText"
       :href="pipelinePath"
+      class="linked-pipelines-counter linked-pipeline-mini-item"
       data-placement="top"
       data-container="body"
     >
@@ -125,10 +125,10 @@
     </a>
 
     <span
-      class="arrow-icon"
       v-if="isUpstream"
-      v-html="arrowSvg"
+      class="arrow-icon"
       aria-hidden="true"
+      v-html="arrowSvg"
     >
     </span>
   </span>

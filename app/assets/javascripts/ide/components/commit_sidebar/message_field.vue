@@ -66,10 +66,10 @@ export default {
 <template>
   <fieldset class="common-note-form ide-commit-message-field">
     <div
-      class="md-area"
       :class="{
         'is-focused': isFocused
       }"
+      class="md-area"
     >
       <div
         v-once
@@ -92,10 +92,10 @@ export default {
       <div class="ide-commit-message-textarea-container">
         <div class="ide-commit-message-highlights-container">
           <div
-            class="note-textarea highlights monospace"
             :style="{
               transform: `translate3d(0, ${-scrollTop}px, 0)`
             }"
+            class="note-textarea highlights monospace"
           >
             <div
               v-for="(line, index) in allLines"
@@ -113,15 +113,15 @@ export default {
           </div>
         </div>
         <textarea
-          class="note-textarea ide-commit-message-textarea"
-          name="commit-message"
+          ref="textarea"
           :placeholder="__('Write a commit message...')"
           :value="text"
+          class="note-textarea ide-commit-message-textarea"
+          name="commit-message"
           @scroll="handleScroll"
           @input="onInput"
           @focus="updateIsFocused(true)"
           @blur="updateIsFocused(false)"
-          ref="textarea"
         >
         </textarea>
       </div>

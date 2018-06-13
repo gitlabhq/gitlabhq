@@ -218,10 +218,10 @@ export default {
 <template>
   <div class="geo-nodes-container">
     <loading-icon
-      class="loading-animation prepend-top-20 append-bottom-20"
-      size="2"
       v-if="isLoading"
       :label="s__('GeoNodes|Loading nodes')"
+      class="loading-animation prepend-top-20 append-bottom-20"
+      size="2"
     />
     <geo-node-item
       v-for="(node, index) in nodes"

@@ -155,7 +155,6 @@
           :endpoint="endpoint"
           :update-endpoint="updateEndpoint"
           :issuable-ref="issuableRef"
-          issuable-type="epic"
           :initial-title-html="initialTitleHtml"
           :initial-title-text="initialTitleText"
           :initial-description-html="initialDescriptionHtml"
@@ -167,6 +166,7 @@
           :show-inline-edit-button="true"
           :show-delete-button="false"
           :enable-autocomplete="true"
+          issuable-type="epic"
         />
       </div>
       <epic-sidebar

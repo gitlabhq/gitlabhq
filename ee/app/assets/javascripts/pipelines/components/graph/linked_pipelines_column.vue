@@ -30,8 +30,8 @@
 
 <template>
   <div
-    class="stage-column linked-pipelines-column"
     :class="columnClass"
+    class="stage-column linked-pipelines-column"
   >
     <div class="stage-name linked-pipelines-column-title"> {{ columnTitle }} </div>
     <div class="cross-project-triangle"></div>

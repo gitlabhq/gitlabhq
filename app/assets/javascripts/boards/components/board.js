@@ -15,7 +15,6 @@ window.gl = window.gl || {};
 window.gl.issueBoards = window.gl.issueBoards || {};
 
 gl.issueBoards.Board = Vue.extend({
-  template: '#js-board-template',
   components: {
     boardList,
     'board-delete': gl.issueBoards.BoardDelete,
@@ -23,10 +22,22 @@ gl.issueBoards.Board = Vue.extend({
     boardPromotionState,
   },
   props: {
-    list: Object,
-    disabled: Boolean,
-    issueLinkBase: String,
-    rootPath: String,
+    list: {
+      type: Object,
+      default: () => ({}),
+    },
+    disabled: {
+      type: Boolean,
+      required: true,
+    },
+    issueLinkBase: {
+      type: String,
+      required: true,
+    },
+    rootPath: {
+      type: String,
+      required: true,
+    },
     boardId: {
       type: String,
       required: true,
@@ -84,20 +95,6 @@ gl.issueBoards.Board = Vue.extend({
       deep: true
     }
   },
-  methods: {
-    showNewIssueForm() {
-      this.$refs['board-list'].showIssueForm = !this.$refs['board-list'].showIssueForm;
-    },
-    toggleExpanded(e) {
-      if (this.list.isExpandable && !e.target.classList.contains('js-no-trigger-collapse')) {
-        this.list.isExpanded = !this.list.isExpanded;
-
-        if (AccessorUtilities.isLocalStorageAccessSafe()) {
-          localStorage.setItem(`boards.${this.boardId}.${this.list.type}.expanded`, this.list.isExpanded);
-        }
-      }
-    },
-  },
   mounted () {
     this.sortableOptions = gl.issueBoards.getBoardSortableDefaultOptions({
       disabled: this.disabled,
@@ -127,4 +124,19 @@ gl.issueBoards.Board = Vue.extend({
       this.list.isExpanded = !isCollapsed;
     }
   },
+  methods: {
+    showNewIssueForm() {
+      this.$refs['board-list'].showIssueForm = !this.$refs['board-list'].showIssueForm;
+    },
+    toggleExpanded(e) {
+      if (this.list.isExpandable && !e.target.classList.contains('js-no-trigger-collapse')) {
+        this.list.isExpanded = !this.list.isExpanded;
+
+        if (AccessorUtilities.isLocalStorageAccessSafe()) {
+          localStorage.setItem(`boards.${this.boardId}.${this.list.type}.expanded`, this.list.isExpanded);
+        }
+      }
+    },
+  },
+  template: '#js-board-template',
 });

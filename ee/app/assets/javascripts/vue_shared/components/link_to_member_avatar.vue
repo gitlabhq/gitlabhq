@@ -97,10 +97,10 @@ export default {
       />
       <span
         v-else
-        v-html="pendingAvatarSvg"
         :class="avatarHtmlClass"
         :width="avatarSize"
         :height="avatarSize"
+        v-html="pendingAvatarSvg"
       >
       </span>
     </a>

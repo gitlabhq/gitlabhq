@@ -67,9 +67,9 @@
     <loading-button
       v-if="canDelete"
       :loading="deleteLoading"
-      @click="deleteEpic"
       :label="s__('Delete')"
       container-class="btn btn-remove btn-inverted flex-right"
+      @click="deleteEpic"
     />
   </div>
 </template>

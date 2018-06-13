@@ -58,13 +58,13 @@
 <template>
   <div>
     <div
-      class="sidebar-collapsed-icon"
+      v-tooltip
       :title="tooltipTitle"
+      class="sidebar-collapsed-icon"
       data-container="body"
       data-placement="left"
       data-html="true"
       data-boundary="viewport"
-      v-tooltip
     >
       <div v-html="epicIcon"></div>
       <span
@@ -87,8 +87,8 @@
     >
       <a
         v-if="hasEpic"
-        class="bold"
         :href="epicUrl"
+        class="bold"
       >
         {{ epicTitle }}
       </a>

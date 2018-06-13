@@ -99,8 +99,8 @@ export default {
 
       <div
         v-if="model.hasDeployBoard && model.isDeployBoardVisible"
-        class="js-deploy-board-row"
         :key="`deploy-board-row-${i}`"
+        class="js-deploy-board-row"
       >
         <div class="deploy-board-container">
           <deploy-board

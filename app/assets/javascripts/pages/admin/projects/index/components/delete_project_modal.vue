@@ -83,9 +83,9 @@
     id="delete-project-modal"
     :title="title"
     :text="text"
-    kind="danger"
     :primary-button-label="primaryButtonLabel"
     :submit-disabled="!canSubmit"
+    kind="danger"
     @submit="onSubmit"
     @cancel="onCancel"
   >
@@ -107,15 +107,15 @@
           value="delete"
         />
         <input
+          :value="csrfToken"
           type="hidden"
           name="authenticity_token"
-          :value="csrfToken"
         />
         <input
+          v-model="enteredProjectName"
           name="projectName"
           class="form-control"
           type="text"
-          v-model="enteredProjectName"
           aria-labelledby="input-label"
           autocomplete="off"
         />

@@ -41,9 +41,9 @@
     <div>
       <a
         v-tooltip
-        class="linked-pipeline-content"
         :href="pipelinePath"
         :title="tooltipText"
+        class="linked-pipeline-content"
         data-container="body"
       >
         <span class="linked-pipeline-status ci-status-text">

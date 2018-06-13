@@ -87,10 +87,10 @@ export default {
 
       <ul
         v-if="!isLoading"
-        class="stage-column-list"
         :class="{
           'has-linked-pipelines': hasTriggered || hasTriggeredBy
         }"
+        class="stage-column-list"
       >
         <stage-column-component
           v-for="(stage, index) in graph"
@@ -104,8 +104,8 @@ export default {
           :key="stage.name"
           :stage-connector-class="stageConnectorClass(index, stage)"
           :is-first-column="isFirstColumn(index)"
-          @refreshPipelineGraph="refreshPipelineGraph"
           :has-triggered-by="hasTriggeredBy"
+          @refreshPipelineGraph="refreshPipelineGraph"
         />
       </ul>
 

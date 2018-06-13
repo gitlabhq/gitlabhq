@@ -114,9 +114,9 @@ export default {
           :endpoint="newEpicEndpoint"
         />
         <a
-          class="btn btn-default"
           :title="__('List')"
           :href="newEpicEndpoint"
+          class="btn btn-default"
         >
           <span>{{ s__('View epics list') }}</span>
         </a>

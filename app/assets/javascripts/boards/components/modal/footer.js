@@ -7,6 +7,9 @@ import ModalStore from '../../stores/modal_store';
 import modalMixin from '../../mixins/modal_mixins';
 
 gl.issueBoards.ModalFooter = Vue.extend({
+  components: {
+    'lists-dropdown': gl.issueBoards.ModalFooterListsDropdown,
+  },
   mixins: [modalMixin],
   data() {
     return {
@@ -57,9 +60,6 @@ gl.issueBoards.ModalFooter = Vue.extend({
 
       this.toggleModal(false);
     },
-  },
-  components: {
-    'lists-dropdown': gl.issueBoards.ModalFooterListsDropdown,
   },
   template: `
     <footer

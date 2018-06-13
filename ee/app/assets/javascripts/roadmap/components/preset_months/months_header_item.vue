@@ -86,12 +86,12 @@
 
 <template>
   <span
-    class="timeline-header-item"
     :style="itemStyles"
+    class="timeline-header-item"
   >
     <div
-      class="item-label"
       :class="timelineHeaderClass"
+      class="item-label"
     >
       {{ timelineHeaderLabel }}
     </div>

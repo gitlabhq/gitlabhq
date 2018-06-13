@@ -158,13 +158,12 @@ export default {
 
 <template>
   <span
-    class="epic-timeline-cell"
     :style="itemStyles"
+    class="epic-timeline-cell"
   >
     <div class="timeline-bar-wrapper">
       <a
         v-if="showTimelineBar"
-        class="timeline-bar"
         :href="epic.webUrl"
         :class="{
           'start-date-undefined': epic.startDateUndefined,
@@ -173,6 +172,7 @@ export default {
           'end-date-outside': epic.endDateOutOfRange,
         }"
         :style="timelineBarStyles"
+        class="timeline-bar"
       >
       </a>
     </div>

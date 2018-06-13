@@ -61,8 +61,8 @@ export default {
     <span
       v-for="(subItem, index) in headerSubItems"
       :key="index"
-      class="sublabel-value"
       :class="getSubItemValueClass(subItem)"
+      class="sublabel-value"
     >
       {{ subItem.getDate() }}
     </span>

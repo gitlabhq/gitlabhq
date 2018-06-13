@@ -85,8 +85,8 @@
       </button>
     </div>
     <div
-      class="value"
       :class="valueClass"
+      class="value"
     >
       {{ valueText }}
     </div>
@@ -95,8 +95,8 @@
       style="display: none;"
     >
       <input
-        type="hidden"
         :name="fieldName"
+        type="hidden"
       />
       <div class="dropdown">
         <button

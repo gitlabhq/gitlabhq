@@ -54,8 +54,8 @@
           {{ s__('GeoNodes|GitLab version') }}
         </div>
         <div
-          class="node-detail-value node-detail-value-bold"
           :class="{ 'node-detail-value-error': versionMismatch }"
+          class="node-detail-value node-detail-value-bold"
         >
           {{ nodeVersion }}
         </div>

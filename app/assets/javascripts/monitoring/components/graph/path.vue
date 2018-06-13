@@ -44,26 +44,26 @@ export default {
 <template>
   <g transform="translate(-5, 20)">
     <circle
-      class="circle-path"
+      v-if="showDot"
       :cx="currentCoordinates.currentX"
       :cy="currentCoordinates.currentY"
       :fill="lineColor"
       :stroke="lineColor"
+      class="circle-path"
       r="3"
-      v-if="showDot"
     />
     <path
-      class="metric-area"
       :d="generatedAreaPath"
       :fill="areaColor"
+      class="metric-area"
     />
     <path
-      class="metric-line"
       :d="generatedLinePath"
       :stroke="lineColor"
+      :stroke-dasharray="strokeDashArray"
+      class="metric-line"
       fill="none"
       stroke-width="1"
-      :stroke-dasharray="strokeDashArray"
     />
   </g>
 </template>

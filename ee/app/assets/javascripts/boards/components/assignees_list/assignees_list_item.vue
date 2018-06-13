@@ -34,16 +34,16 @@ export default {
     >
       <div class="avatar-container s32">
         <img
-          class="avatar s32 lazy"
           :alt="avatarAltText"
           :src="assignee.avatar_url"
+          class="avatar s32 lazy"
         />
       </div>
       <div class="dropdown-user-details">
         <div :title="assignee.name">{{ assignee.name }}</div>
         <div
-          class="dropdown-light-content"
           :title="assignee.username"
+          class="dropdown-light-content"
         >@{{ assignee.username }}</div>
       </div>
     </button>

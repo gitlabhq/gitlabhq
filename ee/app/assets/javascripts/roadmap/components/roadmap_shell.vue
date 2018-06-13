@@ -77,9 +77,9 @@
 
 <template>
   <div
-    class="roadmap-shell"
     :class="{ 'prevent-vertical-scroll': noScroll }"
     :style="containerStyles"
+    class="roadmap-shell"
     @scroll="handleScroll"
   >
     <roadmap-timeline-section
