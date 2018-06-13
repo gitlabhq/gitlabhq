@@ -23,37 +23,44 @@ describe Gitlab::Verify::Uploads do
       FileUtils.rm_f(upload.absolute_path)
 
       expect(failures.keys).to contain_exactly(upload)
-      expect(failure).to be_a(Errno::ENOENT)
-      expect(failure.to_s).to include(upload.absolute_path)
+      expect(failure).to include('No such file or directory')
+      expect(failure).to include(upload.absolute_path)
     end
 
     it 'fails uploads with a mismatched checksum' do
       upload.update!(checksum: 'something incorrect')
 
       expect(failures.keys).to contain_exactly(upload)
-      expect(failure.to_s).to include('Checksum mismatch')
+      expect(failure).to include('Checksum mismatch')
     end
 
     it 'fails uploads with a missing precalculated checksum' do
       upload.update!(checksum: '')
 
       expect(failures.keys).to contain_exactly(upload)
-      expect(failure.to_s).to include('Checksum missing')
+      expect(failure).to include('Checksum missing')
     end
 
     context 'with remote files' do
+      let(:file) { double(:file) }
+
       before do
         stub_uploads_object_storage(AvatarUploader)
+        upload.update!(store: ObjectStorage::Store::REMOTE)
+        expect(CarrierWave::Storage::Fog::File).to receive(:new).and_return(file)
       end
 
-      it 'skips uploads in object storage' do
-        local_failure = create(:upload)
-        create(:upload, :object_storage)
+      it 'passes uploads in object storage that exist' do
+        expect(file).to receive(:exists?).and_return(true)
 
-        failures = {}
-        described_class.new(batch_size: 10).run_batches { |_, failed| failures.merge!(failed) }
+        expect(failures).to eq({})
+      end
 
-        expect(failures.keys).to contain_exactly(local_failure)
+      it 'fails uploads in object storage that do not exist' do
+        expect(file).to receive(:exists?).and_return(false)
+
+        expect(failures.keys).to contain_exactly(upload)
+        expect(failure).to include('Remote object does not exist')
       end
     end
   end
