@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import * as types from '../mutation_types';
+import { diffModes } from '../../constants';
 
 export default {
   [types.SET_FILE_ACTIVE](state, { path, active }) {
@@ -85,8 +86,19 @@ export default {
     });
   },
   [types.SET_FILE_MERGE_REQUEST_CHANGE](state, { file, mrChange }) {
+    let diffMode = diffModes.replaced;
+    if (mrChange.new_file) {
+      diffMode = diffModes.new;
+    } else if (mrChange.deleted_file) {
+      diffMode = diffModes.deleted;
+    } else if (mrChange.renamed_file) {
+      diffMode = diffModes.renamed;
+    }
     Object.assign(state.entries[file.path], {
-      mrChange,
+      mrChange: {
+        ...mrChange,
+        diffMode,
+      },
     });
   },
   [types.SET_FILE_VIEWMODE](state, { file, viewMode }) {
