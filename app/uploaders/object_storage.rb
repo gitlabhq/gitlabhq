@@ -10,6 +10,17 @@ module ObjectStorage
   UnknownStoreError = Class.new(StandardError)
   ObjectStorageUnavailable = Class.new(StandardError)
 
+  class ExclusiveLeaseTaken < StandardError
+    def initialize(lease_key)
+      @lease_key = lease_key
+    end
+
+    def message
+      *lease_key_group, _ = *@lease_key.split(":")
+      "Exclusive lease for #{lease_key_group.join(':')} is already taken."
+    end
+  end
+
   TMP_UPLOAD_PATH = 'tmp/uploads'.freeze
 
   module Store
@@ -29,7 +40,7 @@ module ObjectStorage
       end
 
       def retrieve_from_store!(identifier)
-        paths = store_dirs.map { |store, path| File.join(path, identifier) }
+        paths = upload_paths(identifier)
 
         unless current_upload_satisfies?(paths, model)
           # the upload we already have isn't right, find the correct one
@@ -261,7 +272,7 @@ module ObjectStorage
     end
 
     def delete_migrated_file(migrated_file)
-      migrated_file.delete if exists?
+      migrated_file.delete
     end
 
     def exists?
@@ -277,6 +288,13 @@ module ObjectStorage
         Store::LOCAL => File.join(base_dir, dynamic_segment),
         Store::REMOTE => File.join(dynamic_segment)
       }
+    end
+
+    # Returns all the possible paths for an upload.
+    # the `upload.path` is a lookup parameter, and it may change
+    # depending on the `store` param.
+    def upload_paths(identifier)
+      store_dirs.map { |store, path| File.join(path, identifier) }
     end
 
     def cache!(new_file = sanitized_file)
@@ -369,12 +387,13 @@ module ObjectStorage
     end
 
     def with_exclusive_lease
-      uuid = Gitlab::ExclusiveLease.new(exclusive_lease_key, timeout: 1.hour.to_i).try_obtain
-      raise 'exclusive lease already taken' unless uuid
+      lease_key = exclusive_lease_key
+      uuid = Gitlab::ExclusiveLease.new(lease_key, timeout: 1.hour.to_i).try_obtain
+      raise ExclusiveLeaseTaken.new(lease_key) unless uuid
 
       yield uuid
     ensure
-      Gitlab::ExclusiveLease.cancel(exclusive_lease_key, uuid)
+      Gitlab::ExclusiveLease.cancel(lease_key, uuid)
     end
 
     #
