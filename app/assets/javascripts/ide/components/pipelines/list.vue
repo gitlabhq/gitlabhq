@@ -94,7 +94,7 @@ export default {
         <p class="append-bottom-0">
           {{ __('Found errors in your .gitlab-ci.yml:') }}
         </p>
-        <p class="append-bottom-0">
+        <p class="append-bottom-0 break-word">
           {{ latestPipeline.yamlError }}
         </p>
         <p
