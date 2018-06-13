@@ -224,7 +224,6 @@ export default {
 
     <report-section
       v-if="sastContainerHeadPath"
-      class="js-dependency-scanning-widget split-report-section"
       :type="$options.sastContainer"
       :status="checkReportStatus(sastContainer.isLoading, sastContainer.hasError)"
       :loading-text="translateText('Container scanning').loading"
@@ -233,11 +232,11 @@ export default {
       :unresolved-issues="sastContainer.newIssues"
       :has-issues="sastContainer.newIssues.length > 0"
       :popover-options="sastContainerPopover"
+      class="js-dependency-scanning-widget split-report-section"
     />
 
     <report-section
       v-if="dastHeadPath"
-      class="js-dast-widget split-report-section"
       :type="$options.dast"
       :status="checkReportStatus(dast.isLoading, dast.hasError)"
       :loading-text="translateText('DAST').loading"
@@ -246,6 +245,7 @@ export default {
       :unresolved-issues="dast.newIssues"
       :has-issues="dast.newIssues.length > 0"
       :popover-options="dastPopover"
+      class="js-dast-widget split-report-section"
     />
 
     <issue-modal />
