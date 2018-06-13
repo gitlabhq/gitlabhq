@@ -362,7 +362,7 @@ export default class MergeRequestTabs {
   //
   // status - Boolean, true to show, false to hide
   toggleLoading(status) {
-    $('.mr-loading-status .loading').toggleClass('hidden', !status);
+    $('.mr-loading-status .loading').toggleClass('hide', !status);
   }
 
   diffViewType() {
