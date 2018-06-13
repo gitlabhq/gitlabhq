@@ -85,6 +85,8 @@ export default {
 <template>
   <img
     v-tooltip
+    class="avatar"
+    data-boundary="window"
     :class="{
       lazy: lazy,
       [avatarSizeClass]: true,

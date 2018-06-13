@@ -2,12 +2,11 @@
   = form_errors(@application_setting)
 
   %fieldset
-    .form-group.row
-      = f.label :terminal_max_session_time, 'Max session time', class: 'col-form-label col-sm-2'
-      .col-sm-10
-        = f.number_field :terminal_max_session_time, class: 'form-control'
-        .form-text.text-muted
-          Maximum time for web terminal websocket connection (in seconds).
-          0 for unlimited.
+    .form-group
+      = f.label :terminal_max_session_time, 'Max session time', class: 'label-light'
+      = f.number_field :terminal_max_session_time, class: 'form-control'
+      .form-text.text-muted
+        Maximum time for web terminal websocket connection (in seconds).
+        0 for unlimited.
 
   = f.submit 'Save changes', class: "btn btn-success"
