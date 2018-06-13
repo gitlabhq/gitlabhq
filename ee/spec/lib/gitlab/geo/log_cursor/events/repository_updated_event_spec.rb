@@ -52,6 +52,15 @@ describe Gitlab::Geo::LogCursor::Events::RepositoryUpdatedEvent, :postgresql, :c
             last_repository_verification_failure: nil
           )
         end
+
+        it 'sets resync_repository_was_scheduled_at to the scheduled time' do
+          Timecop.freeze do
+            subject.process
+            reloaded_registry = registry.reload
+
+            expect(reloaded_registry.resync_repository_was_scheduled_at).to be_within(1.second).of(Time.now)
+          end
+        end
       end
 
       context 'when the event source is a wiki' do
@@ -72,6 +81,15 @@ describe Gitlab::Geo::LogCursor::Events::RepositoryUpdatedEvent, :postgresql, :c
           expect(reloaded_registry.wiki_verification_checksum_sha).to be_nil
           expect(reloaded_registry.wiki_checksum_mismatch).to be false
           expect(reloaded_registry.last_wiki_verification_failure).to be_nil
+        end
+
+        it 'sets resync_wiki_was_scheduled_at to the scheduled time' do
+          Timecop.freeze do
+            subject.process
+            reloaded_registry = registry.reload
+
+            expect(reloaded_registry.resync_wiki_was_scheduled_at).to be_within(1.second).of(Time.now)
+          end
         end
       end
     end
