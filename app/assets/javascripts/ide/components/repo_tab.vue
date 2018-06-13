@@ -76,8 +76,8 @@ export default {
     @mouseout="mouseOutTab"
   >
     <div
-      class="multi-file-tab"
       :title="tab.url"
+      class="multi-file-tab"
     >
       <file-icon
         :file-name="tab.name"
@@ -89,16 +89,16 @@ export default {
       />
     </div>
     <button
+      :aria-label="closeLabel"
+      :disabled="tab.pending"
       type="button"
       class="multi-file-tab-close"
       @click.stop.prevent="closeFile(tab)"
-      :aria-label="closeLabel"
-      :disabled="tab.pending"
     >
       <icon
         v-if="!showChangedIcon"
-        name="close"
         :size="12"
+        name="close"
       />
       <changed-file-icon
         v-else

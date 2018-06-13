@@ -71,8 +71,8 @@
 <template>
   <gl-modal
     id="promote-label-modal"
-    footer-primary-button-variant="warning"
     :footer-primary-button-text="s__('Labels|Promote Label')"
+    footer-primary-button-variant="warning"
     @submit="onSubmit"
   >
     <div

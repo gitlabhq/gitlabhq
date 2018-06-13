@@ -235,11 +235,11 @@ export default {
       <div class="mr-widget-body-controls media space-children">
         <span class="btn-group append-bottom-5">
           <button
-            @click="handleMergeButtonClick()"
             :disabled="isMergeButtonDisabled"
             :class="mergeButtonClass"
             type="button"
-            class="qa-merge-button">
+            class="qa-merge-button"
+            @click="handleMergeButtonClick()">
             <i
               v-if="isMakingRequest"
               class="fa fa-spinner fa-spin"
@@ -265,28 +265,28 @@ export default {
             role="menu">
             <li>
               <a
-                @click.prevent="handleMergeButtonClick(true)"
                 class="merge_when_pipeline_succeeds"
-                href="#">
+                href="#"
+                @click.prevent="handleMergeButtonClick(true)">
                 <span class="media">
                   <span
-                    v-html="successSvg"
                     class="merge-opt-icon"
-                    aria-hidden="true"></span>
+                    aria-hidden="true"
+                    v-html="successSvg"></span>
                   <span class="media-body merge-opt-title">Merge when pipeline succeeds</span>
                 </span>
               </a>
             </li>
             <li>
               <a
-                @click.prevent="handleMergeButtonClick(false, true)"
                 class="accept-merge-request"
-                href="#">
+                href="#"
+                @click.prevent="handleMergeButtonClick(false, true)">
                 <span class="media">
                   <span
-                    v-html="warningSvg"
                     class="merge-opt-icon"
-                    aria-hidden="true"></span>
+                    aria-hidden="true"
+                    v-html="warningSvg"></span>
                   <span class="media-body merge-opt-title">Merge immediately</span>
                 </span>
               </a>
@@ -299,8 +299,8 @@ export default {
               <input
                 id="remove-source-branch-input"
                 v-model="removeSourceBranch"
-                class="js-remove-source-branch-checkbox"
                 :disabled="isRemoveSourceBranchButtonDisabled"
+                class="js-remove-source-branch-checkbox"
                 type="checkbox"/> Remove source branch
             </label>
 
@@ -317,10 +317,10 @@ export default {
             </span>
             <button
               v-else
-              @click="toggleCommitMessageEditor"
               :disabled="isMergeButtonDisabled"
               class="js-modify-commit-message-button btn btn-default btn-sm"
-              type="button">
+              type="button"
+              @click="toggleCommitMessageEditor">
               Modify commit message
             </button>
           </template>
@@ -356,8 +356,8 @@ export default {
             </p>
             <div class="hint">
               <a
-                @click.prevent="updateCommitMessage"
                 href="#"
+                @click.prevent="updateCommitMessage"
               >
                 {{ commitMessageLinkTitle }}
               </a>

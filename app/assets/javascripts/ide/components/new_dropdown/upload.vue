@@ -67,9 +67,9 @@
     </a>
     <input
       id="file-upload"
+      ref="fileUpload"
       type="file"
       class="hidden"
-      ref="fileUpload"
     />
   </div>
 </template>

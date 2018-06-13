@@ -67,8 +67,8 @@ export default {
       </template>
       <template v-else-if="hasPipeline">
         <a
-          class="append-right-10"
           :href="status.details_path"
+          class="append-right-10"
         >
           <ci-icon :status="status" />
         </a>
@@ -96,8 +96,8 @@ export default {
 
           <span class="mr-widget-pipeline-graph">
             <span
-              class="stage-cell"
               v-if="hasStages"
+              class="stage-cell"
             >
               <div
                 v-for="(stage, i) in pipeline.details.stages"

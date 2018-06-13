@@ -72,11 +72,11 @@ export default {
       rel="noopener noreferrer"
     >
       <img
-        class="project-badge"
         :src="imageUrlWithRetries"
+        class="project-badge"
+        aria-hidden="true"
         @load="onLoad"
         @error="onError"
-        aria-hidden="true"
       />
     </a>
 
@@ -91,9 +91,9 @@ export default {
     >
       <div class="btn btn-default btn-sm disabled">
         <icon
+          :size="16"
           class="prepend-left-8 append-right-8"
           name="doc_image"
-          :size="16"
           aria-hidden="true"
         />
       </div>
@@ -105,16 +105,16 @@ export default {
     </div>
 
     <button
+      v-tooltip
       v-show="hasError"
+      :title="s__('Badges|Reload badge image')"
       class="btn btn-transparent btn-sm text-primary"
       type="button"
-      v-tooltip
-      :title="s__('Badges|Reload badge image')"
       @click="reloadImage"
     >
       <icon
-        name="retry"
         :size="16"
+        name="retry"
       />
     </button>
   </div>

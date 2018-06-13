@@ -216,10 +216,10 @@ export default {
 <template>
   <div>
     <loading-icon
-      class="loading-animation prepend-top-20"
-      size="2"
       v-if="isLoading"
       :label="s__('GroupsTree|Loading groups')"
+      class="loading-animation prepend-top-20"
+      size="2"
     />
     <groups-component
       v-if="!isLoading"
@@ -230,10 +230,10 @@ export default {
     />
     <deprecated-modal
       v-show="showModal"
-      kind="warning"
       :primary-button-label="__('Leave')"
       :title="__('Are you sure?')"
       :text="groupLeaveConfirmationMessage"
+      kind="warning"
       @cancel="hideLeaveGroupModal"
       @submit="leaveGroup"
     />

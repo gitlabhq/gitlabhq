@@ -301,9 +301,9 @@
       <div class="table-mobile-content">
         <template v-if="pipeline.details.stages.length > 0">
           <div
-            class="stage-container dropdown js-mini-pipeline-graph"
             v-for="(stage, index) in pipeline.details.stages"
-            :key="index">
+            :key="index"
+            class="stage-container dropdown js-mini-pipeline-graph">
             <pipeline-stage
               :type="$options.pipelinesTable"
               :stage="stage"
@@ -331,28 +331,28 @@
 
         <pipelines-artifacts-component
           v-if="pipeline.details.artifacts.length"
-          class="d-none d-sm-none d-md-block"
           :artifacts="pipeline.details.artifacts"
+          class="d-none d-sm-none d-md-block"
         />
 
         <loading-button
           v-if="pipeline.flags.retryable"
-          @click="handleRetryClick"
-          container-class="js-pipelines-retry-button btn btn-default btn-retry"
           :loading="isRetrying"
           :disabled="isRetrying"
+          container-class="js-pipelines-retry-button btn btn-default btn-retry"
+          @click="handleRetryClick"
         >
           <icon name="repeat" />
         </loading-button>
 
         <loading-button
           v-if="pipeline.flags.cancelable"
-          @click="handleCancelClick"
+          :loading="isCancelling"
+          :disabled="isCancelling"
           data-toggle="modal"
           data-target="#confirmation-modal"
           container-class="js-pipelines-cancel-button btn btn-remove"
-          :loading="isCancelling"
-          :disabled="isCancelling"
+          @click="handleCancelClick"
         >
           <icon name="close" />
         </loading-button>

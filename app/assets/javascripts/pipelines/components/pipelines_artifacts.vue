@@ -42,9 +42,9 @@
         v-for="(artifact, i) in artifacts"
         :key="i">
         <a
+          :href="artifact.path"
           rel="nofollow"
           download
-          :href="artifact.path"
         >
           Download {{ artifact.name }} artifacts
         </a>

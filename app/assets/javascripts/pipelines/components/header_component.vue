@@ -82,11 +82,11 @@
     <ci-header
       v-if="shouldRenderContent"
       :status="status"
-      item-name="Pipeline"
       :item-id="pipeline.id"
       :time="pipeline.created_at"
       :user="pipeline.user"
       :actions="actions"
+      item-name="Pipeline"
       @actionClicked="postAction"
     />
     <loading-icon

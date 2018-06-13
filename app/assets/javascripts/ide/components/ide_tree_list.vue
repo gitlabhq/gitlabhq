@@ -50,17 +50,17 @@ export default {
   >
     <template v-if="showLoading">
       <div
-        class="multi-file-loading-container"
         v-for="n in 3"
         :key="n"
+        class="multi-file-loading-container"
       >
         <skeleton-loading-container />
       </div>
     </template>
     <template v-else>
       <header
-        class="ide-tree-header"
         :class="headerClass"
+        class="ide-tree-header"
       >
         <slot name="header"></slot>
       </header>

@@ -8,10 +8,13 @@ import utilsMixin from '../mixins/line_conflict_utils';
   global.mergeConflicts = global.mergeConflicts || {};
 
   global.mergeConflicts.parallelConflictLines = Vue.extend({
-    props: {
-      file: Object
-    },
     mixins: [utilsMixin, actionsMixin],
+    props: {
+      file: {
+        type: Object,
+        required: true,
+      },
+    },
     template: `
       <table>
         <tr class="line_holder parallel" v-for="section in file.parallelLines">

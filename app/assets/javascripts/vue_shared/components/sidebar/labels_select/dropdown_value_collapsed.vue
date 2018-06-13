@@ -37,10 +37,10 @@ export default {
 <template>
   <div
     v-tooltip
+    :title="labelsList"
     class="sidebar-collapsed-icon"
     data-placement="left"
     data-container="body"
-    :title="labelsList"
     @click="handleClick"
   >
     <i

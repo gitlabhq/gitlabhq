@@ -47,15 +47,15 @@ export default {
 <template>
   <div
     v-tooltip
+    :title="tooltipTitle"
     class="controllers-buttons"
     data-container="body"
     data-placement="top"
-    :title="tooltipTitle"
   >
     <button
+      :disabled="disabled"
       class="btn-scroll btn-transparent btn-blank"
       type="button"
-      :disabled="disabled"
       @click="clickedScroll"
     >
       <icon

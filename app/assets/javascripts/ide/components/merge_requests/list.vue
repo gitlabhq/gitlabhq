@@ -80,12 +80,12 @@ export default {
   <div>
     <div class="dropdown-input mt-3 pb-3 mb-0 border-bottom">
       <input
-        type="search"
-        class="dropdown-input-field"
+        ref="searchInput"
         :placeholder="__('Search merge requests')"
         v-model="search"
+        type="search"
+        class="dropdown-input-field"
         @input="searchMergeRequests"
-        ref="searchInput"
       />
       <i
         aria-hidden="true"
@@ -94,8 +94,8 @@ export default {
     </div>
     <div class="dropdown-content ide-merge-requests-dropdown-content d-flex">
       <loading-icon
-        class="mt-3 mb-3 align-self-center ml-auto mr-auto"
         v-if="isLoading"
+        class="mt-3 mb-3 align-self-center ml-auto mr-auto"
         size="2"
       />
       <ul

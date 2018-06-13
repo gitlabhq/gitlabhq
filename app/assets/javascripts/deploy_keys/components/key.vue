@@ -135,9 +135,9 @@ export default {
       <div class="table-mobile-content deploy-project-list">
         <template v-if="projects.length > 0">
           <a
-            class="label deploy-project-label"
-            :title="projectTooltipTitle(firstProject)"
             v-tooltip
+            :title="projectTooltipTitle(firstProject)"
+            class="label deploy-project-label"
           >
             <span>
               {{ firstProject.project.full_name }}
@@ -145,22 +145,22 @@ export default {
             <icon :name="firstProject.can_push ? 'lock-open' : 'lock'"/>
           </a>
           <a
+            v-tooltip
             v-if="isExpandable"
+            :title="restProjectsTooltip"
             class="label deploy-project-label"
             @click="toggleExpanded"
-            :title="restProjectsTooltip"
-            v-tooltip
           >
             <span>{{ restProjectsLabel }}</span>
           </a>
           <a
-            v-else-if="isExpanded"
+            v-tooltip
             v-for="deployKeysProject in restProjects"
+            v-else-if="isExpanded"
             :key="deployKeysProject.project.full_path"
-            class="label deploy-project-label"
             :href="deployKeysProject.project.full_path"
             :title="projectTooltipTitle(deployKeysProject)"
-            v-tooltip
+            class="label deploy-project-label"
           >
             <span>
               {{ deployKeysProject.project.full_name }}
@@ -181,8 +181,8 @@ export default {
       </div>
       <div class="table-mobile-content text-secondary key-created-at">
         <span
-          :title="tooltipTitle(deployKey.created_at)"
-          v-tooltip>
+          v-tooltip
+          :title="tooltipTitle(deployKey.created_at)">
           <icon name="calendar"/>
           <span>{{ timeFormated(deployKey.created_at) }}</span>
         </span>
@@ -198,34 +198,34 @@ export default {
           {{ __('Enable') }}
         </action-btn>
         <a
+          v-tooltip
           v-if="deployKey.can_edit"
-          class="btn btn-default text-secondary"
           :href="editDeployKeyPath"
           :title="__('Edit')"
+          class="btn btn-default text-secondary"
           data-container="body"
-          v-tooltip
         >
           <icon name="pencil"/>
         </a>
         <action-btn
+          v-tooltip
           v-if="isRemovable"
           :deploy-key="deployKey"
+          :title="__('Remove')"
           btn-css-class="btn-danger"
           type="remove"
-          :title="__('Remove')"
           data-container="body"
-          v-tooltip
         >
           <icon name="remove"/>
         </action-btn>
         <action-btn
+          v-tooltip
           v-else-if="isEnabled"
           :deploy-key="deployKey"
+          :title="__('Disable')"
           btn-css-class="btn-warning"
           type="disable"
-          :title="__('Disable')"
           data-container="body"
-          v-tooltip
         >
           <icon name="cancel"/>
         </action-btn>

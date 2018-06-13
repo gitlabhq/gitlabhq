@@ -33,18 +33,18 @@ export default {
       :key="index"
       :transform="transformDeploymentGroup(deployment)">
       <rect
+        :height="calculatedHeight"
         x="0"
         y="0"
-        :height="calculatedHeight"
         width="3"
         fill="url(#shadow-gradient)"
       />
       <line
+        :y2="calculatedHeight"
         class="deployment-line"
         x1="0"
         y1="0"
         x2="0"
-        :y2="calculatedHeight"
         stroke="#000"
       />
     </g>

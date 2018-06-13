@@ -62,15 +62,15 @@
     <div class="container-image-head">
       <button
         type="button"
-        @click="toggleRepo"
         class="js-toggle-repo btn-link"
+        @click="toggleRepo"
       >
         <i
-          class="fa"
           :class="{
             'fa-chevron-right': !isOpen,
             'fa-chevron-up': isOpen,
           }"
+          class="fa"
           aria-hidden="true"
         >
         </i>
@@ -86,12 +86,12 @@
 
       <div class="controls d-none d-sm-block float-right">
         <button
+          v-tooltip
           v-if="repo.canDelete"
-          type="button"
-          class="js-remove-repo btn btn-danger"
           :title="s__('ContainerRegistry|Remove repository')"
           :aria-label="s__('ContainerRegistry|Remove repository')"
-          v-tooltip
+          type="button"
+          class="js-remove-repo btn btn-danger"
           @click="handleDeleteRepository"
         >
           <i

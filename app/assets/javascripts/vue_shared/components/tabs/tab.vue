@@ -36,10 +36,10 @@ export default {
 
 <template>
   <div
-    class="tab-pane"
     :class="{
       active: localActive
     }"
+    class="tab-pane"
     role="tabpanel"
   >
     <slot></slot>

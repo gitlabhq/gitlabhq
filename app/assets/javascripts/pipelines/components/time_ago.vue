@@ -66,8 +66,8 @@
     </div>
     <div class="table-mobile-content">
       <p
-        class="duration"
         v-if="hasDuration"
+        class="duration"
       >
         <span v-html="iconTimerSvg">
         </span>
@@ -75,8 +75,8 @@
       </p>
 
       <p
-        class="finished-at d-none d-sm-none d-md-block"
         v-if="hasFinishedTime"
+        class="finished-at d-none d-sm-none d-md-block"
       >
 
         <i
@@ -87,9 +87,9 @@
 
         <time
           v-tooltip
+          :title="tooltipTitle(finishedTime)"
           data-placement="top"
-          data-container="body"
-          :title="tooltipTitle(finishedTime)">
+          data-container="body">
           {{ timeFormated(finishedTime) }}
         </time>
       </p>

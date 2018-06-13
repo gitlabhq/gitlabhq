@@ -60,8 +60,8 @@ export default {
 <template>
   <div
     ref="fileHolder"
-    class="diff-file file-holder"
     :class="diffFileClass"
+    class="diff-file file-holder"
   >
     <div class="js-file-title file-title file-title-flex-parent">
       <diff-file-header
@@ -74,11 +74,11 @@ export default {
     >
       <table>
         <component
+          v-for="(html, index) in diffRows"
           :is="rowTag(html)"
           :class="html.className"
-          v-for="(html, index) in diffRows"
-          v-html="html.outerHTML"
           :key="index"
+          v-html="html.outerHTML"
         />
         <tr class="notes_holder">
           <td
