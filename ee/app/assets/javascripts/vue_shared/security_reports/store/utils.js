@@ -47,9 +47,9 @@ function enrichVulnerabilityWithfeedback(vulnerability, feedback = []) {
  */
 function fileUrl(location, pathPrefix) {
   let lineSuffix = '';
-  if (!_.isEmpty(location.start_line)) {
+  if (location.start_line) {
     lineSuffix += `#L${location.start_line}`;
-    if (!_.isEmpty(location.end_line)) {
+    if (location.end_line) {
       lineSuffix += `-${location.end_line}`;
     }
   }
@@ -82,7 +82,7 @@ function adaptDeprecatedFormat(issue) {
     // Add the new location property
     location: {
       file: adapted.file,
-      start_line: adapted.line,
+      start_line: adapted.line ? parseInt(adapted.line, 10) : undefined,
     },
     links,
   });
