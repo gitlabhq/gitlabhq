@@ -83,15 +83,8 @@ export default {
         <template v-if="actionText">
           {{ actionText }}
         </template>
-<<<<<<< HEAD
         <span class="system-note-message">
           <slot></slot>
-=======
-        <span
-          v-if="actionTextHtml"
-          class="system-note-message"
-          v-html="actionTextHtml">
->>>>>>> master
         </span>
         <span class="system-note-separator">
           &middot;
