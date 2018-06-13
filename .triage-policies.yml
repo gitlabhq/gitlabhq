@@ -235,10 +235,10 @@ resource_rules:
             Thanks for your help
       - name: Remind team members to set relevant labels on their MRs
         conditions:
-          author:
+          author_member:
             source: group
             condition: member_of
-            source_id: 9970 # the `gitlab-org` group
+            source_id: gitlab-org
           labels:
             - No Label
           state: opened
@@ -251,3 +251,15 @@ resource_rules:
             Please [add labels to your merge request](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#workflow-labels), this helps triage community merge requests.
 
             Thanks for your help! :black_heart:
+      - name: Label community merge requests
+        conditions:
+          author_member:
+            source: group
+            condition: not_member_of
+            source_id: gitlab-org
+          labels:
+            - No Label
+          state: opened
+        actions:
+          labels:
+            - Community Contribution
