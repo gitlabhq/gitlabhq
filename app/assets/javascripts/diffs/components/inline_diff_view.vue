@@ -89,8 +89,8 @@ export default {
         <tr
           v-if="isDiscussionExpanded(line.lineCode) || diffLineCommentForms[line.lineCode]"
           :key="index"
-          class="notes_holder"
           :class="discussionsByLineCode[line.lineCode] ? '' : 'js-temp-notes-holder'"
+          class="notes_holder"
         >
           <td
             class="notes_line"

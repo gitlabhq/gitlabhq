@@ -40,8 +40,8 @@ export default {
         {{ n__('%d changed file', '%d changed files', diffFiles.length) }}
       </span>
       <icon
-        name="chevron-down"
         :size="8"
+        name="chevron-down"
       />
     </button>
     <div class="dropdown-menu diff-file-changes">
@@ -72,9 +72,9 @@ export default {
           :key="diffFile.name"
         >
           <a
-            class="diff-changed-file"
             :href="`#${diffFile.fileHash}`"
             :title="diffFile.newPath"
+            class="diff-changed-file"
           >
             <icon
               :name="fileChangedIcon(diffFile)"

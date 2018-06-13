@@ -118,8 +118,8 @@ export default {
         {{ selectedVersionName }}
       </span>
       <Icon
-        name="angle-down"
         :size="12"
+        name="angle-down"
       />
     </a>
     <div class="dropdown-menu dropdown-select dropdown-menu-selectable">
@@ -153,8 +153,8 @@ export default {
                   </template>
                   <time-ago
                     v-if="version.createdAt"
-                    class="js-timeago js-timeago-render"
                     :time="version.createdAt"
+                    class="js-timeago js-timeago-render"
                   />
                 </small>
               </div>

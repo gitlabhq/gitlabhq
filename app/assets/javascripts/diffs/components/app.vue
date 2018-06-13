@@ -135,8 +135,8 @@ export default {
     </div>
     <div
       v-else
-      :class="{ active: shouldShow }"
       id="diffs"
+      :class="{ active: shouldShow }"
       class="diffs tab-pane"
     >
       <compare-versions

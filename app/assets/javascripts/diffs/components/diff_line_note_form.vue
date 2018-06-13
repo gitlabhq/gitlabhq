@@ -83,9 +83,9 @@ export default {
   >
     <note-form
       :is-editing="true"
+      :line-code="line.lineCode"
       save-button-title="Comment"
       class="diff-comment-form"
-      :line-code="line.lineCode"
       @cancelForm="handleCancelCommentForm"
       @handleFormUpdate="handleSaveNote"
     />

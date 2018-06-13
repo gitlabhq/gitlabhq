@@ -118,8 +118,8 @@ export default {
             @mouseout="handleMouse($event, line, false)"
           >
             <td
-              :class="getClassName(line, 'left')"
               ref="leftLines"
+              :class="getClassName(line, 'left')"
               class="diff-line-num old_line"
             >
               <diff-line-gutter-content
@@ -136,16 +136,16 @@ export default {
               />
             </td>
             <td
-              :class="getClassName(line, 'left')"
               ref="leftLines"
+              :class="getClassName(line, 'left')"
               :id="getLineCode(line, line.left)"
-              v-html="line.left.richText"
               class="line_content parallel left-side"
+              v-html="line.left.richText"
             >
             </td>
             <td
-              :class="getClassName(line, 'right')"
               ref="rightLines"
+              :class="getClassName(line, 'right')"
               class="diff-line-num new_line"
             >
               <diff-line-gutter-content
@@ -162,19 +162,19 @@ export default {
               />
             </td>
             <td
-              :class="getClassName(line, 'right')"
               ref="rightLines"
+              :class="getClassName(line, 'right')"
               :id="getLineCode(line, line.right)"
-              v-html="line.right.richText"
               class="line_content parallel right-side"
+              v-html="line.right.richText"
             >
             </td>
           </tr>
           <tr
             v-if="shouldRenderDiscussionsRow(line)"
             :key="line.left.lineCode || line.right.lineCode"
-            class="notes_holder"
             :class="hasDiscussion(line) ? '' : 'js-temp-notes-holder'"
+            class="notes_holder"
           >
             <td class="notes_line old"></td>
             <td class="notes_content parallel old">

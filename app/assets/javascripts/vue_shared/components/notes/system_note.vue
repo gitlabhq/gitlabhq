@@ -94,20 +94,20 @@ export default {
         </div>
         <div class="note-body">
           <div
-            v-html="note.note_html"
-            class="note-text"
             :class="{
               'system-note-commit-list': hasMoreCommits,
               'hide-shade': expanded
             }"
+            class="note-text"
+            v-html="note.note_html"
           ></div>
           <div
             v-if="hasMoreCommits"
             class="flex-list"
           >
             <div
-              @click="expanded = !expanded"
               class="system-note-commit-list-toggler flex-row"
+              @click="expanded = !expanded"
             >
               <Icon
                 :name="toggleIcon"

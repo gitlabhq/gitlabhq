@@ -110,29 +110,29 @@ export default {
           {{ __('Expand all') }}
         </a>
         <a
-          class="btn btn-default"
           :href="toggleWhitespacePath"
+          class="btn btn-default"
         >
           {{ toggleWhitespaceText }}
         </a>
         <div class="btn-group">
           <button
-            type="button"
-            @click="setInlineDiffViewType"
-            :class="{ active: isInlineView }"
             id="inline-diff-btn"
+            :class="{ active: isInlineView }"
+            type="button"
             class="btn js-inline-diff-button"
             data-view-type="inline"
+            @click="setInlineDiffViewType"
           >
             {{ __('Inline') }}
           </button>
           <button
-            type="button"
-            @click="setParallelDiffViewType"
-            :class="{ active: isParallelView }"
             id="parallel-diff-btn"
+            :class="{ active: isParallelView }"
+            type="button"
             class="btn js-parallel-diff-button"
             data-view-type="parallel"
+            @click="setParallelDiffViewType"
           >
             {{ __('Side-by-side') }}
           </button>
@@ -162,8 +162,8 @@ export default {
 
         <span
           v-show="!isStuck"
-          class="diff-stats-additions-deletions-expanded"
           id="diff-stats"
+          class="diff-stats-additions-deletions-expanded"
         >
           with
           <strong class="cgreen">

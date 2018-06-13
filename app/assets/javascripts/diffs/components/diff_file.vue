@@ -120,8 +120,8 @@ export default {
 
 <template>
   <div
-    class="diff-file file-holder"
     :id="file.fileHash"
+    class="diff-file file-holder"
   >
     <diff-file-header
       :current-user="currentUser"
@@ -130,9 +130,9 @@ export default {
       :expanded="!isCollapsed"
       :discussions-expanded="isDiscussionsExpanded"
       :add-merge-request-buttons="true"
+      class="js-file-title file-title"
       @toggleFile="handleToggle"
       @showForkMessage="showForkMessage"
-      class="js-file-title file-title"
     />
 
     <div
@@ -173,9 +173,9 @@ export default {
     >
       {{ __('This diff is collapsed.') }}
       <a
-        @click.prevent="handleToggle"
         class="click-to-expand js-click-to-expand"
         href="#"
+        @click.prevent="handleToggle"
       >
         {{ __('Click to expand it.') }}
       </a>
