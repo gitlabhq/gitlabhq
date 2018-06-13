@@ -270,8 +270,8 @@ Please check your network connection and try again.`;
       </div>
       <div class="timeline-content">
         <div
-          class="discussion js-discussion-container"
           :data-discussion-id="transformedDiscussion.discussion_id"
+          class="discussion js-discussion-container"
         >
           <div
             v-if="renderHeader"
@@ -282,7 +282,6 @@ Please check your network connection and try again.`;
               :created-at="transformedDiscussion.created_at"
               :note-id="transformedDiscussion.id"
               :include-toggle="true"
-<<<<<<< HEAD
               :expanded="discussion.expanded"
               @toggleHandler="toggleDiscussionHandler"
             >
@@ -313,12 +312,6 @@ Please check your network connection and try again.`;
               :edited-by="transformedDiscussion.resolvedBy"
               :action-text="resolvedText"
               class-name="discussion-headline-light js-discussion-headline"
-=======
-              :expanded="note.expanded"
-              action-text="started a discussion"
-              class="discussion"
-              @toggleHandler="toggleDiscussionHandler"
->>>>>>> master
             />
             <note-edited-text
               v-else-if="lastUpdatedAt"
@@ -358,14 +351,9 @@ Please check your network connection and try again.`;
                         role="group">
                         <button
                           type="button"
-<<<<<<< HEAD
                           class="js-vue-discussion-reply btn btn-text-field mr-2"
-                          title="Add a reply">Reply...</button>
-=======
-                          class="js-vue-discussion-reply btn btn-text-field"
                           title="Add a reply"
                           @click="showReplyForm">Reply...</button>
->>>>>>> master
                       </div>
                       <div
                         v-if="discussion.resolvable"
@@ -373,12 +361,8 @@ Please check your network connection and try again.`;
                         role="group">
                         <button
                           type="button"
-<<<<<<< HEAD
                           class="btn btn-default mr-2"
-=======
-                          class="btn btn-default"
                           @click="resolveHandler()"
->>>>>>> master
                         >
                           <i
                             v-if="isResolving"
@@ -398,15 +382,11 @@ Please check your network connection and try again.`;
                           class="btn-group"
                           role="group">
                           <a
-<<<<<<< HEAD
-                            :href="discussion.resolve_with_issue_path"
-=======
->>>>>>> master
                             v-tooltip
-                            :href="note.resolve_with_issue_path"
+                            :href="discussion.resolve_with_issue_path"
+                            :title="s__('MergeRequests|Resolve this discussion in a new issue')"
                             class="new-issue-for-discussion btn
                               btn-default discussion-create-issue-btn"
-                            :title="s__('MergeRequests|Resolve this discussion in a new issue')"
                             data-container="body"
                           >
                             <span v-html="resolveDiscussionsSvg"></span>
@@ -417,15 +397,11 @@ Please check your network connection and try again.`;
                           class="btn-group"
                           role="group">
                           <button
-<<<<<<< HEAD
-                            @click="jumpToNextDiscussion"
-=======
->>>>>>> master
                             v-tooltip
                             class="btn btn-default discussion-next-btn"
                             title="Jump to next unresolved discussion"
                             data-container="body"
-                            @click="jumpToDiscussion"
+                            @click="jumpToNextDiscussion"
                           >
                             <span v-html="nextDiscussionsSvg"></span>
                           </button>
@@ -435,22 +411,12 @@ Please check your network connection and try again.`;
                   </template>
                   <note-form
                     v-if="isReplying"
-<<<<<<< HEAD
-                    save-button-title="Comment"
-                    :discussion="discussion"
-=======
                     ref="noteForm"
-                    :note="note"
->>>>>>> master
+                    :discussion="discussion"
                     :is-editing="false"
                     save-button-title="Comment"
                     @handleFormUpdate="saveReply"
-<<<<<<< HEAD
-                    @cancelForm="cancelReplyForm"
-                    ref="noteForm" />
-=======
-                    @cancelFormEdition="cancelReplyForm" />
->>>>>>> master
+                    @cancelForm="cancelReplyForm" />
                   <note-signed-out-widget v-if="!canReply" />
                 </div>
               </div>
