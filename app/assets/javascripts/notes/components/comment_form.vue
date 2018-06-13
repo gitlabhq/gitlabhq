@@ -361,7 +361,7 @@ Please check your network connection and try again.`;
 js-gfm-input js-autosize markdown-area js-vue-textarea"
                   data-supports-quick-actions="true"
                   aria-label="Description"
-                  placeholder="Write a comment or drag your files here..."
+                  placeholder="Write a comment or drag your files here…"
                   @keydown.up="editCurrentUserLastNote()"
                   @keydown.meta.enter="handleSave()"
                   @keydown.ctrl.enter="handleSave()">
