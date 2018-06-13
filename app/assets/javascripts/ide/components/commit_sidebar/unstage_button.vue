@@ -32,7 +32,7 @@ export default {
       :aria-label="__('Unstage changes')"
       :title="__('Unstage changes')"
       type="button"
-      class="btn btn-blank"
+      class="btn btn-blank d-flex align-items-center"
       data-container="body"
       @click="unstageChange(path)"
     >

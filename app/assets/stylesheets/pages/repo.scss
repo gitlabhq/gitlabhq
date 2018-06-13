@@ -621,9 +621,13 @@
 }
 
 .multi-file-discard-btn {
-  top: 0;
+  top: 4px;
   right: 8px;
-  bottom: 0;
+  bottom: 4px;
+
+  svg {
+    top: 0;
+  }
 }
 
 .multi-file-commit-form {

@@ -32,7 +32,7 @@ export default {
       :aria-label="__('Stage changes')"
       :title="__('Stage changes')"
       type="button"
-      class="btn btn-blank append-right-5"
+      class="btn btn-blank append-right-5 d-flex align-items-center"
       data-container="body"
       @click.stop="stageChange(path)"
     >
@@ -43,8 +43,9 @@ export default {
     </button>
     <button
       v-tooltip
+      :title="__('More actions')"
       type="button"
-      class="btn btn-blank"
+      class="btn btn-blank d-flex align-items-center"
       data-container="body"
       data-toggle="dropdown"
     >

@@ -100,7 +100,7 @@ export default {
       @dblclick="fileAction"
       @click="openFileInEditor"
     >
-      <span class="multi-file-commit-list-file-path">
+      <span class="multi-file-commit-list-file-path d-flex align-items-center">
         <icon
           :name="iconName"
           :size="16"
