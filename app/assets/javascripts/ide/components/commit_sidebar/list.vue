@@ -100,6 +100,8 @@ export default {
             type="button"
             class="btn btn-default ide-staged-action-btn p-0 order-1 align-items-center"
             data-placement="bottom"
+            data-container="body"
+            data-boundary="viewport"
             @click="actionBtnClicked"
           >
             <icon

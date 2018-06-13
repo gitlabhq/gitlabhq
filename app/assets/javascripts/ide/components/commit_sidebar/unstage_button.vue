@@ -34,6 +34,8 @@ export default {
       type="button"
       class="btn btn-blank d-flex align-items-center"
       data-container="body"
+      data-boundary="viewport"
+      data-placement="bottom"
       @click="unstageChange(path)"
     >
       <icon

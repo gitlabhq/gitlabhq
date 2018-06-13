@@ -34,6 +34,8 @@ export default {
       type="button"
       class="btn btn-blank append-right-5 d-flex align-items-center"
       data-container="body"
+      data-boundary="viewport"
+      data-placement="bottom"
       @click.stop="stageChange(path)"
     >
       <icon
@@ -47,6 +49,8 @@ export default {
       type="button"
       class="btn btn-blank d-flex align-items-center"
       data-container="body"
+      data-boundary="viewport"
+      data-placement="bottom"
       data-toggle="dropdown"
     >
       <icon
