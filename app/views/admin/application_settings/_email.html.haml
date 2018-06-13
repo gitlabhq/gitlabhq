@@ -20,7 +20,6 @@
           By default GitLab sends emails in HTML and plain text formats so mail
           clients can choose what format to use. Disable this option if you only
           want to send emails in plain text format.
-<<<<<<< HEAD
     -# EE-specific start
     - if License.feature_available?(:email_additional_text)
       .form-group
@@ -29,7 +28,5 @@
         .form-text.text-muted
           = _('Add additional text to appear in all email communications. %{character_limit} character limit') % { character_limit: number_with_delimiter(Gitlab::CurrentSettings.email_additional_text_character_limit) }
     -# EE-specific end
-=======
->>>>>>> upstream/master
 
   = f.submit 'Save changes', class: "btn btn-success"

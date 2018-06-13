@@ -11,11 +11,8 @@
       %span.form-text.text-muted
         If disabled, only admins will be able to setup mirrors in projects.
         = link_to icon('question-circle'), help_page_path('workflow/repository_mirroring')
-<<<<<<< HEAD
 
   - if Gitlab.com? && License.feature_available?(:repository_mirrors)
     = render 'mirror_settings', f: f
-=======
->>>>>>> upstream/master
 
   = f.submit 'Save changes', class: "btn btn-success"
