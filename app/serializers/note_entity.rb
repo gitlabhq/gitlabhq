@@ -50,14 +50,6 @@ class NoteEntity < API::Entities::Note
     new_abuse_report_path(user_id: note.author.id, ref_url: Gitlab::UrlBuilder.build(note))
   end
 
-  expose :path do |note|
-    if note.for_personal_snippet?
-      snippet_note_path(note.noteable, note)
-    else
-      project_note_path(note.project, note)
-    end
-  end
-
   expose :noteable_note_url do |note|
     noteable_note_url(note)
   end
