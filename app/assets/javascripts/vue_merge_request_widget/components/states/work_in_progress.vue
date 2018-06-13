@@ -62,7 +62,7 @@ export default {
         v-if="mr.removeWIPPath"
         :disabled="isMakingRequest"
         type="button"
-        class="btn btn-default btn-xs js-remove-wip"
+        class="btn btn-default btn-sm js-remove-wip"
         @click="removeWIP">
         <i
           v-if="isMakingRequest"
