@@ -104,7 +104,6 @@ export default {
       class="diff-content code"
     >
       <table>
-<<<<<<< HEAD
         <tr
           v-for="line in normalizedDiffLines"
           :key="line.lineCode"
@@ -131,8 +130,8 @@ export default {
           >
             Unable to load the diff
             <button
-              @click="fetchDiff"
               class="btn-link btn-link-retry btn-no-padding js-toggle-lazy-diff-retry-button"
+              @click="fetchDiff"
             >
               Try again
             </button>
@@ -146,15 +145,6 @@ export default {
             <span></span>
           </td>
         </tr>
-=======
-        <component
-          v-for="(html, index) in diffRows"
-          :is="rowTag(html)"
-          :class="html.className"
-          :key="index"
-          v-html="html.outerHTML"
-        />
->>>>>>> master
         <tr class="notes_holder">
           <td
             class="notes_line"
