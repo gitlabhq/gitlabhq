@@ -5,6 +5,13 @@ describe Gitlab::Git::GitlabProjects do
     TestEnv.clean_test_path
   end
 
+  around do |example|
+    # TODO move this spec to gitaly-ruby. GitlabProjects is not used in gitlab-ce
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      example.run
+    end
+  end
+
   let(:project) { create(:project, :repository) }
 
   if $VERBOSE
@@ -190,36 +197,30 @@ describe Gitlab::Git::GitlabProjects do
       end
     end
 
-    context 'when Gitaly import_repository feature is enabled' do
-      it_behaves_like 'importing repository'
+    describe 'logging' do
+      it 'imports a repo' do
+        message = "Importing project from <#{import_url}> to <#{tmp_repo_path}>."
+        expect(logger).to receive(:info).with(message)
+
+        subject
+      end
     end
 
-    context 'when Gitaly import_repository feature is disabled', :disable_gitaly do
-      describe 'logging' do
-        it 'imports a repo' do
-          message = "Importing project from <#{import_url}> to <#{tmp_repo_path}>."
-          expect(logger).to receive(:info).with(message)
+    context 'timeout' do
+      it 'does not import a repo' do
+        stub_spawn_timeout(cmd, timeout, nil)
 
-          subject
-        end
+        message = "Importing project from <#{import_url}> to <#{tmp_repo_path}> failed."
+        expect(logger).to receive(:error).with(message)
+
+        is_expected.to be_falsy
+
+        expect(gl_projects.output).to eq("Timed out\n")
+        expect(File.exist?(File.join(tmp_repo_path, 'HEAD'))).to be_falsy
       end
-
-      context 'timeout' do
-        it 'does not import a repo' do
-          stub_spawn_timeout(cmd, timeout, nil)
-
-          message = "Importing project from <#{import_url}> to <#{tmp_repo_path}> failed."
-          expect(logger).to receive(:error).with(message)
-
-          is_expected.to be_falsy
-
-          expect(gl_projects.output).to eq("Timed out\n")
-          expect(File.exist?(File.join(tmp_repo_path, 'HEAD'))).to be_falsy
-        end
-      end
-
-      it_behaves_like 'importing repository'
     end
+
+    it_behaves_like 'importing repository'
   end
 
   describe '#fork_repository' do
@@ -232,9 +233,6 @@ describe Gitlab::Git::GitlabProjects do
 
     before do
       FileUtils.mkdir_p(dest_repos_path)
-
-      # Undo spec_helper stub that deletes hooks
-      allow_any_instance_of(described_class).to receive(:fork_repository).and_call_original
     end
 
     after do
@@ -258,51 +256,45 @@ describe Gitlab::Git::GitlabProjects do
       end
     end
 
-    context 'when Gitaly fork_repository feature is enabled' do
-      it_behaves_like 'forking a repository'
+    it_behaves_like 'forking a repository'
+
+    # We seem to be stuck to having only one working Gitaly storage in tests, changing
+    # that is not very straight-forward so I'm leaving this test here for now till
+    # https://gitlab.com/gitlab-org/gitlab-ce/issues/41393 is fixed.
+    context 'different storages' do
+      let(:dest_repos) { 'alternative' }
+      let(:dest_repos_path) { File.join(File.dirname(tmp_repos_path), dest_repos) }
+
+      before do
+        stub_storage_settings(dest_repos => { 'path' => dest_repos_path })
+      end
+
+      it 'forks the repo' do
+        is_expected.to be_truthy
+
+        expect(File.exist?(dest_repo)).to be_truthy
+        expect(File.exist?(File.join(dest_repo, 'hooks', 'pre-receive'))).to be_truthy
+        expect(File.exist?(File.join(dest_repo, 'hooks', 'post-receive'))).to be_truthy
+      end
     end
 
-    context 'when Gitaly fork_repository feature is disabled', :disable_gitaly do
-      it_behaves_like 'forking a repository'
+    describe 'log messages' do
+      describe 'successful fork' do
+        it do
+          message = "Forking repository from <#{tmp_repo_path}> to <#{dest_repo}>."
+          expect(logger).to receive(:info).with(message)
 
-      # We seem to be stuck to having only one working Gitaly storage in tests, changing
-      # that is not very straight-forward so I'm leaving this test here for now till
-      # https://gitlab.com/gitlab-org/gitlab-ce/issues/41393 is fixed.
-      context 'different storages' do
-        let(:dest_repos) { 'alternative' }
-        let(:dest_repos_path) { File.join(File.dirname(tmp_repos_path), dest_repos) }
-
-        before do
-          stub_storage_settings(dest_repos => { 'path' => dest_repos_path })
-        end
-
-        it 'forks the repo' do
-          is_expected.to be_truthy
-
-          expect(File.exist?(dest_repo)).to be_truthy
-          expect(File.exist?(File.join(dest_repo, 'hooks', 'pre-receive'))).to be_truthy
-          expect(File.exist?(File.join(dest_repo, 'hooks', 'post-receive'))).to be_truthy
+          subject
         end
       end
 
-      describe 'log messages' do
-        describe 'successful fork' do
-          it do
-            message = "Forking repository from <#{tmp_repo_path}> to <#{dest_repo}>."
-            expect(logger).to receive(:info).with(message)
+      describe 'failed fork due existing destination' do
+        it do
+          FileUtils.mkdir_p(dest_repo)
+          message = "fork-repository failed: destination repository <#{dest_repo}> already exists."
+          expect(logger).to receive(:error).with(message)
 
-            subject
-          end
-        end
-
-        describe 'failed fork due existing destination' do
-          it do
-            FileUtils.mkdir_p(dest_repo)
-            message = "fork-repository failed: destination repository <#{dest_repo}> already exists."
-            expect(logger).to receive(:error).with(message)
-
-            subject
-          end
+          subject
         end
       end
     end

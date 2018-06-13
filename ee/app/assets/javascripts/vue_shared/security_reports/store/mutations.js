@@ -170,7 +170,7 @@ export default {
       state.dast.isLoading = false;
       state.summaryCounts.added += newIssues.length;
       state.summaryCounts.fixed += resolvedIssues.length;
-    } else if (reports.head && !reports.base) {
+    } else if (reports.head && reports.head.site && !reports.base) {
       const newIssues = parseDastIssues(reports.head.site.alerts, reports.enrichData);
 
       state.dast.newIssues = newIssues;

@@ -104,8 +104,8 @@
           template: `
             <div class="popover geo-node-detail-popover" role="tooltip">
               <div class="arrow"></div>
-              <p class="popover-title"></p>
-              <div class="popover-content"></div>
+              <p class="popover-header"></p>
+              <div class="popover-body"></div>
             </div>
           `,
           title: this.helpInfo.title,

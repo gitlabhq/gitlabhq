@@ -92,13 +92,23 @@ describe API::GeoNodes, :geo, :prometheus, api: true do
     it 'fetches the current node status' do
       stub_current_geo_node(secondary)
 
+      expect(GeoNodeStatus).to receive(:fast_current_node_status).and_return(secondary_status)
       expect(GeoNode).to receive(:find).and_return(secondary)
-      expect(GeoNodeStatus).to receive(:current_node_status).and_call_original
 
       get api("/geo_nodes/#{secondary.id}/status", admin)
 
       expect(response).to have_gitlab_http_status(200)
       expect(response).to match_response_schema('public_api/v4/geo_node_status', dir: 'ee')
+    end
+
+    it 'shows 404 response if current node status does not exist yet' do
+      stub_current_geo_node(secondary)
+
+      expect(GeoNode).to receive(:find).and_return(secondary)
+
+      get api("/geo_nodes/#{secondary.id}/status", admin)
+
+      expect(response).to have_gitlab_http_status(404)
     end
 
     it_behaves_like '404 response' do
@@ -124,6 +134,8 @@ describe API::GeoNodes, :geo, :prometheus, api: true do
     end
 
     it 'returns 200 for the primary node' do
+      expect(GeoNodeStatus).to receive(:fast_current_node_status).and_return(secondary_status)
+
       post api("/geo_nodes/#{primary.id}/repair", admin)
 
       expect(response).to have_gitlab_http_status(200)

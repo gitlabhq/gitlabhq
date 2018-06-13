@@ -58,7 +58,7 @@
 }
 
 .color-label {
-  padding: $gl-padding-4 $grid-size;
+  padding: 0 $grid-size;
   line-height: 16px;
   border-radius: $label-border-radius;
   color: $white-light;
@@ -111,6 +111,10 @@
         color: $gl-danger;
       }
     }
+  }
+
+  .color-label {
+    padding: $gl-padding-4 $grid-size;
   }
 }
 

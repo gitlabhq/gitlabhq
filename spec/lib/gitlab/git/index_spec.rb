@@ -8,6 +8,13 @@ describe Gitlab::Git::Index, seed_helper: true do
     index.read_tree(repository.lookup('master').tree)
   end
 
+  around do |example|
+    # TODO move these specs to gitaly-ruby. The Index class will disappear from gitlab-ce
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      example.run
+    end
+  end
+
   describe '#create' do
     let(:options) do
       {

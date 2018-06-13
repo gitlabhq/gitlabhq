@@ -1,6 +1,7 @@
 require "spec_helper"
 
 describe 'Git HTTP requests' do
+  include ProjectForksHelper
   include TermsHelper
   include GitHttpHelpers
   include WorkhorseHelpers
@@ -304,6 +305,22 @@ describe 'Git HTTP requests' do
                 expect(response).to have_gitlab_http_status(:forbidden)
                 expect(response.body).to eq(change_access_error(:push_code))
               end
+            end
+
+            context 'when merge requests are open that allow maintainer access' do
+              let(:canonical_project) { create(:project, :public, :repository) }
+              let(:project) { fork_project(canonical_project, nil, repository: true) }
+
+              before do
+                canonical_project.add_master(user)
+                create(:merge_request,
+                       source_project: project,
+                       target_project:  canonical_project,
+                       source_branch: 'fixes',
+                       allow_collaboration: true)
+              end
+
+              it_behaves_like 'pushes are allowed'
             end
           end
         end

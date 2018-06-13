@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-08 18:27+0200\n"
-"PO-Revision-Date: 2018-06-08 18:27+0200\n"
+"POT-Creation-Date: 2018-06-11 09:18+0200\n"
+"PO-Revision-Date: 2018-06-11 09:18+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -2814,6 +2814,9 @@ msgstr ""
 msgid "Gitaly"
 msgstr ""
 
+msgid "Gitaly|Address"
+msgstr ""
+
 msgid "Gitaly Servers"
 msgstr ""
 
@@ -5105,7 +5108,7 @@ msgstr ""
 msgid "TagsPage|Use git tag command to add a new one:"
 msgstr ""
 
-msgid "TagsPage|Write your release notes or drag files here..."
+msgid "TagsPage|Write your release notes or drag files here…"
 msgstr ""
 
 msgid "TagsPage|protected"
@@ -5928,7 +5931,7 @@ msgstr ""
 msgid "WikiPage|Page slug"
 msgstr ""
 
-msgid "WikiPage|Write your content or drag files here..."
+msgid "WikiPage|Write your content or drag files here…"
 msgstr ""
 
 msgid "Wiki|Create Page"

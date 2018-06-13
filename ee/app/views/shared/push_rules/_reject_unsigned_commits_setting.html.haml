@@ -3,10 +3,9 @@
 - form = local_assigns.fetch(:form)
 - push_rule = local_assigns.fetch(:push_rule)
 
-.form-group
-  = form.check_box :reject_unsigned_commits, class: "float-left", disabled: !can_change_push_rule?(form.object, :reject_unsigned_commits)
-  .prepend-left-20
-    = form.label :reject_unsigned_commits, class: "label-light append-bottom-0" do
-      Reject unsigned commits
-    %p.light.append-bottom-0
-      = reject_unsigned_commits_description(push_rule)
+.form-check
+  = form.check_box :reject_unsigned_commits, class: "form-check-input", disabled: !can_change_push_rule?(form.object, :reject_unsigned_commits)
+  = form.label :reject_unsigned_commits, class: "label-light form-check-label" do
+    Reject unsigned commits
+  %p.text-muted
+    = reject_unsigned_commits_description(push_rule)

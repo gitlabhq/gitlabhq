@@ -41,7 +41,7 @@ describe Tags::CreateService do
       it 'returns an error' do
         expect(repository).to receive(:add_tag)
           .with(user, 'v1.1.0', 'master', 'Foo')
-          .and_raise(Gitlab::Git::HooksService::PreReceiveError, 'something went wrong')
+          .and_raise(Gitlab::Git::PreReceiveError, 'something went wrong')
 
         response = service.execute('v1.1.0', 'master', 'Foo')
 

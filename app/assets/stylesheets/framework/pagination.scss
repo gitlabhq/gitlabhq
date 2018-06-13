@@ -4,3 +4,11 @@
     text-decoration: none;
   }
 }
+
+.page-item {
+  &.active {
+    .page-link {
+      z-index: 3;
+    }
+  }
+}

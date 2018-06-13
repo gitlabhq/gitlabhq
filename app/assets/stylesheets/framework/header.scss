@@ -268,6 +268,8 @@
 
 .navbar-sub-nav,
 .navbar-nav {
+  align-items: center;
+
   > li {
     > a:hover,
     > a:focus {
@@ -447,16 +449,16 @@
 .btn-sign-in {
   background-color: $indigo-100;
   color: $indigo-900;
-  margin-top: 3px;
   font-weight: $gl-font-weight-bold;
+  line-height: 18px;
 
   &:hover {
     background-color: $white-light;
   }
-}
 
-.with-performance-bar header.navbar-gitlab {
-  top: $performance-bar-height;
+  @include media-breakpoint-down(xs) {
+    margin-top: $gl-padding-4;
+  }
 }
 
 .navbar-nav {

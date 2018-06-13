@@ -122,6 +122,7 @@ export default {
       @scroll="scrollBuildLog"
     >
       <code
+        v-show="!detailJob.isLoading"
         class="bash"
         v-html="jobOutput"
       >

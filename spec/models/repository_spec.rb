@@ -1195,7 +1195,7 @@ describe Repository do
           Gitlab::Git::OperationService.new(git_user, repository.raw_repository).with_branch('feature') do
             new_rev
           end
-        end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
+        end.to raise_error(Gitlab::Git::PreReceiveError)
       end
     end
 
@@ -1938,13 +1938,13 @@ describe Repository do
       context 'when pre hooks failed' do
         before do
           allow_any_instance_of(Gitlab::GitalyClient::OperationService)
-            .to receive(:user_delete_branch).and_raise(Gitlab::Git::HooksService::PreReceiveError)
+            .to receive(:user_delete_branch).and_raise(Gitlab::Git::PreReceiveError)
         end
 
         it 'gets an error and does not delete the branch' do
           expect do
             repository.rm_branch(user, 'feature')
-          end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
+          end.to raise_error(Gitlab::Git::PreReceiveError)
 
           expect(repository.find_branch('feature')).not_to be_nil
         end
@@ -1980,7 +1980,7 @@ describe Repository do
 
           expect do
             repository.rm_branch(user, 'feature')
-          end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
+          end.to raise_error(Gitlab::Git::PreReceiveError)
         end
 
         it 'does not delete the branch' do
@@ -1988,7 +1988,7 @@ describe Repository do
 
           expect do
             repository.rm_branch(user, 'feature')
-          end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
+          end.to raise_error(Gitlab::Git::PreReceiveError)
           expect(repository.find_branch('feature')).not_to be_nil
         end
       end

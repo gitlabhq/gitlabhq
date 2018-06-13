@@ -537,18 +537,22 @@ module API
         authenticate!
       end
 
-      desc 'Get the currently authenticated user' do
-        success Entities::UserPublic
-      end
-      get do
-        entity =
-          if current_user.admin?
-            Entities::UserWithAdmin
-          else
-            Entities::UserPublic
-          end
+      # Enabling /users/:id endpoint for the v3 version to allow oauth
+      # authentication through this endpoint.
+      version %w(v3 v4), using: :path do
+        desc 'Get the currently authenticated user' do
+          success Entities::UserPublic
+        end
+        get do
+          entity =
+            if current_user.admin?
+              Entities::UserWithAdmin
+            else
+              Entities::UserPublic
+            end
 
-        present current_user, with: entity
+          present current_user, with: entity
+        end
       end
 
       desc "Get the currently authenticated user's SSH keys" do

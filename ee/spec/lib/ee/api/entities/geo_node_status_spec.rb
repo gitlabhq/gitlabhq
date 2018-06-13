@@ -22,7 +22,7 @@ describe EE::API::Entities::GeoNodeStatus, :postgresql do
 
     context 'when node is unhealthy' do
       before do
-        geo_node_status.health = error
+        geo_node_status.status_message = error
       end
 
       subject { entity.as_json }
@@ -36,13 +36,13 @@ describe EE::API::Entities::GeoNodeStatus, :postgresql do
   describe '#health' do
     context 'when node is healthy' do
       it 'exposes the health message' do
-        expect(subject[:health]).to eq 'Healthy'
+        expect(subject[:health]).to eq GeoNodeStatus::HEALTHY_STATUS
       end
     end
 
     context 'when node is unhealthy' do
       before do
-        geo_node_status.health = error
+        geo_node_status.status_message = error
       end
 
       subject { entity.as_json }

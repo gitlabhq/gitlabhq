@@ -62,6 +62,11 @@ describe('IDE jobs detail view', () => {
     expect(vm.$el.querySelector('.build-loader-animation').style.display).toBe('');
   });
 
+  it('hides output when loading', () => {
+    expect(vm.$el.querySelector('.bash')).not.toBe(null);
+    expect(vm.$el.querySelector('.bash').style.display).toBe('none');
+  });
+
   it('hide loading icon when isLoading is false', done => {
     vm.$store.state.pipelines.detailJob.isLoading = false;
 

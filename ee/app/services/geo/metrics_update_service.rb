@@ -5,45 +5,38 @@ module Geo
     def execute
       return unless Gitlab::Geo.enabled?
 
-      if Gitlab::Geo.primary?
-        fetch_secondary_geo_nodes_metrics
-      end
+      current_node_status&.update_cache!
 
-      fetch_current_geo_node_metrics
+      send_status_to_primary(current_node, current_node_status) if Gitlab::Geo.secondary?
+
+      update_prometheus_metrics(current_node, current_node_status) if prometheus_enabled?
+
+      if Gitlab::Geo.primary? && prometheus_enabled?
+        Gitlab::Geo.secondary_nodes.find_each { |node| update_prometheus_metrics(node, node.status) }
+      end
     end
 
     private
 
-    def fetch_secondary_geo_nodes_metrics
-      Gitlab::Geo.secondary_nodes.find_each { |node| fetch_geo_node_metrics(node) }
+    def current_node_status
+      @current_node_status ||= GeoNodeStatus.current_node_status
     end
 
-    def fetch_current_geo_node_metrics
-      fetch_geo_node_metrics(Gitlab::Geo.current_node)
+    def current_node
+      @current_node ||= Gitlab::Geo.current_node
     end
 
-    def fetch_geo_node_metrics(node)
-      return unless node&.enabled?
-
-      status = node_status(node)
-
-      unless status.success
+    def send_status_to_primary(node, status)
+      if !NodeStatusPostService.new.execute(status) && prometheus_enabled?
         increment_failed_status_counter(node)
-        return
       end
-
-      update_db_metrics(node, status) if Gitlab::Geo.primary?
-      status.update_cache! if node.current?
-      update_prometheus_metrics(node, status) if Gitlab::Metrics.prometheus_metrics_enabled?
-    end
-
-    def update_db_metrics(node, status)
-      db_status = node.find_or_build_status
-
-      db_status.update_attributes(status.attributes.compact.merge(last_successful_status_check_at: Time.now.utc))
     end
 
     def update_prometheus_metrics(node, status)
+      return unless node&.enabled?
+
+      return unless status
+
       GeoNodeStatus::PROMETHEUS_METRICS.each do |column, docstring|
         value = status[column]
 
@@ -54,10 +47,6 @@ module Geo
       end
     end
 
-    def node_status(node)
-      NodeStatusFetchService.new.call(node)
-    end
-
     def increment_failed_status_counter(node)
       failed_status_counter(node).increment
     end
@@ -65,7 +54,7 @@ module Geo
     def failed_status_counter(node)
       Gitlab::Metrics.counter(
         :geo_status_failed_total,
-        'Total number of times status for Geo node failed to retrieve',
+        'Total number of times status for Geo node failed to be sent to the primary',
         metric_labels(node))
     end
 
@@ -80,6 +69,10 @@ module Geo
 
     def metric_labels(node)
       { url: node.url }
+    end
+
+    def prometheus_enabled?
+      Gitlab::Metrics.prometheus_metrics_enabled?
     end
   end
 end
