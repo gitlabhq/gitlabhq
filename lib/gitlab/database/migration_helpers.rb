@@ -3,6 +3,7 @@ module Gitlab
     module MigrationHelpers
       include Gitlab::Database::ArelMethods
 
+      BACKGROUND_MIGRATION_RANGE_SIZE = 100000
       BACKGROUND_MIGRATION_BATCH_SIZE = 1000 # Number of rows to process per job
       BACKGROUND_MIGRATION_JOB_BUFFER_SIZE = 1000 # Number of jobs to bulk queue at a time
 
@@ -835,24 +836,28 @@ into similar problems in the future (e.g. when new tables are created).
       #         # do something
       #       end
       #     end
-      def bulk_queue_background_migration_jobs_by_range(model_class, job_class_name, batch_size: BACKGROUND_MIGRATION_BATCH_SIZE)
+      def bulk_queue_background_migration_jobs_by_range(model_class, job_class_name, range_size: BACKGROUND_MIGRATION_RANGE_SIZE, batch_size: BACKGROUND_MIGRATION_BATCH_SIZE)
         raise "#{model_class} does not have an ID to use for batch ranges" unless model_class.column_names.include?('id')
 
         jobs = []
 
-        model_class.each_batch(of: batch_size) do |relation|
-          start_id, end_id = relation.pluck('MIN(id), MAX(id)').first
+        model_class.unscoped.each_batch(of: range_size) do |outer_relation|
+          outer_start_id, outer_end_id = outer_relation.pluck('MIN(id), MAX(id)').first
 
-          if jobs.length >= BACKGROUND_MIGRATION_JOB_BUFFER_SIZE
-            # Note: This code path generally only helps with many millions of rows
-            # We push multiple jobs at a time to reduce the time spent in
-            # Sidekiq/Redis operations. We're using this buffer based approach so we
-            # don't need to run additional queries for every range.
-            BackgroundMigrationWorker.bulk_perform_async(jobs)
-            jobs.clear
+          model_class.where(id: outer_start_id..outer_end_id).each_batch(of: batch_size) do |relation|
+            start_id, end_id = relation.pluck('MIN(id), MAX(id)').first
+
+            if jobs.length >= BACKGROUND_MIGRATION_JOB_BUFFER_SIZE
+              # Note: This code path generally only helps with many millions of rows
+              # We push multiple jobs at a time to reduce the time spent in
+              # Sidekiq/Redis operations. We're using this buffer based approach so we
+              # don't need to run additional queries for every range.
+              BackgroundMigrationWorker.bulk_perform_async(jobs)
+              jobs.clear
+            end
+
+            jobs << [job_class_name, [start_id, end_id]]
           end
-
-          jobs << [job_class_name, [start_id, end_id]]
         end
 
         BackgroundMigrationWorker.bulk_perform_async(jobs) unless jobs.empty?
@@ -883,7 +888,7 @@ into similar problems in the future (e.g. when new tables are created).
       #         # do something
       #       end
       #     end
-      def queue_background_migration_jobs_by_range_at_intervals(model_class, job_class_name, delay_interval, batch_size: BACKGROUND_MIGRATION_BATCH_SIZE)
+      def queue_background_migration_jobs_by_range_at_intervals(model_class, job_class_name, delay_interval, range_size: BACKGROUND_MIGRATION_RANGE_SIZE,  batch_size: BACKGROUND_MIGRATION_BATCH_SIZE)
         raise "#{model_class} does not have an ID to use for batch ranges" unless model_class.column_names.include?('id')
 
         # To not overload the worker too much we enforce a minimum interval both
@@ -892,14 +897,30 @@ into similar problems in the future (e.g. when new tables are created).
           delay_interval = BackgroundMigrationWorker::MIN_INTERVAL
         end
 
-        model_class.each_batch(of: batch_size) do |relation, index|
-          start_id, end_id = relation.pluck('MIN(id), MAX(id)').first
+        interval_index = 1
+        jobs = []
 
-          # `BackgroundMigrationWorker.bulk_perform_in` schedules all jobs for
-          # the same time, which is not helpful in most cases where we wish to
-          # spread the work over time.
-          BackgroundMigrationWorker.perform_in(delay_interval * index, job_class_name, [start_id, end_id])
+        model_class.unscoped.each_batch(of: range_size) do |outer_relation|
+          outer_start_id, outer_end_id = outer_relation.pluck('MIN(id), MAX(id)').first
+
+          model_class.where(id: outer_start_id..outer_end_id).each_batch(of: batch_size) do |relation|
+            start_id, end_id = relation.pluck('MIN(id), MAX(id)').first
+
+            if jobs.length >= batch_size
+              # Note: this code helps to push always at least batch size of jobs to be processed
+              # That way we make background migration code to be predictable. It is possible that we will
+              # push a number of concurrent small background migration jobs to be executed at the same time.
+              # At most we will push 2xbatch_size-1, but in normal circumstances it will be 1.5*batch_size
+              BackgroundMigrationWorker.bulk_perform_in(delay_interval * interval_index, jobs)
+              interval_index += 1
+              jobs.clear
+            end
+
+            jobs << [job_class_name, [start_id, end_id]]
+          end
         end
+
+        BackgroundMigrationWorker.bulk_perform_in(delay_interval * interval_index, jobs) unless jobs.empty?
       end
 
       # Fetches indexes on a column by name for postgres.
