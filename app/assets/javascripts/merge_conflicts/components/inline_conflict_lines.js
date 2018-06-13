@@ -1,14 +1,16 @@
-/* eslint-disable no-param-reassign, comma-dangle */
+/* eslint-disable no-param-reassign */
 
 import Vue from 'vue';
+import actionsMixin from '../mixins/line_conflict_actions';
+import utilsMixin from '../mixins/line_conflict_utils';
 
-((global) => {
+(global => {
   global.mergeConflicts = global.mergeConflicts || {};
 
   global.mergeConflicts.inlineConflictLines = Vue.extend({
     props: {
-      file: Object
+      file: Object,
     },
-    mixins: [global.mergeConflicts.utils, global.mergeConflicts.actions],
+    mixins: [utilsMixin, actionsMixin],
   });
 })(window.gl || (window.gl = {}));

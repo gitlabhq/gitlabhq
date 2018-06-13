@@ -1,6 +1,8 @@
 /* eslint-disable no-param-reassign, comma-dangle */
 
 import Vue from 'vue';
+import actionsMixin from '../mixins/line_conflict_actions';
+import utilsMixin from '../mixins/line_conflict_utils';
 
 ((global) => {
   global.mergeConflicts = global.mergeConflicts || {};
@@ -9,7 +11,7 @@ import Vue from 'vue';
     props: {
       file: Object
     },
-    mixins: [global.mergeConflicts.utils, global.mergeConflicts.actions],
+    mixins: [utilsMixin, actionsMixin],
     template: `
       <table>
         <tr class="line_holder parallel" v-for="section in file.parallelLines">
