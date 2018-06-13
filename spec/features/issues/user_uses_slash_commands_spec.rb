@@ -264,7 +264,9 @@ feature 'Issues > User uses quick actions', :js do
         it 'does not move the issue' do
           add_note("/move #{project_unauthorized.full_path}")
 
-          expect(page).not_to have_content 'Commands applied'
+          wait_for_requests
+
+          expect(page).to have_content 'Commands applied'
           expect(issue.reload).to be_open
         end
       end
