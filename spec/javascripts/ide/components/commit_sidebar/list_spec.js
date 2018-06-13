@@ -18,6 +18,7 @@ describe('Multi-file editor commit sidebar list', () => {
       actionBtnText: 'stage all',
       itemActionComponent: 'stage-button',
       activeFileKey: 'staged-testing',
+      keyPrefix: 'staged',
     });
 
     vm.$store.state.rightPanelCollapsed = false;

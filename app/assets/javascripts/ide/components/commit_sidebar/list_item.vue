@@ -45,7 +45,7 @@ export default {
       return `multi-file-${this.file.tempFile ? 'addition' : 'modified'} append-right-8`;
     },
     fullKey() {
-      return `${this.keyPrefix.toLowerCase()}-${this.file.key}`;
+      return `${this.keyPrefix}-${this.file.key}`;
     },
     isActive() {
       return this.activeFileKey === this.fullKey;
@@ -62,7 +62,7 @@ export default {
     openFileInEditor() {
       return this.openPendingTab({
         file: this.file,
-        keyPrefix: this.keyPrefix.toLowerCase(),
+        keyPrefix: this.keyPrefix,
       }).then(changeViewer => {
         if (changeViewer) {
           this.updateViewer(viewerTypes.diff);

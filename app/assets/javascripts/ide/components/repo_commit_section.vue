@@ -6,7 +6,7 @@ import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 import CommitFilesList from './commit_sidebar/list.vue';
 import EmptyState from './commit_sidebar/empty_state.vue';
 import * as consts from '../stores/modules/commit/constants';
-import { activityBarViews } from '../constants';
+import { activityBarViews, stageKeys } from '../constants';
 
 export default {
   components: {
@@ -47,7 +47,7 @@ export default {
     if (this.lastOpenedFile) {
       this.openPendingTab({
         file: this.lastOpenedFile,
-        keyPrefix: this.lastOpenedFile.changed ? 'unstaged' : 'staged',
+        keyPrefix: this.lastOpenedFile.changed ? stageKeys.unstaged : stageKeys.staged,
       })
         .then(changeViewer => {
           if (changeViewer) {
@@ -66,6 +66,7 @@ export default {
       return this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH).then(() => this.commitChanges());
     },
   },
+  stageKeys,
 };
 </script>
 
@@ -92,6 +93,7 @@ export default {
         class="is-first"
         icon-name="unstaged"
         :title="__('Unstaged')"
+        :key-prefix="$options.stageKeys.unstaged"
         :file-list="changedFiles"
         action="stageAllChanges"
         :action-btn-text="__('Stage all')"
@@ -101,6 +103,7 @@ export default {
       <commit-files-list
         icon-name="staged"
         :title="__('Staged')"
+        :key-prefix="$options.stageKeys.staged"
         :file-list="stagedFiles"
         action="unstageAllChanges"
         :action-btn-text="__('Unstage all')"
