@@ -119,10 +119,9 @@ describe Projects::DiscussionsController do
           expect(response).to have_gitlab_http_status(200)
         end
 
-        # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/42882
-        xit "renders discussion with serializer" do
+        it "renders discussion with serializer" do
           expect_any_instance_of(DiscussionSerializer).to receive(:represent)
-            .with(instance_of(Discussion), { context: instance_of(described_class) })
+            .with(instance_of(Discussion), { context: instance_of(described_class), render_truncated_diff_lines: true })
 
           post :resolve, request_params
         end
@@ -191,10 +190,9 @@ describe Projects::DiscussionsController do
             allow(controller).to receive(:cookies).and_return({ vue_mr_discussions: 'true' })
           end
 
-          # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/42882
-          xit "renders discussion with serializer" do
+          it "renders discussion with serializer" do
             expect_any_instance_of(DiscussionSerializer).to receive(:represent)
-              .with(instance_of(Discussion), { context: instance_of(described_class) })
+              .with(instance_of(Discussion), { context: instance_of(described_class), render_truncated_diff_lines: true })
 
             delete :unresolve, request_params
           end
