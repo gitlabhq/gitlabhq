@@ -12,10 +12,7 @@ window.gl.issueBoards = window.gl.issueBoards || {};
 gl.issueBoards.IssueCardInner = Vue.extend({
   components: {
     UserAvatarLink,
-<<<<<<< HEAD
     IssueCardWeight,
-=======
->>>>>>> upstream/master
   },
   props: {
     issue: {
