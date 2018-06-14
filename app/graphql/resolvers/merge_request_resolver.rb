@@ -2,7 +2,7 @@ module Resolvers
   class MergeRequestResolver < BaseResolver
     prepend FullPathResolver
 
-    type Types::ProjectType, null: true
+    type Types::MergeRequestType, null: true
 
     argument :iid, GraphQL::ID_TYPE,
              required: true,
