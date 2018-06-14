@@ -344,6 +344,18 @@ describe ObjectStorage do
         expect { uploader.use_file }.to raise_error(ObjectStorage::ExclusiveLeaseTaken)
       end
     end
+
+    it 'can still migrate other files of the same model' do
+      uploader2 = uploader_class.new(object, :file)
+      uploader2.upload = create(:upload)
+      uploader.upload = create(:upload)
+
+      when_file_is_in_use do
+        expect(uploader2).to receive(:unsafe_migrate!)
+
+        uploader2.migrate!(described_class::Store::REMOTE)
+      end
+    end
   end
 
   describe '#fog_credentials' do

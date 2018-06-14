@@ -56,7 +56,7 @@ export default class MilestoneSelect {
 
       if (issueUpdateURL) {
         milestoneLinkTemplate = _.template(
-          '<a href="/<%- full_path %>/milestones/<%- iid %>" class="bold has-tooltip" data-container="body" title="<%- remaining %>"><%- title %></a>',
+          '<a href="<%- web_url %>" class="bold has-tooltip" data-container="body" title="<%- remaining %>"><%- title %></a>',
         );
         milestoneLinkNoneTemplate = '<span class="no-value">None</span>';
       }

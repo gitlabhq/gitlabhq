@@ -30,6 +30,11 @@ export default {
       required: false,
       default: false,
     },
+    activeFileKey: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   computed: {
     iconName() {
@@ -38,6 +43,12 @@ export default {
     },
     iconClass() {
       return `multi-file-${this.file.tempFile ? 'addition' : 'modified'} append-right-8`;
+    },
+    fullKey() {
+      return `${this.keyPrefix}-${this.file.key}`;
+    },
+    isActive() {
+      return this.activeFileKey === this.fullKey;
     },
   },
   methods: {
@@ -51,7 +62,7 @@ export default {
     openFileInEditor() {
       return this.openPendingTab({
         file: this.file,
-        keyPrefix: this.keyPrefix.toLowerCase(),
+        keyPrefix: this.keyPrefix,
       }).then(changeViewer => {
         if (changeViewer) {
           this.updateViewer(viewerTypes.diff);
@@ -70,7 +81,12 @@ export default {
 </script>
 
 <template>
-  <div class="multi-file-commit-list-item">
+  <div
+    :class="{
+      'is-active': isActive
+    }"
+    class="multi-file-commit-list-item"
+  >
     <button
       type="button"
       class="multi-file-commit-list-path"
