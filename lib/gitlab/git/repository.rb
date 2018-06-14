@@ -1054,18 +1054,8 @@ module Gitlab
       end
 
       def license_short_name
-        gitaly_migrate(:license_short_name,
-                       status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.license_short_name
-          else
-            begin
-              # The licensee gem creates a Rugged object from the path:
-              # https://github.com/benbalter/licensee/blob/v8.7.0/lib/licensee/projects/git_project.rb
-              Licensee.license(path).try(:key)
-            rescue Rugged::Error
-            end
-          end
+        wrapped_gitaly_errors do
+          gitaly_repository_client.license_short_name
         end
       end
 
