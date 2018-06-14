@@ -825,7 +825,11 @@ describe QuickActions::InterpretService do
       let(:issuable) { issue }
     end
 
-<<<<<<< HEAD
+    it_behaves_like 'confidential command' do
+      let(:content) { '/confidential' }
+      let(:issuable) { issue }
+    end
+
     context 'issuable weights licensed' do
       before do
         stub_licensed_features(issue_weights: true)
@@ -858,11 +862,6 @@ describe QuickActions::InterpretService do
 
         expect(updates).to be_empty
       end
-=======
-    it_behaves_like 'confidential command' do
-      let(:content) { '/confidential' }
-      let(:issuable) { issue }
->>>>>>> upstream/master
     end
 
     context '/copy_metadata command' do
