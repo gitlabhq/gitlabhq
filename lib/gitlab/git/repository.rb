@@ -150,12 +150,8 @@ module Gitlab
       # Returns an Array of branch names
       # sorted by name ASC
       def branch_names
-        gitaly_migrate(:branch_names, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.branch_names
-          else
-            branches.map(&:name)
-          end
+        wrapped_gitaly_errors do
+          gitaly_ref_client.branch_names
         end
       end
 
@@ -268,7 +264,9 @@ module Gitlab
 
       # Returns an Array of tag names
       def tag_names
-        gitaly_ref_client.tag_names
+        wrapped_gitaly_errors do
+          gitaly_ref_client.tag_names
+        end
       end
 
       # Returns an Array of Tags
@@ -1412,6 +1410,16 @@ module Gitlab
 
       def gitaly_migrate(method, status: Gitlab::GitalyClient::MigrationStatus::OPT_IN, &block)
         Gitlab::GitalyClient.migrate(method, status: status, &block)
+      rescue GRPC::NotFound => e
+        raise NoRepository.new(e)
+      rescue GRPC::InvalidArgument => e
+        raise ArgumentError.new(e)
+      rescue GRPC::BadStatus => e
+        raise CommandError.new(e)
+      end
+
+      def wrapped_gitaly_errors(&block)
+        yield block
       rescue GRPC::NotFound => e
         raise NoRepository.new(e)
       rescue GRPC::InvalidArgument => e
