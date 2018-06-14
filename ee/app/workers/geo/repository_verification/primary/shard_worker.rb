@@ -4,8 +4,6 @@ module Geo
       class ShardWorker < Geo::Scheduler::Primary::SchedulerWorker
         sidekiq_options retry: false
 
-        MAX_CAPACITY = 100
-
         attr_accessor :shard_name
 
         def perform(shard_name)
@@ -28,7 +26,7 @@ module Geo
         end
 
         def max_capacity
-          MAX_CAPACITY
+          current_node.verification_max_capacity
         end
 
         def schedule_job(project_id)
