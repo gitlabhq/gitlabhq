@@ -273,12 +273,8 @@ module Gitlab
       #
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/390
       def tags
-        gitaly_migrate(:tags, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            tags_from_gitaly
-          else
-            tags_from_rugged
-          end
+        wrapped_gitaly_errors do
+          gitaly_ref_client.tags
         end
       end
 
@@ -1931,35 +1927,9 @@ module Gitlab
         end
       end
 
-      def tags_from_rugged
-        rugged.references.each("refs/tags/*").map do |ref|
-          message = nil
-
-          if ref.target.is_a?(Rugged::Tag::Annotation)
-            tag_message = ref.target.message
-
-            if tag_message.respond_to?(:chomp)
-              message = tag_message.chomp
-            end
-          end
-
-          target_commit = Gitlab::Git::Commit.find(self, ref.target)
-          Gitlab::Git::Tag.new(self, {
-            name: ref.name,
-            target: ref.target,
-            target_commit: target_commit,
-            message: message
-          })
-        end.sort_by(&:name)
-      end
-
       def last_commit_for_path_by_rugged(sha, path)
         sha = last_commit_id_for_path_by_shelling_out(sha, path)
         commit(sha)
-      end
-
-      def tags_from_gitaly
-        gitaly_ref_client.tags
       end
 
       def size_by_shelling_out
