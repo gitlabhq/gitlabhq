@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-29 16:17+1000\n"
-"PO-Revision-Date: 2018-06-29 16:17+1000\n"
+"POT-Creation-Date: 2018-07-01 16:35+1000\n"
+"PO-Revision-Date: 2018-07-01 16:35+1000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -219,6 +219,9 @@ msgstr ""
 msgid "A project is where you house your files (repository), plan your work (issues), and publish your documentation (wiki), %{among_other_things_link}."
 msgstr ""
 
+msgid "A regular expression that will be used to find the test coverage output in the job trace. Leave blank to disable"
+msgstr ""
+
 msgid "A user with write access to the source branch selected this option"
 msgstr ""
 
@@ -238,6 +241,9 @@ msgid "Access Tokens"
 msgstr ""
 
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
+msgstr ""
+
+msgid "Access your runner token, customize your pipeline configuration, and view your pipeline status and coverage report."
 msgstr ""
 
 msgid "Account"
@@ -348,6 +354,9 @@ msgstr ""
 msgid "Allow commits from members who can merge to the target branch."
 msgstr ""
 
+msgid "Allow public access to pipelines and job details, including output logs and artifacts"
+msgstr ""
+
 msgid "Allow rendering of PlantUML diagrams in Asciidoc documents."
 msgstr ""
 
@@ -361,6 +370,24 @@ msgid "Alternatively, you can use a %{personal_access_token_link}. When you crea
 msgstr ""
 
 msgid "An error occured creating the new branch."
+msgstr ""
+
+msgid "An error occured whilst loading all the files."
+msgstr ""
+
+msgid "An error occured whilst loading the file content."
+msgstr ""
+
+msgid "An error occured whilst loading the file."
+msgstr ""
+
+msgid "An error occured whilst loading the merge request changes."
+msgstr ""
+
+msgid "An error occured whilst loading the merge request version data."
+msgstr ""
+
+msgid "An error occured whilst loading the merge request."
 msgstr ""
 
 msgid "An error occurred previewing the blob"
@@ -525,6 +552,9 @@ msgstr ""
 msgid "Auto Review Apps and Auto Deploy need a domain name to work correctly."
 msgstr ""
 
+msgid "Auto-cancel redundant, pending pipelines"
+msgstr ""
+
 msgid "AutoDevOps|Auto DevOps"
 msgstr ""
 
@@ -640,6 +670,9 @@ msgid "Badges|Your badges"
 msgstr ""
 
 msgid "Begin with the selected commit"
+msgstr ""
+
+msgid "Below are examples of regex for existing tools:"
 msgstr ""
 
 msgid "Boards"
@@ -803,6 +836,9 @@ msgstr ""
 msgid "CI / CD"
 msgstr ""
 
+msgid "CI / CD Settings"
+msgstr ""
+
 msgid "CI/CD configuration"
 msgstr ""
 
@@ -921,6 +957,9 @@ msgid "Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to s
 msgstr ""
 
 msgid "Choose any color."
+msgstr ""
+
+msgid "Choose between <code>clone</code> or <code>fetch</code> to get the recent application code"
 msgstr ""
 
 msgid "Choose file..."
@@ -1722,6 +1761,9 @@ msgstr ""
 msgid "CurrentUser|Settings"
 msgstr ""
 
+msgid "Custom CI config path"
+msgstr ""
+
 msgid "Custom notification events"
 msgstr ""
 
@@ -2135,9 +2177,6 @@ msgstr ""
 msgid "Error loading project data. Please try again."
 msgstr ""
 
-msgid "Error loading tree data. Please try again."
-msgstr ""
-
 msgid "Error occurred when toggling the notification subscription"
 msgstr ""
 
@@ -2219,13 +2258,13 @@ msgstr ""
 msgid "Failure"
 msgstr ""
 
+msgid "Faster as it re-uses the project workspace (falling back to clone if it doesn't exist)"
+msgstr ""
+
 msgid "Feb"
 msgstr ""
 
 msgid "February"
-msgstr ""
-
-msgid "Fetching diff files failed. Please reload the page to try again!"
 msgstr ""
 
 msgid "Fields on this page are now uneditable, you can configure"
@@ -2253,6 +2292,15 @@ msgid "FirstPushedBy|First"
 msgstr ""
 
 msgid "FirstPushedBy|pushed by"
+msgstr ""
+
+msgid "For internal projects, any logged in user can view pipelines and access job details (output logs and artifacts)"
+msgstr ""
+
+msgid "For private projects, any member (guest or higher) can view pipelines and access job details (output logs and artifacts)"
+msgstr ""
+
+msgid "For public projects, anyone can view pipelines and access job details (output logs and artifacts)"
 msgstr ""
 
 msgid "Fork"
@@ -2293,6 +2341,9 @@ msgstr ""
 msgid "General"
 msgstr ""
 
+msgid "General pipelines"
+msgstr ""
+
 msgid "Generate a default set of labels"
 msgstr ""
 
@@ -2303,6 +2354,9 @@ msgid "Git revision"
 msgstr ""
 
 msgid "Git storage health information has been reset"
+msgstr ""
+
+msgid "Git strategy for pipelines"
 msgstr ""
 
 msgid "Git version"
@@ -2499,6 +2553,12 @@ msgstr ""
 msgid "Identities"
 msgstr ""
 
+msgid "If disabled, the access level will depend on the user's permissions in the project."
+msgstr ""
+
+msgid "If enabled"
+msgstr ""
+
 msgid "If you already have files you can push them using the %{link_to_cli} below."
 msgstr ""
 
@@ -2545,6 +2605,9 @@ msgid "Instance does not support multiple Kubernetes clusters"
 msgstr ""
 
 msgid "Integrations"
+msgstr ""
+
+msgid "Integrations Settings"
 msgstr ""
 
 msgid "Interested parties can even contribute by pushing commits if they want to."
@@ -2962,6 +3025,9 @@ msgstr ""
 msgid "New merge request"
 msgstr ""
 
+msgid "New pipelines will cancel older, pending pipelines on the same branch"
+msgstr ""
+
 msgid "New project"
 msgstr ""
 
@@ -3199,6 +3265,9 @@ msgstr ""
 msgid "Pending"
 msgstr ""
 
+msgid "Per job. If a job passes this threshold, it will be marked as failed"
+msgstr ""
+
 msgid "Perform advanced options such as changing path, transferring, or removing the group."
 msgstr ""
 
@@ -3221,6 +3290,9 @@ msgid "Pipeline Schedule"
 msgstr ""
 
 msgid "Pipeline Schedules"
+msgstr ""
+
+msgid "Pipeline triggers"
 msgstr ""
 
 msgid "PipelineCharts|Failed:"
@@ -3646,6 +3718,9 @@ msgstr ""
 msgid "Public - The project can be accessed without any authentication."
 msgstr ""
 
+msgid "Public pipelines"
+msgstr ""
+
 msgid "Push events"
 msgstr ""
 
@@ -3677,6 +3752,9 @@ msgid "Register / Sign In"
 msgstr ""
 
 msgid "Register and see your runners for this group."
+msgstr ""
+
+msgid "Register and see your runners for this project."
 msgstr ""
 
 msgid "Registry"
@@ -3722,6 +3800,9 @@ msgid "Remove project"
 msgstr ""
 
 msgid "Repository"
+msgstr ""
+
+msgid "Repository Settings"
 msgstr ""
 
 msgid "Repository maintenance"
@@ -3792,6 +3873,9 @@ msgstr ""
 msgid "Rollback"
 msgstr ""
 
+msgid "Runner token"
+msgstr ""
+
 msgid "Runners"
 msgstr ""
 
@@ -3805,6 +3889,9 @@ msgid "Running"
 msgstr ""
 
 msgid "SSH Keys"
+msgstr ""
+
+msgid "SSL Verification"
 msgstr ""
 
 msgid "Save"
@@ -3999,6 +4086,9 @@ msgid "Sign-up restrictions"
 msgstr ""
 
 msgid "Size and domain settings for static websites"
+msgstr ""
+
+msgid "Slower but makes sure the project workspace is pristine as it clones the repository from scratch for every job"
 msgstr ""
 
 msgid "Snippets"
@@ -4321,6 +4411,9 @@ msgstr ""
 msgid "Terms of Service and Privacy Policy"
 msgstr ""
 
+msgid "Test coverage parsing"
+msgstr ""
+
 msgid "The Issue Tracker is the place to add things that need to be improved or solved in a project"
 msgstr ""
 
@@ -4351,6 +4444,9 @@ msgstr ""
 msgid "The number of failures of after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
 msgstr ""
 
+msgid "The path to CI config file. Defaults to <code>.gitlab-ci.yml</code>"
+msgstr ""
+
 msgid "The phase of the development lifecycle."
 msgstr ""
 
@@ -4376,6 +4472,9 @@ msgid "The repository must be accessible over <code>http://</code>, <code>https:
 msgstr ""
 
 msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
+msgstr ""
+
+msgid "The secure token used by the Runner to checkout the project"
 msgstr ""
 
 msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
@@ -4678,6 +4777,9 @@ msgstr ""
 msgid "Timeago|right now"
 msgstr ""
 
+msgid "Timeout"
+msgstr ""
+
 msgid "Time|hr"
 msgid_plural "Time|hrs"
 msgstr[0] ""
@@ -4749,6 +4851,9 @@ msgid "Track time with quick actions"
 msgstr ""
 
 msgid "Trigger this manual action"
+msgstr ""
+
+msgid "Triggers can force a specific branch or tag to get rebuilt with an API call.  These tokens will impersonate their associated user including their access to projects and their project permissions."
 msgstr ""
 
 msgid "Try again"
