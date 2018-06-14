@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::ImageLazyLoadFilter, lib: true do
+describe Banzai::Filter::ImageLazyLoadFilter do
   include FilterSpecHelper
 
   def image(path)
