@@ -676,15 +676,9 @@ module Gitlab
       end
 
       # Return total commits count accessible from passed ref
-      #
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/330
       def commit_count(ref)
-        gitaly_migrate(:commit_count, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_commit_client.commit_count(ref)
-          else
-            rugged_commit_count(ref)
-          end
+        wrapped_gitaly_errors do
+          gitaly_commit_client.commit_count(ref)
         end
       end
 
@@ -2391,16 +2385,6 @@ module Gitlab
         rugged.merge_base(from, to)
       rescue Rugged::ReferenceError
         nil
-      end
-
-      def rugged_commit_count(ref)
-        walker = Rugged::Walker.new(rugged)
-        walker.sorting(Rugged::SORT_TOPO | Rugged::SORT_REVERSE)
-        oid = rugged.rev_parse_oid(ref)
-        walker.push(oid)
-        walker.count
-      rescue Rugged::ReferenceError
-        0
       end
 
       def rev_list_param(spec)
