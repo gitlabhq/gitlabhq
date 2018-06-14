@@ -6,8 +6,8 @@ module EE
 
         private
 
-        override :relation
-        def relation
+        override :all_relation
+        def all_relation
           super.with_files_stored_locally
         end
       end
