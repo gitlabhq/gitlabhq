@@ -216,7 +216,7 @@ to the system so that anybody who visits the same board later will see the reord
 with some exceptions.
 
 The first time a given issue appears in any board (i.e. the first time a user
-loads a board containing that issue), it will be ordered with 
+loads a board containing that issue), it will be ordered with
 respect to other issues in that list according to [Priority order][label-priority].
 At that point, that issue will be assigned a relative order value by the system
 representing its relative order with respect to the other issues in the list. Any time
@@ -226,7 +226,7 @@ the updated relative order value will be used for the ordering. (It's only the f
 time an issue appears that it takes from the Priority order mentioned above.) This means that
 if issue `A` is drag-and-drop reordered to be above issue `B` by any user in
 a given board inside your GitLab instance, any time those two issues are subsequently
-loaded in any board in the same instance (could be a different project board or a different group board, for example), 
+loaded in any board in the same instance (could be a different project board or a different group board, for example),
 that ordering will be maintained.
 
 ## Filtering issues
@@ -334,11 +334,7 @@ Issue Board, that is create/delete lists and drag issues around.
 
 ## Group Issue Boards
 
-<<<<<<< HEAD
 > Introduced in GitLab 10.6
-=======
-> Introduced in [GitLab 10.6](https://about.gitlab.com/2018/03/22/gitlab-10-6-released/#single-group-issue-board-in-core-and-free)
->>>>>>> upstream/master
 
 Group Issue Board is analogous to project-level issue board and it is accessible at the group
 navigation level. A group-level issue board allows you to view all issues from all projects in that group
@@ -346,7 +342,6 @@ navigation level. A group-level issue board allows you to view all issues from a
 boards. When updating milestones and labels for an issue through the sidebar update mechanism, again only
 group-level objects are available.
 
-<<<<<<< HEAD
 ## Assignee Lists **[PREMIUM]**
 
 > Introduced in GitLab 11.0 Premium
@@ -369,9 +364,6 @@ When dragging issues between lists, different behavior occurs depending on the s
 | From Closed | Issue reopened | - | Issue reopened<br/>`B` added | Issue reopened<br/>`Bob` assigned |
 | From label `A` list | `A` removed | Issue closed | `A` removed<br/>`B` added | `Bob` assigned |
 | From assignee `Alice` list | `Alice` unassigned | Issue closed | `B` added | `Alice` unassigned<br/>`Bob` assigned |
-=======
-One group issue board per group was made available in GitLab 10.6 Core after multiple group issue boards were originally introduced in [GitLab 10.0 Premium](https://about.gitlab.com/2017/09/22/gitlab-10-0-released/#group-issue-boards).
->>>>>>> upstream/master
 
 ## Features per tier
 
