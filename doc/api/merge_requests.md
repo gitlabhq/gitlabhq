@@ -70,18 +70,18 @@ Parameters:
     "author": {
       "id": 1,
       "username": "admin",
-      "email": "admin@example.com",
       "name": "Administrator",
       "state": "active",
-      "created_at": "2012-04-29T08:46:00Z"
+      "avatar_url": null,
+      "web_url" : "https://gitlab.example.com/admin"
     },
     "assignee": {
       "id": 1,
       "username": "admin",
-      "email": "admin@example.com",
       "name": "Administrator",
       "state": "active",
-      "created_at": "2012-04-29T08:46:00Z"
+      "avatar_url": null,
+      "web_url" : "https://gitlab.example.com/admin"
     },
     "source_project_id": 2,
     "target_project_id": 3,
@@ -190,18 +190,18 @@ Parameters:
     "author": {
       "id": 1,
       "username": "admin",
-      "email": "admin@example.com",
       "name": "Administrator",
       "state": "active",
-      "created_at": "2012-04-29T08:46:00Z"
+      "avatar_url": null,
+      "web_url" : "https://gitlab.example.com/admin"
     },
     "assignee": {
       "id": 1,
       "username": "admin",
-      "email": "admin@example.com",
       "name": "Administrator",
       "state": "active",
-      "created_at": "2012-04-29T08:46:00Z"
+      "avatar_url": null,
+      "web_url" : "https://gitlab.example.com/admin"
     },
     "source_project_id": 2,
     "target_project_id": 3,
@@ -297,18 +297,18 @@ Parameters:
     "author": {
       "id": 1,
       "username": "admin",
-      "email": "admin@example.com",
       "name": "Administrator",
       "state": "active",
-      "created_at": "2012-04-29T08:46:00Z"
+      "avatar_url": null,
+      "web_url" : "https://gitlab.example.com/admin"
     },
     "assignee": {
       "id": 1,
       "username": "admin",
-      "email": "admin@example.com",
       "name": "Administrator",
       "state": "active",
-      "created_at": "2012-04-29T08:46:00Z"
+      "avatar_url": null,
+      "web_url" : "https://gitlab.example.com/admin"
     },
     "source_project_id": 2,
     "target_project_id": 3,
@@ -548,14 +548,16 @@ Parameters:
     "username": "jarrett",
     "id": 5,
     "state": "active",
-    "avatar_url": "http://www.gravatar.com/avatar/b95567800f828948baf5f4160ebb2473?s=40&d=identicon"
+    "avatar_url": "http://www.gravatar.com/avatar/b95567800f828948baf5f4160ebb2473?s=40&d=identicon",
+    "web_url" : "https://gitlab.example.com/jarrett"
   },
   "assignee": {
     "name": "Administrator",
     "username": "root",
     "id": 1,
     "state": "active",
-    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40&d=identicon"
+    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40&d=identicon",
+    "web_url" : "https://gitlab.example.com/root"
   },
   "source_project_id": 4,
   "target_project_id": 4,
@@ -669,18 +671,18 @@ POST /projects/:id/merge_requests
   "author": {
     "id": 1,
     "username": "admin",
-    "email": "admin@example.com",
     "name": "Administrator",
     "state": "active",
-    "created_at": "2012-04-29T08:46:00Z"
+    "avatar_url": null,
+    "web_url" : "https://gitlab.example.com/admin"
   },
   "assignee": {
     "id": 1,
     "username": "admin",
-    "email": "admin@example.com",
     "name": "Administrator",
     "state": "active",
-    "created_at": "2012-04-29T08:46:00Z"
+    "avatar_url": null,
+    "web_url" : "https://gitlab.example.com/admin"
   },
   "source_project_id": 3,
   "target_project_id": 4,
@@ -761,18 +763,18 @@ Must include at least one non-required attribute from above.
   "author": {
     "id": 1,
     "username": "admin",
-    "email": "admin@example.com",
     "name": "Administrator",
     "state": "active",
-    "created_at": "2012-04-29T08:46:00Z"
+    "avatar_url": null,
+    "web_url" : "https://gitlab.example.com/admin"
   },
   "assignee": {
     "id": 1,
     "username": "admin",
-    "email": "admin@example.com",
     "name": "Administrator",
     "state": "active",
-    "created_at": "2012-04-29T08:46:00Z"
+    "avatar_url": null,
+    "web_url" : "https://gitlab.example.com/admin"
   },
   "source_project_id": 3,
   "target_project_id": 4,
@@ -870,18 +872,18 @@ Parameters:
   "author": {
     "id": 1,
     "username": "admin",
-    "email": "admin@example.com",
     "name": "Administrator",
     "state": "active",
-    "created_at": "2012-04-29T08:46:00Z"
+    "avatar_url": null,
+    "web_url" : "https://gitlab.example.com/admin"
   },
   "assignee": {
     "id": 1,
     "username": "admin",
-    "email": "admin@example.com",
     "name": "Administrator",
     "state": "active",
-    "created_at": "2012-04-29T08:46:00Z"
+    "avatar_url": null,
+    "web_url" : "https://gitlab.example.com/admin"
   },
   "source_project_id": 4,
   "target_project_id": 4,
@@ -949,18 +951,18 @@ Parameters:
   "author": {
     "id": 1,
     "username": "admin",
-    "email": "admin@example.com",
     "name": "Administrator",
     "state": "active",
-    "created_at": "2012-04-29T08:46:00Z"
+    "avatar_url": null,
+    "web_url" : "https://gitlab.example.com/admin"
   },
   "assignee": {
     "id": 1,
     "username": "admin",
-    "email": "admin@example.com",
     "name": "Administrator",
     "state": "active",
-    "created_at": "2012-04-29T08:46:00Z"
+    "avatar_url": null,
+    "web_url" : "https://gitlab.example.com/admin"
   },
   "source_project_id": 4,
   "target_project_id": 4,

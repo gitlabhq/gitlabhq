@@ -1,0 +1,5 @@
+---
+title: Fix fields for author & assignee in MR API docs.
+merge_request: 19798
+author: gfyoung
+type: fixed
