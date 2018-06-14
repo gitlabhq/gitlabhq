@@ -41,10 +41,6 @@ export default {
     class="sidebar-collapsed-icon"
     data-placement="left"
     data-container="body"
-<<<<<<< HEAD
-    data-boundary="viewport"
-=======
->>>>>>> upstream/master
     @click="handleClick"
   >
     <i
