@@ -74,7 +74,9 @@ describe RemoteMirror do
 
         mirror.update_attribute(:url, 'http://foo:baz@test.com')
 
-        config = repo.raw_repository.rugged.config
+        config = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          repo.raw_repository.rugged.config
+        end
         expect(config["remote.#{mirror.remote_name}.url"]).to eq('http://foo:baz@test.com')
       end
 
