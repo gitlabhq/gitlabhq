@@ -44,13 +44,13 @@
   <div class="btn-group">
     <button
       v-tooltip
+      :disabled="isLoading"
       type="button"
       class="dropdown-new btn btn-default js-pipeline-dropdown-manual-actions"
       title="Manual job"
       data-toggle="dropdown"
       data-placement="top"
       aria-label="Manual job"
-      :disabled="isLoading"
     >
       <icon
         name="play"
@@ -69,11 +69,11 @@
         :key="i"
       >
         <button
+          :class="{ disabled: isActionDisabled(action) }"
+          :disabled="isActionDisabled(action)"
           type="button"
           class="js-pipeline-action-link no-btn btn"
           @click="onClickAction(action.path)"
-          :class="{ disabled: isActionDisabled(action) }"
-          :disabled="isActionDisabled(action)"
         >
           {{ action.name }}
         </button>

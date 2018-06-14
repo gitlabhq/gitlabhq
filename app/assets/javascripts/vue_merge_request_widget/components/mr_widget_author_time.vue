@@ -35,8 +35,8 @@
     {{ actionText }}
     <mr-widget-author :author="author" />
     <time
-      :title="dateTitle"
       v-tooltip
+      :title="dateTitle"
       data-container="body"
     >
       {{ dateReadable }}

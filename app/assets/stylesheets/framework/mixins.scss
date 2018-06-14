@@ -186,6 +186,7 @@
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
   display: flex;
+  flex-wrap: nowrap;
 
   &::-webkit-scrollbar {
     display: none;

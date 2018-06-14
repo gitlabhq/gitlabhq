@@ -29,30 +29,30 @@ export default {
   >
     <button
       v-tooltip
-      type="button"
-      class="btn btn-blank append-right-5"
       :aria-label="__('Stage changes')"
       :title="__('Stage changes')"
+      type="button"
+      class="btn btn-blank append-right-5"
       data-container="body"
       @click.stop="stageChange(path)"
     >
       <icon
-        name="mobile-issue-close"
         :size="12"
+        name="mobile-issue-close"
       />
     </button>
     <button
       v-tooltip
-      type="button"
-      class="btn btn-blank"
       :aria-label="__('Discard changes')"
       :title="__('Discard changes')"
+      type="button"
+      class="btn btn-blank"
       data-container="body"
       @click.stop="discardFileChanges(path)"
     >
       <icon
-        name="remove"
         :size="12"
+        name="remove"
       />
     </button>
   </div>

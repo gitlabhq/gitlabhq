@@ -458,6 +458,8 @@ describe ApplicationController do
       end
 
       context 'for sessionless users' do
+        render_views
+
         before do
           sign_out user
         end
@@ -466,6 +468,14 @@ describe ApplicationController do
           get :index, feed_token: user.feed_token, format: :atom
 
           expect(response).to have_gitlab_http_status(403)
+        end
+
+        it 'renders the error message when the format was html' do
+          get :index,
+              private_token: create(:personal_access_token, user: user).token,
+              format: :html
+
+          expect(response.body).to have_content /accept the terms of service/i
         end
 
         it 'renders a 200 when the sessionless user accepted the terms' do

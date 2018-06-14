@@ -282,8 +282,8 @@
 <template>
   <div class="pipelines-container">
     <div
-      class="top-area scrolling-tabs-container inner-page-scroll-tabs"
       v-if="shouldRenderTabs || shouldRenderButtons"
+      class="top-area scrolling-tabs-container inner-page-scroll-tabs"
     >
       <div class="fade-left">
         <i
@@ -303,8 +303,8 @@
       <navigation-tabs
         v-if="shouldRenderTabs"
         :tabs="tabs"
-        @onChangeTab="onChangeTab"
         scope="pipelines"
+        @onChangeTab="onChangeTab"
       />
 
       <navigation-controls
@@ -312,8 +312,8 @@
         :new-pipeline-path="newPipelinePath"
         :reset-cache-path="resetCachePath"
         :ci-lint-path="ciLintPath"
-        @resetRunnersCache="handleResetRunnersCache"
         :is-reset-cache-button-loading="isResetCacheButtonLoading"
+        @resetRunnersCache="handleResetRunnersCache"
       />
     </div>
 
@@ -347,8 +347,8 @@
       />
 
       <div
-        class="table-holder"
         v-else-if="stateToRender === $options.stateMap.tableList"
+        class="table-holder"
       >
 
         <pipelines-table-component

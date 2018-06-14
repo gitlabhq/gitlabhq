@@ -201,8 +201,8 @@ export default {
   >
     <div class="ide-mode-tabs clearfix" >
       <ul
-        class="nav-links float-left"
         v-if="!shouldHideEditor && isEditModeActive"
+        class="nav-links float-left"
       >
         <li :class="editTabCSS">
           <a
@@ -235,10 +235,10 @@ export default {
     <div
       v-show="!shouldHideEditor && file.viewMode ==='editor'"
       ref="editor"
-      class="multi-file-editor-holder"
       :class="{
         'is-readonly': isCommitModeActive,
       }"
+      class="multi-file-editor-holder"
     >
     </div>
     <content-viewer

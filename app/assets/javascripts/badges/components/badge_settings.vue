@@ -44,8 +44,8 @@ export default {
     <gl-modal
       id="delete-badge-modal"
       :header-title-text="s__('Badges|Delete badge?')"
-      footer-primary-button-variant="danger"
       :footer-primary-button-text="s__('Badges|Delete badge')"
+      footer-primary-button-variant="danger"
       @submit="onSubmitModal">
       <div class="well">
         <badge

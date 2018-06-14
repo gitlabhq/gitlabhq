@@ -90,11 +90,11 @@
         </span>
         <a
           v-if="mr.canCancelAutomaticMerge"
-          @click.prevent="cancelAutomaticMerge"
           :disabled="isCancellingAutoMerge"
           role="button"
           href="#"
-          class="btn btn-sm btn-default js-cancel-auto-merge">
+          class="btn btn-sm btn-default js-cancel-auto-merge"
+          @click.prevent="cancelAutomaticMerge">
           <i
             v-if="isCancellingAutoMerge"
             class="fa fa-spinner fa-spin"
@@ -127,10 +127,10 @@
           <a
             v-if="canRemoveSourceBranch"
             :disabled="isRemovingSourceBranch"
-            @click.prevent="removeSourceBranch"
             role="button"
             class="btn btn-sm btn-default js-remove-source-branch"
             href="#"
+            @click.prevent="removeSourceBranch"
           >
             <i
               v-if="isRemovingSourceBranch"

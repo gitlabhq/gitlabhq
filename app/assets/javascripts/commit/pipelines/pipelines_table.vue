@@ -77,9 +77,9 @@
   <div class="content-list pipelines">
 
     <loading-icon
+      v-if="isLoading"
       :label="s__('Pipelines|Loading Pipelines')"
       size="3"
-      v-if="isLoading"
       class="prepend-top-20"
     />
 
@@ -91,8 +91,8 @@
     />
 
     <div
-      class="table-holder"
       v-else-if="shouldRenderTable"
+      class="table-holder"
     >
       <pipelines-table-component
         :pipelines="state.pipelines"

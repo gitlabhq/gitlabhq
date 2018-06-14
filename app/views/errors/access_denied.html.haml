@@ -1,4 +1,4 @@
-- message = local_assigns.fetch(:message)
+- message = local_assigns.fetch(:message, nil)
 - content_for(:title, 'Access Denied')
 
 = image_tag('illustrations/error-403.svg', alt: '403', lazy: false)

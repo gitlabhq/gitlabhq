@@ -57,8 +57,8 @@ export default {
 
 <template>
   <div
-    class="diff-file preview-container"
-    v-if="viewer">
+    v-if="viewer"
+    class="diff-file preview-container">
     <component
       :is="viewer"
       :diff-mode="diffMode"

@@ -118,8 +118,8 @@ export default {
             </a>
           </template>
           <span
-            v-if="hasDeploymentTime"
             v-tooltip
+            v-if="hasDeploymentTime"
             :title="deployment.deployed_at_formatted"
             class="js-deploy-time"
           >
@@ -127,9 +127,9 @@ export default {
           </span>
           <loading-button
             v-if="deployment.stop_url"
+            :loading="isStopping"
             container-class="btn btn-default btn-sm prepend-left-default"
             label="Stop environment"
-            :loading="isStopping"
             @click="stopEnvironment"
           />
         </div>

@@ -43,9 +43,9 @@ export default {
 
 <template>
   <div
-    class="avatar identicon"
     :class="sizeClass"
-    :style="identiconStyles">
+    :style="identiconStyles"
+    class="avatar identicon">
     {{ identiconTitle }}
   </div>
 </template>
