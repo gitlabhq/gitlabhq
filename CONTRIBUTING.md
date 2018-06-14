@@ -303,7 +303,7 @@ The UX team uses labels to manage their workflow.
 The  ~"UX" label on an issue is a signal to the UX team that it will need UX attention. 
 To better understand the priority by which UX tackles issues, see the [UX section](https://about.gitlab.com/handbook/engineering/ux) of the handbook.
 
-Once an issue has been worked on and is ready for development, a UXer applies the ~"UX ready" label to that issue.
+Once an issue has been worked on and is ready for development, a UXer removes the ~"UX" label and applies the ~"UX ready" label to that issue.
 
 The UX team has a special type label called ~"design artifact". This label indicates that the final output 
 for an issue is a UX solution/design. The solution will be developed by frontend and/or backend in a subsequent milestone. 
