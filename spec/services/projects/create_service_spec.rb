@@ -272,8 +272,11 @@ describe Projects::CreateService, '#execute' do
 
   it 'writes project full path to .git/config' do
     project = create_project(user, opts)
+    rugged = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      project.repository.rugged
+    end
 
-    expect(project.repository.rugged.config['gitlab.fullpath']).to eq project.full_path
+    expect(rugged.config['gitlab.fullpath']).to eq project.full_path
   end
 
   def create_project(user, opts)
