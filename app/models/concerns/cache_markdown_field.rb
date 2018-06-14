@@ -114,7 +114,7 @@ module CacheMarkdownField
   end
 
   def latest_cached_markdown_version
-    return CacheMarkdownField::CACHE_REDCARPET_VERSION unless cached_markdown_version
+    return CacheMarkdownField::CACHE_COMMONMARK_VERSION unless cached_markdown_version
 
     if cached_markdown_version < CacheMarkdownField::CACHE_COMMONMARK_VERSION_START
       CacheMarkdownField::CACHE_REDCARPET_VERSION

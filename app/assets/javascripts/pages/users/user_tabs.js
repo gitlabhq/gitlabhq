@@ -180,7 +180,7 @@ export default class UserTabs {
   }
 
   toggleLoading(status) {
-    return this.$parentEl.find('.loading-status .loading').toggleClass('hidden', !status);
+    return this.$parentEl.find('.loading-status .loading').toggleClass('hide', !status);
   }
 
   setCurrentAction(source) {

@@ -250,12 +250,12 @@ One group issue board per group was made available in GitLab 10.6 Core after mul
 
 Different issue board features are available in different [GitLab tiers](https://about.gitlab.com/pricing/), as shown in the following table:
 
-| Tier | Number of project issue boards | Board with configuration in project issue boards | Number of group issue boards | Board with configuration in group issue boards |
-| --- | --- | --- | --- | --- |
-| Core    | 1        | No  | 1        | No  |
-| Starter  | Multiple | Yes | 1        | No  |
-| Premium  | Multiple | Yes | Multiple | Yes |
-| Ultimate | Multiple | Yes | Multiple | Yes |
+| Tier | Number of Project Issue Boards | Number of Group Issue Boards | Configurable Project Issue Boards | Configurable Group Issue Boards | Assignee Lists
+| --- | --- | --- | --- | --- | --- |
+| Core     | 1        | 1        | No  | No  | No  |
+| Starter  | Multiple | 1        | Yes | No  | No  |
+| Premium  | Multiple | Multiple | Yes | Yes | Yes |
+| Ultimate | Multiple | Multiple | Yes | Yes | Yes |
 
 ## Tips
 

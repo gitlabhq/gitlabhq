@@ -44,7 +44,7 @@ describe 'GitLab Markdown', :aggregate_failures do
 
   # Shared behavior that all pipelines should exhibit
   shared_examples 'all pipelines' do
-    it 'includes Redcarpet extensions' do
+    it 'includes extensions' do
       aggregate_failures 'does not parse emphasis inside of words' do
         expect(doc.to_html).not_to match('foo<em>bar</em>baz')
       end
@@ -71,10 +71,6 @@ describe 'GitLab Markdown', :aggregate_failures do
 
       aggregate_failures 'parses strikethroughs' do
         expect(doc).to have_selector(%{del:contains("and this text doesn't")})
-      end
-
-      aggregate_failures 'parses superscript' do
-        expect(doc).to have_selector('sup', count: 2)
       end
     end
 
@@ -123,16 +119,24 @@ describe 'GitLab Markdown', :aggregate_failures do
         expect(doc).to have_selector('details summary:contains("collapsible")')
       end
 
-      aggregate_failures 'permits style attribute in th elements' do
-        expect(doc.at_css('th:contains("Header")')['style']).to eq 'text-align: center'
-        expect(doc.at_css('th:contains("Row")')['style']).to eq 'text-align: right'
-        expect(doc.at_css('th:contains("Example")')['style']).to eq 'text-align: left'
+      aggregate_failures 'permits align attribute in th elements' do
+        expect(doc.at_css('th:contains("Header")')['align']).to eq 'center'
+        expect(doc.at_css('th:contains("Row")')['align']).to eq 'right'
+        expect(doc.at_css('th:contains("Example")')['align']).to eq 'left'
       end
 
-      aggregate_failures 'permits style attribute in td elements' do
-        expect(doc.at_css('td:contains("Foo")')['style']).to eq 'text-align: center'
-        expect(doc.at_css('td:contains("Bar")')['style']).to eq 'text-align: right'
-        expect(doc.at_css('td:contains("Baz")')['style']).to eq 'text-align: left'
+      aggregate_failures 'permits align attribute in td elements' do
+        expect(doc.at_css('td:contains("Foo")')['align']).to eq 'center'
+        expect(doc.at_css('td:contains("Bar")')['align']).to eq 'right'
+        expect(doc.at_css('td:contains("Baz")')['align']).to eq 'left'
+      end
+
+      aggregate_failures 'permits superscript elements' do
+        expect(doc).to have_selector('sup', count: 2)
+      end
+
+      aggregate_failures 'permits subscript elements' do
+        expect(doc).to have_selector('sub', count: 3)
       end
 
       aggregate_failures 'removes `rel` attribute from links' do
@@ -316,6 +320,31 @@ describe 'GitLab Markdown', :aggregate_failures do
 
       aggregate_failures 'ColorFilter' do
         expect(doc).to parse_colors
+      end
+    end
+  end
+
+  context 'Redcarpet documents' do
+    before do
+      allow_any_instance_of(Banzai::Filter::MarkdownFilter).to receive(:engine).and_return('Redcarpet')
+      @html = markdown(@feat.raw_markdown)
+    end
+
+    it 'processes certain elements differently' do
+      aggregate_failures 'parses superscript' do
+        expect(doc).to have_selector('sup', count: 3)
+      end
+
+      aggregate_failures 'permits style attribute in th elements' do
+        expect(doc.at_css('th:contains("Header")')['style']).to eq 'text-align: center'
+        expect(doc.at_css('th:contains("Row")')['style']).to eq 'text-align: right'
+        expect(doc.at_css('th:contains("Example")')['style']).to eq 'text-align: left'
+      end
+
+      aggregate_failures 'permits style attribute in td elements' do
+        expect(doc.at_css('td:contains("Foo")')['style']).to eq 'text-align: center'
+        expect(doc.at_css('td:contains("Bar")')['style']).to eq 'text-align: right'
+        expect(doc.at_css('td:contains("Baz")')['style']).to eq 'text-align: left'
       end
     end
   end

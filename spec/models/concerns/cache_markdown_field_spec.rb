@@ -156,7 +156,7 @@ describe CacheMarkdownField do
     end
 
     it { expect(thing.foo_html).to eq(updated_html) }
-    it { expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_REDCARPET_VERSION) }
+    it { expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_COMMONMARK_VERSION) }
   end
 
   describe '#cached_html_up_to_date?' do
@@ -234,7 +234,7 @@ describe CacheMarkdownField do
 
     it 'returns default version when version is nil' do
       thing.cached_markdown_version = nil
-      is_expected.to eq(CacheMarkdownField::CACHE_REDCARPET_VERSION)
+      is_expected.to eq(CacheMarkdownField::CACHE_COMMONMARK_VERSION)
     end
   end
 
@@ -261,7 +261,7 @@ describe CacheMarkdownField do
       thing.cached_markdown_version = nil
       thing.refresh_markdown_cache
 
-      expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_REDCARPET_VERSION)
+      expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_COMMONMARK_VERSION)
     end
   end
 
@@ -346,7 +346,7 @@ describe CacheMarkdownField do
 
         expect(thing.foo_html).to eq(updated_html)
         expect(thing.baz_html).to eq(updated_html)
-        expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_REDCARPET_VERSION)
+        expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_COMMONMARK_VERSION)
       end
     end
 
@@ -366,7 +366,7 @@ describe CacheMarkdownField do
 
         expect(thing.foo_html).to eq(updated_html)
         expect(thing.baz_html).to eq(updated_html)
-        expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_REDCARPET_VERSION)
+        expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_COMMONMARK_VERSION)
       end
     end
   end

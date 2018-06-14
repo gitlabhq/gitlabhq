@@ -522,7 +522,6 @@ describe API::Internal do
 
     context 'the project path was changed' do
       let(:project) { create(:project, :repository, :legacy_storage) }
-      let!(:old_path_to_repo) { project.repository.path_to_repo }
       let!(:repository) { project.repository }
 
       before do
