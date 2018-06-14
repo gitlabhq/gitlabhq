@@ -66,7 +66,7 @@ describe('ShortcutsIssuable', function () {
     });
     describe('with a multi-line selection', () => {
       it('quotes the selected lines as a group', () => {
-        stubSelection('<p>Selected line one.</p>\n\n<p>Selected line two.</p>\n\n<p>Selected line three.</p>');
+        stubSelection('<p>Selected line one.</p>\n<p>Selected line two.</p>\n<p>Selected line three.</p>');
         this.shortcut.replyWithSelectedText(true);
         expect($(this.selector).val()).toBe('> Selected line one.\n>\n> Selected line two.\n>\n> Selected line three.\n\n');
       });
