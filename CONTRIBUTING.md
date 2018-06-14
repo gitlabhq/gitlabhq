@@ -312,11 +312,17 @@ needed until the solution has been decided.
 
 ~"design artifact" issues are like any other issue and should contain a milestone label, ~"Deliverable" or ~"Stretch", when scheduled in the current milestone.
 
-To prevent the misunderstanding that a feature will be be delivered in the assigned milestone, when only UX design is
-planned, the Product Manager should create an issue specifically for the ~"design artifact" with a title that makes
-this clear (e.g. `Design exploration for XYZ`).
+To prevent the misunderstanding that a feature will be be delivered in the
+assigned milestone, when only UX design is planned for that milestone, the
+Product Manager should create a separate issue for the ~"design artifact",
+assign the ~UX, ~"design artifact" and ~"Deliverable" labels, add a milestone
+and use a title that makes it clear that the scheduled issue is design only
+(e.g. `Design exploration for XYZ`).
 
-Once the ~"design artifact" issue has been completed, the UXer removes the ~"design artifact" label and applies the ~"UX ready" label.
+When the ~"design artifact" issue has been completed, the UXer removes the ~UX
+and ~"design artifact" labels, adds the ~"UX ready" label and closes the issue.
+This indicates the design artifact is complete. The UXer will also copy the
+designs to related issues for implementation in an upcoming milestone.
 
 ## Issue tracker
 
