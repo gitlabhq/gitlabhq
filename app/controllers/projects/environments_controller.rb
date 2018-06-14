@@ -6,13 +6,11 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :authorize_update_environment!, only: [:edit, :update]
   before_action :authorize_admin_environment!, only: [:terminal, :terminal_websocket_authorize]
   before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :metrics]
+  before_action :environments, only: [:index, :metrics]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
   before_action :expire_etag_cache, only: [:index]
 
   def index
-    @environments = project.environments
-      .with_state(params[:scope] || :available)
-
     respond_to do |format|
       format.html
       format.json do
@@ -164,5 +162,9 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def environment
     @environment ||= project.environments.find(params[:id])
+  end
+
+  def environments
+    @environments ||= project.environments.with_state(params[:scope] || :available)
   end
 end

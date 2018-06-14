@@ -8,6 +8,7 @@
         %h3
           Environment:
           = link_to @environment.name, environment_path(@environment)
+          = @environments.to_a
 
   #prometheus-graphs{ data: { "settings-path": edit_project_service_path(@project, 'prometheus'),
     "clusters-path": project_clusters_path(@project),
