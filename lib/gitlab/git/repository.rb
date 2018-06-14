@@ -190,12 +190,8 @@ module Gitlab
       end
 
       def local_branches(sort_by: nil)
-        gitaly_migrate(:local_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.local_branches(sort_by: sort_by)
-          else
-            branches_filter(filter: :local, sort_by: sort_by)
-          end
+        wrapped_gitaly_errors do
+          gitaly_ref_client.local_branches(sort_by: sort_by)
         end
       end
 
@@ -1680,20 +1676,6 @@ module Gitlab
           'GL_PROTOCOL' => Gitlab::Git::Hook::GL_PROTOCOL,
           'GL_REPOSITORY' => gl_repository
         }
-      end
-
-      # Gitaly note: JV: Trying to get rid of the 'filter' option so we can implement this with 'git'.
-      def branches_filter(filter: nil, sort_by: nil)
-        branches = rugged.branches.each(filter).map do |rugged_ref|
-          begin
-            target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
-            Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
-          rescue Rugged::ReferenceError
-            # Omit invalid branch
-          end
-        end.compact
-
-        sort_branches(branches, sort_by)
       end
 
       def git_merged_branch_names(branch_names, root_sha)
