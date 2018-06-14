@@ -44,7 +44,9 @@ describe RepositoryRemoveRemoteWorker do
   end
 
   def create_remote_branch(remote_name, branch_name, target)
-    rugged = project.repository.rugged
+    rugged = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      project.repository.rugged
+    end
     rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)
   end
 end

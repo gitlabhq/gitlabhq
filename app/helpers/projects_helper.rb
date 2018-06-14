@@ -173,11 +173,12 @@ module ProjectsHelper
     key = [
       project.route.cache_key,
       project.cache_key,
+      project.last_activity_date,
       controller.controller_name,
       controller.action_name,
       Gitlab::CurrentSettings.cache_key,
       "cross-project:#{can?(current_user, :read_cross_project)}",
-      'v2.5'
+      'v2.6'
     ]
 
     key << pipeline_status_cache_key(project.pipeline_status) if project.pipeline_status.has_status?

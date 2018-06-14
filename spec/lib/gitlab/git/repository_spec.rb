@@ -77,17 +77,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#root_ref' do
-    context 'with gitaly disabled' do
-      before do
-        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).and_return(false)
-      end
-
-      it 'calls #discover_default_branch' do
-        expect(repository).to receive(:discover_default_branch)
-        repository.root_ref
-      end
-    end
-
     it 'returns UTF-8' do
       expect(repository.root_ref).to be_utf8
     end
@@ -150,46 +139,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
           repository_rugged
         end
       end
-    end
-  end
-
-  describe "#discover_default_branch" do
-    let(:master) { 'master' }
-    let(:feature) { 'feature' }
-    let(:feature2) { 'feature2' }
-
-    around do |example|
-      # discover_default_branch will be moved to gitaly-ruby
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        example.run
-      end
-    end
-
-    it "returns 'master' when master exists" do
-      expect(repository).to receive(:branch_names).at_least(:once).and_return([feature, master])
-      expect(repository.discover_default_branch).to eq('master')
-    end
-
-    it "returns non-master when master exists but default branch is set to something else" do
-      File.write(File.join(repository_path, 'HEAD'), 'ref: refs/heads/feature')
-      expect(repository).to receive(:branch_names).at_least(:once).and_return([feature, master])
-      expect(repository.discover_default_branch).to eq('feature')
-      File.write(File.join(repository_path, 'HEAD'), 'ref: refs/heads/master')
-    end
-
-    it "returns a non-master branch when only one exists" do
-      expect(repository).to receive(:branch_names).at_least(:once).and_return([feature])
-      expect(repository.discover_default_branch).to eq('feature')
-    end
-
-    it "returns a non-master branch when more than one exists and master does not" do
-      expect(repository).to receive(:branch_names).at_least(:once).and_return([feature, feature2])
-      expect(repository.discover_default_branch).to eq('feature')
-    end
-
-    it "returns nil when no branch exists" do
-      expect(repository).to receive(:branch_names).at_least(:once).and_return([])
-      expect(repository.discover_default_branch).to be_nil
     end
   end
 
@@ -476,7 +425,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#has_local_branches?' do
-    shared_examples 'check for local branches' do
+    context 'check for local branches' do
       it { expect(repository.has_local_branches?).to eq(true) }
 
       context 'mutable' do
@@ -509,14 +458,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
           end
         end
       end
-    end
-
-    context 'with gitaly' do
-      it_behaves_like 'check for local branches'
-    end
-
-    context 'without gitaly', :skip_gitaly_mock do
-      it_behaves_like 'check for local branches'
     end
   end
 
@@ -1392,24 +1333,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it 'returns the local and remote branches' do
         expect(subject.any? { |b| b.name == 'joe/remote_branch' }).to eq(true)
         expect(subject.any? { |b| b.name == 'local_branch' }).to eq(true)
-      end
-    end
-
-    # With Gitaly enabled, Gitaly just doesn't return deleted branches.
-    context 'with deleted branch with Gitaly disabled' do
-      before do
-        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).and_return(false)
-      end
-
-      it 'returns no results' do
-        ref = double()
-        allow(ref).to receive(:name) { 'bad-branch' }
-        allow(ref).to receive(:target) { raise Rugged::ReferenceError }
-        branches = double()
-        allow(branches).to receive(:each) { [ref].each }
-        allow(repository_rugged).to receive(:branches) { branches }
-
-        expect(subject).to be_empty
       end
     end
 

@@ -24,7 +24,10 @@ You can use GFM in the following areas:
 - snippets (the snippet must be named with a `.md` extension)
 - wiki pages
 - markdown documents inside the repository (currently only rendered by Redcarpet)
+<<<<<<< HEAD
 - epics
+=======
+>>>>>>> upstream/master
 
 You can also use other rich text files in GitLab. You might have to install a
 dependency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
@@ -550,9 +553,9 @@ Examples:
 ```no-highlight
 1. First ordered list item
 2. Another item
-  * Unordered sub-list.
+   * Unordered sub-list.
 1. Actual numbers don't matter, just that it's a number
-  1. Ordered sub-list
+   1. Ordered sub-list
 4. And another item.
 
 * Unordered list can use asterisks
@@ -564,9 +567,9 @@ Become:
 
 1. First ordered list item
 2. Another item
-  * Unordered sub-list.
+   * Unordered sub-list.
 1. Actual numbers don't matter, just that it's a number
-  1. Ordered sub-list
+   1. Ordered sub-list
 4. And another item.
 
 * Unordered list can use asterisks
@@ -581,7 +584,11 @@ Example:
 ```no-highlight
 1. First ordered list item
 
+<<<<<<< HEAD
     Second paragraph of first item.
+=======
+   Second paragraph of first item.
+>>>>>>> upstream/master
 
 2. Another item
 ```
