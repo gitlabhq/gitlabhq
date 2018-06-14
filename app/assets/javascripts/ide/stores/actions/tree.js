@@ -62,7 +62,7 @@ export const getLastCommitData = ({ state, commit, dispatch }, tree = state) => 
     .catch(() => flash('Error fetching log data.', 'alert', document, null, false, true));
 };
 
-export const getFiles = ({ state, commit }, { projectId, branchId } = {}) =>
+export const getFiles = ({ state, commit, dispatch }, { projectId, branchId } = {}) =>
   new Promise((resolve, reject) => {
     if (!state.trees[`${projectId}/${branchId}`]) {
       const selectedProject = state.projects[projectId];

@@ -56,8 +56,6 @@ export const getBranchData = (
           resolve(data);
         })
         .catch(e => {
-          let flashMessage = __('Error loading branch data. Please try again.');
-
           if (e.response.status === 404) {
             dispatch('showBranchNotFoundError', branchId);
           } else {
