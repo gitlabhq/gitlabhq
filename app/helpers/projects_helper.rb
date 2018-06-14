@@ -171,6 +171,7 @@ module ProjectsHelper
     key = [
       project.route.cache_key,
       project.cache_key,
+      project.last_activity_date,
       controller.controller_name,
       controller.action_name,
       Gitlab::CurrentSettings.cache_key,

@@ -90,6 +90,10 @@ describe ProjectsHelper do
       expect(helper.project_list_cache_key(project)).to include(project.cache_key)
     end
 
+    it "includes the last activity date" do
+      expect(helper.project_list_cache_key(project)).to include(project.last_activity_date)
+    end
+
     it "includes the controller name" do
       expect(helper.controller).to receive(:controller_name).and_return("testcontroller")
 
