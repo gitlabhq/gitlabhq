@@ -497,6 +497,12 @@
     &:not(:first-child) {
       border-top: 1px solid $border-color;
     }
+
+    .btn-template-icon {
+      position: absolute;
+      left: $gl-padding;
+      top: $gl-padding;
+    }
   }
 
   .template-title {
