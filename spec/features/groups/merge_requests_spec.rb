@@ -59,9 +59,11 @@ feature 'Group merge requests page' do
 
   describe 'new merge request dropdown' do
     let(:project_with_merge_requests_disabled) { create(:project, :merge_requests_disabled, group: group) }
-    before { visit path }
+    before do
+      visit path
+    end
 
-    it 'shows projects only with merge requests feature enabled', js: true do
+    it 'shows projects only with merge requests feature enabled', :js do
       find('.new-project-item-link').click
 
       page.within('.select2-results') do
@@ -70,5 +72,4 @@ feature 'Group merge requests page' do
       end
     end
   end
-
 end
