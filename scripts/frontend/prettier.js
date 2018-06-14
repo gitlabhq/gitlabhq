@@ -10,7 +10,7 @@ const mode = process.argv[2] || 'check';
 const shouldSave = mode === 'save' || mode === 'save-all';
 const allFiles = mode === 'check-all' || mode === 'save-all';
 let dirPath = process.argv[3] || '';
-if (dirPath.charAt(dirPath.length-1) !== '/') dirPath += '/';
+if (dirPath && dirPath.charAt(dirPath.length - 1) !== '/') dirPath += '/';
 
 const config = {
   patterns: ['**/*.js', '**/*.vue', '**/*.scss'],
@@ -43,7 +43,8 @@ const availableExtensions = Object.keys(config.parsers);
 
 console.log(`Loading ${allFiles ? 'All' : 'Selected'} Files ...`);
 
-const stagedFiles = allFiles || dirPath ? null : getStagedFiles(availableExtensions.map(ext => `*.${ext}`));
+const stagedFiles =
+  allFiles || dirPath ? null : getStagedFiles(availableExtensions.map(ext => `*.${ext}`));
 
 if (stagedFiles) {
   if (!stagedFiles.length || (stagedFiles.length === 1 && !stagedFiles[0])) {
@@ -64,7 +65,9 @@ if (allFiles) {
   files = glob.sync(globPattern, { ignore }).filter(f => allFiles || stagedFiles.includes(f));
 } else if (dirPath) {
   const ignore = config.ignore;
-  const patterns = config.patterns.map((item) => {return dirPath + item;});
+  const patterns = config.patterns.map(item => {
+    return dirPath + item;
+  });
   const globPattern = patterns.length > 1 ? `{${patterns.join(',')}}` : `${patterns.join(',')}`;
   files = glob.sync(globPattern, { ignore });
 } else {
