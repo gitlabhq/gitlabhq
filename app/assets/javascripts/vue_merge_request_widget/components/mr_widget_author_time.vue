@@ -1,10 +1,14 @@
 <script>
+  import tooltip from '~/vue_shared/directives/tooltip';
   import MrWidgetAuthor from './mr_widget_author.vue';
 
   export default {
-    name: 'MRWidgetAuthorTime',
+    name: 'MrWidgetAuthorTime',
     components: {
       MrWidgetAuthor,
+    },
+    directives: {
+      tooltip,
     },
     props: {
       actionText: {
@@ -32,8 +36,7 @@
     <mr-widget-author :author="author" />
     <time
       :title="dateTitle"
-      data-toggle="tooltip"
-      data-placement="top"
+      v-tooltip
       data-container="body"
     >
       {{ dateReadable }}

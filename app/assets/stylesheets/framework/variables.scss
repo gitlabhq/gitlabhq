@@ -99,7 +99,7 @@ $theme-gray-200: #dfdfdf;
 $theme-gray-300: #cccccc;
 $theme-gray-400: #bababa;
 $theme-gray-500: #a7a7a7;
-$theme-gray-600: #949494;
+$theme-gray-600: #919191;
 $theme-gray-700: #707070;
 $theme-gray-800: #4f4f4f;
 $theme-gray-900: #2e2e2e;
@@ -191,7 +191,7 @@ $gl-font-weight-normal: 400;
 $gl-font-weight-bold: 600;
 $gl-text-color: #2e2e2e;
 $gl-text-color-secondary: #707070;
-$gl-text-color-tertiary: #949494;
+$gl-text-color-tertiary: #919191;
 $gl-text-color-quaternary: #d6d6d6;
 $gl-text-color-inverted: rgba(255, 255, 255, 1);
 $gl-text-color-secondary-inverted: rgba(255, 255, 255, 0.85);
@@ -433,6 +433,22 @@ $gl-btn-horz-padding: 12px;
 */
 $badge-bg: rgba(0, 0, 0, 0.07);
 $badge-color: $gl-text-color-secondary;
+
+/*
+* Pagination
+*/
+$pagination-padding-y: 6px;
+$pagination-padding-x: 16px;
+$pagination-line-height: 20px;
+$pagination-border-color: $border-color;
+$pagination-active-bg: $blue-600;
+$pagination-active-border-color: $blue-600;
+$pagination-hover-bg: $blue-50;
+$pagination-hover-border-color: $border-color;
+$pagination-hover-color: $gl-text-color;
+$pagination-disabled-color: #cdcdcd;
+$pagination-disabled-bg: $gray-light;
+$pagination-disabled-border-color: $border-color;
 
 /*
  *  Status icons

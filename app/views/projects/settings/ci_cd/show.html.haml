@@ -8,7 +8,7 @@
 %section.settings#js-general-pipeline-settings.no-animate{ class: ('expanded' if general_expanded) }
   .settings-header
     %h4
-      General pipelines settings
+      General pipelines
     %button.btn.js-settings-toggle{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
@@ -16,7 +16,7 @@
   .settings-content
     = render 'form'
 
-%section.settings#autodevops-settings.no-animate{ class: ('expanded' if expanded) }
+%section.qa-autodevops-settings.settings#autodevops-settings.no-animate{ class: ('expanded' if expanded) }
   .settings-header
     %h4
       = s_('CICD|Auto DevOps')
@@ -28,10 +28,10 @@
   .settings-content
     = render 'autodevops_form'
 
-%section.settings.no-animate{ class: ('expanded' if expanded) }
+%section.qa-runners-settings.settings.no-animate{ class: ('expanded' if expanded) }
   .settings-header
     %h4
-      Runners settings
+      Runners
     %button.btn.js-settings-toggle{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
@@ -39,7 +39,7 @@
   .settings-content
     = render 'projects/runners/index'
 
-%section.settings.no-animate{ class: ('expanded' if expanded) }
+%section.qa-variables-settings.settings.no-animate{ class: ('expanded' if expanded) }
   .settings-header
     %h4
       = _('Variables')

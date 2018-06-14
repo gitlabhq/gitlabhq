@@ -46,7 +46,9 @@ module QA
             resource.remote_branch = @branch_name
           end
 
-          Page::Project::Show.act { wait_for_push }
+          Page::Project::Show.perform do |page|
+            page.wait { page.has_content?(branch_name) }
+          end
 
           # The upcoming process will make it access the Protected Branches page,
           # select the already created branch and protect it according
@@ -62,13 +64,13 @@ module QA
               page.select_branch(branch_name)
 
               if allow_to_push
-                page.allow_devs_and_masters_to_push
+                page.allow_devs_and_maintainers_to_push
               else
                 page.allow_no_one_to_push
               end
 
               if allow_to_merge
-                page.allow_devs_and_masters_to_merge
+                page.allow_devs_and_maintainers_to_merge
               else
                 page.allow_no_one_to_merge
               end
@@ -79,9 +81,13 @@ module QA
 
               page.protect_branch
 
-              # Wait for page load, which resets the expanded sections
-              page.wait(reload: false) do
-                !page.has_content?('Collapse')
+              # Avoid Selenium::WebDriver::Error::StaleElementReferenceError
+              # without sleeping. I.e. this completes fast on fast machines.
+              page.refresh
+
+              # It is possible for the protected branch row to "disappear" at first
+              page.wait do
+                page.has_content?(branch_name)
               end
             end
           end

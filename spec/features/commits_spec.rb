@@ -47,7 +47,7 @@ describe 'Commits' do
 
     context 'commit status is Ci Build' do
       let!(:build) { create(:ci_build, pipeline: pipeline) }
-      let(:artifacts_file) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
+      let(:artifacts_file) { fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif') }
 
       context 'when logged as developer' do
         before do

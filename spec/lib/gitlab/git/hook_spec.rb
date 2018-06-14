@@ -8,25 +8,39 @@ describe Gitlab::Git::Hook do
     allow_any_instance_of(described_class).to receive(:trigger).and_call_original
   end
 
+  around do |example|
+    # TODO move hook tests to gitaly-ruby. Hook will disappear from gitlab-ce
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      example.run
+    end
+  end
+
   describe "#trigger" do
-    let(:project) { create(:project, :repository) }
+    set(:project) { create(:project, :repository) }
     let(:repository) { project.repository.raw_repository }
     let(:repo_path) { repository.path }
+    let(:hooks_dir) { File.join(repo_path, 'hooks') }
     let(:user) { create(:user) }
     let(:gl_id) { Gitlab::GlId.gl_id(user) }
     let(:gl_username) { user.username }
 
     def create_hook(name)
-      FileUtils.mkdir_p(File.join(repo_path, 'hooks'))
-      File.open(File.join(repo_path, 'hooks', name), 'w', 0755) do |f|
-        f.write('exit 0')
+      FileUtils.mkdir_p(hooks_dir)
+      hook_path = File.join(hooks_dir, name)
+      File.open(hook_path, 'w', 0755) do |f|
+        f.write(<<~HOOK)
+          #!/bin/sh
+          exit 0
+        HOOK
       end
     end
 
     def create_failing_hook(name)
-      FileUtils.mkdir_p(File.join(repo_path, 'hooks'))
-      File.open(File.join(repo_path, 'hooks', name), 'w', 0755) do |f|
-        f.write(<<-HOOK)
+      FileUtils.mkdir_p(hooks_dir)
+      hook_path = File.join(hooks_dir, name)
+      File.open(hook_path, 'w', 0755) do |f|
+        f.write(<<~HOOK)
+          #!/bin/sh
           echo 'regular message from the hook'
           echo 'error message from the hook' 1>&2
           echo 'error message from the hook line 2' 1>&2
@@ -38,7 +52,7 @@ describe Gitlab::Git::Hook do
     ['pre-receive', 'post-receive', 'update'].each do |hook_name|
       context "when triggering a #{hook_name} hook" do
         context "when the hook is successful" do
-          let(:hook_path) { File.join(repo_path, 'hooks', hook_name) }
+          let(:hook_path) { File.join(hooks_dir, hook_name) }
           let(:gl_repository) { Gitlab::GlRepository.gl_repository(project, false) }
           let(:env) do
             {
@@ -76,7 +90,7 @@ describe Gitlab::Git::Hook do
 
             status, errors = hook.trigger(gl_id, gl_username, blank, blank, ref)
             expect(status).to be false
-            expect(errors).to eq("error message from the hook<br>error message from the hook line 2<br>")
+            expect(errors).to eq("error message from the hook\nerror message from the hook line 2\n")
           end
         end
       end

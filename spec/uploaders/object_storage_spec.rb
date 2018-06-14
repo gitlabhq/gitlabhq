@@ -321,7 +321,7 @@ describe ObjectStorage do
       when_file_is_in_use do
         expect(uploader).not_to receive(:unsafe_migrate!)
 
-        expect { uploader.migrate!(described_class::Store::REMOTE) }.to raise_error('exclusive lease already taken')
+        expect { uploader.migrate!(described_class::Store::REMOTE) }.to raise_error(ObjectStorage::ExclusiveLeaseTaken)
       end
     end
 
@@ -329,7 +329,19 @@ describe ObjectStorage do
       when_file_is_in_use do
         expect(uploader).not_to receive(:unsafe_use_file)
 
-        expect { uploader.use_file }.to raise_error('exclusive lease already taken')
+        expect { uploader.use_file }.to raise_error(ObjectStorage::ExclusiveLeaseTaken)
+      end
+    end
+
+    it 'can still migrate other files of the same model' do
+      uploader2 = uploader_class.new(object, :file)
+      uploader2.upload = create(:upload)
+      uploader.upload = create(:upload)
+
+      when_file_is_in_use do
+        expect(uploader2).to receive(:unsafe_migrate!)
+
+        uploader2.migrate!(described_class::Store::REMOTE)
       end
     end
   end
@@ -571,7 +583,7 @@ describe ObjectStorage do
     context 'when local file is used' do
       context 'when valid file is used' do
         let(:uploaded_file) do
-          fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg')
+          fixture_file_upload('spec/fixtures/rails_sample.jpg', 'image/jpg')
         end
 
         it "properly caches the file" do

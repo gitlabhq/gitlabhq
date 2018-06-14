@@ -1,0 +1,5 @@
+---
+title: Fixed bug that allowed to remove other wiki pages if the title had wildcard characters
+merge_request:
+author:
+type: fixed

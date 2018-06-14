@@ -6,31 +6,33 @@ module QA # rubocop:disable Naming/FileName
           include Common
 
           view 'app/views/projects/settings/ci_cd/show.html.haml' do
-            element :runners_settings, 'Runners settings'
-            element :secret_variables, 'Variables'
-            element :auto_devops_section, 'Auto DevOps'
+            element :autodevops_settings
+            element :runners_settings
+            element :variables_settings
           end
 
           view 'app/views/projects/settings/ci_cd/_autodevops_form.html.haml' do
-            element :enable_auto_devops_button, 'Enable Auto DevOps'
-            element :domain_input, 'Domain'
+            element :enable_auto_devops_field, 'radio_button :enabled'
+            element :domain_field, 'text_field :domain'
+            element :enable_auto_devops_button, "%strong= s_('CICD|Enable Auto DevOps')"
+            element :domain_input, "%strong= _('Domain')"
             element :save_changes_button, "submit 'Save changes'"
           end
 
           def expand_runners_settings(&block)
-            expand_section('Runners settings') do
+            expand_section(:runners_settings) do
               Settings::Runners.perform(&block)
             end
           end
 
           def expand_secret_variables(&block)
-            expand_section('Variables') do
+            expand_section(:variables_settings) do
               Settings::SecretVariables.perform(&block)
             end
           end
 
           def enable_auto_devops_with_domain(domain)
-            expand_section('Auto DevOps') do
+            expand_section(:autodevops_settings) do
               choose 'Enable Auto DevOps'
               fill_in 'Domain', with: domain
               click_on 'Save changes'

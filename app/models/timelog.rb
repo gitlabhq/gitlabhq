@@ -19,4 +19,9 @@ class Timelog < ActiveRecord::Base
       errors.add(:base, 'Issue or Merge Request ID is required')
     end
   end
+
+  # Rails5 defaults to :touch_later, overwrite for normal touch
+  def belongs_to_touch_method
+    :touch
+  end
 end

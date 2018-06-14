@@ -63,7 +63,9 @@ describe MergeRequests::SquashService do
       end
 
       it 'has the same diff as the merge request, but a different SHA' do
-        rugged = project.repository.rugged
+        rugged = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          project.repository.rugged
+        end
         mr_diff = rugged.diff(merge_request.diff_base_sha, merge_request.diff_head_sha)
         squash_diff = rugged.diff(merge_request.diff_start_sha, squash_sha)
 

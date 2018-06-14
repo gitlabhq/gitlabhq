@@ -89,7 +89,12 @@ a {
   color: $gl-link-color;
 }
 
+hr {
+  overflow: hidden;
+}
+
 .form-group.row .col-form-label {
+  padding-top: 0;
   // Bootstrap 4 aligns labels to the left
   // for horizontal forms
   @include media-breakpoint-up(md) {
@@ -107,7 +112,7 @@ code {
   background-color: $red-100;
   border-radius: 3px;
 
-  .code & {
+  .code > & {
     background-color: inherit;
     padding: unset;
   }
@@ -116,10 +121,6 @@ code {
     background-color: inherit;
     padding: inherit;
   }
-}
-
-.code {
-  padding: 9.5px;
 }
 
 table {
@@ -213,6 +214,10 @@ table {
       border-bottom: 1px solid $well-inner-border;
     }
   }
+
+  .badge.badge-gray {
+    background-color: $well-expand-item;
+  }
 }
 
 .card {
@@ -230,6 +235,13 @@ table {
 
   &.bg-light {
     @extend .border-0;
+  }
+}
+
+.card-header {
+  h3.card-title,
+  h4.card-title {
+    margin-top: 0;
   }
 }
 
@@ -255,13 +267,29 @@ pre code {
 .alert-danger {
   background-color: $red-500;
   border-color: $red-500;
+}
+
+.alert-warning,
+.alert-danger,
+.flash-notice {
+  border-radius: 0;
   color: $white-light;
 
-  h4 {
+  h4,
+  a,
+  .alert-link {
     color: $white-light;
   }
 }
 
 input[type=color].form-control {
   height: $input-height;
+}
+
+.toggle-sidebar-button {
+  .collapse-text,
+  .icon-angle-double-left,
+  .icon-angle-double-right {
+    color: $gl-text-color-secondary;
+  }
 }

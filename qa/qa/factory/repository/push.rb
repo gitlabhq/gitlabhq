@@ -1,11 +1,17 @@
+require 'pathname'
+
 module QA
   module Factory
     module Repository
       class Push < Factory::Base
         attr_accessor :file_name, :file_content, :commit_message,
-                      :branch_name, :new_branch, :repository_uri
+                      :branch_name, :new_branch, :output, :repository_uri
 
         attr_writer :remote_branch
+
+        product :output do |factory|
+          factory.output
+        end
 
         def initialize
           raise NotImplementedError, "Subclasses must define `initialize`"
@@ -43,7 +49,7 @@ module QA
             end
 
             repository.commit(commit_message)
-            repository.push_changes("#{branch_name}:#{remote_branch}")
+            @output = repository.push_changes("#{branch_name}:#{remote_branch}")
           end
         end
       end
