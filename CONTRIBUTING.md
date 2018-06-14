@@ -320,7 +320,7 @@ and use a title that makes it clear that the scheduled issue is design only
 (e.g. `Design exploration for XYZ`).
 
 When the ~"design artifact" issue has been completed, the UXer removes the ~UX
-labels, adds the ~"UX ready" label and closes the issue. This indicates the
+label, adds the ~"UX ready" label and closes the issue. This indicates the
 design artifact is complete. The UXer will also copy the designs to related
 issues for implementation in an upcoming milestone.
 
