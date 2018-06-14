@@ -38,7 +38,8 @@ jasmine.getJSONFixtures().fixturesPath = FIXTURES_PATH;
 beforeAll(() => jasmine.addMatchers(customMatchers));
 
 // globalize common libraries
-window.$ = window.jQuery = $;
+window.$ = $;
+window.jQuery = window.$;
 
 // stub expected globals
 window.gl = window.gl || {};

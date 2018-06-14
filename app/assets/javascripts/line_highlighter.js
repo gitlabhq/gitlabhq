@@ -145,6 +145,8 @@ LineHighlighter.prototype.highlightRange = function(range) {
   var i, lineNumber, ref, ref1, results;
   if (range[1]) {
     results = [];
+
+    // eslint-disable-next-line no-multi-assign
     for (lineNumber = i = ref = range[0], ref1 = range[1]; ref <= ref1 ? i <= ref1 : i >= ref1; lineNumber = ref <= ref1 ? (i += 1) : (i -= 1)) {
       results.push(this.highlightLine(lineNumber));
     }

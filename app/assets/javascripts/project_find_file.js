@@ -91,6 +91,8 @@ export default class ProjectFindFile {
     var blobItemUrl, filePath, html, i, j, len, matches, results;
     this.element.find(".tree-table > tbody").empty();
     results = [];
+
+    // eslint-disable-next-line no-multi-assign
     for (i = j = 0, len = filePaths.length; j < len; i = (j += 1)) {
       filePath = filePaths[i];
       if (i === 20) {
