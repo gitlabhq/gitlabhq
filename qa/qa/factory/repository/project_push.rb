@@ -15,12 +15,18 @@ module QA
           @new_branch = true
         end
 
-        def fabricate!
-          project.visit!
-          @repository_uri = Page::Project::Show.act do
-            choose_repository_clone_http
-            repository_location.uri
+        def get_repository_uri
+          @repository_uri ||= begin
+            project.visit!
+            Page::Project::Show.act do
+              choose_repository_clone_http
+              repository_location.uri
+            end
           end
+        end
+
+        def fabricate!
+          get_repository_uri
           super
         end
       end

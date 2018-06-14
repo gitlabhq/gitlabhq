@@ -14,7 +14,12 @@ module QA
         end
 
         def initialize
-          raise NotImplementedError, "Subclasses must define `initialize`"
+          @file_name = 'file.txt'
+          @file_content = '# This is test file'
+          @commit_message = "This is a test commit"
+          @branch_name = 'master'
+          @new_branch = true
+          @repository_uri = ""
         end
 
         def remote_branch
@@ -25,6 +30,10 @@ module QA
           raise "Must set directory as a Pathname" unless dir.is_a?(Pathname)
 
           @directory = dir
+        end
+
+        def get_repository_uri
+          raise "`get_repository_uri` method must be implemented by subclasses"
         end
 
         def fabricate!

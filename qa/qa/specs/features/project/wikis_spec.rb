@@ -20,6 +20,7 @@ module QA
         resource.content = '# My First Wiki Content'
         resource.message = 'Update home'
       end
+
       validate_content('My First Wiki Content')
 
       Page::Project::Wiki::Edit.act { go_to_edit_page }
@@ -27,6 +28,7 @@ module QA
         page.set_content("My Second Wiki Content")
         page.save_changes
       end
+
       validate_content('My Second Wiki Content')
 
       Factory::Repository::WikiPush.fabricate! do |push|
@@ -36,6 +38,7 @@ module QA
         push.commit_message = 'Update Home.md'
       end
       Page::Menu::Side.act { click_wiki }
+
       expect(page).to have_content('My Third Wiki Content')
     end
   end

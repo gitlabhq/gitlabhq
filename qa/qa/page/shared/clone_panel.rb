@@ -2,6 +2,14 @@ module QA
   module Page
     module Shared
       module ClonePanel
+        def self.included(base)
+          base.view 'app/views/shared/_clone_panel.html.haml' do
+            element :clone_dropdown
+            element :clone_options_dropdown, '.clone-options-dropdown'
+            element :project_repository_location, 'text_field_tag :project_clone'
+          end
+        end
+
         def choose_repository_clone_http
           choose_repository_clone('HTTP', 'http')
         end

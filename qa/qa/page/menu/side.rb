@@ -13,6 +13,7 @@ module QA
           element :top_level_items, '.sidebar-top-level-items'
           element :operations_section, "class: 'shortcuts-operations'"
           element :activity_link, "title: 'Activity'"
+          element :wiki_link_text, "Wiki"
         end
 
         view 'app/assets/javascripts/fly_out_nav.js' do
