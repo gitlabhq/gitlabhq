@@ -1,0 +1,5 @@
+---
+title: Fix active tab highlight when creating new merge request
+merge_request: 19781
+author: Jan Beckmann
+type: fixed
