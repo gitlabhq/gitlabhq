@@ -243,6 +243,15 @@ const Api = {
     });
   },
 
+  createBranch(id, { ref, branch }) {
+    const url = Api.buildUrl(this.createBranchPath).replace(':id', encodeURIComponent(id));
+
+    return axios.post(url, {
+      ref,
+      branch,
+    });
+  },
+
   buildUrl(url) {
     let urlRoot = '';
     if (gon.relative_url_root != null) {

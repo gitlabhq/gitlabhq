@@ -99,7 +99,18 @@ export const getFiles = ({ state, commit }, { projectId, branchId } = {}) =>
           });
         })
         .catch(e => {
-          flash('Error loading tree data. Please try again.', 'alert', document, null, false, true);
+          if (e.response.status === 404) {
+            dispatch('showBranchNotFoundError', branchId);
+          } else {
+            flash(
+              'Error loading tree data. Please try again.',
+              'alert',
+              document,
+              null,
+              false,
+              true,
+            );
+          }
           reject(e);
         });
     } else {
