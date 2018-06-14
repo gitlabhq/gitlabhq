@@ -126,7 +126,7 @@
   }
 
   .linked-pipeline.build {
-    height: 40px;
+    height: 41px;
 
     // apply custom dimensions to connector before and after for triangle arrow
     &.flat-connector-before {
@@ -187,7 +187,7 @@
 
 .cross-project-triangle {
   position: absolute;
-  top: 48px;
+  top: 50px;
   width: 0;
   height: 0;
   border-bottom: 7px solid transparent;
