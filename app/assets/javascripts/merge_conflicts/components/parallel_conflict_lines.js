@@ -8,11 +8,7 @@ import utilsMixin from '../mixins/line_conflict_utils';
   global.mergeConflicts = global.mergeConflicts || {};
 
   global.mergeConflicts.parallelConflictLines = Vue.extend({
-<<<<<<< HEAD
-    mixins: [global.mergeConflicts.utils, global.mergeConflicts.actions],
-=======
     mixins: [utilsMixin, actionsMixin],
->>>>>>> upstream/master
     props: {
       file: {
         type: Object,
