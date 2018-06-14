@@ -34,7 +34,8 @@ module Clusters
         Gitlab::Kubernetes::Helm::InstallCommand.new(
           name,
           chart: chart,
-          values: values
+          values: values,
+          extra_env: extra_env,
         )
       end
 
@@ -43,6 +44,14 @@ module Clusters
         return if external_ip
 
         ClusterWaitForIngressIpAddressWorker.perform_async(name, id)
+      end
+
+      def extra_env
+        {
+          "CA_CERT" => cluster.application_helm.ca_cert,
+          "HELM_CERT" => cluster.application_helm.client_cert,
+          "HELM_KEY" => cluster.application_helm.client_key,
+        }
       end
     end
   end

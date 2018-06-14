@@ -4,15 +4,9 @@ module Gitlab
       class InstallCommand < BaseCommand
         attr_reader :name, :chart, :repository, :values
 
-        def initialize(name, chart:, values:, repository: nil)
-          @name = name
-          @chart = chart
-          @values = values
-          @repository = repository
-        end
-
         def generate_script
           super + [
+            configure_certs_command,
             init_command,
             repository_command,
             script_command
@@ -28,6 +22,15 @@ module Gitlab
         end
 
         private
+
+        def configure_certs_command
+          <<~CMD
+          mkdir $(helm home)
+          echo $CA_CERT > $(helm home)/ca.pem
+          echo $TILLER_CERT > $(helm home)/cert.pem
+          echo $TILLER_KEY > $(helm home)/key.pem
+          CMD
+        end
 
         def init_command
           'helm init --client-only >/dev/null'
