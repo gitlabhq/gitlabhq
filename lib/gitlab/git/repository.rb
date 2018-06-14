@@ -120,13 +120,11 @@ module Gitlab
 
       # Default branch in the repository
       def root_ref
-        @root_ref ||= gitaly_migrate(:root_ref, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.default_branch_name
-          else
-            discover_default_branch
-          end
-        end
+        gitaly_ref_client.default_branch_name
+      rescue GRPC::NotFound => e
+        raise NoRepository.new(e.message)
+      rescue GRPC::Unknown => e
+        raise Gitlab::Git::CommandError.new(e.message)
       end
 
       def rugged
@@ -362,31 +360,6 @@ module Gitlab
         rugged.references.reject do |ref|
           prefixes.any? { |p| ref.name.start_with?(p) }
         end.map(&:name)
-      end
-
-      # Discovers the default branch based on the repository's available branches
-      #
-      # - If no branches are present, returns nil
-      # - If one branch is present, returns its name
-      # - If two or more branches are present, returns current HEAD or master or first branch
-      def discover_default_branch
-        names = branch_names
-
-        return if names.empty?
-
-        return names[0] if names.length == 1
-
-        if rugged_head
-          extracted_name = Ref.extract_branch_name(rugged_head.name)
-
-          return extracted_name if names.include?(extracted_name)
-        end
-
-        if names.include?('master')
-          'master'
-        else
-          names[0]
-        end
       end
 
       def rugged_head
