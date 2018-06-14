@@ -1,11 +1,7 @@
 module EE
   module SamlProvidersHelper
     def group_saml_enabled?
-      group_saml_beta_enabled? && ::Gitlab::Auth::GroupSaml::Config.enabled?
-    end
-
-    def group_saml_beta_enabled?
-      ::Gitlab::Utils.to_boolean(cookies['enable_group_saml'])
+      ::Gitlab::Auth::GroupSaml::Config.enabled?
     end
 
     def show_saml_in_sidebar?(group)
