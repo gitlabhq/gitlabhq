@@ -384,6 +384,7 @@ class Note < ActiveRecord::Base
 
   def expire_etag_cache
     return unless noteable&.discussions_rendered_on_frontend?
+    return unless noteable&.etag_caching_enabled?
 
     Gitlab::EtagCaching::Store.new.touch(etag_key)
   end

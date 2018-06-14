@@ -308,6 +308,10 @@ class Issue < ActiveRecord::Base
     end
   end
 
+  def etag_caching_enabled?
+    true
+  end
+
   def discussions_rendered_on_frontend?
     true
   end
