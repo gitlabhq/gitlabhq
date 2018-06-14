@@ -79,23 +79,21 @@ describe 'Dropdown assignee', :js do
     end
 
     it 'filters by name' do
-      filtered_search.send_keys('j')
+      input_filtered_search('jac', submit: false, extra_space: false)
 
-      expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_john.name)
       expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_jacob.name)
       expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_no_content(user.name)
     end
 
     it 'filters by case insensitive name' do
-      filtered_search.send_keys('J')
+      input_filtered_search('JAC', submit: false, extra_space: false)
 
-      expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_john.name)
       expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_jacob.name)
       expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_no_content(user.name)
     end
 
     it 'filters by username with symbol' do
-      filtered_search.send_keys('@ot')
+      input_filtered_search('@ott', submit: false, extra_space: false)
 
       expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_jacob.name)
       expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user.name)
@@ -103,7 +101,7 @@ describe 'Dropdown assignee', :js do
     end
 
     it 'filters by case insensitive username with symbol' do
-      filtered_search.send_keys('@OT')
+      input_filtered_search('@OTT', submit: false, extra_space: false)
 
       expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_jacob.name)
       expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user.name)
@@ -111,7 +109,9 @@ describe 'Dropdown assignee', :js do
     end
 
     it 'filters by username without symbol' do
-      filtered_search.send_keys('ot')
+      filtered_search.send_keys('ott')
+
+      wait_for_requests
 
       expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_jacob.name)
       expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user.name)
@@ -119,7 +119,9 @@ describe 'Dropdown assignee', :js do
     end
 
     it 'filters by case insensitive username without symbol' do
-      filtered_search.send_keys('OT')
+      filtered_search.send_keys('OTT')
+
+      wait_for_requests
 
       expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_jacob.name)
       expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user.name)
