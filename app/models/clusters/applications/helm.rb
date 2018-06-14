@@ -109,8 +109,19 @@ module Clusters
         self.status = 'installable' if cluster&.platform_kubernetes_active?
       end
 
+      def extra_env
+        {
+          "CA_CERT" => ca_cert,
+          "TILLER_CERT" => server_cert,
+          "TILLER_KEY" => server_key,
+        }
+      end
+
       def install_command
-        Gitlab::Kubernetes::Helm::InitCommand.new(name)
+        Gitlab::Kubernetes::Helm::InitCommand.new(
+          name,
+          extra_env: extra_env,
+        )
       end
     end
   end

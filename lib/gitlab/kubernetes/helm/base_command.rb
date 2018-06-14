@@ -2,10 +2,14 @@ module Gitlab
   module Kubernetes
     module Helm
       class BaseCommand
-        attr_reader :name
+        attr_reader :name, :chart, :repository, :values, :extra_env
 
-        def initialize(name)
+        def initialize(name, chart: nil, values: nil, repository: nil, extra_env: {})
           @name = name
+          @chart = chart
+          @values = values
+          @repository = repository
+          @extra_env = extra_env
         end
 
         def pod_resource

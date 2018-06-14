@@ -52,7 +52,8 @@ module Gitlab
             HELM_VERSION: Gitlab::Kubernetes::Helm::HELM_VERSION,
             TILLER_NAMESPACE: namespace_name,
             COMMAND_SCRIPT: command.generate_script
-          }.map { |key, value| { name: key, value: value } }
+          }.merge(command.extra_env)
+            .map { |key, value| { name: key, value: value } }
         end
 
         def volumes_specification

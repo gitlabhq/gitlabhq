@@ -14,6 +14,7 @@ module Gitlab
 
         def generate_script
           super + [
+            configure_certs_command,
             init_command,
             repository_command,
             script_command
@@ -29,6 +30,15 @@ module Gitlab
         end
 
         private
+
+        def configure_certs_command
+          <<~CMD
+          mkdir $(helm home)
+          echo $CA_CERT > $(helm home)/ca.pem
+          echo $TILLER_CERT > $(helm home)/cert.pem
+          echo $TILLER_KEY > $(helm home)/key.pem
+          CMD
+        end
 
         def init_command
           'helm init --client-only >/dev/null'
