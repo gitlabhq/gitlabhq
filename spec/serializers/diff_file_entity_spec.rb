@@ -13,13 +13,37 @@ describe DiffFileEntity do
 
   subject { entity.as_json }
 
-  it 'exposes correct attributes' do
-    expect(subject).to include(
-      :submodule, :submodule_link, :submodule_tree_url, :file_path,
-      :deleted_file, :old_path, :new_path, :mode_changed,
-      :a_mode, :b_mode, :text, :old_path_html,
-      :new_path_html, :highlighted_diff_lines, :parallel_diff_lines,
-      :blob
-    )
+  shared_examples 'diff file entity' do
+    it 'exposes correct attributes' do
+      expect(subject).to include(
+        :submodule, :submodule_link, :submodule_tree_url, :file_path,
+        :deleted_file, :old_path, :new_path, :mode_changed,
+        :a_mode, :b_mode, :text, :old_path_html,
+        :new_path_html, :highlighted_diff_lines, :parallel_diff_lines,
+        :blob, :file_hash, :added_lines, :removed_lines, :diff_refs, :content_sha,
+        :stored_externally, :external_storage, :too_large, :collapsed, :new_file,
+        :context_lines_path
+      )
+    end
+  end
+
+  context 'when there is no merge request' do
+    it_behaves_like 'diff file entity'
+  end
+
+  context 'when there is a merge request' do
+    let(:user) { create(:user) }
+    let(:request) { EntityRequest.new(project: project, current_user: user) }
+    let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+    let(:entity) { described_class.new(diff_file, request: request, merge_request: merge_request) }
+
+    it_behaves_like 'diff file entity'
+
+    it 'exposes additional attributes' do
+      expect(subject).to include(
+        :load_collapsed_diff_url, :edit_path,
+        :view_path, :replaced_view_path, :context_lines_path
+      )
+    end
   end
 end

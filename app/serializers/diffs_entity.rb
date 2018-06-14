@@ -6,11 +6,11 @@ class DiffsEntity < Grape::Entity
   expose :size
 
   expose :branch_name do |diffs|
-    options[:merge_request]&.source_branch
+    merge_request&.source_branch
   end
 
   expose :target_branch_name do |diffs|
-    options[:merge_request]&.target_branch
+    merge_request&.target_branch
   end
 
   expose :commit do |diffs|
@@ -29,9 +29,7 @@ class DiffsEntity < Grape::Entity
     options[:latest_diff]
   end
 
-  expose :latest_version_path do |diffs|
-    merge_request = options[:merge_request]
-
+  expose :latest_version_path, if: -> (*) { merge_request } do |diffs|
     diffs_project_merge_request_path(merge_request&.project, merge_request)
   end
 
@@ -47,15 +45,11 @@ class DiffsEntity < Grape::Entity
     render_overflow_warning?(diffs.diff_files)
   end
 
-  expose :email_patch_path do |diffs|
-    merge_request = options[:merge_request]
-
+  expose :email_patch_path, if: -> (*) { merge_request } do |diffs|
     merge_request_path(merge_request, format: :patch)
   end
 
-  expose :plain_diff_path do |diffs|
-    merge_request = options[:merge_request]
-
+  expose :plain_diff_path, if: -> (*) { merge_request } do |diffs|
     merge_request_path(merge_request, format: :diff)
   end
 
@@ -65,7 +59,11 @@ class DiffsEntity < Grape::Entity
     options[:merge_request_diffs].as_json
   end
 
-  expose :merge_request_diffs, using: MergeRequestDiffEntity, if: -> (_, options) { options[:merge_request_diffs].any? } do |diffs|
+  expose :merge_request_diffs, using: MergeRequestDiffEntity, if: -> (_, options) { options[:merge_request_diffs]&.any? } do |diffs|
     options[:merge_request_diffs]
+  end
+
+  def merge_request
+    options[:merge_request]
   end
 end

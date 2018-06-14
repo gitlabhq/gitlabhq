@@ -19,7 +19,6 @@ class MergeRequestDiffEntity < Grape::Entity
   end
 
   expose :version_path do |merge_request_diff|
-    merge_request = options[:merge_request]
     start_sha = options[:start_sha]
     project = merge_request.source_project
 
@@ -27,12 +26,15 @@ class MergeRequestDiffEntity < Grape::Entity
   end
 
   expose :compare_path do |merge_request_diff|
-    merge_request = options[:merge_request]
     project = merge_request.source_project
     diff = options[:merge_request_diff]
 
     if project && diff
       merge_request_version_path(project, merge_request, diff, merge_request_diff.head_commit_sha)
     end
+  end
+
+  def merge_request
+    options[:merge_request]
   end
 end

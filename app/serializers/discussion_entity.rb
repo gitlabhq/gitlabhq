@@ -40,9 +40,9 @@ class DiscussionEntity < Grape::Entity
     project_merge_request_discussion_path(discussion.project, discussion.noteable, discussion)
   end
 
-  expose :truncated_diff_lines, if: -> (d, _) { d.diff_discussion? && d.diff_file.text? && (d.expanded? || render_truncated_diff_lines?) }
+  expose :truncated_diff_lines, if: -> (d, _) { d.diff_discussion? && d.on_text? && (d.expanded? || render_truncated_diff_lines?) }
 
-  expose :image_diff_html, if: -> (d, _) { d.diff_discussion? && !d.diff_file.text? } do |discussion|
+  expose :image_diff_html, if: -> (d, _) { d.diff_discussion? && d.on_image? } do |discussion|
     diff_file = discussion.diff_file
     partial = diff_file.new_file? || diff_file.deleted_file? ? 'single_image_diff' : 'replaced_image_diff'
     options[:context].render_to_string(

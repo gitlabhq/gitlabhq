@@ -28,7 +28,11 @@ describe DiscussionEntity do
       :resolvable,
       :resolve_path,
       :resolve_with_issue_path,
-      :resolved
+      :resolved,
+      :discussion_path,
+      :resolved_at,
+      :for_commit,
+      :commit_id
     )
   end
 
@@ -38,8 +42,19 @@ describe DiscussionEntity do
     it 'exposes diff file attributes' do
       expect(subject.keys.sort).to include(
         :diff_file,
-        :truncated_diff_lines
+        :truncated_diff_lines,
+        :position,
+        :line_code,
+        :active
       )
+    end
+
+    context 'when diff file is a image' do
+      it 'exposes image attributes' do
+        allow(discussion).to receive(:on_image?).and_return(true)
+
+        expect(subject.keys).to include(:image_diff_html)
+      end
     end
   end
 end
