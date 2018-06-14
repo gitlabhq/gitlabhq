@@ -94,10 +94,7 @@ export default {
         :key-prefix="$options.stageKeys.unstaged"
         :file-list="changedFiles"
         :action-btn-text="__('Stage all')"
-<<<<<<< HEAD
-=======
         :active-file-key="activeFileKey"
->>>>>>> upstream/master
         class="is-first"
         icon-name="unstaged"
         action="stageAllChanges"
@@ -109,10 +106,7 @@ export default {
         :file-list="stagedFiles"
         :action-btn-text="__('Unstage all')"
         :staged-list="true"
-<<<<<<< HEAD
-=======
         :active-file-key="activeFileKey"
->>>>>>> upstream/master
         icon-name="staged"
         action="unstageAllChanges"
         item-action-component="unstage-button"
