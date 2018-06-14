@@ -14,7 +14,7 @@ module RendersBlob
 
     return unless viewer
 
-    return {} if params[:html_render] == 'false' 
+    return {} if params[:html_render] == 'false'
 
     {
       html: view_to_html_string("projects/blob/_viewer", viewer: viewer, load_async: false)

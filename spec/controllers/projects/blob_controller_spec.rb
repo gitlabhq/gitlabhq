@@ -70,7 +70,7 @@ describe Projects::BlobController do
 
         it do
           expect(response).to be_ok
-          expect(json_response).note_to have_key 'html'
+          expect(json_response).not_to have_key 'html'
         end
       end
     end
