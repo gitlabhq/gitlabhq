@@ -157,12 +157,8 @@ module Gitlab
 
       # Returns an Array of Branches
       def branches
-        gitaly_migrate(:branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.branches
-          else
-            branches_filter
-          end
+        wrapped_gitaly_errors do
+          gitaly_ref_client.branches
         end
       end
 

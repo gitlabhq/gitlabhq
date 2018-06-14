@@ -1344,24 +1344,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
     end
 
-    # With Gitaly enabled, Gitaly just doesn't return deleted branches.
-    context 'with deleted branch with Gitaly disabled' do
-      before do
-        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).and_return(false)
-      end
-
-      it 'returns no results' do
-        ref = double()
-        allow(ref).to receive(:name) { 'bad-branch' }
-        allow(ref).to receive(:target) { raise Rugged::ReferenceError }
-        branches = double()
-        allow(branches).to receive(:each) { [ref].each }
-        allow(repository_rugged).to receive(:branches) { branches }
-
-        expect(subject).to be_empty
-      end
-    end
-
     it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :branches
   end
 
