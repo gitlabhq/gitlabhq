@@ -421,6 +421,16 @@ describe Gitlab::Git::Commit, seed_helper: true do
       end
     end
 
+    describe '#batch_by_oid' do
+      context 'when oids is empty' do
+        it 'makes no Gitaly request' do
+          expect(Gitlab::GitalyClient).not_to receive(:call)
+
+          described_class.batch_by_oid(repository, [])
+        end
+      end
+    end
+
     shared_examples 'extracting commit signature' do
       context 'when the commit is signed' do
         let(:commit_id) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }

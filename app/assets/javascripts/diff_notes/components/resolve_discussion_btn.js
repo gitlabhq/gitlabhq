@@ -6,9 +6,18 @@ import Vue from 'vue';
 
 const ResolveDiscussionBtn = Vue.extend({
   props: {
-    discussionId: String,
-    mergeRequestId: Number,
-    canResolve: Boolean,
+    discussionId: {
+      type: String,
+      required: true,
+    },
+    mergeRequestId: {
+      type: Number,
+      required: true,
+    },
+    canResolve: {
+      type: Boolean,
+      required: true,
+    },
   },
   data: function() {
     return {
@@ -45,16 +54,16 @@ const ResolveDiscussionBtn = Vue.extend({
       }
     }
   },
+  created: function () {
+    CommentsStore.createDiscussion(this.discussionId, this.canResolve);
+
+    this.discussion = CommentsStore.state[this.discussionId];
+  },
   methods: {
     resolve: function () {
       ResolveService.toggleResolveForDiscussion(this.mergeRequestId, this.discussionId);
     }
   },
-  created: function () {
-    CommentsStore.createDiscussion(this.discussionId, this.canResolve);
-
-    this.discussion = CommentsStore.state[this.discussionId];
-  }
 });
 
 Vue.component('resolve-discussion-btn', ResolveDiscussionBtn);

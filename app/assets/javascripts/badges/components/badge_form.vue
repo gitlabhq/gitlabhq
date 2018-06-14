@@ -153,10 +153,10 @@ export default {
       <label for="badge-link-url">{{ s__('Badges|Link') }}</label>
       <input
         id="badge-link-url"
-        type="text"
-        class="form-control"
         v-model="linkUrl"
         :placeholder="$options.badgeLinkUrlPlaceholder"
+        type="text"
+        class="form-control"
         @input="debouncedPreview"
       />
       <span
@@ -169,10 +169,10 @@ export default {
       <label for="badge-image-url">{{ s__('Badges|Badge image URL') }}</label>
       <input
         id="badge-image-url"
-        type="text"
-        class="form-control"
         v-model="imageUrl"
         :placeholder="$options.badgeImageUrlPlaceholder"
+        type="text"
+        class="form-control"
         @input="debouncedPreview"
       />
       <span
@@ -184,8 +184,8 @@ export default {
     <div class="form-group">
       <label for="badge-preview">{{ s__('Badges|Badge image preview') }}</label>
       <badge
-        id="badge-preview"
         v-show="renderedBadge && !isRendering"
+        id="badge-preview"
         :image-url="renderedImageUrl"
         :link-url="renderedLinkUrl"
       />
@@ -202,16 +202,16 @@ export default {
 
     <div class="row-content-block">
       <loading-button
-        type="submit"
-        container-class="btn btn-success"
         :disabled="!canSubmit"
         :loading="isSaving"
         :label="submitButtonLabel"
+        type="submit"
+        container-class="btn btn-success"
       />
       <button
+        v-if="isEditing"
         class="btn btn-cancel"
         type="button"
-        v-if="isEditing"
         @click="onCancel"
       >{{ __('Cancel') }}</button>
     </div>

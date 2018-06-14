@@ -65,7 +65,7 @@ module Banzai
         # We don't support IID lookups for group milestones, because IIDs can
         # clash between group and project milestones.
         if project.group && !params[:iid]
-          finder_params[:group_ids] = [project.group.id]
+          finder_params[:group_ids] = project.group.self_and_ancestors.select(:id)
         end
 
         MilestonesFinder.new(finder_params).find_by(params)

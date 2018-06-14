@@ -47,8 +47,8 @@ export default {
     <span class="d-flex append-right-default ide-merge-request-current-icon">
       <icon
         v-if="isActive"
-        name="mobile-issue-close"
         :size="18"
+        name="mobile-issue-close"
       />
     </span>
     <span>

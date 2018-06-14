@@ -237,12 +237,14 @@ Issue Board, that is create/delete lists and drag issues around.
 
 ##  Group Issue Board
 
->Introduced in GitLab 10.6
+> Introduced in [GitLab 10.6](https://about.gitlab.com/2018/03/22/gitlab-10-6-released/#single-group-issue-board-in-core-and-free)
 
 Group issue board is analogous to project-level issue board and it is accessible at the group
 navigation level. A group-level issue board allows you to view all issues from all projects in that group or descendant subgroups. Similarly, you can only filter by group labels for these
 boards. When updating milestones and labels for an issue through the sidebar update mechanism, again only
 group-level objects are available.
+
+One group issue board per group was made available in GitLab 10.6 Core after multiple group issue boards were originally introduced in [GitLab 10.0 Premium](https://about.gitlab.com/2017/09/22/gitlab-10-0-released/#group-issue-boards).
 
 ## Features per tier
 

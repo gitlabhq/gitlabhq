@@ -101,8 +101,8 @@ export default {
         {{ __('Retry') }}
       </a>
       <button
-        type="button"
         :aria-label="__('Toggle Sidebar')"
+        type="button"
         class="btn btn-blank gutter-toggle float-right d-block d-md-none js-sidebar-build-toggle"
       >
         <i
@@ -114,20 +114,20 @@ export default {
     </div>
     <template v-if="shouldRenderContent">
       <div
-        class="block retry-link"
         v-if="job.retry_path || job.new_issue_path"
+        class="block retry-link"
       >
         <a
           v-if="job.new_issue_path"
-          class="js-new-issue btn btn-new btn-inverted"
           :href="job.new_issue_path"
+          class="js-new-issue btn btn-new btn-inverted"
         >
           {{ __('New issue') }}
         </a>
         <a
           v-if="canUserRetry"
-          class="js-retry-job btn btn-inverted-secondary"
           :href="job.retry_path"
+          class="js-retry-job btn btn-inverted-secondary"
           data-method="post"
           rel="nofollow"
         >
@@ -136,8 +136,8 @@ export default {
       </div>
       <div :class="{block : renderBlock }">
         <p
-          class="build-detail-row js-job-mr"
           v-if="job.merge_request"
+          class="build-detail-row js-job-mr"
         >
           <span class="build-light-text">
             {{ __('Merge Request:') }}
@@ -148,51 +148,51 @@ export default {
         </p>
 
         <detail-row
-          class="js-job-duration"
           v-if="job.duration"
-          title="Duration"
           :value="duration"
+          class="js-job-duration"
+          title="Duration"
         />
         <detail-row
-          class="js-job-finished"
           v-if="job.finished_at"
-          title="Finished"
           :value="timeFormated(job.finished_at)"
+          class="js-job-finished"
+          title="Finished"
         />
         <detail-row
-          class="js-job-erased"
           v-if="job.erased_at"
-          title="Erased"
           :value="timeFormated(job.erased_at)"
+          class="js-job-erased"
+          title="Erased"
         />
         <detail-row
-          class="js-job-queued"
           v-if="job.queued"
-          title="Queued"
           :value="queued"
+          class="js-job-queued"
+          title="Queued"
         />
         <detail-row
-          class="js-job-timeout"
           v-if="hasTimeout"
-          title="Timeout"
           :help-url="runnerHelpUrl"
           :value="timeout"
+          class="js-job-timeout"
+          title="Timeout"
         />
         <detail-row
-          class="js-job-runner"
           v-if="job.runner"
-          title="Runner"
           :value="runnerId"
+          class="js-job-runner"
+          title="Runner"
         />
         <detail-row
-          class="js-job-coverage"
           v-if="job.coverage"
-          title="Coverage"
           :value="coverage"
+          class="js-job-coverage"
+          title="Coverage"
         />
         <p
-          class="build-detail-row js-job-tags"
           v-if="job.tags.length"
+          class="build-detail-row js-job-tags"
         >
           <span class="build-light-text">
             {{ __('Tags:') }}
@@ -210,8 +210,8 @@ export default {
           class="btn-group prepend-top-5"
           role="group">
           <a
-            class="js-cancel-job btn btn-sm btn-default"
             :href="job.cancel_path"
+            class="js-cancel-job btn btn-sm btn-default"
             data-method="post"
             rel="nofollow"
           >
@@ -221,8 +221,8 @@ export default {
       </div>
     </template>
     <loading-icon
-      class="prepend-top-10"
       v-if="isLoading"
+      class="prepend-top-10"
       size="2"
     />
   </div>

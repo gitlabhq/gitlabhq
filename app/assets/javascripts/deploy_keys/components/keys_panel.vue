@@ -59,8 +59,8 @@ export default {
       />
     </template>
     <div
-      class="settings-message text-center"
       v-else
+      class="settings-message text-center"
     >
       {{ s__('DeployKeys|No deploy keys found. Create one with the form above.') }}
     </div>

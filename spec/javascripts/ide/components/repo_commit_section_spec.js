@@ -56,13 +56,17 @@ describe('RepoCommitSection', () => {
       vm.$store.state.entries[f.path] = f;
     });
 
-    return vm.$mount();
+    return vm;
   }
 
   beforeEach(done => {
     spyOn(router, 'push');
 
     vm = createComponent();
+
+    spyOn(vm, 'openPendingTab').and.callThrough();
+
+    vm.$mount();
 
     spyOn(service, 'getTreeData').and.returnValue(
       Promise.resolve({
@@ -98,6 +102,7 @@ describe('RepoCommitSection', () => {
       store.state.noChangesStateSvgPath = 'nochangessvg';
       store.state.committedStateSvgPath = 'svg';
 
+      vm.$destroy();
       vm = createComponentWithStore(Component, store).$mount();
 
       expect(vm.$el.querySelector('.js-empty-state').textContent.trim()).toContain('No changes');
@@ -175,6 +180,13 @@ describe('RepoCommitSection', () => {
     it('opens last opened file', () => {
       expect(store.state.openFiles.length).toBe(1);
       expect(store.state.openFiles[0].pending).toBe(true);
+    });
+
+    it('calls openPendingTab', () => {
+      expect(vm.openPendingTab).toHaveBeenCalledWith({
+        file: vm.lastOpenedFile,
+        keyPrefix: 'unstaged',
+      });
     });
   });
 });

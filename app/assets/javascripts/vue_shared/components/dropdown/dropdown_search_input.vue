@@ -23,10 +23,10 @@ export default {
 <template>
   <div class="dropdown-input">
     <input
-      class="dropdown-input-field"
-      type="search"
       v-model="searchQuery"
       :placeholder="placeholderText"
+      class="dropdown-input-field"
+      type="search"
       autocomplete="off"
     />
     <i

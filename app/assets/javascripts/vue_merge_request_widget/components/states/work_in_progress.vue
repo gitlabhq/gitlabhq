@@ -43,8 +43,8 @@ export default {
 <template>
   <div class="mr-widget-body media">
     <status-icon
-      status="warning"
       :show-disabled-button="Boolean(mr.removeWIPPath)"
+      status="warning"
     />
     <div class="media-body space-children">
       <span class="bold">
@@ -60,10 +60,10 @@ export default {
       </span>
       <button
         v-if="mr.removeWIPPath"
-        @click="removeWIP"
         :disabled="isMakingRequest"
         type="button"
-        class="btn btn-default btn-xs js-remove-wip">
+        class="btn btn-default btn-sm js-remove-wip"
+        @click="removeWIP">
         <i
           v-if="isMakingRequest"
           class="fa fa-spinner fa-spin"

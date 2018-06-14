@@ -29,17 +29,17 @@
 <template>
   <a
     v-tooltip
+    :title="title"
+    :aria-label="title"
+    :href="externalUrl"
     class="btn external-url"
     data-container="body"
     target="_blank"
     rel="noopener noreferrer nofollow"
-    :title="title"
-    :aria-label="title"
-    :href="externalUrl"
   >
     <icon
-      name="external-link"
       :size="12"
+      name="external-link"
     />
   </a>
 </template>

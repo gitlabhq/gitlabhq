@@ -91,7 +91,6 @@ export default {
 
 <template>
   <div
-    class="multi-file-commit-form"
     :class="{
       'is-compact': isCompact,
       'is-full': !isCompact
@@ -99,6 +98,7 @@ export default {
     :style="{
       height: componentHeight ? `${componentHeight}px` : null,
     }"
+    class="multi-file-commit-form"
   >
     <transition
       name="commit-form-slide-up"
@@ -108,12 +108,12 @@ export default {
     >
       <div
         v-if="isCompact"
-        class="commit-form-compact"
         ref="compactEl"
+        class="commit-form-compact"
       >
         <button
-          type="button"
           :disabled="!hasChanges"
+          type="button"
           class="btn btn-primary btn-sm btn-block"
           @click="toggleIsSmall"
         >
@@ -126,8 +126,8 @@ export default {
       </div>
       <form
         v-if="!isCompact"
-        @submit.prevent.stop="commitChanges"
         ref="formEl"
+        @submit.prevent.stop="commitChanges"
       >
         <transition name="fade">
           <success-message
@@ -143,8 +143,8 @@ export default {
           <loading-button
             :loading="submitCommitLoading"
             :disabled="commitButtonDisabled"
-            container-class="btn btn-success btn-sm float-left"
             :label="__('Commit')"
+            container-class="btn btn-success btn-sm float-left"
             @click="commitChanges"
           />
           <button

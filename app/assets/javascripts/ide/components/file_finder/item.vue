@@ -59,11 +59,11 @@ export default {
 
 <template>
   <button
-    type="button"
-    class="diff-changed-file"
     :class="{
       'is-focused': focused,
     }"
+    type="button"
+    class="diff-changed-file"
     @click.prevent="clickRow"
     @mouseover="mouseOverRow"
     @mousemove="mouseMove"

@@ -28,11 +28,11 @@ export default {
 
 <template>
   <button
+    :disabled="isDisabled || isLoading"
     class="dropdown-menu-toggle dropdown-menu-full-width"
     type="button"
     data-toggle="dropdown"
     aria-expanded="false"
-    :disabled="isDisabled || isLoading"
   >
     <loading-icon
       v-show="isLoading"
@@ -42,8 +42,8 @@ export default {
       {{ toggleText }}
     </span>
     <span
-      class="dropdown-toggle-icon"
       v-show="!isLoading"
+      class="dropdown-toggle-icon"
     >
       <i
         class="fa fa-chevron-down"

@@ -24,11 +24,11 @@ export default {
       <line
         :stroke-dasharray="stylizedLine"
         :stroke="track.lineColor"
-        stroke-width="4"
         :x1="0"
         :x2="16"
         :y1="4"
         :y2="4"
+        stroke-width="4"
       />
     </svg>
   </td>

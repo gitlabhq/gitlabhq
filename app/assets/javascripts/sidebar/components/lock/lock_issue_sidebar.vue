@@ -94,13 +94,13 @@ export default {
 <template>
   <div class="block issuable-sidebar-item lock">
     <div
-      class="sidebar-collapsed-icon"
-      @click="toggleForm"
       v-tooltip
+      :title="tooltipLabel"
+      class="sidebar-collapsed-icon"
       data-container="body"
       data-placement="left"
       data-boundary="viewport"
-      :title="tooltipLabel"
+      @click="toggleForm"
     >
       <icon
         :name="lockIcon"
@@ -134,8 +134,8 @@ export default {
         class="value sidebar-item-value"
       >
         <icon
-          name="lock"
           :size="16"
+          name="lock"
           aria-hidden="true"
           class="sidebar-item-icon inline is-active"
         />
@@ -147,8 +147,8 @@ export default {
         class="no-value sidebar-item-value hide-collapsed"
       >
         <icon
-          name="lock-open"
           :size="16"
+          name="lock-open"
           aria-hidden="true"
           class="sidebar-item-icon inline"
         />

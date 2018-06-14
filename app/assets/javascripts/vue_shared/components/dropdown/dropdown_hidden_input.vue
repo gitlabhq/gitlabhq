@@ -15,8 +15,8 @@ export default {
 
 <template>
   <input
-    type="hidden"
     :name="name"
     :value="value"
+    type="hidden"
   />
 </template>
