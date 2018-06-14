@@ -280,7 +280,11 @@ describe ProjectsHelper do
 
   describe '#sanitizerepo_repo_path' do
     let(:project) { create(:project, :repository) }
-    let(:storage_path) { Gitlab.config.repositories.storages.default.legacy_disk_path }
+    let(:storage_path) do
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        Gitlab.config.repositories.storages.default.legacy_disk_path
+      end
+    end
 
     before do
       allow(Settings.shared).to receive(:[]).with('path').and_return('/base/repo/export/path')
