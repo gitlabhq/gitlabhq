@@ -1,0 +1,13 @@
+- project = local_assigns.fetch(:project)
+
+- content_for :create_protected_branch do
+  = render 'projects/protected_branches/create_protected_branch'
+- content_for :branches_list do
+  = render 'projects/protected_branches/branches_list'
+= render 'projects/protected_branches/shared/index'
+
+- content_for :create_protected_tag do
+  = render 'projects/protected_tags/create_protected_tag'
+- content_for :tag_list do
+  = render 'projects/protected_tags/tags_list'
+= render 'projects/protected_tags/shared/index'
