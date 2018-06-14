@@ -166,8 +166,7 @@ feature 'Diff file viewer', :js do
 
     context 'expanding the diff' do
       before do
-        # We can't use `click_link` because the "link" doesn't have an `href`.
-        find('a.click-to-expand').click
+        click_button 'Click to expand it.'
 
         wait_for_requests
       end
