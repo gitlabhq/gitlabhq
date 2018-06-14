@@ -15,7 +15,7 @@
         .footer-block.row-content-block
           = service_save_button(@service)
           &nbsp;
-          = link_to 'Cancel', project_settings_integrations_path(@project), class: 'btn btn-cancel'
+          = link_to _('Cancel'), project_settings_integrations_path(@project), class: 'btn btn-cancel'
 
 - if lookup_context.template_exists?('show', "projects/services/#{@service.to_param}", true)
   %hr

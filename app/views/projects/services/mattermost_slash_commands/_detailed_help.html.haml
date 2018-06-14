@@ -1,6 +1,6 @@
-- run_actions_text = "Perform common operations on GitLab project: #{@project.full_name}"
+- run_actions_text = s_("ProjectService|Perform common operations on GitLab project: %{project_name}") % { project_name: @project.full_name }
 
-%p To set up this service:
+%p= s_("ProjectService|To set up this service:")
 %ul.list-unstyled.indent-list
   %li
     1.
@@ -18,67 +18,67 @@
 
 .help-form
   .form-group
-    = label_tag :display_name, 'Display name', class: 'col-12 col-form-label label-bold'
+    = label_tag :display_name, _('Display name'), class: 'col-12 col-form-label label-bold'
     .col-12.input-group
       = text_field_tag :display_name, "GitLab / #{@project.full_name}", class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
         = clipboard_button(target: '#display_name', class: 'input-group-text')
 
   .form-group
-    = label_tag :description, 'Description', class: 'col-12 col-form-label  label-bold'
+    = label_tag :description, _('Description'), class: 'col-12 col-form-label  label-bold'
     .col-12.input-group
       = text_field_tag :description, run_actions_text, class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
         = clipboard_button(target: '#description', class: 'input-group-text')
 
   .form-group
-    = label_tag nil, 'Command trigger word', class: 'col-12 col-form-label label-bold'
+    = label_tag nil, s_('MattermostService|Command trigger word'), class: 'col-12 col-form-label label-bold'
     .col-12
-      %p Fill in the word that works best for your team.
+      %p= s_('MattermostService|Fill in the word that works best for your team.')
       %p
-        Suggestions:
+        = s_('MattermostService|Suggestions:')
         %code= 'gitlab'
         %code= @project.path # Path contains no spaces, but dashes
         %code= @project.full_path
 
   .form-group
-    = label_tag :request_url, 'Request URL', class: 'col-12 col-form-label label-bold'
+    = label_tag :request_url, s_('MattermostService|Request URL'), class: 'col-12 col-form-label label-bold'
     .col-12.input-group
       = text_field_tag :request_url, service_trigger_url(subject), class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
         = clipboard_button(target: '#request_url', class: 'input-group-text')
 
   .form-group
-    = label_tag nil, 'Request method', class: 'col-12 col-form-label label-bold'
+    = label_tag nil, s_('MattermostService|Request method'), class: 'col-12 col-form-label label-bold'
     .col-12 POST
 
   .form-group
-    = label_tag :response_username, 'Response username', class: 'col-12 col-form-label label-bold'
+    = label_tag :response_username, s_('MattermostService|Response username'), class: 'col-12 col-form-label label-bold'
     .col-12.input-group
       = text_field_tag :response_username, 'GitLab', class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
         = clipboard_button(target: '#response_username', class: 'input-group-text')
 
   .form-group
-    = label_tag :response_icon, 'Response icon', class: 'col-12 col-form-label label-bold'
+    = label_tag :response_icon, s_('MattermostService|Response icon'), class: 'col-12 col-form-label label-bold'
     .col-12.input-group
       = text_field_tag :response_icon, asset_url('gitlab_logo.png'), class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
         = clipboard_button(target: '#response_icon', class: 'input-group-text')
 
   .form-group
-    = label_tag nil, 'Autocomplete', class: 'col-12 col-form-label label-bold'
+    = label_tag nil, _('Autocomplete'), class: 'col-12 col-form-label label-bold'
     .col-12 Yes
 
   .form-group
-    = label_tag :autocomplete_hint, 'Autocomplete hint', class: 'col-12 col-12 col-form-label label-bold'
+    = label_tag :autocomplete_hint, _('Autocomplete hint'), class: 'col-12 col-12 col-form-label label-bold'
     .col-12.input-group
       = text_field_tag :autocomplete_hint, '[help]', class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
         = clipboard_button(target: '#autocomplete_hint', class: 'input-group-text')
 
   .form-group
-    = label_tag :autocomplete_description, 'Autocomplete description', class: 'col-12 col-form-label label-bold'
+    = label_tag :autocomplete_description, _('Autocomplete description'), class: 'col-12 col-form-label label-bold'
     .col-12.input-group
       = text_field_tag :autocomplete_description, run_actions_text, class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
