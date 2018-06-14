@@ -1,5 +1,4 @@
 <script>
-  import arrowSvg from 'ee_icons/_arrow_mini_pipeline_graph.svg';
   import icon from '~/vue_shared/components/icon.vue';
   import ciStatus from '~/vue_shared/components/ci_icon.vue';
   import tooltip from '~/vue_shared/directives/tooltip';
@@ -31,7 +30,6 @@
     },
     data() {
       return {
-        arrowSvg,
         maxRenderedPipelines: 3,
       };
     },
@@ -88,13 +86,11 @@
     class="linked-pipeline-mini-list"
   >
 
-    <span
+    <icon
       v-if="isDownstream"
       class="arrow-icon"
-      aria-hidden="true"
-      v-html="arrowSvg"
-    >
-    </span>
+      name="long-arrow"
+    />
 
     <a
       v-tooltip
@@ -124,12 +120,10 @@
       {{ counterLabel }}
     </a>
 
-    <span
+    <icon
       v-if="isUpstream"
       class="arrow-icon"
-      aria-hidden="true"
-      v-html="arrowSvg"
-    >
-    </span>
+      name="long-arrow"
+    />
   </span>
 </template>

@@ -13,6 +13,9 @@
 
     svg {
       fill: $border-color;
+      position: relative;
+      top: 4px;
+      left: -1px;
     }
   }
 

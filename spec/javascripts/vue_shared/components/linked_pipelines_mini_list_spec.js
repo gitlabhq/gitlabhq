@@ -36,7 +36,7 @@ describe('Linked pipeline mini list', function() {
     it('should render an arrow icon', () => {
       const iconElement = this.component.$el.querySelector('.arrow-icon');
       expect(iconElement).not.toBeNull();
-      expect(iconElement.innerHTML).toContain('<svg');
+      expect(iconElement.innerHTML).toContain('long-arrow');
     });
 
     it('should have an activated tooltip', () => {
@@ -88,7 +88,7 @@ describe('Linked pipeline mini list', function() {
     it('should render an arrow icon', () => {
       const iconElement = this.component.$el.querySelector('.arrow-icon');
       expect(iconElement).not.toBeNull();
-      expect(iconElement.innerHTML).toContain('<svg');
+      expect(iconElement.innerHTML).toContain('long-arrow');
     });
 
     it('should have prepped tooltips', () => {
