@@ -3,13 +3,15 @@
 ## GitLab Flavored Markdown (GFM)
 
 > **Note:**
-Not all of the GitLab-specific extensions to Markdown that are described in
-this document currently work on our documentation website.
+> Not all of the GitLab-specific extensions to Markdown that are described in
+> this document currently work on our documentation website.
 >
-For the best result, we encourage you to check this document out as rendered
+> For the best result, we encourage you to check this document out as rendered
 by GitLab: [markdown.md]
 
-_GitLab uses the [Redcarpet Ruby library][redcarpet] for Markdown processing._
+_GitLab uses (as of 11.1) the [CommonMark Ruby Library][commonmarker] for Markdown processing of all new issues, merge requests, comments, and other Markdown content in the GitLab system.  Previous content and Markdown files `.md` in the repositories are still processed using the [Redcarpet Ruby library][redcarpet]._
+
+_Where there are significant differences, we will try to call them out in this document._
 
 GitLab uses "GitLab Flavored Markdown" (GFM). It extends the standard Markdown in a few significant ways to add some useful functionality. It was inspired by [GitHub Flavored Markdown](https://help.github.com/articles/basic-writing-and-formatting-syntax/).
 
@@ -21,7 +23,7 @@ You can use GFM in the following areas:
 - milestones
 - snippets (the snippet must be named with a `.md` extension)
 - wiki pages
-- markdown documents inside the repository
+- markdown documents inside the repository (currently only rendered by Redcarpet)
 
 You can also use other rich text files in GitLab. You might have to install a
 dependency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
@@ -394,14 +396,14 @@ Color written inside backticks will be followed by a color "chip".
 
 Examples:
 
-    `#F00`
-    `#F00A`
-    `#FF0000`
-    `#FF0000AA`
-    `RGB(0,255,0)`
-    `RGB(0%,100%,0%)`
-    `RGBA(0,255,0,0.7)`
-    `HSL(540,70%,50%)`
+    `#F00`  
+    `#F00A`  
+    `#FF0000`  
+    `#FF0000AA`  
+    `RGB(0,255,0)`  
+    `RGB(0%,100%,0%)`  
+    `RGBA(0,255,0,0.7)`  
+    `HSL(540,70%,50%)`  
     `HSLA(540,70%,50%,0.7)`
 
 Become:
@@ -414,7 +416,7 @@ Become:
 `RGB(0%,100%,0%)`  
 `RGBA(0,255,0,0.7)`  
 `HSL(540,70%,50%)`  
-`HSLA(540,70%,50%,0.7)`  
+`HSLA(540,70%,50%,0.7)`
 
 #### Supported formats:
 
@@ -500,6 +502,7 @@ For example:
 # This header has Unicode in it: 한글
 ## This header has spaces in it
 ### This header has spaces in it
+## This header has 3.5 in it (and parentheses)
 ```
 
 Would generate the following link IDs:
@@ -509,6 +512,7 @@ Would generate the following link IDs:
 1. `this-header-has-unicode-in-it-한글`
 1. `this-header-has-spaces-in-it`
 1. `this-header-has-spaces-in-it-1`
+1. `this-header-has-3-5-in-it-and-parentheses`
 
 Note that the Emoji processing happens before the header IDs are generated, so the Emoji is converted to an image which then gets removed from the ID.
 
@@ -543,9 +547,9 @@ Examples:
 ```no-highlight
 1. First ordered list item
 2. Another item
-  * Unordered sub-list.
+   * Unordered sub-list.
 1. Actual numbers don't matter, just that it's a number
-  1. Ordered sub-list
+   1. Ordered sub-list
 4. And another item.
 
 * Unordered list can use asterisks
@@ -557,9 +561,9 @@ Become:
 
 1. First ordered list item
 2. Another item
-  * Unordered sub-list.
+   * Unordered sub-list.
 1. Actual numbers don't matter, just that it's a number
-  1. Ordered sub-list
+   1. Ordered sub-list
 4. And another item.
 
 * Unordered list can use asterisks
@@ -567,26 +571,7 @@ Become:
 + Or pluses
 
 If a list item contains multiple paragraphs,
-each subsequent paragraph should be indented with four spaces.
-
-Example:
-
-```no-highlight
-1.  First ordered list item
-
-    Second paragraph of first item.
-2.  Another item
-```
-
-Becomes:
-
-1.  First ordered list item
-
-    Second paragraph of first item.
-2.  Another item
-
-If the second paragraph isn't indented with four spaces,
-the second list item will be incorrectly labeled as `1`.
+each subsequent paragraph should be indented to the same level as the start of the list item text (_Redcarpet: paragraph should be indented with four spaces._)
 
 Example:
 
@@ -594,6 +579,28 @@ Example:
 1. First ordered list item
 
    Second paragraph of first item.
+
+2. Another item
+```
+
+Becomes:
+
+1.  First ordered list item
+
+    Paragraph of first item.
+
+2.  Another item
+
+If the paragraph of the first item is not indented with the proper number of spaces,
+the paragraph will appear outside the list, instead of properly indented under the list item.
+
+Example:
+
+```no-highlight
+1. First ordered list item
+
+  Paragraph of first item.
+
 2. Another item
 ```
 
@@ -601,7 +608,8 @@ Becomes:
 
 1. First ordered list item
 
-   Second paragraph of first item.
+  Paragraph of first item.
+
 2. Another item
 
 ### Links
@@ -719,20 +727,24 @@ Content can be collapsed using HTML's [`<details>`](https://developer.mozilla.or
 <p>
 <details>
 <summary>Click me to collapse/fold.</summary>
-These details will remain hidden until expanded.
+
+These details <em>will</em> remain <strong>hidden</strong> until expanded.
 
 <pre><code>PASTE LOGS HERE</code></pre>
+
 </details>
 </p>
 
-**Note:** Unfortunately Markdown is not supported inside these tags, as described by the [markdown specification](https://daringfireball.net/projects/markdown/syntax#html). You can work around this by using HTML, for example you can use `<pre><code>` tags instead of [code fences](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#code-and-syntax-highlighting).
+**Note:** Markdown inside these tags is supported, as long as you have a blank link after the `</summary>` tag and before the `</details>` tag, as shown in the example.  _Redcarpet does not support Markdown inside these tags.  You can work around this by using HTML, for example you can use `<pre><code>` tags instead of [code fences](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#code-and-syntax-highlighting)._
 
 ```html
 <details>
 <summary>Click me to collapse/fold.</summary>
-These details will remain hidden until expanded.
 
-<pre><code>PASTE LOGS HERE</code></pre>
+These details _will_ remain **hidden** until expanded.
+
+    PASTE LOGS HERE
+
 </details>
 ```
 
@@ -774,7 +786,7 @@ Underscores
 
 ### Line Breaks
 
-My basic recommendation for learning how line breaks work is to experiment and discover -- hit &lt;Enter&gt; once (i.e., insert one newline), then hit it twice (i.e., insert two newlines), see what happens. You'll soon learn to get what you want. "Markdown Toggle" is your friend.
+A good way to learn how line breaks work is to experiment and discover -- hit <kbd>Enter</kbd> once (i.e., insert one newline), then hit it twice (i.e., insert two newlines), see what happens. You'll soon learn to get what you want. The "Preview" tab is your friend.
 
 Here are some things to try out:
 
@@ -810,7 +822,7 @@ spaces.
 
 ### Tables
 
-Tables aren't part of the core Markdown spec, but they are part of GFM and Markdown Here supports them.
+Tables aren't part of the core Markdown spec, but they are part of GFM.
 
 Example:
 
@@ -828,9 +840,7 @@ Becomes:
 | cell 1   | cell 2   |
 | cell 3   | cell 4   |
 
-**Note**
-
-The row of dashes between the table header and body must have at least three dashes in each column.
+**Note:** The row of dashes between the table header and body must have at least three dashes in each column.
 
 By including colons in the header row, you can align the text within that column.
 
@@ -862,6 +872,18 @@ You can add footnotes to your text as follows.[^2]
 Becomes:
 
 You can add footnotes to your text as follows.[^2]
+
+### Superscripts / Subscripts
+
+CommonMark and GFM currently do not support the superscript syntax ( `x^2` ) that Redcarpet does.  You can use the standard HTML syntax for superscripts and subscripts.
+
+```
+The formula for water is H<sub>2</sub>O
+while the equation for the theory of relativity is E = mc<sup>2</sup>.
+```
+
+The formula for water is H<sub>2</sub>O while the equation for the theory of relativity is E = mc<sup>2</sup>.
+
 
 ## Wiki-specific Markdown
 
@@ -954,3 +976,4 @@ A link starting with a `/` is relative to the wiki root.
 [katex]: https://github.com/Khan/KaTeX "KaTeX website"
 [katex-subset]: https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX "Macros supported by KaTeX"
 [asciidoctor-manual]: http://asciidoctor.org/docs/user-manual/#activating-stem-support "Asciidoctor user manual"
+[commonmarker]: https://github.com/gjtorikian/commonmarker
