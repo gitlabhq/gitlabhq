@@ -18,10 +18,10 @@ feature 'Commit diff', :js do
       end
 
       it "adds comment to diff" do
-        diff_line_num = first('.diff-line-num.new')
-
-        diff_line_num.hover
-        diff_line_num.find('.js-add-diff-note-button').click
+        page.execute_script <<-JS
+          var diffLineButton = document.querySelectorAll('.js-add-diff-note-button')[0];
+          diffLineButton.click();
+        JS
 
         page.within(first('.diff-viewer')) do
           find('.js-note-text').set 'test comment'
