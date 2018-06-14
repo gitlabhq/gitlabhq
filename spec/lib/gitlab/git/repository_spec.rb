@@ -425,7 +425,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#has_local_branches?' do
-    shared_examples 'check for local branches' do
+    context 'check for local branches' do
       it { expect(repository.has_local_branches?).to eq(true) }
 
       context 'mutable' do
@@ -458,14 +458,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
           end
         end
       end
-    end
-
-    context 'with gitaly' do
-      it_behaves_like 'check for local branches'
-    end
-
-    context 'without gitaly', :skip_gitaly_mock do
-      it_behaves_like 'check for local branches'
     end
   end
 

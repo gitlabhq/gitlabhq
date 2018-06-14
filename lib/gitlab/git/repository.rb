@@ -235,18 +235,6 @@ module Gitlab
       # This refs by default not visible in project page and not cloned to client side.
       alias_method :has_visible_content?, :has_local_branches?
 
-      def has_local_branches_rugged?
-        rugged.branches.each(:local).any? do |ref|
-          begin
-            ref.name && ref.target # ensures the branch is valid
-
-            true
-          rescue Rugged::ReferenceError
-            false
-          end
-        end
-      end
-
       # Returns the number of valid tags
       def tag_count
         gitaly_migrate(:tag_names) do |is_enabled|
@@ -1573,12 +1561,8 @@ module Gitlab
       private
 
       def uncached_has_local_branches?
-        gitaly_migrate(:has_local_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.has_local_branches?
-          else
-            has_local_branches_rugged?
-          end
+        wrapped_gitaly_errors do
+          gitaly_repository_client.has_local_branches?
         end
       end
 
