@@ -719,13 +719,7 @@ module Gitlab
       end
 
       def add_tag(tag_name, user:, target:, message: nil)
-        gitaly_migrate(:operation_user_add_tag, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_add_tag(tag_name, user: user, target: target, message: message)
-          else
-            rugged_add_tag(tag_name, user: user, target: target, message: message)
-          end
-        end
+        gitaly_operations_client.add_tag(tag_name, user, target, message)
       end
 
       def rm_branch(branch_name, user:)
@@ -1027,30 +1021,7 @@ module Gitlab
       end
 
       def languages(ref = nil)
-        gitaly_migrate(:commit_languages, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_commit_client.languages(ref)
-          else
-            ref ||= rugged.head.target_id
-            languages = Linguist::Repository.new(rugged, ref).languages
-            total = languages.map(&:last).sum
-
-            languages = languages.map do |language|
-              name, share = language
-              color = Linguist::Language[name].color || "##{Digest::SHA256.hexdigest(name)[0...6]}"
-              {
-                value: (share.to_f * 100 / total).round(2),
-                label: name,
-                color: color,
-                highlight: color
-              }
-            end
-
-            languages.sort do |x, y|
-              y[:value] <=> x[:value]
-            end
-          end
-        end
+        gitaly_commit_client.languages(ref)
       end
 
       def license_short_name
@@ -2031,33 +2002,6 @@ module Gitlab
       # exist when it has an invalid name).
       rescue Rugged::ReferenceError
         false
-      end
-
-      def gitaly_add_tag(tag_name, user:, target:, message: nil)
-        gitaly_operations_client.add_tag(tag_name, user, target, message)
-      end
-
-      def rugged_add_tag(tag_name, user:, target:, message: nil)
-        target_object = Ref.dereference_object(lookup(target))
-        raise InvalidRef.new("target not found: #{target}") unless target_object
-
-        user = Gitlab::Git::User.from_gitlab(user) unless user.respond_to?(:gl_id)
-
-        options = nil # Use nil, not the empty hash. Rugged cares about this.
-        if message
-          options = {
-            message: message,
-            tagger: Gitlab::Git.committer_hash(email: user.email, name: user.name)
-          }
-        end
-
-        Gitlab::Git::OperationService.new(user, self).add_tag(tag_name, target_object.oid, options)
-
-        find_tag(tag_name)
-      rescue Rugged::ReferenceError => ex
-        raise InvalidRef, ex
-      rescue Rugged::TagError
-        raise TagExistsError
       end
 
       def rugged_create_branch(ref, start_point)

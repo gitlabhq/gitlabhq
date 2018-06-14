@@ -1863,61 +1863,26 @@ describe Repository do
   describe '#add_tag' do
     let(:user) { build_stubbed(:user) }
 
-    shared_examples 'adding tag' do
-      context 'with a valid target' do
-        it 'creates the tag' do
-          repository.add_tag(user, '8.5', 'master', 'foo')
+    context 'with a valid target' do
+      it 'creates the tag' do
+        repository.add_tag(user, '8.5', 'master', 'foo')
 
-          tag = repository.find_tag('8.5')
-          expect(tag).to be_present
-          expect(tag.message).to eq('foo')
-          expect(tag.dereferenced_target.id).to eq(repository.commit('master').id)
-        end
-
-        it 'returns a Gitlab::Git::Tag object' do
-          tag = repository.add_tag(user, '8.5', 'master', 'foo')
-
-          expect(tag).to be_a(Gitlab::Git::Tag)
-        end
+        tag = repository.find_tag('8.5')
+        expect(tag).to be_present
+        expect(tag.message).to eq('foo')
+        expect(tag.dereferenced_target.id).to eq(repository.commit('master').id)
       end
 
-      context 'with an invalid target' do
-        it 'returns false' do
-          expect(repository.add_tag(user, '8.5', 'bar', 'foo')).to be false
-        end
-      end
-    end
-
-    context 'when Gitaly operation_user_add_tag feature is enabled' do
-      it_behaves_like 'adding tag'
-    end
-
-    context 'when Gitaly operation_user_add_tag feature is disabled', :disable_gitaly do
-      it_behaves_like 'adding tag'
-
-      it 'passes commit SHA to pre-receive and update hooks and tag SHA to post-receive hook' do
-        pre_receive_hook = Gitlab::Git::Hook.new('pre-receive', project)
-        update_hook = Gitlab::Git::Hook.new('update', project)
-        post_receive_hook = Gitlab::Git::Hook.new('post-receive', project)
-
-        allow(Gitlab::Git::Hook).to receive(:new)
-          .and_return(pre_receive_hook, update_hook, post_receive_hook)
-
-        allow(pre_receive_hook).to receive(:trigger).and_call_original
-        allow(update_hook).to receive(:trigger).and_call_original
-        allow(post_receive_hook).to receive(:trigger).and_call_original
-
+      it 'returns a Gitlab::Git::Tag object' do
         tag = repository.add_tag(user, '8.5', 'master', 'foo')
 
-        commit_sha = repository.commit('master').id
-        tag_sha = tag.target
+        expect(tag).to be_a(Gitlab::Git::Tag)
+      end
+    end
 
-        expect(pre_receive_hook).to have_received(:trigger)
-          .with(anything, anything, anything, commit_sha, anything)
-        expect(update_hook).to have_received(:trigger)
-          .with(anything, anything, anything, commit_sha, anything)
-        expect(post_receive_hook).to have_received(:trigger)
-          .with(anything, anything, anything, tag_sha, anything)
+    context 'with an invalid target' do
+      it 'returns false' do
+        expect(repository.add_tag(user, '8.5', 'bar', 'foo')).to be false
       end
     end
   end
