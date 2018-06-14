@@ -15,11 +15,11 @@ Would you like to contribute to GitLab University? Then please take a look at ou
 
 The curriculum is composed of GitLab videos, screencasts, presentations, projects and external GitLab content hosted on other services and has been organized into the following sections.
 
-1. [GitLab Beginner](#beginner)
-1. [GitLab Intermediate](#intermediate)
-1. [GitLab Advanced](#advanced)
-1. [External Articles](#external)
-1. [Resources for GitLab Team Members](#team)
+1. [GitLab Beginner](#gitlab-beginner)
+1. [GitLab Intermediate](#gitlab-intermediate)
+1. [GitLab Advanced](#gitlab-advanced)
+1. [External Articles](#external-articles)
+1. [Resources for GitLab Team Members](#resources-for-gitlab-team-members)
 
 ---
 
