@@ -897,7 +897,7 @@ into similar problems in the future (e.g. when new tables are created).
           delay_interval = BackgroundMigrationWorker::MIN_INTERVAL
         end
 
-        interval = 0
+        interval_index = 1
         jobs = []
 
         model_class.unscoped.each_batch(of: range_size) do |outer_relation|
@@ -911,7 +911,8 @@ into similar problems in the future (e.g. when new tables are created).
               # That way we make background migration code to be predictable. It is possible that we will
               # push a number of concurrent small background migration jobs to be executed at the same time.
               # At most we will push 2xbatch_size-1, but in normal circumstances it will be 1.5*batch_size
-              BackgroundMigrationWorker.build_perfom_in(delay_interval * ++interval, jobs)
+              BackgroundMigrationWorker.bulk_perform_in(delay_interval * interval_index, jobs)
+              interval_index += 1
               jobs.clear
             end
 
@@ -919,7 +920,7 @@ into similar problems in the future (e.g. when new tables are created).
           end
         end
 
-        BackgroundMigrationWorker.build_perfom_in(delay_interval * ++interval, jobs) unless jobs.empty?
+        BackgroundMigrationWorker.bulk_perform_in(delay_interval * interval_index, jobs) unless jobs.empty?
       end
 
       # Fetches indexes on a column by name for postgres.
