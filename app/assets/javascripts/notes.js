@@ -1675,7 +1675,7 @@ export default class Notes {
                <div class="note-header">
                   <div class="note-header-info">
                      <a href="/${_.escape(currentUsername)}">
-                       <span class="d-none d-sm-block">${_.escape(
+                       <span class="d-none d-sm-inline-block">${_.escape(
                          currentUsername,
                        )}</span>
                        <span class="note-headline-light">${_.escape(
@@ -1694,7 +1694,7 @@ export default class Notes {
       </li>`,
     );
 
-    $tempNote.find('.d-none.d-sm-block').text(_.escape(currentUserFullname));
+    $tempNote.find('.d-none.d-sm-inline-block').text(_.escape(currentUserFullname));
     $tempNote
       .find('.note-headline-light')
       .text(`@${_.escape(currentUsername)}`);
