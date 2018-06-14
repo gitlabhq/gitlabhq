@@ -799,16 +799,6 @@ cache:
   - binaries/
 ```
 
-If you use **Windows PowerShell** to run your shell scripts you need to replace
-`$` with `$env:`:
-
-```yaml
-cache:
-  key: "$env:CI_COMMIT_REF_SLUG"
-  paths:
-  - binaries/
-```
-
 ### `cache:untracked`
 
 Set `untracked: true` to cache all files that are untracked in your Git
