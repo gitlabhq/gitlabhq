@@ -5,12 +5,12 @@
 
   .nav-controls
     = form_tag request.original_url, method: :get, class: 'project-filter-form', id: 'project-filter-form' do |f|
-      = search_field_tag :filter_projects, nil, placeholder: 'Search forks', class: 'projects-list-filter project-filter-form-field form-control input-short',
+      = search_field_tag :filter_projects, nil, placeholder: _('Search forks'), class: 'projects-list-filter project-filter-form-field form-control input-short',
         spellcheck: false, data: { 'filter-selector' => 'span.namespace-name' }
 
     .dropdown
       %button.dropdown-menu-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
-        %span.light sort:
+        %span.light= _("sort:")
         - if @sort.present?
           = sort_options_hash[@sort]
         - else
@@ -30,13 +30,12 @@
 
     - if current_user && can?(current_user, :fork_project, @project)
       - if current_user.already_forked?(@project) && current_user.manageable_namespaces.size < 2
-        = link_to namespace_project_path(current_user, current_user.fork_of(@project)), title: 'Go to your fork', class: 'btn btn-success' do
+        = link_to namespace_project_path(current_user, current_user.fork_of(@project)), title: _('Go to your fork'), class: 'btn btn-success' do
           = sprite_icon('fork', size: 12)
-          %span Fork
+          %span= _('Fork')
       - else
-        = link_to new_project_fork_path(@project), title: "Fork project", class: 'btn btn-success' do
+        = link_to new_project_fork_path(@project), title: _("Fork project"), class: 'btn btn-success' do
           = sprite_icon('fork', size: 12)
-          %span Fork
-
+          %span= _('Fork')
 
 = render 'projects', projects: @forks
