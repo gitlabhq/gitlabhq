@@ -472,13 +472,21 @@ module Gitlab
       end
 
       def count_commits(options)
-        count_commits_options = process_count_commits_options(options)
+        options = process_count_commits_options(options.dup)
 
-        gitaly_migrate(:count_commits, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            count_commits_by_gitaly(count_commits_options)
+        wrapped_gitaly_errors do
+          if options[:left_right]
+            from = options[:from]
+            to = options[:to]
+
+            right_count = gitaly_commit_client
+              .commit_count("#{from}..#{to}", options)
+            left_count = gitaly_commit_client
+              .commit_count("#{to}..#{from}", options)
+
+            [left_count, right_count]
           else
-            count_commits_by_shelling_out(count_commits_options)
+            gitaly_commit_client.commit_count(options[:ref], options)
           end
         end
       end
@@ -1900,71 +1908,6 @@ module Gitlab
 
       def size_by_gitaly
         gitaly_repository_client.repository_size
-      end
-
-      def count_commits_by_gitaly(options)
-        if options[:left_right]
-          from = options[:from]
-          to = options[:to]
-
-          right_count = gitaly_commit_client
-            .commit_count("#{from}..#{to}", options)
-          left_count = gitaly_commit_client
-            .commit_count("#{to}..#{from}", options)
-
-          [left_count, right_count]
-        else
-          gitaly_commit_client.commit_count(options[:ref], options)
-        end
-      end
-
-      def count_commits_by_shelling_out(options)
-        cmd = count_commits_shelling_command(options)
-
-        raw_output, _status = run_git(cmd)
-
-        process_count_commits_raw_output(raw_output, options)
-      end
-
-      def count_commits_shelling_command(options)
-        cmd = %w[rev-list]
-        cmd << "--after=#{options[:after].iso8601}" if options[:after]
-        cmd << "--before=#{options[:before].iso8601}" if options[:before]
-        cmd << "--max-count=#{options[:max_count]}" if options[:max_count]
-        cmd << "--left-right" if options[:left_right]
-        cmd << '--count'
-
-        cmd << if options[:all]
-                 '--all'
-               elsif options[:ref]
-                 options[:ref]
-               else
-                 raise ArgumentError, "Please specify a valid ref or set the 'all' attribute to true"
-               end
-
-        cmd += %W[-- #{options[:path]}] if options[:path].present?
-        cmd
-      end
-
-      def process_count_commits_raw_output(raw_output, options)
-        if options[:left_right]
-          result = raw_output.scan(/\d+/).map(&:to_i)
-
-          if result.sum != options[:max_count]
-            result
-          else # Reaching max count, right is not accurate
-            right_option =
-              process_count_commits_options(options
-                .except(:left_right, :from, :to)
-                .merge(ref: options[:to]))
-
-            right = count_commits_by_shelling_out(right_option)
-
-            [result.first, right] # left should be accurate in the first call
-          end
-        else
-          raw_output.to_i
-        end
       end
 
       def gitaly_ls_files(ref)

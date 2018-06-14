@@ -1114,7 +1114,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#count_commits' do
-    shared_examples 'extended commit counting' do
+    describe 'extended commit counting' do
       context 'with after timestamp' do
         it 'returns the number of commits after timestamp' do
           options = { ref: 'master', after: Time.iso8601('2013-03-03T20:15:01+00:00') }
@@ -1198,14 +1198,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
           expect { repository.count_commits({}) }.to raise_error(ArgumentError)
         end
       end
-    end
-
-    context 'when Gitaly count_commits feature is enabled' do
-      it_behaves_like 'extended commit counting'
-    end
-
-    context 'when Gitaly count_commits feature is disabled', :disable_gitaly do
-      it_behaves_like 'extended commit counting'
     end
   end
 
