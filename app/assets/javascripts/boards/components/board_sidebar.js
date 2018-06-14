@@ -27,10 +27,7 @@ gl.issueBoards.BoardSidebar = Vue.extend({
     assignees,
     removeBtn: gl.issueBoards.RemoveIssueBtn,
     subscriptions,
-<<<<<<< HEAD
     weight,
-=======
->>>>>>> upstream/master
   },
   props: {
     currentUser: {
