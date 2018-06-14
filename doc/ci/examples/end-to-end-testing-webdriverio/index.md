@@ -3,20 +3,20 @@ author: Vincent Tunru
 author_gitlab: Vinnl
 level: advanced
 article_type: user guide
-date: 2017-02-01 # we'll adjust this later
+date: 2018-06-14
 description: 'Confidence checking your entire app every time a new feature is added can quickly become repetitive. Learn how to automate it with GitLab CI/CD.'
 ---
 
 # End-to-end testing with GitLab CI/CD and WebdriverIO
 
-[Review Apps](https://about.gitlab.com/features/review-apps/) are great: for every merge request
+[Review Apps](../../review_apps/index.md) are great: for every merge request
 (or branch, for that matter), the new code can be copied and deployed to a fresh production-like live
 environment, making it incredibly low-effort to assess the impact of the changes. Thus, when we use a dependency manager like
 [Dependencies.io](https://www.dependencies.io/), it can submit a merge request with an updated dependency,
 and it will immediately be clear that the application can still be properly built and deployed. After all, you can _see_ it
 running!
 
-![screenshot](./img/deployed_dependency_update.png)
+![screenshot](img/deployed_dependency_update.png)
 
 However, looking at the freshly deployed code to check whether it still looks and behaves as
 expected is repetitive manual work, which means it is a prime candidate for automation. This is
@@ -27,7 +27,7 @@ to write such end-to-end tests, and how to set up GitLab CI/CD to automatically 
 against your new code, on a branch-by-branch basis. For the scope of this article, we will walk you
 through the process of setting up GitLab CI/CD for end-to-end testing Javascript-based applications
 with WebdriverIO, but the general strategy should carry over to other languages.
-We assume you are familiar with GitLab, [GitLab CI/CD](../../README.html), [Review Apps](../../review_apps/index.html), and running your app locally, e.g., on `localhost:8000`.
+We assume you are familiar with GitLab, [GitLab CI/CD](../../README.md), [Review Apps](../../review_apps/index.md), and running your app locally, e.g., on `localhost:8000`.
 
 ### What to test
 
@@ -139,10 +139,10 @@ new browser window interacting with your app as you specified.
 Which brings us to the exciting part: how do we run this in GitLab CI/CD? There are two things we
 need to do for this:
 
-1. Set up [CI/CD jobs](../../yaml/README.html#jobs) that actually have a browser available.
+1. Set up [CI/CD jobs](../../yaml/README.md#jobs) that actually have a browser available.
 2. Update our WebdriverIO configuration to use those browsers to visit the review apps.
 
-For the scope of this article, we've defined an additional [CI/CD stage](../../yaml/#stages)
+For the scope of this article, we've defined an additional [CI/CD stage](../../yaml/README.md#stages)
 `confidence-check` that is executed _after_ the stage that deploys the review app. It uses the `node:latest` [Docker
 image](../../docker/using_docker_images.html). However, WebdriverIO fires up actual browsers
 to interact with your application, so we need to install and run them.
@@ -247,5 +247,5 @@ production project, see:
 
 There's plenty more that WebdriverIO can do. For example, you can configure a [`screenshotPath`](http://webdriver.io/guide/getstarted/configuration.html#screenshotPath) to tell WebdriverIO to take
 a screenshot when tests are failing. Then tell GitLab CI/CD to store those
-[artifacts](../../yaml/#artifacts), and you'll be able to see what went
+[artifacts](../../yaml/README.md#artifacts), and you'll be able to see what went
 wrong within GitLab.
