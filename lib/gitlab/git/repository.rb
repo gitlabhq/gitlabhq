@@ -268,13 +268,7 @@ module Gitlab
 
       # Returns an Array of tag names
       def tag_names
-        gitaly_migrate(:tag_names, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.tag_names
-          else
-            rugged.tags.map { |t| t.name }
-          end
-        end
+        gitaly_ref_client.tag_names
       end
 
       # Returns an Array of Tags
