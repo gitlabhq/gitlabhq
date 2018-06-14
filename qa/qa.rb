@@ -47,6 +47,8 @@ module QA
 
     module Repository
       autoload :Push, 'qa/factory/repository/push'
+      autoload :ProjectPush, 'qa/factory/repository/project_push'
+      autoload :WikiPush, 'qa/factory/repository/wiki_push'
     end
 
     module Settings
@@ -164,11 +166,14 @@ module QA
       end
 
       module Wiki
-        autoload :MainLinks, 'qa/page/project/wiki/main_links'
-        autoload :Pages, 'qa/page/project/wiki/pages'
-        autoload :Empty, 'qa/page/project/wiki/empty'
-        autoload :Form, 'qa/page/project/wiki/form'
+        autoload :Edit, 'qa/page/project/wiki/edit'
+        autoload :New, 'qa/page/project/wiki/new'
+        autoload :Show, 'qa/page/project/wiki/show'
       end
+    end
+
+    module Shared
+      autoload :ClonePanel, 'qa/page/shared/clone_panel'
     end
 
     module Profile

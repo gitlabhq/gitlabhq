@@ -10,34 +10,31 @@ module QA
       expect(page).to have_content(/#{content}/)
     end
 
-    before(:all) do
+    before() do
       login
     end
 
-    scenario 'User creates a page in wiki for a project' do
-      @wiki = Factory::Resource::Wiki.fabricate! do |resource|
+    scenario 'User creates, edits and clones wiki' do
+      wiki = Factory::Resource::Wiki.fabricate! do |resource|
         resource.title = 'Home'
         resource.content = '# My First Wiki Content'
         resource.message = 'Update home'
       end
       validate_content('My First Wiki Content')
 
-      Page::Project::Wiki::MainLinks.act { edit_page }
-      Page::Project::Wiki::Form.perform do |page|
-        page.add_content("My Second Wiki Content")
+      Page::Project::Wiki::Edit.act { go_to_edit_page }
+      Page::Project::Wiki::New.perform do |page|
+        page.set_content("My Second Wiki Content")
         page.save_changes
       end
       validate_content('My Second Wiki Content')
 
-      Page::Project::Wiki::Pages.act { clone_repository }
-      Factory::Repository::Push.fabricate! do |resource|
-        resource.project = @wiki
-        resource.file_name = 'Home.md'
-        resource.commit_message = 'Updating Home Page'
-        resource.file_content = '# My Third Wiki Content'
-        resource.new_branch = false
+      Factory::Repository::WikiPush.fabricate! do |push|
+        push.wiki = wiki
+        push.file_name = 'Home.md'
+        push.file_content = '# My Third Wiki Content'
+        push.commit_message = 'Update Home.md'
       end
-
       Page::Menu::Side.act { click_wiki }
       expect(page).to have_content('My Third Wiki Content')
     end
