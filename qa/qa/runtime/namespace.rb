@@ -8,7 +8,7 @@ module QA
       end
 
       def name
-        'qa-test-' + time.strftime('%d-%m-%Y-%H-%M-%S')
+        'qa_test_' + time.strftime('%d-%m-%Y-%H-%M-%S')
       end
 
       def path
