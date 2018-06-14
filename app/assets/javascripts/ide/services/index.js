@@ -9,7 +9,7 @@ export default {
     return Vue.http.get(endpoint, { params: { format: 'json' } });
   },
   getFileData(endpoint) {
-    return Vue.http.get(endpoint, { params: { format: 'json' } });
+    return Vue.http.get(endpoint, { params: { format: 'json', html_render: 'false' } });
   },
   getRawFileData(file) {
     if (file.tempFile) {

@@ -55,6 +55,24 @@ describe Projects::BlobController do
           expect(json_response).to have_key 'raw_path'
         end
       end
+
+      context "html_render=false" do
+        let(:id) { 'master/README.md' }
+
+        before do
+          get(:show,
+              namespace_id: project.namespace,
+              project_id: project,
+              id: id,
+              format: :json,
+              html_render: false)
+        end
+
+        it do
+          expect(response).to be_ok
+          expect(json_response).note_to have_key 'html'
+        end
+      end
     end
 
     context 'with tree path' do
