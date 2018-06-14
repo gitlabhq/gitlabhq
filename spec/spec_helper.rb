@@ -30,12 +30,7 @@ end
 # require rainbow gem String monkeypatch, so we can test SystemChecks
 require 'rainbow/ext/string'
 
-# EE specific support START
-Dir[Rails.root.join("ee/spec/support/helpers/*.rb")].each { |f| require f }
-Dir[Rails.root.join("ee/spec/support/shared_contexts/*.rb")].each { |f| require f }
-Dir[Rails.root.join("ee/spec/support/shared_examples/*.rb")].each { |f| require f }
-Dir[Rails.root.join("ee/spec/support/**/*.rb")].each { |f| require f }
-# EE specific support END
+require_relative '../ee/spec/spec_helper'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -94,11 +89,7 @@ RSpec.configure do |config|
   config.include LiveDebugger, :js
   config.include MigrationsHelpers, :migration
   config.include RedisHelpers
-
-  # EE only START
-  config.include EE::LicenseHelpers
   config.include Rails.application.routes.url_helpers, type: :routing
-  # EE only END
 
   if ENV['CI']
     # This includes the first try, i.e. tests will be run 4 times before failing.
@@ -113,13 +104,6 @@ RSpec.configure do |config|
     Timecop.safe_mode = true
     TestEnv.init
   end
-
-  # EE-specific start
-  config.before(:all) do
-    License.destroy_all
-    TestLicense.init
-  end
-  # EE-specific stop
 
   config.after(:all) do
     TestEnv.clean_test_path
@@ -213,14 +197,6 @@ RSpec.configure do |config|
 
   config.around(:each, :nested_groups) do |example|
     example.run if Group.supports_nested_groups?
-  end
-
-  config.around(:each, :geo) do |example|
-    example.run if Gitlab::Database.postgresql?
-  end
-
-  config.around(:each, :geo_tracking_db) do |example|
-    example.run if Gitlab::Geo.geo_database_configured?
   end
 
   config.around(:each, :postgresql) do |example|
