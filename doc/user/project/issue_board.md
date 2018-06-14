@@ -369,12 +369,12 @@ When dragging issues between lists, different behavior occurs depending on the s
 
 Different issue board features are available in different [GitLab tiers](https://about.gitlab.com/pricing/), as shown in the following table:
 
-| Tier | Number of Project Issue Boards | Board with configuration in Project Issue Boards | Number of Group Issue Boards | Board with configuration in Group Issue Boards |
-| --- | --- | --- | --- | --- |
-| Core    | 1        | No  | 1        | No  |
-| Starter  | Multiple | Yes | 1        | No  |
-| Premium  | Multiple | Yes | Multiple | Yes |
-| Ultimate | Multiple | Yes | Multiple | Yes |
+| Tier | Number of Project Issue Boards | Number of Group Issue Boards | Configurable Project Issue Boards | Configurable Group Issue Boards | Assignee Lists
+| --- | --- | --- | --- | --- | --- |
+| Core     | 1        | 1        | No  | No  | No  |
+| Starter  | Multiple | 1        | Yes | No  | No  |
+| Premium  | Multiple | Multiple | Yes | Yes | Yes |
+| Ultimate | Multiple | Multiple | Yes | Yes | Yes |
 
 ## Tips
 
