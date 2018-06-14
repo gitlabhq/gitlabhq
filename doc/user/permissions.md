@@ -50,7 +50,7 @@ The following table depicts the various user permission levels in a project.
 | See a container registry              |         | ✓          | ✓           | ✓        | ✓      |
 | See environments                      |         | ✓          | ✓           | ✓        | ✓      |
 | See a list of merge requests          |         | ✓          | ✓           | ✓        | ✓      |
-| Manage related issues                 |         | ✓          | ✓           | ✓        | ✓      |
+| Manage related issues **[STARTER]**   |         | ✓          | ✓           | ✓        | ✓      |
 | Lock issue discussions                |         | ✓          | ✓           | ✓        | ✓      |
 | Lock merge request discussions        |         |            | ✓           | ✓        | ✓      |
 | Create new environments               |         |            | ✓           | ✓        | ✓      |
@@ -159,11 +159,11 @@ group.
 | Remove group            |       |          |           |        | ✓     |
 | Manage group labels     |       | ✓        | ✓         | ✓      | ✓     |
 | Create/edit/delete group milestones | |    | ✓         | ✓      | ✓     |
-| View private group epic  |         | ✓        | ✓         | ✓      | ✓     |
-| View internal group epic | ✓       | ✓        | ✓         | ✓      | ✓     |
-| View public group epic   | ✓       | ✓        | ✓         | ✓      | ✓     |
-| Create/edit group epic   |         | ✓        | ✓         | ✓      | ✓     |
-| Delete group epic        |         |          |           |        | ✓     |
+| View private group epic **[ULTIMATE]** |         | ✓        | ✓         | ✓      | ✓     |
+| View internal group epic **[ULTIMATE]** | ✓       | ✓        | ✓         | ✓      | ✓     |
+| View public group epic **[ULTIMATE]**   | ✓       | ✓        | ✓         | ✓      | ✓     |
+| Create/edit group epic **[ULTIMATE]**  |         | ✓        | ✓         | ✓      | ✓     |
+| Delete group epic **[ULTIMATE]**       |         |          |           |        | ✓     |
 | View group Audit Events  |         |          |           |        | ✓     |
 
 ### Subgroup permissions
@@ -205,6 +205,9 @@ by an administrator under **Admin > Application Settings**.
 
 Auditor users are given read-only access to all projects, groups, and other
 resources on the GitLab instance.
+
+An Auditor user should be able to access all projects and groups of a GitLab instance
+with the permissions described on the documentation on [auditor users permissions](../administration/auditor_users.md#permissions-and-restrictions-of-an-auditor-user).
 
 [Read more about Auditor users.](../administration/auditor_users.md)
 
@@ -285,13 +288,6 @@ for details about the pipelines security model.
 
 Since GitLab 8.15, LDAP user permissions can now be manually overridden by an admin user.
 Read through the documentation on [LDAP users permissions](../administration/auth/how_to_configure_ldap_gitlab_ee/index.md) to learn more.
-
-## Auditor users permissions **[PREMIUM ONLY]**
-
-> Available in [GitLab Premium](https://about.gitlab.com/products/).
-
-An Auditor user should be able to access all projects and groups of a GitLab instance
-with the permissions described on the documentation on [auditor users permissions](https://docs.gitlab.com/ee/administration/auditor_users.html#permissions-and-restrictions-of-an-auditor-user).
 
 [^1]: On public and internal projects, all users are able to perform this action
 [^2]: Guest users can only view the confidential issues they created themselves
