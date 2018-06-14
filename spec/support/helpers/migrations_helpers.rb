@@ -10,10 +10,6 @@ module MigrationsHelpers
     ActiveRecord::Migrator.migrations_paths
   end
 
-  def table_exists?(name)
-    ActiveRecord::Base.connection.table_exists?(name)
-  end
-
   def migrations
     ActiveRecord::Migrator.migrations(migrations_paths)
   end
