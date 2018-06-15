@@ -28,15 +28,27 @@ class BoardsStoreEE {
         this.initBoardFilters();
       }
     };
+
+    this.store.updateFiltersUrl = (replaceState = false) => {
+      if (replaceState) {
+        window.history.replaceState(null, null, `?${this.store.filter.path}`);
+      } else {
+        window.history.pushState(null, null, `?${this.store.filter.path}`);
+      }
+    };
   }
 
   initBoardFilters() {
     const updateFilterPath = (key, value) => {
       if (!value) return;
       const querystring = `${key}=${value}`;
-      this.store.filter.path = [querystring].concat(
-        this.store.filter.path.split('&').filter(param => param.match(new RegExp(`^${key}=(.*)$`, 'g')) === null),
-      ).join('&');
+      this.store.filter.path = [querystring]
+        .concat(
+          this.store.filter.path
+            .split('&')
+            .filter(param => param.match(new RegExp(`^${key}=(.*)$`, 'g')) === null),
+        )
+        .join('&');
     };
 
     let milestoneTitle = this.store.boardConfig.milestoneTitle;
@@ -64,7 +76,7 @@ class BoardsStoreEE {
     }
 
     const filterPath = this.store.filter.path.split('&');
-    this.store.boardConfig.labels.forEach((label) => {
+    this.store.boardConfig.labels.forEach(label => {
       const labelTitle = encodeURIComponent(label.title);
       const param = `label_name[]=${labelTitle}`;
       const labelIndex = filterPath.indexOf(param);
@@ -85,7 +97,12 @@ class BoardsStoreEE {
   }
 
   addPromotion() {
-    if (!this.$boardApp.hasAttribute('data-show-promotion') || this.promotionIsHidden() || this.store.disabled) return;
+    if (
+      !this.$boardApp.hasAttribute('data-show-promotion') ||
+      this.promotionIsHidden() ||
+      this.store.disabled
+    )
+      return;
 
     this.store.addList({
       id: 'promotion',
