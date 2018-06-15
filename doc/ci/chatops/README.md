@@ -50,3 +50,11 @@ ls:
     - echo -e "section_start:$( date +%s ):chat_reply\r\033[0K\n$( ls -la )\nsection_end:$( date +%s ):chat_reply\r\033[0K"
 ```
 
+## GitLab ChatOps icon
+
+Say Hi to our ChatOps bot.  
+You can find and download the official GitLab ChatOps icon here.
+
+![GitLab ChatOps bot icon](img/gitlab-chatops-icon-small.png)
+
+[Download bigger image](img/gitlab-chatops-icon.png)
