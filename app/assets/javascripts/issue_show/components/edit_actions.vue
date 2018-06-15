@@ -38,7 +38,7 @@
       },
       deleteIssuable() {
         // eslint-disable-next-line no-alert
-        if (confirm('Issue will be removed! Are you sure?')) {
+        if (window.confirm('Issue will be removed! Are you sure?')) {
           this.deleteLoading = true;
 
           eventHub.$emit('delete.issuable');

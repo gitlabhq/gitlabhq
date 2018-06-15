@@ -150,7 +150,7 @@ export default class ProjectFindFile {
   }
 
   goToTree() {
-    return location.href = this.options.treeUrl;
+    return window.location.href = this.options.treeUrl;
   }
 
   goToBlob() {
