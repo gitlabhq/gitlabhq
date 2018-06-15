@@ -175,8 +175,7 @@ module NotesHelper
   end
 
   def rendered_for_merge_request?
-    # params[:from_merge_request].present?
-    true
+    params[:from_merge_request].present?
   end
 
   def serialize_notes?

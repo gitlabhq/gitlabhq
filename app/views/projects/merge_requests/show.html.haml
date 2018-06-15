@@ -60,14 +60,11 @@
           %section.col-md-12
             %script.js-notes-data{ type: "application/json" }= initial_notes_data(true).to_json.html_safe
             .issuable-discussion.js-vue-notes-event
-              - if rendered_for_merge_request?
-                #js-vue-mr-discussions{ data: { notes_data: notes_data(@merge_request),
-                  noteable_data: serialize_issuable(@merge_request),
-                  noteable_type: 'MergeRequest',
-                  target_type: 'merge_request',
-                  current_user_data: UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestUserEntity).to_json} }
-              - else
-                = render "projects/merge_requests/discussion"
+              #js-vue-mr-discussions{ data: { notes_data: notes_data(@merge_request),
+                noteable_data: serialize_issuable(@merge_request),
+                noteable_type: 'MergeRequest',
+                target_type: 'merge_request',
+                current_user_data: UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestUserEntity).to_json} }
 
       #commits.commits.tab-pane
         -# This tab is always loaded via AJAX
