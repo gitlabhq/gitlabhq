@@ -45,7 +45,7 @@ export default {
         'is-editing': this.isEditing && !this.isRequesting,
         'is-requesting being-posted': this.isRequesting,
         'disabled-content': this.isDeleting,
-        target: this.targetNoteHash === this.noteAnchorId,
+        target: this.isTarget,
       };
     },
     canResolve() {
@@ -57,6 +57,9 @@ export default {
     noteAnchorId() {
       return `note_${this.note.id}`;
     },
+    isTarget() {
+      return this.targetNoteHash === this.noteAnchorId;
+    },
   },
 
   created() {
@@ -66,6 +69,12 @@ export default {
         this.scrollToNoteIfNeeded($(this.$el));
       }
     });
+  },
+
+  mounted() {
+    if (this.isTarget) {
+      this.scrollToNoteIfNeeded($(this.$el));
+    }
   },
 
   methods: {

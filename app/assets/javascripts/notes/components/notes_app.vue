@@ -68,6 +68,7 @@ export default {
     this.setNotesData(this.notesData);
     this.setNoteableData(this.noteableData);
     this.setUserData(this.userData);
+    this.setTargetNoteHash(getLocationHash());
   },
   mounted() {
     this.fetchNotes();
