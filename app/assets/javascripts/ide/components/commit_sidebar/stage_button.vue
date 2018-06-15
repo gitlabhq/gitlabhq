@@ -52,13 +52,14 @@ export default {
       data-boundary="viewport"
       data-placement="bottom"
       data-toggle="dropdown"
+      data-display="static"
     >
       <icon
         :size="12"
         name="more"
       />
     </button>
-    <div class="dropdown-menu">
+    <div class="dropdown-menu dropdown-menu-right">
       <ul>
         <li>
           <button
