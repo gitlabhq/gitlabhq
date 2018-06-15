@@ -11,12 +11,17 @@ module EE
     end
 
     # Transiently sets a configuration variable
+    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1241
     def with_config(values = {})
-      values.each { |k, v| rugged.config[k] = v }
+      ::Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        values.each { |k, v| rugged.config[k] = v }
+      end
 
       yield
     ensure
-      values.keys.each { |key| rugged.config.delete(key) }
+      ::Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        values.keys.each { |key| rugged.config.delete(key) }
+      end
     end
 
     # Runs code after a repository has been synced.
@@ -24,6 +29,11 @@ module EE
       expire_all_method_caches
       expire_branch_cache if exists?
       expire_content_cache
+    end
+
+    def upstream_branches
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1243
+      ::Gitlab::GitalyClient::StorageSettings.allow_disk_access { super }
     end
   end
 end

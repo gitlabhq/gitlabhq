@@ -17,7 +17,9 @@ describe Projects::UpdateRepositoryStorageService do
 
       context 'when the move succeeds' do
         it 'moves the repository to the new storage and unmarks the repository as read only' do
-          old_path = project.repository.path_to_repo
+          old_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            project.repository.path_to_repo
+          end
 
           expect_any_instance_of(Gitlab::Git::Repository).to receive(:fetch_repository_as_mirror)
             .with(project.repository.raw).and_return(true)
