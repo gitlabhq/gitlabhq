@@ -56,7 +56,7 @@ describe Projects::BlobController do
         end
       end
 
-      context "html_render=false" do
+      context "with viewer=none" do
         let(:id) { 'master/README.md' }
 
         before do
@@ -65,12 +65,13 @@ describe Projects::BlobController do
               project_id: project,
               id: id,
               format: :json,
-              html_render: 'false')
+              viewer: 'none')
         end
 
         it do
           expect(response).to be_ok
           expect(json_response).not_to have_key 'html'
+          expect(json_response).to have_key 'raw_path'
         end
       end
     end
