@@ -2292,20 +2292,6 @@ describe Project do
     end
   end
 
-  describe '#find_path_lock' do
-    let(:project) { create :project }
-    let(:path_lock) { create :path_lock, project: project }
-    let(:path) { path_lock.path }
-
-    it 'returns path_lock' do
-      expect(project.find_path_lock(path)).to eq(path_lock)
-    end
-
-    it 'returns nil' do
-      expect(project.find_path_lock('app/controllers')).to be_falsey
-    end
-  end
-
   describe '#change_repository_storage' do
     let(:project) { create(:project, :repository) }
     let(:read_only_project) { create(:project, :repository, repository_read_only: true) }
@@ -2689,6 +2675,22 @@ describe Project do
       end
 
       it_behaves_like 'ref is protected'
+    end
+  end
+
+  describe '#any_lfs_file_locks?', :request_store do
+    set(:project) { create(:project) }
+
+    it 'returns false when there are no LFS file locks' do
+      expect(project.any_lfs_file_locks?).to be_falsey
+    end
+
+    it 'returns a cached true when there are LFS file locks' do
+      create(:lfs_file_lock, project: project)
+
+      expect(project.lfs_file_locks).to receive(:any?).once.and_call_original
+
+      2.times { expect(project.any_lfs_file_locks?).to be_truthy }
     end
   end
 

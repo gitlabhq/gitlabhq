@@ -190,7 +190,7 @@ module EE
         def validate_path_locks?
           strong_memoize(:validate_path_locks) do
             project.feature_available?(:file_locks) &&
-              project.path_locks.any? && newrev && oldrev &&
+              newrev && oldrev && project.any_path_locks? &&
               project.default_branch == branch_name # locks protect default branch only
           end
         end
