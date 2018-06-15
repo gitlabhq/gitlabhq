@@ -197,12 +197,14 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def show_json
+    set_last_commit_sha
     path_segments = @path.split('/')
     path_segments.pop
     tree_path = path_segments.join('/')
 
     json = {
       id: @blob.id,
+      last_commit_sha: @last_commit_sha,
       path: blob.path,
       name: blob.name,
       extension: blob.extension,
