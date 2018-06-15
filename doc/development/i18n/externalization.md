@@ -233,7 +233,7 @@ This makes use of [`Intl.DateTimeFormat`].
 Please never split a sentence as that would assume the sentence grammar and
 structure is the same in all languages.
 
-For instance, the following
+For instance, the following:
 
 ```js
 {{ s__("mrWidget|Set by") }}
@@ -246,6 +246,27 @@ should be externalized as follows:
 ```js
 {{ sprintf(s__("mrWidget|Set by %{author} to be merged automatically when the pipeline succeeds"), { author: author.name }) }}
 ```
+
+#### Avoid splitting sentences when adding links
+
+This also applies when using links in between translated sentences, otherwise these texts are not translatable in certain languages.
+
+Instead of:
+
+```haml
+- zones_link = link_to(s_('ClusterIntegration|zones'), 'https://cloud.google.com/compute/docs/regions-zones/regions-zones', target: '_blank', rel: 'noopener noreferrer')
+= s_('ClusterIntegration|Learn more about %{zones_link}').html_safe % { zones_link: zones_link }
+```
+
+Set the link starting and ending HTML fragments as variables like so:
+
+```haml
+- zones_link_url = 'https://cloud.google.com/compute/docs/regions-zones/regions-zones'
+- zones_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: zones_link_url }
+= s_('ClusterIntegration|Learn more about %{zones_link_start}zones%{zones_link_end}').html_safe % { zones_link_start: zones_link_start, zones_link_end: '</a>'.html_safe }
+```
+
+The reasoning behind this is that in some languages words change depending on context. For example in Japanese は is added to the subject of a sentence and を to the object. This is impossible to translate correctly if we extract individual words from the sentence.
 
 When in doubt, try to follow the best practices described in this [Mozilla
 Developer documentation][mdn].

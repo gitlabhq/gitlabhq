@@ -75,8 +75,8 @@ export default {
           >
             #{{ latestPipeline.id }}
             <icon
-              name="external-link"
               :size="12"
+              name="external-link"
             />
           </a>
         </span>
@@ -94,7 +94,7 @@ export default {
         <p class="append-bottom-0">
           {{ __('Found errors in your .gitlab-ci.yml:') }}
         </p>
-        <p class="append-bottom-0">
+        <p class="append-bottom-0 break-word">
           {{ latestPipeline.yamlError }}
         </p>
         <p

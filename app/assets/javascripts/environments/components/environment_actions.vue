@@ -52,18 +52,18 @@
     role="group">
     <button
       v-tooltip
+      :title="title"
+      :aria-label="title"
+      :disabled="isLoading"
       type="button"
       class="dropdown btn btn-default dropdown-new js-dropdown-play-icon-container"
       data-container="body"
       data-toggle="dropdown"
-      :title="title"
-      :aria-label="title"
-      :disabled="isLoading"
     >
       <span>
         <icon
-          name="play"
           :size="12"
+          name="play"
         />
         <i
           class="fa fa-caret-down"
@@ -79,15 +79,15 @@
         v-for="(action, i) in actions"
         :key="i">
         <button
+          :class="{ disabled: isActionDisabled(action) }"
+          :disabled="isActionDisabled(action)"
           type="button"
           class="js-manual-action-link no-btn btn"
           @click="onClickAction(action.play_path)"
-          :class="{ disabled: isActionDisabled(action) }"
-          :disabled="isActionDisabled(action)"
         >
           <icon
-            name="play"
             :size="12"
+            name="play"
           />
           <span>
             {{ action.name }}

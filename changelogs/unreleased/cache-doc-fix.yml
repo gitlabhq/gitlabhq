@@ -1,0 +1,5 @@
+---
+title: 'Remove incorrect CI doc re: PowerShell'
+merge_request: 19622
+author: gfyoung
+type: fixed

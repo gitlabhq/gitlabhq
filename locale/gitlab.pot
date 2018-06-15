@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-08 18:19+0200\n"
-"PO-Revision-Date: 2018-06-08 18:19+0200\n"
+"POT-Creation-Date: 2018-06-12 18:57+1000\n"
+"PO-Revision-Date: 2018-06-12 18:57+1000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -260,6 +260,9 @@ msgid "Add Readme"
 msgstr ""
 
 msgid "Add new directory"
+msgstr ""
+
+msgid "Add reaction"
 msgstr ""
 
 msgid "Add todo"
@@ -4109,7 +4112,7 @@ msgstr ""
 msgid "TagsPage|Use git tag command to add a new one:"
 msgstr ""
 
-msgid "TagsPage|Write your release notes or drag files here..."
+msgid "TagsPage|Write your release notes or drag files here…"
 msgstr ""
 
 msgid "TagsPage|protected"
@@ -4734,7 +4737,7 @@ msgstr ""
 msgid "WikiEmptyIssueMessage|issue tracker"
 msgstr ""
 
-msgid "WikiEmpty|A wiki is where you can store all the details about your project. This can include why you've created it, it's principles, how to use it, and so on."
+msgid "WikiEmpty|A wiki is where you can store all the details about your project. This can include why you've created it, its principles, how to use it, and so on."
 msgstr ""
 
 msgid "WikiEmpty|Create your first page"
@@ -4806,7 +4809,7 @@ msgstr ""
 msgid "WikiPage|Page slug"
 msgstr ""
 
-msgid "WikiPage|Write your content or drag files here..."
+msgid "WikiPage|Write your content or drag files here…"
 msgstr ""
 
 msgid "Wiki|Create Page"

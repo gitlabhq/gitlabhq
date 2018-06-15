@@ -264,10 +264,10 @@ package-and-qa:
   <<: *single-script-job
   variables:
     <<: *single-script-job-variables
-    SCRIPT_NAME: trigger-build-omnibus
+    SCRIPT_NAME: trigger-build
   retry: 0
   script:
-    - ./$SCRIPT_NAME
+    - ./$SCRIPT_NAME omnibus
   when: manual
   only:
     - //@gitlab-org/gitlab-ce
@@ -415,6 +415,7 @@ setup-test-env:
   script:
     - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
     - scripts/gitaly-test-build # Do not use 'bundle exec' here
+    - BUNDLE_GEMFILE=Gemfile.rails5 bundle install $BUNDLE_INSTALL_FLAGS
   artifacts:
     expire_in: 7d
     paths:
@@ -589,6 +590,12 @@ downtime_check:
     - /^[\d-]+-stable(-ee)?$/
     - /(^docs[\/-].*|.*-docs$)/
     - /(^qa[\/-].*|.*-qa$)/
+
+rails5_gemfile_lock_check:
+  <<: *dedicated-no-docs-no-db-pull-cache-job
+  <<: *except-docs-and-qa
+  script:
+    - scripts/rails5-gemfile-lock-check
 
 ee_compat_check:
   <<: *rake-exec

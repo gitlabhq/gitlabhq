@@ -95,8 +95,8 @@ export default {
         class="btn-group"
         role="group">
         <a
-          :href="resolveAllDiscussionsIssuePath"
           v-tooltip
+          :href="resolveAllDiscussionsIssuePath"
           title="Resolve all discussions in new issue"
           data-container="body"
           class="new-issue-for-discussion btn btn-default discussion-create-issue-btn">
@@ -108,11 +108,11 @@ export default {
         class="btn-group"
         role="group">
         <button
-          @click="jumpToFirstDiscussion"
           v-tooltip
           title="Jump to first unresolved discussion"
           data-container="body"
-          class="btn btn-default discussion-next-btn">
+          class="btn btn-default discussion-next-btn"
+          @click="jumpToFirstDiscussion">
           <span v-html="nextDiscussionSvg"></span>
         </button>
       </div>

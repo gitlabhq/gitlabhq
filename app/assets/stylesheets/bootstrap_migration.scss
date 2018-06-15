@@ -94,6 +94,7 @@ hr {
 }
 
 .form-group.row .col-form-label {
+  padding-top: 0;
   // Bootstrap 4 aligns labels to the left
   // for horizontal forms
   @include media-breakpoint-up(md) {
@@ -290,5 +291,11 @@ input[type=color].form-control {
   .icon-angle-double-left,
   .icon-angle-double-right {
     color: $gl-text-color-secondary;
+  }
+}
+
+.project-templates-buttons {
+  .btn {
+    vertical-align: unset;
   }
 }

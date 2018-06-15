@@ -41,20 +41,20 @@ new Kubernetes cluster that will be hosted on GKE to your project:
 
 1. Navigate to your project's **Operations > Kubernetes** page.
 1. Click on **Add Kubernetes cluster**.
-1. Click on **Create with GKE**.
+1. Click on **Create with Google Kubernetes Engine**.
 1. Connect your Google account if you haven't done already by clicking the
    **Sign in with Google** button.
 1. Fill in the requested values:
-  - **Cluster name** (required) - The name you wish to give the cluster.
-  - **GCP project ID** (required) - The ID of the project you created in your GCP
+  - **Kubernetes cluster name** - The name you wish to give the cluster.
+  - **Environment scope** - The [associated environment](#setting-the-environment-scope) to this cluster.
+  - **Google Cloud Platform project** - The project you created in your GCP
     console that will host the Kubernetes cluster. This must **not** be confused
-    with the project name. Learn more about [Google Cloud Platform projects](https://cloud.google.com/resource-manager/docs/creating-managing-projects).
+    with the project ID. Learn more about [Google Cloud Platform projects](https://cloud.google.com/resource-manager/docs/creating-managing-projects).
   - **Zone** - The [zone](https://cloud.google.com/compute/docs/regions-zones/)
     under which the cluster will be created.
   - **Number of nodes** - The number of nodes you wish the cluster to have.
   - **Machine type** - The [machine type](https://cloud.google.com/compute/docs/machine-types)
     of the Virtual Machine instance that the cluster will be based on.
-  - **Environment scope** - The [associated environment](#setting-the-environment-scope) to this cluster.
 1. Finally, click the **Create Kubernetes cluster** button.
 
 After a few moments, your cluster should be created. If something goes wrong,

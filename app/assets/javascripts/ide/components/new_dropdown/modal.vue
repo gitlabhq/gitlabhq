@@ -71,18 +71,18 @@ export default {
   >
     <form
       slot="body"
-      @submit.prevent="createEntryInStore"
       class="form-group row"
+      @submit.prevent="createEntryInStore"
     >
       <label class="label-light col-form-label col-sm-3">
         {{ __('Name') }}
       </label>
       <div class="col-sm-9">
         <input
+          ref="fieldName"
+          v-model="entryName"
           type="text"
           class="form-control"
-          v-model="entryName"
-          ref="fieldName"
         />
       </div>
     </form>

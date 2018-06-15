@@ -188,8 +188,11 @@ module Gitlab
     end
 
     def self.cached_table_exists?(table_name)
-      # Rails 5 uses data_source_exists? instead of table_exists?
-      connection.schema_cache.table_exists?(table_name)
+      if Gitlab.rails5?
+        connection.schema_cache.data_source_exists?(table_name)
+      else
+        connection.schema_cache.table_exists?(table_name)
+      end
     end
 
     private_class_method :connection

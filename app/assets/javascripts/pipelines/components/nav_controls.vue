@@ -50,10 +50,10 @@
 
     <loading-button
       v-if="resetCachePath"
-      @click="onClickResetCache"
       :loading="isResetCacheButtonLoading"
-      class="btn btn-default js-clear-cache"
       :label="s__('Pipelines|Clear Runner Caches')"
+      class="btn btn-default js-clear-cache"
+      @click="onClickResetCache"
     />
 
     <a

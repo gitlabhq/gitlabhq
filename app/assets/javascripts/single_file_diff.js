@@ -11,7 +11,7 @@ import syntaxHighlight from './syntax_highlight';
 const WRAPPER = '<div class="diff-content"></div>';
 const LOADING_HTML = '<i class="fa fa-spinner fa-spin"></i>';
 const ERROR_HTML = '<div class="nothing-here-block"><i class="fa fa-warning"></i> Could not load diff</div>';
-const COLLAPSED_HTML = '<div class="nothing-here-block diff-collapsed">This diff is collapsed. <a class="click-to-expand">Click to expand it.</a></div>';
+const COLLAPSED_HTML = '<div class="nothing-here-block diff-collapsed">This diff is collapsed. <button class="click-to-expand btn btn-link">Click to expand it.</button></div>';
 
 export default class SingleFileDiff {
   constructor(file) {

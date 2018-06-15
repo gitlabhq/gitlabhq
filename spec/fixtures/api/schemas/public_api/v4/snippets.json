@@ -8,6 +8,7 @@
       "title": { "type": "string" },
       "file_name": { "type": ["string", "null"] },
       "description": { "type": ["string", "null"] },
+      "visibility": { "type": "string" },
       "web_url": { "type": "string" },
       "created_at": { "type": "date" },
       "updated_at": { "type": "date" },

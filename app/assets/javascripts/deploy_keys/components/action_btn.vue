@@ -40,9 +40,9 @@ export default {
 
 <template>
   <button
-    class="btn"
     :class="[{ disabled: isLoading }, btnCssClass]"
     :disabled="isLoading"
+    class="btn"
     @click="doAction">
     <slot></slot>
     <loading-icon

@@ -102,19 +102,7 @@ module QA
         def perform(&block)
           visit(url)
 
-          yield if block_given?
-        rescue
-          raise if block.nil?
-
-          # RSpec examples will take care of screenshots on their own
-          #
-          unless block.binding.receiver.is_a?(RSpec::Core::ExampleGroup)
-            screenshot_and_save_page
-          end
-
-          raise
-        ensure
-          clear! if block_given?
+          yield.tap { clear! } if block_given?
         end
 
         ##

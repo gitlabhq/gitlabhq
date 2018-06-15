@@ -2943,7 +2943,7 @@ describe Project do
 
         project.rename_repo
 
-        expect(project.repository.rugged.config['gitlab.fullpath']).to eq(project.full_path)
+        expect(rugged_config['gitlab.fullpath']).to eq(project.full_path)
       end
     end
 
@@ -3104,7 +3104,7 @@ describe Project do
       it 'updates project full path in .git/config' do
         project.rename_repo
 
-        expect(project.repository.rugged.config['gitlab.fullpath']).to eq(project.full_path)
+        expect(rugged_config['gitlab.fullpath']).to eq(project.full_path)
       end
     end
 
@@ -3525,13 +3525,13 @@ describe Project do
     it 'writes full path in .git/config when key is missing' do
       project.write_repository_config
 
-      expect(project.repository.rugged.config['gitlab.fullpath']).to eq project.full_path
+      expect(rugged_config['gitlab.fullpath']).to eq project.full_path
     end
 
     it 'updates full path in .git/config when key is present' do
       project.write_repository_config(gl_full_path: 'old/path')
 
-      expect { project.write_repository_config }.to change { project.repository.rugged.config['gitlab.fullpath'] }.from('old/path').to(project.full_path)
+      expect { project.write_repository_config }.to change { rugged_config['gitlab.fullpath'] }.from('old/path').to(project.full_path)
     end
 
     it 'does not raise an error with an empty repository' do
@@ -3660,6 +3660,11 @@ describe Project do
     describe '#branch_allows_collaboration_push?' do
       it 'allows access if the user can merge the merge request' do
         expect(project.branch_allows_collaboration?(user, 'awesome-feature-1'))
+          .to be_truthy
+      end
+
+      it 'allows access when there are merge requests open but no branch name is given' do
+        expect(project.branch_allows_collaboration?(user, nil))
           .to be_truthy
       end
 
@@ -3810,6 +3815,12 @@ describe Project do
       let(:model_object) { create(:project, :with_avatar) }
       let(:upload_attribute) { :avatar }
       let(:uploader_class) { AttachmentUploader }
+    end
+  end
+
+  def rugged_config
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      project.repository.rugged.config
     end
   end
 end

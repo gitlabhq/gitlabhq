@@ -105,12 +105,12 @@ export default {
       </div>
     </div>
     <span
-      class="form-text"
+      v-if="hasErrors"
       :class="{
         'text-danger': hasErrors,
         'text-muted': !hasErrors
       }"
-      v-if="hasErrors"
+      class="form-text"
     >
       {{ errorMessage }}
     </span>

@@ -120,13 +120,11 @@ module Gitlab
 
       # Default branch in the repository
       def root_ref
-        @root_ref ||= gitaly_migrate(:root_ref) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.default_branch_name
-          else
-            discover_default_branch
-          end
-        end
+        gitaly_ref_client.default_branch_name
+      rescue GRPC::NotFound => e
+        raise NoRepository.new(e.message)
+      rescue GRPC::Unknown => e
+        raise Gitlab::Git::CommandError.new(e.message)
       end
 
       def rugged
@@ -152,23 +150,15 @@ module Gitlab
       # Returns an Array of branch names
       # sorted by name ASC
       def branch_names
-        gitaly_migrate(:branch_names) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.branch_names
-          else
-            branches.map(&:name)
-          end
+        wrapped_gitaly_errors do
+          gitaly_ref_client.branch_names
         end
       end
 
       # Returns an Array of Branches
       def branches
-        gitaly_migrate(:branches) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.branches
-          else
-            branches_filter
-          end
+        wrapped_gitaly_errors do
+          gitaly_ref_client.branches
         end
       end
 
@@ -200,12 +190,8 @@ module Gitlab
       end
 
       def local_branches(sort_by: nil)
-        gitaly_migrate(:local_branches) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.local_branches(sort_by: sort_by)
-          else
-            branches_filter(filter: :local, sort_by: sort_by)
-          end
+        wrapped_gitaly_errors do
+          gitaly_ref_client.local_branches(sort_by: sort_by)
         end
       end
 
@@ -245,18 +231,6 @@ module Gitlab
       # This refs by default not visible in project page and not cloned to client side.
       alias_method :has_visible_content?, :has_local_branches?
 
-      def has_local_branches_rugged?
-        rugged.branches.each(:local).any? do |ref|
-          begin
-            ref.name && ref.target # ensures the branch is valid
-
-            true
-          rescue Rugged::ReferenceError
-            false
-          end
-        end
-      end
-
       # Returns the number of valid tags
       def tag_count
         gitaly_migrate(:tag_names) do |is_enabled|
@@ -270,12 +244,8 @@ module Gitlab
 
       # Returns an Array of tag names
       def tag_names
-        gitaly_migrate(:tag_names) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.tag_names
-          else
-            rugged.tags.map { |t| t.name }
-          end
+        wrapped_gitaly_errors do
+          gitaly_ref_client.tag_names
         end
       end
 
@@ -283,12 +253,8 @@ module Gitlab
       #
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/390
       def tags
-        gitaly_migrate(:tags) do |is_enabled|
-          if is_enabled
-            tags_from_gitaly
-          else
-            tags_from_rugged
-          end
+        wrapped_gitaly_errors do
+          gitaly_ref_client.tags
         end
       end
 
@@ -310,7 +276,7 @@ module Gitlab
       #
       # name - The name of the tag as a String.
       def tag_exists?(name)
-        gitaly_migrate(:ref_exists_tags) do |is_enabled|
+        gitaly_migrate(:ref_exists_tags, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_exists?("refs/tags/#{name}")
           else
@@ -323,7 +289,7 @@ module Gitlab
       #
       # name - The name of the branch as a String.
       def branch_exists?(name)
-        gitaly_migrate(:ref_exists_branches) do |is_enabled|
+        gitaly_migrate(:ref_exists_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_exists?("refs/heads/#{name}")
           else
@@ -362,31 +328,6 @@ module Gitlab
         rugged.references.reject do |ref|
           prefixes.any? { |p| ref.name.start_with?(p) }
         end.map(&:name)
-      end
-
-      # Discovers the default branch based on the repository's available branches
-      #
-      # - If no branches are present, returns nil
-      # - If one branch is present, returns its name
-      # - If two or more branches are present, returns current HEAD or master or first branch
-      def discover_default_branch
-        names = branch_names
-
-        return if names.empty?
-
-        return names[0] if names.length == 1
-
-        if rugged_head
-          extracted_name = Ref.extract_branch_name(rugged_head.name)
-
-          return extracted_name if names.include?(extracted_name)
-        end
-
-        if names.include?('master')
-          'master'
-        else
-          names[0]
-        end
       end
 
       def rugged_head
@@ -1181,18 +1122,18 @@ module Gitlab
       end
 
       def compare_source_branch(target_branch_name, source_repository, source_branch_name, straight:)
-        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          with_repo_branch_commit(source_repository, source_branch_name) do |commit|
-            break unless commit
+        tmp_ref = "refs/tmp/#{SecureRandom.hex}"
 
-            Gitlab::Git::Compare.new(
-              self,
-              target_branch_name,
-              commit.sha,
-              straight: straight
-            )
-          end
-        end
+        return unless fetch_source_branch!(source_repository, source_branch_name, tmp_ref)
+
+        Gitlab::Git::Compare.new(
+          self,
+          target_branch_name,
+          tmp_ref,
+          straight: straight
+        )
+      ensure
+        delete_refs(tmp_ref)
       end
 
       def write_ref(ref_path, ref, old_ref: nil, shell: true)
@@ -1453,6 +1394,16 @@ module Gitlab
         raise CommandError.new(e)
       end
 
+      def wrapped_gitaly_errors(&block)
+        yield block
+      rescue GRPC::NotFound => e
+        raise NoRepository.new(e)
+      rescue GRPC::InvalidArgument => e
+        raise ArgumentError.new(e)
+      rescue GRPC::BadStatus => e
+        raise CommandError.new(e)
+      end
+
       def clean_stale_repository_files
         gitaly_migrate(:repository_cleanup, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           gitaly_repository_client.cleanup if is_enabled && exists?
@@ -1606,12 +1557,8 @@ module Gitlab
       private
 
       def uncached_has_local_branches?
-        gitaly_migrate(:has_local_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.has_local_branches?
-          else
-            has_local_branches_rugged?
-          end
+        wrapped_gitaly_errors do
+          gitaly_repository_client.has_local_branches?
         end
       end
 
@@ -1729,20 +1676,6 @@ module Gitlab
           'GL_PROTOCOL' => Gitlab::Git::Hook::GL_PROTOCOL,
           'GL_REPOSITORY' => gl_repository
         }
-      end
-
-      # Gitaly note: JV: Trying to get rid of the 'filter' option so we can implement this with 'git'.
-      def branches_filter(filter: nil, sort_by: nil)
-        branches = rugged.branches.each(filter).map do |rugged_ref|
-          begin
-            target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
-            Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
-          rescue Rugged::ReferenceError
-            # Omit invalid branch
-          end
-        end.compact
-
-        sort_branches(branches, sort_by)
       end
 
       def git_merged_branch_names(branch_names, root_sha)
@@ -1956,35 +1889,9 @@ module Gitlab
         end
       end
 
-      def tags_from_rugged
-        rugged.references.each("refs/tags/*").map do |ref|
-          message = nil
-
-          if ref.target.is_a?(Rugged::Tag::Annotation)
-            tag_message = ref.target.message
-
-            if tag_message.respond_to?(:chomp)
-              message = tag_message.chomp
-            end
-          end
-
-          target_commit = Gitlab::Git::Commit.find(self, ref.target)
-          Gitlab::Git::Tag.new(self, {
-            name: ref.name,
-            target: ref.target,
-            target_commit: target_commit,
-            message: message
-          })
-        end.sort_by(&:name)
-      end
-
       def last_commit_for_path_by_rugged(sha, path)
         sha = last_commit_id_for_path_by_shelling_out(sha, path)
         commit(sha)
-      end
-
-      def tags_from_gitaly
-        gitaly_ref_client.tags
       end
 
       def size_by_shelling_out

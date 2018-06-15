@@ -21,7 +21,19 @@ export const viewerTypes = {
   diff: 'diff',
 };
 
+export const diffModes = {
+  replaced: 'replaced',
+  new: 'new',
+  deleted: 'deleted',
+  renamed: 'renamed',
+};
+
 export const rightSidebarViews = {
   pipelines: 'pipelines-list',
   jobsDetail: 'jobs-detail',
+};
+
+export const stageKeys = {
+  unstaged: 'unstaged',
+  staged: 'staged',
 };

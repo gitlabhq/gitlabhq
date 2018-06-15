@@ -169,6 +169,7 @@ the stable branch are:
 * Fixes for [regressions](#regressions)
 * Fixes for security issues
 * Fixes or improvements to automated QA scenarios
+* Documentation updates for changes in the same release
 * New or updated translations (as long as they do not touch application code)
 
 During the feature freeze all merge requests that are meant to go into the
@@ -185,11 +186,7 @@ next patch release.
 
 If a merge request is to be picked into more than one release it will need one
 `Pick into X.Y` label per release where the merge request should be back-ported
-to.
-
-For example, if the current patch release is `10.1.1` and a regression fix needs
-to be backported down to the `9.5` release, you will need to assign it the
-`10.1` milestone and the following labels:
+to. For example:
 
 - `Pick into 10.1`
 - `Pick into 10.0`

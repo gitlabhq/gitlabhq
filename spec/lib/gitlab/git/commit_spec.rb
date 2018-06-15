@@ -4,12 +4,15 @@ describe Gitlab::Git::Commit, seed_helper: true do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
   let(:commit) { described_class.find(repository, SeedRepo::Commit::ID) }
   let(:rugged_commit) do
-    repository.rugged.lookup(SeedRepo::Commit::ID)
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      repository.rugged.lookup(SeedRepo::Commit::ID)
+    end
   end
-
   describe "Commit info" do
     before do
-      repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
+      repo = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
+      end
 
       @committer = {
         email: 'mike@smith.com',
@@ -58,7 +61,9 @@ describe Gitlab::Git::Commit, seed_helper: true do
 
     after do
       # Erase the new commit so other tests get the original repo
-      repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
+      repo = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
+      end
       repo.references.update("refs/heads/master", SeedRepo::LastCommit::ID)
     end
   end
@@ -115,7 +120,9 @@ describe Gitlab::Git::Commit, seed_helper: true do
     describe '.find' do
       it "should return first head commit if without params" do
         expect(described_class.last(repository).id).to eq(
-          repository.rugged.head.target.oid
+          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            repository.rugged.head.target.oid
+          end
         )
       end
 
@@ -410,6 +417,16 @@ describe Gitlab::Git::Commit, seed_helper: true do
 
             described_class.find_all(repository)
           end
+        end
+      end
+    end
+
+    describe '#batch_by_oid' do
+      context 'when oids is empty' do
+        it 'makes no Gitaly request' do
+          expect(Gitlab::GitalyClient).not_to receive(:call)
+
+          described_class.batch_by_oid(repository, [])
         end
       end
     end

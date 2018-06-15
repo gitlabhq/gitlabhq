@@ -36,10 +36,10 @@ export default {
 
 <template>
   <div
-    class="hide-collapsed value issuable-show-labels js-value"
     :class="{
       'has-labels':!isEmpty,
     }"
+    class="hide-collapsed value issuable-show-labels js-value"
   >
     <span
       v-if="isEmpty"
@@ -48,18 +48,18 @@ export default {
       <slot>{{ __('None') }}</slot>
     </span>
     <a
-      v-else
       v-for="label in labels"
+      v-else
       :key="label.id"
       :href="labelFilterUrl(label)"
     >
       <span
         v-tooltip
+        :style="labelStyle(label)"
+        :title="label.description"
         class="badge color-label"
         data-placement="bottom"
         data-container="body"
-        :style="labelStyle(label)"
-        :title="label.description"
       >
         {{ label.title }}
       </span>

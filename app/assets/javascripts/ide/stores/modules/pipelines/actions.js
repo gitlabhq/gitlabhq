@@ -106,7 +106,9 @@ export const fetchJobTrace = ({ dispatch, state }) => {
     .catch(() => dispatch('receiveJobTraceError'));
 };
 
-export const resetLatestPipeline = ({ commit }) =>
+export const resetLatestPipeline = ({ commit }) => {
   commit(types.RECEIVE_LASTEST_PIPELINE_SUCCESS, null);
+  commit(types.SET_DETAIL_JOB, null);
+};
 
 export default () => {};

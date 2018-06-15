@@ -54,7 +54,10 @@ class SnippetsFinder < UnionFinder
   end
 
   def authorized_snippets
-    Snippet.where(feature_available_projects.or(not_project_related))
+    # This query was intentionally converted to a raw one to get it work in Rails 5.0.
+    # In Rails 5.0 and 5.1 there's a bug: https://github.com/rails/arel/issues/531
+    # Please convert it back when on rails 5.2 as it works again as expected since 5.2.
+    Snippet.where("#{feature_available_projects} OR #{not_project_related}")
       .public_or_visible_to_user(current_user)
   end
 
@@ -86,18 +89,20 @@ class SnippetsFinder < UnionFinder
 
   def feature_available_projects
     # Don't return any project related snippets if the user cannot read cross project
-    return table[:id].eq(nil) unless Ability.allowed?(current_user, :read_cross_project)
+    return table[:id].eq(nil).to_sql unless Ability.allowed?(current_user, :read_cross_project)
 
     projects = projects_for_user do |part|
       part.with_feature_available_for_user(:snippets, current_user)
     end.select(:id)
 
-    arel_query = Arel::Nodes::SqlLiteral.new(projects.to_sql)
-    table[:project_id].in(arel_query)
+    # This query was intentionally converted to a raw one to get it work in Rails 5.0.
+    # In Rails 5.0 and 5.1 there's a bug: https://github.com/rails/arel/issues/531
+    # Please convert it back when on rails 5.2 as it works again as expected since 5.2.
+    "snippets.project_id IN (#{projects.to_sql})"
   end
 
   def not_project_related
-    table[:project_id].eq(nil)
+    table[:project_id].eq(nil).to_sql
   end
 
   def table

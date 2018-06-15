@@ -107,11 +107,11 @@ export default {
     </a>
 
     <div
-      v-else
       v-tooltip
-      class="js-job-component-tooltip non-details-job-component"
+      v-else
       :title="tooltipText"
       :class="cssClassJobName"
+      class="js-job-component-tooltip non-details-job-component"
       data-html="true"
       data-container="body"
     >

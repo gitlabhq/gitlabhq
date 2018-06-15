@@ -54,14 +54,17 @@ export default {
 <template>
   <div class="time-tracking-comparison-pane">
     <div
-      class="compare-meter"
-      :title="timeRemainingTooltip"
       v-tooltip
+      :title="timeRemainingTooltip"
       :class="timeRemainingStatusClass"
+      class="compare-meter"
+      data-toggle="tooltip"
+      data-placement="top"
+      role="timeRemainingDisplay"
     >
       <div
-        class="meter-container"
         :aria-valuenow="timeRemainingPercent"
+        class="meter-container"
       >
         <div
           :style="{ width: timeRemainingPercent }"
