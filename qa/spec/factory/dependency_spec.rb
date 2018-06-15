@@ -4,11 +4,11 @@ describe QA::Factory::Dependency do
   let(:block) { spy('block') }
 
   let(:signature) do
-    double('signature', factory: dependency, block: block)
+    double('signature', name: :mydep, factory: dependency, block: block)
   end
 
   subject do
-    described_class.new(:mydep, factory, signature)
+    described_class.new(factory, signature)
   end
 
   describe '#overridden?' do
@@ -46,7 +46,7 @@ describe QA::Factory::Dependency do
       it 'fabricates dependency' do
         subject.build!
 
-        expect(dependency).to have_received(:fabricate!)
+        expect(dependency).to have_received(:fabricate_via_api!)
       end
 
       it 'sets product in the factory' do

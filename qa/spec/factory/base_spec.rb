@@ -1,13 +1,15 @@
 describe QA::Factory::Base do
   let(:factory) { spy('factory') }
   let(:product) { spy('product') }
+  let(:product_location) { 'http://product_location' }
 
   describe '.fabricate!' do
     subject { Class.new(described_class) }
 
     before do
-      allow(QA::Factory::Product).to receive(:new).and_return(product)
+      allow(QA::Factory::Product).to receive(:new).with(product_location).and_return(product)
       allow(QA::Factory::Product).to receive(:populate!).and_return(product)
+      allow(subject).to receive(:current_url).and_return(product_location)
     end
 
     it 'instantiates the factory and calls factory method' do
@@ -75,13 +77,14 @@ describe QA::Factory::Base do
         stub_const('Some::MyDependency', dependency)
 
         allow(subject).to receive(:new).and_return(instance)
+        allow(subject).to receive(:current_url).and_return(product_location)
         allow(instance).to receive(:mydep).and_return(nil)
         allow(QA::Factory::Product).to receive(:new)
         allow(QA::Factory::Product).to receive(:populate!)
       end
 
       it 'builds all dependencies first' do
-        expect(dependency).to receive(:fabricate!).once
+        expect(dependency).to receive(:fabricate_via_api!).once
 
         subject.fabricate!
       end
@@ -118,6 +121,7 @@ describe QA::Factory::Base do
         allow(factory).to receive(:class).and_return(subject)
         allow(QA::Factory::Product).to receive(:new).and_return(product)
         allow(product).to receive(:page).and_return(page)
+        allow(subject).to receive(:current_url).and_return(product_location)
         allow(subject).to receive(:find_page).and_return(page)
       end
 

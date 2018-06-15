@@ -3,6 +3,12 @@ module QA
     module Env
       extend self
 
+      attr_writer :user_type
+
+      def verbose?
+        (ENV['VERBOSE'] =~ /^(false|no|0)$/i) != 0
+      end
+
       # set to 'false' to have Chrome run visibly instead of headless
       def chrome_headless?
         enabled?(ENV['CHROME_HEADLESS'])
@@ -22,7 +28,11 @@ module QA
 
       # specifies token that can be used for the api
       def personal_access_token
-        ENV['PERSONAL_ACCESS_TOKEN']
+        @personal_access_token ||= ENV['PERSONAL_ACCESS_TOKEN']
+      end
+
+      def personal_access_token=(new_personal_access_token)
+        @personal_access_token = new_personal_access_token # rubocop:disable Gitlab/ModuleWithInstanceVariables
       end
 
       def user_username

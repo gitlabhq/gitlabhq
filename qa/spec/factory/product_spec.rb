@@ -8,6 +8,9 @@ describe QA::Factory::Product do
   end
 
   let(:product) { spy('product') }
+  let(:product_location) { 'http://product_location' }
+
+  subject { described_class.new(product_location) }
 
   before do
     allow(QA::Factory::Base).to receive(:attributes).and_return(attributes)
@@ -15,9 +18,9 @@ describe QA::Factory::Product do
 
   describe '.populate!' do
     it 'returns a fabrication product and define factory attributes as its methods' do
-      expect(described_class).to receive(:new).and_return(product)
+      expect(described_class).to receive(:new).with(product_location).and_return(product)
 
-      result = described_class.populate!(factory) do |instance|
+      result = described_class.populate!(factory, product_location) do |instance|
         instance.something = 'string'
       end
 

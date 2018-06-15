@@ -1,28 +1,60 @@
+require 'airborne'
 require 'forwardable'
+require 'capybara/dsl'
 
 module QA
   module Factory
     class Base
       extend SingleForwardable
+      include Airborne
+      extend Capybara::DSL
 
       def_delegators :evaluator, :dependency, :dependencies
       def_delegators :evaluator, :product, :attributes
+
+      def api_client
+        @api_client ||= Runtime::API::Client.new(:gitlab, new_session: false)
+      end
 
       def fabricate!(*_args)
         raise NotImplementedError
       end
 
-      def self.fabricate!(*args)
-        new.tap do |factory|
-          yield factory if block_given?
+      def fabricate_via_api!(*args)
+        fabricate!(*args)
+      end
 
-          dependencies.each do |name, signature|
-            Factory::Dependency.new(name, factory, signature).build!
+      def self.fabricate_via_api!(*args, &block)
+        do_fabricate!(*args, block: block, via: :api)
+      end
+
+      def self.fabricate!(*args, &block)
+        do_fabricate!(*args, block: block, via: :gui)
+      end
+
+      def self.do_fabricate!(*args, block: nil, via:)
+        new.tap do |factory|
+          block.call(factory) if block
+
+          dependencies.each do |signature|
+            Factory::Dependency.new(factory, signature).build!
           end
 
-          factory.fabricate!(*args)
+          start = Time.now
+          resource_url =
+            case via
+            when :gui
+              factory.fabricate!(*args)
+              current_url
+            when :api
+              factory.fabricate_via_api!(*args)
+            else
+              raise ArgumentError, "Unknown fabricate method '#{via}'. Supported methods are :gui and :api."
+            end
 
-          break Factory::Product.populate!(factory)
+          puts "Resource #{factory} built via '#{via}' in #{Time.now - start} seconds" if Runtime::Env.verbose?
+
+          break Factory::Product.populate!(factory, resource_url)
         end
       end
 
@@ -35,7 +67,7 @@ module QA
 
         def initialize(base)
           @base = base
-          @dependencies = {}
+          @dependencies = []
           @attributes = {}
         end
 
@@ -43,8 +75,8 @@ module QA
           as.tap do |name|
             @base.class_eval { attr_accessor name }
 
-            Dependency::Signature.new(factory, block).tap do |signature|
-              @dependencies.store(name, signature)
+            Dependency::Signature.new(name, factory, block).tap do |signature|
+              @dependencies << signature
             end
           end
         end
