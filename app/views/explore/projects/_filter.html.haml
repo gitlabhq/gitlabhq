@@ -1,6 +1,6 @@
 - if current_user
   .dropdown
-    %button.dropdown-toggle{ href: '#', "data-toggle" => "dropdown" }
+    %button.dropdown-toggle{ href: '#', "data-toggle" => "dropdown", 'data-display' => 'static' }
       = icon('globe')
       %span.light Visibility:
       - if params[:visibility_level].present?
