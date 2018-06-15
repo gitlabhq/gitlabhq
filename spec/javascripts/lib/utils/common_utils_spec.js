@@ -40,13 +40,13 @@ describe('common_utils', () => {
     });
 
     it('should decode params', () => {
-      history.pushState('', '', '?label_name%5B%5D=test');
+      window.history.pushState('', '', '?label_name%5B%5D=test');
 
       expect(
         commonUtils.getUrlParamsArray()[0],
       ).toBe('label_name[]=test');
 
-      history.pushState('', '', '?');
+      window.history.pushState('', '', '?');
     });
   });
 

@@ -164,9 +164,9 @@ gl.issueBoards.BoardsStore = {
   },
   updateFiltersUrl (replaceState = false) {
     if (replaceState) {
-      history.replaceState(null, null, `?${this.filter.path}`);
+      window.history.replaceState(null, null, `?${this.filter.path}`);
     } else {
-      history.pushState(null, null, `?${this.filter.path}`);
+      window.history.pushState(null, null, `?${this.filter.path}`);
     }
   },
 };

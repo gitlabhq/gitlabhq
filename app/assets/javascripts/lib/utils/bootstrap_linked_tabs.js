@@ -93,7 +93,7 @@ export default class LinkedTabs {
 
     const newState = `${copySource}${this.currentLocation.search}${this.currentLocation.hash}`;
 
-    history.replaceState({
+    window.history.replaceState({
       url: newState,
     }, document.title, newState);
     return newState;

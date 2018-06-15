@@ -145,7 +145,7 @@ describe('Issuable output', () => {
         resolve({
           data: {
             confidential: false,
-            web_url: location.pathname,
+            web_url: window.location.pathname,
           },
         });
       }));
@@ -177,7 +177,7 @@ describe('Issuable output', () => {
       spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
         resolve({
           data: {
-            web_url: location.pathname,
+            web_url: window.location.pathname,
             confidential: vm.isConfidential,
           },
         });

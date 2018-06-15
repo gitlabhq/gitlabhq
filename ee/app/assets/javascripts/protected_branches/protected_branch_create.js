@@ -132,7 +132,7 @@ export default class ProtectedBranchCreate {
 
     axios[this.$form.attr('method')](this.$form.attr('action'), this.getFormData())
       .then(() => {
-        location.reload();
+        window.location.reload();
       })
       .catch(() => Flash('Failed to protect the branch'));
   }
