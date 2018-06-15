@@ -197,13 +197,14 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def show_json
+    set_last_commit_sha
     path_segments = @path.split('/')
     path_segments.pop
     tree_path = path_segments.join('/')
-    last_commit = @repository.last_commit_for_path(@commit.id, @blob.path)
 
     json = {
       id: @blob.id,
+      last_commit_sha: @last_commit_sha,
       path: blob.path,
       name: blob.name,
       extension: blob.extension,
@@ -218,7 +219,6 @@ class Projects::BlobController < Projects::ApplicationController
       blame_path: project_blame_path(project, @id),
       commits_path: project_commits_path(project, @id),
       tree_path: project_tree_path(project, File.join(@ref, tree_path)),
-      last_commit: last_commit,
       permalink: project_blob_path(project, File.join(@commit.id, @path))
     }
 

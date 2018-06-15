@@ -76,9 +76,7 @@ describe('Multi-file store utils', () => {
             ...file('staged'),
             path: 'staged',
             content: 'updated file content',
-            lastCommit: {
-              id: '123456789',
-            },
+            lastCommitSha: '123456789',
           },
           {
             ...file('newFile'),
@@ -86,9 +84,7 @@ describe('Multi-file store utils', () => {
             tempFile: true,
             content: 'new file content',
             base64: true,
-            lastCommit: {
-              id: '123456789',
-            },
+            lastCommitSha: '123456789',
           },
         ],
         currentBranchId: 'master',

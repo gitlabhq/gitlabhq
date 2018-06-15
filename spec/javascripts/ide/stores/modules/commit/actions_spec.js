@@ -243,9 +243,7 @@ describe('IDE commit module actions', () => {
         ...file('changed'),
         type: 'blob',
         active: true,
-        lastCommit: {
-          id: '123456789',
-        },
+        lastCommitSha: '123456789',
       };
       store.state.stagedFiles.push(f);
       store.state.changedFiles = [

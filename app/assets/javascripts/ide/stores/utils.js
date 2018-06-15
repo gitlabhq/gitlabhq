@@ -17,6 +17,7 @@ export const dataStructure = () => ({
   changed: false,
   staged: false,
   lastCommitPath: '',
+  lastCommitSha: '',
   lastCommit: {
     id: '',
     url: '',
@@ -112,7 +113,7 @@ export const createCommitPayload = ({ branch, newBranch, state, rootState }) => 
     file_path: f.path,
     content: f.content,
     encoding: f.base64 ? 'base64' : 'text',
-    last_commit_id: newBranch ? undefined : f.lastCommit.id,
+    last_commit_id: newBranch ? undefined : f.lastCommitSha,
   })),
   start_branch: newBranch ? rootState.currentBranchId : undefined,
 });
