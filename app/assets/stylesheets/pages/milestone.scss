@@ -3,8 +3,18 @@
 }
 
 .milestones {
+  padding: $gl-padding-top;
+  border-radius: $border-radius-default;
+  background-color: $gray-normal;
+
   .milestone {
-    padding: 10px 16px;
+    padding: $gl-padding-top $gl-padding;
+    border-radius: $border-radius-default;
+    background-color: $white-light;
+
+    &:not(:last-child){
+      margin-bottom: $gl-padding-8;
+    }
 
     h4 {
       font-weight: $gl-font-weight-bold;
