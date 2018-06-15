@@ -26,7 +26,7 @@ class ProjectCacheWorker
   end
 
   def update_statistics(project, statistics = [])
-    try_obtain_lease_for(project.id) do
+    try_obtain_lease_for("#{project_id}:update_statistics") do
       Rails.logger.info("Updating statistics for project #{project.id}")
 
       project.statistics.refresh!(only: statistics)
@@ -35,10 +35,6 @@ class ProjectCacheWorker
   end
 
   private
-
-  def lease_key_for(project_id)
-    "project_cache_worker:#{project_id}:update_statistics"
-  end
 
   def lease_timeout
     LEASE_TIMEOUT

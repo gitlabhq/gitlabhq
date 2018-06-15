@@ -18,10 +18,6 @@ class ProjectMigrateHashedStorageWorker
 
   private
 
-  def lease_key_for(project_id)
-    "project_migrate_hashed_storage_worker:#{project_id}"
-  end
-
   def lease_timeout
     LEASE_TIMEOUT
   end

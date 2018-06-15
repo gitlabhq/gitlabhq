@@ -52,7 +52,7 @@ module ExclusiveLeaseGuard
   end
 
   def lease_key_for(id)
-    self.class.name.underscore.concat(":{#id}")
+    lease_key.concat(":#{id}")
   end
 
   def lease_timeout
