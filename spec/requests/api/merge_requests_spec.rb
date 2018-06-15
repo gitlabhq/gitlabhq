@@ -1137,6 +1137,19 @@ describe API::MergeRequests do
       expect(json_response['labels']).to include '&'
     end
 
+    it 'also accepts labels as an array' do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user),
+        title: 'new issue',
+        labels: ['label', 'label?', 'label&foo', '?', '&']
+
+      expect(response.status).to eq(200)
+      expect(json_response['labels']).to include 'label'
+      expect(json_response['labels']).to include 'label?'
+      expect(json_response['labels']).to include 'label&foo'
+      expect(json_response['labels']).to include '?'
+      expect(json_response['labels']).to include '&'
+    end
+
     it 'does not update state when title is empty' do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), params: { state_event: 'close', title: nil }
 
