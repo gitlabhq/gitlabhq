@@ -293,3 +293,9 @@ input[type=color].form-control {
     color: $gl-text-color-secondary;
   }
 }
+
+.project-templates-buttons {
+  .btn {
+    vertical-align: unset;
+  }
+}
