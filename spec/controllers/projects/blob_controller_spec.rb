@@ -65,7 +65,7 @@ describe Projects::BlobController do
               project_id: project,
               id: id,
               format: :json,
-              html_render: false)
+              html_render: 'false')
         end
 
         it do
