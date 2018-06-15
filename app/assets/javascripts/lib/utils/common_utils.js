@@ -150,19 +150,25 @@ export const isMetaKey = e => e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
 // 3) Middle-click or Mouse Wheel Click (e.which is 2)
 export const isMetaClick = e => e.metaKey || e.ctrlKey || e.which === 2;
 
+export const contentTop = () => {
+  const perfBar = $('#js-peek').height() || 0;
+  const mrTabsHeight = $('.merge-request-tabs').height() || 0;
+  const headerHeight = $('.navbar-gitlab').height() || 0;
+  const diffFilesChanged = $('.js-diff-files-changed').height() || 0;
+
+  return perfBar + mrTabsHeight + headerHeight + diffFilesChanged;
+};
+
 export const scrollToElement = element => {
   let $el = element;
   if (!(element instanceof $)) {
     $el = $(element);
   }
   const top = $el.offset().top;
-  const perfBar = $('#js-peek').height() || 0;
-  const mrTabsHeight = $('.merge-request-tabs').height() || 0;
-  const headerHeight = $('.navbar-gitlab').height() || 0;
 
   return $('body, html').animate(
     {
-      scrollTop: top - mrTabsHeight - headerHeight - perfBar,
+      scrollTop: top - contentTop(),
     },
     200,
   );

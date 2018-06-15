@@ -4,6 +4,7 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import { pluralize } from '~/lib/utils/text_utility';
 import { getParameterValues, mergeUrlParams } from '~/lib/utils/url_utility';
+import { contentTop } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import ChangedFilesDropdown from './changed_files_dropdown.vue';
 import changedFilesMixin from '../mixins/changed_files';
@@ -26,7 +27,7 @@ export default {
     return {
       isStuck: false,
       maxWidth: 'auto',
-      top: 0,
+      offsetTop: 0,
     };
   },
   computed: {
@@ -53,14 +54,13 @@ export default {
 
       return mergeUrlParams({ w: 0 }, window.location.href);
     },
+    top() {
+      return `${this.offsetTop}px`;
+    },
   },
-  mounted() {
+  created() {
     document.addEventListener('scroll', this.handleScroll);
-
-    this.offsetTop = parseInt(
-      window.getComputedStyle(this.$refs.wrapper).getPropertyValue('top'),
-      10,
-    );
+    this.offsetTop = contentTop();
   },
   beforeDestroy() {
     document.removeEventListener('scroll', this.handleScroll);
@@ -81,7 +81,7 @@ export default {
 
       const scrollPosition = window.scrollY;
 
-      this.isStuck = scrollPosition >= this.$refs.wrapper.offsetTop - this.offsetTop;
+      this.isStuck = scrollPosition + this.offsetTop >= this.$refs.placeholder.offsetTop;
       this.updating = false;
     },
     sumValues(key) {
@@ -92,89 +92,93 @@ export default {
 </script>
 
 <template>
-  <div
-    ref="wrapper"
-    :class="{'is-stuck': isStuck}"
-    class="content-block oneline-block diff-files-changed diff-files-changed-merge-request
-    files-changed js-diff-files-changed"
-  >
-    <div class="files-changed-inner">
-      <div
-        class="inline-parallel-buttons d-none d-md-block"
-      >
-        <a
-          v-if="areAllFilesCollapsed"
-          class="btn btn-default"
-          @click="expandAllFiles"
+  <span>
+    <div ref="placeholder"></div>
+    <div
+      ref="wrapper"
+      :style="{ top }"
+      :class="{'is-stuck': isStuck}"
+      class="content-block oneline-block diff-files-changed diff-files-changed-merge-request
+      files-changed js-diff-files-changed"
+    >
+      <div class="files-changed-inner">
+        <div
+          class="inline-parallel-buttons d-none d-md-block"
         >
-          {{ __('Expand all') }}
-        </a>
-        <a
-          :href="toggleWhitespacePath"
-          class="btn btn-default"
-        >
-          {{ toggleWhitespaceText }}
-        </a>
-        <div class="btn-group">
-          <button
-            id="inline-diff-btn"
-            :class="{ active: isInlineView }"
-            type="button"
-            class="btn js-inline-diff-button"
-            data-view-type="inline"
-            @click="setInlineDiffViewType"
+          <a
+            v-if="areAllFilesCollapsed"
+            class="btn btn-default"
+            @click="expandAllFiles"
           >
-            {{ __('Inline') }}
-          </button>
-          <button
-            id="parallel-diff-btn"
-            :class="{ active: isParallelView }"
-            type="button"
-            class="btn js-parallel-diff-button"
-            data-view-type="parallel"
-            @click="setParallelDiffViewType"
+            {{ __('Expand all') }}
+          </a>
+          <a
+            :href="toggleWhitespacePath"
+            class="btn btn-default"
           >
-            {{ __('Side-by-side') }}
-          </button>
+            {{ toggleWhitespaceText }}
+          </a>
+          <div class="btn-group">
+            <button
+              id="inline-diff-btn"
+              :class="{ active: isInlineView }"
+              type="button"
+              class="btn js-inline-diff-button"
+              data-view-type="inline"
+              @click="setInlineDiffViewType"
+            >
+              {{ __('Inline') }}
+            </button>
+            <button
+              id="parallel-diff-btn"
+              :class="{ active: isParallelView }"
+              type="button"
+              class="btn js-parallel-diff-button"
+              data-view-type="parallel"
+              @click="setParallelDiffViewType"
+            >
+              {{ __('Side-by-side') }}
+            </button>
+          </div>
+        </div>
+
+        <div class="commit-stat-summary dropdown">
+          <changed-files-dropdown
+            :diff-files="diffFiles"
+          />
+
+          <span
+            v-show="activeFile"
+            class="prepend-left-5"
+          >
+            <strong class="prepend-right-5">
+              {{ truncatedDiffPath(activeFile) }}
+            </strong>
+            <clipboard-button
+              :text="activeFile"
+              :title="s__('Copy file name to clipboard')"
+              tooltip-placement="bottom"
+              tooltip-container="body"
+              class="btn btn-default btn-transparent btn-clipboard"
+            />
+          </span>
+
+          <span
+            v-show="!isStuck"
+            id="diff-stats"
+            class="diff-stats-additions-deletions-expanded"
+          >
+            with
+            <strong class="cgreen">
+              {{ pluralize(`${sumAddedLines} addition`, sumAddedLines) }}
+            </strong>
+            and
+            <strong class="cred">
+              {{ pluralize(`${sumRemovedLines} deletion`, sumRemovedLines) }}
+            </strong>
+          </span>
         </div>
       </div>
-
-      <div class="commit-stat-summary dropdown">
-        <changed-files-dropdown
-          :diff-files="diffFiles"
-        />
-
-        <span
-          v-show="activeFile"
-          class="prepend-left-5"
-        >
-          <strong class="prepend-right-5">
-            {{ truncatedDiffPath(activeFile) }}
-          </strong>
-          <clipboard-button
-            :text="activeFile"
-            :title="s__('Copy file name to clipboard')"
-            tooltip-placement="bottom"
-            tooltip-container="body"
-            class="btn btn-default btn-transparent btn-clipboard"
-          />
-        </span>
-
-        <span
-          v-show="!isStuck"
-          id="diff-stats"
-          class="diff-stats-additions-deletions-expanded"
-        >
-          with
-          <strong class="cgreen">
-            {{ pluralize(`${sumAddedLines} addition`, sumAddedLines) }}
-          </strong>
-          and
-          <strong class="cred">
-            {{ pluralize(`${sumRemovedLines} deletion`, sumRemovedLines) }}
-          </strong>
-        </span>
-      </div>
     </div>
-  </div>
+  </span>
 </template>
