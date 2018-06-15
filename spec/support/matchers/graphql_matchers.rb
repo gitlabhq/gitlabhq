@@ -13,6 +13,12 @@ RSpec::Matchers.define :have_graphql_fields do |*expected|
   end
 end
 
+RSpec::Matchers.define :have_graphql_field do |field_name|
+  match do |kls|
+    expect(kls.fields.keys).to include(GraphqlHelpers.fieldnamerize(field_name))
+  end
+end
+
 RSpec::Matchers.define :have_graphql_arguments do |*expected|
   include GraphqlHelpers
 

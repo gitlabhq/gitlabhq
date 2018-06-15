@@ -540,33 +540,9 @@
   margin-right: -$grid-size;
   min-height: 60px;
 
-  .multi-file-commit-list-item {
-    margin-left: 0;
-    margin-right: 0;
-  }
-
   &.form-text.text-muted {
     margin-left: 0;
     right: 0;
-  }
-}
-
-.multi-file-commit-list-item {
-  &.is-active {
-    background-color: $white-normal;
-  }
-
-  .multi-file-discard-btn {
-    display: none;
-    margin-top: -2px;
-    margin-left: auto;
-    color: $gl-link-color;
-  }
-
-  &:hover {
-    .multi-file-discard-btn {
-      display: flex;
-    }
   }
 }
 
@@ -599,7 +575,7 @@
   }
 }
 
-.multi-file-commit-list-item,
+.multi-file-commit-list-path,
 .ide-file-list .file {
   display: flex;
   align-items: center;
@@ -616,11 +592,9 @@
 }
 
 .multi-file-commit-list-path {
-  padding: 0;
-  background: none;
-  border: 0;
-  text-align: left;
-  width: 100%;
+  &.is-active {
+    background-color: $white-normal;
+  }
 
   &:hover,
   &:focus {
@@ -635,7 +609,7 @@
 }
 
 .multi-file-commit-list-file-path {
-  @include str-truncated(100%);
+  @include str-truncated(calc(100% - 30px));
 
   &:hover {
     text-decoration: underline;
@@ -643,6 +617,16 @@
 
   &:active {
     text-decoration: none;
+  }
+}
+
+.multi-file-discard-btn {
+  top: 4px;
+  right: 8px;
+  bottom: 4px;
+
+  svg {
+    top: 0;
   }
 }
 
@@ -840,18 +824,20 @@
 }
 
 .ide-staged-action-btn {
-  margin-left: auto;
-  line-height: 22px;
+  width: 22px;
+  margin-left: -1px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+
+  > svg {
+    top: 0;
+  }
 }
 
 .ide-commit-file-count {
   min-width: 22px;
-  margin-left: auto;
   background-color: $gray-light;
-  border-radius: $border-radius-default;
   border: 1px solid $white-dark;
-  line-height: 20px;
-  text-align: center;
 }
 
 .ide-commit-radios {

@@ -111,7 +111,7 @@ describe('RepoCommitSection', () => {
   });
 
   it('renders a commit section', () => {
-    const changedFileElements = [...vm.$el.querySelectorAll('.multi-file-commit-list li')];
+    const changedFileElements = [...vm.$el.querySelectorAll('.multi-file-commit-list > li')];
     const allFiles = vm.$store.state.changedFiles.concat(vm.$store.state.stagedFiles);
 
     expect(changedFileElements.length).toEqual(4);
@@ -140,22 +140,26 @@ describe('RepoCommitSection', () => {
     vm.$el.querySelector('.multi-file-discard-btn .btn').click();
 
     Vue.nextTick(() => {
-      expect(vm.$el.querySelector('.ide-commit-list-container').querySelectorAll('li').length).toBe(
-        1,
-      );
+      expect(
+        vm.$el
+          .querySelector('.ide-commit-list-container')
+          .querySelectorAll('.multi-file-commit-list > li').length,
+      ).toBe(1);
 
       done();
     });
   });
 
   it('discards a single file', done => {
-    vm.$el.querySelectorAll('.multi-file-discard-btn .btn')[1].click();
+    vm.$el.querySelector('.multi-file-discard-btn .dropdown-menu button').click();
 
     Vue.nextTick(() => {
       expect(vm.$el.querySelector('.ide-commit-list-container').textContent).not.toContain('file1');
-      expect(vm.$el.querySelector('.ide-commit-list-container').querySelectorAll('li').length).toBe(
-        1,
-      );
+      expect(
+        vm.$el
+          .querySelector('.ide-commit-list-container')
+          .querySelectorAll('.multi-file-commit-list > li').length,
+      ).toBe(1);
 
       done();
     });

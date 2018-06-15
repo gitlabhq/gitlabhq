@@ -162,6 +162,7 @@ gl.issueBoards.BoardsStore = {
     });
     return filteredList[0];
   },
+<<<<<<< HEAD
   updateFiltersUrl (replaceState = false) {
     if (replaceState) {
       window.history.replaceState(null, null, `?${this.filter.path}`);
@@ -169,6 +170,11 @@ gl.issueBoards.BoardsStore = {
       window.history.pushState(null, null, `?${this.filter.path}`);
     }
   },
+=======
+  updateFiltersUrl () {
+    window.history.pushState(null, null, `?${this.filter.path}`);
+  }
+>>>>>>> upstream/master
 };
 
 boardsStoreEE.initEESpecific(gl.issueBoards.BoardsStore);
