@@ -24,7 +24,7 @@ export default {
     ...mapState(['changedFiles', 'stagedFiles', 'currentActivityView', 'lastCommitMsg']),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
     ...mapGetters(['hasChanges']),
-    ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled']),
+    ...mapGetters('commit', ['discardDraftButtonDisabled']),
     overviewText() {
       return sprintf(
         __(
@@ -35,6 +35,9 @@ export default {
           changedFilesLength: this.changedFiles.length,
         },
       );
+    },
+    commitButtonText() {
+      return this.stagedFiles.length ? __('Commit') : __('Stage & Commit');
     },
   },
   watch: {
@@ -142,8 +145,7 @@ export default {
           <actions />
           <loading-button
             :loading="submitCommitLoading"
-            :disabled="commitButtonDisabled"
-            :label="__('Commit')"
+            :label="commitButtonText"
             container-class="btn btn-success btn-sm float-left"
             @click="commitChanges"
           />

@@ -29,46 +29,6 @@ describe('IDE commit module getters', () => {
     });
   });
 
-  describe('commitButtonDisabled', () => {
-    const localGetters = {
-      discardDraftButtonDisabled: false,
-    };
-    const rootState = {
-      stagedFiles: ['a'],
-    };
-
-    it('returns false when discardDraftButtonDisabled is false & stagedFiles is not empty', () => {
-      expect(
-        getters.commitButtonDisabled(state, localGetters, rootState),
-      ).toBeFalsy();
-    });
-
-    it('returns true when discardDraftButtonDisabled is false & stagedFiles is empty', () => {
-      rootState.stagedFiles.length = 0;
-
-      expect(
-        getters.commitButtonDisabled(state, localGetters, rootState),
-      ).toBeTruthy();
-    });
-
-    it('returns true when discardDraftButtonDisabled is true', () => {
-      localGetters.discardDraftButtonDisabled = true;
-
-      expect(
-        getters.commitButtonDisabled(state, localGetters, rootState),
-      ).toBeTruthy();
-    });
-
-    it('returns true when discardDraftButtonDisabled is false & changedFiles is not empty', () => {
-      localGetters.discardDraftButtonDisabled = false;
-      rootState.stagedFiles.length = 0;
-
-      expect(
-        getters.commitButtonDisabled(state, localGetters, rootState),
-      ).toBeTruthy();
-    });
-  });
-
   describe('newBranchName', () => {
     it('includes username, currentBranchId, patch & random number', () => {
       gon.current_username = 'username';
@@ -108,9 +68,7 @@ describe('IDE commit module getters', () => {
         });
 
         it('uses newBranchName when not empty', () => {
-          expect(getters.branchName(state, localGetters, rootState)).toBe(
-            'state-newBranchName',
-          );
+          expect(getters.branchName(state, localGetters, rootState)).toBe('state-newBranchName');
         });
 
         it('uses getters newBranchName when state newBranchName is empty', () => {
@@ -118,9 +76,7 @@ describe('IDE commit module getters', () => {
             newBranchName: '',
           });
 
-          expect(getters.branchName(state, localGetters, rootState)).toBe(
-            'newBranchName',
-          );
+          expect(getters.branchName(state, localGetters, rootState)).toBe('newBranchName');
         });
       });
     });
