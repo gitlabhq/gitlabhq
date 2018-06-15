@@ -91,7 +91,12 @@ export default {
 btn-transparent ci-action-icon-container ci-action-icon-wrapper"
     :class="cssClass"
     data-container="body"
+<<<<<<< HEAD
     :disabled="isDisabled"
+=======
+    data-boundary="viewport"
+    @click="onClickAction"
+>>>>>>> e3e4a7f3af... Merge branch 'remove-pointer-events' into 'master'
   >
     <icon :name="actionIcon"/>
   </button>
