@@ -25,7 +25,7 @@
       = custom_icon ('illustration_no_commits')
   - else
     %ul.merge-request-tabs.nav.nav-tabs.nav-links.no-top.no-bottom
-      %li.commits-tab.active
+      %li.commits-tab
         = link_to url_for(safe_params), data: {target: 'div#commits', action: 'new', toggle: 'tab'} do
           Commits
           %span.badge.badge-pill= @commits.size
