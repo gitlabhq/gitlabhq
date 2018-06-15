@@ -259,6 +259,7 @@ function UsersSelect(currentUser, els, options = {}) {
             showDivider = 0;
             if (firstUser) {
               // Move current user to the front of the list
+              // eslint-disable-next-line no-multi-assign
               for (index = j = 0, len = users.length; j < len; index = (j += 1)) {
                 obj = users[index];
                 if (obj.username === firstUser) {
@@ -561,6 +562,8 @@ function UsersSelect(currentUser, els, options = {}) {
               if (firstUser) {
                 // Move current user to the front of the list
                 ref = data.results;
+
+                // eslint-disable-next-line no-multi-assign
                 for (index = j = 0, len = ref.length; j < len; index = (j += 1)) {
                   obj = ref[index];
                   if (obj.username === firstUser) {

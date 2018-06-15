@@ -154,7 +154,7 @@ export default {
       point.x = e.clientX;
       point.y = e.clientY;
       point = point.matrixTransform(this.$refs.graphData.getScreenCTM().inverse());
-      point.x = point.x += 7;
+      point.x += 7;
       const firstTimeSeries = this.timeSeries[0];
       const timeValueOverlay = firstTimeSeries.timeSeriesScaleX.invert(point.x);
       const overlayIndex = bisectDate(firstTimeSeries.values, timeValueOverlay, 1);

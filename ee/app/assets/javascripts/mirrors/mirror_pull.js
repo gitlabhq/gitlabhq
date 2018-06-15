@@ -73,7 +73,7 @@ export default class MirrorPull {
       axios.get(`${projectMirrorSSHEndpoint}?ssh_url=${repositoryUrl}`)
       .then(({ data, status }) => {
         if (status === 204) {
-          this.backOffRequestCounter = this.backOffRequestCounter += 1;
+          this.backOffRequestCounter += 1;
           if (this.backOffRequestCounter < 3) {
             next();
           } else {
