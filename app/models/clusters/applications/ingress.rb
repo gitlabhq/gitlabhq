@@ -48,9 +48,9 @@ module Clusters
 
       def extra_env
         {
-          "CA_CERT" => cluster.application_helm.ca_cert,
-          "HELM_CERT" => cluster.application_helm.client_cert,
-          "HELM_KEY" => cluster.application_helm.client_key,
+          "CA_CERT" => Base64.encode64(cluster.application_helm.ca_cert),
+          "HELM_CERT" => Base64.encode64(cluster.application_helm.client_cert),
+          "HELM_KEY" => Base64.encode64(cluster.application_helm.client_key),
         }
       end
     end
