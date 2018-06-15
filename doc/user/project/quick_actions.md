@@ -45,6 +45,7 @@ do.
 | `/tableflip`               | Append the comment with `(╯°□°)╯︵ ┻━┻` |
 | `/shrug`                   | Append the comment with `¯\＿(ツ)＿/¯` |
 | <code>/copy_metadata #issue &#124; !merge_request</code> | Copy labels and milestone from other issue or merge request |
+| `/confidential`            | Makes the issue confidential |
 
 Note: In GitLab Starter every issue can have more than one assignee, so commands `/assign`, `/unassign` and `/reassign`
 support multiple assignees.

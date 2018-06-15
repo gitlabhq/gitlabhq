@@ -1,0 +1,5 @@
+---
+title: Make quick commands case insensitive
+merge_request: 19614
+author: Jan Beckmann
+type: fixed

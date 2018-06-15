@@ -6,7 +6,11 @@ require Rails.root.join('db', 'migrate', '20161124141322_migrate_process_commit_
 describe MigrateProcessCommitWorkerJobs do
   let(:project) { create(:project, :legacy_storage, :repository) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
   let(:user) { create(:user) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
-  let(:commit) { project.commit.raw.rugged_commit }
+  let(:commit) do
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      project.commit.raw.rugged_commit
+    end
+  end
 
   describe 'Project' do
     describe 'find_including_path' do

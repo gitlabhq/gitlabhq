@@ -42,5 +42,26 @@ list.
 An additional review mode is available when you open a merge request, which
 shows you a preview of the merge request diff if you commit your changes.
 
+## View CI job logs
+
+> [Introduced in](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19279) [GitLab Core][ce] 11.0.
+
+The Web IDE can be used to quickly fix failing tests by opening the branch or
+merge request in the Web IDE and opening the logs of the failed job. The status
+of all jobs for the most recent pipeline and job traces for the current commit
+can be accessed by clicking the **Pipelines** button in the top right.
+
+The pipeline status is also shown at all times in the status bar in the bottom
+left.
+
+## Switching merge requests
+
+> [Introduced in](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19318) [GitLab Core][ce] 11.0.
+
+Switching between your authored and assigned merge requests can be done without
+leaving the Web IDE. Click the project name in the top left to open a list of
+merge requests. You will need to commit or discard all your changes before
+switching to a different merge request.
+
 [ce]: https://about.gitlab.com/pricing/
 [ee]: https://about.gitlab.com/pricing/

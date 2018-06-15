@@ -6,6 +6,8 @@ require 'grpc/health/v1/health_services_pb'
 
 module Gitlab
   module GitalyClient
+    prepend ::EE::Gitlab::GitalyClient
+
     include Gitlab::Metrics::Methods
     module MigrationStatus
       DISABLED = 1
@@ -32,11 +34,6 @@ module Gitlab
     SERVER_VERSION_FILE = 'GITALY_SERVER_VERSION'.freeze
     MAXIMUM_GITALY_CALLS = 35
     CLIENT_NAME = (Sidekiq.server? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
-
-    # We have a mechanism to let GitLab automatically opt in to all Gitaly
-    # features. We want to be able to exclude some features from automatic
-    # opt-in. That is what EXPLICIT_OPT_IN_REQUIRED is for.
-    EXPLICIT_OPT_IN_REQUIRED = [Gitlab::GitalyClient::StorageSettings::DISK_ACCESS_DENIED_FLAG].freeze
 
     MUTEX = Mutex.new
 
@@ -249,7 +246,7 @@ module Gitlab
       when MigrationStatus::OPT_OUT
         true
       when MigrationStatus::OPT_IN
-        opt_into_all_features? && !EXPLICIT_OPT_IN_REQUIRED.include?(feature_name)
+        opt_into_all_features? && !explicit_opt_in_required.include?(feature_name)
       else
         false
       end
@@ -257,6 +254,13 @@ module Gitlab
       # During application startup feature lookups in SQL can fail
       Rails.logger.warn "exception while checking Gitaly feature status for #{feature_name}: #{ex}"
       false
+    end
+
+    # We have a mechanism to let GitLab automatically opt in to all Gitaly
+    # features. We want to be able to exclude some features from automatic
+    # opt-in. This function has an override in EE.
+    def self.explicit_opt_in_required
+      []
     end
 
     # opt_into_all_features? returns true when the current environment

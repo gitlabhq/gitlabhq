@@ -216,7 +216,7 @@ to the system so that anybody who visits the same board later will see the reord
 with some exceptions.
 
 The first time a given issue appears in any board (i.e. the first time a user
-loads a board containing that issue), it will be ordered with 
+loads a board containing that issue), it will be ordered with
 respect to other issues in that list according to [Priority order][label-priority].
 At that point, that issue will be assigned a relative order value by the system
 representing its relative order with respect to the other issues in the list. Any time
@@ -226,7 +226,7 @@ the updated relative order value will be used for the ordering. (It's only the f
 time an issue appears that it takes from the Priority order mentioned above.) This means that
 if issue `A` is drag-and-drop reordered to be above issue `B` by any user in
 a given board inside your GitLab instance, any time those two issues are subsequently
-loaded in any board in the same instance (could be a different project board or a different group board, for example), 
+loaded in any board in the same instance (could be a different project board or a different group board, for example),
 that ordering will be maintained.
 
 ## Filtering issues

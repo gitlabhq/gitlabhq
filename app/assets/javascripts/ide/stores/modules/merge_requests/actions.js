@@ -31,15 +31,16 @@ export const openMergeRequest = ({ commit, dispatch }, { projectPath, id }) => {
   commit(rootTypes.CLEAR_PROJECTS, null, { root: true });
   commit(rootTypes.SET_CURRENT_MERGE_REQUEST, `${id}`, { root: true });
   commit(rootTypes.RESET_OPEN_FILES, null, { root: true });
-  dispatch('pipelines/resetLatestPipeline', null, { root: true });
   dispatch('setCurrentBranchId', '', { root: true });
   dispatch('pipelines/stopPipelinePolling', null, { root: true })
     .then(() => {
+      dispatch('pipelines/resetLatestPipeline', null, { root: true });
       dispatch('pipelines/clearEtagPoll', null, { root: true });
     })
     .catch(e => {
       throw e;
     });
+  dispatch('setRightPane', null, { root: true });
 
   router.push(`/project/${projectPath}/merge_requests/${id}`);
 };

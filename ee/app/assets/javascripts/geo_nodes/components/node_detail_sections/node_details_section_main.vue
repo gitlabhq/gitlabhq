@@ -48,7 +48,7 @@
 
 <template>
   <div class="row-fluid clearfix node-detail-section primary-section">
-    <div class="col-md-8">
+    <div class="col-md-8 section-items-container">
       <div class="detail-section-item node-version">
         <div class="node-detail-title">
           {{ s__('GeoNodes|GitLab version') }}

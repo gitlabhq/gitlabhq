@@ -177,7 +177,8 @@ describe API::GeoNodes, :geo, :prometheus, api: true do
         enabled: false,
         url: 'https://updated.example.com/',
         files_max_capacity: 33,
-        repos_max_capacity: 44
+        repos_max_capacity: 44,
+        verification_max_capacity: 55
       }.stringify_keys
 
       put api("/geo_nodes/#{secondary.id}", admin), params

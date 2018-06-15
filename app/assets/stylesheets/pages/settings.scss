@@ -52,7 +52,7 @@
 
 .settings-content {
   max-height: 1px;
-  overflow-y: scroll;
+  overflow-y: hidden;
   padding-right: 110px;
   animation: collapseMaxHeight 300ms ease-out;
   // Keep the section from expanding when we scroll over it

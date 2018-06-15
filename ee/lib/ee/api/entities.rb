@@ -218,6 +218,7 @@ module EE
         expose :current?, as: :current
         expose :files_max_capacity
         expose :repos_max_capacity
+        expose :verification_max_capacity
 
         # Retained for backwards compatibility. Remove in API v5
         expose :clone_protocol do |_record, _options|

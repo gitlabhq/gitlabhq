@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180608201435) do
+ActiveRecord::Schema.define(version: 20180612175636) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1159,6 +1159,7 @@ ActiveRecord::Schema.define(version: 20180608201435) do
     t.string "url", null: false
     t.string "selective_sync_type"
     t.text "selective_sync_shards"
+    t.integer "verification_max_capacity", default: 100, null: false
   end
 
   add_index "geo_nodes", ["access_key"], name: "index_geo_nodes_on_access_key", using: :btree

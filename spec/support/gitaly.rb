@@ -9,7 +9,7 @@ RSpec.configure do |config|
       # Use 'and_wrap_original' to make sure the arguments are valid
       allow(Gitlab::GitalyClient).to receive(:feature_enabled?).and_wrap_original do |m, *args|
         m.call(*args)
-        !Gitlab::GitalyClient::EXPLICIT_OPT_IN_REQUIRED.include?(args.first)
+        !Gitlab::GitalyClient.explicit_opt_in_required.include?(args.first)
       end
     end
   end

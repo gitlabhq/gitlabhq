@@ -370,10 +370,10 @@ package-and-qa:
   <<: *single-script-job
   variables:
     <<: *single-script-job-variables
-    SCRIPT_NAME: trigger-build-omnibus
+    SCRIPT_NAME: trigger-build
   retry: 0
   script:
-    - ./$SCRIPT_NAME
+    - ./$SCRIPT_NAME omnibus
   when: manual
   only:
     - //@gitlab-org/gitlab-ce

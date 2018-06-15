@@ -34,7 +34,6 @@ export default {
     class="btn btn-blank gutter-toggle btn-sidebar-action"
     data-container="body"
     data-placement="left"
-    data-boundary="viewport"
     @click="toggle"
   >
     <i

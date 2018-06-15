@@ -292,8 +292,10 @@ class ApplicationController < ActionController::Base
     return unless current_user
     return if current_user.terms_accepted?
 
+    message = _("Please accept the Terms of Service before continuing.")
+
     if sessionless_user?
-      render_403
+      access_denied!(message)
     else
       # Redirect to the destination if the request is a get.
       # Redirect to the source if it was a post, so the user can re-submit after
@@ -304,7 +306,7 @@ class ApplicationController < ActionController::Base
                         URI(request.referer).path if request.referer
                       end
 
-      flash[:notice] = _("Please accept the Terms of Service before continuing.")
+      flash[:notice] = message
       redirect_to terms_path(redirect: redirect_path), status: :found
     end
   end
