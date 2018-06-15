@@ -81,4 +81,48 @@ describe('IDE commit module getters', () => {
       });
     });
   });
+
+  describe('preBuiltCommitMessage', () => {
+    let rootState = {};
+
+    beforeEach(() => {
+      rootState.changedFiles = [];
+      rootState.stagedFiles = [];
+    });
+
+    afterEach(() => {
+      rootState = {};
+    });
+
+    it('returns commitMessage when set', () => {
+      state.commitMessage = 'test commit message';
+
+      expect(getters.preBuiltCommitMessage(state, null, rootState)).toBe('test commit message');
+    });
+
+    ['changedFiles', 'stagedFiles'].forEach(key => {
+      it('returns commitMessage with updated file', () => {
+        rootState[key].push({
+          path: 'test-file',
+        });
+
+        expect(getters.preBuiltCommitMessage(state, null, rootState)).toBe('Update test-file');
+      });
+
+      it('returns commitMessage with updated files', () => {
+        rootState[key].push(
+          {
+            path: 'test-file',
+          },
+          {
+            path: 'index.js',
+          },
+        );
+
+        expect(getters.preBuiltCommitMessage(state, null, rootState)).toBe(
+          'Update test-file, index.js files',
+        );
+      });
+    });
+  });
 });
