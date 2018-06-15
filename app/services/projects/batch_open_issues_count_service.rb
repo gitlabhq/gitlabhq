@@ -3,10 +3,11 @@
 # because the service use maps to retrieve the project ids
 module Projects
   class BatchOpenIssuesCountService < Projects::BatchCountService
+
+    # Method not needed. Cache here is updated using
+    # overloaded OpenIssuesCount#refresh_cache method
     def global_count
-      @global_count ||= begin
-        count_service.query(project_ids).group(:project_id).count
-      end
+      nil
     end
 
     def count_service
