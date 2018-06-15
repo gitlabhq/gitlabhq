@@ -1,6 +1,0 @@
----
-title: Fixes Web IDE button on merge requests when GitLab is installed with relative
-  URL
-merge_request:
-author:
-type: fixed

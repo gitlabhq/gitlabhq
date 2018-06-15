@@ -1,9 +1,0 @@
-- if show_no_ssh_key_message?
-  .no-ssh-key-message.alert.alert-warning
-    - add_ssh_key_link = link_to s_('MissingSSHKeyWarningLink|add an SSH key'), profile_keys_path, class: 'alert-link'
-    - ssh_message = _("You won't be able to pull or push project code via SSH until you %{add_ssh_key_link} to your profile") % { add_ssh_key_link: add_ssh_key_link }
-    = ssh_message.html_safe
-    .alert-link-group
-      = link_to _("Don't show again"), profile_path(user: {hide_no_ssh_key: true}), method: :put, class: 'alert-link'
-      |
-      = link_to _('Remind later'), '#', class: 'hide-no-ssh-message alert-link'

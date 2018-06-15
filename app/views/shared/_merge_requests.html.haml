@@ -1,9 +1,0 @@
-- if @merge_requests.to_a.any?
-  .card.card-small.card-without-border
-    %ul.content-list.mr-list.issuable-list
-      = render partial: 'projects/merge_requests/merge_request', collection: @merge_requests
-
-  = paginate @merge_requests, theme: "gitlab"
-
-- else
-  = render 'shared/empty_states/merge_requests'

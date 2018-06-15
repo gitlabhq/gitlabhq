@@ -1,4 +1,0 @@
-{
-  "type": "array",
-  "items": { "$ref": "commit/with_stats.json" }
-}

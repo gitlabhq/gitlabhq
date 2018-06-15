@@ -1,5 +1,0 @@
----
-title: Fix repository archive generation when hashed storage is enabled
-merge_request: 19441
-author:
-type: fixed

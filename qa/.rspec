@@ -1,3 +1,0 @@
---color
---format documentation
---require spec_helper

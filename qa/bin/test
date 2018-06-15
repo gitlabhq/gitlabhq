@@ -1,3 +1,0 @@
-#!/bin/bash
-
-xvfb-run bundle exec bin/qa $@

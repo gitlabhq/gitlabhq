@@ -1,8 +1,0 @@
-.gl-pagination.prepend-top-default
-  %ul.pagination.justify-content-center
-    - if previous_path
-      %li.page-item.prev
-        = link_to(t('views.pagination.previous'), previous_path, rel: 'prev', class: 'page-link')
-    - if next_path
-      %li.page-item.next
-        = link_to(t('views.pagination.next'), next_path, rel: 'next', class: 'page-link')

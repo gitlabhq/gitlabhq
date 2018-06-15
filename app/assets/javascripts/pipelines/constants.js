@@ -1,2 +1,0 @@
-export const CANCEL_REQUEST = 'CANCEL_REQUEST';
-export const PIPELINES_TABLE = 'PIPELINES_TABLE';

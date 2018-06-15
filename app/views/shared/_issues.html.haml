@@ -1,7 +1,0 @@
-- if @issues.to_a.any?
-  .card.card-small.card-without-border
-    %ul.content-list.issues-list.issuable-list
-      = render partial: 'projects/issues/issue', collection: @issues
-  = paginate @issues, theme: "gitlab"
-- else
-  = render 'shared/empty_states/issues'

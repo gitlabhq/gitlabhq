@@ -1,3 +1,0 @@
-<%= 'Label'.pluralize(@label_names.size) %> added: <%= @label_names.to_sentence %>
-
-<%= url_for([issuable.project.namespace.becomes(Namespace), issuable.project, issuable, { only_path: false }]) %>

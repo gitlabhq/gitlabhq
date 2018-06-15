@@ -1,6 +1,0 @@
----
-title: 'Rails 5 fix unknown keywords: changes, key_id, project, gl_repository, action,
-  secret_token, protocol'
-merge_request: 19466
-author: Jasper Maes
-type: fixed

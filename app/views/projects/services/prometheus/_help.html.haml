@@ -1,9 +1,0 @@
-- if @project
-  = render 'projects/services/prometheus/configuration_banner', project: @project, service: @service
-
-%h4.append-bottom-default
-  = s_('PrometheusService|Manual configuration')
-
-- unless @service.editable?
-  .info-well
-    = s_('PrometheusService|To enable manual configuration, uninstall Prometheus from your clusters')

@@ -1,8 +1,0 @@
-%ul.content-list.mr-list.issuable-list
-  - if @merge_requests.exists?
-    = render @merge_requests
-  - else
-    = render 'shared/empty_states/merge_requests'
-
-- if @merge_requests.present?
-  = paginate @merge_requests, theme: "gitlab", total_pages: @total_pages

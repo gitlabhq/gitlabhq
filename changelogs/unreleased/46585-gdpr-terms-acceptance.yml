@@ -1,6 +1,0 @@
----
-title: Add flash notice if user has already accepted terms and allow users to continue
-  to root path
-merge_request: 19156
-author:
-type: changed

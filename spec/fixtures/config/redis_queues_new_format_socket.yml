@@ -1,6 +1,0 @@
-development:
-  url: unix:/path/to/redis.queues.sock
-test:
-  url: unix:/path/to/redis.queues.sock
-production:
-  url: unix:/path/to/redis.queues.sock

@@ -1,3 +1,0 @@
-example.com
-test.com
-foo.bar

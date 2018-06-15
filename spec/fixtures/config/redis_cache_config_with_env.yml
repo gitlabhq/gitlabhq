@@ -1,2 +1,0 @@
-test:
-  url: <%= ENV['TEST_GITLAB_REDIS_CACHE_URL'] %>

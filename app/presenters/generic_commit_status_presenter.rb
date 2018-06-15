@@ -1,2 +1,0 @@
-class GenericCommitStatusPresenter < CommitStatusPresenter
-end

@@ -1,9 +1,0 @@
-{
-  "type": "array",
-  "items": {
-    "type": "object",
-    "properties" : {
-      "$ref": "./issue.json"
-    }
-  }
-}
