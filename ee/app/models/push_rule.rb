@@ -1,4 +1,10 @@
 class PushRule < ActiveRecord::Base
+  extend Gitlab::Cache::RequestCache
+
+  request_cache_key do
+    [self.id]
+  end
+
   MatchError = Class.new(StandardError)
 
   REGEX_COLUMNS = %i[
@@ -131,7 +137,7 @@ class PushRule < ActiveRecord::Base
     !regexp_uses_re2?
   end
 
-  def read_setting_with_global_default(setting)
+  request_cache def read_setting_with_global_default(setting)
     value = read_attribute(setting)
 
     # return if value is true/false or if current object is the global setting
