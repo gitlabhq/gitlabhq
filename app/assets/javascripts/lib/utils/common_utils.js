@@ -38,7 +38,6 @@ export const checkPageAndAction = (page, action) => {
 export const isInIssuePage = () => checkPageAndAction('issues', 'show');
 export const isInMRPage = () => checkPageAndAction('merge_requests', 'show');
 export const isInEpicPage = () => checkPageAndAction('epics', 'show');
-export const isInNoteablePage = () => isInIssuePage() || isInMRPage();
 
 export const ajaxGet = url =>
   axios
@@ -157,12 +156,13 @@ export const scrollToElement = element => {
     $el = $(element);
   }
   const top = $el.offset().top;
+  const perfBar = $('#js-peek').height() || 0;
   const mrTabsHeight = $('.merge-request-tabs').height() || 0;
   const headerHeight = $('.navbar-gitlab').height() || 0;
 
   return $('body, html').animate(
     {
-      scrollTop: top - mrTabsHeight - headerHeight,
+      scrollTop: top - mrTabsHeight - headerHeight - perfBar,
     },
     200,
   );
