@@ -25,7 +25,7 @@ class Projects::ApplicationController < ApplicationController
     params[:namespace_id] = project.namespace.to_param
     params[:project_id] = project.to_param
 
-    url_for(params)
+    url_for(safe_params)
   end
 
   def repository
