@@ -24,7 +24,7 @@ export default {
     ...mapState(['changedFiles', 'stagedFiles', 'currentActivityView', 'lastCommitMsg']),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
     ...mapGetters(['hasChanges']),
-    ...mapGetters('commit', ['discardDraftButtonDisabled']),
+    ...mapGetters('commit', ['discardDraftButtonDisabled', 'preBuiltCommitMessage']),
     overviewText() {
       return sprintf(
         __(
@@ -139,6 +139,7 @@ export default {
         </transition>
         <commit-message-field
           :text="commitMessage"
+          :placeholder="preBuiltCommitMessage"
           @input="updateCommitMessage"
         />
         <div class="clearfix prepend-top-15">
