@@ -10,7 +10,8 @@ class PropagateServiceTemplateWorker
   def perform(template_id)
     try_obtain_lease_for(template_id) do
       Projects::PropagateServiceTemplate.propagate(Service.find_by(id: template_id))
-    end rescue LeaseNotObtained
+    end
+  rescue LeaseNotObtained
   end
 
   private

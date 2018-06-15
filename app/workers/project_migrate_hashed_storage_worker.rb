@@ -12,7 +12,8 @@ class ProjectMigrateHashedStorageWorker
 
     try_obtain_lease_for(project_id) do
       ::Projects::HashedStorageMigrationService.new(project, logger).execute
-    end rescue LeaseNotObtained
+    end
+  rescue LeaseNotObtained
   end
 
   private

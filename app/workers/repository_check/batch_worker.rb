@@ -42,9 +42,12 @@ module RepositoryCheck
       project_ids.each do |project_id|
         break if Time.now - start >= RUN_TIME
 
-        try_obtain_lease_for(project_id) do
-          SingleRepositoryWorker.new.perform(project_id)
-        end rescue LeaseNotObtained
+        begin
+          try_obtain_lease_for(project_id) do
+            SingleRepositoryWorker.new.perform(project_id)
+          end
+        rescue LeaseNotObtained
+        end
       end
     end
 
