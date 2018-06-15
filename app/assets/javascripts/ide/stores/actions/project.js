@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import flash from '~/flash';
 import { __, sprintf } from '~/locale';
 import service from '../../services';
@@ -89,7 +90,7 @@ export const refreshLastCommitData = ({ commit }, { projectId, branchId } = {}) 
       flash(__('Error loading last commit.'), 'alert', document, null, false, true);
     });
 
-export const createNewBranchFromDefault = ({ state, getters }, branch) => {
+export const createNewBranchFromDefault = ({ state, getters }, branch) =>
   api
     .createBranch(state.currentProjectId, {
       ref: getters.currentProject.default_branch,
@@ -97,27 +98,23 @@ export const createNewBranchFromDefault = ({ state, getters }, branch) => {
     })
     .then(() => {
       location.reload();
+
+      // this forces the loading icon to spin whilst the page is reloading
+      return new Promise(() => {});
     })
     .catch(() => {});
-};
 
 export const showBranchNotFoundError = ({ dispatch }, branchId) => {
-  flash(
-    sprintf(__('Branch %{branchName} was not found in project.'), {
-      branchName: branchId,
-    }),
-    'alert',
-    document,
-    {
-      href: '#',
-      title: 'Create branch',
-      clickHandler(e) {
-        e.stopPropagation();
-        e.preventDefault();
-        dispatch('createNewBranchFromDefault', branchId);
+  dispatch('setErrorMessage', {
+    text: sprintf(
+      __('Branch %{branchName} was not found in project.'),
+      {
+        branchName: `<strong>${_.escape(branchId)}</strong>`,
       },
-    },
-    false,
-    true,
-  );
+      false,
+    ),
+    action: 'createNewBranchFromDefault',
+    actionText: 'Create branch',
+    actionPayload: branchId,
+  });
 };

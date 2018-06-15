@@ -25,4 +25,5 @@ export default () => ({
   fileFindVisible: false,
   rightPane: null,
   links: {},
+  errorMessage: null,
 });
