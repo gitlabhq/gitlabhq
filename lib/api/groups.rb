@@ -46,7 +46,9 @@ module API
         groups = GroupsFinder.new(current_user, find_params).execute
         groups = groups.search(params[:search]) if params[:search].present?
         groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
-        groups = groups.reorder(params[:order_by] => params[:sort])
+        order_options = { params[:order_by] => params[:sort] }
+        order_options["id"] ||= "asc"
+        groups = groups.reorder(order_options)
 
         groups
       end
