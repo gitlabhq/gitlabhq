@@ -5,21 +5,17 @@ class GitlabUsagePingWorker
 
   include ApplicationWorker
   include CronjobQueue
-  include ExclusiveLeaseGuard
 
   def perform
-    try_obtain_lease do
-      SubmitUsagePingService.new.execute
-    end rescue LeaseNotObtained
+    # Multiple Sidekiq workers could run this. We should only do this at most once a day.
+    return unless try_obtain_lease
+
+    SubmitUsagePingService.new.execute
   end
 
   private
 
-  def lease_key
-    'gitlab_usage_ping_worker:ping'
-  end
-
-  def lease_timeout
-    LEASE_TIMEOUT
+  def try_obtain_lease
+    Gitlab::ExclusiveLease.new('gitlab_usage_ping_worker:ping', timeout: LEASE_TIMEOUT).try_obtain
   end
 end
