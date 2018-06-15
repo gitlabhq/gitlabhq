@@ -17,7 +17,7 @@ gl.issueBoards.BoardDelete = Vue.extend({
     deleteBoard () {
       $(this.$el).tooltip('hide');
 
-      if (confirm('Are you sure you want to delete this list?')) {
+      if (window.confirm('Are you sure you want to delete this list?')) {
         this.list.destroy();
       }
     }

@@ -35,7 +35,7 @@ const LineHighlighter = function(options = {}) {
   options.highlightLineClass = options.highlightLineClass || 'hll';
   options.fileHolderSelector = options.fileHolderSelector || '.file-holder';
   options.scrollFileHolder = options.scrollFileHolder || false;
-  options.hash = options.hash || location.hash;
+  options.hash = options.hash || window.location.hash;
 
   this.options = options;
   this._hash = options.hash;
@@ -170,7 +170,7 @@ LineHighlighter.prototype.setHash = function(firstLineNumber, lastLineNumber) {
 //
 // This method is stubbed in tests.
 LineHighlighter.prototype.__setLocationHash__ = function(value) {
-  return history.pushState({
+  return window.history.pushState({
     url: value
   // We're using pushState instead of assigning location.hash directly to
   // prevent the page from scrolling on the hashchange event
