@@ -197,14 +197,11 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def show_json
-    json = blob_json(@blob)
-    return render_404 unless json
-
     path_segments = @path.split('/')
     path_segments.pop
     tree_path = path_segments.join('/')
 
-    render json: json.merge(
+    json = {
       id: @blob.id,
       path: blob.path,
       name: blob.name,
@@ -221,6 +218,10 @@ class Projects::BlobController < Projects::ApplicationController
       commits_path: project_commits_path(project, @id),
       tree_path: project_tree_path(project, File.join(@ref, tree_path)),
       permalink: project_blob_path(project, File.join(@commit.id, @path))
-    )
+    }
+
+    json.merge!(blob_json(@blob) || {}) unless params[:viewer] == 'none'
+
+    render json: json
   end
 end
