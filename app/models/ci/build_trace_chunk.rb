@@ -1,6 +1,7 @@
 module Ci
   class BuildTraceChunk < ActiveRecord::Base
     include FastDestroyAll
+    include ExclusiveLeaseLock
     extend Gitlab::Ci::Model
 
     belongs_to :build, class_name: "Ci::Build", foreign_key: :build_id
@@ -14,6 +15,8 @@ module Ci
     WRITE_LOCK_SLEEP = 0.01.seconds
     WRITE_LOCK_TTL = 1.minute
 
+    # Note: The ordering of this enum is related to the precedence of persist store.
+    # The bottom item takes the higest precedence, and the top item takes the lowest precedence.
     enum data_store: {
       redis: 1,
       database: 2,
@@ -38,8 +41,8 @@ module Ci
       ##
       # FastDestroyAll concerns
       def begin_fast_destroy
-        all_stores.each_with_object({}) do |result, store|
-          relation = public_send(store)
+        all_stores.each_with_object({}) do |store, result|
+          relation = public_send(store) # rubocop:disable GitlabSecurity/PublicSend
           keys = get_store_class(store).keys(relation)
 
           result[store] = keys if keys.present?
@@ -72,7 +75,13 @@ module Ci
       raise ArgumentError, 'Offset is out of range' if offset > size || offset < 0
       raise ArgumentError, 'Chunk size overflow' if CHUNK_SIZE < (offset + new_data.bytesize)
 
-      set_data!(data.byteslice(0, offset) + new_data)
+      in_lock(*lock_params) do
+        self.reload if self.persisted?
+
+        unsafe_set_data!(data.byteslice(0, offset) + new_data)
+      end
+
+      schedule_to_persist if full?
     end
 
     def size
@@ -90,13 +99,15 @@ module Ci
     def range
       (start_offset...end_offset)
     end
-    
+
     def persisted?
       !redis?
     end
 
     def persist!
-      in_lock do
+      in_lock(*lock_params) do
+        self.reload if self.persisted?
+
         unsafe_move_to!(self.class.persist_store)
       end
     end
@@ -109,10 +120,10 @@ module Ci
 
       old_store_class = self.class.get_store_class(data_store)
 
-      self.get_data.tap do |the_data|
+      get_data.tap do |the_data|
         self.raw_data = nil
         self.data_store = new_store
-        self.set_data!(the_data)
+        unsafe_set_data!(the_data)
       end
 
       old_store_class.delete_data(self)
@@ -122,17 +133,13 @@ module Ci
       self.class.get_store_class(data_store).data(self)&.force_encoding(Encoding::BINARY) # Redis/Database return UTF-8 string as default
     end
 
-    def set_data!(value)
+    def unsafe_set_data!(value)
       raise ArgumentError, 'too much data' if value.bytesize > CHUNK_SIZE
 
-      in_lock do
-        self.class.get_store_class(data_store).set_data(self, value)
-        @data = value
+      self.class.get_store_class(data_store).set_data(self, value)
+      @data = value
 
-        save! if changed?
-      end
-
-      schedule_to_persist if full?
+      save! if changed?
     end
 
     def schedule_to_persist
@@ -145,25 +152,11 @@ module Ci
       size == CHUNK_SIZE
     end
 
-    def in_lock
-      write_lock_key = "trace_write:#{build_id}:chunks:#{chunk_index}"
-
-      lease = Gitlab::ExclusiveLease.new(write_lock_key, timeout: WRITE_LOCK_TTL)
-      retry_count = 0
-
-      until uuid = lease.try_obtain
-        # Keep trying until we obtain the lease. To prevent hammering Redis too
-        # much we'll wait for a bit between retries.
-        sleep(WRITE_LOCK_SLEEP)
-        break if WRITE_LOCK_RETRY < (retry_count += 1)
-      end
-
-      raise WriteError, 'Failed to obtain write lock' unless uuid
-
-      self.reload if self.persisted?
-      return yield
-    ensure
-      Gitlab::ExclusiveLease.cancel(write_lock_key, uuid)
+    def lock_params
+      ["trace_write:#{build_id}:chunks:#{chunk_index}",
+       { ttl: WRITE_LOCK_TTL,
+         retry_max: WRITE_LOCK_RETRY,
+         sleep_sec: WRITE_LOCK_SLEEP }]
     end
   end
 end

@@ -6,7 +6,7 @@ module Ci
       end
 
       def data(model)
-        connection.get_object(bucket_name, key(model)).body
+        connection.get_object(bucket_name, key(model))[:body]
       end
 
       def set_data(model, data)
@@ -36,7 +36,7 @@ module Ci
       end
 
       def key_raw(build_id, chunk_index)
-        "tmp/chunks/builds/#{build_id.to_i}/chunks/#{chunk_index.to_i}.log"
+        "tmp/builds/#{build_id.to_i}/chunks/#{chunk_index.to_i}.log"
       end
 
       def bucket_name
