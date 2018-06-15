@@ -63,6 +63,9 @@ export default {
         title: this.title,
       });
     },
+    filesLength() {
+      return this.fileList.length;
+    },
   },
   methods: {
     ...mapActions(['stageAllChanges', 'unstageAllChanges']),
@@ -92,9 +95,9 @@ export default {
         <div class="d-flex ml-auto">
           <button
             v-tooltip
-            v-show="fileList.length"
+            v-show="filesLength"
             :class="{
-              'd-flex': fileList.length
+              'd-flex': filesLength
             }"
             :title="actionBtnText"
             type="button"
@@ -112,17 +115,17 @@ export default {
           </button>
           <span
             :class="{
-              'rounded-right': !fileList.length
+              'rounded-right': !filesLength
             }"
             class="ide-commit-file-count order-0 rounded-left text-center"
           >
-            {{ fileList.length }}
+            {{ filesLength }}
           </span>
         </div>
       </div>
     </header>
     <ul
-      v-if="fileList.length"
+      v-if="filesLength"
       class="multi-file-commit-list list-unstyled append-bottom-0"
     >
       <li
