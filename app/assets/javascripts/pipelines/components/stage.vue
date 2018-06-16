@@ -164,6 +164,7 @@ export default {
       :title="stage.title"
       data-placement="top"
       data-toggle="dropdown"
+      data-display="static"
       type="button"
       id="stageDropdown"
       aria-haspopup="true"
