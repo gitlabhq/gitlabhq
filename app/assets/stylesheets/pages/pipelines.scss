@@ -1003,7 +1003,7 @@ button.mini-pipeline-graph-dropdown-toggle {
   /**
    * Center dropdown menu in mini graph
    */
-  &.dropdown-menu {
+  .dropdown &.dropdown-menu {
     transform: translate(-80%, 0);
 
     @media (min-width: map-get($grid-breakpoints, md)) {

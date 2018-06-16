@@ -165,6 +165,7 @@ export default {
       class="mini-pipeline-graph-dropdown-toggle js-builds-dropdown-button"
       data-placement="top"
       data-toggle="dropdown"
+      data-display="static"
       type="button"
       aria-haspopup="true"
       aria-expanded="false"
