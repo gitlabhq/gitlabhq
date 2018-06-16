@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-20 16:52+0300\n"
-"PO-Revision-Date: 2018-06-20 16:52+0300\n"
+"POT-Creation-Date: 2018-06-29 16:17+1000\n"
+"PO-Revision-Date: 2018-06-29 16:17+1000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -85,6 +85,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "%{filePath} deleted"
+msgstr ""
+
+msgid "%{group_docs_link_start}Groups%{group_docs_link_end} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects."
 msgstr ""
 
 msgid "%{loadingIcon} Started"
@@ -357,6 +360,9 @@ msgstr ""
 msgid "Alternatively, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import."
 msgstr ""
 
+msgid "An error occured creating the new branch."
+msgstr ""
+
 msgid "An error occurred previewing the blob"
 msgstr ""
 
@@ -436,6 +442,9 @@ msgid "Archived project! Repository and other project resources are read-only"
 msgstr ""
 
 msgid "Are you sure you want to delete this pipeline schedule?"
+msgstr ""
+
+msgid "Are you sure you want to remove this identity?"
 msgstr ""
 
 msgid "Are you sure you want to reset registration token?"
@@ -555,6 +564,9 @@ msgstr ""
 msgid "Average per day: %{average}"
 msgstr ""
 
+msgid "Background color"
+msgstr ""
+
 msgid "Background jobs"
 msgstr ""
 
@@ -628,6 +640,12 @@ msgid "Badges|Your badges"
 msgstr ""
 
 msgid "Begin with the selected commit"
+msgstr ""
+
+msgid "Boards"
+msgstr ""
+
+msgid "Branch %{branchName} was not found in this project's repository."
 msgstr ""
 
 msgid "Branch (%{branch_count})"
@@ -836,6 +854,9 @@ msgstr ""
 msgid "CICD|You need to specify a domain if you want to use Auto Review Apps and Auto Deploy stages."
 msgstr ""
 
+msgid "Can't find HEAD commit for this branch"
+msgstr ""
+
 msgid "Cancel"
 msgstr ""
 
@@ -897,6 +918,9 @@ msgid "Choose File ..."
 msgstr ""
 
 msgid "Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to see what's changed or to create a merge request."
+msgstr ""
+
+msgid "Choose any color."
 msgstr ""
 
 msgid "Choose file..."
@@ -1094,7 +1118,7 @@ msgstr ""
 msgid "ClusterIntegration|Environment scope"
 msgstr ""
 
-msgid "ClusterIntegration|Every new Google Cloud Platform (GCP) account receives $300 in credit upon %{sign_up_link}. In partnership with Google, GitLab is able to offer an additional $200 for new GCP accounts to get started with GitLab's Google Kubernetes Engine Integration."
+msgid "ClusterIntegration|Every new Google Cloud Platform (GCP) account receives $300 in credit upon %{sign_up_link}. In partnership with Google, GitLab is able to offer an additional $200 for both new and existing GCP accounts to get started with GitLab's Google Kubernetes Engine Integration."
 msgstr ""
 
 msgid "ClusterIntegration|Fetching machine types"
@@ -1443,6 +1467,9 @@ msgstr ""
 msgid "Committed by"
 msgstr ""
 
+msgid "Commit…"
+msgstr ""
+
 msgid "Compare"
 msgstr ""
 
@@ -1558,6 +1585,9 @@ msgid "Continue"
 msgstr ""
 
 msgid "Continuous Integration and Deployment"
+msgstr ""
+
+msgid "Contribute to GitLab"
 msgstr ""
 
 msgid "Contribution"
@@ -1741,6 +1771,9 @@ msgid "Define a custom pattern with cron syntax"
 msgstr ""
 
 msgid "Delete"
+msgstr ""
+
+msgid "Delete list"
 msgstr ""
 
 msgid "Deploy"
@@ -1955,10 +1988,16 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
+msgid "Edit Label"
+msgstr ""
+
 msgid "Edit Pipeline Schedule %{id}"
 msgstr ""
 
 msgid "Edit files in the editor and commit changes here"
+msgstr ""
+
+msgid "Edit identity for %{user_name}"
 msgstr ""
 
 msgid "Email"
@@ -2096,6 +2135,9 @@ msgstr ""
 msgid "Error loading project data. Please try again."
 msgstr ""
 
+msgid "Error loading tree data. Please try again."
+msgstr ""
+
 msgid "Error occurred when toggling the notification subscription"
 msgstr ""
 
@@ -2181,6 +2223,9 @@ msgid "Feb"
 msgstr ""
 
 msgid "February"
+msgstr ""
+
+msgid "Fetching diff files failed. Please reload the page to try again!"
 msgstr ""
 
 msgid "Fields on this page are now uneditable, you can configure"
@@ -2341,6 +2386,9 @@ msgstr ""
 msgid "GroupSettings|remove the share with group lock from %{ancestor_group_name}"
 msgstr ""
 
+msgid "Groups can also be nested by creating %{subgroup_docs_link_start}subgroups%{subgroup_docs_link_end}."
+msgstr ""
+
 msgid "GroupsEmptyState|A group is a collection of several projects."
 msgstr ""
 
@@ -2427,6 +2475,9 @@ msgstr ""
 msgid "I accept the|Terms of Service and Privacy Policy"
 msgstr ""
 
+msgid "ID"
+msgstr ""
+
 msgid "IDE|Commit"
 msgstr ""
 
@@ -2440,6 +2491,12 @@ msgid "IDE|Open in file view"
 msgstr ""
 
 msgid "IDE|Review"
+msgstr ""
+
+msgid "Identifier"
+msgstr ""
+
+msgid "Identities"
 msgstr ""
 
 msgid "If you already have files you can push them using the %{link_to_cli} below."
@@ -2505,6 +2562,9 @@ msgstr ""
 msgid "Introducing Cycle Analytics"
 msgstr ""
 
+msgid "Issue Board"
+msgstr ""
+
 msgid "Issue events"
 msgstr ""
 
@@ -2521,6 +2581,9 @@ msgid "Jan"
 msgstr ""
 
 msgid "January"
+msgstr ""
+
+msgid "Job"
 msgstr ""
 
 msgid "Job has been erased"
@@ -2837,6 +2900,9 @@ msgstr ""
 msgid "Name new label"
 msgstr ""
 
+msgid "Name your individual key via a title"
+msgstr ""
+
 msgid "Nav|Help"
 msgstr ""
 
@@ -2849,6 +2915,9 @@ msgstr ""
 msgid "Nav|Sign out and sign in with a different account"
 msgstr ""
 
+msgid "New Identity"
+msgstr ""
+
 msgid "New Issue"
 msgid_plural "New Issues"
 msgstr[0] ""
@@ -2858,6 +2927,9 @@ msgid "New Kubernetes Cluster"
 msgstr ""
 
 msgid "New Kubernetes cluster"
+msgstr ""
+
+msgid "New Label"
 msgstr ""
 
 msgid "New Pipeline Schedule"
@@ -2876,6 +2948,9 @@ msgid "New file"
 msgstr ""
 
 msgid "New group"
+msgstr ""
+
+msgid "New identity"
 msgstr ""
 
 msgid "New issue"
@@ -3076,6 +3151,9 @@ msgstr ""
 msgid "Options"
 msgstr ""
 
+msgid "Or you can choose one of the suggested colors below"
+msgstr ""
+
 msgid "Other Labels"
 msgstr ""
 
@@ -3110,6 +3188,9 @@ msgid "Part of merge request changes"
 msgstr ""
 
 msgid "Password"
+msgstr ""
+
+msgid "Paste your public SSH key, which is usually contained in the file '~/.ssh/id_rsa.pub' and begins with 'ssh-rsa'. Don't use your private SSH key."
 msgstr ""
 
 msgid "Pause"
@@ -3296,6 +3377,9 @@ msgid "Please select at least one filter to see results"
 msgstr ""
 
 msgid "Please solve the reCAPTCHA"
+msgstr ""
+
+msgid "Please try again"
 msgstr ""
 
 msgid "Please wait while we import the repository for you. Refresh at will."
@@ -3553,6 +3637,9 @@ msgstr ""
 msgid "Protip:"
 msgstr ""
 
+msgid "Provider"
+msgstr ""
+
 msgid "Public - The group and any public projects can be viewed without any authentication."
 msgstr ""
 
@@ -3569,6 +3656,9 @@ msgid "Push to create a project"
 msgstr ""
 
 msgid "Quick actions can be used in the issues description and comment boxes."
+msgstr ""
+
+msgid "Re-deploy"
 msgstr ""
 
 msgid "Read more"
@@ -3699,6 +3789,9 @@ msgstr ""
 msgid "Reviewing (merge request !%{mergeRequestId})"
 msgstr ""
 
+msgid "Rollback"
+msgstr ""
+
 msgid "Runners"
 msgstr ""
 
@@ -3712,6 +3805,9 @@ msgid "Running"
 msgstr ""
 
 msgid "SSH Keys"
+msgstr ""
+
+msgid "Save"
 msgstr ""
 
 msgid "Save changes"
@@ -4058,6 +4154,9 @@ msgstr ""
 msgid "Stage"
 msgstr ""
 
+msgid "Stage & Commit"
+msgstr ""
+
 msgid "Stage all changes"
 msgstr ""
 
@@ -4303,6 +4402,9 @@ msgstr ""
 msgid "There are no issues to show"
 msgstr ""
 
+msgid "There are no labels yet"
+msgstr ""
+
 msgid "There are no merge requests to show"
 msgstr ""
 
@@ -4415,6 +4517,9 @@ msgid "This repository"
 msgstr ""
 
 msgid "This source diff could not be displayed because it is too large."
+msgstr ""
+
+msgid "This user has no identities"
 msgstr ""
 
 msgid "Time before an issue gets scheduled"
@@ -4592,6 +4697,9 @@ msgstr ""
 msgid "To GitLab"
 msgstr ""
 
+msgid "To add an SSH key you need to %{generate_link_start}generate one%{link_end} or use an %{existing_link_start}existing key%{link_end}."
+msgstr ""
+
 msgid "To import GitHub repositories, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import."
 msgstr ""
 
@@ -4691,6 +4799,11 @@ msgstr ""
 msgid "Up to date"
 msgstr ""
 
+msgid "Update %{files}"
+msgid_plural "Update %{files} files"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Update your group name, description, avatar, and other general settings."
 msgstr ""
 
@@ -4722,6 +4835,9 @@ msgid "Use your global notification setting"
 msgstr ""
 
 msgid "User and IP Rate Limits"
+msgstr ""
+
+msgid "Users"
 msgstr ""
 
 msgid "Variables"
@@ -4938,9 +5054,6 @@ msgid "Wiki|Wiki Pages"
 msgstr ""
 
 msgid "Withdraw Access Request"
-msgstr ""
-
-msgid "Write a commit message..."
 msgstr ""
 
 msgid "Yes"
