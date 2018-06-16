@@ -1,3 +1,4 @@
+- @content_class = "limit-container-width" unless fluid_layout
 - @no_container = true
 - breadcrumb_title _("Details")
 
@@ -6,7 +7,7 @@
 = render "home_panel"
 
 .project-empty-note-panel
-  %div{ class: [container_class, ("limit-container-width-sm" unless fluid_layout)] }
+  %div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
     .prepend-top-20
     %h4
       = _('The repository for this project is empty')
@@ -36,7 +37,7 @@
   = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_buttons
 
 - if can?(current_user, :push_code, @project)
-  %div{ class: [container_class, ("limit-container-width-sm" unless fluid_layout)] }
+  %div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
     .prepend-top-20
     .empty_wrapper
       %h3#repo-command-line-instructions.page-title-empty

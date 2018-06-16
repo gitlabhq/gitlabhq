@@ -374,7 +374,7 @@
 
 .empty-state .project-item-select-holder.btn-group {
   float: none;
-  display: inline-block;
+  justify-content: center;
 
   .btn {
     // overrides styles applied to plain `.empty-state .btn`

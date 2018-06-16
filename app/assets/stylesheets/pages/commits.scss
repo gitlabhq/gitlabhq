@@ -197,6 +197,10 @@
     display: inline-flex;
   }
 
+  .ci-status-icon svg {
+    vertical-align: text-bottom;
+  }
+
   > .ci-status-link,
   > .btn,
   > .commit-sha-group {
