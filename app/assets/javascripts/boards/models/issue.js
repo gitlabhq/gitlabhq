@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars, space-before-function-paren, arrow-body-style, arrow-parens, comma-dangle, max-len */
+/* eslint-disable no-unused-vars, comma-dangle */
 /* global ListLabel */
 /* global ListMilestone */
 /* global ListAssignee */

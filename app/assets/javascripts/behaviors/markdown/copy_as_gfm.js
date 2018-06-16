@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this, object-shorthand, no-unused-vars, no-use-before-define, no-new, max-len, no-restricted-syntax, guard-for-in, no-continue */
+/* eslint-disable object-shorthand, no-unused-vars, no-use-before-define, max-len, no-restricted-syntax, guard-for-in, no-continue */
 
 import $ from 'jquery';
 import _ from 'underscore';
