@@ -299,7 +299,7 @@ GEM
       flowdock (~> 0.7)
       gitlab-grit (>= 2.4.1)
       multi_json
-    gitlab-gollum-lib (4.2.7.2)
+    gitlab-gollum-lib (4.2.7.4)
       gemojione (~> 3.2)
       github-markup (~> 1.6)
       gollum-grit_adapter (~> 1.0)
@@ -307,7 +307,7 @@ GEM
       rouge (~> 3.1)
       sanitize (~> 2.1)
       stringex (~> 2.6)
-    gitlab-gollum-rugged_adapter (0.4.4)
+    gitlab-gollum-rugged_adapter (0.4.4.1)
       mime-types (>= 1.15)
       rugged (~> 0.25)
     gitlab-grit (2.8.2)
