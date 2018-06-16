@@ -8,7 +8,7 @@ import { setPageTitle } from '../utils';
 import { viewerTypes } from '../../constants';
 
 export const closeFile = ({ commit, state, dispatch }, file) => {
-  const path = file.path;
+  const { path } = file;
   const indexOfClosedFile = state.openFiles.findIndex(f => f.key === file.key);
   const fileWasActive = file.active;
 

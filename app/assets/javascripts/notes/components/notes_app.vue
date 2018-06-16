@@ -72,7 +72,7 @@ export default {
   },
   mounted() {
     this.fetchNotes();
-    const parentElement = this.$el.parentElement;
+    const { parentElement } = this.$el;
 
     if (parentElement && parentElement.classList.contains('js-vue-notes-event')) {
       parentElement.addEventListener('toggleAward', event => {

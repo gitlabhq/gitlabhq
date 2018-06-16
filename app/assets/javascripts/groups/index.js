@@ -29,7 +29,7 @@ export default () => {
       groupsApp,
     },
     data() {
-      const dataset = this.$options.el.dataset;
+      const { dataset } = this.$options.el;
       const hideProjects = dataset.hideProjects === 'true';
       const store = new GroupsStore(hideProjects);
       const service = new GroupsService(dataset.endpoint);
@@ -42,7 +42,7 @@ export default () => {
       };
     },
     beforeMount() {
-      const dataset = this.$options.el.dataset;
+      const { dataset } = this.$options.el;
       let groupFilterList = null;
       const form = document.querySelector(dataset.formSel);
       const filter = document.querySelector(dataset.filterSel);

@@ -88,7 +88,7 @@ export default class ProjectFindFile {
 
   // render result
   renderList(filePaths, searchText) {
-    var blobItemUrl, filePath, html, i, j, len, matches, results;
+    var blobItemUrl, filePath, html, i, len, matches, results;
     this.element.find(".tree-table > tbody").empty();
     results = [];
 

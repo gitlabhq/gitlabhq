@@ -311,7 +311,7 @@ export default class Notes {
         },
       })
       .then(({ data }) => {
-        const notes = data.notes;
+        const { notes } = data;
         this.last_fetched_at = data.last_fetched_at;
         this.setPollingInterval(data.notes.length);
         $.each(notes, (i, note) => this.renderNote(note));

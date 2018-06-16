@@ -30,7 +30,7 @@ export default {
   },
   computed: {
     pathWithEllipsis() {
-      const path = this.file.path;
+      const { path } = this.file;
 
       return path.length < MAX_PATH_LENGTH
         ? path

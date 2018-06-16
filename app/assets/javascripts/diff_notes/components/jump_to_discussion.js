@@ -73,7 +73,7 @@ const JumpToDiscussion = Vue.extend({
         }).toArray();
       };
 
-      const discussions = this.discussions;
+      const { discussions } = this;
 
       if (activeTab === 'diffs') {
         discussionsSelector = '.diffs .notes[data-discussion-id]';

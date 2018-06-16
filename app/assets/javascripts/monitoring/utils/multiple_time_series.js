@@ -41,10 +41,10 @@ function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, xDom
     } else {
       const unusedColors = _.difference(defaultColorOrder, usedColors);
       if (unusedColors.length > 0) {
-        pick = unusedColors[0];
+        [pick] = unusedColors;
       } else {
         usedColors = [];
-        pick = defaultColorOrder[0];
+        [pick] = defaultColorOrder;
       }
     }
     usedColors.push(pick);
