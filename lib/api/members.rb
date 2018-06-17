@@ -38,8 +38,10 @@ module API
         get ":id/members/all" do
           source = find_source(source_type, params[:id])
 
-          members = members_finder(source_type, source, current_user).execute.non_invite
-          members = members.joins(:user).merge(User.search(params[:query])) if params[:query].present?
+          members = members_finder(source_type, source, current_user).execute
+            .non_invite
+            .includes(:user)
+          members = members.references(:user).merge(User.search(params[:query])) if params[:query].present?
           members = paginate(members)
 
           present members, with: Entities::Member
