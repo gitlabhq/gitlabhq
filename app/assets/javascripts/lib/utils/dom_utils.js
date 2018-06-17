@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { isInIssuePage, isInMRPage, isInEpicPage } from './common_utils';
 
 export const addClassIfElementExists = (element, className) => {
