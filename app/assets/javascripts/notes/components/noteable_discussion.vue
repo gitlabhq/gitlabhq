@@ -212,7 +212,6 @@ export default {
         data: {
           in_reply_to_discussion_id: this.discussion.reply_id,
           target_type: this.getNoteableData.targetType,
-          note_project_id: this.discussion.project_id,
           note: { note: noteText },
         },
       };
