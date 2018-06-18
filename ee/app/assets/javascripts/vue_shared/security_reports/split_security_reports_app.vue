@@ -177,7 +177,7 @@ export default {
         });
       }
       return sprintf(
-        n__('%{type} detected %d vulnerability', '%{type} detected %d vulnerabilities', issuesCount),
+        n__('%{type} detected %{d} vulnerability', '%{type} detected %{d} vulnerabilities', issuesCount),
         { type },
       );
     },
