@@ -80,14 +80,12 @@ export default {
       if (!version) {
         return false;
       }
+
       if (this.targetBranch) {
         return (
           (this.isBase(version) && !this.startVersion) ||
           (this.startVersion && this.startVersion.versionIndex === version.versionIndex)
         );
-      }
-      if (this.baseVersion) {
-        return true;
       }
 
       return version.versionIndex === this.mergeRequestVersion.versionIndex;
