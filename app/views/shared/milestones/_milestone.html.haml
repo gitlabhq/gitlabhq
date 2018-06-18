@@ -33,6 +33,8 @@
                 = sprite_icon('level-up', size: 12)
 
             = link_to 'Close Milestone', project_milestone_path(@project, milestone, milestone: {state_event: :close }), method: :put, remote: true, class: "btn btn-sm btn-close btn-grouped"
+          - unless milestone.active?
+            = link_to 'Reopen Milestone', project_milestone_path(@project, milestone, {state_event: :activate }), method: :put, class: "btn btn-grouped btn-reopen"
 
   - if milestone.is_a?(GlobalMilestone) || milestone.group_milestone?
     .row
