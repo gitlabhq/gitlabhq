@@ -42,8 +42,8 @@ export default function initSettingsPanels() {
     }
   });
 
-  if (location.hash) {
-    const $target = $(location.hash);
+  if (window.location.hash) {
+    const $target = $(window.location.hash);
     if ($target.length && $target.hasClass('settings')) {
       expandSection($target);
     }

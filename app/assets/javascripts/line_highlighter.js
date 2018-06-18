@@ -35,7 +35,7 @@ const LineHighlighter = function(options = {}) {
   options.highlightLineClass = options.highlightLineClass || 'hll';
   options.fileHolderSelector = options.fileHolderSelector || '.file-holder';
   options.scrollFileHolder = options.scrollFileHolder || false;
-  options.hash = options.hash || location.hash;
+  options.hash = options.hash || window.location.hash;
 
   this.options = options;
   this._hash = options.hash;
@@ -145,6 +145,8 @@ LineHighlighter.prototype.highlightRange = function(range) {
   var i, lineNumber, ref, ref1, results;
   if (range[1]) {
     results = [];
+
+    // eslint-disable-next-line no-multi-assign
     for (lineNumber = i = ref = range[0], ref1 = range[1]; ref <= ref1 ? i <= ref1 : i >= ref1; lineNumber = ref <= ref1 ? (i += 1) : (i -= 1)) {
       results.push(this.highlightLine(lineNumber));
     }
@@ -170,7 +172,7 @@ LineHighlighter.prototype.setHash = function(firstLineNumber, lastLineNumber) {
 //
 // This method is stubbed in tests.
 LineHighlighter.prototype.__setLocationHash__ = function(value) {
-  return history.pushState({
+  return window.history.pushState({
     url: value
   // We're using pushState instead of assigning location.hash directly to
   // prevent the page from scrolling on the hashchange event

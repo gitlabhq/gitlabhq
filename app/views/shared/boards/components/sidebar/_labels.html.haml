@@ -9,7 +9,7 @@
       None
     %a{ href: "#",
       "v-for" => "label in issue.labels" }
-      %span.badge.color-label.has-tooltip{ ":style" => "{ backgroundColor: label.color, color: label.textColor }" }
+      .badge.color-label.has-tooltip{ ":style" => "{ backgroundColor: label.color, color: label.textColor }" }
         {{ label.title }}
   - if can_admin_issue?
     .selectbox

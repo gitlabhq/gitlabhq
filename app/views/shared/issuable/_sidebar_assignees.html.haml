@@ -50,7 +50,7 @@
     - data[:multi_select] = true
     - data['dropdown-title'] = title
     - data['dropdown-header'] = dropdown_options[:data][:'dropdown-header']
-    - data['max-select'] = dropdown_options[:data][:'max-select']
+    - data['max-select'] = dropdown_options[:data][:'max-select'] if dropdown_options[:data][:'max-select']
     - options[:data].merge!(data)
 
   = dropdown_tag(title, options: options)

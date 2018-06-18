@@ -11,6 +11,12 @@ Rails.application.routes.draw do
     post :toggle_award_emoji, on: :member
   end
 
+  favicon_redirect = redirect do |_params, _request|
+    ActionController::Base.helpers.asset_url(Gitlab::Favicon.main)
+  end
+  get 'favicon.png', to: favicon_redirect
+  get 'favicon.ico', to: favicon_redirect
+
   draw :sherlock
   draw :development
   draw :ci

@@ -307,7 +307,7 @@ GEM
       rouge (~> 3.1)
       sanitize (~> 4.6.4)
       stringex (~> 2.6)
-    gitlab-gollum-rugged_adapter (0.4.4)
+    gitlab-gollum-rugged_adapter (0.4.4.1)
       mime-types (>= 1.15)
       rugged (~> 0.25)
     gitlab-grit (2.8.2)
