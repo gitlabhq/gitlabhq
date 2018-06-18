@@ -249,9 +249,10 @@ When a regression is found:
    the [subject label](../CONTRIBUTING.md#subject-labels-wiki-container-registry-ldap-api-etc)
    and any other label that may apply in the specific case
 1. Add the ~bug and ~regression labels
-1. Evaluate the Severity of the regression and add a Severity level
-1. Add the proper milestone and priority label:
-  - If the regression is ~S1 or ~S2, label set the current milestone
+1. Evaluate the severity and add a [Severity label](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#bug-severity-labels-s1-s2-s3-s4)
+1. Evaluate the priority and add a [Priority label](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#bug-priority-labels-p1-p2-p3-p4)
+1. Schedule the issue in order to get it fixed as soon as possible, based on severity and priority, following these guidelines:
+  - If the regression is ~S1 or ~S2, set the current milestone
   - If the regression was introduced in a RC of the current release, label with ~Deliverable 
   - If the regression was introduced in the previos release, label with ~"Next Patch Release"
 
