@@ -385,6 +385,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
       it 'imports labels' do
         create(:group_label, name: 'Another label', group: project.group)
+
         expect_any_instance_of(Gitlab::ImportExport::Shared).not_to receive(:error)
 
         restored_project_json
@@ -394,6 +395,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
       it 'imports milestones' do
         create(:milestone, name: 'A milestone', group: project.group)
+
         expect_any_instance_of(Gitlab::ImportExport::Shared).not_to receive(:error)
 
         restored_project_json
