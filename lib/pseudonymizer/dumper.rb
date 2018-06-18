@@ -91,6 +91,7 @@ module Pseudonymizer
       )
     rescue => e
       Rails.logger.error("Failed to export #{table}: #{e}")
+      raise e
     end
 
     # yield every results, pagined, anonymized
