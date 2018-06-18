@@ -114,7 +114,7 @@ feature 'Merge request > User creates image diff notes', :js do
           create_image_diff_note
         end
 
-        # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+        # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/48034
         xit 'shows indicator and avatar badges, and allows collapsing/expanding the discussion notes' do
           indicator = find('.js-image-badge', match: :first)
           badge = find('.image-diff-avatar-link .badge', match: :first)
@@ -157,7 +157,7 @@ feature 'Merge request > User creates image diff notes', :js do
       visit project_merge_request_path(project, merge_request)
     end
 
-    # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+    # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/48034
     xit 'render diff indicators within the image frame' do
       diff_note = create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: position)
 

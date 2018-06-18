@@ -31,7 +31,7 @@ describe 'Merge request < User sees mini pipeline graph', :js do
       create(:ci_build, :manual, pipeline: pipeline, when: 'manual')
     end
 
-    # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+    # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/48034
     xit 'avoids repeated database queries' do
       before = ActiveRecord::QueryRecorder.new { visit_merge_request(format: :json, serializer: 'widget') }
 

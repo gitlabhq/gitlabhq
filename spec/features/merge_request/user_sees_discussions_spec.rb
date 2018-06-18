@@ -53,12 +53,12 @@ describe 'Merge request > User sees discussions', :js do
     shared_examples 'a functional discussion' do
       let(:discussion_id) { note.discussion_id(merge_request) }
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/48034
       xit 'is displayed' do
         expect(page).to have_css(".discussion[data-discussion-id='#{discussion_id}']")
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45985
+      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/48034
       xit 'can be replied to' do
         within(".discussion[data-discussion-id='#{discussion_id}']") do
           click_button 'Reply...'
