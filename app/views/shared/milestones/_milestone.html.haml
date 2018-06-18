@@ -1,14 +1,13 @@
 - dashboard = local_assigns[:dashboard]
 - custom_dom_id = dom_id(milestone.try(:milestones) ? milestone.milestones.first : milestone)
+- milestone_type = milestone.group_milestone? ? 'Group Milestone' : 'Project Milestone'
 
 %li{ class: "milestone milestone-#{milestone.closed? ? 'closed' : 'open'}", id: custom_dom_id }
   .row
     .col-sm-6
       %strong= link_to truncate(milestone.title, length: 100), milestone_path
-      - if milestone.group_milestone?
-        %span - Group Milestone
-      - else
-        %span - Project Milestone
+      - unless dashboard
+        = milestone_type
 
       - if @project || milestone.is_a?(GlobalMilestone) || milestone.group_milestone?
         = render('shared/milestone_expired', milestone: milestone)
@@ -50,9 +49,10 @@
               = link_to 'Reopen Milestone', group_milestone_route(milestone, {state_event: :activate }), method: :put, class: "btn btn-sm btn-grouped btn-reopen"
             - else
               = link_to 'Close Milestone', group_milestone_route(milestone, {state_event: :close }), method: :put, class: "btn btn-sm btn-grouped btn-close"
+        - if dashboard
+          .status-box.status-box-upcoming
+            = milestone_type
+              
 
-  - if milestone.is_a?(GlobalMilestone) || milestone.group_milestone?
-    .row
-      .col-sm-6
       
 
