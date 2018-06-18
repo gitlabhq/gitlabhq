@@ -208,6 +208,15 @@ table {
     &:not(:last-of-type) {
       border-bottom: 1px solid $well-inner-border;
     }
+
+    p,
+    ol,
+    ul,
+    .form-group {
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+    }
   }
 
   .badge.badge-gray {
