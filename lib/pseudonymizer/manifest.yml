@@ -70,6 +70,7 @@ tables:
     - updated_at
     pseudo:
     - id
+    - epic_id
   epics:
     whitelist:
     - id
@@ -78,7 +79,6 @@ tables:
     - author_id
     - assignee_id
     - iid
-    - cached_markdown_version
     - updated_by_id
     - last_edited_by_id
     - lock_version
@@ -156,11 +156,9 @@ tables:
     - project_id
     - description
     - milestone_id
-    - state
     - updated_by_id
     - moved_to_id
     - discussion_locked
-    - closed_at
   label_links:
     whitelist:
     - id
@@ -394,10 +392,6 @@ tables:
     - request_access_enabled
     - ldap_sync_status
     - ldap_sync_error
-    - ldap_sync_last_update_at
-    - ldap_sync_last_successful_update_at
-    - ldap_sync_last_sync_at
-    - lfs_enabled
     - parent_id
     - shared_runners_minutes_limit
     - repository_size_limit
@@ -546,22 +540,13 @@ tables:
     - project_id
     - group_id
     - group_access
-    - expires_at
   project_import_data:
     whitelist:
     - id
     - project_id
-    - data
-    - encrypted_credentials
-    - encrypted_credentials_iv
-    - encrypted_credentials_salt
     pseudo:
     - id
     - project_id
-    - data
-    - encrypted_credentials
-    - encrypted_credentials_iv
-    - encrypted_credentials_salt
   project_mirror_data:
     whitelist:
     - id
@@ -573,10 +558,6 @@ tables:
     pseudo:
     - id
     - project_id
-    - retry_count
-    - last_update_started_at
-    - last_update_scheduled_at
-    - next_execution_timestamp
   project_repository_states:
     whitelist:
     - id
@@ -647,7 +628,6 @@ tables:
     - import_error
     - ci_id
     - shared_runners_enabled
-    - runners_token
     - build_coverage_regex
     - build_allow_git_fetch
     - build_timeout
@@ -672,7 +652,6 @@ tables:
     - auto_cancel_pending_pipelines
     - service_desk_enabled
     - import_jid
-    - cached_markdown_version
     - delete_error
     - last_repository_updated_at
     - disable_overriding_approvers_per_merge_request
@@ -681,10 +660,8 @@ tables:
     - remote_mirror_available_overridden
     - only_mirror_protected_branches
     - pull_mirror_available_overridden
-    - jobs_cache_index
     - mirror_overwrites_diverged_branches
     - external_authorization_classification_label
-    - external_webhook_token
     pseudo:
     - id
     - name
@@ -692,7 +669,6 @@ tables:
     - description
     - creator_id
     - namespace_id
-    - last_activity_at
     - import_url
     - visibility_level
     - archived
@@ -700,21 +676,17 @@ tables:
     - import_status
     - merge_requests_template
     - star_count
-    - merge_requests_rebase_enabled
     - import_type
     - import_source
     - approvals_before_merge
     - reset_approvals_on_push
-    - merge_requests_ff_only_enabled
     - issues_template
     - mirror
-    - mirror_last_update_at
     - mirror_last_successful_update_at
     - mirror_user_id
     - import_error
     - ci_id
     - shared_runners_enabled
-    - runners_token
     - build_coverage_regex
     - build_allow_git_fetch
     - build_timeout
@@ -722,36 +694,24 @@ tables:
     - pending_delete
     - public_builds
     - last_repository_check_failed
-    - last_repository_check_at
-    - container_registry_enabled
     - only_allow_merge_if_pipeline_succeeds
-    - has_external_issue_tracker
     - repository_storage
     - repository_read_only
-    - request_access_enabled
-    - has_external_wiki
     - ci_config_path
-    - lfs_enabled
     - description_html
     - only_allow_merge_if_all_discussions_are_resolved
     - repository_size_limit
-    - printing_merge_request_link_enabled
     - auto_cancel_pending_pipelines
-    - service_desk_enabled
     - import_jid
-    - cached_markdown_version
     - delete_error
     - last_repository_updated_at
     - disable_overriding_approvers_per_merge_request
     - storage_version
     - resolve_outdated_diff_discussions
     - remote_mirror_available_overridden
-    - only_mirror_protected_branches
     - pull_mirror_available_overridden
-    - jobs_cache_index
     - mirror_overwrites_diverged_branches
     - external_authorization_classification_label
-    - external_webhook_token
   subscriptions:
     whitelist:
     - id
@@ -797,7 +757,6 @@ tables:
     - created_by_id
     - last_credential_check_at
     - avatar
-    - confirmation_token
     - confirmed_at
     - confirmation_sent_at
     - unconfirmed_email
@@ -815,10 +774,8 @@ tables:
     - layout
     - hide_project_limit
     - note
-    - unlock_token
     - otp_grace_period_started_at
     - external
-    - incoming_email_token
     - organization
     - auditor
     - require_two_factor_authentication_from_group
@@ -828,7 +785,6 @@ tables:
     - notified_of_own_activity
     - support_bot
     - preferred_language
-    - feed_token
     - theme_id
     pseudo:
     - id
@@ -843,7 +799,6 @@ tables:
     - username
     - created_by_id
     - avatar
-    - confirmation_token
     - unconfirmed_email
     - hide_no_ssh_key
     - website_url
@@ -853,11 +808,8 @@ tables:
     - consumed_timestep
     - hide_project_limit
     - note
-    - unlock_token
     - external
-    - incoming_email_token
     - organization
     - auditor
     - two_factor_grace_period
-    - feed_token
     - theme_id
