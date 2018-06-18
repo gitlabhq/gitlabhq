@@ -4,7 +4,7 @@ require 'csv'
 require 'yaml'
 
 module Pseudonymizer
-  PAGE_SIZE = 10000
+  PAGE_SIZE = ENV.fetch('PSEUDONYMIZER_BATCH', 100_000)
 
   class Anon
     def initialize(fields)
@@ -38,45 +38,57 @@ module Pseudonymizer
       @output_dir = options.output_dir
       @start_at = options.start_at
 
+      reset!
+    end
+
+    def reset!
       @schema = Hash.new { |h, k| h[k] = {} }
       @output_files = []
     end
 
     def tables_to_csv
-      tables = config["tables"]
+      reset!
 
+      tables = config["tables"]
       FileUtils.mkdir_p(output_dir) unless File.directory?(output_dir)
 
       schema_to_yml
-      file_list_to_json
-
-      tables.map do |k, v|
+      @output_files = tables.map do |k, v|
         table_to_csv(k, v['whitelist'], v['pseudo'])
       end
+      file_list_to_json
+
+      @output_files
     end
 
     private
 
-    def get_and_log_file_name(ext, prefix = nil, filename = nil)
-      file_timestamp = filename || "#{prefix}_#{@start_at.to_i}"
-      file_timestamp = "#{file_timestamp}.#{ext}"
-      @output_files << file_timestamp
+    def output_filename(basename = nil, ext = "csv.gz")
+      file_timestamp = "#{basename}.#{ext}"
       File.join(output_dir, file_timestamp)
     end
 
     def schema_to_yml
-      file_path = get_and_log_file_name("yml", "schema")
+      file_path = output_filename("schema", "yml")
       File.open(file_path, 'w') { |file| file.write(@schema.to_yaml) }
     end
 
     def file_list_to_json
-      file_path = get_and_log_file_name("json", nil, "file_list")
-      File.open(file_path, 'w') { |file| file.write(@output_files.to_json) }
+      file_path = output_filename("file_list", "json")
+      File.open(file_path, 'w') do |file|
+        relative_files = @output_files.map(&File.method(:basename))
+        file.write(relative_files.to_json)
+      end
     end
 
     def table_to_csv(table, whitelist_columns, pseudonymity_columns)
       table_to_schema(table)
-      write_to_csv_file(table, table_page_results(table, whitelist_columns, pseudonymity_columns))
+      write_to_csv_file(
+        table,
+        table_page_results(table,
+                           whitelist_columns,
+                           pseudonymity_columns)
+      )
     rescue => e
       Rails.logger.error("Failed to export #{table}: #{e}")
     end
@@ -134,15 +146,16 @@ module Pseudonymizer
     end
 
     def write_to_csv_file(table, contents)
-      file_path = get_and_log_file_name("csv", table)
+      file_path = output_filename(table, "csv.gz")
 
       Rails.logger.info "#{self.class.name} writing #{table} to #{file_path}."
-      CSV.open(file_path, 'w') do |csv|
+      Zlib::GzipWriter.open(file_path) do |io|
+        csv = CSV.new(io)
         contents.with_index do |row, i|
           csv << row.keys if i == 0 # header
           csv << row.values
-          csv.flush if i % PAGE_SIZE
         end
+        csv.close
       end
 
       file_path

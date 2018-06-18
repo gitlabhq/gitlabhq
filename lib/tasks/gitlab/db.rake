@@ -76,7 +76,8 @@ namespace :gitlab do
       abort "The pseudonymizer is disabled." unless Gitlab::CurrentSettings.pseudonymizer_enabled?
 
       options = Pseudonymizer::Options.new(
-        config: YAML.load_file(Rails.root.join(Gitlab.config.pseudonymizer.manifest))
+        config: YAML.load_file(Rails.root.join(Gitlab.config.pseudonymizer.manifest)),
+        output_dir: ENV['PSEUDONYMIZER_OUTPUT_DIR']
       )
 
       dumper = Pseudonymizer::Dumper.new(options)

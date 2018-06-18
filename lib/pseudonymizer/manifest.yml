@@ -96,15 +96,8 @@ tables:
     - author_id
     - assignee_id
     - iid
-    - cached_markdown_version
     - updated_by_id
     - last_edited_by_id
-    - lock_version
-    - start_date
-    - end_date
-    - last_edited_at
-    - created_at
-    - updated_at
   issue_assignees:
     whitelist:
     - user_id
@@ -208,8 +201,6 @@ tables:
     - title
     - color
     - project_id
-    - created_at
-    - updated_at
     - template
     - type
     - group_id
@@ -423,12 +414,10 @@ tables:
     - created_at
     - updated_at
     - project_id
-    - attachment
     - line_code
     - commit_id
     - noteable_id
     - system
-    - st_diff
     - updated_by_id
     - type
     - position
@@ -436,35 +425,18 @@ tables:
     - resolved_at
     - resolved_by_id
     - discussion_id
-    - note_html
-    - cached_markdown_version
     - change_position
     - resolved_by_push
     pseudo:
     - id
     - note
-    - noteable_type
     - author_id
-    - created_at
-    - updated_at
     - project_id
-    - attachment
-    - line_code
     - commit_id
     - noteable_id
-    - system
-    - st_diff
     - updated_by_id
-    - type
-    - position
-    - original_position
-    - resolved_at
     - resolved_by_id
     - discussion_id
-    - note_html
-    - cached_markdown_version
-    - change_position
-    - resolved_by_push
   notification_settings:
     whitelist:
     - id
@@ -492,8 +464,6 @@ tables:
     - source_id
     - source_type
     - level
-    - created_at
-    - updated_at
     - new_note
     - new_issue
     - reopen_issue
@@ -526,8 +496,6 @@ tables:
     pseudo:
     - id
     - project_id
-    - created_at
-    - updated_at
     - enabled
     - domain
   project_custom_attributes:
@@ -540,8 +508,6 @@ tables:
     - value
     pseudo:
     - id
-    - created_at
-    - updated_at
     - project_id
     - key
     - value
@@ -565,8 +531,6 @@ tables:
     - wiki_access_level
     - snippets_access_level
     - builds_access_level
-    - created_at
-    - updated_at
     - repository_access_level
   project_group_links:
     whitelist:
@@ -581,8 +545,6 @@ tables:
     - id
     - project_id
     - group_id
-    - created_at
-    - updated_at
     - group_access
     - expires_at
   project_import_data:
@@ -615,8 +577,6 @@ tables:
     - last_update_started_at
     - last_update_scheduled_at
     - next_execution_timestamp
-    - created_at
-    - updated_at
   project_repository_states:
     whitelist:
     - id
@@ -730,8 +690,6 @@ tables:
     - name
     - path
     - description
-    - created_at
-    - updated_at
     - creator_id
     - namespace_id
     - last_activity_at
@@ -875,7 +833,6 @@ tables:
     pseudo:
     - id
     - email
-    - remember_created_at
     - current_sign_in_ip
     - last_sign_in_ip
     - name
@@ -897,12 +854,10 @@ tables:
     - hide_project_limit
     - note
     - unlock_token
-    - otp_grace_period_started_at
     - external
     - incoming_email_token
     - organization
     - auditor
     - two_factor_grace_period
-    - ghost
     - rss_token
     - theme_id

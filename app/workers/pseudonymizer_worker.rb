@@ -7,7 +7,7 @@ class PseudonymizerWorker
 
     options = Pseudonymizer::Options.new(
       config: YAML.load_file(Rails.root.join(Gitlab.config.pseudonymizer.manifest)),
-      start_at: Time.now.utc
+      output_dir: ENV['PSEUDONYMIZER_OUTPUT_DIR']
     )
 
     dumper = Pseudonymizer::Dumper.new(options)
