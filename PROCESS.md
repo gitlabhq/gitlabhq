@@ -240,7 +240,8 @@ available in the package repositories.
 
 Regressions are very important, and they should be considered high priority 
 issues that should be solved as soon as possible, especially if they affect
-users. Despite that, ~regression label itself is not a [priority label].
+users. Despite that, ~regression label itself is not implying when the issue
+will be scheduled.
 
 When a regression is found:
 1. Create an issue describing the problem in the most detailed way possible
@@ -335,4 +336,3 @@ still an issue I encourage you to open it on the [GitLab.com issue tracker](http
 [done]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#definition-of-done
 [automatic_ce_ee_merge]: https://docs.gitlab.com/ce/development/automatic_ce_ee_merge.html
 [ee_features]: https://docs.gitlab.com/ce/development/ee_features.html
-[priority label]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#priority-labels-deliverable-stretch-next-patch-release
