@@ -24,17 +24,12 @@ module EE
         end
 
         def find_user(board)
-          user_ids = user_finder(board).execute(include_descendants: true).non_invite.select(:user_id)
+          user_ids = user_finder(board).select(:user_id)
           ::User.where(id: user_ids).find(params[:assignee_id])
         end
 
         def user_finder(board)
-          @service ||=
-            if board.parent.is_a?(Group)
-              GroupMembersFinder.new(board.parent)
-            else
-              MembersFinder.new(board.parent, current_user)
-            end
+          @user_finder ||= Boards::UsersFinder.new(board, current_user)
         end
       end
     end

@@ -5,10 +5,7 @@ module Boards
     # If board parent is a group it enumerates all members of current group,
     # ancestors, and descendants
     def index
-      user_ids = finder_service
-        .execute(include_descendants: true)
-        .non_invite
-        .select(:user_id)
+      user_ids = user_finder.execute.select(:user_id)
 
       users = User.where(id: user_ids)
 
@@ -17,13 +14,8 @@ module Boards
 
     private
 
-    def finder_service
-      @service ||=
-        if board_parent.is_a?(Group)
-          GroupMembersFinder.new(board_parent)
-        else
-          MembersFinder.new(board_parent, current_user)
-        end
+    def user_finder
+      @user_finder ||= Boards::UsersFinder.new(board, current_user)
     end
   end
 end
