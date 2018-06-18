@@ -16,15 +16,15 @@ class NoteEntity < API::Entities::Note
 
   expose :current_user do
     expose :can_edit do |note|
-      Ability.allowed?(current_user, :admin_note, note)
+      can?(current_user, :admin_note, note)
     end
 
     expose :can_award_emoji do |note|
-      Ability.allowed?(current_user, :award_emoji, note)
+      can?(current_user, :award_emoji, note)
     end
 
     expose :can_resolve do |note|
-      can?(current_user, :resolve_note, note)
+      note.resolvable? && can?(current_user, :resolve_note, note)
     end
   end
 

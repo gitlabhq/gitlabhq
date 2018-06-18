@@ -17,8 +17,7 @@ describe 'Merge request > User sees notes from forked project', :js do
     sign_in(user)
   end
 
-  # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/48034
-  xit 'user can reply to the comment' do
+  it 'user can reply to the comment' do
     visit project_merge_request_path(project, merge_request)
 
     expect(page).to have_content('A commit comment')

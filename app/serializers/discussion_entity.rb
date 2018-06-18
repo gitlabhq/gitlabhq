@@ -7,6 +7,7 @@ class DiscussionEntity < Grape::Entity
   expose :line_code, if: -> (d, _) { d.diff_discussion? }
   expose :expanded?, as: :expanded
   expose :active?, as: :active, if: -> (d, _) { d.diff_discussion? }
+  expose :project_id
 
   expose :notes do |discussion, opts|
     request.note_entity.represent(discussion.notes, opts)
