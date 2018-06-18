@@ -16,7 +16,7 @@
 
       - else
         .input-group-prepend.static-namespace.has-tooltip{ title: user_url(current_user.username) + '/' }
-          .input-group-text
+          .input-group-text.border-0
             #{user_url(current_user.username)}/
         = f.hidden_field :namespace_id, value: current_user.namespace_id
   .form-group.project-path.col-sm-6

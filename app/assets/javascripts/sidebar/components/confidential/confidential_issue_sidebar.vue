@@ -54,7 +54,7 @@ export default {
     updateConfidentialAttribute(confidential) {
       this.service
         .update('issue', { confidential })
-        .then(() => location.reload())
+        .then(() => window.location.reload())
         .catch(() => {
           Flash(
             __(

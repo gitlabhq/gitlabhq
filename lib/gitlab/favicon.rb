@@ -2,7 +2,7 @@ module Gitlab
   class Favicon
     class << self
       def main
-        return appearance_favicon.favicon_main.url if appearance_favicon.exists?
+        return appearance_favicon.url if appearance_favicon.exists?
 
         image_name =
           if Gitlab::Utils.to_boolean(ENV['CANARY'])

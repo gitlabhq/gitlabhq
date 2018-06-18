@@ -315,7 +315,7 @@ export default class Notes {
         if (discussionNoteForm.length) {
           if ($textarea.val() !== '') {
             if (
-              !confirm('Are you sure you want to cancel creating this comment?')
+              !window.confirm('Are you sure you want to cancel creating this comment?')
             ) {
               return;
             }
@@ -329,7 +329,7 @@ export default class Notes {
           newText = $textarea.val();
           if (originalText !== newText) {
             if (
-              !confirm('Are you sure you want to cancel editing this comment?')
+              !window.confirm('Are you sure you want to cancel editing this comment?')
             ) {
               return;
             }

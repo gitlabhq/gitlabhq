@@ -8,7 +8,9 @@ describe('GL Style Field Errors', function() {
 
   beforeEach(function() {
     loadFixtures('static/gl_field_errors.html.raw');
-    const $form = this.$form = $('form.gl-show-field-errors');
+    const $form = $('form.gl-show-field-errors');
+
+    this.$form = $form;
     this.fieldErrors = new GlFieldErrors($form);
   });
 

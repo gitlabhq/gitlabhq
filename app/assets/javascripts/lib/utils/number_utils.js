@@ -12,7 +12,7 @@ export function formatRelevantDigits(number) {
   let digitsLeft = '';
   let relevantDigits = 0;
   let formattedNumber = '';
-  if (!isNaN(Number(number))) {
+  if (!Number.isNaN(Number(number))) {
     digitsLeft = number.toString().split('.')[0];
     switch (digitsLeft.length) {
       case 1:

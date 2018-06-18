@@ -98,7 +98,7 @@ export default {
     },
     disableKey(deployKey, callback) {
       // eslint-disable-next-line no-alert
-      if (confirm(s__('DeployKeys|You are going to remove this deploy key. Are you sure?'))) {
+      if (window.confirm(s__('DeployKeys|You are going to remove this deploy key. Are you sure?'))) {
         this.service
           .disableKey(deployKey.id)
           .then(this.fetchKeys)

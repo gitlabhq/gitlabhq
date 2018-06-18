@@ -112,6 +112,8 @@ export default (function() {
       fill: "#444"
     });
     ref = this.days;
+
+    // eslint-disable-next-line no-multi-assign
     for (mm = j = 0, len = ref.length; j < len; mm = (j += 1)) {
       day = ref[mm];
       if (cuday !== day[0] || cumonth !== day[1]) {
@@ -285,6 +287,8 @@ export default (function() {
     r = this.r;
     ref = commit.parents;
     results = [];
+
+    // eslint-disable-next-line no-multi-assign
     for (i = j = 0, len = ref.length; j < len; i = (j += 1)) {
       parent = ref[i];
       parentCommit = this.preparedCommits[parent[0]];
