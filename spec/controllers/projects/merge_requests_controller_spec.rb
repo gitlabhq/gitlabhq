@@ -234,7 +234,7 @@ describe Projects::MergeRequestsController do
         body = JSON.parse(response.body)
 
         expect(body['assignee'].keys)
-          .to match_array(%w(name username avatar_url))
+          .to match_array(%w(name username avatar_url id state web_url))
       end
     end
 
