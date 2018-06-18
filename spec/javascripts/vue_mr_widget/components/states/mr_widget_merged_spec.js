@@ -39,7 +39,8 @@ describe('MRWidgetMerged', () => {
         readableClosedAt: '',
       },
       updatedAt: 'mergedUpdatedAt',
-      shortMergeCommitSha: 'asdf1234',
+      shortMergeCommitSha: '958c0475',
+      mergeCommitSha: '958c047516e182dfc52317f721f696e8a1ee85ed',
       mergeCommitPath: 'http://localhost:3000/root/nautilus/commit/f7ce827c314c9340b075657fd61c789fb01cf74d',
       sourceBranch: 'bar',
       targetBranch,
@@ -153,7 +154,7 @@ describe('MRWidgetMerged', () => {
 
   it('shows button to copy commit SHA to clipboard', () => {
     expect(selectors.copyMergeShaButton).toExist();
-    expect(selectors.copyMergeShaButton.getAttribute('data-clipboard-text')).toBe(vm.mr.shortMergeCommitSha);
+    expect(selectors.copyMergeShaButton.getAttribute('data-clipboard-text')).toBe(vm.mr.mergeCommitSha);
   });
 
   it('shows merge commit SHA link', () => {
