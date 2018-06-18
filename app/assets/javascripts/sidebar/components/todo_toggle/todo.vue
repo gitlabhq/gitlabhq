@@ -1,0 +1,93 @@
+<script>
+import { __ } from '~/locale';
+import tooltip from '~/vue_shared/directives/tooltip';
+
+import Icon from '~/vue_shared/components/icon.vue';
+import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
+
+const MARK_TEXT = __('Mark todo as done');
+const TODO_TEXT = __('Add todo');
+
+export default {
+  directives: {
+    tooltip,
+  },
+  components: {
+    Icon,
+    LoadingIcon,
+  },
+  props: {
+    issuableId: {
+      type: Number,
+      required: true,
+    },
+    issuableType: {
+      type: String,
+      required: true,
+    },
+    isAddTodo: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    collapsed: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+  data() {
+    return {
+      isButtonTypeAddTodo: this.isAddTodo,
+      isActionActive: false,
+    };
+  },
+  computed: {
+    buttonClasses() {
+      return this.collapsed ?
+        'btn-blank btn-todo sidebar-collapsed-icon dont-change-state' :
+        'btn btn-default btn-todo issuable-header-btn float-right';
+    },
+    buttonLabel() {
+      return this.isButtonTypeAddTodo ? MARK_TEXT : TODO_TEXT;
+    },
+    collapsedButtonIconClasses() {
+      return this.isButtonTypeAddTodo ? 'todo-undone' : '';
+    },
+    collapsedButtonIcon() {
+      return this.isButtonTypeAddTodo ? 'check-circle' : 'plus-square';
+    },
+  },
+};
+</script>
+
+<template>
+  <button
+    v-tooltip
+    :class="buttonClasses"
+    :title="buttonLabel"
+    :aria-label="buttonLabel"
+    :data-issuable-id="issuableId"
+    :data-issuable-type="issuableType"
+    type="button"
+    data-container="body"
+    data-placement="left"
+    data-boundary="viewport"
+  >
+    <icon
+      v-if="collapsed"
+      :css-classes="collapsedButtonIconClasses"
+      :name="collapsedButtonIcon"
+    />
+    <span
+      v-else
+      class="issuable-todo-inner"
+    >
+      {{ buttonLabel }}
+    </span>
+    <loading-icon
+      v-if="isActionActive"
+      :inline="true"
+    />
+  </button>
+</template>

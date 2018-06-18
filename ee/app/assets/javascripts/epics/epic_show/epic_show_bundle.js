@@ -9,6 +9,7 @@ export default () => {
   const props = Object.assign({}, initialData, metaData, el.dataset);
 
   // Convert backend casing to match frontend style guide
+  props.epicId = props.epic_id;
   props.startDate = props.start_date;
   props.endDate = props.end_date;
 

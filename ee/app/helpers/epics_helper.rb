@@ -4,6 +4,7 @@ module EpicsHelper
     group = epic.group
 
     epic_meta = {
+      epic_id: epic.id,
       created: epic.created_at,
       author: {
         name: author.name,

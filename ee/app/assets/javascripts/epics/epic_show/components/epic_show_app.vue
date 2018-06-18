@@ -16,6 +16,10 @@
       relatedIssuesRoot,
     },
     props: {
+      epicId: {
+        type: Number,
+        required: true,
+      },
       endpoint: {
         type: String,
         required: true,
@@ -170,6 +174,7 @@
         />
       </div>
       <epic-sidebar
+        :epic-id="epicId"
         :endpoint="endpoint"
         :editable="canUpdate"
         :initial-start-date="startDate"
