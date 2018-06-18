@@ -25,6 +25,7 @@ class Project < ActiveRecord::Base
   include FastDestroyAll::Helpers
   include WithUploads
   include BatchDestroyDependentAssociations
+  extend Gitlab::Cache::RequestCache
 
   extend Gitlab::ConfigHelper
 
@@ -2012,6 +2013,11 @@ class Project < ActiveRecord::Base
   def gitlab_deploy_token
     @gitlab_deploy_token ||= deploy_tokens.gitlab_deploy_token
   end
+
+  def any_lfs_file_locks?
+    lfs_file_locks.any?
+  end
+  request_cache(:any_lfs_file_locks?) { self.id }
 
   private
 
