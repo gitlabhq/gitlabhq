@@ -149,8 +149,8 @@ describe Banzai::Filter::LabelReferenceFilter do
     end
 
     it 'links with adjacent text' do
-      doc = reference_filter("Label (#{reference}).")
-      expect(doc.to_html).to match(%r(\(<a.+><span.+>\?g\.fm&amp;</span></a>\)\.))
+      doc = reference_filter("Label #{reference}.")
+      expect(doc.to_html).to match(%r(<a.+><span.+>\?g\.fm&amp;</span></a>\.))
     end
 
     it 'ignores invalid label names' do
