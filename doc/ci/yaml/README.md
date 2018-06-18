@@ -390,6 +390,28 @@ job:
 The specification above, will make sure that `job` is built by a Runner that
 has both `ruby` AND `postgres` tags defined.
 
+Tags are also a great way to run different jobs on different platforms, for
+example, given an OS X Runner with tag `osx` and Windows Runner with tag
+`windows`, the following jobs run on respective platforms:
+
+```yaml
+windows job:
+  stage:
+    - build
+  tags:
+    - windows
+  script:
+    - echo Hello, %USERNAME%!
+
+osx job:
+  stage:
+    - build
+  tags:
+    - osx
+  script:
+    - echo "Hello, $USER!"
+```
+
 ## `allow_failure`
 
 `allow_failure` is used when you want to allow a job to fail without impacting
