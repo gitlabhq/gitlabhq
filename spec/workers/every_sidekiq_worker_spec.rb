@@ -13,7 +13,7 @@ describe 'Every Sidekiq worker' do
     file_worker_queues = Gitlab::SidekiqConfig.worker_queues.to_set
 
     worker_queues = Gitlab::SidekiqConfig.workers.map(&:queue).to_set
-    worker_queues << ActionMailer::DeliveryJob.queue_name
+    worker_queues << ActionMailer::DeliveryJob.new.queue_name
     worker_queues << 'default'
 
     missing_from_file = worker_queues - file_worker_queues
