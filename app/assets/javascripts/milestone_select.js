@@ -16,10 +16,10 @@ export default class MilestoneSelect {
         typeof currentProject === 'string' ? JSON.parse(currentProject) : currentProject;
     }
 
-    this.init(els, options);
+    MilestoneSelect.init(els, options);
   }
 
-  init(els, options) {
+  static init(els, options) {
     let $els = $(els);
 
     if (!els) {
@@ -224,7 +224,6 @@ export default class MilestoneSelect {
                 $selectBox.hide();
                 $value.css('display', '');
                 if (data.milestone != null) {
-                  data.milestone.full_path = this.currentProject.full_path;
                   data.milestone.remaining = timeFor(data.milestone.due_date);
                   data.milestone.name = data.milestone.title;
                   $value.html(milestoneLinkTemplate(data.milestone));
