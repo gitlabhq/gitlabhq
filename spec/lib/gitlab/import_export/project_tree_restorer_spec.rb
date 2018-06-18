@@ -189,8 +189,8 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
           @project.pipelines.zip([2, 2, 2, 2, 2])
             .each do |(pipeline, expected_status_size)|
-              expect(pipeline.statuses.size).to eq(expected_status_size)
-            end
+            expect(pipeline.statuses.size).to eq(expected_status_size)
+          end
         end
       end
 
@@ -367,6 +367,39 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
                       labels: 1,
                       milestones: 1,
                       first_issue_labels: 1
+    end
+
+    context 'with existing group models' do
+      let!(:project) do
+        create(:project,
+               :builds_disabled,
+               :issues_disabled,
+               name: 'project',
+               path: 'project',
+               group: create(:group))
+      end
+
+      before do
+        project_tree_restorer.instance_variable_set(:@path, "spec/lib/gitlab/import_export/project.light.json")
+      end
+
+      it 'imports labels' do
+        create(:group_label, name: 'Another label', group: project.group)
+        expect_any_instance_of(Gitlab::ImportExport::Shared).not_to receive(:error)
+
+        restored_project_json
+
+        expect(project.labels.count).to eq(1)
+      end
+
+      it 'imports milestones' do
+        create(:milestone, name: 'A milestone', group: project.group)
+        expect_any_instance_of(Gitlab::ImportExport::Shared).not_to receive(:error)
+
+        restored_project_json
+
+        expect(project.milestones.count).to eq(1)
+      end
     end
   end
 end
