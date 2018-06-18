@@ -174,7 +174,7 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
       end
 
       let(:pipeline) do
-        build(:ci_pipeline, ref: 'master', config: config)
+        build(:ci_pipeline, ref: 'master', project: project, config: config)
       end
 
       it_behaves_like 'a correct pipeline'
