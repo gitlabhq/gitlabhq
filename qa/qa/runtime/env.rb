@@ -68,6 +68,17 @@ module QA
       def has_gcloud_credentials?
         %w[GCLOUD_ACCOUNT_KEY GCLOUD_ACCOUNT_EMAIL].none? { |var| ENV[var].to_s.empty? }
       end
+
+      # Specifies the token that can be used for the GitHub API
+      def github_access_token
+        ENV['GITHUB_ACCESS_TOKEN'].to_s.strip
+      end
+
+      def require_github_access_token!
+        return unless github_access_token.empty?
+
+        raise ArgumentError, "Please provide GITHUB_ACCESS_TOKEN"
+      end
     end
   end
 end
