@@ -28,7 +28,7 @@ export const notesById = state =>
 
 export const discussionsByLineCode = state =>
   state.discussions.reduce((acc, note) => {
-    if (note.diff_discussion && note.line_code) {
+    if (note.diff_discussion && note.line_code && note.resolvable) {
       // For context about line notes: there might be multiple notes with the same line code
       const items = acc[note.line_code] || [];
       items.push(note);
