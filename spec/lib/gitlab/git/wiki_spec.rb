@@ -6,9 +6,7 @@ describe Gitlab::Git::Wiki do
   let(:project_wiki) { ProjectWiki.new(project, user) }
   subject { project_wiki.wiki }
 
-  # Remove skip_gitaly_mock flag when gitaly_find_page when
-  # https://gitlab.com/gitlab-org/gitlab-ce/issues/42039 is solved
-  describe '#page', :skip_gitaly_mock do
+  describe '#page' do
     before do
       create_page('page1', 'content')
       create_page('foo/page1', 'content foo/page1')
@@ -25,7 +23,7 @@ describe Gitlab::Git::Wiki do
     end
   end
 
-  describe '#delete_page', :skip_gitaly_mock do
+  describe '#delete_page' do
     after do
       destroy_page('page1')
     end
