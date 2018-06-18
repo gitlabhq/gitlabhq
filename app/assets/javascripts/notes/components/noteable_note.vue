@@ -133,12 +133,7 @@ export default {
     formCancelHandler(shouldConfirm, isDirty) {
       if (shouldConfirm && isDirty) {
         // eslint-disable-next-line no-alert
-<<<<<<< HEAD
-        if (!confirm('Are you sure you want to cancel editing this comment?')) return;
-=======
-        if (!window.confirm('Are you sure you want to cancel editing this comment?'))
-          return;
->>>>>>> master
+        if (!window.confirm('Are you sure you want to cancel editing this comment?')) return;
       }
       this.$refs.noteBody.resetAutoSave();
       if (this.oldContent) {
