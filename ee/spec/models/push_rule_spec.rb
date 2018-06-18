@@ -223,6 +223,21 @@ describe PushRule do
     end
   end
 
+  context 'with caching', :request_store do
+    let(:push_rule_second) { create(:push_rule) }
+
+    it 'memoizes the right push rules' do
+      expect(described_class).to receive(:global).twice.and_return(global_push_rule)
+      expect(global_push_rule).to receive(:public_send).with(:commit_committer_check).and_return(false)
+      expect(global_push_rule).to receive(:public_send).with(:reject_unsigned_commits).and_return(true)
+
+      2.times do
+        expect(push_rule.commit_committer_check).to be_falsey
+        expect(push_rule_second.reject_unsigned_commits).to be_truthy
+      end
+    end
+  end
+
   describe '#available?' do
     shared_examples 'an unavailable push_rule' do
       it 'is not available' do
