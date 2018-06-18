@@ -92,6 +92,7 @@ btn-transparent ci-action-icon-container ci-action-icon-wrapper"
     :class="cssClass"
     data-container="body"
     :disabled="isDisabled"
+    data-boundary="viewport"
   >
     <icon :name="actionIcon"/>
   </button>
