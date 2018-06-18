@@ -6,7 +6,7 @@ import diffsApp from './components/app.vue';
 export default function initDiffsApp(store) {
   return new Vue({
     el: '#js-diffs-app',
-    name: 'DiffsApp',
+    name: 'MergeRequestDiffs',
     components: {
       diffsApp,
     },
