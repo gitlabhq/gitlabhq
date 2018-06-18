@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-12 18:57+1000\n"
-"PO-Revision-Date: 2018-06-12 18:57+1000\n"
+"POT-Creation-Date: 2018-06-13 14:05+0200\n"
+"PO-Revision-Date: 2018-06-13 14:05+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -133,12 +133,12 @@ msgid "- show less"
 msgstr ""
 
 msgid "1 %{type} addition"
-msgid_plural "%d %{type} additions"
+msgid_plural "%{count} %{type} additions"
 msgstr[0] ""
 msgstr[1] ""
 
 msgid "1 %{type} modification"
-msgid_plural "%d %{type} modifications"
+msgid_plural "%{count} %{type} modifications"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -2252,10 +2252,10 @@ msgstr ""
 msgid "Gitaly"
 msgstr ""
 
-msgid "Gitaly|Address"
+msgid "Gitaly Servers"
 msgstr ""
 
-msgid "Gitaly Servers"
+msgid "Gitaly|Address"
 msgstr ""
 
 msgid "Go Back"
@@ -2417,6 +2417,15 @@ msgid "If you already have files you can push them using the %{link_to_cli} belo
 msgstr ""
 
 msgid "If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>."
+msgstr ""
+
+msgid "ImageDiffViewer|2-up"
+msgstr ""
+
+msgid "ImageDiffViewer|Onion skin"
+msgstr ""
+
+msgid "ImageDiffViewer|Swipe"
 msgstr ""
 
 msgid "Import"
