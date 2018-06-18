@@ -75,9 +75,7 @@ module Ci
       raise ArgumentError, 'Offset is out of range' if offset > size || offset < 0
       raise ArgumentError, 'Chunk size overflow' if CHUNK_SIZE < (offset + new_data.bytesize)
 
-      in_lock(*lock_params) do
-        self.reload if self.persisted?
-
+      in_lock(*lock_params) do # Write opetation is atomic
         unsafe_set_data!(data.byteslice(0, offset) + new_data)
       end
 
@@ -100,21 +98,19 @@ module Ci
       (start_offset...end_offset)
     end
 
-    def persisted?
+    def data_persisted?
       !redis?
     end
 
-    def persist!
-      in_lock(*lock_params) do
-        self.reload if self.persisted?
-
-        unsafe_move_to!(self.class.persist_store)
+    def persist_data!
+      in_lock(*lock_params) do # Write opetation is atomic
+        unsafe_migrate_to!(self.class.persist_store)
       end
     end
 
     private
 
-    def unsafe_move_to!(new_store)
+    def unsafe_migrate_to!(new_store)
       return if data_store == new_store.to_s
       return unless size > 0
 
@@ -143,7 +139,7 @@ module Ci
     end
 
     def schedule_to_persist
-      return if persisted?
+      return if data_persisted?
 
       Ci::BuildTraceChunkFlushWorker.perform_async(id)
     end
