@@ -828,7 +828,7 @@ tables:
     - notified_of_own_activity
     - support_bot
     - preferred_language
-    - rss_token
+    - feed_token
     - theme_id
     pseudo:
     - id
@@ -859,5 +859,5 @@ tables:
     - organization
     - auditor
     - two_factor_grace_period
-    - rss_token
+    - feed_token
     - theme_id
