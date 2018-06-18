@@ -173,7 +173,10 @@ table {
   display: none;
 }
 
-.badge {
+// Add to .label so that old system notes that are saved to the db
+// will still receive the correct styling
+.badge,
+.label {
   padding: 4px 5px;
   font-size: 12px;
   font-style: normal;
