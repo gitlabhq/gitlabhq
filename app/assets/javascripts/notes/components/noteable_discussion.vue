@@ -213,7 +213,7 @@ export default {
           in_reply_to_discussion_id: this.discussion.reply_id,
           target_type: this.getNoteableData.targetType,
           target_id: this.transformedDiscussion.noteable_id,
-          // head_commit_sha:
+          // merge_request_diff_head_sha: this.getNoteableData.diff_head_sha
           note: { note: noteText },
         },
       };
