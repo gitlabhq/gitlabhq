@@ -698,6 +698,8 @@
   font-size: 14px;
   line-height: 24px;
   align-self: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .js-issuable-selector-wrap {
