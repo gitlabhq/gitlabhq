@@ -190,4 +190,29 @@ describe('Security Reports modal', () => {
       expect(vm.$el.querySelector('.js-link-vulnerabilityFeedbackHelpPath').getAttribute('href')).toEqual('feedbacksHelpPath');
     });
   });
+
+  describe('with a resolved issue', () => {
+    beforeEach(() => {
+      store.dispatch('setModalData', {
+        tool: 'bundler_audit',
+        message: 'Arbitrary file existence disclosure in Action Pack',
+        url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
+        cve: 'CVE-2014-9999',
+        file: 'Gemfile.lock',
+        solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
+        title: 'Arbitrary file existence disclosure in Action Pack',
+        path: 'Gemfile.lock',
+        urlPath: 'path/Gemfile.lock',
+        resolved: true,
+      });
+
+      vm = mountComponentWithStore(Component, {
+        store,
+      });
+    });
+
+    it('does not render a button to dismiss issue', () => {
+      expect(vm.$el.querySelector('.js-dismiss-btn')).toBeFalsy();
+    });
+  });
 });

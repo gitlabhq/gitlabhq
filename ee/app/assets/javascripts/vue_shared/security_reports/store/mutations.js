@@ -67,7 +67,8 @@ export default {
       const parsedBase = parseSastIssues(reports.base, reports.enrichData, state.blobPath.base);
 
       const newIssues = filterByKey(parsedHead, parsedBase, filterKey);
-      const resolvedIssues = filterByKey(parsedBase, parsedHead, filterKey);
+      const resolvedIssues = filterByKey(parsedBase, parsedHead, filterKey)
+        .map(issue => ({ ...issue, resolved: true }));
       const allIssues = filterByKey(parsedHead, newIssues.concat(resolvedIssues), filterKey);
 
       state.sast.newIssues = newIssues;
@@ -222,7 +223,8 @@ export default {
         state.blobPath.base);
 
       const newIssues = filterByKey(parsedHead, parsedBase, filterKey);
-      const resolvedIssues = filterByKey(parsedBase, parsedHead, filterKey);
+      const resolvedIssues = filterByKey(parsedBase, parsedHead, filterKey)
+        .map(issue => ({ ...issue, resolved: true }));
       const allIssues = filterByKey(parsedHead, newIssues.concat(resolvedIssues), filterKey);
 
       state.dependencyScanning.newIssues = newIssues;

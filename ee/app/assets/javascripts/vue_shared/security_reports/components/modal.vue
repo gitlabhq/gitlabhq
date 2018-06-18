@@ -203,30 +203,31 @@ export default {
         {{ __('Cancel' ) }}
       </button>
 
-      <loading-button
-        :loading="modal.isDismissingIssue"
-        :disabled="modal.isDismissingIssue"
-        :label="revertTitle"
-        container-class="js-dismiss-btn btn btn-close"
-        @click="handleDismissClick"
-      />
+      <template v-if="!modal.vulnerability.resolved">
+        <loading-button
+          :loading="modal.isDismissingIssue"
+          :disabled="modal.isDismissingIssue"
+          :label="revertTitle"
+          container-class="js-dismiss-btn btn btn-close"
+          @click="handleDismissClick"
+        />
 
-      <a
-        v-if="modal.vulnerability.hasIssue"
-        :href="modal.vulnerability.issueFeedback && modal.vulnerability.issueFeedback.issue_url"
-        rel="noopener noreferrer nofollow"
-        class="btn btn-success btn-inverted"
-      >
-        {{ __('View issue' ) }}
-      </a>
-      <loading-button
-        v-else
-        :loading="modal.isCreatingNewIssue"
-        :disabled="modal.isCreatingNewIssue"
-        :label="__('Create issue')"
-        container-class="btn btn-success btn-inverted"
-        @click="createNewIssue"
-      />
+        <a
+          v-if="modal.vulnerability.hasIssue"
+          :href="modal.vulnerability.issueFeedback && modal.vulnerability.issueFeedback.issue_url"
+          rel="noopener noreferrer nofollow"
+          class="btn btn-success btn-inverted"
+        >
+          {{ __('View issue' ) }}
+        </a>
+        <loading-button
+          :loading="modal.isCreatingNewIssue"
+          :disabled="modal.isCreatingNewIssue"
+          :label="__('Create issue')"
+          container-class="btn btn-success btn-inverted"
+          @click="createNewIssue"
+        />
+      </template>
     </div>
   </modal>
 </template>
