@@ -206,17 +206,23 @@ export default {
       this.isReplying = false;
     },
     saveReply(noteText, form, callback) {
+      const postData = {
+        in_reply_to_discussion_id: this.discussion.reply_id,
+        target_type: this.getNoteableData.targetType,
+        note: { note: noteText },
+      };
+
+      if (this.discussion.for_commit) {
+        postData.note_project_id = this.discussion.project_id;
+      }
+
       const replyData = {
         endpoint: this.newNotePath,
         flashContainer: this.$el,
-        data: {
-          in_reply_to_discussion_id: this.discussion.reply_id,
-          target_type: this.getNoteableData.targetType,
-          note: { note: noteText },
-        },
+        data: postData,
       };
-      this.isReplying = false;
 
+      this.isReplying = false;
       this.saveNote(replyData)
         .then(() => {
           this.resetAutoSave();
