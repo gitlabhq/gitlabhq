@@ -16,6 +16,6 @@ describe 'Geo read-only message' do
 
     visit root_dashboard_path
 
-    expect(page).to have_content('You are on a secondary (read-only) Geo node')
+    expect(page).to have_content('You are on a secondary, read-only Geo node. If you want to make changes, you must visit this page on the primary node.')
   end
 end
