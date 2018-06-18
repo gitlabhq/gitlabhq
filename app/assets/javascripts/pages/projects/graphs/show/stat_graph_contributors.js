@@ -36,7 +36,9 @@ export default (function() {
         var author_graph, author_header;
         author_header = _this.create_author_header(d);
         $(".contributors-list").append(author_header);
-        _this.authors[d.author_name] = author_graph = new ContributorsAuthorGraph(d.dates);
+
+        author_graph = new ContributorsAuthorGraph(d.dates);
+        _this.authors[d.author_name] = author_graph;
         return author_graph.draw();
       };
     })(this));

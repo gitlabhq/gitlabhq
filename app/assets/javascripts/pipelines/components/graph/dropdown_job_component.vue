@@ -87,6 +87,7 @@ export default {
       data-toggle="dropdown"
       data-container="body"
       data-boundary="viewport"
+      data-display="static"
       class="dropdown-menu-toggle build-content"
     >
 

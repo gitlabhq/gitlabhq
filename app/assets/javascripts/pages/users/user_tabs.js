@@ -187,7 +187,7 @@ export default class UserTabs {
     let newState = source;
     newState = newState.replace(/\/+$/, '');
     newState += this.windowLocation.search + this.windowLocation.hash;
-    history.replaceState(
+    window.history.replaceState(
       {
         url: newState,
       },

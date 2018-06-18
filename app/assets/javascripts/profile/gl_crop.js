@@ -139,6 +139,8 @@ import _ from 'underscore';
       var array, binary, i, k, len, v;
       binary = atob(dataURL.split(',')[1]);
       array = [];
+
+      // eslint-disable-next-line no-multi-assign
       for (k = i = 0, len = binary.length; i < len; k = (i += 1)) {
         v = binary[k];
         array.push(binary.charCodeAt(k));

@@ -152,7 +152,7 @@ export default {
         const msg = 'Are you sure you want to cancel creating this comment?';
 
         // eslint-disable-next-line no-alert
-        if (!confirm(msg)) {
+        if (!window.confirm(msg)) {
           return;
         }
       }

@@ -438,7 +438,7 @@ export default class SearchAutocomplete {
   }
 
   onClick(item, $el, e) {
-    if (location.pathname.indexOf(item.url) !== -1) {
+    if (window.location.pathname.indexOf(item.url) !== -1) {
       if (!e.metaKey) e.preventDefault();
       if (!this.badgePresent) {
         if (item.category === 'Projects') {

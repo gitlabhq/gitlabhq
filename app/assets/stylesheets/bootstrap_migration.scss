@@ -128,11 +128,6 @@ table {
   border-spacing: 0;
 }
 
-.tooltip {
-  // Fix bootstrap4 bug whereby tooltips flicker when they are hovered over their borders
-  pointer-events: none;
-}
-
 .popover {
   font-size: 14px;
 }
@@ -264,15 +259,36 @@ pre code {
   white-space: pre-wrap;
 }
 
+.alert,
+.flash-notice {
+  border-radius: 0;
+}
+
+.alert-success {
+  background-color: $green-500;
+  border-color: $green-500;
+}
+
+.alert-info {
+  background-color: $blue-500;
+  border-color: $blue-500;
+}
+
+.alert-warning {
+  background-color: $orange-500;
+  border-color: $orange-500;
+}
+
 .alert-danger {
   background-color: $red-500;
   border-color: $red-500;
 }
 
+.alert-success,
+.alert-info,
 .alert-warning,
 .alert-danger,
 .flash-notice {
-  border-radius: 0;
   color: $white-light;
 
   h4,
