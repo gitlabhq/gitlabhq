@@ -103,6 +103,8 @@ class Projects::BlobController < Projects::ApplicationController
       @match_line = "@@ -#{line}+#{line} @@"
     end
 
+    # We can keep only 'render_diff_lines' from this conditional when
+    # https://gitlab.com/gitlab-org/gitlab-ce/issues/44988 is done
     if rendered_for_merge_request?
       render_diff_lines
     else
