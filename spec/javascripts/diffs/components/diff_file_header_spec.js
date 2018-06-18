@@ -374,6 +374,31 @@ describe('diff_file_header', () => {
       });
     });
 
+    describe('edit button', () => {
+      it('should not render edit button if addMergeRequestButtons is not true', () => {
+        vm = mountComponent(Component, props);
+
+        expect(vm.$el.querySelector('.js-edit-blob')).toEqual(null);
+      });
+
+      it('should show edit button when file is editable', () => {
+        props.addMergeRequestButtons = true;
+        props.diffFile.editPath = '/';
+        vm = mountComponent(Component, props);
+
+        expect(vm.$el.querySelector('.js-edit-blob')).toContainText('Edit');
+      });
+
+      it('should not show edit button when file is deleted', () => {
+        props.addMergeRequestButtons = true;
+        props.diffFile.deletedFile = true;
+        props.diffFile.editPath = '/';
+        vm = mountComponent(Component, props);
+
+        expect(vm.$el.querySelector('.js-edit-blob')).toEqual(null);
+      });
+    });
+
     describe('addMergeRequestButtons', () => {
       beforeEach(() => {
         props.addMergeRequestButtons = true;

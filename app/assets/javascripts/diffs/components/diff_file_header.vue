@@ -215,6 +215,7 @@ export default {
         </button>
 
         <edit-button
+          v-if="!diffFile.deletedFile"
           :current-user="currentUser"
           :edit-path="diffFile.editPath"
           :can-modify-blob="diffFile.canModifyBlob"
