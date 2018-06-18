@@ -179,6 +179,8 @@ module Gitlab
       end
 
       def list_commits_by_oid(oids)
+        return [] if oids.empty?
+
         request = Gitaly::ListCommitsByOidRequest.new(repository: @gitaly_repo, oid: oids)
 
         response = GitalyClient.call(@repository.storage, :commit_service, :list_commits_by_oid, request, timeout: GitalyClient.medium_timeout)

@@ -208,18 +208,19 @@ describe('IDE merge requests actions', () => {
         expect(commit.calls.argsFor(1)).toEqual(['SET_CURRENT_MERGE_REQUEST', '1', { root: true }]);
         expect(commit.calls.argsFor(2)).toEqual(['RESET_OPEN_FILES', null, { root: true }]);
 
-        expect(dispatch.calls.argsFor(0)).toEqual([
-          'pipelines/resetLatestPipeline',
-          null,
-          { root: true },
-        ]);
-        expect(dispatch.calls.argsFor(1)).toEqual(['setCurrentBranchId', '', { root: true }]);
-        expect(dispatch.calls.argsFor(2)).toEqual([
+        expect(dispatch.calls.argsFor(0)).toEqual(['setCurrentBranchId', '', { root: true }]);
+        expect(dispatch.calls.argsFor(1)).toEqual([
           'pipelines/stopPipelinePolling',
           null,
           { root: true },
         ]);
+        expect(dispatch.calls.argsFor(2)).toEqual(['setRightPane', null, { root: true }]);
         expect(dispatch.calls.argsFor(3)).toEqual([
+          'pipelines/resetLatestPipeline',
+          null,
+          { root: true },
+        ]);
+        expect(dispatch.calls.argsFor(4)).toEqual([
           'pipelines/clearEtagPoll',
           null,
           { root: true },

@@ -40,7 +40,7 @@
     methods: {
       onClick() {
         // eslint-disable-next-line no-alert
-        if (confirm('Are you sure you want to stop this environment?')) {
+        if (window.confirm('Are you sure you want to stop this environment?')) {
           this.isLoading = true;
 
           $(this.$el).tooltip('dispose');

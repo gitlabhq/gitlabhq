@@ -111,10 +111,15 @@ export default {
   parse_log_entry: function(log_entry, field, date_range) {
     var parsed_entry;
     parsed_entry = {};
+
     parsed_entry.author_name = log_entry.author_name;
     parsed_entry.author_email = log_entry.author_email;
     parsed_entry.dates = {};
-    parsed_entry.commits = parsed_entry.additions = parsed_entry.deletions = 0;
+
+    parsed_entry.commits = 0;
+    parsed_entry.additions = 0;
+    parsed_entry.deletions = 0;
+
     _.each(_.omit(log_entry, 'author_name', 'author_email'), (function(_this) {
       return function(value, key) {
         if (_this.in_range(value.date, date_range)) {

@@ -216,7 +216,10 @@ export const insertText = (target, text) => {
   // eslint-disable-next-line no-param-reassign
   target.value = newText;
   // eslint-disable-next-line no-param-reassign
-  target.selectionStart = target.selectionEnd = selectionStart + insertedText.length;
+  target.selectionStart = selectionStart + insertedText.length;
+
+  // eslint-disable-next-line no-param-reassign
+  target.selectionEnd = selectionStart + insertedText.length;
 
   // Trigger autosave
   target.dispatchEvent(new Event('input'));

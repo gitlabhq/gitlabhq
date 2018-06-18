@@ -188,7 +188,11 @@ describe ProjectWiki do
       before do
         subject.wiki # Make sure the wiki repo exists
 
-        BareRepoOperations.new(subject.repository.path_to_repo).commit_file(image, 'image.png')
+        repo_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          subject.repository.path_to_repo
+        end
+
+        BareRepoOperations.new(repo_path).commit_file(image, 'image.png')
       end
 
       it 'returns the latest version of the file if it exists' do

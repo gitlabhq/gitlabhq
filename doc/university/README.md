@@ -15,11 +15,11 @@ Would you like to contribute to GitLab University? Then please take a look at ou
 
 The curriculum is composed of GitLab videos, screencasts, presentations, projects and external GitLab content hosted on other services and has been organized into the following sections.
 
-1. [GitLab Beginner](#beginner)
-1. [GitLab Intermediate](#intermediate)
-1. [GitLab Advanced](#advanced)
-1. [External Articles](#external)
-1. [Resources for GitLab Team Members](#team)
+1. [GitLab Beginner](#1-gitlab-beginner)
+1. [GitLab Intermediate](#2-gitlab-intermediate)
+1. [GitLab Advanced](#3-gitlab-advanced)
+1. [External Articles](#4-external-articles)
+1. [Resources for GitLab Team Members](#5-resources-for-gitlab-team-members)
 
 ---
 
@@ -126,7 +126,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 1. [IBM: Continuous Delivery vs Continuous Deployment - Video](https://www.youtube.com/watch?v=igwFj8PPSnw)
 1. [Amazon: Transition to Continuous Delivery - Video](https://www.youtube.com/watch?v=esEFaY0FDKc)
 2. [TechBeacon: Doing continuous delivery? Focus first on reducing release cycle times](https://techbeacon.com/doing-continuous-delivery-focus-first-reducing-release-cycle-times)
-1. See **[Integrations](#integrations)** for integrations with other CI services.
+1. See **[Integrations](#39-integrations)** for integrations with other CI services.
 
 #### 2.4. Workflow
 

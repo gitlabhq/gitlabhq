@@ -45,6 +45,8 @@ the `author` field. GitLab team members **should not**.
   a changelog entry regardless of these guidelines if the contributor wants one.
   Example: "Fixed a typo on the search results page. (Jane Smith)"
 - Performance improvements **should** have a changelog entry.
+- Any change that introduces a database migration **must** have a
+  changelog entry.
 
 ## Writing good changelog entries
 

@@ -197,7 +197,7 @@
     flex-flow: row wrap;
 
     .nav-controls {
-      $controls-margin: $btn-xs-side-margin - 2px;
+      $controls-margin: $btn-margin-5 - 2px;
       flex: 0 0 100%;
 
       &.controls-flex {
@@ -230,6 +230,8 @@
 }
 
 .scrolling-tabs-container {
+  position: relative;
+
   .merge-request-tabs-container & {
     overflow: hidden;
   }
@@ -345,7 +347,7 @@
 
 .empty-state .project-item-select-holder.btn-group {
   float: none;
-  display: inline-block;
+  justify-content: center;
 
   .btn {
     // overrides styles applied to plain `.empty-state .btn`

@@ -97,7 +97,7 @@ export default {
         ? this.deploymentFlagData.seriesIndex
         : indexFromCoordinates;
       const value = series.values[index] && series.values[index].value;
-      if (isNaN(value)) {
+      if (Number.isNaN(value)) {
         return '-';
       }
       return `${formatRelevantDigits(value)}${this.unitOfDisplay}`;

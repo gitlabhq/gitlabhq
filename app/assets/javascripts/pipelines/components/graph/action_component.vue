@@ -91,6 +91,7 @@ export default {
     class="js-ci-action btn btn-blank
 btn-transparent ci-action-icon-container ci-action-icon-wrapper"
     data-container="body"
+    data-boundary="viewport"
     @click="onClickAction"
   >
     <icon :name="actionIcon"/>

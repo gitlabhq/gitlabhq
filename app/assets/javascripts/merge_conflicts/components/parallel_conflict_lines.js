@@ -1,12 +1,14 @@
 /* eslint-disable no-param-reassign, comma-dangle */
 
 import Vue from 'vue';
+import actionsMixin from '../mixins/line_conflict_actions';
+import utilsMixin from '../mixins/line_conflict_utils';
 
 ((global) => {
   global.mergeConflicts = global.mergeConflicts || {};
 
   global.mergeConflicts.parallelConflictLines = Vue.extend({
-    mixins: [global.mergeConflicts.utils, global.mergeConflicts.actions],
+    mixins: [utilsMixin, actionsMixin],
     props: {
       file: {
         type: Object,

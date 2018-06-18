@@ -197,7 +197,11 @@ export default {
     cancelReplyForm(shouldConfirm) {
       if (shouldConfirm && this.$refs.noteForm.isDirty) {
         // eslint-disable-next-line no-alert
+<<<<<<< HEAD
         if (!confirm('Are you sure you want to cancel creating this comment?')) {
+=======
+        if (!window.confirm(msg)) {
+>>>>>>> master
           return;
         }
       }

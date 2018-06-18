@@ -51,12 +51,6 @@
       opacity: 0.3;
     }
 
-    &.btn-xs {
-      line-height: 1;
-      padding: 5px 10px;
-      margin-top: 1px;
-    }
-
     &.dropdown-toggle {
       .fa {
         color: inherit;
@@ -676,6 +670,7 @@
 
 .merge-request-tabs {
   display: flex;
+  flex-wrap: nowrap;
   margin-bottom: 0;
   padding: 0;
 }

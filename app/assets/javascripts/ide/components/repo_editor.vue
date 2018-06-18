@@ -20,7 +20,13 @@ export default {
     },
   },
   computed: {
-    ...mapState(['rightPanelCollapsed', 'viewer', 'panelResizing', 'currentActivityView']),
+    ...mapState([
+      'rightPanelCollapsed',
+      'viewer',
+      'panelResizing',
+      'currentActivityView',
+      'rightPane',
+    ]),
     ...mapGetters([
       'currentMergeRequest',
       'getStagedFile',
@@ -87,6 +93,9 @@ export default {
       if (!this.panelResizing) {
         this.editor.updateDimensions();
       }
+    },
+    rightPane() {
+      this.editor.updateDimensions();
     },
   },
   beforeDestroy() {
