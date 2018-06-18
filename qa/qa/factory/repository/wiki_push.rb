@@ -16,7 +16,7 @@ module QA
           @new_branch = false
         end
 
-        def get_repository_uri
+        def repository_uri
           @repository_uri ||= begin
             wiki.visit!
             Page::Project::Wiki::Show.act do
@@ -25,11 +25,6 @@ module QA
               repository_location.uri
             end
           end
-        end
-
-        def fabricate!
-          get_repository_uri
-          super
         end
       end
     end

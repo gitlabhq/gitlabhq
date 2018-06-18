@@ -5,7 +5,7 @@ module QA
     module Repository
       class Push < Factory::Base
         attr_accessor :file_name, :file_content, :commit_message,
-                      :branch_name, :new_branch, :output, :repository_uri
+        :branch_name, :new_branch, :output, :repository_uri
 
         attr_writer :remote_branch
 
@@ -32,11 +32,8 @@ module QA
           @directory = dir
         end
 
-        def get_repository_uri
-          raise "`get_repository_uri` method must be implemented by subclasses"
-        end
-
         def fabricate!
+          repository_uri
           Git::Repository.perform do |repository|
             repository.uri = @repository_uri
             repository.use_default_credentials

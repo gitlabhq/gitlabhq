@@ -10,7 +10,7 @@ module QA
       expect(page).to have_content(/#{content}/)
     end
 
-    before() do
+    before do
       login
     end
 
