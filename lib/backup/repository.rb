@@ -4,7 +4,6 @@ require_relative 'helper'
 module Backup
   class Repository
     include Backup::Helper
-    # rubocop:disable Metrics/AbcSize
 
     attr_reader :progress
 
@@ -16,7 +15,6 @@ module Backup
       prepare
 
       Project.find_each(batch_size: 1000) do |project|
-        # Create namespace dir or hashed path if missing
         progress.print " * #{display_repo_path(project)} ... "
 
         if project.hashed_storage?(:repository)
@@ -27,22 +25,19 @@ module Backup
 
         if !empty_repo?(project)
           backup_project(project)
+          progress.puts "[DONE]".color(:green)
         else
           progress.puts "[SKIPPED]".color(:cyan)
         end
 
         wiki = ProjectWiki.new(project)
-        path_to_wiki_repo = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          path_to_repo(wiki)
-        end
 
-        if File.exist?(path_to_wiki_repo) && !empty_repo?(wiki)
+        if !empty_repo?(wiki)
           backup_project(wiki)
+          progress.puts "[DONE] Wiki".color(:green)
         else
           progress.puts "[SKIPPED] Wiki".color(:cyan)
         end
-
-        progress.puts "[DONE]".color(:green)
       end
     end
 
@@ -100,8 +95,6 @@ module Backup
       path = repository_storage.legacy_disk_path
       return unless File.exist?(path)
 
-      # Move all files in the existing repos directory except . and .. to
-      # repositories.old.<timestamp> directory
       bk_repos_path = File.join(Gitlab.config.backup.path, "tmp", "#{name}-repositories.old." + Time.now.to_i.to_s)
       FileUtils.mkdir_p(bk_repos_path, mode: 0700)
       files = Dir.glob(File.join(path, "*"), File::FNM_DOTMATCH) - [File.join(path, "."), File.join(path, "..")]
@@ -223,7 +216,6 @@ module Backup
         end
       end
     end
-    # rubocop:enable Metrics/AbcSize
 
     protected
 
@@ -261,9 +253,7 @@ module Backup
 
     def prepare
       FileUtils.rm_rf(backup_repos_path)
-      # Ensure the parent dir of backup_repos_path exists
       FileUtils.mkdir_p(Gitlab.config.backup.path)
-      # Fail if somebody raced to create backup_repos_path before us
       FileUtils.mkdir(backup_repos_path, mode: 0700)
     end
 
@@ -279,7 +269,6 @@ module Backup
     end
 
     def empty_repo?(project_or_wiki)
-      # Protect against stale caches
       project_or_wiki.repository.expire_emptiness_caches
       project_or_wiki.repository.empty?
     end
