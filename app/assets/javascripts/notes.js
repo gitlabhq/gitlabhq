@@ -253,13 +253,9 @@ export default class Notes {
         discussionNoteForm = $textarea.closest('.js-discussion-note-form');
         if (discussionNoteForm.length) {
           if ($textarea.val() !== '') {
-<<<<<<< HEAD
-            if (!confirm('Are you sure you want to cancel creating this comment?')) {
-=======
             if (
               !window.confirm('Are you sure you want to cancel creating this comment?')
             ) {
->>>>>>> master
               return;
             }
           }
@@ -271,13 +267,9 @@ export default class Notes {
           originalText = $textarea.closest('form').data('originalNote');
           newText = $textarea.val();
           if (originalText !== newText) {
-<<<<<<< HEAD
-            if (!confirm('Are you sure you want to cancel editing this comment?')) {
-=======
             if (
               !window.confirm('Are you sure you want to cancel editing this comment?')
             ) {
->>>>>>> master
               return;
             }
           }
