@@ -10,9 +10,8 @@
   .settings-content
     - if @new_deploy_token.persisted?
       = render 'projects/deploy_tokens/new_deploy_token', deploy_token: @new_deploy_token
-    - else
-      %h5.prepend-top-0
-        = s_('DeployTokens|Add a deploy token')
-      = render 'projects/deploy_tokens/form', project: @project, token: @new_deploy_token, presenter: @deploy_tokens
-      %hr
+    %h5.prepend-top-0
+      = s_('DeployTokens|Add a deploy token')
+    = render 'projects/deploy_tokens/form', project: @project, token: @new_deploy_token, presenter: @deploy_tokens
+    %hr
     = render 'projects/deploy_tokens/table', project: @project, active_tokens: @deploy_tokens
