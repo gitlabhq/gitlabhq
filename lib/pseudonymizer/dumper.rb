@@ -22,7 +22,7 @@ module Pseudonymizer
           to_filter.each do |field|
             next if result[field].nil?
 
-            result[field] = OpenSSL::HMAC.hexdigest(digest, key, result[field])
+            result[field] = OpenSSL::HMAC.hexdigest(digest, key, String(result[field]))
           end
           yielder << result
         end
