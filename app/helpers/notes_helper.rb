@@ -179,6 +179,6 @@ module NotesHelper
   end
 
   def serialize_notes?
-    rendered_for_merge_request? && !params['html']
+    rendered_for_merge_request? || params['html'].nil?
   end
 end

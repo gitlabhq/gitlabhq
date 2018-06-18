@@ -60,16 +60,16 @@ class DiffFileEntity < Grape::Entity
     merge_request = options[:merge_request]
     project = merge_request.source_project
 
-    if project
-      diff_for_path_namespace_project_merge_request_path(
-        namespace_id: project.namespace.to_param,
-        project_id: project.to_param,
-        id: merge_request.iid,
-        old_path: diff_file.old_path,
-        new_path: diff_file.new_path,
-        file_identifier: diff_file.file_identifier
-      )
-    end
+    next unless project
+
+    diff_for_path_namespace_project_merge_request_path(
+      namespace_id: project.namespace.to_param,
+      project_id: project.to_param,
+      id: merge_request.iid,
+      old_path: diff_file.old_path,
+      new_path: diff_file.new_path,
+      file_identifier: diff_file.file_identifier
+    )
   end
 
   expose :formatted_external_url, if: -> (_, options) { options[:environment] } do |diff_file|
@@ -95,11 +95,11 @@ class DiffFileEntity < Grape::Entity
 
     options = merge_request.persisted? ? { from_merge_request_iid: merge_request.iid } : {}
 
-    if merge_request.source_project
-      project_edit_blob_path(merge_request.source_project,
-        tree_join(merge_request.source_branch, diff_file.new_path),
-        options)
-    end
+    next unless merge_request.source_project
+
+    project_edit_blob_path(merge_request.source_project,
+      tree_join(merge_request.source_branch, diff_file.new_path),
+      options)
   end
 
   expose :view_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
