@@ -249,11 +249,11 @@ When a regression is found:
    the [subject label](../CONTRIBUTING.md#subject-labels-wiki-container-registry-ldap-api-etc)
    and any other label that may apply in the specific case
 1. Add the ~bug and ~regression labels
+1. Evaluate the Severity of the regression and add a Severity level
 1. Add the proper milestone and priority label:
-  - If the issue is for a feature that was introduced in the previous release.
-    label with the previous milestone and ~"Next Patch Release"
-  - If the issue is for a feature that is introduced in a RC version for the
-    current release, label with the current milestone and ~"Deliverable"
+  - If the regression is ~S1 or ~S2, label set the current milestone
+  - If the regression was introduced in a RC of the current release, label with ~Deliverable 
+  - If the regression was introduced in the previos release, label with ~"Next Patch Release"
 
 When a new issue is found, the fix should start as soon as possible. You can
 ping the Engineering Manager or the Product Manager for the relative area to
