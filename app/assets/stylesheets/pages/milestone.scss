@@ -239,6 +239,12 @@
   }
 }
 
+.milestone-range {
+  color: $gl-text-color-tertiary;
+  margin: $gl-bar-padding 0;
+  font-size: $tooltip-font-size;
+}
+
 @include media-breakpoint-down(xs) {
   .milestone-banner-text,
   .milestone-banner-link {
