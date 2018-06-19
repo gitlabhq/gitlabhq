@@ -70,8 +70,9 @@ export default {
       if (this.diffFile.submodule) {
         return `${this.diffFile.filePath} @ ${truncateSha(this.diffFile.blob.id)}`;
       }
+
       if (this.diffFile.deletedFile) {
-        return sprintf(__('%{filePath} deleted'), { filePath: this.diffFile.filePath });
+        return sprintf(__('%{filePath} deleted'), { filePath: this.diffFile.filePath }, false);
       }
 
       return this.diffFile.filePath;
