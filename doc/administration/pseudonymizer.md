@@ -98,6 +98,6 @@ This will produce some CSV files that might be very large, so make sure the
 10% of the database size is recommended.
 
 After the pseudonymizer has run, the output CSV files should be uploaded to the
-configured object storage.
+configured object storage and deleted from the local disk.
 
 [ee]: https://about.gitlab.com/pricing/
