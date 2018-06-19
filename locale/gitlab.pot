@@ -2625,6 +2625,12 @@ msgstr ""
 msgid "GeoNodes|Full"
 msgstr ""
 
+msgid "Gitaly Servers"
+msgstr ""
+
+msgid "Gitaly|Address"
+msgstr ""
+
 msgid "GeoNodes|GitLab version"
 msgstr ""
 
