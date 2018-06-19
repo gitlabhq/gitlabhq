@@ -152,8 +152,13 @@ module LoginHelpers
   end
 
   def stub_saml_authorize_path_helpers
-    allow_any_instance_of(Object).to receive(:user_saml_omniauth_authorize_path).and_return('/users/auth/saml')
-    allow_any_instance_of(Object).to receive(:omniauth_authorize_path).with(:user, "saml").and_return('/users/auth/saml')
+    allow_any_instance_of(ActionDispatch::Routing::RoutesProxy)
+      .to receive(:user_saml_omniauth_authorize_path)
+      .and_return('/users/auth/saml')
+    allow(Devise::OmniAuth::UrlHelpers)
+      .to receive(:omniauth_authorize_path)
+      .with(:user, "saml")
+      .and_return('/users/auth/saml')
   end
 
   def stub_omniauth_config(messages)
