@@ -16,6 +16,11 @@ export const setVulnerabilityFeedbackHelpPath = ({ commit }, path) =>
 
 export const setPipelineId = ({ commit }, id) => commit(types.SET_PIPELINE_ID, id);
 
+export const setCanCreateIssuePermission = ({ commit }, permission) =>
+  commit(types.SET_CAN_CREATE_ISSUE_PERMISSION, permission);
+export const setCanCreateFeedbackPermission = ({ commit }, permission) =>
+  commit(types.SET_CAN_CREATE_FEEDBACK_PERMISSION, permission);
+
 /**
  * SAST
  */
@@ -46,16 +51,16 @@ export const fetchSastReports = ({ state, dispatch }) => {
       },
     }),
   ])
-  .then(values => {
-    dispatch('receiveSastReports', {
-      head: values && values[0] ? values[0].data : null,
-      base: values && values[1] ? values[1].data : null,
-      enrichData: values && values[2] ? values[2].data : [],
+    .then(values => {
+      dispatch('receiveSastReports', {
+        head: values && values[0] ? values[0].data : null,
+        base: values && values[1] ? values[1].data : null,
+        enrichData: values && values[2] ? values[2].data : [],
+      });
+    })
+    .catch(() => {
+      dispatch('receiveSastError');
     });
-  })
-  .catch(() => {
-    dispatch('receiveSastError');
-  });
 };
 
 export const updateSastIssue = ({ commit }, issue) => commit(types.UPDATE_SAST_ISSUE, issue);
@@ -184,16 +189,16 @@ export const fetchDependencyScanningReports = ({ state, dispatch }) => {
       },
     }),
   ])
-  .then(values => {
-    dispatch('receiveDependencyScanningReports', {
-      head: values[0] ? values[0].data : null,
-      base: values[1] ? values[1].data : null,
-      enrichData: values && values[2] ? values[2].data : [],
+    .then(values => {
+      dispatch('receiveDependencyScanningReports', {
+        head: values[0] ? values[0].data : null,
+        base: values[1] ? values[1].data : null,
+        enrichData: values && values[2] ? values[2].data : [],
+      });
+    })
+    .catch(() => {
+      dispatch('receiveDependencyScanningError');
     });
-  })
-  .catch(() => {
-    dispatch('receiveDependencyScanningError');
-  });
 };
 
 export const updateDependencyScanningIssue = ({ commit }, issue) =>
@@ -215,13 +220,15 @@ export const dismissIssue = ({ state, dispatch }) => {
   dispatch('requestDismissIssue');
 
   return axios
-    .post(state.vulnerabilityFeedbackPath, { vulnerability_feedback: {
-      feedback_type: 'dismissal',
-      category: state.modal.vulnerability.category,
-      project_fingerprint: state.modal.vulnerability.project_fingerprint,
-      pipeline_id: state.pipelineId,
-      vulnerability_data: state.modal.vulnerability,
-    } })
+    .post(state.vulnerabilityFeedbackPath, {
+      vulnerability_feedback: {
+        feedback_type: 'dismissal',
+        category: state.modal.vulnerability.category,
+        project_fingerprint: state.modal.vulnerability.project_fingerprint,
+        pipeline_id: state.pipelineId,
+        vulnerability_data: state.modal.vulnerability,
+      },
+    })
     .then(({ data }) => {
       dispatch('receiveDismissIssue');
 
@@ -306,13 +313,15 @@ export const createNewIssue = ({ state, dispatch }) => {
   dispatch('requestCreateIssue');
 
   return axios
-    .post(state.vulnerabilityFeedbackPath, { vulnerability_feedback: {
-      feedback_type: 'issue',
-      category: state.modal.vulnerability.category,
-      project_fingerprint: state.modal.vulnerability.project_fingerprint,
-      pipeline_id: state.pipelineId,
-      vulnerability_data: state.modal.vulnerability,
-    } })
+    .post(state.vulnerabilityFeedbackPath, {
+      vulnerability_feedback: {
+        feedback_type: 'issue',
+        category: state.modal.vulnerability.category,
+        project_fingerprint: state.modal.vulnerability.project_fingerprint,
+        pipeline_id: state.pipelineId,
+        vulnerability_data: state.modal.vulnerability,
+      },
+    })
     .then(response => {
       dispatch('receiveCreateIssue');
       // redirect the user to the created issue

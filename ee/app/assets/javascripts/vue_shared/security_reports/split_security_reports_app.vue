@@ -74,6 +74,14 @@ export default {
       required: false,
       default: null,
     },
+    canCreateFeedback: {
+      type: Boolean,
+      required: true,
+    },
+    canCreateIssue: {
+      type: Boolean,
+      required: true,
+    },
   },
   sast: SAST,
   dast: DAST,
@@ -106,6 +114,8 @@ export default {
     this.setVulnerabilityFeedbackPath(this.vulnerabilityFeedbackPath);
     this.setVulnerabilityFeedbackHelpPath(this.vulnerabilityFeedbackHelpPath);
     this.setPipelineId(this.pipelineId);
+    this.setCanCreateIssuePermission(this.canCreateIssue);
+    this.setCanCreateFeedbackPermission(this.canCreateFeedback);
 
     if (this.sastHeadPath) {
       this.setSastHeadPath(this.sastHeadPath);
@@ -168,6 +178,8 @@ export default {
       'setVulnerabilityFeedbackPath',
       'setVulnerabilityFeedbackHelpPath',
       'setPipelineId',
+      'setCanCreateIssuePermission',
+      'setCanCreateFeedbackPermission',
     ]),
 
     summaryTextBuilder(type, issuesCount = 0) {

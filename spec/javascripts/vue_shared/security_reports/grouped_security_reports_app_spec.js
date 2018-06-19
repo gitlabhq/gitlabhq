@@ -67,6 +67,8 @@ describe('Grouped security reports app', () => {
         vulnerabilityFeedbackPath: 'vulnerability_feedback_path.json',
         vulnerabilityFeedbackHelpPath: 'path',
         pipelineId: 123,
+        canCreateIssue: true,
+        canCreateFeedback: true,
       });
     });
 
@@ -123,6 +125,8 @@ describe('Grouped security reports app', () => {
         vulnerabilityFeedbackPath: 'vulnerability_feedback_path.json',
         vulnerabilityFeedbackHelpPath: 'path',
         pipelineId: 123,
+        canCreateIssue: true,
+        canCreateFeedback: true,
       });
     });
 
@@ -174,6 +178,8 @@ describe('Grouped security reports app', () => {
         vulnerabilityFeedbackPath: 'vulnerability_feedback_path.json',
         vulnerabilityFeedbackHelpPath: 'path',
         pipelineId: 123,
+        canCreateIssue: true,
+        canCreateFeedback: true,
       });
     });
 
@@ -252,6 +258,8 @@ describe('Grouped security reports app', () => {
         vulnerabilityFeedbackPath: 'vulnerability_feedback_path.json',
         vulnerabilityFeedbackHelpPath: 'path',
         pipelineId: 123,
+        canCreateIssue: true,
+        canCreateFeedback: true,
       });
     });
 

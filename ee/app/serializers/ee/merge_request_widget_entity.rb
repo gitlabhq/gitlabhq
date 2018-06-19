@@ -152,6 +152,10 @@ module EE
       expose :vulnerability_feedback_path do |merge_request|
         project_vulnerability_feedback_index_path(merge_request.project)
       end
+
+      expose :can_create_feedback do |merge_request|
+        can?(current_user, :admin_vulnerability_feedback, merge_request)
+      end
     end
   end
 end
