@@ -9,7 +9,7 @@ module Gitlab
           include Validatable
           include Attributable
 
-          ALLOWED_KEYS = %i[name untracked paths when expire_in].freeze
+          ALLOWED_KEYS = %i[name untracked paths junit when expire_in].freeze
 
           attributes ALLOWED_KEYS
 
@@ -21,6 +21,7 @@ module Gitlab
               validates :name, type: String
               validates :untracked, boolean: true
               validates :paths, array_of_strings: true
+              validates :junit, type: String
               validates :when,
                 inclusion: { in: %w[on_success on_failure always],
                              message: 'should be on_success, on_failure ' \
