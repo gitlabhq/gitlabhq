@@ -978,21 +978,7 @@ module Gitlab
       def info_attributes
         return @info_attributes if @info_attributes
 
-        content =
-          gitaly_migrate(:get_info_attributes, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-            if is_enabled
-              gitaly_repository_client.info_attributes
-            else
-              attributes_path = File.join(File.expand_path(path), 'info', 'attributes')
-
-              if File.exist?(attributes_path)
-                File.read(attributes_path)
-              else
-                ""
-              end
-            end
-          end
-
+        content = gitaly_repository_client.info_attributes
         @info_attributes = AttributesParser.new(content)
       end
 
