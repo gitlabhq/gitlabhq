@@ -232,6 +232,9 @@ describe('security reports utils', () => {
           expect(textBuilder('', { head: 'foo', base: 'foo' }, 1, 0, 0)).toEqual(
             ' detected 1 new vulnerability',
           );
+          expect(textBuilder('', { head: 'foo', base: 'foo' }, 2, 0, 0)).toEqual(
+            ' detected 2 new vulnerabilities',
+          );
         });
       });
 
@@ -240,6 +243,9 @@ describe('security reports utils', () => {
           expect(
             textBuilder('', { head: 'foo', base: 'foo' }, 1, 1, 0).replace(/\n+\s+/m, ' '),
           ).toEqual(' detected 1 new vulnerability and 1 fixed vulnerability');
+          expect(
+            textBuilder('', { head: 'foo', base: 'foo' }, 2, 2, 0).replace(/\n+\s+/m, ' '),
+          ).toEqual(' detected 2 new vulnerabilities and 2 fixed vulnerabilities');
         });
       });
 
@@ -247,6 +253,9 @@ describe('security reports utils', () => {
         it('should return fixed issues text', () => {
           expect(textBuilder('', { head: 'foo', base: 'foo' }, 0, 1, 0)).toEqual(
             ' detected 1 fixed vulnerability',
+          );
+          expect(textBuilder('', { head: 'foo', base: 'foo' }, 0, 2, 0)).toEqual(
+            ' detected 2 fixed vulnerabilities',
           );
         });
       });
