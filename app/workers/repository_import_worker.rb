@@ -9,9 +9,7 @@ class RepositoryImportWorker
 
     return unless start_import(project)
 
-    Gitlab::Metrics.add_event(:import_repository,
-                              import_url: project.import_url,
-                              path: project.full_path)
+    Gitlab::Metrics.add_event(:import_repository)
 
     service = Projects::ImportService.new(project, project.creator)
     result = service.execute
