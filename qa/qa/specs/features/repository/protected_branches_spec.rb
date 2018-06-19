@@ -56,7 +56,7 @@ module QA
     end
 
     def push_new_file(branch)
-      Factory::Repository::Push.fabricate! do |resource|
+      Factory::Repository::ProjectPush.fabricate! do |resource|
         resource.project = project
         resource.file_name = 'new_file.md'
         resource.file_content = '# This is a new file'
