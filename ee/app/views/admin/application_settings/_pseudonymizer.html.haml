@@ -5,10 +5,9 @@
     .form-group.row
       .offset-sm-2.col-sm-10
         - is_enabled = @application_setting.pseudonymizer_enabled?
-        - is_available = @application_setting.pseudonymizer_available?
         .form-check
           = f.label :pseudonymizer_enabled do
-            = f.check_box :pseudonymizer_enabled, disabled: !is_available
+            = f.check_box :pseudonymizer_enabled
             Enable Pseudonymizer Cron Job
           .form-text.text-muted
             - if is_enabled
@@ -17,4 +16,3 @@
               = pseudonymizer_disabled_description_text
 
   = f.submit 'Save changes', class: "btn btn-success"
-

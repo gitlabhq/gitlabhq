@@ -109,7 +109,7 @@ module Pseudonymizer
     end
 
     def tables_to_csv
-      return @output_files if @output_files
+      return @output_files unless @output_files.empty?
 
       tables = config[:tables]
       FileUtils.mkdir_p(output_dir) unless File.directory?(output_dir)

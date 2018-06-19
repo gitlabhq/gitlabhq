@@ -72,8 +72,8 @@ namespace :gitlab do
 
     desc 'Output pseudonymity dump of selected tables'
     task pseudonymizer: :environment do
-      # abort "The pseudonymizer is not available with this license." unless License.feature_available?(:pseudonymizer)
-      # abort "The pseudonymizer is disabled." unless Gitlab::CurrentSettings.pseudonymizer_enabled?
+      abort "The pseudonymizer is not available with this license." unless License.feature_available?(:pseudonymizer)
+      abort "The pseudonymizer is disabled." unless Gitlab::CurrentSettings.pseudonymizer_enabled?
 
       options = Pseudonymizer::Options.new(
         config: YAML.load_file(Gitlab.config.pseudonymizer.manifest),
