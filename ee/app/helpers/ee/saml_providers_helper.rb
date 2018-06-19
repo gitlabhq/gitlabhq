@@ -1,11 +1,15 @@
 module EE
   module SamlProvidersHelper
-    def group_saml_enabled?
+    def group_saml_configured?
       ::Gitlab::Auth::GroupSaml::Config.enabled?
     end
 
     def show_saml_in_sidebar?(group)
-      group_saml_enabled? && !group.subgroup? && can?(current_user, :admin_group_saml, group)
+      return false unless group_saml_configured?
+      return false unless group.feature_available?(:group_saml)
+      return false if group.subgroup?
+
+      can?(current_user, :admin_group_saml, group)
     end
 
     def saml_link_for_provider(text, provider, *args)
