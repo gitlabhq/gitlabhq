@@ -18,24 +18,24 @@ export const findIssueIndex = (issues, issue) =>
  * @param {Array} feedback
  */
 function enrichVulnerabilityWithfeedback(vulnerability, feedback = []) {
-  return feedback.filter(
-    fb => fb.project_fingerprint === vulnerability.project_fingerprint,
-  ).reduce((vuln, fb) => {
-    if (fb.feedback_type === 'dismissal') {
-      return {
-        ...vuln,
-        isDismissed: true,
-        dismissalFeedback: fb,
-      };
-    } else if (fb.feedback_type === 'issue') {
-      return {
-        ...vuln,
-        hasIssue: true,
-        issueFeedback: fb,
-      };
-    }
-    return vuln;
-  }, vulnerability);
+  return feedback
+    .filter(fb => fb.project_fingerprint === vulnerability.project_fingerprint)
+    .reduce((vuln, fb) => {
+      if (fb.feedback_type === 'dismissal') {
+        return {
+          ...vuln,
+          isDismissed: true,
+          dismissalFeedback: fb,
+        };
+      } else if (fb.feedback_type === 'issue') {
+        return {
+          ...vuln,
+          hasIssue: true,
+          issueFeedback: fb,
+        };
+      }
+      return vuln;
+    }, vulnerability);
 }
 
 /**
@@ -155,24 +155,30 @@ export const parseSastContainer = (issues = [], feedback = []) =>
     const parsed = {
       ...issue,
       category: 'container_scanning',
-      project_fingerprint: sha1(`${issue.namespace}:${issue.vulnerability}:${issue.featurename}:${issue.featureversion}`),
+      project_fingerprint: sha1(
+        `${issue.namespace}:${issue.vulnerability}:${issue.featurename}:${issue.featureversion}`,
+      ),
       title: issue.vulnerability,
-      description: !_.isEmpty(issue.description) ? issue.description :
-        sprintf(s__('ciReport|%{namespace} is affected by %{vulnerability}.'), {
-          namespace: issue.namespace,
-          vulnerability: issue.vulnerability,
-        }),
+      description: !_.isEmpty(issue.description)
+        ? issue.description
+        : sprintf(s__('ciReport|%{namespace} is affected by %{vulnerability}.'), {
+            namespace: issue.namespace,
+            vulnerability: issue.vulnerability,
+          }),
       path: issue.namespace,
-      identifiers: [{
-        type: 'CVE',
-        name: issue.vulnerability,
-        value: issue.vulnerability,
-        url: `https://cve.mitre.org/cgi-bin/cvename.cgi?name=${issue.vulnerability}`,
-      }],
+      identifiers: [
+        {
+          type: 'CVE',
+          name: issue.vulnerability,
+          value: issue.vulnerability,
+          url: `https://cve.mitre.org/cgi-bin/cvename.cgi?name=${issue.vulnerability}`,
+        },
+      ],
     };
 
     // Generate solution
-    if (!_.isEmpty(issue.fixedby) &&
+    if (
+      !_.isEmpty(issue.fixedby) &&
       !_.isEmpty(issue.featurename) &&
       !_.isEmpty(issue.featureversion)
     ) {
@@ -213,12 +219,14 @@ export const parseDastIssues = (issues = [], feedback = []) =>
 
     if (!_.isEmpty(issue.cweid)) {
       Object.assign(parsed, {
-        identifiers: [{
-          type: 'CWE',
-          name: `CWE-${issue.cweid}`,
-          value: issue.cweid,
-          url: `https://cwe.mitre.org/data/definitions/${issue.cweid}.html`,
-        }],
+        identifiers: [
+          {
+            type: 'CWE',
+            name: `CWE-${issue.cweid}`,
+            value: issue.cweid,
+            url: `https://cwe.mitre.org/data/definitions/${issue.cweid}.html`,
+          },
+        ],
       });
     }
 
@@ -268,11 +276,10 @@ export const textBuilder = (
     if (newIssues > 0) {
       return sprintf(
         n__(
-          '%{type} detected %d vulnerability for the source branch only',
-          '%{type} detected %d vulnerabilities for the source branch only',
-          newIssues,
+          '%{type} detected %{count} vulnerability for the source branch only',
+          '%{type} detected %{count} vulnerabilities for the source branch only',
         ),
-        { type },
+        { type, count: newIssues },
       );
     }
 

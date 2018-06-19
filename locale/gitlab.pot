@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-13 14:05+0200\n"
-"PO-Revision-Date: 2018-06-13 14:05+0200\n"
+"POT-Creation-Date: 2018-06-19 09:50+0200\n"
+"PO-Revision-Date: 2018-06-19 09:50+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -140,8 +140,8 @@ msgstr ""
 msgid "%{title} changes"
 msgstr ""
 
-msgid "%{type} detected %d vulnerability"
-msgid_plural "%{type} detected %d vulnerabilities"
+msgid "%{type} detected %{count} vulnerability"
+msgid_plural "%{type} detected %{count} vulnerabilities"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -1411,7 +1411,13 @@ msgstr ""
 msgid "ClusterIntegration|Kubernetes clusters can be used to deploy applications and to provide Review Apps for this project"
 msgstr ""
 
-msgid "ClusterIntegration|Learn more about %{link_to_documentation}"
+msgid "ClusterIntegration|Learn more about %{help_link_start_machine_type}machine types%{help_link_end} and %{help_link_start_pricing}pricing%{help_link_end}."
+msgstr ""
+
+msgid "ClusterIntegration|Learn more about %{help_link_start}Kubernetes%{help_link_end}."
+msgstr ""
+
+msgid "ClusterIntegration|Learn more about %{help_link_start}zones%{help_link_end}."
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about environments"
@@ -1505,9 +1511,6 @@ msgid "ClusterIntegration|Security"
 msgstr ""
 
 msgid "ClusterIntegration|See and edit the details for your Kubernetes cluster"
-msgstr ""
-
-msgid "ClusterIntegration|See zones"
 msgstr ""
 
 msgid "ClusterIntegration|Select machine type"
@@ -1824,6 +1827,9 @@ msgid "Control the maximum concurrency of LFS/attachment backfill for this secon
 msgstr ""
 
 msgid "Control the maximum concurrency of repository backfill for this secondary node"
+msgstr ""
+
+msgid "Control the maximum concurrency of verification operations for this Geo node"
 msgstr ""
 
 msgid "Copy SSH public key to clipboard"
@@ -2368,9 +2374,6 @@ msgstr ""
 msgid "Error Reporting and Logging"
 msgstr ""
 
-msgid "Error checking branch data. Please try again."
-msgstr ""
-
 msgid "Error committing changes. Please try again."
 msgstr ""
 
@@ -2622,12 +2625,6 @@ msgstr ""
 msgid "GeoNodes|Full"
 msgstr ""
 
-msgid "Gitaly Servers"
-msgstr ""
-
-msgid "Gitaly|Address"
-msgstr ""
-
 msgid "GeoNodes|GitLab version"
 msgstr ""
 
@@ -2782,6 +2779,9 @@ msgid "Geo|Select groups to replicate."
 msgstr ""
 
 msgid "Geo|Shards to synchronize"
+msgstr ""
+
+msgid "Geo|Verification capacity"
 msgstr ""
 
 msgid "Git repository URL"
@@ -3514,6 +3514,9 @@ msgid "Monitoring"
 msgstr ""
 
 msgid "Months"
+msgstr ""
+
+msgid "More actions"
 msgstr ""
 
 msgid "More info"
@@ -4962,7 +4965,7 @@ msgstr ""
 msgid "Stage"
 msgstr ""
 
-msgid "Stage all"
+msgid "Stage all changes"
 msgstr ""
 
 msgid "Stage changes"
@@ -5643,7 +5646,7 @@ msgstr ""
 msgid "Unresolve discussion"
 msgstr ""
 
-msgid "Unstage all"
+msgid "Unstage all changes"
 msgstr ""
 
 msgid "Unstage changes"
@@ -5994,7 +5997,7 @@ msgstr ""
 msgid "You are on a read-only GitLab instance."
 msgstr ""
 
-msgid "You are on a secondary (read-only) Geo node. If you want to make any changes, you must visit the %{primary_node}."
+msgid "You are on a secondary, <b>read-only</b> Geo node. If you want to make changes, you must visit this page on the %{primary_node}."
 msgstr ""
 
 msgid "You can also create a project from the command line."
