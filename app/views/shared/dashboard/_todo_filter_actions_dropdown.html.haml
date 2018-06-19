@@ -1,0 +1,5 @@
+.filter-item.inline.actions-filter
+  - if params[:action_id].present?
+    = hidden_field_tag(:action_id, params[:action_id])
+  = dropdown_tag(todo_actions_dropdown_label(params[:action_id], 'Action'), options: { toggle_class: 'js-action-search js-filter-submit', dropdown_class: 'dropdown-menu-selectable dropdown-menu-action js-filter-submit',
+    data: { data: todo_actions_options, default_label: 'Action' } })
