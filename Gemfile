@@ -81,16 +81,9 @@ gem 'net-ldap'
 
 # Git Wiki
 # Required manually in config/initializers/gollum.rb to control load order
-# Before updating this gem, check if
-# https://github.com/gollum/gollum-lib/pull/292 has been merged.
-# If it has, then remove the monkey patch for update_page, rename_page and raw_data_in_committer
-# in config/initializers/gollum.rb
-gem 'gollum-lib', '~> 4.2', require: false
+gem 'gitlab-gollum-lib', '~> 4.2'
 
-# Before updating this gem, check if
-# https://github.com/gollum/rugged_adapter/pull/28 has been merged.
-# If it has, then remove the monkey patch for tree_entry in config/initializers/gollum.rb
-gem 'gollum-rugged_adapter', '~> 0.4.4', require: false
+gem 'gitlab-gollum-rugged_adapter', '~> 0.4.4', require: false
 
 # Language detection
 gem 'github-linguist', '~> 5.3.3', require: 'linguist'
@@ -146,7 +139,7 @@ gem 'creole', '~> 0.5.0'
 gem 'wikicloth', '0.8.1'
 gem 'asciidoctor', '~> 1.5.6'
 gem 'asciidoctor-plantuml', '0.0.8'
-gem 'rouge', '~> 2.0'
+gem 'rouge', '~> 3.1'
 gem 'truncato', '~> 0.7.9'
 gem 'bootstrap_form', '~> 2.7.0'
 gem 'nokogiri', '~> 1.8.2'
@@ -226,7 +219,7 @@ gem 'kubeclient', '~> 3.0'
 gem 'd3_rails', '~> 3.5.0'
 
 # Sanitize user input
-gem 'sanitize', '~> 2.0'
+gem 'sanitize', '~> 4.6.5'
 gem 'babosa', '~> 1.0.2'
 
 # Sanitizes SVG input
