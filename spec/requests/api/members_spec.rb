@@ -22,14 +22,14 @@ describe API::Members do
     end
   end
 
-  shared_examples 'GET /:sources/:id/members/(all)' do |source_type, all|
+  shared_examples 'GET /:source_type/:id/members/(all)' do |source_type, all|
     let(:members_url) do
-      base_url = "/#{source_type.pluralize}/#{source.id}/members"
-
-      all ? base_url + '/all' : base_url
+      "/#{source_type.pluralize}/#{source.id}/members".tap do |url|
+        url << "/all" if all
+      end
     end
 
-    context "with :sources == #{source_type.pluralize}" do
+    context "with :source_type == #{source_type.pluralize}" do
       it_behaves_like 'a 404 response when source is private' do
         let(:route) { get api(members_url, stranger) }
       end
@@ -99,7 +99,7 @@ describe API::Members do
     end
   end
 
-  describe 'GET /:sources/:id/members/all', :nested_groups do
+  describe 'GET /:source_type/:id/members/all', :nested_groups do
     let(:nested_user) { create(:user) }
     let(:project_user) { create(:user) }
 
@@ -121,7 +121,6 @@ describe API::Members do
       expect(response).to have_gitlab_http_status(200)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
-      expect(json_response.count).to eq(4)
       expect(json_response.map { |u| u['id'] }).to match_array [master.id, developer.id, nested_user.id, project_user.id]
     end
 
@@ -131,13 +130,12 @@ describe API::Members do
       expect(response).to have_gitlab_http_status(200)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
-      expect(json_response.count).to eq(3)
       expect(json_response.map { |u| u['id'] }).to match_array [master.id, developer.id, nested_user.id]
     end
   end
 
-  shared_examples 'GET /:sources/:id/members/:user_id' do |source_type|
-    context "with :sources == #{source_type.pluralize}" do
+  shared_examples 'GET /:source_type/:id/members/:user_id' do |source_type|
+    context "with :source_type == #{source_type.pluralize}" do
       it_behaves_like 'a 404 response when source is private' do
         let(:route) { get api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", stranger) }
       end
@@ -167,8 +165,8 @@ describe API::Members do
     end
   end
 
-  shared_examples 'POST /:sources/:id/members' do |source_type|
-    context "with :sources == #{source_type.pluralize}" do
+  shared_examples 'POST /:source_type/:id/members' do |source_type|
+    context "with :source_type == #{source_type.pluralize}" do
       it_behaves_like 'a 404 response when source is private' do
         let(:route) do
           post api("/#{source_type.pluralize}/#{source.id}/members", stranger),
@@ -248,8 +246,8 @@ describe API::Members do
     end
   end
 
-  shared_examples 'PUT /:sources/:id/members/:user_id' do |source_type|
-    context "with :sources == #{source_type.pluralize}" do
+  shared_examples 'PUT /:source_type/:id/members/:user_id' do |source_type|
+    context "with :source_type == #{source_type.pluralize}" do
       it_behaves_like 'a 404 response when source is private' do
         let(:route) do
           put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", stranger),
@@ -305,8 +303,8 @@ describe API::Members do
     end
   end
 
-  shared_examples 'DELETE /:sources/:id/members/:user_id' do |source_type|
-    context "with :sources == #{source_type.pluralize}" do
+  shared_examples 'DELETE /:source_type/:id/members/:user_id' do |source_type|
+    context "with :source_type == #{source_type.pluralize}" do
       it_behaves_like 'a 404 response when source is private' do
         let(:route) { delete api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", stranger) }
       end
@@ -367,46 +365,44 @@ describe API::Members do
   end
 
   [false, true].each do |all|
-    it_behaves_like 'GET /:sources/:id/members/(all)', 'project', all do
+    it_behaves_like 'GET /:source_type/:id/members/(all)', 'project', all do
       let(:source) { project }
     end
-  end
 
-  [false, true].each do |all|
-    it_behaves_like 'GET /:sources/:id/members/(all)', 'group', all do
+    it_behaves_like 'GET /:source_type/:id/members/(all)', 'group', all do
       let(:source) { group }
     end
   end
 
-  it_behaves_like 'GET /:sources/:id/members/:user_id', 'project' do
+  it_behaves_like 'GET /:source_type/:id/members/:user_id', 'project' do
     let(:source) { project }
   end
 
-  it_behaves_like 'GET /:sources/:id/members/:user_id', 'group' do
+  it_behaves_like 'GET /:source_type/:id/members/:user_id', 'group' do
     let(:source) { group }
   end
 
-  it_behaves_like 'POST /:sources/:id/members', 'project' do
+  it_behaves_like 'POST /:source_type/:id/members', 'project' do
     let(:source) { project }
   end
 
-  it_behaves_like 'POST /:sources/:id/members', 'group' do
+  it_behaves_like 'POST /:source_type/:id/members', 'group' do
     let(:source) { group }
   end
 
-  it_behaves_like 'PUT /:sources/:id/members/:user_id', 'project' do
+  it_behaves_like 'PUT /:source_type/:id/members/:user_id', 'project' do
     let(:source) { project }
   end
 
-  it_behaves_like 'PUT /:sources/:id/members/:user_id', 'group' do
+  it_behaves_like 'PUT /:source_type/:id/members/:user_id', 'group' do
     let(:source) { group }
   end
 
-  it_behaves_like 'DELETE /:sources/:id/members/:user_id', 'project' do
+  it_behaves_like 'DELETE /:source_type/:id/members/:user_id', 'project' do
     let(:source) { project }
   end
 
-  it_behaves_like 'DELETE /:sources/:id/members/:user_id', 'group' do
+  it_behaves_like 'DELETE /:source_type/:id/members/:user_id', 'group' do
     let(:source) { group }
   end
 
