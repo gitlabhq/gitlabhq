@@ -158,7 +158,6 @@ describe Gitlab::GithubImport::Importer::PullRequestsImporter do
 
       expect(importer.repository_updates_counter)
         .to receive(:increment)
-        .with(project: project.path_with_namespace)
         .and_call_original
 
       Timecop.freeze do

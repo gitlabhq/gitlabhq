@@ -28,10 +28,6 @@ module Gitlab
             record_name: 'comment')
         end
 
-        def metrics_params
-          super.merge(project: project&.full_path)
-        end
-
         private
 
         def author

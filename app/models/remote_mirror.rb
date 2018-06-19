@@ -48,13 +48,13 @@ class RemoteMirror < ActiveRecord::Base
     state :failed
 
     after_transition any => :started do |remote_mirror, _|
-      Gitlab::Metrics.add_event(:remote_mirrors_running, path: remote_mirror.project.full_path)
+      Gitlab::Metrics.add_event(:remote_mirrors_running)
 
       remote_mirror.update(last_update_started_at: Time.now)
     end
 
     after_transition started: :finished do |remote_mirror, _|
-      Gitlab::Metrics.add_event(:remote_mirrors_finished, path: remote_mirror.project.full_path)
+      Gitlab::Metrics.add_event(:remote_mirrors_finished)
 
       timestamp = Time.now
       remote_mirror.update_attributes!(
@@ -63,7 +63,7 @@ class RemoteMirror < ActiveRecord::Base
     end
 
     after_transition started: :failed do |remote_mirror, _|
-      Gitlab::Metrics.add_event(:remote_mirrors_failed, path: remote_mirror.project.full_path)
+      Gitlab::Metrics.add_event(:remote_mirrors_failed)
 
       remote_mirror.update(last_update_at: Time.now)
     end
