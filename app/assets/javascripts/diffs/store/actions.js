@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import axios from '~/lib/utils/axios_utils';
 import Cookies from 'js-cookie';
-import { handleLocationHash } from '~/lib/utils/common_utils';
+import { handleLocationHash, historyPushState } from '~/lib/utils/common_utils';
+import { mergeUrlParams } from '~/lib/utils/url_utility';
 import * as types from './mutation_types';
 import {
   PARALLEL_DIFF_VIEW_TYPE,
@@ -35,12 +36,16 @@ export const setInlineDiffViewType = ({ commit }) => {
   commit(types.SET_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE);
 
   Cookies.set(DIFF_VIEW_COOKIE_NAME, INLINE_DIFF_VIEW_TYPE);
+  const url = mergeUrlParams({ view: INLINE_DIFF_VIEW_TYPE }, window.location.href);
+  historyPushState(url);
 };
 
 export const setParallelDiffViewType = ({ commit }) => {
   commit(types.SET_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE);
 
   Cookies.set(DIFF_VIEW_COOKIE_NAME, PARALLEL_DIFF_VIEW_TYPE);
+  const url = mergeUrlParams({ view: PARALLEL_DIFF_VIEW_TYPE }, window.location.href);
+  historyPushState(url);
 };
 
 export const showCommentForm = ({ commit }, params) => {
