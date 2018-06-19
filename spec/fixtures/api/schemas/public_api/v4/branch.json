@@ -14,7 +14,8 @@
     "merged": { "type": "boolean" },
     "protected": { "type": "boolean" },
     "developers_can_push": { "type": "boolean" },
-    "developers_can_merge": { "type": "boolean" }
+    "developers_can_merge": { "type": "boolean" },
+    "can_push": { "type": "boolean" }
   },
   "additionalProperties": false
 }
