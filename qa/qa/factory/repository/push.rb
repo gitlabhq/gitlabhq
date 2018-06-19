@@ -5,7 +5,7 @@ module QA
     module Repository
       class Push < Factory::Base
         attr_accessor :file_name, :file_content, :commit_message,
-        :branch_name, :new_branch, :output, :repository_uri
+                      :branch_name, :new_branch, :output, :repository_uri
 
         attr_writer :remote_branch
 
@@ -33,9 +33,8 @@ module QA
         end
 
         def fabricate!
-          repository_uri
           Git::Repository.perform do |repository|
-            repository.uri = @repository_uri
+            repository.uri = repository_uri
             repository.use_default_credentials
             repository.clone
             repository.configure_identity('GitLab QA', 'root@gitlab.com')

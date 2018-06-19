@@ -14,7 +14,7 @@ module QA
       login
     end
 
-    scenario 'User creates, edits and clones wiki' do
+    scenario 'User creates, edits, clones, and pushes to the wiki' do
       wiki = Factory::Resource::Wiki.fabricate! do |resource|
         resource.title = 'Home'
         resource.content = '# My First Wiki Content'
