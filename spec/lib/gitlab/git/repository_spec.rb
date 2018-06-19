@@ -1114,7 +1114,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#count_commits' do
-    shared_examples 'extended commit counting' do
+    describe 'extended commit counting' do
       context 'with after timestamp' do
         it 'returns the number of commits after timestamp' do
           options = { ref: 'master', after: Time.iso8601('2013-03-03T20:15:01+00:00') }
@@ -1198,14 +1198,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
           expect { repository.count_commits({}) }.to raise_error(ArgumentError)
         end
       end
-    end
-
-    context 'when Gitaly count_commits feature is enabled' do
-      it_behaves_like 'extended commit counting'
-    end
-
-    context 'when Gitaly count_commits feature is disabled', :disable_gitaly do
-      it_behaves_like 'extended commit counting'
     end
   end
 
@@ -1688,70 +1680,52 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#languages' do
-    shared_examples 'languages' do
-      it 'returns exactly the expected results' do
-        languages = repository.languages('4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6')
-        expected_languages = [
-          { value: 66.63, label: "Ruby", color: "#701516", highlight: "#701516" },
-          { value: 22.96, label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
-          { value: 7.9, label: "HTML", color: "#e34c26", highlight: "#e34c26" },
-          { value: 2.51, label: "CoffeeScript", color: "#244776", highlight: "#244776" }
-        ]
+    it 'returns exactly the expected results' do
+      languages = repository.languages('4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6')
+      expected_languages = [
+        { value: 66.63, label: "Ruby", color: "#701516", highlight: "#701516" },
+        { value: 22.96, label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
+        { value: 7.9, label: "HTML", color: "#e34c26", highlight: "#e34c26" },
+        { value: 2.51, label: "CoffeeScript", color: "#244776", highlight: "#244776" }
+      ]
 
-        expect(languages.size).to eq(expected_languages.size)
+      expect(languages.size).to eq(expected_languages.size)
 
-        expected_languages.size.times do |i|
-          a = expected_languages[i]
-          b = languages[i]
+      expected_languages.size.times do |i|
+        a = expected_languages[i]
+        b = languages[i]
 
-          expect(a.keys.sort).to eq(b.keys.sort)
-          expect(a[:value]).to be_within(0.1).of(b[:value])
+        expect(a.keys.sort).to eq(b.keys.sort)
+        expect(a[:value]).to be_within(0.1).of(b[:value])
 
-          non_float_keys = a.keys - [:value]
-          expect(a.values_at(*non_float_keys)).to eq(b.values_at(*non_float_keys))
-        end
-      end
-
-      it "uses the repository's HEAD when no ref is passed" do
-        lang = repository.languages.first
-
-        expect(lang[:label]).to eq('Ruby')
+        non_float_keys = a.keys - [:value]
+        expect(a.values_at(*non_float_keys)).to eq(b.values_at(*non_float_keys))
       end
     end
 
-    it_behaves_like 'languages'
+    it "uses the repository's HEAD when no ref is passed" do
+      lang = repository.languages.first
 
-    context 'with rugged', :skip_gitaly_mock do
-      it_behaves_like 'languages'
+      expect(lang[:label]).to eq('Ruby')
     end
   end
 
   describe '#license_short_name' do
-    shared_examples 'acquiring the Licensee license key' do
-      subject { repository.license_short_name }
+    subject { repository.license_short_name }
 
-      context 'when no license file can be found' do
-        let(:project) { create(:project, :repository) }
-        let(:repository) { project.repository.raw_repository }
+    context 'when no license file can be found' do
+      let(:project) { create(:project, :repository) }
+      let(:repository) { project.repository.raw_repository }
 
-        before do
-          project.repository.delete_file(project.owner, 'LICENSE', message: 'remove license', branch_name: 'master')
-        end
-
-        it { is_expected.to be_nil }
+      before do
+        project.repository.delete_file(project.owner, 'LICENSE', message: 'remove license', branch_name: 'master')
       end
 
-      context 'when an mit license is found' do
-        it { is_expected.to eq('mit') }
-      end
+      it { is_expected.to be_nil }
     end
 
-    context 'when gitaly is enabled' do
-      it_behaves_like 'acquiring the Licensee license key'
-    end
-
-    context 'when gitaly is disabled', :disable_gitaly do
-      it_behaves_like 'acquiring the Licensee license key'
+    context 'when an mit license is found' do
+      it { is_expected.to eq('mit') }
     end
   end
 
