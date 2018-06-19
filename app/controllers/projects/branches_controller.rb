@@ -31,7 +31,10 @@ class Projects::BranchesController < Projects::ApplicationController
           end
         end
 
-        render
+        # https://gitlab.com/gitlab-org/gitlab-ce/issues/48097
+        Gitlab::GitalyClient.allow_n_plus_1_calls do
+          render
+        end
       end
       format.json do
         branches = BranchesFinder.new(@repository, params).execute

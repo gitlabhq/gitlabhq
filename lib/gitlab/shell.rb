@@ -1,5 +1,4 @@
-# Gitaly note: JV: two sets of straightforward RPC's. 1 Hard RPC: fork_repository.
-# SSH key operations are not part of Gitaly so will never be migrated.
+# Gitaly note: SSH key operations are not part of Gitaly so will never be migrated.
 
 require 'securerandom'
 
@@ -153,8 +152,6 @@ module Gitlab
     #
     # Ex.
     #   mv_repository("/path/to/storage", "gitlab/gitlab-ci", "randx/gitlab-ci-new")
-    #
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/873
     def mv_repository(storage, path, new_path)
       return false if path.empty? || new_path.empty?
 
@@ -169,19 +166,11 @@ module Gitlab
     #
     # Ex.
     #  fork_repository("nfs-file06", "gitlab/gitlab-ci", "nfs-file07", "new-namespace/gitlab-ci")
-    #
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/817
     def fork_repository(forked_from_storage, forked_from_disk_path, forked_to_storage, forked_to_disk_path)
       forked_from_relative_path = "#{forked_from_disk_path}.git"
       fork_args = [forked_to_storage, "#{forked_to_disk_path}.git"]
 
-      gitaly_migrate(:fork_repository, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-        if is_enabled
-          GitalyGitlabProjects.new(forked_from_storage, forked_from_relative_path).fork_repository(*fork_args)
-        else
-          gitlab_projects(forked_from_storage, forked_from_relative_path).fork_repository(*fork_args)
-        end
-      end
+      GitalyGitlabProjects.new(forked_from_storage, forked_from_relative_path).fork_repository(*fork_args)
     end
 
     # Removes a repository from file system, using rm_diretory which is an alias
@@ -193,8 +182,6 @@ module Gitlab
     #
     # Ex.
     #   remove_repository("/path/to/storage", "gitlab/gitlab-ci")
-    #
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/873
     def remove_repository(storage, name)
       return false if name.empty?
 
