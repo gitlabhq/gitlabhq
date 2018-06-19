@@ -133,22 +133,24 @@ export default {
       this.setSastContainerHeadPath(this.sastContainerHeadPath);
 
       this.fetchSastContainerReports()
-        .then(() => {
-          this.$emit('updateBadgeCount', this.sastContainer.newIssues.length);
-        })
-        .catch(() =>
-          createFlash(s__('ciReport|There was an error loading container scanning report')),
-        );
+      .then(() => {
+        this.$emit('updateBadgeCount', this.sastContainer.newIssues.length);
+      })
+      .catch(() =>
+        createFlash(s__('ciReport|There was an error loading container scanning report')),
+      );
     }
 
     if (this.dastHeadPath) {
       this.setDastHeadPath(this.dastHeadPath);
 
       this.fetchDastReports()
-        .then(() => {
-          this.$emit('updateBadgeCount', this.dast.newIssues.length);
-        })
-        .catch(() => createFlash(s__('ciReport|There was an error loading DAST report')));
+      .then(() => {
+        this.$emit('updateBadgeCount', this.dast.newIssues.length);
+      })
+      .catch(() =>
+        createFlash(s__('ciReport|There was an error loading DAST report')),
+      );
     }
   },
 
@@ -175,8 +177,8 @@ export default {
         });
       }
       return sprintf(
-        n__('%{type} detected %{count} vulnerability', '%{type} detected %{count} vulnerabilities'),
-        { type, count: issuesCount },
+        n__('%{type} detected %d vulnerability', '%{type} detected %d vulnerabilities', issuesCount),
+        { type },
       );
     },
     translateText(type) {
