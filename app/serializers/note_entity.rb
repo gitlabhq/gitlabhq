@@ -29,9 +29,7 @@ class NoteEntity < API::Entities::Note
   end
 
   expose :resolved?, as: :resolved
-  expose :resolvable do |note|
-    note.resolvable?
-  end
+  expose :resolvable?, as: :resolvable
 
   expose :resolved_by, using: NoteUserEntity
 

@@ -8,7 +8,7 @@ class MergeRequestUserEntity < UserEntity
   end
 
   expose :can_create_merge_request do |user|
-    can?(user, :create_merge_request_in, project) if project
+    project && can?(user, :create_merge_request_in, project)
   end
 
   expose :fork_path, if: -> (*) { project } do |user|

@@ -55,10 +55,6 @@ class DiffsEntity < Grape::Entity
 
   expose :diff_files, using: DiffFileEntity
 
-  expose :merge_request_diffs, if: -> (_, options) { options[:merge_request_diffs] } do |diffs|
-    options[:merge_request_diffs].as_json
-  end
-
   expose :merge_request_diffs, using: MergeRequestDiffEntity, if: -> (_, options) { options[:merge_request_diffs]&.any? } do |diffs|
     options[:merge_request_diffs]
   end
