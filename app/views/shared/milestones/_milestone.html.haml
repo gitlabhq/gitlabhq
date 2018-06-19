@@ -7,7 +7,7 @@
     .col-sm-6
       %strong= link_to truncate(milestone.title, length: 100), milestone_path
       - unless dashboard
-        = milestone_type
+        = " - #{milestone_type}"
 
       - if @project || milestone.is_a?(GlobalMilestone) || milestone.group_milestone?
         = render('shared/milestone_expired', milestone: milestone)
@@ -18,7 +18,7 @@
                 %span.badge.badge-gray
                   = dashboard ? milestone.project.full_name : milestone.project.name
 
-    .col-sm-4
+    .col-sm-4.milestone-progress
       = milestone_progress_bar(milestone)
       = link_to pluralize(milestone.total_issues_count(current_user), 'Issue'), issues_path
       &middot;

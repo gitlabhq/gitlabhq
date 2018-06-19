@@ -23,6 +23,13 @@
     .progress {
       width: 100%;
       height: 6px;
+      margin-bottom: $gl-padding-4;
+    }
+
+    .milestone-progress {
+      a {
+        color: $gl-link-color;
+      }
     }
   }
 }
