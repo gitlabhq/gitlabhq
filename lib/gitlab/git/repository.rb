@@ -1222,12 +1222,8 @@ module Gitlab
       end
 
       def rebase_in_progress?(rebase_id)
-        gitaly_migrate(:rebase_in_progress) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.rebase_in_progress?(rebase_id)
-          else
-            fresh_worktree?(worktree_path(REBASE_WORKTREE_PREFIX, rebase_id))
-          end
+        wrapped_gitaly_errors do
+          gitaly_repository_client.rebase_in_progress?(rebase_id)
         end
       end
 
@@ -1243,12 +1239,8 @@ module Gitlab
       end
 
       def squash_in_progress?(squash_id)
-        gitaly_migrate(:squash_in_progress, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.squash_in_progress?(squash_id)
-          else
-            fresh_worktree?(worktree_path(SQUASH_WORKTREE_PREFIX, squash_id))
-          end
+        wrapped_gitaly_errors do
+          gitaly_repository_client.squash_in_progress?(squash_id)
         end
       end
 
@@ -1589,21 +1581,6 @@ module Gitlab
         circuit_breaker.perform do
           popen_with_timeout([Gitlab.config.git.bin_path, *args], timeout, path, env)
         end
-      end
-
-      # This function is duplicated in Gitaly-Go, don't change it!
-      # https://gitlab.com/gitlab-org/gitaly/merge_requests/698
-      def fresh_worktree?(path)
-        File.exist?(path) && !clean_stuck_worktree(path)
-      end
-
-      # This function is duplicated in Gitaly-Go, don't change it!
-      # https://gitlab.com/gitlab-org/gitaly/merge_requests/698
-      def clean_stuck_worktree(path)
-        return false unless File.mtime(path) < 15.minutes.ago
-
-        FileUtils.rm_rf(path)
-        true
       end
 
       # Adding a worktree means checking out the repository. For large repos,
