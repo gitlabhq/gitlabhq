@@ -11,12 +11,8 @@ module Gitlab
 
       private
 
-      def all_relation
-        LfsObject.all
-      end
-
-      def local?(lfs_object)
-        lfs_object.local_store?
+      def relation
+        LfsObject.with_files_stored_locally
       end
 
       def expected_checksum(lfs_object)
@@ -25,10 +21,6 @@ module Gitlab
 
       def actual_checksum(lfs_object)
         LfsObject.calculate_oid(lfs_object.file.path)
-      end
-
-      def remote_object_exists?(lfs_object)
-        lfs_object.file.file.exists?
       end
     end
   end
