@@ -3,7 +3,7 @@ require 'spec_helper'
 describe EachBatch do
   describe '.each_batch' do
     let(:model) do
-      Class.new(ActiveRecord::Base) do
+      Class.new(ApplicationRecord) do
         include EachBatch
 
         self.table_name = 'users'

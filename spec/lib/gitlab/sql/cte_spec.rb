@@ -6,9 +6,9 @@ describe Gitlab::SQL::CTE, :postgresql do
       relation = User.where(id: 1)
       cte = described_class.new(:cte_name, relation)
       sql = cte.to_arel.to_sql
-      name = ActiveRecord::Base.connection.quote_table_name(:cte_name)
+      name = ApplicationRecord.connection.quote_table_name(:cte_name)
 
-      sql1 = ActiveRecord::Base.connection.unprepared_statement do
+      sql1 = ApplicationRecord.connection.unprepared_statement do
         relation.except(:order).to_sql
       end
 
@@ -21,8 +21,8 @@ describe Gitlab::SQL::CTE, :postgresql do
       cte = described_class.new(:cte_name, nil)
       table = Arel::Table.new(:kittens)
 
-      source_name = ActiveRecord::Base.connection.quote_table_name(:cte_name)
-      alias_name = ActiveRecord::Base.connection.quote_table_name(:kittens)
+      source_name = ApplicationRecord.connection.quote_table_name(:cte_name)
+      alias_name = ApplicationRecord.connection.quote_table_name(:kittens)
 
       expect(cte.alias_to(table).to_sql).to eq("#{source_name} AS #{alias_name}")
     end

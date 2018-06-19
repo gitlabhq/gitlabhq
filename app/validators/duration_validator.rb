@@ -4,7 +4,7 @@
 #
 # Example:
 #
-#   class ApplicationSetting < ActiveRecord::Base
+#   class ApplicationSetting < ApplicationRecord
 #     validates :default_artifacts_expire_in, presence: true, duration: true
 #   end
 #

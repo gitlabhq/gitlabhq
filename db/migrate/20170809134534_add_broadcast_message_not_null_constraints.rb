@@ -9,7 +9,7 @@ class AddBroadcastMessageNotNullConstraints < ActiveRecord::Migration
 
   COLUMNS = %i[starts_at ends_at created_at updated_at message_html]
 
-  class BroadcastMessage < ActiveRecord::Base
+  class BroadcastMessage < ApplicationRecord
     self.table_name = 'broadcast_messages'
   end
 

@@ -4,7 +4,7 @@
 class MigrateProcessCommitWorkerJobs < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
-  class Project < ActiveRecord::Base
+  class Project < ApplicationRecord
     def self.find_including_path(id)
       select("projects.*, CONCAT(namespaces.path, '/', projects.path) AS path_with_namespace")
         .joins('INNER JOIN namespaces ON namespaces.id = projects.namespace_id')

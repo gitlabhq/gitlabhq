@@ -6,7 +6,7 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
 
   disable_ddl_transaction!
 
-  class Project < ActiveRecord::Base
+  class Project < ApplicationRecord
     self.table_name = 'projects'
 
     has_many :cluster_projects, class_name: 'MigrateKubernetesServiceToNewClustersArchitectures::ClustersProject'
@@ -15,7 +15,7 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
     has_one :kubernetes_service, -> { where(category: 'deployment', type: 'KubernetesService') }, class_name: 'MigrateKubernetesServiceToNewClustersArchitectures::Service', inverse_of: :project, foreign_key: :project_id
   end
 
-  class Cluster < ActiveRecord::Base
+  class Cluster < ApplicationRecord
     self.table_name = 'clusters'
 
     has_many :cluster_projects, class_name: 'MigrateKubernetesServiceToNewClustersArchitectures::ClustersProject'
@@ -34,14 +34,14 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
     }
   end
 
-  class ClustersProject < ActiveRecord::Base
+  class ClustersProject < ApplicationRecord
     self.table_name = 'cluster_projects'
 
     belongs_to :cluster, class_name: 'MigrateKubernetesServiceToNewClustersArchitectures::Cluster'
     belongs_to :project, class_name: 'MigrateKubernetesServiceToNewClustersArchitectures::Project'
   end
 
-  class PlatformsKubernetes < ActiveRecord::Base
+  class PlatformsKubernetes < ApplicationRecord
     self.table_name = 'cluster_platforms_kubernetes'
 
     belongs_to :cluster, class_name: 'MigrateKubernetesServiceToNewClustersArchitectures::Cluster'
@@ -52,7 +52,7 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
       algorithm: 'aes-256-cbc'
   end
 
-  class Service < ActiveRecord::Base
+  class Service < ApplicationRecord
     include EachBatch
 
     self.table_name = 'services'
@@ -116,7 +116,7 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
   end
 
   def up
-    ActiveRecord::Base.transaction do
+    ApplicationRecord.transaction do
       MigrateKubernetesServiceToNewClustersArchitectures::Service
         .unmanaged_kubernetes_service.find_each(batch_size: 1) do |kubernetes_service|
         MigrateKubernetesServiceToNewClustersArchitectures::Cluster.create(

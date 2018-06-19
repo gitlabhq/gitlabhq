@@ -2,7 +2,7 @@ class CalculateConvDevIndexPercentages < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
   DOWNTIME = false
 
-  class ConversationalDevelopmentIndexMetric < ActiveRecord::Base
+  class ConversationalDevelopmentIndexMetric < ApplicationRecord
     self.table_name = 'conversational_development_index_metrics'
 
     METRICS = %w[boards ci_pipelines deployments environments issues merge_requests milestones notes

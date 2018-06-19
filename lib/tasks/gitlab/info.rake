@@ -35,7 +35,7 @@ namespace :gitlab do
       puts "Go Version:\t#{go_version[1] || "unknown".color(:red)}"
 
       # check database adapter
-      database_adapter = ActiveRecord::Base.connection.adapter_name.downcase
+      database_adapter = ApplicationRecord.connection.adapter_name.downcase
 
       project = Group.new(path: "some-group").projects.build(path: "some-project")
       # construct clone URLs

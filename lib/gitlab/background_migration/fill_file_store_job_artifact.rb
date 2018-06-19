@@ -5,7 +5,7 @@
 module Gitlab
   module BackgroundMigration
     class FillFileStoreJobArtifact
-      class JobArtifact < ActiveRecord::Base
+      class JobArtifact < ApplicationRecord
         self.table_name = 'ci_job_artifacts'
       end
 

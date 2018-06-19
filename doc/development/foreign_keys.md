@@ -4,7 +4,7 @@ When adding an association to a model you must also add a foreign key. For
 example, say you have the following model:
 
 ```ruby
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   has_many :posts
 end
 ```
@@ -45,7 +45,7 @@ efficient way possible.
 In other words, this is bad and should be avoided at all costs:
 
 ```ruby
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   has_many :posts, dependent: :destroy
 end
 ```

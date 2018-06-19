@@ -5,7 +5,7 @@ class RemoveEmptyExternUidAuth0Identities < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class Identity < ActiveRecord::Base
+  class Identity < ApplicationRecord
     self.table_name = 'identities'
     include EachBatch
   end

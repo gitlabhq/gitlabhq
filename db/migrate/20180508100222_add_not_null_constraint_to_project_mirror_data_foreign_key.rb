@@ -3,7 +3,7 @@ class AddNotNullConstraintToProjectMirrorDataForeignKey < ActiveRecord::Migratio
 
   DOWNTIME = false
 
-  class ProjectImportState < ActiveRecord::Base
+  class ProjectImportState < ApplicationRecord
     include EachBatch
 
     self.table_name = 'project_mirror_data'

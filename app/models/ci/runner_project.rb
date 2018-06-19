@@ -1,5 +1,5 @@
 module Ci
-  class RunnerProject < ActiveRecord::Base
+  class RunnerProject < ApplicationRecord
     extend Gitlab::Ci::Model
 
     belongs_to :runner, inverse_of: :runner_projects

@@ -1,4 +1,4 @@
-class Event < ActiveRecord::Base
+class Event < ApplicationRecord
   include Sortable
   include IgnorableColumn
   default_scope { reorder(nil) }

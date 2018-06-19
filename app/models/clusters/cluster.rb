@@ -1,5 +1,5 @@
 module Clusters
-  class Cluster < ActiveRecord::Base
+  class Cluster < ApplicationRecord
     include Presentable
 
     self.table_name = 'clusters'

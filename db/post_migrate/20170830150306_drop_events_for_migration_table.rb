@@ -8,7 +8,7 @@ class DropEventsForMigrationTable < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class Event < ActiveRecord::Base
+  class Event < ApplicationRecord
     include EachBatch
   end
 

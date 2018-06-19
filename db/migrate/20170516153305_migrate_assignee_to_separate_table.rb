@@ -34,7 +34,7 @@ class MigrateAssigneeToSeparateTable < ActiveRecord::Migration
           SELECT assignee_id AS user_id, id AS issue_id FROM issues WHERE assignee_id IS NOT NULL
       EOF
     else
-      ActiveRecord::Base.transaction do
+      ApplicationRecord.transaction do
         execute('LOCK TABLE issues IN EXCLUSIVE MODE')
 
         execute <<-EOF

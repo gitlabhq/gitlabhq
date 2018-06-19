@@ -25,3 +25,7 @@ require_relative 'cop/project_path_helper'
 require_relative 'cop/rspec/env_assignment'
 require_relative 'cop/rspec/factories_in_migration_specs'
 require_relative 'cop/sidekiq_options_queue'
+
+# rails5 specific cops.
+# Remove them when upgraded to rails 5.0.
+require_relative 'cop/gitlab/rails5/application_record'

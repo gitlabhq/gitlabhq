@@ -5,7 +5,7 @@
 module Gitlab
   module BackgroundMigration
     class FillFileStoreLfsObject
-      class LfsObject < ActiveRecord::Base
+      class LfsObject < ApplicationRecord
         self.table_name = 'lfs_objects'
       end
 

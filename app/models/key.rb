@@ -1,6 +1,6 @@
 require 'digest/md5'
 
-class Key < ActiveRecord::Base
+class Key < ApplicationRecord
   include AfterCommitQueue
   include Sortable
 

@@ -1,7 +1,7 @@
 class AddForeignKeysToTodos < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
-  class Todo < ActiveRecord::Base
+  class Todo < ApplicationRecord
     self.table_name = 'todos'
     include EachBatch
   end

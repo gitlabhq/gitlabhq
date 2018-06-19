@@ -8,7 +8,7 @@ class MigrateStageIdReferenceInBackground < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class Build < ActiveRecord::Base
+  class Build < ApplicationRecord
     self.table_name = 'ci_builds'
     include ::EachBatch
   end

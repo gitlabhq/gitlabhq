@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe CaseSensitivity do
   describe '.iwhere' do
-    let(:connection) { ActiveRecord::Base.connection }
+    let(:connection) { ApplicationRecord.connection }
     let(:model)      { Class.new { include CaseSensitivity } }
 
     describe 'using PostgreSQL' do

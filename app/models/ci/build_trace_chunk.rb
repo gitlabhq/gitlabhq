@@ -1,5 +1,5 @@
 module Ci
-  class BuildTraceChunk < ActiveRecord::Base
+  class BuildTraceChunk < ApplicationRecord
     include FastDestroyAll
     extend Gitlab::Ci::Model
 

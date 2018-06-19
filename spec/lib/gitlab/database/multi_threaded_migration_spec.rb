@@ -17,7 +17,7 @@ describe Gitlab::Database::MultiThreadedMigration do
     end
 
     it 'returns the global connection if no thread-local connection was set' do
-      expect(migration.connection).to eq(ActiveRecord::Base.connection)
+      expect(migration.connection).to eq(ApplicationRecord.connection)
     end
   end
 

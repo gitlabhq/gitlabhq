@@ -10,7 +10,7 @@ class PopulateCanPushFromDeployKeysProjects < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class DeploysKeyProject < ActiveRecord::Base
+  class DeploysKeyProject < ApplicationRecord
     include EachBatch
 
     self.table_name = 'deploy_keys_projects'

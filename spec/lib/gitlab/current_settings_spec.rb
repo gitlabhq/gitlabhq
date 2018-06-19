@@ -50,7 +50,7 @@ describe Gitlab::CurrentSettings do
         before do
           # For some reason, `allow(described_class).to receive(:connect_to_db?).and_return(false)` causes issues
           # during the initialization phase of the test suite, so instead let's mock the internals of it
-          allow(ActiveRecord::Base.connection).to receive(:active?).and_return(false)
+          allow(ApplicationRecord.connection).to receive(:active?).and_return(false)
           expect(ApplicationSetting).not_to receive(:current)
         end
 
@@ -78,8 +78,8 @@ describe Gitlab::CurrentSettings do
         it 'fetches the settings from cache' do
           # For some reason, `allow(described_class).to receive(:connect_to_db?).and_return(true)` causes issues
           # during the initialization phase of the test suite, so instead let's mock the internals of it
-          expect(ActiveRecord::Base.connection).not_to receive(:active?)
-          expect(ActiveRecord::Base.connection).not_to receive(:cached_table_exists?)
+          expect(ApplicationRecord.connection).not_to receive(:active?)
+          expect(ApplicationRecord.connection).not_to receive(:cached_table_exists?)
           expect(ActiveRecord::Migrator).not_to receive(:needs_migration?)
           expect(ActiveRecord::QueryRecorder.new { described_class.current_application_settings }.count).to eq(0)
         end
@@ -87,8 +87,8 @@ describe Gitlab::CurrentSettings do
 
       context 'and no settings in cache' do
         before do
-          allow(ActiveRecord::Base.connection).to receive(:active?).and_return(true)
-          allow(ActiveRecord::Base.connection).to receive(:cached_table_exists?).with('application_settings').and_return(true)
+          allow(ApplicationRecord.connection).to receive(:active?).and_return(true)
+          allow(ApplicationRecord.connection).to receive(:cached_table_exists?).with('application_settings').and_return(true)
         end
 
         it 'creates default ApplicationSettings if none are present' do

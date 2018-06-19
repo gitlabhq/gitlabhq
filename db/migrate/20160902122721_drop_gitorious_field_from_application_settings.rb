@@ -30,7 +30,7 @@ class DropGitoriousFieldFromApplicationSettings < ActiveRecord::Migration
   private
 
   def connection
-    ActiveRecord::Base.connection
+    ApplicationRecord.connection
   end
 
   def update_yaml(yaml)

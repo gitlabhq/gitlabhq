@@ -1127,7 +1127,7 @@ describe Gitlab::Database::MigrationHelpers do
     let!(:issue) { create(:issue, :closed, closed_at: Time.zone.now) }
 
     let(:issue_model) do
-      Class.new(ActiveRecord::Base) do
+      Class.new(ApplicationRecord) do
         self.table_name = 'issues'
         include EachBatch
       end
@@ -1225,7 +1225,7 @@ describe Gitlab::Database::MigrationHelpers do
 
     context 'when an index with a function exists', :postgresql do
       before do
-        ActiveRecord::Base.connection.execute(
+        ApplicationRecord.connection.execute(
           'CREATE INDEX test_index ON projects (LOWER(path));'
         )
       end

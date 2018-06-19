@@ -4,18 +4,18 @@ class MigrateIssuesToGhostUser < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class User < ActiveRecord::Base
+  class User < ApplicationRecord
     self.table_name = 'users'
   end
 
-  class Issue < ActiveRecord::Base
+  class Issue < ApplicationRecord
     self.table_name = 'issues'
 
     include ::EachBatch
   end
 
   def reset_column_in_migration_models
-    ActiveRecord::Base.clear_cache!
+    ApplicationRecord.clear_cache!
 
     ::User.reset_column_information
     ::Namespace.reset_column_information

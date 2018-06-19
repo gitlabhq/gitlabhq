@@ -7,6 +7,16 @@ unless %w[1 true].include?(ENV["RAILS5"])
   rescue LoadError => e
     raise unless e.message.include?('spring')
   end
+
+  # Add the `--parent` option explicitly for the `rails generate model` command.
+  # This option is required to keep our ActiveRecord inheritance consistent while we are migrating to rails 5.0.
+  # This must be removed when upgraded to rails 5.0.
+  # This work is placed here beacuse in the `rails/commands` file included below the passed command gets shifted,
+  # so we won't event know what command was invoked in the later code.
+  if %w[g generator].include?(ARGV[0]) && ARGV[1] == "model" && !ARGV.include?("--parent")
+    ARGV << "--parent"
+    ARGV << "ApplicationRecord"
+  end
 end
 
 APP_PATH = File.expand_path('../config/application', __dir__)

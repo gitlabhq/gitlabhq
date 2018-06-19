@@ -66,7 +66,7 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
 
   def in_transaction(message:)
     say_with_time(message) do
-      ActiveRecord::Base.transaction do
+      ApplicationRecord.transaction do
         yield
       end
     end
@@ -133,6 +133,6 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
   end
 
   def quote(value)
-    ActiveRecord::Base.connection.quote(value)
+    ApplicationRecord.connection.quote(value)
   end
 end

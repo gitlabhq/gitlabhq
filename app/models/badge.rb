@@ -1,4 +1,4 @@
-class Badge < ActiveRecord::Base
+class Badge < ApplicationRecord
   # This structure sets the placeholders that the urls
   # can have. This hash also sets which action to ask when
   # the placeholder is found.

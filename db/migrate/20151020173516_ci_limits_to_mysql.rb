@@ -1,7 +1,7 @@
 # rubocop:disable all
 class CiLimitsToMysql < ActiveRecord::Migration
   def change
-    return unless ActiveRecord::Base.configurations[Rails.env]['adapter'] =~ /^mysql/
+    return unless ApplicationRecord.configurations[Rails.env]['adapter'] =~ /^mysql/
 
     # CI
     change_column :ci_builds, :trace, :text, limit: 1073741823

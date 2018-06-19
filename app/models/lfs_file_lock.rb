@@ -1,4 +1,4 @@
-class LfsFileLock < ActiveRecord::Base
+class LfsFileLock < ApplicationRecord
   belongs_to :project
   belongs_to :user
 

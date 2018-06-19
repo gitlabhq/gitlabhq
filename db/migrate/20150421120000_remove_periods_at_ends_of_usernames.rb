@@ -2,7 +2,7 @@
 class RemovePeriodsAtEndsOfUsernames < ActiveRecord::Migration
   include Gitlab::ShellAdapter
 
-  class Namespace < ActiveRecord::Base
+  class Namespace < ApplicationRecord
     class << self
       def find_by_path_or_name(path)
         find_by("lower(path) = :path OR lower(name) = :path", path: path.downcase)
@@ -71,7 +71,7 @@ class RemovePeriodsAtEndsOfUsernames < ActiveRecord::Migration
         begin
           gitlab_shell.rm_satellites(path_was)
           # We cannot send update instructions since models and mailers
-          # can't safely be used from migrations as they may be written for 
+          # can't safely be used from migrations as they may be written for
           # later versions of the database.
           # send_update_instructions
         rescue

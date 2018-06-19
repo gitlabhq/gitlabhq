@@ -1,6 +1,6 @@
 require 'carrierwave/orm/activerecord'
 
-class Issue < ActiveRecord::Base
+class Issue < ApplicationRecord
   include AtomicInternalId
   include IidRoutes
   include Issuable

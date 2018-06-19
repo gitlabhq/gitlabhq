@@ -7,7 +7,7 @@ class ScheduleStagesIndexMigration < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class Stage < ActiveRecord::Base
+  class Stage < ApplicationRecord
     include EachBatch
     self.table_name = 'ci_stages'
   end

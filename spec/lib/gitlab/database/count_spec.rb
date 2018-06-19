@@ -55,8 +55,8 @@ describe Gitlab::Database::Count do
 
       describe 'when all reltuples have been updated' do
         before do
-          ActiveRecord::Base.connection.execute('ANALYZE projects')
-          ActiveRecord::Base.connection.execute('ANALYZE identities')
+          ApplicationRecord.connection.execute('ANALYZE projects')
+          ApplicationRecord.connection.execute('ANALYZE identities')
         end
 
         it 'counts models with the standard way' do

@@ -203,7 +203,7 @@ class IssuableBaseService < BaseService
 
       if issuable.with_transaction_returning_status { issuable.save }
         # We do not touch as it will affect a update on updated_at field
-        ActiveRecord::Base.no_touching do
+        ApplicationRecord.no_touching do
           Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, old_associations[:labels])
         end
 

@@ -7,7 +7,7 @@ class ScheduleCreateGpgKeySubkeysFromGpgKeys < ActiveRecord::Migration
   DOWNTIME = false
   MIGRATION = 'CreateGpgKeySubkeysFromGpgKeys'
 
-  class GpgKey < ActiveRecord::Base
+  class GpgKey < ApplicationRecord
     self.table_name = 'gpg_keys'
 
     include EachBatch

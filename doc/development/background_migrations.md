@@ -159,7 +159,7 @@ class:
 
 ```ruby
 class Gitlab::BackgroundMigration::ExtractServicesUrl
-  class Service < ActiveRecord::Base
+  class Service < ApplicationRecord
     self.table_name = 'services'
   end
 
@@ -189,7 +189,7 @@ created and updated services. We can do this using something along the lines of
 the following:
 
 ```ruby
-class Service < ActiveRecord::Base
+class Service < ApplicationRecord
   after_commit :schedule_service_migration, on: :update
   after_commit :schedule_service_migration, on: :create
 
@@ -211,7 +211,7 @@ batches instead of doing this one by one:
 class ScheduleExtractServicesUrl < ActiveRecord::Migration
   disable_ddl_transaction!
 
-  class Service < ActiveRecord::Base
+  class Service < ApplicationRecord
     self.table_name = 'services'
   end
 
@@ -242,7 +242,7 @@ this:
 class ConsumeRemainingExtractServicesUrlJobs < ActiveRecord::Migration
   disable_ddl_transaction!
 
-  class Service < ActiveRecord::Base
+  class Service < ApplicationRecord
     include ::EachBatch
 
     self.table_name = 'services'

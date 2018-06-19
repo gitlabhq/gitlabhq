@@ -8,7 +8,7 @@ module Gitlab
       STATUSES = { created: 0, pending: 1, running: 2, success: 3,
                    failed: 4, canceled: 5, skipped: 6, manual: 7 }.freeze
 
-      class Build < ActiveRecord::Base
+      class Build < ApplicationRecord
         self.table_name = 'ci_builds'
 
         scope :latest, -> { where(retried: [false, nil]) }
@@ -74,7 +74,7 @@ module Gitlab
             AND ci_stages.id BETWEEN #{start_id.to_i} AND #{stop_id.to_i}
         SQL
 
-        ActiveRecord::Base.connection.execute(sql)
+        ApplicationRecord.connection.execute(sql)
       end
     end
   end

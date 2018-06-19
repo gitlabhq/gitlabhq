@@ -1,7 +1,7 @@
 class PagesDomainsVerificationGracePeriod < ActiveRecord::Migration
   DOWNTIME = false
 
-  class PagesDomain < ActiveRecord::Base
+  class PagesDomain < ApplicationRecord
     include EachBatch
   end
 

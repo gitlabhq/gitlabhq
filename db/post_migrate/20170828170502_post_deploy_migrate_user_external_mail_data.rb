@@ -8,13 +8,13 @@ class PostDeployMigrateUserExternalMailData < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class User < ActiveRecord::Base
+  class User < ApplicationRecord
     self.table_name = 'users'
 
     include EachBatch
   end
 
-  class UserSyncedAttributesMetadata < ActiveRecord::Base
+  class UserSyncedAttributesMetadata < ApplicationRecord
     self.table_name = 'user_synced_attributes_metadata'
 
     include EachBatch

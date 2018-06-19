@@ -7,7 +7,7 @@ describe CreateMissingNamespaceForInternalUsers, :migration do
   let(:routes) { table(:routes) }
 
   internal_user_types = [:ghost]
-  internal_user_types << :support_bot if ActiveRecord::Base.connection.column_exists?(:users, :support_bot)
+  internal_user_types << :support_bot if ApplicationRecord.connection.column_exists?(:users, :support_bot)
 
   internal_user_types.each do |attr|
     context "for #{attr} user" do

@@ -27,7 +27,7 @@ module Gitlab
       # Returns a new Query object.
       def self.new_with_bindings(query, bindings, started_at, finished_at)
         bindings.each_with_index do |(_, value), index|
-          quoted_value = ActiveRecord::Base.connection.quote(value)
+          quoted_value = ApplicationRecord.connection.quote(value)
 
           query = query.gsub("$#{index + 1}", quoted_value)
         end
@@ -79,7 +79,7 @@ module Gitlab
       # Returns the query plan as a String.
       def explain
         unless @explain
-          ActiveRecord::Base.connection.transaction do
+          ApplicationRecord.connection.transaction do
             @explain = raw_explain(@query).values.flatten.join("\n")
 
             # Roll back any queries that mutate data so we don't mess up
@@ -101,7 +101,7 @@ module Gitlab
             "EXPLAIN #{query};"
           end
 
-        ActiveRecord::Base.connection.execute(explain)
+        ApplicationRecord.connection.execute(explain)
       end
 
       def format_sql(query)

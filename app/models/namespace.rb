@@ -1,4 +1,4 @@
-class Namespace < ActiveRecord::Base
+class Namespace < ApplicationRecord
   include CacheMarkdownField
   include Sortable
   include Gitlab::ShellAdapter

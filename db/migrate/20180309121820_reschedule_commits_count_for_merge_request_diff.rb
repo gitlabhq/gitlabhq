@@ -7,7 +7,7 @@ class RescheduleCommitsCountForMergeRequestDiff < ActiveRecord::Migration
   BATCH_SIZE = 5000
   DELAY_INTERVAL = 5.minutes.to_i
 
-  class MergeRequestDiff < ActiveRecord::Base
+  class MergeRequestDiff < ApplicationRecord
     self.table_name = 'merge_request_diffs'
 
     include ::EachBatch

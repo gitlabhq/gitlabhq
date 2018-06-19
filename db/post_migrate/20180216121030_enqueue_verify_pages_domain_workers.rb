@@ -1,5 +1,5 @@
 class EnqueueVerifyPagesDomainWorkers < ActiveRecord::Migration
-  class PagesDomain < ActiveRecord::Base
+  class PagesDomain < ApplicationRecord
     include EachBatch
   end
 

@@ -9,7 +9,7 @@ class MigrateStagesStatuses < ActiveRecord::Migration
   RANGE_SIZE = 100
   MIGRATION = 'MigrateStageStatus'.freeze
 
-  class Stage < ActiveRecord::Base
+  class Stage < ApplicationRecord
     self.table_name = 'ci_stages'
     include ::EachBatch
   end

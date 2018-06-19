@@ -1,4 +1,4 @@
-class ProtectedBranch < ActiveRecord::Base
+class ProtectedBranch < ApplicationRecord
   include Gitlab::ShellAdapter
   include ProtectedRef
 

@@ -1,4 +1,4 @@
-class MergeRequest < ActiveRecord::Base
+class MergeRequest < ApplicationRecord
   include AtomicInternalId
   include IidRoutes
   include Issuable

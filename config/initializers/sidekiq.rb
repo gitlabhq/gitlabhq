@@ -29,7 +29,7 @@ Sidekiq.configure_server do |config|
   config.on :startup do
     # Clear any connections that might have been obtained before starting
     # Sidekiq (e.g. in an initializer).
-    ActiveRecord::Base.clear_all_connections!
+    ApplicationRecord.clear_all_connections!
   end
 
   # Sidekiq-cron: load recurring jobs from gitlab.yml
@@ -54,8 +54,8 @@ Sidekiq.configure_server do |config|
   config = Gitlab::Database.config ||
     Rails.application.config.database_configuration[Rails.env]
   config['pool'] = Sidekiq.options[:concurrency]
-  ActiveRecord::Base.establish_connection(config)
-  Rails.logger.debug("Connection Pool size for Sidekiq Server is now: #{ActiveRecord::Base.connection.pool.instance_variable_get('@size')}")
+  ApplicationRecord.establish_connection(config)
+  Rails.logger.debug("Connection Pool size for Sidekiq Server is now: #{ApplicationRecord.connection.pool.instance_variable_get('@size')}")
 
   # Avoid autoload issue such as 'Mail::Parsers::AddressStruct'
   # https://github.com/mikel/mail/issues/912#issuecomment-214850355

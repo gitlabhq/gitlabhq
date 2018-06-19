@@ -8,13 +8,13 @@ class MergeIssuableReopenedIntoOpenedState < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class Issue < ActiveRecord::Base
+  class Issue < ApplicationRecord
     self.table_name = 'issues'
 
     include EachBatch
   end
 
-  class MergeRequest < ActiveRecord::Base
+  class MergeRequest < ApplicationRecord
     self.table_name = 'merge_requests'
 
     include EachBatch

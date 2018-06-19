@@ -1,5 +1,5 @@
 module Ci
-  class BuildTraceSection < ActiveRecord::Base
+  class BuildTraceSection < ApplicationRecord
     extend Gitlab::Ci::Model
 
     belongs_to :build, class_name: 'Ci::Build'

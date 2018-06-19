@@ -3,7 +3,7 @@ module Gitlab
     module_function
 
     def retry_lock(subject, retries = 100, &block)
-      ActiveRecord::Base.transaction do
+      ApplicationRecord.transaction do
         yield(subject)
       end
     rescue ActiveRecord::StaleObjectError

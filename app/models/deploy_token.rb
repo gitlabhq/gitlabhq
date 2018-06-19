@@ -1,4 +1,4 @@
-class DeployToken < ActiveRecord::Base
+class DeployToken < ApplicationRecord
   include Expirable
   include TokenAuthenticatable
   add_authentication_token_field :token

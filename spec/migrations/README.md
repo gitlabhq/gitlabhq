@@ -38,7 +38,7 @@ Example: `describe SomeClass, :migration, schema: 20170608152748`.
 
 ## Available helpers
 
-Use `table` helper to create a temporary `ActiveRecord::Base` derived model
+Use `table` helper to create a temporary `ApplicationRecord` derived model
 for a table.
 
 Use `migrate!` helper to run the migration that is under test. It will not only

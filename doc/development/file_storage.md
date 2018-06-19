@@ -104,7 +104,7 @@ class SongUploader < GitlabUploader
   ...
 end
 
-class Thing < ActiveRecord::Base
+class Thing < ApplicationRecord
   mount :theme, SongUploader # we have a great theme song!
 
   ...
@@ -123,7 +123,7 @@ class SongUploader < GitlabUploader
   ...
 end
 
-class Thing < ActiveRecord::Base
+class Thing < ApplicationRecord
   attr_reader :theme_store # this is an ActiveRecord attribute
   mount :theme, SongUploader # we have a great theme song!
 

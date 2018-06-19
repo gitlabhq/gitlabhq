@@ -1,6 +1,6 @@
 module Clusters
   module Applications
-    class Prometheus < ActiveRecord::Base
+    class Prometheus < ApplicationRecord
       include PrometheusAdapter
 
       VERSION = "2.0.0".freeze

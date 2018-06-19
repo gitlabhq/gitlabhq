@@ -1,4 +1,5 @@
-require_relative '../../app/models/concerns/token_authenticatable.rb'
+require_relative "../../app/models/application_record.rb"
+require_relative "../../app/models/concerns/token_authenticatable.rb"
 
 namespace :tokens do
   desc "Reset all GitLab incoming email tokens"
@@ -21,7 +22,7 @@ namespace :tokens do
   end
 end
 
-class TmpUser < ActiveRecord::Base
+class TmpUser < ApplicationRecord
   include TokenAuthenticatable
 
   self.table_name = 'users'

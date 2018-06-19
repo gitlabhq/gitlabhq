@@ -8,7 +8,7 @@ module Gitlab
       include Gitlab::Database::MigrationHelpers
       attr_reader :old_folder, :new_folder
 
-      class Upload < ActiveRecord::Base
+      class Upload < ApplicationRecord
         self.table_name = 'uploads'
         include EachBatch
       end

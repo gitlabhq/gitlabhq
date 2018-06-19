@@ -6,11 +6,11 @@ module Gitlab
   module BackgroundMigration
     class MigrateBuildStage
       module Migratable
-        class Stage < ActiveRecord::Base
+        class Stage < ApplicationRecord
           self.table_name = 'ci_stages'
         end
 
-        class Build < ActiveRecord::Base
+        class Build < ApplicationRecord
           self.table_name = 'ci_builds'
           self.inheritance_column = :_type_disabled
 

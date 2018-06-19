@@ -1,4 +1,4 @@
-class DeployKeysProject < ActiveRecord::Base
+class DeployKeysProject < ApplicationRecord
   belongs_to :project
   belongs_to :deploy_key, inverse_of: :deploy_keys_projects
 

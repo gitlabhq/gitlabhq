@@ -5,7 +5,7 @@
 #
 # Example:
 #
-#   class User < ActiveRecord::Base
+#   class User < ApplicationRecord
 #     validates :background_color, allow_blank: true, color: true
 #   end
 #

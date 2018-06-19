@@ -1,5 +1,5 @@
 module Ci
-  class Pipeline < ActiveRecord::Base
+  class Pipeline < ApplicationRecord
     extend Gitlab::Ci::Model
     include HasStatus
     include Importable

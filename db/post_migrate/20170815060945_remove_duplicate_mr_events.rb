@@ -5,7 +5,7 @@ class RemoveDuplicateMrEvents < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
   DOWNTIME = false
 
-  class Event < ActiveRecord::Base
+  class Event < ApplicationRecord
     self.table_name = 'events'
   end
 

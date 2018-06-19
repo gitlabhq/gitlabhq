@@ -15,7 +15,7 @@ module Gitlab
       end
 
       def execute
-        ActiveRecord::Base.no_touching do
+        ApplicationRecord.no_touching do
           project_identifier = CGI.escape(project.import_source)
 
           # Issues && Comments

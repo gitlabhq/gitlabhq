@@ -126,7 +126,7 @@ class NotificationRecipient
         :"read_#{@target.to_ability_name}"
       when Ci::Pipeline
         :read_build # We have build trace in pipeline emails
-      when ActiveRecord::Base
+      when ApplicationRecord
         :"read_#{@target.class.model_name.name.underscore}"
       else
         nil

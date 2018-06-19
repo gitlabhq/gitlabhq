@@ -1,4 +1,4 @@
-class PersonalAccessToken < ActiveRecord::Base
+class PersonalAccessToken < ApplicationRecord
   include Expirable
   include TokenAuthenticatable
   add_authentication_token_field :token

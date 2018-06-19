@@ -10,7 +10,7 @@ class NormalizeExternUidFromIdentities < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class Identity < ActiveRecord::Base
+  class Identity < ApplicationRecord
     include EachBatch
 
     self.table_name = 'identities'

@@ -1,4 +1,4 @@
-class NotificationSetting < ActiveRecord::Base
+class NotificationSetting < ApplicationRecord
   include IgnorableColumn
 
   ignore_column :events

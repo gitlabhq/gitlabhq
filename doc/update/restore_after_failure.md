@@ -73,7 +73,7 @@ sudo gitlab-rails console
 At the Rails console, type the following commands:
 
 ```
-ActiveRecord::Base.connection.execute("INSERT INTO schema_migrations (version) VALUES('20151103134857')")
+ApplicationRecord.connection.execute("INSERT INTO schema_migrations (version) VALUES('20151103134857')")
 exit
 ```
 

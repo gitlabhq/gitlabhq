@@ -13,7 +13,7 @@ class CreateDeploymentService
   def execute
     return unless executable?
 
-    ActiveRecord::Base.transaction do
+    ApplicationRecord.transaction do
       environment.external_url = expanded_environment_url if
         expanded_environment_url
 

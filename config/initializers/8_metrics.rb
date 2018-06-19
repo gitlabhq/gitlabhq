@@ -162,7 +162,7 @@ if Gitlab::Metrics.enabled? && !Rails.env.test?
     )
 
     Gitlab::Metrics::Instrumentation
-      .instrument_class_hierarchy(ActiveRecord::Base) do |klass, method|
+      .instrument_class_hierarchy(ApplicationRecord) do |klass, method|
         # Instrumenting the ApplicationSetting class can lead to an infinite
         # loop. Since the data is cached any way we don't really need to
         # instrument it.

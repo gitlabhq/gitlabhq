@@ -8,7 +8,7 @@ class SchedulePopulateUntrackedUploadsIfNeeded < ActiveRecord::Migration
 
   FOLLOW_UP_MIGRATION = 'PopulateUntrackedUploads'.freeze
 
-  class UntrackedFile < ActiveRecord::Base
+  class UntrackedFile < ApplicationRecord
     include EachBatch
 
     self.table_name = 'untracked_files_for_uploads'

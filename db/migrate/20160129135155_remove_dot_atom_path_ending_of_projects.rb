@@ -76,6 +76,6 @@ class RemoveDotAtomPathEndingOfProjects < ActiveRecord::Migration
   end
 
   def sanitize(value)
-    ActiveRecord::Base.connection.quote(value)
+    ApplicationRecord.connection.quote(value)
   end
 end

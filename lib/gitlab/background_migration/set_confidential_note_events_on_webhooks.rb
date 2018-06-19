@@ -6,7 +6,7 @@ module Gitlab
     # Ensures hooks which previously recieved all notes events continue
     # to recieve confidential ones.
     class SetConfidentialNoteEventsOnWebhooks
-      class WebHook < ActiveRecord::Base
+      class WebHook < ApplicationRecord
         self.table_name = 'web_hooks'
 
         include ::EachBatch

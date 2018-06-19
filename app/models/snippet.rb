@@ -1,4 +1,4 @@
-class Snippet < ActiveRecord::Base
+class Snippet < ApplicationRecord
   include Gitlab::VisibilityLevel
   include CacheMarkdownField
   include Noteable

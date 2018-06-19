@@ -4,7 +4,7 @@ module AttrEncrypted
       module DBConnectionQuerier
         def attribute_instance_methods_as_symbols
           # Use with_connection so the connection doesn't stay pinned to the thread.
-          connected = ::ActiveRecord::Base.connection_pool.with_connection(&:active?) rescue false
+          connected = ::ApplicationRecord.connection_pool.with_connection(&:active?) rescue false
 
           if connected
             # Call version from AttrEncrypted::Adapters::ActiveRecord

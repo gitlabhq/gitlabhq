@@ -1,4 +1,4 @@
-class CommitStatus < ActiveRecord::Base
+class CommitStatus < ApplicationRecord
   include HasStatus
   include Importable
   include AfterCommitQueue

@@ -343,7 +343,7 @@ migration. For example:
 
 ```ruby
 class MyMigration < ActiveRecord::Migration
-  class Project < ActiveRecord::Base
+  class Project < ApplicationRecord
     self.table_name = 'projects'
   end
 end

@@ -17,27 +17,27 @@ class RemoveSoftRemovedObjects < ActiveRecord::Migration
     end
   end
 
-  class User < ActiveRecord::Base
+  class User < ApplicationRecord
     self.table_name = 'users'
 
     include EachBatch
   end
 
-  class Issue < ActiveRecord::Base
+  class Issue < ApplicationRecord
     self.table_name = 'issues'
 
     include EachBatch
     include SoftRemoved
   end
 
-  class MergeRequest < ActiveRecord::Base
+  class MergeRequest < ApplicationRecord
     self.table_name = 'merge_requests'
 
     include EachBatch
     include SoftRemoved
   end
 
-  class Namespace < ActiveRecord::Base
+  class Namespace < ApplicationRecord
     self.table_name = 'namespaces'
 
     include EachBatch
@@ -47,28 +47,28 @@ class RemoveSoftRemovedObjects < ActiveRecord::Migration
     scope :soft_removed_group, -> { soft_removed.where(type: 'Group') }
   end
 
-  class Route < ActiveRecord::Base
+  class Route < ApplicationRecord
     self.table_name = 'routes'
 
     include EachBatch
     include SoftRemoved
   end
 
-  class Project < ActiveRecord::Base
+  class Project < ApplicationRecord
     self.table_name = 'projects'
 
     include EachBatch
     include SoftRemoved
   end
 
-  class CiPipelineSchedule < ActiveRecord::Base
+  class CiPipelineSchedule < ApplicationRecord
     self.table_name = 'ci_pipeline_schedules'
 
     include EachBatch
     include SoftRemoved
   end
 
-  class CiTrigger < ActiveRecord::Base
+  class CiTrigger < ApplicationRecord
     self.table_name = 'ci_triggers'
 
     include EachBatch

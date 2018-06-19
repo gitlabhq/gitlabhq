@@ -1,7 +1,7 @@
 class MigrateGcpClustersToNewClustersArchitectures < ActiveRecord::Migration
   DOWNTIME = false
 
-  class GcpCluster < ActiveRecord::Base
+  class GcpCluster < ApplicationRecord
     self.table_name = 'gcp_clusters'
 
     belongs_to :project, class_name: 'Project'
@@ -9,7 +9,7 @@ class MigrateGcpClustersToNewClustersArchitectures < ActiveRecord::Migration
     include EachBatch
   end
 
-  class Cluster < ActiveRecord::Base
+  class Cluster < ApplicationRecord
     self.table_name = 'clusters'
 
     has_many :cluster_projects, class_name: 'ClustersProject'
@@ -30,25 +30,25 @@ class MigrateGcpClustersToNewClustersArchitectures < ActiveRecord::Migration
     }
   end
 
-  class Project < ActiveRecord::Base
+  class Project < ApplicationRecord
     self.table_name = 'projects'
 
     has_one :cluster_project, class_name: 'ClustersProject'
     has_one :cluster, through: :cluster_project, class_name: 'Cluster'
   end
 
-  class ClustersProject < ActiveRecord::Base
+  class ClustersProject < ApplicationRecord
     self.table_name = 'cluster_projects'
 
     belongs_to :cluster, class_name: 'Cluster'
     belongs_to :project, class_name: 'Project'
   end
 
-  class ProvidersGcp < ActiveRecord::Base
+  class ProvidersGcp < ApplicationRecord
     self.table_name = 'cluster_providers_gcp'
   end
 
-  class PlatformsKubernetes < ActiveRecord::Base
+  class PlatformsKubernetes < ApplicationRecord
     self.table_name = 'cluster_platforms_kubernetes'
   end
 

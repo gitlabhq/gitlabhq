@@ -86,9 +86,9 @@ class RenameReservedProjectNames < ActiveRecord::Migration
   end
 
   def route_exists?(full_path)
-    quoted_path = ActiveRecord::Base.connection.quote_string(full_path)
+    quoted_path = ApplicationRecord.connection.quote_string(full_path)
 
-    ActiveRecord::Base.connection
+    ApplicationRecord.connection
       .select_all("SELECT id, path FROM routes WHERE path = '#{quoted_path}'").present?
   end
 

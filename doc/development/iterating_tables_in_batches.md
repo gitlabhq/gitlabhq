@@ -16,7 +16,7 @@ To work around this you can include the `EachBatch` module into your models,
 then use the `each_batch` class method. For example:
 
 ```ruby
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   include EachBatch
 end
 

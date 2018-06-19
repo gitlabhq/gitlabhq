@@ -1,4 +1,4 @@
-class SystemNoteMetadata < ActiveRecord::Base
+class SystemNoteMetadata < ApplicationRecord
   # These notes's action text might contain a reference that is external.
   # We should always force a deep validation upon references that are found
   # in this note type.

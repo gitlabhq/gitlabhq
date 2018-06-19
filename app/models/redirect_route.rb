@@ -1,4 +1,4 @@
-class RedirectRoute < ActiveRecord::Base
+class RedirectRoute < ApplicationRecord
   belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 
   validates :source, presence: true

@@ -1,4 +1,4 @@
-class GpgSignature < ActiveRecord::Base
+class GpgSignature < ApplicationRecord
   include ShaAttribute
 
   sha_attribute :commit_sha

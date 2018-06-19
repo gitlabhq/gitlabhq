@@ -1,5 +1,5 @@
 module Ci
-  class PipelineSchedule < ActiveRecord::Base
+  class PipelineSchedule < ApplicationRecord
     extend Gitlab::Ci::Model
     include Importable
     include IgnorableColumn

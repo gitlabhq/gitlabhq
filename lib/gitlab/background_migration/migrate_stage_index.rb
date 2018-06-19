@@ -6,7 +6,7 @@ module Gitlab
     class MigrateStageIndex
       def perform(start_id, stop_id)
         migrate_stage_index_sql(start_id.to_i, stop_id.to_i).tap do |sql|
-          ActiveRecord::Base.connection.execute(sql)
+          ApplicationRecord.connection.execute(sql)
         end
       end
 

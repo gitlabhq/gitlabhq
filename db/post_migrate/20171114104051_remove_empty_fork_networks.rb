@@ -4,13 +4,13 @@ class RemoveEmptyForkNetworks < ActiveRecord::Migration
   DOWNTIME = false
   BATCH_SIZE = 10_000
 
-  class MigrationForkNetwork < ActiveRecord::Base
+  class MigrationForkNetwork < ApplicationRecord
     include EachBatch
 
     self.table_name = 'fork_networks'
   end
 
-  class MigrationForkNetworkMembers < ActiveRecord::Base
+  class MigrationForkNetworkMembers < ApplicationRecord
     self.table_name = 'fork_network_members'
   end
 

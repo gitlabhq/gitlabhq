@@ -7,7 +7,7 @@ class ScheduleToArchiveLegacyTraces < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class Build < ActiveRecord::Base
+  class Build < ApplicationRecord
     include EachBatch
     self.table_name = 'ci_builds'
     self.inheritance_column = :_type_disabled # Disable STI

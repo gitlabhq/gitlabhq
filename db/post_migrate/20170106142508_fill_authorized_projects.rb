@@ -4,7 +4,7 @@
 class FillAuthorizedProjects < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
-  class User < ActiveRecord::Base
+  class User < ApplicationRecord
     self.table_name = 'users'
   end
 

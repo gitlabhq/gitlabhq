@@ -5,7 +5,7 @@ class DisableInvalidServiceTemplates2 < ActiveRecord::Migration
   DOWNTIME = false
 
   unless defined?(Service)
-    class Service < ActiveRecord::Base
+    class Service < ApplicationRecord
       self.inheritance_column = nil
     end
   end

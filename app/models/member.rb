@@ -1,4 +1,4 @@
-class Member < ActiveRecord::Base
+class Member < ApplicationRecord
   include AfterCommitQueue
   include Sortable
   include Importable

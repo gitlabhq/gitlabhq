@@ -1,4 +1,4 @@
-class UserCustomAttribute < ActiveRecord::Base
+class UserCustomAttribute < ApplicationRecord
   belongs_to :user
 
   validates :user_id, :key, :value, presence: true

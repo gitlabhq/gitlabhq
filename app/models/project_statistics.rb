@@ -1,4 +1,4 @@
-class ProjectStatistics < ActiveRecord::Base
+class ProjectStatistics < ApplicationRecord
   belongs_to :project
   belongs_to :namespace
 

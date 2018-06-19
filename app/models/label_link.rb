@@ -1,4 +1,4 @@
-class LabelLink < ActiveRecord::Base
+class LabelLink < ApplicationRecord
   include Importable
 
   belongs_to :target, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations

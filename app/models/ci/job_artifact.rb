@@ -1,5 +1,5 @@
 module Ci
-  class JobArtifact < ActiveRecord::Base
+  class JobArtifact < ApplicationRecord
     include AfterCommitQueue
     include ObjectStorage::BackgroundMove
     extend Gitlab::Ci::Model

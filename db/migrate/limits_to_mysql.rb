@@ -1,7 +1,7 @@
 # rubocop:disable all
 class LimitsToMysql < ActiveRecord::Migration
   def up
-    return unless ActiveRecord::Base.configurations[Rails.env]['adapter'] =~ /^mysql/
+    return unless ApplicationRecord.configurations[Rails.env]['adapter'] =~ /^mysql/
 
     # These columns were removed in 10.3, but this is called from two places:
     # 1. A migration run after they were added, but before they were removed.

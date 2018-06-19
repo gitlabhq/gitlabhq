@@ -9,7 +9,7 @@ class ScheduleEventMigrations < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class Event < ActiveRecord::Base
+  class Event < ApplicationRecord
     include EachBatch
 
     self.table_name = 'events'

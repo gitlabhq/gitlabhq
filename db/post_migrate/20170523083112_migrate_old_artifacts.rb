@@ -34,7 +34,7 @@ class MigrateOldArtifacts < ActiveRecord::Migration
       .first
   end
 
-  class Build < ActiveRecord::Base
+  class Build < ApplicationRecord
     self.table_name = 'ci_builds'
 
     scope :with_artifacts, -> { where.not(artifacts_file: [nil, '']) }

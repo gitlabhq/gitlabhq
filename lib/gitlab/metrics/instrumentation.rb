@@ -39,7 +39,7 @@ module Gitlab
       # Recursively instruments all subclasses of the given root module.
       #
       # This can be used to for example instrument all ActiveRecord models (as
-      # these all inherit from ActiveRecord::Base).
+      # these all inherit from ApplicationRecord).
       #
       # This method can optionally take a block to pass to `instrument_methods`
       # and `instrument_instance_methods`.

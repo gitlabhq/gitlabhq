@@ -1,5 +1,5 @@
 module Ci
-  class Stage < ActiveRecord::Base
+  class Stage < ApplicationRecord
     extend Gitlab::Ci::Model
     include Importable
     include HasStatus

@@ -1,4 +1,4 @@
-class Route < ActiveRecord::Base
+class Route < ApplicationRecord
   include CaseSensitivity
 
   belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations

@@ -178,7 +178,7 @@ class ProjectForeignKeysWithCascadingDeletes < ActiveRecord::Migration
   def connection
     # Rails memoizes connection objects, but this causes them to be shared
     # amongst threads; we don't want that.
-    Thread.current[:foreign_key_connection] || ActiveRecord::Base.connection
+    Thread.current[:foreign_key_connection] || ApplicationRecord.connection
   end
 
   def queues_for_rows(rows)

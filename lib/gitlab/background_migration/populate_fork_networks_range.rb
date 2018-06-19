@@ -27,7 +27,7 @@ module Gitlab
 
       def create_fork_networks_for_existing_projects(start_id, end_id)
         log("Creating fork networks: #{start_id} - #{end_id}")
-        ActiveRecord::Base.connection.execute <<~INSERT_NETWORKS
+        ApplicationRecord.connection.execute <<~INSERT_NETWORKS
         INSERT INTO fork_networks (root_project_id)
           SELECT DISTINCT forked_project_links.forked_from_project_id
 
@@ -61,7 +61,7 @@ module Gitlab
 
       def create_fork_networks_for_missing_projects(start_id, end_id)
         log("Creating fork networks with missing root: #{start_id} - #{end_id}")
-        ActiveRecord::Base.connection.execute <<~INSERT_NETWORKS
+        ApplicationRecord.connection.execute <<~INSERT_NETWORKS
         INSERT INTO fork_networks (root_project_id)
           SELECT DISTINCT forked_project_links.forked_to_project_id
 
@@ -98,7 +98,7 @@ module Gitlab
       def create_fork_networks_memberships_for_root_projects(start_id, end_id)
         log("Creating memberships for root projects: #{start_id} - #{end_id}")
 
-        ActiveRecord::Base.connection.execute <<~INSERT_ROOT
+        ApplicationRecord.connection.execute <<~INSERT_ROOT
           INSERT INTO fork_network_members (fork_network_id, project_id)
           SELECT DISTINCT fork_networks.id, fork_networks.root_project_id
 

@@ -1,4 +1,4 @@
-class MergeRequestDiff < ActiveRecord::Base
+class MergeRequestDiff < ApplicationRecord
   include Sortable
   include Importable
   include ManualInverseAssociation

@@ -56,7 +56,7 @@ model, followed by defining the columns to ignore. For example, to ignore
 `updated_at` in the User model you'd use the following:
 
 ```ruby
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   include IgnorableColumn
 
   ignore_column :updated_at
@@ -218,7 +218,7 @@ class ExampleMigration < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class Issue < ActiveRecord::Base
+  class Issue < ApplicationRecord
     self.table_name = 'issues'
 
     include EachBatch

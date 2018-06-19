@@ -92,7 +92,7 @@ describe 'gitlab:app namespace rake task' do
   describe 'backup' do
     before do
       # This reconnect makes our project fixture disappear, breaking the restore. Stub it out.
-      allow(ActiveRecord::Base.connection).to receive(:reconnect!)
+      allow(ApplicationRecord.connection).to receive(:reconnect!)
     end
 
     describe 'backup creation and deletion using custom_hooks' do

@@ -1,4 +1,4 @@
-class ForkNetwork < ActiveRecord::Base
+class ForkNetwork < ApplicationRecord
   belongs_to :root_project, class_name: 'Project'
   has_many :fork_network_members
   has_many :projects, through: :fork_network_members

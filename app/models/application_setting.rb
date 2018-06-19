@@ -1,4 +1,4 @@
-class ApplicationSetting < ActiveRecord::Base
+class ApplicationSetting < ApplicationRecord
   include CacheableAttributes
   include CacheMarkdownField
   include TokenAuthenticatable

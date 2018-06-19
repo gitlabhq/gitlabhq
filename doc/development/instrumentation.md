@@ -51,7 +51,7 @@ Instrumenting an entire class hierarchy:
 
 ```ruby
 Gitlab::Metrics::Instrumentation.configure do |conf|
-  conf.instrument_class_hierarchy(ActiveRecord::Base)
+  conf.instrument_class_hierarchy(ApplicationRecord)
 end
 ```
 

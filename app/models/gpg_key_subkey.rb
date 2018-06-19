@@ -1,4 +1,4 @@
-class GpgKeySubkey < ActiveRecord::Base
+class GpgKeySubkey < ApplicationRecord
   include ShaAttribute
 
   sha_attribute :keyid

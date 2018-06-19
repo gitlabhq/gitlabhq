@@ -128,7 +128,7 @@ class BuildUserInteractedProjectsTable < ActiveRecord::Migration
 
     # Protect table against concurrent data changes while still allowing reads
     def with_table_lock(*tables)
-      ActiveRecord::Base.connection.transaction do
+      ApplicationRecord.connection.transaction do
         execute "LOCK TABLE #{tables.join(", ")} IN SHARE MODE"
         yield
       end

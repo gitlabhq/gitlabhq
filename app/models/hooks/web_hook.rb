@@ -1,4 +1,4 @@
-class WebHook < ActiveRecord::Base
+class WebHook < ApplicationRecord
   include Sortable
 
   has_many :web_hook_logs, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent

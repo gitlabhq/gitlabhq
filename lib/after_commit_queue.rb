@@ -14,7 +14,7 @@ module AfterCommitQueue
 
   def run_after_commit_or_now(&block)
     if AfterCommitQueue.inside_transaction?
-      if ActiveRecord::Base.connection.current_transaction.records.include?(self)
+      if ApplicationRecord.connection.current_transaction.records.include?(self)
         run_after_commit(&block)
       else
         # If the current transaction does not include this record, we can run
@@ -39,7 +39,7 @@ module AfterCommitQueue
   end
 
   def self.inside_transaction?
-    ActiveRecord::Base.connection.open_transactions > open_transactions_baseline
+    ApplicationRecord.connection.open_transactions > open_transactions_baseline
   end
 
   protected

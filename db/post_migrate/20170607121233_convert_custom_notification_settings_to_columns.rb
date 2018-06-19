@@ -5,7 +5,7 @@ class ConvertCustomNotificationSettingsToColumns < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class NotificationSetting < ActiveRecord::Base
+  class NotificationSetting < ApplicationRecord
     self.table_name = 'notification_settings'
 
     store :events, coder: JSON

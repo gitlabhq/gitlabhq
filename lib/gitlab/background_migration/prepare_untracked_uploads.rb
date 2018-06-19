@@ -22,7 +22,7 @@ module Gitlab
 
       # This class is used to iterate over batches of
       # `untracked_files_for_uploads` rows.
-      class UntrackedFile < ActiveRecord::Base
+      class UntrackedFile < ApplicationRecord
         include EachBatch
 
         self.table_name = 'untracked_files_for_uploads'
@@ -55,7 +55,7 @@ module Gitlab
       def ensure_temporary_tracking_table_exists
         table_name = :untracked_files_for_uploads
 
-        unless ActiveRecord::Base.connection.data_source_exists?(table_name)
+        unless ApplicationRecord.connection.data_source_exists?(table_name)
           UntrackedFile.connection.create_table table_name do |t|
             t.string :path, limit: 600, null: false
             t.index :path, unique: true
@@ -127,7 +127,7 @@ module Gitlab
       def insert_file_paths(file_paths)
         sql = insert_sql(file_paths)
 
-        ActiveRecord::Base.connection.execute(sql)
+        ApplicationRecord.connection.execute(sql)
       end
 
       def insert_sql(file_paths)
@@ -144,7 +144,7 @@ module Gitlab
 
       def table_columns_and_values_for_insert(file_paths)
         values = file_paths.map do |file_path|
-          ActiveRecord::Base.send(:sanitize_sql_array, ['(?)', file_path]) # rubocop:disable GitlabSecurity/PublicSend, Metrics/LineLength
+          ApplicationRecord.send(:sanitize_sql_array, ['(?)', file_path]) # rubocop:disable GitlabSecurity/PublicSend, Metrics/LineLength
         end.join(', ')
 
         "#{UntrackedFile.table_name} (path) VALUES #{values}"

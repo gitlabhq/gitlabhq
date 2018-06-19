@@ -1,4 +1,4 @@
-class ProjectAutoDevops < ActiveRecord::Base
+class ProjectAutoDevops < ApplicationRecord
   belongs_to :project
 
   enum deploy_strategy: {

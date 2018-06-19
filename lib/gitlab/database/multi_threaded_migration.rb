@@ -8,7 +8,7 @@ module Gitlab
       # migration methods.
       def connection
         Thread.current[MULTI_THREAD_AR_CONNECTION] ||
-          ActiveRecord::Base.connection
+          ApplicationRecord.connection
       end
 
       # Starts a thread-pool for N threads, along with N threads each using a

@@ -13,7 +13,7 @@ module Gitlab
         Rails.logger.info("#{self.class.name} - Moving import attributes data to projects table: #{start_id} - #{end_id}")
 
         if Gitlab::Database.mysql?
-          ActiveRecord::Base.connection.execute <<~SQL
+          ApplicationRecord.connection.execute <<~SQL
             UPDATE projects, project_mirror_data
             SET
               projects.import_status = project_mirror_data.status,
@@ -23,7 +23,7 @@ module Gitlab
             AND project_mirror_data.id BETWEEN #{start_id} AND #{end_id}
           SQL
         else
-          ActiveRecord::Base.connection.execute <<~SQL
+          ApplicationRecord.connection.execute <<~SQL
             UPDATE projects
             SET
               import_status = project_mirror_data.status,

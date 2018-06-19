@@ -39,7 +39,7 @@ class FixProjectRecordsWithInvalidVisibility < ActiveRecord::Migration
           .set(projects[:visibility_level] => visibility_level)
           .where(projects[:id].in(project_ids))
 
-        ActiveRecord::Base.connection.exec_update(updater.to_sql, self.class.name, [])
+        ApplicationRecord.connection.exec_update(updater.to_sql, self.class.name, [])
       end
     end
   end

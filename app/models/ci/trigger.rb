@@ -1,5 +1,5 @@
 module Ci
-  class Trigger < ActiveRecord::Base
+  class Trigger < ApplicationRecord
     extend Gitlab::Ci::Model
     include IgnorableColumn
 

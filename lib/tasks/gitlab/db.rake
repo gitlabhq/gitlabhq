@@ -15,7 +15,7 @@ namespace :gitlab do
 
       sql = "INSERT INTO schema_migrations (version) VALUES (#{version})"
       begin
-        ActiveRecord::Base.connection.execute(sql)
+        ApplicationRecord.connection.execute(sql)
         puts "Successfully marked '#{version}' as complete".color(:green)
       rescue ActiveRecord::RecordNotUnique
         puts "Migration version '#{version}' is already marked complete".color(:yellow)
@@ -24,7 +24,7 @@ namespace :gitlab do
 
     desc 'Drop all tables'
     task drop_tables: :environment do
-      connection = ActiveRecord::Base.connection
+      connection = ApplicationRecord.connection
 
       # If MySQL, turn off foreign key checks
       connection.execute('SET FOREIGN_KEY_CHECKS=0') if Gitlab::Database.mysql?
@@ -46,7 +46,7 @@ namespace :gitlab do
 
     desc 'Configures the database by running migrate, or by loading the schema and seeding if needed'
     task configure: :environment do
-      if ActiveRecord::Base.connection.tables.any?
+      if ApplicationRecord.connection.tables.any?
         Rake::Task['db:migrate'].invoke
       else
         Rake::Task['db:schema:load'].invoke

@@ -9,7 +9,7 @@ class RescheduleForkNetworkCreationCaller < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class ForkedProjectLink < ActiveRecord::Base
+  class ForkedProjectLink < ApplicationRecord
     include EachBatch
 
     self.table_name = 'forked_project_links'

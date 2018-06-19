@@ -12,7 +12,7 @@ module Backup
 
     def pack
       # Make sure there is a connection
-      ActiveRecord::Base.connection.reconnect!
+      ApplicationRecord.connection.reconnect!
 
       Dir.chdir(backup_path) do
         File.open("#{backup_path}/backup_information.yml", "w+") do |file|

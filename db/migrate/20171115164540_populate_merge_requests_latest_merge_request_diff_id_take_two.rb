@@ -5,7 +5,7 @@ class PopulateMergeRequestsLatestMergeRequestDiffIdTakeTwo < ActiveRecord::Migra
   DOWNTIME = false
   BATCH_SIZE = 1_000
 
-  class MergeRequest < ActiveRecord::Base
+  class MergeRequest < ApplicationRecord
     self.table_name = 'merge_requests'
 
     include ::EachBatch

@@ -1,6 +1,6 @@
 module Clusters
   module Applications
-    class Ingress < ActiveRecord::Base
+    class Ingress < ApplicationRecord
       self.table_name = 'clusters_applications_ingress'
 
       include ::Clusters::Concerns::ApplicationCore

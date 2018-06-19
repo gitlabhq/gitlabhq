@@ -1,7 +1,7 @@
 module Gitlab
   module Database
     # Model that can be used for querying permissions of a SQL user.
-    class Grant < ActiveRecord::Base
+    class Grant < ApplicationRecord
       self.table_name =
         if Database.postgresql?
           'information_schema.role_table_grants'

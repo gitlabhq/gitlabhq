@@ -4,7 +4,7 @@
 class ChangeProjectNamespaceIdNotNull < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
-  class Project < ActiveRecord::Base
+  class Project < ApplicationRecord
     self.table_name = 'projects'
     include EachBatch
   end

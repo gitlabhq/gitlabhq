@@ -160,7 +160,7 @@ class NotifyPreview < ActionMailer::Preview
   def cleanup
     email = nil
 
-    ActiveRecord::Base.transaction do
+    ApplicationRecord.transaction do
       email = yield
       raise ActiveRecord::Rollback
     end

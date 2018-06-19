@@ -9,7 +9,7 @@ describe MigrateGcpClustersToNewClustersArchitectures, :migration do
   let(:service) { GcpMigrationSpec::KubernetesService.create!(project_id: project.id) }
 
   module GcpMigrationSpec
-    class KubernetesService < ActiveRecord::Base
+    class KubernetesService < ApplicationRecord
       self.table_name = 'services'
 
       serialize :properties, JSON # rubocop:disable Cop/ActiveRecordSerialize
@@ -53,7 +53,7 @@ describe MigrateGcpClustersToNewClustersArchitectures, :migration do
     let(:cluster_id) { cluster.id }
 
     before do
-      ActiveRecord::Base.connection.execute <<-SQL
+      ApplicationRecord.connection.execute <<-SQL
         INSERT INTO gcp_clusters (project_id, user_id, service_id, status, gcp_cluster_size, created_at, updated_at, enabled, status_reason, project_namespace, endpoint, ca_cert, encrypted_kubernetes_token, encrypted_kubernetes_token_iv, username, encrypted_password, encrypted_password_iv, gcp_project_id, gcp_cluster_zone, gcp_cluster_name, gcp_machine_type, gcp_operation_id, encrypted_gcp_token, encrypted_gcp_token_iv)
         VALUES (#{project_id}, #{user_id}, #{service_id}, #{status}, #{gcp_cluster_size}, #{created_at}, #{updated_at}, #{enabled}, #{status_reason}, #{project_namespace}, #{endpoint}, #{ca_cert}, #{encrypted_kubernetes_token}, #{encrypted_kubernetes_token_iv}, #{username}, #{encrypted_password}, #{encrypted_password_iv}, #{gcp_project_id}, #{gcp_cluster_zone}, #{gcp_cluster_name}, #{gcp_machine_type}, #{gcp_operation_id}, #{encrypted_gcp_token}, #{encrypted_gcp_token_iv});
       SQL
@@ -129,7 +129,7 @@ describe MigrateGcpClustersToNewClustersArchitectures, :migration do
     let(:cluster_id) { cluster.id }
 
     before do
-      ActiveRecord::Base.connection.execute <<-SQL
+      ApplicationRecord.connection.execute <<-SQL
         INSERT INTO gcp_clusters (project_id, user_id, service_id, status, gcp_cluster_size, created_at, updated_at, enabled, status_reason, project_namespace, endpoint, ca_cert, encrypted_kubernetes_token, encrypted_kubernetes_token_iv, username, encrypted_password, encrypted_password_iv, gcp_project_id, gcp_cluster_zone, gcp_cluster_name, gcp_machine_type, gcp_operation_id, encrypted_gcp_token, encrypted_gcp_token_iv)
         VALUES (#{project_id}, #{user_id}, #{service_id}, #{status}, #{gcp_cluster_size}, #{created_at}, #{updated_at}, #{enabled}, #{status_reason}, #{project_namespace}, #{endpoint}, #{ca_cert}, #{encrypted_kubernetes_token}, #{encrypted_kubernetes_token_iv}, #{username}, #{encrypted_password}, #{encrypted_password_iv}, #{gcp_project_id}, #{gcp_cluster_zone}, #{gcp_cluster_name}, #{gcp_machine_type}, #{gcp_operation_id}, #{encrypted_gcp_token}, #{encrypted_gcp_token_iv});
       SQL

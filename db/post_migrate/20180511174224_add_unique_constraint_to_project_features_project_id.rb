@@ -5,7 +5,7 @@ class AddUniqueConstraintToProjectFeaturesProjectId < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class ProjectFeature < ActiveRecord::Base
+  class ProjectFeature < ApplicationRecord
     self.table_name = 'project_features'
 
     include EachBatch

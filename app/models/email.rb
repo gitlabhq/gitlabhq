@@ -1,4 +1,4 @@
-class Email < ActiveRecord::Base
+class Email < ApplicationRecord
   include Sortable
   include Gitlab::SQL::Pattern
 

@@ -9,7 +9,7 @@ class IssuesMovedToIdForeignKey < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class Issue < ActiveRecord::Base
+  class Issue < ApplicationRecord
     include EachBatch
 
     self.table_name = 'issues'

@@ -7,7 +7,7 @@ class ScheduleMergeRequestDiffMigrations < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class MergeRequestDiff < ActiveRecord::Base
+  class MergeRequestDiff < ApplicationRecord
     self.table_name = 'merge_request_diffs'
 
     include ::EachBatch

@@ -4,7 +4,7 @@
 #
 # Usage:
 #
-#     class Milestone < ActiveRecord::Base
+#     class Milestone < ApplicationRecord
 #       strip_attributes :title
 #     end
 #

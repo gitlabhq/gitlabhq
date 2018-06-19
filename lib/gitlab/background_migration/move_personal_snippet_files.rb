@@ -72,7 +72,7 @@ module Gitlab
       end
 
       def connection
-        ActiveRecord::Base.connection
+        ApplicationRecord.connection
       end
 
       def say(message)

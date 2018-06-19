@@ -5,7 +5,7 @@ class FillFileStore < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class JobArtifact < ActiveRecord::Base
+  class JobArtifact < ApplicationRecord
     include EachBatch
     self.table_name = 'ci_job_artifacts'
     BATCH_SIZE = 10_000
@@ -15,7 +15,7 @@ class FillFileStore < ActiveRecord::Migration
     end
   end
 
-  class LfsObject < ActiveRecord::Base
+  class LfsObject < ApplicationRecord
     include EachBatch
     self.table_name = 'lfs_objects'
     BATCH_SIZE = 10_000
@@ -25,7 +25,7 @@ class FillFileStore < ActiveRecord::Migration
     end
   end
 
-  class Upload < ActiveRecord::Base
+  class Upload < ApplicationRecord
     include EachBatch
     self.table_name = 'uploads'
     self.inheritance_column = :_type_disabled # Disable STI
@@ -38,7 +38,7 @@ class FillFileStore < ActiveRecord::Migration
 
   def up
     # NOTE: Schedule background migrations that fill 'NULL' value by '1'(ObjectStorage::Store::LOCAL) on `file_store`, `store` columns
-    # 
+    #
     # Here are the target columns
     # - ci_job_artifacts.file_store
     # - lfs_objects.file_store

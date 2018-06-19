@@ -4,7 +4,7 @@ module Gitlab
     module PopulateUntrackedUploadsDependencies
       # This class is responsible for producing the attributes necessary to
       # track an uploaded file in the `uploads` table.
-      class UntrackedFile < ActiveRecord::Base # rubocop:disable Metrics/ClassLength, Metrics/LineLength
+      class UntrackedFile < ApplicationRecord # rubocop:disable Metrics/ClassLength, Metrics/LineLength
         self.table_name = 'untracked_files_for_uploads'
 
         # Ends with /:random_hex/:filename
@@ -145,34 +145,34 @@ module Gitlab
       end
 
       # Avoid using application code
-      class Upload < ActiveRecord::Base
+      class Upload < ApplicationRecord
         self.table_name = 'uploads'
       end
 
       # Avoid using application code
-      class Appearance < ActiveRecord::Base
+      class Appearance < ApplicationRecord
         self.table_name = 'appearances'
       end
 
       # Avoid using application code
-      class Namespace < ActiveRecord::Base
+      class Namespace < ApplicationRecord
         self.table_name = 'namespaces'
       end
 
       # Avoid using application code
-      class Note < ActiveRecord::Base
+      class Note < ApplicationRecord
         self.table_name = 'notes'
       end
 
       # Avoid using application code
-      class User < ActiveRecord::Base
+      class User < ApplicationRecord
         self.table_name = 'users'
       end
 
       # Since project Markdown upload paths don't contain the project ID, we have to find the
       # project by its full_path. Due to MySQL/PostgreSQL differences, and historical reasons,
       # the logic is somewhat complex, so I've mostly copied it in here.
-      class Project < ActiveRecord::Base
+      class Project < ApplicationRecord
         self.table_name = 'projects'
 
         def self.find_by_full_path(path)

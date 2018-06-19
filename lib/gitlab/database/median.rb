@@ -124,7 +124,7 @@ module Gitlab
       def execute_queries(arel_table, query_so_far, column_sym, partition_column = nil)
         queries = median_queries(arel_table, query_so_far, column_sym, partition_column)
 
-        Array.wrap(queries).map { |query| ActiveRecord::Base.connection.execute(query) }
+        Array.wrap(queries).map { |query| ApplicationRecord.connection.execute(query) }
       end
 
       def average(args, as)

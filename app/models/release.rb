@@ -1,4 +1,4 @@
-class Release < ActiveRecord::Base
+class Release < ApplicationRecord
   include CacheMarkdownField
 
   cache_markdown_field :description

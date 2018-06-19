@@ -81,6 +81,6 @@ elsif Gitlab::Database.mysql?
 end
 
 # Ensure `datetime_with_timezone` columns are correctly written to schema.rb
-if (ActiveRecord::Base.connection.active? rescue false)
-  ActiveRecord::Base.connection.send :reload_type_map
+if (ApplicationRecord.connection.active? rescue false)
+  ApplicationRecord.connection.send :reload_type_map
 end

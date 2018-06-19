@@ -58,8 +58,8 @@ module Gitlab
         # Querying tuple stats only works on the primary. Due to load
         # balancing, we need to ensure this query hits the load balancer.  The
         # easiest way to do this is to start a transaction.
-        ActiveRecord::Base.transaction do
-          rows = ActiveRecord::Base.connection.select_all(query)
+        ApplicationRecord.transaction do
+          rows = ApplicationRecord.connection.select_all(query)
         end
 
         rows.each_with_object({}) { |row, data| data[row['table_name']] = row['estimate'].to_i }

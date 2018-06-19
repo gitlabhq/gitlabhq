@@ -1,3 +1,3 @@
-class ProtectedBranch::MergeAccessLevel < ActiveRecord::Base
+class ProtectedBranch::MergeAccessLevel < ApplicationRecord
   include ProtectedBranchAccess
 end

@@ -1,3 +1,3 @@
-class ProtectedBranch::PushAccessLevel < ActiveRecord::Base
+class ProtectedBranch::PushAccessLevel < ApplicationRecord
   include ProtectedBranchAccess
 end

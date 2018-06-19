@@ -1,4 +1,4 @@
-class ProjectCustomAttribute < ActiveRecord::Base
+class ProjectCustomAttribute < ApplicationRecord
   belongs_to :project
 
   validates :project, :key, :value, presence: true

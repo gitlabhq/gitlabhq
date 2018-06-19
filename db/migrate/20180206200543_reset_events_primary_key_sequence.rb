@@ -7,7 +7,7 @@ class ResetEventsPrimaryKeySequence < ActiveRecord::Migration
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
 
-  class Event < ActiveRecord::Base
+  class Event < ApplicationRecord
     self.table_name = 'events'
   end
 

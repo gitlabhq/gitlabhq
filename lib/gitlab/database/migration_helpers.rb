@@ -516,7 +516,7 @@ module Gitlab
       #
       # Example usage:
       #
-      #     class Issue < ActiveRecord::Base
+      #     class Issue < ApplicationRecord
       #       self.table_name = 'issues'
       #
       #       include EachBatch
@@ -821,7 +821,7 @@ into similar problems in the future (e.g. when new tables are created).
       #
       # Example:
       #
-      #     class Route < ActiveRecord::Base
+      #     class Route < ApplicationRecord
       #       include EachBatch
       #       self.table_name = 'routes'
       #     end
@@ -869,7 +869,7 @@ into similar problems in the future (e.g. when new tables are created).
       #
       # Example:
       #
-      #     class Route < ActiveRecord::Base
+      #     class Route < ApplicationRecord
       #       include EachBatch
       #       self.table_name = 'routes'
       #     end

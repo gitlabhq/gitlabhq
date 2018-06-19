@@ -8,7 +8,7 @@ class ScheduleIssuesClosedAtTypeChange < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class Issue < ActiveRecord::Base
+  class Issue < ApplicationRecord
     self.table_name = 'issues'
     include EachBatch
 

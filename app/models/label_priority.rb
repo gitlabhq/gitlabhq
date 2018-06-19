@@ -1,4 +1,4 @@
-class LabelPriority < ActiveRecord::Base
+class LabelPriority < ApplicationRecord
   belongs_to :project
   belongs_to :label
 

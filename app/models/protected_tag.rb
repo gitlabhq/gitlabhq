@@ -1,4 +1,4 @@
-class ProtectedTag < ActiveRecord::Base
+class ProtectedTag < ApplicationRecord
   include Gitlab::ShellAdapter
   include ProtectedRef
 

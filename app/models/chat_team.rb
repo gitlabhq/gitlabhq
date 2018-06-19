@@ -1,4 +1,4 @@
-class ChatTeam < ActiveRecord::Base
+class ChatTeam < ApplicationRecord
   validates :team_id, presence: true
   validates :namespace, uniqueness: true
 

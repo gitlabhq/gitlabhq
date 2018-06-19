@@ -8,7 +8,7 @@ module Gitlab
     # events are copied to a shadow table, and push events will also have a row
     # created in the push_event_payloads table.
     class MigrateEventsToPushEventPayloads
-      class Event < ActiveRecord::Base
+      class Event < ApplicationRecord
         self.table_name = 'events'
 
         serialize :data
@@ -100,11 +100,11 @@ module Gitlab
         end
       end
 
-      class EventForMigration < ActiveRecord::Base
+      class EventForMigration < ApplicationRecord
         self.table_name = 'events_for_migration'
       end
 
-      class PushEventPayload < ActiveRecord::Base
+      class PushEventPayload < ApplicationRecord
         self.table_name = 'push_event_payloads'
 
         enum action: {
@@ -128,7 +128,7 @@ module Gitlab
       end
 
       def process_event(event)
-        ActiveRecord::Base.transaction do
+        ApplicationRecord.transaction do
           replicate_event(event)
           create_push_event_payload(event) if event.push_event?
         end

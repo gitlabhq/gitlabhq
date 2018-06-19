@@ -6,7 +6,7 @@ module Gitlab
     # Ensures services which previously recieved all notes events continue
     # to recieve confidential ones.
     class SetConfidentialNoteEventsOnServices
-      class Service < ActiveRecord::Base
+      class Service < ApplicationRecord
         self.table_name = 'services'
 
         include ::EachBatch

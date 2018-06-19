@@ -1,4 +1,4 @@
-class TermAgreement < ActiveRecord::Base
+class TermAgreement < ApplicationRecord
   belongs_to :term, class_name: 'ApplicationSetting::Term'
   belongs_to :user
 

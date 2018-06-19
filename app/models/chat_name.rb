@@ -1,4 +1,4 @@
-class ChatName < ActiveRecord::Base
+class ChatName < ApplicationRecord
   LAST_USED_AT_INTERVAL = 1.hour
 
   belongs_to :service

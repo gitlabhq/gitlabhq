@@ -6,7 +6,7 @@ class UpdateCircuitbreakerDefaults < ActiveRecord::Migration
 
   DOWNTIME = false
 
-  class ApplicationSetting < ActiveRecord::Base; end
+  class ApplicationSetting < ApplicationRecord; end
 
   def up
     change_column_default :application_settings,

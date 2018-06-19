@@ -60,7 +60,7 @@ module Projects
     end
 
     def bulk_insert_services(columns, values_array)
-      ActiveRecord::Base.connection.execute(
+      ApplicationRecord.connection.execute(
         <<-SQL.strip_heredoc
           INSERT INTO services (#{columns.join(', ')})
           VALUES #{values_array.map { |tuple| "(#{tuple.join(', ')})" }.join(', ')}
@@ -76,8 +76,8 @@ module Projects
           template_hash.each_with_object({}) do |(key, value), service_hash|
             value = value.is_a?(Hash) ? value.to_json : value
 
-            service_hash[ActiveRecord::Base.connection.quote_column_name(key)] =
-              ActiveRecord::Base.sanitize(value)
+            service_hash[ApplicationRecord.connection.quote_column_name(key)] =
+              ApplicationRecord.sanitize(value)
           end
         end
     end

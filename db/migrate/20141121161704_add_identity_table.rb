@@ -27,7 +27,7 @@ eos
     add_column :users, :extern_uid, :string
     add_column :users, :provider, :string
 
-    if ActiveRecord::Base.connection.adapter_name == 'PostgreSQL'
+    if ApplicationRecord.connection.adapter_name == 'PostgreSQL'
       execute <<eos
 UPDATE users u
 SET provider = i.provider, extern_uid = i.extern_uid

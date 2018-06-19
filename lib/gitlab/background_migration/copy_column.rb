@@ -34,7 +34,7 @@ module Gitlab
       end
 
       def connection
-        ActiveRecord::Base.connection
+        ApplicationRecord.connection
       end
     end
   end

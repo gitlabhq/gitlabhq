@@ -8,13 +8,13 @@ class CleanupNonexistingNamespacePendingDeleteProjects < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class Project < ActiveRecord::Base
+  class Project < ApplicationRecord
     self.table_name = 'projects'
 
     include ::EachBatch
   end
 
-  class Namespace < ActiveRecord::Base
+  class Namespace < ApplicationRecord
     self.table_name = 'namespaces'
   end
 

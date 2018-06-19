@@ -1,4 +1,4 @@
-class NoteDiffFile < ActiveRecord::Base
+class NoteDiffFile < ApplicationRecord
   include DiffFile
 
   belongs_to :diff_note, inverse_of: :note_diff_file

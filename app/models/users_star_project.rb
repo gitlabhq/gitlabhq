@@ -1,4 +1,4 @@
-class UsersStarProject < ActiveRecord::Base
+class UsersStarProject < ApplicationRecord
   belongs_to :project, counter_cache: :star_count, touch: true
   belongs_to :user
 

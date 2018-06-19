@@ -9,7 +9,7 @@ class CleanUpForMembers < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class Member < ActiveRecord::Base
+  class Member < ApplicationRecord
     include EachBatch
 
     self.table_name = 'members'

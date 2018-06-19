@@ -24,8 +24,8 @@ module Gitlab
 
         @project_members = @tree_hash.delete('project_members')
 
-        ActiveRecord::Base.uncached do
-          ActiveRecord::Base.no_touching do
+        ApplicationRecord.uncached do
+          ApplicationRecord.no_touching do
             create_relations
           end
         end

@@ -11,7 +11,7 @@ module CaseSensitivity
       cast_lower = Gitlab::Database.postgresql?
 
       params.each do |key, value|
-        column = ActiveRecord::Base.connection.quote_table_name(key)
+        column = ApplicationRecord.connection.quote_table_name(key)
 
         condition =
           if cast_lower

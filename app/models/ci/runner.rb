@@ -1,5 +1,5 @@
 module Ci
-  class Runner < ActiveRecord::Base
+  class Runner < ApplicationRecord
     extend Gitlab::Ci::Model
     include Gitlab::SQL::Pattern
     include RedisCacheable

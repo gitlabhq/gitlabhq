@@ -15,7 +15,7 @@ module Gitlab
             AND ci_builds.stage_id IS NULL
         SQL
 
-        ActiveRecord::Base.connection.execute(sql)
+        ApplicationRecord.connection.execute(sql)
       end
     end
   end

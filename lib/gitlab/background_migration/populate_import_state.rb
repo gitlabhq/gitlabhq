@@ -14,7 +14,7 @@ module Gitlab
       def move_attributes_data_to_import_state(start_id, end_id)
         Rails.logger.info("#{self.class.name} - Moving import attributes data to project mirror data table: #{start_id} - #{end_id}")
 
-        ActiveRecord::Base.connection.execute <<~SQL
+        ApplicationRecord.connection.execute <<~SQL
           INSERT INTO project_mirror_data (project_id, status, jid, last_error)
           SELECT id, import_status, import_jid, import_error
           FROM projects
@@ -27,7 +27,7 @@ module Gitlab
           )
         SQL
 
-        ActiveRecord::Base.connection.execute <<~SQL
+        ApplicationRecord.connection.execute <<~SQL
           UPDATE projects
           SET import_status = 'none'
           WHERE import_status != 'none'

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe BatchDestroyDependentAssociations do
-  class TestProject < ActiveRecord::Base
+  class TestProject < ApplicationRecord
     self.table_name = 'projects'
 
     has_many :builds, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent

@@ -185,8 +185,8 @@ describe Gitlab::Profiler do
       it 'uses the replacement logger for the duration of the block' do
         expect(null_logger).to receive(:debug).and_call_original
 
-        expect { described_class.with_custom_logger(null_logger) { ActiveRecord::Base.logger.debug('foo') } }
-          .to not_change { ActiveRecord::Base.logger }
+        expect { described_class.with_custom_logger(null_logger) { ApplicationRecord.logger.debug('foo') } }
+          .to not_change { ApplicationRecord.logger }
           .and not_change { ActionController::Base.logger }
           .and not_change { ActiveSupport::LogSubscriber.colorize_logging }
       end
@@ -203,7 +203,7 @@ describe Gitlab::Profiler do
 
       it 'does not modify the standard Rails loggers' do
         expect { described_class.with_custom_logger(nil) { } }
-          .to not_change { ActiveRecord::Base.logger }
+          .to not_change { ApplicationRecord.logger }
           .and not_change { ActionController::Base.logger }
           .and not_change { ActiveSupport::LogSubscriber.colorize_logging }
       end

@@ -10,7 +10,7 @@ module Gitlab
         if Gitlab.rails5?
           Arel::UpdateManager.new
         else
-          Arel::UpdateManager.new(ActiveRecord::Base)
+          Arel::UpdateManager.new(ApplicationRecord)
         end
       end
     end

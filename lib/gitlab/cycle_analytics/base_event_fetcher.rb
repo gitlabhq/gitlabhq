@@ -34,7 +34,7 @@ module Gitlab
       end
 
       def event_result
-        @event_result ||= ActiveRecord::Base.connection.exec_query(events_query.to_sql).to_a
+        @event_result ||= ApplicationRecord.connection.exec_query(events_query.to_sql).to_a
       end
 
       def events_query

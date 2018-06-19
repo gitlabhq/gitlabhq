@@ -9,7 +9,7 @@ class MergeRequestsAssigneeIdForeignKey < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  class MergeRequest < ActiveRecord::Base
+  class MergeRequest < ApplicationRecord
     include EachBatch
 
     self.table_name = 'merge_requests'

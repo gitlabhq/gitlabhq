@@ -14,7 +14,7 @@ a model and define a SHA attribute using the `sha_attribute` class method. For
 example:
 
 ```ruby
-class Commit < ActiveRecord::Base
+class Commit < ApplicationRecord
   include ShaAttribute
 
   sha_attribute :sha

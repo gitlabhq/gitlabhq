@@ -216,7 +216,7 @@ end
 #
 describe Gitlab::BackgroundMigration::MigrateEventsToPushEventPayloads, :migration, schema: 20170825154015 do
   let(:user_class) do
-    Class.new(ActiveRecord::Base) do
+    Class.new(ApplicationRecord) do
       self.table_name = 'users'
     end
   end

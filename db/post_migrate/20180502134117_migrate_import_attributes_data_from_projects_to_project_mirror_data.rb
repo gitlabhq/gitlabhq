@@ -11,13 +11,13 @@ class MigrateImportAttributesDataFromProjectsToProjectMirrorData < ActiveRecord:
 
   disable_ddl_transaction!
 
-  class Project < ActiveRecord::Base
+  class Project < ApplicationRecord
     include EachBatch
 
     self.table_name = 'projects'
   end
 
-  class ProjectImportState < ActiveRecord::Base
+  class ProjectImportState < ApplicationRecord
     include EachBatch
 
     self.table_name = 'project_mirror_data'

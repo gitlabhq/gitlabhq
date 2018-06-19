@@ -34,7 +34,7 @@ module Gitlab
             end
           end
 
-          class Namespace < ActiveRecord::Base
+          class Namespace < ApplicationRecord
             include MigrationClasses::Routable
             self.table_name = 'namespaces'
             self.inheritance_column = :_type_disabled
@@ -55,16 +55,16 @@ module Gitlab
             end
           end
 
-          class User < ActiveRecord::Base
+          class User < ApplicationRecord
             self.table_name = 'users'
           end
 
-          class Route < ActiveRecord::Base
+          class Route < ApplicationRecord
             self.table_name = 'routes'
             belongs_to :source, polymorphic: true
           end
 
-          class Project < ActiveRecord::Base
+          class Project < ApplicationRecord
             include MigrationClasses::Routable
             has_one :route, as: :source
             self.table_name = 'projects'
