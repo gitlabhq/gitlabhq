@@ -80,8 +80,8 @@ module Gitlab
         case @relation_name
         when :merge_request_diff_files       then setup_diff
         when :notes                          then setup_note
-        when :project_label, :project_labels then setup_label
-        when :milestone, :milestones         then setup_milestone
+        when :milestone, :milestones,
+          :project_label, :project_labels then setup_project_group
         when 'Ci::Pipeline'                  then setup_pipeline
         else
           @relation_hash['project_id'] = @project.id
@@ -167,23 +167,10 @@ module Gitlab
         @relation_hash['target_project_id'] && @relation_hash['target_project_id'] == @relation_hash['source_project_id']
       end
 
-      def setup_label
-        # If there's no group, move the label to a project label
-        if @relation_hash['type'] == 'GroupLabel' && @relation_hash['group_id']
-          @relation_hash['project_id'] = nil
-          @relation_name = :group_label
-        else
-          @relation_hash['group_id'] = nil
-          @relation_hash['type'] = 'ProjectLabel'
-        end
-      end
-
-      def setup_milestone
-        if @relation_hash['group_id']
-          @relation_hash['group_id'] = @project.group.id
-        else
-          @relation_hash['project_id'] = @project.id
-        end
+      def setup_project_group
+        @relation_hash['project_id'] = @project.id
+        @relation_hash['group_id'] = @project.group&.id
+        @relation_hash.delete('type')
       end
 
       def reset_tokens!
@@ -288,29 +275,28 @@ module Gitlab
       end
 
       def find_or_create_object!
-        finder_attributes = if @relation_name == :group_label
-                              %w[title group_id]
-                            elsif parsed_relation_hash['project_id']
-                              %w[title project_id]
-                            else
-                              %w[title group_id]
-                            end
-
-        finder_hash = parsed_relation_hash.slice(*finder_attributes)
+        finder_hash = parsed_relation_hash.slice('title', 'project_id', 'group_id')
 
         if label?
-          label = relation_class.find_or_initialize_by(finder_hash)
+          label = GroupProjectFinder.find_or_new(Label, finder_hash)
           parsed_relation_hash.delete('priorities') if label.persisted?
+          parsed_relation_hash.delete('type')
 
           label.save!
           label
         else
-          relation_class.find_or_create_by(finder_hash)
+          parsed_relation_hash.delete('type') if milestone?
+
+          GroupProjectFinder.find_or_create(relation_class, finder_hash)
         end
       end
 
       def label?
         @relation_name.to_s.include?('label')
+      end
+
+      def milestone?
+        @relation_name.to_s.include?('milestone')
       end
     end
   end
