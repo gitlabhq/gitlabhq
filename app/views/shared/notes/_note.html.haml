@@ -36,8 +36,6 @@
               = note.author.to_reference
           %span.note-headline-light
             %span.note-headline-meta
-              - unless note.system
-                commented
               - if note.system
                 %span.system-note-message
                   = markdown_field(note, :note)
