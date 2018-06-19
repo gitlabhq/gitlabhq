@@ -1,0 +1,4 @@
+- return unless Gitlab::CurrentSettings.email_additional_text.present?
+\
+= '---'
+= Gitlab::Utils.nlbr(Gitlab::CurrentSettings.email_additional_text)
