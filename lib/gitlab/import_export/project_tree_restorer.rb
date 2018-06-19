@@ -1,8 +1,8 @@
 module Gitlab
   module ImportExport
     class ProjectTreeRestorer
-      # Relations which cannot have both group_id and project_id at the same time
-      RESTRICT_PROJECT_AND_GROUP = %i(milestone milestones).freeze
+      # Relations which cannot be saved at project level
+      GROUP_MODELS = [GroupLabel, Milestone].freeze
 
       def initialize(user:, shared:, project:)
         @path = File.join(shared.export_path, 'project.json')
@@ -70,10 +70,18 @@ module Gitlab
       def save_relation_hash(relation_hash_batch, relation_key)
         relation_hash = create_relation(relation_key, relation_hash_batch)
 
+        remove_group_models(relation_hash) if relation_hash.is_a?(Array)
+
         @saved = false unless restored_project.append_or_update_attribute(relation_key, relation_hash)
 
         # Restore the project again, extra query that skips holding the AR objects in memory
         @restored_project = Project.find(@project_id)
+      end
+
+      def remove_group_models(relation_hash)
+        relation_hash.reject! do |value|
+          value.respond_to?(:group_id) && value.group_id && GROUP_MODELS.include?(value.class)
+        end
       end
 
       def default_relation_list
@@ -181,13 +189,7 @@ module Gitlab
       end
 
       def parsed_relation_hash(relation_hash, relation_type)
-        if RESTRICT_PROJECT_AND_GROUP.include?(relation_type)
-          params = {}
-          params['group_id'] = restored_project.group.try(:id) if relation_hash['group_id']
-          params['project_id'] = restored_project.id if relation_hash['project_id']
-        else
-          params = { 'group_id' => restored_project.group.try(:id), 'project_id' => restored_project.id }
-        end
+        params = { 'group_id' => restored_project.group.try(:id), 'project_id' => restored_project.id }
 
         relation_hash.merge(params)
       end

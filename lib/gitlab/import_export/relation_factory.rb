@@ -285,9 +285,14 @@ module Gitlab
           label.save!
           label
         else
-          parsed_relation_hash.delete('type') if milestone?
+          object = GroupProjectFinder.find_or_create(relation_class, finder_hash)
 
-          GroupProjectFinder.find_or_create(relation_class, finder_hash)
+          if milestone?
+            parsed_relation_hash.delete('group_id') if object.project_id
+            parsed_relation_hash.delete('project_id') if object.group_id
+          end
+
+          object
         end
       end
 

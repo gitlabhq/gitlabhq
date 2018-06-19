@@ -400,7 +400,8 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
         restored_project_json
 
-        expect(project.milestones.count).to eq(1)
+        expect(project.group.milestones.count).to eq(1)
+        expect(project.milestones.count).to eq(0)
       end
     end
   end
