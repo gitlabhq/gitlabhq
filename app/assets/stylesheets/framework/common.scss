@@ -305,14 +305,6 @@ img.emoji {
   margin-bottom: 10px;
 }
 
-.btn-sign-in {
-  text-shadow: none;
-
-  @include media-breakpoint-up(sm) {
-    margin-top: 8px;
-  }
-}
-
 .side-filters {
   fieldset {
     margin-bottom: 15px;

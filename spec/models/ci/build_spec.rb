@@ -116,6 +116,26 @@ describe Ci::Build do
     end
   end
 
+  describe '.with_live_trace' do
+    subject { described_class.with_live_trace }
+
+    context 'when build has live trace' do
+      let!(:build) { create(:ci_build, :success, :trace_live) }
+
+      it 'selects the build' do
+        is_expected.to eq([build])
+      end
+    end
+
+    context 'when build does not have live trace' do
+      let!(:build) { create(:ci_build, :success, :trace_artifact) }
+
+      it 'does not select the build' do
+        is_expected.to be_empty
+      end
+    end
+  end
+
   describe '#actionize' do
     context 'when build is a created' do
       before do
@@ -1528,7 +1548,9 @@ describe Ci::Build do
     let(:predefined_variables) do
       [
         { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
+        { key: 'CI_PIPELINE_URL', value: project.web_url + "/pipelines/#{pipeline.id}", public: true },
         { key: 'CI_JOB_ID', value: build.id.to_s, public: true },
+        { key: 'CI_JOB_URL', value: project.web_url + "/-/jobs/#{build.id}", public: true },
         { key: 'CI_JOB_TOKEN', value: build.token, public: false },
         { key: 'CI_BUILD_ID', value: build.id.to_s, public: true },
         { key: 'CI_BUILD_TOKEN', value: build.token, public: false },
@@ -2151,6 +2173,7 @@ describe Ci::Build do
 
       it 'does not return prohibited variables' do
         keys = %w[CI_JOB_ID
+                  CI_JOB_URL
                   CI_JOB_TOKEN
                   CI_BUILD_ID
                   CI_BUILD_TOKEN
@@ -2503,6 +2526,78 @@ describe Ci::Build do
 
       it "does not match a build" do
         is_expected.not_to contain_exactly(build)
+      end
+    end
+  end
+
+  describe 'pages deployments' do
+    set(:build) { create(:ci_build, project: project, user: user) }
+
+    context 'when job is "pages"' do
+      before do
+        build.name = 'pages'
+      end
+
+      context 'when pages are enabled' do
+        before do
+          allow(Gitlab.config.pages).to receive_messages(enabled: true)
+        end
+
+        it 'is marked as pages generator' do
+          expect(build).to be_pages_generator
+        end
+
+        context 'job succeeds' do
+          it "calls pages worker" do
+            expect(PagesWorker).to receive(:perform_async).with(:deploy, build.id)
+
+            build.success!
+          end
+        end
+
+        context 'job fails' do
+          it "does not call pages worker" do
+            expect(PagesWorker).not_to receive(:perform_async)
+
+            build.drop!
+          end
+        end
+      end
+
+      context 'when pages are disabled' do
+        before do
+          allow(Gitlab.config.pages).to receive_messages(enabled: false)
+        end
+
+        it 'is not marked as pages generator' do
+          expect(build).not_to be_pages_generator
+        end
+
+        context 'job succeeds' do
+          it "does not call pages worker" do
+            expect(PagesWorker).not_to receive(:perform_async)
+
+            build.success!
+          end
+        end
+      end
+    end
+
+    context 'when job is not "pages"' do
+      before do
+        build.name = 'other-job'
+      end
+
+      it 'is not marked as pages generator' do
+        expect(build).not_to be_pages_generator
+      end
+
+      context 'job succeeds' do
+        it "does not call pages worker" do
+          expect(PagesWorker).not_to receive(:perform_async)
+
+          build.success
+        end
       end
     end
   end

@@ -78,9 +78,12 @@ module Gitlab
 
       # Returns the raw diff content up to the given line index
       def diff_hunk(diff_line)
-        # Adding 2 because of the @@ diff header and Enum#take should consider
-        # an extra line, because we're passing an index.
-        raw_diff.each_line.take(diff_line.index + 2).join
+        diff_line_index = diff_line.index
+        # @@ (match) header is not kept if it's found in the top of the file,
+        # therefore we should keep an extra line on this scenario.
+        diff_line_index += 1 unless diff_lines.first.match?
+
+        diff_lines.select { |line| line.index <= diff_line_index }.map(&:text).join("\n")
       end
 
       def old_sha

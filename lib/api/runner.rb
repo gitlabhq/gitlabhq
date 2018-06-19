@@ -84,7 +84,11 @@ module API
       end
       post '/request' do
         authenticate_runner!
-        no_content! unless current_runner.active?
+
+        unless current_runner.active?
+          header 'X-GitLab-Last-Update', current_runner.ensure_runner_queue_value
+          break no_content!
+        end
 
         if current_runner.runner_queue_value_latest?(params[:last_update])
           header 'X-GitLab-Last-Update', params[:last_update]
@@ -125,7 +129,7 @@ module API
       end
       put '/:id' do
         job = authenticate_job!
-        forbidden!('Job is not running') unless job.running?
+        job_forbidden!(job, 'Job is not running') unless job.running?
 
         job.trace.set(params[:trace]) if params[:trace]
 
@@ -133,6 +137,8 @@ module API
                                   project: job.project.full_path)
 
         case params[:state].to_s
+        when 'running'
+          job.touch if job.needs_touch?
         when 'success'
           job.success!
         when 'failed'
@@ -152,7 +158,7 @@ module API
       end
       patch '/:id/trace' do
         job = authenticate_job!
-        forbidden!('Job is not running') unless job.running?
+        job_forbidden!(job, 'Job is not running') unless job.running?
 
         error!('400 Missing header Content-Range', 400) unless request.headers.key?('Content-Range')
         content_range = request.headers['Content-Range']
@@ -205,7 +211,7 @@ module API
 
         status 200
         content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
-        JobArtifactUploader.workhorse_authorize
+        JobArtifactUploader.workhorse_authorize(has_length: false, maximum_size: max_artifacts_size)
       end
 
       desc 'Upload artifacts for job' do

@@ -41,10 +41,10 @@ module API
         requires :name, type: String, desc: 'The name of the protected branch'
         optional :push_access_level, type: Integer,
                                      values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS,
-                                     desc: 'Access levels allowed to push (defaults: `40`, master access level)'
+                                     desc: 'Access levels allowed to push (defaults: `40`, maintainer access level)'
         optional :merge_access_level, type: Integer,
                                       values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS,
-                                      desc: 'Access levels allowed to merge (defaults: `40`, master access level)'
+                                      desc: 'Access levels allowed to merge (defaults: `40`, maintainer access level)'
       end
       post ':id/protected_branches' do
         protected_branch = user_project.protected_branches.find_by(name: params[:name])

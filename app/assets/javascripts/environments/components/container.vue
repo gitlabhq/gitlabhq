@@ -43,17 +43,17 @@
   <div class="environments-container">
 
     <loading-icon
+      v-if="isLoading"
       class="prepend-top-default"
       label="Loading environments"
-      v-if="isLoading"
       size="3"
     />
 
     <slot name="emptyState"></slot>
 
     <div
-      class="table-holder"
-      v-if="!isLoading && environments.length > 0">
+      v-if="!isLoading && environments.length > 0"
+      class="table-holder">
 
       <environment-table
         :environments="environments"

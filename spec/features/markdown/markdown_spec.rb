@@ -24,7 +24,7 @@ require 'erb'
 #
 # See the MarkdownFeature class for setup details.
 
-describe 'GitLab Markdown' do
+describe 'GitLab Markdown', :aggregate_failures do
   include Capybara::Node::Matchers
   include MarkupHelper
   include MarkdownMatchers
@@ -44,112 +44,106 @@ describe 'GitLab Markdown' do
 
   # Shared behavior that all pipelines should exhibit
   shared_examples 'all pipelines' do
-    describe 'Redcarpet extensions' do
-      it 'does not parse emphasis inside of words' do
+    it 'includes extensions' do
+      aggregate_failures 'does not parse emphasis inside of words' do
         expect(doc.to_html).not_to match('foo<em>bar</em>baz')
       end
 
-      it 'parses table Markdown' do
-        aggregate_failures do
-          expect(doc).to have_selector('th:contains("Header")')
-          expect(doc).to have_selector('th:contains("Row")')
-          expect(doc).to have_selector('th:contains("Example")')
-        end
+      aggregate_failures 'parses table Markdown' do
+        expect(doc).to have_selector('th:contains("Header")')
+        expect(doc).to have_selector('th:contains("Row")')
+        expect(doc).to have_selector('th:contains("Example")')
       end
 
-      it 'allows Markdown in tables' do
+      aggregate_failures 'allows Markdown in tables' do
         expect(doc.at_css('td:contains("Baz")').children.to_html)
           .to eq '<strong>Baz</strong>'
       end
 
-      it 'parses fenced code blocks' do
-        aggregate_failures do
-          expect(doc).to have_selector('pre.code.highlight.js-syntax-highlight.c')
-          expect(doc).to have_selector('pre.code.highlight.js-syntax-highlight.python')
-        end
+      aggregate_failures 'parses fenced code blocks' do
+        expect(doc).to have_selector('pre.code.highlight.js-syntax-highlight.c')
+        expect(doc).to have_selector('pre.code.highlight.js-syntax-highlight.python')
       end
 
-      it 'parses mermaid code block' do
-        aggregate_failures do
-          expect(doc).to have_selector('pre[lang=mermaid] > code.js-render-mermaid')
-        end
+      aggregate_failures 'parses mermaid code block' do
+        expect(doc).to have_selector('pre[lang=mermaid] > code.js-render-mermaid')
       end
 
-      it 'parses strikethroughs' do
+      aggregate_failures 'parses strikethroughs' do
         expect(doc).to have_selector(%{del:contains("and this text doesn't")})
-      end
-
-      it 'parses superscript' do
-        expect(doc).to have_selector('sup', count: 2)
       end
     end
 
-    describe 'SanitizationFilter' do
-      it 'permits b elements' do
+    it 'includes SanitizationFilter' do
+      aggregate_failures 'permits b elements' do
         expect(doc).to have_selector('b:contains("b tag")')
       end
 
-      it 'permits em elements' do
+      aggregate_failures 'permits em elements' do
         expect(doc).to have_selector('em:contains("em tag")')
       end
 
-      it 'permits code elements' do
+      aggregate_failures 'permits code elements' do
         expect(doc).to have_selector('code:contains("code tag")')
       end
 
-      it 'permits kbd elements' do
+      aggregate_failures 'permits kbd elements' do
         expect(doc).to have_selector('kbd:contains("s")')
       end
 
-      it 'permits strike elements' do
+      aggregate_failures 'permits strike elements' do
         expect(doc).to have_selector('strike:contains(Emoji)')
       end
 
-      it 'permits img elements' do
+      aggregate_failures 'permits img elements' do
         expect(doc).to have_selector('img[data-src*="smile.png"]')
       end
 
-      it 'permits br elements' do
+      aggregate_failures 'permits br elements' do
         expect(doc).to have_selector('br')
       end
 
-      it 'permits hr elements' do
+      aggregate_failures 'permits hr elements' do
         expect(doc).to have_selector('hr')
       end
 
-      it 'permits span elements' do
+      aggregate_failures 'permits span elements' do
         expect(doc).to have_selector('span:contains("span tag")')
       end
 
-      it 'permits details elements' do
+      aggregate_failures 'permits details elements' do
         expect(doc).to have_selector('details:contains("Hiding the details")')
       end
 
-      it 'permits summary elements' do
+      aggregate_failures 'permits summary elements' do
         expect(doc).to have_selector('details summary:contains("collapsible")')
       end
 
-      it 'permits style attribute in th elements' do
-        aggregate_failures do
-          expect(doc.at_css('th:contains("Header")')['style']).to eq 'text-align: center'
-          expect(doc.at_css('th:contains("Row")')['style']).to eq 'text-align: right'
-          expect(doc.at_css('th:contains("Example")')['style']).to eq 'text-align: left'
-        end
+      aggregate_failures 'permits align attribute in th elements' do
+        expect(doc.at_css('th:contains("Header")')['align']).to eq 'center'
+        expect(doc.at_css('th:contains("Row")')['align']).to eq 'right'
+        expect(doc.at_css('th:contains("Example")')['align']).to eq 'left'
       end
 
-      it 'permits style attribute in td elements' do
-        aggregate_failures do
-          expect(doc.at_css('td:contains("Foo")')['style']).to eq 'text-align: center'
-          expect(doc.at_css('td:contains("Bar")')['style']).to eq 'text-align: right'
-          expect(doc.at_css('td:contains("Baz")')['style']).to eq 'text-align: left'
-        end
+      aggregate_failures 'permits align attribute in td elements' do
+        expect(doc.at_css('td:contains("Foo")')['align']).to eq 'center'
+        expect(doc.at_css('td:contains("Bar")')['align']).to eq 'right'
+        expect(doc.at_css('td:contains("Baz")')['align']).to eq 'left'
       end
 
-      it 'removes `rel` attribute from links' do
+      aggregate_failures 'permits superscript elements' do
+        expect(doc).to have_selector('sup', count: 2)
+      end
+
+      aggregate_failures 'permits subscript elements' do
+        expect(doc).to have_selector('sub', count: 3)
+      end
+
+      aggregate_failures 'removes `rel` attribute from links' do
         expect(doc).not_to have_selector('a[rel="bookmark"]')
       end
 
-      it "removes `href` from `a` elements if it's fishy" do
+      aggregate_failures "removes `href` from `a` elements if it's fishy" do
         expect(doc).not_to have_selector('a[href*="javascript"]')
       end
     end
@@ -176,26 +170,26 @@ describe 'GitLab Markdown' do
       end
     end
 
-    describe 'ExternalLinkFilter' do
-      it 'adds nofollow to external link' do
+    it 'includes ExternalLinkFilter' do
+      aggregate_failures 'adds nofollow to external link' do
         link = doc.at_css('a:contains("Google")')
 
         expect(link.attr('rel')).to include('nofollow')
       end
 
-      it 'adds noreferrer to external link' do
+      aggregate_failures 'adds noreferrer to external link' do
         link = doc.at_css('a:contains("Google")')
 
         expect(link.attr('rel')).to include('noreferrer')
       end
 
-      it 'adds _blank to target attribute for external links' do
+      aggregate_failures 'adds _blank to target attribute for external links' do
         link = doc.at_css('a:contains("Google")')
 
         expect(link.attr('target')).to match('_blank')
       end
 
-      it 'ignores internal link' do
+      aggregate_failures 'ignores internal link' do
         link = doc.at_css('a:contains("GitLab Root")')
 
         expect(link.attr('rel')).not_to match 'nofollow'
@@ -219,24 +213,24 @@ describe 'GitLab Markdown' do
 
     it_behaves_like 'all pipelines'
 
-    it 'includes RelativeLinkFilter' do
-      expect(doc).to parse_relative_links
-    end
+    it 'includes custom filters' do
+      aggregate_failures 'RelativeLinkFilter' do
+        expect(doc).to parse_relative_links
+      end
 
-    it 'includes EmojiFilter' do
-      expect(doc).to parse_emoji
-    end
+      aggregate_failures 'EmojiFilter' do
+        expect(doc).to parse_emoji
+      end
 
-    it 'includes TableOfContentsFilter' do
-      expect(doc).to create_header_links
-    end
+      aggregate_failures 'TableOfContentsFilter' do
+        expect(doc).to create_header_links
+      end
 
-    it 'includes AutolinkFilter' do
-      expect(doc).to create_autolinks
-    end
+      aggregate_failures 'AutolinkFilter' do
+        expect(doc).to create_autolinks
+      end
 
-    it 'includes all reference filters' do
-      aggregate_failures do
+      aggregate_failures 'all reference filters' do
         expect(doc).to reference_users
         expect(doc).to reference_issues
         expect(doc).to reference_merge_requests
@@ -246,22 +240,22 @@ describe 'GitLab Markdown' do
         expect(doc).to reference_labels
         expect(doc).to reference_milestones
       end
-    end
 
-    it 'includes TaskListFilter' do
-      expect(doc).to parse_task_lists
-    end
+      aggregate_failures 'TaskListFilter' do
+        expect(doc).to parse_task_lists
+      end
 
-    it 'includes InlineDiffFilter' do
-      expect(doc).to parse_inline_diffs
-    end
+      aggregate_failures 'InlineDiffFilter' do
+        expect(doc).to parse_inline_diffs
+      end
 
-    it 'includes VideoLinkFilter' do
-      expect(doc).to parse_video_links
-    end
+      aggregate_failures 'VideoLinkFilter' do
+        expect(doc).to parse_video_links
+      end
 
-    it 'includes ColorFilter' do
-      expect(doc).to parse_colors
+      aggregate_failures 'ColorFilter' do
+        expect(doc).to parse_colors
+      end
     end
   end
 
@@ -280,24 +274,24 @@ describe 'GitLab Markdown' do
 
     it_behaves_like 'all pipelines'
 
-    it 'includes RelativeLinkFilter' do
-      expect(doc).not_to parse_relative_links
-    end
+    it 'includes custom filters' do
+      aggregate_failures 'RelativeLinkFilter' do
+        expect(doc).not_to parse_relative_links
+      end
 
-    it 'includes EmojiFilter' do
-      expect(doc).to parse_emoji
-    end
+      aggregate_failures 'EmojiFilter' do
+        expect(doc).to parse_emoji
+      end
 
-    it 'includes TableOfContentsFilter' do
-      expect(doc).to create_header_links
-    end
+      aggregate_failures 'TableOfContentsFilter' do
+        expect(doc).to create_header_links
+      end
 
-    it 'includes AutolinkFilter' do
-      expect(doc).to create_autolinks
-    end
+      aggregate_failures 'AutolinkFilter' do
+        expect(doc).to create_autolinks
+      end
 
-    it 'includes all reference filters' do
-      aggregate_failures do
+      aggregate_failures 'all reference filters' do
         expect(doc).to reference_users
         expect(doc).to reference_issues
         expect(doc).to reference_merge_requests
@@ -307,26 +301,51 @@ describe 'GitLab Markdown' do
         expect(doc).to reference_labels
         expect(doc).to reference_milestones
       end
+
+      aggregate_failures 'TaskListFilter' do
+        expect(doc).to parse_task_lists
+      end
+
+      aggregate_failures 'GollumTagsFilter' do
+        expect(doc).to parse_gollum_tags
+      end
+
+      aggregate_failures 'InlineDiffFilter' do
+        expect(doc).to parse_inline_diffs
+      end
+
+      aggregate_failures 'VideoLinkFilter' do
+        expect(doc).to parse_video_links
+      end
+
+      aggregate_failures 'ColorFilter' do
+        expect(doc).to parse_colors
+      end
+    end
+  end
+
+  context 'Redcarpet documents' do
+    before do
+      allow_any_instance_of(Banzai::Filter::MarkdownFilter).to receive(:engine).and_return('Redcarpet')
+      @html = markdown(@feat.raw_markdown)
     end
 
-    it 'includes TaskListFilter' do
-      expect(doc).to parse_task_lists
-    end
+    it 'processes certain elements differently' do
+      aggregate_failures 'parses superscript' do
+        expect(doc).to have_selector('sup', count: 3)
+      end
 
-    it 'includes GollumTagsFilter' do
-      expect(doc).to parse_gollum_tags
-    end
+      aggregate_failures 'permits style attribute in th elements' do
+        expect(doc.at_css('th:contains("Header")')['style']).to eq 'text-align: center'
+        expect(doc.at_css('th:contains("Row")')['style']).to eq 'text-align: right'
+        expect(doc.at_css('th:contains("Example")')['style']).to eq 'text-align: left'
+      end
 
-    it 'includes InlineDiffFilter' do
-      expect(doc).to parse_inline_diffs
-    end
-
-    it 'includes VideoLinkFilter' do
-      expect(doc).to parse_video_links
-    end
-
-    it 'includes ColorFilter' do
-      expect(doc).to parse_colors
+      aggregate_failures 'permits style attribute in td elements' do
+        expect(doc.at_css('td:contains("Foo")')['style']).to eq 'text-align: center'
+        expect(doc.at_css('td:contains("Bar")')['style']).to eq 'text-align: right'
+        expect(doc.at_css('td:contains("Baz")')['style']).to eq 'text-align: left'
+      end
     end
   end
 

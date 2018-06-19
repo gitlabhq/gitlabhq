@@ -155,6 +155,7 @@ class ChatNotificationService < Service
   end
 
   def notify_for_ref?(data)
+    return true if data[:object_kind] == 'tag_push'
     return true if data.dig(:object_attributes, :tag)
     return true unless notify_only_default_branch?
 

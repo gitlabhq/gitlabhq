@@ -143,8 +143,8 @@ export default {
         :value="label.id"
       />
       <div
-        class="dropdown"
         ref="dropdown"
+        class="dropdown"
       >
         <dropdown-button
           :ability-name="abilityName"

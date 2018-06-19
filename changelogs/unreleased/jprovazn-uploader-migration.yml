@@ -1,0 +1,5 @@
+---
+title: Migrate any remaining jobs from deprecated `object_storage_upload` queue.
+merge_request:
+author:
+type: deprecated

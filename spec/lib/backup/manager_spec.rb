@@ -274,14 +274,11 @@ describe Backup::Manager do
         }
       )
 
-      # the Fog mock only knows about directories we create explicitly
       Fog.mock!
+
+      # the Fog mock only knows about directories we create explicitly
       connection = ::Fog::Storage.new(Gitlab.config.backup.upload.connection.symbolize_keys)
       connection.directories.create(key: Gitlab.config.backup.upload.remote_directory)
-    end
-
-    after do
-      Fog.unmock!
     end
 
     context 'target path' do

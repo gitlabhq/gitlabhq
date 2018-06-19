@@ -272,7 +272,8 @@ module API
           attrs[key] = params_hash[key]
         end
       end
-      ActionController::Parameters.new(attrs).permit!
+      permitted_attrs = ActionController::Parameters.new(attrs).permit!
+      Gitlab.rails5? ? permitted_attrs.to_h : permitted_attrs
     end
 
     def filter_by_iid(items, iid)

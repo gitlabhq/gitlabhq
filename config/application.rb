@@ -12,6 +12,7 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/redis/shared_state')
     require_dependency Rails.root.join('lib/gitlab/request_context')
     require_dependency Rails.root.join('lib/gitlab/current_settings')
+    require_dependency Rails.root.join('lib/gitlab/middleware/read_only')
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -70,6 +71,7 @@ module Gitlab
     # - Webhook URLs (:hook)
     # - Sentry DSN (:sentry_dsn)
     # - Deploy keys (:key)
+    # - File content from Web Editor (:content)
     config.filter_parameters += [/token$/, /password/, /secret/]
     config.filter_parameters += %i(
       certificate
@@ -81,6 +83,7 @@ module Gitlab
       sentry_dsn
       trace
       variables
+      content
     )
 
     # Enable escaping HTML in JSON.
@@ -173,7 +176,7 @@ module Gitlab
     ENV['GIT_TERMINAL_PROMPT'] = '0'
 
     # Gitlab Read-only middleware support
-    config.middleware.insert_after ActionDispatch::Flash, '::Gitlab::Middleware::ReadOnly'
+    config.middleware.insert_after ActionDispatch::Flash, ::Gitlab::Middleware::ReadOnly
 
     config.generators do |g|
       g.factory_bot false

@@ -1,8 +1,14 @@
 module UploadsActions
+  extend ActiveSupport::Concern
+
   include Gitlab::Utils::StrongMemoize
   include SendFileUpload
 
-  UPLOAD_MOUNTS = %w(avatar attachment file logo header_logo).freeze
+  UPLOAD_MOUNTS = %w(avatar attachment file logo header_logo favicon).freeze
+
+  included do
+    prepend_before_action :set_html_format, only: :show
+  end
 
   def create
     link_to_file = UploadService.new(model, params[:file], uploader_class).execute
@@ -31,10 +37,22 @@ module UploadsActions
 
     disposition = uploader.image_or_video? ? 'inline' : 'attachment'
 
+    uploaders = [uploader, *uploader.versions.values]
+    uploader = uploaders.find { |version| version.filename == params[:filename] }
+
+    return render_404 unless uploader
+
     send_upload(uploader, attachment: uploader.filename, disposition: disposition)
   end
 
   private
+
+  # Explicitly set the format.
+  # Otherwise rails 5 will set it from a file extension.
+  # See https://github.com/rails/rails/commit/84e8accd6fb83031e4c27e44925d7596655285f7#diff-2b8f2fbb113b55ca8e16001c393da8f1
+  def set_html_format
+    request.format = :html
+  end
 
   def uploader_class
     raise NotImplementedError

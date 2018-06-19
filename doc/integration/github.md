@@ -110,7 +110,7 @@ On the sign in page there should now be a GitHub icon below the regular sign in 
 Click the icon to begin the authentication process. GitHub will ask the user to sign in and authorize the GitLab application.
 If everything goes well the user will be returned to GitLab and will be signed in.
 
-### GitHub Enterprise with Self-Signed Certificate
+## GitHub Enterprise with self-signed Certificate
 
 If you are attempting to import projects from GitHub Enterprise with a self-signed
 certificate and the imports are failing, you will need to disable SSL verification.

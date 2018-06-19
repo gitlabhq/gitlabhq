@@ -227,6 +227,42 @@ shared_examples_for 'common trace features' do
       end
     end
   end
+
+  describe '#archive!' do
+    subject { trace.archive! }
+
+    context 'when build status is success' do
+      let!(:build) { create(:ci_build, :success, :trace_live) }
+
+      it 'does not have an archived trace yet' do
+        expect(build.job_artifacts_trace).to be_nil
+      end
+
+      context 'when archives' do
+        it 'has an archived trace' do
+          subject
+
+          build.reload
+          expect(build.job_artifacts_trace).to be_exist
+        end
+
+        context 'when another process has already been archiving', :clean_gitlab_redis_shared_state do
+          before do
+            Gitlab::ExclusiveLease.new("trace:archive:#{trace.job.id}", timeout: 1.hour).try_obtain
+          end
+
+          it 'blocks concurrent archiving' do
+            expect(Rails.logger).to receive(:error).with('Cannot obtain an exclusive lease. There must be another instance already in execution.')
+
+            subject
+
+            build.reload
+            expect(build.job_artifacts_trace).to be_nil
+          end
+        end
+      end
+    end
+  end
 end
 
 shared_examples_for 'trace with disabled live trace feature' do

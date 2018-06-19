@@ -97,7 +97,7 @@ export default {
         ? this.deploymentFlagData.seriesIndex
         : indexFromCoordinates;
       const value = series.values[index] && series.values[index].value;
-      if (isNaN(value)) {
+      if (Number.isNaN(value)) {
         return '-';
       }
       return `${formatRelevantDigits(value)}${this.unitOfDisplay}`;
@@ -117,13 +117,13 @@ export default {
 
 <template>
   <div
-    class="prometheus-graph-cursor"
     :style="cursorStyle"
+    class="prometheus-graph-cursor"
   >
     <div
       v-if="showFlagContent"
-      class="prometheus-graph-flag popover"
       :class="flagOrientation"
+      class="prometheus-graph-flag popover"
     >
       <div class="arrow"></div>
       <div class="popover-title">
@@ -139,8 +139,8 @@ export default {
       >
         <div>
           <icon
-            name="commit"
             :size="12"
+            name="commit"
           />
           <a :href="deploymentFlagData.commitUrl">
             {{ deploymentFlagData.sha.slice(0, 8) }}
@@ -150,8 +150,8 @@ export default {
           v-if="deploymentFlagData.tag"
         >
           <icon
-            name="label"
             :size="12"
+            name="label"
           />
           <a :href="deploymentFlagData.tagUrl">
             {{ deploymentFlagData.ref }}

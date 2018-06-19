@@ -10,9 +10,7 @@ module API
         detail "This feature was introduced in GitLab 11.0."
       end
       post do
-        # Explicitly set CommonMark as markdown engine to use.
-        # Remove this set when https://gitlab.com/gitlab-org/gitlab-ce/issues/43011 is done.
-        context = { markdown_engine: :common_mark, only_path: false }
+        context = { only_path: false }
 
         if params[:project]
           project = Project.find_by_full_path(params[:project])

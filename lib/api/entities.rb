@@ -308,6 +308,10 @@ module API
       expose :additions, :deletions, :total
     end
 
+    class CommitWithStats < Commit
+      expose :stats, using: Entities::CommitStats
+    end
+
     class CommitDetail < Commit
       expose :stats, using: Entities::CommitStats, if: :stats
       expose :status
@@ -358,7 +362,7 @@ module API
     end
 
     class Snippet < Grape::Entity
-      expose :id, :title, :file_name, :description
+      expose :id, :title, :file_name, :description, :visibility
       expose :author, using: Entities::UserBasic
       expose :updated_at, :created_at
       expose :project_id
@@ -412,6 +416,10 @@ module API
       expose :state, :created_at, :updated_at
       expose :due_date
       expose :start_date
+
+      expose :web_url do |milestone, _options|
+        Gitlab::UrlBuilder.build(milestone)
+      end
     end
 
     class IssueBasic < ProjectEntity
@@ -559,7 +567,9 @@ module API
       expose :discussion_locked
       expose :should_remove_source_branch?, as: :should_remove_source_branch
       expose :force_remove_source_branch?, as: :force_remove_source_branch
-      expose :allow_maintainer_to_push, if: -> (merge_request, _) { merge_request.for_fork? }
+      expose :allow_collaboration, if: -> (merge_request, _) { merge_request.for_fork? }
+      # Deprecated
+      expose :allow_collaboration, as: :allow_maintainer_to_push, if: -> (merge_request, _) { merge_request.for_fork? }
 
       expose :web_url do |merge_request, options|
         Gitlab::UrlBuilder.build(merge_request)
@@ -690,6 +700,12 @@ module API
       expose :id
       expose :individual_note?, as: :individual_note
       expose :notes, using: Entities::Note
+    end
+
+    class Avatar < Grape::Entity
+      expose :avatar_url do |avatarable, options|
+        avatarable.avatar_url(only_path: false, size: options[:size])
+      end
     end
 
     class AwardEmoji < Grape::Entity

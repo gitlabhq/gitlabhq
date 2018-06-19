@@ -114,8 +114,8 @@
     <modal
       id="confirmation-modal"
       :header-title-text="modalTitle"
-      footer-primary-button-variant="danger"
       :footer-primary-button-text="s__('Pipeline|Stop pipeline')"
+      footer-primary-button-variant="danger"
       @submit="onSubmit"
     >
       <span v-html="modalText"></span>

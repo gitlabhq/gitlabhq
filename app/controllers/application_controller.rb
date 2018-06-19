@@ -91,6 +91,10 @@ class ApplicationController < ActionController::Base
       payload[:user_id] = logged_user.try(:id)
       payload[:username] = logged_user.try(:username)
     end
+
+    if response.status == 422 && response.body.present? && response.content_type == 'application/json'.freeze
+      payload[:response] = response.body
+    end
   end
 
   # Controllers such as GitHttpController may use alternative methods
@@ -130,12 +134,17 @@ class ApplicationController < ActionController::Base
   end
 
   def access_denied!(message = nil)
+    # If we display a custom access denied message to the user, we don't want to
+    # hide existence of the resource, rather tell them they cannot access it using
+    # the provided message
+    status = message.present? ? :forbidden : :not_found
+
     respond_to do |format|
-      format.any { head :not_found }
+      format.any { head status }
       format.html do
         render "errors/access_denied",
                layout: "errors",
-               status: 404,
+               status: status,
                locals: { message: message }
       end
     end
@@ -275,8 +284,10 @@ class ApplicationController < ActionController::Base
     return unless current_user
     return if current_user.terms_accepted?
 
+    message = _("Please accept the Terms of Service before continuing.")
+
     if sessionless_user?
-      render_403
+      access_denied!(message)
     else
       # Redirect to the destination if the request is a get.
       # Redirect to the source if it was a post, so the user can re-submit after
@@ -287,7 +298,7 @@ class ApplicationController < ActionController::Base
                         URI(request.referer).path if request.referer
                       end
 
-      flash[:notice] = _("Please accept the Terms of Service before continuing.")
+      flash[:notice] = message
       redirect_to terms_path(redirect: redirect_path), status: :found
     end
   end

@@ -15,6 +15,13 @@ describe RemoteMirror do
 
         expect(remote_mirror).not_to be_valid
       end
+
+      it 'does not allow url with an invalid user' do
+        remote_mirror = build(:remote_mirror, url: 'http://$user:password@invalid.invalid')
+
+        expect(remote_mirror).to be_invalid
+        expect(remote_mirror.errors[:url].first).to include('Username needs to start with an alphanumeric character')
+      end
     end
   end
 
@@ -67,7 +74,9 @@ describe RemoteMirror do
 
         mirror.update_attribute(:url, 'http://foo:baz@test.com')
 
-        config = repo.raw_repository.rugged.config
+        config = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          repo.raw_repository.rugged.config
+        end
         expect(config["remote.#{mirror.remote_name}.url"]).to eq('http://foo:baz@test.com')
       end
 

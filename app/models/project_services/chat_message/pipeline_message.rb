@@ -23,10 +23,6 @@ module ChatMessage
       ''
     end
 
-    def fallback
-      format(message)
-    end
-
     def attachments
       return message if markdown
 

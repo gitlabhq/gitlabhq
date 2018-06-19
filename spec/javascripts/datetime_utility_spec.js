@@ -149,23 +149,22 @@ describe('getSundays', () => {
   });
 });
 
-describe('getTimeframeWindow', () => {
-  it('returns array of dates representing a timeframe based on provided length and date', () => {
-    const date = new Date(2018, 0, 1);
+describe('getTimeframeWindowFrom', () => {
+  it('returns array of date objects upto provided length start with provided startDate', () => {
+    const startDate = new Date(2018, 0, 1);
     const mockTimeframe = [
-      new Date(2017, 9, 1),
-      new Date(2017, 10, 1),
-      new Date(2017, 11, 1),
       new Date(2018, 0, 1),
       new Date(2018, 1, 1),
-      new Date(2018, 2, 31),
+      new Date(2018, 2, 1),
+      new Date(2018, 3, 1),
+      new Date(2018, 4, 31),
     ];
-    const timeframe = datetimeUtility.getTimeframeWindow(6, date);
-
-    expect(timeframe.length).toBe(6);
+    const timeframe = datetimeUtility.getTimeframeWindowFrom(startDate, 5);
+    expect(timeframe.length).toBe(5);
     timeframe.forEach((timeframeItem, index) => {
-      expect(timeframeItem.getFullYear() === mockTimeframe[index].getFullYear()).toBeTruthy();
-      expect(timeframeItem.getMonth() === mockTimeframe[index].getMonth()).toBeTruthy();
+      console.log(timeframeItem);
+      expect(timeframeItem.getFullYear() === mockTimeframe[index].getFullYear()).toBe(true);
+      expect(timeframeItem.getMonth() === mockTimeframe[index].getMonth()).toBe(true);
       expect(timeframeItem.getDate() === mockTimeframe[index].getDate()).toBeTruthy();
     });
   });

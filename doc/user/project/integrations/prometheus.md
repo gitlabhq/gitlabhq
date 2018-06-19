@@ -30,7 +30,7 @@ GitLab can seamlessly deploy and manage Prometheus on a [connected Kubernetes cl
 
 Once you have a connected Kubernetes cluster with Helm installed, deploying a managed Prometheus is as easy as a single click.
 
-1. Go to the `CI/CD > Kubernetes` page, to view your connected clusters
+1. Go to the `Operations > Kubernetes` page, to view your connected clusters
 1. Select the cluster you would like to deploy Prometheus to
 1. Click the **Install** button to deploy Prometheus to the cluster
 

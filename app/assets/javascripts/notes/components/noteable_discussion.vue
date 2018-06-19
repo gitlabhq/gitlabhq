@@ -152,7 +152,7 @@ export default {
         const msg = 'Are you sure you want to cancel creating this comment?';
 
         // eslint-disable-next-line no-alert
-        if (!confirm(msg)) {
+        if (!window.confirm(msg)) {
           return;
         }
       }
@@ -229,9 +229,9 @@ Please check your network connection and try again.`;
               :note-id="discussion.id"
               :include-toggle="true"
               :expanded="note.expanded"
-              @toggleHandler="toggleDiscussionHandler"
               action-text="started a discussion"
               class="discussion"
+              @toggleHandler="toggleDiscussionHandler"
             />
             <note-edited-text
               v-if="lastUpdatedAt"
@@ -269,19 +269,19 @@ Please check your network connection and try again.`;
                         class="btn-group"
                         role="group">
                         <button
-                          @click="showReplyForm"
                           type="button"
                           class="js-vue-discussion-reply btn btn-text-field"
-                          title="Add a reply">Reply...</button>
+                          title="Add a reply"
+                          @click="showReplyForm">Reply...</button>
                       </div>
                       <div
                         v-if="note.resolvable"
                         class="btn-group"
                         role="group">
                         <button
-                          @click="resolveHandler()"
                           type="button"
                           class="btn btn-default"
+                          @click="resolveHandler()"
                         >
                           <i
                             v-if="isResolving"
@@ -301,8 +301,8 @@ Please check your network connection and try again.`;
                           class="btn-group"
                           role="group">
                           <a
-                            :href="note.resolve_with_issue_path"
                             v-tooltip
+                            :href="note.resolve_with_issue_path"
                             class="new-issue-for-discussion btn
                               btn-default discussion-create-issue-btn"
                             title="Resolve this discussion in a new issue"
@@ -316,11 +316,11 @@ Please check your network connection and try again.`;
                           class="btn-group"
                           role="group">
                           <button
-                            @click="jumpToDiscussion"
                             v-tooltip
                             class="btn btn-default discussion-next-btn"
                             title="Jump to next unresolved discussion"
                             data-container="body"
+                            @click="jumpToDiscussion"
                           >
                             <span v-html="nextDiscussionsSvg"></span>
                           </button>
@@ -330,12 +330,12 @@ Please check your network connection and try again.`;
                   </template>
                   <note-form
                     v-if="isReplying"
-                    save-button-title="Comment"
+                    ref="noteForm"
                     :note="note"
                     :is-editing="false"
+                    save-button-title="Comment"
                     @handleFormUpdate="saveReply"
-                    @cancelFormEdition="cancelReplyForm"
-                    ref="noteForm" />
+                    @cancelFormEdition="cancelReplyForm" />
                   <note-signed-out-widget v-if="!canReply" />
                 </div>
               </div>

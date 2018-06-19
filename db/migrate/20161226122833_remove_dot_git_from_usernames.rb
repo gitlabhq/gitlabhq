@@ -64,7 +64,9 @@ class RemoveDotGitFromUsernames < ActiveRecord::Migration
     # we rename suffix instead of removing it
     path = path.sub(/\.git\z/, '_git')
 
-    check_routes(path.dup, 0, path)
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      check_routes(path.dup, 0, path)
+    end
   end
 
   def check_routes(base, counter, path)

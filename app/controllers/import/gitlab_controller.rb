@@ -32,7 +32,7 @@ class Import::GitlabController < Import::BaseController
       if project.persisted?
         render json: ProjectSerializer.new.represent(project)
       else
-        render json: { errors: project.errors.full_messages }, status: :unprocessable_entity
+        render json: { errors: project_save_error(project) }, status: :unprocessable_entity
       end
     else
       render json: { errors: 'This namespace has already been taken! Please choose another one.' }, status: :unprocessable_entity

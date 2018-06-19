@@ -65,7 +65,7 @@ module Gitlab
       return false unless can_access_git?
       return false unless project
 
-      return false if !user.can?(:push_code, project) && !project.branch_allows_maintainer_push?(user, ref)
+      return false if !user.can?(:push_code, project) && !project.branch_allows_collaboration?(user, ref)
 
       if protected?(ProtectedBranch, project, ref)
         protected_branch_accessible_to?(ref, action: :push)

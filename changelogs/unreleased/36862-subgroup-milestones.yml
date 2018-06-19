@@ -1,0 +1,5 @@
+---
+title: Include milestones from parent groups when assigning a milestone to an issue or merge request
+merge_request:
+author:
+type: changed

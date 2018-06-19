@@ -6,8 +6,8 @@ describe ProjectsController do
   let(:project) { create(:project) }
   let(:public_project) { create(:project, :public) }
   let(:user) { create(:user) }
-  let(:jpg) { fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg') }
-  let(:txt) { fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain') }
+  let(:jpg) { fixture_file_upload('spec/fixtures/rails_sample.jpg', 'image/jpg') }
+  let(:txt) { fixture_file_upload('spec/fixtures/doc_sample.txt', 'text/plain') }
 
   describe 'GET new' do
     context 'with an authenticated user' do
@@ -296,16 +296,22 @@ describe ProjectsController do
     shared_examples_for 'updating a project' do
       context 'when only renaming a project path' do
         it "sets the repository to the right path after a rename" do
-          original_repository_path = project.repository.path
+          original_repository_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            project.repository.path
+          end
 
           expect { update_project path: 'renamed_path' }
             .to change { project.reload.path }
           expect(project.path).to include 'renamed_path'
 
+          assign_repository_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            assigns(:repository).path
+          end
+
           if project.hashed_storage?(:repository)
-            expect(assigns(:repository).path).to eq(original_repository_path)
+            expect(assign_repository_path).to eq(original_repository_path)
           else
-            expect(assigns(:repository).path).to include(project.path)
+            expect(assign_repository_path).to include(project.path)
           end
 
           expect(response).to have_gitlab_http_status(302)

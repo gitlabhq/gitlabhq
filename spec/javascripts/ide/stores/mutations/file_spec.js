@@ -152,6 +152,53 @@ describe('IDE store file mutations', () => {
 
       expect(localFile.mrChange.diff).toBe('ABC');
     });
+
+    it('has diffMode replaced by default', () => {
+      mutations.SET_FILE_MERGE_REQUEST_CHANGE(localState, {
+        file: localFile,
+        mrChange: {
+          diff: 'ABC',
+        },
+      });
+
+      expect(localFile.mrChange.diffMode).toBe('replaced');
+    });
+
+    it('has diffMode new', () => {
+      mutations.SET_FILE_MERGE_REQUEST_CHANGE(localState, {
+        file: localFile,
+        mrChange: {
+          diff: 'ABC',
+          new_file: true,
+        },
+      });
+
+      expect(localFile.mrChange.diffMode).toBe('new');
+    });
+
+    it('has diffMode deleted', () => {
+      mutations.SET_FILE_MERGE_REQUEST_CHANGE(localState, {
+        file: localFile,
+        mrChange: {
+          diff: 'ABC',
+          deleted_file: true,
+        },
+      });
+
+      expect(localFile.mrChange.diffMode).toBe('deleted');
+    });
+
+    it('has diffMode renamed', () => {
+      mutations.SET_FILE_MERGE_REQUEST_CHANGE(localState, {
+        file: localFile,
+        mrChange: {
+          diff: 'ABC',
+          renamed_file: true,
+        },
+      });
+
+      expect(localFile.mrChange.diffMode).toBe('renamed');
+    });
   });
 
   describe('DISCARD_FILE_CHANGES', () => {

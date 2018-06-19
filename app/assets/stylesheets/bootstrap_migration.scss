@@ -24,16 +24,54 @@ html {
   font-size: 14px;
 }
 
+legend {
+  border-bottom: 1px solid $border-color;
+  margin-bottom: 20px;
+}
+
 button,
 html [type="button"],
 [type="reset"],
-[type="submit"] {
+[type="submit"],
+[role="button"] {
   // Override bootstrap reboot
   -webkit-appearance: inherit;
+  cursor: pointer;
 }
 
-[role="button"] {
-  cursor: pointer;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: $gl-text-color;
+  font-weight: 600;
+}
+
+h1,
+.h1,
+h2,
+.h2,
+h3,
+.h3 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+h4,
+.h4,
+h5,
+.h5,
+h6,
+.h6 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+h5,
+.h5 {
+  font-size: $gl-font-size;
 }
 
 input[type="file"] {
@@ -51,7 +89,12 @@ a {
   color: $gl-link-color;
 }
 
+hr {
+  overflow: hidden;
+}
+
 .form-group.row .col-form-label {
+  padding-top: 0;
   // Bootstrap 4 aligns labels to the left
   // for horizontal forms
   @include media-breakpoint-up(md) {
@@ -59,20 +102,30 @@ a {
   }
 }
 
+kbd {
+  display: inline-block;
+}
+
 code {
   padding: 2px 4px;
+  color: $red-600;
   background-color: $red-100;
   border-radius: 3px;
+
+  .code > & {
+    background-color: inherit;
+    padding: unset;
+  }
+
+  .build-trace & {
+    background-color: inherit;
+    padding: inherit;
+  }
 }
 
 table {
   // Remove any table border lines
   border-spacing: 0;
-}
-
-.tooltip {
-  // Fix bootstrap4 bug whereby tooltips flicker when they are hovered over their borders
-  pointer-events: none;
 }
 
 .popover {
@@ -93,6 +146,16 @@ table {
   color: $gl-text-color-secondary !important;
 }
 
+.bg-success,
+.bg-primary,
+.bg-info,
+.bg-danger,
+.bg-warning {
+  .card-header {
+    color: $white-light;
+  }
+}
+
 // Polyfill deprecated selectors
 
 .hidden {
@@ -110,7 +173,10 @@ table {
   display: none;
 }
 
-.badge {
+// Add to .label so that old system notes that are saved to the db
+// will still receive the correct styling
+.badge,
+.label {
   padding: 4px 5px;
   font-size: 12px;
   font-style: normal;
@@ -145,6 +211,19 @@ table {
     &:not(:last-of-type) {
       border-bottom: 1px solid $well-inner-border;
     }
+
+    p,
+    ol,
+    ul,
+    .form-group {
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .badge.badge-gray {
+    background-color: $well-expand-item;
   }
 }
 
@@ -166,9 +245,21 @@ table {
   }
 }
 
+.card-header {
+  h3.card-title,
+  h4.card-title {
+    margin-top: 0;
+  }
+}
+
 .nav-tabs {
+  // Override bootstrap's default border
+  border-bottom: 0;
+
   .nav-link {
-    border: 0;
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
   }
 
   .nav-item {
@@ -178,4 +269,61 @@ table {
 
 pre code {
   white-space: pre-wrap;
+}
+
+.alert,
+.flash-notice {
+  border-radius: 0;
+}
+
+.alert-success {
+  background-color: $green-500;
+  border-color: $green-500;
+}
+
+.alert-info {
+  background-color: $blue-500;
+  border-color: $blue-500;
+}
+
+.alert-warning {
+  background-color: $orange-500;
+  border-color: $orange-500;
+}
+
+.alert-danger {
+  background-color: $red-500;
+  border-color: $red-500;
+}
+
+.alert-success,
+.alert-info,
+.alert-warning,
+.alert-danger,
+.flash-notice {
+  color: $white-light;
+
+  h4,
+  a,
+  .alert-link {
+    color: $white-light;
+  }
+}
+
+input[type=color].form-control {
+  height: $input-height;
+}
+
+.toggle-sidebar-button {
+  .collapse-text,
+  .icon-angle-double-left,
+  .icon-angle-double-right {
+    color: $gl-text-color-secondary;
+  }
+}
+
+.project-templates-buttons {
+  .btn {
+    vertical-align: unset;
+  }
 }

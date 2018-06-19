@@ -220,11 +220,10 @@ describe API::Repositories do
 
         expect(response).to have_gitlab_http_status(200)
 
-        repo_name = project.repository.name.gsub("\.git", "")
         type, params = workhorse_send_data
 
         expect(type).to eq('git-archive')
-        expect(params['ArchivePath']).to match(/#{repo_name}\-[^\.]+\.tar.gz/)
+        expect(params['ArchivePath']).to match(/#{project.path}\-[^\.]+\.tar.gz/)
       end
 
       it 'returns the repository archive archive.zip' do
@@ -232,11 +231,10 @@ describe API::Repositories do
 
         expect(response).to have_gitlab_http_status(200)
 
-        repo_name = project.repository.name.gsub("\.git", "")
         type, params = workhorse_send_data
 
         expect(type).to eq('git-archive')
-        expect(params['ArchivePath']).to match(/#{repo_name}\-[^\.]+\.zip/)
+        expect(params['ArchivePath']).to match(/#{project.path}\-[^\.]+\.zip/)
       end
 
       it 'returns the repository archive archive.tar.bz2' do
@@ -244,11 +242,10 @@ describe API::Repositories do
 
         expect(response).to have_gitlab_http_status(200)
 
-        repo_name = project.repository.name.gsub("\.git", "")
         type, params = workhorse_send_data
 
         expect(type).to eq('git-archive')
-        expect(params['ArchivePath']).to match(/#{repo_name}\-[^\.]+\.tar.bz2/)
+        expect(params['ArchivePath']).to match(/#{project.path}\-[^\.]+\.tar.bz2/)
       end
 
       context 'when sha does not exist' do

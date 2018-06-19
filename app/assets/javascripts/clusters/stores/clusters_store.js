@@ -95,7 +95,7 @@ export default class ClusterStore {
         this.state.applications.jupyter.hostname =
           serverAppEntry.hostname ||
           (this.state.applications.ingress.externalIp
-            ? `jupyter.${this.state.applications.ingress.externalIp}.xip.io`
+            ? `jupyter.${this.state.applications.ingress.externalIp}.nip.io`
             : '');
       }
     });

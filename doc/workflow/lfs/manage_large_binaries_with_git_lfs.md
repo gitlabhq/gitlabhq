@@ -144,7 +144,7 @@ git lfs unlock --id=123
 ```
 
 If for some reason you need to unlock a file that was not locked by you,
-you can use the `--force` flag as long as you have a `master` access on
+you can use the `--force` flag as long as you have a `maintainer` access on
 the project:
 
 ```bash

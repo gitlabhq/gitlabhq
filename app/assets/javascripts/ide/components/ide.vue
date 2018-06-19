@@ -93,8 +93,8 @@ export default {
             :merge-request-id="currentMergeRequestId"
           />
           <repo-editor
-            class="multi-file-edit-pane-content"
             :file="activeFile"
+            class="multi-file-edit-pane-content"
           />
         </template>
         <template

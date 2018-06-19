@@ -54,6 +54,7 @@ module API
         pipeline = user_project.pipelines.find(params[:pipeline_id])
         builds = pipeline.builds
         builds = filter_builds(builds, params[:scope])
+        builds = builds.preload(:job_artifacts_archive)
 
         present paginate(builds), with: Entities::Job
       end

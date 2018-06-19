@@ -15,6 +15,7 @@
   color: $perf-bar-text;
 
   select {
+    color: $perf-bar-text;
     width: 200px;
   }
 
@@ -106,12 +107,12 @@
   }
 
   .performance-bar-modal {
-    .modal-footer {
-      display: none;
+    .modal-body {
+      padding: 0;
     }
 
-    .modal-dialog {
-      width: 860px;
+    .modal-footer {
+      display: none;
     }
   }
 }

@@ -17,6 +17,7 @@
 - cronjob:stuck_ci_jobs
 - cronjob:stuck_import_jobs
 - cronjob:stuck_merge_jobs
+- cronjob:ci_archive_traces_cron
 - cronjob:trending_projects
 - cronjob:issue_due_scheduler
 
@@ -30,12 +31,14 @@
 - github_importer:github_import_import_diff_note
 - github_importer:github_import_import_issue
 - github_importer:github_import_import_note
+- github_importer:github_import_import_lfs_object
 - github_importer:github_import_import_pull_request
 - github_importer:github_import_refresh_import_jid
 - github_importer:github_import_stage_finish_import
 - github_importer:github_import_stage_import_base_data
 - github_importer:github_import_stage_import_issues_and_diff_notes
 - github_importer:github_import_stage_import_notes
+- github_importer:github_import_stage_import_lfs_objects
 - github_importer:github_import_stage_import_pull_requests
 - github_importer:github_import_stage_import_repository
 

@@ -76,6 +76,26 @@ feature 'Admin Appearance' do
     expect(page).not_to have_css(header_logo_selector)
   end
 
+  scenario 'Favicon' do
+    sign_in(create(:admin))
+    visit admin_appearances_path
+
+    attach_file(:appearance_favicon, logo_fixture)
+    click_button 'Save'
+
+    expect(page).to have_css('.appearance-light-logo-preview')
+
+    click_link 'Remove favicon'
+
+    expect(page).not_to have_css('.appearance-light-logo-preview')
+
+    # allowed file types
+    attach_file(:appearance_favicon, Rails.root.join('spec', 'fixtures', 'sanitized.svg'))
+    click_button 'Save'
+
+    expect(page).to have_content 'Favicon You are not allowed to upload "svg" files, allowed types: png, ico'
+  end
+
   def expect_custom_sign_in_appearance(appearance)
     expect(page).to have_content appearance.title
     expect(page).to have_content appearance.description

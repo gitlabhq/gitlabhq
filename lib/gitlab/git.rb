@@ -62,7 +62,7 @@ module Gitlab
       end
 
       def version
-        Gitlab::VersionInfo.parse(Gitlab::Popen.popen(%W(#{Gitlab.config.git.bin_path} --version)).first)
+        Gitlab::Git::Version.git_version
       end
 
       def check_namespace!(*objects)

@@ -18,7 +18,7 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
   def upload_authorize
     set_workhorse_internal_api_content_type
 
-    authorized = LfsObjectUploader.workhorse_authorize
+    authorized = LfsObjectUploader.workhorse_authorize(has_length: true)
     authorized.merge!(LfsOid: oid, LfsSize: size)
 
     render json: authorized

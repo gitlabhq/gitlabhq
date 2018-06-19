@@ -30,7 +30,7 @@ describe 'Projects > Settings > User manages group links' do
     click_link('Share with group')
 
     select2(group_market.id, from: '#link_group_id')
-    select('Master', from: 'link_group_access')
+    select('Maintainer', from: 'link_group_access')
 
     click_button('Share')
 

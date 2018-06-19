@@ -36,7 +36,7 @@ import {
   notify,
   SourceBranchRemovalStatus,
 } from './dependencies';
-import { setFavicon } from '../lib/utils/common_utils';
+import { setFaviconOverlay } from '../lib/utils/common_utils';
 
 export default {
   el: '#js-vue-mr-widget',
@@ -159,8 +159,9 @@ export default {
     },
     setFaviconHelper() {
       if (this.mr.ciStatusFaviconPath) {
-        setFavicon(this.mr.ciStatusFaviconPath);
+        return setFaviconOverlay(this.mr.ciStatusFaviconPath);
       }
+      return Promise.resolve();
     },
     fetchDeployments() {
       return this.service.fetchDeployments()
@@ -265,10 +266,10 @@ export default {
       />
 
       <section
-        v-if="mr.maintainerEditAllowed"
+        v-if="mr.allowCollaboration"
         class="mr-info-list mr-links"
       >
-        {{ s__("mrWidget|Allows edits from maintainers") }}
+        {{ s__("mrWidget|Allows commits from members who can merge to the target branch") }}
       </section>
 
       <mr-widget-related-links
@@ -282,8 +283,8 @@ export default {
       />
     </div>
     <div
-      class="mr-widget-footer"
       v-if="shouldRenderMergeHelp"
+      class="mr-widget-footer"
     >
       <mr-widget-merge-help />
     </div>

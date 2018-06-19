@@ -1,6 +1,10 @@
 module Gitlab
   module Ci
     class Trace
+      include ExclusiveLeaseGuard
+
+      LEASE_TIMEOUT = 1.hour
+
       ArchiveError = Class.new(StandardError)
 
       attr_reader :job
@@ -105,6 +109,14 @@ module Gitlab
       end
 
       def archive!
+        try_obtain_lease do
+          unsafe_archive!
+        end
+      end
+
+      private
+
+      def unsafe_archive!
         raise ArchiveError, 'Already archived' if trace_artifact
         raise ArchiveError, 'Job is not finished yet' unless job.complete?
 
@@ -125,8 +137,6 @@ module Gitlab
           end
         end
       end
-
-      private
 
       def archive_stream!(stream)
         clone_file!(stream, JobArtifactUploader.workhorse_upload_path) do |clone_path|
@@ -205,6 +215,16 @@ module Gitlab
 
       def trace_artifact
         job.job_artifacts_trace
+      end
+
+      # For ExclusiveLeaseGuard concern
+      def lease_key
+        @lease_key ||= "trace:archive:#{job.id}"
+      end
+
+      # For ExclusiveLeaseGuard concern
+      def lease_timeout
+        LEASE_TIMEOUT
       end
     end
   end

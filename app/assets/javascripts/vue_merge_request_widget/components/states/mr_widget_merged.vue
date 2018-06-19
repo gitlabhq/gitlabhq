@@ -4,7 +4,7 @@
   import loadingIcon from '~/vue_shared/components/loading_icon.vue';
   import { s__, __ } from '~/locale';
   import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-  import mrWidgetAuthorTime from '../../components/mr_widget_author_time.vue';
+  import MrWidgetAuthorTime from '../../components/mr_widget_author_time.vue';
   import statusIcon from '../mr_widget_status_icon.vue';
   import eventHub from '../../event_hub';
 
@@ -14,7 +14,7 @@
       tooltip,
     },
     components: {
-      mrWidgetAuthorTime,
+      MrWidgetAuthorTime,
       loadingIcon,
       statusIcon,
       ClipboardButton,
@@ -116,44 +116,44 @@
           :date-readable="mr.metrics.readableMergedAt"
         />
         <a
-          v-if="mr.canRevertInCurrentMR"
           v-tooltip
+          v-if="mr.canRevertInCurrentMR"
+          :title="revertTitle"
           class="btn btn-close btn-sm"
           href="#modal-revert-commit"
           data-toggle="modal"
           data-container="body"
-          :title="revertTitle"
         >
           {{ revertLabel }}
         </a>
         <a
-          v-else-if="mr.revertInForkPath"
           v-tooltip
-          class="btn btn-close btn-sm"
-          data-method="post"
+          v-else-if="mr.revertInForkPath"
           :href="mr.revertInForkPath"
           :title="revertTitle"
+          class="btn btn-close btn-sm"
+          data-method="post"
         >
           {{ revertLabel }}
         </a>
         <a
-          v-if="mr.canCherryPickInCurrentMR"
           v-tooltip
+          v-if="mr.canCherryPickInCurrentMR"
+          :title="cherryPickTitle"
           class="btn btn-default btn-sm"
           href="#modal-cherry-pick-commit"
           data-toggle="modal"
           data-container="body"
-          :title="cherryPickTitle"
         >
           {{ cherryPickLabel }}
         </a>
         <a
-          v-else-if="mr.cherryPickInForkPath"
           v-tooltip
-          class="btn btn-default btn-sm"
-          data-method="post"
+          v-else-if="mr.cherryPickInForkPath"
           :href="mr.cherryPickInForkPath"
           :title="cherryPickTitle"
+          class="btn btn-default btn-sm"
+          data-method="post"
         >
           {{ cherryPickLabel }}
         </a>
@@ -173,7 +173,7 @@
           </a>
           <clipboard-button
             :title="__('Copy commit SHA to clipboard')"
-            :text="mr.shortMergeCommitSha"
+            :text="mr.mergeCommitSha"
             css-class="btn-default btn-transparent btn-clipboard js-mr-merged-copy-sha"
           />
         </p>
@@ -186,10 +186,10 @@
         >
           <span>{{ s__("mrWidget|You can remove source branch now") }}</span>
           <button
-            @click="removeSourceBranch"
             :disabled="isMakingRequest"
             type="button"
             class="btn btn-sm btn-default js-remove-branch-button"
+            @click="removeSourceBranch"
           >
             {{ s__("mrWidget|Remove Source Branch") }}
           </button>

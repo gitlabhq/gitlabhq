@@ -10,7 +10,7 @@
 10 => Guest access
 20 => Reporter access
 30 => Developer access
-40 => Master access
+40 => Maintainer access
 50 => Owner access # Only valid for groups
 ```
 

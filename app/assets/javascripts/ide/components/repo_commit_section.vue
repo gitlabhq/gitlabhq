@@ -6,7 +6,7 @@ import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 import CommitFilesList from './commit_sidebar/list.vue';
 import EmptyState from './commit_sidebar/empty_state.vue';
 import * as consts from '../stores/modules/commit/constants';
-import { activityBarViews } from '../constants';
+import { activityBarViews, stageKeys } from '../constants';
 
 export default {
   components: {
@@ -27,10 +27,13 @@ export default {
       'unusedSeal',
     ]),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
-    ...mapGetters(['lastOpenedFile', 'hasChanges', 'someUncommitedChanges']),
+    ...mapGetters(['lastOpenedFile', 'hasChanges', 'someUncommitedChanges', 'activeFile']),
     ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled']),
     showStageUnstageArea() {
       return !!(this.someUncommitedChanges || this.lastCommitMsg || !this.unusedSeal);
+    },
+    activeFileKey() {
+      return this.activeFile ? this.activeFile.key : null;
     },
   },
   watch: {
@@ -44,6 +47,7 @@ export default {
     if (this.lastOpenedFile) {
       this.openPendingTab({
         file: this.lastOpenedFile,
+        keyPrefix: this.lastOpenedFile.changed ? stageKeys.unstaged : stageKeys.staged,
       })
         .then(changeViewer => {
           if (changeViewer) {
@@ -62,6 +66,7 @@ export default {
       return this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH).then(() => this.commitChanges());
     },
   },
+  stageKeys,
 };
 </script>
 
@@ -72,8 +77,8 @@ export default {
     <deprecated-modal
       id="ide-create-branch-modal"
       :primary-button-label="__('Create new branch')"
-      kind="success"
       :title="__('Branch has changed')"
+      kind="success"
       @submit="forceCreateNewBranch"
     >
       <template slot="body">
@@ -85,22 +90,28 @@ export default {
       v-if="showStageUnstageArea"
     >
       <commit-files-list
+        :title="__('Unstaged')"
+        :key-prefix="$options.stageKeys.unstaged"
+        :file-list="changedFiles"
+        :action-btn-text="__('Stage all changes')"
+        :active-file-key="activeFileKey"
+        action="stageAllChanges"
+        action-btn-icon="mobile-issue-close"
+        item-action-component="stage-button"
         class="is-first"
         icon-name="unstaged"
-        :title="__('Unstaged')"
-        :file-list="changedFiles"
-        action="stageAllChanges"
-        :action-btn-text="__('Stage all')"
-        item-action-component="stage-button"
       />
       <commit-files-list
-        icon-name="staged"
         :title="__('Staged')"
+        :key-prefix="$options.stageKeys.staged"
         :file-list="stagedFiles"
-        action="unstageAllChanges"
-        :action-btn-text="__('Unstage all')"
-        item-action-component="unstage-button"
+        :action-btn-text="__('Unstage all changes')"
         :staged-list="true"
+        :active-file-key="activeFileKey"
+        action="unstageAllChanges"
+        action-btn-icon="history"
+        item-action-component="unstage-button"
+        icon-name="staged"
       />
     </template>
     <empty-state

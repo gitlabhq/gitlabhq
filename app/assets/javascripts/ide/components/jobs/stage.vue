@@ -48,6 +48,9 @@ export default {
     toggleCollapsed() {
       this.$emit('toggleCollapsed', this.stage.id);
     },
+    clickViewLog(job) {
+      this.$emit('clickViewLog', job);
+    },
   },
 };
 </script>
@@ -57,10 +60,10 @@ export default {
     class="ide-stage card prepend-top-default"
   >
     <div
-      class="card-header"
       :class="{
         'border-bottom-0': stage.isCollapsed
       }"
+      class="card-header"
       @click="toggleCollapsed"
     >
       <ci-icon
@@ -69,10 +72,10 @@ export default {
       />
       <strong
         v-tooltip="showTooltip"
+        ref="stageTitle"
         :title="showTooltip ? stage.name : null"
         data-container="body"
         class="prepend-left-8 ide-stage-title"
-        ref="stageTitle"
       >
         {{ stage.name }}
       </strong>
@@ -90,8 +93,8 @@ export default {
       />
     </div>
     <div
-      class="card-body"
       v-show="!stage.isCollapsed"
+      class="card-body"
     >
       <loading-icon
         v-if="showLoadingIcon"
@@ -101,6 +104,7 @@ export default {
           v-for="job in stage.jobs"
           :key="job.id"
           :job="job"
+          @clickViewLog="clickViewLog"
         />
       </template>
     </div>

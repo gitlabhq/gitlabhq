@@ -1,8 +1,6 @@
 module Gitlab
   module Git
     class HooksService
-      PreReceiveError = Class.new(StandardError)
-
       attr_accessor :oldrev, :newrev, :ref
 
       def execute(pusher, repository, oldrev, newrev, ref)

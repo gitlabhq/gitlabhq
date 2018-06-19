@@ -158,22 +158,23 @@ export default {
   <div class="dropdown">
     <button
       v-tooltip
+      id="stageDropdown"
+      ref="dropdown"
       :class="triggerButtonClass"
-      @click="onClickStage"
-      class="mini-pipeline-graph-dropdown-toggle js-builds-dropdown-button"
       :title="stage.title"
+      class="mini-pipeline-graph-dropdown-toggle js-builds-dropdown-button"
       data-placement="top"
       data-toggle="dropdown"
+      data-display="static"
       type="button"
-      id="stageDropdown"
       aria-haspopup="true"
       aria-expanded="false"
-      ref="dropdown"
+      @click="onClickStage"
     >
 
       <span
-        aria-hidden="true"
         :aria-label="stage.title"
+        aria-hidden="true"
       >
         <icon :name="borderlessIcon" />
       </span>

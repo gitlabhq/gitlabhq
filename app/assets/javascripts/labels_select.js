@@ -426,7 +426,7 @@ export default class LabelsSelect {
     const tpl = _.template([
       '<% _.each(labels, function(label){ %>',
       '<a href="<%- issueUpdateURL.slice(0, issueUpdateURL.lastIndexOf("/")) %>?label_name[]=<%- encodeURIComponent(label.title) %>">',
-      '<span class="label has-tooltip color-label" title="<%- label.description %>" style="background-color: <%- label.color %>; color: <%- label.text_color %>;">',
+      '<span class="badge label has-tooltip color-label" title="<%- label.description %>" style="background-color: <%- label.color %>; color: <%- label.text_color %>;">',
       '<%- label.title %>',
       '</span>',
       '</a>',

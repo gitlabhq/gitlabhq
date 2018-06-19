@@ -143,6 +143,9 @@ describe 'New/edit issue', :js do
         click_link label.title
         click_link label2.title
       end
+
+      find('.js-issuable-form-dropdown.js-label-select').click
+
       page.within '.js-label-select' do
         expect(page).to have_content label.title
       end

@@ -1,4 +1,4 @@
-.board{ ":class" => '{ "is-draggable": !list.preset, "is-expandable": list.isExpandable, "is-collapsed": !list.isExpanded }',
+.board{ ":class" => '{ "is-draggable": !list.preset, "is-expandable": list.isExpandable, "is-collapsed": !list.isExpanded, "board-type-assignee": list.type === "assignee" }',
   ":data-id" => "list.id" }
   .board-inner
     %header.board-header{ ":class" => '{ "has-border": list.label && list.label.color }', ":style" => "{ borderTopColor: (list.label && list.label.color ? list.label.color : null) }", "@click" => "toggleExpanded($event)" }
@@ -7,9 +7,17 @@
           ":class": "{ \"fa-caret-down\": list.isExpanded, \"fa-caret-right\": !list.isExpanded }",
           "aria-hidden": "true" }
 
+        %a.user-avatar-link.js-no-trigger{ "v-if": "list.type === \"assignee\"", ":href": "list.assignee.path" }
+          -# haml-lint:disable AltText
+          %img.avatar.s20.has-tooltip{ height: "20", width: "20", ":src": "list.assignee.avatar", ":alt": "list.assignee.name" }
+
         %span.board-title-text.has-tooltip{ "v-if": "list.type !== \"label\"",
-          ":title" => '(list.label ? list.label.description : "")', data: { container: "body" } }
+          ":title" => '((list.label && list.label.description) || list.title || "")', data: { container: "body" } }
           {{ list.title }}
+
+        %span.board-title-sub-text.prepend-left-5.has-tooltip{ "v-if": "list.type === \"assignee\"",
+          ":title" => '(list.assignee && list.assignee.username || "")' }
+          @{{ list.assignee.username }}
 
         %span.has-tooltip{ "v-if": "list.type === \"label\"",
           ":title" => '(list.label ? list.label.description : "")',

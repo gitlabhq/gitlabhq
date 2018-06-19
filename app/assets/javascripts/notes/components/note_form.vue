@@ -165,15 +165,15 @@ export default {
         :add-spacing-classes="false">
         <textarea
           id="note_note"
+          ref="textarea"
+          slot="textarea"
+          :data-supports-quick-actions="!isEditing"
+          v-model="updatedNoteBody"
           name="note[note]"
           class="note-textarea js-gfm-input
 js-autosize markdown-area js-vue-issue-note-form js-vue-textarea"
-          :data-supports-quick-actions="!isEditing"
           aria-label="Description"
-          v-model="updatedNoteBody"
-          ref="textarea"
-          slot="textarea"
-          placeholder="Write a comment or drag your files here..."
+          placeholder="Write a comment or drag your files here…"
           @keydown.meta.enter="handleUpdate()"
           @keydown.ctrl.enter="handleUpdate()"
           @keydown.up="editMyLastNote()"
@@ -182,23 +182,23 @@ js-autosize markdown-area js-vue-issue-note-form js-vue-textarea"
       </markdown-field>
       <div class="note-form-actions clearfix">
         <button
-          type="button"
-          @click="handleUpdate()"
           :disabled="isDisabled"
-          class="js-vue-issue-save btn btn-save">
+          type="button"
+          class="js-vue-issue-save btn btn-save"
+          @click="handleUpdate()">
           {{ saveButtonTitle }}
         </button>
         <button
           v-if="note.resolvable"
-          @click.prevent="handleUpdate(true)"
           class="btn btn-nr btn-default append-right-10 js-comment-resolve-button"
+          @click.prevent="handleUpdate(true)"
         >
           {{ resolveButtonTitle }}
         </button>
         <button
-          @click="cancelHandler()"
           class="btn btn-cancel note-edit-cancel"
-          type="button">
+          type="button"
+          @click="cancelHandler()">
           Cancel
         </button>
       </div>
