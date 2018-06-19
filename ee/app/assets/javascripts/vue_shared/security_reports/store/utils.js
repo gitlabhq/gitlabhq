@@ -272,7 +272,7 @@ export const textBuilder = (
           '%{type} detected %{vulnerabilityCount} vulnerabilities for the source branch only',
           newIssues,
         ),
-        { type: type, vulnerabilityCount: newIssues },
+        { type, vulnerabilityCount: newIssues },
       );
     }
 
@@ -291,7 +291,7 @@ export const textBuilder = (
           '%{type} detected %{vulnerabilityCount} new vulnerabilities',
           newIssues,
         ),
-        { type: type, vulnerabilityCount: newIssues },
+        { type, vulnerabilityCount: newIssues },
       );
     }
 
@@ -303,7 +303,7 @@ export const textBuilder = (
           '%{type} detected %{vulnerabilityCount} new vulnerabilities',
           newIssues,
         ),
-        { type: type, vulnerabilityCount: newIssues },
+        { type, vulnerabilityCount: newIssues },
       )}
       ${n__('and 1 fixed vulnerability', 'and %d fixed vulnerabilities', resolvedIssues)}`;
     }
@@ -316,7 +316,7 @@ export const textBuilder = (
           '%{type} detected %{vulnerabilityCount} fixed vulnerabilities',
           resolvedIssues,
         ),
-        { type: type, vulnerabilityCount: resolvedIssues },
+        { type, vulnerabilityCount: resolvedIssues },
       );
     }
   }
