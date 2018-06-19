@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Pipeline::Chain::Create do
-  set(:project) { create(:project, :repository) }
+  set(:project) { create(:project) }
   set(:user) { create(:user) }
 
   let(:pipeline) do
