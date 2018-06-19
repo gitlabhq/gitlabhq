@@ -23,7 +23,7 @@
       = link_to pluralize(milestone.total_issues_count(current_user), 'Issue'), issues_path
       &middot;
       = link_to pluralize(milestone.merge_requests.size, 'Merge Request'), merge_requests_path
-      .float-right.light #{milestone.percent_complete(current_user)}% complete
+      .float-lg-right.light #{milestone.percent_complete(current_user)}% complete
     .col-sm-2
       .milestone-actions.d-flex.justify-content-sm-start.justify-content-md-end
         - if @project
