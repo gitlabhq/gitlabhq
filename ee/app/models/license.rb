@@ -31,7 +31,6 @@ class License < ActiveRecord::Base
     repository_mirrors
     repository_size_limit
     scoped_issue_board
-    pseudonymizer
   ].freeze
 
   EEP_FEATURES = EES_FEATURES + %i[
@@ -74,6 +73,7 @@ class License < ActiveRecord::Base
     ide
     chatops
     pod_logs
+    pseudonymizer
   ].freeze
 
   # List all features available for early adopters,

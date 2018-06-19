@@ -209,34 +209,6 @@ tables:
     - updated_at
     pseudo:
     - id
-  merge_request_diff_commits:
-    whitelist:
-    - authored_date
-    - committed_date
-    - merge_request_diff_id
-    - relative_order
-    - author_name
-    - author_email
-    - committer_name
-    - committer_email
-    pseudo:
-    - merge_request_diff_id
-    - author_name
-    - author_email
-    - committer_name
-    - committer_email
-  merge_request_diff_files:
-    whitelist:
-    - merge_request_diff_id
-    - relative_order
-    - new_file
-    - renamed_file
-    - deleted_file
-    - too_large
-    - a_mode
-    - b_mode
-    pseudo:
-    - merge_request_diff_id
   merge_request_diffs:
     whitelist:
     - id

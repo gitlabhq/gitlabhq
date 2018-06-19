@@ -5,7 +5,7 @@ describe Pseudonymizer::Dumper do
   let(:base_dir) { Dir.mktmpdir }
   let(:options) do
     Pseudonymizer::Options.new(
-      config: YAML.load_file(Rails.root.join(Gitlab.config.pseudonymizer.manifest))
+      config: YAML.load_file(Gitlab.config.pseudonymizer.manifest)
     )
   end
   subject(:pseudo) { described_class.new(options) }

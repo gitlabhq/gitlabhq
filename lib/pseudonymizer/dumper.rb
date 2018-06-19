@@ -4,7 +4,69 @@ require 'csv'
 require 'yaml'
 
 module Pseudonymizer
-  PAGE_SIZE = ENV.fetch('PSEUDONYMIZER_BATCH', 100_000)
+  class Pager
+    PAGE_SIZE = ENV.fetch('PSEUDONYMIZER_BATCH', 100_000)
+
+    def initialize(table, columns)
+      @table = table
+      @columns = columns
+    end
+
+    def pages(&block)
+      if @columns.include?("id")
+        # optimize the pagination using WHERE id > ?
+        pages_per_id(&block)
+      else
+        # fallback to `LIMIT ? OFFSET ?` when "id" is unavailable
+        pages_per_offset(&block)
+      end
+    end
+
+    def pages_per_id(&block)
+      id_offset = 0
+
+      loop do
+        # a page of results
+        results = ActiveRecord::Base.connection.exec_query(<<-SQL.squish)
+          SELECT #{@columns.join(",")}
+          FROM #{@table}
+          WHERE id > #{id_offset}
+          ORDER BY id
+          LIMIT #{PAGE_SIZE}
+        SQL
+        Rails.logger.debug("#{self.class.name} fetch ids [#{id_offset}, +#{PAGE_SIZE}[")
+        break if results.empty?
+
+        id_offset = results.last["id"].to_i
+        yield results
+
+        break if results.count < PAGE_SIZE
+      end
+    end
+
+    def pages_per_offset(&block)
+      page = 0
+
+      loop do
+        offset = page * PAGE_SIZE
+
+        # a page of results
+        results = ActiveRecord::Base.connection.exec_query(<<-SQL.squish)
+          SELECT #{@columns.join(",")}
+          FROM #{@table}
+          ORDER BY #{@columns.join(",")}
+          LIMIT #{PAGE_SIZE} OFFSET #{offset}
+        SQL
+        Rails.logger.debug("#{self.class.name} fetching offset [#{offset}, #{offset + PAGE_SIZE}[")
+        break if results.empty?
+
+        page += 1
+        yield results
+
+        break if results.count < PAGE_SIZE
+      end
+    end
+  end
 
   class Anon
     def initialize(fields)
@@ -47,7 +109,7 @@ module Pseudonymizer
     end
 
     def tables_to_csv
-      reset!
+      return @output_files if @output_files
 
       tables = config[:tables]
       FileUtils.mkdir_p(output_dir) unless File.directory?(output_dir)
@@ -94,25 +156,13 @@ module Pseudonymizer
     # yield every results, pagined, anonymized
     def table_page_results(table, whitelist_columns, pseudonymity_columns)
       anonymizer = Anon.new(pseudonymity_columns)
-      page = 0
+      pager = Pager.new(table, whitelist_columns)
 
       Enumerator.new do |yielder|
-        loop do
-          offset = page * PAGE_SIZE
-          has_more = false
-
-          sql = "SELECT #{whitelist_columns.join(",")} FROM #{table} LIMIT #{PAGE_SIZE} OFFSET #{offset}"
-
-          # a page of results
-          results = ActiveRecord::Base.connection.exec_query(sql)
-          anonymizer.anonymize(results).each do |result|
-            has_more = true
+        pager.pages do |page|
+          anonymizer.anonymize(page).each do |result|
             yielder << result
           end
-
-          raise StopIteration unless has_more
-
-          page += 1
         end
       end.lazy
     end

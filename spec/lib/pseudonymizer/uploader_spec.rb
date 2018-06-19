@@ -4,7 +4,7 @@ describe Pseudonymizer::Uploader do
   let(:base_dir) { Dir.mktmpdir }
   let(:options) do
     Pseudonymizer::Options.new(
-      config: YAML.load_file(Rails.root.join(Gitlab.config.pseudonymizer.manifest))
+      config: YAML.load_file(Gitlab.config.pseudonymizer.manifest)
     )
   end
   let(:remote_directory) { subject.send(:remote_directory) }
