@@ -1,8 +1,30 @@
 # Pseudonymizer
 
-## Object Storage Settings
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/5532) in [GitLab Ultimate][ee] 11.1.
 
-**In Omnibus installations:**
+As GitLab's database hosts sensitive information, using it unfiltered for analytics
+implies high security requirements. To help alleviate this constraint, the Pseudonymizer
+service is used to export GitLab's data in a pseudonymized way.
+
+CAUTION: **Warning:**
+This process is not impervious. If the source data is available, it's possible for
+a user to correlate data to the pseudonymized version.
+
+The Pseudonymizer currently uses `HMAC(SHA256)` to mutate fields that shouldn't
+be textually exported. This ensures that:
+
+- the end-user of the data source cannot infer/revert the pseudonymized fields
+- the referential integrity is maintained
+
+## Configuration
+
+To configure the pseudonymizer, you need to:
+
+- Provide a manifest file that describes which fields should be included or
+  pseudonymized ([example `manifest.yml` file]()).
+- Use an object storage
+
+**For Omnibus installations:**
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following lines by replacing with
    the values you want:
@@ -19,8 +41,8 @@
     }
     ```
 
->**Note:**
-If you are using AWS IAM profiles, be sure to omit the AWS access key and secret access key/value pairs.
+    NOTE: **Note:**
+    If you are using AWS IAM profiles, be sure to omit the AWS access key and secret access key/value pairs.
 
     ```ruby
     gitlab_rails['pseudonymizer_upload_connection'] = {
@@ -30,11 +52,12 @@ If you are using AWS IAM profiles, be sure to omit the AWS access key and secret
     }
     ```
 
-1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure)
+   for the changes to take effect.
 
 ---
 
-**In installations from source:**
+**For installations from source:**
 
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
    lines:
@@ -52,4 +75,29 @@ If you are using AWS IAM profiles, be sure to omit the AWS access key and secret
           region: eu-central-1
     ```
 
-1. Save the file and [restart GitLab][] for the changes to take effect.
+1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source)
+   for the changes to take effect.
+
+## Usage
+
+You can optionally run the pseudonymizer using the following environment variables:
+
+- `PSEUDONYMIZER_OUTPUT_DIR` - where to store the output CSV files (defaults to `/tmp`)
+- `PSEUDONYMIZER_BATCH` - the batch size when querying the DB (defaults to `100000`)
+
+```bash
+## Omnibus
+sudo gitlab-rake gitlab:db:pseudonymizer
+
+## Source
+sudo -u git -H bundle exec rake gitlab:db:pseudonymizer RAILS_ENV=production
+```
+
+This will produce some CSV files that might be very large, so make sure the
+`PSEUDONYMIZER_OUTPUT_DIR` has sufficient space. As a rule of thumb, at least
+10% of the database size is recommended.
+
+After the pseudonymizer has run, the output CSV files should be uploaded to the
+configured object storage.
+
+[ee]: https://about.gitlab.com/pricing/
