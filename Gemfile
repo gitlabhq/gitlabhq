@@ -222,7 +222,7 @@ gem 'kubeclient', '~> 3.0'
 gem 'd3_rails', '~> 3.5.0'
 
 # Sanitize user input
-gem 'sanitize', '~> 2.0'
+gem 'sanitize', '~> 4.6.5'
 gem 'babosa', '~> 1.0.2'
 
 # Sanitizes SVG input
