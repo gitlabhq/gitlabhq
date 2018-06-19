@@ -638,6 +638,10 @@ ul.notes {
   .new & {
     margin-top: -10px;
   }
+
+  .parallel .new & {
+    margin-top: initial;
+  }
 }
 
 .discussion-body,
