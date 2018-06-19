@@ -64,8 +64,7 @@ module Pseudonymizer
     private
 
     def output_filename(basename = nil, ext = "csv.gz")
-      file_timestamp = "#{basename}.#{ext}"
-      File.join(output_dir, file_timestamp)
+      File.join(output_dir, "#{basename}.#{ext}")
     end
 
     def schema_to_yml
@@ -147,7 +146,7 @@ module Pseudonymizer
     end
 
     def write_to_csv_file(table, contents)
-      file_path = output_filename(table, "csv.gz")
+      file_path = output_filename(table)
 
       Rails.logger.info "#{self.class.name} writing #{table} to #{file_path}."
       Zlib::GzipWriter.open(file_path) do |io|

@@ -13,7 +13,7 @@ module Pseudonymizer
     end
 
     def upload_dir
-      File.join(start_at.iso8601)
+      start_at.iso8601
     end
   end
 end

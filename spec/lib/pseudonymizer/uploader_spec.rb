@@ -23,6 +23,10 @@ describe Pseudonymizer::Uploader do
     mock_file("file_list.json")
   end
 
+  after do
+    FileUtils.rm_rf(base_dir)
+  end
+
   describe "#upload" do
     it "upload all file in the directory" do
       subject.upload
@@ -37,9 +41,5 @@ describe Pseudonymizer::Uploader do
 
       expect(Dir[File.join(base_dir, "*")].length).to eq(0)
     end
-  end
-
-  after do
-    FileUtils.rm_rf(base_dir)
   end
 end

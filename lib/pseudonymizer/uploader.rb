@@ -34,7 +34,10 @@ module Pseudonymizer
       return unless File.exist?(@output_dir)
 
       progress_output.print "Deleting tmp directory #{@output_dir} ... "
-      progress_output.puts FileUtils.rm_rf(@output_dir) ? "done".color(:green) : "failed".color(:red)
+      FileUtils.rm_rf(@output_dir)
+      progress_output.puts "done".color(:green)
+    rescue
+      progress_output.puts "failed".color(:red)
     end
 
     private
