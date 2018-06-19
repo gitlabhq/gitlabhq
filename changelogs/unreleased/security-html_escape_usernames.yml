@@ -1,0 +1,5 @@
+---
+title: HTML escape the name of the user in ProjectsHelper#link_to_member
+merge_request:
+author:
+type: security
