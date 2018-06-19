@@ -58,7 +58,7 @@ class DiffFileEntity < Grape::Entity
 
   expose :load_collapsed_diff_url, if: -> (diff_file, options) { diff_file.text? && options[:merge_request] } do |diff_file|
     merge_request = options[:merge_request]
-    project = merge_request.source_project
+    project = merge_request.target_project
 
     next unless project
 
@@ -97,7 +97,7 @@ class DiffFileEntity < Grape::Entity
 
     next unless merge_request.source_project
 
-    project_edit_blob_path(merge_request.source_project,
+    project_edit_blob_path(merge_request.target_project,
       tree_join(merge_request.source_branch, diff_file.new_path),
       options)
   end
@@ -105,9 +105,11 @@ class DiffFileEntity < Grape::Entity
   expose :view_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
     merge_request = options[:merge_request]
 
-    if merge_request.source_project
-      project_blob_path(merge_request.source_project, tree_join(diff_file.content_sha, diff_file.new_path))
-    end
+    project = merge_request.target_project
+
+    next unless project
+
+    project_blob_path(project, tree_join(diff_file.content_sha, diff_file.new_path))
   end
 
   expose :replaced_view_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
@@ -115,10 +117,11 @@ class DiffFileEntity < Grape::Entity
     image_replaced = diff_file.old_content_sha && diff_file.old_content_sha != diff_file.content_sha
 
     merge_request = options[:merge_request]
+    project = merge_request.target_project
 
-    if merge_request.source_project
-      project_blob_path(merge_request.source_project, tree_join(diff_file.old_content_sha, diff_file.old_path)) if image_diff && image_replaced
-    end
+    next unless project
+
+    project_blob_path(project, tree_join(diff_file.old_content_sha, diff_file.old_path)) if image_diff && image_replaced
   end
 
   expose :context_lines_path, if: -> (diff_file, _) { diff_file.text? } do |diff_file|
