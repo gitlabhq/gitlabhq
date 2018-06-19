@@ -34,7 +34,7 @@ module Pseudonymizer
     attr_accessor :config, :output_dir
 
     def initialize(options)
-      @config = options.config
+      @config = options.config.deep_symbolize_keys
       @output_dir = options.output_dir
       @start_at = options.start_at
 
@@ -49,15 +49,15 @@ module Pseudonymizer
     def tables_to_csv
       reset!
 
-      tables = config["tables"]
+      tables = config[:tables]
       FileUtils.mkdir_p(output_dir) unless File.directory?(output_dir)
 
       schema_to_yml
       @output_files = tables.map do |k, v|
-        table_to_csv(k, v['whitelist'], v['pseudo'])
-      end
-      file_list_to_json
+        table_to_csv(k, v[:whitelist], v[:pseudo])
+      end.compact
 
+      file_list_to_json
       @output_files
     end
 
@@ -69,15 +69,13 @@ module Pseudonymizer
 
     def schema_to_yml
       file_path = output_filename("schema", "yml")
-      File.open(file_path, 'w') { |file| file.write(@schema.to_yaml) }
+      File.write(file_path, @schema.to_yaml)
     end
 
     def file_list_to_json
       file_path = output_filename("file_list", "json")
-      File.open(file_path, 'w') do |file|
-        relative_files = @output_files.map(&File.method(:basename))
-        file.write(relative_files.to_json)
-      end
+      relative_files = @output_files.map(&File.method(:basename))
+      File.write(file_path, relative_files.to_json)
     end
 
     def table_to_csv(table, whitelist_columns, pseudonymity_columns)
@@ -120,20 +118,24 @@ module Pseudonymizer
     end
 
     def table_to_schema(table)
+      whitelisted = ->(table) { @config.dig(:tables, table, :whitelist) }
+      pseudonymized = ->(table) { @config.dig(:tables, table, :pseudo) }
+
       type_results = ActiveRecord::Base.connection.columns(table)
       type_results = type_results.select do |c|
-        @config["tables"][table]["whitelist"].include?(c.name)
+        whitelisted[table].include?(c.name)
       end
 
       type_results = type_results.map do |c|
         data_type = c.sql_type
 
-        if @config["tables"][table]["pseudo"].include?(c.name)
+        if pseudonymized[table].include?(c.name)
           data_type = "character varying"
         end
 
         { name: c.name, data_type: data_type }
       end
+
       set_schema_column_types(table, type_results)
     end
 
@@ -141,24 +143,25 @@ module Pseudonymizer
       type_results.each do |type_result|
         @schema[table][type_result[:name]] = type_result[:data_type]
       end
+
       # hard coded because all mapping keys in GL are id
       @schema[table]["gl_mapping_key"] = "id"
     end
 
     def write_to_csv_file(table, contents)
       file_path = output_filename(table)
+      headers = contents.peek.keys
 
       Rails.logger.info "#{self.class.name} writing #{table} to #{file_path}."
       Zlib::GzipWriter.open(file_path) do |io|
-        csv = CSV.new(io)
-        contents.with_index do |row, i|
-          csv << row.keys if i == 0 # header
-          csv << row.values
-        end
-        csv.close
+        csv = CSV.new(io, headers: headers, write_headers: true)
+        contents.each { |row| csv << row.values }
       end
 
       file_path
+    rescue StopIteration
+      Rails.logger.info "#{self.class.name} table #{table} is empty."
+      nil
     end
   end
 end

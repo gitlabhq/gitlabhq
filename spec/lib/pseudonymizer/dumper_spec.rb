@@ -21,10 +21,10 @@ describe Pseudonymizer::Dumper do
   describe 'Pseudo tables' do
     it 'outputs project tables to csv' do
       column_names = %w(id name path description)
-      pseudo.config["tables"] = {
-        "projects" => {
-          "whitelist" => column_names,
-          "pseudo" => %w(id)
+      pseudo.config[:tables] = {
+        projects: {
+          whitelist: column_names,
+          pseudo: %w(id)
         }
       }
 

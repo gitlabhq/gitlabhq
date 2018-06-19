@@ -65,6 +65,6 @@ module StubObjectStorage
 
   def stub_object_storage_pseudonymizer
     stub_object_storage(connection_params: Pseudonymizer::Uploader.object_store_credentials,
-                        remote_directory: Gitlab.config.pseudonymizer.upload.remote_directory)
+                        remote_directory: Pseudonymizer::Uploader.remote_directory)
   end
 end
