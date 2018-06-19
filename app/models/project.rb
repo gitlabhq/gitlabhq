@@ -26,12 +26,9 @@ class Project < ActiveRecord::Base
   include WithUploads
   include BatchDestroyDependentAssociations
   extend Gitlab::Cache::RequestCache
-<<<<<<< HEAD
 
   # EE specific modules
   prepend EE::Project
-=======
->>>>>>> upstream/master
 
   extend Gitlab::ConfigHelper
 
