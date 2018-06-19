@@ -30,7 +30,7 @@ _This notice should stay as the first item in the CONTRIBUTING.md file._
   - [Type labels (~"feature proposal", ~bug, ~customer, etc.)](#type-labels-feature-proposal-bug-customer-etc)
   - [Subject labels (~wiki, ~"container registry", ~ldap, ~api, etc.)](#subject-labels-wiki-container-registry-ldap-api-etc)
   - [Team labels (~"CI/CD", ~Discussion, ~Quality, ~Platform, etc.)](#team-labels-cicd-discussion-quality-platform-etc)
-  - [Milestone labels (~Deliverable, ~Stretch, ~"Next Patch Release")](#milestone-labels-deliverable-stretch-next-patch-release)
+  - [Release Scoping labels (~Deliverable, ~Stretch, ~"Next Patch Release")](#milestone-labels-deliverable-stretch-next-patch-release)
   - [Priority labels (~P1, ~P2, ~P3 , ~P4)](#bug-priority-labels-p1-p2-p3-p4)
   - [Severity labels (~S1, ~S2, ~S3 , ~S4)](#bug-severity-labels-s1-s2-s3-s4)
   - [Label for community contributors (~"Accepting Merge Requests")](#label-for-community-contributors-accepting-merge-requests)
@@ -132,7 +132,7 @@ Most issues will have labels for at least one of the following:
 - Type: ~"feature proposal", ~bug, ~customer, etc.
 - Subject: ~wiki, ~"container registry", ~ldap, ~api, ~frontend, etc.
 - Team: ~"CI/CD", ~Discussion, ~Quality, ~Platform, etc.
-- Milestone: ~Deliverable, ~Stretch, ~"Next Patch Release"
+- Release Scoping: ~Deliverable, ~Stretch, ~"Next Patch Release"
 - Priority: ~P1, ~P2, ~P3, ~P4
 - Severity: ~S1, ~S2, ~S3, ~S4
 
@@ -193,10 +193,10 @@ indicate if an issue needs backend work, frontend work, or both.
 Team labels are always capitalized so that they show up as the first label for
 any issue.
 
-### Milestone labels (~Deliverable, ~Stretch, ~"Next Patch Release")
+### Release Scoping labels (~Deliverable, ~Stretch, ~"Next Patch Release")
 
-Milestone labels help us clearly communicate expectations of the work for the
-release. There are three levels of Milestone labels:
+Release Scoping labels help us clearly communicate expectations of the work for the
+release. There are three levels of Release Scoping labels:
 
 - ~Deliverable: Issues that are expected to be delivered in the current
   milestone.
