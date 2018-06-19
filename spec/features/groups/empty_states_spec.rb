@@ -110,9 +110,11 @@ feature 'Group empty states' do
 
       context 'group has only a project with issues disabled' do
         let(:project_with_issues_disabled) { create(:empty_project, :issues_disabled, group: group) }
+
         before do
           visit path
         end
+
         it_behaves_like "no projects"
       end
     end

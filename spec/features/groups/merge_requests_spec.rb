@@ -59,6 +59,7 @@ feature 'Group merge requests page' do
 
   describe 'new merge request dropdown' do
     let(:project_with_merge_requests_disabled) { create(:project, :merge_requests_disabled, group: group) }
+
     before do
       visit path
     end

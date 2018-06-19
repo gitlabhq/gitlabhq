@@ -81,11 +81,13 @@ feature 'Group issues page' do
   context 'projects with issues disabled' do
     describe 'issue dropdown' do
       let(:user_in_group) { create(:group_member, :master, user: create(:user), group: group ).user }
+
       before do
         [project, project_with_issues_disabled].each { |project| project.add_master(user_in_group) }
         sign_in(user_in_group)
         visit issues_group_path(group)
       end
+
       it 'shows projects only with issues feature enabled', :js do
         find('.new-project-item-link').click
 
