@@ -55,6 +55,8 @@ module Backup
           backup_project_local(project)
         end
       end
+
+      backup_custom_hooks(project)
     rescue => e
       progress_warn(project, e, 'Failed to backup repo')
     end
@@ -63,8 +65,6 @@ module Backup
       path_to_project_bundle = path_to_bundle(project)
       Gitlab::GitalyClient::RepositoryService.new(project.repository)
         .create_bundle(path_to_project_bundle)
-
-      backup_custom_hooks(project)
     end
 
     def backup_project_local(project)
@@ -73,8 +73,6 @@ module Backup
       end
 
       path_to_project_bundle = path_to_bundle(project)
-
-      backup_custom_hooks(project)
 
       cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path_to_project_repo} bundle create #{path_to_project_bundle} --all)
       output, status = Gitlab::Popen.popen(cmd)
