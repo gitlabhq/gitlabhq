@@ -201,6 +201,10 @@ label {
 }
 
 .gl-show-field-errors {
+  .form-control {
+    height: 34px;
+  }
+
   .gl-field-success-outline {
     border: 1px solid $green-600;
 
