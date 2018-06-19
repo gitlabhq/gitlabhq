@@ -6,9 +6,10 @@ export default {
     discussionResolved() {
       if (this.discussion) {
         const { notes, resolved } = this.discussion;
+
         if (notes) {
           // Decide resolved state using store. Only valid for discussions.
-          return notes.every(note => note.resolved && !note.system);
+          return notes.filter(note => !note.system).every(note => note.resolved);
         }
 
         return resolved;
@@ -24,6 +25,7 @@ export default {
 
         return __('Comment & resolve discussion');
       }
+
       return this.discussionResolved ? __('Unresolve discussion') : __('Resolve discussion');
     },
   },
@@ -32,13 +34,7 @@ export default {
       this.isResolving = true;
       const isResolved = this.discussionResolved || resolvedState;
       const discussion = this.resolveAsThread;
-
-      let endpoint;
-      if (discussion) {
-        endpoint = this.discussion.resolve_path;
-      } else {
-        endpoint = `${this.note.path}/resolve`;
-      }
+      const endpoint = discussion ? this.discussion.resolve_path : `${this.note.path}/resolve`;
 
       this.toggleResolveNote({ endpoint, isResolved, discussion })
         .then(() => {
@@ -46,6 +42,7 @@ export default {
         })
         .catch(() => {
           this.isResolving = false;
+
           const msg = __('Something went wrong while resolving this discussion. Please try again.');
           Flash(msg, 'alert', this.$el);
         });
