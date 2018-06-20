@@ -1,5 +1,7 @@
 <script>
 import { __ } from '~/locale';
+import Icon from '~/vue_shared/components/icon.vue';
+
 /**
  * Port of detail_behavior expand button.
  *
@@ -12,6 +14,9 @@ import { __ } from '~/locale';
  */
 export default {
   name: 'ExpandButton',
+  components: {
+    Icon,
+  },
   data() {
     return {
       isCollapsed: true,
@@ -40,7 +45,10 @@ export default {
       type="button"
       class="text-expander btn-blank"
       @click="onClick">
-      ...
+      <icon
+        :size="12"
+        name="ellipsis_h"
+      />
     </button>
     <span v-if="!isCollapsed">
       <slot name="expanded"></slot>

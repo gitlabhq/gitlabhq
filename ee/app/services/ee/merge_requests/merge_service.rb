@@ -26,6 +26,11 @@ module EE
           return false
         end
 
+        if push_rule.commit_message_blocked?(params[:commit_message])
+          handle_merge_error(log_message: "Commit message contains the forbidden pattern '#{push_rule.commit_message_negative_regex}'", save_message_on_model: true)
+          return false
+        end
+
         unless push_rule.author_email_allowed?(current_user.email)
           handle_merge_error(log_message: "Commit author's email '#{current_user.email}' does not follow the pattern '#{push_rule.author_email_regex}'", save_message_on_model: true)
           return false

@@ -93,14 +93,4 @@ describe Gitlab::Git::RevList do
       expect { |b| rev_list.all_objects(&b) }.to yield_with_args(%w[sha1 sha2])
     end
   end
-
-  context "#missed_ref" do
-    let(:rev_list) { described_class.new(repository, oldrev: 'oldrev', newrev: 'newrev') }
-
-    it 'calls out to `popen`' do
-      stub_popen_rev_list('--max-count=1', 'oldrev', '^newrev', with_lazy_block: false, output: "sha1\nsha2")
-
-      expect(rev_list.missed_ref).to eq(%w[sha1 sha2])
-    end
-  end
 end

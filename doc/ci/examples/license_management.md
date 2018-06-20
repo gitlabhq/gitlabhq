@@ -1,4 +1,4 @@
-# Dependencies license management with GitLab CI/CD
+# Dependencies license management with GitLab CI/CD **[ULTIMATE]**
 
 NOTE: **Note:**
 In order to use this tool, a [GitLab Ultimate][ee] license

@@ -173,7 +173,7 @@
           </a>
           <clipboard-button
             :title="__('Copy commit SHA to clipboard')"
-            :text="mr.shortMergeCommitSha"
+            :text="mr.mergeCommitSha"
             css-class="btn-default btn-transparent btn-clipboard js-mr-merged-copy-sha"
           />
         </p>

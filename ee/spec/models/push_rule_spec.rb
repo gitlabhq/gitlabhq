@@ -82,6 +82,16 @@ describe PushRule do
     end
   end
 
+  describe '#commit_message_blocked?' do
+    subject(:push_rule) { create(:push_rule, commit_message_negative_regex: 'commit')}
+
+    it 'uses multiline regex' do
+      commit_message = "Some git commit feature\n\nSigned-off-by: Someone"
+
+      expect(subject.commit_message_blocked?(commit_message)).to be true
+    end
+  end
+
   describe '#commit_validation?' do
     let(:settings_with_global_default) { %i(reject_unsigned_commits) }
 
@@ -118,6 +128,7 @@ describe PushRule do
 
   methods_and_regexes = {
     commit_message_allowed?: :commit_message_regex,
+    commit_message_blocked?: :commit_message_negative_regex,
     branch_name_allowed?: :branch_name_regex,
     author_email_allowed?: :author_email_regex,
     filename_blacklisted?: :file_name_regex
@@ -219,6 +230,21 @@ describe PushRule do
             expect(push_rule.commit_signature_allowed?(signed_commit)).to eq(true)
           end
         end
+      end
+    end
+  end
+
+  context 'with caching', :request_store do
+    let(:push_rule_second) { create(:push_rule) }
+
+    it 'memoizes the right push rules' do
+      expect(described_class).to receive(:global).twice.and_return(global_push_rule)
+      expect(global_push_rule).to receive(:public_send).with(:commit_committer_check).and_return(false)
+      expect(global_push_rule).to receive(:public_send).with(:reject_unsigned_commits).and_return(true)
+
+      2.times do
+        expect(push_rule.commit_committer_check).to be_falsey
+        expect(push_rule_second.reject_unsigned_commits).to be_truthy
       end
     end
   end

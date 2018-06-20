@@ -468,12 +468,18 @@ module Elasticsearch
         def search_blob(query, type: :all, page: 1, per: 20, options: {})
           page ||= 1
 
+          query = ::Gitlab::Search::Query.new(query) do
+            filter :filename, field: :file_name
+            filter :path, parser: ->(input) { "*#{input.downcase}*" }
+            filter :extension, field: :path, parser: ->(input) { '*.' + input.downcase }
+          end
+
           query_hash = {
             query: {
               bool: {
                 must: {
                   simple_query_string: {
-                    query: query,
+                    query: query.term,
                     default_operator: :and,
                     fields: %w[blob.content blob.file_name]
                   }
@@ -484,6 +490,8 @@ module Elasticsearch
             size: per,
             from: per * (page - 1)
           }
+
+          query_hash[:query][:bool][:filter] += query.elasticsearch_filters(:blob)
 
           if options[:repository_id]
             query_hash[:query][:bool][:filter] << {
