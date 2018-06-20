@@ -3,44 +3,60 @@ require 'rails_helper'
 describe Gitlab::Kubernetes::Helm::InstallCommand do
   let(:application) { create(:clusters_applications_prometheus) }
   let(:namespace) { Gitlab::Kubernetes::Helm::NAMESPACE }
-
-  let(:install_command) do
-    described_class.new(
-      application.name,
-      chart: application.chart,
-      values: application.values
-    )
-  end
+  let(:install_command) { application.install_command }
 
   subject { install_command }
 
-  it_behaves_like 'helm commands' do
-    let(:commands) do
-      <<~EOS
-         helm init --client-only >/dev/null
-         helm install #{application.chart} --name #{application.name} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
-      EOS
-    end
-  end
-
-  context 'with an application with a repository' do
-    let(:ci_runner) { create(:ci_runner) }
-    let(:application) { create(:clusters_applications_runner, runner: ci_runner) }
-    let(:install_command) do
-      described_class.new(
-        application.name,
-        chart: application.chart,
-        values: application.values,
-        repository: application.repository
-      )
-    end
+  context 'for ingress' do
+    let(:application) { create(:clusters_applications_ingress) }
 
     it_behaves_like 'helm commands' do
       let(:commands) do
         <<~EOS
-           helm init --client-only >/dev/null
-           helm repo add #{application.name} #{application.repository}
-           helm install #{application.chart} --name #{application.name} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
+         helm init --client-only >/dev/null
+         helm install #{application.chart} --name #{application.name} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
+        EOS
+      end
+    end
+  end
+
+  context 'for prometheus' do
+    let(:application) { create(:clusters_applications_prometheus) }
+
+    it_behaves_like 'helm commands' do
+      let(:commands) do
+        <<~EOS
+         helm init --client-only >/dev/null
+         helm install #{application.chart} --name #{application.name} --version #{application.version} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
+        EOS
+      end
+    end
+  end
+
+  context 'for runner' do
+    let(:ci_runner) { create(:ci_runner) }
+    let(:application) { create(:clusters_applications_runner, runner: ci_runner) }
+
+    it_behaves_like 'helm commands' do
+      let(:commands) do
+        <<~EOS
+         helm init --client-only >/dev/null
+         helm repo add #{application.name} #{application.repository}
+         helm install #{application.chart} --name #{application.name} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
+        EOS
+      end
+    end
+  end
+
+  context 'for jupyter' do
+    let(:application) { create(:clusters_applications_jupyter) }
+
+    it_behaves_like 'helm commands' do
+      let(:commands) do
+        <<~EOS
+         helm init --client-only >/dev/null
+         helm repo add #{application.name} #{application.repository}
+         helm install #{application.chart} --name #{application.name} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
         EOS
       end
     end
