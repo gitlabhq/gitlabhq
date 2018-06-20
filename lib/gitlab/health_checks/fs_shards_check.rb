@@ -1,5 +1,6 @@
 module Gitlab
   module HealthChecks
+    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1218
     class FsShardsCheck
       extend BaseAbstractCheck
       RANDOM_STRING = SecureRandom.hex(1000).freeze

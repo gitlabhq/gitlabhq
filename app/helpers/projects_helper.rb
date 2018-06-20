@@ -407,6 +407,7 @@ module ProjectsHelper
     @ref || @repository.try(:root_ref)
   end
 
+  # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1235
   def sanitize_repo_path(project, message)
     return '' unless message.present?
 
