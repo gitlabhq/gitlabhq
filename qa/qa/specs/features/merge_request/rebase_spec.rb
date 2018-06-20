@@ -16,7 +16,7 @@ module QA
         merge_request.title = 'Needs rebasing'
       end
 
-      Factory::Repository::Push.fabricate! do |push|
+      Factory::Repository::ProjectPush.fabricate! do |push|
         push.project = project
         push.file_name = "other.txt"
         push.file_content = "New file added!"
