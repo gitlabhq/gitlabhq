@@ -1,107 +1,4 @@
-require 'openssl'
-require 'digest'
-require 'csv'
-require 'yaml'
-
 module Pseudonymizer
-  class Pager
-    PAGE_SIZE = ENV.fetch('PSEUDONYMIZER_BATCH', 100_000)
-
-    def initialize(table, columns)
-      @table = table
-      @columns = columns
-    end
-
-    def pages(&block)
-      if @columns.include?("id")
-        # optimize the pagination using WHERE id > ?
-        pages_per_id(&block)
-      else
-        # fallback to `LIMIT ? OFFSET ?` when "id" is unavailable
-        pages_per_offset(&block)
-      end
-    end
-
-    def pages_per_id(&block)
-      id_offset = 0
-
-      loop do
-        # a page of results
-        results = ActiveRecord::Base.connection.exec_query(<<-SQL.squish)
-          SELECT #{@columns.join(",")}
-          FROM #{@table}
-          WHERE id > #{id_offset}
-          ORDER BY id
-          LIMIT #{PAGE_SIZE}
-        SQL
-        Rails.logger.debug("#{self.class.name} fetch ids [#{id_offset}, +#{PAGE_SIZE}[")
-        break if results.empty?
-
-        id_offset = results.last["id"].to_i
-        yield results
-
-        break if results.count < PAGE_SIZE
-      end
-    end
-
-    def pages_per_offset(&block)
-      page = 0
-
-      loop do
-        offset = page * PAGE_SIZE
-
-        # a page of results
-        results = ActiveRecord::Base.connection.exec_query(<<-SQL.squish)
-          SELECT #{@columns.join(",")}
-          FROM #{@table}
-          ORDER BY #{@columns.join(",")}
-          LIMIT #{PAGE_SIZE} OFFSET #{offset}
-        SQL
-        Rails.logger.debug("#{self.class.name} fetching offset [#{offset}, #{offset + PAGE_SIZE}[")
-        break if results.empty?
-
-        page += 1
-        yield results
-
-        break if results.count < PAGE_SIZE
-      end
-    end
-  end
-
-  class Anon
-    def initialize(table, whitelisted_fields, pseudonymized_fields)
-      @table = table
-      @pseudo_fields = pseudo_fields(whitelisted_fields, pseudonymized_fields)
-    end
-
-    def anonymize(results)
-      key = Rails.application.secrets[:secret_key_base]
-      digest = OpenSSL::Digest.new('sha256')
-
-      Enumerator.new do |yielder|
-        results.each do |result|
-          @pseudo_fields.each do |field|
-            next if result[field].nil?
-
-            result[field] = OpenSSL::HMAC.hexdigest(digest, key, String(result[field]))
-          end
-          yielder << result
-        end
-      end
-    end
-
-    private
-
-    def pseudo_fields(whitelisted, pseudonymized)
-      pseudo_extra_fields = pseudonymized - whitelisted
-      pseudo_extra_fields.each do |field|
-        Rails.logger.warn("#{self.class.name} extraneous pseudo: #{@table}.#{field} is not whitelisted and will be ignored.")
-      end
-
-      pseudonymized & whitelisted
-    end
-  end
-
   class Dumper
     attr_accessor :config, :output_dir
 
@@ -165,12 +62,12 @@ module Pseudonymizer
 
     # yield every results, pagined, anonymized
     def table_page_results(table, whitelist_columns, pseudonymity_columns)
-      anonymizer = Anon.new(table, whitelist_columns, pseudonymity_columns)
+      filter = Filter.new(table, whitelist_columns, pseudonymity_columns)
       pager = Pager.new(table, whitelist_columns)
 
       Enumerator.new do |yielder|
         pager.pages do |page|
-          anonymizer.anonymize(page).each do |result|
+          filter.anonymize(page).each do |result|
             yielder << result
           end
         end
