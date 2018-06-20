@@ -15,7 +15,7 @@ module Ci
       @runner = runner
     end
 
-    def execute(runner_session_params = {})
+    def execute(params = {})
       builds =
         if runner.shared?
           builds_for_shared_runner
@@ -44,8 +44,8 @@ module Ci
           begin
             build.runner_id = runner.id
 
-            if runner_session_params[:url].present?
-              build.build_runner_session.assign_attributes(runner_session_params)
+            if params.dig(:session, :url).present?
+              build.build_runner_session(params[:session])
             end
 
             build.run!
