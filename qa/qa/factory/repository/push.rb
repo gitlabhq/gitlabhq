@@ -9,10 +9,6 @@ module QA
 
         attr_writer :remote_branch
 
-        product :output do |factory|
-          factory.output
-        end
-
         def initialize
           @file_name = 'file.txt'
           @file_content = '# This is test file'
