@@ -25,6 +25,9 @@ See our [product handbook on permissions](https://about.gitlab.com/handbook/prod
 
 ## Project members permissions
 
+NOTE: **Note:**
+In GitLab 11.0, the Master role was renamed to Maintainer.
+
 The following table depicts the various user permission levels in a project.
 
 | Action                                | Guest   | Reporter   | Developer   |Maintainer| Owner  |
@@ -145,6 +148,9 @@ read through the documentation on [permissions and access to confidential issues
 
 ## Group members permissions
 
+NOTE: **Note:**
+In GitLab 11.0, the Master role was renamed to Maintainer.
+
 Any user can remove themselves from a group, unless they are the last Owner of
 the group. The following table depicts the various user permission levels in a
 group.
@@ -222,6 +228,9 @@ which visibility level you select on project settings.
 
 ## GitLab CI/CD permissions
 
+NOTE: **Note:**
+In GitLab 11.0, the Master role was renamed to Maintainer.
+
 GitLab CI/CD permissions rely on the role the user has in GitLab. There are four
 permission levels in total:
 
@@ -248,6 +257,9 @@ instance and project. In addition, all admins can use the admin interface under
 | Admin interface                       |                 |             |          | ✓      |
 
 ### Job permissions
+
+NOTE: **Note:**
+In GitLab 11.0, the Master role was renamed to Maintainer.
 
 >**Note:**
 GitLab 8.12 has a completely redesigned job permissions system.
