@@ -299,7 +299,6 @@ gem 'peek-sidekiq', '~> 1.0.3'
 
 # Metrics
 group :metrics do
-  gem 'allocations', '~> 1.0', require: false, platform: :mri
   gem 'method_source', '~> 0.8', require: false
   gem 'influxdb', '~> 0.2', require: false
 
