@@ -138,10 +138,15 @@ describe API::Groups do
 
     context "when using sorting" do
       let(:group3) { create(:group, name: "a#{group1.name}", path: "z#{group1.path}") }
+      let(:group4) { create(:group, name: "same-name", path: "y#{group1.path}") }
+      let(:group5) { create(:group, name: "same-name") }
       let(:response_groups) { json_response.map { |group| group['name'] } }
+      let(:response_groups_ids) { json_response.map { |group| group['id'] } }
 
       before do
         group3.add_owner(user1)
+        group4.add_owner(user1)
+        group5.add_owner(user1)
       end
 
       it "sorts by name ascending by default" do
@@ -150,7 +155,7 @@ describe API::Groups do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(response_groups).to eq([group3.name, group1.name])
+        expect(response_groups).to eq(Group.visible_to_user(user1).order(:name).pluck(:name))
       end
 
       it "sorts in descending order when passed" do
@@ -159,16 +164,52 @@ describe API::Groups do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(response_groups).to eq([group1.name, group3.name])
+        expect(response_groups).to eq(Group.visible_to_user(user1).order(name: :desc).pluck(:name))
       end
 
-      it "sorts by the order_by param" do
+      it "sorts by path in order_by param" do
         get api("/groups", user1), order_by: "path"
 
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(response_groups).to eq([group1.name, group3.name])
+        expect(response_groups).to eq(Group.visible_to_user(user1).order(:path).pluck(:name))
+      end
+
+      it "sorts by id in the order_by param" do
+        get api("/groups", user1), order_by: "id"
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(response_groups).to eq(Group.visible_to_user(user1).order(:id).pluck(:name))
+      end
+
+      it "sorts also by descending id with pagination fix" do
+        get api("/groups", user1), order_by: "id", sort: "desc"
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(response_groups).to eq(Group.visible_to_user(user1).order(id: :desc).pluck(:name))
+      end
+
+      it "sorts identical keys by id for good pagination" do
+        get api("/groups", user1), search: "same-name", order_by: "name"
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(response_groups_ids).to eq(Group.select { |group| group['name'] == 'same-name' }.map { |group| group['id'] }.sort)
+      end
+
+      it "sorts descending identical keys by id for good pagination" do
+        get api("/groups", user1), search: "same-name", order_by: "name", sort: "desc"
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(response_groups_ids).to eq(Group.select { |group| group['name'] == 'same-name' }.map { |group| group['id'] }.sort)
       end
     end
 

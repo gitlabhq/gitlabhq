@@ -1,5 +1,3 @@
-# Gitaly note: JV: will probably be migrated indirectly by migrating the call sites.
-
 module Gitlab
   module Git
     class RevList
@@ -43,13 +41,6 @@ module Gitlab
                     options: options,
                     require_path: require_path,
                     &lazy_block)
-      end
-
-      # This methods returns an array of missed references
-      #
-      # Should become obsolete after https://gitlab.com/gitlab-org/gitaly/issues/348.
-      def missed_ref
-        repository.missed_ref(oldrev, newrev).split("\n")
       end
 
       private
