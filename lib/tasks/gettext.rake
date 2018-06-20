@@ -53,25 +53,34 @@ namespace :gettext do
   task :updated_check do
     # Removing all pre-translated files speeds up `gettext:find` as the
     # files don't need to be merged.
-    `rm locale/*/gitlab.po`
+    # Having `LC_MESSAGES/gitlab.mo files present also confuses the output.
+    FileUtils.rm Dir['locale/**/gitlab.*']
+
+    # Make sure we start out with a clean pot.file
+    `git checkout -- locale/gitlab.pot`
 
     # `gettext:find` writes touches to temp files to `stderr` which would cause
-    # `static-analysis` to report failures. We can ignore these
-    silence_stream(STDERR) { Rake::Task['gettext:find'].invoke }
+    # `static-analysis` to report failures. We can ignore these.
+    silence_stream($stderr) do
+      Rake::Task['gettext:find'].invoke
+    end
 
-    changed_files = `git diff --name-only`.lines.map(&:strip)
+    pot_diff = `git diff -- locale/gitlab.pot`.strip
 
     # reset the locale folder for potential next tasks
     `git checkout -- locale`
 
-    if changed_files.include?('locale/gitlab.pot')
+    if pot_diff.present?
       raise <<~MSG
         Newly translated strings found, please add them to `gitlab.pot` by running:
 
-          bundle exec rake gettext:find; git checkout -- locale/*/gitlab.po;
+          rm locale/**/gitlab.*; bin/rake gettext:find; git checkout -- locale/*/gitlab.po
 
         Then commit and push the resulting changes to `locale/gitlab.pot`.
 
+        The diff was:
+
+        #{pot_diff}
       MSG
     end
   end
