@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-19 13:14+0200\n"
-"PO-Revision-Date: 2018-06-19 13:14+0200\n"
+"POT-Creation-Date: 2018-06-20 09:05+0200\n"
+"PO-Revision-Date: 2018-06-20 09:05+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -1414,10 +1414,10 @@ msgstr ""
 msgid "ClusterIntegration|Learn more about %{help_link_start_machine_type}machine types%{help_link_end} and %{help_link_start_pricing}pricing%{help_link_end}."
 msgstr ""
 
-msgid "ClusterIntegration|Learn more about %{help_link_start}zones%{help_link_end}."
+msgid "ClusterIntegration|Learn more about %{help_link_start}Kubernetes%{help_link_end}."
 msgstr ""
 
-msgid "ClusterIntegration|Learn more about %{link_to_documentation}"
+msgid "ClusterIntegration|Learn more about %{help_link_start}zones%{help_link_end}."
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about environments"
@@ -2623,12 +2623,6 @@ msgid "GeoNodes|Failed"
 msgstr ""
 
 msgid "GeoNodes|Full"
-msgstr ""
-
-msgid "Gitaly Servers"
-msgstr ""
-
-msgid "Gitaly|Address"
 msgstr ""
 
 msgid "GeoNodes|GitLab version"
