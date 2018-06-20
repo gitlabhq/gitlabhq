@@ -194,12 +194,21 @@ describe Gitlab::Metrics::WebTransaction do
         expect(transaction.action).to eq('TestController#show')
       end
 
-      context 'when the response content type is not :html' do
+      context 'when the request content type is not :html' do
         let(:request) { double(:request, format: double(:format, ref: :json)) }
 
         it 'appends the mime type to the transaction action' do
           expect(transaction.labels).to eq({ controller: 'TestController', action: 'show.json' })
           expect(transaction.action).to eq('TestController#show.json')
+        end
+      end
+
+      context 'when the request content type is not' do
+        let(:request) { double(:request, format: double(:format, ref: 'http://example.com')) }
+
+        it 'does not append the MIME type to the transaction action' do
+          expect(transaction.labels).to eq({ controller: 'TestController', action: 'show' })
+          expect(transaction.action).to eq('TestController#show')
         end
       end
     end
