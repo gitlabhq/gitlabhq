@@ -80,8 +80,7 @@ module Gitlab
         case @relation_name
         when :merge_request_diff_files       then setup_diff
         when :notes                          then setup_note
-        when :milestone, :milestones,
-          :project_label, :project_labels then setup_project_group
+        when *(EXISTING_OBJECT_CHECK - [:project_feature])  then setup_project_group
         when 'Ci::Pipeline'                  then setup_pipeline
         else
           @relation_hash['project_id'] = @project.id
@@ -275,7 +274,11 @@ module Gitlab
       end
 
       def find_or_create_object!
-        finder_hash = parsed_relation_hash.slice('title', 'project_id', 'group_id')
+        # Can't use IDs as validation exists calilng `.group` or `.project`
+        finder_hash = { project: @project }.tap do |hash|
+          hash[:group] = @project.group if relation_class.attribute_method?('group_id')
+          hash[:title] = parsed_relation_hash['title'] if parsed_relation_hash['title']
+        end
 
         if label?
           label = GroupProjectFinder.find_or_new(Label, finder_hash)
@@ -288,8 +291,10 @@ module Gitlab
           object = GroupProjectFinder.find_or_create(relation_class, finder_hash)
 
           if milestone?
-            parsed_relation_hash.delete('group_id') if object.project_id
-            parsed_relation_hash.delete('project_id') if object.group_id
+            parsed_relation_hash.delete('group_id') if object.project
+            parsed_relation_hash.delete('project_id') if object.group
+            parsed_relation_hash.delete('iid')
+            parsed_relation_hash.delete('id')
           end
 
           object

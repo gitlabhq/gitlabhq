@@ -246,13 +246,6 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       expect(project.issues.size).to eq(results.fetch(:issues, 0))
     end
 
-    it 'has issue with group label and project label' do
-      labels = project.issues.first.labels
-
-      expect(labels.where(type: "ProjectLabel").count).to eq(results.fetch(:first_issue_labels, 0))
-      expect(labels.where(type: "ProjectLabel").where.not(group_id: nil).count).to eq(0)
-    end
-
     it 'does not set params that are excluded from import_export settings' do
       expect(project.import_type).to be_nil
       expect(project.creator_id).not_to eq 123
@@ -267,12 +260,6 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
     it 'has group milestone' do
       expect(project.group.milestones.size).to eq(results.fetch(:milestones, 0))
-    end
-
-    it 'has issue with group label' do
-      labels = project.issues.first.labels
-
-      expect(labels.where(type: "GroupLabel").count).to eq(results.fetch(:first_issue_labels, 0))
     end
   end
 
@@ -360,12 +347,12 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       it_behaves_like 'restores project correctly',
                       issues: 2,
                       labels: 1,
-                      milestones: 1,
+                      milestones: 2,
                       first_issue_labels: 1
 
       it_behaves_like 'restores group correctly',
-                      labels: 1,
-                      milestones: 1,
+                      labels: 0,
+                      milestones: 0,
                       first_issue_labels: 1
     end
 
