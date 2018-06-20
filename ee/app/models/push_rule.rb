@@ -11,6 +11,7 @@ class PushRule < ActiveRecord::Base
     force_push_regex
     delete_branch_regex
     commit_message_regex
+    commit_message_negative_regex
     author_email_regex
     file_name_regex
     branch_name_regex
@@ -36,6 +37,7 @@ class PushRule < ActiveRecord::Base
 
   def commit_validation?
     commit_message_regex.present? ||
+      commit_message_negative_regex.present? ||
       branch_name_regex.present? ||
       author_email_regex.present? ||
       reject_unsigned_commits ||
@@ -61,6 +63,10 @@ class PushRule < ActiveRecord::Base
 
   def commit_message_allowed?(message)
     data_match?(message, commit_message_regex, multiline: true)
+  end
+
+  def commit_message_blocked?(message)
+    commit_message_negative_regex.present? && data_match?(message, commit_message_negative_regex, multiline: true)
   end
 
   def branch_name_allowed?(branch)
