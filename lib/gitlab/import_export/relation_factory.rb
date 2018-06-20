@@ -80,7 +80,6 @@ module Gitlab
         case @relation_name
         when :merge_request_diff_files       then setup_diff
         when :notes                          then setup_note
-        when *(EXISTING_OBJECT_CHECK - [:project_feature])  then setup_project_group
         when 'Ci::Pipeline'                  then setup_pipeline
         else
           @relation_hash['project_id'] = @project.id
@@ -164,12 +163,6 @@ module Gitlab
 
       def same_source_and_target?
         @relation_hash['target_project_id'] && @relation_hash['target_project_id'] == @relation_hash['source_project_id']
-      end
-
-      def setup_project_group
-        @relation_hash['project_id'] = @project.id
-        @relation_hash['group_id'] = @project.group&.id
-        @relation_hash.delete('type')
       end
 
       def reset_tokens!
@@ -266,27 +259,14 @@ module Gitlab
       end
 
       def find_or_create_object!
-        # Can't use IDs as validation exists calilng `.group` or `.project`
+        # Can't use IDs as validation exists calling `group` or `project` attributes
         finder_hash = parsed_relation_hash.tap do |hash|
           hash[:group] = @project.group if relation_class.attribute_method?('group_id')
           hash[:project] = @project
-          hash[:title] = parsed_relation_hash['title'] if parsed_relation_hash['title']
           hash.delete('project_id')
         end
 
-        if label?
-          GroupProjectFinder.find_or_new(Label, finder_hash)
-        else
-          GroupProjectFinder.find_or_create(relation_class, finder_hash)
-        end
-      end
-
-      def label?
-        @relation_name.to_s.include?('label')
-      end
-
-      def milestone?
-        @relation_name.to_s.include?('milestone')
+        GroupProjectFinder.find_or_create(relation_class, finder_hash)
       end
     end
   end

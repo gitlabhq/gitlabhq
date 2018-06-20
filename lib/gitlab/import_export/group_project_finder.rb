@@ -14,7 +14,7 @@ module Gitlab
       end
 
       def initialize(klass, attributes)
-        @klass = klass
+        @klass = klass < Label ? Label : klass
         @attributes = attributes
         @group = @attributes[:group]
         @project = @attributes[:project]
@@ -33,7 +33,7 @@ module Gitlab
       def where_clause
         return { project_id: @project.id } unless milestone? || label?
 
-        @attributes.slice(:title).map do |key, value|
+        @attributes.slice('title').map do |key, value|
           project_clause = table[key].eq(value).and(table[:project_id].eq(@project.id))
 
           if @group
@@ -51,9 +51,9 @@ module Gitlab
       def project_attributes
         @attributes.except(:group).tap do |atts|
           if label?
-            atts['type'] = 'ProjectLabel'
+            atts['type'] = 'ProjectLabel' # Always create project labels
           elsif milestone?
-            if atts['group_id']
+            if atts['group_id'] # Transform new group milestones into project ones
               atts['iid'] = nil
               atts.delete('group_id')
             else
@@ -64,13 +64,18 @@ module Gitlab
       end
 
       def label?
-        @klass == Label || @klass < Label
+        @klass == Label
       end
 
       def milestone?
         @klass == Milestone
       end
 
+      # If an existing group milesone used the IIID
+      # claim the IID back and set the group milestone to use one available
+      # This is neccessary to fix situations like the following:
+      #  - Importing into a user namespace project with exported group milestones
+      #    where the IID of the Group milestone could conflict with a project one.
       def claim_iid
         group_milestone = @project.milestones.find_by(iid: @attributes['iid'])
 
