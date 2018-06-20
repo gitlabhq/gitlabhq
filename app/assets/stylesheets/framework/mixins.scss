@@ -331,3 +331,10 @@
   border-radius: 50%;
   animation: blinking-dots 1s linear infinite;
 }
+
+@mixin borderless-status-icon($color) {
+  svg {
+    border: 1px solid $color;
+    border-radius: 50%;
+  }
+}

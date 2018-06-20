@@ -43,6 +43,7 @@
     <ci-icon
       v-else
       :status="statusObj"
+      :size="24"
     />
 
     <button
