@@ -16,7 +16,7 @@ class Upload < ActiveRecord::Base
 
   # as the FileUploader is not mounted, the default CarrierWave ActiveRecord
   # hooks are not executed and the file will not be deleted
-  after_destroy :delete_file!, if: -> { uploader_class <= FileUploader }
+  #after_destroy :delete_file!, if: -> { uploader_class <= FileUploader }
 
   def self.hexdigest(path)
     Digest::SHA256.file(path).hexdigest
@@ -36,8 +36,8 @@ class Upload < ActiveRecord::Base
     self.checksum = Digest::SHA256.file(absolute_path).hexdigest
   end
 
-  def build_uploader(mounted_as = nil)
-    uploader_class.new(model, mounted_as || mount_point).tap do |uploader|
+  def build_uploader(mounted_as = nil, parent = nil)
+    uploader_class.new(parent || model, mounted_as || mount_point).tap do |uploader|
       uploader.upload = self
       uploader.retrieve_from_store!(identifier)
     end
@@ -60,11 +60,11 @@ class Upload < ActiveRecord::Base
     store == ObjectStorage::Store::LOCAL
   end
 
-  private
-
-  def delete_file!
-    build_uploader.remove!
+  def delete_file!(parent = nil)
+    build_uploader(nil, parent).remove!
   end
+
+  private
 
   def checksummable?
     checksum.nil? && local? && exist?

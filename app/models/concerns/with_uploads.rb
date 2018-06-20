@@ -24,7 +24,7 @@ module WithUploads
   included do
     has_many :uploads, as: :model
 
-    before_destroy :destroy_file_uploads
+    after_commit :destroy_file_uploads, on: :destroy
   end
 
   # mounted uploads are deleted in carrierwave's after_commit hook,
@@ -33,7 +33,8 @@ module WithUploads
   # associated model on destroy (which is already deleted in after_commit)
   def destroy_file_uploads
     self.uploads.where(uploader: FILE_UPLOADERS).find_each do |upload|
-      upload.destroy
+      upload.delete_file!(self)
+      upload.delete
     end
   end
 
