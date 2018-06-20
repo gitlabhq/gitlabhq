@@ -89,11 +89,6 @@ a {
   color: $gl-link-color;
 }
 
-a:not(.btn):focus,
-a:not(.btn):active {
-  text-decoration: underline;
-}
-
 hr {
   overflow: hidden;
 }
