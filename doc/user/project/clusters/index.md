@@ -349,6 +349,11 @@ To remove the Kubernetes cluster integration from your project, simply click on 
 **Remove integration** button. You will then be able to follow the procedure
 and add a Kubernetes cluster again.
 
+## View Kubernetes pod logs from GitLab **[ULTIMATE]**
+
+Learn how to easily
+[view the logs of running pods in connected Kubernetes clusters](kubernetes_pod_logs.md).
+
 ## What you can get with the Kubernetes integration
 
 Here's what you can do with GitLab if you enable the Kubernetes integration.
@@ -361,7 +366,7 @@ displaying the status of the pods in the deployment. Developers and other
 teammates can view the progress and status of a rollout, pod by pod, in the
 workflow they already use without any need to access Kubernetes.
 
-[> Read more about Deploy Boards](../deploy_boards.md)
+[Read more about Deploy Boards](../deploy_boards.md)
 
 ### Canary Deployments **[PREMIUM]**
 
@@ -369,14 +374,14 @@ Leverage [Kubernetes' Canary deployments](https://kubernetes.io/docs/concepts/cl
 and visualize your canary deployments right inside the Deploy Board, without
 the need to leave GitLab.
 
-[> Read more about Canary Deployments](../canary_deployments.md)
+[Read more about Canary Deployments](../canary_deployments.md)
 
 ### Kubernetes monitoring
 
 Automatically detect and monitor Kubernetes metrics. Automatic monitoring of
 [NGINX ingress](../integrations/prometheus_library/nginx.md) is also supported.
 
-[> Read more about Kubernetes monitoring](../integrations/prometheus_library/kubernetes.md)
+[Read more about Kubernetes monitoring](../integrations/prometheus_library/kubernetes.md)
 
 ### Auto DevOps
 
@@ -386,7 +391,7 @@ applications.
 To make full use of Auto DevOps(Auto Deploy, Auto Review Apps, and Auto Monitoring)
 you will need the Kubernetes project integration enabled.
 
-[> Read more about Auto DevOps](../../../topics/autodevops/index.md)
+[Read more about Auto DevOps](../../../topics/autodevops/index.md)
 
 ### Web terminals
 
@@ -402,9 +407,9 @@ containers. To use this integration, you should deploy to Kubernetes using
 the deployment variables above, ensuring any pods you create are labelled with
 `app=$CI_ENVIRONMENT_SLUG`. GitLab will do the rest!
 
-## Read more
+## Integrating Amazon EKS cluster with GitLab
 
-- [Connecting and deploying to an Amazon EKS cluster](eks_and_gitlab/index.md)
+Learn how to [connect and deploy to an Amazon EKS cluster](eks_and_gitlab/index.md).
 
 [permissions]: ../../permissions.md
 [ee]: https://about.gitlab.com/products/
