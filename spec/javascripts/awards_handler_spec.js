@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, no-unused-expressions, comma-dangle, new-parens, no-unused-vars, quotes, jasmine/no-spec-dupes, prefer-template, max-len */
+/* eslint-disable no-var, one-var, one-var-declaration-per-line, no-unused-expressions, comma-dangle, no-unused-vars, quotes, prefer-template, max-len */
 
 import $ from 'jquery';
 import Cookies from 'js-cookie';

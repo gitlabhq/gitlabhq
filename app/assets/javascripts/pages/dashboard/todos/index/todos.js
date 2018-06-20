@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this, no-unneeded-ternary, quote-props */
+/* eslint-disable class-methods-use-this, no-unneeded-ternary */
 
 import $ from 'jquery';
 import { visitUrl } from '~/lib/utils/url_utility';

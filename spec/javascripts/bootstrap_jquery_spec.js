@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, no-var */
+/* eslint-disable no-var */
 
 import $ from 'jquery';
 import '~/commons/bootstrap';

@@ -96,7 +96,7 @@ export default class MirrorPull {
     .catch(({ response }) => {
       // Show failure message when there's an error and re-enable Detect host keys button
       const failureMessage = response.data ? response.data.message : __('An error occurred while detecting host keys');
-      Flash(failureMessage); // eslint-disable-line
+      Flash(failureMessage);
 
       $btnLoadSpinner.addClass('hidden');
       this.$btnDetectHostKeys.enable();
