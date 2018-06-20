@@ -81,11 +81,14 @@ namespace :gitlab do
       )
 
       dumper = Pseudonymizer::Dumper.new(options)
-      dumper.tables_to_csv
-
       uploader = Pseudonymizer::Uploader.new(options)
-      uploader.upload
-      uploader.cleanup
+
+      begin
+        dumper.tables_to_csv
+        uploader.upload
+      ensure
+        uploader.cleanup
+      end
     end
   end
 end

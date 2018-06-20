@@ -3,6 +3,7 @@ class PseudonymizerWorker
   include CronjobQueue
 
   def perform
+    abort "The pseudonymizer is not available with this license." unless License.feature_available?(:pseudonymizer)
     return unless Gitlab::CurrentSettings.pseudonymizer_enabled?
 
     options = Pseudonymizer::Options.new(
@@ -11,10 +12,13 @@ class PseudonymizerWorker
     )
 
     dumper = Pseudonymizer::Dumper.new(options)
-    dumper.tables_to_csv
-
     uploader = Pseudonymizer::Uploader.new(options, progress_output: File.open(File::NULL, "w"))
-    uploader.upload
-    uploader.cleanup
+
+    begin
+      dumper.tables_to_csv
+      uploader.upload
+    ensure
+      uploader.cleanup
+    end
   end
 end
