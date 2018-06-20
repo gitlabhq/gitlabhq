@@ -597,6 +597,22 @@ describe ProjectsController do
       expect(parsed_body["Tags"]).to include("v1.0.0")
       expect(parsed_body["Commits"]).to include("123456")
     end
+
+    context "when preferred language is Japanese" do
+      before do
+        user.update!(preferred_language: 'ja')
+        sign_in(user)
+      end
+
+      it "gets a list of branches, tags and commits" do
+        get :refs, namespace_id: public_project.namespace, id: public_project, ref: "123456"
+
+        parsed_body = JSON.parse(response.body)
+        expect(parsed_body["Branches"]).to include("master")
+        expect(parsed_body["Tags"]).to include("v1.0.0")
+        expect(parsed_body["Commits"]).to include("123456")
+      end
+    end
   end
 
   describe 'POST #preview_markdown' do

@@ -252,6 +252,53 @@ Keep in mind that the relation passed to
 `change_column_type_using_background_migration` _must_ include `EachBatch`,
 otherwise it will raise a `TypeError`.
 
+This migration then needs to be followed in a separate release (_not_ a patch
+release) by a cleanup migration, which should steal from the queue and handle
+any remaining rows. For example:
+
+```ruby
+class MigrateRemainingIssuesClosedAt < ActiveRecord::Migration
+  include Gitlab::Database::MigrationHelpers
+
+  DOWNTIME = false
+
+  disable_ddl_transaction!
+
+  class Issue < ActiveRecord::Base
+    self.table_name = 'issues'
+    include EachBatch
+  end
+
+  def up
+    Gitlab::BackgroundMigration.steal('CopyColumn')
+    Gitlab::BackgroundMigration.steal('CleanupConcurrentTypeChange')
+
+    migrate_remaining_rows if migrate_column_type?
+  end
+
+  def down
+    # Previous migrations already revert the changes made here.
+  end
+
+  def migrate_remaining_rows
+    Issue.where('closed_at_for_type_change IS NULL AND closed_at IS NOT NULL').each_batch do |batch|
+      batch.update_all('closed_at_for_type_change = closed_at')
+    end
+
+    cleanup_concurrent_column_type_change(:issues, :closed_at)
+  end
+
+  def migrate_column_type?
+    # Some environments may have already executed the previous version of this
+    # migration, thus we don't need to migrate those environments again.
+    column_for('issues', 'closed_at').type == :datetime # rubocop:disable Migration/Datetime
+  end
+end
+```
+
+For more information, see [the documentation on cleaning up background
+migrations](background_migrations.md#cleaning-up).
+
 ## Adding Indexes
 
 Adding indexes is an expensive process that blocks INSERT and UPDATE queries for

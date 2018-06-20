@@ -1484,10 +1484,6 @@ module Gitlab
         run_git!(args, lazy_block: block)
       end
 
-      def missed_ref(oldrev, newrev)
-        run_git!(['rev-list', '--max-count=1', oldrev, "^#{newrev}"])
-      end
-
       def with_worktree(worktree_path, branch, sparse_checkout_files: nil, env:)
         base_args = %w(worktree add --detach)
 
