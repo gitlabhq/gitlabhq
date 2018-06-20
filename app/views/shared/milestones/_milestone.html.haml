@@ -7,7 +7,7 @@
     .col-sm-6
       %div
         %strong= link_to truncate(milestone.title, length: 100), milestone_path
-        - unless dashboard
+        - if @group
           = " - #{milestone_type}"
 
       - if @project || milestone.is_a?(GlobalMilestone) || milestone.group_milestone?
