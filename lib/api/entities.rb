@@ -349,6 +349,10 @@ module API
       expose :developers_can_merge do |repo_branch, options|
         options[:project].protected_branches.developers_can?(:merge, repo_branch.name)
       end
+
+      expose :can_push do |repo_branch, options|
+        Gitlab::UserAccess.new(options[:current_user], project: options[:project]).can_push_to_branch?(repo_branch.name)
+      end
     end
 
     class TreeObject < Grape::Entity

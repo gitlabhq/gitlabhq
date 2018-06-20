@@ -5,7 +5,7 @@
     "dev-server": "nodemon -w 'config/webpack.config.js' --exec 'webpack-dev-server --config config/webpack.config.js'",
     "eslint": "eslint --max-warnings 0 --ext .js,.vue .",
     "eslint-fix": "eslint --max-warnings 0 --ext .js,.vue --fix .",
-    "eslint-report": "eslint --max-warnings 0 --ext .js,.vue --format html --output-file ./eslint-report.html .",
+    "eslint-report": "eslint --max-warnings 0 --ext .js,.vue --format html --output-file ./eslint-report.html --no-inline-config .",
     "karma": "BABEL_ENV=${BABEL_ENV:=karma} karma start --single-run true config/karma.config.js",
     "karma-coverage": "BABEL_ENV=coverage karma start --single-run true config/karma.config.js",
     "karma-start": "BABEL_ENV=karma karma start config/karma.config.js",
