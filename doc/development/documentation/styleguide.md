@@ -27,9 +27,10 @@ Check the GitLab handbook for the [writing styles guidelines](https://about.gitl
 - Capitalize "G" and "L" in GitLab
 - Use sentence case for titles, headings, labels, menu items, and buttons.
 - Use title case when referring to [features](https://about.gitlab.com/features/) or
-[products](https://about.gitlab.com/pricing/), and methods. Note that some
-features are also objects (e.g. "Merge Requests" and "merge requests").
-E.g.: GitLab Runner, Geo, Issue Boards, Git, Prometheus, Continuous Integration.
+[products](https://about.gitlab.com/pricing/) (e.g., GitLab Runner, Geo,
+Issue Boards, GitLab Core, Git, Prometheus, Kubernetes, etc), and methods or methodologies
+(e.g., Continuous Integration, Continuous Deployment, Scrum, Agile, etc). Note that
+some features are also objects (e.g. "Merge Requests" and "merge requests").
 
 ## Formatting
 
