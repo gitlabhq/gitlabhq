@@ -8,10 +8,6 @@ describe Gitlab::Metrics::Samplers::RubySampler do
     allow(Gitlab::Metrics::NullMetric).to receive(:instance).and_return(null_metric)
   end
 
-  after do
-    Allocations.stop if Gitlab::Metrics.mri?
-  end
-
   describe '#sample' do
     it 'samples various statistics' do
       expect(Gitlab::Metrics::System).to receive(:memory_usage)
