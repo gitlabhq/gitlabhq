@@ -1,7 +1,4 @@
-Merge Request #{@merge_request.to_reference} can no longer be merged due to the following #{'reason'.pluralize(@reasons.count)}:
-
-- @reasons.each do |reason|
-  * #{reason}
+Merge Request #{@merge_request.to_reference} can no longer be merged due to conflict.
 
 Merge Request url: #{project_merge_request_url(@merge_request.target_project, @merge_request)}
 
