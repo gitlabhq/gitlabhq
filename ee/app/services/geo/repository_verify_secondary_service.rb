@@ -69,7 +69,11 @@ module Geo
       }
 
       if failure
-        log_error(failure, exception, type: type, repository_full_path: repository.path_to_repo)
+        log_error(failure, exception,
+                  type: type,
+                  repository_shard: project.repository_storage,
+                  repsitory_disk_path: repository.disk_path
+                 )
       end
 
       registry.update!(attrs)
