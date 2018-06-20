@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-expressions, no-prototype-builtins, no-new, no-shadow, max-len */
+/* eslint-disable no-unused-expressions, no-prototype-builtins, no-new, no-shadow */
 
 import $ from 'jquery';
 import 'vendor/jquery.endless-scroll';

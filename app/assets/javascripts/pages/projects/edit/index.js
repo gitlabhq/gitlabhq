@@ -1,4 +1,3 @@
-/* eslint-disable no-new */
 import initSettingsPanels from '~/settings_panels';
 import setupProjectEdit from '~/project_edit';
 import initConfirmDangerModal from '~/confirm_danger_modal';

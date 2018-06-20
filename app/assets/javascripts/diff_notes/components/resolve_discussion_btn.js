@@ -1,4 +1,4 @@
-/* eslint-disable object-shorthand, func-names, space-before-function-paren, comma-dangle, no-else-return, quotes, max-len */
+/* eslint-disable object-shorthand, func-names, comma-dangle, no-else-return, quotes */
 /* global CommentsStore */
 /* global ResolveService */
 
