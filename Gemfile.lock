@@ -832,7 +832,7 @@ GEM
     rubyzip (1.2.1)
     rufus-scheduler (3.4.0)
       et-orbi (~> 1.0)
-    rugged (0.27.1)
+    rugged (0.27.2)
     safe_yaml (1.0.4)
     sanitize (2.1.0)
       nokogiri (>= 1.4.4)
