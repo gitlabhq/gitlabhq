@@ -78,7 +78,7 @@ To display the Deploy Boards for a specific [environment] you should:
     ![Deploy Boards Kubernetes Label](img/deploy_boards_kubernetes_label.png)
 
 Once all of the above are set up and the pipeline has run at least once,
-navigate to the environments page under **Pipelines > Environments**.
+navigate to the environments page under **Operations > Environments**.
 
 Deploy Boards are visible by default. You can explicitly click
 the triangle next to their respective environment name in order to hide them.
