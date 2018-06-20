@@ -9,7 +9,7 @@ class Admin::HooksController < Admin::ApplicationController
   end
 
   def create
-    @hook = SystemHook.new(hook_params)
+    @hook = SystemHook.new(hook_params.to_h)
 
     if @hook.save
       redirect_to admin_hooks_path, notice: 'Hook was successfully created.'

@@ -71,7 +71,7 @@ describe Projects::PagesController do
       {
         namespace_id: project.namespace,
         project_id: project,
-        project: { pages_https_only: false }
+        project: { pages_https_only: 'false' }
       }
     end
 
@@ -96,7 +96,7 @@ describe Projects::PagesController do
     it 'calls the update service' do
       expect(Projects::UpdateService)
         .to receive(:new)
-        .with(project, user, request_params[:project])
+        .with(project, user, ActionController::Parameters.new(request_params[:project]).permit!)
         .and_return(update_service)
 
       patch :update, request_params

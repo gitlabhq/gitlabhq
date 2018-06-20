@@ -31,6 +31,7 @@ describe Clusters::Applications::Runner do
     it 'should be initialized with 4 arguments' do
       expect(subject.name).to eq('runner')
       expect(subject.chart).to eq('runner/gitlab-runner')
+      expect(subject.version).to be_nil
       expect(subject.repository).to eq('https://charts.gitlab.io')
       expect(subject.values).to eq(gitlab_runner.values)
     end

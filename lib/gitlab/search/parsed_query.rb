@@ -1,8 +1,11 @@
 module Gitlab
   module Search
     class ParsedQuery
+<<<<<<< HEAD
       prepend EE::Gitlab::Search::ParsedQuery
 
+=======
+>>>>>>> upstream/master
       attr_reader :term, :filters
 
       def initialize(term, filters)

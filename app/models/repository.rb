@@ -161,7 +161,10 @@ class Repository
 
   # Returns a list of commits that are not present in any reference
   def new_commits(newrev)
-    refs = ::Gitlab::Git::RevList.new(raw, newrev: newrev).new_refs
+    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1233
+    refs = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      ::Gitlab::Git::RevList.new(raw, newrev: newrev).new_refs
+    end
 
     refs.map { |sha| commit(sha.strip) }
   end
