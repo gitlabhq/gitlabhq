@@ -4,8 +4,8 @@ module Geo
 
     private
 
-    def sync_repository(redownload = false)
-      fetch_repository(redownload)
+    def sync_repository
+      fetch_repository
 
       mark_sync_as_successful
     rescue Gitlab::Git::RepositoryMirroring::RemoteError,
@@ -23,7 +23,6 @@ module Geo
       log_info('Setting force_to_redownload flag')
       fail_registry!('Invalid wiki', e, force_to_redownload_wiki: true)
     ensure
-      clean_up_temporary_repository if redownload
       expire_repository_caches
     end
 

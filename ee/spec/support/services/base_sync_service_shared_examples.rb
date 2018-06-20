@@ -50,7 +50,7 @@ end
 
 shared_examples 'geo base sync fetch and repack' do
   describe '#fetch_repository' do
-    let(:fetch_repository) { subject.send(:fetch_repository, false) }
+    let(:fetch_repository) { subject.send(:fetch_repository) }
 
     before do
       allow(subject).to receive(:fetch_geo_mirror).and_return(true)

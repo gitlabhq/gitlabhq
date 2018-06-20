@@ -4,8 +4,8 @@ module Geo
 
     private
 
-    def sync_repository(redownload = false)
-      fetch_repository(redownload)
+    def sync_repository
+      fetch_repository
 
       update_gitattributes
 
@@ -27,7 +27,6 @@ module Geo
       log_info('Expiring caches')
       project.repository.after_create
     ensure
-      clean_up_temporary_repository if redownload
       expire_repository_caches
       execute_housekeeping
     end

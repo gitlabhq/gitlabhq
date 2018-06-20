@@ -253,7 +253,7 @@ describe Geo::RepositorySyncService do
       it 'tries to fetch repo' do
         create(:geo_project_registry, project: project, repository_retry_count: Geo::ProjectRegistry::RETRIES_BEFORE_REDOWNLOAD - 1)
 
-        expect(subject).to receive(:sync_repository).with(no_args)
+        expect(subject).to receive(:sync_repository)
 
         subject.execute
       end
@@ -269,7 +269,7 @@ describe Geo::RepositorySyncService do
       it 'tries to redownload repo' do
         create(:geo_project_registry, project: project, repository_retry_count: Geo::ProjectRegistry::RETRIES_BEFORE_REDOWNLOAD + 1)
 
-        expect(subject).to receive(:sync_repository).with(true).and_call_original
+        expect(subject).to receive(:sync_repository).and_call_original
         expect(subject.gitlab_shell).to receive(:mv_repository).exactly(2).times.and_call_original
 
         expect(subject.gitlab_shell).to receive(:add_namespace).with(
@@ -297,7 +297,7 @@ describe Geo::RepositorySyncService do
           force_to_redownload_repository: true
         )
 
-        expect(subject).to receive(:sync_repository).with(true)
+        expect(subject).to receive(:sync_repository)
 
         subject.execute
       end

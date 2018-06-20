@@ -25,11 +25,7 @@ module Geo
       try_obtain_lease do
         log_info("Started #{type} sync")
 
-        if registry.should_be_retried?(type)
-          sync_repository
-        else
-          sync_repository(true)
-        end
+        sync_repository
 
         log_info("Finished #{type} sync")
       end
@@ -45,7 +41,7 @@ module Geo
 
     private
 
-    def fetch_repository(redownload)
+    def fetch_repository
       log_info("Trying to fetch #{type}")
       clean_up_temporary_repository
 
@@ -53,9 +49,8 @@ module Geo
 
       registry.start_sync!(type)
 
-      if redownload
+      if redownload?
         redownload_repository
-        set_temp_repository_as_main
         schedule_repack
       elsif repository.exists?
         fetch_geo_mirror(repository)
@@ -64,6 +59,10 @@ module Geo
         fetch_geo_mirror(repository)
         schedule_repack
       end
+    end
+
+    def redownload?
+      registry.should_be_redownloaded?(type)
     end
 
     def schedule_repack
@@ -83,6 +82,10 @@ module Geo
       end
 
       fetch_geo_mirror(temp_repo)
+
+      set_temp_repository_as_main
+    ensure
+      clean_up_temporary_repository
     end
 
     def current_node
