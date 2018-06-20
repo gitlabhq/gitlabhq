@@ -7,18 +7,10 @@ module Gitlab
         # Created or deleted branch
         return false if Gitlab::Git.blank_ref?(oldrev) || Gitlab::Git.blank_ref?(newrev)
 
-        GitalyClient.migrate(:force_push) do |is_enabled|
-          if is_enabled
-            !project
-              .repository
-              .gitaly_commit_client
-              .ancestor?(oldrev, newrev)
-          else
-            Gitlab::Git::RevList.new(
-              project.repository.raw, oldrev: oldrev, newrev: newrev
-            ).missed_ref.present?
-          end
-        end
+        !project
+          .repository
+          .gitaly_commit_client
+          .ancestor?(oldrev, newrev)
       end
     end
   end

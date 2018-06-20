@@ -55,8 +55,14 @@ For more information: #{EE::Gitlab::GeoGitAccess::GEO_SERVER_DOCS_URL}"
         expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.not_to raise_error
       end
 
-      it 'returns false' do
+      it 'returns false when a commit message is missing required matches (positive regex match)' do
         project.create_push_rule(commit_message_regex: "@only.com")
+
+        expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.to raise_error(described_class::UnauthorizedError)
+      end
+
+      it 'returns false when a commit message contains forbidden characters (negative regex match)' do
+        project.create_push_rule(commit_message_negative_regex: "@gmail.com")
 
         expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.to raise_error(described_class::UnauthorizedError)
       end

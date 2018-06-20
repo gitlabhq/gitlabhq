@@ -42,7 +42,7 @@
         return this.isNodeHTTP || this.nodeDetailsFailed;
       },
       nodeStatusIconClass() {
-        const iconClasses = 'prepend-left-10 float-left node-status-icon';
+        const iconClasses = 'prepend-left-10 node-status-icon';
         if (this.nodeDetailsFailed) {
           return `${iconClasses} status-icon-failure`;
         }
@@ -68,33 +68,35 @@
   <div class="card-header">
     <div class="row">
       <div class="col-md-8 clearfix">
-        <strong class="node-url inline float-left">
-          {{ node.url }}
-        </strong>
-        <loading-icon
-          v-if="nodeDetailsLoading || node.nodeActionActive"
-          class="node-details-loading prepend-left-10 float-left inline"
-        />
-        <icon
-          v-tooltip
-          v-if="showNodeStatusIcon"
-          data-container="body"
-          data-placement="bottom"
-          :name="nodeStatusIconName"
-          :size="18"
-          :css-classes="nodeStatusIconClass"
-          :title="nodeStatusIconTooltip"
-        />
-        <span class="inline float-left prepend-left-10">
+        <span class="d-flex float-left append-right-10">
+          <strong class="node-url">
+            {{ node.url }}
+          </strong>
+          <loading-icon
+            v-if="nodeDetailsLoading || node.nodeActionActive"
+            class="node-details-loading prepend-left-10 inline"
+          />
+          <icon
+            v-tooltip
+            v-if="showNodeStatusIcon"
+            :name="nodeStatusIconName"
+            :size="18"
+            :css-classes="nodeStatusIconClass"
+            :title="nodeStatusIconTooltip"
+            data-container="body"
+            data-placement="bottom"
+          />
+        </span>
+        <span class="inline node-type-badges">
           <span
-            class="prepend-left-5 node-badge current-node"
             v-if="node.current"
+            class="node-badge current-node"
           >
             {{ s__('Current node') }}
           </span>
           <span
-            class="prepend-left-5 node-badge primary-node"
             v-if="node.primary"
+            class="prepend-left-5 node-badge primary-node"
           >
             {{ s__('Primary') }}
           </span>

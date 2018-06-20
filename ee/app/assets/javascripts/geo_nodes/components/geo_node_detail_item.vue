@@ -104,8 +104,8 @@
           template: `
             <div class="popover geo-node-detail-popover" role="tooltip">
               <div class="arrow"></div>
-              <p class="popover-title"></p>
-              <div class="popover-content"></div>
+              <p class="popover-header"></p>
+              <div class="popover-body"></div>
             </div>
           `,
           title: this.helpInfo.title,
@@ -129,22 +129,22 @@
       <icon
         v-popover="popoverConfig"
         v-if="hasHelpInfo"
+        :size="12"
         css-classes="node-detail-help-text prepend-left-5"
         name="question"
-        :size="12"
       />
     </div>
     <div
       v-if="isValueTypePlain"
-      class="node-detail-value"
       :class="cssClass"
+      class="node-detail-value"
     >
       {{ itemValue }}
     </div>
     <div
       v-if="isValueTypeGraph"
-      class="node-detail-value"
       :class="{ 'd-flex': itemValueStale }"
+      class="node-detail-value"
     >
       <stacked-progress-bar
         :css-class="itemValueStale ? 'flex-fill' : ''"
@@ -158,10 +158,10 @@
       <icon
         v-tooltip
         v-show="itemValueStale"
+        :title="itemValueStaleTooltip"
         name="time-out"
         css-classes="prepend-left-10 detail-value-stale-icon"
         data-container="body"
-        :title="itemValueStaleTooltip"
       />
     </div>
     <template v-if="isValueTypeCustom">

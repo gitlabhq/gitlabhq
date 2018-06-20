@@ -1,6 +1,6 @@
 <script>
 const buttonVariants = ['danger', 'primary', 'success', 'warning'];
-const sizeVariants = ['sm', 'md', 'lg'];
+const sizeVariants = ['sm', 'md', 'lg', 'xl'];
 
 export default {
   name: 'GlModal',
@@ -57,8 +57,8 @@ export default {
     role="dialog"
   >
     <div
-      class="modal-dialog"
       :class="modalSizeClass"
+      class="modal-dialog"
       role="document"
     >
       <div class="modal-content">
@@ -70,10 +70,10 @@ export default {
               </slot>
             </h4>
             <button
+              :aria-label="s__('Modal|Close')"
               type="button"
               class="close js-modal-close-action"
               data-dismiss="modal"
-              :aria-label="s__('Modal|Close')"
               @click="emitCancel($event)"
             >
               <span aria-hidden="true">&times;</span>
@@ -96,9 +96,9 @@ export default {
               {{ s__('Modal|Cancel') }}
             </button>
             <button
+              :class="`btn-${footerPrimaryButtonVariant}`"
               type="button"
               class="btn js-modal-primary-action"
-              :class="`btn-${footerPrimaryButtonVariant}`"
               data-dismiss="modal"
               @click="emitSubmit($event)"
             >

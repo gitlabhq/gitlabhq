@@ -25,6 +25,7 @@ Example response:
     "current": true,
     "files_max_capacity": 10,
     "repos_max_capacity": 25,
+    "verification_max_capacity": 100,
     "clone_protocol": "http"
   },
   {
@@ -35,6 +36,7 @@ Example response:
     "current": false,
     "files_max_capacity": 10,
     "repos_max_capacity": 25,
+    "verification_max_capacity": 100,
     "clone_protocol": "http"
   }
 ]
@@ -61,6 +63,7 @@ Example response:
   "current": true,
   "files_max_capacity": 10,
   "repos_max_capacity": 25,
+  "verification_max_capacity": 100,
   "clone_protocol": "http"
 }
 ```
@@ -75,13 +78,14 @@ _This can only be run against a primary Geo node._
 PUT /geo_nodes/:id
 ```
 
-| Attribute            | Type    | Required | Description                                                               |
-|----------------------|---------|----------|---------------------------------------------------------------------------|
-| `id`                 | integer | yes      | The ID of the Geo node.                                                   |
-| `enabled`            | boolean | no       | Flag indicating if the Geo node is enabled.                               |
-| `url`                | string  | no       | The URL to connect to the Geo node.                                       |
-| `files_max_capacity` | integer | no       | Control the maximum concurrency of LFS/attachment backfill for this node. |
-| `repos_max_capacity` | integer | no       | Control the maximum concurrency of repository backfill for this node.     |
+| Attribute            | Type    | Required  | Description                                                               |
+|----------------------|---------|-----------|---------------------------------------------------------------------------|
+| `id`                 | integer | yes       | The ID of the Geo node.                                                   |
+| `enabled`            | boolean | no        | Flag indicating if the Geo node is enabled.                               |
+| `url`                | string  | no        | The URL to connect to the Geo node.                                       |
+| `files_max_capacity` | integer | no        | Control the maximum concurrency of LFS/attachment backfill for this secondary node. |
+| `repos_max_capacity` | integer | no        | Control the maximum concurrency of repository backfill for this secondary node.     |
+| `verification_max_capacity` | integer | no | Control the maximum concurrency of verification for this node. |
 
 Example response:
 
@@ -94,6 +98,7 @@ Example response:
   "current": true,
   "files_max_capacity": 10,
   "repos_max_capacity": 25,
+  "verification_max_capacity": 100,
   "clone_protocol": "http"
 }
 ```
@@ -131,6 +136,7 @@ Example response:
   "current": true,
   "files_max_capacity": 10,
   "repos_max_capacity": 25,
+  "verification_max_capacity": 100,
   "clone_protocol": "http"
 }
 ```
@@ -320,6 +326,8 @@ Example response:
   "revision": "33d33a096a"
 }
 ```
+
+Please note that the `health_status` parameter can only be in an "Healthy" or "Unhealthy" state, while the `health` parameter can be empty, "Healthy", or contain the actual error message.
 
 ## Retrieve project sync failures that occurred on the current node
 

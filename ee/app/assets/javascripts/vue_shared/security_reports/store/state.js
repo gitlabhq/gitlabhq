@@ -132,7 +132,7 @@ export default () => ({
     learnMoreUrl: null,
 
     vulnerability: {
-      isDimissed: false,
+      isDismissed: false,
       hasIssue: false,
     },
 

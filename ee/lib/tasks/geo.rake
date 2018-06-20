@@ -275,7 +275,7 @@ namespace :geo do
       puts 'N/A'
     end
 
-    print 'Last status was pulled by primary node: '.rjust(COLUMN_WIDTH)
+    print 'Last status report was: '.rjust(COLUMN_WIDTH)
 
     if current_node_status.updated_at
       puts "#{time_ago_in_words(current_node_status.updated_at)} ago"

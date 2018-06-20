@@ -205,12 +205,12 @@ export default {
 <template>
   <deprecated-modal
     v-show="isVisible"
-    modal-dialog-class="board-config-modal"
     :hide-footer="readonly"
     :title="title"
     :primary-button-label="buttonText"
     :kind="buttonKind"
     :submit-disabled="submitDisabled"
+    modal-dialog-class="board-config-modal"
     @cancel="cancel"
     @submit="submit"
   >
@@ -234,13 +234,13 @@ export default {
             Board name
           </label>
           <input
+            id="board-new-name"
             ref="name"
+            v-model="board.name"
             class="form-control"
             type="text"
-            id="board-new-name"
-            v-model="board.name"
-            @keyup.enter="submit"
             placeholder="Enter board name"
+            @keyup.enter="submit"
           />
         </div>
         <div v-if="scopedIssueBoardFeatureEnabled">
@@ -252,10 +252,10 @@ export default {
               Board scope
             </label>
             <button
+              v-if="collapseScope"
               type="button"
               class="btn"
               @click="expanded = !expanded"
-              v-if="collapseScope"
             >
               {{ expandButtonText }}
             </button>
@@ -271,25 +271,25 @@ export default {
             />
 
             <board-labels-select
-              ability-name="issue"
               :context="board"
               :labels-path="labelsPath"
               :can-edit="canAdminBoard"
+              ability-name="issue"
               @onLabelClick="handleLabelClick"
             >
               {{ __('Any Label') }}
             </board-labels-select>
 
             <assignee-select
-              any-user-text="Any assignee"
               :board="board"
-              field-name="assignee_id"
-              label="Assignee"
               :selected="board.assignee"
               :can-edit="canAdminBoard"
-              placeholder-text="Select assignee"
               :project-id="projectId"
               :group-id="groupId"
+              any-user-text="Any assignee"
+              field-name="assignee_id"
+              label="Assignee"
+              placeholder-text="Select assignee"
               wrapper-class="assignee"
             />
 

@@ -37,7 +37,11 @@ describe Projects::HashedStorage::MigrateRepositoryService do
       it 'writes project full path to .git/config' do
         service.execute
 
-        expect(project.repository.rugged.config['gitlab.fullpath']).to eq project.full_path
+        rugged_config = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          project.repository.rugged.config['gitlab.fullpath']
+        end
+
+        expect(rugged_config).to eq project.full_path
       end
     end
 

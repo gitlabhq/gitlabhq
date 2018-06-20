@@ -80,24 +80,24 @@ export default {
   <div>
     <ul class="report-block-list">
       <li
-        class="report-block-list-issue"
-        :class="{ 'is-dismissed': issue.isDismissed }"
         v-for="(issue, index) in issues"
+        :class="{ 'is-dismissed': issue.isDismissed }"
         :key="index"
+        class="report-block-list-issue"
       >
         <div
-          class="report-block-list-icon append-right-5"
           :class="{
             failed: isStatusFailed,
             success: isStatusSuccess,
             neutral: isStatusNeutral,
           }"
+          class="report-block-list-icon append-right-5"
         >
           <icon
             v-if="isTypeLicense"
+            :size="24"
             name="status_created_borderless"
             css-classes="prepend-left-4"
-            :size="24"
           />
           <icon
             v-else

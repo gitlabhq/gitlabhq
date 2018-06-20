@@ -13,7 +13,6 @@ describe Geo::MetricsUpdateService, :geo, :prometheus do
 
   let(:data) do
     {
-      success: true,
       status_message: nil,
       db_replication_lag_seconds: 0,
       repositories_count: 10,
@@ -54,7 +53,6 @@ describe Geo::MetricsUpdateService, :geo, :prometheus do
 
   let(:primary_data) do
     {
-      success: true,
       status_message: nil,
       repositories_count: 10,
       wikis_count: 10,
@@ -79,8 +77,8 @@ describe Geo::MetricsUpdateService, :geo, :prometheus do
 
   describe '#execute' do
     before do
-      request = double(success?: true, parsed_response: data.stringify_keys, code: 200)
-      allow(Gitlab::HTTP).to receive(:get).and_return(request)
+      response = double(success?: true, parsed_response: data.stringify_keys, code: 200)
+      allow(Gitlab::HTTP).to receive(:post).and_return(response)
     end
 
     context 'when current node is nil' do
@@ -88,8 +86,8 @@ describe Geo::MetricsUpdateService, :geo, :prometheus do
         stub_current_geo_node(nil)
       end
 
-      it 'skips fetching the status' do
-        expect(Gitlab::HTTP).to receive(:get).never
+      it 'skips posting the status' do
+        expect(Gitlab::HTTP).to receive(:post).never
 
         subject.execute
       end
@@ -100,8 +98,20 @@ describe Geo::MetricsUpdateService, :geo, :prometheus do
         stub_current_geo_node(primary)
       end
 
-      it 'attempts to retrieve metrics from all nodes' do
+      it 'updates the cache' do
+        status = GeoNodeStatus.from_json(primary_data.as_json)
+        allow(GeoNodeStatus).to receive(:current_node_status).and_return(status)
+
+        expect(status).to receive(:update_cache!)
+
+        subject.execute
+      end
+
+      it 'updates metrics for all nodes' do
         allow(GeoNodeStatus).to receive(:current_node_status).and_return(GeoNodeStatus.from_json(primary_data.as_json))
+
+        secondary.update(status: GeoNodeStatus.from_json(data.as_json))
+        another_secondary.update(status: GeoNodeStatus.from_json(data.as_json))
 
         subject.execute
 
@@ -113,29 +123,21 @@ describe Geo::MetricsUpdateService, :geo, :prometheus do
       end
 
       it 'updates the GeoNodeStatus entry' do
-        expect { subject.execute }.to change { GeoNodeStatus.count }.by(3)
-
-        status = secondary.status.load_data_from_current_node
-
-        expect(status.geo_node_id).to eq(secondary.id)
-        expect(status.last_successful_status_check_at).not_to be_nil
-      end
-
-      it 'updates only the active node' do
-        secondary.update_attributes(enabled: false)
-
-        expect { subject.execute }.to change { GeoNodeStatus.count }.by(2)
-
-        expect(another_secondary.status).not_to be_nil
+        expect { subject.execute }.to change { GeoNodeStatus.count }.by(1)
       end
     end
 
     context 'when node is a secondary' do
-      subject { described_class.new }
-
       before do
         stub_current_geo_node(secondary)
-        allow(subject).to receive(:node_status).and_return(GeoNodeStatus.new(data))
+        @status = GeoNodeStatus.new(data.as_json)
+        allow(GeoNodeStatus).to receive(:current_node_status).and_return(@status)
+      end
+
+      it 'updates the cache' do
+        expect(@status).to receive(:update_cache!)
+
+        subject.execute
       end
 
       it 'adds gauges for various metrics' do
@@ -179,22 +181,12 @@ describe Geo::MetricsUpdateService, :geo, :prometheus do
       end
 
       it 'increments a counter when metrics fail to retrieve' do
-        allow(subject).to receive(:node_status).and_return(GeoNodeStatus.new(success: false))
+        allow_any_instance_of(Geo::NodeStatusPostService).to receive(:execute).and_return(false)
 
         # Run once to get the gauge set
         subject.execute
 
         expect { subject.execute }.to change { metric_value(:geo_status_failed_total) }.by(1)
-      end
-
-      it 'updates cache' do
-        status = GeoNodeStatus.new(success: true)
-
-        expect(status).to receive(:update_cache!)
-
-        allow(subject).to receive(:node_status).and_return(status)
-
-        subject.execute
       end
 
       it 'does not create GeoNodeStatus entries' do

@@ -19,14 +19,14 @@ export default {
 
 <template>
   <div
-    class="dropdown-input"
     :class="{ 'has-value': !!query }"
+    class="dropdown-input"
   >
     <input
-      type="search"
-      class="dropdown-input-field"
       :placeholder="__('Search')"
       v-model.trim="query"
+      type="search"
+      class="dropdown-input-field"
       @keyup="handleInputChange"
     />
     <i

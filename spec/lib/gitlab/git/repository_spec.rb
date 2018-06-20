@@ -77,17 +77,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#root_ref' do
-    context 'with gitaly disabled' do
-      before do
-        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).and_return(false)
-      end
-
-      it 'calls #discover_default_branch' do
-        expect(repository).to receive(:discover_default_branch)
-        repository.root_ref
-      end
-    end
-
     it 'returns UTF-8' do
       expect(repository.root_ref).to be_utf8
     end
@@ -150,46 +139,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
           repository_rugged
         end
       end
-    end
-  end
-
-  describe "#discover_default_branch" do
-    let(:master) { 'master' }
-    let(:feature) { 'feature' }
-    let(:feature2) { 'feature2' }
-
-    around do |example|
-      # discover_default_branch will be moved to gitaly-ruby
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        example.run
-      end
-    end
-
-    it "returns 'master' when master exists" do
-      expect(repository).to receive(:branch_names).at_least(:once).and_return([feature, master])
-      expect(repository.discover_default_branch).to eq('master')
-    end
-
-    it "returns non-master when master exists but default branch is set to something else" do
-      File.write(File.join(repository_path, 'HEAD'), 'ref: refs/heads/feature')
-      expect(repository).to receive(:branch_names).at_least(:once).and_return([feature, master])
-      expect(repository.discover_default_branch).to eq('feature')
-      File.write(File.join(repository_path, 'HEAD'), 'ref: refs/heads/master')
-    end
-
-    it "returns a non-master branch when only one exists" do
-      expect(repository).to receive(:branch_names).at_least(:once).and_return([feature])
-      expect(repository.discover_default_branch).to eq('feature')
-    end
-
-    it "returns a non-master branch when more than one exists and master does not" do
-      expect(repository).to receive(:branch_names).at_least(:once).and_return([feature, feature2])
-      expect(repository.discover_default_branch).to eq('feature')
-    end
-
-    it "returns nil when no branch exists" do
-      expect(repository).to receive(:branch_names).at_least(:once).and_return([])
-      expect(repository.discover_default_branch).to be_nil
     end
   end
 
@@ -476,7 +425,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#has_local_branches?' do
-    shared_examples 'check for local branches' do
+    context 'check for local branches' do
       it { expect(repository.has_local_branches?).to eq(true) }
 
       context 'mutable' do
@@ -509,14 +458,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
           end
         end
       end
-    end
-
-    context 'with gitaly' do
-      it_behaves_like 'check for local branches'
-    end
-
-    context 'without gitaly', :skip_gitaly_mock do
-      it_behaves_like 'check for local branches'
     end
   end
 
@@ -1173,7 +1114,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#count_commits' do
-    shared_examples 'extended commit counting' do
+    describe 'extended commit counting' do
       context 'with after timestamp' do
         it 'returns the number of commits after timestamp' do
           options = { ref: 'master', after: Time.iso8601('2013-03-03T20:15:01+00:00') }
@@ -1257,14 +1198,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
           expect { repository.count_commits({}) }.to raise_error(ArgumentError)
         end
       end
-    end
-
-    context 'when Gitaly count_commits feature is enabled' do
-      it_behaves_like 'extended commit counting'
-    end
-
-    context 'when Gitaly count_commits feature is disabled', :disable_gitaly do
-      it_behaves_like 'extended commit counting'
     end
   end
 
@@ -1392,24 +1325,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it 'returns the local and remote branches' do
         expect(subject.any? { |b| b.name == 'joe/remote_branch' }).to eq(true)
         expect(subject.any? { |b| b.name == 'local_branch' }).to eq(true)
-      end
-    end
-
-    # With Gitaly enabled, Gitaly just doesn't return deleted branches.
-    context 'with deleted branch with Gitaly disabled' do
-      before do
-        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).and_return(false)
-      end
-
-      it 'returns no results' do
-        ref = double()
-        allow(ref).to receive(:name) { 'bad-branch' }
-        allow(ref).to receive(:target) { raise Rugged::ReferenceError }
-        branches = double()
-        allow(branches).to receive(:each) { [ref].each }
-        allow(repository_rugged).to receive(:branches) { branches }
-
-        expect(subject).to be_empty
       end
     end
 
@@ -1765,70 +1680,52 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#languages' do
-    shared_examples 'languages' do
-      it 'returns exactly the expected results' do
-        languages = repository.languages('4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6')
-        expected_languages = [
-          { value: 66.63, label: "Ruby", color: "#701516", highlight: "#701516" },
-          { value: 22.96, label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
-          { value: 7.9, label: "HTML", color: "#e34c26", highlight: "#e34c26" },
-          { value: 2.51, label: "CoffeeScript", color: "#244776", highlight: "#244776" }
-        ]
+    it 'returns exactly the expected results' do
+      languages = repository.languages('4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6')
+      expected_languages = [
+        { value: 66.63, label: "Ruby", color: "#701516", highlight: "#701516" },
+        { value: 22.96, label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
+        { value: 7.9, label: "HTML", color: "#e34c26", highlight: "#e34c26" },
+        { value: 2.51, label: "CoffeeScript", color: "#244776", highlight: "#244776" }
+      ]
 
-        expect(languages.size).to eq(expected_languages.size)
+      expect(languages.size).to eq(expected_languages.size)
 
-        expected_languages.size.times do |i|
-          a = expected_languages[i]
-          b = languages[i]
+      expected_languages.size.times do |i|
+        a = expected_languages[i]
+        b = languages[i]
 
-          expect(a.keys.sort).to eq(b.keys.sort)
-          expect(a[:value]).to be_within(0.1).of(b[:value])
+        expect(a.keys.sort).to eq(b.keys.sort)
+        expect(a[:value]).to be_within(0.1).of(b[:value])
 
-          non_float_keys = a.keys - [:value]
-          expect(a.values_at(*non_float_keys)).to eq(b.values_at(*non_float_keys))
-        end
-      end
-
-      it "uses the repository's HEAD when no ref is passed" do
-        lang = repository.languages.first
-
-        expect(lang[:label]).to eq('Ruby')
+        non_float_keys = a.keys - [:value]
+        expect(a.values_at(*non_float_keys)).to eq(b.values_at(*non_float_keys))
       end
     end
 
-    it_behaves_like 'languages'
+    it "uses the repository's HEAD when no ref is passed" do
+      lang = repository.languages.first
 
-    context 'with rugged', :skip_gitaly_mock do
-      it_behaves_like 'languages'
+      expect(lang[:label]).to eq('Ruby')
     end
   end
 
   describe '#license_short_name' do
-    shared_examples 'acquiring the Licensee license key' do
-      subject { repository.license_short_name }
+    subject { repository.license_short_name }
 
-      context 'when no license file can be found' do
-        let(:project) { create(:project, :repository) }
-        let(:repository) { project.repository.raw_repository }
+    context 'when no license file can be found' do
+      let(:project) { create(:project, :repository) }
+      let(:repository) { project.repository.raw_repository }
 
-        before do
-          project.repository.delete_file(project.owner, 'LICENSE', message: 'remove license', branch_name: 'master')
-        end
-
-        it { is_expected.to be_nil }
+      before do
+        project.repository.delete_file(project.owner, 'LICENSE', message: 'remove license', branch_name: 'master')
       end
 
-      context 'when an mit license is found' do
-        it { is_expected.to eq('mit') }
-      end
+      it { is_expected.to be_nil }
     end
 
-    context 'when gitaly is enabled' do
-      it_behaves_like 'acquiring the Licensee license key'
-    end
-
-    context 'when gitaly is disabled', :disable_gitaly do
-      it_behaves_like 'acquiring the Licensee license key'
+    context 'when an mit license is found' do
+      it { is_expected.to eq('mit') }
     end
   end
 

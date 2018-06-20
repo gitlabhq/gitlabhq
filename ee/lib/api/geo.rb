@@ -27,15 +27,18 @@ module API
         end
       end
 
-      #  Get node information (e.g. health, repos synced, repos failed, etc.)
+      # Post current node information to primary (e.g. health, repos synced, repos failed, etc.)
       #
       # Example request:
-      #   GET /geo/status
-      get 'status' do
+      #   POST /geo/status
+      post 'status' do
         authenticate_by_gitlab_geo_node_token!
 
-        status = ::GeoNodeStatus.fast_current_node_status
-        present status, with: EE::API::Entities::GeoNodeStatus
+        db_status = GeoNode.find(params[:geo_node_id]).find_or_build_status
+
+        unless db_status.update(params.merge(last_successful_status_check_at: Time.now.utc))
+          render_validation_error!(db_status)
+        end
       end
     end
   end

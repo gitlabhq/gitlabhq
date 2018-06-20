@@ -1568,7 +1568,9 @@ describe Ci::Build do
     let(:predefined_variables) do
       [
         { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
+        { key: 'CI_PIPELINE_URL', value: project.web_url + "/pipelines/#{pipeline.id}", public: true },
         { key: 'CI_JOB_ID', value: build.id.to_s, public: true },
+        { key: 'CI_JOB_URL', value: project.web_url + "/-/jobs/#{build.id}", public: true },
         { key: 'CI_JOB_TOKEN', value: build.token, public: false },
         { key: 'CI_BUILD_ID', value: build.id.to_s, public: true },
         { key: 'CI_BUILD_TOKEN', value: build.token, public: false },
@@ -2191,6 +2193,7 @@ describe Ci::Build do
 
       it 'does not return prohibited variables' do
         keys = %w[CI_JOB_ID
+                  CI_JOB_URL
                   CI_JOB_TOKEN
                   CI_BUILD_ID
                   CI_BUILD_TOKEN

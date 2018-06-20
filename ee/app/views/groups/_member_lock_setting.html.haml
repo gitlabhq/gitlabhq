@@ -1,8 +1,8 @@
 - return unless can?(current_user, :admin_group, group) && License.feature_available?(:member_lock)
 
-.form-group
-  %hr
-  = f.label :membership_lock, class: 'col-form-label' do
+%hr
+.form-group.row
+  = f.label :membership_lock, class: 'col-form-label col-sm-2' do
     Member lock
   .col-sm-10
     .form-check

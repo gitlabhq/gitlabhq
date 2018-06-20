@@ -1884,7 +1884,11 @@ describe Project do
         .with(project.repository_storage, project.disk_path, project.import_url)
         .and_return(true)
 
-      expect_any_instance_of(Repository).to receive(:after_import)
+      # Works around https://github.com/rspec/rspec-mocks/issues/910
+      allow(described_class).to receive(:find).with(project.id).and_return(project)
+      expect(project.repository).to receive(:after_import)
+        .and_call_original
+      expect(project.wiki.repository).to receive(:after_import)
         .and_call_original
     end
 
@@ -2288,20 +2292,6 @@ describe Project do
     end
   end
 
-  describe '#find_path_lock' do
-    let(:project) { create :project }
-    let(:path_lock) { create :path_lock, project: project }
-    let(:path) { path_lock.path }
-
-    it 'returns path_lock' do
-      expect(project.find_path_lock(path)).to eq(path_lock)
-    end
-
-    it 'returns nil' do
-      expect(project.find_path_lock('app/controllers')).to be_falsey
-    end
-  end
-
   describe '#change_repository_storage' do
     let(:project) { create(:project, :repository) }
     let(:read_only_project) { create(:project, :repository, repository_read_only: true) }
@@ -2685,6 +2675,22 @@ describe Project do
       end
 
       it_behaves_like 'ref is protected'
+    end
+  end
+
+  describe '#any_lfs_file_locks?', :request_store do
+    set(:project) { create(:project) }
+
+    it 'returns false when there are no LFS file locks' do
+      expect(project.any_lfs_file_locks?).to be_falsey
+    end
+
+    it 'returns a cached true when there are LFS file locks' do
+      create(:lfs_file_lock, project: project)
+
+      expect(project.lfs_file_locks).to receive(:any?).once.and_call_original
+
+      2.times { expect(project.any_lfs_file_locks?).to be_truthy }
     end
   end
 
@@ -3302,7 +3308,7 @@ describe Project do
 
         project.rename_repo
 
-        expect(project.repository.rugged.config['gitlab.fullpath']).to eq(project.full_path)
+        expect(rugged_config['gitlab.fullpath']).to eq(project.full_path)
       end
     end
 
@@ -3463,7 +3469,7 @@ describe Project do
       it 'updates project full path in .git/config' do
         project.rename_repo
 
-        expect(project.repository.rugged.config['gitlab.fullpath']).to eq(project.full_path)
+        expect(rugged_config['gitlab.fullpath']).to eq(project.full_path)
       end
     end
 
@@ -3761,10 +3767,11 @@ describe Project do
   end
 
   describe '#after_import' do
-    let(:project) { build(:project) }
+    let(:project) { create(:project) }
 
     it 'runs the correct hooks' do
       expect(project.repository).to receive(:after_import)
+      expect(project.wiki.repository).to receive(:after_import)
       expect(project).to receive(:import_finish)
       expect(project).to receive(:update_project_counter_caches)
       expect(project).to receive(:remove_import_jid)
@@ -3906,13 +3913,13 @@ describe Project do
     it 'writes full path in .git/config when key is missing' do
       project.write_repository_config
 
-      expect(project.repository.rugged.config['gitlab.fullpath']).to eq project.full_path
+      expect(rugged_config['gitlab.fullpath']).to eq project.full_path
     end
 
     it 'updates full path in .git/config when key is present' do
       project.write_repository_config(gl_full_path: 'old/path')
 
-      expect { project.write_repository_config }.to change { project.repository.rugged.config['gitlab.fullpath'] }.from('old/path').to(project.full_path)
+      expect { project.write_repository_config }.to change { rugged_config['gitlab.fullpath'] }.from('old/path').to(project.full_path)
     end
 
     it 'does not raise an error with an empty repository' do
@@ -4041,6 +4048,11 @@ describe Project do
     describe '#branch_allows_collaboration_push?' do
       it 'allows access if the user can merge the merge request' do
         expect(project.branch_allows_collaboration?(user, 'awesome-feature-1'))
+          .to be_truthy
+      end
+
+      it 'allows access when there are merge requests open but no branch name is given' do
+        expect(project.branch_allows_collaboration?(user, nil))
           .to be_truthy
       end
 
@@ -4191,6 +4203,12 @@ describe Project do
       let(:model_object) { create(:project, :with_avatar) }
       let(:upload_attribute) { :avatar }
       let(:uploader_class) { AttachmentUploader }
+    end
+  end
+
+  def rugged_config
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      project.repository.rugged.config
     end
   end
 end

@@ -196,8 +196,8 @@
 
 <template>
   <aside
-    class="right-sidebar"
     :class="{ 'right-sidebar-expanded' : !collapsed, 'right-sidebar-collapsed': collapsed }"
+    class="right-sidebar"
   >
     <div class="issuable-sidebar js-issuable-update">
       <div class="block issuable-sidebar-header">
@@ -208,26 +208,26 @@
       </div>
       <sidebar-date-picker
         v-if="!collapsed"
-        block-class="start-date"
         :collapsed="collapsed"
         :is-loading="savingStartDate"
         :editable="editable"
-        label="Planned start date"
         :selected-date="store.startDateTime"
         :max-date="store.endDateTime"
         :show-toggle-sidebar="true"
+        block-class="start-date"
+        label="Planned start date"
         @saveDate="saveStartDate"
         @toggleCollapse="toggleSidebar"
       />
       <sidebar-date-picker
         v-if="!collapsed"
-        block-class="end-date"
         :collapsed="collapsed"
         :is-loading="savingEndDate"
         :editable="editable"
-        label="Planned finish date"
         :selected-date="store.endDateTime"
         :min-date="store.startDateTime"
+        block-class="end-date"
+        label="Planned finish date"
         @saveDate="saveEndDate"
         @toggleCollapse="toggleSidebar"
       />
@@ -239,7 +239,6 @@
         @toggleCollapse="toggleSidebar"
       />
       <sidebar-labels-select
-        ability-name="epic"
         :context="epicContext"
         :namespace="namespace"
         :update-path="updatePath"
@@ -248,6 +247,7 @@
         :label-filter-base-path="epicsWebUrl"
         :can-edit="editable"
         :show-create="true"
+        ability-name="epic"
         @onLabelClick="handleLabelClick"
         @onDropdownClose="handleDropdownClose"
         @toggleCollapse="toggleSidebarRevealLabelsDropdown"

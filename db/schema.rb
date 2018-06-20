@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180608201435) do
+ActiveRecord::Schema.define(version: 20180612175636) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1063,7 +1063,6 @@ ActiveRecord::Schema.define(version: 20180608201435) do
   create_table "geo_hashed_storage_migrated_events", id: :bigserial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.text "repository_storage_name", null: false
-    t.text "repository_storage_path"
     t.text "old_disk_path", null: false
     t.text "new_disk_path", null: false
     t.text "old_wiki_disk_path", null: false
@@ -1160,6 +1159,7 @@ ActiveRecord::Schema.define(version: 20180608201435) do
     t.string "url", null: false
     t.string "selective_sync_type"
     t.text "selective_sync_shards"
+    t.integer "verification_max_capacity", default: 100, null: false
   end
 
   add_index "geo_nodes", ["access_key"], name: "index_geo_nodes_on_access_key", using: :btree
@@ -1175,7 +1175,6 @@ ActiveRecord::Schema.define(version: 20180608201435) do
   create_table "geo_repository_created_events", id: :bigserial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.text "repository_storage_name", null: false
-    t.text "repository_storage_path"
     t.text "repo_path", null: false
     t.text "wiki_path"
     t.text "project_name", null: false
@@ -1186,7 +1185,6 @@ ActiveRecord::Schema.define(version: 20180608201435) do
   create_table "geo_repository_deleted_events", id: :bigserial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.text "repository_storage_name", null: false
-    t.text "repository_storage_path"
     t.text "deleted_path", null: false
     t.text "deleted_wiki_path"
     t.text "deleted_project_name", null: false
@@ -1197,7 +1195,6 @@ ActiveRecord::Schema.define(version: 20180608201435) do
   create_table "geo_repository_renamed_events", id: :bigserial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.text "repository_storage_name", null: false
-    t.text "repository_storage_path"
     t.text "old_path_with_namespace", null: false
     t.text "new_path_with_namespace", null: false
     t.text "old_wiki_path_with_namespace", null: false
@@ -2137,6 +2134,7 @@ ActiveRecord::Schema.define(version: 20180608201435) do
   add_index "projects", ["created_at"], name: "index_projects_on_created_at", using: :btree
   add_index "projects", ["creator_id"], name: "index_projects_on_creator_id", using: :btree
   add_index "projects", ["description"], name: "index_projects_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
+  add_index "projects", ["id", "repository_storage", "last_repository_updated_at"], name: "idx_projects_on_repository_storage_last_repository_updated_at", using: :btree
   add_index "projects", ["id"], name: "index_projects_on_id_partial_for_visibility", unique: true, where: "(visibility_level = ANY (ARRAY[10, 20]))", using: :btree
   add_index "projects", ["id"], name: "index_projects_on_mirror_and_mirror_trigger_builds_both_true", where: "((mirror IS TRUE) AND (mirror_trigger_builds IS TRUE))", using: :btree
   add_index "projects", ["last_activity_at"], name: "index_projects_on_last_activity_at", using: :btree
@@ -2264,6 +2262,7 @@ ActiveRecord::Schema.define(version: 20180608201435) do
     t.boolean "reject_unsigned_commits"
     t.boolean "commit_committer_check"
     t.boolean "regexp_uses_re2", default: true
+    t.string "commit_message_negative_regex"
   end
 
   add_index "push_rules", ["is_sample"], name: "index_push_rules_on_is_sample", where: "is_sample", using: :btree

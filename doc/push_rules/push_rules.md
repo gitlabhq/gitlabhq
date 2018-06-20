@@ -65,6 +65,7 @@ The following options are available.
 | Check whether commit is signed through GPG | **Premium** 10.1 | Reject commit when it is not signed through GPG. Read [signing commits with GPG][signing-commits]. |
 | Prevent committing secrets to Git | **Starter** 8.12 | GitLab will reject any files that are likely to contain secrets. Read [what files are forbidden](#prevent-pushing-secrets-to-the-repository). |
 | Restrict by commit message | **Starter** 7.10 | Only commit messages that match this regular expression are allowed to be pushed. Leave empty to allow any commit message. Uses multiline mode, which can be disabled using `(?-m)`. |
+| Restrict by commit message (negative match)| **Starter** 11.1 | Only commit messages that do not match this regular expression are allowed to be pushed. Leave empty to allow any commit message. Uses multiline mode, which can be disabled using `(?-m)`. |
 | Restrict by branch name | **Starter** 9.3 | Only branch names that match this regular expression are allowed to be pushed. Leave empty to allow any branch name. |
 | Restrict by commit author's email | **Starter** 7.10 | Only commit author's email that match this regular expression are allowed to be pushed. Leave empty to allow any email. |
 | Prohibited file names | **Starter** 7.10 | Any committed filenames that match this regular expression are not allowed to be pushed. Leave empty to allow any filenames. |

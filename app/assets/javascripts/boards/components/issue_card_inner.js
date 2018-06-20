@@ -10,6 +10,10 @@ window.gl = window.gl || {};
 window.gl.issueBoards = window.gl.issueBoards || {};
 
 gl.issueBoards.IssueCardInner = Vue.extend({
+  components: {
+    UserAvatarLink,
+    IssueCardWeight,
+  },
   props: {
     issue: {
       type: Object,
@@ -36,6 +40,7 @@ gl.issueBoards.IssueCardInner = Vue.extend({
     groupId: {
       type: Number,
       required: false,
+      default: null,
     },
   },
   data() {
@@ -44,10 +49,6 @@ gl.issueBoards.IssueCardInner = Vue.extend({
       maxRender: 4,
       maxCounter: 99,
     };
-  },
-  components: {
-    UserAvatarLink,
-    IssueCardWeight,
   },
   computed: {
     numberOverLimit() {

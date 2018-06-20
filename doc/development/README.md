@@ -32,7 +32,7 @@ description: 'Learn how to contribute to GitLab.'
 - [GitLab utilities](utilities.md)
 - [API styleguide](api_styleguide.md) Use this styleguide if you are
   contributing to the API.
-- [GrapQL API styleguide](api_graphql_styleguide.md) Use this
+- [GraphQL API styleguide](api_graphql_styleguide.md) Use this
   styleguide if you are contribution to the [GraphQL API](../api/graphql/index.md)
 - [Sidekiq guidelines](sidekiq_style_guide.md) for working with Sidekiq workers
 - [Working with Gitaly](gitaly.md)

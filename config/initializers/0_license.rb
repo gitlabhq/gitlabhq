@@ -7,7 +7,7 @@ rescue
 end
 
 # Needed to run migration
-if ActiveRecord::Base.connected? && ActiveRecord::Base.connection.table_exists?('licenses')
+if ActiveRecord::Base.connected? && ActiveRecord::Base.connection.data_source_exists?('licenses')
   message = LicenseHelper.license_message(signed_in: true, is_admin: true, in_html: false)
   if ::License.block_changes? && message.present?
     warn "WARNING: #{message}"

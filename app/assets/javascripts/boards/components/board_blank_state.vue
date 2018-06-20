@@ -72,8 +72,8 @@ export default {
         :key="index"
       >
         <span
-          class="label-color"
-          :style="{ backgroundColor: label.color }">
+          :style="{ backgroundColor: label.color }"
+          class="label-color">
         </span>
         {{ label.title }}
       </li>

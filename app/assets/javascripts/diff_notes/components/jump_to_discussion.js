@@ -1,16 +1,18 @@
-/* eslint-disable comma-dangle, object-shorthand, func-names, no-else-return, guard-for-in, no-restricted-syntax, one-var, space-before-function-paren, no-lonely-if, no-continue, brace-style, max-len, quotes */
-/* global DiscussionMixins */
+/* eslint-disable comma-dangle, object-shorthand, func-names, no-else-return, guard-for-in, no-restricted-syntax, no-lonely-if, no-continue, brace-style, max-len, quotes */
 /* global CommentsStore */
 
 import $ from 'jquery';
 import Vue from 'vue';
 
-import '../mixins/discussion';
+import DiscussionMixins from '../mixins/discussion';
 
 const JumpToDiscussion = Vue.extend({
   mixins: [DiscussionMixins],
   props: {
-    discussionId: String
+    discussionId: {
+      type: String,
+      required: true,
+    },
   },
   data: function () {
     return {
@@ -51,6 +53,9 @@ const JumpToDiscussion = Vue.extend({
       }
       return lastId;
     }
+  },
+  created() {
+    this.discussion = this.discussions[this.discussionId];
   },
   methods: {
     jumpToNextUnresolvedDiscussion: function () {
@@ -201,9 +206,6 @@ const JumpToDiscussion = Vue.extend({
         offset: -150
       });
     }
-  },
-  created() {
-    this.discussion = this.discussions[this.discussionId];
   },
 });
 

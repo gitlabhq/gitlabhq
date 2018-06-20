@@ -14,7 +14,21 @@
     "subscribed": { "type": ["boolean", "null"] },
     "participants": { "type": "array" },
     "allow_collaboration": { "type": "boolean"},
-    "allow_maintainer_to_push": { "type": "boolean"}
+    "allow_maintainer_to_push": { "type": "boolean"},
+    "assignee": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "user.json" }
+      ]
+    },
+    "milestone": {
+      "type": [ "object", "null" ]
+    },
+    "labels": {
+      "type": [ "array", "null" ]
+    },
+    "task_status": { "type": "string" },
+    "task_status_short": { "type": "string" }
   },
   "additionalProperties": false
 }

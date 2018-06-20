@@ -4,7 +4,7 @@ FactoryBot.define do
     storage_shards { StorageShard.all }
 
     trait :healthy do
-      health nil
+      status_message nil
       attachments_count 329
       attachments_failed_count 13
       attachments_synced_count 141
@@ -43,7 +43,7 @@ FactoryBot.define do
     end
 
     trait :unhealthy do
-      health "Could not connect to Geo node - HTTP Status Code: 401 Unauthorized\nTest"
+      status_message "Could not connect to Geo node - HTTP Status Code: 401 Unauthorized\nTest"
     end
   end
 end

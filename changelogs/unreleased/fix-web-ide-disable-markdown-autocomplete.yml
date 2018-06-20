@@ -1,0 +1,5 @@
+---
+title: Disabled Web IDE autocomplete suggestions for Markdown files.
+merge_request:
+author: Isaac Smith
+type: fixed

@@ -53,12 +53,41 @@ describe Geo::RepositoryVerificationFinder, :postgresql do
 
       expect(subject.find_outdated_projects(batch_size: 10)).to eq [less_active_project, project]
     end
+
+    context 'with shard restriction' do
+      subject { described_class.new(shard_name: project.repository_storage) }
+
+      it 'does not return projects on other shards' do
+        project_other_shard = create(:project)
+        project_other_shard.update_column(:repository_storage, 'other')
+        create(:repository_state, :repository_outdated, project: project)
+        create(:repository_state, :repository_outdated, project: project_other_shard)
+
+        expect(subject.find_outdated_projects(batch_size: 10))
+          .to match_array(project)
+      end
+    end
   end
 
   describe '#find_unverified_projects' do
     it 'returns projects that never have been verified' do
+      create(:repository_state, :repository_outdated)
+      create(:repository_state, :wiki_outdated)
+
       expect(subject.find_unverified_projects(batch_size: 10))
         .to match_array(project)
+    end
+
+    context 'with shard restriction' do
+      subject { described_class.new(shard_name: project.repository_storage) }
+
+      it 'does not return projects on other shards' do
+        project_other_shard = create(:project)
+        project_other_shard.update_column(:repository_storage, 'other')
+
+        expect(subject.find_unverified_projects(batch_size: 10))
+          .to match_array(project)
+      end
     end
   end
 end

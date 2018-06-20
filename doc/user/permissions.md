@@ -25,6 +25,9 @@ See our [product handbook on permissions](https://about.gitlab.com/handbook/prod
 
 ## Project members permissions
 
+NOTE: **Note:**
+In GitLab 11.0, the Master role was renamed to Maintainer.
+
 The following table depicts the various user permission levels in a project.
 
 | Action                                | Guest   | Reporter   | Developer   |Maintainer| Owner  |
@@ -50,7 +53,7 @@ The following table depicts the various user permission levels in a project.
 | See a container registry              |         | ✓          | ✓           | ✓        | ✓      |
 | See environments                      |         | ✓          | ✓           | ✓        | ✓      |
 | See a list of merge requests          |         | ✓          | ✓           | ✓        | ✓      |
-| Manage related issues                 |         | ✓          | ✓           | ✓        | ✓      |
+| Manage related issues **[STARTER]**   |         | ✓          | ✓           | ✓        | ✓      |
 | Lock issue discussions                |         | ✓          | ✓           | ✓        | ✓      |
 | Lock merge request discussions        |         |            | ✓           | ✓        | ✓      |
 | Create new environments               |         |            | ✓           | ✓        | ✓      |
@@ -145,6 +148,9 @@ read through the documentation on [permissions and access to confidential issues
 
 ## Group members permissions
 
+NOTE: **Note:**
+In GitLab 11.0, the Master role was renamed to Maintainer.
+
 Any user can remove themselves from a group, unless they are the last Owner of
 the group. The following table depicts the various user permission levels in a
 group.
@@ -159,11 +165,11 @@ group.
 | Remove group            |       |          |           |        | ✓     |
 | Manage group labels     |       | ✓        | ✓         | ✓      | ✓     |
 | Create/edit/delete group milestones | |    | ✓         | ✓      | ✓     |
-| View private group epic  |         | ✓        | ✓         | ✓      | ✓     |
-| View internal group epic | ✓       | ✓        | ✓         | ✓      | ✓     |
-| View public group epic   | ✓       | ✓        | ✓         | ✓      | ✓     |
-| Create/edit group epic   |         | ✓        | ✓         | ✓      | ✓     |
-| Delete group epic        |         |          |           |        | ✓     |
+| View private group epic **[ULTIMATE]** |         | ✓        | ✓         | ✓      | ✓     |
+| View internal group epic **[ULTIMATE]** | ✓       | ✓        | ✓         | ✓      | ✓     |
+| View public group epic **[ULTIMATE]**   | ✓       | ✓        | ✓         | ✓      | ✓     |
+| Create/edit group epic **[ULTIMATE]**  |         | ✓        | ✓         | ✓      | ✓     |
+| Delete group epic **[ULTIMATE]**       |         |          |           |        | ✓     |
 | View group Audit Events  |         |          |           |        | ✓     |
 
 ### Subgroup permissions
@@ -206,6 +212,9 @@ by an administrator under **Admin > Application Settings**.
 Auditor users are given read-only access to all projects, groups, and other
 resources on the GitLab instance.
 
+An Auditor user should be able to access all projects and groups of a GitLab instance
+with the permissions described on the documentation on [auditor users permissions](../administration/auditor_users.md#permissions-and-restrictions-of-an-auditor-user).
+
 [Read more about Auditor users.](../administration/auditor_users.md)
 
 ## Project features
@@ -218,6 +227,9 @@ which visibility level you select on project settings.
 - Everyone with access: everyone can see depending on your project visibility level
 
 ## GitLab CI/CD permissions
+
+NOTE: **Note:**
+In GitLab 11.0, the Master role was renamed to Maintainer.
 
 GitLab CI/CD permissions rely on the role the user has in GitLab. There are four
 permission levels in total:
@@ -245,6 +257,9 @@ instance and project. In addition, all admins can use the admin interface under
 | Admin interface                       |                 |             |          | ✓      |
 
 ### Job permissions
+
+NOTE: **Note:**
+In GitLab 11.0, the Master role was renamed to Maintainer.
 
 >**Note:**
 GitLab 8.12 has a completely redesigned job permissions system.
@@ -285,13 +300,6 @@ for details about the pipelines security model.
 
 Since GitLab 8.15, LDAP user permissions can now be manually overridden by an admin user.
 Read through the documentation on [LDAP users permissions](../administration/auth/how_to_configure_ldap_gitlab_ee/index.md) to learn more.
-
-## Auditor users permissions **[PREMIUM ONLY]**
-
-> Available in [GitLab Premium](https://about.gitlab.com/products/).
-
-An Auditor user should be able to access all projects and groups of a GitLab instance
-with the permissions described on the documentation on [auditor users permissions](https://docs.gitlab.com/ee/administration/auditor_users.html#permissions-and-restrictions-of-an-auditor-user).
 
 [^1]: On public and internal projects, all users are able to perform this action
 [^2]: Guest users can only view the confidential issues they created themselves

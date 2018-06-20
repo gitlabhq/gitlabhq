@@ -327,7 +327,7 @@ Settings.cron_jobs['geo_file_download_dispatch_worker'] ||= Settingslogic.new({}
 Settings.cron_jobs['geo_file_download_dispatch_worker']['cron'] ||= '*/1 * * * *'
 Settings.cron_jobs['geo_file_download_dispatch_worker']['job_class'] ||= 'Geo::FileDownloadDispatchWorker'
 Settings.cron_jobs['geo_prune_event_log_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['geo_prune_event_log_worker']['cron'] ||= '0 */6 * * *'
+Settings.cron_jobs['geo_prune_event_log_worker']['cron'] ||= '0 */2 * * *'
 Settings.cron_jobs['geo_prune_event_log_worker']['job_class'] ||= 'Geo::PruneEventLogWorker'
 Settings.cron_jobs['geo_repository_verification_primary_batch_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['geo_repository_verification_primary_batch_worker']['cron'] ||= '*/1 * * * *'
@@ -450,6 +450,7 @@ repositories_storages          = Settings.repositories.storages.values
 repository_downloads_path      = Settings.gitlab['repository_downloads_path'].to_s.gsub(%r{/$}, '')
 repository_downloads_full_path = File.expand_path(repository_downloads_path, Settings.gitlab['user_home'])
 
+# Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1237
 Gitlab::GitalyClient::StorageSettings.allow_disk_access do
   if repository_downloads_path.blank? || repositories_storages.any? { |rs| [repository_downloads_path, repository_downloads_full_path].include?(rs.legacy_disk_path.gsub(%r{/$}, '')) }
     Settings.gitlab['repository_downloads_path'] = File.join(Settings.shared['path'], 'cache/archive')

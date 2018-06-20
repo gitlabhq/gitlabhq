@@ -78,6 +78,36 @@ describe API::Search do
       end
 
       it_behaves_like 'response is correct', schema: 'public_api/v4/blobs'
+
+      context 'filters' do
+        it 'by filename' do
+          get api("/projects/#{repo_project.id}/search", user), scope: 'blobs', search: 'mon filename:PROCESS.md'
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response.size).to eq(1)
+          expect(json_response.first['filename']).to eq('PROCESS.md')
+        end
+
+        it 'by path' do
+          get api("/projects/#{repo_project.id}/search", user), scope: 'blobs', search: 'mon path:markdown'
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response.size).to eq(1)
+          json_response.each do |file|
+            expect(file['filename']).to match(%r[/markdown/])
+          end
+        end
+
+        it 'by extension' do
+          get api("/projects/#{repo_project.id}/search", user), scope: 'blobs', search: 'mon extension:md'
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response.size).to eq(3)
+          json_response.each do |file|
+            expect(file['filename']).to match(/\A.+\.md\z/)
+          end
+        end
+      end
     end
   end
 

@@ -12,7 +12,9 @@ class MigrateProcessCommitWorkerJobs < ActiveRecord::Migration
     end
 
     def repository_storage_path
-      Gitlab.config.repositories.storages[repository_storage].legacy_disk_path
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        Gitlab.config.repositories.storages[repository_storage].legacy_disk_path
+      end
     end
 
     def repository_path

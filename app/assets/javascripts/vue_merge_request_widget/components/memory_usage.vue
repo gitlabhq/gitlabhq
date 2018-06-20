@@ -105,7 +105,7 @@ export default {
         MRWidgetService.fetchMetrics(this.metricsUrl)
           .then((res) => {
             if (res.status === statusCodes.NO_CONTENT) {
-              this.backOffRequestCounter = this.backOffRequestCounter += 1;
+              this.backOffRequestCounter += 1;
               /* eslint-disable no-unused-expressions */
               this.backOffRequestCounter < 3 ? next() : stop(res);
             } else {

@@ -1,0 +1,5 @@
+- merge_request = local_assigns.fetch(:merge_request)
+- return unless merge_request.approvers.any?
+
+%p
+  Approvers: #{render_items_list(merge_request.approvers_left.map(&:name))}

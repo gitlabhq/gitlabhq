@@ -20,7 +20,7 @@
 
           - else
             .input-group-prepend.static-namespace.has-tooltip{ title: user_url(current_user.username) + '/' }
-              .input-group-text
+              .input-group-text.border-0
                 #{user_url(current_user.username)}/
             = hidden_field_tag :namespace_id, value: current_user.namespace_id
     .form-group.col-12.col-sm-6.project-path
@@ -37,6 +37,6 @@
       .form-group
         = file_field_tag :file, class: ''
   .row
-    .form-actions
+    .form-actions.col-sm-12
       = submit_tag 'Import project', class: 'btn btn-create'
       = link_to 'Cancel', new_project_path, class: 'btn btn-cancel'

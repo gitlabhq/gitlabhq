@@ -34,6 +34,10 @@ export default {
       type: String,
       required: true,
     },
+    actionBtnIcon: {
+      type: String,
+      required: true,
+    },
     itemActionComponent: {
       type: String,
       required: true,
@@ -43,11 +47,15 @@ export default {
       required: false,
       default: false,
     },
-  },
-  data() {
-    return {
-      showActionButton: false,
-    };
+    activeFileKey: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    keyPrefix: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
     titleText() {
@@ -55,14 +63,14 @@ export default {
         title: this.title,
       });
     },
+    filesLength() {
+      return this.fileList.length;
+    },
   },
   methods: {
     ...mapActions(['stageAllChanges', 'unstageAllChanges']),
     actionBtnClicked() {
       this[this.action]();
-    },
-    setShowActionButton(show) {
-      this.showActionButton = show;
     },
   },
 };
@@ -74,8 +82,6 @@ export default {
   >
     <header
       class="multi-file-commit-panel-header"
-      @mouseenter="setShowActionButton(true)"
-      @mouseleave="setShowActionButton(false)"
     >
       <div
         class="multi-file-commit-panel-header-title"
@@ -86,24 +92,40 @@ export default {
           :size="18"
         />
         {{ titleText }}
-        <span
-          v-show="!showActionButton"
-          class="ide-commit-file-count"
-        >
-          {{ fileList.length }}
-        </span>
-        <button
-          v-show="showActionButton"
-          type="button"
-          class="btn btn-blank btn-link ide-staged-action-btn"
-          @click="actionBtnClicked"
-        >
-          {{ actionBtnText }}
-        </button>
+        <div class="d-flex ml-auto">
+          <button
+            v-tooltip
+            v-show="filesLength"
+            :class="{
+              'd-flex': filesLength
+            }"
+            :title="actionBtnText"
+            type="button"
+            class="btn btn-default ide-staged-action-btn p-0 order-1 align-items-center"
+            data-placement="bottom"
+            data-container="body"
+            data-boundary="viewport"
+            @click="actionBtnClicked"
+          >
+            <icon
+              :name="actionBtnIcon"
+              :size="12"
+              class="ml-auto mr-auto"
+            />
+          </button>
+          <span
+            :class="{
+              'rounded-right': !filesLength
+            }"
+            class="ide-commit-file-count order-0 rounded-left text-center"
+          >
+            {{ filesLength }}
+          </span>
+        </div>
       </div>
     </header>
     <ul
-      v-if="fileList.length"
+      v-if="filesLength"
       class="multi-file-commit-list list-unstyled append-bottom-0"
     >
       <li
@@ -113,8 +135,9 @@ export default {
         <list-item
           :file="file"
           :action-component="itemActionComponent"
-          :key-prefix="title"
+          :key-prefix="keyPrefix"
           :staged-list="stagedList"
+          :active-file-key="activeFileKey"
         />
       </li>
     </ul>

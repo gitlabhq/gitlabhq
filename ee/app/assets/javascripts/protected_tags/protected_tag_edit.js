@@ -1,5 +1,3 @@
-/* eslint-disable no-new */
-
 import $ from 'jquery';
 import _ from 'underscore';
 import axios from '~/lib/utils/axios_utils';
@@ -47,7 +45,6 @@ export default class ProtectedTagEdit {
 
   updatePermissions() {
     const formData = Object.keys(ACCESS_LEVELS).reduce((acc, level) => {
-      /* eslint-disable no-param-reassign */
       const accessLevelName = ACCESS_LEVELS[level];
       const inputData = this[`${accessLevelName}_dropdown`].getInputData(accessLevelName);
       acc[`${accessLevelName}_attributes`] = inputData;

@@ -96,7 +96,7 @@ export default class ProtectedTagCreate {
 
     axios[this.$form.attr('method')](this.$form.attr('action'), this.getFormData())
       .then(() => {
-        location.reload();
+        window.location.reload();
       })
       .catch(() => createFlash(s__('ProjectSettings|Failed to protect the tag')));
   }

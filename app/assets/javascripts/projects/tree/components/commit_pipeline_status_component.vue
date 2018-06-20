@@ -100,9 +100,9 @@
 <template>
   <div>
     <loading-icon
+      v-if="isLoading"
       label="Loading pipeline status"
       size="3"
-      v-if="isLoading"
     />
     <a
       v-else
@@ -112,8 +112,8 @@
         v-tooltip
         :title="statusTitle"
         :aria-label="statusTitle"
-        data-container="body"
         :status="ciStatus"
+        data-container="body"
       />
     </a>
   </div>

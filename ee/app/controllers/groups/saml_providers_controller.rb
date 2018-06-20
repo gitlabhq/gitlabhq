@@ -3,7 +3,6 @@ class Groups::SamlProvidersController < Groups::ApplicationController
   before_action :authorize_manage_saml!
   before_action :check_group_saml_available!
   before_action :check_group_saml_configured
-  before_action :check_group_saml_beta_enabled
 
   def show
     @saml_provider = @group.saml_provider || @group.build_saml_provider
@@ -33,10 +32,6 @@ class Groups::SamlProvidersController < Groups::ApplicationController
 
   def check_group_saml_configured
     render_404 unless Gitlab::Auth::GroupSaml::Config.enabled?
-  end
-
-  def check_group_saml_beta_enabled
-    render_404 unless Gitlab::Utils.to_boolean(cookies['enable_group_saml'])
   end
 
   def require_top_level_group

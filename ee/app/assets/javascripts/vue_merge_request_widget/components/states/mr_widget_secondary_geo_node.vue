@@ -28,10 +28,10 @@ export default {
         Merge requests are read-only in a secondary Geo node
       </span>
       <a
+        v-tooltip
         :href="mr.geoSecondaryHelpPath"
         :title="__('About this feature')"
         data-placement="bottom"
-        v-tooltip
         target="_blank"
         rel="noopener noreferrer nofollow"
         data-container="body"

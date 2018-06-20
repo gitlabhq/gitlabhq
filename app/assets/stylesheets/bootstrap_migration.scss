@@ -89,7 +89,12 @@ a {
   color: $gl-link-color;
 }
 
+hr {
+  overflow: hidden;
+}
+
 .form-group.row .col-form-label {
+  padding-top: 0;
   // Bootstrap 4 aligns labels to the left
   // for horizontal forms
   @include media-breakpoint-up(md) {
@@ -121,11 +126,6 @@ code {
 table {
   // Remove any table border lines
   border-spacing: 0;
-}
-
-.tooltip {
-  // Fix bootstrap4 bug whereby tooltips flicker when they are hovered over their borders
-  pointer-events: none;
 }
 
 .popover {
@@ -173,7 +173,10 @@ table {
   display: none;
 }
 
-.badge {
+// Add to .label so that old system notes that are saved to the db
+// will still receive the correct styling
+.badge,
+.label {
   padding: 4px 5px;
   font-size: 12px;
   font-style: normal;
@@ -208,6 +211,19 @@ table {
     &:not(:last-of-type) {
       border-bottom: 1px solid $well-inner-border;
     }
+
+    p,
+    ol,
+    ul,
+    .form-group {
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .badge.badge-gray {
+    background-color: $well-expand-item;
   }
 }
 
@@ -255,16 +271,59 @@ pre code {
   white-space: pre-wrap;
 }
 
+.alert,
+.flash-notice {
+  border-radius: 0;
+}
+
+.alert-success {
+  background-color: $green-500;
+  border-color: $green-500;
+}
+
+.alert-info {
+  background-color: $blue-500;
+  border-color: $blue-500;
+}
+
+.alert-warning {
+  background-color: $orange-500;
+  border-color: $orange-500;
+}
+
 .alert-danger {
   background-color: $red-500;
   border-color: $red-500;
+}
+
+.alert-success,
+.alert-info,
+.alert-warning,
+.alert-danger,
+.flash-notice {
   color: $white-light;
 
-  h4 {
+  h4,
+  a,
+  .alert-link {
     color: $white-light;
   }
 }
 
 input[type=color].form-control {
   height: $input-height;
+}
+
+.toggle-sidebar-button {
+  .collapse-text,
+  .icon-angle-double-left,
+  .icon-angle-double-right {
+    color: $gl-text-color-secondary;
+  }
+}
+
+.project-templates-buttons {
+  .btn {
+    vertical-align: unset;
+  }
 }

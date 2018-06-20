@@ -30,7 +30,7 @@ export default () => {
     presetButtonsContainer.addEventListener('click', e => {
       const presetType = e.target.querySelector('input[name="presetType"]').value;
 
-      visitUrl(mergeUrlParams({ layout: presetType }, location.href));
+      visitUrl(mergeUrlParams({ layout: presetType }, window.location.href));
     });
   }
 

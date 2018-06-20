@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, space-before-function-paren, one-var, no-shadow, dot-notation, max-len */
+/* eslint-disable comma-dangle, no-shadow */
 /* global List */
 
 import $ from 'jquery';
@@ -123,7 +123,7 @@ gl.issueBoards.BoardsStore = {
     if (!issueTo) {
       // Check if target list assignee is already present in this issue
       if ((listTo.type === 'assignee' && listFrom.type === 'assignee') &&
-          issue.findAssignee(listTo.assignee)) {
+        issue.findAssignee(listTo.assignee)) {
         const targetIssue = listTo.findIssue(issue.id);
         targetIssue.removeAssignee(listFrom.assignee);
       } else {
@@ -144,7 +144,7 @@ gl.issueBoards.BoardsStore = {
       issue.removeAssignee(listFrom.assignee);
       listFrom.removeIssue(issue);
     } else if ((listTo.type !== 'label' && listFrom.type === 'assignee') ||
-               (listTo.type !== 'assignee' && listFrom.type === 'label')) {
+      (listTo.type !== 'assignee' && listFrom.type === 'label')) {
       listFrom.removeIssue(issue);
     }
   },
@@ -162,13 +162,9 @@ gl.issueBoards.BoardsStore = {
     });
     return filteredList[0];
   },
-  updateFiltersUrl (replaceState = false) {
-    if (replaceState) {
-      history.replaceState(null, null, `?${this.filter.path}`);
-    } else {
-      history.pushState(null, null, `?${this.filter.path}`);
-    }
-  },
+  updateFiltersUrl () {
+    window.history.pushState(null, null, `?${this.filter.path}`);
+  }
 };
 
 boardsStoreEE.initEESpecific(gl.issueBoards.BoardsStore);

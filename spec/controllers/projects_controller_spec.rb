@@ -319,16 +319,22 @@ describe ProjectsController do
     shared_examples_for 'updating a project' do
       context 'when only renaming a project path' do
         it "sets the repository to the right path after a rename" do
-          original_repository_path = project.repository.path
+          original_repository_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            project.repository.path
+          end
 
           expect { update_project path: 'renamed_path' }
             .to change { project.reload.path }
           expect(project.path).to include 'renamed_path'
 
+          assign_repository_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            assigns(:repository).path
+          end
+
           if project.hashed_storage?(:repository)
-            expect(assigns(:repository).path).to eq(original_repository_path)
+            expect(assign_repository_path).to eq(original_repository_path)
           else
-            expect(assigns(:repository).path).to include(project.path)
+            expect(assign_repository_path).to include(project.path)
           end
 
           expect(response).to have_gitlab_http_status(302)
@@ -613,6 +619,22 @@ describe ProjectsController do
       expect(parsed_body["Branches"]).to include("master")
       expect(parsed_body["Tags"]).to include("v1.0.0")
       expect(parsed_body["Commits"]).to include("123456")
+    end
+
+    context "when preferred language is Japanese" do
+      before do
+        user.update!(preferred_language: 'ja')
+        sign_in(user)
+      end
+
+      it "gets a list of branches, tags and commits" do
+        get :refs, namespace_id: public_project.namespace, id: public_project, ref: "123456"
+
+        parsed_body = JSON.parse(response.body)
+        expect(parsed_body["Branches"]).to include("master")
+        expect(parsed_body["Tags"]).to include("v1.0.0")
+        expect(parsed_body["Commits"]).to include("123456")
+      end
     end
   end
 

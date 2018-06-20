@@ -18,6 +18,7 @@ import actions, {
   receiveJobTraceError,
   receiveJobTraceSuccess,
   fetchJobTrace,
+  resetLatestPipeline,
 } from '~/ide/stores/modules/pipelines/actions';
 import state from '~/ide/stores/modules/pipelines/state';
 import * as types from '~/ide/stores/modules/pipelines/mutation_types';
@@ -414,6 +415,22 @@ describe('IDE pipelines actions', () => {
           done,
         );
       });
+    });
+  });
+
+  describe('resetLatestPipeline', () => {
+    it('commits reset mutations', done => {
+      testAction(
+        resetLatestPipeline,
+        null,
+        mockedState,
+        [
+          { type: types.RECEIVE_LASTEST_PIPELINE_SUCCESS, payload: null },
+          { type: types.SET_DETAIL_JOB, payload: null },
+        ],
+        [],
+        done,
+      );
     });
   });
 });

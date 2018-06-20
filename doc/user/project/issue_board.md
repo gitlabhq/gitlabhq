@@ -40,9 +40,6 @@ organized from a broader perspective with one Issue Board per project,
 but also allow your team members to organize their own workflow by creating
 multiple Issue Boards within the same project.
 
-[GitLab Premium] adds even more powerful ways to work with Issue Boards by
-allowing you to have assignee lists as well as label lists.
-
 ## Use cases
 
 You can see below a few different use cases for GitLab's Issue Boards.
@@ -219,7 +216,7 @@ to the system so that anybody who visits the same board later will see the reord
 with some exceptions.
 
 The first time a given issue appears in any board (i.e. the first time a user
-loads a board containing that issue), it will be ordered with 
+loads a board containing that issue), it will be ordered with
 respect to other issues in that list according to [Priority order][label-priority].
 At that point, that issue will be assigned a relative order value by the system
 representing its relative order with respect to the other issues in the list. Any time
@@ -229,7 +226,7 @@ the updated relative order value will be used for the ordering. (It's only the f
 time an issue appears that it takes from the Priority order mentioned above.) This means that
 if issue `A` is drag-and-drop reordered to be above issue `B` by any user in
 a given board inside your GitLab instance, any time those two issues are subsequently
-loaded in any board in the same instance (could be a different project board or a different group board, for example), 
+loaded in any board in the same instance (could be a different project board or a different group board, for example),
 that ordering will be maintained.
 
 ## Filtering issues
@@ -345,16 +342,39 @@ navigation level. A group-level issue board allows you to view all issues from a
 boards. When updating milestones and labels for an issue through the sidebar update mechanism, again only
 group-level objects are available.
 
+## Assignee Lists **[PREMIUM]**
+
+> Introduced in GitLab 11.0 Premium
+
+An assignee list shows all issues for the given assignee. You add an assignee list using the same button as adding
+a label list. There's an additional tab to select assignee list, where you specify a user to be the assignee. You remove an assignee
+list the same way as a label list, by clicking the Trash icon.
+
+You can have a board with both label lists and assignee lists.
+
+![Assignee lists](img/assignee_lists.png)
+
+## Dragging Issues Between Lists
+
+When dragging issues between lists, different behavior occurs depending on the source list and the target list.
+
+| | To Backlog | To Closed | To label `B` list | To assignee `Bob` list |
+| --- | --- | --- | --- | ---  |
+| From Backlog | - | Issue closed | `B` added | `Bob` assigned |
+| From Closed | Issue reopened | - | Issue reopened<br/>`B` added | Issue reopened<br/>`Bob` assigned |
+| From label `A` list | `A` removed | Issue closed | `A` removed<br/>`B` added | `Bob` assigned |
+| From assignee `Alice` list | `Alice` unassigned | Issue closed | `B` added | `Alice` unassigned<br/>`Bob` assigned |
+
 ## Features per tier
 
 Different issue board features are available in different [GitLab tiers](https://about.gitlab.com/pricing/), as shown in the following table:
 
-| Tier | Number of Project Issue Boards | Board with configuration in Project Issue Boards | Number of Group Issue Boards | Board with configuration in Group Issue Boards |
-| --- | --- | --- | --- | --- |
-| Core    | 1        | No  | 1        | No  |
-| Starter  | Multiple | Yes | 1        | No  |
-| Premium  | Multiple | Yes | Multiple | Yes |
-| Ultimate | Multiple | Yes | Multiple | Yes |
+| Tier | Number of Project Issue Boards | Number of Group Issue Boards | Configurable Project Issue Boards | Configurable Group Issue Boards | Assignee Lists
+| --- | --- | --- | --- | --- | --- |
+| Core     | 1        | 1        | No  | No  | No  |
+| Starter  | Multiple | 1        | Yes | No  | No  |
+| Premium  | Multiple | Multiple | Yes | Yes | Yes |
+| Ultimate | Multiple | Multiple | Yes | Yes | Yes |
 
 ## Tips
 

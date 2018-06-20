@@ -245,6 +245,70 @@ RSpec.shared_examples 'slack or mattermost notifications' do
     end
   end
 
+  describe 'Push events' do
+    let(:user) { create(:user) }
+    let(:project) { create(:project, :repository, creator: user) }
+
+    before do
+      allow(chat_service).to receive_messages(
+        project: project,
+        service_hook: true,
+        webhook: webhook_url
+      )
+
+      WebMock.stub_request(:post, webhook_url)
+    end
+
+    context 'only notify for the default branch' do
+      context 'when enabled' do
+        before do
+          chat_service.notify_only_default_branch = true
+        end
+
+        it 'does not notify push events if they are not for the default branch' do
+          ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}test"
+          push_sample_data = Gitlab::DataBuilder::Push.build(project, user, nil, nil, ref, [])
+
+          chat_service.execute(push_sample_data)
+
+          expect(WebMock).not_to have_requested(:post, webhook_url)
+        end
+
+        it 'notifies about push events for the default branch' do
+          push_sample_data = Gitlab::DataBuilder::Push.build_sample(project, user)
+
+          chat_service.execute(push_sample_data)
+
+          expect(WebMock).to have_requested(:post, webhook_url).once
+        end
+
+        it 'still notifies about pushed tags' do
+          ref = "#{Gitlab::Git::TAG_REF_PREFIX}test"
+          push_sample_data = Gitlab::DataBuilder::Push.build(project, user, nil, nil, ref, [])
+
+          chat_service.execute(push_sample_data)
+
+          expect(WebMock).to have_requested(:post, webhook_url).once
+        end
+      end
+
+      context 'when disabled' do
+        before do
+          chat_service.notify_only_default_branch = false
+        end
+
+        it 'notifies about all push events' do
+          ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}test"
+          push_sample_data = Gitlab::DataBuilder::Push.build(project, user, nil, nil, ref, [])
+
+          chat_service.execute(push_sample_data)
+
+          expect(WebMock).to have_requested(:post, webhook_url).once
+        end
+      end
+    end
+  end
+
   describe "Note events" do
     let(:user) { create(:user) }
     let(:project) { create(:project, :repository, creator: user) }
@@ -393,23 +457,6 @@ RSpec.shared_examples 'slack or mattermost notifications' do
           result = chat_service.execute(data)
 
           expect(result).to be_falsy
-        end
-
-        it 'does not notify push events if they are not for the default branch' do
-          ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}test"
-          push_sample_data = Gitlab::DataBuilder::Push.build(project, user, nil, nil, ref, [])
-
-          chat_service.execute(push_sample_data)
-
-          expect(WebMock).not_to have_requested(:post, webhook_url)
-        end
-
-        it 'notifies about push events for the default branch' do
-          push_sample_data = Gitlab::DataBuilder::Push.build_sample(project, user)
-
-          chat_service.execute(push_sample_data)
-
-          expect(WebMock).to have_requested(:post, webhook_url).once
         end
       end
 

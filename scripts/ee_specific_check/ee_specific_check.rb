@@ -118,15 +118,15 @@ module EESpecificCheck
     else
       say <<~MESSAGE
         💥 Git status not clean! This shouldn't happen, but there are two
-        💥 known issues that one can be worked around, and the other can't.
+        💥 known issues. One can be worked around, and the other can't.
         💥
-        💥 First please try to update your CE brnach with CE master, and
+        💥 First please try to update your CE branch with CE master, and
         💥 retry this job. You could find more information in this issue:
         💥
         💥 https://gitlab.com/gitlab-org/gitlab-ee/issues/5960#note_72669536
         💥
-        💥 But it's possible that it doesn't work out. In this case, please
-        💥 just disregard this job. You could find other information at:
+        💥 It's possible, however, that that doesn't work out. In this case,
+        💥 please just disregard this job. You could find other information at:
         💥
         💥 https://gitlab.com/gitlab-org/gitlab-ee/issues/6038
         💥

@@ -113,8 +113,8 @@ export default {
   <form @submit.prevent="onFormSubmit">
     <div
       ref="issuableFormWrapper"
-      class="add-issuable-form-input-wrapper form-control"
       :class="{ focus: isInputFocused }"
+      class="add-issuable-form-input-wrapper form-control"
       role="button"
       @click="onInputWrapperClick">
       <ul class="add-issuable-form-input-token-list">
@@ -129,20 +129,20 @@ export default {
           class="js-add-issuable-form-token-list-item add-issuable-form-token-list-item"
         >
           <issue-token
-            event-namespace="pendingIssuable"
             :id-key="index"
             :display-reference="reference"
             :can-remove="true"
             :is-condensed="true"
+            event-namespace="pendingIssuable"
           />
         </li>
         <li class="add-issuable-form-input-list-item">
           <input
             ref="input"
-            type="text"
-            class="js-add-issuable-form-input add-issuable-form-input"
             :value="inputValue"
             :placeholder="inputPlaceholder"
+            type="text"
+            class="js-add-issuable-form-input add-issuable-form-input"
             @input="onInput"
             @focus="onFocus"
             @blur="onBlur" />
@@ -152,13 +152,13 @@ export default {
     <div class="add-issuable-form-actions clearfix">
       <button
         ref="addButton"
+        :disabled="isSubmitButtonDisabled"
         type="submit"
-        class="js-add-issuable-form-add-button btn btn-new float-left"
-        :disabled="isSubmitButtonDisabled">
+        class="js-add-issuable-form-add-button btn btn-new float-left">
         Add
         <loading-icon
-          ref="loadingIcon"
           v-if="isSubmitting"
+          ref="loadingIcon"
           :inline="true" />
       </button>
       <button

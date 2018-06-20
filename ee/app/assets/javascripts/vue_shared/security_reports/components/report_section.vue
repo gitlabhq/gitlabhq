@@ -134,8 +134,8 @@ export default {
  append-right-default append-bottom-default"
     >
       <loading-icon
-        class="mr-widget-icon"
         v-if="isLoading"
+        class="mr-widget-icon"
       />
       <status-icon
         v-else
@@ -151,15 +151,15 @@ export default {
 
           <popover
             v-if="hasPopover"
-            class="prepend-left-5"
             :options="popoverOptions"
+            class="prepend-left-5"
           />
         </span>
 
         <button
+          v-if="hasIssues"
           type="button"
           class="js-collapse-btn btn bt-default float-right btn-sm"
-          v-if="hasIssues"
           @click="toggleCollapsed"
         >
           {{ collapseText }}
@@ -168,9 +168,9 @@ export default {
     </div>
 
     <div
-      class="js-report-section-container"
       v-if="hasIssues"
       v-show="!isCollapsed"
+      class="js-report-section-container"
     >
       <slot name="body">
         <issues-list

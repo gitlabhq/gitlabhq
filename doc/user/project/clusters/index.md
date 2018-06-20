@@ -41,20 +41,20 @@ new Kubernetes cluster that will be hosted on GKE to your project:
 
 1. Navigate to your project's **Operations > Kubernetes** page.
 1. Click on **Add Kubernetes cluster**.
-1. Click on **Create with GKE**.
+1. Click on **Create with Google Kubernetes Engine**.
 1. Connect your Google account if you haven't done already by clicking the
    **Sign in with Google** button.
 1. Fill in the requested values:
-  - **Cluster name** (required) - The name you wish to give the cluster.
-  - **GCP project ID** (required) - The ID of the project you created in your GCP
+  - **Kubernetes cluster name** - The name you wish to give the cluster.
+  - **Environment scope** - The [associated environment](#setting-the-environment-scope) to this cluster.
+  - **Google Cloud Platform project** - The project you created in your GCP
     console that will host the Kubernetes cluster. This must **not** be confused
-    with the project name. Learn more about [Google Cloud Platform projects](https://cloud.google.com/resource-manager/docs/creating-managing-projects).
+    with the project ID. Learn more about [Google Cloud Platform projects](https://cloud.google.com/resource-manager/docs/creating-managing-projects).
   - **Zone** - The [zone](https://cloud.google.com/compute/docs/regions-zones/)
     under which the cluster will be created.
   - **Number of nodes** - The number of nodes you wish the cluster to have.
   - **Machine type** - The [machine type](https://cloud.google.com/compute/docs/machine-types)
     of the Virtual Machine instance that the cluster will be based on.
-  - **Environment scope** - The [associated environment](#setting-the-environment-scope) to this cluster.
 1. Finally, click the **Create Kubernetes cluster** button.
 
 After a few moments, your cluster should be created. If something goes wrong,
@@ -156,7 +156,7 @@ added directly to your configured cluster. Those applications are needed for
 | [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) | 10.2+ | Ingress can provide load balancing, SSL termination, and name-based virtual hosting. It acts as a web proxy for your applications and is useful if you want to use [Auto DevOps] or deploy your own web apps. |
 | [Prometheus](https://prometheus.io/docs/introduction/overview/) | 10.4+ | Prometheus is an open-source monitoring and alerting system useful to supervise your deployed applications |
 | [GitLab Runner](https://docs.gitlab.com/runner/) | 10.6+ | GitLab Runner is the open source project that is used to run your jobs and send the results back to GitLab. It is used in conjunction with [GitLab CI/CD](https://about.gitlab.com/features/gitlab-ci-cd/), the open-source continuous integration service included with GitLab that coordinates the jobs. When installing the GitLab Runner via the applications, it will run in **privileged mode** by default. Make sure you read the [security implications](#security-implications) before doing so. |
-| [JupyterHub](http://jupyter.org/) | 11.0+ | The Jupyter Notebook is an open-source web application that allows you to create and share documents that contain live code, equations, visualizations and narrative text. |
+| [JupyterHub](http://jupyter.org/) | 11.0+ | [JupyterHub](https://jupyterhub.readthedocs.io/en/stable/) is a multi-user service for managing notebooks across a team. [Jupyter Notebooks](https://jupyter-notebook.readthedocs.io/en/latest/) provide a web-based interactive programming environment used for data analysis, visualization, and machine learning. **Note**: Authentication will be enabled for any user of the GitLab server via OAuth2. HTTPS will be supported in a future release. |
 
 ## Getting the external IP address
 
@@ -349,6 +349,11 @@ To remove the Kubernetes cluster integration from your project, simply click on 
 **Remove integration** button. You will then be able to follow the procedure
 and add a Kubernetes cluster again.
 
+## View Kubernetes pod logs from GitLab **[ULTIMATE]**
+
+Learn how to easily
+[view the logs of running pods in connected Kubernetes clusters](kubernetes_pod_logs.md).
+
 ## What you can get with the Kubernetes integration
 
 Here's what you can do with GitLab if you enable the Kubernetes integration.
@@ -361,7 +366,7 @@ displaying the status of the pods in the deployment. Developers and other
 teammates can view the progress and status of a rollout, pod by pod, in the
 workflow they already use without any need to access Kubernetes.
 
-[> Read more about Deploy Boards](../deploy_boards.md)
+[Read more about Deploy Boards](../deploy_boards.md)
 
 ### Canary Deployments **[PREMIUM]**
 
@@ -369,14 +374,14 @@ Leverage [Kubernetes' Canary deployments](https://kubernetes.io/docs/concepts/cl
 and visualize your canary deployments right inside the Deploy Board, without
 the need to leave GitLab.
 
-[> Read more about Canary Deployments](../canary_deployments.md)
+[Read more about Canary Deployments](../canary_deployments.md)
 
 ### Kubernetes monitoring
 
 Automatically detect and monitor Kubernetes metrics. Automatic monitoring of
 [NGINX ingress](../integrations/prometheus_library/nginx.md) is also supported.
 
-[> Read more about Kubernetes monitoring](../integrations/prometheus_library/kubernetes.md)
+[Read more about Kubernetes monitoring](../integrations/prometheus_library/kubernetes.md)
 
 ### Auto DevOps
 
@@ -386,7 +391,7 @@ applications.
 To make full use of Auto DevOps(Auto Deploy, Auto Review Apps, and Auto Monitoring)
 you will need the Kubernetes project integration enabled.
 
-[> Read more about Auto DevOps](../../../topics/autodevops/index.md)
+[Read more about Auto DevOps](../../../topics/autodevops/index.md)
 
 ### Web terminals
 
@@ -402,9 +407,9 @@ containers. To use this integration, you should deploy to Kubernetes using
 the deployment variables above, ensuring any pods you create are labelled with
 `app=$CI_ENVIRONMENT_SLUG`. GitLab will do the rest!
 
-## Read more
+## Integrating Amazon EKS cluster with GitLab
 
-- [Connecting and deploying to an Amazon EKS cluster](eks_and_gitlab/index.md)
+Learn how to [connect and deploy to an Amazon EKS cluster](eks_and_gitlab/index.md).
 
 [permissions]: ../../permissions.md
 [ee]: https://about.gitlab.com/products/

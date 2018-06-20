@@ -268,6 +268,8 @@
 
 .navbar-sub-nav,
 .navbar-nav {
+  align-items: center;
+
   > li {
     > a:hover,
     > a:focus {
@@ -457,10 +459,6 @@
   @include media-breakpoint-down(xs) {
     margin-top: $gl-padding-4;
   }
-}
-
-.with-performance-bar header.navbar-gitlab {
-  top: $performance-bar-height;
 }
 
 .navbar-nav {

@@ -29,6 +29,10 @@ class GeoNode < ActiveRecord::Base
     allow_nil: true
   }
 
+  validates :repos_max_capacity, numericality: { greater_than_or_equal_to: 0 }
+  validates :files_max_capacity, numericality: { greater_than_or_equal_to: 0 }
+  validates :verification_max_capacity, numericality: { greater_than_or_equal_to: 0 }
+
   validate :check_not_adding_primary_as_secondary, if: :secondary?
 
   after_save :expire_cache!

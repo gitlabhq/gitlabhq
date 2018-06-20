@@ -6,6 +6,7 @@ module EE
   module Project
     extend ActiveSupport::Concern
     extend ::Gitlab::Utils::Override
+    extend ::Gitlab::Cache::RequestCache
     include ::Gitlab::Utils::StrongMemoize
 
     prepended do
@@ -485,6 +486,11 @@ module EE
         License.global_feature?(feature) || licensed_feature_available?(feature)
       end
     end
+
+    def any_path_locks?
+      path_locks.any?
+    end
+    request_cache(:any_path_locks?) { self.id }
 
     private
 

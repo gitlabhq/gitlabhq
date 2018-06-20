@@ -47,7 +47,8 @@ class Admin::GeoNodesController < Admin::ApplicationController
       :selective_sync_shards,
       :namespace_ids,
       :repos_max_capacity,
-      :files_max_capacity
+      :files_max_capacity,
+      :verification_max_capacity
     )
   end
 

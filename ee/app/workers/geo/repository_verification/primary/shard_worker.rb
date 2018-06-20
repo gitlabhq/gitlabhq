@@ -4,8 +4,6 @@ module Geo
       class ShardWorker < Geo::Scheduler::Primary::SchedulerWorker
         sidekiq_options retry: false
 
-        MAX_CAPACITY = 100
-
         attr_accessor :shard_name
 
         def perform(shard_name)
@@ -28,7 +26,7 @@ module Geo
         end
 
         def max_capacity
-          MAX_CAPACITY
+          current_node.verification_max_capacity
         end
 
         def schedule_job(project_id)
@@ -38,7 +36,7 @@ module Geo
         end
 
         def finder
-          @finder ||= Geo::RepositoryVerificationFinder.new
+          @finder ||= Geo::RepositoryVerificationFinder.new(shard_name: shard_name)
         end
 
         def load_pending_resources
@@ -53,17 +51,11 @@ module Geo
         end
 
         def find_unverified_project_ids(batch_size:)
-          shard_restriction(finder.find_unverified_projects(batch_size: batch_size))
-            .pluck(:id)
+          finder.find_unverified_projects(batch_size: batch_size).pluck(:id)
         end
 
         def find_outdated_project_ids(batch_size:)
-          shard_restriction(finder.find_outdated_projects(batch_size: batch_size))
-            .pluck(:id)
-        end
-
-        def shard_restriction(relation)
-          relation.where(repository_storage: shard_name)
+          finder.find_outdated_projects(batch_size: batch_size).pluck(:id)
         end
       end
     end

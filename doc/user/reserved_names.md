@@ -58,6 +58,7 @@ Currently the following names are reserved as top level groups:
 - dashboard
 - deploy.html
 - explore
+- favicon.ico
 - favicon.png
 - groups
 - health_check

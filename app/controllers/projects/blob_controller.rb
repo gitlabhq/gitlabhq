@@ -7,6 +7,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   prepend_before_action :authenticate_user!, only: [:edit]
 
+  before_action :set_request_format, only: [:edit, :show, :update]
   before_action :require_non_empty_project, except: [:new, :create]
   before_action :authorize_download_code!
 
@@ -188,6 +189,18 @@ class Projects::BlobController < Projects::ApplicationController
       .last_for_path(@repository, @ref, @path).sha
   end
 
+  # In Rails 4.2 if params[:format] is empty, Rails set it to :html
+  # But since Rails 5.0 the framework now looks for an extension.
+  # E.g. for `blob/master/CHANGELOG.md` in Rails 4 the format would be `:html`, but in Rails 5 on it'd be `:md`
+  # This before_action explicitly sets the `:html` format for all requests unless `:format` is set by a client e.g. by JS for XHR requests.
+  def set_request_format
+    request.format = :html if set_request_format?
+  end
+
+  def set_request_format?
+    params[:id].present? && params[:format].blank? && request.format != "json"
+  end
+
   def show_html
     environment_params = @repository.branch_exists?(@ref) ? { ref: @ref } : { commit: @commit }
     @environment = EnvironmentsFinder.new(@project, current_user, environment_params).execute.last
@@ -197,15 +210,14 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def show_json
-    json = blob_json(@blob)
-    return render_404 unless json
-
+    set_last_commit_sha
     path_segments = @path.split('/')
     path_segments.pop
     tree_path = path_segments.join('/')
 
-    render json: json.merge(
+    json = {
       id: @blob.id,
+      last_commit_sha: @last_commit_sha,
       path: blob.path,
       name: blob.name,
       extension: blob.extension,
@@ -221,6 +233,10 @@ class Projects::BlobController < Projects::ApplicationController
       commits_path: project_commits_path(project, @id),
       tree_path: project_tree_path(project, File.join(@ref, tree_path)),
       permalink: project_blob_path(project, File.join(@commit.id, @path))
-    )
+    }
+
+    json.merge!(blob_json(@blob) || {}) unless params[:viewer] == 'none'
+
+    render json: json
   end
 end

@@ -14,6 +14,7 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/redis/shared_state')
     require_dependency Rails.root.join('lib/gitlab/request_context')
     require_dependency Rails.root.join('lib/gitlab/current_settings')
+    require_dependency Rails.root.join('lib/gitlab/middleware/read_only')
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -69,6 +70,13 @@ module Gitlab
 
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = "utf-8"
+
+    # ActionCable mount point.
+    # The default Rails' mount point is `/cable` which may conflict with existing
+    # namespaces/users.
+    # https://github.com/rails/rails/blob/5-0-stable/actioncable/lib/action_cable.rb#L38
+    # Please change this value when configuring ActionCable for real usage.
+    config.action_cable.mount_path = "-" if rails5?
 
     # Configure sensitive parameters which will be filtered from the log file.
     #
@@ -203,7 +211,7 @@ module Gitlab
     ENV['GIT_TERMINAL_PROMPT'] = '0'
 
     # Gitlab Read-only middleware support
-    config.middleware.insert_after ActionDispatch::Flash, '::Gitlab::Middleware::ReadOnly'
+    config.middleware.insert_after ActionDispatch::Flash, ::Gitlab::Middleware::ReadOnly
 
     config.generators do |g|
       g.factory_bot false

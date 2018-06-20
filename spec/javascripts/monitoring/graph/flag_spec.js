@@ -63,7 +63,7 @@ describe('GraphFlag', () => {
       });
 
       expect(
-        deploymentFlagComponent.$el.querySelector('.popover-title'),
+        deploymentFlagComponent.$el.querySelector('.popover-header'),
       ).toContainText('Deployed');
     });
 

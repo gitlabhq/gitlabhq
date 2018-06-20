@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, no-unused-expressions, no-var, object-shorthand, comma-dangle, max-len */
+/* eslint-disable no-unused-expressions, no-var, object-shorthand */
 import $ from 'jquery';
 import _ from 'underscore';
 import MockAdapter from 'axios-mock-adapter';
@@ -974,7 +974,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         ).toBeFalsy();
         expect(
           $tempNoteHeader
-            .find('.d-none.d-sm-block')
+            .find('.d-none.d-sm-inline-block')
             .text()
             .trim(),
         ).toEqual(currentUserFullname);
@@ -1020,7 +1020,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         const $tempNoteHeader = $tempNote.find('.note-header');
         expect(
           $tempNoteHeader
-            .find('.d-none.d-sm-block')
+            .find('.d-none.d-sm-inline-block')
             .text()
             .trim(),
         ).toEqual('Foo &lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;');

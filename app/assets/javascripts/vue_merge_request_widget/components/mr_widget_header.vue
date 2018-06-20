@@ -59,11 +59,11 @@ export default {
       <strong>
         {{ s__("mrWidget|Request to merge") }}
         <span
-          class="label-branch js-source-branch"
           :class="{ 'label-truncated': isSourceBranchLong }"
           :title="isSourceBranchLong ? mr.sourceBranch : ''"
-          data-placement="bottom"
           :v-tooltip="isSourceBranchLong"
+          class="label-branch js-source-branch"
+          data-placement="bottom"
           v-html="mr.sourceBranchLink"
         >
         </span>
@@ -77,10 +77,10 @@ export default {
         {{ s__("mrWidget|into") }}
 
         <span
-          class="label-branch"
           :v-tooltip="isTargetBranchLong"
           :class="{ 'label-truncatedtooltip': isTargetBranchLong }"
           :title="isTargetBranchLong ? mr.targetBranch : ''"
+          class="label-branch"
           data-placement="bottom"
         >
           <a
@@ -108,9 +108,9 @@ export default {
         {{ s__("mrWidget|Web IDE") }}
       </a>
       <button
+        :disabled="mr.sourceBranchRemoved"
         data-target="#modal_merge_info"
         data-toggle="modal"
-        :disabled="mr.sourceBranchRemoved"
         class="btn btn-sm btn-default inline js-check-out-branch"
         type="button"
       >
@@ -134,8 +134,8 @@ export default {
         <ul class="dropdown-menu dropdown-menu-right">
           <li>
             <a
-              class="js-download-email-patches"
               :href="mr.emailPatchesPath"
+              class="js-download-email-patches"
               download
             >
               {{ s__("mrWidget|Email patches") }}
@@ -143,8 +143,8 @@ export default {
           </li>
           <li>
             <a
-              class="js-download-plain-diff"
               :href="mr.plainDiffPath"
+              class="js-download-plain-diff"
               download
             >
               {{ s__("mrWidget|Plain diff") }}

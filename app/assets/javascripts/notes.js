@@ -1,10 +1,8 @@
-/* eslint-disable no-restricted-properties, func-names, space-before-function-paren,
-no-var, prefer-rest-params, wrap-iife, no-use-before-define, camelcase,
-no-unused-expressions, quotes, max-len, one-var, one-var-declaration-per-line,
-default-case, prefer-template, consistent-return, no-alert, no-return-assign,
-no-param-reassign, prefer-arrow-callback, no-else-return, comma-dangle, no-new,
-brace-style, no-lonely-if, vars-on-top, no-unused-vars, no-sequences, no-shadow,
-newline-per-chained-call, no-useless-escape, class-methods-use-this */
+/* eslint-disable no-restricted-properties, func-names, no-var, wrap-iife, camelcase,
+no-unused-expressions, max-len, one-var, one-var-declaration-per-line, default-case,
+prefer-template, consistent-return, no-alert, no-return-assign,
+no-param-reassign, prefer-arrow-callback, no-else-return, vars-on-top,
+no-unused-vars, no-shadow, no-useless-escape, class-methods-use-this */
 
 /* global ResolveService */
 /* global mrRefreshWidgetUrl */
@@ -315,7 +313,7 @@ export default class Notes {
         if (discussionNoteForm.length) {
           if ($textarea.val() !== '') {
             if (
-              !confirm('Are you sure you want to cancel creating this comment?')
+              !window.confirm('Are you sure you want to cancel creating this comment?')
             ) {
               return;
             }
@@ -329,7 +327,7 @@ export default class Notes {
           newText = $textarea.val();
           if (originalText !== newText) {
             if (
-              !confirm('Are you sure you want to cancel editing this comment?')
+              !window.confirm('Are you sure you want to cancel editing this comment?')
             ) {
               return;
             }
@@ -784,6 +782,7 @@ export default class Notes {
   }
 
   updateNoteError($parentTimeline) {
+    // eslint-disable-next-line no-new
     new Flash(
       'Your comment could not be updated! Please check your network connection and try again.',
     );
@@ -1411,8 +1410,8 @@ export default class Notes {
 
   static renderPlaceholderComponent($container) {
     const el = $container.find('.js-code-placeholder').get(0);
+    // eslint-disable-next-line no-new
     new Vue({
-      // eslint-disable-line no-new
       el,
       components: {
         SkeletonLoadingContainer,
@@ -1675,7 +1674,7 @@ export default class Notes {
                <div class="note-header">
                   <div class="note-header-info">
                      <a href="/${_.escape(currentUsername)}">
-                       <span class="d-none d-sm-block">${_.escape(
+                       <span class="d-none d-sm-inline-block">${_.escape(
                          currentUsername,
                        )}</span>
                        <span class="note-headline-light">${_.escape(
@@ -1694,7 +1693,7 @@ export default class Notes {
       </li>`,
     );
 
-    $tempNote.find('.d-none.d-sm-block').text(_.escape(currentUserFullname));
+    $tempNote.find('.d-none.d-sm-inline-block').text(_.escape(currentUserFullname));
     $tempNote
       .find('.note-headline-light')
       .text(`@${_.escape(currentUsername)}`);
@@ -1827,7 +1826,6 @@ export default class Notes {
 
     $closeBtn.text($closeBtn.data('originalText'));
 
-    /* eslint-disable promise/catch-or-return */
     // Make request to submit comment on server
     return axios
       .post(`${formAction}?html=true`, formData)
@@ -1989,7 +1987,6 @@ export default class Notes {
         '<i class="fa fa-spinner fa-spin" aria-label="Comment is being updated" aria-hidden="true"></i>',
       );
 
-    /* eslint-disable promise/catch-or-return */
     // Make request to update comment on server
     axios
       .post(`${formAction}?html=true`, formData)

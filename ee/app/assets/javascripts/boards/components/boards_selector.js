@@ -13,7 +13,7 @@ import AssigneesList from './assignees_list';
   Store.createNewListDropdownData();
 
   gl.issueBoards.BoardsSelector = Vue.extend({
-    name: 'boards-selector',
+    name: 'BoardsSelector',
     components: {
       BoardForm,
     },
@@ -45,17 +45,6 @@ import AssigneesList from './assignees_list';
         maxPosition: 0,
       };
     },
-    watch: {
-      reload() {
-        if (this.reload) {
-          this.boards = [];
-          this.loading = true;
-          this.reload = false;
-
-          this.loadBoards(false);
-        }
-      },
-    },
     computed: {
       currentPage() {
         return this.state.currentPage;
@@ -79,6 +68,23 @@ import AssigneesList from './assignees_list';
           'fade-out': !this.hasScrollFade,
         };
       },
+    },
+    watch: {
+      reload() {
+        if (this.reload) {
+          this.boards = [];
+          this.loading = true;
+          this.reload = false;
+
+          this.loadBoards(false);
+        }
+      },
+    },
+    created() {
+      this.state.currentBoard = this.currentBoard;
+      Store.state.assignees = [];
+      $('#js-add-list').on('hide.bs.dropdown', this.handleDropdownHide);
+      $('.js-new-board-list-tabs').on('click', this.handleDropdownTabClick);
     },
     methods: {
       showPage(page) {
@@ -147,12 +153,6 @@ import AssigneesList from './assignees_list';
           this.hasAssigneesListMounted = true;
         }
       },
-    },
-    created() {
-      this.state.currentBoard = this.currentBoard;
-      Store.state.assignees = [];
-      $('#js-add-list').on('hide.bs.dropdown', this.handleDropdownHide);
-      $('.js-new-board-list-tabs').on('click', this.handleDropdownTabClick);
     },
   });
 })();

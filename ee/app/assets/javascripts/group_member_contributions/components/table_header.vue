@@ -55,8 +55,8 @@ export default {
       <th
         v-for="(column, index) in columns"
         :key="index"
-        class="header"
         :title="getColumnSortTooltip(column.name)"
+        class="header"
         @click="onColumnClick(column.name)"
       >
         {{ column.text }}

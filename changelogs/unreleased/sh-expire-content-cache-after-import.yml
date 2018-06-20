@@ -1,0 +1,5 @@
+---
+title: Expire Wiki content cache after importing a repository
+merge_request:
+author:
+type: fixed

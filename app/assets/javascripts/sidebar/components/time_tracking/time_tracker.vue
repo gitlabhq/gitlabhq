@@ -101,8 +101,8 @@ export default {
 
 <template>
   <div
-    class="time_tracker time-tracking-component-wrap"
     v-cloak
+    class="time_tracker time-tracking-component-wrap"
   >
     <time-tracking-collapsed-state
       :show-comparison-state="showComparisonState"
@@ -116,8 +116,8 @@ export default {
     <div class="title hide-collapsed">
       {{ __('Time tracking') }}
       <div
-        class="help-button float-right"
         v-if="!showHelpState"
+        class="help-button float-right"
         @click="toggleHelpState(true)"
       >
         <i
@@ -127,8 +127,8 @@ export default {
         </i>
       </div>
       <div
-        class="close-help-button float-right"
         v-if="showHelpState"
+        class="close-help-button float-right"
         @click="toggleHelpState(false)"
       >
         <i

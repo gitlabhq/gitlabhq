@@ -129,10 +129,16 @@
   }
 
   .section-items-container {
+    display: inline-block;
+
     .node-detail-item {
       &:first-child {
         margin-top: 0;
       }
+    }
+
+    @include media-breakpoint-down(sm) {
+      width: 95%;
     }
   }
 }

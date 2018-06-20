@@ -34,14 +34,20 @@ module GraphqlHelpers
   end
 
   def graphql_query_for(name, attributes = {}, fields = nil)
+    <<~QUERY
+    {
+      #{query_graphql_field(name, attributes, fields)}
+    }
+    QUERY
+  end
+
+  def query_graphql_field(name, attributes = {}, fields = nil)
     fields ||= all_graphql_fields_for(name.classify)
     attributes = attributes_to_graphql(attributes)
     <<~QUERY
-    {
       #{name}(#{attributes}) {
         #{fields}
       }
-    }
     QUERY
   end
 
@@ -50,12 +56,15 @@ module GraphqlHelpers
     return "" unless type
 
     type.fields.map do |name, field|
+      # We can't guess arguments, so skip fields that require them
+      next if field.arguments.any?
+
       if scalar?(field)
         name
       else
         "#{name} { #{all_graphql_fields_for(field_type(field))} }"
       end
-    end.join("\n")
+    end.compact.join("\n")
   end
 
   def attributes_to_graphql(attributes)

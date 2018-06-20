@@ -93,10 +93,10 @@ export default {
         <a
           v-tooltip
           :title="__('Show complete raw log')"
+          :href="detailJob.rawPath"
           data-placement="top"
           data-container="body"
           class="controllers-buttons"
-          :href="detailJob.rawPath"
           target="_blank"
         >
           <i
@@ -105,23 +105,24 @@ export default {
           ></i>
         </a>
         <scroll-button
-          direction="up"
           :disabled="isScrolledToTop"
+          direction="up"
           @click="scrollUp"
         />
         <scroll-button
-          direction="down"
           :disabled="isScrolledToBottom"
+          direction="down"
           @click="scrollDown"
         />
       </div>
     </div>
     <pre
-      class="build-trace mb-0 h-100"
       ref="buildTrace"
+      class="build-trace mb-0 h-100"
       @scroll="scrollBuildLog"
     >
       <code
+        v-show="!detailJob.isLoading"
         class="bash"
         v-html="jobOutput"
       >

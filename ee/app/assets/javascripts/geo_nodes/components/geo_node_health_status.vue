@@ -29,8 +29,8 @@
       {{ s__('GeoNodes|Health status') }}
     </div>
     <div
-      class="node-detail-value node-health-status"
       :class="healthCssClass"
+      class="node-detail-value node-health-status"
     >
       <icon
         :size="16"

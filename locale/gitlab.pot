@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-08 18:27+0200\n"
-"PO-Revision-Date: 2018-06-08 18:27+0200\n"
+"POT-Creation-Date: 2018-06-20 09:05+0200\n"
+"PO-Revision-Date: 2018-06-20 09:05+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -140,8 +140,8 @@ msgstr ""
 msgid "%{title} changes"
 msgstr ""
 
-msgid "%{type} detected %d vulnerability"
-msgid_plural "%{type} detected %d vulnerabilities"
+msgid "%{type} detected 1 vulnerability"
+msgid_plural "%{type} detected %{vulnerabilityCount} vulnerabilities"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -164,12 +164,12 @@ msgid "- show less"
 msgstr ""
 
 msgid "1 %{type} addition"
-msgid_plural "%d %{type} additions"
+msgid_plural "%{count} %{type} additions"
 msgstr[0] ""
 msgstr[1] ""
 
 msgid "1 %{type} modification"
-msgid_plural "%d %{type} modifications"
+msgid_plural "%{count} %{type} modifications"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -309,6 +309,9 @@ msgid "Add additional text to appear in all email communications. %{character_li
 msgstr ""
 
 msgid "Add new directory"
+msgstr ""
+
+msgid "Add reaction"
 msgstr ""
 
 msgid "Add todo"
@@ -1408,7 +1411,13 @@ msgstr ""
 msgid "ClusterIntegration|Kubernetes clusters can be used to deploy applications and to provide Review Apps for this project"
 msgstr ""
 
-msgid "ClusterIntegration|Learn more about %{link_to_documentation}"
+msgid "ClusterIntegration|Learn more about %{help_link_start_machine_type}machine types%{help_link_end} and %{help_link_start_pricing}pricing%{help_link_end}."
+msgstr ""
+
+msgid "ClusterIntegration|Learn more about %{help_link_start}Kubernetes%{help_link_end}."
+msgstr ""
+
+msgid "ClusterIntegration|Learn more about %{help_link_start}zones%{help_link_end}."
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about environments"
@@ -1502,9 +1511,6 @@ msgid "ClusterIntegration|Security"
 msgstr ""
 
 msgid "ClusterIntegration|See and edit the details for your Kubernetes cluster"
-msgstr ""
-
-msgid "ClusterIntegration|See zones"
 msgstr ""
 
 msgid "ClusterIntegration|Select machine type"
@@ -1823,6 +1829,9 @@ msgstr ""
 msgid "Control the maximum concurrency of repository backfill for this secondary node"
 msgstr ""
 
+msgid "Control the maximum concurrency of verification operations for this Geo node"
+msgstr ""
+
 msgid "Copy SSH public key to clipboard"
 msgstr ""
 
@@ -1923,9 +1932,6 @@ msgid "Created by me"
 msgstr ""
 
 msgid "Creating epic"
-msgstr ""
-
-msgid "Created by me"
 msgstr ""
 
 msgid "Cron Timezone"
@@ -2132,9 +2138,6 @@ msgid "Deprioritize label"
 msgstr ""
 
 msgid "Descending"
-msgstr ""
-
-msgid "Deprioritize label"
 msgstr ""
 
 msgid "Description"
@@ -2369,9 +2372,6 @@ msgid "Epics let you manage your portfolio of projects more efficiently and with
 msgstr ""
 
 msgid "Error Reporting and Logging"
-msgstr ""
-
-msgid "Error checking branch data. Please try again."
 msgstr ""
 
 msgid "Error committing changes. Please try again."
@@ -2781,6 +2781,9 @@ msgstr ""
 msgid "Geo|Shards to synchronize"
 msgstr ""
 
+msgid "Geo|Verification capacity"
+msgstr ""
+
 msgid "Git repository URL"
 msgstr ""
 
@@ -2815,6 +2818,9 @@ msgid "Gitaly"
 msgstr ""
 
 msgid "Gitaly Servers"
+msgstr ""
+
+msgid "Gitaly|Address"
 msgstr ""
 
 msgid "Go Back"
@@ -3030,6 +3036,15 @@ msgid "If you are setting up multiple clusters and are using Auto DevOps,|read t
 msgstr ""
 
 msgid "If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>."
+msgstr ""
+
+msgid "ImageDiffViewer|2-up"
+msgstr ""
+
+msgid "ImageDiffViewer|Onion skin"
+msgstr ""
+
+msgid "ImageDiffViewer|Swipe"
 msgstr ""
 
 msgid "Import"
@@ -3501,6 +3516,9 @@ msgstr ""
 msgid "Months"
 msgstr ""
 
+msgid "More actions"
+msgstr ""
+
 msgid "More info"
 msgstr ""
 
@@ -3792,9 +3810,6 @@ msgid "Other Labels"
 msgstr ""
 
 msgid "Other information"
-msgstr ""
-
-msgid "Other Labels"
 msgstr ""
 
 msgid "Otherwise it is recommended you start with one of the options below."
@@ -4950,7 +4965,7 @@ msgstr ""
 msgid "Stage"
 msgstr ""
 
-msgid "Stage all"
+msgid "Stage all changes"
 msgstr ""
 
 msgid "Stage changes"
@@ -5105,7 +5120,7 @@ msgstr ""
 msgid "TagsPage|Use git tag command to add a new one:"
 msgstr ""
 
-msgid "TagsPage|Write your release notes or drag files here..."
+msgid "TagsPage|Write your release notes or drag files here…"
 msgstr ""
 
 msgid "TagsPage|protected"
@@ -5130,9 +5145,6 @@ msgid "Thanks! Don't show me this again"
 msgstr ""
 
 msgid "The Advanced Global Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
-msgstr ""
-
-msgid "Terms of Service and Privacy Policy"
 msgstr ""
 
 msgid "The Issue Tracker is the place to add things that need to be improved or solved in a project"
@@ -5634,7 +5646,7 @@ msgstr ""
 msgid "Unresolve discussion"
 msgstr ""
 
-msgid "Unstage all"
+msgid "Unstage all changes"
 msgstr ""
 
 msgid "Unstage changes"
@@ -5856,7 +5868,7 @@ msgstr ""
 msgid "WikiEmptyIssueMessage|issue tracker"
 msgstr ""
 
-msgid "WikiEmpty|A wiki is where you can store all the details about your project. This can include why you've created it, it's principles, how to use it, and so on."
+msgid "WikiEmpty|A wiki is where you can store all the details about your project. This can include why you've created it, its principles, how to use it, and so on."
 msgstr ""
 
 msgid "WikiEmpty|Create your first page"
@@ -5928,7 +5940,7 @@ msgstr ""
 msgid "WikiPage|Page slug"
 msgstr ""
 
-msgid "WikiPage|Write your content or drag files here..."
+msgid "WikiPage|Write your content or drag files here…"
 msgstr ""
 
 msgid "Wiki|Create Page"
@@ -5985,7 +5997,7 @@ msgstr ""
 msgid "You are on a read-only GitLab instance."
 msgstr ""
 
-msgid "You are on a secondary (read-only) Geo node. If you want to make any changes, you must visit the %{primary_node}."
+msgid "You are on a secondary, <b>read-only</b> Geo node. If you want to make changes, you must visit this page on the %{primary_node}."
 msgstr ""
 
 msgid "You can also create a project from the command line."
@@ -6022,9 +6034,6 @@ msgid "You do not have any assigned merge requests"
 msgstr ""
 
 msgid "You do not have the correct permissions to override the settings from the LDAP group sync."
-msgstr ""
-
-msgid "You do not have any assigned merge requests"
 msgstr ""
 
 msgid "You have no permissions"
@@ -6120,7 +6129,7 @@ msgstr ""
 msgid "among other things"
 msgstr ""
 
-msgid "and %d fixed vulnerability"
+msgid "and 1 fixed vulnerability"
 msgid_plural "and %d fixed vulnerabilities"
 msgstr[0] ""
 msgstr[1] ""
@@ -6134,6 +6143,9 @@ msgstr ""
 msgid "by"
 msgstr ""
 
+msgid "ciReport|%{linkStartTag}Learn more about Container Scanning %{linkEndTag}"
+msgstr ""
+
 msgid "ciReport|%{linkStartTag}Learn more about DAST %{linkEndTag}"
 msgstr ""
 
@@ -6141,9 +6153,6 @@ msgid "ciReport|%{linkStartTag}Learn more about Dependency Scanning %{linkEndTag
 msgstr ""
 
 msgid "ciReport|%{linkStartTag}Learn more about SAST %{linkEndTag}"
-msgstr ""
-
-msgid "ciReport|%{linkStartTag}Learn more about SAST image %{linkEndTag}"
 msgstr ""
 
 msgid "ciReport|%{namespace} is affected by %{vulnerability}."
@@ -6182,6 +6191,9 @@ msgstr ""
 msgid "ciReport|Confidence"
 msgstr ""
 
+msgid "ciReport|Container scanning detected"
+msgstr ""
+
 msgid "ciReport|Container scanning detects known vulnerabilities in your docker images."
 msgstr ""
 
@@ -6189,6 +6201,9 @@ msgid "ciReport|Container scanning is loading"
 msgstr ""
 
 msgid "ciReport|Container scanning resulted in error while loading results"
+msgstr ""
+
+msgid "ciReport|DAST detected"
 msgstr ""
 
 msgid "ciReport|DAST is loading"
@@ -6305,7 +6320,13 @@ msgstr ""
 msgid "ciReport|There was an error dismissing the vulnerability. Please try again."
 msgstr ""
 
+msgid "ciReport|There was an error loading DAST report"
+msgstr ""
+
 msgid "ciReport|There was an error loading SAST report"
+msgstr ""
+
+msgid "ciReport|There was an error loading container scanning report"
 msgstr ""
 
 msgid "ciReport|There was an error loading dependency scanning report"

@@ -67,7 +67,7 @@ module API
               if geo_node.current?
                 GeoNodeStatus.fast_current_node_status
               else
-                ::Geo::NodeStatusFetchService.new.call(geo_node)
+                geo_node.status
               end
             end
           end
@@ -134,6 +134,7 @@ module API
           optional :url, type: String, desc: 'The URL to connect to the Geo node'
           optional :files_max_capacity, type: Integer, desc: 'Control the maximum concurrency of LFS/attachment backfill for this secondary node'
           optional :repos_max_capacity, type: Integer, desc: 'Control the maximum concurrency of repository backfill for this secondary node'
+          optional :verification_max_capacity, type: Integer, desc: 'Control the maximum concurrency of repository verification for this node'
         end
         put do
           not_found!('GeoNode') unless geo_node

@@ -122,14 +122,14 @@
 
 <template>
   <div
-    class="roadmap-container"
     :class="{ 'overflow-reset': isEpicsListEmpty }"
+    class="roadmap-container"
   >
     <loading-icon
-      class="loading-animation prepend-top-20 append-bottom-20"
-      size="2"
       v-if="isLoading"
       :label="s__('GroupRoadmap|Loading roadmap')"
+      class="loading-animation prepend-top-20 append-bottom-20"
+      size="2"
     />
     <roadmap-shell
       v-if="showRoadmap"

@@ -1,4 +1,4 @@
-/* eslint-disable no-param-reassign, prefer-template, no-var, no-void, consistent-return */
+/* eslint-disable no-param-reassign, prefer-template, no-void, consistent-return */
 
 import AccessorUtilities from './lib/utils/accessor';
 

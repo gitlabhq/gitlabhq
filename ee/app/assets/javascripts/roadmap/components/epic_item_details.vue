@@ -76,10 +76,10 @@
     <div class="epic-title">
       <a
         v-tooltip
-        data-container="body"
-        class="epic-url"
         :href="epic.webUrl"
         :title="epic.title"
+        data-container="body"
+        class="epic-url"
       >
         {{ epic.title }}
       </a>
@@ -88,10 +88,10 @@
       <span
         v-tooltip
         v-if="isEpicGroupDifferent"
+        :title="epic.groupFullName"
         class="epic-group"
         data-placement="right"
         data-container="body"
-        :title="epic.groupFullName"
       >
         {{ epic.groupName }} &middot;
       </span>

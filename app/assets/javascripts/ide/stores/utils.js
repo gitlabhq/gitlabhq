@@ -17,6 +17,7 @@ export const dataStructure = () => ({
   changed: false,
   staged: false,
   lastCommitPath: '',
+  lastCommitSha: '',
   lastCommit: {
     id: '',
     url: '',
@@ -39,7 +40,7 @@ export const dataStructure = () => ({
   editorColumn: 1,
   fileLanguage: '',
   eol: '',
-  viewMode: 'edit',
+  viewMode: 'editor',
   previewMode: null,
   size: 0,
   parentPath: null,
@@ -104,7 +105,7 @@ export const setPageTitle = title => {
   document.title = title;
 };
 
-export const createCommitPayload = (branch, newBranch, state, rootState) => ({
+export const createCommitPayload = ({ branch, newBranch, state, rootState }) => ({
   branch,
   commit_message: state.commitMessage,
   actions: rootState.stagedFiles.map(f => ({
@@ -112,6 +113,7 @@ export const createCommitPayload = (branch, newBranch, state, rootState) => ({
     file_path: f.path,
     content: f.content,
     encoding: f.base64 ? 'base64' : 'text',
+    last_commit_id: newBranch ? undefined : f.lastCommitSha,
   })),
   start_branch: newBranch ? rootState.currentBranchId : undefined,
 });
