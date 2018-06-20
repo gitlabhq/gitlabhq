@@ -21,7 +21,7 @@ be textually exported. This ensures that:
 To configure the pseudonymizer, you need to:
 
 - Provide a manifest file that describes which fields should be included or
-  pseudonymized ([example `manifest.yml` file]()).
+  pseudonymized ([example `manifest.yml` file](https://gitlab.com/gitlab-org/gitlab-ee/tree/master/config/pseudonymizer.yml)).
 - Use an object storage
 
 **For Omnibus installations:**
@@ -31,7 +31,7 @@ To configure the pseudonymizer, you need to:
 
     ```ruby
     gitlab_rails['pseudonymizer_enabled'] = true
-    gitlab_rails['pseudonymizer_manifest'] = 'lib/pseudonymizer/manifest.yml'
+    gitlab_rails['pseudonymizer_manifest'] = 'config/pseudonymizer.yml'
     gitlab_rails['pseudonymizer_upload_remote_directory'] = 'gitlab-elt'
     gitlab_rails['pseudonymizer_upload_connection'] = {
       'provider' => 'AWS',
@@ -65,7 +65,7 @@ To configure the pseudonymizer, you need to:
     ```yaml
     pseudonymizer:
       enabled: true
-	  manifest: lib/pseudonymizer/manifest.yml
+	  manifest: config/pseudonymizer.yml
 	  upload:
         remote_directory: 'gitlab-elt' # The bucket name
         connection:

@@ -32,7 +32,7 @@ describe Pseudonymizer::Dumper do
 
       # grab the first table it outputs. There would only be 1.
       project_table_file = pseudo.tables_to_csv[0]
-      expect(project_table_file).to include("projects.csv.gz")
+      expect(project_table_file).to end_with("projects.csv.gz")
 
       columns = []
       project_data = []
@@ -49,6 +49,20 @@ describe Pseudonymizer::Dumper do
       # is it pseudonymous
       # sha 256 is 64 chars in length
       expect(project_data["id"].length).to eq(64)
+    end
+
+    it "warns when pseudonymized fields are extraneous" do
+      column_names = %w(id name path description)
+      pseudo.config[:tables] = {
+        projects: {
+          whitelist: column_names,
+          pseudo: %w(id extraneous)
+        }
+      }
+
+      expect(Rails.logger).to receive(:warn).with(/extraneous/)
+
+      pseudo.tables_to_csv
     end
   end
 

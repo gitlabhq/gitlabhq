@@ -35,8 +35,12 @@ module EE
         "and the value is encrypted at rest.")
     end
 
+    def pseudonymizer_enabled_help_text
+      _("Enable Pseudonymizer data export")
+    end
+
     def pseudonymizer_description_text
-      _("GitLab will run the pseudonymizer cron job which will send pseudoanonymized data to be processed and analyzed.")
+      _("GitLab will run the pseudonymizer cron job which will output pseudoanonymized data to be processed and analyzed.")
     end
 
     def pseudonymizer_disabled_description_text

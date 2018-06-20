@@ -8,7 +8,7 @@
         .form-check
           = f.label :pseudonymizer_enabled do
             = f.check_box :pseudonymizer_enabled
-            Enable Pseudonymizer Cron Job
+            = pseudonymizer_enabled_help_text
           .form-text.text-muted
             - if is_enabled
               = pseudonymizer_description_text

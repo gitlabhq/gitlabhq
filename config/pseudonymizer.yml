@@ -98,6 +98,8 @@ tables:
     - iid
     - updated_by_id
     - last_edited_by_id
+    - title
+    - description
   issue_assignees:
     whitelist:
     - user_id
@@ -617,7 +619,6 @@ tables:
     - has_external_wiki
     - ci_config_path
     - lfs_enabled
-    - description_html
     - only_allow_merge_if_all_discussions_are_resolved
     - repository_size_limit
     - printing_merge_request_link_enabled
@@ -670,7 +671,6 @@ tables:
     - repository_storage
     - repository_read_only
     - ci_config_path
-    - description_html
     - only_allow_merge_if_all_discussions_are_resolved
     - repository_size_limit
     - auto_cancel_pending_pipelines

@@ -69,19 +69,18 @@ module Pseudonymizer
   end
 
   class Anon
-    def initialize(fields)
-      @anon_fields = fields
+    def initialize(table, whitelisted_fields, pseudonymized_fields)
+      @table = table
+      @pseudo_fields = pseudo_fields(whitelisted_fields, pseudonymized_fields)
     end
 
     def anonymize(results)
-      columns = results.columns # Assume they all have the same table
-      to_filter = @anon_fields & columns
       key = Rails.application.secrets[:secret_key_base]
       digest = OpenSSL::Digest.new('sha256')
 
       Enumerator.new do |yielder|
         results.each do |result|
-          to_filter.each do |field|
+          @pseudo_fields.each do |field|
             next if result[field].nil?
 
             result[field] = OpenSSL::HMAC.hexdigest(digest, key, String(result[field]))
@@ -89,6 +88,17 @@ module Pseudonymizer
           yielder << result
         end
       end
+    end
+
+    private
+
+    def pseudo_fields(whitelisted, pseudonymized)
+      pseudo_extra_fields = pseudonymized - whitelisted
+      pseudo_extra_fields.each do |field|
+        Rails.logger.warn("#{self.class.name} extraneous pseudo: #{@table}.#{field} is not whitelisted and will be ignored.")
+      end
+
+      pseudonymized & whitelisted
     end
   end
 
@@ -155,7 +165,7 @@ module Pseudonymizer
 
     # yield every results, pagined, anonymized
     def table_page_results(table, whitelist_columns, pseudonymity_columns)
-      anonymizer = Anon.new(pseudonymity_columns)
+      anonymizer = Anon.new(table, whitelist_columns, pseudonymity_columns)
       pager = Pager.new(table, whitelist_columns)
 
       Enumerator.new do |yielder|
@@ -168,18 +178,17 @@ module Pseudonymizer
     end
 
     def table_to_schema(table)
-      whitelisted = ->(table) { @config.dig(:tables, table, :whitelist) }
-      pseudonymized = ->(table) { @config.dig(:tables, table, :pseudo) }
+      table_config = @config.dig(:tables, table)
 
       type_results = ActiveRecord::Base.connection.columns(table)
       type_results = type_results.select do |c|
-        whitelisted[table].include?(c.name)
+        table_config[:whitelist].include?(c.name)
       end
 
       type_results = type_results.map do |c|
         data_type = c.sql_type
 
-        if pseudonymized[table].include?(c.name)
+        if table_config[:pseudo].include?(c.name)
           data_type = "character varying"
         end
 

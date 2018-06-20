@@ -734,7 +734,7 @@ production: &base
   pseudonymizer:
     enabled: false
     # Tables manifest that specifies the fields to extract and pseudonymize.
-    manifest: lib/pseudonymizer/manifest.yml
+    manifest: config/pseudonymizer.yml
     upload:
       # remote_directory: 'gitlab-elt'
       # Fog storage connection settings, see http://fog.io/storage/ .
@@ -897,7 +897,7 @@ test:
     path: tmp/tests/backups
   pseudonymizer:
     enabled: false
-    manifest: lib/pseudonymizer/manifest.yml
+    manifest: config/pseudonymizer.yml
     upload:
       # The remote 'directory' to store the CSV files. For S3, this would be the bucket name.
       remote_directory: gitlab-elt.test
