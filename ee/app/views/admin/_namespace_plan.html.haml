@@ -1,7 +1,7 @@
 - return unless Gitlab::CurrentSettings.should_check_namespace_plan?
 
-.form-group
-  = f.label :plan, class: 'col-form-label'
+.form-group.row
+  = f.label :plan, class: 'col-form-label col-sm-2'
   .col-sm-10
     = f.select :plan_id, Plan.pluck(:title, :id),
       { include_blank: 'No plan' },
