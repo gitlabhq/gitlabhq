@@ -5,6 +5,10 @@ class Groups::AutocompleteSourcesController < Groups::ApplicationController
     render json: ::Groups::ParticipantsService.new(@group, current_user).execute(target)
   end
 
+  def labels
+    render json: @autocomplete_service.labels(target)
+  end
+
   def epics
     render json: @autocomplete_service.epics
   end

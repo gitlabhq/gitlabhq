@@ -6,7 +6,7 @@ describe ApplicationHelper do
     let(:noteable_type) { Epic }
     it 'returns paths for autocomplete_sources_controller' do
       sources = helper.autocomplete_data_sources(object, noteable_type)
-      expect(sources.keys).to match_array([:members])
+      expect(sources.keys).to match_array([:members, :labels, :epics])
       sources.keys.each do |key|
         expect(sources[key]).not_to be_nil
       end
