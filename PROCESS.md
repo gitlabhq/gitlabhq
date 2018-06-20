@@ -255,7 +255,7 @@ When a regression is found:
 1. Schedule the issue in order to get it fixed as soon as possible, based on severity and priority, following these guidelines:
   - If the regression is ~S1 or ~S2, set the current milestone
     - If the regression was introduced in a RC of the current release, label with ~Deliverable 
-    - If the regression was introduced in the previos release, label with ~"Next Patch Release"
+    - If the regression was introduced in the previous release, label with ~"Next Patch Release"
   - If the regression is ~S3 or ~S4, it can be scheduled for later milestones
 
 When a new issue is found, the fix should start as soon as possible. You can
