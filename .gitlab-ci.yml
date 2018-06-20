@@ -582,6 +582,21 @@ docs lint:
     # Check the internal links
     - bundle exec nanoc check internal_links
 
+# Documentation checks:
+# - Check validity of relative links
+# - Make sure cURL examples in API docs use the full switches
+markdown lint:
+  <<: *dedicated-runner
+  <<: *except-qa
+  image: "registry.gitlab.com/leipert-projects/remark-docker"
+  stage: test
+  cache: {}
+  dependencies: []
+  before_script: []
+  script:
+    - mv doc/ /app/doc
+    - remark
+
 downtime_check:
   <<: *rake-exec
   except:
@@ -881,3 +896,4 @@ no_ee_check:
     - scripts/no-ee-check
   only:
     - //@gitlab-org/gitlab-ce
+
