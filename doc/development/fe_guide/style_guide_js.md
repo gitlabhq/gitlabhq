@@ -366,6 +366,47 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
     <component my-prop="prop" />
   ```
 
+1. **Private Methods:** Use `$_` to prefix private methods. These methods should not be used in templates, and are only called from inside the component itself. [(See official Vue style guide)](https://vuejs.org/v2/style-guide/#Private-property-names-essential)
+  ```javascript
+  // given a component with the following template:
+  <template>
+    <button @click="onClick" />
+  </template>  
+
+  // bad
+  methods: {
+    getFoos() {
+      // ...
+    }
+    onClick() {
+      this.getFoos()
+      // ...
+    }      
+  }
+
+  // bad
+  methods: {
+    _getFoos() {
+      // ...
+    }
+    onClick() {
+      this._getFoos()
+      // ...
+    }      
+  }
+
+  // good
+  methods: {
+    $_getFoos() {
+      // ...
+    }
+    onClick() {
+      this.$_getFoos()
+      // ...
+    }
+  }
+  ```
+
 [#34371]: https://gitlab.com/gitlab-org/gitlab-ce/issues/34371
 
 #### Alignment
