@@ -1,0 +1,5 @@
+---
+title: Fix invalid fuzzy translations being generated during installation
+merge_request: 20048
+author:
+type: fixed
