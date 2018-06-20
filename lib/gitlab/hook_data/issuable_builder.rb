@@ -1,13 +1,9 @@
 module Gitlab
   module HookData
-    class IssuableBuilder
+    class IssuableBuilder < BaseBuilder
       CHANGES_KEYS = %i[previous current].freeze
 
-      attr_accessor :issuable
-
-      def initialize(issuable)
-        @issuable = issuable
-      end
+      alias_method :issuable, :object
 
       def build(user: nil, changes: {})
         hook_data = {
@@ -63,6 +59,13 @@ module Gitlab
           hash[key] = Hash[CHANGES_KEYS.zip(changes_array)]
           hash
         end
+      end
+
+      def absolute_image_urls(markdown_text)
+        return markdown_text unless markdown_text.present?
+
+        markdown_text.gsub(/!\[(.*?)\]\((.*?)\)/,
+                           "![\\1](#{Settings.gitlab.url}\\2)")
       end
     end
   end

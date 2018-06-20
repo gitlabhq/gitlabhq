@@ -59,9 +59,7 @@ class WikiPage
   attr_accessor :attributes
 
   def hook_attrs
-    attributes.merge({
-      "content" => MarkdownUtils.absolute_image_urls(self.content)
-    })
+    Gitlab::HookData::WikiPageBuilder.new(self).build
   end
 
   def initialize(wiki, page = nil, persisted = false)

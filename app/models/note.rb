@@ -202,9 +202,7 @@ class Note < ActiveRecord::Base
   end
 
   def hook_attrs
-    attributes.merge({
-      "note" => MarkdownUtils.absolute_image_urls(self.note)
-    })
+    Gitlab::HookData::NoteBuilder.new(self).build
   end
 
   def for_commit?
