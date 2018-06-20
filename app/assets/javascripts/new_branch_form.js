@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, one-var, prefer-rest-params, max-len, vars-on-top, wrap-iife, consistent-return, comma-dangle, one-var-declaration-per-line, quotes, no-return-assign, prefer-arrow-callback, prefer-template, no-shadow, no-else-return, max-len, object-shorthand */
+/* eslint-disable func-names, no-var, one-var, max-len, wrap-iife, consistent-return, comma-dangle, one-var-declaration-per-line, quotes, no-return-assign, prefer-arrow-callback, prefer-template, no-shadow, no-else-return, max-len */
 
 import $ from 'jquery';
 import RefSelectDropdown from './ref_select_dropdown';

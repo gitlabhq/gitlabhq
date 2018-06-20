@@ -1,4 +1,4 @@
-/* eslint-disable one-var, quote-props, comma-dangle, space-before-function-paren */
+/* eslint-disable quote-props, comma-dangle */
 
 import $ from 'jquery';
 import _ from 'underscore';

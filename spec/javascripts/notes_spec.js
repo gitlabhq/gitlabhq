@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, no-unused-expressions, no-var, object-shorthand, comma-dangle, max-len */
+/* eslint-disable no-unused-expressions, no-var, object-shorthand */
 import $ from 'jquery';
 import _ from 'underscore';
 import MockAdapter from 'axios-mock-adapter';

@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-use-before-define, prefer-arrow-callback, no-else-return, consistent-return, prefer-template, quotes, one-var, one-var-declaration-per-line, no-unused-vars, no-return-assign, comma-dangle, quote-props, no-unused-expressions, no-sequences, object-shorthand, max-len */
+/* eslint-disable func-names, wrap-iife, no-var, prefer-arrow-callback, no-else-return, consistent-return, prefer-template, quotes, one-var, one-var-declaration-per-line, no-unused-vars, no-return-assign, comma-dangle, quote-props, no-unused-expressions, no-sequences, max-len */
 
 import $ from 'jquery';
 
@@ -95,7 +95,7 @@ export default class ImageFile {
     });
     return [maxWidth, maxHeight];
   }
-  // eslint-disable-next-line
+
   views = {
     'two-up': function() {
       return $('.two-up.view .wrap', this.file).each((function(_this) {

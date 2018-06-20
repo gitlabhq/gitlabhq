@@ -1,4 +1,4 @@
-/* eslint-disable func-names, comma-dangle, new-cap, no-new, max-len */
+/* eslint-disable func-names, comma-dangle, new-cap, no-new */
 /* global ResolveCount */
 
 import $ from 'jquery';

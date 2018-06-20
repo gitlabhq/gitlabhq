@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, no-underscore-dangle, class-methods-use-this, consistent-return, no-shadow, no-param-reassign, max-len, no-unused-vars */
+/* eslint-disable no-underscore-dangle, class-methods-use-this, consistent-return, no-shadow, no-param-reassign, max-len */
 /* global ListIssue */
 
 import ListLabel from '~/vue_shared/models/label';

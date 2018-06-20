@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, one-var, no-unused-vars */
+/* eslint-disable comma-dangle, no-unused-vars */
 /* global ListIssue */
 
 import Vue from 'vue';

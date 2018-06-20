@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, object-shorthand, comma-dangle, prefer-arrow-callback */
+/* eslint-disable func-names, no-var, object-shorthand, prefer-arrow-callback */
 
 import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
