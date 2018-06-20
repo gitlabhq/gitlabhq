@@ -68,7 +68,7 @@ describe WebHookService do
         WebMock.stub_request(:post, url)
 
         service_instance.execute
-        
+
         expect(WebMock).to have_requested(:post, url).with(
           headers: headers.merge('Authorization' => 'Basic ZGVtbzpkZW1v')
         ).once
