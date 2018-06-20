@@ -5,9 +5,10 @@
 %li{ class: "milestone milestone-#{milestone.closed? ? 'closed' : 'open'}", id: custom_dom_id }
   .row
     .col-sm-6
-      %strong= link_to truncate(milestone.title, length: 100), milestone_path
-      - unless dashboard
-        = " - #{milestone_type}"
+      %div
+        %strong= link_to truncate(milestone.title, length: 100), milestone_path
+        - unless dashboard
+          = " - #{milestone_type}"
 
       - if @project || milestone.is_a?(GlobalMilestone) || milestone.group_milestone?
         = render('shared/milestone_expired', milestone: milestone)
