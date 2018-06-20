@@ -40,7 +40,7 @@ module QA
         runner.tags = %w[qa test]
       end
 
-      Factory::Repository::Push.fabricate! do |push|
+      Factory::Repository::ProjectPush.fabricate! do |push|
         push.project = project
         push.file_name = '.gitlab-ci.yml'
         push.commit_message = 'Add .gitlab-ci.yml'
