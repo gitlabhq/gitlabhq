@@ -90,6 +90,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     resources :autocomplete_sources, only: [] do
       collection do
         get 'members'
+        get 'epics'
       end
     end
 
