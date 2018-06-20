@@ -211,8 +211,8 @@ describe('Security Reports modal', () => {
       });
     });
 
-    it('does not render a button to dismiss issue', () => {
-      expect(vm.$el.querySelector('.js-dismiss-btn')).toBeFalsy();
+    it('does not display the footer', () => {
+      expect(vm.$el.classList.contains('modal--hide-footer')).toBeTruthy();
     });
   });
 });

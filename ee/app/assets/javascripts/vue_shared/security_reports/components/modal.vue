@@ -57,6 +57,7 @@ export default {
   <modal
     id="modal-mrwidget-security-issue"
     :header-title-text="modal.title"
+    :class="{'modal--hide-footer': modal.vulnerability.resolved}"
     class="modal-security-report-dast"
   >
     <slot>
@@ -195,15 +196,15 @@ export default {
       </div>
     </slot>
     <div slot="footer">
-      <button
-        type="button"
-        class="btn btn-default"
-        data-dismiss="modal"
-      >
-        {{ __('Cancel' ) }}
-      </button>
-
       <template v-if="!modal.vulnerability.resolved">
+        <button
+          type="button"
+          class="btn btn-default"
+          data-dismiss="modal"
+        >
+          {{ __('Cancel' ) }}
+        </button>
+
         <loading-button
           :loading="modal.isDismissingIssue"
           :disabled="modal.isDismissingIssue"
@@ -221,6 +222,7 @@ export default {
           {{ __('View issue' ) }}
         </a>
         <loading-button
+          v-else
           :loading="modal.isCreatingNewIssue"
           :disabled="modal.isCreatingNewIssue"
           :label="__('Create issue')"
