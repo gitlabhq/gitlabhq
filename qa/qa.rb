@@ -184,6 +184,10 @@ module QA
       autoload :PersonalAccessTokens, 'qa/page/profile/personal_access_tokens'
     end
 
+    module Issuable
+      autoload :Show, 'qa/page/issuable/show'
+    end
+
     module MergeRequest
       autoload :New, 'qa/page/merge_request/new'
       autoload :Show, 'qa/page/merge_request/show'
