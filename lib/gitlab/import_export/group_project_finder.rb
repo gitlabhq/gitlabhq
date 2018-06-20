@@ -31,7 +31,9 @@ module Gitlab
       private
 
       def where_clause
-        @attributes.except(:group, :project).map do |key, value|
+        return { project_id: @project.id } unless milestone? || label?
+
+        @attributes.slice(:title).map do |key, value|
           project_clause = table[key].eq(value).and(table[:project_id].eq(@project.id))
 
           if @group
@@ -48,12 +50,35 @@ module Gitlab
 
       def project_attributes
         @attributes.except(:group).tap do |atts|
-          atts['type'] = 'ProjectLabel' if label?
+          if label?
+            atts['type'] = 'ProjectLabel'
+          elsif milestone?
+            if atts['group_id']
+              atts['iid'] = nil
+              atts.delete('group_id')
+            else
+              claim_iid
+            end
+          end
         end
       end
 
       def label?
         @klass == Label || @klass < Label
+      end
+
+      def milestone?
+        @klass == Milestone
+      end
+
+      def claim_iid
+        group_milestone = @project.milestones.find_by(iid: @attributes['iid'])
+
+        group_milestone.update!(iid: max_milestone_iid + 1) if group_milestone
+      end
+
+      def max_milestone_iid
+        [@attributes['iid'], @project.milestones.maximum(:iid)].compact.max
       end
     end
   end

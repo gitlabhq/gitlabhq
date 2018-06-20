@@ -16,15 +16,15 @@ describe Gitlab::ImportExport::GroupProjectFinder do
 
       expect(described_class.find_or_new(Label,
                                          title: 'group label',
-                                         'project_id' => project.id,
-                                         'group_id' => project.group.id)).to eq(group_label)
+                                         project: project,
+                                         group: project.group)).to eq(group_label)
     end
 
     it 'initializes a new label' do
       label = described_class.find_or_new(Label,
                                           title: 'group label',
-                                          'project_id' => project.id,
-                                          'group_id' => project.group.id)
+                                          project: project,
+                                          group: project.group)
 
       expect(label.persisted?).to be false
     end
@@ -32,8 +32,8 @@ describe Gitlab::ImportExport::GroupProjectFinder do
     it 'creates a new label' do
       label = described_class.find_or_create(Label,
                                              title: 'group label',
-                                             'project_id' => project.id,
-                                             'group_id' => project.group.id)
+                                             project: project,
+                                             group: project.group)
 
       expect(label.persisted?).to be true
     end
@@ -45,24 +45,24 @@ describe Gitlab::ImportExport::GroupProjectFinder do
 
       expect(described_class.find_or_new(Milestone,
                                          title: 'group milestone',
-                                         'project_id' => project.id,
-                                         'group_id' => project.group.id)).to eq(milestone)
+                                         project: project,
+                                         group: project.group)).to eq(milestone)
     end
 
     it 'initializes a new milestone' do
       milestone = described_class.find_or_new(Milestone,
-                                          title: 'group milestone',
-                                          'project_id' => project.id,
-                                          'group_id' => project.group.id)
+                                              title: 'group milestone',
+                                              project: project,
+                                              group: project.group)
 
       expect(milestone.persisted?).to be false
     end
 
     it 'creates a new milestone' do
       milestone = described_class.find_or_create(Milestone,
-                                             title: 'group milestone',
-                                             'project_id' => project.id,
-                                             'group_id' => project.group.id)
+                                                 title: 'group milestone',
+                                                 project: project,
+                                                 group: project.group)
 
       expect(milestone.persisted?).to be true
     end

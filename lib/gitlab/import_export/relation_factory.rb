@@ -257,15 +257,7 @@ module Gitlab
       end
 
       def existing_object
-        @existing_object ||=
-          begin
-            existing_object = find_or_create_object!
-
-            # Done in two steps, as MySQL behaves differently than PostgreSQL using
-            # the +find_or_create_by+ method and does not return the ID the second time.
-            existing_object.update!(parsed_relation_hash)
-            existing_object
-          end
+        @existing_object ||= find_or_create_object!
       end
 
       def unknown_service?
@@ -275,29 +267,17 @@ module Gitlab
 
       def find_or_create_object!
         # Can't use IDs as validation exists calilng `.group` or `.project`
-        finder_hash = { project: @project }.tap do |hash|
+        finder_hash = parsed_relation_hash.tap do |hash|
           hash[:group] = @project.group if relation_class.attribute_method?('group_id')
+          hash[:project] = @project
           hash[:title] = parsed_relation_hash['title'] if parsed_relation_hash['title']
+          hash.delete('project_id')
         end
 
         if label?
-          label = GroupProjectFinder.find_or_new(Label, finder_hash)
-          parsed_relation_hash.delete('priorities') if label.persisted?
-          parsed_relation_hash.delete('type')
-
-          label.save!
-          label
+          GroupProjectFinder.find_or_new(Label, finder_hash)
         else
-          object = GroupProjectFinder.find_or_create(relation_class, finder_hash)
-
-          if milestone?
-            parsed_relation_hash.delete('group_id') if object.project
-            parsed_relation_hash.delete('project_id') if object.group
-            parsed_relation_hash.delete('iid')
-            parsed_relation_hash.delete('id')
-          end
-
-          object
+          GroupProjectFinder.find_or_create(relation_class, finder_hash)
         end
       end
 
