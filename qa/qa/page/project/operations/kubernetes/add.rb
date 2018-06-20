@@ -5,7 +5,7 @@ module QA
         module Kubernetes
           class Add < Page::Base
             view 'app/views/projects/clusters/new.html.haml' do
-              element :add_kubernetes_cluster_button, "link_to s_('ClusterIntegration|Add existing cluster')"
+              element :add_existing_cluster_button, "Add existing cluster"
             end
 
             def add_existing_cluster
