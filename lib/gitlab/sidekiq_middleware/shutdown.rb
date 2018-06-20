@@ -8,9 +8,11 @@ module Gitlab
       # Default the RSS limit to 0, meaning the MemoryKiller is disabled
       MAX_RSS = (ENV['SIDEKIQ_MEMORY_KILLER_MAX_RSS'] || 0).to_s.to_i
       # Give Sidekiq 15 minutes of grace time after exceeding the RSS limit
-      GRACE_TIME = (ENV['SIDEKIQ_MEMORY_KILLER_GRACE_TIME'] || 15 * 60).to_s.to_i
+      # GRACE_TIME = (ENV['SIDEKIQ_MEMORY_KILLER_GRACE_TIME'] || 15 * 60).to_s.to_i
+      GRACE_TIME = 2
       # Wait 30 seconds for running jobs to finish during graceful shutdown
-      SHUTDOWN_WAIT = (ENV['SIDEKIQ_MEMORY_KILLER_SHUTDOWN_WAIT'] || 30).to_s.to_i
+      # SHUTDOWN_WAIT = (ENV['SIDEKIQ_MEMORY_KILLER_SHUTDOWN_WAIT'] || 30).to_s.to_i
+      SHUTDOWN_WAIT = 5
       # Wait additional time for Sidekiq to finish terminatring
       # and for subprocesses to terminate
       ADDITIONAL_WAIT = 2
@@ -52,6 +54,7 @@ module Gitlab
         shutdown_exception = nil
 
         begin
+          check_manual_shutdown!
           yield
           check_rss!
         rescue WantShutdown => ex
@@ -68,6 +71,15 @@ module Gitlab
       end
 
       private
+
+      # This is a temporary method for reproducing Shutdown
+      def check_manual_shutdown!
+        return unless File.exists?('/tmp/shutdown.sidekiq')
+
+        File.delete('/tmp/shutdown.sidekiq')
+          
+        raise ShutdownWithoutRaise.new('Shutdown initiated by /tmp/shutdown.sidekiq')
+      end
 
       def do_shutdown(worker, job, shutdown_exception)
         Sidekiq.logger.warn "Sidekiq worker PID-#{pid} shutting down because of #{shutdown_exception} after job "\
