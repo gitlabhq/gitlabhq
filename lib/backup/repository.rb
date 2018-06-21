@@ -165,6 +165,8 @@ module Backup
           progress.print " * #{wiki.full_path} ... "
           begin
             wiki.repository.create_from_bundle(path_to_wiki_bundle)
+            restore_custom_hooks(wiki)
+
             progress.puts "[DONE]".color(:green)
           rescue => e
             progress.puts "[Failed] restoring #{wiki.full_path} wiki".color(:red)
