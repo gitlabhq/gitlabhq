@@ -81,12 +81,23 @@ the deployment is taking place if you run the command in another terminal.
 
 ### Initial login
 
-You can access the GitLab instance by visiting the domain specified during
-installation. If you manually created the secret for initial root password, you
-can use that to sign in as `root` user. If not, Gitlab would've automatically
+You can access the GitLab instance by visiting `gitlab.` and then the domain specified during installation. From the example above, the URL would be `https://gitlab.example.local`.
+
+If you manually created the secret for initial root password, you
+can use that to sign in as `root` user. If not, Gitlab automatically
 created a random password for `root` user. This can be extracted by the
 following command (replace `<name>` by name of the release - which is `gitlab`
 if you used the command above)
+
+> **Note**: On some versions of Kubernetes a `%` will appear at the end of the password, do not include it.
+
+Mac OS:
+
+```
+kubectl get secret <name>-gitlab-initial-root-password -ojsonpath={.data.password} | base64 -D
+```
+
+Linux:
 
 ```
 kubectl get secret <name>-gitlab-initial-root-password -ojsonpath={.data.password} | base64 -d
