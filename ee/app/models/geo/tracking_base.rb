@@ -15,7 +15,8 @@ module Geo
         raise SecondaryNotConfigured.new('Geo secondary database is not configured')
       end
 
-      super
+      # Don't call super because LoadBalancing::ActiveRecordProxy will intercept it
+      retrieve_connection
     end
   end
 end
