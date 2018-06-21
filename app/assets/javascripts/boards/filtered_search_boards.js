@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 import FilteredSearchTokenKeysIssues from 'ee/filtered_search/filtered_search_token_keys_issues';
-=======
->>>>>>> upstream/master
 import FilteredSearchContainer from '../filtered_search/container';
 import FilteredSearchManager from '../filtered_search/filtered_search_manager';
 
