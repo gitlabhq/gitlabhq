@@ -32,7 +32,7 @@ Currently out of scope:
 In order to deploy GitLab on Kubernetes, a few prerequisites are required.
 
 1. `helm` and `kubectl` [installed on your computer](preparation/tools_installation.md).
-1. A Kubernetes cluster, version 1.8 or higher. 4vCPU and 16GB of RAM is recommended.
+1. A Kubernetes cluster, version 1.8 or higher. 6vCPU and 16GB of RAM is recommended.
   * [Google GKE](https://cloud.google.com/kubernetes-engine/docs/how-to/creating-a-container-cluster)
   * [Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html)
   * [Microsoft AKS](https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough-portal)
