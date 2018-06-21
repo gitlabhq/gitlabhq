@@ -1,5 +1,5 @@
 module Groups
-  class AutocompleteService < BaseService
+  class AutocompleteService < Groups::BaseService
     def labels(target = nil)
       labels = LabelsFinder.new(
         current_user,
