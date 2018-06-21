@@ -5,7 +5,7 @@
 %p.profile-settings-content
   Pick a name for the application, and we'll give you a unique #{type} token.
 
-= form_for token, url: path, method: :post, html: { class: 'js-requires-input' } do |f|
+= form_for token, url: path, method: :post, html: { class: 'js-requires-input personal-access-token-form' } do |f|
 
   = form_errors(token)
 

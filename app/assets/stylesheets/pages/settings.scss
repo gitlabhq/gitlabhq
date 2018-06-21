@@ -255,6 +255,7 @@
   }
 }
 
+.personal-access-token-form,
 .modal-doorkeepr-auth,
 .doorkeeper-app-form {
   .scope-description {
@@ -265,12 +266,6 @@
 .modal-doorkeepr-auth {
   .modal-body {
     padding: $gl-padding;
-  }
-}
-
-.doorkeeper-app-form {
-  .scope-description {
-    margin: 0 0 5px 17px;
   }
 }
 

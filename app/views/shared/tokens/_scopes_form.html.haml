@@ -3,7 +3,7 @@
 - token = local_assigns.fetch(:token)
 
 - scopes.each do |scope|
-  %fieldset
-    = check_box_tag "#{prefix}[scopes][]", scope, token.scopes.include?(scope), id: "#{prefix}_scopes_#{scope}"
-    = label_tag ("#{prefix}_scopes_#{scope}"), scope, class: "label-light"
+  %fieldset.form-group.form-check
+    = check_box_tag "#{prefix}[scopes][]", scope, token.scopes.include?(scope), id: "#{prefix}_scopes_#{scope}", class: 'form-check-input'
+    = label_tag ("#{prefix}_scopes_#{scope}"), scope, class: 'label-light form-check-label'
     .scope-description= t scope, scope: [:doorkeeper, :scope_desc]
