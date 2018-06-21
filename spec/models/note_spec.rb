@@ -828,5 +828,15 @@ describe Note do
 
       note.destroy!
     end
+
+    context 'when issuable etag caching is disabled' do
+      it 'does not store cache key' do
+        allow(note.noteable).to receive(:etag_caching_enabled?).and_return(false)
+
+        expect_any_instance_of(Gitlab::EtagCaching::Store).not_to receive(:touch)
+
+        note.save!
+      end
+    end
   end
 end

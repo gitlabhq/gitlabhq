@@ -91,7 +91,7 @@ module IssuableActions
   end
 
   def discussions
-    notes = issuable.notes
+    notes = issuable.discussion_notes
       .inc_relations_for_view
       .includes(:noteable)
       .fresh

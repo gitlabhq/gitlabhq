@@ -1,12 +1,18 @@
 import * as getters from '~/notes/stores/getters';
-import { notesDataMock, userDataMock, noteableDataMock, individualNote, collapseNotesMock } from '../mock_data';
+import {
+  notesDataMock,
+  userDataMock,
+  noteableDataMock,
+  individualNote,
+  collapseNotesMock,
+} from '../mock_data';
 
 describe('Getters Notes Store', () => {
   let state;
 
   beforeEach(() => {
     state = {
-      notes: [individualNote],
+      discussions: [individualNote],
       targetNoteHash: 'hash',
       lastFetchedAt: 'timestamp',
 
@@ -15,15 +21,15 @@ describe('Getters Notes Store', () => {
       noteableData: noteableDataMock,
     };
   });
-  describe('notes', () => {
-    it('should return all notes in the store', () => {
-      expect(getters.notes(state)).toEqual([individualNote]);
+  describe('discussions', () => {
+    it('should return all discussions in the store', () => {
+      expect(getters.discussions(state)).toEqual([individualNote]);
     });
   });
 
   describe('Collapsed notes', () => {
     const stateCollapsedNotes = {
-      notes: collapseNotesMock,
+      discussions: collapseNotesMock,
       targetNoteHash: 'hash',
       lastFetchedAt: 'timestamp',
 
@@ -33,7 +39,7 @@ describe('Getters Notes Store', () => {
     };
 
     it('should return a single system note when a description was updated multiple times', () => {
-      expect(getters.notes(stateCollapsedNotes).length).toEqual(1);
+      expect(getters.discussions(stateCollapsedNotes).length).toEqual(1);
     });
   });
 

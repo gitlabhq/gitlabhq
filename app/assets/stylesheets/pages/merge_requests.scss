@@ -52,12 +52,6 @@
       opacity: 0.3;
     }
 
-    &.btn-sm {
-      line-height: 1;
-      padding: 5px 10px;
-      margin-top: 1px;
-    }
-
     &.dropdown-toggle {
       .fa {
         color: inherit;
@@ -86,6 +80,7 @@
     }
 
     .accept-control {
+      display: inline-block;
       float: left;
       margin: 0;
       margin-left: 20px;
@@ -294,6 +289,13 @@
 
       .accept-action {
         width: 100%;
+        text-align: center;
+      }
+
+      .accept-control {
+        width: 100%;
+        text-align: center;
+        margin: 0;
       }
     }
 
@@ -598,14 +600,12 @@
   position: relative;
   background: $gray-light;
   color: $gl-text-color;
-  z-index: 199;
 
   .mr-version-menus-container {
-    display: -webkit-flex;
     display: flex;
-    -webkit-align-items: center;
     align-items: center;
     padding: 16px;
+    z-index: 199;
   }
 
   .content-block {
@@ -718,11 +718,6 @@
 
 .fork-sprite {
   margin-right: -5px;
-}
-
-.mr-widget-icon {
-  font-size: 22px;
-  margin: 0 10px 0 0;
 }
 
 .deploy-heading {
