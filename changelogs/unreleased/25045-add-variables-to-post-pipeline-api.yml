@@ -1,5 +1,0 @@
----
-title: Add variables to POST api/v4/projects/:id/pipeline
-merge_request: 19124
-author: Jacopo Beschi @jacopo-beschi
-type: added
