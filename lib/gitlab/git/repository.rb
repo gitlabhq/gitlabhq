@@ -529,32 +529,17 @@ module Gitlab
       def raw_changes_between(old_rev, new_rev)
         @raw_changes_between ||= {}
 
-        @raw_changes_between[[old_rev, new_rev]] ||= begin
-          return [] if new_rev.blank? || new_rev == Gitlab::Git::BLANK_SHA
+        @raw_changes_between[[old_rev, new_rev]] ||=
+          begin
+            return [] if new_rev.blank? || new_rev == Gitlab::Git::BLANK_SHA
 
-          gitaly_migrate(:raw_changes_between) do |is_enabled|
-            if is_enabled
+            wrapped_gitaly_errors do
               gitaly_repository_client.raw_changes_between(old_rev, new_rev)
                 .each_with_object([]) do |msg, arr|
                 msg.raw_changes.each { |change| arr << ::Gitlab::Git::RawDiffChange.new(change) }
               end
-            else
-              result = []
-
-              circuit_breaker.perform do
-                Open3.pipeline_r(git_diff_cmd(old_rev, new_rev), format_git_cat_file_script, git_cat_file_cmd) do |last_stdout, wait_threads|
-                  last_stdout.each_line { |line| result << ::Gitlab::Git::RawDiffChange.new(line.chomp!) }
-
-                  if wait_threads.any? { |waiter| !waiter.value&.success? }
-                    raise ::Gitlab::Git::Repository::GitError, "Unabled to obtain changes between #{old_rev} and #{new_rev}"
-                  end
-                end
-              end
-
-              result
             end
           end
-        end
       rescue ArgumentError => e
         raise Gitlab::Git::Repository::GitError.new(e)
       end
@@ -1413,12 +1398,10 @@ module Gitlab
       end
 
       def can_be_merged?(source_sha, target_branch)
-        gitaly_migrate(:can_be_merged) do |is_enabled|
-          if is_enabled
-            gitaly_can_be_merged?(source_sha, find_branch(target_branch, true).target)
-          else
-            rugged_can_be_merged?(source_sha, target_branch)
-          end
+        if target_sha = find_branch(target_branch, true)&.target
+          !gitaly_conflicts_client(source_sha, target_sha).conflicts?
+        else
+          false
         end
       end
 
@@ -2230,14 +2213,6 @@ module Gitlab
 
       def fetch_remote(remote_name = 'origin', env: nil)
         run_git(['fetch', remote_name], env: env).last.zero?
-      end
-
-      def gitaly_can_be_merged?(their_commit, our_commit)
-        !gitaly_conflicts_client(our_commit, their_commit).conflicts?
-      end
-
-      def rugged_can_be_merged?(their_commit, our_commit)
-        !rugged.merge_commits(our_commit, their_commit).conflicts?
       end
 
       def gitlab_projects_error

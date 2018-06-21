@@ -30,7 +30,7 @@ _This notice should stay as the first item in the CONTRIBUTING.md file._
     - [Type labels](#type-labels)
     - [Subject labels](#subject-labels)
     - [Team labels](#team-labels)
-    - [Milestone labels](#milestone-labels)
+    - [Release Scoping labels](#release-scoping-labels)
     - [Bug Priority labels](#bug-priority-labels)
     - [Bug Severity labels](#bug-severity-labels)
         - [Severity impact guidance](#severity-impact-guidance)
@@ -133,7 +133,7 @@ Most issues will have labels for at least one of the following:
 - Type: ~"feature proposal", ~bug, ~customer, etc.
 - Subject: ~wiki, ~"container registry", ~ldap, ~api, ~frontend, etc.
 - Team: ~"CI/CD", ~Discussion, ~Quality, ~Platform, etc.
-- Milestone: ~Deliverable, ~Stretch, ~"Next Patch Release"
+- Release Scoping: ~Deliverable, ~Stretch, ~"Next Patch Release"
 - Priority: ~P1, ~P2, ~P3, ~P4
 - Severity: ~S1, ~S2, ~S3, ~S4
 
@@ -207,10 +207,10 @@ indicate if an issue needs backend work, frontend work, or both.
 Team labels are always capitalized so that they show up as the first label for
 any issue.
 
-### Milestone labels
+### Release Scoping labels
 
-Milestone labels help us clearly communicate expectations of the work for the
-release. There are three levels of Milestone labels:
+Release Scoping labels help us clearly communicate expectations of the work for the
+release. There are three levels of Release Scoping labels:
 
 - ~Deliverable: Issues that are expected to be delivered in the current
   milestone.

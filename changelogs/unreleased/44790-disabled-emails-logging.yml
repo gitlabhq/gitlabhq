@@ -1,5 +1,0 @@
----
-title: Stop logging email information when emails are disabled
-merge_request: 18521
-author: Marc Shaw
-type: fixed

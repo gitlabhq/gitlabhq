@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, space-before-function-paren, one-var, no-shadow, dot-notation, max-len */
+/* eslint-disable comma-dangle, no-shadow */
 /* global List */
 
 import $ from 'jquery';

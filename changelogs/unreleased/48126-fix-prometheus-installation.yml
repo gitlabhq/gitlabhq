@@ -1,0 +1,5 @@
+---
+title: Specify chart version when installing applications on Clusters
+merge_request: 20010
+author:
+type: fixed

@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-use-before-define, no-underscore-dangle, no-param-reassign, prefer-template, quotes, comma-dangle, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, no-else-return, max-len */
+/* eslint-disable func-names, no-var, no-underscore-dangle, no-param-reassign, prefer-template, quotes, comma-dangle, consistent-return, one-var, one-var-declaration-per-line, no-else-return, max-len */
 
 import $ from 'jquery';
 

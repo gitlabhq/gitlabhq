@@ -151,6 +151,44 @@ describe ProjectPolicy do
     end
   end
 
+  context 'builds feature' do
+    subject { described_class.new(owner, project) }
+
+    it 'disallows all permissions when the feature is disabled' do
+      project.project_feature.update(builds_access_level: ProjectFeature::DISABLED)
+
+      builds_permissions = [
+        :create_pipeline, :update_pipeline, :admin_pipeline, :destroy_pipeline,
+        :create_build, :read_build, :update_build, :admin_build, :destroy_build,
+        :create_pipeline_schedule, :read_pipeline_schedule, :update_pipeline_schedule, :admin_pipeline_schedule, :destroy_pipeline_schedule,
+        :create_environment, :read_environment, :update_environment, :admin_environment, :destroy_environment,
+        :create_cluster, :read_cluster, :update_cluster, :admin_cluster, :destroy_cluster,
+        :create_deployment, :read_deployment, :update_deployment, :admin_deployment, :destroy_deployment
+      ]
+
+      expect_disallowed(*builds_permissions)
+    end
+  end
+
+  context 'repository feature' do
+    subject { described_class.new(owner, project) }
+
+    it 'disallows all permissions when the feature is disabled' do
+      project.project_feature.update(repository_access_level: ProjectFeature::DISABLED)
+
+      repository_permissions = [
+        :create_pipeline, :update_pipeline, :admin_pipeline, :destroy_pipeline,
+        :create_build, :read_build, :update_build, :admin_build, :destroy_build,
+        :create_pipeline_schedule, :read_pipeline_schedule, :update_pipeline_schedule, :admin_pipeline_schedule, :destroy_pipeline_schedule,
+        :create_environment, :read_environment, :update_environment, :admin_environment, :destroy_environment,
+        :create_cluster, :read_cluster, :update_cluster, :admin_cluster, :destroy_cluster,
+        :create_deployment, :read_deployment, :update_deployment, :admin_deployment, :destroy_deployment
+      ]
+
+      expect_disallowed(*repository_permissions)
+    end
+  end
+
   shared_examples 'archived project policies' do
     let(:feature_write_abilities) do
       described_class::READONLY_FEATURES_WHEN_ARCHIVED.flat_map do |feature|

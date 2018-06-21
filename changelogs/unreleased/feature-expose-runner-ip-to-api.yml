@@ -1,5 +1,0 @@
----
-title: Expose runner ip address to runners API
-merge_request: 18799
-author: Lars Greiss
-type: changed

@@ -35,7 +35,11 @@ describe 'Explore Groups page', :js do
     fill_in 'filter', with: group.name
     wait_for_requests
 
+    expect(page).to have_content(group.full_name)
+    expect(page).not_to have_content(public_group.full_name)
+
     fill_in 'filter', with: ""
+    page.find('[name="filter"]').send_keys(:enter)
     wait_for_requests
 
     expect(page).to have_content(group.full_name)

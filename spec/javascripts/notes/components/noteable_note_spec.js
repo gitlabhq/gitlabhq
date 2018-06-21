@@ -32,7 +32,6 @@ describe('issue_note', () => {
 
   it('should render note header content', () => {
     expect(vm.$el.querySelector('.note-header .note-header-author-name').textContent.trim()).toEqual(note.author.name);
-    expect(vm.$el.querySelector('.note-header .note-headline-meta').textContent.trim()).toContain('commented');
   });
 
   it('should render note actions', () => {

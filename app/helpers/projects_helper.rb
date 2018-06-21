@@ -350,11 +350,15 @@ module ProjectsHelper
     if allowed_protocols_present?
       enabled_protocol
     else
-      if !current_user || current_user.require_ssh_key?
-        gitlab_config.protocol
-      else
-        'ssh'
-      end
+      extra_default_clone_protocol
+    end
+  end
+
+  def extra_default_clone_protocol
+    if !current_user || current_user.require_ssh_key?
+      gitlab_config.protocol
+    else
+      'ssh'
     end
   end
 
@@ -407,6 +411,7 @@ module ProjectsHelper
     @ref || @repository.try(:root_ref)
   end
 
+  # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1235
   def sanitize_repo_path(project, message)
     return '' unless message.present?
 
@@ -499,5 +504,38 @@ module ProjectsHelper
     else
       "list-label"
     end
+  end
+
+  def sidebar_settings_paths
+    %w[
+      projects#edit
+      project_members#index
+      integrations#show
+      services#edit
+      repository#show
+      ci_cd#show
+      badges#index
+      pages#show
+    ]
+  end
+
+  def sidebar_repository_paths
+    %w[
+      tree
+      blob
+      blame
+      edit_tree
+      new_tree
+      find_file
+      commit
+      commits
+      compare
+      projects/repositories
+      tags
+      branches
+      releases
+      graphs
+      network
+    ]
   end
 end
