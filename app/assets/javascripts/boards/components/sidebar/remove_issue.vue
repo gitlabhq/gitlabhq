@@ -1,62 +1,61 @@
 <script>
-import Flash from '../../../flash';
-import { __ } from '../../../locale';
+  import Vue from 'vue';
+  import Flash from '../../../flash';
+  import { __ } from '../../../locale';
 
-const Store = gl.issueBoards.BoardsStore;
+  const Store = gl.issueBoards.BoardsStore;
 
-export default {
-  props: {
-    issue: {
-      type: Object,
-      required: true,
+  export default {
+    props: {
+      issue: {
+        type: Object,
+        required: true,
+      },
+      list: {
+        type: Object,
+        required: true,
+      },
     },
-    list: {
-      type: Object,
-      required: true,
+    computed: {
+      updateUrl() {
+        return this.issue.path;
+      },
     },
-  },
-  computed: {
-    updateUrl() {
-      return this.issue.path;
-    },
-  },
-  methods: {
-    removeIssue() {
-      const issue = this.issue;
-      const lists = issue.getLists();
-      const listLabelIds = lists.map(list => list.label.id);
+    methods: {
+      removeIssue() {
+        const issue = this.issue;
+        const lists = issue.getLists();
+        const listLabelIds = lists.map(list => list.label.id);
 
-      let labelIds = issue.labels
-        .map(label => label.id)
-        .filter(id => !listLabelIds.includes(id));
-      if (labelIds.length === 0) {
-        labelIds = [''];
-      }
+        let labelIds = issue.labels.map(label => label.id).filter(id => !listLabelIds.includes(id));
+        if (labelIds.length === 0) {
+          labelIds = [''];
+        }
 
-      const data = {
-        issue: {
-          label_ids: labelIds,
-        },
-      };
+        const data = {
+          issue: {
+            label_ids: labelIds,
+          },
+        };
 
-      // Post the remove data
-      Vue.http.patch(this.updateUrl, data).catch(() => {
-        Flash(__('Failed to remove issue from board, please try again.'));
+        // Post the remove data
+        Vue.http.patch(this.updateUrl, data).catch(() => {
+          Flash(__('Failed to remove issue from board, please try again.'));
 
-        lists.forEach((list) => {
-          list.addIssue(issue);
+          lists.forEach(list => {
+            list.addIssue(issue);
+          });
         });
-      });
 
-      // Remove from the frontend store
-      lists.forEach((list) => {
-        list.removeIssue(issue);
-      });
+        // Remove from the frontend store
+        lists.forEach(list => {
+          list.removeIssue(issue);
+        });
 
-      Store.detail.issue = {};
+        Store.detail.issue = {};
+      },
     },
-  },
-};
+  };
 </script>
 <template>
   <div
