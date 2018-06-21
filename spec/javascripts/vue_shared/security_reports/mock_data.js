@@ -312,7 +312,6 @@ export const parsedSastBaseStore = [
       value: 'CVE-2016-9999',
       link: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-9999',
     }],
-    resolved: true,
   },
 ];
 
@@ -499,7 +498,6 @@ export const parsedDependencyScanningBaseStore = [
     links: [{
       url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
     }],
-    resolved: true,
   },
 ];
 

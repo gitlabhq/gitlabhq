@@ -20,6 +20,7 @@ describe('dast issue body', () => {
     riskcode: '1',
     riskdesc: 'Low (Medium)',
   };
+  const status = 'failed';
 
   afterEach(() => {
     vm.$destroy();
@@ -31,6 +32,7 @@ describe('dast issue body', () => {
         issue: dastIssue,
         issueIndex: 1,
         modalTargetId: '#modal-mrwidget-issue',
+        status,
       });
 
       expect(vm.$el.textContent.trim()).toContain(`${dastIssue.severity} (${dastIssue.confidence})`);
@@ -43,6 +45,7 @@ describe('dast issue body', () => {
         issue: dastIssue,
         issueIndex: 1,
         modalTargetId: '#modal-mrwidget-issue',
+        status,
       });
     });
 

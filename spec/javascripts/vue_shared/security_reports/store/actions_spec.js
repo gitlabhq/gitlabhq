@@ -977,13 +977,13 @@ describe('security reports actions', () => {
     it('dispatches setModalData action', done => {
       testAction(
         openModal,
-        { id: 1 },
+        { issue: { id: 1 }, status: 'failed' },
         mockedState,
         [],
         [
           {
             type: 'setModalData',
-            payload: { id: 1 },
+            payload: { issue: { id: 1 }, status: 'failed' },
           },
         ],
         done,
@@ -995,12 +995,12 @@ describe('security reports actions', () => {
     it('commits set issue modal data', done => {
       testAction(
         setModalData,
-        { id: 1 },
+        { issue: { id: 1 }, status: 'success' },
         mockedState,
         [
           {
             type: types.SET_ISSUE_MODAL_DATA,
-            payload: { id: 1 },
+            payload: { issue: { id: 1 }, status: 'success' },
           },
         ],
         [],

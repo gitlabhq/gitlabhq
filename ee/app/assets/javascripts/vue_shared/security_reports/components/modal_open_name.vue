@@ -7,11 +7,17 @@ export default {
       type: Object,
       required: true,
     },
+    // failed || success
+    status: {
+      type: String,
+      required: true,
+    },
   },
   methods: {
     ...mapActions(['openModal']),
     handleIssueClick() {
-      this.openModal(this.issue);
+      const { issue, status, openModal } = this;
+      openModal({ issue, status });
     },
   },
 };

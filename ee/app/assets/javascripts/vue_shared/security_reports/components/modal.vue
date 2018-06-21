@@ -57,7 +57,7 @@ export default {
   <modal
     id="modal-mrwidget-security-issue"
     :header-title-text="modal.title"
-    :class="{'modal--hide-footer': modal.vulnerability.resolved}"
+    :class="{'modal-hide-footer': modal.isResolved}"
     class="modal-security-report-dast"
   >
     <slot>
@@ -196,7 +196,7 @@ export default {
       </div>
     </slot>
     <div slot="footer">
-      <template v-if="!modal.vulnerability.resolved">
+      <template v-if="!modal.isResolved">
         <button
           type="button"
           class="btn btn-default"
