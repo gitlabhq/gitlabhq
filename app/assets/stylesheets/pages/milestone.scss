@@ -35,6 +35,7 @@
 
     .status-box {
       font-size: $tooltip-font-size;
+      margin-top: 0;
     }
   }
 }
@@ -253,7 +254,7 @@
 
 .milestone-range {
   color: $gl-text-color-tertiary;
-  margin: $gl-bar-padding 0;
+  margin: $gl-bar-padding 0 $gl-padding-4;
   font-size: $tooltip-font-size;
 }
 
