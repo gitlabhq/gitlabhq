@@ -37,13 +37,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const items = [{
       text: rootPath,
       href: treePath,
-    }].concat(breadcrumbTitles.map((text, index) => {
-      return {
-        text,
-        href: `${treePath}/${breadcrumbTitles.slice(0, index + 1).join('/')}`,
-      };
-    }));
+    }].concat(breadcrumbTitles.map((text, index) => ({
+      text,
+      href: `${treePath}/${breadcrumbTitles.slice(0, index + 1).join('/')}`,
+    })));
 
+    // eslint-disable-next-line no-new
     new Vue({
       el: repoBreadcrumbs,
       components: {
@@ -55,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
             items,
           },
         });
-      }
-    })
+      },
+    });
   }
 });
