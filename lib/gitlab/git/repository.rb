@@ -925,10 +925,6 @@ module Gitlab
         nil
       end
 
-      def update_branch(user, branch_name, newrev, oldrev)
-        Gitlab::Git::OperationService.new(user, self).update_branch(branch_name, newrev, oldrev)
-      end
-
       AUTOCRLF_VALUES = {
         "true" => true,
         "false" => false,
@@ -2241,14 +2237,6 @@ module Gitlab
         gitaly_commit_client
           .commits_by_message(query, revision: ref, path: path, limit: limit, offset: offset)
           .map { |c| commit(c) }
-      end
-
-      def gitaly_can_be_merged?(their_commit, our_commit)
-        !gitaly_conflicts_client(our_commit, their_commit).conflicts?
-      end
-
-      def rugged_can_be_merged?(their_commit, our_commit)
-        !rugged.merge_commits(our_commit, their_commit).conflicts?
       end
 
       def last_commit_for_path_by_gitaly(sha, path)
