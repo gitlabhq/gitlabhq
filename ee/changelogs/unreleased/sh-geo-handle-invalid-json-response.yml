@@ -1,5 +1,0 @@
----
-title: 'Geo: Gracefully handle a non-JSON response from the node status'
-merge_request:
-author:
-type: fixed

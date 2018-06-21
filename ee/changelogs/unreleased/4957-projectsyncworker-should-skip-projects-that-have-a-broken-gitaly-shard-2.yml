@@ -1,5 +1,0 @@
----
-title: Only process Geo::EventLog events if associated shard is queryable and healthy
-merge_request:
-author:
-type: performance

@@ -1,5 +1,0 @@
----
-title: When last Geo::EventLog is not available, geo:status rake task fails
-merge_request:
-author:
-type: fixed

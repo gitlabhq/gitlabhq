@@ -1,5 +1,0 @@
----
-title: Fixes include directive to not allow SSRF requests
-merge_request:
-author:
-type: security

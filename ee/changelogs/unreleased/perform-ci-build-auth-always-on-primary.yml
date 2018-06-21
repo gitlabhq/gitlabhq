@@ -1,5 +1,0 @@
----
-title: Perform gitlab-ci-token authentication always using primary
-merge_request:
-author:
-type: fixed
