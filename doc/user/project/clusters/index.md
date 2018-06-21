@@ -23,39 +23,41 @@ You need Maintainer [permissions] and above to access the Kubernetes page.
 
 Before proceeding, make sure the following requirements are met:
 
-- The [Google authentication integration](../../../integration/google.md) must
+* The [Google authentication integration](../../../integration/google.md) must
   be enabled in GitLab at the instance level. If that's not the case, ask your
   GitLab administrator to enable it.
-- Your associated Google account must have the right privileges to manage
+* Your associated Google account must have the right privileges to manage
   clusters on GKE. That would mean that a [billing
   account](https://cloud.google.com/billing/docs/how-to/manage-billing-account)
   must be set up and that you have to have permissions to access it.
-- You must have Maintainer [permissions] in order to be able to access the
+* You must have Maintainer [permissions] in order to be able to access the
   **Kubernetes** page.
-- You must have [Cloud Billing API](https://cloud.google.com/billing/) enabled
-- You must have [Resource Manager
+* You must have [Cloud Billing API](https://cloud.google.com/billing/) enabled
+* You must have [Resource Manager
   API](https://cloud.google.com/resource-manager/)
 
 If all of the above requirements are met, you can proceed to create and add a
 new Kubernetes cluster that will be hosted on GKE to your project:
 
-1. Navigate to your project's **Operations > Kubernetes** page.
-1. Click on **Add Kubernetes cluster**.
-1. Click on **Create with Google Kubernetes Engine**.
-1. Connect your Google account if you haven't done already by clicking the
-   **Sign in with Google** button.
-1. Fill in the requested values:
-  - **Kubernetes cluster name** - The name you wish to give the cluster.
-  - **Environment scope** - The [associated environment](#setting-the-environment-scope) to this cluster.
-  - **Google Cloud Platform project** - The project you created in your GCP
-    console that will host the Kubernetes cluster. This must **not** be confused
-    with the project ID. Learn more about [Google Cloud Platform projects](https://cloud.google.com/resource-manager/docs/creating-managing-projects).
-  - **Zone** - The [zone](https://cloud.google.com/compute/docs/regions-zones/)
-    under which the cluster will be created.
-  - **Number of nodes** - The number of nodes you wish the cluster to have.
-  - **Machine type** - The [machine type](https://cloud.google.com/compute/docs/machine-types)
-    of the Virtual Machine instance that the cluster will be based on.
-1. Finally, click the **Create Kubernetes cluster** button.
+1.  Navigate to your project's **Operations > Kubernetes** page.
+1.  Click on **Add Kubernetes cluster**.
+1.  Click on **Create with Google Kubernetes Engine**.
+1.  Connect your Google account if you haven't done already by clicking the
+    **Sign in with Google** button.
+1.  Fill in the requested values:
+
+* **Kubernetes cluster name** - The name you wish to give the cluster.
+* **Environment scope** - The [associated environment](#setting-the-environment-scope) to this cluster.
+* **Google Cloud Platform project** - The project you created in your GCP
+  console that will host the Kubernetes cluster. This must **not** be confused
+  with the project ID. Learn more about [Google Cloud Platform projects](https://cloud.google.com/resource-manager/docs/creating-managing-projects).
+* **Zone** - The [zone](https://cloud.google.com/compute/docs/regions-zones/)
+  under which the cluster will be created.
+* **Number of nodes** - The number of nodes you wish the cluster to have.
+* **Machine type** - The [machine type](https://cloud.google.com/compute/docs/machine-types)
+  of the Virtual Machine instance that the cluster will be based on.
+
+1.  Finally, click the **Create Kubernetes cluster** button.
 
 After a few moments, your cluster should be created. If something goes wrong,
 you will be notified.
@@ -70,20 +72,20 @@ You need Maintainer [permissions] and above to access the Kubernetes page.
 
 To add an existing Kubernetes cluster to your project:
 
-1. Navigate to your project's **Operations > Kubernetes** page.
-1. Click on **Add Kubernetes cluster**.
-1. Click on **Add an existing Kubernetes cluster** and fill in the details:
-    - **Kubernetes cluster name** (required) - The name you wish to give the cluster.
-    - **Environment scope** (required)- The
+1.  Navigate to your project's **Operations > Kubernetes** page.
+1.  Click on **Add Kubernetes cluster**.
+1.  Click on **Add an existing Kubernetes cluster** and fill in the details:
+    * **Kubernetes cluster name** (required) - The name you wish to give the cluster.
+    * **Environment scope** (required)- The
       [associated environment](#setting-the-environment-scope) to this cluster.
-    - **API URL** (required) -
+    * **API URL** (required) -
       It's the URL that GitLab uses to access the Kubernetes API. Kubernetes
       exposes several APIs, we want the "base" URL that is common to all of them,
       e.g., `https://kubernetes.example.com` rather than `https://kubernetes.example.com/api/v1`.
-    - **CA certificate** (optional) -
+    * **CA certificate** (optional) -
       If the API is using a self-signed TLS certificate, you'll also need to include
       the `ca.crt` contents here.
-    - **Token** -
+    * **Token** -
       GitLab authenticates against Kubernetes using service tokens, which are
       scoped to a particular `namespace`. If you don't have a service token yet,
       you can follow the
@@ -91,17 +93,17 @@ To add an existing Kubernetes cluster to your project:
       to create one. You can also view or create service tokens in the
       [Kubernetes dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/#config)
       (under **Config > Secrets**).
-    - **Project namespace** (optional) - The following apply:
-      - By default you don't have to fill it in; by leaving it blank, GitLab will
+    * **Project namespace** (optional) - The following apply:
+      * By default you don't have to fill it in; by leaving it blank, GitLab will
         create one for you.
-      - Each project should have a unique namespace.
-      - The project namespace is not necessarily the namespace of the secret, if
+      * Each project should have a unique namespace.
+      * The project namespace is not necessarily the namespace of the secret, if
         you're using a secret with broader permissions, like the secret from `default`.
-      - You should **not** use `default` as the project namespace.
-      - If you or someone created a secret specifically for the project, usually
+      * You should **not** use `default` as the project namespace.
+      * If you or someone created a secret specifically for the project, usually
         with limited permissions, the secret's namespace and project namespace may
         be the same.
-1. Finally, click the **Create Kubernetes cluster** button.
+1.  Finally, click the **Create Kubernetes cluster** button.
 
 After a few moments, your cluster should be created. If something goes wrong,
 you will be notified.
@@ -150,13 +152,13 @@ GitLab provides a one-click install for various applications which will be
 added directly to your configured cluster. Those applications are needed for
 [Review Apps](../../../ci/review_apps/index.md) and [deployments](../../../ci/environments.md).
 
-| Application | GitLab version | Description |
-| ----------- | :------------: | ----------- |
-| [Helm Tiller](https://docs.helm.sh/) | 10.2+ | Helm is a package manager for Kubernetes and is required to install all the other applications. It will be automatically installed as a dependency when you try to install a different app. It is installed in its own pod inside the cluster which can run the `helm` CLI in a safe environment. |
-| [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) | 10.2+ | Ingress can provide load balancing, SSL termination, and name-based virtual hosting. It acts as a web proxy for your applications and is useful if you want to use [Auto DevOps] or deploy your own web apps. |
-| [Prometheus](https://prometheus.io/docs/introduction/overview/) | 10.4+ | Prometheus is an open-source monitoring and alerting system useful to supervise your deployed applications |
-| [GitLab Runner](https://docs.gitlab.com/runner/) | 10.6+ | GitLab Runner is the open source project that is used to run your jobs and send the results back to GitLab. It is used in conjunction with [GitLab CI/CD](https://about.gitlab.com/features/gitlab-ci-cd/), the open-source continuous integration service included with GitLab that coordinates the jobs. When installing the GitLab Runner via the applications, it will run in **privileged mode** by default. Make sure you read the [security implications](#security-implications) before doing so. |
-| [JupyterHub](http://jupyter.org/) | 11.0+ | [JupyterHub](https://jupyterhub.readthedocs.io/en/stable/) is a multi-user service for managing notebooks across a team. [Jupyter Notebooks](https://jupyter-notebook.readthedocs.io/en/latest/) provide a web-based interactive programming environment used for data analysis, visualization, and machine learning. **Note**: Authentication will be enabled for any user of the GitLab server via OAuth2. HTTPS will be supported in a future release. |
+| Application                                                                 | GitLab version | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| --------------------------------------------------------------------------- | :------------: | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Helm Tiller](https://docs.helm.sh/)                                        |     10.2+      | Helm is a package manager for Kubernetes and is required to install all the other applications. It will be automatically installed as a dependency when you try to install a different app. It is installed in its own pod inside the cluster which can run the `helm` CLI in a safe environment.                                                                                                                                                                                                         |
+| [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) |     10.2+      | Ingress can provide load balancing, SSL termination, and name-based virtual hosting. It acts as a web proxy for your applications and is useful if you want to use [Auto DevOps] or deploy your own web apps.                                                                                                                                                                                                                                                                                             |
+| [Prometheus](https://prometheus.io/docs/introduction/overview/)             |     10.4+      | Prometheus is an open-source monitoring and alerting system useful to supervise your deployed applications                                                                                                                                                                                                                                                                                                                                                                                                |
+| [GitLab Runner](https://docs.gitlab.com/runner/)                            |     10.6+      | GitLab Runner is the open source project that is used to run your jobs and send the results back to GitLab. It is used in conjunction with [GitLab CI/CD](https://about.gitlab.com/features/gitlab-ci-cd/), the open-source continuous integration service included with GitLab that coordinates the jobs. When installing the GitLab Runner via the applications, it will run in **privileged mode** by default. Make sure you read the [security implications](#security-implications) before doing so. |
+| [JupyterHub](http://jupyter.org/)                                           |     11.0+      | [JupyterHub](https://jupyterhub.readthedocs.io/en/stable/) is a multi-user service for managing notebooks across a team. [Jupyter Notebooks](https://jupyter-notebook.readthedocs.io/en/latest/) provide a web-based interactive programming environment used for data analysis, visualization, and machine learning. **Note**: Authentication will be enabled for any user of the GitLab server via OAuth2. HTTPS will be supported in a future release.                                                 |
 
 ## Getting the external IP address
 
@@ -202,6 +204,7 @@ kubectl get svc --all-namespaces -o jsonpath='{range.items[?(@.status.loadBalanc
 ```
 
 > **Note**: Some Kubernetes clusters return a hostname instead, like [Amazon EKS](https://aws.amazon.com/eks/). For these platforms, run:
+>
 > ```bash
 > kubectl get service ingress-nginx-ingress-controller -n gitlab-managed-apps -o jsonpath="{.status.loadBalancer.ingress[0].hostname}"`.
 > ```
@@ -262,11 +265,11 @@ Also, jobs that don't have an environment keyword set will not be able to access
 
 For example, let's say the following Kubernetes clusters exist in a project:
 
-| Cluster    | Environment scope |
-| ---------- | ------------------|
-| Development| `*`               |
-| Staging    | `staging`         |
-| Production | `production`      |
+| Cluster     | Environment scope |
+| ----------- | ----------------- |
+| Development | `*`               |
+| Staging     | `staging`         |
+| Production  | `production`      |
 
 And the following environments are set in [`.gitlab-ci.yml`](../../../ci/yaml/README.md):
 
@@ -296,9 +299,9 @@ deploy to production:
 
 The result will then be:
 
-- The development cluster will be used for the "test" job.
-- The staging cluster will be used for the "deploy to staging" job.
-- The production cluster will be used for the "deploy to production" job.
+* The development cluster will be used for the "test" job.
+* The staging cluster will be used for the "deploy to staging" job.
+* The production cluster will be used for the "deploy to production" job.
 
 ## Deployment variables
 
@@ -306,20 +309,20 @@ The Kubernetes cluster integration exposes the following
 [deployment variables](../../../ci/variables/README.md#deployment-variables) in the
 GitLab CI/CD build environment.
 
-| Variable | Description |
-| -------- | ----------- |
-| `KUBE_URL` | Equal to the API URL. |
-| `KUBE_TOKEN` | The Kubernetes token. |
-| `KUBE_NAMESPACE` | The Kubernetes namespace is auto-generated if not specified. The default value is `<project_name>-<project_id>`. You can overwrite it to use different one if needed, otherwise the `KUBE_NAMESPACE` variable will receive the default value. |
-| `KUBE_CA_PEM_FILE` | Only present if a custom CA bundle was specified. Path to a file containing PEM data. |
-| `KUBE_CA_PEM` | (**deprecated**) Only if a custom CA bundle was specified. Raw PEM data. |
-| `KUBECONFIG` | Path to a file containing `kubeconfig` for this deployment. CA bundle would be embedded if specified. |
+| Variable           | Description                                                                                                                                                                                                                                   |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `KUBE_URL`         | Equal to the API URL.                                                                                                                                                                                                                         |
+| `KUBE_TOKEN`       | The Kubernetes token.                                                                                                                                                                                                                         |
+| `KUBE_NAMESPACE`   | The Kubernetes namespace is auto-generated if not specified. The default value is `<project_name>-<project_id>`. You can overwrite it to use different one if needed, otherwise the `KUBE_NAMESPACE` variable will receive the default value. |
+| `KUBE_CA_PEM_FILE` | Only present if a custom CA bundle was specified. Path to a file containing PEM data.                                                                                                                                                         |
+| `KUBE_CA_PEM`      | (**deprecated**) Only if a custom CA bundle was specified. Raw PEM data.                                                                                                                                                                      |
+| `KUBECONFIG`       | Path to a file containing `kubeconfig` for this deployment. CA bundle would be embedded if specified.                                                                                                                                         |
 
 ## Monitoring your Kubernetes cluster **[ULTIMATE]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/4701) in [GitLab Ultimate][ee] 10.6.
 
-When [Prometheus is deployed](#installing-applications), GitLab will automatically monitor the cluster's health. At the top of the cluster settings page, CPU and Memory utilization is displayed, along with the total amount available. Keeping an eye on cluster resources can be important, if the cluster runs out of memory pods may be shutdown or fail to start. 
+When [Prometheus is deployed](#installing-applications), GitLab will automatically monitor the cluster's health. At the top of the cluster settings page, CPU and Memory utilization is displayed, along with the total amount available. Keeping an eye on cluster resources can be important, if the cluster runs out of memory pods may be shutdown or fail to start.
 
 ![Cluster Monitoring](img/k8s_cluster_monitoring.png)
 
@@ -328,8 +331,8 @@ When [Prometheus is deployed](#installing-applications), GitLab will automatical
 After you have successfully added your cluster information, you can enable the
 Kubernetes cluster integration:
 
-1. Click the "Enabled/Disabled" switch
-1. Hit **Save** for the changes to take effect
+1.  Click the "Enabled/Disabled" switch
+1.  Hit **Save** for the changes to take effect
 
 You can now start using your Kubernetes cluster for your deployments.
 
@@ -413,4 +416,4 @@ Learn how to [connect and deploy to an Amazon EKS cluster](eks_and_gitlab/index.
 
 [permissions]: ../../permissions.md
 [ee]: https://about.gitlab.com/products/
-[Auto DevOps]: ../../../topics/autodevops/index.md
+[auto devops]: ../../../topics/autodevops/index.md
