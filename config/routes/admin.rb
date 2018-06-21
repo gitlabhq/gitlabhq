@@ -60,7 +60,7 @@ namespace :admin do
 
   resources :hooks, only: [:index, :create, :edit, :update, :destroy] do
     member do
-      get :test
+      post :test
     end
 
     resources :hook_logs, only: [:show] do
