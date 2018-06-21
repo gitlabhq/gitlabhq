@@ -85,11 +85,16 @@ class Label < ActiveRecord::Base
       (#{Project.reference_pattern})?
       #{Regexp.escape(reference_prefix)}
       (?:
-        (?<label_id>\d+(?!\S\w)\b) | # Integer-based label ID, or
-        (?<label_name>
-          [A-Za-z0-9_\-\?\.&]+ | # String-based single-word label title, or
-          ".+?"                  # String-based multi-word label surrounded in quotes
-        )
+          (?<label_id>\d+(?!\S\w)\b)
+        | # Integer-based label ID, or
+          (?<label_name>
+              # String-based single-word label title, or
+              [A-Za-z0-9_\-\?\.&]+
+              (?<!\.|\?)
+            |
+              # String-based multi-word label surrounded in quotes
+              ".+?"
+          )
       )
     }x
   end
