@@ -1,5 +1,0 @@
----
-title: Updated Mattermost integration to use API v4 and only allow creation of Mattermost slash commands in the current user's teams
-merge_request: 19043
-author: Harrison Healey
-type: changed

@@ -1,5 +1,0 @@
----
-title: Add backgound migration for filling nullfied file_store columns
-merge_request: 18557
-author:
-type: performance

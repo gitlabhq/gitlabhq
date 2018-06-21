@@ -1,5 +1,0 @@
----
-title: Optimise paused runners to reduce amount of used requests
-merge_request:
-author:
-type: performance
