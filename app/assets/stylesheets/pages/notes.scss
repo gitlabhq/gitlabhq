@@ -624,20 +624,18 @@ ul.notes {
 .line_holder .is-over:not(.no-comment-btn) {
   .add-diff-note {
     opacity: 1;
+    z-index: 101;
   }
 }
 
 .add-diff-note {
   @include btn-comment-icon;
   opacity: 0;
-  margin-top: -2px;
   margin-left: -55px;
   position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   z-index: 10;
-
-  .new & {
-    margin-top: -10px;
-  }
 }
 
 .discussion-body,
