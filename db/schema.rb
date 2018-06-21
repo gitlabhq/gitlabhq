@@ -206,7 +206,7 @@ ActiveRecord::Schema.define(version: 20180612175636) do
     t.string "encrypted_external_auth_client_key_pass_iv"
     t.string "email_additional_text"
     t.boolean "enforce_terms", default: false
-    t.boolean "pseudonymizer_enabled", default: false, null: false
+    t.boolean "pseudonymizer_enabled", default: true, null: false
   end
 
   create_table "approvals", force: :cascade do |t|

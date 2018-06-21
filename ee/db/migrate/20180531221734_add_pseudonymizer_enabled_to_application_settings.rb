@@ -26,6 +26,6 @@ class AddPseudonymizerEnabledToApplicationSettings < ActiveRecord::Migration
   # disable_ddl_transaction!
 
   def change
-    add_column :application_settings, :pseudonymizer_enabled, :boolean, null: false, default: false
+    add_column :application_settings, :pseudonymizer_enabled, :boolean, null: false, default: true
   end
 end
