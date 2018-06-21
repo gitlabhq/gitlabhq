@@ -3,6 +3,7 @@ class SessionsController < Devise::SessionsController
   include AuthenticatesWithTwoFactor
   include Devise::Controllers::Rememberable
   include Recaptcha::ClientHelper
+  include Recaptcha::Verify
   prepend EE::SessionsController
 
   skip_before_action :check_two_factor_requirement, only: [:destroy]
@@ -10,15 +11,20 @@ class SessionsController < Devise::SessionsController
   prepend_before_action :check_initial_setup, only: [:new]
   prepend_before_action :authenticate_with_two_factor,
     if: :two_factor_enabled?, only: [:create]
+  prepend_before_action :check_captcha, only: [:create]
   prepend_before_action :store_redirect_uri, only: [:new]
+  prepend_before_action :ldap_servers, only: [:new, :create]
   before_action :auto_sign_in_with_provider, only: [:new]
   before_action :load_recaptcha
 
   after_action :log_failed_login, only: [:new], if: :failed_login?
 
+  helper_method :captcha_enabled?
+
+  CAPTCHA_HEADER = 'X-GitLab-Show-Login-Captcha'.freeze
+
   def new
     set_minimum_password_length
-    @ldap_servers = Gitlab::Auth::LDAP::Config.available_servers
 
     super
   end
@@ -46,6 +52,25 @@ class SessionsController < Devise::SessionsController
   end
 
   private
+
+  def captcha_enabled?
+    request.headers[CAPTCHA_HEADER] && Gitlab::Recaptcha.enabled?
+  end
+
+  # From https://github.com/plataformatec/devise/wiki/How-To:-Use-Recaptcha-with-Devise#devisepasswordscontroller
+  def check_captcha
+    return unless user_params[:password].present?
+    return unless captcha_enabled?
+    return unless Gitlab::Recaptcha.load_configurations!
+
+    unless verify_recaptcha
+      self.resource = resource_class.new
+      flash[:alert] = 'There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'
+      flash.delete :recaptcha_error
+
+      respond_with_navigational(resource) { render :new }
+    end
+  end
 
   def log_failed_login
     Gitlab::AppLogger.info("Failed Login: username=#{user_params[:login]} ip=#{request.remote_ip}")
@@ -151,6 +176,10 @@ class SessionsController < Devise::SessionsController
 
   def load_recaptcha
     Gitlab::Recaptcha.load_configurations!
+  end
+
+  def ldap_servers
+    @ldap_servers ||= Gitlab::Auth::LDAP::Config.available_servers
   end
 
   def authentication_method
