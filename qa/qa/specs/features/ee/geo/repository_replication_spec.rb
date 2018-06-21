@@ -12,7 +12,7 @@ module QA
         geo_project_name = Page::Project::Show.act { project_name }
         expect(geo_project_name).to include 'geo-project'
 
-        Factory::Repository::Push.fabricate! do |push|
+        Factory::Repository::ProjectPush.fabricate! do |push|
           push.file_name = 'README.md'
           push.file_content = '# This is Geo project!'
           push.commit_message = 'Add README.md'

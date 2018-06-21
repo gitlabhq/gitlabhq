@@ -13,7 +13,7 @@ module QA
         geo_project_name = project.name
         expect(project.name).to include 'geo-before-rename'
 
-        Factory::Repository::Push.fabricate! do |push|
+        Factory::Repository::ProjectPush.fabricate! do |push|
           push.project = project
           push.file_name = 'README.md'
           push.file_content = '# This is Geo project!'
