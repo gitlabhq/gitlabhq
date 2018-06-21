@@ -135,7 +135,7 @@ if (process.env.BABEL_ENV === 'coverage') {
   // exempt these files from the coverage report
   const troubleMakers = [
     './blob_edit/blob_bundle.js',
-    './boards/components/modal/empty_state.js',
+    './boards/components/modal/empty_state.vue',
     './boards/components/modal/footer.js',
     './boards/components/modal/header.js',
     './cycle_analytics/cycle_analytics_bundle.js',

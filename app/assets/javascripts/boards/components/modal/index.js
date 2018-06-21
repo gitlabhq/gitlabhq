@@ -6,15 +6,15 @@ import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import './header';
 import './list';
 import './footer';
-import './empty_state';
+import EmptyState from './empty_state.vue';
 import ModalStore from '../../stores/modal_store';
 
 gl.issueBoards.IssuesModal = Vue.extend({
   components: {
+    EmptyState,
     'modal-header': gl.issueBoards.ModalHeader,
     'modal-list': gl.issueBoards.ModalList,
     'modal-footer': gl.issueBoards.ModalFooter,
-    'empty-state': gl.issueBoards.ModalEmptyState,
     loadingIcon,
   },
   props: {
