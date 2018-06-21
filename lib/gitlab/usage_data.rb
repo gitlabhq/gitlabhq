@@ -24,11 +24,7 @@ module Gitlab
           installation_type: Gitlab::INSTALLATION_TYPE,
           active_user_count: User.active.count,
           recorded_at: Time.now,
-<<<<<<< HEAD
           edition: 'EE'
-=======
-          edition: 'CE'
->>>>>>> upstream/master
         }
 
         license = ::License.current
@@ -139,7 +135,6 @@ module Gitlab
           omniauth_enabled: Gitlab.config.omniauth.enabled,
           reply_by_email_enabled: Gitlab::IncomingEmail.enabled?,
           signup_enabled: Gitlab::CurrentSettings.allow_signup?
-<<<<<<< HEAD
         }
       end
 
@@ -147,8 +142,6 @@ module Gitlab
         {
           elasticsearch_enabled: Gitlab::CurrentSettings.elasticsearch_search?,
           geo_enabled: Gitlab::Geo.enabled?
-=======
->>>>>>> upstream/master
         }
       end
 
