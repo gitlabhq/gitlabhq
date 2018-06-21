@@ -20,16 +20,6 @@ module Gitlab
           {}
         end
 
-        def initialize(interval)
-          super(interval)
-
-          if Metrics.mri?
-            require 'allocations'
-
-            Allocations.start
-          end
-        end
-
         def init_metrics
           metrics = {}
           metrics[:sampler_duration] = Metrics.histogram(with_prefix(:sampler_duration, :seconds), 'Sampler time', { worker: nil })

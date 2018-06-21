@@ -1417,8 +1417,11 @@ module Gitlab
       end
 
       def can_be_merged?(source_sha, target_branch)
-        target_sha = find_branch(target_branch, true).target
-        !gitaly_conflicts_client(source_sha, target_sha).conflicts?
+        if target_sha = find_branch(target_branch, true)&.target
+          !gitaly_conflicts_client(source_sha, target_sha).conflicts?
+        else
+          false
+        end
       end
 
       def search_files_by_name(query, ref)
@@ -1451,16 +1454,6 @@ module Gitlab
       def shell_blame(sha, path)
         output, _status = run_git(%W(blame -p #{sha} -- #{path}))
         output
-      end
-
-      def can_be_merged?(source_sha, target_branch)
-        gitaly_migrate(:can_be_merged) do |is_enabled|
-          if is_enabled
-            gitaly_can_be_merged?(source_sha, find_branch(target_branch).target)
-          else
-            rugged_can_be_merged?(source_sha, target_branch)
-          end
-        end
       end
 
       def last_commit_for_path(sha, path)
