@@ -71,7 +71,7 @@ describe 'geo rake tasks', :geo do
     end
 
     it 'runs with no error' do
-      expect { run_rake_task('geo:status') }.to output(/Sync settings: Full/).to_stdout
+      expect { run_rake_task('geo:status') }.to output(/Sync Settings: Full/).to_stdout
     end
   end
 end
