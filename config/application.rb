@@ -76,7 +76,7 @@ module Gitlab
     # namespaces/users.
     # https://github.com/rails/rails/blob/5-0-stable/actioncable/lib/action_cable.rb#L38
     # Please change this value when configuring ActionCable for real usage.
-    config.action_cable.mount_path = "-" if rails5?
+    config.action_cable.mount_path = "/-/cable" if rails5?
 
     # Configure sensitive parameters which will be filtered from the log file.
     #
