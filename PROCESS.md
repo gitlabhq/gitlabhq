@@ -246,7 +246,7 @@ will be scheduled.
 When a regression is found:
 1. Create an issue describing the problem in the most detailed way possible
 1. If possible, provide links to real examples and how to reproduce the problem
-1. Label the issue properly, using the [team label](../CONTRIBUTING.md#team-labels-ci-discussion-edge-platform-etc),
+1. Label the issue properly, using the [team label](../CONTRIBUTING.md#team-labels),
    the [subject label](../CONTRIBUTING.md#subject-labels-wiki-container-registry-ldap-api-etc)
    and any other label that may apply in the specific case
 1. Add the ~bug and ~regression labels
