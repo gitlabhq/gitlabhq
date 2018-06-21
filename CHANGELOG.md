@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.0.1 (2018-06-21)
+
+### Security (5 changes)
+
+- Fix XSS vulnerability for table of content generation.
+- Update sanitize gem to 4.6.5 to fix HTML injection vulnerability.
+- HTML escape branch name in project graphs page.
+- HTML escape the name of the user in ProjectsHelper#link_to_member.
+- Don't show events from internal projects for anonymous users in public feed.
+
+
 ## 11.0.0 (2018-06-22)
 
 ### Security (3 changes)
