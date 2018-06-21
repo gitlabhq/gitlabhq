@@ -2,6 +2,7 @@ module EpicsHelper
   def epic_show_app_data(epic, opts)
     author = epic.author
     group = epic.group
+    todo = issuable_todo(epic)
 
     epic_meta = {
       epic_id: epic.id,
@@ -12,9 +13,12 @@ module EpicsHelper
         username: "@#{author.username}",
         src: opts[:author_icon]
       },
+      todo_exists: todo.present?,
       start_date: epic.start_date,
       end_date: epic.end_date
     }
+
+    epic_meta[:todo_delete_path] = dashboard_todo_path(todo) if todo.present?
 
     participants = UserSerializer.new.represent(epic.participants)
     initial = opts[:initial].merge(labels: epic.labels,

@@ -53,13 +53,24 @@ describe TodosFinder do
         it 'returns correct todos when filtered by a group' do
           todos = finder.new(user, { group_id: group.id }).execute
 
-          expect(todos).to match_array([todo2])
+          expect(todos).to match_array([todo1, todo2])
         end
 
         it 'returns correct todos when filtered by a type' do
           todos = finder.new(user, { type: 'Issue' }).execute
 
           expect(todos).to match_array([todo1])
+        end
+
+        context 'with subgroups', :nested_groups do
+          let(:subgroup) { create(:group, parent: group) }
+          let!(:todo3) { create(:todo, user: user, group: subgroup, target: issue) }
+
+          it 'returns todos from subgroups when filtered by a group' do
+            todos = finder.new(user, { group_id: group.id }).execute
+
+            expect(todos).to match_array([todo1, todo2, todo3])
+          end
         end
       end
     end

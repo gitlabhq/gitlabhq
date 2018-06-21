@@ -1,20 +1,11 @@
 class Groups::TodosController < Groups::ApplicationController
-  include Gitlab::Utils::StrongMemoize
+  include TodosActions
 
   before_action :authenticate_user!, only: [:create]
 
-  def create
-    todo = TodoService.new.mark_todo(epic, current_user)
-
-    render json: {
-      count: TodosFinder.new(current_user, state: :pending).execute.count,
-      delete_path: dashboard_todo_path(todo)
-    }
-  end
-
   private
 
-  def epic
+  def issuable
     strong_memoize(:epic) do
       case params[:issuable_type]
       when "epic"

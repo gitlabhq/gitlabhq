@@ -1,7 +1,6 @@
 FactoryBot.define do
   factory :todo do
     project
-    group
     author { project&.creator || user }
     user { project&.creator || user }
     target factory: :issue

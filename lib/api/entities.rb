@@ -797,20 +797,14 @@ module API
 
     class Todo < Grape::Entity
       expose :id
-      expose :project, using: Entities::ProjectIdentity, if: -> (todo, _) { todo.project }
-      expose :group, using: 'API::Entities::NamespaceBasic', if: -> (todo, _) { todo.group }
+      expose :project, using: Entities::ProjectIdentity, if: -> (todo, _) { todo.project_id }
+      expose :group, using: 'API::Entities::NamespaceBasic', if: -> (todo, _) { todo.group_id }
       expose :author, using: Entities::UserBasic
       expose :action_name
       expose :target_type
 
       expose :target do |todo, options|
-        begin
-          klass = "EE::API::Entities::#{todo.target_type}".constantize
-        rescue
-          klass = "API::Entities::#{todo.target_type}".constantize
-        end
-
-        klass.represent(todo.target, options)
+        todo_target_class(todo.target_type).represent(todo.target, options)
       end
 
       expose :target_url do |todo, options|
@@ -826,6 +820,10 @@ module API
       expose :body
       expose :state
       expose :created_at
+
+      def todo_target_class(target_type)
+        ::API::Entities.const_get(target_type)
+      end
     end
 
     class NamespaceBasic < Grape::Entity
@@ -1420,3 +1418,4 @@ API::Entities.prepend_entity(::API::Entities::Project, with: EE::API::Entities::
 API::Entities.prepend_entity(::API::Entities::ProtectedRefAccess, with: EE::API::Entities::ProtectedRefAccess)
 API::Entities.prepend_entity(::API::Entities::UserPublic, with: EE::API::Entities::UserPublic)
 API::Entities.prepend_entity(::API::Entities::Variable, with: EE::API::Entities::Variable)
+API::Entities.prepend_entity(::API::Entities::Todo, with: EE::API::Entities::Todo)
