@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, one-var, camelcase, one-var-declaration-per-line, quotes, no-param-reassign, quote-props, comma-dangle, prefer-template, max-len, no-return-assign, no-shadow */
+/* eslint-disable func-names, wrap-iife, no-var, one-var, camelcase, one-var-declaration-per-line, quotes, no-param-reassign, quote-props, comma-dangle, prefer-template, max-len, no-return-assign */
 
 import $ from 'jquery';
 import _ from 'underscore';
@@ -36,7 +36,9 @@ export default (function() {
         var author_graph, author_header;
         author_header = _this.create_author_header(d);
         $(".contributors-list").append(author_header);
-        _this.authors[d.author_name] = author_graph = new ContributorsAuthorGraph(d.dates);
+
+        author_graph = new ContributorsAuthorGraph(d.dates);
+        _this.authors[d.author_name] = author_graph;
         return author_graph.draw();
       };
     })(this));

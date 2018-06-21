@@ -31,13 +31,13 @@ module QA
         def fabricate!
           project.visit!
 
-          Factory::Repository::Push.fabricate! do |resource|
+          Factory::Repository::ProjectPush.fabricate! do |resource|
             resource.project = project
             resource.file_name = 'kick-off.txt'
             resource.commit_message = 'First commit'
           end
 
-          branch = Factory::Repository::Push.fabricate! do |resource|
+          branch = Factory::Repository::ProjectPush.fabricate! do |resource|
             resource.project = project
             resource.file_name = 'README.md'
             resource.commit_message = 'Add readme'

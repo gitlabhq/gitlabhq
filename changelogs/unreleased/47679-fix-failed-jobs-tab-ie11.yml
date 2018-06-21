@@ -1,5 +1,0 @@
----
-title: Fix overflowing Failed Jobs table in sm viewports on IE11
-merge_request:
-author:
-type: fixed

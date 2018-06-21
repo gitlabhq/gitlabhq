@@ -135,10 +135,10 @@
 }
 
 .text-expander {
-  display: inline-block;
+  display: inline-flex;
   background: $white-light;
   color: $gl-text-color-secondary;
-  padding: 0 4px;
+  padding: 1px $gl-padding-4;
   cursor: pointer;
   border: 1px solid $border-gray-dark;
   border-radius: $border-radius-default;
@@ -180,6 +180,11 @@
 .commit-content {
   padding-right: 10px;
   white-space: normal;
+
+  .commit-title {
+    display: flex;
+    align-items: center;
+  }
 }
 
 .commit-actions {
@@ -191,6 +196,10 @@
 
   .ci-status-link {
     display: inline-flex;
+  }
+
+  .ci-status-icon svg {
+    vertical-align: text-bottom;
   }
 
   > .ci-status-link,
@@ -249,7 +258,6 @@
 .generic_commit_status {
   a,
   button {
-    color: $gl-text-color;
     vertical-align: baseline;
   }
 

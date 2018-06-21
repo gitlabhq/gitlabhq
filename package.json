@@ -3,9 +3,9 @@
   "scripts": {
     "clean": "rm -rf public/assets tmp/cache/*-loader",
     "dev-server": "nodemon -w 'config/webpack.config.js' --exec 'webpack-dev-server --config config/webpack.config.js'",
-    "eslint": "eslint --max-warnings 0 --ext .js,.vue .",
-    "eslint-fix": "eslint --max-warnings 0 --ext .js,.vue --fix .",
-    "eslint-report": "eslint --max-warnings 0 --ext .js,.vue --format html --output-file ./eslint-report.html .",
+    "eslint": "eslint --max-warnings 0 --report-unused-disable-directives --ext .js,.vue .",
+    "eslint-fix": "eslint --max-warnings 0 --report-unused-disable-directives --ext .js,.vue --fix .",
+    "eslint-report": "eslint --max-warnings 0 --ext .js,.vue --format html --output-file ./eslint-report.html --no-inline-config .",
     "karma": "BABEL_ENV=${BABEL_ENV:=karma} karma start --single-run true config/karma.config.js",
     "karma-coverage": "BABEL_ENV=coverage karma start --single-run true config/karma.config.js",
     "karma-start": "BABEL_ENV=karma karma start config/karma.config.js",
@@ -130,7 +130,7 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "3.0.0",
     "nodemon": "^1.17.3",
-    "prettier": "1.11.1",
+    "prettier": "1.12.1",
     "webpack-dev-server": "^3.1.4"
   }
 }

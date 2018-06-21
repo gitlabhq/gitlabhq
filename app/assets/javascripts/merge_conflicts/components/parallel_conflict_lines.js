@@ -1,4 +1,4 @@
-/* eslint-disable no-param-reassign, comma-dangle */
+/* eslint-disable no-param-reassign */
 
 import Vue from 'vue';
 import actionsMixin from '../mixins/line_conflict_actions';

@@ -1,13 +1,15 @@
 import Vue from 'vue';
 import noteHeader from '~/notes/components/note_header.vue';
-import store from '~/notes/stores';
+import createStore from '~/notes/stores';
 
 describe('note_header component', () => {
+  let store;
   let vm;
   let Component;
 
   beforeEach(() => {
     Component = Vue.extend(noteHeader);
+    store = createStore();
   });
 
   afterEach(() => {
@@ -38,12 +40,8 @@ describe('note_header component', () => {
     });
 
     it('should render user information', () => {
-      expect(
-        vm.$el.querySelector('.note-header-author-name').textContent.trim(),
-      ).toEqual('Root');
-      expect(
-        vm.$el.querySelector('.note-header-info a').getAttribute('href'),
-      ).toEqual('/root');
+      expect(vm.$el.querySelector('.note-header-author-name').textContent.trim()).toEqual('Root');
+      expect(vm.$el.querySelector('.note-header-info a').getAttribute('href')).toEqual('/root');
     });
 
     it('should render timestamp link', () => {
@@ -78,7 +76,7 @@ describe('note_header component', () => {
       expect(vm.$el.querySelector('.js-vue-toggle-button')).toBeDefined();
     });
 
-    it('emits toggle event on click', (done) => {
+    it('emits toggle event on click', done => {
       spyOn(vm, '$emit');
 
       vm.$el.querySelector('.js-vue-toggle-button').click();
@@ -89,24 +87,24 @@ describe('note_header component', () => {
       });
     });
 
-    it('renders up arrow when open', (done) => {
+    it('renders up arrow when open', done => {
       vm.expanded = true;
 
       Vue.nextTick(() => {
-        expect(
-          vm.$el.querySelector('.js-vue-toggle-button i').classList,
-        ).toContain('fa-chevron-up');
+        expect(vm.$el.querySelector('.js-vue-toggle-button i').classList).toContain(
+          'fa-chevron-up',
+        );
         done();
       });
     });
 
-    it('renders down arrow when closed', (done) => {
+    it('renders down arrow when closed', done => {
       vm.expanded = false;
 
       Vue.nextTick(() => {
-        expect(
-          vm.$el.querySelector('.js-vue-toggle-button i').classList,
-        ).toContain('fa-chevron-down');
+        expect(vm.$el.querySelector('.js-vue-toggle-button i').classList).toContain(
+          'fa-chevron-down',
+        );
         done();
       });
     });

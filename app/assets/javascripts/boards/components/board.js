@@ -1,6 +1,5 @@
-/* eslint-disable comma-dangle, space-before-function-paren, one-var */
+/* eslint-disable comma-dangle */
 
-import $ from 'jquery';
 import Sortable from 'sortablejs';
 import Vue from 'vue';
 import AccessorUtilities from '../../lib/utils/accessor';
@@ -57,40 +56,6 @@ gl.issueBoards.Board = Vue.extend({
           });
       },
       deep: true,
-    },
-    detailIssue: {
-      handler () {
-        if (!Object.keys(this.detailIssue.issue).length) return;
-
-        const issue = this.list.findIssue(this.detailIssue.issue.id);
-
-        if (issue) {
-          const offsetLeft = this.$el.offsetLeft;
-          const boardsList = document.querySelectorAll('.boards-list')[0];
-          const left = boardsList.scrollLeft - offsetLeft;
-          let right = (offsetLeft + this.$el.offsetWidth);
-
-          if (window.innerWidth > 768 && boardsList.classList.contains('is-compact')) {
-            // -290 here because width of boardsList is animating so therefore
-            // getting the width here is incorrect
-            // 290 is the width of the sidebar
-            right -= (boardsList.offsetWidth - 290);
-          } else {
-            right -= boardsList.offsetWidth;
-          }
-
-          if (right - boardsList.scrollLeft > 0) {
-            $(boardsList).animate({
-              scrollLeft: right
-            }, this.sortableOptions.animation);
-          } else if (left > 0) {
-            $(boardsList).animate({
-              scrollLeft: offsetLeft
-            }, this.sortableOptions.animation);
-          }
-        }
-      },
-      deep: true
     }
   },
   mounted () {

@@ -1,0 +1,5 @@
+---
+title: Improve no-multi-assignment fixes after enabling rule
+merge_request: 19915
+author: gfyoung
+type: other

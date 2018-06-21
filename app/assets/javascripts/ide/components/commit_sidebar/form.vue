@@ -117,7 +117,7 @@ export default {
           class="btn btn-primary btn-sm btn-block"
           @click="toggleIsSmall"
         >
-          {{ __('Commit') }}
+          {{ __('Commit…') }}
         </button>
         <p
           class="text-center"

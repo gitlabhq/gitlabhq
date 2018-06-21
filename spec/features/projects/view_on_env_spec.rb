@@ -59,7 +59,9 @@ describe 'View on environment', :js do
 
         it 'has a "View on env" button' do
           within '.diffs' do
-            expect(page).to have_link('View on feature.review.example.com', href: 'http://feature.review.example.com/ruby/feature')
+            text = 'View on feature.review.example.com'
+            url = 'http://feature.review.example.com/ruby/feature'
+            expect(page).to have_selector("a[data-original-title='#{text}'][href='#{url}']")
           end
         end
       end

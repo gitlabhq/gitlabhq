@@ -1,5 +1,0 @@
----
-title: Update runner cached informations without performing validations
-merge_request:
-author:
-type: performance

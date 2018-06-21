@@ -166,12 +166,12 @@ describe('IDE store file actions', () => {
     });
 
     it('resets location.hash for line highlighting', done => {
-      location.hash = 'test';
+      window.location.hash = 'test';
 
       store
         .dispatch('setFileActive', localFile.path)
         .then(() => {
-          expect(location.hash).not.toBe('test');
+          expect(window.location.hash).not.toBe('test');
 
           done();
         })
