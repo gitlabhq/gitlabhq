@@ -7,7 +7,7 @@ class AddGroupToTodos < ActiveRecord::Migration
 
   def up
     add_column :todos, :group_id, :integer
-    add_foreign_key :todos, :namespaces, column: :group_id, on_delete: :cascade
+    add_concurrent_foreign_key :todos, :namespaces, column: :group_id, on_delete: :cascade
     add_concurrent_index :todos, :group_id
 
     change_column_null :todos, :project_id, true

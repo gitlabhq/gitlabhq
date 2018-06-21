@@ -32,8 +32,8 @@ class Todo < ActiveRecord::Base
   validates :author, presence: true
   validates :target_id, presence: true, unless: :for_commit?
   validates :commit_id, presence: true, if: :for_commit?
-  validates :project, presence: true, unless: :group
-  validates :group, presence: true, unless: :project
+  validates :project, presence: true, unless: :group_id
+  validates :group, presence: true, unless: :project_id
 
   scope :pending, -> { with_state(:pending) }
   scope :done, -> { with_state(:done) }

@@ -769,14 +769,14 @@ module API
 
     class Todo < Grape::Entity
       expose :id
-      expose :project, using: Entities::ProjectIdentity, if: -> (todo, _) { todo.project }
-      expose :group, using: 'API::Entities::NamespaceBasic', if: -> (todo, _) { todo.group }
+      expose :project, using: Entities::ProjectIdentity, if: -> (todo, _) { todo.project_id }
+      expose :group, using: 'API::Entities::NamespaceBasic', if: -> (todo, _) { todo.group_id }
       expose :author, using: Entities::UserBasic
       expose :action_name
       expose :target_type
 
       expose :target do |todo, options|
-        Entities.const_get(todo.target_type).represent(todo.target, options)
+        todo_target_class(todo.target_type).represent(todo.target, options)
       end
 
       expose :target_url do |todo, options|
@@ -792,6 +792,10 @@ module API
       expose :body
       expose :state
       expose :created_at
+
+      def todo_target_class(target_type)
+        ::API::Entities.const_get(target_type)
+      end
     end
 
     class NamespaceBasic < Grape::Entity

@@ -113,16 +113,6 @@ class TodosFinder
     end
   end
 
-  def project_ids(items)
-    ids = items.except(:order).select(:project_id)
-    if Gitlab::Database.mysql?
-      # To make UPDATE work on MySQL, wrap it in a SELECT with an alias
-      ids = Todo.except(:order).select('*').from("(#{ids.to_sql}) AS t")
-    end
-
-    ids
-  end
-
   def type?
     type.present? && %w(Issue MergeRequest Epic).include?(type)
   end
@@ -169,7 +159,12 @@ class TodosFinder
 
   def by_group(items)
     if group?
-      items = items.where(group: group)
+      groups = group.self_and_descendants
+      items = items.where(
+        'project_id IN (?) OR group_id IN  (?)',
+        Project.where(group: groups).select(:id),
+        groups.select(:id)
+      )
     end
 
     items
@@ -184,8 +179,8 @@ class TodosFinder
       .joins('LEFT JOIN projects ON projects.id = todos.project_id')
       .where(
         'project_id IN (?) OR group_id IN  (?)',
-        projects.map(&:id),
-        groups.map(&:id)
+        projects.select(:id),
+        groups.select(:id)
       )
   end
 

@@ -285,6 +285,7 @@ class TodoService
   def attributes_for_target(target)
     attributes = {
       project_id: target&.project&.id,
+      group_id: target.respond_to?(:group) ? target.group_id : nil,
       target_id: target.id,
       target_type: target.class.name,
       commit_id: nil
@@ -300,7 +301,6 @@ class TodoService
   def attributes_for_todo(project, target, author, action, note = nil)
     attributes_for_target(target).merge!(
       project_id: project&.id,
-      group_id: target.respond_to?(:group) ? target.group.id : nil,
       author_id: author.id,
       action: action,
       note: note
@@ -322,7 +322,7 @@ class TodoService
   end
 
   def reject_users_without_access(users, parent, target)
-    if target.is_a?(Note) && (target.for_issue? || target.for_merge_request? || target.for_epic?)
+    if target.is_a?(Note) && target.for_issuable_with_ability?
       target = target.noteable
     end
 
