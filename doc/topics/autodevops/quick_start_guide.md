@@ -1,18 +1,18 @@
 # Getting started with Auto DevOps
 
-This is a step-by-step guide that will help you deploy a project hosted on
-GitLab.com to Google Kubernetes Engine, using [Auto DevOps](index.md).
+This is a step-by-step guide that will help you use [Auto DevOps](index.md) to
+deploy a project hosted on GitLab.com to Google Kubernetes Engine.
 
-We will use the Kubernetes integration that GitLab provides, so you won't have
-to create a Kubernetes cluster manually using the GCP console.
+We will use GitLab's native Kubernetes integration, so you will not need
+to create a Kubernetes cluster manually using the Google Cloud Platform console.
+We will create and deploy a simple application that we create from a GitLab template.
 
 ## Configuring your Google account
 
 Before creating and connecting your Kubernetes cluster to your GitLab project,
-you have to set up your Google Cloud account. If you don't already have one, go
-and create it at https://console.cloud.google.com. If you already have a
-Google account that you use to access Gmail, etc., you can use it to sign in
-the Google Cloud.
+you need a Google Cloud Platform account. If you don't already have one,
+sign up at https://console.cloud.google.com. You'll need to either sign in with an existing
+Google account (for example, one that you use to access Gmail, Drive, etc.) or create a new one.
 
 1. Follow the steps as outlined in the ["Before you begin" section of the Kubernetes Engine docs](https://cloud.google.com/kubernetes-engine/docs/quickstart#before-you-begin)
    in order for the required APIs and related services to be enabled.
@@ -25,14 +25,14 @@ Google Kubernetes Engine Integration. All you have to do is [follow this link](h
 
 ## Creating a new project from a template
 
-We will use one of GitLab's project templates to get started. AS the name suggests,
-those projects provide a barebone of an application built on some well known frameworks.
+We will use one of GitLab's project templates to get started. As the name suggests,
+those projects provide a barebones application built on some well-known frameworks.
 
-1. Find the plus icon (**+**) at the top of the navigation bar, click it and select
+1. In GitLab, click the plus icon (**+**) at the top of the navigation bar and select
    **New project**.
 1. Go to the **Create from template** tab where you can choose among a Ruby on
-   Rails, a Spring, or a NodeJS Express project. For the sake of the example
-   let's use the Ruby on Rails template.
+   Rails, Spring, or NodeJS Express project. For this example,
+   we'll use the Ruby on Rails template.
 
     ![Select project template](img/guide_project_template.png)
 
@@ -42,23 +42,16 @@ those projects provide a barebone of an application built on some well known fra
 
     ![Create project](img/guide_create_project.png)
 
-1. Finally, click on the **Create project** button.
+1. Click **Create project**.
 
 Now that the project is created, the next step is to create the Kubernetes cluster
 under which this application will be deployed.
 
-## Creating a Kubernetes cluster
+## Creating a Kubernetes cluster from within GitLab
 
-One thing you should notice after you created the project is the **Add Kubernetes cluster**
-button on the project's landing page. Go ahead and click it.
+1. On the project's landing page, click the button labeled **Add Kubernetes cluster**. (Note that this option is also available when you navigate to Operations > Kubernetes.)
 
-![Project landing page](img/guide_project_landing_page.png)
-
-TIP: **Tip:**
-Another way is to navigate to **Operations > Kubernetes** and click on
-**Add Kubernetes cluster**.
-
-From there on, let's see how to create a new Kubernetes cluster on GKE:
+    ![Project landing page](img/guide_project_landing_page.png)
 
 1. Choose **Create on Google Kubernetes Engine**.
 
@@ -75,16 +68,16 @@ From there on, let's see how to create a new Kubernetes cluster on GKE:
 
 1. The last step is to fill in the cluster details. Give it a name, leave the
    environment scope as is, and choose the GCP project under which the cluster
-   will be created (if you followed the instructions when you
+   will be created. (Per the instructions when you
    [configured your Google account](#configuring-your-google-account), a project
-   should have been created for you). Next, choose the
+   should have already been created for you.) Next, choose the
    [region/zone](https://cloud.google.com/compute/docs/regions-zones/) under which the
    cluster will be created, enter the number of nodes you want it to have, and
    finally choose their [machine type](https://cloud.google.com/compute/docs/machine-types).
 
     ![GitLab GKE cluster details](img/guide_gitlab_gke_details.png)
 
-1. Once ready, hit the **Create Kubernetes cluster** button.
+1. Once ready, click **Create Kubernetes cluster**.
 
 After a couple of minutes, the cluster will be created. You can also see its
 status on your [GCP dashboard](https://console.cloud.google.com/kubernetes).
@@ -92,7 +85,7 @@ status on your [GCP dashboard](https://console.cloud.google.com/kubernetes).
 The next step is to install some applications on your cluster that are needed
 to take full advantage of Auto DevOps.
 
-## Installing Helm, Ingress and Prometheus
+## Installing Helm, Ingress, and Prometheus
 
 GitLab's Kubernetes integration comes with some
 [pre-defined applications](../../user/project/clusters/index.md#installing-applications)
@@ -104,7 +97,7 @@ The first one to install is Helm Tiller, a package manager for Kubernetes, which
 is needed in order to install the rest of the applications. Go ahead and click
 its **Install** button.
 
-Once it's installed, the other applications that rely on it will have their **Install**
+Once it's installed, the other applications that rely on it will each have their **Install**
 button enabled. For this guide, we need Ingress and Prometheus. Ingress provides
 load balancing, SSL termination, and name-based virtual hosting, using NGINX behind
 the scenes. Prometheus is an open-source monitoring and alerting system that we'll
@@ -112,14 +105,13 @@ use to supervise the deployed application. We will not install GitLab Runner as
 we'll use the shared Runners that GitLab.com provides.
 
 After the Ingress is installed, wait a few seconds and copy the IP address that
-will show up, we'll use in the next step when enabling Auto DevOps.
+is displayed, which we'll use in the next step when enabling Auto DevOps.
 
 ## Enabling Auto DevOps
 
 Now that the Kubernetes cluster is set up and ready, let's enable Auto DevOps.
 
 1. First, navigate to **Settings > CI/CD > Auto DevOps**.
-
 1. Select **Enable Auto DevOps**.
 1. Add in your base **Domain** by using the one GitLab suggests. Note that
    generally, you would associate the IP address with a domain name on your
@@ -130,13 +122,13 @@ Now that the Kubernetes cluster is set up and ready, let's enable Auto DevOps.
    would be `1.2.3.4.nip.io`.
 1. Lastly, let's select the [continuous deployment strategy](index.md#deployment-strategy)
    which will automatically deploy the application to production once the pipeline
-   successfully runs on `master` branch.
-1. Hit **Save changes** for the changes to take effect.
+   successfully runs on the `master` branch.
+1. Click **Save changes**.
 
     ![Auto DevOps settings](img/guide_enable_autodevops.png)
 
-Once you complete all the above and save your changes, a new pipeline will be
-automatically created. Go to **CI/CD > Pipelines** to check it out.
+Once you complete all the above and save your changes, a new pipeline is
+automatically created. To view the pipeline, go to **CI/CD > Pipelines**.
 
 ![First pipeline](img/guide_first_pipeline.png)
 
@@ -144,9 +136,9 @@ In the next section we'll break down the pipeline and explain what each job does
 
 ## Deploying the application
 
-So, by now you should see the pipeline running, but what is it running exactly?
+By now you should see the pipeline running, but what is it running exactly?
 
-To navigate inside the pipeline, click on its status badge (it should say running)
+To navigate inside the pipeline, click its status badge. (It's status should be "running").
 The pipeline is split into 4 stages, each running a couple of jobs.
 
 ![Pipeline stages](img/guide_pipeline_stages.png)
@@ -164,10 +156,10 @@ In the **test** stage, GitLab runs various checks on the application:
   vulnerabilities and is allowed to fail ([Auto Container Scanning](index.md#auto-container-scanning))
 - The `dependency_scanning` job checks if the application has any dependencies
   susceptible to vulnerabilities and is allowed to fail ([Auto Dependency Scanning](index.md#auto-dependency-scanning)) **[ULTIMATE]**
-- The `sast` job runs static analysis on the current code and checks for potential
+- The `sast` job runs static analysis on the current code to check for potential
   security issues and is allowed to fail([Auto SAST](index.md#auto-sast)) **[ULTIMATE]**
-- The `license_management` job searches the application's dependencies for their
-  license and is allowed to fail ([Auto License Management](index.md#auto-license-management)) **[ULTIMATE]**
+- The `license_management` job searches the application's dependencies to determine each of their
+  licenses and is allowed to fail ([Auto License Management](index.md#auto-license-management)) **[ULTIMATE]**
 
 NOTE: **Note:**
 As you might have noticed, all jobs except `test` are allowed to fail in the
@@ -188,19 +180,18 @@ page where you can also monitor your application. Let's explore that.
 ### Monitoring
 
 Now that the application is successfully deployed, let's navigate to its
-website, by first going to **Operations > Environments**.
+website. First, go to **Operations > Environments**.
 
 ![Environments](img/guide_environments.png)
 
-This is the **Environments** where you can see some details about the deployed
-applications. At the upper right or the production environment, you should see
-some icons:
+In **Environments** you can see some details about the deployed
+applications. In the rightmost column for the production environment, you can make use of the three icons:
 
-- The first one will take you to the URL of the application that is deployed in
-  production. It's a very simple page, but the purpose is that it works!
-- The next icon with the little graph will take you to the metrics page where
-  prometheus collects data about the Kubernetes cluster and how the application
-  affects it (in terms of memory/CPU usage, latency etc.).
+- The first icon will open the URL of the application that is deployed in
+  production. It's a very simple page, but the important part is that it works!
+- The next icon with the small graph will take you to the metrics page where
+  Prometheus collects data about the Kubernetes cluster and how the application
+  affects it (in terms of memory/CPU usage, latency, etc.).
 
     ![Environments metrics](img/guide_environments_metrics.png)
 
@@ -212,7 +203,7 @@ Right below, there is the
 [Deploy Board](https://docs.gitlab.com/ee/user/project/deploy_boards.md).
 The squares represent pods in your Kubernetes cluster that are associated with
 the given environment. Hovering above each square you can see the state of a
-deployment and clicking on the square will take you to the pod's logs page.
+deployment and clicking a square will take you to the pod's logs page.
 
 TIP: **Tip:**
 There is only one pod hosting the application at the moment, but you can add
@@ -226,7 +217,7 @@ let's create a feature branch that will add some content to the application.
 
 Under your repository, navigate to the following file: `app/views/welcome/index.html.erb`.
 By now, it should only contain a paragraph: `<p>You're on Rails!</p>`, so let's
-start adding content. Let's use GitLab's [Web IDE]() to make the change. Once
+start adding content. Let's use GitLab's [Web IDE](../../user/project/web_ide/index.md) to make the change. Once
 you're on the Web IDE, make the following change:
 
 ```html
@@ -244,9 +235,9 @@ a few more that run only on branches other than `master`.
 
 ![Merge request](img/guide_merge_request.png)
 
-After a few minutes you'll realize that there was a failure in a test.
-That means that there's a test that was broken when we made the change.
-Navigating in the `test` job that failed, you can see what the broken test is:
+After a few minutes you'll notice that there was a failure in a test.
+This means there's a test that was 'broken' by our change.
+Navigating into the `test` job that failed, you can see what the broken test is:
 
 ```
 Failure:
@@ -266,10 +257,10 @@ Let's fix that:
 1. Click **Commit**.
 1. On your left, under "Unstaged changes", click the little checkmark icon
    to stage the changes.
-1. Write a commit message and hit **Commit**
+1. Write a commit message and click **Commit**.
 
-Now, if you go back to the merge request you should see not only the test passing,
-but the application deployed as a [review app](index.md#auto-review-apps). You
+Now, if you go back to the merge request you should not only see the test passing,
+but also the application deployed as a [review app](index.md#auto-review-apps). You
 can visit it by following the URL in the merge request. The changes that we
 previously made should be there.
 
@@ -280,11 +271,10 @@ and the application will be eventually deployed straight to production.
 
 ## Conclusion
 
-By now, you should have gained a solid understanding of how Auto DevOps works.
+After implementing this project, you should now have a solid understanding of the basics of Auto DevOps.
 We started from building and testing to deploying and monitoring an application
-all within GitLab. In spite of its auto nature, this doesn't mean that you can't
-configure and customize Auto DevOps to fit your workflow. Here are a few
-interesting links:
+all within GitLab. Despite its automatic nature, Audo DevOps can also be configured
+and customized to fit your workflow. Here are some helpful resources for further reading:
 
 1. [Auto DevOps](index.md)
 1. [Multiple Kubernetes clusters](index.md#using-multiple-kubernetes-clusters) **[PREMIUM]**
