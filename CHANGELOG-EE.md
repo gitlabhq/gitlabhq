@@ -199,6 +199,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Remove `features/group_active_tab.feature`. !5554 (@blackst0ne)
 
 
+## 10.7.6 (2018-06-21)
+
+- No changes.
+
 ## 10.7.5 (2018-05-28)
 
 ### Security (3 changes)
