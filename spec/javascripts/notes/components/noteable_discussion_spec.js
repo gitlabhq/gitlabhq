@@ -1,21 +1,24 @@
 import Vue from 'vue';
-import store from '~/notes/stores';
-import issueDiscussion from '~/notes/components/noteable_discussion.vue';
+import createStore from '~/notes/stores';
+import noteableDiscussion from '~/notes/components/noteable_discussion.vue';
+import '~/behaviors/markdown/render_gfm';
 import { noteableDataMock, discussionMock, notesDataMock } from '../mock_data';
 
-describe('issue_discussion component', () => {
+describe('noteable_discussion component', () => {
+  let store;
   let vm;
 
   beforeEach(() => {
-    const Component = Vue.extend(issueDiscussion);
+    const Component = Vue.extend(noteableDiscussion);
 
+    store = createStore();
     store.dispatch('setNoteableData', noteableDataMock);
     store.dispatch('setNotesData', notesDataMock);
 
     vm = new Component({
       store,
       propsData: {
-        note: discussionMock,
+        discussion: discussionMock,
       },
     }).$mount();
   });
@@ -53,6 +56,76 @@ describe('issue_discussion component', () => {
       expect(
         vm.$el.querySelector('*[data-original-title="Jump to next unresolved discussion"]'),
       ).toBeNull();
+    });
+  });
+
+  describe('computed', () => {
+    describe('hasMultipleUnresolvedDiscussions', () => {
+      it('is false if there are no unresolved discussions', done => {
+        spyOnProperty(vm, 'unresolvedDiscussions').and.returnValue([]);
+
+        Vue.nextTick()
+          .then(() => {
+            expect(vm.hasMultipleUnresolvedDiscussions).toBe(false);
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+
+      it('is false if there is one unresolved discussion', done => {
+        spyOnProperty(vm, 'unresolvedDiscussions').and.returnValue([discussionMock]);
+
+        Vue.nextTick()
+          .then(() => {
+            expect(vm.hasMultipleUnresolvedDiscussions).toBe(false);
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+
+      it('is true if there are two unresolved discussions', done => {
+        spyOnProperty(vm, 'unresolvedDiscussions').and.returnValue([{}, {}]);
+
+        Vue.nextTick()
+          .then(() => {
+            expect(vm.hasMultipleUnresolvedDiscussions).toBe(true);
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+    });
+  });
+
+  describe('methods', () => {
+    describe('jumpToNextDiscussion', () => {
+      it('expands next unresolved discussion', () => {
+        spyOn(vm, 'expandDiscussion').and.stub();
+        const discussions = [
+          discussionMock,
+          {
+            ...discussionMock,
+            id: discussionMock.id + 1,
+            notes: [{ ...discussionMock.notes[0], resolved: true }],
+          },
+          {
+            ...discussionMock,
+            id: discussionMock.id + 2,
+            notes: [{ ...discussionMock.notes[0], resolved: false }],
+          },
+        ];
+        const nextDiscussionId = discussionMock.id + 2;
+        store.replaceState({
+          ...store.state,
+          discussions,
+        });
+        setFixtures(`
+          <div data-discussion-id="${nextDiscussionId}"></div>
+        `);
+
+        vm.jumpToNextDiscussion();
+
+        expect(vm.expandDiscussion).toHaveBeenCalledWith({ discussionId: nextDiscussionId });
+      });
     });
   });
 });

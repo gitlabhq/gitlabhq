@@ -40,7 +40,7 @@ export default {
     this.initTaskList();
 
     if (this.isEditing) {
-      this.initAutoSave(this.note.noteable_type);
+      this.initAutoSave(this.note);
     }
   },
   updated() {
@@ -49,7 +49,7 @@ export default {
 
     if (this.isEditing) {
       if (!this.autosave) {
-        this.initAutoSave(this.note.noteable_type);
+        this.initAutoSave(this.note);
       } else {
         this.setAutoSave();
       }
@@ -72,7 +72,7 @@ export default {
       this.$emit('handleFormUpdate', note, parentElement, callback);
     },
     formCancelHandler(shouldConfirm, isDirty) {
-      this.$emit('cancelFormEdition', shouldConfirm, isDirty);
+      this.$emit('cancelForm', shouldConfirm, isDirty);
     },
   },
 };
@@ -93,7 +93,7 @@ export default {
       :note-body="noteBody"
       :note-id="note.id"
       @handleFormUpdate="handleFormUpdate"
-      @cancelFormEdition="formCancelHandler"
+      @cancelForm="formCancelHandler"
     />
     <textarea
       v-if="canEdit"
@@ -105,6 +105,7 @@ export default {
       :edited-at="note.last_edited_at"
       :edited-by="note.last_edited_by"
       action-text="Edited"
+      class="note_edited_ago"
     />
     <note-awards-list
       v-if="note.award_emoji.length"
