@@ -21,12 +21,12 @@ module Pseudonymizer
       tables = config[:tables]
       FileUtils.mkdir_p(output_dir) unless File.directory?(output_dir)
 
-      schema_to_yml
       @output_files = tables.map do |k, v|
         table_to_csv(k, v[:whitelist], v[:pseudo])
       end.compact
-
+      schema_to_yml
       file_list_to_json
+
       @output_files
     end
 
@@ -96,12 +96,16 @@ module Pseudonymizer
     end
 
     def set_schema_column_types(table, type_results)
+      has_id = type_results.any? {|c| c[:name] == "id" }
+
       type_results.each do |type_result|
-        @schema[table][type_result[:name]] = type_result[:data_type]
+        @schema[table.to_s][type_result[:name]] = type_result[:data_type]
       end
 
-      # hard coded because all mapping keys in GL are id
-      @schema[table]["gl_mapping_key"] = "id"
+      if has_id
+        # if there is an ID, it is the mapping_key
+        @schema[table.to_s]["gl_mapping_key"] = "id"
+      end
     end
 
     def write_to_csv_file(table, contents)
