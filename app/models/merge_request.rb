@@ -1130,15 +1130,12 @@ class MergeRequest < ActiveRecord::Base
     true
   end
 
-<<<<<<< HEAD
   def base_pipeline
     @base_pipeline ||= project.pipelines
       .order(id: :desc)
       .find_by(sha: diff_base_sha)
   end
 
-=======
->>>>>>> upstream/master
   def discussions_rendered_on_frontend?
     true
   end

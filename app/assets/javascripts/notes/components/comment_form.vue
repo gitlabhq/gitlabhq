@@ -7,15 +7,11 @@ import { __, sprintf } from '~/locale';
 import Flash from '../../flash';
 import Autosave from '../../autosave';
 import TaskList from '../../task_list';
-<<<<<<< HEAD
 import {
   capitalizeFirstCharacter,
   convertToCamelCase,
   splitCamelCase,
 } from '../../lib/utils/text_utility';
-=======
-import { capitalizeFirstCharacter, convertToCamelCase, splitCamelCase } from '../../lib/utils/text_utility';
->>>>>>> upstream/master
 import * as constants from '../constants';
 import eventHub from '../event_hub';
 import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
@@ -125,13 +121,9 @@ export default {
       return this.getNoteableData.create_note_path;
     },
     issuableTypeTitle() {
-<<<<<<< HEAD
       return this.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE
         ? 'merge request'
         : 'issue';
-=======
-      return this.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE ? 'merge request' : 'issue';
->>>>>>> upstream/master
     },
   },
   watch: {

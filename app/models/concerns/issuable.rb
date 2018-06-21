@@ -112,13 +112,6 @@ module Issuable
 
     def etag_caching_enabled?
       false
-<<<<<<< HEAD
-=======
-    end
-
-    def has_multiple_assignees?
-      assignees.count > 1
->>>>>>> upstream/master
     end
   end
 
