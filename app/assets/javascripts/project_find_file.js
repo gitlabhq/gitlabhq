@@ -92,8 +92,7 @@ export default class ProjectFindFile {
     this.element.find(".tree-table > tbody").empty();
     results = [];
 
-    // eslint-disable-next-line no-multi-assign
-    for (i = j = 0, len = filePaths.length; j < len; i = (j += 1)) {
+    for (i = 0, len = filePaths.length; i < len; i += 1) {
       filePath = filePaths[i];
       if (i === 20) {
         break;
