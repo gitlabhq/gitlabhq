@@ -53,11 +53,8 @@ describe Gitlab::UsageData do
         reply_by_email_enabled
         container_registry_enabled
         gitlab_shared_runners_enabled
-<<<<<<< HEAD
         elasticsearch_enabled
         geo_enabled
-=======
->>>>>>> upstream/master
         gitlab_pages
         git
         database
@@ -160,7 +157,6 @@ describe Gitlab::UsageData do
       expect(subject[:reply_by_email_enabled]).to eq(Gitlab::IncomingEmail.enabled?)
       expect(subject[:container_registry_enabled]).to eq(Gitlab.config.registry.enabled)
       expect(subject[:gitlab_shared_runners_enabled]).to eq(Gitlab.config.gitlab_ci.shared_runners_enabled)
-<<<<<<< HEAD
     end
   end
 
@@ -170,8 +166,6 @@ describe Gitlab::UsageData do
     it 'gathers feature usage data of EE' do
       expect(subject[:elasticsearch_enabled]).to eq(Gitlab::CurrentSettings.elasticsearch_search?)
       expect(subject[:geo_enabled]).to eq(Gitlab::Geo.enabled?)
-=======
->>>>>>> upstream/master
     end
   end
 
