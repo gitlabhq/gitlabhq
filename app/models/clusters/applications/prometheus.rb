@@ -39,6 +39,7 @@ module Clusters
           chart: chart,
           version: version,
           values: values
+          extra_env: extra_env
         )
       end
 

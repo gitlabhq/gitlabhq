@@ -38,7 +38,8 @@ module Clusters
           name,
           chart: chart,
           values: values,
-          repository: repository
+          repository: repository,
+          extra_env: extra_env
         )
       end
 
