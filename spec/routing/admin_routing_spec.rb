@@ -79,7 +79,7 @@ end
 # edit_admin_hook GET    /admin/hooks/:id(.:format)           admin/hooks#edit
 describe Admin::HooksController, "routing" do
   it "to #test" do
-    expect(get("/admin/hooks/1/test")).to route_to('admin/hooks#test', id: '1')
+    expect(post("/admin/hooks/1/test")).to route_to('admin/hooks#test', id: '1')
   end
 
   it "to #index" do

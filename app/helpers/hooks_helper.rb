@@ -10,7 +10,7 @@ module HooksHelper
 
     trigger_human_name = trigger.to_s.tr('_', ' ').camelize
 
-    link_to path, rel: 'nofollow' do
+    link_to path, rel: 'nofollow', method: :post do
       content_tag(:span, trigger_human_name)
     end
   end
