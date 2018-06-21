@@ -374,7 +374,8 @@ module Elasticsearch
         def repository_for_indexing(repo_path = nil)
           return @rugged_repo_indexer if defined? @rugged_repo_indexer
 
-          @path_to_repo ||= repo_path || path_to_repo
+          # Gitaly: how are we going to migrate ES code search? https://gitlab.com/gitlab-org/gitaly/issues/760
+          @path_to_repo ||= allow_disk_access { repo_path || path_to_repo }
 
           set_repository_id
 
@@ -383,6 +384,19 @@ module Elasticsearch
 
         def client_for_indexing
           @client_for_indexing ||= Elasticsearch::Client.new retry_on_failure: 5
+        end
+
+        def allow_disk_access
+          # Sometimes this code runs as part of a bin/elastic_repo_indexer
+          # process. When that is the case Gitlab::GitalyClient::StorageSettings
+          # is not defined.
+          if defined?(Gitlab::GitalyClient::StorageSettings)
+            Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+              yield
+            end
+          else
+            yield
+          end
         end
       end
 

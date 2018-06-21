@@ -47,7 +47,7 @@ describe Gitlab::Elastic::Indexer do
         [
           File.join(Rails.root, 'bin/elastic_repo_indexer'),
           project.id.to_s,
-          project.repository.path_to_repo
+          Gitlab::GitalyClient::StorageSettings.allow_disk_access { project.repository.path_to_repo }
         ],
         nil,
         hash_including(

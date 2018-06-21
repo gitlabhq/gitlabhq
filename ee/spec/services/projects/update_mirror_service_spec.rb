@@ -222,7 +222,9 @@ describe Projects::UpdateMirrorService do
   end
 
   def fetch_mirror(repository)
-    rugged = repository.rugged
+    rugged = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      repository.rugged
+    end
     masterrev = repository.find_branch('master').dereferenced_target.id
 
     parentrev = repository.commit(masterrev).parent_id
