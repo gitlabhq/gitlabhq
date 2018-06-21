@@ -1,14 +1,6 @@
 require 'spec_helper'
 
 describe Pseudonymizer::Pager do
-  class Counter
-    @count = 0
-
-    def increment(*args)
-      self.count += 1
-    end
-  end
-
   let(:page_size) { 1 }
   let!(:projects) { create_list(:project, 10) }
   subject { described_class.new("projects", whitelisted_columns) }

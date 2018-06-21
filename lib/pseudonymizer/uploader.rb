@@ -1,4 +1,6 @@
 module Pseudonymizer
+  ObjectStorageUnavailableError = Class.new(StandardError)
+
   class Uploader
     include Gitlab::Utils::StrongMemoize
 
@@ -22,12 +24,20 @@ module Pseudonymizer
       @connection_params = self.class.object_store_credentials
     end
 
+    def available?
+      !connect_to_remote_directory.nil?
+    rescue ObjectStorageUnavailableError
+      false
+    end
+
     def upload
       progress_output.puts "Uploading output files to remote storage #{remote_directory}:"
 
       file_list.each do |file|
         upload_file(file, remote_directory)
       end
+    rescue ObjectStorageUnavailableError
+      abort "Cannot upload files, make sure the `pseudonimizer.upload.connection` is set properly".color(:red)
     end
 
     def cleanup
@@ -62,7 +72,8 @@ module Pseudonymizer
 
     def connect_to_remote_directory
       if @connection_params.blank?
-        abort "Cannot upload files, make sure the `pseudonimizer.upload.connection` is set properly".color(:red)
+        raise ObjectStorageUnavailableError
+
       end
 
       connection = ::Fog::Storage.new(@connection_params)
