@@ -10,7 +10,7 @@ module Clusters
 
       default_value_for :version, Gitlab::Kubernetes::Helm::HELM_VERSION
 
-      after_initialize :create_keys_and_certs
+      before_create :create_keys_and_certs
 
       def create_keys_and_certs
         # CA
