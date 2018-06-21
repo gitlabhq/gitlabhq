@@ -61,15 +61,22 @@ module Gitlab
       end
 
       def fetch_remote(name, timeout, force:, tags:, ssh_key: nil, known_hosts: nil, prune: true)
+        tags_option = tags ? '--tags' : '--no-tags'
+
         logger.info "Fetching remote #{name} for repository #{repository_absolute_path}."
-        cmd = fetch_remote_command(name, tags, prune, force)
+        cmd = %W(#{Gitlab.config.git.bin_path} fetch #{name} --quiet)
+        cmd << '--prune' if prune
+        cmd << '--force' if force
+        cmd << tags_option
 
         setup_ssh_auth(ssh_key, known_hosts) do |env|
-          run_with_timeout(cmd, timeout, repository_absolute_path, env).tap do |success|
-            unless success
-              logger.error "Fetching remote #{name} for repository #{repository_absolute_path} failed."
-            end
+          success = run_with_timeout(cmd, timeout, repository_absolute_path, env)
+
+          unless success
+            logger.error "Fetching remote #{name} for repository #{repository_absolute_path} failed."
           end
+
+          success
         end
       end
 
@@ -194,14 +201,6 @@ module Gitlab
       end
 
       private
-
-      def fetch_remote_command(name, tags, prune, force)
-        %W(#{Gitlab.config.git.bin_path} fetch #{name} --quiet).tap do |cmd|
-          cmd << '--prune' if prune
-          cmd << '--force' if force
-          cmd << (tags ? '--tags' : '--no-tags')
-        end
-      end
 
       def git_import_repository(source, timeout)
         # Skip import if repo already exists
