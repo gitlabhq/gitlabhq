@@ -14,8 +14,8 @@ module Gitlab
 
         def generate_script
           super + [
-            configure_certs_command,
             init_command,
+            configure_certs_command,
             repository_command,
             script_command
           ].compact.join("\n")
@@ -33,7 +33,6 @@ module Gitlab
 
         def configure_certs_command
           <<~CMD
-          mkdir $(helm home)
           echo $CA_CERT | base64 -d > $(helm home)/ca.pem
           echo $HELM_CERT | base64 -d > $(helm home)/cert.pem
           echo $HELM_KEY | base64 -d > $(helm home)/key.pem
@@ -50,7 +49,7 @@ module Gitlab
 
         def script_command
           <<~HEREDOC
-          helm install #{chart} --name #{name}#{optional_version_flag} --namespace #{Gitlab::Kubernetes::Helm::NAMESPACE} -f /data/helm/#{name}/config/values.yaml >/dev/null
+          helm install --tls #{chart} --name #{name}#{optional_version_flag} --namespace #{Gitlab::Kubernetes::Helm::NAMESPACE} -f /data/helm/#{name}/config/values.yaml >/dev/null
           HEREDOC
         end
 
