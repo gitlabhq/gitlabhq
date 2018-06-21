@@ -32,7 +32,7 @@ feature 'EE Clusters', :js do
         context 'when user filled form with environment scope' do
           before do
             click_link 'Add Kubernetes cluster'
-            click_link 'Add an existing Kubernetes cluster'
+            click_link 'Add existing cluster'
             fill_in 'cluster_name', with: 'staging-cluster'
             fill_in 'cluster_environment_scope', with: 'staging/*'
             click_button 'Add Kubernetes cluster'
@@ -61,7 +61,7 @@ feature 'EE Clusters', :js do
         context 'when user updates duplicated environment scope' do
           before do
             click_link 'Add Kubernetes cluster'
-            click_link 'Add an existing Kubernetes cluster'
+            click_link 'Add existing cluster'
             fill_in 'cluster_name', with: 'staging-cluster'
             fill_in 'cluster_environment_scope', with: '*'
             click_button 'Add Kubernetes cluster'
@@ -75,13 +75,13 @@ feature 'EE Clusters', :js do
 
       context 'when user adds an Google Kubernetes Engine cluster' do
         before do
-          allow_any_instance_of(Projects::Clusters::GcpController)
+          allow_any_instance_of(Projects::ClustersController)
             .to receive(:token_in_session).and_return('token')
-          allow_any_instance_of(Projects::Clusters::GcpController)
+          allow_any_instance_of(Projects::ClustersController)
             .to receive(:expires_at_in_session).and_return(1.hour.since.to_i.to_s)
 
-          allow_any_instance_of(Projects::Clusters::GcpController).to receive(:authorize_google_project_billing)
-          allow_any_instance_of(Projects::Clusters::GcpController).to receive(:google_project_billing_status).and_return(true)
+          allow_any_instance_of(Projects::ClustersController).to receive(:authorize_google_project_billing)
+          allow_any_instance_of(Projects::ClustersController).to receive(:google_project_billing_status).and_return(true)
 
           allow_any_instance_of(GoogleApi::CloudPlatform::Client)
             .to receive(:projects_zones_clusters_create) do
@@ -105,7 +105,7 @@ feature 'EE Clusters', :js do
         context 'when user filled form with environment scope' do
           before do
             click_link 'Add Kubernetes cluster'
-            click_link 'Create on Google Kubernetes Engine'
+            click_link 'Create new Cluster on GKE'
 
             sleep 2 # wait for ajax
             execute_script('document.querySelector(".js-gcp-project-id-dropdown input").setAttribute("type", "text")')
@@ -144,7 +144,7 @@ feature 'EE Clusters', :js do
         context 'when user updates duplicated environment scope' do
           before do
             click_link 'Add Kubernetes cluster'
-            click_link 'Create on Google Kubernetes Engine'
+            click_link 'Create new Cluster on GKE'
 
             sleep 2 # wait for ajax
             execute_script('document.querySelector(".js-gcp-project-id-dropdown input").setAttribute("type", "text")')
