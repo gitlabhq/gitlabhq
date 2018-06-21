@@ -49,7 +49,6 @@ describe Groups::AutocompleteService do
         expect(result.map { |label| label['title'] }).to contain_exactly(*expected_labels.map(&:title))
 
         epic.labels.each do |assigned_label|
-
           expect(result.find { |label| label['title'] == assigned_label.title }[:set]).to eq(true)
         end
       end
