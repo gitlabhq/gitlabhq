@@ -235,6 +235,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
 
         collection do
+          get :empty
           get :folder, path: 'folders/*id', constraints: { format: /(html|json)/ }
         end
 
