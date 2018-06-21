@@ -1136,6 +1136,10 @@ class MergeRequest < ActiveRecord::Base
       .find_by(sha: diff_base_sha)
   end
 
+  def discussions_rendered_on_frontend?
+    true
+  end
+
   def update_project_counter_caches
     Projects::OpenMergeRequestsCountService.new(target_project).refresh_cache
   end

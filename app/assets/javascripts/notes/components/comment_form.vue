@@ -10,6 +10,7 @@ import TaskList from '../../task_list';
 import {
   capitalizeFirstCharacter,
   convertToCamelCase,
+  splitCamelCase,
 } from '../../lib/utils/text_utility';
 import * as constants from '../constants';
 import eventHub from '../event_hub';
@@ -56,21 +57,23 @@ export default {
     ]),
     ...mapState(['isToggleStateButtonLoading']),
     noteableDisplayName() {
-      return this.noteableType.replace(/_/g, ' ');
+      return splitCamelCase(this.noteableType).toLowerCase();
     },
     isLoggedIn() {
       return this.getUserData.id;
     },
     commentButtonTitle() {
-      return this.noteType === constants.COMMENT
-        ? 'Comment'
-        : 'Start discussion';
+      return this.noteType === constants.COMMENT ? 'Comment' : 'Start discussion';
+    },
+    startDiscussionDescription() {
+      let text = 'Discuss a specific suggestion or question';
+      if (this.getNoteableData.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE) {
+        text += ' that needs to be resolved';
+      }
+      return `${text}.`;
     },
     isOpen() {
-      return (
-        this.openState === constants.OPENED ||
-        this.openState === constants.REOPENED
-      );
+      return this.openState === constants.OPENED || this.openState === constants.REOPENED;
     },
     canCreateNote() {
       return this.getNoteableData.current_user.can_create_note;
@@ -117,6 +120,11 @@ export default {
     endpoint() {
       return this.getNoteableData.create_note_path;
     },
+    issuableTypeTitle() {
+      return this.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE
+        ? 'merge request'
+        : 'issue';
+    },
   },
   watch: {
     note(newNote) {
@@ -129,9 +137,7 @@ export default {
   mounted() {
     // jQuery is needed here because it is a custom event being dispatched with jQuery.
     $(document).on('issuable:change', (e, isClosed) => {
-      this.toggleIssueLocalState(
-        isClosed ? constants.CLOSED : constants.REOPENED,
-      );
+      this.toggleIssueLocalState(isClosed ? constants.CLOSED : constants.REOPENED);
     });
 
     this.initAutoSave();
@@ -168,6 +174,7 @@ export default {
               noteable_id: this.getNoteableData.id,
               note: this.note,
             },
+            merge_request_diff_head_sha: this.getNoteableData.diff_head_sha,
           },
         };
 
@@ -227,9 +234,7 @@ Please check your network connection and try again.`;
             this.toggleStateButtonLoading(false);
             Flash(
               sprintf(
-                __(
-                  'Something went wrong while closing the %{issuable}. Please try again later',
-                ),
+                __('Something went wrong while closing the %{issuable}. Please try again later'),
                 { issuable: this.noteableDisplayName },
               ),
             );
@@ -242,9 +247,7 @@ Please check your network connection and try again.`;
             this.toggleStateButtonLoading(false);
             Flash(
               sprintf(
-                __(
-                  'Something went wrong while reopening the %{issuable}. Please try again later',
-                ),
+                __('Something went wrong while reopening the %{issuable}. Please try again later'),
                 { issuable: this.noteableDisplayName },
               ),
             );
@@ -281,9 +284,7 @@ Please check your network connection and try again.`;
     },
     initAutoSave() {
       if (this.isLoggedIn) {
-        const noteableType = capitalizeFirstCharacter(
-          convertToCamelCase(this.noteableType),
-        );
+        const noteableType = capitalizeFirstCharacter(convertToCamelCase(this.noteableType));
 
         this.autosave = new Autosave($(this.$refs.textarea), [
           'Note',
@@ -312,8 +313,8 @@ Please check your network connection and try again.`;
   <div>
     <note-signed-out-widget v-if="!isLoggedIn" />
     <discussion-locked-widget
-      v-else-if="isLocked(getNoteableData) && !canCreateNote"
-      issuable-type="issue"
+      v-else-if="!canCreateNote"
+      :issuable-type="issuableTypeTitle"
     />
     <ul
       v-else-if="canCreateNote"
@@ -357,7 +358,7 @@ Please check your network connection and try again.`;
                   v-model="note"
                   :disabled="isSubmitting"
                   name="note[note]"
-                  class="note-textarea js-vue-comment-form
+                  class="note-textarea js-vue-comment-form js-note-text
 js-gfm-input js-autosize markdown-area js-vue-textarea"
                   data-supports-quick-actions="true"
                   aria-label="Description"
@@ -423,7 +424,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                         <div class="description">
                           <strong>Start discussion</strong>
                           <p>
-                            Discuss a specific suggestion or question.
+                            {{ startDiscussionDescription }}
                           </p>
                         </div>
                       </button>

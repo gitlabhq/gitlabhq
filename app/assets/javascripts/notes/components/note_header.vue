@@ -20,11 +20,6 @@ export default {
       required: false,
       default: '',
     },
-    actionTextHtml: {
-      type: String,
-      required: false,
-      default: '',
-    },
     noteId: {
       type: Number,
       required: true,
@@ -88,10 +83,8 @@ export default {
         <template v-if="actionText">
           {{ actionText }}
         </template>
-        <span
-          v-if="actionTextHtml"
-          class="system-note-message"
-          v-html="actionTextHtml">
+        <span class="system-note-message">
+          <slot></slot>
         </span>
         <span class="system-note-separator">
           &middot;

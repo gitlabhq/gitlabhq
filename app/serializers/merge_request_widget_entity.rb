@@ -22,19 +22,6 @@ class MergeRequestWidgetEntity < IssuableEntity
     merge_request.project.merge_requests_ff_only_enabled
   end
 
-  expose :rebase_commit_sha
-  expose :rebase_in_progress?, as: :rebase_in_progress
-
-  expose :can_push_to_source_branch do |merge_request|
-    presenter(merge_request).can_push_to_source_branch?
-  end
-  expose :rebase_path do |merge_request|
-    presenter(merge_request).rebase_path
-  end
-  expose :approvals_path do |merge_request|
-    presenter(merge_request).approvals_path
-  end
-
   expose :metrics do |merge_request|
     metrics = build_metrics(merge_request)
 
@@ -135,12 +122,12 @@ class MergeRequestWidgetEntity < IssuableEntity
       presenter(merge_request).can_cherry_pick_on_current_merge_request?
     end
 
-    expose :can_create_note do |issue|
-      can?(request.current_user, :create_note, issue.project)
+    expose :can_create_note do |merge_request|
+      can?(request.current_user, :create_note, merge_request)
     end
 
-    expose :can_update do |issue|
-      can?(request.current_user, :update_issue, issue)
+    expose :can_update do |merge_request|
+      can?(request.current_user, :update_merge_request, merge_request)
     end
   end
 
@@ -222,6 +209,10 @@ class MergeRequestWidgetEntity < IssuableEntity
 
   expose :commit_change_content_path do |merge_request|
     commit_change_content_project_merge_request_path(merge_request.project, merge_request)
+  end
+
+  expose :preview_note_path do |merge_request|
+    preview_markdown_path(merge_request.project, quick_actions_target_type: 'MergeRequest', quick_actions_target_id: merge_request.id)
   end
 
   expose :merge_commit_path do |merge_request|

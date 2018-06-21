@@ -91,7 +91,7 @@ describe 'User comments on a diff', :js do
 
           # Check the same comments in the side-by-side view.
           execute_script("window.scrollTo(0,0);")
-          click_link('Side-by-side')
+          click_button 'Side-by-side'
 
           wait_for_requests
 
@@ -120,7 +120,7 @@ describe 'User comments on a diff', :js do
         click_button('Comment')
       end
 
-      page.within('.diff-file:nth-of-type(5) .note') do
+      page.within('.diff-file:nth-of-type(5) .discussion .note') do
         find('.js-note-edit').click
 
         page.within('.current-note-edit-form') do
@@ -131,7 +131,7 @@ describe 'User comments on a diff', :js do
         expect(page).not_to have_button('Save comment', disabled: true)
       end
 
-      page.within('.diff-file:nth-of-type(5) .note') do
+      page.within('.diff-file:nth-of-type(5) .discussion .note') do
         expect(page).to have_content('Typo, please fix').and have_no_content('Line is wrong')
       end
     end
@@ -150,7 +150,7 @@ describe 'User comments on a diff', :js do
         expect(page).to have_content('1')
       end
 
-      page.within('.diff-file:nth-of-type(5) .note') do
+      page.within('.diff-file:nth-of-type(5) .discussion .note') do
         find('.more-actions').click
         find('.more-actions .dropdown-menu li', match: :first)
 
