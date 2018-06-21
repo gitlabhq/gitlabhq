@@ -1515,6 +1515,40 @@ module API
       end
       expose :label, using: Entities::LabelBasic
       expose :action
+
+    class UnleashIssue < Grape::Entity
+      expose :name
+      expose :title, as: :description
+      expose :enabled
+      expose :strategies
+
+      private
+
+      def name
+        "\##{object.iid}"
+      end
+
+      def enabled
+        true
+      end
+
+      def strategies
+        [{ name: 'default' }]
+      end
+    end
+
+    class UnleashFeatureResponse < Grape::Entity
+      expose :version
+      expose :features, with: UnleashIssue
+
+      private
+
+      def version
+        1
+      end
+
+      def features
+      end
     end
   end
 end
