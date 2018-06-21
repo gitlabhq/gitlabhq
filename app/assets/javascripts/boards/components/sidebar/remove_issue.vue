@@ -1,13 +1,10 @@
-import Vue from 'vue';
+<script>
 import Flash from '../../../flash';
 import { __ } from '../../../locale';
 
 const Store = gl.issueBoards.BoardsStore;
 
-window.gl = window.gl || {};
-window.gl.issueBoards = window.gl.issueBoards || {};
-
-gl.issueBoards.RemoveIssueBtn = Vue.extend({
+export default {
   props: {
     issue: {
       type: Object,
@@ -59,15 +56,18 @@ gl.issueBoards.RemoveIssueBtn = Vue.extend({
       Store.detail.issue = {};
     },
   },
-  template: `
-    <div
-      class="block list">
-      <button
-        class="btn btn-default btn-block"
-        type="button"
-        @click="removeIssue">
-        Remove from board
-      </button>
-    </div>
-  `,
-});
+};
+</script>
+<template>
+  <div
+    class="block list"
+  >
+    <button
+      class="btn btn-default btn-block"
+      type="button"
+      @click="removeIssue"
+    >
+      Remove from board
+    </button>
+  </div>
+</template>

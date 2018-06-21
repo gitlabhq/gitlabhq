@@ -9,7 +9,7 @@ import eventHub from '../../sidebar/event_hub';
 import assigneeTitle from '../../sidebar/components/assignees/assignee_title.vue';
 import assignees from '../../sidebar/components/assignees/assignees.vue';
 import DueDateSelectors from '../../due_date_select';
-import './sidebar/remove_issue';
+import removeBtn from './sidebar/remove_issue.vue';
 import IssuableContext from '../../issuable_context';
 import LabelsSelect from '../../labels_select';
 import subscriptions from '../../sidebar/components/subscriptions/subscriptions.vue';
@@ -24,7 +24,7 @@ gl.issueBoards.BoardSidebar = Vue.extend({
   components: {
     assigneeTitle,
     assignees,
-    removeBtn: gl.issueBoards.RemoveIssueBtn,
+    removeBtn,
     subscriptions,
   },
   props: {
