@@ -49,6 +49,7 @@ MergeRequest.prototype.initTabs = function() {
   if (window.mrTabs) {
     window.mrTabs.unbindEvents();
   }
+
   window.mrTabs = new MergeRequestTabs(this.opts);
 };
 
