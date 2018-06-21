@@ -1,5 +1,0 @@
----
-title: XSS fix to use safe_params instead of params in url_for helpers
-merge_request:
-author:
-type: security
