@@ -240,7 +240,7 @@ available in the package repositories.
 
 Regressions are very important, and they should be considered high priority 
 issues that should be solved as soon as possible, especially if they affect
-users. Despite that, ~regression label itself is not implying when the issue
+users. Despite that, ~regression label itself does not imply when the issue
 will be scheduled.
 
 When a regression is found:
