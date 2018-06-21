@@ -47,20 +47,49 @@ describe Gitlab::Verify::Uploads do
       before do
         stub_uploads_object_storage(AvatarUploader)
         upload.update!(store: ObjectStorage::Store::REMOTE)
-        expect(CarrierWave::Storage::Fog::File).to receive(:new).and_return(file)
       end
 
-      it 'passes uploads in object storage that exist' do
-        expect(file).to receive(:exists?).and_return(true)
+      describe 'returned hash object' do
+        before do
+          expect(CarrierWave::Storage::Fog::File).to receive(:new).and_return(file)
+        end
 
-        expect(failures).to eq({})
+        it 'passes uploads in object storage that exist' do
+          expect(file).to receive(:exists?).and_return(true)
+
+          expect(failures).to eq({})
+        end
+
+        it 'fails uploads in object storage that do not exist' do
+          expect(file).to receive(:exists?).and_return(false)
+
+          expect(failures.keys).to contain_exactly(upload)
+          expect(failure).to include('Remote object does not exist')
+        end
       end
 
-      it 'fails uploads in object storage that do not exist' do
-        expect(file).to receive(:exists?).and_return(false)
+      describe 'performance' do
+        before do
+          allow(file).to receive(:exists?)
+          allow(CarrierWave::Storage::Fog::File).to receive(:new).and_return(file)
+        end
 
-        expect(failures.keys).to contain_exactly(upload)
-        expect(failure).to include('Remote object does not exist')
+        it "avoids N+1 queries" do
+          control_count = ActiveRecord::QueryRecorder.new { perform_task }
+
+          # Create additional uploads in object storage
+          projects = create_list(:project, 3, :with_avatar)
+          uploads = projects.flat_map(&:uploads)
+          uploads.each do |upload|
+            upload.update!(store: ObjectStorage::Store::REMOTE)
+          end
+
+          expect { perform_task }.not_to exceed_query_limit(control_count)
+        end
+
+        def perform_task
+          described_class.new(batch_size: 100).run_batches { }
+        end
       end
     end
   end

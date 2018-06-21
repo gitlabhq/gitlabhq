@@ -1417,8 +1417,11 @@ module Gitlab
       end
 
       def can_be_merged?(source_sha, target_branch)
-        target_sha = find_branch(target_branch, true).target
-        !gitaly_conflicts_client(source_sha, target_sha).conflicts?
+        if target_sha = find_branch(target_branch, true)&.target
+          !gitaly_conflicts_client(source_sha, target_sha).conflicts?
+        else
+          false
+        end
       end
 
       def search_files_by_name(query, ref)
