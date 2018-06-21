@@ -1,5 +1,0 @@
----
-title: Persist truncated note diffs on a new table
-merge_request:
-author:
-type: performance

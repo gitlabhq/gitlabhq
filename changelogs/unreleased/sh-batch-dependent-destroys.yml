@@ -1,5 +1,0 @@
----
-title: Fix project destruction failing due to idle in transaction timeouts
-merge_request:
-author:
-type: fixed

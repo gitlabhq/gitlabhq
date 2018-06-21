@@ -1,5 +1,0 @@
----
-title: 'Hashed Storage: migration rake task now can be executed to specific project'
-merge_request: 19268
-author:
-type: changed
