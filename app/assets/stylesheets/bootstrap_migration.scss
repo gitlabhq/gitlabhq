@@ -173,6 +173,12 @@ table {
   display: none;
 }
 
+h3.popover-header {
+  // Default bootstrap popovers use <h3>
+  // which we default to having a top margin
+  margin-top: 0;
+}
+
 // Add to .label so that old system notes that are saved to the db
 // will still receive the correct styling
 .badge,
