@@ -32,7 +32,7 @@ Currently out of scope:
 In order to deploy GitLab on Kubernetes, a few prerequisites are required.
 
 1. `helm` and `kubectl` [installed on your computer](preparation/tools_installation.md).
-1. A Kubernetes cluster, version 1.8 or higher. 4vCPU and 16GB of RAM is recommended.
+1. A Kubernetes cluster, version 1.8 or higher. 6vCPU and 16GB of RAM is recommended.
   * [Google GKE](https://cloud.google.com/kubernetes-engine/docs/how-to/creating-a-container-cluster)
   * [Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html)
   * [Microsoft AKS](https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough-portal)
@@ -64,7 +64,7 @@ run helm. In this example, we've named our helm release "gitlab".
 
 ```
 helm repo add gitlab https://charts.gitlab.io/
-helm dependencies update
+helm update
 helm upgrade --install gitlab gitlab/gitlab \
   --timeout 600 \
   --set global.hosts.domain=example.local \
@@ -81,15 +81,16 @@ the deployment is taking place if you run the command in another terminal.
 
 ### Initial login
 
-You can access the GitLab instance by visiting the domain specified during
-installation. If you manually created the secret for initial root password, you
-can use that to sign in as `root` user. If not, Gitlab would've automatically
+You can access the GitLab instance by visiting the domain name beginning with `gitlab.` followed by the domain specified during installation. From the example above, the URL would be `https://gitlab.example.local`.
+
+If you manually created the secret for initial root password, you
+can use that to sign in as `root` user. If not, Gitlab automatically
 created a random password for `root` user. This can be extracted by the
 following command (replace `<name>` by name of the release - which is `gitlab`
-if you used the command above)
+if you used the command above).
 
 ```
-kubectl get secret <name>-gitlab-initial-root-password -ojsonpath={.data.password} | base64 -d
+kubectl get secret <name>-gitlab-initial-root-password -ojsonpath={.data.password} | base64 --decode
 ```
 
 ## Outgoing email
