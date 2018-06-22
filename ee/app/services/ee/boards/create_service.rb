@@ -7,6 +7,14 @@ module EE
       def can_create_board?
         parent.multiple_issue_boards_available? || super
       end
+
+      override :create_board!
+      def create_board!
+        set_assignee
+        set_milestone
+
+        super
+      end
     end
   end
 end
