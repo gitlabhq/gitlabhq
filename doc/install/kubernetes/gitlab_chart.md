@@ -81,7 +81,7 @@ the deployment is taking place if you run the command in another terminal.
 
 ### Initial login
 
-You can access the GitLab instance by visiting `gitlab.` and then the domain specified during installation. From the example above, the URL would be `https://gitlab.example.local`.
+You can access the GitLab instance by visiting the domain name beginning with `gitlab.` followed by the domain specified during installation. From the example above, the URL would be `https://gitlab.example.local`.
 
 If you manually created the secret for initial root password, you
 can use that to sign in as `root` user. If not, Gitlab automatically
