@@ -31,7 +31,7 @@ module QA
       expect(page).to have_content('The project was successfully forked.')
       forked_project = QA::Factory::Product.new
 
-      push = Factory::Repository::Push.fabricate! do |push|
+      Factory::Repository::Push.fabricate! do |push|
         push.project = forked_project
         push.file_name = 'file2.txt'
       end
