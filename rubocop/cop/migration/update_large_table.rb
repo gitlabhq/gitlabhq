@@ -20,10 +20,14 @@ module RuboCop
               'necessary'.freeze
 
         LARGE_TABLES = %i[
-          ci_pipelines
+          ci_build_trace_sections
           ci_builds
+          ci_job_artifacts
+          ci_pipelines
+          ci_stages
           events
           issues
+          merge_request_diff_commits
           merge_request_diff_files
           merge_request_diffs
           merge_requests
