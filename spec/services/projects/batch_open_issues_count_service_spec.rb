@@ -19,8 +19,10 @@ describe Projects::BatchOpenIssuesCountService do
       it 'refreshes cache keys correctly' do
         subject.refresh_cache
 
-        expect(Rails.cache.read(get_cache_key(subject, project_1))).to eq(2)
-        expect(Rails.cache.read(get_cache_key(subject, project_2))).to eq(2)
+        # It does not update total issues cache
+        expect(Rails.cache.read(get_cache_key(subject, project_1))).to eq(nil)
+        expect(Rails.cache.read(get_cache_key(subject, project_2))).to eq(nil)
+
         expect(Rails.cache.read(get_cache_key(subject, project_1, true))).to eq(1)
         expect(Rails.cache.read(get_cache_key(subject, project_1, true))).to eq(1)
       end
