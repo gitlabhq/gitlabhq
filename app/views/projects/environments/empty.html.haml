@@ -1,6 +1,14 @@
 - page_title "Metrics"
 
-%h1
-  No environments were found
-
-= link_to "New Environment", new_project_environment_path(@project)
+.row
+  .col-sm-12
+    .svg-content
+      = image_tag 'illustrations/operations-metrics_empty.svg'
+.row.empty-environments
+  .col-sm-12.text-center
+    %h4
+      = s_('Metrics|No deployed environments')
+    .state-description
+      = s_('Metrics|Check out the CI/CD documentation on deploying to an environment')
+    .prepend-top-10
+      = link_to "Learn about environments", help_page_path('ci/environments'), class: 'btn btn-success'
