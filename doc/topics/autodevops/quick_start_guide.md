@@ -7,6 +7,10 @@ We will use GitLab's native Kubernetes integration, so you will not need
 to create a Kubernetes cluster manually using the Google Cloud Platform console.
 We will create and deploy a simple application that we create from a GitLab template.
 
+These instructions will also work for a self-hosted GitLab instance; you'll just
+need to ensure your own [Runners are configured](../../ci/runners/README.md) and
+[Google OAuth is enabled](../../integration/google.md).
+
 ## Configuring your Google account
 
 Before creating and connecting your Kubernetes cluster to your GitLab project,
@@ -49,7 +53,8 @@ under which this application will be deployed.
 
 ## Creating a Kubernetes cluster from within GitLab
 
-1. On the project's landing page, click the button labeled **Add Kubernetes cluster**. (Note that this option is also available when you navigate to Operations > Kubernetes.)
+1. On the project's landing page, click the button labeled **Add Kubernetes cluster**
+   (note that this option is also available when you navigate to **Operations > Kubernetes**).
 
     ![Project landing page](img/guide_project_landing_page.png)
 
