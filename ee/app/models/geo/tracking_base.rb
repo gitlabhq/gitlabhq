@@ -12,7 +12,9 @@ module Geo
 
     def self.connection
       unless ::Gitlab::Geo.geo_database_configured?
-        raise SecondaryNotConfigured.new('Geo secondary database is not configured')
+        message = 'Geo secondary database is not configured'
+        message += "\nIn the GDK root, try running `make geo-setup`" if Rails.env.development?
+        raise SecondaryNotConfigured.new(message)
       end
 
       # Don't call super because LoadBalancing::ActiveRecordProxy will intercept it
