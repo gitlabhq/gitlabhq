@@ -8,7 +8,7 @@ class PseudonymizerWorker
       return
     end
 
-    unless unless Gitlab::CurrentSettings.pseudonymizer_enabled?
+    unless Gitlab::CurrentSettings.pseudonymizer_enabled?
       Rails.logger.info("The pseudonymizer is disabled.")
       return
     end
