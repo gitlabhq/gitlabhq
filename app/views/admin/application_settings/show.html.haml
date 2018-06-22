@@ -324,3 +324,5 @@
       = _('Configure push mirrors.')
   .settings-content
     = render partial: 'repository_mirrors_form'
+
+= render_if_exists 'pseudonymizer_settings'
