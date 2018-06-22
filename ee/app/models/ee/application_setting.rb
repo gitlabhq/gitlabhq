@@ -101,7 +101,7 @@ module EE
           slack_app_id: nil,
           slack_app_secret: nil,
           slack_app_verification_token: nil,
-          pseudonymizer_enabled: true
+          pseudonymizer_enabled: false
         )
       end
     end
@@ -110,12 +110,8 @@ module EE
       License.feature_available?(:pseudonymizer)
     end
 
-    def pseudonymizer_can_be_configured?
-      Settings.pseudonymizer.enabled && pseudonymizer_available?
-    end
-
     def pseudonymizer_enabled?
-      pseudonymizer_can_be_configured? && super
+      pseudonymizer_available? && super
     end
 
     def should_check_namespace_plan?

@@ -30,7 +30,6 @@ To configure the pseudonymizer, you need to:
    the values you want:
 
     ```ruby
-    gitlab_rails['pseudonymizer_enabled'] = true
     gitlab_rails['pseudonymizer_manifest'] = 'config/pseudonymizer.yml'
     gitlab_rails['pseudonymizer_upload_remote_directory'] = 'gitlab-elt'
     gitlab_rails['pseudonymizer_upload_connection'] = {
@@ -64,7 +63,6 @@ To configure the pseudonymizer, you need to:
 
     ```yaml
     pseudonymizer:
-      enabled: true
 	  manifest: config/pseudonymizer.yml
 	  upload:
         remote_directory: 'gitlab-elt' # The bucket name

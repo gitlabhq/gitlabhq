@@ -1,4 +1,4 @@
-- if Gitlab::CurrentSettings.pseudonymizer_can_be_configured?
+- if Gitlab::CurrentSettings.pseudonymizer_available?
   %section.settings.as-pseudonymizer.no-animate#js-pseudonymizer-settings{ class: ('expanded' if expanded) }
     .settings-header
       %h4

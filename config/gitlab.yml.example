@@ -732,7 +732,6 @@ production: &base
 
   ## Pseudonymizer exporter
   pseudonymizer:
-    enabled: false
     # Tables manifest that specifies the fields to extract and pseudonymize.
     manifest: config/pseudonymizer.yml
     upload:
@@ -896,7 +895,6 @@ test:
   backup:
     path: tmp/tests/backups
   pseudonymizer:
-    enabled: false
     manifest: config/pseudonymizer.yml
     upload:
       # The remote 'directory' to store the CSV files. For S3, this would be the bucket name.
