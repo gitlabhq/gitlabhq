@@ -17,7 +17,7 @@ There are various configuration options to help GitLab server administrators:
 
 * Enabling/disabling Git LFS support
 * Changing the location of LFS object storage
-* Setting up AWS S3 compatible object storage
+* Setting up an object storage supported by [Fog](http://fog.io/about/provider_documentation.html)
 
 ### Configuration for Omnibus installations
 
@@ -44,19 +44,31 @@ In `config/gitlab.yml`:
     storage_path: /mnt/storage/lfs-objects
 ```
 
-## Storing the LFS objects in an S3-compatible object storage
+## Storing LFS objects to an object storage
 
 > [Introduced][ee-2760] in [GitLab Premium][eep] 10.0. Brought to GitLab Core
 in 10.7.
 
-It is possible to store LFS objects on a remote object storage which allows you
-to offload storage to an external AWS S3 compatible service, freeing up disk
-space locally. You can also host your own S3 compatible storage decoupled from
-GitLab, with with a service such as [Minio](https://www.minio.io/).
+It is possible to store LFS objects to a remote object storage which allows you
+to offload R/W operation on local hard disk and freed up disk space significantly.
+You can check which object storage can be integrated with GitLab [here](http://fog.io/about/provider_documentation.html)
+(Since GitLab is tightly integrated with `Fog`, you can refer the documentation)
+You can also use an object storage in a private local network. For example,
+[Minio](https://www.minio.io/) is standalone object storage, easy to setup, and works well with GitLab instance.
 
-Object storage currently transfers files first to GitLab, and then on the
-object storage in a second stage. This can be done either by using a rake task
-to transfer existing objects, or in a background job after each file is received.
+GitLab provides two different options as the uploading mechanizm. One is "Direct upload", and another one is "Background upload".
+
+**Option 1. Direct upload**
+
+1. User pushes a lfs file to the GitLab instance
+1. GitLab-workhorse uploads the file to the object storage
+1. GitLab-workhorse notifies to GitLab-rails that the uploading process is done
+
+**Option 2. Background upload**
+
+1. User pushes a lfs file to the GitLab instance
+1. GitLab-rails stores the file to the local files storage
+1. GitLab-rails uploads the file to object storage asynchronously
 
 The following general settings are supported.
 
@@ -71,15 +83,49 @@ The following general settings are supported.
 
 The `connection` settings match those provided by [Fog](https://github.com/fog).
 
-| Setting | Description | Default |
+Here is the configuration example with S3.
+
+| Setting | Description | example |
 |---------|-------------|---------|
-| `provider` | Always `AWS` for compatible hosts | AWS |
-| `aws_access_key_id` | AWS credentials, or compatible | |
-| `aws_secret_access_key` | AWS credentials, or compatible | |
+| `provider` | The provider name | AWS |
+| `aws_access_key_id` | AWS credentials, or compatible | `ABC123DEF456` |
+| `aws_secret_access_key` | AWS credentials, or compatible | `ABC123DEF456ABC123DEF456ABC123DEF456` |
 | `region` | AWS region | us-east-1 |
 | `host` | S3 compatible host for when not using AWS, e.g. `localhost` or `storage.example.com` | s3.amazonaws.com |
 | `endpoint` | Can be used when configuring an S3 compatible service such as [Minio](https://www.minio.io), by entering a URL such as `http://127.0.0.1:9000` | (optional) |
 | `path_style` | Set to true to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Leave as false for AWS S3 | false |
+
+Here is a configuration example with GCS.
+
+| Setting | Description | example |
+|---------|-------------|---------|
+| `provider` | The provider name | `Google` |
+| `google_project` | GCP project name | `gcp-project-12345` |
+| `google_client_email` | The email address of a service account | `foo@gcp-project-12345.iam.gserviceaccount.com` |
+| `google_json_key_location` | The json key path to the  | `/path/to/gcp-project-12345-abcde.json` |
+
+_NOTE: Service account must have a permission to access the bucket. See more https://cloud.google.com/storage/docs/authentication_
+
+### Manual uploading to an object storage
+
+There are two ways to do the same thing with automatic uploading which described above.
+
+**Option 1: rake task**
+
+```
+$ rake gitlab:lfs:migrate
+```
+
+**Option 2: rails console**
+
+```
+$ sudo gitlab-rails console            # Login to rails console
+
+> # Upload LFS files manually
+> LfsObject.where(file_store: [nil, 1]).find_each do |lfs_object|
+>   lfs_object.file.migrate!(ObjectStorage::Store::REMOTE) if lfs_object.file.file.exists?
+> end
+```
 
 ### S3 for Omnibus installations
 
@@ -155,6 +201,29 @@ For source installations the settings are nested under `lfs:` and then
 You can see the total storage used for LFS objects on groups and projects
 in the administration area, as well as through the [groups](../../api/groups.md)
 and [projects APIs](../../api/projects.md).
+
+## Troubleshooting: `Google::Apis::TransmissionError: execution expired`
+
+If LFS integration is configred with Google Cloud Storage and background upload (`background_upload: true` and `direct_upload: false`)
+sidekiq workers may encouter this error. This is because uploading timed out by huge files.
+For the record, upto 6GB lfs files can be uploaded without any extra steps, otherwise you need the following workaround.
+
+```shell
+$ sudo gitlab-rails console            # Login to rails console
+
+> # Setup timeouts. 20 minutes is enough to upload 30GB LFS files.
+> # Those settings are only effective in the same session, i.e. Those are not effective in sidekiq workers.
+> ::Google::Apis::ClientOptions.default.open_timeout_sec = 1200
+> ::Google::Apis::ClientOptions.default.read_timeout_sec = 1200
+> ::Google::Apis::ClientOptions.default.send_timeout_sec = 1200
+
+> # Upload LFS files manually. This process does not use sidekiq at all.
+> LfsObject.where(file_store: [nil, 1]).find_each do |lfs_object|
+>   lfs_object.file.migrate!(ObjectStorage::Store::REMOTE) if lfs_object.file.file.exists?
+> end
+```
+
+See more information in https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19581
 
 ## Known limitations
 
