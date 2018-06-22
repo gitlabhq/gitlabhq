@@ -607,17 +607,7 @@ module Gitlab
       def ref_name_for_sha(ref_path, sha)
         raise ArgumentError, "sha can't be empty" unless sha.present?
 
-        gitaly_migrate(:find_ref_name) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.find_ref_name(sha, ref_path)
-          else
-            args = %W(for-each-ref --count=1 #{ref_path} --contains #{sha})
-
-            # Not found -> ["", 0]
-            # Found -> ["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0]
-            run_git(args).first.split.last
-          end
-        end
+        gitaly_ref_client.find_ref_name(sha, ref_path)
       end
 
       # Get refs hash which key is is the commit id
