@@ -4,10 +4,7 @@ class SessionsController < Devise::SessionsController
   include Devise::Controllers::Rememberable
   include Recaptcha::ClientHelper
   include Recaptcha::Verify
-<<<<<<< HEAD
   prepend EE::SessionsController
-=======
->>>>>>> upstream/master
 
   skip_before_action :check_two_factor_requirement, only: [:destroy]
 
