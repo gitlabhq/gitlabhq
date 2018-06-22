@@ -402,11 +402,9 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
                group: create(:group))
       end
 
-      before do
-        project_tree_restorer.instance_variable_set(:@path, "spec/lib/gitlab/import_export/project.milestone-iid.json")
-      end
-
       it 'preserves the project milestone IID' do
+        project_tree_restorer.instance_variable_set(:@path, "spec/lib/gitlab/import_export/project.milestone-iid.json")
+
         expect_any_instance_of(Gitlab::ImportExport::Shared).not_to receive(:error)
 
         restored_project_json
