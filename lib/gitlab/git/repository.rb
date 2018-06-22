@@ -403,13 +403,7 @@ module Gitlab
 
       # Return repo size in megabytes
       def size
-        size = gitaly_migrate(:repository_size) do |is_enabled|
-          if is_enabled
-            size_by_gitaly
-          else
-            size_by_shelling_out
-          end
-        end
+        size = gitaly_repository_client.repository_size
 
         (size.to_f / 1024).round(2)
       end
@@ -1820,14 +1814,6 @@ module Gitlab
       def last_commit_for_path_by_rugged(sha, path)
         sha = last_commit_id_for_path_by_shelling_out(sha, path)
         commit(sha)
-      end
-
-      def size_by_shelling_out
-        popen(%w(du -sk), path).first.strip.to_i
-      end
-
-      def size_by_gitaly
-        gitaly_repository_client.repository_size
       end
 
       # Returns true if the given ref name exists
