@@ -118,23 +118,15 @@ Issue Board, that is, create or delete lists and drag issues from one list to an
 
 ## Issue Board terminology
 
-Below is a table of the definitions used for GitLab's Issue Board.
+- **Issue Board** - Each board represents a unique view for your issues. It can have multiple lists with each list consisting of issues represented by cards.
+- **List** - A column on the issue board that displays issues matching certain attributes. In addition to the default lists of 'Backlog' and 'Closed' issue, each additional list will show issues matching your chosen label or assignee.
+   - Label list: a list based on a label. It shows all opened issues with that label.
+   - Assignee list: a list which includes all issues assigned to a user.
+   - **Backlog** (default): shows all open issues that do not belong to one of the other lists. Always appears as the leftmost list.
+   - **Closed** (default): shows all closed issues. Always appears as the rightmost list.
+- **Card** - A box in the list that represents an individual issue. The information you can see on a card consists of the issue number, the issue title, the assignee, and the labels associated with the issue. You can drag cards from one list to another to change their label or assignee from that of the source list to that of the destination list.
 
-| What we call it  | What it means |
-| --------------  | ------------- |
-| **Issue Board** | It represents a different view for your issues. It can have multiple lists with each list consisting of issues represented by cards. |
-| **List**        | Any label that exists in the issue tracker can have its own dedicated list on an issue board. Every list is named after the label it is based on and is represented by a column which contains all the issues associated with that label. You can think of a list like the results you get when you filter the issues by a label in your issue tracker. Each user in the project or group can also have their own dedicated list. |
-| **Card**        | Every card represents an issue and it is shown under the list for which it has a label. The information you can see on a card consists of the issue number, the issue title, the assignee and the labels associated with it. You can drag cards around from one list to another. You can re-order cards within a list. |
-
-There are three types of lists, the ones you create based on your labels, the
-ones based on assignee, and finally the default ones:
-
-- Label list: a list based on a label. It shows all opened issues with that label.
-- Assignee list: a list which includes all issues assigned to a user.
-- **Backlog** (default): shows all open issues that does not belong to one of lists. Always appears on the very left.
-- **Closed** (default): shows all closed issues. Always appears on the very right.
-
-In short, here's a list of actions you can take in an Issue Board:
+## Actions you can take on an Issue Board
 
 - [Create a new list](#creating-a-new-list).
 - [Delete an existing list](#deleting-a-list).
@@ -326,15 +318,15 @@ Click the button at the top right to toggle focus mode on and off. In focus mode
 
 > Introduced in [GitLab Premium 10.0](https://about.gitlab.com/2017/09/22/gitlab-10-0-released/#group-issue-boards).
 
-A group issue board is analogous to project-level issue board and it is accessible at the group
-navigation level. A group-level issue board allows you to view all issues from all projects in that
-group or descendant subgroups. Similarly, you can only filter by group labels for these
+Accessible at the group navigation level, a group issue board offers the same features as a project-level board,
+but it can display issues from all projects in that
+group and its descendant subgroups. Similarly, you can only filter by group labels for these
 boards. When updating milestones and labels for an issue through the sidebar update mechanism, again only
 group-level objects are available.
 
 NOTE: **Note:**
-One group issue board per group was made available in GitLab 10.6 Core after multiple
-group issue boards were originally introduced in [GitLab 10.0 Premium](https://about.gitlab.com/2017/09/22/gitlab-10-0-released/#group-issue-boards).
+Multiple group issue boards were originally introduced in [GitLab 10.0 Premium](https://about.gitlab.com/2017/09/22/gitlab-10-0-released/#group-issue-boards) and
+one group issue board per group was made available in GitLab 10.6 Core. 
 
 ![Group issue board](img/group_issue_board.png)
 
@@ -347,13 +339,13 @@ an assignee list that shows all issues assigned to the given user.
 You can have a board with both label lists and assignee lists. To add an
 assignee list:
 
-1. Click **Add list**
-1. Select the **Assignee list** tab
-1. Search and click on the user you want to add as an assignee
+1. Click **Add list**.
+1. Select the **Assignee list** tab.
+1. Search and click on the user you want to add as an assignee.
 
 Now that the assignee list is added, you can assign or unassign issues to that user
-by [dragging issues around](#dragging-issues-between-lists).
-To remove an assignee list, use the same way as a label list, click the trash icon.
+by [dragging issues](#dragging-issues-between-lists) to and/or from an assignee list.
+To remove an assignee list, just as with a label list, click the trash icon.
 
 ![Assignee lists](img/issue_board_assignee_lists.png)
 
