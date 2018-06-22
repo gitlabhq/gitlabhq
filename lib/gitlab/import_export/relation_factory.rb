@@ -266,7 +266,7 @@ module Gitlab
           hash.delete('project_id')
         end
 
-        GroupProjectFinder.find_or_create(relation_class, finder_hash)
+        GroupProjectObjectBuilder.build(relation_class, finder_hash)
       end
     end
   end

@@ -1,15 +1,18 @@
 module Gitlab
   module ImportExport
-    class GroupProjectFinder
-      def self.find_or_new(*args)
+    # Given a class, it finds or creates a new object
+    # (initializes in the case of Label) at group or project level
+    # If it does not exist in the group, it creates it at project level
+    #
+    # For example:
+    # `GroupProjectObjectBuilder.build(Label, label_attributes)`
+    #  finds or initializes a label with the given attributes.
+    #
+    # It also adds some logic around Group Labels/Milestones for edge cases.
+    class GroupProjectObjectBuilder
+      def self.build(*args)
         Project.transaction do
-          new(*args).find_or_new
-        end
-      end
-
-      def self.find_or_create(*args)
-        Project.transaction do
-          new(*args).find_or_create
+          new(*args).find
         end
       end
 
@@ -20,28 +23,36 @@ module Gitlab
         @project = @attributes[:project]
       end
 
-      def find_or_new
-        @klass.where(where_clause).first || @klass.new(project_attributes)
-      end
-
-      def find_or_create
-        @klass.where(where_clause).first || @klass.create(project_attributes)
+      def find
+        find_or_action do
+          label? ? @klass.new(project_attributes) : @klass.create(project_attributes)
+        end
       end
 
       private
+
+      def find_or_action(&block)
+        @klass.where(where_clause).first || yield
+      end
 
       def where_clause
         return { project_id: @project.id } unless milestone? || label?
 
         @attributes.slice('title').map do |key, value|
-          project_clause = table[key].eq(value).and(table[:project_id].eq(@project.id))
-
           if @group
-            project_clause.or(table[key].eq(value).and(table[:group_id].eq(@group.id)))
+            project_clause(key, value).or(group_clause(key, value))
           else
-            project_clause
+            project_clause(key, value)
           end
         end.reduce(:or)
+      end
+
+      def group_clause(key, value)
+        table[key].eq(value).and(table[:group_id].eq(@group.id))
+      end
+
+      def project_clause(key, value)
+        table[key].eq(value).and(table[:project_id].eq(@project.id))
       end
 
       def table
@@ -71,7 +82,7 @@ module Gitlab
         @klass == Milestone
       end
 
-      # If an existing group milesone used the IIID
+      # If an existing group milesone used the IID
       # claim the IID back and set the group milestone to use one available
       # This is neccessary to fix situations like the following:
       #  - Importing into a user namespace project with exported group milestones
