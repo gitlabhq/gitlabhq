@@ -6,8 +6,15 @@ module QA
       # creating it if it doesn't yet exist.
       #
       class Sandbox < Factory::Base
+        attr_accessor :name, :visibility
+
         def initialize
           @name = Runtime::Namespace.sandbox_name
+          @visibility = 'Private'
+        end
+
+        product :name do |factory|
+          factory.name
         end
 
         def fabricate!
@@ -22,7 +29,7 @@ module QA
               Page::Group::New.perform do |group|
                 group.set_path(@name)
                 group.set_description('GitLab QA Sandbox')
-                group.set_visibility('Private')
+                group.set_visibility(@visibility)
                 group.create
               end
             end

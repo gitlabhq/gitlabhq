@@ -46,6 +46,7 @@ module QA
       autoload :Runner, 'qa/factory/resource/runner'
       autoload :PersonalAccessToken, 'qa/factory/resource/personal_access_token'
       autoload :KubernetesCluster, 'qa/factory/resource/kubernetes_cluster'
+      autoload :User, 'qa/factory/resource/user'
       autoload :Wiki, 'qa/factory/resource/wiki'
     end
 
@@ -160,6 +161,10 @@ module QA
         autoload :Index, 'qa/page/project/issue/index'
       end
 
+      module Fork
+        autoload :New, 'qa/page/project/fork/new.rb'
+      end
+
       module Operations
         module Kubernetes
           autoload :Index, 'qa/page/project/operations/kubernetes/index'
@@ -187,6 +192,7 @@ module QA
     module MergeRequest
       autoload :New, 'qa/page/merge_request/new'
       autoload :Show, 'qa/page/merge_request/show'
+      autoload :Index, 'qa/page/merge_request/index'
     end
 
     module Admin
