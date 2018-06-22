@@ -187,7 +187,6 @@ module.exports = {
   },
 
   optimization: {
-    nodeEnv: false,
     runtimeChunk: 'single',
     splitChunks: {
       maxInitialRequests: 4,
