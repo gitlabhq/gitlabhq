@@ -10,12 +10,10 @@ describe Groups::AutocompleteService do
     create(:group_member, group: group, user: user)
   end
 
-  def user_to_autocompletable(user)
-    {
-      username: user.username,
-      name: user.name,
-      avatar_url: user.avatar_url
-    }
+  def expect_labels_to_equal(labels, expected_labels)
+    expect(labels.size).to eq(expected_labels.size)
+    extract_title = lambda { |label| label['title'] }
+    expect(labels.map(&extract_title)).to eq(expected_labels.map(&extract_title))
   end
 
   describe '#labels' do
@@ -26,12 +24,10 @@ describe Groups::AutocompleteService do
 
     it 'returns labels from own group and ancestor groups' do
       service = described_class.new(group, user)
-      result = service.labels
-
+      results = service.labels_as_hash
       expected_labels = [label1, label2, parent_group_label]
 
-      expect(result.size).to eq(3)
-      expect(result.map(&:title)).to contain_exactly(*expected_labels.map(&:title))
+      expect_labels_to_equal(results, expected_labels)
     end
 
     context 'some labels are already assigned' do
@@ -41,15 +37,18 @@ describe Groups::AutocompleteService do
 
       it 'marks already assigned as set' do
         service = described_class.new(group, user)
-        result = service.labels(epic)
-
+        results = service.labels_as_hash(epic)
         expected_labels = [label1, label2, parent_group_label]
 
-        expect(result.size).to eq(3)
-        expect(result.map { |label| label['title'] }).to contain_exactly(*expected_labels.map(&:title))
+        expect_labels_to_equal(results, expected_labels)
 
-        epic.labels.each do |assigned_label|
-          expect(result.find { |label| label['title'] == assigned_label.title }[:set]).to eq(true)
+        assigned_label_titles = epic.labels.map(&:title)
+        results.each do |hash|
+          if assigned_label_titles.include?(hash['title'])
+            expect(hash[:set]).to eq(true)
+          else
+            expect(hash.key?(:set)).to eq(false)
+          end
         end
       end
     end

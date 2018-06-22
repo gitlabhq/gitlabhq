@@ -1,27 +1,27 @@
 module Groups
   class AutocompleteService < Groups::BaseService
-    def labels(target = nil)
-      labels = LabelsFinder.new(
+    def labels_as_hash(target = nil)
+      available_labels = LabelsFinder.new(
         current_user,
         group_id: group.id,
         include_ancestor_groups: true,
         only_group_labels: true
-      ).execute.select([:color, :title])
+      ).execute
 
-      return labels unless target&.respond_to?(:labels)
+      hashes = available_labels.as_json(only: [:title, :color])
 
-      issuable_label_titles = target.labels.pluck(:title)
-
-      if issuable_label_titles
-        labels = labels.as_json(only: [:title, :color])
-
-        issuable_label_titles.each do |issuable_label_title|
-          found_label = labels.find { |label| label['title'] == issuable_label_title }
-          found_label[:set] = true if found_label
+      if target&.respond_to?(:labels)
+        if already_set_labels = available_labels & target.labels
+          titles = already_set_labels.map(&:title)
+          hashes.each do |hash|
+            if titles.include?(hash['title'])
+              hash[:set] = true
+            end
+          end
         end
       end
 
-      labels
+      hashes
     end
 
     def epics

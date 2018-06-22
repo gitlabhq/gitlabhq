@@ -6,7 +6,7 @@ class Groups::AutocompleteSourcesController < Groups::ApplicationController
   end
 
   def labels
-    render json: @autocomplete_service.labels(target)
+    render json: @autocomplete_service.labels_as_hash(target)
   end
 
   def epics
