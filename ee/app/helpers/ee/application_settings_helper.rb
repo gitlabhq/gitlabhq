@@ -36,15 +36,15 @@ module EE
     end
 
     def pseudonymizer_enabled_help_text
-      _("Enable Pseudonymizer data export")
+      _("Enable Pseudonymizer data collection")
     end
 
     def pseudonymizer_description_text
-      _("GitLab will run the pseudonymizer cron job which will output pseudoanonymized data to be processed and analyzed.")
+      _("GitLab will run the pseudonymizer data collection which will output pseudonymized data to be processed and analyzed.")
     end
 
     def pseudonymizer_disabled_description_text
-      _("The pseudonymizer database cron job is disabled. When enabled the cron job will send pseudoanonymized data to be processed and analyzed.")
+      _("The pseudonymizer data collection is disabled. When enabled, it will send pseudonymized data to be processed and analyzed.")
     end
 
     override :visible_attributes
