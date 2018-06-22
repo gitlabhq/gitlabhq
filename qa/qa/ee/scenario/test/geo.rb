@@ -21,7 +21,10 @@ module QA
                 add_secondary_node
               end
 
-              Geo::Secondary.act { replicate_database }
+              Geo::Secondary.act do
+                replicate_database
+                wait_for_services
+              end
             end
 
             Specs::Runner.perform do |specs|
@@ -101,10 +104,16 @@ module QA
                 gitlab_ctl "replicate-geo-database --host=#{host} --slot-name=#{slot} " \
                            "--sslmode=disable --no-wait --force", input: 'echo mypass'
               end
+            end
 
-              puts 'Waiting until secondary node services are restarted ...'
+            def wait_for_services
+              puts 'Waiting until secondary node services are ready ...'
 
-              sleep 60 # Wait until services are restarted correctly
+              ##
+              # TODO, wait until services are restarted correctly
+              # This needs to be fixed, see gitlab-org/gitlab-ee#6514
+              #
+              sleep 90
             end
           end
         end
