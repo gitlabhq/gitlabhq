@@ -42,15 +42,6 @@ describe 'GitLab Markdown', :aggregate_failures do
     @doc ||= Nokogiri::HTML::DocumentFragment.parse(html)
   end
 
-  before do
-    stub_licensed_features(epics: true)
-    @feat = MarkdownFeature.new
-
-    # `markdown` helper expects a `@project` and `@group` variable
-    @project = @feat.project
-    @group = @feat.group
-  end
-
   # Shared behavior that all pipelines should exhibit
   shared_examples 'all pipelines' do
     it 'includes extensions' do
@@ -207,6 +198,14 @@ describe 'GitLab Markdown', :aggregate_failures do
     end
   end
 
+  before do
+    @feat = MarkdownFeature.new
+
+    # `markdown` helper expects a `@project` and `@group` variable
+    @project = @feat.project
+    @group = @feat.group
+  end
+
   context 'default pipeline' do
     before do
       @html = markdown(@feat.raw_markdown)
@@ -240,7 +239,6 @@ describe 'GitLab Markdown', :aggregate_failures do
         expect(doc).to reference_commits
         expect(doc).to reference_labels
         expect(doc).to reference_milestones
-        expect(doc).to reference_epics
       end
 
       aggregate_failures 'TaskListFilter' do
@@ -302,7 +300,6 @@ describe 'GitLab Markdown', :aggregate_failures do
         expect(doc).to reference_commits
         expect(doc).to reference_labels
         expect(doc).to reference_milestones
-        expect(doc).to reference_epics
       end
 
       aggregate_failures 'TaskListFilter' do

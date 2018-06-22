@@ -85,14 +85,6 @@ class MarkdownFeature
     @group_milestone ||= create(:milestone, name: 'group-milestone', group: group)
   end
 
-  def epic
-    @epic ||= create(:epic, title: 'epic', group: group)
-  end
-
-  def epic_other_group
-    @epic ||= create(:epic, title: 'epic')
-  end
-
   # Cross-references -----------------------------------------------------------
 
   def xproject

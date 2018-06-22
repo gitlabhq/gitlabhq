@@ -239,14 +239,6 @@ References should be parseable even inside _<%= merge_request.to_reference %>_ e
 - Group milestone by name in quotes: <%= group_milestone.to_reference(format: :name) %>
 - Group milestone by URL is ignore: <%= urls.milestone_url(group_milestone) %>
 
-#### EpicReferenceFilter
-
-- Epic by ID: <%= epic.to_reference %>
-- Epic in another group: <%= epic_other_group.to_reference(group) %>
-- Epic by url: <%= urls.group_epic_url(epic.group, epic) %>
-- Link to epic by reference: [Epic](<%= epic.to_reference(group) %>)
-- Link to epic by URL: [Epic](<%= urls.group_epic_url(epic.group, epic) %>)
-
 ### Task Lists
 
 - [ ] Incomplete task 1
