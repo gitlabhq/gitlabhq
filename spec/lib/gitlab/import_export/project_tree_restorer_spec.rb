@@ -407,8 +407,6 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       end
 
       it 'preserves the project milestone IID' do
-        create(:milestone, name: 'A milestone', group: project.group)
-
         expect_any_instance_of(Gitlab::ImportExport::Shared).not_to receive(:error)
 
         restored_project_json
