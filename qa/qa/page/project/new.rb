@@ -8,12 +8,13 @@ module QA
           element :project_path, 'text_field :path'
           element :project_description, 'text_area :description'
           element :project_create_button, "submit 'Create project'"
+          element :visibility_level, 'label :visibility_level'
         end
 
-        def choose_test_namespace
+        def choose_test_namespace(namespace)
           click_element :project_namespace_select
 
-          find('ul.select2-result-sub > li', text: Runtime::Namespace.path).click
+          find('ul.select2-result-sub > li', text: namespace || Runtime::Namespace.path).click
         end
 
         def choose_name(name)
@@ -26,6 +27,10 @@ module QA
 
         def create_new_project
           click_on 'Create project'
+        end
+
+        def set_visibility(visibility)
+          find('.option-title', text: visibility).click unless visibility == 'Private' # Private is selected by default
         end
       end
     end

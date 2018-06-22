@@ -26,6 +26,11 @@ module QA
           element :branches_dropdown
         end
 
+        view 'app/views/projects/buttons/_fork.html.haml' do
+          element :fork_label, "%span= s_('GoToYourFork|Fork')"
+          element :fork_link, "link_to new_project_fork_path(@project)"
+        end
+
         def choose_repository_clone_http
           choose_repository_clone('HTTP', 'http')
         end
@@ -74,6 +79,10 @@ module QA
           click_element :new_menu_toggle
 
           click_link 'New issue'
+        end
+
+        def fork_project
+          click_on 'Fork'
         end
 
         private

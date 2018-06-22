@@ -25,6 +25,20 @@ module QA
           element :standard_tab, "link_to 'Standard'"
         end
 
+        view 'app/views/devise/shared/_signup_box.html.haml' do
+          element :name, 'text_field :name'
+          element :username, 'text_field :username'
+          element :email_field, 'email_field :email'
+          element :email_confirmation, 'email_field :email_confirmation'
+          element :password, 'password_field :password'
+          element :register_button, 'submit "Register"'
+        end
+
+        view 'app/views/devise/shared/_tabs_normal.html.haml' do
+          element :sign_in_tab, /nav-link.*login-pane.*Sign in/
+          element :register_tab, /nav-link.*register-pane.*Register/
+        end
+
         def initialize
           # The login page is usually the entry point for all the scenarios so
           # we need to wait for the instance to start. That said, in some cases
@@ -52,6 +66,26 @@ module QA
 
         def self.path
           '/users/sign_in'
+        end
+
+        def switch_to_sign_in_tab
+          click_on 'Sign in'
+        end
+
+        def switch_to_register_tab
+          click_on 'Register'
+        end
+
+        def sign_up_with_new_user(name, username, email, password)
+          switch_to_register_tab
+
+          fill_in :new_user_name, with: name
+          fill_in :new_user_username, with: username
+          fill_in :new_user_email, with: email
+          fill_in :new_user_email_confirmation, with: email
+          fill_in :new_user_password, with: password
+
+          click_button 'Register'
         end
 
         private

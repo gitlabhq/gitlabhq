@@ -4,13 +4,14 @@ module QA
   module Factory
     module Resource
       class Project < Factory::Base
-        attr_writer :description
+        attr_writer :description, :visibility, :namespace
 
         dependency Factory::Resource::Group, as: :group
 
         def name=(name)
           @name = "#{name}-#{SecureRandom.hex(8)}"
           @description = 'My awesome project'
+          @visibility = 'Private'
         end
 
         product :name do
@@ -30,9 +31,10 @@ module QA
           Page::Group::Show.act { go_to_new_project }
 
           Page::Project::New.perform do |page|
-            page.choose_test_namespace
+            page.choose_test_namespace(@namespace)
             page.choose_name(@name)
             page.add_description(@description)
+            page.set_visibility(@visibility)
             page.create_new_project
           end
         end

@@ -2,13 +2,14 @@ module QA
   module Factory
     module Resource
       class Group < Factory::Base
-        attr_writer :path, :description
+        attr_writer :path, :description, :visibility
 
         dependency Factory::Resource::Sandbox, as: :sandbox
 
         def initialize
           @path = Runtime::Namespace.name
           @description = "QA test run at #{Runtime::Namespace.time}"
+          @visibility = 'Private'
         end
 
         def fabricate!
@@ -23,7 +24,7 @@ module QA
               Page::Group::New.perform do |group|
                 group.set_path(@path)
                 group.set_description(@description)
-                group.set_visibility('Private')
+                group.set_visibility(@visibility)
                 group.create
               end
             end
