@@ -24,6 +24,7 @@ module Pseudonymizer
       @output_files = tables.map do |k, v|
         table_to_csv(k, v[:whitelist], v[:pseudo])
       end.compact
+
       schema_to_yml
       file_list_to_json
 
