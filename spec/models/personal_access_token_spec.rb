@@ -3,6 +3,13 @@ require 'spec_helper'
 describe PersonalAccessToken do
   subject { described_class }
 
+  describe 'associations' do
+    subject { described_class.new }
+
+    it { is_expected.to have_many(:token_resources) }
+    it { is_expected.to have_many(:projects) }
+  end
+
   describe '.build' do
     let(:personal_access_token) { build(:personal_access_token) }
     let(:invalid_personal_access_token) { build(:personal_access_token, :invalid) }
