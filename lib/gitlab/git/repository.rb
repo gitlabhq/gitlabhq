@@ -403,13 +403,7 @@ module Gitlab
 
       # Return repo size in megabytes
       def size
-        size = gitaly_migrate(:repository_size) do |is_enabled|
-          if is_enabled
-            size_by_gitaly
-          else
-            size_by_shelling_out
-          end
-        end
+        size = gitaly_repository_client.repository_size
 
         (size.to_f / 1024).round(2)
       end
