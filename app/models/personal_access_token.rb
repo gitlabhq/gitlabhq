@@ -9,6 +9,9 @@ class PersonalAccessToken < ActiveRecord::Base
 
   belongs_to :user
 
+  has_many :token_resources
+  has_many :projects, through: :token_resources
+
   before_save :ensure_token
 
   scope :active, -> { where("revoked = false AND (expires_at >= NOW() OR expires_at IS NULL)") }

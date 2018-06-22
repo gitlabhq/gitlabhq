@@ -1977,6 +1977,14 @@ ActiveRecord::Schema.define(version: 20180722103201) do
   add_index "todos", ["user_id", "id"], name: "index_todos_on_user_id_and_id_pending", where: "((state)::text = 'pending'::text)", using: :btree
   add_index "todos", ["user_id"], name: "index_todos_on_user_id", using: :btree
 
+  create_table "token_resources", force: :cascade do |t|
+    t.integer "personal_access_token_id", null: false
+    t.integer "project_id", null: false
+  end
+
+  add_index "token_resources", ["personal_access_token_id"], name: "index_token_resources_on_personal_access_token_id", using: :btree
+  add_index "token_resources", ["project_id"], name: "index_token_resources_on_project_id", using: :btree
+
   create_table "trending_projects", force: :cascade do |t|
     t.integer "project_id", null: false
   end
@@ -2348,6 +2356,8 @@ ActiveRecord::Schema.define(version: 20180722103201) do
   add_foreign_key "todos", "projects", name: "fk_45054f9c45", on_delete: :cascade
   add_foreign_key "todos", "users", column: "author_id", name: "fk_ccf0373936", on_delete: :cascade
   add_foreign_key "todos", "users", name: "fk_d94154aa95", on_delete: :cascade
+  add_foreign_key "token_resources", "personal_access_tokens", on_delete: :cascade
+  add_foreign_key "token_resources", "projects", on_delete: :cascade
   add_foreign_key "trending_projects", "projects", on_delete: :cascade
   add_foreign_key "u2f_registrations", "users"
   add_foreign_key "user_callouts", "users", on_delete: :cascade
