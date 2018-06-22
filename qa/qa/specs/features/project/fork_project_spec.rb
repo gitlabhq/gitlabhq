@@ -18,7 +18,7 @@ module QA
       end
 
       # project needs to have at least one commit for fork button to be enabled
-      Factory::Repository::Push.fabricate! do |push|
+      Factory::Repository::ProjectPush.fabricate! do |push|
         push.project = new_project
       end
 
@@ -31,7 +31,7 @@ module QA
       expect(page).to have_content('The project was successfully forked.')
       forked_project = QA::Factory::Product.new
 
-      Factory::Repository::Push.fabricate! do |push|
+      Factory::Repository::ProjectPush.fabricate! do |push|
         push.project = forked_project
         push.file_name = 'file2.txt'
       end
