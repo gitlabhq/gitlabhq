@@ -946,13 +946,7 @@ module Gitlab
       #
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/327
       def ls_files(ref)
-        gitaly_migrate(:ls_files) do |is_enabled|
-          if is_enabled
-            gitaly_ls_files(ref)
-          else
-            git_ls_files(ref)
-          end
-        end
+        gitaly_commit_client.ls_files(ref)
       end
 
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/328
@@ -1834,33 +1828,6 @@ module Gitlab
 
       def size_by_gitaly
         gitaly_repository_client.repository_size
-      end
-
-      def gitaly_ls_files(ref)
-        gitaly_commit_client.ls_files(ref)
-      end
-
-      def git_ls_files(ref)
-        actual_ref = ref || root_ref
-
-        begin
-          sha_from_ref(actual_ref)
-        rescue Rugged::OdbError, Rugged::InvalidError, Rugged::ReferenceError
-          # Return an empty array if the ref wasn't found
-          return []
-        end
-
-        cmd = %W(ls-tree -r --full-tree --full-name -- #{actual_ref})
-        raw_output, _status = run_git(cmd)
-
-        lines = raw_output.split("\n").map do |f|
-          stuff, path = f.split("\t")
-          _mode, type, _sha = stuff.split(" ")
-          path if type == "blob"
-          # Contain only blob type
-        end
-
-        lines.compact
       end
 
       # Returns true if the given ref name exists
