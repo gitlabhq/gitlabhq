@@ -381,15 +381,11 @@ module Gitlab
       # empty repo. See Repository#diff for keys allowed in the +options+
       # hash.
       def diff_from_parent(options = {})
-        Gitlab::GitalyClient.migrate(:commit_raw_diffs) do |is_enabled|
-          if is_enabled
-            @repository.gitaly_commit_client.diff_from_parent(self, options)
-          else
-            rugged_diff_from_parent(options)
-          end
-        end
+        @repository.gitaly_commit_client.diff_from_parent(self, options)
       end
 
+      # Not to be called directly, but right now its used for tests and in old
+      # migrations
       def rugged_diff_from_parent(options = {})
         options ||= {}
         break_rewrites = options[:break_rewrites]
