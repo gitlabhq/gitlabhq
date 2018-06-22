@@ -3,15 +3,7 @@ class PseudonymizerWorker
   include CronjobQueue
 
   def perform
-    unless License.feature_available?(:pseudonymizer)
-      Rails.logger.warn("The pseudonymizer is not available with this license.")
-      return
-    end
-
-    unless Gitlab::CurrentSettings.pseudonymizer_enabled?
-      Rails.logger.info("The pseudonymizer is disabled.")
-      return
-    end
+    return unless Gitlab::CurrentSettings.pseudonymizer_enabled?
 
     options = Pseudonymizer::Options.new(
       config: YAML.load_file(Gitlab.config.pseudonymizer.manifest),

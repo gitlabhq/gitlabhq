@@ -37,7 +37,7 @@ module Pseudonymizer
         upload_file(file, remote_directory)
       end
     rescue ObjectStorageUnavailableError
-      abort "Cannot upload files, make sure the `pseudonimizer.upload.connection` is set properly".color(:red)
+      abort "Cannot upload files, make sure the `pseudonimizer.upload.connection` is set properly"
     end
 
     def cleanup
@@ -45,9 +45,9 @@ module Pseudonymizer
 
       progress_output.print "Deleting tmp directory #{@output_dir} ... "
       FileUtils.rm_rf(@output_dir)
-      progress_output.puts "done".color(:green)
+      progress_output.puts "done"
     rescue
-      progress_output.puts "failed".color(:red)
+      progress_output.puts "failed"
     end
 
     private
@@ -60,9 +60,9 @@ module Pseudonymizer
       if directory.files.create(key: File.join(@upload_dir, File.basename(file)),
                                 body: File.open(file),
                                 public: false)
-        progress_output.puts "done".color(:green)
+        progress_output.puts "done"
       else
-        progress_output.puts "failed".color(:red)
+        progress_output.puts "failed"
       end
     end
 

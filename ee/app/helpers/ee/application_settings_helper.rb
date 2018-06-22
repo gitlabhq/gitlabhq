@@ -40,11 +40,11 @@ module EE
     end
 
     def pseudonymizer_description_text
-      _("GitLab will run the pseudonymizer data collection which will output pseudonymized data to be processed and analyzed.")
+      _("GitLab will run a background job that will produce pseudonymized CSVs of the GitLab database that will be uploaded to your configured object storage directory.")
     end
 
     def pseudonymizer_disabled_description_text
-      _("The pseudonymizer data collection is disabled. When enabled, it will send pseudonymized data to be processed and analyzed.")
+      _("The pseudonymizer data collection is disabled. When enabled, GitLab will run a background job that will produce pseudonymized CSVs of the GitLab database that will be uploaded to your configured object storage directory.")
     end
 
     override :visible_attributes
