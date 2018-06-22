@@ -4,12 +4,7 @@
 
 The GitLab Issue Board is a software project management tool used to plan,
 organize, and visualize a workflow for a feature or product release.
-It can be seen like a light version of a [Kanban] or a [Scrum] board.
-
-Other interesting links:
-
-- [GitLab Issue Board landing page on about.gitlab.com](https://about.gitlab.com/features/issueboard/)
-- [YouTube video introduction to Issue Boards](https://www.youtube.com/watch?v=UWsJ8tkHAa8)
+It can be used as a [Kanban] or a [Scrum] board.
 
 ![GitLab Issue Board](img/issue_board.png)
 
@@ -39,9 +34,13 @@ organized from a broader perspective with one Issue Board per project,
 but also allow your team members to organize their own workflow by creating
 multiple Issue Boards within the same project.
 
+For a visual overview, see our [Issue Board feature page](https://about.gitlab.com/features/issueboard/)
+on about.gitlab.com or our [video introduction to Issue Boards](https://www.youtube.com/watch?v=UWsJ8tkHAa8).
+
 ## Use cases
 
-You can see below a few different use cases for GitLab's Issue Boards.
+There are many ways to use GitLab Issue Boards tailored to your own preferred workflow.
+Here are some common use cases for Issue Boards.
 
 ### Use cases for a single Issue Board
 
@@ -102,9 +101,9 @@ When done with something, they move the card to **Frontend**. The Frontend team'
 Cards finished by the UX team will automatically appear in the **Frontend** column when they're ready for them.
 
 NOTE: **Note:**
-For a broader use case, please check the blog post
+For a broader use case, please see the blog post
 [GitLab Workflow, an Overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/#gitlab-workflow-use-case-scenario).
-For a real use case, please check why
+For a real use case example, you can read why
 [Codepen decided to adopt Issue Boards](https://about.gitlab.com/2017/01/27/codepen-welcome-to-gitlab/#project-management-everything-in-one-place)
 to improve their workflow with multiple boards.
 
@@ -115,7 +114,7 @@ Create lists for each of your team members and quickly drag-and-drop issues onto
 ## Permissions
 
 [Developers and up](../permissions.md) can use all the functionality of the
-Issue Board, that is create/delete lists and drag issues around.
+Issue Board, that is, create or delete lists and drag issues from one list to another.
 
 ## Issue Board terminology
 
@@ -124,7 +123,7 @@ Below is a table of the definitions used for GitLab's Issue Board.
 | What we call it  | What it means |
 | --------------  | ------------- |
 | **Issue Board** | It represents a different view for your issues. It can have multiple lists with each list consisting of issues represented by cards. |
-| **List**        | Each label that exists in the issue tracker can have its own dedicated list. Every list is named after the label it is based on and is represented by a column which contains all the issues associated with that label. You can think of a list like the results you get when you filter the issues by a label in your issue tracker. Each user in the project or group can also have their own dedicated list. |
+| **List**        | Any label that exists in the issue tracker can have its own dedicated list on an issue board. Every list is named after the label it is based on and is represented by a column which contains all the issues associated with that label. You can think of a list like the results you get when you filter the issues by a label in your issue tracker. Each user in the project or group can also have their own dedicated list. |
 | **Card**        | Every card represents an issue and it is shown under the list for which it has a label. The information you can see on a card consists of the issue number, the issue title, the assignee and the labels associated with it. You can drag cards around from one list to another. You can re-order cards within a list. |
 
 There are three types of lists, the ones you create based on your labels, the
