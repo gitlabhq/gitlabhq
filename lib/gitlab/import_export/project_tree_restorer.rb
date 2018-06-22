@@ -178,7 +178,7 @@ module Gitlab
       def create_relation(relation, relation_hash_list)
         relation_array = [relation_hash_list].flatten.map do |relation_hash|
           Gitlab::ImportExport::RelationFactory.create(relation_sym: relation.to_sym,
-                                                       relation_hash: parsed_relation_hash(relation_hash, relation.to_sym),
+                                                       relation_hash: relation_hash,
                                                        members_mapper: members_mapper,
                                                        user: @user,
                                                        project: @restored_project,
@@ -186,12 +186,6 @@ module Gitlab
         end.compact
 
         relation_hash_list.is_a?(Array) ? relation_array : relation_array.first
-      end
-
-      def parsed_relation_hash(relation_hash, relation_type)
-        params = { 'group_id' => restored_project.group.try(:id), 'project_id' => restored_project.id }
-
-        relation_hash.merge(params)
       end
 
       def reader

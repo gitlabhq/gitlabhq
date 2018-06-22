@@ -391,5 +391,32 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(project.milestones.count).to eq(0)
       end
     end
+
+    context 'with clashing milestones on IID' do
+      let!(:project) do
+        create(:project,
+               :builds_disabled,
+               :issues_disabled,
+               name: 'project',
+               path: 'project',
+               group: create(:group))
+      end
+
+      before do
+        project_tree_restorer.instance_variable_set(:@path, "spec/lib/gitlab/import_export/project.milestone-iid.json")
+      end
+
+      it 'preserves the project milestone IID' do
+        create(:milestone, name: 'A milestone', group: project.group)
+
+        expect_any_instance_of(Gitlab::ImportExport::Shared).not_to receive(:error)
+
+        restored_project_json
+
+        expect(project.milestones.count).to eq(2)
+        expect(Milestone.find_by_title('Another milestone').iid).to eq(1)
+        expect(Milestone.find_by_title('Group-level milestone').iid).to eq(2)
+      end
+    end
   end
 end

@@ -54,6 +54,8 @@ module Gitlab
         @project = project
         @imported_object_retries = 0
 
+        @relation_hash['project_id'] = @project.id
+
         # Remove excluded keys from relation_hash
         # We don't do this in the parsed_relation_hash because of the 'transformed attributes'
         # For example, MergeRequestDiffFiles exports its diff attribute as utf8_diff. Then,
@@ -81,12 +83,11 @@ module Gitlab
         when :merge_request_diff_files       then setup_diff
         when :notes                          then setup_note
         when 'Ci::Pipeline'                  then setup_pipeline
-        else
-          @relation_hash['project_id'] = @project.id
         end
 
         update_user_references
         update_project_references
+        update_group_references
         remove_duplicate_assignees
 
         reset_tokens!
@@ -159,6 +160,13 @@ module Gitlab
         # project_id may not be part of the export, but we always need to populate it if required.
         @relation_hash['project_id'] = project_id
         @relation_hash['target_project_id'] = project_id if @relation_hash['target_project_id']
+      end
+
+      def update_group_references
+        return unless EXISTING_OBJECT_CHECK.include?(@relation_name)
+        return unless @relation_hash['group_id']
+
+        @relation_hash['group_id'] = @project.group&.id
       end
 
       def same_source_and_target?
