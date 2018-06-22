@@ -89,18 +89,8 @@ created a random password for `root` user. This can be extracted by the
 following command (replace `<name>` by name of the release - which is `gitlab`
 if you used the command above).
 
-> **Note**: On some versions of Kubernetes a `%` will appear at the end of the password, do not include it.
-
-Mac OS:
-
 ```
-kubectl get secret <name>-gitlab-initial-root-password -ojsonpath={.data.password} | base64 -D
-```
-
-Linux:
-
-```
-kubectl get secret <name>-gitlab-initial-root-password -ojsonpath={.data.password} | base64 -d
+kubectl get secret <name>-gitlab-initial-root-password -ojsonpath={.data.password} | base64 --decode
 ```
 
 ## Outgoing email
