@@ -78,6 +78,9 @@ module Gitlab
         @restored_project = Project.find(@project_id)
       end
 
+      # Remove project models that became group models as we found them at group level.
+      # This no longer required saving them at the root project level.
+      # For example, in the case of an existing group label that matched the title.
       def remove_group_models(relation_hash)
         relation_hash.reject! do |value|
           value.respond_to?(:group_id) && value.group_id && GROUP_MODELS.include?(value.class)

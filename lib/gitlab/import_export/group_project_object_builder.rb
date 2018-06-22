@@ -1,12 +1,12 @@
 module Gitlab
   module ImportExport
     # Given a class, it finds or creates a new object
-    # (initializes in the case of Label) at group or project level
-    # If it does not exist in the group, it creates it at project level
+    # (initializes in the case of Label) at group or project level.
+    # If it does not exist in the group, it creates it at project level.
     #
-    # For example:
-    # `GroupProjectObjectBuilder.build(Label, label_attributes)`
-    #  finds or initializes a label with the given attributes.
+    # Example:
+    #   `GroupProjectObjectBuilder.build(Label, label_attributes)`
+    #    finds or initializes a label with the given attributes.
     #
     # It also adds some logic around Group Labels/Milestones for edge cases.
     class GroupProjectObjectBuilder
@@ -88,6 +88,8 @@ module Gitlab
       #  - Importing into a user namespace project with exported group milestones
       #    where the IID of the Group milestone could conflict with a project one.
       def claim_iid
+        # The milestone has to be a group milestone, as it's the only case where
+        # we set the IID as the maximum. The rest of them are fixed.
         group_milestone = @project.milestones.find_by(iid: @attributes['iid'])
 
         group_milestone.update!(iid: max_milestone_iid + 1) if group_milestone
