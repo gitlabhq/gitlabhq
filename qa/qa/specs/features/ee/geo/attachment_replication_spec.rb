@@ -25,7 +25,11 @@ module QA
             authorize! if needs_authorization?
           end
 
-          expect(page).to have_content 'You are on a secondary (read-only) Geo node'
+          EE::Page::Main::Banner.perform do |banner|
+            expect(banner).to have_secondary_read_only_banner
+          end
+
+          expect(page).to have_content 'You are on a secondary, read-only Geo node'
 
           Page::Menu::Main.perform do |menu|
             menu.go_to_projects

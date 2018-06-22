@@ -13,7 +13,7 @@ module QA
         geo_project_name = project.name
         expect(project.name).to include 'geo-before-rename'
 
-        Factory::Repository::Push.fabricate! do |push|
+        Factory::Repository::ProjectPush.fabricate! do |push|
           push.project = project
           push.file_name = 'README.md'
           push.file_content = '# This is Geo project!'
@@ -44,7 +44,9 @@ module QA
             authorize! if needs_authorization?
           end
 
-          expect(page).to have_content 'You are on a secondary (read-only) Geo node'
+          EE::Page::Main::Banner.perform do |banner|
+            expect(banner).to have_secondary_read_only_banner
+          end
 
           Page::Menu::Main.perform do |menu|
             menu.go_to_projects
