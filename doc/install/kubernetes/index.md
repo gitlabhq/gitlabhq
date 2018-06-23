@@ -14,7 +14,7 @@ should be deployed, upgraded, and configured.
 
 ## Chart Overview
 
-* **[GitLab Chart](https://gitlab.com/charts/gitlab/blob/master/README.md)**: The recommended GitLab chart, currently in beta. Support large deployments with horizontal scaling of individual GitLab components, and does not require NFS.
+* **[GitLab Chart](gitlab_chart.html)**: The recommended GitLab chart, currently in beta. Supports large deployments with horizontal scaling of individual GitLab components, and does not require NFS.
 * **[GitLab Runner Chart](gitlab_runner_chart.md)**: For deploying just the GitLab Runner.
 * Other Charts
   * [GitLab-Omnibus](gitlab_omnibus.md): Chart based on the Omnibus GitLab linux package, only suitable for small deployments. The chart will be deprecated by the [GitLab chart](#gitlab-chart) when it is GA.
@@ -26,7 +26,7 @@ should be deployed, upgraded, and configured.
 
 The best way to operate GitLab on Kubernetes. This chart contains all the required components to get started, and can scale to large deployments.
 
-This chart includes a number of benefits:
+This chart offers a number of benefits:
 * Horizontal scaling of individual components
 * No requirement for shared storage to scale
 * Containers do not need `root` permissions
