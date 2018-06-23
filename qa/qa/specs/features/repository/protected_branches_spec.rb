@@ -13,11 +13,15 @@ module QA
       Page::Main::Login.act { sign_in_using_credentials }
     end
 
-    after do
+    after do |example|
       # We need to clear localStorage because we're using it for the dropdown,
       # and capybara doesn't do this for us.
       # https://github.com/teamcapybara/capybara/issues/1702
       Capybara.execute_script 'localStorage.clear()'
+
+      # In order to help diagnose a false failure
+      # https://gitlab.com/gitlab-org/gitlab-ce/issues/48241
+      log_push_output if example.exception
     end
 
     context 'when developers and maintainers are allowed to push to a protected branch' do
@@ -27,9 +31,9 @@ module QA
         expect(protected_branch.name).to have_content(branch_name)
         expect(protected_branch.push_allowance).to have_content('Developers + Maintainers')
 
-        push = push_new_file(branch_name)
+        @push = push_new_file(branch_name)
 
-        expect(push.output).to match(/remote: To create a merge request for protected-branch, visit/)
+        expect(@push.output).to match(/remote: To create a merge request for protected-branch, visit/)
       end
     end
 
@@ -37,11 +41,11 @@ module QA
       scenario 'user without push rights fails to push to the protected branch' do
         create_protected_branch(allow_to_push: false)
 
-        push = push_new_file(branch_name)
+        @push = push_new_file(branch_name)
 
-        expect(push.output)
+        expect(@push.output)
           .to match(/remote\: GitLab\: You are not allowed to push code to protected branches on this project/)
-        expect(push.output)
+        expect(@push.output)
           .to match(/\[remote rejected\] #{branch_name} -> #{branch_name} \(pre-receive hook declined\)/)
       end
     end
@@ -63,6 +67,14 @@ module QA
         resource.commit_message = 'Add new_file.md'
         resource.branch_name = branch_name
         resource.new_branch = false
+      end
+    end
+
+    def log_push_output
+      if defined?(@push)
+        filename = File.join('tmp', "push-output-#{project.name}")
+        puts "Exception detected. Push output will be saved to #{filename}"
+        IO.binwrite(filename, @push.output)
       end
     end
   end
