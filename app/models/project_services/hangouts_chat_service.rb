@@ -1,3 +1,5 @@
+require 'hangouts_chat'
+
 class HangoutsChatService < ChatNotificationService
   def title
     'Hangouts Chat'
@@ -37,5 +39,28 @@ class HangoutsChatService < ChatNotificationService
       { type: 'checkbox', name: 'notify_only_broken_pipelines' },
       { type: 'checkbox', name: 'notify_only_default_branch' }
     ]
+  end
+
+  private
+
+  def notify(message, opts)
+    simple_text = compose_simple_message(message)
+    HangoutsChat::Sender.new(webhook).simple(simple_text)
+  end
+
+  def compose_simple_message(message)
+    header = message.pretext
+    return header if message.attachments.empty?
+
+    title = fetch_attachment_title(message.attachments.first)
+    body = message.attachments.first[:text]
+    [header, title, body].compact.join("\n")
+  end
+
+  def fetch_attachment_title(attachment)
+    return nil if attachment[:title].nil?
+    return attachment[:title] if attachment[:title_link].nil?
+
+    "<#{attachment[:title_link]}|#{attachment[:title]}>"
   end
 end
