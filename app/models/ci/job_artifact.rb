@@ -22,7 +22,8 @@ module Ci
     enum file_type: {
       archive: 1,
       metadata: 2,
-      trace: 3
+      trace: 3,
+      junit: 4
     }
 
     def update_file_store

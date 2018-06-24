@@ -25,6 +25,7 @@ module Ci
     has_one :job_artifacts_archive, -> { where(file_type: Ci::JobArtifact.file_types[:archive]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
     has_one :job_artifacts_metadata, -> { where(file_type: Ci::JobArtifact.file_types[:metadata]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
     has_one :job_artifacts_trace, -> { where(file_type: Ci::JobArtifact.file_types[:trace]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
+    has_one :job_artifacts_junit, -> { where(file_type: Ci::JobArtifact.file_types[:junit]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
 
     has_one :metadata, class_name: 'Ci::BuildMetadata'
     delegate :timeout, to: :metadata, prefix: true, allow_nil: true
