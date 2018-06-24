@@ -38,7 +38,7 @@ variables:
   ELASTIC_URL: "http://elastic:changeme@docker.elastic.co-elasticsearch-elasticsearch:9200"
   EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-master-ee.json
 
-include: 'ci/.review-app.yml'
+include: 'ee/ci/.review-app.yml'
 
 before_script:
   - bundle --version

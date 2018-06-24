@@ -1,5 +1,6 @@
 # Review apps related tasks
 
+# TODO, duplicated this section from .gitlab-ci.yml. Can this be done differently?
 .duplicated-setup: &duplicated-setup
   retry: 1
   tags:
@@ -21,8 +22,7 @@ review-app-image:
   only:
     - //@gitlab-org/gitlab-ee
 
-.auto_devops: &auto_devops |
-  # Auto DevOps variables and functions
+.reviewapps_deploy: &reviewapps_deploy |
   [[ "$TRACE" ]] && set -x
   export TILLER_NAMESPACE=$KUBE_NAMESPACE
 
@@ -196,7 +196,7 @@ review:
   image: registry.gitlab.com/charts/gitlab:latest
   stage: post-test
   before_script:
-    - *auto_devops
+    - *reviewapps_deploy
   script:
     - export GITLAB_SHELL_VERSION=$(< GITLAB_SHELL_VERSION)
     - export GITALY_VERSION=$(< GITALY_SERVER_VERSION)
@@ -226,7 +226,7 @@ stop_review:
   image: registry.gitlab.com/charts/gitlab:latest
   stage: post-cleanup
   before_script:
-    - *auto_devops
+    - *reviewapps_deploy
   variables:
     GIT_CHECKOUT: "false"
   script:
