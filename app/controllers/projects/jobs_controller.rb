@@ -160,7 +160,7 @@ class Projects::JobsController < Projects::ApplicationController
 
   def build
     @build ||= project.builds.find(params[:id])
-                 .present(current_user: current_user)
+      .present(current_user: current_user)
   end
 
   def build_path(build)
