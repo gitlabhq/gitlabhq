@@ -263,6 +263,7 @@ production: &base
     # Remove outdated repository archives
     repository_archive_cache_worker:
       cron: "0 * * * *"
+
     # Verify custom GitLab Pages domains
     pages_domain_verification_cron_worker:
       cron: "*/15 * * * *"
