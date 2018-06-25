@@ -89,14 +89,14 @@ export default {
 
 <template>
   <div class="multi-file-commit-list-item position-relative">
-    <button
+    <div
       v-tooltip
       :title="tooltipTitle"
       :class="{
         'is-active': isActive
       }"
-      type="button"
       class="multi-file-commit-list-path w-100 border-0 ml-0 mr-0"
+      role="button"
       @dblclick="fileAction"
       @click="openFileInEditor"
     >
@@ -107,7 +107,7 @@ export default {
           :css-classes="iconClass"
         />{{ file.name }}
       </span>
-    </button>
+    </div>
     <component
       :is="actionComponent"
       :path="file.path"
