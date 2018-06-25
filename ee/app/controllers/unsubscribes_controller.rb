@@ -1,7 +1,5 @@
 class UnsubscribesController < ApplicationController
-  skip_before_action :authenticate_user!,
-                     :reject_blocked, :set_current_user_for_observers,
-                     :add_abilities, raise: false
+  skip_before_action :authenticate_user!
 
   def show
     @user = get_user
