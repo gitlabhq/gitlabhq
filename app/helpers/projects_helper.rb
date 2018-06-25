@@ -506,6 +506,14 @@ module ProjectsHelper
     end
   end
 
+  def sidebar_projects_paths
+    %w[
+      projects#show
+      projects#activity
+      cycle_analytics#show
+    ]
+  end
+
   def sidebar_settings_paths
     %w[
       projects#edit
