@@ -38,6 +38,24 @@ describe ImportExportCleanUpService do
       end
     end
 
+    context 'with uploader exports' do
+      it 'removes old files' do
+        upload = create(:import_export_upload,
+                        updated_at: 2.days.ago,
+                        export_file: fixture_file_upload('spec/fixtures/project_export.tar.gz'))
+
+        expect { service.execute }.to change { upload.reload.export_file.file.nil? }.to(true)
+      end
+
+      it 'does not remove new files' do
+        upload = create(:import_export_upload,
+                        updated_at: 1.hour.ago,
+                        export_file: fixture_file_upload('spec/fixtures/project_export.tar.gz'))
+
+        expect { service.execute }.not_to change { upload.reload.export_file.file.nil? }
+      end
+    end
+
     def in_directory_with_files(mtime:)
       Dir.mktmpdir do |tmpdir|
         stub_repository_downloads_path(tmpdir)
