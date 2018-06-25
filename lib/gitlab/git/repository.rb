@@ -699,6 +699,10 @@ module Gitlab
         end
       end
 
+      def update_branch(branch_name, user:, newrev:, oldrev:)
+        OperationService.new(user, self).update_branch(branch_name, newrev, oldrev)
+      end
+
       def rm_branch(branch_name, user:)
         gitaly_migrate(:operation_user_delete_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
@@ -2004,8 +2008,7 @@ module Gitlab
 
           rebase_sha = run_git!(%w(rev-parse HEAD), chdir: rebase_path, env: env).strip
 
-          Gitlab::Git::OperationService.new(user, self)
-            .update_branch(branch, rebase_sha, branch_sha)
+          update_branch(branch, user: user, newrev: rebase_sha, oldrev: branch_sha)
 
           rebase_sha
         end

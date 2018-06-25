@@ -35,12 +35,5 @@ module EE
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1243
       ::Gitlab::GitalyClient::StorageSettings.allow_disk_access { super }
     end
-
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1246
-    def update_branch(user, branch_name, newrev, oldrev)
-      ::Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        ::Gitlab::Git::OperationService.new(user, raw_repository).update_branch(branch_name, newrev, oldrev)
-      end
-    end
   end
 end

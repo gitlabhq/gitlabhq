@@ -97,7 +97,10 @@ module Projects
         newrev = upstream.dereferenced_target.sha
         oldrev = local.dereferenced_target.sha
 
-        repository.update_branch(current_user, branch_name, newrev, oldrev)
+        # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1246
+        ::Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          repository.update_branch(branch_name, user: current_user, newrev: newrev, oldrev: oldrev)
+        end
       elsif branch_name == project.default_branch
         # Cannot be updated
         errors << "The default branch (#{project.default_branch}) has diverged from its upstream counterpart and could not be updated automatically."
