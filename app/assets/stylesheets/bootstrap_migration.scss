@@ -301,7 +301,7 @@ pre code {
   color: $white-light;
 
   h4,
-  a,
+  a:not(.btn),
   .alert-link {
     color: $white-light;
   }
