@@ -1,58 +1,89 @@
 import _ from 'underscore';
+import * as constants from '../constants';
 import { collapseSystemNotes } from './collapse_utils';
 
-export const notes = state => collapseSystemNotes(state.notes);
+export const discussions = state => collapseSystemNotes(state.discussions);
 
 export const targetNoteHash = state => state.targetNoteHash;
 
 export const getNotesData = state => state.notesData;
+
 export const getNotesDataByProp = state => prop => state.notesData[prop];
 
 export const getNoteableData = state => state.noteableData;
+
 export const getNoteableDataByProp = state => prop => state.noteableData[prop];
+
 export const openState = state => state.noteableData.state;
 
 export const getUserData = state => state.userData || {};
-export const getUserDataByProp = state => prop =>
-  state.userData && state.userData[prop];
+
+export const getUserDataByProp = state => prop => state.userData && state.userData[prop];
 
 export const notesById = state =>
-  state.notes.reduce((acc, note) => {
+  state.discussions.reduce((acc, note) => {
     note.notes.every(n => Object.assign(acc, { [n.id]: n }));
     return acc;
   }, {});
 
+export const discussionsByLineCode = state =>
+  state.discussions.reduce((acc, note) => {
+    if (note.diff_discussion && note.line_code && note.resolvable) {
+      // For context about line notes: there might be multiple notes with the same line code
+      const items = acc[note.line_code] || [];
+      items.push(note);
+
+      Object.assign(acc, { [note.line_code]: items });
+    }
+    return acc;
+  }, {});
+
+export const noteableType = state => {
+  const { ISSUE_NOTEABLE_TYPE, MERGE_REQUEST_NOTEABLE_TYPE, EPIC_NOTEABLE_TYPE } = constants;
+
+  if (state.noteableData.noteableType === EPIC_NOTEABLE_TYPE) {
+    return EPIC_NOTEABLE_TYPE;
+  }
+
+  return state.noteableData.merge_params ? MERGE_REQUEST_NOTEABLE_TYPE : ISSUE_NOTEABLE_TYPE;
+};
+
 const reverseNotes = array => array.slice(0).reverse();
+
 const isLastNote = (note, state) =>
-  !note.system &&
-  state.userData &&
-  note.author &&
-  note.author.id === state.userData.id;
+  !note.system && state.userData && note.author && note.author.id === state.userData.id;
 
 export const getCurrentUserLastNote = state =>
-  _.flatten(
-    reverseNotes(state.notes).map(note => reverseNotes(note.notes)),
-  ).find(el => isLastNote(el, state));
+  _.flatten(reverseNotes(state.discussions).map(note => reverseNotes(note.notes))).find(el =>
+    isLastNote(el, state),
+  );
 
 export const getDiscussionLastNote = state => discussion =>
   reverseNotes(discussion.notes).find(el => isLastNote(el, state));
 
 export const discussionCount = state => {
-  const discussions = state.notes.filter(n => !n.individual_note);
+  const filteredDiscussions = state.discussions.filter(n => !n.individual_note && n.resolvable);
 
-  return discussions.length;
+  return filteredDiscussions.length;
 };
 
 export const unresolvedDiscussions = (state, getters) => {
   const resolvedMap = getters.resolvedDiscussionsById;
 
-  return state.notes.filter(n => !n.individual_note && !resolvedMap[n.id]);
+  return state.discussions.filter(n => !n.individual_note && !resolvedMap[n.id]);
+};
+
+export const allDiscussions = (state, getters) => {
+  const resolved = getters.resolvedDiscussionsById;
+  const unresolved = getters.unresolvedDiscussions;
+
+  return Object.values(resolved).concat(unresolved);
 };
 
 export const resolvedDiscussionsById = state => {
   const map = {};
 
-  state.notes.forEach(n => {
+  state.discussions.forEach(n => {
     if (n.notes) {
       const resolved = n.notes.every(note => note.resolved && !note.system);
 
@@ -69,6 +100,16 @@ export const resolvedDiscussionCount = (state, getters) => {
   const resolvedMap = getters.resolvedDiscussionsById;
 
   return Object.keys(resolvedMap).length;
+};
+
+export const discussionTabCounter = state => {
+  let all = [];
+
+  state.discussions.forEach(discussion => {
+    all = all.concat(discussion.notes.filter(note => !note.system && !note.placeholder));
+  });
+
+  return all.length;
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

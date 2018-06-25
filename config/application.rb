@@ -71,6 +71,13 @@ module Gitlab
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = "utf-8"
 
+    # ActionCable mount point.
+    # The default Rails' mount point is `/cable` which may conflict with existing
+    # namespaces/users.
+    # https://github.com/rails/rails/blob/5-0-stable/actioncable/lib/action_cable.rb#L38
+    # Please change this value when configuring ActionCable for real usage.
+    config.action_cable.mount_path = "/-/cable" if rails5?
+
     # Configure sensitive parameters which will be filtered from the log file.
     #
     # Parameters filtered:

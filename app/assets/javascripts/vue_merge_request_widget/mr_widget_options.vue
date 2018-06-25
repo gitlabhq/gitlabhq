@@ -173,7 +173,7 @@ export default {
           }
         })
         .catch(() => {
-          createFlash('Something went wrong while fetching the environments for this merge request. Please try again.'); // eslint-disable-line
+          createFlash('Something went wrong while fetching the environments for this merge request. Please try again.');
         });
     },
     fetchActionsContent() {

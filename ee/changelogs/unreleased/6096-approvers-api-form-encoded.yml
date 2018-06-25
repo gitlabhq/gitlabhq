@@ -1,5 +1,0 @@
----
-title: Fix approvers API not accepting empty form-encoded params
-merge_request: 5784
-author:
-type: fixed

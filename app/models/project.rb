@@ -2033,6 +2033,10 @@ class Project < ActiveRecord::Base
   end
   request_cache(:any_lfs_file_locks?) { self.id }
 
+  def auto_cancel_pending_pipelines?
+    auto_cancel_pending_pipelines == 'enabled'
+  end
+
   private
 
   def storage

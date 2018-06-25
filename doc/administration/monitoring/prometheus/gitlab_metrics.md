@@ -87,6 +87,20 @@ the `monitoring.sidekiq_exporter` configuration option in `gitlab.yml`.
 | geo_wikis_verification_failed_count         | Gauge   | 10.7  | Number of wikis failed to verify on secondary | url
 | geo_wikis_checksum_mismatch_count           | Gauge   | 10.7  | Number of wikis that checksum mismatch on secondary | url
 
+### Ruby metrics
+
+Some basic Ruby runtime metrics are available:
+
+| Metric                                 | Type      | Since | Description |
+|:-------------------------------------- |:--------- |:----- |:----------- |
+| ruby_gc_duration_seconds_total         | Counter   | 11.1  | Time spent by Ruby in GC |
+| ruby_gc_stat_...                       | Gauge     | 11.1  | Various metrics from [GC.stat] |
+| ruby_file_descriptors                  | Gauge     | 11.1  | File descriptors per process |
+| ruby_memory_bytes                      | Gauge     | 11.1  | Memory usage by process |
+| ruby_sampler_duration_seconds_total    | Counter   | 11.1  | Time spent collecting stats |
+
+[GC.stat]: https://ruby-doc.org/core-2.3.0/GC.html#method-c-stat
+
 ## Metrics shared directory
 
 GitLab's Prometheus client requires a directory to store metrics data shared between multi-process services.

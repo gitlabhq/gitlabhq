@@ -1,5 +1,76 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 11.0.0 (2018-06-22)
+
+### Security (2 changes)
+
+- Escape name in merge request approvers dropdown.
+- Fixes include directive to not allow SSRF requests.
+
+### Fixed (15 changes)
+
+- Hide Lock button if File Locking feature is not available in license. !5656
+- Geo - Move out the replication slots items from verification section in Geo admin screen. !5723
+- Fix approvers API not accepting empty form-encoded params. !5784
+- Fix error when locking/unlocking directories. !5862
+- Geo: Formatting fix for geo:status rake task. !6020
+- Geo: Automatically clean up stale lock files on Geo secondary. !6034
+- Remove LFS object warning from import UI. !6083
+- Fix Web IDE status bar if System Footer message is present.
+- [Geo] Fix: Deleted project events may be skipped on the secondary when selective sync is used.
+- [Geo] Fix: Unauthenticated rate limits should not block Geo requests.
+- Perform gitlab-ci-token authentication always using primary.
+- Geo: Gracefully handle a non-JSON response from the node status.
+- Geo: Fix FDW schema check when tables and columns are not in the same order.
+- Fix sticking of runner to primary if new job is scheduled.
+- When last Geo::EventLog is not available, geo:status rake task fails.
+
+### Deprecated (2 changes)
+
+- Rename Container Scanning job and artifact. !5770
+- Rename Code Quality job and artifact. !5773
+
+### Changed (7 changes)
+
+- Removed "(Beta)" from "Auto DevOps" messages. !5583
+- Make issue weight promotion in issuable sidebar dismissable. !5601
+- Remove the comma from the weight system notes. !5854
+- Enrich Security Reports with more data. !5878
+- Truncate Geo event log with a delay. !5897
+- Add support for non-negative integer weight values in issuable sidebar.
+- Improve Failed Jobs tab in the Pipeline detail page.
+
+### Performance (5 changes, 2 of them are from the community)
+
+- Reorder LinkToMemberAvatar vue component props values. !5692 (George Tsiolis)
+- Rename merge request widget author component. !5693 (George Tsiolis)
+- Geo - Fix index for outdated projects on the project_repository_states table. !5986
+- Preload Group plans in EpicsFinder.
+- Only process Geo::EventLog events if associated shard is queryable and healthy.
+
+### Added (12 changes)
+
+- Allows the review of kubernetes pod logs within GitLab. !4752
+- Geo: Rake task to force housekeeping on next sync. !5623
+- Add ability to have zero approvers. !5635
+- Show status information stale icon in Geo admin dashboard. !5653
+- Add assignee board list type. !5743
+- Geo: HTTP git push to secondary now redirects to the primary. !5785
+- Add presets for navigating Epic Roadmap. !5798
+- Guest users will not consume seats quote in Ultimate plan. !5816
+- Create system note on epic date change.
+- Add License Management results in the MR widget.
+- Extract EE specific files.
+- Add service discovery for the DB load balancer.
+
+### Other (4 changes, 1 of them is from the community)
+
+- Add promotion for epics to issuable sidebar. !5601
+- Remove confusing statement in the message shown for Epics list empty state when filters are applied. !5630
+- Fixed illustration alignment for group milestones promotion. !5677 (Constance Okoghenun)
+- Allow viewing only one when multiple issue boards is not enabled.
+
+
 ## 10.8.4 (2018-06-06)
 
 ### Fixed (4 changes)

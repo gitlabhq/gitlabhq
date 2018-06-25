@@ -1,5 +1,3 @@
-/* eslint-disable camelcase, no-unused-vars */
-
 class NoteModel {
   constructor(discussionId, noteObj) {
     this.discussionId = discussionId;

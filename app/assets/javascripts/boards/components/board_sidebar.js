@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, space-before-function-paren, no-new */
+/* eslint-disable comma-dangle, no-new */
 
 import $ from 'jquery';
 import Vue from 'vue';

@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars, space-before-function-paren, func-call-spacing, no-spaced-func, semi, max-len, quotes, space-infix-ops, padded-blocks */
+/* eslint-disable no-unused-vars, func-call-spacing, no-spaced-func, semi, quotes, space-infix-ops, max-len */
 
 import $ from 'jquery';
 import Vue from 'vue';

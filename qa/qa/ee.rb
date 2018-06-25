@@ -4,6 +4,10 @@ module QA
   #
   module EE
     module Page
+      module Main
+        autoload :Banner, 'qa/ee/page/main/banner'
+      end
+
       module Menu
         autoload :Admin, 'qa/ee/page/menu/admin'
       end

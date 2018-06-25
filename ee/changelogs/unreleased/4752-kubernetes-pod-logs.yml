@@ -1,5 +1,0 @@
----
-title: Allows the review of kubernetes pod logs within GitLab
-merge_request: 4752
-author:
-type: added

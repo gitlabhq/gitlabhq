@@ -3,7 +3,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include Devise::Controllers::Rememberable
   prepend EE::OmniauthCallbacksController
 
-  protect_from_forgery except: [:kerberos, :saml, :cas3]
+  protect_from_forgery except: [:kerberos, :saml, :cas3], prepend: true
 
   def handle_omniauth
     omniauth_flow(Gitlab::Auth::OAuth)

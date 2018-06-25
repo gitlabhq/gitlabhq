@@ -1,5 +1,0 @@
----
-title: Fix error when locking/unlocking directories
-merge_request: 5862
-author:
-type: fixed

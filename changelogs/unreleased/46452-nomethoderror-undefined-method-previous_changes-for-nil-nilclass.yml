@@ -1,5 +1,0 @@
----
-title: Check for nil AutoDevOps when saving project CI/CD settings.
-merge_request: 19190
-author:
-type: fixed

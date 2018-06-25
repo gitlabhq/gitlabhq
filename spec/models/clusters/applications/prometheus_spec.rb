@@ -109,6 +109,7 @@ describe Clusters::Applications::Prometheus do
     it 'should be initialized with 3 arguments' do
       expect(subject.name).to eq('prometheus')
       expect(subject.chart).to eq('stable/prometheus')
+      expect(subject.version).to eq('6.7.3')
       expect(subject.values).to eq(prometheus.values)
     end
   end

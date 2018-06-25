@@ -527,7 +527,7 @@
 .header-user {
   .dropdown-menu {
     width: auto;
-    min-width: 160px;
+    min-width: unset;
     margin-top: 4px;
     color: $gl-text-color;
     left: auto;
@@ -558,7 +558,7 @@
   background: $white-light;
   border-bottom: 1px solid $white-normal;
 
-  .center-logo {
+  .mx-auto {
     margin: 8px 0;
     text-align: center;
 

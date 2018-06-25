@@ -173,3 +173,7 @@ DELETE /projects/:id/members/:user_id
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/:id/members/:user_id
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/:id/members/:user_id
 ```
+
+## Give a group access to a project
+
+Look at [share project with group](projects.md#share-project-with-group)

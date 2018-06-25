@@ -323,16 +323,6 @@ module ProjectsHelper
     end
   end
 
-  def size_limit_message(project)
-    show_lfs = project.lfs_enabled? ? 'including files in LFS' : ''
-
-    "The total size of this project's repository #{show_lfs} will be limited to this size. 0 for unlimited. Leave empty to inherit the group/global value."
-  end
-
-  def project_above_size_limit_message
-    Gitlab::RepositorySizeError.new(@project).above_size_limit_message
-  end
-
   def git_user_name
     if current_user
       current_user.name.gsub('"', '\"')
@@ -351,8 +341,6 @@ module ProjectsHelper
 
   def default_url_to_repo(project = @project)
     case default_clone_protocol
-    when 'krb5'
-      project.kerberos_url_to_repo
     when 'ssh'
       project.ssh_url_to_repo
     else
@@ -363,20 +351,17 @@ module ProjectsHelper
   def default_clone_protocol
     if allowed_protocols_present?
       enabled_protocol
-    elsif alternative_kerberos_url? && current_user
-      "krb5"
     else
-      if !current_user || current_user.require_ssh_key?
-        gitlab_config.protocol
-      else
-        'ssh'
-      end
+      extra_default_clone_protocol
     end
   end
 
-  # Given the current GitLab configuration, check whether the GitLab URL for Kerberos is going to be different than the HTTP URL
-  def alternative_kerberos_url?
-    Gitlab.config.alternative_gitlab_kerberos_url?
+  def extra_default_clone_protocol
+    if !current_user || current_user.require_ssh_key?
+      gitlab_config.protocol
+    else
+      'ssh'
+    end
   end
 
   def project_last_activity(project)
@@ -419,36 +404,6 @@ module ProjectsHelper
     end
   end
 
-  def project_can_be_shared?
-    !membership_locked? || @project.allowed_to_share_with_group?
-  end
-
-  def membership_locked?
-    if @project.group && @project.group.membership_lock
-      true
-    else
-      false
-    end
-  end
-
-  def share_project_description
-    share_with_group   = @project.allowed_to_share_with_group?
-    share_with_members = !membership_locked?
-    project_name       = content_tag(:strong, @project.name)
-    member_message     = "You can add a new member to #{project_name}"
-
-    description =
-      if share_with_group && share_with_members
-        "#{member_message} or share it with another group."
-      elsif share_with_group
-        "You can share #{project_name} with another group."
-      elsif share_with_members
-        "#{member_message}."
-      end
-
-    description.to_s.html_safe
-  end
-
   def readme_cache_key
     sha = @project.commit.try(:sha) || 'nil'
     [@project.full_path, sha, "readme"].join('-')
@@ -458,6 +413,7 @@ module ProjectsHelper
     @ref || @repository.try(:root_ref)
   end
 
+  # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1235
   def sanitize_repo_path(project, message)
     return '' unless message.present?
 
@@ -550,5 +506,38 @@ module ProjectsHelper
     else
       "list-label"
     end
+  end
+
+  def sidebar_settings_paths
+    %w[
+      projects#edit
+      project_members#index
+      integrations#show
+      services#edit
+      repository#show
+      ci_cd#show
+      badges#index
+      pages#show
+    ]
+  end
+
+  def sidebar_repository_paths
+    %w[
+      tree
+      blob
+      blame
+      edit_tree
+      new_tree
+      find_file
+      commit
+      commits
+      compare
+      projects/repositories
+      tags
+      branches
+      releases
+      graphs
+      network
+    ]
   end
 end

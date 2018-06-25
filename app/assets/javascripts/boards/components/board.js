@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, space-before-function-paren, one-var */
+/* eslint-disable comma-dangle */
 
 import Sortable from 'sortablejs';
 import Vue from 'vue';

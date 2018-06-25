@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, wrap-iife, quotes, comma-dangle, one-var, one-var-declaration-per-line, no-mixed-operators, no-loop-func, no-floating-decimal, consistent-return, no-unused-vars, prefer-template, prefer-arrow-callback, camelcase, max-len */
+/* eslint-disable func-names, no-var, wrap-iife, quotes, comma-dangle, one-var, one-var-declaration-per-line, no-loop-func, no-floating-decimal, consistent-return, no-unused-vars, prefer-template, prefer-arrow-callback, camelcase, max-len */
 
 import $ from 'jquery';
 import { __ } from '../locale';
@@ -113,8 +113,7 @@ export default (function() {
     });
     ref = this.days;
 
-    // eslint-disable-next-line no-multi-assign
-    for (mm = j = 0, len = ref.length; j < len; mm = (j += 1)) {
+    for (mm = 0, len = ref.length; mm < len; mm += 1) {
       day = ref[mm];
       if (cuday !== day[0] || cumonth !== day[1]) {
         // Dates
@@ -288,8 +287,7 @@ export default (function() {
     ref = commit.parents;
     results = [];
 
-    // eslint-disable-next-line no-multi-assign
-    for (i = j = 0, len = ref.length; j < len; i = (j += 1)) {
+    for (i = 0, len = ref.length; i < len; i += 1) {
       parent = ref[i];
       parentCommit = this.preparedCommits[parent[0]];
       parentY = this.offsetY + this.unitTime * parentCommit.time;

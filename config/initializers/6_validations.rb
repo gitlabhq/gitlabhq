@@ -37,6 +37,7 @@ def validate_storages_config
   end
 end
 
+# Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1237
 def validate_storages_paths
   Gitlab::GitalyClient::StorageSettings.allow_disk_access do
     Gitlab.config.repositories.storages.each do |name, repository_storage|

@@ -9,12 +9,10 @@ export default class ShortcutsIssuable extends Shortcuts {
   constructor(isMergeRequest) {
     super();
 
-    this.$replyField = isMergeRequest ? $('.js-main-target-form #note_note') : $('.js-main-target-form .js-vue-comment-form');
-
     Mousetrap.bind('a', () => ShortcutsIssuable.openSidebarDropdown('assignee'));
     Mousetrap.bind('m', () => ShortcutsIssuable.openSidebarDropdown('milestone'));
     Mousetrap.bind('l', () => ShortcutsIssuable.openSidebarDropdown('labels'));
-    Mousetrap.bind('r', this.replyWithSelectedText.bind(this));
+    Mousetrap.bind('r', ShortcutsIssuable.replyWithSelectedText);
     Mousetrap.bind('e', ShortcutsIssuable.editIssue);
 
     if (isMergeRequest) {
@@ -24,11 +22,16 @@ export default class ShortcutsIssuable extends Shortcuts {
     }
   }
 
-  replyWithSelectedText() {
+  static replyWithSelectedText() {
+    const $replyField = $('.js-main-target-form .js-vue-comment-form');
     const documentFragment = window.gl.utils.getSelectedFragment();
 
+    if (!$replyField.length) {
+      return false;
+    }
+
     if (!documentFragment) {
-      this.$replyField.focus();
+      $replyField.focus();
       return false;
     }
 
@@ -39,21 +42,22 @@ export default class ShortcutsIssuable extends Shortcuts {
       return false;
     }
 
-    const quote = _.map(selected.split('\n'), val => `${(`> ${val}`).trim()}\n`);
+    const quote = _.map(selected.split('\n'), val => `${`> ${val}`.trim()}\n`);
 
     // If replyField already has some content, add a newline before our quote
-    const separator = (this.$replyField.val().trim() !== '' && '\n\n') || '';
-    this.$replyField.val((a, current) => `${current}${separator}${quote.join('')}\n`)
+    const separator = ($replyField.val().trim() !== '' && '\n\n') || '';
+    $replyField
+      .val((a, current) => `${current}${separator}${quote.join('')}\n`)
       .trigger('input')
       .trigger('change');
 
     // Trigger autosize
     const event = document.createEvent('Event');
     event.initEvent('autosize:update', true, false);
-    this.$replyField.get(0).dispatchEvent(event);
+    $replyField.get(0).dispatchEvent(event);
 
     // Focus the input field
-    this.$replyField.focus();
+    $replyField.focus();
 
     return false;
   }

@@ -10,12 +10,19 @@ describe Geo::MoveRepositoryService, :geo do
     subject(:service) { described_class.new(project, old_path, new_path) }
 
     it 'renames the project repositories' do
-      old_disk_path = project.repository.path_to_repo
-      old_wiki_disk_path = project.wiki.repository.path_to_repo
-      full_new_path = File.join(
-        Gitlab.config.repositories.storages[project.repository_storage].legacy_disk_path,
-        new_path
-      )
+      old_disk_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        project.repository.path_to_repo
+      end
+      old_wiki_disk_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        project.wiki.repository.path_to_repo
+      end
+
+      full_new_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        File.join(
+          Gitlab.config.repositories.storages[project.repository_storage].legacy_disk_path,
+          new_path
+        )
+      end
 
       expect(File.directory?(old_disk_path)).to be_truthy
       expect(File.directory?(old_wiki_disk_path)).to be_truthy

@@ -4,10 +4,12 @@
 
     .form-group
       = f.label :key, class: 'label-light'
-      = f.text_area :key, class: "form-control", rows: 8, required: true, placeholder: "Don't paste the private part of the SSH key. Paste the public part, which is usually contained in the file '~/.ssh/id_rsa.pub' and begins with 'ssh-rsa'."
+      %p= _("Paste your public SSH key, which is usually contained in the file '~/.ssh/id_rsa.pub' and begins with 'ssh-rsa'. Don't use your private SSH key.")
+      = f.text_area :key, class: "form-control", rows: 8, required: true, placeholder: 'Typically starts with "ssh-rsa …"'
     .form-group
       = f.label :title, class: 'label-light'
-      = f.text_field :title, class: "form-control", required: true
+      = f.text_field :title, class: "form-control", required: true, placeholder: 'e.g. My MacBook key'
+      %p.form-text.text-muted= _('Name your individual key via a title')
 
     .prepend-top-default
       = f.submit 'Add key', class: "btn btn-create"

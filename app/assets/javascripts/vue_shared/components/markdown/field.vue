@@ -150,7 +150,7 @@
     </div>
     <div
       v-show="previewMarkdown"
-      class="md md-preview-holder md-preview"
+      class="md md-preview-holder md-preview js-vue-md-preview"
     >
       <div
         ref="markdown-preview"

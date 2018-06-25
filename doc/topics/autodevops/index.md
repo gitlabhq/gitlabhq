@@ -1,6 +1,6 @@
 # Auto DevOps
 
-> [Introduced][ce-37115] in GitLab 10.0.
+> [Introduced][ce-37115] in GitLab 10.0. Generally available on GitLab 11.0.
 
 Auto DevOps automatically detects, builds, tests, deploys, and monitors your
 applications.
@@ -12,6 +12,12 @@ as every project can have a complete workflow from verification to monitoring
 without needing to configure anything. Just push your code and GitLab takes
 care of everything else. This makes it easier to start new projects and brings
 consistency to how applications are set up throughout a company.
+
+## Quick start
+
+If you are using GitLab.com, see the [quick start guide](quick_start_guide.md)
+for using Auto DevOps with GitLab.com and a Kubernetes cluster on Google Kubernetes
+Engine.
 
 ## Comparison to application platforms and PaaS
 
@@ -34,19 +40,19 @@ in a couple of ways:
 ## Features
 
 Comprised of a set of stages, Auto DevOps brings these best practices to your
-project in an easy and automatic way:
+project in a simple and automatic way:
 
 1. [Auto Build](#auto-build)
 1. [Auto Test](#auto-test)
-1. [Auto Code Quality](#auto-code-quality)
-1. [Auto SAST (Static Application Security Testing)](#auto-sast)
-1. [Auto Dependency Scanning](#auto-dependency-scanning)
-1. [Auto License Management](#auto-license-management)
+1. [Auto Code Quality](#auto-code-quality) **[STARTER]**
+1. [Auto SAST (Static Application Security Testing)](#auto-sast) **[ULTIMATE]**
+1. [Auto Dependency Scanning](#auto-dependency-scanning) **[ULTIMATE]**
+1. [Auto License Management](#auto-license-management) **[ULTIMATE]**
 1. [Auto Container Scanning](#auto-container-scanning)
 1. [Auto Review Apps](#auto-review-apps)
-1. [Auto DAST (Dynamic Application Security Testing)](#auto-dast)
+1. [Auto DAST (Dynamic Application Security Testing)](#auto-dast) **[ULTIMATE]**
 1. [Auto Deploy](#auto-deploy)
-1. [Auto Browser Performance Testing](#auto-browser-performance-testing)
+1. [Auto Browser Performance Testing](#auto-browser-performance-testing) **[PREMIUM]**
 1. [Auto Monitoring](#auto-monitoring)
 
 As Auto DevOps relies on many different components, it's good to have a basic
@@ -135,10 +141,9 @@ and `1.2.3.4` is the IP address of your load balancer; generally NGINX
 ([see requirements](#requirements)). How to set up the DNS record is beyond
 the scope of this document; you should check with your DNS provider.
 
-Alternatively you can use free public services like [nip.io](http://nip.io) or
-[nip.io](http://nip.io) which provide automatic wildcard DNS without any
-configuration. Just set the Auto DevOps base domain to `1.2.3.4.nip.io` or
-`1.2.3.4.nip.io`.
+Alternatively you can use free public services like [nip.io](http://nip.io)
+which provide automatic wildcard DNS without any configuration. Just set the
+Auto DevOps base domain to `1.2.3.4.nip.io`.
 
 Once set up, all requests will hit the load balancer, which in turn will route
 them to the Kubernetes pods that run your application(s).
@@ -197,12 +202,6 @@ Now that all is configured, you can test your setup by creating a merge request
 and verifying that your app is deployed as a review app in the Kubernetes
 cluster with the `review/*` environment scope. Similarly, you can check the
 other environments.
-
-## Quick start
-
-If you are using GitLab.com, see our [quick start guide](quick_start_guide.md)
-for using Auto DevOps with GitLab.com and an external Kubernetes cluster on
-Google Cloud.
 
 ## Enabling Auto DevOps
 
@@ -288,7 +287,7 @@ NOTE: **Note:**
 Auto Test uses tests you already have in your application. If there are no
 tests, it's up to you to add them.
 
-### Auto Code Quality
+### Auto Code Quality **[STARTER]**
 
 Auto Code Quality uses the
 [Code Quality image](https://gitlab.com/gitlab-org/security-products/codequality) to run
@@ -323,7 +322,7 @@ to run analysis on the project dependencies and checks for potential security is
 report is created, it's uploaded as an artifact which you can later download and
 check out.
 
-In GitLab Ultimate, any security warnings are also
+Any security warnings are also
 [shown in the merge request widget](../../user/project/merge_requests/dependency_scanning.md).
 
 ### Auto License Management **[ULTIMATE]**
@@ -331,12 +330,12 @@ In GitLab Ultimate, any security warnings are also
 > Introduced in [GitLab Ultimate][ee] 11.0.
 
 License Management uses the
-[License Management Docker image](https://gitlab.com/gitlab-org/security-products/license_management)
+[License Management Docker image](https://gitlab.com/gitlab-org/security-products/license-management)
 to search the project dependencies for their license. Once the
 report is created, it's uploaded as an artifact which you can later download and
 check out.
 
-In GitLab Ultimate, any licenses are also
+Any licenses are also
 [shown in the merge request widget](../../user/project/merge_requests/license_management.md).
 
 ### Auto Container Scanning

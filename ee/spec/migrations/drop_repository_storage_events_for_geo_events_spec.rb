@@ -97,6 +97,8 @@ describe DropRepositoryStorageEventsForGeoEvents, :migration do
   end
 
   def legacy_disk_path(name)
-    Gitlab.config.repositories.storages[name].legacy_disk_path
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      Gitlab.config.repositories.storages[name].legacy_disk_path
+    end
   end
 end

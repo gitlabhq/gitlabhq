@@ -104,7 +104,6 @@ export default class Members {
     const { $memberListItem, $toggle, $dateInput } = this.getMemberListItems($btn);
 
     $btn.disable();
-    // eslint-disable-next-line promise/catch-or-return
     this.overrideLdap($memberListItem, $btn.data('endpoint'), true)
       .then(() => {
         this.showLDAPPermissionsWarning(e);

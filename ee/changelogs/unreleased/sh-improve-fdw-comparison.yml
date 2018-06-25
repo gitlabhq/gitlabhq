@@ -1,5 +1,0 @@
----
-title: 'Geo: Fix FDW schema check when tables and columns are not in the same order'
-merge_request:
-author:
-type: fixed

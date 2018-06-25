@@ -420,7 +420,9 @@ describe Gitlab::Checks::ChangeAccess do
         #
         # That means only the merge commit should be validated.
         let(:newrev) do
-          rugged = project.repository.raw_repository.rugged
+          rugged = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            project.repository.raw_repository.rugged
+          end
           base = oldrev
           to_merge = '2d1096e3a0ecf1d2baf6dee036cc80775d4940ba'
 

@@ -1,5 +1,0 @@
----
-title: Hide Lock button if File Locking feature is not available in license
-merge_request: 5656
-author:
-type: fixed
