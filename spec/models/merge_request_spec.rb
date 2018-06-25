@@ -2145,8 +2145,7 @@ describe MergeRequest do
     describe 'transition to cannot_be_merged' do
       let(:notification_service) { double(:notification_service) }
       let(:todo_service) { double(:todo_service) }
-
-      subject { create(:merge_request, merge_status: :unchecked) }
+      subject { create(:merge_request, state, merge_status: :unchecked) }
 
       before do
         allow(NotificationService).to receive(:new).and_return(notification_service)
@@ -2155,33 +2154,52 @@ describe MergeRequest do
         allow(subject.project.repository).to receive(:can_be_merged?).and_return(false)
       end
 
-      it 'notifies conflict, but does not notify again if rechecking still results in cannot_be_merged' do
-        expect(notification_service).to receive(:merge_request_unmergeable).with(subject).once
-        expect(todo_service).to receive(:merge_request_became_unmergeable).with(subject).once
+      [:opened, :locked].each do |state|
+        context state do
+          let(:state) { state }
 
-        subject.mark_as_unmergeable
-        subject.mark_as_unchecked
-        subject.mark_as_unmergeable
+          it 'notifies conflict, but does not notify again if rechecking still results in cannot_be_merged' do
+            expect(notification_service).to receive(:merge_request_unmergeable).with(subject).once
+            expect(todo_service).to receive(:merge_request_became_unmergeable).with(subject).once
+
+            subject.mark_as_unmergeable
+            subject.mark_as_unchecked
+            subject.mark_as_unmergeable
+          end
+
+          it 'notifies conflict, whenever newly unmergeable' do
+            expect(notification_service).to receive(:merge_request_unmergeable).with(subject).twice
+            expect(todo_service).to receive(:merge_request_became_unmergeable).with(subject).twice
+
+            subject.mark_as_unmergeable
+            subject.mark_as_unchecked
+            subject.mark_as_mergeable
+            subject.mark_as_unchecked
+            subject.mark_as_unmergeable
+          end
+
+          it 'does not notify whenever merge request is newly unmergeable due to other reasons' do
+            allow(subject.project.repository).to receive(:can_be_merged?).and_return(true)
+
+            expect(notification_service).not_to receive(:merge_request_unmergeable)
+            expect(todo_service).not_to receive(:merge_request_became_unmergeable)
+
+            subject.mark_as_unmergeable
+          end
+        end
       end
 
-      it 'notifies conflict, whenever newly unmergeable' do
-        expect(notification_service).to receive(:merge_request_unmergeable).with(subject).twice
-        expect(todo_service).to receive(:merge_request_became_unmergeable).with(subject).twice
+      [:closed, :merged].each do |state|
+        let(:state) { state }
 
-        subject.mark_as_unmergeable
-        subject.mark_as_unchecked
-        subject.mark_as_mergeable
-        subject.mark_as_unchecked
-        subject.mark_as_unmergeable
-      end
+        context state do
+          it 'does not notify' do
+            expect(notification_service).not_to receive(:merge_request_unmergeable)
+            expect(todo_service).not_to receive(:merge_request_became_unmergeable)
 
-      it 'does not notify whenever merge request is newly unmergeable due to other reasons' do
-        allow(subject.project.repository).to receive(:can_be_merged?).and_return(true)
-
-        expect(notification_service).not_to receive(:merge_request_unmergeable)
-        expect(todo_service).not_to receive(:merge_request_became_unmergeable)
-
-        subject.mark_as_unmergeable
+            subject.mark_as_unmergeable
+          end
+        end
       end
     end
 
