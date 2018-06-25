@@ -16,6 +16,7 @@ describe('IDE commit form', () => {
 
     store.state.changedFiles.push('test');
     store.state.currentProjectId = 'abcproject';
+    store.state.currentBranchId = 'master';
     Vue.set(store.state.projects, 'abcproject', { ...projectData });
 
     vm = createComponentWithStore(Component, store).$mount();

@@ -49,8 +49,8 @@ export default {
       :title="$options.currentBranchPermissionsTooltip"
     >
       <span
-        v-html="commitToCurrentBranchText"
         class="ide-radio-label"
+        v-html="commitToCurrentBranchText"
       >
       </span>
     </radio-group>
