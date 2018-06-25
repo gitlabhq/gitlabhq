@@ -163,7 +163,7 @@ class Namespace < ActiveRecord::Base
   end
 
   def shared_runners_enabled?
-    projects.with_shared_runners.any?
+    projects.with_shared_runners_enabled.any?
   end
 
   # Returns all ancestors, self, and descendants of the current namespace.

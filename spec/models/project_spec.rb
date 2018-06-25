@@ -1044,8 +1044,8 @@ describe Project do
     it { expect(project.builds_enabled?).to be_truthy }
   end
 
-  describe '.with_shared_runners' do
-    subject { described_class.with_shared_runners }
+  describe '.with_shared_runners_enabled' do
+    subject { described_class.with_shared_runners_enabled }
 
     context 'when shared runners are enabled for project' do
       let!(:project) { create(:project, shared_runners_enabled: true) }

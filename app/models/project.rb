@@ -330,7 +330,7 @@ class Project < ActiveRecord::Base
   scope :with_push, -> { joins(:events).where('events.action = ?', Event::PUSHED) }
   scope :with_project_feature, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id') }
   scope :with_statistics, -> { includes(:statistics) }
-  scope :with_shared_runners, -> { where(shared_runners_enabled: true) }
+  scope :with_shared_runners_enabled, -> { where(shared_runners_enabled: true) }
   scope :inside_path, ->(path) do
     # We need routes alias rs for JOIN so it does not conflict with
     # includes(:route) which we use in ProjectsFinder.
@@ -1440,8 +1440,10 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def any_runners?(&block)
-    active_runners.any?(&block)
+  def active_online_runners
+    strong_memoize(:active_online_runners) do
+      active_runners.online
+    end
   end
 
   def valid_runners_token?(token)
