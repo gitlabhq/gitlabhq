@@ -4,4 +4,8 @@ class TokenResource < ActiveRecord::Base
 
   validates :personal_access_token, presence: true
   validates :project, presence: true
+
+  def self.allowing_resource(resource)
+    where(project: resource)
+  end
 end
