@@ -1869,7 +1869,11 @@ describe Ci::Build do
     end
 
     context 'when yaml_variables are undefined' do
-      let(:pipeline) { create(:ci_pipeline, project: project) }
+      let(:pipeline) do
+        create(:ci_pipeline, project: project,
+                             sha: project.commit.id,
+                             ref: project.default_branch)
+      end
 
       before do
         build.yaml_variables = nil
