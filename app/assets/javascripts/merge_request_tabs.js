@@ -1,6 +1,7 @@
 /* eslint-disable no-new, class-methods-use-this */
 
 import $ from 'jquery';
+import Vue from 'vue';
 import Cookies from 'js-cookie';
 import axios from './lib/utils/axios_utils';
 import flash from './flash';
@@ -8,6 +9,7 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import initChangesDropdown from './init_changes_dropdown';
 import bp from './breakpoints';
 import { parseUrlPathname, handleLocationHash, isMetaClick } from './lib/utils/common_utils';
+import { isInVueNoteablePage } from './lib/utils/dom_utils';
 import { getLocationHash } from './lib/utils/url_utility';
 import initDiscussionTab from './image_diff/init_discussion_tab';
 import Diff from './diff';
@@ -70,11 +72,13 @@ export default class MergeRequestTabs {
     const navbar = document.querySelector('.navbar-gitlab');
     const peek = document.getElementById('js-peek');
     const paddingTop = 16;
+    this.commitsTab = document.querySelector('.tab-content .commits.tab-pane');
 
     this.diffsLoaded = false;
     this.pipelinesLoaded = false;
     this.commitsLoaded = false;
     this.fixedLayoutPref = null;
+    this.eventHub = new Vue();
 
     this.setUrl = setUrl !== undefined ? setUrl : true;
     this.setCurrentAction = this.setCurrentAction.bind(this);
@@ -149,7 +153,9 @@ export default class MergeRequestTabs {
       this.resetViewContainer();
       this.destroyPipelinesView();
     } else if (this.isDiffAction(action)) {
-      this.loadDiff($target.attr('href'));
+      if (!isInVueNoteablePage()) {
+        this.loadDiff($target.attr('href'));
+      }
       if (bp.getBreakpointSize() !== 'lg') {
         this.shrinkView();
       }
@@ -157,6 +163,7 @@ export default class MergeRequestTabs {
         this.expandViewContainer();
       }
       this.destroyPipelinesView();
+      this.commitsTab.classList.remove('active');
     } else if (action === 'pipelines') {
       this.resetViewContainer();
       this.mountPipelinesView();
@@ -172,6 +179,8 @@ export default class MergeRequestTabs {
     if (this.setUrl) {
       this.setCurrentAction(action);
     }
+
+    this.eventHub.$emit('MergeRequestTabChange', this.getCurrentAction());
   }
 
   scrollToElement(container) {

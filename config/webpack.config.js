@@ -16,9 +16,12 @@ const DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
 const DEV_SERVER_LIVERELOAD = IS_DEV_SERVER && process.env.DEV_SERVER_LIVERELOAD !== 'false';
 const WEBPACK_REPORT = process.env.WEBPACK_REPORT;
 const NO_COMPRESSION = process.env.NO_COMPRESSION;
+const NO_SOURCEMAPS = process.env.NO_SOURCEMAPS;
 
 const VUE_VERSION = require('vue/package.json').version;
 const VUE_LOADER_VERSION = require('vue-loader/package.json').version;
+
+const devtool = IS_PRODUCTION ? 'source-map' : 'cheap-module-eval-source-map';
 
 let autoEntriesCount = 0;
 let watchAutoEntries = [];
@@ -171,7 +174,6 @@ module.exports = {
   },
 
   optimization: {
-    nodeEnv: false,
     runtimeChunk: 'single',
     splitChunks: {
       maxInitialRequests: 4,
@@ -286,7 +288,7 @@ module.exports = {
     inline: DEV_SERVER_LIVERELOAD,
   },
 
-  devtool: IS_PRODUCTION ? 'source-map' : 'cheap-module-eval-source-map',
+  devtool: NO_SOURCEMAPS ? false : devtool,
 
   // sqljs requires fs
   node: { fs: 'empty' },

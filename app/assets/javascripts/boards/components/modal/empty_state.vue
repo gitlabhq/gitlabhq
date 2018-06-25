@@ -1,8 +1,8 @@
-import Vue from 'vue';
+<script>
 import ModalStore from '../../stores/modal_store';
 import modalMixin from '../../mixins/modal_mixins';
 
-gl.issueBoards.ModalEmptyState = Vue.extend({
+export default {
   mixins: [modalMixin],
   props: {
     newIssuePath: {
@@ -38,32 +38,36 @@ gl.issueBoards.ModalEmptyState = Vue.extend({
       return obj;
     },
   },
-  template: `
-    <section class="empty-state">
-      <div class="row">
-        <div class="col-12 col-md-6 order-md-last">
-          <aside class="svg-content"><img :src="emptyStateSvg"/></aside>
-        </div>
-        <div class="col-12 col-md-6 order-md-first">
-          <div class="text-content">
-            <h4>{{ contents.title }}</h4>
-            <p v-html="contents.content"></p>
-            <a
-              :href="newIssuePath"
-              class="btn btn-success btn-inverted"
-              v-if="activeTab === 'all'">
-              New issue
-            </a>
-            <button
-              type="button"
-              class="btn btn-default"
-              @click="changeTab('all')"
-              v-if="activeTab === 'selected'">
-              Open issues
-            </button>
-          </div>
+};
+</script>
+
+<template>
+  <section class="empty-state">
+    <div class="row">
+      <div class="col-12 col-md-6 order-md-last">
+        <aside class="svg-content"><img :src="emptyStateSvg"/></aside>
+      </div>
+      <div class="col-12 col-md-6 order-md-first">
+        <div class="text-content">
+          <h4>{{ contents.title }}</h4>
+          <p v-html="contents.content"></p>
+          <a
+            v-if="activeTab === 'all'"
+            :href="newIssuePath"
+            class="btn btn-success btn-inverted"
+          >
+            New issue
+          </a>
+          <button
+            v-if="activeTab === 'selected'"
+            class="btn btn-default"
+            type="button"
+            @click="changeTab('all')"
+          >
+            Open issues
+          </button>
         </div>
       </div>
-    </section>
-  `,
-});
+    </div>
+  </section>
+</template>

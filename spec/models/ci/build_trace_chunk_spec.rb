@@ -125,14 +125,6 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
         end
       end
     end
-
-    context 'when data_store is others' do
-      before do
-        build_trace_chunk.send(:write_attribute, :data_store, -1)
-      end
-
-      it { expect { subject }.to raise_error('Unsupported data store') }
-    end
   end
 
   describe '#truncate' do

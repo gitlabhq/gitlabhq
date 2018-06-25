@@ -17,6 +17,10 @@ class Discussion
 
             to: :first_note
 
+  def project_id
+    project&.id
+  end
+
   def self.build(notes, context_noteable = nil)
     notes.first.discussion_class(context_noteable).new(notes, context_noteable)
   end

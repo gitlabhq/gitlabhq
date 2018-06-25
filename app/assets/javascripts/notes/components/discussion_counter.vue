@@ -1,5 +1,5 @@
 <script>
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import resolveSvg from 'icons/_icon_resolve_discussion.svg';
 import resolvedSvg from 'icons/_icon_status_success_solid.svg';
 import mrIssueSvg from 'icons/_icon_mr_issue.svg';
@@ -48,10 +48,14 @@ export default {
     this.nextDiscussionSvg = nextDiscussionSvg;
   },
   methods: {
-    jumpToFirstDiscussion() {
-      const el = document.querySelector(
-        `[data-discussion-id="${this.firstUnresolvedDiscussionId}"]`,
-      );
+    ...mapActions(['expandDiscussion']),
+    jumpToFirstUnresolvedDiscussion() {
+      const discussionId = this.firstUnresolvedDiscussionId;
+      if (!discussionId) {
+        return;
+      }
+
+      const el = document.querySelector(`[data-discussion-id="${discussionId}"]`);
       const activeTab = window.mrTabs.currentAction;
 
       if (activeTab === 'commits' || activeTab === 'pipelines') {
@@ -59,6 +63,7 @@ export default {
       }
 
       if (el) {
+        this.expandDiscussion({ discussionId });
         scrollToElement(el);
       }
     },
@@ -97,7 +102,7 @@ export default {
         <a
           v-tooltip
           :href="resolveAllDiscussionsIssuePath"
-          title="Resolve all discussions in new issue"
+          :title="s__('Resolve all discussions in new issue')"
           data-container="body"
           class="new-issue-for-discussion btn btn-default discussion-create-issue-btn">
           <span v-html="mrIssueSvg"></span>
@@ -112,7 +117,7 @@ export default {
           title="Jump to first unresolved discussion"
           data-container="body"
           class="btn btn-default discussion-next-btn"
-          @click="jumpToFirstDiscussion">
+          @click="jumpToFirstUnresolvedDiscussion">
           <span v-html="nextDiscussionSvg"></span>
         </button>
       </div>

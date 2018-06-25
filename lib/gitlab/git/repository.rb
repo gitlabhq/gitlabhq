@@ -403,13 +403,7 @@ module Gitlab
 
       # Return repo size in megabytes
       def size
-        size = gitaly_migrate(:repository_size) do |is_enabled|
-          if is_enabled
-            size_by_gitaly
-          else
-            size_by_shelling_out
-          end
-        end
+        size = gitaly_repository_client.repository_size
 
         (size.to_f / 1024).round(2)
       end
@@ -613,17 +607,7 @@ module Gitlab
       def ref_name_for_sha(ref_path, sha)
         raise ArgumentError, "sha can't be empty" unless sha.present?
 
-        gitaly_migrate(:find_ref_name) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.find_ref_name(sha, ref_path)
-          else
-            args = %W(for-each-ref --count=1 #{ref_path} --contains #{sha})
-
-            # Not found -> ["", 0]
-            # Found -> ["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0]
-            run_git(args).first.split.last
-          end
-        end
+        gitaly_ref_client.find_ref_name(sha, ref_path)
       end
 
       # Get refs hash which key is is the commit id
@@ -946,13 +930,7 @@ module Gitlab
       #
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/327
       def ls_files(ref)
-        gitaly_migrate(:ls_files) do |is_enabled|
-          if is_enabled
-            gitaly_ls_files(ref)
-          else
-            git_ls_files(ref)
-          end
-        end
+        gitaly_commit_client.ls_files(ref)
       end
 
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/328
@@ -1826,41 +1804,6 @@ module Gitlab
       def last_commit_for_path_by_rugged(sha, path)
         sha = last_commit_id_for_path_by_shelling_out(sha, path)
         commit(sha)
-      end
-
-      def size_by_shelling_out
-        popen(%w(du -sk), path).first.strip.to_i
-      end
-
-      def size_by_gitaly
-        gitaly_repository_client.repository_size
-      end
-
-      def gitaly_ls_files(ref)
-        gitaly_commit_client.ls_files(ref)
-      end
-
-      def git_ls_files(ref)
-        actual_ref = ref || root_ref
-
-        begin
-          sha_from_ref(actual_ref)
-        rescue Rugged::OdbError, Rugged::InvalidError, Rugged::ReferenceError
-          # Return an empty array if the ref wasn't found
-          return []
-        end
-
-        cmd = %W(ls-tree -r --full-tree --full-name -- #{actual_ref})
-        raw_output, _status = run_git(cmd)
-
-        lines = raw_output.split("\n").map do |f|
-          stuff, path = f.split("\t")
-          _mode, type, _sha = stuff.split(" ")
-          path if type == "blob"
-          # Contain only blob type
-        end
-
-        lines.compact
       end
 
       # Returns true if the given ref name exists

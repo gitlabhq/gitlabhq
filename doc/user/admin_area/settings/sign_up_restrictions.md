@@ -38,3 +38,4 @@ semicolon, comma, or a new line.
 ![Domain Blacklist](img/domain_blacklist.png)
 
 [ce-5259]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5259
+[ce-598]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/598

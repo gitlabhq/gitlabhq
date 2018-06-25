@@ -1,4 +1,16 @@
 export default {
+  toContainText: () => ({
+    compare(vm, text) {
+      if (!(vm.$el instanceof HTMLElement)) {
+        throw new Error('vm.$el is not a DOM element!');
+      }
+
+      const result = {
+        pass: vm.$el.innerText.includes(text),
+      };
+      return result;
+    },
+  }),
   toHaveSpriteIcon: () => ({
     compare(element, iconName) {
       if (!iconName) {
@@ -10,7 +22,9 @@ export default {
       }
 
       const iconReferences = [].slice.apply(element.querySelectorAll('svg use'));
-      const matchingIcon = iconReferences.find(reference => reference.getAttribute('xlink:href').endsWith(`#${iconName}`));
+      const matchingIcon = iconReferences.find(reference =>
+        reference.getAttribute('xlink:href').endsWith(`#${iconName}`),
+      );
       const result = {
         pass: !!matchingIcon,
       };
@@ -20,7 +34,7 @@ export default {
       } else {
         result.message = `${element.outerHTML} does not contain the sprite icon "${iconName}"!`;
 
-        const existingIcons = iconReferences.map((reference) => {
+        const existingIcons = iconReferences.map(reference => {
           const iconUrl = reference.getAttribute('xlink:href');
           return `"${iconUrl.replace(/^.+#/, '')}"`;
         });
@@ -29,6 +43,14 @@ export default {
         }
       }
 
+      return result;
+    },
+  }),
+  toRender: () => ({
+    compare(vm) {
+      const result = {
+        pass: vm.$el.nodeType !== Node.COMMENT_NODE,
+      };
       return result;
     },
   }),

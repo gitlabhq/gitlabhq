@@ -290,10 +290,6 @@
   &.is-active,
   &.is-active .board-card-assignee:hover a {
     background-color: $row-hover;
-
-    &:first-child:not(:only-child) {
-      box-shadow: -10px 0 10px 1px $row-hover;
-    }
   }
 
   .badge {
