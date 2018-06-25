@@ -10,7 +10,7 @@ export default {
   },
   computed: {
     ...mapState(['currentBranchId', 'changedFiles', 'stagedFiles']),
-    ...mapGetters(['currentProject']),
+    ...mapGetters(['currentProject', 'currentBranch']),
     commitToCurrentBranchText() {
       return sprintf(
         __('Commit to %{branchName} branch'),
@@ -23,7 +23,9 @@ export default {
     },
   },
   mounted() {
-    if (this.disableMergeRequestRadio) {
+    if (!this.currentBranch.can_push) {
+      this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH);
+    } else if (this.disableMergeRequestRadio) {
       this.updateCommitAction(consts.COMMIT_TO_CURRENT_BRANCH);
     }
   },
@@ -33,6 +35,9 @@ export default {
   commitToCurrentBranch: consts.COMMIT_TO_CURRENT_BRANCH,
   commitToNewBranch: consts.COMMIT_TO_NEW_BRANCH,
   commitToNewBranchMR: consts.COMMIT_TO_NEW_BRANCH_MR,
+  currentBranchPermissionsTooltip: __(
+    "This option is disabled as you don't have write permissions for the current branch",
+  ),
 };
 </script>
 
@@ -40,10 +45,12 @@ export default {
   <div class="append-bottom-15 ide-commit-radios">
     <radio-group
       :value="$options.commitToCurrentBranch"
-      :checked="true"
+      :disabled="!currentBranch.can_push"
+      :title="$options.currentBranchPermissionsTooltip"
     >
       <span
         v-html="commitToCurrentBranchText"
+        class="ide-radio-label"
       >
       </span>
     </radio-group>
@@ -56,6 +63,7 @@ export default {
       v-if="currentProject.merge_requests_enabled"
       :value="$options.commitToNewBranchMR"
       :label="__('Create a new branch and merge request')"
+      :title="__('This option is disabled while you still have unstaged changes')"
       :show-input="true"
       :disabled="disableMergeRequestRadio"
     />
