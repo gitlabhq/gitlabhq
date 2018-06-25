@@ -1871,48 +1871,38 @@ describe Gitlab::Git::Repository, seed_helper: true do
       repository_rugged.config["gitlab.fullpath"] = repository_path
     end
 
-    shared_examples 'writing repo config' do
-      context 'is given a path' do
-        it 'writes it to disk' do
-          repository.write_config(full_path: "not-the/real-path.git")
+    context 'is given a path' do
+      it 'writes it to disk' do
+        repository.write_config(full_path: "not-the/real-path.git")
 
-          config = File.read(File.join(repository_path, "config"))
+        config = File.read(File.join(repository_path, "config"))
 
-          expect(config).to include("[gitlab]")
-          expect(config).to include("fullpath = not-the/real-path.git")
-        end
-      end
-
-      context 'it is given an empty path' do
-        it 'does not write it to disk' do
-          repository.write_config(full_path: "")
-
-          config = File.read(File.join(repository_path, "config"))
-
-          expect(config).to include("[gitlab]")
-          expect(config).to include("fullpath = #{repository_path}")
-        end
-      end
-
-      context 'repository does not exist' do
-        it 'raises NoRepository and does not call Gitaly WriteConfig' do
-          repository = Gitlab::Git::Repository.new('default', 'does/not/exist.git', '')
-
-          expect(repository.gitaly_repository_client).not_to receive(:write_config)
-
-          expect do
-            repository.write_config(full_path: 'foo/bar.git')
-          end.to raise_error(Gitlab::Git::Repository::NoRepository)
-        end
+        expect(config).to include("[gitlab]")
+        expect(config).to include("fullpath = not-the/real-path.git")
       end
     end
 
-    context "when gitaly_write_config is enabled" do
-      it_behaves_like "writing repo config"
+    context 'it is given an empty path' do
+      it 'does not write it to disk' do
+        repository.write_config(full_path: "")
+
+        config = File.read(File.join(repository_path, "config"))
+
+        expect(config).to include("[gitlab]")
+        expect(config).to include("fullpath = #{repository_path}")
+      end
     end
 
-    context "when gitaly_write_config is disabled", :disable_gitaly do
-      it_behaves_like "writing repo config"
+    context 'repository does not exist' do
+      it 'raises NoRepository and does not call Gitaly WriteConfig' do
+        repository = Gitlab::Git::Repository.new('default', 'does/not/exist.git', '')
+
+        expect(repository.gitaly_repository_client).not_to receive(:write_config)
+
+        expect do
+          repository.write_config(full_path: 'foo/bar.git')
+        end.to raise_error(Gitlab::Git::Repository::NoRepository)
+      end
     end
   end
 
