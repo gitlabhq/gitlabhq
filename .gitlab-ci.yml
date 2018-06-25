@@ -310,7 +310,7 @@ review-docs-cleanup:
   when: manual
   script:
     - gem install gitlab --no-ri --no-rdoc
-    - ./SCRIPT_NAME cleanup
+    - ./$SCRIPT_NAME cleanup
 
 ##
 # Trigger a docker image build in CNG (Cloud Native GitLab) repository
