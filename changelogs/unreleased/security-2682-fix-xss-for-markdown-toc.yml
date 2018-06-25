@@ -1,0 +1,5 @@
+---
+title: Fix XSS vulnerability for table of content generation
+merge_request:
+author:
+type: security
