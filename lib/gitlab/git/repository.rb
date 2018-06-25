@@ -1122,16 +1122,7 @@ module Gitlab
       end
 
       def create_from_bundle(bundle_path)
-        gitaly_migrate(:create_repo_from_bundle) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.create_from_bundle(bundle_path)
-          else
-            run_git!(%W(clone --bare -- #{bundle_path} #{path}), chdir: nil)
-            self.class.create_hooks(path, File.expand_path(Gitlab.config.gitlab_shell.hooks_path))
-          end
-        end
-
-        true
+        gitaly_repository_client.create_from_bundle(bundle_path)
       end
 
       def create_from_snapshot(url, auth)
