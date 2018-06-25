@@ -281,8 +281,8 @@
     }
 
     .margin {
-      background-color: $gray-light;
-      border-right: 1px solid $white-normal;
+      background-color: $white-light;
+      border-right: 1px solid $theme-gray-100;
 
       .line-insert {
         border-right: 1px solid $line-added-dark;
@@ -303,6 +303,15 @@
 .multi-file-editor-holder {
   height: 100%;
   min-height: 0;
+
+  &.is-readonly,
+  .editor.original {
+    .monaco-editor,
+    .monaco-editor-background,
+    .monaco-editor .inputarea.ime-input {
+      background-color: $theme-gray-50;
+    }
+  }
 }
 
 .preview-container {
