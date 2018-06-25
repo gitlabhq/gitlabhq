@@ -26,6 +26,10 @@ export default {
       type: String,
       required: true,
     },
+    projectPath: {
+      type: String,
+      required: true,
+    },
     shouldShow: {
       type: Boolean,
       required: false,
@@ -94,18 +98,16 @@ export default {
     },
   },
   mounted() {
-    this.setEndpoint(this.endpoint);
-    this
-      .fetchDiffFiles()
-      .catch(() => {
-        createFlash(__('Something went wrong on our end. Please try again!'));
-      });
+    this.setBaseConfig({ endpoint: this.endpoint, projectPath: this.projectPath });
+    this.fetchDiffFiles().catch(() => {
+      createFlash(__('Something went wrong on our end. Please try again!'));
+    });
   },
   created() {
     this.adjustView();
   },
   methods: {
-    ...mapActions(['setEndpoint', 'fetchDiffFiles']),
+    ...mapActions(['setBaseConfig', 'fetchDiffFiles']),
     setActive(filePath) {
       this.activeFile = filePath;
     },

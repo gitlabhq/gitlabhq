@@ -501,6 +501,10 @@
   border-bottom: 0;
 }
 
+.merge-request-details .preview-container .file-container .file-content img {
+  max-height: 50vh;
+}
+
 .diff-stats-summary-toggler {
   padding: 0;
   background-color: transparent;

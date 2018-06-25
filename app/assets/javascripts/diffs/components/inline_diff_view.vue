@@ -36,7 +36,8 @@ export default {
   <table
     :class="userColorScheme"
     :data-commit-id="commitId"
-    class="code diff-wrap-lines js-syntax-highlight text-file">
+    class="code diff-wrap-lines js-syntax-highlight text-file"
+    data-test="diff-inline-view">
     <tbody>
       <template
         v-for="(line, index) in normalizedDiffLines"
