@@ -100,7 +100,7 @@ module Gitlab
                                             { project: @project },
                                             :milestones,
                                             init_iid
-        ).generate
+                                           ).generate
       end
     end
   end
