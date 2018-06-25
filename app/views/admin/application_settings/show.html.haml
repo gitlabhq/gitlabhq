@@ -373,3 +373,5 @@
         = _('Geo allows you to replicate your GitLab instance to other geographical locations.')
     .settings-content
       = render partial: 'slack'
+
+= render_if_exists 'admin/application_settings/pseudonymizer_settings', expanded: expanded
