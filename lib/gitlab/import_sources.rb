@@ -10,7 +10,8 @@ module Gitlab
     # We exclude `bare_repository` here as it has no import class associated
     ImportTable = [
       ImportSource.new('github',         'GitHub',        Gitlab::GithubImport::ParallelImporter),
-      ImportSource.new('bitbucket',      'Bitbucket',     Gitlab::BitbucketImport::Importer),
+      ImportSource.new('bitbucket',      'Bitbucket Cloud',     Gitlab::BitbucketImport::Importer),
+      ImportSource.new('bitbucket_server', 'Bitbucket Server', Gitlab::BitbucketServerImport::Importer),
       ImportSource.new('gitlab',         'GitLab.com',    Gitlab::GitlabImport::Importer),
       ImportSource.new('google_code',    'Google Code',   Gitlab::GoogleCodeImport::Importer),
       ImportSource.new('fogbugz',        'FogBugz',       Gitlab::FogbugzImport::Importer),
