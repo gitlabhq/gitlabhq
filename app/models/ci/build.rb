@@ -401,7 +401,7 @@ module Ci
     end
 
     def any_runners_online?
-      project.any_runners? { |runner| runner.active? && runner.online? && runner.can_pick?(self) }
+      Ci::RunnerBuildsMatcherService.new.valid_runners_for_pending_build(self).any?
     end
 
     def stuck?

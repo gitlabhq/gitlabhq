@@ -27,6 +27,7 @@ module Ci
     scope :paused, -> { where(active: false) }
     scope :online, -> { where('contacted_at > ?', contact_time_deadline) }
     scope :ordered, -> { order(id: :desc) }
+    scope :run_untagged, -> { where(run_untagged: true) }
 
     scope :belonging_to_project, -> (project_id) {
       joins(:runner_projects).where(ci_runner_projects: { project_id: project_id })
@@ -53,6 +54,16 @@ module Ci
       where(locked: false)
         .where.not("ci_runners.id IN (#{project.runners.select(:id).to_sql})")
         .project_type
+    end
+
+    scope :contains_all_tag_ids, -> (tag_ids) do
+      matcher = ::ActsAsTaggableOn::Tagging
+        .where(taggable_type: Ci::Runner)
+        .where(context: 'tags')
+        .where('taggable_id = ci_runners.id')
+        .where(tag_id: tag_ids).select('count(*)')
+
+      where("(?)=(?)", matcher, tag_ids.count)
     end
 
     validate :tag_constraints
@@ -171,12 +182,6 @@ module Ci
       runner_projects.any?
     end
 
-    def can_pick?(build)
-      return false if self.ref_protected? && !build.protected?
-
-      assignable_for?(build.project_id) && accepting_tags?(build)
-    end
-
     def only_for?(project)
       projects == [project]
     end
@@ -223,9 +228,33 @@ module Ci
       self.update_columns(values) if persist_cached_data?
     end
 
-    def pick_build!(build)
-      if can_pick?(build)
-        tick_runner_queue
+    def pick_build!
+      tick_runner_queue
+    end
+
+    def all_projects
+      case runner_type
+      when 'instance_type'
+        Project.all
+          .with_shared_runners_enabled
+          .without_deleted
+          .with_builds_enabled
+
+      when 'group_type'
+        groups = ::Group.joins(:runner_namespaces).merge(runner_namespaces)
+        hierarchy_groups = Gitlab::GroupHierarchy.new(groups).base_and_descendants
+        Project.where(namespace_id: hierarchy_groups)
+          .with_group_runners_enabled
+          .without_deleted
+          .with_builds_enabled
+
+      when 'project_type'
+        projects
+          .without_deleted
+          .with_builds_enabled
+
+      else
+        raise ArgumentError, 'invalid runner_type'
       end
     end
 
@@ -259,10 +288,6 @@ module Ci
       end
     end
 
-    def assignable_for?(project_id)
-      self.class.owned_or_shared(project_id).where(id: self.id).any?
-    end
-
     def no_projects
       if projects.any?
         errors.add(:runner, 'cannot have projects assigned')
@@ -291,10 +316,6 @@ module Ci
       unless is_shared? == instance_type?
         errors.add(:is_shared, 'is not equal to instance_type?')
       end
-    end
-
-    def accepting_tags?(build)
-      (run_untagged? || build.has_tags?) && (build.tag_list - tag_list).empty?
     end
   end
 end
