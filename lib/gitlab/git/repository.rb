@@ -978,29 +978,8 @@ module Gitlab
       end
 
       def languages(ref = nil)
-        gitaly_migrate(:commit_languages, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_commit_client.languages(ref)
-          else
-            ref ||= rugged.head.target_id
-            languages = Linguist::Repository.new(rugged, ref).languages
-            total = languages.map(&:last).sum
-
-            languages = languages.map do |language|
-              name, share = language
-              color = Linguist::Language[name].color || "##{Digest::SHA256.hexdigest(name)[0...6]}"
-              {
-                value: (share.to_f * 100 / total).round(2),
-                label: name,
-                color: color,
-                highlight: color
-              }
-            end
-
-            languages.sort do |x, y|
-              y[:value] <=> x[:value]
-            end
-          end
+        wrapped_gitaly_errors do
+          gitaly_commit_client.languages(ref)
         end
       end
 
