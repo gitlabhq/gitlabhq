@@ -1,6 +1,3 @@
-- if milestone.due_date || milestone.start_date
-  .milestone-range.append-bottom-5
-    = milestone_date_range(milestone)
 - if milestone.expired? and not milestone.closed?
   .status-box.status-box-expired Expired
 - if milestone.upcoming?

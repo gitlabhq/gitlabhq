@@ -11,13 +11,17 @@
           = " - #{milestone_type}"
 
       - if @project || milestone.is_a?(GlobalMilestone) || milestone.group_milestone?
-        = render('shared/milestone_expired', milestone: milestone)
-        - if milestone.legacy_group_milestone?
-          .projects
-            - milestone.milestones.each do |milestone|
-              = link_to milestone_path(milestone) do
-                %span.label-badge.label-badge-blue
-                  = dashboard ? milestone.project.full_name : milestone.project.name
+        - if milestone.due_date || milestone.start_date
+          .milestone-range.append-bottom-5
+            = milestone_date_range(milestone)
+        %div
+          = render('shared/milestone_expired', milestone: milestone)
+          - if milestone.legacy_group_milestone?
+            .projects
+              - milestone.milestones.each do |milestone|
+                = link_to milestone_path(milestone) do
+                  %span.label-badge.label-badge-blue.d-inline-block.append-bottom-5.append-right-5
+                    = dashboard ? milestone.project.full_name : milestone.project.name
 
     .col-sm-4.milestone-progress
       = milestone_progress_bar(milestone)
