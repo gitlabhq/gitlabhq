@@ -26,13 +26,12 @@ describe Geo::RepositorySyncWorker, :geo, :clean_gitlab_redis_cache do
       it 'skips backfill for repositories on other shards' do
         create(:project, group: synced_group, repository_storage: 'broken')
         unhealthy_dirty = create(:project, group: synced_group, repository_storage: 'broken')
-
         create(:geo_project_registry, :synced, :repository_dirty, project: unhealthy_dirty)
 
-        # Make the shard unhealthy
-        Gitlab::Shell.new.rm_directory('broken', '/')
+        allow(Gitlab::GitalyClient).to receive(:call) do
+          raise GRPC::Unavailable.new('No Gitaly available')
+        end
 
-        expect(Geo::RepositoryShardSyncWorker).to receive(:perform_async).with(project_in_synced_group.repository.storage)
         expect(Geo::RepositoryShardSyncWorker).not_to receive(:perform_async).with('broken')
 
         subject.perform
@@ -42,8 +41,6 @@ describe Geo::RepositorySyncWorker, :geo, :clean_gitlab_redis_cache do
         secondary.update!(selective_sync_type: 'shards', selective_sync_shards: [healthy_shard_name])
 
         # Report both shards as healthy
-        expect(Gitlab::HealthChecks::FsShardsCheck).to receive(:readiness)
-          .and_return([result(true, healthy_shard_name), result(true, 'broken')])
         expect(Gitlab::HealthChecks::GitalyCheck).to receive(:readiness)
           .and_return([result(true, healthy_shard_name), result(true, 'broken')])
 
@@ -77,8 +74,6 @@ describe Geo::RepositorySyncWorker, :geo, :clean_gitlab_redis_cache do
         create(:geo_project_registry, :synced, :repository_dirty, project: unhealthy_dirty)
 
         # Report only one healthy shard
-        expect(Gitlab::HealthChecks::FsShardsCheck).to receive(:readiness)
-          .and_return([result(true, healthy_shard_name), result(true, 'broken')])
         expect(Gitlab::HealthChecks::GitalyCheck).to receive(:readiness)
           .and_return([result(true, healthy_shard_name), result(false, 'broken')])
 

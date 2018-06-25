@@ -7,7 +7,6 @@ module Geo
       include ::Gitlab::Geo::LogHelpers
 
       HEALTHY_SHARD_CHECKS = [
-        Gitlab::HealthChecks::FsShardsCheck,
         Gitlab::HealthChecks::GitalyCheck
       ].freeze
 
