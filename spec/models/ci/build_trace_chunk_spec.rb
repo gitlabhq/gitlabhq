@@ -60,9 +60,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       let(:data_store) { :fog }
 
       before do
-        ::Fog::Storage.new(JobArtifactUploader.object_store_credentials).tap do |connection|
-          connection.put_object('artifacts', "tmp/builds/#{build.id}/chunks/#{chunk_index}.log", 'Sample data in fog')
-        end        
+        build_trace_chunk.send(:unsafe_set_data!, 'Sample data in fog')
       end
 
       it { is_expected.to eq('Sample data in fog') }
@@ -104,9 +102,23 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
           expect(build_trace_chunk.data).to eq(merged_data)
         end
 
+        context 'when the other process is appending' do
+          let(:lease_key) { "trace_write:#{build_trace_chunk.build.id}:chunks:#{build_trace_chunk.chunk_index}" }
+
+          it 'raise an error' do
+            begin
+              uuid = Gitlab::ExclusiveLease.new(lease_key, timeout: 1.day).try_obtain
+
+              expect { subject }.to raise_error('Failed to obtain a lock')
+            ensure
+              Gitlab::ExclusiveLease.cancel(lease_key, uuid)
+            end
+          end
+        end
+
         context 'when new_data is nil' do
           let(:new_data) { nil }
-  
+
           it 'raises an error' do
             expect { subject }.to raise_error('New data is nil')
           end
@@ -114,10 +126,10 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
 
         context 'when new_data is empty' do
           let(:new_data) { '' }
-  
+
           it 'does not append' do
             subject
-  
+
             expect(build_trace_chunk.data).to eq(data)
           end
 
@@ -361,13 +373,29 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       end
 
       context 'when data does not exist' do
-        it { expect{ subject }.to raise_error(Excon::Error::NotFound) }
+        it { expect { subject }.to raise_error(Excon::Error::NotFound) }
       end
     end
   end
 
   describe '#persist_data!' do
     subject { build_trace_chunk.persist_data! }
+
+    shared_examples_for 'Atomic operation' do
+      context 'when the other process is persisting' do
+        let(:lease_key) { "trace_write:#{build_trace_chunk.build.id}:chunks:#{build_trace_chunk.chunk_index}" }
+
+        it 'raise an error' do
+          begin
+            uuid = Gitlab::ExclusiveLease.new(lease_key, timeout: 1.day).try_obtain
+
+            expect { subject }.to raise_error('Failed to obtain a lock')
+          ensure
+            Gitlab::ExclusiveLease.cancel(lease_key, uuid)
+          end
+        end
+      end
+    end
 
     context 'when data_store is redis' do
       let(:data_store) { :redis }
@@ -392,6 +420,8 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
           expect(Ci::BuildTraceChunks::Database.new.data(build_trace_chunk)).to be_nil
           expect(Ci::BuildTraceChunks::Fog.new.data(build_trace_chunk)).to eq(data)
         end
+
+        it_behaves_like 'Atomic operation'
       end
 
       context 'when data does not exist' do
@@ -424,6 +454,8 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
           expect(Ci::BuildTraceChunks::Database.new.data(build_trace_chunk)).to be_nil
           expect(Ci::BuildTraceChunks::Fog.new.data(build_trace_chunk)).to eq(data)
         end
+
+        it_behaves_like 'Atomic operation'
       end
 
       context 'when data does not exist' do
@@ -456,66 +488,56 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
           expect(Ci::BuildTraceChunks::Database.new.data(build_trace_chunk)).to be_nil
           expect(Ci::BuildTraceChunks::Fog.new.data(build_trace_chunk)).to eq(data)
         end
+
+        it_behaves_like 'Atomic operation'
       end
     end
   end
 
-  ## TODO: 
-  # describe 'ExclusiveLock' do
-  #   before do
-  #     allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { nil }
-  #     stub_const('Ci::BuildTraceChunk::WRITE_LOCK_RETRY', 1)
-  #   end
+  describe 'deletes data in redis after a parent record destroyed' do
+    let(:project) { create(:project) }
 
-  #   it 'raise an error' do
-  #     expect { build_trace_chunk.append('ABC', 0) }.to raise_error('Failed to obtain write lock')
-  #   end
-  # end
+    before do
+      pipeline = create(:ci_pipeline, project: project)
+      create(:ci_build, :running, :trace_live, pipeline: pipeline, project: project)
+      create(:ci_build, :running, :trace_live, pipeline: pipeline, project: project)
+      create(:ci_build, :running, :trace_live, pipeline: pipeline, project: project)
+    end
 
-  # describe 'deletes data in redis after a parent record destroyed' do
-  #   let(:project) { create(:project) }
+    shared_examples_for 'deletes all build_trace_chunk and data in redis' do
+      it do
+        Gitlab::Redis::SharedState.with do |redis|
+          expect(redis.scan_each(match: "gitlab:ci:trace:*:chunks:*").to_a.size).to eq(3)
+        end
 
-  #   before do
-  #     pipeline = create(:ci_pipeline, project: project)
-  #     create(:ci_build, :running, :trace_live, pipeline: pipeline, project: project)
-  #     create(:ci_build, :running, :trace_live, pipeline: pipeline, project: project)
-  #     create(:ci_build, :running, :trace_live, pipeline: pipeline, project: project)
-  #   end
+        expect(described_class.count).to eq(3)
 
-  #   shared_examples_for 'deletes all build_trace_chunk and data in redis' do
-  #     it do
-  #       Gitlab::Redis::SharedState.with do |redis|
-  #         expect(redis.scan_each(match: "gitlab:ci:trace:*:chunks:*").to_a.size).to eq(3)
-  #       end
+        subject
 
-  #       expect(described_class.count).to eq(3)
+        expect(described_class.count).to eq(0)
 
-  #       subject
+        Gitlab::Redis::SharedState.with do |redis|
+          expect(redis.scan_each(match: "gitlab:ci:trace:*:chunks:*").to_a.size).to eq(0)
+        end
+      end
+    end
 
-  #       expect(described_class.count).to eq(0)
+    context 'when traces are archived' do
+      let(:subject) do
+        project.builds.each do |build|
+          build.success!
+        end
+      end
 
-  #       Gitlab::Redis::SharedState.with do |redis|
-  #         expect(redis.scan_each(match: "gitlab:ci:trace:*:chunks:*").to_a.size).to eq(0)
-  #       end
-  #     end
-  #   end
+      it_behaves_like 'deletes all build_trace_chunk and data in redis'
+    end
 
-  #   context 'when traces are archived' do
-  #     let(:subject) do
-  #       project.builds.each do |build|
-  #         build.success!
-  #       end
-  #     end
+    context 'when project is destroyed' do
+      let(:subject) do
+        project.destroy!
+      end
 
-  #     it_behaves_like 'deletes all build_trace_chunk and data in redis'
-  #   end
-
-  #   context 'when project is destroyed' do
-  #     let(:subject) do
-  #       project.destroy!
-  #     end
-
-  #     it_behaves_like 'deletes all build_trace_chunk and data in redis'
-  #   end
-  # end
+      it_behaves_like 'deletes all build_trace_chunk and data in redis'
+    end
+  end
 end
