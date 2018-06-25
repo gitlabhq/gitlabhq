@@ -1,3 +1,6 @@
+require 'net/http'
+require 'json'
+
 module QA
   module EE
     module Scenario
@@ -89,6 +92,7 @@ module QA
             include QA::Scenario::Actable
 
             def initialize
+              @address = QA::Runtime::Scenario.geo_secondary_address
               @name = QA::Runtime::Scenario.geo_secondary_name
             end
 
@@ -109,11 +113,25 @@ module QA
             def wait_for_services
               puts 'Waiting until secondary node services are ready ...'
 
-              ##
-              # TODO, wait until services are restarted correctly
-              # This needs to be fixed, see gitlab-org/gitlab-ee#6514
-              #
-              sleep 90
+              Time.new.tap do |start|
+                while Time.new - start < 120
+                  begin
+                    Net::HTTP.get(URI.join(@address, '/-/readiness')).tap do |body|
+                      if JSON.parse(body).all? { |_, service| service['status'] == 'ok' }
+                        return puts "\nSecondary ready after #{Time.now - start} seconds." # rubocop:disable Cop/AvoidReturnFromBlocks
+                      else
+                        print '.'
+                      end
+                    end
+                  rescue StandardError
+                    print 'e'
+                  end
+
+                  sleep 1
+                end
+
+                raise "Secondary node did not start correctly in #{Time.now - start} seconds!"
+              end
             end
           end
         end
