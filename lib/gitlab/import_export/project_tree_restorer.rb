@@ -1,7 +1,7 @@
 module Gitlab
   module ImportExport
     class ProjectTreeRestorer
-      # Relations which cannot be saved at project level
+      # Relations which cannot be saved at project level (and have a group assigned)
       GROUP_MODELS = [GroupLabel, Milestone].freeze
 
       def initialize(user:, shared:, project:)
@@ -83,7 +83,7 @@ module Gitlab
       # For example, in the case of an existing group label that matched the title.
       def remove_group_models(relation_hash)
         relation_hash.reject! do |value|
-          value.respond_to?(:group_id) && value.group_id && GROUP_MODELS.include?(value.class)
+          GROUP_MODELS.include?(value.class) && value.group_id
         end
       end
 

@@ -36,19 +36,17 @@ module Gitlab
       end
 
       def where_clause
-        return { project_id: @project.id } unless milestone? || label?
-
         @attributes.slice('title').map do |key, value|
           if @group
-            project_clause(key, value).or(group_clause(key, value))
+            project_group_clause(key, value)
           else
             project_clause(key, value)
           end
         end.reduce(:or)
       end
 
-      def group_clause(key, value)
-        table[key].eq(value).and(table[:group_id].eq(@group.id))
+      def project_group_clause(key, value)
+        table[key].eq(value).and(table[:project_id].eq(@project.id).or(table[:group_id].eq(@group.id)))
       end
 
       def project_clause(key, value)
@@ -92,11 +90,17 @@ module Gitlab
         # we set the IID as the maximum. The rest of them are fixed.
         group_milestone = @project.milestones.find_by(iid: @attributes['iid'])
 
-        group_milestone.update!(iid: max_milestone_iid + 1) if group_milestone
+        group_milestone.update!(iid:  max_milestone_iid(group_milestone)) if group_milestone
       end
 
-      def max_milestone_iid
-        [@attributes['iid'], @project.milestones.maximum(:iid)].compact.max
+      def max_milestone_iid(group_milestone)
+        init_iid = [@attributes['iid'], @project.milestones.maximum(:iid)].compact.max + 1
+
+        InternalId::InternalIdGenerator.new(group_milestone,
+                                            { project: @project },
+                                            :milestones,
+                                            init_iid
+        ).generate
       end
     end
   end

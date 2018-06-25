@@ -150,16 +150,16 @@ module Gitlab
       end
 
       def update_project_references
-        project_id = @relation_hash.delete('project_id')
-
         # If source and target are the same, populate them with the new project ID.
         if @relation_hash['source_project_id']
-          @relation_hash['source_project_id'] = same_source_and_target? ? project_id : MergeRequestParser::FORKED_PROJECT_ID
+          @relation_hash['source_project_id'] = same_source_and_target? ? @relation_hash['project_id'] : MergeRequestParser::FORKED_PROJECT_ID
         end
 
-        # project_id may not be part of the export, but we always need to populate it if required.
-        @relation_hash['project_id'] = project_id
-        @relation_hash['target_project_id'] = project_id if @relation_hash['target_project_id']
+        @relation_hash['target_project_id'] = @relation_hash['project_id'] if @relation_hash['target_project_id']
+      end
+
+      def same_source_and_target?
+        @relation_hash['target_project_id'] && @relation_hash['target_project_id'] == @relation_hash['source_project_id']
       end
 
       def update_group_references
@@ -167,10 +167,6 @@ module Gitlab
         return unless @relation_hash['group_id']
 
         @relation_hash['group_id'] = @project.group&.id
-      end
-
-      def same_source_and_target?
-        @relation_hash['target_project_id'] && @relation_hash['target_project_id'] == @relation_hash['source_project_id']
       end
 
       def reset_tokens!
@@ -267,6 +263,8 @@ module Gitlab
       end
 
       def find_or_create_object!
+        return relation_class.find_or_create_by(project_id: @project.id) if @relation_name == :project_feature
+
         # Can't use IDs as validation exists calling `group` or `project` attributes
         finder_hash = parsed_relation_hash.tap do |hash|
           hash[:group] = @project.group if relation_class.attribute_method?('group_id')
