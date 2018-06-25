@@ -1,0 +1,5 @@
+---
+title: Improve U2F workflow when using unsupported browsers
+merge_request: 19938
+author: Jan Beckmann
+type: changed
