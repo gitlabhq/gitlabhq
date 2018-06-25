@@ -147,4 +147,16 @@ describe('IDE commit form', () => {
       });
     });
   });
+
+  describe('commitButtonText', () => {
+    it('returns commit text when staged files exist', () => {
+      vm.$store.state.stagedFiles.push('testing');
+
+      expect(vm.commitButtonText).toBe('Commit');
+    });
+
+    it('returns stage & commit text when staged files do not exist', () => {
+      expect(vm.commitButtonText).toBe('Stage & Commit');
+    });
+  });
 });
