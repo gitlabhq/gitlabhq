@@ -4,10 +4,10 @@ module QA
       module Dashboard
         module Projects
           def wait_for_project_replication(project_name)
-            wait(max: 180) do
+            wait(max: Runtime::Geo.max_db_replication_time) do
               filter_by_name(project_name)
 
-              page.has_content?(project_name)
+              page.has_text?(project_name)
             end
           end
         end

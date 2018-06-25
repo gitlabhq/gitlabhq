@@ -3,6 +3,11 @@ module QA
   # GitLab EE extensions
   #
   module EE
+    module Runtime
+      autoload :Env, 'qa/ee/runtime/env'
+      autoload :Geo, 'qa/ee/runtime/geo'
+    end
+
     module Page
       module Dashboard
         autoload :Projects, 'qa/ee/page/dashboard/projects'
