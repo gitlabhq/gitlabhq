@@ -146,6 +146,9 @@ describe('IDE store getters', () => {
     it('returns the last commit of the current branch on the current project', () => {
       const commitTitle = 'Example commit title';
       const localGetters = {
+        currentProject: {
+          name: 'test-project',
+        },
         currentBranch: {
           commit: {
             title: commitTitle,
