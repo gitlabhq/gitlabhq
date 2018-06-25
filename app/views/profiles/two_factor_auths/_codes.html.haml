@@ -10,4 +10,17 @@
       %li
         %span.monospace= code
 
+:javascript
+  function download(text) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', 'gitlab-recovery-codes.txt');
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  }
+
+%button{:class => 'btn', :onclick => "download('#{@codes.join('\n')}')"} Download Codes
 = link_to 'Proceed', profile_account_path, class: 'btn btn-success'
