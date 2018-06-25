@@ -257,21 +257,21 @@ module API
         if params['file_type'] == 'archive'
           bad_request!("Already uploaded") if job.job_artifacts_archive
 
-        job.build_job_artifacts_archive(
-          project: job.project,
-          file: artifacts,
-          file_type: :archive,
-          file_sha256: artifacts.sha256,
-          expire_in: expire_in)
-
-        if metadata
-          job.build_job_artifacts_metadata(
+          job.build_job_artifacts_archive(
             project: job.project,
-            file: metadata,
-            file_type: :metadata,
-            file_sha256: metadata.sha256,
+            file: artifacts,
+            file_type: :archive,
+            file_sha256: artifacts.sha256,
             expire_in: expire_in)
-        end
+
+          if metadata
+            job.build_job_artifacts_metadata(
+              project: job.project,
+              file: metadata,
+              file_type: :metadata,
+              file_sha256: metadata.sha256,
+              expire_in: expire_in)
+          end
         elsif params['file_type'] == 'junit'
           bad_request!("Undefined file_type") unless Ci::JobArtifact.file_formats.key?(params['file_type'])
 
