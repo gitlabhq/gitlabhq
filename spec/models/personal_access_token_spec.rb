@@ -133,4 +133,39 @@ describe PersonalAccessToken do
       expect(personal_access_token.errors[:scopes].first).to eq "can only contain available scopes"
     end
   end
+
+  describe "restricted_by_resource?" do
+    it "is true when the token is scoped to specific projects" do
+      token = create(:personal_access_token, projects: [create(:project)])
+
+      expect(token).to be_restricted_by_resource
+    end
+
+    it "is false when no projects are linked" do
+      expect(described_class.new).not_to be_restricted_by_resource
+      expect(create(:personal_access_token)).not_to be_restricted_by_resource
+    end
+  end
+
+  describe "allows_resource?" do
+    it "is true when the token isn't restricted by resource" do
+      subject = create(:personal_access_token)
+
+      expect(subject.allows_resource?(create(:project))).to eq true
+    end
+
+    context "when restricted to a project" do
+      let(:allowed_project) { create(:project) }
+
+      subject { create(:personal_access_token, projects: [allowed_project]) }
+
+      it "is true for projects the token grants access to" do
+        expect(subject.allows_resource?(allowed_project)).to eq true
+      end
+
+      it "is false for projects to which access isn't allowed" do
+        expect(subject.allows_resource?(create(:project))).to eq false
+      end
+    end
+  end
 end

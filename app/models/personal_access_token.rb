@@ -32,6 +32,14 @@ class PersonalAccessToken < ActiveRecord::Base
     !revoked? && !expired?
   end
 
+  def restricted_by_resource?
+    token_resources.exists?
+  end
+
+  def allows_resource?(resource)
+    !restricted_by_resource? || token_resources.allowing_resource(resource).present?
+  end
+
   def self.redis_getdel(user_id)
     Gitlab::Redis::SharedState.with do |redis|
       token = redis.get(redis_shared_state_key(user_id))
