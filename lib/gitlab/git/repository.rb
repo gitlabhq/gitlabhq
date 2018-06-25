@@ -549,24 +549,9 @@ module Gitlab
         end
       end
 
-      # Gitaly note: JV: check gitlab-ee before removing this method.
-      def rugged_is_ancestor?(ancestor_id, descendant_id)
-        return false if ancestor_id.nil? || descendant_id.nil?
-
-        rugged_merge_base(ancestor_id, descendant_id) == ancestor_id
-      rescue Rugged::OdbError
-        false
-      end
-
       # Returns true is +from+ is direct ancestor to +to+, otherwise false
       def ancestor?(from, to)
-        Gitlab::GitalyClient.migrate(:is_ancestor) do |is_enabled|
-          if is_enabled
-            gitaly_commit_client.ancestor?(from, to)
-          else
-            rugged_is_ancestor?(from, to)
-          end
-        end
+        gitaly_commit_client.ancestor?(from, to)
       end
 
       def merged_branch_names(branch_names = [])
