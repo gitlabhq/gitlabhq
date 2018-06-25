@@ -1630,28 +1630,17 @@ describe MergeRequest do
   end
 
   describe "#reload_diff" do
-    let(:discussion) { create(:diff_note_on_merge_request, project: subject.project, noteable: subject).to_discussion }
-    let(:commit) { subject.project.commit(sample_commit.id) }
+    it 'calls MergeRequests::ReloadDiffsService#execute with correct params' do
+      user = create(:user)
+      service = instance_double(MergeRequests::ReloadDiffsService, execute: nil)
 
-    it "does not change existing merge request diff" do
-      expect(subject.merge_request_diff).not_to receive(:save_git_content)
-      subject.reload_diff
-    end
+      expect(MergeRequests::ReloadDiffsService)
+        .to receive(:new).with(subject, user)
+        .and_return(service)
 
-    it "creates new merge request diff" do
-      expect { subject.reload_diff }.to change { subject.merge_request_diffs.count }.by(1)
-    end
+      subject.reload_diff(user)
 
-    it "executes diff cache service" do
-      expect_any_instance_of(MergeRequests::MergeRequestDiffCacheService).to receive(:execute).with(subject, an_instance_of(MergeRequestDiff))
-
-      subject.reload_diff
-    end
-
-    it "calls update_diff_discussion_positions" do
-      expect(subject).to receive(:update_diff_discussion_positions)
-
-      subject.reload_diff
+      expect(service).to have_received(:execute)
     end
 
     context 'when using the after_update hook to update' do

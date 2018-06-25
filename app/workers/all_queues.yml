@@ -118,3 +118,4 @@
 - web_hook
 - repository_update_remote_mirror
 - create_note_diff_file
+- delete_diff_files
