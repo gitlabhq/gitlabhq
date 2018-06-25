@@ -2,7 +2,7 @@ module Gitlab
   module Prometheus
     module Queries
       module QueryAdditionalMetrics
-        def query_metrics(project, query_context)
+        def query_metrics(project, environment, query_context)
           matched_metrics(project).map(&query_group(query_context))
             .select(&method(:group_with_any_metrics))
         end
