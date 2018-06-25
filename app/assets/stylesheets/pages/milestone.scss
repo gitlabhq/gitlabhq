@@ -255,8 +255,6 @@
 
 .milestone-range {
   color: $gl-text-color-tertiary;
-  margin: $gl-bar-padding 0 $gl-padding-4;
-  font-size: $tooltip-font-size;
 }
 
 @include media-breakpoint-down(xs) {

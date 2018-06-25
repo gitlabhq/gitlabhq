@@ -5,7 +5,7 @@
 %li{ class: "milestone milestone-#{milestone.closed? ? 'closed' : 'open'}", id: custom_dom_id }
   .row
     .col-sm-6
-      %div
+      .append-bottom-5
         %strong= link_to truncate(milestone.title, length: 100), milestone_path
         - if @group
           = " - #{milestone_type}"
