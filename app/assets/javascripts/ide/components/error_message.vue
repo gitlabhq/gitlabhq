@@ -55,7 +55,7 @@ export default {
       <a
         v-if="message.action"
         href="#"
-        class="flash-action"
+        class="flash-action text-white"
         @click.stop.prevent="clickAction"
       >
         {{ message.actionText }}
@@ -67,9 +67,3 @@ export default {
     </div>
   </div>
 </template>
-
-<style scoped>
-.flash-action {
-  color: #fff;
-}
-</style>
