@@ -209,5 +209,4 @@ describe ApplicationSetting do
       )
     end
   end
-
 end
