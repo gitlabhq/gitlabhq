@@ -72,10 +72,10 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(group_params_ce)
+    params.require(:group).permit(allowed_group_params)
   end
 
-  def group_params_ce
+  def allowed_group_params
     [
       :avatar,
       :description,
