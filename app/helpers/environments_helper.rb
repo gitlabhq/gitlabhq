@@ -5,8 +5,8 @@ module EnvironmentsHelper
     }
   end
 
-  def metrics_path(project, environment)
-    return metrics_project_environment_path(project, environment) if environment
+  def operations_metrics_path(project, environment)
+    return environment_metrics_path(environment) if environment
 
     empty_project_environments_path(project)
   end
