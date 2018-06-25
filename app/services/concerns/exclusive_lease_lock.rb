@@ -1,6 +1,8 @@
 module ExclusiveLeaseLock
   extend ActiveSupport::Concern
 
+  FailedToObtainLockError = Class.new(StandardError)
+
   def in_lock(key, ttl: 1.minute, retry_max: 10, sleep_sec: 0.01.seconds)
     lease = Gitlab::ExclusiveLease.new(key, timeout: ttl)
     retry_count = 0
@@ -12,7 +14,7 @@ module ExclusiveLeaseLock
       break if retry_max < (retry_count += 1)
     end
 
-    raise WriteError, 'Failed to obtain write lock' unless uuid
+    raise FailedToObtainLockError, 'Failed to obtain a lock' unless uuid
 
     return yield
   ensure

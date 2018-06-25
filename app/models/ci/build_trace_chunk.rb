@@ -8,8 +8,6 @@ module Ci
 
     default_value_for :data_store, :redis
 
-    WriteError = Class.new(StandardError)
-
     CHUNK_SIZE = 128.kilobytes
     WRITE_LOCK_RETRY = 10
     WRITE_LOCK_SLEEP = 0.01.seconds
@@ -65,6 +63,7 @@ module Ci
     end
 
     def truncate(offset = 0)
+      raise ArgumentError, 'Fog store does not support truncating' if fog? # If data is null, get_data returns Excon::Error::NotFound
       raise ArgumentError, 'Offset is out of range' if offset > size || offset < 0
       return if offset == size # Skip the following process as it doesn't affect anything
 
@@ -72,6 +71,8 @@ module Ci
     end
 
     def append(new_data, offset)
+      raise ArgumentError, 'Fog store does not support appending' if fog? # If data is null, get_data returns Excon::Error::NotFound
+      raise ArgumentError, 'New data is nil' unless new_data
       raise ArgumentError, 'Offset is out of range' if offset > size || offset < 0
       raise ArgumentError, 'Chunk size overflow' if CHUNK_SIZE < (offset + new_data.bytesize)
 
@@ -98,21 +99,17 @@ module Ci
       (start_offset...end_offset)
     end
 
-    def data_persisted?
-      !redis?
-    end
-
     def persist_data!
       in_lock(*lock_params) do # Write opetation is atomic
-        unsafe_migrate_to!(self.class.persist_store)
+        unsafe_persist_to!(self.class.persist_store)
       end
     end
 
     private
 
-    def unsafe_migrate_to!(new_store)
+    def unsafe_persist_to!(new_store)
       return if data_store == new_store.to_s
-      return unless size > 0
+      raise ArgumentError, 'Can not persist empty data' unless size > 0
 
       old_store_class = self.class.get_store_class(data_store)
 
@@ -130,7 +127,7 @@ module Ci
     end
 
     def unsafe_set_data!(value)
-      raise ArgumentError, 'too much data' if value.bytesize > CHUNK_SIZE
+      raise ArgumentError, 'New data size exceeds chunk size' if value.bytesize > CHUNK_SIZE
 
       self.class.get_store_class(data_store).set_data(self, value)
       @data = value
@@ -142,6 +139,10 @@ module Ci
       return if data_persisted?
 
       Ci::BuildTraceChunkFlushWorker.perform_async(id)
+    end
+
+    def data_persisted?
+      !redis?
     end
 
     def full?

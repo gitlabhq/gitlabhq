@@ -20,6 +20,11 @@ module StubObjectStorage
     ::Fog::Storage.new(uploader.object_store_credentials).tap do |connection|
       begin
         connection.directories.create(key: remote_directory)
+
+        # Cleanup remaining files
+        connection.directories.each do |directory|
+          directory.files.map(&:destroy)
+        end
       rescue Excon::Error::Conflict
       end
     end
