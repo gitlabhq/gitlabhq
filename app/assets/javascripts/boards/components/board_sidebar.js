@@ -2,18 +2,18 @@
 
 import $ from 'jquery';
 import Vue from 'vue';
-import weight from 'ee/sidebar/components/weight/weight.vue';
+import Weight from 'ee/sidebar/components/weight/weight.vue';
 import Flash from '../../flash';
 import { __ } from '../../locale';
 import Sidebar from '../../right_sidebar';
 import eventHub from '../../sidebar/event_hub';
-import assigneeTitle from '../../sidebar/components/assignees/assignee_title.vue';
-import assignees from '../../sidebar/components/assignees/assignees.vue';
+import AssigneeTitle from '../../sidebar/components/assignees/assignee_title.vue';
+import Assignees from '../../sidebar/components/assignees/assignees.vue';
 import DueDateSelectors from '../../due_date_select';
-import './sidebar/remove_issue';
+import RemoveBtn from './sidebar/remove_issue.vue';
 import IssuableContext from '../../issuable_context';
 import LabelsSelect from '../../labels_select';
-import subscriptions from '../../sidebar/components/subscriptions/subscriptions.vue';
+import Subscriptions from '../../sidebar/components/subscriptions/subscriptions.vue';
 import MilestoneSelect from '../../milestone_select';
 
 const Store = gl.issueBoards.BoardsStore;
@@ -23,11 +23,11 @@ window.gl.issueBoards = window.gl.issueBoards || {};
 
 gl.issueBoards.BoardSidebar = Vue.extend({
   components: {
-    assigneeTitle,
-    assignees,
-    removeBtn: gl.issueBoards.RemoveIssueBtn,
-    subscriptions,
-    weight,
+    AssigneeTitle,
+    Assignees,
+    RemoveBtn,
+    Subscriptions,
+    Weight,
   },
   props: {
     currentUser: {
