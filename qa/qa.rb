@@ -46,10 +46,13 @@ module QA
       autoload :Runner, 'qa/factory/resource/runner'
       autoload :PersonalAccessToken, 'qa/factory/resource/personal_access_token'
       autoload :KubernetesCluster, 'qa/factory/resource/kubernetes_cluster'
+      autoload :Wiki, 'qa/factory/resource/wiki'
     end
 
     module Repository
       autoload :Push, 'qa/factory/repository/push'
+      autoload :ProjectPush, 'qa/factory/repository/project_push'
+      autoload :WikiPush, 'qa/factory/repository/wiki_push'
     end
 
     module Settings
@@ -165,6 +168,16 @@ module QA
           autoload :Show, 'qa/page/project/operations/kubernetes/show'
         end
       end
+
+      module Wiki
+        autoload :Edit, 'qa/page/project/wiki/edit'
+        autoload :New, 'qa/page/project/wiki/new'
+        autoload :Show, 'qa/page/project/wiki/show'
+      end
+    end
+
+    module Shared
+      autoload :ClonePanel, 'qa/page/shared/clone_panel'
     end
 
     module Profile

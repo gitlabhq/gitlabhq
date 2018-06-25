@@ -3,11 +3,29 @@ require 'spec_helper'
 describe Gitlab::FileFinder do
   describe '#find' do
     let(:project) { create(:project, :public, :repository) }
+    subject { described_class.new(project, project.default_branch) }
 
     it_behaves_like 'file finder' do
-      subject { described_class.new(project, project.default_branch) }
       let(:expected_file_by_name) { 'files/images/wm.svg' }
       let(:expected_file_by_content) { 'CHANGELOG' }
+    end
+
+    it 'filters by name' do
+      results = subject.find('files filename:wm.svg')
+
+      expect(results.count).to eq(1)
+    end
+
+    it 'filters by path' do
+      results = subject.find('white path:images')
+
+      expect(results.count).to eq(1)
+    end
+
+    it 'filters by extension' do
+      results = subject.find('files extension:svg')
+
+      expect(results.count).to eq(1)
     end
   end
 end

@@ -1,6 +1,0 @@
----
-title: Enforce UTF-8 encoding on user input in LogrageWithTimestamp formatter and
-  filter out file content from logs
-merge_request:
-author:
-type: fixed

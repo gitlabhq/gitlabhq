@@ -34,7 +34,8 @@
           .d-block.d-sm-none
             = render_commit_status(commit, ref: ref)
         - if commit.description?
-          %button.text-expander.d-none.d-sm-inline-block.js-toggle-button{ type: "button" } ...
+          %button.text-expander.js-toggle-button
+            = sprite_icon('ellipsis_h', size: 12)
 
         .commiter
           - commit_author_link = commit_author_link(commit, avatar: false, size: 24)

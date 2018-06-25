@@ -1,6 +1,6 @@
 # Squash and merge
 
-> [Introduced][ee-1024] in [GitLab Starter][ee] 8.17, and in [GitLab CE][ce] [11.0][ce-18956].
+> [Introduced][ee-1024] in [GitLab Starter][ee] 8.17, and in [GitLab Core][ce] [11.0][ce-18956].
 
 Combine all commits of your merge request into one and retain a clean history.
 
@@ -75,6 +75,6 @@ squashing can itself be considered equivalent to rebasing.
 [squash-edit-form]: img/squash_edit_form.png
 [squash-mr-widget]: img/squash_mr_widget.png
 [ff-merge]: fast_forward_merge.md#enabling-fast-forward-merges
-[ce]: https://about.gitlab.com/products/
-[ee]: https://about.gitlab.com/products/
+[ce]: https://about.gitlab.com/pricing/
+[ee]: https://about.gitlab.com/pricing/
 [revert]: revert_changes.md

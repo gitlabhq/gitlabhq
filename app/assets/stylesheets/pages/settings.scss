@@ -127,13 +127,6 @@
   color: $gl-danger;
 }
 
-.service-settings {
-  input[type="radio"],
-  input[type="checkbox"] {
-    margin-top: 10px;
-  }
-}
-
 .integration-settings-form {
   .card.card-body,
   .info-well {
@@ -296,7 +289,8 @@
   }
 
   .btn-clipboard {
-    margin-left: 5px;
+    background-color: $white-light;
+    border: 1px solid $theme-gray-200;
   }
 
   .deploy-token-help-block {

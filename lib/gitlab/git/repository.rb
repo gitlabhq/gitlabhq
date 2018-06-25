@@ -403,13 +403,7 @@ module Gitlab
 
       # Return repo size in megabytes
       def size
-        size = gitaly_migrate(:repository_size) do |is_enabled|
-          if is_enabled
-            size_by_gitaly
-          else
-            size_by_shelling_out
-          end
-        end
+        size = gitaly_repository_client.repository_size
 
         (size.to_f / 1024).round(2)
       end
@@ -472,13 +466,21 @@ module Gitlab
       end
 
       def count_commits(options)
-        count_commits_options = process_count_commits_options(options)
+        options = process_count_commits_options(options.dup)
 
-        gitaly_migrate(:count_commits, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            count_commits_by_gitaly(count_commits_options)
+        wrapped_gitaly_errors do
+          if options[:left_right]
+            from = options[:from]
+            to = options[:to]
+
+            right_count = gitaly_commit_client
+              .commit_count("#{from}..#{to}", options)
+            left_count = gitaly_commit_client
+              .commit_count("#{to}..#{from}", options)
+
+            [left_count, right_count]
           else
-            count_commits_by_shelling_out(count_commits_options)
+            gitaly_commit_client.commit_count(options[:ref], options)
           end
         end
       end
@@ -521,32 +523,17 @@ module Gitlab
       def raw_changes_between(old_rev, new_rev)
         @raw_changes_between ||= {}
 
-        @raw_changes_between[[old_rev, new_rev]] ||= begin
-          return [] if new_rev.blank? || new_rev == Gitlab::Git::BLANK_SHA
+        @raw_changes_between[[old_rev, new_rev]] ||=
+          begin
+            return [] if new_rev.blank? || new_rev == Gitlab::Git::BLANK_SHA
 
-          gitaly_migrate(:raw_changes_between) do |is_enabled|
-            if is_enabled
+            wrapped_gitaly_errors do
               gitaly_repository_client.raw_changes_between(old_rev, new_rev)
                 .each_with_object([]) do |msg, arr|
                 msg.raw_changes.each { |change| arr << ::Gitlab::Git::RawDiffChange.new(change) }
               end
-            else
-              result = []
-
-              circuit_breaker.perform do
-                Open3.pipeline_r(git_diff_cmd(old_rev, new_rev), format_git_cat_file_script, git_cat_file_cmd) do |last_stdout, wait_threads|
-                  last_stdout.each_line { |line| result << ::Gitlab::Git::RawDiffChange.new(line.chomp!) }
-
-                  if wait_threads.any? { |waiter| !waiter.value&.success? }
-                    raise ::Gitlab::Git::Repository::GitError, "Unabled to obtain changes between #{old_rev} and #{new_rev}"
-                  end
-                end
-              end
-
-              result
             end
           end
-        end
       rescue ArgumentError => e
         raise Gitlab::Git::Repository::GitError.new(e)
       end
@@ -620,17 +607,7 @@ module Gitlab
       def ref_name_for_sha(ref_path, sha)
         raise ArgumentError, "sha can't be empty" unless sha.present?
 
-        gitaly_migrate(:find_ref_name) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.find_ref_name(sha, ref_path)
-          else
-            args = %W(for-each-ref --count=1 #{ref_path} --contains #{sha})
-
-            # Not found -> ["", 0]
-            # Found -> ["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0]
-            run_git(args).first.split.last
-          end
-        end
+        gitaly_ref_client.find_ref_name(sha, ref_path)
       end
 
       # Get refs hash which key is is the commit id
@@ -676,15 +653,9 @@ module Gitlab
       end
 
       # Return total commits count accessible from passed ref
-      #
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/330
       def commit_count(ref)
-        gitaly_migrate(:commit_count, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_commit_client.commit_count(ref)
-          else
-            rugged_commit_count(ref)
-          end
+        wrapped_gitaly_errors do
+          gitaly_commit_client.commit_count(ref)
         end
       end
 
@@ -959,13 +930,7 @@ module Gitlab
       #
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/327
       def ls_files(ref)
-        gitaly_migrate(:ls_files) do |is_enabled|
-          if is_enabled
-            gitaly_ls_files(ref)
-          else
-            git_ls_files(ref)
-          end
-        end
+        gitaly_commit_client.ls_files(ref)
       end
 
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/328
@@ -984,21 +949,7 @@ module Gitlab
       def info_attributes
         return @info_attributes if @info_attributes
 
-        content =
-          gitaly_migrate(:get_info_attributes, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-            if is_enabled
-              gitaly_repository_client.info_attributes
-            else
-              attributes_path = File.join(File.expand_path(path), 'info', 'attributes')
-
-              if File.exist?(attributes_path)
-                File.read(attributes_path)
-              else
-                ""
-              end
-            end
-          end
-
+        content = gitaly_repository_client.info_attributes
         @info_attributes = AttributesParser.new(content)
       end
 
@@ -1054,18 +1005,8 @@ module Gitlab
       end
 
       def license_short_name
-        gitaly_migrate(:license_short_name,
-                       status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.license_short_name
-          else
-            begin
-              # The licensee gem creates a Rugged object from the path:
-              # https://github.com/benbalter/licensee/blob/v8.7.0/lib/licensee/projects/git_project.rb
-              Licensee.license(path).try(:key)
-            rescue Rugged::Error
-            end
-          end
+        wrapped_gitaly_errors do
+          gitaly_repository_client.license_short_name
         end
       end
 
@@ -1252,12 +1193,8 @@ module Gitlab
       end
 
       def rebase_in_progress?(rebase_id)
-        gitaly_migrate(:rebase_in_progress) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.rebase_in_progress?(rebase_id)
-          else
-            fresh_worktree?(worktree_path(REBASE_WORKTREE_PREFIX, rebase_id))
-          end
+        wrapped_gitaly_errors do
+          gitaly_repository_client.rebase_in_progress?(rebase_id)
         end
       end
 
@@ -1273,12 +1210,8 @@ module Gitlab
       end
 
       def squash_in_progress?(squash_id)
-        gitaly_migrate(:squash_in_progress, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.squash_in_progress?(squash_id)
-          else
-            fresh_worktree?(worktree_path(SQUASH_WORKTREE_PREFIX, squash_id))
-          end
+        wrapped_gitaly_errors do
+          gitaly_repository_client.squash_in_progress?(squash_id)
         end
       end
 
@@ -1443,12 +1376,10 @@ module Gitlab
       end
 
       def can_be_merged?(source_sha, target_branch)
-        gitaly_migrate(:can_be_merged) do |is_enabled|
-          if is_enabled
-            gitaly_can_be_merged?(source_sha, find_branch(target_branch, true).target)
-          else
-            rugged_can_be_merged?(source_sha, target_branch)
-          end
+        if target_sha = find_branch(target_branch, true)&.target
+          !gitaly_conflicts_client(source_sha, target_sha).conflicts?
+        else
+          false
         end
       end
 
@@ -1512,10 +1443,6 @@ module Gitlab
         end
 
         run_git!(args, lazy_block: block)
-      end
-
-      def missed_ref(oldrev, newrev)
-        run_git!(['rev-list', '--max-count=1', oldrev, "^#{newrev}"])
       end
 
       def with_worktree(worktree_path, branch, sparse_checkout_files: nil, env:)
@@ -1619,21 +1546,6 @@ module Gitlab
         circuit_breaker.perform do
           popen_with_timeout([Gitlab.config.git.bin_path, *args], timeout, path, env)
         end
-      end
-
-      # This function is duplicated in Gitaly-Go, don't change it!
-      # https://gitlab.com/gitlab-org/gitaly/merge_requests/698
-      def fresh_worktree?(path)
-        File.exist?(path) && !clean_stuck_worktree(path)
-      end
-
-      # This function is duplicated in Gitaly-Go, don't change it!
-      # https://gitlab.com/gitlab-org/gitaly/merge_requests/698
-      def clean_stuck_worktree(path)
-        return false unless File.mtime(path) < 15.minutes.ago
-
-        FileUtils.rm_rf(path)
-        true
       end
 
       # Adding a worktree means checking out the repository. For large repos,
@@ -1892,106 +1804,6 @@ module Gitlab
       def last_commit_for_path_by_rugged(sha, path)
         sha = last_commit_id_for_path_by_shelling_out(sha, path)
         commit(sha)
-      end
-
-      def size_by_shelling_out
-        popen(%w(du -sk), path).first.strip.to_i
-      end
-
-      def size_by_gitaly
-        gitaly_repository_client.repository_size
-      end
-
-      def count_commits_by_gitaly(options)
-        if options[:left_right]
-          from = options[:from]
-          to = options[:to]
-
-          right_count = gitaly_commit_client
-            .commit_count("#{from}..#{to}", options)
-          left_count = gitaly_commit_client
-            .commit_count("#{to}..#{from}", options)
-
-          [left_count, right_count]
-        else
-          gitaly_commit_client.commit_count(options[:ref], options)
-        end
-      end
-
-      def count_commits_by_shelling_out(options)
-        cmd = count_commits_shelling_command(options)
-
-        raw_output, _status = run_git(cmd)
-
-        process_count_commits_raw_output(raw_output, options)
-      end
-
-      def count_commits_shelling_command(options)
-        cmd = %w[rev-list]
-        cmd << "--after=#{options[:after].iso8601}" if options[:after]
-        cmd << "--before=#{options[:before].iso8601}" if options[:before]
-        cmd << "--max-count=#{options[:max_count]}" if options[:max_count]
-        cmd << "--left-right" if options[:left_right]
-        cmd << '--count'
-
-        cmd << if options[:all]
-                 '--all'
-               elsif options[:ref]
-                 options[:ref]
-               else
-                 raise ArgumentError, "Please specify a valid ref or set the 'all' attribute to true"
-               end
-
-        cmd += %W[-- #{options[:path]}] if options[:path].present?
-        cmd
-      end
-
-      def process_count_commits_raw_output(raw_output, options)
-        if options[:left_right]
-          result = raw_output.scan(/\d+/).map(&:to_i)
-
-          if result.sum != options[:max_count]
-            result
-          else # Reaching max count, right is not accurate
-            right_option =
-              process_count_commits_options(options
-                .except(:left_right, :from, :to)
-                .merge(ref: options[:to]))
-
-            right = count_commits_by_shelling_out(right_option)
-
-            [result.first, right] # left should be accurate in the first call
-          end
-        else
-          raw_output.to_i
-        end
-      end
-
-      def gitaly_ls_files(ref)
-        gitaly_commit_client.ls_files(ref)
-      end
-
-      def git_ls_files(ref)
-        actual_ref = ref || root_ref
-
-        begin
-          sha_from_ref(actual_ref)
-        rescue Rugged::OdbError, Rugged::InvalidError, Rugged::ReferenceError
-          # Return an empty array if the ref wasn't found
-          return []
-        end
-
-        cmd = %W(ls-tree -r --full-tree --full-name -- #{actual_ref})
-        raw_output, _status = run_git(cmd)
-
-        lines = raw_output.split("\n").map do |f|
-          stuff, path = f.split("\t")
-          _mode, type, _sha = stuff.split(" ")
-          path if type == "blob"
-          # Contain only blob type
-        end
-
-        lines.compact
       end
 
       # Returns true if the given ref name exists
@@ -2346,14 +2158,6 @@ module Gitlab
         run_git(['fetch', remote_name], env: env).last.zero?
       end
 
-      def gitaly_can_be_merged?(their_commit, our_commit)
-        !gitaly_conflicts_client(our_commit, their_commit).conflicts?
-      end
-
-      def rugged_can_be_merged?(their_commit, our_commit)
-        !rugged.merge_commits(our_commit, their_commit).conflicts?
-      end
-
       def gitlab_projects_error
         raise CommandError, @gitlab_projects.output
       end
@@ -2391,16 +2195,6 @@ module Gitlab
         rugged.merge_base(from, to)
       rescue Rugged::ReferenceError
         nil
-      end
-
-      def rugged_commit_count(ref)
-        walker = Rugged::Walker.new(rugged)
-        walker.sorting(Rugged::SORT_TOPO | Rugged::SORT_REVERSE)
-        oid = rugged.rev_parse_oid(ref)
-        walker.push(oid)
-        walker.count
-      rescue Rugged::ReferenceError
-        0
       end
 
       def rev_list_param(spec)

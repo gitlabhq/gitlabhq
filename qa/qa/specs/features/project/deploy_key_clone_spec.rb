@@ -75,7 +75,7 @@ module QA
               - docker
         YAML
 
-        Factory::Repository::Push.fabricate! do |resource|
+        Factory::Repository::ProjectPush.fabricate! do |resource|
           resource.project = @project
           resource.file_name = '.gitlab-ci.yml'
           resource.commit_message = 'Add .gitlab-ci.yml'

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-12 18:57+1000\n"
-"PO-Revision-Date: 2018-06-12 18:57+1000\n"
+"POT-Creation-Date: 2018-06-20 16:52+0300\n"
+"PO-Revision-Date: 2018-06-20 16:52+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -17,6 +17,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+msgid "%d changed file"
+msgid_plural "%d changed files"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "%d commit"
 msgid_plural "%d commits"
@@ -79,6 +84,9 @@ msgid_plural "%{count} participants"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{filePath} deleted"
+msgstr ""
+
 msgid "%{loadingIcon} Started"
 msgstr ""
 
@@ -133,12 +141,12 @@ msgid "- show less"
 msgstr ""
 
 msgid "1 %{type} addition"
-msgid_plural "%d %{type} additions"
+msgid_plural "%{count} %{type} additions"
 msgstr[0] ""
 msgstr[1] ""
 
 msgid "1 %{type} modification"
-msgid_plural "%d %{type} modifications"
+msgid_plural "%{count} %{type} modifications"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -828,9 +836,6 @@ msgstr ""
 msgid "CICD|You need to specify a domain if you want to use Auto Review Apps and Auto Deploy stages."
 msgstr ""
 
-msgid "Can run untagged jobs"
-msgstr ""
-
 msgid "Cancel"
 msgstr ""
 
@@ -994,6 +999,9 @@ msgid "Click the <strong>Promote</strong> button in the top right corner to prom
 msgstr ""
 
 msgid "Click the button below to begin the install process by navigating to the Kubernetes page"
+msgstr ""
+
+msgid "Click to expand it."
 msgstr ""
 
 msgid "Click to expand text"
@@ -1176,7 +1184,13 @@ msgstr ""
 msgid "ClusterIntegration|Kubernetes clusters can be used to deploy applications and to provide Review Apps for this project"
 msgstr ""
 
-msgid "ClusterIntegration|Learn more about %{link_to_documentation}"
+msgid "ClusterIntegration|Learn more about %{help_link_start_machine_type}machine types%{help_link_end} and %{help_link_start_pricing}pricing%{help_link_end}."
+msgstr ""
+
+msgid "ClusterIntegration|Learn more about %{help_link_start}Kubernetes%{help_link_end}."
+msgstr ""
+
+msgid "ClusterIntegration|Learn more about %{help_link_start}zones%{help_link_end}."
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about environments"
@@ -1269,9 +1283,6 @@ msgstr ""
 msgid "ClusterIntegration|See and edit the details for your Kubernetes cluster"
 msgstr ""
 
-msgid "ClusterIntegration|See zones"
-msgstr ""
-
 msgid "ClusterIntegration|Select machine type"
 msgstr ""
 
@@ -1362,10 +1373,10 @@ msgstr ""
 msgid "Collapse sidebar"
 msgstr ""
 
-msgid "Comment and resolve discussion"
+msgid "Comment & resolve discussion"
 msgstr ""
 
-msgid "Comment and unresolve discussion"
+msgid "Comment & unresolve discussion"
 msgstr ""
 
 msgid "Comments"
@@ -1582,6 +1593,12 @@ msgstr ""
 msgid "Copy commit SHA to clipboard"
 msgstr ""
 
+msgid "Copy file name to clipboard"
+msgstr ""
+
+msgid "Copy file path to clipboard"
+msgstr ""
+
 msgid "Copy reference to clipboard"
 msgstr ""
 
@@ -1604,6 +1621,9 @@ msgid "Create a personal access token on your account to pull or push via %{prot
 msgstr ""
 
 msgid "Create branch"
+msgstr ""
+
+msgid "Create commit"
 msgstr ""
 
 msgid "Create directory"
@@ -1863,6 +1883,9 @@ msgstr ""
 msgid "Diffs|No file name available"
 msgstr ""
 
+msgid "Diffs|Something went wrong while fetching diff lines."
+msgstr ""
+
 msgid "Directory name"
 msgstr ""
 
@@ -1939,6 +1962,9 @@ msgid "Edit files in the editor and commit changes here"
 msgstr ""
 
 msgid "Email"
+msgstr ""
+
+msgid "Email patch"
 msgstr ""
 
 msgid "Emails"
@@ -2037,9 +2063,6 @@ msgstr ""
 msgid "Error Reporting and Logging"
 msgstr ""
 
-msgid "Error checking branch data. Please try again."
-msgstr ""
-
 msgid "Error committing changes. Please try again."
 msgstr ""
 
@@ -2116,6 +2139,9 @@ msgid "Every week (Sundays at 4:00am)"
 msgstr ""
 
 msgid "Expand"
+msgstr ""
+
+msgid "Expand all"
 msgstr ""
 
 msgid "Expand sidebar"
@@ -2252,10 +2278,10 @@ msgstr ""
 msgid "Gitaly"
 msgstr ""
 
-msgid "Gitaly|Address"
+msgid "Gitaly Servers"
 msgstr ""
 
-msgid "Gitaly Servers"
+msgid "Gitaly|Address"
 msgstr ""
 
 msgid "Go Back"
@@ -2386,6 +2412,9 @@ msgid_plural "Hide values"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Hide whitespace changes"
+msgstr ""
+
 msgid "History"
 msgstr ""
 
@@ -2419,6 +2448,15 @@ msgstr ""
 msgid "If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>."
 msgstr ""
 
+msgid "ImageDiffViewer|2-up"
+msgstr ""
+
+msgid "ImageDiffViewer|Onion skin"
+msgstr ""
+
+msgid "ImageDiffViewer|Swipe"
+msgstr ""
+
 msgid "Import"
 msgstr ""
 
@@ -2435,6 +2473,9 @@ msgid "Import repository"
 msgstr ""
 
 msgid "Include a Terms of Service agreement and Privacy Policy that all users must accept."
+msgstr ""
+
+msgid "Inline"
 msgstr ""
 
 msgid "Install Runner on Kubernetes"
@@ -2525,6 +2566,9 @@ msgid "Kubernetes configured"
 msgstr ""
 
 msgid "Kubernetes service integration has been deprecated. %{deprecated_message_content} your Kubernetes clusters using the new <a href=\"%{url}\"/>Kubernetes Clusters</a> page"
+msgstr ""
+
+msgid "LFS"
 msgstr ""
 
 msgid "LFSStatus|Disabled"
@@ -2649,9 +2693,6 @@ msgstr ""
 msgid "Locked to current projects"
 msgstr ""
 
-msgid "Locked to this project"
-msgstr ""
-
 msgid "Login"
 msgstr ""
 
@@ -2682,9 +2723,6 @@ msgstr ""
 msgid "Maximum git storage failures"
 msgstr ""
 
-msgid "Maximum job timeout"
-msgstr ""
-
 msgid "May"
 msgstr ""
 
@@ -2710,6 +2748,24 @@ msgid "Merge requests"
 msgstr ""
 
 msgid "Merge requests are a place to propose changes you've made to a project and discuss those changes with others"
+msgstr ""
+
+msgid "MergeRequests|Resolve this discussion in a new issue"
+msgstr ""
+
+msgid "MergeRequests|Saving the comment failed"
+msgstr ""
+
+msgid "MergeRequests|Toggle comments for this file"
+msgstr ""
+
+msgid "MergeRequests|Updating discussions failed"
+msgstr ""
+
+msgid "MergeRequests|View file @ %{commitId}"
+msgstr ""
+
+msgid "MergeRequests|View replaced file @ %{commitId}"
 msgstr ""
 
 msgid "Merged"
@@ -2758,6 +2814,9 @@ msgid "Modal|Close"
 msgstr ""
 
 msgid "Monitoring"
+msgstr ""
+
+msgid "More actions"
 msgstr ""
 
 msgid "More information"
@@ -2862,6 +2921,9 @@ msgid "No estimate or time spent"
 msgstr ""
 
 msgid "No file chosen"
+msgstr ""
+
+msgid "No files found"
 msgstr ""
 
 msgid "No files found."
@@ -2991,6 +3053,9 @@ msgid "OfSearchInADropdown|Filter"
 msgstr ""
 
 msgid "Online IDE integration settings."
+msgstr ""
+
+msgid "Only comments from the following commit are shown below"
 msgstr ""
 
 msgid "Only project members can comment."
@@ -3213,6 +3278,9 @@ msgid "Pipeline|with stage"
 msgstr ""
 
 msgid "Pipeline|with stages"
+msgstr ""
+
+msgid "Plain diff"
 msgstr ""
 
 msgid "PlantUML"
@@ -3512,12 +3580,6 @@ msgstr ""
 msgid "Real-time features"
 msgstr ""
 
-msgid "RefSwitcher|Branches"
-msgstr ""
-
-msgid "RefSwitcher|Tags"
-msgstr ""
-
 msgid "Reference:"
 msgstr ""
 
@@ -3594,6 +3656,9 @@ msgid "Reset health check access token"
 msgstr ""
 
 msgid "Reset runners registration token"
+msgstr ""
+
+msgid "Resolve all discussions in new issue"
 msgstr ""
 
 msgid "Resolve conflicts on source branch"
@@ -3805,16 +3870,28 @@ msgstr ""
 msgid "Show complete raw log"
 msgstr ""
 
+msgid "Show latest version"
+msgstr ""
+
+msgid "Show latest version of the diff"
+msgstr ""
+
 msgid "Show parent pages"
 msgstr ""
 
 msgid "Show parent subgroups"
 msgstr ""
 
+msgid "Show whitespace changes"
+msgstr ""
+
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Side-by-side"
+msgstr ""
 
 msgid "Sign out"
 msgstr ""
@@ -3837,13 +3914,25 @@ msgstr ""
 msgid "Something went wrong on our end."
 msgstr ""
 
+msgid "Something went wrong on our end. Please try again!"
+msgstr ""
+
 msgid "Something went wrong when toggling the button"
+msgstr ""
+
+msgid "Something went wrong while closing the %{issuable}. Please try again later"
 msgstr ""
 
 msgid "Something went wrong while fetching the projects."
 msgstr ""
 
 msgid "Something went wrong while fetching the registry list."
+msgstr ""
+
+msgid "Something went wrong while reopening the %{issuable}. Please try again later"
+msgstr ""
+
+msgid "Something went wrong while resolving this discussion. Please try again."
 msgstr ""
 
 msgid "Something went wrong. Please try again."
@@ -3969,7 +4058,7 @@ msgstr ""
 msgid "Stage"
 msgstr ""
 
-msgid "Stage all"
+msgid "Stage all changes"
 msgstr ""
 
 msgid "Stage changes"
@@ -4250,6 +4339,9 @@ msgstr ""
 msgid "This GitLab instance does not provide any shared Runners yet. Instance administrators can register shared Runners in the admin area."
 msgstr ""
 
+msgid "This diff is collapsed."
+msgstr ""
+
 msgid "This directory"
 msgstr ""
 
@@ -4320,6 +4412,9 @@ msgid "This project does not belong to a group and can therefore not make use of
 msgstr ""
 
 msgid "This repository"
+msgstr ""
+
+msgid "This source diff could not be displayed because it is too large."
 msgstr ""
 
 msgid "Time before an issue gets scheduled"
@@ -4530,6 +4625,9 @@ msgstr ""
 msgid "ToggleButton|Toggle Status: ON"
 msgstr ""
 
+msgid "Too many changes to show."
+msgstr ""
+
 msgid "Total Time"
 msgstr ""
 
@@ -4560,7 +4658,7 @@ msgstr ""
 msgid "Unresolve discussion"
 msgstr ""
 
-msgid "Unstage all"
+msgid "Unstage all changes"
 msgstr ""
 
 msgid "Unstage changes"
@@ -4863,6 +4961,9 @@ msgstr ""
 msgid "You are on a read-only GitLab instance."
 msgstr ""
 
+msgid "You can %{linkStart}view the blob%{linkEnd} instead."
+msgstr ""
+
 msgid "You can also create a project from the command line."
 msgstr ""
 
@@ -5016,6 +5117,9 @@ msgid "for this project"
 msgstr ""
 
 msgid "importing"
+msgstr ""
+
+msgid "latest version"
 msgstr ""
 
 msgid "merge request"

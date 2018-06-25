@@ -67,4 +67,6 @@ def update_username(new_username)
   page.within('.modal') do
     find('.js-modal-primary-action').click
   end
+
+  wait_for_requests
 end

@@ -1,14 +1,16 @@
 import Vue from 'vue';
-import store from '~/notes/stores';
+import createStore from '~/notes/stores';
 import noteActions from '~/notes/components/note_actions.vue';
 import { userDataMock } from '../mock_data';
 
 describe('issue_note_actions component', () => {
   let vm;
+  let store;
   let Component;
 
   beforeEach(() => {
     Component = Vue.extend(noteActions);
+    store = createStore();
   });
 
   afterEach(() => {
@@ -27,7 +29,9 @@ describe('issue_note_actions component', () => {
         canAwardEmoji: true,
         canReportAsAbuse: true,
         noteId: 539,
-        reportAbusePath: '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F7%23note_539&user_id=26',
+        noteUrl: 'https://localhost:3000/group/project/merge_requests/1#note_1',
+        reportAbusePath:
+          '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F7%23note_539&user_id=26',
       };
 
       store.dispatch('setUserData', userDataMock);
@@ -74,7 +78,9 @@ describe('issue_note_actions component', () => {
         canAwardEmoji: false,
         canReportAsAbuse: false,
         noteId: 539,
-        reportAbusePath: '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F7%23note_539&user_id=26',
+        noteUrl: 'https://localhost:3000/group/project/merge_requests/1#note_1',
+        reportAbusePath:
+          '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F7%23note_539&user_id=26',
       };
       vm = new Component({
         store,

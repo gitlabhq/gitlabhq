@@ -1,5 +1,0 @@
----
-title: Add index on runner_type for ci_runners
-merge_request: 18897
-author:
-type: performance

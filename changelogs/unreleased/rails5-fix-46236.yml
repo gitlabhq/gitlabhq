@@ -1,5 +1,0 @@
----
-title: Support rails5 in postgres indexes function and fix some migrations
-merge_request: 19400
-author: Jasper Maes
-type: fixed

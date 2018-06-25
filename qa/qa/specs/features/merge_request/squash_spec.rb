@@ -13,7 +13,7 @@ module QA
         merge_request.title = 'Squashing commits'
       end
 
-      Factory::Repository::Push.fabricate! do |push|
+      Factory::Repository::ProjectPush.fabricate! do |push|
         push.project = project
         push.commit_message = 'to be squashed'
         push.branch_name = merge_request.source_branch

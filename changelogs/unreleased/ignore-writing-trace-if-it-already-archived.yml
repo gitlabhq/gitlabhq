@@ -1,5 +1,0 @@
----
-title: Disallow updating job status if the job is not running
-merge_request: 19101
-author:
-type: fixed

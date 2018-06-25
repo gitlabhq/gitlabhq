@@ -11,13 +11,25 @@ describe 'Dashboard Issues Calendar Feed'  do
     end
 
     context 'when authenticated' do
-      it 'renders calendar feed' do
-        sign_in user
-        visit issues_dashboard_path(:ics)
+      context 'with no referer' do
+        it 'renders calendar feed' do
+          sign_in user
+          visit issues_dashboard_path(:ics)
 
-        expect(response_headers['Content-Type']).to have_content('text/calendar')
-        expect(response_headers['Content-Disposition']).to have_content('inline')
-        expect(body).to have_text('BEGIN:VCALENDAR')
+          expect(response_headers['Content-Type']).to have_content('text/calendar')
+          expect(body).to have_text('BEGIN:VCALENDAR')
+        end
+      end
+
+      context 'with GitLab as the referer' do
+        it 'renders calendar feed as text/plain' do
+          sign_in user
+          page.driver.header('Referer', issues_dashboard_url(host: Settings.gitlab.base_url))
+          visit issues_dashboard_path(:ics)
+
+          expect(response_headers['Content-Type']).to have_content('text/plain')
+          expect(body).to have_text('BEGIN:VCALENDAR')
+        end
       end
     end
 
@@ -28,7 +40,6 @@ describe 'Dashboard Issues Calendar Feed'  do
         visit issues_dashboard_path(:ics, private_token: personal_access_token.token)
 
         expect(response_headers['Content-Type']).to have_content('text/calendar')
-        expect(response_headers['Content-Disposition']).to have_content('inline')
         expect(body).to have_text('BEGIN:VCALENDAR')
       end
     end
@@ -38,7 +49,6 @@ describe 'Dashboard Issues Calendar Feed'  do
         visit issues_dashboard_path(:ics, feed_token: user.feed_token)
 
         expect(response_headers['Content-Type']).to have_content('text/calendar')
-        expect(response_headers['Content-Disposition']).to have_content('inline')
         expect(body).to have_text('BEGIN:VCALENDAR')
       end
     end

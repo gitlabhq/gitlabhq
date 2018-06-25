@@ -1,5 +1,0 @@
----
-title: Fix UI broken in line profiling modal due to Bootstrap 4
-merge_request: 19253
-author: Takuya Noguchi
-type: other

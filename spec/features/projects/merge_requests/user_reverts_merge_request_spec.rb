@@ -13,6 +13,8 @@ describe 'User reverts a merge request', :js do
 
     click_button('Merge')
 
+    wait_for_requests
+
     visit(merge_request_path(merge_request))
   end
 

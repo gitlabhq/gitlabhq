@@ -2339,6 +2339,22 @@ describe Project do
     end
   end
 
+  describe '#any_lfs_file_locks?', :request_store do
+    set(:project) { create(:project) }
+
+    it 'returns false when there are no LFS file locks' do
+      expect(project.any_lfs_file_locks?).to be_falsey
+    end
+
+    it 'returns a cached true when there are LFS file locks' do
+      create(:lfs_file_lock, project: project)
+
+      expect(project.lfs_file_locks).to receive(:any?).once.and_call_original
+
+      2.times { expect(project.any_lfs_file_locks?).to be_truthy }
+    end
+  end
+
   describe '#protected_for?' do
     let(:project) { create(:project) }
 

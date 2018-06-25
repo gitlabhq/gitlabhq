@@ -4,7 +4,7 @@ module Gitlab
       extend Gitlab::Git::Popen
 
       def self.git_version
-        Gitlab::VersionInfo.parse(popen(%W(#{Gitlab.config.git.bin_path} --version), nil).first)
+        Gitlab::VersionInfo.parse(Gitaly::Server.all.first.git_binary_version)
       end
     end
   end
