@@ -9,6 +9,7 @@ module EE
       has_many :approved_by_users, through: :approvals, source: :user
       has_many :approvers, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
       has_many :approver_groups, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+      has_many :draft_notes
 
       # codeclimate_artifact is deprecated and replaced with code_quality_artifact (#5779)
       delegate :codeclimate_artifact, to: :head_pipeline, prefix: :head, allow_nil: true

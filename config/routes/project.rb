@@ -158,6 +158,17 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         resources :approver_groups, only: :destroy
         ## EE-specific
 
+        ## EE-specific
+        scope module: :merge_requests do
+          resources :drafts, only: [:index, :update, :create, :destroy] do
+            collection do
+              post :publish
+              delete :discard
+            end
+          end
+        end
+        ## EE-specific
+
         resources :discussions, only: [:show], constraints: { id: /\h{40}/ } do
           member do
             post :resolve
