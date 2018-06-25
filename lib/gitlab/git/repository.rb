@@ -1494,7 +1494,11 @@ module Gitlab
       def can_be_merged?(source_sha, target_branch)
         gitaly_migrate(:can_be_merged) do |is_enabled|
           if is_enabled
-            gitaly_can_be_merged?(source_sha, find_branch(target_branch, true).target)
+            if branch = find_branch(target_branch, true)
+              gitaly_can_be_merged?(source_sha, branch.target)
+            else
+              false
+            end
           else
             rugged_can_be_merged?(source_sha, target_branch)
           end
