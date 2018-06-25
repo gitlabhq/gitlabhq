@@ -23,7 +23,7 @@ export default {
     },
   },
   mounted() {
-    if (!this.currentBranch.can_push) {
+    if (this.currentBranch && !this.currentBranch.can_push) {
       this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH);
     } else if (this.disableMergeRequestRadio) {
       this.updateCommitAction(consts.COMMIT_TO_CURRENT_BRANCH);
@@ -45,7 +45,7 @@ export default {
   <div class="append-bottom-15 ide-commit-radios">
     <radio-group
       :value="$options.commitToCurrentBranch"
-      :disabled="!currentBranch.can_push"
+      :disabled="currentBranch && !currentBranch.can_push"
       :title="$options.currentBranchPermissionsTooltip"
     >
       <span

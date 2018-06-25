@@ -88,7 +88,7 @@ export const lastCommit = (state, getters) => {
 };
 
 export const currentBranch = (state, getters) =>
-  getters.currentProject.branches[state.currentBranchId];
+  getters.currentProject && getters.currentProject.branches[state.currentBranchId];
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};
