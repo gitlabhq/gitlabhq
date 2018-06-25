@@ -63,7 +63,6 @@ module Ci
     end
 
     def truncate(offset = 0)
-      raise ArgumentError, 'Fog store does not support truncating' if fog? # If data is null, get_data returns Excon::Error::NotFound
       raise ArgumentError, 'Offset is out of range' if offset > size || offset < 0
       return if offset == size # Skip the following process as it doesn't affect anything
 
@@ -71,7 +70,6 @@ module Ci
     end
 
     def append(new_data, offset)
-      raise ArgumentError, 'Fog store does not support appending' if fog? # If data is null, get_data returns Excon::Error::NotFound
       raise ArgumentError, 'New data is nil' unless new_data
       raise ArgumentError, 'Offset is out of range' if offset > size || offset < 0
       raise ArgumentError, 'Chunk size overflow' if CHUNK_SIZE < (offset + new_data.bytesize)
@@ -124,6 +122,8 @@ module Ci
 
     def get_data
       self.class.get_store_class(data_store).data(self)&.force_encoding(Encoding::BINARY) # Redis/Database return UTF-8 string as default
+    rescue Excon::Error::NotFound
+      # If the data store is :fog and the file does not exist in the object storage, this method returns nil.
     end
 
     def unsafe_set_data!(value)

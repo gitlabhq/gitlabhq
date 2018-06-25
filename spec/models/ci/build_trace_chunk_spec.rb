@@ -256,11 +256,31 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
 
     context 'when data_store is fog' do
       let(:data_store) { :fog }
-      let(:data) { '' }
-      let(:offset) { 0 }
 
-      it 'can not append' do
-        expect { subject }.to raise_error('Fog store does not support appending')
+      context 'when there are no data' do
+        let(:data) { '' }
+
+        it 'has no data' do
+          expect(build_trace_chunk.data).to be_empty
+        end
+
+        it_behaves_like 'Appending correctly'
+        it_behaves_like 'Scheduling no sidekiq worker'
+      end
+
+      context 'when there are some data' do
+        let(:data) { 'Sample data in fog' }
+
+        before do
+          build_trace_chunk.send(:unsafe_set_data!, data)
+        end
+
+        it 'has data' do
+          expect(build_trace_chunk.data).to eq(data)
+        end
+
+        it_behaves_like 'Appending correctly'
+        it_behaves_like 'Scheduling no sidekiq worker'
       end
     end
   end
@@ -313,12 +333,13 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
 
     context 'when data_store is fog' do
       let(:data_store) { :fog }
-      let(:data) { '' }
-      let(:offset) { 0 }
+      let(:data) { 'Sample data in fog' }
 
-      it 'can not truncate' do
-        expect { subject }.to raise_error('Fog store does not support truncating')
+      before do
+        build_trace_chunk.send(:unsafe_set_data!, data)
       end
+
+      it_behaves_like 'truncates'
     end
   end
 
@@ -373,7 +394,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       end
 
       context 'when data does not exist' do
-        it { expect { subject }.to raise_error(Excon::Error::NotFound) }
+        it { is_expected.to eq(0) }
       end
     end
   end
