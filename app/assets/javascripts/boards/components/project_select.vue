@@ -46,7 +46,7 @@ export default {
       selectable: true,
       data: (term, callback) => {
         this.loading = true;
-        return Api.groupProjects(this.groupId, term, projects => {
+        return Api.groupProjects(this.groupId, term, {}, projects => {
           this.loading = false;
           callback(projects);
         });
