@@ -124,6 +124,29 @@ feature 'Admin updates settings' do
     expect(Gitlab::CurrentSettings.disabled_oauth_sign_in_sources).not_to include('google_oauth2')
   end
 
+  scenario 'Oauth providers do not raise validation errors when saving unrelated changes' do
+    expect(Gitlab::CurrentSettings.disabled_oauth_sign_in_sources).to be_empty
+
+    page.within('.as-signin') do
+      uncheck 'Google'
+      click_button 'Save changes'
+    end
+
+    expect(page).to have_content "Application settings saved successfully"
+    expect(Gitlab::CurrentSettings.disabled_oauth_sign_in_sources).to include('google_oauth2')
+
+    # Remove google_oauth2 from the Omniauth strategies
+    allow(Devise).to receive(:omniauth_providers).and_return([])
+
+    # Save an unrelated setting
+    page.within('.as-ci-cd') do
+      click_button 'Save changes'
+    end
+
+    expect(page).to have_content "Application settings saved successfully"
+    expect(Gitlab::CurrentSettings.disabled_oauth_sign_in_sources).to include('google_oauth2')
+  end
+
   scenario 'Change Help page' do
     page.within('.as-help-page') do
       fill_in 'Help page text', with: 'Example text'
