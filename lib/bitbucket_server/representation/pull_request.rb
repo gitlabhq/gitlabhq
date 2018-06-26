@@ -40,7 +40,7 @@ module BitbucketServer
       end
 
       def source_branch_sha
-        # XXX Not implemented?
+        source_branch['latestCommit']
       end
 
       def target_branch_name
@@ -48,7 +48,7 @@ module BitbucketServer
       end
 
       def target_branch_sha
-        # XXX Not implemented?
+        target_branch['latestCommit']
       end
 
       private
