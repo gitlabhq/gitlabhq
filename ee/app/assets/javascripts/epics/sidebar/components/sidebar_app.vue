@@ -1,5 +1,6 @@
 <script>
 /* eslint-disable vue/require-default-prop */
+import $ from 'jquery';
 import _ from 'underscore';
 import Cookies from 'js-cookie';
 import Flash from '~/flash';
@@ -82,6 +83,14 @@ export default {
       type: String,
       required: true,
     },
+    todoPath: {
+      type: String,
+      required: true,
+    },
+    todoDeletePath: {
+      type: String,
+      required: true,
+    },
     labelsWebUrl: {
       type: String,
       required: true,
@@ -96,6 +105,8 @@ export default {
       startDate: this.initialStartDate,
       endDate: this.initialEndDate,
       subscribed: this.initialSubscribed,
+      todoExists: this.initialTodoExists,
+      todoDeletePath: this.todoDeletePath,
     });
 
     return {
@@ -107,7 +118,12 @@ export default {
       savingStartDate: false,
       savingEndDate: false,
       savingSubscription: false,
-      service: new SidebarService(this.endpoint, this.toggleSubscriptionPath),
+      savingTodoAction: false,
+      service: new SidebarService({
+        endpoint: this.endpoint,
+        subscriptionEndpoint: this.subscriptionEndpoint,
+        todoPath: this.todoPath,
+      }),
       epicContext: {
         labels: this.initialLabels,
       },
@@ -202,6 +218,37 @@ export default {
           }
         });
     },
+    handleToggleTodo() {
+      this.savingTodoAction = true;
+      if (!this.store.todoExists) {
+        this.service
+          .addTodo(this.epicId)
+          .then(res => res.data)
+          .then(data => {
+            this.savingTodoAction = false;
+            this.store.setTodoDeletePath(data.delete_path);
+            this.store.setTodoExists(!this.store.todoExists);
+            $(document).trigger('todo:toggle', data.count);
+          })
+          .catch(() => {
+            this.savingTodoAction = false;
+            Flash(__('There was an error adding a todo.'));
+          });
+      } else {
+        this.service
+          .deleteTodo(this.store.todoDeletePath)
+          .then(res => res.data)
+          .then(data => {
+            this.savingTodoAction = false;
+            this.store.setTodoExists(!this.store.todoExists);
+            $(document).trigger('todo:toggle', data.count);
+          })
+          .catch(() => {
+            this.savingTodoAction = false;
+            Flash(__('There was an error deleting the todo.'));
+          });
+      }
+    },
   },
 };
 </script>
@@ -226,8 +273,10 @@ export default {
           v-if="!collapsed"
           :collapsed="collapsed"
           :issuable-id="epicId"
-          :is-todo="initialTodoExists"
+          :is-todo="store.todoExists"
+          :is-action-active="savingTodoAction"
           issuable-type="epic"
+          @toggleTodo="handleToggleTodo"
         />
       </div>
       <div
@@ -237,8 +286,10 @@ export default {
         <sidebar-todo
           :collapsed="collapsed"
           :issuable-id="epicId"
-          :is-todo="initialTodoExists"
+          :is-todo="store.todoExists"
+          :is-action-active="savingTodoAction"
           issuable-type="epic"
+          @toggleTodo="handleToggleTodo"
         />
       </div>
       <sidebar-date-picker

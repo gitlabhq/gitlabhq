@@ -14,6 +14,7 @@ module EpicsHelper
         src: opts[:author_icon]
       },
       todo_exists: todo.present?,
+      todo_path: group_todos_path(group),
       start_date: epic.start_date,
       end_date: epic.end_date
     }

@@ -30,17 +30,16 @@ export default {
       required: false,
       default: true,
     },
+    isActionActive: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     collapsed: {
       type: Boolean,
       required: false,
       default: false,
     },
-  },
-  data() {
-    return {
-      isButtonTypeTodo: this.isTodo,
-      isActionActive: false,
-    };
   },
   computed: {
     buttonClasses() {
@@ -49,13 +48,18 @@ export default {
         'btn btn-default btn-todo issuable-header-btn float-right';
     },
     buttonLabel() {
-      return this.isButtonTypeTodo ? MARK_TEXT : TODO_TEXT;
+      return this.isTodo ? MARK_TEXT : TODO_TEXT;
     },
     collapsedButtonIconClasses() {
-      return this.isButtonTypeTodo ? 'todo-undone' : '';
+      return this.isTodo ? 'todo-undone' : '';
     },
     collapsedButtonIcon() {
-      return this.isButtonTypeTodo ? 'check-circle' : 'plus-square';
+      return this.isTodo ? 'check-circle' : 'plus-square';
+    },
+  },
+  methods: {
+    handleButtonClick() {
+      this.$emit('toggleTodo');
     },
   },
 };
@@ -73,6 +77,7 @@ export default {
     data-container="body"
     data-placement="left"
     data-boundary="viewport"
+    @click="handleButtonClick"
   >
     <icon
       v-if="collapsed"

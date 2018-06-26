@@ -119,6 +119,15 @@
         type: String,
         required: true,
       },
+      todoPath: {
+        type: String,
+        required: true,
+      },
+      todoDeletePath: {
+        type: String,
+        required: false,
+        default: '',
+      },
       labelsWebUrl: {
         type: String,
         required: true,
@@ -191,6 +200,8 @@
         :update-path="updateEndpoint"
         :labels-path="labelsPath"
         :toggle-subscription-path="toggleSubscriptionPath"
+        :todo-path="todoPath"
+        :todo-delete-path="todoDeletePath"
         :labels-web-url="labelsWebUrl"
         :epics-web-url="epicsWebUrl"
       />
