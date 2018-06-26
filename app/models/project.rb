@@ -266,6 +266,9 @@ class Project < ActiveRecord::Base
   has_many :project_deploy_tokens
   has_many :deploy_tokens, through: :project_deploy_tokens
 
+  has_many :project_feature_flags
+  has_many :project_feature_flags_access_tokens
+
   has_one :auto_devops, class_name: 'ProjectAutoDevops'
   has_many :custom_attributes, class_name: 'ProjectCustomAttribute'
 
