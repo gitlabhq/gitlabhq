@@ -4,14 +4,8 @@ module AuthHelper
   PROVIDERS_WITH_ICONS = %w(twitter github gitlab bitbucket google_oauth2 facebook azure_oauth2 authentiq).freeze
   LDAP_PROVIDER = /\Aldap/
 
-  delegate :slack_app_id, to: :'Gitlab::CurrentSettings.current_application_settings'
-
   def ldap_enabled?
     Gitlab::Auth::LDAP::Config.enabled?
-  end
-
-  def kerberos_enabled?
-    auth_providers.include?(:kerberos)
   end
 
   def omniauth_enabled?
@@ -78,10 +72,6 @@ module AuthHelper
 
   def unlink_allowed?(provider)
     %w(saml cas3).exclude?(provider.to_s)
-  end
-
-  def slack_redirect_uri(project)
-    slack_auth_project_settings_slack_url(project)
   end
 
   extend self
