@@ -28,7 +28,7 @@ describe Geo::RepositoryShardSyncWorker, :geo, :delete, :clean_gitlab_redis_cach
       allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { true }
       allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:renew) { true }
 
-      Gitlab::Geo::ShardHealthCache.update([shard_name])
+      Gitlab::ShardHealthCache.update([shard_name])
     end
 
     it 'performs Geo::ProjectSyncWorker for each project' do
@@ -47,8 +47,7 @@ describe Geo::RepositoryShardSyncWorker, :geo, :delete, :clean_gitlab_redis_cach
     end
 
     it 'does not perform Geo::ProjectSyncWorker when shard becomes unhealthy' do
-      Gitlab::Geo::ShardHealthCache.update([])
-
+      Gitlab::ShardHealthCache.update([])
       expect(Geo::ProjectSyncWorker).not_to receive(:perform_async)
 
       subject.perform(shard_name)
@@ -108,7 +107,7 @@ describe Geo::RepositoryShardSyncWorker, :geo, :delete, :clean_gitlab_redis_cach
       it 'uses two loops to schedule jobs' do
         expect(subject).to receive(:schedule_jobs).twice.and_call_original
 
-        Gitlab::Geo::ShardHealthCache.update([shard_name, 'shard2', 'shard3', 'shard4', 'shard5'])
+        Gitlab::ShardHealthCache.update([shard_name, 'shard2', 'shard3', 'shard4', 'shard5'])
         secondary.update!(repos_max_capacity: 5)
 
         subject.perform(shard_name)

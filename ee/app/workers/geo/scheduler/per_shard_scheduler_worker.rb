@@ -7,8 +7,6 @@ module Geo
       include ::EachShardWorker
 
       def perform
-        Gitlab::Geo::ShardHealthCache.update(eligible_shard_names)
-
         each_shard { |shard_name| schedule_job(shard_name) }
       end
 

@@ -90,7 +90,7 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
       let!(:registry) { create(:geo_project_registry, :synced, project: project) }
 
       before do
-        allow(Gitlab::Geo::ShardHealthCache).to receive(:healthy_shard?).with('default').and_return(true)
+        allow(Gitlab::ShardHealthCache).to receive(:healthy_shard?).with('default').and_return(true)
       end
 
       it 'replays events for projects that belong to selected namespaces to replicate' do

@@ -9,7 +9,7 @@ module Geo
         def perform(shard_name)
           @shard_name = shard_name
 
-          return unless Gitlab::Geo::ShardHealthCache.healthy_shard?(shard_name)
+          return unless Gitlab::ShardHealthCache.healthy_shard?(shard_name)
 
           super()
         end

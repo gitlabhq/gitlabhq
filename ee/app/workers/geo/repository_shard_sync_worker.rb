@@ -7,7 +7,7 @@ module Geo
     def perform(shard_name)
       @shard_name = shard_name
 
-      return unless Gitlab::Geo::ShardHealthCache.healthy_shard?(shard_name)
+      return unless Gitlab::ShardHealthCache.healthy_shard?(shard_name)
 
       super()
     end
@@ -24,7 +24,7 @@ module Geo
     end
 
     def max_capacity
-      healthy_count = Gitlab::Geo::ShardHealthCache.healthy_shard_count
+      healthy_count = Gitlab::ShardHealthCache.healthy_shard_count
 
       # If we don't have a count, that means that for some reason
       # RepositorySyncWorker stopped running/updating the cache. We might

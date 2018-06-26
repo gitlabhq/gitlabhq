@@ -16,7 +16,7 @@ describe Geo::RepositoryVerification::Primary::ShardWorker, :postgresql, :clean_
       allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { true }
       allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:renew) { true }
 
-      Gitlab::Geo::ShardHealthCache.update([shard_name])
+      Gitlab::ShardHealthCache.update([shard_name])
     end
 
     it 'performs Geo::RepositoryVerification::Primary::SingleWorker for each project' do
@@ -66,7 +66,7 @@ describe Geo::RepositoryVerification::Primary::ShardWorker, :postgresql, :clean_
     it 'does not perform Geo::RepositoryVerification::Primary::SingleWorker when shard becomes unhealthy' do
       create(:project)
 
-      Gitlab::Geo::ShardHealthCache.update([])
+      Gitlab::ShardHealthCache.update([])
 
       expect(primary_singleworker).not_to receive(:perform_async)
 

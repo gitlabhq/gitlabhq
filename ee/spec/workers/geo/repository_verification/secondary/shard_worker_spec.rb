@@ -19,7 +19,7 @@ describe Geo::RepositoryVerification::Secondary::ShardWorker, :postgresql, :clea
       allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { true }
       allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:renew) { true }
 
-      Gitlab::Geo::ShardHealthCache.update([shard_name])
+      Gitlab::ShardHealthCache.update([shard_name])
     end
 
     it 'schedules job for each project' do
@@ -116,7 +116,7 @@ describe Geo::RepositoryVerification::Secondary::ShardWorker, :postgresql, :clea
     it 'does not schedule jobs when shard becomes unhealthy' do
       create(:repository_state, project: project)
 
-      Gitlab::Geo::ShardHealthCache.update([])
+      Gitlab::ShardHealthCache.update([])
 
       expect(secondary_singleworker).not_to receive(:perform_async)
 
