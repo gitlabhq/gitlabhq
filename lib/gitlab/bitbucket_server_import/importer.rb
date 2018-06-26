@@ -89,7 +89,7 @@ module Gitlab
               updated_at: pull_request.updated_at
             )
 
-            import_pull_request_comments(pull_request, merge_request) if merge_request.persisted?
+#            import_pull_request_comments(pull_request, merge_request) if merge_request.persisted?
           rescue StandardError => e
             errors << { type: :pull_request, iid: pull_request.iid, errors: e.message, trace: e.backtrace.join("\n"), raw_response: pull_request.raw }
           end

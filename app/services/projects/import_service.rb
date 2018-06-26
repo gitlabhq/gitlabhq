@@ -23,7 +23,7 @@ module Projects
 
       success
     rescue => e
-      error("Error importing repository #{project.import_url} into #{project.full_path} - #{e.message}")
+      error("Error importing repository #{project.import_url} into #{project.full_path} - #{e.message} #{e.backtrace.join("\n")}")
     end
 
     private
