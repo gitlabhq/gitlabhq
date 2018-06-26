@@ -92,7 +92,7 @@ module Banzai
         def text
           return '' unless node
 
-          @text ||= node.text
+          @text ||= EscapeUtils.escape_html(node.text)
         end
 
         private

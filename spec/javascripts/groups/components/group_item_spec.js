@@ -41,7 +41,7 @@ describe('GroupItemComponent', () => {
     describe('rowClass', () => {
       it('should return map of classes based on group details', () => {
         const classes = ['is-open', 'has-children', 'has-description', 'being-removed'];
-        const rowClass = vm.rowClass;
+        const { rowClass } = vm;
 
         expect(Object.keys(rowClass).length).toBe(classes.length);
         Object.keys(rowClass).forEach((className) => {

@@ -191,7 +191,7 @@ export default {
       if (data.ci_status === this.mr.ciStatus) return;
       if (!data.pipeline) return;
 
-      const label = data.pipeline.details.status.label;
+      const { label } = data.pipeline.details.status;
       const title = `Pipeline ${label}`;
       const message = `Pipeline ${label} for "${data.title}"`;
 
@@ -211,7 +211,7 @@ export default {
       // `params` should be an Array contains a Boolean, like `[true]`
       // Passing parameter as Boolean didn't work.
       eventHub.$on('SetBranchRemoveFlag', (params) => {
-        this.mr.isRemovingSourceBranch = params[0];
+        [this.mr.isRemovingSourceBranch] = params;
       });
 
       eventHub.$on('FailedToMerge', (mergeError) => {

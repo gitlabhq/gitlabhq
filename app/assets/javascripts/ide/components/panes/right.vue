@@ -69,7 +69,7 @@ export default {
           >
             <icon
               :size="16"
-              name="pipeline"
+              name="rocket"
             />
           </button>
         </li>

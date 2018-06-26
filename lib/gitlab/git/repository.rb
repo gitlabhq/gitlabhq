@@ -549,24 +549,9 @@ module Gitlab
         end
       end
 
-      # Gitaly note: JV: check gitlab-ee before removing this method.
-      def rugged_is_ancestor?(ancestor_id, descendant_id)
-        return false if ancestor_id.nil? || descendant_id.nil?
-
-        rugged_merge_base(ancestor_id, descendant_id) == ancestor_id
-      rescue Rugged::OdbError
-        false
-      end
-
       # Returns true is +from+ is direct ancestor to +to+, otherwise false
       def ancestor?(from, to)
-        Gitlab::GitalyClient.migrate(:is_ancestor) do |is_enabled|
-          if is_enabled
-            gitaly_commit_client.ancestor?(from, to)
-          else
-            rugged_is_ancestor?(from, to)
-          end
-        end
+        gitaly_commit_client.ancestor?(from, to)
       end
 
       def merged_branch_names(branch_names = [])
@@ -697,6 +682,10 @@ module Gitlab
             rugged_add_tag(tag_name, user: user, target: target, message: message)
           end
         end
+      end
+
+      def update_branch(branch_name, user:, newrev:, oldrev:)
+        OperationService.new(user, self).update_branch(branch_name, newrev, oldrev)
       end
 
       def rm_branch(branch_name, user:)
@@ -978,29 +967,8 @@ module Gitlab
       end
 
       def languages(ref = nil)
-        gitaly_migrate(:commit_languages, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_commit_client.languages(ref)
-          else
-            ref ||= rugged.head.target_id
-            languages = Linguist::Repository.new(rugged, ref).languages
-            total = languages.map(&:last).sum
-
-            languages = languages.map do |language|
-              name, share = language
-              color = Linguist::Language[name].color || "##{Digest::SHA256.hexdigest(name)[0...6]}"
-              {
-                value: (share.to_f * 100 / total).round(2),
-                label: name,
-                color: color,
-                highlight: color
-              }
-            end
-
-            languages.sort do |x, y|
-              y[:value] <=> x[:value]
-            end
-          end
+        wrapped_gitaly_errors do
+          gitaly_commit_client.languages(ref)
         end
       end
 
@@ -1158,16 +1126,7 @@ module Gitlab
       end
 
       def create_from_bundle(bundle_path)
-        gitaly_migrate(:create_repo_from_bundle) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.create_from_bundle(bundle_path)
-          else
-            run_git!(%W(clone --bare -- #{bundle_path} #{path}), chdir: nil)
-            self.class.create_hooks(path, File.expand_path(Gitlab.config.gitlab_shell.hooks_path))
-          end
-        end
-
-        true
+        gitaly_repository_client.create_from_bundle(bundle_path)
       end
 
       def create_from_snapshot(url, auth)
@@ -1268,16 +1227,10 @@ module Gitlab
         return unless full_path.present?
 
         # This guard avoids Gitaly log/error spam
-        unless exists?
-          raise NoRepository, 'repository does not exist'
-        end
+        raise NoRepository, 'repository does not exist' unless exists?
 
-        gitaly_migrate(:write_config) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.write_config(full_path: full_path)
-          else
-            rugged_write_config(full_path: full_path)
-          end
+        wrapped_gitaly_errors do
+          gitaly_repository_client.write_config(full_path: full_path)
         end
       end
 
@@ -2004,8 +1957,7 @@ module Gitlab
 
           rebase_sha = run_git!(%w(rev-parse HEAD), chdir: rebase_path, env: env).strip
 
-          Gitlab::Git::OperationService.new(user, self)
-            .update_branch(branch, rebase_sha, branch_sha)
+          update_branch(branch, user: user, newrev: rebase_sha, oldrev: branch_sha)
 
           rebase_sha
         end

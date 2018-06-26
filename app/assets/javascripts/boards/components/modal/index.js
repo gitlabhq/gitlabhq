@@ -5,7 +5,7 @@ import queryData from '~/boards/utils/query_data';
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import './header';
 import './list';
-import './footer';
+import ModalFooter from './footer.vue';
 import EmptyState from './empty_state.vue';
 import ModalStore from '../../stores/modal_store';
 
@@ -14,7 +14,7 @@ gl.issueBoards.IssuesModal = Vue.extend({
     EmptyState,
     'modal-header': gl.issueBoards.ModalHeader,
     'modal-list': gl.issueBoards.ModalList,
-    'modal-footer': gl.issueBoards.ModalFooter,
+    ModalFooter,
     loadingIcon,
   },
   props: {

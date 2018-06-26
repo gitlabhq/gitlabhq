@@ -250,7 +250,6 @@ function UsersSelect(currentUser, els, options = {}) {
 
           let anyUser;
           let index;
-          let j;
           let len;
           let name;
           let obj;
@@ -501,7 +500,7 @@ function UsersSelect(currentUser, els, options = {}) {
           if (this.multiSelect) {
             selected = getSelected().find(u => user.id === u);
 
-            const fieldName = this.fieldName;
+            const { fieldName } = this;
             const field = $dropdown.closest('.selectbox').find("input[name='" + fieldName + "'][value='" + user.id + "']");
 
             if (field.length) {
@@ -553,7 +552,7 @@ function UsersSelect(currentUser, els, options = {}) {
         minimumInputLength: 0,
         query: function(query) {
           return _this.users(query.term, options, function(users) {
-            var anyUser, data, emailUser, index, j, len, name, nullUser, obj, ref;
+            var anyUser, data, emailUser, index, len, name, nullUser, obj, ref;
             data = {
               results: users
             };

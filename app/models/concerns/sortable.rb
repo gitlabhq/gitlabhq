@@ -12,8 +12,8 @@ module Sortable
     scope :order_created_asc, -> { reorder(created_at: :asc) }
     scope :order_updated_desc, -> { reorder(updated_at: :desc) }
     scope :order_updated_asc, -> { reorder(updated_at: :asc) }
-    scope :order_name_asc, -> { reorder("lower(name) asc") }
-    scope :order_name_desc, -> { reorder("lower(name) desc") }
+    scope :order_name_asc, -> { reorder(Arel::Nodes::Ascending.new(arel_table[:name].lower)) }
+    scope :order_name_desc, -> { reorder(Arel::Nodes::Descending.new(arel_table[:name].lower)) }
   end
 
   module ClassMethods

@@ -12,15 +12,16 @@ import axios from '~/lib/utils/axios_utils';
 import testAction from '../../helpers/vuex_action_helper';
 
 describe('DiffsStoreActions', () => {
-  describe('setEndpoint', () => {
-    it('should set given endpoint', done => {
+  describe('setBaseConfig', () => {
+    it('should set given endpoint and project path', done => {
       const endpoint = '/diffs/set/endpoint';
+      const projectPath = '/root/project';
 
       testAction(
-        actions.setEndpoint,
-        endpoint,
-        { endpoint: '' },
-        [{ type: types.SET_ENDPOINT, payload: endpoint }],
+        actions.setBaseConfig,
+        { endpoint, projectPath },
+        { endpoint: '', projectPath: '' },
+        [{ type: types.SET_BASE_CONFIG, payload: { endpoint, projectPath } }],
         [],
         done,
       );

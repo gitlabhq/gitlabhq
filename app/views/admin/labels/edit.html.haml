@@ -1,7 +1,7 @@
-- add_to_breadcrumbs "Labels", admin_labels_path
-- breadcrumb_title "Edit Label"
-- page_title "Edit", @label.name, "Labels"
+- add_to_breadcrumbs _("Labels"), admin_labels_path
+- breadcrumb_title _("Edit Label")
+- page_title _("Edit"), @label.name, _("Labels")
 %h3.page-title
-  Edit Label
+  = _('Edit Label')
 %hr
 = render 'form'

@@ -56,11 +56,11 @@ describe 'bin/changelog' do
       it 'parses -h' do
         expect do
           expect { described_class.parse(%w[foo -h bar]) }.to output.to_stdout
-        end.to raise_error(SystemExit)
+        end.to raise_error(ChangelogHelpers::Done)
       end
 
       it 'assigns title' do
-        options = described_class.parse(%W[foo -m 1 bar\n -u baz\r\n --amend])
+        options = described_class.parse(%W[foo -m 1 bar\n baz\r\n --amend])
 
         expect(options.title).to eq 'foo bar baz'
       end
@@ -82,9 +82,10 @@ describe 'bin/changelog' do
         it 'shows error message and exits the program' do
           allow($stdin).to receive(:getc).and_return(type)
           expect do
-            expect do
-              expect { described_class.read_type }.to raise_error(SystemExit)
-            end.to output("Invalid category index, please select an index between 1 and 8\n").to_stderr
+            expect { described_class.read_type }.to raise_error(
+              ChangelogHelpers::Abort,
+              'Invalid category index, please select an index between 1 and 8'
+            )
           end.to output.to_stdout
         end
       end

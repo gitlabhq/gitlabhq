@@ -124,7 +124,7 @@ export default {
       const newLineNumber = this.metaData.newPos || 0;
       const offset = newLineNumber - oldLineNumber;
       const bottom = this.isBottom;
-      const fileHash = this.fileHash;
+      const { fileHash } = this;
       const view = this.diffViewType;
       let unfold = true;
       let lineNumber = newLineNumber - 1;

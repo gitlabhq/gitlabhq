@@ -7,6 +7,7 @@ export const CONTEXT_LINE_TYPE = 'context';
 export const EMPTY_CELL_TYPE = 'empty-cell';
 export const COMMENT_FORM_TYPE = 'commentForm';
 export const DIFF_NOTE_TYPE = 'DiffNote';
+export const NOTE_TYPE = 'Note';
 export const NEW_LINE_TYPE = 'new';
 export const OLD_LINE_TYPE = 'old';
 export const TEXT_DIFF_POSITION_TYPE = 'text';

@@ -9,6 +9,17 @@ export const toggleTreeOpen = ({ commit }, path) => {
   commit(types.TOGGLE_TREE_OPEN, path);
 };
 
+export const showTreeEntry = ({ commit, dispatch, state }, path) => {
+  const entry = state.entries[path];
+  const parentPath = entry ? entry.parentPath : '';
+
+  if (parentPath) {
+    commit(types.SET_TREE_OPEN, parentPath);
+
+    dispatch('showTreeEntry', parentPath);
+  }
+};
+
 export const handleTreeEntryAction = ({ commit, dispatch }, row) => {
   if (row.type === 'tree') {
     dispatch('toggleTreeOpen', row.path);
@@ -21,6 +32,8 @@ export const handleTreeEntryAction = ({ commit, dispatch }, row) => {
   } else {
     dispatch('getFileData', { path: row.path });
   }
+
+  dispatch('showTreeEntry', row.path);
 };
 
 export const getLastCommitData = ({ state, commit, dispatch }, tree = state) => {
