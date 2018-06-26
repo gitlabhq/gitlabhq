@@ -16,6 +16,7 @@ export default function initDiffsApp(store) {
 
       return {
         endpoint: dataset.endpoint,
+        projectPath: dataset.projectPath,
         currentUser: convertObjectPropsToCamelCase(JSON.parse(dataset.currentUserData), {
           deep: true,
         }),
@@ -31,6 +32,7 @@ export default function initDiffsApp(store) {
         props: {
           endpoint: this.endpoint,
           currentUser: this.currentUser,
+          projectPath: this.projectPath,
           shouldShow: this.activeTab === 'diffs',
         },
       });

@@ -6,6 +6,7 @@ import diffFileMockData from '../diffs/mock_data/diff_file';
 
 export default function initVueMRPage() {
   const diffsAppEndpoint = '/diffs/app/endpoint';
+  const diffsAppProjectPath = 'testproject';
   const mrEl = document.createElement('div');
   mrEl.className = 'merge-request fixture-mr';
   mrEl.setAttribute('data-mr-action', 'diffs');
@@ -26,6 +27,7 @@ export default function initVueMRPage() {
   const diffsAppEl = document.createElement('div');
   diffsAppEl.id = 'js-diffs-app';
   diffsAppEl.setAttribute('data-endpoint', diffsAppEndpoint);
+  diffsAppEl.setAttribute('data-project-path', diffsAppProjectPath);
   diffsAppEl.setAttribute('data-current-user-data', JSON.stringify(userDataMock));
   document.body.appendChild(diffsAppEl);
 

@@ -73,7 +73,8 @@
           = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_project_merge_request_path(@project, @merge_request)
       #js-diffs-app.diffs.tab-pane{ data: { "is-locked" => @merge_request.discussion_locked?,
         endpoint: diffs_project_merge_request_path(@project, @merge_request, 'json', request.query_parameters),
-        current_user_data: UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestUserEntity).to_json } }
+        current_user_data: UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestUserEntity).to_json,
+        project_path: project_path(@merge_request.project)} }
 
     .mr-loading-status
       = spinner
