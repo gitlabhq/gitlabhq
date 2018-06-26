@@ -42,12 +42,13 @@ module Geo
         def load_pending_resources
           resources = find_unverified_project_ids(batch_size: db_retrieve_batch_size)
           remaining_capacity = db_retrieve_batch_size - resources.size
+          return resources if remaining_capacity.zero?
 
-          if remaining_capacity.zero?
-            resources
-          else
-            resources + find_outdated_project_ids(batch_size: remaining_capacity)
-          end
+          resources = resources + find_outdated_project_ids(batch_size: remaining_capacity)
+          remaining_capacity = db_retrieve_batch_size - resources.size
+          return resources if remaining_capacity.zero?
+
+          resources + find_failed_project_ids(batch_size: remaining_capacity)
         end
 
         def find_unverified_project_ids(batch_size:)
@@ -56,6 +57,10 @@ module Geo
 
         def find_outdated_project_ids(batch_size:)
           finder.find_outdated_projects(batch_size: batch_size).pluck(:id)
+        end
+
+        def find_failed_project_ids(batch_size:)
+          finder.find_failed_projects(batch_size: batch_size).pluck(:id)
         end
       end
     end
