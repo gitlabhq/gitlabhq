@@ -30,11 +30,7 @@
           %board-delete{ "inline-template" => true,
             ":list" => "list",
             "v-if" => "!list.preset && list.id" }
-<<<<<<< HEAD
-            %button.board-delete.has-tooltip.append-right-10{ type: "button", title: "Delete list", "aria-label" => "Delete list", data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
-=======
-            %button.board-delete.has-tooltip.float-right{ type: "button", title: _("Delete list"), "aria-label" => _("Delete list"), data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
->>>>>>> upstream/master
+            %button.board-delete.has-tooltip.append-right-10{ type: "button", title: _("Delete list"), "aria-label" => _("Delete list"), data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
               = icon("trash")
         .issue-count-badge.clearfix{ "v-if" => 'list.type !== "blank" && list.type !== "promotion"' }
           %span.issue-count-badge-count.float-left{ ":class" => '{ "has-btn": list.type !== "closed" && !disabled }' }
