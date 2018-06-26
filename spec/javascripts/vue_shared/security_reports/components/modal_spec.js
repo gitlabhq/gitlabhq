@@ -20,7 +20,7 @@ describe('Security Reports modal', () => {
     store.dispatch('setPipelineId', 123);
   });
 
-  describe('wit permissions', () => {
+  describe('with permissions', () => {
     beforeEach(() => {
       store.dispatch('setCanCreateIssuePermission', true);
       store.dispatch('setCanCreateFeedbackPermission', true);
@@ -56,7 +56,7 @@ describe('Security Reports modal', () => {
               },
             },
           },
-        status: 'failed',
+          status: 'failed',
         });
 
         vm = mountComponentWithStore(Component, {
@@ -126,27 +126,30 @@ describe('Security Reports modal', () => {
     describe('with instances', () => {
       beforeEach(() => {
         store.dispatch('setModalData', {
-          title: 'Absence of Anti-CSRF Tokens',
-          riskcode: '1',
-          riskdesc: 'Low (Medium)',
-          desc: '<p>No Anti-CSRF tokens were found in a HTML submission form.</p>',
-          pluginid: '123',
-          instances: [
-            {
-              uri: 'http://192.168.32.236:3001/explore?sort=latest_activity_desc',
-              method: 'GET',
-              evidence:
-                "<form class='navbar-form' action='/search' accept-charset='UTF-8' method='get'>",
-            },
-            {
-              uri: 'http://192.168.32.236:3001/help/user/group/subgroups/index.md',
-              method: 'GET',
-              evidence:
-                "<form class='navbar-form' action='/search' accept-charset='UTF-8' method='get'>",
-            },
-          ],
-          description: ' No Anti-CSRF tokens were found in a HTML submission form. ',
-          solution: '',
+          issue: {
+            title: 'Absence of Anti-CSRF Tokens',
+            riskcode: '1',
+            riskdesc: 'Low (Medium)',
+            desc: '<p>No Anti-CSRF tokens were found in a HTML submission form.</p>',
+            pluginid: '123',
+            instances: [
+              {
+                uri: 'http://192.168.32.236:3001/explore?sort=latest_activity_desc',
+                method: 'GET',
+                evidence:
+                  "<form class='navbar-form' action='/search' accept-charset='UTF-8' method='get'>",
+              },
+              {
+                uri: 'http://192.168.32.236:3001/help/user/group/subgroups/index.md',
+                method: 'GET',
+                evidence:
+                  "<form class='navbar-form' action='/search' accept-charset='UTF-8' method='get'>",
+              },
+            ],
+            description: ' No Anti-CSRF tokens were found in a HTML submission form. ',
+            solution: '',
+          },
+          status: 'failed',
         });
 
         vm = mountComponentWithStore(Component, {
@@ -169,19 +172,22 @@ describe('Security Reports modal', () => {
     describe('data & create issue button', () => {
       beforeEach(() => {
         store.dispatch('setModalData', {
-          tool: 'bundler_audit',
-          message: 'Arbitrary file existence disclosure in Action Pack',
-          cve: 'CVE-2014-9999',
-          solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
-          title: 'Arbitrary file existence disclosure in Action Pack',
-          path: 'Gemfile.lock',
-          urlPath: 'path/Gemfile.lock',
-          location: {
-            file: 'Gemfile.lock',
+          issue: {
+            tool: 'bundler_audit',
+            message: 'Arbitrary file existence disclosure in Action Pack',
+            cve: 'CVE-2014-9999',
+            solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
+            title: 'Arbitrary file existence disclosure in Action Pack',
+            path: 'Gemfile.lock',
+            urlPath: 'path/Gemfile.lock',
+            location: {
+              file: 'Gemfile.lock',
+            },
+            links: [{
+              url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
+            }],
           },
-          links: [{
-            url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
-          }],
+          status: 'failed',
         });
 
         vm = mountComponentWithStore(Component, {
@@ -247,6 +253,114 @@ describe('Security Reports modal', () => {
     it('does not render action buttons', () => {
       expect(vm.$el.querySelector('.js-dismiss-btn')).toBe(null);
       expect(vm.$el.querySelector('.js-create-issue-btn')).toBe(null);
+    });
+
+    it('does not display the footer', () => {
+      expect(vm.$el.classList.contains('modal-hide-footer')).toEqual(true);
+    });
+  });
+
+  describe('with permission to create issue', () => {
+    beforeEach(() => {
+      store.dispatch('setCanCreateIssuePermission', true);
+      store.dispatch('setModalData', {
+        issue: {
+          tool: 'bundler_audit',
+          message: 'Arbitrary file existence disclosure in Action Pack',
+          url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
+          cve: 'CVE-2014-9999',
+          file: 'Gemfile.lock',
+          solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
+          title: 'Arbitrary file existence disclosure in Action Pack',
+          path: 'Gemfile.lock',
+          urlPath: 'path/Gemfile.lock',
+          isDismissed: true,
+          dismissalFeedback: {
+            id: 1,
+            category: 'sast',
+            feedback_type: 'dismissal',
+            issue_id: null,
+            author: {
+              name: 'John Smith',
+              username: 'jsmith',
+              web_url: 'https;//gitlab.com/user1',
+            },
+            pipeline: {
+              id: 123,
+              path: '/jsmith/awesome-project/pipelines/123',
+            },
+          },
+        },
+        status: 'failed',
+      });
+
+      vm = mountComponentWithStore(Component, {
+        store,
+      });
+    });
+
+    it('does not render dismiss button', () => {
+      expect(vm.$el.querySelector('.js-dismiss-btn')).toBe(null);
+    });
+
+    it('renders create issue button', () => {
+      expect(vm.$el.querySelector('.js-create-issue-btn')).not.toBe(null);
+    });
+
+    it('renders the footer', () => {
+      expect(vm.$el.classList.contains('modal-hide-footer')).toEqual(false);
+    });
+  });
+
+  describe('with permission to dismiss issue', () => {
+    beforeEach(() => {
+      store.dispatch('setCanCreateFeedbackPermission', true);
+      store.dispatch('setModalData', {
+        issue: {
+          tool: 'bundler_audit',
+          message: 'Arbitrary file existence disclosure in Action Pack',
+          url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
+          cve: 'CVE-2014-9999',
+          file: 'Gemfile.lock',
+          solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
+          title: 'Arbitrary file existence disclosure in Action Pack',
+          path: 'Gemfile.lock',
+          urlPath: 'path/Gemfile.lock',
+          isDismissed: true,
+          dismissalFeedback: {
+            id: 1,
+            category: 'sast',
+            feedback_type: 'dismissal',
+            issue_id: null,
+            author: {
+              name: 'John Smith',
+              username: 'jsmith',
+              web_url: 'https;//gitlab.com/user1',
+            },
+            pipeline: {
+              id: 123,
+              path: '/jsmith/awesome-project/pipelines/123',
+            },
+          },
+        },
+        status: 'failed',
+      });
+
+      vm = mountComponentWithStore(Component, {
+        store,
+      });
+    });
+
+    it('does not render create issue button', () => {
+      expect(vm.$el.querySelector('.js-create-issue-btn')).toBe(null);
+    });
+
+    it('renders create issue button and footer', () => {
+      expect(vm.$el.querySelector('.js-dismiss-btn')).not.toBe(null);
+    });
+
+    it('renders the footer', () => {
+      expect(vm.$el.classList.contains('modal-hide-footer')).toEqual(false);
     });
   });
 

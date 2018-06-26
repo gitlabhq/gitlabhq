@@ -1,70 +1,76 @@
 <script>
-  import { mapActions, mapState } from 'vuex';
-  import { s__ } from '~/locale';
-  import Modal from '~/vue_shared/components/gl_modal.vue';
-  import LoadingButton from '~/vue_shared/components/loading_button.vue';
-  import Icon from '~/vue_shared/components/icon.vue';
-  import ExpandButton from '~/vue_shared/components/expand_button.vue';
+import { mapActions, mapState } from 'vuex';
+import { s__ } from '~/locale';
+import Modal from '~/vue_shared/components/gl_modal.vue';
+import LoadingButton from '~/vue_shared/components/loading_button.vue';
+import Icon from '~/vue_shared/components/icon.vue';
+import ExpandButton from '~/vue_shared/components/expand_button.vue';
 
-  export default {
-    components: {
-      Modal,
-      LoadingButton,
-      ExpandButton,
-      Icon,
+export default {
+  components: {
+    Modal,
+    LoadingButton,
+    ExpandButton,
+    Icon,
+  },
+  computed: {
+    ...mapState([
+      'modal',
+      'vulnerabilityFeedbackHelpPath',
+      'canCreateIssuePermission',
+      'canCreateFeedbackPermission',
+    ]),
+    revertTitle() {
+      return this.modal.vulnerability.isDismissed
+        ? s__('ciReport|Revert dismissal')
+        : s__('ciReport|Dismiss vulnerability');
     },
-    computed: {
-      ...mapState([
-        'modal',
-        'vulnerabilityFeedbackHelpPath',
-        'canCreateIssuePermission',
-        'canCreateFeedbackPermission',
-      ]),
-      revertTitle() {
-        return this.modal.vulnerability.isDismissed
-          ? s__('ciReport|Revert dismissal')
-          : s__('ciReport|Dismiss vulnerability');
-      },
-      hasDismissedBy() {
-        return (
-          this.modal.vulnerability.dismissalFeedback &&
-          this.modal.vulnerability.dismissalFeedback.pipeline &&
-          this.modal.vulnerability.dismissalFeedback.author
-        );
-      },
+    hasDismissedBy() {
+      return (
+        this.modal.vulnerability.dismissalFeedback &&
+        this.modal.vulnerability.dismissalFeedback.pipeline &&
+        this.modal.vulnerability.dismissalFeedback.author
+      );
     },
-    methods: {
-      ...mapActions(['dismissIssue', 'revertDismissIssue', 'createNewIssue']),
-      handleDismissClick() {
-        if (this.modal.vulnerability.isDismissed) {
-          this.revertDismissIssue();
-        } else {
-          this.dismissIssue();
-        }
-      },
-      isLastValue(index, values) {
-        return index < values.length - 1;
-      },
-      hasValue(field) {
-        return field.value && field.value.length > 0;
-      },
-      hasInstances(field, key) {
-        return key === 'instances' && this.hasValue(field);
-      },
-      hasIdentifiers(field, key) {
-        return key === 'identifiers' && this.hasValue(field);
-      },
-      hasLinks(field, key) {
-        return key === 'links' && this.hasValue(field);
-      },
+    shouldHideModalFooter() {
+      return (
+        this.modal.isResolved ||
+        (!this.canCreateFeedbackPermission && !this.canCreateIssuePermission)
+      );
     },
-  };
+  },
+  methods: {
+    ...mapActions(['dismissIssue', 'revertDismissIssue', 'createNewIssue']),
+    handleDismissClick() {
+      if (this.modal.vulnerability.isDismissed) {
+        this.revertDismissIssue();
+      } else {
+        this.dismissIssue();
+      }
+    },
+    isLastValue(index, values) {
+      return index < values.length - 1;
+    },
+    hasValue(field) {
+      return field.value && field.value.length > 0;
+    },
+    hasInstances(field, key) {
+      return key === 'instances' && this.hasValue(field);
+    },
+    hasIdentifiers(field, key) {
+      return key === 'identifiers' && this.hasValue(field);
+    },
+    hasLinks(field, key) {
+      return key === 'links' && this.hasValue(field);
+    },
+  },
+};
 </script>
 <template>
   <modal
     id="modal-mrwidget-security-issue"
     :header-title-text="modal.title"
-    :class="{'modal-hide-footer': modal.isResolved}"
+    :class="{ 'modal-hide-footer': shouldHideModalFooter }"
     class="modal-security-report-dast"
   >
     <slot>
@@ -203,7 +209,7 @@
       </div>
     </slot>
     <div slot="footer">
-      <template v-if="!modal.isResolved">
+      <template v-if="!modal.isResolved && (canCreateFeedbackPermission || canCreateIssuePermission)">
         <button
           type="button"
           class="btn btn-default"
@@ -229,12 +235,13 @@
         >
           {{ __('View issue' ) }}
         </a>
+
         <loading-button
           v-else-if="!modal.vulnerability.hasIssue && canCreateIssuePermission"
           :loading="modal.isCreatingNewIssue"
           :disabled="modal.isCreatingNewIssue"
           :label="__('Create issue')"
-          container-class="btn btn-success btn-inverted"
+          container-class="js-create-issue-btn btn btn-success btn-inverted"
           @click="createNewIssue"
         />
       </template>
