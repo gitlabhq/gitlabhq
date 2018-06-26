@@ -23,7 +23,10 @@
     },
     methods: {
       removeIssue() {
+<<<<<<< HEAD
         const board = Store.state.currentBoard;
+=======
+>>>>>>> upstream/master
         const { issue } = this;
         const lists = issue.getLists();
         const boardLabelIds = board.labels.map(label => label.id);

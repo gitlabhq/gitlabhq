@@ -5,8 +5,9 @@ import { findDiffFile, addLineReferences, removeMatchLine, addContextLines } fro
 import * as types from './mutation_types';
 
 export default {
-  [types.SET_ENDPOINT](state, endpoint) {
-    Object.assign(state, { endpoint });
+  [types.SET_BASE_CONFIG](state, options) {
+    const { endpoint, projectPath } = options;
+    Object.assign(state, { endpoint, projectPath });
   },
 
   [types.SET_LOADING](state, isLoading) {
@@ -73,7 +74,7 @@ export default {
   [types.EXPAND_ALL_FILES](state) {
     const diffFiles = [];
 
-    state.diffFiles.forEach((file) => {
+    state.diffFiles.forEach(file => {
       diffFiles.push({
         ...file,
         collapsed: false,
