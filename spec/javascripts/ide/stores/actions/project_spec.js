@@ -1,6 +1,12 @@
-import { refreshLastCommitData } from '~/ide/stores/actions';
+import {
+  refreshLastCommitData,
+  showBranchNotFoundError,
+  createNewBranchFromDefault,
+} from '~/ide/stores/actions';
 import store from '~/ide/stores';
+import projectActions from '~/ide/stores/actions/project';
 import service from '~/ide/services';
+import api from '~/api';
 import { resetStore } from '../../helpers';
 import testAction from '../../../helpers/vuex_action_helper';
 
@@ -78,6 +84,84 @@ describe('IDE store project actions', () => {
         ], // action
         done,
       );
+    });
+  });
+
+  describe('showBranchNotFoundError', () => {
+    it('dispatches setErrorMessage', done => {
+      testAction(
+        showBranchNotFoundError,
+        'master',
+        null,
+        [],
+        [
+          {
+            type: 'setErrorMessage',
+            payload: {
+              text: "Branch <strong>master</strong> was not found in this project's repository.",
+              action: 'createNewBranchFromDefault',
+              actionText: 'Create branch',
+              actionPayload: 'master',
+            },
+          },
+        ],
+        done,
+      );
+    });
+  });
+
+  describe('createNewBranchFromDefault', () => {
+    it('calls API', done => {
+      spyOn(api, 'createBranch').and.returnValue(Promise.resolve());
+      spyOnDependency(projectActions, 'refreshCurrentPage');
+
+      createNewBranchFromDefault(
+        {
+          state: {
+            currentProjectId: 'project-path',
+          },
+          getters: {
+            currentProject: {
+              default_branch: 'master',
+            },
+          },
+        },
+        'new-branch-name',
+      );
+
+      setTimeout(() => {
+        expect(api.createBranch).toHaveBeenCalledWith('project-path', {
+          ref: 'master',
+          branch: 'new-branch-name',
+        });
+
+        done();
+      });
+    });
+
+    it('reloads window', done => {
+      spyOn(api, 'createBranch').and.returnValue(Promise.resolve());
+      const refreshSpy = spyOnDependency(projectActions, 'refreshCurrentPage');
+
+      createNewBranchFromDefault(
+        {
+          state: {
+            currentProjectId: 'project-path',
+          },
+          getters: {
+            currentProject: {
+              default_branch: 'master',
+            },
+          },
+        },
+        'new-branch-name',
+      );
+
+      setTimeout(() => {
+        expect(refreshSpy).toHaveBeenCalled();
+
+        done();
+      });
     });
   });
 });

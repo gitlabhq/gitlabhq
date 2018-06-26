@@ -4,6 +4,7 @@ import { __, sprintf } from '~/locale';
 import service from '../../services';
 import api from '../../../api';
 import * as types from '../mutation_types';
+import { refreshCurrentPage } from '../../../lib/utils/url_utility';
 
 export const getProjectData = ({ commit, state }, { namespace, projectId, force = false } = {}) =>
   new Promise((resolve, reject) => {
@@ -97,7 +98,7 @@ export const createNewBranchFromDefault = ({ state, getters }, branch) =>
       branch,
     })
     .then(() => {
-      window.location.reload();
+      refreshCurrentPage();
 
       // this forces the loading icon to spin whilst the page is reloading
       return new Promise(() => {});
