@@ -1869,7 +1869,6 @@ describe MergeRequest do
     it 'calls MergeRequests::ReloadDiffsService#execute with correct params' do
       user = create(:user)
       service = instance_double(MergeRequests::ReloadDiffsService, execute: nil)
-<<<<<<< HEAD
 
       expect(MergeRequests::ReloadDiffsService)
         .to receive(:new).with(subject, user)
@@ -1877,15 +1876,6 @@ describe MergeRequest do
 
       subject.reload_diff(user)
 
-=======
-
-      expect(MergeRequests::ReloadDiffsService)
-        .to receive(:new).with(subject, user)
-        .and_return(service)
-
-      subject.reload_diff(user)
-
->>>>>>> upstream/master
       expect(service).to have_received(:execute)
     end
 
