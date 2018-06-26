@@ -204,13 +204,13 @@ export const fetchDependencyScanningReports = ({ state, dispatch }) => {
 export const updateDependencyScanningIssue = ({ commit }, issue) =>
   commit(types.UPDATE_DEPENDENCY_SCANNING_ISSUE, issue);
 
-export const openModal = ({ dispatch }, issue) => {
-  dispatch('setModalData', issue);
+export const openModal = ({ dispatch }, payload) => {
+  dispatch('setModalData', payload);
 
   $('#modal-mrwidget-security-issue').modal('show');
 };
 
-export const setModalData = ({ commit }, issue) => commit(types.SET_ISSUE_MODAL_DATA, issue);
+export const setModalData = ({ commit }, payload) => commit(types.SET_ISSUE_MODAL_DATA, payload);
 export const requestDismissIssue = ({ commit }) => commit(types.REQUEST_DISMISS_ISSUE);
 export const receiveDismissIssue = ({ commit }) => commit(types.RECEIVE_DISMISS_ISSUE_SUCCESS);
 export const receiveDismissIssueError = ({ commit }, error) =>

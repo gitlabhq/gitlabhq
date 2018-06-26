@@ -73,6 +73,7 @@ class License < ActiveRecord::Base
     ide
     chatops
     pod_logs
+    pseudonymizer
   ].freeze
 
   # List all features available for early adopters,

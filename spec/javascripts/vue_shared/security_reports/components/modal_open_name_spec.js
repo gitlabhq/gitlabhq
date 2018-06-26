@@ -13,6 +13,7 @@ describe('Modal open name', () => {
       store,
       props: {
         issue: parsedDast[0],
+        status: 'failed',
       },
     });
   });

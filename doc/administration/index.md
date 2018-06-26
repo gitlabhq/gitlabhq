@@ -167,6 +167,10 @@ created in snippets, wikis, and repos.
   - [Request Profiling](monitoring/performance/request_profiling.md): Get a detailed profile on slow requests.
   - [Performance Bar](monitoring/performance/performance_bar.md): Get performance information for the current page.
 
+## Analytics
+
+- [Pseudonymizer](pseudonymizer.md): Export data from GitLab's database to CSV files in a secure way.
+
 ## Troubleshooting
 
 - [Debugging tips](troubleshooting/debug.md): Tips to debug problems when things go wrong

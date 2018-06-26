@@ -29,31 +29,34 @@ describe('Security Reports modal', () => {
     describe('with dismissed issue', () => {
       beforeEach(() => {
         store.dispatch('setModalData', {
-          tool: 'bundler_audit',
-          message: 'Arbitrary file existence disclosure in Action Pack',
-          url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
-          cve: 'CVE-2014-9999',
-          file: 'Gemfile.lock',
-          solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
-          title: 'Arbitrary file existence disclosure in Action Pack',
-          path: 'Gemfile.lock',
-          urlPath: 'path/Gemfile.lock',
-          isDismissed: true,
-          dismissalFeedback: {
-            id: 1,
-            category: 'sast',
-            feedback_type: 'dismissal',
-            issue_id: null,
-            author: {
-              name: 'John Smith',
-              username: 'jsmith',
-              web_url: 'https;//gitlab.com/user1',
-            },
-            pipeline: {
-              id: 123,
-              path: '/jsmith/awesome-project/pipelines/123',
+          issue: {
+            tool: 'bundler_audit',
+            message: 'Arbitrary file existence disclosure in Action Pack',
+            url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
+            cve: 'CVE-2014-9999',
+            file: 'Gemfile.lock',
+            solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
+            title: 'Arbitrary file existence disclosure in Action Pack',
+            path: 'Gemfile.lock',
+            urlPath: 'path/Gemfile.lock',
+            isDismissed: true,
+            dismissalFeedback: {
+              id: 1,
+              category: 'sast',
+              feedback_type: 'dismissal',
+              issue_id: null,
+              author: {
+                name: 'John Smith',
+                username: 'jsmith',
+                web_url: 'https;//gitlab.com/user1',
+              },
+              pipeline: {
+                id: 123,
+                path: '/jsmith/awesome-project/pipelines/123',
+              },
             },
           },
+        status: 'failed',
         });
 
         vm = mountComponentWithStore(Component, {
@@ -85,15 +88,18 @@ describe('Security Reports modal', () => {
     describe('with not dismissed isssue', () => {
       beforeEach(() => {
         store.dispatch('setModalData', {
-          tool: 'bundler_audit',
-          message: 'Arbitrary file existence disclosure in Action Pack',
-          url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
-          cve: 'CVE-2014-9999',
-          file: 'Gemfile.lock',
-          solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
-          title: 'Arbitrary file existence disclosure in Action Pack',
-          path: 'Gemfile.lock',
-          urlPath: 'path/Gemfile.lock',
+          issue: {
+            tool: 'bundler_audit',
+            message: 'Arbitrary file existence disclosure in Action Pack',
+            url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
+            cve: 'CVE-2014-9999',
+            file: 'Gemfile.lock',
+            solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
+            title: 'Arbitrary file existence disclosure in Action Pack',
+            path: 'Gemfile.lock',
+            urlPath: 'path/Gemfile.lock',
+          },
+          status: 'failed',
         });
 
         vm = mountComponentWithStore(Component, {
@@ -203,31 +209,34 @@ describe('Security Reports modal', () => {
   describe('without permissions', () => {
     beforeEach(() => {
       store.dispatch('setModalData', {
-        tool: 'bundler_audit',
-        message: 'Arbitrary file existence disclosure in Action Pack',
-        url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
-        cve: 'CVE-2014-9999',
-        file: 'Gemfile.lock',
-        solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
-        title: 'Arbitrary file existence disclosure in Action Pack',
-        path: 'Gemfile.lock',
-        urlPath: 'path/Gemfile.lock',
-        isDismissed: true,
-        dismissalFeedback: {
-          id: 1,
-          category: 'sast',
-          feedback_type: 'dismissal',
-          issue_id: null,
-          author: {
-            name: 'John Smith',
-            username: 'jsmith',
-            web_url: 'https;//gitlab.com/user1',
-          },
-          pipeline: {
-            id: 123,
-            path: '/jsmith/awesome-project/pipelines/123',
+        issue: {
+          tool: 'bundler_audit',
+          message: 'Arbitrary file existence disclosure in Action Pack',
+          url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
+          cve: 'CVE-2014-9999',
+          file: 'Gemfile.lock',
+          solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
+          title: 'Arbitrary file existence disclosure in Action Pack',
+          path: 'Gemfile.lock',
+          urlPath: 'path/Gemfile.lock',
+          isDismissed: true,
+          dismissalFeedback: {
+            id: 1,
+            category: 'sast',
+            feedback_type: 'dismissal',
+            issue_id: null,
+            author: {
+              name: 'John Smith',
+              username: 'jsmith',
+              web_url: 'https;//gitlab.com/user1',
+            },
+            pipeline: {
+              id: 123,
+              path: '/jsmith/awesome-project/pipelines/123',
+            },
           },
         },
+        status: 'failed',
       });
 
       vm = mountComponentWithStore(Component, {
@@ -238,6 +247,33 @@ describe('Security Reports modal', () => {
     it('does not render action buttons', () => {
       expect(vm.$el.querySelector('.js-dismiss-btn')).toBe(null);
       expect(vm.$el.querySelector('.js-create-issue-btn')).toBe(null);
+    });
+  });
+
+  describe('with a resolved issue', () => {
+    beforeEach(() => {
+      store.dispatch('setModalData', {
+        issue: {
+          tool: 'bundler_audit',
+          message: 'Arbitrary file existence disclosure in Action Pack',
+          url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
+          cve: 'CVE-2014-9999',
+          file: 'Gemfile.lock',
+          solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
+          title: 'Arbitrary file existence disclosure in Action Pack',
+          path: 'Gemfile.lock',
+          urlPath: 'path/Gemfile.lock',
+        },
+        status: 'success',
+      });
+
+      vm = mountComponentWithStore(Component, {
+        store,
+      });
+    });
+
+    it('does not display the footer', () => {
+      expect(vm.$el.classList.contains('modal-hide-footer')).toBeTruthy();
     });
   });
 });

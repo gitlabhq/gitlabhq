@@ -370,6 +370,10 @@ Settings.cron_jobs['gitlab_usage_ping_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= Settings.__send__(:cron_for_usage_ping)
 Settings.cron_jobs['gitlab_usage_ping_worker']['job_class'] = 'GitlabUsagePingWorker'
 
+Settings.cron_jobs['pseudonymizer_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['pseudonymizer_worker']['cron'] ||= '0 23 * * *'
+Settings.cron_jobs['pseudonymizer_worker']['job_class'] ||= 'PseudonymizerWorker'
+
 Settings.cron_jobs['schedule_update_user_activity_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['schedule_update_user_activity_worker']['cron'] ||= '30 0 * * *'
 Settings.cron_jobs['schedule_update_user_activity_worker']['job_class'] = 'ScheduleUpdateUserActivityWorker'
@@ -469,6 +473,14 @@ Settings.backup['upload'] ||= Settingslogic.new({ 'remote_directory' => nil, 'co
 Settings.backup['upload']['multipart_chunk_size'] ||= 104857600
 Settings.backup['upload']['encryption'] ||= nil
 Settings.backup['upload']['storage_class'] ||= nil
+
+#
+# Pseudonymizer
+#
+Settings['pseudonymizer'] ||= Settingslogic.new({})
+Settings.pseudonymizer['manifest'] = Settings.absolute(Settings.pseudonymizer['manifest'] || Rails.root.join("config/pseudonymizer.yml"))
+Settings.pseudonymizer['upload'] ||= Settingslogic.new({ 'remote_directory' => nil, 'connection' => nil })
+# Settings.pseudonymizer['upload']['multipart_chunk_size'] ||= 104857600
 
 #
 # Git

@@ -1,12 +1,12 @@
 import Vue from 'vue';
 import modalFilters from './filters';
-import './tabs';
+import modalTabs from './tabs.vue';
 import ModalStore from '../../stores/modal_store';
 import modalMixin from '../../mixins/modal_mixins';
 
 gl.issueBoards.ModalHeader = Vue.extend({
   components: {
-    'modal-tabs': gl.issueBoards.ModalTabs,
+    modalTabs,
     modalFilters,
   },
   mixins: [modalMixin],

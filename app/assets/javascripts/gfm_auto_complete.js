@@ -7,6 +7,16 @@ function sanitize(str) {
   return str.replace(/<(?:.|\n)*?>/gm, '');
 }
 
+export const defaultAutocompleteConfig = {
+  emojis: true,
+  members: true,
+  issues: true,
+  mergeRequests: true,
+  epics: false,
+  milestones: true,
+  labels: true,
+};
+
 class GfmAutoComplete {
   constructor(dataSources) {
     this.dataSources = dataSources || {};
@@ -14,14 +24,7 @@ class GfmAutoComplete {
     this.isLoadingData = {};
   }
 
-  setup(input, enableMap = {
-    emojis: true,
-    members: true,
-    issues: true,
-    milestones: true,
-    mergeRequests: true,
-    labels: true,
-  }) {
+  setup(input, enableMap = defaultAutocompleteConfig) {
     // Add GFM auto-completion to all input fields, that accept GFM input.
     this.input = input || $('.js-gfm-input');
     this.enableMap = enableMap;

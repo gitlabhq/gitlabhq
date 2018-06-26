@@ -29,8 +29,8 @@ class ProjectAutoDevops < ActiveRecord::Base
       end
 
       if manual?
-        variables.append(key: 'STAGING_ENABLED', value: 1)
-        variables.append(key: 'INCREMENTAL_ROLLOUT_ENABLED', value: 1)
+        variables.append(key: 'STAGING_ENABLED', value: '1')
+        variables.append(key: 'INCREMENTAL_ROLLOUT_ENABLED', value: '1')
       end
     end
   end

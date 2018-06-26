@@ -10,14 +10,14 @@ describe Admin::PushRulesController do
   describe '#update' do
     let(:params) do
       {
-        deny_delete_tag: true, delete_branch_regex: "any", commit_message_regex: "any", branch_name_regex: "any",
-        force_push_regex: "any", author_email_regex: "any", member_check: true, file_name_regex: "any",
-        max_file_size: "0", prevent_secrets: true
+        deny_delete_tag: "true", delete_branch_regex: "any", commit_message_regex: "any", branch_name_regex: "any",
+        force_push_regex: "any", author_email_regex: "any", member_check: "true", file_name_regex: "any",
+        max_file_size: "0", prevent_secrets: "true"
       }
     end
 
     it 'updates sample push rule' do
-      expect_any_instance_of(PushRule).to receive(:update_attributes).with(params)
+      expect_any_instance_of(PushRule).to receive(:update_attributes).with(ActionController::Parameters.new(params).permit!)
 
       patch :update, push_rule: params
 
