@@ -24,13 +24,13 @@ module API
         attributes =
           if runner_registration_token_valid?
             # Create shared runner. Requires admin access
-            attributes.merge(is_shared: true, runner_type: :instance_type)
+            attributes.merge(runner_type: :instance_type)
           elsif project = Project.find_by(runners_token: params[:token])
             # Create a specific runner for the project
-            attributes.merge(is_shared: false, runner_type: :project_type, projects: [project])
+            attributes.merge(runner_type: :project_type, projects: [project])
           elsif group = Group.find_by(runners_token: params[:token])
             # Create a specific runner for the group
-            attributes.merge(is_shared: false, runner_type: :group_type, groups: [group])
+            attributes.merge(runner_type: :group_type, groups: [group])
           else
             forbidden!
           end

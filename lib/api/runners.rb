@@ -119,7 +119,7 @@ module API
         use :pagination
       end
       get ':id/runners' do
-        runners = filter_runners(Ci::Runner.owned_or_shared(user_project.id), params[:scope])
+        runners = filter_runners(Ci::Runner.owned_or_instance_wide(user_project.id), params[:scope])
         present paginate(runners), with: Entities::Runner
       end
 
@@ -180,7 +180,7 @@ module API
       end
 
       def authenticate_show_runner!(runner)
-        return if runner.is_shared || current_user.admin?
+        return if runner.instance_type? || current_user.admin?
 
         forbidden!("No access granted") unless can?(current_user, :read_runner, runner)
       end
