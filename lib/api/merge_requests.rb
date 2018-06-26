@@ -72,8 +72,8 @@ module API
       end
 
       params :merge_requests_params do
-        optional :state, type: String, values: %w[opened closed merged all], default: 'all',
-                         desc: 'Return opened, closed, merged, or all merge requests'
+        optional :state, type: String, values: %w[opened closed locked merged all], default: 'all',
+                         desc: 'Return opened, closed, locked, merged, or all merge requests'
         optional :order_by, type: String, values: %w[created_at updated_at], default: 'created_at',
                             desc: 'Return merge requests ordered by `created_at` or `updated_at` fields.'
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
