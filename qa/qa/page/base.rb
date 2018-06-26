@@ -13,19 +13,8 @@ module QA
         visit current_url
       end
 
-      def wait(max: 60, time: 0.1, reload: true)
-        start = Time.now
-
-        while Time.now - start < max
-          result = yield
-          return result if result
-
-          sleep(time)
-
-          refresh if reload
-        end
-
-        false
+      def wait(opts)
+        QA::Runtime::Wait.new(opts).sleep
       end
 
       def scroll_to(selector, text: nil)
