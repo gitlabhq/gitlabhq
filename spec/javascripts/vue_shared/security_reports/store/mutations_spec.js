@@ -400,8 +400,9 @@ describe('security reports mutations', () => {
         }],
         isDismissed: true,
       };
+      const status = 'success';
 
-      mutations[types.SET_ISSUE_MODAL_DATA](stateCopy, issue);
+      mutations[types.SET_ISSUE_MODAL_DATA](stateCopy, { issue, status });
 
       expect(stateCopy.modal.title).toEqual(issue.title);
       expect(stateCopy.modal.data.description.value).toEqual(issue.description);
@@ -417,6 +418,7 @@ describe('security reports mutations', () => {
       expect(stateCopy.modal.data.links.value).toEqual(issue.links);
       expect(stateCopy.modal.data.instances.value).toEqual(issue.instances);
       expect(stateCopy.modal.vulnerability).toEqual(issue);
+      expect(stateCopy.modal.isResolved).toEqual(true);
     });
   });
 

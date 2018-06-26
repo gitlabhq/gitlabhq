@@ -21,6 +21,11 @@ export default {
       type: Number,
       required: true,
     },
+    // failed || success
+    status: {
+      type: String,
+      required: true,
+    },
   },
 };
 </script>
@@ -31,6 +36,7 @@ export default {
 
       <modal-open-name
         :issue="issue"
+        :status="status"
         class="js-modal-dast"
       />
     </div>

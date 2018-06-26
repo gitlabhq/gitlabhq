@@ -247,7 +247,9 @@ export default {
     state.dependencyScanning.hasError = true;
   },
 
-  [types.SET_ISSUE_MODAL_DATA](state, issue) {
+  [types.SET_ISSUE_MODAL_DATA](state, payload) {
+    const { issue, status } = payload;
+
     state.modal.title = issue.title;
     state.modal.data.description.value = issue.description;
     state.modal.data.file.value = issue.location && issue.location.file;
@@ -272,6 +274,7 @@ export default {
     }
     state.modal.data.instances.value = issue.instances;
     state.modal.vulnerability = issue;
+    state.modal.isResolved = status === 'success';
 
     // clear previous state
     state.modal.error = null;

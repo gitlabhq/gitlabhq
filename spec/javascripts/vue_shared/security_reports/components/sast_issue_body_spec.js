@@ -23,6 +23,8 @@ describe('sast issue body', () => {
     confidence: 'Low',
   };
 
+  const status = 'failed';
+
   afterEach(() => {
     vm.$destroy();
   });
@@ -31,6 +33,7 @@ describe('sast issue body', () => {
     it('renders severity and confidence', () => {
       vm = mountComponent(Component, {
         issue: sastIssue,
+        status,
       });
 
       expect(vm.$el.textContent.trim()).toContain(`${sastIssue.severity} (${sastIssue.confidence}):`);
@@ -43,6 +46,7 @@ describe('sast issue body', () => {
       delete issueCopy.confidence;
       vm = mountComponent(Component, {
         issue: issueCopy,
+        status,
       });
 
       expect(vm.$el.textContent.trim()).toContain(`${issueCopy.severity}:`);
@@ -55,6 +59,7 @@ describe('sast issue body', () => {
       delete issueCopy.severity;
       vm = mountComponent(Component, {
         issue: issueCopy,
+        status,
       });
 
       expect(vm.$el.textContent.trim()).toContain(`(${issueCopy.confidence}):`);
@@ -69,6 +74,7 @@ describe('sast issue body', () => {
       issueCopy.priority = 'Low';
       vm = mountComponent(Component, {
         issue: issueCopy,
+        status,
       });
 
       expect(vm.$el.textContent.trim()).toContain(issueCopy.priority);
@@ -83,6 +89,7 @@ describe('sast issue body', () => {
 
       vm = mountComponent(Component, {
         issue: issueCopy,
+        status,
       });
 
       expect(vm.$el.textContent.trim()).not.toContain(
@@ -95,6 +102,7 @@ describe('sast issue body', () => {
     it('renders title', () => {
       vm = mountComponent(Component, {
         issue: sastIssue,
+        status,
       });
 
       expect(vm.$el.textContent.trim()).toContain(
@@ -107,6 +115,7 @@ describe('sast issue body', () => {
     it('renders path', () => {
       vm = mountComponent(Component, {
         issue: sastIssue,
+        status,
       });
 
       expect(vm.$el.querySelector('a').getAttribute('href')).toEqual(

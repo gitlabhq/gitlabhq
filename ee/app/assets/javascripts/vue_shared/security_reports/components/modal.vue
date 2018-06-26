@@ -57,6 +57,7 @@ export default {
   <modal
     id="modal-mrwidget-security-issue"
     :header-title-text="modal.title"
+    :class="{'modal-hide-footer': modal.isResolved}"
     class="modal-security-report-dast"
   >
     <slot>
@@ -195,38 +196,40 @@ export default {
       </div>
     </slot>
     <div slot="footer">
-      <button
-        type="button"
-        class="btn btn-default"
-        data-dismiss="modal"
-      >
-        {{ __('Cancel' ) }}
-      </button>
+      <template v-if="!modal.isResolved">
+        <button
+          type="button"
+          class="btn btn-default"
+          data-dismiss="modal"
+        >
+          {{ __('Cancel' ) }}
+        </button>
 
-      <loading-button
-        :loading="modal.isDismissingIssue"
-        :disabled="modal.isDismissingIssue"
-        :label="revertTitle"
-        container-class="js-dismiss-btn btn btn-close"
-        @click="handleDismissClick"
-      />
+        <loading-button
+          :loading="modal.isDismissingIssue"
+          :disabled="modal.isDismissingIssue"
+          :label="revertTitle"
+          container-class="js-dismiss-btn btn btn-close"
+          @click="handleDismissClick"
+        />
 
-      <a
-        v-if="modal.vulnerability.hasIssue"
-        :href="modal.vulnerability.issueFeedback && modal.vulnerability.issueFeedback.issue_url"
-        rel="noopener noreferrer nofollow"
-        class="btn btn-success btn-inverted"
-      >
-        {{ __('View issue' ) }}
-      </a>
-      <loading-button
-        v-else
-        :loading="modal.isCreatingNewIssue"
-        :disabled="modal.isCreatingNewIssue"
-        :label="__('Create issue')"
-        container-class="btn btn-success btn-inverted"
-        @click="createNewIssue"
-      />
+        <a
+          v-if="modal.vulnerability.hasIssue"
+          :href="modal.vulnerability.issueFeedback && modal.vulnerability.issueFeedback.issue_url"
+          rel="noopener noreferrer nofollow"
+          class="btn btn-success btn-inverted"
+        >
+          {{ __('View issue' ) }}
+        </a>
+        <loading-button
+          v-else
+          :loading="modal.isCreatingNewIssue"
+          :disabled="modal.isCreatingNewIssue"
+          :label="__('Create issue')"
+          container-class="btn btn-success btn-inverted"
+          @click="createNewIssue"
+        />
+      </template>
     </div>
   </modal>
 </template>
