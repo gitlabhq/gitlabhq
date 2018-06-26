@@ -277,6 +277,16 @@ describe Projects::EnvironmentsController do
     end
   end
 
+  describe 'GET #empty' do
+    it 'responds with HTML' do
+      get :empty, namespace_id: project.namespace,
+                  project_id: project
+
+      expect(response).to be_ok
+      expect(response).to render_template 'empty'
+    end
+  end
+
   describe 'GET #metrics' do
     before do
       allow(controller).to receive(:environment).and_return(environment)

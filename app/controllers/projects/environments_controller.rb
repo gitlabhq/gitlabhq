@@ -31,10 +31,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     end
   end
 
-  def empty
-    render :empty
-  end
-
   def folder
     folder_environments = project.environments.where(environment_type: params[:id])
     @environments = folder_environments.with_state(params[:scope] || :available)
@@ -122,6 +118,10 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     else
       render text: 'Not found', status: 404
     end
+  end
+
+  def empty
+    render :empty
   end
 
   def metrics

@@ -2,7 +2,7 @@ class Projects::UploadsController < Projects::ApplicationController
   include UploadsActions
 
   # These will kick you out if you don't have access.
-  skip_before_action :project, :repository,
+  skip_before_action :project, :repository, :available_environment,
     if: -> { action_name == 'show' && image_or_video? }
 
   before_action :authorize_upload_file!, only: [:create]
