@@ -77,7 +77,6 @@
   - [repository_remove_remote, 1]
   - [create_note_diff_file, 1]
   - [delete_diff_files, 1]
-<<<<<<< HEAD
 
   # EE-specific queues
   - [ldap_group_sync, 2]
@@ -98,6 +97,3 @@
   - geo_file_download
   - geo_project_sync
   - geo_repository_shard_sync
-=======
- 
->>>>>>> upstream/master
