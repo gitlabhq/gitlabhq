@@ -3,6 +3,8 @@ import { mapGetters } from 'vuex';
 import Icon from '../../../vue_shared/components/icon.vue';
 import timeago from '../../../vue_shared/mixins/timeago';
 import tooltip from '../../../vue_shared/directives/tooltip';
+import TitleComponent from '../../../issue_show/components/title.vue';
+import DescriptionComponent from '../../../issue_show/components/description.vue';
 
 const states = {
   open: 'open',
@@ -15,6 +17,8 @@ export default {
   },
   components: {
     Icon,
+    TitleComponent,
+    DescriptionComponent,
   },
   mixins: [timeago],
   computed: {
@@ -72,20 +76,16 @@ export default {
         </div>
       </div>
     </div>
-    <div class="detail-page-description">
-      <h2 class="title">
-        {{ currentMergeRequest.title }}
-      </h2>
-      <div
-        v-if="currentMergeRequest.description"
-        class="description"
-      >
-        <div class="wiki">
-          <p dir="auto">
-            {{ currentMergeRequest.description }}
-          </p>
-        </div>
-      </div>
+    <div class="issuable-details">
+      <title-component
+        :issuable-ref="currentMergeRequest.iid"
+        :title-html="currentMergeRequest.title"
+        :title-text="currentMergeRequest.title"
+      />
+      <description-component
+        :description-html="currentMergeRequest.description"
+        :description-text="currentMergeRequest.description"
+      />
     </div>
   </div>
 </template>
