@@ -1,0 +1,5 @@
+---
+title: Fix incremental rollouts for Auto DevOps
+merge_request: 20061
+author:
+type: fixed

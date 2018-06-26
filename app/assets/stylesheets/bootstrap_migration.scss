@@ -89,11 +89,6 @@ a {
   color: $gl-link-color;
 }
 
-a:not(.btn):focus,
-a:not(.btn):active {
-  text-decoration: underline;
-}
-
 hr {
   overflow: hidden;
 }
@@ -176,6 +171,12 @@ table {
 .dropright .dropdown-menu-toggle::after {
   // Remove bootstrap's dropdown caret
   display: none;
+}
+
+h3.popover-header {
+  // Default bootstrap popovers use <h3>
+  // which we default to having a top margin
+  margin-top: 0;
 }
 
 // Add to .label so that old system notes that are saved to the db
@@ -300,7 +301,7 @@ pre code {
   color: $white-light;
 
   h4,
-  a,
+  a:not(.btn),
   .alert-link {
     color: $white-light;
   }
