@@ -351,6 +351,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         namespace :ci do
           resource :lint, only: [:show, :create]
         end
+
+        resources :feature_flags
       end
 
       draw :legacy_builds

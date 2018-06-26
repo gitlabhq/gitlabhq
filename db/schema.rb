@@ -2090,6 +2090,24 @@ ActiveRecord::Schema.define(version: 20180926140319) do
 
   add_index "project_deploy_tokens", ["project_id", "deploy_token_id"], name: "index_project_deploy_tokens_on_project_id_and_deploy_token_id", unique: true, using: :btree
 
+  create_table "project_feature_flags", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.string "name", null: false
+    t.text "description"
+    t.boolean "active", null: false
+  end
+
+  add_index "project_feature_flags", ["project_id", "name"], name: "index_project_feature_flags_on_project_id_and_name", unique: true, using: :btree
+
+  create_table "project_feature_flags_access_tokens", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.string "token", null: false
+  end
+
+  add_index "project_feature_flags_access_tokens", ["project_id", "token"], name: "project_feature_flag_access_token", unique: true, using: :btree
+
   create_table "project_features", force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "merge_requests_access_level"
@@ -3247,6 +3265,8 @@ ActiveRecord::Schema.define(version: 20180926140319) do
   add_foreign_key "project_custom_attributes", "projects", on_delete: :cascade
   add_foreign_key "project_deploy_tokens", "deploy_tokens", on_delete: :cascade
   add_foreign_key "project_deploy_tokens", "projects", on_delete: :cascade
+  add_foreign_key "project_feature_flags", "projects", on_delete: :cascade
+  add_foreign_key "project_feature_flags_access_tokens", "projects", on_delete: :cascade
   add_foreign_key "project_features", "projects", name: "fk_18513d9b92", on_delete: :cascade
   add_foreign_key "project_group_links", "projects", name: "fk_daa8cee94c", on_delete: :cascade
   add_foreign_key "project_import_data", "projects", name: "fk_ffb9ee3a10", on_delete: :cascade

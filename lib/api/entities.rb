@@ -1515,31 +1515,17 @@ module API
       end
       expose :label, using: Entities::LabelBasic
       expose :action
-
-    class UnleashIssue < Grape::Entity
-      expose :name
-      expose :title, as: :description
-      expose :enabled
-      expose :strategies
-
-      private
-
-      def name
-        "\##{object.iid}"
-      end
-
-      def enabled
-        true
-      end
-
-      def strategies
-        [{ name: 'default' }]
-      end
     end
 
-    class UnleashFeatureResponse < Grape::Entity
+    class UnleashFeature < Grape::Entity
+      expose :name
+      expose :description, unless: ->(feature) { feature.description.nil? }
+      expose :active, as: :enabled
+    end
+
+    class UnleashFeatures < Grape::Entity
       expose :version
-      expose :features, with: UnleashIssue
+      expose :project_feature_flags, as: :features, with: UnleashFeature
 
       private
 
