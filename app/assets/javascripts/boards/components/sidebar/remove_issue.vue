@@ -23,7 +23,6 @@
     },
     methods: {
       removeIssue() {
-<<<<<<< HEAD
         const board = Store.state.currentBoard;
         const issue = this.issue;
         const lists = issue.getLists();
@@ -34,18 +33,11 @@
           .map(label => label.id)
           .filter(id => !listLabelIds.includes(id))
           .filter(id => !boardLabelIds.includes(id));
-=======
-        const issue = this.issue;
-        const lists = issue.getLists();
-        const listLabelIds = lists.map(list => list.label.id);
 
-        let labelIds = issue.labels.map(label => label.id).filter(id => !listLabelIds.includes(id));
->>>>>>> upstream/master
         if (labelIds.length === 0) {
           labelIds = [''];
         }
 
-<<<<<<< HEAD
         let assigneeIds = issue.assignees
           .map(assignee => assignee.id)
           .filter(id => id !== board.assignee.id);
@@ -69,14 +61,6 @@
           data.issue.weight = null;
         }
 
-=======
-        const data = {
-          issue: {
-            label_ids: labelIds,
-          },
-        };
-
->>>>>>> upstream/master
         // Post the remove data
         Vue.http.patch(this.updateUrl, data).catch(() => {
           Flash(__('Failed to remove issue from board, please try again.'));
