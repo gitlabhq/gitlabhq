@@ -11,7 +11,7 @@
 - cronjob:remove_old_web_hook_logs
 - cronjob:remove_unreferenced_lfs_objects
 - cronjob:repository_archive_cache
-- cronjob:repository_check_batch
+- cronjob:repository_check_dispatch
 - cronjob:requests_profiles
 - cronjob:schedule_update_user_activity
 - cronjob:stuck_ci_jobs
@@ -71,6 +71,7 @@
 - pipeline_processing:update_head_pipeline_for_merge_request
 
 - repository_check:repository_check_clear
+- repository_check:repository_check_batch
 - repository_check:repository_check_single_repository
 
 - default
