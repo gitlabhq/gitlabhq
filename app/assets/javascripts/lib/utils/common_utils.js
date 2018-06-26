@@ -164,7 +164,7 @@ export const scrollToElement = element => {
   if (!(element instanceof $)) {
     $el = $(element);
   }
-  const top = $el.offset().top;
+  const { top } = $el.offset();
 
   return $('body, html').animate(
     {
@@ -203,9 +203,7 @@ export const getSelectedFragment = () => {
 
 export const insertText = (target, text) => {
   // Firefox doesn't support `document.execCommand('insertText', false, text)` on textareas
-  const selectionStart = target.selectionStart;
-  const selectionEnd = target.selectionEnd;
-  const value = target.value;
+  const { selectionStart, selectionEnd, value } = target;
 
   const textBefore = value.substring(0, selectionStart);
   const textAfter = value.substring(selectionEnd, value.length);
@@ -245,7 +243,8 @@ export const nodeMatchesSelector = (node, selector) => {
 
   // IE11 doesn't support `node.matches(selector)`
 
-  let parentNode = node.parentNode;
+  let { parentNode } = node;
+
   if (!parentNode) {
     parentNode = document.createElement('div');
     // eslint-disable-next-line no-param-reassign
@@ -281,6 +280,8 @@ export const normalizeCRLFHeaders = headers => {
 
   headersArray.forEach(header => {
     const keyValue = header.split(': ');
+
+    // eslint-disable-next-line prefer-destructuring
     headersObject[keyValue[0]] = keyValue[1];
   });
 

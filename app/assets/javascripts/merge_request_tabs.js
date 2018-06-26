@@ -64,7 +64,7 @@ import Notes from './notes';
 /* eslint-enable max-len */
 
 // Store the `location` object, allowing for easier stubbing in tests
-let location = window.location;
+let { location } = window;
 
 export default class MergeRequestTabs {
   constructor({ action, setUrl, stubLocation } = {}) {
@@ -279,7 +279,7 @@ export default class MergeRequestTabs {
 
   mountPipelinesView() {
     const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
-    const CommitPipelinesTable = gl.CommitPipelinesTable;
+    const { CommitPipelinesTable } = gl;
     this.commitPipelinesTable = new CommitPipelinesTable({
       propsData: {
         endpoint: pipelineTableViewEl.dataset.endpoint,

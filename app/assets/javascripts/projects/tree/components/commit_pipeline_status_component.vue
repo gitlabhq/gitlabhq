@@ -47,7 +47,7 @@
     },
     methods: {
       successCallback(res) {
-        const pipelines = res.data.pipelines;
+        const { pipelines } = res.data;
         if (pipelines.length > 0) {
           // The pipeline entity always keeps the latest pipeline info on the `details.status`
           this.ciStatus = pipelines[0].details.status;

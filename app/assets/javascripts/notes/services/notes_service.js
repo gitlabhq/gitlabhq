@@ -28,7 +28,7 @@ export default {
   },
   poll(data = {}) {
     const endpoint = data.notesData.notesPath;
-    const lastFetchedAt = data.lastFetchedAt;
+    const { lastFetchedAt } = data;
     const options = {
       headers: {
         'X-Last-Fetched-At': lastFetchedAt ? `${lastFetchedAt}` : undefined,

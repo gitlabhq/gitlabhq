@@ -80,7 +80,7 @@ class GfmAutoComplete {
         let tpl = '/${name} ';
         let referencePrefix = null;
         if (value.params.length > 0) {
-          referencePrefix = value.params[0][0];
+          [[referencePrefix]] = value.params;
           if (/^[@%~]/.test(referencePrefix)) {
             tpl += '<%- referencePrefix %>';
           }
@@ -458,7 +458,7 @@ class GfmAutoComplete {
   static isLoading(data) {
     let dataToInspect = data;
     if (data && data.length > 0) {
-      dataToInspect = data[0];
+      [dataToInspect] = data;
     }
 
     const loadingState = GfmAutoComplete.defaultLoadingData[0];

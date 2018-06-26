@@ -21,7 +21,7 @@ describe('User Avatar Link Component', function () {
       propsData: this.propsData,
     }).$mount();
 
-    this.userAvatarImage = this.userAvatarLink.$children[0];
+    [this.userAvatarImage] = this.userAvatarLink.$children;
   });
 
   it('should return a defined Vue component', function () {

@@ -23,7 +23,7 @@
     },
     methods: {
       removeIssue() {
-        const issue = this.issue;
+        const { issue } = this;
         const lists = issue.getLists();
         const listLabelIds = lists.map(list => list.label.id);
 
