@@ -97,7 +97,7 @@ export const createNewBranchFromDefault = ({ state, getters }, branch) =>
       branch,
     })
     .then(() => {
-      location.reload();
+      window.location.reload();
 
       // this forces the loading icon to spin whilst the page is reloading
       return new Promise(() => {});
@@ -107,14 +107,14 @@ export const createNewBranchFromDefault = ({ state, getters }, branch) =>
 export const showBranchNotFoundError = ({ dispatch }, branchId) => {
   dispatch('setErrorMessage', {
     text: sprintf(
-      __('Branch %{branchName} was not found in project.'),
+      __("Branch %{branchName} was not found in project's repository."),
       {
         branchName: `<strong>${_.escape(branchId)}</strong>`,
       },
       false,
     ),
     action: 'createNewBranchFromDefault',
-    actionText: 'Create branch',
+    actionText: __('Create branch'),
     actionPayload: branchId,
   });
 };
