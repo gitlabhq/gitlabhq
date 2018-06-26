@@ -179,7 +179,6 @@ tell GitLab which groups are external via the `external_groups:` element:
         } }
 ```
 
-<<<<<<< HEAD
 ## Required groups
 
 >**Note:**
@@ -229,7 +228,8 @@ considered `admin groups`.
           issuer: 'https://gitlab.example.com',
           name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
         } }
-=======
+```
+
 ## Bypass two factor authentication
 
 If you want some SAML authentication methods to count as 2FA on a per session basis, you can register them in the
@@ -303,7 +303,6 @@ In addition to the changes in GitLab, make sure that your Idp is returning the
             <saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:MediumStrongCertificateProtectedTransport</saml:AuthnContextClassRef> 
         </saml:AuthnContext>
     </saml:AuthnStatement>
->>>>>>> upstream/master
 ```
 
 ## Customization
