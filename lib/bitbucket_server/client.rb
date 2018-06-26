@@ -21,9 +21,10 @@ module BitbucketServer
       get_collection(path, :pull_request)
     end
 
-    def pull_request_comments(project_key, repo, pull_request)
-      path = "/projects/#{project_key}/repos/#{repo}/pull-requests/#{pull_request}/comments"
-      get_collection(path, :pull_request_comment)
+    def activities(project_key, repo, pull_request)
+      path = "/projects/#{project_key}/repos/#{repo}/pull-requests/#{pull_request}/activities"
+
+      collection = get_collection(path, :activities)
     end
 
     def pull_request_diff(project_key, repo, pull_request)

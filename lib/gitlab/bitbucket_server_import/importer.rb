@@ -97,9 +97,9 @@ module Gitlab
       end
 
       def import_pull_request_comments(pull_request, merge_request)
-        comments = client.pull_request_comments(repo, pull_request.iid)
+        comments = client.activities(repo, pull_request.iid).select(&:commment?)
 
-        inline_comments, pr_comments = comments.partition(&:inline?)
+        inline_comments, pr_comments = comments.partition(&:inline_comment?)
 
         import_inline_comments(inline_comments, pull_request, merge_request)
         import_standalone_pr_comments(pr_comments, merge_request)
