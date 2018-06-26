@@ -325,7 +325,6 @@
   .settings-content
     = render partial: 'repository_mirrors_form'
 
-<<<<<<< HEAD
 -# EE-only
 - if Gitlab::Geo.license_allows?
   %section.settings.as-geo.no-animate#js-geo-settings{ class: ('expanded' if expanded) }
@@ -376,7 +375,3 @@
       = render partial: 'slack'
 
 = render_if_exists 'admin/application_settings/pseudonymizer_settings', expanded: expanded
-=======
-= render_if_exists 'admin/application_settings/pseudonymizer_settings', expanded: expanded
-
->>>>>>> upstream/master
