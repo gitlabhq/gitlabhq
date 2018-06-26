@@ -18,10 +18,9 @@ module QA
         end
 
         def fabricate!
-          Runtime::Browser.visit(:gitlab, Page::Main::Login)
-
-          Page::Main::Login.perform do |page|
-            page.sign_up_with_new_user(name, username, email, password)
+          Page::Main::Login.act { switch_to_register_tab }
+          Page::Main::SignUp.perform do |page|
+            page.sign_up(name: name, username: username, email: email, password: password)
           end
         end
       end

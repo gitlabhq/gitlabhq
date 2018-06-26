@@ -8,7 +8,7 @@ module QA
           element :project_path, 'text_field :path'
           element :project_description, 'text_area :description'
           element :project_create_button, "submit 'Create project'"
-          element :visibility_level, 'label :visibility_level'
+          element :visibility_radios, 'visibility_level:'
         end
 
         def choose_test_namespace(namespace)
@@ -30,7 +30,7 @@ module QA
         end
 
         def set_visibility(visibility)
-          find('.option-title', text: visibility).click unless visibility == 'Private' # Private is selected by default
+          choose visibility
         end
       end
     end

@@ -23,12 +23,15 @@ module QA
       end
 
       Page::Menu::Main.act { sign_out }
+      puts '1ogged out'
       new_user = Factory::Resource::User.fabricate!
 
       new_project.visit!
       Page::Project::Show.act { fork_project }
       Page::Project::Fork::New.act { choose_namespace new_user.name }
+
       expect(page).to have_content('The project was successfully forked.')
+
       forked_project = QA::Factory::Product.new
 
       Factory::Repository::ProjectPush.fabricate! do |push|
@@ -36,16 +39,7 @@ module QA
         push.file_name = 'file2.txt'
       end
 
-      Page::Menu::Side.act { click_merge_requests }
-      Page::MergeRequest::Index.act { new_merge_request }
-
-      Page::MergeRequest::New.act do
-        select_source_branch('master')
-        compare_branches_and_continue
-        create_merge_request
-      end
-      expect(page).to have_content('Close merge request')
-      merge_request = QA::Factory::Product.new
+      merge_request = Factory::Resource::MergeRequestFromFork.fabricate!
 
       Page::Menu::Main.act { sign_out }
       Page::Main::Login.act do
@@ -55,6 +49,7 @@ module QA
 
       merge_request.visit!
       Page::MergeRequest::Show.act { merge! }
+
       expect(page).to have_content('The changes were merged')
     end
   end

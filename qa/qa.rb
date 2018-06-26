@@ -40,6 +40,7 @@ module QA
       autoload :Issue, 'qa/factory/resource/issue'
       autoload :Project, 'qa/factory/resource/project'
       autoload :MergeRequest, 'qa/factory/resource/merge_request'
+      autoload :MergeRequestFromFork, 'qa/factory/resource/merge_request_from_fork'
       autoload :DeployKey, 'qa/factory/resource/deploy_key'
       autoload :Branch, 'qa/factory/resource/branch'
       autoload :SecretVariable, 'qa/factory/resource/secret_variable'
@@ -105,6 +106,7 @@ module QA
     module Main
       autoload :Login, 'qa/page/main/login'
       autoload :OAuth, 'qa/page/main/oauth'
+      autoload :SignUp, 'qa/page/main/sign_up'
     end
 
     module Settings
@@ -190,6 +192,7 @@ module QA
     end
 
     module MergeRequest
+      autoload :CompareBeforeNew, 'qa/page/merge_request/compare_before_new'
       autoload :New, 'qa/page/merge_request/new'
       autoload :Show, 'qa/page/merge_request/show'
       autoload :Index, 'qa/page/merge_request/index'
