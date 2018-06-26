@@ -49,6 +49,7 @@ module QA
       autoload :KubernetesCluster, 'qa/factory/resource/kubernetes_cluster'
       autoload :User, 'qa/factory/resource/user'
       autoload :Wiki, 'qa/factory/resource/wiki'
+      autoload :Fork, 'qa/factory/resource/fork'
     end
 
     module Repository
