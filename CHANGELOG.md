@@ -2,6 +2,28 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.0.2 (2018-06-26)
+
+### Fixed (8 changes, 1 of them is from the community)
+
+- Serve favicon image always from the main GitLab domain to avoid issues with CORS. !19810 (Alexis Reigel)
+- Specify chart version when installing applications on Clusters. !20010
+- Fix invalid fuzzy translations being generated during installation. !20048
+- Fix incremental rollouts for Auto DevOps. !20061
+- Notify conflict for only open merge request. !20125
+- Only load Omniauth if enabled. !20132
+- Fix sorting by name on explore projects page. !20162
+- Fix alert button styling so that they don't show up white.
+
+### Performance (1 change)
+
+- Remove performance bottleneck preventing large wiki pages from displaying. !20174
+
+### Added (1 change)
+
+- Add support for verifying remote uploads, artifacts, and LFS objects in check rake tasks. !19501
+
+
 ## 11.0.1 (2018-06-21)
 
 ### Security (5 changes)

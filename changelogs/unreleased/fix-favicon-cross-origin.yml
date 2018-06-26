@@ -1,5 +1,0 @@
----
-title: Serve favicon image always from the main GitLab domain to avoid issues with CORS
-merge_request: 19810
-author: Alexis Reigel
-type: fixed
