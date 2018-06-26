@@ -27,7 +27,7 @@ export const file = (name = 'name', id = name, type = '', parent = null) =>
     lastCommit: {},
   });
 
-export const createEntriesFromPaths = (paths) =>
+export const createEntriesFromPaths = paths =>
   paths
     .map(path => ({
       name: pathUtils.basename(path),
@@ -35,7 +35,7 @@ export const createEntriesFromPaths = (paths) =>
       ext: pathUtils.extname(path),
     }))
     .reduce((entries, path, idx) => {
-      const name = path.name;
+      const { name } = path;
       const parent = path.dir ? entries[path.dir] : null;
       const type = path.ext ? 'blob' : 'tree';
 
