@@ -26,6 +26,11 @@ module Ci
       junit: 4
     }
 
+    enum file_format: {
+      zip: 1,
+      raw: 2
+    }
+
     def update_file_store
       # The file.object_store is set during `uploader.store!`
       # which happens after object is inserted/updated

@@ -528,9 +528,9 @@ module Ci
       list = []
 
       if options[:artifacts].key?(:junit)
-        list << {:name=>nil, :untracked=>nil, :paths=>[options[:artifacts].delete(:junit)], :when=>nil, :type => 'junit', :format => 'raw', :expire_in=>nil}
+        list << {:name=>nil, :untracked=>nil, :paths=>[options[:artifacts].delete(:junit)], :when=>nil, :artifact_type => 'junit', :artifact_format => 'raw', :expire_in=>nil}
       end
-      list << options[:artifacts].merge(type: 'archive', format: 'zip')
+      list << options[:artifacts].merge(artifact_type: 'archive', artifact_format: 'zip')
       list
     end
 
