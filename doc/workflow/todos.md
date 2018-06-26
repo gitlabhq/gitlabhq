@@ -31,7 +31,7 @@ A Todo appears in your Todos dashboard when:
 - you are `@mentioned` in a comment on a commit,
 - a job in the CI pipeline running for your merge request failed, but this
   job is not allowed to fail.
-- a merge request becomes unmergeable, and you are either:
+- an open merge request becomes unmergeable due to conflict, and you are either:
   - the author, or
   - have set it to automatically merge once pipeline succeeds.
 

@@ -33,6 +33,7 @@
           .map(label => label.id)
           .filter(id => !listLabelIds.includes(id))
           .filter(id => !boardLabelIds.includes(id));
+
         if (labelIds.length === 0) {
           labelIds = [''];
         }

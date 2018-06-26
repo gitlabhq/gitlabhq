@@ -27,7 +27,7 @@ def docs_branch
   # Prefix the remote branch with the slug of the project in order
   # to avoid name conflicts in the rare case the branch name already
   # exists in the docs repo and truncate to max length.
-  "#{slug}-#{ENV["CI_COMMIT_REF_SLUG"]}"[0...max]
+  "#{slug}-#{ENV["CI_ENVIRONMENT_SLUG"]}"[0...max]
 end
 
 #
