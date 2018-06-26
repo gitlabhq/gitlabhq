@@ -8,10 +8,12 @@ module Gitlab
                 { title: 'proposal', color: '#69D100' },
                 { title: 'task', color: '#7F8C8D' }].freeze
 
-      attr_reader :project, :client, :errors, :users
+      attr_reader :project_key, :repository_slug, :client, :errors, :users
 
       def initialize(project)
         @project = project
+        @project_key = project.import_data.data['project_key']
+        @repository_slug = project.import_data.data['repo_slug']
         @client = BitbucketServer::Client.new(project.import_data.credentials)
         @formatter = Gitlab::ImportFormatter.new
         @labels = {}
@@ -20,7 +22,6 @@ module Gitlab
       end
 
       def execute
-        import_issues
         import_pull_requests
         handle_errors
 
@@ -49,7 +50,7 @@ module Gitlab
 
         users[username] = User.select(:id)
                               .joins(:identities)
-                              .find_by("identities.extern_uid = ? AND identities.provider = 'bitbucket'", username)
+                              .find_by("identities.extern_uid = ? AND identities.provider = 'bitbucket_server'", username)
                               .try(:id)
       end
 
@@ -57,80 +58,8 @@ module Gitlab
         @repo ||= client.repo(project.import_source)
       end
 
-      def import_issues
-        return unless repo.issues_enabled?
-
-        create_labels
-
-        client.issues(repo).each do |issue|
-          begin
-            description = ''
-            description += @formatter.author_line(issue.author) unless find_user_id(issue.author)
-            description += issue.description
-
-            label_name = issue.kind
-            milestone = issue.milestone ? project.milestones.find_or_create_by(title: issue.milestone) : nil
-
-            gitlab_issue = project.issues.create!(
-              iid: issue.iid,
-              title: issue.title,
-              description: description,
-              state: issue.state,
-              author_id: gitlab_user_id(project, issue.author),
-              milestone: milestone,
-              created_at: issue.created_at,
-              updated_at: issue.updated_at
-            )
-
-            gitlab_issue.labels << @labels[label_name]
-
-            import_issue_comments(issue, gitlab_issue) if gitlab_issue.persisted?
-          rescue StandardError => e
-            errors << { type: :issue, iid: issue.iid, errors: e.message }
-          end
-        end
-      end
-
-      def import_issue_comments(issue, gitlab_issue)
-        client.issue_comments(repo, issue.iid).each do |comment|
-          # The note can be blank for issue service messages like "Changed title: ..."
-          # We would like to import those comments as well but there is no any
-          # specific parameter that would allow to process them, it's just an empty comment.
-          # To prevent our importer from just crashing or from creating useless empty comments
-          # we do this check.
-          next unless comment.note.present?
-
-          note = ''
-          note += @formatter.author_line(comment.author) unless find_user_id(comment.author)
-          note += comment.note
-
-          begin
-            gitlab_issue.notes.create!(
-              project: project,
-              note: note,
-              author_id: gitlab_user_id(project, comment.author),
-              created_at: comment.created_at,
-              updated_at: comment.updated_at
-            )
-          rescue StandardError => e
-            errors << { type: :issue_comment, iid: issue.iid, errors: e.message }
-          end
-        end
-      end
-
-      def create_labels
-        LABELS.each do |label_params|
-          label = ::Labels::CreateService.new(label_params).execute(project: project)
-          if label.valid?
-            @labels[label_params[:title]] = label
-          else
-            raise "Failed to create label \"#{label_params[:title]}\" for project \"#{project.full_name}\""
-          end
-        end
-      end
-
       def import_pull_requests
-        pull_requests = client.pull_requests(repo)
+        pull_requests = client.pull_requests(project_key, repository_slug)
 
         pull_requests.each do |pull_request|
           begin

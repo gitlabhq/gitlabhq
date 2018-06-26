@@ -15,16 +15,8 @@ module BitbucketServer
         raw['slug']
       end
 
-      def clone_url(token = nil)
-        url = raw['links']['clone'].find { |link| link['name'].starts_with?('http') }.fetch('href')
-
-        if token.present?
-          clone_url = URI.parse(url)
-          clone_url.user = "x-token-auth:#{token}"
-          clone_url.to_s
-        else
-          url
-        end
+      def clone_url
+        raw['links']['clone'].find { |link| link['name'].starts_with?('http') }.fetch('href')
       end
 
       def description

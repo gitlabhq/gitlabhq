@@ -2,7 +2,7 @@ module BitbucketServer
   module Representation
     class PullRequest < Representation::Base
       def author
-        raw.fetch('author', {}).fetch('username', nil)
+        raw.fetch('author', {}).fetch('user', {}).fetch('name')
       end
 
       def description
@@ -24,11 +24,11 @@ module BitbucketServer
       end
 
       def created_at
-        raw['created_on']
+        raw['createdDate']
       end
 
       def updated_at
-        raw['updated_on']
+        raw['updatedDate']
       end
 
       def title
@@ -36,29 +36,29 @@ module BitbucketServer
       end
 
       def source_branch_name
-        source_branch.fetch('branch', {}).fetch('name', nil)
+        source_branch['id']
       end
 
       def source_branch_sha
-        source_branch.fetch('commit', {}).fetch('hash', nil)
+        # XXX Not implemented?
       end
 
       def target_branch_name
-        target_branch.fetch('branch', {}).fetch('name', nil)
+        target_branch['id']
       end
 
       def target_branch_sha
-        target_branch.fetch('commit', {}).fetch('hash', nil)
+        # XXX Not implemented?
       end
 
       private
 
       def source_branch
-        raw['source']
+        raw['fromRef'] || {}
       end
 
       def target_branch
-        raw['destination']
+        raw['toRef'] || {}
       end
     end
   end

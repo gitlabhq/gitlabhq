@@ -1,9 +1,11 @@
 module Gitlab
   module BitbucketServerImport
     class ProjectCreator
-      attr_reader :repo, :name, :namespace, :current_user, :session_data
+      attr_reader :project_key, :repo_slug, :repo, :name, :namespace, :current_user, :session_data
 
-      def initialize(repo, name, namespace, current_user, session_data)
+      def initialize(project_key, repo_slug, repo, name, namespace, current_user, session_data)
+        @project_key = project_key
+        @repo_slug = repo_slug
         @repo = repo
         @name = name
         @namespace = namespace
@@ -19,18 +21,16 @@ module Gitlab
           description: repo.description,
           namespace_id: namespace.id,
           visibility_level: repo.visibility_level,
-          import_type: 'bitbucket',
+          import_type: 'bitbucket_server',
           import_source: repo.full_name,
-          import_url: repo.clone_url(session_data[:token]),
-          import_data: { credentials: session_data },
-          skip_wiki: skip_wiki
+          import_url: repo.clone_url,
+          import_data: {
+            credentials: session_data,
+            data: { project_key: project_key,
+                    repo_slug: repo_slug },
+          },
+          skip_wiki: true
         ).execute
-      end
-
-      private
-
-      def skip_wiki
-        repo.has_wiki?
       end
     end
   end

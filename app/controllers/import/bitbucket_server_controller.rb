@@ -20,7 +20,7 @@ class Import::BitbucketServerController < Import::BaseController
     target_namespace = find_or_create_namespace(namespace_path, current_user)
 
     if current_user.can?(:create_projects, target_namespace)
-      project = Gitlab::BitbucketImport::ProjectCreator.new(repo, project_name, target_namespace, current_user, credentials).execute
+      project = Gitlab::BitbucketServerImport::ProjectCreator.new(project_slug, repo_slug, repo, project_name, target_namespace, current_user, credentials).execute
 
       if project.persisted?
         render json: ProjectSerializer.new.represent(project)
@@ -86,7 +86,7 @@ class Import::BitbucketServerController < Import::BaseController
     {
       base_uri: session[bitbucket_server_url_key],
       username: session[bitbucket_server_username_key],
-      personal_access_token: session[personal_access_token_key]
+      password: session[personal_access_token_key]
     }
   end
 end

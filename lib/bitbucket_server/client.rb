@@ -16,8 +16,8 @@ module BitbucketServer
       get_collection(path, :comment)
     end
 
-    def pull_requests(repo)
-      path = "/repositories/#{repo}/pullrequests?state=ALL"
+    def pull_requests(project_key, repository_slug)
+      path = "/projects/#{project}/repos/#{repo}/pull-requests?state=ALL"
       get_collection(path, :pull_request)
     end
 

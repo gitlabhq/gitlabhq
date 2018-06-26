@@ -8,7 +8,7 @@ module BitbucketServer
       @api_version   = options.fetch(:api_version, DEFAULT_API_VERSION)
       @base_uri      = options[:base_uri]
       @username      = options[:username]
-      @token         = options[:personal_access_token]
+      @token         = options[:password]
     end
 
     def get(path, extra_query = {})
