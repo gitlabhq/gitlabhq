@@ -61,6 +61,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    initialTodoExists: {
+      type: Boolean,
+      required: true,
+    },
     namespace: {
       type: String,
       required: false,
@@ -222,6 +226,7 @@ export default {
           v-if="!collapsed"
           :collapsed="collapsed"
           :issuable-id="epicId"
+          :is-todo="initialTodoExists"
           issuable-type="epic"
         />
       </div>
@@ -232,6 +237,7 @@ export default {
         <sidebar-todo
           :collapsed="collapsed"
           :issuable-id="epicId"
+          :is-todo="initialTodoExists"
           issuable-type="epic"
         />
       </div>

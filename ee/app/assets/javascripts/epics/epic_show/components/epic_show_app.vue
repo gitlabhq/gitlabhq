@@ -102,6 +102,10 @@
         type: Boolean,
         required: true,
       },
+      todoExists: {
+        type: Boolean,
+        required: true,
+      },
       namespace: {
         type: String,
         required: false,
@@ -182,6 +186,7 @@
         :initial-labels="labels"
         :initial-participants="participants"
         :initial-subscribed="subscribed"
+        :initial-todo-exists="todoExists"
         :namespace="namespace"
         :update-path="updateEndpoint"
         :labels-path="labelsPath"

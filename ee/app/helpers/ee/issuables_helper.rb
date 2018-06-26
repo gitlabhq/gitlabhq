@@ -14,7 +14,7 @@ module EE
       return default_label if group_id.nil?
       return "Any group" if group_id == "0"
 
-      group = Group.find_by(id: group_id)
+      group = ::Group.find_by(id: group_id)
 
       if group
         group.full_name

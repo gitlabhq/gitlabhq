@@ -25,7 +25,7 @@ export default {
       type: String,
       required: true,
     },
-    isAddTodo: {
+    isTodo: {
       type: Boolean,
       required: false,
       default: true,
@@ -38,7 +38,7 @@ export default {
   },
   data() {
     return {
-      isButtonTypeAddTodo: this.isAddTodo,
+      isButtonTypeTodo: this.isTodo,
       isActionActive: false,
     };
   },
@@ -49,13 +49,13 @@ export default {
         'btn btn-default btn-todo issuable-header-btn float-right';
     },
     buttonLabel() {
-      return this.isButtonTypeAddTodo ? MARK_TEXT : TODO_TEXT;
+      return this.isButtonTypeTodo ? MARK_TEXT : TODO_TEXT;
     },
     collapsedButtonIconClasses() {
-      return this.isButtonTypeAddTodo ? 'todo-undone' : '';
+      return this.isButtonTypeTodo ? 'todo-undone' : '';
     },
     collapsedButtonIcon() {
-      return this.isButtonTypeAddTodo ? 'check-circle' : 'plus-square';
+      return this.isButtonTypeTodo ? 'check-circle' : 'plus-square';
     },
   },
 };

@@ -10,6 +10,7 @@ export default () => {
 
   // Convert backend casing to match frontend style guide
   props.epicId = props.epic_id;
+  props.todoExists = props.todo_exists;
   props.startDate = props.start_date;
   props.endDate = props.end_date;
 

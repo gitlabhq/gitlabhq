@@ -39,6 +39,7 @@ export default class Todos {
   }
 
   initFilters() {
+    this.initFilterDropdown($('.js-group-search'), 'group_id', ['text']);
     this.initFilterDropdown($('.js-project-search'), 'project_id', ['text']);
     this.initFilterDropdown($('.js-type-search'), 'type');
     this.initFilterDropdown($('.js-action-search'), 'action_id');
@@ -47,14 +48,16 @@ export default class Todos {
   }
 
   initFilterDropdown($dropdown, fieldName, searchFields) {
-    $dropdown.glDropdown({
-      fieldName,
-      selectable: true,
-      filterable: searchFields ? true : false,
-      search: { fields: searchFields },
-      data: $dropdown.data('data'),
-      clicked: () => $dropdown.closest('form.filter-form').submit(),
-    });
+    if ($dropdown.length) {
+      $dropdown.glDropdown({
+        fieldName,
+        selectable: true,
+        filterable: searchFields ? true : false,
+        search: { fields: searchFields },
+        data: $dropdown.data('data'),
+        clicked: () => $dropdown.closest('form.filter-form').submit(),
+      });
+    }
   }
 
   updateRowStateClicked(e) {
