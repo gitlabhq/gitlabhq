@@ -181,12 +181,6 @@ describe API::Branches do
         expect(json_response['can_push']).to eq(true)
       end
 
-      it 'returns that the current user can push' do
-        get api(route, current_user)
-
-        expect(json_response['can_push']).to eq(true)
-      end
-
       context 'when branch contains a dot' do
         let(:branch_name) { branch_with_dot.name }
 
