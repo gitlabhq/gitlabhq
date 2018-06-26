@@ -735,7 +735,7 @@ production: &base
     # Tables manifest that specifies the fields to extract and pseudonymize.
     manifest: config/pseudonymizer.yml
     upload:
-      # remote_directory: 'gitlab-elt'
+      remote_directory: 'gitlab-elt'
       # Fog storage connection settings, see http://fog.io/storage/ .
       connection:
       #   provider: AWS
