@@ -65,7 +65,7 @@ class ProjectsController < Projects::ApplicationController
           redirect_to(edit_project_path(@project))
         end
       else
-        flash[:alert] = result[:message]
+        flash.now[:alert] = result[:message]
 
         format.html { render 'edit' }
       end

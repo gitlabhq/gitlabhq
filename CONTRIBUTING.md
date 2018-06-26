@@ -651,7 +651,7 @@ the feature you contribute through all of these steps.
 1. Working and clean code that is commented where needed
 1. [Unit, integration, and system tests][testing] that pass on the CI server
 1. Performance/scalability implications have been considered, addressed, and tested
-1. [Documented][doc-styleguide] in the `/doc` directory
+1. [Documented][doc-guidelines] in the `/doc` directory
 1. [Changelog entry added][changelog], if necessary
 1. Reviewed and any concerns are addressed
 1. Merged by a project maintainer
@@ -688,7 +688,7 @@ merge request:
     contributors to enhance security
 1.  [Database Migrations](doc/development/migration_style_guide.md)
 1.  [Markdown](http://www.cirosantilli.com/markdown-styleguide)
-1.  [Documentation styleguide][doc-styleguide]
+1.  [Documentation styleguide](https://docs.gitlab.com/ee/development/documentation/styleguide.html)
 1.  Interface text should be written subjectively instead of objectively. It
     should be the GitLab core team addressing a person. It should be written in
     present time and never use past tense (has been/was). For example instead
