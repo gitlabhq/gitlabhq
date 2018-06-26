@@ -1,14 +1,14 @@
-import Vue from 'vue';
+<script>
 import Flash from '../../../flash';
 import { __ } from '../../../locale';
-import './lists_dropdown';
+import ListsDropdown from './lists_dropdown.vue';
 import { pluralize } from '../../../lib/utils/text_utility';
 import ModalStore from '../../stores/modal_store';
 import modalMixin from '../../mixins/modal_mixins';
 
-gl.issueBoards.ModalFooter = Vue.extend({
+export default {
   components: {
-    'lists-dropdown': gl.issueBoards.ModalFooterListsDropdown,
+    ListsDropdown,
   },
   mixins: [modalMixin],
   data() {
@@ -61,28 +61,32 @@ gl.issueBoards.ModalFooter = Vue.extend({
       this.toggleModal(false);
     },
   },
-  template: `
-    <footer
-      class="form-actions add-issues-footer">
-      <div class="float-left">
-        <button
-          class="btn btn-success"
-          type="button"
-          :disabled="submitDisabled"
-          @click="addIssues">
-          {{ submitText }}
-        </button>
-        <span class="inline add-issues-footer-to-list">
-          to list
-        </span>
-        <lists-dropdown></lists-dropdown>
-      </div>
+};
+</script>
+<template>
+  <footer
+    class="form-actions add-issues-footer"
+  >
+    <div class="float-left">
       <button
-        class="btn btn-default float-right"
+        :disabled="submitDisabled"
+        class="btn btn-success"
         type="button"
-        @click="toggleModal(false)">
-        Cancel
+        @click="addIssues"
+      >
+        {{ submitText }}
       </button>
-    </footer>
-  `,
-});
+      <span class="inline add-issues-footer-to-list">
+        to list
+      </span>
+      <lists-dropdown/>
+    </div>
+    <button
+      class="btn btn-default float-right"
+      type="button"
+      @click="toggleModal(false)"
+    >
+      Cancel
+    </button>
+  </footer>
+</template>

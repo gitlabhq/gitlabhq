@@ -29,8 +29,12 @@ eslint-report.html
 /app/assets/javascripts/locale/**/app.js
 /backups/*
 /config/aws.yml
+<<<<<<< HEAD
 /config/database.yml
 /config/database_geo.yml
+=======
+/config/database*.yml
+>>>>>>> upstream/master
 /config/gitlab.yml
 /config/gitlab_ci.yml
 /config/initializers/rack_attack.rb

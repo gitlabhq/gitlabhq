@@ -82,7 +82,7 @@ class WebHookService
     post_url = hook.url.gsub("#{parsed_url.userinfo}@", '')
     basic_auth = {
       username: CGI.unescape(parsed_url.user),
-      password: CGI.unescape(parsed_url.password)
+      password: CGI.unescape(parsed_url.password.presence || '')
     }
     make_request(post_url, basic_auth)
   end

@@ -93,6 +93,16 @@ describe Banzai::Filter::SanitizationFilter do
       expect(doc.at_css('td')['style']).to eq 'text-align: center'
     end
 
+    it 'disallows `text-align` property in `style` attribute on other elements' do
+      html = <<~HTML
+        <div style="text-align: center">Text</div>
+      HTML
+
+      doc = filter(html)
+
+      expect(doc.at_css('div')['style']).to be_nil
+    end
+
     it 'allows `span` elements' do
       exp = act = %q{<span>Hello</span>}
       expect(filter(act).to_html).to eq exp
@@ -224,7 +234,7 @@ describe Banzai::Filter::SanitizationFilter do
 
       'protocol-based JS injection: spaces and entities' => {
         input:  '<a href=" &#14;  javascript:alert(\'XSS\');">foo</a>',
-        output: '<a href="">foo</a>'
+        output: '<a href>foo</a>'
       },
 
       'protocol whitespace' => {

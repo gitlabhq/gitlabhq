@@ -119,6 +119,7 @@
 - repository_update_remote_mirror
 - create_note_diff_file
 - delete_diff_files
+<<<<<<< HEAD
 
 # EE-specific queues
 
@@ -181,3 +182,5 @@
 - rebase
 - repository_update_mirror
 - chat_notification
+=======
+>>>>>>> upstream/master
