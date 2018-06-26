@@ -26,6 +26,10 @@ module QA
           find('.qa-project-name').text
         end
 
+        def create_new_file
+          find('.btn-new').click
+        end
+
         def switch_to_branch(branch_name)
           find_element(:branches_select).click
 

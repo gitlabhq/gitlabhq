@@ -127,6 +127,10 @@ module QA
       autoload :Show, 'qa/page/group/show'
     end
 
+    module File
+      autoload :New, 'qa/page/file/new'
+    end
+
     module Project
       autoload :New, 'qa/page/project/new'
       autoload :Show, 'qa/page/project/show'
