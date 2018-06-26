@@ -1,4 +1,4 @@
-export const SET_ENDPOINT = 'SET_ENDPOINT';
+export const SET_BASE_CONFIG = 'SET_BASE_CONFIG';
 export const SET_LOADING = 'SET_LOADING';
 export const SET_DIFF_DATA = 'SET_DIFF_DATA';
 export const SET_DIFF_FILES = 'SET_DIFF_FILES';

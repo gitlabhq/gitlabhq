@@ -3,13 +3,15 @@ import * as types from '~/diffs/store/mutation_types';
 import { INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
 
 describe('DiffsStoreMutations', () => {
-  describe('SET_ENDPOINT', () => {
-    it('should set endpoint', () => {
+  describe('SET_BASE_CONFIG', () => {
+    it('should set endpoint and project path', () => {
       const state = {};
       const endpoint = '/diffs/endpoint';
+      const projectPath = '/root/project';
 
-      mutations[types.SET_ENDPOINT](state, endpoint);
+      mutations[types.SET_BASE_CONFIG](state, { endpoint, projectPath });
       expect(state.endpoint).toEqual(endpoint);
+      expect(state.projectPath).toEqual(projectPath);
     });
   });
 
