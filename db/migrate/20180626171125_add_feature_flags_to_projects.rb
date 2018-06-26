@@ -19,7 +19,7 @@ class AddFeatureFlagsToProjects < ActiveRecord::Migration
       t.index [:project_id, :name], unique: true
     end
 
-    create_table :project_feature_flag_access_tokens do |t|
+    create_table :project_feature_flags_access_tokens do |t|
       t.integer :project_id, null: false
       t.string :token, null: false
 

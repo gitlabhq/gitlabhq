@@ -2,23 +2,39 @@ module API
   class Unleash < Grape::API
     include PaginationParams
 
-    #before { authenticate! }
-
-    params do
-      requires :id, type: String, desc: 'The ID of a project'
+    before do
+      unauthorized! unless access_token
     end
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
-      get ':id/unleash/features' do
-        issues = IssuesFinder.new(current_user, project_id: user_project.id, label_name: 'rollout')
-        present issues, with: Entities::UnleashFeatureResponse
+
+    get ':unleash/features' do
+      present @project, with: Entities::UnleashFeatures
+    end
+
+    post 'unleash/client/register' do
+      status :ok
+    end
+
+    post 'unleash/client/metrics' do
+      status :ok
+    end
+
+    private
+
+    helpers do
+      def project
+        @project ||= find_project(unleash_appname)
       end
 
-      post ':id/unleash/client/register' do
-        status :ok
+      def access_token
+        @access_token ||= ProjectFeatureFlagsAccessToken.find_by(token: unleash_instanceid, project: project)
       end
 
-      post ':id/unleash/client/metrics' do
-        status :ok
+      def unleash_appname
+        params[:appname] || env[:HTTP_UNLEASH_APPNAME]
+      end
+
+      def unleash_instanceid
+        params[:instanceid] || env[:HTTP_UNLEASH_INSTANCEID]
       end
     end
   end

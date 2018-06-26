@@ -1,0 +1,16 @@
+- page_title 'Feature Flags'
+
+%h3.page-title.with-button
+  Feature Flags
+
+  - if can?(current_user, :create_feature_flags, @project)
+    = link_to new_project_feature_flag_path(@project), class: 'btn btn-new float-right', title: 'New Feature Flag' do
+      New Feature Flag
+
+%p.light
+  With GitLab Feature Flags
+
+%hr.clearfix
+
+= render 'use'
+= render 'list'

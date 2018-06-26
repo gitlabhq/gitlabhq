@@ -1,4 +1,4 @@
-class ProjectFeatureFlagAccessToken < ActiveRecord::Base
+class ProjectFeatureFlagsAccessToken < ActiveRecord::Base
   include TokenAuthenticatable
 
   belongs_to :project
@@ -7,4 +7,6 @@ class ProjectFeatureFlagAccessToken < ActiveRecord::Base
   validates :token, presence: true
 
   add_authentication_token_field :token
+
+  before_validation :ensure_token!
 end
