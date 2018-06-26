@@ -107,7 +107,7 @@ export const createNewBranchFromDefault = ({ state, getters }, branch) =>
 export const showBranchNotFoundError = ({ dispatch }, branchId) => {
   dispatch('setErrorMessage', {
     text: sprintf(
-      __("Branch %{branchName} was not found in project's repository."),
+      __("Branch %{branchName} was not found in this project's repository."),
       {
         branchName: `<strong>${_.escape(branchId)}</strong>`,
       },
