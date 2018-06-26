@@ -129,9 +129,7 @@ class MergeRequest < ActiveRecord::Base
 
     after_transition unchecked: :cannot_be_merged do |merge_request, transition|
       begin
-        # Merge request can become unmergeable due to many reasons.
-        # We only notify if it is due to conflict.
-        unless merge_request.project.repository.can_be_merged?(merge_request.diff_head_sha, merge_request.target_branch)
+        if merge_request.notify_conflict?
           NotificationService.new.merge_request_unmergeable(merge_request)
           TodoService.new.merge_request_became_unmergeable(merge_request)
         end
@@ -378,6 +376,10 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  def non_latest_diffs
+    merge_request_diffs.where.not(id: merge_request_diff.id)
+  end
+
   def diff_size
     # Calling `merge_request_diff.diffs.real_size` will also perform
     # highlighting, which we don't need here.
@@ -619,18 +621,7 @@ class MergeRequest < ActiveRecord::Base
   def reload_diff(current_user = nil)
     return unless open?
 
-    old_diff_refs = self.diff_refs
-    new_diff = create_merge_request_diff
-
-    MergeRequests::MergeRequestDiffCacheService.new.execute(self, new_diff)
-
-    new_diff_refs = self.diff_refs
-
-    update_diff_discussion_positions(
-      old_diff_refs: old_diff_refs,
-      new_diff_refs: new_diff_refs,
-      current_user: current_user
-    )
+    MergeRequests::ReloadDiffsService.new(self, current_user).execute
   end
 
   def check_if_can_be_merged
@@ -713,6 +704,10 @@ class MergeRequest < ActiveRecord::Base
 
   def remove_source_branch?
     should_remove_source_branch? || force_remove_source_branch?
+  end
+
+  def notify_conflict?
+    (opened? || locked?) && !project.repository.can_be_merged?(diff_head_sha, target_branch)
   end
 
   def related_notes

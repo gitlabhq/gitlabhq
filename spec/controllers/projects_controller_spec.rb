@@ -329,7 +329,7 @@ describe ProjectsController do
           expect { update_project path: 'renamed_path' }
             .not_to change { project.reload.path }
 
-          expect(controller).to set_flash[:alert].to(/container registry tags/)
+          expect(controller).to set_flash.now[:alert].to(/container registry tags/)
           expect(response).to have_gitlab_http_status(200)
         end
       end

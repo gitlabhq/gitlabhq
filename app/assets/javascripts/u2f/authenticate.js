@@ -11,7 +11,6 @@ export default class U2FAuthenticate {
   constructor(container, form, u2fParams, fallbackButton, fallbackUI) {
     this.u2fUtils = null;
     this.container = container;
-    this.renderNotSupported = this.renderNotSupported.bind(this);
     this.renderAuthenticated = this.renderAuthenticated.bind(this);
     this.renderError = this.renderError.bind(this);
     this.renderInProgress = this.renderInProgress.bind(this);
@@ -41,7 +40,6 @@ export default class U2FAuthenticate {
     this.signRequests = u2fParams.sign_requests.map(request => _(request).omit('challenge'));
 
     this.templates = {
-      notSupported: '#js-authenticate-u2f-not-supported',
       setup: '#js-authenticate-u2f-setup',
       inProgress: '#js-authenticate-u2f-in-progress',
       error: '#js-authenticate-u2f-error',
@@ -55,7 +53,7 @@ export default class U2FAuthenticate {
         this.u2fUtils = utils;
         this.renderInProgress();
       })
-      .catch(() => this.renderNotSupported());
+      .catch(() => this.switchToFallbackUI());
   }
 
   authenticate() {
@@ -94,10 +92,6 @@ export default class U2FAuthenticate {
     container.querySelector('#js-device-response').value = deviceResponse;
     container.querySelector(this.form).submit();
     this.fallbackButton.classList.add('hidden');
-  }
-
-  renderNotSupported() {
-    return this.renderTemplate('notSupported');
   }
 
   switchToFallbackUI() {

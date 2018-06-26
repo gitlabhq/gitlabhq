@@ -30,7 +30,7 @@ describe Gitlab::ImportExport::RepoRestorer do
     end
 
     it 'restores the repo successfully' do
-      expect(restorer.restore).to be true
+      expect(restorer.restore).to be_truthy
     end
 
     it 'has the webhooks' do

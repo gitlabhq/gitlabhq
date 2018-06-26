@@ -134,4 +134,4 @@ We're currently evaluating this feature on dev.gitalb.org or staging.gitlab.com 
 
 - TBD
 
-[ce-44935]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18169
+[ce-18169]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18169
