@@ -19,7 +19,15 @@ describe('DiffLineNoteForm', () => {
       diffLines,
       line: diffLines[0],
       noteTargetLine: diffLines[0],
-    }).$mount();
+    });
+
+    Object.defineProperty(component, 'isLoggedIn', {
+      get() {
+        return true;
+      },
+    });
+
+    component.$mount();
   });
 
   describe('methods', () => {
@@ -53,6 +61,15 @@ describe('DiffLineNoteForm', () => {
         expect(saveNoteSpy).toHaveBeenCalled();
         expect(isPromiseCalled).toEqual(true);
       });
+    });
+  });
+
+  describe('mounted', () => {
+    it('should init autosave', () => {
+      const key = 'autosave/Note/issue///DiffNote//1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_1';
+
+      expect(component.autosave).toBeDefined();
+      expect(component.autosave.key).toEqual(key);
     });
   });
 
