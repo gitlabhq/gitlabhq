@@ -44,7 +44,6 @@ export default {
   },
   mounted() {
     if (this.isLoggedIn) {
-      const textarea = this.$el.querySelector('.js-note-text');
       const noteableData = this.getNoteableData;
       const keys = [
         NOTE_TYPE,
@@ -56,7 +55,7 @@ export default {
         this.line.lineCode,
       ];
 
-      this.autosave = new Autosave($(textarea), keys);
+      this.autosave = new Autosave($(this.$refs.noteForm.$refs.textarea), keys);
     }
   },
   methods: {
@@ -103,6 +102,7 @@ export default {
     class="content discussion-form discussion-form-container discussion-notes"
   >
     <note-form
+      ref="noteForm"
       :is-editing="true"
       :line-code="line.lineCode"
       save-button-title="Comment"
