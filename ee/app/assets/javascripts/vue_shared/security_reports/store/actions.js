@@ -32,8 +32,7 @@ export const receiveSastError = ({ commit }, error) =>
   commit(types.RECEIVE_SAST_REPORTS_ERROR, error);
 
 export const fetchSastReports = ({ state, dispatch }) => {
-  const base = state.sast.paths.base;
-  const head = state.sast.paths.head;
+  const { base, head } = state.sast.paths;
 
   dispatch('requestSastReports');
 
@@ -79,8 +78,7 @@ export const receiveSastContainerError = ({ commit }, error) =>
   commit(types.RECEIVE_SAST_CONTAINER_ERROR, error);
 
 export const fetchSastContainerReports = ({ state, dispatch }) => {
-  const base = state.sastContainer.paths.base;
-  const head = state.sastContainer.paths.head;
+  const { base, head } = state.sastContainer.paths;
 
   dispatch('requestSastContainerReports');
 
@@ -123,8 +121,7 @@ export const receiveDastReports = ({ commit }, response) =>
 export const receiveDastError = ({ commit }, error) => commit(types.RECEIVE_DAST_ERROR, error);
 
 export const fetchDastReports = ({ state, dispatch }) => {
-  const base = state.dast.paths.base;
-  const head = state.dast.paths.head;
+  const { base, head } = state.dast.paths;
 
   dispatch('requestDastReports');
 
@@ -170,8 +167,7 @@ export const receiveDependencyScanningError = ({ commit }, error) =>
   commit(types.RECEIVE_DEPENDENCY_SCANNING_ERROR, error);
 
 export const fetchDependencyScanningReports = ({ state, dispatch }) => {
-  const base = state.dependencyScanning.paths.base;
-  const head = state.dependencyScanning.paths.head;
+  const { base, head } = state.dependencyScanning.paths;
 
   dispatch('requestDependencyScanningReports');
 

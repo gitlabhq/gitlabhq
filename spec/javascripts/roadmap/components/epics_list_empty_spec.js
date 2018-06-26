@@ -63,7 +63,7 @@ describe('EpicsListEmptyComponent', () => {
       describe('with presetType `QUARTERS`', () => {
         beforeEach(() => {
           vm.presetType = PRESET_TYPES.QUARTERS;
-          vm.timeframeStart = mockTimeframeQuarters[0];
+          [vm.timeframeStart] = mockTimeframeQuarters;
           vm.timeframeEnd = mockTimeframeQuarters[mockTimeframeQuarters.length - 1];
         });
 
@@ -118,7 +118,7 @@ describe('EpicsListEmptyComponent', () => {
           timeframeEnd.setDate(timeframeEnd.getDate() + 6);
 
           vm.presetType = PRESET_TYPES.WEEKS;
-          vm.timeframeStart = mockTimeframeWeeks[0];
+          [vm.timeframeStart] = mockTimeframeWeeks;
           vm.timeframeEnd = timeframeEnd;
         });
 

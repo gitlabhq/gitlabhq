@@ -193,21 +193,21 @@ export const getEpicsPathForPreset = ({
     return null;
   }
 
+  const firstTimeframe = timeframe[0];
+  const lastTimeframe = timeframe[timeframe.length - 1];
+
   // Construct Epic API path to include
   // `start_date` & `end_date` query params to get list of
   // epics only for timeframe.
   if (presetType === PRESET_TYPES.QUARTERS) {
-    const firstTimeframe = timeframe[0];
-    const lastTimeframe = timeframe[timeframe.length - 1];
-
-    start = firstTimeframe.range[0];
+    [start] = firstTimeframe.range;
     end = lastTimeframe.range[lastTimeframe.range.length - 1];
   } else if (presetType === PRESET_TYPES.MONTHS) {
-    start = timeframe[0];
-    end = timeframe[timeframe.length - 1];
+    start = firstTimeframe;
+    end = lastTimeframe;
   } else if (presetType === PRESET_TYPES.WEEKS) {
-    start = timeframe[0];
-    end = new Date(timeframe[timeframe.length - 1].getTime());
+    start = firstTimeframe;
+    end = new Date(lastTimeframe.getTime());
     end.setDate(end.getDate() + 6);
   }
 

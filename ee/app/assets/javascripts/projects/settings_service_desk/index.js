@@ -12,7 +12,7 @@ export default () => {
         serviceDeskRoot,
       },
       data() {
-        const dataset = serviceDeskRootElement.dataset;
+        const { dataset } = serviceDeskRootElement;
         return {
           initialIsEnabled: convertPermissionToBoolean(
             dataset.enabled,

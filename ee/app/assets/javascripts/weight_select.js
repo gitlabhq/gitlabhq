@@ -40,7 +40,7 @@ function WeightSelect(els, options = {}) {
         }
       },
       clicked: function(glDropdownEvt) {
-        const e = glDropdownEvt.e;
+        const { e } = glDropdownEvt;
         let selected = glDropdownEvt.selectedObj;
         const inputField = $dropdown.closest('.selectbox').find(`input[name='${fieldName}']`);
 

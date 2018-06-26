@@ -292,7 +292,7 @@
         if (this.model &&
           this.model.last_deployment &&
           this.model.last_deployment.deployable) {
-          const deployable = this.model.last_deployment.deployable;
+          const { deployable } = this.model.last_deployment;
           return `${deployable.name} #${deployable.id}`;
         }
         return '';

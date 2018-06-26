@@ -51,7 +51,7 @@
     },
     methods: {
       selectMilestone(milestone) {
-        let id = milestone.id;
+        let { id } = milestone;
         // swap the IDs of 'Any' and 'No' milestone to what backend requires
         if (milestone.title === ANY_MILESTONE) {
           id = -1;

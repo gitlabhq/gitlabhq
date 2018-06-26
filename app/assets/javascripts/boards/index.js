@@ -131,7 +131,7 @@ export default () => {
         this.filterManager.updateTokens();
       },
       updateDetailIssue(newIssue) {
-        const sidebarInfoEndpoint = newIssue.sidebarInfoEndpoint;
+        const { sidebarInfoEndpoint } = newIssue;
         if (sidebarInfoEndpoint && newIssue.subscribed === undefined) {
           newIssue.setFetchingState('subscriptions', true);
           newIssue.setFetchingState('weight', true);
@@ -161,7 +161,7 @@ export default () => {
         Store.detail.issue = {};
       },
       toggleSubscription(id) {
-        const issue = Store.detail.issue;
+        const { issue } = Store.detail;
         if (issue.id === id && issue.toggleSubscriptionEndpoint) {
           issue.setFetchingState('subscriptions', true);
           BoardService.toggleIssueSubscription(issue.toggleSubscriptionEndpoint)
@@ -178,7 +178,7 @@ export default () => {
         }
       },
       updateWeight(newWeight, id) {
-        const issue = Store.detail.issue;
+        const { issue } = Store.detail;
         if (issue.id === id && issue.sidebarInfoEndpoint) {
           issue.setLoadingState('weight', true);
           BoardService.updateWeight(issue.sidebarInfoEndpoint, newWeight)

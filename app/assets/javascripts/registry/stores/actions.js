@@ -20,7 +20,7 @@ export const fetchList = ({ commit }, { repo, page }) => {
   commit(types.TOGGLE_REGISTRY_LIST_LOADING, repo);
 
   return Vue.http.get(repo.tagsPath, { params: { page } }).then(response => {
-    const headers = response.headers;
+    const { headers } = response;
 
     return response.json().then(resp => {
       commit(types.TOGGLE_REGISTRY_LIST_LOADING, repo);

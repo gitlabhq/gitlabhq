@@ -96,10 +96,10 @@ export default class ApproversSelect {
         dropdownCss() {
           const $input = $('.js-select-user-and-group .select2-input');
           const offset = $input.offset();
-          const inputRightPosition = offset.left + $input.outerWidth();
+          let { left } = offset;
+          const inputRightPosition = left + $input.outerWidth();
           const $dropdown = $('.select2-drop-active');
 
-          let left = offset.left;
           if ($dropdown.outerWidth() > $input.outerWidth()) {
             left = `${inputRightPosition - $dropdown.width()}px`;
           }

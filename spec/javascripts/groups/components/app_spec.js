@@ -67,7 +67,7 @@ describe('AppComponent', () => {
       it('should return list of groups from store', () => {
         spyOn(vm.store, 'getGroups');
 
-        const groups = vm.groups;
+        const { groups } = vm;
         expect(vm.store.getGroups).toHaveBeenCalled();
         expect(groups).not.toBeDefined();
       });
@@ -77,7 +77,7 @@ describe('AppComponent', () => {
       it('should return pagination info from store', () => {
         spyOn(vm.store, 'getPaginationInfo');
 
-        const pageInfo = vm.pageInfo;
+        const { pageInfo } = vm;
         expect(vm.store.getPaginationInfo).toHaveBeenCalled();
         expect(pageInfo).not.toBeDefined();
       });
@@ -293,7 +293,7 @@ describe('AppComponent', () => {
       beforeEach(() => {
         groupItem = Object.assign({}, mockParentGroupItem);
         groupItem.children = mockChildren;
-        childGroupItem = groupItem.children[0];
+        [childGroupItem] = groupItem.children;
         groupItem.isChildrenLoading = false;
         vm.targetGroup = childGroupItem;
         vm.targetParentGroup = groupItem;

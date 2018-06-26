@@ -156,7 +156,7 @@ export default {
           }),
         );
       } else {
-        let labels = this.board.labels;
+        let { labels } = this.board;
         labels = labels.filter(selected => selected.id !== label.id);
         this.board.labels = labels;
       }

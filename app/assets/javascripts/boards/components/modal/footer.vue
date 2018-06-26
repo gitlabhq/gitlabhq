@@ -33,7 +33,7 @@ export default {
       const list = this.modal.selectedList || this.state.lists[firstListIndex];
       const selectedIssues = ModalStore.getSelectedIssues();
       const issueIds = selectedIssues.map(issue => issue.id);
-      const currentBoard = this.state.currentBoard;
+      const { currentBoard } = this.state;
       const boardLabelIds = currentBoard.labels.map(label => label.id);
       const assigneeIds = currentBoard.assignee && [currentBoard.assignee.id];
 

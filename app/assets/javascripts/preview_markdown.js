@@ -43,7 +43,7 @@ MarkdownPreview.prototype.showPreview = function ($form) {
     this.fetchMarkdownPreview(mdText, url, (function (response) {
       var body;
       if (response.body.length > 0) {
-        body = response.body;
+        ({ body } = response);
       } else {
         body = this.emptyMessage;
       }

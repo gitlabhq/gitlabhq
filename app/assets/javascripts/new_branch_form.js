@@ -52,7 +52,7 @@ export default class NewBranchForm {
 
   validate() {
     var errorMessage, errors, formatter, unique, validator;
-    const indexOf = [].indexOf;
+    const { indexOf } = [];
 
     this.branchNameError.empty();
     unique = function(values, value) {
