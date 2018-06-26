@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import '~/boards/components/issue_card_inner';
+import '~/boards/components/issue_card_inner.vue';
 import ListIssue from '~/boards/models/issue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { listObj } from './mock_data';
