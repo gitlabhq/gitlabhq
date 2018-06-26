@@ -1,7 +1,9 @@
 module EE
   module AuditEvent
     extend ActiveSupport::Concern
+    extend ::Gitlab::Utils::Override
 
+    override :author_name
     def author_name
       details[:author_name].presence || user&.name
     end
