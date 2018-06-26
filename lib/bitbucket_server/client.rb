@@ -16,18 +16,18 @@ module BitbucketServer
       get_collection(path, :comment)
     end
 
-    def pull_requests(project_key, repository_slug)
-      path = "/projects/#{project}/repos/#{repo}/pull-requests?state=ALL"
+    def pull_requests(project_key, repo)
+      path = "/projects/#{project_key}/repos/#{repo}/pull-requests?state=ALL"
       get_collection(path, :pull_request)
     end
 
-    def pull_request_comments(repo, pull_request)
-      path = "/repositories/#{repo}/pullrequests/#{pull_request}/comments"
+    def pull_request_comments(project_key, repo, pull_request)
+      path = "/projects/#{project_key}/repos/#{repo}/pull-requests/#{pull_request}/comments"
       get_collection(path, :pull_request_comment)
     end
 
-    def pull_request_diff(repo, pull_request)
-      path = "/repositories/#{repo}/pullrequests/#{pull_request}/diff"
+    def pull_request_diff(project_key, repo, pull_request)
+      path = "/projects/#{project_key}/repos/#{repo}/pull-requests/#{pull_request}/diff"
       connection.get(path)
     end
 
