@@ -2,8 +2,6 @@ module Gitlab
   module Kubernetes
     module Helm
       class Api
-        attr_reader :kubeclient, :namespace
-
         def initialize(kubeclient)
           @kubeclient = kubeclient
           @namespace = Gitlab::Kubernetes::Namespace.new(Gitlab::Kubernetes::Helm::NAMESPACE, kubeclient)
@@ -35,6 +33,8 @@ module Gitlab
         end
 
         private
+
+        attr_reader :kubeclient, :namespace
 
         def create_config_map(command)
           command.config_map_resource.tap do |config_map_resource|
