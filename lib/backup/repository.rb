@@ -48,7 +48,7 @@ module Backup
     end
 
     def backup_project(project)
-      gitaly_migrate(:repository_backup) do |is_enabled|
+      gitaly_migrate(:repository_backup, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
         if is_enabled
           backup_project_gitaly(project)
         else
@@ -80,7 +80,7 @@ module Backup
     end
 
     def delete_all_repositories(name, repository_storage)
-      gitaly_migrate(:delete_all_repositories) do |is_enabled|
+      gitaly_migrate(:delete_all_repositories, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
         if is_enabled
           Gitlab::GitalyClient::StorageService.new(name).delete_all_repositories
         else
@@ -148,7 +148,7 @@ module Backup
     end
 
     def backup_custom_hooks(project)
-      gitaly_migrate(:backup_custom_hooks) do |is_enabled|
+      gitaly_migrate(:backup_custom_hooks, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
         if is_enabled
           gitaly_backup_custom_hooks(project)
         else
@@ -159,7 +159,7 @@ module Backup
 
     def restore_custom_hooks(project)
       in_path(path_to_tars(project)) do |dir|
-        gitaly_migrate(:restore_custom_hooks) do |is_enabled|
+        gitaly_migrate(:restore_custom_hooks, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_restore_custom_hooks(project, dir)
           else
