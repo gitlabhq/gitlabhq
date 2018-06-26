@@ -150,6 +150,8 @@ production: &base
     enabled: true
     # The location where build artifacts are stored (default: shared/artifacts).
     # path: shared/artifacts
+    # local_store:
+    #    enabled: true
     # object_store:
     #   enabled: false
     #   remote_directory: artifacts # The bucket name
@@ -166,6 +168,8 @@ production: &base
     enabled: true
     # The location where LFS objects are stored (default: shared/lfs-objects).
     # storage_path: shared/lfs-objects
+    # local_store:
+    #    enabled: true
     object_store:
       enabled: false
       remote_directory: lfs-objects # Bucket name
@@ -187,6 +191,8 @@ production: &base
     # The location where uploads objects are stored (default: public/).
     # storage_path: public/
     # base_dir: uploads/-/system
+    # local_store:
+    #    enabled: true
     object_store:
       enabled: false
       remote_directory: uploads # Bucket name

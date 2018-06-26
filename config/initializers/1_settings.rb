@@ -177,6 +177,8 @@ Settings.artifacts['enabled']      = true if Settings.artifacts['enabled'].nil?
 Settings.artifacts['storage_path'] = Settings.absolute(Settings.artifacts.values_at('path', 'storage_path').compact.first || File.join(Settings.shared['path'], "artifacts"))
 # Settings.artifact['path'] is deprecated, use `storage_path` instead
 Settings.artifacts['path']         = Settings.artifacts['storage_path']
+Settings.artifacts['local_store'] ||= Settingslogic.new({})
+Settings.artifacts['local_store']['enabled'] = true if Settings.artifacts['local_store']['enabled'].nil?
 Settings.artifacts['max_size'] ||= 100 # in megabytes
 Settings.artifacts['object_store'] ||= Settingslogic.new({})
 Settings.artifacts['object_store']['enabled'] = false if Settings.artifacts['object_store']['enabled'].nil?
@@ -224,6 +226,8 @@ Settings.pages.admin['certificate'] ||= ''
 Settings['lfs'] ||= Settingslogic.new({})
 Settings.lfs['enabled']      = true if Settings.lfs['enabled'].nil?
 Settings.lfs['storage_path'] = Settings.absolute(Settings.lfs['storage_path'] || File.join(Settings.shared['path'], "lfs-objects"))
+Settings.lfs['local_store'] ||= Settingslogic.new({})
+Settings.lfs['local_store']['enabled'] = true if Settings.lfs['local_store']['enabled'].nil?
 Settings.lfs['object_store'] ||= Settingslogic.new({})
 Settings.lfs['object_store']['enabled'] = false if Settings.lfs['object_store']['enabled'].nil?
 Settings.lfs['object_store']['remote_directory'] ||= nil
@@ -239,6 +243,8 @@ Settings.lfs['object_store']['connection']&.deep_stringify_keys!
 Settings['uploads'] ||= Settingslogic.new({})
 Settings.uploads['storage_path'] = Settings.absolute(Settings.uploads['storage_path'] || 'public')
 Settings.uploads['base_dir'] = Settings.uploads['base_dir'] || 'uploads/-/system'
+Settings.uploads['local_store'] ||= Settingslogic.new({})
+Settings.uploads['local_store']['enabled'] = true if Settings.uploads['local_store']['enabled'].nil?
 Settings.uploads['object_store'] ||= Settingslogic.new({})
 Settings.uploads['object_store']['enabled'] = false if Settings.uploads['object_store']['enabled'].nil?
 Settings.uploads['object_store']['remote_directory'] ||= 'uploads'

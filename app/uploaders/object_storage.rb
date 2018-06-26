@@ -143,8 +143,16 @@ module ObjectStorage
         options.object_store
       end
 
+      def local_store_options
+        options.local_store
+      end
+
       def object_store_enabled?
         object_store_options.enabled
+      end
+
+      def local_store_enabled?
+        local_store_options.enabled
       end
 
       def direct_upload_enabled?
@@ -183,6 +191,8 @@ module ObjectStorage
       end
 
       def workhorse_local_upload_path
+        return unless self.local_store_enabled?
+
         File.join(self.root, TMP_UPLOAD_PATH)
       end
 
@@ -389,6 +399,8 @@ module ObjectStorage
 
         CarrierWave::Storage::Fog.new(self)
       when Store::LOCAL
+        raise 'Local Storage is not enabled' unless self.class.local_store_enabled?
+
         CarrierWave::Storage::File.new(self)
       else
         raise UnknownStoreError
