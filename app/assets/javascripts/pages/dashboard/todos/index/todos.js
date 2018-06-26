@@ -61,7 +61,7 @@ export default class Todos {
     e.stopPropagation();
     e.preventDefault();
 
-    const target = e.target;
+    const { target } = e;
     target.setAttribute('disabled', true);
     target.classList.add('disabled');
 

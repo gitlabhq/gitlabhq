@@ -14,7 +14,7 @@ import createStore from 'ee/vue_shared/security_reports/store'; // eslint-disabl
 Vue.use(Translate);
 
 export default () => {
-  const dataset = document.querySelector('.js-pipeline-details-vue').dataset;
+  const { dataset } = document.querySelector('.js-pipeline-details-vue');
 
   const mediator = new PipelinesMediator({ endpoint: dataset.endpoint });
 
@@ -108,17 +108,19 @@ export default () => {
   // They are being rendered under the same condition
   if (securityTab && sastSummary) {
     const datasetOptions = securityTab.dataset;
-    const endpoint = datasetOptions.endpoint;
-    const blobPath = datasetOptions.blobPath;
-    const sastHelpPath = datasetOptions.sastHelpPath;
-    const dependencyScanningEndpoint = datasetOptions.dependencyScanningEndpoint;
-    const dependencyScanningHelpPath = datasetOptions.dependencyScanningHelpPath;
-    const vulnerabilityFeedbackPath = datasetOptions.vulnerabilityFeedbackPath;
-    const vulnerabilityFeedbackHelpPath = datasetOptions.vulnerabilityFeedbackHelpPath;
-    const dastEndpoint = datasetOptions.dastEndpoint;
-    const sastContainerEndpoint = datasetOptions.sastContainerEndpoint;
-    const dastHelpPath = datasetOptions.dastHelpPath;
-    const sastContainerHelpPath = datasetOptions.sastContainerHelpPath;
+    const {
+      endpoint,
+      blobPath,
+      sastHelpPath,
+      dependencyScanningEndpoint,
+      dependencyScanningHelpPath,
+      vulnerabilityFeedbackPath,
+      vulnerabilityFeedbackHelpPath,
+      dastEndpoint,
+      sastContainerEndpoint,
+      dastHelpPath,
+      sastContainerHelpPath,
+    } = datasetOptions;
     const pipelineId = parseInt(datasetOptions.pipelineId, 10);
 
     const store = createStore();

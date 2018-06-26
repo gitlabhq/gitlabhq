@@ -41,7 +41,7 @@ export default () => {
     },
     data() {
       const supportedPresetTypes = Object.keys(PRESET_TYPES);
-      const dataset = this.$options.el.dataset;
+      const { dataset } = this.$options.el;
       const hasFiltersApplied = convertPermissionToBoolean(dataset.hasFiltersApplied);
       const presetType =
         supportedPresetTypes.indexOf(dataset.presetType) > -1

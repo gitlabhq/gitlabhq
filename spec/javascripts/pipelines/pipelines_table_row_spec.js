@@ -24,7 +24,7 @@ describe('Pipelines Table Row', () => {
   preloadFixtures(jsonFixtureName);
 
   beforeEach(() => {
-    const pipelines = getJSONFixture(jsonFixtureName).pipelines;
+    const { pipelines } = getJSONFixture(jsonFixtureName);
 
     pipeline = pipelines.find(p => p.user !== null && p.commit !== null);
     pipelineWithoutAuthor = pipelines.find(p => p.user === null && p.commit !== null);

@@ -15,15 +15,18 @@ export default class RoadmapStore {
   }
 
   initTimeframeThreshold() {
+    const [startFrame] = this.state.timeframe;
+
     const lastTimeframeIndex = this.state.timeframe.length - 1;
     if (this.presetType === PRESET_TYPES.QUARTERS) {
-      this.timeframeStartDate = this.state.timeframe[0].range[0];
+      [this.timeframeStartDate] = startFrame.range;
+      // eslint-disable-next-line prefer-destructuring
       this.timeframeEndDate = this.state.timeframe[lastTimeframeIndex].range[2];
     } else if (this.presetType === PRESET_TYPES.MONTHS) {
-      this.timeframeStartDate = this.state.timeframe[0];
+      this.timeframeStartDate = startFrame;
       this.timeframeEndDate = this.state.timeframe[lastTimeframeIndex];
     } else if (this.presetType === PRESET_TYPES.WEEKS) {
-      this.timeframeStartDate = this.state.timeframe[0];
+      this.timeframeStartDate = startFrame;
       this.timeframeEndDate = new Date(this.state.timeframe[lastTimeframeIndex].getTime());
       this.timeframeEndDate.setDate(this.timeframeEndDate.getDate() + 7);
     }

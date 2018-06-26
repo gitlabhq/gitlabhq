@@ -38,11 +38,11 @@ describe('GroupMemberStore', () => {
       store.setColumns(defaultColumns);
       store.setMembers(rawMembers);
 
-      let firstMember = store.state.members[0];
+      let [firstMember] = store.state.members;
       expect(firstMember.fullname).toBe('Administrator');
 
       store.sortMembers('fullname');
-      firstMember = store.state.members[0];
+      ([firstMember] = store.state.members);
       expect(firstMember.fullname).toBe('Terrell Graham');
     });
   });

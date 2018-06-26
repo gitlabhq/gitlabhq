@@ -12,7 +12,7 @@ export default class KubernetesPodLogs extends LogOutputBehaviours {
     super();
     this.options = $(container).data();
     this.podNameContainer = $(container).find('.js-pod-name');
-    this.podName = getParameterValues('pod_name')[0];
+    [this.podName] = getParameterValues('pod_name');
     this.$buildOutputContainer = $(container).find('.js-build-output');
     this.$window = $(window);
     this.$refreshLogBtn = $(container).find('.js-refresh-log');
@@ -69,7 +69,7 @@ export default class KubernetesPodLogs extends LogOutputBehaviours {
         params: { pod_name: this.podName },
       })
       .then(res => {
-        const logs = res.data.logs;
+        const { logs } = res.data;
         const formattedLogs = logs.map(logEntry => `${_.escape(logEntry)} <br />`);
         this.$buildOutputContainer.append(formattedLogs);
         scrollDown();

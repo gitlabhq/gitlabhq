@@ -1,9 +1,7 @@
-/* eslint-disable no-var, func-names, camelcase, no-unused-vars, quotes, object-shorthand, one-var, one-var-declaration-per-line, prefer-arrow-callback, comma-dangle, prefer-template, no-else-return, yoda, prefer-rest-params, prefer-spread, max-len */
+/* eslint-disable no-var, func-names, camelcase, no-unused-vars, quotes, object-shorthand, one-var, one-var-declaration-per-line, prefer-arrow-callback, comma-dangle, prefer-template, no-else-return, max-len */
 
 import $ from 'jquery';
 import Api from '~/api';
-
-var slice = [].slice;
 
 function AdminEmailSelect() {
   $('.ajax-admin-email-select').each((function(_this) {
@@ -40,15 +38,11 @@ function AdminEmailSelect() {
             return "all";
           }
         },
-        formatResult: function() {
-          var args;
-          args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-          return _this.formatResult.apply(_this, args);
+        formatResult(...args) {
+          return _this.formatResult(...args);
         },
-        formatSelection: function() {
-          var args;
-          args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-          return _this.formatSelection.apply(_this, args);
+        formatSelection(...args) {
+          return _this.formatSelection(...args);
         },
         dropdownCssClass: "ajax-admin-email-dropdown",
         escapeMarkup: function(m) {
