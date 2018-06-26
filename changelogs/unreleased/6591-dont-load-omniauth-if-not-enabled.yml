@@ -1,5 +1,0 @@
----
-title: Only load Omniauth if enabled
-merge_request: 20132
-author:
-type: fixed
