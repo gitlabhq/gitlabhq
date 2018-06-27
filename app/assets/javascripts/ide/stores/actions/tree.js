@@ -1,5 +1,6 @@
 import { normalizeHeaders } from '~/lib/utils/common_utils';
 import flash from '~/flash';
+import { __ } from '../../../locale';
 import service from '../../services';
 import * as types from '../mutation_types';
 import { findEntry } from '../utils';
@@ -64,7 +65,11 @@ export const getLastCommitData = ({ state, commit, dispatch }, tree = state) => 
 
 export const getFiles = ({ state, commit, dispatch }, { projectId, branchId } = {}) =>
   new Promise((resolve, reject) => {
-    if (!state.trees[`${projectId}/${branchId}`]) {
+    if (
+      !state.trees[`${projectId}/${branchId}`] ||
+      (state.trees[`${projectId}/${branchId}`].tree &&
+        state.trees[`${projectId}/${branchId}`].tree.length === 0)
+    ) {
       const selectedProject = state.projects[projectId];
       commit(types.CREATE_TREE, { treePath: `${projectId}/${branchId}` });
 
@@ -102,7 +107,7 @@ export const getFiles = ({ state, commit, dispatch }, { projectId, branchId } = 
             dispatch('showBranchNotFoundError', branchId);
           } else {
             flash(
-              'Error loading tree data. Please try again.',
+              __('Error loading tree data. Please try again.'),
               'alert',
               document,
               null,

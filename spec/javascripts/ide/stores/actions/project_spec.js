@@ -7,9 +7,9 @@ import {
   getBranchData,
 } from '~/ide/stores/actions';
 import store from '~/ide/stores';
-import projectActions from '~/ide/stores/actions/project';
 import service from '~/ide/services';
 import api from '~/api';
+import router from '~/ide/ide_router';
 import { resetStore } from '../../helpers';
 import testAction from '../../../helpers/vuex_action_helper';
 
@@ -124,7 +124,7 @@ describe('IDE store project actions', () => {
   describe('createNewBranchFromDefault', () => {
     it('calls API', done => {
       spyOn(api, 'createBranch').and.returnValue(Promise.resolve());
-      spyOnDependency(projectActions, 'refreshCurrentPage');
+      spyOn(router, 'push');
 
       createNewBranchFromDefault(
         {
@@ -136,23 +136,49 @@ describe('IDE store project actions', () => {
               default_branch: 'master',
             },
           },
+          dispatch() {},
         },
         'new-branch-name',
-      );
+      )
+        .then(() => {
+          expect(api.createBranch).toHaveBeenCalledWith('project-path', {
+            ref: 'master',
+            branch: 'new-branch-name',
+          });
+        })
+        .then(done)
+        .catch(done.fail);
+    });
 
-      setTimeout(() => {
-        expect(api.createBranch).toHaveBeenCalledWith('project-path', {
-          ref: 'master',
-          branch: 'new-branch-name',
-        });
+    it('clears error message', done => {
+      const dispatchSpy = jasmine.createSpy('dispatch');
+      spyOn(api, 'createBranch').and.returnValue(Promise.resolve());
+      spyOn(router, 'push');
 
-        done();
-      });
+      createNewBranchFromDefault(
+        {
+          state: {
+            currentProjectId: 'project-path',
+          },
+          getters: {
+            currentProject: {
+              default_branch: 'master',
+            },
+          },
+          dispatch: dispatchSpy,
+        },
+        'new-branch-name',
+      )
+        .then(() => {
+          expect(dispatchSpy).toHaveBeenCalledWith('setErrorMessage', null);
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
     it('reloads window', done => {
       spyOn(api, 'createBranch').and.returnValue(Promise.resolve());
-      const refreshSpy = spyOnDependency(projectActions, 'refreshCurrentPage');
+      spyOn(router, 'push');
 
       createNewBranchFromDefault(
         {
@@ -164,15 +190,15 @@ describe('IDE store project actions', () => {
               default_branch: 'master',
             },
           },
+          dispatch() {},
         },
         'new-branch-name',
-      );
-
-      setTimeout(() => {
-        expect(refreshSpy).toHaveBeenCalled();
-
-        done();
-      });
+      )
+        .then(() => {
+          expect(router.push).toHaveBeenCalled();
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 

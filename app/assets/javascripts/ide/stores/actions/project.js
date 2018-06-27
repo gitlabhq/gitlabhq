@@ -4,7 +4,7 @@ import { __, sprintf } from '~/locale';
 import service from '../../services';
 import api from '../../../api';
 import * as types from '../mutation_types';
-import { refreshCurrentPage } from '../../../lib/utils/url_utility';
+import router from '../../ide_router';
 
 export const getProjectData = ({ commit, state }, { namespace, projectId, force = false } = {}) =>
   new Promise((resolve, reject) => {
@@ -91,19 +91,24 @@ export const refreshLastCommitData = ({ commit }, { projectId, branchId } = {}) 
       flash(__('Error loading last commit.'), 'alert', document, null, false, true);
     });
 
-export const createNewBranchFromDefault = ({ state, getters }, branch) =>
+export const createNewBranchFromDefault = ({ state, dispatch, getters }, branch) =>
   api
     .createBranch(state.currentProjectId, {
       ref: getters.currentProject.default_branch,
       branch,
     })
     .then(() => {
-      refreshCurrentPage();
-
-      // this forces the loading icon to spin whilst the page is reloading
-      return new Promise(() => {});
+      dispatch('setErrorMessage', null);
+      router.push(`${router.currentRoute.path}?${Date.now()}`);
     })
-    .catch(() => {});
+    .catch(() => {
+      dispatch('setErrorMessage', {
+        text: __('An error occured creating the new branch.'),
+        action: 'createNewBranchFromDefault',
+        actionText: __('Please try again'),
+        actionPayload: branch,
+      });
+    });
 
 export const showBranchNotFoundError = ({ dispatch }, branchId) => {
   dispatch('setErrorMessage', {
