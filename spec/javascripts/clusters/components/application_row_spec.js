@@ -174,7 +174,27 @@ describe('Application Row', () => {
 
       installButton.click();
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('installApplication', DEFAULT_APPLICATION_STATE.id);
+      expect(eventHub.$emit).toHaveBeenCalledWith('installApplication', {
+        id: DEFAULT_APPLICATION_STATE.id,
+        params: {},
+      });
+    });
+
+    it('clicking install button when installApplicationRequestParams are provided emits event', () => {
+      spyOn(eventHub, '$emit');
+      vm = mountComponent(ApplicationRow, {
+        ...DEFAULT_APPLICATION_STATE,
+        status: APPLICATION_INSTALLABLE,
+        installApplicationRequestParams: { hostname: 'jupyter' },
+      });
+      const installButton = vm.$el.querySelector('.js-cluster-application-install-button');
+
+      installButton.click();
+
+      expect(eventHub.$emit).toHaveBeenCalledWith('installApplication', {
+        id: DEFAULT_APPLICATION_STATE.id,
+        params: { hostname: 'jupyter' },
+      });
     });
 
     it('clicking disabled install button emits nothing', () => {

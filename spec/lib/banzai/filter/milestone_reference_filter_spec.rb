@@ -3,7 +3,8 @@ require 'spec_helper'
 describe Banzai::Filter::MilestoneReferenceFilter do
   include FilterSpecHelper
 
-  let(:group) { create(:group, :public) }
+  let(:parent_group) { create(:group, :public) }
+  let(:group) { create(:group, :public, parent: parent_group) }
   let(:project) { create(:project, :public, group: group) }
 
   it 'requires project context' do
@@ -340,16 +341,31 @@ describe Banzai::Filter::MilestoneReferenceFilter do
 
       expect(doc.css('a')).to be_empty
     end
+
+    it 'supports parent group references', :nested_groups do
+      milestone.update!(group: parent_group)
+
+      doc = reference_filter("See #{reference}")
+      expect(doc.css('a').first.text).to eq(milestone.name)
+    end
   end
 
   context 'group context' do
+    let(:context) { { project: nil, group: create(:group) } }
+    let(:milestone) { create(:milestone, project: project) }
+
     it 'links to a valid reference' do
-      milestone = create(:milestone, project: project)
       reference = "#{project.full_path}%#{milestone.iid}"
 
-      result = reference_filter("See #{reference}", { project: nil, group: create(:group) } )
+      result = reference_filter("See #{reference}", context)
 
       expect(result.css('a').first.attr('href')).to eq(urls.milestone_url(milestone))
+    end
+
+    it 'ignores internal references' do
+      exp = act = "See %#{milestone.iid}"
+
+      expect(reference_filter(act, context).to_html).to eq exp
     end
   end
 

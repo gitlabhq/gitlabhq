@@ -256,6 +256,18 @@ describe RuboCop::Cop::LineBreakAroundConditionalBlock do
       expect(cop.offenses).to be_empty
     end
 
+    it "doesn't flag violation for #{conditional} followed by a comment" do
+      source = <<~RUBY
+          #{conditional} condition
+            do_something
+          end
+          # a short comment
+      RUBY
+      inspect_source(source)
+
+      expect(cop.offenses).to be_empty
+    end
+
     it "doesn't flag violation for #{conditional} followed by an end" do
       source = <<~RUBY
           class Foo

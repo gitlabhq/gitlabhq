@@ -23,8 +23,12 @@ class Projects::CommitController < Projects::ApplicationController
 
     respond_to do |format|
       format.html  { render }
-      format.diff  { render text: @commit.to_diff }
-      format.patch { render text: @commit.to_patch }
+      format.diff  do
+        send_git_diff(@project.repository, @commit.diff_refs)
+      end
+      format.patch do
+        send_git_patch(@project.repository, @commit.diff_refs)
+      end
     end
   end
 
@@ -34,6 +38,7 @@ class Projects::CommitController < Projects::ApplicationController
 
   def pipelines
     @pipelines = @commit.pipelines.order(id: :desc)
+    @pipelines = @pipelines.where(ref: params[:ref]) if params[:ref]
 
     respond_to do |format|
       format.html

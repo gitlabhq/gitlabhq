@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Environment do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :stubbed_repository) }
   subject(:environment) { create(:environment, project: project) }
 
   it { is_expected.to belong_to(:project) }
@@ -201,7 +201,7 @@ describe Environment do
   end
 
   describe '#stop_with_action!' do
-    let(:user) { create(:admin) }
+    let(:user) { create(:user) }
 
     subject { environment.stop_with_action!(user) }
 
@@ -365,6 +365,32 @@ describe Environment do
       end
 
       it { is_expected.to be_falsy }
+    end
+  end
+
+  describe '#deployment_platform' do
+    context 'when there is a deployment platform for environment' do
+      let!(:cluster) do
+        create(:cluster, :provided_by_gcp,
+               environment_scope: '*', projects: [project])
+      end
+
+      it 'finds a deployment platform' do
+        expect(environment.deployment_platform).to eq cluster.platform
+      end
+    end
+
+    context 'when there is no deployment platform for environment' do
+      it 'returns nil' do
+        expect(environment.deployment_platform).to be_nil
+      end
+    end
+
+    it 'checks deployment platforms associated with a project' do
+      expect(project).to receive(:deployment_platform)
+        .with(environment: environment.name)
+
+      environment.deployment_platform
     end
   end
 

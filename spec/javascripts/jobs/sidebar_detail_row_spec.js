@@ -37,4 +37,25 @@ describe('Sidebar detail row', () => {
       vm.$el.textContent.replace(/\s+/g, ' ').trim(),
     ).toEqual('this is the title: this is the value');
   });
+
+  describe('when helpUrl not provided', () => {
+    it('should not render help', () => {
+      expect(vm.$el.querySelector('.help-button')).toBeNull();
+    });
+  });
+
+  describe('when helpUrl provided', () => {
+    beforeEach(() => {
+      vm = new SidebarDetailRow({
+        propsData: {
+          helpUrl: 'help url',
+          value: 'foo',
+        },
+      }).$mount();
+    });
+
+    it('should render help', () => {
+      expect(vm.$el.querySelector('.help-button a').getAttribute('href')).toEqual('help url');
+    });
+  });
 });

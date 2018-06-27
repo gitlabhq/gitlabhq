@@ -52,7 +52,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      resource :pages, only: [:show, :destroy] do
+      resource :pages, only: [:show, :update, :destroy] do
         resources :domains, except: :index, controller: 'pages_domains', constraints: { id: %r{[^/]+} } do
           member do
             post :verify
@@ -85,6 +85,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         member do
           put :enable
           put :disable
+        end
+      end
+
+      resources :deploy_tokens, constraints: { id: /\d+/ }, only: [] do
+        member do
+          put :revoke
         end
       end
 
@@ -155,7 +161,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
 
           get :diff_for_path
-          get :update_branches
           get :branch_from
           get :branch_to
         end
@@ -169,6 +174,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
+      resource :mirror, only: [:show, :update] do
+        member do
+          post :update_now
+        end
+      end
+
       resources :pipelines, only: [:index, :new, :create, :show] do
         collection do
           resource :pipelines_settings, path: 'settings', only: [:show, :update]
@@ -177,6 +188,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         member do
           get :stage
+          get :stage_ajax
           post :cancel
           post :retry
           get :builds
@@ -249,6 +261,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       end
 
       scope '-' do
+        get 'archive/*id', constraints: { format: Gitlab::PathRegex.archive_formats_regex, id: /.+?/ }, to: 'repositories#archive', as: 'archive'
+
         resources :jobs, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
             post :cancel_all
@@ -279,6 +293,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             get :raw, path: 'raw/*path', format: false
             post :keep
           end
+        end
+
+        namespace :ci do
+          resource :lint, only: [:show, :create]
         end
       end
 
@@ -335,6 +353,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
+      get :issues, to: 'issues#calendar', constraints: lambda { |req| req.format == :ics }
       resources :issues, concerns: :awardable, constraints: { id: /\d+/ } do
         member do
           post :toggle_subscription
@@ -398,6 +417,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         collection do
           post :toggle_shared_runners
+          post :toggle_group_runners
         end
       end
 
@@ -416,11 +436,14 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       end
       namespace :settings do
         get :members, to: redirect("%{namespace_id}/%{project_id}/project_members")
-        resource :ci_cd, only: [:show], controller: 'ci_cd' do
+        resource :ci_cd, only: [:show, :update], controller: 'ci_cd' do
           post :reset_cache
         end
         resource :integrations, only: [:show]
-        resource :repository, only: [:show], controller: :repository
+        resource :repository, only: [:show], controller: :repository do
+          post :create_deploy_token, path: 'deploy_token/create'
+        end
+        resources :badges, only: [:index]
       end
 
       # Since both wiki and repository routing contains wildcard characters

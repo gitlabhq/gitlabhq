@@ -171,6 +171,22 @@ module Gitlab
         consume_ref_contains_sha_response(stream, :branch_names)
       end
 
+      def get_tag_messages(tag_ids)
+        request = Gitaly::GetTagMessagesRequest.new(repository: @gitaly_repo, tag_ids: tag_ids)
+        response = GitalyClient.call(@repository.storage, :ref_service, :get_tag_messages, request)
+
+        messages = Hash.new { |h, k| h[k] = ''.b }
+        current_tag_id = nil
+
+        response.each do |rpc_message|
+          current_tag_id = rpc_message.tag_id if rpc_message.tag_id.present?
+
+          messages[current_tag_id] << rpc_message.message
+        end
+
+        messages
+      end
+
       private
 
       def consume_refs_response(response)
@@ -210,7 +226,7 @@ module Gitlab
 
       def consume_tags_response(response)
         response.flat_map do |message|
-          message.tags.map { |gitaly_tag| Util.gitlab_tag_from_gitaly_tag(@repository, gitaly_tag) }
+          message.tags.map { |gitaly_tag| Gitlab::Git::Tag.new(@repository, gitaly_tag) }
         end
       end
 

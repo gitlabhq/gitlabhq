@@ -31,23 +31,19 @@ module API
         get ":id/#{noteables_str}/:noteable_id/notes" do
           noteable = find_noteable(parent_type, noteables_str, params[:noteable_id])
 
-          if can?(current_user, noteable_read_ability_name(noteable), noteable)
-            # We exclude notes that are cross-references and that cannot be viewed
-            # by the current user. By doing this exclusion at this level and not
-            # at the DB query level (which we cannot in that case), the current
-            # page can have less elements than :per_page even if
-            # there's more than one page.
-            raw_notes = noteable.notes.with_metadata.reorder(params[:order_by] => params[:sort])
-            notes =
-              # paginate() only works with a relation. This could lead to a
-              # mismatch between the pagination headers info and the actual notes
-              # array returned, but this is really a edge-case.
-              paginate(raw_notes)
-              .reject { |n| n.cross_reference_not_visible_for?(current_user) }
-            present notes, with: Entities::Note
-          else
-            not_found!("Notes")
-          end
+          # We exclude notes that are cross-references and that cannot be viewed
+          # by the current user. By doing this exclusion at this level and not
+          # at the DB query level (which we cannot in that case), the current
+          # page can have less elements than :per_page even if
+          # there's more than one page.
+          raw_notes = noteable.notes.with_metadata.reorder(params[:order_by] => params[:sort])
+          notes =
+            # paginate() only works with a relation. This could lead to a
+            # mismatch between the pagination headers info and the actual notes
+            # array returned, but this is really a edge-case.
+            paginate(raw_notes)
+            .reject { |n| n.cross_reference_not_visible_for?(current_user) }
+          present notes, with: Entities::Note
         end
 
         desc "Get a single #{noteable_type.to_s.downcase} note" do

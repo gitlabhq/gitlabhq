@@ -26,17 +26,17 @@
     weight: 1
     queries:
     - query_range: 'avg(nginx_upstream_response_msecs_avg{upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"})'
-      label: Average
+      label: Pod average
       unit: ms
   - title: "HTTP Error Rate"
-    y_label: "HTTP 500 Errors / Sec"
+    y_label: "HTTP Errors"
     required_metrics:
       - nginx_upstream_responses_total
     weight: 1
     queries:
-    - query_range: 'sum(rate(nginx_upstream_responses_total{status_code="5xx", upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[2m]))'
-      label: HTTP Errors
-      unit: "errors / sec"
+    - query_range: 'sum(rate(nginx_upstream_responses_total{status_code="5xx", upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[2m])) / sum(rate(nginx_upstream_responses_total{upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[2m])) * 100'
+      label: 5xx Errors
+      unit: "%"
 - group: Response metrics (HA Proxy)
   priority: 10
   metrics:
@@ -103,10 +103,10 @@
   - title: "Throughput"
     y_label: "Requests / Sec"
     required_metrics:
-      - nginx_responses_total
+      - nginx_server_requests
     weight: 1
     queries:
-    - query_range: 'sum(rate(nginx_responses_total{server_zone!="*", server_zone!="_", %{environment_filter}}[2m])) by (status_code)'
+    - query_range: 'sum(rate(nginx_server_requests{server_zone!="*", server_zone!="_", %{environment_filter}}[2m])) by (code)'
       unit: req / sec
       label: Status Code
       series:
@@ -121,39 +121,57 @@
   - title: "Latency"
     y_label: "Latency (ms)"
     required_metrics:
-      - nginx_upstream_response_msecs_avg
+      - nginx_server_requestMsec
     weight: 1
     queries:
-    - query_range: 'avg(nginx_upstream_response_msecs_avg{%{environment_filter}})'
+    - query_range: 'avg(nginx_server_requestMsec{%{environment_filter}})'
       label: Upstream
       unit: ms
   - title: "HTTP Error Rate"
     y_label: "HTTP 500 Errors / Sec"
     required_metrics:
-      - nginx_responses_total
+      - nginx_server_requests
     weight: 1
     queries:
-    - query_range: 'sum(rate(nginx_responses_total{status_code="5xx", %{environment_filter}}[2m]))'
+    - query_range: 'sum(rate(nginx_server_requests{code="5xx", %{environment_filter}}[2m]))'
       label: HTTP Errors
       unit: "errors / sec"
 - group: System metrics (Kubernetes)
   priority: 5
   metrics:
-  - title: "Memory Usage"
+  - title: "Memory Usage (Total)"
+    y_label: "Total Memory Used"
+    required_metrics:
+      - container_memory_usage_bytes
+    weight: 4
+    queries:
+    - query_range: 'avg(sum(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) by (job)) without (job)  /1024/1024/1024'
+      label: Total
+      unit: GB
+  - title: "Core Usage (Total)"
+    y_label: "Total Cores"
+    required_metrics:
+     - container_cpu_usage_seconds_total
+    weight: 3
+    queries:
+    - query_range: 'avg(sum(rate(container_cpu_usage_seconds_total{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}[15m])) by (job)) without (job)'
+      label: Total
+      unit: "cores"
+  - title: "Memory Usage (Pod average)"
     y_label: "Memory Used per Pod"
     required_metrics:
       - container_memory_usage_bytes
-    weight: 1
+    weight: 2
     queries:
-    - query_range: 'avg(sum(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-([^c].*|c([^a]|a([^n]|n([^a]|a([^r]|r[^y])))).*|)-(.*)",namespace="%{kube_namespace}"}) by (job)) without (job) / count(avg(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-([^c].*|c([^a]|a([^n]|n([^a]|a([^r]|r[^y])))).*|)-(.*)",namespace="%{kube_namespace}"}) without (job)) /1024/1024'
-      label: Average
+    - query_range: 'avg(sum(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) by (job)) without (job) / count(avg(container_memory_usage_bytes{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}) without (job)) /1024/1024'
+      label: Pod average
       unit: MB
-  - title: "CPU Usage"
+  - title: "Core Usage (Pod average)"
     y_label: "Cores per Pod"
     required_metrics:
      - container_cpu_usage_seconds_total
     weight: 1
     queries:
-    - query_range: 'avg(sum(rate(container_cpu_usage_seconds_total{container_name!="POD",pod_name=~"^%{ci_environment_slug}-([^c].*|c([^a]|a([^n]|n([^a]|a([^r]|r[^y])))).*|)-(.*)",namespace="%{kube_namespace}"}[15m])) by (job)) without (job) / count(sum(rate(container_cpu_usage_seconds_total{container_name!="POD",pod_name=~"^%{ci_environment_slug}-([^c].*|c([^a]|a([^n]|n([^a]|a([^r]|r[^y])))).*|)-(.*)",namespace="%{kube_namespace}"}[15m])) by (pod_name))'
-      label: Average
+    - query_range: 'avg(sum(rate(container_cpu_usage_seconds_total{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}[15m])) by (job)) without (job) / count(sum(rate(container_cpu_usage_seconds_total{container_name!="POD",pod_name=~"^%{ci_environment_slug}-(.*)",namespace="%{kube_namespace}"}[15m])) by (pod_name))'
+      label: Pod average
       unit: "cores"

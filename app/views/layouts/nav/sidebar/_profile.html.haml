@@ -129,6 +129,17 @@
             = link_to profile_preferences_path do
               %strong.fly-out-top-item-name
                 #{ _('Preferences') }
+      = nav_link(controller: :active_sessions) do
+        = link_to profile_active_sessions_path do
+          .nav-icon-container
+            = sprite_icon('monitor-lines')
+          %span.nav-item-name
+            Active Sessions
+        %ul.sidebar-sub-level-items.is-fly-out-only
+          = nav_link(controller: :active_sessions, html_options: { class: "fly-out-top-item" } ) do
+            = link_to profile_active_sessions_path do
+              %strong.fly-out-top-item-name
+                #{ _('Active Sessions') }
       = nav_link(path: 'profiles#audit_log') do
         = link_to audit_log_profile_path do
           .nav-icon-container

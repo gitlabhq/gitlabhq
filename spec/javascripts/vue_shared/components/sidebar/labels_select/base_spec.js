@@ -73,6 +73,22 @@ describe('BaseComponent', () => {
         expect(vm.$emit).toHaveBeenCalledWith('onLabelClick', mockLabels[0]);
       });
     });
+
+    describe('handleCollapsedValueClick', () => {
+      it('emits toggleCollapse event on component', () => {
+        spyOn(vm, '$emit');
+        vm.handleCollapsedValueClick();
+        expect(vm.$emit).toHaveBeenCalledWith('toggleCollapse');
+      });
+    });
+
+    describe('handleDropdownHidden', () => {
+      it('emits onDropdownClose event on component', () => {
+        spyOn(vm, '$emit');
+        vm.handleDropdownHidden();
+        expect(vm.$emit).toHaveBeenCalledWith('onDropdownClose');
+      });
+    });
   });
 
   describe('mounted', () => {

@@ -38,7 +38,7 @@ describe 'Issue Boards add issue modal filtering', :js do
     page.within('.add-issues-modal') do
       wait_for_requests
 
-      expect(page).to have_selector('.card', count: 0)
+      expect(page).to have_selector('.board-card', count: 0)
 
       click_button 'Cancel'
     end
@@ -48,7 +48,7 @@ describe 'Issue Boards add issue modal filtering', :js do
     page.within('.add-issues-modal') do
       wait_for_requests
 
-      expect(page).to have_selector('.card', count: 1)
+      expect(page).to have_selector('.board-card', count: 1)
     end
   end
 
@@ -62,13 +62,13 @@ describe 'Issue Boards add issue modal filtering', :js do
     page.within('.add-issues-modal') do
       wait_for_requests
 
-      expect(page).to have_selector('.card', count: 0)
+      expect(page).to have_selector('.board-card', count: 0)
 
       find('.clear-search').click
 
       wait_for_requests
 
-      expect(page).to have_selector('.card', count: 1)
+      expect(page).to have_selector('.board-card', count: 1)
     end
   end
 
@@ -90,7 +90,7 @@ describe 'Issue Boards add issue modal filtering', :js do
         wait_for_requests
 
         expect(page).to have_selector('.js-visual-token', text: user2.name)
-        expect(page).to have_selector('.card', count: 1)
+        expect(page).to have_selector('.board-card', count: 1)
       end
     end
   end
@@ -113,7 +113,7 @@ describe 'Issue Boards add issue modal filtering', :js do
         wait_for_requests
 
         expect(page).to have_selector('.js-visual-token', text: 'none')
-        expect(page).to have_selector('.card', count: 1)
+        expect(page).to have_selector('.board-card', count: 1)
       end
     end
 
@@ -126,7 +126,7 @@ describe 'Issue Boards add issue modal filtering', :js do
         wait_for_requests
 
         expect(page).to have_selector('.js-visual-token', text: user2.name)
-        expect(page).to have_selector('.card', count: 1)
+        expect(page).to have_selector('.board-card', count: 1)
       end
     end
   end
@@ -148,7 +148,7 @@ describe 'Issue Boards add issue modal filtering', :js do
         wait_for_requests
 
         expect(page).to have_selector('.js-visual-token', text: 'upcoming')
-        expect(page).to have_selector('.card', count: 0)
+        expect(page).to have_selector('.board-card', count: 0)
       end
     end
 
@@ -161,7 +161,7 @@ describe 'Issue Boards add issue modal filtering', :js do
         wait_for_requests
 
         expect(page).to have_selector('.js-visual-token', text: milestone.name)
-        expect(page).to have_selector('.card', count: 1)
+        expect(page).to have_selector('.board-card', count: 1)
       end
     end
   end
@@ -183,7 +183,7 @@ describe 'Issue Boards add issue modal filtering', :js do
         wait_for_requests
 
         expect(page).to have_selector('.js-visual-token', text: 'none')
-        expect(page).to have_selector('.card', count: 1)
+        expect(page).to have_selector('.board-card', count: 1)
       end
     end
 
@@ -196,7 +196,7 @@ describe 'Issue Boards add issue modal filtering', :js do
         wait_for_requests
 
         expect(page).to have_selector('.js-visual-token', text: label.title)
-        expect(page).to have_selector('.card', count: 1)
+        expect(page).to have_selector('.board-card', count: 1)
       end
     end
   end

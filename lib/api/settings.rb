@@ -5,7 +5,7 @@ module API
     helpers do
       def current_settings
         @current_setting ||=
-          (ApplicationSetting.current || ApplicationSetting.create_from_defaults)
+          (ApplicationSetting.current_without_cache || ApplicationSetting.create_from_defaults)
       end
     end
 
@@ -24,7 +24,7 @@ module API
       optional :default_project_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default project visibility'
       optional :default_snippet_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default snippet visibility'
       optional :default_group_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default group visibility'
-      optional :restricted_visibility_levels, type: Array[String], desc: 'Selected levels cannot be used by non-admin users for projects or snippets. If the public level is restricted, user profiles are only visible to logged in users.'
+      optional :restricted_visibility_levels, type: Array[String], desc: 'Selected levels cannot be used by non-admin users for groups, projects or snippets. If the public level is restricted, user profiles are only visible to logged in users.'
       optional :import_sources, type: Array[String], values: %w[github bitbucket gitlab google_code fogbugz git gitlab_project],
                                 desc: 'Enabled sources for code import during project creation. OmniAuth must be configured for GitHub, Bitbucket, and GitLab.com'
       optional :disabled_oauth_sign_in_sources, type: Array[String], desc: 'Disable certain OAuth sign-in sources'
@@ -49,6 +49,9 @@ module API
       optional :signin_enabled, type: Boolean, desc: 'Flag indicating if password authentication is enabled for the web interface' # support legacy names, can be removed in v5
       mutually_exclusive :password_authentication_enabled_for_web, :password_authentication_enabled, :signin_enabled
       optional :password_authentication_enabled_for_git, type: Boolean, desc: 'Flag indicating if password authentication is enabled for Git over HTTP(S)'
+      optional :performance_bar_allowed_group_path, type: String, desc: 'Path of the group that is allowed to toggle the performance bar.'
+      optional :performance_bar_allowed_group_id, type: String, desc: 'Depreated: Use :performance_bar_allowed_group_path instead. Path of the group that is allowed to toggle the performance bar.' # support legacy names, can be removed in v6
+      optional :performance_bar_enabled, type: String, desc: 'Deprecated: Pass `performance_bar_allowed_group_path: nil` instead. Allow enabling the performance.' # support legacy names, can be removed in v6
       optional :require_two_factor_authentication, type: Boolean, desc: 'Require all users to setup Two-factor authentication'
       given require_two_factor_authentication: ->(val) { val } do
         requires :two_factor_grace_period, type: Integer, desc: 'Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication'
@@ -126,6 +129,7 @@ module API
       optional :gitaly_timeout_default, type: Integer, desc: 'Default Gitaly timeout, in seconds. Set to 0 to disable timeouts.'
       optional :gitaly_timeout_medium, type: Integer, desc: 'Medium Gitaly timeout, in seconds. Set to 0 to disable timeouts.'
       optional :gitaly_timeout_fast, type: Integer, desc: 'Gitaly fast operation timeout, in seconds. Set to 0 to disable timeouts.'
+      optional :usage_ping_enabled, type: Boolean, desc: 'Every week GitLab will report license usage back to GitLab, Inc.'
 
       ApplicationSetting::SUPPORTED_KEY_TYPES.each do |type|
         optional :"#{type}_key_restriction",
@@ -134,11 +138,24 @@ module API
                  desc: "Restrictions on the complexity of uploaded #{type.upcase} keys. A value of #{ApplicationSetting::FORBIDDEN_KEY_VALUE} disables all #{type.upcase} keys."
       end
 
-      optional(*::ApplicationSettingsHelper.visible_attributes)
-      at_least_one_of(*::ApplicationSettingsHelper.visible_attributes)
+      optional_attributes = ::ApplicationSettingsHelper.visible_attributes << :performance_bar_allowed_group_id
+
+      optional(*optional_attributes)
+      at_least_one_of(*optional_attributes)
     end
     put "application/settings" do
       attrs = declared_params(include_missing: false)
+
+      # support legacy names, can be removed in v6
+      if attrs.has_key?(:performance_bar_allowed_group_id)
+        attrs[:performance_bar_allowed_group_path] = attrs.delete(:performance_bar_allowed_group_id)
+      end
+
+      # support legacy names, can be removed in v6
+      if attrs.has_key?(:performance_bar_enabled)
+        performance_bar_enabled = attrs.delete(:performance_bar_allowed_group_id)
+        attrs[:performance_bar_allowed_group_path] = nil unless performance_bar_enabled
+      end
 
       # support legacy names, can be removed in v5
       if attrs.has_key?(:signin_enabled)

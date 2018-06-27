@@ -1,83 +1,70 @@
 <script>
-  import Icon from '~/vue_shared/components/icon.vue';
+import { __, sprintf } from '~/locale';
+import { viewerTypes } from '../constants';
 
-  export default {
-    components: {
-      Icon,
+export default {
+  props: {
+    viewer: {
+      type: String,
+      required: true,
     },
-    props: {
-      hasChanges: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
-      viewer: {
-        type: String,
-        required: true,
-      },
-      showShadow: {
-        type: Boolean,
-        required: true,
-      },
+    mergeRequestId: {
+      type: Number,
+      required: true,
     },
-    methods: {
-      changeMode(mode) {
-        this.$emit('click', mode);
-      },
+  },
+  computed: {
+    mergeReviewLine() {
+      return sprintf(__('Reviewing (merge request !%{mergeRequestId})'), {
+        mergeRequestId: this.mergeRequestId,
+      });
     },
-  };
+  },
+  methods: {
+    changeMode(mode) {
+      this.$emit('click', mode);
+    },
+  },
+  viewerTypes,
+};
 </script>
 
 <template>
   <div
     class="dropdown"
-    :class="{
-      shadow: showShadow,
-    }"
   >
     <button
       type="button"
-      class="btn btn-primary btn-sm"
-      :class="{
-        'btn-inverted': hasChanges,
-      }"
+      class="btn btn-link"
       data-toggle="dropdown"
     >
-      <template v-if="viewer === 'editor'">
-        {{ __('Editing') }}
-      </template>
-      <template v-else>
-        {{ __('Reviewing') }}
-      </template>
-      <icon
-        name="angle-down"
-        :size="12"
-        css-classes="caret-down"
-      />
+      {{ __('Edit') }}
     </button>
     <div class="dropdown-menu dropdown-menu-selectable dropdown-open-left">
       <ul>
         <li>
           <a
-            href="#"
-            @click.prevent="changeMode('editor')"
             :class="{
-              'is-active': viewer === 'editor',
+              'is-active': viewer === $options.viewerTypes.mr,
             }"
+            href="#"
+            @click.prevent="changeMode($options.viewerTypes.mr)"
           >
-            <strong class="dropdown-menu-inner-title">{{ __('Editing') }}</strong>
+            <strong class="dropdown-menu-inner-title">
+              {{ mergeReviewLine }}
+            </strong>
             <span class="dropdown-menu-inner-content">
-              {{ __('View and edit lines') }}
+              {{ __('Compare changes with the merge request target branch') }}
             </span>
           </a>
         </li>
         <li>
           <a
-            href="#"
-            @click.prevent="changeMode('diff')"
             :class="{
-              'is-active': viewer === 'diff',
+              'is-active': viewer === $options.viewerTypes.diff,
             }"
+            href="#"
+            @click.prevent="changeMode($options.viewerTypes.diff)"
           >
             <strong class="dropdown-menu-inner-title">{{ __('Reviewing') }}</strong>
             <span class="dropdown-menu-inner-content">

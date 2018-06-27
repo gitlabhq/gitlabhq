@@ -68,7 +68,7 @@ describe Notify do
         end
 
         it 'contains the description' do
-          is_expected.to have_html_escaped_body_text issue.description
+          is_expected.to have_body_text issue.description
         end
 
         it 'does not add a reason header' do
@@ -89,7 +89,7 @@ describe Notify do
           end
 
           it 'contains a link to note author' do
-            is_expected.to have_html_escaped_body_text(issue.author_name)
+            is_expected.to have_body_text(issue.author_name)
             is_expected.to have_body_text 'created an issue:'
           end
         end
@@ -115,8 +115,8 @@ describe Notify do
         it 'has the correct subject and body' do
           aggregate_failures do
             is_expected.to have_referable_subject(issue, reply: true)
-            is_expected.to have_html_escaped_body_text(previous_assignee.name)
-            is_expected.to have_html_escaped_body_text(assignee.name)
+            is_expected.to have_body_text(previous_assignee.name)
+            is_expected.to have_body_text(assignee.name)
             is_expected.to have_body_text(project_issue_path(project, issue))
           end
         end
@@ -190,7 +190,7 @@ describe Notify do
           aggregate_failures do
             is_expected.to have_referable_subject(issue, reply: true)
             is_expected.to have_body_text(status)
-            is_expected.to have_html_escaped_body_text(current_user.name)
+            is_expected.to have_body_text(current_user.name)
             is_expected.to have_body_text(project_issue_path project, issue)
           end
         end
@@ -243,7 +243,7 @@ describe Notify do
         end
 
         it 'contains the description' do
-          is_expected.to have_html_escaped_body_text merge_request.description
+          is_expected.to have_body_text merge_request.description
         end
 
         context 'when sent with a reason' do
@@ -260,7 +260,7 @@ describe Notify do
           end
 
           it 'contains a link to note author' do
-            is_expected.to have_html_escaped_body_text merge_request.author_name
+            is_expected.to have_body_text merge_request.author_name
             is_expected.to have_body_text 'created a merge request:'
           end
         end
@@ -286,9 +286,9 @@ describe Notify do
         it 'has the correct subject and body' do
           aggregate_failures do
             is_expected.to have_referable_subject(merge_request, reply: true)
-            is_expected.to have_html_escaped_body_text(previous_assignee.name)
+            is_expected.to have_body_text(previous_assignee.name)
             is_expected.to have_body_text(project_merge_request_path(project, merge_request))
-            is_expected.to have_html_escaped_body_text(assignee.name)
+            is_expected.to have_body_text(assignee.name)
           end
         end
 
@@ -358,7 +358,7 @@ describe Notify do
           aggregate_failures do
             is_expected.to have_referable_subject(merge_request, reply: true)
             is_expected.to have_body_text(status)
-            is_expected.to have_html_escaped_body_text(current_user.name)
+            is_expected.to have_body_text(current_user.name)
             is_expected.to have_body_text(project_merge_request_path(project, merge_request))
           end
         end
@@ -388,6 +388,82 @@ describe Notify do
             is_expected.to have_body_text(project_merge_request_path(project, merge_request))
           end
         end
+      end
+
+      describe 'that are unmergeable' do
+        set(:merge_request) do
+          create(:merge_request, :conflict,
+                 source_project: project,
+                 target_project: project,
+                 author: current_user,
+                 assignee: assignee,
+                 description: 'Awesome description')
+        end
+
+        subject { described_class.merge_request_unmergeable_email(recipient.id, merge_request.id) }
+
+        it_behaves_like 'a multiple recipients email'
+        it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+          let(:model) { merge_request }
+        end
+        it_behaves_like 'it should show Gmail Actions View Merge request link'
+        it_behaves_like 'an unsubscribeable thread'
+
+        it 'is sent as the merge request author' do
+          sender = subject.header[:from].addrs[0]
+          expect(sender.display_name).to eq(merge_request.author.name)
+          expect(sender.address).to eq(gitlab_sender)
+        end
+
+        it 'has the correct subject and body' do
+          aggregate_failures do
+            is_expected.to have_referable_subject(merge_request, reply: true)
+            is_expected.to have_body_text(project_merge_request_path(project, merge_request))
+            is_expected.to have_body_text('due to conflict.')
+          end
+        end
+      end
+
+      shared_examples 'a push to an existing merge request' do
+        let(:push_user) { create(:user) }
+
+        subject do
+          described_class.push_to_merge_request_email(recipient.id, merge_request.id, push_user.id, new_commits: merge_request.commits, existing_commits: existing_commits)
+        end
+
+        it_behaves_like 'a multiple recipients email'
+        it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+          let(:model) { merge_request }
+        end
+        it_behaves_like 'it should show Gmail Actions View Merge request link'
+        it_behaves_like 'an unsubscribeable thread'
+
+        it 'is sent as the push user' do
+          sender = subject.header[:from].addrs[0]
+
+          expect(sender.display_name).to eq(push_user.name)
+          expect(sender.address).to eq(gitlab_sender)
+        end
+
+        it 'has the correct subject and body' do
+          aggregate_failures do
+            is_expected.to have_referable_subject(merge_request, reply: true)
+            is_expected.to have_body_text("#{push_user.name} pushed new commits")
+            is_expected.to have_body_text(project_merge_request_path(project, merge_request))
+          end
+        end
+      end
+
+      describe 'that have new commits' do
+        let(:existing_commits) { [] }
+
+        it_behaves_like 'a push to an existing merge request'
+      end
+
+      describe 'that have new commits on top of an existing one' do
+        let(:existing_commits) { [merge_request.commits.first] }
+
+        it_behaves_like 'a push to an existing merge request'
       end
     end
 
@@ -444,7 +520,7 @@ describe Notify do
 
       it 'has the correct subject and body' do
         is_expected.to have_referable_subject(project_snippet, reply: true)
-        is_expected.to have_html_escaped_body_text project_snippet_note.note
+        is_expected.to have_body_text project_snippet_note.note
       end
     end
 
@@ -457,7 +533,7 @@ describe Notify do
 
       it 'has the correct subject and body' do
         is_expected.to have_subject("#{project.name} | Project was moved")
-        is_expected.to have_html_escaped_body_text project.full_name
+        is_expected.to have_body_text project.full_name
         is_expected.to have_body_text(project.ssh_url_to_repo)
       end
     end
@@ -484,7 +560,7 @@ describe Notify do
         expect(to_emails).to eq([recipient.notification_email])
 
         is_expected.to have_subject "Request to join the #{project.full_name} project"
-        is_expected.to have_html_escaped_body_text project.full_name
+        is_expected.to have_body_text project.full_name
         is_expected.to have_body_text project_project_members_url(project)
         is_expected.to have_body_text project_member.human_access
       end
@@ -504,7 +580,7 @@ describe Notify do
 
       it 'contains all the useful information' do
         is_expected.to have_subject "Access to the #{project.full_name} project was denied"
-        is_expected.to have_html_escaped_body_text project.full_name
+        is_expected.to have_body_text project.full_name
         is_expected.to have_body_text project.web_url
       end
     end
@@ -521,7 +597,7 @@ describe Notify do
 
       it 'contains all the useful information' do
         is_expected.to have_subject "Access to the #{project.full_name} project was granted"
-        is_expected.to have_html_escaped_body_text project.full_name
+        is_expected.to have_body_text project.full_name
         is_expected.to have_body_text project.web_url
         is_expected.to have_body_text project_member.human_access
       end
@@ -551,8 +627,8 @@ describe Notify do
 
       it 'contains all the useful information' do
         is_expected.to have_subject "Invitation to join the #{project.full_name} project"
-        is_expected.to have_html_escaped_body_text project.full_name
-        is_expected.to have_body_text project.web_url
+        is_expected.to have_body_text project.full_name
+        is_expected.to have_body_text project.full_name
         is_expected.to have_body_text project_member.human_access
         is_expected.to have_body_text project_member.invite_token
       end
@@ -575,10 +651,10 @@ describe Notify do
 
       it 'contains all the useful information' do
         is_expected.to have_subject 'Invitation accepted'
-        is_expected.to have_html_escaped_body_text project.full_name
+        is_expected.to have_body_text project.full_name
         is_expected.to have_body_text project.web_url
         is_expected.to have_body_text project_member.invite_email
-        is_expected.to have_html_escaped_body_text invited_user.name
+        is_expected.to have_body_text invited_user.name
       end
     end
 
@@ -598,7 +674,7 @@ describe Notify do
 
       it 'contains all the useful information' do
         is_expected.to have_subject 'Invitation declined'
-        is_expected.to have_html_escaped_body_text project.full_name
+        is_expected.to have_body_text project.full_name
         is_expected.to have_body_text project.web_url
         is_expected.to have_body_text project_member.invite_email
       end
@@ -610,38 +686,6 @@ describe Notify do
 
       before do
         allow(Note).to receive(:find).with(note.id).and_return(note)
-      end
-
-      shared_examples 'a note email' do
-        it_behaves_like 'it should have Gmail Actions links'
-
-        it 'is sent to the given recipient as the author' do
-          sender = subject.header[:from].addrs[0]
-
-          aggregate_failures do
-            expect(sender.display_name).to eq(note_author.name)
-            expect(sender.address).to eq(gitlab_sender)
-            expect(subject).to deliver_to(recipient.notification_email)
-          end
-        end
-
-        it 'contains the message from the note' do
-          is_expected.to have_html_escaped_body_text note.note
-        end
-
-        it 'does not contain note author' do
-          is_expected.not_to have_body_text note.author_name
-        end
-
-        context 'when enabled email_author_in_body' do
-          before do
-            stub_application_setting(email_author_in_body: true)
-          end
-
-          it 'contains a link to note author' do
-            is_expected.to have_html_escaped_body_text note.author_name
-          end
-        end
       end
 
       describe 'on a commit' do
@@ -882,7 +926,7 @@ describe Notify do
         end
 
         it 'contains the message from the note' do
-          is_expected.to have_html_escaped_body_text note.note
+          is_expected.to have_body_text note.note
         end
 
         it 'contains an introduction' do
@@ -941,7 +985,7 @@ describe Notify do
         expect(to_emails).to eq([recipient.notification_email])
 
         is_expected.to have_subject "Request to join the #{group.name} group"
-        is_expected.to have_html_escaped_body_text group.name
+        is_expected.to have_body_text group.name
         is_expected.to have_body_text group_group_members_url(group)
         is_expected.to have_body_text group_member.human_access
       end
@@ -960,7 +1004,7 @@ describe Notify do
 
       it 'contains all the useful information' do
         is_expected.to have_subject "Access to the #{group.name} group was denied"
-        is_expected.to have_html_escaped_body_text group.name
+        is_expected.to have_body_text group.name
         is_expected.to have_body_text group.web_url
       end
     end
@@ -976,7 +1020,7 @@ describe Notify do
 
       it 'contains all the useful information' do
         is_expected.to have_subject "Access to the #{group.name} group was granted"
-        is_expected.to have_html_escaped_body_text group.name
+        is_expected.to have_body_text group.name
         is_expected.to have_body_text group.web_url
         is_expected.to have_body_text group_member.human_access
       end
@@ -1006,7 +1050,7 @@ describe Notify do
 
       it 'contains all the useful information' do
         is_expected.to have_subject "Invitation to join the #{group.name} group"
-        is_expected.to have_html_escaped_body_text group.name
+        is_expected.to have_body_text group.name
         is_expected.to have_body_text group.web_url
         is_expected.to have_body_text group_member.human_access
         is_expected.to have_body_text group_member.invite_token
@@ -1030,10 +1074,10 @@ describe Notify do
 
       it 'contains all the useful information' do
         is_expected.to have_subject 'Invitation accepted'
-        is_expected.to have_html_escaped_body_text group.name
+        is_expected.to have_body_text group.name
         is_expected.to have_body_text group.web_url
         is_expected.to have_body_text group_member.invite_email
-        is_expected.to have_html_escaped_body_text invited_user.name
+        is_expected.to have_body_text invited_user.name
       end
     end
 
@@ -1053,7 +1097,7 @@ describe Notify do
 
       it 'contains all the useful information' do
         is_expected.to have_subject 'Invitation declined'
-        is_expected.to have_html_escaped_body_text group.name
+        is_expected.to have_body_text group.name
         is_expected.to have_body_text group.web_url
         is_expected.to have_body_text group_member.invite_email
       end
@@ -1346,7 +1390,7 @@ describe Notify do
 
     it 'has the correct subject and body' do
       is_expected.to have_referable_subject(personal_snippet, reply: true)
-      is_expected.to have_html_escaped_body_text personal_snippet_note.note
+      is_expected.to have_body_text personal_snippet_note.note
     end
   end
 end

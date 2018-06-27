@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'User views a wiki page' do
   shared_examples 'wiki page user view' do
     let(:user) { create(:user) }
-    let(:project) { create(:project, namespace: user.namespace) }
+    let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
     let(:wiki_page) do
       create(:wiki_page,
         wiki: project.wiki,
@@ -18,6 +18,7 @@ describe 'User views a wiki page' do
     context 'when wiki is empty' do
       before do
         visit(project_wikis_path(project))
+        click_link "Create your first page"
 
         click_on('New page')
 
@@ -140,6 +141,7 @@ describe 'User views a wiki page' do
       visit(project_path(project))
 
       find('.shortcuts-wiki').click
+      click_link "Create your first page"
 
       expect(page).to have_content('Home · Create Page')
     end

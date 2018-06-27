@@ -19,7 +19,8 @@ module Gitlab
         Importer::PullRequestsImporter,
         Importer::IssuesImporter,
         Importer::DiffNotesImporter,
-        Importer::NotesImporter
+        Importer::NotesImporter,
+        Importer::LfsObjectsImporter
       ].freeze
 
       # project - The project to import the data into.
@@ -40,8 +41,6 @@ module Gitlab
         PARALLEL_IMPORTERS.each do |klass|
           klass.new(project, client, parallel: false).execute
         end
-
-        project.repository.after_import
 
         true
       end

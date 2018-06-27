@@ -1,8 +1,10 @@
+- extra_flash_class = local_assigns.fetch(:extra_flash_class, nil)
+
 .flash-container.flash-container-page
   -# We currently only support `alert`, `notice`, `success`
   - flash.each do |key, value|
     -# Don't show a flash message if the message is nil
     - if value
       %div{ class: "flash-#{key}" }
-        %div{ class: (container_class) }
+        %div{ class: "#{container_class} #{extra_flash_class}" }
           %span= value

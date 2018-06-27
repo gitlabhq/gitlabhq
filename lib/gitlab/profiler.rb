@@ -11,6 +11,7 @@ module Gitlab
       lib/gitlab/etag_caching/
       lib/gitlab/metrics/
       lib/gitlab/middleware/
+      ee/lib/gitlab/middleware/
       lib/gitlab/performance_bar/
       lib/gitlab/request_profiler/
       lib/gitlab/profiler.rb
@@ -98,17 +99,19 @@ module Gitlab
 
             super
 
-            backtrace = Rails.backtrace_cleaner.clean(caller)
-
-            backtrace.each do |caller_line|
-              next if caller_line.match(Regexp.union(IGNORE_BACKTRACES))
-
+            Gitlab::Profiler.clean_backtrace(caller).each do |caller_line|
               stripped_caller_line = caller_line.sub("#{Rails.root}/", '')
 
               super("  ↳ #{stripped_caller_line}")
             end
           end
         end
+      end
+    end
+
+    def self.clean_backtrace(backtrace)
+      Array(Rails.backtrace_cleaner.clean(backtrace)).reject do |line|
+        line.match(Regexp.union(IGNORE_BACKTRACES))
       end
     end
 

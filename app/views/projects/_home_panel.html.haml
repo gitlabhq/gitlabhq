@@ -23,21 +23,28 @@
             - deleted_message = s_('ForkedFromProjectPath|Forked from %{project_name} (deleted)')
             = deleted_message % { project_name: fork_source_name(@project) }
 
-    .project-badges
+    .project-badges.prepend-top-default.append-bottom-default
       - @project.badges.each do |badge|
-        - badge_link_url = badge.rendered_link_url(@project)
-        %a{ href: badge_link_url, target: '_blank', rel: 'noopener noreferrer' }
-          %img{ src: badge.rendered_image_url(@project), alt: badge_link_url }
+        %a.append-right-8{ href: badge.rendered_link_url(@project),
+          target: '_blank',
+          rel: 'noopener noreferrer' }>
+          %img.project-badge{ src: badge.rendered_image_url(@project),
+            'aria-hidden': true,
+            alt: '' }>
 
     .project-repo-buttons
       .count-buttons
         = render 'projects/buttons/star'
         = render 'projects/buttons/fork'
 
-      %span.hidden-xs
+      %span.d-none.d-sm-inline
         - if can?(current_user, :download_code, @project)
           .project-clone-holder
             = render "shared/clone_panel"
+
+          - if show_xcode_link?(@project)
+            .project-action-button.project-xcode.inline
+              = render "projects/buttons/xcode_link"
 
         - if current_user
           - if can?(current_user, :download_code, @project)

@@ -1,8 +1,8 @@
 %li.header-new.dropdown
-  = link_to new_project_path, class: "header-new-dropdown-toggle has-tooltip qa-new-menu-toggle", title: "New...", ref: 'tooltip', aria: { label: "New..." }, data: { toggle: 'dropdown', placement: 'bottom', container: 'body' } do
+  = link_to new_project_path, class: "header-new-dropdown-toggle has-tooltip qa-new-menu-toggle", title: "New...", ref: 'tooltip', aria: { label: "New..." }, data: { toggle: 'dropdown', placement: 'bottom', container: 'body', display: 'static' } do
     = sprite_icon('plus-square', size: 16)
     = sprite_icon('angle-down', css_class: 'caret-down')
-  .dropdown-menu-nav.dropdown-menu-align-right
+  .dropdown-menu.dropdown-menu-right
     %ul
       - if @group&.persisted?
         - create_group_project = can?(current_user, :create_projects, @group)
@@ -19,8 +19,8 @@
           %li.dropdown-bold-header GitLab
 
       - if @project&.persisted?
-        - create_project_issue = can?(current_user, :create_issue, @project)
-        - merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
+        - create_project_issue = show_new_issue_link?(@project)
+        - merge_project = merge_request_source_project_for_project(@project)
         - create_project_snippet = can?(current_user, :create_project_snippet, @project)
         - if create_project_issue || merge_project || create_project_snippet
           %li.dropdown-bold-header This project

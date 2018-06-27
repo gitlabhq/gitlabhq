@@ -15,9 +15,8 @@ feature 'Group share with group lock' do
     context 'when enabling the parent group share with group lock' do
       scenario 'the subgroup share with group lock becomes enabled' do
         visit edit_group_path(root_group)
-        check 'group_share_with_group_lock'
 
-        click_on 'Save group'
+        enable_group_lock
 
         expect(subgroup.reload.share_with_group_lock?).to be_truthy
       end
@@ -26,16 +25,15 @@ feature 'Group share with group lock' do
     context 'when disabling the parent group share with group lock (which was already enabled)' do
       background do
         visit edit_group_path(root_group)
-        check 'group_share_with_group_lock'
-        click_on 'Save group'
+
+        enable_group_lock
       end
 
       context 'and the subgroup share with group lock is enabled' do
         scenario 'the subgroup share with group lock does not change' do
           visit edit_group_path(root_group)
-          uncheck 'group_share_with_group_lock'
 
-          click_on 'Save group'
+          disable_group_lock
 
           expect(subgroup.reload.share_with_group_lock?).to be_truthy
         end
@@ -44,19 +42,32 @@ feature 'Group share with group lock' do
       context 'but the subgroup share with group lock is disabled' do
         background do
           visit edit_group_path(subgroup)
-          uncheck 'group_share_with_group_lock'
-          click_on 'Save group'
+
+          disable_group_lock
         end
 
         scenario 'the subgroup share with group lock does not change' do
           visit edit_group_path(root_group)
-          uncheck 'group_share_with_group_lock'
 
-          click_on 'Save group'
+          disable_group_lock
 
           expect(subgroup.reload.share_with_group_lock?).to be_falsey
         end
       end
+    end
+  end
+
+  def enable_group_lock
+    page.within('.gs-permissions') do
+      check 'group_share_with_group_lock'
+      click_on 'Save group'
+    end
+  end
+
+  def disable_group_lock
+    page.within('.gs-permissions') do
+      uncheck 'group_share_with_group_lock'
+      click_on 'Save group'
     end
   end
 end

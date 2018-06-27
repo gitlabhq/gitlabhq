@@ -8,7 +8,7 @@ describe SchedulePopulateMergeRequestMetricsWithEventsData, :migration, :sidekiq
       .to receive(:commits_count=).and_return(nil)
   end
 
-  let!(:mrs) { create_list(:merge_request, 3) }
+  let!(:mrs) { create_list(:merge_request, 3) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
 
   it 'correctly schedules background migrations' do
     stub_const("#{described_class.name}::BATCH_SIZE", 2)

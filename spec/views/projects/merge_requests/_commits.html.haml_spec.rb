@@ -28,6 +28,6 @@ describe 'projects/merge_requests/_commits.html.haml' do
     commit = merge_request.commits.first # HEAD
     href = diffs_project_merge_request_path(target_project, merge_request, commit_id: commit)
 
-    expect(rendered).to have_link(Commit.truncate_sha(commit.sha), href: href)
+    expect(rendered).to have_link(href: href)
   end
 end

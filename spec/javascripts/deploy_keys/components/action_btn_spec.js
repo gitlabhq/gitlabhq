@@ -7,62 +7,64 @@ describe('Deploy keys action btn', () => {
   const deployKey = data.enabled_keys[0];
   let vm;
 
-  beforeEach((done) => {
-    const ActionBtnComponent = Vue.extend(actionBtn);
-
-    vm = new ActionBtnComponent({
-      propsData: {
-        deployKey,
-        type: 'enable',
+  beforeEach(done => {
+    const ActionBtnComponent = Vue.extend({
+      components: {
+        actionBtn,
       },
-    }).$mount();
+      data() {
+        return {
+          deployKey,
+        };
+      },
+      template: `
+        <action-btn
+          :deploy-key="deployKey"
+          type="enable">
+            Enable
+        </action-btn>`,
+    });
 
-    setTimeout(done);
+    vm = new ActionBtnComponent().$mount();
+
+    Vue.nextTick()
+      .then(done)
+      .catch(done.fail);
   });
 
-  it('renders the type as uppercase', () => {
-    expect(
-      vm.$el.textContent.trim(),
-    ).toBe('Enable');
+  it('renders the default slot', () => {
+    expect(vm.$el.textContent.trim()).toBe('Enable');
   });
 
-  it('sends eventHub event with btn type', (done) => {
+  it('sends eventHub event with btn type', done => {
     spyOn(eventHub, '$emit');
 
     vm.$el.click();
 
-    setTimeout(() => {
-      expect(
-        eventHub.$emit,
-      ).toHaveBeenCalledWith('enable.key', deployKey, jasmine.anything());
+    Vue.nextTick(() => {
+      expect(eventHub.$emit).toHaveBeenCalledWith('enable.key', deployKey, jasmine.anything());
 
       done();
     });
   });
 
-  it('shows loading spinner after click', (done) => {
+  it('shows loading spinner after click', done => {
     vm.$el.click();
 
-    setTimeout(() => {
-      expect(
-        vm.$el.querySelector('.fa'),
-      ).toBeDefined();
+    Vue.nextTick(() => {
+      expect(vm.$el.querySelector('.fa')).toBeDefined();
 
       done();
     });
   });
 
-  it('disables button after click', (done) => {
+  it('disables button after click', done => {
     vm.$el.click();
 
-    setTimeout(() => {
-      expect(
-        vm.$el.classList.contains('disabled'),
-      ).toBeTruthy();
+    Vue.nextTick(() => {
+      expect(vm.$el.classList.contains('disabled')).toBeTruthy();
 
-      expect(
-        vm.$el.getAttribute('disabled'),
-      ).toBe('disabled');
+      expect(vm.$el.getAttribute('disabled')).toBe('disabled');
 
       done();
     });

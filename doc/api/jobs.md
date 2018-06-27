@@ -38,6 +38,7 @@ Example of response
       "size": 1000
     },
     "finished_at": "2015-12-24T17:54:27.895Z",
+    "artifacts_expire_at": "2016-01-23T17:54:27.895Z"
     "id": 7,
     "name": "teaspoon",
     "pipeline": {
@@ -81,8 +82,9 @@ Example of response
     "created_at": "2015-12-24T15:51:21.727Z",
     "artifacts_file": null,
     "finished_at": "2015-12-24T17:54:24.921Z",
+    "artifacts_expire_at": "2016-01-23T17:54:24.921Z",
     "id": 6,
-    "name": "spinach:other",
+    "name": "rspec:other",
     "pipeline": {
       "id": 6,
       "ref": "master",
@@ -152,6 +154,7 @@ Example of response
       "size": 1000
     },
     "finished_at": "2015-12-24T17:54:27.895Z",
+    "artifacts_expire_at": "2016-01-23T17:54:27.895Z"
     "id": 7,
     "name": "teaspoon",
     "pipeline": {
@@ -195,8 +198,9 @@ Example of response
     "created_at": "2015-12-24T15:51:21.727Z",
     "artifacts_file": null,
     "finished_at": "2015-12-24T17:54:24.921Z",
+    "artifacts_expire_at": "2016-01-23T17:54:24.921Z"
     "id": 6,
-    "name": "spinach:other",
+    "name": "rspec:other",
     "pipeline": {
       "id": 6,
       "ref": "master",
@@ -261,6 +265,7 @@ Example of response
   "created_at": "2015-12-24T15:51:21.880Z",
   "artifacts_file": null,
   "finished_at": "2015-12-24T17:54:31.198Z",
+  "artifacts_expire_at": "2016-01-23T17:54:31.198Z",
   "id": 8,
   "name": "rubocop",
   "pipeline": {
@@ -294,9 +299,10 @@ Example of response
 
 ## Get job artifacts
 
-> [Introduced][ce-2893] in GitLab 8.5
+> **Notes**:
+- [Introduced][ce-2893] in GitLab 8.5.
 
-Get job artifacts of a project
+Get job artifacts of a project.
 
 ```
 GET /projects/:id/jobs/:job_id/artifacts
@@ -307,8 +313,10 @@ GET /projects/:id/jobs/:job_id/artifacts
 | `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `job_id` | integer | yes      | The ID of a job   |
 
+Example requests:
+
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/8/artifacts"
+curl --location --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/8/artifacts"
 ```
 
 Response:
@@ -322,7 +330,8 @@ Response:
 
 ## Download the artifacts archive
 
-> [Introduced][ce-5347] in GitLab 8.10.
+> **Notes**:
+- [Introduced][ce-5347] in GitLab 8.10.
 
 Download the artifacts archive from the given reference name and job provided the
 job finished successfully.
@@ -339,7 +348,7 @@ Parameters
 | `ref_name`  | string  | yes      | The ref from a repository (can only be branch or tag name, not HEAD or SHA) |
 | `job`       | string  | yes      | The name of the job       |
 
-Example request:
+Example requests:
 
 ```
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/master/download?job=test"

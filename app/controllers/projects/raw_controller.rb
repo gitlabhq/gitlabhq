@@ -2,6 +2,7 @@
 class Projects::RawController < Projects::ApplicationController
   include ExtractsPath
   include BlobHelper
+  include SendFileUpload
 
   before_action :require_non_empty_project
   before_action :assign_ref_vars
@@ -31,7 +32,7 @@ class Projects::RawController < Projects::ApplicationController
     lfs_object = find_lfs_object
 
     if lfs_object && lfs_object.project_allowed_access?(@project)
-      send_file lfs_object.file.path, filename: @blob.name, disposition: 'attachment'
+      send_upload(lfs_object.file, attachment: @blob.name)
     else
       render_404
     end

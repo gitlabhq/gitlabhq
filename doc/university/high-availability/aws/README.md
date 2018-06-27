@@ -2,6 +2,10 @@
 comments: false
 ---
 
+DANGER: This guide exists for reference of how an AWS deployment could work.
+We are currently seeing very slow EFS access performance which causes GitLab to
+be 5-10x slower than using NFS or Local disk. We _do not_ recommend follow this
+guide at this time.
 
 # High Availability on AWS
 
@@ -354,11 +358,11 @@ add the following script to the User Data section:
     - mount -a -t nfs
     - sudo gitlab-ctl reconfigure
 
-On the security group section we can chosse our existing
+On the security group section we can choose our existing
 `gitlab-ec2-security-group` group which has already been tested.
 
 After this is launched we are able to start creating our Auto Scaling
-Group. Start by giving it a name and assinging it our VPC and private
+Group. Start by giving it a name and assigning it our VPC and private
 subnets. We also want to always start with two instances and if you
 scroll down to Advanced Details we can choose to receive traffic from ELBs.
 Lets enable that option and select our ELB. We also want to use the ELB's

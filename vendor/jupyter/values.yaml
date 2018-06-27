@@ -1,0 +1,19 @@
+rbac:
+  enabled: false
+
+hub:
+  extraEnv:
+    JUPYTER_ENABLE_LAB: 1
+  extraConfig: |
+    c.KubeSpawner.cmd = ['jupyter-labhub']
+
+auth:
+  type: gitlab
+
+singleuser:
+  defaultUrl: "/lab"
+
+ingress:
+ enabled: true
+ annotations:
+   kubernetes.io/ingress.class: "nginx"

@@ -104,8 +104,8 @@ Jobs are used to create jobs, which are then picked by
 
 What is important is that each job is run independently from each other.
 
-If you want to check whether your `.gitlab-ci.yml` file is valid, there is a
-Lint tool under the page `/ci/lint` of your GitLab instance. You can also find
+If you want to check whether the `.gitlab-ci.yml` of your project is valid, there is a
+Lint tool under the page `/ci/lint` of your project namespace. You can also find
 a "CI Lint" button to go to this page under **CI/CD ➔ Pipelines** and
 **Pipelines ➔ Jobs** in your project.
 
@@ -125,6 +125,11 @@ git push origin master
 
 Now if you go to the **Pipelines** page you will see that the pipeline is
 pending.
+
+NOTE: **Note:**
+If you have a [mirrored repository where GitLab pulls from](https://docs.gitlab.com/ee/workflow/repository_mirroring.html#pulling-from-a-remote-repository),
+you may need to enable pipeline triggering in your project's
+**Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
 
 You can also go to the **Commits** page and notice the little pause icon next
 to the commit SHA.
@@ -146,7 +151,8 @@ The next step is to configure a Runner so that it picks the pending jobs.
 In GitLab, Runners run the jobs that you define in `.gitlab-ci.yml`. A Runner
 can be a virtual machine, a VPS, a bare-metal machine, a docker container or
 even a cluster of containers. GitLab and the Runners communicate through an API,
-so the only requirement is that the Runner's machine has [Internet] access.
+so the only requirement is that the Runner's machine has network access to the
+GitLab server.
 
 A Runner can be specific to a certain project or serve multiple projects in
 GitLab. If it serves all projects it's called a _Shared Runner_.
@@ -221,4 +227,3 @@ CI with various languages.
 [enabled]: ../enable_or_disable_ci.md
 [stages]: ../yaml/README.md#stages
 [pipeline]: ../pipelines.md
-[internet]: https://about.gitlab.com/images/theinternet.png

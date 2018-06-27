@@ -18,14 +18,14 @@ describe API::Commits do
   describe 'GET /projects/:id/repository/commits' do
     let(:route) { "/projects/#{project_id}/repository/commits" }
 
-    shared_examples_for 'project commits' do
+    shared_examples_for 'project commits' do |schema: 'public_api/v4/commits'|
       it "returns project commits" do
         commit = project.repository.commit
 
         get api(route, current_user)
 
         expect(response).to have_gitlab_http_status(200)
-        expect(response).to match_response_schema('public_api/v4/commits')
+        expect(response).to match_response_schema(schema)
         expect(json_response.first['id']).to eq(commit.id)
         expect(json_response.first['committer_name']).to eq(commit.committer_name)
         expect(json_response.first['committer_email']).to eq(commit.committer_email)
@@ -161,6 +161,23 @@ describe API::Commits do
         end
       end
 
+      context 'with_stats optional parameter' do
+        let(:project) { create(:project, :public, :repository) }
+
+        it_behaves_like 'project commits', schema: 'public_api/v4/commits_with_stats' do
+          let(:route) { "/projects/#{project_id}/repository/commits?with_stats=true" }
+
+          it 'include commits details' do
+            commit = project.repository.commit
+            get api(route, current_user)
+
+            expect(json_response.first['stats']['additions']).to eq(commit.stats.additions)
+            expect(json_response.first['stats']['deletions']).to eq(commit.stats.deletions)
+            expect(json_response.first['stats']['total']).to eq(commit.stats.total)
+          end
+        end
+      end
+
       context 'with pagination params' do
         let(:page) { 1 }
         let(:per_page) { 5 }
@@ -247,9 +264,31 @@ describe API::Commits do
           ]
         }
       end
+      let!(:valid_utf8_c_params) do
+        {
+          branch: 'master',
+          commit_message: message,
+          actions: [
+            {
+              action: 'create',
+              file_path: 'foo/bar/baz.txt',
+              content: 'puts 🦊'
+            }
+          ]
+        }
+      end
 
       it 'a new file in project repo' do
         post api(url, user), valid_c_params
+
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response['title']).to eq(message)
+        expect(json_response['committer_name']).to eq(user.name)
+        expect(json_response['committer_email']).to eq(user.email)
+      end
+
+      it 'a new file with utf8 chars in project repo' do
+        post api(url, user), valid_utf8_c_params
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq(message)
@@ -1139,6 +1178,35 @@ describe API::Commits do
           it_behaves_like 'ref new comment'
         end
       end
+    end
+  end
+
+  describe 'GET /projects/:id/repository/commits/:sha/merge_requests' do
+    let!(:project) { create(:project, :repository, :private) }
+    let!(:merged_mr) { create(:merge_request, source_project: project, source_branch: 'master', target_branch: 'feature') }
+    let(:commit) { merged_mr.merge_request_diff.commits.last }
+
+    it 'returns the correct merge request' do
+      get api("/projects/#{project.id}/repository/commits/#{commit.id}/merge_requests", user)
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response.length).to eq(1)
+      expect(json_response[0]['id']).to eq(merged_mr.id)
+    end
+
+    it 'returns 403 for an unauthorized user' do
+      project.add_guest(user)
+
+      get api("/projects/#{project.id}/repository/commits/#{commit.id}/merge_requests", user)
+
+      expect(response).to have_gitlab_http_status(403)
+    end
+
+    it 'responds 404 when the commit does not exist' do
+      get api("/projects/#{project.id}/repository/commits/a7d26f00c35b/merge_requests", user)
+
+      expect(response).to have_gitlab_http_status(404)
     end
   end
 end

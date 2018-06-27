@@ -7,6 +7,7 @@ describe 'projects/commit/_commit_box.html.haml' do
   before do
     assign(:project, project)
     assign(:commit, project.commit)
+    allow(view).to receive(:current_user).and_return(user)
     allow(view).to receive(:can_collaborate_with_project?).and_return(false)
   end
 
@@ -47,7 +48,8 @@ describe 'projects/commit/_commit_box.html.haml' do
   context 'viewing a commit' do
     context 'as a developer' do
       before do
-        expect(view).to receive(:can_collaborate_with_project?).and_return(true)
+        project.add_developer(user)
+        allow(view).to receive(:can_collaborate_with_project?).and_return(true)
       end
 
       it 'has a link to create a new tag' do
@@ -58,10 +60,6 @@ describe 'projects/commit/_commit_box.html.haml' do
     end
 
     context 'as a non-developer' do
-      before do
-        expect(view).to receive(:can_collaborate_with_project?).and_return(false)
-      end
-
       it 'does not have a link to create a new tag' do
         render
 

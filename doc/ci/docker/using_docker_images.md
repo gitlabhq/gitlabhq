@@ -86,7 +86,7 @@ services](#accessing-the-services).
 ### How the health check of services works
 
 Services are designed to provide additional functionality which is **network accessible**.
-It may be a database like MySQL, or Redis, and even `docker:dind` which
+It may be a database like MySQL, or Redis, and even `docker:stable-dind` which
 allows you to use Docker in Docker. It can be practically anything that is
 required for the CI/CD job to proceed and is accessed by network.
 
@@ -496,7 +496,7 @@ To configure access for `registry.example.com`, follow these steps:
            bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ=
            ```
 
-1. Create a [secret variable] `DOCKER_AUTH_CONFIG` with the content of the
+1. Create a [variable] `DOCKER_AUTH_CONFIG` with the content of the
    Docker configuration file as the value:
 
      ```json
@@ -632,7 +632,7 @@ creation.
 [postgres-hub]: https://hub.docker.com/r/_/postgres/
 [mysql-hub]: https://hub.docker.com/r/_/mysql/
 [runner-priv-reg]: http://docs.gitlab.com/runner/configuration/advanced-configuration.html#using-a-private-container-registry
-[secret variable]: ../variables/README.md#secret-variables
+[variable]: ../variables/README.md#variables
 [entrypoint]: https://docs.docker.com/engine/reference/builder/#entrypoint
 [cmd]: https://docs.docker.com/engine/reference/builder/#cmd
 [register]: https://docs.gitlab.com/runner/register/

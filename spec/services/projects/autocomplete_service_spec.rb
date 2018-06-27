@@ -115,5 +115,20 @@ describe Projects::AutocompleteService do
 
       expect(milestone_titles).to eq([group_milestone2.title, group_milestone1.title])
     end
+
+    context 'with nested groups', :nested_groups do
+      let(:subgroup) { create(:group, :public, parent: group) }
+      let!(:subgroup_milestone) { create(:milestone, group: subgroup) }
+
+      before do
+        project.update(namespace: subgroup)
+      end
+
+      it 'includes project milestones and all acestors milestones' do
+        expect(milestone_titles).to match_array(
+          [project_milestone.title, group_milestone2.title, group_milestone1.title, subgroup_milestone.title]
+        )
+      end
+    end
   end
 end

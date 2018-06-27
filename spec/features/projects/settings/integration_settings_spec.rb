@@ -1,20 +1,20 @@
 require 'spec_helper'
 
-feature 'Integration settings' do
+describe 'Projects > Settings > Integration settings' do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:role) { :developer }
   let(:integrations_path) { project_settings_integrations_path(project) }
 
-  background do
+  before do
     sign_in(user)
     project.add_role(user, role)
   end
 
   context 'for developer' do
-    given(:role) { :developer }
+    let(:role) { :developer }
 
-    scenario 'to be disallowed to view' do
+    it 'to be disallowed to view' do
       visit integrations_path
 
       expect(page.status_code).to eq(404)
@@ -22,13 +22,13 @@ feature 'Integration settings' do
   end
 
   context 'for master' do
-    given(:role) { :master }
+    let(:role) { :master }
 
     context 'Webhooks' do
       let(:hook) { create(:project_hook, :all_events_enabled, enable_ssl_verification: true, project: project) }
       let(:url) { generate(:url) }
 
-      scenario 'show list of webhooks' do
+      it 'show list of webhooks' do
         hook
 
         visit integrations_path
@@ -46,7 +46,7 @@ feature 'Integration settings' do
         expect(page).to have_content('Wiki page events')
       end
 
-      scenario 'create webhook' do
+      it 'create webhook' do
         visit integrations_path
 
         fill_in 'hook_url', with: url
@@ -63,7 +63,7 @@ feature 'Integration settings' do
         expect(page).to have_content('Job events')
       end
 
-      scenario 'edit existing webhook' do
+      it 'edit existing webhook' do
         hook
         visit integrations_path
 
@@ -76,7 +76,7 @@ feature 'Integration settings' do
         expect(page).to have_content(url)
       end
 
-      scenario 'test existing webhook', :js do
+      it 'test existing webhook', :js do
         WebMock.stub_request(:post, hook.url)
         visit integrations_path
 
@@ -87,14 +87,14 @@ feature 'Integration settings' do
       end
 
       context 'remove existing webhook' do
-        scenario 'from webhooks list page' do
+        it 'from webhooks list page' do
           hook
           visit integrations_path
 
           expect { click_link 'Remove' }.to change(ProjectHook, :count).by(-1)
         end
 
-        scenario 'from webhook edit page' do
+        it 'from webhook edit page' do
           hook
           visit integrations_path
           click_link 'Edit'
@@ -108,7 +108,7 @@ feature 'Integration settings' do
       let(:hook) { create(:project_hook, project: project) }
       let(:hook_log) { create(:web_hook_log, web_hook: hook, internal_error_message: 'some error') }
 
-      scenario 'show list of hook logs' do
+      it 'show list of hook logs' do
         hook_log
         visit edit_project_hook_path(project, hook)
 
@@ -116,7 +116,7 @@ feature 'Integration settings' do
         expect(page).to have_content(hook_log.url)
       end
 
-      scenario 'show hook log details' do
+      it 'show hook log details' do
         hook_log
         visit edit_project_hook_path(project, hook)
         click_link 'View details'
@@ -126,7 +126,7 @@ feature 'Integration settings' do
         expect(page).to have_content('Resend Request')
       end
 
-      scenario 'retry hook log' do
+      it 'retry hook log' do
         WebMock.stub_request(:post, hook.url)
 
         hook_log

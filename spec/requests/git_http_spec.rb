@@ -1,6 +1,8 @@
 require "spec_helper"
 
 describe 'Git HTTP requests' do
+  include ProjectForksHelper
+  include TermsHelper
   include GitHttpHelpers
   include WorkhorseHelpers
   include UserActivitiesHelpers
@@ -163,7 +165,7 @@ describe 'Git HTTP requests' do
             download(path) do |response|
               json_body = ActiveSupport::JSON.decode(response.body)
 
-              expect(json_body['RepoPath']).to include(wiki.repository.disk_path)
+              expect(json_body['Repository']['relative_path']).to eq(wiki.repository.relative_path)
             end
           end
         end
@@ -304,6 +306,22 @@ describe 'Git HTTP requests' do
                 expect(response.body).to eq(change_access_error(:push_code))
               end
             end
+
+            context 'when merge requests are open that allow maintainer access' do
+              let(:canonical_project) { create(:project, :public, :repository) }
+              let(:project) { fork_project(canonical_project, nil, repository: true) }
+
+              before do
+                canonical_project.add_master(user)
+                create(:merge_request,
+                       source_project: project,
+                       target_project:  canonical_project,
+                       source_branch: 'fixes',
+                       allow_collaboration: true)
+              end
+
+              it_behaves_like 'pushes are allowed'
+            end
           end
         end
 
@@ -344,20 +362,11 @@ describe 'Git HTTP requests' do
         context 'and the user requests a redirected path' do
           let!(:redirect) { project.route.create_redirect('foo/bar') }
           let(:path) { "#{redirect.path}.git" }
-          let(:project_moved_message) do
-            <<-MSG.strip_heredoc
-              Project '#{redirect.path}' was moved to '#{project.full_path}'.
 
-              Please update your Git remote:
-
-                git remote set-url origin #{project.http_url_to_repo} and try again.
-            MSG
-          end
-
-          it 'downloads get status 404 with "project was moved" message' do
+          it 'downloads get status 200 for redirects' do
             clone_get(path, {})
-            expect(response).to have_gitlab_http_status(:not_found)
-            expect(response.body).to match(project_moved_message)
+
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
       end
@@ -559,20 +568,19 @@ describe 'Git HTTP requests' do
 
                     Please update your Git remote:
 
-                      git remote set-url origin #{project.http_url_to_repo} and try again.
+                      git remote set-url origin #{project.http_url_to_repo}.
                   MSG
                 end
 
-                it 'downloads get status 404 with "project was moved" message' do
+                it 'downloads get status 200' do
                   clone_get(path, env)
-                  expect(response).to have_gitlab_http_status(:not_found)
-                  expect(response.body).to match(project_moved_message)
+
+                  expect(response).to have_gitlab_http_status(:ok)
                 end
 
                 it 'uploads get status 404 with "project was moved" message' do
                   upload(path, env) do |response|
-                    expect(response).to have_gitlab_http_status(:not_found)
-                    expect(response.body).to match(project_moved_message)
+                    expect(response).to have_gitlab_http_status(:ok)
                   end
                 end
               end
@@ -832,6 +840,58 @@ describe 'Git HTTP requests' do
           it_behaves_like 'pushes are allowed'
         end
       end
+    end
+  end
+
+  context 'when terms are enforced' do
+    let(:project) { create(:project, :repository) }
+    let(:user) { create(:user) }
+    let(:path) { "#{project.full_path}.git" }
+    let(:env) { { user: user.username, password: user.password } }
+
+    before do
+      project.add_master(user)
+      enforce_terms
+    end
+
+    it 'blocks git access when the user did not accept terms', :aggregate_failures do
+      clone_get(path, env) do |response|
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+
+      download(path, env) do |response|
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+
+      upload(path, env) do |response|
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when the user accepted the terms' do
+      before do
+        accept_terms(user)
+      end
+
+      it 'allows clones' do
+        clone_get(path, env) do |response|
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      it_behaves_like 'pulls are allowed'
+      it_behaves_like 'pushes are allowed'
+    end
+
+    context 'from CI' do
+      let(:build) { create(:ci_build, :running) }
+      let(:env) { { user: 'gitlab-ci-token', password: build.token } }
+
+      before do
+        build.update!(user: user, project: project)
+      end
+
+      it_behaves_like 'pulls are allowed'
     end
   end
 end

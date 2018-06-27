@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   include Gitlab::GonHelper
   include GitlabRoutingHelper
   include PageLayoutHelper
+  include SafeParamsHelper
   include SentryHelper
   include WorkhorseHelper
   include EnforcesTwoFactorAuthentication
@@ -12,12 +13,13 @@ class ApplicationController < ActionController::Base
 
   before_action :authenticate_sessionless_user!
   before_action :authenticate_user!
+  before_action :enforce_terms!, if: :should_enforce_terms?
   before_action :validate_user_service_ticket!
   before_action :check_password_expiration
   before_action :ldap_security_check
   before_action :sentry_context
   before_action :default_headers
-  before_action :add_gon_variables, unless: -> { request.path.start_with?('/-/peek') }
+  before_action :add_gon_variables, unless: :peek_request?
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :require_email, unless: :devise_controller?
 
@@ -25,7 +27,7 @@ class ApplicationController < ActionController::Base
 
   after_action :set_page_title_header, if: -> { request.format == :json }
 
-  protect_from_forgery with: :exception
+  protect_from_forgery with: :exception, prepend: true
 
   helper_method :can?
   helper_method :import_sources_enabled?, :github_import_enabled?, :gitea_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?, :gitlab_project_import_enabled?
@@ -89,6 +91,10 @@ class ApplicationController < ActionController::Base
       payload[:user_id] = logged_user.try(:id)
       payload[:username] = logged_user.try(:username)
     end
+
+    if response.status == 422 && response.body.present? && response.content_type == 'application/json'.freeze
+      payload[:response] = response.body
+    end
   end
 
   # Controllers such as GitHttpController may use alternative methods
@@ -109,7 +115,8 @@ class ApplicationController < ActionController::Base
   def log_exception(exception)
     Raven.capture_exception(exception) if sentry_enabled?
 
-    application_trace = ActionDispatch::ExceptionWrapper.new(env, exception).application_trace
+    backtrace_cleaner = Gitlab.rails5? ? env["action_dispatch.backtrace_cleaner"] : env
+    application_trace = ActionDispatch::ExceptionWrapper.new(backtrace_cleaner, exception).application_trace
     application_trace.map! { |t| "  #{t}\n" }
     logger.error "\n#{exception.class.name} (#{exception.message}):\n#{application_trace.join}"
   end
@@ -127,12 +134,17 @@ class ApplicationController < ActionController::Base
   end
 
   def access_denied!(message = nil)
+    # If we display a custom access denied message to the user, we don't want to
+    # hide existence of the resource, rather tell them they cannot access it using
+    # the provided message
+    status = message.present? ? :forbidden : :not_found
+
     respond_to do |format|
-      format.any { head :not_found }
+      format.any { head status }
       format.html do
         render "errors/access_denied",
                layout: "errors",
-               status: 404,
+               status: status,
                locals: { message: message }
       end
     end
@@ -143,14 +155,15 @@ class ApplicationController < ActionController::Base
   end
 
   def render_403
-    head :forbidden
+    respond_to do |format|
+      format.any { head :forbidden }
+      format.html { render "errors/access_denied", layout: "errors", status: 403 }
+    end
   end
 
   def render_404
     respond_to do |format|
-      format.html do
-        render file: Rails.root.join("public", "404"), layout: false, status: "404"
-      end
+      format.html { render "errors/not_found", layout: "errors", status: 404 }
       # Prevent the Rails CSRF protector from thinking a missing .js file is a JavaScript file
       format.js { render json: '', status: :not_found, content_type: 'application/json' }
       format.any { head :not_found }
@@ -229,10 +242,6 @@ class ApplicationController < ActionController::Base
     @event_filter ||= EventFilter.new(filters)
   end
 
-  def gitlab_ldap_access(&block)
-    Gitlab::Auth::LDAP::Access.open { |access| yield(access) }
-  end
-
   # JSON for infinite scroll via Pager object
   def pager_json(partial, count, locals = {})
     html = render_to_string(
@@ -268,6 +277,29 @@ class ApplicationController < ActionController::Base
   def require_email
     if current_user && current_user.temp_oauth_email? && session[:impersonator_id].nil?
       return redirect_to profile_path, notice: 'Please complete your profile with email address'
+    end
+  end
+
+  def enforce_terms!
+    return unless current_user
+    return if current_user.terms_accepted?
+
+    message = _("Please accept the Terms of Service before continuing.")
+
+    if sessionless_user?
+      access_denied!(message)
+    else
+      # Redirect to the destination if the request is a get.
+      # Redirect to the source if it was a post, so the user can re-submit after
+      # accepting the terms.
+      redirect_path = if request.get?
+                        request.fullpath
+                      else
+                        URI(request.referer).path if request.referer
+                      end
+
+      flash[:notice] = message
+      redirect_to terms_path(redirect: redirect_path), status: :found
     end
   end
 
@@ -343,5 +375,19 @@ class ApplicationController < ActionController::Base
   def set_page_title_header
     # Per https://tools.ietf.org/html/rfc5987, headers need to be ISO-8859-1, not UTF-8
     response.headers['Page-Title'] = URI.escape(page_title('GitLab'))
+  end
+
+  def sessionless_user?
+    current_user && !session.keys.include?('warden.user.user.key')
+  end
+
+  def peek_request?
+    request.path.start_with?('/-/peek')
+  end
+
+  def should_enforce_terms?
+    return false unless Gitlab::CurrentSettings.current_application_settings.enforce_terms
+
+    !(peek_request? || devise_controller?)
   end
 end

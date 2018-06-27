@@ -65,7 +65,10 @@ feature 'Protected Tags', :js do
       set_protected_tag_name('*-stable')
       click_on "Protect"
 
-      within(".protected-tags-list") { expect(page).to have_content("2 matching tags") }
+      within(".protected-tags-list") do
+        expect(page).to have_content("Protected tag (2)")
+        expect(page).to have_content("2 matching tags")
+      end
     end
 
     it "displays all the tags matching the wildcard" do

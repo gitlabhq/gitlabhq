@@ -2,12 +2,12 @@ require 'backup/files'
 
 module Backup
   class Uploads < Files
-    def initialize
-      super('uploads', Rails.root.join('public/uploads'))
-    end
+    attr_reader :progress
 
-    def create_files_dir
-      Dir.mkdir(app_files_dir)
+    def initialize(progress)
+      @progress = progress
+
+      super('uploads', Rails.root.join('public/uploads'))
     end
   end
 end

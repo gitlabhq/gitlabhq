@@ -3,18 +3,18 @@
 .awards.js-awards-block{ class: ("hidden" if !inline && grouped_emojis.empty?), data: { award_url: toggle_award_url(awardable) } }
   - awards_sort(grouped_emojis).each do |emoji, awards|
     %button.btn.award-control.js-emoji-btn.has-tooltip{ type: "button",
-      class: [(award_state_class(awards, current_user)), (award_user_authored_class(emoji) if user_authored)],
+      class: [(award_state_class(awardable, awards, current_user)), (award_user_authored_class(emoji) if user_authored)],
       data: { placement: "bottom", title: award_user_list(awards, current_user) } }
       = emoji_icon(emoji)
       %span.award-control-text.js-counter
         = awards.count
 
-  - if current_user
+  - if can?(current_user, :award_emoji, awardable)
     .award-menu-holder.js-award-holder
       %button.btn.award-control.has-tooltip.js-add-award{ type: 'button',
-        'aria-label': 'Add reaction',
+        'aria-label': _('Add reaction'),
         class: ("js-user-authored" if user_authored),
-        data: { title: 'Add reaction', placement: "bottom" } }
+        data: { title: _('Add reaction'), placement: "bottom" } }
         %span{ class: "award-control-icon award-control-icon-neutral" }= custom_icon('emoji_slightly_smiling_face')
         %span{ class: "award-control-icon award-control-icon-positive" }= custom_icon('emoji_smiley')
         %span{ class: "award-control-icon award-control-icon-super-positive" }= custom_icon('emoji_smile')

@@ -41,10 +41,10 @@ module Peek
             ]
           end.sort_by{ |a,b,c,d,e,f| -f }
 
-          output = "<div class='modal-dialog modal-full'><div class='modal-content'>"
+          output = "<div class='modal-dialog modal-xl'><div class='modal-content'>"
           output << "<div class='modal-header'>"
-          output << "<button class='close btn btn-link btn-sm' type='button' data-dismiss='modal'>X</button>"
           output << "<h4>Line profiling: #{human_description(params[:lineprofiler])}</h4>"
+          output << "<button class='close' type='button' data-dismiss='modal' aria-label='close'><span aria-hidden='true'>&times;</span></button>"
           output << "</div>"
           output << "<div class='modal-body'>"
 

@@ -2,12 +2,12 @@ require 'backup/files'
 
 module Backup
   class Pages < Files
-    def initialize
-      super('pages', Gitlab.config.pages.path)
-    end
+    attr_reader :progress
 
-    def create_files_dir
-      Dir.mkdir(app_files_dir, 0700)
+    def initialize(progress)
+      @progress = progress
+
+      super('pages', Gitlab.config.pages.path)
     end
   end
 end

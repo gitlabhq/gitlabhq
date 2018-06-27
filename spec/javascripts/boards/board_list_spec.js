@@ -1,10 +1,9 @@
-/* global BoardService */
 /* global List */
 /* global ListIssue */
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import Sortable from 'vendor/Sortable';
+import Sortable from 'sortablejs';
 import BoardList from '~/boards/components/board_list.vue';
 import eventHub from '~/boards/eventhub';
 import '~/boards/mixins/sortable_default_options';
@@ -83,13 +82,13 @@ describe('Board list component', () => {
 
   it('renders issues', () => {
     expect(
-      component.$el.querySelectorAll('.card').length,
+      component.$el.querySelectorAll('.board-card').length,
     ).toBe(1);
   });
 
   it('sets data attribute with issue id', () => {
     expect(
-      component.$el.querySelector('.card').getAttribute('data-issue-id'),
+      component.$el.querySelector('.board-card').getAttribute('data-issue-id'),
     ).toBe('1');
   });
 

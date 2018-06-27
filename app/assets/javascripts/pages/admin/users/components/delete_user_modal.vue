@@ -1,11 +1,11 @@
 <script>
   import _ from 'underscore';
-  import modal from '~/vue_shared/components/modal.vue';
+  import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
   import { s__, sprintf } from '~/locale';
 
   export default {
     components: {
-      modal,
+      DeprecatedModal,
     },
     props: {
       deleteUserUrl: {
@@ -52,16 +52,15 @@
       text() {
         const keepContributionsText = s__(`AdminArea|
           You are about to permanently delete the user %{username}.
-          This will delete all of the issues, merge requests, and groups linked to them.
+          Issues, merge requests, and groups linked to them will be transferred to a system-wide "Ghost-user".
           To avoid data loss, consider using the %{strong_start}block user%{strong_end} feature instead.
           Once you %{strong_start}Delete user%{strong_end}, it cannot be undone or recovered.`);
 
         const deleteContributionsText = s__(`AdminArea|
           You are about to permanently delete the user %{username}.
-          Issues, merge requests, and groups linked to them will be transferred to a system-wide "Ghost-user".
+          This will delete all of the issues, merge requests, and groups linked to them.
           To avoid data loss, consider using the %{strong_start}block user%{strong_end} feature instead.
           Once you %{strong_start}Delete user%{strong_end}, it cannot be undone or recovered.`);
-
         return sprintf(this.deleteContributions ? deleteContributionsText : keepContributionsText,
           {
             username: `<strong>${_.escape(this.username)}</strong>`,
@@ -97,7 +96,7 @@
         this.enteredUsername = '';
       },
       onSecondaryAction() {
-        const form = this.$refs.form;
+        const { form } = this.$refs;
 
         form.action = this.blockUserUrl;
         this.$refs.method.value = 'put';
@@ -113,14 +112,14 @@
 </script>
 
 <template>
-  <modal
+  <deprecated-modal
     id="delete-user-modal"
     :title="title"
     :text="text"
-    kind="danger"
     :primary-button-label="primaryButtonLabel"
     :secondary-button-label="secondaryButtonLabel"
     :submit-disabled="!canSubmit"
+    kind="danger"
     @submit="onSubmit"
     @cancel="onCancel"
   >
@@ -142,15 +141,15 @@
           value="delete"
         />
         <input
+          :value="csrfToken"
           type="hidden"
           name="authenticity_token"
-          :value="csrfToken"
         />
         <input
+          v-model="enteredUsername"
           type="text"
           name="username"
           class="form-control"
-          v-model="enteredUsername"
           aria-labelledby="input-label"
           autocomplete="off"
         />
@@ -161,14 +160,14 @@
       slot-scope="props"
     >
       <button
+        :disabled="!canSubmit"
         type="button"
         class="btn js-secondary-button btn-warning"
-        :disabled="!canSubmit"
-        @click="onSecondaryAction"
         data-dismiss="modal"
+        @click="onSecondaryAction"
       >
         {{ secondaryButtonLabel }}
       </button>
     </template>
-  </modal>
+  </deprecated-modal>
 </template>

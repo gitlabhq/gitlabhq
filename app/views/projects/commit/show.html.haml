@@ -17,6 +17,6 @@
 
   .limited-width-notes
     = render "shared/notes/notes_with_form", :autocomplete => true
-    - if can_collaborate_with_project?
+    - if can_collaborate_with_project?(@project)
       - %w(revert cherry-pick).each do |type|
         = render "projects/commit/change", type: type, commit: @commit, title: @commit.title

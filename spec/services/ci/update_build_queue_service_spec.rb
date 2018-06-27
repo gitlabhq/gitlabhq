@@ -6,45 +6,82 @@ describe Ci::UpdateBuildQueueService do
   let(:pipeline) { create(:ci_pipeline, project: project) }
 
   context 'when updating specific runners' do
-    let(:runner) { create(:ci_runner) }
+    let(:runner) { create(:ci_runner, :project, projects: [project]) }
 
-    context 'when there are runner that can pick build' do
-      before do
-        build.project.runners << runner
-      end
-
+    context 'when there is a runner that can pick build' do
       it 'ticks runner queue value' do
-        expect { subject.execute(build) }
-          .to change { runner.ensure_runner_queue_value }
+        expect { subject.execute(build) }.to change { runner.ensure_runner_queue_value }
       end
     end
 
-    context 'when there are no runners that can pick build' do
+    context 'when there is no runner that can pick build' do
+      let(:another_project) { create(:project) }
+      let(:runner) { create(:ci_runner, :project, projects: [another_project]) }
+
       it 'does not tick runner queue value' do
-        expect { subject.execute(build) }
-          .not_to change { runner.ensure_runner_queue_value }
+        expect { subject.execute(build) }.not_to change { runner.ensure_runner_queue_value }
       end
     end
   end
 
   context 'when updating shared runners' do
-    let(:runner) { create(:ci_runner, :shared) }
+    let(:runner) { create(:ci_runner, :instance) }
 
-    context 'when there are runner that can pick build' do
+    context 'when there is no runner that can pick build' do
       it 'ticks runner queue value' do
-        expect { subject.execute(build) }
-          .to change { runner.ensure_runner_queue_value }
+        expect { subject.execute(build) }.to change { runner.ensure_runner_queue_value }
       end
     end
 
-    context 'when there are no runners that can pick build' do
+    context 'when there is no runner that can pick build due to tag mismatch' do
       before do
         build.tag_list = [:docker]
       end
 
       it 'does not tick runner queue value' do
-        expect { subject.execute(build) }
-          .not_to change { runner.ensure_runner_queue_value }
+        expect { subject.execute(build) }.not_to change { runner.ensure_runner_queue_value }
+      end
+    end
+
+    context 'when there is no runner that can pick build due to being disabled on project' do
+      before do
+        build.project.shared_runners_enabled = false
+      end
+
+      it 'does not tick runner queue value' do
+        expect { subject.execute(build) }.not_to change { runner.ensure_runner_queue_value }
+      end
+    end
+  end
+
+  context 'when updating group runners' do
+    let(:group) { create(:group) }
+    let(:project) { create(:project, group: group) }
+    let(:runner) { create(:ci_runner, :group, groups: [group]) }
+
+    context 'when there is a runner that can pick build' do
+      it 'ticks runner queue value' do
+        expect { subject.execute(build) }.to change { runner.ensure_runner_queue_value }
+      end
+    end
+
+    context 'when there is no runner that can pick build due to tag mismatch' do
+      before do
+        build.tag_list = [:docker]
+      end
+
+      it 'does not tick runner queue value' do
+        expect { subject.execute(build) }.not_to change { runner.ensure_runner_queue_value }
+      end
+    end
+
+    context 'when there is no runner that can pick build due to being disabled on project' do
+      before do
+        build.project.group_runners_enabled = false
+      end
+
+      it 'does not tick runner queue value' do
+        expect { subject.execute(build) }.not_to change { runner.ensure_runner_queue_value }
       end
     end
   end

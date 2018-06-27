@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::Conflict::File do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
-  let(:rugged) { repository.rugged }
+  let(:rugged) { Gitlab::GitalyClient::StorageSettings.allow_disk_access { repository.rugged } }
   let(:their_commit) { rugged.branches['conflict-start'].target }
   let(:our_commit) { rugged.branches['conflict-resolvable'].target }
   let(:merge_request) { create(:merge_request, source_branch: 'conflict-resolvable', target_branch: 'conflict-start', source_project: project) }

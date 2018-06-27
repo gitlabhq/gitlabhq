@@ -4,9 +4,13 @@ require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20161124141322_migrate_process_commit_worker_jobs.rb')
 
 describe MigrateProcessCommitWorkerJobs do
-  let(:project) { create(:project, :legacy_storage, :repository) }
-  let(:user) { create(:user) }
-  let(:commit) { project.commit.raw.rugged_commit }
+  let(:project) { create(:project, :legacy_storage, :repository) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
+  let(:user) { create(:user) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
+  let(:commit) do
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      project.commit.raw.rugged_commit
+    end
+  end
 
   describe 'Project' do
     describe 'find_including_path' do

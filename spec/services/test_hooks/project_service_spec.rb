@@ -6,13 +6,19 @@ describe TestHooks::ProjectService do
   describe '#execute' do
     let(:project) { create(:project, :repository) }
     let(:hook)    { create(:project_hook, project: project) }
+    let(:trigger) { 'not_implemented_events' }
     let(:service) { described_class.new(hook, current_user, trigger) }
     let(:sample_data) { { data: 'sample' } }
     let(:success_result) { { status: :success, http_status: 200, message: 'ok' } }
 
-    context 'hook with not implemented test' do
-      let(:trigger) { 'not_implemented_events' }
+    it 'allows to set a custom project' do
+      project = double
+      service.project = project
 
+      expect(service.project).to eq(project)
+    end
+
+    context 'hook with not implemented test' do
       it 'returns error message' do
         expect(hook).not_to receive(:execute)
         expect(service.execute).to include({ status: :error, message: 'Testing not available for this hook' })
@@ -170,6 +176,7 @@ describe TestHooks::ProjectService do
     end
 
     context 'wiki_page_events' do
+      let(:project) { create(:project, :wiki_repo) }
       let(:trigger) { 'wiki_page_events' }
       let(:trigger_key) { :wiki_page_hooks }
 

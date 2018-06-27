@@ -1,12 +1,16 @@
-/* eslint-disable jasmine/no-global-setup */
+/* eslint-disable jasmine/no-global-setup, jasmine/no-unsafe-spy, no-underscore-dangle */
+
 import $ from 'jquery';
 import 'vendor/jasmine-jquery';
 import '~/commons';
-
 import Vue from 'vue';
 import VueResource from 'vue-resource';
+import Translate from '~/vue_shared/translate';
 
 import { getDefaultAdapter } from '~/lib/utils/axios_utils';
+import { FIXTURES_PATH, TEST_HOST } from './test_constants';
+
+import customMatchers from './matchers';
 
 const isHeadlessChrome = /\bHeadlessChrome\//.test(navigator.userAgent);
 Vue.config.devtools = !isHeadlessChrome;
@@ -19,33 +23,49 @@ Vue.config.warnHandler = (msg, vm, trace) => {
 };
 
 let hasVueErrors = false;
-Vue.config.errorHandler = function (err) {
+Vue.config.errorHandler = function(err) {
   hasVueErrors = true;
   fail(err);
 };
 
 Vue.use(VueResource);
+Vue.use(Translate);
 
 // enable test fixtures
-jasmine.getFixtures().fixturesPath = '/base/spec/javascripts/fixtures';
-jasmine.getJSONFixtures().fixturesPath = '/base/spec/javascripts/fixtures';
+jasmine.getFixtures().fixturesPath = FIXTURES_PATH;
+jasmine.getJSONFixtures().fixturesPath = FIXTURES_PATH;
+
+beforeAll(() => jasmine.addMatchers(customMatchers));
 
 // globalize common libraries
-window.$ = window.jQuery = $;
+window.$ = $;
+window.jQuery = window.$;
 
 // stub expected globals
 window.gl = window.gl || {};
-window.gl.TEST_HOST = 'http://test.host';
+window.gl.TEST_HOST = TEST_HOST;
 window.gon = window.gon || {};
 window.gon.test_env = true;
+gon.relative_url_root = '';
 
 let hasUnhandledPromiseRejections = false;
 
-window.addEventListener('unhandledrejection', (event) => {
+window.addEventListener('unhandledrejection', event => {
   hasUnhandledPromiseRejections = true;
   console.error('Unhandled promise rejection:');
   console.error(event.reason.stack || event.reason);
 });
+
+// Add global function to spy on a module's dependencies via rewire
+window.spyOnDependency = (module, name) => {
+  const dependency = module.__GetDependency__(name);
+  const spy = jasmine.createSpy(name, dependency);
+  module.__Rewire__(name, spy);
+  return spy;
+};
+
+// Reset any rewired modules after each test (see babel-plugin-rewire)
+afterEach(__rewire_reset_all__); // eslint-disable-line
 
 // HACK: Chrome 59 disconnects if there are too many synchronous tests in a row
 // because it appears to lock up the thread that communicates to Karma's socket
@@ -66,13 +86,14 @@ const axiosDefaultAdapter = getDefaultAdapter();
 
 // render all of our tests
 const testsContext = require.context('.', true, /_spec$/);
-testsContext.keys().forEach(function (path) {
+testsContext.keys().forEach(function(path) {
   try {
     testsContext(path);
   } catch (err) {
-    console.error('[ERROR] Unable to load spec: ', path);
-    describe('Test bundle', function () {
-      it(`includes '${path}'`, function () {
+    console.log(err);
+    console.error('[GL SPEC RUNNER ERROR] Unable to load spec: ', path);
+    describe('Test bundle', function() {
+      it(`includes '${path}'`, function() {
         expect(err).toBeNull();
       });
     });
@@ -80,7 +101,7 @@ testsContext.keys().forEach(function (path) {
 });
 
 describe('test errors', () => {
-  beforeAll((done) => {
+  beforeAll(done => {
     if (hasUnhandledPromiseRejections || hasVueWarnings || hasVueErrors) {
       setTimeout(done, 1000);
     } else {
@@ -114,7 +135,7 @@ if (process.env.BABEL_ENV === 'coverage') {
   // exempt these files from the coverage report
   const troubleMakers = [
     './blob_edit/blob_bundle.js',
-    './boards/components/modal/empty_state.js',
+    './boards/components/modal/empty_state.vue',
     './boards/components/modal/footer.js',
     './boards/components/modal/header.js',
     './cycle_analytics/cycle_analytics_bundle.js',
@@ -144,18 +165,18 @@ if (process.env.BABEL_ENV === 'coverage') {
     './issue_show/index.js',
   ];
 
-  describe('Uncovered files', function () {
+  describe('Uncovered files', function() {
     const sourceFiles = require.context('~', true, /\.js$/);
 
     $.holdReady(true);
 
-    sourceFiles.keys().forEach(function (path) {
+    sourceFiles.keys().forEach(function(path) {
       // ignore if there is a matching spec file
       if (testsContext.keys().indexOf(`${path.replace(/\.js$/, '')}_spec`) > -1) {
         return;
       }
 
-      it(`includes '${path}'`, function () {
+      it(`includes '${path}'`, function() {
         try {
           sourceFiles(path);
         } catch (err) {

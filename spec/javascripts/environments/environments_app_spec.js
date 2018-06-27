@@ -1,8 +1,8 @@
-import _ from 'underscore';
 import Vue from 'vue';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import environmentsComponent from '~/environments/components/environments_app.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { headersInterceptor } from 'spec/helpers/vue_resource_helper';
 import { environment, folder } from './mock_data';
 
 describe('Environment', () => {
@@ -18,103 +18,76 @@ describe('Environment', () => {
 
   let EnvironmentsComponent;
   let component;
+  let mock;
 
   beforeEach(() => {
+    mock = new MockAdapter(axios);
+
     EnvironmentsComponent = Vue.extend(environmentsComponent);
+  });
+
+  afterEach(() => {
+    component.$destroy();
+    mock.restore();
   });
 
   describe('successfull request', () => {
     describe('without environments', () => {
-      const environmentsEmptyResponseInterceptor = (request, next) => {
-        next(request.respondWith(JSON.stringify([]), {
-          status: 200,
-        }));
-      };
+      beforeEach((done) => {
+        mock.onGet(mockData.endpoint).reply(200, { environments: [] });
 
-      beforeEach(() => {
-        Vue.http.interceptors.push(environmentsEmptyResponseInterceptor);
-        Vue.http.interceptors.push(headersInterceptor);
-      });
-
-      afterEach(() => {
-        Vue.http.interceptors = _.without(
-          Vue.http.interceptors, environmentsEmptyResponseInterceptor,
-        );
-        Vue.http.interceptors = _.without(Vue.http.interceptors, headersInterceptor);
-      });
-
-      it('should render the empty state', (done) => {
         component = mountComponent(EnvironmentsComponent, mockData);
 
         setTimeout(() => {
-          expect(
-            component.$el.querySelector('.js-new-environment-button').textContent,
-          ).toContain('New environment');
-
-          expect(
-            component.$el.querySelector('.js-blank-state-title').textContent,
-          ).toContain('You don\'t have any environments right now.');
-
           done();
         }, 0);
+      });
+
+      it('should render the empty state', () => {
+        expect(
+          component.$el.querySelector('.js-new-environment-button').textContent,
+        ).toContain('New environment');
+
+        expect(
+          component.$el.querySelector('.js-blank-state-title').textContent,
+        ).toContain('You don\'t have any environments right now.');
       });
     });
 
     describe('with paginated environments', () => {
-      let backupInterceptors;
-      const environmentsResponseInterceptor = (request, next) => {
-        next((response) => {
-          response.headers.set('X-nExt-pAge', '2');
-        });
-
-        next(request.respondWith(JSON.stringify({
+      beforeEach((done) => {
+        mock.onGet(mockData.endpoint).reply(200, {
           environments: [environment],
           stopped_count: 1,
           available_count: 0,
-        }), {
-          status: 200,
-          headers: {
-            'X-nExt-pAge': '2',
-            'x-page': '1',
-            'X-Per-Page': '1',
-            'X-Prev-Page': '',
-            'X-TOTAL': '37',
-            'X-Total-Pages': '2',
-          },
-        }));
-      };
+        }, {
+          'X-nExt-pAge': '2',
+          'x-page': '1',
+          'X-Per-Page': '1',
+          'X-Prev-Page': '',
+          'X-TOTAL': '37',
+          'X-Total-Pages': '2',
+        });
 
-      beforeEach(() => {
-        backupInterceptors = Vue.http.interceptors;
-        Vue.http.interceptors = [
-          environmentsResponseInterceptor,
-          headersInterceptor,
-        ];
         component = mountComponent(EnvironmentsComponent, mockData);
-      });
 
-      afterEach(() => {
-        Vue.http.interceptors = backupInterceptors;
-      });
-
-      it('should render a table with environments', (done) => {
         setTimeout(() => {
-          expect(component.$el.querySelectorAll('table')).not.toBeNull();
-          expect(
-            component.$el.querySelector('.environment-name').textContent.trim(),
-          ).toEqual(environment.name);
           done();
         }, 0);
       });
 
+      it('should render a table with environments', () => {
+        expect(component.$el.querySelectorAll('table')).not.toBeNull();
+        expect(
+          component.$el.querySelector('.environment-name').textContent.trim(),
+        ).toEqual(environment.name);
+      });
+
       describe('pagination', () => {
-        it('should render pagination', (done) => {
-          setTimeout(() => {
-            expect(
-              component.$el.querySelectorAll('.gl-pagination li').length,
-            ).toEqual(5);
-            done();
-          }, 0);
+        it('should render pagination', () => {
+          expect(
+            component.$el.querySelectorAll('.gl-pagination li').length,
+          ).toEqual(5);
         });
 
         it('should make an API request when page is clicked', (done) => {
@@ -133,50 +106,39 @@ describe('Environment', () => {
 
             expect(component.updateContent).toHaveBeenCalledWith({ scope: 'stopped', page: '1' });
             done();
-          });
+          }, 0);
         });
       });
     });
   });
 
   describe('unsuccessfull request', () => {
-    const environmentsErrorResponseInterceptor = (request, next) => {
-      next(request.respondWith(JSON.stringify([]), {
-        status: 500,
-      }));
-    };
+    beforeEach((done) => {
+      mock.onGet(mockData.endpoint).reply(500, {});
 
-    beforeEach(() => {
-      Vue.http.interceptors.push(environmentsErrorResponseInterceptor);
-    });
-
-    afterEach(() => {
-      Vue.http.interceptors = _.without(
-        Vue.http.interceptors, environmentsErrorResponseInterceptor,
-      );
-    });
-
-    it('should render empty state', (done) => {
       component = mountComponent(EnvironmentsComponent, mockData);
 
       setTimeout(() => {
-        expect(
-          component.$el.querySelector('.js-blank-state-title').textContent,
-        ).toContain('You don\'t have any environments right now.');
         done();
       }, 0);
+    });
+
+    it('should render empty state', () => {
+      expect(
+        component.$el.querySelector('.js-blank-state-title').textContent,
+      ).toContain('You don\'t have any environments right now.');
     });
   });
 
   describe('expandable folders', () => {
-    const environmentsResponseInterceptor = (request, next) => {
-      next(request.respondWith(JSON.stringify({
-        environments: [folder],
-        stopped_count: 0,
-        available_count: 1,
-      }), {
-        status: 200,
-        headers: {
+    beforeEach(() => {
+      mock.onGet(mockData.endpoint).reply(200,
+        {
+          environments: [folder],
+          stopped_count: 0,
+          available_count: 1,
+        },
+        {
           'X-nExt-pAge': '2',
           'x-page': '1',
           'X-Per-Page': '1',
@@ -184,18 +146,11 @@ describe('Environment', () => {
           'X-TOTAL': '37',
           'X-Total-Pages': '2',
         },
-      }));
-    };
-
-    beforeEach(() => {
-      Vue.http.interceptors.push(environmentsResponseInterceptor);
-      component = mountComponent(EnvironmentsComponent, mockData);
-    });
-
-    afterEach(() => {
-      Vue.http.interceptors = _.without(
-        Vue.http.interceptors, environmentsResponseInterceptor,
       );
+
+      mock.onGet(environment.folder_path).reply(200, { environments: [environment] });
+
+      component = mountComponent(EnvironmentsComponent, mockData);
     });
 
     it('should open a closed folder', (done) => {
@@ -211,7 +166,7 @@ describe('Environment', () => {
           ).not.toContain('display: none');
           done();
         });
-      });
+      }, 0);
     });
 
     it('should close an opened folder', (done) => {
@@ -233,7 +188,7 @@ describe('Environment', () => {
             done();
           });
         });
-      });
+      }, 0);
     });
 
     it('should show children environments and a button to show all environments', (done) => {
@@ -242,47 +197,30 @@ describe('Environment', () => {
         component.$el.querySelector('.folder-name').click();
 
         Vue.nextTick(() => {
-          const folderInterceptor = (request, next) => {
-            next(request.respondWith(JSON.stringify({
-              environments: [environment],
-            }), { status: 200 }));
-          };
-
-          Vue.http.interceptors.push(folderInterceptor);
-
           // wait for next async request
           setTimeout(() => {
             expect(component.$el.querySelectorAll('.js-child-row').length).toEqual(1);
             expect(component.$el.querySelector('.text-center > a.btn').textContent).toContain('Show all');
-
-            Vue.http.interceptors = _.without(Vue.http.interceptors, folderInterceptor);
             done();
           });
         });
-      });
+      }, 0);
     });
   });
 
   describe('methods', () => {
-    const environmentsEmptyResponseInterceptor = (request, next) => {
-      next(request.respondWith(JSON.stringify([]), {
-        status: 200,
-      }));
-    };
-
     beforeEach(() => {
-      Vue.http.interceptors.push(environmentsEmptyResponseInterceptor);
-      Vue.http.interceptors.push(headersInterceptor);
+      mock.onGet(mockData.endpoint).reply(200,
+        {
+          environments: [],
+          stopped_count: 0,
+          available_count: 1,
+        },
+        {},
+      );
 
       component = mountComponent(EnvironmentsComponent, mockData);
-      spyOn(history, 'pushState').and.stub();
-    });
-
-    afterEach(() => {
-      Vue.http.interceptors = _.without(
-        Vue.http.interceptors, environmentsEmptyResponseInterceptor,
-      );
-      Vue.http.interceptors = _.without(Vue.http.interceptors, headersInterceptor);
+      spyOn(window.history, 'pushState').and.stub();
     });
 
     describe('updateContent', () => {

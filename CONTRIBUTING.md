@@ -9,6 +9,10 @@ terms.
 
 [DCO + License](https://gitlab.com/gitlab-org/dco/blob/master/README.md)
 
+All Documentation content that resides under the [doc/ directory](/doc) of this
+repository is licensed under Creative Commons:
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+
 _This notice should stay as the first item in the CONTRIBUTING.md file._
 
 ---
@@ -23,23 +27,26 @@ _This notice should stay as the first item in the CONTRIBUTING.md file._
 - [Helping others](#helping-others)
 - [I want to contribute!](#i-want-to-contribute)
 - [Workflow labels](#workflow-labels)
-  - [Type labels (~"feature proposal", ~bug, ~customer, etc.)](#type-labels-feature-proposal-bug-customer-etc)
-  - [Subject labels (~wiki, ~"container registry", ~ldap, ~api, etc.)](#subject-labels-wiki-container-registry-ldap-api-etc)
-  - [Team labels (~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.)](#team-labels-cicd-discussion-edge-platform-etc)
-  - [Priority labels (~Deliverable, ~Stretch, ~"Next Patch Release")](#priority-labels-deliverable-stretch-next-patch-release)
-  - [Label for community contributors (~"Accepting Merge Requests")](#label-for-community-contributors-accepting-merge-requests)
+    - [Type labels](#type-labels)
+    - [Subject labels](#subject-labels)
+    - [Team labels](#team-labels)
+    - [Release Scoping labels](#release-scoping-labels)
+    - [Bug Priority labels](#bug-priority-labels)
+    - [Bug Severity labels](#bug-severity-labels)
+        - [Severity impact guidance](#severity-impact-guidance)
+    - [Label for community contributors](#label-for-community-contributors)
 - [Implement design & UI elements](#implement-design-ui-elements)
 - [Issue tracker](#issue-tracker)
-  - [Issue triaging](#issue-triaging)
-  - [Feature proposals](#feature-proposals)
-  - [Issue tracker guidelines](#issue-tracker-guidelines)
-  - [Issue weight](#issue-weight)
-  - [Regression issues](#regression-issues)
-  - [Technical and UX debt](#technical-and-ux-debt)
-  - [Stewardship](#stewardship)
+    - [Issue triaging](#issue-triaging)
+    - [Feature proposals](#feature-proposals)
+    - [Issue tracker guidelines](#issue-tracker-guidelines)
+    - [Issue weight](#issue-weight)
+    - [Regression issues](#regression-issues)
+    - [Technical and UX debt](#technical-and-ux-debt)
+    - [Stewardship](#stewardship)
 - [Merge requests](#merge-requests)
-  - [Merge request guidelines](#merge-request-guidelines)
-  - [Contribution acceptance criteria](#contribution-acceptance-criteria)
+    - [Merge request guidelines](#merge-request-guidelines)
+    - [Contribution acceptance criteria](#contribution-acceptance-criteria)
 - [Definition of done](#definition-of-done)
 - [Style guides](#style-guides)
 - [Code of conduct](#code-of-conduct)
@@ -112,7 +119,7 @@ is a great place to start. Issues with a lower weight (1 or 2) are deemed
 suitable for beginners. These issues will be of reasonable size and challenge,
 for anyone to start contributing to GitLab. If you have any questions or need help visit [Getting Help](https://about.gitlab.com/getting-help/#discussion) to
 learn how to communicate with GitLab. If you're looking for a Gitter or Slack channel
-please consider we favor 
+please consider we favor
 [asynchronous communication](https://about.gitlab.com/handbook/communication/#internal-communication) over real time communication. Thanks for your contribution!
 
 ## Workflow labels
@@ -125,8 +132,10 @@ Most issues will have labels for at least one of the following:
 
 - Type: ~"feature proposal", ~bug, ~customer, etc.
 - Subject: ~wiki, ~"container registry", ~ldap, ~api, ~frontend, etc.
-- Team: ~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.
-- Priority: ~Deliverable, ~Stretch, ~"Next Patch Release"
+- Team: ~"CI/CD", ~Discussion, ~Quality, ~Platform, etc.
+- Release Scoping: ~Deliverable, ~Stretch, ~"Next Patch Release"
+- Priority: ~P1, ~P2, ~P3, ~P4
+- Severity: ~S1, ~S2, ~S3, ~S4
 
 All labels, their meaning and priority are defined on the
 [labels page][labels-page].
@@ -137,7 +146,7 @@ labels, you can _always_ add the team and type, and often also the subject.
 [milestones-page]: https://gitlab.com/gitlab-org/gitlab-ce/milestones
 [labels-page]: https://gitlab.com/gitlab-org/gitlab-ce/labels
 
-### Type labels (~"feature proposal", ~bug, ~customer, etc.)
+### Type labels
 
 Type labels are very important. They define what kind of issue this is. Every
 issue should have one or more.
@@ -153,28 +162,41 @@ already reserved for subject labels).
 
 The descriptions on the [labels page][labels-page] explain what falls under each type label.
 
-### Subject labels (~wiki, ~"container registry", ~ldap, ~api, etc.)
+### Subject labels
 
 Subject labels are labels that define what area or feature of GitLab this issue
 hits. They are not always necessary, but very convenient.
 
+Examples of subject labels are ~wiki, ~ldap, ~api,
+~issues, ~"merge requests", ~labels, and ~"container registry".
+
 If you are an expert in a particular area, it makes it easier to find issues to
 work on. You can also subscribe to those labels to receive an email each time an
-issue is labelled with a subject label corresponding to your expertise.
-
-Examples of subject labels are ~wiki, ~"container registry", ~ldap, ~api,
-~issues, ~"merge requests", ~labels, and ~"container registry".
+issue is labeled with a subject label corresponding to your expertise.
 
 Subject labels are always all-lowercase.
 
-### Team labels (~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.)
+### Team labels
 
 Team labels specify what team is responsible for this issue.
 Assigning a team label makes sure issues get the attention of the appropriate
 people.
 
-The current team labels are ~Build, ~"CI/CD", ~Discussion, ~Documentation, ~Edge,
-~Geo, ~Gitaly, ~Monitoring, ~Platform, ~Release, ~"Security Products" and ~"UX".
+The current team labels are:
+
+- ~Configuration
+- ~"CI/CD"
+- ~Discussion
+- ~Distribution
+- ~Documentation
+- ~Geo
+- ~Gitaly
+- ~Monitoring
+- ~Platform
+- ~Quality
+- ~Release
+- ~"Security Products"
+- ~UX
 
 The descriptions on the [labels page][labels-page] explain what falls under the
 responsibility of each team.
@@ -185,36 +207,58 @@ indicate if an issue needs backend work, frontend work, or both.
 Team labels are always capitalized so that they show up as the first label for
 any issue.
 
-### Priority labels (~Deliverable, ~Stretch, ~"Next Patch Release")
+### Release Scoping labels
 
-Priority labels help us clearly communicate expectations of the work for the
-release. There are two levels of priority labels:
+Release Scoping labels help us clearly communicate expectations of the work for the
+release. There are three levels of Release Scoping labels:
 
 - ~Deliverable: Issues that are expected to be delivered in the current
   milestone.
 - ~Stretch: Issues that are a stretch goal for delivering in the current
   milestone. If these issues are not done in the current release, they will
   strongly be considered for the next release.
-- ~"Next Patch Release": Issues to put in the next patch release. Work on these 
+- ~"Next Patch Release": Issues to put in the next patch release. Work on these
   first, and add the "Pick Into X" label to the merge request, along with the
   appropriate milestone.
 
 Each issue scheduled for the current milestone should be labeled ~Deliverable
-or ~"Stretch". Any open issue for a previous milestone should be labeled 
+or ~"Stretch". Any open issue for a previous milestone should be labeled
 ~"Next Patch Release", or otherwise rescheduled to a different milestone.
 
-### Severity labels (~S1, ~S2, etc.)
+### Bug Priority labels
+
+Bug Priority labels help us define the time a ~bug fix should be completed. Priority determines how quickly the defect turnaround time must be.
+If there are multiple defects, the priority decides which defect has to be fixed immediately versus later.
+This label documents the planned timeline & urgency which is used to measure against our actual SLA on delivering ~bug fixes.
+
+| Label | Meaning         | Estimate time to fix                                             | Guidance |
+|-------|-----------------|------------------------------------------------------------------|----------|
+| ~P1   | Urgent Priority | The current release + potentially immediate hotfix to GitLab.com |  |
+| ~P2   | High Priority   | The next release                                                 |  |
+| ~P3   | Medium Priority | Within the next 3 releases (approx one quarter)                  |  |
+| ~P4   | Low Priority    | Anything outside the next 3 releases (approx beyond one quarter) | The issue is prominent but does not impact user workflow and a workaround is documented  |
+
+### Bug Severity labels
 
 Severity labels help us clearly communicate the impact of a ~bug on users.
 
-| Label | Meaning                                  | Example |
-|-------|------------------------------------------|---------|
-| ~S1   | Feature broken, no workaround            | Unable to create an issue |
-| ~S2   | Feature broken, workaround unacceptable  | Can push commits, but only via the command line |
-| ~S3   | Feature broken, workaround acceptable    | Can create merge requests only from the Merge Requests page, not through the Issue |
-| ~S4   | Cosmetic issue                           | Label colors are incorrect / not being displayed |       
+| Label | Meaning           | Impact of the defect                                  | Example |
+|-------|-------------------|-------------------------------------------------------|---------|
+| ~S1   | Blocker           | Outage, broken feature with no workaround             | Unable to create an issue. Data corruption/loss. Security breach. |
+| ~S2   | Critical Severity | Broken Feature, workaround too complex & unacceptable | Can push commits, but only via the command line. |
+| ~S3   | Major Severity    | Broken Feature, workaround acceptable                 | Can create merge requests only from the Merge Requests page, not through the Issue. |
+| ~S4   | Low Severity      | Functionality inconvenience or cosmetic issue         | Label colors are incorrect / not being displayed. |
 
-### Label for community contributors (~"Accepting Merge Requests")
+#### Severity impact guidance
+
+| Label | Security Impact                                                     | Availability / Performance Impact                            |
+|-------|---------------------------------------------------------------------|--------------------------------------------------------------|
+| ~S1   | >50% users impacted (possible company extinction level event)       |                                                              |
+| ~S2   | Many users or multiple paid customers impacted (but not apocalyptic)| The issue is (almost) guaranteed to occur in the near future |
+| ~S3   | A few users or a single paid customer impacted                      | The issue is likely to occur in the near future              |
+| ~S4   | No paid users/customer impacted, or expected impact within 30 days  | The issue _may_ occur but it's not likely                    |
+
+### Label for community contributors
 
 Issues that are beneficial to our users, 'nice to haves', that we currently do
 not have the capacity for or want to give the priority to, are labeled as
@@ -266,7 +310,33 @@ any potential community contributor to @-mention per above.
 
 ## Implement design & UI elements
 
-Please see the [UX Guide for GitLab].
+For guidance on UX implementation at GitLab, please refer to our [Design System](https://design.gitlab.com/).
+
+The UX team uses labels to manage their workflow.
+
+The  ~"UX" label on an issue is a signal to the UX team that it will need UX attention.
+To better understand the priority by which UX tackles issues, see the [UX section](https://about.gitlab.com/handbook/engineering/ux) of the handbook.
+
+Once an issue has been worked on and is ready for development, a UXer removes the ~"UX" label and applies the ~"UX ready" label to that issue.
+
+The UX team has a special type label called ~"design artifact". This label indicates that the final output
+for an issue is a UX solution/design. The solution will be developed by frontend and/or backend in a subsequent milestone.
+Any issue labeled ~"design artifact" should not also be labeled ~"frontend" or ~"backend" since no development is
+needed until the solution has been decided.
+
+~"design artifact" issues are like any other issue and should contain a milestone label, ~"Deliverable" or ~"Stretch", when scheduled in the current milestone.
+
+To prevent the misunderstanding that a feature will be be delivered in the
+assigned milestone, when only UX design is planned for that milestone, the
+Product Manager should create a separate issue for the ~"design artifact",
+assign the ~UX, ~"design artifact" and ~"Deliverable" labels, add a milestone
+and use a title that makes it clear that the scheduled issue is design only
+(e.g. `Design exploration for XYZ`).
+
+When the ~"design artifact" issue has been completed, the UXer removes the ~UX
+label, adds the ~"UX ready" label and closes the issue. This indicates the
+design artifact is complete. The UXer will also copy the designs to related
+issues for implementation in an upcoming milestone.
 
 ## Issue tracker
 
@@ -302,7 +372,7 @@ on those issues. Please select someone with relevant experience from the
 [GitLab team][team]. If there is nobody mentioned with that expertise look in
 the commit history for the affected files to find someone.
 
-[described in our handbook]: https://about.gitlab.com/handbook/engineering/issues/issue-triage-policies/
+[described in our handbook]: https://about.gitlab.com/handbook/engineering/issue-triage/
 [issue bash events]: https://gitlab.com/gitlab-org/gitlab-ce/issues/17815
 
 ### Feature proposals
@@ -465,7 +535,7 @@ request is as follows:
 1. Write [tests](https://docs.gitlab.com/ee/development/rake_tasks.html#run-tests) and code
 1. [Generate a changelog entry with `bin/changelog`][changelog]
 1. If you are writing documentation, make sure to follow the
-   [documentation styleguide][doc-styleguide]
+   [documentation guidelines][doc-guidelines]
 1. If you have multiple commits please combine them into a few logically
   organized commits by [squashing them][git-squash]
 1. Push the commit(s) to your fork
@@ -580,7 +650,7 @@ the feature you contribute through all of these steps.
 1. Working and clean code that is commented where needed
 1. [Unit, integration, and system tests][testing] that pass on the CI server
 1. Performance/scalability implications have been considered, addressed, and tested
-1. [Documented][doc-styleguide] in the `/doc` directory
+1. [Documented][doc-guidelines] in the `/doc` directory
 1. [Changelog entry added][changelog], if necessary
 1. Reviewed and any concerns are addressed
 1. Merged by a project maintainer
@@ -617,7 +687,7 @@ merge request:
     contributors to enhance security
 1.  [Database Migrations](doc/development/migration_style_guide.md)
 1.  [Markdown](http://www.cirosantilli.com/markdown-styleguide)
-1.  [Documentation styleguide][doc-styleguide]
+1.  [Documentation styleguide](https://docs.gitlab.com/ee/development/documentation/styleguide.html)
 1.  Interface text should be written subjectively instead of objectively. It
     should be the GitLab core team addressing a person. It should be written in
     present time and never use past tense (has been/was). For example instead
@@ -680,7 +750,7 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [rss-source]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#source-code-layout
 [rss-naming]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#naming
 [changelog]: doc/development/changelog.md "Generate a changelog entry"
-[doc-styleguide]: doc/development/doc_styleguide.md "Documentation styleguide"
+[doc-guidelines]: doc/development/documentation/index.md "Documentation guidelines"
 [js-styleguide]: doc/development/fe_guide/style_guide_js.md "JavaScript styleguide"
 [scss-styleguide]: doc/development/fe_guide/style_guide_scss.md "SCSS styleguide"
 [newlines-styleguide]: doc/development/newlines_styleguide.md "Newlines styleguide"
@@ -690,7 +760,3 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [polling-etag]: https://docs.gitlab.com/ce/development/polling.html
 [testing]: doc/development/testing_guide/index.md
 [us-english]: https://en.wikipedia.org/wiki/American_English
-
-[^1]: Please note that specs other than JavaScript specs are considered backend
-      code.
-      

@@ -16,7 +16,7 @@
       = text_field_tag 'file_name', params[:file_name], placeholder: "File name",
         required: true, class: 'form-control new-file-name js-file-path-name-input'
 
-    .pull-right.file-buttons
+    .float-right.file-buttons
       = button_tag class: 'soft-wrap-toggle btn', type: 'button', tabindex: '-1' do
         %span.no-wrap
           = custom_icon('icon_no_wrap')

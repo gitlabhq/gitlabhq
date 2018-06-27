@@ -16,8 +16,8 @@ describe('GpgBadges', () => {
   beforeEach(() => {
     mock = new MockAdapter(axios);
     setFixtures(`
-      <form 
-        class="commits-search-form" data-signatures-path="/hello" action="/hello"
+      <form
+        class="commits-search-form js-signature-container" data-signatures-path="/hello" action="/hello"
         method="get">
         <input name="utf8" type="hidden" value="✓">
         <input type="search" name="search" id="commits-search"class="form-control search-text-input input-short">

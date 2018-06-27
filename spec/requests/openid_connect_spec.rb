@@ -61,7 +61,7 @@ describe 'OpenID Connect requests' do
           email: private_email.email,
           public_email: public_email.email,
           website_url: 'https://example.com',
-          avatar: fixture_file_upload(Rails.root + "spec/fixtures/dk.png")
+          avatar: fixture_file_upload('spec/fixtures/dk.png')
         )
       end
 
@@ -151,6 +151,17 @@ describe 'OpenID Connect requests' do
           request_access_token
         end.to raise_error UncaughtThrowError
       end
+    end
+  end
+
+  context 'OpenID configuration information' do
+    it 'correctly returns the configuration' do
+      get '/.well-known/openid-configuration'
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response['issuer']).to eq('http://localhost')
+      expect(json_response['jwks_uri']).to eq('http://www.example.com/oauth/discovery/keys')
+      expect(json_response['scopes_supported']).to eq(%w[api read_user sudo read_repository openid])
     end
   end
 end

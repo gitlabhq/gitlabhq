@@ -1,0 +1,5 @@
+---
+title: Omits operartions and kubernetes item from project sidebar when repository or builds are disabled
+merge_request: 19835
+author:
+type: fixed

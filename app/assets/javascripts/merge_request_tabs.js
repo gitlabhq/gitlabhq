@@ -1,17 +1,15 @@
 /* eslint-disable no-new, class-methods-use-this */
 
 import $ from 'jquery';
+import Vue from 'vue';
 import Cookies from 'js-cookie';
 import axios from './lib/utils/axios_utils';
 import flash from './flash';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import initChangesDropdown from './init_changes_dropdown';
 import bp from './breakpoints';
-import {
-  parseUrlPathname,
-  handleLocationHash,
-  isMetaClick,
-} from './lib/utils/common_utils';
+import { parseUrlPathname, handleLocationHash, isMetaClick } from './lib/utils/common_utils';
+import { isInVueNoteablePage } from './lib/utils/dom_utils';
 import { getLocationHash } from './lib/utils/url_utility';
 import initDiscussionTab from './image_diff/init_discussion_tab';
 import Diff from './diff';
@@ -66,20 +64,21 @@ import Notes from './notes';
 /* eslint-enable max-len */
 
 // Store the `location` object, allowing for easier stubbing in tests
-let location = window.location;
+let { location } = window;
 
 export default class MergeRequestTabs {
-
   constructor({ action, setUrl, stubLocation } = {}) {
     const mergeRequestTabs = document.querySelector('.js-tabs-affix');
     const navbar = document.querySelector('.navbar-gitlab');
-    const peek = document.getElementById('peek');
+    const peek = document.getElementById('js-peek');
     const paddingTop = 16;
+    this.commitsTab = document.querySelector('.tab-content .commits.tab-pane');
 
     this.diffsLoaded = false;
     this.pipelinesLoaded = false;
     this.commitsLoaded = false;
     this.fixedLayoutPref = null;
+    this.eventHub = new Vue();
 
     this.setUrl = setUrl !== undefined ? setUrl : true;
     this.setCurrentAction = this.setCurrentAction.bind(this);
@@ -109,8 +108,7 @@ export default class MergeRequestTabs {
       .on('shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', this.tabShown)
       .on('click', '.js-show-tab', this.showTab);
 
-    $('.merge-request-tabs a[data-toggle="tab"]')
-      .on('click', this.clickTab);
+    $('.merge-request-tabs a[data-toggle="tab"]').on('click', this.clickTab);
   }
 
   // Used in tests
@@ -119,8 +117,7 @@ export default class MergeRequestTabs {
       .off('shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', this.tabShown)
       .off('click', '.js-show-tab', this.showTab);
 
-    $('.merge-request-tabs a[data-toggle="tab"]')
-      .off('click', this.clickTab);
+    $('.merge-request-tabs a[data-toggle="tab"]').off('click', this.clickTab);
   }
 
   destroyPipelinesView() {
@@ -156,7 +153,9 @@ export default class MergeRequestTabs {
       this.resetViewContainer();
       this.destroyPipelinesView();
     } else if (this.isDiffAction(action)) {
-      this.loadDiff($target.attr('href'));
+      if (!isInVueNoteablePage()) {
+        this.loadDiff($target.attr('href'));
+      }
       if (bp.getBreakpointSize() !== 'lg') {
         this.shrinkView();
       }
@@ -164,6 +163,7 @@ export default class MergeRequestTabs {
         this.expandViewContainer();
       }
       this.destroyPipelinesView();
+      this.commitsTab.classList.remove('active');
     } else if (action === 'pipelines') {
       this.resetViewContainer();
       this.mountPipelinesView();
@@ -179,14 +179,13 @@ export default class MergeRequestTabs {
     if (this.setUrl) {
       this.setCurrentAction(action);
     }
+
+    this.eventHub.$emit('MergeRequestTabChange', this.getCurrentAction());
   }
 
   scrollToElement(container) {
     if (location.hash) {
-      const offset = 0 - (
-        $('.navbar-gitlab').outerHeight() +
-        $('.js-tabs-affix').outerHeight()
-      );
+      const offset = 0 - ($('.navbar-gitlab').outerHeight() + $('.js-tabs-affix').outerHeight());
       const $el = $(`${container} ${location.hash}:not(.match)`);
       if ($el.length) {
         $.scrollTo($el[0], { offset });
@@ -240,9 +239,13 @@ export default class MergeRequestTabs {
     // Turbolinks' history.
     //
     // See https://github.com/rails/turbolinks/issues/363
-    window.history.replaceState({
-      url: newState,
-    }, document.title, newState);
+    window.history.replaceState(
+      {
+        url: newState,
+      },
+      document.title,
+      newState,
+    );
 
     return newState;
   }
@@ -258,7 +261,8 @@ export default class MergeRequestTabs {
 
     this.toggleLoading(true);
 
-    axios.get(`${source}.json`)
+    axios
+      .get(`${source}.json`)
       .then(({ data }) => {
         document.querySelector('div#commits').innerHTML = data.html;
         localTimeAgo($('.js-timeago', 'div#commits'));
@@ -275,7 +279,7 @@ export default class MergeRequestTabs {
 
   mountPipelinesView() {
     const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
-    const CommitPipelinesTable = gl.CommitPipelinesTable;
+    const { CommitPipelinesTable } = gl;
     this.commitPipelinesTable = new CommitPipelinesTable({
       propsData: {
         endpoint: pipelineTableViewEl.dataset.endpoint,
@@ -303,7 +307,8 @@ export default class MergeRequestTabs {
 
     this.toggleLoading(true);
 
-    axios.get(`${urlPathname}.json${location.search}`)
+    axios
+      .get(`${urlPathname}.json${location.search}`)
       .then(({ data }) => {
         const $container = $('#diffs');
         $container.html(data.html);
@@ -332,8 +337,7 @@ export default class MergeRequestTabs {
             cancelButtons: $(el).find('.js-cancel-fork-suggestion-button'),
             suggestionSections: $(el).find('.js-file-fork-suggestion-section'),
             actionTextPieces: $(el).find('.js-file-fork-suggestion-section-action'),
-          })
-            .init();
+          }).init();
         });
 
         // Scroll any linked note into view
@@ -367,7 +371,7 @@ export default class MergeRequestTabs {
   //
   // status - Boolean, true to show, false to hide
   toggleLoading(status) {
-    $('.mr-loading-status .loading').toggle(status);
+    $('.mr-loading-status .loading').toggleClass('hide', !status);
   }
 
   diffViewType() {
@@ -388,8 +392,7 @@ export default class MergeRequestTabs {
 
   resetViewContainer() {
     if (this.fixedLayoutPref !== null) {
-      $('.content-wrapper .container-fluid')
-        .toggleClass('container-limited', this.fixedLayoutPref);
+      $('.content-wrapper .container-fluid').toggleClass('container-limited', this.fixedLayoutPref);
     }
   }
 
@@ -433,17 +436,16 @@ export default class MergeRequestTabs {
       If the browser does not support position sticky, it returns the position as static.
       If the browser does support sticky, then we allow the browser to handle it, if not
       then we default back to Bootstraps affix
-    **/
+    */
     if ($tabs.css('position') !== 'static') return;
 
     const $diffTabs = $('#diff-notes-app');
 
-    $tabs.off('affix.bs.affix affix-top.bs.affix')
+    $tabs
+      .off('affix.bs.affix affix-top.bs.affix')
       .affix({
         offset: {
-          top: () => (
-            $diffTabs.offset().top - $tabs.height() - $fixedNav.height()
-          ),
+          top: () => $diffTabs.offset().top - $tabs.height() - $fixedNav.height(),
         },
       })
       .on('affix.bs.affix', () => $diffTabs.css({ marginTop: $tabs.height() }))

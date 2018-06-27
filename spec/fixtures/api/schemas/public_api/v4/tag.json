@@ -10,6 +10,7 @@
     "name": { "type": "string" },
     "message": { "type": ["string", "null"] },
     "commit": { "$ref": "commit/basic.json" },
+    "target": { "type": "string" },
     "release": {
       "oneOf": [
         { "type": "null" },

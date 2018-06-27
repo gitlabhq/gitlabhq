@@ -4,15 +4,15 @@ module QA
       class DeployKey < Factory::Base
         attr_accessor :title, :key
 
-        product :title do
+        product :fingerprint do |resource|
           Page::Project::Settings::Repository.act do
-            expand_deploy_keys(&:key_title)
-          end
-        end
+            expand_deploy_keys do |key|
+              key_offset = key.key_titles.index do |title|
+                title.text == resource.title
+              end
 
-        product :fingerprint do
-          Page::Project::Settings::Repository.act do
-            expand_deploy_keys(&:key_fingerprint)
+              key.key_fingerprints[key_offset].text
+            end
           end
         end
 

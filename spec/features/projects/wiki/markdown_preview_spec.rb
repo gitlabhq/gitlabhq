@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Projects > Wiki > User previews markdown changes', :js do
   let(:user) { create(:user) }
-  let(:project) { create(:project, namespace: user.namespace) }
+  let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
   let(:wiki_content) do
     <<-HEREDOC
 [regular link](regular)
@@ -19,6 +19,7 @@ feature 'Projects > Wiki > User previews markdown changes', :js do
 
     visit project_path(project)
     find('.shortcuts-wiki').click
+    click_link "Create your first page"
   end
 
   context "while creating a new wiki page" do
@@ -154,5 +155,28 @@ feature 'Projects > Wiki > User previews markdown changes', :js do
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/c-page/e/f/relative\">relative link 3</a>")
       end
     end
+  end
+
+  it "does not linkify double brackets inside code blocks as expected" do
+    click_link 'New page'
+    page.within '#modal-new-wiki' do
+      fill_in :new_wiki_path, with: 'linkify_test'
+      click_button 'Create page'
+    end
+
+    page.within '.wiki-form' do
+      fill_in :wiki_content, with: <<-HEREDOC
+        `[[do_not_linkify]]`
+        ```
+        [[also_do_not_linkify]]
+        ```
+      HEREDOC
+      click_on "Preview"
+    end
+
+    expect(page).to have_content("do_not_linkify")
+
+    expect(page.html).to include('[[do_not_linkify]]')
+    expect(page.html).to include('[[also_do_not_linkify]]')
   end
 end

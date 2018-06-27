@@ -56,6 +56,16 @@ describe('DropdownValueCollapsedComponent', () => {
     });
   });
 
+  describe('methods', () => {
+    describe('handleClick', () => {
+      it('emits onValueClick event on component', () => {
+        spyOn(vm, '$emit');
+        vm.handleClick();
+        expect(vm.$emit).toHaveBeenCalledWith('onValueClick');
+      });
+    });
+  });
+
   describe('template', () => {
     it('renders component container element with tooltip`', () => {
       expect(vm.$el.dataset.placement).toBe('left');

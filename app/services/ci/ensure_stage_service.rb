@@ -42,6 +42,7 @@ module Ci
 
     def create_stage
       Ci::Stage.create!(name: @build.stage,
+                        position: @build.stage_idx,
                         pipeline: @build.pipeline,
                         project: @build.project)
     end

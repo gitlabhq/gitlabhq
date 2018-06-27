@@ -13,12 +13,12 @@ checks failed you can see their output on the admin log page under
 
 ## Periodic checks
 
-When enabled, GitLab periodically runs a repository check on all project 
-repositories and wiki repositories in order to detect data corruption problems. 
+When enabled, GitLab periodically runs a repository check on all project
+repositories and wiki repositories in order to detect data corruption.
 A project will be checked no more than once per month. If any projects
 fail their repository checks all GitLab administrators will receive an email
-notification of the situation. This notification is sent out once a week on
-Sunday, by default. 
+notification of the situation. This notification is sent out once a week,
+by default, midnight at the start of Sunday.
 
 ## Disabling periodic checks
 
@@ -28,16 +28,18 @@ panel.
 ## What to do if a check failed
 
 If the repository check fails for some repository you should look up the error
-in repocheck.log (in the admin panel or on disk; see
-`/var/log/gitlab/gitlab-rails` for Omnibus installations or
-`/home/git/gitlab/log` for installations from source). Once you have
-resolved the issue use the admin panel to trigger a new repository check on
-the project. This will clear the 'check failed' state.
+in `repocheck.log`:
+
+- in the [admin panel](logs.md#repocheck.log)
+- or on disk, see:
+    - `/var/log/gitlab/gitlab-rails` for Omnibus installations
+    - `/home/git/gitlab/log` for installations from source
 
 If for some reason the periodic repository check caused a lot of false
-alarms you can choose to clear ALL repository check states from the
-'Settings' page of the admin panel.
+alarms you can choose to clear *all* repository check states by
+clicking "Clear all repository checks" on the **Settings** page of the
+admin panel (`/admin/application_settings`).
 
 ---
 [ce-3232]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3232 "Auto git fsck"
-[git-fsck]: https://www.kernel.org/pub/software/scm/git/docs/git-fsck.html "git fsck documentation"
+[git-fsck]: https://git-scm.com/docs/git-fsck "git fsck documentation"

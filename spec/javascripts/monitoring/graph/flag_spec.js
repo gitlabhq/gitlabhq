@@ -22,15 +22,20 @@ const defaultValuesComponent = {
   graphHeightOffset: 120,
   showFlagContent: true,
   realPixelRatio: 1,
-  timeSeries: [{
-    values: [{
-      time: new Date('2017-06-04T18:17:33.501Z'),
-      value: '1.49609375',
-    }],
-  }],
+  timeSeries: [
+    {
+      values: [
+        {
+          time: new Date('2017-06-04T18:17:33.501Z'),
+          value: '1.49609375',
+        },
+      ],
+    },
+  ],
   unitOfDisplay: 'ms',
   currentDataIndex: 0,
   legendTitle: 'Average',
+  currentCoordinates: [],
 };
 
 const deploymentFlagData = {
@@ -113,7 +118,7 @@ describe('GraphFlag', () => {
     });
 
     it('formatDate', () => {
-      expect(component.formatDate).toEqual('Sun, Jun 4');
+      expect(component.formatDate).toEqual('04 Jun 2017, ');
     });
 
     it('cursorStyle', () => {

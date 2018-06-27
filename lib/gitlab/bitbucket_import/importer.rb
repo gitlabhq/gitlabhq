@@ -63,7 +63,7 @@ module Gitlab
 
         disk_path = project.wiki.disk_path
         import_url = project.import_url.sub(/\.git\z/, ".git/wiki")
-        gitlab_shell.import_repository(project.repository_storage_path, disk_path, import_url)
+        gitlab_shell.import_repository(project.repository_storage, disk_path, import_url)
       rescue StandardError => e
         errors << { type: :wiki, errors: e.message }
       end

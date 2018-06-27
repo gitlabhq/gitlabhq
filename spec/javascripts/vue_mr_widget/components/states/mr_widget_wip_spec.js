@@ -1,9 +1,9 @@
 import Vue from 'vue';
-import wipComponent from '~/vue_merge_request_widget/components/states/mr_widget_wip';
+import WorkInProgress from '~/vue_merge_request_widget/components/states/work_in_progress.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 
 const createComponent = () => {
-  const Component = Vue.extend(wipComponent);
+  const Component = Vue.extend(WorkInProgress);
   const mr = {
     title: 'The best MR ever',
     removeWIPPath: '/path/to/remove/wip',
@@ -17,10 +17,10 @@ const createComponent = () => {
   });
 };
 
-describe('MRWidgetWIP', () => {
+describe('Wip', () => {
   describe('props', () => {
     it('should have props', () => {
-      const { mr, service } = wipComponent.props;
+      const { mr, service } = WorkInProgress.props;
 
       expect(mr.type instanceof Object).toBeTruthy();
       expect(mr.required).toBeTruthy();

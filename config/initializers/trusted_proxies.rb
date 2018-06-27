@@ -22,3 +22,16 @@ end.compact
 
 Rails.application.config.action_dispatch.trusted_proxies = (
   ['127.0.0.1', '::1'] + gitlab_trusted_proxies)
+
+# A monkey patch to make trusted proxies work with Rails 5.0.
+# Inspired by https://github.com/rails/rails/issues/5223#issuecomment-263778719
+# Remove this monkey patch when upstream is fixed.
+if Gitlab.rails5?
+  module TrustedProxyMonkeyPatch
+    def ip
+      @ip ||= (get_header("action_dispatch.remote_ip") || super).to_s
+    end
+  end
+
+  ActionDispatch::Request.send(:include, TrustedProxyMonkeyPatch)
+end

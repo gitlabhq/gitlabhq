@@ -93,6 +93,25 @@ describe VerifyPagesDomainService do
           expect(domain).not_to be_enabled
         end
       end
+
+      context 'invalid domain' do
+        let(:domain) { build(:pages_domain, :expired, :with_missing_chain) }
+
+        before do
+          domain.save(validate: false)
+        end
+
+        it 'can be disabled' do
+          error_status[:message] += '. It is now disabled.'
+
+          stub_resolver
+
+          expect(service.execute).to eq(error_status)
+
+          expect(domain).not_to be_verified
+          expect(domain).not_to be_enabled
+        end
+      end
     end
 
     context 'timeout behaviour' do

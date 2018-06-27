@@ -1,5 +1,5 @@
-= form.label :assignee_ids, "Assignee", class: "control-label #{"col-lg-4" if has_due_date}"
-.col-sm-10{ class: ("col-lg-8" if has_due_date) }
+= form.label :assignee_ids, "Assignee", class: "col-form-label #{"col-md-2 col-lg-4" if has_due_date}"
+.col-sm-10{ class: ("col-md-8" if has_due_date) }
   .issuable-form-select-holder.selectbox
     - issuable.assignees.each do |assignee|
       = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", assignee.id, id: nil, data: { meta: assignee.name, avatar_url: assignee.avatar_url, name: assignee.name, username: assignee.username }

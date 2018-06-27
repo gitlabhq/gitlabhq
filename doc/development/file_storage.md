@@ -84,7 +84,7 @@ The `RecordsUploads::Concern` concern will create an `Upload` entry for every fi
 By including the `ObjectStorage::Concern` in the `GitlabUploader` derived class, you may enable the object storage for this uploader. To enable the object storage
 in your uploader, you need to either 1) include `RecordsUpload::Concern` and prepend `ObjectStorage::Extension::RecordsUploads` or 2) mount the uploader and create a new field named `<mount>_store`.
 
-The `CarrierWave::Uploader#store_dir` is overriden to
+The `CarrierWave::Uploader#store_dir` is overridden to
 
  - `GitlabUploader.base_dir` + `GitlabUploader.dynamic_segment` when the store is LOCAL
  - `GitlabUploader.dynamic_segment` when the store is REMOTE (the bucket name is used to namespace)

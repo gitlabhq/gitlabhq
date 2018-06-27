@@ -41,14 +41,14 @@
     .label-container
       - if job.tags.any?
         - job.tags.each do |tag|
-          %span.label.label-primary
+          %span.badge.badge-primary
             = tag
       - if job.try(:trigger_request)
-        %span.label.label-info triggered
+        %span.badge.badge-info triggered
       - if job.try(:allow_failure)
-        %span.label.label-danger allowed to fail
+        %span.badge.badge-danger allowed to fail
       - if job.action?
-        %span.label.label-info manual
+        %span.badge.badge-info manual
 
   - if pipeline_link
     %td
@@ -93,7 +93,7 @@
       #{job.coverage}%
 
   %td
-    .pull-right
+    .float-right
       - if can?(current_user, :read_build, job) && job.artifacts?
         = link_to download_project_job_artifacts_path(job.project, job), rel: 'nofollow', download: '', title: 'Download artifacts', class: 'btn btn-build' do
           = sprite_icon('download')

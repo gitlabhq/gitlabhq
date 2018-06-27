@@ -146,6 +146,6 @@ class UsersController < ApplicationController
   end
 
   def build_canonical_path(user)
-    url_for(params.merge(username: user.to_param))
+    url_for(safe_params.merge(username: user.to_param))
   end
 end

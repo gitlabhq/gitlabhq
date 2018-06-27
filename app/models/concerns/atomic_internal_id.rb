@@ -25,22 +25,23 @@ module AtomicInternalId
   extend ActiveSupport::Concern
 
   module ClassMethods
-    def has_internal_id(column, scope:, init:) # rubocop:disable Naming/PredicateName
-      before_validation(on: :create) do
-        if read_attribute(column).blank?
-          scope_attrs = { scope => association(scope).reader }
+    def has_internal_id(column, scope:, init:, presence: true) # rubocop:disable Naming/PredicateName
+      before_validation :"ensure_#{scope}_#{column}!", on: :create
+      validates column, presence: presence
+
+      define_method("ensure_#{scope}_#{column}!") do
+        scope_value = association(scope).reader
+
+        if read_attribute(column).blank? && scope_value
+          scope_attrs = { scope_value.class.table_name.singularize.to_sym => scope_value }
           usage = self.class.table_name.to_sym
 
           new_iid = InternalId.generate_next(self, scope_attrs, usage, init)
           write_attribute(column, new_iid)
         end
+
+        read_attribute(column)
       end
-
-      validates column, presence: true, numericality: true
     end
-  end
-
-  def to_param
-    iid.to_s
   end
 end

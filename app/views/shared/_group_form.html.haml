@@ -2,15 +2,16 @@
 - group_path = root_url
 - group_path << parent.full_path + '/' if parent
 
-.form-group
-  = f.label :path, class: 'control-label' do
+.form-group.row
+  = f.label :path, class: 'col-form-label col-sm-2' do
     Group path
   .col-sm-10
     .input-group.gl-field-error-anchor
-      .group-root-path.input-group-addon.has-tooltip{ title: group_path, :'data-placement' => 'bottom' }
-        %span>= root_url
-        - if parent
-          %strong= parent.full_path + '/'
+      .group-root-path.input-group-prepend.has-tooltip{ title: group_path, :'data-placement' => 'bottom' }
+        .input-group-text
+          %span>= root_url
+          - if parent
+            %strong= parent.full_path + '/'
       = f.hidden_field :parent_id
       = f.text_field :path, placeholder: 'open-source', class: 'form-control',
         autofocus: local_assigns[:autofocus] || false, required: true,
@@ -24,16 +25,23 @@
         = succeed '.' do
           = link_to 'Learn more', help_page_path('user/group/index', anchor: 'changing-a-groups-path'), target: '_blank'
 
-.form-group.group-name-holder
-  = f.label :name, class: 'control-label' do
+.form-group.row.group-name-holder
+  = f.label :name, class: 'col-form-label col-sm-2' do
     Group name
   .col-sm-10
     = f.text_field :name, class: 'form-control',
       required: true,
       title: 'You can choose a descriptive name different from the path.'
 
-.form-group.group-description-holder
-  = f.label :description, class: 'control-label'
+- if @group.persisted?
+  .form-group.row.group-name-holder
+    = f.label :id, class: 'col-form-label col-sm-2' do
+      = _("Group ID")
+    .col-sm-10
+      = f.text_field :id, class: 'form-control', readonly: true
+
+.form-group.row.group-description-holder
+  = f.label :description, class: 'col-form-label col-sm-2'
   .col-sm-10
     = f.text_area :description, maxlength: 250,
         class: 'form-control js-gfm-input', rows: 4

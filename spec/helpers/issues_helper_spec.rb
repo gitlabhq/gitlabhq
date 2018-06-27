@@ -96,13 +96,32 @@ describe IssuesHelper do
 
   describe '#award_state_class' do
     let!(:upvote) { create(:award_emoji) }
+    let(:awardable) { upvote.awardable }
+    let(:user) { upvote.user }
+
+    before do
+      allow(helper).to receive(:can?) do |*args|
+        Ability.allowed?(*args)
+      end
+    end
 
     it "returns disabled string for unauthenticated user" do
-      expect(award_state_class(AwardEmoji.all, nil)).to eq("disabled")
+      expect(helper.award_state_class(awardable, AwardEmoji.all, nil)).to eq("disabled")
+    end
+
+    it "returns disabled for a user that does not have access to the awardable" do
+      expect(helper.award_state_class(awardable, AwardEmoji.all, build(:user))).to eq("disabled")
     end
 
     it "returns active string for author" do
-      expect(award_state_class(AwardEmoji.all, upvote.user)).to eq("active")
+      expect(helper.award_state_class(awardable, AwardEmoji.all, upvote.user)).to eq("active")
+    end
+
+    it "is blank for a user that has access to the awardable" do
+      user = build(:user)
+      expect(helper).to receive(:can?).with(user, :award_emoji, awardable).and_return(true)
+
+      expect(helper.award_state_class(awardable, AwardEmoji.all, user)).to be_blank
     end
   end
 
@@ -142,6 +161,28 @@ describe IssuesHelper do
       it "contains both the reference to the merge request and a mention of the discussion" do
         expect(link_to_discussions_to_resolve(merge_request, discussion)).to include("#{merge_request.to_reference} (discussion #{diff_note.id})")
       end
+    end
+  end
+
+  describe '#show_new_issue_link?' do
+    before do
+      allow(helper).to receive(:current_user)
+    end
+
+    it 'is false when no project there is no project' do
+      expect(helper.show_new_issue_link?(nil)).to be_falsey
+    end
+
+    it 'is true when there is a project and no logged in user' do
+      expect(helper.show_new_issue_link?(build(:project))).to be_truthy
+    end
+
+    it 'is true when the current user does not have access to the project' do
+      project = build(:project)
+      allow(helper).to receive(:current_user).and_return(project.owner)
+
+      expect(helper).to receive(:can?).with(project.owner, :create_issue, project).and_return(true)
+      expect(helper.show_new_issue_link?(project)).to be_truthy
     end
   end
 end

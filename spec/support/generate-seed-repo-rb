@@ -8,7 +8,7 @@
 #
 # Usage:
 #
-#   ./spec/support/generate-seed-repo-rb > spec/support/seed_repo.rb
+#   ./spec/support/generate-seed-repo-rb > spec/support/helpers/seed_repo.rb
 #
 #
 

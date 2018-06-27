@@ -1,0 +1,27 @@
+%li.runner{ id: dom_id(runner) }
+  %h4
+    = runner_status_icon(runner)
+
+    = link_to runner.short_sha, group_runner_path(@group, runner), class: 'commit-sha'
+
+    %small.edit-runner
+      = link_to edit_group_runner_path(@group, runner) do
+        = icon('edit')
+
+    .float-right
+      - if runner.active?
+        = link_to _('Pause'), pause_group_runner_path(@group, runner), method: :post, class: 'btn btn-sm btn-danger', data: { confirm: _("Are you sure?") }
+      - else
+        = link_to _('Resume'), resume_group_runner_path(@group, runner), method: :post, class: 'btn btn-success btn-sm'
+      = link_to _('Remove Runner'), group_runner_path(@group, runner), data: { confirm: _("Are you sure?") }, method: :delete, class: 'btn btn-danger btn-sm'
+  .float-right
+    %small.light
+      \##{runner.id}
+  - if runner.description.present?
+    %p.runner-description
+      = runner.description
+  - if runner.tag_list.present?
+    %p
+      - runner.tag_list.sort.each do |tag|
+        %span.label.label-primary
+          = tag

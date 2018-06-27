@@ -56,8 +56,13 @@ module Banzai
       # Pattern to match allowed image extensions
       ALLOWED_IMAGE_EXTENSIONS = /.+(jpg|png|gif|svg|bmp)\z/i.freeze
 
+      # Do not perform linking inside these tags.
+      IGNORED_ANCESTOR_TAGS = %w(pre code tt).to_set
+
       def call
-        search_text_nodes(doc).each do |node|
+        doc.search(".//text()").each do |node|
+          next if has_ancestor?(node, IGNORED_ANCESTOR_TAGS)
+
           # A Gollum ToC tag is `[[_TOC_]]`, but due to MarkdownFilter running
           # before this one, it will be converted into `[[<em>TOC</em>]]`, so it
           # needs special-case handling

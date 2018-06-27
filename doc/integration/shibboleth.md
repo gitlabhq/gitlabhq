@@ -43,7 +43,7 @@ exclude shibboleth URLs from rewriting, add "RewriteCond %{REQUEST_URI} !/Shibbo
   RequestHeader set X_FORWARDED_PROTO 'https'
 ```
 
-1.  Edit /etc/gitlab/gitlab.rb configuration file, your shibboleth attributes should be in form of "HTTP_ATTRIBUTE" and you should addjust them to your need and environment. Add any other configuration you need.
+1.  Edit /etc/gitlab/gitlab.rb configuration file, your shibboleth attributes should be in form of "HTTP_ATTRIBUTE" and you should adjust them to your need and environment. Add any other configuration you need.
 
 File should look like this:
 ```
@@ -107,7 +107,7 @@ you will not get a shibboleth session!
   RewriteEngine on
 
   #Don't escape encoded characters in api requests
-  RewriteCond %{REQUEST_URI} ^/api/v3/.*
+  RewriteCond %{REQUEST_URI} ^/api/v4/.*
   RewriteCond %{REQUEST_URI} !/Shibboleth.sso
   RewriteCond %{REQUEST_URI} !/shibboleth-sp
   RewriteRule .* http://127.0.0.1:8181%{REQUEST_URI} [P,QSA,NE]

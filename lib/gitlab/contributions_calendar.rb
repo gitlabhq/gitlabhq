@@ -85,7 +85,7 @@ module Gitlab
         .select(t[:project_id], t[:target_type], t[:action], "date(created_at + #{date_interval}) AS date", 'count(id) as total_amount')
         .group(t[:project_id], t[:target_type], t[:action], "date(created_at + #{date_interval})")
         .where(conditions)
-        .having(t[:project_id].in(Arel::Nodes::SqlLiteral.new(authed_projects.to_sql)))
+        .where("events.project_id in (#{authed_projects.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
     end
   end
 end

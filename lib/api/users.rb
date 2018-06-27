@@ -77,7 +77,7 @@ module API
         authenticated_as_admin! if params[:external].present? || (params[:extern_uid].present? && params[:provider].present?)
 
         unless current_user&.admin?
-          params.except!(:created_after, :created_before, :order_by, :sort)
+          params.except!(:created_after, :created_before, :order_by, :sort, :two_factor)
         end
 
         users = UsersFinder.new(current_user, params).execute
@@ -531,18 +531,22 @@ module API
         authenticate!
       end
 
-      desc 'Get the currently authenticated user' do
-        success Entities::UserPublic
-      end
-      get do
-        entity =
-          if current_user.admin?
-            Entities::UserWithAdmin
-          else
-            Entities::UserPublic
-          end
+      # Enabling /user endpoint for the v3 version to allow oauth
+      # authentication through this endpoint.
+      version %w(v3 v4), using: :path do
+        desc 'Get the currently authenticated user' do
+          success Entities::UserPublic
+        end
+        get do
+          entity =
+            if current_user.admin?
+              Entities::UserWithAdmin
+            else
+              Entities::UserPublic
+            end
 
-        present current_user, with: entity
+          present current_user, with: entity
+        end
       end
 
       desc "Get the currently authenticated user's SSH keys" do

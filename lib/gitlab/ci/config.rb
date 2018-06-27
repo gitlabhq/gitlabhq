@@ -4,7 +4,8 @@ module Gitlab
     # Base GitLab CI Configuration facade
     #
     class Config
-      def initialize(config)
+      # EE would override this and utilize opts argument
+      def initialize(config, opts = {})
         @config = Loader.new(config).load!
 
         @global = Entry::Global.new(@config)

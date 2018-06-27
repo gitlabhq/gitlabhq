@@ -1,7 +1,7 @@
 - page_title "Identities", @user.name, "Users"
 = render 'admin/users/head'
 
-= link_to 'New identity', new_admin_user_identity_path, class: 'pull-right btn btn-new'
+= link_to 'New identity', new_admin_user_identity_path, class: 'float-right btn btn-new'
 - if @identities.present?
   .table-holder
     %table.table

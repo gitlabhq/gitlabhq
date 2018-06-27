@@ -5,7 +5,7 @@ class Admin::GroupsController < Admin::ApplicationController
 
   def index
     @groups = Group.with_statistics.with_route
-    @groups = @groups.sort(@sort = params[:sort])
+    @groups = @groups.sort_by_attribute(@sort = params[:sort])
     @groups = @groups.search(params[:name]) if params[:name].present?
     @groups = @groups.page(params[:page])
   end
@@ -72,10 +72,10 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(group_params_ce)
+    params.require(:group).permit(allowed_group_params)
   end
 
-  def group_params_ce
+  def allowed_group_params
     [
       :avatar,
       :description,

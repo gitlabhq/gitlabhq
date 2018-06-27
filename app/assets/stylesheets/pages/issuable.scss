@@ -187,14 +187,31 @@
       padding-left: 10px;
 
       &:hover {
-        color: $gray-darkest;
+        color: $gl-text-color;
+      }
+
+      &:hover,
+      &:focus {
+        text-decoration: none;
       }
     }
 
     &.assignee {
-      .author_link:hover {
-        .author {
-          text-decoration: underline;
+      .author_link {
+        display: block;
+        padding-left: 42px;
+        position: relative;
+
+        &:hover {
+          .author {
+            text-decoration: underline;
+          }
+        }
+
+        .avatar {
+          left: 0;
+          position: absolute;
+          top: 0;
         }
       }
     }
@@ -356,7 +373,7 @@
     /* Extra small devices (phones, less than 768px) */
     display: none;
     /* Small devices (tablets, 768px and up) */
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       display: block;
     }
 
@@ -368,6 +385,14 @@
       padding: 15px 0 0;
       border-bottom: 0;
       overflow: hidden;
+
+      &:hover {
+        background-color: $sidebar-block-hover-color;
+      }
+
+      &.issuable-sidebar-header {
+        padding-top: 0;
+      }
     }
 
     .participants {
@@ -380,8 +405,17 @@
 
     .gutter-toggle {
       width: 100%;
+      height: $sidebar-toggle-height;
       margin-left: 0;
-      padding-left: 25px;
+      padding-left: 0;
+      border-bottom: 1px solid $border-gray-dark;
+    }
+
+    a.gutter-toggle {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
     }
 
     .sidebar-collapsed-icon {
@@ -428,10 +462,10 @@
 
       .btn-clipboard {
         border: 0;
+        background: transparent;
         color: $issuable-sidebar-color;
 
         &:hover {
-          background: transparent;
           color: $gl-text-color;
         }
       }
@@ -451,6 +485,15 @@
     .sidebar-collapsed-user {
       padding-bottom: 0;
       margin-bottom: 10px;
+
+      .author_link {
+        padding-left: 0;
+
+        .avatar {
+          position: static;
+          margin: 0;
+        }
+      }
     }
 
     .issuable-header-btn {
@@ -522,10 +565,6 @@
 
 .with-performance-bar .right-sidebar {
   top: $header-height + $performance-bar-height;
-
-  .issuable-sidebar {
-    height: calc(100% - #{$performance-bar-height});
-  }
 }
 
 .sidebar-move-issue-confirmation-button {
@@ -626,7 +665,7 @@
 }
 
 .issuable-form-padding-top {
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     padding-top: 7px;
   }
 }
@@ -640,7 +679,7 @@
   padding-left: 9px;
   padding-right: 9px;
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     display: inline-block;
     height: auto;
     align-self: center;
@@ -648,7 +687,7 @@
 }
 
 .issuable-gutter-toggle {
-  @media (max-width: $screen-sm-max) {
+  @include media-breakpoint-down(sm) {
     margin-left: $btn-side-margin;
   }
 }
@@ -659,6 +698,8 @@
   font-size: 14px;
   line-height: 24px;
   align-self: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .js-issuable-selector-wrap {
@@ -666,7 +707,7 @@
     width: 100%;
   }
 
-  @media (max-width: $screen-sm-max) {
+  @include media-breakpoint-down(sm) {
     margin-bottom: $gl-padding;
   }
 }
@@ -707,7 +748,7 @@
         }
       }
 
-      @media(max-width: $screen-xs-max) {
+      @include media-breakpoint-down(xs) {
         .issuable-meta {
           .controls li {
             margin-right: 0;
@@ -742,7 +783,7 @@
       }
     }
 
-    @media(max-width: $screen-md-max) {
+    @media(max-width: map-get($grid-breakpoints, lg)-1) {
       .task-status,
       .issuable-due-date,
       .project-ref-path {

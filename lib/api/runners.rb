@@ -14,7 +14,7 @@ module API
         use :pagination
       end
       get do
-        runners = filter_runners(current_user.ci_authorized_runners, params[:scope], without: %w(specific shared))
+        runners = filter_runners(current_user.ci_owned_runners, params[:scope], without: %w(specific shared))
         present paginate(runners), with: Entities::Runner
       end
 
@@ -57,6 +57,7 @@ module API
         optional :locked, type: Boolean, desc: 'Flag indicating the runner is locked'
         optional :access_level, type: String, values: Ci::Runner.access_levels.keys,
                                 desc: 'The access_level of the runner'
+        optional :maximum_timeout, type: Integer, desc: 'Maximum timeout set when this Runner will handle the job'
         at_least_one_of :description, :active, :tag_list, :run_untagged, :locked, :access_level
       end
       put ':id' do
@@ -132,12 +133,10 @@ module API
         runner = get_runner(params[:runner_id])
         authenticate_enable_runner!(runner)
 
-        runner_project = runner.assign_to(user_project)
-
-        if runner_project.persisted?
+        if runner.assign_to(user_project)
           present runner, with: Entities::Runner
         else
-          conflict!("Runner was already enabled for this project")
+          render_validation_error!(runner)
         end
       end
 
@@ -183,40 +182,35 @@ module API
       def authenticate_show_runner!(runner)
         return if runner.is_shared || current_user.admin?
 
-        forbidden!("No access granted") unless user_can_access_runner?(runner)
+        forbidden!("No access granted") unless can?(current_user, :read_runner, runner)
       end
 
       def authenticate_update_runner!(runner)
         return if current_user.admin?
 
-        forbidden!("Runner is shared") if runner.is_shared?
-        forbidden!("No access granted") unless user_can_access_runner?(runner)
+        forbidden!("No access granted") unless can?(current_user, :update_runner, runner)
       end
 
       def authenticate_delete_runner!(runner)
         return if current_user.admin?
 
-        forbidden!("Runner is shared") if runner.is_shared?
         forbidden!("Runner associated with more than one project") if runner.projects.count > 1
-        forbidden!("No access granted") unless user_can_access_runner?(runner)
+        forbidden!("No access granted") unless can?(current_user, :delete_runner, runner)
       end
 
       def authenticate_enable_runner!(runner)
-        forbidden!("Runner is shared") if runner.is_shared?
-        forbidden!("Runner is locked") if runner.locked?
+        forbidden!("Runner is a group runner") if runner.group_type?
+
         return if current_user.admin?
 
-        forbidden!("No access granted") unless user_can_access_runner?(runner)
+        forbidden!("Runner is locked") if runner.locked?
+        forbidden!("No access granted") unless can?(current_user, :assign_runner, runner)
       end
 
       def authenticate_list_runners_jobs!(runner)
         return if current_user.admin?
 
-        forbidden!("No access granted") unless user_can_access_runner?(runner)
-      end
-
-      def user_can_access_runner?(runner)
-        current_user.ci_authorized_runners.exists?(runner.id)
+        forbidden!("No access granted") unless can?(current_user, :read_runner, runner)
       end
     end
   end

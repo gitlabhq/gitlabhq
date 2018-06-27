@@ -3,7 +3,7 @@ class TeamcityService < CiService
 
   prop_accessor :teamcity_url, :build_type, :username, :password
 
-  validates :teamcity_url, presence: true, url: true, if: :activated?
+  validates :teamcity_url, presence: true, public_url: true, if: :activated?
   validates :build_type, presence: true, if: :activated?
   validates :username,
     presence: true,

@@ -1,60 +1,143 @@
 <script>
-  import icon from '~/vue_shared/components/icon.vue';
-  import tooltip from '~/vue_shared/directives/tooltip';
-  import timeAgoMixin from '~/vue_shared/mixins/timeago';
+import { mapActions, mapState, mapGetters } from 'vuex';
+import icon from '~/vue_shared/components/icon.vue';
+import tooltip from '~/vue_shared/directives/tooltip';
+import timeAgoMixin from '~/vue_shared/mixins/timeago';
+import CiIcon from '../../vue_shared/components/ci_icon.vue';
+import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
 
-  export default {
-    components: {
-      icon,
+export default {
+  components: {
+    icon,
+    userAvatarImage,
+    CiIcon,
+  },
+  directives: {
+    tooltip,
+  },
+  mixins: [timeAgoMixin],
+  props: {
+    file: {
+      type: Object,
+      required: false,
+      default: null,
     },
-    directives: {
-      tooltip,
+  },
+  data() {
+    return {
+      lastCommitFormatedAge: null,
+    };
+  },
+  computed: {
+    ...mapState(['currentBranchId', 'currentProjectId']),
+    ...mapGetters(['currentProject', 'lastCommit']),
+    ...mapState('pipelines', ['latestPipeline']),
+  },
+  watch: {
+    lastCommit() {
+      this.initPipelinePolling();
     },
-    mixins: [
-      timeAgoMixin,
-    ],
-    props: {
-      file: {
-        type: Object,
-        required: true,
-      },
+  },
+  mounted() {
+    this.startTimer();
+  },
+  beforeDestroy() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
+
+    this.stopPipelinePolling();
+  },
+  methods: {
+    ...mapActions('pipelines', ['fetchLatestPipeline', 'stopPipelinePolling']),
+    startTimer() {
+      this.intervalId = setInterval(() => {
+        this.commitAgeUpdate();
+      }, 1000);
     },
-  };
+    initPipelinePolling() {
+      if (this.lastCommit) {
+        this.fetchLatestPipeline();
+      }
+    },
+    commitAgeUpdate() {
+      if (this.lastCommit) {
+        this.lastCommitFormatedAge = this.timeFormated(this.lastCommit.committed_date);
+      }
+    },
+    getCommitPath(shortSha) {
+      return `${this.currentProject.web_url}/commit/${shortSha}`;
+    },
+  },
+};
 </script>
 
 <template>
-  <div class="ide-status-bar">
-    <div class="ref-name">
-      <icon
-        name="branch"
-        :size="12"
-      />
-      {{ file.branchId }}
-    </div>
-    <div>
-      <div v-if="file.lastCommit && file.lastCommit.id">
-        Last commit:
-        <a
+  <footer class="ide-status-bar">
+    <div
+      v-if="lastCommit && lastCommitFormatedAge"
+      class="ide-status-branch"
+    >
+      <span
+        v-if="latestPipeline && latestPipeline.details"
+        class="ide-status-pipeline"
+      >
+        <ci-icon
           v-tooltip
-          :title="file.lastCommit.message"
-          :href="file.lastCommit.url"
-        >
-          {{ timeFormated(file.lastCommit.updatedAt) }} by
-          {{ file.lastCommit.author }}
-        </a>
-      </div>
+          :status="latestPipeline.details.status"
+          :title="latestPipeline.details.status.text"
+        />
+        Pipeline
+        <a
+          :href="latestPipeline.details.status.details_path"
+          class="monospace">#{{ latestPipeline.id }}</a>
+        {{ latestPipeline.details.status.text }}
+        for
+      </span>
+
+      <icon
+        name="commit"
+      />
+      <a
+        v-tooltip
+        :title="lastCommit.message"
+        :href="getCommitPath(lastCommit.short_id)"
+        class="commit-sha"
+      >{{ lastCommit.short_id }}</a>
+      by
+      {{ lastCommit.author_name }}
+      <time
+        v-tooltip
+        :datetime="lastCommit.committed_date"
+        :title="tooltipTitle(lastCommit.committed_date)"
+        data-placement="top"
+        data-container="body"
+      >
+        {{ lastCommitFormatedAge }}
+      </time>
     </div>
-    <div class="text-right">
+    <div
+      v-if="file"
+      class="ide-status-file"
+    >
       {{ file.name }}
     </div>
-    <div class="text-right">
+    <div
+      v-if="file"
+      class="ide-status-file"
+    >
       {{ file.eol }}
     </div>
-    <div class="text-right">
+    <div
+      v-if="file && !file.binary"
+      class="ide-status-file">
       {{ file.editorRow }}:{{ file.editorColumn }}
     </div>
-    <div class="text-right">
+    <div
+      v-if="file"
+      class="ide-status-file"
+    >
       {{ file.fileLanguage }}
     </div>
-  </div>
+  </footer>
 </template>

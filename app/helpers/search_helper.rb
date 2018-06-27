@@ -25,14 +25,22 @@ module SearchHelper
     return unless collection.count > 0
 
     from = collection.offset_value + 1
-    to = collection.offset_value + collection.length
+    to = collection.offset_value + collection.count
     count = collection.total_count
 
     "Showing #{from} - #{to} of #{count} #{scope.humanize(capitalize: false)} for \"#{term}\""
   end
 
+  def find_project_for_result_blob(result)
+    @project
+  end
+
   def parse_search_result(result)
-    Gitlab::ProjectSearchResults.parse_search_result(result)
+    result
+  end
+
+  def search_blob_title(project, filename)
+    filename
   end
 
   private

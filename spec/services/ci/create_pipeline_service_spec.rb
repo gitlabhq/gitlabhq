@@ -17,11 +17,13 @@ describe Ci::CreatePipelineService do
       after: project.commit.id,
       message: 'Message',
       ref: ref_name,
-      trigger_request: nil)
+      trigger_request: nil,
+      variables_attributes: nil)
       params = { ref: ref,
                  before: '00000000',
                  after: after,
-                 commits: [{ message: message }] }
+                 commits: [{ message: message }],
+                 variables_attributes: variables_attributes }
 
       described_class.new(project, user, params).execute(
         source, trigger_request: trigger_request)
@@ -393,7 +395,27 @@ describe Ci::CreatePipelineService do
         result = execute_service
 
         expect(result).to be_persisted
-        expect(Environment.find_by(name: "review/master")).not_to be_nil
+        expect(Environment.find_by(name: "review/master")).to be_present
+      end
+    end
+
+    context 'with environment name including persisted variables' do
+      before do
+        config = YAML.dump(
+          deploy: {
+            environment: { name: "review/id1$CI_PIPELINE_ID/id2$CI_BUILD_ID" },
+            script: 'ls'
+          }
+        )
+
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      it 'skipps persisted variables in environment name' do
+        result = execute_service
+
+        expect(result).to be_persisted
+        expect(Environment.find_by(name: "review/id1/id2")).to be_present
       end
     end
 
@@ -543,6 +565,20 @@ describe Ci::CreatePipelineService do
         pipeline = execute_service(ref: 'v1.0.0')
 
         expect(pipeline.tag?).to be true
+      end
+    end
+
+    context 'when pipeline variables are specified' do
+      let(:variables_attributes) do
+        [{ key: 'first', secret_value: 'world' },
+         { key: 'second', secret_value: 'second_world' }]
+      end
+
+      subject { execute_service(variables_attributes: variables_attributes) }
+
+      it 'creates a pipeline with specified variables' do
+        expect(subject.variables.map { |var| var.slice(:key, :secret_value) })
+          .to eq variables_attributes.map(&:with_indifferent_access)
       end
     end
   end

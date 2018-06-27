@@ -8,6 +8,8 @@ class UserPolicy < BasePolicy
   rule { ~restricted_public_level }.enable :read_user
   rule { ~anonymous }.enable :read_user
 
-  rule { user_is_self | admin }.enable :destroy_user
-  rule { subject_ghost }.prevent :destroy_user
+  rule { ~subject_ghost & (user_is_self | admin) }.policy do
+    enable :destroy_user
+    enable :update_user
+  end
 end

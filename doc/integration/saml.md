@@ -102,9 +102,10 @@ in your SAML IdP:
     installation to generate the correct value).
 
 1.  Change the values of `idp_cert_fingerprint`, `idp_sso_target_url`,
-    `name_identifier_format` to match your IdP. Check
+    `name_identifier_format` to match your IdP. If a fingerprint is used it must
+    be a SHA1 fingerprint; check
     [the omniauth-saml documentation](https://github.com/omniauth/omniauth-saml)
-    for details on these options.
+    for more details on these options.
 
 1.  Change the value of `issuer` to a unique name, which will identify the application
     to the IdP.
@@ -176,6 +177,81 @@ tell GitLab which groups are external via the `external_groups:` element:
           issuer: 'https://gitlab.example.com',
           name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
         } }
+```
+
+## Bypass two factor authentication
+
+If you want some SAML authentication methods to count as 2FA on a per session basis, you can register them in the
+`upstream_two_factor_authn_contexts` list:
+
+**For Omnibus installations:**
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+      gitlab_rails['omniauth_providers'] = [
+        {
+          name: 'saml',
+          args: {
+                   assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
+                   idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                   idp_sso_target_url: 'https://login.example.com/idp',
+                   issuer: 'https://gitlab.example.com',
+                   name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
+                   upstream_two_factor_authn_contexts:
+                     %w(
+                       urn:oasis:names:tc:SAML:2.0:ac:classes:CertificateProtectedTransport
+                       urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorOTPSMS
+                       urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorIGTOKEN
+                     )
+    
+                 },
+          label: 'Company Login' # optional label for SAML login button, defaults to "Saml"
+        }
+      ]
+    ```
+    
+1. Save the file and [reconfigure][] GitLab for the changes to take effect.
+
+---
+
+**For installations from source:**
+
+1. Edit `config/gitlab.yml`:
+    
+     ```yaml
+          - {
+              name: 'saml',
+              args: {
+                     assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
+                     idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                     idp_sso_target_url: 'https://login.example.com/idp',
+                     issuer: 'https://gitlab.example.com',
+                     name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
+                     upstream_two_factor_authn_contexts:
+                       [
+                         'urn:oasis:names:tc:SAML:2.0:ac:classes:CertificateProtectedTransport',
+                         'urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorOTPSMS',
+                         'urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorIGTOKEN'
+                       ]
+    
+                   },
+              label: 'Company Login' # optional label for SAML login button, defaults to "Saml"
+            }
+    ```
+    
+1. Save the file and [restart GitLab][] for the changes ot take effect
+    
+
+In addition to the changes in GitLab, make sure that your Idp is returning the
+`AuthnContext`. For example:
+
+```xml
+    <saml:AuthnStatement> 
+        <saml:AuthnContext> 
+            <saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:MediumStrongCertificateProtectedTransport</saml:AuthnContextClassRef> 
+        </saml:AuthnContext>
+    </saml:AuthnStatement>
 ```
 
 ## Customization
@@ -311,6 +387,7 @@ need to be validated using a fingerprint, a certificate or a validator.
 
 For this you need take the following into account:
 
+- If a fingerprint is used, it must be the SHA1 fingerprint
 - If no certificate is provided in the settings, a fingerprint or fingerprint
   validator needs to be provided and the response from the server must contain
   a certificate (`<ds:KeyInfo><ds:X509Data><ds:X509Certificate>`)

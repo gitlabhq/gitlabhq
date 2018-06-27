@@ -9,12 +9,14 @@ module PreferencesHelper
 
   # Maps `dashboard` values to more user-friendly option text
   DASHBOARD_CHOICES = {
-    projects: 'Your Projects (default)',
-    stars:    'Starred Projects',
-    project_activity: "Your Projects' Activity",
-    starred_project_activity: "Starred Projects' Activity",
-    groups: "Your Groups",
-    todos: "Your Todos"
+    projects: _("Your Projects (default)"),
+    stars:    _("Starred Projects"),
+    project_activity: _("Your Projects' Activity"),
+    starred_project_activity: _("Starred Projects' Activity"),
+    groups: _("Your Groups"),
+    todos: _("Your Todos"),
+    issues: _("Assigned Issues"),
+    merge_requests: _("Assigned Merge Requests")
   }.with_indifferent_access.freeze
 
   # Returns an Array usable by a select field for more user-friendly option text

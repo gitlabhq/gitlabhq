@@ -28,11 +28,9 @@ module QA
         def has_subgroup?(name)
           filter_by_name(name)
 
-          wait(reload: false) do
-            return false if page.has_content?('Sorry, no groups or projects matched your search')
+          page.has_text?(/#{name}|Sorry, no groups or projects matched your search/, wait: 60)
 
-            page.has_link?(name)
-          end
+          page.has_text?(name, wait: 0)
         end
 
         def go_to_new_subgroup

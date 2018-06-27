@@ -9,10 +9,10 @@
     = f.label :redirect_uri, class: 'label-light'
     = f.text_area :redirect_uri, class: 'form-control', required: true
 
-    %span.help-block
+    %span.form-text.text-muted
       Use one line per URI
     - if Doorkeeper.configuration.native_redirect_uri
-      %span.help-block
+      %span.form-text.text-muted
         Use
         %code= Doorkeeper.configuration.native_redirect_uri
         for local tests

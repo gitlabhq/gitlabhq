@@ -1,6 +1,6 @@
-%ul.nav-links.new-session-tabs.nav-tabs{ role: 'tablist' }
-  %li.active{ role: 'presentation' }
-    %a{ href: '#login-pane', data: { toggle: 'tab' }, role: 'tab' } Sign in
+%ul.nav-links.new-session-tabs.nav-tabs.nav{ role: 'tablist' }
+  %li.nav-item{ role: 'presentation' }
+    %a.nav-link.active{ href: '#login-pane', data: { toggle: 'tab' }, role: 'tab' } Sign in
   - if allow_signup?
-    %li{ role: 'presentation' }
-      %a{ href: '#register-pane', data: { toggle: 'tab' }, role: 'tab' } Register
+    %li.nav-item{ role: 'presentation' }
+      %a.nav-link{ href: '#register-pane', data: { toggle: 'tab' }, role: 'tab' } Register

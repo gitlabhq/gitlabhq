@@ -1,4 +1,4 @@
-# GitLab Pages
+# Exploring GitLab Pages
 
 > **Notes:**
 > - This feature was [introduced][ee-80] in GitLab EE 8.3.
@@ -14,9 +14,7 @@ deploy static pages for your individual projects, your user or your group.
 Read [GitLab Pages on GitLab.com](#gitlab-pages-on-gitlab-com) for specific
 information, if you are using GitLab.com to host your website.
 
-Read through [All you Need to Know About GitLab Pages][pages-index-guide] for a list of all learning materials we have prepared for GitLab Pages (webpages, articles, guides, blog posts, video tutorials).
-
-## Getting started with GitLab Pages
+## Getting started with GitLab Pages domains
 
 > **Note:**
 > In the rest of this document we will assume that the general domain name that

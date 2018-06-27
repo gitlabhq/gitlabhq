@@ -20,10 +20,14 @@ module RuboCop
               'necessary'.freeze
 
         LARGE_TABLES = %i[
-          ci_pipelines
+          ci_build_trace_sections
           ci_builds
+          ci_job_artifacts
+          ci_pipelines
+          ci_stages
           events
           issues
+          merge_request_diff_commits
           merge_request_diff_files
           merge_request_diffs
           merge_requests
@@ -34,8 +38,15 @@ module RuboCop
           users
         ].freeze
 
+        BATCH_UPDATE_METHODS = %w[
+          :add_column_with_default
+          :change_column_type_concurrently
+          :rename_column_concurrently
+          :update_column_in_batches
+        ].join(' ').freeze
+
         def_node_matcher :batch_update?, <<~PATTERN
-          (send nil? ${:add_column_with_default :update_column_in_batches} $(sym ...) ...)
+          (send nil? ${#{BATCH_UPDATE_METHODS}} $(sym ...) ...)
         PATTERN
 
         def on_send(node)

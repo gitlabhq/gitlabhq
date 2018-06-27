@@ -1,10 +1,9 @@
 require 'spec_helper'
 
-feature 'User uses soft wrap whilst editing file', :js do
+describe 'Projects > Files > User uses soft wrap whilst editing file', :js do
   before do
-    user = create(:user)
     project = create(:project, :repository)
-    project.add_master(user)
+    user = project.owner
     sign_in user
     visit project_new_blob_path(project, 'master', file_name: 'test_file-name')
     page.within('.file-editor.code') do
@@ -23,7 +22,7 @@ feature 'User uses soft wrap whilst editing file', :js do
 
   let(:toggle_button) { find('.soft-wrap-toggle') }
 
-  scenario 'user clicks the "Soft wrap" button and then "No wrap" button' do
+  it 'user clicks the "Soft wrap" button and then "No wrap" button' do
     wrapped_content_width = get_content_width
     toggle_button.click
     expect(toggle_button).to have_content 'No wrap'

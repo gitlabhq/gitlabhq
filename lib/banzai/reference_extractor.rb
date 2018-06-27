@@ -10,8 +10,8 @@ module Banzai
     end
 
     def references(type, project, current_user = nil)
-      processor = Banzai::ReferenceParser[type]
-        .new(project, current_user)
+      context = RenderContext.new(project, current_user)
+      processor = Banzai::ReferenceParser[type].new(context)
 
       processor.process(html_documents)
     end

@@ -16,14 +16,9 @@ describe StatusEntity do
     subject { entity.as_json }
 
     it 'contains status details' do
-      expect(subject).to include :text, :icon, :favicon, :label, :group
+      expect(subject).to include :text, :icon, :favicon, :label, :group, :tooltip
       expect(subject).to include :has_details, :details_path
-      expect(subject[:favicon]).to match_asset_path('/assets/ci_favicons/favicon_status_success.ico')
-    end
-
-    it 'contains a dev namespaced favicon if dev env' do
-      allow(Rails.env).to receive(:development?) { true }
-      expect(entity.as_json[:favicon]).to match_asset_path('/assets/ci_favicons/dev/favicon_status_success.ico')
+      expect(subject[:favicon]).to match_asset_path('/assets/ci_favicons/favicon_status_success.png')
     end
   end
 end

@@ -9,7 +9,7 @@
 .new_project,
 .edit-project,
 .import-project {
-  .help-block {
+  .form-text.text-muted {
     margin-bottom: 10px;
   }
 
@@ -34,7 +34,7 @@
     }
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     .input-group > div {
       &:last-child {
         margin-bottom: 0;
@@ -46,7 +46,8 @@
     }
   }
 
-  .input-group-addon {
+  .input-group-prepend,
+  .input-group-append {
     overflow: hidden;
     text-overflow: ellipsis;
     line-height: unset;
@@ -82,7 +83,7 @@
   border: 1px solid $border-color;
   padding: 10px 32px;
 
-  @media (max-width: $screen-xs-min) {
+  @include media-breakpoint-down(xs) {
     padding: 10px 20px;
   }
 }
@@ -134,7 +135,7 @@
     max-width: 400px;
   }
 
-  @media (max-width: $screen-xs-min) {
+  @include media-breakpoint-down(xs) {
     padding-left: 20px;
   }
 }
@@ -144,7 +145,7 @@
   padding-top: 24px;
   padding-bottom: 24px;
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     border-bottom: 1px solid $border-color;
   }
 
@@ -205,7 +206,6 @@
 .project-repo-buttons,
 .group-buttons {
   .btn {
-    @include btn-gray;
     padding: 3px 10px;
 
     &:last-child {
@@ -231,11 +231,11 @@
   }
 
   .notification-dropdown .dropdown-menu {
-    @extend .dropdown-menu-align-right;
+    @extend .dropdown-menu-right;
   }
 
   .download-button {
-    @media (max-width: $screen-md-max) {
+    @include media-breakpoint-down(md) {
       margin-left: 0;
     }
   }
@@ -294,7 +294,7 @@
     }
 
     .count {
-      @include btn-gray;
+      @include btn-white;
       display: inline-block;
       background: $white-light;
       border-radius: 2px;
@@ -354,30 +354,42 @@
   min-width: 200px;
 }
 
-.deploy-key-content {
-  @media (min-width: $screen-sm-min) {
-    float: left;
+.deploy-key {
+  // Ensure that the fingerprint does not overflow on small screens
+  .fingerprint {
+    word-break: break-all;
+    white-space: normal;
+  }
 
-    &:last-child {
-      float: right;
+  .deploy-project-label,
+  .key-created-at {
+    svg {
+      vertical-align: text-top;
     }
   }
-}
 
-.deploy-key-projects {
-  @media (min-width: $screen-sm-min) {
-    line-height: 42px;
+  .btn svg {
+    vertical-align: top;
+  }
+
+  .key-created-at {
+    line-height: unset;
   }
 }
 
-a.deploy-project-label {
-  padding: 5px;
-  margin-right: 5px;
-  color: $gl-text-color;
-  background-color: $row-hover;
+.deploy-project-list {
+  margin-bottom: -$gl-padding-4;
 
-  &:hover {
-    color: $gl-link-color;
+  a.deploy-project-label {
+    margin-right: $gl-padding-4;
+    margin-bottom: $gl-padding-4;
+    color: $gl-text-color-secondary;
+    background-color: $theme-gray-100;
+    line-height: $gl-btn-line-height;
+
+    &:hover {
+      color: $gl-link-color;
+    }
   }
 }
 
@@ -427,11 +439,11 @@ a.deploy-project-label {
   height: 200px;
   width: calc((100% / 2) - #{$gl-padding * 2});
 
-  @media (min-width: $screen-md-min) {
+  @include media-breakpoint-up(md) {
     width: calc((100% / 4) - #{$gl-padding * 2});
   }
 
-  @media (min-width: $screen-lg-min) {
+  @include media-breakpoint-up(lg) {
     width: calc((100% / 5) - #{$gl-padding * 2});
   }
 
@@ -485,6 +497,12 @@ a.deploy-project-label {
     &:not(:first-child) {
       border-top: 1px solid $border-color;
     }
+
+    .btn-template-icon {
+      position: absolute;
+      left: $gl-padding;
+      top: $gl-padding;
+    }
   }
 
   .template-title {
@@ -502,12 +520,6 @@ a.deploy-project-label {
     }
   }
 
-  svg {
-    position: absolute;
-    left: $gl-padding;
-    top: $gl-padding;
-  }
-
   .project-fields-form {
     display: none;
 
@@ -518,33 +530,23 @@ a.deploy-project-label {
   }
 
   .template-input-group {
-    position: relative;
-
-    @media (min-width: $screen-sm-min) {
-      display: flex;
+    .input-group-prepend {
+      flex: 1;
     }
 
-    .input-group-addon {
-      flex: 1;
-      text-align: left;
-      padding-left: ($gl-padding * 3);
+    .input-group-text {
+      width: 100%;
       background-color: $white-light;
     }
 
-    .selected-template {
-      line-height: 20px;
-    }
-
     .selected-icon {
+      padding-right: $gl-padding;
+
       svg {
         display: none;
         top: 7px;
         height: 20px;
         width: 20px;
-
-        &.active {
-          display: block;
-        }
       }
     }
   }
@@ -584,12 +586,12 @@ a.deploy-project-label {
       margin: 0 auto 4px;
       font-size: 24px;
 
-      @media (min-width: $screen-xs-max) {
+      @media (min-width: map-get($grid-breakpoints, sm)-1) {
         top: 0;
       }
     }
 
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       .btn-template-icon {
         display: inline-block;
         height: 14px;
@@ -608,31 +610,31 @@ a.deploy-project-label {
 .create-project-options {
   display: flex;
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     display: block;
   }
 
   .first-column {
-    @media (min-width: $screen-xs-min) {
+    @include media-breakpoint-up(xs) {
       max-width: 50%;
       padding-right: 30px;
     }
 
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       max-width: 100%;
       width: 100%;
     }
   }
 
   .second-column {
-    @media (min-width: $screen-xs-min) {
+    @include media-breakpoint-up(xs) {
       width: 50%;
       flex: 1;
       padding-left: 30px;
       position: relative;
     }
 
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       max-width: 100%;
       width: 100%;
       padding-left: 0;
@@ -640,7 +642,7 @@ a.deploy-project-label {
     }
 
     // Mobile
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       padding-top: 30px;
     }
 
@@ -660,7 +662,7 @@ a.deploy-project-label {
       line-height: 20px;
 
       // Mobile
-      @media (max-width: $screen-xs-max) {
+      @include media-breakpoint-down(xs) {
         left: 50%;
         top: 0;
         transform: translateX(-50%);
@@ -680,7 +682,7 @@ a.deploy-project-label {
       top: 0;
 
       // Mobile
-      @media (max-width: $screen-xs-max) {
+      @include media-breakpoint-down(xs) {
         top: 10px;
         left: 10px;
         right: 10px;
@@ -718,7 +720,7 @@ a.deploy-project-label {
         vertical-align: top;
         margin-top: 0;
 
-        @media (min-width: $screen-lg-min) {
+        @include media-breakpoint-up(lg) {
           float: right;
         }
       }
@@ -849,15 +851,9 @@ pre.light-well {
   }
 }
 
-.panel .projects-list li {
+.card .projects-list li {
   padding: 10px 15px;
   margin: 0;
-}
-
-.commits-search-form {
-  .input-short {
-    min-width: 200px;
-  }
 }
 
 .git-clone-holder {
@@ -877,11 +873,11 @@ pre.light-well {
 
   .form-control {
     @extend .monospace;
-    background: $white-light;
+    background-color: $white-light;
+    border-color: $border-color;
     font-size: 14px;
     margin-left: -1px;
     cursor: auto;
-    width: 101%;
   }
 }
 
@@ -910,7 +906,8 @@ pre.light-well {
 }
 
 .project-tip-command {
-  > .input-group-btn:first-child {
+  > .input-group-prepend:first-child,
+  > .input-group-append:first-child {
     width: auto;
   }
 }
@@ -933,11 +930,6 @@ pre.light-well {
     td:not(:last-child) {
       border-right: solid 1px transparent;
     }
-  }
-
-  .dropdown-menu-toggle {
-    width: 100%;
-    max-width: 300px;
   }
 
   .flash-container {
@@ -966,7 +958,7 @@ pre.light-well {
 .dropdown-menu-projects {
   width: 300px;
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     width: 500px;
   }
 
@@ -980,7 +972,7 @@ pre.light-well {
   .inline-input-group {
     width: 100%;
 
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       width: 300px;
     }
   }
@@ -991,8 +983,8 @@ pre.light-well {
     text-align: center;
     margin-top: -20px;
 
-    @media (min-width: $screen-sm-min) {
-      margin-top: 0;
+    @include media-breakpoint-up(sm) {
+      margin: 0 $gl-padding-8;
       width: auto;
     }
   }
@@ -1030,7 +1022,7 @@ pre.light-well {
   }
 
   &.form-group {
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       margin-bottom: 0;
     }
   }
@@ -1058,12 +1050,12 @@ pre.light-well {
 .project-feature {
   padding-top: 10px;
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     padding-left: 45px;
   }
 
   &.nested {
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       padding-left: 90px;
     }
   }
@@ -1120,4 +1112,34 @@ pre.light-well {
 .issuable-footer {
   padding-top: $gl-padding;
   padding-bottom: 37px;
+}
+
+.project-ci-body {
+  .incorrect-syntax {
+    font-size: 18px;
+    color: $lint-incorrect-color;
+  }
+
+  .correct-syntax {
+    font-size: 18px;
+    color: $lint-correct-color;
+  }
+}
+
+.project-ci-linter {
+  .ci-editor {
+    height: 400px;
+  }
+
+  .ci-template pre {
+    white-space: pre-wrap;
+  }
+}
+
+.project-badge {
+  opacity: 0.9;
+
+  &:hover {
+    opacity: 1;
+  }
 }

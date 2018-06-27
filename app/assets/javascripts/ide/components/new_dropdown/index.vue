@@ -1,58 +1,64 @@
 <script>
-  import { mapActions } from 'vuex';
-  import icon from '~/vue_shared/components/icon.vue';
-  import newModal from './modal.vue';
-  import upload from './upload.vue';
+import { mapActions } from 'vuex';
+import icon from '~/vue_shared/components/icon.vue';
+import newModal from './modal.vue';
+import upload from './upload.vue';
 
-  export default {
-    components: {
-      icon,
-      newModal,
-      upload,
+export default {
+  components: {
+    icon,
+    newModal,
+    upload,
+  },
+  props: {
+    branch: {
+      type: String,
+      required: true,
     },
-    props: {
-      branch: {
-        type: String,
-        required: true,
-      },
-      path: {
-        type: String,
-        required: true,
-      },
+    path: {
+      type: String,
+      required: false,
+      default: '',
     },
-    data() {
-      return {
-        openModal: false,
-        modalType: '',
-        dropdownOpen: false,
-      };
+  },
+  data() {
+    return {
+      openModal: false,
+      modalType: '',
+      dropdownOpen: false,
+    };
+  },
+  watch: {
+    dropdownOpen() {
+      this.$nextTick(() => {
+        this.$refs.dropdownMenu.scrollIntoView();
+      });
     },
-    methods: {
-      ...mapActions([
-        'createTempEntry',
-      ]),
-      createNewItem(type) {
-        this.modalType = type;
-        this.openModal = true;
-        this.dropdownOpen = false;
-      },
-      hideModal() {
-        this.openModal = false;
-      },
-      openDropdown() {
-        this.dropdownOpen = !this.dropdownOpen;
-      },
+  },
+  methods: {
+    ...mapActions(['createTempEntry']),
+    createNewItem(type) {
+      this.modalType = type;
+      this.openModal = true;
+      this.dropdownOpen = false;
     },
-  };
+    hideModal() {
+      this.openModal = false;
+    },
+    openDropdown() {
+      this.dropdownOpen = !this.dropdownOpen;
+    },
+  },
+};
 </script>
 
 <template>
   <div class="ide-new-btn">
     <div
-      class="dropdown"
       :class="{
-        open: dropdownOpen,
+        show: dropdownOpen,
       }"
+      class="dropdown"
     >
       <button
         type="button"
@@ -61,17 +67,20 @@
         @click.stop="openDropdown()"
       >
         <icon
-          name="plus"
           :size="12"
-          css-classes="pull-left"
+          name="plus"
+          css-classes="float-left"
         />
         <icon
-          name="arrow-down"
           :size="12"
-          css-classes="pull-left"
+          name="arrow-down"
+          css-classes="float-left"
         />
       </button>
-      <ul class="dropdown-menu dropdown-menu-right">
+      <ul
+        ref="dropdownMenu"
+        class="dropdown-menu dropdown-menu-right"
+      >
         <li>
           <a
             href="#"

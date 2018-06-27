@@ -1,10 +1,12 @@
-/* eslint-disable func-names, space-before-function-paren, one-var, no-var, prefer-rest-params, wrap-iife, quotes, max-len, one-var-declaration-per-line, vars-on-top, prefer-arrow-callback, consistent-return, comma-dangle, object-shorthand, no-shadow, no-unused-vars, no-else-return, no-self-compare, prefer-template, no-unused-expressions, no-lonely-if, yoda, prefer-spread, no-void, camelcase, no-param-reassign */
+/* eslint-disable func-names, one-var, no-var, prefer-rest-params, quotes, max-len, one-var-declaration-per-line, vars-on-top, prefer-arrow-callback, consistent-return, comma-dangle, object-shorthand, no-shadow, no-unused-vars, no-else-return, no-self-compare, prefer-template, no-unused-expressions, yoda, prefer-spread, no-void, camelcase, no-param-reassign */
 /* global Issuable */
 /* global emitSidebarEvent */
 
 import $ from 'jquery';
 import _ from 'underscore';
 import axios from './lib/utils/axios_utils';
+import { __ } from './locale';
+import ModalStore from './boards/stores/modal_store';
 
 // TODO: remove eventHub hack after code splitting refactor
 window.emitSidebarEvent = window.emitSidebarEvent || $.noop;
@@ -181,7 +183,7 @@ function UsersSelect(currentUser, els, options = {}) {
 
         return axios.put(issueURL, data)
           .then(({ data }) => {
-            var user;
+            var user, tooltipTitle;
             $dropdown.trigger('loaded.gl.dropdown');
             $loading.fadeOut();
             if (data.assignee) {
@@ -190,15 +192,17 @@ function UsersSelect(currentUser, els, options = {}) {
                 username: data.assignee.username,
                 avatar: data.assignee.avatar_url
               };
+              tooltipTitle = _.escape(user.name);
             } else {
               user = {
                 name: 'Unassigned',
                 username: '',
                 avatar: ''
               };
+              tooltipTitle = __('Assignee');
             }
             $value.html(assigneeTemplate(user));
-            $collapsedSidebar.attr('title', _.escape(user.name)).tooltip('fixTitle');
+            $collapsedSidebar.attr('title', tooltipTitle).tooltip('_fixTitle');
             return $collapsedSidebar.html(collapsedAssigneeTemplate(user));
           });
       };
@@ -246,7 +250,6 @@ function UsersSelect(currentUser, els, options = {}) {
 
           let anyUser;
           let index;
-          let j;
           let len;
           let name;
           let obj;
@@ -255,7 +258,7 @@ function UsersSelect(currentUser, els, options = {}) {
             showDivider = 0;
             if (firstUser) {
               // Move current user to the front of the list
-              for (index = j = 0, len = users.length; j < len; index = (j += 1)) {
+              for (index = 0, len = users.length; index < len; index += 1) {
                 obj = users[index];
                 if (obj.username === firstUser) {
                   users.splice(index, 1);
@@ -441,7 +444,7 @@ function UsersSelect(currentUser, els, options = {}) {
             return;
           }
           if ($el.closest('.add-issues-modal').length) {
-            gl.issueBoards.ModalStore.store.filter[$dropdown.data('fieldName')] = user.id;
+            ModalStore.store.filter[$dropdown.data('fieldName')] = user.id;
           } else if (handleClick) {
             e.preventDefault();
             handleClick(user, isMarking);
@@ -497,7 +500,7 @@ function UsersSelect(currentUser, els, options = {}) {
           if (this.multiSelect) {
             selected = getSelected().find(u => user.id === u);
 
-            const fieldName = this.fieldName;
+            const { fieldName } = this;
             const field = $dropdown.closest('.selectbox').find("input[name='" + fieldName + "'][value='" + user.id + "']");
 
             if (field.length) {
@@ -549,7 +552,7 @@ function UsersSelect(currentUser, els, options = {}) {
         minimumInputLength: 0,
         query: function(query) {
           return _this.users(query.term, options, function(users) {
-            var anyUser, data, emailUser, index, j, len, name, nullUser, obj, ref;
+            var anyUser, data, emailUser, index, len, name, nullUser, obj, ref;
             data = {
               results: users
             };
@@ -557,7 +560,8 @@ function UsersSelect(currentUser, els, options = {}) {
               if (firstUser) {
                 // Move current user to the front of the list
                 ref = data.results;
-                for (index = j = 0, len = ref.length; j < len; index = (j += 1)) {
+
+                for (index = 0, len = ref.length; index < len; index += 1) {
                   obj = ref[index];
                   if (obj.username === firstUser) {
                     data.results.splice(index, 1);

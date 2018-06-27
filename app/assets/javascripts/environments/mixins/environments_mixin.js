@@ -6,7 +6,6 @@ import Visibility from 'visibilityjs';
 import Poll from '../../lib/utils/poll';
 import {
   getParameterByName,
-  parseQueryStringIntoObject,
 } from '../../lib/utils/common_utils';
 import { s__ } from '../../locale';
 import Flash from '../../flash';
@@ -46,17 +45,14 @@ export default {
 
   methods: {
     saveData(resp) {
-      const headers = resp.headers;
-      return resp.json().then((response) => {
-        this.isLoading = false;
+      this.isLoading = false;
 
-        if (_.isEqual(parseQueryStringIntoObject(resp.url.split('?')[1]), this.requestData)) {
-          this.store.storeAvailableCount(response.available_count);
-          this.store.storeStoppedCount(response.stopped_count);
-          this.store.storeEnvironments(response.environments);
-          this.store.setPagination(headers);
-        }
-      });
+      if (_.isEqual(resp.config.params, this.requestData)) {
+        this.store.storeAvailableCount(resp.data.available_count);
+        this.store.storeStoppedCount(resp.data.stopped_count);
+        this.store.storeEnvironments(resp.data.environments);
+        this.store.setPagination(resp.headers);
+      }
     },
 
     /**
@@ -70,7 +66,7 @@ export default {
     updateContent(parameters) {
       this.updateInternalState(parameters);
       // fetch new data
-      return this.service.get(this.requestData)
+      return this.service.fetchEnvironments(this.requestData)
         .then(response => this.successCallback(response))
         .then(() => {
           // restart polling
@@ -105,7 +101,7 @@ export default {
     fetchEnvironments() {
       this.isLoading = true;
 
-      return this.service.get(this.requestData)
+      return this.service.fetchEnvironments(this.requestData)
         .then(this.successCallback)
         .catch(this.errorCallback);
     },
@@ -141,7 +137,7 @@ export default {
 
     this.poll = new Poll({
       resource: this.service,
-      method: 'get',
+      method: 'fetchEnvironments',
       data: this.requestData,
       successCallback: this.successCallback,
       errorCallback: this.errorCallback,

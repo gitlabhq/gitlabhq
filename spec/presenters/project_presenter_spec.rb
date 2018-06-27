@@ -208,6 +208,17 @@ describe ProjectPresenter do
       it 'returns nil if user cannot push' do
         expect(presenter.new_file_anchor_data).to be_nil
       end
+
+      context 'when the project is empty' do
+        let(:project) { create(:project, :empty_repo) }
+
+        # Since we protect the default branch for empty repos
+        it 'is empty for a developer' do
+          project.add_developer(user)
+
+          expect(presenter.new_file_anchor_data).to be_nil
+        end
+      end
     end
 
     describe '#readme_anchor_data' do
@@ -321,7 +332,7 @@ describe ProjectPresenter do
 
           expect(presenter.autodevops_anchor_data).to eq(OpenStruct.new(enabled: false,
                                                                         label: 'Enable Auto DevOps',
-                                                                        link: presenter.project_settings_ci_cd_path(project, anchor: 'js-general-pipeline-settings')))
+                                                                        link: presenter.project_settings_ci_cd_path(project, anchor: 'autodevops-settings')))
         end
       end
     end
@@ -339,7 +350,7 @@ describe ProjectPresenter do
 
         it 'returns link to clusters page if more than one exists' do
           project.add_master(user)
-          create(:cluster, projects: [project])
+          create(:cluster, :production_environment, projects: [project])
           create(:cluster, projects: [project])
 
           expect(presenter.kubernetes_cluster_anchor_data).to eq(OpenStruct.new(enabled: true,

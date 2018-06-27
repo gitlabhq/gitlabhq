@@ -1,8 +1,9 @@
 import Vue from 'vue';
+import store from '~/ide/stores';
 import listItem from '~/ide/components/commit_sidebar/list_item.vue';
 import router from '~/ide/ide_router';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { file } from '../../helpers';
+import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
+import { file, resetStore } from '../../helpers';
 
 describe('Multi-file editor commit sidebar list item', () => {
   let vm;
@@ -13,48 +14,55 @@ describe('Multi-file editor commit sidebar list item', () => {
 
     f = file('test-file');
 
-    vm = mountComponent(Component, {
+    store.state.entries[f.path] = f;
+
+    vm = createComponentWithStore(Component, store, {
       file: f,
-    });
+      actionComponent: 'stage-button',
+      activeFileKey: `staged-${f.key}`,
+    }).$mount();
   });
 
   afterEach(() => {
     vm.$destroy();
+
+    resetStore(store);
   });
 
   it('renders file path', () => {
-    expect(
-      vm.$el.querySelector('.multi-file-commit-list-path').textContent.trim(),
-    ).toBe(f.path);
+    expect(vm.$el.querySelector('.multi-file-commit-list-path').textContent.trim()).toBe(f.path);
   });
 
-  it('calls discardFileChanges when clicking discard button', () => {
-    spyOn(vm, 'discardFileChanges');
-
-    vm.$el.querySelector('.multi-file-discard-btn').click();
-
-    expect(vm.discardFileChanges).toHaveBeenCalled();
+  it('renders actionn button', () => {
+    expect(vm.$el.querySelector('.multi-file-discard-btn')).not.toBeNull();
   });
 
-  it('opens a closed file in the editor when clicking the file path', () => {
-    spyOn(vm, 'openFileInEditor').and.callThrough();
-    spyOn(vm, 'updateViewer');
+  it('opens a closed file in the editor when clicking the file path', done => {
+    spyOn(vm, 'openPendingTab').and.callThrough();
     spyOn(router, 'push');
 
     vm.$el.querySelector('.multi-file-commit-list-path').click();
 
-    expect(vm.openFileInEditor).toHaveBeenCalled();
-    expect(router.push).toHaveBeenCalled();
+    setTimeout(() => {
+      expect(vm.openPendingTab).toHaveBeenCalled();
+      expect(router.push).toHaveBeenCalled();
+
+      done();
+    });
   });
 
-  it('calls updateViewer with diff when clicking file', () => {
+  it('calls updateViewer with diff when clicking file', done => {
     spyOn(vm, 'openFileInEditor').and.callThrough();
-    spyOn(vm, 'updateViewer');
+    spyOn(vm, 'updateViewer').and.callThrough();
     spyOn(router, 'push');
 
     vm.$el.querySelector('.multi-file-commit-list-path').click();
 
-    expect(vm.updateViewer).toHaveBeenCalledWith('diff');
+    setTimeout(() => {
+      expect(vm.updateViewer).toHaveBeenCalledWith('diff');
+
+      done();
+    });
   });
 
   describe('computed', () => {
@@ -79,6 +87,22 @@ describe('Multi-file editor commit sidebar list item', () => {
         f.tempFile = true;
 
         expect(vm.iconClass).toContain('multi-file-addition');
+      });
+    });
+  });
+
+  describe('is active', () => {
+    it('does not add active class when dont keys match', () => {
+      expect(vm.$el.querySelector('.is-active')).toBe(null);
+    });
+
+    it('adds active class when keys match', done => {
+      vm.keyPrefix = 'staged';
+
+      vm.$nextTick(() => {
+        expect(vm.$el.querySelector('.is-active')).not.toBe(null);
+
+        done();
       });
     });
   });

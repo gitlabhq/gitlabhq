@@ -20,7 +20,7 @@
       - else
         %p
           Download the Google Authenticator application from App Store or Google Play Store and scan this code.
-          More information is available in the #{link_to('documentation', help_page_path('profile/two_factor_authentication'))}.
+          More information is available in the #{link_to('documentation', help_page_path('user/profile/account/two_factor_authentication'))}.
         .row.append-bottom-10
           .col-md-4
             = raw @qr_code
@@ -86,7 +86,7 @@
                 %tr
                   %td= registration.name.presence || "<no name set>"
                   %td= registration.created_at.to_date.to_s(:medium)
-                  %td= link_to "Delete", profile_u2f_registration_path(registration), method: :delete, class: "btn btn-danger pull-right", data: { confirm: "Are you sure you want to delete this device? This action cannot be undone." }
+                  %td= link_to "Delete", profile_u2f_registration_path(registration), method: :delete, class: "btn btn-danger float-right", data: { confirm: "Are you sure you want to delete this device? This action cannot be undone." }
 
       - else
         .settings-message.text-center

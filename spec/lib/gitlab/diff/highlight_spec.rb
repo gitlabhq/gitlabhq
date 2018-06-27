@@ -79,6 +79,8 @@ describe Gitlab::Diff::Highlight do
         end
 
         it 'keeps the original rich line' do
+          allow(Gitlab::Sentry).to receive(:track_exception)
+
           code = %q{+      raise RuntimeError, "System commands must be given as an array of strings"}
 
           expect(subject[5].text).to eq(code)
@@ -86,12 +88,9 @@ describe Gitlab::Diff::Highlight do
         end
 
         it 'reports to Sentry if configured' do
-          allow(Gitlab::Sentry).to receive(:enabled?).and_return(true)
+          expect(Gitlab::Sentry).to receive(:track_exception).and_call_original
 
-          expect(Gitlab::Sentry).to receive(:context)
-          expect(Raven).to receive(:capture_exception)
-
-          subject
+          expect { subject }. to raise_exception(RangeError)
         end
       end
     end

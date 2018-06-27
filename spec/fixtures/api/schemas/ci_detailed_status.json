@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "required" : [
+    "icon",
+    "text",
+    "label",
+    "group",
+    "tooltip",
+    "has_details",
+    "details_path",
+    "favicon"
+  ],
+  "properties": {
+    "icon": { "type": "string" },
+    "text": { "type": "string" },
+    "label": { "type": "string" },
+    "group": { "type": "string" },
+    "tooltip": { "type": "string" },
+    "has_details": { "type": "boolean" },
+    "details_path": { "type": "string" },
+    "favicon": { "type": "string" }
+  },
+  "additionalProperties": false
+}

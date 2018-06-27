@@ -4,27 +4,37 @@
 - page_title    'New Group'
 - header_title  "Groups", dashboard_groups_path
 
-%h3.page-title
-  New Group
-%hr
+.row.prepend-top-default
+  .col-lg-3.profile-settings-sidebar
+    %h4.prepend-top-0
+      = _('New group')
+    %p
+      - group_docs_path = help_page_path('user/group/index')
+      - group_docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: group_docs_path }
+      = s_('%{group_docs_link_start}Groups%{group_docs_link_end} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects.').html_safe % { group_docs_link_start: group_docs_link_start, group_docs_link_end: '</a>'.html_safe }
+    %p
+      - subgroup_docs_path = help_page_path('user/group/subgroups/index')
+      - subgroup_docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: subgroup_docs_path }
+      = s_('Groups can also be nested by creating %{subgroup_docs_link_start}subgroups%{subgroup_docs_link_end}.').html_safe % { subgroup_docs_link_start: subgroup_docs_link_start, subgroup_docs_link_end: '</a>'.html_safe }
 
-= form_for @group, html: { class: 'group-form form-horizontal gl-show-field-errors' } do |f|
-  = form_errors(@group)
-  = render 'shared/group_form', f: f, autofocus: true
+  .col-lg-9
+    = form_for @group, html: { class: 'group-form gl-show-field-errors' } do |f|
+      = form_errors(@group)
+      = render 'shared/group_form', f: f, autofocus: true
 
-  .form-group.group-description-holder
-    = f.label :avatar, "Group avatar", class: 'control-label'
-    .col-sm-10
-      = render 'shared/choose_group_avatar_button', f: f
+      .form-group.row.group-description-holder
+        = f.label :avatar, "Group avatar", class: 'col-form-label col-sm-2'
+        .col-sm-10
+          = render 'shared/choose_group_avatar_button', f: f
 
-  = render 'shared/visibility_level', f: f, visibility_level: default_group_visibility, can_change_visibility_level: true, form_model: @group
+      = render 'shared/visibility_level', f: f, visibility_level: default_group_visibility, can_change_visibility_level: true, form_model: @group
 
-  = render 'create_chat_team', f: f if Gitlab.config.mattermost.enabled
+      = render 'create_chat_team', f: f if Gitlab.config.mattermost.enabled
 
-  .form-group
-    .col-sm-offset-2.col-sm-10
-      = render 'shared/group_tips'
+      .form-group.row
+        .offset-sm-2.col-sm-10
+          = render 'shared/group_tips'
 
-  .form-actions
-    = f.submit 'Create group', class: "btn btn-create"
-    = link_to 'Cancel', dashboard_groups_path, class: 'btn btn-cancel'
+      .form-actions
+        = f.submit 'Create group', class: "btn btn-create"
+        = link_to 'Cancel', dashboard_groups_path, class: 'btn btn-cancel'

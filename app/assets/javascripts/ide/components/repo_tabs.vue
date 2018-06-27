@@ -1,49 +1,59 @@
 <script>
-  import { mapActions } from 'vuex';
-  import RepoTab from './repo_tab.vue';
-  import EditorMode from './editor_mode_dropdown.vue';
+import { mapActions } from 'vuex';
+import RepoTab from './repo_tab.vue';
+import EditorMode from './editor_mode_dropdown.vue';
+import router from '../ide_router';
 
-  export default {
-    components: {
-      RepoTab,
-      EditorMode,
+export default {
+  components: {
+    RepoTab,
+    EditorMode,
+  },
+  props: {
+    activeFile: {
+      type: Object,
+      required: true,
     },
-    props: {
-      files: {
-        type: Array,
-        required: true,
-      },
-      viewer: {
-        type: String,
-        required: true,
-      },
-      hasChanges: {
-        type: Boolean,
-        required: true,
-      },
+    files: {
+      type: Array,
+      required: true,
     },
-    data() {
-      return {
-        showShadow: false,
-      };
+    viewer: {
+      type: String,
+      required: true,
     },
-    updated() {
-      if (!this.$refs.tabsScroller) return;
+    hasChanges: {
+      type: Boolean,
+      required: true,
+    },
+    mergeRequestId: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
+  methods: {
+    ...mapActions(['updateViewer', 'removePendingTab']),
+    openFileViewer(viewer) {
+      this.updateViewer(viewer);
 
-      this.showShadow =
-        this.$refs.tabsScroller.scrollWidth > this.$refs.tabsScroller.offsetWidth;
+      if (this.activeFile.pending) {
+        return this.removePendingTab(this.activeFile).then(() => {
+          router.push(`/project${this.activeFile.url}`);
+        });
+      }
+
+      return null;
     },
-    methods: {
-      ...mapActions(['updateViewer']),
-    },
-  };
+  },
+};
 </script>
 
 <template>
   <div class="multi-file-tabs">
     <ul
-      class="list-unstyled append-bottom-0"
       ref="tabsScroller"
+      class="list-unstyled append-bottom-0"
     >
       <repo-tab
         v-for="tab in files"
@@ -51,11 +61,5 @@
         :tab="tab"
       />
     </ul>
-    <editor-mode
-      :viewer="viewer"
-      :show-shadow="showShadow"
-      :has-changes="hasChanges"
-      @click="updateViewer"
-    />
   </div>
 </template>

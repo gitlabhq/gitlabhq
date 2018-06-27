@@ -2,7 +2,7 @@
 
 QueryRecorder is a tool for detecting the [N+1 queries problem](http://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations) from tests.
 
-> Implemented in [spec/support/query_recorder.rb](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/support/query_recorder.rb) via [9c623e3e](https://gitlab.com/gitlab-org/gitlab-ce/commit/9c623e3e5d7434f2e30f7c389d13e5af4ede770a)
+> Implemented in [spec/support/query_recorder.rb](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/support/helpers/query_recorder.rb) via [9c623e3e](https://gitlab.com/gitlab-org/gitlab-ce/commit/9c623e3e5d7434f2e30f7c389d13e5af4ede770a)
 
 As a rule, merge requests [should not increase query counts](merge_request_performance_guidelines.md#query-counts). If you find yourself adding something like `.includes(:author, :assignee)` to avoid having `N+1` queries, consider using QueryRecorder to enforce this with a test. Without this, a new feature which causes an additional model to be accessed will silently reintroduce the problem.
 
@@ -21,6 +21,20 @@ end
 As an example you might create 5 issues in between counts, which would cause the query count to increase by 5 if an N+1 problem exists.
 
 > **Note:** In some cases the query count might change slightly between runs for unrelated reasons. In this case you might need to test `exceed_query_limit(control_count + acceptable_change)`, but this should be avoided if possible.
+
+## Cached queries
+
+By default, QueryRecorder will ignore cached queries in the count. However, it may be better to count
+all queries to avoid introducing an N+1 query that may be masked by the statement cache. To do this,
+pass the `skip_cached` variable to `QueryRecorder` and use the `exceed_all_query_limit` matcher:
+
+```
+it "avoids N+1 database queries" do
+  control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { visit_some_page }.count
+  create_list(:issue, 5)
+  expect { visit_some_page }.not_to exceed_all_query_limit(control_count)
+end
+```
 
 ## Finding the source of the query
 

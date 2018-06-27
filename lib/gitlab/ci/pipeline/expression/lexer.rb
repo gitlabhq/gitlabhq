@@ -5,14 +5,16 @@ module Gitlab
         class Lexer
           include ::Gitlab::Utils::StrongMemoize
 
+          SyntaxError = Class.new(Expression::ExpressionError)
+
           LEXEMES = [
             Expression::Lexeme::Variable,
             Expression::Lexeme::String,
+            Expression::Lexeme::Pattern,
             Expression::Lexeme::Null,
-            Expression::Lexeme::Equals
+            Expression::Lexeme::Equals,
+            Expression::Lexeme::Matches
           ].freeze
-
-          SyntaxError = Class.new(Statement::StatementError)
 
           MAX_TOKENS = 100
 

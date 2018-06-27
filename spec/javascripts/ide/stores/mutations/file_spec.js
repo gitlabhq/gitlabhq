@@ -2,13 +2,16 @@ import mutations from '~/ide/stores/mutations/file';
 import state from '~/ide/stores/state';
 import { file } from '../../helpers';
 
-describe('Multi-file store file mutations', () => {
+describe('IDE store file mutations', () => {
   let localState;
   let localFile;
 
   beforeEach(() => {
     localState = state();
-    localFile = file();
+    localFile = {
+      ...file(),
+      type: 'blob',
+    };
 
     localState.entries[localFile.path] = localFile;
   });
@@ -21,6 +24,21 @@ describe('Multi-file store file mutations', () => {
       });
 
       expect(localFile.active).toBeTruthy();
+    });
+
+    it('sets pending tab as not active', () => {
+      localState.openFiles.push({
+        ...localFile,
+        pending: true,
+        active: true,
+      });
+
+      mutations.SET_FILE_ACTIVE(localState, {
+        path: localFile.path,
+        active: true,
+      });
+
+      expect(localState.openFiles[0].active).toBe(false);
     });
   });
 
@@ -62,6 +80,8 @@ describe('Multi-file store file mutations', () => {
       expect(localFile.rawPath).toBe('raw');
       expect(localFile.binary).toBeTruthy();
       expect(localFile.renderError).toBe('render_error');
+      expect(localFile.raw).toBeNull();
+      expect(localFile.baseRaw).toBeNull();
     });
   });
 
@@ -73,6 +93,17 @@ describe('Multi-file store file mutations', () => {
       });
 
       expect(localFile.raw).toBe('testing');
+    });
+  });
+
+  describe('SET_FILE_BASE_RAW_DATA', () => {
+    it('sets raw data from base branch', () => {
+      mutations.SET_FILE_BASE_RAW_DATA(localState, {
+        file: localFile,
+        baseRaw: 'testing',
+      });
+
+      expect(localFile.baseRaw).toBe('testing');
     });
   });
 
@@ -112,6 +143,64 @@ describe('Multi-file store file mutations', () => {
     });
   });
 
+  describe('SET_FILE_MERGE_REQUEST_CHANGE', () => {
+    it('sets file mr change', () => {
+      mutations.SET_FILE_MERGE_REQUEST_CHANGE(localState, {
+        file: localFile,
+        mrChange: { diff: 'ABC' },
+      });
+
+      expect(localFile.mrChange.diff).toBe('ABC');
+    });
+
+    it('has diffMode replaced by default', () => {
+      mutations.SET_FILE_MERGE_REQUEST_CHANGE(localState, {
+        file: localFile,
+        mrChange: {
+          diff: 'ABC',
+        },
+      });
+
+      expect(localFile.mrChange.diffMode).toBe('replaced');
+    });
+
+    it('has diffMode new', () => {
+      mutations.SET_FILE_MERGE_REQUEST_CHANGE(localState, {
+        file: localFile,
+        mrChange: {
+          diff: 'ABC',
+          new_file: true,
+        },
+      });
+
+      expect(localFile.mrChange.diffMode).toBe('new');
+    });
+
+    it('has diffMode deleted', () => {
+      mutations.SET_FILE_MERGE_REQUEST_CHANGE(localState, {
+        file: localFile,
+        mrChange: {
+          diff: 'ABC',
+          deleted_file: true,
+        },
+      });
+
+      expect(localFile.mrChange.diffMode).toBe('deleted');
+    });
+
+    it('has diffMode renamed', () => {
+      mutations.SET_FILE_MERGE_REQUEST_CHANGE(localState, {
+        file: localFile,
+        mrChange: {
+          diff: 'ABC',
+          renamed_file: true,
+        },
+      });
+
+      expect(localFile.mrChange.diffMode).toBe('renamed');
+    });
+  });
+
   describe('DISCARD_FILE_CHANGES', () => {
     beforeEach(() => {
       localFile.content = 'test';
@@ -144,6 +233,49 @@ describe('Multi-file store file mutations', () => {
     });
   });
 
+  describe('STAGE_CHANGE', () => {
+    it('adds file into stagedFiles array', () => {
+      mutations.STAGE_CHANGE(localState, localFile.path);
+
+      expect(localState.stagedFiles.length).toBe(1);
+      expect(localState.stagedFiles[0]).toEqual(localFile);
+    });
+
+    it('updates stagedFile if it is already staged', () => {
+      mutations.STAGE_CHANGE(localState, localFile.path);
+
+      localFile.raw = 'testing 123';
+
+      mutations.STAGE_CHANGE(localState, localFile.path);
+
+      expect(localState.stagedFiles.length).toBe(1);
+      expect(localState.stagedFiles[0].raw).toEqual('testing 123');
+    });
+  });
+
+  describe('UNSTAGE_CHANGE', () => {
+    let f;
+
+    beforeEach(() => {
+      f = {
+        ...file(),
+        type: 'blob',
+        staged: true,
+      };
+
+      localState.stagedFiles.push(f);
+      localState.changedFiles.push(f);
+      localState.entries[f.path] = f;
+    });
+
+    it('removes from stagedFiles array', () => {
+      mutations.UNSTAGE_CHANGE(localState, f.path);
+
+      expect(localState.stagedFiles.length).toBe(0);
+      expect(localState.changedFiles.length).toBe(1);
+    });
+  });
+
   describe('TOGGLE_FILE_CHANGED', () => {
     it('updates file changed status', () => {
       mutations.TOGGLE_FILE_CHANGED(localState, {
@@ -152,6 +284,64 @@ describe('Multi-file store file mutations', () => {
       });
 
       expect(localFile.changed).toBeTruthy();
+    });
+  });
+
+  describe('SET_FILE_VIEWMODE', () => {
+    it('updates file view mode', () => {
+      mutations.SET_FILE_VIEWMODE(localState, {
+        file: localFile,
+        viewMode: 'preview',
+      });
+
+      expect(localFile.viewMode).toBe('preview');
+    });
+  });
+
+  describe('ADD_PENDING_TAB', () => {
+    beforeEach(() => {
+      const f = {
+        ...file('openFile'),
+        path: 'openFile',
+        active: true,
+        opened: true,
+      };
+
+      localState.entries[f.path] = f;
+      localState.openFiles.push(f);
+    });
+
+    it('adds file into openFiles as pending', () => {
+      mutations.ADD_PENDING_TAB(localState, { file: localFile });
+
+      expect(localState.openFiles.length).toBe(1);
+      expect(localState.openFiles[0].pending).toBe(true);
+      expect(localState.openFiles[0].key).toBe(`pending-${localFile.key}`);
+    });
+
+    it('only allows 1 open pending file', () => {
+      const newFile = file('test');
+      localState.entries[newFile.path] = newFile;
+
+      mutations.ADD_PENDING_TAB(localState, { file: localFile });
+
+      expect(localState.openFiles.length).toBe(1);
+
+      mutations.ADD_PENDING_TAB(localState, { file: file('test') });
+
+      expect(localState.openFiles.length).toBe(1);
+      expect(localState.openFiles[0].name).toBe('test');
+    });
+  });
+
+  describe('REMOVE_PENDING_TAB', () => {
+    it('removes pending tab from openFiles', () => {
+      localFile.key = 'testing';
+      localState.openFiles.push(localFile);
+
+      mutations.REMOVE_PENDING_TAB(localState, localFile);
+
+      expect(localState.openFiles.length).toBe(0);
     });
   });
 });

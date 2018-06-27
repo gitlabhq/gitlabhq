@@ -12,7 +12,6 @@
     components: {
       loadingIcon,
     },
-
     props: {
       retryUrl: {
         type: String,
@@ -24,13 +23,11 @@
         default: true,
       },
     },
-
     data() {
       return {
         isLoading: false,
       };
     },
-
     methods: {
       onClick() {
         this.isLoading = true;
@@ -42,10 +39,10 @@
 </script>
 <template>
   <button
-    type="button"
-    class="btn hidden-xs hidden-sm"
-    @click="onClick"
     :disabled="isLoading"
+    type="button"
+    class="btn d-none d-sm-none d-md-block"
+    @click="onClick"
   >
 
     <span v-if="isLastDeployment">

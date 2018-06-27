@@ -1,5 +1,3 @@
-import 'vendor/peek.performance_bar';
-
 import Vue from 'vue';
 import performanceBarApp from './components/performance_bar_app.vue';
 import PerformanceBarStore from './stores/performance_bar_store';

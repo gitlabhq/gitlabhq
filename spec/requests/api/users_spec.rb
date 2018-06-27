@@ -212,6 +212,18 @@ describe API::Users do
         expect(json_response.last['id']).to eq(user.id)
       end
 
+      it 'returns users with 2fa enabled' do
+        admin
+        user
+        user_with_2fa = create(:user, :two_factor_via_otp)
+
+        get api('/users', admin), { two_factor: 'enabled' }
+
+        expect(response).to match_response_schema('public_api/v4/user/admins')
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['id']).to eq(user_with_2fa.id)
+      end
+
       it 'returns 400 when provided incorrect sort params' do
         get api('/users', admin), { order_by: 'magic', sort: 'asc' }
 
@@ -476,10 +488,6 @@ describe API::Users do
   describe "PUT /users/:id" do
     let!(:admin_user) { create(:admin) }
 
-    before do
-      admin
-    end
-
     it "updates user with new bio" do
       put api("/users/#{user.id}", admin), { bio: 'new test bio' }
 
@@ -504,7 +512,7 @@ describe API::Users do
     end
 
     it 'updates user with avatar' do
-      put api("/users/#{user.id}", admin), { avatar: fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
+      put api("/users/#{user.id}", admin), { avatar: fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif') }
 
       user.reload
 
@@ -513,27 +521,28 @@ describe API::Users do
       expect(json_response['avatar_url']).to include(user.avatar_path)
     end
 
-    it 'updates user with his own email' do
-      put api("/users/#{user.id}", admin), email: user.email
-
-      expect(response).to have_gitlab_http_status(200)
-      expect(json_response['email']).to eq(user.email)
-      expect(user.reload.email).to eq(user.email)
-    end
-
     it 'updates user with a new email' do
+      old_email = user.email
+      old_notification_email = user.notification_email
       put api("/users/#{user.id}", admin), email: 'new@email.com'
-
-      expect(response).to have_gitlab_http_status(200)
-      expect(user.reload.notification_email).to eq('new@email.com')
-    end
-
-    it 'skips reconfirmation when requested' do
-      put api("/users/#{user.id}", admin), { skip_reconfirmation: true }
 
       user.reload
 
-      expect(user.confirmed_at).to be_present
+      expect(response).to have_gitlab_http_status(200)
+      expect(user).to be_confirmed
+      expect(user.email).to eq(old_email)
+      expect(user.notification_email).to eq(old_notification_email)
+      expect(user.unconfirmed_email).to eq('new@email.com')
+    end
+
+    it 'skips reconfirmation when requested' do
+      put api("/users/#{user.id}", admin), email: 'new@email.com', skip_reconfirmation: true
+
+      user.reload
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(user).to be_confirmed
+      expect(user.email).to eq('new@email.com')
     end
 
     it 'updates user with his own username' do
@@ -1114,58 +1123,63 @@ describe API::Users do
   describe "GET /user" do
     let(:personal_access_token) { create(:personal_access_token, user: user).token }
 
-    context 'with regular user' do
-      context 'with personal access token' do
-        it 'returns 403 without private token when sudo is defined' do
-          get api("/user?private_token=#{personal_access_token}&sudo=123")
+    shared_examples 'get user info' do |version|
+      context 'with regular user' do
+        context 'with personal access token' do
+          it 'returns 403 without private token when sudo is defined' do
+            get api("/user?private_token=#{personal_access_token}&sudo=123", version: version)
 
-          expect(response).to have_gitlab_http_status(403)
-        end
-      end
-
-      it 'returns current user without private token when sudo not defined' do
-        get api("/user", user)
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(response).to match_response_schema('public_api/v4/user/public')
-        expect(json_response['id']).to eq(user.id)
-      end
-
-      context "scopes" do
-        let(:path) { "/user" }
-        let(:api_call) { method(:api) }
-
-        include_examples 'allows the "read_user" scope'
-      end
-    end
-
-    context 'with admin' do
-      let(:admin_personal_access_token) { create(:personal_access_token, user: admin).token }
-
-      context 'with personal access token' do
-        it 'returns 403 without private token when sudo defined' do
-          get api("/user?private_token=#{admin_personal_access_token}&sudo=#{user.id}")
-
-          expect(response).to have_gitlab_http_status(403)
+            expect(response).to have_gitlab_http_status(403)
+          end
         end
 
-        it 'returns initial current user without private token but with is_admin when sudo not defined' do
-          get api("/user?private_token=#{admin_personal_access_token}")
+        it 'returns current user without private token when sudo not defined' do
+          get api("/user", user, version: version)
 
           expect(response).to have_gitlab_http_status(200)
-          expect(response).to match_response_schema('public_api/v4/user/admin')
-          expect(json_response['id']).to eq(admin.id)
+          expect(response).to match_response_schema('public_api/v4/user/public')
+          expect(json_response['id']).to eq(user.id)
+        end
+
+        context "scopes" do
+          let(:path) { "/user" }
+          let(:api_call) { method(:api) }
+
+          include_examples 'allows the "read_user" scope', version
+        end
+      end
+
+      context 'with admin' do
+        let(:admin_personal_access_token) { create(:personal_access_token, user: admin).token }
+
+        context 'with personal access token' do
+          it 'returns 403 without private token when sudo defined' do
+            get api("/user?private_token=#{admin_personal_access_token}&sudo=#{user.id}", version: version)
+
+            expect(response).to have_gitlab_http_status(403)
+          end
+
+          it 'returns initial current user without private token but with is_admin when sudo not defined' do
+            get api("/user?private_token=#{admin_personal_access_token}", version: version)
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(response).to match_response_schema('public_api/v4/user/admin')
+            expect(json_response['id']).to eq(admin.id)
+          end
+        end
+      end
+
+      context 'with unauthenticated user' do
+        it "returns 401 error if user is unauthenticated" do
+          get api("/user", version: version)
+
+          expect(response).to have_gitlab_http_status(401)
         end
       end
     end
 
-    context 'with unauthenticated user' do
-      it "returns 401 error if user is unauthenticated" do
-        get api("/user")
-
-        expect(response).to have_gitlab_http_status(401)
-      end
-    end
+    it_behaves_like 'get user info', 'v3'
+    it_behaves_like 'get user info', 'v4'
   end
 
   describe "GET /user/keys" do

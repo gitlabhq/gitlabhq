@@ -21,7 +21,7 @@ class Repository
   attr_accessor :full_path, :disk_path, :project, :is_wiki
 
   delegate :ref_name_for_sha, to: :raw_repository
-  delegate :bundle_to_disk, :create_from_bundle, to: :raw_repository
+  delegate :bundle_to_disk, to: :raw_repository
 
   CreateTreeError = Class.new(StandardError)
 
@@ -37,7 +37,7 @@ class Repository
                       changelog license_blob license_key gitignore koding_yml
                       gitlab_ci_yml branch_names tag_names branch_count
                       tag_count avatar exists? root_ref has_visible_content?
-                      issue_template_names merge_request_template_names).freeze
+                      issue_template_names merge_request_template_names xcode_project?).freeze
 
   # Methods that use cache_method but only memoize the value
   MEMOIZED_CACHED_METHODS = %i(license).freeze
@@ -55,7 +55,8 @@ class Repository
     gitlab_ci: :gitlab_ci_yml,
     avatar: :avatar,
     issue_template: :issue_template_names,
-    merge_request_template: :merge_request_template_names
+    merge_request_template: :merge_request_template_names,
+    xcode_config: :xcode_project?
   }.freeze
 
   def initialize(full_path, project, disk_path: nil, is_wiki: false)
@@ -84,17 +85,18 @@ class Repository
 
   # Return absolute path to repository
   def path_to_repo
-    @path_to_repo ||= File.expand_path(
-      File.join(repository_storage_path, disk_path + '.git')
-    )
+    @path_to_repo ||=
+      begin
+        storage = Gitlab.config.repositories.storages[@project.repository_storage]
+
+        File.expand_path(
+          File.join(storage.legacy_disk_path, disk_path + '.git')
+        )
+      end
   end
 
   def inspect
     "#<#{self.class.name}:#{@disk_path}>"
-  end
-
-  def create_hooks
-    Gitlab::Git::Repository.create_hooks(path_to_repo, Gitlab.config.gitlab_shell.hooks_path)
   end
 
   def commit(ref = 'HEAD')
@@ -152,7 +154,10 @@ class Repository
 
   # Returns a list of commits that are not present in any reference
   def new_commits(newrev)
-    refs = ::Gitlab::Git::RevList.new(raw, newrev: newrev).new_refs
+    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1233
+    refs = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      ::Gitlab::Git::RevList.new(raw, newrev: newrev).new_refs
+    end
 
     refs.map { |sha| commit(sha.strip) }
   end
@@ -253,19 +258,29 @@ class Repository
   end
 
   def diverging_commit_counts(branch)
-    root_ref_hash = raw_repository.commit(root_ref).id
+    @root_ref_hash ||= raw_repository.commit(root_ref).id
     cache.fetch(:"diverging_commit_counts_#{branch.name}") do
       # Rugged seems to throw a `ReferenceError` when given branch_names rather
       # than SHA-1 hashes
       number_commits_behind, number_commits_ahead =
         raw_repository.count_commits_between(
-          root_ref_hash,
+          @root_ref_hash,
           branch.dereferenced_target.sha,
           left_right: true,
           max_count: MAX_DIVERGING_COUNT)
 
       { behind: number_commits_behind, ahead: number_commits_ahead }
     end
+  end
+
+  def archive_metadata(ref, storage_path, format = "tar.gz", append_sha:)
+    raw_repository.archive_metadata(
+      ref,
+      storage_path,
+      project.path,
+      format,
+      append_sha: append_sha
+    )
   end
 
   def expire_tags_cache
@@ -335,6 +350,7 @@ class Repository
     return unless empty?
 
     expire_method_caches(%i(has_visible_content?))
+    raw_repository.expire_has_local_branches_cache
   end
 
   def lookup_cache
@@ -592,6 +608,11 @@ class Repository
   end
   cache_method :gitlab_ci_yml
 
+  def xcode_project?
+    file_on_head(:xcode_config, :tree).present?
+  end
+  cache_method :xcode_project?
+
   def head_commit
     @head_commit ||= commit(self.root_ref)
   end
@@ -829,7 +850,7 @@ class Repository
     @root_ref_sha ||= commit(root_ref).sha
   end
 
-  delegate :merged_branch_names, :can_be_merged?, to: :raw_repository
+  delegate :merged_branch_names, to: :raw_repository
 
   def merge_base(first_commit_id, second_commit_id)
     first_commit_id = commit(first_commit_id).try(:id) || first_commit_id
@@ -852,11 +873,25 @@ class Repository
     add_remote(remote_name, url, mirror_refmap: refmap)
     fetch_remote(remote_name, forced: forced, prune: prune)
   ensure
-    remove_remote(remote_name) if tmp_remote_name
+    async_remove_remote(remote_name) if tmp_remote_name
   end
 
   def fetch_remote(remote, forced: false, ssh_auth: nil, no_tags: false, prune: true)
     gitlab_shell.fetch_remote(raw_repository, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags, prune: prune)
+  end
+
+  def async_remove_remote(remote_name)
+    return unless remote_name
+
+    job_id = RepositoryRemoveRemoteWorker.perform_async(project.id, remote_name)
+
+    if job_id
+      Rails.logger.info("Remove remote job scheduled for #{project.id} with remote name: #{remote_name} job ID #{job_id}.")
+    else
+      Rails.logger.info("Remove remote job failed to create for #{project.id} with remote name #{remote_name}.")
+    end
+
+    job_id
   end
 
   def fetch_source_branch!(source_repository, source_branch, local_ref)
@@ -898,11 +933,21 @@ class Repository
     end
   end
 
-  def file_on_head(type)
-    if head = tree(:head)
-      head.blobs.find do |blob|
-        Gitlab::FileDetector.type_of(blob.path) == type
+  def file_on_head(type, object_type = :blob)
+    return unless head = tree(:head)
+
+    objects =
+      case object_type
+      when :blob
+        head.blobs
+      when :tree
+        head.trees
+      else
+        raise ArgumentError, "Object type #{object_type} is not supported"
       end
+
+    objects.find do |object|
+      Gitlab::FileDetector.type_of(object.path) == type
     end
   end
 
@@ -914,12 +959,12 @@ class Repository
     blob_data_at(sha, path)
   end
 
-  def fetch_ref(source_repository, source_ref:, target_ref:)
-    raw_repository.fetch_ref(source_repository.raw_repository, source_ref: source_ref, target_ref: target_ref)
+  def lfsconfig_for(sha)
+    blob_data_at(sha, '.lfsconfig')
   end
 
-  def repository_storage_path
-    @project.repository_storage_path
+  def fetch_ref(source_repository, source_ref:, target_ref:)
+    raw_repository.fetch_ref(source_repository.raw_repository, source_ref: source_ref, target_ref: target_ref)
   end
 
   def rebase(user, merge_request)
@@ -927,6 +972,22 @@ class Repository
                                        branch_sha: merge_request.source_branch_sha,
                                        remote_repository: merge_request.target_project.repository.raw,
                                        remote_branch: merge_request.target_branch)
+  end
+
+  def blob_data_at(sha, path)
+    blob = blob_at(sha, path)
+    return unless blob
+
+    blob.load_all_data!
+    blob.data
+  end
+
+  def squash(user, merge_request)
+    raw.squash(user, merge_request.id, branch: merge_request.target_branch,
+                                       start_sha: merge_request.diff_start_sha,
+                                       end_sha: merge_request.diff_head_sha,
+                                       author: merge_request.author,
+                                       message: merge_request.title)
   end
 
   private
@@ -941,14 +1002,6 @@ class Repository
              end
 
     ::Commit.new(commit, @project) if commit
-  end
-
-  def blob_data_at(sha, path)
-    blob = blob_at(sha, path)
-    return unless blob
-
-    blob.load_all_data!
-    blob.data
   end
 
   def cache

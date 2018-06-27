@@ -11,7 +11,7 @@ Available `RAILS_ENV`
 
  - `production` (generally not for your main GDK db, but you may need this for e.g. omnibus)
  - `development` (this is your main GDK db)
- - `test` (used for tests like rspec and spinach)
+ - `test` (used for tests like rspec)
 
 
 ## Nuke everything and start over

@@ -51,12 +51,6 @@
       opacity: 0.3;
     }
 
-    &.btn-xs {
-      line-height: 1;
-      padding: 5px 10px;
-      margin-top: 1px;
-    }
-
     &.dropdown-toggle {
       .fa {
         color: inherit;
@@ -131,7 +125,7 @@
     color: $gl-text-color;
     display: flex;
 
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       flex-wrap: wrap;
     }
   }
@@ -155,10 +149,6 @@
 
     .dropdown-menu {
       z-index: 300;
-    }
-
-    .ci-action-icon-wrapper {
-      line-height: 16px;
     }
   }
 
@@ -286,7 +276,7 @@
       display: inline-block;
     }
 
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       p {
         font-size: 13px;
       }
@@ -498,18 +488,18 @@
   }
 }
 
-.panel-new-merge-request {
-  .panel-heading {
+.card-new-merge-request {
+  .card-header {
     padding: 5px 10px;
     font-weight: $gl-font-weight-bold;
     line-height: 25px;
   }
 
-  .panel-body {
+  .card-body {
     padding: 10px 5px;
   }
 
-  .panel-footer {
+  .card-footer {
     padding: 0;
 
     .btn {
@@ -523,7 +513,7 @@
     }
 
     .item-title {
-      @media (min-width: $screen-sm-min) {
+      @include media-breakpoint-up(sm) {
         width: 45%;
       }
     }
@@ -554,7 +544,7 @@
     margin-bottom: 0;
   }
 
-  @media (min-width: $screen-xs-min) {
+  @include media-breakpoint-up(xs) {
     float: left;
     width: 50%;
     margin-bottom: 0;
@@ -609,14 +599,12 @@
   position: relative;
   background: $gray-light;
   color: $gl-text-color;
-  z-index: 199;
 
   .mr-version-menus-container {
-    display: -webkit-flex;
     display: flex;
-    -webkit-align-items: center;
     align-items: center;
     padding: 16px;
+    z-index: 199;
   }
 
   .content-block {
@@ -652,7 +640,7 @@
   background-color: $white-light;
   border-bottom: 1px solid $border-color;
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     position: sticky;
     position: -webkit-sticky;
   }
@@ -661,7 +649,7 @@
     left: 0;
     transition: right .15s;
 
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       right: 0;
     }
 
@@ -682,6 +670,7 @@
 
 .merge-request-tabs {
   display: flex;
+  flex-wrap: nowrap;
   margin-bottom: 0;
   padding: 0;
 }
@@ -704,7 +693,7 @@
   display: flex;
   justify-content: space-between;
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     flex-direction: column-reverse;
   }
 }
@@ -740,7 +729,7 @@
   display: flex;
   flex-wrap: wrap;
 
-  @media (min-width: $screen-xs) {
+  @include media-breakpoint-up(xs) {
     flex-wrap: nowrap;
     white-space: nowrap;
   }
@@ -757,8 +746,25 @@
   min-width: 100px;
   max-width: 150px;
 
-  @media (min-width: $screen-xs) {
+  @include media-breakpoint-up(xs) {
     min-width: 0;
     max-width: 100%;
+  }
+}
+
+// Hack alert: we've rewritten `btn` class in a way that
+// we've broken it and it is not possible to use with `btn-link`
+// which causes a blank button when it's disabled and hovering
+// The css in here is the boostrap one
+.btn-link-retry {
+  &[disabled] {
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: .65;
+
+    &:hover {
+      color: $file-mode-changed;
+      text-decoration: none;
+    }
   }
 }

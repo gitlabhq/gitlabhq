@@ -210,5 +210,11 @@ describe Banzai::Filter::SnippetReferenceFilter do
 
       expect(result.css('a').first.attr('href')).to eq(urls.project_snippet_url(project, snippet))
     end
+
+    it 'ignores internal references' do
+      exp = act = "See $#{snippet.id}"
+
+      expect(reference_filter(act, project: nil, group: create(:group)).to_html).to eq exp
+    end
   end
 end

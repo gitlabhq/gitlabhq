@@ -29,7 +29,7 @@ export default {
       required: false,
       default: 'Save comment',
     },
-    note: {
+    discussion: {
       type: Object,
       required: false,
       default: () => ({}),
@@ -37,6 +37,11 @@ export default {
     isEditing: {
       type: Boolean,
       required: true,
+    },
+    lineCode: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   data() {
@@ -66,9 +71,7 @@ export default {
       return this.getNotesDataByProp('markdownDocsPath');
     },
     quickActionsDocsPath() {
-      return !this.isEditing
-        ? this.getNotesDataByProp('quickActionsDocsPath')
-        : undefined;
+      return !this.isEditing ? this.getNotesDataByProp('quickActionsDocsPath') : undefined;
     },
     currentUserId() {
       return this.getUserDataByProp('id');
@@ -95,24 +98,17 @@ export default {
       const beforeSubmitDiscussionState = this.discussionResolved;
       this.isSubmitting = true;
 
-      this.$emit(
-        'handleFormUpdate',
-        this.updatedNoteBody,
-        this.$refs.editNoteForm,
-        () => {
-          this.isSubmitting = false;
+      this.$emit('handleFormUpdate', this.updatedNoteBody, this.$refs.editNoteForm, () => {
+        this.isSubmitting = false;
 
-          if (shouldResolve) {
-            this.resolveHandler(beforeSubmitDiscussionState);
-          }
-        },
-      );
+        if (shouldResolve) {
+          this.resolveHandler(beforeSubmitDiscussionState);
+        }
+      });
     },
     editMyLastNote() {
       if (this.updatedNoteBody === '') {
-        const lastNoteInDiscussion = this.getDiscussionLastNote(
-          this.updatedNoteBody,
-        );
+        const lastNoteInDiscussion = this.getDiscussionLastNote(this.discussion);
 
         if (lastNoteInDiscussion) {
           eventHub.$emit('enterEditMode', {
@@ -123,11 +119,7 @@ export default {
     },
     cancelHandler(shouldConfirm = false) {
       // Sends information about confirm message and if the textarea has changed
-      this.$emit(
-        'cancelFormEdition',
-        shouldConfirm,
-        this.noteBody !== this.updatedNoteBody,
-      );
+      this.$emit('cancelForm', shouldConfirm, this.noteBody !== this.updatedNoteBody);
     },
   },
 };
@@ -136,7 +128,7 @@ export default {
 <template>
   <div
     ref="editNoteForm"
-    class="note-edit-form current-note-edit-form">
+    class="note-edit-form current-note-edit-form js-discussion-note-form">
     <div
       v-if="conflictWhileEditing"
       class="js-conflict-edit-warning alert alert-danger">
@@ -150,7 +142,10 @@ export default {
       to ensure information is not lost.
     </div>
     <div class="flash-container timeline-content"></div>
-    <form class="edit-note common-note-form js-quick-submit gfm-form">
+    <form
+      :data-line-code="lineCode"
+      class="edit-note common-note-form js-quick-submit gfm-form"
+    >
 
       <issue-warning
         v-if="hasWarning(getNoteableData)"
@@ -165,15 +160,15 @@ export default {
         :add-spacing-classes="false">
         <textarea
           id="note_note"
-          name="note[note]"
-          class="note-textarea js-gfm-input
-js-autosize markdown-area js-vue-issue-note-form js-vue-textarea"
-          :data-supports-quick-actions="!isEditing"
-          aria-label="Description"
-          v-model="updatedNoteBody"
           ref="textarea"
           slot="textarea"
-          placeholder="Write a comment or drag your files here..."
+          :data-supports-quick-actions="!isEditing"
+          v-model="updatedNoteBody"
+          name="note[note]"
+          class="note-textarea js-gfm-input js-note-text
+js-autosize markdown-area js-vue-issue-note-form js-vue-textarea"
+          aria-label="Description"
+          placeholder="Write a comment or drag your files here…"
           @keydown.meta.enter="handleUpdate()"
           @keydown.ctrl.enter="handleUpdate()"
           @keydown.up="editMyLastNote()"
@@ -182,24 +177,24 @@ js-autosize markdown-area js-vue-issue-note-form js-vue-textarea"
       </markdown-field>
       <div class="note-form-actions clearfix">
         <button
-          type="button"
-          @click="handleUpdate()"
           :disabled="isDisabled"
-          class="js-vue-issue-save btn btn-save">
+          type="button"
+          class="js-vue-issue-save btn btn-save js-comment-button "
+          @click="handleUpdate()">
           {{ saveButtonTitle }}
         </button>
         <button
-          v-if="note.resolvable"
-          @click.prevent="handleUpdate(true)"
+          v-if="discussion.resolvable"
           class="btn btn-nr btn-default append-right-10 js-comment-resolve-button"
+          @click.prevent="handleUpdate(true)"
         >
           {{ resolveButtonTitle }}
         </button>
         <button
-          @click="cancelHandler()"
-          class="btn btn-cancel note-edit-cancel"
-          type="button">
-          Cancel
+          class="btn btn-cancel note-edit-cancel js-close-discussion-note-form"
+          type="button"
+          @click="cancelHandler()">
+          {{ __('Discard draft') }}
         </button>
       </div>
     </form>

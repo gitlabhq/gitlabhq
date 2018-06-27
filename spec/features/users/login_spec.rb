@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'Login' do
+  include TermsHelper
+
   scenario 'Successful user signin invalidates password reset token' do
     user = create(:user)
 
@@ -175,14 +177,35 @@ feature 'Login' do
     end
 
     context 'logging in via OAuth' do
-      it 'shows 2FA prompt after OAuth login' do
-        stub_omniauth_saml_config(enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'], providers: [mock_saml_config])
-        user = create(:omniauth_user, :two_factor, extern_uid: 'my-uid', provider: 'saml')
-        gitlab_sign_in_via('saml', user, 'my-uid')
+      let(:user) { create(:omniauth_user, :two_factor, extern_uid: 'my-uid', provider: 'saml')}
+      let(:mock_saml_response) do
+        File.read('spec/fixtures/authentication/saml_response.xml')
+      end
 
-        expect(page).to have_content('Two-Factor Authentication')
-        enter_code(user.current_otp)
-        expect(current_path).to eq root_path
+      before do
+        stub_omniauth_saml_config(enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'],
+                                  providers: [mock_saml_config_with_upstream_two_factor_authn_contexts])
+        gitlab_sign_in_via('saml', user, 'my-uid', mock_saml_response)
+      end
+
+      context 'when authn_context is worth two factors' do
+        let(:mock_saml_response) do
+          File.read('spec/fixtures/authentication/saml_response.xml')
+              .gsub('urn:oasis:names:tc:SAML:2.0:ac:classes:Password', 'urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorOTPSMS')
+        end
+
+        it 'signs user in without prompting for second factor' do
+          expect(page).not_to have_content('Two-Factor Authentication')
+          expect(current_path).to eq root_path
+        end
+      end
+
+      context 'when authn_context is not worth two factors' do
+        it 'shows 2FA prompt after OAuth login' do
+          expect(page).to have_content('Two-Factor Authentication')
+          enter_code(user.current_otp)
+          expect(current_path).to eq root_path
+        end
       end
     end
   end
@@ -392,11 +415,150 @@ feature 'Login' do
     end
 
     def ensure_one_active_tab
-      expect(page).to have_selector('.nav-tabs > li.active', count: 1)
+      expect(page).to have_selector('ul.new-session-tabs > li > a.active', count: 1)
     end
 
     def ensure_one_active_pane
       expect(page).to have_selector('.tab-pane.active', count: 1)
+    end
+  end
+
+  context 'when terms are enforced' do
+    let(:user) { create(:user) }
+
+    before do
+      enforce_terms
+    end
+
+    it 'asks to accept the terms on first login' do
+      visit new_user_session_path
+
+      fill_in 'user_login', with: user.email
+      fill_in 'user_password', with: '12345678'
+
+      click_button 'Sign in'
+
+      expect_to_be_on_terms_page
+
+      click_button 'Accept terms'
+
+      expect(current_path).to eq(root_path)
+      expect(page).not_to have_content('You are already signed in.')
+    end
+
+    it 'does not ask for terms when the user already accepted them' do
+      accept_terms(user)
+
+      visit new_user_session_path
+
+      fill_in 'user_login', with: user.email
+      fill_in 'user_password', with: '12345678'
+
+      click_button 'Sign in'
+
+      expect(current_path).to eq(root_path)
+    end
+
+    context 'when 2FA is required for the user' do
+      before do
+        group = create(:group, require_two_factor_authentication: true)
+        group.add_developer(user)
+      end
+
+      context 'when the user did not enable 2FA' do
+        it 'asks to set 2FA before asking to accept the terms' do
+          visit new_user_session_path
+
+          fill_in 'user_login', with: user.email
+          fill_in 'user_password', with: '12345678'
+
+          click_button 'Sign in'
+
+          expect_to_be_on_terms_page
+          click_button 'Accept terms'
+
+          expect(current_path).to eq(profile_two_factor_auth_path)
+
+          fill_in 'pin_code', with: user.reload.current_otp
+
+          click_button 'Register with two-factor app'
+          click_link 'Proceed'
+
+          expect(current_path).to eq(profile_account_path)
+        end
+      end
+
+      context 'when the user already enabled 2FA' do
+        before do
+          user.update!(otp_required_for_login: true,
+                       otp_secret:  User.generate_otp_secret(32))
+        end
+
+        it 'asks the user to accept the terms' do
+          visit new_user_session_path
+
+          fill_in 'user_login', with: user.email
+          fill_in 'user_password', with: '12345678'
+          click_button 'Sign in'
+
+          fill_in 'user_otp_attempt', with: user.reload.current_otp
+          click_button 'Verify code'
+
+          expect_to_be_on_terms_page
+          click_button 'Accept terms'
+
+          expect(current_path).to eq(root_path)
+        end
+      end
+    end
+
+    context 'when the users password is expired' do
+      before do
+        user.update!(password_expires_at: Time.parse('2018-05-08 11:29:46 UTC'))
+      end
+
+      it 'asks the user to accept the terms before setting a new password' do
+        visit new_user_session_path
+
+        fill_in 'user_login', with: user.email
+        fill_in 'user_password', with: '12345678'
+        click_button 'Sign in'
+
+        expect_to_be_on_terms_page
+        click_button 'Accept terms'
+
+        expect(current_path).to eq(new_profile_password_path)
+
+        fill_in 'user_current_password', with: '12345678'
+        fill_in 'user_password', with: 'new password'
+        fill_in 'user_password_confirmation', with: 'new password'
+        click_button 'Set new password'
+
+        expect(page).to have_content('Password successfully changed')
+      end
+    end
+
+    context 'when the user does not have an email configured' do
+      let(:user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'saml', email: 'temp-email-for-oauth-user@gitlab.localhost') }
+
+      before do
+        stub_omniauth_saml_config(enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'], providers: [mock_saml_config])
+      end
+
+      it 'asks the user to accept the terms before setting an email' do
+        gitlab_sign_in_via('saml', user, 'my-uid')
+
+        expect_to_be_on_terms_page
+        click_button 'Accept terms'
+
+        expect(current_path).to eq(profile_path)
+
+        fill_in 'Email', with: 'hello@world.com'
+
+        click_button 'Update profile settings'
+
+        expect(page).to have_content('Profile was successfully updated')
+      end
     end
   end
 end

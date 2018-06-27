@@ -9,7 +9,7 @@ delete window.translations;
   Translates `text`
   @param text The text to be translated
   @returns {String} The translated text
-**/
+*/
 const gettext = locale.gettext.bind(locale);
 
 /**
@@ -21,7 +21,7 @@ const gettext = locale.gettext.bind(locale);
   @param pluralText Plural text to translate (eg. '%d days')
   @param count Number to decide which translation to use (eg. 2)
   @returns {String} Translated text with the number replaced (eg. '2 days')
-**/
+*/
 const ngettext = (text, pluralText, count) => {
   const translated = locale.ngettext(text, pluralText, count).replace(/%d/g, count).split('|');
 
@@ -38,7 +38,7 @@ const ngettext = (text, pluralText, count) => {
                       (eg. 'Context')
   @param key Is the dynamic variable you want to be translated
   @returns {String} Translated context based text
-**/
+*/
 const pgettext = (keyOrContext, key) => {
   const normalizedKey = key ? `${keyOrContext}|${key}` : keyOrContext;
   const translated = gettext(normalizedKey).split('|');

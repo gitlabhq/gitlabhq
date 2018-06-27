@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, no-return-assign */
+/* eslint-disable no-return-assign */
 
 import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';

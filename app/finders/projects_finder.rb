@@ -124,7 +124,7 @@ class ProjectsFinder < UnionFinder
   end
 
   def sort(items)
-    params[:sort].present? ? items.sort(params[:sort]) : items.order_id_desc
+    params[:sort].present? ? items.sort_by_attribute(params[:sort]) : items.order_id_desc
   end
 
   def by_archived(projects)

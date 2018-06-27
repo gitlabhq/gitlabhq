@@ -15,7 +15,7 @@ describe API::Environments do
       it 'returns project environments' do
         project_data_keys = %w(
           id description default_branch tag_list
-          ssh_url_to_repo http_url_to_repo web_url
+          ssh_url_to_repo http_url_to_repo web_url readme_url
           name name_with_namespace
           path path_with_namespace
           star_count forks_count

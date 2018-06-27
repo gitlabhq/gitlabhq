@@ -286,6 +286,14 @@ $colors: (
   }
 
   .resolve-conflicts-form {
-    padding-top: $gl-padding;
+    h4 {
+      margin-top: 0;
+    }
+
+    .resolve-info {
+      @media(max-width: map-get($grid-breakpoints, lg)-1) {
+        margin-bottom: $gl-padding;
+      }
+    }
   }
 }

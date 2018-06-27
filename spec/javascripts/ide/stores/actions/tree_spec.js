@@ -1,8 +1,11 @@
 import Vue from 'vue';
+import testAction from 'spec/helpers/vuex_action_helper';
+import { showTreeEntry } from '~/ide/stores/actions/tree';
+import * as types from '~/ide/stores/mutation_types';
 import store from '~/ide/stores';
 import service from '~/ide/services';
 import router from '~/ide/ide_router';
-import { file, resetStore } from '../../helpers';
+import { file, resetStore, createEntriesFromPaths } from '../../helpers';
 
 describe('Multi-file store tree actions', () => {
   let projectTree;
@@ -68,9 +71,7 @@ describe('Multi-file store tree actions', () => {
           expect(projectTree.tree[0].tree[1].name).toBe('fileinfolder.js');
           expect(projectTree.tree[1].type).toBe('blob');
           expect(projectTree.tree[0].tree[0].tree[0].type).toBe('blob');
-          expect(projectTree.tree[0].tree[0].tree[0].name).toBe(
-            'fileinsubfolder.js',
-          );
+          expect(projectTree.tree[0].tree[0].tree[0].name).toBe('fileinsubfolder.js');
 
           done();
         })
@@ -95,6 +96,37 @@ describe('Multi-file store tree actions', () => {
           done();
         })
         .catch(done.fail);
+    });
+  });
+
+  describe('showTreeEntry', () => {
+    beforeEach(() => {
+      const paths = [
+        'grandparent',
+        'ancestor',
+        'grandparent/parent',
+        'grandparent/aunt',
+        'grandparent/parent/child.txt',
+        'grandparent/aunt/cousing.txt',
+      ];
+
+      Object.assign(store.state.entries, createEntriesFromPaths(paths));
+    });
+
+    it('opens the parents', done => {
+      testAction(
+        showTreeEntry,
+        'grandparent/parent/child.txt',
+        store.state,
+        [
+          { type: types.SET_TREE_OPEN, payload: 'grandparent/parent' },
+          { type: types.SET_TREE_OPEN, payload: 'grandparent' },
+        ],
+        [
+          { type: 'showTreeEntry' },
+        ],
+        done,
+      );
     });
   });
 
@@ -132,9 +164,7 @@ describe('Multi-file store tree actions', () => {
       store
         .dispatch('getLastCommitData', projectTree)
         .then(() => {
-          expect(service.getTreeLastCommit).toHaveBeenCalledWith(
-            'lastcommitpath',
-          );
+          expect(service.getTreeLastCommit).toHaveBeenCalledWith('lastcommitpath');
 
           done();
         })
@@ -160,9 +190,7 @@ describe('Multi-file store tree actions', () => {
         .dispatch('getLastCommitData', projectTree)
         .then(Vue.nextTick)
         .then(() => {
-          expect(projectTree.tree[0].lastCommit.message).not.toBe(
-            'commit message',
-          );
+          expect(projectTree.tree[0].lastCommit.message).not.toBe('commit message');
 
           done();
         })

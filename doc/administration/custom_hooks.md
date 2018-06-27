@@ -3,7 +3,7 @@
 >
 **Note:** Custom Git hooks must be configured on the filesystem of the GitLab
 server. Only GitLab server administrators will be able to complete these tasks.
-Please explore [webhooks] as an option if you do not
+Please explore [webhooks] and [CI] as an option if you do not
 have filesystem access. For a user configurable Git hook interface, see
 [Push Rules](https://docs.gitlab.com/ee/push_rules/push_rules.html),
 available in GitLab Enterprise Edition.
@@ -80,6 +80,7 @@ STDERR takes precedence over STDOUT.
 
 ![Custom message from custom Git hook](img/custom_hooks_error_msg.png)
 
+[CI]: ../ci/README.md
 [hooks]: https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks#Server-Side-Hooks
 [webhooks]: ../user/project/integrations/webhooks.md
 [5073]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5073

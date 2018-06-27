@@ -3,7 +3,12 @@ require 'spec_helper'
 describe Gitlab::CycleAnalytics::UsageData do
   describe '#to_json' do
     before do
-      Timecop.freeze do
+      # Since git commits only have second precision, round up to the
+      # nearest second to ensure we have accurate median and standard
+      # deviation calculations.
+      current_time = Time.at(Time.now.to_i)
+
+      Timecop.freeze(current_time) do
         user = create(:user, :admin)
         projects = create_list(:project, 2, :repository)
 
@@ -37,13 +42,7 @@ describe Gitlab::CycleAnalytics::UsageData do
 
           expected_values.each_pair do |op, value|
             expect(stage_values).to have_key(op)
-
-            if op == :missing
-              expect(stage_values[op]).to eq(value)
-            else
-              # delta is used because of git timings that Timecop does not stub
-              expect(stage_values[op].to_i).to be_within(5).of(value.to_i)
-            end
+            expect(stage_values[op]).to eq(value)
           end
         end
       end
@@ -58,8 +57,8 @@ describe Gitlab::CycleAnalytics::UsageData do
             missing: 0
           },
           plan: {
-            average: 2,
-            sd: 2,
+            average: 1,
+            sd: 0,
             missing: 0
           },
           code: {

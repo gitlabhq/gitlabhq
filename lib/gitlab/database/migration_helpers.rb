@@ -1,6 +1,8 @@
 module Gitlab
   module Database
     module MigrationHelpers
+      include Gitlab::Database::ArelMethods
+
       BACKGROUND_MIGRATION_BATCH_SIZE = 1000 # Number of rows to process per job
       BACKGROUND_MIGRATION_JOB_BUFFER_SIZE = 1000 # Number of jobs to bulk queue at a time
 
@@ -314,7 +316,7 @@ module Gitlab
           stop_arel = yield table, stop_arel if block_given?
           stop_row = exec_query(stop_arel.to_sql).to_hash.first
 
-          update_arel = Arel::UpdateManager.new(ActiveRecord::Base)
+          update_arel = arel_update_manager
             .table(table)
             .set([[table[column], value]])
             .where(table[:id].gteq(start_id))
@@ -594,6 +596,97 @@ module Gitlab
         end
       end
 
+      # Renames a column using a background migration.
+      #
+      # Because this method uses a background migration it's more suitable for
+      # large tables. For small tables it's better to use
+      # `rename_column_concurrently` since it can complete its work in a much
+      # shorter amount of time and doesn't rely on Sidekiq.
+      #
+      # Example usage:
+      #
+      #     rename_column_using_background_migration(
+      #       :users,
+      #       :feed_token,
+      #       :rss_token
+      #     )
+      #
+      # table - The name of the database table containing the column.
+      #
+      # old - The old column name.
+      #
+      # new - The new column name.
+      #
+      # type - The type of the new column. If no type is given the old column's
+      #        type is used.
+      #
+      # batch_size - The number of rows to schedule in a single background
+      #              migration.
+      #
+      # interval - The time interval between every background migration.
+      def rename_column_using_background_migration(
+        table,
+        old_column,
+        new_column,
+        type: nil,
+        batch_size: 10_000,
+        interval: 10.minutes
+      )
+
+        check_trigger_permissions!(table)
+
+        old_col = column_for(table, old_column)
+        new_type = type || old_col.type
+        max_index = 0
+
+        add_column(table, new_column, new_type,
+                   limit: old_col.limit,
+                   precision: old_col.precision,
+                   scale: old_col.scale)
+
+        # We set the default value _after_ adding the column so we don't end up
+        # updating any existing data with the default value. This isn't
+        # necessary since we copy over old values further down.
+        change_column_default(table, new_column, old_col.default) if old_col.default
+
+        install_rename_triggers(table, old_column, new_column)
+
+        model = Class.new(ActiveRecord::Base) do
+          self.table_name = table
+
+          include ::EachBatch
+        end
+
+        # Schedule the jobs that will copy the data from the old column to the
+        # new one. Rows with NULL values in our source column are skipped since
+        # the target column is already NULL at this point.
+        model.where.not(old_column => nil).each_batch(of: batch_size) do |batch, index|
+          start_id, end_id = batch.pluck('MIN(id), MAX(id)').first
+          max_index = index
+
+          BackgroundMigrationWorker.perform_in(
+            index * interval,
+            'CopyColumn',
+            [table, old_column, new_column, start_id, end_id]
+          )
+        end
+
+        # Schedule the renaming of the column to happen (initially) 1 hour after
+        # the last batch finished.
+        BackgroundMigrationWorker.perform_in(
+          (max_index * interval) + 1.hour,
+          'CleanupConcurrentRename',
+          [table, old_column, new_column]
+        )
+
+        if perform_background_migration_inline?
+          # To ensure the schema is up to date immediately we perform the
+          # migration inline in dev / test environments.
+          Gitlab::BackgroundMigration.steal('CopyColumn')
+          Gitlab::BackgroundMigration.steal('CleanupConcurrentRename')
+        end
+      end
+
       def perform_background_migration_inline?
         Rails.env.test? || Rails.env.development?
       end
@@ -860,7 +953,7 @@ into similar problems in the future (e.g. when new tables are created).
       # Each job is scheduled with a `delay_interval` in between.
       # If you use a small interval, then some jobs may run at the same time.
       #
-      # model_class - The table being iterated over
+      # model_class - The table or relation being iterated over
       # job_class_name - The background migration job class as a string
       # delay_interval - The duration between each job's scheduled time (must respond to `to_f`)
       # batch_size - The maximum number of rows per job
@@ -900,11 +993,42 @@ into similar problems in the future (e.g. when new tables are created).
         end
       end
 
-      # Rails' index_exists? doesn't work when you only give it a table and index
-      # name. As such we have to use some extra code to check if an index exists for
-      # a given name.
+      # Fetches indexes on a column by name for postgres.
+      #
+      # This will include indexes using an expression on the column, for example:
+      # `CREATE INDEX CONCURRENTLY index_name ON table (LOWER(column));`
+      #
+      # For mysql, it falls back to the default ActiveRecord implementation that
+      # will not find custom indexes. But it will select by name without passing
+      # a column.
+      #
+      # We can remove this when upgrading to Rails 5 with an updated `index_exists?`:
+      # - https://github.com/rails/rails/commit/edc2b7718725016e988089b5fb6d6fb9d6e16882
+      #
+      # Or this can be removed when we no longer support postgres < 9.5, so we
+      # can use `CREATE INDEX IF NOT EXISTS`.
       def index_exists_by_name?(table, index)
-        indexes(table).map(&:name).include?(index)
+        # We can't fall back to the normal `index_exists?` method because that
+        # does not find indexes without passing a column name.
+        if indexes(table).map(&:name).include?(index.to_s)
+          true
+        elsif Gitlab::Database.postgresql?
+          postgres_exists_by_name?(table, index)
+        else
+          false
+        end
+      end
+
+      def postgres_exists_by_name?(table, name)
+        index_sql = <<~SQL
+          SELECT COUNT(*)
+          FROM pg_index
+          JOIN pg_class i ON (indexrelid=i.oid)
+          JOIN pg_class t ON (indrelid=t.oid)
+          WHERE i.relname = '#{name}' AND t.relname = '#{table}'
+        SQL
+
+        connection.select_value(index_sql).to_i > 0
       end
     end
   end

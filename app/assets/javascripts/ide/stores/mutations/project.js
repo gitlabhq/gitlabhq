@@ -11,6 +11,7 @@ export default {
     Object.assign(project, {
       tree: [],
       branches: {},
+      mergeRequests: {},
       active: true,
     });
 

@@ -88,7 +88,7 @@ module API
       end
       get ':id/repository/archive', requirements: { format: Gitlab::PathRegex.archive_formats_regex } do
         begin
-          send_git_archive user_project.repository, ref: params[:sha], format: params[:format]
+          send_git_archive user_project.repository, ref: params[:sha], format: params[:format], append_sha: true
         rescue
           not_found!('File')
         end
@@ -111,8 +111,8 @@ module API
       end
       params do
         use :pagination
-        optional :order_by, type: String, values: %w[email name commits], default: nil, desc: 'Return contributors ordered by `name` or `email` or `commits`'
-        optional :sort, type: String, values: %w[asc desc], default: nil, desc: 'Sort by asc (ascending) or desc (descending)'
+        optional :order_by, type: String, values: %w[email name commits], default: 'commits', desc: 'Return contributors ordered by `name` or `email` or `commits`'
+        optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
       end
       get ':id/repository/contributors' do
         begin

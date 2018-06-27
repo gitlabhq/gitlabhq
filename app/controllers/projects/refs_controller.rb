@@ -25,7 +25,7 @@ class Projects::RefsController < Projects::ApplicationController
           when "graphs_commits"
             commits_project_graph_path(@project, @id)
           when "badges"
-            project_pipelines_settings_path(@project, ref: @id)
+            project_settings_ci_cd_path(@project, ref: @id)
           else
             project_commits_path(@project, @id)
           end

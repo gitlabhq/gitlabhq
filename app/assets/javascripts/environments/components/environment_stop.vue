@@ -40,10 +40,10 @@
     methods: {
       onClick() {
         // eslint-disable-next-line no-alert
-        if (confirm('Are you sure you want to stop this environment?')) {
+        if (window.confirm('Are you sure you want to stop this environment?')) {
           this.isLoading = true;
 
-          $(this.$el).tooltip('destroy');
+          $(this.$el).tooltip('dispose');
 
           eventHub.$emit('postAction', this.stopUrl);
         }
@@ -54,13 +54,13 @@
 <template>
   <button
     v-tooltip
-    type="button"
-    class="btn stop-env-link hidden-xs hidden-sm"
-    data-container="body"
-    @click="onClick"
     :disabled="isLoading"
     :title="title"
     :aria-label="title"
+    type="button"
+    class="btn stop-env-link d-none d-sm-none d-md-block"
+    data-container="body"
+    @click="onClick"
   >
     <i
       class="fa fa-stop stop-env-icon"

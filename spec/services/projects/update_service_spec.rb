@@ -125,7 +125,7 @@ describe Projects::UpdateService do
 
     context 'when we update project but not enabling a wiki' do
       it 'does not try to create an empty wiki' do
-        FileUtils.rm_rf(project.wiki.repository.path)
+        Gitlab::Shell.new.rm_directory(project.repository_storage, project.wiki.path)
 
         result = update_project(project, user, { name: 'test1' })
 
@@ -146,7 +146,7 @@ describe Projects::UpdateService do
     context 'when enabling a wiki' do
       it 'creates a wiki' do
         project.project_feature.update(wiki_access_level: ProjectFeature::DISABLED)
-        FileUtils.rm_rf(project.wiki.repository.path)
+        Gitlab::Shell.new.rm_directory(project.repository_storage, project.wiki.path)
 
         result = update_project(project, user, project_feature_attributes: { wiki_access_level: ProjectFeature::ENABLED })
 
@@ -190,7 +190,7 @@ describe Projects::UpdateService do
 
     context 'when renaming a project' do
       let(:repository_storage) { 'default' }
-      let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
+      let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage].legacy_disk_path }
 
       context 'with legacy storage' do
         let(:project) { create(:project, :legacy_storage, :repository, creator: user, namespace: user.namespace) }
@@ -200,7 +200,7 @@ describe Projects::UpdateService do
         end
 
         after do
-          gitlab_shell.remove_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
+          gitlab_shell.remove_repository(repository_storage, "#{user.namespace.full_path}/existing")
         end
 
         it 'does not allow renaming when new path matches existing repository on disk' do
@@ -241,6 +241,27 @@ describe Projects::UpdateService do
         })
       end
     end
+
+    context 'when updating #pages_https_only', :https_pages_enabled do
+      subject(:call_service) do
+        update_project(project, admin, pages_https_only: false)
+      end
+
+      it 'updates the attribute' do
+        expect { call_service }
+          .to change { project.pages_https_only? }
+          .to(false)
+      end
+
+      it 'calls Projects::UpdatePagesConfigurationService' do
+        expect(Projects::UpdatePagesConfigurationService)
+          .to receive(:new)
+          .with(project)
+          .and_call_original
+
+        call_service
+      end
+    end
   end
 
   describe '#run_auto_devops_pipeline?' do
@@ -251,6 +272,10 @@ describe Projects::UpdateService do
         allow(project.repository).to receive(:gitlab_ci_yml).and_return("script: ['test']")
       end
 
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when auto devops is nil' do
       it { is_expected.to eq(false) }
     end
 

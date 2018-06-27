@@ -20,14 +20,23 @@ describe Projects::MilestonesController do
   describe "#show" do
     render_views
 
-    def view_milestone
-      get :show, namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid
+    def view_milestone(options = {})
+      params = { namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid }
+      get :show, params.merge(options)
     end
 
     it 'shows milestone page' do
       view_milestone
 
       expect(response).to have_gitlab_http_status(200)
+      expect(response.content_type).to eq 'text/html'
+    end
+
+    it 'returns milestone json' do
+      view_milestone format: :json
+
+      expect(response).to have_http_status(404)
+      expect(response.content_type).to eq 'application/json'
     end
   end
 
@@ -48,19 +57,36 @@ describe Projects::MilestonesController do
     context "as json" do
       let!(:group) { create(:group, :public) }
       let!(:group_milestone) { create(:milestone, group: group) }
-      let!(:group_member) { create(:group_member, group: group, user: user) }
 
-      before do
-        project.update(namespace: group)
-        get :index, namespace_id: project.namespace.id, project_id: project.id, format: :json
+      context 'with a single group ancestor' do
+        before do
+          project.update(namespace: group)
+          get :index, namespace_id: project.namespace.id, project_id: project.id, format: :json
+        end
+
+        it "queries projects milestones and groups milestones" do
+          milestones = assigns(:milestones)
+
+          expect(milestones.count).to eq(2)
+          expect(milestones).to match_array([milestone, group_milestone])
+        end
       end
 
-      it "queries projects milestones and groups milestones" do
-        milestones = assigns(:milestones)
+      context 'with nested groups', :nested_groups do
+        let!(:subgroup) { create(:group, :public, parent: group) }
+        let!(:subgroup_milestone) { create(:milestone, group: subgroup) }
 
-        expect(milestones.count).to eq(2)
-        expect(milestones.where(project_id: nil).first).to eq(group_milestone)
-        expect(milestones.where(group_id: nil).first).to eq(milestone)
+        before do
+          project.update(namespace: subgroup)
+          get :index, namespace_id: project.namespace.id, project_id: project.id, format: :json
+        end
+
+        it "queries projects milestones and all ancestors milestones" do
+          milestones = assigns(:milestones)
+
+          expect(milestones.count).to eq(3)
+          expect(milestones).to match_array([milestone, group_milestone, subgroup_milestone])
+        end
       end
     end
   end
@@ -98,7 +124,7 @@ describe Projects::MilestonesController do
       it 'shows group milestone' do
         post :promote, namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid
 
-        expect(flash[:notice]).to eq("#{milestone.title} promoted to group milestone")
+        expect(flash[:notice]).to eq("#{milestone.title} promoted to <a href=\"#{group_milestone_path(project.group, milestone.iid)}\">group milestone</a>.")
         expect(response).to redirect_to(project_milestones_path(project))
       end
     end

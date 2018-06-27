@@ -19,6 +19,11 @@ module Gitlab
         response.exists
       end
 
+      def cleanup
+        request = Gitaly::CleanupRequest.new(repository: @gitaly_repo)
+        GitalyClient.call(@storage, :repository_service, :cleanup, request)
+      end
+
       def garbage_collect(create_bitmap)
         request = Gitaly::GarbageCollectRequest.new(repository: @gitaly_repo, create_bitmap: create_bitmap)
         GitalyClient.call(@storage, :repository_service, :garbage_collect, request)
@@ -43,6 +48,15 @@ module Gitlab
       def apply_gitattributes(revision)
         request = Gitaly::ApplyGitattributesRequest.new(repository: @gitaly_repo, revision: encode_binary(revision))
         GitalyClient.call(@storage, :repository_service, :apply_gitattributes, request)
+      end
+
+      def info_attributes
+        request = Gitaly::GetInfoAttributesRequest.new(repository: @gitaly_repo)
+
+        response = GitalyClient.call(@storage, :repository_service, :get_info_attributes, request)
+        response.each_with_object("") do |message, attributes|
+          attributes << message.attributes
+        end
       end
 
       def fetch_remote(remote, ssh_auth:, forced:, no_tags:, timeout:, prune: true)
@@ -128,7 +142,7 @@ module Gitlab
           :repository_service,
           :is_rebase_in_progress,
           request,
-          timeout: GitalyClient.default_timeout
+          timeout: GitalyClient.fast_timeout
         )
 
         response.in_progress
@@ -145,7 +159,7 @@ module Gitlab
           :repository_service,
           :is_squash_in_progress,
           request,
-          timeout: GitalyClient.default_timeout
+          timeout: GitalyClient.fast_timeout
         )
 
         response.in_progress
@@ -182,41 +196,53 @@ module Gitlab
       end
 
       def create_bundle(save_path)
-        request = Gitaly::CreateBundleRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(
-          @storage,
-          :repository_service,
+        gitaly_fetch_stream_to_file(
+          save_path,
           :create_bundle,
-          request,
-          timeout: GitalyClient.default_timeout
+          Gitaly::CreateBundleRequest,
+          GitalyClient.default_timeout
         )
+      end
 
-        File.open(save_path, 'wb') do |f|
-          response.each do |message|
-            f.write(message.data)
-          end
-        end
+      def backup_custom_hooks(save_path)
+        gitaly_fetch_stream_to_file(
+          save_path,
+          :backup_custom_hooks,
+          Gitaly::BackupCustomHooksRequest,
+          GitalyClient.default_timeout
+        )
       end
 
       def create_from_bundle(bundle_path)
-        request = Gitaly::CreateRepositoryFromBundleRequest.new(repository: @gitaly_repo)
-        enum = Enumerator.new do |y|
-          File.open(bundle_path, 'rb') do |f|
-            while data = f.read(MAX_MSG_SIZE)
-              request.data = data
+        gitaly_repo_stream_request(
+          bundle_path,
+          :create_repository_from_bundle,
+          Gitaly::CreateRepositoryFromBundleRequest,
+          GitalyClient.default_timeout
+        )
+      end
 
-              y.yield request
+      def restore_custom_hooks(custom_hooks_path)
+        gitaly_repo_stream_request(
+          custom_hooks_path,
+          :restore_custom_hooks,
+          Gitaly::RestoreCustomHooksRequest,
+          GitalyClient.default_timeout
+        )
+      end
 
-              request = Gitaly::CreateRepositoryFromBundleRequest.new
-            end
-          end
-        end
+      def create_from_snapshot(http_url, http_auth)
+        request = Gitaly::CreateRepositoryFromSnapshotRequest.new(
+          repository: @gitaly_repo,
+          http_url: http_url,
+          http_auth: http_auth
+        )
 
         GitalyClient.call(
           @storage,
           :repository_service,
-          :create_repository_from_bundle,
-          enum,
+          :create_repository_from_snapshot,
+          request,
           timeout: GitalyClient.default_timeout
         )
       end
@@ -256,6 +282,73 @@ module Gitlab
         response = GitalyClient.call(@storage, :repository_service, :find_license, request, timeout: GitalyClient.fast_timeout)
 
         response.license_short_name.presence
+      end
+
+      def calculate_checksum
+        request  = Gitaly::CalculateChecksumRequest.new(repository: @gitaly_repo)
+        response = GitalyClient.call(@storage, :repository_service, :calculate_checksum, request)
+        response.checksum.presence
+      rescue GRPC::DataLoss => e
+        raise Gitlab::Git::Repository::InvalidRepository.new(e)
+      end
+
+      def raw_changes_between(from, to)
+        request = Gitaly::GetRawChangesRequest.new(repository: @gitaly_repo, from_revision: from, to_revision: to)
+
+        GitalyClient.call(@storage, :repository_service, :get_raw_changes, request)
+      end
+
+      def search_files_by_name(ref, query)
+        request = Gitaly::SearchFilesByNameRequest.new(repository: @gitaly_repo, ref: ref, query: query)
+        GitalyClient.call(@storage, :repository_service, :search_files_by_name, request).flat_map(&:files)
+      end
+
+      def search_files_by_content(ref, query)
+        request = Gitaly::SearchFilesByContentRequest.new(repository: @gitaly_repo, ref: ref, query: query)
+        GitalyClient.call(@storage, :repository_service, :search_files_by_content, request).flat_map(&:matches)
+      end
+
+      private
+
+      def gitaly_fetch_stream_to_file(save_path, rpc_name, request_class, timeout)
+        request = request_class.new(repository: @gitaly_repo)
+        response = GitalyClient.call(
+          @storage,
+          :repository_service,
+          rpc_name,
+          request,
+          timeout: timeout
+        )
+
+        File.open(save_path, 'wb') do |f|
+          response.each do |message|
+            f.write(message.data)
+          end
+        end
+        # If the file is empty means that we recieved an empty stream, we delete the file
+        FileUtils.rm(save_path) if File.zero?(save_path)
+      end
+
+      def gitaly_repo_stream_request(file_path, rpc_name, request_class, timeout)
+        request = request_class.new(repository: @gitaly_repo)
+        enum = Enumerator.new do |y|
+          File.open(file_path, 'rb') do |f|
+            while data = f.read(MAX_MSG_SIZE)
+              request.data = data
+
+              y.yield request
+              request = request_class.new
+            end
+          end
+        end
+
+        GitalyClient.call(
+          @storage,
+          :repository_service,
+          rpc_name,
+          enum,
+          timeout: timeout
+        )
       end
     end
   end

@@ -30,7 +30,7 @@ and GitLab UI._
 
 Many components and concepts are similar to Ruby on Rails or Python's Django. High developer
 productivity and high application performance are only a few advantages on learning how to use it.
-Working on the MVC pattern, it's was designed to be modular and flexible. Easy to mantain a growing
+Working on the MVC pattern, it's was designed to be modular and flexible. Easy to maintain a growing
 app is a plus.
 
 Phoenix can run in any OS where Erlang is supported:
@@ -48,7 +48,7 @@ Check the [Phoenix learning guide][phoenix-learning-guide] for more information.
 ### What is Elixir?
 
 [Elixir][elixir-site] is a dynamic, functional language created to use all the maturity of Erlang
-(30 years old!) in these days, in an easy way. It has similarities with Ruby, specially on sintax,
+(30 years old!) in these days, in an easy way. It has similarities with Ruby, specially on syntax,
 so Ruby developers are quite excited with the rapid growing of Elixir. A full-stack Ruby developer
 can learn how to use Elixir and Phoenix in just a few weeks!
 
@@ -162,7 +162,7 @@ productive, because every time we, or our co-workers push any code, GitLab CI/CD
 test the changes, telling us in realtime if anything goes wrong.
 
 Certainly, when our application starts to grow, we'll need more developers working on the same
-project and this process of building and testing can easely become a mess without proper management.
+project and this process of building and testing can easily become a mess without proper management.
 That's also why GitLab CI/CD is so important to our application. Every time someone pushes its code to
 GitLab, we'll quickly know if their changes broke something or not. We don't need to stop everything
 we're doing to test manually and locally every change our team does.
@@ -237,7 +237,7 @@ Finished in 0.7 seconds
 Randomized with seed 610000
 ```
 
-Our test was successfull. It's time to push our files to GitLab.
+Our test was successful. It's time to push our files to GitLab.
 
 ## Configuring CI/CD Pipeline
 
@@ -302,7 +302,7 @@ template** and select **Elixir**:
     ```
 
     It's important to install `postgresql-client` to let GitLab CI/CD access PostgreSQL and create our
-    database with the login information provided earlier. More important is to respect the identation,
+    database with the login information provided earlier. More important is to respect the indentation,
     to avoid syntax errors when running the build.
 
 - And finally, we'll let `mix` session intact.
@@ -333,7 +333,7 @@ mix:
   - mix test
 ```
 
-For safety, we can check if we get any syntax errors before submiting this file to GitLab. Copy the
+For safety, we can check if we get any syntax errors before submitting this file to GitLab. Copy the
 contents of `.gitlab-ci.yml` and paste it on [GitLab CI/CD Lint tool][ci-lint]. Please note that
 this link will only work for logged in users.
 
@@ -384,7 +384,7 @@ working properly.
 
 When we have a growing application with many developers working on it, or when we have an open
 source project being watched and contributed by the community, it is really important to have our
-code permanently working. GitLab CI/CD is a time saving powerfull tool to help us mantain our code
+code permanently working. GitLab CI/CD is a time saving powerful tool to help us maintain our code
 organized and working.
 
 As we could see in this post, GitLab CI/CD is really really easy to configure and use. We have [many

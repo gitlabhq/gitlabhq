@@ -3,15 +3,20 @@
 - return unless issuable.is_a?(MergeRequest)
 - return if issuable.closed_without_fork?
 
--# This check is duplicated below to avoid CE -> EE merge conflicts.
--# This comment and the following line should only exist in CE.
-- return unless issuable.can_remove_source_branch?(current_user)
-
-.form-group
-  .col-sm-10.col-sm-offset-2
-    - if issuable.can_remove_source_branch?(current_user)
-      .checkbox
-        = label_tag 'merge_request[force_remove_source_branch]' do
-          = hidden_field_tag 'merge_request[force_remove_source_branch]', '0', id: nil
-          = check_box_tag 'merge_request[force_remove_source_branch]', '1', issuable.force_remove_source_branch?
+- if issuable.can_remove_source_branch?(current_user)
+  .form-group.row
+    .col-sm-10.offset-sm-2
+      .form-check
+        = hidden_field_tag 'merge_request[force_remove_source_branch]', '0', id: nil
+        = check_box_tag 'merge_request[force_remove_source_branch]', '1', issuable.force_remove_source_branch?, class: 'form-check-input'
+        = label_tag 'merge_request[force_remove_source_branch]', class: 'form-check-label' do
           Remove source branch when merge request is accepted.
+
+.form-group.row
+  .col-sm-10.offset-sm-2
+    .form-check
+      = hidden_field_tag 'merge_request[squash]', '0', id: nil
+      = check_box_tag 'merge_request[squash]', '1', issuable.squash, class: 'form-check-input'
+      = label_tag 'merge_request[squash]', class: 'form-check-label' do
+        Squash commits when merge request is accepted.
+        = link_to 'About this feature', help_page_path('user/project/merge_requests/squash_and_merge')

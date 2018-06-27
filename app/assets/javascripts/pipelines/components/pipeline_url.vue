@@ -46,7 +46,7 @@
   };
 </script>
 <template>
-  <div class="table-section section-15 hidden-xs hidden-sm pipeline-tags">
+  <div class="table-section section-15 d-none d-sm-none d-md-block pipeline-tags">
     <a
       :href="pipeline.path"
       class="js-pipeline-url-link">
@@ -55,10 +55,10 @@
     <span>by</span>
     <user-avatar-link
       v-if="user"
-      class="js-pipeline-url-user"
       :link-href="pipeline.user.path"
       :img-src="pipeline.user.avatar_url"
       :tooltip-text="pipeline.user.name"
+      class="js-pipeline-url-user"
     />
     <span
       v-if="!user"
@@ -67,37 +67,37 @@
     </span>
     <div class="label-container">
       <span
-        v-if="pipeline.flags.latest"
         v-tooltip
-        class="js-pipeline-url-latest label label-success"
+        v-if="pipeline.flags.latest"
+        class="js-pipeline-url-latest badge badge-success"
         title="Latest pipeline for this branch">
         latest
       </span>
       <span
-        v-if="pipeline.flags.yaml_errors"
         v-tooltip
-        class="js-pipeline-url-yaml label label-danger"
-        :title="pipeline.yaml_errors">
+        v-if="pipeline.flags.yaml_errors"
+        :title="pipeline.yaml_errors"
+        class="js-pipeline-url-yaml badge badge-danger">
         yaml invalid
       </span>
       <span
-        v-if="pipeline.flags.failure_reason"
         v-tooltip
-        class="js-pipeline-url-failure label label-danger"
-        :title="pipeline.failure_reason">
+        v-if="pipeline.flags.failure_reason"
+        :title="pipeline.failure_reason"
+        class="js-pipeline-url-failure badge badge-danger">
         error
       </span>
       <a
+        v-popover="popoverOptions"
         v-if="pipeline.flags.auto_devops"
         tabindex="0"
-        class="js-pipeline-url-autodevops label label-info autodevops-badge"
-        v-popover="popoverOptions"
+        class="js-pipeline-url-autodevops badge badge-info autodevops-badge"
         role="button">
         Auto DevOps
       </a>
       <span
         v-if="pipeline.flags.stuck"
-        class="js-pipeline-url-stuck label label-warning">
+        class="js-pipeline-url-stuck badge badge-warning">
         stuck
       </span>
     </div>

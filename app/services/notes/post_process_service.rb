@@ -11,7 +11,7 @@ module Notes
       unless @note.system?
         EventCreateService.new.leave_note(@note, @note.author)
 
-        return unless @note.for_project_noteable?
+        return if @note.for_personal_snippet?
 
         @note.create_cross_references!
         execute_note_hooks
@@ -23,9 +23,13 @@ module Notes
     end
 
     def execute_note_hooks
+      return unless @note.project
+
       note_data = hook_data
-      @note.project.execute_hooks(note_data, :note_hooks)
-      @note.project.execute_services(note_data, :note_hooks)
+      hooks_scope = @note.confidential? ? :confidential_note_hooks : :note_hooks
+
+      @note.project.execute_hooks(note_data, hooks_scope)
+      @note.project.execute_services(note_data, hooks_scope)
     end
   end
 end

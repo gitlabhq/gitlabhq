@@ -1,4 +1,4 @@
-/* eslint-disable one-var, quote-props, comma-dangle, space-before-function-paren */
+/* eslint-disable quote-props, comma-dangle */
 
 import $ from 'jquery';
 import _ from 'underscore';
@@ -7,6 +7,7 @@ import Vue from 'vue';
 import Flash from '~/flash';
 import { __ } from '~/locale';
 import '~/vue_shared/models/label';
+import '~/vue_shared/models/assignee';
 
 import FilteredSearchBoards from './filtered_search_boards';
 import eventHub from './eventhub';
@@ -15,11 +16,10 @@ import './models/issue';
 import './models/list';
 import './models/milestone';
 import './models/project';
-import './models/assignee';
 import './stores/boards_store';
-import './stores/modal_store';
+import ModalStore from './stores/modal_store';
 import BoardService from './services/board_service';
-import './mixins/modal_mixins';
+import modalMixin from './mixins/modal_mixins';
 import './mixins/sortable_default_options';
 import './filters/due_date_filters';
 import './components/board';
@@ -31,7 +31,6 @@ import '~/vue_shared/vue_resource_interceptor'; // eslint-disable-line import/fi
 export default () => {
   const $boardApp = document.getElementById('board-app');
   const Store = gl.issueBoards.BoardsStore;
-  const ModalStore = gl.issueBoards.ModalStore;
 
   window.gl = window.gl || {};
 
@@ -122,7 +121,7 @@ export default () => {
         this.filterManager.updateTokens();
       },
       updateDetailIssue(newIssue) {
-        const sidebarInfoEndpoint = newIssue.sidebarInfoEndpoint;
+        const { sidebarInfoEndpoint } = newIssue;
         if (sidebarInfoEndpoint && newIssue.subscribed === undefined) {
           newIssue.setFetchingState('subscriptions', true);
           BoardService.getIssueInfo(sidebarInfoEndpoint)
@@ -145,7 +144,7 @@ export default () => {
         Store.detail.issue = {};
       },
       toggleSubscription(id) {
-        const issue = Store.detail.issue;
+        const { issue } = Store.detail;
         if (issue.id === id && issue.toggleSubscriptionEndpoint) {
           issue.setFetchingState('subscriptions', true);
           BoardService.toggleIssueSubscription(issue.toggleSubscriptionEndpoint)
@@ -176,7 +175,7 @@ export default () => {
 
   gl.IssueBoardsModalAddBtn = new Vue({
     el: document.getElementById('js-add-issues-btn'),
-    mixins: [gl.issueBoards.ModalMixins],
+    mixins: [modalMixin],
     data() {
       return {
         modal: ModalStore.store,
@@ -215,7 +214,7 @@ export default () => {
           if (this.disabled) {
             $tooltip.tooltip();
           } else {
-            $tooltip.tooltip('destroy');
+            $tooltip.tooltip('dispose');
           }
         });
       },

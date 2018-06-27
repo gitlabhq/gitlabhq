@@ -1,6 +1,0 @@
----
-title: Send @mention notifications even if a user has explicitly unsubscribed from
-  item
-merge_request:
-author:
-type: added

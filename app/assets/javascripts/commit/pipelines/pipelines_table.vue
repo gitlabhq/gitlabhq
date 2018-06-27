@@ -55,22 +55,20 @@
     },
     methods: {
       successCallback(resp) {
-        return resp.json().then((response) => {
-          // depending of the endpoint the response can either bring a `pipelines` key or not.
-          const pipelines = response.pipelines || response;
-          this.setCommonData(pipelines);
+        // depending of the endpoint the response can either bring a `pipelines` key or not.
+        const pipelines = resp.data.pipelines || resp.data;
+        this.setCommonData(pipelines);
 
-          const updatePipelinesEvent = new CustomEvent('update-pipelines-count', {
-            detail: {
-              pipelines: response,
-            },
-          });
-
-          // notifiy to update the count in tabs
-          if (this.$el.parentElement) {
-            this.$el.parentElement.dispatchEvent(updatePipelinesEvent);
-          }
+        const updatePipelinesEvent = new CustomEvent('update-pipelines-count', {
+          detail: {
+            pipelines: resp.data,
+          },
         });
+
+        // notifiy to update the count in tabs
+        if (this.$el.parentElement) {
+          this.$el.parentElement.dispatchEvent(updatePipelinesEvent);
+        }
       },
     },
   };
@@ -79,9 +77,9 @@
   <div class="content-list pipelines">
 
     <loading-icon
+      v-if="isLoading"
       :label="s__('Pipelines|Loading Pipelines')"
       size="3"
-      v-if="isLoading"
       class="prepend-top-20"
     />
 
@@ -93,8 +91,8 @@
     />
 
     <div
-      class="table-holder"
       v-else-if="shouldRenderTable"
+      class="table-holder"
     >
       <pipelines-table-component
         :pipelines="state.pipelines"

@@ -24,15 +24,14 @@ class Import::GithubController < Import::BaseController
 
   def status
     @repos = client.repos
-    @already_added_projects = current_user.created_projects.where(import_type: provider)
+    @already_added_projects = find_already_added_projects(provider)
     already_added_projects_names = @already_added_projects.pluck(:import_source)
 
     @repos.reject! { |repo| already_added_projects_names.include? repo.full_name }
   end
 
   def jobs
-    jobs = current_user.created_projects.where(import_type: provider).to_json(only: [:id, :import_status])
-    render json: jobs
+    render json: find_jobs(provider)
   end
 
   def create
@@ -49,7 +48,7 @@ class Import::GithubController < Import::BaseController
       if project.persisted?
         render json: ProjectSerializer.new.represent(project)
       else
-        render json: { errors: project.errors.full_messages }, status: :unprocessable_entity
+        render json: { errors: project_save_error(project) }, status: :unprocessable_entity
       end
     else
       render json: { errors: 'This namespace has already been taken! Please choose another one.' }, status: :unprocessable_entity

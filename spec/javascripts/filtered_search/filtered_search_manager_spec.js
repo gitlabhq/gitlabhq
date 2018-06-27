@@ -1,5 +1,3 @@
-import * as urlUtils from '~/lib/utils/url_utility';
-import * as recentSearchesStoreSrc from '~/filtered_search/stores/recent_searches_store';
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
 import RecentSearchesServiceError from '~/filtered_search/services/recent_searches_service_error';
 import RecentSearchesRoot from '~/filtered_search/recent_searches_root';
@@ -11,7 +9,7 @@ import FilteredSearchDropdownManager from '~/filtered_search/filtered_search_dro
 import FilteredSearchManager from '~/filtered_search/filtered_search_manager';
 import FilteredSearchSpecHelper from '../helpers/filtered_search_spec_helper';
 
-describe('Filtered Search Manager', () => {
+describe('Filtered Search Manager', function () {
   let input;
   let manager;
   let tokensContainer;
@@ -74,18 +72,19 @@ describe('Filtered Search Manager', () => {
 
   describe('class constructor', () => {
     const isLocalStorageAvailable = 'isLocalStorageAvailable';
+    let RecentSearchesStoreSpy;
 
     beforeEach(() => {
       spyOn(RecentSearchesService, 'isAvailable').and.returnValue(isLocalStorageAvailable);
-      spyOn(recentSearchesStoreSrc, 'default');
       spyOn(RecentSearchesRoot.prototype, 'render');
+      RecentSearchesStoreSpy = spyOnDependency(FilteredSearchManager, 'RecentSearchesStore');
     });
 
     it('should instantiate RecentSearchesStore with isLocalStorageAvailable', () => {
       manager = new FilteredSearchManager({ page });
 
       expect(RecentSearchesService.isAvailable).toHaveBeenCalled();
-      expect(recentSearchesStoreSrc.default).toHaveBeenCalledWith({
+      expect(RecentSearchesStoreSpy).toHaveBeenCalledWith({
         isLocalStorageAvailable,
         allowedKeys: FilteredSearchTokenKeys.getKeys(),
       });
@@ -164,7 +163,7 @@ describe('Filtered Search Manager', () => {
     it('should search with a single word', (done) => {
       input.value = 'searchTerm';
 
-      spyOn(urlUtils, 'visitUrl').and.callFake((url) => {
+      spyOnDependency(FilteredSearchManager, 'visitUrl').and.callFake((url) => {
         expect(url).toEqual(`${defaultParams}&search=searchTerm`);
         done();
       });
@@ -175,7 +174,7 @@ describe('Filtered Search Manager', () => {
     it('should search with multiple words', (done) => {
       input.value = 'awesome search terms';
 
-      spyOn(urlUtils, 'visitUrl').and.callFake((url) => {
+      spyOnDependency(FilteredSearchManager, 'visitUrl').and.callFake((url) => {
         expect(url).toEqual(`${defaultParams}&search=awesome+search+terms`);
         done();
       });
@@ -186,7 +185,7 @@ describe('Filtered Search Manager', () => {
     it('should search with special characters', (done) => {
       input.value = '~!@#$%^&*()_+{}:<>,.?/';
 
-      spyOn(urlUtils, 'visitUrl').and.callFake((url) => {
+      spyOnDependency(FilteredSearchManager, 'visitUrl').and.callFake((url) => {
         expect(url).toEqual(`${defaultParams}&search=~!%40%23%24%25%5E%26*()_%2B%7B%7D%3A%3C%3E%2C.%3F%2F`);
         done();
       });
@@ -200,7 +199,7 @@ describe('Filtered Search Manager', () => {
         ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug')}
       `);
 
-      spyOn(urlUtils, 'visitUrl').and.callFake((url) => {
+      spyOnDependency(FilteredSearchManager, 'visitUrl').and.callFake((url) => {
         expect(url).toEqual(`${defaultParams}&label_name[]=bug`);
         done();
       });

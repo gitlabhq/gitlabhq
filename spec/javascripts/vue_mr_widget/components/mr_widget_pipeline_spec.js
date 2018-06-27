@@ -113,6 +113,46 @@ describe('MRWidgetPipeline', () => {
       });
     });
 
+    describe('without commit path', () => {
+      beforeEach(() => {
+        const mockCopy = Object.assign({}, mockData);
+        delete mockCopy.pipeline.commit;
+
+        vm = mountComponent(Component, {
+          pipeline: mockCopy.pipeline,
+          hasCi: true,
+          ciStatus: 'success',
+        });
+      });
+
+      it('should render pipeline ID', () => {
+        expect(
+          vm.$el.querySelector('.pipeline-id').textContent.trim(),
+        ).toEqual(`#${mockData.pipeline.id}`);
+      });
+
+      it('should render pipeline status', () => {
+        expect(
+          vm.$el.querySelector('.media-body').textContent.trim(),
+        ).toContain(mockData.pipeline.details.status.label);
+
+        expect(
+          vm.$el.querySelector('.js-commit-link'),
+        ).toBeNull();
+      });
+
+      it('should render pipeline graph', () => {
+        expect(vm.$el.querySelector('.mr-widget-pipeline-graph')).toBeDefined();
+        expect(vm.$el.querySelectorAll('.stage-container').length).toEqual(mockData.pipeline.details.stages.length);
+      });
+
+      it('should render coverage information', () => {
+        expect(
+          vm.$el.querySelector('.media-body').textContent,
+        ).toContain(`Coverage ${mockData.pipeline.coverage}`);
+      });
+    });
+
     describe('without coverage', () => {
       it('should not render a coverage', () => {
         const mockCopy = Object.assign({}, mockData);

@@ -1,41 +1,39 @@
 <script>
-  import { mapState } from 'vuex';
-  import { sprintf, __ } from '~/locale';
-  import * as consts from '../../stores/modules/commit/constants';
-  import RadioGroup from './radio_group.vue';
+import { mapActions, mapState, mapGetters } from 'vuex';
+import { sprintf, __ } from '~/locale';
+import * as consts from '../../stores/modules/commit/constants';
+import RadioGroup from './radio_group.vue';
 
-  export default {
-    components: {
-      RadioGroup,
+export default {
+  components: {
+    RadioGroup,
+  },
+  computed: {
+    ...mapState(['currentBranchId', 'changedFiles', 'stagedFiles']),
+    ...mapGetters(['currentProject']),
+    commitToCurrentBranchText() {
+      return sprintf(
+        __('Commit to %{branchName} branch'),
+        { branchName: `<strong class="monospace">${this.currentBranchId}</strong>` },
+        false,
+      );
     },
-    computed: {
-      ...mapState([
-        'currentBranchId',
-      ]),
-      newMergeRequestHelpText() {
-        return sprintf(
-          __('Creates a new branch from %{branchName} and re-directs to create a new merge request'),
-          { branchName: this.currentBranchId },
-        );
-      },
-      commitToCurrentBranchText() {
-        return sprintf(
-          __('Commit to %{branchName} branch'),
-          { branchName: `<strong>${this.currentBranchId}</strong>` },
-          false,
-        );
-      },
-      commitToNewBranchText() {
-        return sprintf(
-          __('Creates a new branch from %{branchName}'),
-          { branchName: this.currentBranchId },
-        );
-      },
+    disableMergeRequestRadio() {
+      return this.changedFiles.length > 0 && this.stagedFiles.length > 0;
     },
-    commitToCurrentBranch: consts.COMMIT_TO_CURRENT_BRANCH,
-    commitToNewBranch: consts.COMMIT_TO_NEW_BRANCH,
-    commitToNewBranchMR: consts.COMMIT_TO_NEW_BRANCH_MR,
-  };
+  },
+  mounted() {
+    if (this.disableMergeRequestRadio) {
+      this.updateCommitAction(consts.COMMIT_TO_CURRENT_BRANCH);
+    }
+  },
+  methods: {
+    ...mapActions('commit', ['updateCommitAction']),
+  },
+  commitToCurrentBranch: consts.COMMIT_TO_CURRENT_BRANCH,
+  commitToNewBranch: consts.COMMIT_TO_NEW_BRANCH,
+  commitToNewBranchMR: consts.COMMIT_TO_NEW_BRANCH_MR,
+};
 </script>
 
 <template>
@@ -53,13 +51,13 @@
       :value="$options.commitToNewBranch"
       :label="__('Create a new branch')"
       :show-input="true"
-      :help-text="commitToNewBranchText"
     />
     <radio-group
+      v-if="currentProject.merge_requests_enabled"
       :value="$options.commitToNewBranchMR"
       :label="__('Create a new branch and merge request')"
       :show-input="true"
-      :help-text="newMergeRequestHelpText"
+      :disabled="disableMergeRequestRadio"
     />
   </div>
 </template>

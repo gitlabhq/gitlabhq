@@ -82,7 +82,7 @@ describe('Sketch viewer', () => {
       const img = document.querySelector('#js-sketch-viewer img');
 
       expect(img).not.toBeNull();
-      expect(img.classList.contains('img-responsive')).toBeTruthy();
+      expect(img.classList.contains('img-fluid')).toBeTruthy();
     });
 
     it('renders link to image', () => {

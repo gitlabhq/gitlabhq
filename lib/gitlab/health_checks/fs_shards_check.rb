@@ -1,5 +1,6 @@
 module Gitlab
   module HealthChecks
+    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1218
     class FsShardsCheck
       extend BaseAbstractCheck
       RANDOM_STRING = SecureRandom.hex(1000).freeze
@@ -77,7 +78,9 @@ module Gitlab
         end
 
         def storage_path(storage_name)
-          storages_paths&.dig(storage_name, 'path')
+          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            storages_paths[storage_name]&.legacy_disk_path
+          end
         end
 
         # All below test methods use shell commands to perform actions on storage volumes.

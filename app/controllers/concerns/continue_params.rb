@@ -1,4 +1,5 @@
 module ContinueParams
+  include InternalRedirect
   extend ActiveSupport::Concern
 
   def continue_params
@@ -6,8 +7,7 @@ module ContinueParams
     return nil unless continue_params
 
     continue_params = continue_params.permit(:to, :notice, :notice_now)
-    return unless continue_params[:to] && continue_params[:to].start_with?('/')
-    return if continue_params[:to].start_with?('//')
+    continue_params[:to] = safe_redirect_path(continue_params[:to])
 
     continue_params
   end

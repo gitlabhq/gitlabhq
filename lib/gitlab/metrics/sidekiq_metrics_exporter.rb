@@ -4,6 +4,8 @@ require 'prometheus/client/rack/exporter'
 module Gitlab
   module Metrics
     class SidekiqMetricsExporter < Daemon
+      LOG_FILENAME = File.join(Rails.root, 'log', 'sidekiq_exporter.log')
+
       def enabled?
         Gitlab::Metrics.metrics_folder_present? && settings.enabled
       end
@@ -17,7 +19,13 @@ module Gitlab
       attr_reader :server
 
       def start_working
-        @server = ::WEBrick::HTTPServer.new(Port: settings.port, BindAddress: settings.address)
+        logger = WEBrick::Log.new(LOG_FILENAME)
+        access_log = [
+          [logger, WEBrick::AccessLog::COMBINED_LOG_FORMAT]
+        ]
+
+        @server = ::WEBrick::HTTPServer.new(Port: settings.port, BindAddress: settings.address,
+                                            Logger: logger, AccessLog: access_log)
         server.mount "/", Rack::Handler::WEBrick, rack_app
         server.start
       end

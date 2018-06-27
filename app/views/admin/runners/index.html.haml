@@ -14,20 +14,23 @@
       %span Each Runner can be in one of the following states:
       %ul
         %li
-          %span.label.label-success shared
+          %span.badge.badge-success shared
           \- Runner runs jobs from all unassigned projects
         %li
-          %span.label.label-info specific
+          %span.badge.badge-success group
+          \- Runner runs jobs from all unassigned projects in its group
+        %li
+          %span.badge.badge-info specific
           \- Runner runs jobs from assigned projects
         %li
-          %span.label.label-warning locked
+          %span.badge.badge-warning locked
           \- Runner cannot be assigned to other projects
         %li
-          %span.label.label-danger paused
+          %span.badge.badge-danger paused
           \- Runner will not receive any new jobs
 
   .bs-callout.clearfix
-    .pull-left
+    .float-left
       %p
         You can reset runners registration token by pressing a button below.
       .prepend-top-10
@@ -39,13 +42,13 @@
            locals: { registration_token: Gitlab::CurrentSettings.runners_registration_token }
 
   .append-bottom-20.clearfix
-    .pull-left
+    .float-left
       = form_tag admin_runners_path, id: 'runners-search', class: 'form-inline', method: :get do
         .form-group
-          = search_field_tag :search, params[:search], class: 'form-control', placeholder: 'Runner description or token', spellcheck: false
+          = search_field_tag :search, params[:search], class: 'form-control input-short', placeholder: 'Runner description or token', spellcheck: false
         = submit_tag 'Search', class: 'btn'
 
-    .pull-right.light
+    .float-right.light
       Runners with last contact more than a minute ago: #{@active_runners_cnt}
 
   %br
@@ -64,7 +67,7 @@
               %th Projects
               %th Jobs
               %th Tags
-              %th= link_to 'Last contact', admin_runners_path(params.slice(:search).merge(sort: 'contacted_asc'))
+              %th= link_to 'Last contact', admin_runners_path(safe_params.slice(:search).merge(sort: 'contacted_asc'))
               %th
 
           - @runners.each do |runner|

@@ -1,53 +1,57 @@
 <script>
-  import tooltip from '~/vue_shared/directives/tooltip';
-  import { n__ } from '~/locale';
-  import icon from '~/vue_shared/components/icon.vue';
-  import clipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import tooltip from '~/vue_shared/directives/tooltip';
+import { n__ } from '~/locale';
+import { webIDEUrl } from '~/lib/utils/url_utility';
+import icon from '~/vue_shared/components/icon.vue';
+import clipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
-  export default {
-    name: 'MRWidgetHeader',
-    directives: {
-      tooltip,
+export default {
+  name: 'MRWidgetHeader',
+  directives: {
+    tooltip,
+  },
+  components: {
+    icon,
+    clipboardButton,
+  },
+  props: {
+    mr: {
+      type: Object,
+      required: true,
     },
-    components: {
-      icon,
-      clipboardButton,
+  },
+  computed: {
+    shouldShowCommitsBehindText() {
+      return this.mr.divergedCommitsCount > 0;
     },
-    props: {
-      mr: {
-        type: Object,
-        required: true,
-      },
+    commitsText() {
+      return n__('%d commit behind', '%d commits behind', this.mr.divergedCommitsCount);
     },
-    computed: {
-      shouldShowCommitsBehindText() {
-        return this.mr.divergedCommitsCount > 0;
-      },
-      commitsText() {
-        return n__('%d commit behind', '%d commits behind', this.mr.divergedCommitsCount);
-      },
-      branchNameClipboardData() {
-        // This supports code in app/assets/javascripts/copy_to_clipboard.js that
-        // works around ClipboardJS limitations to allow the context-specific
-        // copy/pasting of plain text or GFM.
-        return JSON.stringify({
-          text: this.mr.sourceBranch,
-          gfm: `\`${this.mr.sourceBranch}\``,
-        });
-      },
-      isSourceBranchLong() {
-        return this.isBranchTitleLong(this.mr.sourceBranch);
-      },
-      isTargetBranchLong() {
-        return this.isBranchTitleLong(this.mr.targetBranch);
-      },
+    branchNameClipboardData() {
+      // This supports code in app/assets/javascripts/copy_to_clipboard.js that
+      // works around ClipboardJS limitations to allow the context-specific
+      // copy/pasting of plain text or GFM.
+      return JSON.stringify({
+        text: this.mr.sourceBranch,
+        gfm: `\`${this.mr.sourceBranch}\``,
+      });
     },
-    methods: {
-      isBranchTitleLong(branchTitle) {
-        return branchTitle.length > 32;
-      },
+    isSourceBranchLong() {
+      return this.isBranchTitleLong(this.mr.sourceBranch);
     },
-  };
+    isTargetBranchLong() {
+      return this.isBranchTitleLong(this.mr.targetBranch);
+    },
+    webIdePath() {
+      return webIDEUrl(this.mr.statusPath.replace('.json', ''));
+    },
+  },
+  methods: {
+    isBranchTitleLong(branchTitle) {
+      return branchTitle.length > 32;
+    },
+  },
+};
 </script>
 <template>
   <div class="mr-source-target">
@@ -55,11 +59,11 @@
       <strong>
         {{ s__("mrWidget|Request to merge") }}
         <span
-          class="label-branch js-source-branch"
           :class="{ 'label-truncated': isSourceBranchLong }"
           :title="isSourceBranchLong ? mr.sourceBranch : ''"
-          data-placement="bottom"
           :v-tooltip="isSourceBranchLong"
+          class="label-branch js-source-branch"
+          data-placement="bottom"
           v-html="mr.sourceBranchLink"
         >
         </span>
@@ -73,10 +77,10 @@
         {{ s__("mrWidget|into") }}
 
         <span
-          class="label-branch"
           :v-tooltip="isTargetBranchLong"
           :class="{ 'label-truncatedtooltip': isTargetBranchLong }"
           :title="isTargetBranchLong ? mr.targetBranch : ''"
+          class="label-branch"
           data-placement="bottom"
         >
           <a
@@ -96,10 +100,17 @@
     </div>
 
     <div v-if="mr.isOpen">
+      <a
+        v-if="!mr.sourceBranchRemoved"
+        :href="webIdePath"
+        class="btn btn-sm btn-default inline js-web-ide"
+      >
+        {{ s__("mrWidget|Web IDE") }}
+      </a>
       <button
+        :disabled="mr.sourceBranchRemoved"
         data-target="#modal_merge_info"
         data-toggle="modal"
-        :disabled="mr.sourceBranchRemoved"
         class="btn btn-sm btn-default inline js-check-out-branch"
         type="button"
       >
@@ -120,11 +131,11 @@
             aria-hidden="true">
           </i>
         </button>
-        <ul class="dropdown-menu dropdown-menu-align-right">
+        <ul class="dropdown-menu dropdown-menu-right">
           <li>
             <a
-              class="js-download-email-patches"
               :href="mr.emailPatchesPath"
+              class="js-download-email-patches"
               download
             >
               {{ s__("mrWidget|Email patches") }}
@@ -132,8 +143,8 @@
           </li>
           <li>
             <a
-              class="js-download-plain-diff"
               :href="mr.plainDiffPath"
+              class="js-download-plain-diff"
               download
             >
               {{ s__("mrWidget|Plain diff") }}

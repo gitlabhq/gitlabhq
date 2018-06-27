@@ -10,6 +10,11 @@ of your repository and contains definitions of how your project should be built.
 If you want a quick introduction to GitLab CI, follow our
 [quick start guide](../quick_start/README.md).
 
+NOTE: **Note:**
+If you have a [mirrored repository where GitLab pulls from](https://docs.gitlab.com/ee/workflow/repository_mirroring.html#pulling-from-a-remote-repository),
+you may need to enable pipeline triggering in your project's
+**Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
+
 ## Jobs
 
 The YAML file defines a set of jobs with constraints stating when they should
@@ -83,18 +88,18 @@ The example below simply moves all files from the root of the project to the
 `public/` directory. The `.public` workaround is so `cp` doesn't also copy
 `public/` to itself in an infinite loop:
 
-```
+```yaml
 pages:
   stage: deploy
   script:
-  - mkdir .public
-  - cp -r * .public
-  - mv .public public
+    - mkdir .public
+    - cp -r * .public
+    - mv .public public
   artifacts:
     paths:
-    - public
+      - public
   only:
-  - master
+    - master
 ```
 
 Read more on [GitLab Pages user documentation](../../user/project/pages/index.md).
@@ -126,15 +131,15 @@ if you set it per-job:
 
 ```yaml
 before_script:
-- global before script
+  - global before script
 
 job:
   before_script:
-  - execute this instead of global before script
+    - execute this instead of global before script
   script:
-  - my command
+    - my command
   after_script:
-  - execute this after my script
+    - execute this after my script
 ```
 
 ## `stages`
@@ -303,7 +308,9 @@ except master.
 
 ## `only` and `except` (complex)
 
-> Introduced in GitLab 10.0
+> `refs` and `kubernetes` policies introduced in GitLab 10.0
+
+> `variables` policy introduced in 10.7
 
 CAUTION: **Warning:**
 This an _alpha_ feature, and it it subject to change at any time without
@@ -315,9 +322,14 @@ policy configuration.
 GitLab now supports both, simple and complex strategies, so it is possible to
 use an array and a hash configuration scheme.
 
-Two keys are now available: `refs` and `kubernetes`. Refs strategy equals to
-simplified only/except configuration, whereas kubernetes strategy accepts only
-`active` keyword.
+Three keys are now available: `refs`, `kubernetes` and `variables`.
+Refs strategy equals to simplified only/except configuration, whereas
+kubernetes strategy accepts only `active` keyword.
+
+`variables` keyword is used to define variables expressions. In other words
+you can use predefined variables / project / group or
+environment-scoped variables to define an expression GitLab is going to
+evaluate in order to decide whether a job should be created or not.
 
 See the example below. Job is going to be created only when pipeline has been
 scheduled or runs for a `master` branch, and only if kubernetes service is
@@ -331,6 +343,31 @@ job:
       - schedules
     kubernetes: active
 ```
+
+Examples of using variables expressions:
+
+```yaml
+deploy:
+  script: cap staging deploy
+  only:
+    refs:
+      - branches
+    variables:
+      - $RELEASE == "staging"
+      - $STAGING
+```
+
+Another use case is exluding jobs depending on a commit message _(added in 11.0)_:
+
+```yaml
+end-to-end:
+  script: rake test:end-to-end
+  except:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /skip-end-to-end-tests/
+```
+
+Learn more about variables expressions on [a separate page][variables-expressions].
 
 ## `tags`
 
@@ -372,18 +409,18 @@ fails, it will not stop the next stage from running, since it's marked with
 job1:
   stage: test
   script:
-  - execute_script_that_will_fail
+    - execute_script_that_will_fail
   allow_failure: true
 
 job2:
   stage: test
   script:
-  - execute_script_that_will_succeed
+    - execute_script_that_will_succeed
 
 job3:
   stage: deploy
   script:
-  - deploy_to_staging
+    - deploy_to_staging
 ```
 
 ## `when`
@@ -405,38 +442,38 @@ For example:
 
 ```yaml
 stages:
-- build
-- cleanup_build
-- test
-- deploy
-- cleanup
+  - build
+  - cleanup_build
+  - test
+  - deploy
+  - cleanup
 
 build_job:
   stage: build
   script:
-  - make build
+    - make build
 
 cleanup_build_job:
   stage: cleanup_build
   script:
-  - cleanup build when failed
+    - cleanup build when failed
   when: on_failure
 
 test_job:
   stage: test
   script:
-  - make test
+    - make test
 
 deploy_job:
   stage: deploy
   script:
-  - make deploy
+    - make deploy
   when: manual
 
 cleanup_job:
   stage: cleanup
   script:
-  - cleanup after jobs
+    - cleanup after jobs
   when: always
 ```
 
@@ -697,8 +734,8 @@ rspec:
   script: test
   cache:
     paths:
-    - binaries/*.apk
-    - .config
+      - binaries/*.apk
+      - .config
 ```
 
 Locally defined cache overrides globally defined options. The following `rspec`
@@ -707,14 +744,19 @@ job will cache only `binaries/`:
 ```yaml
 cache:
   paths:
-  - my/files
+    - my/files
 
 rspec:
   script: test
   cache:
+    key: rspec
     paths:
-    - binaries/
+      - binaries/
 ```
+
+Note that since cache is shared between jobs, if you're using different
+paths for different jobs, you should also set a different **cache:key**
+otherwise cache content can be overwritten.
 
 ### `cache:key`
 
@@ -730,10 +772,9 @@ or any other way that fits your workflow. This way, you can fine tune caching,
 allowing you to cache data between different jobs or even different branches.
 
 The `cache:key` variable can use any of the
-[predefined variables](../variables/README.md), and the default key, if not set,
-is `$CI_JOB_NAME-$CI_COMMIT_REF_NAME` which translates as "per-job and
-per-branch". It is the default across the project, therefore everything is
-shared between pipelines and jobs running on the same branch by default.
+[predefined variables](../variables/README.md), and the default key, if not
+set, is just literal `default` which means everything is shared between each
+pipelines and jobs by default, starting from GitLab 9.0.
 
 NOTE: **Note:**
 The `cache:key` variable cannot contain the `/` character, or the equivalent
@@ -745,7 +786,7 @@ For example, to enable per-branch caching:
 cache:
   key: "$CI_COMMIT_REF_SLUG"
   paths:
-  - binaries/
+    - binaries/
 ```
 
 If you use **Windows Batch** to run your shell scripts you need to replace
@@ -753,19 +794,9 @@ If you use **Windows Batch** to run your shell scripts you need to replace
 
 ```yaml
 cache:
-  key: "%CI_JOB_STAGE%-%CI_COMMIT_REF_SLUG%"
+  key: "%CI_COMMIT_REF_SLUG%"
   paths:
-  - binaries/
-```
-
-If you use **Windows PowerShell** to run your shell scripts you need to replace
-`$` with `$env:`:
-
-```yaml
-cache:
-  key: "$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_SLUG"
-  paths:
-  - binaries/
+    - binaries/
 ```
 
 ### `cache:untracked`
@@ -788,7 +819,7 @@ rspec:
   cache:
     untracked: true
     paths:
-    - binaries/
+      - binaries/
 ```
 
 ### `cache:policy`
@@ -845,37 +876,29 @@ skip the download step.
 - Introduced in GitLab Runner v0.7.0 for non-Windows platforms.
 - Windows support was added in GitLab Runner v.1.0.0.
 - From GitLab 9.2, caches are restored before artifacts.
-- Currently not all executors are supported.
+- Not all executors are [supported](https://docs.gitlab.com/runner/executors/#compatibility-chart).
 - Job artifacts are only collected for successful jobs by default.
 
 `artifacts` is used to specify a list of files and directories which should be
-attached to the job after success. You can only use paths that are within the
-project workspace. To pass artifacts between different jobs, see [dependencies](#dependencies).
-Below are some examples.
+attached to the job after success.
+
+The artifacts will be sent to GitLab after the job finishes successfully and will
+be available for download in the GitLab UI.
+
+[Read more about artifacts.](../../user/project/pipelines/job_artifacts.md)
+
+### `artifacts:paths`
+
+You can only use paths that are within the project workspace. To pass artifacts
+between different jobs, see [dependencies](#dependencies).
 
 Send all files in `binaries` and `.config`:
 
 ```yaml
 artifacts:
   paths:
-  - binaries/
-  - .config
-```
-
-Send all Git untracked files:
-
-```yaml
-artifacts:
-  untracked: true
-```
-
-Send all Git untracked files and files in `binaries`:
-
-```yaml
-artifacts:
-  untracked: true
-  paths:
-  - binaries/
+    - binaries/
+    - .config
 ```
 
 To disable artifact passing, define the job with empty [dependencies](#dependencies):
@@ -904,15 +927,10 @@ release-job:
     - mvn package -U
   artifacts:
     paths:
-    - target/*.war
+      - target/*.war
   only:
     - tags
 ```
-
-The artifacts will be sent to GitLab after the job finishes successfully and will
-be available for download in the GitLab UI.
-
-[Read more about artifacts.](../../user/project/pipelines/job_artifacts.md)
 
 ### `artifacts:name`
 
@@ -930,26 +948,30 @@ To create an archive with a name of the current job:
 job:
   artifacts:
     name: "$CI_JOB_NAME"
+    paths:
+      - binaries/
 ```
 
 To create an archive with a name of the current branch or tag including only
-the files that are untracked by Git:
+the binaries directory:
 
 ```yaml
 job:
    artifacts:
      name: "$CI_COMMIT_REF_NAME"
-     untracked: true
+    paths:
+      - binaries/
 ```
 
 To create an archive with a name of the current job and the current branch or
-tag including only the files that are untracked by Git:
+tag including only the binaries directory:
 
 ```yaml
 job:
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
-    untracked: true
+    paths:
+      - binaries/
 ```
 
 To create an archive with a name of the current [stage](#stages) and branch name:
@@ -958,7 +980,8 @@ To create an archive with a name of the current [stage](#stages) and branch name
 job:
   artifacts:
     name: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME"
-    untracked: true
+    paths:
+      - binaries/
 ```
 
 ---
@@ -970,7 +993,8 @@ If you use **Windows Batch** to run your shell scripts you need to replace
 job:
   artifacts:
     name: "%CI_JOB_STAGE%-%CI_COMMIT_REF_NAME%"
-    untracked: true
+    paths:
+      - binaries/
 ```
 
 If you use **Windows PowerShell** to run your shell scripts you need to replace
@@ -980,7 +1004,33 @@ If you use **Windows PowerShell** to run your shell scripts you need to replace
 job:
   artifacts:
     name: "$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_NAME"
-    untracked: true
+    paths:
+      - binaries/
+```
+
+### `artifacts:untracked`
+
+`artifacts:untracked` is used to add all Git untracked files as artifacts (along
+to the paths defined in `artifacts:paths`).
+
+NOTE: **Note:**
+To exclude the folders/files which should not be a part of `untracked` just
+add them to `.gitignore`.
+
+Send all Git untracked files:
+
+```yaml
+artifacts:
+  untracked: true
+```
+
+Send all Git untracked files and files in `binaries`:
+
+```yaml
+artifacts:
+  untracked: true
+  paths:
+    - binaries/
 ```
 
 ### `artifacts:when`
@@ -1070,26 +1120,26 @@ build:osx:
   script: make build:osx
   artifacts:
     paths:
-    - binaries/
+      - binaries/
 
 build:linux:
   stage: build
   script: make build:linux
   artifacts:
     paths:
-    - binaries/
+      - binaries/
 
 test:osx:
   stage: test
   script: make test:osx
   dependencies:
-  - build:osx
+    - build:osx
 
 test:linux:
   stage: test
   script: make test:linux
   dependencies:
-  - build:linux
+    - build:linux
 
 deploy:
   stage: deploy
@@ -1189,7 +1239,7 @@ Runner itself](../variables/README.md#predefined-variables-environment-variables
 One example would be `CI_COMMIT_REF_NAME` which has the value of
 the branch or tag name for which project is built. Apart from the variables
 you can set in `.gitlab-ci.yml`, there are also the so called
-[secret variables](../variables/README.md#secret-variables)
+[Variables](../variables/README.md#variables)
 which can be set in GitLab's UI.
 
 [Learn more about variables and their priority.][variables]
@@ -1355,6 +1405,43 @@ variables:
 ```
 
 You can set it globally or per-job in the [`variables`](#variables) section.
+
+### Custom build directories
+
+> [Introduced][gitlab-runner-876] in Gitlab Runner 11.1
+
+NOTE: **Note:**
+This can only be used when `custom_build_dir` is set to true in the [Runner's
+configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
+
+By default, GitLab Runner clones the repository in the `/builds` directory,
+but sometimes your project might require to have the code in a specific
+directory, like the GO projects for example. In that case, you can specify
+the `CI_PROJECT_DIR` variable to tell the Runner in which directory to clone
+the repository:
+
+```yml
+image: golang:1.10-alpine3.7
+
+variables:
+  CI_PROJECT_DIR: /go/src/gitlab.com/namespace/project-name
+
+stages:
+    - test
+
+dir:
+    stage: test
+    script:
+      - pwd # /go/src/gitlab.com/namespace/project-name
+```
+
+The following executors may use this feature only when
+[concurrent](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section)
+is set to `1`:
+
+- `shell`
+- `ssh`
+- `docker`, `docker+machine` when the job's working directory is mounted as a host volume.
 
 ## Special YAML features
 
@@ -1526,8 +1613,9 @@ capitalization, the commit will be created but the pipeline will be skipped.
 
 ## Validate the .gitlab-ci.yml
 
-Each instance of GitLab CI has an embedded debug tool called Lint.
-You can find the link under `/ci/lint` of your gitlab instance.
+Each instance of GitLab CI has an embedded debug tool called Lint, which validates the
+content of your `.gitlab-ci.yml` files. You can find the Lint under the page `ci/lint` of your
+project namespace (e.g, `http://gitlab-example.com/gitlab-org/project-123/-/ci/lint`)
 
 ## Using reserved keywords
 
@@ -1548,4 +1636,6 @@ CI with various languages.
 [ce-7983]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7983
 [ce-7447]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7447
 [ce-12909]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12909
+[gitlab-runner-876]: https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/876
 [schedules]: ../../user/project/pipelines/schedules.md
+[variables-expressions]: ../variables/README.md#variables-expressions

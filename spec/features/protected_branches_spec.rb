@@ -68,9 +68,11 @@ feature 'Protected Branches', :js do
 
         within form do
           find(".js-allowed-to-merge").click
+          wait_for_requests
           click_link 'No one'
           find(".js-allowed-to-push").click
-          click_link 'Developers + Masters'
+          wait_for_requests
+          click_link 'Developers + Maintainers'
         end
 
         visit project_protected_branches_path(project)
@@ -80,7 +82,7 @@ feature 'Protected Branches', :js do
             expect(page.find(".dropdown-toggle-text")).to have_content("No one")
           end
           page.within(".js-allowed-to-push") do
-            expect(page.find(".dropdown-toggle-text")).to have_content("Developers + Masters")
+            expect(page.find(".dropdown-toggle-text")).to have_content("Developers + Maintainers")
           end
         end
       end
@@ -142,7 +144,10 @@ feature 'Protected Branches', :js do
         set_protected_branch_name('*-stable')
         click_on "Protect"
 
-        within(".protected-branches-list") { expect(page).to have_content("2 matching branches") }
+        within(".protected-branches-list") do
+          expect(page).to have_content("Protected branch (2)")
+          expect(page).to have_content("2 matching branches")
+        end
       end
 
       it "displays all the branches matching the wildcard" do

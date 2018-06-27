@@ -21,6 +21,11 @@ describe Auth::ContainerRegistryAuthenticationService do
     allow_any_instance_of(JSONWebToken::RSAToken).to receive(:key).and_return(rsa_key)
   end
 
+  shared_examples 'an authenticated' do
+    it { is_expected.to include(:token) }
+    it { expect(payload).to include('access') }
+  end
+
   shared_examples 'a valid token' do
     it { is_expected.to include(:token) }
     it { expect(payload).to include('access') }
@@ -380,6 +385,14 @@ describe Auth::ContainerRegistryAuthenticationService do
       current_project.add_developer(current_user)
     end
 
+    context 'allow to use offline_token' do
+      let(:current_params) do
+        { offline_token: true }
+      end
+
+      it_behaves_like 'an authenticated'
+    end
+
     it_behaves_like 'a valid token'
 
     context 'allow to pull and push images' do
@@ -583,6 +596,142 @@ describe Auth::ContainerRegistryAuthenticationService do
 
       it_behaves_like 'a forbidden'
       it_behaves_like 'not a container repository factory'
+    end
+  end
+
+  context 'for deploy tokens' do
+    let(:current_params) do
+      { scope: "repository:#{project.full_path}:pull" }
+    end
+
+    context 'when deploy token has read_registry as a scope' do
+      let(:current_user) { create(:deploy_token, projects: [project]) }
+
+      context 'for public project' do
+        let(:project) { create(:project, :public) }
+
+        context 'when pulling' do
+          it_behaves_like 'a pullable'
+        end
+
+        context 'when pushing' do
+          let(:current_params) do
+            { scope: "repository:#{project.full_path}:push" }
+          end
+
+          it_behaves_like 'an inaccessible'
+        end
+      end
+
+      context 'for internal project' do
+        let(:project) { create(:project, :internal) }
+
+        context 'when pulling' do
+          it_behaves_like 'a pullable'
+        end
+
+        context 'when pushing' do
+          let(:current_params) do
+            { scope: "repository:#{project.full_path}:push" }
+          end
+
+          it_behaves_like 'an inaccessible'
+        end
+      end
+
+      context 'for private project' do
+        let(:project) { create(:project, :private) }
+
+        context 'when pulling' do
+          it_behaves_like 'a pullable'
+        end
+
+        context 'when pushing' do
+          let(:current_params) do
+            { scope: "repository:#{project.full_path}:push" }
+          end
+
+          it_behaves_like 'an inaccessible'
+        end
+      end
+    end
+
+    context 'when deploy token does not have read_registry scope' do
+      let(:current_user) { create(:deploy_token, projects: [project], read_registry: false) }
+
+      context 'for public project' do
+        let(:project) { create(:project, :public) }
+
+        context 'when pulling' do
+          it_behaves_like 'a pullable'
+        end
+      end
+
+      context 'for internal project' do
+        let(:project) { create(:project, :internal) }
+
+        context 'when pulling' do
+          it_behaves_like 'an inaccessible'
+        end
+      end
+
+      context 'for private project' do
+        let(:project) { create(:project, :internal) }
+
+        context 'when pulling' do
+          it_behaves_like 'an inaccessible'
+        end
+      end
+    end
+
+    context 'when deploy token is not related to the project' do
+      let(:current_user) { create(:deploy_token, read_registry: false) }
+
+      context 'for public project' do
+        let(:project) { create(:project, :public) }
+
+        context 'when pulling' do
+          it_behaves_like 'a pullable'
+        end
+      end
+
+      context 'for internal project' do
+        let(:project) { create(:project, :internal) }
+
+        context 'when pulling' do
+          it_behaves_like 'an inaccessible'
+        end
+      end
+
+      context 'for private project' do
+        let(:project) { create(:project, :internal) }
+
+        context 'when pulling' do
+          it_behaves_like 'an inaccessible'
+        end
+      end
+    end
+
+    context 'when deploy token has been revoked' do
+      let(:current_user) { create(:deploy_token, :revoked, projects: [project]) }
+
+      context 'for public project' do
+        let(:project) { create(:project, :public) }
+
+        it_behaves_like 'a pullable'
+      end
+
+      context 'for internal project' do
+        let(:project) { create(:project, :internal) }
+
+        it_behaves_like 'an inaccessible'
+      end
+
+      context 'for private project' do
+        let(:project) { create(:project, :internal) }
+
+        it_behaves_like 'an inaccessible'
+      end
     end
   end
 end

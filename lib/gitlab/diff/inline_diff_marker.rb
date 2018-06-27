@@ -1,11 +1,14 @@
 module Gitlab
   module Diff
     class InlineDiffMarker < Gitlab::StringRangeMarker
+      def initialize(line, rich_line = nil)
+        super(line, rich_line || line)
+      end
+
       def mark(line_inline_diffs, mode: nil)
-        mark = super(line_inline_diffs) do |text, left:, right:|
+        super(line_inline_diffs) do |text, left:, right:|
           %{<span class="#{html_class_names(left, right, mode)}">#{text}</span>}
         end
-        mark.html_safe
       end
 
       private

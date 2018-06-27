@@ -8,7 +8,7 @@ require Rails.root.join('db', 'post_migrate', '20170313133418_rename_more_reserv
 # around this we use the DELETE cleaning strategy.
 describe RenameMoreReservedProjectNames, :delete do
   let(:migration) { described_class.new }
-  let!(:project) { create(:project) }
+  let!(:project) { create(:project) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
 
   before do
     project.path = 'artifacts'

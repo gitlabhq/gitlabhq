@@ -97,8 +97,6 @@ module Issuable
 
     strip_attributes :title
 
-    after_save :ensure_metrics, unless: :imported?
-
     # We want to use optimistic lock for cases when only title or description are involved
     # http://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html
     def locking_enabled?
@@ -106,6 +104,10 @@ module Issuable
     end
 
     def allows_multiple_assignees?
+      false
+    end
+
+    def etag_caching_enabled?
       false
     end
 
@@ -137,7 +139,7 @@ module Issuable
       fuzzy_search(query, [:title, :description])
     end
 
-    def sort(method, excluded_labels: [])
+    def sort_by_attribute(method, excluded_labels: [])
       sorted =
         case method.to_s
         when 'downvotes_desc'     then order_downvotes_desc

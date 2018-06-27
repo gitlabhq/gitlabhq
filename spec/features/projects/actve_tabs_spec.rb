@@ -35,7 +35,7 @@ describe 'Project active tab' do
       visit project_path(project)
     end
 
-    it_behaves_like 'page has active tab', 'Overview'
+    it_behaves_like 'page has active tab', 'Project'
     it_behaves_like 'page has active sub tab', 'Details'
 
     context 'on project Home/Activity' do
@@ -43,7 +43,7 @@ describe 'Project active tab' do
         click_tab('Activity')
       end
 
-      it_behaves_like 'page has active tab', 'Overview'
+      it_behaves_like 'page has active tab', 'Project'
       it_behaves_like 'page has active sub tab', 'Activity'
     end
   end

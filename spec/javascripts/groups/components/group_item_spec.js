@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import * as urlUtils from '~/lib/utils/url_utility';
 import groupItemComponent from '~/groups/components/group_item.vue';
 import groupFolderComponent from '~/groups/components/group_folder.vue';
 import eventHub from '~/groups/event_hub';
@@ -42,7 +41,7 @@ describe('GroupItemComponent', () => {
     describe('rowClass', () => {
       it('should return map of classes based on group details', () => {
         const classes = ['is-open', 'has-children', 'has-description', 'being-removed'];
-        const rowClass = vm.rowClass;
+        const { rowClass } = vm;
 
         expect(Object.keys(rowClass).length).toBe(classes.length);
         Object.keys(rowClass).forEach((className) => {
@@ -135,13 +134,13 @@ describe('GroupItemComponent', () => {
         const group = Object.assign({}, mockParentGroupItem);
         group.childrenCount = 0;
         const newVm = createComponent(group);
-        spyOn(urlUtils, 'visitUrl').and.stub();
+        const visitUrl = spyOnDependency(groupItemComponent, 'visitUrl').and.stub();
         spyOn(eventHub, '$emit');
 
         newVm.onClickRowGroup(event);
         setTimeout(() => {
           expect(eventHub.$emit).not.toHaveBeenCalled();
-          expect(urlUtils.visitUrl).toHaveBeenCalledWith(newVm.group.relativePath);
+          expect(visitUrl).toHaveBeenCalledWith(newVm.group.relativePath);
           done();
         }, 0);
       });

@@ -12,6 +12,7 @@ describe('Promote label modal', () => {
     labelColor: '#5cb85c',
     labelTextColor: '#ffffff',
     url: `${gl.TEST_HOST}/dummy/promote/labels`,
+    groupName: 'group',
   };
 
   describe('Modal title and description', () => {
@@ -24,7 +25,7 @@ describe('Promote label modal', () => {
     });
 
     it('contains the proper description', () => {
-      expect(vm.text).toContain('Promoting this label will make it available for all projects inside the group');
+      expect(vm.text).toContain(`Promoting ${labelMockData.labelTitle} will make it available for all projects inside ${labelMockData.groupName}`);
     });
 
     it('contains a label span with the color', () => {

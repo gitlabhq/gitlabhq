@@ -27,6 +27,10 @@ class DeployKey < Key
     self.private?
   end
 
+  def user
+    super || User.ghost
+  end
+
   def has_access_to?(project)
     deploy_keys_project_for(project).present?
   end

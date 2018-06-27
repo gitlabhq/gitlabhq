@@ -27,7 +27,7 @@ describe GitlabUploader do
   describe '#file_cache_storage?' do
     context 'when file storage is used' do
       before do
-        uploader_class.cache_storage(:file)
+        expect(uploader_class).to receive(:cache_storage) { CarrierWave::Storage::File }
       end
 
       it { is_expected.to be_file_cache_storage }
@@ -35,7 +35,7 @@ describe GitlabUploader do
 
     context 'when is remote storage' do
       before do
-        uploader_class.cache_storage(:fog)
+        expect(uploader_class).to receive(:cache_storage) { CarrierWave::Storage::Fog }
       end
 
       it { is_expected.not_to be_file_cache_storage }
@@ -62,7 +62,7 @@ describe GitlabUploader do
       expect(FileUtils).to receive(:mv).with(anything, /^#{subject.work_dir}/).and_call_original
       expect(FileUtils).to receive(:mv).with(/^#{subject.work_dir}/, /#{subject.cache_dir}/).and_call_original
 
-      fixture = Rails.root.join('spec', 'fixtures', 'rails_sample.jpg')
+      fixture = File.join('spec', 'fixtures', 'rails_sample.jpg')
       subject.cache!(fixture_file_upload(fixture))
 
       expect(subject.file.path).to match(/#{subject.cache_dir}/)

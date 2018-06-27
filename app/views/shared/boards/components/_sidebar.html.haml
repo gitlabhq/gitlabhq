@@ -3,14 +3,14 @@
     %aside.right-sidebar.right-sidebar-expanded.issue-boards-sidebar{ "v-show" => "showSidebar" }
       .issuable-sidebar
         .block.issuable-sidebar-header
-          %span.issuable-header-text.hide-collapsed.pull-left
+          %span.issuable-header-text.hide-collapsed.float-left
             %strong
               {{ issue.title }}
             %br/
             %span
               = precede "#" do
                 {{ issue.iid }}
-          %a.gutter-toggle.pull-right{ role: "button",
+          %a.gutter-toggle.float-right{ role: "button",
             href: "#",
             "@click.prevent" => "closeSidebar",
             "aria-label" => "Toggle sidebar" }
@@ -22,6 +22,6 @@
           = render "shared/boards/components/sidebar/labels"
           = render "shared/boards/components/sidebar/notifications"
           %remove-btn{ ":issue" => "issue",
-            ":issue-update" => "'#{build_issue_link_base}/' + issue.iid + '.json'",
+            ":issue-update" => "issue.sidebarInfoEndpoint",
             ":list" => "list",
             "v-if" => "canRemove" }

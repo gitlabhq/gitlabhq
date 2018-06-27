@@ -132,8 +132,9 @@ Use GPG to [sign your commits](gpg_signed_commits/index.md).
 
 ## Repository size
 
-In GitLab.com, your repository size limit it 10GB. For other instances,
-the repository size is limited by your system administrators.
+On GitLab.com, your [repository size limit is 10GB](../../gitlab_com/index.md#repository-size-limit)
+(including LFS). For other instances, the repository size is limited by your
+system administrators.
 
 You can also [reduce a repository size using Git](reducing_the_repo_size_using_git.md).
 
@@ -174,5 +175,13 @@ Lock your files to prevent any conflicting changes.
 ## Repository's API
 
 You can access your repos via [repository API](../../../api/repositories.md).
+
+## Clone in Apple Xcode
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/45820) in GitLab 11.0
+
+Projects that contain a `.xcodeproj` or `.xcworkspace` directory can now be cloned
+in Xcode using the new **Open in Xcode** button, located next to the Git URL
+used for cloning your project. The button is only shown on macOS.
 
 [jupyter]: https://jupyter.org

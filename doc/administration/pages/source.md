@@ -67,11 +67,11 @@ you need to add a [wildcard DNS A record][wiki-wildcard-dns] pointing to the
 host that GitLab runs. For example, an entry would look like this:
 
 ```
-*.example.io. 1800 IN A 1.1.1.1
+*.example.io. 1800 IN A 192.0.2.1
 ```
 
 where `example.io` is the domain under which GitLab Pages will be served
-and `1.1.1.1` is the IP address of your GitLab instance.
+and `192.0.2.1` is the IP address of your GitLab instance.
 
 > **Note:**
 You should not use the GitLab domain to serve user pages. For more information
@@ -253,7 +253,7 @@ world. Custom domains are supported, but no TLS.
        port: 80
        https: false
 
-       external_http: 1.1.1.2:80
+       external_http: 192.0.2.2:80
      ```
 
 1. Edit `/etc/default/gitlab` and set `gitlab_pages_enabled` to `true` in
@@ -263,7 +263,7 @@ world. Custom domains are supported, but no TLS.
 
     ```
     gitlab_pages_enabled=true
-    gitlab_pages_options="-pages-domain example.io -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8090 -listen-http 1.1.1.2:80"
+    gitlab_pages_options="-pages-domain example.io -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8090 -listen-http 192.0.2.2:80"
     ```
 
 1. Copy the `gitlab-pages-ssl` Nginx configuration file:
@@ -274,7 +274,7 @@ world. Custom domains are supported, but no TLS.
     ```
 
 1. Edit all GitLab related configs in `/etc/nginx/site-available/` and replace
-   `0.0.0.0` with `1.1.1.1`, where `1.1.1.1` the primary IP where GitLab
+   `0.0.0.0` with `192.0.2.1`, where `192.0.2.1` the primary IP where GitLab
    listens to.
 1. Restart NGINX
 1. [Restart GitLab][restart]
@@ -320,8 +320,8 @@ world. Custom domains and TLS are supported.
        port: 443
        https: true
 
-       external_http: 1.1.1.2:80
-       external_https: 1.1.1.2:443
+       external_http: 192.0.2.2:80
+       external_https: 192.0.2.2:443
      ```
 
 1. Edit `/etc/default/gitlab` and set `gitlab_pages_enabled` to `true` in
@@ -333,7 +333,7 @@ world. Custom domains and TLS are supported.
 
     ```
     gitlab_pages_enabled=true
-    gitlab_pages_options="-pages-domain example.io -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8090 -listen-http 1.1.1.2:80 -listen-https 1.1.1.2:443 -root-cert /path/to/example.io.crt -root-key /path/to/example.io.key
+    gitlab_pages_options="-pages-domain example.io -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8090 -listen-http 192.0.2.2:80 -listen-https 192.0.2.2:443 -root-cert /path/to/example.io.crt -root-key /path/to/example.io.key
     ```
 
 1. Copy the `gitlab-pages-ssl` Nginx configuration file:
@@ -344,7 +344,7 @@ world. Custom domains and TLS are supported.
     ```
 
 1. Edit all GitLab related configs in `/etc/nginx/site-available/` and replace
-   `0.0.0.0` with `1.1.1.1`, where `1.1.1.1` the primary IP where GitLab
+   `0.0.0.0` with `192.0.2.1`, where `192.0.2.1` the primary IP where GitLab
    listens to.
 1. Restart NGINX
 1. [Restart GitLab][restart]

@@ -14,7 +14,7 @@ describe 'Discussion Lock', :js do
       project.add_developer(user)
     end
 
-    context 'when the discussion is   unlocked' do
+    context 'when the discussion is unlocked' do
       it 'the user can lock the issue' do
         visit project_issue_path(project, issue)
 

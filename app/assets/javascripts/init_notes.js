@@ -7,10 +7,10 @@ export default () => {
     notesIds,
     now,
     diffView,
-    autocomplete,
+    enableGFM,
   } = JSON.parse(dataEl.innerHTML);
 
   // Create a singleton so that we don't need to assign
   // into the window object, we can just access the current isntance with Notes.instance
-  Notes.initialize(notesUrl, notesIds, now, diffView, autocomplete);
+  Notes.initialize(notesUrl, notesIds, now, diffView, enableGFM);
 };

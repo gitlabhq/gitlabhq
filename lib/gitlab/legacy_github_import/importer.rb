@@ -78,7 +78,8 @@ module Gitlab
       def handle_errors
         return unless errors.any?
 
-        project.update_column(:import_error, {
+        project.ensure_import_state
+        project.import_state&.update_column(:last_error, {
           message: 'The remote data could not be fully imported.',
           errors: errors
         }.to_json)
@@ -259,7 +260,7 @@ module Gitlab
       def import_wiki
         unless project.wiki.repository_exists?
           wiki = WikiFormatter.new(project)
-          gitlab_shell.import_repository(project.repository_storage_path, wiki.disk_path, wiki.import_url)
+          gitlab_shell.import_repository(project.repository_storage, wiki.disk_path, wiki.import_url)
         end
       rescue Gitlab::Shell::Error => e
         # GitHub error message when the wiki repo has not been created,

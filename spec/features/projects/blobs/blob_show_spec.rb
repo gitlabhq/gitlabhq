@@ -14,6 +14,8 @@ feature 'File blob', :js do
   context 'Ruby file' do
     before do
       visit_blob('files/ruby/popen.rb')
+
+      wait_for_requests
     end
 
     it 'displays the blob' do
@@ -48,6 +50,8 @@ feature 'File blob', :js do
     context 'visiting directly' do
       before do
         visit_blob('files/markdown/ruby-style-guide.md')
+
+        wait_for_requests
       end
 
       it 'displays the blob using the rich viewer' do
@@ -159,6 +163,8 @@ feature 'File blob', :js do
         project.update_attribute(:lfs_enabled, true)
 
         visit_blob('files/lfs/file.md')
+
+        wait_for_requests
       end
 
       it 'displays an error' do
@@ -207,6 +213,8 @@ feature 'File blob', :js do
     context 'when LFS is disabled on the project' do
       before do
         visit_blob('files/lfs/file.md')
+
+        wait_for_requests
       end
 
       it 'displays the blob' do
@@ -242,6 +250,8 @@ feature 'File blob', :js do
       ).execute
 
       visit_blob('files/test.pdf')
+
+      wait_for_requests
     end
 
     it 'displays the blob' do
@@ -268,6 +278,8 @@ feature 'File blob', :js do
         project.update_attribute(:lfs_enabled, true)
 
         visit_blob('files/lfs/lfs_object.iso')
+
+        wait_for_requests
       end
 
       it 'displays the blob' do
@@ -290,6 +302,8 @@ feature 'File blob', :js do
     context 'when LFS is disabled on the project' do
       before do
         visit_blob('files/lfs/lfs_object.iso')
+
+        wait_for_requests
       end
 
       it 'displays the blob' do
@@ -313,6 +327,8 @@ feature 'File blob', :js do
   context 'ZIP file' do
     before do
       visit_blob('Gemfile.zip')
+
+      wait_for_requests
     end
 
     it 'displays the blob' do
@@ -347,6 +363,8 @@ feature 'File blob', :js do
       ).execute
 
       visit_blob('files/empty.md')
+
+      wait_for_requests
     end
 
     it 'displays an error' do

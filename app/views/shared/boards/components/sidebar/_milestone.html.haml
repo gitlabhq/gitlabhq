@@ -1,12 +1,12 @@
 .block.milestone
   .title
-    Milestone
+    = _("Milestone")
     - if can_admin_issue?
       = icon("spinner spin", class: "block-loading")
-      = link_to "Edit", "#", class: "js-sidebar-dropdown-toggle edit-link pull-right"
+      = link_to _("Edit"), "#", class: "js-sidebar-dropdown-toggle edit-link float-right"
   .value
     %span.no-value{ "v-if" => "!issue.milestone" }
-      None
+      = _("None")
     %span.bold.has-tooltip{ "v-if" => "issue.milestone" }
       {{ issue.milestone.title }}
   - if can_admin_issue?
@@ -18,12 +18,11 @@
       .dropdown
         %button.dropdown-menu-toggle.js-milestone-select.js-issue-board-sidebar{ type: "button", data: { toggle: "dropdown", show_no: "true", field_name: "issue[milestone_id]", milestones: milestones_filter_path(format: :json), ability_name: "issue", use_id: "true", default_no: "true" },
           ":data-selected" => "milestoneTitle",
-          ":data-issuable-id" => "issue.iid",
-          ":data-issue-update" => "'#{build_issue_link_base}/' + issue.iid + '.json'" }
-          Milestone
+          ":data-issuable-id" => "issue.iid" }
+          = _("Milestone")
           = icon("chevron-down")
         .dropdown-menu.dropdown-select.dropdown-menu-selectable
-          = dropdown_title("Assign milestone")
-          = dropdown_filter("Search milestones")
+          = dropdown_title(_("Assign milestone"))
+          = dropdown_filter(_("Search milestones"))
           = dropdown_content
           = dropdown_loading

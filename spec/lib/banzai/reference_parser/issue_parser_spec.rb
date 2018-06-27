@@ -7,7 +7,7 @@ describe Banzai::ReferenceParser::IssueParser do
   let(:user)    { create(:user) }
   let(:issue)   { create(:issue, project: project) }
   let(:link)    { empty_html_link }
-  subject       { described_class.new(project, user) }
+  subject       { described_class.new(Banzai::RenderContext.new(project, user)) }
 
   describe '#nodes_visible_to_user' do
     context 'when the link has a data-issue attribute' do
@@ -116,5 +116,28 @@ describe Banzai::ReferenceParser::IssueParser do
 
       expect(subject.records_for_nodes(nodes)).to eq({ link => issue })
     end
+  end
+
+  context 'when checking multiple merge requests on another project' do
+    let(:other_project) { create(:project, :public) }
+    let(:other_issue) { create(:issue, project: other_project) }
+
+    let(:control_links) do
+      [issue_link(other_issue)]
+    end
+
+    let(:actual_links) do
+      control_links + [issue_link(create(:issue, project: other_project))]
+    end
+
+    def issue_link(issue)
+      Nokogiri::HTML.fragment(%Q{<a data-issue="#{issue.id}"></a>}).children[0]
+    end
+
+    before do
+      project.add_developer(user)
+    end
+
+    it_behaves_like 'no N+1 queries'
   end
 end

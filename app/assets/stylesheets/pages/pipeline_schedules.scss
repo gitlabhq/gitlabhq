@@ -69,7 +69,7 @@
 .cron-preset-radio-input {
   display: inline-block;
 
-  @media (max-width: $screen-md-max) {
+  @include media-breakpoint-down(md) {
     display: block;
     margin: 0 0 5px 5px;
   }

@@ -53,8 +53,8 @@ describe Groups::DestroyService do
         end
 
         it 'verifies that paths have been deleted' do
-          expect(gitlab_shell.exists?(project.repository_storage_path, group.path)).to be_falsey
-          expect(gitlab_shell.exists?(project.repository_storage_path, remove_path)).to be_falsey
+          expect(gitlab_shell.exists?(project.repository_storage, group.path)).to be_falsey
+          expect(gitlab_shell.exists?(project.repository_storage, remove_path)).to be_falsey
         end
       end
     end
@@ -71,13 +71,13 @@ describe Groups::DestroyService do
 
       after do
         # Clean up stale directories
-        gitlab_shell.rm_namespace(project.repository_storage_path, group.path)
-        gitlab_shell.rm_namespace(project.repository_storage_path, remove_path)
+        gitlab_shell.rm_namespace(project.repository_storage, group.path)
+        gitlab_shell.rm_namespace(project.repository_storage, remove_path)
       end
 
       it 'verifies original paths and projects still exist' do
-        expect(gitlab_shell.exists?(project.repository_storage_path, group.path)).to be_truthy
-        expect(gitlab_shell.exists?(project.repository_storage_path, remove_path)).to be_falsey
+        expect(gitlab_shell.exists?(project.repository_storage, group.path)).to be_truthy
+        expect(gitlab_shell.exists?(project.repository_storage, remove_path)).to be_falsey
         expect(Project.unscoped.count).to eq(1)
         expect(Group.unscoped.count).to eq(2)
       end
@@ -144,7 +144,7 @@ describe Groups::DestroyService do
       let!(:project) { create(:project, :legacy_storage, :empty_repo, namespace: group) }
 
       it 'removes repository' do
-        expect(gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")).to be_falsey
+        expect(gitlab_shell.exists?(project.repository_storage, "#{project.disk_path}.git")).to be_falsey
       end
     end
 
@@ -152,7 +152,7 @@ describe Groups::DestroyService do
       let!(:project) { create(:project, :empty_repo, namespace: group) }
 
       it 'removes repository' do
-        expect(gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")).to be_falsey
+        expect(gitlab_shell.exists?(project.repository_storage, "#{project.disk_path}.git")).to be_falsey
       end
     end
   end

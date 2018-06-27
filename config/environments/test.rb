@@ -1,7 +1,7 @@
 Rails.application.configure do
   # Make sure the middleware is inserted first in middleware chain
-  config.middleware.insert_before('ActionDispatch::Static', 'Gitlab::Testing::RequestBlockerMiddleware')
-  config.middleware.insert_before('ActionDispatch::Static', 'Gitlab::Testing::RequestInspectorMiddleware')
+  config.middleware.insert_before(ActionDispatch::Static, Gitlab::Testing::RequestBlockerMiddleware)
+  config.middleware.insert_before(ActionDispatch::Static, Gitlab::Testing::RequestInspectorMiddleware)
 
   # Settings specified here will take precedence over those in config/application.rb
 
@@ -18,7 +18,13 @@ Rails.application.configure do
 
   # Configure static asset server for tests with Cache-Control for performance
   config.assets.compile = false if ENV['CI']
-  config.serve_static_files = true
+
+  if Gitlab.rails5?
+    config.public_file_server.enabled = true
+  else
+    config.serve_static_files = true
+  end
+
   config.static_cache_control = "public, max-age=3600"
 
   # Show full error reports and disable caching

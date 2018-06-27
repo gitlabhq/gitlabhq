@@ -73,15 +73,14 @@ class Import::GoogleCodeController < Import::BaseController
     @repos = client.repos
     @incompatible_repos = client.incompatible_repos
 
-    @already_added_projects = current_user.created_projects.where(import_type: "google_code")
+    @already_added_projects = find_already_added_projects('google_code')
     already_added_projects_names = @already_added_projects.pluck(:import_source)
 
     @repos.reject! { |repo| already_added_projects_names.include? repo.name }
   end
 
   def jobs
-    jobs = current_user.created_projects.where(import_type: "google_code").to_json(only: [:id, :import_status])
-    render json: jobs
+    render json: find_jobs('google_code')
   end
 
   def create
@@ -93,7 +92,7 @@ class Import::GoogleCodeController < Import::BaseController
     if project.persisted?
       render json: ProjectSerializer.new.represent(project)
     else
-      render json: { errors: project.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: project_save_error(project) }, status: :unprocessable_entity
     end
   end
 

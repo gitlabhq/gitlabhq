@@ -1,60 +1,117 @@
 <script>
-  import { mapActions } from 'vuex';
-  import icon from '~/vue_shared/components/icon.vue';
-  import router from '../../ide_router';
+import { mapActions } from 'vuex';
+import tooltip from '~/vue_shared/directives/tooltip';
+import Icon from '~/vue_shared/components/icon.vue';
+import StageButton from './stage_button.vue';
+import UnstageButton from './unstage_button.vue';
+import { viewerTypes } from '../../constants';
 
-  export default {
-    components: {
-      icon,
+export default {
+  components: {
+    Icon,
+    StageButton,
+    UnstageButton,
+  },
+  directives: {
+    tooltip,
+  },
+  props: {
+    file: {
+      type: Object,
+      required: true,
     },
-    props: {
-      file: {
-        type: Object,
-        required: true,
-      },
+    actionComponent: {
+      type: String,
+      required: true,
     },
-    computed: {
-      iconName() {
-        return this.file.tempFile ? 'file-addition' : 'file-modified';
-      },
-      iconClass() {
-        return `multi-file-${this.file.tempFile ? 'addition' : 'modified'} append-right-8`;
-      },
+    keyPrefix: {
+      type: String,
+      required: false,
+      default: '',
     },
-    methods: {
-      ...mapActions([
-        'discardFileChanges',
-        'updateViewer',
-      ]),
-      openFileInEditor(file) {
-        this.updateViewer('diff');
-
-        router.push(`/project${file.url}`);
-      },
+    stagedList: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
-  };
+    activeFileKey: {
+      type: String,
+      required: false,
+      default: null,
+    },
+  },
+  computed: {
+    iconName() {
+      const prefix = this.stagedList ? '-solid' : '';
+      return this.file.tempFile ? `file-addition${prefix}` : `file-modified${prefix}`;
+    },
+    iconClass() {
+      return `multi-file-${this.file.tempFile ? 'addition' : 'modified'} append-right-8`;
+    },
+    fullKey() {
+      return `${this.keyPrefix}-${this.file.key}`;
+    },
+    isActive() {
+      return this.activeFileKey === this.fullKey;
+    },
+    tooltipTitle() {
+      return this.file.path === this.file.name ? '' : this.file.path;
+    },
+  },
+  methods: {
+    ...mapActions([
+      'discardFileChanges',
+      'updateViewer',
+      'openPendingTab',
+      'unstageChange',
+      'stageChange',
+    ]),
+    openFileInEditor() {
+      return this.openPendingTab({
+        file: this.file,
+        keyPrefix: this.keyPrefix,
+      }).then(changeViewer => {
+        if (changeViewer) {
+          this.updateViewer(viewerTypes.diff);
+        }
+      });
+    },
+    fileAction() {
+      if (this.file.staged) {
+        this.unstageChange(this.file.path);
+      } else {
+        this.stageChange(this.file.path);
+      }
+    },
+  },
+};
 </script>
 
 <template>
-  <div class="multi-file-commit-list-item">
-    <button
-      type="button"
-      class="multi-file-commit-list-path"
-      @click="openFileInEditor(file)">
-      <span class="multi-file-commit-list-file-path">
+  <div class="multi-file-commit-list-item position-relative">
+    <div
+      v-tooltip
+      :title="tooltipTitle"
+      :class="{
+        'is-active': isActive
+      }"
+      class="multi-file-commit-list-path w-100 border-0 ml-0 mr-0"
+      role="button"
+      @dblclick="fileAction"
+      @click="openFileInEditor"
+    >
+      <span class="multi-file-commit-list-file-path d-flex align-items-center">
         <icon
           :name="iconName"
           :size="16"
           :css-classes="iconClass"
-        />{{ file.path }}
+        />{{ file.name }}
       </span>
-    </button>
-    <button
-      type="button"
-      class="btn btn-blank multi-file-discard-btn"
-      @click="discardFileChanges(file.path)"
-    >
-      Discard
-    </button>
+    </div>
+    <component
+      :is="actionComponent"
+      :path="file.path"
+      class="d-flex position-absolute"
+    />
   </div>
 </template>

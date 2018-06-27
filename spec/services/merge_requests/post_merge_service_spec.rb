@@ -35,5 +35,17 @@ describe MergeRequests::PostMergeService do
 
       described_class.new(project, user, {}).execute(merge_request)
     end
+
+    it 'deletes non-latest diffs' do
+      diff_removal_service = instance_double(MergeRequests::DeleteNonLatestDiffsService, execute: nil)
+
+      expect(MergeRequests::DeleteNonLatestDiffsService)
+        .to receive(:new).with(merge_request)
+        .and_return(diff_removal_service)
+
+      described_class.new(project, user, {}).execute(merge_request)
+
+      expect(diff_removal_service).to have_received(:execute)
+    end
   end
 end

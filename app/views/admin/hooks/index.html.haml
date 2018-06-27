@@ -15,8 +15,8 @@
     %hr
 
     - if @hooks.any?
-      .panel.panel-default
-        .panel-heading
+      .card
+        .card-header
           System hooks (#{@hooks.count})
         %ul.content-list
           - @hooks.each do |hook|
@@ -29,7 +29,7 @@
               %div
                 - SystemHook.triggers.each_value do |event|
                   - if hook.public_send(event)
-                    %span.label.label-gray= event.to_s.titleize
-                %span.label.label-gray SSL Verification: #{hook.enable_ssl_verification ? 'enabled' : 'disabled'}
+                    %span.badge.badge-gray= event.to_s.titleize
+                %span.badge.badge-gray SSL Verification: #{hook.enable_ssl_verification ? 'enabled' : 'disabled'}
 
 = render 'shared/plugins/index'

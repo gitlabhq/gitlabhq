@@ -3,6 +3,17 @@ module Gitlab
     class RemoteService
       MAX_MSG_SIZE = 128.kilobytes.freeze
 
+      def self.exists?(remote_url)
+        request = Gitaly::FindRemoteRepositoryRequest.new(remote: remote_url)
+
+        response = GitalyClient.call(GitalyClient.random_storage,
+                                     :remote_service,
+                                     :find_remote_repository, request,
+                                     timeout: GitalyClient.medium_timeout)
+
+        response.exists
+      end
+
       def initialize(repository)
         @repository = repository
         @gitaly_repo = repository.gitaly_repository

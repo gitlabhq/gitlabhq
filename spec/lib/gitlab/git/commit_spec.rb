@@ -4,12 +4,15 @@ describe Gitlab::Git::Commit, seed_helper: true do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
   let(:commit) { described_class.find(repository, SeedRepo::Commit::ID) }
   let(:rugged_commit) do
-    repository.rugged.lookup(SeedRepo::Commit::ID)
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      repository.rugged.lookup(SeedRepo::Commit::ID)
+    end
   end
-
   describe "Commit info" do
     before do
-      repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
+      repo = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
+      end
 
       @committer = {
         email: 'mike@smith.com',
@@ -58,7 +61,9 @@ describe Gitlab::Git::Commit, seed_helper: true do
 
     after do
       # Erase the new commit so other tests get the original repo
-      repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
+      repo = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
+      end
       repo.references.update("refs/heads/master", SeedRepo::LastCommit::ID)
     end
   end
@@ -66,7 +71,8 @@ describe Gitlab::Git::Commit, seed_helper: true do
   describe "Commit info from gitaly commit" do
     let(:subject) { "My commit".force_encoding('ASCII-8BIT') }
     let(:body) { subject + "My body".force_encoding('ASCII-8BIT') }
-    let(:gitaly_commit) { build(:gitaly_commit, subject: subject, body: body) }
+    let(:body_size) { body.length }
+    let(:gitaly_commit) { build(:gitaly_commit, subject: subject, body: body, body_size: body_size) }
     let(:id) { gitaly_commit.id }
     let(:committer) { gitaly_commit.committer }
     let(:author) { gitaly_commit.author }
@@ -83,10 +89,30 @@ describe Gitlab::Git::Commit, seed_helper: true do
     it { expect(commit.committer_email).to eq(committer.email) }
     it { expect(commit.parent_ids).to eq(gitaly_commit.parent_ids) }
 
-    context 'no body' do
+    context 'body_size != body.size' do
       let(:body) { "".force_encoding('ASCII-8BIT') }
 
-      it { expect(commit.safe_message).to eq(subject) }
+      context 'zero body_size' do
+        it { expect(commit.safe_message).to eq(subject) }
+      end
+
+      context 'body_size less than threshold' do
+        let(:body_size) { 123 }
+
+        it 'fetches commit message seperately' do
+          expect(described_class).to receive(:get_message).with(repository, id)
+
+          commit.safe_message
+        end
+      end
+
+      context 'body_size greater than threshold' do
+        let(:body_size) { described_class::MAX_COMMIT_MESSAGE_DISPLAY_SIZE + 1 }
+
+        it 'returns the suject plus a notice about message size' do
+          expect(commit.safe_message).to eq("My commit\n\n--commit message is too big")
+        end
+      end
     end
   end
 
@@ -94,7 +120,9 @@ describe Gitlab::Git::Commit, seed_helper: true do
     describe '.find' do
       it "should return first head commit if without params" do
         expect(described_class.last(repository).id).to eq(
-          repository.rugged.head.target.oid
+          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            repository.rugged.head.target.oid
+          end
         )
       end
 
@@ -393,6 +421,16 @@ describe Gitlab::Git::Commit, seed_helper: true do
       end
     end
 
+    describe '#batch_by_oid' do
+      context 'when oids is empty' do
+        it 'makes no Gitaly request' do
+          expect(Gitlab::GitalyClient).not_to receive(:call)
+
+          described_class.batch_by_oid(repository, [])
+        end
+      end
+    end
+
     shared_examples 'extracting commit signature' do
       context 'when the commit is signed' do
         let(:commit_id) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
@@ -554,22 +592,8 @@ describe Gitlab::Git::Commit, seed_helper: true do
     it_should_behave_like '#stats'
   end
 
-  describe '#to_diff' do
-    subject { commit.to_diff }
-
-    it { is_expected.not_to include "From #{SeedRepo::Commit::ID}" }
-    it { is_expected.to include 'diff --git a/files/ruby/popen.rb b/files/ruby/popen.rb'}
-  end
-
   describe '#has_zero_stats?' do
     it { expect(commit.has_zero_stats?).to eq(false) }
-  end
-
-  describe '#to_patch' do
-    subject { commit.to_patch }
-
-    it { is_expected.to include "From #{SeedRepo::Commit::ID}" }
-    it { is_expected.to include 'diff --git a/files/ruby/popen.rb b/files/ruby/popen.rb'}
   end
 
   describe '#to_hash' do
@@ -596,11 +620,40 @@ describe Gitlab::Git::Commit, seed_helper: true do
     let(:commit) { described_class.find(repository, 'master') }
     subject { commit.ref_names(repository) }
 
-    it 'has 1 element' do
-      expect(subject.size).to eq(1)
+    it 'has 2 element' do
+      expect(subject.size).to eq(2)
     end
     it { is_expected.to include("master") }
     it { is_expected.not_to include("feature") }
+  end
+
+  describe '.get_message' do
+    let(:commit_ids) { %w[6d394385cf567f80a8fd85055db1ab4c5295806f cfe32cf61b73a0d5e9f13e774abde7ff789b1660] }
+
+    subject do
+      commit_ids.map { |id| described_class.get_message(repository, id) }
+    end
+
+    shared_examples 'getting commit messages' do
+      it 'gets commit messages' do
+        expect(subject).to contain_exactly(
+          "Added contributing guide\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n",
+          "Add submodule\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n"
+        )
+      end
+    end
+
+    context 'when Gitaly commit_messages feature is enabled' do
+      it_behaves_like 'getting commit messages'
+
+      it 'gets messages in one batch', :request_store do
+        expect { subject.map(&:itself) }.to change { Gitlab::GitalyClient.get_request_count }.by(1)
+      end
+    end
+
+    context 'when Gitaly commit_messages feature is disabled', :disable_gitaly do
+      it_behaves_like 'getting commit messages'
+    end
   end
 
   def sample_commit_hash

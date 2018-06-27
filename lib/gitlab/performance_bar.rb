@@ -5,6 +5,7 @@ module Gitlab
 
     def self.enabled?(user = nil)
       return true if Rails.env.development?
+      return true if user&.admin?
       return false unless user && allowed_group_id
 
       allowed_user_ids.include?(user.id)

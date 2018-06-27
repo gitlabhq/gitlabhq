@@ -1,5 +1,5 @@
 require './spec/support/sidekiq'
-require './spec/support/test_env'
+require './spec/support/helpers/test_env'
 
 class Gitlab::Seeder::CycleAnalytics
   def initialize(project, perf: false)

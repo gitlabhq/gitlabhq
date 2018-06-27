@@ -4,5 +4,4 @@ comments: false
 
 # Legal
 
-- [Corporate contributor license agreement](corporate_contributor_license_agreement.md)
-- [Individual contributor license agreement](individual_contributor_license_agreement.md)
+Please read through the [GitLab License Agreement](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md).

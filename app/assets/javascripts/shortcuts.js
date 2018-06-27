@@ -85,6 +85,7 @@ export default class Shortcuts {
 
     if ($modal.length) {
       $modal.modal('toggle');
+      return null;
     }
 
     return axios.get(gon.shortcuts_path, {

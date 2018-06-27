@@ -4,8 +4,8 @@ FactoryBot.define do
     name 'test-cluster'
 
     trait :project do
-      after(:create) do |cluster, evaluator|
-        cluster.projects << create(:project)
+      before(:create) do |cluster, evaluator|
+        cluster.projects << create(:project, :repository)
       end
     end
 
@@ -31,6 +31,10 @@ FactoryBot.define do
 
     trait :disabled do
       enabled false
+    end
+
+    trait :production_environment do
+      sequence(:environment_scope) { |n| "production#{n}/*" }
     end
   end
 end

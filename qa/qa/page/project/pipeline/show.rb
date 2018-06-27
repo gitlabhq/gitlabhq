@@ -20,14 +20,14 @@ module QA::Page
 
       def running?
         within('.ci-header-container') do
-          return page.has_content?('running')
+          page.has_content?('running')
         end
       end
 
-      def has_build?(name, status: :success)
+      def has_build?(name, status: :success, wait: nil)
         within('.pipeline-graph') do
           within('.ci-job-component', text: name) do
-            return has_selector?(".ci-status-icon-#{status}")
+            has_selector?(".ci-status-icon-#{status}", { wait: wait }.compact)
           end
         end
       end

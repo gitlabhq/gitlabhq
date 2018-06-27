@@ -2,7 +2,6 @@
 
 [![Build status](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/build.svg)](https://gitlab.com/gitlab-org/gitlab-ce/commits/master)
 [![Overall test coverage](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg)](https://gitlab.com/gitlab-org/gitlab-ce/pipelines)
-[![Dependency Status](https://gemnasium.com/gitlabhq/gitlabhq.svg)](https://gemnasium.com/gitlabhq/gitlabhq)
 [![Code Climate](https://codeclimate.com/github/gitlabhq/gitlabhq.svg)](https://codeclimate.com/github/gitlabhq/gitlabhq)
 [![Core Infrastructure Initiative Best Practices](https://bestpractices.coreinfrastructure.org/projects/42/badge)](https://bestpractices.coreinfrastructure.org/projects/42)
 [![Gitter](https://badges.gitter.im/gitlabhq/gitlabhq.svg)](https://gitter.im/gitlabhq/gitlabhq?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
@@ -67,6 +66,14 @@ You can access a new installation with the login **`root`** and password **`5ive
 
 GitLab is an open source project and we are very happy to accept community contributions. Please refer to [CONTRIBUTING.md](/CONTRIBUTING.md) for details.
 
+## Licensing
+
+GitLab Community Edition (CE) is available freely under the MIT Expat license.
+
+All third party components incorporated into the GitLab Software are licensed under the original license provided by the owner of the applicable component.
+
+All Documentation content that resides under the doc/ directory of this repository is licensed under Creative Commons: CC BY-SA 4.0.
+
 ## Install a development environment
 
 To work on GitLab itself, we recommend setting up your development environment with [the GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit).
@@ -119,5 +126,5 @@ Please see [Getting help for GitLab](https://about.gitlab.com/getting-help/) on 
 
 ## Is it awesome?
 
-Thanks for [asking this question](https://twitter.com/supersloth/status/489462789384056832) Joshua.
 [These people](https://twitter.com/gitlab/likes) seem to like it.
+

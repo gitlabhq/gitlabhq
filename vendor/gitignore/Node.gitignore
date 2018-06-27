@@ -36,7 +36,7 @@ build/Release
 node_modules/
 jspm_packages/
 
-# Typescript v1 declaration files
+# TypeScript v1 declaration files
 typings/
 
 # Optional npm cache directory
@@ -59,3 +59,9 @@ typings/
 
 # next.js build output
 .next
+
+# vuepress build output
+.vuepress/dist
+
+# Serverless directories
+.serverless

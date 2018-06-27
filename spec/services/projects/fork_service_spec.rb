@@ -8,7 +8,7 @@ describe Projects::ForkService do
       before do
         @from_user = create(:user)
         @from_namespace = @from_user.namespace
-        avatar = fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")
+        avatar = fixture_file_upload("spec/fixtures/dk.png", "image/png")
         @from_project = create(:project,
                                :repository,
                                creator_id: @from_user.id,
@@ -105,14 +105,14 @@ describe Projects::ForkService do
 
       context 'repository already exists' do
         let(:repository_storage) { 'default' }
-        let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
+        let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage].legacy_disk_path }
 
         before do
           gitlab_shell.create_repository(repository_storage, "#{@to_user.namespace.full_path}/#{@from_project.path}")
         end
 
         after do
-          gitlab_shell.remove_repository(repository_storage_path, "#{@to_user.namespace.full_path}/#{@from_project.path}")
+          gitlab_shell.remove_repository(repository_storage, "#{@to_user.namespace.full_path}/#{@from_project.path}")
         end
 
         it 'does not allow creation' do

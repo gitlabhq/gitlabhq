@@ -70,7 +70,7 @@ pre {
     padding: 0;
   }
 
-  &.well-pre {
+  &.card.card-body-pre {
     border: 1px solid $well-pre-bg;
     background: $gray-light;
     border-radius: 0;
@@ -218,7 +218,7 @@ li.note {
 }
 
 .git_error_tips {
-  @extend .col-md-6;
+  @extend .col-lg-6;
   text-align: left;
   margin-top: 40px;
 
@@ -305,14 +305,6 @@ img.emoji {
   margin-bottom: 10px;
 }
 
-.btn-sign-in {
-  text-shadow: none;
-
-  @media (min-width: $screen-sm-min) {
-    margin-top: 8px;
-  }
-}
-
 .side-filters {
   fieldset {
     margin-bottom: 15px;
@@ -327,7 +319,7 @@ img.emoji {
   }
 }
 
-.well {
+.card.card-body {
   margin-bottom: $gl-padding;
 
   hr {
@@ -336,7 +328,7 @@ img.emoji {
 }
 
 .search_box {
-  @extend .well;
+  @extend .card.card-body;
   text-align: center;
 }
 
@@ -452,6 +444,7 @@ img.emoji {
 
 /** COMMON CLASSES **/
 .prepend-top-0 { margin-top: 0; }
+.prepend-top-2 { margin-top: 2px; }
 .prepend-top-5 { margin-top: 5px; }
 .prepend-top-8 { margin-top: $grid-size; }
 .prepend-top-10 { margin-top: 10px; }
@@ -472,6 +465,7 @@ img.emoji {
 .append-right-20 { margin-right: 20px; }
 .append-bottom-0 { margin-bottom: 0; }
 .append-bottom-5 { margin-bottom: 5px; }
+.append-bottom-8 { margin-bottom: $grid-size; }
 .append-bottom-10 { margin-bottom: 10px; }
 .append-bottom-15 { margin-bottom: 15px; }
 .append-bottom-20 { margin-bottom: 20px; }

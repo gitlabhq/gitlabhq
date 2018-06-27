@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Project snippet', :js do
+describe 'Projects > Snippets > Project snippet', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:snippet) { create(:project_snippet, project: project, file_name: file_name, content: content) }

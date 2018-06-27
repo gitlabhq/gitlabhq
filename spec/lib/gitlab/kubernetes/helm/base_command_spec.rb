@@ -4,22 +4,10 @@ describe Gitlab::Kubernetes::Helm::BaseCommand do
   let(:application) { create(:clusters_applications_helm) }
   let(:base_command) { described_class.new(application.name) }
 
-  describe '#generate_script' do
-    let(:helm_version) { Gitlab::Kubernetes::Helm::HELM_VERSION }
-    let(:command) do
-      <<~HEREDOC
-         set -eo pipefail
-         apk add -U ca-certificates openssl >/dev/null
-         wget -q -O - https://kubernetes-helm.storage.googleapis.com/helm-v#{helm_version}-linux-amd64.tar.gz | tar zxC /tmp >/dev/null
-         mv /tmp/linux-amd64/helm /usr/bin/
-      HEREDOC
-    end
+  subject { base_command }
 
-    subject { base_command.generate_script }
-
-    it 'should return a command that prepares the environment for helm-cli' do
-      expect(subject).to eq(command)
-    end
+  it_behaves_like 'helm commands' do
+    let(:commands) { '' }
   end
 
   describe '#pod_resource' do

@@ -68,8 +68,7 @@
         this.store.updateEnvironmentProp(folder, 'isLoadingFolderContent', showLoader);
 
         this.service.getFolderContent(folder.folder_path)
-          .then(resp => resp.json())
-          .then(response => this.store.setfolderContent(folder, response.environments))
+          .then(response => this.store.setfolderContent(folder, response.data.environments))
           .then(() => this.store.updateEnvironmentProp(folder, 'isLoadingFolderContent', false))
           .catch(() => {
             Flash(s__('Environments|An error occurred while fetching the environments.'));
@@ -94,8 +93,8 @@
     <div class="top-area">
       <tabs
         :tabs="tabs"
-        @onChangeTab="onChangeTab"
         scope="environments"
+        @onChangeTab="onChangeTab"
       />
 
       <div
@@ -120,8 +119,8 @@
       @onChangePage="onChangePage"
     >
       <empty-state
-        slot="emptyState"
         v-if="!isLoading && state.environments.length === 0"
+        slot="emptyState"
         :new-path="newEnvironmentPath"
         :help-path="helpPagePath"
         :can-create-environment="canCreateEnvironment"

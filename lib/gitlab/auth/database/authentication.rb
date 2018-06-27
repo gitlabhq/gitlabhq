@@ -8,7 +8,7 @@ module Gitlab
         def login(login, password)
           return false unless Gitlab::CurrentSettings.password_authentication_enabled_for_git?
 
-          user&.valid_password?(password)
+          return user if user&.valid_password?(password)
         end
       end
     end

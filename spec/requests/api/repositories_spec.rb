@@ -220,11 +220,10 @@ describe API::Repositories do
 
         expect(response).to have_gitlab_http_status(200)
 
-        repo_name = project.repository.name.gsub("\.git", "")
         type, params = workhorse_send_data
 
         expect(type).to eq('git-archive')
-        expect(params['ArchivePath']).to match(/#{repo_name}\-[^\.]+\.tar.gz/)
+        expect(params['ArchivePath']).to match(/#{project.path}\-[^\.]+\.tar.gz/)
       end
 
       it 'returns the repository archive archive.zip' do
@@ -232,11 +231,10 @@ describe API::Repositories do
 
         expect(response).to have_gitlab_http_status(200)
 
-        repo_name = project.repository.name.gsub("\.git", "")
         type, params = workhorse_send_data
 
         expect(type).to eq('git-archive')
-        expect(params['ArchivePath']).to match(/#{repo_name}\-[^\.]+\.zip/)
+        expect(params['ArchivePath']).to match(/#{project.path}\-[^\.]+\.zip/)
       end
 
       it 'returns the repository archive archive.tar.bz2' do
@@ -244,11 +242,10 @@ describe API::Repositories do
 
         expect(response).to have_gitlab_http_status(200)
 
-        repo_name = project.repository.name.gsub("\.git", "")
         type, params = workhorse_send_data
 
         expect(type).to eq('git-archive')
-        expect(params['ArchivePath']).to match(/#{repo_name}\-[^\.]+\.tar.bz2/)
+        expect(params['ArchivePath']).to match(/#{project.path}\-[^\.]+\.tar.bz2/)
       end
 
       context 'when sha does not exist' do
@@ -425,6 +422,21 @@ describe API::Repositories do
     context 'when authenticated', 'as a guest' do
       it_behaves_like '403 response' do
         let(:request) { get api(route, guest) }
+      end
+    end
+
+    # Regression: https://gitlab.com/gitlab-org/gitlab-ce/issues/45363
+    describe 'Links header contains working URLs when no `order_by` nor `sort` is given' do
+      let(:project) { create(:project, :public, :repository) }
+      let(:current_user) { nil }
+
+      it 'returns `Link` header that includes URLs with default value for `order_by` & `sort`' do
+        get api(route, current_user)
+
+        first_link_url = response.headers['Link'].split(';').first
+
+        expect(first_link_url).to include('order_by=commits')
+        expect(first_link_url).to include('sort=asc')
       end
     end
   end

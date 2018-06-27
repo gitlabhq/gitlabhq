@@ -18,6 +18,7 @@ issues:
 - metrics
 - timelogs
 - issue_assignees
+- closed_by
 events:
 - author
 - project
@@ -34,6 +35,7 @@ notes:
 - todos
 - events
 - system_note_metadata
+- note_diff_file
 label_links:
 - target
 - label
@@ -144,6 +146,9 @@ pipeline_schedule:
 - pipelines
 pipeline_schedule_variables:
 - pipeline_schedule
+deploy_tokens:
+- project_deploy_tokens
+- projects
 deploy_keys:
 - user
 - deploy_keys_projects
@@ -181,6 +186,7 @@ project:
 - cluster
 - clusters
 - cluster_project
+- cluster_ingresses
 - creator
 - group
 - namespace
@@ -251,10 +257,10 @@ project:
 - import_data
 - commit_statuses
 - pipelines
+- stages
 - builds
 - runner_projects
 - runners
-- active_runners
 - variables
 - triggers
 - pipeline_schedules
@@ -265,13 +271,16 @@ project:
 - pages_domains
 - authorized_users
 - project_authorizations
+- remote_mirrors
 - route
 - redirect_routes
 - statistics
 - container_repositories
 - uploads
+- import_state
 - members_and_requesters
 - build_trace_section_names
+- build_trace_chunks
 - root_of_fork_network
 - fork_network_member
 - fork_network
@@ -280,6 +289,10 @@ project:
 - project_badges
 - source_of_merge_requests
 - internal_ids
+- project_deploy_tokens
+- deploy_tokens
+- settings
+- ci_cd_settings
 award_emoji:
 - awardable
 - user
@@ -298,3 +311,8 @@ lfs_file_locks:
 - user
 project_badges:
 - project
+metrics:
+- merge_request
+- latest_closed_by
+- merged_by
+- pipeline

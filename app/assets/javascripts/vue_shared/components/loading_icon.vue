@@ -35,10 +35,10 @@
     :is="rootElementType"
     class="loading-container text-center">
     <i
-      class="fa fa-spin fa-spinner"
       :class="cssClass"
-      aria-hidden="true"
       :aria-label="label"
+      class="fa fa-spin fa-spinner"
+      aria-hidden="true"
     >
     </i>
   </component>

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'User manages project members' do
+describe 'Projects > Settings > User manages project members' do
   let(:group) { create(:group, name: 'OpenSource') }
   let(:project) { create(:project) }
   let(:project2) { create(:project) }
@@ -62,7 +62,7 @@ describe 'User manages project members' do
 
     page.within('.project-members-groups') do
       expect(page).to have_content('OpenSource')
-      expect(first('.group_member')).to have_content('Master')
+      expect(first('.group_member')).to have_content('Maintainer')
     end
   end
 end

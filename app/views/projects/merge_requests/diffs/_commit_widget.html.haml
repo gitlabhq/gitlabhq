@@ -1,5 +1,5 @@
 - if @commit
-  .info-well.hidden-xs.prepend-top-default
+  .info-well.d-none.d-sm-block.prepend-top-default
     .well-segment
       %ul.blob-commit-info
         = render 'projects/commits/commit', commit: @commit, merge_request: @merge_request, view_details: true

@@ -4,6 +4,18 @@ describe Clusters::Applications::Prometheus do
   include_examples 'cluster application core specs', :clusters_applications_prometheus
   include_examples 'cluster application status specs', :cluster_application_prometheus
 
+  describe '.installed' do
+    subject { described_class.installed }
+
+    let!(:cluster) { create(:clusters_applications_prometheus, :installed) }
+
+    before do
+      create(:clusters_applications_prometheus, :errored)
+    end
+
+    it { is_expected.to contain_exactly(cluster) }
+  end
+
   describe 'transition to installed' do
     let(:project) { create(:project) }
     let(:cluster) { create(:cluster, projects: [project]) }
@@ -67,11 +79,21 @@ describe Clusters::Applications::Prometheus do
       end
 
       it 'creates proper url' do
-        expect(subject.prometheus_client.url).to eq('http://example.com/api/v1/proxy/namespaces/gitlab-managed-apps/service/prometheus-prometheus-server:80')
+        expect(subject.prometheus_client.url).to eq('http://example.com/api/v1/namespaces/gitlab-managed-apps/service/prometheus-prometheus-server:80/proxy')
       end
 
       it 'copies options and headers from kube client to proxy client' do
         expect(subject.prometheus_client.options).to eq(kube_client.rest_client.options.merge(headers: kube_client.headers))
+      end
+
+      context 'when cluster is not reachable' do
+        before do
+          allow(kube_client).to receive(:proxy_url).and_raise(Kubeclient::HttpError.new(401, 'Unauthorized', nil))
+        end
+
+        it 'returns nil' do
+          expect(subject.prometheus_client).to be_nil
+        end
       end
     end
   end
@@ -87,6 +109,7 @@ describe Clusters::Applications::Prometheus do
     it 'should be initialized with 3 arguments' do
       expect(subject.name).to eq('prometheus')
       expect(subject.chart).to eq('stable/prometheus')
+      expect(subject.version).to eq('6.7.3')
       expect(subject.values).to eq(prometheus.values)
     end
   end

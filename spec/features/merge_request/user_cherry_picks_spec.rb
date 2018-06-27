@@ -40,6 +40,14 @@ describe 'Merge request > User cherry-picks', :js do
 
         expect(page).to have_link 'Cherry-pick'
       end
+
+      it 'hides the cherry pick button for an archived project' do
+        project.update!(archived: true)
+
+        visit project_merge_request_path(project, merge_request)
+
+        expect(page).not_to have_link 'Cherry-pick'
+      end
     end
   end
 end

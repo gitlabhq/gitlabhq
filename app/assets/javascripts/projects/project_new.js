@@ -66,8 +66,8 @@ const bindEvents = () => {
       .on('click', (e) => { e.preventDefault(); })
       .popover({
         title: $pushNewProjectTipTrigger.data('title'),
-        placement: 'auto bottom',
-        html: 'true',
+        placement: 'bottom',
+        html: true,
         content: $('.push-new-project-tip-template').html(),
       })
       .on('shown.bs.popover', () => {
@@ -90,7 +90,7 @@ const bindEvents = () => {
   function chooseTemplate() {
     $('.template-option').hide();
     $projectFieldsForm.addClass('selected');
-    $selectedIcon.removeClass('active');
+    $selectedIcon.removeClass('d-block');
     const value = $(this).val();
     const templates = {
       rails: {
@@ -109,7 +109,7 @@ const bindEvents = () => {
 
     const selectedTemplate = templates[value];
     $selectedTemplateText.text(selectedTemplate.text);
-    $(selectedTemplate.icon).addClass('active');
+    $(selectedTemplate.icon).addClass('d-block');
     $templateProjectNameInput.focus();
   }
 

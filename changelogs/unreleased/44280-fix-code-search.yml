@@ -1,5 +1,0 @@
----
-title: Fix search results stripping last endline when parsing the results
-merge_request: 17777
-author: Jasper Maes
-type: fixed

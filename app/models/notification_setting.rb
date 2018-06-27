@@ -33,6 +33,7 @@ class NotificationSetting < ActiveRecord::Base
     :close_issue,
     :reassign_issue,
     :new_merge_request,
+    :push_to_merge_request,
     :reopen_merge_request,
     :close_merge_request,
     :reassign_merge_request,
@@ -41,9 +42,14 @@ class NotificationSetting < ActiveRecord::Base
     :success_pipeline
   ].freeze
 
-  EXCLUDED_WATCHER_EVENTS = [
+  EXCLUDED_PARTICIPATING_EVENTS = [
     :success_pipeline
   ].freeze
+
+  EXCLUDED_WATCHER_EVENTS = [
+    :push_to_merge_request,
+    :issue_due
+  ].push(*EXCLUDED_PARTICIPATING_EVENTS).freeze
 
   def self.find_or_create_for(source)
     setting = find_or_initialize_by(source: source)

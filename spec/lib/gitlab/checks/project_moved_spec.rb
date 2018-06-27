@@ -44,44 +44,17 @@ describe Gitlab::Checks::ProjectMoved, :clean_gitlab_redis_shared_state do
   end
 
   describe '#message' do
-    context 'when the push is rejected' do
-      it 'returns a redirect message telling the user to try again' do
-        project_moved = described_class.new(project, user, 'http', 'foo/bar')
-        message = "Project 'foo/bar' was moved to '#{project.full_path}'." +
-          "\n\nPlease update your Git remote:" +
-          "\n\n  git remote set-url origin #{project.http_url_to_repo} and try again.\n"
+    it 'returns a redirect message' do
+      project_moved = described_class.new(project, user, 'http', 'foo/bar')
+      message = <<~MSG
+                Project 'foo/bar' was moved to '#{project.full_path}'.
 
-        expect(project_moved.message(rejected: true)).to eq(message)
-      end
-    end
+                Please update your Git remote:
 
-    context 'when the push is not rejected' do
-      it 'returns a redirect message' do
-        project_moved = described_class.new(project, user, 'http', 'foo/bar')
-        message = "Project 'foo/bar' was moved to '#{project.full_path}'." +
-          "\n\nPlease update your Git remote:" +
-          "\n\n  git remote set-url origin #{project.http_url_to_repo}\n"
+                  git remote set-url origin #{project.http_url_to_repo}
+                MSG
 
-        expect(project_moved.message).to eq(message)
-      end
-    end
-  end
-
-  describe '#permanent_redirect?' do
-    context 'with a permanent RedirectRoute' do
-      it 'returns true' do
-        project.route.create_redirect('foo/bar', permanent: true)
-        project_moved = described_class.new(project, user, 'http', 'foo/bar')
-        expect(project_moved.permanent_redirect?).to be_truthy
-      end
-    end
-
-    context 'without a permanent RedirectRoute' do
-      it 'returns false' do
-        project.route.create_redirect('foo/bar')
-        project_moved = described_class.new(project, user, 'http', 'foo/bar')
-        expect(project_moved.permanent_redirect?).to be_falsy
-      end
+      expect(project_moved.message).to eq(message)
     end
   end
 end

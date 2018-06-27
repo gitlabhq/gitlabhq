@@ -298,7 +298,7 @@ describe MarkupHelper do
 
       it 'preserves code color scheme' do
         object = create_object("```ruby\ndef test\n  'hello world'\nend\n```")
-        expected = "\n<pre class=\"code highlight js-syntax-highlight ruby\">" \
+        expected = "<pre class=\"code highlight js-syntax-highlight ruby\">" \
           "<code><span class=\"line\"><span class=\"k\">def</span> <span class=\"nf\">test</span>...</span>\n" \
           "</code></pre>"
 

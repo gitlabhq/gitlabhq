@@ -45,9 +45,13 @@ module Banzai
         @data_attribute ||= "data-#{reference_type.to_s.dasherize}"
       end
 
-      def initialize(project = nil, current_user = nil)
-        @project = project
-        @current_user = current_user
+      # context - An instance of `Banzai::RenderContext`.
+      def initialize(context)
+        @context = context
+      end
+
+      def project_for_node(node)
+        context.project_for_node(node)
       end
 
       # Returns all the nodes containing references that the user can refer to.
@@ -224,7 +228,11 @@ module Banzai
 
       private
 
-      attr_reader :current_user, :project
+      attr_reader :context
+
+      def current_user
+        context.current_user
+      end
 
       # When a feature is disabled or visible only for
       # team members we should not allow team members

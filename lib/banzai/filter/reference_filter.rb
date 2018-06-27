@@ -73,7 +73,7 @@ module Banzai
       #
       # Note that while the key might exist, its value could be nil!
       def validate
-        needs :project
+        needs :project unless skip_project_check?
       end
 
       # Iterates over all <a> and text() nodes in a document.

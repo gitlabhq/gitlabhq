@@ -65,12 +65,11 @@ To make sure that indices still fit. You could find great details in:
 ## Run tests
 
 In order to run the test you can use the following commands:
-- `rake spinach` to run the spinach suite
 - `rake spec` to run the rspec suite
 - `rake karma` to run the karma test suite
 - `rake gitlab:test` to run all the tests
 
-Note: Both `rake spinach` and `rake spec` takes significant time to pass.
+Note: `rake spec` takes significant time to pass.
 Instead of running full test suite locally you can save a lot of time by running
 a single test or directory related to your changes. After you submit merge request
 CI will run full test suite for you. Green CI status in the merge request means
@@ -82,12 +81,10 @@ files it can find, also the ones in `/tmp`
 To run a single test file you can use:
 
 - `bin/rspec spec/controllers/commit_controller_spec.rb` for a rspec test
-- `bin/spinach features/project/issues/milestones.feature` for a spinach test
 
 To run several tests inside one directory:
 
 - `bin/rspec spec/requests/api/` for the rspec tests if you want to test API only
-- `bin/spinach features/profile/` for the spinach tests if you want to test only profile pages
 
 ### Speed-up tests, rake tasks, and migrations
 
@@ -179,3 +176,20 @@ git push -u origin update-project-templates
 ```
 
 Now create a merge request and merge that to master.
+
+## Generate route lists
+
+To see the full list of API routes, you can run:
+
+```shell
+bundle exec rake grape:path_helpers
+```
+
+For the Rails controllers, run:
+
+```shell
+bundle exec rake routes
+```
+
+Since these take some time to create, it's often helpful to save the output to
+a file for quick reference.

@@ -47,6 +47,45 @@ describe MergeRequestDiff do
   end
 
   describe '#diffs' do
+    let(:merge_request) { create(:merge_request, :with_diffs) }
+    let!(:diff) { merge_request.merge_request_diff.reload }
+
+    context 'when it was not cleaned by the system' do
+      it 'returns persisted diffs' do
+        expect(diff).to receive(:load_diffs)
+
+        diff.diffs
+      end
+    end
+
+    context 'when diff was cleaned by the system' do
+      before do
+        diff.clean!
+      end
+
+      it 'returns diffs from repository if can compare with current diff refs' do
+        expect(diff).not_to receive(:load_diffs)
+
+        expect(Compare)
+          .to receive(:new)
+          .with(instance_of(Gitlab::Git::Compare), merge_request.target_project,
+                base_sha: diff.base_commit_sha, straight: false)
+          .and_call_original
+
+        diff.diffs
+      end
+
+      it 'returns persisted diffs if cannot compare with diff refs' do
+        expect(diff).to receive(:load_diffs)
+
+        diff.update!(head_commit_sha: 'invalid-sha')
+
+        diff.diffs
+      end
+    end
+  end
+
+  describe '#raw_diffs' do
     context 'when the :ignore_whitespace_change option is set' do
       it 'creates a new compare object instead of loading from the DB' do
         expect(diff_with_commits).not_to receive(:load_diffs)

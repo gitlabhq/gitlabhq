@@ -17,8 +17,8 @@ describe Boards::IssuesController do
     project.add_guest(guest)
   end
 
-  describe 'GET index' do
-    let(:johndoe) { create(:user, avatar: fixture_file_upload(File.join(Rails.root, 'spec/fixtures/dk.png'))) }
+  describe 'GET index', :request_store do
+    let(:johndoe) { create(:user, avatar: fixture_file_upload(File.join('spec/fixtures/dk.png'))) }
 
     context 'with invalid board id' do
       it 'returns a not found 404 response' do

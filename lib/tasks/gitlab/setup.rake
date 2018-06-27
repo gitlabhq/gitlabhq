@@ -1,7 +1,18 @@
 namespace :gitlab do
   desc "GitLab | Setup production application"
   task setup: :gitlab_environment do
+    check_gitaly_connection
     setup_db
+  end
+
+  def check_gitaly_connection
+    Gitlab.config.repositories.storages.each do |name, _details|
+      Gitlab::GitalyClient::ServerService.new(name).info
+    end
+  rescue GRPC::Unavailable => ex
+    puts "Failed to connect to Gitaly...".color(:red)
+    puts "Error: #{ex}"
+    exit 1
   end
 
   def setup_db

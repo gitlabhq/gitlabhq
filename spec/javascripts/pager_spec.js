@@ -1,15 +1,25 @@
-/* global fixture */
+import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import * as utils from '~/lib/utils/url_utility';
 import Pager from '~/pager';
 
 describe('pager', () => {
+  let axiosMock;
+
+  beforeEach(() => {
+    axiosMock = new MockAdapter(axios);
+  });
+
+  afterEach(() => {
+    axiosMock.restore();
+  });
+
   describe('init', () => {
     const originalHref = window.location.href;
 
     beforeEach(() => {
       setFixtures('<div class="content_list"></div><div class="loading"></div>');
+      spyOn($.fn, 'endlessScroll').and.stub();
     });
 
     afterEach(() => {
@@ -25,7 +35,7 @@ describe('pager', () => {
 
     it('should use current url if data-href attribute not provided', () => {
       const href = `${gl.TEST_HOST}/some_list`;
-      spyOn(utils, 'removeParams').and.returnValue(href);
+      spyOnDependency(Pager, 'removeParams').and.returnValue(href);
       Pager.init();
       expect(Pager.url).toBe(href);
     });
@@ -39,42 +49,37 @@ describe('pager', () => {
     it('keeps extra query parameters from url', () => {
       window.history.replaceState({}, null, '?filter=test&offset=100');
       const href = `${gl.TEST_HOST}/some_list?filter=test`;
-      spyOn(utils, 'removeParams').and.returnValue(href);
+      const removeParams = spyOnDependency(Pager, 'removeParams').and.returnValue(href);
       Pager.init();
-      expect(utils.removeParams).toHaveBeenCalledWith(['limit', 'offset']);
+      expect(removeParams).toHaveBeenCalledWith(['limit', 'offset']);
       expect(Pager.url).toEqual(href);
     });
   });
 
   describe('getOld', () => {
     const urlRegex = /(.*)some_list(.*)$/;
-    let mock;
 
     function mockSuccess() {
-      mock.onGet(urlRegex).reply(200, {
+      axiosMock.onGet(urlRegex).reply(200, {
         count: 0,
         html: '',
       });
     }
 
     function mockError() {
-      mock.onGet(urlRegex).networkError();
+      axiosMock.onGet(urlRegex).networkError();
     }
 
     beforeEach(() => {
-      setFixtures('<div class="content_list" data-href="/some_list"></div><div class="loading"></div>');
+      setFixtures(
+        '<div class="content_list" data-href="/some_list"></div><div class="loading"></div>',
+      );
       spyOn(axios, 'get').and.callThrough();
-
-      mock = new MockAdapter(axios);
 
       Pager.init();
     });
 
-    afterEach(() => {
-      mock.restore();
-    });
-
-    it('shows loader while loading next page', (done) => {
+    it('shows loader while loading next page', done => {
       mockSuccess();
 
       spyOn(Pager.loading, 'show');
@@ -87,7 +92,7 @@ describe('pager', () => {
       });
     });
 
-    it('hides loader on success', (done) => {
+    it('hides loader on success', done => {
       mockSuccess();
 
       spyOn(Pager.loading, 'hide');
@@ -100,7 +105,7 @@ describe('pager', () => {
       });
     });
 
-    it('hides loader on error', (done) => {
+    it('hides loader on error', done => {
       mockError();
 
       spyOn(Pager.loading, 'hide');
@@ -113,7 +118,7 @@ describe('pager', () => {
       });
     });
 
-    it('sends request to url with offset and limit params', (done) => {
+    it('sends request to url with offset and limit params', done => {
       Pager.offset = 100;
       Pager.limit = 20;
       Pager.getOld();

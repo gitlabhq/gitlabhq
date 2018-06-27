@@ -1,4 +1,4 @@
-/* eslint-disable no-useless-return, func-names, space-before-function-paren, wrap-iife, no-var, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, no-unused-vars, one-var-declaration-per-line, prefer-template, no-new, consistent-return, object-shorthand, comma-dangle, no-shadow, no-param-reassign, brace-style, vars-on-top, quotes, no-lonely-if, no-else-return, dot-notation, no-empty, no-return-assign, camelcase, prefer-spread */
+/* eslint-disable no-useless-return, func-names, no-var, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, no-unused-vars, one-var-declaration-per-line, prefer-template, no-new, consistent-return, object-shorthand, comma-dangle, no-shadow, no-param-reassign, brace-style, vars-on-top, quotes, no-lonely-if, no-else-return, dot-notation, no-empty */
 /* global Issuable */
 /* global ListLabel */
 
@@ -10,6 +10,7 @@ import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
 import DropdownUtils from './filtered_search/dropdown_utils';
 import CreateLabelDropdown from './create_label';
 import flash from './flash';
+import ModalStore from './boards/stores/modal_store';
 
 export default class LabelsSelect {
   constructor(els, options = {}) {
@@ -55,7 +56,7 @@ export default class LabelsSelect {
         .map(function () {
           return this.value;
         }).get();
-      const handleClick = options.handleClick;
+      const { handleClick } = options;
 
       $sidebarLabelTooltip.tooltip();
 
@@ -82,7 +83,7 @@ export default class LabelsSelect {
         $dropdown.trigger('loading.gl.dropdown');
         axios.put(issueUpdateURL, data)
           .then(({ data }) => {
-            var labelCount, template, labelTooltipTitle, labelTitles;
+            var labelCount, template, labelTooltipTitle, labelTitles, formattedLabels;
             $loading.fadeOut();
             $dropdown.trigger('loaded.gl.dropdown');
             $selectbox.hide();
@@ -114,13 +115,12 @@ export default class LabelsSelect {
               labelTooltipTitle = labelTitles.join(', ');
             }
             else {
-              labelTooltipTitle = '';
-              $sidebarLabelTooltip.tooltip('destroy');
+              labelTooltipTitle = __('Labels');
             }
 
             $sidebarLabelTooltip
               .attr('title', labelTooltipTitle)
-              .tooltip('fixTitle');
+              .tooltip('_fixTitle');
 
             $('.has-tooltip', $value).tooltip({
               container: 'body'
@@ -215,7 +215,7 @@ export default class LabelsSelect {
           }
           else {
             if (label.color != null) {
-              color = label.color[0];
+              [color] = label.color;
             }
           }
           if (color) {
@@ -243,7 +243,8 @@ export default class LabelsSelect {
           var $dropdownParent = $dropdown.parent();
           var $dropdownInputField = $dropdownParent.find('.dropdown-input-field');
           var isSelected = el !== null ? el.hasClass('is-active') : false;
-          var title = selected.title;
+
+          var { title } = selected;
           var selectedLabels = this.selected;
 
           if ($dropdownInputField.length && $dropdownInputField.val().length) {
@@ -350,7 +351,7 @@ export default class LabelsSelect {
           }
 
           if ($dropdown.closest('.add-issues-modal').length) {
-            boardsModel = gl.issueBoards.ModalStore.store.filter;
+            boardsModel = ModalStore.store.filter;
           }
 
           if (boardsModel) {
@@ -382,7 +383,7 @@ export default class LabelsSelect {
               }));
             }
             else {
-              var labels = gl.issueBoards.BoardsStore.detail.issue.labels;
+              var { labels } = gl.issueBoards.BoardsStore.detail.issue;
               labels = labels.filter(function (selectedLabel) {
                 return selectedLabel.id !== label.id;
               });
@@ -426,7 +427,7 @@ export default class LabelsSelect {
     const tpl = _.template([
       '<% _.each(labels, function(label){ %>',
       '<a href="<%- issueUpdateURL.slice(0, issueUpdateURL.lastIndexOf("/")) %>?label_name[]=<%- encodeURIComponent(label.title) %>">',
-      '<span class="label has-tooltip color-label" title="<%- label.description %>" style="background-color: <%- label.color %>; color: <%- label.text_color %>;">',
+      '<span class="badge label has-tooltip color-label" title="<%- label.description %>" style="background-color: <%- label.color %>; color: <%- label.text_color %>;">',
       '<%- label.title %>',
       '</span>',
       '</a>',

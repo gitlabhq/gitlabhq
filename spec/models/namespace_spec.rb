@@ -5,6 +5,7 @@ describe Namespace do
 
   let!(:namespace) { create(:namespace) }
   let(:gitlab_shell) { Gitlab::Shell.new }
+  let(:repository_storage) { 'default' }
 
   describe 'associations' do
     it { is_expected.to have_many :projects }
@@ -201,7 +202,7 @@ describe Namespace do
       it "moves dir if path changed" do
         namespace.update_attributes(path: namespace.full_path + '_new')
 
-        expect(gitlab_shell.exists?(project.repository_storage_path, "#{namespace.path}/#{project.path}.git")).to be_truthy
+        expect(gitlab_shell.exists?(project.repository_storage, "#{namespace.path}/#{project.path}.git")).to be_truthy
       end
 
       context 'with subgroups', :nested_groups do
@@ -281,7 +282,7 @@ describe Namespace do
         namespace.update_attributes(path: namespace.full_path + '_new')
 
         expect(before_disk_path).to eq(project.disk_path)
-        expect(gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")).to be_truthy
+        expect(gitlab_shell.exists?(project.repository_storage, "#{project.disk_path}.git")).to be_truthy
       end
     end
 
@@ -300,12 +301,18 @@ describe Namespace do
     end
 
     def project_rugged(project)
-      project.repository.rugged
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        project.repository.rugged
+      end
     end
   end
 
   describe '#rm_dir', 'callback' do
-    let(:repository_storage_path) { Gitlab.config.repositories.storages.default['path'] }
+    let(:repository_storage_path) do
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        Gitlab.config.repositories.storages.default.legacy_disk_path
+      end
+    end
     let(:path_in_dir) { File.join(repository_storage_path, namespace.full_path) }
     let(:deleted_path) { namespace.full_path.gsub(namespace.path, "#{namespace.full_path}+#{namespace.id}+deleted") }
     let(:deleted_path_in_dir) { File.join(repository_storage_path, deleted_path) }
@@ -322,7 +329,7 @@ describe Namespace do
       end
 
       it 'schedules the namespace for deletion' do
-        expect(GitlabShellWorker).to receive(:perform_in).with(5.minutes, :rm_namespace, repository_storage_path, deleted_path)
+        expect(GitlabShellWorker).to receive(:perform_in).with(5.minutes, :rm_namespace, repository_storage, deleted_path)
 
         namespace.destroy
       end
@@ -344,7 +351,7 @@ describe Namespace do
         end
 
         it 'schedules the namespace for deletion' do
-          expect(GitlabShellWorker).to receive(:perform_in).with(5.minutes, :rm_namespace, repository_storage_path, deleted_path)
+          expect(GitlabShellWorker).to receive(:perform_in).with(5.minutes, :rm_namespace, repository_storage, deleted_path)
 
           child.destroy
         end
@@ -395,6 +402,21 @@ describe Namespace do
     it "cleans the path and makes sure it's available" do
       expect(described_class.clean_path("-john+gitlab-ETC%.git@gmail.com")).to eq("johngitlab-ETC2")
       expect(described_class.clean_path("--%+--valid_*&%name=.git.%.atom.atom.@email.com")).to eq("valid_name")
+    end
+  end
+
+  describe '#self_and_hierarchy', :nested_groups do
+    let!(:group) { create(:group, path: 'git_lab') }
+    let!(:nested_group) { create(:group, parent: group) }
+    let!(:deep_nested_group) { create(:group, parent: nested_group) }
+    let!(:very_deep_nested_group) { create(:group, parent: deep_nested_group) }
+    let!(:another_group) { create(:group, path: 'gitllab') }
+    let!(:another_group_nested) { create(:group, path: 'foo', parent: another_group) }
+
+    it 'returns the correct tree' do
+      expect(group.self_and_hierarchy).to contain_exactly(group, nested_group, deep_nested_group, very_deep_nested_group)
+      expect(nested_group.self_and_hierarchy).to contain_exactly(group, nested_group, deep_nested_group, very_deep_nested_group)
+      expect(very_deep_nested_group.self_and_hierarchy).to contain_exactly(group, nested_group, deep_nested_group, very_deep_nested_group)
     end
   end
 
@@ -630,6 +652,19 @@ describe Namespace do
 
         2.times { namespace.find_fork_of(project) }
       end
+    end
+  end
+
+  describe '#root_ancestor' do
+    it 'returns the top most ancestor', :nested_groups do
+      root_group = create(:group)
+      nested_group = create(:group, parent: root_group)
+      deep_nested_group = create(:group, parent: nested_group)
+      very_deep_nested_group = create(:group, parent: deep_nested_group)
+
+      expect(nested_group.root_ancestor).to eq(root_group)
+      expect(deep_nested_group.root_ancestor).to eq(root_group)
+      expect(very_deep_nested_group.root_ancestor).to eq(root_group)
     end
   end
 

@@ -48,13 +48,21 @@ describe StuckImportJobsWorker do
 
   describe 'with scheduled import_status' do
     it_behaves_like 'project import job detection' do
-      let(:project) { create(:project, :import_scheduled, import_jid: '123') }
+      let(:project) { create(:project, :import_scheduled) }
+
+      before do
+        project.import_state.update_attributes(jid: '123')
+      end
     end
   end
 
   describe 'with started import_status' do
     it_behaves_like 'project import job detection' do
-      let(:project) { create(:project, :import_started, import_jid: '123') }
+      let(:project) { create(:project, :import_started) }
+
+      before do
+        project.import_state.update_attributes(jid: '123')
+      end
     end
   end
 end

@@ -2,7 +2,7 @@
 - header_title t('sherlock.title'), sherlock_transactions_path
 
 .row-content-block
-  .pull-right
+  .float-right
     = link_to(destroy_all_sherlock_transactions_path,
       class: 'btn btn-danger',
       method: :delete) do
@@ -35,8 +35,7 @@
               = t('sherlock.seconds')
             %td= trans.queries.length
             %td
-              = time_ago_in_words(trans.finished_at)
-              = t('sherlock.ago')
+              = time_ago_with_tooltip trans.finished_at
             %td
-              = link_to(sherlock_transaction_path(trans), class: 'btn btn-xs') do
+              = link_to(sherlock_transaction_path(trans), class: 'btn btn-sm') do
                 = t('sherlock.view')

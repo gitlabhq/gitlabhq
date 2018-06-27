@@ -9,10 +9,10 @@ module QA
         class Mattermost < Test::Instance
           tags :core, :mattermost
 
-          def perform(address, mattermost, *files)
+          def perform(address, mattermost, *rspec_options)
             Runtime::Scenario.define(:mattermost_address, mattermost)
 
-            super(address, *files)
+            super(address, *rspec_options)
           end
         end
       end

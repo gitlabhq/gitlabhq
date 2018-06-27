@@ -34,6 +34,8 @@ module Projects
       system_hook_service.execute_hooks_for(project, :destroy)
       log_info("Project \"#{project.full_path}\" was removed")
 
+      current_user.invalidate_personal_projects_count
+
       true
     rescue => error
       attempt_rollback(project, error.message)
@@ -42,6 +44,20 @@ module Projects
       # Project.transaction can raise Exception
       attempt_rollback(project, error.message)
       raise
+    end
+
+    def attempt_repositories_rollback
+      return unless @project
+
+      flush_caches(@project)
+
+      unless rollback_repository(removal_path(repo_path), repo_path)
+        raise_error('Failed to restore project repository. Please contact the administrator.')
+      end
+
+      unless rollback_repository(removal_path(wiki_path), wiki_path)
+        raise_error('Failed to restore wiki repository. Please contact the administrator.')
+      end
     end
 
     private
@@ -69,20 +85,37 @@ module Projects
       return true if params[:skip_repo] == true
 
       # There is a possibility project does not have repository or wiki
-      return true unless gitlab_shell.exists?(project.repository_storage_path, path + '.git')
+      return true unless repo_exists?(path)
 
       new_path = removal_path(path)
 
-      if gitlab_shell.mv_repository(project.repository_storage_path, path, new_path)
-        log_info("Repository \"#{path}\" moved to \"#{new_path}\"")
+      if mv_repository(path, new_path)
+        log_info(%Q{Repository "#{path}" moved to "#{new_path}" for project "#{project.full_path}"})
 
         project.run_after_commit do
           # self is now project
-          GitlabShellWorker.perform_in(5.minutes, :remove_repository, self.repository_storage_path, new_path)
+          GitlabShellWorker.perform_in(5.minutes, :remove_repository, self.repository_storage, new_path)
         end
       else
         false
       end
+    end
+
+    def rollback_repository(old_path, new_path)
+      # There is a possibility project does not have repository or wiki
+      return true unless repo_exists?(old_path)
+
+      mv_repository(old_path, new_path)
+    end
+
+    def repo_exists?(path)
+      gitlab_shell.exists?(project.repository_storage, path + '.git')
+    end
+
+    def mv_repository(from_path, to_path)
+      return true unless gitlab_shell.exists?(project.repository_storage, from_path + '.git')
+
+      gitlab_shell.mv_repository(project.repository_storage, from_path, to_path)
     end
 
     def attempt_rollback(project, message)
@@ -102,11 +135,22 @@ module Projects
           raise_error('Failed to remove some tags in project container registry. Please try again or contact administrator.')
         end
 
+        log_destroy_event
         trash_repositories!
 
-        project.team.truncate
+        # Rails attempts to load all related records into memory before
+        # destroying: https://github.com/rails/rails/issues/22510
+        # This ensures we delete records in batches.
+        #
+        # Exclude container repositories because its before_destroy would be
+        # called multiple times, and it doesn't destroy any database records.
+        project.destroy_dependent_associations_in_batches(exclude: [:container_repositories])
         project.destroy!
       end
+    end
+
+    def log_destroy_event
+      log_info("Attempting to destroy #{project.full_path} (#{project.id})")
     end
 
     ##
@@ -117,7 +161,7 @@ module Projects
       return true unless Gitlab.config.registry.enabled
 
       ContainerRepository.build_root_repository(project).tap do |repository|
-        return repository.has_tags? ? repository.delete_tags! : true
+        break repository.has_tags? ? repository.delete_tags! : true
       end
     end
 

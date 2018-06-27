@@ -5,7 +5,7 @@
 # Arguments:
 #   current_user - which user use
 #   params:
-#     scope: 'created-by-me' or 'assigned-to-me' or 'all'
+#     scope: 'created_by_me' or 'assigned_to_me' or 'all'
 #     state: 'open' or 'closed' or 'all'
 #     group_id: integer
 #     project_id: integer
@@ -75,6 +75,8 @@ class IssuesFinder < IssuableFinder
         items = items.due_between(Date.today.beginning_of_week, Date.today.end_of_week)
       elsif filter_by_due_this_month?
         items = items.due_between(Date.today.beginning_of_month, Date.today.end_of_month)
+      elsif filter_by_due_next_month_and_previous_two_weeks?
+        items = items.due_between(Date.today - 2.weeks, (Date.today + 1.month).end_of_month)
       end
     end
 
@@ -95,6 +97,10 @@ class IssuesFinder < IssuableFinder
 
   def filter_by_due_this_month?
     due_date? && params[:due_date] == Issue::DueThisMonth.name
+  end
+
+  def filter_by_due_next_month_and_previous_two_weeks?
+    due_date? && params[:due_date] == Issue::DueNextMonthAndPreviousTwoWeeks.name
   end
 
   def due_date?
@@ -129,9 +135,5 @@ class IssuesFinder < IssuableFinder
     else
       items
     end
-  end
-
-  def item_project_ids(items)
-    items&.reorder(nil)&.select(:project_id)
   end
 end

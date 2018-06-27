@@ -21,6 +21,13 @@ describe Projects::EnvironmentsController do
 
         expect(response).to have_gitlab_http_status(:ok)
       end
+
+      it 'expires etag cache to force reload environments list' do
+        expect_any_instance_of(Gitlab::EtagCaching::Store)
+          .to receive(:touch).with(project_environments_path(project, format: :json))
+
+        get :index, environment_params
+      end
     end
 
     context 'when requesting JSON response for folders' do

@@ -26,7 +26,7 @@ module Gitlab
           # When the remote repo does not have tags.
           if target.nil? || path.nil?
             Rails.logger.info "Empty or invalid list of tags for remote: #{remote}. Output: #{output}"
-            return []
+            break []
           end
 
           name = path.split('/', 3).last
@@ -35,7 +35,11 @@ module Gitlab
           next if name =~ /\^\{\}\Z/
 
           target_commit = Gitlab::Git::Commit.find(self, target)
-          Gitlab::Git::Tag.new(self, name, target, target_commit)
+          Gitlab::Git::Tag.new(self, {
+            name: name,
+            target: target,
+            target_commit: target_commit
+          })
         end.compact
       end
 

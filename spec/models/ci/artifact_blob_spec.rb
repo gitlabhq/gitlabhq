@@ -65,6 +65,19 @@ describe Ci::ArtifactBlob do
         expect(url).not_to be_nil
         expect(url).to eq("http://#{project.namespace.path}.#{Gitlab.config.pages.host}/-/#{project.path}/-/jobs/#{build.id}/artifacts/#{path}")
       end
+
+      context 'when port is configured' do
+        let(:port) { 1234 }
+
+        it 'returns an URL with port number' do
+          allow(Gitlab.config.pages).to receive(:url).and_return("#{Gitlab.config.pages.url}:#{port}")
+
+          url = subject.external_url(build.project, build)
+
+          expect(url).not_to be_nil
+          expect(url).to eq("http://#{project.namespace.path}.#{Gitlab.config.pages.host}:#{port}/-/#{project.path}/-/jobs/#{build.id}/artifacts/#{path}")
+        end
+      end
     end
   end
 

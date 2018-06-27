@@ -1,6 +1,49 @@
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'support/shared_examples/malicious_regexp_shared_examples'
 
 describe Gitlab::UntrustedRegexp do
+  describe '.valid?' do
+    it 'returns true if regexp is valid' do
+      expect(described_class.valid?('/some ( thing/'))
+        .to be false
+    end
+
+    it 'returns true if regexp is invalid' do
+      expect(described_class.valid?('/some .* thing/'))
+        .to be true
+    end
+  end
+
+  describe '.fabricate' do
+    context 'when regexp is using /regexp/ scheme with flags' do
+      it 'fabricates regexp with a single flag' do
+        regexp = described_class.fabricate('/something/i')
+
+        expect(regexp).to eq described_class.new('(?i)something')
+        expect(regexp.scan('SOMETHING')).to be_one
+      end
+
+      it 'fabricates regexp with multiple flags' do
+        regexp = described_class.fabricate('/something/im')
+
+        expect(regexp).to eq described_class.new('(?im)something')
+      end
+
+      it 'fabricates regexp without flags' do
+        regexp = described_class.fabricate('/something/')
+
+        expect(regexp).to eq described_class.new('something')
+      end
+    end
+
+    context 'when regexp is a raw pattern' do
+      it 'raises an error' do
+        expect { described_class.fabricate('some .* thing') }
+          .to raise_error(RegexpError)
+      end
+    end
+  end
+
   describe '#initialize' do
     subject { described_class.new(pattern) }
 
@@ -38,6 +81,14 @@ describe Gitlab::UntrustedRegexp do
       result = described_class.new('foo') === 'a bar here'
 
       expect(result).to be_falsy
+    end
+
+    it 'can handle regular expressions in multiline mode' do
+      regexp = described_class.new('^\d', multiline: true)
+
+      result = regexp === "Header\n\n1. Content"
+
+      expect(result).to be_truthy
     end
   end
 

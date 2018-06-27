@@ -66,18 +66,6 @@ describe Gitlab::Git::AttributesParser, seed_helper: true do
       end
     end
 
-    context 'when attributes data is a file handle' do
-      subject do
-        File.open(attributes_path, 'r') do |file_handle|
-          described_class.new(file_handle)
-        end
-      end
-
-      it 'returns the attributes as a Hash' do
-        expect(subject.attributes('test.txt')).to eq({ 'text' => true })
-      end
-    end
-
     context 'when attributes data is nil' do
       let(:data) { nil }
 

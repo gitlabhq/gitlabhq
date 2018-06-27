@@ -1,3 +1,6 @@
+require 'flipper/adapters/active_record'
+require 'flipper/adapters/active_support_cache_store'
+
 class Feature
   # Classes to override flipper table names
   class FlipperFeature < Flipper::Adapters::ActiveRecord::Feature
@@ -60,13 +63,32 @@ class Feature
     end
 
     def flipper
-      @flipper ||= Flipper.instance
+      if RequestStore.active?
+        RequestStore[:flipper] ||= build_flipper_instance
+      else
+        @flipper ||= build_flipper_instance
+      end
+    end
+
+    def build_flipper_instance
+      Flipper.new(flipper_adapter).tap { |flip| flip.memoize = true }
     end
 
     # This method is called from config/initializers/flipper.rb and can be used
     # to register Flipper groups.
     # See https://docs.gitlab.com/ee/development/feature_flags.html#feature-groups
     def register_feature_groups
+    end
+
+    def flipper_adapter
+      active_record_adapter = Flipper::Adapters::ActiveRecord.new(
+        feature_class: FlipperFeature,
+        gate_class: FlipperGate)
+
+      Flipper::Adapters::ActiveSupportCacheStore.new(
+        active_record_adapter,
+        Rails.cache,
+        expires_in: 1.hour)
     end
   end
 end

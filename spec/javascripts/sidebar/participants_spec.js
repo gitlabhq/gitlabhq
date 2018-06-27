@@ -170,5 +170,19 @@ describe('Participants', function () {
 
       expect(vm.isShowingMoreParticipants).toBe(true);
     });
+
+    it('clicking on participants icon emits `toggleSidebar` event', () => {
+      vm = mountComponent(Participants, {
+        loading: false,
+        participants: PARTICIPANT_LIST,
+        numberOfLessParticipants: 2,
+      });
+      spyOn(vm, '$emit');
+
+      const participantsIconEl = vm.$el.querySelector('.sidebar-collapsed-icon');
+
+      participantsIconEl.click();
+      expect(vm.$emit).toHaveBeenCalledWith('toggleSidebar');
+    });
   });
 });

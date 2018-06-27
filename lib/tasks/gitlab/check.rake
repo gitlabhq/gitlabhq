@@ -44,11 +44,13 @@ namespace :gitlab do
       start_checking "GitLab Shell"
 
       check_gitlab_shell
-      check_repo_base_exists
-      check_repo_base_is_not_symlink
-      check_repo_base_user_and_group
-      check_repo_base_permissions
-      check_repos_hooks_directory_is_link
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        check_repo_base_exists
+        check_repo_base_is_not_symlink
+        check_repo_base_user_and_group
+        check_repo_base_permissions
+        check_repos_hooks_directory_is_link
+      end
       check_gitlab_shell_self_test
 
       finished_checking "GitLab Shell"
@@ -61,7 +63,7 @@ namespace :gitlab do
       puts "Repo base directory exists?"
 
       Gitlab.config.repositories.storages.each do |name, repository_storage|
-        repo_base_path = repository_storage['path']
+        repo_base_path = repository_storage.legacy_disk_path
         print "#{name}... "
 
         if File.exist?(repo_base_path)
@@ -86,7 +88,7 @@ namespace :gitlab do
       puts "Repo storage directories are symlinks?"
 
       Gitlab.config.repositories.storages.each do |name, repository_storage|
-        repo_base_path = repository_storage['path']
+        repo_base_path = repository_storage.legacy_disk_path
         print "#{name}... "
 
         unless File.exist?(repo_base_path)
@@ -110,7 +112,7 @@ namespace :gitlab do
       puts "Repo paths access is drwxrws---?"
 
       Gitlab.config.repositories.storages.each do |name, repository_storage|
-        repo_base_path = repository_storage['path']
+        repo_base_path = repository_storage.legacy_disk_path
         print "#{name}... "
 
         unless File.exist?(repo_base_path)
@@ -140,7 +142,7 @@ namespace :gitlab do
       puts "Repo paths owned by #{gitlab_shell_ssh_user}:root, or #{gitlab_shell_ssh_user}:#{Gitlab.config.gitlab_shell.owner_group}?"
 
       Gitlab.config.repositories.storages.each do |name, repository_storage|
-        repo_base_path = repository_storage['path']
+        repo_base_path = repository_storage.legacy_disk_path
         print "#{name}... "
 
         unless File.exist?(repo_base_path)
@@ -427,10 +429,7 @@ namespace :gitlab do
       user = User.find_by(username: username)
       if user
         repo_dirs = user.authorized_projects.map do |p|
-          File.join(
-            p.repository_storage_path,
-            "#{p.disk_path}.git"
-          )
+          p.repository.path_to_repo
         end
 
         repo_dirs.each { |repo_dir| check_repo_integrity(repo_dir) }

@@ -22,6 +22,7 @@
     "in_progress_merge_commit_sha": { "type": ["string", "null"] },
     "merge_error": { "type": ["string", "null"] },
     "merge_commit_sha": { "type": ["string", "null"] },
+    "short_merge_commit_sha": { "type": ["string", "null"] },
     "merge_params": { "type": ["object", "null"] },
     "merge_status": { "type": "string" },
     "merge_user_id": { "type": ["integer", "null"] },
@@ -30,7 +31,7 @@
     "source_project_id": { "type": "integer" },
     "target_branch": { "type": "string" },
     "target_project_id": { "type": "integer" },
-    "allow_maintainer_to_push": { "type": "boolean"},
+    "allow_collaboration": { "type": "boolean"},
     "metrics": {
       "oneOf": [
         { "type": "null" },
@@ -100,6 +101,7 @@
     "merge_commit_message_with_description": { "type": "string" },
     "diverged_commits_count": { "type": "integer" },
     "commit_change_content_path": { "type": "string" },
+    "merge_commit_path": { "type": ["string", "null"] },
     "remove_wip_path": { "type": ["string", "null"] },
     "commits_count": { "type": "integer" },
     "remove_source_branch": { "type": ["boolean", "null"] },
@@ -107,10 +109,12 @@
     "ff_only_enabled": { "type": ["boolean", false] },
     "should_be_rebased": { "type": "boolean" },
     "create_note_path": { "type": ["string", "null"] },
+    "preview_note_path": { "type": ["string", "null"] },
     "rebase_commit_sha": { "type": ["string", "null"] },
     "rebase_in_progress": { "type": "boolean" },
     "can_push_to_source_branch": { "type": "boolean" },
-    "rebase_path": { "type": ["string", "null"] }
+    "rebase_path": { "type": ["string", "null"] },
+    "squash": { "type": "boolean" }
   },
   "additionalProperties": false
 }

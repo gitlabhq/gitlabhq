@@ -12,11 +12,11 @@ describe Gitlab::HTTP do
       end
 
       it 'deny requests to localhost' do
-        expect { described_class.get('http://localhost:3003') }.to raise_error(URI::InvalidURIError)
+        expect { described_class.get('http://localhost:3003') }.to raise_error(Gitlab::HTTP::BlockedUrlError)
       end
 
       it 'deny requests to private network' do
-        expect { described_class.get('http://192.168.1.2:3003') }.to raise_error(URI::InvalidURIError)
+        expect { described_class.get('http://192.168.1.2:3003') }.to raise_error(Gitlab::HTTP::BlockedUrlError)
       end
 
       context 'if allow_local_requests set to true' do
@@ -41,7 +41,7 @@ describe Gitlab::HTTP do
 
       context 'if allow_local_requests set to false' do
         it 'override the global value and ban requests to localhost or private network' do
-          expect { described_class.get('http://localhost:3003', allow_local_requests: false) }.to raise_error(URI::InvalidURIError)
+          expect { described_class.get('http://localhost:3003', allow_local_requests: false) }.to raise_error(Gitlab::HTTP::BlockedUrlError)
         end
       end
     end

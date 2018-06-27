@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Pipeline::Chain::Validate::Config do
-  set(:project) { create(:project) }
+  set(:project) { create(:project, :repository) }
   set(:user) { create(:user) }
 
   let(:command) do
@@ -73,28 +73,6 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Config do
         expect(pipeline).not_to be_failed
         expect(pipeline).not_to be_persisted
       end
-    end
-  end
-
-  context 'when pipeline has no stages / jobs' do
-    let(:config) do
-      { rspec: {
-          script: 'ls',
-          only: ['something']
-      } }
-    end
-
-    let(:pipeline) do
-      build(:ci_pipeline, project: project, config: config)
-    end
-
-    it 'appends an error about missing stages' do
-      expect(pipeline.errors.to_a)
-        .to include 'No stages / jobs for this pipeline.'
-    end
-
-    it 'breaks the chain' do
-      expect(step.break?).to be true
     end
   end
 

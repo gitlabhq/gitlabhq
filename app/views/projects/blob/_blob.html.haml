@@ -1,6 +1,6 @@
 = render "projects/blob/breadcrumb", blob: blob
 
-.info-well.hidden-xs
+.info-well.d-none.d-sm-block
   .well-segment
     %ul.blob-commit-info
       = render 'projects/commits/commit', commit: @last_commit, project: @project, ref: @ref

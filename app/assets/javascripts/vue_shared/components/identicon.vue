@@ -17,7 +17,7 @@ export default {
   },
   computed: {
     /**
-     * This method is based on app/helpers/application_helper.rb#project_identicon
+     * This method is based on app/helpers/avatars_helper.rb#project_identicon
      */
     identiconStyles() {
       const allowedColors = [
@@ -43,9 +43,9 @@ export default {
 
 <template>
   <div
-    class="avatar identicon"
     :class="sizeClass"
-    :style="identiconStyles">
+    :style="identiconStyles"
+    class="avatar identicon">
     {{ identiconTitle }}
   </div>
 </template>

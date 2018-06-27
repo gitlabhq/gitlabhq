@@ -1,16 +1,27 @@
 require 'spec_helper'
 
 describe Gitlab::Auth::LDAP::Access do
+  include LdapHelpers
+
   let(:access) { described_class.new user }
   let(:user) { create(:omniauth_user) }
 
   describe '.allowed?' do
     it 'updates the users `last_credential_check_at' do
+      allow(access).to receive(:update_user)
       expect(access).to receive(:allowed?) { true }
       expect(described_class).to receive(:open).and_yield(access)
 
       expect { described_class.allowed?(user) }
         .to change { user.last_credential_check_at }
+    end
+  end
+
+  describe '#find_ldap_user' do
+    it 'finds a user by dn first' do
+      expect(Gitlab::Auth::LDAP::Person).to receive(:find_by_dn).and_return(:ldap_user)
+
+      access.find_ldap_user
     end
   end
 
@@ -20,6 +31,7 @@ describe Gitlab::Auth::LDAP::Access do
     context 'when the user cannot be found' do
       before do
         allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_dn).and_return(nil)
+        allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_email).and_return(nil)
       end
 
       it { is_expected.to be_falsey }
@@ -32,8 +44,10 @@ describe Gitlab::Auth::LDAP::Access do
     end
 
     context 'when the user is found' do
+      let(:ldap_user) { Gitlab::Auth::LDAP::Person.new(Net::LDAP::Entry.new, 'ldapmain') }
+
       before do
-        allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_dn).and_return(:ldap_user)
+        allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_dn).and_return(ldap_user)
       end
 
       context 'and the user is disabled via active directory' do
@@ -50,7 +64,7 @@ describe Gitlab::Auth::LDAP::Access do
         end
       end
 
-      context 'and has no disabled flag in active diretory' do
+      context 'and has no disabled flag in active directory' do
         before do
           allow(Gitlab::Auth::LDAP::Person).to receive(:disabled_via_active_directory?).and_return(false)
         end
@@ -96,6 +110,7 @@ describe Gitlab::Auth::LDAP::Access do
         context 'when user cannot be found' do
           before do
             allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_dn).and_return(nil)
+            allow(Gitlab::Auth::LDAP::Person).to receive(:find_by_email).and_return(nil)
           end
 
           it { is_expected.to be_falsey }
@@ -118,6 +133,22 @@ describe Gitlab::Auth::LDAP::Access do
             access.allowed?
           end
         end
+      end
+    end
+
+    context 'when the connection fails' do
+      before do
+        raise_ldap_connection_error
+      end
+
+      it 'does not block the user' do
+        access.allowed?
+
+        expect(user.ldap_blocked?).to be_falsey
+      end
+
+      it 'denies access' do
+        expect(access.allowed?).to be_falsey
       end
     end
   end

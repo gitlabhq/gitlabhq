@@ -40,20 +40,20 @@ In GitLab, a namespace is a unique name to be used as a user name, a group name,
 - `http://gitlab.example.com/groupname`
 - `http://gitlab.example.com/groupname/subgroup_name`
 
-For example, consider a user called John:
+For example, consider a user named Alex:
 
-1. John creates his account on GitLab.com with the username `john`;
-his profile will be accessed under `https://gitlab.example.com/john`
-1. John creates a group for his team with the groupname `john-team`;
-his group and its projects will be accessed under `https://gitlab.example.com/john-team`
-1. John creates a subgroup of `john-team` with the subgroup name `marketing`;
-his subgroup and its projects will be accessed under `https://gitlab.example.com/john-team/marketing`
+1. Alex creates an account on GitLab.com with the username `alex`;
+their profile will be accessed under `https://gitlab.example.com/alex`
+1. Alex creates a group for their team with the groupname `alex-team`;
+the group and its projects will be accessed under `https://gitlab.example.com/alex-team`
+1. Alex creates a subgroup of `alex-team` with the subgroup name `marketing`;
+this subgroup and its projects will be accessed under `https://gitlab.example.com/alex-team/marketing`
 
 By doing so:
 
-- Any team member mentions John with `@john`
-- John mentions everyone from his team with `@john-team`
-- John mentions only his marketing team with `@john-team/marketing`
+- Any team member mentions Alex with `@alex`
+- Alex mentions everyone from their team with `@alex-team`
+- Alex mentions only the marketing team with `@alex-team/marketing`
 
 ## Issues and merge requests within a group
 
@@ -125,7 +125,7 @@ side of your screen.
 
 ---
 
-Group owners and masters will be notified of your request and will be able to approve or
+Group owners and maintainers will be notified of your request and will be able to approve or
 decline it on the members page.
 
 ![Manage access requests](img/access_requests_management.png)
@@ -245,10 +245,7 @@ To enable this feature, navigate to the group settings page. Select
 
 ![Checkbox for share with group lock](img/share_with_group_lock.png)
 
-#### Member Lock
-
-> Available in [GitLab Starter](https://about.gitlab.com/products/) and
-[GitLab.com Bronze](https://about.gitlab.com/gitlab-com/).
+#### Member Lock **[STARTER]**
 
 With **Member Lock** it is possible to lock membership in project to the
 level of members in group.
@@ -259,8 +256,8 @@ Learn more about [Member Lock](https://docs.gitlab.com/ee/user/group/index.html#
 
 - **Projects**: view all projects within that group, add members to each project,
 access each project's settings, and remove any project from the same screen.
-- **Webhooks**: configure [webhooks](../project/integrations/webhooks.md)
-and [push rules](https://docs.gitlab.com/ee/push_rules/push_rules.html#push-rules) to your group (Push Rules is available in [GitLab Starter](https://about.gitlab.com/products/).)
+- **Webhooks**: configure [webhooks](../project/integrations/webhooks.md) to your group.
+- **Push rules**: configure [push rules](https://docs.gitlab.com/ee/push_rules/push_rules.html#push-rules) to your group. **[STARTER]**
 - **Audit Events**: view [Audit Events](https://docs.gitlab.com/ee/administration/audit_events.html#audit-events)
-for the group (GitLab admins only, available in [GitLab Starter][ee]).
+for the group. **[STARTER ONLY]**
 - **Pipelines quota**: keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RunPipelineScheduleWorker
   include ApplicationWorker
   include PipelineQueue

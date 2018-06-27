@@ -1,4 +1,5 @@
-%h3 Specific Runners
+%h3
+  = _('Specific Runners')
 
 = render partial: 'ci/runner/how_to_setup_specific_runner',
          locals: { registration_token: @project.runners_token }

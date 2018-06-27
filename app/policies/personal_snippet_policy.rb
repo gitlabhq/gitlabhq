@@ -25,4 +25,6 @@ class PersonalSnippetPolicy < BasePolicy
   end
 
   rule { anonymous }.prevent :comment_personal_snippet
+
+  rule { can?(:comment_personal_snippet) }.enable :award_emoji
 end

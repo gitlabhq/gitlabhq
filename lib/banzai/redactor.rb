@@ -2,13 +2,15 @@ module Banzai
   # Class for removing Markdown references a certain user is not allowed to
   # view.
   class Redactor
-    attr_reader :user, :project
+    attr_reader :context
 
-    # project - A Project to use for redacting links.
-    # user - The currently logged in user (if any).
-    def initialize(project, user = nil)
-      @project = project
-      @user = user
+    # context - An instance of `Banzai::RenderContext`.
+    def initialize(context)
+      @context = context
+    end
+
+    def user
+      context.current_user
     end
 
     # Redacts the references in the given Array of documents.
@@ -70,11 +72,11 @@ module Banzai
     end
 
     def redact_cross_project_references(documents)
-      extractor = Banzai::IssuableExtractor.new(project, user)
+      extractor = Banzai::IssuableExtractor.new(context)
       issuables = extractor.extract(documents)
 
       issuables.each do |node, issuable|
-        next if issuable.project == project
+        next if issuable.project == context.project_for_node(node)
 
         node['class'] = node['class'].gsub('has-tooltip', '')
         node['title'] = nil
@@ -95,7 +97,7 @@ module Banzai
       end
 
       per_type.each do |type, nodes|
-        parser = Banzai::ReferenceParser[type].new(project, user)
+        parser = Banzai::ReferenceParser[type].new(context)
 
         visible.merge(parser.nodes_visible_to_user(user, nodes))
       end

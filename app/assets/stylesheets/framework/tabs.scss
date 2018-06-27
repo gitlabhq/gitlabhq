@@ -1,6 +1,7 @@
 .gitlab-tabs {
   background: $gray-light;
   border: 1px solid $border-color;
+  flex-wrap: nowrap;
 
   li {
     width: 50%;

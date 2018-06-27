@@ -91,4 +91,23 @@ describe Gitlab::ImportSources do
       end
     end
   end
+
+  describe 'imports_repository? checker' do
+    let(:allowed_importers) { %w[github gitlab_project] }
+
+    it 'fails if any importer other than the allowed ones implements this method' do
+      current_importers = described_class.values.select { |kind| described_class.importer(kind).try(:imports_repository?) }
+      not_allowed_importers = current_importers - allowed_importers
+
+      expect(not_allowed_importers).to be_empty, failure_message(not_allowed_importers)
+    end
+
+    def failure_message(importers_class_names)
+      <<-MSG
+        It looks like the #{importers_class_names.join(', ')} importers implements its own way to import the repository.
+        That means that the lfs object download must be handled for each of them. You can use 'LfsImportService' and
+        'LfsDownloadService' to implement it. After that, add the importer name to the list of allowed importers in this spec.
+      MSG
+    end
+  end
 end

@@ -6,7 +6,7 @@ describe Gitlab::Ci::Pipeline::Expression::Lexer do
   end
 
   describe '#tokens' do
-    it 'tokenss single value' do
+    it 'returns single value' do
       tokens = described_class.new('$VARIABLE').tokens
 
       expect(tokens).to be_one
@@ -20,14 +20,14 @@ describe Gitlab::Ci::Pipeline::Expression::Lexer do
       expect(tokens).to all(be_an_instance_of(token_class))
     end
 
-    it 'tokenss multiple values of the same token' do
+    it 'returns multiple values of the same token' do
       tokens = described_class.new("$VARIABLE1 $VARIABLE2").tokens
 
       expect(tokens.size).to eq 2
       expect(tokens).to all(be_an_instance_of(token_class))
     end
 
-    it 'tokenss multiple values with different tokens' do
+    it 'returns multiple values with different tokens' do
       tokens = described_class.new('$VARIABLE "text" "value"').tokens
 
       expect(tokens.size).to eq 3
@@ -36,7 +36,7 @@ describe Gitlab::Ci::Pipeline::Expression::Lexer do
       expect(tokens.third.value).to eq '"value"'
     end
 
-    it 'tokenss tokens and operators' do
+    it 'returns tokens and operators' do
       tokens = described_class.new('$VARIABLE == "text"').tokens
 
       expect(tokens.size).to eq 3

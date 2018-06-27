@@ -265,6 +265,15 @@ class WikiPage
     title.present? && self.class.unhyphenize(@page.url_path) != title
   end
 
+  # Updates the current @attributes hash by merging a hash of params
+  def update_attributes(attrs)
+    attrs[:title] = process_title(attrs[:title]) if attrs[:title].present?
+
+    attrs.slice!(:content, :format, :message, :title)
+
+    @attributes.merge!(attrs)
+  end
+
   private
 
   # Process and format the title based on the user input.
@@ -288,15 +297,6 @@ class WikiPage
     components = title.split(File::SEPARATOR).map(&:squish)
 
     File.join(components)
-  end
-
-  # Updates the current @attributes hash by merging a hash of params
-  def update_attributes(attrs)
-    attrs[:title] = process_title(attrs[:title]) if attrs[:title].present?
-
-    attrs.slice!(:content, :format, :message, :title)
-
-    @attributes.merge!(attrs)
   end
 
   def set_attributes

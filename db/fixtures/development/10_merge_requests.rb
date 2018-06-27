@@ -4,7 +4,7 @@ Gitlab::Seeder.quiet do
   # Limit the number of merge requests per project to avoid long seeds
   MAX_NUM_MERGE_REQUESTS = 10
 
-  Project.all.reject(&:empty_repo?).each do |project|
+  Project.non_archived.with_merge_requests_enabled.reject(&:empty_repo?).each do |project|
     branches = project.repository.branch_names.sample(MAX_NUM_MERGE_REQUESTS * 2)
 
     branches.each do |branch_name|
@@ -21,7 +21,11 @@ Gitlab::Seeder.quiet do
         assignee: project.team.users.sample
       }
 
-      MergeRequests::CreateService.new(project, project.team.users.sample, params).execute
+      # Only create MRs with users that are allowed to create MRs
+      developer = project.team.developers.sample
+      break unless developer
+
+      MergeRequests::CreateService.new(project, developer, params).execute
       print '.'
     end
   end

@@ -1,5 +1,5 @@
 - @no_container = true
-- breadcrumb_title "Details"
+- breadcrumb_title _("Details")
 - @content_class = "limit-container-width" unless fluid_layout
 - show_auto_devops_callout = show_auto_devops_callout?(@project)
 
@@ -24,7 +24,7 @@
     .text-warning.center.prepend-top-20
       %p
         = icon("exclamation-triangle fw")
-        #{ _('Archived project! Repository is read-only') }
+        #{ _('Archived project! Repository and other project resources are read-only') }
 
   - view_path = @project.default_view
 

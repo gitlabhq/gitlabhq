@@ -55,14 +55,19 @@ feature 'Admin disables Git access protocol' do
   end
 
   def disable_http_protocol
-    visit admin_application_settings_path
-    find('#application_setting_enabled_git_access_protocol').find(:xpath, 'option[2]').select_option
-    click_on 'Save'
+    switch_git_protocol(2)
   end
 
   def disable_ssh_protocol
+    switch_git_protocol(3)
+  end
+
+  def switch_git_protocol(value)
     visit admin_application_settings_path
-    find('#application_setting_enabled_git_access_protocol').find(:xpath, 'option[3]').select_option
-    click_on 'Save'
+
+    page.within('.as-visibility-access') do
+      find('#application_setting_enabled_git_access_protocol').find(:xpath, "option[#{value}]").select_option
+      click_on 'Save'
+    end
   end
 end

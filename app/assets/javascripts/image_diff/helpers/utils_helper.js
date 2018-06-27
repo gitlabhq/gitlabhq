@@ -40,8 +40,7 @@ export function getTargetSelection(event) {
   const x = event.offsetX;
   const y = event.offsetY;
 
-  const width = imageEl.width;
-  const height = imageEl.height;
+  const { width, height } = imageEl;
 
   const actualWidth = imageEl.naturalWidth;
   const actualHeight = imageEl.naturalHeight;

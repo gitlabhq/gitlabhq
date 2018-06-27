@@ -5,7 +5,7 @@ import AccessorUtilities from '~/lib/utils/accessor';
  * Does that setting the current selected tab in the localStorage
  */
 export default class SigninTabsMemoizer {
-  constructor({ currentTabKey = 'current_signin_tab', tabSelector = 'ul.nav-tabs' } = {}) {
+  constructor({ currentTabKey = 'current_signin_tab', tabSelector = 'ul.new-session-tabs' } = {}) {
     this.currentTabKey = currentTabKey;
     this.tabSelector = tabSelector;
     this.isLocalStorageAvailable = AccessorUtilities.isLocalStorageAccessSafe();
@@ -37,6 +37,11 @@ export default class SigninTabsMemoizer {
       const tab = document.querySelector(`${this.tabSelector} a[href="${anchorName}"]`);
       if (tab) {
         tab.click();
+      } else {
+        const firstTab = document.querySelector(`${this.tabSelector} a`);
+        if (firstTab) {
+          firstTab.click();
+        }
       }
     }
   }

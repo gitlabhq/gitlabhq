@@ -23,6 +23,10 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         allow_any_instance_of(Gitlab::Git::Repository).to receive(:create_branch)
 
         project_tree_restorer = described_class.new(user: @user, shared: @shared, project: @project)
+
+        expect(Gitlab::ImportExport::RelationFactory).to receive(:create).with(hash_including(excluded_keys: ['whatever'])).and_call_original.at_least(:once)
+        allow(project_tree_restorer).to receive(:excluded_keys_for_relation).and_return(['whatever'])
+
         @restored_project_json = project_tree_restorer.restore
       end
     end
@@ -44,10 +48,6 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
       it 'has the project description' do
         expect(Project.find_by_path('project').description).to eq('Nisi et repellendus ut enim quo accusamus vel magnam.')
-      end
-
-      it 'has the project html description' do
-        expect(Project.find_by_path('project').description_html).to eq('description')
       end
 
       it 'has the same label associated to two issues' do
@@ -252,6 +252,11 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       expect(labels.where(type: "ProjectLabel").count).to eq(results.fetch(:first_issue_labels, 0))
       expect(labels.where(type: "ProjectLabel").where.not(group_id: nil).count).to eq(0)
     end
+
+    it 'does not set params that are excluded from import_export settings' do
+      expect(project.import_type).to be_nil
+      expect(project.creator_id).not_to eq 123
+    end
   end
 
   shared_examples 'restores group correctly' do |**results|
@@ -314,6 +319,24 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         end
 
         it_behaves_like 'restores project successfully'
+      end
+    end
+
+    context 'when the project has overriden params in import data' do
+      it 'overwrites the params stored in the JSON' do
+        project.create_import_data(data: { override_params: { description: "Overridden" } })
+
+        restored_project_json
+
+        expect(project.description).to eq("Overridden")
+      end
+
+      it 'does not allow setting params that are excluded from import_export settings' do
+        project.create_import_data(data: { override_params: { lfs_enabled: true } })
+
+        restored_project_json
+
+        expect(project.lfs_enabled).to be_nil
       end
     end
 

@@ -7,6 +7,67 @@ be replaced by Gitaly API calls.
 Visit the [Gitaly Migration Board](https://gitlab.com/gitlab-org/gitaly/boards/331341) for current
 status of the migration.
 
+## Developing new Git features
+
+Starting with Gitlab 10.8, all new Git features should be developed in
+Gitaly.
+
+> This is a new process that is not clearly defined yet. If you want
+to contribute a Git feature and you're getting stuck, reach out to the
+Gitaly team or `@jacobvosmaer-gitlab`.
+
+By 'new feature' we mean any method or class in `lib/gitlab/git` that is
+called from outside `lib/gitlab/git`. For new methods that are called
+from inside `lib/gitlab/git`, see 'Modifying existing Git features'
+below.
+
+There should be no new code that touches Git repositories via
+disk access (e.g. Rugged, `git`, `rm -rf`) anywhere outside
+`lib/gitlab/git`.
+
+The process for adding new Gitaly features is:
+
+- exploration / prototyping
+- design and create a new Gitaly RPC [in gitaly-proto](https://gitlab.com/gitlab-org/gitaly-proto)
+- release a new version of gitaly-proto
+- write implementation and tests for the RPC [in Gitaly](https://gitlab.com/gitlab-org/gitaly), in Go or Ruby
+- release a new version of Gitaly
+- write client code in gitlab-ce/ee, gitlab-workhorse or gitlab-shell that calls the new Gitaly RPC
+
+These steps often overlap. It is possible to use an unreleased version
+of Gitaly and gitaly-proto during testing and development.
+
+- See the [Gitaly repo](https://gitlab.com/gitlab-org/gitaly/blob/master/CONTRIBUTING.md#development-and-testing-with-a-custom-gitaly-proto) for instructions on writing server side code with an unreleased protocol.
+- See [below](#running-tests-with-a-locally-modified-version-of-gitaly) for instructions on running gitlab-ce tests with a modified version of Gitaly.
+- In GDK run `gdk install` and restart `gdk run` (or `gdk run app`) to use a locally modified Gitaly version for development
+
+### Gitaly-ruby
+
+It is possible to implement and test RPC's in Gitaly using Ruby code,
+in
+[gitaly-ruby](https://gitlab.com/gitlab-org/gitaly/tree/master/ruby).
+This should make it easier to contribute for developers who are less
+comfortable writing Go code.
+
+There is documentation for this approach in [the Gitaly
+repo](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/ruby_endpoint.md).
+
+## Modifying existing Git features
+
+If you modify existing Git features in `lib/gitlab/git` you need to make
+sure the changes also work in Gitaly. Because we are still in the
+migration process there are a number of subtle pitfalls. Features that
+have been migrated have dual implementations (Gitaly and local). The
+Gitaly implementation may or may not use a vendored (and therefore
+possibly outdated) copy of the local implementation in `lib/gitlab/git`.
+
+To avoid unexpected problems and conflicts, all changes to
+`lib/gitlab/git` need to be approved by a member of the Gitaly team.
+
+For the time being, while the Gitaly migration is still in progress,
+there should be no Enterprise Edition-only Git code in
+`lib/gitlab/git`. Also no mixins.
+
 ## Feature Flags
 
 Gitaly makes heavy use of [feature flags](feature_flags.md).
@@ -99,10 +160,14 @@ end
 
 ## Running tests with a locally modified version of Gitaly
 
-Normally, gitlab-ce/ee tests use a local clone of Gitaly in `tmp/tests/gitaly`
-pinned at the version specified in GITALY_SERVER_VERSION. If you want
-to run tests locally against a modified version of Gitaly you can
-replace `tmp/tests/gitaly` with a symlink.
+Normally, gitlab-ce/ee tests use a local clone of Gitaly in
+`tmp/tests/gitaly` pinned at the version specified in
+`GITALY_SERVER_VERSION`. The `GITALY_SERVER_VERSION` file supports
+`=my-branch` syntax to use a custom branch in gitlab-org/gitaly. If
+you want to run tests locally against a modified version of Gitaly you
+can replace `tmp/tests/gitaly` with a symlink. This is much faster
+because the `=my-branch` syntax forces a Gitaly re-install each time
+you run `rspec`.
 
 ```shell
 rm -rf tmp/tests/gitaly

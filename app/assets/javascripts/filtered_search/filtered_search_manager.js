@@ -21,7 +21,7 @@ export default class FilteredSearchManager {
   constructor({
     page,
     isGroup = false,
-    isGroupAncestor = false,
+    isGroupAncestor = true,
     isGroupDecendent = false,
     filteredSearchTokenKeys = FilteredSearchTokenKeys,
     stateFiltersSelector = '.issues-state-filters',
@@ -86,6 +86,7 @@ export default class FilteredSearchManager {
         page: this.page,
         isGroup: this.isGroup,
         isGroupAncestor: this.isGroupAncestor,
+        isGroupDecendent: this.isGroupDecendent,
         filteredSearchTokenKeys: this.filteredSearchTokenKeys,
       });
 
@@ -234,7 +235,7 @@ export default class FilteredSearchManager {
 
   checkForEnter(e) {
     if (e.keyCode === 38 || e.keyCode === 40) {
-      const selectionStart = this.filteredSearchInput.selectionStart;
+      const { selectionStart } = this.filteredSearchInput;
 
       e.preventDefault();
       this.filteredSearchInput.setSelectionRange(selectionStart, selectionStart);
@@ -495,7 +496,7 @@ export default class FilteredSearchManager {
           // Replace underscore with hyphen in the sanitizedkey.
           // e.g. 'my_reaction' => 'my-reaction'
           sanitizedKey = sanitizedKey.replace('_', '-');
-          const symbol = match.symbol;
+          const { symbol } = match;
           let quotationsToUse = '';
 
           if (sanitizedValue.indexOf(' ') !== -1) {

@@ -50,7 +50,7 @@ class Todo < ActiveRecord::Base
     # Priority sorting isn't displayed in the dropdown, because we don't show
     # milestones, but still show something if the user has a URL with that
     # selected.
-    def sort(method)
+    def sort_by_attribute(method)
       sorted =
         case method.to_s
         when 'priority', 'label_priority' then order_by_labels_priority

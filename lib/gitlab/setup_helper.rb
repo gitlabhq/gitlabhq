@@ -24,7 +24,10 @@ module Gitlab
             address = val['gitaly_address']
           end
 
-          storages << { name: key, path: val['path'] }
+          # https://gitlab.com/gitlab-org/gitaly/issues/1238
+          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            storages << { name: key, path: val.legacy_disk_path }
+          end
         end
 
         if Rails.env.test?

@@ -1,9 +1,9 @@
 <script>
-import Flash from '../../../flash';
+import Flash from '~/flash';
+import eventHub from '~/sidebar/event_hub';
+import Store from '~/sidebar/stores/sidebar_store';
 import AssigneeTitle from './assignee_title.vue';
 import Assignees from './assignees.vue';
-import Store from '../../stores/sidebar_store';
-import eventHub from '../../event_hub';
 
 export default {
   name: 'SidebarAssignees',
@@ -24,6 +24,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    issuableType: {
+      type: String,
+      require: true,
+      default: 'issue',
     },
   },
   data() {
@@ -85,10 +90,11 @@ export default {
     />
     <assignees
       v-if="!store.isFetching.assignees"
-      class="value"
       :root-path="store.rootPath"
       :users="store.assignees"
       :editable="store.editable"
+      :issuable-type="issuableType"
+      class="value"
       @assign-self="assignSelf"
     />
   </div>

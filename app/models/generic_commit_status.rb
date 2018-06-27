@@ -1,7 +1,7 @@
 class GenericCommitStatus < CommitStatus
   before_validation :set_default_values
 
-  validates :target_url, addressable_url: true,
+  validates :target_url, url: true,
                          length: { maximum: 255 },
                          allow_nil: true
 

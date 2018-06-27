@@ -95,7 +95,7 @@ module RuboCop
       end
 
       def end_clause_line?(line)
-        line =~ /^\s*(rescue|else|elsif|when)/
+        line =~ /^\s*(#|rescue|else|elsif|when)/
       end
 
       def begin_line?(line)

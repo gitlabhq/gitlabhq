@@ -3,6 +3,7 @@ FactoryBot.define do
     title { generate(:title) }
     project
     author { project.creator }
+    updated_by { author }
 
     trait :confidential do
       confidential true

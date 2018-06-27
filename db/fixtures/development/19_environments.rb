@@ -28,7 +28,11 @@ class Gitlab::Seeder::Environments
   end
 
   def create_merge_request_review_deployments!
-    @project.merge_requests.sample(4).map do |merge_request|
+    @project
+      .merge_requests
+      .select { |mr| mr.source_branch.match(/\p{Alnum}+/) }
+      .sample(4)
+      .each do |merge_request|
       next unless merge_request.diff_head_sha
 
       create_deployment!(

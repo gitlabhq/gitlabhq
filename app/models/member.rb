@@ -96,7 +96,18 @@ class Member < ActiveRecord::Base
       joins(:user).merge(User.search(query))
     end
 
-    def sort(method)
+    def filter_by_2fa(value)
+      case value
+      when 'enabled'
+        left_join_users.merge(User.with_two_factor_indistinct)
+      when 'disabled'
+        left_join_users.merge(User.without_two_factor)
+      else
+        all
+      end
+    end
+
+    def sort_by_attribute(method)
       case method.to_s
       when 'access_level_asc' then reorder(access_level: :asc)
       when 'access_level_desc' then reorder(access_level: :desc)

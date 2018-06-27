@@ -21,13 +21,31 @@ module Gitlab
       attr_accessor :name, :path, :size, :data, :mode, :id, :commit_id, :loaded_size, :binary
 
       class << self
-        def find(repository, sha, path)
-          Gitlab::GitalyClient.migrate(:project_raw_show) do |is_enabled|
-            if is_enabled
-              find_by_gitaly(repository, sha, path)
-            else
-              find_by_rugged(repository, sha, path, limit: MAX_DATA_DISPLAY_SIZE)
-            end
+        def find(repository, sha, path, limit: MAX_DATA_DISPLAY_SIZE)
+          return unless path
+
+          path = path.sub(%r{\A/*}, '')
+          path = '/' if path.empty?
+          name = File.basename(path)
+
+          # Gitaly will think that setting the limit to 0 means unlimited, while
+          # the client might only need the metadata and thus set the limit to 0.
+          # In this method we'll then set the limit to 1, but clear the byte of data
+          # that we got back so for the outside world it looks like the limit was
+          # actually 0.
+          req_limit = limit == 0 ? 1 : limit
+
+          entry = Gitlab::GitalyClient::CommitService.new(repository).tree_entry(sha, path, req_limit)
+          return unless entry
+
+          entry.data = "" if limit == 0
+
+          case entry.type
+          when :COMMIT
+            new(id: entry.oid, name: name, size: 0, data: '', path: path, commit_id: sha)
+          when :BLOB
+            new(id: entry.oid, name: name, size: entry.size, data: entry.data.dup, mode: entry.mode.to_s(8),
+                path: path, commit_id: sha, binary: binary?(entry.data))
           end
         end
 
@@ -56,10 +74,16 @@ module Gitlab
               repository.gitaly_blob_client.get_blobs(blob_references, blob_size_limit).to_a
             else
               blob_references.map do |sha, path|
-                find_by_rugged(repository, sha, path, limit: blob_size_limit)
+                find(repository, sha, path, limit: blob_size_limit)
               end
             end
           end
+        end
+
+        # Returns an array of Blob instances just with the metadata, that means
+        # the data attribute has no content.
+        def batch_metadata(repository, blob_references)
+          batch(repository, blob_references, blob_size_limit: 0)
         end
 
         # Find LFS blobs given an array of sha ids
@@ -98,25 +122,22 @@ module Gitlab
         #       file.rb      # oid: 4a
         #
         #
-        # Blob.find_entry_by_path(repo, '1a', 'app/file.rb') # => '4a'
+        # Blob.find_entry_by_path(repo, '1a', 'blog', 'app', 'file.rb') # => '4a'
         #
-        def find_entry_by_path(repository, root_id, path)
+        def find_entry_by_path(repository, root_id, *path_parts)
           root_tree = repository.lookup(root_id)
-          # Strip leading slashes
-          path[%r{^/*}] = ''
-          path_arr = path.split('/')
 
           entry = root_tree.find do |entry|
-            entry[:name] == path_arr[0]
+            entry[:name] == path_parts[0]
           end
 
           return nil unless entry
 
-          if path_arr.size > 1
+          if path_parts.size > 1
             return nil unless entry[:type] == :tree
 
-            path_arr.shift
-            find_entry_by_path(repository, entry[:oid], path_arr.join('/'))
+            path_parts.shift
+            find_entry_by_path(repository, entry[:oid], *path_parts)
           else
             [:blob, :commit].include?(entry[:type]) ? entry : nil
           end
@@ -131,82 +152,6 @@ module Gitlab
             path: path,
             commit_id: sha
           )
-        end
-
-        def find_by_gitaly(repository, sha, path, limit: MAX_DATA_DISPLAY_SIZE)
-          return unless path
-
-          path = path.sub(%r{\A/*}, '')
-          path = '/' if path.empty?
-          name = File.basename(path)
-
-          # Gitaly will think that setting the limit to 0 means unlimited, while
-          # the client might only need the metadata and thus set the limit to 0.
-          # In this method we'll then set the limit to 1, but clear the byte of data
-          # that we got back so for the outside world it looks like the limit was
-          # actually 0.
-          req_limit = limit == 0 ? 1 : limit
-
-          entry = Gitlab::GitalyClient::CommitService.new(repository).tree_entry(sha, path, req_limit)
-          return unless entry
-
-          entry.data = "" if limit == 0
-
-          case entry.type
-          when :COMMIT
-            new(
-              id: entry.oid,
-              name: name,
-              size: 0,
-              data: '',
-              path: path,
-              commit_id: sha
-            )
-          when :BLOB
-            new(
-              id: entry.oid,
-              name: name,
-              size: entry.size,
-              data: entry.data.dup,
-              mode: entry.mode.to_s(8),
-              path: path,
-              commit_id: sha,
-              binary: binary?(entry.data)
-            )
-          end
-        end
-
-        def find_by_rugged(repository, sha, path, limit:)
-          return unless path
-
-          rugged_commit = repository.lookup(sha)
-          root_tree = rugged_commit.tree
-
-          blob_entry = find_entry_by_path(repository, root_tree.oid, path)
-
-          return nil unless blob_entry
-
-          if blob_entry[:type] == :commit
-            submodule_blob(blob_entry, path, sha)
-          else
-            blob = repository.lookup(blob_entry[:oid])
-
-            if blob
-              new(
-                id: blob.oid,
-                name: blob_entry[:name],
-                size: blob.size,
-                # Rugged::Blob#content is expensive; don't call it if we don't have to.
-                data: limit.zero? ? '' : blob.content(limit),
-                mode: blob_entry[:filemode].to_s(8),
-                path: path,
-                commit_id: sha,
-                binary: blob.binary?
-              )
-            end
-          end
-        rescue Rugged::ReferenceError
-          nil
         end
 
         def rugged_raw(repository, sha, limit:)

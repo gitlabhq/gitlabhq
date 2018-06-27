@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Avatarable do
-  set(:project) { create(:project, avatar: fixture_file_upload(File.join(Rails.root, 'spec/fixtures/dk.png'))) }
+  let(:project) { create(:project, :with_avatar) }
 
   let(:gitlab_host) { "https://gitlab.example.com" }
   let(:relative_url_root) { "/gitlab" }
@@ -37,10 +37,22 @@ describe Avatarable do
         project.visibility_level = visibility_level
       end
 
-      let(:avatar_path) { (avatar_path_prefix + [project.avatar.url]).join }
+      let(:avatar_path) { (avatar_path_prefix + [project.avatar.local_url]).join }
 
       it 'returns the expected avatar path' do
         expect(project.avatar_path(only_path: only_path)).to eq(avatar_path)
+      end
+
+      context "when avatar is stored remotely" do
+        before do
+          stub_uploads_object_storage(AvatarUploader)
+
+          project.avatar.migrate!(ObjectStorage::Store::REMOTE)
+        end
+
+        it 'returns the expected avatar path' do
+          expect(project.avatar_url(only_path: only_path)).to eq(avatar_path)
+        end
       end
     end
   end

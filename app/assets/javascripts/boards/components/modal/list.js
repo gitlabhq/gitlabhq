@@ -1,11 +1,11 @@
-/* global ListIssue */
-
 import Vue from 'vue';
 import bp from '../../../breakpoints';
-
-const ModalStore = gl.issueBoards.ModalStore;
+import ModalStore from '../../stores/modal_store';
 
 gl.issueBoards.ModalList = Vue.extend({
+  components: {
+    'issue-card-inner': gl.issueBoards.IssueCardInner,
+  },
   props: {
     issueLinkBase: {
       type: String,
@@ -22,13 +22,6 @@ gl.issueBoards.ModalList = Vue.extend({
   },
   data() {
     return ModalStore.store;
-  },
-  watch: {
-    activeTab() {
-      if (this.activeTab === 'all') {
-        ModalStore.purgeUnselectedIssues();
-      }
-    },
   },
   computed: {
     loopIssues() {
@@ -53,12 +46,34 @@ gl.issueBoards.ModalList = Vue.extend({
       return groups;
     },
   },
+  watch: {
+    activeTab() {
+      if (this.activeTab === 'all') {
+        ModalStore.purgeUnselectedIssues();
+      }
+    },
+  },
+  mounted() {
+    this.scrollHandlerWrapper = this.scrollHandler.bind(this);
+    this.setColumnCountWrapper = this.setColumnCount.bind(this);
+    this.setColumnCount();
+
+    this.$refs.list.addEventListener('scroll', this.scrollHandlerWrapper);
+    window.addEventListener('resize', this.setColumnCountWrapper);
+  },
+  beforeDestroy() {
+    this.$refs.list.removeEventListener('scroll', this.scrollHandlerWrapper);
+    window.removeEventListener('resize', this.setColumnCountWrapper);
+  },
   methods: {
     scrollHandler() {
       const currentPage = Math.floor(this.issues.length / this.perPage);
 
-      if ((this.scrollTop() > this.scrollHeight() - 100) && !this.loadingNewPage
-        && currentPage === this.page) {
+      if (
+        this.scrollTop() > this.scrollHeight() - 100 &&
+        !this.loadingNewPage &&
+        currentPage === this.page
+      ) {
         this.loadingNewPage = true;
         this.page += 1;
       }
@@ -96,21 +111,6 @@ gl.issueBoards.ModalList = Vue.extend({
       }
     },
   },
-  mounted() {
-    this.scrollHandlerWrapper = this.scrollHandler.bind(this);
-    this.setColumnCountWrapper = this.setColumnCount.bind(this);
-    this.setColumnCount();
-
-    this.$refs.list.addEventListener('scroll', this.scrollHandlerWrapper);
-    window.addEventListener('resize', this.setColumnCountWrapper);
-  },
-  beforeDestroy() {
-    this.$refs.list.removeEventListener('scroll', this.scrollHandlerWrapper);
-    window.removeEventListener('resize', this.setColumnCountWrapper);
-  },
-  components: {
-    'issue-card-inner': gl.issueBoards.IssueCardInner,
-  },
   template: `
     <section
       class="add-issues-list add-issues-list-columns"
@@ -134,9 +134,9 @@ gl.issueBoards.ModalList = Vue.extend({
         <div
           v-for="issue in group"
           v-if="showIssue(issue)"
-          class="card-parent">
+          class="board-card-parent">
           <div
-            class="card"
+            class="board-card"
             :class="{ 'is-active': issue.selected }"
             @click="toggleIssue($event, issue)">
             <issue-card-inner

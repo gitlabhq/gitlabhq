@@ -14,6 +14,8 @@ class Projects::WikisController < Projects::ApplicationController
   def show
     @page = @project_wiki.find_page(params[:id], params[:version_id])
 
+    view_param = @project_wiki.empty? ? params[:view] : 'create'
+
     if @page
       render 'show'
     elsif file = @project_wiki.find_file(params[:id], params[:version_id])
@@ -26,13 +28,12 @@ class Projects::WikisController < Projects::ApplicationController
         disposition: 'inline',
         filename: file.name
       )
-    else
-      return render('empty') unless can?(current_user, :create_wiki, @project)
-
-      @page = WikiPage.new(@project_wiki)
-      @page.title = params[:id]
+    elsif can?(current_user, :create_wiki, @project) && view_param == 'create'
+      @page = build_page(title: params[:id])
 
       render 'edit'
+    else
+      render 'empty'
     end
   end
 
@@ -54,7 +55,7 @@ class Projects::WikisController < Projects::ApplicationController
     else
       render 'edit'
     end
-  rescue WikiPage::PageChangedError, WikiPage::PageRenameError => e
+  rescue WikiPage::PageChangedError, WikiPage::PageRenameError, Gitlab::Git::Wiki::OperationError => e
     @error = e
     render 'edit'
   end
@@ -70,6 +71,11 @@ class Projects::WikisController < Projects::ApplicationController
     else
       render action: "edit"
     end
+  rescue Gitlab::Git::Wiki::OperationError => e
+    @page = build_page(wiki_params)
+    @error = e
+
+    render 'edit'
   end
 
   def history
@@ -89,11 +95,15 @@ class Projects::WikisController < Projects::ApplicationController
 
   def destroy
     @page = @project_wiki.find_page(params[:id])
+
     WikiPages::DestroyService.new(@project, current_user).execute(@page)
 
     redirect_to project_wiki_path(@project, :home),
                 status: 302,
                 notice: "Page was successfully deleted"
+  rescue Gitlab::Git::Wiki::OperationError => e
+    @error = e
+    render 'edit'
   end
 
   def git_access
@@ -120,5 +130,11 @@ class Projects::WikisController < Projects::ApplicationController
 
   def wiki_params
     params.require(:wiki).permit(:title, :content, :format, :message, :last_commit_sha)
+  end
+
+  def build_page(args)
+    WikiPage.new(@project_wiki).tap do |page|
+      page.update_attributes(args)
+    end
   end
 end

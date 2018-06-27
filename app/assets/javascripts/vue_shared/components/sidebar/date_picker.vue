@@ -97,8 +97,8 @@
 
 <template>
   <div
-    class="block"
     :class="blockClass"
+    class="block"
   >
     <div class="issuable-sidebar-header">
       <toggle-sidebar
@@ -107,8 +107,8 @@
       />
     </div>
     <collapsed-calendar-icon
-      class="sidebar-collapsed-icon"
       :text="collapsedText"
+      class="sidebar-collapsed-icon"
     />
     <div class="title">
       {{ label }}
@@ -116,7 +116,7 @@
         v-if="isLoading"
         :inline="true"
       />
-      <div class="pull-right">
+      <div class="float-right">
         <button
           v-if="editable && !editing"
           type="button"

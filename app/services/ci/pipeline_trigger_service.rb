@@ -16,8 +16,8 @@ module Ci
 
       pipeline = Ci::CreatePipelineService.new(project, trigger.owner, ref: params[:ref])
         .execute(:trigger, ignore_skip_ci: true) do |pipeline|
-          pipeline.trigger_requests.create!(trigger: trigger)
-          create_pipeline_variables!(pipeline)
+          pipeline.trigger_requests.build(trigger: trigger)
+          pipeline.variables.build(variables)
         end
 
       if pipeline.persisted?
@@ -33,14 +33,10 @@ module Ci
       end
     end
 
-    def create_pipeline_variables!(pipeline)
-      return unless params[:variables]
-
-      variables = params[:variables].map do |key, value|
+    def variables
+      params[:variables].to_h.map do |key, value|
         { key: key, value: value }
       end
-
-      pipeline.variables.create!(variables)
     end
   end
 end

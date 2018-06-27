@@ -11,9 +11,11 @@ describe DashboardController do
 
   describe 'GET issues' do
     it_behaves_like 'issuables list meta-data', :issue, :issues
+    it_behaves_like 'issuables requiring filter', :issues
   end
 
   describe 'GET merge requests' do
     it_behaves_like 'issuables list meta-data', :merge_request, :merge_requests
+    it_behaves_like 'issuables requiring filter', :merge_requests
   end
 end

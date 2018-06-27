@@ -131,6 +131,9 @@ There is also and alternative method to [translate messages from validation erro
 
 ### Interpolation
 
+Placeholders in translated text should match the code style of the respective source file.
+For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript.
+
 - In Ruby/HAML:
 
     ```ruby
@@ -141,11 +144,19 @@ There is also and alternative method to [translate messages from validation erro
 
     ```js
     import { __, sprintf } from '~/locale';
-    sprintf(__('Hello %{username}'), { username: 'Joe' }) => 'Hello Joe'
+
+    sprintf(__('Hello %{username}'), { username: 'Joe' }); // => 'Hello Joe'
     ```
 
-The placeholders should match the code style of the respective source file.
-For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript.
+    By default, `sprintf` escapes the placeholder values.
+    If you want to take care of that yourself, you can pass `false` as third argument.
+
+    ```js
+    import { __, sprintf } from '~/locale';
+
+    sprintf(__('This is %{value}'), { value: '<strong>bold</strong>' }); // => 'This is &lt;strong&gt;bold&lt;/strong&gt;'
+    sprintf(__('This is %{value}'), { value: '<strong>bold</strong>' }, false); // => 'This is <strong>bold</strong>'
+    ```
 
 ### Plurals
 
@@ -222,7 +233,7 @@ This makes use of [`Intl.DateTimeFormat`].
 Please never split a sentence as that would assume the sentence grammar and
 structure is the same in all languages.
 
-For instance, the following
+For instance, the following:
 
 ```js
 {{ s__("mrWidget|Set by") }}
@@ -235,6 +246,27 @@ should be externalized as follows:
 ```js
 {{ sprintf(s__("mrWidget|Set by %{author} to be merged automatically when the pipeline succeeds"), { author: author.name }) }}
 ```
+
+#### Avoid splitting sentences when adding links
+
+This also applies when using links in between translated sentences, otherwise these texts are not translatable in certain languages.
+
+Instead of:
+
+```haml
+- zones_link = link_to(s_('ClusterIntegration|zones'), 'https://cloud.google.com/compute/docs/regions-zones/regions-zones', target: '_blank', rel: 'noopener noreferrer')
+= s_('ClusterIntegration|Learn more about %{zones_link}').html_safe % { zones_link: zones_link }
+```
+
+Set the link starting and ending HTML fragments as variables like so:
+
+```haml
+- zones_link_url = 'https://cloud.google.com/compute/docs/regions-zones/regions-zones'
+- zones_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: zones_link_url }
+= s_('ClusterIntegration|Learn more about %{zones_link_start}zones%{zones_link_end}').html_safe % { zones_link_start: zones_link_start, zones_link_end: '</a>'.html_safe }
+```
+
+The reasoning behind this is that in some languages words change depending on context. For example in Japanese は is added to the subject of a sentence and を to the object. This is impossible to translate correctly if we extract individual words from the sentence.
 
 When in doubt, try to follow the best practices described in this [Mozilla
 Developer documentation][mdn].
@@ -259,7 +291,7 @@ If there are merge conflicts in the `gitlab.pot` file, you can delete the file
 and regenerate it using the same command. Confirm that you are not deleting any strings accidentally by looking over the diff.
 
 The command also updates the translation files for each language: `locale/*/gitlab.po`
-These changes can be discarded, the languange files will be updated by Crowdin
+These changes can be discarded, the language files will be updated by Crowdin
 automatically.
 
 Discard all of them at once like this:

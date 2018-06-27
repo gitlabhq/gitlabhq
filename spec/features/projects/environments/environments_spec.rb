@@ -42,6 +42,22 @@ feature 'Environments page', :js do
           expect(page).to have_content('You don\'t have any environments right now')
         end
       end
+
+      context 'when cluster is not reachable' do
+        let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+        let!(:application_prometheus) { create(:clusters_applications_prometheus, :installed, cluster: cluster) }
+
+        before do
+          allow_any_instance_of(Kubeclient::Client).to receive(:proxy_url).and_raise(Kubeclient::HttpError.new(401, 'Unauthorized', nil))
+        end
+
+        it 'should show one environment without error' do
+          visit_environments(project, scope: 'available')
+
+          expect(page).to have_css('.environments-container')
+          expect(page.all('.environment-name').length).to eq(1)
+        end
+      end
     end
 
     describe 'with one stopped environment' do

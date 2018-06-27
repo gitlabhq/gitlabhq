@@ -114,26 +114,27 @@
     font-size: 0.95em;
   }
 
-  blockquote {
+  blockquote,
+  .blockquote {
     color: $gl-grayish-blue;
     font-size: inherit;
     padding: 8px 24px;
     margin: 16px 0;
     border-left: 3px solid $white-dark;
-  }
 
-  blockquote:dir(rtl) {
-    border-left: 0;
-    border-right: 3px solid $white-dark;
-  }
+    &:dir(rtl) {
+      border-left: 0;
+      border-right: 3px solid $white-dark;
+    }
 
-  blockquote p {
-    color: $gl-grayish-blue !important;
-    font-size: inherit;
-    line-height: 1.5;
+    p {
+      color: $gl-grayish-blue !important;
+      font-size: inherit;
+      line-height: 1.5;
 
-    &:last-child {
-      margin: 0;
+      &:last-child {
+        margin: 0;
+      }
     }
   }
 
@@ -289,6 +290,11 @@ body {
   &:last-child {
     margin-bottom: 0;
   }
+
+  &.with-button {
+    line-height: 34px;
+  }
+
 }
 
 .page-title-empty {
@@ -316,6 +322,16 @@ h6 {
 /** CODE **/
 pre {
   font-family: $monospace_font;
+  display: block;
+  padding: $gl-padding-8;
+  margin: 0 0 $gl-padding-8;
+  font-size: 13px;
+  word-break: break-all;
+  word-wrap: break-word;
+  color: $gl-text-color;
+  background-color: $gray-light;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-small;
 }
 
 code {
@@ -323,10 +339,6 @@ code {
     background: $body-bg;
     color: $text-color;
   }
-}
-
-a > code {
-  color: $link-color;
 }
 
 .monospace {
@@ -386,7 +398,7 @@ h4 {
 }
 
 .text-right-lg {
-  @media (min-width: $screen-lg-min) {
+  @include media-breakpoint-up(lg) {
     text-align: right;
   }
 }

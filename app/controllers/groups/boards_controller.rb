@@ -2,17 +2,22 @@ class Groups::BoardsController < Groups::ApplicationController
   include BoardsResponses
 
   before_action :assign_endpoint_vars
+  before_action :boards, only: :index
 
   def index
-    @boards = Boards::ListService.new(group, current_user).execute
-
     respond_with_boards
   end
 
   def show
-    @board = group.boards.find(params[:id])
+    @board = boards.find(params[:id])
 
     respond_with_board
+  end
+
+  private
+
+  def boards
+    @boards ||= Boards::ListService.new(group, current_user).execute
   end
 
   def assign_endpoint_vars

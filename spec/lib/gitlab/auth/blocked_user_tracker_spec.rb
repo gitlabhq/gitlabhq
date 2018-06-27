@@ -17,12 +17,8 @@ describe Gitlab::Auth::BlockedUserTracker do
     end
 
     context 'failed login due to blocked user' do
-      let(:env) do
-        {
-          'warden.options' => { message: User::BLOCKED_MESSAGE },
-          described_class::ACTIVE_RECORD_REQUEST_PARAMS => { 'user' => { 'login' => user.username } }
-        }
-      end
+      let(:base_env) { { 'warden.options' => { message: User::BLOCKED_MESSAGE } } }
+      let(:env) { base_env.merge(request_env) }
 
       subject { described_class.log_if_user_blocked(env) }
 
@@ -30,23 +26,37 @@ describe Gitlab::Auth::BlockedUserTracker do
         expect_any_instance_of(SystemHooksService).to receive(:execute_hooks_for).with(user, :failed_login)
       end
 
-      it 'logs a blocked user' do
-        user.block!
+      context 'via GitLab login' do
+        let(:request_env) { { described_class::ACTIVE_RECORD_REQUEST_PARAMS => { 'user' => { 'login' => user.username } } } }
 
-        expect(subject).to be_truthy
+        it 'logs a blocked user' do
+          user.block!
+
+          expect(subject).to be_truthy
+        end
+
+        it 'logs a blocked user by e-mail' do
+          user.block!
+          env[described_class::ACTIVE_RECORD_REQUEST_PARAMS]['user']['login'] = user.email
+
+          expect(subject).to be_truthy
+        end
       end
 
-      it 'logs a blocked user by e-mail' do
-        user.block!
-        env[described_class::ACTIVE_RECORD_REQUEST_PARAMS]['user']['login'] = user.email
+      context 'via LDAP login' do
+        let(:request_env) { { described_class::ACTIVE_RECORD_REQUEST_PARAMS => { 'username' => user.username } } }
 
-        expect(subject).to be_truthy
-      end
+        it 'logs a blocked user' do
+          user.block!
 
-      it 'logs a LDAP blocked user' do
-        user.ldap_block!
+          expect(subject).to be_truthy
+        end
 
-        expect(subject).to be_truthy
+        it 'logs a LDAP blocked user' do
+          user.ldap_block!
+
+          expect(subject).to be_truthy
+        end
       end
     end
   end

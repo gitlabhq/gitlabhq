@@ -138,8 +138,10 @@ module QuickActions
         'Remove assignee'
       end
     end
-    explanation do
-      "Removes #{'assignee'.pluralize(issuable.assignees.size)} #{issuable.assignees.map(&:to_reference).to_sentence}."
+    explanation do |users = nil|
+      assignees = issuable.assignees
+      assignees &= users if users.present? && issuable.allows_multiple_assignees?
+      "Removes #{'assignee'.pluralize(assignees.size)} #{assignees.map(&:to_reference).to_sentence}."
     end
     params do
       issuable.allows_multiple_assignees? ? '@user1 @user2' : ''
@@ -200,7 +202,7 @@ module QuickActions
     end
     params '~label1 ~"label 2"'
     condition do
-      available_labels = LabelsFinder.new(current_user, project_id: project.id).execute
+      available_labels = LabelsFinder.new(current_user, project_id: project.id, include_ancestor_groups: true).execute
 
       current_user.can?(:"admin_#{issuable.to_ability_name}", project) &&
         available_labels.any?
@@ -265,6 +267,26 @@ module QuickActions
         @updates[:label_ids] += label_ids
 
         @updates[:label_ids].uniq!
+      end
+    end
+
+    desc 'Copy labels and milestone from other issue or merge request'
+    explanation do |source_issuable|
+      "Copy labels and milestone from #{source_issuable.to_reference}."
+    end
+    params '#issue | !merge_request'
+    condition do
+      issuable.persisted? &&
+        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+    end
+    parse_params do |issuable_param|
+      extract_references(issuable_param, :issue).first ||
+        extract_references(issuable_param, :merge_request).first
+    end
+    command :copy_metadata do |source_issuable|
+      if source_issuable.present? && source_issuable.project.id == issuable.project.id
+        @updates[:add_label_ids] = source_issuable.labels.map(&:id)
+        @updates[:milestone_id] = source_issuable.milestone.id if source_issuable.milestone
       end
     end
 
@@ -539,6 +561,17 @@ module QuickActions
       end
     end
 
+    desc 'Make issue confidential.'
+    explanation do
+      'Makes this issue confidential'
+    end
+    condition do
+      issuable.is_a?(Issue) && current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
+    end
+    command :confidential do
+      @updates[:confidential] = true
+    end
+
     def extract_users(params)
       return [] if params.nil?
 
@@ -562,7 +595,7 @@ module QuickActions
 
     def find_labels(labels_param)
       extract_references(labels_param, :label) |
-        LabelsFinder.new(current_user, project_id: project.id, name: labels_param.split).execute
+        LabelsFinder.new(current_user, project_id: project.id, name: labels_param.split, include_ancestor_groups: true).execute
     end
 
     def find_label_references(labels_param)
@@ -593,6 +626,7 @@ module QuickActions
 
     def extract_references(arg, type)
       ext = Gitlab::ReferenceExtractor.new(project, current_user)
+
       ext.analyze(arg, author: current_user)
 
       ext.references(type)

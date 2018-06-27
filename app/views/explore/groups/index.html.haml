@@ -9,7 +9,7 @@
   = render 'nav'
 
 - if cookies[:explore_groups_landing_dismissed] != 'true'
-  .explore-groups.landing.content-block.js-explore-groups-landing.hidden
+  .explore-groups.landing.content-block.js-explore-groups-landing.hide
     %button.dismiss-button{ type: 'button', 'aria-label' => 'Dismiss' }= icon('times')
     .svg-container
       = custom_icon('icon_explore_groups_splash')

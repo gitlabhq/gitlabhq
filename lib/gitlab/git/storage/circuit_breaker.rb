@@ -22,13 +22,14 @@ module Gitlab
 
         def self.build(storage, hostname = Gitlab::Environment.hostname)
           config = Gitlab.config.repositories.storages[storage]
-
-          if !config.present?
-            NullCircuitBreaker.new(storage, hostname, error: Misconfiguration.new("Storage '#{storage}' is not configured"))
-          elsif !config['path'].present?
-            NullCircuitBreaker.new(storage, hostname, error: Misconfiguration.new("Path for storage '#{storage}' is not configured"))
-          else
-            new(storage, hostname)
+          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            if !config.present?
+              NullCircuitBreaker.new(storage, hostname, error: Misconfiguration.new("Storage '#{storage}' is not configured"))
+            elsif !config.legacy_disk_path.present?
+              NullCircuitBreaker.new(storage, hostname, error: Misconfiguration.new("Path for storage '#{storage}' is not configured"))
+            else
+              new(storage, hostname)
+            end
           end
         end
 

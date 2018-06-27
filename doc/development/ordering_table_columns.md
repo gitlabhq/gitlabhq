@@ -30,7 +30,7 @@ example) at the end.
 
 ## Type Sizes
 
-While the PostgreSQL docuemntation
+While the PostgreSQL documentation
 (https://www.postgresql.org/docs/current/static/datatype.html) contains plenty
 of information we will list the sizes of common types here so it's easier to
 look them up. Here "word" refers to the word size, which is 4 bytes for a 32
