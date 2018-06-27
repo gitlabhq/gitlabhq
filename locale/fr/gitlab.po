@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-06-20 09:05+0200\n"
-"PO-Revision-Date: 2018-06-27 08:28\n"
+"PO-Revision-Date: 2018-06-27 08:42\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -4701,22 +4701,22 @@ msgid "Service URL"
 msgstr "URL du service"
 
 msgid "Session expiration, projects limit and attachment size."
-msgstr "Expiration de la session, limite des projets et taille des pièces jointes."
+msgstr "Expiration de la session, restrictions des projets et taille des pièces jointes."
 
 msgid "Set a password on your account to pull or push via %{protocol}."
-msgstr "Définissez un mot de passe pour votre compte pour pouvoir tirer ou pousser par %{protocol}."
+msgstr "Définissez un mot de passe pour votre compte afin de pouvoir récupérer ou pousser vos modification via %{protocol}."
 
 msgid "Set default and restrict visibility levels. Configure import sources and git access protocol."
-msgstr "Définir les valeurs par défaut et limiter les niveaux de visibilité. Configurer les sources d’importation et le protocole d’accès git."
+msgstr "Définissez les valeurs par défaut et restreignez les niveaux de visibilité. Configurez les sources d’importation et le protocole d’accès pour Git."
 
 msgid "Set max session time for web terminal."
-msgstr "Définir le temps maximal de la session pour le terminal Web."
+msgstr "Définissez le temps maximal de la session pour le terminal Web."
 
 msgid "Set notification email for abuse reports."
-msgstr "Définir un courriel de notification pour les rapports d’abus."
+msgstr "Définissez un courriel de notification pour les rapports d’abus."
 
 msgid "Set requirements for a user to sign-in. Enable mandatory two-factor authentication."
-msgstr "Définir les exigences pour la connexion d’un utilisateur. Activer l’authentification obligatoire à deux facteurs."
+msgstr "Définissez les exigences pour la connexion d’un utilisateur. Activez l’authentification obligatoire à deux facteurs."
 
 msgid "Set up CI/CD"
 msgstr "Configurer CI/CD"
