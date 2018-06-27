@@ -1,9 +1,6 @@
 <script>
   import $ from 'jquery';
-<<<<<<< HEAD
   import IssueCardWeight from 'ee/boards/components/issue_card_weight.vue';
-=======
->>>>>>> upstream/master
   import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
   import eventHub from '../eventhub';
 
@@ -12,10 +9,7 @@
   export default {
     components: {
       UserAvatarLink,
-<<<<<<< HEAD
       IssueCardWeight,
-=======
->>>>>>> upstream/master
     },
     props: {
       issue: {
@@ -160,13 +154,10 @@
         >
           {{ issue.referencePath }}
         </span>
-<<<<<<< HEAD
         <issue-card-weight
           v-if="issue.weight"
           :weight="issue.weight"
         />
-=======
->>>>>>> upstream/master
       </h4>
       <div class="board-card-assignee">
         <user-avatar-link
