@@ -651,7 +651,13 @@ module Gitlab
       end
 
       def update_branch(branch_name, user:, newrev:, oldrev:)
-        OperationService.new(user, self).update_branch(branch_name, newrev, oldrev)
+        gitaly_migrate(:operation_user_update_branch) do |is_enabled|
+          if is_enabled
+            gitaly_operations_client.user_update_branch(branch_name, user, newrev, oldrev)
+          else
+            OperationService.new(user, self).update_branch(branch_name, newrev, oldrev)
+          end
+        end
       end
 
       def rm_branch(branch_name, user:)
