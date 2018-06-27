@@ -52,10 +52,10 @@ export default {
         v-html="message.text"
       >
       </span>
-      <a
+      <button
         v-if="message.action"
-        href="#"
-        class="flash-action text-white"
+        type="button"
+        class="flash-action text-white p-0 border-top-0 border-right-0 border-left-0 bg-transparent"
         @click.stop.prevent="clickAction"
       >
         {{ message.actionText }}
@@ -63,7 +63,7 @@ export default {
           v-show="isLoading"
           inline
         />
-      </a>
+      </button>
     </div>
   </div>
 </template>
