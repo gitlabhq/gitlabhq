@@ -9,7 +9,7 @@ import '~/vue_shared/models/assignee';
 import '~/boards/models/issue';
 import '~/boards/models/list';
 import '~/boards/stores/boards_store';
-import '~/boards/components/issue_card_inner';
+import IssueCardInner from '~/boards/components/issue_card_inner.vue';
 import { listObj } from './mock_data';
 
 describe('Issue card component', () => {
@@ -48,7 +48,7 @@ describe('Issue card component', () => {
     component = new Vue({
       el: document.querySelector('.test-container'),
       components: {
-        'issue-card': gl.issueBoards.IssueCardInner,
+        'issue-card': IssueCardInner,
       },
       data() {
         return {
