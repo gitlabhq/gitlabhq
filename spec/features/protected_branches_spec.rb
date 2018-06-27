@@ -147,12 +147,9 @@ feature 'Protected Branches', :js do
 
         visit project_protected_branches_path(project)
         set_protected_branch_name('*-stable')
-<<<<<<< HEAD
         set_allowed_to('merge')
         set_allowed_to('push')
-=======
         set_defaults
->>>>>>> upstream/master
         click_on "Protect"
 
         visit project_protected_branches_path(project)
