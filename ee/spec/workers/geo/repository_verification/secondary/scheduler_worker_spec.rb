@@ -25,10 +25,10 @@ describe Geo::RepositoryVerification::Secondary::SchedulerWorker, :postgresql, :
       it 'skips verification for repositories on other shards' do
         create(:project, repository_storage: 'broken')
 
-        # Make the shard unhealthy
-        Gitlab::Shell.new.rm_directory('broken', '/')
+        allow(Gitlab::GitalyClient).to receive(:call) do
+          raise GRPC::Unavailable.new('No Gitaly available')
+        end
 
-        expect(Geo::RepositoryVerification::Secondary::ShardWorker).to receive(:perform_async).with(healthy_shard)
         expect(Geo::RepositoryVerification::Secondary::ShardWorker).not_to receive(:perform_async).with('broken')
 
         subject.perform
@@ -50,9 +50,6 @@ describe Geo::RepositoryVerification::Secondary::SchedulerWorker, :postgresql, :
       it 'skips verification for projects with downed Gitaly server' do
         create(:project, repository_storage: 'broken')
 
-        # Report only one healthy shard
-        expect(Gitlab::HealthChecks::FsShardsCheck).to receive(:readiness)
-          .and_return([result(true, healthy_shard), result(true, 'broken')])
         expect(Gitlab::HealthChecks::GitalyCheck).to receive(:readiness)
           .and_return([result(true, healthy_shard), result(false, 'broken')])
 
@@ -66,8 +63,6 @@ describe Geo::RepositoryVerification::Secondary::SchedulerWorker, :postgresql, :
         secondary.update!(selective_sync_type: 'shards', selective_sync_shards: [healthy_shard])
 
         # Report both shards as healthy
-        expect(Gitlab::HealthChecks::FsShardsCheck).to receive(:readiness)
-          .and_return([result(true, healthy_shard), result(true, 'broken')])
         expect(Gitlab::HealthChecks::GitalyCheck).to receive(:readiness)
           .and_return([result(true, healthy_shard), result(true, 'broken')])
 

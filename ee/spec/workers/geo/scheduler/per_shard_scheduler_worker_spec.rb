@@ -17,9 +17,8 @@ describe Geo::Scheduler::PerShardSchedulerWorker do
     expect(described_class).to include_module(::Gitlab::Geo::LogHelpers)
   end
 
-  it 'includes FsShards and Gitaly health checks' do
+  it 'includes Gitaly health checks' do
     expect(described_class::HEALTHY_SHARD_CHECKS).to include(
-      Gitlab::HealthChecks::FsShardsCheck,
       Gitlab::HealthChecks::GitalyCheck
     )
   end
@@ -36,7 +35,6 @@ describe Geo::Scheduler::PerShardSchedulerWorker do
     let(:unhealthy_shard) { Gitlab::HealthChecks::Result.new(false, '14:Connect Failed', shard: unhealthy_shard_name) }
 
     before do
-      allow(Gitlab::HealthChecks::FsShardsCheck).to receive(:readiness).and_return([default_shard, other_shard, unhealthy_shard])
       allow(Gitlab::HealthChecks::GitalyCheck).to receive(:readiness).and_return([default_shard, other_shard, unhealthy_shard])
     end
 
@@ -49,7 +47,7 @@ describe Geo::Scheduler::PerShardSchedulerWorker do
     end
 
     describe '#ready_shards' do
-      let(:ready_shards) { [[default_shard, other_shard, unhealthy_shard], [default_shard, other_shard, unhealthy_shard]] }
+      let(:ready_shards) { [[default_shard, other_shard, unhealthy_shard]] }
 
       it "returns an array of ready shards" do
         expect(per_shard_scheduler_worker.ready_shards).to eq(ready_shards)

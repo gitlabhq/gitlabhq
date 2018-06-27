@@ -28,10 +28,10 @@ describe Geo::RepositoryVerification::Primary::BatchWorker, :postgresql, :clean_
 
         create(:repository_state, :repository_outdated, project: unhealthy_outdated)
 
-        # Make the shard unhealthy
-        Gitlab::Shell.new.rm_directory('broken', '/')
+        allow(Gitlab::GitalyClient).to receive(:call) do
+          raise GRPC::Unavailable.new('No Gitaly available')
+        end
 
-        expect(Geo::RepositoryVerification::Primary::ShardWorker).to receive(:perform_async).with(healthy_shard)
         expect(Geo::RepositoryVerification::Primary::ShardWorker).not_to receive(:perform_async).with('broken')
 
         subject.perform
@@ -61,8 +61,6 @@ describe Geo::RepositoryVerification::Primary::BatchWorker, :postgresql, :clean_
         create(:repository_state, :repository_outdated, project: unhealthy_outdated)
 
         # Report only one healthy shard
-        expect(Gitlab::HealthChecks::FsShardsCheck).to receive(:readiness)
-          .and_return([result(true, healthy_shard), result(true, 'broken')])
         expect(Gitlab::HealthChecks::GitalyCheck).to receive(:readiness)
           .and_return([result(true, healthy_shard), result(false, 'broken')])
 

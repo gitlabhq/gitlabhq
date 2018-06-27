@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Gitaly::Server do
+  let(:server) { described_class.new('default') }
+
   describe '.all' do
     let(:storages) { Gitlab.config.repositories.storages }
 
@@ -16,6 +18,38 @@ describe Gitaly::Server do
   it { is_expected.to respond_to(:git_binary_version) }
   it { is_expected.to respond_to(:up_to_date?) }
   it { is_expected.to respond_to(:address) }
+
+  describe 'readable?' do
+    context 'when the storage is readable' do
+      it 'returns true' do
+        expect(server).to be_readable
+      end
+    end
+
+    context 'when the storage is not readable' do
+      let(:server) { described_class.new('broken') }
+
+      it 'returns false' do
+        expect(server).not_to be_readable
+      end
+    end
+  end
+
+  describe 'writeable?' do
+    context 'when the storage is writeable' do
+      it 'returns true' do
+        expect(server).to be_writeable
+      end
+    end
+
+    context 'when the storage is not writeable' do
+      let(:server) { described_class.new('broken') }
+
+      it 'returns false' do
+        expect(server).not_to be_writeable
+      end
+    end
+  end
 
   describe 'request memoization' do
     context 'when requesting multiple properties', :request_store do
