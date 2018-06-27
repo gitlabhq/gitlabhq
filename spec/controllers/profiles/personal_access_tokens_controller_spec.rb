@@ -33,6 +33,23 @@ describe Profiles::PersonalAccessTokensController do
       expect(created_token).not_to be_nil
       expect(created_token.expires_at).to eq(expires_at)
     end
+
+    it "tokens are not restricted by project by default" do
+      post :create, personal_access_token: token_attributes
+
+      expect(created_token).not_to be_restricted_by_resource
+    end
+
+    it "allows creation of tokens restricted by project" do
+      allowed_project = create(:project)
+      restricted_project = create(:project)
+
+      post :create, personal_access_token: token_attributes.merge(project_ids: [allowed_project.id])
+
+      expect(created_token).to be_restricted_by_resource
+      expect(created_token.allows_resource?(allowed_project)).to be_truthy
+      expect(created_token.allows_resource?(restricted_project)).to be_falsey
+    end
   end
 
   describe '#index' do
