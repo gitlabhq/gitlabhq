@@ -8,7 +8,7 @@ module Gitlab
                 { title: 'proposal', color: '#69D100' },
                 { title: 'task', color: '#7F8C8D' }].freeze
 
-      attr_reader :project_key, :repository_slug, :client, :errors, :users
+      attr_reader :project, :project_key, :repository_slug, :client, :errors, :users
 
       def initialize(project)
         @project = project
@@ -39,23 +39,20 @@ module Gitlab
         }.to_json)
       end
 
-      def gitlab_user_id(project, username)
-        find_user_id(username) || project.creator_id
+      def gitlab_user_id(project, email)
+        find_user_id(email) || project.creator_id
       end
 
-      def find_user_id(username)
-        return nil unless username
+      def find_user_id(email)
+        return nil unless email
 
-        return users[username] if users.key?(username)
+        return users[email] if users.key?(email)
 
-        users[username] = User.select(:id)
-                              .joins(:identities)
-                              .find_by("identities.extern_uid = ? AND identities.provider = 'bitbucket_server'", username)
-                              .try(:id)
+        users[email] = User.find_by_any_email(email)
       end
 
       def repo
-        @repo ||= client.repo(project.import_source)
+        @repo ||= client.repo(project_key, repository_slug)
       end
 
       def import_pull_requests
@@ -64,13 +61,14 @@ module Gitlab
         pull_requests.each do |pull_request|
           begin
             description = ''
-            description += @formatter.author_line(pull_request.author) unless find_user_id(pull_request.author)
+            description += @formatter.author_line(pull_request.author) unless find_user_id(pull_request.author_email)
             description += pull_request.description
 
             source_branch_sha = pull_request.source_branch_sha
             target_branch_sha = pull_request.target_branch_sha
             source_branch_sha = project.repository.commit(source_branch_sha)&.sha || source_branch_sha
             target_branch_sha = project.repository.commit(target_branch_sha)&.sha || target_branch_sha
+            project.merge_requests.find_by(iid: pull_request.iid)&.destroy
 
             merge_request = project.merge_requests.create!(
               iid: pull_request.iid,
@@ -83,13 +81,13 @@ module Gitlab
               target_branch: pull_request.target_branch_name,
               target_branch_sha: target_branch_sha,
               state: pull_request.state,
-              author_id: gitlab_user_id(project, pull_request.author),
+              author_id: gitlab_user_id(project, pull_request.author_email),
               assignee_id: nil,
               created_at: pull_request.created_at,
               updated_at: pull_request.updated_at
             )
 
-#            import_pull_request_comments(pull_request, merge_request) if merge_request.persisted?
+            import_pull_request_comments(pull_request, merge_request) if merge_request.persisted?
           rescue StandardError => e
             errors << { type: :pull_request, iid: pull_request.iid, errors: e.message, trace: e.backtrace.join("\n"), raw_response: pull_request.raw }
           end
@@ -97,12 +95,31 @@ module Gitlab
       end
 
       def import_pull_request_comments(pull_request, merge_request)
-        comments = client.activities(repo, pull_request.iid).select(&:commment?)
+        # XXX This is inefficient since we are making multiple requests to the activities endpoint
+        merge_event = client.activities(project_key, repository_slug, pull_request.iid).find(&:merge_event?)
+
+        import_merge_event(merge_request, merge_event) if merge_event
+
+        comments = client.activities(project_key, repository_slug, pull_request.iid).select(&:comment?)
 
         inline_comments, pr_comments = comments.partition(&:inline_comment?)
 
-        import_inline_comments(inline_comments, pull_request, merge_request)
+#        import_inline_comments(inline_comments, pull_request, merge_request)
         import_standalone_pr_comments(pr_comments, merge_request)
+      end
+
+      def import_merge_event(merge_request, merge_event)
+        committer = merge_event.commiter_email
+
+        return unless committer
+
+        user_id = find_user_id(committer) if committer
+        timestamp = merge_event.merge_timestamp
+
+        return unless user_id
+
+        event = Event.create(merged_by_id: user_id, merged_at: timestamp)
+        MergeRequestMetricsService.new(merge_request.metrics).merge(event)
       end
 
       def import_inline_comments(inline_comments, pull_request, merge_request)
@@ -153,7 +170,7 @@ module Gitlab
           begin
             merge_request.notes.create!(pull_request_comment_attributes(comment))
           rescue StandardError => e
-            errors << { type: :pull_request, iid: comment.iid, errors: e.message }
+            errors << { type: :pull_request, iid: comment.id, errors: e.message }
           end
         end
       end
@@ -163,10 +180,11 @@ module Gitlab
       end
 
       def pull_request_comment_attributes(comment)
+        byebug
         {
           project: project,
           note: comment.note,
-          author_id: gitlab_user_id(project, comment.author),
+          author_id: gitlab_user_id(project, comment.author_email),
           created_at: comment.created_at,
           updated_at: comment.updated_at
         }

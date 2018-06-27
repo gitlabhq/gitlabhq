@@ -5,6 +5,10 @@ module BitbucketServer
         raw.fetch('author', {}).fetch('user', {}).fetch('name')
       end
 
+      def author_email
+        raw.fetch('author', {}).fetch('user', {}).fetch('emailAddress')
+      end
+
       def description
         raw['description']
       end

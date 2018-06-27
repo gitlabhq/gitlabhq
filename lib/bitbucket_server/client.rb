@@ -24,7 +24,7 @@ module BitbucketServer
     def activities(project_key, repo, pull_request)
       path = "/projects/#{project_key}/repos/#{repo}/pull-requests/#{pull_request}/activities"
 
-      collection = get_collection(path, :activities)
+      collection = get_collection(path, :activity)
     end
 
     def pull_request_diff(project_key, repo, pull_request)
