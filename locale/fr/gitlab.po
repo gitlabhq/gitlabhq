@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-06-20 09:05+0200\n"
-"PO-Revision-Date: 2018-06-27 12:14\n"
+"PO-Revision-Date: 2018-06-27 12:23\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -4841,13 +4841,13 @@ msgid "SortOptions|Access level, ascending"
 msgstr "Niveau d’accès, croissant"
 
 msgid "SortOptions|Access level, descending"
-msgstr "Niveau d’accès, decroissant"
+msgstr "Niveau d’accès décroissant"
 
 msgid "SortOptions|Created date"
 msgstr "Date de création"
 
 msgid "SortOptions|Due date"
-msgstr "Date d'échéance"
+msgstr "Date d’échéance"
 
 msgid "SortOptions|Due later"
 msgstr "Échéance lointaine"
@@ -4856,7 +4856,7 @@ msgid "SortOptions|Due soon"
 msgstr "Échéance proche"
 
 msgid "SortOptions|Label priority"
-msgstr "Priorité du label"
+msgstr "Priorité de l’étiquette"
 
 msgid "SortOptions|Largest group"
 msgstr "Taille de groupe"
