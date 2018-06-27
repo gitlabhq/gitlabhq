@@ -2,10 +2,6 @@ module EachShardWorker
   extend ActiveSupport::Concern
   include ::Gitlab::Utils::StrongMemoize
 
-  HEALTHY_SHARD_CHECKS = [
-    Gitlab::HealthChecks::GitalyCheck
-  ].freeze
-
   def each_eligible_shard
     Gitlab::ShardHealthCache.update(eligible_shard_names)
 
@@ -21,18 +17,15 @@ module EachShardWorker
 
   def healthy_shard_names
     strong_memoize(:healthy_shard_names) do
-      # For now, we need to perform both Gitaly and direct filesystem checks to ensure
-      # the shard is healthy. We take the intersection of the successful checks
-      # as the healthy shards.
-      healthy_ready_shards.map { |result| result.labels[:shard] }.compact.uniq
+      healthy_ready_shards.map { |result| result.labels[:shard] }
     end
   end
 
   def healthy_ready_shards
-    ready_shards.map { |result| result.select(&:success) }.inject(:&)
+    ready_shards.select(&:success)
   end
 
   def ready_shards
-    HEALTHY_SHARD_CHECKS.map(&:readiness)
+    Gitlab::HealthChecks::GitalyCheck.readiness
   end
 end
