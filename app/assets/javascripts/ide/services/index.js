@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueResource from 'vue-resource';
+import axios from '~/lib/utils/axios_utils';
 import Api from '~/api';
 
 Vue.use(VueResource);
@@ -69,11 +70,7 @@ export default {
   },
   getFiles(projectUrl, branchId) {
     const url = `${projectUrl}/files/${branchId}`;
-    return Vue.http.get(url, {
-      params: {
-        format: 'json',
-      },
-    });
+    return axios.get(url, { params: { format: 'json' } });
   },
   lastCommitPipelines({ getters }) {
     const commitSha = getters.lastCommit.id;

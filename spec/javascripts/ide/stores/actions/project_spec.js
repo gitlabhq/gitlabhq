@@ -1,7 +1,10 @@
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import {
   refreshLastCommitData,
   showBranchNotFoundError,
   createNewBranchFromDefault,
+  getBranchData,
 } from '~/ide/stores/actions';
 import store from '~/ide/stores';
 import projectActions from '~/ide/stores/actions/project';
@@ -11,11 +14,19 @@ import { resetStore } from '../../helpers';
 import testAction from '../../../helpers/vuex_action_helper';
 
 describe('IDE store project actions', () => {
+  let mock;
+
   beforeEach(() => {
-    store.state.projects['abc/def'] = {};
+    mock = new MockAdapter(axios);
+
+    store.state.projects['abc/def'] = {
+      branches: {},
+    };
   });
 
   afterEach(() => {
+    mock.restore();
+
     resetStore(store);
   });
 
@@ -161,6 +172,36 @@ describe('IDE store project actions', () => {
         expect(refreshSpy).toHaveBeenCalled();
 
         done();
+      });
+    });
+  });
+
+  describe('getBranchData', () => {
+    describe('error', () => {
+      it('dispatches branch not found action when response is 404', done => {
+        const dispatch = jasmine.createSpy('dispatchSpy');
+
+        mock.onGet(/(.*)/).replyOnce(404);
+
+        getBranchData(
+          {
+            commit() {},
+            dispatch,
+            state: store.state,
+          },
+          {
+            projectId: 'abc/def',
+            branchId: 'master-testing',
+          },
+        )
+          .then(done.fail)
+          .catch(() => {
+            expect(dispatch.calls.argsFor(0)).toEqual([
+              'showBranchNotFoundError',
+              'master-testing',
+            ]);
+            done();
+          });
       });
     });
   });
