@@ -244,6 +244,12 @@ ping the Engineering Manager or the Product Manager for the relative area to
 make them aware of the issue earlier. They will analyze the priority and change
 it if needed.
 
+A ~regression label implies that a regress in functionality happened, a functionality which worked previously but no longer works currently.
+The ~regression label is not removed as part of the "Rescheduling" process. If an issue is indeed a regression, it should carry such context forward until it's fully resolved. 
+A ~regression label on a ~bug tells us that something worked before and it needs extra attention from Engineering and Product Managers to schedule/reschedule. 
+
+The milestone of a ~regression is used to schedule when the fix will be delivered. The creation time of a ~regression tells us which release it was found in.
+
 ## Release retrospective and kickoff
 
 - [Retrospective](https://about.gitlab.com/handbook/engineering/workflow/#retrospective)
