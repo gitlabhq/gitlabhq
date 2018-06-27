@@ -17,7 +17,7 @@ describe 'Snippet elastic search', :js, :elastic do
 
       visit explore_snippets_path
       fill_in 'search', with: 'Test'
-      click_button 'Go'
+      find('#search').native.send_keys(:enter)
 
       expect(page).to have_content('Test searching for personal snippets')
     end
@@ -27,7 +27,7 @@ describe 'Snippet elastic search', :js, :elastic do
 
       visit explore_snippets_path
       fill_in 'search', with: 'Test'
-      click_button 'Go'
+      find('#search').native.send_keys(:enter)
 
       expect(page).to have_content('Test searching for personal snippets')
     end

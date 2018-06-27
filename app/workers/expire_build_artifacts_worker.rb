@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ExpireBuildArtifactsWorker
   include ApplicationWorker
   include CronjobQueue
