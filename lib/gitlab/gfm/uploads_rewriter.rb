@@ -48,7 +48,7 @@ module Gitlab
       def find_file(project, secret, file)
         uploader = FileUploader.new(project, secret: secret)
         uploader.retrieve_from_store!(file)
-        uploader.file
+        uploader.file if uploader.object_store == ObjectStorage::Store::LOCAL
       end
 
       # Because the uploaders use 'move_to_store' we must have a temporary

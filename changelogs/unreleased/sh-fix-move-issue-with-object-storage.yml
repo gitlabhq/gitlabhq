@@ -1,0 +1,5 @@
+---
+title: When moving issues, don't attempt to move files in object storage
+merge_request:
+author:
+type: fixed

@@ -62,5 +62,24 @@ describe Gitlab::Gfm::UploadsRewriter do
       subject { rewriter.files }
       it { is_expected.to be_an(Array) }
     end
+
+    describe 'with object storage' do
+      before do
+        stub_uploads_object_storage(uploader: FileUploader)
+        zip_uploader.migrate!(FileUploader::Store::REMOTE)
+      end
+
+      describe '#needs_rewrite?' do
+        subject { rewriter.needs_rewrite? }
+
+        it { is_expected.to eq false }
+      end
+
+      describe '#files' do
+        subject { rewriter.files }
+
+        it { is_expected.to eq([]) }
+      end
+    end
   end
 end
