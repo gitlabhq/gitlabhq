@@ -1,7 +1,10 @@
+import _ from 'underscore';
 import flash from '~/flash';
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
 import service from '../../services';
+import api from '../../../api';
 import * as types from '../mutation_types';
+import { refreshCurrentPage } from '../../../lib/utils/url_utility';
 
 export const getProjectData = ({ commit, state }, { namespace, projectId, force = false } = {}) =>
   new Promise((resolve, reject) => {
@@ -32,7 +35,10 @@ export const getProjectData = ({ commit, state }, { namespace, projectId, force 
     }
   });
 
-export const getBranchData = ({ commit, state }, { projectId, branchId, force = false } = {}) =>
+export const getBranchData = (
+  { commit, dispatch, state },
+  { projectId, branchId, force = false } = {},
+) =>
   new Promise((resolve, reject) => {
     if (
       typeof state.projects[`${projectId}`] === 'undefined' ||
@@ -51,15 +57,19 @@ export const getBranchData = ({ commit, state }, { projectId, branchId, force = 
           commit(types.SET_BRANCH_WORKING_REFERENCE, { projectId, branchId, reference: id });
           resolve(data);
         })
-        .catch(() => {
-          flash(
-            __('Error loading branch data. Please try again.'),
-            'alert',
-            document,
-            null,
-            false,
-            true,
-          );
+        .catch(e => {
+          if (e.response.status === 404) {
+            dispatch('showBranchNotFoundError', branchId);
+          } else {
+            flash(
+              __('Error loading branch data. Please try again.'),
+              'alert',
+              document,
+              null,
+              false,
+              true,
+            );
+          }
           reject(new Error(`Branch not loaded - ${projectId}/${branchId}`));
         });
     } else {
@@ -80,3 +90,32 @@ export const refreshLastCommitData = ({ commit }, { projectId, branchId } = {}) 
     .catch(() => {
       flash(__('Error loading last commit.'), 'alert', document, null, false, true);
     });
+
+export const createNewBranchFromDefault = ({ state, getters }, branch) =>
+  api
+    .createBranch(state.currentProjectId, {
+      ref: getters.currentProject.default_branch,
+      branch,
+    })
+    .then(() => {
+      refreshCurrentPage();
+
+      // this forces the loading icon to spin whilst the page is reloading
+      return new Promise(() => {});
+    })
+    .catch(() => {});
+
+export const showBranchNotFoundError = ({ dispatch }, branchId) => {
+  dispatch('setErrorMessage', {
+    text: sprintf(
+      __("Branch %{branchName} was not found in this project's repository."),
+      {
+        branchName: `<strong>${_.escape(branchId)}</strong>`,
+      },
+      false,
+    ),
+    action: 'createNewBranchFromDefault',
+    actionText: __('Create branch'),
+    actionPayload: branchId,
+  });
+};

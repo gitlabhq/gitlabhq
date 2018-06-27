@@ -245,6 +245,15 @@ const Api = {
     });
   },
 
+  createBranch(id, { ref, branch }) {
+    const url = Api.buildUrl(this.createBranchPath).replace(':id', encodeURIComponent(id));
+
+    return axios.post(url, {
+      ref,
+      branch,
+    });
+  },
+
   approverUsers(search, options, callback = $.noop) {
     const url = Api.buildUrl('/autocomplete/users.json');
     return axios

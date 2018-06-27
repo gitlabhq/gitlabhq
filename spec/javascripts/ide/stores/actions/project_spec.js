@@ -1,15 +1,32 @@
-import { refreshLastCommitData } from '~/ide/stores/actions';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
+import {
+  refreshLastCommitData,
+  showBranchNotFoundError,
+  createNewBranchFromDefault,
+  getBranchData,
+} from '~/ide/stores/actions';
 import store from '~/ide/stores';
+import projectActions from '~/ide/stores/actions/project';
 import service from '~/ide/services';
+import api from '~/api';
 import { resetStore } from '../../helpers';
 import testAction from '../../../helpers/vuex_action_helper';
 
 describe('IDE store project actions', () => {
+  let mock;
+
   beforeEach(() => {
-    store.state.projects['abc/def'] = {};
+    mock = new MockAdapter(axios);
+
+    store.state.projects['abc/def'] = {
+      branches: {},
+    };
   });
 
   afterEach(() => {
+    mock.restore();
+
     resetStore(store);
   });
 
@@ -78,6 +95,114 @@ describe('IDE store project actions', () => {
         ], // action
         done,
       );
+    });
+  });
+
+  describe('showBranchNotFoundError', () => {
+    it('dispatches setErrorMessage', done => {
+      testAction(
+        showBranchNotFoundError,
+        'master',
+        null,
+        [],
+        [
+          {
+            type: 'setErrorMessage',
+            payload: {
+              text: "Branch <strong>master</strong> was not found in this project's repository.",
+              action: 'createNewBranchFromDefault',
+              actionText: 'Create branch',
+              actionPayload: 'master',
+            },
+          },
+        ],
+        done,
+      );
+    });
+  });
+
+  describe('createNewBranchFromDefault', () => {
+    it('calls API', done => {
+      spyOn(api, 'createBranch').and.returnValue(Promise.resolve());
+      spyOnDependency(projectActions, 'refreshCurrentPage');
+
+      createNewBranchFromDefault(
+        {
+          state: {
+            currentProjectId: 'project-path',
+          },
+          getters: {
+            currentProject: {
+              default_branch: 'master',
+            },
+          },
+        },
+        'new-branch-name',
+      );
+
+      setTimeout(() => {
+        expect(api.createBranch).toHaveBeenCalledWith('project-path', {
+          ref: 'master',
+          branch: 'new-branch-name',
+        });
+
+        done();
+      });
+    });
+
+    it('reloads window', done => {
+      spyOn(api, 'createBranch').and.returnValue(Promise.resolve());
+      const refreshSpy = spyOnDependency(projectActions, 'refreshCurrentPage');
+
+      createNewBranchFromDefault(
+        {
+          state: {
+            currentProjectId: 'project-path',
+          },
+          getters: {
+            currentProject: {
+              default_branch: 'master',
+            },
+          },
+        },
+        'new-branch-name',
+      );
+
+      setTimeout(() => {
+        expect(refreshSpy).toHaveBeenCalled();
+
+        done();
+      });
+    });
+  });
+
+  describe('getBranchData', () => {
+    describe('error', () => {
+      it('dispatches branch not found action when response is 404', done => {
+        const dispatch = jasmine.createSpy('dispatchSpy');
+
+        mock.onGet(/(.*)/).replyOnce(404);
+
+        getBranchData(
+          {
+            commit() {},
+            dispatch,
+            state: store.state,
+          },
+          {
+            projectId: 'abc/def',
+            branchId: 'master-testing',
+          },
+        )
+          .then(done.fail)
+          .catch(() => {
+            expect(dispatch.calls.argsFor(0)).toEqual([
+              'showBranchNotFoundError',
+              'master-testing',
+            ]);
+            done();
+          });
+      });
     });
   });
 });
