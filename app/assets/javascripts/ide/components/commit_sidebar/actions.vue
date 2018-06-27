@@ -22,15 +22,23 @@ export default {
       return this.changedFiles.length > 0 && this.stagedFiles.length > 0;
     },
   },
+  watch: {
+    disableMergeRequestRadio() {
+      this.updateSelectedCommitAction();
+    },
+  },
   mounted() {
-    if (this.currentBranch && !this.currentBranch.can_push) {
-      this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH);
-    } else if (this.disableMergeRequestRadio) {
-      this.updateCommitAction(consts.COMMIT_TO_CURRENT_BRANCH);
-    }
+    this.updateSelectedCommitAction();
   },
   methods: {
     ...mapActions('commit', ['updateCommitAction']),
+    updateSelectedCommitAction() {
+      if (this.currentBranch && !this.currentBranch.can_push) {
+        this.updateCommitAction(consts.COMMIT_TO_NEW_BRANCH);
+      } else if (this.disableMergeRequestRadio) {
+        this.updateCommitAction(consts.COMMIT_TO_CURRENT_BRANCH);
+      }
+    },
   },
   commitToCurrentBranch: consts.COMMIT_TO_CURRENT_BRANCH,
   commitToNewBranch: consts.COMMIT_TO_NEW_BRANCH,
