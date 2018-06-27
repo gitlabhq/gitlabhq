@@ -942,6 +942,11 @@ useful when you'd like to download the archive from GitLab. The `artifacts:name`
 variable can make use of any of the [predefined variables](../variables/README.md).
 The default name is `artifacts`, which becomes `artifacts.zip` when downloaded.
 
+NOTE: **Note:**
+If your branch-name contains forward slashes
+(e.g. `feature/my-feature`) it is advised to use `$CI_COMMIT_REF_SLUG`
+instead of `$CI_COMMIT_REF_NAME` for proper naming of the artifact.
+
 To create an archive with a name of the current job:
 
 ```yaml
