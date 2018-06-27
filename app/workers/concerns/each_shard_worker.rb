@@ -6,7 +6,7 @@ module EachShardWorker
     Gitlab::HealthChecks::GitalyCheck
   ].freeze
 
-  def each_shard
+  def each_eligible_shard
     Gitlab::ShardHealthCache.update(eligible_shard_names)
 
     eligible_shard_names.each do |shard_name|
