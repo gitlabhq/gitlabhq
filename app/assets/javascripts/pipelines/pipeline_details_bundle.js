@@ -35,7 +35,8 @@ export default () => {
       requestRefreshPipelineGraph() {
         // When an action is clicked
         // (wether in the dropdown or in the main nodes, we refresh the big graph)
-        this.mediator.refreshPipeline()
+        this.mediator
+          .refreshPipeline()
           .catch(() => Flash(__('An error occurred while making the request.')));
       },
     },
@@ -122,8 +123,7 @@ export default () => {
       sastContainerHelpPath,
     } = datasetOptions;
     const pipelineId = parseInt(datasetOptions.pipelineId, 10);
-    const canCreateIssue = datasetOptions.canCreateIssue;
-    const canCreateFeedback = datasetOptions.canCreateFeedback;
+    const { canCreateIssue, canCreateFeedback } = datasetOptions;
 
     const store = createStore();
     // Widget summary
