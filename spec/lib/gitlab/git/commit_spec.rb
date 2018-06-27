@@ -309,7 +309,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
       it { is_expected.not_to include(SeedRepo::FirstCommit::ID) }
     end
 
-    shared_examples '.shas_with_signatures' do
+    describe '.shas_with_signatures' do
       let(:signed_shas) { %w[5937ac0a7beb003549fc5fd26fc247adbce4a52e 570e7b2abdd848b95f2f578043fc23bd6f6fd24d] }
       let(:unsigned_shas) { %w[19e2e9b4ef76b422ce1154af39a91323ccc57434 c642fe9b8b9f28f9225d7ea953fe14e74748d53b] }
       let(:first_signed_shas) { %w[5937ac0a7beb003549fc5fd26fc247adbce4a52e c642fe9b8b9f28f9225d7ea953fe14e74748d53b] }
@@ -328,14 +328,6 @@ describe Gitlab::Git::Commit, seed_helper: true do
         ret = described_class.shas_with_signatures(repository, first_signed_shas)
         expect(ret).to contain_exactly(first_signed_shas.first)
       end
-    end
-
-    describe '.shas_with_signatures with gitaly on' do
-      it_should_behave_like '.shas_with_signatures'
-    end
-
-    describe '.shas_with_signatures with gitaly disabled', :disable_gitaly do
-      it_should_behave_like '.shas_with_signatures'
     end
 
     describe '.find_all' do
@@ -498,7 +490,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
     end
 
     describe '.extract_signature_lazily' do
-      shared_examples 'loading signatures in batch once' do
+      describe 'loading signatures in batch once' do
         it 'fetches signatures in batch once' do
           commit_ids = %w[0b4bc9a49b562e85de7cc9e834518ea6828729b9 4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6]
           signatures = commit_ids.map do |commit_id|
@@ -516,27 +508,13 @@ describe Gitlab::Git::Commit, seed_helper: true do
 
       subject { described_class.extract_signature_lazily(repository, commit_id).itself }
 
-      context 'with Gitaly extract_commit_signature_in_batch feature enabled' do
-        it_behaves_like 'extracting commit signature'
-        it_behaves_like 'loading signatures in batch once'
-      end
-
-      context 'with Gitaly extract_commit_signature_in_batch feature disabled', :disable_gitaly do
-        it_behaves_like 'extracting commit signature'
-        it_behaves_like 'loading signatures in batch once'
-      end
+      it_behaves_like 'extracting commit signature'
     end
 
     describe '.extract_signature' do
       subject { described_class.extract_signature(repository, commit_id) }
 
-      context 'with gitaly' do
-        it_behaves_like 'extracting commit signature'
-      end
-
-      context 'without gitaly', :disable_gitaly do
-        it_behaves_like 'extracting commit signature'
-      end
+      it_behaves_like 'extracting commit signature'
     end
   end
 
