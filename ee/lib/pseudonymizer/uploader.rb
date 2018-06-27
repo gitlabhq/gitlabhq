@@ -26,7 +26,7 @@ module Pseudonymizer
 
     def available?
       !connect_to_remote_directory.nil?
-    rescue ObjectStorageUnavailableError
+    rescue
       false
     end
 

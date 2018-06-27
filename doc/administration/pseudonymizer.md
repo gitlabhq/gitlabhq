@@ -33,7 +33,7 @@ To configure the pseudonymizer, you need to:
 
     ```ruby
     gitlab_rails['pseudonymizer_manifest'] = 'config/pseudonymizer.yml'
-    gitlab_rails['pseudonymizer_upload_remote_directory'] = 'gitlab-elt'
+    gitlab_rails['pseudonymizer_upload_remote_directory'] = 'gitlab-elt' # bucket name
     gitlab_rails['pseudonymizer_upload_connection'] = {
       'provider' => 'AWS',
       'region' => 'eu-central-1',
@@ -67,9 +67,9 @@ To configure the pseudonymizer, you need to:
     pseudonymizer:
 	  manifest: config/pseudonymizer.yml
 	  upload:
-        remote_directory: 'gitlab-elt' # The bucket name
+        remote_directory: 'gitlab-elt' # bucket name
         connection:
-          provider: AWS # Only AWS supported at the moment
+          provider: AWS
           aws_access_key_id: AWS_ACCESS_KEY_ID
           aws_secret_access_key: AWS_SECRET_ACCESS_KEY
           region: eu-central-1
