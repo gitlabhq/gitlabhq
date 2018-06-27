@@ -812,13 +812,13 @@ coverage:
   stage: post-test
   script:
     - bundle exec scripts/merge-simplecov
+    - ls coverage/
   coverage: '/LOC \((\d+\.\d+%)\) covered.$/'
   artifacts:
     name: coverage
     expire_in: 31d
     paths:
-    - coverage/index.html
-    - coverage/assets/
+    - coverage/
 
 lint:javascript:report:
   <<: *dedicated-no-docs-and-no-qa-pull-cache-job

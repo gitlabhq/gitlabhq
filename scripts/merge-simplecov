@@ -3,6 +3,13 @@
 require_relative '../spec/simplecov_env'
 SimpleCovEnv.configure_profile
 
+require 'simplecov-json'
+
+SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new([
+  SimpleCov::Formatter::HTMLFormatter,
+  SimpleCov::Formatter::JSONFormatter
+])
+
 module SimpleCov
   module ResultMerger
     class << self
