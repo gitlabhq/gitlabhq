@@ -5,6 +5,7 @@ module Gitlab
 
       BACKGROUND_MIGRATION_BATCH_SIZE = 1000 # Number of rows to process per job
       BACKGROUND_MIGRATION_JOB_BUFFER_SIZE = 1000 # Number of jobs to bulk queue at a time
+      BACKGROUND_MIGRATION_DELTA_MAX = 500_000
 
       # Adds `created_at` and `updated_at` columns with timezone information.
       #
@@ -974,7 +975,7 @@ into similar problems in the future (e.g. when new tables are created).
       #         # do something
       #       end
       #     end
-      def queue_background_migration_jobs_by_range_at_intervals(model_class, job_class_name, delay_interval, batch_size: BACKGROUND_MIGRATION_BATCH_SIZE)
+      def queue_background_migration_jobs_by_range_at_intervals(model_class, job_class_name, delay_interval, batch_size: BACKGROUND_MIGRATION_BATCH_SIZE, delta_max: BACKGROUND_MIGRATION_DELTA_MAX)
         raise "#{model_class} does not have an ID to use for batch ranges" unless model_class.column_names.include?('id')
 
         # To not overload the worker too much we enforce a minimum interval both
@@ -986,10 +987,15 @@ into similar problems in the future (e.g. when new tables are created).
         model_class.each_batch(of: batch_size) do |relation, index|
           start_id, end_id = relation.pluck('MIN(id), MAX(id)').first
 
-          # `BackgroundMigrationWorker.bulk_perform_in` schedules all jobs for
-          # the same time, which is not helpful in most cases where we wish to
-          # spread the work over time.
-          BackgroundMigrationWorker.perform_in(delay_interval * index, job_class_name, [start_id, end_id])
+          while start_id < end_id
+            tmp_end_id = [start_id + delta_max, end_id].min
+
+            # `BackgroundMigrationWorker.bulk_perform_in` schedules all jobs for
+            # the same time, which is not helpful in most cases where we wish to
+            # spread the work over time.
+            BackgroundMigrationWorker.perform_in(delay_interval * index, job_class_name, [start_id, tmp_end_id])
+            start_id = tmp_end_id
+          end
         end
       end
 
