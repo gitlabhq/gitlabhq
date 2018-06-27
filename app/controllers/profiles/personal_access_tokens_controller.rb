@@ -35,7 +35,7 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
   end
 
   def personal_access_token_params
-    params.require(:personal_access_token).permit(:name, :expires_at, scopes: [])
+    params.require(:personal_access_token).permit(:name, :expires_at, scopes: [], project_ids: [])
   end
 
   def set_index_vars

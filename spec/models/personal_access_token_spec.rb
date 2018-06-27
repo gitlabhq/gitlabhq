@@ -26,6 +26,14 @@ describe PersonalAccessToken do
     end
   end
 
+  describe '.create' do
+    it 'can be restricted to projects' do
+      token = create(:personal_access_token, projects: create_list(:project, 2))
+
+      expect(token.projects.count).to eq 2
+    end
+  end
+
   describe ".active?" do
     let(:active_personal_access_token) { build(:personal_access_token) }
     let(:revoked_personal_access_token) { build(:personal_access_token, :revoked) }
