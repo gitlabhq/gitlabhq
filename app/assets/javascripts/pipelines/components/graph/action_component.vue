@@ -41,7 +41,6 @@ export default {
       type: String,
       required: true,
     },
-
   },
   data() {
     return {
@@ -67,7 +66,8 @@ export default {
 
       this.isDisabled = true;
 
-      axios.post(`${this.link}.json`)
+      axios
+        .post(`${this.link}.json`)
         .then(() => {
           this.isDisabled = false;
           this.$emit('pipelineActionRequestComplete');
