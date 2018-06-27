@@ -7,7 +7,7 @@ module Geo
       include ::EachShardWorker
 
       def perform
-        each_shard { |shard_name| schedule_job(shard_name) }
+        each_eligible_shard { |shard_name| schedule_job(shard_name) }
       end
 
       def schedule_job(shard_name)

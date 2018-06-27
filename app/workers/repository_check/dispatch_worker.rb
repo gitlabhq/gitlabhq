@@ -7,7 +7,7 @@ module RepositoryCheck
     def perform
       return unless Gitlab::CurrentSettings.repository_checks_enabled
 
-      each_shard do |shard_name|
+      each_eligible_shard do |shard_name|
         RepositoryCheck::BatchWorker.perform_async(shard_name)
       end
     end
