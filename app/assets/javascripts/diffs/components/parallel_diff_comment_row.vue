@@ -1,0 +1,129 @@
+<script>
+import { mapState, mapGetters } from 'vuex';
+import diffDiscussions from './diff_discussions.vue';
+import diffLineNoteForm from './diff_line_note_form.vue';
+
+export default {
+  components: {
+    diffDiscussions,
+    diffLineNoteForm,
+  },
+  props: {
+    line: {
+      type: Object,
+      required: true,
+    },
+    diffFile: {
+      type: Object,
+      required: true,
+    },
+    diffLines: {
+      type: Array,
+      required: true,
+    },
+    lineIndex: {
+      type: Number,
+      required: true,
+    },
+  },
+  computed: {
+    ...mapState({
+      diffLineCommentForms: state => state.diffs.diffLineCommentForms,
+    }),
+    ...mapGetters(['discussionsByLineCode']),
+    leftLineCode() {
+      return this.line.left.lineCode;
+    },
+    rightLineCode() {
+      return this.line.right.lineCode;
+    },
+    hasDiscussion() {
+      const discussions = this.discussionsByLineCode;
+
+      return discussions[this.leftLineCode] || discussions[this.rightLineCode];
+    },
+    hasExpandedDiscussionOnLeft() {
+      const discussions = this.discussionsByLineCode[this.leftLineCode];
+
+      return discussions ? discussions.every(discussion => discussion.expanded) : false;
+    },
+    hasExpandedDiscussionOnRight() {
+      const discussions = this.discussionsByLineCode[this.rightLineCode];
+
+      return discussions ? discussions.every(discussion => discussion.expanded) : false;
+    },
+    hasAnyExpandedDiscussion() {
+      return this.hasExpandedDiscussionOnLeft || this.hasExpandedDiscussionOnRight;
+    },
+    shouldRenderDiscussionsRow() {
+      const hasDiscussion = this.hasDiscussion && this.hasAnyExpandedDiscussion;
+      const hasCommentFormOnLeft = this.diffLineCommentForms[this.leftLineCode];
+      const hasCommentFormOnRight = this.diffLineCommentForms[this.rightLineCode];
+
+      return hasDiscussion || hasCommentFormOnLeft || hasCommentFormOnRight;
+    },
+    shouldRenderDiscussionsOnLeft() {
+      return this.discussionsByLineCode[this.leftLineCode] && this.hasExpandedDiscussionOnLeft;
+    },
+    shouldRenderDiscussionsOnRight() {
+      return (
+        this.discussionsByLineCode[this.rightLineCode] &&
+        this.hasExpandedDiscussionOnRight &&
+        this.line.right.type
+      );
+    },
+    className() {
+      return this.hasDiscussion ? '' : 'js-temp-notes-holder';
+    },
+  },
+};
+</script>
+
+<template>
+  <tr
+    v-if="shouldRenderDiscussionsRow"
+    :class="className"
+    class="notes_holder"
+  >
+    <td class="notes_line old"></td>
+    <td class="notes_content parallel old">
+      <div
+        v-if="shouldRenderDiscussionsOnLeft"
+        class="content"
+      >
+        <diff-discussions
+          :discussions="discussionsByLineCode[leftLineCode]"
+        />
+      </div>
+      <diff-line-note-form
+        v-if="diffLineCommentForms[leftLineCode] &&
+        diffLineCommentForms[leftLineCode]"
+        :diff-file="diffFile"
+        :diff-lines="diffLines"
+        :line="line.left"
+        :note-target-line="diffLines[lineIndex].left"
+        position="left"
+      />
+    </td>
+    <td class="notes_line new"></td>
+    <td class="notes_content parallel new">
+      <div
+        v-if="shouldRenderDiscussionsOnRight"
+        class="content"
+      >
+        <diff-discussions
+          :discussions="discussionsByLineCode[rightLineCode]"
+        />
+      </div>
+      <diff-line-note-form
+        v-if="diffLineCommentForms[rightLineCode] &&
+        diffLineCommentForms[rightLineCode] && line.right.type"
+        :diff-file="diffFile"
+        :diff-lines="diffLines"
+        :line="line.right"
+        :note-target-line="diffLines[lineIndex].right"
+        position="right"
+      />
+    </td>
+  </tr>
+</template>
