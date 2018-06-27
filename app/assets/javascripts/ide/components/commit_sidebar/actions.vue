@@ -44,7 +44,7 @@ export default {
   commitToNewBranch: consts.COMMIT_TO_NEW_BRANCH,
   commitToNewBranchMR: consts.COMMIT_TO_NEW_BRANCH_MR,
   currentBranchPermissionsTooltip: __(
-    'This option is disabled as you don't have write permissions for the current branch',
+    "This option is disabled as you don't have write permissions for the current branch",
   ),
 };
 </script>
