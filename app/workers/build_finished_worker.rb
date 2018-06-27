@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BuildFinishedWorker
   prepend EE::BuildFinishedWorker
   include ApplicationWorker
