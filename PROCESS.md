@@ -197,24 +197,7 @@ to. For example:
 If you think a merge request should go into an RC or patch even though it does not meet these requirements,
 you can ask for an exception to be made.
 
-Go to [Release tasks issue tracker](https://gitlab.com/gitlab-org/release/tasks/issues/new) and create an issue
-using the `Exception-request` issue template.
-
-**Do not** set the relevant `Pick into X.Y` label (see above) before request an
-exception; this should be done after the exception is approved.
-
-You can find who is who on the [team page](https://about.gitlab.com/team/).
-
-Whether an exception is made is determined by weighing the benefit and urgency of the change
-(how important it is to the company that this is released _right now_ instead of in a month)
-against the potential negative impact
-(things breaking without enough time to comfortably find and fix them before the release on the 22nd).
-When in doubt, we err on the side of _not_ cherry-picking.
-
-For example, it is likely that an exception will be made for a trivial 1-5 line performance improvement
-(e.g. adding a database index or adding `includes` to a query), but not for a new feature, no matter how relatively small or thoroughly tested.
-
-All MRs which have had exceptions granted must be merged by the 15th.
+Check [this guide](https://gitlab.com/gitlab-org/release/docs/blob/master/general/exception-request/process.md) about how to open an exception request before opening one.
 
 ### Regressions
 
