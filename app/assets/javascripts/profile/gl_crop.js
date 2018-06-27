@@ -47,7 +47,8 @@ import _ from 'underscore';
       var _this;
       _this = this;
       this.fileInput.on('change', function(e) {
-        return _this.onFileInputChange(e, this);
+        _this.onFileInputChange(e, this);
+        this.value = null;
       });
       this.pickImageEl.on('click', this.onPickImageClick);
       this.modalCrop.on('shown.bs.modal', this.onModalShow);
