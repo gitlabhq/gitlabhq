@@ -323,13 +323,7 @@ module Gitlab
         end
 
         def get_messages(repository, commit_ids)
-          repository.gitaly_migrate(:commit_messages) do |is_enabled|
-            if is_enabled
-              repository.gitaly_commit_client.get_commit_messages(commit_ids)
-            else
-              commit_ids.map { |id| [id, rugged_find(repository, id).message] }.to_h
-            end
-          end
+          repository.gitaly_commit_client.get_commit_messages(commit_ids)
         end
       end
 
