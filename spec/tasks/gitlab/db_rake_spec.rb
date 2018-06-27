@@ -20,7 +20,7 @@ describe 'gitlab:db namespace rake task' do
 
   describe 'configure' do
     it 'invokes db:migrate when schema has already been loaded' do
-      allow(ActiveRecord::Base.connection).to receive(:tables).and_return(['table1', 'table2'])
+      allow(ActiveRecord::Base.connection).to receive(:tables).and_return(%w[table1 table2])
       expect(Rake::Task['db:migrate']).to receive(:invoke)
       expect(Rake::Task['db:schema:load']).not_to receive(:invoke)
       expect(Rake::Task['db:seed_fu']).not_to receive(:invoke)
