@@ -222,6 +222,13 @@
   }
 }
 
+.prometheus-graphs {
+  .environments {
+    display: flex;
+    align-items: center;
+  }
+}
+
 .environments-actions {
   .external-url,
   .monitoring-url,

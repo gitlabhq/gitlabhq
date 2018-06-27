@@ -155,8 +155,30 @@ export default {
 <template>
   <div
     v-if="!showEmptyState"
-    class="prometheus-graphs"
+    class="prometheus-graphs prepend-top-10"
   >
+    <div class="environments">
+      Environment
+      <div class="dropdown prepend-left-10">
+        <!--Set up the actual data-->
+        <button
+          class="dropdown-menu-toggle"
+          data-toggle="dropdown"
+          type="button"
+        >
+          Production
+          <i class="fa fa-chevron-down"></i>
+        </button>
+        <div class="dropdown-menu dropdown-menu-selectable dropdown-menu-drop-up">
+          <a
+            href="#"
+            class="dropdown-item"
+          >
+            Staging
+          </a>
+        </div>
+      </div>
+    </div>
     <graph-group
       v-for="(groupData, index) in store.groups"
       :key="index"
