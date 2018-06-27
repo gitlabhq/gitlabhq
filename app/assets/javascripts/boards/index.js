@@ -25,7 +25,7 @@ import './filters/due_date_filters';
 import './components/board';
 import './components/board_sidebar';
 import './components/new_list_dropdown';
-import './components/modal/index';
+import BoardAddIssuesModal from './components/modal/index.vue';
 import '~/vue_shared/vue_resource_interceptor'; // eslint-disable-line import/first
 
 import 'ee/boards/models/project'; // eslint-disable-line import/first
@@ -56,7 +56,7 @@ export default () => {
     components: {
       'board': gl.issueBoards.Board,
       'board-sidebar': gl.issueBoards.BoardSidebar,
-      'board-add-issues-modal': gl.issueBoards.IssuesModal,
+      BoardAddIssuesModal,
     },
     data: {
       state: Store.state,
