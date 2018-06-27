@@ -122,6 +122,8 @@ export default () => {
       sastContainerHelpPath,
     } = datasetOptions;
     const pipelineId = parseInt(datasetOptions.pipelineId, 10);
+    const canCreateIssue = datasetOptions.canCreateIssue;
+    const canCreateFeedback = datasetOptions.canCreateFeedback;
 
     const store = createStore();
     // Widget summary
@@ -174,6 +176,8 @@ export default () => {
             sastContainerHeadPath: sastContainerEndpoint,
             dastHelpPath,
             sastContainerHelpPath,
+            canCreateFeedback,
+            canCreateIssue,
           },
           on: {
             updateBadgeCount: this.updateBadge,

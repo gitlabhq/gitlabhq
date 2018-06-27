@@ -54,6 +54,8 @@ describe('Slipt security reports app', () => {
           dastHelpPath: 'path',
           sastContainerHelpPath: 'path',
           pipelineId: 123,
+          canCreateIssue: true,
+          canCreateFeedback: true,
         },
       });
     });
@@ -96,6 +98,8 @@ describe('Slipt security reports app', () => {
           dastHelpPath: 'path',
           sastContainerHelpPath: 'path',
           pipelineId: 123,
+          canCreateIssue: true,
+          canCreateFeedback: true,
         },
       });
     });
@@ -144,6 +148,8 @@ describe('Slipt security reports app', () => {
           dastHelpPath: 'path',
           sastContainerHelpPath: 'path',
           pipelineId: 123,
+          canCreateIssue: true,
+          canCreateFeedback: true,
         },
       });
     });

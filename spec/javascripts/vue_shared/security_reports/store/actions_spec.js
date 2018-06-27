@@ -6,6 +6,8 @@ import actions, {
   setVulnerabilityFeedbackPath,
   setVulnerabilityFeedbackHelpPath,
   setPipelineId,
+  setCanCreateIssuePermission,
+  setCanCreateFeedbackPermission,
   setSastHeadPath,
   setSastBasePath,
   requestSastReports,
@@ -156,6 +158,42 @@ describe('security reports actions', () => {
           {
             type: types.SET_PIPELINE_ID,
             payload: 123,
+          },
+        ],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('setCanCreateIssuePermission', () => {
+    it('should commit set can create issue permission', done => {
+      testAction(
+        setCanCreateIssuePermission,
+        true,
+        mockedState,
+        [
+          {
+            type: types.SET_CAN_CREATE_ISSUE_PERMISSION,
+            payload: true,
+          },
+        ],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('setCanCreateFeedbackPermission', () => {
+    it('should commit set can create feedback permission', done => {
+      testAction(
+        setCanCreateFeedbackPermission,
+        true,
+        mockedState,
+        [
+          {
+            type: types.SET_CAN_CREATE_FEEDBACK_PERMISSION,
+            payload: true,
           },
         ],
         [],

@@ -32,6 +32,14 @@ export default {
     state.pipelineId = id;
   },
 
+  [types.SET_CAN_CREATE_ISSUE_PERMISSION](state, permission) {
+    state.canCreateIssuePermission = permission;
+  },
+
+  [types.SET_CAN_CREATE_FEEDBACK_PERMISSION](state, permission) {
+    state.canCreateFeedbackPermission = permission;
+  },
+
   // SAST
   [types.SET_SAST_HEAD_PATH](state, path) {
     state.sast.paths.head = path;

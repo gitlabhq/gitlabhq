@@ -129,7 +129,8 @@
       "head_path": { "type": "string" },
       "base_path": { "type": "string" }
     },
-    "vulnerability_feedback_path": { "type": "string" }
+    "vulnerability_feedback_path": { "type": "string" },
+    "can_create_feedback": { "type": "boolean" }
   },
   "additionalProperties": false
 }
