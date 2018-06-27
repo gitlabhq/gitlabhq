@@ -193,9 +193,13 @@ This example can be used for a bucket in Amsterdam (AMS3).
     gitlab_rails['backup_upload_remote_directory'] = 'my.s3.bucket'
     ```
 
-
-
 1. [Reconfigure GitLab] for the changes to take effect
+
+CAUTION: **Warning:**
+If you see `400 Bad Request` by using Digital Ocean Spaces, the cause may be the
+usage of backup encryption. Remove or comment the line that
+contains `gitlab_rails['backup_encryption']` since Digital Ocean Spaces
+doesn't support encryption.
 
 #### Other S3 Providers
 
@@ -694,8 +698,3 @@ For more information see similar questions on postgresql issue tracker[here](htt
 
 [reconfigure GitLab]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart GitLab]: ../administration/restart_gitlab.md#installations-from-source
-
-### 400 Bad Request on Digital Ocean Spaces
-
-If you see `400 Bad Request` by using Digital Ocean Spaces the cause may be the usage of `gitlab_rails['backup_encryption']`. You must remove or comment the line you contain `gitlab_rails['backup_encryption'] = '...'`.
-Digital Ocean Spaces doesn't implement encryption.
