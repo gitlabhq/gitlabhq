@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # @Deprecated - remove once the `object_storage_upload` queue is empty
 # The queue has been renamed `object_storage:object_storage_background_upload`
 #

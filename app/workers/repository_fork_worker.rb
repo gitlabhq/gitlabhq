@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RepositoryForkWorker
   include ApplicationWorker
   include Gitlab::ShellAdapter
