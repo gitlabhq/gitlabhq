@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Geo::ShardHealthCache, :clean_gitlab_redis_cache do
+describe Gitlab::ShardHealthCache, :clean_gitlab_redis_cache do
   let(:shards) { %w(foo bar) }
 
   before do
