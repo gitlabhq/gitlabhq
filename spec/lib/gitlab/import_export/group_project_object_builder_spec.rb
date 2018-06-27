@@ -15,18 +15,18 @@ describe Gitlab::ImportExport::GroupProjectObjectBuilder do
       group_label = create(:group_label, 'name': 'group label', 'group': project.group)
 
       expect(described_class.build(Label,
-                                  title: 'group label',
-                                  project: project,
-                                  group: project.group)).to eq(group_label)
+                                  'title' => 'group label',
+                                  'project' => project,
+                                  'group' => project.group)).to eq(group_label)
     end
 
-    it 'initializes a new label' do
+    it 'creates a new label' do
       label = described_class.build(Label,
-                                   title: 'group label',
-                                   project: project,
-                                   group: project.group)
+                                   'title' => 'group label',
+                                   'project' => project,
+                                   'group' => project.group)
 
-      expect(label.persisted?).to be false
+      expect(label.persisted?).to be true
     end
   end
 
@@ -35,16 +35,16 @@ describe Gitlab::ImportExport::GroupProjectObjectBuilder do
       milestone = create(:milestone, 'name' => 'group milestone', 'group' => project.group)
 
       expect(described_class.build(Milestone,
-                                  title: 'group milestone',
-                                  project: project,
-                                  group: project.group)).to eq(milestone)
+                                  'title' => 'group milestone',
+                                  'project' => project,
+                                  'group' => project.group)).to eq(milestone)
     end
 
     it 'creates a new milestone' do
       milestone = described_class.build(Milestone,
-                                       title: 'group milestone',
-                                       project: project,
-                                       group: project.group)
+                                       'title' => 'group milestone',
+                                       'project' => project,
+                                       'group' => project.group)
 
       expect(milestone.persisted?).to be true
     end

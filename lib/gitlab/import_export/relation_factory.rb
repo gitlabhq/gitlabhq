@@ -267,8 +267,8 @@ module Gitlab
 
         # Can't use IDs as validation exists calling `group` or `project` attributes
         finder_hash = parsed_relation_hash.tap do |hash|
-          hash[:group] = @project.group if relation_class.attribute_method?('group_id')
-          hash[:project] = @project
+          hash['group'] = @project.group if relation_class.attribute_method?('group_id')
+          hash['project'] = @project
           hash.delete('project_id')
         end
 
