@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-06-20 09:05+0200\n"
-"PO-Revision-Date: 2018-06-27 08:06\n"
+"PO-Revision-Date: 2018-06-27 08:23\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -4647,22 +4647,22 @@ msgid "Select"
 msgstr "Sélectionner"
 
 msgid "Select Archive Format"
-msgstr "Sélectionnez le format de l'archive"
+msgstr "Sélectionnez le format de l’archive"
 
 msgid "Select a namespace to fork the project"
-msgstr "Sélectionnez un espace de noms afin de créer un divergence du projet"
+msgstr "Sélectionnez un espace de noms afin de créer une divergence du projet"
 
 msgid "Select a timezone"
 msgstr "Sélectionnez un fuseau horaire"
 
 msgid "Select an existing Kubernetes cluster or create a new one"
-msgstr "Sélectionnez un cluster Kubernetes existant ou créez-en un nouveau"
+msgstr "Sélectionnez une grappe de serveurs Kubernetes existante ou créez‐en une nouvelle"
 
 msgid "Select assignee"
 msgstr "Sélectionner une personne assignée"
 
 msgid "Select branch/tag"
-msgstr "Sélectionnez une branche / un tag"
+msgstr "Sélectionner une branche ou une étiquette"
 
 msgid "Select project"
 msgstr "Sélectionner un projet"
