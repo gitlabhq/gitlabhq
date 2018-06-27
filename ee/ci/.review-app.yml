@@ -15,7 +15,7 @@ review-app-image:
   <<: *duplicated-setup
   image: ruby:2.4-alpine
   before_script: []
-  allow_failure: true # TODO, decide if we want to be able to bypass this
+  allow_failure: true
   cache: {}
   script:
     - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN scripts/trigger-build cng
@@ -38,12 +38,9 @@ review-app-image:
   }
 
   function download_gitlab_chart() {
-    if [ -z ${CNG_BRANCH} ]; then
-      export CNG_BRANCH="master"
-    fi
-    curl -o gitlab.tar.bz2 https://gitlab.com/charts/gitlab/-/archive/$CNG_BRANCH/gitlab-$CNG_BRANCH.tar.bz2
+    curl -o gitlab.tar.bz2 https://gitlab.com/charts/gitlab/-/archive/$GITLAB_HELM_CHART_REF/gitlab-$GITLAB_HELM_CHART_REF.tar.bz2
     tar -xjf gitlab.tar.bz2
-    cd gitlab-$CNG_BRANCH
+    cd gitlab-$GITLAB_HELM_CHART_REF
 
     helm init --client-only
     helm repo add gitlab https://charts.gitlab.io
@@ -213,11 +210,12 @@ review:
   variables:
     HOST_SUFFIX: "$CI_ENVIRONMENT_SLUG"
     DOMAIN: "-$CI_ENVIRONMENT_SLUG.$REVIEW_APPS_DOMAIN"
+    GITLAB_HELM_CHART_REF: "master"
   only:
     refs:
       - branches
     kubernetes: active
-  allow_failure: true # TODO, decide if we want to be able to bypass this
+  allow_failure: true
   except:
     refs:
       - master
