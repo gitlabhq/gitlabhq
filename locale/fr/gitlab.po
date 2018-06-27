@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-06-20 09:05+0200\n"
-"PO-Revision-Date: 2018-06-27 08:42\n"
+"PO-Revision-Date: 2018-06-27 08:53\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -4719,13 +4719,13 @@ msgid "Set requirements for a user to sign-in. Enable mandatory two-factor authe
 msgstr "Définissez les exigences pour la connexion d’un utilisateur. Activez l’authentification obligatoire à deux facteurs."
 
 msgid "Set up CI/CD"
-msgstr "Configurer CI/CD"
+msgstr "Configuration CI/CD"
 
 msgid "Set up Koding"
-msgstr "Mettre en place Koding"
+msgstr "Configurer Koding"
 
 msgid "Set up assertions/attributes/claims (email, first_name, last_name) and NameID according to %{docsLinkStart}the documentation %{icon}%{docsLinkEnd}"
-msgstr "Mettre en place des assersions/attributs/protections (email, first_name, last_name) et NameID en accord avec %{docsLinkStart}la documentation%{icon}%{docsLinkEnd}"
+msgstr "Configurez les assertions, attributs et revendications (courriel, prénom , nom), ainsi que le NameID, conformément à %{docsLinkStart}la documentation %{icon}%{docsLinkEnd}"
 
 msgid "SetPasswordToCloneLink|set a password"
 msgstr "définir un mot de passe"
@@ -4734,7 +4734,7 @@ msgid "Settings"
 msgstr "Paramètres"
 
 msgid "Setup a specific Runner automatically"
-msgstr "Configurer un Exécuteur spécifique automatiquement"
+msgstr "Configurer automatiquement un exécuteur spécifique"
 
 msgid "Share"
 msgstr "Partager"
