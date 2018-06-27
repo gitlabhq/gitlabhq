@@ -64,7 +64,7 @@ feature 'Group empty states' do
           expect(page).to have_selector('.empty-state')
         end
 
-        it "shows a new #{issuable_name} button" do
+        it "does not show a new #{issuable_name} button" do
           within '.empty-state' do
             expect(page).not_to have_link("create #{issuable_name}")
           end

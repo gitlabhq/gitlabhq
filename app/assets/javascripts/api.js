@@ -160,7 +160,7 @@ const Api = {
     };
     return axios
       .get(url, {
-        params: Object.assign(defaults, options),
+        params: Object.assign({}, defaults, options),
       })
       .then(({ data }) => callback(data));
   },
