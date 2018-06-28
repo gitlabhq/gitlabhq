@@ -556,7 +556,7 @@ Parameters:
 
 ## List SSH keys for user
 
-Get a list of a specified user's SSH keys. Available only for admin
+Get a list of a specified user's SSH keys.
 
 ```
 GET /users/:id/keys
