@@ -21,8 +21,9 @@
           = sprite_icon('star-o')
         %button.label-action.remove-priority.btn.btn-transparent.has-tooltip{ title: _('Remove priority'), type: 'button', data: { placement: 'top' }, aria_label: _('Deprioritize label') }
           = sprite_icon('star')
+    - if can?(current_user, :admin_label, label)
       %li.inline
-        = link_to edit_label_path(label), class: 'btn btn-transparent label-action', aria_label: 'Edit label' do
+        = link_to edit_label_path(label), class: 'btn btn-transparent label-action edit', aria_label: 'Edit label' do
           = sprite_icon('pencil')
     %li.inline
       .dropdown
@@ -42,9 +43,10 @@
                           container: 'body',
                           toggle: 'modal' } }
                   = _('Promote to group label')
-            %li
-              %span{ data: { toggle: 'modal', target: "#modal-delete-label-#{label.id}" } }
-                %button.text-danger.remove-row{ type: 'button' }= _('Delete')
+            - if can?(current_user, :admin_label, label)
+              %li
+                %span{ data: { toggle: 'modal', target: "#modal-delete-label-#{label.id}" } }
+                  %button.text-danger.remove-row{ type: 'button' }= _('Delete')
     - if current_user
       %li.inline.label-subscription
         - if can_subscribe_to_label_in_different_levels?(label)
