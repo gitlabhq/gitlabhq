@@ -20,7 +20,7 @@
             .projects
               - milestone.milestones.each do |milestone|
                 = link_to milestone_path(milestone) do
-                  %span.label-badge.label-badge-blue.d-inline-block.append-bottom-5.append-right-5
+                  %span.label-badge.label-badge-blue.d-inline-block.append-bottom-5
                     = dashboard ? milestone.project.full_name : milestone.project.name
 
     .col-sm-4.milestone-progress
