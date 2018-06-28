@@ -37,6 +37,10 @@ export default class MonitoringStore {
     this.deploymentData = deploymentData;
   }
 
+  storeEnvironmentsData(environmentsData = []) {
+    this.environmentsData = environmentsData;
+  }
+
   getMetricsCount() {
     return this.groups.reduce((count, group) => count + group.metrics.length, 0);
   }

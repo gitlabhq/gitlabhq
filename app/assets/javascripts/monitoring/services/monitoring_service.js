@@ -23,9 +23,10 @@ function backOffRequest(makeRequestCallback) {
 }
 
 export default class MonitoringService {
-  constructor({ metricsEndpoint, deploymentEndpoint }) {
+  constructor({ metricsEndpoint, deploymentEndpoint, environmentsEndpoint }) {
     this.metricsEndpoint = metricsEndpoint;
     this.deploymentEndpoint = deploymentEndpoint;
+    this.environmentsEndpoint = environmentsEndpoint;
   }
 
   getGraphsData() {
@@ -51,5 +52,16 @@ export default class MonitoringService {
         }
         return response.deployments;
       });
+  }
+
+  getEnvironmentsData() {
+    return axios.get(this.environmentsEndpoint)
+    .then(resp => resp.data)
+    .then((response) => {
+      if (!response || !response.environments) {
+        throw new Error('There was an error fetching the environments data, please try again');
+      }
+      return response.environments;
+    });
   }
 }

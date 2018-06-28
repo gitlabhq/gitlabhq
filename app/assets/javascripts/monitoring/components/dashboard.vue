@@ -80,6 +80,10 @@ export default {
       type: String,
       required: true,
     },
+    environmentsEndpoint: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -96,6 +100,7 @@ export default {
     this.service = new MonitoringService({
       metricsEndpoint: this.metricsEndpoint,
       deploymentEndpoint: this.deploymentEndpoint,
+      environmentsEndpoint: this.environmentsEndpoint,
     });
     eventHub.$on('toggleAspectRatio', this.toggleAspectRatio);
     eventHub.$on('hoverChanged', this.hoverChanged);
@@ -123,12 +128,17 @@ export default {
           .getDeploymentData()
           .then(data => this.store.storeDeploymentData(data))
           .catch(() => new Flash('Error getting deployment information.')),
+        this.service
+          .getEnvironmentsData()
+          .then((data) => this.store.storeEnvironmentsData(data))
+          .catch(() => new Flash('Error getting environments information.')),
       ])
         .then(() => {
           if (this.store.groups.length < 1) {
             this.state = 'noData';
             return;
           }
+          // Populate the environments dropdown
           this.showEmptyState = false;
         })
         .catch(() => {
@@ -170,12 +180,9 @@ export default {
           <i class="fa fa-chevron-down"></i>
         </button>
         <div class="dropdown-menu dropdown-menu-selectable dropdown-menu-drop-up">
-          <a
-            href="#"
-            class="dropdown-item"
-          >
+          <button class="dropdown-item">
             Staging
-          </a>
+          </button>
         </div>
       </div>
     </div>
