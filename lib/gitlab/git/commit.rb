@@ -149,56 +149,9 @@ module Gitlab
         #
         # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/326
         def find_all(repo, options = {})
-          Gitlab::GitalyClient.migrate(:find_all_commits) do |is_enabled|
-            if is_enabled
-              find_all_by_gitaly(repo, options)
-            else
-              find_all_by_rugged(repo, options)
-            end
+          repo.wrapped_gitaly_errors do
+            Gitlab::GitalyClient::CommitService.new(repo).find_all_commits(options)
           end
-        end
-
-        def find_all_by_rugged(repo, options = {})
-          actual_options = options.dup
-
-          allowed_options = [:ref, :max_count, :skip, :order]
-
-          actual_options.keep_if do |key|
-            allowed_options.include?(key)
-          end
-
-          default_options = { skip: 0 }
-          actual_options = default_options.merge(actual_options)
-
-          rugged = repo.rugged
-          walker = Rugged::Walker.new(rugged)
-
-          if actual_options[:ref]
-            walker.push(rugged.rev_parse_oid(actual_options[:ref]))
-          else
-            rugged.references.each("refs/heads/*") do |ref|
-              walker.push(ref.target_id)
-            end
-          end
-
-          walker.sorting(rugged_sort_type(actual_options[:order]))
-
-          commits = []
-          offset = actual_options[:skip]
-          limit = actual_options[:max_count]
-          walker.each(offset: offset, limit: limit) do |commit|
-            commits.push(decorate(repo, commit))
-          end
-
-          walker.reset
-
-          commits
-        rescue Rugged::OdbError
-          []
-        end
-
-        def find_all_by_gitaly(repo, options = {})
-          Gitlab::GitalyClient::CommitService.new(repo).find_all_commits(options)
         end
 
         def decorate(repository, commit, ref = nil)
