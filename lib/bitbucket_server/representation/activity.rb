@@ -10,7 +10,7 @@ module BitbucketServer
       end
 
       def inline_comment?
-        comment? && raw['commentAnchor']
+        comment? && comment_anchor
       end
 
       def comment
@@ -18,9 +18,9 @@ module BitbucketServer
 
         @comment ||=
           if inline_comment?
-            PullRequestComment.new(raw_comment)
+            PullRequestComment.new(raw)
           else
-            Comment.new(raw_comment)
+            Comment.new(raw)
           end
       end
 
@@ -61,12 +61,13 @@ module BitbucketServer
         raw.fetch('comment', {})
       end
 
+      def comment_anchor
+        raw['commentAnchor']
+      end
+
       def author
         raw_comment.fetch('author', {})
       end
-
-      # Anchor hash:
-      # {u'toHash': u'a4c2164330f2549f67c13f36a93884cf66e976be', u'fromHash': u'c5f4288162e2e6218180779c7f6ac1735bb56eab', u'fileType': u'FROM', u'diffType': u'EFFECTIVE', u'lineType': u'CONTEXT', u'path': u'CHANGELOG.md', u'line': 3, u'orphaned': False}
 
       def created_date
         comment['createdDate']

@@ -104,7 +104,7 @@ module Gitlab
 
         inline_comments, pr_comments = comments.partition(&:inline_comment?)
 
-#        import_inline_comments(inline_comments, pull_request, merge_request)
+        import_inline_comments(inline_comments.map(&:comment), pull_request, merge_request)
         import_standalone_pr_comments(pr_comments.map(&:comment), merge_request)
       end
 
@@ -125,17 +125,13 @@ module Gitlab
       def import_inline_comments(inline_comments, pull_request, merge_request)
         line_code_map = {}
 
-        children, parents = inline_comments.partition(&:has_parent?)
+        inline_comments.each do |comment|
+          line_code = generate_line_code(comment)
+          line_code_map[comment.id] = line_code
 
-        # The BitbucketServer API returns threaded replies as parent-child
-        # relationships. We assume that the child can appear in any order in
-        # the JSON.
-        parents.each do |comment|
-          line_code_map[comment.iid] = generate_line_code(comment)
-        end
-
-        children.each do |comment|
-          line_code_map[comment.iid] = line_code_map.fetch(comment.parent_id, nil)
+          comment.comments.each do |reply|
+            line_code_map[reply.id] = line_code
+          end
         end
 
         inline_comments.each do |comment|
@@ -143,12 +139,12 @@ module Gitlab
             attributes = pull_request_comment_attributes(comment)
             attributes.merge!(
               position: build_position(merge_request, comment),
-              line_code: line_code_map.fetch(comment.iid),
+              line_code: line_code_map.fetch(comment.id),
               type: 'DiffNote')
 
             merge_request.notes.create!(attributes)
           rescue StandardError => e
-            errors << { type: :pull_request, iid: comment.iid, errors: e.message }
+            errors << { type: :pull_request, id: comment.id, errors: e.message }
           end
         end
       end

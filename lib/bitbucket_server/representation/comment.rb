@@ -22,7 +22,7 @@ module BitbucketServer
     # }
     class Comment < Representation::Base
       def id
-        raw['id']
+        raw_comment['id']
       end
 
       def author_username
@@ -34,7 +34,7 @@ module BitbucketServer
       end
 
       def note
-        raw['text']
+        raw_comment['text']
       end
 
       def created_at
@@ -46,7 +46,7 @@ module BitbucketServer
       end
 
       def comments
-        workset = [raw['comments']].compact
+        workset = [raw_comment['comments']].compact
         all_comments = []
 
         until workset.empty?
@@ -64,16 +64,20 @@ module BitbucketServer
 
       private
 
+      def raw_comment
+        raw.fetch('comment', {})
+      end
+
       def author
-        raw.fetch('author', {})
+        raw_comment.fetch('author', {})
       end
 
       def created_date
-        raw['createdDate']
+        raw_comment['createdDate']
       end
 
       def updated_date
-        raw['updatedDate']
+        raw_comment['updatedDate']
       end
     end
   end
