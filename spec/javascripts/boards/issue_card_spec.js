@@ -258,7 +258,7 @@ describe('Issue card component', () => {
     it('renders label', () => {
       const nodes = [];
       component.$el.querySelectorAll('.badge').forEach((label) => {
-        nodes.push(label.title);
+        nodes.push(label.getAttribute('data-original-title'));
       });
 
       expect(
@@ -268,7 +268,7 @@ describe('Issue card component', () => {
 
     it('sets label description as title', () => {
       expect(
-        component.$el.querySelector('.badge').getAttribute('title'),
+        component.$el.querySelector('.badge').getAttribute('data-original-title'),
       ).toContain(label1.description);
     });
 
