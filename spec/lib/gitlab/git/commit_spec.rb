@@ -331,84 +331,54 @@ describe Gitlab::Git::Commit, seed_helper: true do
     end
 
     describe '.find_all' do
-      shared_examples 'finding all commits' do
-        it 'should return a return a collection of commits' do
-          commits = described_class.find_all(repository)
+      it 'should return a return a collection of commits' do
+        commits = described_class.find_all(repository)
 
-          expect(commits).to all( be_a_kind_of(described_class) )
+        expect(commits).to all( be_a_kind_of(described_class) )
+      end
+
+      context 'max_count' do
+        subject do
+          commits = described_class.find_all(
+            repository,
+            max_count: 50
+          )
+
+          commits.map(&:id)
         end
 
-        context 'max_count' do
-          subject do
-            commits = described_class.find_all(
-              repository,
-              max_count: 50
-            )
-
-            commits.map(&:id)
-          end
-
-          it 'has 34 elements' do
-            expect(subject.size).to eq(34)
-          end
-
-          it 'includes the expected commits' do
-            expect(subject).to include(
-              SeedRepo::Commit::ID,
-              SeedRepo::Commit::PARENT_ID,
-              SeedRepo::FirstCommit::ID
-            )
-          end
+        it 'has 34 elements' do
+          expect(subject.size).to eq(34)
         end
 
-        context 'ref + max_count + skip' do
-          subject do
-            commits = described_class.find_all(
-              repository,
-              ref: 'master',
-              max_count: 50,
-              skip: 1
-            )
-
-            commits.map(&:id)
-          end
-
-          it 'has 24 elements' do
-            expect(subject.size).to eq(24)
-          end
-
-          it 'includes the expected commits' do
-            expect(subject).to include(SeedRepo::Commit::ID, SeedRepo::FirstCommit::ID)
-            expect(subject).not_to include(SeedRepo::LastCommit::ID)
-          end
+        it 'includes the expected commits' do
+          expect(subject).to include(
+            SeedRepo::Commit::ID,
+            SeedRepo::Commit::PARENT_ID,
+            SeedRepo::FirstCommit::ID
+          )
         end
       end
 
-      context 'when Gitaly find_all_commits feature is enabled' do
-        it_behaves_like 'finding all commits'
-      end
+      context 'ref + max_count + skip' do
+        subject do
+          commits = described_class.find_all(
+            repository,
+            ref: 'master',
+            max_count: 50,
+            skip: 1
+          )
 
-      context 'when Gitaly find_all_commits feature is disabled', :skip_gitaly_mock do
-        it_behaves_like 'finding all commits'
+          commits.map(&:id)
+        end
 
-        context 'while applying a sort order based on the `order` option' do
-          it "allows ordering topologically (no parents shown before their children)" do
-            expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_TOPO)
+        it 'has 24 elements' do
+          expect(subject.size).to eq(24)
+        end
 
-            described_class.find_all(repository, order: :topo)
-          end
-
-          it "allows ordering by date" do
-            expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_DATE | Rugged::SORT_TOPO)
-
-            described_class.find_all(repository, order: :date)
-          end
-
-          it "applies no sorting by default" do
-            expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_NONE)
-
-            described_class.find_all(repository)
-          end
+        it 'includes the expected commits' do
+          expect(subject).to include(SeedRepo::Commit::ID, SeedRepo::FirstCommit::ID)
+          expect(subject).not_to include(SeedRepo::LastCommit::ID)
         end
       end
     end
