@@ -1,6 +1,6 @@
 module QA
-  feature 'create, edit and destroy file in project', :core do
-    scenario 'user creates, edits and deletes a file' do
+  feature 'Create, edit and delete file in project', :core do
+    scenario 'User creates, edits and deletes a file' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act {sign_in_using_credentials}
 
