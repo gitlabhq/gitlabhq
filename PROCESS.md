@@ -245,22 +245,16 @@ will be scheduled.
 
 When a regression is found:
 1. Create an issue describing the problem in the most detailed way possible
-
 1. If possible, provide links to real examples and how to reproduce the problem
-
 1. Label the issue properly, using the [team label](../CONTRIBUTING.md#team-labels),
    the [subject label](../CONTRIBUTING.md#subject-labels)
    and any other label that may apply in the specific case
-
-1. Add the bug and regression labels
-
+1. Add the ~bug and ~regression labels
 1. Notify the respective Engineering Manager to evaluate the Severity of the regression and add a [Severity label](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#bug-severity-labels). The counterpart Product Manager is included to weigh-in on prioritization as needed to set the [Priority label](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#bug-priority-labels).
-
-1. If the regression is a ~S1 or ~S2, label the regression with the current milestone as it should be fixed in the current milestone.
+1. If the regression is either an ~S1, ~S2 or ~S3 severity, label the regression with the current milestone as it should be fixed in the current milestone.
   1. If the regression was introduced in an RC of the current release, label with ~Deliverable
   1. If the regression was introduced in the previous release, label with ~"Next Patch Release"
-
-1. If the regression is a ~S3 or ~S4, the regression may be scheduled for later milestones at the discretion of Engineering Manager and Product Manager.
+1. If the regression is an ~S4 severity, the regression may be scheduled for later milestones at the discretion of Engineering Manager and Product Manager.
 
 When a new issue is found, the fix should start as soon as possible. You can
 ping the Engineering Manager or the Product Manager for the relative area to
