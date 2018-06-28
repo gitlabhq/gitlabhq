@@ -3,12 +3,12 @@ module QA
     module File
       class New < Page::Base
 
-        def add_name_of_file(name)
+        def add_name(name)
           fill_in 'file_name', with: name
         end
 
-        def add_file_content(content)
-          find('.ace_text-input', visible: :all).set content
+        def add_content(content)
+          find('.ace_text-input', visible: false).set content
         end
 
         def add_commit_message(message)

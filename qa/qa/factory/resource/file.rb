@@ -24,8 +24,8 @@ module QA
           Page::Project::Show.act {create_new_file}
 
           Page::File::New.perform do |page|
-            page.add_name_of_file(@name)
-            page.add_file_content(@content)
+            page.add_name(@name)
+            page.add_content(@content)
             page.add_commit_message(@commit_message)
             page.commit_changes
           end

@@ -130,6 +130,7 @@ module QA
 
     module File
       autoload :New, 'qa/page/file/new'
+      autoload :Show, 'qa/page/file/show'
     end
 
     module Project
