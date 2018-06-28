@@ -44,6 +44,7 @@ module QA
 
       expect(page).to have_content('The file has been successfully deleted.')
       expect(page).to have_content(commit_message_for_delete)
+      expect(page).to have_no_content(file_name)
 
     end
   end
