@@ -22,9 +22,9 @@ module QA
       updated_file_content = 'QA Test - Updated file content'
       commit_message_for_update = 'QA Test - Update file'
 
-      Page::File::Show.act {click_edit}
+      Page::FilePO::Show.act {click_edit}
 
-      Page::File::Edit.act do
+      Page::FilePO::Edit.act do
         remove_content
         update_content(updated_file_content)
         add_commit_message(commit_message_for_update)
@@ -37,7 +37,7 @@ module QA
 
       commit_message_for_delete = 'QA Test - Delete file'
 
-      Page::File::Show.act do
+      Page::FilePO::Show.act do
         click_delete
         add_commit_message(commit_message_for_delete)
         click_delete_file
