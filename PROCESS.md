@@ -250,6 +250,8 @@ A ~regression label on a ~bug tells us that something worked before and it needs
 
 The milestone of a ~regression is used to schedule when the fix will be delivered. The creation time of a ~regression tells us which release it was found in.
 
+A ~regression label does not apply to ~bugs for new features. That by the definition above are not regressions.
+
 ## Release retrospective and kickoff
 
 - [Retrospective](https://about.gitlab.com/handbook/engineering/workflow/#retrospective)
