@@ -996,46 +996,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe "#rugged_commits_between" do
-    around do |example|
-      # TODO #rugged_commits_between will be removed, has been migrated to gitaly
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        example.run
-      end
-    end
-
-    context 'two SHAs' do
-      let(:first_sha) { 'b0e52af38d7ea43cf41d8a6f2471351ac036d6c9' }
-      let(:second_sha) { '0e50ec4d3c7ce42ab74dda1d422cb2cbffe1e326' }
-
-      it 'returns the number of commits between' do
-        expect(repository.rugged_commits_between(first_sha, second_sha).count).to eq(3)
-      end
-    end
-
-    context 'SHA and master branch' do
-      let(:sha) { 'b0e52af38d7ea43cf41d8a6f2471351ac036d6c9' }
-      let(:branch) { 'master' }
-
-      it 'returns the number of commits between a sha and a branch' do
-        expect(repository.rugged_commits_between(sha, branch).count).to eq(5)
-      end
-
-      it 'returns the number of commits between a branch and a sha' do
-        expect(repository.rugged_commits_between(branch, sha).count).to eq(0) # sha is before branch
-      end
-    end
-
-    context 'two branches' do
-      let(:first_branch) { 'feature' }
-      let(:second_branch) { 'master' }
-
-      it 'returns the number of commits between' do
-        expect(repository.rugged_commits_between(first_branch, second_branch).count).to eq(17)
-      end
-    end
-  end
-
   describe '#count_commits_between' do
     subject { repository.count_commits_between('feature', 'master') }
 
