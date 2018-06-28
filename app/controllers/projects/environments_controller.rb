@@ -6,7 +6,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :authorize_update_environment!, only: [:edit, :update]
   before_action :authorize_admin_environment!, only: [:terminal, :terminal_websocket_authorize]
   before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :metrics]
-  before_action :environments, only: [:index, :metrics]
+  before_action :environments, only: [:index]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
   before_action :expire_etag_cache, only: [:index]
 
@@ -126,7 +126,12 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: @metrics, status: @metrics.any? ? :ok : :no_content
+        render json: {
+          metrics: @metrics,
+          environments: EnvironmentSerializer
+            .new(project: project, current_user: current_user)
+            .represent(environments)
+        }, status: @metrics.any? ? :ok : :no_content
       end
     end
   end
