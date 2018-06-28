@@ -250,7 +250,7 @@ module Gitlab
 
         last_line = lines.last
 
-        if last_line.new_pos < total_blob_lines(blob)
+        if last_line.new_pos < total_blob_lines(blob) && !deleted_file?
           match_line = Gitlab::Diff::Line.new("", 'match', nil, last_line.old_pos, last_line.new_pos)
           lines.push(match_line)
         end
