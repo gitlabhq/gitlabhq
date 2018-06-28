@@ -1316,16 +1316,7 @@ module Gitlab
         safe_query = Regexp.escape(query)
         ref ||= root_ref
 
-        gitaly_migrate(:search_files_by_content) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.search_files_by_content(ref, safe_query)
-          else
-            offset = 2
-            args = %W(grep -i -I -n -z --before-context #{offset} --after-context #{offset} -E -e #{safe_query} #{ref})
-
-            run_git(args).first.scrub.split(/^--\n/)
-          end
-        end
+        gitaly_repository_client.search_files_by_content(ref, safe_query)
       end
 
       def can_be_merged?(source_sha, target_branch)
@@ -1342,15 +1333,7 @@ module Gitlab
 
         return [] if empty? || safe_query.blank?
 
-        gitaly_migrate(:search_files_by_name) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.search_files_by_name(ref, safe_query)
-          else
-            args = %W(ls-tree -r --name-status --full-tree #{ref} -- #{safe_query})
-
-            run_git(args).first.lines.map(&:strip)
-          end
-        end
+        gitaly_repository_client.search_files_by_name(ref, safe_query)
       end
 
       def find_commits_by_message(query, ref, path, limit, offset)
