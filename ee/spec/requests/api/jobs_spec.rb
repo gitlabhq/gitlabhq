@@ -32,7 +32,7 @@ describe API::Jobs do
 
       it 'returns specific job artifacts' do
         expect(response).to have_gitlab_http_status(200)
-        expect(response.headers).to include(download_headers)
+        expect(response.headers.to_h).to include(download_headers)
         expect(response.body).to match_file(job.artifacts_file.file.file)
       end
     end
