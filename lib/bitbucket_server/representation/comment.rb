@@ -55,7 +55,7 @@ module BitbucketServer
           comments.each do |comment|
             new_comments = comment.delete('comments')
             workset << new_comments if new_comments
-            all_comments << Comment.new(comment)
+            all_comments << Comment.new({ 'comment' => comment})
           end
         end
 
