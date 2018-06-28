@@ -2,12 +2,16 @@
   import $ from 'jquery';
   import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
   import eventHub from '../eventhub';
+  import tooltip from '../../vue_shared/directives/tooltip';
 
   const Store = gl.issueBoards.BoardsStore;
 
   export default {
     components: {
       UserAvatarLink,
+    },
+    directives: {
+      tooltip,
     },
     props: {
       issue: {
@@ -166,9 +170,10 @@
           tooltip-placement="bottom"
         />
         <span
+          v-tooltip
           v-if="shouldRenderCounter"
           :title="assigneeCounterTooltip"
-          class="avatar-counter has-tooltip"
+          class="avatar-counter"
         >
           {{ assigneeCounterLabel }}
         </span>
@@ -179,12 +184,13 @@
       class="board-card-footer"
     >
       <button
+        v-tooltip
         v-for="label in issue.labels"
         v-if="showLabel(label)"
         :key="label.id"
         :style="labelStyle(label)"
         :title="label.description"
-        class="badge color-label has-tooltip"
+        class="badge color-label"
         type="button"
         data-container="body"
         @click="filterByLabel(label, $event)"
