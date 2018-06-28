@@ -1,5 +1,0 @@
-.filter-item.inline
-  - if params[:group_id].present?
-    = hidden_field_tag(:group_id, params[:group_id])
-  = dropdown_tag(group_dropdown_label(params[:group_id], 'Group'), options: { toggle_class: 'js-group-search js-filter-submit', title: 'Filter by group', filter: true, filterInput: 'input#group-search', dropdown_class: 'dropdown-menu-selectable dropdown-menu-group js-filter-submit',
-    placeholder: 'Search groups', data: { data: todo_group_options, default_label: 'Group', display: 'static' } })

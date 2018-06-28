@@ -1,5 +1,0 @@
-.filter-item.inline
-  - if params[:type].present?
-    = hidden_field_tag(:type, params[:type])
-  = dropdown_tag(todo_types_dropdown_label(params[:type], 'Type'), options: { toggle_class: 'js-type-search js-filter-submit', dropdown_class: 'dropdown-menu-selectable dropdown-menu-type js-filter-submit',
-    data: { data: todo_types_options, default_label: 'Type' } })
