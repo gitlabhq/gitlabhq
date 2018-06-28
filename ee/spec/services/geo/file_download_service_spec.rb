@@ -2,20 +2,25 @@ require 'spec_helper'
 
 describe Geo::FileDownloadService do
   include ::EE::GeoHelpers
+  include ExclusiveLeaseHelpers
 
   set(:primary)  { create(:geo_node, :primary) }
   set(:secondary) { create(:geo_node) }
 
   before do
     stub_current_geo_node(secondary)
-
-    allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(true)
   end
 
   shared_examples_for 'a service that downloads the file and registers the sync result' do |file_type|
     let(:download_service) { described_class.new(file_type, file.id) }
     let(:registry) { file_type == 'job_artifact' ? Geo::JobArtifactRegistry : Geo::FileRegistry }
+
     subject(:execute!) { download_service.execute }
+
+    before do
+      stub_exclusive_lease("file_download_service:#{file_type}:#{file.id}",
+        timeout: Geo::FileDownloadService::LEASE_TIMEOUT)
+    end
 
     context 'for a new file' do
       context 'when the downloader fails before attempting a transfer' do

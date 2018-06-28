@@ -2,13 +2,18 @@ require 'spec_helper'
 
 describe Geo::PruneEventLogWorker, :geo do
   include ::EE::GeoHelpers
+  include ExclusiveLeaseHelpers
 
   subject(:worker) { described_class.new }
+
   set(:primary) { create(:geo_node, :primary) }
   set(:secondary) { create(:geo_node) }
 
+  let(:lease_key) { 'geo/prune_event_log_worker' }
+  let(:lease_timeout) { Geo::PruneEventLogWorker::LEASE_TIMEOUT }
+
   before do
-    allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(true)
+    stub_exclusive_lease(lease_key, timeout: lease_timeout)
   end
 
   describe '#perform' do
@@ -30,7 +35,7 @@ describe Geo::PruneEventLogWorker, :geo do
       end
 
       it 'logs error when it cannot obtain lease' do
-        allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { nil }
+        stub_exclusive_lease_taken(lease_key, timeout: lease_timeout)
 
         expect(worker).to receive(:log_error).with(/^Cannot obtain an exclusive lease/)
 

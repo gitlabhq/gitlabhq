@@ -1,8 +1,14 @@
 module ExclusiveLeaseHelpers
-  def stub_exclusive_lease(key = nil, uuid = 'uuid', timeout: nil)
+  def stub_exclusive_lease(key = nil, uuid = 'uuid', renew: false, timeout: nil)
     key     ||= instance_of(String)
     timeout ||= instance_of(Integer)
-    lease   = instance_double(Gitlab::ExclusiveLease, try_obtain: uuid)
+
+    lease = instance_double(
+      Gitlab::ExclusiveLease,
+      try_obtain: uuid,
+      exists?: true,
+      renew: renew
+    )
 
     allow(Gitlab::ExclusiveLease)
       .to receive(:new)
