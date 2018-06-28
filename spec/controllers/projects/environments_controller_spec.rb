@@ -287,6 +287,24 @@ describe Projects::EnvironmentsController do
     end
   end
 
+  describe 'GET #metrics_redirect' do
+    let(:project) { create(:project) }
+
+    it 'redirects to environment if it exists' do
+      environment = create(:environment, name: 'production', project: project)
+
+      get :metrics_redirect, environment_params
+
+      expect(response).to redirect_to(environment_metrics_path(environment))
+    end
+
+    it 'redirects to empty page if no environment exists' do
+      get :metrics_redirect, environment_params
+
+      expect(response).to redirect_to(empty_project_environments_path(project))
+    end
+  end
+
   describe 'GET #metrics' do
     before do
       allow(controller).to receive(:environment).and_return(environment)

@@ -8,7 +8,6 @@ class ProjectsController < Projects::ApplicationController
   before_action :redirect_git_extension, only: [:show]
   before_action :project, except: [:index, :new, :create]
   before_action :repository, except: [:index, :new, :create]
-  before_action :available_environment, except: [:index, :new, :create]
   before_action :assign_ref_vars, only: [:show], if: :repo_exists?
   before_action :tree, only: [:show], if: [:repo_exists?, :project_view_files?]
   before_action :lfs_blob_ids, only: [:show], if: [:repo_exists?, :project_view_files?]

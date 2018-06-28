@@ -5,7 +5,6 @@ class Projects::ApplicationController < ApplicationController
   skip_before_action :authenticate_user!
   before_action :project
   before_action :repository
-  before_action :available_environment
   layout 'project'
 
   helper_method :repository, :can_collaborate_with_project?, :user_access
@@ -31,10 +30,6 @@ class Projects::ApplicationController < ApplicationController
 
   def repository
     @repository ||= project.repository
-  end
-
-  def available_environment
-    @available_environment ||= project.environments.with_state(:available).first
   end
 
   def authorize_action!(action)
