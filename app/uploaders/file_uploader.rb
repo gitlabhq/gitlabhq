@@ -162,12 +162,14 @@ class FileUploader < GitlabUploader
   end
 
   def copy_file(file)
-    if file_storage?
-      store!(file)
-    else
-      self.file = file.copy_to(store_path)
-      record_upload # after_store is not triggered
-    end
+    to_path = if file_storage?
+                File.join(self.class.root, store_path)
+              else
+                store_path
+              end
+
+    self.file = file.copy_to(to_path)
+    record_upload # after_store is not triggered
   end
 
   private
