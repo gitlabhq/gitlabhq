@@ -63,6 +63,25 @@ class Projects::JobsController < Projects::ApplicationController
     end
   end
 
+  def junit
+    return respond_404 unless @build.job_artifacts_junit
+
+    respond_to do |format|
+      format.json do
+        if @build.job_artifacts_junit.raw?
+          raw_path = @build.job_artifacts_junit.file.raw_path
+        else
+          @build.job_artifacts_junit.decompress! unless @build.job_artifacts_junit.decompressing?
+        end
+
+        render json: {
+          id: @build.id,
+          path: raw_path
+        }
+      end
+    end
+  end
+
   def trace
     build.trace.read do |stream|
       respond_to do |format|

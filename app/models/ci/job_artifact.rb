@@ -50,6 +50,42 @@ module Ci
         end
     end
 
+    def raw?
+      connection.get_object(bucket_name, raw_name) # This is inefficient
+    rescue Excon::File::NotFound
+      false
+    end
+
+    def cache!(file)
+      connection.put_object(bucket_name, raw_name, file)
+    end
+
+    def raw_path
+      connection.get_object_https_url(bucket_name, raw_name)
+    end
+
+    def raw_name
+      "tmp/cache/builds/#{job_id}/artifacts/#{id}/#{file_type}/raw"
+    end
+
+    def bucket_name
+      Gitlab.config.artifacts.object_store.remote_directory
+    end
+
+    def connection
+      ::Fog::Storage.new(Gitlab.config.artifacts)
+    end
+
+    def decompressing?
+      Gitlab::Redis::Cache.with do |redis|
+        redis.exist(raw_name)
+      end
+    end
+
+    def decompress!
+      DecompressZipArtifactWorker.perform_async(id)
+    end
+
     private
 
     def set_size
