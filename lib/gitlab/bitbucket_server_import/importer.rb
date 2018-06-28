@@ -105,11 +105,11 @@ module Gitlab
         inline_comments, pr_comments = comments.partition(&:inline_comment?)
 
 #        import_inline_comments(inline_comments, pull_request, merge_request)
-        import_standalone_pr_comments(pr_comments, merge_request)
+        import_standalone_pr_comments(pr_comments.map(&:comment), merge_request)
       end
 
       def import_merge_event(merge_request, merge_event)
-        committer = merge_event.commiter_email
+        committer = merge_event.committer_email
 
         return unless committer
 
@@ -169,6 +169,10 @@ module Gitlab
         pr_comments.each do |comment|
           begin
             merge_request.notes.create!(pull_request_comment_attributes(comment))
+
+            comment.comments.each do |replies|
+              merge_request.notes.create!(pull_request_comment_attributes(replies))
+            end
           rescue StandardError => e
             errors << { type: :pull_request, iid: comment.id, errors: e.message }
           end
@@ -180,7 +184,6 @@ module Gitlab
       end
 
       def pull_request_comment_attributes(comment)
-        byebug
         {
           project: project,
           note: comment.note,

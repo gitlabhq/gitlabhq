@@ -13,31 +13,27 @@ module BitbucketServer
         comment? && raw['commentAnchor']
       end
 
-      def id
-        raw['id']
+      def comment
+        return unless comment?
+
+        @comment ||=
+          if inline_comment?
+            PullRequestComment.new(raw_comment)
+          else
+            Comment.new(raw_comment)
+          end
       end
 
-      def note
-        comment['text']
-      end
-
-      def author_username
-        author['name']
-      end
-
-      def author_email
-        author['emailAddress']
-      end
-
+      # XXX Move this into MergeEvent
       def merge_event?
         action == 'MERGED'
       end
 
-      def commiter_user
+      def committer_user
         commit.fetch('committer', {})['displayName']
       end
 
-      def commiter_email
+      def committer_email
         commit.fetch('committer', {})['emailAddress']
       end
 
@@ -61,12 +57,12 @@ module BitbucketServer
 
       private
 
-      def comment
+      def raw_comment
         raw.fetch('comment', {})
       end
 
       def author
-        comment.fetch('author', {})
+        raw_comment.fetch('author', {})
       end
 
       # Anchor hash:
