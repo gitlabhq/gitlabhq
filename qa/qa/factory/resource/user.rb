@@ -13,14 +13,19 @@ module QA
           @password = 'password'
         end
 
-        product :name do |factory|
-          factory.name
-        end
+        product(:name) {|factory| factory.name}
+
+        product(:username) {|factory| factory.username}
+
+        product(:email) {|factory| factory.email}
+
+        product(:password) {|factory| factory.password}
 
         def fabricate!
+          Page::Menu::Main.act { sign_out }
           Page::Main::Login.act { switch_to_register_tab }
           Page::Main::SignUp.perform do |page|
-            page.sign_up(name: name, username: username, email: email, password: password)
+            page.sign_up!(name: name, username: username, email: email, password: password)
           end
         end
       end

@@ -193,10 +193,8 @@ module QA
     end
 
     module MergeRequest
-      autoload :CompareBeforeNew, 'qa/page/merge_request/compare_before_new'
       autoload :New, 'qa/page/merge_request/new'
       autoload :Show, 'qa/page/merge_request/show'
-      autoload :Index, 'qa/page/merge_request/index'
     end
 
     module Admin

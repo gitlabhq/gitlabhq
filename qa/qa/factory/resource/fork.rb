@@ -18,15 +18,15 @@ module QA
           push.project = factory.project
         end
 
-        def fabricate!
-          project.visit!
-          Page::Menu::Main.act { sign_out }
-          new_user = Factory::Resource::User.fabricate!
+        dependency Factory::Resource::User, as: :user
 
+        product(:user) {|factory| factory.user}
+
+        def fabricate!
           project.visit!
           Page::Project::Show.act { fork_project }
           Page::Project::Fork::New.perform do |page|
-            page.choose_namespace(new_user.name)
+            page.choose_namespace(user.name)
             page.wait do
               page.has_content?('The project was successfully forked.')
             end

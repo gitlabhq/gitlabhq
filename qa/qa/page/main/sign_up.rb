@@ -11,7 +11,7 @@ module QA
           element :register_button, 'submit "Register"'
         end
 
-        def sign_up(name:, username:, email:, password:)
+        def sign_up!(name:, username:, email:, password:)
           fill_in :new_user_name, with: name
           fill_in :new_user_username, with: username
           fill_in :new_user_email, with: email
