@@ -130,6 +130,7 @@ Parameters:
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `from` (required) - the commit SHA or branch name
 - `to` (required) - the commit SHA or branch name
+- `straight` (optional) - comparison method, `true` for direct comparison between `from` and `to` (`from`..`to`), `false` to compare using merge base (`from`...`to`)'. Default is `false`.
 
 ```
 GET /projects/:id/repository/compare?from=master&to=feature
