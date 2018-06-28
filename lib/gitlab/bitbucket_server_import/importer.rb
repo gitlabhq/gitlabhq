@@ -143,7 +143,7 @@ module Gitlab
             attributes = pull_request_comment_attributes(reply)
             attributes.merge!(
               position: build_position(merge_request, comment),
-              line_code: line_code_map.fetch(reply.id)
+              line_code: line_code_map.fetch(reply.id),
               discussion_id: parent.discussion_id,
               type: 'DiffNote')
             merge_request.notes.create!(attributes)

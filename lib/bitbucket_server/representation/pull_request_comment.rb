@@ -34,16 +34,26 @@ module BitbucketServer
         file_type == 'FROM'
       end
 
-      def new_pos
-        return unless to?
+      def added?
+        line_type  == 'ADDED'
+      end
 
-        comment_anchor['line']
+      def removed?
+        line_type == 'REMOVED'
+      end
+
+      def new_pos
+        return if removed?
+        return unless line_position
+
+        line_position[1]
       end
 
       def old_pos
-        return unless from?
+        return if added?
+        return unless line_position
 
-        comment_anchor['line']
+        line_position[0]
       end
 
       def file_path
@@ -52,8 +62,35 @@ module BitbucketServer
 
       private
 
+      def line_type
+        comment_anchor['lineType']
+      end
+
+      def line_position
+        @line_position ||=
+          diff_hunks.each do |hunk|
+            segments = hunk.fetch('segments', [])
+            segments.each do |segment|
+              lines = segment.fetch('lines', [])
+              lines.each do |line|
+                if line['commentIds']&.include?(id)
+                  return [line['source'], line['destination']]
+                end
+              end
+            end
+        end
+      end
+
       def comment_anchor
         raw.fetch('commentAnchor', {})
+      end
+
+      def diff
+        raw.fetch('diff', {})
+      end
+
+      def diff_hunks
+        diff.fetch('hunks', [])
       end
     end
   end
