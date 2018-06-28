@@ -47,6 +47,7 @@ module QA
       autoload :PersonalAccessToken, 'qa/factory/resource/personal_access_token'
       autoload :KubernetesCluster, 'qa/factory/resource/kubernetes_cluster'
       autoload :Wiki, 'qa/factory/resource/wiki'
+      autoload :File, 'qa/factory/resource/file'
     end
 
     module Repository
