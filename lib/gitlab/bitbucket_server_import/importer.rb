@@ -135,18 +135,33 @@ module Gitlab
         end
 
         inline_comments.each do |comment|
-          begin
-            attributes = pull_request_comment_attributes(comment)
+          parent = build_diff_note(merge_request, comment, line_code_map)
+
+          next unless parent&.persisted?
+
+          comment.comments.each do |reply|
+            attributes = pull_request_comment_attributes(reply)
             attributes.merge!(
               position: build_position(merge_request, comment),
-              line_code: line_code_map.fetch(comment.id),
+              line_code: line_code_map.fetch(reply.id)
+              discussion_id: parent.discussion_id,
               type: 'DiffNote')
-
             merge_request.notes.create!(attributes)
-          rescue StandardError => e
-            errors << { type: :pull_request, id: comment.id, errors: e.message }
           end
         end
+      end
+
+      def build_diff_note(merge_request, comment, line_code_map)
+        attributes = pull_request_comment_attributes(comment)
+        attributes.merge!(
+          position: build_position(merge_request, comment),
+          line_code: line_code_map.fetch(comment.id),
+          type: 'DiffNote')
+
+        merge_request.notes.create!(attributes)
+      rescue StandardError => e
+        errors << { type: :pull_request, id: comment.id, errors: e.message }
+        nil
       end
 
       def build_position(merge_request, pr_comment)
