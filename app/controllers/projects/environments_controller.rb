@@ -141,7 +141,12 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       format.json do
         additional_metrics = environment.additional_metrics || {}
 
-        render json: additional_metrics, status: additional_metrics.any? ? :ok : :no_content
+        render json: {
+          additional_metrics: additional_metrics,
+          environments: EnvironmentSerializer
+            .new(project: project, current_user: current_user)
+            .represent(environments)
+        }, status: additional_metrics.empty? ? :ok : :no_content
       end
     end
   end
