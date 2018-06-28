@@ -134,9 +134,20 @@ In order to do that, follow the steps:
     ```yaml
     image: docker:stable
 
-    # When using dind, it's wise to use the overlayfs driver for
-    # improved performance.
     variables:
+      # When using dind service we need to instruct docker, to talk with the
+      # daemon started inside of the service. The daemon is available with
+      # a network connection instead of the default /var/run/docker.sock socket.
+      #
+      # The 'docker' hostname is the alias of the service container as described at
+      # https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#accessing-the-services
+      #
+      # Note that if you're using Kubernetes executor, the variable should be set to
+      # tcp://localhost:2375 because of how Kubernetes executor connects services
+      # to the job container
+      DOCKER_HOST: tcp://docker:2375/
+      # When using dind, it's wise to use the overlayfs driver for
+      # improved performance.
       DOCKER_DRIVER: overlay2
 
     services:
@@ -293,6 +304,7 @@ services:
 
 variables:
   CONTAINER_IMAGE: registry.gitlab.com/$CI_PROJECT_PATH
+  DOCKER_HOST: tcp://docker:2375
   DOCKER_DRIVER: overlay2
 
 before_script:
@@ -391,6 +403,9 @@ could look like:
    image: docker:stable
    services:
    - docker:dind
+   variables:
+     DOCKER_HOST: tcp://docker:2375
+     DOCKER_DRIVER: overlay2
    stage: build
    script:
      - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.example.com
@@ -410,6 +425,8 @@ services:
   - docker:dind
 
 variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
   IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
 
 before_script:
@@ -445,6 +462,8 @@ stages:
 - deploy
 
 variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
   CONTAINER_TEST_IMAGE: registry.example.com/my-group/my-project/my-image:$CI_COMMIT_REF_NAME
   CONTAINER_RELEASE_IMAGE: registry.example.com/my-group/my-project/my-image:latest
 
