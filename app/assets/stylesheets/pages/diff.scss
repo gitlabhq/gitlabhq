@@ -698,7 +698,7 @@
     &.diff-files-changed-merge-request {
       position: sticky;
       top: 90px;
-      z-index: 190;
+      z-index: 200;
       margin: $gl-padding 0;
       padding: 0;
     }
@@ -706,6 +706,7 @@
     &.is-stuck {
       padding-top: 0;
       padding-bottom: 0;
+      border-top: 1px solid $white-dark;
       border-bottom: 1px solid $white-dark;
 
       .diff-stats-additions-deletions-expanded,

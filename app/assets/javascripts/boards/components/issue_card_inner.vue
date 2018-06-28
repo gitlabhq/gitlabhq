@@ -15,6 +15,9 @@
     directives: {
       tooltip,
     },
+    directives: {
+      tooltip,
+    },
     props: {
       issue: {
         type: Object,

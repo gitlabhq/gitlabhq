@@ -6,9 +6,9 @@ module MergeRequests
   #
   class PostMergeService < MergeRequests::BaseService
     def execute(merge_request)
+      merge_request.mark_as_merged
       close_issues(merge_request)
       todo_service.merge_merge_request(merge_request, current_user)
-      merge_request.mark_as_merged
       create_event(merge_request)
       create_note(merge_request)
       notification_service.merge_mr(merge_request, current_user)

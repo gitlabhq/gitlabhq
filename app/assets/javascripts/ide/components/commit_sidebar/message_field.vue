@@ -16,6 +16,10 @@ export default {
       type: String,
       required: true,
     },
+    placeholder: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -114,7 +118,7 @@ export default {
         </div>
         <textarea
           ref="textarea"
-          :placeholder="__('Write a commit message...')"
+          :placeholder="placeholder"
           :value="text"
           class="note-textarea ide-commit-message-textarea"
           name="commit-message"
