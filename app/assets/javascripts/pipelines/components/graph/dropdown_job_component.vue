@@ -1,5 +1,6 @@
 <script>
 import $ from 'jquery';
+import _ from 'underscore';
 import JobNameComponent from './job_name_component.vue';
 import JobComponent from './job_component.vue';
 import tooltip from '../../../vue_shared/directives/tooltip';
@@ -46,7 +47,7 @@ export default {
 
   computed: {
     tooltipText() {
-      return `${this.job.name} - ${this.job.status.label}`;
+      return _.escape(`${this.job.name} - ${this.job.status.label}`);
     },
   },
 

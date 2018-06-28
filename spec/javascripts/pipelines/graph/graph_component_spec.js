@@ -1,37 +1,33 @@
 import Vue from 'vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import graphComponent from '~/pipelines/components/graph/graph_component.vue';
 import graphJSON from './mock_data';
 
 describe('graph component', () => {
-  preloadFixtures('static/graph.html.raw');
+  const GraphComponent = Vue.extend(graphComponent);
+  let component;
 
-  let GraphComponent;
-
-  beforeEach(() => {
-    loadFixtures('static/graph.html.raw');
-    GraphComponent = Vue.extend(graphComponent);
+  afterEach(() => {
+    component.$destroy();
   });
 
   describe('while is loading', () => {
     it('should render a loading icon', () => {
-      const component = new GraphComponent({
-        propsData: {
-          isLoading: true,
-          pipeline: {},
-        },
-      }).$mount('#js-pipeline-graph-vue');
+      component = mountComponent(GraphComponent, {
+        isLoading: true,
+        pipeline: {},
+      });
+
       expect(component.$el.querySelector('.loading-icon')).toBeDefined();
     });
   });
 
   describe('with data', () => {
     it('should render the graph', () => {
-      const component = new GraphComponent({
-        propsData: {
-          isLoading: false,
-          pipeline: graphJSON,
-        },
-      }).$mount('#js-pipeline-graph-vue');
+      component = mountComponent(GraphComponent, {
+        isLoading: false,
+        pipeline: graphJSON,
+      });
 
       expect(component.$el.classList.contains('js-pipeline-graph')).toEqual(true);
 
@@ -50,6 +46,17 @@ describe('graph component', () => {
       expect(component.$el.querySelector('loading-icon')).toBe(null);
 
       expect(component.$el.querySelector('.stage-column-list')).toBeDefined();
+    });
+  });
+
+  describe('capitalizeStageName', () => {
+    it('capitalizes and escapes stage name', () => {
+      component = mountComponent(GraphComponent, {
+        isLoading: false,
+        pipeline: graphJSON,
+      });
+
+      expect(component.$el.querySelector('.stage-column:nth-child(2) .stage-name').textContent.trim()).toEqual('Deploy &lt;img src=x onerror=alert(document.domain)&gt;');
     });
   });
 });

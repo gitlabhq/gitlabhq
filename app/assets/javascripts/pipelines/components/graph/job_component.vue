@@ -1,4 +1,5 @@
 <script>
+import _ from 'underscore';
 import ActionComponent from './action_component.vue';
 import JobNameComponent from './job_name_component.vue';
 import tooltip from '../../../vue_shared/directives/tooltip';
@@ -61,7 +62,7 @@ export default {
       const textBuilder = [];
 
       if (this.job.name) {
-        textBuilder.push(this.job.name);
+        textBuilder.push(_.escape(this.job.name));
       }
 
       if (this.job.name && this.status.tooltip) {
@@ -69,7 +70,7 @@ export default {
       }
 
       if (this.status.tooltip) {
-        textBuilder.push(`${this.job.status.tooltip}`);
+        textBuilder.push(this.job.status.tooltip);
       }
 
       return textBuilder.join(' ');

@@ -91,7 +91,7 @@ export default {
         dropdown_path: '/root/ci-mock/pipelines/123/stage.json?stage=test',
       },
       {
-        name: 'deploy',
+        name: 'deploy <img src=x onerror=alert(document.domain)>',
         title: 'deploy: passed',
         groups: [
           {
