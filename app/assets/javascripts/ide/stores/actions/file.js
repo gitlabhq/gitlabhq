@@ -1,4 +1,3 @@
-import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { __ } from '../../../locale';
 import eventHub from '../../eventhub';
 import service from '../../services';

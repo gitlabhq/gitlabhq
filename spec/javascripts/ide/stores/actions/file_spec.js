@@ -2,7 +2,6 @@ import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import store from '~/ide/stores';
-import { getFileData, getRawFileData } from '~/ide/stores/actions/file';
 import * as actions from '~/ide/stores/actions/file';
 import * as types from '~/ide/stores/mutation_types';
 import service from '~/ide/services';
@@ -293,14 +292,15 @@ describe('IDE store file actions', () => {
       it('dispatches error action', done => {
         const dispatch = jasmine.createSpy('dispatch');
 
-        getFileData(
-          {
-            state: store.state,
-            commit() {},
-            dispatch,
-          },
-          { path: localFile.path },
-        )
+        actions
+          .getFileData(
+            {
+              state: store.state,
+              commit() {},
+              dispatch,
+            },
+            { path: localFile.path },
+          )
           .then(() => {
             expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
               text: 'An error occured whilst loading the file.',
@@ -381,14 +381,15 @@ describe('IDE store file actions', () => {
       it('dispatches error action', done => {
         const dispatch = jasmine.createSpy('dispatch');
 
-        getRawFileData(
-          {
-            state: store.state,
-            commit() {},
-            dispatch,
-          },
-          { path: tmpFile.path, baseSha: tmpFile.baseSha },
-        )
+        actions
+          .getRawFileData(
+            {
+              state: store.state,
+              commit() {},
+              dispatch,
+            },
+            { path: tmpFile.path, baseSha: tmpFile.baseSha },
+          )
           .then(done.fail)
           .catch(() => {
             expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {

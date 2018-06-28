@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import store from '~/ide/stores';
-import service from '~/ide/services';
 import router from '~/ide/ide_router';
 import repoCommitSection from '~/ide/components/repo_commit_section.vue';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
