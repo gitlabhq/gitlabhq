@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RepositoryCheck
   class BatchWorker
     prepend ::EE::RepositoryCheck::BatchWorker
