@@ -21,7 +21,13 @@ module DeclarativePolicy
       cache = opts[:cache] || {}
       key = Cache.policy_key(user, subject)
 
-      cache[key] ||= class_for(subject).new(user, subject, opts)
+      if Gitlab.rails5?
+        ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
+          cache[key] ||= class_for(subject).new(user, subject, opts)
+        end
+      else
+        cache[key] ||= class_for(subject).new(user, subject, opts)
+      end
     end
 
     def class_for(subject)
