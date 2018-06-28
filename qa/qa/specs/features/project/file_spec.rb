@@ -22,7 +22,7 @@ module QA
       updated_file_content = 'QA Test - Updated file content'
       commit_message_for_update = 'QA Test - Update file'
 
-      Page::File::Show.act {edit}
+      Page::File::Show.act {click_edit}
 
       Page::File::Edit.act do
         remove_content
@@ -38,9 +38,9 @@ module QA
       commit_message_for_delete = 'QA Test - Delete file'
 
       Page::File::Show.act do
-        delete
+        click_delete
         add_commit_message(commit_message_for_delete)
-        delete_file
+        click_delete_file
       end
 
       expect(page).to have_content('The file has been successfully deleted.')

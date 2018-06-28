@@ -15,15 +15,15 @@ module QA
           element :commit_message, "text_area_tag 'commit_message'"
         end
 
-        def edit
+        def click_edit
           click_on 'Edit'
         end
 
-        def delete
+        def click_delete
           click_on 'Delete'
         end
 
-        def delete_file
+        def click_delete_file
           click_on 'Delete file'
         end
 
