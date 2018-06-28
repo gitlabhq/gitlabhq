@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180626125654) do
+ActiveRecord::Schema.define(version: 20180628124813) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -2144,6 +2144,7 @@ ActiveRecord::Schema.define(version: 20180626125654) do
     t.datetime "updated_at", null: false
   end
 
+  add_index "web_hook_logs", ["created_at", "web_hook_id"], name: "index_web_hook_logs_on_created_at_and_web_hook_id", using: :btree
   add_index "web_hook_logs", ["web_hook_id"], name: "index_web_hook_logs_on_web_hook_id", using: :btree
 
   create_table "web_hooks", force: :cascade do |t|
