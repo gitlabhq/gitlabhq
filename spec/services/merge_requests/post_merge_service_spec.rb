@@ -47,5 +47,18 @@ describe MergeRequests::PostMergeService do
 
       expect(diff_removal_service).to have_received(:execute)
     end
+
+    it 'marks MR as merged regardless of errors when closing issues' do
+      merge_request.update(target_branch: 'foo')
+      allow(project).to receive(:default_branch).and_return('foo')
+
+      issue = create(:issue, project: project)
+      allow(merge_request).to receive(:closes_issues).and_return([issue])
+      allow_any_instance_of(Issues::CloseService).to receive(:execute).with(issue, commit: merge_request).and_raise
+
+      expect { described_class.new(project, user, {}).execute(merge_request) }.to raise_error
+
+      expect(merge_request.reload).to be_merged
+    end
   end
 end
