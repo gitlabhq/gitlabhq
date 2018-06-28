@@ -10,8 +10,7 @@ export const getMergeRequestData = (
     if (!state.projects[projectId].mergeRequests[mergeRequestId] || force) {
       service
         .getProjectMergeRequestData(projectId, mergeRequestId)
-        .then(res => res.data)
-        .then(data => {
+        .then(({ data }) => {
           commit(types.SET_MERGE_REQUEST, {
             projectPath: projectId,
             mergeRequestId,
@@ -45,8 +44,7 @@ export const getMergeRequestChanges = (
     if (!state.projects[projectId].mergeRequests[mergeRequestId].changes.length || force) {
       service
         .getProjectMergeRequestChanges(projectId, mergeRequestId)
-        .then(res => res.data)
-        .then(data => {
+        .then(({ data }) => {
           commit(types.SET_MERGE_REQUEST_CHANGES, {
             projectPath: projectId,
             mergeRequestId,

@@ -116,6 +116,40 @@ describe('Multi-file store tree actions', () => {
             done();
           });
       });
+
+      it('dispatches error action', done => {
+        const dispatch = jasmine.createSpy('dispatchSpy');
+
+        store.state.projects = {
+          'abc/def': {
+            web_url: `${gl.TEST_HOST}/files`,
+          },
+        };
+
+        mock.onGet(/(.*)/).replyOnce(500);
+
+        getFiles(
+          {
+            commit() {},
+            dispatch,
+            state: store.state,
+          },
+          {
+            projectId: 'abc/def',
+            branchId: 'master-testing',
+          },
+        )
+          .then(done.fail)
+          .catch(() => {
+            expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
+              text: 'An error occured whilst loading all the files.',
+              action: jasmine.any(Function),
+              actionText: 'Please try again',
+              actionPayload: { projectId: 'abc/def', branchId: 'master-testing' },
+            });
+            done();
+          });
+      });
     });
   });
 
