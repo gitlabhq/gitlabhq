@@ -2,7 +2,6 @@ module QA
   module Page
     module File
       class Show < Page::Base
-
         view 'app/helpers/blob_helper.rb' do
           element :edit_button, "_('Edit')"
           element :delete_button, /label:\s+"Delete"/
@@ -31,7 +30,6 @@ module QA
         def add_commit_message(message)
           fill_in 'commit_message', with: message
         end
-
       end
     end
   end

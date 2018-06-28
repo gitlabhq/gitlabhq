@@ -2,7 +2,6 @@ module QA
   module Page
     module File
       class Edit < Page::Base
-
         view 'app/views/projects/blob/_editor.html.haml' do
           element :file_name, "text_field_tag 'file_name'"
           element :editor, '#editor'
@@ -35,7 +34,6 @@ module QA
         def commit_changes
           click_on 'Commit changes'
         end
-
       end
     end
   end

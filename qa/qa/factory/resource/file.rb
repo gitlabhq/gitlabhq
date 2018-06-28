@@ -10,13 +10,11 @@ module QA
           project.name = 'project-with-new-file'
         end
 
-
         def initialize
           @name = 'QA Test - File name'
           @content = 'QA Test - File content'
           @commit_message = 'QA Test - Commit message'
         end
-
 
         def fabricate!
           project.visit!
