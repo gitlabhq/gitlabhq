@@ -94,7 +94,7 @@ export const setFileMrChange = ({ commit }, { file, mrChange }) => {
   commit(types.SET_FILE_MERGE_REQUEST_CHANGE, { file, mrChange });
 };
 
-export const getRawFileData = ({ state, commit }, { path, baseSha }) => {
+export const getRawFileData = ({ state, commit, dispatch }, { path, baseSha }) => {
   const file = state.entries[path];
   return new Promise((resolve, reject) => {
     service

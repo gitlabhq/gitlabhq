@@ -1,5 +1,4 @@
 import MockAdapter from 'axios-mock-adapter';
-import Vue from 'vue';
 import testAction from 'spec/helpers/vuex_action_helper';
 import { showTreeEntry, getFiles } from '~/ide/stores/actions/tree';
 import * as types from '~/ide/stores/mutation_types';

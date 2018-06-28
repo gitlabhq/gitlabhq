@@ -80,9 +80,9 @@ export const getFiles = ({ state, commit, dispatch }, { projectId, branchId } = 
             dispatch('setErrorMessage', {
               text: __('An error occured whilst loading all the files.'),
               action: payload =>
-                dispatch('getRawFileData', payload).then(() => dispatch('setErrorMessage', null)),
+                dispatch('getFiles', payload).then(() => dispatch('setErrorMessage', null)),
               actionText: __('Please try again'),
-              actionPayload: { path, baseSha },
+              actionPayload: { projectId, branchId },
             });
           }
           reject(e);
