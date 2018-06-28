@@ -293,14 +293,7 @@ describe('IDE store file actions', () => {
         const dispatch = jasmine.createSpy('dispatch');
 
         actions
-          .getFileData(
-            {
-              state: store.state,
-              commit() {},
-              dispatch,
-            },
-            { path: localFile.path },
-          )
+          .getFileData({ state: store.state, commit() {}, dispatch }, { path: localFile.path })
           .then(() => {
             expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
               text: 'An error occured whilst loading the file.',
@@ -383,11 +376,7 @@ describe('IDE store file actions', () => {
 
         actions
           .getRawFileData(
-            {
-              state: store.state,
-              commit() {},
-              dispatch,
-            },
+            { state: store.state, commit() {}, dispatch },
             { path: tmpFile.path, baseSha: tmpFile.baseSha },
           )
           .then(done.fail)
