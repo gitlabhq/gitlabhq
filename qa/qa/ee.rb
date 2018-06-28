@@ -35,6 +35,10 @@ module QA
       module Project
         autoload :Show, 'qa/ee/page/project/show'
 
+        module Issue
+          autoload :Index, 'qa/ee/page/project/issue/index'
+        end
+
         module Settings
           autoload :ProtectedBranches, 'qa/ee/page/project/settings/protected_branches'
         end
