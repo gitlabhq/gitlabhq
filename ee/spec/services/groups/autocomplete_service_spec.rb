@@ -4,7 +4,7 @@ describe Groups::AutocompleteService do
   let!(:group) { create(:group, :nested, avatar: fixture_file_upload('spec/fixtures/dk.png')) }
   let!(:sub_group) { create(:group, parent: group) }
   let(:user) { create(:user) }
-  let(:epic) { create(:epic, group: group, author: user) }
+  let!(:epic) { create(:epic, group: group, author: user) }
 
   before do
     create(:group_member, group: group, user: user)
@@ -51,6 +51,22 @@ describe Groups::AutocompleteService do
           end
         end
       end
+    end
+  end
+
+  describe '#epics' do
+    it 'returns nothing if not allowed' do
+      allow(Ability).to receive(:allowed?).with(user, :read_epic, group).and_return(false)
+      service = described_class.new(group, user)
+
+      expect(service.epics).to eq([])
+    end
+
+    it 'returns epics from group' do
+      allow(Ability).to receive(:allowed?).with(user, :read_epic, group).and_return(true)
+      service = described_class.new(group, user)
+
+      expect(service.epics).to contain_exactly(epic)
     end
   end
 end

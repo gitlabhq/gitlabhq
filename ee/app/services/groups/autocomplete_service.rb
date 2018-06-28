@@ -25,7 +25,14 @@ module Groups
     end
 
     def epics
-      EpicsFinder.new(current_user, group_id: group.id).execute
+      # TODO: change to EpicsFinder once frontend supports epics from descendant groups
+      DeclarativePolicy.user_scope do
+        if Ability.allowed?(current_user, :read_epic, group)
+          group.epics
+        else
+          []
+        end
+      end
     end
   end
 end
