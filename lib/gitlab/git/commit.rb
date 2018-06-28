@@ -220,19 +220,7 @@ module Gitlab
         end
 
         def shas_with_signatures(repository, shas)
-          GitalyClient.migrate(:filter_shas_with_signatures) do |is_enabled|
-            if is_enabled
-              Gitlab::GitalyClient::CommitService.new(repository).filter_shas_with_signatures(shas)
-            else
-              shas.select do |sha|
-                begin
-                  Rugged::Commit.extract_signature(repository.rugged, sha)
-                rescue Rugged::OdbError
-                  false
-                end
-              end
-            end
-          end
+          Gitlab::GitalyClient::CommitService.new(repository).filter_shas_with_signatures(shas)
         end
 
         # Only to be used when the object ids will not necessarily have a
@@ -250,13 +238,7 @@ module Gitlab
         end
 
         def extract_signature(repository, commit_id)
-          repository.gitaly_migrate(:extract_commit_signature) do |is_enabled|
-            if is_enabled
-              repository.gitaly_commit_client.extract_signature(commit_id)
-            else
-              rugged_extract_signature(repository, commit_id)
-            end
-          end
+          repository.gitaly_commit_client.extract_signature(commit_id)
         end
 
         def extract_signature_lazily(repository, commit_id)
@@ -276,34 +258,7 @@ module Gitlab
         end
 
         def batch_signature_extraction(repository, commit_ids)
-          repository.gitaly_migrate(:extract_commit_signature_in_batch) do |is_enabled|
-            if is_enabled
-              gitaly_batch_signature_extraction(repository, commit_ids)
-            else
-              rugged_batch_signature_extraction(repository, commit_ids)
-            end
-          end
-        end
-
-        def gitaly_batch_signature_extraction(repository, commit_ids)
           repository.gitaly_commit_client.get_commit_signatures(commit_ids)
-        end
-
-        def rugged_batch_signature_extraction(repository, commit_ids)
-          commit_ids.each_with_object({}) do |commit_id, signatures|
-            signature_data = rugged_extract_signature(repository, commit_id)
-            next unless signature_data
-
-            signatures[commit_id] = signature_data
-          end
-        end
-
-        def rugged_extract_signature(repository, commit_id)
-          begin
-            Rugged::Commit.extract_signature(repository.rugged, commit_id)
-          rescue Rugged::OdbError
-            nil
-          end
         end
 
         def get_message(repository, commit_id)
