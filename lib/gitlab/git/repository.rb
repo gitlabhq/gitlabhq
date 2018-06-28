@@ -492,27 +492,6 @@ module Gitlab
         Ref.dereference_object(obj)
       end
 
-      # Return a collection of Rugged::Commits between the two revspec arguments.
-      # See http://git-scm.com/docs/git-rev-parse.html#_specifying_revisions for
-      # a detailed list of valid arguments.
-      #
-      # Gitaly note: JV: to be deprecated in favor of Commit.between
-      def rugged_commits_between(from, to)
-        walker = Rugged::Walker.new(rugged)
-        walker.sorting(Rugged::SORT_NONE | Rugged::SORT_REVERSE)
-
-        sha_from = sha_from_ref(from)
-        sha_to = sha_from_ref(to)
-
-        walker.push(sha_to)
-        walker.hide(sha_from)
-
-        commits = walker.to_a
-        walker.reset
-
-        commits
-      end
-
       # Counts the amount of commits between `from` and `to`.
       def count_commits_between(from, to, options = {})
         count_commits(from: from, to: to, **options)
@@ -1316,16 +1295,7 @@ module Gitlab
         safe_query = Regexp.escape(query)
         ref ||= root_ref
 
-        gitaly_migrate(:search_files_by_content) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.search_files_by_content(ref, safe_query)
-          else
-            offset = 2
-            args = %W(grep -i -I -n -z --before-context #{offset} --after-context #{offset} -E -e #{safe_query} #{ref})
-
-            run_git(args).first.scrub.split(/^--\n/)
-          end
-        end
+        gitaly_repository_client.search_files_by_content(ref, safe_query)
       end
 
       def can_be_merged?(source_sha, target_branch)
@@ -1342,15 +1312,7 @@ module Gitlab
 
         return [] if empty? || safe_query.blank?
 
-        gitaly_migrate(:search_files_by_name) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.search_files_by_name(ref, safe_query)
-          else
-            args = %W(ls-tree -r --name-status --full-tree #{ref} -- #{safe_query})
-
-            run_git(args).first.lines.map(&:strip)
-          end
-        end
+        gitaly_repository_client.search_files_by_name(ref, safe_query)
       end
 
       def find_commits_by_message(query, ref, path, limit, offset)

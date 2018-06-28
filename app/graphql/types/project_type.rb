@@ -1,5 +1,7 @@
 module Types
   class ProjectType < BaseObject
+    expose_permissions Types::PermissionTypes::Project
+
     graphql_name 'Project'
 
     field :id, GraphQL::ID_TYPE, null: false

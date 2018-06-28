@@ -103,17 +103,24 @@ export const updateFilesAfterCommit = ({ commit, dispatch, rootState }, { data }
 
 export const commitChanges = ({ commit, state, getters, dispatch, rootState, rootGetters }) => {
   const newBranch = state.commitAction !== consts.COMMIT_TO_CURRENT_BRANCH;
-  const payload = createCommitPayload({
-    branch: getters.branchName,
-    newBranch,
-    state,
-    rootState,
-  });
+  const stageFilesPromise = rootState.stagedFiles.length
+    ? Promise.resolve()
+    : dispatch('stageAllChanges', null, { root: true });
 
   commit(types.UPDATE_LOADING, true);
 
-  return service
-    .commit(rootState.currentProjectId, payload)
+  return stageFilesPromise
+    .then(() => {
+      const payload = createCommitPayload({
+        branch: getters.branchName,
+        newBranch,
+        getters,
+        state,
+        rootState,
+      });
+
+      return service.commit(rootState.currentProjectId, payload);
+    })
     .then(({ data }) => {
       commit(types.UPDATE_LOADING, false);
 

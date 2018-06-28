@@ -54,6 +54,51 @@ a new presenter specifically for GraphQL.
 The presenter is initialized using the object resolved by a field, and
 the context.
 
+### Exposing permissions for a type
+
+To expose permissions the current user has on a resource, you can call
+the `expose_permissions` passing in a separate type representing the
+permissions for the resource.
+
+For example:
+
+```ruby
+module Types
+  class MergeRequestType < BaseObject
+    expose_permissions Types::MergeRequestPermissionsType
+  end
+end
+```
+
+The permission type inherits from `BasePermissionType` which includes
+some helper methods, that allow exposing permissions as non-nullable
+booleans:
+
+```ruby
+class MergeRequestPermissionsType < BasePermissionType
+  present_using MergeRequestPresenter
+
+  graphql_name 'MergeRequestPermissions'
+
+  abilities :admin_merge_request, :update_merge_request, :create_note
+
+  ability_field :resolve_note,
+                description: 'Whether or not the user can resolve disussions on the merge request'
+  permission_field :push_to_source_branch, method: :can_push_to_source_branch?
+end
+```
+
+- **`permission_field`**: Will act the same as `graphql-ruby`'s
+  `field` method but setting a default description and type and making
+  them non-nullable. These options can still be overridden by adding
+  them as arguments.
+- **`ability_field`**: Expose an ability defined in our policies. This
+  takes behaves the same way as `permission_field` and the same
+  arguments can be overridden.
+- **`abilities`**: Allows exposing several abilities defined in our
+  policies at once. The fields for these will all have be non-nullable
+  booleans with a default description.
+
 ## Resolvers
 
 To find objects to display in a field, we can add resolvers to

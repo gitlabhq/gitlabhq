@@ -105,9 +105,9 @@ export const setPageTitle = title => {
   document.title = title;
 };
 
-export const createCommitPayload = ({ branch, newBranch, state, rootState }) => ({
+export const createCommitPayload = ({ branch, getters, newBranch, state, rootState }) => ({
   branch,
-  commit_message: state.commitMessage,
+  commit_message: state.commitMessage || getters.preBuiltCommitMessage,
   actions: rootState.stagedFiles.map(f => ({
     action: f.tempFile ? 'create' : 'update',
     file_path: f.path,
