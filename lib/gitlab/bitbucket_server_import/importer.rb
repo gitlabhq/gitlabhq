@@ -2,12 +2,6 @@ module Gitlab
   module BitbucketServerImport
     class Importer
       include Gitlab::ShellAdapter
-
-      LABELS = [{ title: 'bug', color: '#FF0000' },
-                { title: 'enhancement', color: '#428BCA' },
-                { title: 'proposal', color: '#69D100' },
-                { title: 'task', color: '#7F8C8D' }].freeze
-
       attr_reader :project, :project_key, :repository_slug, :client, :errors, :users
 
       def initialize(project)
@@ -16,7 +10,6 @@ module Gitlab
         @repository_slug = project.import_data.data['repo_slug']
         @client = BitbucketServer::Client.new(project.import_data.credentials)
         @formatter = Gitlab::ImportFormatter.new
-        @labels = {}
         @errors = []
         @users = {}
       end
@@ -75,10 +68,10 @@ module Gitlab
               title: pull_request.title,
               description: description,
               source_project: project,
-              source_branch: pull_request.source_branch_name,
-              source_branch_sha: source_branch_sha,
+              source_branch: Gitlab::Git.ref_name(pull_request.source_branch_name),
+              source_branch_sha: pull_request.source_branch_sha,
               target_project: project,
-              target_branch: pull_request.target_branch_name,
+              target_branch: Gitlab::Git.ref_name(pull_request.target_branch_name),
               target_branch_sha: target_branch_sha,
               state: pull_request.state,
               author_id: gitlab_user_id(project, pull_request.author_email),
@@ -123,39 +116,30 @@ module Gitlab
       end
 
       def import_inline_comments(inline_comments, pull_request, merge_request)
-        line_code_map = {}
-
         inline_comments.each do |comment|
-          line_code = generate_line_code(comment)
-          line_code_map[comment.id] = line_code
-
-          comment.comments.each do |reply|
-            line_code_map[reply.id] = line_code
-          end
-        end
-
-        inline_comments.each do |comment|
-          parent = build_diff_note(merge_request, comment, line_code_map)
+          parent = build_diff_note(merge_request, comment)
 
           next unless parent&.persisted?
 
           comment.comments.each do |reply|
-            attributes = pull_request_comment_attributes(reply)
-            attributes.merge!(
-              position: build_position(merge_request, comment),
-              line_code: line_code_map.fetch(reply.id),
-              discussion_id: parent.discussion_id,
-              type: 'DiffNote')
-            merge_request.notes.create!(attributes)
+            begin
+              attributes = pull_request_comment_attributes(reply)
+              attributes.merge!(
+                position: build_position(merge_request, comment),
+                discussion_id: parent.discussion_id,
+                type: 'DiffNote')
+              merge_request.notes.create!(attributes)
+            rescue StandardError => e
+              errors << { type: :pull_request, id: comment.id, errors: e.message }
+            end
           end
         end
       end
 
-      def build_diff_note(merge_request, comment, line_code_map)
+      def build_diff_note(merge_request, comment)
         attributes = pull_request_comment_attributes(comment)
         attributes.merge!(
           position: build_position(merge_request, comment),
-          line_code: line_code_map.fetch(comment.id),
           type: 'DiffNote')
 
         merge_request.notes.create!(attributes)
