@@ -149,11 +149,18 @@ describe Boards::ListsController do
 
     def move(user:, board:, list:, position:)
       sign_in(user)
+      params = {
+        board_id: board.to_param,
+        id: list.to_param,
+        list: { position: position },
+        format: :json
+      }
 
-      patch :update, board_id: board.to_param,
-                     id: list.to_param,
-                     list: { position: position },
-                     format: :json
+      if Gitlab.rails5?
+        patch :update, params: params, as: :json
+      else
+        patch :update, params
+      end
     end
   end
 
