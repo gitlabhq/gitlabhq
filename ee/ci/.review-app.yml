@@ -20,7 +20,11 @@ review-app-image:
   script:
     - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN scripts/trigger-build cng
   only:
-    - //@gitlab-org/gitlab-ee
+    refs:
+      - branches
+  except:
+    refs:
+      - master
 
 .reviewapps_deploy: &reviewapps_deploy |
   [[ "$TRACE" ]] && set -x
@@ -65,17 +69,11 @@ review-app-image:
 
   function create_secret() {
     echo "Create secret..."
-    if [[ "$CI_PROJECT_VISIBILITY" == "public" ]]; then
-      return
-    fi
 
-    kubectl create secret -n "$KUBE_NAMESPACE" \
-      docker-registry gitlab-registry \
-      --docker-server="$CI_REGISTRY" \
-      --docker-username="${CI_DEPLOY_USER:-$CI_REGISTRY_USER}" \
-      --docker-password="${CI_DEPLOY_PASSWORD:-$CI_REGISTRY_PASSWORD}" \
-      --docker-email="$GITLAB_USER_EMAIL" \
-      -o yaml --dry-run | kubectl replace -n "$KUBE_NAMESPACE" --force -f -
+    kubectl create secret generic -n "$KUBE_NAMESPACE" \
+      $CI_ENVIRONMENT_SLUG-gitlab-initial-root-password \
+      --from-literal=password=$REVIEW_APPS_ROOT_PASSWORD \
+      --dry-run -o json | kubectl apply -f -
   }
 
   function previousDeployFailed() {
@@ -148,7 +146,6 @@ review-app-image:
       --set certmanager.install=false \
       --set global.ingress.configureCertmanager=false \
       --set global.ingress.tls.secretName=tls-cert \
-      --set gitlab.migrations.initialRootPassword="$REVIEW_APPS_ROOT_PASSWORD" \
       --set gitlab.unicorn.resources.requests.cpu=200m \
       --set gitlab.sidekiq.resources.requests.cpu=100m \
       --set gitlab.gitlab-shell.resources.requests.cpu=100m \
