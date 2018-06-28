@@ -116,15 +116,9 @@ module Gitlab
         #   Commit.between(repo, '29eda46b', 'master')
         #
         def between(repo, base, head)
-          Gitlab::GitalyClient.migrate(:commits_between) do |is_enabled|
-            if is_enabled
-              repo.gitaly_commit_client.between(base, head)
-            else
-              repo.rugged_commits_between(base, head).map { |c| decorate(repo, c) }
-            end
+          repo.wrapped_gitaly_errors do
+            repo.gitaly_commit_client.between(base, head)
           end
-        rescue Rugged::ReferenceError
-          []
         end
 
         # Returns commits collection

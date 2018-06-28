@@ -492,27 +492,6 @@ module Gitlab
         Ref.dereference_object(obj)
       end
 
-      # Return a collection of Rugged::Commits between the two revspec arguments.
-      # See http://git-scm.com/docs/git-rev-parse.html#_specifying_revisions for
-      # a detailed list of valid arguments.
-      #
-      # Gitaly note: JV: to be deprecated in favor of Commit.between
-      def rugged_commits_between(from, to)
-        walker = Rugged::Walker.new(rugged)
-        walker.sorting(Rugged::SORT_NONE | Rugged::SORT_REVERSE)
-
-        sha_from = sha_from_ref(from)
-        sha_to = sha_from_ref(to)
-
-        walker.push(sha_to)
-        walker.hide(sha_from)
-
-        commits = walker.to_a
-        walker.reset
-
-        commits
-      end
-
       # Counts the amount of commits between `from` and `to`.
       def count_commits_between(from, to, options = {})
         count_commits(from: from, to: to, **options)
