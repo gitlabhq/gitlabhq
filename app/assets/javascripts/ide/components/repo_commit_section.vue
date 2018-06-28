@@ -28,7 +28,7 @@ export default {
     ]),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
     ...mapGetters(['lastOpenedFile', 'hasChanges', 'someUncommitedChanges', 'activeFile']),
-    ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled']),
+    ...mapGetters('commit', ['discardDraftButtonDisabled']),
     showStageUnstageArea() {
       return !!(this.someUncommitedChanges || this.lastCommitMsg || !this.unusedSeal);
     },
