@@ -490,7 +490,8 @@
 .dropdown-menu-selectable {
   li {
     a,
-    button {
+    button,
+    .dropdown-menu-item {
       padding: 8px 40px;
       position: relative;
 
@@ -501,7 +502,7 @@
         &::before {
           position: absolute;
           left: 16px;
-          top: 16px;
+          top: 50%;
           transform: translateY(-50%);
           font: normal normal normal 14px/1 FontAwesome;
           font-size: inherit;
@@ -907,6 +908,10 @@ header.header-content .dropdown-menu.projects-dropdown-menu {
   }
 }
 
+.project-inline-container {
+  display: flex;
+}
+
 .projects-list-item-container {
   .project-item-avatar-container .project-item-metadata-container {
     float: left;
@@ -918,6 +923,10 @@ header.header-content .dropdown-menu.projects-dropdown-menu {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+
+    .project-multi-select-dropdown & {
+      max-width: 100%;
+    }
   }
 
   &:hover {
@@ -968,5 +977,43 @@ header.header-content .dropdown-menu.projects-dropdown-menu {
 
   &.fade-out::after {
     opacity: 0;
+  }
+}
+
+.project-multi-select {
+  .select2-choices {
+    // This is needed to override select2's custom theme when position is up
+    background: none !important;
+  }
+
+  .select2-search-choice {
+    white-space: nowrap;
+  }
+
+  .select2-default {
+    color: inherit !important;
+  }
+}
+
+.project-multi-select-dropdown {
+  // do not hide selected from dropdown
+  .select2-selected {
+    display: block;
+  }
+
+  .dropdown-menu-item.label-item {
+    padding: 0;
+    padding-left: 24px;
+
+    &.is-active::before {
+      left: 0;
+    }
+  }
+}
+
+.project-multi-select-all {
+  .project-item-avatar-container,
+  .project-namespace {
+    display: none;
   }
 }
