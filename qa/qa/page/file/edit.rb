@@ -1,7 +1,7 @@
 module QA
   module Page
     module File
-      class New < Page::Base
+      class Edit < Page::Base
 
         view 'app/views/projects/blob/_editor.html.haml' do
           element :file_name, "text_field_tag 'file_name'"
@@ -20,7 +20,11 @@ module QA
           fill_in 'file_name', with: name
         end
 
-        def add_content(content)
+        def remove_content
+          find('#editor>textarea', visible: false).send_keys([:command, 'a'], :backspace)
+        end
+
+        def update_content(content)
           find('#editor>textarea', visible: false).set content
         end
 

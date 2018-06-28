@@ -3,6 +3,19 @@ module QA
     module File
       class Show < Page::Base
 
+        view 'app/helpers/blob_helper.rb' do
+          element :edit_button, "_('Edit')"
+          element :delete_button, /label:\s+"Delete"/
+        end
+
+        view 'app/views/projects/blob/_remove.html.haml' do
+          element :delete_file_button, "button_tag 'Delete file'"
+        end
+
+        view 'app/views/shared/_commit_message_container.html.haml' do
+          element :commit_message, "text_area_tag 'commit_message'"
+        end
+
         def edit
           click_on 'Edit'
         end
@@ -15,20 +28,8 @@ module QA
           click_on 'Delete file'
         end
 
-        def remove_content
-          find('.ace_text-input', visible: false).send_keys([:command, 'a'], :backspace)
-        end
-
-        def update_content(content)
-          find('.ace_text-input', visible: false).set content
-        end
-
         def add_commit_message(message)
           fill_in 'commit_message', with: message
-        end
-
-        def commit_changes
-          click_on 'Commit changes'
         end
 
       end

@@ -1,6 +1,6 @@
 module QA
-  feature 'create file in project', :core do
-    scenario 'user creates a file' do
+  feature 'create, edit and destroy file in project', :core do
+    scenario 'user creates, edits and deletes a file' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act {sign_in_using_credentials}
 
@@ -22,8 +22,9 @@ module QA
       updated_file_content = 'QA Test - Updated file content'
       commit_message_for_update = 'QA Test - Update file'
 
-      Page::File::Show.act do
-        edit
+      Page::File::Show.act {edit}
+
+      Page::File::Edit.act do
         remove_content
         update_content(updated_file_content)
         add_commit_message(commit_message_for_update)
