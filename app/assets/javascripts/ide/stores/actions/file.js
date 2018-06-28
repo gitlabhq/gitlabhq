@@ -1,5 +1,5 @@
 import { normalizeHeaders } from '~/lib/utils/common_utils';
-import flash from '~/flash';
+import { __ } from '../../../locale';
 import eventHub from '../../eventhub';
 import service from '../../services';
 import * as types from '../mutation_types';
@@ -80,7 +80,13 @@ export const getFileData = ({ state, commit, dispatch }, { path, makeFileActive 
     })
     .catch(() => {
       commit(types.TOGGLE_LOADING, { entry: file });
-      flash('Error loading file data. Please try again.', 'alert', document, null, false, true);
+      dispatch('setErrorMessage', {
+        text: __('An error occured whilst loading the file.'),
+        action: payload =>
+          dispatch('getFileData', payload).then(() => dispatch('setErrorMessage', null)),
+        actionText: __('Please try again'),
+        actionPayload: { path, makeFileActive },
+      });
     });
 };
 
@@ -113,7 +119,13 @@ export const getRawFileData = ({ state, commit }, { path, baseSha }) => {
         }
       })
       .catch(() => {
-        flash('Error loading file content. Please try again.');
+        dispatch('setErrorMessage', {
+          text: __('An error occured whilst loading the file content.'),
+          action: payload =>
+            dispatch('getRawFileData', payload).then(() => dispatch('setErrorMessage', null)),
+          actionText: __('Please try again'),
+          actionPayload: { path, baseSha },
+        });
         reject();
       });
   });

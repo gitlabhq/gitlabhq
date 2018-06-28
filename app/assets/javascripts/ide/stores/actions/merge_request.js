@@ -1,4 +1,3 @@
-import flash from '~/flash';
 import service from '../../services';
 import * as types from '../mutation_types';
 
@@ -21,7 +20,15 @@ export const getMergeRequestData = (
           resolve(data);
         })
         .catch(() => {
-          flash('Error loading merge request data. Please try again.');
+          dispatch('setErrorMessage', {
+            text: __('An error occured whilst loading the merge request.'),
+            action: payload =>
+              dispatch('getMergeRequestData', payload).then(() =>
+                dispatch('setErrorMessage', null),
+              ),
+            actionText: __('Please try again'),
+            actionPayload: { projectId, mergeRequestId, force },
+          });
           reject(new Error(`Merge Request not loaded ${projectId}`));
         });
     } else {
@@ -47,7 +54,15 @@ export const getMergeRequestChanges = (
           resolve(data);
         })
         .catch(() => {
-          flash('Error loading merge request changes. Please try again.');
+          dispatch('setErrorMessage', {
+            text: __('An error occured whilst loading the merge request changes.'),
+            action: payload =>
+              dispatch('getMergeRequestChanges', payload).then(() =>
+                dispatch('setErrorMessage', null),
+              ),
+            actionText: __('Please try again'),
+            actionPayload: { projectId, mergeRequestId, force },
+          });
           reject(new Error(`Merge Request Changes not loaded ${projectId}`));
         });
     } else {
@@ -73,7 +88,15 @@ export const getMergeRequestVersions = (
           resolve(data);
         })
         .catch(() => {
-          flash('Error loading merge request versions. Please try again.');
+          dispatch('setErrorMessage', {
+            text: __('An error occured whilst loading the merge request version data.'),
+            action: payload =>
+              dispatch('getMergeRequestVersions', payload).then(() =>
+                dispatch('setErrorMessage', null),
+              ),
+            actionText: __('Please try again'),
+            actionPayload: { projectId, mergeRequestId, force },
+          });
           reject(new Error(`Merge Request Versions not loaded ${projectId}`));
         });
     } else {
