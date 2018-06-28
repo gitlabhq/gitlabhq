@@ -66,13 +66,9 @@ export const getFileData = ({ state, commit, dispatch }, { path, makeFileActive 
     .getFileData(
       `${gon.relative_url_root ? gon.relative_url_root : ''}${file.url.replace('/-/', '/')}`,
     )
-    .then(res => {
-      const pageTitle = decodeURI(normalizeHeaders(res.headers)['PAGE-TITLE']);
-      setPageTitle(pageTitle);
+    .then(({ data, headers }) => {
+      setPageTitle(decodeURI(headers['page-title']));
 
-      return res.json();
-    })
-    .then(data => {
       commit(types.SET_FILE_DATA, { data, file });
       commit(types.TOGGLE_FILE_OPEN, path);
       if (makeFileActive) dispatch('setFileActive', path);

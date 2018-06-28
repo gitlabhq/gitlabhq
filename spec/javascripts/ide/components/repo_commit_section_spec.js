@@ -68,23 +68,6 @@ describe('RepoCommitSection', () => {
 
     vm.$mount();
 
-    spyOn(service, 'getTreeData').and.returnValue(
-      Promise.resolve({
-        headers: {
-          'page-title': 'test',
-        },
-        json: () =>
-          Promise.resolve({
-            last_commit_path: 'last_commit_path',
-            parent_tree_url: 'parent_tree_url',
-            path: '/',
-            trees: [{ name: 'tree' }],
-            blobs: [{ name: 'blob' }],
-            submodules: [{ name: 'submodule' }],
-          }),
-      }),
-    );
-
     Vue.nextTick(done);
   });
 
