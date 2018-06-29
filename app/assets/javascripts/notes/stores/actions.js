@@ -28,6 +28,9 @@ export const setInitialNotes = ({ commit }, discussions) =>
 
 export const setTargetNoteHash = ({ commit }, data) => commit(types.SET_TARGET_NOTE_HASH, data);
 
+export const setNotesFetchedState = ({ commit }, state) =>
+  commit(types.SET_NOTES_FETCHED_STATE, state);
+
 export const toggleDiscussion = ({ commit }, data) => commit(types.TOGGLE_DISCUSSION, data);
 
 export const fetchDiscussions = ({ commit }, path) =>

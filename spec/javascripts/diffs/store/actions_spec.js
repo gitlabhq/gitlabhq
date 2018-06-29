@@ -5,7 +5,6 @@ import {
   INLINE_DIFF_VIEW_TYPE,
   PARALLEL_DIFF_VIEW_TYPE,
 } from '~/diffs/constants';
-import store from '~/diffs/store';
 import * as actions from '~/diffs/store/actions';
 import * as types from '~/diffs/store/mutation_types';
 import axios from '~/lib/utils/axios_utils';
@@ -22,22 +21,6 @@ describe('DiffsStoreActions', () => {
         { endpoint, projectPath },
         { endpoint: '', projectPath: '' },
         [{ type: types.SET_BASE_CONFIG, payload: { endpoint, projectPath } }],
-        [],
-        done,
-      );
-    });
-  });
-
-  describe('setLoadingState', () => {
-    it('should set loading state', done => {
-      expect(store.state.diffs.isLoading).toEqual(true);
-      const loadingState = false;
-
-      testAction(
-        actions.setLoadingState,
-        loadingState,
-        {},
-        [{ type: types.SET_LOADING, payload: loadingState }],
         [],
         done,
       );
