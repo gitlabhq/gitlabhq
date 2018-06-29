@@ -1,5 +1,7 @@
 <script>
 import _ from 'underscore';
+import { s__ } from '~/locale';
+import Icon from '~/vue_shared/components/icon.vue';
 import Flash from '../../flash';
 import MonitoringService from '../services/monitoring_service';
 import GraphGroup from './graph_group.vue';
@@ -13,6 +15,7 @@ export default {
     Graph,
     GraphGroup,
     EmptyState,
+    Icon,
   },
   props: {
     hasMetrics: {
@@ -84,6 +87,10 @@ export default {
       type: String,
       required: true,
     },
+    currentEnvironmentName: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -127,18 +134,17 @@ export default {
         this.service
           .getDeploymentData()
           .then(data => this.store.storeDeploymentData(data))
-          .catch(() => new Flash('Error getting deployment information.')),
+          .catch(() => Flash(s__('Metrics|There was an error getting deployment information.'))),
         this.service
           .getEnvironmentsData()
           .then((data) => this.store.storeEnvironmentsData(data))
-          .catch(() => new Flash('Error getting environments information.')),
+          .catch(() => Flash(s__('Metrics|There was an error getting environments information.'))),
       ])
         .then(() => {
           if (this.store.groups.length < 1) {
             this.state = 'noData';
             return;
           }
-          // Populate the environments dropdown
           this.showEmptyState = false;
         })
         .catch(() => {
@@ -167,22 +173,36 @@ export default {
     v-if="!showEmptyState"
     class="prometheus-graphs prepend-top-10"
   >
-    <div class="environments">
-      Environment
+    <div class="environments d-flex align-items-center">
+      {{ s__('Metrics|Environment') }}
       <div class="dropdown prepend-left-10">
-        <!--Set up the actual data-->
         <button
           class="dropdown-menu-toggle"
           data-toggle="dropdown"
           type="button"
         >
-          Production
-          <i class="fa fa-chevron-down"></i>
+          <span>
+            {{ currentEnvironmentName }}
+          </span>
+          <icon
+            name="chevron-down"
+          />
         </button>
         <div class="dropdown-menu dropdown-menu-selectable dropdown-menu-drop-up">
-          <button class="dropdown-item">
-            Staging
-          </button>
+          <ul>
+            <li
+              v-for="environment in store.environmentsData"
+              :key="environment.latest.id"
+            >
+              <a
+                :href="environment.latest.metrics_path"
+                :class="{ 'is-active': environment.latest.name == currentEnvironmentName }"
+                class="dropdown-item"
+              >
+                {{ environment.latest.name }}
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
     </div>

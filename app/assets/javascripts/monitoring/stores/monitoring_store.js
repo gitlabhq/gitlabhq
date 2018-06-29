@@ -24,6 +24,7 @@ export default class MonitoringStore {
   constructor() {
     this.groups = [];
     this.deploymentData = [];
+    this.environmentsData = [];
   }
 
   storeMetrics(groups = []) {

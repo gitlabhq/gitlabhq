@@ -224,8 +224,18 @@
 
 .prometheus-graphs {
   .environments {
-    display: flex;
-    align-items: center;
+    .dropdown-menu-toggle {
+      svg {
+        position: absolute;
+        right: 5%;
+        top: 25%;
+      }
+    }
+
+    .dropdown-menu-toggle,
+    .dropdown-menu {
+      width: 240px;
+    }
   }
 }
 
