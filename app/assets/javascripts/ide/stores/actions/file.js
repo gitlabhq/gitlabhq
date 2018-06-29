@@ -1,4 +1,5 @@
 import { __ } from '../../../locale';
+import { normalizeHeaders } from '../../../lib/utils/common_utils';
 import eventHub from '../../eventhub';
 import service from '../../services';
 import * as types from '../mutation_types';
@@ -66,7 +67,8 @@ export const getFileData = ({ state, commit, dispatch }, { path, makeFileActive 
       `${gon.relative_url_root ? gon.relative_url_root : ''}${file.url.replace('/-/', '/')}`,
     )
     .then(({ data, headers }) => {
-      setPageTitle(decodeURI(headers['page-title']));
+      const normalizedHeaders = normalizeHeaders(headers);
+      setPageTitle(decodeURI(normalizedHeaders['PAGE-TITLE']));
 
       commit(types.SET_FILE_DATA, { data, file });
       commit(types.TOGGLE_FILE_OPEN, path);
