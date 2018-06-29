@@ -2,18 +2,10 @@ module Projects
   class UpdateService < BaseService
     include UpdateVisibilityLevel
 
+    UpdateError = Class.new(StandardError)
+
     def execute
-      unless valid_visibility_level_change?(project, params[:visibility_level])
-        return error('New visibility level not allowed!')
-      end
-
-      if renaming_project_with_container_registry_tags?
-        return error('Cannot rename project because it contains container registry tags!')
-      end
-
-      if changing_default_branch?
-        return error("Could not set the default branch") unless project.change_head(params[:default_branch])
-      end
+      pre_checks
 
       ensure_wiki_exists if enabling_wiki?
 
@@ -22,29 +14,15 @@ module Projects
       # If the block added errors, don't try to save the project
       return validation_failed! if project.errors.any?
 
-      if params[:path] && (params[:path] != project.path)
-        if project.repository_in_use?
-          return error("Repository currently in use and can not be moved. Try later")
-        end
-      end
-
       if project.update(params.except(:default_branch))
-        if project.previous_changes.include?('path')
-          if Gitlab::CurrentSettings.hashed_storage_enabled && (project.storage_version != Project::LATEST_STORAGE_VERSION)
-            project.migrate_to_hashed_storage_synchronously!
-          else
-            project.rename_repo
-          end
-        else
-          system_hook_service.execute_hooks_for(project, :update)
-        end
-
-        update_pages_config if changing_pages_https_only?
+        after_update
 
         success
       else
         validation_failed!
       end
+    rescue UpdateError => e
+      return error(e.message)
     end
 
     def run_auto_devops_pipeline?
@@ -54,6 +32,46 @@ module Projects
     end
 
     private
+
+    def pre_checks
+      unless valid_visibility_level_change?(project, params[:visibility_level])
+        raise UpdateError.new('New visibility level not allowed!')
+      end
+
+      if renaming_project_with_container_registry_tags?
+        raise UpdateError.new('Cannot rename project because it contains container registry tags!')
+      end
+
+      if changing_default_branch?
+        raise UpdateError.new("Could not set the default branch") unless project.change_head(params[:default_branch])
+      end
+
+      if path_updated? && project.repository_in_use?
+        raise UpdateError.new("Repository currently in use and can not be moved. Try later")
+      end
+    end
+
+    def after_update
+      if project.previous_changes.include?('path')
+        if migrate_to_hashed_storage?
+          project.migrate_to_hashed_storage_synchronously!
+        else
+          project.rename_repo
+        end
+      else
+        system_hook_service.execute_hooks_for(project, :update)
+      end
+
+      update_pages_config if changing_pages_https_only?
+    end
+
+    def migrate_to_hashed_storage?
+      Gitlab::CurrentSettings.hashed_storage_enabled && !project.latest_storage_version?
+    end
+
+    def path_updated?
+      params[:path] && (params[:path] != project.path)
+    end
 
     def validation_failed!
       model_errors = project.errors.full_messages.to_sentence

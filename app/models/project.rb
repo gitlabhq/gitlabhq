@@ -2037,6 +2037,10 @@ class Project < ActiveRecord::Base
     repo_reference_count > 0 || wiki_reference_count > 0
   end
 
+  def latest_storage_version?
+    storage_version == LATEST_STORAGE_VERSION
+  end
+
   private
 
   def storage
