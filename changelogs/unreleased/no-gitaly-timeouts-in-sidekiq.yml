@@ -1,0 +1,5 @@
+---
+title: Avoid Gitaly fail-fast timeouts from Sidekiq
+merge_request: !20261
+author:
+type: performance
