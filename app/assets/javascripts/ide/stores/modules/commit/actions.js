@@ -198,11 +198,18 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
       if (err.response.status === 400) {
         $('#ide-create-branch-modal').modal('show');
       } else {
-        let errMsg = __('Error committing changes. Please try again.');
-        if (err.response.data && err.response.data.message) {
-          errMsg += ` (${stripHtml(err.response.data.message)})`;
-        }
-        flash(errMsg, 'alert', document, null, false, true);
+        dispatch(
+          'setErrorMessage',
+          {
+            text: __('An error accured whilst committing your changes.'),
+            action: () =>
+              dispatch('commitChanges').then(() =>
+                dispatch('setErrorMessage', null, { root: true }),
+              ),
+            actionText: __('Please try again'),
+          },
+          { root: true },
+        );
         window.dispatchEvent(new Event('resize'));
       }
 
