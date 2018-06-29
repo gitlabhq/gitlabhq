@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-06-20 09:05+0200\n"
-"PO-Revision-Date: 2018-06-29 16:57\n"
+"PO-Revision-Date: 2018-06-29 17:11\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -5018,7 +5018,7 @@ msgid "Storage"
 msgstr "Stockage"
 
 msgid "Subgroups"
-msgstr "Sous-groupes"
+msgstr "Sous‐groupes"
 
 msgid "Subscribe"
 msgstr "S’abonner"
@@ -5030,30 +5030,30 @@ msgid "Subscribe at project level"
 msgstr "S’abonner au niveau du projet"
 
 msgid "Switch branch/tag"
-msgstr "Changer de branche / tag"
+msgstr "Changer de branche ou d’étiquette"
 
 msgid "Sync information"
 msgstr "Synchroniser les informations"
 
 msgid "System Hooks"
-msgstr "Crochets système"
+msgstr "« Hooks » système"
 
 msgid "System header and footer:"
-msgstr "En-tête et pied de page du système :"
+msgstr "En‐tête et pied de page du système :"
 
 msgid "System metrics (Custom)"
-msgstr "Métriques du système (Personnalisées)"
+msgstr "Métriques du système (personnalisées)"
 
 msgid "Tag (%{tag_count})"
 msgid_plural "Tags (%{tag_count})"
-msgstr[0] "Tag (%{tag_count})"
-msgstr[1] "Tags (%{tag_count})"
+msgstr[0] "Étiquette (%{tag_count})"
+msgstr[1] "Étiquettes (%{tag_count})"
 
 msgid "Tags"
-msgstr "Tags"
+msgstr "Étiquettes"
 
 msgid "Tags:"
-msgstr "Tags :"
+msgstr "Étiquettes :"
 
 msgid "TagsPage|Browse commits"
 msgstr "Parcourir les commits"
@@ -5062,37 +5062,37 @@ msgid "TagsPage|Browse files"
 msgstr "Parcourir les fichiers"
 
 msgid "TagsPage|Can't find HEAD commit for this tag"
-msgstr "Impossible de trouver le commit HEAD pour ce tag"
+msgstr "Impossible de trouver le commit HEAD pour cette étiquette"
 
 msgid "TagsPage|Cancel"
 msgstr "Annuler"
 
 msgid "TagsPage|Create tag"
-msgstr "Créer le tag"
+msgstr "Créer l’étiquette"
 
 msgid "TagsPage|Delete tag"
-msgstr "Supprimer le tag"
+msgstr "Supprimer l’étiquette"
 
 msgid "TagsPage|Deleting the %{tag_name} tag cannot be undone. Are you sure?"
-msgstr "La suppression du tag %{tag_name} ne peut être annulée. Êtes-vous sûr•e ?"
+msgstr "La suppression de l’étiquette %{tag_name} ne peut être annulée. Êtes‐vous sûr·e ?"
 
 msgid "TagsPage|Edit release notes"
 msgstr "Modifier les notes de version"
 
 msgid "TagsPage|Existing branch name, tag, or commit SHA"
-msgstr "Nom de branche, tag, ou SHA de commit existant"
+msgstr "Nom de branche, d’étiquette ou SHA de commit existant"
 
 msgid "TagsPage|Filter by tag name"
-msgstr "Filtrer par nom de tag"
+msgstr "Filtrer par nom d’étiquette"
 
 msgid "TagsPage|New Tag"
-msgstr "Nouveau tag"
+msgstr "Nouvelle étiquette"
 
 msgid "TagsPage|New tag"
-msgstr "Nouveau tag"
+msgstr "Nouvelle étiquette"
 
 msgid "TagsPage|Optionally, add a message to the tag."
-msgstr "Éventuellement, ajoutez un message au tag."
+msgstr "Éventuellement, ajoutez un message à l’étiquette."
 
 msgid "TagsPage|Optionally, add release notes to the tag. They will be stored in the GitLab database and displayed on the tags page."
 msgstr "Éventuellement, ajouter des notes de version pour le tag. Elles seront stockées dans la base de données de GitLab et affichées sur la page des tags."
