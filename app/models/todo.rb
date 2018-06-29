@@ -83,7 +83,7 @@ class Todo < ActiveRecord::Base
   end
 
   def parent
-    project || group
+    project
   end
 
   def unmergeable?
