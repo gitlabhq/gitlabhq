@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-06-29 16:17+1000\n"
-"PO-Revision-Date: 2018-06-29 19:32\n"
+"PO-Revision-Date: 2018-06-29 20:11\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -683,7 +683,7 @@ msgid "Begin with the selected commit"
 msgstr "Почати із виділеного коміту"
 
 msgid "Boards"
-msgstr ""
+msgstr "Дошки"
 
 msgid "Branch %{branchName} was not found in this project's repository."
 msgstr ""
@@ -1700,7 +1700,7 @@ msgid "Create branch"
 msgstr "Створити гілку"
 
 msgid "Create commit"
-msgstr ""
+msgstr "Створити коміт"
 
 msgid "Create directory"
 msgstr "Створити каталог"
@@ -1820,7 +1820,7 @@ msgid "Delete"
 msgstr "Видалити"
 
 msgid "Delete list"
-msgstr ""
+msgstr "Видалити список"
 
 msgid "Deploy"
 msgid_plural "Deploys"
@@ -2037,7 +2037,7 @@ msgid "Edit"
 msgstr "Редагувати"
 
 msgid "Edit Label"
-msgstr ""
+msgstr "Редагувати мітку"
 
 msgid "Edit Pipeline Schedule %{id}"
 msgstr "Редагувати Розклад Конвеєра %{id}"
@@ -2528,7 +2528,7 @@ msgid "I accept the|Terms of Service and Privacy Policy"
 msgstr "Я погоджуюсь з Правилами користування сервісом і політикою конфіденційності"
 
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 msgid "IDE|Commit"
 msgstr "Коміт"
@@ -2546,7 +2546,7 @@ msgid "IDE|Review"
 msgstr "Огляд"
 
 msgid "Identifier"
-msgstr ""
+msgstr "Ідентифікатор"
 
 msgid "Identities"
 msgstr ""
@@ -2684,7 +2684,7 @@ msgid "Kubernetes service integration has been deprecated. %{deprecated_message_
 msgstr "Спосіб Інтеграції Kubernetes як сервіса застарів. %{deprecated_message_content} ваші Kubernetes-кластери за допомогою нової сторінки <a href=\"%{url}\"/>Кластери Kubernetes</a>"
 
 msgid "LFS"
-msgstr ""
+msgstr "LFS"
 
 msgid "LFSStatus|Disabled"
 msgstr "Вимкнено"
@@ -3866,7 +3866,7 @@ msgid "SSH Keys"
 msgstr "Ключі SSH"
 
 msgid "Save"
-msgstr ""
+msgstr "Зберегти"
 
 msgid "Save changes"
 msgstr "Зберегти зміни"
@@ -4906,7 +4906,7 @@ msgid "User and IP Rate Limits"
 msgstr "Ліміти частоти для користувачів та IP"
 
 msgid "Users"
-msgstr ""
+msgstr "Користувачі"
 
 msgid "Variables"
 msgstr "Змінні"
@@ -5303,7 +5303,7 @@ msgid "importing"
 msgstr "імпорт"
 
 msgid "latest version"
-msgstr ""
+msgstr "остання версія"
 
 msgid "merge request"
 msgid_plural "merge requests"
