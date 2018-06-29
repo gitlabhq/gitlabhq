@@ -109,6 +109,7 @@ export default {
             :key="i"
           >
             <job-component
+              :dropdown-length="job.size"
               :job="item"
               css-class-job-name="mini-pipeline-graph-dropdown-item"
               @pipelineActionRequestComplete="pipelineActionRequestComplete"
