@@ -14,7 +14,7 @@
       "properties": {
         "group": { "type": ["object", null] },
         "name": { "type": "string" },
-        "weight": { "type": ["string", "null"] },
+        "weight": { "type": ["integer", "null"] },
         "assignee": {
           "type": ["object", "null"]
         },
