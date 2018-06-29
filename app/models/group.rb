@@ -87,8 +87,7 @@ class Group < Namespace
     def public_or_visible_to_user(user)
       where('id IN (?) OR namespaces.visibility_level IN (?)',
         user.authorized_groups.select(:id),
-        Gitlab::VisibilityLevel.levels_for_user(user)
-      )
+        Gitlab::VisibilityLevel.levels_for_user(user))
     end
 
     def select_for_project_authorization
