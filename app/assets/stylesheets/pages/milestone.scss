@@ -38,6 +38,11 @@
       font-size: $tooltip-font-size;
       margin-top: 0;
       margin-right: $gl-padding-4;
+
+      @include media-breakpoint-down(xs) {
+        line-height: unset;
+        padding: $gl-padding-4 $gl-input-padding;
+      }
     }
   }
 }
