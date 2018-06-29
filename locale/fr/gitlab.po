@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-06-20 09:05+0200\n"
-"PO-Revision-Date: 2018-06-29 17:17\n"
+"PO-Revision-Date: 2018-06-29 17:31\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -5143,7 +5143,7 @@ msgid "Thanks! Don't show me this again"
 msgstr "Merci ! Ne plus afficher ce message"
 
 msgid "The Advanced Global Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
-msgstr "La Recherche Globale Avancée de Gitlab est un outils puissant qui vous fait gagner du temps. Au lieu de créer du code similaire et perdre du temps, vous pouvez maintenant chercher dans le code d'autres équipes pour vous aider sur votre projet."
+msgstr "La recherche globale avancée de Gitlab est un outil puissant qui vous fait gagner du temps. Au lieu de créer un code similaire et perdre du temps, vous pouvez maintenant chercher dans le code d’autres équipes pour vous aider sur votre projet."
 
 msgid "The Issue Tracker is the place to add things that need to be improved or solved in a project"
 msgstr "Le suivi des tickets est l’endroit où ajouter des éléments à améliorer ou à résoudre dans un projet"
@@ -5152,13 +5152,13 @@ msgid "The Issue Tracker is the place to add things that need to be improved or 
 msgstr "Le suivi des tickets est l’endroit où ajouter des éléments à améliorer ou à résoudre dans un projet. Vous pouvez vous inscrire ou vous connecter pour créer des tickets pour ce projet."
 
 msgid "The X509 Certificate to use when mutual TLS is required to communicate with the external authorization service. If left blank, the server certificate is still validated when accessing over HTTPS."
-msgstr "Le certificat X509 à utiliser lorsque le protocole TLS est requis pour communiquer avec le service d’autorisation externe. Si ce champ est vide, le certificat du serveur est utilisé lors de l’accès via HTTPS."
+msgstr "Le certificat X.509 à utiliser lorsque le protocole TLS est requis pour communiquer avec le service d’autorisation externe. Si ce champ est vide, le certificat du serveur est utilisé lors de l’accès via HTTPS."
 
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
 msgstr "L’étape de développement montre le temps entre le premier commit et la création de la demande de fusion. Les données seront automatiquement ajoutées ici une fois que vous aurez créé votre première demande de fusion."
 
 msgid "The collection of events added to the data gathered for that stage."
-msgstr "L’ensemble d’évènements ajoutés aux données récupérées pour cette étape."
+msgstr "L’ensemble d’événements ajoutés aux données recueillies pour cette étape."
 
 msgid "The connection will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
 msgstr "La connexion expirera après %{timeout}. Pour les dépôts qui prennent plus de temps, utilisez une combinaison cloner / pousser."
@@ -5170,7 +5170,7 @@ msgid "The import will time out after %{timeout}. For repositories that take lon
 msgstr "L’importation expirera après %{timeout}. Pour les dépôts qui prennent plus de temps, utilisez une combinaison clone / push."
 
 msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
-msgstr "L’étape des tickets montre le temps nécessaire entre la création d’un ticket et son assignation à un jalon, ou son ajout à une liste d’un tableau de tickets. Commencez par créer des tickets pour voir des données pour cette étape."
+msgstr "L’étape des tickets montre le temps nécessaire entre la création d’un ticket et son assignation à un jalon ou son ajout à une liste d’un tableau de tickets. Commencez par créer des tickets pour voir des données de cette étape."
 
 msgid "The maximum file size allowed is 200KB."
 msgstr "La taille de fichier maximale autorisée est de 200 Ko."
