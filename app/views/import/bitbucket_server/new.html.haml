@@ -1,0 +1,19 @@
+- title = _('Bitbucket Server import')
+- page_title title
+- breadcrumb_title title
+- header_title "Projects", root_path
+
+%h3.page-title
+  = icon 'bitbucket', text: _('Import repositories from Bitbucket Server')
+
+%p
+  = _('Enter in your Bitbucket Server URL and personal access token below')
+
+= form_tag configure_import_bitbucket_server_path, method: :post, class: 'form-inline' do
+  .form-group
+    = text_field_tag :bitbucket_server_url, '', class: 'form-control append-right-8', placeholder: _('https://bitbucket-server'), size: 40
+
+    = text_field_tag :bitbucket_username, '', class: 'form-control append-right-8', placeholder: _('username'), size: 40
+
+    = text_field_tag :personal_access_token, '', class: 'form-control append-right-8', placeholder: _('Personal Access Token'), size: 40
+    = submit_tag _('List your Bitbucket Server repositories'), class: 'btn btn-success'
