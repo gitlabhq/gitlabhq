@@ -1,0 +1,15 @@
+- type = local_assigns.fetch(:type)
+- return unless type == :issues || type == :boards || type == :boards_modal
+
+#js-dropdown-weight.filtered-search-input-dropdown-menu.dropdown-menu
+  %ul{ 'data-dropdown' => true }
+    %li.filter-dropdown-item{ 'data-value' => 'None' }
+      %button.btn.btn-link
+        None
+    %li.filter-dropdown-item{ 'data-value' => 'Any' }
+      %button.btn.btn-link
+        Any
+    %li.divider.droplab-item-ignore
+  %ul.filter-dropdown{ data: { dropdown: true, dynamic: true } }
+    %li.filter-dropdown-item{ data: { value: '{{id}}' } }
+      %button.btn.btn-link {{title}}
