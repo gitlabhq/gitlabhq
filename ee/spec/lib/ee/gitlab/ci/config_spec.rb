@@ -12,7 +12,10 @@ describe EE::Gitlab::Ci::Config do
     image: ruby:2.2
     HEREDOC
   end
-  let(:config) { ::Gitlab::Ci::Config.new(gitlab_ci_yml, { project: project, sha: '12345' }) }
+
+  let(:config) do
+    ::Gitlab::Ci::Config.new(gitlab_ci_yml, project: project, sha: '12345')
+  end
 
   context 'when the project does not have a valid license' do
     before do
@@ -87,6 +90,24 @@ describe EE::Gitlab::Ci::Config do
           ::Gitlab::Ci::YamlProcessor::ValidationError,
           "Local file 'invalid' is not valid."
         )
+      end
+    end
+
+    describe 'external file version' do
+      context 'when external file SHA is defined' do
+        it 'is using a defined value' do
+          expect(project.repository).to receive(:find_commit).with('eeff1122')
+
+          config.new(gitlab_ci_yml, project: project, sha: 'eeff1122')
+        end
+      end
+
+      context 'when external file SHA is not defined' do
+        it 'is using latest SHA on the default branch' do
+          expect(project.repository).to receive(:root_ref_sha)
+
+          config.new(gitlab_ci_yml, project: project)
+        end
       end
     end
 
