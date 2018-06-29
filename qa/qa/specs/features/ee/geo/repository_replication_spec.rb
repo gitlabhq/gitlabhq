@@ -30,17 +30,17 @@ module QA
 
           Page::Menu::Main.perform do |menu|
             menu.go_to_projects
-
-            expect(page).to have_content(geo_project_name)
           end
 
-          sleep 10 # wait for repository replication
-
           Page::Dashboard::Projects.perform do |dashboard|
+            dashboard.wait_for_project_replication(geo_project_name)
+
             dashboard.go_to_project(geo_project_name)
           end
 
-          Page::Project::Show.perform do
+          Page::Project::Show.perform do |show|
+            show.wait_for_repository_replication
+
             expect(page).to have_content 'README.md'
             expect(page).to have_content 'This is Geo project!'
           end

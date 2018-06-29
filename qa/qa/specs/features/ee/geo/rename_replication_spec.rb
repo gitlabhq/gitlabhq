@@ -36,8 +36,6 @@ module QA
           end
         end
 
-        sleep 2 # wait for replication
-
         # check renamed project exist on secondary node
         Runtime::Browser.visit(:geo_secondary, QA::Page::Main::Login) do
           Page::Main::OAuth.act do
@@ -50,15 +48,17 @@ module QA
 
           Page::Menu::Main.perform do |menu|
             menu.go_to_projects
-
-            expect(page).to have_content(geo_project_renamed)
           end
 
           Page::Dashboard::Projects.perform do |dashboard|
+            dashboard.wait_for_project_replication(geo_project_renamed)
+
             dashboard.go_to_project(geo_project_renamed)
           end
 
-          Page::Project::Show.perform do
+          Page::Project::Show.perform do |show|
+            show.wait_for_repository_replication
+
             expect(page).to have_content 'README.md'
             expect(page).to have_content 'This is Geo project!'
           end
