@@ -110,7 +110,7 @@ describe('IDE store project actions', () => {
             type: 'setErrorMessage',
             payload: {
               text: "Branch <strong>master</strong> was not found in this project's repository.",
-              action: 'createNewBranchFromDefault',
+              action: jasmine.any(Function),
               actionText: 'Create branch',
               actionPayload: 'master',
             },
