@@ -1,14 +1,17 @@
 require 'spec_helper'
 
 describe ProjectCacheWorker do
+  include ExclusiveLeaseHelpers
+
   let(:worker) { described_class.new }
   let(:project) { create(:project, :repository) }
   let(:statistics) { project.statistics }
+  let(:lease_key) { "project_cache_worker:#{project.id}:update_statistics" }
+  let(:lease_timeout) { ProjectCacheWorker::LEASE_TIMEOUT }
 
   describe '#perform' do
     before do
-      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain)
-        .and_return(true)
+      stub_exclusive_lease(lease_key, timeout: lease_timeout)
     end
 
     context 'with a non-existing project' do
@@ -63,9 +66,7 @@ describe ProjectCacheWorker do
   describe '#update_statistics' do
     context 'when a lease could not be obtained' do
       it 'does not update the repository size' do
-        allow(worker).to receive(:try_obtain_lease_for)
-          .with(project.id, :update_statistics)
-          .and_return(false)
+        stub_exclusive_lease_taken(lease_key, timeout: lease_timeout)
 
         expect(statistics).not_to receive(:refresh!)
 
@@ -75,9 +76,7 @@ describe ProjectCacheWorker do
 
     context 'when a lease could be obtained' do
       it 'updates the project statistics' do
-        allow(worker).to receive(:try_obtain_lease_for)
-          .with(project.id, :update_statistics)
-          .and_return(true)
+        stub_exclusive_lease(lease_key, timeout: lease_timeout)
 
         expect(statistics).to receive(:refresh!)
           .with(only: %i(repository_size))
