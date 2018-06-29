@@ -413,10 +413,14 @@ module Gitlab
     end
 
     def self.fast_timeout
+      return 0 if Sidekiq.server?
+
       timeout(:gitaly_timeout_fast)
     end
 
     def self.medium_timeout
+      return 0 if Sidekiq.server?
+
       timeout(:gitaly_timeout_medium)
     end
 
