@@ -23,27 +23,25 @@ RSpec.configure do |config|
     DatabaseCleaner.clean_with(:deletion, cache_tables: false)
   end
 
-  config.before(:each) do
-    DatabaseCleaner.strategy = :transaction
-  end
-
-  config.before(:each, :js) do
-    DatabaseCleaner.strategy = :deletion, { cache_tables: false }
-  end
+  # config.before(:each) do
+  #   DatabaseCleaner.strategy = :transaction
+  # end
 
   config.before(:each, :delete) do
     DatabaseCleaner.strategy = :deletion, { cache_tables: false }
+    DatabaseCleaner.start
+  end
+
+  config.after(:each, :delete) do
+    DatabaseCleaner.clean
   end
 
   config.before(:each, :migration) do
     DatabaseCleaner.strategy = :deletion, { cache_tables: false }
-  end
-
-  config.before(:each) do
     DatabaseCleaner.start
   end
 
-  config.append_after(:each) do
+  config.after(:each, :migration) do
     DatabaseCleaner.clean
   end
 end

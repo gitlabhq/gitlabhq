@@ -9,6 +9,7 @@ require 'rspec/rails'
 require 'shoulda/matchers'
 require 'rspec/retry'
 require 'rspec-parameterized'
+require 'test_prof/recipes/active_record_shared_connection'
 
 rspec_profiling_is_configured =
   ENV['RSPEC_PROFILING_POSTGRES_URL'].present? ||
@@ -39,7 +40,7 @@ Dir[Rails.root.join("spec/support/shared_examples/*.rb")].each { |f| require f }
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
 RSpec.configure do |config|
-  config.use_transactional_fixtures = false
+  config.use_transactional_fixtures = true
   config.use_instantiated_fixtures  = false
 
   config.verbose_retry = true

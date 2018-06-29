@@ -385,7 +385,7 @@ group :test do
   gem 'test_after_commit', '~> 1.1' unless rails5? # Remove this gem when migrated to rails 5.0. It's been integrated to rails 5.0.
   gem 'sham_rack', '~> 1.3.6'
   gem 'concurrent-ruby', '~> 1.0.5'
-  gem 'test-prof', '~> 0.2.5'
+  gem 'test-prof', '~> 0.6.0'
 end
 
 gem 'octokit', '~> 4.9'
