@@ -1,7 +1,6 @@
 import Visibility from 'visibilityjs';
 import axios from 'axios';
 import { __ } from '../../../../locale';
-import flash from '../../../../flash';
 import Poll from '../../../../lib/utils/poll';
 import service from '../../../services';
 import { rightSidebarViews } from '../../../constants';
@@ -85,8 +84,10 @@ export const receiveJobsError = ({ commit, dispatch }, stage) => {
     'setErrorMessage',
     {
       text: __('An error occured whilst loading the pipelines jobs.'),
-      action: stage =>
-        dispatch('fetchJobs', stage).then(() => dispatch('setErrorMessage', null, { root: true })),
+      action: payload =>
+        dispatch('fetchJobs', payload).then(() =>
+          dispatch('setErrorMessage', null, { root: true }),
+        ),
       actionText: __('Please try again'),
       actionPayload: stage,
     },

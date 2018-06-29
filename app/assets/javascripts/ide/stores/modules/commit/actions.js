@@ -1,7 +1,6 @@
 import $ from 'jquery';
 import { sprintf, __ } from '~/locale';
 import flash from '~/flash';
-import { stripHtml } from '~/lib/utils/text_utility';
 import * as rootTypes from '../../mutation_types';
 import { createCommitPayload, createNewMergeRequestUrl } from '../../utils';
 import router from '../../../ide_router';
