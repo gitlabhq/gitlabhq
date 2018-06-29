@@ -99,11 +99,11 @@ class Repository
     "#<#{self.class.name}:#{@disk_path}>"
   end
 
-  def commit(ref = 'HEAD')
+  def commit(ref = nil)
     return nil unless exists?
     return ref if ref.is_a?(::Commit)
 
-    find_commit(ref)
+    find_commit(ref || root_ref)
   end
 
   # Finding a commit by the passed SHA
