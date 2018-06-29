@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Geo::RepositoryVerifySecondaryService, :geo do
+describe Geo::RepositoryVerificationSecondaryService, :geo do
   include ::EE::GeoHelpers
 
   let(:secondary) { create(:geo_node) }

@@ -1,5 +1,5 @@
 module Geo
-  class RepositoryVerifySecondaryService
+  class RepositoryVerificationSecondaryService
     include Gitlab::Geo::ProjectLogHelpers
 
     def initialize(registry, type)
