@@ -15,6 +15,7 @@ describe('Getters Notes Store', () => {
       discussions: [individualNote],
       targetNoteHash: 'hash',
       lastFetchedAt: 'timestamp',
+      isNotesFetched: false,
 
       notesData: notesDataMock,
       userData: userDataMock,
@@ -82,6 +83,12 @@ describe('Getters Notes Store', () => {
   describe('openState', () => {
     it('should return the issue state', () => {
       expect(getters.openState(state)).toEqual(noteableDataMock.state);
+    });
+  });
+
+  describe('isNotesFetched', () => {
+    it('should return the state for the fetching notes', () => {
+      expect(getters.isNotesFetched(state)).toBeFalsy();
     });
   });
 });

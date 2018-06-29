@@ -291,4 +291,17 @@ describe('Actions Notes Store', () => {
         .catch(done.fail);
     });
   });
+
+  describe('setNotesFetchedState', () => {
+    it('should set notes fetched state', done => {
+      testAction(
+        actions.setNotesFetchedState,
+        true,
+        {},
+        [{ type: 'SET_NOTES_FETCHED_STATE', payload: true }],
+        [],
+        done,
+      );
+    });
+  });
 });

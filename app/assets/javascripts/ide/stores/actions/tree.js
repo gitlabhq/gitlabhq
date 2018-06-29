@@ -1,9 +1,6 @@
-import { normalizeHeaders } from '~/lib/utils/common_utils';
-import flash from '~/flash';
 import { __ } from '../../../locale';
 import service from '../../services';
 import * as types from '../mutation_types';
-import { findEntry } from '../utils';
 import FilesDecoratorWorker from '../workers/files_decorator_worker';
 
 export const toggleTreeOpen = ({ commit }, path) => {
@@ -35,32 +32,6 @@ export const handleTreeEntryAction = ({ commit, dispatch }, row) => {
   }
 
   dispatch('showTreeEntry', row.path);
-};
-
-export const getLastCommitData = ({ state, commit, dispatch }, tree = state) => {
-  if (!tree || tree.lastCommitPath === null || !tree.lastCommitPath) return;
-
-  service
-    .getTreeLastCommit(tree.lastCommitPath)
-    .then(res => {
-      const lastCommitPath = normalizeHeaders(res.headers)['MORE-LOGS-URL'] || null;
-
-      commit(types.SET_LAST_COMMIT_URL, { tree, url: lastCommitPath });
-
-      return res.json();
-    })
-    .then(data => {
-      data.forEach(lastCommit => {
-        const entry = findEntry(tree.tree, lastCommit.type, lastCommit.file_name);
-
-        if (entry) {
-          commit(types.SET_LAST_COMMIT_DATA, { entry, lastCommit });
-        }
-      });
-
-      dispatch('getLastCommitData', tree);
-    })
-    .catch(() => flash('Error fetching log data.', 'alert', document, null, false, true));
 };
 
 export const getFiles = ({ state, commit, dispatch }, { projectId, branchId } = {}) =>
@@ -106,14 +77,13 @@ export const getFiles = ({ state, commit, dispatch }, { projectId, branchId } = 
           if (e.response.status === 404) {
             dispatch('showBranchNotFoundError', branchId);
           } else {
-            flash(
-              __('Error loading tree data. Please try again.'),
-              'alert',
-              document,
-              null,
-              false,
-              true,
-            );
+            dispatch('setErrorMessage', {
+              text: __('An error occured whilst loading all the files.'),
+              action: payload =>
+                dispatch('getFiles', payload).then(() => dispatch('setErrorMessage', null)),
+              actionText: __('Please try again'),
+              actionPayload: { projectId, branchId },
+            });
           }
           reject(e);
         });
