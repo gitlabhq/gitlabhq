@@ -277,16 +277,6 @@ describe Projects::EnvironmentsController do
     end
   end
 
-  describe 'GET #empty' do
-    it 'responds with HTML' do
-      get :empty, namespace_id: project.namespace,
-                  project_id: project
-
-      expect(response).to be_ok
-      expect(response).to render_template 'empty'
-    end
-  end
-
   describe 'GET #metrics_redirect' do
     let(:project) { create(:project) }
 
@@ -301,7 +291,8 @@ describe Projects::EnvironmentsController do
     it 'redirects to empty page if no environment exists' do
       get :metrics_redirect, environment_params
 
-      expect(response).to redirect_to(empty_project_environments_path(project))
+      expect(response).to be_ok
+      expect(response).to render_template 'empty'
     end
   end
 

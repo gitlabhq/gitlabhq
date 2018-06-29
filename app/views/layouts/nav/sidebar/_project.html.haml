@@ -210,7 +210,7 @@
             %li.divider.fly-out-top-item
 
             - if project_nav_tab? :environments
-              = nav_link(controller: :environments, action: [:metrics, :empty]) do
+              = nav_link(controller: :environments, action: [:metrics, :metrics_redirect]) do
                 = link_to metrics_project_environments_path(@project), title: 'Metrics', class: 'shortcuts-metrics' do
                   %span
                     = _('Metrics')

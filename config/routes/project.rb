@@ -236,7 +236,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         collection do
           get :metrics, action: :metrics_redirect
-          get :empty
           get :folder, path: 'folders/*id', constraints: { format: /(html|json)/ }
         end
 
