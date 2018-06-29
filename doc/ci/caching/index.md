@@ -87,7 +87,7 @@ you can use the same key for all of them:
 
 ```yaml
 cache:
-  key: one-key-to-rull-them-all
+  key: one-key-to-rule-them-all
 ```
 
 To share the same cache between branches, but separate them by job:
