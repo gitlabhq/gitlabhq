@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Geo::RepositoryVerification::Secondary::SingleWorker, :postgresql, :clean_gitlab_redis_cache do
   include ::EE::GeoHelpers
+  include ExclusiveLeaseHelpers
 
   let!(:secondary) { create(:geo_node) }
   let(:project)    { create(:project, :repository, :wiki_repo) }
@@ -9,13 +10,10 @@ describe Geo::RepositoryVerification::Secondary::SingleWorker, :postgresql, :cle
 
   before do
     stub_current_geo_node(secondary)
+    stub_exclusive_lease
   end
 
   describe '#perform' do
-    before do
-      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { true }
-    end
-
     it 'does not calculate the checksum when not running on a secondary' do
       allow(Gitlab::Geo).to receive(:secondary?) { false }
 

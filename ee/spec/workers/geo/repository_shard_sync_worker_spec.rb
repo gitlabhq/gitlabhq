@@ -4,6 +4,7 @@ require 'spec_helper'
 # can't see changes inside a transaction of a different connection.
 describe Geo::RepositoryShardSyncWorker, :geo, :delete, :clean_gitlab_redis_cache do
   include ::EE::GeoHelpers
+  include ExclusiveLeaseHelpers
 
   let!(:primary) { create(:geo_node, :primary) }
   let!(:secondary) { create(:geo_node) }
@@ -25,8 +26,7 @@ describe Geo::RepositoryShardSyncWorker, :geo, :delete, :clean_gitlab_redis_cach
     end
 
     before do
-      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { true }
-      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:renew) { true }
+      stub_exclusive_lease(renew: true)
 
       Gitlab::ShardHealthCache.update([shard_name])
     end
@@ -48,6 +48,7 @@ describe Geo::RepositoryShardSyncWorker, :geo, :delete, :clean_gitlab_redis_cach
 
     it 'does not perform Geo::ProjectSyncWorker when shard becomes unhealthy' do
       Gitlab::ShardHealthCache.update([])
+
       expect(Geo::ProjectSyncWorker).not_to receive(:perform_async)
 
       subject.perform(shard_name)

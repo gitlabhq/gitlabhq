@@ -2,10 +2,12 @@ require 'spec_helper'
 
 describe Geo::RepositoriesCleanUpWorker do
   describe '#perform' do
+    include ExclusiveLeaseHelpers
+
     let(:geo_node) { create(:geo_node) }
 
     before do
-      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { true }
+      stub_exclusive_lease
     end
 
     context 'when node has namespace restrictions' do
@@ -68,7 +70,7 @@ describe Geo::RepositoriesCleanUpWorker do
     end
 
     it 'does not perform GeoRepositoryDestroyWorker when cannnot obtain a lease' do
-      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { false }
+      stub_exclusive_lease_taken
 
       expect(GeoRepositoryDestroyWorker).not_to receive(:perform_async)
 

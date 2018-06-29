@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Geo::RepositoryVerification::Primary::SingleWorker, :postgresql, :clean_gitlab_redis_cache do
   include ::EE::GeoHelpers
+  include ExclusiveLeaseHelpers
 
   set(:project) { create(:project) }
 
@@ -11,13 +12,10 @@ describe Geo::RepositoryVerification::Primary::SingleWorker, :postgresql, :clean
 
   before do
     stub_current_geo_node(primary)
+    stub_exclusive_lease
   end
 
   describe '#perform' do
-    before do
-      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { true }
-    end
-
     it 'does not calculate the checksum when not running on a primary' do
       stub_project_repository(project, repository)
       stub_wiki_repository(project.wiki, wiki)
