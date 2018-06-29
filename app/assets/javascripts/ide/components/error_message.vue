@@ -24,8 +24,8 @@ export default {
 
       this.isLoading = true;
 
-      this.$store
-        .dispatch(this.message.action, this.message.actionPayload)
+      this.message
+        .action(this.message.actionPayload)
         .then(() => {
           this.isLoading = false;
         })

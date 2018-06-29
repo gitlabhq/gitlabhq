@@ -290,6 +290,7 @@
   }
 }
 
+<<<<<<< HEAD
 .saml-settings.info-well {
   .form-control[readonly] {
     background: $white-light;
@@ -303,15 +304,11 @@
   }
 }
 
+=======
+>>>>>>> upstream/master
 .modal-doorkeepr-auth {
   .modal-body {
     padding: $gl-padding;
-  }
-}
-
-.doorkeeper-app-form {
-  .scope-description {
-    margin: 0 0 5px 17px;
   }
 }
 

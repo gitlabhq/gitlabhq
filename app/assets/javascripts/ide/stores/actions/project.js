@@ -104,7 +104,7 @@ export const createNewBranchFromDefault = ({ state, dispatch, getters }, branch)
     .catch(() => {
       dispatch('setErrorMessage', {
         text: __('An error occured creating the new branch.'),
-        action: 'createNewBranchFromDefault',
+        action: payload => dispatch('createNewBranchFromDefault', payload),
         actionText: __('Please try again'),
         actionPayload: branch,
       });
@@ -119,7 +119,7 @@ export const showBranchNotFoundError = ({ dispatch }, branchId) => {
       },
       false,
     ),
-    action: 'createNewBranchFromDefault',
+    action: payload => dispatch('createNewBranchFromDefault', payload),
     actionText: __('Create branch'),
     actionPayload: branchId,
   });

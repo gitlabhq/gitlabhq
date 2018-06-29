@@ -534,11 +534,18 @@ describe Discussion, ResolvableDiscussion do
 
   describe "#last_resolved_note" do
     let(:current_user) { create(:user) }
+    let(:time) { Time.now.utc }
 
     before do
-      first_note.resolve!(current_user)
-      third_note.resolve!(current_user)
-      second_note.resolve!(current_user)
+      Timecop.freeze(time - 1.second) do
+        first_note.resolve!(current_user)
+      end
+      Timecop.freeze(time) do
+        third_note.resolve!(current_user)
+      end
+      Timecop.freeze(time + 1.second) do
+        second_note.resolve!(current_user)
+      end
     end
 
     it "returns the last note that was resolved" do
