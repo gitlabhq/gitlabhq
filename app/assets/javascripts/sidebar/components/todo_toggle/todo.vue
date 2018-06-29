@@ -54,7 +54,7 @@ export default {
       return this.isTodo ? 'todo-undone' : '';
     },
     collapsedButtonIcon() {
-      return this.isTodo ? 'check-circle' : 'plus-square';
+      return this.isTodo ? 'todo-done' : 'todo-add';
     },
   },
   methods: {
