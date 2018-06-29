@@ -1,4 +1,5 @@
 class Projects::TodosController < Projects::ApplicationController
+  include Gitlab::Utils::StrongMemoize
   include TodosActions
 
   before_action :authenticate_user!, only: [:create]

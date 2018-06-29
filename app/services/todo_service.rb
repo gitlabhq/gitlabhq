@@ -305,7 +305,6 @@ class TodoService
   def attributes_for_target(target)
     attributes = {
       project_id: target&.project&.id,
-      group_id: target.respond_to?(:group) ? target.group_id : nil,
       target_id: target.id,
       target_type: target.class.name,
       commit_id: nil

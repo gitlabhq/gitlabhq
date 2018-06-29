@@ -1,4 +1,5 @@
 class Todo < ActiveRecord::Base
+  prepend EE::Todo
   include Sortable
 
   ASSIGNED           = 1
@@ -83,7 +84,7 @@ class Todo < ActiveRecord::Base
   end
 
   def parent
-    project || group
+    project
   end
 
   def unmergeable?

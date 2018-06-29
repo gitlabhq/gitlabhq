@@ -1,5 +1,4 @@
 module TodosActions
-  include Gitlab::Utils::StrongMemoize
   extend ActiveSupport::Concern
 
   def create
