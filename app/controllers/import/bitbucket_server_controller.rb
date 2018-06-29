@@ -60,8 +60,8 @@ class Import::BitbucketServerController < Import::BaseController
 
   def bitbucket_auth
     unless session[bitbucket_server_url_key].present? &&
-           session[bitbucket_server_username_key].present? &&
-           session[personal_access_token_key].present?
+        session[bitbucket_server_username_key].present? &&
+        session[personal_access_token_key].present?
       redirect_to new_import_bitbucket_server_path
     end
   end

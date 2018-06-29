@@ -35,7 +35,7 @@ module BitbucketServer
       end
 
       def added?
-        line_type  == 'ADDED'
+        line_type == 'ADDED'
       end
 
       def removed?
@@ -67,17 +67,16 @@ module BitbucketServer
       end
 
       def line_position
-        @line_position ||=
-          diff_hunks.each do |hunk|
-            segments = hunk.fetch('segments', [])
-            segments.each do |segment|
-              lines = segment.fetch('lines', [])
-              lines.each do |line|
-                if line['commentIds']&.include?(id)
-                  return [line['source'], line['destination']]
-                end
+        @line_position ||= diff_hunks.each do |hunk|
+          segments = hunk.fetch('segments', [])
+          segments.each do |segment|
+            lines = segment.fetch('lines', [])
+            lines.each do |line|
+              if line['commentIds']&.include?(id)
+                return [line['source'], line['destination']]
               end
             end
+          end
         end
       end
 

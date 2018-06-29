@@ -27,7 +27,7 @@ module Gitlab
           import_data: {
             credentials: session_data,
             data: { project_key: project_key,
-                    repo_slug: repo_slug },
+                    repo_slug: repo_slug }
           },
           skip_wiki: true
         ).execute

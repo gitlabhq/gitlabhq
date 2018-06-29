@@ -69,7 +69,7 @@ module Gitlab
               description: description,
               source_project: project,
               source_branch: Gitlab::Git.ref_name(pull_request.source_branch_name),
-              source_branch_sha: pull_request.source_branch_sha,
+              source_branch_sha: source_branch_sha,
               target_project: project,
               target_branch: Gitlab::Git.ref_name(pull_request.target_branch_name),
               target_branch_sha: target_branch_sha,
