@@ -2,12 +2,6 @@ import Vue from 'vue';
 import DiffLineGutterContent from '~/diffs/components/diff_line_gutter_content.vue';
 import store from '~/mr_notes/stores';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
-import {
-  MATCH_LINE_TYPE,
-  CONTEXT_LINE_TYPE,
-  OLD_NO_NEW_LINE_TYPE,
-  NEW_NO_NEW_LINE_TYPE,
-} from '~/diffs/constants';
 import discussionsMockData from '../mock_data/diff_discussions';
 import diffFileMockData from '../mock_data/diff_file';
 
@@ -31,45 +25,6 @@ describe('DiffLineGutterContent', () => {
   };
 
   describe('computed', () => {
-    describe('isMatchLine', () => {
-      it('should return true for match line type', () => {
-        const component = createComponent({ lineType: MATCH_LINE_TYPE });
-        expect(component.isMatchLine).toEqual(true);
-      });
-
-      it('should return false for non-match line type', () => {
-        const component = createComponent({ lineType: CONTEXT_LINE_TYPE });
-        expect(component.isMatchLine).toEqual(false);
-      });
-    });
-
-    describe('isContextLine', () => {
-      it('should return true for context line type', () => {
-        const component = createComponent({ lineType: CONTEXT_LINE_TYPE });
-        expect(component.isContextLine).toEqual(true);
-      });
-
-      it('should return false for non-context line type', () => {
-        const component = createComponent({ lineType: MATCH_LINE_TYPE });
-        expect(component.isContextLine).toEqual(false);
-      });
-    });
-
-    describe('isMetaLine', () => {
-      it('should return true for meta line type', () => {
-        const component = createComponent({ lineType: NEW_NO_NEW_LINE_TYPE });
-        expect(component.isMetaLine).toEqual(true);
-
-        const component2 = createComponent({ lineType: OLD_NO_NEW_LINE_TYPE });
-        expect(component2.isMetaLine).toEqual(true);
-      });
-
-      it('should return false for non-meta line type', () => {
-        const component = createComponent({ lineType: MATCH_LINE_TYPE });
-        expect(component.isMetaLine).toEqual(false);
-      });
-    });
-
     describe('lineHref', () => {
       it('should prepend # to lineCode', () => {
         const lineCode = 'LC_42';
@@ -109,7 +64,7 @@ describe('DiffLineGutterContent', () => {
   describe('template', () => {
     it('should render three dots for context lines', () => {
       const component = createComponent({
-        lineType: MATCH_LINE_TYPE,
+        isMatchLine: true,
       });
 
       expect(component.$el.querySelector('span').classList.contains('context-cell')).toEqual(true);

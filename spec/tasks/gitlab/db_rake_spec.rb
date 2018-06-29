@@ -20,7 +20,7 @@ describe 'gitlab:db namespace rake task' do
 
   describe 'configure' do
     it 'invokes db:migrate when schema has already been loaded' do
-      allow(ActiveRecord::Base.connection).to receive(:tables).and_return(['default'])
+      allow(ActiveRecord::Base.connection).to receive(:tables).and_return(%w[table1 table2])
       expect(Rake::Task['db:migrate']).to receive(:invoke)
       expect(Rake::Task['db:schema:load']).not_to receive(:invoke)
       expect(Rake::Task['db:seed_fu']).not_to receive(:invoke)
@@ -29,6 +29,14 @@ describe 'gitlab:db namespace rake task' do
 
     it 'invokes db:shema:load and db:seed_fu when schema is not loaded' do
       allow(ActiveRecord::Base.connection).to receive(:tables).and_return([])
+      expect(Rake::Task['db:schema:load']).to receive(:invoke)
+      expect(Rake::Task['db:seed_fu']).to receive(:invoke)
+      expect(Rake::Task['db:migrate']).not_to receive(:invoke)
+      expect { run_rake_task('gitlab:db:configure') }.not_to raise_error
+    end
+
+    it 'invokes db:shema:load and db:seed_fu when there is only a single table present' do
+      allow(ActiveRecord::Base.connection).to receive(:tables).and_return(['default'])
       expect(Rake::Task['db:schema:load']).to receive(:invoke)
       expect(Rake::Task['db:seed_fu']).to receive(:invoke)
       expect(Rake::Task['db:migrate']).not_to receive(:invoke)

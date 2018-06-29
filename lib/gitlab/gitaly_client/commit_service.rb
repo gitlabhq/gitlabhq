@@ -324,6 +324,8 @@ module Gitlab
         return if signature.blank? && signed_text.blank?
 
         [signature, signed_text]
+      rescue GRPC::InvalidArgument => ex
+        raise ArgumentError, ex
       end
 
       def get_commit_signatures(commit_ids)
@@ -341,6 +343,8 @@ module Gitlab
         end
 
         signatures
+      rescue GRPC::InvalidArgument => ex
+        raise ArgumentError, ex
       end
 
       def get_commit_messages(commit_ids)
