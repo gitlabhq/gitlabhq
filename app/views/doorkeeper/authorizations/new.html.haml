@@ -35,7 +35,7 @@
               - @pre_auth.scopes.each do |scope|
                 %li
                   %strong= t scope, scope: [:doorkeeper, :scopes]
-                  .scope-description= t scope, scope: [:doorkeeper, :scope_desc]
+                  .text-secondary= t scope, scope: [:doorkeeper, :scope_desc]
         .form-actions.text-right
           = form_tag oauth_authorization_path, method: :delete, class: 'inline'  do
             = hidden_field_tag :client_id, @pre_auth.client.uid
