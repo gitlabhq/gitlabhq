@@ -1,9 +1,10 @@
 module QA
-  feature 'Create, edit and delete file in project', :core do
-    scenario 'User creates, edits and deletes a file' do
+  feature 'File Functionality', :core do
+    scenario 'User creates, edits and deletes a file via WebUI' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act {sign_in_using_credentials}
 
+      #Create
       file_name = 'QA Test - File name'
       file_content = 'QA Test - File content'
       commit_message_for_create = 'QA Test - Create new file'
@@ -19,6 +20,7 @@ module QA
       expect(page).to have_content(file_content)
       expect(page).to have_content(commit_message_for_create)
 
+      #Edit
       updated_file_content = 'QA Test - Updated file content'
       commit_message_for_update = 'QA Test - Update file'
 
@@ -35,6 +37,7 @@ module QA
       expect(page).to have_content(updated_file_content)
       expect(page).to have_content(commit_message_for_update)
 
+      #Delete
       commit_message_for_delete = 'QA Test - Delete file'
 
       Page::File::Show.act do
