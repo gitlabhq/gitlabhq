@@ -44,12 +44,10 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def show
-    @builds = @project.pipelines
-      .find_by_sha(@build.sha)
-      .builds
+    @pipeline = @build.pipeline
+    @builds = @pipeline.builds
       .order('id DESC')
       .present(current_user: current_user)
-    @pipeline = @build.pipeline
 
     respond_to do |format|
       format.html
