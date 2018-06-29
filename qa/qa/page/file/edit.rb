@@ -1,6 +1,6 @@
 module QA
   module Page
-    module FilePO
+    module File
       class Edit < Page::Base
         view 'app/views/projects/blob/_editor.html.haml' do
           element :file_name, "text_field_tag 'file_name'"

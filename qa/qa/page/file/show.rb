@@ -1,6 +1,6 @@
 module QA
   module Page
-    module FilePO
+    module File
       class Show < Page::Base
         view 'app/helpers/blob_helper.rb' do
           element :edit_button, "_('Edit')"

@@ -21,7 +21,7 @@ module QA
 
           Page::Project::Show.act {create_new_file}
 
-          Page::FilePO::New.perform do |page|
+          Page::File::New.perform do |page|
             page.add_name(@name)
             page.add_content(@content)
             page.add_commit_message(@commit_message)

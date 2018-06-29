@@ -128,7 +128,7 @@ module QA
       autoload :Show, 'qa/page/group/show'
     end
 
-    module FilePO
+    module File
       autoload :New, 'qa/page/file/new'
       autoload :Edit, 'qa/page/file/edit'
       autoload :Show, 'qa/page/file/show'
