@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-06-20 09:05+0200\n"
-"PO-Revision-Date: 2018-06-29 17:11\n"
+"PO-Revision-Date: 2018-06-29 17:17\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -5095,7 +5095,7 @@ msgid "TagsPage|Optionally, add a message to the tag."
 msgstr "Éventuellement, ajoutez un message à l’étiquette."
 
 msgid "TagsPage|Optionally, add release notes to the tag. They will be stored in the GitLab database and displayed on the tags page."
-msgstr "Éventuellement, ajouter des notes de version pour le tag. Elles seront stockées dans la base de données de GitLab et affichées sur la page des tags."
+msgstr "Éventuellement, ajouter des notes de version pour l’étiquette. Elles seront stockées dans la base de données de GitLab et affichées sur la page des étiquettes."
 
 msgid "TagsPage|Release notes"
 msgstr "Notes de version"
@@ -5107,16 +5107,16 @@ msgid "TagsPage|Sort by"
 msgstr "Trier par"
 
 msgid "TagsPage|Tags"
-msgstr "Tags"
+msgstr "Étiquettes"
 
 msgid "TagsPage|Tags give the ability to mark specific points in history as being important"
-msgstr "Les étiquettes permettent de marquer des points spécifiques l’historique du projet comme étant importants."
+msgstr "Les étiquettes permettent de marquer des moments spécifiques de l’historique du projet comme étant importants"
 
 msgid "TagsPage|This tag has no release notes."
 msgstr "Cette étiquette n’a pas de notes de version."
 
 msgid "TagsPage|Use git tag command to add a new one:"
-msgstr "Utilisez la commande git tag pour en ajouter un nouveau :"
+msgstr "Utilisez la commande « git tag » pour en ajouter un nouveau :"
 
 msgid "TagsPage|Write your release notes or drag files here…"
 msgstr "Rédigez vos notes de version ou faites glisser des fichiers ici…"
@@ -5134,7 +5134,7 @@ msgid "Team"
 msgstr "Équipe"
 
 msgid "Terms of Service Agreement and Privacy Policy"
-msgstr "Termes du contrat de service et de la politique de confidentialité"
+msgstr "Conditions générales d’utilisation et politique de confidentialité"
 
 msgid "Terms of Service and Privacy Policy"
 msgstr "Conditions générales d’utilisation et politique de confidentialité"
