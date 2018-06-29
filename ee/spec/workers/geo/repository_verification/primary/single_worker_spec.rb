@@ -78,45 +78,27 @@ describe Geo::RepositoryVerification::Primary::SingleWorker, :postgresql, :clean
       )
     end
 
-    it 'calculates the checksum for outdated repositories' do
+    it 'calculates the checksum for outdated repositories/wikis' do
       stub_project_repository(project, repository)
+      stub_wiki_repository(project.wiki, wiki)
 
       repository_state =
         create(:repository_state,
           project: project,
           repository_verification_checksum: nil,
-          wiki_verification_checksum: 'e079a831cab27bcda7d81cd9b48296d0c3dd92ef')
+          wiki_verification_checksum: nil)
 
       subject.perform(project.id)
 
       expect(repository_state.reload).to have_attributes(
         repository_verification_checksum: 'f123',
         last_repository_verification_failure: nil,
-        wiki_verification_checksum: 'e079a831cab27bcda7d81cd9b48296d0c3dd92ef',
-        last_wiki_verification_failure: nil
-      )
-    end
-
-    it 'calculates the checksum for outdated wikis' do
-      stub_wiki_repository(project.wiki, wiki)
-
-      repository_state =
-        create(:repository_state,
-          project: project,
-          repository_verification_checksum: 'f079a831cab27bcda7d81cd9b48296d0c3dd92ee',
-          wiki_verification_checksum: nil)
-
-      subject.perform(project.id)
-
-      expect(repository_state.reload).to have_attributes(
-        repository_verification_checksum: 'f079a831cab27bcda7d81cd9b48296d0c3dd92ee',
-        last_repository_verification_failure: nil,
         wiki_verification_checksum: 'e321',
         last_wiki_verification_failure: nil
       )
     end
 
-    it 'does not recalculate the checksum for projects up to date' do
+    it 'recalculates the checksum for projects up to date' do
       stub_project_repository(project, repository)
       stub_wiki_repository(project.wiki, wiki)
 
@@ -125,8 +107,8 @@ describe Geo::RepositoryVerification::Primary::SingleWorker, :postgresql, :clean
         repository_verification_checksum: 'f079a831cab27bcda7d81cd9b48296d0c3dd92ee',
         wiki_verification_checksum: 'e079a831cab27bcda7d81cd9b48296d0c3dd92ef')
 
-      expect(repository).not_to receive(:checksum)
-      expect(wiki).not_to receive(:checksum)
+      expect(repository).to receive(:checksum)
+      expect(wiki).to receive(:checksum)
 
       subject.perform(project.id)
     end
