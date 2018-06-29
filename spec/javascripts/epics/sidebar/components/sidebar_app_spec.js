@@ -13,6 +13,7 @@ describe('epicSidebar', () => {
   let originalCookieState;
   let EpicSidebar;
   const {
+    epicId,
     updateEndpoint,
     labelsPath,
     labelsWebUrl,
@@ -21,18 +22,25 @@ describe('epicSidebar', () => {
     participants,
     subscribed,
     toggleSubscriptionPath,
+    todoExists,
+    todoPath,
+    todoDeletePath,
   } = props;
 
   const defaultPropsData = {
+    epicId,
     endpoint: gl.TEST_HOST,
     initialLabels: labels,
     initialParticipants: participants,
     initialSubscribed: subscribed,
+    initialTodoExists: todoExists,
     updatePath: updateEndpoint,
     toggleSubscriptionPath,
     labelsPath,
     labelsWebUrl,
     epicsWebUrl,
+    todoPath,
+    todoDeletePath,
   };
 
   beforeEach(() => {
