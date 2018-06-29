@@ -10,7 +10,6 @@ module QA
           push.project = factory.fork
           push.branch_name = factory.fork_branch
           push.file_name = 'file2.txt'
-          push
           push.user = factory.fork.user
         end
 
