@@ -102,6 +102,8 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
 
   describe 'GET show' do
     let!(:job) { create(:ci_build, :failed, pipeline: pipeline) }
+    let!(:second_job) { create(:ci_build, :failed, pipeline: pipeline) }
+    let!(:third_job) { create(:ci_build, :failed) }
 
     context 'when requesting HTML' do
       context 'when job exists' do
@@ -112,6 +114,13 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         it 'has a job' do
           expect(response).to have_gitlab_http_status(:ok)
           expect(assigns(:build).id).to eq(job.id)
+        end
+
+        it 'has the correct build collection' do
+          builds = assigns(:builds).map(&:id)
+
+          expect(builds).to include(job.id, second_job.id)
+          expect(builds).not_to include(third_job.id)
         end
       end
 
