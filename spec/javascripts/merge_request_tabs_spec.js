@@ -40,6 +40,7 @@ describe('MergeRequestTabs', function() {
     this.class.unbindEvents();
     this.class.destroyPipelinesView();
     mrPageMock.restore();
+    $('.js-merge-request-test').remove();
   });
 
   describe('opensInNewTab', function() {

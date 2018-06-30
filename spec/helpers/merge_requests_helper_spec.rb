@@ -54,7 +54,7 @@ describe MergeRequestsHelper do
       let(:options) { { force_link: true } }
 
       it 'removes the data-toggle attributes' do
-        is_expected.not_to match(/data-toggle="tab"/)
+        is_expected.not_to match(/data-toggle="tabvue"/)
       end
     end
   end

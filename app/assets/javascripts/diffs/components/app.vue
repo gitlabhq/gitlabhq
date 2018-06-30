@@ -145,7 +145,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="shouldShow">
+  <div v-show="shouldShow">
     <div
       v-if="isLoading"
       class="loading"
