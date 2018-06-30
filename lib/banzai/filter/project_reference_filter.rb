@@ -64,11 +64,11 @@ module Banzai
         end
       end
 
-      # Returns a Hash containing all Namespace objects for the project
+      # Returns a Hash containing all Project objects for the project
       # references in the current document.
       #
-      # The keys of this Hash are the namespace paths, the values the
-      # corresponding Namespace objects.
+      # The keys of this Hash are the project paths, the values the
+      # corresponding Project objects.
       def projects_hash
         @projects ||= Project.where_full_path_in(projects)
                              .index_by(&:full_path)
