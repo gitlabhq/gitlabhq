@@ -68,7 +68,7 @@ describe Banzai::Filter::ProjectReferenceFilter do
       link = doc.css('a').first
 
       expect(link).to have_attribute('data-project')
-      expect(link.attr('data-project')).to eq project.namespace.owner_id.to_s
+      expect(link.attr('data-project')).to eq project.id.to_s
     end
   end
 
