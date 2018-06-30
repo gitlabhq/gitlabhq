@@ -175,7 +175,7 @@ export default {
 
 <template>
   <div
-    v-if="shouldShow"
+    v-show="shouldShow"
     id="notes"
   >
     <ul
