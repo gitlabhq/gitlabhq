@@ -108,7 +108,7 @@ module MergeRequestsHelper
     data_attrs = {
       action: tab.to_s,
       target: "##{tab}",
-      toggle: options.fetch(:force_link, false) ? '' : 'tab'
+      toggle: options.fetch(:force_link, false) ? '' : 'tabvue'
     }
 
     url = case tab
