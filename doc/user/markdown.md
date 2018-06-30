@@ -259,6 +259,7 @@ GFM will recognize the following:
 | `@user_name`               | specific user                   |
 | `@group_name`              | specific group                  |
 | `@all`                     | entire team                     |
+| `namespace/project>`       | project                         |
 | `#12345`                   | issue                           |
 | `!123`                     | merge request                   |
 | `$123`                     | snippet                         |
