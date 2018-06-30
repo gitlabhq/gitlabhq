@@ -8,7 +8,7 @@ module Banzai
       TABLE_ALIGNMENT_PATTERN = /text-align: (?<alignment>center|left|right)/
 
       def whitelist
-        whitelist = super
+        whitelist = super.dup
 
         customize_whitelist(whitelist)
 
