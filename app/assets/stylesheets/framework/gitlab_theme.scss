@@ -289,6 +289,30 @@ body {
     );
   }
 
+  &.ui-cyan {
+    @include gitlab-theme(
+      $theme-cyan-100,
+      $theme-cyan-200,
+      $theme-cyan-500,
+      $theme-cyan-500,
+      $theme-cyan-700,
+      $theme-cyan-700,
+      $white-light
+    );
+  }
+
+  &.ui-pink {
+    @include gitlab-theme(
+      $theme-pink-100,
+      $theme-pink-200,
+      $theme-pink-500,
+      $theme-pink-500,
+      $theme-pink-700,
+      $theme-pink-700,
+      $white-light
+    );
+  }
+
   &.ui-dark {
     @include gitlab-theme(
       $theme-gray-100,

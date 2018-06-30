@@ -25,6 +25,8 @@ The default palette is Indigo. You can choose between 10 different themes:
 - Light Green
 - Red
 - Light Red
+- Cyan
+- Pink
 - Dark
 - Light
 

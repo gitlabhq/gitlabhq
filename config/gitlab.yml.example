@@ -85,8 +85,10 @@ production: &base
     ##   6 - Light Green
     ##   7 - Red
     ##   8 - Light Red
-    ##   9 - Dark
-    ##   10 - Light
+    ##   9 - Cyan
+    ##   10 - Pink
+    ##   11 - Dark
+    ##   12 - Light
     # default_theme: 1 # default: 1
 
     ## Automatic issue closing

@@ -20,6 +20,8 @@ module Gitlab
       Theme.new(8, 'Light Green', 'ui-light-green'),
       Theme.new(9, 'Red', 'ui-red'),
       Theme.new(10, 'Light Red', 'ui-light-red'),
+      Theme.new(11, 'Cyan', 'ui-cyan'),
+      Theme.new(12, 'Pink', 'ui-pink'),
       Theme.new(2, 'Dark', 'ui-dark'),
       Theme.new(3, 'Light', 'ui-light')
     ].freeze
