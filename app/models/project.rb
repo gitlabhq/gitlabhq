@@ -456,6 +456,20 @@ class Project < ActiveRecord::Base
       }x
     end
 
+    def reference_postfix
+      '>'
+    end
+
+    # Pattern used to extract `project>` project references from text
+    # (?!\w) matches any non-word character
+    def markdown_reference_pattern
+      %r{
+        #{reference_pattern}
+        (#{reference_postfix}|#{CGI.escapeHTML(reference_postfix)})
+        (?!\w)
+      }x
+    end
+
     def trending
       joins('INNER JOIN trending_projects ON projects.id = trending_projects.project_id')
         .reorder('trending_projects.id ASC')
@@ -882,6 +896,10 @@ class Project < ActiveRecord::Base
     else
       path
     end
+  end
+
+  def to_reference_with_postfix
+    "#{to_reference(full: true)}#{self.class.reference_postfix}"
   end
 
   # `from` argument can be a Namespace or Project.
