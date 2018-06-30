@@ -10,8 +10,7 @@ job output in the UI will be empty.
 ## Data flow
 
 In general, there are two states in job traces: "live trace" and "archived trace".
-In the following table you can see the phases a trace is going through its
-journey.
+In the following table you can see the phases a trace goes through.
 
 | Phase          | State          | Condition                 | Data flow                                       |  Stored path |
 | -----          | -----          | ---------                 | ---------                                       |  ----------- |
@@ -20,7 +19,7 @@ journey.
 | 3: archiving   | Archived trace | After a job is finished   | Sidekiq moves live trace to artifacts folder    |`#{ROOT_PATH}/shared/artifacts/#{disk_hash}/#{YYYY_mm_dd}/#{job_id}/#{job_artifact_id}/trace.log`|
 | 4: uploading   | Archived trace | After a trace is archived | Sidekiq moves archived trace to [object storage](#uploading-traces-to-object-storage) (if configured)  |`#{bucket_name}/#{disk_hash}/#{YYYY_mm_dd}/#{job_id}/#{job_artifact_id}/trace.log`|
 
-The `ROOT_PATH` varies per your environment. For example, Omnibus GitLab it
+The `ROOT_PATH` varies per your environment. For Omnibus GitLab it
 would be `/var/opt/gitlab/gitlab-ci`, whereas for installations from source
 it would be `/home/git/gitlab`.
 
@@ -62,7 +61,7 @@ An archived trace is considered as a [job artifact](job_artifacts.md).
 Therefore, when you [set up an object storage](job_artifacts.md#object-storage-settings),
 job traces are automatically migrated to it along with the other job artifacts.
 
-Check the [data flow](#data-flow) to learn about the process.
+See [Data flow](#data-flow) to learn about the process.
 
 ## New live trace architecture
 
