@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-06-29 16:17+1000\n"
-"PO-Revision-Date: 2018-06-29 19:32\n"
+"PO-Revision-Date: 2018-06-30 15:40\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -1008,7 +1008,7 @@ msgid "Click to expand text"
 msgstr "點擊以展開內容"
 
 msgid "Clone repository"
-msgstr "複製（clone）檔案庫（repository）"
+msgstr "複製檔案庫"
 
 msgid "Close"
 msgstr "關閉"
@@ -1532,7 +1532,7 @@ msgid "ContainerRegistry|Once you log in, you&rsquo;re free to create and upload
 msgstr "當您登入後，您可以透過 %{build} 和 %{push} 指令來自由建立和上傳容器映像檔"
 
 msgid "ContainerRegistry|Remove repository"
-msgstr "刪除檔案庫（repository）"
+msgstr "刪除檔案庫"
 
 msgid "ContainerRegistry|Remove tag"
 msgstr "刪除標籤"
@@ -4029,7 +4029,7 @@ msgid "SortOptions|Largest group"
 msgstr "最大群組"
 
 msgid "SortOptions|Largest repository"
-msgstr "最大檔案庫（repository）"
+msgstr "最大儲存庫"
 
 msgid "SortOptions|Last created"
 msgstr "最近建立"
@@ -4486,7 +4486,7 @@ msgid "This source diff could not be displayed because it is too large."
 msgstr ""
 
 msgid "This user has no identities"
-msgstr ""
+msgstr "該使用者沒有身份"
 
 msgid "Time before an issue gets scheduled"
 msgstr "議題被列入日程表的時間"
@@ -4885,7 +4885,7 @@ msgid "Wiki"
 msgstr "Wiki"
 
 msgid "WikiClone|Clone your wiki"
-msgstr "複製（clone）您的 Wiki"
+msgstr "複製您的 Wiki"
 
 msgid "WikiClone|Git Access"
 msgstr "Git 讀取"
