@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-06-29 16:17+1000\n"
-"PO-Revision-Date: 2018-06-30 15:40\n"
+"PO-Revision-Date: 2018-06-30 15:50\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -18,7 +18,7 @@ msgstr ""
 
 msgid "%d changed file"
 msgid_plural "%d changed files"
-msgstr[0] ""
+msgstr[0] "%d 個變更的檔案"
 
 msgid "%d commit"
 msgid_plural "%d commits"
@@ -71,10 +71,10 @@ msgid_plural "%{count} participants"
 msgstr[0] "%{count} 參與者"
 
 msgid "%{filePath} deleted"
-msgstr ""
+msgstr "已刪除 %{filePath}"
 
 msgid "%{group_docs_link_start}Groups%{group_docs_link_end} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects."
-msgstr ""
+msgstr "%{group_docs_link_start}群組%{group_docs_link_end} 允許您管理、協作多個專案。群組的成員可以訪問群組下的所有專案。"
 
 msgid "%{loadingIcon} Started"
 msgstr "%{loadingIcon} 開始"
@@ -338,7 +338,7 @@ msgid "Alternatively, you can use a %{personal_access_token_link}. When you crea
 msgstr "或者，你可以使用 %{personal_access_token_link}。當你建立你的個人存取權杖時，你將需要選擇<code>檔案庫</code>範圍，所以我們將會顯示你公開及私人的檔案庫清單進行匯入。"
 
 msgid "An error occured creating the new branch."
-msgstr ""
+msgstr "創建新分支時發生錯誤。"
 
 msgid "An error occurred previewing the blob"
 msgstr "預覽 blob 檔案時發生錯誤"
@@ -422,7 +422,7 @@ msgid "Are you sure you want to delete this pipeline schedule?"
 msgstr "確定要刪除此流水線排程嗎？"
 
 msgid "Are you sure you want to remove this identity?"
-msgstr ""
+msgstr "您確定要刪除此身份嗎?"
 
 msgid "Are you sure you want to reset registration token?"
 msgstr "確定要重置註冊憑證嗎？"
@@ -542,7 +542,7 @@ msgid "Average per day: %{average}"
 msgstr "平均每天：%{average}"
 
 msgid "Background color"
-msgstr ""
+msgstr "背景顏色"
 
 msgid "Background jobs"
 msgstr "背景工作"
@@ -620,10 +620,10 @@ msgid "Begin with the selected commit"
 msgstr "從選定的變更紀錄開始"
 
 msgid "Boards"
-msgstr ""
+msgstr "看板"
 
 msgid "Branch %{branchName} was not found in this project's repository."
-msgstr ""
+msgstr "在這個專案的檔案庫中找不到 %{branchName} 分支。"
 
 msgid "Branch (%{branch_count})"
 msgid_plural "Branches (%{branch_count})"
@@ -831,7 +831,7 @@ msgid "CICD|You need to specify a domain if you want to use Auto Review Apps and
 msgstr "如果你想要使用自動複閱程式及自動部署，請指定網域。"
 
 msgid "Can't find HEAD commit for this branch"
-msgstr ""
+msgstr "找不到此分支的 HEAD 更動。"
 
 msgid "Cancel"
 msgstr "取消"
@@ -897,7 +897,7 @@ msgid "Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to s
 msgstr "選擇分支/標籤(例如：%{master})或者輸入更動紀錄(例如：%{sha})以查看更改內容或建立合併請求。"
 
 msgid "Choose any color."
-msgstr ""
+msgstr "選取顏色。"
 
 msgid "Choose file..."
 msgstr "選擇檔案⋯"
@@ -1002,7 +1002,7 @@ msgid "Click the button below to begin the install process by navigating to the 
 msgstr "點擊下面的按鈕，連結到 Kubernetes 頁面開始安裝。"
 
 msgid "Click to expand it."
-msgstr ""
+msgstr "按一下以展開。"
 
 msgid "Click to expand text"
 msgstr "點擊以展開內容"
@@ -1095,7 +1095,7 @@ msgid "ClusterIntegration|Environment scope"
 msgstr "環境範圍"
 
 msgid "ClusterIntegration|Every new Google Cloud Platform (GCP) account receives $300 in credit upon %{sign_up_link}. In partnership with Google, GitLab is able to offer an additional $200 for both new and existing GCP accounts to get started with GitLab's Google Kubernetes Engine Integration."
-msgstr ""
+msgstr "每個新的 Google Cloud Platform (GCP) 帳號都會在 %{sign_up_link} 收到 300 元的優惠。因與 Google 合作，GitLab 將可以為新建立及現有的 GCP 帳號提供額外的 200 元優惠，以嘗試 GitLab 的 Google Kubernetes Engine 整合。"
 
 msgid "ClusterIntegration|Fetching machine types"
 msgstr "正在獲取機器類型"
@@ -1374,10 +1374,10 @@ msgid "Collapse sidebar"
 msgstr "收起側邊欄"
 
 msgid "Comment & resolve discussion"
-msgstr ""
+msgstr "評論並關閉討論"
 
 msgid "Comment & unresolve discussion"
-msgstr ""
+msgstr "評論並重新討論"
 
 msgid "Comments"
 msgstr "留言"
@@ -1442,7 +1442,7 @@ msgid "Committed by"
 msgstr "送交者為 "
 
 msgid "Commit…"
-msgstr ""
+msgstr "提交…"
 
 msgid "Compare"
 msgstr "比較"
@@ -1493,7 +1493,7 @@ msgid "Configure limits for web and API requests."
 msgstr "為網路與 API 請求設定限制。"
 
 msgid "Configure push mirrors."
-msgstr ""
+msgstr "設定推送的鏡像。"
 
 msgid "Configure storage path and circuit breaker settings."
 msgstr "設定儲存路徑與斷路器設定。"
@@ -1562,7 +1562,7 @@ msgid "Continuous Integration and Deployment"
 msgstr "持續整合與部屬"
 
 msgid "Contribute to GitLab"
-msgstr ""
+msgstr "貢獻給GitLab"
 
 msgid "Contribution"
 msgstr "貢獻"
@@ -1598,10 +1598,10 @@ msgid "Copy commit SHA to clipboard"
 msgstr "複製更動記錄的 SHA 值到剪貼簿"
 
 msgid "Copy file name to clipboard"
-msgstr ""
+msgstr "將檔案名稱複製到剪貼簿"
 
 msgid "Copy file path to clipboard"
-msgstr ""
+msgstr "複製檔案路徑到剪貼簿"
 
 msgid "Copy reference to clipboard"
 msgstr "複製連結"
@@ -1628,7 +1628,7 @@ msgid "Create branch"
 msgstr "建立分支"
 
 msgid "Create commit"
-msgstr ""
+msgstr "建立提交"
 
 msgid "Create directory"
 msgstr "建立目錄"
@@ -1748,7 +1748,7 @@ msgid "Delete"
 msgstr "刪除"
 
 msgid "Delete list"
-msgstr ""
+msgstr "刪除清單"
 
 msgid "Deploy"
 msgid_plural "Deploys"
@@ -1890,7 +1890,7 @@ msgid "Diffs|No file name available"
 msgstr "沒有可用的檔案名稱"
 
 msgid "Diffs|Something went wrong while fetching diff lines."
-msgstr ""
+msgstr "讀取差異檔時發生了一些錯誤."
 
 msgid "Directory name"
 msgstr "目錄名稱"
@@ -1962,7 +1962,7 @@ msgid "Edit"
 msgstr "編輯"
 
 msgid "Edit Label"
-msgstr ""
+msgstr "編輯標籤"
 
 msgid "Edit Pipeline Schedule %{id}"
 msgstr "編輯 %{id} 流水線排程"
@@ -1971,13 +1971,13 @@ msgid "Edit files in the editor and commit changes here"
 msgstr "在編輯器中編輯提交更動紀錄"
 
 msgid "Edit identity for %{user_name}"
-msgstr ""
+msgstr "編輯 %{user_name} 的身份"
 
 msgid "Email"
 msgstr "電子信箱"
 
 msgid "Email patch"
-msgstr ""
+msgstr "電子郵件補丁"
 
 msgid "Emails"
 msgstr "電子郵件"
@@ -2109,7 +2109,7 @@ msgid "Error loading project data. Please try again."
 msgstr "載入專案資料時錯誤，請重試。"
 
 msgid "Error loading tree data. Please try again."
-msgstr ""
+msgstr "載入樹狀資料時錯誤，請重試。"
 
 msgid "Error occurred when toggling the notification subscription"
 msgstr "切換訂閱通知時發生錯誤"
@@ -2157,7 +2157,7 @@ msgid "Expand"
 msgstr "展開"
 
 msgid "Expand all"
-msgstr ""
+msgstr "展開全部"
 
 msgid "Expand sidebar"
 msgstr "展開側邊欄"
@@ -2199,7 +2199,7 @@ msgid "February"
 msgstr "二月"
 
 msgid "Fetching diff files failed. Please reload the page to try again!"
-msgstr ""
+msgstr "提取diff文件失敗。請重新加載頁面重試！"
 
 msgid "Fields on this page are now uneditable, you can configure"
 msgstr "此頁面欄位現在無法編輯，你可以設置"
@@ -2359,7 +2359,7 @@ msgid "GroupSettings|remove the share with group lock from %{ancestor_group_name
 msgstr "從 %{ancestor_group_name} 中移除共享群組鎖"
 
 msgid "Groups can also be nested by creating %{subgroup_docs_link_start}subgroups%{subgroup_docs_link_end}."
-msgstr ""
+msgstr "群組也可以創建 %{subgroup_docs_link_start}子群組%{subgroup_docs_link_end}。"
 
 msgid "GroupsEmptyState|A group is a collection of several projects."
 msgstr "群組是數個專案的集合。"
@@ -2432,7 +2432,7 @@ msgid_plural "Hide values"
 msgstr[0] "隱藏資料"
 
 msgid "Hide whitespace changes"
-msgstr ""
+msgstr "隱藏空白變化"
 
 msgid "History"
 msgstr "歷史"
@@ -2447,7 +2447,7 @@ msgid "I accept the|Terms of Service and Privacy Policy"
 msgstr "服務條款和隱私政策"
 
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 msgid "IDE|Commit"
 msgstr "提交"
@@ -2465,10 +2465,10 @@ msgid "IDE|Review"
 msgstr "審閱"
 
 msgid "Identifier"
-msgstr ""
+msgstr "識別碼"
 
 msgid "Identities"
-msgstr ""
+msgstr "身份"
 
 msgid "If you already have files you can push them using the %{link_to_cli} below."
 msgstr "如果你已經擁有檔案，你可以使用 %{link_to_cli} 推送他們。"
@@ -2504,7 +2504,7 @@ msgid "Include a Terms of Service agreement and Privacy Policy that all users mu
 msgstr "包括所有用戶必須接受的服務條款協議和隱私政策。"
 
 msgid "Inline"
-msgstr ""
+msgstr "內含"
 
 msgid "Install Runner on Kubernetes"
 msgstr "在 Kubernetes 上安裝運行器"
@@ -2534,7 +2534,7 @@ msgid "Introducing Cycle Analytics"
 msgstr "週期分析簡介"
 
 msgid "Issue Board"
-msgstr ""
+msgstr "議題看板"
 
 msgid "Issue events"
 msgstr "議題事件"
@@ -2555,7 +2555,7 @@ msgid "January"
 msgstr "一月"
 
 msgid "Job"
-msgstr ""
+msgstr "任務"
 
 msgid "Job has been erased"
 msgstr "工作已被抹除"
@@ -2603,7 +2603,7 @@ msgid "Kubernetes service integration has been deprecated. %{deprecated_message_
 msgstr "Kubernetes服務整合已被棄用。 %{deprecated_message_content} 您的 Kubernetes 叢集使用新的 <a href=\"%{url}\"/>Kubernetes 叢集</a> 頁面"
 
 msgid "LFS"
-msgstr ""
+msgstr "LFS"
 
 msgid "LFSStatus|Disabled"
 msgstr "停用"
@@ -2784,22 +2784,22 @@ msgid "Merge requests are a place to propose changes you've made to a project an
 msgstr "合併請求是一個讓其他人提出更改建議並討論的地方"
 
 msgid "MergeRequests|Resolve this discussion in a new issue"
-msgstr ""
+msgstr "在新議題中解決此討論"
 
 msgid "MergeRequests|Saving the comment failed"
-msgstr ""
+msgstr "儲存評論失敗"
 
 msgid "MergeRequests|Toggle comments for this file"
-msgstr ""
+msgstr "切換此文件的註釋"
 
 msgid "MergeRequests|Updating discussions failed"
-msgstr ""
+msgstr "更新討論失敗"
 
 msgid "MergeRequests|View file @ %{commitId}"
-msgstr ""
+msgstr "查看文件@ %{commitId}"
 
 msgid "MergeRequests|View replaced file @ %{commitId}"
-msgstr ""
+msgstr "查看替換文件@ %{commitId}"
 
 msgid "Merged"
 msgstr "已合併"
@@ -2871,7 +2871,7 @@ msgid "Name new label"
 msgstr "命名新標籤"
 
 msgid "Name your individual key via a title"
-msgstr ""
+msgstr "透過標題為您的個人密鑰命名"
 
 msgid "Nav|Help"
 msgstr "幫助"
@@ -2886,7 +2886,7 @@ msgid "Nav|Sign out and sign in with a different account"
 msgstr "登出，並使用其他帳號登入"
 
 msgid "New Identity"
-msgstr ""
+msgstr "新增身份"
 
 msgid "New Issue"
 msgid_plural "New Issues"
@@ -2899,7 +2899,7 @@ msgid "New Kubernetes cluster"
 msgstr "建立 Kubernetes 叢集"
 
 msgid "New Label"
-msgstr ""
+msgstr "新增標籤"
 
 msgid "New Pipeline Schedule"
 msgstr "建立流水線排程"
@@ -2920,7 +2920,7 @@ msgid "New group"
 msgstr "新群組"
 
 msgid "New identity"
-msgstr ""
+msgstr "新增身份"
 
 msgid "New issue"
 msgstr "新增議題"
@@ -2968,7 +2968,7 @@ msgid "No file chosen"
 msgstr "未選擇任何檔案"
 
 msgid "No files found"
-msgstr ""
+msgstr "找不到任何檔案"
 
 msgid "No files found."
 msgstr "找不到任何檔案"
@@ -3100,7 +3100,7 @@ msgid "Online IDE integration settings."
 msgstr "線上 IDE 整合設定。"
 
 msgid "Only comments from the following commit are shown below"
-msgstr ""
+msgstr "下面僅顯示來自以下提交的註釋"
 
 msgid "Only project members can comment."
 msgstr "只有群組成員才能留言。"
@@ -3121,7 +3121,7 @@ msgid "Options"
 msgstr "選項"
 
 msgid "Or you can choose one of the suggested colors below"
-msgstr ""
+msgstr "或者您可以在下方建議的顏色中選擇一個"
 
 msgid "Other Labels"
 msgstr "其他標籤"
@@ -3160,7 +3160,7 @@ msgid "Password"
 msgstr "密碼"
 
 msgid "Paste your public SSH key, which is usually contained in the file '~/.ssh/id_rsa.pub' and begins with 'ssh-rsa'. Don't use your private SSH key."
-msgstr ""
+msgstr "貼上您的SSH公鑰，通常放置在 '~/.ssh/id_rsa.pub'，並以 'ssh-rsa' 開頭。不要使用您的SSH私鑰。"
 
 msgid "Pause"
 msgstr "暫停"
@@ -3331,7 +3331,7 @@ msgid "Pipeline|with stages"
 msgstr "於階段"
 
 msgid "Plain diff"
-msgstr ""
+msgstr "本文差異"
 
 msgid "PlantUML"
 msgstr "PlantUML"
@@ -3349,7 +3349,7 @@ msgid "Please solve the reCAPTCHA"
 msgstr "請填寫驗證碼"
 
 msgid "Please try again"
-msgstr ""
+msgstr "請再試一次"
 
 msgid "Please wait while we import the repository for you. Refresh at will."
 msgstr "請稍候，我們正在匯入您的檔案庫，稍後請重新整理。"
@@ -3565,7 +3565,7 @@ msgid "PrometheusService|Metrics"
 msgstr "指標"
 
 msgid "PrometheusService|Metrics are automatically configured and monitored based on a library of metrics from popular exporters."
-msgstr ""
+msgstr "指標會根據一些受大眾歡迎的指標，自動設置及監控。"
 
 msgid "PrometheusService|Missing environment variable"
 msgstr "缺少環境變數"
@@ -3607,7 +3607,7 @@ msgid "Protip:"
 msgstr "提示:"
 
 msgid "Provider"
-msgstr ""
+msgstr "提供者"
 
 msgid "Public - The group and any public projects can be viewed without any authentication."
 msgstr "公開 - 未登入的情況下依然可以查看任何公開專案"
@@ -3628,7 +3628,7 @@ msgid "Quick actions can be used in the issues description and comment boxes."
 msgstr "快速操作可以用於問題描述和評論框。"
 
 msgid "Re-deploy"
-msgstr ""
+msgstr "重新部署"
 
 msgid "Read more"
 msgstr "瞭解更多"
@@ -3718,7 +3718,7 @@ msgid "Reset runners registration token"
 msgstr "重置 Runner 註冊憑證"
 
 msgid "Resolve all discussions in new issue"
-msgstr ""
+msgstr "建立新議題以解決所有討論"
 
 msgid "Resolve conflicts on source branch"
 msgstr "解決來源分支上的衝突"
@@ -3758,7 +3758,7 @@ msgid "Reviewing (merge request !%{mergeRequestId})"
 msgstr "正在審閱中（合併請求 !%{mergeRequestId}）"
 
 msgid "Rollback"
-msgstr ""
+msgstr "退回"
 
 msgid "Runners"
 msgstr "執行器"
@@ -3776,7 +3776,7 @@ msgid "SSH Keys"
 msgstr "SSH 金鑰"
 
 msgid "Save"
-msgstr ""
+msgstr "儲存"
 
 msgid "Save changes"
 msgstr "儲存變更"
@@ -3935,10 +3935,10 @@ msgid "Show complete raw log"
 msgstr "顯示完整的原始日誌"
 
 msgid "Show latest version"
-msgstr ""
+msgstr "顯示最新版本"
 
 msgid "Show latest version of the diff"
-msgstr ""
+msgstr "顯示與最新版本的差異"
 
 msgid "Show parent pages"
 msgstr "顯示上層頁面"
@@ -3947,14 +3947,14 @@ msgid "Show parent subgroups"
 msgstr "顯示群組中的子群組"
 
 msgid "Show whitespace changes"
-msgstr ""
+msgstr "顯示空白變化"
 
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
 msgstr[0] "顯示 %d 個事件"
 
 msgid "Side-by-side"
-msgstr ""
+msgstr "並排"
 
 msgid "Sign out"
 msgstr "登出"
@@ -3978,13 +3978,13 @@ msgid "Something went wrong on our end."
 msgstr "發生了錯誤。"
 
 msgid "Something went wrong on our end. Please try again!"
-msgstr ""
+msgstr "未知錯誤，請重試!"
 
 msgid "Something went wrong when toggling the button"
 msgstr "切換按鈕時發生未知的錯誤"
 
 msgid "Something went wrong while closing the %{issuable}. Please try again later"
-msgstr ""
+msgstr "在關閉議題 %{issuable} 時出現問題，請稍後再試"
 
 msgid "Something went wrong while fetching the projects."
 msgstr "讀取專案時發生錯誤。"
@@ -3993,10 +3993,10 @@ msgid "Something went wrong while fetching the registry list."
 msgstr "讀取註冊列表時發生錯誤。"
 
 msgid "Something went wrong while reopening the %{issuable}. Please try again later"
-msgstr ""
+msgstr "重新開啟 %{issuable} 議題時發生錯誤。請稍後再試"
 
 msgid "Something went wrong while resolving this discussion. Please try again."
-msgstr ""
+msgstr "解決此議題時出現問題。請再試一次。"
 
 msgid "Something went wrong. Please try again."
 msgstr "發生了未知的錯誤，請稍後再試"
@@ -4122,7 +4122,7 @@ msgid "Stage"
 msgstr "階段"
 
 msgid "Stage & Commit"
-msgstr ""
+msgstr "暫存 & 提交"
 
 msgid "Stage all changes"
 msgstr "暫存所有變更"
@@ -4369,7 +4369,7 @@ msgid "There are no issues to show"
 msgstr "沒有可以顯示的議題"
 
 msgid "There are no labels yet"
-msgstr ""
+msgstr "目前還沒有標籤"
 
 msgid "There are no merge requests to show"
 msgstr "沒有任何的合併請求"
@@ -4408,7 +4408,7 @@ msgid "This GitLab instance does not provide any shared Runners yet. Instance ad
 msgstr "此 GitLab 實例不提供任何分享的執行器。實例管理員可以在管理員區域註冊分享的執行器。"
 
 msgid "This diff is collapsed."
-msgstr ""
+msgstr "此差異已折疊。"
 
 msgid "This directory"
 msgstr "這個目錄"
@@ -4483,7 +4483,7 @@ msgid "This repository"
 msgstr "這個檔案庫"
 
 msgid "This source diff could not be displayed because it is too large."
-msgstr ""
+msgstr "此原始碼差異無法顯示，因為它太大。"
 
 msgid "This user has no identities"
 msgstr "該使用者沒有身份"
@@ -4662,7 +4662,7 @@ msgid "To GitLab"
 msgstr "到 GitLab"
 
 msgid "To add an SSH key you need to %{generate_link_start}generate one%{link_end} or use an %{existing_link_start}existing key%{link_end}."
-msgstr ""
+msgstr "要添加SSH密鑰，你需要 %{generate_link_start}產生一個%{link_end} 或使用 %{existing_link_start}現有的密鑰%{link_end}。"
 
 msgid "To import GitHub repositories, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import."
 msgstr "要匯入 GitHub 存儲庫，你可以使用 %{personal_access_token_link}。當你建立你的個人存取權杖時，你將需要選擇<code>檔案庫</code>範圍，所以我們將會顯示你公開及私人的檔案庫清單進行匯入。"
@@ -4698,7 +4698,7 @@ msgid "ToggleButton|Toggle Status: ON"
 msgstr "切換狀態：開啟"
 
 msgid "Too many changes to show."
-msgstr ""
+msgstr "太多的更改。"
 
 msgid "Total Time"
 msgstr "總時間"
@@ -4765,7 +4765,7 @@ msgstr "已經是最新"
 
 msgid "Update %{files}"
 msgid_plural "Update %{files} files"
-msgstr[0] ""
+msgstr[0] "更新 %{files} 檔案"
 
 msgid "Update your group name, description, avatar, and other general settings."
 msgstr "更新您的群組名稱、說明、頭像與其他一般設定。"
@@ -4801,7 +4801,7 @@ msgid "User and IP Rate Limits"
 msgstr "使用者與 IP 速率限制"
 
 msgid "Users"
-msgstr ""
+msgstr "使用者"
 
 msgid "Variables"
 msgstr "變數"
@@ -5038,7 +5038,7 @@ msgid "You are on a read-only GitLab instance."
 msgstr "您在唯讀的 GitLab 主機上。"
 
 msgid "You can %{linkStart}view the blob%{linkEnd} instead."
-msgstr ""
+msgstr "您可以 %{linkStart}查看BLOB%{linkEnd} 。"
 
 msgid "You can also create a project from the command line."
 msgstr "您也可以從指令新增一個專案。"
@@ -5195,7 +5195,7 @@ msgid "importing"
 msgstr "輸入"
 
 msgid "latest version"
-msgstr ""
+msgstr "最新版本"
 
 msgid "merge request"
 msgid_plural "merge requests"
