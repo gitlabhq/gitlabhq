@@ -112,7 +112,11 @@ export default {
   },
   methods: {
     handleToggle(e, checkTarget) {
-      if (!checkTarget || e.target === this.$refs.header) {
+      if (
+        !checkTarget ||
+        e.target === this.$refs.header ||
+        (e.target.classList && e.target.classList.contains('diff-toggle-caret'))
+      ) {
         this.$emit('toggleFile');
       }
     },
