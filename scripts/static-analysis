@@ -31,7 +31,9 @@ tasks = [
   %w[yarn run eslint],
   %w[bundle exec rubocop --parallel],
   %w[scripts/lint-conflicts.sh],
-  %w[scripts/lint-rugged]
+  %w[scripts/lint-rugged],
+  %w[bin/rake gitlab:routes_javascript],
+  %w[scripts/expect-unchanged.sh app/assets/javascripts/routes.js]
 ]
 
 static_analysis = Gitlab::Popen::Runner.new
