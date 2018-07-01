@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-07-01 16:35+1000\n"
-"PO-Revision-Date: 2018-07-01 11:01\n"
+"PO-Revision-Date: 2018-07-01 18:01\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -635,7 +635,7 @@ msgid "Average per day: %{average}"
 msgstr "В середньому за день: %{average}"
 
 msgid "Background color"
-msgstr ""
+msgstr "Колір фону"
 
 msgid "Background jobs"
 msgstr "Фонові завдання"
@@ -999,7 +999,7 @@ msgid "Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to s
 msgstr "Виберіть гілку чи тег (напр. %{master}) або введіть коміт (напр. %{sha}) для перегляду змін або для створення запиту на злиття."
 
 msgid "Choose any color."
-msgstr ""
+msgstr "Вибрати будь-який колір."
 
 msgid "Choose between <code>clone</code> or <code>fetch</code> to get the recent application code"
 msgstr ""
@@ -1553,7 +1553,7 @@ msgid "Committed by"
 msgstr "Коміт від"
 
 msgid "Commit…"
-msgstr ""
+msgstr "Коміт…"
 
 msgid "Compare"
 msgstr "Порівняти"
