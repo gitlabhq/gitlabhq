@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-07-01 16:35+1000\n"
-"PO-Revision-Date: 2018-07-01 18:25\n"
+"PO-Revision-Date: 2018-07-01 18:42\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -68,7 +68,7 @@ msgstr[1] "%d changements qui ne seront pas validés"
 
 msgid "%s additional commit has been omitted to prevent performance issues."
 msgid_plural "%s additional commits have been omitted to prevent performance issues."
-msgstr[0] "%s commit supplémentaire a été ignoré afin d’éviter de causer des problèmes de performance."
+msgstr[0] "Un commit supplémentaire a été ignoré afin d’éviter de causer des problèmes de performance."
 msgstr[1] "%s commits supplémentaires ont été ignorés afin d’éviter de causer des problèmes de performance."
 
 msgid "%{actionText} & %{openOrClose} %{noteable}"
@@ -79,14 +79,14 @@ msgstr "%{commit_author_link} a créé %{commit_timeago}"
 
 msgid "%{count} participant"
 msgid_plural "%{count} participants"
-msgstr[0] "%{count} participant·e"
+msgstr[0] "un·e participant·e"
 msgstr[1] "%{count} participant·e·s"
 
 msgid "%{filePath} deleted"
-msgstr ""
+msgstr "%{filePath} supprimé"
 
 msgid "%{group_docs_link_start}Groups%{group_docs_link_end} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects."
-msgstr ""
+msgstr "Les %{group_docs_link_start}groupes%{group_docs_link_end} vous permettent de gérer plusieurs projets et d’y collaborer. Les membres d’un groupe ont accès à tous ses projets."
 
 msgid "%{loadingIcon} Started"
 msgstr "%{loadingIcon} Démarré"
@@ -98,7 +98,7 @@ msgid "%{nip_domain} can be used as an alternative to a custom domain."
 msgstr "%{nip_domain} peut être utilisé comme alternative à un domaine personnalisé."
 
 msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
-msgstr "%{number_commits_behind} commits de retard sur %{default_branch}, %{number_commits_ahead} commits d'avance"
+msgstr "%{number_commits_behind} commits de retard sur %{default_branch}, %{number_commits_ahead} commits d’avance"
 
 msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will allow access on the next attempt."
 msgstr "%{number_of_failures} sur %{maximum_failures} tentative(s). GitLab va vous permettre d’accéder à la prochaine tentative."
@@ -110,7 +110,7 @@ msgid "%{openOrClose} %{noteable}"
 msgstr "%{openOrClose} %{noteable}"
 
 msgid "%{percent}%% complete"
-msgstr "%{percent}%% complété"
+msgstr "%{percent} %% effectués"
 
 msgid "%{storage_name}: failed storage access attempt on host:"
 msgid_plural "%{storage_name}: %{failed_attempts} failed storage access attempts:"
@@ -130,7 +130,7 @@ msgid "(checkout the %{link} for information on how to install it)."
 msgstr "(lisez %{link} pour savoir comment l’installer)."
 
 msgid "+ %{moreCount} more"
-msgstr "+ %{moreCount} de plus"
+msgstr "+ %{moreCount} de plus"
 
 msgid "- Runner is active and can process any new jobs"
 msgstr "- l’exécuteur est actif et peut traiter de nouvelles tâches"
