@@ -13,6 +13,10 @@ module BitbucketServer
         raw['slug']
       end
 
+      def browse_url
+        link = raw.dig('project', 'links', 'self').first.fetch('href')
+      end
+
       def clone_url
         raw['links']['clone'].find { |link| link['name'].starts_with?('http') }.fetch('href')
       end

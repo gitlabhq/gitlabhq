@@ -52,7 +52,7 @@
       - @repos.each do |repo|
         %tr{ id: "repo_#{repo.owner}___#{repo.slug}" }
           %td
-            = link_to repo.full_name, "https://bitbucket.org/#{repo.full_name}", target: '_blank', rel: 'noopener noreferrer'
+            = link_to repo.full_name, repo.browse_url, target: '_blank', rel: 'noopener noreferrer'
           %td.import-target
             %fieldset.row
             .input-group
