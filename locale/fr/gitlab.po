@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-07-01 16:35+1000\n"
-"PO-Revision-Date: 2018-07-01 23:15\n"
+"PO-Revision-Date: 2018-07-01 23:30\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -1661,10 +1661,10 @@ msgid "Copy commit SHA to clipboard"
 msgstr "Copier le condensat SHA du commit"
 
 msgid "Copy file name to clipboard"
-msgstr ""
+msgstr "Copier le nom du fichier dans le presse‐papiers"
 
 msgid "Copy file path to clipboard"
-msgstr ""
+msgstr "Copier le chemin d’accès du fichier dans le presse‐papiers"
 
 msgid "Copy reference to clipboard"
 msgstr "Copier la référence dans le presse‐papiers"
@@ -1691,7 +1691,7 @@ msgid "Create branch"
 msgstr "Créer une branche"
 
 msgid "Create commit"
-msgstr ""
+msgstr "Créer un commit"
 
 msgid "Create directory"
 msgstr "Créer un dossier"
@@ -1760,7 +1760,7 @@ msgid "CurrentUser|Settings"
 msgstr "Paramètres"
 
 msgid "Custom CI config path"
-msgstr ""
+msgstr "Chemin d’accès de la config d’intégration continue personnalisée"
 
 msgid "Custom notification events"
 msgstr "Événements de notification personnalisés"
@@ -1814,7 +1814,7 @@ msgid "Delete"
 msgstr "Supprimer"
 
 msgid "Delete list"
-msgstr ""
+msgstr "Supprimer la liste"
 
 msgid "Deploy"
 msgid_plural "Deploys"
@@ -1957,7 +1957,7 @@ msgid "Diffs|No file name available"
 msgstr "Aucun nom de fichier disponible"
 
 msgid "Diffs|Something went wrong while fetching diff lines."
-msgstr ""
+msgstr "Quelque chose s’est mal passé lors de la rapatriement des lignes du diff."
 
 msgid "Directory name"
 msgstr "Nom du dossier"
@@ -2029,7 +2029,7 @@ msgid "Edit"
 msgstr "Éditer"
 
 msgid "Edit Label"
-msgstr ""
+msgstr "Modifier l’étiquette"
 
 msgid "Edit Pipeline Schedule %{id}"
 msgstr "Éditer le pipeline programmé %{id}"
@@ -2038,13 +2038,13 @@ msgid "Edit files in the editor and commit changes here"
 msgstr "Modifier les fichiers dans l’éditeur et valider les modifications ici"
 
 msgid "Edit identity for %{user_name}"
-msgstr ""
+msgstr "Modifier l’identité de %{user_name}"
 
 msgid "Email"
 msgstr "Courriel"
 
 msgid "Email patch"
-msgstr ""
+msgstr "Correctif par courriel"
 
 msgid "Emails"
 msgstr "Courriels"
