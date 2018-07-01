@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-07-01 16:35+1000\n"
-"PO-Revision-Date: 2018-07-01 22:45\n"
+"PO-Revision-Date: 2018-07-01 23:10\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -889,7 +889,7 @@ msgid "CICD|You need to specify a domain if you want to use Auto Review Apps and
 msgstr "Vous devez spécifier un domaine si vous voulez utiliser la revue automatique d’applications Auto Review Apps et le déploiement automatique d’étapes Auto Deploy stages."
 
 msgid "Can't find HEAD commit for this branch"
-msgstr ""
+msgstr "Impossible de trouver le dernier commit (HEAD) pour cette branche"
 
 msgid "Cancel"
 msgstr "Annuler"
@@ -955,10 +955,10 @@ msgid "Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to s
 msgstr "Choisissez une branche ou une étiquette (par exemple %{master}) ou entrez un commit (par exemple %{sha}) pour voir ce qui a changé ou pour créer une demande de fusion."
 
 msgid "Choose any color."
-msgstr ""
+msgstr "Choisissez n’importe quelle couleur."
 
 msgid "Choose between <code>clone</code> or <code>fetch</code> to get the recent application code"
-msgstr ""
+msgstr "Choisissez entre <code>clone</code> ou <code>fetch</code> pour obtenir les dernières modifications du code de l’application"
 
 msgid "Choose file..."
 msgstr "Choisir le fichier…"
@@ -1063,7 +1063,7 @@ msgid "Click the button below to begin the install process by navigating to the 
 msgstr "Cliquez sur le bouton ci-dessous pour lancer le processus d’installation en accédant à la page Kubernetes"
 
 msgid "Click to expand it."
-msgstr ""
+msgstr "Cliquez pour l’agrandir."
 
 msgid "Click to expand text"
 msgstr "Cliquez pour agrandir le texte"
@@ -1156,7 +1156,7 @@ msgid "ClusterIntegration|Environment scope"
 msgstr "Portée de l’environnement"
 
 msgid "ClusterIntegration|Every new Google Cloud Platform (GCP) account receives $300 in credit upon %{sign_up_link}. In partnership with Google, GitLab is able to offer an additional $200 for both new and existing GCP accounts to get started with GitLab's Google Kubernetes Engine Integration."
-msgstr ""
+msgstr "Chaque nouveau compte Google Cloud Platform (GCP) reçoit un crédit de 300 US$ sur %{sign_up_link}. En partenariat avec Google, GitLab est en mesure de vous offrir 200 US$ supplémentaires, à la fois pour les nouveaux et les anciens comptes GCP, afin de vous permettre de commencer l’intégration de Google Kubernetes Engine sur GitLab."
 
 msgid "ClusterIntegration|Fetching machine types"
 msgstr "Récupération des types de machines"
@@ -1435,10 +1435,10 @@ msgid "Collapse sidebar"
 msgstr "Réduire la barre latérale"
 
 msgid "Comment & resolve discussion"
-msgstr ""
+msgstr "Commenter et marquer la discussion comme résolue"
 
 msgid "Comment & unresolve discussion"
-msgstr ""
+msgstr "Commenter et marquer la discussion comme non résolue"
 
 msgid "Comments"
 msgstr "Commentaires"
