@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-07-01 16:35+1000\n"
-"PO-Revision-Date: 2018-07-01 23:35\n"
+"PO-Revision-Date: 2018-07-01 23:51\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -1556,7 +1556,7 @@ msgid "Configure limits for web and API requests."
 msgstr "Configurer les limites pour les requêtes Web et d’API."
 
 msgid "Configure push mirrors."
-msgstr ""
+msgstr "Configurez les miroirs où pousser le code."
 
 msgid "Configure storage path and circuit breaker settings."
 msgstr "Configurez les paramètres du chemin de stockage et du disjoncteur."
@@ -2221,7 +2221,7 @@ msgid "Expand"
 msgstr "Étendre"
 
 msgid "Expand all"
-msgstr ""
+msgstr "Tout étendre"
 
 msgid "Expand sidebar"
 msgstr "Étendre la barre latérale"
@@ -4941,7 +4941,7 @@ msgid "User and IP Rate Limits"
 msgstr "Limites de l’utilisateur et du débit IP"
 
 msgid "Users"
-msgstr ""
+msgstr "Utilisa·teur·trice·s"
 
 msgid "Variables"
 msgstr "Variables"
@@ -5178,7 +5178,7 @@ msgid "You are on a read-only GitLab instance."
 msgstr "Vous êtes sur une instance GitLab en lecture seule."
 
 msgid "You can %{linkStart}view the blob%{linkEnd} instead."
-msgstr ""
+msgstr "Vous pouvez %{linkStart}afficher les données brutes%{linkEnd} à la place."
 
 msgid "You can also create a project from the command line."
 msgstr "Vous pouvez également créer un projet en ligne de commande."
@@ -5336,7 +5336,7 @@ msgid "importing"
 msgstr "importation en cours"
 
 msgid "latest version"
-msgstr ""
+msgstr "dernière version"
 
 msgid "merge request"
 msgid_plural "merge requests"
