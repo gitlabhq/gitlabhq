@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-29 16:17+1000\n"
-"PO-Revision-Date: 2018-06-29 19:32\n"
+"POT-Creation-Date: 2018-07-01 16:35+1000\n"
+"PO-Revision-Date: 2018-07-01 11:02\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Portuguese, Brazilian\n"
 "Language: pt_BR\n"
@@ -217,6 +217,9 @@ msgstr "Um novo \"branch\" será criado no seu \"fork\" e um novo merge request 
 msgid "A project is where you house your files (repository), plan your work (issues), and publish your documentation (wiki), %{among_other_things_link}."
 msgstr "Um projeto é onde você armazena seus arquivos (repositório), planeja seu trabalho (issues), e publica sua documentação (wiki), %{among_other_things_link}."
 
+msgid "A regular expression that will be used to find the test coverage output in the job trace. Leave blank to disable"
+msgstr ""
+
 msgid "A user with write access to the source branch selected this option"
 msgstr "Um usuário com permissão de escrita no branch de origem selecionou esta opção"
 
@@ -237,6 +240,9 @@ msgstr "Tokens de acesso"
 
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
 msgstr "Os acessos à storages com defeito foram temporariamente desabilitados para permitir a sua remontagem. Redefina as informações de armazenamento depois que o problema foi resolvido para permitir o acesso de novo."
+
+msgid "Access your runner token, customize your pipeline configuration, and view your pipeline status and coverage report."
+msgstr ""
 
 msgid "Account"
 msgstr "Conta"
@@ -346,6 +352,9 @@ msgstr "Todas as funcionalidades estão habilitadas para projetos em branco, a p
 msgid "Allow commits from members who can merge to the target branch."
 msgstr "Permitir commits de membros que podem fazer merge ao branch de destino."
 
+msgid "Allow public access to pipelines and job details, including output logs and artifacts"
+msgstr ""
+
 msgid "Allow rendering of PlantUML diagrams in Asciidoc documents."
 msgstr "Permitir renderização de diagramas PlantUML em documentos Asciidoc."
 
@@ -359,6 +368,24 @@ msgid "Alternatively, you can use a %{personal_access_token_link}. When you crea
 msgstr "Alternativamente, você pode usar um %{personal_access_token_link}. Quando você cria seu Token de Acesso Pessoal, você precisará selecionar o escopo do <code>repositório</code>, para que possamos exibir uma lista de seus repositórios públicos e privados que estão disponíveis para se importar."
 
 msgid "An error occured creating the new branch."
+msgstr ""
+
+msgid "An error occured whilst loading all the files."
+msgstr ""
+
+msgid "An error occured whilst loading the file content."
+msgstr ""
+
+msgid "An error occured whilst loading the file."
+msgstr ""
+
+msgid "An error occured whilst loading the merge request changes."
+msgstr ""
+
+msgid "An error occured whilst loading the merge request version data."
+msgstr ""
+
+msgid "An error occured whilst loading the merge request."
 msgstr ""
 
 msgid "An error occurred previewing the blob"
@@ -523,6 +550,9 @@ msgstr "Apps de revisão e deploy automáticos precisam de um nome de domínio e
 msgid "Auto Review Apps and Auto Deploy need a domain name to work correctly."
 msgstr "Apps de revisão automática e Auto Deploy precisam de um nome de domínio para que funcione corretamente."
 
+msgid "Auto-cancel redundant, pending pipelines"
+msgstr ""
+
 msgid "AutoDevOps|Auto DevOps"
 msgstr "Auto DevOps"
 
@@ -639,6 +669,9 @@ msgstr "Seus selos"
 
 msgid "Begin with the selected commit"
 msgstr "Comece com o commit selecionado"
+
+msgid "Below are examples of regex for existing tools:"
+msgstr ""
 
 msgid "Boards"
 msgstr ""
@@ -801,6 +834,9 @@ msgstr "por"
 msgid "CI / CD"
 msgstr "CI / CD"
 
+msgid "CI / CD Settings"
+msgstr ""
+
 msgid "CI/CD configuration"
 msgstr "Configuração de CI/CD"
 
@@ -919,6 +955,9 @@ msgid "Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to s
 msgstr "Escolha a branch/tag (ex: %{master}) ou número do commit (ex: %{sha}) para ver o que mudou ou para criar um merge request."
 
 msgid "Choose any color."
+msgstr ""
+
+msgid "Choose between <code>clone</code> or <code>fetch</code> to get the recent application code"
 msgstr ""
 
 msgid "Choose file..."
@@ -1720,6 +1759,9 @@ msgstr "Perfil"
 msgid "CurrentUser|Settings"
 msgstr "Configurações"
 
+msgid "Custom CI config path"
+msgstr ""
+
 msgid "Custom notification events"
 msgstr "Eventos de notificação personalizados"
 
@@ -2133,9 +2175,6 @@ msgstr "Erro ao carregar merge requests."
 msgid "Error loading project data. Please try again."
 msgstr "Erro ao carregar dados do projeto. Por favor, tente novamente."
 
-msgid "Error loading tree data. Please try again."
-msgstr ""
-
 msgid "Error occurred when toggling the notification subscription"
 msgstr "Erro ao alterar configuração de notificação de assinatura"
 
@@ -2217,14 +2256,14 @@ msgstr "Falha ao atualizar Issues. Por favor, tente novamente."
 msgid "Failure"
 msgstr "Falha"
 
+msgid "Faster as it re-uses the project workspace (falling back to clone if it doesn't exist)"
+msgstr ""
+
 msgid "Feb"
 msgstr "Fev"
 
 msgid "February"
 msgstr "Fevereiro"
-
-msgid "Fetching diff files failed. Please reload the page to try again!"
-msgstr ""
 
 msgid "Fields on this page are now uneditable, you can configure"
 msgstr "Campos nessa página não são mais editáveis, você pode configurar"
@@ -2252,6 +2291,15 @@ msgstr "Primeiro"
 
 msgid "FirstPushedBy|pushed by"
 msgstr "publicado por"
+
+msgid "For internal projects, any logged in user can view pipelines and access job details (output logs and artifacts)"
+msgstr ""
+
+msgid "For private projects, any member (guest or higher) can view pipelines and access job details (output logs and artifacts)"
+msgstr ""
+
+msgid "For public projects, anyone can view pipelines and access job details (output logs and artifacts)"
+msgstr ""
 
 msgid "Fork"
 msgid_plural "Forks"
@@ -2291,6 +2339,9 @@ msgstr "Chaves GPG"
 msgid "General"
 msgstr "Geral"
 
+msgid "General pipelines"
+msgstr ""
+
 msgid "Generate a default set of labels"
 msgstr "Gerar labels padrão"
 
@@ -2302,6 +2353,9 @@ msgstr "Revisão do Git"
 
 msgid "Git storage health information has been reset"
 msgstr "Informações sobre o status de saúde do storage Git foram reiniciadas"
+
+msgid "Git strategy for pipelines"
+msgstr ""
 
 msgid "Git version"
 msgstr "Versão do Git"
@@ -2497,6 +2551,12 @@ msgstr ""
 msgid "Identities"
 msgstr ""
 
+msgid "If disabled, the access level will depend on the user's permissions in the project."
+msgstr ""
+
+msgid "If enabled"
+msgstr ""
+
 msgid "If you already have files you can push them using the %{link_to_cli} below."
 msgstr "Se você já tem arquivos, pode realizar um push usando o %{link_to_cli} abaixo."
 
@@ -2544,6 +2604,9 @@ msgstr "A instância não suporta múltiplos clusters Kubernetes"
 
 msgid "Integrations"
 msgstr "Integrações"
+
+msgid "Integrations Settings"
+msgstr ""
 
 msgid "Interested parties can even contribute by pushing commits if they want to."
 msgstr "As partes interessadas podem até contribuir enviando commits, caso queiram."
@@ -2960,6 +3023,9 @@ msgstr "Nova label"
 msgid "New merge request"
 msgstr "Novo merge request"
 
+msgid "New pipelines will cancel older, pending pipelines on the same branch"
+msgstr ""
+
 msgid "New project"
 msgstr "Novo projeto"
 
@@ -3197,6 +3263,9 @@ msgstr "Pausar"
 msgid "Pending"
 msgstr "Pendente"
 
+msgid "Per job. If a job passes this threshold, it will be marked as failed"
+msgstr ""
+
 msgid "Perform advanced options such as changing path, transferring, or removing the group."
 msgstr "Execute opções avançadas, como alterar o caminho, transferir ou remover o grupo."
 
@@ -3220,6 +3289,9 @@ msgstr "Agendamento da Pipeline"
 
 msgid "Pipeline Schedules"
 msgstr "Agendamentos da Pipeline"
+
+msgid "Pipeline triggers"
+msgstr ""
 
 msgid "PipelineCharts|Failed:"
 msgstr "Falhou:"
@@ -3644,6 +3716,9 @@ msgstr "Público - O grupo e seus projetos podem ser visualizados por todos sem 
 msgid "Public - The project can be accessed without any authentication."
 msgstr "Público - O projeto pode ser acessado sem nenhuma autenticação."
 
+msgid "Public pipelines"
+msgstr ""
+
 msgid "Push events"
 msgstr "Eventos de push"
 
@@ -3676,6 +3751,9 @@ msgstr "Registrar/Login"
 
 msgid "Register and see your runners for this group."
 msgstr "Registre-se e veja seus runners para este grupo."
+
+msgid "Register and see your runners for this project."
+msgstr ""
 
 msgid "Registry"
 msgstr "Registro"
@@ -3721,6 +3799,9 @@ msgstr "Remover projeto"
 
 msgid "Repository"
 msgstr "Repositório"
+
+msgid "Repository Settings"
+msgstr ""
 
 msgid "Repository maintenance"
 msgstr "Manutenção do repositório"
@@ -3790,6 +3871,9 @@ msgstr "Revisando (merge request !%{mergeRequestId})"
 msgid "Rollback"
 msgstr ""
 
+msgid "Runner token"
+msgstr ""
+
 msgid "Runners"
 msgstr "Runners"
 
@@ -3804,6 +3888,9 @@ msgstr "Executando"
 
 msgid "SSH Keys"
 msgstr "Chaves SSH"
+
+msgid "SSL Verification"
+msgstr ""
 
 msgid "Save"
 msgstr ""
@@ -3998,6 +4085,9 @@ msgstr "Restrições de cadastro"
 
 msgid "Size and domain settings for static websites"
 msgstr "Configurações de tamanho e domínio para sites estáticos"
+
+msgid "Slower but makes sure the project workspace is pristine as it clones the repository from scratch for every job"
+msgstr ""
 
 msgid "Snippets"
 msgstr "Snippets"
@@ -4319,6 +4409,9 @@ msgstr "Contrato de Termos de Serviço e Política de Privacidade"
 msgid "Terms of Service and Privacy Policy"
 msgstr "Termos de Serviço e Política de Privacidade"
 
+msgid "Test coverage parsing"
+msgstr ""
+
 msgid "The Issue Tracker is the place to add things that need to be improved or solved in a project"
 msgstr "Issue Tracker é o lugar para adicionar coisas que precisam ser melhoradas ou resolvidas em um projeto"
 
@@ -4349,6 +4442,9 @@ msgstr "O número de tentativas que gitlab fará para acessar um storage."
 msgid "The number of failures of after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
 msgstr "O número de falhas para que o GitLab desabilite o acesso ao storage. O número de falhas pode ser redefinido na interface do administrador: %{link_to_health_page} ou %{api_documentation_link}."
 
+msgid "The path to CI config file. Defaults to <code>.gitlab-ci.yml</code>"
+msgstr ""
+
 msgid "The phase of the development lifecycle."
 msgstr "A fase do ciclo de vida do desenvolvimento."
 
@@ -4375,6 +4471,9 @@ msgstr "O repositório deve ser acessível por <code>http://</code>, <code>https
 
 msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
 msgstr "A etapa de revisão mostra o tempo de criação de uma solicitação de incorporação até sua aceitação. Os dados serão automaticamente adicionados depois que sua primeira solicitação de incorporação for aceita."
+
+msgid "The secure token used by the Runner to checkout the project"
+msgstr ""
 
 msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
 msgstr "A etapa de homologação mostra o tempo entre o aceite da solicitação de incorporação e a implantação do código no ambiente de produção. Os dados serão automaticamente adicionados depois que você implantar em produção pela primeira vez."
@@ -4676,6 +4775,9 @@ msgstr "agora"
 msgid "Timeago|right now"
 msgstr "agora mesmo"
 
+msgid "Timeout"
+msgstr ""
+
 msgid "Time|hr"
 msgid_plural "Time|hrs"
 msgstr[0] "h"
@@ -4748,6 +4850,9 @@ msgstr "Acompanhe o tempo com ações rápidas"
 
 msgid "Trigger this manual action"
 msgstr "Acionar esta ação manual"
+
+msgid "Triggers can force a specific branch or tag to get rebuilt with an API call.  These tokens will impersonate their associated user including their access to projects and their project permissions."
+msgstr ""
 
 msgid "Try again"
 msgstr "Tente novamente"
