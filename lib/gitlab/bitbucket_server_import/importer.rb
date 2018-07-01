@@ -63,7 +63,7 @@ module Gitlab
             target_branch_sha = project.repository.commit(target_branch_sha)&.sha || target_branch_sha
             project.merge_requests.find_by(iid: pull_request.iid)&.destroy
 
-            merge_request = project.merge_requests.create!(
+            attributes = {
               iid: pull_request.iid,
               title: pull_request.title,
               description: description,
@@ -78,8 +78,10 @@ module Gitlab
               assignee_id: nil,
               created_at: pull_request.created_at,
               updated_at: pull_request.updated_at
-            )
+            }
 
+            attributes[:merge_commit_sha] = target_branch_sha if pull_request.merged?
+            merge_request = project.merge_requests.create!(attributes)
             import_pull_request_comments(pull_request, merge_request) if merge_request.persisted?
           rescue StandardError => e
             errors << { type: :pull_request, iid: pull_request.iid, errors: e.message, trace: e.backtrace.join("\n"), raw_response: pull_request.raw }
