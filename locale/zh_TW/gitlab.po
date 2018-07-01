@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-07-01 16:35+1000\n"
-"PO-Revision-Date: 2018-07-01 11:02\n"
+"PO-Revision-Date: 2018-07-01 13:35\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -197,7 +197,7 @@ msgid "A project is where you house your files (repository), plan your work (iss
 msgstr "一個專案提供了以下功能，存放你的文件(存儲庫)，計劃你的工作(議題)，並發布你的文件(維基)， %{among_other_things_link}。"
 
 msgid "A regular expression that will be used to find the test coverage output in the job trace. Leave blank to disable"
-msgstr ""
+msgstr "正則表達式，將用於在作業跟踪中查找測試覆蓋率的輸出。留空時停用此功能"
 
 msgid "A user with write access to the source branch selected this option"
 msgstr "一個有存取原始分支權限的使用者，選擇了此項目"
@@ -221,7 +221,7 @@ msgid "Access to failing storages has been temporarily disabled to allow the mou
 msgstr "已暫時停用失敗的 Git 儲存空間。當儲存空間恢復正常後，請重置儲存空間健康指數。"
 
 msgid "Access your runner token, customize your pipeline configuration, and view your pipeline status and coverage report."
-msgstr ""
+msgstr "存取您執行器憑證，自定義您的流水線配置，並查看你的流水現狀態及測試涵蓋率報告。"
 
 msgid "Account"
 msgstr "帳號"
@@ -332,7 +332,7 @@ msgid "Allow commits from members who can merge to the target branch."
 msgstr "允許可以合併至目標分支的成員提交"
 
 msgid "Allow public access to pipelines and job details, including output logs and artifacts"
-msgstr ""
+msgstr "允許公開存取流水線和任務詳細資訊，包含輸出日誌和產物"
 
 msgid "Allow rendering of PlantUML diagrams in Asciidoc documents."
 msgstr "允許在 Asciidoc 文件中渲染 PlantUML64"
@@ -350,22 +350,22 @@ msgid "An error occured creating the new branch."
 msgstr "創建新分支時發生錯誤。"
 
 msgid "An error occured whilst loading all the files."
-msgstr ""
+msgstr "讀取檔案時發生錯誤。"
 
 msgid "An error occured whilst loading the file content."
-msgstr ""
+msgstr "讀取檔案內容時發生錯誤。"
 
 msgid "An error occured whilst loading the file."
-msgstr ""
+msgstr "讀取檔案時發生錯誤。"
 
 msgid "An error occured whilst loading the merge request changes."
-msgstr ""
+msgstr "讀取合併請求的更改時發生錯誤。"
 
 msgid "An error occured whilst loading the merge request version data."
-msgstr ""
+msgstr "讀取合併請求的版本資訊時發生錯誤。"
 
 msgid "An error occured whilst loading the merge request."
-msgstr ""
+msgstr "讀取合併請求時發生錯誤。"
 
 msgid "An error occurred previewing the blob"
 msgstr "預覽 blob 檔案時發生錯誤"
@@ -530,7 +530,7 @@ msgid "Auto Review Apps and Auto Deploy need a domain name to work correctly."
 msgstr "自動複閱應用與自動部署需要網域才能運作。"
 
 msgid "Auto-cancel redundant, pending pipelines"
-msgstr ""
+msgstr "自動取消多餘、待處理的流水線"
 
 msgid "AutoDevOps|Auto DevOps"
 msgstr "自動 DevOps"
@@ -650,7 +650,7 @@ msgid "Begin with the selected commit"
 msgstr "從選定的變更紀錄開始"
 
 msgid "Below are examples of regex for existing tools:"
-msgstr ""
+msgstr "以下是現有工具的正規表達式示例："
 
 msgid "Boards"
 msgstr "看板"
@@ -813,7 +813,7 @@ msgid "CI / CD"
 msgstr "CI / CD"
 
 msgid "CI / CD Settings"
-msgstr ""
+msgstr "CI / CD 設定"
 
 msgid "CI/CD configuration"
 msgstr "CI/CD 設定"
@@ -936,7 +936,7 @@ msgid "Choose any color."
 msgstr "選取顏色。"
 
 msgid "Choose between <code>clone</code> or <code>fetch</code> to get the recent application code"
-msgstr ""
+msgstr "選擇 <code>複製</code> 或 <code>抓取</code> 以獲取最新的應用程式原始碼"
 
 msgid "Choose file..."
 msgstr "選擇檔案⋯"
@@ -1736,7 +1736,7 @@ msgid "CurrentUser|Settings"
 msgstr "設定"
 
 msgid "Custom CI config path"
-msgstr ""
+msgstr "自定義 CI 配置路徑"
 
 msgid "Custom notification events"
 msgstr "自訂事件通知"
@@ -2232,7 +2232,7 @@ msgid "Failure"
 msgstr "失敗"
 
 msgid "Faster as it re-uses the project workspace (falling back to clone if it doesn't exist)"
-msgstr ""
+msgstr "較快，因為它再次使用專案工作空間 (如果它不存在，則返回到複製)"
 
 msgid "Feb"
 msgstr "二月"
@@ -2268,13 +2268,13 @@ msgid "FirstPushedBy|pushed by"
 msgstr "推送者："
 
 msgid "For internal projects, any logged in user can view pipelines and access job details (output logs and artifacts)"
-msgstr ""
+msgstr "對於內部專案，任何登錄的使用者都可以查看流水線並存取工作詳細資訊 (輸出日誌和產物)"
 
 msgid "For private projects, any member (guest or higher) can view pipelines and access job details (output logs and artifacts)"
-msgstr ""
+msgstr "對於私人專案，任何成員 (訪客或以上) 都可以查看流水線並存取工作詳細資訊 (輸出日誌和產物)"
 
 msgid "For public projects, anyone can view pipelines and access job details (output logs and artifacts)"
-msgstr ""
+msgstr "對於公開專案，任何人都可以查看流水線並存取工作詳細資訊 (輸出日誌和產物)"
 
 msgid "Fork"
 msgid_plural "Forks"
@@ -2314,7 +2314,7 @@ msgid "General"
 msgstr "一般"
 
 msgid "General pipelines"
-msgstr ""
+msgstr "一般流水線"
 
 msgid "Generate a default set of labels"
 msgstr "產生預設的標籤"
@@ -2329,7 +2329,7 @@ msgid "Git storage health information has been reset"
 msgstr "Git 儲存空間健康指數已重置"
 
 msgid "Git strategy for pipelines"
-msgstr ""
+msgstr "Git 流水線策略"
 
 msgid "Git version"
 msgstr "Git 版本"
@@ -2525,10 +2525,10 @@ msgid "Identities"
 msgstr "身份"
 
 msgid "If disabled, the access level will depend on the user's permissions in the project."
-msgstr ""
+msgstr "如果禁用，存取等級將取決於使用者在專案中的權限。"
 
 msgid "If enabled"
-msgstr ""
+msgstr "如果啟用"
 
 msgid "If you already have files you can push them using the %{link_to_cli} below."
 msgstr "如果你已經擁有檔案，你可以使用 %{link_to_cli} 推送他們。"
@@ -2579,7 +2579,7 @@ msgid "Integrations"
 msgstr "整合"
 
 msgid "Integrations Settings"
-msgstr ""
+msgstr "整合設定"
 
 msgid "Interested parties can even contribute by pushing commits if they want to."
 msgstr "有興趣的人甚至可以通過推送更動紀錄做出貢獻，如果他們願意的話。"
@@ -2995,7 +2995,7 @@ msgid "New merge request"
 msgstr "新增合併請求"
 
 msgid "New pipelines will cancel older, pending pipelines on the same branch"
-msgstr ""
+msgstr "新的流水線將取消同一分支上較舊、未解決的流水線"
 
 msgid "New project"
 msgstr "新專案"
@@ -3235,7 +3235,7 @@ msgid "Pending"
 msgstr "等待處理"
 
 msgid "Per job. If a job passes this threshold, it will be marked as failed"
-msgstr ""
+msgstr "每份任務。如果任務通過此閾值，它將被標記為失敗"
 
 msgid "Perform advanced options such as changing path, transferring, or removing the group."
 msgstr "執行進階選項，例如更改路徑、傳輸或移除群組。"
@@ -3262,7 +3262,7 @@ msgid "Pipeline Schedules"
 msgstr "流水線排程"
 
 msgid "Pipeline triggers"
-msgstr ""
+msgstr "流水線觸發器"
 
 msgid "PipelineCharts|Failed:"
 msgstr "失敗："
@@ -3688,7 +3688,7 @@ msgid "Public - The project can be accessed without any authentication."
 msgstr "公開 - 無須任何身份驗證即可存取該專案"
 
 msgid "Public pipelines"
-msgstr ""
+msgstr "公共流水線"
 
 msgid "Push events"
 msgstr "推送事件"
@@ -3724,7 +3724,7 @@ msgid "Register and see your runners for this group."
 msgstr "註冊、並觀察您在這個群組的執行器。"
 
 msgid "Register and see your runners for this project."
-msgstr ""
+msgstr "註冊、並觀察您在這個專案的執行器。"
 
 msgid "Registry"
 msgstr "註冊表"
@@ -3772,7 +3772,7 @@ msgid "Repository"
 msgstr "檔案庫"
 
 msgid "Repository Settings"
-msgstr ""
+msgstr "檔案庫設置"
 
 msgid "Repository maintenance"
 msgstr "檔案庫維護"
@@ -3842,7 +3842,7 @@ msgid "Rollback"
 msgstr "退回"
 
 msgid "Runner token"
-msgstr ""
+msgstr "執行器憑證"
 
 msgid "Runners"
 msgstr "執行器"
@@ -3860,7 +3860,7 @@ msgid "SSH Keys"
 msgstr "SSH 金鑰"
 
 msgid "SSL Verification"
-msgstr ""
+msgstr "SSL 驗證"
 
 msgid "Save"
 msgstr "儲存"
@@ -4056,7 +4056,7 @@ msgid "Size and domain settings for static websites"
 msgstr "為靜態網站的大小與網域設定"
 
 msgid "Slower but makes sure the project workspace is pristine as it clones the repository from scratch for every job"
-msgstr ""
+msgstr "速度較慢，但確保項目工作空間是原始的，因為它為每項工作從頭開始複製檔案庫"
 
 msgid "Snippets"
 msgstr "程式碼片段"
@@ -4378,7 +4378,7 @@ msgid "Terms of Service and Privacy Policy"
 msgstr "服務條款和隱私政策"
 
 msgid "Test coverage parsing"
-msgstr ""
+msgstr "測試覆蓋率分析"
 
 msgid "The Issue Tracker is the place to add things that need to be improved or solved in a project"
 msgstr "議題追蹤器是添加專案中需要改進或解決問題的地方。"
@@ -4411,7 +4411,7 @@ msgid "The number of failures of after which GitLab will completely prevent acce
 msgstr "GitLab 將阻擋存取失敗的次數。在管理者介面中可以重置失敗次數: %{link_to_health_page} 或使用 %{api_documentation_link}。"
 
 msgid "The path to CI config file. Defaults to <code>.gitlab-ci.yml</code>"
-msgstr ""
+msgstr "CI 設定檔的路徑。默認為 <code>.gitlab-ci.yml</code>"
 
 msgid "The phase of the development lifecycle."
 msgstr "專案開發週期的各個階段。"
@@ -4441,7 +4441,7 @@ msgid "The review stage shows the time from creating the merge request to mergin
 msgstr "複閱階段顯示從合併請求建立後至被合併的時間。當建立第一個合併請求後，資料將自動填入。"
 
 msgid "The secure token used by the Runner to checkout the project"
-msgstr ""
+msgstr "此安全憑證使用於執行器簽出專案"
 
 msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
 msgstr "試營運段顯示從合併請求被合併後至部署營運的時間。當第一次部署營運後，資料將自動填入"
@@ -4744,7 +4744,7 @@ msgid "Timeago|right now"
 msgstr "立刻"
 
 msgid "Timeout"
-msgstr ""
+msgstr "逾時"
 
 msgid "Time|hr"
 msgid_plural "Time|hrs"
@@ -4818,7 +4818,7 @@ msgid "Trigger this manual action"
 msgstr "啟動此任務"
 
 msgid "Triggers can force a specific branch or tag to get rebuilt with an API call.  These tokens will impersonate their associated user including their access to projects and their project permissions."
-msgstr ""
+msgstr "觸發器可以強制使用API​​調用重建特定的分支或標記。這些令牌將模仿他們的關聯用戶，包括他們對項目的訪問權限。"
 
 msgid "Try again"
 msgstr "重試"
