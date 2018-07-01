@@ -526,12 +526,21 @@ module Ci
 
     def artifacts
       list = []
-
-      if options[:artifacts].key?(:junit)
-        list << {:name=>nil, :untracked=>nil, :paths=>[options[:artifacts].delete(:junit)], :when=>nil, :artifact_type => 'junit', :artifact_format => 'raw', :expire_in=>nil}
-      end
+      list << artifacts_junit(options[:artifacts].delete(:junit)) if options[:artifacts].key?(:junit)
       list << options[:artifacts].merge(artifact_type: 'archive', artifact_format: 'zip')
       list
+    end
+
+    def artifacts_junit(path)
+      { 
+        name: 'junit.xml',
+        untracked: nil,
+        paths: [path],
+        when: nil,
+        artifact_type: 'junit',
+        artifact_format: 'gzip',
+        expire_in: nil # TODO:
+      }
     end
 
     def cache
