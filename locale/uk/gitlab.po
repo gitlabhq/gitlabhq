@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-29 16:17+1000\n"
-"PO-Revision-Date: 2018-06-29 20:11\n"
+"POT-Creation-Date: 2018-07-01 16:35+1000\n"
+"PO-Revision-Date: 2018-07-01 11:01\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -259,6 +259,9 @@ msgstr "У вашому форку буде створено нову гілку
 msgid "A project is where you house your files (repository), plan your work (issues), and publish your documentation (wiki), %{among_other_things_link}."
 msgstr "Проект — це місце де ви можете розміщувати свої файли (репозиторій), планувати роботу (проблеми) і публікувати документацію (wiki), %{among_other_things_link}."
 
+msgid "A regular expression that will be used to find the test coverage output in the job trace. Leave blank to disable"
+msgstr ""
+
 msgid "A user with write access to the source branch selected this option"
 msgstr "Користувач із правом запису в гілку-джерело вибрав цей варіант"
 
@@ -279,6 +282,9 @@ msgstr "Токени доступу"
 
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
 msgstr "Доступ до сховищ, що вийшли з ладу, тимчасово прибраний задля відновлення монтування. Після вирішення проблеми обнуліть інформацію сховища для відновлення доступу."
+
+msgid "Access your runner token, customize your pipeline configuration, and view your pipeline status and coverage report."
+msgstr ""
 
 msgid "Account"
 msgstr "Обліковий запис"
@@ -388,6 +394,9 @@ msgstr "Всі функції для нових проектів берутьс�
 msgid "Allow commits from members who can merge to the target branch."
 msgstr "Дозволити коміти від учасників, які можуть зливати в цільову гілку."
 
+msgid "Allow public access to pipelines and job details, including output logs and artifacts"
+msgstr ""
+
 msgid "Allow rendering of PlantUML diagrams in Asciidoc documents."
 msgstr "Дозволити відображення діаграм PlantUML в документах Asciidoc."
 
@@ -401,6 +410,24 @@ msgid "Alternatively, you can use a %{personal_access_token_link}. When you crea
 msgstr "Крім того, ви можете використовувати %{personal_access_token_link}. Коли ви створюватимете свій персональний токен доступу, вам потрібно буде вибрати область <code>repo</code>, щоб ми могли відобразити список ваших публічних та приватних репозиторіїв, доступних для імпорту."
 
 msgid "An error occured creating the new branch."
+msgstr ""
+
+msgid "An error occured whilst loading all the files."
+msgstr ""
+
+msgid "An error occured whilst loading the file content."
+msgstr ""
+
+msgid "An error occured whilst loading the file."
+msgstr ""
+
+msgid "An error occured whilst loading the merge request changes."
+msgstr ""
+
+msgid "An error occured whilst loading the merge request version data."
+msgstr ""
+
+msgid "An error occured whilst loading the merge request."
 msgstr ""
 
 msgid "An error occurred previewing the blob"
@@ -565,6 +592,9 @@ msgstr "Для коректної роботи Auto Review Apps та Auto Deploy
 msgid "Auto Review Apps and Auto Deploy need a domain name to work correctly."
 msgstr "Для коректної роботи Auto Review Apps та Auto Deploy необхідно вказати доменне ім’я."
 
+msgid "Auto-cancel redundant, pending pipelines"
+msgstr ""
+
 msgid "AutoDevOps|Auto DevOps"
 msgstr "Auto DevOps"
 
@@ -681,6 +711,9 @@ msgstr "Ваші значки"
 
 msgid "Begin with the selected commit"
 msgstr "Почати із виділеного коміту"
+
+msgid "Below are examples of regex for existing tools:"
+msgstr ""
 
 msgid "Boards"
 msgstr "Дошки"
@@ -845,6 +878,9 @@ msgstr "від"
 msgid "CI / CD"
 msgstr "CI / CD"
 
+msgid "CI / CD Settings"
+msgstr ""
+
 msgid "CI/CD configuration"
 msgstr "Налаштування CI/CD"
 
@@ -963,6 +999,9 @@ msgid "Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to s
 msgstr "Виберіть гілку чи тег (напр. %{master}) або введіть коміт (напр. %{sha}) для перегляду змін або для створення запиту на злиття."
 
 msgid "Choose any color."
+msgstr ""
+
+msgid "Choose between <code>clone</code> or <code>fetch</code> to get the recent application code"
 msgstr ""
 
 msgid "Choose file..."
@@ -1768,6 +1807,9 @@ msgstr "Профіль"
 msgid "CurrentUser|Settings"
 msgstr "Налаштування"
 
+msgid "Custom CI config path"
+msgstr ""
+
 msgid "Custom notification events"
 msgstr "Користувацькі налаштування повідомлень про події"
 
@@ -2183,9 +2225,6 @@ msgstr "Помилка при завантаженні запитів на зл�
 msgid "Error loading project data. Please try again."
 msgstr "Помилка при завантаженні даних проекту. Будь ласка, спробуйте знову."
 
-msgid "Error loading tree data. Please try again."
-msgstr ""
-
 msgid "Error occurred when toggling the notification subscription"
 msgstr "Сталася помилка під час підключення підписки на сповіщення"
 
@@ -2267,14 +2306,14 @@ msgstr "Не вдалося оновити проблеми. Будь ласка
 msgid "Failure"
 msgstr "Помилка"
 
+msgid "Faster as it re-uses the project workspace (falling back to clone if it doesn't exist)"
+msgstr ""
+
 msgid "Feb"
 msgstr "лют."
 
 msgid "February"
 msgstr "лютий"
-
-msgid "Fetching diff files failed. Please reload the page to try again!"
-msgstr ""
 
 msgid "Fields on this page are now uneditable, you can configure"
 msgstr "Поля на цій сторінці зараз недоступні для редагування, ви можете налаштувати"
@@ -2302,6 +2341,15 @@ msgstr "Перший"
 
 msgid "FirstPushedBy|pushed by"
 msgstr "відправлено"
+
+msgid "For internal projects, any logged in user can view pipelines and access job details (output logs and artifacts)"
+msgstr ""
+
+msgid "For private projects, any member (guest or higher) can view pipelines and access job details (output logs and artifacts)"
+msgstr ""
+
+msgid "For public projects, anyone can view pipelines and access job details (output logs and artifacts)"
+msgstr ""
 
 msgid "Fork"
 msgid_plural "Forks"
@@ -2343,6 +2391,9 @@ msgstr "GPG ключі"
 msgid "General"
 msgstr "Загальні"
 
+msgid "General pipelines"
+msgstr ""
+
 msgid "Generate a default set of labels"
 msgstr "Створити стандартний набір міток"
 
@@ -2354,6 +2405,9 @@ msgstr "Git-редакція"
 
 msgid "Git storage health information has been reset"
 msgstr "Інформація про статус зберігання Git була скинута"
+
+msgid "Git strategy for pipelines"
+msgstr ""
 
 msgid "Git version"
 msgstr "Git-версія"
@@ -2551,6 +2605,12 @@ msgstr "Ідентифікатор"
 msgid "Identities"
 msgstr ""
 
+msgid "If disabled, the access level will depend on the user's permissions in the project."
+msgstr ""
+
+msgid "If enabled"
+msgstr ""
+
 msgid "If you already have files you can push them using the %{link_to_cli} below."
 msgstr "Якщо у вас уже є файли, ви можете відправити їх за допомогою %{link_to_cli} нижче."
 
@@ -2598,6 +2658,9 @@ msgstr "Цей інстанс не підтримує декілька Kubernete
 
 msgid "Integrations"
 msgstr "Інтеграції"
+
+msgid "Integrations Settings"
+msgstr ""
 
 msgid "Interested parties can even contribute by pushing commits if they want to."
 msgstr "Зацікавлені сторони за бажанням можуть навіть робити внески шляхом відправлення комітів."
@@ -3018,6 +3081,9 @@ msgstr "Нова мітка"
 msgid "New merge request"
 msgstr "Новий запит на злиття"
 
+msgid "New pipelines will cancel older, pending pipelines on the same branch"
+msgstr ""
+
 msgid "New project"
 msgstr "Новий проект"
 
@@ -3255,6 +3321,9 @@ msgstr "Призупинити"
 msgid "Pending"
 msgstr "В очікуванні"
 
+msgid "Per job. If a job passes this threshold, it will be marked as failed"
+msgstr ""
+
 msgid "Perform advanced options such as changing path, transferring, or removing the group."
 msgstr "Виконуйте такі розширені операції, як зміна шляху, перенесення чи видалення групи."
 
@@ -3278,6 +3347,9 @@ msgstr "Розклад Конвеєра"
 
 msgid "Pipeline Schedules"
 msgstr "Розклади Конвеєрів"
+
+msgid "Pipeline triggers"
+msgstr ""
 
 msgid "PipelineCharts|Failed:"
 msgstr "Невдалі:"
@@ -3702,6 +3774,9 @@ msgstr "Публічна — група та всі публічні проек�
 msgid "Public - The project can be accessed without any authentication."
 msgstr "Публічний — проект может переглядатися без автентифікації."
 
+msgid "Public pipelines"
+msgstr ""
+
 msgid "Push events"
 msgstr "Події відправлення (push)"
 
@@ -3734,6 +3809,9 @@ msgstr "Зареєструватися / Увійти"
 
 msgid "Register and see your runners for this group."
 msgstr "Зареєструйте і переглядайте ваші Runner’и для цієї групи."
+
+msgid "Register and see your runners for this project."
+msgstr ""
 
 msgid "Registry"
 msgstr "Реєстр"
@@ -3779,6 +3857,9 @@ msgstr "Видалити проект"
 
 msgid "Repository"
 msgstr "Репозиторій"
+
+msgid "Repository Settings"
+msgstr ""
 
 msgid "Repository maintenance"
 msgstr "Обслуговування репозиторію"
@@ -3850,6 +3931,9 @@ msgstr "Затвердження (запиту на злиття !%{mergeRequest
 msgid "Rollback"
 msgstr ""
 
+msgid "Runner token"
+msgstr ""
+
 msgid "Runners"
 msgstr "Runner'и"
 
@@ -3864,6 +3948,9 @@ msgstr "Виконується"
 
 msgid "SSH Keys"
 msgstr "Ключі SSH"
+
+msgid "SSL Verification"
+msgstr ""
 
 msgid "Save"
 msgstr "Зберегти"
@@ -4060,6 +4147,9 @@ msgstr "Обмеження для реєстрації"
 
 msgid "Size and domain settings for static websites"
 msgstr "Налаштування розміру та домену для статичних веб-сайтів"
+
+msgid "Slower but makes sure the project workspace is pristine as it clones the repository from scratch for every job"
+msgstr ""
 
 msgid "Snippets"
 msgstr "Сніпети"
@@ -4383,6 +4473,9 @@ msgstr "Угода про надання послуг і політика кон
 msgid "Terms of Service and Privacy Policy"
 msgstr "Правилами користування сервісом і політика конфіденційності"
 
+msgid "Test coverage parsing"
+msgstr ""
+
 msgid "The Issue Tracker is the place to add things that need to be improved or solved in a project"
 msgstr "Трекер проблем — це місце, де можна додати речі, які потрібно покращити або розв’язати в проекті"
 
@@ -4413,6 +4506,9 @@ msgstr "Кількість спроб, які зробить GitLab для от�
 msgid "The number of failures of after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
 msgstr "Кількість збоїв після якої Gitlab повністю заблокує доступ до сховища данних. Лічильник кількості збоїв можна буде обнулити в інтерфейсі адміністратора (%{link_to_health_page}), або через %{api_documentation_link}."
 
+msgid "The path to CI config file. Defaults to <code>.gitlab-ci.yml</code>"
+msgstr ""
+
 msgid "The phase of the development lifecycle."
 msgstr "Фаза життєвого циклу розробки."
 
@@ -4439,6 +4535,9 @@ msgstr "Репозиторій має бути доступним через <co
 
 msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
 msgstr "Стадія Затвердження показує час від створення запиту про об'єднання до його виконання. Дані будуть автоматично додані після завершення першого запиту на злиття."
+
+msgid "The secure token used by the Runner to checkout the project"
+msgstr ""
 
 msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
 msgstr "Стадія Staging показує час між виконання запиту на злиття та розгортанням коду у production. Дані автоматично додаються після розгортання у production вперше."
@@ -4740,6 +4839,9 @@ msgstr "щойно"
 msgid "Timeago|right now"
 msgstr "зараз"
 
+msgid "Timeout"
+msgstr ""
+
 msgid "Time|hr"
 msgid_plural "Time|hrs"
 msgstr[0] "година"
@@ -4816,6 +4918,9 @@ msgstr "Відстежуйте час за допомогою швидких д�
 
 msgid "Trigger this manual action"
 msgstr "Запустити цю ручну дію"
+
+msgid "Triggers can force a specific branch or tag to get rebuilt with an API call.  These tokens will impersonate their associated user including their access to projects and their project permissions."
+msgstr ""
 
 msgid "Try again"
 msgstr "Спробуйте ще раз"
