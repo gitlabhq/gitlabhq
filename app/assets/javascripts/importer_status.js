@@ -45,6 +45,8 @@ class ImporterStatus {
     }
     $btn.disable().addClass('is-loading');
 
+    this.id = id;
+
     return axios.post(this.importUrl, {
       repo_id: id,
       target_namespace: targetNamespace,
@@ -69,6 +71,10 @@ class ImporterStatus {
     })
     .catch((error) => {
       let details = error;
+
+      const jobItem = $(`#repo_${this.id}`);
+      const statusField = jobItem.find('.job-status');
+      statusField.html(__('Failed'));
 
       if (error.response && error.response.data && error.response.data.errors) {
         details = error.response.data.errors;
