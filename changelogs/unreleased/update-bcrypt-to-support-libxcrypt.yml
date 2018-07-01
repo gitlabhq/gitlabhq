@@ -1,0 +1,5 @@
+---
+title: update bcrypt to also support libxcrypt
+merge_request: 20260
+author: muhammadn
+type: other

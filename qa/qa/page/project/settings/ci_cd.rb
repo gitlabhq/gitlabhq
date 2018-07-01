@@ -16,7 +16,7 @@ module QA # rubocop:disable Naming/FileName
             element :domain_field, 'text_field :domain'
             element :enable_auto_devops_button, "%strong= s_('CICD|Enable Auto DevOps')"
             element :domain_input, "%strong= _('Domain')"
-            element :save_changes_button, "submit 'Save changes'"
+            element :save_changes_button, "submit _('Save changes')"
           end
 
           def expand_runners_settings(&block)

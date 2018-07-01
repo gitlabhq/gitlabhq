@@ -84,7 +84,7 @@ GEM
     babosa (1.0.2)
     base32 (0.3.2)
     batch-loader (1.2.1)
-    bcrypt (3.1.11)
+    bcrypt (3.1.12)
     bcrypt_pbkdf (1.0.0)
     benchmark-ips (2.3.0)
     better_errors (2.1.1)
