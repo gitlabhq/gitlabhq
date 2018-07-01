@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-07-01 16:35+1000\n"
-"PO-Revision-Date: 2018-07-01 18:59\n"
+"PO-Revision-Date: 2018-07-01 22:41\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -353,7 +353,7 @@ msgid "Allow commits from members who can merge to the target branch."
 msgstr "Autoriser les commits des membres qui peuvent fusionner dans la branche cible."
 
 msgid "Allow public access to pipelines and job details, including output logs and artifacts"
-msgstr ""
+msgstr "Autoriser l’accès public aux pipelines et aux détails des tâches, y compris les journaux de sortie et les artefacts"
 
 msgid "Allow rendering of PlantUML diagrams in Asciidoc documents."
 msgstr "Permettre le rendu des diagrammes PlantUML dans les documents Asciidoc."
@@ -368,25 +368,25 @@ msgid "Alternatively, you can use a %{personal_access_token_link}. When you crea
 msgstr "Vous pouvez également utiliser un %{personal_access_token_link}. Lorsque vous créerez votre jeton d’accès, vous devrez sélectionner le champ <code>repo</code>, afin que nous puissions afficher une liste de vos dépôts publics et privés qui sont disponibles pour être importés."
 
 msgid "An error occured creating the new branch."
-msgstr ""
+msgstr "Une erreur est survenue lors de la création de la nouvelle branche."
 
 msgid "An error occured whilst loading all the files."
-msgstr ""
+msgstr "Une erreur est survenue lors du chargement de l’ensemble des fichiers."
 
 msgid "An error occured whilst loading the file content."
-msgstr ""
+msgstr "Une erreur est survenue lors du chargement du contenu du fichier."
 
 msgid "An error occured whilst loading the file."
-msgstr ""
+msgstr "Une erreur est survenue lors du chargement du fichier."
 
 msgid "An error occured whilst loading the merge request changes."
-msgstr ""
+msgstr "Une erreur est survenue lors du chargement des modifications de la demande de fusion."
 
 msgid "An error occured whilst loading the merge request version data."
-msgstr ""
+msgstr "Une erreur est survenue lors du chargement des données de version de la demande de fusion."
 
 msgid "An error occured whilst loading the merge request."
-msgstr ""
+msgstr "Une erreur est survenue lors du chargement de la demande de fusion."
 
 msgid "An error occurred previewing the blob"
 msgstr "Une erreur s’est produite lors de la prévisualisation du blob"
@@ -470,7 +470,7 @@ msgid "Are you sure you want to delete this pipeline schedule?"
 msgstr "Êtes‐vous sûr·e de vouloir supprimer ce pipeline programmé ?"
 
 msgid "Are you sure you want to remove this identity?"
-msgstr ""
+msgstr "Êtes-vous sûr·e de vouloir supprimer cette identité ?"
 
 msgid "Are you sure you want to reset registration token?"
 msgstr "Êtes‐vous sûr·e de vouloir réinitialiser le jeton d’inscription ?"
