@@ -27,6 +27,10 @@ module BitbucketServer
         end
       end
 
+      def merged?
+        state == 'merged'
+      end
+
       def created_at
         raw['createdDate']
       end

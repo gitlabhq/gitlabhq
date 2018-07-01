@@ -14,8 +14,7 @@ class Import::BitbucketServerController < Import::BaseController
     repo = bitbucket_client.repo(project_slug, repo_slug)
     project_name = params[:new_name].presence || repo.name
 
-    repo_owner = repo.owner
-    repo_owner = current_user.username if repo_owner == bitbucket_client.user.username
+    repo_owner = current_user.username
     namespace_path = params[:new_namespace].presence || repo_owner
     target_namespace = find_or_create_namespace(namespace_path, current_user)
 
@@ -85,7 +84,7 @@ class Import::BitbucketServerController < Import::BaseController
   def credentials
     {
       base_uri: session[bitbucket_server_url_key],
-      username: session[bitbucket_server_username_key],
+      user: session[bitbucket_server_username_key],
       password: session[personal_access_token_key]
     }
   end

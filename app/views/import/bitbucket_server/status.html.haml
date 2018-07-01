@@ -4,20 +4,22 @@
 %h3.page-title
   %i.fa.fa-bitbucket
   Import projects from Bitbucket Server
+  = link_to('Reconfigure', configure_import_bitbucket_server_path, class: 'btn btn-primary float-right', method: :post)
 
 - if @repos.any?
   %p.light
     Select projects you want to import.
   %hr
   %p
-  - if @incompatible_repos.any?
-    = button_tag class: 'btn btn-import btn-success js-import-all' do
-      Import all compatible projects
-      = icon('spinner spin', class: 'loading-icon')
-  - else
-    = button_tag class: 'btn btn-import btn-success js-import-all' do
-      Import all projects
-      = icon('spinner spin', class: 'loading-icon')
+    - if @incompatible_repos.any?
+      = button_tag class: 'btn btn-import btn-success js-import-all' do
+        Import all compatible projects
+        = icon('spinner spin', class: 'loading-icon')
+    - else
+      = button_tag class: 'btn btn-import btn-success js-import-all' do
+        Import all projects
+        = icon('spinner spin', class: 'loading-icon')
+  %p
 
 .table-responsive
   %table.table.import-jobs
