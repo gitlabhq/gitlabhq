@@ -388,6 +388,12 @@ module API
       expose :id, :iid
       expose(:project_id) { |entity| entity&.project.try(:id) }
       expose :title, :description
+      expose :title_html do |entity|
+        MarkupHelper::markdown_field(entity, :title)
+      end
+      expose :description_html do |entity|
+        MarkupHelper::markdown_field(entity, :description)
+      end
       expose :state, :created_at, :updated_at
     end
 

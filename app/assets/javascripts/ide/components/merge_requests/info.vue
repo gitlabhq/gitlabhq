@@ -53,11 +53,11 @@ export default {
     <div class="issuable-details">
       <title-component
         :issuable-ref="currentMergeRequest.iid"
-        :title-html="currentMergeRequest.title"
+        :title-html="currentMergeRequest.title_html"
         :title-text="currentMergeRequest.title"
       />
       <description-component
-        :description-html="currentMergeRequest.description"
+        :description-html="currentMergeRequest.description_html"
         :description-text="currentMergeRequest.description"
         :can-update="false"
       />
