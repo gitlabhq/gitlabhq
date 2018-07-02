@@ -47,6 +47,7 @@
     "d3-time": "^1.0.8",
     "d3-time-format": "^2.1.1",
     "d3-transition": "^1.1.1",
+    "dateformat": "^3.0.3",
     "deckar01-task_list": "^2.0.0",
     "diff": "^3.4.0",
     "document-register-element": "1.3.0",
