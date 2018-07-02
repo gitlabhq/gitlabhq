@@ -1,0 +1,5 @@
+---
+title: Allow all but "/" chars for groups and projects paths on Jira dev panel integration
+merge_request:
+author:
+type: fixed
