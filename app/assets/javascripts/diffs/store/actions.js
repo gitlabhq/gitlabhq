@@ -30,19 +30,31 @@ export const fetchDiffFiles = ({ state, commit }) => {
 };
 
 export const setInlineDiffViewType = ({ commit }) => {
-  commit(types.SET_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE);
-
   Cookies.set(DIFF_VIEW_COOKIE_NAME, INLINE_DIFF_VIEW_TYPE);
   const url = mergeUrlParams({ view: INLINE_DIFF_VIEW_TYPE }, window.location.href);
-  historyPushState(url);
+
+  // This is a temporarily workaround for performance issues
+  if (process.env.NODE_ENV !== 'test') {
+    historyPushState(url);
+    commit(types.SET_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE);
+  }
+
+  // For some performance issues we reload the page. See #48666 for more details.
+  document.location.href = url;
 };
 
 export const setParallelDiffViewType = ({ commit }) => {
-  commit(types.SET_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE);
-
   Cookies.set(DIFF_VIEW_COOKIE_NAME, PARALLEL_DIFF_VIEW_TYPE);
   const url = mergeUrlParams({ view: PARALLEL_DIFF_VIEW_TYPE }, window.location.href);
-  historyPushState(url);
+
+  // This is a temporarily workaround for performance issues
+  if (process.env.NODE_ENV !== 'test') {
+    commit(types.SET_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE);
+    historyPushState(url);
+  }
+
+  // For some performance issues we reload the page. See #48666 for more details.
+  document.location.href = url;
 };
 
 export const showCommentForm = ({ commit }, params) => {
