@@ -527,7 +527,7 @@ module Ci
     def artifacts
       list = []
       list << artifacts_archive
-      list << artifacts_junit if options[:artifacts].key?(:junit)
+      list << artifacts_junit if options.dig(:artifacts, :reports, :junit)
       list
     end
 
@@ -538,12 +538,12 @@ module Ci
     def artifacts_junit
       {
         name: 'junit.xml',
-        untracked: nil,
-        paths: [options[:artifacts][:junit]],
-        when: nil,
+        untracked: nil, # Use default
+        paths: [options[:artifacts][:reports][:junit]],
+        when: nil, # Use default
         artifact_type: 'junit',
         artifact_format: 'gzip',
-        expire_in: nil # Use default expire_in
+        expire_in: nil # Use default
       }
     end
 

@@ -28,7 +28,8 @@ module Ci
 
     enum file_format: {
       zip: 1,
-      gzip: 2
+      gzip: 2,
+      raw: 3
     }
 
     def update_file_store
