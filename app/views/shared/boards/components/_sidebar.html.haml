@@ -7,9 +7,8 @@
             %strong
               {{ issue.title }}
             %br/
-            %span<
-              - if @group
-                {{ issue.project && issue.project.path }}
+            %span
+              = render_if_exists "shared/boards/components/sidebar/issue_project_path"
               = precede "#" do
                 {{ issue.iid }}
           %a.gutter-toggle.float-right{ role: "button",
