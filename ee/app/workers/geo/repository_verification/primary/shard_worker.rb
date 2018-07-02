@@ -44,7 +44,7 @@ module Geo
           remaining_capacity = db_retrieve_batch_size - resources.size
           return resources if remaining_capacity.zero?
 
-          resources = resources + find_outdated_project_ids(batch_size: remaining_capacity)
+          resources += find_outdated_project_ids(batch_size: remaining_capacity)
           remaining_capacity = db_retrieve_batch_size - resources.size
           return resources if remaining_capacity.zero?
 
