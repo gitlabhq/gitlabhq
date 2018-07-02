@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-07-01 16:35+1000\n"
-"PO-Revision-Date: 2018-07-02 00:35\n"
+"PO-Revision-Date: 2018-07-02 00:51\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -2299,7 +2299,7 @@ msgid "For private projects, any member (guest or higher) can view pipelines and
 msgstr "Pour les projets privés, tout membre (invité ou supérieur) peut afficher les pipelines et accéder aux détails des tâches (journaux de sortie et artefacts)"
 
 msgid "For public projects, anyone can view pipelines and access job details (output logs and artifacts)"
-msgstr ""
+msgstr "Pour les projets publics, tout le monde peut afficher des pipelines et accéder aux détails des tâches (journaux de sortie et artefacts)"
 
 msgid "Fork"
 msgid_plural "Forks"
@@ -2340,7 +2340,7 @@ msgid "General"
 msgstr "Général"
 
 msgid "General pipelines"
-msgstr ""
+msgstr "Pipelines généraux"
 
 msgid "Generate a default set of labels"
 msgstr "Générer un jeu d’étiquettes par défaut"
@@ -2355,7 +2355,7 @@ msgid "Git storage health information has been reset"
 msgstr "Les informations sur l’état de santé du stockage Git ont été réinitialisées"
 
 msgid "Git strategy for pipelines"
-msgstr ""
+msgstr "Stratégie Git pour les pipelines"
 
 msgid "Git version"
 msgstr "Version de Git"
@@ -2439,7 +2439,7 @@ msgid "GroupSettings|remove the share with group lock from %{ancestor_group_name
 msgstr "supprimer le partage avec verrou de groupe pour %{ancestor_group_name}"
 
 msgid "Groups can also be nested by creating %{subgroup_docs_link_start}subgroups%{subgroup_docs_link_end}."
-msgstr ""
+msgstr "Les groupes peuvent également être imbriqués en créant des %{subgroup_docs_link_start}sous‐groupes%{subgroup_docs_link_end}."
 
 msgid "GroupsEmptyState|A group is a collection of several projects."
 msgstr "Un groupe est une collection de plusieurs projets."
@@ -2513,7 +2513,7 @@ msgstr[0] "Masquer la valeur"
 msgstr[1] "Masquer les valeurs"
 
 msgid "Hide whitespace changes"
-msgstr ""
+msgstr "Masquer les modifications des espaces"
 
 msgid "History"
 msgstr "Historique"
@@ -2552,7 +2552,7 @@ msgid "Identities"
 msgstr "Identités"
 
 msgid "If disabled, the access level will depend on the user's permissions in the project."
-msgstr ""
+msgstr "Si désactivé, le niveau d’accès dépendra des autorisations de l’utilisa·teur·trice dans le projet."
 
 msgid "If enabled"
 msgstr ""
@@ -2606,7 +2606,7 @@ msgid "Integrations"
 msgstr "Intégrations"
 
 msgid "Integrations Settings"
-msgstr ""
+msgstr "Paramètres des intégrations"
 
 msgid "Interested parties can even contribute by pushing commits if they want to."
 msgstr "Les personnes intéressées peuvent même contribuer en poussant des commits si elles le souhaitent."
@@ -2624,7 +2624,7 @@ msgid "Introducing Cycle Analytics"
 msgstr "Introduction à l’analyseur de cycle"
 
 msgid "Issue Board"
-msgstr ""
+msgstr "Tableau des tickets"
 
 msgid "Issue events"
 msgstr "Événements du ticket"
@@ -2645,7 +2645,7 @@ msgid "January"
 msgstr "janvier"
 
 msgid "Job"
-msgstr ""
+msgstr "Tâche"
 
 msgid "Job has been erased"
 msgstr "La tâche a été supprimée"
@@ -2875,16 +2875,16 @@ msgid "Merge requests are a place to propose changes you've made to a project an
 msgstr "Les demandes de fusion permettent de proposer les modifications que vous avez apportées à un projet et de discuter de ces modifications avec les autres"
 
 msgid "MergeRequests|Resolve this discussion in a new issue"
-msgstr ""
+msgstr "Résoudre cette discussion avec un nouveau ticket"
 
 msgid "MergeRequests|Saving the comment failed"
-msgstr ""
+msgstr "L’enregistrement du commentaire a échoué"
 
 msgid "MergeRequests|Toggle comments for this file"
-msgstr ""
+msgstr "Activer/désactiver les commentaires pour ce fichier"
 
 msgid "MergeRequests|Updating discussions failed"
-msgstr ""
+msgstr "Échec de la mise à jour des discussions"
 
 msgid "MergeRequests|View file @ %{commitId}"
 msgstr ""
@@ -2977,7 +2977,7 @@ msgid "Nav|Sign out and sign in with a different account"
 msgstr "Se déconnecter et se reconnecter avec un autre compte"
 
 msgid "New Identity"
-msgstr ""
+msgstr "Nouvelle identité"
 
 msgid "New Issue"
 msgid_plural "New Issues"
@@ -2991,7 +2991,7 @@ msgid "New Kubernetes cluster"
 msgstr "Nouvelle grappe de serveurs Kubernetes"
 
 msgid "New Label"
-msgstr ""
+msgstr "Nouvelle étiquette"
 
 msgid "New Pipeline Schedule"
 msgstr "Nouvelle planification de pipeline"
@@ -3012,7 +3012,7 @@ msgid "New group"
 msgstr "Nouveau groupe"
 
 msgid "New identity"
-msgstr ""
+msgstr "Nouvelle identité"
 
 msgid "New issue"
 msgstr "Nouveau ticket"
@@ -3024,7 +3024,7 @@ msgid "New merge request"
 msgstr "Nouvelle demande de fusion"
 
 msgid "New pipelines will cancel older, pending pipelines on the same branch"
-msgstr ""
+msgstr "De nouveaux pipelines annuleront les anciens pipelines en attente sur la même branche"
 
 msgid "New project"
 msgstr "Nouveau projet"
@@ -3063,7 +3063,7 @@ msgid "No file chosen"
 msgstr "Aucun fichier sélectionné"
 
 msgid "No files found"
-msgstr ""
+msgstr "Aucun fichier trouvé"
 
 msgid "No files found."
 msgstr "Aucun fichier trouvé."
