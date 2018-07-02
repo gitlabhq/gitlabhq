@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-07-01 16:35+1000\n"
-"PO-Revision-Date: 2018-07-02 08:21\n"
+"PO-Revision-Date: 2018-07-02 17:23\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -221,7 +221,7 @@ msgid "A regular expression that will be used to find the test coverage output i
 msgstr ""
 
 msgid "A user with write access to the source branch selected this option"
-msgstr "Un·e utilisateur·rice avec un accès en écriture à la branche source a sélectionné cette option"
+msgstr "Une personne avec un accès en écriture à la branche source a sélectionné cette option"
 
 msgid "About auto deploy"
 msgstr "À propos de l’auto‐déploiement"
@@ -314,19 +314,19 @@ msgid "AdminSettings|Specify a domain to use by default for every project's Auto
 msgstr "Spécifiez un domaine à utiliser par défaut pour les étapes Auto Review Apps et Auto Deploy de chaque projet."
 
 msgid "AdminUsers|Block user"
-msgstr "Bloquer l’utilisateur·rice"
+msgstr "Bloquer ce compte"
 
 msgid "AdminUsers|Delete User %{username} and contributions?"
-msgstr "Supprimer l’utilisateur·rice %{username} et ses contributions ?"
+msgstr "Supprimer le compte %{username} et ses contributions ?"
 
 msgid "AdminUsers|Delete User %{username}?"
-msgstr "Supprimer l’utilisateur·rice %{username} ?"
+msgstr "Supprimer le compte %{username} ?"
 
 msgid "AdminUsers|Delete user"
-msgstr "Supprimer un·e utilisateur·rice"
+msgstr "Supprimer un compte utilisateur"
 
 msgid "AdminUsers|Delete user and contributions"
-msgstr "Supprimer l’utilisateur·rice et ses contributions"
+msgstr "Supprimer le compte et ses contributions"
 
 msgid "AdminUsers|To confirm, type %{projectName}"
 msgstr "Pour confirmer, veuillez saisir %{projectName}"
