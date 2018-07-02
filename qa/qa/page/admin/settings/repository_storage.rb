@@ -6,11 +6,11 @@ module QA
           view 'app/views/admin/application_settings/_repository_storage.html.haml' do
             element :submit, "submit 'Save changes'"
             element :hashed_storage,
-              'Create new projects using hashed storage paths'
+              'Use hashed storage paths for newly created and renamed projects'
           end
 
           def enable_hashed_storage
-            check 'Create new projects using hashed storage paths'
+            check 'Use hashed storage paths for newly created and renamed projects'
           end
 
           def save_settings
