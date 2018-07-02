@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-07-01 16:35+1000\n"
-"PO-Revision-Date: 2018-07-02 00:11\n"
+"PO-Revision-Date: 2018-07-02 00:31\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -4443,7 +4443,7 @@ msgid "The number of failures of after which GitLab will completely prevent acce
 msgstr "Nombre d’échecs avant que GitLab n’empêche tout accès au stockage. Ce nombre d’échecs peut être réinitialisé dans l’interface d’administration : %{link_to_health_page} ou en suivant le %{api_documentation_link}."
 
 msgid "The path to CI config file. Defaults to <code>.gitlab-ci.yml</code>"
-msgstr ""
+msgstr "Le chemin d’accès au fichier de configuration de l’intégration continue. Par défaut, <code>.gitlab-ci.yml</code>"
 
 msgid "The phase of the development lifecycle."
 msgstr "La phase du cycle de développement."
@@ -4473,7 +4473,7 @@ msgid "The review stage shows the time from creating the merge request to mergin
 msgstr "L’étape d’évaluation montre le temps entre la création de la demande de fusion et la fusion effective de celle‐ci. Ces données seront automatiquement ajoutées après que vous ayez fusionné votre première demande de fusion."
 
 msgid "The secure token used by the Runner to checkout the project"
-msgstr ""
+msgstr "Le jeton sécurisé utilisé par l’exécuteur pour vérifier (checkout) le projet"
 
 msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
 msgstr "L’étape de pré-production indique le temps entre la fusion de la DF et le déploiement du code dans l’environnent de production. Les données seront automatiquement ajoutées une fois que vous déploierez en production pour la première fois."
@@ -4500,7 +4500,7 @@ msgid "There are no issues to show"
 msgstr "Il n’y a aucun ticket à afficher"
 
 msgid "There are no labels yet"
-msgstr ""
+msgstr "Il n’y a pas encore d’étiquette"
 
 msgid "There are no merge requests to show"
 msgstr "Il n’y a aucune demande de fusion à afficher"
@@ -4539,7 +4539,7 @@ msgid "This GitLab instance does not provide any shared Runners yet. Instance ad
 msgstr "Cette instance de GitLab ne fournit aucun exécuteur partagé pour le moment. Les administrateur•rice•s de l’instance peuvent enregistrer des exécuteurs partagés dans la zone d’administration."
 
 msgid "This diff is collapsed."
-msgstr ""
+msgstr "Ce diff est replié."
 
 msgid "This directory"
 msgstr "Ce répertoire"
@@ -4614,10 +4614,10 @@ msgid "This repository"
 msgstr "Ce dépôt"
 
 msgid "This source diff could not be displayed because it is too large."
-msgstr ""
+msgstr "Ce diff n’a pas pu être affiché car il est trop grand."
 
 msgid "This user has no identities"
-msgstr ""
+msgstr "Cet utilisa·teur·trice n’a aucune identité"
 
 msgid "Time before an issue gets scheduled"
 msgstr "Temps avant qu’un ticket ne soit planifié"
@@ -4776,7 +4776,7 @@ msgid "Timeago|right now"
 msgstr "immédiatement"
 
 msgid "Timeout"
-msgstr ""
+msgstr "Délai d’attente"
 
 msgid "Time|hr"
 msgid_plural "Time|hrs"
