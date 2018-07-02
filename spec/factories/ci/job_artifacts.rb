@@ -4,6 +4,7 @@ FactoryBot.define do
   factory :ci_job_artifact, class: Ci::JobArtifact do
     job factory: :ci_build
     file_type :archive
+    file_store JobArtifactUploader::Store::LOCAL
 
     trait :remote_store do
       file_store JobArtifactUploader::Store::REMOTE
