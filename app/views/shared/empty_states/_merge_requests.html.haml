@@ -15,7 +15,7 @@
           = _("Interested parties can even contribute by pushing commits if they want to.")
         .text-center
           - if project_select_button
-            = render 'shared/new_project_item_select', path: 'merge_requests/new', label: _('New merge request'), type: :merge_requests
+            = render 'shared/new_project_item_select', path: 'merge_requests/new', label: _('New merge request'), type: :merge_requests, with_feature_enabled: 'merge_requests'
           - else
             = link_to _('New merge request'), button_path, class: 'btn btn-new', title: _('New merge request'), id: 'new_merge_request_link'
       - else
