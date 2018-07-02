@@ -479,6 +479,14 @@ describe Repository do
       end
     end
 
+    context 'when ref is not specified' do
+      it 'is using a root ref' do
+        expect(repository).to receive(:find_commit).with('master')
+
+        repository.commit
+      end
+    end
+
     context 'when ref is not valid' do
       context 'when preceding tree element exists' do
         it 'returns nil' do
