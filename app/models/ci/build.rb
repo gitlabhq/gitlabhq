@@ -371,7 +371,7 @@ module Ci
 
     def update_coverage
       coverage = trace.extract_coverage(coverage_regex)
-      update_attributes(coverage: coverage) if coverage.present?
+      update(coverage: coverage) if coverage.present?
     end
 
     def parse_trace_sections!

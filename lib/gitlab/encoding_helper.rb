@@ -65,7 +65,7 @@ module Gitlab
         clean(message)
       end
     rescue ArgumentError
-      return nil
+      nil
     end
 
     def encode_binary(s)

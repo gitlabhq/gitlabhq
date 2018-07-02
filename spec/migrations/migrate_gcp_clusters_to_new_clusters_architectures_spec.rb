@@ -12,7 +12,7 @@ describe MigrateGcpClustersToNewClustersArchitectures, :migration do
     class KubernetesService < ActiveRecord::Base
       self.table_name = 'services'
 
-      serialize :properties, JSON # rubocop:disable Cop/ActiveRecordSerialize
+      serialize :properties, JSON
 
       default_value_for :active, true
       default_value_for :type, 'KubernetesService'

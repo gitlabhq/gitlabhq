@@ -48,7 +48,7 @@ module Gitlab
           gl_user
         rescue ActiveRecord::RecordInvalid => e
           log.info "(#{provider}) Error saving user #{auth_hash.uid} (#{auth_hash.email}): #{gl_user.errors.full_messages}"
-          return self, e.record.errors
+          [self, e.record.errors]
         end
 
         def gl_user

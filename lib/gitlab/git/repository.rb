@@ -1068,8 +1068,6 @@ module Gitlab
 
         true
       end
-
-      # rubocop:disable Metrics/ParameterLists
       def multi_action(
         user, branch_name:, message:, actions:,
         author_email: nil, author_name: nil,

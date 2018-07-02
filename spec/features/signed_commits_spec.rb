@@ -23,7 +23,7 @@ describe 'GPG signed commits', :js do
     # user changes his email which makes the gpg key verified
     Sidekiq::Testing.inline! do
       user.skip_reconfirmation!
-      user.update_attributes!(email: GpgHelpers::User1.emails.first)
+      user.update!(email: GpgHelpers::User1.emails.first)
     end
 
     visit project_commits_path(project, :'signed-commits')

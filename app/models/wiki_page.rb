@@ -190,7 +190,7 @@ class WikiPage
   # Returns the String SHA1 of the newly created page
   # or False if the save was unsuccessful.
   def create(attrs = {})
-    update_attributes(attrs)
+    update(attrs)
 
     save(page_details: title) do
       wiki.create_page(title, content, format, message)
@@ -216,7 +216,7 @@ class WikiPage
       raise PageChangedError
     end
 
-    update_attributes(attrs)
+    update(attrs)
 
     if title_changed?
       page_details = title

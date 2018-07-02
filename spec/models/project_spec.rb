@@ -567,15 +567,15 @@ describe Project do
       end
 
       it 'returns the most recent timestamp' do
-        project.update_attributes(updated_at: nil,
-                                  last_activity_at: timestamp,
-                                  last_repository_updated_at: timestamp - 1.hour)
+        project.update(updated_at: nil,
+                       last_activity_at: timestamp,
+                       last_repository_updated_at: timestamp - 1.hour)
 
         expect(project.last_activity_date).to be_like_time(timestamp)
 
-        project.update_attributes(updated_at: timestamp,
-                                  last_activity_at: timestamp - 1.hour,
-                                  last_repository_updated_at: nil)
+        project.update(updated_at: timestamp,
+                       last_activity_at: timestamp - 1.hour,
+                       last_repository_updated_at: nil)
 
         expect(project.last_activity_date).to be_like_time(timestamp)
       end
@@ -1768,7 +1768,7 @@ describe Project do
       it 'resets project import_error' do
         error_message = 'Some error'
         mirror = create(:project_empty_repo, :import_started)
-        mirror.import_state.update_attributes(last_error: error_message)
+        mirror.import_state.update(last_error: error_message)
 
         expect { mirror.import_finish }.to change { mirror.import_error }.from(error_message).to(nil)
       end
@@ -1929,7 +1929,7 @@ describe Project do
     end
 
     it 'returns false when remote mirror is disabled' do
-      project.remote_mirrors.first.update_attributes(enabled: false)
+      project.remote_mirrors.first.update(enabled: false)
 
       is_expected.to be_falsy
     end
@@ -1959,7 +1959,7 @@ describe Project do
     end
 
     it 'does not sync disabled remote mirrors' do
-      project.remote_mirrors.first.update_attributes(enabled: false)
+      project.remote_mirrors.first.update(enabled: false)
 
       expect_any_instance_of(RemoteMirror).not_to receive(:sync)
 

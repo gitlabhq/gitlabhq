@@ -180,7 +180,6 @@ module Gitlab
             @pool
           end
         end
-        # rubocop:enable Gitlab/ModuleWithInstanceVariables
       end
     end
   end

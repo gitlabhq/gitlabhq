@@ -186,18 +186,18 @@ describe Ci::Build do
       let(:runner) { create(:ci_runner, :project, projects: [build.project]) }
 
       before do
-        runner.update_attributes(contacted_at: 1.second.ago)
+        runner.update(contacted_at: 1.second.ago)
       end
 
       it { is_expected.to be_truthy }
 
       it 'that is inactive' do
-        runner.update_attributes(active: false)
+        runner.update(active: false)
         is_expected.to be_falsey
       end
 
       it 'that is not online' do
-        runner.update_attributes(contacted_at: nil)
+        runner.update(contacted_at: nil)
         is_expected.to be_falsey
       end
 
@@ -261,7 +261,7 @@ describe Ci::Build do
 
     context 'artifacts metadata does not exist' do
       before do
-        build.update_attributes(legacy_artifacts_metadata: nil)
+        build.update(legacy_artifacts_metadata: nil)
       end
 
       it { is_expected.to be_falsy }
@@ -1535,7 +1535,7 @@ describe Ci::Build do
         expect(ProjectStatistics)
           .not_to receive(:increment_statistic)
 
-        build.project.update_attributes(pending_delete: true)
+        build.project.update(pending_delete: true)
         build.project.destroy!
       end
     end
@@ -1662,7 +1662,7 @@ describe Ci::Build do
       end
 
       before do
-        build.update_attributes(user: user)
+        build.update(user: user)
       end
 
       it { user_variables.each { |v| is_expected.to include(v) } }
@@ -1740,7 +1740,7 @@ describe Ci::Build do
 
     context 'when build started manually' do
       before do
-        build.update_attributes(when: :manual)
+        build.update(when: :manual)
       end
 
       let(:manual_variable) do
@@ -1756,7 +1756,7 @@ describe Ci::Build do
       end
 
       before do
-        build.update_attributes(tag: true)
+        build.update(tag: true)
       end
 
       it { is_expected.to include(tag_variable) }

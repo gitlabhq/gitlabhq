@@ -21,6 +21,6 @@ class Projects::AvatarsController < Projects::ApplicationController
 
     @project.save
 
-    redirect_to edit_project_path(@project), status: 302
+    redirect_to edit_project_path(@project), status: :found
   end
 end

@@ -133,7 +133,7 @@ class ProjectsController < Projects::ApplicationController
     ::Projects::DestroyService.new(@project, current_user, {}).async_execute
     flash[:notice] = _("Project '%{project_name}' is in the process of being deleted.") % { project_name: @project.full_name }
 
-    redirect_to dashboard_projects_path, status: 302
+    redirect_to dashboard_projects_path, status: :found
   rescue Projects::DestroyService::DestroyError => ex
     redirect_to edit_project_path(@project), status: 302, alert: ex.message
   end
