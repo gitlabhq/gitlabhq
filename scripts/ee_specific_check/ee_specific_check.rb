@@ -152,7 +152,7 @@ module EESpecificCheck
   # CE and EE branches.
   def checkout_and_rebase(new_base, old_base, target_head)
     with_detached_head(target_head) do
-      run_git_command("rebase --onto #{new_base} #{old_base}~1 #{target_head}")
+      run_git_command("rebase --onto #{new_base} #{old_base} #{target_head}")
 
       status = git_status
 
