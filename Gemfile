@@ -351,7 +351,7 @@ group :development, :test do
   gem 'spring', '~> 2.0.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
 
-  gem 'gitlab-styles', '~> 2.4', require: false, git: 'https://gitlab.com/gitlab-org/gitlab-styles.git', branch: 'update-to-0.54.0'
+  gem 'gitlab-styles', '~> 2.4', require: false
   # Pin these dependencies, otherwise a new rule could break the CI pipelines
   gem 'rubocop', '~> 0.54.0'
   gem 'rubocop-rspec', '~> 1.22.1'

@@ -1,3 +1,4 @@
+# rubocop:disable Rails/ActiveRecordAliases
 class WikiPage
   PageChangedError = Class.new(StandardError)
   PageRenameError = Class.new(StandardError)
@@ -190,7 +191,7 @@ class WikiPage
   # Returns the String SHA1 of the newly created page
   # or False if the save was unsuccessful.
   def create(attrs = {})
-    update(attrs)
+    update_attributes(attrs)
 
     save(page_details: title) do
       wiki.create_page(title, content, format, message)
@@ -216,7 +217,7 @@ class WikiPage
       raise PageChangedError
     end
 
-    update(attrs)
+    update_attributes(attrs)
 
     if title_changed?
       page_details = title

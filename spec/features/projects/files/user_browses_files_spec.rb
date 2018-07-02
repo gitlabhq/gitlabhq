@@ -149,7 +149,6 @@ describe "User browses files" do
         end
         # Test the full URLs of links instead of relative paths by `have_link(text: "...", href: "...")`.
         find("a", text: /^empty$/)["href"] == project_blob_url(project, "markdown/d/README.md")
-        # rubocop:enable Lint/Void
       end
 
       it "shows correct content of directory" do

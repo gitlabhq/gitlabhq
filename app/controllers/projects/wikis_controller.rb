@@ -129,7 +129,7 @@ class Projects::WikisController < Projects::ApplicationController
 
   def build_page(args)
     WikiPage.new(@project_wiki).tap do |page|
-      page.update(args)
+      page.update_attributes(args) # rubocop:disable Rails/ActiveRecordAliases
     end
   end
 end

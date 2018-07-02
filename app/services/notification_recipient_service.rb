@@ -43,6 +43,7 @@ module NotificationRecipientService
       def target
         raise 'abstract'
       end
+
       def project
         target.project
       end
