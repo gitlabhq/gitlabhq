@@ -47,8 +47,8 @@ module EESpecificCheck
     run_git_command(
       "remote add canonical-ee https://gitlab.com/gitlab-org/gitlab-ee.git",
       "remote add canonical-ce https://gitlab.com/gitlab-org/gitlab-ce.git",
-      "fetch canonical-ee master --quiet",
-      "fetch canonical-ce master --quiet")
+      "fetch canonical-ee master --quiet --depth=9999",
+      "fetch canonical-ce master --quiet --depth=9999")
   end
 
   def fetch_remote_ce_branch
@@ -56,7 +56,7 @@ module EESpecificCheck
 
     remote_to_fetch, branch_to_fetch = find_remote_ce_branch
 
-    run_git_command("fetch #{remote_to_fetch} #{branch_to_fetch} --quiet")
+    run_git_command("fetch #{remote_to_fetch} #{branch_to_fetch} --quiet --depth=9999")
 
     "#{remote_to_fetch}/#{branch_to_fetch}"
   end
