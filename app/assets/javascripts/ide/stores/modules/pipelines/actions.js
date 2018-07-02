@@ -66,7 +66,7 @@ export const fetchLatestPipeline = ({ dispatch, rootGetters }) => {
   });
 
   if (!Visibility.hidden()) {
-    dispatch('forcePipelineRequest');
+    eTagPoll.makeRequest();
   }
 
   Visibility.change(() => {
