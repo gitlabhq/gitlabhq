@@ -1,5 +1,11 @@
 # GitLab Maintenance Policy
 
+## Long Term Support
+
+Every version of GitLab is supported by our support engineers, there are no special LTS releases.
+
+To resolve some issues, you will need to upgrade to a later (minor, major) GitLab release.
+
 ## Versioning
 
 GitLab follows the [Semantic Versioning](http://semver.org/) for its releases:
@@ -44,7 +50,7 @@ This decision is made on a case-by-case basis.
 
 ## Upgrade recommendations
 
-We encourage everyone to run the [latest stable release](https://about.gitlab.com/blog/categories/release/) to ensure that you can
+We encourage everyone to run the [latest stable release](https://about.gitlab.com/blog/categories/releases/) to ensure that you can
 easily upgrade to the most secure and feature-rich GitLab experience. In order
 to make sure you can easily run the most recent stable release, we are working
 hard to keep the update process simple and reliable.
