@@ -12,7 +12,11 @@ describe Banzai::Filter::ProjectReferenceFilter do
   end
 
   let(:project)   { create(:project, :public) }
+  subject { project }
+  let(:subject_name) { "project" }
   let(:reference) { get_reference(project) }
+
+  it_behaves_like 'user reference or project reference'
 
   it 'ignores invalid projects' do
     exp = act = "Hey #{invalidate_reference(reference)}"
@@ -32,79 +36,9 @@ describe Banzai::Filter::ProjectReferenceFilter do
     end
   end
 
-  context 'mentioning a project' do
-    it_behaves_like 'a reference containing an element node'
-
-    it 'links to a Project' do
-      doc = reference_filter("Hey #{reference}")
-      expect(doc.css('a').first.attr('href')).to eq urls.project_url(project)
-    end
-
-    it 'links to a Project with a period' do
-      project = create(:project, name: 'alphA.Beta')
-
-      doc = reference_filter("Hey #{get_reference(project)}")
-      expect(doc.css('a').length).to eq 1
-    end
-
-    it 'links to a Project with an underscore' do
-      project = create(:project, name: 'ping_pong_king')
-
-      doc = reference_filter("Hey #{get_reference(project)}")
-      expect(doc.css('a').length).to eq 1
-    end
-
-    it 'links to a Project with different case-sensitivity' do
-      project = create(:project, name: 'RescueRanger')
-      reference = get_reference(project)
-
-      doc = reference_filter("Hey #{reference.upcase}")
-      expect(doc.css('a').length).to eq 1
-      expect(doc.css('a').text).to eq(reference)
-    end
-
-    it 'includes a data-project attribute' do
-      doc = reference_filter("Hey #{reference}")
-      link = doc.css('a').first
-
-      expect(link).to have_attribute('data-project')
-      expect(link.attr('data-project')).to eq project.id.to_s
-    end
-  end
-
   it 'includes default classes' do
     doc = reference_filter("Hey #{reference}")
     expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-project has-tooltip'
-  end
-
-  it 'supports an :only_path context' do
-    doc = reference_filter("Hey #{reference}", only_path: true)
-    link = doc.css('a').first.attr('href')
-
-    expect(link).not_to match %r(https?://)
-    expect(link).to eq urls.project_path(project)
-  end
-
-  context 'referencing a project in a link href' do
-    let(:reference) { %Q{<a href="#{get_reference(project)}">Project</a>} }
-
-    it 'links to a Project' do
-      doc = reference_filter("Hey #{reference}")
-      expect(doc.css('a').first.attr('href')).to eq urls.project_url(project)
-    end
-
-    it 'links with adjacent text' do
-      doc = reference_filter("Mention me (#{reference}.)")
-      expect(doc.to_html).to match(%r{\(<a.+>Project</a>\.\)})
-    end
-
-    it 'includes a data-project attribute' do
-      doc = reference_filter("Hey #{reference}")
-      link = doc.css('a').first
-
-      expect(link).to have_attribute('data-project')
-      expect(link.attr('data-project')).to eq project.id.to_s
-    end
   end
 
   context 'in group context' do
