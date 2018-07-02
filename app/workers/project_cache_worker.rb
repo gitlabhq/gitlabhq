@@ -4,10 +4,7 @@
 class ProjectCacheWorker
   include ApplicationWorker
   include ExclusiveLeaseGuard
-<<<<<<< HEAD
   prepend EE::Workers::ProjectCacheWorker
-=======
->>>>>>> upstream/master
 
   LEASE_TIMEOUT = 15.minutes.to_i
 
