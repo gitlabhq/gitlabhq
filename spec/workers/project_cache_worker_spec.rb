@@ -9,44 +9,50 @@ describe ProjectCacheWorker do
   let(:lease_key) { "project_cache_worker:#{project.id}:update_statistics" }
   let(:lease_timeout) { ProjectCacheWorker::LEASE_TIMEOUT }
 
+  before do
+    stub_exclusive_lease(lease_key, timeout: lease_timeout)
+
+    allow(Project).to receive(:find_by)
+                        .with(id: project.id)
+                        .and_return(project)
+  end
+
   describe '#perform' do
-    before do
-      stub_exclusive_lease(lease_key, timeout: lease_timeout)
-    end
-
     context 'with a non-existing project' do
-      it 'does nothing' do
-        expect(worker).not_to receive(:update_statistics)
+      it 'does not update statistic' do
+        allow(Project).to receive(:find_by).with(id: -1).and_return(nil)
 
-        worker.perform(-1)
+        expect(subject).not_to receive(:update_statistics)
+
+        subject.perform(-1)
       end
     end
 
     context 'with an existing project without a repository' do
-      it 'does nothing' do
-        allow_any_instance_of(Repository).to receive(:exists?).and_return(false)
+      it 'does not update statistics' do
+        allow(project.repository).to receive(:exists?).and_return(false)
 
-        expect(worker).not_to receive(:update_statistics)
+        expect(subject).not_to receive(:update_statistics)
 
-        worker.perform(project.id)
+        subject.perform(project.id)
       end
     end
 
     context 'with an existing project' do
       it 'updates the project statistics' do
-        expect(worker).to receive(:update_statistics)
-          .with(kind_of(Project), %i(repository_size))
-          .and_call_original
+        expect(subject).to receive(:update_statistics)
+                             .with(%w(repository_size))
+                             .and_call_original
 
-        worker.perform(project.id, [], %w(repository_size))
+        subject.perform(project.id, [], %w(repository_size))
       end
 
       it 'refreshes the method caches' do
-        expect_any_instance_of(Repository).to receive(:refresh_method_caches)
-          .with(%i(readme))
-          .and_call_original
+        expect(project.repository).to receive(:refresh_method_caches)
+                                        .with(%i(readme))
+                                        .and_call_original
 
-        worker.perform(project.id, %w(readme))
+        subject.perform(project.id, %w(readme))
       end
 
       context 'when in Geo secondary node' do
@@ -70,23 +76,22 @@ describe ProjectCacheWorker do
           allow(MarkupHelper).to receive(:gitlab_markdown?).and_return(false)
           allow(MarkupHelper).to receive(:plain?).and_return(true)
 
-          expect_any_instance_of(Repository).to receive(:refresh_method_caches)
-                                                  .with(%i(readme))
-                                                  .and_call_original
-          worker.perform(project.id, %w(readme))
+          expect(project.repository).to receive(:refresh_method_caches)
+                                          .with(%i(readme))
+                                          .and_call_original
+
+          subject.perform(project.id, %w(readme))
         end
       end
     end
-  end
 
-  describe '#update_statistics' do
     context 'when a lease could not be obtained' do
       it 'does not update the repository size' do
         stub_exclusive_lease_taken(lease_key, timeout: lease_timeout)
 
-        expect(statistics).not_to receive(:refresh!)
+        expect(project.statistics).not_to receive(:refresh!)
 
-        worker.update_statistics(project)
+        subject.perform(project.id, [], %w(repository_size))
       end
     end
 
@@ -94,11 +99,17 @@ describe ProjectCacheWorker do
       it 'updates the project statistics' do
         stub_exclusive_lease(lease_key, timeout: lease_timeout)
 
-        expect(statistics).to receive(:refresh!)
-          .with(only: %i(repository_size))
-          .and_call_original
+        expect(project.statistics).to receive(:refresh!)
+                                        .with(only: %i(repository_size))
+                                        .and_call_original
 
-        worker.update_statistics(project, %i(repository_size))
+        subject.perform(project.id, [], %i(repository_size))
+      end
+
+      it 'cancels the lease after statistics has been updated' do
+        expect(subject).to receive(:release_lease).with('uuid')
+
+        subject.perform(project.id, [], %i(repository_size))
       end
     end
   end
