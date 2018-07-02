@@ -26,25 +26,23 @@ class CleanupFillFileStoreBackgroundMigrations < ActiveRecord::Migration
     Gitlab::BackgroundMigration.steal('FillFileStoreLfsObject')
     Gitlab::BackgroundMigration.steal('FillStoreUpload')
 
-    CleanupFillFileStoreBackgroundMigrations::JobArtifact.where(file_store: nil).each_batch(batch_size: 10_000) do |relation|
+    CleanupFillFileStoreBackgroundMigrations::JobArtifact.where(file_store: nil).each_batch(of: 10_000) do |relation|
       start_id, end_id = relation.pluck('MIN(id), MAX(id)').first
 
       Gitlab::BackgroundMigration::FillFileStoreJobArtifact.new.perform(start_id, end_id)
     end
 
-    CleanupFillFileStoreBackgroundMigrations::LfsObject.where(file_store: nil).each_batch(batch_size: 10_000) do |relation|
+    CleanupFillFileStoreBackgroundMigrations::LfsObject.where(file_store: nil).each_batch(of: 10_000) do |relation|
       start_id, end_id = relation.pluck('MIN(id), MAX(id)').first
 
       Gitlab::BackgroundMigration::FillFileStoreLfsObject.new.perform(start_id, end_id)
     end
 
-    CleanupFillFileStoreBackgroundMigrations::Upload.where(store: nil).each_batch(batch_size: 10_000) do |relation|
+    CleanupFillFileStoreBackgroundMigrations::Upload.where(store: nil).each_batch(of: 10_000) do |relation|
       start_id, end_id = relation.pluck('MIN(id), MAX(id)').first
 
       Gitlab::BackgroundMigration::FillStoreUpload.new.perform(start_id, end_id)
     end
-
-    ## TODO: Do we add NOT NULL constraint here?
   end
 
   def down

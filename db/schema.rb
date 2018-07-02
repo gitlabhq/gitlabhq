@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180626125654) do
+ActiveRecord::Schema.define(version: 20180702174635) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -376,7 +376,7 @@ ActiveRecord::Schema.define(version: 20180626125654) do
     t.integer "project_id", null: false
     t.integer "job_id", null: false
     t.integer "file_type", null: false
-    t.integer "file_store"
+    t.integer "file_store", null: false
     t.integer "size", limit: 8
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
@@ -1084,9 +1084,10 @@ ActiveRecord::Schema.define(version: 20180626125654) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "file"
-    t.integer "file_store"
+    t.integer "file_store", null: false
   end
 
+  add_index "lfs_objects", ["file_store"], name: "index_lfs_objects_on_file_store", using: :btree
   add_index "lfs_objects", ["oid"], name: "index_lfs_objects_on_oid", unique: true, using: :btree
 
   create_table "lfs_objects_projects", force: :cascade do |t|
@@ -1980,11 +1981,12 @@ ActiveRecord::Schema.define(version: 20180626125654) do
     t.datetime "created_at", null: false
     t.string "mount_point"
     t.string "secret"
-    t.integer "store"
+    t.integer "store", null: false
   end
 
   add_index "uploads", ["checksum"], name: "index_uploads_on_checksum", using: :btree
   add_index "uploads", ["model_id", "model_type"], name: "index_uploads_on_model_id_and_model_type", using: :btree
+  add_index "uploads", ["store"], name: "index_uploads_on_store", using: :btree
   add_index "uploads", ["uploader", "path"], name: "index_uploads_on_uploader_and_path", using: :btree
 
   create_table "user_agent_details", force: :cascade do |t|
