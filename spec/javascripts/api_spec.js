@@ -242,7 +242,7 @@ describe('Api', () => {
         },
       ]);
 
-      Api.groupProjects(groupId, query, response => {
+      Api.groupProjects(groupId, query, {}, response => {
         expect(response.length).toBe(1);
         expect(response[0].name).toBe('test');
         done();
