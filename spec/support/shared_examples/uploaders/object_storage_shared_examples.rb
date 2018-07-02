@@ -76,8 +76,10 @@ shared_examples "migrates" do |to_store:, from_store: nil|
   end
 
   context 'when migrate! is occupied by another process' do
+    include ExclusiveLeaseHelpers
+
     before do
-      @uuid = Gitlab::ExclusiveLease.new(subject.exclusive_lease_key, timeout: 1.hour.to_i).try_obtain
+      stub_exclusive_lease_taken(subject.exclusive_lease_key, timeout: 1.hour.to_i)
     end
 
     it 'does not execute migrate!' do
@@ -90,10 +92,6 @@ shared_examples "migrates" do |to_store:, from_store: nil|
       expect(subject).not_to receive(:unsafe_use_file)
 
       expect { subject.use_file }.to raise_error(ObjectStorage::ExclusiveLeaseTaken)
-    end
-
-    after do
-      Gitlab::ExclusiveLease.cancel(subject.exclusive_lease_key, @uuid)
     end
   end
 

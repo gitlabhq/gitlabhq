@@ -737,6 +737,10 @@
   > *:not(:last-child) {
     margin-right: .3em;
   }
+
+  svg {
+    vertical-align: text-top;
+  }
 }
 
 .deploy-link {

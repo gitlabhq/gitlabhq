@@ -571,13 +571,13 @@ describe Project do
                                   last_activity_at: timestamp,
                                   last_repository_updated_at: timestamp - 1.hour)
 
-        expect(project.last_activity_date).to eq(timestamp)
+        expect(project.last_activity_date).to be_like_time(timestamp)
 
         project.update_attributes(updated_at: timestamp,
                                   last_activity_at: timestamp - 1.hour,
                                   last_repository_updated_at: nil)
 
-        expect(project.last_activity_date).to eq(timestamp)
+        expect(project.last_activity_date).to be_like_time(timestamp)
       end
     end
   end

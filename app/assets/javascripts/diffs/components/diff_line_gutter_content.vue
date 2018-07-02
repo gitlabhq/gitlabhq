@@ -4,14 +4,7 @@ import { s__ } from '~/locale';
 import { mapState, mapGetters, mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import DiffGutterAvatars from './diff_gutter_avatars.vue';
-import {
-  MATCH_LINE_TYPE,
-  CONTEXT_LINE_TYPE,
-  OLD_NO_NEW_LINE_TYPE,
-  NEW_NO_NEW_LINE_TYPE,
-  LINE_POSITION_RIGHT,
-  UNFOLD_COUNT,
-} from '../constants';
+import { LINE_POSITION_RIGHT, UNFOLD_COUNT } from '../constants';
 import * as utils from '../store/utils';
 
 export default {
@@ -63,6 +56,21 @@ export default {
       required: false,
       default: false,
     },
+    isMatchLine: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isMetaLine: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isContextLine: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     ...mapState({
@@ -70,15 +78,6 @@ export default {
       diffFiles: state => state.diffs.diffFiles,
     }),
     ...mapGetters(['isLoggedIn', 'discussionsByLineCode']),
-    isMatchLine() {
-      return this.lineType === MATCH_LINE_TYPE;
-    },
-    isContextLine() {
-      return this.lineType === CONTEXT_LINE_TYPE;
-    },
-    isMetaLine() {
-      return this.lineType === OLD_NO_NEW_LINE_TYPE || this.lineType === NEW_NO_NEW_LINE_TYPE;
-    },
     lineHref() {
       return this.lineCode ? `#${this.lineCode}` : '#';
     },
@@ -109,9 +108,9 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['loadMoreLines']),
+    ...mapActions(['loadMoreLines', 'showCommentForm']),
     handleCommentButton() {
-      this.$emit('showCommentForm', { lineCode: this.lineCode });
+      this.showCommentForm({ lineCode: this.lineCode });
     },
     handleLoadMoreLines() {
       if (this.isRequesting) {

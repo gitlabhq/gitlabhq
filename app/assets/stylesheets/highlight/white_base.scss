@@ -102,7 +102,9 @@ pre.code,
 // Diff line
 .line_holder {
 
-  &.match .line_content {
+  &.match .line_content,
+  .new-nonewline.line_content,
+  .old-nonewline.line_content {
     @include matchLine;
   }
 

@@ -67,6 +67,7 @@
         members: this.enableAutocomplete,
         issues: this.enableAutocomplete,
         mergeRequests: this.enableAutocomplete,
+        epics: this.enableAutocomplete,
         milestones: this.enableAutocomplete,
         labels: this.enableAutocomplete,
       });

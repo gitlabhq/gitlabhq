@@ -35,7 +35,7 @@ gem 'faraday', '~> 0.12'
 # Authentication libraries
 gem 'devise', '~> 4.4'
 gem 'doorkeeper', '~> 4.3'
-gem 'doorkeeper-openid_connect', '~> 1.3'
+gem 'doorkeeper-openid_connect', '~> 1.5'
 gem 'omniauth', '~> 1.8'
 gem 'omniauth-auth0', '~> 2.0.0'
 gem 'omniauth-azure-oauth2', '~> 0.0.9'
@@ -418,7 +418,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.102.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.103.0', require: 'gitaly'
 gem 'grpc', '~> 1.11.0'
 
 # Locked until https://github.com/google/protobuf/issues/4210 is closed

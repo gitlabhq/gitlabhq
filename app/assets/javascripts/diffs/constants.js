@@ -14,6 +14,8 @@ export const TEXT_DIFF_POSITION_TYPE = 'text';
 
 export const LINE_POSITION_LEFT = 'left';
 export const LINE_POSITION_RIGHT = 'right';
+export const LINE_SIDE_LEFT = 'left-side';
+export const LINE_SIDE_RIGHT = 'right-side';
 
 export const DIFF_VIEW_COOKIE_NAME = 'diff_view';
 export const LINE_HOVER_CLASS_NAME = 'is-over';

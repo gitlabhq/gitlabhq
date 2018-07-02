@@ -148,6 +148,7 @@ module NotesHelper
         members: autocomplete,
         issues: autocomplete,
         mergeRequests: autocomplete,
+        epics: autocomplete,
         milestones: autocomplete,
         labels: autocomplete
       }

@@ -247,8 +247,10 @@ shared_examples_for 'common trace features' do
         end
 
         context 'when another process has already been archiving', :clean_gitlab_redis_shared_state do
+          include ExclusiveLeaseHelpers
+
           before do
-            Gitlab::ExclusiveLease.new("trace:archive:#{trace.job.id}", timeout: 1.hour).try_obtain
+            stub_exclusive_lease_taken("trace:archive:#{trace.job.id}", timeout: 1.hour)
           end
 
           it 'blocks concurrent archiving' do

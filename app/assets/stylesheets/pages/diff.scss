@@ -14,8 +14,8 @@
       background-color: $gray-normal;
     }
 
-    .diff-toggle-caret {
-      padding-right: 6px;
+    svg {
+      vertical-align: text-bottom;
     }
   }
 
@@ -698,7 +698,7 @@
     &.diff-files-changed-merge-request {
       position: sticky;
       top: 90px;
-      z-index: 190;
+      z-index: 200;
       margin: $gl-padding 0;
       padding: 0;
     }
@@ -706,6 +706,7 @@
     &.is-stuck {
       padding-top: 0;
       padding-bottom: 0;
+      border-top: 1px solid $white-dark;
       border-bottom: 1px solid $white-dark;
 
       .diff-stats-additions-deletions-expanded,
@@ -736,6 +737,10 @@
   max-width: 560px;
   width: 100%;
   z-index: 150;
+  min-height: $dropdown-min-height;
+  max-height: $dropdown-max-height;
+  overflow-y: auto;
+  margin-bottom: 0;
 
   @include media-breakpoint-up(sm) {
     left: $gl-padding;

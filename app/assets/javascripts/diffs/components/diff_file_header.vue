@@ -112,7 +112,11 @@ export default {
   },
   methods: {
     handleToggle(e, checkTarget) {
-      if (!checkTarget || e.target === this.$refs.header) {
+      if (
+        !checkTarget ||
+        e.target === this.$refs.header ||
+        (e.target.classList && e.target.classList.contains('diff-toggle-caret'))
+      ) {
         this.$emit('toggleFile');
       }
     },
@@ -201,7 +205,7 @@ export default {
 
     <div
       v-if="!diffFile.submodule && addMergeRequestButtons"
-      class="file-actions d-none d-md-block"
+      class="file-actions d-none d-sm-block"
     >
       <template
         v-if="diffFile.blob && diffFile.blob.readableText"

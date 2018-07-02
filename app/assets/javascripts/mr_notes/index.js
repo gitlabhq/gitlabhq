@@ -45,17 +45,17 @@ export default function initMrNotes() {
         this.updateDiscussionTabCounter();
       },
     },
+    created() {
+      this.setActiveTab(window.mrTabs.getCurrentAction());
+    },
     mounted() {
       this.notesCountBadge = $('.issuable-details').find('.notes-tab .badge');
-      this.setActiveTab(window.mrTabs.getCurrentAction());
-
-      window.mrTabs.eventHub.$on('MergeRequestTabChange', tab => {
-        this.setActiveTab(tab);
-      });
       $(document).on('visibilitychange', this.updateDiscussionTabCounter);
+      window.mrTabs.eventHub.$on('MergeRequestTabChange', this.setActiveTab);
     },
     beforeDestroy() {
       $(document).off('visibilitychange', this.updateDiscussionTabCounter);
+      window.mrTabs.eventHub.$off('MergeRequestTabChange', this.setActiveTab);
     },
     methods: {
       ...mapActions(['setActiveTab']),
