@@ -42,39 +42,13 @@ export default {
 <template>
   <div class="ide-merge-request-info">
     <div class="detail-page-header">
-      <div class="detail-page-header-body">
-        <div
-          :class="{
-            'status-box-open': isOpen,
-            'status-box-closed': isClosed
-          }"
-          class="issuable-status-box status-box d-flex h-100"
-        >
-          <icon
-            :name="iconName"
-          />
-        </div>
-        <div class="issuable-meta">
-          Opened
-          {{ timeFormated(currentMergeRequest.created_at) }}
-          by
-          <a
-            :href="currentMergeRequest.author.web_url"
-            class="author_link"
-          >
-            <img
-              :src="currentMergeRequest.author.avatar_url"
-              class="avatar avatar-inline s24"
-            />
-            <strong
-              v-tooltip
-              :title="authorUsername"
-            >
-              {{ currentMergeRequest.author.name }}
-            </strong>
-          </a>
-        </div>
-      </div>
+      <icon
+        name="git-merge"
+        class="align-self-center append-right-8"
+      />
+      <strong>
+        !{{ currentMergeRequest.iid }}
+      </strong>
     </div>
     <div class="issuable-details">
       <title-component
@@ -85,6 +59,7 @@ export default {
       <description-component
         :description-html="currentMergeRequest.description"
         :description-text="currentMergeRequest.description"
+        :can-update="false"
       />
     </div>
   </div>
@@ -93,5 +68,9 @@ export default {
 <style scoped>
 .ide-merge-request-info {
   overflow: auto;
+}
+
+.detail-page-header {
+  line-height: initial;
 }
 </style>
