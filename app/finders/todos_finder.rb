@@ -161,7 +161,7 @@ class TodosFinder
     if group?
       groups = group.self_and_descendants
       items = items.where(
-        'project_id IN (?) OR group_id IN  (?)',
+        'project_id IN (?) OR group_id IN (?)',
         Project.where(group: groups).select(:id),
         groups.select(:id)
       )
@@ -178,7 +178,7 @@ class TodosFinder
       .joins('LEFT JOIN namespaces ON namespaces.id = todos.group_id')
       .joins('LEFT JOIN projects ON projects.id = todos.project_id')
       .where(
-        'project_id IN (?) OR group_id IN  (?)',
+        'project_id IN (?) OR group_id IN (?)',
         projects.select(:id),
         groups.select(:id)
       )
