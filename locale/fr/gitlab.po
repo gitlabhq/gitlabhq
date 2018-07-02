@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-07-01 16:35+1000\n"
-"PO-Revision-Date: 2018-07-02 00:55\n"
+"PO-Revision-Date: 2018-07-02 01:13\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -3195,7 +3195,7 @@ msgid "Online IDE integration settings."
 msgstr "Paramètres d’intégration de l’EDI en ligne."
 
 msgid "Only comments from the following commit are shown below"
-msgstr ""
+msgstr "Seuls les commentaires du commit suivant sont affichés ci‐dessous"
 
 msgid "Only project members can comment."
 msgstr "Seuls les membres du projet peuvent commenter."
@@ -3216,7 +3216,7 @@ msgid "Options"
 msgstr "Options"
 
 msgid "Or you can choose one of the suggested colors below"
-msgstr ""
+msgstr "Ou vous pouvez choisir l’une des couleurs suggérées ci‐dessous"
 
 msgid "Other Labels"
 msgstr "Autres étiquettes"
@@ -3255,7 +3255,7 @@ msgid "Password"
 msgstr "Mot de Passe"
 
 msgid "Paste your public SSH key, which is usually contained in the file '~/.ssh/id_rsa.pub' and begins with 'ssh-rsa'. Don't use your private SSH key."
-msgstr ""
+msgstr "Collez votre clef SSH publique, qui est habituellement située dans le fichier « ~/.ssh/id_rsa.pub » et commence par « ssh-rsa ». N’utilisez pas votre clef SSH privée !"
 
 msgid "Pause"
 msgstr "Pause"
@@ -3264,7 +3264,7 @@ msgid "Pending"
 msgstr "En attente"
 
 msgid "Per job. If a job passes this threshold, it will be marked as failed"
-msgstr ""
+msgstr "Par tâche. Si une tâche dépasse ce seuil, elle sera marquée comme ayant échoué"
 
 msgid "Perform advanced options such as changing path, transferring, or removing the group."
 msgstr "Effectuer des actions avancées telles que la modification du chemin d’accès, le transfert ou la suppression du groupe."
@@ -3291,7 +3291,7 @@ msgid "Pipeline Schedules"
 msgstr "Planifications de pipelines"
 
 msgid "Pipeline triggers"
-msgstr ""
+msgstr "Déclencheurs de pipeline"
 
 msgid "PipelineCharts|Failed:"
 msgstr "Échecs :"
@@ -3432,7 +3432,7 @@ msgid "Pipeline|with stages"
 msgstr "avec les étapes"
 
 msgid "Plain diff"
-msgstr ""
+msgstr "Diff brut"
 
 msgid "PlantUML"
 msgstr "PlantUML"
@@ -3450,7 +3450,7 @@ msgid "Please solve the reCAPTCHA"
 msgstr "Veuillez résoudre le reCAPTCHA"
 
 msgid "Please try again"
-msgstr ""
+msgstr "Veuillez réessayer"
 
 msgid "Please wait while we import the repository for you. Refresh at will."
 msgstr "Veuillez patienter pendant l’importation de votre dépôt. Actualisez à votre guise."
@@ -3666,7 +3666,7 @@ msgid "PrometheusService|Metrics"
 msgstr "Métriques"
 
 msgid "PrometheusService|Metrics are automatically configured and monitored based on a library of metrics from popular exporters."
-msgstr ""
+msgstr "Les métriques sont automatiquement configurées et supervisées en fonction d’une bibliothèque de métriques provenant d’exportateurs populaires."
 
 msgid "PrometheusService|Missing environment variable"
 msgstr "Variable d’environnement manquante"
@@ -3708,7 +3708,7 @@ msgid "Protip:"
 msgstr "Astuce :"
 
 msgid "Provider"
-msgstr ""
+msgstr "Fournisseur"
 
 msgid "Public - The group and any public projects can be viewed without any authentication."
 msgstr "Public — le groupe ainsi que n’importe quel projet public est accessible sans authentification."
@@ -3717,7 +3717,7 @@ msgid "Public - The project can be accessed without any authentication."
 msgstr "Public - le projet est accessible sans aucune authentification."
 
 msgid "Public pipelines"
-msgstr ""
+msgstr "Pipelines publics"
 
 msgid "Push events"
 msgstr "Événements de poussée"
@@ -3732,7 +3732,7 @@ msgid "Quick actions can be used in the issues description and comment boxes."
 msgstr "Les actions rapides peuvent être utilisées dans la description des tickets et dans les zones de commentaire."
 
 msgid "Re-deploy"
-msgstr ""
+msgstr "Redéployer"
 
 msgid "Read more"
 msgstr "Lire plus"
@@ -3753,7 +3753,7 @@ msgid "Register and see your runners for this group."
 msgstr "Identifiez‐vous et accédez à vos exécuteurs pour ce groupe."
 
 msgid "Register and see your runners for this project."
-msgstr ""
+msgstr "Enregistrer et afficher vos exécuteurs pour ce projet."
 
 msgid "Registry"
 msgstr "Registre"
@@ -3801,7 +3801,7 @@ msgid "Repository"
 msgstr "Dépôt"
 
 msgid "Repository Settings"
-msgstr ""
+msgstr "Paramètres du dépôt"
 
 msgid "Repository maintenance"
 msgstr "Maintenance du dépôt"
@@ -3828,7 +3828,7 @@ msgid "Reset runners registration token"
 msgstr "Réinitialiser le jeton d’inscription des exécuteurs"
 
 msgid "Resolve all discussions in new issue"
-msgstr ""
+msgstr "Résoudre toutes les discussions dans un nouveau ticket"
 
 msgid "Resolve conflicts on source branch"
 msgstr "Résoudre les conflits sur la branche source"
@@ -3869,10 +3869,10 @@ msgid "Reviewing (merge request !%{mergeRequestId})"
 msgstr "Examen (demande de fusion !%{mergeRequestId})"
 
 msgid "Rollback"
-msgstr ""
+msgstr "Restaurer (rollback)"
 
 msgid "Runner token"
-msgstr ""
+msgstr "Jeton de l’exécuteur"
 
 msgid "Runners"
 msgstr "Exécuteurs"
@@ -3890,10 +3890,10 @@ msgid "SSH Keys"
 msgstr "Clefs SSH"
 
 msgid "SSL Verification"
-msgstr ""
+msgstr "Vérification SSL"
 
 msgid "Save"
-msgstr ""
+msgstr "Enregistrer"
 
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
@@ -4052,10 +4052,10 @@ msgid "Show complete raw log"
 msgstr "Afficher le journal brut complet"
 
 msgid "Show latest version"
-msgstr ""
+msgstr "Afficher la dernière version"
 
 msgid "Show latest version of the diff"
-msgstr ""
+msgstr "Afficher la dernière version du diff"
 
 msgid "Show parent pages"
 msgstr "Afficher les pages parentes"
@@ -4064,7 +4064,7 @@ msgid "Show parent subgroups"
 msgstr "Afficher les sous‐groupes parents"
 
 msgid "Show whitespace changes"
-msgstr ""
+msgstr "Afficher les modifications des espaces"
 
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
@@ -4072,7 +4072,7 @@ msgstr[0] "Affichage de %d évènement"
 msgstr[1] "Affichage de %d événements"
 
 msgid "Side-by-side"
-msgstr ""
+msgstr "côte à côte"
 
 msgid "Sign out"
 msgstr "Se déconnecter"
@@ -4087,7 +4087,7 @@ msgid "Size and domain settings for static websites"
 msgstr "Paramètres de taille et de domaine pour les sites Web statiques"
 
 msgid "Slower but makes sure the project workspace is pristine as it clones the repository from scratch for every job"
-msgstr ""
+msgstr "Plus lent, mais permet de s’assurer que l’espace de travail du projet est vierge, comme il clone le dépôt à partir de zéro pour chaque tâche"
 
 msgid "Snippets"
 msgstr "Extraits de code"
@@ -4099,7 +4099,7 @@ msgid "Something went wrong on our end."
 msgstr "Une erreur est survenue de notre côté."
 
 msgid "Something went wrong on our end. Please try again!"
-msgstr ""
+msgstr "Quelque chose s’est mal passé de notre côté. Veuillez réessayer."
 
 msgid "Something went wrong when toggling the button"
 msgstr "Une erreur s’est produite lors du basculement du bouton"
