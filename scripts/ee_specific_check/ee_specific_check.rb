@@ -62,9 +62,11 @@ module EESpecificCheck
   end
 
   def find_ce_compare_head(ce_fetch_head, ce_fetch_base, ce_merge_base)
-    if git_ancestor?(ce_merge_base, ce_fetch_base) # CE ahead of EE
+    if git_ancestor?(ce_merge_base, ce_fetch_base)
+      say("CE is ahead of EE, finding backward CE head")
       find_backward_ce_head(ce_fetch_head, ce_fetch_base, ce_merge_base)
-    else # EE ahead of CE
+    else
+      say("CE is behind of EE, finding forward CE head")
       find_forward_ce_head(ce_merge_base, ce_fetch_head)
     end
   end
@@ -77,14 +79,16 @@ module EESpecificCheck
   def find_backward_ce_head(ce_fetch_head, ce_fetch_base, ce_merge_base)
     if ce_fetch_head.start_with?('canonical-ce') || # No specific CE branch
         ce_fetch_base == ce_merge_base # Up-to-date, no rebase needed
+      say("CE is up-to-date, using #{ce_fetch_head} directly")
       ce_merge_base
     else
-      # Rebase CE to remove commits in CE haven't merged into EE
+      say("Performing rebase to remove commits in CE haven't merged into EE")
       checkout_and_rebase(ce_merge_base, ce_fetch_base, ce_fetch_head)
     end
   end
 
   def find_forward_ce_head(ce_merge_base, ce_fetch_head)
+    say("Performing merge with CE master for CE branch #{ce_fetch_head}")
     with_detached_head(ce_fetch_head) do
       run_git_command("merge #{ce_merge_base} -s recursive -X patience")
 
