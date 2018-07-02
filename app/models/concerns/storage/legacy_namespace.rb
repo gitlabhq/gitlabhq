@@ -11,8 +11,6 @@ module Storage
                      Namespace.find(parent_id_was) # raise NotFound early if needed
                    end
 
-      expires_full_path_cache
-
       move_repositories
 
       if parent_changed?
