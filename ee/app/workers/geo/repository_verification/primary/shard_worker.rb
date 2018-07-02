@@ -60,7 +60,18 @@ module Geo
         end
 
         def find_failed_project_ids(batch_size:)
-          finder.find_failed_projects(batch_size: batch_size).pluck(:id)
+          repositories_ids = find_failed_repositories_ids(batch_size: batch_size)
+          wiki_ids = find_failed_wiki_ids(batch_size: batch_size)
+
+          take_batch(repositories_ids, wiki_ids, batch_size: batch_size)
+        end
+
+        def find_failed_repositories_ids(batch_size:)
+          finder.find_failed_repositories(batch_size: batch_size).pluck(:id)
+        end
+
+        def find_failed_wiki_ids(batch_size:)
+          finder.find_failed_wikis(batch_size: batch_size).pluck(:id)
         end
       end
     end

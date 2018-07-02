@@ -4,13 +4,22 @@ module Geo
       @shard_name = shard_name
     end
 
-    def find_failed_projects(batch_size:)
-      query = build_query_to_find_failed_projects(batch_size: batch_size)
-      cte   = Gitlab::SQL::CTE.new(:failed_projects, query)
+    def find_failed_repositories(batch_size:)
+      query = build_query_to_find_failed_projects(type: :repository, batch_size: batch_size)
+      cte   = Gitlab::SQL::CTE.new(:failed_repositories, query)
 
       Project.with(cte.to_arel)
              .from(cte.alias_to(projects_table))
-             .order(last_repository_updated_at_asc)
+             .order("projects.repository_retry_at ASC")
+    end
+
+    def find_failed_wikis(batch_size:)
+      query = build_query_to_find_failed_projects(type: :wiki, batch_size: batch_size)
+      cte   = Gitlab::SQL::CTE.new(:failed_wikis, query)
+
+      Project.with(cte.to_arel)
+             .from(cte.alias_to(projects_table))
+             .order("projects.wiki_retry_at ASC")
     end
 
     def find_outdated_projects(batch_size:)
@@ -54,12 +63,12 @@ module Geo
 
     attr_reader :shard_name
 
-    def build_query_to_find_failed_projects(batch_size:)
+    def build_query_to_find_failed_projects(type:, batch_size:)
       query =
         projects_table
           .join(repository_state_table).on(project_id_matcher)
-          .project(projects_table[:id], projects_table[:last_repository_updated_at])
-          .where(repository_failed.or(wiki_failed))
+          .project(projects_table[:id], repository_state_table["#{type}_retry_at"])
+          .where(repository_state_table["last_#{type}_verification_failure"].not_eq(nil))
           .take(batch_size)
 
       query = apply_shard_restriction(query) if shard_name.present?
@@ -97,17 +106,9 @@ module Geo
         .join_sources
     end
 
-    def repository_failed
-      repository_state_table[:last_repository_verification_failure].not_eq(nil)
-    end
-
     def repository_outdated
       repository_state_table[:repository_verification_checksum].eq(nil)
         .and(repository_state_table[:last_repository_verification_failure].eq(nil))
-    end
-
-    def wiki_failed
-      repository_state_table[:last_wiki_verification_failure].not_eq(nil)
     end
 
     def wiki_outdated
