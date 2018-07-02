@@ -283,13 +283,13 @@ describe Projects::EnvironmentsController do
     it 'redirects to environment if it exists' do
       environment = create(:environment, name: 'production', project: project)
 
-      get :metrics_redirect, environment_params
+      get :metrics_redirect, namespace_id: project.namespace, project_id: project
 
       expect(response).to redirect_to(environment_metrics_path(environment))
     end
 
     it 'redirects to empty page if no environment exists' do
-      get :metrics_redirect, environment_params
+      get :metrics_redirect, namespace_id: project.namespace, project_id: project
 
       expect(response).to be_ok
       expect(response).to render_template 'empty'
