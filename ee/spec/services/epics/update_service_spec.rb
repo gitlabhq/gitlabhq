@@ -6,6 +6,9 @@ describe Epics::UpdateService do
   let(:epic) { create(:epic, group: group) }
 
   describe '#execute' do
+    before do
+      stub_licensed_features(epics: true)
+    end
     def update_epic(opts)
       described_class.new(group, user, opts).execute(epic)
     end
@@ -54,6 +57,22 @@ describe Epics::UpdateService do
 
         expect(note.note).to start_with('changed the description')
         expect(note.noteable).to eq(epic)
+      end
+    end
+
+    context 'todos' do
+      let(:mentioned1) { create(:user) }
+      let(:mentioned2) { create(:user) }
+
+      before do
+        group.update(visibility: Gitlab::VisibilityLevel::PUBLIC)
+        epic.update(description: "FYI: #{mentioned1.to_reference}")
+      end
+
+      it 'creates todos for only newly mentioned users' do
+        expect {
+          update_epic(description: "FYI: #{mentioned1.to_reference} #{mentioned2.to_reference}")
+        }.to change { Todo.count }.by(1)
       end
     end
   end
