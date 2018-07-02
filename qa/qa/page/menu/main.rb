@@ -54,9 +54,9 @@ module QA
           end
         end
 
-        def has_personal_area?
+        def has_personal_area?(wait_time = Capybara.default_wait_time)
           # No need to wait, either we're logged-in, or not.
-          using_wait_time(0) { page.has_selector?('.qa-user-avatar') }
+          using_wait_time(wait_time) { page.has_selector?('.qa-user-avatar') }
         end
 
         private

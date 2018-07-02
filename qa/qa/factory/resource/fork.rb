@@ -20,7 +20,7 @@ module QA
 
         dependency Factory::Resource::User, as: :user
 
-        product(:user) {|factory| factory.user}
+        product(:user) { |factory| factory.user }
 
         def fabricate!
           project.visit!

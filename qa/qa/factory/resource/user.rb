@@ -13,13 +13,13 @@ module QA
           @password = 'password'
         end
 
-        product(:name) {|factory| factory.name}
+        product(:name) { |factory| factory.name }
 
-        product(:username) {|factory| factory.username}
+        product(:username) { |factory| factory.username }
 
-        product(:email) {|factory| factory.email}
+        product(:email) { |factory| factory.email }
 
-        product(:password) {|factory| factory.password}
+        product(:password) { |factory| factory.password }
 
         def fabricate!
           Page::Menu::Main.act { sign_out }
