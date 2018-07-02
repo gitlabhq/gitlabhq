@@ -30,7 +30,7 @@
           %board-delete{ "inline-template" => true,
             ":list" => "list",
             "v-if" => "!list.preset && list.id" }
-            %button.board-delete.has-tooltip.append-right-10{ type: "button", title: _("Delete list"), "aria-label" => _("Delete list"), data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
+            %button.board-delete.has-tooltip.float-right{ type: "button", title: _("Delete list"), "aria-label" => _("Delete list"), data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
               = icon("trash")
         .issue-count-badge.clearfix{ "v-if" => 'list.type !== "blank" && list.type !== "promotion"' }
           %span.issue-count-badge-count.float-left{ ":class" => '{ "has-btn": list.type !== "closed" && !disabled }' }
@@ -54,4 +54,4 @@
       "ref" => "board-list" }
     - if can?(current_user, :admin_list, current_board_parent)
       %board-blank-state{ "v-if" => 'list.id == "blank"' }
-    %board-promotion-state{ "v-if" => 'list.id == "promotion"' }
+    = render_if_exists 'shared/boards/board_promotion_state'
