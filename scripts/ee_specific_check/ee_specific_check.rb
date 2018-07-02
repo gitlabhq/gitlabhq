@@ -21,7 +21,6 @@ module EESpecificCheck
 
   def git_version
     say run_git_command('--version')
-    say run_git_command('mergetool')
   end
 
   def say(message)
@@ -60,6 +59,55 @@ module EESpecificCheck
     run_git_command("fetch #{remote_to_fetch} #{branch_to_fetch} --quiet")
 
     "#{remote_to_fetch}/#{branch_to_fetch}"
+  end
+
+  def find_ce_compare_head(ce_fetch_head, ce_fetch_base, ce_merge_base)
+    if git_ancestor?(ce_merge_base, ce_fetch_base) # CE ahead of EE
+      find_backward_ce_head(ce_fetch_head, ce_fetch_base, ce_merge_base)
+    else # EE ahead of CE
+      find_forward_ce_head(ce_merge_base, ce_fetch_head)
+    end
+  end
+
+  def git_ancestor?(ancestor, descendant)
+    run_git_command(
+      "merge-base --is-ancestor #{ancestor} #{descendant} && echo y") == 'y'
+  end
+
+  def find_backward_ce_head(ce_fetch_head, ce_fetch_base, ce_merge_base)
+    if ce_fetch_head.start_with?('canonical-ce') || # No specific CE branch
+        ce_fetch_base == ce_merge_base # Up-to-date, no rebase needed
+      ce_merge_base
+    else
+      # Rebase CE to remove commits in CE haven't merged into EE
+      checkout_and_rebase(ce_merge_base, ce_fetch_base, ce_fetch_head)
+    end
+  end
+
+  def find_forward_ce_head(ce_merge_base, ce_fetch_head)
+    with_detached_head(ce_fetch_head) do
+      run_git_command("merge #{ce_merge_base} -s recursive -X patience")
+
+      status = git_status
+
+      if status.porcelain == ''
+        status.head
+      else
+        run_git_command("merge --abort")
+
+        say <<~MESSAGE
+          💥 Git status not clean! This means there's a conflict in
+          💥 #{ce_fetch_head} with canonical-ce/master. Please resolve
+          💥 the conflict from CE master and retry this job.
+
+          ⚠️ Git status:
+
+          #{status.porcelain}
+        MESSAGE
+
+        exit(254)
+      end
+    end
   end
 
   # We rebase onto the commit which is the latest commit presented in both
@@ -176,11 +224,6 @@ module EESpecificCheck
     run_git_command('clean -fd') if ENV['CI']
   end
 
-  def git_ancestor?(ancestor, descendant)
-    run_git_command(
-      "merge-base --is-ancestor #{ancestor} #{descendant} && echo y") == 'y'
-  end
-
   def remove_remotes
     run_git_command(
       "remote remove canonical-ee",
@@ -209,50 +252,6 @@ module EESpecificCheck
       MESSAGE
 
       %w[canonical-ce master]
-    end
-  end
-
-  def find_ce_compare_head(ce_fetch_head, ce_fetch_base, ce_merge_base)
-    if git_ancestor?(ce_merge_base, ce_fetch_base) # CE ahead of EE
-      find_backward_ce_head(ce_fetch_head, ce_fetch_base, ce_merge_base)
-    else # EE ahead of CE
-      find_forward_ce_head(ce_merge_base, ce_fetch_head)
-    end
-  end
-
-  def find_backward_ce_head(ce_fetch_head, ce_fetch_base, ce_merge_base)
-    if ce_fetch_head.start_with?('canonical-ce') || # No specific CE branch
-        ce_fetch_base == ce_merge_base # Up-to-date, no rebase needed
-      ce_merge_base
-    else
-      # Rebase CE to remove commits in CE haven't merged into EE
-      checkout_and_rebase(ce_merge_base, ce_fetch_base, ce_fetch_head)
-    end
-  end
-
-  def find_forward_ce_head(ce_merge_base, ce_fetch_head)
-    with_detached_head(ce_fetch_head) do
-      run_git_command("merge #{ce_merge_base} -s recursive -X patience")
-
-      status = git_status
-
-      if status.porcelain == ''
-        status.head
-      else
-        run_git_command("merge --abort")
-
-        say <<~MESSAGE
-          💥 Git status not clean! This means there's a conflict in
-          💥 #{ce_fetch_head} with canonical-ce/master. Please resolve
-          💥 the conflict from CE master and retry this job.
-
-          ⚠️ Git status:
-
-          #{status.porcelain}
-        MESSAGE
-
-        exit(254)
-      end
     end
   end
 
