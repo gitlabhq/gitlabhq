@@ -248,7 +248,7 @@ class User < ActiveRecord::Base
   scope :blocked, -> { with_states(:blocked, :ldap_blocked) }
   scope :external, -> { where(external: true) }
   scope :active, -> { with_state(:active).non_internal }
-  scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members WHERE user_id IS NOT NULL AND requested_at IS NULL)') }
+  scope :without_projects, -> { joins('LEFT JOIN project_authorizations ON users.id = project_authorizations.user_id').where(project_authorizations: { user_id: nil }) }
   scope :subscribed_for_admin_email, -> { where(admin_email_unsubscribed_at: nil) }
   scope :ldap, -> { joins(:identities).where('identities.provider LIKE ?', 'ldap%') }
   scope :with_provider, ->(provider) do
