@@ -16,6 +16,7 @@ module Projects
         @new_path = project.disk_path
 
         origin = FileUploader.absolute_base_dir(project)
+        origin.sub!(%r{#{Regexp.escape(project.full_path)}\z}, options[:old_path]) if options[:old_path]
         project.storage_version = ::Project::HASHED_STORAGE_FEATURES[:attachments]
         target = FileUploader.absolute_base_dir(project)
 

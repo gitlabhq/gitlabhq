@@ -221,7 +221,6 @@ describe Projects::UpdateService do
           it 'migrates project to a hashed storage instead of renaming the repo to another legacy name' do
             Sidekiq::Testing.inline! do
               result = update_project(project, admin, path: 'new-path')
-              # stub_application_setting(hashed_storage_enabled: true)
 
               expect(result).not_to include(status: :error)
               expect(project).to be_valid

@@ -79,6 +79,23 @@ describe Projects::HashedStorage::MigrateRepositoryService do
       end
     end
 
+    context 'when old_path is explicitly passed' do
+      let(:old_path) { 'old-path' }
+      let(:logger) { double }
+      let(:service) { described_class.new(project, { old_path: old_path, logger: logger }) }
+
+      it 'uses passed old_path parameter' do
+        expect(service).to receive(:move_repository).with(old_path, /\@hashed/)
+
+        allow(service).to receive(:rollback_folder_move).and_return(nil)
+
+        service.execute
+
+        expect(service.old_disk_path).to eq old_path
+        expect(service.old_wiki_disk_path).to eq "#{old_path}.wiki"
+      end
+    end
+
     def expect_move_repository(from_name, to_name)
       expect(gitlab_shell).to receive(:mv_repository).with(project.repository_storage, from_name, to_name).and_call_original
     end

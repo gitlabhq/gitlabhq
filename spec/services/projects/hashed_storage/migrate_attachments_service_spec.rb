@@ -55,6 +55,20 @@ describe Projects::HashedStorage::MigrateAttachmentsService do
         expect { service.execute }.to raise_error(Projects::HashedStorage::AttachmentMigrationError)
       end
     end
+
+    context 'when old_path is explicitly passed' do
+      let(:old_path) { 'old-path' }
+      let(:logger) { double }
+      subject(:service) { described_class.new(project, { old_path: old_path, logger: logger }) }
+
+      it 'uses passed old_path parameter' do
+        expect(logger).to receive(:info).with(/source path doesn\'t exist or is not a directory/)
+
+        service.execute
+
+        expect(service.old_path).to eq old_path
+      end
+    end
   end
 
   def base_path(storage)
