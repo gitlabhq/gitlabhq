@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-07-01 16:35+1000\n"
-"PO-Revision-Date: 2018-07-01 13:35\n"
+"PO-Revision-Date: 2018-07-02 07:22\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -2564,7 +2564,7 @@ msgid "Include a Terms of Service agreement and Privacy Policy that all users mu
 msgstr "包括所有用戶必須接受的服務條款協議和隱私政策。"
 
 msgid "Inline"
-msgstr "內含"
+msgstr "內嵌"
 
 msgid "Install Runner on Kubernetes"
 msgstr "在 Kubernetes 上安裝運行器"
