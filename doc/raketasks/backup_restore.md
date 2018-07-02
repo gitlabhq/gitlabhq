@@ -326,6 +326,16 @@ For installations from source:
 
 1. [Restart GitLab] for the changes to take effect
 
+#### Specifying a custom directory for backups
+
+Note: This option only works for remote storage. If you want to group your backups
+you can pass a `DIRECTORY` environment variable:
+
+```
+sudo gitlab-rake gitlab:backup:create DIRECTORY=daily
+sudo gitlab-rake gitlab:backup:create DIRECTORY=weekly
+```
+
 ### Uploading to locally mounted shares
 
 You may also send backups to a mounted share (`NFS` / `CIFS` / `SMB` / etc.) by
@@ -367,15 +377,6 @@ For installations from source:
       # The directory inside the mounted folder to copy backups to
       # Use '.' to store them in the root directory
       remote_directory: 'gitlab_backups'
-```
-
-### Specifying a custom directory for backups
-
-If you want to group your backups you can pass a `DIRECTORY` environment variable:
-
-```
-sudo gitlab-rake gitlab:backup:create DIRECTORY=daily
-sudo gitlab-rake gitlab:backup:create DIRECTORY=weekly
 ```
 
 ### Backup archive permissions
