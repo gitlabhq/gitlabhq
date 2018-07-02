@@ -1,0 +1,13 @@
+- page_title "Manifest Import"
+- header_title "Projects", root_path
+
+%h3.page-title
+  = icon('git')
+  Import multiple repositories
+
+- if @errors.present?
+  .alert.alert-danger
+    - @errors.each do |error|
+      = error
+
+= render 'form'
