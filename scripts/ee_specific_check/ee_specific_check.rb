@@ -90,7 +90,7 @@ module EESpecificCheck
   def find_forward_ce_head(ce_merge_base, ce_fetch_head)
     say("Performing merge with CE master for CE branch #{ce_fetch_head}")
     with_detached_head(ce_fetch_head) do
-      run_git_command("merge #{ce_merge_base} -s recursive -X patience")
+      run_git_command("merge #{ce_merge_base} -s recursive -X patience -m 'ee-specific-auto-merge'")
 
       status = git_status
 
