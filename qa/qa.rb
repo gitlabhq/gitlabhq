@@ -14,6 +14,7 @@ module QA
     autoload :Browser, 'qa/runtime/browser'
     autoload :Env, 'qa/runtime/env'
     autoload :Address, 'qa/runtime/address'
+    autoload :Wait, 'qa/runtime/wait'
 
     module API
       autoload :Client, 'qa/runtime/api/client'

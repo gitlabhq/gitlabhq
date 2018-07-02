@@ -34,7 +34,7 @@ module QA
           # The login page is usually the entry point for all the scenarios so
           # we need to wait for the instance to start. That said, in some cases
           # we are already logged-in so we check both cases here.
-          wait(max: 500) do
+          wait.until do
             page.has_css?('.login-page') ||
               Page::Menu::Main.act { has_personal_area?(wait: 0) }
           end

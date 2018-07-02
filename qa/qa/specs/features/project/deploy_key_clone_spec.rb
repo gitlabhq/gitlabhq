@@ -92,7 +92,7 @@ module QA
         Page::Project::Pipeline::Show.act { go_to_first_job }
 
         Page::Project::Job::Show.perform do |job|
-          job.wait(reload: false) do
+          job.wait.sleep(reload: false) do
             job.completed? && !job.trace_loading?
           end
 

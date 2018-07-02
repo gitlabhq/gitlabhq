@@ -56,7 +56,7 @@ module QA
         end
 
         def new_merge_request
-          wait(reload: true) do
+          wait.sleep(reload: true) do
             has_css?(element_selector_css(:create_merge_request))
           end
 
@@ -64,7 +64,7 @@ module QA
         end
 
         def wait_for_import
-          wait(reload: true) do
+          wait.sleep(reload: true) do
             has_css?('.tree-holder')
           end
         end

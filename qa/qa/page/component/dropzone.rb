@@ -21,7 +21,7 @@ module QA
           page.attach_file(attachment, class: 'dz-hidden-input', make_visible: field_style)
 
           # Wait for link to be appended to dropzone text
-          page.wait(reload: false) do
+          page.wait.sleep(reload: false) do
             page.find("#{container} textarea").value.match(filename)
           end
         end

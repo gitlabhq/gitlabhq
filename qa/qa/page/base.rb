@@ -13,8 +13,8 @@ module QA
         visit current_url
       end
 
-      def wait(opts)
-        QA::Runtime::Wait.new(opts).sleep
+      def wait
+        QA::Runtime::Wait
       end
 
       def scroll_to(selector, text: nil)
@@ -42,7 +42,7 @@ module QA
           xhr.send();
         JS
 
-        return false unless wait(time: 0.5, max: 60, reload: false) do
+        return false unless wait.sleep(interval: 0.5, timeout: 60) do
           page.evaluate_script('xhr.readyState == XMLHttpRequest.DONE')
         end
 
