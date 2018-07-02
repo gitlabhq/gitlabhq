@@ -11,34 +11,19 @@ describe ProjectCacheWorker do
 
   before do
     stub_exclusive_lease(lease_key, timeout: lease_timeout)
-<<<<<<< HEAD
 
     allow(Project).to receive(:find_by)
                         .with(id: project.id)
                         .and_return(project)
   end
 
-=======
-
-    allow(Project).to receive(:find_by)
-                        .with(id: project.id)
-                        .and_return(project)
-  end
-
->>>>>>> upstream/master
   describe '#perform' do
     context 'with a non-existing project' do
       it 'does not update statistic' do
         allow(Project).to receive(:find_by).with(id: -1).and_return(nil)
-<<<<<<< HEAD
 
         expect(subject).not_to receive(:update_statistics)
 
-=======
-
-        expect(subject).not_to receive(:update_statistics)
-
->>>>>>> upstream/master
         subject.perform(-1)
       end
     end
@@ -66,7 +51,6 @@ describe ProjectCacheWorker do
         expect(project.repository).to receive(:refresh_method_caches)
                                         .with(%i(readme))
                                         .and_call_original
-<<<<<<< HEAD
 
         subject.perform(project.id, %w(readme))
       end
@@ -85,10 +69,6 @@ describe ProjectCacheWorker do
 
           subject.perform(project.id)
         end
-=======
-
-        subject.perform(project.id, %w(readme))
->>>>>>> upstream/master
       end
 
       context 'with plain readme' do
