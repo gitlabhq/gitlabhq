@@ -36,18 +36,35 @@ module Geo
     def reset_repository_checksum!
       return if repository_state.nil?
 
-      repository_state.update!("#{repository_checksum_column}" => nil, "#{repository_failure_column}" => nil)
+      repository_state.update!(
+        "#{repository_checksum_column}" => nil,
+        "#{repository_failure_column}" => nil,
+        "#{repository_retry_at_column}" => nil,
+        "#{repository_retry_count_column}" => nil
+      )
     rescue => e
       log_error('Cannot reset repository checksum', e)
       raise RepositoryUpdateError, "Cannot reset repository checksum: #{e}"
     end
 
     def repository_checksum_column
-      "#{Geo::RepositoryUpdatedEvent.sources.key(source)}_verification_checksum"
+      "#{repository_type}_verification_checksum"
     end
 
     def repository_failure_column
-      "last_#{Geo::RepositoryUpdatedEvent.sources.key(source)}_verification_failure"
+      "last_#{repository_type}_verification_failure"
+    end
+
+    def repository_retry_at_column
+      "#{repository_type}_retry_at"
+    end
+
+    def repository_retry_count_column
+      "#{repository_type}_retry_count"
+    end
+
+    def repository_type
+      @repository_type ||= Geo::RepositoryUpdatedEvent.sources.key(source)
     end
   end
 end
