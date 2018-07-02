@@ -53,9 +53,9 @@ module Banzai
       # Returns a String with `project>` references replaced with links. All links
       # have `gfm` and `gfm-project` class names attached for styling.
       def project_link_filter(text, link_content: nil)
-        self.class.references_in(text) do |match, project_name|
-          cached_call(:banzai_url_for_object, match, path: [Project, project_name.downcase]) do
-            if project = projects_hash[project_name.downcase]
+        self.class.references_in(text) do |match, project_path|
+          cached_call(:banzai_url_for_object, match, path: [Project, project_path.downcase]) do
+            if project = projects_hash[project_path.downcase]
               link_to_project(project, link_content: link_content) || match
             else
               match
