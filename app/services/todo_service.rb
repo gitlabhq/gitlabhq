@@ -341,7 +341,7 @@ class TodoService
   end
 
   def reject_users_without_access(users, parent, target)
-    if target.is_a?(Note) && target.for_issuable_with_ability?
+    if target.is_a?(Note) && target.for_issuable?
       target = target.noteable
     end
 

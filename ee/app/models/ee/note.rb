@@ -57,8 +57,8 @@ module EE
       super.merge(banzai_context_params)
     end
 
-    override :for_issuable_with_ability?
-    def for_issuable_with_ability?
+    override :for_issuable?
+    def for_issuable?
       for_epic? || super
     end
 
