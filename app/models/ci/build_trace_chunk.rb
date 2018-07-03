@@ -1,7 +1,7 @@
 module Ci
   class BuildTraceChunk < ActiveRecord::Base
     include FastDestroyAll
-    include ExclusiveLeaseLock
+    include ::Gitlab::ExclusiveLeaseHelpers
     extend Gitlab::Ci::Model
 
     belongs_to :build, class_name: "Ci::Build", foreign_key: :build_id
