@@ -68,7 +68,7 @@ module EE
       project.full_path.sub(/\A#{Regexp.escape(full_path)}/, full_path_was)
     end
 
-    # Checks features (i.e. https://about.gitlab.com/products/) availabily
+    # Checks features (i.e. https://about.gitlab.com/pricing/) availabily
     # for a given Namespace plan. This method should consider ancestor groups
     # being licensed.
     def feature_available?(feature)
