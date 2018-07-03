@@ -391,7 +391,8 @@ review-docs-deploy-manual:
     - ./$SCRIPT_NAME deploy
   when: manual
   only:
-    - branches
+    - branches@gitlab-org/gitlab-ce
+    - branches@gitlab-org/gitlab-ee
   <<: *except-docs-and-qa
 
 # Always trigger a docs build in gitlab-docs only on docs-only branches.
@@ -404,6 +405,8 @@ review-docs-deploy:
     - ./$SCRIPT_NAME deploy
   only:
     - /(^docs[\/-].*|.*-docs$)/
+    - branches@gitlab-org/gitlab-ce
+    - branches@gitlab-org/gitlab-ee
   <<: *except-qa
 
 # Cleanup remote environment of gitlab-docs
