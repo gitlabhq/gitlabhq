@@ -388,12 +388,6 @@ module API
       expose :id, :iid
       expose(:project_id) { |entity| entity&.project.try(:id) }
       expose :title, :description
-      expose :title_html do |entity|
-        MarkupHelper::markdown_field(entity, :title)
-      end
-      expose :description_html do |entity|
-        MarkupHelper::markdown_field(entity, :description)
-      end
       expose :state, :created_at, :updated_at
     end
 
@@ -538,6 +532,12 @@ module API
     end
 
     class MergeRequestBasic < ProjectEntity
+      expose :title_html, if: -> (_, options) { options[:render_html] } do |entity|
+        MarkupHelper::markdown_field(entity, :title)
+      end
+      expose :description_html, if: -> (_, options) { options[:render_html] } do |entity|
+        MarkupHelper::markdown_field(entity, :description)
+      end
       expose :target_branch, :source_branch
       expose :upvotes do |merge_request, options|
         if options[:issuable_metadata]
