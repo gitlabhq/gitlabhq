@@ -130,7 +130,7 @@ class GeoNodeStatus < ActiveRecord::Base
   end
 
   def initialize_feature_flags
-    self.repository_verification_enabled = Feature.enabled?('geo_repository_verification')
+    self.repository_verification_enabled = Gitlab::Geo.repository_verification_enabled?
   end
 
   def update_cache!
