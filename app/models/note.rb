@@ -229,7 +229,7 @@ class Note < ActiveRecord::Base
     !for_personal_snippet?
   end
 
-  def for_issuable_with_ability?
+  def for_issuable?
     for_issue? || for_merge_request?
   end
 
