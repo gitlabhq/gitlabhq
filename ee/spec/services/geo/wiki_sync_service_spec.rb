@@ -20,6 +20,7 @@ RSpec.describe Geo::WikiSyncService do
 
   it_behaves_like 'geo base sync execution'
   it_behaves_like 'geo base sync fetch and repack'
+  it_behaves_like 'reschedules sync due to race condition instead of waiting for backfill'
 
   describe '#execute' do
     let(:url_to_repo) { "#{primary.url}#{project.full_path}.wiki.git" }
@@ -109,7 +110,7 @@ RSpec.describe Geo::WikiSyncService do
     end
 
     it 'marks resync as true after a failure' do
-      subject.execute
+      described_class.new(project).execute
 
       allow(repository).to receive(:fetch_as_mirror)
         .with(url_to_repo, remote_name: 'geo', forced: true)

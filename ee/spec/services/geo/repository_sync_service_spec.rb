@@ -20,6 +20,7 @@ describe Geo::RepositorySyncService do
 
   it_behaves_like 'geo base sync execution'
   it_behaves_like 'geo base sync fetch and repack'
+  it_behaves_like 'reschedules sync due to race condition instead of waiting for backfill'
 
   describe '#execute' do
     let(:url_to_repo) { "#{primary.url}#{project.full_path}.git" }
@@ -130,7 +131,9 @@ describe Geo::RepositorySyncService do
     end
 
     it 'marks resync as true after a failure' do
-      subject.execute
+      described_class.new(project).execute
+
+      expect(Geo::ProjectRegistry.last.resync_repository).to be false
 
       allow(repository).to receive(:fetch_as_mirror)
         .with(url_to_repo, remote_name: 'geo', forced: true)

@@ -32,16 +32,6 @@ module Geo
       execute_housekeeping
     end
 
-    def mark_sync_as_successful
-      log_info("Marking #{type} sync as successful")
-
-      registry.finish_sync!(type)
-
-      log_info('Finished repository sync',
-               update_delay_s: update_delay_in_seconds,
-               download_time_s: download_time_in_seconds)
-    end
-
     def expire_repository_caches
       log_info('Expiring caches')
       project.repository.after_sync

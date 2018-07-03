@@ -410,6 +410,30 @@ describe Geo::ProjectRegistry do
         expect(subject.reload.repository_checksum_mismatch).to be false
         expect(subject.reload.last_repository_verification_failure).to be_nil
       end
+
+      context 'when a repository sync was scheduled after the last sync began' do
+        before do
+          subject.update!(resync_repository_was_scheduled_at: subject.last_repository_synced_at + 1.minute)
+
+          subject.finish_sync!(type)
+        end
+
+        it 'does not reset resync_repository' do
+          expect(subject.reload.resync_repository).to be true
+        end
+
+        it 'resets the other sync state fields' do
+          expect(subject.reload.repository_retry_count).to be_nil
+          expect(subject.reload.repository_retry_at).to be_nil
+          expect(subject.reload.force_to_redownload_repository).to be false
+        end
+
+        it 'resets the verification state' do
+          expect(subject.reload.repository_verification_checksum_sha).to be_nil
+          expect(subject.reload.repository_checksum_mismatch).to be false
+          expect(subject.reload.last_repository_verification_failure).to be_nil
+        end
+      end
     end
 
     context 'for a wiki' do
@@ -449,6 +473,30 @@ describe Geo::ProjectRegistry do
         expect(subject.reload.wiki_verification_checksum_sha).to be_nil
         expect(subject.reload.wiki_checksum_mismatch).to be false
         expect(subject.reload.last_wiki_verification_failure).to be_nil
+      end
+
+      context 'when a wiki sync was scheduled after the last sync began' do
+        before do
+          subject.update!(resync_wiki_was_scheduled_at: subject.last_wiki_synced_at + 1.minute)
+
+          subject.finish_sync!(type)
+        end
+
+        it 'does not reset resync_wiki' do
+          expect(subject.reload.resync_wiki).to be true
+        end
+
+        it 'resets the other sync state fields' do
+          expect(subject.reload.wiki_retry_count).to be_nil
+          expect(subject.reload.wiki_retry_at).to be_nil
+          expect(subject.reload.force_to_redownload_wiki).to be false
+        end
+
+        it 'resets the verification state' do
+          expect(subject.reload.wiki_verification_checksum_sha).to be_nil
+          expect(subject.reload.wiki_checksum_mismatch).to be false
+          expect(subject.reload.last_wiki_verification_failure).to be_nil
+        end
       end
     end
   end

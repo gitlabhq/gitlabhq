@@ -142,3 +142,19 @@ shared_examples 'sync retries use the snapshot RPC' do
     end
   end
 end
+
+shared_examples 'reschedules sync due to race condition instead of waiting for backfill' do
+  describe '#mark_sync_as_successful' do
+    let(:mark_sync_as_successful) { subject.send(:mark_sync_as_successful) }
+    let(:registry) { subject.send(:registry) }
+
+    context 'when RepositoryUpdatedEvent was processed during a sync' do
+      it 'reschedules the sync' do
+        expect(::Geo::ProjectSyncWorker).to receive(:perform_async)
+        expect(registry).to receive(:finish_sync!).and_return(false)
+
+        mark_sync_as_successful
+      end
+    end
+  end
+end

@@ -123,6 +123,24 @@ module Geo
       @registry ||= Geo::ProjectRegistry.find_or_initialize_by(project_id: project.id)
     end
 
+    def mark_sync_as_successful
+      log_info("Marking #{type} sync as successful")
+
+      persisted = registry.finish_sync!(type)
+
+      reschedule_sync unless persisted
+
+      log_info("Finished #{type} sync",
+               update_delay_s: update_delay_in_seconds,
+               download_time_s: download_time_in_seconds)
+    end
+
+    def reschedule_sync
+      log_info("Reschedule #{type} sync because a RepositoryUpdateEvent was processed during the sync")
+
+      ::Geo::ProjectSyncWorker.perform_async(project.id, Time.now)
+    end
+
     def fail_registry!(message, error, attrs = {})
       log_error(message, error)
 

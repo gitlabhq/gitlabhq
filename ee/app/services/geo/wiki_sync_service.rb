@@ -44,16 +44,6 @@ module Geo
       repository.after_sync
     end
 
-    def mark_sync_as_successful
-      log_info("Marking #{type} sync as successful")
-
-      registry.finish_sync!(type)
-
-      log_info('Finished wiki sync',
-               update_delay_s: update_delay_in_seconds,
-               download_time_s: download_time_in_seconds)
-    end
-
     def schedule_repack
       # No-op: we currently don't schedule wiki repository to repack
       # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/45523
