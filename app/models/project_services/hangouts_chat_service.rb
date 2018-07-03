@@ -58,8 +58,7 @@ class HangoutsChatService < ChatNotificationService
   end
 
   def fetch_attachment_title(attachment)
-    return nil if attachment[:title].nil?
-    return attachment[:title] if attachment[:title_link].nil?
+    return attachment[:title] unless attachment[:title_link]
 
     "<#{attachment[:title_link]}|#{attachment[:title]}>"
   end
