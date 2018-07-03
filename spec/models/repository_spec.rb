@@ -479,6 +479,14 @@ describe Repository do
       end
     end
 
+    context 'when ref is not specified' do
+      it 'is using a root ref' do
+        expect(repository).to receive(:find_commit).with('master')
+
+        repository.commit
+      end
+    end
+
     context 'when ref is not valid' do
       context 'when preceding tree element exists' do
         it 'returns nil' do
@@ -1689,19 +1697,29 @@ describe Repository do
   end
 
   describe '#after_change_head' do
-    it 'flushes the readme cache' do
+    it 'flushes the method caches' do
       expect(repository).to receive(:expire_method_caches).with([
-        :readme,
+        :size,
+        :commit_count,
+        :rendered_readme,
+        :contribution_guide,
         :changelog,
-        :license,
-        :contributing,
+        :license_blob,
+        :license_key,
         :gitignore,
-        :koding,
-        :gitlab_ci,
+        :koding_yml,
+        :gitlab_ci_yml,
+        :branch_names,
+        :tag_names,
+        :branch_count,
+        :tag_count,
         :avatar,
-        :issue_template,
-        :merge_request_template,
-        :xcode_config
+        :exists?,
+        :root_ref,
+        :has_visible_content?,
+        :issue_template_names,
+        :merge_request_template_names,
+        :xcode_project?
       ])
 
       repository.after_change_head

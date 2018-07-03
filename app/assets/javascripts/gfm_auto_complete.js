@@ -12,7 +12,7 @@ export const defaultAutocompleteConfig = {
   members: true,
   issues: true,
   mergeRequests: true,
-  epics: false,
+  epics: true,
   milestones: true,
   labels: true,
 };
@@ -493,6 +493,7 @@ GfmAutoComplete.atTypeMap = {
   '@': 'members',
   '#': 'issues',
   '!': 'mergeRequests',
+  '&': 'epics',
   '~': 'labels',
   '%': 'milestones',
   '/': 'commands',

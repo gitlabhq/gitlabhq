@@ -8,10 +8,11 @@ export default (initGFM = true) => {
   new DueDateSelectors(); // eslint-disable-line no-new
   // eslint-disable-next-line no-new
   new GLForm($('.milestone-form'), {
-    emojis: initGFM,
+    emojis: true,
     members: initGFM,
     issues: initGFM,
     mergeRequests: initGFM,
+    epics: initGFM,
     milestones: initGFM,
     labels: initGFM,
   });
