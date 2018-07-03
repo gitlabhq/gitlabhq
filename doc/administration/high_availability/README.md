@@ -19,12 +19,15 @@ solution. And the more complex the solution, the more work is involved in
 setting up and maintaining it. High availability is not free and every HA
 solution should balance the costs against the benefits.
 
-# Architecture
-
 There are many options when choosing a highly-available GitLab architecture. We
 recommend engaging with GitLab Support to choose the best architecture for your
 use-case. This page contains some various options and guidelines based on
-experience with GitLab.com and EE on-premises customers.
+experience with GitLab.com and Enterprise Edition on-premises customers.
+
+For a detailed insight into how GitLab scales and configures GitLab.com, you can
+watch [this 1 hour Q&A](https://www.youtube.com/watch?v=uCU8jdYzpac)
+with [John Northrup](https://gitlab.com/northrup), one of our infrastructure
+engineers, and live questions coming in from some of our customers.
 
 ## GitLab Components
 
