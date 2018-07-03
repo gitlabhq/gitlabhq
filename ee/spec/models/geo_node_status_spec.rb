@@ -910,4 +910,70 @@ describe GeoNodeStatus, :geo do
       expect(result.storage_shards_match?).to be true
     end
   end
+
+  describe '#repositories_checked_count' do
+    before do
+      stub_application_setting(repository_checks_enabled: true)
+    end
+
+    context 'current is a Geo primary' do
+      before do
+        stub_current_geo_node(primary)
+      end
+
+      it 'counts the number of repo checked projects' do
+        project_1.update!(last_repository_check_at: 2.minutes.ago)
+        project_2.update!(last_repository_check_at: 7.minutes.ago)
+
+        expect(status.repositories_checked_count).to eq(2)
+      end
+    end
+
+    context 'current is a Geo secondary' do
+      before do
+        stub_current_geo_node(secondary)
+      end
+
+      it 'counts the number of repo checked projects' do
+        create(:geo_project_registry, project: project_1, last_repository_check_at: 2.minutes.ago)
+        create(:geo_project_registry, project: project_2, last_repository_check_at: 7.minutes.ago)
+        create(:geo_project_registry, project: project_3)
+
+        expect(status.repositories_checked_count).to eq(2)
+      end
+    end
+  end
+
+  describe '#repositories_checked_failed_count' do
+    before do
+      stub_application_setting(repository_checks_enabled: true)
+    end
+
+    context 'current is a Geo primary' do
+      before do
+        stub_current_geo_node(primary)
+      end
+
+      it 'counts the number of repo check failed projects' do
+        project_1.update!(last_repository_check_at: 2.minutes.ago, last_repository_check_failed: true)
+        project_2.update!(last_repository_check_at: 7.minutes.ago, last_repository_check_failed: false)
+
+        expect(status.repositories_checked_failed_count).to eq(1)
+      end
+    end
+
+    context 'current is a Geo secondary' do
+      before do
+        stub_current_geo_node(secondary)
+      end
+
+      it 'counts the number of repo check failed projects' do
+        create(:geo_project_registry, project: project_1, last_repository_check_at: 2.minutes.ago, last_repository_check_failed: true)
+        create(:geo_project_registry, project: project_2, last_repository_check_at: 7.minutes.ago, last_repository_check_failed: false)
+        create(:geo_project_registry, project: project_3)
+
+        expect(status.repositories_checked_failed_count).to eq(1)
+      end
+    end
+  end
 end

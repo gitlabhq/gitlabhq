@@ -15,7 +15,8 @@ class GeoNodeStatus < ActiveRecord::Base
                 :repository_deleted_max_id, :repository_renamed_max_id, :repositories_changed_max_id,
                 :lfs_object_deleted_max_id, :job_artifact_deleted_max_id,
                 :lfs_objects_registry_count, :job_artifacts_registry_count, :attachments_registry_count,
-                :hashed_storage_migrated_max_id, :hashed_storage_attachments_max_id
+                :hashed_storage_migrated_max_id, :hashed_storage_attachments_max_id,
+                :repositories_checked_count, :repositories_checked_failed_count
 
   # Be sure to keep this consistent with Prometheus naming conventions
   PROMETHEUS_METRICS = {
@@ -70,7 +71,9 @@ class GeoNodeStatus < ActiveRecord::Base
     lfs_object_deleted_max_id: 'Highest ID present in LFS objects deleted',
     job_artifact_deleted_max_id: 'Highest ID present in job artifacts deleted',
     hashed_storage_migrated_max_id: 'Highest ID present in projects migrated to hashed storage',
-    hashed_storage_attachments_max_id: 'Highest ID present in attachments migrated to hashed storage'
+    hashed_storage_attachments_max_id: 'Highest ID present in attachments migrated to hashed storage',
+    repositories_checked_count: 'Number of repositories checked',
+    repositories_checked_failed_count: 'Number of failed repositories checked'
   }.freeze
 
   EXPIRATION_IN_MINUTES = 5
@@ -187,6 +190,9 @@ class GeoNodeStatus < ActiveRecord::Base
         self.wikis_checksummed_count = repository_verification_finder.count_verified_wikis
         self.wikis_checksum_failed_count = repository_verification_finder.count_verification_failed_wikis
       end
+
+      self.repositories_checked_count = Project.where.not(last_repository_check_at: nil).count
+      self.repositories_checked_failed_count = Project.where(last_repository_check_failed: true).count
     end
   end
 
@@ -213,6 +219,9 @@ class GeoNodeStatus < ActiveRecord::Base
       self.attachments_synced_missing_on_primary_count = attachments_finder.count_synced_missing_on_primary
 
       load_verification_data
+
+      self.repositories_checked_count = Geo::ProjectRegistry.where.not(last_repository_check_at: nil).count
+      self.repositories_checked_failed_count = Geo::ProjectRegistry.where(last_repository_check_failed: true).count
     end
   end
 
@@ -299,6 +308,10 @@ class GeoNodeStatus < ActiveRecord::Base
 
   def wikis_verified_in_percentage
     calc_percentage(wikis_count, wikis_verified_count)
+  end
+
+  def repositories_checked_in_percentage
+    calc_percentage(repositories_count, repositories_checked_count)
   end
 
   def lfs_objects_synced_in_percentage
