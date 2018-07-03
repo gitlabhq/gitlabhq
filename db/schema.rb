@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180701230554) do
+ActiveRecord::Schema.define(version: 20180626125654) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -337,7 +337,6 @@ ActiveRecord::Schema.define(version: 20180701230554) do
   add_index "ci_builds", ["commit_id", "status", "type"], name: "index_ci_builds_on_commit_id_and_status_and_type", using: :btree
   add_index "ci_builds", ["commit_id", "type", "name", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_name_and_ref", using: :btree
   add_index "ci_builds", ["commit_id", "type", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_ref", using: :btree
-  add_index "ci_builds", ["id"], name: "index_ci_builds_on_id", where: "(artifacts_file <> ''::text)", using: :btree
   add_index "ci_builds", ["project_id", "id"], name: "index_ci_builds_on_project_id_and_id", using: :btree
   add_index "ci_builds", ["protected"], name: "index_ci_builds_on_protected", using: :btree
   add_index "ci_builds", ["runner_id"], name: "index_ci_builds_on_runner_id", using: :btree
@@ -384,7 +383,6 @@ ActiveRecord::Schema.define(version: 20180701230554) do
     t.datetime_with_timezone "expire_at"
     t.string "file"
     t.binary "file_sha256"
-    t.integer "file_location", limit: 2
     t.integer "file_format", limit: 2
   end
 
@@ -1731,7 +1729,6 @@ ActiveRecord::Schema.define(version: 20180701230554) do
   end
 
   add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path", unique: true, using: :btree
-  add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path_text_pattern_ops", using: :btree, opclasses: {"path"=>"varchar_pattern_ops"}
   add_index "redirect_routes", ["source_type", "source_id"], name: "index_redirect_routes_on_source_type_and_source_id", using: :btree
 
   create_table "releases", force: :cascade do |t|
