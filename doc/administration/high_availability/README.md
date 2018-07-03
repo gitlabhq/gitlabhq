@@ -13,6 +13,8 @@ of Git, developers can still commit code locally even when GitLab is not
 available. However, some GitLab features such as the issue tracker and
 Continuous Integration are not available when GitLab is down.
 
+For a detailed insight into how GitLab scales and configures gitlab.com, you can watch [this 1 hour Q&A](https://www.youtube.com/watch?v=uCU8jdYzpac&feature=youtu.be) with [John Northrup](gitlab.com/northrup), one of our Infrastructure Engineers and live questions coming in from some of our customers. 
+
 **Keep in mind that all Highly Available solutions come with a trade-off between
 cost/complexity and uptime**. The more uptime you want, the more complex the
 solution. And the more complex the solution, the more work is involved in
