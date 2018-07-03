@@ -16,7 +16,7 @@ describe Groups::AutocompleteService do
     expect(labels.map(&extract_title)).to eq(expected_labels.map(&extract_title))
   end
 
-  describe '#labels' do
+  describe '#labels_as_hash' do
     let!(:label1) { create(:group_label, group: group) }
     let!(:label2) { create(:group_label, group: group) }
     let!(:sub_group_label) { create(:group_label, group: sub_group) }
