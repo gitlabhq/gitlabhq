@@ -6,6 +6,7 @@ module Gitlab
       LEASE_TIMEOUT = 1.hour
 
       ArchiveError = Class.new(StandardError)
+      EraseError = Class.new(StandardError)
 
       attr_reader :job
 
@@ -98,14 +99,18 @@ module Gitlab
       end
 
       def erase!
-        trace_artifact&.destroy
+        ##
+        # Erase an archived traces
+        # This removes both a database-row and a real file in either a file storage or a object storage
+        trace_artifact&.destroy!
 
-        paths.each do |trace_path|
-          FileUtils.rm(trace_path, force: true)
-        end
-
-        job.trace_chunks.fast_destroy_all
-        job.erase_old_trace!
+        ##
+        # Erase a live trace
+        # Basically, jobs have _one_ of the following live traces, but it might be able to happen by a race condition
+        # Therefore, we remove all type of live traces.
+        job.trace_chunks.fast_destroy_all # Destroy chunks of a live trace
+        FileUtils.rm_f(current_path) if current_path # Remove a trace file of a live trace
+        job.erase_old_trace! if job.has_old_trace? # Remove a trace in database of a live trace
       end
 
       def archive!
