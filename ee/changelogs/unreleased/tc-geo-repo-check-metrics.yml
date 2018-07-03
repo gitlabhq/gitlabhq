@@ -1,0 +1,5 @@
+---
+title: Log repository check and failed count to Prometheus
+merge_request: 5984
+author:
+type: added
