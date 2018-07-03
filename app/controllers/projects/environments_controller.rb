@@ -121,7 +121,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   end
 
   def metrics_redirect
-    environment = project.environments.with_state(:available).first
+    environment = project.default_environment
 
     if environment
       redirect_to environment_metrics_path(environment)
