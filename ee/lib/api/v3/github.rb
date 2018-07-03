@@ -7,6 +7,9 @@ module API
   module V3
     class Github < Grape::API
       JIRA_DEV_PANEL_FEATURE = :jira_dev_panel_integration.freeze
+      NO_SLASH_URL_PART_REGEX = %r{[^/]+}
+      NAMESPACE_ENDPOINT_REQUIREMENTS = { namespace: NO_SLASH_URL_PART_REGEX }.freeze
+      PROJECT_ENDPOINT_REQUIREMENTS = NAMESPACE_ENDPOINT_REQUIREMENTS.merge(project: NO_SLASH_URL_PART_REGEX).freeze
 
       include PaginationParams
 
@@ -60,7 +63,7 @@ module API
       end
 
       resource :orgs do
-        get ':namespace/repos' do
+        get ':namespace/repos', requirements: NAMESPACE_ENDPOINT_REQUIREMENTS do
           present []
         end
       end
@@ -75,7 +78,7 @@ module API
         params do
           use :pagination
         end
-        get ':namespace/repos' do
+        get ':namespace/repos', requirements: NAMESPACE_ENDPOINT_REQUIREMENTS do
           projects = current_user.authorized_projects.select { |project| licensed_project?(project) }
           projects = ::Kaminari.paginate_array(projects)
           present paginate(projects), with: ::API::Github::Entities::Repository
@@ -120,7 +123,7 @@ module API
           use :project_full_path
           use :pagination
         end
-        get ':namespace/:project/branches' do
+        get ':namespace/:project/branches', requirements: PROJECT_ENDPOINT_REQUIREMENTS do
           namespace = params[:namespace]
           project = params[:project]
           user_project = find_project_with_access("#{namespace}/#{project}")
@@ -133,7 +136,7 @@ module API
         params do
           use :project_full_path
         end
-        get ':namespace/:project/commits/:sha' do
+        get ':namespace/:project/commits/:sha', requirements: PROJECT_ENDPOINT_REQUIREMENTS do
           namespace = params[:namespace]
           project = params[:project]
           user_project = find_project_with_access("#{namespace}/#{project}")
