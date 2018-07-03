@@ -281,6 +281,13 @@ namespace :geo do
     print "#{current_node_status.attachments_synced_count}/#{current_node_status.attachments_count} "
     puts using_percentage(current_node_status.attachments_synced_in_percentage)
 
+    if Gitlab::CurrentSettings.repository_checks_enabled
+      print 'Repositories Checked: '.rjust(COLUMN_WIDTH)
+      show_failed_value(current_node_status.repositories_checked_failed_count)
+      print "#{current_node_status.repositories_checked_count}/#{current_node_status.repositories_count} "
+      puts using_percentage(current_node_status.repositories_checked_in_percentage)
+    end
+
     print 'Sync Settings: '.rjust(COLUMN_WIDTH)
     puts  geo_node.namespaces.any? ? 'Selective' : 'Full'
 

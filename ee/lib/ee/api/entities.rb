@@ -332,6 +332,12 @@ module EE
         end
         expose :replication_slots_max_retained_wal_bytes
 
+        expose :repositories_checked_count
+        expose :repositories_checked_failed_count
+        expose :repositories_checked_in_percentage do |node|
+          number_to_percentage(node.repositories_checked_in_percentage, precision: 2)
+        end
+
         expose :last_event_id
         expose :last_event_timestamp
         expose :cursor_last_event_id

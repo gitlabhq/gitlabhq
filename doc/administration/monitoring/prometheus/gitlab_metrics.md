@@ -86,6 +86,8 @@ the `monitoring.sidekiq_exporter` configuration option in `gitlab.yml`.
 | geo_wikis_verified_count                    | Gauge   | 10.7  | Number of wikis verified on secondary | url
 | geo_wikis_verification_failed_count         | Gauge   | 10.7  | Number of wikis failed to verify on secondary | url
 | geo_wikis_checksum_mismatch_count           | Gauge   | 10.7  | Number of wikis that checksum mismatch on secondary | url
+| geo_repositories_checked_count              | Gauge   | 11.1  | Number of repositories that have been checked via `git fsck` | url
+| geo_repositories_checked_failed_count       | Gauge   | 11.1  | Number of repositories that have a failure from `git fsck` | url
 
 ### Ruby metrics
 

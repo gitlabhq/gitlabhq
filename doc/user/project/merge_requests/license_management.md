@@ -19,9 +19,9 @@ It helps you find licenses that you don't want to use in your project and see
 which dependencies use them. For example, your application is using an external (open source)
 library whose license is incompatible with yours.
 
-## Supported languages and dependency managers
+## Supported languages and package managers
 
-The following languages and dependency managers are supported.
+The following languages and package managers are supported.
 
 | Language   | Package managers                                                  |
 |------------|-------------------------------------------------------------------|
@@ -48,7 +48,7 @@ prerequisites:
 If the license management report doesn't have anything to compare to, no information
 will be displayed in the merge request area. That is the case when you add the
 `license_management` job in your `.gitlab-ci.yml` for the very first time.
-Consecutive merge requests will have something to compare to and the license 
+Consecutive merge requests will have something to compare to and the license
 management report will be shown properly.
 
 The `license_management` job will search the application dependencies for licenses,
