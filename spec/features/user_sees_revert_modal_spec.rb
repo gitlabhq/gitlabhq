@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-describe 'Merge request > User sees Revert modal', :js do
+describe 'Merge request > User sees revert modal', :js do
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
   let(:merge_request) { create(:merge_request, source_project: project) }
 
   before do
     sign_in(user)
-    visit project_merge_request_path(project, merge_request)
+    visit(project_merge_request_path(project, merge_request))
     click_button('Merge')
     visit(merge_request_path(merge_request))
     click_link('Revert')
