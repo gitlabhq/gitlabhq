@@ -1,5 +1,6 @@
 import Visibility from 'visibilityjs';
 import axios from 'axios';
+import httpStatus from '../../../../lib/utils/http_status';
 import { __ } from '../../../../locale';
 import Poll from '../../../../lib/utils/poll';
 import service from '../../../services';
@@ -23,7 +24,7 @@ export const forcePipelineRequest = () => {
 
 export const requestLatestPipeline = ({ commit }) => commit(types.REQUEST_LATEST_PIPELINE);
 export const receiveLatestPipelineError = ({ commit, dispatch }, err) => {
-  if (err.response.status !== 404) {
+  if (err.status !== httpStatus.NOT_FOUND) {
     dispatch(
       'setErrorMessage',
       {

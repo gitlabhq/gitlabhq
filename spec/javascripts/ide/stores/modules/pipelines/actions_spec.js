@@ -59,7 +59,7 @@ describe('IDE pipelines actions', () => {
     it('commits error', done => {
       testAction(
         receiveLatestPipelineError,
-        { response: { status: 404 } },
+        { status: 404 },
         mockedState,
         [{ type: types.RECEIVE_LASTEST_PIPELINE_ERROR }],
         [{ type: 'stopPipelinePolling' }],
@@ -70,7 +70,7 @@ describe('IDE pipelines actions', () => {
     it('dispatches setErrorMessage is not 404', done => {
       testAction(
         receiveLatestPipelineError,
-        { response: { status: 500 } },
+        { status: 500 },
         mockedState,
         [{ type: types.RECEIVE_LASTEST_PIPELINE_ERROR }],
         [
