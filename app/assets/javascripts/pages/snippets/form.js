@@ -8,6 +8,7 @@ export default () => {
     members: false,
     issues: false,
     mergeRequests: false,
+    epics: false,
     milestones: false,
     labels: false,
   });

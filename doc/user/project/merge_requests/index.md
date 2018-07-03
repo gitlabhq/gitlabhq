@@ -325,4 +325,4 @@ git checkout origin/merge-requests/1
 ```
 
 [protected branches]: ../protected_branches.md
-[ee]: https://about.gitlab.com/products/ "GitLab Enterprise Edition"
+[ee]: https://about.gitlab.com/pricing/ "GitLab Enterprise Edition"

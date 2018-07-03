@@ -553,7 +553,7 @@ Below you can find supported syntax reference:
     `/pattern/i` to make a pattern case-insensitive.
 
 [ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784 "Simple protection of CI variables"
-[eep]: https://about.gitlab.com/products/ "Available only in GitLab Premium"
+[eep]: https://about.gitlab.com/pricing/ "Available only in GitLab Premium"
 [envs]: ../environments.md
 [protected branches]: ../../user/project/protected_branches.md
 [protected tags]: ../../user/project/protected_tags.md

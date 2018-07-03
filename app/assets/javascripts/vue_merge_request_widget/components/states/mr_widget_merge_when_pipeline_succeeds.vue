@@ -82,7 +82,7 @@
   <div class="mr-widget-body media">
     <status-icon status="success" />
     <div class="media-body">
-      <h4 class="flex-container-block">
+      <h4 class="d-flex align-items-start">
         <span class="append-right-10">
           {{ s__("mrWidget|Set by") }}
           <mr-widget-author :author="mr.setToMWPSBy" />
@@ -119,7 +119,7 @@
         </p>
         <p
           v-else
-          class="flex-container-block"
+          class="d-flex align-items-start"
         >
           <span class="append-right-10">
             {{ s__("mrWidget|The source branch will not be removed") }}
