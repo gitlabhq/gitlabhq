@@ -164,6 +164,13 @@ module Gitlab
 
         return unless committer
 
+        user_id =
+          if committer
+            find_user_id(committer)
+          else
+            User.ghost
+          end
+
         user_id = find_user_id(committer) if committer
         timestamp = merge_event.merge_timestamp
 
