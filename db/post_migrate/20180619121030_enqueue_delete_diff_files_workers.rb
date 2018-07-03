@@ -11,8 +11,7 @@ class EnqueueDeleteDiffFilesWorkers < ActiveRecord::Migration
 
   DOWNTIME = false
   BATCH_SIZE = 1000
-  MIGRATION = 'DeleteDiffFiles'
-  DELAY_INTERVAL = 10.minutes
+  SCHEDULER = 'ScheduleDiffFilesDeletion'.freeze
   TMP_INDEX = 'tmp_partial_diff_id_with_files_index'.freeze
 
   disable_ddl_transaction!
@@ -38,23 +37,10 @@ class EnqueueDeleteDiffFilesWorkers < ActiveRecord::Migration
     # Planning time: 0.752 ms
     # Execution time: 12.430 ms
     #
-    diffs_with_files.each_batch(of: BATCH_SIZE) do |relation, outer_index|
-      # We slice the batches in groups of 5 and schedule each group of 5 at
-      # once. This should make writings on Redis go 5x faster.
-      job_batches = relation.pluck(:id).in_groups_of(5, false).map do |ids|
-        ids.map { |id| [MIGRATION, [id]] }
-      end
+    diffs_with_files.each_batch(of: BATCH_SIZE) do |relation, scheduler_index|
+      ids = relation.pluck(:id).map { |id| [id] }
 
-      job_batches.each_with_index do |jobs, inner_index|
-        # This will give some space between batches of workers.
-        interval = DELAY_INTERVAL * outer_index + inner_index.minutes
-
-        # A single `merge_request_diff` can be associated with way too many
-        # `merge_request_diff_files`. It's better to avoid scheduling big
-        # batches and go with 5 at a time.
-        #
-        BackgroundMigrationWorker.bulk_perform_in(interval, jobs)
-      end
+      BackgroundMigrationWorker.perform_async(SCHEDULER, [ids, scheduler_index])
     end
 
     # We remove temporary index, because it is not required during standard
