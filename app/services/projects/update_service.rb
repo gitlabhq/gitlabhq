@@ -45,16 +45,12 @@ module Projects
       if changing_default_branch?
         raise UpdateError.new("Could not set the default branch") unless project.change_head(params[:default_branch])
       end
-
-      if path_updated? && project.repository_in_use?
-        raise UpdateError.new("Repository currently in use and can not be moved. Try later")
-      end
     end
 
     def after_update
       if project.previous_changes.include?('path')
         if migrate_to_hashed_storage?
-          project.migrate_to_hashed_storage_synchronously!
+          project.rename_using_hashed_storage!
         else
           project.rename_repo
         end
@@ -67,10 +63,6 @@ module Projects
 
     def migrate_to_hashed_storage?
       Gitlab::CurrentSettings.hashed_storage_enabled && !project.latest_storage_version?
-    end
-
-    def path_updated?
-      params[:path] && (params[:path] != project.path)
     end
 
     def validation_failed!

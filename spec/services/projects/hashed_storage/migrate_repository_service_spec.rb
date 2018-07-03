@@ -80,19 +80,19 @@ describe Projects::HashedStorage::MigrateRepositoryService do
     end
 
     context 'when old_path is explicitly passed' do
-      let(:old_path) { 'old-path' }
+      let(:path_before_rename) { 'old-path' }
       let(:logger) { double }
-      let(:service) { described_class.new(project, { old_path: old_path, logger: logger }) }
+      let(:service) { described_class.new(project, path_before_rename: path_before_rename, logger: logger) }
 
       it 'uses passed old_path parameter' do
-        expect(service).to receive(:move_repository).with(old_path, /\@hashed/)
+        expect(service).to receive(:move_repository).with(path_before_rename, /\@hashed/)
 
         allow(service).to receive(:rollback_folder_move).and_return(nil)
 
         service.execute
 
-        expect(service.old_disk_path).to eq old_path
-        expect(service.old_wiki_disk_path).to eq "#{old_path}.wiki"
+        expect(service.old_disk_path).to eq path_before_rename
+        expect(service.old_wiki_disk_path).to eq "#{path_before_rename}.wiki"
       end
     end
 

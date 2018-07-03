@@ -3,18 +3,17 @@ module Projects
     class MigrateRepositoryService < BaseService
       include Gitlab::ShellAdapter
 
-      attr_reader :old_disk_path, :new_disk_path, :old_wiki_disk_path, :old_storage_version, :logger, :options
+      attr_reader :old_disk_path, :new_disk_path, :old_wiki_disk_path, :old_storage_version,
+                  :logger
 
-      def initialize(project, options)
+      def initialize(project, logger: nil, path_before_rename: nil)
         @project = project
-        @logger = options.delete(:logger) || Rails.logger
-        @options = options
+        @logger = logger || Rails.logger
+        @old_disk_path = path_before_rename || project.disk_path
+        @old_wiki_disk_path = "#{@old_disk_path}.wiki"
       end
 
       def execute
-        @old_disk_path = options[:old_path] || project.disk_path
-        @old_wiki_disk_path = "#{@old_disk_path}.wiki"
-
         has_wiki = gitlab_shell.exists?(project.repository_storage, "#{@old_wiki_disk_path}.git")
 
         @old_storage_version = project.storage_version

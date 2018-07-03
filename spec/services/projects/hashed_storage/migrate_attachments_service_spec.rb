@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::HashedStorage::MigrateAttachmentsService do
-  subject(:service) { described_class.new(project, {}) }
+  subject(:service) { described_class.new(project, logger: nil) }
   let(:project) { create(:project, :legacy_storage) }
   let(:legacy_storage) { Storage::LegacyProject.new(project) }
   let(:hashed_storage) { Storage::HashedProject.new(project) }
@@ -56,17 +56,17 @@ describe Projects::HashedStorage::MigrateAttachmentsService do
       end
     end
 
-    context 'when old_path is explicitly passed' do
-      let(:old_path) { 'old-path' }
+    context 'when path_before_rename is explicitly passed' do
+      let(:path_before_rename) { 'old-path' }
       let(:logger) { double }
-      subject(:service) { described_class.new(project, { old_path: old_path, logger: logger }) }
+      subject(:service) { described_class.new(project, path_before_rename: path_before_rename, logger: logger) }
 
-      it 'uses passed old_path parameter' do
+      it 'uses path_before_rename parameter' do
         expect(logger).to receive(:info).with(/source path doesn\'t exist or is not a directory/)
 
         service.execute
 
-        expect(service.old_path).to eq old_path
+        expect(service.path_before_rename).to eq path_before_rename
       end
     end
   end
