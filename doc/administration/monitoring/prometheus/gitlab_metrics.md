@@ -48,6 +48,7 @@ The following metrics are available:
 | filesystem_circuitbreaker_latency_seconds | Gauge | 9.5 | Time spent validating if a storage is accessible |
 | filesystem_circuitbreaker         | Gauge     | 9.5   | Whether or not the circuit for a certain shard is broken or not |
 | circuitbreaker_storage_check_duration_seconds | Histogram | 10.3 | Time a single storage probe took |
+<<<<<<< HEAD
 | upload_file_does_not_exist                    | Counter   | 10.7  | Number of times an upload record could not find its file |
 
 ## Sidekiq Metrics available
@@ -88,6 +89,10 @@ the `monitoring.sidekiq_exporter` configuration option in `gitlab.yml`.
 | geo_wikis_checksum_mismatch_count           | Gauge   | 10.7  | Number of wikis that checksum mismatch on secondary | url
 | geo_repositories_checked_count              | Gauge   | 11.1  | Number of repositories that have been checked via `git fsck` | url
 | geo_repositories_checked_failed_count       | Gauge   | 11.1  | Number of repositories that have a failure from `git fsck` | url
+=======
+| failed_login_captcha_total        | Gauge | 11.0 | Counter of failed CAPTCHA attempts during login |
+| successful_login_captcha_total    | Gauge | 11.0 | Counter of successful CAPTCHA attempts during login |
+>>>>>>> upstream/master
 
 ### Ruby metrics
 
