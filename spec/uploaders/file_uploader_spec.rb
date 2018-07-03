@@ -105,12 +105,12 @@ describe FileUploader do
       end
     end
 
-    context 'files are store locally' do
-      include_examples 'returns a valid uploader'
-
+    context 'files are stored locally' do
       before do
         subject.store!(fixture_file_upload('spec/fixtures/dk.png'))
       end
+
+      include_examples 'returns a valid uploader'
     end
 
     context 'files are stored remotely' do

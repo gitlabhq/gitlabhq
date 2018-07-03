@@ -59,7 +59,7 @@ describe Gitlab::Gfm::UploadsRewriter do
       include_examples "files are accessible"
     end
 
-    context "files are store remotely" do
+    context "files are stored remotely" do
       before do
         stub_uploads_object_storage(FileUploader)
 
