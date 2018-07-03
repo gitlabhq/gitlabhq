@@ -262,7 +262,7 @@ production:
 
 [hot-standby]: https://www.postgresql.org/docs/9.6/static/hot-standby.html
 [ee-1283]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1283
-[eep]: https://about.gitlab.com/products/
+[eep]: https://about.gitlab.com/pricing/
 [reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
 [restart gitlab]: restart_gitlab.md#installations-from-source "How to restart GitLab"
 [wikipedia]: https://en.wikipedia.org/wiki/Load_balancing_(computing)

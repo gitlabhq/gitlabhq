@@ -55,6 +55,6 @@ request.
 
 [ee-4682]: https://gitlab.com/gitlab-org/gitlab-ee/issues/4682
 [ee-5105]: https://gitlab.com/gitlab-org/gitlab-ee/issues/5105
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/
 [ci]: ../../../ci/README.md
 [cc-docs]: ../../../ci/examples/dependency_scanning.md

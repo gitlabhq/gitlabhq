@@ -31,7 +31,7 @@ Please access our [permissions] page for more information.
 
 Additionally, you are also able to manage related issues through [our API].
 
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/
 [ee-1797]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1797
 [permissions]: ../../permissions.md
 [Our API]: ../../../api/issue_links.md

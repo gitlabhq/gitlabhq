@@ -1526,7 +1526,7 @@ Read more in the [Project members](members.md) documentation.
 
 ## Start the pull mirroring process for a Project **[STARTER]**
 
-> Introduced in [GitLab Starter](https://about.gitlab.com/products) 10.3.
+> Introduced in [GitLab Starter](https://about.gitlab.com/pricing) 10.3.
 
 ```
 POST /projects/:id/mirror/pull

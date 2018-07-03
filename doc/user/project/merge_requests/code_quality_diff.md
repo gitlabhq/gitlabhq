@@ -50,7 +50,7 @@ in next major release, GitLab 12.0. You are advised to update your current `.git
 configuration to reflect that change.
 
 [ee-1984]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1984
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/
 [ci]: ../../../ci/README.md
 [cc]: https://codeclimate.com
 [cd]: https://hub.docker.com/r/codeclimate/codeclimate/

@@ -267,7 +267,7 @@ Read the [Geo tuning][tunning] documentation.
 
 Read the [troubleshooting document][troubleshooting].
 
-[ee]: https://about.gitlab.com/products/ "GitLab Enterprise Edition landing page"
+[ee]: https://about.gitlab.com/pricing/ "GitLab Enterprise Edition landing page"
 [install-requirements]: ../../../install/requirements.md
 [install-ee]: https://about.gitlab.com/downloads-ee/ "GitLab Enterprise Edition Omnibus packages downloads page"
 [install-ee-source]: https://docs.gitlab.com/ee/install/installation.html "GitLab Enterprise Edition installation from source"

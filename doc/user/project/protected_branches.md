@@ -159,4 +159,4 @@ for details about the pipelines security model.
 [ce-21393]: https://gitlab.com/gitlab-org/gitlab-ce/issues/21393
 [ee-restrict]: http://docs.gitlab.com/ee/user/project/protected_branches.html#restricting-push-and-merge-access-to-certain-users
 [perm]: ../permissions.md
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/

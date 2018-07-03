@@ -93,7 +93,7 @@ You can view the performance dashboard for an environment by [clicking on the mo
 
 ### Adding additional metrics **[PREMIUM]**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3799) in [GitLab Premium](https://about.gitlab.com/products/) 10.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3799) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.6.
 
 Additional metrics can be monitored by adding them on the Prometheus integration page. Once saved, they will be displayed on the environment performance dashboard.
 
