@@ -4,7 +4,7 @@ module Banzai
     class ProjectReferenceFilter < ReferenceFilter
       self.reference_type = :project
 
-      # Public: Find `project>` project references in text
+      # Public: Find `namespace/project>` project references in text
       #
       #   ProjectReferenceFilter.references_in(text) do |match, project|
       #     "<a href=...>#{project}></a>"
