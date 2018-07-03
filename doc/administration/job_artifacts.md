@@ -91,8 +91,8 @@ _The artifacts are stored by default in
 - [Introduced][ee-1762] in [GitLab Premium][eep] 9.4.
 - Since version 9.5, artifacts are [browsable], when object storage is enabled.
   9.4 lacks this feature.
-> Since version 10.6, available in [GitLab Core](https://about.gitlab.com/pricing/)
-> Since version 11.0, we support direct_upload to S3.
+- Since version 10.6, available in [GitLab Core](https://about.gitlab.com/pricing/)
+- Since version 11.0, we support direct_upload to S3.
 
 If you don't want to use the local disk where GitLab is installed to store the
 artifacts, you can use an object storage like AWS S3 instead.
