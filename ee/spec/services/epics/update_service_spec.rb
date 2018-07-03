@@ -70,9 +70,9 @@ describe Epics::UpdateService do
       end
 
       it 'creates todos for only newly mentioned users' do
-        expect {
+        expect do
           update_epic(description: "FYI: #{mentioned1.to_reference} #{mentioned2.to_reference}")
-        }.to change { Todo.count }.by(1)
+        end.to change { Todo.count }.by(1)
       end
     end
   end
