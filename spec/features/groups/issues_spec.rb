@@ -5,6 +5,7 @@ feature 'Group issues page' do
 
   let(:group) { create(:group) }
   let(:project) { create(:project, :public, group: group)}
+  let(:project_with_issues_disabled) { create(:project, :issues_disabled, group: group) }
   let(:path) { issues_group_path(group) }
 
   context 'with shared examples' do
@@ -73,6 +74,27 @@ feature 'Group issues page' do
         visit path
 
         expect(page).not_to have_content issue.title[0..80]
+      end
+    end
+  end
+
+  context 'projects with issues disabled' do
+    describe 'issue dropdown' do
+      let(:user_in_group) { create(:group_member, :master, user: create(:user), group: group ).user }
+
+      before do
+        [project, project_with_issues_disabled].each { |project| project.add_master(user_in_group) }
+        sign_in(user_in_group)
+        visit issues_group_path(group)
+      end
+
+      it 'shows projects only with issues feature enabled', :js do
+        find('.new-project-item-link').click
+
+        page.within('.select2-results') do
+          expect(page).to have_content(project.full_name)
+          expect(page).not_to have_content(project_with_issues_disabled.full_name)
+        end
       end
     end
   end

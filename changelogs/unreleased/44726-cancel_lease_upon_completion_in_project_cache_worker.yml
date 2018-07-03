@@ -1,0 +1,5 @@
+---
+title: Cancel ExclusiveLease upon completion in ProjectCacheWorker
+merge_request: 20103
+author:
+type: fixed

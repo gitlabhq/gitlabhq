@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::Middleware::ReadOnly do
   include Rack::Test::Methods
+  using RSpec::Parameterized::TableSyntax
 
   RSpec::Matchers.define :be_a_redirect do
     match do |response|
@@ -117,24 +118,7 @@ describe Gitlab::Middleware::ReadOnly do
     context 'whitelisted requests' do
       it 'expects a POST internal request to be allowed' do
         expect(Rails.application.routes).not_to receive(:recognize_path)
-
         response = request.post("/api/#{API::API.version}/internal")
-
-        expect(response).not_to be_a_redirect
-        expect(subject).not_to disallow_request
-      end
-
-      it 'expects a POST LFS request to batch URL to be allowed' do
-        expect(Rails.application.routes).to receive(:recognize_path).and_call_original
-        response = request.post('/root/rouge.git/info/lfs/objects/batch')
-
-        expect(response).not_to be_a_redirect
-        expect(subject).not_to disallow_request
-      end
-
-      it 'expects a POST request to git-upload-pack URL to be allowed' do
-        expect(Rails.application.routes).to receive(:recognize_path).and_call_original
-        response = request.post('/root/rouge.git/git-upload-pack')
 
         expect(response).not_to be_a_redirect
         expect(subject).not_to disallow_request
@@ -150,6 +134,25 @@ describe Gitlab::Middleware::ReadOnly do
 
         expect(response).not_to be_a_redirect
         expect(subject).not_to disallow_request
+      end
+
+      where(:description, :path) do
+        'LFS request to batch'        | '/root/rouge.git/info/lfs/objects/batch'
+        'LFS request to locks verify' | '/root/rouge.git/info/lfs/locks/verify'
+        'LFS request to locks create' | '/root/rouge.git/info/lfs/locks'
+        'LFS request to locks unlock' | '/root/rouge.git/info/lfs/locks/1/unlock'
+        'request to git-upload-pack'  | '/root/rouge.git/git-upload-pack'
+        'request to git-receive-pack' | '/root/rouge.git/git-receive-pack'
+      end
+
+      with_them do
+        it "expects a POST #{description} URL to be allowed" do
+          expect(Rails.application.routes).to receive(:recognize_path).and_call_original
+          response = request.post(path)
+
+          expect(response).not_to be_a_redirect
+          expect(subject).not_to disallow_request
+        end
       end
     end
   end
