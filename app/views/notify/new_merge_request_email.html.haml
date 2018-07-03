@@ -9,6 +9,8 @@
   %p
     Assignee: #{@merge_request.assignee_name}
 
+= render_if_exists 'notify/merge_request_approvers', merge_request: @merge_request
+
 - if @merge_request.description
   %div
     = markdown(@merge_request.description, pipeline: :email, author: @merge_request.author)

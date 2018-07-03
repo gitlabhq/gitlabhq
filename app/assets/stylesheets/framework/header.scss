@@ -139,6 +139,8 @@
     }
 
     .nav {
+      flex-wrap: nowrap;
+
       > li:not(.d-none) a {
         @include media-breakpoint-down(xs) {
           margin-left: 0;
@@ -158,11 +160,12 @@
     }
 
     .navbar-toggler {
+      position: relative;
       right: -10px;
       border-radius: 0;
       min-width: 45px;
       padding: 0;
-      margin-right: -7px;
+      margin: $gl-padding-8 -7px $gl-padding-8 0;
       font-size: 14px;
       text-align: center;
       color: currentColor;
@@ -186,6 +189,7 @@
         display: -webkit-flex;
         display: flex;
         padding-right: 10px;
+        flex-direction: row;
       }
 
       li {
@@ -264,6 +268,8 @@
 
 .navbar-sub-nav,
 .navbar-nav {
+  align-items: center;
+
   > li {
     > a:hover,
     > a:focus {
@@ -290,18 +296,16 @@
       margin: 8px;
     }
   }
+
+  .dropdown-menu {
+    position: absolute;
+  }
 }
 
 .navbar-sub-nav {
   display: -webkit-flex;
   display: flex;
   margin: 0 0 0 6px;
-
-  .projects-dropdown-menu {
-    padding: 0;
-    overflow-y: initial;
-    max-height: initial;
-  }
 
   .dropdown-chevron {
     position: relative;
@@ -443,11 +447,17 @@
 }
 
 .btn-sign-in {
-  margin-top: 3px;
+  background-color: $indigo-100;
+  color: $indigo-900;
   font-weight: $gl-font-weight-bold;
+  line-height: 18px;
 
   &:hover {
     background-color: $white-light;
+  }
+
+  @include media-breakpoint-down(xs) {
+    margin-top: $gl-padding-4;
   }
 }
 
@@ -517,7 +527,7 @@
 .header-user {
   .dropdown-menu {
     width: auto;
-    min-width: 160px;
+    min-width: unset;
     margin-top: 4px;
     color: $gl-text-color;
     left: auto;
@@ -528,6 +538,10 @@
       .user-name {
         display: block;
       }
+    }
+
+    svg {
+      vertical-align: text-top;
     }
   }
 }
@@ -548,7 +562,7 @@
   background: $white-light;
   border-bottom: 1px solid $white-normal;
 
-  .center-logo {
+  .mx-auto {
     margin: 8px 0;
     text-align: center;
 

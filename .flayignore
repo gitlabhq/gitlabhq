@@ -14,3 +14,12 @@ lib/gitlab/gitaly_client/ref_service.rb
 lib/gitlab/gitaly_client/commit_service.rb
 lib/gitlab/git/commit.rb
 lib/gitlab/git/tag.rb
+
+ee/db/**/*
+ee/app/serializers/ee/merge_request_widget_entity.rb
+ee/lib/api/epics.rb
+ee/lib/api/geo_nodes.rb
+ee/lib/ee/gitlab/ldap/sync/admin_users.rb
+ee/app/workers/geo/file_download_dispatch_worker/job_artifact_job_finder.rb
+ee/app/workers/geo/file_download_dispatch_worker/lfs_object_job_finder.rb
+ee/spec/**/*

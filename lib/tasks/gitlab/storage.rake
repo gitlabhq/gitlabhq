@@ -2,8 +2,25 @@ namespace :gitlab do
   namespace :storage do
     desc 'GitLab | Storage | Migrate existing projects to Hashed Storage'
     task migrate_to_hashed: :environment do
-      legacy_projects_count = Project.with_unmigrated_storage.count
+      storage_migrator = Gitlab::HashedStorage::Migrator.new
       helper = Gitlab::HashedStorage::RakeHelper
+
+      if helper.range_single_item?
+        project = Project.with_unmigrated_storage.find_by(id: helper.range_from)
+
+        unless project
+          puts "There are no projects requiring storage migration with ID=#{helper.range_from}"
+
+          next
+        end
+
+        puts "Enqueueing storage migration of #{project.full_path} (ID=#{project.id})..."
+        storage_migrator.migrate(project)
+
+        next
+      end
+
+      legacy_projects_count = Project.with_unmigrated_storage.count
 
       if legacy_projects_count == 0
         puts 'There are no projects requiring storage migration. Nothing to do!'
@@ -14,7 +31,7 @@ namespace :gitlab do
       print "Enqueuing migration of #{legacy_projects_count} projects in batches of #{helper.batch_size}"
 
       helper.project_id_batches do |start, finish|
-        StorageMigratorWorker.perform_async(start, finish)
+        storage_migrator.bulk_schedule(start, finish)
 
         print '.'
       end

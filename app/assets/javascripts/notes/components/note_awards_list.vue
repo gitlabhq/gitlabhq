@@ -199,10 +199,11 @@ export default {
         :key="index"
         :class="getAwardClassBindings(awardList, awardName)"
         :title="awardTitle(awardList)"
-        @click="handleAward(awardName)"
         class="btn award-control"
+        data-boundary="viewport"
         data-placement="bottom"
-        type="button">
+        type="button"
+        @click="handleAward(awardName)">
         <span v-html="getAwardHTML(awardName)"></span>
         <span class="award-control-text js-counter">
           {{ awardList.length }}
@@ -217,19 +218,20 @@ export default {
           class="award-control btn js-add-award"
           title="Add reaction"
           aria-label="Add reaction"
+          data-boundary="viewport"
           data-placement="bottom"
           type="button">
           <span
-            v-html="emojiSmiling"
-            class="award-control-icon award-control-icon-neutral">
+            class="award-control-icon award-control-icon-neutral"
+            v-html="emojiSmiling">
           </span>
           <span
-            v-html="emojiSmiley"
-            class="award-control-icon award-control-icon-positive">
+            class="award-control-icon award-control-icon-positive"
+            v-html="emojiSmiley">
           </span>
           <span
-            v-html="emojiSmile"
-            class="award-control-icon award-control-icon-super-positive">
+            class="award-control-icon award-control-icon-super-positive"
+            v-html="emojiSmile">
           </span>
           <i
             aria-hidden="true"

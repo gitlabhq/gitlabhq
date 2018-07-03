@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ArchiveTraceWorker
   include ApplicationWorker
   include PipelineBackgroundQueue

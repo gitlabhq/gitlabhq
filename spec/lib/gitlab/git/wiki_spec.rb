@@ -6,9 +6,7 @@ describe Gitlab::Git::Wiki do
   let(:project_wiki) { ProjectWiki.new(project, user) }
   subject { project_wiki.wiki }
 
-  # Remove skip_gitaly_mock flag when gitaly_find_page when
-  # https://gitlab.com/gitlab-org/gitlab-ce/issues/42039 is solved
-  describe '#page', :skip_gitaly_mock do
+  describe '#page' do
     before do
       create_page('page1', 'content')
       create_page('foo/page1', 'content foo/page1')
@@ -22,6 +20,22 @@ describe Gitlab::Git::Wiki do
     it 'returns the right page' do
       expect(subject.page(title: 'page1', dir: '').url_path).to eq 'page1'
       expect(subject.page(title: 'page1', dir: 'foo').url_path).to eq 'foo/page1'
+    end
+  end
+
+  describe '#delete_page' do
+    after do
+      destroy_page('page1')
+    end
+
+    it 'only removes the page with the same path' do
+      create_page('page1', 'content')
+      create_page('*', 'content')
+
+      subject.delete_page('*', commit_details('whatever'))
+
+      expect(subject.pages.count).to eq 1
+      expect(subject.pages.first.title).to eq 'page1'
     end
   end
 

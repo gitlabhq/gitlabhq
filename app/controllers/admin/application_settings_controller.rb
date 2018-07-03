@@ -52,7 +52,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   private
 
   def set_application_setting
-    @application_setting = ApplicationSetting.current_without_cache
+    @application_setting = Gitlab::CurrentSettings.current_application_settings
   end
 
   def application_setting_params

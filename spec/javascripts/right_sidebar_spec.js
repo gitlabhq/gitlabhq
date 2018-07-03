@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, new-parens, no-return-assign, new-cap, vars-on-top, max-len */
+/* eslint-disable no-var, one-var, one-var-declaration-per-line, no-return-assign, vars-on-top, max-len */
 
 import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';

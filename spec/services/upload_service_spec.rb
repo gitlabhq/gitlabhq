@@ -9,7 +9,7 @@ describe UploadService do
 
     context 'for valid gif file' do
       before do
-        gif = fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif')
+        gif = fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif')
         @link_to_file = upload_file(@project, gif)
       end
 
@@ -21,7 +21,7 @@ describe UploadService do
 
     context 'for valid png file' do
       before do
-        png = fixture_file_upload(Rails.root + 'spec/fixtures/dk.png',
+        png = fixture_file_upload('spec/fixtures/dk.png',
           'image/png')
         @link_to_file = upload_file(@project, png)
       end
@@ -34,7 +34,7 @@ describe UploadService do
 
     context 'for valid jpg file' do
       before do
-        jpg = fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg')
+        jpg = fixture_file_upload('spec/fixtures/rails_sample.jpg', 'image/jpg')
         @link_to_file = upload_file(@project, jpg)
       end
 
@@ -46,7 +46,7 @@ describe UploadService do
 
     context 'for txt file' do
       before do
-        txt = fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain')
+        txt = fixture_file_upload('spec/fixtures/doc_sample.txt', 'text/plain')
         @link_to_file = upload_file(@project, txt)
       end
 
@@ -58,7 +58,7 @@ describe UploadService do
 
     context 'for too large a file' do
       before do
-        txt = fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain')
+        txt = fixture_file_upload('spec/fixtures/doc_sample.txt', 'text/plain')
         allow(txt).to receive(:size) { 1000.megabytes.to_i }
         @link_to_file = upload_file(@project, txt)
       end

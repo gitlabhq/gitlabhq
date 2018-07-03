@@ -63,14 +63,13 @@ export default {
   <div>
     <div
       class="js-gcp-zone-dropdown dropdown"
-      :class="{ 'gl-show-field-errors': hasErrors }"
     >
       <dropdown-hidden-input
         :name="fieldName"
         :value="selectedZone"
       />
       <dropdown-button
-        :class="{ 'gl-field-error-outline': hasErrors }"
+        :class="{ 'border-danger': hasErrors }"
         :is-disabled="isDisabled"
         :is-loading="isLoading"
         :toggle-text="toggleText"
@@ -106,9 +105,12 @@ export default {
       </div>
     </div>
     <span
-      class="form-text text-muted"
-      :class="{ 'gl-field-error': hasErrors }"
       v-if="hasErrors"
+      :class="{
+        'text-danger': hasErrors,
+        'text-muted': !hasErrors
+      }"
+      class="form-text"
     >
       {{ errorMessage }}
     </span>

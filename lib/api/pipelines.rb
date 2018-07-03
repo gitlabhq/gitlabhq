@@ -41,15 +41,20 @@ module API
       end
       params do
         requires :ref, type: String,  desc: 'Reference'
+        optional :variables, Array, desc: 'Array of variables available in the pipeline'
       end
       post ':id/pipeline' do
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42124')
 
         authorize! :create_pipeline, user_project
 
+        pipeline_params = declared_params(include_missing: false)
+          .merge(variables_attributes: params[:variables])
+          .except(:variables)
+
         new_pipeline = Ci::CreatePipelineService.new(user_project,
                                                      current_user,
-                                                     declared_params(include_missing: false))
+                                                     pipeline_params)
                            .execute(:api, ignore_skip_ci: true, save_on_errors: false)
 
         if new_pipeline.persisted?

@@ -67,7 +67,7 @@
               %th Projects
               %th Jobs
               %th Tags
-              %th= link_to 'Last contact', admin_runners_path(params.slice(:search).merge(sort: 'contacted_asc'))
+              %th= link_to 'Last contact', admin_runners_path(safe_params.slice(:search).merge(sort: 'contacted_asc'))
               %th
 
           - @runners.each do |runner|

@@ -80,12 +80,12 @@
 <template>
   <div>
     <div
-      class="sidebar-collapsed-icon"
       v-tooltip
+      :title="participantLabel"
+      class="sidebar-collapsed-icon"
       data-container="body"
       data-placement="left"
       data-boundary="viewport"
-      :title="participantLabel"
       @click="onClickCollapsedIcon"
     >
       <i
@@ -119,15 +119,15 @@
         class="participants-author js-participants-author"
       >
         <a
-          class="author_link"
           :href="participant.web_url"
+          class="author_link"
         >
           <user-avatar-image
             :lazy="true"
             :img-src="participant.avatar_url"
-            css-classes="avatar-inline"
             :size="24"
             :tooltip-text="participant.name"
+            css-classes="avatar-inline"
             tooltip-placement="bottom"
           />
         </a>

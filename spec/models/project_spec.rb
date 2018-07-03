@@ -238,18 +238,25 @@ describe Project do
       expect(project2.import_data).to be_nil
     end
 
-    it "does not allow blocked import_url localhost" do
+    it "does not allow import_url pointing to localhost" do
       project2 = build(:project, import_url: 'http://localhost:9000/t.git')
 
       expect(project2).to be_invalid
       expect(project2.errors[:import_url].first).to include('Requests to localhost are not allowed')
     end
 
-    it "does not allow blocked import_url port" do
+    it "does not allow import_url with invalid ports" do
       project2 = build(:project, import_url: 'http://github.com:25/t.git')
 
       expect(project2).to be_invalid
       expect(project2.errors[:import_url].first).to include('Only allowed ports are 22, 80, 443')
+    end
+
+    it "does not allow import_url with invalid user" do
+      project2 = build(:project, import_url: 'http://$user:password@github.com/t.git')
+
+      expect(project2).to be_invalid
+      expect(project2.errors[:import_url].first).to include('Username needs to start with an alphanumeric character')
     end
 
     describe 'project pending deletion' do
@@ -564,13 +571,13 @@ describe Project do
                                   last_activity_at: timestamp,
                                   last_repository_updated_at: timestamp - 1.hour)
 
-        expect(project.last_activity_date).to eq(timestamp)
+        expect(project.last_activity_date).to be_like_time(timestamp)
 
         project.update_attributes(updated_at: timestamp,
                                   last_activity_at: timestamp - 1.hour,
                                   last_repository_updated_at: nil)
 
-        expect(project.last_activity_date).to eq(timestamp)
+        expect(project.last_activity_date).to be_like_time(timestamp)
       end
     end
   end
@@ -960,7 +967,7 @@ describe Project do
 
     it 'is false if avatar is html page' do
       project.update_attribute(:avatar, 'uploads/avatar.html')
-      expect(project.avatar_type).to eq(['file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff'])
+      expect(project.avatar_type).to eq(['file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff, ico'])
     end
   end
 
@@ -1693,6 +1700,31 @@ describe Project do
     end
   end
 
+  describe '#human_import_status_name' do
+    context 'when import_state exists' do
+      it 'returns the humanized status name' do
+        project = create(:project)
+        create(:import_state, :started, project: project)
+
+        expect(project.human_import_status_name).to eq("started")
+      end
+    end
+
+    context 'when import_state was not created yet' do
+      let(:project) { create(:project, :import_started) }
+
+      it 'ensures import_state is created and returns humanized status name' do
+        expect do
+          project.human_import_status_name
+        end.to change { ProjectImportState.count }.from(0).to(1)
+      end
+
+      it 'returns humanized status name' do
+        expect(project.human_import_status_name).to eq("started")
+      end
+    end
+  end
+
   describe 'Project import job' do
     let(:project) { create(:project, import_url: generate(:url)) }
 
@@ -1701,7 +1733,11 @@ describe Project do
         .with(project.repository_storage, project.disk_path, project.import_url)
         .and_return(true)
 
-      expect_any_instance_of(Repository).to receive(:after_import)
+      # Works around https://github.com/rspec/rspec-mocks/issues/910
+      allow(described_class).to receive(:find).with(project.id).and_return(project)
+      expect(project.repository).to receive(:after_import)
+        .and_call_original
+      expect(project.wiki.repository).to receive(:after_import)
         .and_call_original
     end
 
@@ -2300,6 +2336,22 @@ describe Project do
       end
 
       it_behaves_like 'ref is protected'
+    end
+  end
+
+  describe '#any_lfs_file_locks?', :request_store do
+    set(:project) { create(:project) }
+
+    it 'returns false when there are no LFS file locks' do
+      expect(project.any_lfs_file_locks?).to be_falsey
+    end
+
+    it 'returns a cached true when there are LFS file locks' do
+      create(:lfs_file_lock, project: project)
+
+      expect(project.lfs_file_locks).to receive(:any?).once.and_call_original
+
+      2.times { expect(project.any_lfs_file_locks?).to be_truthy }
     end
   end
 
@@ -2907,7 +2959,7 @@ describe Project do
 
         project.rename_repo
 
-        expect(project.repository.rugged.config['gitlab.fullpath']).to eq(project.full_path)
+        expect(rugged_config['gitlab.fullpath']).to eq(project.full_path)
       end
     end
 
@@ -3068,7 +3120,7 @@ describe Project do
       it 'updates project full path in .git/config' do
         project.rename_repo
 
-        expect(project.repository.rugged.config['gitlab.fullpath']).to eq(project.full_path)
+        expect(rugged_config['gitlab.fullpath']).to eq(project.full_path)
       end
     end
 
@@ -3366,10 +3418,11 @@ describe Project do
   end
 
   describe '#after_import' do
-    let(:project) { build(:project) }
+    let(:project) { create(:project) }
 
     it 'runs the correct hooks' do
       expect(project.repository).to receive(:after_import)
+      expect(project.wiki.repository).to receive(:after_import)
       expect(project).to receive(:import_finish)
       expect(project).to receive(:update_project_counter_caches)
       expect(project).to receive(:remove_import_jid)
@@ -3488,13 +3541,13 @@ describe Project do
     it 'writes full path in .git/config when key is missing' do
       project.write_repository_config
 
-      expect(project.repository.rugged.config['gitlab.fullpath']).to eq project.full_path
+      expect(rugged_config['gitlab.fullpath']).to eq project.full_path
     end
 
     it 'updates full path in .git/config when key is present' do
       project.write_repository_config(gl_full_path: 'old/path')
 
-      expect { project.write_repository_config }.to change { project.repository.rugged.config['gitlab.fullpath'] }.from('old/path').to(project.full_path)
+      expect { project.write_repository_config }.to change { rugged_config['gitlab.fullpath'] }.from('old/path').to(project.full_path)
     end
 
     it 'does not raise an error with an empty repository' do
@@ -3583,7 +3636,7 @@ describe Project do
         target_branch: 'target-branch',
         source_project: project,
         source_branch: 'awesome-feature-1',
-        allow_maintainer_to_push: true
+        allow_collaboration: true
       )
     end
 
@@ -3620,9 +3673,14 @@ describe Project do
       end
     end
 
-    describe '#branch_allows_maintainer_push?' do
+    describe '#branch_allows_collaboration_push?' do
       it 'allows access if the user can merge the merge request' do
-        expect(project.branch_allows_maintainer_push?(user, 'awesome-feature-1'))
+        expect(project.branch_allows_collaboration?(user, 'awesome-feature-1'))
+          .to be_truthy
+      end
+
+      it 'allows access when there are merge requests open but no branch name is given' do
+        expect(project.branch_allows_collaboration?(user, nil))
           .to be_truthy
       end
 
@@ -3630,7 +3688,7 @@ describe Project do
         guest = create(:user)
         target_project.add_guest(guest)
 
-        expect(project.branch_allows_maintainer_push?(guest, 'awesome-feature-1'))
+        expect(project.branch_allows_collaboration?(guest, 'awesome-feature-1'))
           .to be_falsy
       end
 
@@ -3640,31 +3698,31 @@ describe Project do
                target_branch: 'target-branch',
                source_project: project,
                source_branch: 'rejected-feature-1',
-               allow_maintainer_to_push: true)
+               allow_collaboration: true)
 
-        expect(project.branch_allows_maintainer_push?(user, 'rejected-feature-1'))
+        expect(project.branch_allows_collaboration?(user, 'rejected-feature-1'))
           .to be_falsy
       end
 
       it 'does not allow access if the user cannot merge the merge request' do
         create(:protected_branch, :masters_can_push, project: target_project, name: 'target-branch')
 
-        expect(project.branch_allows_maintainer_push?(user, 'awesome-feature-1'))
+        expect(project.branch_allows_collaboration?(user, 'awesome-feature-1'))
           .to be_falsy
       end
 
       it 'caches the result' do
-        control = ActiveRecord::QueryRecorder.new { project.branch_allows_maintainer_push?(user, 'awesome-feature-1') }
+        control = ActiveRecord::QueryRecorder.new { project.branch_allows_collaboration?(user, 'awesome-feature-1') }
 
-        expect { 3.times { project.branch_allows_maintainer_push?(user, 'awesome-feature-1') } }
+        expect { 3.times { project.branch_allows_collaboration?(user, 'awesome-feature-1') } }
           .not_to exceed_query_limit(control)
       end
 
       context 'when the requeststore is active', :request_store do
         it 'only queries per project across instances' do
-          control = ActiveRecord::QueryRecorder.new { project.branch_allows_maintainer_push?(user, 'awesome-feature-1') }
+          control = ActiveRecord::QueryRecorder.new { project.branch_allows_collaboration?(user, 'awesome-feature-1') }
 
-          expect { 2.times { described_class.find(project.id).branch_allows_maintainer_push?(user, 'awesome-feature-1') } }
+          expect { 2.times { described_class.find(project.id).branch_allows_collaboration?(user, 'awesome-feature-1') } }
             .not_to exceed_query_limit(control).with_threshold(2)
         end
       end
@@ -3773,6 +3831,12 @@ describe Project do
       let(:model_object) { create(:project, :with_avatar) }
       let(:upload_attribute) { :avatar }
       let(:uploader_class) { AttachmentUploader }
+    end
+  end
+
+  def rugged_config
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      project.repository.rugged.config
     end
   end
 end

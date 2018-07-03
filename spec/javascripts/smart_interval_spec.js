@@ -87,7 +87,7 @@ describe('SmartInterval', function () {
       setTimeout(() => {
         interval.cancel();
 
-        const intervalId = interval.state.intervalId;
+        const { intervalId } = interval.state;
         const currentInterval = interval.getCurrentInterval();
         const intervalLowerLimit = interval.cfg.startingInterval;
 
@@ -106,7 +106,7 @@ describe('SmartInterval', function () {
 
         interval.resume();
 
-        const intervalId = interval.state.intervalId;
+        const { intervalId } = interval.state;
 
         expect(intervalId).toBeTruthy();
 

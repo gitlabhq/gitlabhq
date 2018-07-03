@@ -41,7 +41,6 @@ export default {
       type: String,
       required: true,
     },
-
   },
   data() {
     return {
@@ -67,7 +66,8 @@ export default {
 
       this.isDisabled = true;
 
-      axios.post(`${this.link}.json`)
+      axios
+        .post(`${this.link}.json`)
         .then(() => {
           this.isDisabled = false;
           this.$emit('pipelineActionRequestComplete');
@@ -83,15 +83,16 @@ export default {
 </script>
 <template>
   <button
-    type="button"
-    @click="onClickAction"
     v-tooltip
     :title="tooltipText"
+    :class="cssClass"
+    :disabled="isDisabled"
+    type="button"
     class="js-ci-action btn btn-blank
 btn-transparent ci-action-icon-container ci-action-icon-wrapper"
-    :class="cssClass"
     data-container="body"
-    :disabled="isDisabled"
+    data-boundary="viewport"
+    @click="onClickAction"
   >
     <icon :name="actionIcon"/>
   </button>

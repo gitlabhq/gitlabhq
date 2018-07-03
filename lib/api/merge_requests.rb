@@ -38,7 +38,7 @@ module API
         merge_requests = MergeRequestsFinder.new(current_user, args).execute
                            .reorder(args[:order_by] => args[:sort])
         merge_requests = paginate(merge_requests)
-                           .preload(:target_project)
+                           .preload(:source_project, :target_project)
 
         return merge_requests if args[:view] == 'simple'
 
@@ -72,8 +72,8 @@ module API
       end
 
       params :merge_requests_params do
-        optional :state, type: String, values: %w[opened closed merged all], default: 'all',
-                         desc: 'Return opened, closed, merged, or all merge requests'
+        optional :state, type: String, values: %w[opened closed locked merged all], default: 'all',
+                         desc: 'Return opened, closed, locked, merged, or all merge requests'
         optional :order_by, type: String, values: %w[created_at updated_at], default: 'created_at',
                             desc: 'Return merge requests ordered by `created_at` or `updated_at` fields.'
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
@@ -162,7 +162,8 @@ module API
           optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign the merge request'
           optional :labels, type: String, desc: 'Comma-separated list of label names'
           optional :remove_source_branch, type: Boolean, desc: 'Remove source branch when merging'
-          optional :allow_maintainer_to_push, type: Boolean, desc: 'Whether a maintainer of the target project can push to the source project'
+          optional :allow_collaboration, type: Boolean, desc: 'Allow commits from members who can merge to the target branch'
+          optional :allow_maintainer_to_push, type: Boolean, as: :allow_collaboration, desc: '[deprecated] See allow_collaboration'
           optional :squash, type: Grape::API::Boolean, desc: 'When true, the commits will be squashed into a single commit on merge'
 
           use :optional_params_ee

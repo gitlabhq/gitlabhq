@@ -38,6 +38,26 @@ describe('RepoTab', () => {
     expect(name.textContent.trim()).toEqual(vm.tab.name);
   });
 
+  it('does not call openPendingTab when tab is active', done => {
+    vm = createComponent({
+      tab: {
+        ...file(),
+        pending: true,
+        active: true,
+      },
+    });
+
+    spyOn(vm, 'openPendingTab');
+
+    vm.$el.click();
+
+    vm.$nextTick(() => {
+      expect(vm.openPendingTab).not.toHaveBeenCalled();
+
+      done();
+    });
+  });
+
   it('fires clickFile when the link is clicked', () => {
     vm = createComponent({
       tab: file(),
@@ -112,9 +132,9 @@ describe('RepoTab', () => {
     });
 
     it('renders a tooltip', () => {
-      expect(
-        vm.$el.querySelector('span:nth-child(2)').dataset.originalTitle,
-      ).toContain('Locked by testuser');
+      expect(vm.$el.querySelector('span:nth-child(2)').dataset.originalTitle).toContain(
+        'Locked by testuser',
+      );
     });
   });
 

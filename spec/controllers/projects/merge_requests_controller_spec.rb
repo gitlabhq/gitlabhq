@@ -80,6 +80,16 @@ describe Projects::MergeRequestsController do
                                                                 ))
         end
       end
+
+      context "that is invalid" do
+        let(:merge_request) { create(:invalid_merge_request, target_project: project, source_project: project) }
+
+        it "renders merge request page" do
+          go(format: :html)
+
+          expect(response).to be_success
+        end
+      end
     end
 
     describe 'as json' do
@@ -104,6 +114,16 @@ describe Projects::MergeRequestsController do
           go(serializer: nil, format: :json)
 
           expect(response).to match_response_schema('entities/merge_request_widget')
+        end
+      end
+
+      context "that is invalid" do
+        let(:merge_request) { create(:invalid_merge_request, target_project: project, source_project: project) }
+
+        it "renders merge request page" do
+          go(format: :json)
+
+          expect(response).to be_success
         end
       end
     end
@@ -214,7 +234,7 @@ describe Projects::MergeRequestsController do
         body = JSON.parse(response.body)
 
         expect(body['assignee'].keys)
-          .to match_array(%w(name username avatar_url))
+          .to match_array(%w(name username avatar_url id state web_url))
       end
     end
 
@@ -317,7 +337,12 @@ describe Projects::MergeRequestsController do
 
     context 'when the sha parameter matches the source SHA' do
       def merge_with_sha(params = {})
-        post :merge, base_params.merge(sha: merge_request.diff_head_sha).merge(params)
+        post_params = base_params.merge(sha: merge_request.diff_head_sha).merge(params)
+        if Gitlab.rails5?
+          post :merge, params: post_params, as: :json
+        else
+          post :merge, post_params
+        end
       end
 
       it 'returns :success' do
@@ -681,7 +706,7 @@ describe Projects::MergeRequestsController do
         expect(json_response['text']).to eq status.text
         expect(json_response['label']).to eq status.label
         expect(json_response['icon']).to eq status.icon
-        expect(json_response['favicon']).to match_asset_path "/assets/ci_favicons/#{status.favicon}.ico"
+        expect(json_response['favicon']).to match_asset_path "/assets/ci_favicons/#{status.favicon}.png"
       end
     end
 

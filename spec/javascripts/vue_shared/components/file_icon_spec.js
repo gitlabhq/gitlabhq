@@ -74,7 +74,7 @@ describe('File Icon component', () => {
       size: 120,
     });
 
-    const classList = vm.$el.firstChild.classList;
+    const { classList } = vm.$el.firstChild;
     const containsSizeClass = classList.contains('s120');
     const containsCustomClass = classList.contains('extraclasses');
     expect(containsSizeClass).toBe(true);

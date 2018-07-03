@@ -242,6 +242,7 @@ Ci::Pipeline:
 - config_source
 - failure_reason
 - protected
+- iid
 Ci::Stage:
 - id
 - name
@@ -539,6 +540,7 @@ ProjectAutoDevops:
 - id
 - enabled
 - domain
+- deploy_strategy
 - project_id
 - created_at
 - updated_at

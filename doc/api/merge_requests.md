@@ -11,7 +11,7 @@ default it returns only merge requests created by the current user. To
 get all merge requests, use parameter `scope=all`.
 
 The `state` parameter can be used to get only merge requests with a
-given state (`opened`, `closed`, or `merged`) or all of them (`all`).
+given state (`opened`, `closed`, `locked`, or `merged`) or all of them (`all`). It should be noted that when searching by `locked` it will mostly return no results as it is a short-lived, transitional state.
 The pagination parameters `page` and `per_page` can be used to
 restrict the list of merge requests.
 
@@ -35,7 +35,7 @@ Parameters:
 
 | Attribute           | Type     | Required | Description                                                                                                            |
 | ------------------- | -------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `state`             | string   | no       | Return all merge requests or just those that are `opened`, `closed`, or `merged`                                       |
+| `state`             | string   | no       | Return all merge requests or just those that are `opened`, `closed`, `locked`, or `merged`                                       |
 | `order_by`          | string   | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                |
 | `sort`              | string   | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                     |
 | `milestone`         | string   | no       | Return merge requests for a specific milestone                                                                         |
@@ -70,18 +70,18 @@ Parameters:
     "author": {
       "id": 1,
       "username": "admin",
-      "email": "admin@example.com",
       "name": "Administrator",
       "state": "active",
-      "created_at": "2012-04-29T08:46:00Z"
+      "avatar_url": null,
+      "web_url" : "https://gitlab.example.com/admin"
     },
     "assignee": {
       "id": 1,
       "username": "admin",
-      "email": "admin@example.com",
       "name": "Administrator",
       "state": "active",
-      "created_at": "2012-04-29T08:46:00Z"
+      "avatar_url": null,
+      "web_url" : "https://gitlab.example.com/admin"
     },
     "source_project_id": 2,
     "target_project_id": 3,
@@ -122,7 +122,7 @@ Parameters:
 ## List project merge requests
 
 Get all merge requests for this project.
-The `state` parameter can be used to get only merge requests with a given state (`opened`, `closed`, or `merged`) or all of them (`all`).
+The `state` parameter can be used to get only merge requests with a given state (`opened`, `closed`, `locked`, or `merged`) or all of them (`all`).
 The pagination parameters `page` and `per_page` can be used to restrict the list of merge requests.
 
 ```
@@ -155,7 +155,7 @@ Parameters:
 | ------------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | `id`                | integer        | yes      | The ID of a project                                                                                                            |
 | `iids[]`            | Array[integer] | no       | Return the request having the given `iid`                                                                                      |
-| `state`             | string         | no       | Return all merge requests or just those that are `opened`, `closed`, or `merged`                                               |
+| `state`             | string         | no       | Return all merge requests or just those that are `opened`, `closed`, `locked`, or `merged`                                               |
 | `order_by`          | string         | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                        |
 | `sort`              | string         | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                             |
 | `milestone`         | string         | no       | Return merge requests for a specific milestone                                                                                 |
@@ -190,18 +190,18 @@ Parameters:
     "author": {
       "id": 1,
       "username": "admin",
-      "email": "admin@example.com",
       "name": "Administrator",
       "state": "active",
-      "created_at": "2012-04-29T08:46:00Z"
+      "avatar_url": null,
+      "web_url" : "https://gitlab.example.com/admin"
     },
     "assignee": {
       "id": 1,
       "username": "admin",
-      "email": "admin@example.com",
       "name": "Administrator",
       "state": "active",
-      "created_at": "2012-04-29T08:46:00Z"
+      "avatar_url": null,
+      "web_url" : "https://gitlab.example.com/admin"
     },
     "source_project_id": 2,
     "target_project_id": 3,
@@ -243,7 +243,7 @@ Parameters:
 ## List group merge requests
 
 Get all merge requests for this group and its subgroups.
-The `state` parameter can be used to get only merge requests with a given state (`opened`, `closed`, or `merged`) or all of them (`all`).
+The `state` parameter can be used to get only merge requests with a given state (`opened`, `closed`, `locked`, or `merged`) or all of them (`all`).
 The pagination parameters `page` and `per_page` can be used to restrict the list of merge requests.
 
 ```
@@ -262,7 +262,7 @@ Parameters:
 | Attribute           | Type           | Required | Description                                                                                                                    |
 | ------------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | `id`                | integer        | yes      | The ID of a group                                                                                                           |
-| `state`             | string         | no       | Return all merge requests or just those that are `opened`, `closed`, or `merged`                                               |
+| `state`             | string         | no       | Return all merge requests or just those that are `opened`, `closed`, `locked`, or `merged`                                               |
 | `order_by`          | string         | no       | Return merge requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                        |
 | `sort`              | string         | no       | Return merge requests sorted in `asc` or `desc` order. Default is `desc`                                                             |
 | `milestone`         | string         | no       | Return merge requests for a specific milestone                                                                                 |
@@ -297,18 +297,18 @@ Parameters:
     "author": {
       "id": 1,
       "username": "admin",
-      "email": "admin@example.com",
       "name": "Administrator",
       "state": "active",
-      "created_at": "2012-04-29T08:46:00Z"
+      "avatar_url": null,
+      "web_url" : "https://gitlab.example.com/admin"
     },
     "assignee": {
       "id": 1,
       "username": "admin",
-      "email": "admin@example.com",
       "name": "Administrator",
       "state": "active",
-      "created_at": "2012-04-29T08:46:00Z"
+      "avatar_url": null,
+      "web_url" : "https://gitlab.example.com/admin"
     },
     "source_project_id": 2,
     "target_project_id": 3,
@@ -548,14 +548,16 @@ Parameters:
     "username": "jarrett",
     "id": 5,
     "state": "active",
-    "avatar_url": "http://www.gravatar.com/avatar/b95567800f828948baf5f4160ebb2473?s=40&d=identicon"
+    "avatar_url": "http://www.gravatar.com/avatar/b95567800f828948baf5f4160ebb2473?s=40&d=identicon",
+    "web_url" : "https://gitlab.example.com/jarrett"
   },
   "assignee": {
     "name": "Administrator",
     "username": "root",
     "id": 1,
     "state": "active",
-    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40&d=identicon"
+    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40&d=identicon",
+    "web_url" : "https://gitlab.example.com/root"
   },
   "source_project_id": 4,
   "target_project_id": 4,
@@ -582,6 +584,7 @@ Parameters:
   "changes_count": "1",
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
+  "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
   "discussion_locked": false,
   "time_stats": {
@@ -650,7 +653,8 @@ POST /projects/:id/merge_requests
 | `labels`                   | string  | no       | Labels for MR as a comma-separated list                                         |
 | `milestone_id`             | integer | no       | The global ID of a milestone                                                           |
 | `remove_source_branch`     | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
-| `allow_maintainer_to_push` | boolean | no       | Whether or not a maintainer of the target project can push to the source branch |
+| `allow_collaboration`      | boolean | no       | Allow commits from members who can merge to the target branch                   |
+| `allow_maintainer_to_push` | boolean | no       | Deprecated, see allow_collaboration                                             |
 | `squash`                   | boolean | no       | Squash commits into a single commit when merging                                |
 
 ```json
@@ -667,18 +671,18 @@ POST /projects/:id/merge_requests
   "author": {
     "id": 1,
     "username": "admin",
-    "email": "admin@example.com",
     "name": "Administrator",
     "state": "active",
-    "created_at": "2012-04-29T08:46:00Z"
+    "avatar_url": null,
+    "web_url" : "https://gitlab.example.com/admin"
   },
   "assignee": {
     "id": 1,
     "username": "admin",
-    "email": "admin@example.com",
     "name": "Administrator",
     "state": "active",
-    "created_at": "2012-04-29T08:46:00Z"
+    "avatar_url": null,
+    "web_url" : "https://gitlab.example.com/admin"
   },
   "source_project_id": 3,
   "target_project_id": 4,
@@ -708,6 +712,7 @@ POST /projects/:id/merge_requests
   "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
   "discussion_locked": false,
+  "allow_collaboration": false,
   "allow_maintainer_to_push": false,
   "time_stats": {
     "time_estimate": 0,
@@ -740,7 +745,8 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 | `remove_source_branch`     | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
 | `squash`                   | boolean | no       | Squash commits into a single commit when merging |
 | `discussion_locked`        | boolean | no       | Flag indicating if the merge request's discussion is locked. If the discussion is locked only project members can add, edit or resolve comments. |
-| `allow_maintainer_to_push` | boolean | no       | Whether or not a maintainer of the target project can push to the source branch |
+| `allow_collaboration`      | boolean | no       | Allow commits from members who can merge to the target branch                   |
+| `allow_maintainer_to_push` | boolean | no       | Deprecated, see allow_collaboration                                             |
 
 Must include at least one non-required attribute from above.
 
@@ -757,18 +763,18 @@ Must include at least one non-required attribute from above.
   "author": {
     "id": 1,
     "username": "admin",
-    "email": "admin@example.com",
     "name": "Administrator",
     "state": "active",
-    "created_at": "2012-04-29T08:46:00Z"
+    "avatar_url": null,
+    "web_url" : "https://gitlab.example.com/admin"
   },
   "assignee": {
     "id": 1,
     "username": "admin",
-    "email": "admin@example.com",
     "name": "Administrator",
     "state": "active",
-    "created_at": "2012-04-29T08:46:00Z"
+    "avatar_url": null,
+    "web_url" : "https://gitlab.example.com/admin"
   },
   "source_project_id": 3,
   "target_project_id": 4,
@@ -798,6 +804,7 @@ Must include at least one non-required attribute from above.
   "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
   "discussion_locked": false,
+  "allow_collaboration": false,
   "allow_maintainer_to_push": false,
   "time_stats": {
     "time_estimate": 0,
@@ -865,18 +872,18 @@ Parameters:
   "author": {
     "id": 1,
     "username": "admin",
-    "email": "admin@example.com",
     "name": "Administrator",
     "state": "active",
-    "created_at": "2012-04-29T08:46:00Z"
+    "avatar_url": null,
+    "web_url" : "https://gitlab.example.com/admin"
   },
   "assignee": {
     "id": 1,
     "username": "admin",
-    "email": "admin@example.com",
     "name": "Administrator",
     "state": "active",
-    "created_at": "2012-04-29T08:46:00Z"
+    "avatar_url": null,
+    "web_url" : "https://gitlab.example.com/admin"
   },
   "source_project_id": 4,
   "target_project_id": 4,
@@ -944,18 +951,18 @@ Parameters:
   "author": {
     "id": 1,
     "username": "admin",
-    "email": "admin@example.com",
     "name": "Administrator",
     "state": "active",
-    "created_at": "2012-04-29T08:46:00Z"
+    "avatar_url": null,
+    "web_url" : "https://gitlab.example.com/admin"
   },
   "assignee": {
     "id": 1,
     "username": "admin",
-    "email": "admin@example.com",
     "name": "Administrator",
     "state": "active",
-    "created_at": "2012-04-29T08:46:00Z"
+    "avatar_url": null,
+    "web_url" : "https://gitlab.example.com/admin"
   },
   "source_project_id": 4,
   "target_project_id": 4,

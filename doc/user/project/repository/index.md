@@ -82,7 +82,7 @@ your implementation with your team.
 You can live preview changes submitted to a new branch with
 [Review Apps](../../../ci/review_apps/index.md).
 
-With [GitLab Starter](https://about.gitlab.com/products/), you can also request
+With [GitLab Starter](https://about.gitlab.com/pricing/), you can also request
 [approval](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your managers.
 
 To create, delete, and [branches](branches/index.md) via GitLab's UI:
@@ -165,15 +165,23 @@ Find it under your project's **Repository > Compare**.
 
 ## Locked files
 
-> Available in [GitLab Premium](https://about.gitlab.com/products/).
+> Available in [GitLab Premium](https://about.gitlab.com/pricing/).
 
 Lock your files to prevent any conflicting changes.
 
 [File Locking](https://docs.gitlab.com/ee/user/project/file_lock.html) is available only in
-[GitLab Premium](https://about.gitlab.com/products/).
+[GitLab Premium](https://about.gitlab.com/pricing/).
 
 ## Repository's API
 
 You can access your repos via [repository API](../../../api/repositories.md).
+
+## Clone in Apple Xcode
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/45820) in GitLab 11.0
+
+Projects that contain a `.xcodeproj` or `.xcworkspace` directory can now be cloned
+in Xcode using the new **Open in Xcode** button, located next to the Git URL
+used for cloning your project. The button is only shown on macOS.
 
 [jupyter]: https://jupyter.org

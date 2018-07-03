@@ -75,9 +75,9 @@ feature 'Master creates tag' do
       visit new_project_tag_path(project)
     end
 
-    it 'description has autocomplete', :js do
+    it 'description has emoji autocomplete', :js do
       find('#release_description').native.send_keys('')
-      fill_in 'release_description', with: '@'
+      fill_in 'release_description', with: ':'
 
       expect(page).to have_selector('.atwho-view')
     end

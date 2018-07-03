@@ -20,6 +20,19 @@ When an admin enables this feature, they will automattically be
 directed to the page to accept the terms themselves. After they
 accept, they will be directed back to the settings page.
 
+## New registrations
+
+When this feature is enabled, a checkbox will be available in the
+sign-up form.
+
+![Sign up form](img/sign_up_terms.png)
+
+This checkbox will be required during sign up.
+
+Users can review the terms entered in the admin panel before
+accepting. The page will be opened in a new window so they can
+continue their registration afterwards.
+
 ## Accepting terms
 
 When this feature was enabled, the users that have not accepted the

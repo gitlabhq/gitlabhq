@@ -28,18 +28,7 @@ module Gitlab
         end
 
         def get_messages(repository, tag_ids)
-          repository.gitaly_migrate(:tag_messages) do |is_enabled|
-            if is_enabled
-              repository.gitaly_ref_client.get_tag_messages(tag_ids)
-            else
-              tag_ids.map do |id|
-                tag = repository.rugged.lookup(id)
-                message = tag.is_a?(Rugged::Commit) ? "" : tag.message
-
-                [id, message]
-              end.to_h
-            end
-          end
+          repository.gitaly_ref_client.get_tag_messages(tag_ids)
         end
       end
 

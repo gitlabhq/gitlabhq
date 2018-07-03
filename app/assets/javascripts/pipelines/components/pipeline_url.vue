@@ -1,49 +1,49 @@
 <script>
-  import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
-  import tooltip from '../../vue_shared/directives/tooltip';
-  import popover from '../../vue_shared/directives/popover';
+import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+import tooltip from '../../vue_shared/directives/tooltip';
+import popover from '../../vue_shared/directives/popover';
 
-  export default {
-    components: {
-      userAvatarLink,
+export default {
+  components: {
+    userAvatarLink,
+  },
+  directives: {
+    tooltip,
+    popover,
+  },
+  props: {
+    pipeline: {
+      type: Object,
+      required: true,
     },
-    directives: {
-      tooltip,
-      popover,
+    autoDevopsHelpPath: {
+      type: String,
+      required: true,
     },
-    props: {
-      pipeline: {
-        type: Object,
-        required: true,
-      },
-      autoDevopsHelpPath: {
-        type: String,
-        required: true,
-      },
+  },
+  computed: {
+    user() {
+      return this.pipeline.user;
     },
-    computed: {
-      user() {
-        return this.pipeline.user;
-      },
-      popoverOptions() {
-        return {
-          html: true,
-          trigger: 'focus',
-          placement: 'top',
-          title: `<div class="autodevops-title">
+    popoverOptions() {
+      return {
+        html: true,
+        trigger: 'focus',
+        placement: 'top',
+        title: `<div class="autodevops-title">
             This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b>
           </div>`,
-          content: `<a
+        content: `<a
             class="autodevops-link"
             href="${this.autoDevopsHelpPath}"
             target="_blank"
             rel="noopener noreferrer nofollow">
             Learn more about Auto DevOps
           </a>`,
-        };
-      },
+      };
     },
-  };
+  },
+};
 </script>
 <template>
   <div class="table-section section-15 d-none d-sm-none d-md-block pipeline-tags">
@@ -55,10 +55,10 @@
     <span>by</span>
     <user-avatar-link
       v-if="user"
-      class="js-pipeline-url-user"
       :link-href="pipeline.user.path"
       :img-src="pipeline.user.avatar_url"
       :tooltip-text="pipeline.user.name"
+      class="js-pipeline-url-user"
     />
     <span
       v-if="!user"
@@ -67,31 +67,31 @@
     </span>
     <div class="label-container">
       <span
-        v-if="pipeline.flags.latest"
         v-tooltip
+        v-if="pipeline.flags.latest"
         class="js-pipeline-url-latest badge badge-success"
         title="Latest pipeline for this branch">
         latest
       </span>
       <span
-        v-if="pipeline.flags.yaml_errors"
         v-tooltip
-        class="js-pipeline-url-yaml badge badge-danger"
-        :title="pipeline.yaml_errors">
+        v-if="pipeline.flags.yaml_errors"
+        :title="pipeline.yaml_errors"
+        class="js-pipeline-url-yaml badge badge-danger">
         yaml invalid
       </span>
       <span
-        v-if="pipeline.flags.failure_reason"
         v-tooltip
-        class="js-pipeline-url-failure badge badge-danger"
-        :title="pipeline.failure_reason">
+        v-if="pipeline.flags.failure_reason"
+        :title="pipeline.failure_reason"
+        class="js-pipeline-url-failure badge badge-danger">
         error
       </span>
       <a
+        v-popover="popoverOptions"
         v-if="pipeline.flags.auto_devops"
         tabindex="0"
         class="js-pipeline-url-autodevops badge badge-info autodevops-badge"
-        v-popover="popoverOptions"
         role="button">
         Auto DevOps
       </a>

@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this, object-shorthand, no-unused-vars, no-use-before-define, no-new, max-len, no-restricted-syntax, guard-for-in, no-continue */
+/* eslint-disable object-shorthand, no-unused-vars, no-use-before-define, max-len, no-restricted-syntax, guard-for-in, no-continue */
 
 import $ from 'jquery';
 import _ from 'underscore';
@@ -119,7 +119,7 @@ const gfmRules = {
       return el.outerHTML;
     },
     'dl'(el, text) {
-      let lines = text.trim().split('\n');
+      let lines = text.replace(/\n\n/g, '\n').trim().split('\n');
       // Add two spaces to the front of subsequent list items lines,
       // or leave the line entirely blank.
       lines = lines.map((l) => {
@@ -129,9 +129,13 @@ const gfmRules = {
         return `  ${line}`;
       });
 
-      return `<dl>\n${lines.join('\n')}\n</dl>`;
+      return `<dl>\n${lines.join('\n')}\n</dl>\n`;
     },
-    'sub, dt, dd, kbd, q, samp, var, ruby, rt, rp, abbr, summary, details'(el, text) {
+    'dt, dd, summary, details'(el, text) {
+      const tag = el.nodeName.toLowerCase();
+      return `<${tag}>${text}</${tag}>\n`;
+    },
+    'sup, sub, kbd, q, samp, var, ruby, rt, rp, abbr'(el, text) {
       const tag = el.nodeName.toLowerCase();
       return `<${tag}>${text}</${tag}>`;
     },
@@ -215,22 +219,22 @@ const gfmRules = {
       return text.replace(/^- /mg, '1. ');
     },
     'h1'(el, text) {
-      return `# ${text.trim()}`;
+      return `# ${text.trim()}\n`;
     },
     'h2'(el, text) {
-      return `## ${text.trim()}`;
+      return `## ${text.trim()}\n`;
     },
     'h3'(el, text) {
-      return `### ${text.trim()}`;
+      return `### ${text.trim()}\n`;
     },
     'h4'(el, text) {
-      return `#### ${text.trim()}`;
+      return `#### ${text.trim()}\n`;
     },
     'h5'(el, text) {
-      return `##### ${text.trim()}`;
+      return `##### ${text.trim()}\n`;
     },
     'h6'(el, text) {
-      return `###### ${text.trim()}`;
+      return `###### ${text.trim()}\n`;
     },
     'strong'(el, text) {
       return `**${text}**`;
@@ -241,11 +245,13 @@ const gfmRules = {
     'del'(el, text) {
       return `~~${text}~~`;
     },
-    'sup'(el, text) {
-      return `^${text}`;
-    },
     'hr'(el) {
-      return '-----';
+      // extra leading \n is to ensure that there is a blank line between
+      // a list followed by an hr, otherwise this breaks old redcarpet rendering
+      return '\n-----\n';
+    },
+    'p'(el, text) {
+      return `${text.trim()}\n`;
     },
     'table'(el) {
       const theadEl = el.querySelector('thead');
@@ -263,7 +269,9 @@ const gfmRules = {
 
         let before = '';
         let after = '';
-        switch (cell.style.textAlign) {
+        const alignment = cell.align || cell.style.textAlign;
+
+        switch (alignment) {
           case 'center':
             before = ':';
             after = ':';
@@ -313,7 +321,7 @@ export class CopyAsGFM {
   }
 
   static copyAsGFM(e, transformer) {
-    const clipboardData = e.originalEvent.clipboardData;
+    const { clipboardData } = e.originalEvent;
     if (!clipboardData) return;
 
     const documentFragment = getSelectedFragment();
@@ -330,7 +338,7 @@ export class CopyAsGFM {
   }
 
   static pasteGFM(e) {
-    const clipboardData = e.originalEvent.clipboardData;
+    const { clipboardData } = e.originalEvent;
     if (!clipboardData) return;
 
     const text = clipboardData.getData('text/plain');

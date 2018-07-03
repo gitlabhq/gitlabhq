@@ -20,6 +20,7 @@ describe API::Snippets do
         private_snippet.id)
       expect(json_response.last).to have_key('web_url')
       expect(json_response.last).to have_key('raw_url')
+      expect(json_response.last).to have_key('visibility')
     end
 
     it 'hides private snippets from regular user' do
@@ -112,6 +113,7 @@ describe API::Snippets do
       expect(json_response['title']).to eq(snippet.title)
       expect(json_response['description']).to eq(snippet.description)
       expect(json_response['file_name']).to eq(snippet.file_name)
+      expect(json_response['visibility']).to eq(snippet.visibility)
     end
 
     it 'returns 404 for invalid snippet id' do
@@ -142,6 +144,7 @@ describe API::Snippets do
       expect(json_response['title']).to eq(params[:title])
       expect(json_response['description']).to eq(params[:description])
       expect(json_response['file_name']).to eq(params[:file_name])
+      expect(json_response['visibility']).to eq(params[:visibility])
     end
 
     it 'returns 400 for missing parameters' do
@@ -311,7 +314,7 @@ describe API::Snippets do
       expect(json_response['akismet_submitted']).to eq(user_agent_detail.submitted)
     end
 
-    it "returns unautorized for non-admin users" do
+    it "returns unauthorized for non-admin users" do
       get api("/snippets/#{snippet.id}/user_agent_detail", user)
 
       expect(response).to have_gitlab_http_status(403)

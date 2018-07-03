@@ -251,3 +251,12 @@ $skeleton-line-widths: (
     transform: translateX(468px);
   }
 }
+
+.slide-down-enter-active {
+  transition: transform 0.2s;
+}
+
+.slide-down-enter,
+.slide-down-leave-to {
+  transform: translateY(-30%);
+}

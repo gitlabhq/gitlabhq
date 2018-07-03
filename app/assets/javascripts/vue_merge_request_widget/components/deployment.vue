@@ -1,4 +1,5 @@
 <script>
+import Icon from '~/vue_shared/components/icon.vue';
 import timeagoMixin from '../../vue_shared/mixins/timeago';
 import tooltip from '../../vue_shared/directives/tooltip';
 import LoadingButton from '../../vue_shared/components/loading_button.vue';
@@ -14,6 +15,7 @@ export default {
     LoadingButton,
     MemoryUsage,
     StatusIcon,
+    Icon,
   },
   directives: {
     tooltip,
@@ -110,16 +112,15 @@ export default {
               class="deploy-link js-deploy-url"
             >
               {{ deployment.external_url_formatted }}
-              <i
-                class="fa fa-external-link"
-                aria-hidden="true"
-              >
-              </i>
+              <icon
+                :size="16"
+                name="external-link"
+              />
             </a>
           </template>
           <span
-            v-if="hasDeploymentTime"
             v-tooltip
+            v-if="hasDeploymentTime"
             :title="deployment.deployed_at_formatted"
             class="js-deploy-time"
           >
@@ -127,9 +128,9 @@ export default {
           </span>
           <loading-button
             v-if="deployment.stop_url"
+            :loading="isStopping"
             container-class="btn btn-default btn-sm prepend-left-default"
             label="Stop environment"
-            :loading="isStopping"
             @click="stopEnvironment"
           />
         </div>

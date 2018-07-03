@@ -518,7 +518,7 @@ describe API::Projects do
     end
 
     it 'uploads avatar for project a project' do
-      project = attributes_for(:project, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif'))
+      project = attributes_for(:project, avatar: fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif'))
 
       post api('/projects', user), project
 
@@ -777,7 +777,7 @@ describe API::Projects do
     end
 
     it "uploads the file and returns its info" do
-      post api("/projects/#{project.id}/uploads", user), file: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")
+      post api("/projects/#{project.id}/uploads", user), file: fixture_file_upload("spec/fixtures/dk.png", "image/png")
 
       expect(response).to have_gitlab_http_status(201)
       expect(json_response['alt']).to eq("dk")
@@ -1986,6 +1986,38 @@ describe API::Projects do
         post api("/projects/#{project.id}/housekeeping")
 
         expect(response).to have_gitlab_http_status(401)
+      end
+    end
+  end
+
+  describe 'PUT /projects/:id/transfer' do
+    context 'when authenticated as owner' do
+      let(:group) { create :group }
+
+      it 'transfers the project to the new namespace' do
+        group.add_owner(user)
+
+        put api("/projects/#{project.id}/transfer", user), namespace: group.id
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+
+      it 'fails when transferring to a non owned namespace' do
+        put api("/projects/#{project.id}/transfer", user), namespace: group.id
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+
+      it 'fails when transferring to an unknown namespace' do
+        put api("/projects/#{project.id}/transfer", user), namespace: 'unknown'
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+
+      it 'fails on missing namespace' do
+        put api("/projects/#{project.id}/transfer", user)
+
+        expect(response).to have_gitlab_http_status(400)
       end
     end
   end

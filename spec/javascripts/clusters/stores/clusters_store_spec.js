@@ -110,7 +110,7 @@ describe('Clusters Store', () => {
 
       expect(
         store.state.applications.jupyter.hostname,
-      ).toEqual(`jupyter.${store.state.applications.ingress.externalIp}.xip.io`);
+      ).toEqual(`jupyter.${store.state.applications.ingress.externalIp}.nip.io`);
     });
   });
 });

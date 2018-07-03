@@ -63,7 +63,7 @@ class ProjectsController < Projects::ApplicationController
           redirect_to(edit_project_path(@project))
         end
       else
-        flash[:alert] = result[:message]
+        flash.now[:alert] = result[:message]
 
         format.html { render 'edit' }
       end
@@ -247,13 +247,13 @@ class ProjectsController < Projects::ApplicationController
 
     if find_branches
       branches = BranchesFinder.new(@repository, params).execute.take(100).map(&:name)
-      options[s_('RefSwitcher|Branches')] = branches
+      options['Branches'] = branches
     end
 
     if find_tags && @repository.tag_count.nonzero?
       tags = TagsFinder.new(@repository, params).execute.take(100).map(&:name)
 
-      options[s_('RefSwitcher|Tags')] = tags
+      options['Tags'] = tags
     end
 
     # If reference is commit id - we should add it to branch/tag selectbox

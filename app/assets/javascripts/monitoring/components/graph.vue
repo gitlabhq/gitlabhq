@@ -154,7 +154,7 @@ export default {
       point.x = e.clientX;
       point.y = e.clientY;
       point = point.matrixTransform(this.$refs.graphData.getScreenCTM().inverse());
-      point.x = point.x += 7;
+      point.x += 7;
       const firstTimeSeries = this.timeSeries[0];
       const timeValueOverlay = firstTimeSeries.timeSeriesScaleX.invert(point.x);
       const overlayIndex = bisectDate(firstTimeSeries.values, timeValueOverlay, 1);
@@ -232,20 +232,25 @@ export default {
     @mouseover="showFlagContent = true"
     @mouseleave="showFlagContent = false"
   >
-    <h5 class="text-center graph-title">
-      {{ graphData.title }}
-    </h5>
+    <div class="prometheus-graph-header">
+      <h5 class="prometheus-graph-title">
+        {{ graphData.title }}
+      </h5>
+      <div class="prometheus-graph-widgets">
+        <slot></slot>
+      </div>
+    </div>
     <div
-      class="prometheus-svg-container"
       :style="paddingBottomRootSvg"
+      class="prometheus-svg-container"
     >
       <svg
-        :viewBox="outerViewBox"
         ref="baseSvg"
+        :viewBox="outerViewBox"
       >
         <g
-          class="x-axis"
           :transform="axisTransform"
+          class="x-axis"
         />
         <g
           class="y-axis"
@@ -260,9 +265,9 @@ export default {
           :unit-of-display="unitOfDisplay"
         />
         <svg
-          class="graph-data"
-          :viewBox="innerViewBox"
           ref="graphData"
+          :viewBox="innerViewBox"
+          class="graph-data"
         >
           <graph-path
             v-for="(path, index) in timeSeries"
@@ -282,11 +287,11 @@ export default {
             :graph-height-offset="graphHeightOffset"
           />
           <rect
-            class="prometheus-graph-overlay"
+            ref="graphOverlay"
             :width="(graphWidth - 70)"
             :height="(graphHeight - 100)"
+            class="prometheus-graph-overlay"
             transform="translate(-5, 20)"
-            ref="graphOverlay"
             @mousemove="handleMouseOverGraph($event)"
           />
         </svg>

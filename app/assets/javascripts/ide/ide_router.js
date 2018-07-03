@@ -95,14 +95,6 @@ router.beforeEach((to, from, next) => {
               }
             })
             .catch(e => {
-              flash(
-                'Error while loading the branch files. Please try again.',
-                'alert',
-                document,
-                null,
-                false,
-                true,
-              );
               throw e;
             });
         } else if (to.params.mrid) {

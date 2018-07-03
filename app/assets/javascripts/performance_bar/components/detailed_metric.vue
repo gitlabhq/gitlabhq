@@ -39,9 +39,9 @@ export default {
 </script>
 <template>
   <div
+    v-if="currentRequest.details"
     :id="`peek-view-${metric}`"
     class="view"
-    v-if="currentRequest.details"
   >
     <button
       :data-target="`#modal-peek-${metric}-details`"
@@ -56,6 +56,7 @@ export default {
     <gl-modal
       :id="`modal-peek-${metric}-details`"
       :header-title-text="header"
+      modal-size="xl"
       class="performance-bar-modal"
     >
       <table

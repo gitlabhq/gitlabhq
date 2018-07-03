@@ -44,11 +44,13 @@ namespace :gitlab do
       start_checking "GitLab Shell"
 
       check_gitlab_shell
-      check_repo_base_exists
-      check_repo_base_is_not_symlink
-      check_repo_base_user_and_group
-      check_repo_base_permissions
-      check_repos_hooks_directory_is_link
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        check_repo_base_exists
+        check_repo_base_is_not_symlink
+        check_repo_base_user_and_group
+        check_repo_base_permissions
+        check_repos_hooks_directory_is_link
+      end
       check_gitlab_shell_self_test
 
       finished_checking "GitLab Shell"

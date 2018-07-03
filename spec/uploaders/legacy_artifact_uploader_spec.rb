@@ -44,8 +44,7 @@ describe LegacyArtifactUploader do
 
   context 'file is stored in valid path' do
     let(:file) do
-      fixture_file_upload(
-        Rails.root.join('spec/fixtures/ci_build_artifacts.zip'), 'application/zip')
+      fixture_file_upload('spec/fixtures/ci_build_artifacts.zip', 'application/zip')
     end
 
     before do

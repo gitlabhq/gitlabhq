@@ -74,6 +74,10 @@ module Gitlab
           gl_user
         end
 
+        def bypass_two_factor?
+          false
+        end
+
         protected
 
         def should_save?

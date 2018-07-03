@@ -13,13 +13,25 @@ describe 'Group Issues Calendar Feed'  do
     end
 
     context 'when authenticated' do
-      it 'renders calendar feed' do
-        sign_in user
-        visit issues_group_path(group, :ics)
+      context 'with no referer' do
+        it 'renders calendar feed' do
+          sign_in user
+          visit issues_group_path(group, :ics)
 
-        expect(response_headers['Content-Type']).to have_content('text/calendar')
-        expect(response_headers['Content-Disposition']).to have_content('inline')
-        expect(body).to have_text('BEGIN:VCALENDAR')
+          expect(response_headers['Content-Type']).to have_content('text/calendar')
+          expect(body).to have_text('BEGIN:VCALENDAR')
+        end
+      end
+
+      context 'with GitLab as the referer' do
+        it 'renders calendar feed as text/plain' do
+          sign_in user
+          page.driver.header('Referer', issues_group_url(group, host: Settings.gitlab.base_url))
+          visit issues_group_path(group, :ics)
+
+          expect(response_headers['Content-Type']).to have_content('text/plain')
+          expect(body).to have_text('BEGIN:VCALENDAR')
+        end
       end
     end
 
@@ -30,7 +42,6 @@ describe 'Group Issues Calendar Feed'  do
         visit issues_group_path(group, :ics, private_token: personal_access_token.token)
 
         expect(response_headers['Content-Type']).to have_content('text/calendar')
-        expect(response_headers['Content-Disposition']).to have_content('inline')
         expect(body).to have_text('BEGIN:VCALENDAR')
       end
     end
@@ -40,7 +51,6 @@ describe 'Group Issues Calendar Feed'  do
         visit issues_group_path(group, :ics, feed_token: user.feed_token)
 
         expect(response_headers['Content-Type']).to have_content('text/calendar')
-        expect(response_headers['Content-Disposition']).to have_content('inline')
         expect(body).to have_text('BEGIN:VCALENDAR')
       end
     end

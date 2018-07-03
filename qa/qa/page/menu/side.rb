@@ -7,10 +7,13 @@ module QA
           element :settings_link, 'link_to edit_project_path'
           element :repository_link, "title: 'Repository'"
           element :pipelines_settings_link, "title: 'CI / CD'"
+          element :operations_kubernetes_link, "title: _('Kubernetes')"
           element :issues_link, /link_to.*shortcuts-issues/
           element :issues_link_text, "Issues"
           element :top_level_items, '.sidebar-top-level-items'
+          element :operations_section, "class: 'shortcuts-operations'"
           element :activity_link, "title: 'Activity'"
+          element :wiki_link_text, "Wiki"
         end
 
         view 'app/assets/javascripts/fly_out_nav.js' do
@@ -33,6 +36,14 @@ module QA
           end
         end
 
+        def click_operations_kubernetes
+          hover_operations do
+            within_submenu do
+              click_link('Kubernetes')
+            end
+          end
+        end
+
         def click_ci_cd_pipelines
           within_sidebar do
             click_link('CI / CD')
@@ -51,11 +62,25 @@ module QA
           end
         end
 
+        def click_wiki
+          within_sidebar do
+            click_link('Wiki')
+          end
+        end
+
         private
 
         def hover_settings
           within_sidebar do
             find('.qa-settings-item').hover
+
+            yield
+          end
+        end
+
+        def hover_operations
+          within_sidebar do
+            find('.shortcuts-operations').hover
 
             yield
           end

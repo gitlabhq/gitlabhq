@@ -196,42 +196,38 @@ module Gitlab
       end
 
       def create_bundle(save_path)
-        request = Gitaly::CreateBundleRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(
-          @storage,
-          :repository_service,
+        gitaly_fetch_stream_to_file(
+          save_path,
           :create_bundle,
-          request,
-          timeout: GitalyClient.default_timeout
+          Gitaly::CreateBundleRequest,
+          GitalyClient.default_timeout
         )
+      end
 
-        File.open(save_path, 'wb') do |f|
-          response.each do |message|
-            f.write(message.data)
-          end
-        end
+      def backup_custom_hooks(save_path)
+        gitaly_fetch_stream_to_file(
+          save_path,
+          :backup_custom_hooks,
+          Gitaly::BackupCustomHooksRequest,
+          GitalyClient.default_timeout
+        )
       end
 
       def create_from_bundle(bundle_path)
-        request = Gitaly::CreateRepositoryFromBundleRequest.new(repository: @gitaly_repo)
-        enum = Enumerator.new do |y|
-          File.open(bundle_path, 'rb') do |f|
-            while data = f.read(MAX_MSG_SIZE)
-              request.data = data
-
-              y.yield request
-
-              request = Gitaly::CreateRepositoryFromBundleRequest.new
-            end
-          end
-        end
-
-        GitalyClient.call(
-          @storage,
-          :repository_service,
+        gitaly_repo_stream_request(
+          bundle_path,
           :create_repository_from_bundle,
-          enum,
-          timeout: GitalyClient.default_timeout
+          Gitaly::CreateRepositoryFromBundleRequest,
+          GitalyClient.default_timeout
+        )
+      end
+
+      def restore_custom_hooks(custom_hooks_path)
+        gitaly_repo_stream_request(
+          custom_hooks_path,
+          :restore_custom_hooks,
+          Gitaly::RestoreCustomHooksRequest,
+          GitalyClient.default_timeout
         )
       end
 
@@ -310,6 +306,49 @@ module Gitlab
       def search_files_by_content(ref, query)
         request = Gitaly::SearchFilesByContentRequest.new(repository: @gitaly_repo, ref: ref, query: query)
         GitalyClient.call(@storage, :repository_service, :search_files_by_content, request).flat_map(&:matches)
+      end
+
+      private
+
+      def gitaly_fetch_stream_to_file(save_path, rpc_name, request_class, timeout)
+        request = request_class.new(repository: @gitaly_repo)
+        response = GitalyClient.call(
+          @storage,
+          :repository_service,
+          rpc_name,
+          request,
+          timeout: timeout
+        )
+
+        File.open(save_path, 'wb') do |f|
+          response.each do |message|
+            f.write(message.data)
+          end
+        end
+        # If the file is empty means that we recieved an empty stream, we delete the file
+        FileUtils.rm(save_path) if File.zero?(save_path)
+      end
+
+      def gitaly_repo_stream_request(file_path, rpc_name, request_class, timeout)
+        request = request_class.new(repository: @gitaly_repo)
+        enum = Enumerator.new do |y|
+          File.open(file_path, 'rb') do |f|
+            while data = f.read(MAX_MSG_SIZE)
+              request.data = data
+
+              y.yield request
+              request = request_class.new
+            end
+          end
+        end
+
+        GitalyClient.call(
+          @storage,
+          :repository_service,
+          rpc_name,
+          enum,
+          timeout: timeout
+        )
       end
     end
   end

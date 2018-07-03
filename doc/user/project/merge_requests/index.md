@@ -28,7 +28,7 @@ With GitLab merge requests, you can:
 - Enable [fast-forward merge requests](#fast-forward-merge-requests)
 - Enable [semi-linear history merge requests](#semi-linear-history-merge-requests) as another security layer to guarantee the pipeline is passing in the target branch
 - [Create new merge requests by email](#create-new-merge-requests-by-email)
-- Allow maintainers of the target project to push directly to the fork by [allowing edits from maintainers](maintainer_access.md)
+- [Allow collaboration](allow_collaboration.md) so members of the target project can push directly to the fork
 - [Squash and merge](squash_and_merge.md) for a cleaner commit history
 
 With **[GitLab Enterprise Edition][ee]**, you can also:
@@ -85,7 +85,7 @@ request is merged.
 
 This option is also visible in an existing merge request next to the merge
 request button and can be selected/deselected before merging. It's only visible
-to users with [Master permissions](../../permissions.md) in the source project.
+to users with [Maintainer permissions](../../permissions.md) in the source project.
 
 If the user viewing the merge request does not have the correct permissions to
 remove the source branch and the source branch is set for removal, the merge
@@ -325,4 +325,4 @@ git checkout origin/merge-requests/1
 ```
 
 [protected branches]: ../protected_branches.md
-[ee]: https://about.gitlab.com/products/ "GitLab Enterprise Edition"
+[ee]: https://about.gitlab.com/pricing/ "GitLab Enterprise Edition"

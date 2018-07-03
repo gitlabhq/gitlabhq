@@ -96,7 +96,7 @@
         this.enteredUsername = '';
       },
       onSecondaryAction() {
-        const form = this.$refs.form;
+        const { form } = this.$refs;
 
         form.action = this.blockUserUrl;
         this.$refs.method.value = 'put';
@@ -116,10 +116,10 @@
     id="delete-user-modal"
     :title="title"
     :text="text"
-    kind="danger"
     :primary-button-label="primaryButtonLabel"
     :secondary-button-label="secondaryButtonLabel"
     :submit-disabled="!canSubmit"
+    kind="danger"
     @submit="onSubmit"
     @cancel="onCancel"
   >
@@ -141,15 +141,15 @@
           value="delete"
         />
         <input
+          :value="csrfToken"
           type="hidden"
           name="authenticity_token"
-          :value="csrfToken"
         />
         <input
+          v-model="enteredUsername"
           type="text"
           name="username"
           class="form-control"
-          v-model="enteredUsername"
           aria-labelledby="input-label"
           autocomplete="off"
         />
@@ -160,11 +160,11 @@
       slot-scope="props"
     >
       <button
+        :disabled="!canSubmit"
         type="button"
         class="btn js-secondary-button btn-warning"
-        :disabled="!canSubmit"
-        @click="onSecondaryAction"
         data-dismiss="modal"
+        @click="onSecondaryAction"
       >
         {{ secondaryButtonLabel }}
       </button>

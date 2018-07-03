@@ -301,12 +301,18 @@ describe Namespace do
     end
 
     def project_rugged(project)
-      project.repository.rugged
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        project.repository.rugged
+      end
     end
   end
 
   describe '#rm_dir', 'callback' do
-    let(:repository_storage_path) { Gitlab.config.repositories.storages.default.legacy_disk_path }
+    let(:repository_storage_path) do
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        Gitlab.config.repositories.storages.default.legacy_disk_path
+      end
+    end
     let(:path_in_dir) { File.join(repository_storage_path, namespace.full_path) }
     let(:deleted_path) { namespace.full_path.gsub(namespace.path, "#{namespace.full_path}+#{namespace.id}+deleted") }
     let(:deleted_path_in_dir) { File.join(repository_storage_path, deleted_path) }
@@ -646,6 +652,19 @@ describe Namespace do
 
         2.times { namespace.find_fork_of(project) }
       end
+    end
+  end
+
+  describe '#root_ancestor' do
+    it 'returns the top most ancestor', :nested_groups do
+      root_group = create(:group)
+      nested_group = create(:group, parent: root_group)
+      deep_nested_group = create(:group, parent: nested_group)
+      very_deep_nested_group = create(:group, parent: deep_nested_group)
+
+      expect(nested_group.root_ancestor).to eq(root_group)
+      expect(deep_nested_group.root_ancestor).to eq(root_group)
+      expect(very_deep_nested_group.root_ancestor).to eq(root_group)
     end
   end
 

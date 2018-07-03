@@ -51,12 +51,6 @@
       opacity: 0.3;
     }
 
-    &.btn-xs {
-      line-height: 1;
-      padding: 5px 10px;
-      margin-top: 1px;
-    }
-
     &.dropdown-toggle {
       .fa {
         color: inherit;
@@ -605,14 +599,12 @@
   position: relative;
   background: $gray-light;
   color: $gl-text-color;
-  z-index: 199;
 
   .mr-version-menus-container {
-    display: -webkit-flex;
     display: flex;
-    -webkit-align-items: center;
     align-items: center;
     padding: 16px;
+    z-index: 199;
   }
 
   .content-block {
@@ -678,6 +670,7 @@
 
 .merge-request-tabs {
   display: flex;
+  flex-wrap: nowrap;
   margin-bottom: 0;
   padding: 0;
 }
@@ -743,6 +736,10 @@
 
   > *:not(:last-child) {
     margin-right: .3em;
+  }
+
+  svg {
+    vertical-align: text-top;
   }
 }
 

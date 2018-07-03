@@ -176,7 +176,7 @@ describe API::Events do
       end
 
       it 'avoids N+1 queries' do
-        control_count = ActiveRecord::QueryRecorder.new do
+        control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
           get api("/projects/#{private_project.id}/events", user), target_type: :merge_request
         end.count
 
@@ -184,7 +184,7 @@ describe API::Events do
 
         expect do
           get api("/projects/#{private_project.id}/events", user), target_type: :merge_request
-        end.not_to exceed_query_limit(control_count)
+        end.not_to exceed_all_query_limit(control_count)
 
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers

@@ -14,7 +14,7 @@ class CreateBranchService < BaseService
     else
       error('Invalid reference name')
     end
-  rescue Gitlab::Git::HooksService::PreReceiveError => ex
+  rescue Gitlab::Git::PreReceiveError => ex
     error(ex.message)
   end
 

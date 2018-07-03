@@ -43,13 +43,13 @@ describe ControllerWithCrossProjectAccessCheck do
         end
       end
 
-      it 'renders a 404 with trying to access a cross project page' do
+      it 'renders a 403 with trying to access a cross project page' do
         message = "This page is unavailable because you are not allowed to read "\
                   "information across multiple projects."
 
         get :index
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(403)
         expect(response.body).to match(/#{message}/)
       end
 
@@ -119,7 +119,7 @@ describe ControllerWithCrossProjectAccessCheck do
 
         get :index
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(403)
       end
 
       it 'is executed when the `unless` condition returns true' do
@@ -127,19 +127,19 @@ describe ControllerWithCrossProjectAccessCheck do
 
         get :index
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(403)
       end
 
       it 'does not skip the check on an action that is not skipped' do
         get :show, id: 'hello'
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(403)
       end
 
       it 'does not skip the check on an action that was not defined to skip' do
         get :edit, id: 'hello'
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
   end

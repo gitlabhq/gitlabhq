@@ -2,7 +2,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include AuthenticatesWithTwoFactor
   include Devise::Controllers::Rememberable
 
-  protect_from_forgery except: [:kerberos, :saml, :cas3]
+  protect_from_forgery except: [:kerberos, :saml, :cas3], prepend: true
 
   def handle_omniauth
     omniauth_flow(Gitlab::Auth::OAuth)
@@ -119,7 +119,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       set_remember_me(user)
 
-      if user.two_factor_enabled?
+      if user.two_factor_enabled? && !auth_user.bypass_two_factor?
         prompt_for_two_factor(user)
       else
         sign_in_and_redirect(user)

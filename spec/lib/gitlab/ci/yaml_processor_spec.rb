@@ -2,18 +2,8 @@ require 'spec_helper'
 
 module Gitlab
   module Ci
-    describe YamlProcessor, :lib do
+    describe YamlProcessor do
       subject { described_class.new(config) }
-
-      describe 'our current .gitlab-ci.yml' do
-        let(:config) { File.read("#{Rails.root}/.gitlab-ci.yml") }
-
-        it 'is valid' do
-          error_message = described_class.validation_message(config)
-
-          expect(error_message).to be_nil
-        end
-      end
 
       describe '#build_attributes' do
         subject { described_class.new(config).build_attributes(:rspec) }

@@ -76,4 +76,5 @@
   - [repository_update_remote_mirror, 1]
   - [repository_remove_remote, 1]
   - [create_note_diff_file, 1]
+  - [delete_diff_files, 1]
  

@@ -80,7 +80,7 @@ export default class SidebarMediator {
     return this.service.moveIssue(this.store.moveToProjectId)
       .then(response => response.json())
       .then((data) => {
-        if (location.pathname !== data.web_url) {
+        if (window.location.pathname !== data.web_url) {
           visitUrl(data.web_url);
         }
       });

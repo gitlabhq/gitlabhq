@@ -28,21 +28,23 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def show
-    validates_merge_request
-    close_merge_request_without_source_project
-    check_if_can_be_merged
-
-    # Return if the response has already been rendered
-    return if response_body
+    close_merge_request_if_no_source_project
+    mark_merge_request_mergeable
 
     respond_to do |format|
       format.html do
+        # use next to appease Rubocop
+        next render('invalid') if target_branch_missing?
+
         # Build a note object for comment form
         @note = @project.notes.new(noteable: @merge_request)
 
         @noteable = @merge_request
         @commits_count = @merge_request.commits_count
 
+        # TODO cleanup- Fatih Simon Create an issue to remove these after the refactoring
+        # we no longer render notes here. I see it will require a small frontend refactoring,
+        # since we gather some data from this collection.
         @discussions = @merge_request.discussions
         @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes), @noteable)
 
@@ -116,7 +118,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       end
 
       format.json do
-        render json: @merge_request.to_json(include: { milestone: {}, assignee: { only: [:name, :username], methods: [:avatar_url] }, labels: { methods: :text_color } }, methods: [:task_status, :task_status_short])
+        render json: serializer.represent(@merge_request, serializer: 'basic')
       end
     end
   rescue ActiveRecord::StaleObjectError
@@ -234,20 +236,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   alias_method :issuable, :merge_request
   alias_method :awardable, :merge_request
 
-  def validates_merge_request
-    # Show git not found page
-    # if there is no saved commits between source & target branch
-    if @merge_request.has_no_commits?
-      # and if target branch doesn't exist
-      return invalid_mr unless @merge_request.target_branch_exists?
-    end
-  end
-
-  def invalid_mr
-    # Render special view for MR with removed target branch
-    render 'invalid'
-  end
-
   def merge_params
     params.permit(merge_params_attributes)
   end
@@ -261,7 +249,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       @merge_request.head_pipeline && @merge_request.head_pipeline.active?
   end
 
-  def close_merge_request_without_source_project
+  def close_merge_request_if_no_source_project
     if !@merge_request.source_project && @merge_request.open?
       @merge_request.close
     end
@@ -269,7 +257,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   private
 
-  def check_if_can_be_merged
+  def target_branch_missing?
+    @merge_request.has_no_commits? && !@merge_request.target_branch_exists?
+  end
+
+  def mark_merge_request_mergeable
     @merge_request.check_if_can_be_merged
   end
 

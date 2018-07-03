@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, one-var-declaration-per-line, no-unused-vars, object-shorthand, comma-dangle, no-else-return, no-self-compare, consistent-return, no-param-reassign, no-shadow */
+/* eslint-disable max-len, one-var, one-var-declaration-per-line, no-unused-vars, object-shorthand, no-else-return, no-self-compare, consistent-return, no-param-reassign, no-shadow */
 /* global Issuable */
 /* global ListMilestone */
 
@@ -16,10 +16,10 @@ export default class MilestoneSelect {
         typeof currentProject === 'string' ? JSON.parse(currentProject) : currentProject;
     }
 
-    this.init(els, options);
+    MilestoneSelect.init(els, options);
   }
 
-  init(els, options) {
+  static init(els, options) {
     let $els = $(els);
 
     if (!els) {
@@ -56,7 +56,7 @@ export default class MilestoneSelect {
 
       if (issueUpdateURL) {
         milestoneLinkTemplate = _.template(
-          '<a href="/<%- full_path %>/milestones/<%- iid %>" class="bold has-tooltip" data-container="body" title="<%- remaining %>"><%- title %></a>',
+          '<a href="<%- web_url %>" class="bold has-tooltip" data-container="body" title="<%- remaining %>"><%- title %></a>',
         );
         milestoneLinkNoneTemplate = '<span class="no-value">None</span>';
       }
@@ -224,7 +224,6 @@ export default class MilestoneSelect {
                 $selectBox.hide();
                 $value.css('display', '');
                 if (data.milestone != null) {
-                  data.milestone.full_path = this.currentProject.full_path;
                   data.milestone.remaining = timeFor(data.milestone.due_date);
                   data.milestone.name = data.milestone.title;
                   $value.html(milestoneLinkTemplate(data.milestone));

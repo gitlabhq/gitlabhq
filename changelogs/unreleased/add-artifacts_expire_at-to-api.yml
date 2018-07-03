@@ -1,5 +1,0 @@
----
-title: Expose artifacts_expire_at field for job entity in api
-merge_request: 18872
-author: Semyon Pupkov
-type: added

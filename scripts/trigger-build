@@ -1,0 +1,185 @@
+#!/usr/bin/env ruby
+
+require 'net/http'
+require 'json'
+require 'cgi'
+
+module Trigger
+  OMNIBUS_PROJECT_PATH = 'gitlab-org/omnibus-gitlab'.freeze
+  CNG_PROJECT_PATH = 'gitlab-org/build/CNG'.freeze
+  TOKEN = ENV['BUILD_TRIGGER_TOKEN']
+
+  def self.ee?
+    ENV['CI_PROJECT_NAME'] == 'gitlab-ee' || File.exist?('CHANGELOG-EE.md')
+  end
+
+  class Omnibus
+    def initialize
+      @uri = URI("https://gitlab.com/api/v4/projects/#{CGI.escape(Trigger::OMNIBUS_PROJECT_PATH)}/trigger/pipeline")
+      @params = env_params.merge(file_params).merge(token: Trigger::TOKEN)
+    end
+
+    def invoke!
+      res = Net::HTTP.post_form(@uri, @params)
+      id = JSON.parse(res.body)['id']
+      project = Trigger::OMNIBUS_PROJECT_PATH
+
+      if id
+        puts "Triggered https://gitlab.com/#{project}/pipelines/#{id}"
+        puts "Waiting for downstream pipeline status"
+      else
+        raise "Trigger failed! The response from the trigger is: #{res.body}"
+      end
+
+      Trigger::Pipeline.new(project, id)
+    end
+
+    private
+
+    def env_params
+      {
+        "ref" => ENV["OMNIBUS_BRANCH"] || "master",
+        "variables[GITLAB_VERSION]" => ENV["CI_COMMIT_SHA"],
+        "variables[ALTERNATIVE_SOURCES]" => true,
+        "variables[ee]" => Trigger.ee? ? 'true' : 'false',
+        "variables[TRIGGERED_USER]" => ENV["GITLAB_USER_NAME"],
+        "variables[TRIGGER_SOURCE]" => "https://gitlab.com/gitlab-org/#{ENV['CI_PROJECT_NAME']}/-/jobs/#{ENV['CI_JOB_ID']}"
+      }
+    end
+
+    def file_params
+      Hash.new.tap do |params|
+        Dir.glob("*_VERSION").each do |version_file|
+          params["variables[#{version_file}]"] = File.read(version_file).strip
+        end
+      end
+    end
+  end
+
+  class CNG
+    def initialize
+      @uri = URI("https://gitlab.com/api/v4/projects/#{CGI.escape(Trigger::CNG_PROJECT_PATH)}/trigger/pipeline")
+      @ref_name = ENV['CI_COMMIT_REF_NAME']
+      @username = ENV['GITLAB_USER_NAME']
+      @project_name = ENV['CI_PROJECT_NAME']
+      @job_id = ENV['CI_JOB_ID']
+      @params = env_params.merge(file_params).merge(token: Trigger::TOKEN)
+    end
+
+    #
+    # Trigger a pipeline
+    #
+    def invoke!
+      res = Net::HTTP.post_form(@uri, @params)
+      id = JSON.parse(res.body)['id']
+      project = Trigger::CNG_PROJECT_PATH
+
+      if id
+        puts "Triggered https://gitlab.com/#{project}/pipelines/#{id}"
+        puts "Waiting for downstream pipeline status"
+      else
+        raise "Trigger failed! The response from the trigger is: #{res.body}"
+      end
+
+      Trigger::Pipeline.new(project, id)
+    end
+
+    private
+
+    def env_params
+      params = {
+        "ref" => ENV["CNG_BRANCH"] || "master",
+        "variables[TRIGGERED_USER]" => @username,
+        "variables[TRIGGER_SOURCE]" => "https://gitlab.com/gitlab-org/#{@project_name}/-/jobs/#{@job_id}"
+      }
+
+      if Trigger.ee?
+        params["variables[GITLAB_EE_VERSION]"] = @ref_name
+        params["variables[EE_PIPELINE]"] = 'true'
+      else
+        params["variables[GITLAB_CE_VERSION]"] = @ref_name
+        params["variables[CE_PIPELINE]"] = 'true'
+      end
+
+      params
+    end
+
+    # Read version files from all components
+    def file_params
+      Dir.glob("*_VERSION").each_with_object({}) do |version_file, params|
+        raw_version = File.read(version_file).strip
+        # if the version matches semver format, treat it as a tag and prepend `v`
+        version = if raw_version =~ Regexp.compile(/^\d+\.\d+\.\d+(-rc\d+)?(-ee)?$/)
+                    "v#{raw_version}"
+                  else
+                    raw_version
+                  end
+
+        params["variables[#{version_file}]"] = version
+      end
+    end
+  end
+
+  class Pipeline
+    INTERVAL = 60 # seconds
+    MAX_DURATION = 3600 * 3 # 3 hours
+
+    def initialize(project, id)
+      @start = Time.now.to_i
+      @uri = URI("https://gitlab.com/api/v4/projects/#{CGI.escape(project)}/pipelines/#{id}")
+    end
+
+    def wait!
+      loop do
+        raise "Pipeline timed out after waiting for #{duration} minutes!" if timeout?
+
+        case status
+        when :created, :pending, :running
+          print "."
+          sleep INTERVAL
+        when :success
+          puts "Pipeline succeeded in #{duration} minutes!"
+          break
+        else
+          raise "Pipeline did not succeed!"
+        end
+
+        STDOUT.flush
+      end
+    end
+
+    def timeout?
+      Time.now.to_i > (@start + MAX_DURATION)
+    end
+
+    def duration
+      (Time.now.to_i - @start) / 60
+    end
+
+    def status
+      req = Net::HTTP::Get.new(@uri)
+      req['PRIVATE-TOKEN'] = ENV['GITLAB_QA_ACCESS_TOKEN']
+
+      res = Net::HTTP.start(@uri.hostname, @uri.port, use_ssl: true) do |http|
+        http.request(req)
+      end
+
+      JSON.parse(res.body)['status'].to_s.to_sym
+    rescue JSON::ParserError
+      # Ignore GitLab API hiccups. If GitLab is really down, we'll hit the job
+      # timeout anyway.
+      :running
+    end
+  end
+end
+
+case ARGV[0]
+when 'omnibus'
+  Trigger::Omnibus.new.invoke!.wait!
+when 'cng'
+  Trigger::CNG.new.invoke!.wait!
+else
+  puts "Please provide a valid option:
+  omnibus - Triggers a pipeline that builds the omnibus-gitlab package
+  cng - Triggers a pipeline that builds images used by the GitLab helm chart"
+end

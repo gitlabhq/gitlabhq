@@ -244,7 +244,7 @@ class User < ActiveRecord::Base
   scope :blocked, -> { with_states(:blocked, :ldap_blocked) }
   scope :external, -> { where(external: true) }
   scope :active, -> { with_state(:active).non_internal }
-  scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members WHERE user_id IS NOT NULL AND requested_at IS NULL)') }
+  scope :without_projects, -> { joins('LEFT JOIN project_authorizations ON users.id = project_authorizations.user_id').where(project_authorizations: { user_id: nil }) }
   scope :todo_authors, ->(user_id, state) { where(id: Todo.where(user_id: user_id, state: state).select(:author_id)) }
   scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'DESC')) }
   scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'ASC')) }
@@ -1038,7 +1038,10 @@ class User < ActiveRecord::Base
 
   def notification_settings_for(source)
     if notification_settings.loaded?
-      notification_settings.find { |notification| notification.source == source }
+      notification_settings.find do |notification|
+        notification.source_type == source.class.base_class.name &&
+          notification.source_id == source.id
+      end
     else
       notification_settings.find_or_initialize_by(source: source)
     end

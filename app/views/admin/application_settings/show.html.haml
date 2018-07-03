@@ -17,7 +17,7 @@
 %section.settings.as-account-limit.no-animate#js-account-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
-      = _('Account and limit settings')
+      = _('Account and limit')
     %button.btn.js-settings-toggle{ type: 'button' }
       = expanded ? _('Collapse') : _('Expand')
     %p
@@ -50,11 +50,11 @@
 %section.settings.as-terms.no-animate#js-terms-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
-      = _('Terms of Service')
+      = _('Terms of Service and Privacy Policy')
     %button.btn.btn-default.js-settings-toggle{ type: 'button' }
       = expanded ? _('Collapse') : _('Expand')
     %p
-      = _('Include a Terms of Service agreement that all users must accept.')
+      = _('Include a Terms of Service agreement and Privacy Policy that all users must accept.')
   .settings-content
     = render 'terms'
 
@@ -169,7 +169,7 @@
   .settings-content
     = render 'logging'
 
-%section.settings.as-repository-storage.no-animate#js-repository-storage-settings{ class: ('expanded' if expanded) }
+%section.qa-repository-storage-settings.settings.as-repository-storage.no-animate#js-repository-storage-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
       = _('Repository storage')
@@ -317,10 +317,13 @@
 %section.settings.as-mirror.no-animate#js-mirror-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
-      = _('Repository mirror settings')
+      = _('Repository mirror')
     %button.btn.js-settings-toggle{ type: 'button' }
       = expanded ? 'Collapse' : 'Expand'
     %p
       = _('Configure push mirrors.')
   .settings-content
     = render partial: 'repository_mirrors_form'
+
+= render_if_exists 'admin/application_settings/pseudonymizer_settings', expanded: expanded
+

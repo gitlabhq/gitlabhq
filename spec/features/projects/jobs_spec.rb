@@ -11,7 +11,7 @@ feature 'Jobs', :clean_gitlab_redis_shared_state do
   let(:job2) { create(:ci_build) }
 
   let(:artifacts_file) do
-    fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif')
+    fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif')
   end
 
   before do
@@ -165,7 +165,7 @@ feature 'Jobs', :clean_gitlab_redis_shared_state do
 
         it 'links to issues/new with the title and description filled in' do
           button_title = "Job Failed ##{job.id}"
-          job_url = project_job_path(project, job)
+          job_url = project_job_url(project, job, host: page.server.host, port: page.server.port)
           options = { issue: { title: button_title, description: "Job [##{job.id}](#{job_url}) failed for #{job.sha}:\n" } }
 
           href = new_project_issue_path(project, options)

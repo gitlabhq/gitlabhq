@@ -7,12 +7,12 @@ class MembersFinder
     @group = project.group
   end
 
-  def execute
+  def execute(include_descendants: false)
     project_members = project.project_members
     project_members = project_members.non_invite unless can?(current_user, :admin_project, project)
 
     if group
-      group_members = GroupMembersFinder.new(group).execute
+      group_members = GroupMembersFinder.new(group).execute(include_descendants: include_descendants)
       group_members = group_members.non_invite
 
       union = Gitlab::SQL::Union.new([project_members, group_members], remove_duplicates: false)

@@ -76,6 +76,13 @@ module Gitlab
       end
 
       def tree_entry(ref, path, limit = nil)
+        if Pathname.new(path).cleanpath.to_s.start_with?('../')
+          # The TreeEntry RPC should return an empty reponse in this case but in
+          # Gitaly 0.107.0 and earlier we get an exception instead. This early return
+          # saves us a Gitaly roundtrip while also avoiding the exception.
+          return
+        end
+
         request = Gitaly::TreeEntryRequest.new(
           repository: @gitaly_repo,
           revision: encode_binary(ref),
@@ -179,6 +186,8 @@ module Gitlab
       end
 
       def list_commits_by_oid(oids)
+        return [] if oids.empty?
+
         request = Gitaly::ListCommitsByOidRequest.new(repository: @gitaly_repo, oid: oids)
 
         response = GitalyClient.call(@repository.storage, :commit_service, :list_commits_by_oid, request, timeout: GitalyClient.medium_timeout)
@@ -315,6 +324,8 @@ module Gitlab
         return if signature.blank? && signed_text.blank?
 
         [signature, signed_text]
+      rescue GRPC::InvalidArgument => ex
+        raise ArgumentError, ex
       end
 
       def get_commit_signatures(commit_ids)
@@ -332,6 +343,8 @@ module Gitlab
         end
 
         signatures
+      rescue GRPC::InvalidArgument => ex
+        raise ArgumentError, ex
       end
 
       def get_commit_messages(commit_ids)
@@ -355,7 +368,7 @@ module Gitlab
       def call_commit_diff(request_params, options = {})
         request_params[:ignore_whitespace_change] = options.fetch(:ignore_whitespace_change, false)
         request_params[:enforce_limits] = options.fetch(:limits, true)
-        request_params[:collapse_diffs] = request_params[:enforce_limits] || !options.fetch(:expanded, true)
+        request_params[:collapse_diffs] = !options.fetch(:expanded, true)
         request_params.merge!(Gitlab::Git::DiffCollection.collection_limits(options).to_h)
 
         request = Gitaly::CommitDiffRequest.new(request_params)

@@ -3,8 +3,16 @@ require 'spec_helper'
 describe Projects::ImportService do
   let!(:project) { create(:project) }
   let(:user) { project.creator }
+  let(:import_url) { 'http://www.gitlab.com/demo/repo.git' }
+  let(:oid_download_links) { { 'oid1' => "#{import_url}/gitlab-lfs/objects/oid1", 'oid2' => "#{import_url}/gitlab-lfs/objects/oid2" } }
 
   subject { described_class.new(project, user) }
+
+  before do
+    allow(project).to receive(:lfs_enabled?).and_return(true)
+    allow_any_instance_of(Projects::LfsPointers::LfsDownloadService).to receive(:execute)
+    allow_any_instance_of(Projects::LfsPointers::LfsImportService).to receive(:execute).and_return(oid_download_links)
+  end
 
   describe '#async?' do
     it 'returns true for an asynchronous importer' do
@@ -63,6 +71,15 @@ describe Projects::ImportService do
         expect(result[:status]).to eq :error
         expect(result[:message]).to eq "Error importing repository #{project.import_url} into #{project.full_path} - The repository could not be created."
       end
+
+      context 'when repository creation succeeds' do
+        it 'does not download lfs files' do
+          expect_any_instance_of(Projects::LfsPointers::LfsImportService).not_to receive(:execute)
+          expect_any_instance_of(Projects::LfsPointers::LfsDownloadService).not_to receive(:execute)
+
+          subject.execute
+        end
+      end
     end
 
     context 'with known url' do
@@ -91,6 +108,15 @@ describe Projects::ImportService do
 
           expect(result[:status]).to eq :error
         end
+
+        context 'when repository import scheduled' do
+          it 'does not download lfs objects' do
+            expect_any_instance_of(Projects::LfsPointers::LfsImportService).not_to receive(:execute)
+            expect_any_instance_of(Projects::LfsPointers::LfsDownloadService).not_to receive(:execute)
+
+            subject.execute
+          end
+        end
       end
 
       context 'with a non Github repository' do
@@ -99,9 +125,10 @@ describe Projects::ImportService do
           project.import_type = 'bitbucket'
         end
 
-        it 'succeeds if repository import is successfully' do
+        it 'succeeds if repository import is successfull' do
           expect_any_instance_of(Gitlab::Shell).to receive(:import_repository).and_return(true)
           expect_any_instance_of(Gitlab::BitbucketImport::Importer).to receive(:execute).and_return(true)
+          expect_any_instance_of(Projects::LfsPointers::LfsImportService).to receive(:execute).and_return({})
 
           result = subject.execute
 
@@ -115,6 +142,29 @@ describe Projects::ImportService do
 
           expect(result[:status]).to eq :error
           expect(result[:message]).to eq "Error importing repository #{project.import_url} into #{project.full_path} - Failed to import the repository"
+        end
+
+        context 'when repository import scheduled' do
+          before do
+            allow_any_instance_of(Gitlab::Shell).to receive(:import_repository).and_return(true)
+            allow(subject).to receive(:import_data)
+          end
+
+          it 'downloads lfs objects if lfs_enabled is enabled for project' do
+            allow(project).to receive(:lfs_enabled?).and_return(true)
+            expect_any_instance_of(Projects::LfsPointers::LfsImportService).to receive(:execute).and_return(oid_download_links)
+            expect_any_instance_of(Projects::LfsPointers::LfsDownloadService).to receive(:execute).twice
+
+            subject.execute
+          end
+
+          it 'does not download lfs objects if lfs_enabled is not enabled for project' do
+            allow(project).to receive(:lfs_enabled?).and_return(false)
+            expect_any_instance_of(Projects::LfsPointers::LfsImportService).not_to receive(:execute)
+            expect_any_instance_of(Projects::LfsPointers::LfsDownloadService).not_to receive(:execute)
+
+            subject.execute
+          end
         end
       end
     end
@@ -146,6 +196,26 @@ describe Projects::ImportService do
         result = subject.execute
 
         expect(result[:status]).to eq :error
+      end
+
+      context 'when importer' do
+        it 'has a custom repository importer it does not download lfs objects' do
+          allow(Gitlab::GithubImport::ParallelImporter).to receive(:imports_repository?).and_return(true)
+
+          expect_any_instance_of(Projects::LfsPointers::LfsImportService).not_to receive(:execute)
+          expect_any_instance_of(Projects::LfsPointers::LfsDownloadService).not_to receive(:execute)
+
+          subject.execute
+        end
+
+        it 'does not have a custom repository importer downloads lfs objects' do
+          allow(Gitlab::GithubImport::ParallelImporter).to receive(:imports_repository?).and_return(false)
+
+          expect_any_instance_of(Projects::LfsPointers::LfsImportService).to receive(:execute).and_return(oid_download_links)
+          expect_any_instance_of(Projects::LfsPointers::LfsDownloadService).to receive(:execute)
+
+          subject.execute
+        end
       end
     end
 

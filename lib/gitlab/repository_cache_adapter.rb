@@ -25,6 +25,11 @@ module Gitlab
       raise NotImplementedError
     end
 
+    # List of cached methods. Should be overridden by the including class
+    def cached_methods
+      raise NotImplementedError
+    end
+
     # Caches the supplied block both in a cache and in an instance variable.
     #
     # The cache key and instance variable are named the same way as the value of
@@ -67,6 +72,11 @@ module Gitlab
     # Expires the caches of a specific set of methods
     def expire_method_caches(methods)
       methods.each do |key|
+        unless cached_methods.include?(key.to_sym)
+          Rails.logger.error "Requested to expire non-existent method '#{key}' for Repository"
+          next
+        end
+
         cache.expire(key)
 
         ivar = cache_instance_variable_name(key)

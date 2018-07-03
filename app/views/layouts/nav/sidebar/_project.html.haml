@@ -8,7 +8,7 @@
         .sidebar-context-title
           = @project.name
     %ul.sidebar-top-level-items
-      = nav_link(path: ['projects#show', 'projects#activity', 'cycle_analytics#show'], html_options: { class: 'home' }) do
+      = nav_link(path: sidebar_projects_paths, html_options: { class: 'home' }) do
         = link_to project_path(@project), class: 'shortcuts-project' do
           .nav-icon-container
             = sprite_icon('project')
@@ -29,13 +29,15 @@
             = link_to activity_project_path(@project), title: _('Activity'), class: 'shortcuts-project-activity' do
               %span= _('Activity')
 
+          = render_if_exists 'projects/sidebar/security_dashboard'
+
           - if can?(current_user, :read_cycle_analytics, @project)
             = nav_link(path: 'cycle_analytics#show') do
               = link_to project_cycle_analytics_path(@project), title: _('Cycle Analytics'), class: 'shortcuts-project-cycle-analytics' do
                 %span= _('Cycle Analytics')
 
       - if project_nav_tab? :files
-        = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file commit commits compare projects/repositories tags branches releases graphs network)) do
+        = nav_link(controller: sidebar_repository_paths) do
           = link_to project_tree_path(@project), class: 'shortcuts-tree' do
             .nav-icon-container
               = sprite_icon('doc_text')
@@ -43,7 +45,7 @@
               = _('Repository')
 
           %ul.sidebar-sub-level-items
-            = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file commit commits compare projects/repositories tags branches releases graphs network), html_options: { class: "fly-out-top-item" } ) do
+            = nav_link(controller: sidebar_repository_paths, html_options: { class: "fly-out-top-item" } ) do
               = link_to project_tree_path(@project) do
                 %strong.fly-out-top-item-name
                   = _('Repository')
@@ -80,6 +82,8 @@
               = link_to charts_project_graph_path(@project, current_ref) do
                 = _('Charts')
 
+            = render_if_exists 'projects/sidebar/repository_locked_files'
+
       - if project_nav_tab? :issues
         = nav_link(controller: @project.issues_enabled? ? [:issues, :labels, :milestones, :boards] : :issues) do
           = link_to project_issues_path(@project), class: 'shortcuts-issues' do
@@ -92,7 +96,7 @@
                 = number_with_delimiter(@project.open_issues_count(current_user))
 
           %ul.sidebar-sub-level-items
-            = nav_link(controller: :issues, html_options: { class: "fly-out-top-item" } ) do
+            = nav_link(controller: :issues, action: :index, html_options: { class: "fly-out-top-item" } ) do
               = link_to project_issues_path(@project) do
                 %strong.fly-out-top-item-name
                   = _('Issues')
@@ -114,6 +118,8 @@
               = link_to project_labels_path(@project), title: 'Labels' do
                 %span
                   = _('Labels')
+
+            = render_if_exists 'projects/sidebar/issues_service_desk'
 
             = nav_link(controller: :milestones) do
               = link_to project_milestones_path(@project), title: 'Milestones' do
@@ -278,7 +284,7 @@
                   = _('Snippets')
 
       - if project_nav_tab? :settings
-        = nav_link(path: %w[projects#edit project_members#index integrations#show services#edit repository#show ci_cd#show badges#index pages#show]) do
+        = nav_link(path: sidebar_settings_paths) do
           = link_to edit_project_path(@project), class: 'shortcuts-tree' do
             .nav-icon-container
               = sprite_icon('settings')
@@ -288,7 +294,7 @@
           %ul.sidebar-sub-level-items
             - can_edit = can?(current_user, :admin_project, @project)
             - if can_edit
-              = nav_link(path: %w[projects#edit project_members#index integrations#show services#edit repository#show ci_cd#show badges#index pages#show], html_options: { class: "fly-out-top-item" } ) do
+              = nav_link(path: sidebar_settings_paths, html_options: { class: "fly-out-top-item" } ) do
                 = link_to edit_project_path(@project) do
                   %strong.fly-out-top-item-name
                     = _('Settings')
@@ -325,6 +331,8 @@
                   = link_to project_pages_path(@project), title: 'Pages' do
                     %span
                       = _('Pages')
+
+              = render_if_exists 'projects/sidebar/settings_audit_events'
 
       - else
         = nav_link(controller: :project_members) do

@@ -99,7 +99,7 @@ $theme-gray-200: #dfdfdf;
 $theme-gray-300: #cccccc;
 $theme-gray-400: #bababa;
 $theme-gray-500: #a7a7a7;
-$theme-gray-600: #949494;
+$theme-gray-600: #919191;
 $theme-gray-700: #707070;
 $theme-gray-800: #4f4f4f;
 $theme-gray-900: #2e2e2e;
@@ -117,6 +117,15 @@ $theme-blue-800: #25496e;
 $theme-blue-900: #1a3652;
 $theme-blue-950: #0f2235;
 
+$theme-light-blue-50: #f2f7fc;
+$theme-light-blue-100: #ebf1f7;
+$theme-light-blue-200: #c9dcf2;
+$theme-light-blue-300: #83abd4;
+$theme-light-blue-400: #4d86bf;
+$theme-light-blue-500: #367cc2;
+$theme-light-blue-600: #3771ab;
+$theme-light-blue-700: #2261a1;
+
 $theme-green-50: #f2faf6;
 $theme-green-100: #e4f3ea;
 $theme-green-200: #c0dfcd;
@@ -129,6 +138,29 @@ $theme-green-800: #145d33;
 $theme-green-900: #0d4524;
 $theme-green-950: #072d16;
 
+$theme-light-green-700: #156b39;
+
+$theme-red-50: #fcf4f2;
+$theme-red-100: #fae9e6;
+$theme-red-200: #ebcac5;
+$theme-red-300: #d99b91;
+$theme-red-400: #b0655a;
+$theme-red-500: #ad4a3b;
+$theme-red-600: #9e4133;
+$theme-red-700: #912f20;
+$theme-red-800: #78291d;
+$theme-red-900: #691a16;
+$theme-red-950: #36140f;
+
+$theme-light-red-50: #fff6f5;
+$theme-light-red-100: #fae2de;
+$theme-light-red-200: #f7d5d0;
+$theme-light-red-300: #d9796a;
+$theme-light-red-400: #cf604e;
+$theme-light-red-500: #c24b38;
+$theme-light-red-600: #b03927;
+$theme-light-red-700: #a62e21;
+
 $black: #000;
 $black-transparent: rgba(0, 0, 0, 0.3);
 $almost-black: #242424;
@@ -140,11 +172,6 @@ $border-gray-light: darken($gray-light, $darken-border-factor);
 $border-gray-normal: darken($gray-normal, $darken-border-factor);
 $border-gray-normal-dashed: darken($gray-normal, $darken-border-dashed-factor);
 $border-gray-dark: darken($white-normal, $darken-border-factor);
-
-/*
- * Override Bootstrap 4 variables
- */
-$secondary: $gray-light;
 
 /*
  * UI elements
@@ -164,7 +191,7 @@ $gl-font-weight-normal: 400;
 $gl-font-weight-bold: 600;
 $gl-text-color: #2e2e2e;
 $gl-text-color-secondary: #707070;
-$gl-text-color-tertiary: #949494;
+$gl-text-color-tertiary: #919191;
 $gl-text-color-quaternary: #d6d6d6;
 $gl-text-color-inverted: rgba(255, 255, 255, 1);
 $gl-text-color-secondary-inverted: rgba(255, 255, 255, 0.85);
@@ -206,7 +233,7 @@ $md-area-border: #ddd;
 /*
  * Code
  */
-$code_font_size: 12px;
+$code_font_size: 90%;
 $code_line_height: 1.6;
 
 /*
@@ -217,10 +244,11 @@ $tooltip-font-size: 12px;
 /*
  * Padding
  */
-$gl-padding-24: 24px;
-$gl-padding: 16px;
-$gl-padding-8: 8px;
 $gl-padding-4: 4px;
+$gl-padding-8: 8px;
+$gl-padding: 16px;
+$gl-padding-24: 24px;
+$gl-padding-32: 32px;
 $gl-col-padding: 15px;
 $gl-input-padding: 10px;
 $gl-vert-padding: 6px;
@@ -238,7 +266,6 @@ $header-height: 40px;
 $ide-statusbar-height: 25px;
 $fixed-layout-width: 1280px;
 $limited-layout-width: 990px;
-$limited-layout-width-sm: 790px;
 $container-text-max-width: 540px;
 $gl-avatar-size: 40px;
 $error-exclamation-point: $red-500;
@@ -251,7 +278,7 @@ $active-item-blue: $blue-500;
 $layout-link-gray: #7e7c7c;
 $btn-side-margin: 10px;
 $btn-sm-side-margin: 7px;
-$btn-xs-side-margin: 5px;
+$btn-margin-5: 5px;
 $issue-status-expired: $orange-500;
 $issuable-sidebar-color: $gl-text-color-secondary;
 $sidebar-block-hover-color: #ebebeb;
@@ -406,6 +433,22 @@ $gl-btn-horz-padding: 12px;
 */
 $badge-bg: rgba(0, 0, 0, 0.07);
 $badge-color: $gl-text-color-secondary;
+
+/*
+* Pagination
+*/
+$pagination-padding-y: 6px;
+$pagination-padding-x: 16px;
+$pagination-line-height: 20px;
+$pagination-border-color: $border-color;
+$pagination-active-bg: $blue-600;
+$pagination-active-border-color: $blue-600;
+$pagination-hover-bg: $blue-50;
+$pagination-hover-border-color: $border-color;
+$pagination-hover-color: $gl-text-color;
+$pagination-disabled-color: #cdcdcd;
+$pagination-disabled-bg: $gray-light;
+$pagination-disabled-border-color: $border-color;
 
 /*
  *  Status icons
@@ -776,3 +819,19 @@ $modal-body-height: 134px;
 Prometheus
 */
 $prometheus-table-row-highlight-color: $theme-gray-100;
+
+$priority-label-empty-state-width: 114px;
+
+/*
+ * Override Bootstrap 4 variables
+ */
+
+$secondary: $gray-light;
+$input-disabled-bg: $gray-light;
+$input-border-color: $theme-gray-200;
+$input-color: $gl-text-color;
+$font-family-sans-serif: $regular_font;
+$font-family-monospace: $monospace_font;
+$input-line-height: 20px;
+$btn-line-height: 20px;
+$table-accent-bg: $gray-light;

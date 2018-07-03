@@ -1198,7 +1198,7 @@ POST /projects/:id/share
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `group_id` | integer | yes | The ID of the group to share with |
-| `group_access` | integer | yes | The permissions level to grant the group |
+| `group_access` | integer | yes | The [permissions level](members.md) to grant the group |
 | `expires_at` | string | no | Share expiration date in ISO 8601 format: 2016-09-26 |
 
 ## Delete a shared project link within a group
@@ -1389,6 +1389,16 @@ POST /projects/:id/housekeeping
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+
+### Transfer a project to a new namespace
+
+```
+PUT /projects/:id/transfer
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `namespace` | integer/string | yes | The ID or path of the namespace to transfer to project to |
 
 ## Branches
 

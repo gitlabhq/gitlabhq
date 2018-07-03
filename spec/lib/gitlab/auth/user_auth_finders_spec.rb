@@ -99,7 +99,7 @@ describe Gitlab::Auth::UserAuthFinders do
 
     context 'when the request format is empty' do
       it 'the method call does not modify the original value' do
-        env['action_dispatch.request.formats'] = nil
+        env.delete('action_dispatch.request.formats')
 
         find_user_from_feed_token
 

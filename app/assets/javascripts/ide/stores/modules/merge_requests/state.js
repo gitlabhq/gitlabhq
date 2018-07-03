@@ -1,8 +1,13 @@
-import { scopes, states } from './constants';
+import { states } from './constants';
 
 export default () => ({
-  isLoading: false,
-  mergeRequests: [],
-  scope: scopes.assignedToMe,
+  created: {
+    isLoading: false,
+    mergeRequests: [],
+  },
+  assigned: {
+    isLoading: false,
+    mergeRequests: [],
+  },
   state: states.opened,
 });

@@ -139,7 +139,7 @@ export default {
       this.updateAspectRatio = true;
     },
     toggleAspectRatio() {
-      this.updatedAspectRatios = this.updatedAspectRatios += 1;
+      this.updatedAspectRatios += 1;
       if (this.store.getMetricsCount() === this.updatedAspectRatios) {
         this.updateAspectRatio = !this.updateAspectRatio;
         this.updatedAspectRatios = 0;
@@ -174,7 +174,10 @@ export default {
         :tags-path="tagsPath"
         :show-legend="showLegend"
         :small-graph="forceSmallGraph"
-      />
+      >
+        <!-- EE content -->
+        {{ null }}
+      </graph>
     </graph-group>
   </div>
   <empty-state

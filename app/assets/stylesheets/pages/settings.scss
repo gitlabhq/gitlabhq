@@ -52,7 +52,7 @@
 
 .settings-content {
   max-height: 1px;
-  overflow-y: scroll;
+  overflow-y: hidden;
   padding-right: 110px;
   animation: collapseMaxHeight 300ms ease-out;
   // Keep the section from expanding when we scroll over it
@@ -102,10 +102,6 @@
   .form-text.text-muted {
     margin-top: 0;
   }
-
-  .label-light {
-    margin-bottom: 0;
-  }
 }
 
 .settings-list-icon {
@@ -131,12 +127,9 @@
   color: $gl-danger;
 }
 
-.service-settings .form-control-label {
-  padding-top: 0;
-}
-
 .integration-settings-form {
-  .card.card-body {
+  .card.card-body,
+  .info-well {
     padding: $gl-padding / 2;
     box-shadow: none;
   }
@@ -174,7 +167,7 @@
 
     .option-description,
     .option-disabled-reason {
-      margin-left: 45px;
+      margin-left: 30px;
       color: $project-option-descr-color;
     }
 
@@ -262,22 +255,9 @@
   }
 }
 
-.modal-doorkeepr-auth,
-.doorkeeper-app-form {
-  .scope-description {
-    color: $theme-gray-700;
-  }
-}
-
 .modal-doorkeepr-auth {
   .modal-body {
     padding: $gl-padding;
-  }
-}
-
-.doorkeeper-app-form {
-  .scope-description {
-    margin: 0 0 5px 17px;
   }
 }
 
@@ -296,7 +276,8 @@
   }
 
   .btn-clipboard {
-    margin-left: 5px;
+    background-color: $white-light;
+    border: 1px solid $theme-gray-200;
   }
 
   .deploy-token-help-block {

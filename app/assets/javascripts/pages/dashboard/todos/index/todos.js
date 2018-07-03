@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this, no-unneeded-ternary, quote-props */
+/* eslint-disable class-methods-use-this, no-unneeded-ternary */
 
 import $ from 'jquery';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -61,7 +61,7 @@ export default class Todos {
     e.stopPropagation();
     e.preventDefault();
 
-    const target = e.target;
+    const { target } = e;
     target.setAttribute('disabled', true);
     target.classList.add('disabled');
 

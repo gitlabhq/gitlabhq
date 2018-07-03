@@ -8,7 +8,8 @@ import initBlobBundle from '~/blob_edit/blob_bundle';
 export default () => {
   new LineHighlighter(); // eslint-disable-line no-new
 
-  new BlobLinePermalinkUpdater( // eslint-disable-line no-new
+  // eslint-disable-next-line no-new
+  new BlobLinePermalinkUpdater(
     document.querySelector('#blob-content-holder'),
     '.diff-line-num[data-line-number]',
     document.querySelectorAll('.js-data-file-blob-permalink-url, .js-blob-blame-link'),
@@ -19,12 +20,13 @@ export default () => {
 
   new ShortcutsNavigation(); // eslint-disable-line no-new
 
-  new ShortcutsBlob({ // eslint-disable-line no-new
+  // eslint-disable-next-line no-new
+  new ShortcutsBlob({
     skipResetBindings: true,
     fileBlobPermalinkUrl,
   });
 
-  new BlobForkSuggestion({ // eslint-disable-line no-new
+  new BlobForkSuggestion({
     openButtons: document.querySelectorAll('.js-edit-blob-link-fork-toggler'),
     forkButtons: document.querySelectorAll('.js-fork-suggestion-button'),
     cancelButtons: document.querySelectorAll('.js-cancel-fork-suggestion-button'),

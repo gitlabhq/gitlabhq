@@ -87,10 +87,46 @@ export default {
   mounted() {
     const options = gl.issueBoards.getBoardSortableDefaultOptions({
       scroll: true,
-      group: 'issues',
       disabled: this.disabled,
       filter: '.board-list-count, .is-disabled',
       dataIdAttr: 'data-issue-id',
+      group: {
+        name: 'issues',
+        /**
+         * Dynamically determine between which containers
+         * items can be moved or copied as
+         * Assignee lists (EE feature) require this behavior
+         */
+        pull: (to, from, dragEl, e) => {
+          // As per Sortable's docs, `to` should provide
+          // reference to exact sortable container on which
+          // we're trying to drag element, but either it is
+          // a library's bug or our markup structure is too complex
+          // that `to` never points to correct container
+          // See https://github.com/RubaXa/Sortable/issues/1037
+          //
+          // So we use `e.target` which is always accurate about
+          // which element we're currently dragging our card upon
+          // So from there, we can get reference to actual container
+          // and thus the container type to enable Copy or Move
+          if (e.target) {
+            const containerEl = e.target.closest('.js-board-list') || e.target.querySelector('.js-board-list');
+            const toBoardType = containerEl.dataset.boardType;
+
+            if (toBoardType) {
+              const fromBoardType = this.list.type;
+
+              if ((fromBoardType === 'assignee' && toBoardType === 'label') ||
+                  (fromBoardType === 'label' && toBoardType === 'assignee')) {
+                return 'clone';
+              }
+            }
+          }
+
+          return true;
+        },
+        revertClone: true,
+      },
       onStart: (e) => {
         const card = this.$refs.issue[e.oldIndex];
 
@@ -169,21 +205,22 @@ export default {
 <template>
   <div class="board-list-component">
     <div
+      v-if="loading"
       class="board-list-loading text-center"
-      aria-label="Loading issues"
-      v-if="loading">
+      aria-label="Loading issues">
       <loading-icon />
     </div>
     <board-new-issue
+      v-if="list.type !== 'closed' && showIssueForm"
       :group-id="groupId"
-      :list="list"
-      v-if="list.type !== 'closed' && showIssueForm"/>
+      :list="list"/>
     <ul
-      class="board-list"
       v-show="!loading"
       ref="list"
       :data-board="list.id"
-      :class="{ 'is-smaller': showIssueForm }">
+      :data-board-type="list.type"
+      :class="{ 'is-smaller': showIssueForm }"
+      class="board-list js-board-list">
       <board-card
         v-for="(issue, index) in issues"
         ref="issue"
@@ -196,8 +233,8 @@ export default {
         :disabled="disabled"
         :key="issue.id" />
       <li
-        class="board-list-count text-center"
         v-if="showCount"
+        class="board-list-count text-center"
         data-issue-id="-1">
         <loading-icon
           v-show="list.loadingMore"

@@ -29,8 +29,7 @@ describe JobArtifactUploader do
     context 'when trace is stored in File storage' do
       context 'when file exists' do
         let(:file) do
-          fixture_file_upload(
-            Rails.root.join('spec/fixtures/trace/sample_trace'), 'text/plain')
+          fixture_file_upload('spec/fixtures/trace/sample_trace', 'text/plain')
         end
 
         before do
@@ -63,8 +62,7 @@ describe JobArtifactUploader do
 
   context 'file is stored in valid local_path' do
     let(:file) do
-      fixture_file_upload(
-        Rails.root.join('spec/fixtures/ci_build_artifacts.zip'), 'application/zip')
+      fixture_file_upload('spec/fixtures/ci_build_artifacts.zip', 'application/zip')
     end
 
     before do
@@ -81,7 +79,7 @@ describe JobArtifactUploader do
 
   describe "#migrate!" do
     before do
-      uploader.store!(fixture_file_upload(Rails.root.join('spec/fixtures/trace/sample_trace')))
+      uploader.store!(fixture_file_upload('spec/fixtures/trace/sample_trace'))
       stub_artifacts_object_storage
     end
 
