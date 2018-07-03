@@ -11,8 +11,11 @@ import {
   LINE_HOVER_CLASS_NAME,
   LINE_UNFOLD_CLASS_NAME,
   INLINE_DIFF_VIEW_TYPE,
+<<<<<<< HEAD
   LINE_POSITION_LEFT,
   LINE_POSITION_RIGHT,
+=======
+>>>>>>> eba05eb8d48... Merge branch '_acet-mr-diff-performance' into 'master'
 } from '../constants';
 
 export default {
@@ -27,6 +30,11 @@ export default {
     diffFile: {
       type: Object,
       required: true,
+    },
+    diffViewType: {
+      type: String,
+      required: false,
+      default: INLINE_DIFF_VIEW_TYPE,
     },
     showCommentButton: {
       type: Boolean,
@@ -60,8 +68,9 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['isLoggedIn', 'isInlineView']),
+    ...mapGetters(['isLoggedIn']),
     normalizedLine() {
+<<<<<<< HEAD
       let normalizedLine;
 
       if (this.diffViewType === INLINE_DIFF_VIEW_TYPE) {
@@ -70,6 +79,10 @@ export default {
         normalizedLine = this.line.left;
       } else if (this.linePosition === LINE_POSITION_RIGHT) {
         normalizedLine = this.line.right;
+=======
+      if (this.diffViewType === INLINE_DIFF_VIEW_TYPE) {
+        return this.line;
+>>>>>>> eba05eb8d48... Merge branch '_acet-mr-diff-performance' into 'master'
       }
 
       return normalizedLine;
@@ -81,10 +94,10 @@ export default {
       return this.normalizedLine.type === CONTEXT_LINE_TYPE;
     },
     isMetaLine() {
+      const { type } = this.normalizedLine;
+
       return (
-        this.normalizedLine.type === OLD_NO_NEW_LINE_TYPE ||
-        this.normalizedLine.type === NEW_NO_NEW_LINE_TYPE ||
-        this.normalizedLine.type === EMPTY_CELL_TYPE
+        type === OLD_NO_NEW_LINE_TYPE || type === NEW_NO_NEW_LINE_TYPE || type === EMPTY_CELL_TYPE
       );
     },
     classNameMap() {

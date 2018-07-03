@@ -35,29 +35,20 @@ export default {
   },
   data() {
     return {
-      isHover: false,
       isLeftHover: false,
       isRightHover: false,
     };
   },
   computed: {
-    ...mapGetters(['isInlineView', 'isParallelView']),
+    ...mapGetters(['isParallelView']),
     isContextLine() {
-      return this.line.left
-        ? this.line.left.type === CONTEXT_LINE_TYPE
-        : this.line.type === CONTEXT_LINE_TYPE;
+      return this.line.left.type === CONTEXT_LINE_TYPE;
     },
     classNameMap() {
       return {
-        [this.line.type]: this.line.type,
         [CONTEXT_LINE_CLASS_NAME]: this.isContextLine,
         [PARALLEL_DIFF_VIEW_TYPE]: this.isParallelView,
       };
-    },
-    inlineRowId() {
-      const { lineCode, oldLine, newLine } = this.line;
-
-      return lineCode || `${this.diffFile.fileHash}_${oldLine}_${newLine}`;
     },
     parallelViewLeftLineType() {
       if (this.line.right.type === NEW_NO_NEW_LINE_TYPE) {
@@ -72,23 +63,19 @@ export default {
     this.oldLineType = OLD_LINE_TYPE;
     this.linePositionLeft = LINE_POSITION_LEFT;
     this.linePositionRight = LINE_POSITION_RIGHT;
+    this.parallelDiffViewType = PARALLEL_DIFF_VIEW_TYPE;
   },
   methods: {
     handleMouseMove(e) {
       const isHover = e.type === 'mouseover';
+      const hoveringCell = e.target.closest('td');
+      const allCellsInHoveringRow = Array.from(e.currentTarget.children);
+      const hoverIndex = allCellsInHoveringRow.indexOf(hoveringCell);
 
-      if (this.isInlineView) {
-        this.isHover = isHover;
+      if (hoverIndex >= 2) {
+        this.isRightHover = isHover;
       } else {
-        const hoveringCell = e.target.closest('td');
-        const allCellsInHoveringRow = Array.from(e.currentTarget.children);
-        const hoverIndex = allCellsInHoveringRow.indexOf(hoveringCell);
-
-        if (hoverIndex >= 2) {
-          this.isRightHover = isHover;
-        } else {
-          this.isLeftHover = isHover;
-        }
+        this.isLeftHover = isHover;
       }
     },
     // Prevent text selecting on both sides of parallel diff view
@@ -110,40 +97,6 @@ export default {
 
 <template>
   <tr
-    v-if="isInlineView"
-    :id="inlineRowId"
-    :class="classNameMap"
-    class="line_holder"
-    @mouseover="handleMouseMove"
-    @mouseout="handleMouseMove"
-  >
-    <diff-table-cell
-      :diff-file="diffFile"
-      :line="line"
-      :line-type="oldLineType"
-      :is-bottom="isBottom"
-      :is-hover="isHover"
-      :show-comment-button="true"
-      class="diff-line-num old_line"
-    />
-    <diff-table-cell
-      :diff-file="diffFile"
-      :line="line"
-      :line-type="newLineType"
-      :is-bottom="isBottom"
-      :is-hover="isHover"
-      class="diff-line-num new_line"
-    />
-    <diff-table-cell
-      :class="line.type"
-      :diff-file="diffFile"
-      :line="line"
-      :is-content-line="true"
-    />
-  </tr>
-
-  <tr
-    v-else
     :class="classNameMap"
     class="line_holder"
     @mouseover="handleMouseMove"
@@ -157,6 +110,7 @@ export default {
       :is-bottom="isBottom"
       :is-hover="isLeftHover"
       :show-comment-button="true"
+      :diff-view-type="parallelDiffViewType"
       class="diff-line-num old_line"
     />
     <diff-table-cell
@@ -166,6 +120,7 @@ export default {
       :is-content-line="true"
       :line-position="linePositionLeft"
       :line-type="parallelViewLeftLineType"
+      :diff-view-type="parallelDiffViewType"
       class="line_content parallel left-side"
       @mousedown.native="handleParallelLineMouseDown"
     />
@@ -177,6 +132,7 @@ export default {
       :is-bottom="isBottom"
       :is-hover="isRightHover"
       :show-comment-button="true"
+      :diff-view-type="parallelDiffViewType"
       class="diff-line-num new_line"
     />
     <diff-table-cell
@@ -186,6 +142,7 @@ export default {
       :is-content-line="true"
       :line-position="linePositionRight"
       :line-type="line.right.type"
+      :diff-view-type="parallelDiffViewType"
       class="line_content parallel right-side"
       @mousedown.native="handleParallelLineMouseDown"
     />
