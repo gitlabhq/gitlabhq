@@ -106,11 +106,11 @@ class Repository
     "#<#{self.class.name}:#{@disk_path}>"
   end
 
-  def commit(ref = 'HEAD')
+  def commit(ref = nil)
     return nil unless exists?
     return ref if ref.is_a?(::Commit)
 
-    find_commit(ref)
+    find_commit(ref || root_ref)
   end
 
   # Finding a commit by the passed SHA
@@ -290,6 +290,10 @@ class Repository
     )
   end
 
+  def cached_methods
+    CACHED_METHODS
+  end
+
   def expire_tags_cache
     expire_method_caches(%i(tag_names tag_count))
     @tags = nil
@@ -430,7 +434,7 @@ class Repository
 
   # Runs code after the HEAD of a repository is changed.
   def after_change_head
-    expire_method_caches(METHOD_CACHES_FOR_FILE_TYPES.keys)
+    expire_all_method_caches
   end
 
   # Runs code after a repository has been forked/imported.
