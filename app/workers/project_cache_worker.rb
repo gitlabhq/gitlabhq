@@ -28,7 +28,7 @@ class ProjectCacheWorker
 
   def update_statistics(statistics = [])
     try_obtain_lease do
-      Rails.logger.info("Updating statistics for project #{@project.id}")
+      Rails.logger.debug("Updating statistics for project #{@project.id}")
       @project.statistics.refresh!(only: statistics.to_a.map(&:to_sym))
     end
   end
