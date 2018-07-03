@@ -1,0 +1,5 @@
+---
+title: Fix merge request diffs when created with gitaly_diff_between enabled
+merge_request:
+author:
+type: fixed

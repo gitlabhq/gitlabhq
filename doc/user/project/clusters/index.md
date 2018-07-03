@@ -406,5 +406,5 @@ the deployment variables above, ensuring any pods you create are labelled with
 - [Connecting and deploying to an Amazon EKS cluster](eks_and_gitlab/index.md)
 
 [permissions]: ../../permissions.md
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/
 [Auto DevOps]: ../../../topics/autodevops/index.md

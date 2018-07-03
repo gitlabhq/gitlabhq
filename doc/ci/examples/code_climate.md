@@ -46,4 +46,4 @@ configuration to reflect that change.
 
 [cli]: https://github.com/codeclimate/codeclimate
 [dind]: ../docker/using_docker_build.md#use-docker-in-docker-executor
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/
