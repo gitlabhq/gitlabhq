@@ -49,6 +49,8 @@ The following metrics are available:
 | filesystem_circuitbreaker         | Gauge     | 9.5   | Whether or not the circuit for a certain shard is broken or not |
 | circuitbreaker_storage_check_duration_seconds | Histogram | 10.3 | Time a single storage probe took |
 | upload_file_does_not_exist                    | Counter   | 10.7  | Number of times an upload record could not find its file |
+| failed_login_captcha_total        | Gauge | 11.0 | Counter of failed CAPTCHA attempts during login |
+| successful_login_captcha_total    | Gauge | 11.0 | Counter of successful CAPTCHA attempts during login |
 
 ## Sidekiq Metrics available
 

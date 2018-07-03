@@ -63,13 +63,31 @@ class SessionsController < Devise::SessionsController
     return unless captcha_enabled?
     return unless Gitlab::Recaptcha.load_configurations!
 
-    unless verify_recaptcha
+    if verify_recaptcha
+      increment_successful_login_captcha_counter
+    else
+      increment_failed_login_captcha_counter
+
       self.resource = resource_class.new
       flash[:alert] = 'There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'
       flash.delete :recaptcha_error
 
       respond_with_navigational(resource) { render :new }
     end
+  end
+
+  def increment_failed_login_captcha_counter
+    Gitlab::Metrics.counter(
+      :failed_login_captcha_total,
+      'Number of failed CAPTCHA attempts for logins'.freeze
+    ).increment
+  end
+
+  def increment_successful_login_captcha_counter
+    Gitlab::Metrics.counter(
+      :successful_login_captcha_total,
+      'Number of successful CAPTCHA attempts for logins'.freeze
+    ).increment
   end
 
   def log_failed_login
