@@ -27,6 +27,16 @@ module BitbucketServer
       get_collection(path, :repo)
     end
 
+    def create_branch(project_key, repo, branch_name, sha)
+      payload = {
+        name: branch_name,
+        startPoint: sha,
+        message: 'GitLab temporary branch for import'
+      }
+
+      connection.post("/projects/#{project_key}/repos/#{repo}/branches", payload.to_json)
+    end
+
     private
 
     def get_collection(path, type)

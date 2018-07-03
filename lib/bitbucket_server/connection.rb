@@ -12,7 +12,6 @@ module BitbucketServer
     end
 
     def get(path, extra_query = {})
-      auth = { username: username, password: token }
       response = Gitlab::HTTP.get(build_url(path),
                                   basic_auth: auth,
                                   params: extra_query)
@@ -20,7 +19,22 @@ module BitbucketServer
       response.parsed_response
     end
 
+    def post(path, body)
+      Gitlab::HTTP.post(build_url(path),
+                        basic_auth: auth,
+                        headers: post_headers,
+                        body: body)
+    end
+
     private
+
+    def auth
+      @auth ||= { username: username, password: token }
+    end
+
+    def post_headers
+      @post_headers ||= { 'Content-Type' => 'application/json' }
+    end
 
     def build_url(path)
       return path if path.starts_with?(root_url)

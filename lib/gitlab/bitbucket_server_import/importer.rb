@@ -4,6 +4,16 @@ module Gitlab
       include Gitlab::ShellAdapter
       attr_reader :project, :project_key, :repository_slug, :client, :errors, :users
 
+      REMOTE_NAME = 'bitbucket_server'.freeze
+
+      def self.imports_repository?
+        true
+      end
+
+      def self.refmap
+        [:heads, :tags, '+refs/pull-requests/*/to:refs/merge-requests/*/head']
+      end
+
       def initialize(project)
         @project = project
         @project_key = project.import_data.data['project_key']
@@ -12,9 +22,11 @@ module Gitlab
         @formatter = Gitlab::ImportFormatter.new
         @errors = []
         @users = {}
+        @temp_branches = []
       end
 
       def execute
+        import_repository
         import_pull_requests
         handle_errors
 
@@ -48,11 +60,55 @@ module Gitlab
         @repo ||= client.repo(project_key, repository_slug)
       end
 
+      def sha_exists?(sha)
+        project.repository.commit(sha)
+      end
+
+      def track_temp_branch(pull_request, index)
+        temp_branch_name = "gitlab/import/pull-request/#{pull_request.iid}-#{index}"
+
+        @temp_branches << temp_branch_name
+        temp_branch_name
+      end
+
+      def restore_branches(pull_request)
+        shas_to_restore = [pull_request.source_branch_sha, pull_request.target_branch_sha]
+        resync = false
+
+        shas_to_restore.each_with_index do |sha, index|
+          next if sha_exists?(sha)
+
+          branch_name = track_temp_branch(pull_request, index)
+          response = client.create_branch(project_key, repository_slug, branch_name, sha)
+
+          if response.success?
+            resync = true
+          else
+            Rails.logger.warn("BitbucketServerImporter: Unable to recreate branch for SHA #{sha}: #{response.code}")
+          end
+        end
+
+        import_repository if resync
+      end
+
+      def import_repository
+        project.ensure_repository
+        project.repository.fetch_as_mirror(project.import_url, refmap: self.class.refmap, remote_name: REMOTE_NAME)
+      rescue Gitlab::Shell::Error, Gitlab::Git::RepositoryMirroring::RemoteError => e
+        # Expire cache to prevent scenarios such as:
+        # 1. First import failed, but the repo was imported successfully, so +exists?+ returns true
+        # 2. Retried import, repo is broken or not imported but +exists?+ still returns true
+        project.repository.expire_content_cache if project.repository_exists?
+
+        raise RuntimeError, e.message
+      end
+
       def import_pull_requests
         pull_requests = client.pull_requests(project_key, repository_slug)
-
         pull_requests.each do |pull_request|
           begin
+            restore_branches(pull_request)
+
             description = ''
             description += @formatter.author_line(pull_request.author) unless find_user_id(pull_request.author_email)
             description += pull_request.description
