@@ -44,13 +44,13 @@ module Banzai
         doc
       end
 
-      # Replace `project>` project references in text with links to the referenced
+      # Replace `namespace/project>` project references in text with links to the referenced
       # project page.
       #
       # text - String text to replace references in.
       # link_content - Original content of the link being replaced.
       #
-      # Returns a String with `project>` references replaced with links. All links
+      # Returns a String with `namespace/project>` references replaced with links. All links
       # have `gfm` and `gfm-project` class names attached for styling.
       def project_link_filter(text, link_content: nil)
         self.class.references_in(text) do |match, project_path|
