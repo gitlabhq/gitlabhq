@@ -2692,6 +2692,22 @@ describe MergeRequest do
           end
         end
       end
+
+      context 'source branch is missing' do
+        subject { create(:merge_request, :invalid, :opened, merge_status: :unchecked, target_branch: 'master') }
+
+        before do
+          allow(subject.project.repository).to receive(:can_be_merged?).and_call_original
+        end
+
+        it 'does not raise error' do
+          expect(notification_service).not_to receive(:merge_request_unmergeable)
+          expect(todo_service).not_to receive(:merge_request_became_unmergeable)
+
+          expect { subject.mark_as_unmergeable }.not_to raise_error
+          expect(subject.cannot_be_merged?).to eq(true)
+        end
+      end
     end
 
     describe 'check_state?' do

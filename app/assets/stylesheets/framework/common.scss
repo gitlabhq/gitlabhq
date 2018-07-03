@@ -266,12 +266,7 @@ li.note {
 }
 
 .milestone {
-  &.milestone-closed {
-    background: $gray-light;
-  }
-
   .progress {
-    margin-bottom: 0;
     margin-top: 4px;
     box-shadow: none;
     background-color: $border-gray-light;

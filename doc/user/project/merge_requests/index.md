@@ -429,9 +429,13 @@ git checkout origin/merge-requests/1
 
 [products]: https://about.gitlab.com/products/ "GitLab products page"
 [protected branches]: ../protected_branches.md
+<<<<<<< HEAD
 [ci]: ../../../ci/README.md
 [cc]: https://codeclimate.com/
 [cd]: https://hub.docker.com/r/codeclimate/codeclimate/
 [ee]: https://about.gitlab.com/products/ "GitLab Enterprise Edition"
 [sitespeed]: https://www.sitespeed.io
 [sitespeed-container]: https://hub.docker.com/r/sitespeedio/sitespeed.io/
+=======
+[ee]: https://about.gitlab.com/pricing/ "GitLab Enterprise Edition"
+>>>>>>> upstream/master

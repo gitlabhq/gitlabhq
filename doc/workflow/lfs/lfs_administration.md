@@ -236,5 +236,5 @@ See more information in [!19581](https://gitlab.com/gitlab-org/gitlab-ce/merge_r
 
 [reconfigure gitlab]: ../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
 [restart gitlab]: ../../administration/restart_gitlab.md#installations-from-source "How to restart GitLab"
-[eep]: https://about.gitlab.com/products/ "GitLab Premium"
+[eep]: https://about.gitlab.com/pricing/ "GitLab Premium"
 [ee-2760]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2760

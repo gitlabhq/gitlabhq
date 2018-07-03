@@ -64,6 +64,8 @@ module Gitlab
 
         target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target_commit)
         Gitlab::Git::Branch.new(@repository, branch.name, target_commit.id, target_commit)
+      rescue GRPC::FailedPrecondition => ex
+        raise Gitlab::Git::Repository::InvalidRef, ex
       end
 
       def user_delete_branch(branch_name, user)
@@ -133,6 +135,8 @@ module Gitlab
           request
         ).branch_update
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(branch_update)
+      rescue GRPC::FailedPrecondition => e
+        raise Gitlab::Git::CommitError, e
       end
 
       def user_cherry_pick(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)

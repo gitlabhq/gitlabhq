@@ -174,6 +174,8 @@ For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript.
     # => When size == 2: 'There are 2 mice.'
     ```
 
+    Avoid using `%d` or count variables in sigular strings. This allows more natural translation in some languages.
+
 - In JavaScript:
 
     ```js

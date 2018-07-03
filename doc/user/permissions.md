@@ -312,4 +312,4 @@ Read through the documentation on [LDAP users permissions](../administration/aut
 [ce-18994]: https://gitlab.com/gitlab-org/gitlab-ce/issues/18994
 [new-mod]: project/new_ci_build_permissions_model.md
 [ee-998]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/998
-[eep]: https://about.gitlab.com/products/
+[eep]: https://about.gitlab.com/pricing/

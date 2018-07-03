@@ -195,6 +195,12 @@ This example can be used for a bucket in Amsterdam (AMS3).
 
 1. [Reconfigure GitLab] for the changes to take effect
 
+CAUTION: **Warning:**
+If you see `400 Bad Request` by using Digital Ocean Spaces, the cause may be the
+usage of backup encryption. Remove or comment the line that
+contains `gitlab_rails['backup_encryption']` since Digital Ocean Spaces
+doesn't support encryption.
+
 #### Other S3 Providers
 
 Not all S3 providers are fully-compatible with the Fog library. For example,
