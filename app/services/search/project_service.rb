@@ -10,7 +10,8 @@ module Search
       Gitlab::ProjectSearchResults.new(current_user,
                                        project,
                                        params[:search],
-                                       params[:repository_ref])
+                                       params[:repository_ref],
+                                       per_page: params[:per_page])
     end
 
     def scope

@@ -4,9 +4,10 @@ module Gitlab
 
     attr_reader :limit_snippets
 
-    def initialize(limit_snippets, query)
+    def initialize(limit_snippets, query, per_page: 20)
       @limit_snippets = limit_snippets
       @query = query
+      @per_page = per_page
     end
 
     def objects(scope, page = nil)

@@ -10,7 +10,7 @@ module Search
 
     def execute
       Gitlab::SearchResults.new(current_user, projects, params[:search],
-                                default_project_filter: default_project_filter)
+                                default_project_filter: default_project_filter, per_page: params[:per_page])
     end
 
     def projects

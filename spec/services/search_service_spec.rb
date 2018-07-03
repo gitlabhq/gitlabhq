@@ -235,6 +235,31 @@ describe SearchService do
   end
 
   describe '#search_objects' do
+    # this shared example expects 3 results to be returned, can be overrided
+    shared_examples 'pagination' do |params|
+      let(:results_count) { 3 }
+      let(:last_page_count) { 1 }
+
+      def search(per_page: nil, page: nil)
+        params[:per_page] = per_page if per_page
+        params[:page] = page if page
+
+        described_class.new(user, params).search_objects
+      end
+
+      it 'returns all 3 objects with default params' do
+        expect(search.count).to eq(results_count)
+      end
+
+      it 'returns correct count of results ' do
+        expect(search(per_page: 2).count).to eq(2)
+      end
+
+      it 'returns correct result page' do
+        expect(search(per_page: 2, page: 2).count).to eq(last_page_count)
+      end
+    end
+
     context 'with accessible project_id' do
       it 'returns objects in the project' do
         search_objects = described_class.new(
@@ -244,6 +269,26 @@ describe SearchService do
           search: note.note).search_objects
 
         expect(search_objects.first).to eq note
+      end
+
+      context 'pagination' do
+        before do
+          [
+            create(:note_on_issue, project: accessible_project, note: 'simple note'),
+            create(:note_on_issue, project: accessible_project, note: 'some simple note'),
+            create(:note_on_issue, project: accessible_project, note: 'non simple note')
+          ]
+        end
+
+        let(:params) do
+          {
+            project_id: accessible_project.id,
+            scope: 'notes',
+            search: 'simple'
+          }
+        end
+
+        include_examples 'pagination'
       end
     end
 
@@ -269,6 +314,25 @@ describe SearchService do
 
         expect(search_objects.first).to eq snippet
       end
+
+      context 'pagination' do
+        before do
+          [
+            create(:snippet, author: user, content: 'simple snippet'),
+            create(:snippet, author: user, content: 'some simple snippet'),
+            create(:snippet, author: user, content: 'non simple snippet')
+          ]
+        end
+
+        let(:params) do
+          {
+            snippets: 'true',
+            search: 'simple'
+          }
+        end
+
+        include_examples 'pagination'
+      end
     end
 
     context 'with accessible group_id' do
@@ -280,6 +344,25 @@ describe SearchService do
 
         expect(search_objects.first).to eq group_project
       end
+
+      context 'pagination' do
+        before do
+          [
+            create(:project, group: accessible_group, name: 'group_project1'),
+            create(:project, group: accessible_group, name: 'group_project2'),
+            create(:project, group: accessible_group, name: 'group_project3')
+          ]
+        end
+
+        let(:params) do
+          {
+            group_id: accessible_group.id,
+            search: 'group'
+          }
+        end
+
+        include_examples 'pagination'
+      end
     end
 
     context 'with no project_id, group_id or snippets' do
@@ -289,6 +372,24 @@ describe SearchService do
           search: public_project.name).search_objects
 
         expect(search_objects.first).to eq public_project
+      end
+
+      context 'pagination' do
+        before do
+          [
+            create(:project, :public, name: 'public_project1'),
+            create(:project, :public, name: 'public_project2'),
+            create(:project, :public, name: 'public_project3')
+          ]
+        end
+
+        let(:params) do
+          {
+            search: 'public'
+          }
+        end
+
+        include_examples 'pagination'
       end
     end
   end
