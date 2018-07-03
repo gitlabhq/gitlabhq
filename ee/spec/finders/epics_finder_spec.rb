@@ -27,7 +27,9 @@ describe EpicsFinder do
       end
     end
 
-    context 'when epics feature is enabled' do
+    # Enabeling the `request_store` for this to avoid counting queries that check
+    # the license.
+    context 'when epics feature is enabled', :request_store do
       before do
         stub_licensed_features(epics: true)
       end
