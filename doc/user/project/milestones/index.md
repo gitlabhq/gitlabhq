@@ -106,13 +106,13 @@ These features are only available for project milestones and not group milestone
 
 ### Project Burndown Charts **[STARTER]**
 
-For project milestones in [GitLab Starter](https://about.gitlab.com/products), a [burndown chart](burndown_charts.md) is in the milestone view, showing the progress of completing a milestone.
+For project milestones in [GitLab Starter](https://about.gitlab.com/pricing), a [burndown chart](burndown_charts.md) is in the milestone view, showing the progress of completing a milestone.
 
 ![burndown chart](img/burndown_chart.png)
 
 ### Group Burndown Charts **[PREMIUM]**
 
-For group milestones in [GitLab Premium](https://about.gitlab.com/products), a [burndown chart](burndown_charts.md) is in the milestone view, showing the progress of completing a milestone.
+For group milestones in [GitLab Premium](https://about.gitlab.com/pricing), a [burndown chart](burndown_charts.md) is in the milestone view, showing the progress of completing a milestone.
 
 ### Milestone sidebar
 

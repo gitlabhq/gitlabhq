@@ -41,5 +41,5 @@ website:
 - [Product page](https://network.pivotal.io/products/p-gitlab/)
 - [Documentation](https://docs.pivotal.io/partners/gitlab/index.html)
 
-[eep]: https://about.gitlab.com/products/
+[eep]: https://about.gitlab.com/pricing/
 [pcf]: https://pivotal.io/platform

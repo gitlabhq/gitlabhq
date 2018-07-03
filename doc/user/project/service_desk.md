@@ -117,7 +117,7 @@ Behind the scenes, Service Desk works by the special Support Bot user creating i
 does not count toward the license limit count.
 
 [ee-149]: https://gitlab.com/gitlab-org/gitlab-ee/issues/149 "Service Desk with email"
-[ee]: https://about.gitlab.com/products/ "GitLab Enterprise Edition landing page"
+[ee]: https://about.gitlab.com/pricing/ "GitLab Enterprise Edition landing page"
 [eep-9.1]: https://about.gitlab.com/2017/04/22/gitlab-9-1-released/#service-desk-eep
 [incoming-email]: ../../administration/incoming_email.md#set-it-up
 [email-sub-addressing]: ../../administration/reply_by_email.md#email-sub-addressing

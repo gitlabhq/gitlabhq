@@ -59,6 +59,6 @@ request.
 ![License Management Widget](img/license_management.jpg)
 
 [ee-5483]: https://gitlab.com/gitlab-org/gitlab-ee/issues/5483
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/
 [ci]: ../../../ci/README.md
 [cc-docs]: ../../../ci/examples/license_management.md

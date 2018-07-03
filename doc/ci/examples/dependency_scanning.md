@@ -56,4 +56,4 @@ or specify another existing stage inside the `dependency_scanning` job.
 
 See [the full list of supported languages and package managers](../../user/project/merge_requests/dependency_scanning.md#supported-languages-and-frameworks).
 
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/

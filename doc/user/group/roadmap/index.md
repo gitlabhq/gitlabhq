@@ -48,4 +48,4 @@ away towards the future. Similarly, if an epic doesn't have a planned start date
 timeline bar becomes more visible as it approaches the epic's planned finish date on the
 timeline.
 
-[ee]: https://about.gitlab.com/products
+[ee]: https://about.gitlab.com/pricing
