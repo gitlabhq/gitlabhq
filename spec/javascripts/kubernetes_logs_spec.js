@@ -1,7 +1,8 @@
+import $ from 'jquery';
 import KubernetesLogs from 'ee/kubernetes_logs';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import { logMockData } from './ee/kubernetes_mock_data';
+import { logMockData, podMockData } from './ee/kubernetes_mock_data';
 
 describe('Kubernetes Logs', () => {
   const fixtureTemplate = 'static/environments_logs.html.raw';
@@ -20,7 +21,7 @@ describe('Kubernetes Logs', () => {
 
       mock = new MockAdapter(axios);
 
-      mock.onGet(logMockPath).reply(200, { logs: logMockData });
+      mock.onGet(logMockPath).reply(200, { logs: logMockData, pods: podMockData });
 
       kubernetesLogContainer = document.querySelector('.js-kubernetes-logs');
     });
@@ -29,11 +30,18 @@ describe('Kubernetes Logs', () => {
       mock.restore();
     });
 
-    it('has the pod name placed on the top bar', () => {
+    it('has the pod name placed on the dropdown', (done) => {
       kubernetesLog = new KubernetesLogs(kubernetesLogContainer);
-      const topBar = document.querySelector('.js-pod-name');
+      kubernetesLog.getPodLogs();
 
-      expect(topBar.textContent).toContain(kubernetesLog.podName);
+      setTimeout(() => {
+        const podDropdown = document
+          .querySelector('.js-pod-dropdown')
+          .querySelector('.dropdown-menu-toggle');
+
+        expect(podDropdown.textContent).toContain(mockPodName);
+        done();
+      }, 0);
     });
 
     it('queries the pod log data and sets the dom elements', (done) => {
@@ -49,6 +57,58 @@ describe('Kubernetes Logs', () => {
         expect(toggleDisableSpy).toHaveBeenCalled();
         done();
       }, 0);
+    });
+
+    it('asks for the pod logs from another pod', (done) => {
+      const changePodLogSpy = spyOn(KubernetesLogs.prototype, 'getPodLogs').and.callThrough();
+      kubernetesLog = new KubernetesLogs(kubernetesLogContainer);
+
+      kubernetesLog.getPodLogs();
+      setTimeout(() => {
+        const podDropdown = document.querySelectorAll('.js-pod-dropdown .dropdown-menu button');
+        const anotherPod = podDropdown[podDropdown.length - 1];
+
+        anotherPod.click();
+
+        expect(changePodLogSpy).toHaveBeenCalled();
+        done();
+      }, 0);
+    });
+
+    it('clears the pod dropdown contents when pod logs are requested', (done) => {
+      const emptySpy = spyOn($.prototype, 'empty').and.callThrough();
+      kubernetesLog = new KubernetesLogs(kubernetesLogContainer);
+
+      kubernetesLog.getPodLogs();
+      setTimeout(() => {
+        // This is because it clears both the job log contents and the dropdown
+        expect(emptySpy.calls.count()).toEqual(2);
+        done();
+      });
+    });
+  });
+
+  describe('XSS Protection', () => {
+    const hackyPodName = '">&lt;img src=x onerror=alert(document.domain)&gt; production';
+    beforeEach(() => {
+      loadFixtures(fixtureTemplate);
+
+      spyOnDependency(KubernetesLogs, 'getParameterValues').and.callFake(() => [hackyPodName]);
+
+      mock = new MockAdapter(axios);
+
+      mock.onGet(logMockPath).reply(200, { logs: logMockData, pods: [hackyPodName] });
+
+      kubernetesLogContainer = document.querySelector('.js-kubernetes-logs');
+    });
+
+    afterEach(() => {
+      mock.restore();
+    });
+
+    it('escapes the pod name', () => {
+      kubernetesLog = new KubernetesLogs(kubernetesLogContainer);
+      expect(kubernetesLog.podName).toContain('&quot;&gt;&amp;lt;img src=x onerror=alert(document.domain)&amp;gt; production');
     });
   });
 

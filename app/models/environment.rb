@@ -1,4 +1,6 @@
 class Environment < ActiveRecord::Base
+  prepend EE::Environment
+
   # Used to generate random suffixes for the slug
   LETTERS = 'a'..'z'
   NUMBERS = '0'..'9'

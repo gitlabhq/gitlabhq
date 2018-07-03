@@ -4,20 +4,21 @@ import { getParameterValues } from '~/lib/utils/url_utility';
 import { isScrolledToBottom, scrollDown, toggleDisableButton } from '~/lib/utils/scroll_utils';
 import LogOutputBehaviours from '~/lib/utils/logoutput_behaviours';
 import createFlash from '~/flash';
-import { __, s__, sprintf } from '~/locale';
+import { __, s__ } from '~/locale';
 import _ from 'underscore';
 
 export default class KubernetesPodLogs extends LogOutputBehaviours {
   constructor(container) {
     super();
     this.options = $(container).data();
-    this.podNameContainer = $(container).find('.js-pod-name');
     [this.podName] = getParameterValues('pod_name');
+    this.podName = _.escape(this.podName);
     this.$buildOutputContainer = $(container).find('.js-build-output');
     this.$window = $(window);
     this.$refreshLogBtn = $(container).find('.js-refresh-log');
     this.$buildRefreshAnimation = $(container).find('.js-build-refresh');
     this.isLogComplete = false;
+    this.$podDropdown = $(container).find('.js-pod-dropdown');
 
     this.scrollThrottled = _.throttle(this.toggleScroll.bind(this), 100);
 
@@ -25,16 +26,6 @@ export default class KubernetesPodLogs extends LogOutputBehaviours {
       createFlash(s__('Environments|No pod name has been specified'));
       return;
     }
-
-    const podTitle = sprintf(
-      s__('Environments|Pod logs from %{podName}'),
-      {
-        podName: `<strong>${_.escape(this.podName)}</strong>`,
-      },
-      false,
-    );
-    this.podNameContainer.empty();
-    this.podNameContainer.append(podTitle);
 
     this.$window.off('scroll').on('scroll', () => {
       if (!isScrolledToBottom()) {
@@ -70,6 +61,7 @@ export default class KubernetesPodLogs extends LogOutputBehaviours {
       })
       .then(res => {
         const { logs } = res.data;
+        this.populateDropdown(res.data.pods);
         const formattedLogs = logs.map(logEntry => `${_.escape(logEntry)} <br />`);
         this.$buildOutputContainer.append(formattedLogs);
         scrollDown();
@@ -78,5 +70,35 @@ export default class KubernetesPodLogs extends LogOutputBehaviours {
         toggleDisableButton(this.$refreshLogBtn, false);
       })
       .catch(() => createFlash(__('Something went wrong on our end')));
+  }
+
+  populateDropdown(pods) {
+    // set the selected element from the pod set on the url params
+    const $podDropdownMenu = this.$podDropdown.find('.dropdown-menu');
+
+    this.$podDropdown
+      .find('.dropdown-menu-toggle')
+      .html(`${this.podName}<i class="fa fa-chevron-down"></i>`);
+    $podDropdownMenu.off('click');
+    $podDropdownMenu.empty();
+
+    pods.forEach((pod) => {
+      $podDropdownMenu.append(`
+        <button class='dropdown-item'>
+          ${_.escape(pod)}
+        </button>
+      `);
+    });
+
+    $podDropdownMenu.find('li').on('click', this.changePodLog.bind(this));
+  }
+
+  changePodLog(el) {
+    const selectedPodName = el.currentTarget.textContent.trim();
+
+    if (selectedPodName !== this.podName) {
+      this.podName = selectedPodName;
+      this.getPodLogs();
+    }
   }
 }

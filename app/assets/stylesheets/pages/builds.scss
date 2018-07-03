@@ -55,34 +55,11 @@
   }
 
   .build-trace {
-    background: $black;
-    color: $gray-darkest;
-    white-space: pre;
-    overflow-x: auto;
-    font-size: 12px;
-    border-radius: 0;
-    border: 0;
-    padding: $grid-size;
-
-    .bash {
-      display: block;
-    }
-
-    &.build-trace-rounded {
-      border-radius: $border-radius-base;
-    }
+    @include build-trace();
   }
 
   .top-bar {
-    height: 35px;
-    min-height: 35px;
-    background: $gray-light;
-    border: 1px solid $border-color;
-    color: $gl-text-color;
-    position: sticky;
-    position: -webkit-sticky;
-    top: $header-height;
-    padding: $grid-size;
+    @include build-trace-top-bar(35px, $header-height);
 
     &.affix {
       top: $header-height;
@@ -120,56 +97,7 @@
     }
 
     .controllers {
-      display: flex;
-      font-size: 15px;
-      justify-content: center;
-      align-items: center;
-
-      svg {
-        width: 15px;
-        height: 15px;
-        display: block;
-        fill: $gl-text-color;
-      }
-
-      .controllers-buttons {
-        color: $gl-text-color;
-        margin: 0 $grid-size;
-
-        &:last-child {
-          margin-right: 0;
-        }
-      }
-
-      .btn-scroll.animate {
-        .first-triangle {
-          animation: blinking-scroll-button 1s ease infinite;
-          animation-delay: 0.3s;
-        }
-
-        .second-triangle {
-          animation: blinking-scroll-button 1s ease infinite;
-          animation-delay: 0.2s;
-        }
-
-        .third-triangle {
-          animation: blinking-scroll-button 1s ease infinite;
-        }
-
-        &:disabled {
-          opacity: 1;
-        }
-      }
-
-      .btn-refresh {
-        border-radius: 4px;
-      }
-
-      .btn-scroll:disabled,
-      .btn-refresh:disabled {
-        opacity: 0.35;
-        cursor: not-allowed;
-      }
+      @include build-controllers(15px, center, false, 0);
     }
   }
 
@@ -188,12 +116,7 @@
   }
 
   .build-loader-animation {
-    position: relative;
-    width: 6px;
-    height: 6px;
-    margin: auto auto 12px 2px;
-    border-radius: 50%;
-    animation: blinking-dots 1s linear infinite;
+    @include build-loader-animation();
   }
 }
 
@@ -204,6 +127,66 @@
     &.affix {
       top: $header-height + $performance-bar-height;
     }
+  }
+}
+
+.build-page-pod-logs {
+  .build-trace-container {
+    position: relative;
+  }
+
+  .build-trace {
+    @include build-trace();
+  }
+
+  .top-bar {
+    @include build-trace-top-bar(48px, $header-height-pod-logs);
+    display: flex;
+    border-top-left-radius: $border-radius-default;
+    border-top-right-radius: $border-radius-default;
+
+    .truncated-info {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .dropdown {
+      display: flex;
+
+      > .dropdown-menu-toggle {
+        display: flex;
+        align-content: center;
+        align-self: center;
+        width: 300px;
+      }
+
+      > .dropdown-menu {
+        width: 300px;
+      }
+    }
+
+    .controllers {
+      @include build-controllers(16px, flex-end, true, 2);
+    }
+
+    .refresh-control {
+      @include build-controllers(16px, flex-end, true, 0);
+      margin-left: 2px;
+
+      .controllers-buttons {
+        .btn-refresh {
+          border-radius: 4px;
+          width: 32px;
+          height: 32px;
+          vertical-align: middle;
+        }
+      }
+    }
+  }
+
+  .build-loader-animation {
+    @include build-loader-animation();
   }
 }
 
