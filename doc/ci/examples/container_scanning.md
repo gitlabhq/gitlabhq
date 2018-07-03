@@ -63,4 +63,4 @@ are still maintained they have been deprecated with GitLab 11.0 and may be remov
 in next major release, GitLab 12.0. You are advised to update your current `.gitlab-ci.yml`
 configuration to reflect that change.
 
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/

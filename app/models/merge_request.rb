@@ -132,14 +132,9 @@ class MergeRequest < ActiveRecord::Base
     end
 
     after_transition unchecked: :cannot_be_merged do |merge_request, transition|
-      begin
-        if merge_request.notify_conflict?
-          NotificationService.new.merge_request_unmergeable(merge_request)
-          TodoService.new.merge_request_became_unmergeable(merge_request)
-        end
-      rescue Gitlab::Git::CommandError
-        # Checking mergeability can trigger exception, e.g. non-utf8
-        # We ignore this type of errors.
+      if merge_request.notify_conflict?
+        NotificationService.new.merge_request_unmergeable(merge_request)
+        TodoService.new.merge_request_became_unmergeable(merge_request)
       end
     end
 
@@ -713,7 +708,14 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def notify_conflict?
-    (opened? || locked?) && !project.repository.can_be_merged?(diff_head_sha, target_branch)
+    (opened? || locked?) &&
+      has_commits? &&
+      !branch_missing? &&
+      !project.repository.can_be_merged?(diff_head_sha, target_branch)
+  rescue Gitlab::Git::CommandError
+    # Checking mergeability can trigger exception, e.g. non-utf8
+    # We ignore this type of errors.
+    false
   end
 
   def related_notes

@@ -265,12 +265,16 @@
     vertical-align: baseline;
   }
 
-  a.autodevops-badge {
-    color: $white-light;
-  }
+  a {
+    color: $gl-text-color;
 
-  a.autodevops-link {
-    color: $gl-link-color;
+    &.autodevops-badge {
+      color: $white-light;
+    }
+
+    &.autodevops-link {
+      color: $gl-link-color;
+    }
   }
 
   .commit-row-description {

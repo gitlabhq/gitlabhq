@@ -82,7 +82,7 @@ your implementation with your team.
 You can live preview changes submitted to a new branch with
 [Review Apps](../../../ci/review_apps/index.md).
 
-With [GitLab Starter](https://about.gitlab.com/products/), you can also request
+With [GitLab Starter](https://about.gitlab.com/pricing/), you can also request
 [approval](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your managers.
 
 To create, delete, and [branches](branches/index.md) via GitLab's UI:
@@ -165,8 +165,7 @@ Find it under your project's **Repository > Compare**.
 
 ## Locked files **[PREMIUM]**
 
-[Lock your files](https://docs.gitlab.com/ee/user/project/file_lock.html) to
-prevent any conflicting changes.
+[Lock your files](../file_lock.md) to prevent any conflicting changes.
 
 ## Repository's API
 

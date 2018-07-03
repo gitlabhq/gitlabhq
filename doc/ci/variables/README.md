@@ -575,6 +575,7 @@ Below you can find supported syntax reference:
 
 [ee-2112]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2112
 [premium]: https://about.gitlab.com/products/ "Available only in GitLab Premium"
+[ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784 "Simple protection of CI variables"
 [envs]: ../environments.md
 [protected branches]: ../../user/project/protected_branches.md
 [protected tags]: ../../user/project/protected_tags.md

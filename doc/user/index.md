@@ -7,7 +7,7 @@ description: 'Read through the GitLab User documentation to learn how to use, co
 Welcome to GitLab! We're glad to have you here!
 
 As a GitLab user you'll have access to all the features
-your [subscription](https://about.gitlab.com/products/)
+your [subscription](https://about.gitlab.com/pricing/)
 includes, except [GitLab administrator](../README.md#administrator-documentation)
 settings, unless you have admin privileges to install, configure,
 and upgrade your GitLab instance.
