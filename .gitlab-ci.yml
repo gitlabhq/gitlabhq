@@ -1078,6 +1078,7 @@ review-app-image:
   except:
     refs:
       - master
+      - /(^docs[\/-].*|.*-docs$)/
 
 .reviewapps_deploy: &reviewapps_deploy |
   [[ "$TRACE" ]] && set -x
@@ -1269,6 +1270,7 @@ review:
   except:
     refs:
       - master
+      - /(^docs[\/-].*|.*-docs$)/
 
 stop_review:
   image: registry.gitlab.com/charts/gitlab:latest
@@ -1291,3 +1293,4 @@ stop_review:
     kubernetes: active
   except:
     - master
+    - /(^docs[\/-].*|.*-docs$)/
