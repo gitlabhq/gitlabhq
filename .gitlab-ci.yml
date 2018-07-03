@@ -1281,7 +1281,7 @@ stop_review:
   before_script:
     - *reviewapps_deploy
   variables:
-    GIT_CHECKOUT: "false"
+    GIT_STRATEGY: none
   script:
     - delete
     - cleanup
