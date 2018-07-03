@@ -62,8 +62,9 @@ shared_examples 'geo base sync fetch and repack' do
       fetch_repository
     end
 
-    it 'updates registry' do
-      is_expected.to receive(:update_registry!)
+    it 'tells registry that sync will start now' do
+      registry = subject.send(:registry)
+      expect(registry).to receive(:start_sync!)
 
       fetch_repository
     end
@@ -95,7 +96,7 @@ shared_examples 'geo base sync fetch and repack' do
 end
 
 shared_examples 'sync retries use the snapshot RPC' do
-  let(:retry_count) { Geo::BaseSyncService::RETRIES_BEFORE_REDOWNLOAD }
+  let(:retry_count) { Geo::ProjectRegistry::RETRIES_BEFORE_REDOWNLOAD }
 
   context 'snapshot synchronization method' do
     before do

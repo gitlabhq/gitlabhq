@@ -16,7 +16,7 @@ module Gitlab
           attr_reader :event, :created_at, :logger
 
           def registry
-            @registry ||= find_or_initialize_registry
+            @registry ||= ::Geo::ProjectRegistry.find_or_initialize_by(project_id: event.project_id)
           end
 
           def skippable?
@@ -31,12 +31,6 @@ module Gitlab
 
           def enqueue_job_if_shard_healthy(event)
             yield if healthy_shard_for?(event)
-          end
-
-          def find_or_initialize_registry(attrs = nil)
-            ::Geo::ProjectRegistry.find_or_initialize_by(project_id: event.project_id).tap do |registry|
-              registry.assign_attributes(attrs)
-            end
           end
         end
       end

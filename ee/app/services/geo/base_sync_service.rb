@@ -16,7 +16,6 @@ module Geo
     GEO_REMOTE_NAME = 'geo'.freeze
     LEASE_TIMEOUT    = 8.hours.freeze
     LEASE_KEY_PREFIX = 'geo_sync_service'.freeze
-    RETRIES_BEFORE_REDOWNLOAD = 5
 
     def initialize(project)
       @project = project
@@ -26,7 +25,7 @@ module Geo
       try_obtain_lease do
         log_info("Started #{type} sync")
 
-        if should_be_retried?
+        if registry.should_be_retried?(type)
           sync_repository
         else
           sync_repository(true)
@@ -50,7 +49,9 @@ module Geo
       log_info("Trying to fetch #{type}")
       clean_up_temporary_repository
 
-      update_registry!(started_at: DateTime.now)
+      log_info("Marking #{type} sync as started")
+
+      registry.start_sync!(type)
 
       if redownload
         redownload_repository
@@ -82,16 +83,6 @@ module Geo
       end
 
       fetch_geo_mirror(temp_repo)
-    end
-
-    def retry_count
-      registry.public_send("#{type}_retry_count") || -1 # rubocop:disable GitlabSecurity/PublicSend
-    end
-
-    def should_be_retried?
-      return false if registry.public_send("force_to_redownload_#{type}")  # rubocop:disable GitlabSecurity/PublicSend
-
-      retry_count <= RETRIES_BEFORE_REDOWNLOAD
     end
 
     def current_node
@@ -132,40 +123,10 @@ module Geo
       @registry ||= Geo::ProjectRegistry.find_or_initialize_by(project_id: project.id)
     end
 
-    def update_registry!(started_at: nil, finished_at: nil, attrs: {})
-      return unless started_at || finished_at
-
-      log_info("Updating #{type} sync information")
-
-      if started_at
-        attrs["last_#{type}_synced_at"] = started_at
-        attrs["#{type}_retry_count"] = retry_count + 1
-        attrs["#{type}_retry_at"] = next_retry_time(attrs["#{type}_retry_count"])
-      end
-
-      if finished_at
-        attrs["last_#{type}_successful_sync_at"] = finished_at
-        attrs["resync_#{type}"] = false
-        attrs["#{type}_retry_count"] = nil
-        attrs["#{type}_retry_at"] = nil
-        attrs["force_to_redownload_#{type}"] = false
-
-        # Indicate that repository verification needs to be done again
-        attrs["#{type}_verification_checksum_sha"] = nil
-        attrs["#{type}_checksum_mismatch"] = false
-        attrs["last_#{type}_verification_failure"] = nil
-      end
-
-      registry.update!(attrs)
-    end
-
     def fail_registry!(message, error, attrs = {})
       log_error(message, error)
 
-      attrs["resync_#{type}"] = true
-      attrs["last_#{type}_sync_failure"] = "#{message}: #{error.message}"
-      attrs["#{type}_retry_count"] = retry_count + 1
-      registry.update!(attrs)
+      registry.fail_sync!(type, message, error, attrs)
 
       repository.clean_stale_repository_files
     end
@@ -258,15 +219,6 @@ module Geo
         project.repository_storage,
         File.dirname(disk_path)
       )
-    end
-
-    # To prevent the retry time from storing invalid dates in the database,
-    # cap the max time to a week plus some random jitter value.
-    def next_retry_time(retry_count)
-      proposed_time = Time.now + delay(retry_count).seconds
-      max_future_time = Time.now + 7.days + delay(1).seconds
-
-      [proposed_time, max_future_time].min
     end
   end
 end

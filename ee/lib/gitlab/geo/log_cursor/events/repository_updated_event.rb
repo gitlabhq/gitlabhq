@@ -6,7 +6,7 @@ module Gitlab
           include BaseEvent
 
           def process
-            registry.save!
+            registry.repository_updated!(event, scheduled_at)
 
             job_id = enqueue_job_if_shard_healthy(event) do
               ::Geo::ProjectSyncWorker.perform_async(event.project_id, scheduled_at)
@@ -16,16 +16,6 @@ module Gitlab
           end
 
           private
-
-          def registry
-            @registry ||= find_or_initialize_registry(
-              "resync_#{event.source}" => true,
-              "#{event.source}_verification_checksum_sha" => nil,
-              "#{event.source}_checksum_mismatch" => false,
-              "last_#{event.source}_verification_failure" => nil,
-              "resync_#{event.source}_was_scheduled_at" => scheduled_at
-            )
-          end
 
           def log_event(job_id)
             logger.event_info(

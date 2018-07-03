@@ -45,7 +45,9 @@ module Geo
     end
 
     def mark_sync_as_successful
-      update_registry!(finished_at: DateTime.now, attrs: { last_wiki_sync_failure: nil })
+      log_info("Marking #{type} sync as successful")
+
+      registry.finish_sync!(type)
 
       log_info('Finished wiki sync',
                update_delay_s: update_delay_in_seconds,
