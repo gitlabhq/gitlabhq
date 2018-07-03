@@ -7,16 +7,16 @@ class LfsObject < ActiveRecord::Base
 
   scope :with_files_stored_locally, -> { where(file_store: [nil, LfsObjectUploader::Store::LOCAL]) }
 
+  before_save :set_file_store, if: :file_changed?
+
   validates :oid, presence: true, uniqueness: true
 
   mount_uploader :file, LfsObjectUploader
 
   after_save :update_file_store, if: :file_changed?
 
-  def update_file_store
-    # The file.object_store is set during `uploader.store!`
-    # which happens after object is inserted/updated
-    self.update_column(:file_store, file.object_store)
+  def set_file_store
+    self.file_store = file.object_store
   end
 
   def project_allowed_access?(project)

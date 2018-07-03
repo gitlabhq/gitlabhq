@@ -50,7 +50,7 @@ describe CleanupFillFileStoreBackgroundMigrations, :migration, :sidekiq, :redis 
         namespace = namespaces.create(name: 'test-namespace', path: 'path')
         project = projects.create(name: 'test-project', namespace_id: namespace.id, path: 'path')
         build = builds.create(name: 'job1', ref: 'master', project_id: project.id)
-  
+
         job_artifacts.create(id: 1, project_id: project.id, job_id: build.id, file_type: 1, file_store: nil)
         job_artifacts.create(id: 2, project_id: project.id, job_id: build.id, file_type: 2, file_store: nil)
       end

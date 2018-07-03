@@ -10,10 +10,9 @@ module Ci
     mount_uploader :file, JobArtifactUploader
 
     before_save :set_size, if: :file_changed?
+    before_save :set_file_store, if: :file_changed?
     after_save :update_project_statistics_after_save, if: :size_changed?
     after_destroy :update_project_statistics_after_destroy, unless: :project_destroyed?
-
-    after_save :update_file_store, if: :file_changed?
 
     scope :with_files_stored_locally, -> { where(file_store: [nil, ::JobArtifactUploader::Store::LOCAL]) }
 
@@ -25,10 +24,8 @@ module Ci
       trace: 3
     }
 
-    def update_file_store
-      # The file.object_store is set during `uploader.store!`
-      # which happens after object is inserted/updated
-      self.update_column(:file_store, file.object_store)
+    def set_file_store
+      self.file_store = file.object_store
     end
 
     def self.artifacts_size_for(project)
