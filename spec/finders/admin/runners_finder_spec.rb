@@ -23,7 +23,7 @@ describe Admin::RunnersFinder do
       it 'calls the corresponding scope on Ci::Runner' do
         expect(Ci::Runner).to receive(:paused).and_call_original
 
-        described_class.new(params: { status: 'paused' }).execute
+        described_class.new(params: { status_status: 'paused' }).execute
       end
     end
 

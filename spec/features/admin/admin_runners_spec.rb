@@ -1,7 +1,8 @@
 require 'spec_helper'
 
-describe "Admin Runners" do
+describe "Admin Runners", :js do
   include StubENV
+  include FilteredSearchHelpers
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
@@ -30,26 +31,20 @@ describe "Admin Runners" do
         end
 
         it 'shows correct runner when description matches' do
-          within '#runners-search' do
-            fill_in 'search', with: 'runner-foo'
-            click_button 'Search'
-          end
+          input_filtered_search_keys('runner-foo')
 
           expect(page).to have_content("runner-foo")
           expect(page).not_to have_content("runner-bar")
         end
 
         it 'shows no runner when description does not match' do
-          within '#runners-search' do
-            fill_in 'search', with: 'runner-baz'
-            click_button 'Search'
-          end
+          input_filtered_search_keys('runner-baz')
 
           expect(page).to have_text 'No runners found'
         end
       end
 
-      describe 'filter by status', :js do
+      describe 'filter by status' do
         it 'shows correct runner when status matches' do
           FactoryBot.create :ci_runner, description: 'runner-active', active: true
           FactoryBot.create :ci_runner, description: 'runner-paused', active: false
@@ -59,8 +54,7 @@ describe "Admin Runners" do
           expect(page).to have_content 'runner-active'
           expect(page).to have_content 'runner-paused'
 
-          click_button 'Status'
-          click_link 'Active'
+          input_filtered_search_keys('status:active')
           expect(page).to have_content 'runner-active'
           expect(page).not_to have_content 'runner-paused'
         end
@@ -71,8 +65,7 @@ describe "Admin Runners" do
 
           visit admin_runners_path
 
-          click_button 'Status'
-          click_link 'Offline'
+          input_filtered_search_keys('status:offline')
 
           expect(page).not_to have_content 'runner-active'
           expect(page).not_to have_content 'runner-paused'
@@ -81,48 +74,22 @@ describe "Admin Runners" do
         end
       end
 
-      describe 'filter by status and enter search term', :js do
-        before do
-          FactoryBot.create :ci_runner, description: 'runner-a-1', active: true
-          FactoryBot.create :ci_runner, description: 'runner-a-2', active: false
-          FactoryBot.create :ci_runner, description: 'runner-b-1', active: true
+      it 'shows correct runner when status is selected and search term is entered' do
+        FactoryBot.create :ci_runner, description: 'runner-a-1', active: true
+        FactoryBot.create :ci_runner, description: 'runner-a-2', active: false
+        FactoryBot.create :ci_runner, description: 'runner-b-1', active: true
 
-          visit admin_runners_path
-        end
+        visit admin_runners_path
 
-        it 'shows correct runner when status is selected first and then search term is entered' do
-          click_button 'Status'
-          click_link 'Active'
-          expect(page).to have_content 'runner-a-1'
-          expect(page).to have_content 'runner-b-1'
-          expect(page).not_to have_content 'runner-a-2'
+        input_filtered_search_keys('status:active')
+        expect(page).to have_content 'runner-a-1'
+        expect(page).to have_content 'runner-b-1'
+        expect(page).not_to have_content 'runner-a-2'
 
-          within '#runners-search' do
-            fill_in 'search', with: 'runner-a'
-            click_button 'Search'
-          end
-
-          expect(page).to have_content 'runner-a-1'
-          expect(page).not_to have_content 'runner-b-1'
-          expect(page).not_to have_content 'runner-a-2'
-        end
-
-        it 'shows correct runner when search term is entered first and then status is selected' do
-          within '#runners-search' do
-            fill_in 'search', with: 'runner-a'
-            click_button 'Search'
-          end
-
-          expect(page).to have_content 'runner-a-1'
-          expect(page).to have_content 'runner-a-2'
-          expect(page).not_to have_content 'runner-b-1'
-
-          click_button 'Status'
-          click_link 'Active'
-          expect(page).to have_content 'runner-a-1'
-          expect(page).not_to have_content 'runner-b-1'
-          expect(page).not_to have_content 'runner-a-2'
-        end
+        input_filtered_search_keys('status:active runner-a')
+        expect(page).to have_content 'runner-a-1'
+        expect(page).not_to have_content 'runner-b-1'
+        expect(page).not_to have_content 'runner-a-2'
       end
     end
 
