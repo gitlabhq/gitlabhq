@@ -99,7 +99,7 @@ describe('epicSidebar', () => {
     });
 
     it('should render collapsed grouped date picker', () => {
-      expect(vm.$el.querySelector('.sidebar-collapsed-icon span').innerText.trim()).toEqual('From Jan 1 2017');
+      expect(vm.$el.querySelector('.sidebar-grouped-item .sidebar-collapsed-icon span').innerText.trim()).toEqual('From Jan 1 2017');
     });
 
     it('should render collapsed labels picker', () => {
@@ -225,7 +225,7 @@ describe('epicSidebar', () => {
 
     beforeEach(() => {
       mock = new MockAdapter(axios);
-      document.body.innerHTML += '<div class="flash-container"></div>';
+      setFixtures('<div class="flash-container"></div>');
     });
 
     afterEach(() => {

@@ -178,6 +178,14 @@ export default {
     saveEndDate(date) {
       return this.saveDate('end', date);
     },
+    saveTodoState({ count, deletePath }) {
+      this.savingTodoAction = false;
+      this.store.setTodoExists(!this.store.todoExists);
+      if (deletePath) {
+        this.store.setTodoDeletePath(deletePath);
+      }
+      $(document).trigger('todo:toggle', count);
+    },
     handleLabelClick(label) {
       if (label.isAny) {
         this.epicContext.labels = [];
@@ -223,12 +231,11 @@ export default {
       if (!this.store.todoExists) {
         this.service
           .addTodo(this.epicId)
-          .then(res => res.data)
-          .then(data => {
-            this.savingTodoAction = false;
-            this.store.setTodoDeletePath(data.delete_path);
-            this.store.setTodoExists(!this.store.todoExists);
-            $(document).trigger('todo:toggle', data.count);
+          .then(({ data }) => {
+            this.saveTodoState({
+              count: data.count,
+              deletePath: data.delete_path,
+            });
           })
           .catch(() => {
             this.savingTodoAction = false;
@@ -237,11 +244,10 @@ export default {
       } else {
         this.service
           .deleteTodo(this.store.todoDeletePath)
-          .then(res => res.data)
-          .then(data => {
-            this.savingTodoAction = false;
-            this.store.setTodoExists(!this.store.todoExists);
-            $(document).trigger('todo:toggle', data.count);
+          .then(({ data }) => {
+            this.saveTodoState({
+              count: data.count,
+            });
           })
           .catch(() => {
             this.savingTodoAction = false;
