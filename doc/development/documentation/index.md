@@ -322,50 +322,49 @@ to EE only.
 
 ## Previewing the changes live
 
-To preview your changes to documentation locally, please follow
-this [development guide](https://gitlab.com/gitlab-com/gitlab-docs/blob/master/README.md#development).
+NOTE: **Note:**
+To preview your changes to documentation locally, follow this
+[development guide](https://gitlab.com/gitlab-com/gitlab-docs/blob/master/README.md#development).
 
-If you want to preview the doc changes of your merge request live, you can use
-the manual `review-docs-deploy` job in your merge request. You will need at
-least Maintainer permissions to be able to run it and is currently enabled for the
-following projects:
+The live preview is currently enabled for the following projects:
 
 - https://gitlab.com/gitlab-org/gitlab-ce
 - https://gitlab.com/gitlab-org/gitlab-ee
+- https://gitlab.com/gitlab-org/gitlab-runner
+
+If your branch contains only documentation changes, you can use
+[special branch names](#branch-naming) to avoid long running pipelines.
+
+For [docs-only changes](#branch-naming), the review app is run automatically.
+For all other branches, you can use the manual `review-docs-deploy-manual` job
+in your merge request. You will need at least Maintainer permissions to be able
+to run it. In the mini pipeline graph, you should see an `>>` icon. Clicking on it will
+reveal the `review-docs-deploy-manual` job. Hit the play button for the job to start.
+
+![Manual trigger a docs build](img/manual_build_docs.png)
 
 NOTE: **Note:**
 You will need to push a branch to those repositories, it doesn't work for forks.
 
-TIP: **Tip:**
-If your branch contains only documentation changes, you can use
-[special branch names](#branch-naming) to avoid long running pipelines.
-
-In the mini pipeline graph, you should see an `>>` icon. Clicking on it will
-reveal the `review-docs-deploy` job. Hit the play button for the job to start.
-
-![Manual trigger a docs build](img/manual_build_docs.png)
-
-This job will:
+The `review-docs-deploy*` job will:
 
 1. Create a new branch in the [gitlab-docs](https://gitlab.com/gitlab-com/gitlab-docs)
-   project named after the scheme: `preview-<branch-slug>`
+   project named after the scheme: `$DOCS_GITLAB_REPO_SUFFIX-$CI_ENVIRONMENT_SLUG`,
+   where `DOCS_GITLAB_REPO_SUFFIX` is the suffix for each product, e.g, `ce` for
+   CE, etc.
 1. Trigger a cross project pipeline and build the docs site with your changes
 
 After a few minutes, the Review App will be deployed and you will be able to
 preview the changes. The docs URL can be found in two places:
 
 - In the merge request widget
-- In the output of the `review-docs-deploy` job, which also includes the
+- In the output of the `review-docs-deploy*` job, which also includes the
   triggered pipeline so that you can investigate whether something went wrong
 
 In case the Review App URL returns 404, follow these steps to debug:
 
 1. **Did you follow the URL from the merge request widget?** If yes, then check if
-   the link is the same as the one in the job output. It can happen that if the
-   branch name slug is longer than 35 characters, it is automatically
-   truncated. That means that the merge request widget will not show the proper
-   URL due to a limitation of how `environment: url` works, but you can find the
-   real URL from the output of the `review-docs-deploy` job.
+   the link is the same as the one in the job output.
 1. **Did you follow the URL from the job output?** If yes, then it means that
    either the site is not yet deployed or something went wrong with the remote
    pipeline. Give it a few minutes and it should appear online, otherwise you

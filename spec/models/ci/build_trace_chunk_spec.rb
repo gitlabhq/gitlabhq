@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
+  include ExclusiveLeaseHelpers
+
   set(:build) { create(:ci_build, :running) }
   let(:chunk_index) { 0 }
   let(:data_store) { :redis }
@@ -105,14 +107,12 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
         context 'when the other process is appending' do
           let(:lease_key) { "trace_write:#{build_trace_chunk.build.id}:chunks:#{build_trace_chunk.chunk_index}" }
 
-          it 'raise an error' do
-            begin
-              uuid = Gitlab::ExclusiveLease.new(lease_key, timeout: 1.day).try_obtain
+          before do
+            stub_exclusive_lease_taken(lease_key)
+          end
 
-              expect { subject }.to raise_error('Failed to obtain a lock')
-            ensure
-              Gitlab::ExclusiveLease.cancel(lease_key, uuid)
-            end
+          it 'raise an error' do
+            expect { subject }.to raise_error('Failed to obtain a lock')
           end
         end
 
@@ -406,14 +406,12 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       context 'when the other process is persisting' do
         let(:lease_key) { "trace_write:#{build_trace_chunk.build.id}:chunks:#{build_trace_chunk.chunk_index}" }
 
-        it 'raise an error' do
-          begin
-            uuid = Gitlab::ExclusiveLease.new(lease_key, timeout: 1.day).try_obtain
+        before do
+          stub_exclusive_lease_taken(lease_key)
+        end
 
-            expect { subject }.to raise_error('Failed to obtain a lock')
-          ensure
-            Gitlab::ExclusiveLease.cancel(lease_key, uuid)
-          end
+        it 'raise an error' do
+          expect { subject }.to raise_error('Failed to obtain a lock')
         end
       end
     end

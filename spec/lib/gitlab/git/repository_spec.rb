@@ -996,46 +996,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe "#rugged_commits_between" do
-    around do |example|
-      # TODO #rugged_commits_between will be removed, has been migrated to gitaly
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        example.run
-      end
-    end
-
-    context 'two SHAs' do
-      let(:first_sha) { 'b0e52af38d7ea43cf41d8a6f2471351ac036d6c9' }
-      let(:second_sha) { '0e50ec4d3c7ce42ab74dda1d422cb2cbffe1e326' }
-
-      it 'returns the number of commits between' do
-        expect(repository.rugged_commits_between(first_sha, second_sha).count).to eq(3)
-      end
-    end
-
-    context 'SHA and master branch' do
-      let(:sha) { 'b0e52af38d7ea43cf41d8a6f2471351ac036d6c9' }
-      let(:branch) { 'master' }
-
-      it 'returns the number of commits between a sha and a branch' do
-        expect(repository.rugged_commits_between(sha, branch).count).to eq(5)
-      end
-
-      it 'returns the number of commits between a branch and a sha' do
-        expect(repository.rugged_commits_between(branch, sha).count).to eq(0) # sha is before branch
-      end
-    end
-
-    context 'two branches' do
-      let(:first_branch) { 'feature' }
-      let(:second_branch) { 'master' }
-
-      it 'returns the number of commits between' do
-        expect(repository.rugged_commits_between(first_branch, second_branch).count).to eq(17)
-      end
-    end
-  end
-
   describe '#count_commits_between' do
     subject { repository.count_commits_between('feature', 'master') }
 
@@ -1871,48 +1831,38 @@ describe Gitlab::Git::Repository, seed_helper: true do
       repository_rugged.config["gitlab.fullpath"] = repository_path
     end
 
-    shared_examples 'writing repo config' do
-      context 'is given a path' do
-        it 'writes it to disk' do
-          repository.write_config(full_path: "not-the/real-path.git")
+    context 'is given a path' do
+      it 'writes it to disk' do
+        repository.write_config(full_path: "not-the/real-path.git")
 
-          config = File.read(File.join(repository_path, "config"))
+        config = File.read(File.join(repository_path, "config"))
 
-          expect(config).to include("[gitlab]")
-          expect(config).to include("fullpath = not-the/real-path.git")
-        end
-      end
-
-      context 'it is given an empty path' do
-        it 'does not write it to disk' do
-          repository.write_config(full_path: "")
-
-          config = File.read(File.join(repository_path, "config"))
-
-          expect(config).to include("[gitlab]")
-          expect(config).to include("fullpath = #{repository_path}")
-        end
-      end
-
-      context 'repository does not exist' do
-        it 'raises NoRepository and does not call Gitaly WriteConfig' do
-          repository = Gitlab::Git::Repository.new('default', 'does/not/exist.git', '')
-
-          expect(repository.gitaly_repository_client).not_to receive(:write_config)
-
-          expect do
-            repository.write_config(full_path: 'foo/bar.git')
-          end.to raise_error(Gitlab::Git::Repository::NoRepository)
-        end
+        expect(config).to include("[gitlab]")
+        expect(config).to include("fullpath = not-the/real-path.git")
       end
     end
 
-    context "when gitaly_write_config is enabled" do
-      it_behaves_like "writing repo config"
+    context 'it is given an empty path' do
+      it 'does not write it to disk' do
+        repository.write_config(full_path: "")
+
+        config = File.read(File.join(repository_path, "config"))
+
+        expect(config).to include("[gitlab]")
+        expect(config).to include("fullpath = #{repository_path}")
+      end
     end
 
-    context "when gitaly_write_config is disabled", :disable_gitaly do
-      it_behaves_like "writing repo config"
+    context 'repository does not exist' do
+      it 'raises NoRepository and does not call Gitaly WriteConfig' do
+        repository = Gitlab::Git::Repository.new('default', 'does/not/exist.git', '')
+
+        expect(repository.gitaly_repository_client).not_to receive(:write_config)
+
+        expect do
+          repository.write_config(full_path: 'foo/bar.git')
+        end.to raise_error(Gitlab::Git::Repository::NoRepository)
+      end
     end
   end
 
@@ -2160,43 +2110,33 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#create_from_bundle' do
-    shared_examples 'creating repo from bundle' do
-      let(:bundle_path) { File.join(Dir.tmpdir, "repo-#{SecureRandom.hex}.bundle") }
-      let(:project) { create(:project) }
-      let(:imported_repo) { project.repository.raw }
+    let(:bundle_path) { File.join(Dir.tmpdir, "repo-#{SecureRandom.hex}.bundle") }
+    let(:project) { create(:project) }
+    let(:imported_repo) { project.repository.raw }
 
-      before do
-        expect(repository.bundle_to_disk(bundle_path)).to be true
-      end
-
-      after do
-        FileUtils.rm_rf(bundle_path)
-      end
-
-      it 'creates a repo from a bundle file' do
-        expect(imported_repo).not_to exist
-
-        result = imported_repo.create_from_bundle(bundle_path)
-
-        expect(result).to be true
-        expect(imported_repo).to exist
-        expect { imported_repo.fsck }.not_to raise_exception
-      end
-
-      it 'creates a symlink to the global hooks dir' do
-        imported_repo.create_from_bundle(bundle_path)
-        hooks_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access { File.join(imported_repo.path, 'hooks') }
-
-        expect(File.readlink(hooks_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
-      end
+    before do
+      expect(repository.bundle_to_disk(bundle_path)).to be_truthy
     end
 
-    context 'when Gitaly create_repo_from_bundle feature is enabled' do
-      it_behaves_like 'creating repo from bundle'
+    after do
+      FileUtils.rm_rf(bundle_path)
     end
 
-    context 'when Gitaly create_repo_from_bundle feature is disabled', :disable_gitaly do
-      it_behaves_like 'creating repo from bundle'
+    it 'creates a repo from a bundle file' do
+      expect(imported_repo).not_to exist
+
+      result = imported_repo.create_from_bundle(bundle_path)
+
+      expect(result).to be_truthy
+      expect(imported_repo).to exist
+      expect { imported_repo.fsck }.not_to raise_exception
+    end
+
+    it 'creates a symlink to the global hooks dir' do
+      imported_repo.create_from_bundle(bundle_path)
+      hooks_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access { File.join(imported_repo.path, 'hooks') }
+
+      expect(File.readlink(hooks_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
     end
   end
 

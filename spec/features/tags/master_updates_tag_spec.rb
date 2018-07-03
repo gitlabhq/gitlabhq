@@ -25,13 +25,13 @@ feature 'Master updates tag' do
       expect(page).to have_content 'Awesome release notes'
     end
 
-    scenario 'description has autocomplete', :js do
+    scenario 'description has emoji autocomplete', :js do
       page.within(first('.content-list .controls')) do
         click_link 'Edit release notes'
       end
 
       find('#release_description').native.send_keys('')
-      fill_in 'release_description', with: '@'
+      fill_in 'release_description', with: ':'
 
       expect(page).to have_selector('.atwho-view')
     end

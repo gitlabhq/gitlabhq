@@ -1,0 +1,5 @@
+---
+title: Improve performance of listing users without projects
+merge_request:
+author:
+type: performance

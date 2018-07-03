@@ -143,7 +143,15 @@ module NotesHelper
       notesIds: @notes.map(&:id),
       now: Time.now.to_i,
       diffView: diff_view,
-      autocomplete: autocomplete
+      enableGFM: {
+        emojis: true,
+        members: autocomplete,
+        issues: autocomplete,
+        mergeRequests: autocomplete,
+        epics: autocomplete,
+        milestones: autocomplete,
+        labels: autocomplete
+      }
     }
   end
 

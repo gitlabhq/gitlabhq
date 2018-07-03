@@ -69,5 +69,3 @@ rules:
       FunctionExpression:
         parameters: 1
         body: 1
-  ## Destructuring: https://eslint.org/docs/rules/prefer-destructuring
-  prefer-destructuring: off

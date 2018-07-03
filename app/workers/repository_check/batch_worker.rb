@@ -1,13 +1,20 @@
+# frozen_string_literal: true
+
 module RepositoryCheck
   class BatchWorker
     include ApplicationWorker
-    include CronjobQueue
+    include RepositoryCheckQueue
 
     RUN_TIME = 3600
     BATCH_SIZE = 10_000
 
-    def perform
+    attr_reader :shard_name
+
+    def perform(shard_name)
+      @shard_name = shard_name
+
       return unless Gitlab::CurrentSettings.repository_checks_enabled
+      return unless Gitlab::ShardHealthCache.healthy_shard?(shard_name)
 
       start = Time.now
 
@@ -37,16 +44,20 @@ module RepositoryCheck
     end
 
     def never_checked_project_ids(batch_size)
-      Project.where(last_repository_check_at: nil)
+      projects_on_shard.where(last_repository_check_at: nil)
         .where('created_at < ?', 24.hours.ago)
         .limit(batch_size).pluck(:id)
     end
 
     def old_checked_project_ids(batch_size)
-      Project.where.not(last_repository_check_at: nil)
+      projects_on_shard.where.not(last_repository_check_at: nil)
         .where('last_repository_check_at < ?', 1.month.ago)
         .reorder(last_repository_check_at: :asc)
         .limit(batch_size).pluck(:id)
+    end
+
+    def projects_on_shard
+      Project.where(repository_storage: shard_name)
     end
 
     def try_obtain_lease(id)

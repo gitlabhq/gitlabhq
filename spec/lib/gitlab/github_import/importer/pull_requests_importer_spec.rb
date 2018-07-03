@@ -164,7 +164,7 @@ describe Gitlab::GithubImport::Importer::PullRequestsImporter do
       Timecop.freeze do
         importer.update_repository
 
-        expect(project.last_repository_updated_at).to eq(Time.zone.now)
+        expect(project.last_repository_updated_at).to be_like_time(Time.zone.now)
       end
     end
   end

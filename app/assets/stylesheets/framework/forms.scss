@@ -243,3 +243,15 @@ label {
     }
   }
 }
+
+.input-icon-wrapper {
+  position: relative;
+
+  .input-icon-right {
+    position: absolute;
+    right: 0.8em;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $theme-gray-600;
+  }
+}

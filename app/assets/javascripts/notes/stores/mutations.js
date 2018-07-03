@@ -205,6 +205,10 @@ export default {
     Object.assign(state, { isToggleStateButtonLoading: value });
   },
 
+  [types.SET_NOTES_FETCHED_STATE](state, value) {
+    Object.assign(state, { isNotesFetched: value });
+  },
+
   [types.SET_DISCUSSION_DIFF_LINES](state, { discussionId, diffLines }) {
     const discussion = utils.findNoteObjectById(state.discussions, discussionId);
     const index = state.discussions.indexOf(discussion);

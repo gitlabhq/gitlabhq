@@ -46,7 +46,6 @@
 
   .btn {
     font-size: $gl-font-size;
-    max-height: 26px;
 
     &[disabled] {
       opacity: 0.3;
@@ -737,6 +736,10 @@
 
   > *:not(:last-child) {
     margin-right: .3em;
+  }
+
+  svg {
+    vertical-align: text-top;
   }
 }
 

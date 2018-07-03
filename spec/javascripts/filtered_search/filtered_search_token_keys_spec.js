@@ -17,6 +17,17 @@ describe('Filtered Search Token Keys', () => {
     });
   });
 
+  describe('getKeys', () => {
+    it('should return keys', () => {
+      const getKeys = FilteredSearchTokenKeys.getKeys();
+      const keys = FilteredSearchTokenKeys.get().map(i => i.key);
+
+      keys.forEach((key, i) => {
+        expect(key).toEqual(getKeys[i]);
+      });
+    });
+  });
+
   describe('getConditions', () => {
     let conditions;
 

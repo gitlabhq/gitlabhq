@@ -3,10 +3,6 @@ module Banzai
     # HTML filter that replaces :emoji: and unicode with images.
     #
     # Based on HTML::Pipeline::EmojiFilter
-    #
-    # Context options:
-    #   :asset_root
-    #   :asset_host
     class EmojiFilter < HTML::Pipeline::Filter
       IGNORED_ANCESTOR_TAGS = %w(pre code tt).to_set
 

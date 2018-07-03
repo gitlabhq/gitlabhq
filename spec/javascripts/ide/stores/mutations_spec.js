@@ -148,4 +148,12 @@ describe('Multi-file store mutations', () => {
       expect(localState.unusedSeal).toBe(false);
     });
   });
+
+  describe('SET_ERROR_MESSAGE', () => {
+    it('updates error message', () => {
+      mutations.SET_ERROR_MESSAGE(localState, 'error');
+
+      expect(localState.errorMessage).toBe('error');
+    });
+  });
 });

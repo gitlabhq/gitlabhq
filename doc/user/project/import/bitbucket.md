@@ -9,6 +9,10 @@ The [Bitbucket integration][bb-import] must be first enabled in order to be
 able to import your projects from Bitbucket. Ask your GitLab administrator
 to enable this if not already.
 
+>**Note:**  
+The BitBucket importer currently only works with BitBucket's cloud offering 
+(bitbucket.org) and does not work with BitBucket Server (aka Stash).
+
 - At its current state, the Bitbucket importer can import:
   - the repository description (GitLab 7.7+)
   - the Git repository data (GitLab 7.7+)
