@@ -193,8 +193,9 @@ module EESpecificCheck
   end
 
   def with_detached_head(target_head)
-    # So that we could switch back
-    head = current_branch
+    # So that we could switch back. CI sometimes doesn't have the branch,
+    # so we don't use current_branch here
+    head = current_head
 
     # Use detached HEAD so that we don't update HEAD
     run_git_command("checkout -f #{target_head}")
@@ -261,6 +262,10 @@ module EESpecificCheck
 
   def ce_repo_url
     @ce_repo_url ||= ENV.fetch('CI_REPOSITORY_URL', 'https://gitlab.com/gitlab-org/gitlab-ce.git').sub('gitlab-ee', 'gitlab-ce')
+  end
+
+  def current_head
+    @current_head ||= ENV.fetch('CI_COMMIT_SHA', current_branch)
   end
 
   def current_branch
