@@ -48,25 +48,23 @@ export default class Todos {
   }
 
   initFilterDropdown($dropdown, fieldName, searchFields) {
-    if ($dropdown.length) {
-      $dropdown.glDropdown({
-        fieldName,
-        selectable: true,
-        filterable: searchFields ? true : false,
-        search: { fields: searchFields },
-        data: $dropdown.data('data'),
-        clicked: () => {
-          const $formEl = $dropdown.closest('form.filter-form');
-          const mutexDropdowns = {
-            group_id: 'project_id',
-            project_id: 'group_id',
-          };
+    $dropdown.glDropdown({
+      fieldName,
+      selectable: true,
+      filterable: searchFields ? true : false,
+      search: { fields: searchFields },
+      data: $dropdown.data('data'),
+      clicked: () => {
+        const $formEl = $dropdown.closest('form.filter-form');
+        const mutexDropdowns = {
+          group_id: 'project_id',
+          project_id: 'group_id',
+        };
 
-          $formEl.find(`input[name="${mutexDropdowns[fieldName]}"]`).remove();
-          $formEl.submit();
-        },
-      });
-    }
+        $formEl.find(`input[name="${mutexDropdowns[fieldName]}"]`).remove();
+        $formEl.submit();
+      },
+    });
   }
 
   updateRowStateClicked(e) {
