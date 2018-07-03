@@ -43,37 +43,64 @@ describe HangoutsChatService do
       WebMock.stub_request(:post, webhook_url)
     end
 
-    context 'with push events' do
-      let(:push_sample_data) do
-        Gitlab::DataBuilder::Push.build_sample(project, user)
-      end
-
-      it 'calls Hangouts Chat API for push events' do
-        chat_service.execute(push_sample_data)
+    shared_examples 'Hangouts Chat service' do
+      it 'calls Hangouts Chat API' do
+        chat_service.execute(sample_data)
 
         expect(WebMock).to have_requested(:post, webhook_url).once
       end
+    end
+
+    context 'with push events' do
+      let(:sample_data) do
+        Gitlab::DataBuilder::Push.build_sample(project, user)
+      end
+
+      it_behaves_like 'Hangouts Chat service'
 
       it 'specifies the webhook when it is configured' do
         expect(HangoutsChat::Sender).to receive(:new).with(webhook_url).and_return(double(:hangouts_chat_service).as_null_object)
 
-        chat_service.execute(push_sample_data)
+        chat_service.execute(sample_data)
+      end
+
+      context 'with not default branch' do
+        let(:sample_data) do
+          ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}test"
+          Gitlab::DataBuilder::Push.build(project, user, nil, nil, ref, [])
+        end
+
+        context 'when notify_only_default_branch enabled' do
+          before do
+            chat_service.notify_only_default_branch = true
+          end
+
+          it 'does not call the Hangouts Chat API' do
+            result = chat_service.execute(sample_data)
+
+            expect(result).to be_falsy
+          end
+        end
+
+        context 'when notify_only_default_branch disabled' do
+          before do
+            chat_service.notify_only_default_branch = false
+          end
+
+          it_behaves_like 'Hangouts Chat service'
+        end
       end
     end
 
     context 'with issue events' do
       let(:opts) { { title: 'Awesome issue', description: 'please fix' } }
-      let(:issues_sample_data) do
+      let(:sample_data) do
         service = Issues::CreateService.new(project, user, opts)
         issue = service.execute
         service.hook_data(issue, 'open')
       end
 
-      it 'calls Hangouts Chat API' do
-        chat_service.execute(issues_sample_data)
-
-        expect(WebMock).to have_requested(:post, webhook_url).once
-      end
+      it_behaves_like 'Hangouts Chat service'
     end
 
     context 'with merge events' do
@@ -86,7 +113,7 @@ describe HangoutsChatService do
         }
       end
 
-      let(:merge_sample_data) do
+      let(:sample_data) do
         service = MergeRequests::CreateService.new(project, user, opts)
         merge_request = service.execute
         service.hook_data(merge_request, 'open')
@@ -96,11 +123,7 @@ describe HangoutsChatService do
         project.add_developer(user)
       end
 
-      it 'calls Hangouts Chat API' do
-        chat_service.execute(merge_sample_data)
-
-        expect(WebMock).to have_requested(:post, webhook_url).once
-      end
+      it_behaves_like 'Hangouts Chat service'
     end
 
     context 'with wiki page events' do
@@ -113,198 +136,110 @@ describe HangoutsChatService do
         }
       end
       let(:wiki_page) { create(:wiki_page, wiki: project.wiki, attrs: opts) }
-      let(:wiki_page_sample_data) { Gitlab::DataBuilder::WikiPage.build(wiki_page, user, 'create') }
+      let(:sample_data) { Gitlab::DataBuilder::WikiPage.build(wiki_page, user, 'create') }
 
-      it 'calls Hangouts Chat API' do
-        chat_service.execute(wiki_page_sample_data)
-
-        expect(WebMock).to have_requested(:post, webhook_url).once
-      end
-    end
-  end
-
-  describe 'Note events' do
-    let(:user) { create(:user) }
-    let(:project) { create(:project, :repository, creator: user) }
-
-    before do
-      allow(chat_service).to receive_messages(
-        project: project,
-        project_id: project.id,
-        service_hook: true,
-        webhook: webhook_url
-      )
-
-      WebMock.stub_request(:post, webhook_url)
+      it_behaves_like 'Hangouts Chat service'
     end
 
-    context 'when commit comment event executed' do
-      let(:commit_note) do
-        create(:note_on_commit, author: user,
-                                project: project,
-                                commit_id: project.repository.commit.id,
-                                note: 'a comment on a commit')
+    context 'with note events' do
+      let(:sample_data) { Gitlab::DataBuilder::Note.build(note, user) }
+
+      context 'with commit comment' do
+        let(:note) do
+          create(:note_on_commit, author: user,
+                                  project: project,
+                                  commit_id: project.repository.commit.id,
+                                  note: 'a comment on a commit')
+        end
+
+        it_behaves_like 'Hangouts Chat service'
       end
 
-      it 'calls Hangouts Chat API for commit comment events' do
-        data = Gitlab::DataBuilder::Note.build(commit_note, user)
+      context 'with merge request comment' do
+        let(:note) do
+          create(:note_on_merge_request, project: project,
+                                         note: 'merge request note')
+        end
 
-        chat_service.execute(data)
-
-        expect(WebMock).to have_requested(:post, webhook_url).once
-      end
-    end
-
-    context 'when merge request comment event executed' do
-      let(:merge_request_note) do
-        create(:note_on_merge_request, project: project,
-                                       note: 'merge request note')
+        it_behaves_like 'Hangouts Chat service'
       end
 
-      it 'calls Hangouts Chat API for merge request comment events' do
-        data = Gitlab::DataBuilder::Note.build(merge_request_note, user)
+      context 'with issue comment' do
+        let(:note) do
+          create(:note_on_issue, project: project, note: 'issue note')
+        end
 
-        chat_service.execute(data)
+        it_behaves_like 'Hangouts Chat service'
+      end
 
-        expect(WebMock).to have_requested(:post, webhook_url).once
+      context 'wiht snippet comment' do
+        let(:note) do
+          create(:note_on_project_snippet, project: project,
+                                           note: 'snippet note')
+        end
+
+        it_behaves_like 'Hangouts Chat service'
       end
     end
 
-    context 'when issue comment event executed' do
-      let(:issue_note) do
-        create(:note_on_issue, project: project, note: 'issue note')
+    context 'with pipeline events' do
+      let(:pipeline) do
+        create(:ci_pipeline,
+               project: project, status: status,
+               sha: project.commit.sha, ref: project.default_branch)
+      end
+      let(:sample_data) { Gitlab::DataBuilder::Pipeline.build(pipeline) }
+
+      context 'with failed pipeline' do
+        let(:status) { 'failed' }
+
+        it_behaves_like 'Hangouts Chat service'
       end
 
-      it 'calls Hangouts Chat API for issue comment events' do
-        data = Gitlab::DataBuilder::Note.build(issue_note, user)
+      context 'with succeeded pipeline' do
+        let(:status) { 'success' }
 
-        chat_service.execute(data)
+        context 'with default notify_only_broken_pipelines' do
+          it 'does not call Hangouts Chat API' do
+            result = chat_service.execute(sample_data)
 
-        expect(WebMock).to have_requested(:post, webhook_url).once
-      end
-    end
+            expect(result).to be_falsy
+          end
+        end
 
-    context 'when snippet comment event executed' do
-      let(:snippet_note) do
-        create(:note_on_project_snippet, project: project,
-                                         note: 'snippet note')
-      end
+        context 'when notify_only_broken_pipelines is false' do
+          before do
+            chat_service.notify_only_broken_pipelines = false
+          end
 
-      it 'calls Hangouts Chat API for snippet comment events' do
-        data = Gitlab::DataBuilder::Note.build(snippet_note, user)
-
-        chat_service.execute(data)
-
-        expect(WebMock).to have_requested(:post, webhook_url).once
-      end
-    end
-  end
-
-  describe 'Pipeline events' do
-    let(:user) { create(:user) }
-    let(:project) { create(:project, :repository) }
-
-    let(:pipeline) do
-      create(:ci_pipeline,
-             project: project, status: status,
-             sha: project.commit.sha, ref: project.default_branch)
-    end
-
-    before do
-      allow(chat_service).to receive_messages(
-        project: project,
-        service_hook: true,
-        webhook: webhook_url
-      )
-    end
-
-    shared_examples 'call Hangouts Chat API' do
-      before do
-        WebMock.stub_request(:post, webhook_url)
-      end
-
-      it 'calls Hangouts Chat API for pipeline events' do
-        data = Gitlab::DataBuilder::Pipeline.build(pipeline)
-
-        chat_service.execute(data)
-
-        expect(WebMock).to have_requested(:post, webhook_url).once
-      end
-    end
-
-    context 'with failed pipeline' do
-      let(:status) { 'failed' }
-
-      it_behaves_like 'call Hangouts Chat API'
-    end
-
-    context 'with succeeded pipeline' do
-      let(:status) { 'success' }
-
-      context 'with default to notify_only_broken_pipelines' do
-        it 'does not call Hangouts Chat API for pipeline events' do
-          data = Gitlab::DataBuilder::Pipeline.build(pipeline)
-          result = chat_service.execute(data)
-
-          expect(result).to be_falsy
+          it_behaves_like 'Hangouts Chat service'
         end
       end
 
-      context 'with setting notify_only_broken_pipelines to false' do
-        before do
-          chat_service.notify_only_broken_pipelines = false
-        end
-
-        it_behaves_like 'call Hangouts Chat API'
-      end
-    end
-
-    context 'only notify for the default branch' do
-      context 'when enabled' do
+      context 'with not default branch' do
         let(:pipeline) do
           create(:ci_pipeline, project: project, status: 'failed', ref: 'not-the-default-branch')
         end
 
-        before do
-          chat_service.notify_only_default_branch = true
-          WebMock.stub_request(:post, webhook_url)
+        context 'when notify_only_default_branch enabled' do
+          before do
+            chat_service.notify_only_default_branch = true
+          end
+
+          it 'does not call the Hangouts Chat API' do
+            result = chat_service.execute(sample_data)
+
+            expect(result).to be_falsy
+          end
         end
 
-        it 'does not call the Hangouts Chat API for pipeline events' do
-          data = Gitlab::DataBuilder::Pipeline.build(pipeline)
-          result = chat_service.execute(data)
+        context 'when notify_only_default_branch disabled' do
+          before do
+            chat_service.notify_only_default_branch = false
+          end
 
-          expect(result).to be_falsy
+          it_behaves_like 'Hangouts Chat service'
         end
-
-        it 'does not notify push events if they are not for the default branch' do
-          ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}test"
-          push_sample_data = Gitlab::DataBuilder::Push.build(project, user, nil, nil, ref, [])
-
-          chat_service.execute(push_sample_data)
-
-          expect(WebMock).not_to have_requested(:post, webhook_url)
-        end
-
-        it 'notifies about push events for the default branch' do
-          push_sample_data = Gitlab::DataBuilder::Push.build_sample(project, user)
-
-          chat_service.execute(push_sample_data)
-
-          expect(WebMock).to have_requested(:post, webhook_url).once
-        end
-      end
-
-      context 'when disabled' do
-        let(:pipeline) do
-          create(:ci_pipeline, :failed, project: project, ref: 'not-the-default-branch')
-        end
-
-        before do
-          chat_service.notify_only_default_branch = false
-        end
-
-        it_behaves_like 'call Hangouts Chat API'
       end
     end
   end
