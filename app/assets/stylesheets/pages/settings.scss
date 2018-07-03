@@ -191,6 +191,22 @@
   }
 }
 
+.initialize-with-readme-setting {
+  .form-check {
+    margin-bottom: 10px;
+
+    .option-title {
+      font-weight: $gl-font-weight-normal;
+      display: inline-block;
+      color: $gl-text-color;
+    }
+
+    .option-description {
+      color: $project-option-descr-color;
+    }
+  }
+}
+
 .prometheus-metrics-monitoring {
   .card {
     .card-toggle {
