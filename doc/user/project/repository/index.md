@@ -165,17 +165,7 @@ Find it under your project's **Repository > Compare**.
 
 ## Locked files **[PREMIUM]**
 
-<<<<<<< HEAD
-[Lock your files](https://docs.gitlab.com/ee/user/project/file_lock.html) to
-prevent any conflicting changes.
-=======
-> Available in [GitLab Premium](https://about.gitlab.com/pricing/).
-
-Lock your files to prevent any conflicting changes.
-
-[File Locking](https://docs.gitlab.com/ee/user/project/file_lock.html) is available only in
-[GitLab Premium](https://about.gitlab.com/pricing/).
->>>>>>> upstream/master
+[Lock your files](../file_lock.md) to prevent any conflicting changes.
 
 ## Repository's API
 

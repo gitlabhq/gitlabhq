@@ -34,13 +34,8 @@ your project public, open to collaboration.
 
 ### Streamline collaboration
 
-<<<<<<< HEAD
 With [Multiple Assignees for Issues](multiple_assignees_for_issues.md),
-available in [GitLab Starter](https://about.gitlab.com/products/)
-=======
-With [Multiple Assignees for Issues](https://docs.gitlab.com/ee/user/project/issues/multiple_assignees_for_issues.html),
 available in [GitLab Starter](https://about.gitlab.com/pricing/)
->>>>>>> upstream/master
 you can streamline collaboration and allow shared responsibilities to be clearly displayed.
 All assignees are shown across your workflows and receive notifications (as they
 would as single assignees), simplifying communication and ownership.
@@ -144,24 +139,19 @@ Find GitLab Issue Boards by navigating to your **Project's Dashboard** > **Issue
 Read through the documentation for [Issue Boards](../issue_board.md)
 to find out more about this feature.
 
-<<<<<<< HEAD
 ### Export Issues to CSV **[STARTER]**
 
 Issues can be [exported as CSV](csv_export.md) from GitLab and are sent to your email as an attachment.
 
 _Exporting issues to CSV is available only in [GitLab Enterprise Edition](https://about.gitlab.com/products/)._
 
-## Related Issues **[STARTER]**
+### Related Issues **[STARTER]**
 
 Related Issues are a bi-directional relationship between any two issues
 and appear in a block below the issue description. Issues can be across groups
 and projects.
 
 Read more about [Related Issues](related_issues.md).
-=======
-With [GitLab Starter](https://about.gitlab.com/pricing/), you can also
-create various boards per project with [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards).
->>>>>>> upstream/master
 
 ### External Issue Tracker
 
