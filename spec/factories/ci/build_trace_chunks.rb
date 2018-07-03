@@ -12,12 +12,7 @@ FactoryBot.define do
       end
 
       after(:create) do |build_trace_chunk, evaluator|
-        Gitlab::Redis::SharedState.with do |redis|
-          redis.set(
-            "gitlab:ci:trace:#{build_trace_chunk.build.id}:chunks:#{build_trace_chunk.chunk_index.to_i}",
-            evaluator.initial_data,
-            ex: 1.day)
-        end
+        Ci::BuildTraceChunk::Redis.new.set_data(build_trace_chunk, evaluator.initial_data)
       end
     end
 
@@ -33,7 +28,7 @@ FactoryBot.define do
       end
 
       after(:build) do |build_trace_chunk, evaluator|
-        build_trace_chunk.raw_data = evaluator.initial_data
+        Ci::BuildTraceChunk::Database.new.set_data(build_trace_chunk, evaluator.initial_data)
       end
     end
 
@@ -49,12 +44,7 @@ FactoryBot.define do
       end
 
       after(:create) do |build_trace_chunk, evaluator|
-        ::Fog::Storage.new(JobArtifactUploader.object_store_credentials).tap do |connection|
-          connection.put_object(
-            'artifacts',
-            "tmp/builds/#{build_trace_chunk.build.id}/chunks/#{build_trace_chunk.chunk_index.to_i}.log",
-            evaluator.initial_data)
-        end
+        Ci::BuildTraceChunk::Fog.new.set_data(build_trace_chunk, evaluator.initial_data)
       end
     end
 
