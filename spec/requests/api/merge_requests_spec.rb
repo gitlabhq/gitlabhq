@@ -307,11 +307,11 @@ describe API::MergeRequests do
     end
 
     it 'exposes description and title html' do
-      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}?render_html=true", user)
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), render_html: true
 
       expect(response).to have_gitlab_http_status(200)
 
-      expect(json_response).to include(['title_html', 'description_html'])
+      expect(json_response).to include('title_html', 'description_html')
     end
 
     context 'merge_request_metrics' do
