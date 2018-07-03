@@ -14,8 +14,8 @@
       background-color: $gray-normal;
     }
 
-    .diff-toggle-caret {
-      padding-right: 6px;
+    svg {
+      vertical-align: text-bottom;
     }
   }
 
@@ -737,6 +737,10 @@
   max-width: 560px;
   width: 100%;
   z-index: 150;
+  min-height: $dropdown-min-height;
+  max-height: $dropdown-max-height;
+  overflow-y: auto;
+  margin-bottom: 0;
 
   @include media-breakpoint-up(sm) {
     left: $gl-padding;

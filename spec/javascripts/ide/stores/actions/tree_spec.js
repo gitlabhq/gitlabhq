@@ -1,5 +1,4 @@
 import MockAdapter from 'axios-mock-adapter';
-import Vue from 'vue';
 import testAction from 'spec/helpers/vuex_action_helper';
 import { showTreeEntry, getFiles } from '~/ide/stores/actions/tree';
 import * as types from '~/ide/stores/mutation_types';
@@ -117,6 +116,40 @@ describe('Multi-file store tree actions', () => {
             done();
           });
       });
+
+      it('dispatches error action', done => {
+        const dispatch = jasmine.createSpy('dispatchSpy');
+
+        store.state.projects = {
+          'abc/def': {
+            web_url: `${gl.TEST_HOST}/files`,
+          },
+        };
+
+        mock.onGet(/(.*)/).replyOnce(500);
+
+        getFiles(
+          {
+            commit() {},
+            dispatch,
+            state: store.state,
+          },
+          {
+            projectId: 'abc/def',
+            branchId: 'master-testing',
+          },
+        )
+          .then(done.fail)
+          .catch(() => {
+            expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
+              text: 'An error occured whilst loading all the files.',
+              action: jasmine.any(Function),
+              actionText: 'Please try again',
+              actionPayload: { projectId: 'abc/def', branchId: 'master-testing' },
+            });
+            done();
+          });
+      });
     });
   });
 
@@ -166,74 +199,6 @@ describe('Multi-file store tree actions', () => {
         [{ type: 'showTreeEntry' }],
         done,
       );
-    });
-  });
-
-  describe('getLastCommitData', () => {
-    beforeEach(() => {
-      spyOn(service, 'getTreeLastCommit').and.returnValue(
-        Promise.resolve({
-          headers: {
-            'more-logs-url': null,
-          },
-          json: () =>
-            Promise.resolve([
-              {
-                type: 'tree',
-                file_name: 'testing',
-                commit: {
-                  message: 'commit message',
-                  authored_date: '123',
-                },
-              },
-            ]),
-        }),
-      );
-
-      store.state.trees['abcproject/mybranch'] = {
-        tree: [],
-      };
-
-      projectTree = store.state.trees['abcproject/mybranch'];
-      projectTree.tree.push(file('testing', '1', 'tree'));
-      projectTree.lastCommitPath = 'lastcommitpath';
-    });
-
-    it('calls service with lastCommitPath', done => {
-      store
-        .dispatch('getLastCommitData', projectTree)
-        .then(() => {
-          expect(service.getTreeLastCommit).toHaveBeenCalledWith('lastcommitpath');
-
-          done();
-        })
-        .catch(done.fail);
-    });
-
-    it('updates trees last commit data', done => {
-      store
-        .dispatch('getLastCommitData', projectTree)
-        .then(Vue.nextTick)
-        .then(() => {
-          expect(projectTree.tree[0].lastCommit.message).toBe('commit message');
-
-          done();
-        })
-        .catch(done.fail);
-    });
-
-    it('does not update entry if not found', done => {
-      projectTree.tree[0].name = 'a';
-
-      store
-        .dispatch('getLastCommitData', projectTree)
-        .then(Vue.nextTick)
-        .then(() => {
-          expect(projectTree.tree[0].lastCommit.message).not.toBe('commit message');
-
-          done();
-        })
-        .catch(done.fail);
     });
   });
 });

@@ -59,6 +59,18 @@ feature 'Group empty states' do
         end
       end
 
+      shared_examples "no projects" do
+        it 'displays an empty state' do
+          expect(page).to have_selector('.empty-state')
+        end
+
+        it "does not show a new #{issuable_name} button" do
+          within '.empty-state' do
+            expect(page).not_to have_link("create #{issuable_name}")
+          end
+        end
+      end
+
       context 'group without a project' do
         context 'group has a subgroup', :nested_groups do
           let(:subgroup) { create(:group, parent: group) }
@@ -92,16 +104,18 @@ feature 'Group empty states' do
             visit path
           end
 
-          it 'displays an empty state' do
-            expect(page).to have_selector('.empty-state')
-          end
-
-          it "shows a new #{issuable_name} button" do
-            within '.empty-state' do
-              expect(page).not_to have_link("create #{issuable_name}")
-            end
-          end
+          it_behaves_like "no projects"
         end
+      end
+
+      context 'group has only a project with issues disabled' do
+        let(:project_with_issues_disabled) { create(:empty_project, :issues_disabled, group: group) }
+
+        before do
+          visit path
+        end
+
+        it_behaves_like "no projects"
       end
     end
   end

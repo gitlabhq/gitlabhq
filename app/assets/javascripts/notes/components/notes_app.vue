@@ -3,6 +3,7 @@ import { mapGetters, mapActions } from 'vuex';
 import { getLocationHash } from '../../lib/utils/url_utility';
 import Flash from '../../flash';
 import * as constants from '../constants';
+import eventHub from '../event_hub';
 import noteableNote from './noteable_note.vue';
 import noteableDiscussion from './noteable_discussion.vue';
 import systemNote from '../../vue_shared/components/notes/system_note.vue';
@@ -49,7 +50,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['discussions', 'getNotesDataByProp', 'discussionCount']),
+    ...mapGetters(['isNotesFetched', 'discussions', 'getNotesDataByProp', 'discussionCount']),
     noteableType() {
       return this.noteableData.noteableType;
     },
@@ -61,7 +62,15 @@ export default {
           isSkeletonNote: true,
         });
       }
+
       return this.discussions;
+    },
+  },
+  watch: {
+    shouldShow() {
+      if (!this.isNotesFetched) {
+        this.fetchNotes();
+      }
     },
   },
   created() {
@@ -69,11 +78,14 @@ export default {
     this.setNoteableData(this.noteableData);
     this.setUserData(this.userData);
     this.setTargetNoteHash(getLocationHash());
+    eventHub.$once('fetchNotesData', this.fetchNotes);
   },
   mounted() {
-    this.fetchNotes();
-    const { parentElement } = this.$el;
+    if (this.shouldShow) {
+      this.fetchNotes();
+    }
 
+    const { parentElement } = this.$el;
     if (parentElement && parentElement.classList.contains('js-vue-notes-event')) {
       parentElement.addEventListener('toggleAward', event => {
         const { awardName, noteId } = event.detail;
@@ -93,6 +105,7 @@ export default {
       setLastFetchedAt: 'setLastFetchedAt',
       setTargetNoteHash: 'setTargetNoteHash',
       toggleDiscussion: 'toggleDiscussion',
+      setNotesFetchedState: 'setNotesFetchedState',
     }),
     getComponentName(discussion) {
       if (discussion.isSkeletonNote) {
@@ -119,11 +132,13 @@ export default {
         })
         .then(() => {
           this.isLoading = false;
+          this.setNotesFetchedState(true);
         })
         .then(() => this.$nextTick())
         .then(() => this.checkLocationHash())
         .catch(() => {
           this.isLoading = false;
+          this.setNotesFetchedState(true);
           Flash('Something went wrong while fetching comments. Please try again.');
         });
     },
@@ -160,12 +175,13 @@ export default {
 
 <template>
   <div
-    v-if="shouldShow"
-    id="notes">
+    v-show="shouldShow"
+    id="notes"
+  >
     <ul
       id="notes-list"
-      class="notes main-notes-list timeline">
-
+      class="notes main-notes-list timeline"
+    >
       <component
         v-for="discussion in allDiscussions"
         :is="getComponentName(discussion)"

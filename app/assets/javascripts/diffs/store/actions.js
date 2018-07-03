@@ -15,10 +15,6 @@ export const setBaseConfig = ({ commit }, options) => {
   commit(types.SET_BASE_CONFIG, { endpoint, projectPath });
 };
 
-export const setLoadingState = ({ commit }, state) => {
-  commit(types.SET_LOADING, state);
-};
-
 export const fetchDiffFiles = ({ state, commit }) => {
   commit(types.SET_LOADING, true);
 
@@ -88,7 +84,6 @@ export const expandAllFiles = ({ commit }) => {
 
 export default {
   setBaseConfig,
-  setLoadingState,
   fetchDiffFiles,
   setInlineDiffViewType,
   setParallelDiffViewType,

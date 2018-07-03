@@ -1,0 +1,5 @@
+---
+title: Prevent pipeline job tooltip from scrolling off dropdown container
+merge_request:
+author:
+type: fixed

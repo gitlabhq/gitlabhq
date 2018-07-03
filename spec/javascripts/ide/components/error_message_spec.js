@@ -36,12 +36,14 @@ describe('IDE error message component', () => {
   });
 
   describe('with action', () => {
+    let actionSpy;
+
     beforeEach(done => {
-      vm.message.action = 'testAction';
+      actionSpy = jasmine.createSpy('action').and.returnValue(Promise.resolve());
+
+      vm.message.action = actionSpy;
       vm.message.actionText = 'test action';
       vm.message.actionPayload = 'testActionPayload';
-
-      spyOn(vm.$store, 'dispatch').and.returnValue(Promise.resolve());
 
       vm.$nextTick(done);
     });
@@ -63,7 +65,7 @@ describe('IDE error message component', () => {
       vm.$el.querySelector('.flash-action').click();
 
       vm.$nextTick(() => {
-        expect(vm.$store.dispatch).toHaveBeenCalledWith('testAction', 'testActionPayload');
+        expect(actionSpy).toHaveBeenCalledWith('testActionPayload');
 
         done();
       });
@@ -74,7 +76,7 @@ describe('IDE error message component', () => {
 
       vm.$el.querySelector('.flash-action').click();
 
-      expect(vm.$store.dispatch).not.toHaveBeenCalledWith();
+      expect(actionSpy).not.toHaveBeenCalledWith();
     });
 
     it('resets isLoading after click', done => {
