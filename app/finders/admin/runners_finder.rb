@@ -26,8 +26,9 @@ class Admin::RunnersFinder < UnionFinder
   end
 
   def filter_by_status!
-    if @params[:status].present? && Ci::Runner::AVAILABLE_STATUSES.include?(@params[:status])
-      @runners = @runners.public_send(@params[:status]) # rubocop:disable GitlabSecurity/PublicSend
+    status = @params[:status_status]
+    if status.present? && Ci::Runner::AVAILABLE_STATUSES.include?(status)
+      @runners = @runners.public_send(status) # rubocop:disable GitlabSecurity/PublicSend
     end
   end
 

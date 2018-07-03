@@ -41,18 +41,50 @@
   = render partial: 'ci/runner/how_to_setup_shared_runner',
            locals: { registration_token: Gitlab::CurrentSettings.runners_registration_token }
 
-  .append-bottom-20.clearfix
-    = form_tag admin_runners_path, id: 'runners-search', method: :get do
-      .float-left
-        .form-inline
-          .form-group
-            = search_field_tag :search, params[:search], class: 'form-control input-short', placeholder: 'Runner description or token', spellcheck: false
-          = submit_tag 'Search', class: 'btn'
-
-      .float-left.prepend-left-10
-        = render 'statuses'
-
-      .float-right.light
+  .row-content-block.second-block
+    = form_tag admin_runners_path, id: 'runners-search', method: :get, class: 'filter-form js-filter-form' do
+      .filtered-search-wrapper
+        .filtered-search-box
+          = dropdown_tag(custom_icon('icon_history'),
+            options: { wrapper_class: "filtered-search-history-dropdown-wrapper",
+            toggle_class: "filtered-search-history-dropdown-toggle-button",
+            dropdown_class: "filtered-search-history-dropdown",
+            content_class: "filtered-search-history-dropdown-content",
+            title: "Recent searches" }) do
+            .js-filtered-search-history-dropdown{ data: { full_path: admin_runners_path } }
+          .filtered-search-box-input-container.droplab-dropdown
+            .scroll-container
+              %ul.tokens-container.list-unstyled
+                %li.input-token
+                  %input.form-control.filtered-search{ { id: 'filtered-search-runners', placeholder: 'Search or filter results...' } }
+            #js-dropdown-hint.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
+              %ul{ data: { dropdown: true } }
+                %li.filter-dropdown-item{ data: { action: 'submit' } }
+                  %button.btn.btn-link
+                    = icon('search')
+                    %span
+                      Press Enter or click to search
+              %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+                %li.filter-dropdown-item
+                  %button.btn.btn-link
+                    -# Encapsulate static class name `{{icon}}` inside #{} to bypass
+                    -# haml lint's ClassAttributeWithStaticValue
+                    %i.fa{ class: "#{'{{icon}}'}" }
+                    %span.js-filter-hint
+                      {{hint}}
+                    %span.js-filter-tag.dropdown-light-content
+                      {{tag}}
+            #js-dropdown-admin-runner-status.filtered-search-input-dropdown-menu.dropdown-menu
+              %ul{ data: { dropdown: true } }
+                - Ci::Runner::AVAILABLE_STATUSES.each do |status|
+                  %li.filter-dropdown-item{ data: { value: status } }
+                    %button.btn.btn-link
+                      = status.titleize
+          %button.clear-search.hidden{ type: 'button' }
+            = icon('times')
+  .clearfix
+    .float-right.light
+      .prepend-top-10
         Runners currently online: #{@active_runners_cnt}
 
   %br
