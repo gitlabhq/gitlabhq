@@ -26,7 +26,7 @@ module Ci
         @all_stores ||= self.data_stores.keys
       end
 
-      def persist_store
+      def persistable_store
         # get first available store from the back of the list
         all_stores.reverse.find { |store| get_store_class(store).available? }
       end
@@ -99,7 +99,7 @@ module Ci
 
     def persist_data!
       in_lock(*lock_params) do # Write opetation is atomic
-        unsafe_persist_to!(self.class.persist_store)
+        unsafe_persist_to!(self.class.persistable_store)
       end
     end
 
