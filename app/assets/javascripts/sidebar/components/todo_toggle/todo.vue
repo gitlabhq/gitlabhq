@@ -80,18 +80,18 @@ export default {
     @click="handleButtonClick"
   >
     <icon
-      v-if="collapsed"
+      v-show="collapsed"
       :css-classes="collapsedButtonIconClasses"
       :name="collapsedButtonIcon"
     />
     <span
-      v-else
+      v-show="!collapsed"
       class="issuable-todo-inner"
     >
       {{ buttonLabel }}
     </span>
     <loading-icon
-      v-if="isActionActive"
+      v-show="isActionActive"
       :inline="true"
     />
   </button>
