@@ -70,7 +70,7 @@ module Ci
     end
 
     def append(new_data, offset)
-      raise ArgumentError, 'New data is nil' unless new_data
+      raise ArgumentError, 'New data is missing' unless new_data
       raise ArgumentError, 'Offset is out of range' if offset > size || offset < 0
       raise ArgumentError, 'Chunk size overflow' if CHUNK_SIZE < (offset + new_data.bytesize)
 
