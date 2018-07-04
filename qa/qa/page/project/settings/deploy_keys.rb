@@ -58,7 +58,7 @@ module QA
 
           def within_project_deploy_keys
             wait(reload: false) do
-              find_element(:project_deploy_keys)
+              has_css?(element_selector_css(:project_deploy_keys))
             end
 
             within_element(:project_deploy_keys) do

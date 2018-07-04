@@ -1971,21 +1971,15 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
     end
 
-    context 'with gitaly' do
-      it "calls Gitaly's OperationService" do
-        expect_any_instance_of(Gitlab::GitalyClient::OperationService)
-          .to receive(:user_ff_branch).with(user, source_sha, target_branch)
-          .and_return(nil)
+    it "calls Gitaly's OperationService" do
+      expect_any_instance_of(Gitlab::GitalyClient::OperationService)
+        .to receive(:user_ff_branch).with(user, source_sha, target_branch)
+        .and_return(nil)
 
-        subject
-      end
-
-      it_behaves_like '#ff_merge'
+      subject
     end
 
-    context 'without gitaly', :skip_gitaly_mock do
-      it_behaves_like '#ff_merge'
-    end
+    it_behaves_like '#ff_merge'
   end
 
   describe '#delete_all_refs_except' do
@@ -2308,92 +2302,95 @@ describe Gitlab::Git::Repository, seed_helper: true do
         expect { subject }.to raise_error(Gitlab::Git::CommandError, 'error')
       end
     end
+  end
 
-    describe '#squash' do
-      let(:squash_id) { '1' }
-      let(:branch_name) { 'fix' }
-      let(:start_sha) { '4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6' }
-      let(:end_sha) { '12d65c8dd2b2676fa3ac47d955accc085a37a9c1' }
+  describe '#squash' do
+    let(:squash_id) { '1' }
+    let(:branch_name) { 'fix' }
+    let(:start_sha) { '4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6' }
+    let(:end_sha) { '12d65c8dd2b2676fa3ac47d955accc085a37a9c1' }
 
-      subject do
-        opts = {
-          branch: branch_name,
-          start_sha: start_sha,
-          end_sha: end_sha,
-          author: user,
-          message: 'Squash commit message'
-        }
+    subject do
+      opts = {
+        branch: branch_name,
+        start_sha: start_sha,
+        end_sha: end_sha,
+        author: user,
+        message: 'Squash commit message'
+      }
 
-        repository.squash(user, squash_id, opts)
+      repository.squash(user, squash_id, opts)
+    end
+
+    # Should be ported to gitaly-ruby rspec suite https://gitlab.com/gitlab-org/gitaly/issues/1234
+    skip 'sparse checkout' do
+      let(:expected_files) { %w(files files/js files/js/application.js) }
+
+      it 'checks out only the files in the diff' do
+        allow(repository).to receive(:with_worktree).and_wrap_original do |m, *args|
+          m.call(*args) do
+            worktree_path = args[0]
+            files_pattern = File.join(worktree_path, '**', '*')
+            expected = expected_files.map do |path|
+              File.expand_path(path, worktree_path)
+            end
+
+            expect(Dir[files_pattern]).to eq(expected)
+          end
+        end
+
+        subject
       end
 
-      context 'sparse checkout', :skip_gitaly_mock do
-        let(:expected_files) { %w(files files/js files/js/application.js) }
+      context 'when the diff contains a rename' do
+        let(:repo) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged }
+        let(:end_sha) { new_commit_move_file(repo).oid }
 
-        it 'checks out only the files in the diff' do
+        after do
+          # Erase our commits so other tests get the original repo
+          repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
+          repo.references.update('refs/heads/master', SeedRepo::LastCommit::ID)
+        end
+
+        it 'does not include the renamed file in the sparse checkout' do
           allow(repository).to receive(:with_worktree).and_wrap_original do |m, *args|
             m.call(*args) do
               worktree_path = args[0]
               files_pattern = File.join(worktree_path, '**', '*')
-              expected = expected_files.map do |path|
-                File.expand_path(path, worktree_path)
-              end
 
-              expect(Dir[files_pattern]).to eq(expected)
+              expect(Dir[files_pattern]).not_to include('CHANGELOG')
+              expect(Dir[files_pattern]).not_to include('encoding/CHANGELOG')
             end
           end
 
           subject
         end
-
-        context 'when the diff contains a rename' do
-          let(:repo) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged }
-          let(:end_sha) { new_commit_move_file(repo).oid }
-
-          after do
-            # Erase our commits so other tests get the original repo
-            repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
-            repo.references.update('refs/heads/master', SeedRepo::LastCommit::ID)
-          end
-
-          it 'does not include the renamed file in the sparse checkout' do
-            allow(repository).to receive(:with_worktree).and_wrap_original do |m, *args|
-              m.call(*args) do
-                worktree_path = args[0]
-                files_pattern = File.join(worktree_path, '**', '*')
-
-                expect(Dir[files_pattern]).not_to include('CHANGELOG')
-                expect(Dir[files_pattern]).not_to include('encoding/CHANGELOG')
-              end
-            end
-
-            subject
-          end
-        end
       end
+    end
 
-      context 'with an ASCII-8BIT diff', :skip_gitaly_mock do
-        let(:diff) { "diff --git a/README.md b/README.md\nindex faaf198..43c5edf 100644\n--- a/README.md\n+++ b/README.md\n@@ -1,4 +1,4 @@\n-testme\n+✓ testme\n ======\n \n Sample repo for testing gitlab features\n" }
+    # Should be ported to gitaly-ruby rspec suite https://gitlab.com/gitlab-org/gitaly/issues/1234
+    skip 'with an ASCII-8BIT diff' do
+      let(:diff) { "diff --git a/README.md b/README.md\nindex faaf198..43c5edf 100644\n--- a/README.md\n+++ b/README.md\n@@ -1,4 +1,4 @@\n-testme\n+✓ testme\n ======\n \n Sample repo for testing gitlab features\n" }
 
-        it 'applies a ASCII-8BIT diff' do
-          allow(repository).to receive(:run_git!).and_call_original
-          allow(repository).to receive(:run_git!).with(%W(diff --binary #{start_sha}...#{end_sha})).and_return(diff.force_encoding('ASCII-8BIT'))
+      it 'applies a ASCII-8BIT diff' do
+        allow(repository).to receive(:run_git!).and_call_original
+        allow(repository).to receive(:run_git!).with(%W(diff --binary #{start_sha}...#{end_sha})).and_return(diff.force_encoding('ASCII-8BIT'))
 
-          expect(subject).to match(/\h{40}/)
-        end
+        expect(subject).to match(/\h{40}/)
       end
+    end
 
-      context 'with trailing whitespace in an invalid patch', :skip_gitaly_mock do
-        let(:diff) { "diff --git a/README.md b/README.md\nindex faaf198..43c5edf 100644\n--- a/README.md\n+++ b/README.md\n@@ -1,4 +1,4 @@\n-testme\n+   \n ======   \n \n Sample repo for testing gitlab features\n" }
+    # Should be ported to gitaly-ruby rspec suite https://gitlab.com/gitlab-org/gitaly/issues/1234
+    skip 'with trailing whitespace in an invalid patch' do
+      let(:diff) { "diff --git a/README.md b/README.md\nindex faaf198..43c5edf 100644\n--- a/README.md\n+++ b/README.md\n@@ -1,4 +1,4 @@\n-testme\n+   \n ======   \n \n Sample repo for testing gitlab features\n" }
 
-        it 'does not include whitespace warnings in the error' do
-          allow(repository).to receive(:run_git!).and_call_original
-          allow(repository).to receive(:run_git!).with(%W(diff --binary #{start_sha}...#{end_sha})).and_return(diff.force_encoding('ASCII-8BIT'))
+      it 'does not include whitespace warnings in the error' do
+        allow(repository).to receive(:run_git!).and_call_original
+        allow(repository).to receive(:run_git!).with(%W(diff --binary #{start_sha}...#{end_sha})).and_return(diff.force_encoding('ASCII-8BIT'))
 
-          expect { subject }.to raise_error do |error|
-            expect(error).to be_a(described_class::GitError)
-            expect(error.message).not_to include('trailing whitespace')
-          end
+        expect { subject }.to raise_error do |error|
+          expect(error).to be_a(described_class::GitError)
+          expect(error.message).not_to include('trailing whitespace')
         end
       end
     end
