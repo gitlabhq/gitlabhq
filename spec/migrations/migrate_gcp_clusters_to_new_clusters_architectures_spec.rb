@@ -175,7 +175,7 @@ describe MigrateGcpClustersToNewClustersArchitectures, :migration do
     end
   end
 
-  def tr(s)
-    s.delete("'")
+  def tr(str)
+    str.delete("'")
   end
 end
