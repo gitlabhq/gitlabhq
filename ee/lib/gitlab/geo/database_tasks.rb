@@ -117,7 +117,6 @@ module Gitlab
             puts
           end
         end
-        # rubocop: enable Rails/Output
       end
 
       module Test
