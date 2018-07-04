@@ -37,7 +37,7 @@ module Clusters
         Gitlab::Kubernetes::Helm::InstallCommand.new(
           name,
           chart: chart,
-          version: version,
+          version: VERSION,
           values: values
         )
       end

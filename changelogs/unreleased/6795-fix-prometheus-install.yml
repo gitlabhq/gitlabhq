@@ -1,0 +1,5 @@
+---
+title: Lock prometheus version independent of data in the database
+merge_request: 20376
+author:
+type: fixed
