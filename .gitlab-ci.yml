@@ -272,7 +272,7 @@ package-and-qa:
     name: review-docs/$CI_COMMIT_REF_SLUG
     # DOCS_REVIEW_APPS_DOMAIN and DOCS_GITLAB_REPO_SUFFIX are secret variables
     # Discussion: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14236/diffs#note_40140693
-    url: http://$DOCS_GITLAB_REPO_SUFFIX-$CI_ENVIRONMENT_SLUG.$DOCS_REVIEW_APPS_DOMAIN/$DOCS_GITLAB_REPO_SUFFIX
+    url: http://$CI_ENVIRONMENT_SLUG.$DOCS_REVIEW_APPS_DOMAIN/$DOCS_GITLAB_REPO_SUFFIX
     on_stop: review-docs-cleanup
 
 # Trigger a manual docs build in gitlab-docs only on non docs-only branches.
