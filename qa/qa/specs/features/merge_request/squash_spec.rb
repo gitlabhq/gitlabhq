@@ -24,6 +24,8 @@ module QA
 
       merge_request.visit!
 
+      expect(page).to have_text('to be squashed')
+
       Page::MergeRequest::Show.perform do |merge_request_page|
         merge_request_page.mark_to_squash
         merge_request_page.merge!
