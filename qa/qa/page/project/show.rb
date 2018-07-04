@@ -22,12 +22,16 @@ module QA
           element :branches_dropdown
         end
 
+        view 'app/presenters/project_presenter.rb' do
+          element :new_file_button, "label: _('New file'),"
+        end
+
         def project_name
           find('.qa-project-name').text
         end
 
         def create_new_file
-          find('.btn-new').click
+          click_on 'New file'
         end
 
         def switch_to_branch(branch_name)

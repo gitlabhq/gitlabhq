@@ -1,14 +1,12 @@
 module QA
   module Page
     module File
-      class New < Page::Base
+      class Form < Page::Base
+        include Shared::CommitMessage
+
         view 'app/views/projects/blob/_editor.html.haml' do
           element :file_name, "text_field_tag 'file_name'"
           element :editor, '#editor'
-        end
-
-        view 'app/views/shared/_commit_message_container.html.haml' do
-          element :commit_message, "text_area_tag 'commit_message'"
         end
 
         view 'app/views/projects/_commit_button.html.haml' do
@@ -20,15 +18,21 @@ module QA
         end
 
         def add_content(content)
-          find('#editor>textarea', visible: false).set content
+          text_area.set content
         end
 
-        def add_commit_message(message)
-          fill_in 'commit_message', with: message
+        def remove_content
+          text_area.send_keys([:command, 'a'], :backspace)
         end
 
         def commit_changes
           click_on 'Commit changes'
+        end
+
+        private
+
+        def text_area
+          find('#editor>textarea', visible: false)
         end
       end
     end

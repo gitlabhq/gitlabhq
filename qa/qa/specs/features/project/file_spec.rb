@@ -24,11 +24,11 @@ module QA
       updated_file_content = 'QA Test - Updated file content'
       commit_message_for_update = 'QA Test - Update file'
 
-      Page::File::Show.act {click_edit}
+      Page::File::Show.act { click_edit }
 
-      Page::File::Edit.act do
+      Page::File::Form.act do
         remove_content
-        update_content(updated_file_content)
+        add_content(updated_file_content)
         add_commit_message(commit_message_for_update)
         commit_changes
       end

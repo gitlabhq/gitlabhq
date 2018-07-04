@@ -129,9 +129,12 @@ module QA
     end
 
     module File
-      autoload :New, 'qa/page/file/new'
-      autoload :Edit, 'qa/page/file/edit'
+      autoload :Form, 'qa/page/file/form'
       autoload :Show, 'qa/page/file/show'
+
+      module Shared
+        autoload :CommitMessage, 'qa/page/file/shared/commit_message'
+      end
     end
 
     module Project
