@@ -209,6 +209,86 @@ Example response:
   }
 ```
 
+## Update a board **[STARTER]**
+
+Updates a board.
+
+```
+PUT /projects/:id/boards/:board_id
+```
+
+| Attribute           | Type           | Required | Description |
+| ------------------- | -------------- | -------- | ----------- |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `board_id`          | integer        | yes      | The ID of a board |
+| `name`              | string         | no       | The new name of the board |
+| `assignee_id`       | integer        | no       | The assignee the board should be scoped to |
+| `milestone_id`      | integer        | no       | The milestone the board should be scoped to |
+| `labels`            | string         | no       | Comma-separated list of label names which the board should be scoped to |
+| `weight`            | integer        | no       | The weight range from 0 to 9, to which the board should be scoped to |
+
+
+```bash
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/boards/1?name=new_name&milestone_id=43&assignee_id=1&labels=Doing&weight=4
+```
+
+Example response:
+
+```json
+  {
+    "id": 1,
+    "project": {
+      "id": 5,
+      "name": "Diaspora Project Site",
+      "name_with_namespace": "Diaspora / Diaspora Project Site",
+      "path": "diaspora-project-site",
+      "path_with_namespace": "diaspora/diaspora-project-site",
+      "created_at": "2018-07-03T05:48:49.982Z",
+      "default_branch": null,
+      "tag_list": [],
+      "ssh_url_to_repo": "ssh://user@example.com/diaspora/diaspora-project-site.git",
+      "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
+      "web_url": "http://example.com/diaspora/diaspora-project-site",
+      "readme_url": null,
+      "avatar_url": null,
+      "star_count": 0,
+      "forks_count": 0,
+      "last_activity_at": "2018-07-03T05:48:49.982Z"
+    },
+    "lists": [],
+    "name": "new_name",
+    "group": null,
+    "milestone": {
+      "id": 43,
+      "iid": 1,
+      "project_id": 15,
+      "title": "Milestone 1",
+      "description": "Milestone 1 desc",
+      "state": "active",
+      "created_at": "2018-07-03T06:36:42.618Z",
+      "updated_at": "2018-07-03T06:36:42.618Z",
+      "due_date": null,
+      "start_date": null,
+      "web_url": "http://example.com/root/board1/milestones/1"
+    },
+    "assignee": {
+      "id": 1,
+      "name": "Administrator",
+      "username": "root",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+      "web_url": "http://example.com/root"
+    },
+    "labels": [{
+      "id": 10,
+      "name": "Doing",
+      "color": "#5CB85C",
+      "description": null
+    }],
+    "weight": 4
+  }
+```
+
 ## Delete a board **[STARTER]**
 
 Deletes a board.

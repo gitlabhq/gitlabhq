@@ -18,18 +18,6 @@ module EE
       end
       resource :projects, requirements: ::API::API::PROJECT_ENDPOINT_REQUIREMENTS do
         segment ':id/boards' do
-          desc 'Get all project boards' do
-            detail 'This feature was introduced in 8.13'
-            success ::API::Entities::Board
-          end
-          params do
-            use :pagination
-          end
-          get '/' do
-            authorize!(:read_board, user_project)
-            present paginate(board_parent.boards), with: ::API::Entities::Board
-          end
-
           desc 'Create a project board' do
             detail 'This feature was introduced in 10.4'
             success ::API::Entities::Board
@@ -41,6 +29,19 @@ module EE
             authorize!(:admin_board, board_parent)
 
             create_board
+          end
+
+          desc 'Update a project board' do
+            detail 'This feature was introduced in 11.0'
+            success ::API::Entities::Board
+          end
+          params do
+            use :update_params
+          end
+          put '/:board_id' do
+            authorize!(:admin_board, board_parent)
+
+            update_board
           end
 
           desc 'Delete a project board' do

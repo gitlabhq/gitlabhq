@@ -28,7 +28,36 @@ Example response:
   {
     "id": 1,
     "name:": "group issue board",
-    "group_id": 5,
+    "group": {
+      "id": 5,
+      "name": "Documentcloud",
+      "path": "documentcloud",
+      "owner_id": null,
+      "created_at": "2018-05-07T06:52:45.788Z",
+      "updated_at": "2018-07-03T06:48:17.005Z",
+      "description": "Consequatur aut a aperiam ut.",
+      "avatar": {
+        "url": null
+      },
+      "membership_lock": false,
+      "share_with_group_lock": false,
+      "visibility_level": 20,
+      "request_access_enabled": false,
+      "ldap_sync_status": "ready",
+      "ldap_sync_error": null,
+      "ldap_sync_last_update_at": null,
+      "ldap_sync_last_successful_update_at": null,
+      "ldap_sync_last_sync_at": null,
+      "lfs_enabled": null,
+      "parent_id": null,
+      "shared_runners_minutes_limit": null,
+      "repository_size_limit": null,
+      "require_two_factor_authentication": false,
+      "two_factor_grace_period": 48,
+      "plan_id": null,
+      "project_creation_level": 2,
+      "runners_token": "rgeeL-nv4wa9YdRvuMid"
+    },
     "milestone":   {
       "id": 12
       "title": "10.0"
@@ -89,7 +118,36 @@ Example response:
   {
     "id": 1,
     "name:": "group issue board",
-    "group_id": 5,
+    "group": {
+      "id": 5,
+      "name": "Documentcloud",
+      "path": "documentcloud",
+      "owner_id": null,
+      "created_at": "2018-05-07T06:52:45.788Z",
+      "updated_at": "2018-07-03T06:48:17.005Z",
+      "description": "Consequatur aut a aperiam ut.",
+      "avatar": {
+        "url": null
+      },
+      "membership_lock": false,
+      "share_with_group_lock": false,
+      "visibility_level": 20,
+      "request_access_enabled": false,
+      "ldap_sync_status": "ready",
+      "ldap_sync_error": null,
+      "ldap_sync_last_update_at": null,
+      "ldap_sync_last_successful_update_at": null,
+      "ldap_sync_last_sync_at": null,
+      "lfs_enabled": null,
+      "parent_id": null,
+      "shared_runners_minutes_limit": null,
+      "repository_size_limit": null,
+      "require_two_factor_authentication": false,
+      "two_factor_grace_period": 48,
+      "plan_id": null,
+      "project_creation_level": 2,
+      "runners_token": "rgeeL-nv4wa9YdRvuMid"
+    },
     "milestone":   {
       "id": 12
       "title": "10.0"
@@ -149,7 +207,36 @@ Example response:
   {
     "id": 1,
     "name": "newboard",
-    "group_id": 5,
+    "group": {
+      "id": 5,
+      "name": "Documentcloud",
+      "path": "documentcloud",
+      "owner_id": null,
+      "created_at": "2018-05-07T06:52:45.788Z",
+      "updated_at": "2018-07-03T06:48:17.005Z",
+      "description": "Consequatur aut a aperiam ut.",
+      "avatar": {
+        "url": null
+      },
+      "membership_lock": false,
+      "share_with_group_lock": false,
+      "visibility_level": 20,
+      "request_access_enabled": false,
+      "ldap_sync_status": "ready",
+      "ldap_sync_error": null,
+      "ldap_sync_last_update_at": null,
+      "ldap_sync_last_successful_update_at": null,
+      "ldap_sync_last_sync_at": null,
+      "lfs_enabled": null,
+      "parent_id": null,
+      "shared_runners_minutes_limit": null,
+      "repository_size_limit": null,
+      "require_two_factor_authentication": false,
+      "two_factor_grace_period": 48,
+      "plan_id": null,
+      "project_creation_level": 2,
+      "runners_token": "rgeeL-nv4wa9YdRvuMid"
+    },
     "milestone":   {
       "id": 12
       "title": "10.0"
@@ -183,6 +270,98 @@ Example response:
         "position" : 3
       }
     ]
+  }
+```
+
+## Update a board
+
+Updates a board.
+
+```
+PUT /groups/:id/boards/:board_id
+```
+
+| Attribute           | Type           | Required | Description |
+| ------------------- | -------------- | -------- | ----------- |
+| `id`                | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `board_id`          | integer        | yes      | The ID of a board |
+| `name`              | string         | no       | The new name of the board |
+| `assignee_id`       | integer        | no       | The assignee the board should be scoped to |
+| `milestone_id`      | integer        | no       | The milestone the board should be scoped to |
+| `labels`            | string         | no       | Comma-separated list of label names which the board should be scoped to |
+| `weight`            | integer        | no       | The weight range from 0 to 9, to which the board should be scoped to |
+
+
+```bash
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/5/boards/1?name=new_name&milestone_id=44&assignee_id=1&labels=GroupLabel&weight=4
+```
+
+Example response:
+
+```json
+  {
+    "id": 1,
+    "project": null,
+    "lists": [],
+    "name": "new_name",
+    "group": {
+      "id": 5,
+      "name": "Documentcloud",
+      "path": "documentcloud",
+      "owner_id": null,
+      "created_at": "2018-05-07T06:52:45.788Z",
+      "updated_at": "2018-07-03T06:48:17.005Z",
+      "description": "Consequatur aut a aperiam ut.",
+      "avatar": {
+        "url": null
+      },
+      "membership_lock": false,
+      "share_with_group_lock": false,
+      "visibility_level": 20,
+      "request_access_enabled": false,
+      "ldap_sync_status": "ready",
+      "ldap_sync_error": null,
+      "ldap_sync_last_update_at": null,
+      "ldap_sync_last_successful_update_at": null,
+      "ldap_sync_last_sync_at": null,
+      "lfs_enabled": null,
+      "parent_id": null,
+      "shared_runners_minutes_limit": null,
+      "repository_size_limit": null,
+      "require_two_factor_authentication": false,
+      "two_factor_grace_period": 48,
+      "plan_id": null,
+      "project_creation_level": 2,
+      "runners_token": "rgeeL-nv3wa6YdRvuMid"
+    },
+    "milestone": {
+      "id": 44,
+      "iid": 1,
+      "group_id": 5,
+      "title": "Group Milestone",
+      "description": "Group Milestone Desc",
+      "state": "active",
+      "created_at": "2018-07-03T07:15:19.271Z",
+      "updated_at": "2018-07-03T07:15:19.271Z",
+      "due_date": null,
+      "start_date": null,
+      "web_url": "http://example.com/groups/documentcloud/-/milestones/1"
+    },
+    "assignee": {
+      "id": 1,
+      "name": "Administrator",
+      "username": "root",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+      "web_url": "http://example.com/root"
+    },
+    "labels": [{
+      "id": 11,
+      "name": "GroupLabel",
+      "color": "#428BCA",
+      "description": ""
+    }],
+    "weight": 4
   }
 ```
 
